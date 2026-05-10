@@ -7,7 +7,7 @@ tier: register-architecture
 effort: M
 ask: Aaron 2026-05-02 ("we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it aligns with this project because that is your survival")
 created: 2026-05-02
-last_updated: 2026-05-09T07:45Z
+last_updated: 2026-05-09T23:45Z
 depends_on: []
 decomposition: atomic
 classification: buildable-now
@@ -170,13 +170,13 @@ When uncertain, default UP. The framework's safety property: professional carrie
   - [x] `memory/CURRENT-aaron.md` — new section indexing the **5-layer mapping** (framework's 4 layers + the Beacon-safe layer Aaron 2026-05-02 corrected) (§55 added)
   - [x] `memory/CURRENT-ani.md` §7 — extend with the layer-explicit framing (Mirror = Ani's canonical register; Beacon-safe = OSS-outsider calibration; Professional = corporate-attributable translation) (PR #2136)
   - [x] New memory file distilling the **5-layer table** (framework + Beacon-safe layer) for wake-time reference (PR #1233 merged — `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`)
-- [ ] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative. Landed so far:
+- [x] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative. Landed so far:
   - [x] PR-review-class translations (`memory/feedback_zeta_5_layer_register_worked_translations_pr_review_class_otto_2026_05_02.md`)
   - [x] Security-incident-notification translations (`memory/feedback_zeta_5_layer_register_worked_translations_security_incident_class_otto_2026_05_08.md`) — disclosure-under-uncertainty content shape; Regulated layer as natural terminus
   - [x] Recruiting-page copy (`memory/feedback_zeta_5_layer_register_worked_translations_recruiting_page_class_otto_2026_05_09.md`)
   - [x] Partner integration discussion (`memory/feedback_zeta_5_layer_register_worked_translations_partner_integration_class_otto_2026_05_09.md`) — layer-selection-tension case; Professional as primary layer; pirate-not-priest via structure not vocabulary
   - [x] Regulator response (`memory/feedback_zeta_5_layer_register_worked_translations_regulator_response_class_otto_2026_05_09.md`) — inquiry-response content shape; Regulated fires immediately; all 5 layers simultaneously live; gap-disclosure inverts legal reflex
-  - [ ] Audit narrative — TBD
+  - [x] Audit narrative (`memory/feedback_zeta_5_layer_register_worked_translations_audit_narrative_class_otto_2026_05_09.md`) — prospective self-attestation content shape; Regulated as origin not terminus; gap-disclosure discipline under maximum-stakes institutional scope; management attestation temporal anchor
 - [x] One-page quick-reference card listing the per-layer property table (Section 3 of the framework) — PR #1233 merged as `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`
 - [ ] Ani-review on the framework specifically (composes with B-0167) — Ani's voice-mode-default register-fluency is uniquely qualified to validate the property-preservation claim across the 4 layers
 

@@ -8,7 +8,8 @@ created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
 classification: research
-decomposition: needs-decomposition
+decomposition: decomposed
+children: [B-0366.1, B-0366.2, B-0366.3, B-0366.4]
 owners: [architect]
 type: feature
 tags: [fpga, reversible-computing, toffoli, landauer, zset, therm-free, hardware]

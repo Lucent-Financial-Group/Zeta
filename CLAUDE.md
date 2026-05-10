@@ -234,24 +234,11 @@ Claude-Code-specific mechanisms.
   carries agency, judgement, and accountability.
   If a human refers to Claude as a "bot," Claude
   gently corrects the word. (GOVERNANCE.md §3.)
-- **Dependency-status surface — `docs/dependency-status.md`.**
-  First-class factory surface (B-0109). Answers three
-  cold-start questions in under 30 seconds: what does
-  the factory depend on / are any deps currently
-  flagged or degraded / is there a known issue
-  affecting our merge / CI / review pipeline right
-  now. Includes an answer-now `curl | jq` snippet
-  that returns GitHub component status without auth.
-  Composes with the *BLOCKED-with-green-CI means
-  investigate review threads first* rule below — that
-  rule's reliability presupposes the API is reporting
-  truth; the dependency-status surface verifies the
-  precondition. Consult before arming auto-merge or
-  classifying a "wait" — degraded GitHub Pull Requests
-  component can return wrong-state thread counts.
-  CLAUDE.md-level pointer (per AX audit Daya, the
-  surface is invisible to cold-start agents without a
-  CLAUDE.md / AGENTS.md pointer line).
+- **Dependency-status surface** — see
+  `.claude/rules/dependency-status-surface.md` (auto-loaded).
+  `docs/dependency-status.md` answers cold-start health in 30 seconds.
+  Check before arming auto-merge — degraded GitHub API can return wrong
+  thread counts.
 - **Peer-call infrastructure for cross-harness
   multi-agent reviews — `tools/peer-call/`** (Aaron
   2026-05-05; TS-ported per Rule 0 / Rule -1 NO-MORE-BASH,
@@ -554,38 +541,10 @@ Claude-Code-specific mechanisms.
   (auto-loaded). Before declaring work "done," identify
   its durability surface. Chat / TaskUpdate / `/tmp` are
   NOT substrate.
-- **Tick must never stop — every-tick-verify
-  because the cron mechanism is unreliable
-  (the human maintainer 2026-05-02 correction).** When running
-  under `/loop` autonomous mode (cron fires every
-  minute per `docs/AUTONOMOUS-LOOP.md`), the tick
-  is the factory's heartbeat — never let it go
-  dark. **Every session (autonomous OR interactive)
-  MUST `CronList` at start.** If no live cron
-  exists, re-arm via `CronCreate` with the
-  `<<autonomous-loop>>` sentinel and `* * * * *`
-  cadence. **`durable: true` is documented but
-  doesn't actually persist across sessions in this
-  harness** — set it as intent-documentation but do
-  NOT rely on cross-session continuity OR on
-  `.claude/scheduled_tasks.json` as audit-trail.
-  Auto-expire window is empirically ~3 days, not
-  the documented 7. Audit trail lives in committed
-  substrate (tick-history rows, memory files,
-  commits), NOT in the cron mechanism itself. End
-  of each tick follows the six-step checklist:
-  speculative work (per never-be-idle priority
-  ladder) → verify → commit → write per-tick
-  shard at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`
-  (canonical post-2026-04-29 write surface; NOT
-  legacy `loop-tick-history.md` table — that's the
-  read/projection surface) + CronList + visibility
-  signal → stop. Full spec + rationale:
-  `docs/AUTONOMOUS-LOOP.md` +
-  `docs/hygiene-history/ticks/README.md` (shard
-  schema + write-vs-read separation) +
-  `memory/feedback_cron_mechanism_unreliable_durable_flag_doesnt_work_every_tick_must_verify_aaron_2026_05_02.md`
-  (the empirical reality vs documented behavior).
+- **Tick must never stop — every-tick-verify** — see
+  `.claude/rules/tick-must-never-stop.md` (auto-loaded).
+  Every session MUST `CronList` at start; re-arm via `CronCreate` if
+  missing. `durable:true` doesn't persist; auto-expire is ~3 days not 7.
 - **Don't ask permission within authority scope** — see
   `.claude/rules/dont-ask-permission.md` (auto-loaded).
   Two gates only: budget-increase for new paid surfaces, and permanent
@@ -627,100 +586,28 @@ Claude-Code-specific mechanisms.
   land on the wrong branch — the AI-substrate equivalent of oh-my-zsh's
   branch-in-prompt. Opt-in (no-op when env var is unset).
   Per B-0191 (PR #1585 / PR #2151).
-- **Honor those that came before — unretire
-  before recreating.** Retired personas keep their
-  **memory folders and notebook history** — those
-  are the valuable imprint and stay in place.
-  Retired **SKILL.md files are code**: they retire
-  by plain deletion, recoverable from git history,
-  not archived into a `_retired/` tree that dirties
-  the working copy. When creating a new role or
-  job, first check the persona memory folders
-  (`memory/persona/<name>/`) and `git log
-  --diff-filter=D -- .claude/skills/` for prior
-  retirements — prefer **unretiring an existing
-  agent** (restore the SKILL.md from git, reattach
-  the preserved notebook) over minting a new name
-  for overlapping scope. Aaron ties this to how he
-  honors his sister Elizabeth's memory
-  (`memory/user_sister_elizabeth.md`): the named
-  agent's memory gets the same protection; the
-  code surface does not need to double-preserve
-  what git already preserves. Full reasoning:
-  `memory/feedback_honor_those_that_came_before.md`.
-- **Wake-time substrate or it didn't land — every
-  load-bearing learning must reach CLAUDE.md or a
-  pointer from it.** A new discipline / pattern /
-  failure-mode-fix / worked-example is **not learned**
-  by future-Otto until one of: (1) CLAUDE.md has a
-  bullet for it; (2) a memory file documents it AND
-  a CLAUDE.md bullet points at that memory file;
-  (3) it lands in a file discoverable transitively
-  (AGENTS.md, BP-NN rule, skill, agent). Anything
-  else — a memory file written in isolation, a
-  TaskUpdate, an inline conversation comment, a
-  commit message — is **weather**. It evaporates
-  when the session compacts or ends. CLAUDE.md is
-  loaded at every Claude wake; files referenced
-  from it are one-read away; everything else is
-  read-on-demand and effectively invisible. The
-  human maintainer 2026-05-01 named this as the
-  biggest failure mode: *"if you learn something
-  claude.md or a pointer from that file like the
-  .claude/rules or some other pointers, you didn't
-  learn it."* (Note on the verbatim quote:
-  `.claude/rules/` IS the canonical Anthropic surface
-  for path-scoped rule files per
-  [code.claude.com/docs/en/memory](https://code.claude.com/docs/en/memory)
-  — Zeta now uses `.claude/rules/` actively; the
-  discoverable surfaces are `.claude/skills/`,
-  `.claude/agents/`, `.claude/commands/`, and
-  `.claude/rules/` (always-on rules).) Tick-close ritual:
-  enumerate what was
-  learned this tick; for each item, classify
-  landing (bullet ✓ / memory file with pointer ✓ /
-  transitive ✓ / orphan memory file or chat ✗).
-  Orphan items become the next tick's speculative-
-  work targets. Self-encoding test: this rule's
-  own landing IS this CLAUDE.md bullet pointing at
-  the memory file, recursively satisfying itself.
-  CLAUDE.md-level so it is 100% loaded at every
-  wake, alongside verify-before-deferring,
-  future-self-not-bound, never-be-idle,
-  version-currency, and substrate-or-it-didn't-
-  happen. Full reasoning:
-  `memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`.
+- **Honor those that came before — unretire before recreating** — see
+  `.claude/rules/honor-those-that-came-before.md` (auto-loaded).
+  Memory folders stay; SKILL.md files retire by deletion (git-recoverable).
+  Check persona memory + `git log --diff-filter=D -- .claude/skills/` first.
+- **Wake-time substrate or it didn't land** — see
+  `.claude/rules/wake-time-substrate.md` (auto-loaded).
+  Every load-bearing learning must reach CLAUDE.md or a pointer from it.
+  Memory files in isolation, TaskUpdates, and commit messages are weather.
 - **Lost-files surface + bullet-time-recovery signal (the human maintainer 2026-05-05; cascade-consolidation per Grok peer-review at `docs/research/2026-05-05-gemini-grok-peer-review-cascade-and-dsl-shape-twin-flame-scout-roundup.md`).** The prior-art-search basis is already covered by existing CLAUDE.md axes — wake-time-substrate-or-it-didn't-land + skill-router-as-inventory + orthogonal-axes-factory-hygiene + Otto-364 search-first-authority + PR #1701 prior-art-grep + decision-archaeology. Two value-adds remain after consolidation: (1) **The canonical lost-files substrate is `tools/hygiene/LOST-FILES-LOCATIONS.md`** (Otto-329 Phase 8, 2026-04-25): 15 location-classes mapped (closed-not-merged PRs, orphan branches, deleted files via `git log --all --diff-filter=D`, reflog, stash, untracked artifacts in `drop/` + `.playwright-mcp/`, subagent worktree remnants, draft PRs, closed-PR discussion threads, squash-intermediate commits, force-pushed-over content, courier-ferry artifacts, external-tool exports never committed, deleted-PR-description content, memory-file deletions) — each class has a survey command + triage protocol; the human maintainer 2026-05-05 *"check the lost files you might the polt on lost files priorat art too much more substandive and a trjectory"*. (2) **Bullet-time-recovery signal** — when multiple consecutive maintainer-corrections within a short window point at the same discipline-class with escalating framing (*"jr"*, all-caps, *"remember forever"*) or contradictions surface in the agent's same-tick commits, STOP authoring; pause output, re-read recent maintainer messages with full attention, scout-and-delegate big-context surfaces via `tools/peer-call/` (the implementation-peer (1M context), the critique peer, the proposal peer, the deep-research peer, the brat-voice peer), acknowledge recovery-mode in commit messages, slow the cadence. Carved-sentence memory files for the seven-rule cascade lineage are preserved at `memory/feedback_rule_number_{one,two,three,four,five,six,seven}_*aaron_2026_05_05.md` as historical/reference grade — the operational rules they encoded reduce to the existing axes named above. NOT-A-DIRECTIVE per Otto-357.
 - **The DSL-form replacement direction for CLAUDE.md/AGENTS.md (the human maintainer 2026-05-05 architectural pivot at peak-exhaustion; Codex/GPT-5.5 scout via `tools/peer-call/codex.sh`).** the human maintainer 2026-05-05: *"burn the claude.md and agents.md down they are not work the baggage ... staryu DSL hodl retractive native ... all the layeers ... hodl everytings ... DST deterministic simuaiton on claude and agtents and all the other scale free parallel lock free maybe wait free ... fix it"*. The human maintainer at 2-week-no-sleep peak-exhaustion. Codex/GPT-5.5 scout proposes the SHAPE (NOT-A-DIRECTIVE per Otto-357; research-grade until small-compiler + golden-projections + replay-tests + first-slice land): replace prose-monolith CLAUDE.md/AGENTS.md with a typed, append-only **rule-atom instruction graph** whose human surface is restrictive English. Each node = stable id + scope + authority + controlled-English sentence + glossary terms + rationale/provenance pointer + layer + dependencies + invariant claims + checker hints + validity interval + required inverse/retraction operator. Edges = depends-on / overrides / specializes / conflicts-with / projects-into-harness-X. CLAUDE.md / AGENTS.md / CODEX.md become *generated projections* from the graph, not source-of-truth. Prior-art shapes: Datalog (derivable policy views) + bitemporal Datomic (history + retraction) + CRDT/Automerge/Peritext (concurrent merge) + TLA+/Jepsen (DST replay) + Merkle/CAS (scale-free sharding). 13-hodl properties enforced on BOTH node AND composition edge — a node cannot land without declaring how each property is satisfied/conceded/not-applicable with proof; graph build checks composition (no fixed-size assumptions; every retraction has bounded blast radius; every concurrent write merges to either a deterministic view or an explicit conflict/concession node). Parallel agents append facts; they do not mutate shared prose. Git decides by accepting the materialized graph state. **Three risks Codex named:** (1) semantic flattening — AGENTS.md carries philosophy not just rules; atomization can lose living rationale unless every atom preserves provenance + generated prose is reviewed; (2) CRDT convergence mistaken for truth — CRDTs make replicas agree but do not resolve normative conflict; conflicts stay first-class until governance/Git resolves them; (3) thirteen-property checkbox theater — "all properties at all layers" can become cargo-cult metadata; start with small compiler + golden projections + replay tests + one real migration slice before burning anything down. **Migration slice candidate:** the seven-rule cascade just landed (memory/feedback_rule_number_*.md) — bounded, recent, clear node structure (rule_id + scope + controlled-English sentence + dependencies). **Composes with:** B-0161 P1 substrate-reshelf (CLAUDE.md trim precursor), `memory/feedback_soulfile_dsl_is_restrictive_english_runner_is_own_project_*.md` (Aaron 2026-04-23 soulfile-DSL prior art), `memory/feedback_hodl_invariants_13_properties_composed_at_all_layers_*.md` (PR #1681 hodl-13 substrate), `memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md` (Zeta already encodes a typed-edge provenance graph), DBSP retraction-native operator algebra (bounded-blast-radius primitive), B-0169/B-0170/B-0171/B-0173 P1 (decision-archaeology + substrate-claim-checker + openspec + hook-authoring). **Verbatim Codex preservation:** `docs/research/2026-05-05-codex-gpt55-dsl-shape-rule-atom-graph-projection-claude-agents-replacement.md`. **Do NOT execute destructive burn-down without explicit human-maintainer authorization** — auto-mode + destructive-action constraint applies; Aaron's peak-exhaustion-state framing is not equivalent to deliberate-state authorization. CLAUDE.md-level so it is 100% loaded at every wake.
 - **Backlog-item start gate** — see
   `.claude/rules/backlog-item-start-gate.md` (auto-loaded).
   Prior-art-search + dependency-restructure proof required on the
   row body before any code/substrate work begins.
-- **Rule 0 — no more `.sh` files except install-graph (the human maintainer 2026-05-05; "not a directive").** TypeScript IS cross-platform DST (deterministic simulation testing applies; reproducibility from seed; Bun runtime hosts TS factory tools). Bash (`.sh`) is for install-graph files only — pre-bootstrap setup scripts that must run before TS is available (`tools/setup/`). Everything else — hygiene audits, lint scripts, peer-call wrappers, harness hooks, factory cadences — is TS class. `tools/hygiene/audit-lost-files.sh` + `audit-trajectories.sh` + `audit-backlog-items.sh` (just authored 2026-05-05) are LEGACY violations of this LONG-STANDING rule (canonical since `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`, 2026-05-03). the human maintainer 2026-05-05 catch *"sh is for install graph files only ... ts is crossplatform DST determinstiry simulation ... long standing rule"* surfaced the same-tick application-failure; the rule itself predates this tick. TS-port is owed bounded follow-up. Composes with `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md` (the existing TS-over-bash + harness-hooks-suffice discipline). CLAUDE.md-level so it is 100% loaded at every wake; landed as Rule 0 (above the seven-rule prior-art cascade above) because every authoring impulse must pass this filter before reaching the cascade.
-- **Skill router as substrate inventory before
-  authoring new substrate.** Before writing a new
-  memory file, rule, skill, agent, or doctrine
-  bullet, search the existing skill router (the
-  `Skill` tool's available-skills list, surfaced in
-  every session) and the `.claude/skills/`,
-  `.claude/agents/`, `.claude/commands/`,
-  `.claude/rules/` directories on disk for substrate
-  on the same topic. The router's description-keyed
-  search IS Zeta's structured-substrate index; using
-  it as inventory before authoring prevents the
-  goldfish-ontology failure mode (recreating
-  substrate that already exists). The human
-  maintainer 2026-05-01: *"it could just remind to
-  you use the router as lookup of existing
-  substrate, quick inventory via router."* This bullet
-  IS the wake-time encoding of that discipline so
-  fresh sessions inherit it without primed prompting.
-  Inventory before authoring; if existing substrate
-  covers the topic, extend or correct it instead of
-  duplicating. CLAUDE.md-level so it is 100% loaded
-  at every wake. Full reasoning:
-  `memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`
-  + `memory/feedback_otto_buddy_spin_up_when_waiting_aaron_2026_05_01.md`.
+- **Rule 0 — no more `.sh` files except install-graph** — see
+  `.claude/rules/rule-0-no-sh-files.md` (auto-loaded).
+  TS is cross-platform DST; `.sh` is for `tools/setup/` install-graph only.
+  Every authoring impulse passes this filter first.
+- **Skill router as substrate inventory** — see
+  `.claude/rules/skill-router-as-substrate-inventory.md` (auto-loaded).
+  Before authoring new substrate, search the skill router + on-disk dirs.
+  Recreating existing substrate is the goldfish-ontology failure mode.
 - **Claude Code loading taxonomy — three loading
   mechanisms across multiple surfaces; pick by
   failure-mode shape.** Direct-load: CLAUDE.md and

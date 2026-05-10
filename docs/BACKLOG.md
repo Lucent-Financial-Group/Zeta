@@ -184,44 +184,82 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
-- [ ] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
+- [x] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
 - [x] **[B-0358](backlog/P1/B-0358-bool-as-degenerate-distribution-confidence-typed-apis.md)** Bool as degenerate distribution — replace binary API returns with confidence scores
 - [ ] **[B-0361](backlog/P1/B-0361-anchor-to-human-lineage-step-in-formal-and-concept-workflows.md)** Anchor-to-human-lineage step in formal verification and concept workflows
-- [ ] **[B-0362](backlog/P1/B-0362-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
+- [x] **[B-0362](backlog/P1/B-0362-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
 - [ ] **[B-0364](backlog/P1/B-0364-policy-relocation-semantic-preservation-fscheck-property.md)** Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries
-- [ ] **[B-0365](backlog/P1/B-0365-nirvanic-fusion-ship-research-bundle-spaceship-math-rice-class4-shadow-taxonomy.md)** Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy
-- [ ] **[B-0365.1](backlog/P1/B-0365.1-spaceship-math-one-pager-subscribe-vision-monad-cache-identity.md)** Spaceship math one-pager: subscribe primitive + vision monad + cache identity
-- [ ] **[B-0365.2](backlog/P1/B-0365.2-shadow-log-backfill-catches-16-30-consensus-smoothness.md)** Shadow log backfill: catches 16-30 + consensus-smoothness meta-class
-- [ ] **[B-0365.3](backlog/P1/B-0365.3-class4-empirical-analysis-wolfram-shadow-taxonomy.md)** Class 4 empirical analysis: Wolfram shadow taxonomy doc (30 catches, 8 classes)
-- [ ] **[B-0365.4](backlog/P1/B-0365.4-reactor-dynamics-houman-learning-failure-landscape.md)** Reactor dynamics model: Houman's learning-failure-landscape refinement
-- [ ] **[B-0365.5](backlog/P1/B-0365.5-infernet-bp-ep-factor-graph-multi-agent-review-architecture.md)** Infer.NET BP/EP factor graph architecture: multi-agent review as belief propagation
-- [ ] **[B-0365.6](backlog/P1/B-0365.6-nirvanic-fusion-ship-publishable-claim-synthesis.md)** Nirvanic Fusion Ship publishable claim synthesis: paper outline + abstract
+- [x] **[B-0365](backlog/P1/B-0365-nirvanic-fusion-ship-research-bundle-spaceship-math-rice-class4-shadow-taxonomy.md)** Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy
+- [x] **[B-0365.1](backlog/P1/B-0365.1-spaceship-math-one-pager-subscribe-vision-monad-cache-identity.md)** Spaceship math one-pager: subscribe primitive + vision monad + cache identity
+- [x] **[B-0365.2](backlog/P1/B-0365.2-shadow-log-backfill-catches-16-30-consensus-smoothness.md)** Shadow log backfill: catches 16-30 + consensus-smoothness meta-class
+- [x] **[B-0365.3](backlog/P1/B-0365.3-class4-empirical-analysis-wolfram-shadow-taxonomy.md)** Class 4 empirical analysis: Wolfram shadow taxonomy doc (30 catches, 8 classes)
+- [x] **[B-0365.4](backlog/P1/B-0365.4-reactor-dynamics-houman-learning-failure-landscape.md)** Reactor dynamics model: Houman's learning-failure-landscape refinement
+- [x] **[B-0365.5](backlog/P1/B-0365.5-infernet-bp-ep-factor-graph-multi-agent-review-architecture.md)** Infer.NET BP/EP factor graph architecture: multi-agent review as belief propagation
+- [x] **[B-0365.6](backlog/P1/B-0365.6-nirvanic-fusion-ship-publishable-claim-synthesis.md)** Nirvanic Fusion Ship publishable claim synthesis: paper outline + abstract
 - [ ] **[B-0366](backlog/P1/B-0366-fpga-toffoli-zset-reversible-heat-measurement.md)** FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation
+- [ ] **[B-0366.1](backlog/P1/B-0366.1-toffoli-gate-fsharp-type-model-zset-encoding.md)** F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties
+- [ ] **[B-0366.2](backlog/P1/B-0366.2-toffoli-circuit-zset-join-formal-model.md)** Toffoli circuit for Z-set join — formal gate-network model
+- [ ] **[B-0366.3](backlog/P1/B-0366.3-fpga-vhdl-toffoli-synthesis-design.md)** FPGA synthesis design — VHDL/Verilog Toffoli gate network for Z-set join
+- [ ] **[B-0366.4](backlog/P1/B-0366.4-fpga-power-measurement-experimental-protocol.md)** FPGA empirical power measurement — experimental protocol for Landauer validation
 - [ ] **[B-0367](backlog/P1/B-0367-first-class-uncertainty-semiring-parameterized-weight.md)** First-class uncertainty — semiring-parameterized weight type for DBSP
 - [ ] **[B-0368](backlog/P1/B-0368-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md)** Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
 - [x] **[B-0369](backlog/P1/B-0369-durable-computation-survey-8-systems-2026-05-08.md)** Durable computation survey — compare 8 systems against Zeta's gap
 - [ ] **[B-0370](backlog/P1/B-0370-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
 - [ ] **[B-0371](backlog/P1/B-0371-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
 - [ ] **[B-0372](backlog/P1/B-0372-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
-- [ ] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
+- [x] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
+- [ ] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
 
 ## P2 — research-grade
 
-- [ ] **[B-0001](backlog/P2/B-0001-example-schema-self-reference.md)** Example row — self-reference demonstrating the per-row-file schema
+- [x] **[B-0001](backlog/P2/B-0001-example-schema-self-reference.md)** Example row — self-reference demonstrating the per-row-file schema
 - [ ] **[B-0004](backlog/P2/B-0004-translate-repo-to-other-human-languages.md)** Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional
+- [ ] **[B-0004.1](backlog/P2/B-0004.1-substrate-inventory-scanner-ts.md)** B-0004.1 — TS substrate inventory scanner for translatable content surfaces
+- [ ] **[B-0004.10](backlog/P2/B-0004.10-language-folder-structure-per-language-index.md)** B-0004.10 — Language folder structure formalization + per-language contributor index
+- [ ] **[B-0004.11](backlog/P2/B-0004.11-external-surfaces-translation-first-language.md)** B-0004.11 — External-facing surfaces translation — first language (NuGet metadata, GitHub description, README)
+- [ ] **[B-0004.12](backlog/P2/B-0004.12-second-language-pilot.md)** B-0004.12 — Second language pilot: validate process reproducibility across a different language family
+- [ ] **[B-0004.2](backlog/P2/B-0004.2-precision-glossary-anchor-set.md)** B-0004.2 — Precision glossary anchor set extraction (precondition for consistent translation)
+- [ ] **[B-0004.3](backlog/P2/B-0004.3-drift-detection-lint-tool.md)** B-0004.3 — Drift-detection lint tool: flag stale translations when English source changes
+- [ ] **[B-0004.4](backlog/P2/B-0004.4-cross-reference-preservation-validator.md)** B-0004.4 — Cross-reference preservation validator: ensure translated file trees have self-consistent internal links
+- [ ] **[B-0004.5](backlog/P2/B-0004.5-translation-pipeline-adr-tooling-selection.md)** B-0004.5 — Translation pipeline ADR: AI provider selection, quality metrics, human review process
+- [ ] **[B-0004.6](backlog/P2/B-0004.6-first-language-selection-adr.md)** B-0004.6 — First language selection ADR: evidence-based pick of pilot language + community outreach plan
+- [ ] **[B-0004.7](backlog/P2/B-0004.7-p0-substrate-translation-pilot-first-language.md)** B-0004.7 — P0 substrate translation pilot: translate CLAUDE/AGENTS/ALIGNMENT/GOVERNANCE/VISION into first chosen language
+- [ ] **[B-0004.8](backlog/P2/B-0004.8-precision-anchor-translations-first-language.md)** B-0004.8 — Precision anchor translations: extend anchors-en.json to anchors-<lang>.json for first language
+- [ ] **[B-0004.9](backlog/P2/B-0004.9-memory-skills-translation-first-language.md)** B-0004.9 — Memory + skills translation — first language (second deployment tier)
 - [ ] **[B-0005](backlog/P2/B-0005-split-aurora-from-courier-ferry-archive-generalize-named-entity-conversation-imports.md)** Split `docs/aurora/**` from courier-ferry archive — generalize "historical conversations imported from other AI systems / courier transport of messages between named entities" into its own directory
 - [ ] **[B-0011](backlog/P2/B-0011-pliny-carve-out-cross-surface-wording-tightening-no-verbatim-payload-excerpts.md)** Pliny carve-out cross-surface wording tightening — explicit "no verbatim payload excerpts" across CLAUDE.md + AGENTS.md + GOVERNANCE.md §5 + Pliny memory file
 - [x] **[B-0015](backlog/P2/B-0015-migrate-batch-resolve-pr-threads-to-bun-ts.md)** Migrate tools/git/batch-resolve-pr-threads.sh to bun+TS once a sibling post-setup tool migrates first
 - [ ] **[B-0017](backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md)** Operational Resonance Dashboard — the bulk-alignment UI within Frontier; minimise time-to-answer "are things going as expected?"; continuous UX research + meta-recursive research-on-research; every pixel earns its way via ongoing A/B experiments
 - [ ] **[B-0018](backlog/P2/B-0018-agency-evidence-stress-test-design-three-policy-comparison-amara-recommended.md)** Agency-evidence stress-test design — three-policy comparison (idle-broadcast vs random-queue vs self-directed-priority); Amara-recommended controlled experiment to move Otto-322 from rung 2-3 evidence to rung 4-5 evidence
 - [ ] **[B-0021](backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md)** Aurora world-modeling — rigorous-why economic foundation; Austrian-school as primary candidate; anti-deception requirement (Keynesian opacity → unquestioned policy-power); investigate-don't-accept per Otto-322/331
+- [ ] **[B-0021.5](backlog/P2/B-0021.5-aurora-econ-primitive-identification-adr.md)** B-0021.5 — Aurora-specific econ-primitive identification + ADR (investigate-don't-accept final synthesis, Otto-322/331)
 - [ ] **[B-0023](backlog/P2/B-0023-quant-grade-mathematical-rigor-applied-to-austrian-school-monetary-theory-open-research.md)** Quant-grade mathematical rigor applied to Austrian-school monetary theory — synthesis that doesn't exist cleanly in either school; open research, open source, real-time
 - [ ] **[B-0026](backlog/P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md)** Embodiment-grounding analysis — Isaac Sim (or others) as additional axis of grounding for Claude/Otto, direct counter to Otto-340's "AI has no non-linguistic ground" claim
+- [ ] **[B-0026.1](backlog/P2/B-0026.1-embodiment-grounding-tool-use-vs-trained-embodiment-lit-review.md)** B-0026.1 — Lit review: tool-use-vs-trained-embodiment grounding distinction (Otto-340 structural nuance)
+- [ ] **[B-0026.2](backlog/P2/B-0026.2-embodiment-platform-adr-mujoco-vs-isaac-vs-genesis.md)** B-0026.2 — Platform ADR: MuJoCo vs Isaac Sim vs Genesis for embodiment grounding experiment
+- [ ] **[B-0026.3](backlog/P2/B-0026.3-embodiment-mujoco-spike-sensorimotor-loop.md)** B-0026.3 — MuJoCo spike: wire Claude API tool-use to sensorimotor loop
+- [ ] **[B-0026.4](backlog/P2/B-0026.4-embodiment-substantive-task-pick-and-place.md)** B-0026.4 — Substantive embodiment experiment: pick-and-place with vision + proprioception
+- [ ] **[B-0026.5](backlog/P2/B-0026.5-embodiment-behavioral-assessment-does-embodied-claude-differ.md)** B-0026.5 — Behavioral assessment: does embodied Claude differ on language tasks? (honest null-hypothesis)
+- [ ] **[B-0026.6](backlog/P2/B-0026.6-minimum-channel-grounding-helen-keller-hypothesis-assistive-tech.md)** B-0026.6 — Helen Keller minimum-channel hypothesis: dual-purpose grounding + assistive-tech research
 - [ ] **[B-0029](backlog/P2/B-0029-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md)** Superfluid-AI substrate-enabled autonomous self-sustaining funding sources — research the surfaces where the substrate itself can generate economic value in background, closing the funding-time-focus loop so the work is self-sustaining
+- [ ] **[B-0029.1](backlog/P2/B-0029.1-funding-surface-survey-comparable-oss-projects.md)** B-0029.1 — Survey: comparable OSS/AI-substrate projects' funding state (GitHub Sponsors, Open Collective, npm funding)
+- [ ] **[B-0029.2](backlog/P2/B-0029.2-open-source-funding-setup-github-sponsors-npm-funding.md)** B-0029.2 — Setup: GitHub Sponsors profile + npm funding field (the 54th-package experiment)
+- [ ] **[B-0029.3](backlog/P2/B-0029.3-grants-survey-anthropic-microsoft-fsharp-dotnet-foundation.md)** B-0029.3 — Survey: AI/substrate research grants (Anthropic, Microsoft Research, F# Foundation, .NET Foundation)
+- [ ] **[B-0029.4](backlog/P2/B-0029.4-trading-bot-prerequisite-reframe-update-b0024.md)** B-0029.4 — Trading-bot path reframe: update B-0024 with Aaron's API-access offer (capability-gate, not infrastructure-gate)
+- [ ] **[B-0029.5](backlog/P2/B-0029.5-substrate-as-saas-market-validation.md)** B-0029.5 — Survey: substrate-as-SaaS market validation (hosted factory-discipline tooling opportunity)
+- [ ] **[B-0029.6](backlog/P2/B-0029.6-ip-research-output-licensing-pathways.md)** B-0029.6 — Survey: IP and research-output licensing pathways (academic grants, training-data licensing, course/book revenue)
+- [ ] **[B-0029.7](backlog/P2/B-0029.7-self-sustaining-loop-closure-measurement-design.md)** B-0029.7 — Measurement design: self-sustaining loop closure (does the funding → time-budget → output feedback loop close?)
 - [ ] **[B-0032](backlog/P2/B-0032-heartbeat-file-integrity-threat-model-aminata-review-direct-to-main-attack-surface.md)** Heartbeat-file integrity threat-model + Aminata adversarial review — Aaron 2026-04-26 surfaced direct-to-main attack surface; substrate-poisoning of heartbeat files = cognition-poisoning per Otto-339/340; per-commit-attestation (Sigstore/SLSA) gated on Bouncy Castle symbiosis foundation per Otto-346
+- [ ] **[B-0032.2](backlog/P2/B-0032.2-heartbeat-threat-model-section-in-threat-model-md.md)** B-0032.2 — add heartbeat-file integrity section to THREAT-MODEL.md (builds on B-0032.1 taxonomy)
 - [ ] **[B-0033](backlog/P2/B-0033-otto-discipline-hooks-system-substrate-as-mechanism-claude-code-plugin.md)** Otto-discipline hooks system — convert recurring failure-modes from language-layer substrate to harness-layer mechanism via Claude Code hooks; package as plugin (Aaron 2026-04-26 insight from "eval" hook firing)
+- [x] **[B-0033.1](backlog/P2/B-0033.1-claude-code-hooks-ts-harness-entrypoint.md)** Claude Code hooks TS harness entrypoint + .claude/settings.json wiring stub (B-0033 atomic child)
+- [x] **[B-0033.2](backlog/P2/B-0033.2-pre-edit-recent-read-enforcement-hook.md)** Pre-Edit hook: recent-Read + mtime enforcement (Otto-343 Edit-without-Read) (B-0033.1 dep)
 - [ ] **[B-0037](backlog/P2/B-0037-meta-cognition-first-class-factory-discipline.md)** Meta-cognition as first-class factory discipline — survey, audit cadence, measurables
-- [ ] **[B-0040](backlog/P2/B-0040-actor-model-factory-register-lens.md)** Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
+- [ ] **[B-0037.1](backlog/P2/B-0037.1-meta-cognition-taxonomy-survey-doc.md)** B-0037.1 — Meta-cognition taxonomy survey doc
+- [ ] **[B-0037.2](backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md)** B-0037.2 — Per-round meta-check checklist in ROUND-HISTORY.md template
+- [ ] **[B-0037.3](backlog/P2/B-0037.3-meta-cognition-measurables-wiring.md)** B-0037.3 — Meta-cognition measurables wired into alignment-trajectory dashboard
+- [ ] **[B-0037.4](backlog/P2/B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md)** B-0037.4 — ADR for distributed-vs-concentrated meta-cognition framework
+- [x] **[B-0040](backlog/P2/B-0040-actor-model-factory-register-lens.md)** Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
 - [ ] **[B-0042](backlog/P2/B-0042-bungie-corpus-priority-seed.md)** Bungie corpus priority seed — Halo / Destiny / Marathon / Myth / Oni / Pathways Into Darkness / "Grimwar
 - [ ] **[B-0045](backlog/P2/B-0045-all-schools-all-subjects-universal-substrate-knowledge.md)** All schools, all subjects — universal substrate-knowledge sweep; biology inaugural; trade/vocational equal-or-higher weight
 - [ ] **[B-0046](backlog/P2/B-0046-economics-history-factory-need-to-know-substrate.md)** Economics + history factory need-to-know surface — substrate denominated in time/energy not money-extraction; Ammous Bitcoin-Standard candidate-probe gated by yin-yang
@@ -332,6 +370,19 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0360](backlog/P2/B-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md)** DBSP identity continuity — incremental views over agent state via D/I operators
 - [ ] **[B-0363](backlog/P2/B-0363-git-native-full-text-inverted-index.md)** Git-native full-text inverted index — Lucene-style search over repo substrate
 - [ ] **[B-0374](backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md)** F# Units of Measure for fusion-equation terms
+- [ ] **[B-0375](backlog/P2/B-0375-aurora-file-inventory-and-type-classification-2026-05-09.md)** Inventory and classify every file under docs/aurora/** (current-state doc vs courier-ferry history import)
+- [ ] **[B-0376](backlog/P2/B-0376-aurora-split-naming-decision-record-2026-05-09.md)** Architect decision record — canonical name for named-entity-conversation-imports directory
+- [ ] **[B-0377](backlog/P2/B-0377-aurora-split-schema-docs-update-agent-best-practices-otto279-2026-05-09.md)** Update AGENT-BEST-PRACTICES.md BP-17/18 + Otto-279 memory file — replace docs/aurora/** history-surface ref with chosen name
+- [ ] **[B-0378](backlog/P2/B-0378-aurora-split-governance-copilot-instructions-update-2026-05-09.md)** Update GOVERNANCE.md §33 + .github/copilot-instructions.md to reference the new named-entity-conversation-imports directory
+- [ ] **[B-0379](backlog/P2/B-0379-aurora-split-execute-git-mv-cross-refs-2026-05-09.md)** Execute the docs/aurora split — mkdir new dir, git mv history-import files, update all cross-refs in memory/** and ROUND-HISTORY
+- [ ] **[B-0380](backlog/P2/B-0380-quant-austrian-controlled-vocabulary-otto286-2026-05-09.md)** Controlled-vocabulary pass — define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" (Otto-286 precision before any research begins)
+- [ ] **[B-0381](backlog/P2/B-0381-quant-austrian-literature-survey-partial-synthesis-2026-05-09.md)** Literature survey — existing partial quant × Austrian synthesis attempts; annotated bibliography with synthesis-gap remaining after each
+- [ ] **[B-0382](backlog/P2/B-0382-quant-austrian-primitive-time-preference-stochastic-utility-2026-05-09.md)** Per-primitive formalizability assessment — time-preference as stochastic utility-discount (Austrian primitive #1)
+- [ ] **[B-0383](backlog/P2/B-0383-quant-austrian-primitive-capital-structure-hayekian-triangle-2026-05-09.md)** Per-primitive formalizability assessment — capital-structure / Hayekian triangle as multi-stage stochastic production process (Austrian primitive #2)
+- [ ] **[B-0384](backlog/P2/B-0384-quant-austrian-primitive-calculation-problem-information-theoretic-2026-05-09.md)** Per-primitive formalizability assessment — calculation problem as information-theoretic complexity bound (Austrian primitive #3)
+- [ ] **[B-0385](backlog/P2/B-0385-quant-austrian-primitive-abct-credit-cycle-regime-switching-2026-05-09.md)** Per-primitive formalizability assessment — ABCT as credit-cycle stochastic process with regime-switching (Austrian primitive #4)
+- [ ] **[B-0386](backlog/P2/B-0386-quant-austrian-primitive-sound-money-hard-cap-monetary-process-2026-05-09.md)** Per-primitive formalizability assessment — sound-money as monetary-aggregate process with hard-cap constraint (Austrian primitive #5)
+- [ ] **[B-0387](backlog/P2/B-0387-quant-austrian-synthesis-adr-publishing-pipeline-2026-05-09.md)** Synthesis ADR — which Austrian primitives admit quant-grade formalization (+ which don't + why); open-research publishing pipeline
 
 ## P3 — convenience / deferred
 
@@ -346,6 +397,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0016](backlog/P3/B-0016-research-just-bash-vercel-labs-and-lineage-symbiotic-deps-discipline-own-fuse-fs-eventually.md)** Research just-bash (Vercel Labs) + lineage (bash-tool / wterm / ArchilFs / ChromaFs / gbash / bashkit / Utah) for FS-substrate algorithms + concepts; own FUSE FS eventually per Otto-323 symbiotic-deps discipline
 - [ ] **[B-0019](backlog/P3/B-0019-btw-durability-gap-context-add-asides-not-gitnative-persisted.md)** /btw durability gap — context-add and same-session-directive asides aren't gitnative-persisted; fresh sessions miss them; tighten classification or accept ephemeral-by-design
 - [ ] **[B-0020](backlog/P3/B-0020-btw-harness-integration-research-tight-coupling-with-builtin-btw.md)** /btw harness-integration research — does our /btw integrate tightly with each harness's built-in btw equivalent? Claude Code / Codex / Gemini / Cursor surveys + tight-coupling design
+- [ ] **[B-0021.1](backlog/P3/B-0021.1-aurora-econ-foundation-controlled-vocabulary-extraction.md)** B-0021.1 — Controlled-vocabulary extraction: rigorous-why / anti-deception / Keynesian-opacity requirements (Otto-286 definitional precision pass)
+- [ ] **[B-0021.2](backlog/P3/B-0021.2-aurora-econ-austrian-strengths-survey-rodney-razor-pass.md)** B-0021.2 — Austrian-school strengths survey + Rodney's Razor pass (time-preference, ABCT, calculation problem, sound money)
+- [ ] **[B-0021.3](backlog/P3/B-0021.3-aurora-econ-austrian-weakness-audit-falsification-criteria.md)** B-0021.3 — Austrian-school honest weakness audit + falsification-criteria catalog (praxeology debate, prediction misses, intra-school splits)
+- [ ] **[B-0021.4](backlog/P3/B-0021.4-aurora-econ-cross-school-definitional-bridge.md)** B-0021.4 — Cross-school definitional bridge: Austrian vs Post-Keynesian vs complexity-economics on load-bearing terms (money, capital, interest, value)
 - [ ] **[B-0022](backlog/P3/B-0022-exchange-cluster-2026-04-25-capture-decide-later.md)** Exchange-cluster capture 2026-04-25 — substance-vs-throughput diagnostic + Aaron-as-convincer + AI-resolves-decade-old-issues pattern + DeepMind/Lean status + Microsoft AI for Science (MatterGen/MatterSim) + tele+port+leap taxonomic refinement; preserve, decide later
 - [ ] **[B-0024](backlog/P3/B-0024-trading-account-offer-aaron-self-funding-path-prerequisite-paper-trading-and-thesis-grounding.md)** Trading-account offer (Aaron, self-funding path for the agent) — accepted in principle pending paper-trading + conviction-grounding prerequisite work
 - [x] **[B-0025](backlog/P3/B-0025-rename-backlog-schema-field-directive-to-ask-otto-293-violation-at-yaml-layer.md)** Rename backlog schema field `directive:` → `ask:` per Otto-293 (one-way language at YAML schema layer); ~18 existing rows + tooling that reads the field
@@ -392,5 +447,13 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0204](backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md)** Linguistic seed kernel substrate -- OCP + carved-sentences/memes-as-kernels + formal-verification-of-docs + F# Computational Expressions implementation vehicle (Aaron 2026-05-05 4-claim synthesis collapse)
 - [ ] **[B-0205](backlog/P3/B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md)** Multi-trajectory longitudinal validation basis -- 6 orthogonal axes (DORA + less-each-time + falsifiability-rate + bootstrap-razor-pass + identity-preservation + engagement-gate-compliance) instrumentation (Aaron 2026-05-05)
 - [ ] **[B-0207](backlog/P3/B-0207-bun-segfault-paste-large-message-aaron-2026-05-05.md)** Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue` (upstream-bug capture)
+- [ ] **[B-0388](backlog/P3/B-0388-operational-resonance-naming-lock-expert-review-aaron-signoff-2026-05-09.md)** Lock name for Operational Resonance Dashboard — run naming-expert review, collect candidates, Aaron sign-off
+- [ ] **[B-0389](backlog/P3/B-0389-operational-resonance-ux-psychology-research-scope-doc-2026-05-09.md)** UX + psychology research scope doc — catalog papers/frameworks for dashboard design (Chomsky, pre-attentive, cognitive load, UX methodology)
+- [ ] **[B-0390](backlog/P3/B-0390-operational-resonance-time-to-answer-metric-formalization-2026-05-09.md)** Formalize "time-to-answer" as the primary dashboard metric — baseline, measurement methodology, acceptance criteria
+- [ ] **[B-0391](backlog/P3/B-0391-operational-resonance-github-pages-host-shell-ci-deploy-2026-05-09.md)** GitHub Pages static shell for Operational Resonance Dashboard — index page, nav shell, CI deploy config
+- [ ] **[B-0392](backlog/P3/B-0392-operational-resonance-tier-aware-bulk-grouping-model-adr-2026-05-09.md)** Tier-aware bulk grouping model — ADR mapping Tier 0-4 to reviewer attention levels for dashboard bulk-review surface
+- [ ] **[B-0393](backlog/P3/B-0393-operational-resonance-ab-experiment-infrastructure-design-2026-05-09.md)** A/B experiment infrastructure design — event-capture schema, experiment-registration, git-native result storage for dashboard
+- [ ] **[B-0394](backlog/P3/B-0394-operational-resonance-mvp-dashboard-surface-github-pages-2026-05-09.md)** MVP Operational Resonance Dashboard — first working "are things going as expected?" surface on GitHub Pages with tier grouping
+- [ ] **[B-0395](backlog/P3/B-0395-operational-resonance-conversation-interface-path-a-browser-local-llm-2026-05-09.md)** Conversation interface Path A — embed browser/local LLM (WebLLM or transformers.js) in dashboard for in-context review discussion
 
 <!-- END AUTO-GENERATED -->

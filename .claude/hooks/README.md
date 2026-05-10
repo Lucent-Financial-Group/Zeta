@@ -4,6 +4,49 @@ Claude Code reads project-level hooks from `.claude/settings.json`. Hook scripts
 
 Canonical Anthropic reference: <https://code.claude.com/docs/en/hooks>.
 
+## Shared harness module — `harness.ts`
+
+All Otto-discipline hook scripts (`*-hook.ts`) import from `harness.ts` for common types and utilities:
+
+| Export | Purpose |
+|--------|---------|
+| `HookInput` | Typed stdin payload (tool name + input fields) |
+| `HookDecision` | Typed deny-decision JSON output |
+| `readHookInput()` | Parses stdin; returns `{}` on failure (safe default) |
+| `deny(event, reason)` | Emits deny JSON to stdout, exits 0 |
+| `allow()` | Exits 0 with no output (the default allow path) |
+
+Hook contract summary: exit 0 always (non-zero = hook error, not deny). Deny is signalled via JSON stdout. Allow is silence + exit 0.
+
+## Otto-discipline hooks (B-0033 series)
+
+These hooks convert recurring failure-mode disciplines from language-layer substrate into harness-layer mechanism (Otto-341). Each is a separate script; each adds one entry to `settings.json` when wired.
+
+| Script | Matcher | Status | Backlog row |
+|--------|---------|--------|-------------|
+| `pre-edit-recent-read.ts` | `Edit` | planned | B-0033.2 |
+| `pre-bash-inline-python.ts` | `Bash` | planned | B-0033.3 |
+| `pre-commit-directive-vocab.ts` | `Bash` | planned | B-0033.4 |
+| `pre-commit-dst-exempt.ts` | `Bash` | planned | B-0033.5 |
+| `pre-commit-magic-number.ts` | `Bash` | planned | B-0033.6 |
+| `pre-action-bulk-resolve.ts` | `mcp__*` | planned | B-0033.7 |
+| `pre-commit-heartbeat-repeat.ts` | `Bash` | planned | B-0033.8 |
+| `pre-commit-table-cellcount.ts` | `Bash` | planned | B-0033.9 |
+
+Settings wiring pattern for a discipline hook (PreToolUse, Edit matcher):
+
+```json
+{
+  "matcher": "Edit",
+  "hooks": [
+    {
+      "type": "command",
+      "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-edit-recent-read.ts"
+    }
+  ]
+}
+```
+
 ## Available hooks
 
 ### `verify-branch-pretooluse.ts`

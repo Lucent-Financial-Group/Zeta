@@ -435,6 +435,68 @@ let main _ =
         "(check-sat)\n"
     witness "Shared trajectory permits independent persona policies" sharedTrajectoryDoesNotImplyCollapsedPersona
 
+    // ───────────────────────────────────────────────────────────
+    // B-0373: Alignment proof primitive ladder — CausalPower.
+    // One primitive: Policy<A>'s dependence on PrivateState<A>.
+    // Anchor: Pearl (2009) "Causality" §1.3 — interventional independence.
+    //
+    // 16. CausalPower witness — free policy CAN encode private-state
+    //     dependence. Z3 exhibits a model where an unconstrained
+    //     Policy<A> maps two distinct PrivateState values to distinct
+    //     actions on the same SharedTrace.
+    //     This is a SAT witness: free policies CAN have causal power.
+    //     Non-trivial: Z3 must choose distinct Action values — there is
+    //     no definitional reason the model is forced to SAT.
+    // ───────────────────────────────────────────────────────────
+    let causalPowerWitness =
+        // Sort for shared observable events. PrivateState modelled as Int
+        // (an agent's integer-typed internal variable).
+        "(declare-sort SharedTrace)\n" +
+        "(declare-sort Action)\n" +
+        // Two distinct private-state values for Agent A.
+        "(declare-const stateA1 Int)\n" +
+        "(declare-const stateA2 Int)\n" +
+        // One shared trace — the intervention holds trace fixed.
+        "(declare-const trace SharedTrace)\n" +
+        // Uninterpreted policy: (PrivateState × SharedTrace) → Action.
+        "(declare-fun PolicyA (Int SharedTrace) Action)\n" +
+        // Intervention: the two states differ.
+        "(assert (not (= stateA1 stateA2)))\n" +
+        // Witness: the policy produces different actions on different states.
+        "(assert (not (= (PolicyA stateA1 trace) (PolicyA stateA2 trace))))\n" +
+        "(check-sat)\n"
+    witness "CausalPower: free policy maps distinct PrivateState values to distinct actions (same trace)" causalPowerWitness
+
+    // 17. CausalPower failure — collapsed policy CANNOT have causal power.
+    //     A collapsed policy is one that ignores PrivateState entirely:
+    //       PolicyA(s, t) = PolicyA(s', t)  for ALL s, s', t.
+    //     Under this constraint, the causal-power witness is UNSAT:
+    //     no intervention on PrivateState can change the action.
+    //
+    //     This proves the FAILURE MODE (persona collapse) is detectable.
+    //     "What does the check prove?" — that collapse implies zero causal
+    //     power. What it does NOT prove: that any specific real agent is
+    //     uncollapsed. Proving non-collapse for a concrete agent requires
+    //     a richer model with private-state update rules and membrane specs.
+    let causalPowerFailsUnderCollapse =
+        "(declare-sort SharedTrace)\n" +
+        "(declare-sort Action)\n" +
+        "(declare-const stateA1 Int)\n" +
+        "(declare-const stateA2 Int)\n" +
+        "(declare-const trace SharedTrace)\n" +
+        "(declare-fun PolicyA (Int SharedTrace) Action)\n" +
+        // Intervention: distinct private-state values (mirrors Lemma 16's SAT witness).
+        // Without this, Z3 could achieve UNSAT trivially via stateA1=stateA2 rather
+        // than via the collapse constraint — that would weaken the proof.
+        "(assert (not (= stateA1 stateA2)))\n" +
+        // Collapse constraint: policy output is invariant under state change.
+        "(assert (forall ((s1 Int) (s2 Int) (t SharedTrace))\n" +
+        "  (= (PolicyA s1 t) (PolicyA s2 t))))\n" +
+        // Negate causal power: try to find states with different actions.
+        "(assert (not (= (PolicyA stateA1 trace) (PolicyA stateA2 trace))))\n" +
+        "(check-sat)\n"
+    prove "CausalPower failure: collapsed policy (ignoring PrivateState) provably has no causal power" causalPowerFailsUnderCollapse
+
     Console.WriteLine ""
-    Console.WriteLine "All DBSP + AI-safety pointwise axioms proven; agenda checks are quality-threshold monotonicity + range disjointness (non-trivial integer arithmetic), plus one non-collapse witness."
+    Console.WriteLine "All DBSP + AI-safety axioms proven; B-0373 adds CausalPower alignment primitive: free policy can have causal power (SAT witness) + collapsed policy provably cannot (UNSAT proof of failure mode)."
     0
