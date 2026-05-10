@@ -69,12 +69,14 @@ awareness.
 - `composes_with: [B-0064, B-0319]` — B-0319 closed; `reconcile-settings.ts` type patterns reused.
 - Reciprocal `composes_with:` entries on B-0064 and B-0319 already include B-0323.
 
-### Decomposition (this slice)
+### Re-decomposition (2026-05-10, riven background worker)
 
-The full B-0323 scope spans: (a) diff engine, (b) snapshot persistence, (c) report rendering,
-(d) live snapshot capture across monitored pages, (e) cadence workflow. This PR implements
-**(a)+(b)+(c)** as a pure, Playwright-free module with full unit-test coverage. Live capture
-and cadence wiring are follow-on slices.
+Original decomp assumed mistake: bundling (a)+(b)+(c) still exceeds "exactly one bounded step".
+Re-decomposed to **smallest safe slice**: only (a) pure diff engine (types + newToggles detection logic)
+as Playwright-free TS with unit tests. Persistence, report render, live capture, cadence remain
+follow-on atomic children (new rows or later slices). This keeps velocity + no permanent harm.
+
+Prior-art search + dependency check completed per start-gate (see claim notes).
 
 ## Done-criteria
 
