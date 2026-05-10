@@ -108,8 +108,9 @@ export async function main(argv: readonly string[]): Promise<number> {
   const { repo, expected } = parsed.args;
 
   // Verify expected snapshot exists
+  let expectedContent: string;
   try {
-    readFileSync(expected, "utf8");
+    expectedContent = readFileSync(expected, "utf8");
   } catch {
     process.stderr.write(`error: expected snapshot not found: ${expected}\n`);
     return 2;
@@ -119,28 +120,67 @@ export async function main(argv: readonly string[]): Promise<number> {
   let liveContent: string;
   try {
     liveContent = await snapshot(repo);
-    // Ensure trailing newline for clean diff
-    if (!liveContent.endsWith("\n")) {
-      liveContent += "\n";
-    }
   } catch (err: unknown) {
     process.stderr.write(`error: snapshot failed: ${err instanceof Error ? err.message : String(err)}\n`);
     return 2;
   }
 
-  // Write live snapshot to temp file for diff
-  const tmpPath = resolve(SCRIPT_DIR, `.github-settings-live-${Date.now()}.json`);
+  // Strip scope-limited fields: when the live snapshot emits {_skipped: "insufficient-token-scope"}
+  // for a field (e.g. actions/permissions requires admin token, not available in CI), drop that
+  // field from both sides so a missing-scope field doesn't register as false drift.
+  let liveObj: Record<string, unknown>;
+  let expectedObj: Record<string, unknown>;
   try {
-    writeFileSync(tmpPath, liveContent, "utf8");
+    liveObj = JSON.parse(liveContent) as Record<string, unknown>;
+    expectedObj = JSON.parse(expectedContent) as Record<string, unknown>;
+  } catch {
+    process.stderr.write("error: failed to parse JSON snapshots\n");
+    return 2;
+  }
+
+  const skippedKeys: string[] = [];
+  for (const [key, value] of Object.entries(liveObj)) {
+    if (
+      value !== null &&
+      typeof value === "object" &&
+      "_skipped" in (value as Record<string, unknown>) &&
+      (value as Record<string, unknown>)._skipped === "insufficient-token-scope"
+    ) {
+      skippedKeys.push(key);
+    }
+  }
+
+  if (skippedKeys.length > 0) {
+    process.stderr.write(
+      `github-settings-drift: skipping ${skippedKeys.length} field(s) not readable with current token: ${skippedKeys.join(", ")}\n`,
+    );
+    for (const key of skippedKeys) {
+      delete liveObj[key];
+      delete expectedObj[key];
+    }
+    liveContent = JSON.stringify(liveObj, null, 2);
+    expectedContent = JSON.stringify(expectedObj, null, 2);
+  }
+
+  if (!liveContent.endsWith("\n")) liveContent += "\n";
+  if (!expectedContent.endsWith("\n")) expectedContent += "\n";
+
+  // Write both to temp files for diff (content may have been stripped above)
+  const ts = Date.now();
+  const tmpLive = resolve(SCRIPT_DIR, `.github-settings-live-${ts}.json`);
+  const tmpExp = resolve(SCRIPT_DIR, `.github-settings-expected-${ts}.json`);
+  try {
+    writeFileSync(tmpLive, liveContent, "utf8");
+    writeFileSync(tmpExp, expectedContent, "utf8");
 
     // Run diff — exit 0 = identical, 1 = differences, 2 = error
-    const diffResult = await runCmd(["diff", "-u", expected, tmpPath]);
+    // Use --label so output shows real paths, not temp paths.
+    const diffResult = await runCmd(["diff", "-u", "--label", expected, "--label", "(live from gh api)", tmpExp, tmpLive]);
 
     if (diffResult.exitCode === 0) {
       process.stderr.write(`github-settings-drift: no drift (repo=${repo})\n`);
       return 0;
     } else if (diffResult.exitCode >= 2) {
-      // diff exit code 2+ means an error (missing file, unreadable, etc.)
       process.stderr.write(`error: diff command failed (exit ${diffResult.exitCode}): ${diffResult.stderr.trim()}\n`);
       return 2;
     } else {
@@ -160,10 +200,15 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 1;
     }
   } finally {
-    // Clean up temp file
     try {
       const { unlinkSync } = await import("node:fs");
-      unlinkSync(tmpPath);
+      unlinkSync(tmpLive);
+    } catch {
+      // Best-effort cleanup
+    }
+    try {
+      const { unlinkSync } = await import("node:fs");
+      unlinkSync(tmpExp);
     } catch {
       // Best-effort cleanup
     }
