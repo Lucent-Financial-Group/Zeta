@@ -218,7 +218,7 @@ function logicalSearchLines(lines: string[]): SearchLine[] {
 function findSupersessionClaims(lines: string[]): SupersessionClaim[] {
   const claims: SupersessionClaim[] = [];
   const seen = new Set<string>();
-  const backtickRe = /\bSupersedes(?:\s+ADR)?\s+`([^`\n]+?\.md)`/gi;
+  const backtickRe = /\bSupersedes(?:\s+ADR)?\s+`([^`\n]+?\.md(?:[?#][^`\n]*)?)`/gi;
   const linkRe =
     /\bSupersedes(?:\s+ADR)?\s+\[[^\]\n]+?\]\(((?:[^()\n]|\([^()\n]*\))+)\)/gi;
 

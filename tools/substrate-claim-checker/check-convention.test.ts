@@ -29,6 +29,16 @@ describe("findSupersessionClaims", () => {
     expect(claims.at(0)?.target).toBe("docs/DECISIONS/old.md");
   });
 
+  test("finds anchored backtick ADR supersession targets", () => {
+    const claims = findSupersessionClaims([
+      "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md#rationale`.",
+      "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/query.md?plain=1`.",
+    ]);
+    expect(claims).toHaveLength(2);
+    expect(claims.at(0)?.target).toBe("docs/DECISIONS/old.md");
+    expect(claims.at(1)?.target).toBe("docs/DECISIONS/query.md");
+  });
+
   test("finds markdown link ADR supersession targets", () => {
     const claims = findSupersessionClaims([
       "Supersedes ADR [v1](old.md) after review.",
