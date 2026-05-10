@@ -70,20 +70,7 @@
       "enforcement": "active",
       "id": 15256879,
       "name": "Default",
-      "rules": [
-        {
-          "parameters": null,
-          "type": "deletion"
-        },
-        {
-          "parameters": null,
-          "type": "non_fast_forward"
-        },
-        {
-          "parameters": null,
-          "type": "required_linear_history"
-        }
-      ],
+      "rules": [],
       "target": "branch"
     },
     {
@@ -172,6 +159,34 @@
             "required_reviewers": []
           },
           "type": "pull_request"
+        }
+      ],
+      "target": "branch"
+    },
+    {
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "~DEFAULT_BRANCH"
+          ]
+        }
+      },
+      "enforcement": "active",
+      "id": 16189060,
+      "name": "Branch Safety",
+      "rules": [
+        {
+          "parameters": null,
+          "type": "deletion"
+        },
+        {
+          "parameters": null,
+          "type": "non_fast_forward"
+        },
+        {
+          "parameters": null,
+          "type": "required_linear_history"
         }
       ],
       "target": "branch"
