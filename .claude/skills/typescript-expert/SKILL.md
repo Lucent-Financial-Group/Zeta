@@ -1,6 +1,6 @@
 ---
 name: typescript-expert
-description: TypeScript idioms for Zeta tool scripts — strict mode, utility types, branded types, module resolution, Bun runtime, type-safe DST-compatible patterns.
+description: "TypeScript for Zeta tool scripts — strict mode, utility types, branded types, Bun runtime, type-safe DST patterns."
 ---
 
 # TypeScript Expert — Structural Typing with a Gradual Escape Hatch

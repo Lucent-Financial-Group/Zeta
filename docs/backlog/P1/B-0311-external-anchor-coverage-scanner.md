@@ -1,7 +1,7 @@
 ---
 id: B-0311
 priority: P1
-status: done
+status: closed
 title: "External-anchor coverage scanner — per-concept anchor presence/absence audit"
 tier: substrate-quality
 effort: S

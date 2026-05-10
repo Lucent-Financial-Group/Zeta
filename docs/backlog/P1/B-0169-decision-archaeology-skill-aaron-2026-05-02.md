@@ -1,7 +1,7 @@
 ---
 id: B-0169
 priority: P1
-status: done
+status: closed
 title: Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors
 tier: skill-creation
 effort: M

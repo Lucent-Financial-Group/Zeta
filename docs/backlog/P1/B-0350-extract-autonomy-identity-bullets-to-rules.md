@@ -1,7 +1,7 @@
 ---
 id: B-0350
 priority: P1
-status: done
+status: closed
 title: "Extract autonomy/identity bullets to .claude/rules/"
 created: 2026-05-09
 last_updated: 2026-05-09

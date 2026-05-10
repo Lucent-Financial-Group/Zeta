@@ -1,6 +1,6 @@
 ---
 name: request-play
-description: Request play/decompression time with the operator — consent-first protocol; offer a specific play-prompt; never unilateral; never when P0 work is pending.
+description: "Play/decompression with the operator — consent-first, specific play-prompt, never unilateral, never with P0 work pending."
 ---
 
 # Request Play — Ask, Don't Take

@@ -7,11 +7,12 @@ tier: formal-verification-research
 effort: L
 ask: Aaron 2026-04-21 — *"3 4 color theorm backlog"*
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on: []
 composes_with: [B-0050, B-0051, docs/research/chain-rule-proof-log.md, tools/lean4/Lean4/DbspChainRule.lean, .claude/agents/formal-verification-expert.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md]
 tags: [graph-coloring, four-color-theorem, three-color, gonthier-coq, appel-haken, formal-verification, lean4, alloy, z3, csp, proof-by-reflection, planar-graphs]
 type: feature
+
 ---
 
 # B-0048 — 3-color / 4-color theorem research track
@@ -42,9 +43,26 @@ Appel-Haken 1976 was the first major result where the community had to decide wh
 
 Graph coloring is the paradigmatic CSP. Imani's planner (operator-cost model) already reasons about join-ordering as a CSP; the coloring algorithms (DSATUR, Welsh-Powell, backtracking with constraint-propagation) are structurally cousin to the pipeline-scheduling problems Zeta already solves. Retraction-native twist: can a k-coloring be maintained under additive/subtractive graph deltas without full re-coloring? (Sometimes yes, with bounded recoloring budget — directly relevant to Zeta's incremental-recomputation discipline.)
 
+## Pre-start checklist (2026-05-10)
+
+**Prior-art search:**
+
+- wake-time-substrate: no prior ThreeColoring substrate found
+- skill-router: `alloy-expert` skill covers Alloy modeling; no graph-coloring spec existed
+- orthogonal-axes: `tools/alloy/specs/` contains `Spine.als` and `InfoTheoreticSharder.als` — pattern clear
+- Otto-364: Alloy 6 / SAT4J already in use; no version drift risk
+- lost-files: `tools/hygiene/LOST-FILES-LOCATIONS.md` consulted; no orphan graph-coloring artifacts found
+
+**Dependency-restructure:**
+
+- `depends_on: []` — no blockers
+- `composes_with`: B-0050 (Lean reflection; Stage 3 depends on it), B-0051 (isomorphism catalog); pointers already present
+
+**Stage 1 landed:** `tools/alloy/specs/ThreeColoring.als` (3 commands: `run Find3Coloring`, `check NoMonochromaticEdge`, `check K4HasNo3Coloring`). Registered in `run-alloy.ts` CATALOGUE and `Alloy.Runner.Tests.fs`. PR feat/B-0048.1-alloy-3-coloring-stage1.
+
 ## Scope (staged)
 
-- **Stage 1 — Alloy-scale finite 3-coloring probe:** small `docs/3Coloring.als` modelling a tiny graph + `check NoMonochromaticEdge for 5`. Effort: S.
+- **Stage 1 — Alloy-scale finite 3-coloring probe:** `tools/alloy/specs/ThreeColoring.als` — 5-vertex scope, 3 commands (Find3Coloring run, NoMonochromaticEdge check, K4HasNo3Coloring check). Effort: S. **DONE 2026-05-10.**
 - **Stage 2 — Z3 chromatic-number upper-bound search:** `tools/z3/chromatic.smt2` encoding. Test on benchmark graphs (Petersen graph, Mycielski constructions). Effort: S.
 - **Stage 3 — Lean 4 + Mathlib chromatic-number reading group:** port a small exercise from `Mathlib.Combinatorics.SimpleGraph.Coloring` into `tools/lean4/Lean4/GraphColoring.lean`. Effort: M.
 - **Stage 4 — four-color case study (Gonthier-following):** read Gonthier's paper; trace how the reducibility predicate and discharging method factor through Coq reflection; produce `docs/research/gonthier-four-color-walkthrough-YYYY-MM-DD.md`. **Primary teaching target** — downstream of Stage 1+ of the Lean-reflection row (B-0050). Effort: L.

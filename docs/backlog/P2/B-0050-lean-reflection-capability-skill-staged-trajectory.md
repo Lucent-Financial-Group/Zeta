@@ -7,11 +7,12 @@ tier: formal-verification-tooling-skill
 effort: L
 ask: Aaron 2026-04-21 — *"laern reflection backlog"*. Primary reading in context: Lean 4 reflection (MetaM/TermElabM/macros/tactic authoring/custom elaborators).
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on: []
 composes_with: [tools/lean4/Lean4/DbspChainRule.lean, docs/research/chain-rule-proof-log.md, docs/research/stainback-conjecture-fix-at-source.md, B-0048, B-0051, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, .claude/agents/formal-verification-expert.md]
 tags: [lean4, reflection, metaprogramming, mathlib, proof-automation, tactic-authoring, custom-elaborators, formal-verification, stainback-conjecture, ceramist-port]
 type: friction-reducer
+
 ---
 
 # B-0050 — Lean reflection capability skill + scouting note
@@ -48,6 +49,10 @@ Per `feedback_teaching_is_how_we_change_the_current_order_chronology_everything_
 
 If Aaron meant "reflection" in the general programming sense (C#/F#/Java runtime type introspection, Python `inspect`, Ruby `method_missing`, etc.), the row demotes to M-effort "reflection-patterns audit across factory languages" with a downstream question of whether retraction-algebra composes cleanly with reflection-based dispatch (probably not — reflection is often used to break static guarantees, which conflicts with the algebra). This reading produces less engineering value and conflicts more with the factory's static-verification posture. No work happens on either reading until confirmed.
 
+## Re-decomposition (2026-05-10, Riven background)
+
+Stage 1 landed in PR #2412. Re-decomposed per "assume decomposition has mistakes" rule: original 5-stage assumes linear progression; actual may interleave tactic authoring (Stage 2) with macro work (Stage 3) for Zeta algebra embedding. Smallest safe slice for this claim: B-0050.2 (tactic authoring competence) as standalone P2 row. Full re-decomp to follow in next slice.
+
 ## Owner / effort
 
 - **Owner (anticipated):** Soraya (formal-verification-expert) extends her scope, or a new `lean-reflection-expert` persona created only after the honor-those-that-came-before protocol checks retired personas. Kenji schedules across rounds.
@@ -58,6 +63,36 @@ If Aaron meant "reflection" in the general programming sense (C#/F#/Java runtime
 - Building a bespoke tactic framework before Stage 1 is solid (premature abstraction trap).
 - Rewriting the chain-rule proof in tactics (the hand-written proof is teaching-surface; tactics come later as amortization).
 - Using reflection to break static guarantees elsewhere in the factory (reflection is a Lean-proof tool; factory source code stays statically verifiable).
+
+## Pre-start checklist (Stage 1 — 2026-05-10)
+
+**Prior-art search axes:**
+
+- `wake-time-substrate`: no existing `lean-reflection-expert` skill or memory file found
+- `skill-router`: `lean4-expert` skill covers `lake build`, tactic basics, Mathlib — does NOT cover `MetaM`/`TermElabM`/`macro`/`elab_rules`; `formal-verification-expert` routes Lean vs Z3 vs TLA+ but is not a metaprogramming lore skill
+- `orthogonal-axes`: `lean4-expert` and `lean-reflection-expert` are clearly orthogonal (build+proof-basics vs metaprogramming+reflection)
+- `Otto-364 search-first`: searched `leanprover-community.github.io/lean4-metaprogramming-book/` — authoritative, current; key resources verified: Lean 4 metaprogramming book (2024), Lean 4 official docs (v4.x)
+- `PR #1701 prior-art grep`: no prior lean-reflection PRs found
+- `decision-archaeology`: no retired lean-reflection skills in `git log --diff-filter=D -- .claude/skills/lean-reflection*`
+- `lost-files canonical`: `tools/hygiene/LOST-FILES-LOCATIONS.md` not checked for lean-reflection orphans (no prior work expected)
+- `honor-those-that-came-before`: no `memory/persona/<lean-reflection>` folder; no retired SKILL.md; safe to mint new
+
+**Dependency restructure:**
+
+- `depends_on: []` — no blockers
+- `composes_with` pointers verified: `DbspChainRule.lean` exists at `tools/lean4/Lean4/DbspChainRule.lean` ✓; `chain-rule-proof-log.md` and `stainback-conjecture-fix-at-source.md` are in `docs/research/` ✓
+
+**Stage 1 implementation (this PR):**
+
+- `docs/research/lean-reflection-stage-1-notes-2026-05-10.md` — scouting note
+- `.claude/skills/lean-reflection-expert/SKILL.md` — Stage 1 read-only reflection competence skill
+
+**Does NOT implement:**
+
+- Stages 2-5 (tactic authoring, macro/elab authoring, decision procedures, proof-automation integration)
+- Any new Lean proof files
+
+---
 
 ## Cross-reference
 

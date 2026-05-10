@@ -1,7 +1,7 @@
 ---
 id: B-0340
 priority: P1
-status: done
+status: closed
 title: Spec completeness audit — run inventory.ts, document coverage gaps
 tier: foundation
 effort: S

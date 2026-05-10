@@ -1,7 +1,7 @@
 ---
 id: B-0063
 priority: P1
-status: done
+status: closed
 title: Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
 tier: install-path-supply-chain
 effort: M

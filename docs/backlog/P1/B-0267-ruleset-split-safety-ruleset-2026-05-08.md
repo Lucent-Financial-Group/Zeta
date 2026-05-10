@@ -1,10 +1,10 @@
 ---
 id: B-0267
 priority: P1
-status: open
+status: closed
 title: "GitHub ruleset split — safety ruleset (deletion + force-push + linear history)"
 created: 2026-05-08
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 parent: B-0155
 depends_on: [B-0265]
 classification: buildable-now

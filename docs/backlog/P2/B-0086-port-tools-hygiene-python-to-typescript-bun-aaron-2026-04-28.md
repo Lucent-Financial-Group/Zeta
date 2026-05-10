@@ -1,13 +1,15 @@
 ---
 id: B-0086
 priority: P2
-status: open
+status: closed
 title: Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)
 tier: factory-tooling
 effort: M
 ask: maintainer Aaron 2026-04-28T19:56Z (TypeScript/Bun-as-default substrate framing)
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-10
+closed: 2026-05-10
+closed_by: decomposition-prior-art-search (commit 40344c9b, PR #849)
 depends_on: []
 composes_with:
   - B-0061
@@ -123,3 +125,26 @@ When picking this up:
 4. Verify lint job continues passing on PR with the port.
 5. Delete the Python original in the same PR (avoid parallel
    implementations).
+
+## Closure — 2026-05-10 (decomposition prior-art-search)
+
+**Result: zero child rows needed. All acceptance criteria already met.**
+
+Prior-art-search on 2026-05-10 found:
+
+- Commit `40344c9b` (PR #849, merged 2026-04-29): *"ts(B-0086): port
+  tools/hygiene Python → TypeScript on Bun (idiomatic, lint-clean,
+  equivalence-verified)"*
+
+Evidence per acceptance criterion:
+
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| `sort-tick-history-canonical.ts` exists | ✅ | `tools/hygiene/sort-tick-history-canonical.ts` present |
+| `fix-markdown-md032-md026.ts` exists | ✅ | `tools/hygiene/fix-markdown-md032-md026.ts` present |
+| `package.json` script entries | ✅ | `hygiene:sort-tick-history` + `hygiene:fix-markdown` in root `package.json` |
+| Python originals deleted | ✅ | No `.py` files anywhere under `tools/` |
+| CI callers updated | ✅ | No Python hygiene script invocations in `.github/workflows/`; only CodeQL file-change pattern match (not invocation) |
+| Trial round verified | ✅ | PR #849 message: "equivalence-verified" |
+
+Decomposition finding: item is **complete as-shipped**. Closing.

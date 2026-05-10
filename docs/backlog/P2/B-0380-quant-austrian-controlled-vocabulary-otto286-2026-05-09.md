@@ -1,13 +1,15 @@
 ---
 id: B-0380
 priority: P3
-status: open
+status: closed
 title: Controlled-vocabulary pass — define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" (Otto-286 precision before any research begins)
 tier: research-grade
 effort: S
 ask: decomposition of B-0023
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-10
+resolved: 2026-05-10
+resolved_by: "PR closes B-0380: docs/aurora/quant-austrian-vocabulary.md — four-term vocabulary with include/exclude/falsification-criterion per term"
 depends_on: []
 composes_with: [B-0023, B-0381, B-0382, B-0383, B-0384, B-0385, B-0386, B-0387]
 parent: B-0023

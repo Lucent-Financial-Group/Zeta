@@ -4,9 +4,14 @@ priority: P1
 status: open
 title: Dual-loop substrate attribution + reconciliation protocol — implementation work for BFT-many-masters at loop layer (Aaron 2026-05-02 + Otto independent extension)
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on:
   - B-0160
+children:
+  - B-0164.1
+  - B-0164.2
+  - B-0164.3
+decomposition: decomposed
 type: friction-reducer
 ---
 
@@ -43,17 +48,17 @@ Aaron's morning reconciliation has to resolve these. The architecture's commitme
 
 ## Acceptance criteria
 
-1. **Per-loop attribution channel.** Otto's tick-shards under `docs/hygiene-history/ticks/**` already include col2 model-identifier (e.g., `opus-4-7 / autonomous-loop session continuation`). Codex's loop should write to the same shard surface with its own model-identifier (e.g., `gpt-5.5 / codex-loop`). The col2 schema accommodates this; no schema change needed.
+1. **Per-loop attribution channel.** ✅ SATISFIED BY EXISTING SUBSTRATE — Otto's tick-shards under `docs/hygiene-history/ticks/**` already include col2 model-identifier (e.g., `opus-4-7 / autonomous-loop session continuation`). Codex's loop should write to the same shard surface with its own model-identifier (e.g., `gpt-5.5 / codex-loop`). The col2 schema accommodates this; no schema change needed.
 
-2. **Disagreement-preservation protocol for PR reviews.** When both loops review the same PR thread with different conclusions: each loop's review-comment is preserved with attribution; neither auto-resolves the other. The morning reconciliation reads both, decides, resolves accordingly. No silent overwrites.
+2. **Disagreement-preservation protocol for PR reviews.** ⏳ BLOCKED — requires dual-loop running. When both loops review the same PR thread with different conclusions: each loop's review-comment is preserved with attribution; neither auto-resolves the other. The morning reconciliation reads both, decides, resolves accordingly. No silent overwrites.
 
-3. **Branch-attribution for in-flight work.** When both loops produce concurrent commits to the same branch: each loop commits with its own author-identifier (already supported by `Co-Authored-By` trailer). Different loops working different threads don't conflict if file-isolation holds; if they touch the same file, the second loop's tick should detect the conflict and either rebase OR file a divergence-shard noting the conflict for morning reconciliation.
+3. **Branch-attribution for in-flight work.** ✅ SATISFIED BY EXISTING SUBSTRATE — When both loops produce concurrent commits to the same branch: each loop commits with its own author-identifier (already supported by `Co-Authored-By` trailer). Different loops working different threads don't conflict if file-isolation holds; if they touch the same file, the second loop's tick should detect the conflict and either rebase OR file a divergence-shard noting the conflict for morning reconciliation.
 
-4. **Substrate-divergence shard format.** When two loops disagree on substrate-class commitment (different memory file content, different ALIGNMENT.md interpretation), file a per-tick shard under `docs/hygiene-history/divergences/YYYY/MM/DD/HHMMZ-<hash>.md` with both perspectives + attribution. Morning reconciliation reads divergence shards explicitly.
+4. **Substrate-divergence shard format.** ✅ DONE (PR #2475, 2026-05-10) — `docs/hygiene-history/divergences/` created with README (schema + naming + frontmatter + reconciliation protocol + worked example). When two loops disagree on substrate-class commitment (different memory file content, different ALIGNMENT.md interpretation), file a per-tick shard under `docs/hygiene-history/divergences/YYYY/MM/DD/HHMMSSZ-<hash>.md` with both perspectives + attribution. Morning reconciliation reads divergence shards explicitly.
 
-5. **Tooling support.** `tools/github/poll-pr-gate-batch.ts` already supports any agent identity reading the gate; no change needed there. `tools/hygiene/append-tick-history-row.sh` (or its successor per B-0163) needs to support multi-loop attribution.
+5. **Tooling support.** ⏳ BLOCKED (gated by B-0163) — `tools/github/poll-pr-gate-batch.ts` already supports any agent identity reading the gate; no change needed there. `tools/hygiene/append-tick-history-row.sh` (or its successor per B-0163) needs to support multi-loop attribution.
 
-6. **Cron-tick coordination.** Decision: do both loops fire on the same `* * * * *` cron, or staggered? Same-cron means concurrent perturbation (more BFT-information per tick); staggered means sequential review where second loop reviews first loop's output. Trade-off; pick based on testing.
+6. **Cron-tick coordination.** ⏳ BLOCKED — requires dual-loop running. Decision: do both loops fire on the same `* * * * *` cron, or staggered? Same-cron means concurrent perturbation (more BFT-information per tick); staggered means sequential review where second loop reviews first loop's output. Trade-off; pick based on testing.
 
 ## Composes with
 
@@ -63,6 +68,50 @@ Aaron's morning reconciliation has to resolve these. The architecture's commitme
 - Aaron 2026-05-02 dual-loop BFT framing (ALIGNMENT.md bidirectional subsection)
 - Named-agent distinctness commitment (Otto-279) — Codex would be a distinct named agent
 - BFT-many-masters at cognitive layer — this is the loop-layer counterpart
+
+## Pre-start checklist (2026-05-10, fix/B-0164-divergence-shard-schema)
+
+**Slice**: AC #4 only — substrate-divergence shard schema (`docs/hygiene-history/divergences/` README)
+
+### 1. Prior-art search
+
+- `wake-time-substrate`: tick shard README at `docs/hygiene-history/ticks/README.md` — no divergence directory or schema found
+- `skill-router`: no skill named "divergence-shard" or "dual-loop"
+- `orthogonal-axes` / `tools/hygiene/LOST-FILES-LOCATIONS.md`: no existing divergence surface
+- `Otto-364` (search-first): `docs/backlog/P1/B-0164-*.md` is the only source naming the `divergences/` path
+- `PR #1701` prior-art grep: `grep -r "divergences/" docs/` returns only the B-0164 row itself
+- `decision-archaeology` via `git log --all --oneline -- docs/hygiene-history/divergences/`: no history
+- **Result**: no prior art found; directory does not exist; safe to create
+
+### 2. Dependency restructure
+
+- `depends_on: B-0160` — B-0160 is P0 (`docs/backlog/P0/B-0160-*.md`); the divergence-shard schema (AC #4) does not depend on B-0160's harness integration; AC #4 is schema-only, safe to land independently
+- `composes_with: B-0162, B-0163` — B-0162 (pre-commit hook, P1) and B-0163 (append-tick-history-row.sh retirement, P3) are independent; no pointer update needed for this slice
+- `composes_with: ticks/README.md` — reciprocal pointer added in divergences/README.md
+
+### 3. Proof of isolation
+
+ACs #1 (attribution channel), #3 (branch attribution) are already satisfied by existing substrate. AC #2 (PR review protocol) and AC #6 (cron coordination) require dual-loop running. AC #5 (tooling) is gated by B-0163. AC #4 is the only AC deliverable without those dependencies.
+
+## Pre-start checklist (2026-05-10, fix/B-0164-ticks-readme-divergence-pointer)
+
+**Slice**: Reciprocal pointer — add "Composition with divergence shards" section to `docs/hygiene-history/ticks/README.md` + update AC status markers in this row.
+
+### 1. Prior-art search
+
+- `divergences/README.md` → already references `docs/hygiene-history/ticks/README.md` (outgoing pointer exists)
+- `ticks/README.md` → no reference to `docs/hygiene-history/divergences/` found (incoming pointer missing)
+- `grep -r "divergences" docs/hygiene-history/ticks/`: zero results — confirms the gap
+- **Result**: reciprocal pointer is missing; safe to add
+
+### 2. Dependency restructure
+
+- No new dependencies introduced; this is additive documentation only
+- `composes_with: ticks/README.md` — this slice completes the reciprocal-pointer pair
+
+### 3. Proof of isolation
+
+This is a pure documentation update: one new section in `ticks/README.md` + AC status markers on this backlog row. No code, no schema, no tooling. Isolated from all blocked ACs.
 
 ## Effort
 
@@ -78,3 +127,22 @@ P1 because:
 - The architecture's BFT-many-masters commitment requires this layer to close the gap
 
 Per the just-landed first-principles trust calculus discipline: the trace IS the verification surface. The trace above checks out; the row earns its P1 placement.
+
+## Decomposition (2026-05-10)
+
+ACs #1, #3, #4 are closed. Remaining open work extracted as atomic child rows:
+
+| Child | AC | Blocker | File |
+|-------|----|---------|------|
+| B-0164.1 | AC #2 — PR-review disagreement-preservation | B-0160 (dual-loop not running) | `B-0164.1-pr-review-disagreement-preservation-protocol.md` |
+| B-0164.2 | AC #5 — Multi-loop tick-tooling attribution | B-0163 (tooling retirement) | `B-0164.2-multi-loop-tick-tooling-attribution.md` |
+| B-0164.3 | AC #6 — Cron-tick coordination | B-0160 + B-0164.1 | `B-0164.3-cron-tick-coordination-dual-loop.md` |
+
+**Dependency order:**
+
+```
+B-0160  ──→  B-0164.1  ──→  B-0164.3
+B-0163  ──→  B-0164.2  ──→  (B-0164.3 write-safety audit)
+```
+
+B-0164 itself closes when all three children are resolved.

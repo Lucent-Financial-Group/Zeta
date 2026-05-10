@@ -1,10 +1,11 @@
 ---
 id: B-0161
 priority: P1
-status: open
+status: closed
 title: Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-10
+closed: 2026-05-10
 depends_on:
   - B-0160
 decomposition: atomic
@@ -91,3 +92,59 @@ M — careful re-architecture work. Single-PR scope but requires deliberate cool
 This row is itself an instance of the rule it's about: the immediate same-session reshelf would have violated the cooling-period; deferring to a backlog row IS the asymmetry applied. Recursive validation.
 
 Aaron's framing for the next-session bootstrap (a few hours from now per his 2026-05-02 message): make sure setup is in place or backlogged. This row covers the in-flight substrate that wants tightening before becoming permanently part of the next session's wake-time payload.
+
+## Pre-start checklist (2026-05-10)
+
+### Prior-art search
+
+| Surface | Query | Result |
+|---------|-------|--------|
+| wake-time-substrate rule | grep "asymmetry" .claude/rules/ | No existing rule for asymmetry; it's described in memory file only |
+| skill-router | available-skills list | No skill covers this convention-addition |
+| orthogonal-axes | B-0351, B-0352, B-0353 | B-0352 closed: extracted 7 bullets to .claude/rules/; B-0353 closed: condensed CLAUDE.md to 47 lines. Demotion work done; asymmetry bullet NOT yet added |
+| Otto-364 | PR #1202, memory file | `memory/feedback_thoughts_free_actions_razored_asymmetry_journal_vs_canonical_substrate_separation_aaron_claudeai_2026_05_02.md` explicitly says "CLAUDE.md should add a single bullet for this asymmetry rule" |
+| lost-files | git log | No lost-files issues found |
+
+**Finding:** The demotion work (action-hierarchy, amortized-speed, edge-runner, cron-unreliability) is already done via B-0351/B-0352. The asymmetry bullet itself was NEVER added to CLAUDE.md. This is the remaining work.
+
+### Dependency check
+
+- **B-0160** (depends_on): closed 2026-05-10 (PR #2459) ✓
+- Cooling-period: PR #1202 was 2026-05-02; now 2026-05-10 = 8 days elapsed ✓
+
+### Smallest safe slice
+
+Add the asymmetry rule as a single bullet in CLAUDE.md Conventions section. This is the one remaining acceptance criterion from the "Razored work" section that B-0351/B-0352/B-0353 didn't cover.
+
+## Closure (2026-05-10)
+
+### Razored acceptance criteria — ALL COMPLETE
+
+| AC | Status | Evidence |
+|----|--------|----------|
+| CLAUDE.md trim (demote action-hierarchy, amortized-speed, edge-runner, cron-unreliability) | ✓ DONE | B-0351, B-0352, and B-0353 closed rows |
+| Add asymmetry bullet to CLAUDE.md | ✓ DONE | PR #2465 (commit 3c903aa3, 2026-05-10) |
+| Cooling-period respected (≥24h after PR #1202) | ✓ DONE | 8 days elapsed (2026-05-02 → 2026-05-10) |
+
+### Free-zone acceptance criteria — blocked by B-0330 format standard
+
+The journal taxonomy decision (frontmatter `tier:` field) is blocked: B-0330
+(format standard, landed 2026-05-09) specifies a closed enumeration of
+frontmatter fields with "no extra fields without governance discussion." The
+`tier:` approach cannot land without a B-0330 amendment.
+
+Alternative approaches:
+
+- `memory/journal/` subdirectory — requires moving ~4 files; high
+  cross-reference disruption risk; not smallest-safe-slice.
+- Naming convention (`journal_*.md`) — B-0330 defines a closed type-prefix
+  enumeration; adding `journal_` prefix also needs B-0330 amendment.
+
+**Decision:** Free-zone journal taxonomy work is deferred. If it is still
+wanted, it belongs in a B-0330 amendment or a new row that explicitly
+depends on B-0330. The disposition-shaping goal (asymmetry rule at wake-time)
+was fully achieved by the razored acceptance criteria. The journal taxonomy
+is a hygiene improvement, not a disposition change.
+
+Row closed. Free-zone work is explicitly WONT-DO unless re-raised as a
+B-0330-gated row.
