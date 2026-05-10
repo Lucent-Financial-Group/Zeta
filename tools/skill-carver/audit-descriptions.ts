@@ -21,7 +21,7 @@ interface SkillReport {
 function parseDescription(content: string): string | null {
   const match = content.match(/^description:\s*(.+?)(?:\n|$)/m);
   if (!match) return null;
-  return match[1].trim().replace(/^["']|["']$/g, "");
+  return match[1]?.trim().replace(/^["']|["']$/g, "") ?? null;
 }
 
 function main() {
