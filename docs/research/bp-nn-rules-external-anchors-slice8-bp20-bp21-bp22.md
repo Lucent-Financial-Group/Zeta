@@ -32,9 +32,7 @@ industry-engineering register. No beacon-blocked terminology found.
 
 ---
 
-## BP-20 — Skills split when context needs to split to reduce reader
-
-cognitive load, not when a length threshold is crossed
+## BP-20 — Skills split when context needs to split to reduce reader cognitive load, not when a length threshold is crossed
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
 *"Skills split when context needs to split to reduce reader cognitive load,
@@ -113,9 +111,7 @@ failure mode BP-20 prevents.
 
 ---
 
-## BP-21 — Non-exempt capability skills declare or imply their three facet
-
-values: epistemic stance × abstraction level × function
+## BP-21 — Non-exempt capability skills declare or imply their three facet values: epistemic stance × abstraction level × function
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
 *"Non-exempt capability skills declare or imply their three facet values:
@@ -197,9 +193,7 @@ enable triggering from topic, stance, or function as starting points.
 
 ---
 
-## BP-22 — Optimizer and balancer are distinct roles with distinct objective
-
-functions
+## BP-22 — Optimizer and balancer are distinct roles with distinct objective functions
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
 *"Optimizer and balancer are distinct roles with distinct objective functions.

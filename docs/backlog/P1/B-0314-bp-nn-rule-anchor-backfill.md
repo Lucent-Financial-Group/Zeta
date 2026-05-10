@@ -71,9 +71,9 @@ BP-1 through BP-28 as enumerated in
 | BP-15 | anchored (slice 5, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
 | BP-05 | anchored (slice 6, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` |
 | BP-06 | anchored (slice 6, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` |
-| BP-17 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
-| BP-18 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
-| BP-19 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
+| BP-17 | anchor-pending (slice 7 in progress) | slice 7 PR in progress — file not yet landed |
+| BP-18 | anchor-pending (slice 7 in progress) | slice 7 PR in progress — file not yet landed |
+| BP-19 | anchor-pending (slice 7 in progress) | slice 7 PR in progress — file not yet landed |
 | BP-20 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
 | BP-21 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
 | BP-22 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
