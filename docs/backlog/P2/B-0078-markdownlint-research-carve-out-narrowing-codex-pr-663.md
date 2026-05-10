@@ -37,6 +37,7 @@ violating GOVERNANCE §33 verbatim-preservation.
 Empirical result: the date-prefix IS the naming convention for verbatim content in this
 repo. The Codex concern (a non-ferry author-controlled doc might accidentally land with
 date-prefix shape and silently lose lint coverage) is a theoretical risk outweighed by:
+
 1. The practical cost of bulk-reformatting or bulk-renaming 82+ verbatim files.
 2. The convention being stable: author-controlled research uses non-date-prefixed or
    date-suffixed filenames; date-prefixed filenames are verbatim absorbs.
