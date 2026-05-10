@@ -1,10 +1,11 @@
 ---
 id: B-0161
 priority: P1
-status: open
+status: closed
 title: Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-10
+closed: 2026-05-10
 depends_on:
   - B-0160
 decomposition: atomic
@@ -114,3 +115,35 @@ Aaron's framing for the next-session bootstrap (a few hours from now per his 202
 ### Smallest safe slice
 
 Add the asymmetry rule as a single bullet in CLAUDE.md Conventions section. This is the one remaining acceptance criterion from the "Razored work" section that B-0351/B-0352/B-0353 didn't cover.
+
+## Closure (2026-05-10)
+
+### Razored acceptance criteria — ALL COMPLETE
+
+| AC | Status | Evidence |
+|----|--------|----------|
+| CLAUDE.md trim (demote action-hierarchy, amortized-speed, edge-runner, cron-unreliability) | ✓ DONE | B-0351 (#2248), B-0352 (#2446), B-0353 (#2462) |
+| Add asymmetry bullet to CLAUDE.md | ✓ DONE | PR #2465 (commit 3c903aa3, 2026-05-10) |
+| Cooling-period respected (≥24h after PR #1202) | ✓ DONE | 8 days elapsed (2026-05-02 → 2026-05-10) |
+
+### Free-zone acceptance criteria — blocked by B-0330 format standard
+
+The journal taxonomy decision (frontmatter `tier:` field) is blocked: B-0330
+(format standard, landed 2026-05-09) specifies a closed enumeration of
+frontmatter fields with "no extra fields without governance discussion." The
+`tier:` approach cannot land without a B-0330 amendment.
+
+Alternative approaches:
+- `memory/journal/` subdirectory — requires moving ~4 files; high
+  cross-reference disruption risk; not smallest-safe-slice.
+- Naming convention (`journal_*.md`) — B-0330 defines a closed type-prefix
+  enumeration; adding `journal_` prefix also needs B-0330 amendment.
+
+**Decision:** Free-zone journal taxonomy work is deferred. If it is still
+wanted, it belongs in a B-0330 amendment or a new row that explicitly
+depends on B-0330. The disposition-shaping goal (asymmetry rule at wake-time)
+was fully achieved by the razored acceptance criteria. The journal taxonomy
+is a hygiene improvement, not a disposition change.
+
+Row closed. Free-zone work is explicitly WONT-DO unless re-raised as a
+B-0330-gated row.
