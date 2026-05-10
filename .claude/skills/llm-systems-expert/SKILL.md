@@ -1,6 +1,6 @@
 ---
 name: llm-systems-expert
-description: "LLM application systems — RAG pipelines, agent loops, tool orchestration, context budgets, multi-model routing, cost/latency envelopes, eval wiring."
+description: LLM application systems — RAG, agent loops, tool orchestration, context budgets, multi-model routing, cost/latency, evals.
 ---
 
 # LLM Systems Expert — the application-architecture hat

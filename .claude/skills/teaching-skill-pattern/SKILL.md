@@ -1,6 +1,6 @@
 ---
 name: teaching-skill-pattern
-description: Three-counterpart skill taxonomy — theoretical foundation, applied context, worked example; how to structure any Zeta capability skill for learning.
+description: Three-counterpart skill taxonomy — theoretical foundation, applied context, worked example for Zeta skills.
 ---
 
 # Teaching Skill Pattern — The Three-Counterpart Taxonomy
