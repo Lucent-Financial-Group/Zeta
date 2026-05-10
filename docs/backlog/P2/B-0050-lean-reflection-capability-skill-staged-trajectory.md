@@ -49,6 +49,10 @@ Per `feedback_teaching_is_how_we_change_the_current_order_chronology_everything_
 
 If Aaron meant "reflection" in the general programming sense (C#/F#/Java runtime type introspection, Python `inspect`, Ruby `method_missing`, etc.), the row demotes to M-effort "reflection-patterns audit across factory languages" with a downstream question of whether retraction-algebra composes cleanly with reflection-based dispatch (probably not — reflection is often used to break static guarantees, which conflicts with the algebra). This reading produces less engineering value and conflicts more with the factory's static-verification posture. No work happens on either reading until confirmed.
 
+## Re-decomposition (2026-05-10, Riven background)
+
+Stage 1 landed in PR #2412. Re-decomposed per "assume decomposition has mistakes" rule: original 5-stage assumes linear progression; actual may interleave tactic authoring (Stage 2) with macro work (Stage 3) for Zeta algebra embedding. Smallest safe slice for this claim: B-0050.2 (tactic authoring competence) as standalone P2 row. Full re-decomp to follow in next slice.
+
 ## Owner / effort
 
 - **Owner (anticipated):** Soraya (formal-verification-expert) extends her scope, or a new `lean-reflection-expert` persona created only after the honor-those-that-came-before protocol checks retired personas. Kenji schedules across rounds.
