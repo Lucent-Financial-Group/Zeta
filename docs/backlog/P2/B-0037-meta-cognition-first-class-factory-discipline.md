@@ -7,9 +7,9 @@ tier: factory-discipline
 effort: M
 ask: Aaron 2026-04-21 — *"backlog meta congnition"* names meta-cognition (thinking-about-thinking) as a factory-register discipline worth first-class capture. Typo "congnition" preserved verbatim per witnessable-self-directed-evolution discipline.
 created: 2026-04-26
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 depends_on: []
-children: ["B-0037.1", "B-0037.2", "B-0037.3", "B-0037.4", "B-0037.5", "B-0037.6", "B-0037.7"]
+children: [B-0037.1, B-0037.2, B-0037.3, B-0037.4]
 composes_with: [feedback_capture_everything_including_failure_aspirational_honesty.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_verify_target_exists_before_deferring.md, feedback_future_self_not_bound_by_past_decisions.md, feedback_never_idle_speculative_work_over_waiting.md, feedback_decohere_star_kernel_vocabulary_entry_dont_decohere_star_factory_rule_2026_04_21.md, feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, docs/AGENT-BEST-PRACTICES.md, docs/ALIGNMENT.md, docs/CONFLICT-RESOLUTION.md]
 tags: [meta-cognition, alignment-trajectory, factory-discipline, measurables, witnessable-evolution, retractible-ceiling]
 type: friction-reducer
@@ -17,30 +17,16 @@ type: friction-reducer
 
 # B-0037 — Meta-cognition as first-class factory discipline
 
-## Decomposition (re-decomposed 2026-05-09 — assume prior mistakes, re-decompose per discipline)
+## Decomposition (2026-05-10)
 
-Original scope was M-effort and doc-heavy. Re-decomposed into 7 dependency-ordered atomic children (B-0037.1–B-0037.7), all S-effort, P2/P3, with two buildable roots now. Prefer TS code slices over pure docs. Root children unblock the rest.
+| Child | Title | Depends on | Status |
+|-------|-------|-----------|--------|
+| [B-0037.1](B-0037.1-meta-cognition-taxonomy-survey-doc.md) | Meta-cognition taxonomy survey doc | — | open |
+| [B-0037.2](B-0037.2-meta-cognition-round-close-checklist.md) | Per-round meta-check checklist in ROUND-HISTORY.md | B-0037.1 | blocked |
+| [B-0037.3](B-0037.3-meta-cognition-measurables-wiring.md) | Measurables wired into ALIGNMENT.md dashboard | B-0037.1 | blocked |
+| [B-0037.4](B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md) | ADR for distributed-vs-concentrated framework | B-0037.1, B-0037.2, B-0037.3 | blocked |
 
-**Buildable now (no deps):**
-
-- B-0037.1 — TS meta-move taxonomy scanner (smallest safe code slice: scans .claude/skills/ + docs/ for overclaim*/decohere*/meta* patterns, emits JSON report)
-- B-0037.2 — Per-round meta-check cadence template (append-only checklist for ROUND-HISTORY.md)
-
-**Blocked on .1:**
-
-- B-0037.3 — Meta-cognition measurables extractor (TS, consumes scanner output, wires self-corrections etc.)
-- B-0037.4 — Distributed-vs-concentrated framework decision ADR stub (code + doc)
-
-**Blocked on .2:**
-
-- B-0037.5 — Meta-drift detection lag measurer (TS)
-- B-0037.6 — Higher-order retractible-ceiling test harness (F# property tests for retraction safety)
-
-**Blocked on .1+.2:**
-
-- B-0037.7 — Meta-cognition dashboard stub (alignment-trajectory integration)
-
-This re-decomp corrects: (a) no code-first bias in original, (b) deliverables not atomic, (c) missing retraction-native emphasis from revision.
+Work on children in dependency order; B-0037.1 is the root.
 
 ## Origin
 
