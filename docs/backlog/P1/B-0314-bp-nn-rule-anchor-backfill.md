@@ -7,7 +7,7 @@ tier: substrate-quality
 effort: M
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-10
+last_updated: 2026-05-10 (slice-6)
 depends_on: [B-0311]
 composes_with: [B-0060]
 tags: [substrate-quality, external-anchors, best-practices, beacon-safety, research]
@@ -69,13 +69,16 @@ BP-1 through BP-28 as enumerated in
 | BP-01 | anchored (slice 5, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
 | BP-02 | anchored (slice 5, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
 | BP-15 | anchored (slice 5, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
-| BP-05–BP-06, BP-17–BP-28 | anchor-pending | slices 6+ |
+| BP-05 | anchored (slice 6, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` |
+| BP-06 | anchored (slice 6, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` |
+| BP-17–BP-28 | anchor-pending | slices 7+ |
 
 **Slice-1 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice1
 **Slice-2 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice2
 **Slice-3 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice3
 **Slice-4 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice4
 **Slice-5 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice5
+**Slice-6 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice6
 
 ## Pre-start checklist (2026-05-10, Otto)
 
