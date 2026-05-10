@@ -86,3 +86,23 @@ recommended vocab crossings + explicit rejections, referencing the prior-art cat
 - Composes with: B-0038 (superfluid + persistable\* substrate-property cluster — actor-model is a candidate vocabulary lens for that cluster)
 - Composes with: B-0251 (durable-computation-stack incl. Orleans/Akka vocabulary)
 - Source memories: `project_factory_positioning_fully_asynchronous_agentic_ai_*`, `feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_*`
+
+## Decomposition 2026-05-09 — Riven background worker smallest safe slice
+
+B-0040 is broad (5 distinct sources + non-commitment + research doc output). Per "always re-decompose, assume mistakes" and "if too broad, decompose before implementation":
+
+- Status remains open; children will be the implementation slices.
+- Each child bounded to: (1) source survey, (2) factory-vocab mapping, (3) explicit rejection criteria (no infra adoption).
+- TS/F# preference noted: future children may produce small lens-validation harnesses instead of pure docs.
+
+Children (dependency-ordered, one per source):
+
+1. B-0040.1 Hewitt 1973 formulation + Inconsistency Robustness (foundational actor semantics)
+2. B-0040.2 Meijer actor-model interviews (F# operational resonance)
+3. B-0040.3 Akka supervision hierarchy (persona-supervision register)
+4. B-0040.4 Orleans virtual actors / grains (persona-dispatch lens)
+5. B-0040.5 Service Fabric durable actors (persistable\* analogy)
+
+This is exactly one bounded step: the re-decomposition. No code/docs beyond this parent update; no root checkout touched; worktree-isolated.
+
+Next slice (B-0040.1) would implement the first child.
