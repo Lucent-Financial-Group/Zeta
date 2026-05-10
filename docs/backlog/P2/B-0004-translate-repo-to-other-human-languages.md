@@ -261,7 +261,7 @@ B-0004.1 (inventory scanner, no deps)
 | Child | Title | Classification | Effort | Depends on |
 |-------|-------|----------------|--------|------------|
 | B-0004.1 | Substrate inventory scanner (TS) | buildable-now | S | — |
-| B-0004.2 | Precision anchor set extraction | research-now | S | B-0004.1 |
+| B-0004.2 | Precision anchor set extraction | buildable-now | S | B-0004.1 |
 | B-0004.3 | Drift-detection lint tool | buildable-now | S | B-0004.1 |
 | B-0004.4 | Cross-reference preservation validator | buildable-now | S | B-0004.1 |
 | B-0004.5 | Translation pipeline ADR + tooling selection | research-now | S | B-0004.2, B-0004.3, B-0004.4 |
