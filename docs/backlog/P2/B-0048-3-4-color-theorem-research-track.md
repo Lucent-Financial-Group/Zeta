@@ -12,6 +12,7 @@ depends_on: []
 composes_with: [B-0050, B-0051, docs/research/chain-rule-proof-log.md, tools/lean4/Lean4/DbspChainRule.lean, .claude/agents/formal-verification-expert.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md]
 tags: [graph-coloring, four-color-theorem, three-color, gonthier-coq, appel-haken, formal-verification, lean4, alloy, z3, csp, proof-by-reflection, planar-graphs]
 type: feature
+
 ---
 
 # B-0048 — 3-color / 4-color theorem research track
@@ -45,6 +46,7 @@ Graph coloring is the paradigmatic CSP. Imani's planner (operator-cost model) al
 ## Pre-start checklist (2026-05-10)
 
 **Prior-art search:**
+
 - wake-time-substrate: no prior ThreeColoring substrate found
 - skill-router: `alloy-expert` skill covers Alloy modeling; no graph-coloring spec existed
 - orthogonal-axes: `tools/alloy/specs/` contains `Spine.als` and `InfoTheoreticSharder.als` — pattern clear
@@ -52,6 +54,7 @@ Graph coloring is the paradigmatic CSP. Imani's planner (operator-cost model) al
 - lost-files: `LOST-FILES-LOCATIONS.md` consulted; no orphan graph-coloring artifacts found
 
 **Dependency-restructure:**
+
 - `depends_on: []` — no blockers
 - `composes_with`: B-0050 (Lean reflection; Stage 3 depends on it), B-0051 (isomorphism catalog); pointers already present
 
