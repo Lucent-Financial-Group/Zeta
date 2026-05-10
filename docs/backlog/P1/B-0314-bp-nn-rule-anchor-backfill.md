@@ -57,9 +57,13 @@ BP-1 through BP-28 as enumerated in
 | --- | --- | --- |
 | BP-10 | anchored (slice 1, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md` |
 | BP-11 | anchored (slice 1, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md` |
-| BP-01–BP-09, BP-12–BP-28 | anchor-pending | slices 2+ |
+| BP-03 | anchored (slice 2, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
+| BP-07 | anchored (slice 2, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
+| BP-16 | anchored (slice 2, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
+| BP-01–BP-02, BP-04–BP-06, BP-08–BP-09, BP-12–BP-15, BP-17–BP-28 | anchor-pending | slices 3+ |
 
 **Slice-1 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice1
+**Slice-2 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice2
 
 ## Pre-start checklist (2026-05-10, Otto)
 

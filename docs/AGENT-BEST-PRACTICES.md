@@ -36,6 +36,16 @@ BP-07").
 - **BP-03** *Skill body ≤ ~300 lines; one purpose per skill.*
   **Rationale:** bloat dilutes triggering and reviewability.
   Split at the cap; merge only via `skill-creator`. **stable**
+  **External anchors:** (1) Wang et al. (2024), *AgentSquare: Automatic LLM
+  Agent Search in Modular Design Space*, ICLR 2025, arXiv 2410.06153
+  (<https://arxiv.org/abs/2410.06153>) — formalises modular agent design as
+  single-purpose independent modules with uniform I/O interfaces; empirically
+  shows ≥17% performance gain over monolithic designs. (2) Anthropic (2024),
+  *Building Effective Agents* (<https://www.anthropic.com/research/building-effective-agents>)
+  — practitioner guidance: "practice modular design"; recommends specialised
+  single-purpose sub-agents per concern over consolidating multiple concerns into
+  one prompt. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md`.
 
 ## Voice & behaviour
 
@@ -65,6 +75,18 @@ BP-07").
   invocation's effective prompt. A growing notebook
   silently rewrites the skill. Cap + prune keep it auditable.
   **stable**
+  **External anchors:** (1) Liu, N. F. et al. (2024), *Lost in the Middle: How
+  Language Models Use Long Contexts*, ACL TACL, arXiv 2307.03172
+  (<https://arxiv.org/abs/2307.03172>) — foundational evidence: performance
+  degrades significantly when relevant information appears in the middle of long
+  contexts; primacy/recency bias means unbounded notebooks bury critical material
+  in the degraded middle band, silently reducing effective skill behaviour. (2)
+  Chroma Research (2024), *Context Rot: How Increasing Input Tokens Impacts LLM
+  Performance* (<https://research.trychroma.com/context-rot>) — names and
+  quantifies "context rot": performance degrades non-uniformly as input length
+  grows; stale entries act as distractors that compound degradation, directly
+  justifying the every-3rd-invocation prune cadence. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md`.
 
 - **BP-08** *Frontmatter is canon. On any disagreement between
   frontmatter and notebook, frontmatter wins.*
@@ -170,6 +192,18 @@ BP-07").
   The round-22 `InfoTheoreticSharder` cross-check is the anchor
   case. Routing triage lives in
   `.claude/skills/formal-verification-expert/SKILL.md`. **stable**
+  **External anchors:** (1) Herber, P. et al. (2018), *A Survey on Formal
+  Verification Techniques for Safety-Critical Systems-on-Chip*, MDPI Electronics
+  7(6) (<https://www.mdpi.com/2079-9292/7/6/81>) — peer-reviewed survey of six
+  formal verification techniques; concludes "no single formal technique [is] able
+  to verify [a safety-critical system] completely … a verification plan that uses
+  several techniques is more likely to obtain better results." (2) Kulik, T. et
+  al. (2022), *A Survey of Practical Formal Methods for Security*, Formal Aspects
+  of Computing, arXiv 2109.01362 (<https://arxiv.org/abs/2109.01362>) — documents
+  distinct coverage properties and blind spots per tool class (model checking,
+  theorem proving, lightweight FM); complementary classes are necessary for P0-
+  grade coverage. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md`.
 
 ## Repo ontology & Rule Zero
 
