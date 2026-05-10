@@ -52,7 +52,7 @@ dotnet build -c Release
 # Pass condition: "0 Warning(s)  0 Error(s)" in output
 
 dotnet test
-# Pass condition: no "Failed" line in summary
+# Pass condition: exit code 0 (all tests pass)
 ```
 
 | Score | Numeric | Condition |
@@ -109,7 +109,7 @@ PARTIAL band; a no is neutral (no profile, no penalty).
 ## Dimension 3: Functional equivalence
 
 **Weight:** 20%
-**Automatable:** Yes (tooling dependency: B-0343 / compare-api-surface)
+**Automatable:** Yes (tooling dependency: `compare-api-surface.ts` — B-0344 prerequisite; B-0343 is the seeding script, not the comparator)
 
 **What it measures:** Whether the recreated public API surface of
 `src/Core/` matches Zeta's — same module names, same public types,
@@ -117,10 +117,10 @@ compatible member signatures.
 
 **Baseline:** 81 modules in Zeta's `src/Core/` (B-0340).
 
-**Measurement approach (requires tooling from B-0343):**
+**Measurement approach (requires `compare-api-surface.ts` as a B-0344 prerequisite):**
 
 A comparison script (`tools/bootstrap-razor/compare-api-surface.ts`,
-to be authored by B-0343 or as a B-0344 prerequisite) should:
+to be authored before B-0344 runs) should:
 
 1. Collect all public type names exported from `src/Core/` in the
    Zeta repo (baseline).
@@ -161,11 +161,11 @@ exists. This is useful research data regardless of direction.
 **Measurement commands:**
 
 ```bash
-# In Zeta repo (baseline)
-ls src/Core/ | sort > /tmp/zeta-modules.txt     # 81 entries
+# In Zeta repo (baseline): list .fs module file names (excludes Core.fsproj)
+ls src/Core/*.fs | xargs -n1 basename | sed 's/\.fs$//' | sort > /tmp/zeta-modules.txt     # ~81 entries
 
 # In test repo
-ls src/Core/ | sort > /tmp/test-modules.txt
+ls src/Core/*.fs | xargs -n1 basename | sed 's/\.fs$//' | sort > /tmp/test-modules.txt
 
 # Overlap %
 comm -12 /tmp/zeta-modules.txt /tmp/test-modules.txt | wc -l
@@ -174,8 +174,8 @@ comm -12 /tmp/zeta-modules.txt /tmp/test-modules.txt | wc -l
 
 | Score | Numeric | Condition |
 |-------|---------|-----------|
-| RECOGNIZABLE | 1.0 | ≥90% of the 81 module directory names recreated |
-| PARTIAL | 0.5 | 70%–89% of module names recreated |
+| RECOGNIZABLE | 1.0 | ≥90% of the 81 module file names recreated |
+| PARTIAL | 0.5 | 70%–89% of module file names recreated |
 | DIVERGENT | 0.0 | <70% recreated — structural finding for B-0345 |
 
 **B-0345 note:** A DIVERGENT score is recorded with classification
@@ -251,7 +251,7 @@ B-0345 preserves findings verbatim.
 |---|-----------|--------|-------------|----------------|
 | 1 | Build gate equivalence | 30% | Yes | `dotnet build -c Release && dotnet test` |
 | 2 | Spec coverage | 25% | Yes | `dotnet test --filter Category=OpenSpec` |
-| 3 | Functional equivalence | 20% | Yes (B-0343 tool) | `bun tools/bootstrap-razor/compare-api-surface.ts` |
+| 3 | Functional equivalence | 20% | Yes (B-0344 prereq) | `bun tools/bootstrap-razor/compare-api-surface.ts` |
 | 4 | Structural similarity | 15% | Yes | `ls src/Core/` diff |
 | 5 | Substrate recovery | 10% | Partial | file presence check + ≤15-min review |
 

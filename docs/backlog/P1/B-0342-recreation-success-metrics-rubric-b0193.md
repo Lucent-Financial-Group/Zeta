@@ -67,7 +67,7 @@ S — design document, no code.
 **Dependency check:**
 
 - B-0339 (depends_on): closed ✓
-- B-0343 (seeding script, tooling dependency for Dim 3): open — rubric notes this as tooling dependency, not blocker
+- B-0343 (seeding script): open — seeding script; the Dim 3 API-surface comparator (`compare-api-surface.ts`) is a separate B-0344 prerequisite, not B-0343
 - B-0344 (cites this rubric): open — cannot start until this item closes
 
 **Deliverable:** `docs/bootstrap-razor/SUCCESS-METRICS.md` — 5 dimensions with numeric thresholds, weighted formula, citable by B-0344 and B-0345.
