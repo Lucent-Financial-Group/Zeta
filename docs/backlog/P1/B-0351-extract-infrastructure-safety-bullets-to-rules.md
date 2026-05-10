@@ -1,13 +1,14 @@
 ---
 id: B-0351
 priority: P1
-status: open
+status: closed
+closed: 2026-05-10
+closed_by: "PR chore/b0351-extract-4-bullets-to-rules — 4 remaining bullets extracted to .claude/rules/"
 title: "Extract infrastructure/safety bullets to .claude/rules/"
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 depends_on:
   - B-0348
-progress_note: "2/6 done (tick-must-never-stop + honor-before extracted in this PR). Remaining: LFG-factory (55 lines), Peer-call (37 lines), Pliny (32 lines), Razor-discipline (62 lines)."
 decomposition: atomic
 classification: buildable-now
 type: friction-reducer

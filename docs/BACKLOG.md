@@ -15,7 +15,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0073](backlog/P0/B-0073-lfg-csharp-code-scanning-cleanup-13-alerts-blocking-ruleset-2026-04-28.md)** LFG csharp Code Scanning cleanup — 13 open alerts gating code_quality severity:all ruleset on every PR
 - [x] **[B-0085](backlog/P0/B-0085-budget-cadence-workflow-cron-misses-task-287-deadline-window-aaron-2026-04-28.md)** Budget cadence workflow's weekly-Sundays cron misses task #287 cost-visibility deadline window (2026-04-26..04-29)
 - [x] **[B-0109](backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md)** Dependency status tracking surface — outages and issues affecting us (Aaron 2026-04-30, urgent)
-- [ ] **[B-0160](backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md)** Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction
+- [x] **[B-0160](backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md)** Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction
 - [x] **[B-0249](backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md)** Autonomous backlog pickup — loops must start new work, not just maintain
 - [x] **[B-0278](backlog/P0/B-0278-autonomous-backlog-selector-priority-safe-pickup-2026-05-08.md)** Autonomous backlog pickup - priority selector
 - [x] **[B-0279](backlog/P0/B-0279-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md)** Autonomous backlog pickup - claim and worktree bootstrap
@@ -112,7 +112,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide
 - [x] **[B-0265](backlog/P1/B-0265-ruleset-split-ci-gate-ruleset-2026-05-08.md)** GitHub ruleset split — CI gate ruleset (required status checks)
 - [ ] **[B-0266](backlog/P1/B-0266-ruleset-split-review-policy-ruleset-2026-05-08.md)** GitHub ruleset split — review policy ruleset (conversation resolution + reviews)
-- [ ] **[B-0267](backlog/P1/B-0267-ruleset-split-safety-ruleset-2026-05-08.md)** GitHub ruleset split — safety ruleset (deletion + force-push + linear history)
+- [x] **[B-0267](backlog/P1/B-0267-ruleset-split-safety-ruleset-2026-05-08.md)** GitHub ruleset split — safety ruleset (deletion + force-push + linear history)
 - [x] **[B-0268](backlog/P1/B-0268-canary-test-rules-autoload-verification-2026-05-08.md)** Verify .claude/rules/ auto-load — run canary test
 - [x] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
 - [x] **[B-0270](backlog/P1/B-0270-pm2-role-skill-definition-2026-05-08.md)** PM-2 role - skill definition + persona agent
@@ -178,8 +178,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0348](backlog/P1/B-0348-classify-claude-md-bullets-for-extraction.md)** Classify all CLAUDE.md bullets into extraction tiers
 - [ ] **[B-0349](backlog/P1/B-0349-extract-operational-discipline-bullets-to-rules.md)** Extract operational-discipline bullets to .claude/rules/
 - [ ] **[B-0350](backlog/P1/B-0350-extract-autonomy-identity-bullets-to-rules.md)** Extract autonomy/identity bullets to .claude/rules/
-- [ ] **[B-0351](backlog/P1/B-0351-extract-infrastructure-safety-bullets-to-rules.md)** Extract infrastructure/safety bullets to .claude/rules/
-- [ ] **[B-0352](backlog/P1/B-0352-extract-meta-governance-bullets-to-rules.md)** Extract meta/governance bullets to .claude/rules/
+- [x] **[B-0351](backlog/P1/B-0351-extract-infrastructure-safety-bullets-to-rules.md)** Extract infrastructure/safety bullets to .claude/rules/
+- [x] **[B-0352](backlog/P1/B-0352-extract-meta-governance-bullets-to-rules.md)** Extract meta/governance bullets to .claude/rules/
 - [ ] **[B-0353](backlog/P1/B-0353-write-bootstrap-process-claude-md.md)** Write bootstrap-process CLAUDE.md (<50 lines)
 - [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
@@ -296,8 +296,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0074](backlog/P2/B-0074-pr-72-punch-list-stale-item-sweep-spec-consistency-2026-04-28.md)** PR #72 punch-list / spec-consistency drift sweep — 8 codex threads on stale items + cross-doc alignment
 - [x] **[B-0076](backlog/P2/B-0076-disowned-runtime-sweep-python-typescript-2026-04-28.md)** Disowned-runtime sweep — Python + TypeScript surface (same pattern PR #662 fixed for Java)
 - [ ] **[B-0077](backlog/P2/B-0077-curl-fetch-canonical-content-cleanup-codex-pr-663.md)** tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P1 on PR #663
-- [ ] **[B-0078](backlog/P2/B-0078-markdownlint-research-carve-out-narrowing-codex-pr-663.md)** Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663
-- [ ] **[B-0079](backlog/P2/B-0079-audit-agencysignature-script-hardening-codex-pr-663.md)** tools/hygiene/audit-agencysignature-main-tip.sh hardening — 4 Codex findings on PR #663
+- [x] **[B-0078](backlog/P2/B-0078-markdownlint-research-carve-out-narrowing-codex-pr-663.md)** Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663
+- [x] **[B-0079](backlog/P2/B-0079-audit-agencysignature-script-hardening-codex-pr-663.md)** tools/hygiene/audit-agencysignature-main-tip.ts hardening — 5 Codex findings on PR #663 (sh→ts ported)
 - [ ] **[B-0081](backlog/P2/B-0081-path-gate-kotlin-scala-codex-pr-662.md)** codeql.yml path-gate should match `*.kt` + `*.scala` not just `*.java` — Codex P2 on PR #662
 - [ ] **[B-0082](backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md)** docs/GLOSSARY.md provenance entries use persona-name attribution; convert to role-refs
 - [ ] **[B-0086](backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md)** Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)

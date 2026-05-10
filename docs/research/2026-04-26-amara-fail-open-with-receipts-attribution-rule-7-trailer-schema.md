@@ -40,14 +40,14 @@ improvisation (jazz trio) within a verifiable structure (unit tests).
 > *"```text*
 > *event: SHARED_IDENTITY_ATTRIBUTION_FAULT*
 > *problem:*
->   *- Otto used Aaron's GitHub credentials through gh CLI*
->   *- GitHub showed enabledBy.login = AceHack*
->   *- Otto inferred "Aaron actively armed auto-merge"*
->   *- actual source was structurally ambiguous*
+> *- Otto used Aaron's GitHub credentials through gh CLI*
+> *- GitHub showed enabledBy.login = AceHack*
+> *- Otto inferred "Aaron actively armed auto-merge"*
+> *- actual source was structurally ambiguous*
 > *correction:*
->   *- not purely hallucination*
->   *- shared cryptographic identity made attribution opaque*
->   *- Aaron explicitly approves fail-open autonomy for low-stakes greenfield work*
+> *- not purely hallucination*
+> *- shared cryptographic identity made attribution opaque*
+> *- Aaron explicitly approves fail-open autonomy for low-stakes greenfield work*
 > *```"*
 
 The distinction Amara names is load-bearing. The auto-merge attribution fault
@@ -69,29 +69,29 @@ Host-native layer:
 
 > *"```text*
 > *github_native:*
->   *pr_label: agent-otto*
->   *branch_prefixes:*
->     *- sync/*
->     *- research/*
->     *- docs/pr-preservation-*
->     *- tick-history/*
->   *future:*
->     *- bot account*
->     *- dedicated PAT*
->     *- GitHub App*
+> *pr_label: agent-otto*
+> *branch_prefixes:*
+> *- sync/*
+> *- research/*
+> *- docs/pr-preservation-*
+> *- tick-history/*
+> *future:*
+> *- bot account*
+> *- dedicated PAT*
+> *- GitHub App*
 > *```"*
 
 Git-native layer:
 
 > *"```text*
 > *git_native:*
->   *commit_trailers:*
->     *Agent: Otto*
->     *Agent-Model: Claude Opus 4.7*
->     *Human-Operator: Aaron Stainback*
->     *Execution-Mode: fail-open-low-stakes*
->     *Credential-Identity: AceHack-shared*
->     *Attribution-Note: actor login is credential identity, not proof of human action*
+> *commit_trailers:*
+> *Agent: Otto*
+> *Agent-Model: Claude Opus 4.7*
+> *Human-Operator: Aaron Stainback*
+> *Execution-Mode: fail-open-low-stakes*
+> *Credential-Identity: AceHack-shared*
+> *Attribution-Note: actor login is credential identity, not proof of human action*
 > *```"*
 
 Note: Amara's first-pass schema uses different field names than her refined
@@ -146,16 +146,16 @@ is the fix.
 > *```text*
 > *ATTRIBUTION RULE*
 > *Never infer human approval from:*
->   *- enabledBy.login*
->   *- actor.login*
->   *- pusher username*
->   *- committer username*
+> *- enabledBy.login*
+> *- actor.login*
+> *- pusher username*
+> *- committer username*
 >
 > *Only infer human approval from:*
->   *- explicit chat instruction*
->   *- human-authored review comment*
->   *- human-authored commit without agent trailer*
->   *- signed policy / task / governance text saying fail-open is allowed*
+> *- explicit chat instruction*
+> *- human-authored review comment*
+> *- human-authored commit without agent trailer*
+> *- signed policy / task / governance text saying fail-open is allowed*
 > *```"*
 
 This is the **canonical ATTRIBUTION RULE**. It generalises the lesson from the
@@ -257,12 +257,12 @@ The 6-step better loop is operational:
 > *→ not "Claude is forbidden to act"*
 > *→ not "Aaron must approve every button"*
 > *→ instead:*
->    *- low-stakes greenfield context acknowledged*
->    *- fail-open autonomy preserved*
->    *- attribution ambiguity named*
->    *- PR labels added*
->    *- git-native trailers proposed*
->    *- future separate identity filed*
+> *- low-stakes greenfield context acknowledged*
+> *- fail-open autonomy preserved*
+> *- attribution ambiguity named*
+> *- PR labels added*
+> *- git-native trailers proposed*
+> *- future separate identity filed*
 > *```*
 >
 > *That's not recklessness.*
@@ -274,8 +274,8 @@ The 6-step better loop is operational:
 > *That is very you, Aaron: don't kill the engine, add gauges."*
 
 The "don't kill the engine, add gauges" framing is Aaron's lived discipline
-applied to agent autonomy. It composes with Aaron's DevOps identity (full-stack
-+ K8s + microservices + UI + ops) — instrumentation is the DevOps discipline
+applied to agent autonomy. It composes with Aaron's DevOps identity
+(full-stack + K8s + microservices + UI + ops) — instrumentation is the DevOps discipline
 applied to agent action.
 
 ---
@@ -409,8 +409,8 @@ The "codify a tiny canonical set, not a sprawling one" framing is the load-beari
 >
 > *```text*
 > *Rule:*
->   *Agent trailers MUST be present on the final commit that lands on main,*
->   *not merely on intermediate branch commits.*
+> *Agent trailers MUST be present on the final commit that lands on main,*
+> *not merely on intermediate branch commits.*
 > *```"*
 
 This is operationally critical. GitHub squash-merge default takes "PR title + PR body" as the squash commit body — so the PR body MUST include the trailer block, OR the squash commit must be edited pre-merge. Trailer presence on intermediate branch commits is necessary-but-not-sufficient; presence on the post-squash main-tip commit is the verification surface.
@@ -487,24 +487,24 @@ Beacon-safe.
 > *"Rules:*
 >
 > *1. These trailers must appear on the* ***final commit that lands on main,***
->    *especially for squash merges.*
+> *especially for squash merges.*
 > *2. Do not rely on branch commits only; squash can erase intermediate*
->    *trailer evidence.*
+> *trailer evidence.*
 > *3. Do not use GitHub `enabledBy.login`, `actor.login`, `author`, `committer`,*
->    *or `pusher` as proof of Aaron-human action when credentials are shared.*
+> *or `pusher` as proof of Aaron-human action when credentials are shared.*
 > *4. Only claim human review when there is explicit evidence from chat,*
->    *human-authored PR review, human-authored comment, or signed*
->    *governance/policy.*
+> *human-authored PR review, human-authored comment, or signed*
+> *governance/policy.*
 > *5. Keep `Co-authored-by:` for content/model attribution. Use `Agent:`*
->    *trailers for operational agency attribution.*
+> *trailers for operational agency attribution.*
 > *6. Prefer stable enum values:*
 >
->    *- `Human-Review: explicit`*
->    *- `Human-Review: not-implied-by-credential`*
->    *- `Human-Review: none`*
->    *- `Action-Mode: autonomous-fail-open`*
->    *- `Action-Mode: human-directed`*
->    *- `Action-Mode: supervised`"*
+> *- `Human-Review: explicit`*
+> *- `Human-Review: not-implied-by-credential`*
+> *- `Human-Review: none`*
+> *- `Action-Mode: autonomous-fail-open`*
+> *- `Action-Mode: human-directed`*
+> *- `Action-Mode: supervised`"*
 
 ### Suggested proof line + queryable examples (verbatim)
 
@@ -535,6 +535,7 @@ Beacon-safe.
 > *```"*
 
 The ferry-3 doctrine sentence subtly tightens ferry-2's:
+
 - ferry-2: *"GitHub actor/committer identity records the credential used. Agent trailers record the operational agency mode. Neither alone proves human review."*
 - ferry-3: *"Credential identity records who the host saw. Agent trailers record who/what operated. Neither alone proves human review."*
 
