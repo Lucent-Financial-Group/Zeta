@@ -122,7 +122,7 @@ Add the asymmetry rule as a single bullet in CLAUDE.md Conventions section. This
 
 | AC | Status | Evidence |
 |----|--------|----------|
-| CLAUDE.md trim (demote action-hierarchy, amortized-speed, edge-runner, cron-unreliability) | ✓ DONE | B-0351 (#2248), B-0352 (#2446), B-0353 (#2462) |
+| CLAUDE.md trim (demote action-hierarchy, amortized-speed, edge-runner, cron-unreliability) | ✓ DONE | B-0351, B-0352, and B-0353 closed rows |
 | Add asymmetry bullet to CLAUDE.md | ✓ DONE | PR #2465 (commit 3c903aa3, 2026-05-10) |
 | Cooling-period respected (≥24h after PR #1202) | ✓ DONE | 8 days elapsed (2026-05-02 → 2026-05-10) |
 
