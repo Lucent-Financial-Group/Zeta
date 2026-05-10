@@ -268,7 +268,8 @@ rules referenced by 3+ skills, per the B-0314 priority ordering.
 
 - B-0314 (this file is the slice-1 output)
 - B-0060 (umbrella anchor-backfill row)
-- B-0311 (coverage scanner — will extract URLs from this file via `EXTERNAL_RE`)
+- B-0311 (coverage scanner — extracts URLs with `MARKDOWN_LINK_RE` and
+  `BARE_URL_RE` in `extractUrlsFromWindow`)
 - `.claude/rules/search-first-authority.md` (Otto-364 — the search discipline
   that produced this research)
 - `docs/AGENT-BEST-PRACTICES.md` (target surface for inline citations)

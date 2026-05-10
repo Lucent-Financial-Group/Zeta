@@ -16,14 +16,14 @@ type: friction-reducer
 
 # BP-NN rule external-anchor backfill
 
-Research and land external prior-art anchors for the 25
+Research and land external prior-art anchors for the 28
 BP-NN rules in `docs/AGENT-BEST-PRACTICES.md`. Priority:
 rules enforced by CI/pre-commit hooks first (they fire most
 frequently and need the strongest justification trail).
 
 ## Scope
 
-BP-1 through BP-25 as enumerated in
+BP-1 through BP-28 as enumerated in
 `docs/AGENT-BEST-PRACTICES.md`.
 
 ## Priority ordering within scope
@@ -46,10 +46,10 @@ BP-1 through BP-25 as enumerated in
 
 ## Done-criteria
 
-- [ ] All 25 rules have external anchor or "original" note.
+- [ ] All 28 rules have external anchor or "original" note.
 - [ ] Citations include URL, author/org, title, date.
 - [ ] Beacon-safety pass on all cited sources.
-- [ ] Coverage scanner (B-0311) confirms 25/25 resolved.
+- [ ] Coverage scanner (B-0311) confirms 28/28 resolved.
 
 ### Slice progress
 
