@@ -358,3 +358,5 @@ Amara ferry-12 closing (verbatim — load-bearing):
 > ***That is Zeta working.***"
 
 The "Convention-as-prose claimed victory. Convention-as-executable said: not yet. That is Zeta working." three-line closing belongs alongside the ferry-9 covenant lines as substrate-grade structural framing. They name what the system IS when working correctly: prose and executable enforcement both present, with the executable layer winning when they disagree.
+
+[3]: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/configuring-commit-squashing-for-pull-requests
