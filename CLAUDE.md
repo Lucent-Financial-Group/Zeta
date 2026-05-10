@@ -45,3 +45,5 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
 - **Result-over-exception** — errors surface as `Result<_, DbspError>`; no exceptions on hot paths.
 - **Memory fast-path** — read `~/.claude/projects/<slug>/memory/CURRENT-*.md` before raw
   `feedback_*.md` logs; CURRENT files win on conflict with older raw memories.
+- **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
+  are razored (cooling-period required, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
