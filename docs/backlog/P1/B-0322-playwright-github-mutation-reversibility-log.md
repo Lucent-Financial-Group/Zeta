@@ -1,13 +1,13 @@
 ---
 id: B-0322
 priority: P1
-status: claimed
+status: open
 title: "Mutation reversibility drain log — inverse-action record for every UI mutation"
 tier: agent-capability-expansion
 effort: S
 parent: B-0064
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-10
 depends_on: [B-0321]
 composes_with: [B-0064]
 tags: [agent-capability, github-ui, playwright, audit-trail, reversibility, safety]

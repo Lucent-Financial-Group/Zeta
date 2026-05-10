@@ -16,8 +16,9 @@ const DEFAULT_LOG_PATH = resolve(REPO_ROOT, "docs/hygiene-history/playwright-mut
 
 /**
  * A drain-log entry persisted on disk.  Extends the in-memory MutationLogEntry
- * with a mutable status so that revert events can be recorded as new lines in
- * the same append-only file.
+ * with a status field that varies per record ("applied" | "reverted") — each
+ * record is individually immutable; reversals are recorded as new lines with
+ * the same id and status "reverted" (append-only invariant).
  */
 export type DrainLogEntry = Omit<MutationLogEntry, "status"> & {
   readonly status: "applied" | "reverted";
@@ -47,7 +48,7 @@ function ensureLogDir(logPath: string): void {
   }
 }
 
-/** Parse all lines from the log file, skipping blank lines. */
+/** Parse all lines from the log file, skipping blank and malformed lines. */
 function readAllLines(logPath: string): DrainLogEntry[] {
   if (!existsSync(logPath)) return [];
   const raw = readFileSync(logPath, "utf8");
@@ -55,7 +56,11 @@ function readAllLines(logPath: string): DrainLogEntry[] {
   for (const line of raw.split("\n")) {
     const trimmed = line.trim();
     if (trimmed.length === 0) continue;
-    entries.push(JSON.parse(trimmed) as DrainLogEntry);
+    try {
+      entries.push(JSON.parse(trimmed) as DrainLogEntry);
+    } catch {
+      // Skip truncated/malformed lines (e.g. from a crash mid-append).
+    }
   }
   return entries;
 }
@@ -136,12 +141,22 @@ export async function revert(
     params: latest.params,
   };
 
-  const result = await mutate(inverseRequest, options);
+  let result;
+  try {
+    result = await mutate(inverseRequest, options);
+  } catch (err) {
+    return {
+      success: false,
+      entryId,
+      error: `Inverse mutation threw: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
   if (!result.success) {
     return { success: false, entryId, error: `Inverse mutation failed: ${result.error}` };
   }
 
-  // Append revert marker (minimal — just id + status + timestamp)
+  // Append revert marker — full entry from the inverse mutation, id overridden
+  // to match the original applied record so listPending() correctly reduces it.
   const revertMarker: DrainLogEntry = {
     ...result.drainLogEntry,
     id: entryId,         // same id as original — this is the revert event
