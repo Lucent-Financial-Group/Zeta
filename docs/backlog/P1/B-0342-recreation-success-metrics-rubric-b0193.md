@@ -58,12 +58,14 @@ S — design document, no code.
 ## Pre-start checklist (2026-05-10)
 
 **Prior-art search:**
+
 - Searched `.claude/skills/`, `.claude/agents/`, `docs/bootstrap-razor/` — no existing SUCCESS-METRICS.md
 - B-0339 (KEEP-VS-CUT.md) closed and citable; SEED-MANIFEST.md and SPEC-AUDIT.md reviewed for baseline numbers
 - B-0340 provides the 81-module / 37%-coverage baseline used in the rubric
 - No prior metrics rubric exists for this experiment line
 
 **Dependency check:**
+
 - B-0339 (depends_on): closed ✓
 - B-0343 (seeding script, tooling dependency for Dim 3): open — rubric notes this as tooling dependency, not blocker
 - B-0344 (cites this rubric): open — cannot start until this item closes

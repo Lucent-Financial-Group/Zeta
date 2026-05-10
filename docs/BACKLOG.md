@@ -172,7 +172,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0339](backlog/P1/B-0339-keep-vs-cut-criteria-documentation-b0193.md)** Keep-vs-cut criteria documentation — define the 4 category taxonomy before bootstrap-razor runs
 - [x] **[B-0340](backlog/P1/B-0340-spec-completeness-audit-inventory-b0193.md)** Spec completeness audit — run inventory.ts, document coverage gaps
 - [x] **[B-0341](backlog/P1/B-0341-minimal-bootstrap-seed-manifest-b0193.md)** Minimal bootstrap seed manifest — exact file set for the recreation test repo
-- [ ] **[B-0342](backlog/P1/B-0342-recreation-success-metrics-rubric-b0193.md)** Recreation success metrics — evaluation rubric for the 23-hour test
+- [x] **[B-0342](backlog/P1/B-0342-recreation-success-metrics-rubric-b0193.md)** Recreation success metrics — evaluation rubric for the 23-hour test
 - [ ] **[B-0343](backlog/P1/B-0343-test-repo-seeding-script-ts-b0193.md)** Test-repo seeding script (TS) — create + seed the recreation experiment repo
 - [ ] **[B-0344](backlog/P1/B-0344-run-23-hour-recreation-experiment-b0193.md)** Run the 23-hour recreation experiment — fresh-context Otto against specs-only repo
 - [ ] **[B-0345](backlog/P1/B-0345-document-recreation-findings-b0193.md)** Document recreation findings — research-grade preservation of experiment results

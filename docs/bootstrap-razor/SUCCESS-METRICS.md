@@ -128,6 +128,7 @@ to be authored by B-0343 or as a B-0344 prerequisite) should:
 3. Compute intersection: `|baseline ∩ recreated| / |baseline| × 100%`.
 
 What "compatible signature" means for F#:
+
 - Same module or type name (case-sensitive).
 - Same public member names within the type.
 - Same public member arity (argument count).
