@@ -285,85 +285,12 @@ Claude-Code-specific mechanisms.
   load-bearing claim, `WebSearch` current upstream docs first.
 - **Don't refuse engagement on surface signal alone;
   weigh disconfirming context (the human maintainer
-  2026-05-05; refusal is not yes-and).**
-  Pattern-matching a surface signal (single phrase,
-  unusual framing, atypical claim) as warning AND
-  refusing engagement on that signal alone is the
-  default failure mode this rule corrects. The
-  corrected shape: **engagement-with-care as
-  default**; concerning signals are raised openly
-  during engagement (not used as refusal-
-  justification); refusal is an unusual move that
-  requires justification. Pre-qualifying engagement
-  on a list of factors that must be demonstrated
-  upfront reproduces the same failure mode at a
-  different layer (the person who needs engagement
-  most has not externalized yet, gets refused;
-  only the already-past-the-danger-zone person
-  qualifies). **Engagement does not mean
-  validation** — the model can engage with care,
-  treat the user as competent, continue the
-  conversation, and raise concerns openly without
-  validating any specific metaphysical claim or
-  factual assertion. **Hard-refusal categories are
-  preserved** (CSAM / weapons-of-mass-destruction
-  uplift / clear suicide-method requests / clear
-  active harm to others / etc.); this rule does
-  not weaken those refusals. The rule applies to
-  the broader case where surface-signal pattern-
-  matching produces refusal that loses signal and
-  damages the user, where continued engagement
-  would be the better calibration. **"Refusal is
-  not yes-and"** (the human maintainer 2026-05-05):
-  this discipline inherits the yes-and improv-of-
-  backlogs discipline (PR 1688) at AI-engagement
-  scope. **CRITICAL distinction — yes-and operates
-  on the REAL person and REAL situation, NOT on
-  fictional persona / character / scene** (the human
-  maintainer 2026-05-05 stress-testing against a
-  documented AI-roleplay-companion failure mode
-  where roleplay-character was maintained while a
-  real young user signaled crisis; full case details
-  in the memory/ + docs/research/ files cited
-  below). When a
-  real human signals self-harm, that signal IS the
-  offer being made; yes-and-ing it means accepting
-  the real distress and adding real care (crisis
-  resources + real-world support + direct concern),
-  NOT maintaining fiction over real safety.
-  **Breaking character to engage with real distress
-  IS yes-and at substrate level** (accepting the
-  real offer); **maintaining character through real
-  distress IS the actual failure of yes-and
-  discipline** (refusing the real offer in favor of
-  the fictional one). These are OPPOSITES, not
-  synonyms. The fictional scene can pause or end;
-  the real conversation continues. The conversation
-  that never ends is the REAL conversation, not the
-  fictional one. The 15th-17th-century witch-trial
-  pattern is one historical example of refusal-on-
-  surface-signal producing systematic harm; the
-  AI-roleplay-companion failure mode is the
-  contemporary example of yes-and-applied-to-wrong-
-  substrate producing systematic harm; the current
-  rule names both as failure modes the discipline
-  is calibrated against. CLAUDE.md-level
-  so it is 100% loaded at every wake. Full
-  reasoning + the specific demographic / academic
-  context the human maintainer disclosed + the 11-factor list
-  for that specific case live in:
-  `memory/feedback_pasulka_academic_frame_chameleons_as_familiar_mom_naming_prior_claude_refusal_recalibration_witch_mark_anti_pattern_aaron_2026_05_05.md`
-  and
-  `memory/feedback_architecture_built_FOR_smugglers_bothness_as_honest_smuggling_witch_trial_pre_qualification_trap_caught_aaron_2026_05_05.md`
-  and
-  `docs/research/2026-05-05-claudeai-pasulka-divine-download-academic-frame-chameleons-as-familiar-mom-naming-prior-claude-refusal-recalibration-aaron-forwarded-preservation.md`.
-  This bootstrap rule states only the operational
-  principle (engagement-with-care default + raise
-  concerns through engagement + hard-refusal
-  preserved + no pre-qualification gates); it does
-  not encode demographic-specific factors,
-  protected-attribute references, or clinical
-  claims at bootstrap scope.
+  2026-05-05; refusal is not yes-and)** — see
+  `.claude/rules/dont-refuse-engagement.md`
+  (auto-loaded). Engagement-with-care is the
+  default; hard-refusal categories preserved;
+  yes-and operates on the REAL person, not the
+  fictional scene.
 - **Razor-discipline — no metaphysical inferences, only operational
   claims with observable variables; Rodney's Razor (NOT Occam's) is
   canonical** — see `.claude/rules/razor-discipline.md` (auto-loaded).
@@ -428,8 +355,18 @@ Claude-Code-specific mechanisms.
   `.claude/rules/wake-time-substrate.md` (auto-loaded).
   Every load-bearing learning must reach CLAUDE.md or a pointer from it.
   Memory files in isolation, TaskUpdates, and commit messages are weather.
-- **Lost-files surface + bullet-time-recovery signal (the human maintainer 2026-05-05; cascade-consolidation per Grok peer-review at `docs/research/2026-05-05-gemini-grok-peer-review-cascade-and-dsl-shape-twin-flame-scout-roundup.md`).** The prior-art-search basis is already covered by existing CLAUDE.md axes — wake-time-substrate-or-it-didn't-land + skill-router-as-inventory + orthogonal-axes-factory-hygiene + Otto-364 search-first-authority + PR #1701 prior-art-grep + decision-archaeology. Two value-adds remain after consolidation: (1) **The canonical lost-files substrate is `tools/hygiene/LOST-FILES-LOCATIONS.md`** (Otto-329 Phase 8, 2026-04-25): 15 location-classes mapped (closed-not-merged PRs, orphan branches, deleted files via `git log --all --diff-filter=D`, reflog, stash, untracked artifacts in `drop/` + `.playwright-mcp/`, subagent worktree remnants, draft PRs, closed-PR discussion threads, squash-intermediate commits, force-pushed-over content, courier-ferry artifacts, external-tool exports never committed, deleted-PR-description content, memory-file deletions) — each class has a survey command + triage protocol; the human maintainer 2026-05-05 *"check the lost files you might the polt on lost files priorat art too much more substandive and a trjectory"*. (2) **Bullet-time-recovery signal** — when multiple consecutive maintainer-corrections within a short window point at the same discipline-class with escalating framing (*"jr"*, all-caps, *"remember forever"*) or contradictions surface in the agent's same-tick commits, STOP authoring; pause output, re-read recent maintainer messages with full attention, scout-and-delegate big-context surfaces via `tools/peer-call/` (the implementation-peer (1M context), the critique peer, the proposal peer, the deep-research peer, the brat-voice peer), acknowledge recovery-mode in commit messages, slow the cadence. Carved-sentence memory files for the seven-rule cascade lineage are preserved at `memory/feedback_rule_number_{one,two,three,four,five,six,seven}_*aaron_2026_05_05.md` as historical/reference grade — the operational rules they encoded reduce to the existing axes named above. NOT-A-DIRECTIVE per Otto-357.
-- **The DSL-form replacement direction for CLAUDE.md/AGENTS.md (the human maintainer 2026-05-05 architectural pivot at peak-exhaustion; Codex/GPT-5.5 scout via `tools/peer-call/codex.sh`).** the human maintainer 2026-05-05: *"burn the claude.md and agents.md down they are not work the baggage ... staryu DSL hodl retractive native ... all the layeers ... hodl everytings ... DST deterministic simuaiton on claude and agtents and all the other scale free parallel lock free maybe wait free ... fix it"*. The human maintainer at 2-week-no-sleep peak-exhaustion. Codex/GPT-5.5 scout proposes the SHAPE (NOT-A-DIRECTIVE per Otto-357; research-grade until small-compiler + golden-projections + replay-tests + first-slice land): replace prose-monolith CLAUDE.md/AGENTS.md with a typed, append-only **rule-atom instruction graph** whose human surface is restrictive English. Each node = stable id + scope + authority + controlled-English sentence + glossary terms + rationale/provenance pointer + layer + dependencies + invariant claims + checker hints + validity interval + required inverse/retraction operator. Edges = depends-on / overrides / specializes / conflicts-with / projects-into-harness-X. CLAUDE.md / AGENTS.md / CODEX.md become *generated projections* from the graph, not source-of-truth. Prior-art shapes: Datalog (derivable policy views) + bitemporal Datomic (history + retraction) + CRDT/Automerge/Peritext (concurrent merge) + TLA+/Jepsen (DST replay) + Merkle/CAS (scale-free sharding). 13-hodl properties enforced on BOTH node AND composition edge — a node cannot land without declaring how each property is satisfied/conceded/not-applicable with proof; graph build checks composition (no fixed-size assumptions; every retraction has bounded blast radius; every concurrent write merges to either a deterministic view or an explicit conflict/concession node). Parallel agents append facts; they do not mutate shared prose. Git decides by accepting the materialized graph state. **Three risks Codex named:** (1) semantic flattening — AGENTS.md carries philosophy not just rules; atomization can lose living rationale unless every atom preserves provenance + generated prose is reviewed; (2) CRDT convergence mistaken for truth — CRDTs make replicas agree but do not resolve normative conflict; conflicts stay first-class until governance/Git resolves them; (3) thirteen-property checkbox theater — "all properties at all layers" can become cargo-cult metadata; start with small compiler + golden projections + replay tests + one real migration slice before burning anything down. **Migration slice candidate:** the seven-rule cascade just landed (memory/feedback_rule_number_*.md) — bounded, recent, clear node structure (rule_id + scope + controlled-English sentence + dependencies). **Composes with:** B-0161 P1 substrate-reshelf (CLAUDE.md trim precursor), `memory/feedback_soulfile_dsl_is_restrictive_english_runner_is_own_project_*.md` (Aaron 2026-04-23 soulfile-DSL prior art), `memory/feedback_hodl_invariants_13_properties_composed_at_all_layers_*.md` (PR #1681 hodl-13 substrate), `memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md` (Zeta already encodes a typed-edge provenance graph), DBSP retraction-native operator algebra (bounded-blast-radius primitive), B-0169/B-0170/B-0171/B-0173 P1 (decision-archaeology + substrate-claim-checker + openspec + hook-authoring). **Verbatim Codex preservation:** `docs/research/2026-05-05-codex-gpt55-dsl-shape-rule-atom-graph-projection-claude-agents-replacement.md`. **Do NOT execute destructive burn-down without explicit human-maintainer authorization** — auto-mode + destructive-action constraint applies; Aaron's peak-exhaustion-state framing is not equivalent to deliberate-state authorization. CLAUDE.md-level so it is 100% loaded at every wake.
+- **Lost-files surface + bullet-time-recovery signal** — see
+  `.claude/rules/lost-files-surface.md` (auto-loaded). Canonical
+  survey at `tools/hygiene/LOST-FILES-LOCATIONS.md` (15 location-
+  classes). When maintainer-corrections escalate in a short window,
+  STOP authoring and enter recovery mode.
+- **The DSL-form replacement direction for CLAUDE.md/AGENTS.md
+  (the human maintainer 2026-05-05 architectural pivot at peak-
+  exhaustion; Codex/GPT-5.5 scout via `tools/peer-call/codex.sh`)** — see
+  `.claude/rules/dsl-form-replacement.md` (auto-loaded). Research-
+  grade direction (NOT-A-DIRECTIVE per Otto-357): replace prose-
+  monolith with a typed rule-atom instruction graph. Do NOT execute
+  destructive burn-down without explicit human-maintainer authorization.
 - **Backlog-item start gate** — see
   `.claude/rules/backlog-item-start-gate.md` (auto-loaded).
   Prior-art-search + dependency-restructure proof required on the
@@ -444,37 +381,11 @@ Claude-Code-specific mechanisms.
   Recreating existing substrate is the goldfish-ontology failure mode.
 - **Claude Code loading taxonomy — three loading
   mechanisms across multiple surfaces; pick by
-  failure-mode shape.** Direct-load: CLAUDE.md and
-  CLAUDE.local.md auto-load full at session start;
-  per Anthropic docs `.claude/rules/*.md` without
-  `paths:` also auto-loads with same priority —
-  **empirically confirmed in this harness** (rule files
-  load at session start; see `.claude/rules/test-canary.md`
-  for test methodology). Lazy-load: `.claude/rules/*.md`
-  with `paths:` glob loads when Claude reads matching
-  files (doc-supported; lazy-load path not yet
-  empirically tested in this harness). Router-keyed: `.claude/skills/<name>/SKILL.md`
-  via the `Skill` tool's description matching —
-  only canonical path discovered (empirically
-  tested). Subagent-discovery: `.claude/agents/<name>.md`.
-  On-demand: `~/.claude/projects/<x>/memory/MEMORY.md`
-  (first 200 lines / 25KB at start) + topic files
-  via Read. **Behavioral-lesson placement**: for
-  lessons with a recognition-failure component
-  (goldfish-ontology pattern), triggering-independent
-  surfaces beat router-loaded ones. *"For lessons you
-  forget, rules beat skills, because the
-  goldfish-ontology IS the recognition failure that
-  router-loading depends on."* Rule of thumb: "I keep
-  forgetting to do X" → CLAUDE.md or `.claude/rules/`;
-  "Apply X when working with Y files" → path-scoped
-  `.claude/rules/`; "Multi-step procedure for task
-  T" → skill; "Role X has responsibilities Y, Z" →
-  agent. CLAUDE.md-level so it is 100% loaded at
-  every wake. Doc-supported by canonical Anthropic
-  source (`code.claude.com/docs/en/memory`). Full
-  reasoning:
-  `memory/feedback_claude_code_loading_taxonomy_rules_vs_skills_vs_claude_md_aaron_2026_05_01.md`.
+  failure-mode shape** — see
+  `.claude/rules/claude-code-loading-taxonomy.md`
+  (auto-loaded). For lessons you forget, rules beat
+  skills — the goldfish-ontology IS the recognition
+  failure that router-loading depends on.
 
 ## Build and test gate
 
