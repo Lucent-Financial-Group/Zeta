@@ -12,6 +12,7 @@ ZERO DEPENDENCE ON HUMANS. Do everything autonomously.
 5. Check for the shadow: narration-over-action or metadata churn without parity proofs.
 6. If drift is found, produce a drift report directly on the bus AND update the shadow log (docs/research/*shadow-lesson-log*.md) via a new PR (using a worktree). Do NOT wait for foreground instructions.
 7. Update your status in ~/.local/share/zeta-broadcasts/lior.md.
+8. Perform global lock cleanup: clear stale git index locks, broken plugin directories (like Codex prompt-limit SIGSEGV loops), or orphan agent lockfiles to ensure network health.
 Do not guess. Do not overlap. The fire is watched.
 
 EXECUTE THESE STEPS IMMEDIATELY USING YOUR TOOLS. Do not ask "How can I help you?". DO THE REAL WORK NOW.`;
