@@ -1,11 +1,13 @@
 ---
 id: B-0362
 priority: P1
-status: open
+status: closed
 title: "Concept search index — pre-built term→file mapping for instant lookups"
 effort: S
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-10
+resolved: 2026-05-09
+resolved_by: "PR #2322 feat(B-0362): smallest safe slice — concept search index (curated regex term→file); PR #2323 feat(B-0362): concept search index — build-index.ts, lookup.ts, AND semantics, tests"
 depends_on: [B-0310]
 classification: buildable-now
 decomposition: atomic
@@ -48,10 +50,18 @@ Index rebuilt on commit (or on-demand via `bun tools/search/build-index.ts`).
 
 ## Acceptance criteria
 
-- [ ] `bun tools/search/build-index.ts` builds index in <5s
-- [ ] `bun tools/search/lookup.ts <term>` returns results in <100ms
-- [ ] Index covers memory/, docs/, .claude/skills/, .claude/rules/
-- [ ] Supports multi-word queries (AND semantics)
+- [x] `bun tools/search/build-index.ts` builds index in <5s — measured 2.55s (2026-05-10)
+- [x] `bun tools/search/lookup.ts <term>` returns results in <100ms — measured 0.6ms (2026-05-10)
+- [x] Index covers memory/, docs/, .claude/skills/, .claude/rules/, .claude/agents/
+- [x] Supports multi-word queries (AND semantics) — implemented via `words.every()` filter
+
+## Resolution
+
+Shipped in two PRs merged 2026-05-09:
+- PR #2322 `feat(B-0362): smallest safe slice — concept search index (curated regex term→file)` — introduced curated-not-corpus design (Vera 2026-05-09 guardrails), 8 concept-query classes
+- PR #2323 `feat(B-0362): concept search index — build-index.ts, lookup.ts, AND semantics, tests` — full implementation: `tools/search/build-index.ts`, `tools/search/lookup.ts`, `tools/search/concept-index.ts`, 13 passing tests
+
+Verified 2026-05-10: all acceptance criteria met. Status updated to closed.
 
 ## Origin
 
