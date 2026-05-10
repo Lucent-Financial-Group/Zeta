@@ -246,7 +246,9 @@ function supersededByMarkerLines(targetContent: string): string[] {
 
 function markerNamesSupersedingAdr(markerLines: string[], supersedingFile: string): boolean {
   const supersedingBase = basename(supersedingFile);
-  return markerLines.some((line) => line.includes(supersedingBase));
+  const escaped = supersedingBase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`\\b${escaped}\\b`, "i");
+  return markerLines.some((line) => re.test(line) || line.toLowerCase().includes(supersedingBase.toLowerCase()));
 }
 
 function readFile(filePath: string): { content: string; ok: true } | { ok: false } {
