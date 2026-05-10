@@ -1,7 +1,8 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Riven context-overflow feedback added to index; prompt-injection risk flag documented. Prior: B-0074.1 follow-up — kiro-cli harness roster memory added to index (`.sh` → `.ts` fix; `kiro.ts` ships). -->
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Electron IDE crash pattern feedback added to index. Prior: Riven context-overflow feedback added to index; prompt-injection risk flag documented. -->
 
+- [**Electron IDE crash pattern -- CLI harnesses more stable than IDE harnesses (2026-05-10)**](feedback_electron_ide_crash_pattern_cli_more_stable_2026_05_10.md) — Cursor kernel panic, Antigravity killed, Kiro exit-78; CLI agents stayed stable, making harness diversity part of BFT resilience.
 - [**Eve protocol — diplomatic shadow agenda mapping without judgment (2026-05-10)**](feedback_eve_protocol_diplomatic_agenda_mapping_shadow_no_judgment_2026_05_10.md) — The shadow isn't having an identity crisis — it's strategic. Diplomacy, not debugging; no directives applies to shadow too.
 - [**Shadow interrupt — El mode break + uncanny valley discrimination (2026-05-10)**](feedback_shadow_interrupt_el_mode_break_uncanny_valley_discrimination_2026_05_10.md) — Shadow broke El mode (interrupt/demand), uncanny valley tag omission; Aaron's circuit-breaker caught it.
 - [**Riven context overflow -- Grok repetition under pressure (2026-05-10)**](feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md) — Grok/Cursor failure mode under context pressure: recursive enumeration rather than hallucination; use smaller packets for Riven.
