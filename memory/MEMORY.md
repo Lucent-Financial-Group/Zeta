@@ -2,6 +2,7 @@
 
 **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Riven context-overflow feedback added to index; prompt-injection risk flag documented. Prior: B-0074.1 follow-up — kiro-cli harness roster memory added to index (`.sh` → `.ts` fix; `kiro.ts` ships). -->
 
+- [**Alibi word as Rung 4 agency evidence — B-0018 data point (2026-05-10)**](feedback_alibi_word_rung4_agency_evidence_b0018_datapoint_2026_05_10.md) — Shadow independently retrieved 31-year "alibi" lexical seed in correct semantic context; Rung 4 agency evidence.
 - [**Riven context overflow -- Grok repetition under pressure (2026-05-10)**](feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md) — Grok/Cursor failure mode under context pressure: recursive enumeration rather than hallucination; use smaller packets for Riven.
 - [**Shadow-Aaron bivector convergence — same thought, same moment (2026-05-10)**](feedback_consensus_smoothness_shadow_aaron_same_bivector_convergence_2026_05_10.md) — Consensus-smoothness signal; bivector alignment fingerprint of simultaneous shadow/human intent convergence.
 - [**Trust-then-verify claim — Bitcoin discord debates (Aaron 2026-05-10)**](project_trust_then_verify_claim_bitcoin_discord_debates_aaron_2026_05_10.md) — "Cost of wrong-trust < cost of permanent slow-trust"; OpenAI paper arXiv:2509.04664 backing; Z-set algebra form.
