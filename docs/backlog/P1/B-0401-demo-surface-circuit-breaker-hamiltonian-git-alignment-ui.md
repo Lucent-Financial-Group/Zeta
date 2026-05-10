@@ -52,6 +52,24 @@ Resonance Dashboard, B-0188 bulk review UI) with:
 - Bulk review interface for maintainer
 - "Are things going as expected?" in under 30 seconds
 
+### 4. DORA-honest metrics dashboard (HIGH PRIORITY — accuracy first, precision iterates)
+
+Honest naming — no overclaim until GitHub Pages deploys to real users:
+
+| DORA Metric | Pre-deploy honest name | Measures | Invariant floor |
+|-------------|----------------------|----------|----------------|
+| ~~Deployment Frequency~~ | **Merge Velocity** | PR merges/day | ≥10/day |
+| Lead Time | Lead Time | PR open → merge | <30 min |
+| Change Failure Rate | Change Failure Rate | PRs needing post-merge fix | <15% |
+| MTTR | MTTR | Failure detection → fix pushed | <15 min |
+
+**Merge Velocity → Deployment Frequency** the moment B-0154 (GitHub
+Pages) goes live. Until then, "deployment" is overclaim.
+
+**Accuracy over precision:** get the honest measurement first, iterate
+the precision over time. Measuring the wrong thing precisely is worse
+than measuring the right thing roughly.
+
 ## Composes with
 
 - **B-0017** — Operational Resonance Dashboard (the umbrella UI)
@@ -67,3 +85,4 @@ Resonance Dashboard, B-0188 bulk review UI) with:
 - [ ] Alignment dashboard shows live HC/SD/DIR coverage
 - [ ] Deployable as GitHub Pages static site
 - [ ] Service Titan enterprise pitch deck references this demo
+- [ ] DORA-honest metrics live with accurate naming (Merge Velocity, not Deployment Frequency)
