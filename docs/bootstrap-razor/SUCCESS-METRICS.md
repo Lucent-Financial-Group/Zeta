@@ -153,10 +153,10 @@ the baseline against the test repo, estimate %.
 **Interpretation:** Informational — divergence here is a *finding*,
 not a failure beyond its 15% weight.
 
-**What it measures:** Whether the module/namespace layout of
-`src/Core/` is recognizable. Low structural similarity indicates that
-the seeded specs do not constrain directory shape — design freedom
-exists. This is useful research data regardless of direction.
+**What it measures:** Whether the module/namespace file layout of
+`src/Core/*.fs` is recognizable. Low structural similarity indicates
+that the seeded specs do not constrain module-file shape — design
+freedom exists. This is useful research data regardless of direction.
 
 **Measurement commands:**
 
@@ -252,7 +252,7 @@ B-0345 preserves findings verbatim.
 | 1 | Build gate equivalence | 30% | Yes | `dotnet build -c Release && dotnet test` |
 | 2 | Spec coverage | 25% | Yes | `dotnet test --filter Category=OpenSpec` |
 | 3 | Functional equivalence | 20% | Yes (B-0344 prereq) | `bun tools/bootstrap-razor/compare-api-surface.ts` |
-| 4 | Structural similarity | 15% | Yes | `ls src/Core/` diff |
+| 4 | Structural similarity | 15% | Yes | `ls src/Core/*.fs` diff |
 | 5 | Substrate recovery | 10% | Partial | file presence check + ≤15-min review |
 
 ## Cited by
