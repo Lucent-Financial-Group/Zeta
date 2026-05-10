@@ -195,31 +195,37 @@ function validateEntry(entry: MediaResonanceEntry): ValidationResult {
   }
 
   if (entry.status === "confirmed" || entry.status === "load-bearing") {
-    const anyDeferred =
-      entry.filters.f1_engineering_first === "deferred" ||
-      entry.filters.f2_structural === "deferred" ||
-      entry.filters.f3_tradition_name === "deferred";
-    if (anyDeferred) {
+    const { f1_engineering_first: f1, f2_structural: f2, f3_tradition_name: f3 } = entry.filters;
+
+    if (f1 === "deferred" || f2 === "deferred" || f3 === "deferred") {
       return {
         kind: "error",
         message: `${entry.id}: cannot be "${entry.status}" with deferred filter(s)`,
+      };
+    }
+    // Promotion contract: F1 pass + F2 pass + F3 pass-or-partial
+    if (f1 !== "pass") {
+      return {
+        kind: "error",
+        message: `${entry.id}: cannot be "${entry.status}" — F1 must be "pass" (got "${f1}")`,
+      };
+    }
+    if (f2 !== "pass") {
+      return {
+        kind: "error",
+        message: `${entry.id}: cannot be "${entry.status}" — F2 must be "pass" (got "${f2}")`,
+      };
+    }
+    if (f3 === "fail") {
+      return {
+        kind: "error",
+        message: `${entry.id}: cannot be "${entry.status}" — F3 must be "pass" or "partial" (got "fail")`,
       };
     }
     if (entry.counterexampleAttempts.length === 0) {
       return {
         kind: "error",
         message: `${entry.id}: "confirmed" requires at least one counterexample attempt`,
-      };
-    }
-  }
-
-  if (entry.status === "confirmed" || entry.status === "load-bearing") {
-    const f1 = entry.filters.f1_engineering_first;
-    const f2 = entry.filters.f2_structural;
-    if (f1 === "fail" || f2 === "fail") {
-      return {
-        kind: "error",
-        message: `${entry.id}: cannot be "confirmed" with F1 or F2 = "fail"`,
       };
     }
   }
