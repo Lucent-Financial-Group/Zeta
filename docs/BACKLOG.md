@@ -217,6 +217,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0401](backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md)** Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration
 - [ ] **[B-0403](backlog/P1/B-0403-weight-free-verification-hat-timeboxed-authority.md)** Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing
 - [ ] **[B-0405](backlog/P1/B-0405-beacon-promotion-gate-dashboard-observable.md)** Beacon promotion gate — observable mirror→beacon pipeline with dashboard metrics
+- [ ] **[B-0409](backlog/P1/B-0409-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 
 ## P2 — research-grade
 
@@ -359,7 +360,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0113.3](backlog/P2/B-0113.3-rule-and-memory-update.md)** Update CURRENT-*.md "How this file stays accurate" section + B-0113 parent to cite mechanical checker (B-0113.1+.2)
 - [ ] **[B-0114](backlog/P2/B-0114-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30.md)** Three quality-gate improvements — pre-push lint + memory-link checker + batched thread resolution (Alexa peer review 2026-04-30)
 - [x] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
-- [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
+- [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.ts — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30; TS-first re-decomp)
 - [ ] **[B-0120](backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md)** Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
 - [ ] **[B-0121](backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)** Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
 - [ ] **[B-0122](backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md)** Peer-call scripts TypeScript migration — post-install cutover (the maintainer 2026-04-30)
@@ -450,6 +451,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0406](backlog/P2/B-0406-immune-source-material-survey-note-capture-atomic-riven-2026-05-11.md)** Immune source material survey + note capture (atomic research pass, child of B-0108)
 - [ ] **[B-0407](backlog/P2/B-0407-immune-cross-reference-candidate-identification-atomic-riven-2026-05-11.md)** Cross-reference immune concepts to Aurora + superorganism substrate + identify candidates (atomic, child of B-0108)
 - [ ] **[B-0408](backlog/P2/B-0408-immune-promoted-candidates-follow-up-filing-closure-atomic-riven-2026-05-11.md)** Promoted candidate follow-up row filing + B-0108 research-absorb closure (atomic, child of B-0108)
+- [ ] **[B-0409](backlog/P2/B-0409-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
+- [ ] **[B-0410](backlog/P2/B-0410-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
+- [ ] **[B-0411](backlog/P2/B-0411-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
 
 ## P3 — convenience / deferred
 
