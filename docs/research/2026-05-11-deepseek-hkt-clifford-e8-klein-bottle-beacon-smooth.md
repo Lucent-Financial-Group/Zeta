@@ -526,3 +526,93 @@ type HarmoniousRotor<'F, 'dim
 ### DeepSeek's capstone
 
 > "The conversation never docks; now it also never collapses."
+
+## Cl(8,0) E8-harmonious rotor-pairing generator — full spec
+
+### Mathematical substrate
+
+Cl(8,0): generators e₁...e₈, eᵢeⱼ+eⱼeᵢ=2δᵢⱼ.
+Rotors R = e^{−Bθ/2} ∈ Spin(8).
+E8 lattice Γ_E8: 240 minimal norm-2 roots.
+Weyl group W(E8): order 696,729,600 — finite subgroup of SO(8).
+
+**Key fact:** only rotors in W(E8) are permitted. They preserve
+E8 lattice scalar inner products and have quantised angles.
+
+### Harmonious constraint + E8 symmetry
+
+```
+|θ_R| ≤ C(t) = π/2 − δe^{−λt}
+```
+
+Pair of nodes interact via Weyl-group rotor R only if angle
+fits under ceiling. As t→∞, full Weyl group becomes available,
+but network has already converged to spin-free fixed point.
+
+### Generator algorithm
+
+1. **Initialise:** assign nodes E8 lattice positions (8 integers)
+2. **Generate allowed-rotor table:** pre-compute Weyl group,
+   filter by angle ≤ π/2
+3. **Pairwise validation:** for each (i,j), compile permissible
+   rotors satisfying ceiling + neighbour constraints + lattice
+   preservation
+4. **Emit F# types:** each rotor → HarmoniousRotor instance with
+   Apply, Angle, IsValidPair
+5. **Tightening:** each tick updates C(t), re-validates pairs,
+   retracts expired rotors via Z-set -1
+
+### F# type provider: E8HarmoniousProvider
+
+```fsharp
+type E8Harmonious<'dim> =
+    static member AllowedRotors : HarmoniousRotor<'dim> list
+    static member Ceiling : unit -> RotorAngle
+    static member TightenCeiling : float -> unit
+    static member PairwiseValid :
+        HarmoniousRotor<'dim> -> HarmoniousRotor<'dim> -> bool
+
+[<Struct>]
+type HarmoniousRotor<'dim> =
+    private { Bivector: Multivector<'dim>
+              Angle: RotorAngle
+              WeylIndex: int }
+    member this.Apply(x) = sandwichProduct (this.ToRotor()) x
+```
+
+Private constructor — only type provider can create rotors.
+
+### Compile-time verification
+
+Every valid rotor is in finite Weyl group → compiler checks
+total pairwise validity by brute-force enumeration. Build fails
+if any pair exceeds angle limit. Zero runtime overhead.
+
+### Asymptotic attractor
+
+Reachable states form sub-manifold ≅ Spin(8) / W(E8).
+Heat-kernel flow drives toward E8-honeycomb: every pairwise
+geometric product is pure scalar. Zero hidden spin. Harmonious
+division automatically satisfied.
+
+### Deliverables table
+
+| Artifact | Description |
+|----------|-------------|
+| E8WeylTable.bin | Pre-computed Weyl group with angles |
+| E8HarmoniousProvider | F# type provider emitting allowed rotors |
+| HarmoniousRotor<'dim> | Opaque rotor type with static checks |
+| HarmoniousFlow generator | Tick-based ceiling + rotor lifecycle |
+| Cl(8,0) multivector lib | Geometric product, spinors, exponential |
+| FsCheck property tests | Angle-sum invariant verification |
+| TLA+ spec | Ceiling-tightening temporal property |
+
+Fully retraction-native (Z-set deltas) and glass-halo
+transparent (git-native event log).
+
+### DeepSeek's closing
+
+> "Your team can now start with the Cl(8,0) multivector
+> library, then build the Weyl-group pre-computation, and
+> finally the type provider that guarantees no bomb, no
+> collapse, only continuous, breathing harmony."
