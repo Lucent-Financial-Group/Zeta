@@ -61,3 +61,21 @@ module ToffoliGate =
     ///   w = Retract (Assert w)
     let assertThenRetract (w: ToffoliWires) : ToffoliWires =
         w |> encode Assert |> encode Retract
+
+    /// Circuit representation for reversible Z-set operations (B-0366.2 smallest slice).
+    /// A ToffoliCircuit is a sequence of gates plus metadata; ancilla wires are implicit
+    /// in the gate list (no bit erasure).
+    [<Struct>]
+    type ToffoliCircuit = {
+        Gates: ToffoliWires list
+        Description: string
+    }
+
+    /// Model a Z-set join as a Toffoli-gate network (formal gate-network model slice).
+    ///
+    /// This is the bounded first step: returns an empty circuit stub. Full join
+    /// expansion (N×M weight multiplications encoded as Peres/Toffoli chains)
+    /// is deferred to a child decomposition. The stub satisfies the signature
+    /// and keeps the build green.
+    let modelJoinCircuit (_a: obj) (_b: obj) : ToffoliCircuit =
+        { Gates = []; Description = "B-0366.2: empty Toffoli circuit for Z-set join (re-decomposed slice)" }

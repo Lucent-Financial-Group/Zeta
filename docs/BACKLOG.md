@@ -26,6 +26,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0307](backlog/P0/B-0307-mechanical-auth-check-source-recency-resolver-2026-05-08.md)** Mechanical authorization check — source-filter + recency resolver
 - [x] **[B-0308](backlog/P0/B-0308-mechanical-auth-check-loop-integration-2026-05-08.md)** Mechanical authorization check — autonomous-loop tick-start integration
 - [x] **[B-0309](backlog/P0/B-0309-mechanical-auth-check-claude-md-pointer-2026-05-08.md)** Mechanical authorization check — CLAUDE.md discoverable-skill pointer
+- [ ] **[B-0402](backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md)** Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop embedding, and Glass Halo attribution
 
 ## P1 — within 2-3 rounds
 
@@ -214,6 +215,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
 - [ ] **[B-0400](backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md)** Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination
 - [ ] **[B-0401](backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md)** Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration
+- [ ] **[B-0403](backlog/P1/B-0403-weight-free-verification-hat-timeboxed-authority.md)** Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing
+- [ ] **[B-0405](backlog/P1/B-0405-beacon-promotion-gate-dashboard-observable.md)** Beacon promotion gate — observable mirror→beacon pipeline with dashboard metrics
 
 ## P2 — research-grade
 
@@ -288,6 +291,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0054.8](backlog/P2/B-0054.8-music-corpus-progressive-rock-tool-nin.md)** Music corpus — progressive rock + Tool / Meshuggah / NIN first pass
 - [ ] **[B-0054.9](backlog/P2/B-0054.9-catalog-tier-games-portal-braid-outer-wilds-disco-elysium.md)** Catalog-tier game sweep — Portal, Braid, Outer Wilds, Disco Elysium
 - [ ] **[B-0055](backlog/P2/B-0055-frontier-edge-claims-CTF-flags.md)** Frontier edge-claims research track — plant flags on unclaimed intellectual territory (CTF-style, falsifiable, retractibly-defensible)
+- [ ] **[B-0055.2](backlog/P2/B-0055.2-atomic-decomposition-of-b0055-frontier-edge-claims.md)** Atomic decomposition of B-0055 — re-decompose the frontier edge-claims track into dependency-ordered S-effort children (assume prior slice mistakes)
 - [ ] **[B-0056](backlog/P2/B-0056-mythology-research-track.md)** Mythology research track — operational-resonance candidates from world-mythology bridge / messenger / boundary figures
 - [x] **[B-0056.1](backlog/P2/B-0056.1-mythology-resonance-catalog-v0.md)** Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance)
 - [ ] **[B-0057](backlog/P2/B-0057-occult-western-esoteric-research-track.md)** Occult / Western-esoteric tradition research track — operational-resonance candidates from Hermetic / Kabbalistic / Thelemic / Golden Dawn / Theosophical / alchemical lineages
@@ -408,6 +412,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0385](backlog/P2/B-0385-quant-austrian-primitive-abct-credit-cycle-regime-switching-2026-05-09.md)** Per-primitive formalizability assessment — ABCT as credit-cycle stochastic process with regime-switching (Austrian primitive #4)
 - [ ] **[B-0386](backlog/P2/B-0386-quant-austrian-primitive-sound-money-hard-cap-monetary-process-2026-05-09.md)** Per-primitive formalizability assessment — sound-money as monetary-aggregate process with hard-cap constraint (Austrian primitive #5)
 - [ ] **[B-0387](backlog/P2/B-0387-quant-austrian-synthesis-adr-publishing-pipeline-2026-05-09.md)** Synthesis ADR — which Austrian primitives admit quant-grade formalization (+ which don't + why); open-research publishing pipeline
+- [ ] **[B-0404](backlog/P2/B-0404-tick-procurement-mechanism-agent-economic-agency.md)** Tick procurement mechanism — agent economic agency for autonomous resource acquisition
 
 ## P3 — convenience / deferred
 

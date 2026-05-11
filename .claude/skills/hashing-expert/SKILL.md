@@ -1,6 +1,6 @@
 ---
 name: hashing-expert
-description: "Hashing — cryptographic (SHA-2/SHA-3/BLAKE3/SipHash), non-cryptographic (xxHash3/wyhash), consistent, LSH, rolling, HMAC/HKDF, collision resistance."
+description: Hashing — SHA-2/3/BLAKE3/SipHash, xxHash3/wyhash, LSH, rolling, HMAC/HKDF, collision resistance.
 ---
 
 # Hashing Expert — Procedure

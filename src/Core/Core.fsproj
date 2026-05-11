@@ -93,6 +93,7 @@
     <Compile Include="DeltaCrdt.fs" />
     <Compile Include="SignalQuality.fs" />
     <Compile Include="Maji.fs" />
+    <Compile Include="Consent/KskAuthorization.fs" />
   </ItemGroup>
 
   <ItemGroup>
