@@ -19,15 +19,18 @@ classification: buildable-now
 # B-0371 — Cross-reference integration
 
 ## Scope (atomic)
+
 - Add pointer + brief in `AGENTS.md` (onboarding section).
 - Add to `CONTRIBUTING.md` if exists (or note for creation).
 - Optional GOVERNANCE.md §N if rule-like.
 - One-sentence "see CONTRIBUTOR-COMPLIANCE.md for public-company MNPI discipline".
 
 ## Acceptance
+
 - [ ] AGENTS.md updated with link + context.
 - [ ] No duplicate text; points to canonical doc.
 - [ ] Build + format check green.
 
 ## Why atomic after B-0370
+
 Depends on doc existing; pure integration, prefer edit not new prose.

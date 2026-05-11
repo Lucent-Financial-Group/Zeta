@@ -19,14 +19,17 @@ classification: buildable-now
 # B-0373 — T4 + T5 trajectory packets
 
 ## Scope (atomic)
+
 - T4: Onboarding briefing text (add to FIRST-PR.md or AGENTS.md onboarding; cite doc).
 - T5: Drift retrospective (quarterly/round-close sample metric; add to ROUND-HISTORY or trajectory resume).
 - No new code; doc + cadence updates only.
 
 ## Acceptance
+
 - [ ] Onboarding text landed.
 - [ ] T5 metric sketch + first baseline in docs.
 - [ ] Depends on doc + cross-refs.
 
 ## Why last
+
 Requires upstream surfaces; keeps graph ordered.

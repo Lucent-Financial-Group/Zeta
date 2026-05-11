@@ -19,6 +19,7 @@ classification: buildable-now
 # B-0370 — Core CONTRIBUTOR-COMPLIANCE.md authoring
 
 ## Scope (atomic slice)
+
 - Create `docs/CONTRIBUTOR-COMPLIANCE.md` with:
   - Plain-language MNPI rule for public-company contributors.
   - Industry-general vs company-specific framing examples.
@@ -29,12 +30,15 @@ classification: buildable-now
 - No cross-refs or trajectories yet (those are sibling rows).
 
 ## Acceptance
+
 - [ ] File exists at canonical path with all 5 content bullets from B-0092 §1.
 - [ ] Worked example cited.
 - [ ] No legal-advice disclaimer missing.
 
 ## Why S-effort atomic
+
 Single deliverable doc; no integration or cadence work. TS/audit later if needed.
 
 ## Pre-check
+
 Build gate passed (0w 0e) in claim worktree. Refresh + prior-art confirmed no collision.
