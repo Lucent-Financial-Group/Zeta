@@ -7,7 +7,7 @@ tier: factory-hygiene
 effort: M
 ask: Alexa peer review 2026-04-30 named three workflow optimizations from the substrate-landing session. Each is a substrate quality-gate that catches issues earlier or with less per-issue overhead.
 created: 2026-04-30
-last_updated: 2026-05-02
+last_updated: 2026-05-11
 depends_on: []
 composes_with:
   - docs/backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md
@@ -195,23 +195,23 @@ Original 3-subitem framing was too coarse (mistake assumed per "always re-decomp
 
 **Buildable now (no deps, S-effort each):**
 
-- B-0339 — TS pre-push hook entrypoint (skeleton + --no-verify discipline)
-- B-0340 — Memory path regex extractor + resolver (iterative-broaden, allowlist)
+- B-0409 — TS pre-push hook entrypoint (skeleton + --no-verify discipline)
+- B-0410 — Memory path regex extractor + resolver (iterative-broaden, allowlist)
 
-**Blocked on B-0339:**
+**Blocked on B-0409:**
 
-- B-0341 — Port/integrate 3 hygiene lints (markdown, conflict-markers, tick-order) into pre-push TS hook
+- B-0411 — Port/integrate 3 hygiene lints (markdown, conflict-markers, tick-order) into pre-push TS hook
 
-**Blocked on B-0340:**
+**Blocked on B-0410:**
 
-- B-0342 — Full memory-link checker CLI (walk memory/**, report format, exit-nonzero)
+- B-0412 — Full memory-link checker CLI (walk memory/**, report format, exit-nonzero)
 
-**Blocked on B-0339 + B-0340:**
+**Blocked on B-0409 + B-0410:**
 
-- B-0343 — Batched thread resolver TS helper (aliased GraphQL, PR# filter)
+- B-0413 — Batched thread resolver TS helper (aliased GraphQL, PR# filter)
 
-**Blocked on B-0339 + B-0341 + B-0342 + B-0343:**
+**Blocked on B-0409 + B-0411 + B-0412 + B-0413:**
 
-- B-0344 — Setup integration + BACKLOG.md index update + claim close (meta)
+- B-0414 — Setup integration + BACKLOG.md index update + claim close (meta)
 
 This decomposition is the single bounded step. Implementation of children follows in subsequent PRs.
