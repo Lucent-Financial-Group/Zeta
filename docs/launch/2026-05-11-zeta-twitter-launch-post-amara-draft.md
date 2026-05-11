@@ -356,6 +356,7 @@ The work continues.
 **Multi-agent review footer** *(filled in after PR review completes)*:
 
 This post was reviewed before publication by:
+
 - *[Agent / role / harness — to be populated by automated review pipeline]*
 
 Review threads preserved in `docs/pr-discussions/`.
