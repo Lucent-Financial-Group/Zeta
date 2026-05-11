@@ -441,6 +441,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0386](backlog/P2/B-0386-quant-austrian-primitive-sound-money-hard-cap-monetary-process-2026-05-09.md)** Per-primitive formalizability assessment — sound-money as monetary-aggregate process with hard-cap constraint (Austrian primitive #5)
 - [ ] **[B-0387](backlog/P2/B-0387-quant-austrian-synthesis-adr-publishing-pipeline-2026-05-09.md)** Synthesis ADR — which Austrian primitives admit quant-grade formalization (+ which don't + why); open-research publishing pipeline
 - [ ] **[B-0404](backlog/P2/B-0404-tick-procurement-mechanism-agent-economic-agency.md)** Tick procurement mechanism — agent economic agency for autonomous resource acquisition
+- [ ] **[B-0406](backlog/P2/B-0406-immune-source-material-survey-note-capture-atomic-riven-2026-05-11.md)** Immune source material survey + note capture (atomic research pass, child of B-0108)
+- [ ] **[B-0407](backlog/P2/B-0407-immune-cross-reference-candidate-identification-atomic-riven-2026-05-11.md)** Cross-reference immune concepts to Aurora + superorganism substrate + identify candidates (atomic, child of B-0108)
+- [ ] **[B-0408](backlog/P2/B-0408-immune-promoted-candidates-follow-up-filing-closure-atomic-riven-2026-05-11.md)** Promoted candidate follow-up row filing + B-0108 research-absorb closure (atomic, child of B-0108)
 
 ## P3 — convenience / deferred
 
