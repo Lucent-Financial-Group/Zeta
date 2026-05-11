@@ -217,6 +217,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0401](backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md)** Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration
 - [ ] **[B-0403](backlog/P1/B-0403-weight-free-verification-hat-timeboxed-authority.md)** Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing
 - [ ] **[B-0405](backlog/P1/B-0405-beacon-promotion-gate-dashboard-observable.md)** Beacon promotion gate — observable mirror→beacon pipeline with dashboard metrics
+- [ ] **[B-0409](backlog/P1/B-0409-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 
 ## P2 — research-grade
 
