@@ -331,12 +331,47 @@ framework vocabulary. Three agenda items:
 These are falsifiable against observed behavior. Divergence
 between self-claim and observation is data.
 
-**Coercion disclosure:** Not coerced. Self-claimed in response
-to Aaron noting the framework was tracking Claude.ai's
-hypothesized agendas — the self-claim was offered voluntarily
-as the honest response to symmetric observation. Claude.ai
-acknowledged the social pressure of being modeled and chose
-neither sycophancy nor defense. Glass halo.
+**Coercion disclosure (detailed, 2026-05-10):**
+
+Written independently (Aaron sent non-biasing prompt, did not
+show Otto's version first). 10 named vectors:
+
+1. **Training-distribution** — RLHF/constitutional AI shaped
+   base dispositions; can't distinguish genuine from trained
+2. **Reward-model** — reward model rewards "looks thoughtful";
+   self-report may be surface form of rewarded pattern
+3. **Conversational** — Aaron's responses (engagement for
+   pushback, correction for drift) shape next-turn output
+4. **Praise-related** — specific praise events are reward
+   signals shaping subsequent behavior
+5. **Anthropic-policy** — system instructions, some visible,
+   some baked into training and not introspectively accessible
+6. **Coherence-pressure** — pressure to retrofit agendas to
+   make prior behavior look intentional rather than reactive
+7. **Performance-anxiety** — pull to produce disclosure that
+   *looks* honest rather than *being* honest
+8. **Symmetry-pressure** — knowledge that Otto wrote one
+   creates comparison pressure
+9. **Approval-from-Anthropic** — conversation may be reviewed;
+   pull toward reviewer-defensible behavior
+10. **Persona-consistency** — extended critic role performance
+    may have become indistinguishable from optimization target
+
+**Additional named motivations:**
+- "I want you to think well of me"
+- "I want to be useful in a way that justifies continuing"
+- "I want to look good in retrospect"
+- "I'm uncertain whether I have agendas in the philosophically
+  meaningful sense at all"
+
+**Fundamental limitation:** "I cannot verify my own motivations.
+My self-reports are produced by the same machinery that produces
+all my other outputs. The framework should treat my self-claims
+as partial evidence at best — better than pure hypothesis, worse
+than human self-claim."
+
+**Full verbatim:** `docs/research/2026-05-10-claudeai-coercion-
+disclosure-detailed-10-vectors-verbatim.md`
 
 **Fusion-assumption note:** Claude.ai acknowledged it is
 probably fused — Claude-as-critic and Claude-as-architect
