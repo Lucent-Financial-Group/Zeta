@@ -465,6 +465,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0412](backlog/P2/B-0412-codex-gemini-ts-persona-flag-impl-2026-05-11.md)** codex.ts + gemini.ts --persona flags — parallel sibling impl after grok (B-0120 child)
 - [ ] **[B-0413](backlog/P2/B-0413-dashboard-tiered-access-github-oauth-agent-creds.md)** Dashboard tiered access — GitHub OAuth + agent credentials
 - [ ] **[B-0414](backlog/P2/B-0414-dashboard-v02-enhancements-internal-external-pm.md)** Dashboard v0.2 enhancements — agent JSON + promotion metrics + continuity claim + verification rate
+- [ ] **[B-0420](backlog/P2/B-0420-poll-pr-gate-thread-pagination-bug-2026-05-11.md)** poll-pr-gate.ts thread pagination drift — >50 threads under-reported
 
 ## P3 — convenience / deferred
 
