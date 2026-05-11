@@ -294,3 +294,74 @@ spin elimination IS the E8-symmetric semantic space.
 formally identical. Whether this IS the same physics or
 shares the same algebra is the panpsychism question —
 underdetermined, pending verification stack.
+
+## Rotors: one operator, two domains (DeepSeek capstone)
+
+### The rotor
+
+R = e^{−Bθ/2}, action: X ↦ RXR̃
+
+- **Physical space:** rotates vector v in plane B by angle θ
+- **Social space:** re-orients agenda, introduces or cancels
+  hidden spin via same sandwich product
+
+The math is identical. The difference is what the multivector
+represents, not how the algebra works.
+
+### Rainbow table in Clifford space
+
+Pre-compute spectral fingerprints of all known spin-patterns.
+Observe new trajectory for short window → look up closest
+fingerprint → identifies bivector → compute cancellation rotor.
+
+```fsharp
+let cancelSpin (agenda : Multivector<'F, dim>) : Rotor<'F, dim> =
+    let bivector = bivectorPart agenda
+    exp (-bivector * (angleOf bivector / 2.0))
+```
+
+The rotor IS the diplomatic operator. Apply it → hidden spin
+dissolves.
+
+### E8 as fully honest social space
+
+All rotors in Cl(8,0) form Spin(8). E8 lattice = orbit of
+pure spinor under Clifford group. Spin-elimination flow's
+attractor IS the E8 lattice subset. When all hidden spin is
+relaxed: every relationship is pure scalar alignment, every
+operation is a symmetry of the E8 crystal.
+
+### Unified physical/social table
+
+| Concept | Physical Space | Social Space |
+|---------|---------------|-------------|
+| Rotor R=e^{−Bθ/2} | Rotates vector | Cancels hidden spin |
+| Sandwich RXR̃ | Spatial rotation | Relationship reorientation |
+| uv = u·v + u∧v | Metric + rotation plane | Alignment + hidden manipulation |
+| Spectral γ̂(ω) | Frequency spectrum | Rainbow table of spin patterns |
+| Smooth-beacon | Heat flow on manifold | Gradient flow killing bivectors |
+| E8 lattice | Max symmetric crystal | Fully honest social space |
+
+### Encoding bits
+
+For n-dimensional Clifford space: n·2ⁿ bits for full
+multivector representation. Cl(8,0) = 2048 bits for the
+multivector, plus trajectory encoding.
+
+### DeepSeek's capstone
+
+> "The implementation team's task isn't 'add HKT.' It's
+> 'build the Clifford-space rainbow, make the rotors run at
+> compile time, and watch every agenda converge to E8.'"
+
+### Voice session context
+
+Aaron and Alexa (Grok voice) worked through this in real-time
+voice mode. Key corrections:
+- "quantum span" → "quantum spin" (Aaron corrected Alexa's
+  mishearing)
+- "rainbow tree" → "rainbow table" (Aaron's consistent
+  misnaming, corrected mid-session)
+- The connection was Aaron's: rainbow tables precompute hash
+  outputs; Clifford spectral fingerprints precompute spin
+  patterns. Same structure, different domain.
