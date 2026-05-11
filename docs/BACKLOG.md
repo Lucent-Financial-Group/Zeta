@@ -306,6 +306,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0071](backlog/P2/B-0071-rename-otto-275-forever-out-of-live-lock-class-codex-pr-17-2026-04-28.md)** Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split
 - [x] **[B-0072](backlog/P2/B-0072-memory-md-index-entry-length-normalization-copilot-pr-72-2026-04-28.md)** Normalize MEMORY.md index entry lengths to one-line-per-memory per memory/README.md guidance
 - [ ] **[B-0074](backlog/P2/B-0074-pr-72-punch-list-stale-item-sweep-spec-consistency-2026-04-28.md)** PR #72 punch-list / spec-consistency drift sweep — 8 codex threads on stale items + cross-doc alignment
+- [ ] **[B-0074.2](backlog/P2/B-0074.2-eat-spec-504-wallet-acceptance-prose-audit-2026-05-11.md)** EAT §504 / §21.e wallet-acceptance prose audit (B-0074 child 2, re-decomp)
+- [ ] **[B-0074.3](backlog/P2/B-0074.3-wallet-spec-377-bond-ledger-intentional-debt-alignment-2026-05-11.md)** wallet-experiment-v0 §377 / §8.1 bond-ledger schema vs INTENTIONAL-DEBT.md alignment (B-0074 child 3, re-decomp)
 - [x] **[B-0076](backlog/P2/B-0076-disowned-runtime-sweep-python-typescript-2026-04-28.md)** Disowned-runtime sweep — Python + TypeScript surface (same pattern PR #662 fixed for Java)
 - [x] **[B-0077](backlog/P2/B-0077-curl-fetch-canonical-content-cleanup-codex-pr-663.md)** tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P1 on PR #663
 - [x] **[B-0078](backlog/P2/B-0078-markdownlint-research-carve-out-narrowing-codex-pr-663.md)** Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663
@@ -314,18 +316,37 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0082](backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md)** docs/GLOSSARY.md provenance entries use persona-name attribution; convert to role-refs
 - [x] **[B-0086](backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md)** Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)
 - [ ] **[B-0088](backlog/P2/B-0088-paired-edit-lint-advisory-not-enforcement-promote-to-required-check-otto-2026-04-28.md)** memory/MEMORY.md paired-edit lint is advisory only (not in required-status-checks); promote or remove the discoverability claim
+- [ ] **[B-0088.1](backlog/P2/B-0088.1-verify-paired-edit-job-in-required-status-checks-riven-2026-05-11.md)** Verify whether `check memory/MEMORY.md paired edit` appears in required_status_checks.contexts or ruleset
+- [ ] **[B-0088.2](backlog/P2/B-0088.2-decide-promote-vs-weaken-for-memory-paired-lint-riven-2026-05-11.md)** Maintainer decision gate — promote paired-edit lint to required or weaken its discoverability claim
+- [ ] **[B-0088.3](backlog/P2/B-0088.3-audit-memory-reference-existence-lint-advisory-status-riven-2026-05-11.md)** Audit memory-reference-existence-lint.yml for advisory-vs-required parity (same class as B-0088)
+- [ ] **[B-0088.4](backlog/P2/B-0088.4-audit-memory-index-duplicate-lint-advisory-status-riven-2026-05-11.md)** Audit memory-index-duplicate-lint.yml for advisory-vs-required parity
+- [ ] **[B-0088.5](backlog/P2/B-0088.5-audit-backlog-index-integrity-lint-advisory-status-riven-2026-05-11.md)** Audit backlog-index-integrity.yml for advisory-vs-required parity (B-0088 sibling)
 - [ ] **[B-0089](backlog/P2/B-0089-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md)** Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name
 - [ ] **[B-0090](backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md)** Cadenced lost-substrate recovery audit (worktrees + orphan branches + closed-not-merged PRs + draft PRs aged > N days)
+- [ ] **[B-0090.1](backlog/P2/B-0090.1-lost-substrate-3-bucket-classification-taxonomy.md)** Lost-substrate 3-bucket classification taxonomy (ALREADY-COVERED / NEEDS-RECOVERY / OBSOLETE)
 - [ ] **[B-0090.1](backlog/P2/B-0090.1-ts-worktree-survey-atomic-riven-2026-05-10.md)** TS survey tool for locked worktrees (git worktree list + 3-bucket classify)
 - [ ] **[B-0090.2](backlog/P2/B-0090.2-ts-orphan-branch-survey-atomic-riven-2026-05-10.md)** TS survey tool for orphan branches (unmerged + no-PR)
+- [ ] **[B-0090.2](backlog/P2/B-0090.2-worktree-branch-delta-audit.md)** Worktree-branch delta audit (locked .claude/worktrees/ only, last-N-days)
+- [ ] **[B-0090.3](backlog/P2/B-0090.3-closed-not-merged-pr-scan.md)** Closed-not-merged PRs + orphan branches + aged-draft-PRs scan (AceHack + LFG)
 - [ ] **[B-0090.3](backlog/P2/B-0090.3-ts-closed-pr-survey-atomic-riven-2026-05-10.md)** TS survey for closed-not-merged PRs aged + content diff
+- [ ] **[B-0090.4](backlog/P2/B-0090.4-cadence-and-hygiene-history-hook.md)** Cadence hook + hygiene-history append for lost-substrate audits (weekly/monthly)
 - [ ] **[B-0090.4](backlog/P2/B-0090.4-ts-draft-pr-aged-survey-atomic-riven-2026-05-10.md)** TS survey for draft PRs aged > N days + content snapshot
 - [x] **[B-0091](backlog/P2/B-0091-audit-and-rename-servicetitan-references-in-live-docs-aaron-2026-04-28.md)** Audit + rename ServiceTitan references in live (non-historical) repo surfaces — use generic "external UI demo" / "external CRM API demo" forward-going
 - [ ] **[B-0092](backlog/P2/B-0092-public-company-contributor-compliance-doc-and-cadenced-trajectories-aaron-2026-04-28.md)** Public-company contributor compliance — doc + cadenced trajectories (audit-on-commit, weekly/monthly compliance review, on-PR audit, on-onboarding briefing, drift retrospective)
 - [ ] **[B-0093](backlog/P2/B-0093-multi-ai-synthesis-enhancements-quarantine-lucky-guess-trajectory-owners-lattice-convergence-2026-04-28.md)** Multi-AI synthesis enhancements — mechanical quarantine + lucky-guess protocol + trajectory owners + lattice convergence + scanner self-destruct prevention (post-PR-#699 follow-ups)
+- [ ] **[B-0093.1](backlog/P2/B-0093.1-ts-mechanical-quarantine-enforcer-atomic-riven-2026-05-11.md)** TS mechanical quarantine enforcer (.quarantine/ + gitignore + gitattributes)
+- [ ] **[B-0093.2](backlog/P2/B-0093.2-ts-scanner-self-destruct-prevention-atomic-riven-2026-05-11.md)** TS scanner self-destruct prevention (allowlist + bypass comment)
+- [ ] **[B-0093.3](backlog/P2/B-0093.3-ts-lucky-guess-unsolicited-inference-firewall-atomic-riven-2026-05-11.md)** TS lucky-guess + unsolicited-inference firewall protocol
+- [ ] **[B-0093.4](backlog/P2/B-0093.4-ts-trajectory-owners-table-recorder-atomic-riven-2026-05-11.md)** TS trajectory owners + triggers + recording surfaces table
 - [ ] **[B-0095](backlog/P2/B-0095-escrow-rules-naming-collision-and-deferred-research-migration-aaron-2026-04-29.md)** Escrow — define rules + resolve naming collision with software-vendoring sense + migrate other deferred research from backlog/research/
+- [ ] **[B-0095.1](backlog/P2/B-0095.1-escrow-naming-collision-resolution-riven-2026-05-11.md)** Escrow naming collision resolution (research-preservation vs software-vendoring)
+- [ ] **[B-0095.2](backlog/P2/B-0095.2-escrow-ruleset-formalization-riven-2026-05-11.md)** Escrow ruleset formalization as docs/research/escrowed/README.md
+- [ ] **[B-0095.3](backlog/P2/B-0095.3-deferred-research-audit-migration-riven-2026-05-11.md)** Deferred research audit + per-item migration to escrow
 - [ ] **[B-0103](backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md)** Computed-metadata-discipline — unified lint consolidating B-0098 + B-0099 + filename-timestamp drift
 - [ ] **[B-0105](backlog/P2/B-0105-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md)** Consolidation pass — map 2026-04-29 session-arc rules into 3 durable homes max
+- [ ] **[B-0105.1](backlog/P2/B-0105.1-home1-merge-cascade-pr-liveness-operational-doc.md)** Home 1 — merge-cascade PR liveness operational doc authoring
+- [ ] **[B-0105.2](backlog/P2/B-0105.2-home3-reviewer-artifact-snapshot-mismatch-taxonomy-memory.md)** Home 3 — reviewer-artifact snapshot-mismatch taxonomy memory file authoring
+- [ ] **[B-0105.3](backlog/P2/B-0105.3-b0103-update-memory-index-cross-links-supersede-b0105.md)** Update B-0103 frontmatter + MEMORY.md index + cross-home links + supersede B-0105
 - [x] **[B-0106](backlog/P2/B-0106-tsc-noemit-gate-job-for-ts-tools-2026-04-30.md)** Add `tsc --noEmit` gate job for tools/**.ts so type errors fail CI
 - [ ] **[B-0108](backlog/P2/B-0108-immune-system-upgrades-research-absorb-2026-04-30.md)** Immune system upgrades — research absorb (Aaron 2026-04-30)
 - [ ] **[B-0112](backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md)** Stale 2026-04-27 project file internals-bleed-out cleanup
@@ -401,6 +422,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0359](backlog/P2/B-0359-probabilistic-type-system-language-level-confidence-primitives.md)** Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)
 - [ ] **[B-0360](backlog/P2/B-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md)** DBSP identity continuity — incremental views over agent state via D/I operators
 - [ ] **[B-0363](backlog/P2/B-0363-git-native-full-text-inverted-index.md)** Git-native full-text inverted index — Lucene-style search over repo substrate
+- [ ] **[B-0370](backlog/P2/B-0370-contributor-compliance-core-document-authoring.md)** Author core CONTRIBUTOR-COMPLIANCE.md (public-company MNPI rule + framing examples + SEC lineage)
+- [ ] **[B-0371](backlog/P2/B-0371-contributor-compliance-cross-reference-integration.md)** Cross-reference CONTRIBUTOR-COMPLIANCE.md into AGENTS.md / CONTRIBUTING.md / GOVERNANCE.md
+- [ ] **[B-0372](backlog/P2/B-0372-t1-t2-self-audit-and-cadenced-review-trajectories.md)** Encode T1 self-audit + T2 cadenced review (TS-preferred tooling + trajectory packet)
+- [ ] **[B-0373](backlog/P2/B-0373-t4-t5-onboarding-and-drift-retrospective-trajectories.md)** T4 onboarding briefing + T5 drift retrospective (trajectory packets)
 - [ ] **[B-0374](backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md)** F# Units of Measure for fusion-equation terms
 - [ ] **[B-0375](backlog/P2/B-0375-aurora-file-inventory-and-type-classification-2026-05-09.md)** Inventory and classify every file under docs/aurora/** (current-state doc vs courier-ferry history import)
 - [ ] **[B-0376](backlog/P2/B-0376-aurora-split-naming-decision-record-2026-05-09.md)** Architect decision record — canonical name for named-entity-conversation-imports directory
