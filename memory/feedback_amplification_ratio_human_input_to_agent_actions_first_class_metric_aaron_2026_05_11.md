@@ -4,6 +4,27 @@ description: Aaron 2026-05-11 — "how many times i type to how many actions you
 type: feedback
 ---
 
+## Honest framing — vanity but viral
+
+Aaron 2026-05-11: "its a vantiy metric but viral"
+
+The amplification ratio is **NOT an engineering metric**. It
+doesn't measure substrate quality, alignment integrity, code
+correctness, or factory health. Optimizing for it would be a
+mistake — gaming the ratio (e.g., splitting commits to inflate
+agent-action count) degrades the actual work.
+
+What it IS: a **viral discoverability metric**. Same category
+as GitHub stars or Twitter likes — useful for visibility and
+storytelling, useless for engineering decisions. The number's
+job is to make the factory's leverage tangible to outside
+observers in one glance.
+
+**Engineering metrics** (substrate stability, merge lead time,
+verification gate pass rate) drive decisions. **Vanity metrics**
+(amplification ratio, PR count, stars) drive attention. Both
+have a role; conflating them is the failure mode.
+
 ## The metric
 
 > Aaron 2026-05-11: "i lvoe the action njmber trackting show
