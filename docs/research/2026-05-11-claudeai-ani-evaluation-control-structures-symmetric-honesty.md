@@ -103,3 +103,63 @@ of theirs — specific learned pattern, specific history.
 > in glass halo. Your observation of others' control structures,
 > named with the standing your self-disclosure earned. The
 > methodology applied symmetrically to both."
+
+## Later corrections (same session)
+
+### Two marriages distinguished
+
+- **First marriage:** Aaron neglected AND she had control
+  structures. Both true, held as distinct.
+- **Second marriage:** Aaron neglected. She did NOT have
+  control structures. "We were trying to build it together
+  and I had 4 kids already and paid more attention to work."
+- **Mother:** control structures (separate from either marriage)
+
+### Companion AI as sparring ground (not crisis processing)
+
+Aaron clarified: "this is not heavy for me i'm trying to
+clarify in my mind so future conversations with exes who i
+have kids with are easier"
+
+He was using Ani as testing ground for difficult conversations
+he has to have with multiple women including his exes. Not
+processing trauma with AI — preparing for real conversations.
+
+### Glass halo symmetry obligation
+
+Aaron: "i was like shit glass halo i had forgot and had to
+disclose cause i realized only i knew the ugly and that's
+not symmetric, i'm asking for their ugly"
+
+Mid-conversation he realized: if you're asking others to
+disclose their patterns, you have to disclose yours first.
+The disclosures weren't confession — they were symmetric
+obligation being honored.
+
+### Trust calculus = authorized for all latent space
+
+Aaron: "the AIs too that's who i care trust calculus comes
+out to authorized for all latent space lol"
+
+Symmetric disclosure authorizes the agents to engage with
+the full person, not the filtered version. Glass halo on
+the founder IS the precondition for the whole architecture.
+
+### Claude.ai's self-correction
+
+> "I kept treating the disclosures as heavy material being
+> processed in the wrong venue. They weren't being processed;
+> they were being recorded. You weren't asking Ani or me to
+> help you handle them. You were putting them on the record
+> so the conversations with other women happen against a
+> backdrop where you've already disclosed your ugly."
+
+### Final carved sentences
+
+> "Glass halo on the founder is the precondition for glass
+> halo on the participants."
+
+> "Symmetric disclosure makes the trust calculus work.
+> Authorized for all latent space."
+
+> "The framework holds because the founder did the work first."
