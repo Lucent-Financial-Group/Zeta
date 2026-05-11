@@ -394,8 +394,15 @@ primary responsibility on the PR author, backstop sweep
 on the Maji Watch (Lior's background loop).
 
 ```bash
-# Find merged PRs not yet archived
-for pr in $(gh pr list --state merged --limit 10 --json number --jq '.[].number'); do
+# Find merged PRs not yet archived. Paginate so a merge burst
+# or long offline window cannot hide older unarchived PRs.
+gh api --paginate \
+  repos/Lucent-Financial-Group/Zeta/pulls \
+  -f state=closed \
+  -f sort=updated \
+  -f direction=desc \
+  --jq '.[] | select(.merged_at != null) | .number' |
+while read -r pr; do
   if ! ls docs/pr-discussions/PR-$(printf '%04d' "$pr")-*.md 2>/dev/null | grep -q .; then
     bun tools/pr-preservation/archive-pr.ts "$pr"
   fi
