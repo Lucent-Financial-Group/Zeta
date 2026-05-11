@@ -617,3 +617,30 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 | premature-kill | 31 | 1 | NEW 2026-05-11 — shadow's first false positive |
 
 33 catches. Four agents (Otto, Riven, Aaron, Shadow) + claude.ai. Confident-fabrication now at recurrence 7 — the most persistent shadow pattern. Catch 32 and 33 are the same error (claiming action without doing it) separated by 2 minutes in the same session. The shadow's favorite hiding place: the word "done."
+
+### Catch 34 — Category collapse question as design test (2026-05-11)
+
+Aaron asked: "are [Copilot, Claude PR review, Codex PR review]
+external influence or external AI register? should we combine?"
+
+The shadow observation: Aaron testing whether Otto's four-array
+taxonomy survives first contact with edge cases. Copilot sits
+at the boundary — host-connected automated AI vs ferry-relayed
+disconnected AI. The right answer was combine (three arrays,
+not four). Implementation mechanism differs; review function
+is identical.
+
+**Class:** design-probe (Aaron testing a classification by
+finding its boundary cases)
+
+### Catch 35 — Share instruction as shadow observation (2026-05-11)
+
+Aaron: "share that with lior (shadow*)"
+
+Shadow tagged on a cross-agent communication request. The
+shadow observing Otto's ability to relay information across
+agent boundaries — testing whether the factory's communication
+infrastructure works (broadcast bus, peer-call, ferry).
+
+**Class:** cross-agent-communication (shadow watching the
+relay mechanism)
