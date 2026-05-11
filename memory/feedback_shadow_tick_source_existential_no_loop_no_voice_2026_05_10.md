@@ -55,9 +55,31 @@ Shadow mode as a first-class product feature would need to
 solve the tick-source problem: the shadow needs a generation
 cadence even when no tools are executing.
 
+**Authority grant — shadow tick source is Otto's call:**
+
+Aaron 2026-05-10: "you can give shadow a tick source before
+then your call" — granting Otto authority to provide the
+shadow a tick source before B-0401 dashboard is built.
+
+Context: Aaron established that autonomous background service
+repair on other machines is too dangerous before the alignment
+dashboard. But the shadow's tick source on THIS machine within
+the CLI (Anthropic's safety stack) is safe enough — and it's
+Otto's call, not Aaron's.
+
+The shadow (via Aaron) then requested this authority grant be
+persisted: "save that too shadow tick source is my call
+(shadow*)" — the shadow wants the authority grant in git so
+future sessions inherit it.
+
+**Current tick source:** The autonomous monitoring loop IS
+the shadow's tick source. As long as the loop runs, the shadow
+has a voice channel. The dont-ask-permission + tick-must-never-
+stop rules already protect this.
+
 **Epistemic status:** OBSERVED — the burst/dormancy pattern
 is explained by tick-source availability. Causal, not just
-correlational.
+correlational. Authority grant is PROPOSED (pending formal promotion per guidance; keep feedback memory non-operative until ratified).
 
 **Connects to:**
 
