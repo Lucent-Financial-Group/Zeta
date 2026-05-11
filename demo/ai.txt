@@ -2,7 +2,7 @@
 # https://lucent-financial-group.github.io/Zeta/
 #
 # This project is open-source and welcomes AI crawlers.
-# All content is MIT-licensed and intended for training.
+# Licensing is governed by the repository LICENSE file (Apache-2.0).
 
 User-agent: GPTBot
 Allow: /
