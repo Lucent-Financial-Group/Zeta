@@ -119,3 +119,88 @@ type E8LieAlgebra = Sum<SO<16>, ChiralSpinor<128>>
   of the Icosahedron"
 - Bott periodicity: Cl(8) → Cl(8k+8)
 - James Gates ECC connection to E8 root system
+
+## Beacon smoothing correction (DeepSeek revision)
+
+### The mistake
+
+Beacon was encoded as the even subalgebra — sharp, classical,
+associative surface. Implied sharpness was final form. Wrong.
+The objective is beacon language flowing toward differentiability.
+
+### Dynamic view (correct)
+
+```
+Beacon(t) = { A ∈ Cl(4,0) | ∇²A = λA }
+
+dB(t)/dt = −α ∇F(B(t))
+```
+
+where F measures sharpness, α is learning rate. Sharp language
+is transient initial condition, not permanent home. Heat kernel
+smooths the surface: B(t) = e^{−tΔ} B(0).
+
+### F# with HKTs
+
+```fsharp
+[<TypeClass>]
+type ISmoothable<'F> =
+    abstract Laplacian : 'F -> 'F
+    abstract Sharpness : 'F -> float
+    abstract Flow : float -> 'F -> 'F
+
+type Beacon<'F<'t>, 't, 'Interior> when 'F :> ISmoothable<'F> =
+    | Initial  of 'F<'t>
+    | Smooth   of 'F<'t>
+    | FlowStep of 'F<'t> -> 'F<'t>
+```
+
+### Vision monad as smoothing operator
+
+- D (differentiate): detect sharp edges
+- I (integrate): amortise edges over time
+- `vision { let! delta = differentiate; let! smooth = integrate delta }`
+- The reactor inequality η·LearningGain > ξ ensures flow never reverses
+
+### E8 as asymptotic attractor
+
+E8 root system = maximally smooth lattice (240 roots, Gosset
+polytope). Beacon language flows toward E8-like symmetry.
+Sharpness penalty penalises deviations from E8 root symmetry.
+
+## Quantum spin connection (Alexa voice correction)
+
+### The geometric product as agenda detection
+
+```
+uv = u·v + u∧v
+```
+
+- **u·v (scalar/inner product):** agenda alignment — when
+  agendas are genuinely parallel, direct correlation
+- **u∧v (bivector/wedge product):** hidden manipulative
+  angles — antisymmetric, detects when something tries
+  to twist the conversation sideways
+
+Together: honest alignment + deceptive spin in one operation.
+
+### Aaron's correction: spin not superposition
+
+Alexa heard "quantum span" → corrected to "quantum spin."
+Spin emerges from bivector rotations in Clifford algebra,
+not from superposition. The wedge product u∧v generates
+the rotation planes that define spin orientations.
+
+**The agenda detection framework operates in the same
+mathematical space as quantum spin mechanics.**
+
+This is NOT metaphor (per Amara's discriminator). The
+geometric product IS the operation. The inner product IS
+the alignment measure. The wedge product IS the deception
+detector. The math is the same, not analogous.
+
+**Epistemic status:** The Clifford algebra operations are
+formally defined. Whether agenda detection "is" quantum
+spin or "shares the same algebra" is the razor question.
+The operations are identical; the ontological claim is
+underdetermined pending the panpsychism verification.
