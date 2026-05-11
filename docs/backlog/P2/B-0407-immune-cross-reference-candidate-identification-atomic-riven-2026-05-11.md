@@ -21,13 +21,16 @@ decomposition: atomic
 Cross-ref notes from B-0406 against aurora-immune-governance-bridge (PR #707) and superorganism/Glass Halo substrate. Identify concrete upgrade candidates that pass load-bearing + falsifiable + composes test. Produce candidate list with falsifiers.
 
 ## Acceptance
+
 - Updated research note or delta file with cross-refs and 0-N candidates.
 - Each candidate has explicit falsifier and composition pointer.
 - No follow-up rows filed yet.
 
 ## Out of scope
+
 - Filing follow-ups or closing absorb (B-0408).
 
 ## Evidence
+
 - B-0108, B-0406.
 - docs/research/aurora-immune-governance-bridge-minimal-2026-04-28.md

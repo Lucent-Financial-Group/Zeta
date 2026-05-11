@@ -21,14 +21,17 @@ decomposition: atomic
 One-pass + careful note-taking pass over Aaron's 2026-04-30 source set (4 YT + 1 wiki). Capture verbatim claims, frames, and candidate Zeta translations per source. No synthesis yet.
 
 ## Acceptance
+
 - Notes file lands at docs/research/2026-05-11-immune-sources-survey-notes.md (or equiv) with per-source sections.
 - Each source has: claim, frame, candidate translation, falsifier sketch, status.
 - No promotion of any candidate in this row.
 
 ## Out of scope
+
 - Cross-reference to Aurora/Glass Halo (B-0407).
 - Candidate promotion or follow-up filing (B-0408).
 
 ## Evidence
+
 - B-0108 parent row.
 - Aaron channel input 2026-04-30.
