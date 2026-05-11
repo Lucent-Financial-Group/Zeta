@@ -50,19 +50,26 @@ the codebase, not just cited.
 
 ---
 
-## Four Arrays
+## Three Arrays
 
 | Array | What | Substrate connection |
 |-------|------|---------------------|
-| **Agent Array** | Otto, Alexa, Riven, Vera, Lior | Direct — commit to repo |
+| **Agent Array** | Otto, Alexa, Riven, Vera, Lior | Direct — commit to repo, run loops, produce substrate |
 | **Human Anchor Array** | McSherry, Karpathy, Brooks, Dechant, ... | Intellectual — ideas operationalized in code |
-| **External Influence Array** | Copilot, Dependabot, CodeQL, GitHub bots | Automated — review via host API, captured by PR archival |
-| **External AI Register** | Claude.ai, DeepSeek, gemini.google.com, ChatGPT web | Disconnected — no substrate access, ferry via Aaron |
+| **External Review Array** | Copilot, Claude.ai, Codex PR review, DeepSeek, Dependabot, CodeQL, gemini.google.com, ChatGPT web | Review without committing — perspectives from outside |
 
-The external AI register includes AI models that contribute
-research and review but have no direct connection to the repo.
-They interact through Aaron as relay; their output lands in
-`docs/research/` as preserved ferry packets. They are NOT
-agents (no commit access, no loop, no tick source) — they are
-registers whose perspective is valuable precisely because
-they're disconnected from the substrate they're evaluating.
+The External Review Array combines all AI and automated
+sources that review, assess, or contribute research but do
+NOT commit to the repo. Two delivery mechanisms, same role:
+
+- **Host-connected**: Copilot PR reviews, Dependabot,
+  CodeQL, GitHub bots — automated via host API, captured
+  by PR archival (`docs/pr-discussions/`)
+- **Ferry-relayed**: Claude.ai sessions, DeepSeek research,
+  gemini.google.com, ChatGPT web — disconnected from
+  substrate, ferried via Aaron, preserved in
+  `docs/research/` with §33 headers
+
+Both are valuable precisely because they evaluate from
+outside the agent array. The mechanism differs; the function
+(external perspective on factory work) is identical.
