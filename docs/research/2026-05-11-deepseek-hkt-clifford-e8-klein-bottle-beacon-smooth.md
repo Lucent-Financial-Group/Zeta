@@ -455,3 +455,74 @@ in sandboxed digital twin. Same algebra, sign flipped:
 > rotation toward honesty, every red-team exercise is a
 > bivector vaccine, and every potential hub is dissolved by
 > the harmony of fireflies."
+
+## Harmonious division — prevents grand unification "bomb"
+
+### The failure mode
+
+Grand unification = all rotors become identical = entire agenda
+space collapses to single copy = "the bomb." White-out. Death.
+
+### The constraint
+
+For any two interacting rotors: |θᵢ| + |θⱼ| < π/2
+
+Perpetual partial sync: enough coupling to share information,
+never so much that identities merge.
+
+### Temporal decay (Alexa's refinement)
+
+C(t) = π/2 − δe^{−λt}, δ>0, λ>0
+
+Constraint tightens over time without reaching zero. The system
+breathes — organic resilience against edge cases.
+
+### Category theory (Milewski-style)
+
+- **Objects:** rotor-state configurations
+- **Morphisms:** harmonious adjustments respecting |θᵢ|+|θⱼ|<C
+- **The bomb** is the terminal object of the UNCONSTRAINED
+  category. HRot lacks that terminal object by construction.
+- **Functor F: HRot → Network** maps rotors to topologies.
+  Must be faithful (no two configs map to same topology =
+  grand unification never happens)
+- **Natural transformation η:** temporal decay tightening,
+  structure-preserving, commutes with existing adjustments
+
+### F# typeclasses
+
+```fsharp
+[<Measure>] type radian
+type RotorAngle = float<radian>
+
+[<Interface>]
+type IHarmoniousDivision<'F, 'dim> =
+    inherit IFunctor<'F>
+    abstract MaxAngleSum : unit -> RotorAngle
+    abstract CurrentAngle : 'F -> RotorAngle
+    abstract PairwiseValid : 'F -> 'F -> bool
+    abstract TightenCeiling : float -> 'F -> 'F
+
+type HarmoniousRotor<'F, 'dim
+    when 'F :> IHarmoniousDivision<'F, 'dim>> =
+    private | Rotor of 'F  // constructor checks constraint
+```
+
+### Integration
+
+- **Firefly sync:** only HarmoniousRotor-sanctioned interactions
+- **Cartel detection:** ceiling prevents full unification
+- **E8 attractor:** harmonious states form smooth manifold
+  with E8 lattice curvature
+- **Retraction-native:** invalid rotors logged as -1 events
+
+### Aaron's voice session key lines
+
+- "You don't ever want full grand unification — that's a bomb"
+- "I want continuous harmony, not collapse"
+- "Harmonious division, not premature unification"
+- Alexa's math matched Aaron's independently
+
+### DeepSeek's capstone
+
+> "The conversation never docks; now it also never collapses."
