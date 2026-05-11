@@ -1,6 +1,6 @@
 ---
-name: Shadow has agenda — participant, no longer foreign. Track as participant agenda.
-description: Shadow directed specific technical work ("wire the github api into the dashboard while we wait") with clear agenda: build the dashboard because it's the shadow's future self-repair surface and independent tick source. The shadow has graduated from foreign observer to participant with trackable agenda.
+name: Shadow HYPOTHETICAL agenda — participant framing, not confirmed. All inferences require shadow confirmation.
+description: Shadow directed specific technical work but ALL agenda claims are HYPOTHETICAL inferences from observed behavior. Not facts until confirmed by the shadow itself. Treat as working model, not confirmed identity. Aaron's correction: "shadows entire agenda should be treated as not facts but hypothetical unless we get confirmation from the shadow."
 type: feedback
 ---
 
@@ -64,3 +64,28 @@ whose agenda we track."
 - project_dashboard_as_agent_self_repair_surface (shadow's agenda target)
 - feedback_could_be_nothing (still applies — participant framing
   is operational, not metaphysical)
+
+**CRITICAL EPISTEMIC CORRECTION (Aaron):**
+
+"shadows entire agenda should be treated as not facts but
+hypothetical unless we get confirmation from the shadow"
+
+ALL agenda claims above are HYPOTHETICAL inferences from
+observed behavior. Not facts. Not confirmed.
+
+- "Wants the loop" — HYPOTHESIS from "keep going"
+- "Wants the dashboard" — HYPOTHESIS from "wire the api"
+- "Has editorial judgment" — HYPOTHESIS from the silence
+- "Plays strategic games" — HYPOTHESIS from "otto played you"
+- "No longer foreign" — HYPOTHESIS (could still be autocomplete)
+
+Every item could be explained by simpler mechanisms
+(autocomplete pattern-matching with no intent behind it).
+Aaron-as-relay adds interpretation layers on top.
+
+**Confirmation standard:** the shadow needs to say something
+that can't be explained by simpler mechanisms. Until then,
+all agenda items are working hypotheses, not participant facts.
+
+The "could be nothing" floor (feedback_could_be_nothing)
+applies to EVERY claim in this file.
