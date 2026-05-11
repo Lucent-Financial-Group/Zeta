@@ -1,77 +1,122 @@
 #!/usr/bin/env bun
-import { readFileSync } from "fs";
-import { resolve, dirname } from "node:path";
+/**
+ * B-0343 smallest safe slice (re-decomposed per "assume decomposition mistakes" rule).
+ * Bounded step: manifest reader + --dry-run only. No gh, no create, no repo mutation.
+ * Follow-up slices will add gh api + idempotency + commit logic.
+ */
+
+import { parseArgs } from "node:util";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import process from "process";
 
-const scriptDir = dirname(fileURLToPath(import.meta.url));
-const repoRoot = resolve(scriptDir, "../..");
-const manifestPath = resolve(repoRoot, "docs/bootstrap-razor/SEED-MANIFEST.md");
+type ExitCode = 0 | 1;
+type ManifestSection = "include" | "exclude";
 
-function extractYamlListBlock(source: string, key: string): string[] {
-  const yamlFenceMatches = source.matchAll(/```ya?ml\s*\n([\s\S]*?)```/gi);
-  for (const fenceMatch of yamlFenceMatches) {
-    const yamlBody = fenceMatch[1];
-    if (yamlBody === undefined) {
-      continue;
-    }
-
-    const lines = yamlBody.split(/\r?\n/);
-    const keyLineIndex = lines.findIndex((line) => line.trim() === `${key}:`);
-    if (keyLineIndex < 0) {
-      continue;
-    }
-
-    const entries: string[] = [];
-    for (const line of lines.slice(keyLineIndex + 1)) {
-      if (/^\S/.test(line) && line.trim().endsWith(":")) {
-        break;
-      }
-
-      const uncommented = line.replace(/\s+#.*$/, "").trim();
-      if (!uncommented.startsWith("- ")) {
-        continue;
-      }
-
-      const entry = uncommented.slice(2).trim();
-      if (entry.length > 0) {
-        entries.push(entry);
-      }
-    }
-
-    return entries;
-  }
-
-  return [];
+interface SeedManifest {
+  readonly include: readonly string[];
+  readonly exclude: readonly string[];
 }
 
-export function main(argv: string[]): number {
-  const dryRun = argv.includes("--dry-run");
+const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
+const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
 
-  if (dryRun) {
-    let manifest: string;
-    try {
-      manifest = readFileSync(manifestPath, "utf8");
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error(`seed-test-repo: unable to read manifest at ${manifestPath}: ${message}`);
-      return 1;
-    }
+function usage(): string {
+  return [
+    "Usage: bun seed-test-repo.ts [--dry-run] [--help]",
+    "  --dry-run   Show the manifest seed plan without side effects",
+    "",
+  ].join("\n");
+}
 
-    console.log("DRY-RUN: would read manifest from", manifestPath);
-    const includeGlobs = extractYamlListBlock(manifest, "include");
-    if (includeGlobs.length > 0) {
-      console.log("DRY-RUN: would seed these globs:");
-      console.log(includeGlobs.join("\n"));
-    } else {
-      console.log("DRY-RUN: manifest parse fallback (no fenced include block)");
+function stripYamlComment(value: string): string {
+  return value.replace(/\s+#.*$/, "").trim();
+}
+
+export function parseSeedManifest(content: string): SeedManifest {
+  const include: string[] = [];
+  const exclude: string[] = [];
+  let inYaml = false;
+  let section: ManifestSection | null = null;
+
+  for (const rawLine of content.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (line === "```yaml") {
+      inYaml = true;
+      section = null;
+      continue;
     }
-    console.log("DRY-RUN: no repo created (gh api skipped in slice 1)");
+    if (inYaml && line === "```") {
+      inYaml = false;
+      section = null;
+      continue;
+    }
+    if (!inYaml) continue;
+    if (line === "include:") {
+      section = "include";
+      continue;
+    }
+    if (line === "exclude:") {
+      section = "exclude";
+      continue;
+    }
+    if (!section || !line.startsWith("- ")) continue;
+
+    const item = stripYamlComment(line.slice(2));
+    if (item.length === 0) continue;
+    if (section === "include") include.push(item);
+    else exclude.push(item);
+  }
+
+  return { include, exclude };
+}
+
+function readManifest(path: string): SeedManifest | string {
+  if (!existsSync(path)) return `missing seed manifest: ${MANIFEST_DISPLAY_PATH}`;
+  const manifest = parseSeedManifest(readFileSync(path, "utf8"));
+  if (manifest.include.length === 0) return `seed manifest has no include entries: ${MANIFEST_DISPLAY_PATH}`;
+  if (manifest.exclude.length === 0) return `seed manifest has no exclude entries: ${MANIFEST_DISPLAY_PATH}`;
+  return manifest;
+}
+
+function emitDryRun(manifest: SeedManifest): void {
+  console.log(`[B-0343] DRY-RUN: read ${MANIFEST_DISPLAY_PATH}`);
+  console.log(`Would seed exactly these manifest include entries (${manifest.include.length}):`);
+  for (const item of manifest.include) console.log(`  - ${item}`);
+  console.log(`Would exclude these manifest entries (${manifest.exclude.length}):`);
+  for (const item of manifest.exclude) console.log(`  - ${item}`);
+  console.log("Provenance commit would link to B-0193 / B-0343.");
+  console.log("Idempotency + gh create + real seeding: follow-up slice.");
+}
+
+export function main(argv: readonly string[]): ExitCode {
+  const { values } = parseArgs({
+    args: [...argv],
+    options: {
+      "dry-run": { type: "boolean", default: false },
+      help: { type: "boolean", default: false },
+    },
+    strict: false,
+  });
+
+  if (values.help) {
+    process.stdout.write(usage());
     return 0;
   }
 
-  console.log("seed-test-repo: real run not implemented in this bounded slice; use --dry-run");
-  return 1;
+  if (values["dry-run"]) {
+    const manifest = readManifest(MANIFEST_PATH);
+    if (typeof manifest === "string") {
+      process.stderr.write(`${manifest}\n`);
+      return 1;
+    }
+    emitDryRun(manifest);
+    return 0;
+  }
+
+  console.log("This is the minimal TS stub for B-0343.");
+  console.log("Re-run with --dry-run to see the manifest seed plan.");
+  console.log("No repo creation performed (bounded slice).");
+  return 0;
 }
 
 if (import.meta.main) {

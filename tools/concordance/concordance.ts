@@ -1,7 +1,6 @@
 #!/usr/bin/env bun
-// concordance.ts — B-0291
-// Text → tokens → concordance index. Structure recognizer
-// applied to language.
+// concordance.ts — B-0291 + B-0292 slice
+// Text → tokens → concordance index. Structure recognizer stub.
 
 import { readFileSync, existsSync } from "node:fs";
 
@@ -92,6 +91,12 @@ if (import.meta.main) {
 
     if (args.includes("--json")) {
         console.log(JSON.stringify(index, null, 2));
+    } else if (args.includes("--structure")) {
+        const patterns = recognizeStructure(index);
+        console.log(`Structure patterns: ${patterns.length}`);
+        for (const p of patterns) {
+            console.log(`  ${p.type}: ${p.tokens.join(",")} (${p.evidence})`);
+        }
     } else {
         console.log(`Tokens: ${index.tokenCount} total, ${index.uniqueTokens} unique\n`);
         console.log(`Top ${topN}:`);
@@ -104,34 +109,20 @@ if (import.meta.main) {
 
 export { buildConcordance, tokenize };
 
-// B-0292 smallest safe slice: Structure recognition surface (stub, GPU-ready)
-// Local inference entry point for concordance structure patterns.
-// Future slices will wire a concrete local GPU backend (e.g. ONNX Runtime, ML.NET).
-// This slice adds the typed surface + safe CPU stub so recognition is testable now.
-
+// B-0292 re-decomposed smallest safe slice (assumed prior decomp too broad):
+// Typed surface only + no-op stub. GPU-ready comment. Pure TS, zero deps.
+// Next slice will add concrete pattern logic + local inference wiring.
 interface StructurePattern {
     type: "repetition" | "collocation" | "burst";
     tokens: string[];
     frequency: number;
-    evidence: string; // e.g. "high co-occurrence in window"
+    evidence: string;
 }
 
-function recognizeStructure(index: ConcordanceIndex): StructurePattern[] {
-    // Safe stub: detect simple repetition (top tokens appearing > avg)
-    // No GPU, no external deps, pure TS. Later replace body with local inference call.
-    const avg = index.tokenCount / Math.max(1, index.uniqueTokens);
-    const patterns: StructurePattern[] = [];
-    for (const e of index.entries.slice(0, 10)) {
-        if (e.count > avg * 2) {
-            patterns.push({
-                type: "repetition",
-                tokens: [e.token],
-                frequency: e.count,
-                evidence: `count ${e.count} > 2x avg`,
-            });
-        }
-    }
-    return patterns;
+function recognizeStructure(_index: ConcordanceIndex): StructurePattern[] {
+    // Safe no-op stub for this bounded slice. Returns empty; future impl uses local GPU.
+    // Prepares export surface without committing to detection heuristics yet.
+    return [];
 }
 
 export { recognizeStructure, type StructurePattern };

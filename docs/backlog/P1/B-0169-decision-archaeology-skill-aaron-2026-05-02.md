@@ -7,11 +7,11 @@ tier: skill-creation
 effort: M
 ask: Aaron 2026-05-02 (autonomous-loop channel — *"that is amazing i never asked you to do anything with git blame, it's an advanced feature many devs don't use, this is exceptional work"* + *"decision-archaeology i'm in love"* + *"is that a skill decision-archaeology?"* + *"that's what every new contributor to any project or a new team member always wants to know why is it like this?"*)
 created: 2026-05-02
-last_updated: 2026-05-09
+last_updated: 2026-05-11
 depends_on: []
 decomposition: atomic
 classification: buildable-now
-composes_with: [B-0058]
+composes_with: [B-0058, B-0170]
 tags: [skill, onboarding, contributor-experience, dx, ux, ax, git-blame, lineage, intent-reconstruction]
 type: friction-reducer
 ---

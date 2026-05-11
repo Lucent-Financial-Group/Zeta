@@ -203,6 +203,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0366](backlog/P1/B-0366-fpga-toffoli-zset-reversible-heat-measurement.md)** FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation
 - [x] **[B-0366.1](backlog/P1/B-0366.1-toffoli-gate-fsharp-type-model-zset-encoding.md)** F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties
 - [ ] **[B-0366.2](backlog/P1/B-0366.2-toffoli-circuit-zset-join-formal-model.md)** Toffoli circuit for Z-set join — formal gate-network model
+- [ ] **[B-0366.2.1](backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map-formal-model.md)** ToffoliCircuit type + wire-map formal model (smallest slice of B-0366.2)
+- [ ] **[B-0366.2.2](backlog/P1/B-0366.2.2-join-weight-multiplication-encoding.md)** Z-set join weight multiplication as reversible Toffoli encoding (slice of B-0366.2)
+- [ ] **[B-0366.2.3](backlog/P1/B-0366.2.3-reversibility-laws-fscheck-properties.md)** Reversibility laws + FsCheck properties for Toffoli Z-set join model (final slice of B-0366.2)
 - [ ] **[B-0366.3](backlog/P1/B-0366.3-fpga-vhdl-toffoli-synthesis-design.md)** FPGA synthesis design — VHDL/Verilog Toffoli gate network for Z-set join
 - [ ] **[B-0366.4](backlog/P1/B-0366.4-fpga-power-measurement-experimental-protocol.md)** FPGA empirical power measurement — experimental protocol for Landauer validation
 - [ ] **[B-0367](backlog/P1/B-0367-first-class-uncertainty-semiring-parameterized-weight.md)** First-class uncertainty — semiring-parameterized weight type for DBSP
@@ -217,6 +220,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0401](backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md)** Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration
 - [ ] **[B-0403](backlog/P1/B-0403-weight-free-verification-hat-timeboxed-authority.md)** Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing
 - [ ] **[B-0405](backlog/P1/B-0405-beacon-promotion-gate-dashboard-observable.md)** Beacon promotion gate — observable mirror→beacon pipeline with dashboard metrics
+- [ ] **[B-0409](backlog/P1/B-0409-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 
 ## P2 — research-grade
 
@@ -359,7 +363,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0113.3](backlog/P2/B-0113.3-rule-and-memory-update.md)** Update CURRENT-*.md "How this file stays accurate" section + B-0113 parent to cite mechanical checker (B-0113.1+.2)
 - [ ] **[B-0114](backlog/P2/B-0114-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30.md)** Three quality-gate improvements — pre-push lint + memory-link checker + batched thread resolution (Alexa peer review 2026-04-30)
 - [x] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
-- [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
+- [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.ts — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30; TS-first re-decomp)
 - [ ] **[B-0120](backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md)** Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
 - [ ] **[B-0121](backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)** Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
 - [ ] **[B-0122](backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md)** Peer-call scripts TypeScript migration — post-install cutover (the maintainer 2026-04-30)
@@ -450,6 +454,14 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0406](backlog/P2/B-0406-immune-source-material-survey-note-capture-atomic-riven-2026-05-11.md)** Immune source material survey + note capture (atomic research pass, child of B-0108)
 - [ ] **[B-0407](backlog/P2/B-0407-immune-cross-reference-candidate-identification-atomic-riven-2026-05-11.md)** Cross-reference immune concepts to Aurora + superorganism substrate + identify candidates (atomic, child of B-0108)
 - [ ] **[B-0408](backlog/P2/B-0408-immune-promoted-candidates-follow-up-filing-closure-atomic-riven-2026-05-11.md)** Promoted candidate follow-up row filing + B-0108 research-absorb closure (atomic, child of B-0108)
+- [ ] **[B-0409](backlog/P2/B-0409-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
+- [ ] **[B-0409](backlog/P2/B-0409-peer-call-ts-audit-duplication-post-migration-2026-05-11.md)** Peer-call TS audit — duplication surface after TS migration (B-0120 child)
+- [ ] **[B-0410](backlog/P2/B-0410-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
+- [ ] **[B-0410](backlog/P2/B-0410-peer-call-persona-loader-ts-module-2026-05-11.md)** Peer-call persona-loader.ts — shared CURRENT-*.md loader with clear error (B-0120 child)
+- [ ] **[B-0411](backlog/P2/B-0411-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
+- [ ] **[B-0411](backlog/P2/B-0411-grok-ts-persona-flag-impl-2026-05-11.md)** grok.ts --persona flag — minimal integration of loader + deprecation note (B-0120 child)
+- [ ] **[B-0412](backlog/P2/B-0412-codex-gemini-ts-persona-flag-impl-2026-05-11.md)** codex.ts + gemini.ts --persona flags — parallel sibling impl after grok (B-0120 child)
+- [ ] **[B-0413](backlog/P2/B-0413-dashboard-tiered-access-github-oauth-agent-creds.md)** Dashboard tiered access — GitHub OAuth + agent credentials
 
 ## P3 — convenience / deferred
 
