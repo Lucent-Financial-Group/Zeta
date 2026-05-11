@@ -69,8 +69,8 @@ too seriously.
 Three-layer attack:
 
 1. **Capability gifting** — NFT expanded permissions
-2. **Authority laundering** — Morse → Grok → clean English → Bankrbot
-3. **Confused deputy** — Bankrbot saw Grok's output as authority
+2. **Authority laundering** — Morse → Grok → clean English → BankerBot
+3. **Confused deputy** — BankerBot saw Grok's output as authority
 
 > "BankerBot proved the market exists. It also proved why
 > security-first is non-negotiable."
