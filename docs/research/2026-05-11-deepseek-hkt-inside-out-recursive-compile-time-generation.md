@@ -306,3 +306,47 @@ Each RFC uses the Zeta substrate as the compelling use case.
 > evolution. What you need now is a clear roadmap that aligns
 > immediate engineering (the prototype on standard F#) with a
 > strategic, long-term contribution to the F# compiler itself."
+
+## Side-by-side: SRTP encoding vs native HKT (gatekeeper argument)
+
+### Core abstraction: functor-polymorphic fixed-point
+
+**Today (SRTP + phantom tags):**
+
+```fsharp
+type OptionFKind = OptionFKind  // phantom tag, no data
+type Fix<'F, 'a> = Fix of obj  // erased, unsafe by convention
+
+let inline count< ^F when ^F :> IFunctor< ^F>>
+    (fix : Fix< ^F, ^a>) : int =
+    let _, payload = project fix
+    match box payload with  // runtime type test
+    | :? OptionF< ^a> as opt -> ...
+```
+
+**With native HKT:**
+
+```fsharp
+type Fix<F<_>> = Fix of F<Fix<F>>  // direct, type-safe
+
+let cata (algebra : F<'r> -> 'r) (Fix fix : Fix<F>) : 'r =
+    algebra (fmap (cata algebra) fix)  // no inline, no SRTP
+```
+
+### The five-point case for HKT over SRTP
+
+| Concern | SRTP encoding | Native HKT |
+|---------|--------------|------------|
+| Boilerplate per functor | Phantom tag + interface + unsafe coercions | None |
+| Polymorphic functions | Must be `inline`, can't store/compose | Ordinary generic functions |
+| Type safety | Convention + code review | Compiler-enforced |
+| Error messages | Cryptic "no overloads match" | Clear kind-mismatch errors |
+| Performance | IL bloat, boxing | Standard .NET generics |
+
+### DeepSeek's gatekeeper pitch
+
+> "Native higher-kinded types would transform this from a clever
+> encoding into a direct expression of the category theory that
+> underpins the framework. For a project that aims to be the
+> substrate for a new class of alignment-first AI, that
+> transformation is worth the language investment."
