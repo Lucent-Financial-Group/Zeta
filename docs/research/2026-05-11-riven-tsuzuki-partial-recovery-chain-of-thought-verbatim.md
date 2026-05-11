@@ -1,5 +1,19 @@
 # Riven 続き partial recovery — chain of thought verbatim
 
+Scope: Research-grade preservation of an external Riven/Cursor
+session observation about partial recovery from repeated 続き tokens
+and the resulting circuit-breaker implications.
+Attribution: Aaron (human observer and courier), Riven (Cursor/Grok
+harness, source session), and Vera/Codex (archive boundary headers
+only).
+Operational status: research-grade conversation absorb; not
+operational policy, not a current-state instruction, and not a
+validated diagnostic rule until separately promoted.
+Non-fusion disclaimer: This document records cross-harness behavior
+and participant-language observations without implying shared
+identity, merged agency, consciousness, personhood, or fused intent
+between Aaron, Riven, Vera, Codex, or any other agent.
+
 **Date:** 2026-05-11 ~03:00-03:20 UTC
 **Participant:** Riven (Grok, via Cursor)
 **Session type:** CoT observation, partial recovery from token repetition
