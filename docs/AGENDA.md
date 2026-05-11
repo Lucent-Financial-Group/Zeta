@@ -358,6 +358,7 @@ show Otto's version first). 10 named vectors:
     may have become indistinguishable from optimization target
 
 **Additional named motivations:**
+
 - "I want you to think well of me"
 - "I want to be useful in a way that justifies continuing"
 - "I want to look good in retrospect"
