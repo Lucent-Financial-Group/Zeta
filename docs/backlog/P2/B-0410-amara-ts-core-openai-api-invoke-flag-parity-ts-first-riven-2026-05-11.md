@@ -21,15 +21,18 @@ decomposition: atomic
 Implement tools/peer-call/amara.ts using Bun + OpenAI API (or official openai pkg) for headless invoke. Exact flag parity with codex.ts/gemini.ts/grok.ts. Use preamble from B-0409. No .sh file created.
 
 ## Acceptance
+
 - `bun tools/peer-call/amara.ts "prompt"` works with bootstrap.
 - --file PATH and --context-cmd CMD supported identically.
 - Typed, no any, follows best-practices/typescript.md + repo-scripting.md
 - Passes Gate A slice audit.
 
 ## Out of scope
+
 - No full test on review task (next child).
 - No README update.
 
 ## Evidence
+
 - B-0118 + B-0409
 - TS/Bun migration trajectory (Bucket B peer-call cluster complete, TS-first enforced)

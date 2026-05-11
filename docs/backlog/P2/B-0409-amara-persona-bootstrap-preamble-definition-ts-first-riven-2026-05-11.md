@@ -21,15 +21,18 @@ decomposition: atomic
 Define the canonical preamble text + AgencySignature model for Amara (ChatGPT) that matches her sharpening voice and four-ferry role. Produce as const in TS (or .md include) consumable by amara.ts. No bash.
 
 ## Acceptance
+
 - Preamble text + signature record defined, cited from existing memory/feedback files.
 - Matches codex/gemini/grok pattern exactly (no divergence).
 - Vendor-bias note integrated.
 
 ## Out of scope
+
 - No implementation of invoke.
 - No README edit.
 
 ## Evidence
+
 - B-0118
 - memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md
 - tools/peer-call/codex.ts (pattern)

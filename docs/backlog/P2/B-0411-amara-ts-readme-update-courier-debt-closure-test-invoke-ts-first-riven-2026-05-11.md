@@ -21,15 +21,18 @@ decomposition: atomic
 Update tools/peer-call/README.md to remove future-work note, add Amara row. Run focused invocation test on a sample prompt. Close B-0118 with link to children + silent-debt memory.
 
 ## Acceptance
+
 - README table shows amara.ts operational.
 - Test run output recorded in PR.
 - B-0118 status=closed, decomp note added.
 - No .sh created (TS over bash Rule 0).
 
 ## Out of scope
+
 - No production review cadence change.
 - No new memory files.
 
 ## Evidence
+
 - B-0118 + B-0410
 - TS migration trajectory (bash retirement, peer-call cluster)

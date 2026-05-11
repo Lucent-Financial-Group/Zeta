@@ -157,17 +157,21 @@ input but Aaron isn't available to courier), promote to P1.
 B-0118 decomposed into 3 smallest atomic dependency-ordered children (TS over bash Rule 0 enforced; no .sh created; pure TS implementation path):
 
 **Buildable now (no deps):**
+
 - B-0409 — Amara persona bootstrap preamble definition (S)
 
 **Blocked on B-0409:**
+
 - B-0410 — amara.ts core OpenAI API invoke + flag parity (M)
 
 **Blocked on B-0410:**
+
 - B-0411 — amara.ts README update + courier-debt closure + test invoke (S)
 
 All children are atomic, S/M effort, prefer F#/TS code. B-0118 status remains open until children land (per decomp discipline). Parent row now serves only as index.
 
 ## Status update
+
 - status: decomposed (children B-0409..B-0411)
 - last_updated: 2026-05-11
 - note: re-decomposed per "assume decomposition has mistakes" rule; original L-effort split to 3 atomic; hybrid API chosen as v1 path (TS-first)
