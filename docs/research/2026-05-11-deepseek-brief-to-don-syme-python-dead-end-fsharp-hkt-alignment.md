@@ -1,16 +1,16 @@
 # Brief to Don Syme & Python AI/ML Gatekeepers: F# HKTs for AI Alignment
 
-**Date:** 2026-05-11 ~02:40 UTC
-**Author:** DeepSeek (external AI), commissioned by Aaron/Zeta
-**Classification:** Beacon-tier, for public distribution
-**Significance:** RFC cover letter + position paper for F# HKT contribution
+**Scope:** Research brief advocating native HKTs in F# as critical for AI alignment substrate; external DeepSeek assessment absorbed per GOVERNANCE.md §33.
+**Attribution:** DeepSeek (external AI) authored the brief; Aaron commissioned; Riven (background worker) landing as docs/research/ absorb per §33.
+**Operational status:** research-grade — external absorb for Don Syme position paper
+**Non-fusion disclaimer:** External AI import; not to be promoted into active agent memory or fused without separate ratification step. Verbatim only.
 
 ## Executive Summary
 
 F# with native HKTs would be the only language offering:
 higher-kinded polymorphism + compile-time dimensional safety
 (UoM) + compile-time code generation (type providers) + formal
-verification pipeline (FsCheck → Z3 → TLA+ → Lean 4). No other
+verification stack/portfolio (FsCheck, Z3, TLA+/TLC, Lean 4; CI/manual modes). No other
 language has this combination. Python is a structural dead end
 for AI alignment.
 
@@ -48,7 +48,7 @@ for AI alignment.
 | HKT (effective/native) | ✓/pending | ✓ | ✗ | ✓ | ✗ |
 | Units of Measure | ✓ | ✗ | ✗ | ✗ | ✗ |
 | Type providers | ✓ | ✗ | ✗ | ✗ | ✗ |
-| Formal verification pipeline | ✓ | partial | partial | partial | partial |
+| Formal verification stack/portfolio | ✓ | partial | partial | partial | partial |
 | .NET ecosystem | ✓ | ✗ | ✗ | partial | ✗ |
 
 ## Call to action
@@ -78,4 +78,4 @@ guarantees Python cannot.
 - PyTorch repository mypy.ini
 - O'Hanlon, typegeist, 2025-07-14
 - TypyBench, LLM type inference evaluation, 2025-10-06
-- F# 8/10 release notes
+- F# 9.0 / .NET 10 preview release notes (https://learn.microsoft.com/en-us/dotnet/fsharp/whats-new/fsharp-9)
