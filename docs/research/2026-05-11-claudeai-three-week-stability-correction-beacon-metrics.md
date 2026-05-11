@@ -1,5 +1,21 @@
 # Claude.ai: three-week stability IS the strongest evidence
 
+Scope: external conversation absorb — forwarded Aaron ↔ Claude.ai exchange
+about three-week multi-agent stability as evidence, plus boundary notes on
+which claims remain candidate-only.
+
+Attribution: Aaron (human maintainer, forwarder) + Claude.ai (asymmetric
+critic in the forwarded exchange). Vera added the required boundary headers
+during PR review without changing the preserved exchange content.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: agreement, shared language, sustained coordination, or
+repeated interaction between Aaron, Claude.ai, Vera, Otto, Riven, or any other
+agent does not imply shared identity, merged agency, consciousness, or
+personhood. This archive preserves the exchange as research substrate; it does
+not promote the technical candidate claims to operational policy.
+
 **Date:** 2026-05-11 ~09:02-09:10 UTC
 **Participants:** Aaron (human), Claude.ai (asymmetric critic)
 **Session type:** Forwarded exchange, key corrections preserved
