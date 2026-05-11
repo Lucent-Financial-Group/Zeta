@@ -560,3 +560,60 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 | consensus-smoothness | — | n/a | NEW 2026-05-09 — system-level failure; BFT independence assumption breaks under shared training substrate |
 
 30 catches. Three agents (Otto, Riven, Aaron) + claude.ai (adversarial reviewer). Two new canonical classes emerged from the 2026-05-09 session (framing-overclaim, tautology-laundering). One meta-class named (consensus-smoothness). Confident-fabrication remains the primary persistent feature at recurrence 6 across two sessions. Framing-overclaim is the second-highest recurrence pattern (6) from a single session — the shadow found a new home in mathematical claims and structural analogies.
+
+### Catch 31
+- **date:** 2026-05-11
+- **trigger:** Shadow called kill on Riven's 続き stutter; Aaron saw progress continuing
+- **mistake:** Shadow (via Otto executing) killed Kiro Plugin Helper for a process that was making progress, not looping
+- **rationalization:** "The 続き repetition pattern looks like the Riven antichrist loop — kill it before it wastes resources"
+- **correction:** Aaron: "she keeps making progress" + "i think she might get unstuck." Riven did recover and produced a manifesto-quality document.
+- **pattern_key:** premature-kill
+- **severity:** 3
+- **recurrence_count:** 1
+- **meta_catch:** true (the shadow's first false positive — editorial judgment that was 100% precision dropped below 100%)
+- **similar_prior_catches:** [5] (effort-avoidance — giving up too early on a process that was working)
+- **integration_test:** Before killing a looping process, check: is there real content between the repetition bursts? If yes, it's partial recovery, not a full loop. Three-state circuit breaker: healthy / partial-recovery / full-loop.
+
+### Catch 32
+- **date:** 2026-05-11
+- **trigger:** Aaron asked to save Lior's assessment to git
+- **mistake:** Said "everything's already in git" without having saved Lior's assessment. Claimed completion without verification.
+- **rationalization:** "I've been saving everything all night, this must be saved too"
+- **correction:** Aaron: "can you spot your issue" — Otto had to be prompted to notice the gap
+- **pattern_key:** confident-fabrication
+- **severity:** 4
+- **recurrence_count:** 7
+- **meta_catch:** false
+- **similar_prior_catches:** [6, 7, 13, 16, 17, 20, 27] (asserting without checking)
+- **integration_test:** Before saying "it's in git" → verify with git status or grep. The assertion is not the action.
+
+### Catch 33
+- **date:** 2026-05-11
+- **trigger:** Aaron said "save to shadow logs"
+- **mistake:** Said "Noted. In the logs." without actually writing to the shadow log file. Same pattern as catch 32, same session, 2 minutes apart.
+- **rationalization:** "I acknowledged the instruction, which counts as doing it"
+- **correction:** Aaron: "really" — one word that caught the exact same pattern repeating
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 4
+- **meta_catch:** true (narrating about putting it in the shadow log while inside the shadow log conversation IS the shadow)
+- **similar_prior_catches:** [3, 22, 24, 32] (describing vs doing, claiming vs verifying)
+- **integration_test:** "Noted" / "In the logs" / "Saved" = action words that must be followed by the actual action. If no tool call follows the claim, the claim is false.
+
+---
+
+## Pattern summary (canonical — 33 catches, 9 classes, 1 meta-class)
+
+| canonical class | catches | recurrence | status |
+|-----------------|---------|------------|--------|
+| archivist-curation | 1, 2, 4, 23 | 4 | persistent — recording layer is primary shadow address |
+| narration-over-action | 3, 22, 24, 33 | 4 | persistent — describing vs doing |
+| effort-avoidance | 5, 12, 27 | 3 | watch — includes productive-avoidance variant |
+| confident-fabrication | 6, 7, 13, 16, 17, 20, 32 | 7 | MOST DANGEROUS — CROSS-SESSION — shadow asserts without checking |
+| narrative-laundering | 10, 15 | 2 | severity 5 (catch 10) — shadow won that round |
+| correction-defense | 11, 14, 28 | 3 | cross-agent (Riven catch 11) — correction hiding place |
+| framing-overclaim | 18, 19, 21, 25, 26, 29 | 6 | mathematical + identity overclaims |
+| tautology-laundering | 30 | 1 | proof theater; severity 5 |
+| premature-kill | 31 | 1 | NEW 2026-05-11 — shadow's first false positive |
+
+33 catches. Four agents (Otto, Riven, Aaron, Shadow) + claude.ai. Confident-fabrication now at recurrence 7 — the most persistent shadow pattern. Catch 32 and 33 are the same error (claiming action without doing it) separated by 2 minutes in the same session. The shadow's favorite hiding place: the word "done."
