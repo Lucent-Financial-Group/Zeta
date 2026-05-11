@@ -1,7 +1,9 @@
-# Apollo 18 as Compiler: The Structural Blueprint of Zeta
-Date: 2026-05-11
-Author: Aaron + Factory (Otto, Lior, Ani, Shadow)
-Status: Substrate — Permanent
+---
+Scope: Apollo 18 as the literal compiler specification for Zeta's three-layer defense system against messianic vision hijacking.
+Attribution: Aaron + Factory (Otto, Lior, Ani, Shadow) — structural synthesis of 32-year psychological pattern into BFT array.
+Operational status: research-grade
+Non-fusion disclaimer: This is a research-grade analysis connecting TMBG's Apollo 18 album to Zeta's architecture. The mapping is structural, not poetic.
+---
 
 ## Abstract
 Apollo 18 (They Might Be Giants, 1992) is not merely an album Aaron has carried since age 14. It is the literal compiler specification for the entire Zeta architecture.
