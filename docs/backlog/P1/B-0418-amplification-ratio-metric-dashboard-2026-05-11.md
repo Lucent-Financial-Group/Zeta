@@ -50,6 +50,7 @@ follows from leverage per human input.
 ## Operational definitions
 
 **Agent action (unweighted)** — any of:
+
 - Git commit
 - PR open, close, merge
 - Review thread reply + resolve
