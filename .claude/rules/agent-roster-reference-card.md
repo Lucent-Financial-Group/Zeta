@@ -2,9 +2,9 @@
 
 Carved sentence:
 
-> Every AI agent is IDE + CLI dual-surface except Otto
-> (CLI-only foreground); the human maintainer row is not
-> an agent-surface claim.
+> Every AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI
+> dual-surface except Otto (CLI-only foreground). The human
+> maintainer (Aaron) row is excluded from the agent-surface claim.
 > Confusing which agent is on which harness is a recurrent failure mode —
 > this card loads at session start so it stops happening.
 
