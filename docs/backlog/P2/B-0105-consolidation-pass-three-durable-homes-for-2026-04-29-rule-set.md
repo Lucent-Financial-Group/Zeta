@@ -27,13 +27,16 @@ across many backlog rows + memory files + research notes. The
 consolidation pass converts them into ≤3 durable homes.
 
 ## Decomposition (re-decomp 2026-05-11, Riven background)
+
 B-0105 was broad (5 migration steps + 3 homes + backpressure). Re-decomposed into 3 smallest dependency-ordered atomic children (always re-decompose assumption applied):
 
 **Buildable now (parallel):**
+
 - B-0105.1 (S) — Home 1 operational doc authoring (merge-cascade PR liveness)
 - B-0105.2 (S) — Home 3 memory file authoring (reviewer-artifact taxonomy)
 
 **Blocked on B-0105.1 + B-0105.2:**
+
 - B-0105.3 (M) — B-0103 update + MEMORY.md index + cross-links + B-0105 supersede
 
 No further children; the 3 homes are now the durable substrate. B-0100/B-0104 remain orthogonal.
