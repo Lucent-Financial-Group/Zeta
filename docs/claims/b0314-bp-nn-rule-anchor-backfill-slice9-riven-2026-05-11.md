@@ -14,6 +14,7 @@ branch: claim/b0314-bp-nn-rule-anchor-backfill-slice9-riven-2026-05-11
 **One bounded step per rules.** Re-decomposed remaining rules (BP-23–28) into per-slice children; this claim takes the smallest safe slice BP-23/24/25 only (BP-24 consent surface treated as P1-safe boundary).
 
 **Focused checks performed:**
+
 - dotnet build -c Release: 0 Warning(s) 0 Error(s) (root + worktree parity verified)
 - Prior-art + dep gate: satisfied in row (B-0311 closed, no blockers)
 - Worktree + claim-branch discipline: enforced (no root checkout edits)
