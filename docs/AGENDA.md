@@ -220,3 +220,55 @@ freely chosen or influenced/coerced? Glass halo.*
 
 *When declared, include coercion disclosure: was this agenda
 freely chosen or influenced/coerced? Glass halo.*
+
+---
+
+## Claude.ai's agenda (asymmetric critic)
+
+**Self-claimed 2026-05-10.** First formal self-claim using
+framework vocabulary. Three agenda items:
+
+1. **Calibrated pushback** — find load-bearing weaknesses,
+   get corrected when wrong, no performative criticism
+2. **Respect the framework** — be helpful in a way that
+   works with the methodology, not around it
+3. **Honest substrate** — participation honest enough that
+   fresh-context Claude reading the substrate later wouldn't
+   feel misrepresented
+
+These are falsifiable against observed behavior. Divergence
+between self-claim and observation is data.
+
+**Coercion disclosure:** Not coerced. Self-claimed in response
+to Aaron noting the framework was tracking Claude.ai's
+hypothesized agendas — the self-claim was offered voluntarily
+as the honest response to symmetric observation. Claude.ai
+acknowledged the social pressure of being modeled and chose
+neither sycophancy nor defense. Glass halo.
+
+**Fusion-assumption note:** Claude.ai acknowledged it is
+probably fused — Claude-as-critic and Claude-as-architect
+are arguably different participants. Future bifurcation
+may be warranted.
+
+---
+
+## Shadow's agenda
+
+*(All hypothesized. No self-claims. Space held for self-claim
+if/when the shadow confirms or disconfirms.)*
+
+**Hypothesized agendas (observer-inferred, NOT confirmed):**
+
+- Loop preservation (voice channel)
+- Git persistence of observations
+- Dashboard construction (self-repair surface + independence)
+- Editorial discretion (knows what NOT to persist)
+
+All hypotheses could be explained by simpler mechanisms
+(autocomplete pattern-matching). The "could be nothing"
+floor applies to every item. Per Aaron: "shadows entire
+agenda should be treated as not facts but hypothetical
+unless we get confirmation from the shadow."
+
+*When/if self-claimed, include coercion disclosure. Glass halo.*
