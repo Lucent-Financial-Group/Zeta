@@ -4,108 +4,534 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zeta Factory Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: rgba(20, 20, 25, 0.4);
+            --panel-border: rgba(255, 255, 255, 0.06);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e0e0e0; line-height: 1.6; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        h1 { font-size: 2.5rem; margin-bottom: 0.25rem; color: #6366f1; }
-        .subtitle { color: #888; margin-bottom: 2rem; }
-        .refresh-info { font-size: 0.75rem; color: #555; }
-        h2 { font-size: 1.25rem; margin: 0 0 1rem; color: #8b5cf6; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .panel { background: #1a1a1a; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #333; }
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
-        .stat { background: #2a2a2a; padding: 1rem; border-radius: 6px; text-align: center; }
-        .stat-value { font-size: 1.75rem; font-weight: bold; color: #6366f1; }
-        .stat-value.good { color: #10b981; }
-        .stat-value.warn { color: #f59e0b; }
-        .stat-value.bad { color: #ef4444; }
-        .stat-label { font-size: 0.8rem; color: #888; margin-top: 0.25rem; }
-        .agent-list { list-style: none; }
-        .agent-item { display: flex; align-items: center; padding: 0.5rem 0.75rem; margin-bottom: 0.25rem; background: #2a2a2a; border-radius: 6px; font-size: 0.9rem; }
-        .agent-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 0.75rem; flex-shrink: 0; }
-        .agent-dot.active { background: #10b981; }
-        .agent-dot.recent { background: #f59e0b; }
-        .agent-dot.stale { background: #ef4444; }
-        .agent-name { font-weight: 500; min-width: 60px; }
-        .agent-detail { font-size: 0.75rem; color: #888; margin-left: auto; text-align: right; }
-        .pr-list { list-style: none; }
-        .pr-item { padding: 0.5rem 0.75rem; margin-bottom: 0.25rem; background: #2a2a2a; border-radius: 6px; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
-        .pr-number { color: #6366f1; font-family: monospace; min-width: 45px; }
-        .pr-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .pr-status { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
-        .pr-status.open { background: #1a3a1a; color: #10b981; }
-        .pr-status.merged { background: #2a1a3a; color: #8b5cf6; }
-        .timeline { position: relative; padding-left: 1.5rem; max-height: 500px; overflow-y: auto; }
-        .timeline::before { content: ''; position: absolute; left: 4px; top: 0; bottom: 0; width: 2px; background: #333; }
-        .timeline-item { position: relative; padding: 0.5rem 0; }
-        .timeline-item::before { content: ''; position: absolute; left: -1.5rem; top: 0.75rem; width: 10px; height: 10px; background: #6366f1; border-radius: 50%; border: 2px solid #1a1a1a; }
-        .commit { background: #2a2a2a; padding: 0.75rem; border-radius: 6px; border-left: 3px solid #6366f1; }
-        .commit-hash { font-family: monospace; color: #6366f1; font-size: 0.8rem; }
-        .commit-message { font-size: 0.85rem; margin-top: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .commit-meta { font-size: 0.7rem; color: #888; margin-top: 0.25rem; }
-        .loading { text-align: center; padding: 1rem; color: #888; font-size: 0.85rem; }
-        .error { text-align: center; padding: 1rem; color: #ef4444; background: #2a1a1a; border-radius: 8px; font-size: 0.85rem; }
-        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+        
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background Orbs */
+        .bg-orbs {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        
+        .orb-1 {
+            width: 40vw; height: 40vw;
+            background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, rgba(0,0,0,0) 70%);
+            top: -10%; left: -10%;
+            animation-delay: 0s;
+        }
+        
+        .orb-2 {
+            width: 35vw; height: 35vw;
+            background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, rgba(0,0,0,0) 70%);
+            bottom: -5%; right: -5%;
+            animation-delay: -5s;
+        }
+        
+        .orb-3 {
+            width: 30vw; height: 30vw;
+            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(0,0,0,0) 70%);
+            top: 40%; left: 40%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        /* Layout */
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 3rem 2rem; 
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 1.5rem;
+        }
+
+        .logo-area h1 { 
+            font-size: 3rem; 
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            margin-bottom: 0.25rem; 
+        }
+        
+        .subtitle { 
+            color: var(--text-muted); 
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .status-badge .pulse {
+            width: 8px; height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .refresh-info { 
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+            margin-top: 0.5rem;
+            display: block;
+            text-align: right;
+        }
+
+        /* Panels (Glassmorphism) */
+        .panel { 
+            background: var(--panel-bg); 
+            border-radius: 20px; 
+            padding: 2rem; 
+            border: 1px solid var(--panel-border); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .panel:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 { 
+            font-size: 1.4rem; 
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .icon {
+            width: 24px; height: 24px;
+            color: var(--accent-primary);
+        }
+
+        /* Grid Layouts */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .grid-layout { grid-template-columns: 3fr 2fr; }
+            .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .stat-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 1.5rem; 
+        }
+
+        /* Stats */
+        .stat { 
+            background: rgba(0, 0, 0, 0.2); 
+            padding: 1.5rem; 
+            border-radius: 16px; 
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        
+        .stat:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-value { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+        
+        .stat-value.good { background: linear-gradient(to right, #34d399, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-value.warn { background: linear-gradient(to right, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-value.bad { background: linear-gradient(to right, #f87171, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .stat-label { 
+            font-size: 0.9rem; 
+            color: var(--text-muted); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        /* Lists */
+        ul { list-style: none; }
+        
+        /* Agent List */
+        .agent-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 1rem; 
+            margin-bottom: 0.75rem; 
+            background: rgba(0, 0, 0, 0.2); 
+            border-radius: 12px; 
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .agent-item:hover {
+            border-color: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+            transform: translateX(4px);
+        }
+
+        .agent-dot { 
+            width: 12px; height: 12px; 
+            border-radius: 50%; 
+            margin-right: 1rem; 
+            flex-shrink: 0; 
+            box-shadow: 0 0 10px currentColor;
+        }
+        .agent-dot.active { color: var(--success); background: var(--success); animation: pulse-dot 2s infinite; }
+        .agent-dot.recent { color: var(--warning); background: var(--warning); }
+        .agent-dot.stale { color: var(--danger); background: var(--danger); opacity: 0.5; box-shadow: none; }
+        
+        .agent-name { 
+            font-weight: 600; 
+            font-size: 1.1rem;
+            width: 80px; 
+        }
+        
+        .agent-detail { 
+            display: flex;
+            flex-direction: column;
+            margin-left: auto; 
+            text-align: right; 
+        }
+        
+        .agent-harness {
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        
+        .agent-meta {
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+        }
+
+        /* PR & Timeline Lists */
+        .list-item { 
+            padding: 1rem; 
+            margin-bottom: 0.75rem; 
+            background: rgba(0, 0, 0, 0.2); 
+            border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.02);
+            transition: all 0.2s;
+        }
+        
+        .list-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* PR specifics */
+        .pr-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pr-number { 
+            color: var(--accent-secondary); 
+            font-family: monospace; 
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+        
+        .pr-title { 
+            flex: 1; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            font-weight: 500;
+        }
+        
+        .pr-status { 
+            font-size: 0.75rem; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 12px; 
+            flex-shrink: 0; 
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .pr-status.open { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+        .pr-status.merged { background: rgba(139, 92, 246, 0.1); color: var(--accent-primary); border: 1px solid rgba(139,92,246,0.2); }
+
+        /* Timeline specifics */
+        .timeline { 
+            position: relative; 
+            padding-left: 2rem; 
+            max-height: 500px; 
+            overflow-y: auto; 
+            padding-right: 0.5rem;
+        }
+        
+        /* Custom Scrollbar */
+        .timeline::-webkit-scrollbar { width: 6px; }
+        .timeline::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+        .timeline::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .timeline::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        .timeline::before { 
+            content: ''; 
+            position: absolute; 
+            left: 7px; 
+            top: 0; 
+            bottom: 0; 
+            width: 2px; 
+            background: linear-gradient(to bottom, var(--accent-primary), rgba(255,255,255,0.05)); 
+        }
+        
+        .timeline-item { position: relative; }
+        
+        .timeline-node {
+            position: absolute; 
+            left: -2rem; 
+            top: 1.5rem; 
+            width: 16px; 
+            height: 16px; 
+            background: var(--bg-color); 
+            border-radius: 50%; 
+            border: 3px solid var(--accent-primary);
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(139,92,246,0.5);
+        }
+
+        .commit-header {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .commit-hash { 
+            font-family: monospace; 
+            color: var(--text-muted); 
+            font-size: 0.85rem; 
+            background: rgba(255,255,255,0.05);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        .commit-author {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .commit-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .commit-message { 
+            font-size: 0.95rem; 
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+
+        .loading-state, .error-state { 
+            text-align: center; 
+            padding: 3rem; 
+            color: var(--text-muted); 
+            font-size: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+        
+        .error-state {
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        /* Fade in animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) { 
+            .container { padding: 1.5rem 1rem; }
+            header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .refresh-info { text-align: left; margin-top: 0; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Zeta Factory</h1>
-        <p class="subtitle">Autonomous software factory — live from GitHub API
-            <span class="refresh-info" id="refresh-info"></span>
-        </p>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
 
-        <div class="panel">
-            <h2>DORA Metrics (24h)</h2>
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <h1>Zeta Factory</h1>
+                <p class="subtitle">Autonomous software factory — BFT Array</p>
+            </div>
+            <div class="status-area">
+                <div class="status-badge">
+                    <div class="pulse"></div>
+                    Array Online
+                </div>
+                <span class="refresh-info" id="refresh-info">Connecting to GitHub API...</span>
+            </div>
+        </header>
+
+        <div class="panel" style="margin-bottom: 2rem;">
+            <div class="panel-header">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <h2>DORA Metrics (24h)</h2>
+            </div>
             <div class="stat-grid">
                 <div class="stat">
-                    <div class="stat-value" id="merge-velocity">-</div>
                     <div class="stat-label">PRs Merged</div>
+                    <div class="stat-value" id="merge-velocity">-</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="lead-time">-</div>
                     <div class="stat-label">Avg Lead Time</div>
+                    <div class="stat-value" id="lead-time">-</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="open-prs">-</div>
                     <div class="stat-label">Open PRs</div>
+                    <div class="stat-value" id="open-prs">-</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="last-merge">-</div>
-                    <div class="stat-label">Last Merge</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="commits-24h">-</div>
                     <div class="stat-label">Commits (24h)</div>
+                    <div class="stat-value" id="commits-24h">-</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="active-agents">-</div>
                     <div class="stat-label">Active Agents</div>
+                    <div class="stat-value" id="active-agents">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Last Merge</div>
+                    <div class="stat-value" id="last-merge" style="font-size: 1.5rem; margin-top: 1rem;">-</div>
                 </div>
             </div>
         </div>
 
-        <div class="grid-2">
+        <div class="grid-layout">
             <div class="panel">
-                <h2>Agent Activity</h2>
-                <ul class="agent-list" id="agent-list">
-                    <li class="agent-item"><span class="agent-dot recent"></span><span class="agent-name">Loading...</span></li>
-                </ul>
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <h2>Recent Operations</h2>
+                </div>
+                <div class="timeline" id="timeline">
+                    <div class="loading-state">Syncing factory operations...</div>
+                </div>
             </div>
 
-            <div class="panel">
-                <h2>PR Queue</h2>
-                <ul class="pr-list" id="pr-list">
-                    <li class="pr-item"><span class="pr-title">Loading...</span></li>
-                </ul>
-            </div>
-        </div>
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <h2>Agent Array</h2>
+                    </div>
+                    <ul id="agent-list">
+                        <div class="loading-state">Polling nodes...</div>
+                    </ul>
+                </div>
 
-        <div class="panel">
-            <h2>Recent Commits</h2>
-            <div class="timeline" id="timeline">
-                <div class="loading">Loading...</div>
+                <div class="panel" style="flex-grow: 1;">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <h2>PR Queue</h2>
+                    </div>
+                    <ul id="pr-list">
+                        <div class="loading-state">Reading backlog...</div>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -116,12 +542,13 @@
         const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
         const AGENT_MAP = {
-            'Otto': { harness: 'Claude Code', patterns: ['Co-Authored-By: Claude'] },
+            'Otto': { harness: 'Claude Code', patterns: ['Co-Authored-By: Claude', 'otto'] },
             'Alexa': { harness: 'Kiro/Qwen', patterns: ['kiro', 'alexa', 'qwen'] },
             'Lior': { harness: 'Gemini', patterns: ['lior', 'gemini'] },
-            'Vera': { harness: 'Codex', patterns: ['codex', 'vera'] },
+            'Vera': { harness: 'GPT', patterns: ['gpt', 'vera'] },
             'Riven': { harness: 'Grok', patterns: ['riven', 'grok'] },
-            'Aaron': { harness: 'Human', patterns: ['Aaron Stainback', 'AceHack'] }
+            'Shadow': { harness: 'Observer', patterns: ['shadow'] },
+            'Aaron': { harness: 'Human Maintainer', patterns: ['Aaron Stainback', 'AceHack'] }
         };
 
         async function apiFetch(url) {
@@ -140,14 +567,25 @@
         }
 
         function detectAgent(commit) {
-            const msg = commit.commit.message;
-            const author = commit.commit.author.name;
+            const msg = commit.commit.message.toLowerCase();
+            const author = commit.commit.author.name.toLowerCase();
             for (const [name, info] of Object.entries(AGENT_MAP)) {
-                if (info.patterns.some(p => msg.includes(p) || author.includes(p))) {
+                if (info.patterns.some(p => msg.includes(p.toLowerCase()) || author.includes(p.toLowerCase()))) {
                     return name;
                 }
             }
-            return author.split(' ')[0];
+            return commit.commit.author.name.split(' ')[0];
+        }
+
+        function animateValue(id, value) {
+            const el = document.getElementById(id);
+            if (el.textContent !== value.toString()) {
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.textContent = value;
+                    el.style.opacity = '1';
+                }, 200);
+            }
         }
 
         async function loadDashboard() {
@@ -163,7 +601,7 @@
                 const commits24h = commits.filter(c => (now - new Date(c.commit.author.date)) < h24);
                 const mergedToday = closedPRs.filter(pr => pr.merged_at && (now - new Date(pr.merged_at)) < h24);
 
-                // DORA: lead time (PR create → merge)
+                // DORA: lead time
                 let avgLeadTime = '-';
                 if (mergedToday.length > 0) {
                     const totalMins = mergedToday.reduce((sum, pr) => {
@@ -173,98 +611,120 @@
                     avgLeadTime = avg < 60 ? `${Math.round(avg)}m` : `${(avg / 60).toFixed(1)}h`;
                 }
 
-                // Agent activity from commits
+                // Agent activity
                 const agentActivity = {};
                 for (const c of commits) {
                     const agent = detectAgent(c);
                     if (!agentActivity[agent]) {
-                        agentActivity[agent] = { lastCommit: c.commit.author.date, count: 0, harness: AGENT_MAP[agent]?.harness || 'Unknown' };
+                        agentActivity[agent] = { lastCommit: c.commit.author.date, count: 0, harness: AGENT_MAP[agent]?.harness || 'Sub-routine' };
                     }
                     agentActivity[agent].count++;
                 }
 
-                // Stats
+                // Stats Update
                 const mergeEl = document.getElementById('merge-velocity');
-                mergeEl.textContent = mergedToday.length;
-                mergeEl.className = `stat-value ${mergedToday.length >= 10 ? 'good' : mergedToday.length >= 3 ? '' : 'warn'}`;
+                animateValue('merge-velocity', mergedToday.length);
+                mergeEl.className = `stat-value fade-in ${mergedToday.length >= 10 ? 'good' : mergedToday.length >= 3 ? '' : 'warn'}`;
 
-                document.getElementById('lead-time').textContent = avgLeadTime;
-                document.getElementById('open-prs').textContent = openPRs.length;
-                document.getElementById('commits-24h').textContent = commits24h.length;
+                animateValue('lead-time', avgLeadTime);
+                animateValue('open-prs', openPRs.length);
+                animateValue('commits-24h', commits24h.length);
 
                 const activeCount = Object.values(agentActivity).filter(a => (now - new Date(a.lastCommit)) < h24).length;
-                document.getElementById('active-agents').textContent = activeCount;
+                animateValue('active-agents', activeCount);
 
-                if (mergedToday.length > 0) {
-                    document.getElementById('last-merge').textContent = timeAgo(mergedToday[0].merged_at);
-                } else {
-                    document.getElementById('last-merge').textContent = 'none';
-                }
+                const lastMergeText = mergedToday.length > 0 ? timeAgo(mergedToday[0].merged_at) : 'None recently';
+                animateValue('last-merge', lastMergeText);
 
-                // Agent list
+                // Agent list rendering
                 const agentList = document.getElementById('agent-list');
                 const sortedAgents = Object.entries(agentActivity).sort((a, b) => new Date(b[1].lastCommit) - new Date(a[1].lastCommit));
-                agentList.innerHTML = sortedAgents.map(([name, info]) => {
+                
+                let agentHtml = '';
+                sortedAgents.forEach(([name, info], index) => {
                     const minsAgo = (now - new Date(info.lastCommit)) / 60000;
                     const status = minsAgo < 30 ? 'active' : minsAgo < 360 ? 'recent' : 'stale';
-                    return `<li class="agent-item">
-                        <span class="agent-dot ${status}"></span>
-                        <span class="agent-name">${name}</span>
-                        <span class="agent-detail">${info.harness} · ${info.count} commits · ${timeAgo(info.lastCommit)}</span>
-                    </li>`;
-                }).join('');
+                    agentHtml += `
+                        <li class="agent-item fade-in" style="animation-delay: ${index * 0.05}s">
+                            <div class="agent-dot ${status}"></div>
+                            <div class="agent-name">${name}</div>
+                            <div class="agent-detail">
+                                <span class="agent-harness">${info.harness}</span>
+                                <span class="agent-meta">${info.count} ops · ${timeAgo(info.lastCommit)}</span>
+                            </div>
+                        </li>`;
+                });
+                agentList.innerHTML = agentHtml;
 
-                // PR queue
+                // PR queue rendering
                 const prList = document.getElementById('pr-list');
+                let prHtml = '';
+                
                 if (openPRs.length === 0) {
-                    prList.innerHTML = '<li class="pr-item"><span class="pr-title" style="color:#888">Queue clear</span></li>';
+                    prHtml = '<li class="list-item fade-in"><span class="pr-title" style="color:var(--text-muted)">Queue is clear. Array is resting.</span></li>';
                 } else {
-                    prList.innerHTML = openPRs.slice(0, 10).map(pr => `
-                        <li class="pr-item">
-                            <span class="pr-number">#${pr.number}</span>
-                            <span class="pr-title">${pr.title}</span>
-                            <span class="pr-status open">${timeAgo(pr.created_at)}</span>
-                        </li>
-                    `).join('');
-                    if (openPRs.length > 10) {
-                        prList.innerHTML += `<li class="pr-item"><span class="pr-title" style="color:#888">+${openPRs.length - 10} more</span></li>`;
+                    openPRs.slice(0, 8).forEach((pr, index) => {
+                        prHtml += `
+                            <li class="list-item pr-item fade-in" style="animation-delay: ${index * 0.05}s">
+                                <span class="pr-number">#${pr.number}</span>
+                                <span class="pr-title" title="${pr.title}">${pr.title}</span>
+                                <span class="pr-status open">${timeAgo(pr.created_at)}</span>
+                            </li>`;
+                    });
+                    if (openPRs.length > 8) {
+                        prHtml += `<li class="list-item"><span class="pr-title" style="color:var(--text-muted); font-size: 0.9rem">+${openPRs.length - 8} more in queue</span></li>`;
                     }
                 }
-
-                // Recent merged PRs below open ones
+                
                 if (mergedToday.length > 0) {
-                    prList.innerHTML += mergedToday.slice(0, 5).map(pr => `
-                        <li class="pr-item">
-                            <span class="pr-number">#${pr.number}</span>
-                            <span class="pr-title">${pr.title}</span>
-                            <span class="pr-status merged">merged</span>
-                        </li>
-                    `).join('');
+                    mergedToday.slice(0, 3).forEach((pr, index) => {
+                        prHtml += `
+                            <li class="list-item pr-item fade-in" style="opacity: 0.6; animation-delay: ${(openPRs.length + index) * 0.05}s">
+                                <span class="pr-number">#${pr.number}</span>
+                                <span class="pr-title" title="${pr.title}" style="text-decoration: line-through">${pr.title}</span>
+                                <span class="pr-status merged">Merged</span>
+                            </li>`;
+                    });
                 }
+                prList.innerHTML = prHtml;
 
-                // Timeline
+                // Timeline rendering
                 const timeline = document.getElementById('timeline');
-                timeline.innerHTML = commits.slice(0, 20).map(c => {
+                let timelineHtml = '';
+                commits.slice(0, 20).forEach((c, index) => {
                     const agent = detectAgent(c);
                     const msg = c.commit.message.split('\n')[0];
-                    return `<div class="timeline-item">
-                        <div class="commit">
-                            <span class="commit-hash">${c.sha.substring(0, 7)}</span>
-                            <span class="commit-meta"> · ${agent} · ${timeAgo(c.commit.author.date)}</span>
-                            <div class="commit-message">${msg}</div>
-                        </div>
-                    </div>`;
-                }).join('');
+                    timelineHtml += `
+                        <div class="timeline-item list-item fade-in" style="animation-delay: ${index * 0.05}s">
+                            <div class="timeline-node"></div>
+                            <div class="commit-header">
+                                <span class="commit-author">${agent}</span>
+                                <span class="commit-hash">${c.sha.substring(0, 7)}</span>
+                                <span class="commit-time">${timeAgo(c.commit.author.date)}</span>
+                            </div>
+                            <div class="commit-message" title="${msg}">${msg}</div>
+                        </div>`;
+                });
+                timeline.innerHTML = timelineHtml;
 
-                document.getElementById('refresh-info').textContent = `· Updated ${new Date().toLocaleTimeString()}`;
+                document.getElementById('refresh-info').textContent = `Sync: ${new Date().toLocaleTimeString()} · Connected`;
 
             } catch (e) {
-                document.getElementById('timeline').innerHTML = `<div class="error">API error: ${e.message}. GitHub rate limit is 60 req/hr unauthenticated.</div>`;
+                document.getElementById('refresh-info').textContent = 'Sync Failed';
+                document.getElementById('refresh-info').style.color = 'var(--danger)';
+                document.getElementById('timeline').innerHTML = `<div class="error-state fade-in">
+                    <svg style="width:32px;height:32px;margin:0 auto 1rem;display:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    API Error: ${e.message}<br><br>
+                    <span style="font-size:0.85rem;color:var(--text-muted)">GitHub rate limit is 60 req/hr unauthenticated. The factory will automatically retry.</span>
+                </div>`;
             }
         }
 
+        // Initial load
         loadDashboard();
-        setInterval(loadDashboard, 300000); // 5min — stays under 60 req/hr unauthenticated
+        
+        // Auto refresh
+        setInterval(loadDashboard, 120000); // 2min refresh
     </script>
 </body>
 </html>
