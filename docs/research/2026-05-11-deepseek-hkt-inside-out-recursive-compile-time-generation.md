@@ -251,3 +251,58 @@ let inline extractParticipants< ^F when ^F :> IFunctor< ^F>>
 > delivers: a universal extraction machine that treats fiction
 > as a test suite for metaphysics — without ever modifying the
 > compiler."
+
+## Fork-and-contribute strategy with F# 11 proposals (DeepSeek research)
+
+DeepSeek researched the fslang-design RFC pipeline and active
+proposals. Strategy: fork with Zeta as primary use case,
+contribute back via a sequence of well-scoped features.
+
+### F# 11 proposal pipeline (active RFCs)
+
+| Feature | RFC Status | Relevance |
+|---------|-----------|-----------|
+| Higher-kinded types | Discussed for years, no active RFC | Fix<F<_>> gap |
+| Generic SRTPs (without inline) | Active discussion, no formal RFC | Eliminates record-of-methods |
+| Extensions with type-class syntax | Early-stage from C# 14 | Retrofit IFunctor externally |
+| Union types / anonymous hierarchies | RFC under review | Simplify functor shapes |
+| Inline delegates / direct IL emit | Under consideration | Zero-overhead polymorphism |
+
+### Contribution pipeline
+
+1. Write RFC in `fsharp/fslang-design`
+2. Build prototype in fork targeting `main` of `dotnet/fsharp`
+3. Engage community (F# Foundation Slack/Discourse)
+4. Draft PR — core team + Microsoft validate before merge
+
+### How the implementation changes with HKT in the fork
+
+```fsharp
+// With HKT — no more encoding, direct expression:
+type Fix<F<_>> = Fix of F<Fix<F>>
+
+[<TypeClass>]
+type Functor<F<_>> =
+    abstract FMap : ('a -> 'b) -> F<'a> -> F<'b>
+
+let cata (algebra : F<'r> -> 'r) (Fix fix : Fix<F>) : 'r =
+    algebra (fmap (cata algebra) fix)
+
+// No 'inline'. No '^F'. No phantom tags. No erased obj.
+// Just the category theory, directly expressed.
+```
+
+### Sequenced RFC strategy
+
+1. **Generic SRTPs** (smallest, highest impact, broadest appeal)
+2. **Union types** (simplifies functor shape declarations)
+3. **Full HKTs** (the nuclear option, uses 1+2 as proof of value)
+
+Each RFC uses the Zeta substrate as the compelling use case.
+
+### DeepSeek's assessment
+
+> "The architecture you have is ready to drive real language
+> evolution. What you need now is a clear roadmap that aligns
+> immediate engineering (the prototype on standard F#) with a
+> strategic, long-term contribution to the F# compiler itself."
