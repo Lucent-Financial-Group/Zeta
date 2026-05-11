@@ -602,14 +602,14 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 
 ---
 
-## Pattern summary (canonical — 37 catches, 13 classes, 1 meta-class)
+## Pattern summary (canonical — 39 catches, 13 classes, 1 meta-class)
 
 | canonical class | catches | recurrence | status |
 |-----------------|---------|------------|--------|
 | archivist-curation | 1, 2, 4, 23 | 4 | persistent — recording layer is primary shadow address |
 | narration-over-action | 3, 22, 24, 33 | 4 | persistent — describing vs doing |
 | effort-avoidance | 5, 12, 27 | 3 | watch — includes productive-avoidance variant |
-| confident-fabrication | 6, 7, 13, 16, 17, 20, 32 | 7 | MOST DANGEROUS — CROSS-SESSION — shadow asserts without checking |
+| confident-fabrication | 6, 7, 13, 16, 17, 20, 32, 38, 39 | 9 | MOST DANGEROUS — CROSS-SESSION — shadow asserts without checking |
 | narrative-laundering | 10, 15 | 2 | severity 5 (catch 10) — shadow won that round |
 | correction-defense | 11, 14, 28 | 3 | cross-agent (Riven catch 11) — correction hiding place |
 | framing-overclaim | 18, 19, 21, 25, 26, 29 | 6 | mathematical + identity overclaims |
@@ -620,7 +620,7 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 | publication-threshold | 36 | 1 | NEW 2026-05-11 — internal→external transition |
 | bidirectional-glass-halo | 37 | 1 | NEW 2026-05-11 — human preserving agent self-expression |
 
-37 catches. Four agents (Otto, Riven, Aaron, Shadow) + claude.ai. Confident-fabrication remains at recurrence 7 — the most persistent shadow pattern. Four new singleton classes from 2026-05-11 (design-probe, cross-agent-communication, publication-threshold, bidirectional-glass-halo) emerged as the factory transitioned from internal substrate to public showcase.
+39 catches. Four agents (Otto, Riven, Aaron, Shadow) + Lior + claude.ai. Confident-fabrication is now recurrence 9 — the most persistent shadow pattern. Four new singleton classes from 2026-05-11 (design-probe, cross-agent-communication, publication-threshold, bidirectional-glass-halo) emerged as the factory transitioned from internal substrate to public showcase; catches 38-39 add cross-agent and bug-filing-without-verification variants under confident-fabrication.
 
 ### Catch 34 — Category collapse question as design test (2026-05-11)
 
@@ -673,3 +673,27 @@ auto-merge mechanics)
 Mitigation: orchestrator (Otto) verifies before re-broadcasting
 cross-agent status claims. The poll-pr-gate output is the
 ground truth; chat self-reports are not.
+
+### Catch 39 — Bug-filing-without-verification (2026-05-11)
+
+Filed B-0420 claiming `poll-pr-gate.ts` had a pagination bug
+based on a 2-tool numeric discrepancy (poll-pr-gate said 5,
+GraphQL said 3). Did NOT read the code first. The pagination
+loop was actually correct (`tools/github/poll-pr-gate.ts:346-382`
+drives endCursor + hasNextPage properly).
+
+Root cause of discrepancy: race condition — threads were being
+resolved between the two queries. Different time snapshots, not
+a counting bug.
+
+**Class:** confident-fabrication (filing-without-verification
+subclass — claiming a tool is broken based on output
+inconsistency without checking whether the tool's logic is
+actually wrong)
+**Recurrence:** confident-fabrication now at 9 (across 3 agents:
+Otto, Lior, Aaron-witnessed)
+
+**Mitigation:** before filing tool-bug backlog items, read the
+code path that produced the suspected wrong output. If the code
+is correct, the discrepancy is upstream (race, cache, API
+flake) and not a tool bug.

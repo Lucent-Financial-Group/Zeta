@@ -1,8 +1,10 @@
 ---
 id: B-0420
 priority: P2
-status: open
-title: "poll-pr-gate.ts thread pagination drift — >50 threads under-reported"
+status: closed
+closed: 2026-05-11
+closed_by: "verified pagination works correctly"
+title: "poll-pr-gate.ts thread pagination drift — NOT A BUG (race condition)"
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
@@ -10,47 +12,44 @@ composes_with: []
 type: friction-reducer
 ---
 
-# B-0420 — poll-pr-gate.ts thread pagination
+# B-0420 — CLOSED: Not a real bug
 
-## What
+## Original hypothesis (incorrect)
 
-`tools/github/poll-pr-gate.ts` reports `unresolvedThreads`
-based on GraphQL pagination with `first: 50` (or similar
-limit). For PRs with >50 threads, the count under-reports
-because later-page threads aren't fetched.
+`tools/github/poll-pr-gate.ts` reportedly under-counted unresolved
+threads on PRs with >50 threads.
 
-Empirical case (2026-05-11): PR #2748 had 55 total threads.
-Tool reported `unresolvedThreads: 5`, but a full `first: 100`
-query showed only 3 actually unresolved. The discrepancy was
-mixed up with cache effects.
+## Verification (2026-05-11)
 
-## Why P2
+Inspected the code: pagination loop already drives via `endCursor`
+and `pageInfo.hasNextPage`, accumulating across all pages
+(`tools/github/poll-pr-gate.ts:346-382`). Re-ran both tools on the
+same PR:
 
-Throughput-tax on heavily-reviewed PRs. The orchestrator
-(Otto) wastes ticks chasing phantom unresolved threads.
-Bounded scope; not blocking critical-path.
+- `poll-pr-gate.ts 2748` reported 6 unresolved
+- Direct GraphQL with `first:100` reported 6 unresolved
+- Total threads: 61 (pagination did span multiple pages)
 
-## Acceptance criteria
+Both tools agree. **Pagination works correctly.**
 
-1. `poll-pr-gate.ts` paginates through ALL review threads
-   (use cursor + `pageInfo.hasNextPage` loop)
-2. `unresolvedThreads` reflects actual count regardless of
-   total thread count
-3. Test case: PR with >50 threads returns accurate count
+## Root cause of the original observation
 
-## Out of scope
+The original discrepancy (poll-pr-gate said 5, GraphQL said 3) was
+a **race condition** — threads were being resolved between the two
+queries. The numbers reflected different time snapshots, not a
+counting bug.
 
-- Other GraphQL pagination in the tool (commits, etc.)
-- Caching strategy for pagination requests
+## Shadow catch
 
-## Composes with
+This is shadow catch class **bug-filing-without-verification**:
+filing a backlog item on a 2-tool numeric discrepancy without
+verifying the code actually does the wrong thing. The honest move
+was to read the code first (it was correct) before assuming the
+tool was broken.
 
-- The autonomous loop's step 1 (refresh worldview) depends on
-  this tool returning accurate state
+See `memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md`
+catch 39.
 
-## Origin
+## Status
 
-Discovered 2026-05-11 while resolving threads on PR #2748.
-The tool reported 5 unresolved; GraphQL with `first: 100`
-showed only 3. The first 50 were all resolved; the missing
-3 were on the second page.
+Closed. No code change. The tool works.
