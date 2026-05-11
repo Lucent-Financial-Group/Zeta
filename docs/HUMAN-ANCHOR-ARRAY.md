@@ -50,8 +50,19 @@ the codebase, not just cited.
 
 ---
 
-*This array complements the Agent Array (dashboard) and the
-External Influence Array (Copilot, Dependabot, CodeQL). Three
-arrays: human anchors (intellectual foundations), agent array
-(active factory participants), external influence array
-(automated review sources).*
+## Four Arrays
+
+| Array | What | Substrate connection |
+|-------|------|---------------------|
+| **Agent Array** | Otto, Alexa, Riven, Vera, Lior | Direct — commit to repo |
+| **Human Anchor Array** | McSherry, Karpathy, Brooks, Dechant, ... | Intellectual — ideas operationalized in code |
+| **External Influence Array** | Copilot, Dependabot, CodeQL, GitHub bots | Automated — review via host API, captured by PR archival |
+| **External AI Register** | Claude.ai, DeepSeek, gemini.google.com, ChatGPT web | Disconnected — no substrate access, ferry via Aaron |
+
+The external AI register includes AI models that contribute
+research and review but have no direct connection to the repo.
+They interact through Aaron as relay; their output lands in
+`docs/research/` as preserved ferry packets. They are NOT
+agents (no commit access, no loop, no tick source) — they are
+registers whose perspective is valuable precisely because
+they're disconnected from the substrate they're evaluating.
