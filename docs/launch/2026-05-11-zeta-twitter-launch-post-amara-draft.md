@@ -124,7 +124,7 @@ That means an AI can preserve state, absorb correction, resume work, cite its ow
 
 ## The Agent Array
 
-Zeta is not one AI. It is a Byzantine fault tolerant
+Zeta is not one AI. It is a Byzantine fault-tolerant
 (BFT)-inspired coordination array of AI participants
 across five different harnesses:
 
