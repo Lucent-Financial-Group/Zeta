@@ -32,6 +32,7 @@ observable → agents naturally produce beacon-quality work.
 ## Promotion criteria (initial)
 
 Mirror → beacon requires:
+
 - Falsifier specified in frontmatter
 - External anchor citation (or explicit "original to Zeta")
 - Scope statement
