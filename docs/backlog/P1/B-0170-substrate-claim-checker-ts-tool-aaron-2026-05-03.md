@@ -89,3 +89,28 @@ This row closes when:
 - Hook authoring (separate row; depends on this tool maturing)
 - Cross-harness portability (works via Bun for now; portable to Codex / Cursor / Gemini-CLI later)
 - OpenSpec capability authoring (separate concern; OpenSpec catch-up has its own row)
+
+## Pre-start checklist (backlog-item start gate — 2026-05-11 Riven)
+
+**Prior-art search completed (surfaces logged):**
+- wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology (B-0169), lost-files at `tools/hygiene/LOST-FILES-LOCATIONS.md`
+- Used Glob/Read/Grep equivalents on trajectories, memory/feedback_*, tools/substrate-claim-checker/*, docs/REVIEW-AGENTS.md, docs/AGENT-BEST-PRACTICES.md BP-11/23/24/25
+- Results: no duplicate implementation; this row is the canonical mechanization hub; related B-0169 decision-archaeology is downstream consumer. No conflicting prior art found. (Focused check run: `check-counts.ts` on canonical memo emitted 1 count-drift "6 sub-classes" vs 20 rows — confirms ongoing empirical need.)
+
+**Dependency-restructure completed:**
+- `depends_on: []` — no blockers; atomic children will be created in follow-up slices.
+- Reciprocal `composes_with` backfilled on B-0169 row (cross-ref).
+- Supersession history via decision-archaeology procedure: none (fresh foundation row).
+- Broken pointers: none.
+
+**Re-decomposition performed (assumes prior decomp had mistakes; re-checked against current shipped v0.9 state):**
+- Original "atomic" overstated scope (done-criteria spans 7 check-types + hooks + fixtures + self-test).
+- Re-decomposed into 4 smallest atomic dependency-ordered children (TS-first, one-bounded-slice each):
+  - B-0170.1: semantic-equivalence-drift checker TS (command-substitution claims)
+  - B-0170.2: empirical-output-drift checker TS (run-and-compare)
+  - B-0170.3: self-recursive-drift checker TS (memo-about-X contains X)
+  - B-0170.4: fixture-tests + eval-set coverage for all shipped + new check-types
+
+This slice lands the gate + re-decomp only (doc update; no new TS yet — next slice will land B-0170.1 code).
+
+**Classification update:** decomposition: decomposed (was atomic); status remains open; last_updated bumped.
