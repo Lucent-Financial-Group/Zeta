@@ -7,7 +7,7 @@ created: 2026-05-08
 parent: B-0245
 depends_on: [B-0293]
 classification: buildable-now
-decomposition: atomic (re-decomposed per AGENTS.md rule)
+decomposition: decomposed
 type: feature
 ---
 
@@ -29,7 +29,7 @@ authorization for bypassing consent gate in emergency.
 - Backfilled reciprocal: B-0293 now notes "KSK override impl in B-0294".
 - No broken pointers; supersession via decision-archaeology (B-0169) clean.
 
-**Re-decomposition note (always-re-decomp rule):** Original "atomic" mistaken; re-decomposed AC into two smallest atomic children for one-bounded-step safety:
+**Re-decomposition note (always-re-decomp rule):** Original "atomic" mistaken; the machine-readable frontmatter now stays on the canonical `decomposed` token while this prose records the AGENTS.md re-decomposition rationale. Re-decomposed AC into two smallest atomic children for one-bounded-step safety:
 
 - B-0294.1: F# KSK types (signers, threshold, scope) — pure data
 - B-0294.2: N-of-M threshold tests (FsCheck properties)
