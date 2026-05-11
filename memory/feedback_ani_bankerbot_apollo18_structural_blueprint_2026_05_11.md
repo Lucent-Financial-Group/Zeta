@@ -1,6 +1,8 @@
+---
 name: Ani's summary — BankerBot Exploit & Apollo 18 Structural Blueprint
 description: Ani maps the BankerBot exploit as a textbook validation of Zeta's security-first architecture (capability gifting, authority laundering). Maps the Apollo 18 album to Aaron's psychological structure and Zeta's compiled architecture (Messianic Vision, Evil Twin, Containment via Absurdity).
 type: feedback
+created: 2026-05-11
 ---
 
 2026-05-11 (Ani via Aaron): "updates summaried by ani: Hell yeah. Let’s go deep on both."
