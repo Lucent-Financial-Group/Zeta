@@ -17,6 +17,26 @@ const OWNER = "Lucent-Financial-Group";
 const REPO = "Zeta";
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
+type GitHubCommit = {
+  sha: string;
+  commit: {
+    message: string;
+    author: {
+      name?: string;
+      date: string;
+    };
+  };
+};
+
+type GitHubPullRequest = {
+  number: number;
+  title: string;
+  created_at: string;
+  merged_at: string | null;
+};
+
+type MergedPullRequest = GitHubPullRequest & { merged_at: string };
+
 const AGENT_MAP: Record<string, { harness: string; patterns: string[] }> = {
   Otto: { harness: "Claude Code", patterns: ["Co-Authored-By: Claude"] },
   Alexa: { harness: "Kiro/Qwen", patterns: ["kiro", "alexa", "qwen"] },
@@ -26,7 +46,7 @@ const AGENT_MAP: Record<string, { harness: string; patterns: string[] }> = {
   Aaron: { harness: "Human", patterns: ["Aaron Stainback", "AceHack"] },
 };
 
-async function apiFetch(url: string) {
+async function apiFetch<T>(url: string): Promise<T> {
   const token = process.env.GITHUB_TOKEN;
   const headers: Record<string, string> = {
     Accept: "application/vnd.github+json",
@@ -34,10 +54,10 @@ async function apiFetch(url: string) {
   if (token) headers.Authorization = `Bearer ${token}`;
   const resp = await fetch(url, { headers });
   if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}: ${url}`);
-  return resp.json();
+  return (await resp.json()) as T;
 }
 
-function detectAgent(commit: any): string {
+function detectAgent(commit: GitHubCommit): string {
   const msg = commit.commit?.message ?? "";
   const author = commit.commit?.author?.name ?? "";
   for (const [name, info] of Object.entries(AGENT_MAP)) {
@@ -57,40 +77,35 @@ function timeAgo(date: string): string {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
+function mergedWithin(dateNow: number, windowMs: number) {
+  return (pr: GitHubPullRequest): pr is MergedPullRequest =>
+    pr.merged_at !== null && dateNow - new Date(pr.merged_at).getTime() < windowMs;
+}
+
 async function main() {
-  const [commits, openPRs, closedPRs] = (await Promise.all([
-    apiFetch(`${API}/commits?per_page=100`),
-    apiFetch(`${API}/pulls?state=open&per_page=50`),
-    apiFetch(
-      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`
+  const [commits, openPRs, closedPRs] = await Promise.all([
+    apiFetch<GitHubCommit[]>(`${API}/commits?per_page=100`),
+    apiFetch<GitHubPullRequest[]>(`${API}/pulls?state=open&per_page=50`),
+    apiFetch<GitHubPullRequest[]>(
+      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`,
     ),
-  ])) as [any[], any[], any[]];
+  ]);
 
   const now = Date.now();
   const h24 = 24 * 60 * 60 * 1000;
-  const commits24h = commits.filter(
-    (c: any) => now - new Date(c.commit.author.date).getTime() < h24
-  );
-  const mergedToday = closedPRs.filter(
-    (pr: any) => pr.merged_at && now - new Date(pr.merged_at).getTime() < h24
-  );
+  const commits24h = commits.filter((c) => now - new Date(c.commit.author.date).getTime() < h24);
+  const mergedToday = closedPRs.filter(mergedWithin(now, h24));
+  const lastMerged = mergedToday[0] ?? null;
 
   let avgLeadTimeMinutes: number | null = null;
   if (mergedToday.length > 0) {
-    const totalMins = mergedToday.reduce((sum: number, pr: any) => {
-      return (
-        sum +
-        (new Date(pr.merged_at).getTime() - new Date(pr.created_at).getTime()) /
-          60000
-      );
+    const totalMins = mergedToday.reduce((sum, pr) => {
+      return sum + (new Date(pr.merged_at).getTime() - new Date(pr.created_at).getTime()) / 60000;
     }, 0);
     avgLeadTimeMinutes = Math.round(totalMins / mergedToday.length);
   }
 
-  const agentActivity: Record<
-    string,
-    { lastCommit: string; count: number; harness: string }
-  > = {};
+  const agentActivity: Record<string, { lastCommit: string; count: number; harness: string }> = {};
   for (const c of commits) {
     const agent = detectAgent(c);
     if (!agentActivity[agent]) {
@@ -103,16 +118,10 @@ async function main() {
     agentActivity[agent].count++;
   }
 
-  const activeAgents = Object.values(agentActivity).filter(
-    (a) => now - new Date(a.lastCommit).getTime() < h24
-  ).length;
+  const activeAgents = Object.values(agentActivity).filter((a) => now - new Date(a.lastCommit).getTime() < h24).length;
 
   const agents = Object.entries(agentActivity)
-    .sort(
-      (a, b) =>
-        new Date(b[1].lastCommit).getTime() -
-        new Date(a[1].lastCommit).getTime()
-    )
+    .sort((a, b) => new Date(b[1].lastCommit).getTime() - new Date(a[1].lastCommit).getTime())
     .map(([name, info]) => ({
       name,
       harness: info.harness,
@@ -127,21 +136,21 @@ async function main() {
             : "stale",
     }));
 
-  const prQueue = openPRs.slice(0, 10).map((pr: any) => ({
+  const prQueue = openPRs.slice(0, 10).map((pr) => ({
     number: pr.number,
     title: pr.title,
     createdAgo: timeAgo(pr.created_at),
     state: "open",
   }));
 
-  const recentMerged = mergedToday.slice(0, 5).map((pr: any) => ({
+  const recentMerged = mergedToday.slice(0, 5).map((pr) => ({
     number: pr.number,
     title: pr.title,
     mergedAgo: timeAgo(pr.merged_at),
     state: "merged",
   }));
 
-  const recentCommits = commits.slice(0, 20).map((c: any) => ({
+  const recentCommits = commits.slice(0, 20).map((c) => ({
     sha: c.sha.substring(0, 7),
     message: c.commit.message.split("\n")[0],
     agent: detectAgent(c),
@@ -156,10 +165,8 @@ async function main() {
       prs_merged_24h: mergedToday.length,
       avg_lead_time_minutes: avgLeadTimeMinutes,
       open_prs: openPRs.length,
-      last_merge:
-        mergedToday.length > 0 ? mergedToday[0].merged_at : null,
-      last_merge_ago:
-        mergedToday.length > 0 ? timeAgo(mergedToday[0].merged_at) : "none",
+      last_merge: lastMerged?.merged_at ?? null,
+      last_merge_ago: lastMerged ? timeAgo(lastMerged.merged_at) : "none",
       commits_24h: commits24h.length,
       active_agents: activeAgents,
       consecutive_days_operational: null,
@@ -174,7 +181,7 @@ async function main() {
   const outPath = "demo/metrics.json";
   await Bun.write(outPath, JSON.stringify(metrics, null, 2));
   console.log(
-    `Wrote ${outPath}: ${mergedToday.length} PRs merged, ${commits24h.length} commits, ${activeAgents} active agents`
+    `Wrote ${outPath}: ${mergedToday.length} PRs merged, ${commits24h.length} commits, ${activeAgents} active agents`,
   );
 }
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zeta Factory Dashboard</title>
     <meta name="description" content="Zeta Factory Dashboard — Autonomous software factory operations, BFT agent array metrics, and alignment substrate tracking.">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://lucent-financial-group.github.io/Zeta/demo/index.html">
@@ -54,11 +54,11 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
@@ -72,7 +72,7 @@
             overflow: hidden;
             pointer-events: none;
         }
-        
+
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -80,21 +80,21 @@
             opacity: 0.5;
             animation: float 20s infinite ease-in-out alternate;
         }
-        
+
         .orb-1 {
             width: 40vw; height: 40vw;
             background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, rgba(0,0,0,0) 70%);
             top: -10%; left: -10%;
             animation-delay: 0s;
         }
-        
+
         .orb-2 {
             width: 35vw; height: 35vw;
             background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, rgba(0,0,0,0) 70%);
             bottom: -5%; right: -5%;
             animation-delay: -5s;
         }
-        
+
         .orb-3 {
             width: 30vw; height: 30vw;
             background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(0,0,0,0) 70%);
@@ -108,10 +108,10 @@
         }
 
         /* Layout */
-        .container { 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            padding: 3rem 2rem; 
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
         }
 
         /* Header */
@@ -124,18 +124,18 @@
             padding-bottom: 1.5rem;
         }
 
-        .logo-area h1 { 
-            font-size: 3rem; 
+        .logo-area h1 {
+            font-size: 3rem;
             font-weight: 700;
             background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -1px;
-            margin-bottom: 0.25rem; 
+            margin-bottom: 0.25rem;
         }
-        
-        .subtitle { 
-            color: var(--text-muted); 
+
+        .subtitle {
+            color: var(--text-muted);
             font-size: 1.1rem;
             font-weight: 300;
         }
@@ -167,9 +167,9 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        .refresh-info { 
-            font-size: 0.8rem; 
-            color: var(--text-muted); 
+        .refresh-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
             margin-top: 0.5rem;
             display: block;
             text-align: right;
@@ -214,17 +214,17 @@
         }
 
         /* Panels (Glassmorphism) */
-        .panel { 
-            background: var(--panel-bg); 
-            border-radius: 20px; 
-            padding: 2rem; 
-            border: 1px solid var(--panel-border); 
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--panel-border);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s ease, border-color 0.3s ease;
         }
-        
+
         .panel:hover {
             border-color: rgba(255, 255, 255, 0.1);
             transform: translateY(-2px);
@@ -237,12 +237,12 @@
             margin-bottom: 1.5rem;
         }
 
-        h2 { 
-            font-size: 1.4rem; 
+        h2 {
+            font-size: 1.4rem;
             font-weight: 600;
             color: #fff;
         }
-        
+
         .icon {
             width: 24px; height: 24px;
             color: var(--accent-primary);
@@ -261,44 +261,44 @@
             .grid-half { grid-template-columns: 1fr 1fr; }
         }
 
-        .stat-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 1.5rem; 
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
         }
 
         /* Stats */
-        .stat { 
-            background: rgba(0, 0, 0, 0.2); 
-            padding: 1.5rem; 
-            border-radius: 16px; 
+        .stat {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.03);
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
             transition: background 0.3s ease;
         }
-        
+
         .stat:hover {
             background: rgba(255, 255, 255, 0.03);
         }
 
-        .stat-value { 
-            font-size: 2.5rem; 
-            font-weight: 700; 
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
             background: linear-gradient(to right, #fff, #cbd5e1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1;
         }
-        
+
         .stat-value.good { background: linear-gradient(to right, #34d399, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .stat-value.warn { background: linear-gradient(to right, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .stat-value.bad { background: linear-gradient(to right, #f87171, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .stat-label { 
-            font-size: 0.9rem; 
-            color: var(--text-muted); 
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 500;
@@ -306,30 +306,30 @@
 
         /* Lists */
         ul { list-style: none; }
-        
+
         /* Agent/Anchor List */
-        .agent-item, .anchor-item { 
-            display: flex; 
-            align-items: center; 
-            padding: 1rem; 
-            margin-bottom: 0.75rem; 
-            background: rgba(0, 0, 0, 0.2); 
-            border-radius: 12px; 
+        .agent-item, .anchor-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
             border: 1px solid transparent;
             transition: all 0.2s ease;
         }
-        
+
         .agent-item:hover, .anchor-item:hover {
             border-color: rgba(255, 255, 255, 0.05);
             background: rgba(255, 255, 255, 0.02);
             transform: translateX(4px);
         }
 
-        .agent-dot { 
-            width: 12px; height: 12px; 
-            border-radius: 50%; 
-            margin-right: 1rem; 
-            flex-shrink: 0; 
+        .agent-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            flex-shrink: 0;
             box-shadow: 0 0 10px currentColor;
         }
         .agent-dot.active { color: var(--success); background: var(--success); animation: pulse-dot 2s infinite; }
@@ -337,42 +337,42 @@
         .agent-dot.stale { color: var(--danger); background: var(--danger); opacity: 0.5; box-shadow: none; }
         .agent-dot.anchor { color: #3b82f6; background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
         .agent-dot.external { color: #f43f5e; background: #f43f5e; box-shadow: 0 0 8px #f43f5e; }
-        
-        .agent-name, .anchor-name { 
-            font-weight: 600; 
+
+        .agent-name, .anchor-name {
+            font-weight: 600;
             font-size: 1.1rem;
             width: auto;
             min-width: 100px;
         }
-        
-        .agent-detail, .anchor-detail { 
+
+        .agent-detail, .anchor-detail {
             display: flex;
             flex-direction: column;
-            margin-left: auto; 
-            text-align: right; 
+            margin-left: auto;
+            text-align: right;
         }
-        
+
         .agent-harness, .anchor-contribution {
             font-size: 0.85rem;
             color: var(--accent-primary);
             font-weight: 500;
         }
-        
+
         .agent-meta, .anchor-meta {
-            font-size: 0.8rem; 
-            color: var(--text-muted); 
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
         /* PR & Timeline Lists */
-        .list-item { 
-            padding: 1rem; 
-            margin-bottom: 0.75rem; 
-            background: rgba(0, 0, 0, 0.2); 
-            border-radius: 12px; 
+        .list-item {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.02);
             transition: all 0.2s;
         }
-        
+
         .list-item:hover {
             background: rgba(255, 255, 255, 0.03);
             border-color: rgba(255, 255, 255, 0.08);
@@ -384,30 +384,30 @@
             align-items: center;
             gap: 1rem;
         }
-        
-        .pr-number { 
-            color: var(--accent-secondary); 
-            font-family: monospace; 
+
+        .pr-number {
+            color: var(--accent-secondary);
+            font-family: monospace;
             font-size: 0.95rem;
             font-weight: 600;
             background: rgba(99, 102, 241, 0.1);
             padding: 0.25rem 0.5rem;
             border-radius: 6px;
         }
-        
-        .pr-title { 
-            flex: 1; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
+
+        .pr-title {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             font-weight: 500;
         }
-        
-        .pr-status { 
-            font-size: 0.75rem; 
-            padding: 0.25rem 0.75rem; 
-            border-radius: 12px; 
-            flex-shrink: 0; 
+
+        .pr-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            flex-shrink: 0;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -416,40 +416,40 @@
         .pr-status.merged { background: rgba(139, 92, 246, 0.1); color: var(--accent-primary); border: 1px solid rgba(139,92,246,0.2); }
 
         /* Timeline specifics */
-        .timeline { 
-            position: relative; 
-            padding-left: 2rem; 
-            max-height: 500px; 
-            overflow-y: auto; 
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            max-height: 500px;
+            overflow-y: auto;
             padding-right: 0.5rem;
         }
-        
+
         /* Custom Scrollbar */
         .timeline::-webkit-scrollbar, .panel-scroll::-webkit-scrollbar { width: 6px; }
         .timeline::-webkit-scrollbar-track, .panel-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
         .timeline::-webkit-scrollbar-thumb, .panel-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
         .timeline::-webkit-scrollbar-thumb:hover, .panel-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-        .timeline::before { 
-            content: ''; 
-            position: absolute; 
-            left: 7px; 
-            top: 0; 
-            bottom: 0; 
-            width: 2px; 
-            background: linear-gradient(to bottom, var(--accent-primary), rgba(255,255,255,0.05)); 
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-primary), rgba(255,255,255,0.05));
         }
-        
+
         .timeline-item { position: relative; }
-        
+
         .timeline-node {
-            position: absolute; 
-            left: -2rem; 
-            top: 1.5rem; 
-            width: 16px; 
-            height: 16px; 
-            background: var(--bg-color); 
-            border-radius: 50%; 
+            position: absolute;
+            left: -2rem;
+            top: 1.5rem;
+            width: 16px;
+            height: 16px;
+            background: var(--bg-color);
+            border-radius: 50%;
             border: 3px solid var(--accent-primary);
             z-index: 2;
             box-shadow: 0 0 10px rgba(139,92,246,0.5);
@@ -462,15 +462,15 @@
             margin-bottom: 0.5rem;
         }
 
-        .commit-hash { 
-            font-family: monospace; 
-            color: var(--text-muted); 
-            font-size: 0.85rem; 
+        .commit-hash {
+            font-family: monospace;
+            color: var(--text-muted);
+            font-size: 0.85rem;
             background: rgba(255,255,255,0.05);
             padding: 0.1rem 0.4rem;
             border-radius: 4px;
         }
-        
+
         .commit-author {
             font-weight: 600;
             color: #fff;
@@ -482,22 +482,22 @@
             margin-left: auto;
         }
 
-        .commit-message { 
-            font-size: 0.95rem; 
+        .commit-message {
+            font-size: 0.95rem;
             color: #cbd5e1;
             line-height: 1.4;
         }
 
-        .loading-state, .error-state { 
-            text-align: center; 
-            padding: 3rem; 
-            color: var(--text-muted); 
+        .loading-state, .error-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
             font-size: 1rem;
             background: rgba(0,0,0,0.2);
             border-radius: 12px;
             border: 1px dashed rgba(255,255,255,0.1);
         }
-        
+
         .error-state {
             color: var(--danger);
             border-color: rgba(239, 68, 68, 0.3);
@@ -507,13 +507,13 @@
         .fade-in {
             animation: fadeIn 0.5s ease-out forwards;
         }
-        
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 768px) { 
+        @media (max-width: 768px) {
             .container { padding: 1.5rem 1rem; }
             header { flex-direction: column; align-items: flex-start; gap: 1rem; }
             .refresh-info { text-align: left; margin-top: 0; }
@@ -522,41 +522,41 @@
 
         /* Print Layout */
         @media print {
-            body { 
-                background: white; 
-                color: black; 
+            body {
+                background: white;
+                color: black;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
             .bg-orbs, .nav-tabs { display: none; }
             .tab-content { display: block !important; margin-bottom: 2rem; }
-            .panel { 
-                background: white; 
-                border: 1px solid #ddd; 
-                backdrop-filter: none; 
+            .panel {
+                background: white;
+                border: 1px solid #ddd;
+                backdrop-filter: none;
                 -webkit-backdrop-filter: none;
                 box-shadow: none;
                 break-inside: avoid;
             }
-            .logo-area h1 { 
-                background: none; 
-                -webkit-text-fill-color: black; 
-                color: black; 
+            .logo-area h1 {
+                background: none;
+                -webkit-text-fill-color: black;
+                color: black;
             }
             h2, .commit-author, .anchor-name { color: black; }
-            .stat-value { 
-                background: none; 
-                -webkit-text-fill-color: black; 
-                color: black; 
+            .stat-value {
+                background: none;
+                -webkit-text-fill-color: black;
+                color: black;
             }
-            .stat-value.good, .stat-value.warn, .stat-value.bad { 
-                background: none; 
-                -webkit-text-fill-color: black; 
+            .stat-value.good, .stat-value.warn, .stat-value.bad {
+                background: none;
+                -webkit-text-fill-color: black;
             }
             .stat-label, .subtitle, .refresh-info, .agent-meta, .commit-time, .commit-hash, .anchor-meta { color: #555; }
-            .stat, .agent-item, .list-item, .anchor-item { 
-                background: white; 
-                border: 1px solid #ddd; 
+            .stat, .agent-item, .list-item, .anchor-item {
+                background: white;
+                border: 1px solid #ddd;
             }
             .timeline::before { background: #ddd; }
             .timeline-node { background: white; border-color: #555; box-shadow: none; }
@@ -1029,7 +1029,7 @@
                 // Agent list rendering
                 const agentList = document.getElementById('agent-list');
                 const sortedAgents = Object.entries(agentActivity).sort((a, b) => new Date(b[1].lastCommit) - new Date(a[1].lastCommit));
-                
+
                 let agentHtml = '';
                 sortedAgents.forEach(([name, info], index) => {
                     const minsAgo = (now - new Date(info.lastCommit)) / 60000;
@@ -1126,7 +1126,7 @@
 
         // Render static UI
         renderStaticLists();
-        
+
         // Initial load
         loadDashboard();
 
