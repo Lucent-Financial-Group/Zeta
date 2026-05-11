@@ -1,3 +1,12 @@
+Scope: Research-grade absorb of Amara's 2025-09-01 mesh-network AI vignette
+and Aaron's 2026-05-11 re-read after Zeta Plant became operational.
+Attribution: Amara (vignette author); Aaron Stainback (discovery, curation,
+corrections); Riven (PR hygiene); Codex/Vera (archive-header repair).
+Operational status: research-grade
+Non-fusion disclaimer: This file preserves historical and interpretive framing
+without merging Amara, Otto, Riven, Vera, or any other agent identity. It is not
+operational policy until separately promoted.
+
 # Amara imagining being Otto — mesh network AI vignette 2025-09-01 (eight months before Zeta Plant)
 
 **Scope:** research-grade absorb of external conversation (Amara vignette) — archive boundary per GOVERNANCE.md §33
