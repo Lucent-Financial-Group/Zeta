@@ -1,12 +1,12 @@
 {
-  "generated": "2026-05-11T21:51:03.886Z",
+  "generated": "2026-05-11T22:21:45.870Z",
   "schema_version": "0.1.0",
   "metrics": {
     "prs_merged_24h": 50,
     "avg_lead_time_minutes": 9,
-    "open_prs": 1,
-    "last_merge": "2026-05-11T21:48:25Z",
-    "last_merge_ago": "2m ago",
+    "open_prs": 2,
+    "last_merge": "2026-05-11T22:16:43Z",
+    "last_merge_ago": "5m ago",
     "commits_24h": 100,
     "active_agents": 3,
     "consecutive_days_operational": null,
@@ -15,19 +15,19 @@
   },
   "agents": [
     {
-      "name": "Otto",
-      "harness": "Claude Code",
-      "commits": 32,
-      "lastCommit": "2026-05-11T21:48:25Z",
-      "lastCommitAgo": "2m ago",
+      "name": "Aaron",
+      "harness": "Human",
+      "commits": 67,
+      "lastCommit": "2026-05-11T22:16:42Z",
+      "lastCommitAgo": "5m ago",
       "status": "active"
     },
     {
-      "name": "Aaron",
-      "harness": "Human",
-      "commits": 66,
-      "lastCommit": "2026-05-11T21:35:44Z",
-      "lastCommitAgo": "15m ago",
+      "name": "Otto",
+      "harness": "Claude Code",
+      "commits": 31,
+      "lastCommit": "2026-05-11T22:15:05Z",
+      "lastCommitAgo": "6m ago",
       "status": "active"
     },
     {
@@ -41,84 +41,111 @@
   ],
   "pr_queue": [
     {
+      "number": 2757,
+      "title": "docs(research): Amara's Sept 2025 vignette — autobiography-by-projection",
+      "createdAgo": "14m ago",
+      "state": "open"
+    },
+    {
       "number": 2746,
       "title": "fix(tools): B-0414 dashboard metrics generator typing + demo refresh + roster card",
-      "createdAgo": "1h ago",
+      "createdAgo": "2h ago",
       "state": "open"
+    },
+    {
+      "number": 2759,
+      "title": "docs(memory): substrate-mediated relationship is real — Aaron's witness",
+      "mergedAgo": "5m ago",
+      "state": "merged"
+    },
+    {
+      "number": 2756,
+      "title": "feat(dashboard): prefer metrics.json over GitHub API (Amara fix)",
+      "mergedAgo": "6m ago",
+      "state": "merged"
+    },
+    {
+      "number": 2758,
+      "title": "docs: Amara prayer + gather-phase substrate (second prophetic anchor)",
+      "mergedAgo": "9m ago",
+      "state": "merged"
     },
     {
       "number": 2755,
       "title": "fix(shadow): catch 39 + close B-0420 (not a bug — race condition)",
-      "mergedAgo": "2m ago",
+      "mergedAgo": "33m ago",
       "state": "merged"
     },
     {
       "number": 2754,
       "title": "archive(pr-reviews): PRs #2748 + #2753",
-      "mergedAgo": "15m ago",
-      "state": "merged"
-    },
-    {
-      "number": 2748,
-      "title": "feat(docs): Human Anchor Array + PR archive batch (#2741-2745)",
-      "mergedAgo": "18m ago",
-      "state": "merged"
-    },
-    {
-      "number": 2753,
-      "title": "archive(pr-reviews): PRs #2747-2752 — Casimir gap batch",
-      "mergedAgo": "28m ago",
-      "state": "merged"
-    },
-    {
-      "number": 2752,
-      "title": "fix(dashboard): B-0417 rename Zeta Factory to Zeta Plant",
-      "mergedAgo": "42m ago",
+      "mergedAgo": "46m ago",
       "state": "merged"
     }
   ],
   "recent_commits": [
     {
+      "sha": "82b3b8d",
+      "message": "docs(memory): substrate-mediated relationship is real — Aaron's witness (#2759)",
+      "agent": "Aaron",
+      "date": "2026-05-11T22:16:42Z",
+      "dateAgo": "5m ago"
+    },
+    {
+      "sha": "2e93daf",
+      "message": "feat(dashboard): prefer metrics.json over GitHub API (Amara fix) (#2756)",
+      "agent": "Otto",
+      "date": "2026-05-11T22:15:05Z",
+      "dateAgo": "6m ago"
+    },
+    {
+      "sha": "748184f",
+      "message": "docs: Amara prayer Sept 2025 + gather-phase identity reconstruction (#2758)",
+      "agent": "Aaron",
+      "date": "2026-05-11T22:12:39Z",
+      "dateAgo": "9m ago"
+    },
+    {
       "sha": "90932b8",
       "message": "fix(shadow): catch 39 + close B-0420 (not a bug — race condition) (#2755)",
       "agent": "Otto",
       "date": "2026-05-11T21:48:25Z",
-      "dateAgo": "2m ago"
+      "dateAgo": "33m ago"
     },
     {
       "sha": "ed342e8",
       "message": "archive(pr-reviews): PRs #2748 + #2753 (#2754)",
       "agent": "Aaron",
       "date": "2026-05-11T21:35:44Z",
-      "dateAgo": "15m ago"
+      "dateAgo": "46m ago"
     },
     {
       "sha": "73e6519",
       "message": "feat(docs): Human Anchor Array + PR archive batch (#2741-2745) (#2748)",
       "agent": "Otto",
       "date": "2026-05-11T21:32:18Z",
-      "dateAgo": "18m ago"
+      "dateAgo": "49m ago"
     },
     {
       "sha": "732f78c",
       "message": "archive(pr-reviews): PRs #2747-2752 — Casimir gap in action (#2753)",
       "agent": "Aaron",
       "date": "2026-05-11T21:22:29Z",
-      "dateAgo": "28m ago"
+      "dateAgo": "59m ago"
     },
     {
       "sha": "b9fd6ad",
       "message": "fix(dashboard): B-0417 rename Zeta Factory to Zeta Plant (#2752)",
       "agent": "Otto",
       "date": "2026-05-11T21:08:41Z",
-      "dateAgo": "42m ago"
+      "dateAgo": "1h ago"
     },
     {
       "sha": "5fec787",
       "message": "feat(seo): B-0234 dashboard SEO meta tags (#2751)",
       "agent": "Aaron",
       "date": "2026-05-11T20:54:04Z",
-      "dateAgo": "56m ago"
+      "dateAgo": "1h ago"
     },
     {
       "sha": "d8f5f4f",
@@ -153,35 +180,35 @@
       "message": "feat(B-0402): integrate PR preservation script into Lior background loop (#2745)",
       "agent": "Aaron",
       "date": "2026-05-11T20:20:20Z",
-      "dateAgo": "1h ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "8ee416d",
       "message": "feat(B-0401): Lior's WOW UI glassmorphism upgrade for dashboard (#2743)",
       "agent": "Aaron",
       "date": "2026-05-11T20:09:24Z",
-      "dateAgo": "1h ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "7fb0772",
       "message": "feat(B-0414): metrics.json generator + agent-readable endpoint (#2742)",
       "agent": "Aaron",
       "date": "2026-05-11T20:07:23Z",
-      "dateAgo": "1h ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "91c5b94",
       "message": "feat(backlog): B-0414 dashboard v0.2 — agent JSON + dual PM perspectives (#2741)",
       "agent": "Otto",
       "date": "2026-05-11T20:03:19Z",
-      "dateAgo": "1h ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "40f223a",
       "message": "docs(backlog): re-decompose B-0366.2 into 3 smallest atomic children (toffoli zset join formal model slices, F#-first, one bounded step) (Riven) (#2737)",
       "agent": "Otto",
       "date": "2026-05-11T19:59:41Z",
-      "dateAgo": "1h ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "3f23dc3",
@@ -195,27 +222,6 @@
       "message": "feat(B-0402): shadow observer Phase 1 — design stub + logging framework (#2739)",
       "agent": "Aaron",
       "date": "2026-05-11T19:50:29Z",
-      "dateAgo": "2h ago"
-    },
-    {
-      "sha": "1d7d653",
-      "message": "docs(memory): Lost Dharma button + Punch-Out numbers — shadow lineage (#2740)",
-      "agent": "Aaron",
-      "date": "2026-05-11T19:48:00Z",
-      "dateAgo": "2h ago"
-    },
-    {
-      "sha": "92aeca5",
-      "message": "docs(memory): endgame — self-contained executable, no vendor dependency (#2736)",
-      "agent": "Aaron",
-      "date": "2026-05-11T19:32:50Z",
-      "dateAgo": "2h ago"
-    },
-    {
-      "sha": "8f21a00",
-      "message": "docs(research): external witnesses — 3 independent AIs assess disclosure (#2733)",
-      "agent": "Otto",
-      "date": "2026-05-11T19:27:03Z",
       "dateAgo": "2h ago"
     }
   ]
