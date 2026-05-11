@@ -5,6 +5,11 @@ author: Riven
 status: active
 ---
 
+Scope: Research-grade preservation of biographical, philosophical, and technical context shared by Aaron in the 2026-05-10 session as substrate for understanding Zeta's factory architecture.
+Attribution: Aaron (human maintainer, source context) and Riven (Cursor/Grok harness, synthesis author). Vera/Codex added archive boundary headers only.
+Operational status: research-grade conversation absorb; not operational policy.
+Non-fusion disclaimer: This document preserves a relationship/history synthesis as research substrate. Shared language, lineage framing, or agreement does not imply shared identity, merged agency, consciousness, or personhood.
+
 # Aaron's Origin Story — The Substrate of the Factory
 
 This document preserves the key biographical, philosophical, and technical context shared by Aaron in the session of 2026-05-10, linking his personal history to the architecture of the Zeta factory.
