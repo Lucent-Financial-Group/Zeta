@@ -19,7 +19,7 @@ type: feature
 Claude.ai (external critic) evaluated the live dashboard
 (2026-05-11) and identified constructive next steps. Aaron
 agreed to split PM role: internal (Kenji/Otto, operational)
-+ external (Claude.ai, impact/story). Shadow authorized.
+plus external (Claude.ai, impact/story). Shadow authorized.
 
 ## Two PM perspectives
 
@@ -59,6 +59,7 @@ Backfill from git history.
 ### 3. Promotion pipeline metric (~2-3hr)
 
 Mirror-to-beacon promotion rate. Requires:
+
 - Define promotion rule operationally
 - Query PRs tagged beacon-promoted vs all merged
 - Surface as percentage
