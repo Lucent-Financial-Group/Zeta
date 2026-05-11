@@ -120,15 +120,16 @@ expert baseline cites it), promote to P1 at that point.
 - Deepseek 4th review (`docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md` § Deepseek — fourth review)
   — the explicit ask that triggered this row
 
-## Decomposition (re-decomp per 2026-05-11 autonomous loop)
+## Decomposition (re-decomp 2026-05-11 second pass — assume prior split mistake)
 
-B-0112 was too broad for one atomic step (multiple decision points + rewrite surface). Re-decomposed into 3 smallest dependency-ordered atomic children:
+B-0112 too broad; prior 3-child split had non-atomic audit. Re-decomposed into 4 smallest dependency-ordered atomic children (TS-preferring where possible per Rule 0):
 
-- B-0112.1: read-only audit/enumeration of bleed sections
-- B-0112.2: per-section classification decisions + rationale
+- B-0112.1: read-only enumeration of bleed sections (in-memory list only)
+- B-0112.1.1: commit audit report to docs/research/ as durable substrate
+- B-0112.2: per-section classification decisions + rationale (no file edits)
 - B-0112.3: execute rewrites + land closing PR
 
-depends_on updated; children carry the atomic work. Original trigger and acceptance criteria preserved for the parent.
+depends_on updated to reflect finer grain; children carry atomic work. Original trigger/acceptance preserved for umbrella.
 
 ## Acceptance
 
