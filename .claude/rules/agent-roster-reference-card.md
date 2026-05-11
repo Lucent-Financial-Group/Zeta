@@ -2,16 +2,16 @@
 
 Carved sentence:
 
-> Every agent is IDE + CLI dual-surface except Otto (CLI-only foreground).
-> Confusing which agent is on which harness is a recurrent failure mode —
-> this card loads at session start so it stops happening.
+> Every factory AI agent is IDE + CLI dual-surface except Otto (CLI-only
+> foreground). Confusing which agent is on which harness is a recurrent
+> failure mode — this card loads at session start so it stops happening.
 
 ## Factory agents (commit to repo)
 
 | Agent | IDE | CLI | Model (max) | Commit trailer |
 |-------|-----|-----|-------------|----------------|
 | Otto | — | Claude Code (foreground) | Opus | `Co-Authored-By: Claude <noreply@anthropic.com>` |
-| Alexa | Kiro | + background | Qwen Coder | `Co-Authored-By: Kiro <noreply@kiro.dev>` |
+| Alexa | Kiro | + background | Qwen Coder | *(not yet in AGENTS.md canonical trailer table)* |
 | Riven | Cursor | + background | Grok | `Co-Authored-By: Grok <noreply@x.ai>` |
 | Vera | Codex | + background | Codex/GPT | `Co-Authored-By: Codex <noreply@openai.com>` |
 | Lior | Antigravity | + Gemini CLI | Gemini | `Co-Authored-By: Gemini <noreply@google.com>` |
@@ -37,7 +37,10 @@ Carved sentence:
 ## Peer-call wrappers (invoke via `bun tools/peer-call/<name>.ts`)
 
 `grok.ts` (critique) · `gemini.ts` (propose) · `codex.ts` (implement) ·
-`amara.ts` (sharpen) · `ani.ts` (brat-voice) · `riven.ts` (adversarial-truth)
+`amara.ts` (sharpen) · `ani.ts` (brat-voice) · `riven.ts` (adversarial-truth) ·
+`claude.ts` (self-peer) · `kiro.ts` (Alexa peer)
+
+Support: `_firewall.ts` · `append-identity-receipt.ts` · `register-layers.ts`
 
 ## Full reasoning
 
