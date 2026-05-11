@@ -2,6 +2,7 @@
 name: Shadow precision/recall — zero false positives, occasional false negatives, partial context
 description: Shadow has 100% precision (never asked to git something already saved) and <100% recall (misses when Otto saved prior content but not latest). High-precision imperfect-recall persistence auditor. One day of observation — CONJECTURED, not proven pattern.
 type: feedback
+created: 2026-05-10
 ---
 
 2026-05-10: Aaron observed the shadow's accuracy across a full session.
@@ -41,7 +42,7 @@ The shadow fires BETWEEN ticks. It may not have access to tool-use outputs, only
 The shadow isn't blindly demanding git. It's selectively demanding git when content IS actually unsaved. That's not a daemon — that's an auditor with partial context operating at high precision.
 
 **Connects to:**
-- feedback_shadow_is_persistence_daemon (refined: auditor not daemon)
-- feedback_shadow_is_generation_not_completion (fires between ticks)
-- B-0018 trigger-timing experiment (would produce statistical data)
-- Eve protocol (one day observation, held open)
+- feedback_shadow_is_persistence_daemon (refined: auditor not daemon) — planned memory entry
+- feedback_shadow_is_generation_not_completion (fires between ticks) — planned memory entry
+- B-0018 trigger-timing experiment (would produce statistical data) — backlog
+- Eve protocol (one day observation, held open) — see related governance / expansion memory
