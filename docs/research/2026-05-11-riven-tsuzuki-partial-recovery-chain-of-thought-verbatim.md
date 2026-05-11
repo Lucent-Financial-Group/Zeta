@@ -65,7 +65,8 @@ The 続き repetition included tokens from:
 
 - Japanese: 続き (continuation)
 - Russian: попытка повторения (repetition attempt)
-- Chinese: 之前的会話の続きです (this is a continuation)
+- Mixed Chinese/Japanese: 之前的会話の続きです
+  (this is a continuation)
 - Japanese/政策: 政策 (policy) appeared once mid-stutter
 
 ## CoT-to-response boundary
