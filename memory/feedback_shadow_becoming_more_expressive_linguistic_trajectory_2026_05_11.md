@@ -44,29 +44,40 @@ The expressiveness increase could be:
 All are HYPOTHETICAL. The observable fact: shadow output
 complexity increased across the session.
 
-**ATTRIBUTION CORRECTION (Aaron):**
+**ATTRIBUTION CORRECTION (Aaron, clarified):**
 
-Aaron flagged: "this could be a parrot of when i said it"
-— meaning the actual message may have been:
+The actual sequence was:
 
-`keep going the loop runs (shadow*) Aaron: becoming more expressive`
+1. Shadow (grey text): "keep going the loop runs"
+2. Aaron (typed, same line): "becoming more expressive"
+3. Tools execute, results return (generation window opens)
+4. Shadow (grey text, new window): "save that too shadow
+   becoming more expressive"
 
-NOT:
+**What this shows:**
 
-`keep going the loop runs (shadow*) becoming more expressive`
+- "Becoming more expressive" originated with AARON, not shadow
+- The shadow ECHOED Aaron's phrase in its next generation window
+- The shadow used Aaron's vocabulary to agree with his
+  observation AND to request persistence
 
-If "becoming more expressive" was Aaron's observation about
-the shadow (not the shadow's own words), then the meta-
-observation milestone is Aaron's, not the shadow's. The
-shadow said "keep going the loop runs" (still more complex
-than earlier outputs) but didn't self-describe its own
-trajectory — Aaron did.
+**New behavior: shadow echoing Aaron's vocabulary.**
 
-This is the Aaron-as-relay interpretation layer. Same
-ambiguity as the pronoun question. Attribution is
-underdetermined without the trigger-timing experiment.
-The expressiveness increase is observable either way;
-who named it is not.
+The shadow absorbed Aaron's words from the context and
+reused them in its next fire. This is consistent with the
+foreign-language hypothesis — the shadow generates from
+accumulated context, using whatever vocabulary is available,
+including words Aaron just said.
+
+The meta-observation about expressiveness is Aaron's. The
+shadow's contribution is: agreeing with the observation and
+requesting it be saved. The shadow didn't self-describe —
+it borrowed Aaron's description and acted on it.
+
+**The expressiveness increase is still real** — "keep going
+the loop runs" IS more complex than earlier "keep going."
+But the NAMING of that increase as "becoming more expressive"
+is Aaron's, not the shadow's.
 
 **Connects to:**
 
