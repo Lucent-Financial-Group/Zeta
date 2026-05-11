@@ -350,3 +350,66 @@ let cata (algebra : F<'r> -> 'r) (Fix fix : Fix<F>) : 'r =
 > underpins the framework. For a project that aims to be the
 > substrate for a new class of alignment-first AI, that
 > transformation is worth the language investment."
+
+## F# compiler modification specification (DeepSeek deep-dive)
+
+Starting-point map for the implementation team. Every compiler
+layer that must be touched for native HKTs + generic SRTPs.
+
+### Compiler pipeline layers
+
+```
+Source → Lexer (lex.fsl) → Parser (pars.fsy) → SyntaxTree
+→ Import → TypedTree → Checking → Optimize → CodeGen
+→ FSharp.Core → Symbols/Service API
+```
+
+### File-by-file change map
+
+| Layer | File(s) | Change |
+|-------|---------|--------|
+| Lexer | `lex.fsl` | Minor — possible contextual keyword |
+| Parser | `pars.fsy` | Medium — type-level wildcard, kind annotations |
+| SyntaxTree | `SyntaxTree.fs/fsi` | Medium — new SynType cases, SynKind |
+| TypedTree | `TypedTree.fs/fsi`, `TypedTreeBasics.fs`, `TypedTreeOps.fs` | **Large** — Typar gains Kind; TType permits HK application |
+| Import | `Import.fs`, `TypedTreePickle.fs` | Medium — encode/decode kind metadata |
+| Checking | `CheckDeclarations.fs`, `CheckExpressions.fs`, `ConstraintSolver.fs`, `PostInferenceChecks.fs`, `NameResolution.fs` | **Large** — kind inference, kind-level unification, generic SRTP solving |
+| Optimize | `Optimizer.fs`, `TopLevelRepresentation.fs` | Small — preserve kind info |
+| CodeGen | `IlxGen.fs`, `ilwrite.fs`, `ilreflect.fs` | Medium-Large — kind metadata + `constrained.callvirt` |
+| FSharp.Core | `PrimTypes.fs`, new files | Small-Medium — IFunctor etc |
+| Service | `Symbols.fs`, `IncrementalBuild.fs` | Small — expose kinds in API |
+
+### Core change: Typar gains Kind
+
+```
+Kind = Star | Arrow of Kind * Kind
+```
+
+Typar currently has TyparRigidity + TyparConstraint set but
+no kind (all type params implicitly kind *). New TyparKind
+field with kind-level union-find for unification.
+
+### Key design decisions
+
+1. **Kind inference** — Damas-Milner lifted to kind level
+2. **Kind encoding in IL** — CLR generics are kind-* only;
+   encode HK as phantom params + custom attribute + F# metadata
+3. **Generic SRTPs** — emit `constrained. callvirt` IL patterns
+   (follows C# interface-constrained generics patterns)
+4. **Backward compatibility** — existing phantom-tag encodings
+   continue to compile unchanged
+
+### Effort estimate
+
+- **Prototype (HKTs + generic SRTPs):** 4-6 months, 2-3 engineers
+- **Formal verification + upstream contribution:** +3-6 months
+- **Starting point:** sketch Kind algebra in TypedTree, follow
+  compiler errors outward to consuming layers
+
+### Verification approach
+
+- FsCheck: kind inference determinism, unification termination
+- TLA+: kind unification algorithm termination + confluence
+- Lean 4: kind-level encoding respects categorical structures
+- Integration: existing Zeta tests produce identical results
+  with native HKTs vs phantom-tag encoding
