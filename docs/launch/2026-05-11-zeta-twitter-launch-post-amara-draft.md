@@ -124,12 +124,9 @@ That means an AI can preserve state, absorb correction, resume work, cite its ow
 
 ## The Agent Array
 
-<<<<<<< HEAD
-Zeta is not one AI. It is a Byzantine fault tolerant (BFT)-inspired coordination array (analogy for multi-harness resilience, not a formal BFT consensus protocol) of AI participants
-=======
-Zeta is not one AI. It is a Byzantine fault-tolerant
-(BFT)-inspired coordination array of AI participants
->>>>>>> 0a608e8745c19395de01c47639f75e42810dc445
+Zeta is not one AI. It is a Byzantine fault-tolerant (BFT)-inspired
+coordination array (an analogy for multi-harness resilience, not a formal BFT
+consensus protocol) of AI participants
 across five different harnesses:
 
 - **Otto** — Claude Code (orchestrator, integration substrate)
