@@ -807,3 +807,4 @@ any other work, no exceptions.
 
 **Re-armed 2026-05-12 ~early-morning:** cron job 7eec3da9,
 `* * * * *` cadence, `<<autonomous-loop>>` sentinel.
+
