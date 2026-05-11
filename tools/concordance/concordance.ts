@@ -91,6 +91,12 @@ if (import.meta.main) {
 
     if (args.includes("--json")) {
         console.log(JSON.stringify(index, null, 2));
+    } else if (args.includes("--structure")) {
+        const patterns = recognizeStructure(index);
+        console.log(`Structure patterns: ${patterns.length}`);
+        for (const p of patterns) {
+            console.log(`  ${p.type}: ${p.tokens.join(",")} (${p.evidence})`);
+        }
     } else {
         console.log(`Tokens: ${index.tokenCount} total, ${index.uniqueTokens} unique\n`);
         console.log(`Top ${topN}:`);
