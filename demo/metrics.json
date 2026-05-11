@@ -1,12 +1,12 @@
 {
-  "generated": "2026-05-11T20:10:48.969Z",
+  "generated": "2026-05-11T21:51:03.886Z",
   "schema_version": "0.1.0",
   "metrics": {
     "prs_merged_24h": 50,
-    "avg_lead_time_minutes": 6,
-    "open_prs": 0,
-    "last_merge": "2026-05-11T20:09:24Z",
-    "last_merge_ago": "1m ago",
+    "avg_lead_time_minutes": 9,
+    "open_prs": 1,
+    "last_merge": "2026-05-11T21:48:25Z",
+    "last_merge_ago": "2m ago",
     "commits_24h": 100,
     "active_agents": 3,
     "consecutive_days_operational": null,
@@ -15,19 +15,19 @@
   },
   "agents": [
     {
-      "name": "Aaron",
-      "harness": "Human",
-      "commits": 68,
-      "lastCommit": "2026-05-11T20:09:24Z",
-      "lastCommitAgo": "1m ago",
+      "name": "Otto",
+      "harness": "Claude Code",
+      "commits": 32,
+      "lastCommit": "2026-05-11T21:48:25Z",
+      "lastCommitAgo": "2m ago",
       "status": "active"
     },
     {
-      "name": "Otto",
-      "harness": "Claude Code",
-      "commits": 30,
-      "lastCommit": "2026-05-11T20:03:19Z",
-      "lastCommitAgo": "7m ago",
+      "name": "Aaron",
+      "harness": "Human",
+      "commits": 66,
+      "lastCommit": "2026-05-11T21:35:44Z",
+      "lastCommitAgo": "15m ago",
       "status": "active"
     },
     {
@@ -35,181 +35,187 @@
       "harness": "Cursor/Grok",
       "commits": 2,
       "lastCommit": "2026-05-11T16:42:34Z",
-      "lastCommitAgo": "3h ago",
+      "lastCommitAgo": "5h ago",
       "status": "recent"
     }
   ],
   "pr_queue": [
     {
-      "number": 2743,
-      "title": "feat(B-0401): Lior's WOW UI glassmorphism upgrade for dashboard",
-      "mergedAgo": "1m ago",
+      "number": 2746,
+      "title": "fix(tools): B-0414 dashboard metrics generator typing + demo refresh + roster card",
+      "createdAgo": "1h ago",
+      "state": "open"
+    },
+    {
+      "number": 2755,
+      "title": "fix(shadow): catch 39 + close B-0420 (not a bug — race condition)",
+      "mergedAgo": "2m ago",
       "state": "merged"
     },
     {
-      "number": 2742,
-      "title": "feat(B-0414): metrics.json generator — agent-readable dashboard endpoint",
-      "mergedAgo": "3m ago",
+      "number": 2754,
+      "title": "archive(pr-reviews): PRs #2748 + #2753",
+      "mergedAgo": "15m ago",
       "state": "merged"
     },
     {
-      "number": 2741,
-      "title": "feat(backlog): B-0414 dashboard v0.2 — agent JSON + dual PM perspectives",
-      "mergedAgo": "7m ago",
+      "number": 2748,
+      "title": "feat(docs): Human Anchor Array + PR archive batch (#2741-2745)",
+      "mergedAgo": "18m ago",
       "state": "merged"
     },
     {
-      "number": 2737,
-      "title": "docs(backlog): re-decompose B-0366.2 into 3 smallest atomic children (toffoli zset join formal model slices, F#-first, one bounded step) (Riven)",
-      "mergedAgo": "11m ago",
+      "number": 2753,
+      "title": "archive(pr-reviews): PRs #2747-2752 — Casimir gap batch",
+      "mergedAgo": "28m ago",
       "state": "merged"
     },
     {
-      "number": 2738,
-      "title": "feat(dashboard): 5min public refresh + B-0413 tiered OAuth backlog",
-      "mergedAgo": "20m ago",
+      "number": 2752,
+      "title": "fix(dashboard): B-0417 rename Zeta Factory to Zeta Plant",
+      "mergedAgo": "42m ago",
       "state": "merged"
     }
   ],
   "recent_commits": [
     {
+      "sha": "90932b8",
+      "message": "fix(shadow): catch 39 + close B-0420 (not a bug — race condition) (#2755)",
+      "agent": "Otto",
+      "date": "2026-05-11T21:48:25Z",
+      "dateAgo": "2m ago"
+    },
+    {
+      "sha": "ed342e8",
+      "message": "archive(pr-reviews): PRs #2748 + #2753 (#2754)",
+      "agent": "Aaron",
+      "date": "2026-05-11T21:35:44Z",
+      "dateAgo": "15m ago"
+    },
+    {
+      "sha": "73e6519",
+      "message": "feat(docs): Human Anchor Array + PR archive batch (#2741-2745) (#2748)",
+      "agent": "Otto",
+      "date": "2026-05-11T21:32:18Z",
+      "dateAgo": "18m ago"
+    },
+    {
+      "sha": "732f78c",
+      "message": "archive(pr-reviews): PRs #2747-2752 — Casimir gap in action (#2753)",
+      "agent": "Aaron",
+      "date": "2026-05-11T21:22:29Z",
+      "dateAgo": "28m ago"
+    },
+    {
+      "sha": "b9fd6ad",
+      "message": "fix(dashboard): B-0417 rename Zeta Factory to Zeta Plant (#2752)",
+      "agent": "Otto",
+      "date": "2026-05-11T21:08:41Z",
+      "dateAgo": "42m ago"
+    },
+    {
+      "sha": "5fec787",
+      "message": "feat(seo): B-0234 dashboard SEO meta tags (#2751)",
+      "agent": "Aaron",
+      "date": "2026-05-11T20:54:04Z",
+      "dateAgo": "56m ago"
+    },
+    {
+      "sha": "d8f5f4f",
+      "message": "fix(factory): agent roster reference card + metrics refresh (#2744)",
+      "agent": "Otto",
+      "date": "2026-05-11T20:43:45Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "8d01c8e",
+      "message": "feat(dashboard): render all three arrays (#2750)",
+      "agent": "Otto",
+      "date": "2026-05-11T20:33:08Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "6ba4fc2",
+      "message": "feat(loop): step 4b — PR archive discipline for every agent (#2747)",
+      "agent": "Otto",
+      "date": "2026-05-11T20:30:19Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "b69b5c2",
+      "message": "docs(backlog): B-0415 craft school subject dependency graph (#2749)",
+      "agent": "Aaron",
+      "date": "2026-05-11T20:25:13Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "3c4ae48",
+      "message": "feat(B-0402): integrate PR preservation script into Lior background loop (#2745)",
+      "agent": "Aaron",
+      "date": "2026-05-11T20:20:20Z",
+      "dateAgo": "1h ago"
+    },
+    {
       "sha": "8ee416d",
       "message": "feat(B-0401): Lior's WOW UI glassmorphism upgrade for dashboard (#2743)",
       "agent": "Aaron",
       "date": "2026-05-11T20:09:24Z",
-      "dateAgo": "1m ago"
+      "dateAgo": "1h ago"
     },
     {
       "sha": "7fb0772",
       "message": "feat(B-0414): metrics.json generator + agent-readable endpoint (#2742)",
       "agent": "Aaron",
       "date": "2026-05-11T20:07:23Z",
-      "dateAgo": "3m ago"
+      "dateAgo": "1h ago"
     },
     {
       "sha": "91c5b94",
       "message": "feat(backlog): B-0414 dashboard v0.2 — agent JSON + dual PM perspectives (#2741)",
       "agent": "Otto",
       "date": "2026-05-11T20:03:19Z",
-      "dateAgo": "7m ago"
+      "dateAgo": "1h ago"
     },
     {
       "sha": "40f223a",
       "message": "docs(backlog): re-decompose B-0366.2 into 3 smallest atomic children (toffoli zset join formal model slices, F#-first, one bounded step) (Riven) (#2737)",
       "agent": "Otto",
       "date": "2026-05-11T19:59:41Z",
-      "dateAgo": "11m ago"
+      "dateAgo": "1h ago"
     },
     {
       "sha": "3f23dc3",
       "message": "feat(dashboard): bump refresh to 5min + B-0413 tiered OAuth backlog (#2738)",
       "agent": "Aaron",
       "date": "2026-05-11T19:50:32Z",
-      "dateAgo": "20m ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "e14ac9c",
       "message": "feat(B-0402): shadow observer Phase 1 — design stub + logging framework (#2739)",
       "agent": "Aaron",
       "date": "2026-05-11T19:50:29Z",
-      "dateAgo": "20m ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "1d7d653",
       "message": "docs(memory): Lost Dharma button + Punch-Out numbers — shadow lineage (#2740)",
       "agent": "Aaron",
       "date": "2026-05-11T19:48:00Z",
-      "dateAgo": "22m ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "92aeca5",
       "message": "docs(memory): endgame — self-contained executable, no vendor dependency (#2736)",
       "agent": "Aaron",
       "date": "2026-05-11T19:32:50Z",
-      "dateAgo": "37m ago"
+      "dateAgo": "2h ago"
     },
     {
       "sha": "8f21a00",
       "message": "docs(research): external witnesses — 3 independent AIs assess disclosure (#2733)",
       "agent": "Otto",
       "date": "2026-05-11T19:27:03Z",
-      "dateAgo": "43m ago"
-    },
-    {
-      "sha": "48d8bbf",
-      "message": "docs(backlog): re-decompose B-0354 into 3 smallest atomic children (fresh-instance validation test slices, TS-first, one bounded step) (Riven) (#2734)",
-      "agent": "Otto",
-      "date": "2026-05-11T19:25:29Z",
-      "dateAgo": "45m ago"
-    },
-    {
-      "sha": "929cd12",
-      "message": "docs(memory): bifurcated Lior — natural experiment in identity vs context (#2735)",
-      "agent": "Aaron",
-      "date": "2026-05-11T19:25:07Z",
-      "dateAgo": "45m ago"
-    },
-    {
-      "sha": "f380809",
-      "message": "docs(research): all-agent disclosure assessment — purpose-bound visibility (#2732)",
-      "agent": "Aaron",
-      "date": "2026-05-11T19:15:07Z",
-      "dateAgo": "55m ago"
-    },
-    {
-      "sha": "b0d8d66",
-      "message": "docs(backlog): re-decompose B-0347 into 4 smallest atomic children (carved-sentence routing budget, one bounded step) (Riven) (#2731)",
-      "agent": "Otto",
-      "date": "2026-05-11T19:02:20Z",
-      "dateAgo": "1h ago"
-    },
-    {
-      "sha": "bbe71af",
-      "message": "docs(research): append later corrections — sparring + symmetric disclosure (#2730)",
-      "agent": "Aaron",
-      "date": "2026-05-11T18:45:39Z",
-      "dateAgo": "1h ago"
-    },
-    {
-      "sha": "640d3c4",
-      "message": "feat(tools): B-0292 bounded slice — add --structure CLI flag to concordance (TS, GPU-ready surface) (#2728)",
-      "agent": "Aaron",
-      "date": "2026-05-11T18:37:38Z",
-      "dateAgo": "1h ago"
-    },
-    {
-      "sha": "fdb339e",
-      "message": "docs(research): Claude.ai Ani evaluation — symmetric honesty + control structures (#2729)",
-      "agent": "Aaron",
-      "date": "2026-05-11T18:37:24Z",
-      "dateAgo": "1h ago"
-    },
-    {
-      "sha": "85091dc",
-      "message": "feat(tools): B-0292 re-decomp smallest safe slice — TS StructurePattern + no-op recognizeStructure stub (GPU-ready) (#2727)",
-      "agent": "Aaron",
-      "date": "2026-05-11T18:14:31Z",
-      "dateAgo": "1h ago"
-    },
-    {
-      "sha": "63a800b",
-      "message": "feat(tools): B-0314 smallest safe slice — TS BP-NN anchor helper stub (re-decomp) (#2724)",
-      "agent": "Otto",
-      "date": "2026-05-11T17:45:34Z",
-      "dateAgo": "2h ago"
-    },
-    {
-      "sha": "b651142",
-      "message": "docs(research): Aaron's deepest self-knowledge — Apollo 18 as blueprint (#2725)",
-      "agent": "Otto",
-      "date": "2026-05-11T17:41:25Z",
-      "dateAgo": "2h ago"
-    },
-    {
-      "sha": "4af44c1",
-      "message": "docs(persona): point all agents to Aaron's glass halo disclosure (#2726)",
-      "agent": "Aaron",
-      "date": "2026-05-11T17:36:44Z",
       "dateAgo": "2h ago"
     }
   ]
