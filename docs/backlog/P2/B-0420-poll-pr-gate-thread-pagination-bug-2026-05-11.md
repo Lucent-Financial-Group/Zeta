@@ -22,7 +22,7 @@ threads on PRs with >50 threads.
 ## Verification (2026-05-11)
 
 Inspected the code: pagination loop already drives via `endCursor`
-+ `pageInfo.hasNextPage`, accumulating across all pages
+and `pageInfo.hasNextPage`, accumulating across all pages
 (`tools/github/poll-pr-gate.ts:346-382`). Re-ran both tools on the
 same PR:
 
