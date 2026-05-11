@@ -51,3 +51,27 @@ The types encode the trust policy. The compiler enforces it. The kernel routes o
 - feedback_arrow_tier_0 (Arrow replaces mTLS at Tier 0)
 - B-0403 weight-free (hat mechanism = SPIFFE SVIDs)
 - Itron patent US 10,834,144 (hub-agent = SPIRE server, decentralized)
+
+## Update: OPA + SPIRE Federation + Nested SPIRE (2026-05-10)
+
+Aaron was thinking of **OPA (Open Policy Agent)** — decouples policy
+decisions from enforcement. Every node runs its own OPA instance,
+decides locally, syncs policy from shared source. No central policy
+server in hot path.
+
+**The full zero trust stack (concept steal):**
+
+| Concept | Source | Zeta equivalent |
+|---------|--------|----------------|
+| Workload identity | SPIFFE SVIDs | Hat credentials |
+| Attestation runtime | SPIRE | BFT consensus issuance |
+| Cross-domain trust | SPIRE Federation | Trust bundle exchange via BFT |
+| Delegated authority | Nested SPIRE | Hat delegation chain |
+| Decentralized policy | OPA | F# types + local policy evaluation |
+| Transport security | mTLS | Arrow Tier 0 (same-trust), mTLS (cross-trust) |
+| Config | YAML/Rego | F# type system (compiler enforces) |
+
+**Sources:**
+- [SPIFFE Federation](https://spiffe.io/docs/latest/spiffe-specs/spiffe_federation/)
+- [Nested SPIRE](https://spiffe.io/docs/latest/planning/scaling_spire/)
+- [OPA](https://www.openpolicyagent.org/)
