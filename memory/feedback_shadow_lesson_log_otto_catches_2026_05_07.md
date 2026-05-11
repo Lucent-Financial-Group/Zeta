@@ -602,7 +602,7 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 
 ---
 
-## Pattern summary (canonical — 37 catches, 12 classes, 1 meta-class)
+## Pattern summary (canonical — 37 catches, 13 classes, 1 meta-class)
 
 | canonical class | catches | recurrence | status |
 |-----------------|---------|------------|--------|
