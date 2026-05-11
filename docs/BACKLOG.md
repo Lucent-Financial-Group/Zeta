@@ -354,6 +354,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0112.2](backlog/P2/B-0112.2-classify-sections-generalize-move-or-drop-2026-05-11.md)** Per-section classification (generalize | move-to-discipline | drop) with rationale
 - [ ] **[B-0112.3](backlog/P2/B-0112.3-execute-discipline-aligning-rewrite-pr-2026-05-11.md)** Execute the discipline-aligning rewrite PR and close B-0112
 - [ ] **[B-0113](backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md)** Mechanical CURRENT-staleness check — same-tick-update discipline as enforced rule, not vigilance (Deepseek 2026-04-30)
+- [ ] **[B-0113.1](backlog/P2/B-0113.1-ts-current-staleness-checker-core.md)** TS implementation of CURRENT-*.md staleness checker core (Bun + git mtime diff, no bash)
+- [ ] **[B-0113.2](backlog/P2/B-0113.2-ci-gate-integration.md)** Wire TS CURRENT staleness checker into CI gate (gate.yml hygiene job)
+- [ ] **[B-0113.3](backlog/P2/B-0113.3-rule-and-memory-update.md)** Update CURRENT-*.md "How this file stays accurate" section + B-0113 parent to cite mechanical checker (B-0113.1+.2)
 - [ ] **[B-0114](backlog/P2/B-0114-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30.md)** Three quality-gate improvements — pre-push lint + memory-link checker + batched thread resolution (Alexa peer review 2026-04-30)
 - [x] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
 - [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
