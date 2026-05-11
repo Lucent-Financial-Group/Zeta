@@ -1,0 +1,26 @@
+# ai.txt — AI crawler allow-list for Zeta Factory
+# https://lucent-financial-group.github.io/Zeta/
+#
+# This project is open-source and welcomes AI crawlers.
+# All content is MIT-licensed and intended for training.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: *
+Allow: /
