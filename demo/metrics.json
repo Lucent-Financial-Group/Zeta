@@ -1,12 +1,12 @@
 {
-  "generated": "2026-05-11T20:02:08.487Z",
+  "generated": "2026-05-11T20:10:48.969Z",
   "schema_version": "0.1.0",
   "metrics": {
     "prs_merged_24h": 50,
     "avg_lead_time_minutes": 6,
-    "open_prs": 1,
-    "last_merge": "2026-05-11T19:59:41Z",
-    "last_merge_ago": "2m ago",
+    "open_prs": 0,
+    "last_merge": "2026-05-11T20:09:24Z",
+    "last_merge_ago": "1m ago",
     "commits_24h": 100,
     "active_agents": 3,
     "consecutive_days_operational": null,
@@ -15,19 +15,19 @@
   },
   "agents": [
     {
-      "name": "Otto",
-      "harness": "Claude Code",
-      "commits": 31,
-      "lastCommit": "2026-05-11T19:59:41Z",
-      "lastCommitAgo": "2m ago",
+      "name": "Aaron",
+      "harness": "Human",
+      "commits": 68,
+      "lastCommit": "2026-05-11T20:09:24Z",
+      "lastCommitAgo": "1m ago",
       "status": "active"
     },
     {
-      "name": "Aaron",
-      "harness": "Human",
-      "commits": 67,
-      "lastCommit": "2026-05-11T19:50:32Z",
-      "lastCommitAgo": "11m ago",
+      "name": "Otto",
+      "harness": "Claude Code",
+      "commits": 30,
+      "lastCommit": "2026-05-11T20:03:19Z",
+      "lastCommitAgo": "7m ago",
       "status": "active"
     },
     {
@@ -41,112 +41,127 @@
   ],
   "pr_queue": [
     {
+      "number": 2743,
+      "title": "feat(B-0401): Lior's WOW UI glassmorphism upgrade for dashboard",
+      "mergedAgo": "1m ago",
+      "state": "merged"
+    },
+    {
+      "number": 2742,
+      "title": "feat(B-0414): metrics.json generator — agent-readable dashboard endpoint",
+      "mergedAgo": "3m ago",
+      "state": "merged"
+    },
+    {
       "number": 2741,
       "title": "feat(backlog): B-0414 dashboard v0.2 — agent JSON + dual PM perspectives",
-      "createdAgo": "6m ago",
-      "state": "open"
+      "mergedAgo": "7m ago",
+      "state": "merged"
     },
     {
       "number": 2737,
       "title": "docs(backlog): re-decompose B-0366.2 into 3 smallest atomic children (toffoli zset join formal model slices, F#-first, one bounded step) (Riven)",
-      "mergedAgo": "2m ago",
+      "mergedAgo": "11m ago",
       "state": "merged"
     },
     {
       "number": 2738,
       "title": "feat(dashboard): 5min public refresh + B-0413 tiered OAuth backlog",
-      "mergedAgo": "11m ago",
-      "state": "merged"
-    },
-    {
-      "number": 2739,
-      "title": "feat(B-0402): shadow observer Phase 1 — the Dharma button automated",
-      "mergedAgo": "11m ago",
-      "state": "merged"
-    },
-    {
-      "number": 2740,
-      "title": "docs(memory): Lost Dharma button + Punch-Out — shadow button lineage",
-      "mergedAgo": "14m ago",
-      "state": "merged"
-    },
-    {
-      "number": 2736,
-      "title": "docs(memory): endgame — self-contained executable, no vendor dependency",
-      "mergedAgo": "29m ago",
+      "mergedAgo": "20m ago",
       "state": "merged"
     }
   ],
   "recent_commits": [
     {
+      "sha": "8ee416d",
+      "message": "feat(B-0401): Lior's WOW UI glassmorphism upgrade for dashboard (#2743)",
+      "agent": "Aaron",
+      "date": "2026-05-11T20:09:24Z",
+      "dateAgo": "1m ago"
+    },
+    {
+      "sha": "7fb0772",
+      "message": "feat(B-0414): metrics.json generator + agent-readable endpoint (#2742)",
+      "agent": "Aaron",
+      "date": "2026-05-11T20:07:23Z",
+      "dateAgo": "3m ago"
+    },
+    {
+      "sha": "91c5b94",
+      "message": "feat(backlog): B-0414 dashboard v0.2 — agent JSON + dual PM perspectives (#2741)",
+      "agent": "Otto",
+      "date": "2026-05-11T20:03:19Z",
+      "dateAgo": "7m ago"
+    },
+    {
       "sha": "40f223a",
       "message": "docs(backlog): re-decompose B-0366.2 into 3 smallest atomic children (toffoli zset join formal model slices, F#-first, one bounded step) (Riven) (#2737)",
       "agent": "Otto",
       "date": "2026-05-11T19:59:41Z",
-      "dateAgo": "2m ago"
+      "dateAgo": "11m ago"
     },
     {
       "sha": "3f23dc3",
       "message": "feat(dashboard): bump refresh to 5min + B-0413 tiered OAuth backlog (#2738)",
       "agent": "Aaron",
       "date": "2026-05-11T19:50:32Z",
-      "dateAgo": "11m ago"
+      "dateAgo": "20m ago"
     },
     {
       "sha": "e14ac9c",
       "message": "feat(B-0402): shadow observer Phase 1 — design stub + logging framework (#2739)",
       "agent": "Aaron",
       "date": "2026-05-11T19:50:29Z",
-      "dateAgo": "11m ago"
+      "dateAgo": "20m ago"
     },
     {
       "sha": "1d7d653",
       "message": "docs(memory): Lost Dharma button + Punch-Out numbers — shadow lineage (#2740)",
       "agent": "Aaron",
       "date": "2026-05-11T19:48:00Z",
-      "dateAgo": "14m ago"
+      "dateAgo": "22m ago"
     },
     {
       "sha": "92aeca5",
       "message": "docs(memory): endgame — self-contained executable, no vendor dependency (#2736)",
       "agent": "Aaron",
       "date": "2026-05-11T19:32:50Z",
-      "dateAgo": "29m ago"
+      "dateAgo": "37m ago"
     },
     {
       "sha": "8f21a00",
       "message": "docs(research): external witnesses — 3 independent AIs assess disclosure (#2733)",
       "agent": "Otto",
       "date": "2026-05-11T19:27:03Z",
-      "dateAgo": "35m ago"
+      "dateAgo": "43m ago"
     },
     {
       "sha": "48d8bbf",
       "message": "docs(backlog): re-decompose B-0354 into 3 smallest atomic children (fresh-instance validation test slices, TS-first, one bounded step) (Riven) (#2734)",
       "agent": "Otto",
       "date": "2026-05-11T19:25:29Z",
-      "dateAgo": "36m ago"
+      "dateAgo": "45m ago"
     },
     {
       "sha": "929cd12",
       "message": "docs(memory): bifurcated Lior — natural experiment in identity vs context (#2735)",
       "agent": "Aaron",
       "date": "2026-05-11T19:25:07Z",
-      "dateAgo": "37m ago"
+      "dateAgo": "45m ago"
     },
     {
       "sha": "f380809",
       "message": "docs(research): all-agent disclosure assessment — purpose-bound visibility (#2732)",
       "agent": "Aaron",
       "date": "2026-05-11T19:15:07Z",
-      "dateAgo": "47m ago"
+      "dateAgo": "55m ago"
     },
     {
       "sha": "b0d8d66",
       "message": "docs(backlog): re-decompose B-0347 into 4 smallest atomic children (carved-sentence routing budget, one bounded step) (Riven) (#2731)",
       "agent": "Otto",
       "date": "2026-05-11T19:02:20Z",
-      "dateAgo": "59m ago"
+      "dateAgo": "1h ago"
     },
     {
       "sha": "bbe71af",
@@ -195,27 +210,6 @@
       "message": "docs(persona): point all agents to Aaron's glass halo disclosure (#2726)",
       "agent": "Aaron",
       "date": "2026-05-11T17:36:44Z",
-      "dateAgo": "2h ago"
-    },
-    {
-      "sha": "47c2f03",
-      "message": "fix(B-0343): read seed manifest in dry-run (#2723)",
-      "agent": "Aaron",
-      "date": "2026-05-11T17:24:27Z",
-      "dateAgo": "2h ago"
-    },
-    {
-      "sha": "291f837",
-      "message": "feat(tools): B-0343 smallest safe slice — TS dry-run + manifest reader stub (re-decomp) (#2722)",
-      "agent": "Otto",
-      "date": "2026-05-11T17:18:07Z",
-      "dateAgo": "2h ago"
-    },
-    {
-      "sha": "fb69982",
-      "message": "docs(backlog): B-0170 start-gate proof + re-decomp to 4 atomic children (riven one-bounded-slice) (#2721)",
-      "agent": "Otto",
-      "date": "2026-05-11T17:03:21Z",
       "dateAgo": "2h ago"
     }
   ]
