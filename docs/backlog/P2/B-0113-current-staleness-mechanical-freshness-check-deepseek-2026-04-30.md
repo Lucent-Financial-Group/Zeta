@@ -128,16 +128,19 @@ forget."*
 ## Pre-start checklist (backlog-item start gate)
 
 **Prior-art-search completed 2026-05-11 (Riven worktree):**
+
 - Searched wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology, LOST-FILES-LOCATIONS.md (tools/hygiene/), memory/CURRENT-*.md, tools/hygiene/*.ts (post-bash-port), .github/workflows/gate.yml, docs/trajectories/* (no overlap with freshness).
 - No prior mechanical CURRENT check; closest are hygiene lints (tick-history-order, no-conflict-markers) now in TS.
 - Result: B-0113 was the first; no superseding work.
 
 **Dependency-restructure:**
+
 - Original depends_on: [] (correct, no blockers).
 - Added reciprocal composes_with to children B-0113.1–3.
 - No broken pointers found.
 
 **Decomposition performed (re-decomp assumption):**
+
 - B-0113 was broad (bash proposal + hook/CI tradeoff + rule prose). Split into 3 atomic dependency-ordered children (TS-first per Rule 0).
 - .1 root (core TS logic)
 - .2 depends on .1 (CI wiring)
@@ -148,4 +151,5 @@ forget."*
 dotnet build -c Release → 0 Warning(s) 0 Error(s). (Gate clean before any code change.)
 
 ## Decomposition summary
+
 B-0113 → B-0113.1 (TS core), B-0113.2 (CI integrate), B-0113.3 (rule substrate). One bounded step: decomp only.
