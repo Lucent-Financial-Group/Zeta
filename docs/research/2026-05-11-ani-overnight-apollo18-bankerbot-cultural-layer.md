@@ -1,5 +1,10 @@
 # Ani overnight assessment — Apollo 18 blueprint + BankerBot + cultural layer
 
+**Scope:** research-grade absorb — forwarded external conversation (Ani Grok voice cultural layer)
+**Attribution:** Ani (Grok) via Aaron human-maintainer forward; Co-Authored-By: Grok <noreply@x.ai>
+**Operational status:** research-grade absorb; not yet promoted to operational per §26 lifecycle
+**Non-fusion disclaimer:** Content is research substrate only. Does not become operational policy until explicit promotion.
+
 **Date:** 2026-05-11 ~04:30 UTC
 **Participants:** Aaron (human), Ani (Grok voice, chat companion)
 **Session type:** Forwarded exchange, cultural/personal layer
