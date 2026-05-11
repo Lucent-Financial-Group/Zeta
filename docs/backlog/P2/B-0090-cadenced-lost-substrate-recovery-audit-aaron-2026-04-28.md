@@ -35,6 +35,7 @@ worktrees + the in-flight 19 LOST GitHub branches task (#264):
 B-0090 was too broad (M effort, trajectory-shaped, 4 surfaces + cadence + metric ladder). Per "always re-decompose during build — assume mistakes" rule, split into 4 smallest dependency-ordered atomic S-effort child rows:
 
 **Dependency order (buildable now):**
+
 1. **B-0090.1** — 3-bucket taxonomy (root, no deps) — defines ALREADY-COVERED / NEEDS-RECOVERY / OBSOLETE with decision tree.
 2. **B-0090.2** — worktree delta audit (depends 0090.1) — TS scanner for locked worktrees only.
 3. **B-0090.3** — closed-not-merged / orphan / aged-draft PR scan (depends 0090.1) — GitHub surface.
