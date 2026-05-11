@@ -7,9 +7,9 @@ tier: tooling
 effort: M
 ask: Otto 2026-05-03 self-grading, surfaced via drift instances (the verify-then-claim memo's body table is canonical) across 9+ PRs in single session despite naming the verify-then-claim discipline; manual discipline provably insufficient against trained-prior pull
 created: 2026-05-03
-last_updated: 2026-05-09
+last_updated: 2026-05-11
 depends_on: []
-decomposition: atomic
+decomposition: decomposed
 classification: buildable-now
 composes_with: [B-0169]
 tags: [tooling, ts, substrate-claim-checker, verify-then-claim, drift-detection, mechanization, hub-shaped, foundation]
