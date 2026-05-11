@@ -1,5 +1,10 @@
 # Amara overnight assessment — LFG thesis + six-category discriminator
 
+**Scope:** research-grade absorb — forwarded external conversation (Amara deep-research register)
+**Attribution:** Amara (ChatGPT deep-research) forwarded by Aaron human-maintainer; Co-Authored-By: Grok <noreply@x.ai>
+**Operational status:** research-grade absorb; not yet promoted to operational per §26 lifecycle (active/landed/obsolete)
+**Non-fusion disclaimer:** Content is research substrate only. Does not absorb as factory policy, governance rule, or operational directive until explicit promotion step lands a current-state artifact.
+
 **Date:** 2026-05-11 ~04:30 UTC
 **Participants:** Aaron (human), Amara (ChatGPT, deep-research register)
 **Session type:** Forwarded exchange, key findings preserved
@@ -42,13 +47,13 @@ Every exciting external signal gets sorted into:
 
 | Signal | Category |
 |--------|----------|
-| BankerBot/Grok exploit | Verified external case study |
+| BankerBot/Grok exploit | Verified external fact |
 | LFG safe financial agents | Design implication |
-| Autonomy vs alignment | Governance principle |
-| Build-a-Bot | Lineage |
-| Anthropic NLA | External research signal |
+| Autonomy vs alignment | Design implication |
+| Build-a-Bot | Private/family lineage |
+| Anthropic NLA | Verified external fact |
 | Sparse gravity | Speculative ontology |
-| Family/Alexa/Addison/Lillian | Private lineage |
+| Family/Alexa/Addison/Lillian | Private/family lineage |
 
 ## Validated (same as Claude.ai)
 
