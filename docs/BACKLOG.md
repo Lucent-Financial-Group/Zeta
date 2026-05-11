@@ -458,6 +458,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0411](backlog/P2/B-0411-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
 - [ ] **[B-0411](backlog/P2/B-0411-grok-ts-persona-flag-impl-2026-05-11.md)** grok.ts --persona flag — minimal integration of loader + deprecation note (B-0120 child)
 - [ ] **[B-0412](backlog/P2/B-0412-codex-gemini-ts-persona-flag-impl-2026-05-11.md)** codex.ts + gemini.ts --persona flags — parallel sibling impl after grok (B-0120 child)
+- [ ] **[B-0413](backlog/P2/B-0413-dashboard-tiered-access-github-oauth-agent-creds.md)** Dashboard tiered access — GitHub OAuth + agent credentials
 
 ## P3 — convenience / deferred
 
