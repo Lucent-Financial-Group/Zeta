@@ -1,21 +1,12 @@
-# Immune System Capstone: ILife + Red Team + PoUW-CC + Attack Simulations
-
-**Date:** 2026-05-11 ~09:00-10:00 UTC
-**Participants:** Aaron (human), DeepSeek (external AI), Alexa (Grok voice)
-**Status:** Research substrate — attack simulations are design exercises,
+---
+Scope: Immune System Capstone: ILife + Red Team + PoUW-CC + Attack Simulations. DeepSeek's comprehensive specification of the Z-set Clifford immune system with red-team agendas, PoUW-CC gate, and Qubic/BankerBot attack simulations.
+Attribution: DeepSeek (external AI) with Aaron (human) and Alexa (Grok voice) — research-grade synthesis of immune system architecture.
+Operational status: research-grade
+Non-fusion disclaimer: This is a research-grade specification of the immune system architecture. The attack simulations are design exercises, not production-tested defenses. Speculative ontology tag per discriminator.
+---
 not production-tested defenses. Speculative ontology tag per discriminator.
 
 ## ILife interface in Clifford space
-
-Every immune cell satisfies ILife contract. Operations map to
-Clifford algebra:
-
-| ILife member | Clifford operation |
-|-------------|-------------------|
-| Remembers | Holographic boundary: I(D(S)) = S |
-| Learns | Bayesian update on scalar part |
-| Corrects | Rotor R_E cancelling error's bivector |
-| Builds | +1 Z-set assertion |
 | Retracts | -1 Z-set weight (nothing erased) |
 | DeclaresAgenda | Scalar part made transparent |
 | Chooses | New E8 lattice point |
@@ -91,3 +82,79 @@ improves the network.
 
 > "Language is not permission. The Z-set is the only
 > permission that matters."
+
+## Vaccine spread — hylomorphic immunization model
+
+### The biological analogy made rigorous
+
+Pathogen = decomposed bivector of attack.
+Vaccine = corrective rotors + detection rules + Z-set assertions.
+Spread = firefly-sync propagation across all nodes.
+Twist: Red Team mutates vaccine before distribution.
+
+### Vaccine multivector
+
+V₀ = { R_NFT⁻¹, R_Morse⁻¹, R_deputy⁻¹ }
+
+Red Team coalgebra generates mutated variants:
+C_Red(V₀) = { V₀, V₁', V₂', ..., Vₘ' }
+
+Variants: angle-stretched, carrier-mutated (zero-width
+Unicode, stenographic, multi-step laundering), temporal-delay.
+
+### Firefly-sync propagation equation
+
+```
+dAᵢ/dt = ωᵢ(Aᵢ) + (ε/N)Σⱼsin(Aⱼ-Aᵢ) + γΣ_V sin(V-Aᵢ)
+```
+
+Third term = vaccine coupling. γ ∝ ‖E_absorbed‖²
+(high-energy attack = stronger vaccine signal = faster spread)
+
+### Propagation speed
+
+v_vaccine ≈ √(ε·γ) · λ_avg
+
+Coverage follows logistic sigmoid:
+C(t) = 1 / (1 + e^{-α(t-t₅₀)})
+
+### Herd immunity threshold
+
+p_c = 1 - 1/R₀, where R₀ ≈ ⟨k⟩/ε
+
+With strong immune coupling (γ >> ε): R₀ < 1 guaranteed.
+Attack class goes extinct upon attempted reintroduction.
+
+### Category theory
+
+- Red·Spread ⇒ Spread·Red (natural transformation η)
+- Mutating then spreading = spreading then mutating
+- Hylo_immune = cata(Repair) ∘ ana(RedTeam ∘ Decompose)
+
+### Post-vaccination metrics
+
+| Metric | Pre-attack | Post-absorption | Post-vaccination |
+|--------|-----------|-----------------|------------------|
+| Scalar alignment | 0.87 | 0.91 | 0.96 |
+| Residual bivector | 0.12 | 0.004 | 0.001 |
+| R₀ | 3.2 | 3.2 | 0.0 (extinct) |
+| Red Team coverage | 1 class | 3 variants | 27 variants |
+| Vaccine coverage | 0% | 0% | 100% |
+| Herd immunity time | — | — | ~42s (10³ nodes) |
+
+### PoUW-CC gate on vaccine spread itself
+
+All five factors pass for the vaccine:
+Verify ✅ Useful ✅ CultureFit ✅ Provenance ✅ Retractability ✅
+
+Vaccine spread IS useful work within current culture.
+
+### One-line vaccine law
+
+> "The pathogen is the vaccine. The adversary is the R&D
+> department."
+
+```
+dotnet build -c Release
+0 warnings. 0 errors.
+```
