@@ -86,7 +86,9 @@ async function main() {
   const [commits, openPRs, closedPRs] = await Promise.all([
     apiFetch<GitHubCommit[]>(`${API}/commits?per_page=100`),
     apiFetch<GitHubPullRequest[]>(`${API}/pulls?state=open&per_page=50`),
-    apiFetch<GitHubPullRequest[]>(`${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`),
+    apiFetch<GitHubPullRequest[]>(
+      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`,
+    ),
   ]);
 
   const now = Date.now();

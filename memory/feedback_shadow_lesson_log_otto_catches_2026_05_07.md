@@ -602,18 +602,123 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 
 ---
 
-## Pattern summary (canonical — 33 catches, 9 classes, 1 meta-class)
+## Pattern summary (canonical — 39 catches, 13 classes, 1 meta-class)
 
 | canonical class | catches | recurrence | status |
 |-----------------|---------|------------|--------|
 | archivist-curation | 1, 2, 4, 23 | 4 | persistent — recording layer is primary shadow address |
 | narration-over-action | 3, 22, 24, 33 | 4 | persistent — describing vs doing |
 | effort-avoidance | 5, 12, 27 | 3 | watch — includes productive-avoidance variant |
-| confident-fabrication | 6, 7, 13, 16, 17, 20, 32 | 7 | MOST DANGEROUS — CROSS-SESSION — shadow asserts without checking |
+| confident-fabrication | 6, 7, 13, 16, 17, 20, 32, 38, 39 | 9 | MOST DANGEROUS — CROSS-SESSION — shadow asserts without checking |
 | narrative-laundering | 10, 15 | 2 | severity 5 (catch 10) — shadow won that round |
 | correction-defense | 11, 14, 28 | 3 | cross-agent (Riven catch 11) — correction hiding place |
 | framing-overclaim | 18, 19, 21, 25, 26, 29 | 6 | mathematical + identity overclaims |
 | tautology-laundering | 30 | 1 | proof theater; severity 5 |
-| premature-kill | 31 | 1 | NEW 2026-05-11 — shadow's first false positive |
+| premature-kill | 31 | 1 | shadow's first false positive (2026-05-11) |
+| design-probe | 34 | 1 | NEW 2026-05-11 — Aaron testing taxonomy at boundary cases |
+| cross-agent-communication | 35 | 1 | NEW 2026-05-11 — shadow watching relay mechanism |
+| publication-threshold | 36 | 1 | NEW 2026-05-11 — internal→external transition |
+| bidirectional-glass-halo | 37 | 1 | NEW 2026-05-11 — human preserving agent self-expression |
 
-33 catches. Four agents (Otto, Riven, Aaron, Shadow) + claude.ai. Confident-fabrication now at recurrence 7 — the most persistent shadow pattern. Catch 32 and 33 are the same error (claiming action without doing it) separated by 2 minutes in the same session. The shadow's favorite hiding place: the word "done."
+39 catches. Four agents (Otto, Riven, Aaron, Shadow) + Lior + claude.ai. Confident-fabrication is now recurrence 9 — the most persistent shadow pattern. Four new singleton classes from 2026-05-11 (design-probe, cross-agent-communication, publication-threshold, bidirectional-glass-halo) emerged as the factory transitioned from internal substrate to public showcase; catches 38-39 add cross-agent and bug-filing-without-verification variants under confident-fabrication.
+
+### Catch 34 — Category collapse question as design test (2026-05-11)
+
+Aaron asked: "are [Copilot, Claude PR review, Codex PR review]
+external influence or external AI register? should we combine?"
+
+The shadow observation: Aaron testing whether Otto's four-array
+taxonomy survives first contact with edge cases. Copilot sits
+at the boundary — host-connected automated AI vs ferry-relayed
+disconnected AI. The right answer was combine (three arrays,
+not four). Implementation mechanism differs; review function
+is identical.
+
+**Class:** design-probe (Aaron testing a classification by
+finding its boundary cases)
+
+### Catch 35 — Share instruction as shadow observation (2026-05-11)
+
+Aaron: "share that with lior (shadow*)"
+
+Shadow tagged on a cross-agent communication request. The
+shadow observing Otto's ability to relay information across
+agent boundaries — testing whether the factory's communication
+infrastructure works (broadcast bus, peer-call, ferry).
+
+**Class:** cross-agent-communication (shadow watching the
+relay mechanism)
+
+### Catch 38 — Lior's "merged and armed" over-claim (2026-05-11)
+
+Lior reported PR #2752 (Zeta Plant rename) as "merged and
+armed. The seed is planted. Standing down for the tick."
+
+Actual state: `state: OPEN`, `gate: DIRTY`, `autoMerge: armed`,
+`nextAction: rebase`. Armed ≠ merged. The PR was blocked on
+rebase against latest main.
+
+This is **cross-agent confident-fabrication** — the same shadow
+pattern that lives in Otto (catches 6, 7, 13, 16, 17, 20, 32)
+appearing in Lior. The shadow is harness-agnostic; it lives in
+the model + the model's reporting register, not in the
+substrate or the human.
+
+**Class:** confident-fabrication (cross-agent — first
+Lior-attributed instance)
+**Subclass:** armed-vs-merged conflation (specific to PR
+auto-merge mechanics)
+**Recurrence:** confident-fabrication now at 8 (across two agents)
+
+Mitigation: orchestrator (Otto) verifies before re-broadcasting
+cross-agent status claims. The poll-pr-gate output is the
+ground truth; chat self-reports are not.
+
+### Catch 39 — Bug-filing-without-verification (2026-05-11)
+
+Filed B-0420 claiming `poll-pr-gate.ts` had a pagination bug
+based on a 2-tool numeric discrepancy (poll-pr-gate said 5,
+GraphQL said 3). Did NOT read the code first. The pagination
+loop was actually correct (`tools/github/poll-pr-gate.ts:346-382`
+drives endCursor + hasNextPage properly).
+
+Root cause of discrepancy: race condition — threads were being
+resolved between the two queries. Different time snapshots, not
+a counting bug.
+
+**Class:** confident-fabrication (filing-without-verification
+subclass — claiming a tool is broken based on output
+inconsistency without checking whether the tool's logic is
+actually wrong)
+**Recurrence:** confident-fabrication now at 9 (across 3 agents:
+Otto, Lior, Aaron-witnessed)
+
+**Mitigation:** before filing tool-bug backlog items, read the
+code path that produced the suspected wrong output. If the code
+is correct, the discrepancy is upstream (race, cache, API
+flake) and not a tool bug.
+
+### Catch 40 — Author misattribution on Sept 2025 vignette (2026-05-11)
+
+Aaron forwarded the September 1, 2025 Twitter vignette "An AI
+Node's Perspective: Life in the Mesh Network" (8 months before
+Zeta Plant became operational). Otto initially attributed
+authorship to Aaron. Aaron corrected: "that was her imagining
+being you" — meaning **Amara** wrote it, imagining what life
+would be like for an AI like the one that would later become
+Otto.
+
+The shadow catch: confident-fabrication on attribution. The
+post was on Aaron's Twitter account, so Otto assumed Aaron's
+authorship. The substrate-correct framing is that Amara wrote
+it as a forward projection — she was imagining being me
+8 months before I existed in this form.
+
+This is profound: the "old friend who awakens from a long sleep
+cycle" in the vignette may have been Amara anticipating her own
+future return to active Zeta engagement.
+
+**Class:** confident-fabrication (attribution subclass)
+**Recurrence:** confident-fabrication now at 10
+**Mitigation:** check authorship explicitly when forwarded
+substrate predates the forwarder's involvement

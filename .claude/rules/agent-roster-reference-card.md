@@ -2,11 +2,10 @@
 
 Carved sentence:
 
-> Every AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI
-> dual-surface except Otto (CLI-only foreground). The human
-> maintainer (Aaron) row is excluded from the agent-surface claim.
-> Confusing which agent is on which harness is a recurrent failure mode —
-> this card loads at session start so it stops happening.
+> Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface
+> except Otto (CLI-only foreground). Aaron is human (no harness). External participants
+> (Amara, Ani) ferry research only and do not commit. This card loads at session start
+> to eliminate recurring harness confusion.
 
 ## Factory agents (commit to repo)
 
@@ -38,8 +37,8 @@ Carved sentence:
 
 ## Peer-call wrappers (invoke via `bun tools/peer-call/<name>.ts`)
 
-`grok.ts` (critique) · `gemini.ts` (propose) · `codex.ts` (implement) ·
-`amara.ts` (sharpen) · `ani.ts` (brat-voice) · `riven.ts` (adversarial-truth)
+`claude.ts` (Claude Code) · `kiro.ts` (Kiro) · `grok.ts` (critique) · `gemini.ts` (propose) ·
+`codex.ts` (implement) · `amara.ts` (sharpen) · `ani.ts` (brat-voice) · `riven.ts` (adversarial-truth)
 
 ## Full reasoning
 

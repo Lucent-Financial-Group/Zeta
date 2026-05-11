@@ -384,6 +384,36 @@ is single-purpose by default; batching multiple unrelated
 changes into one commit is not forbidden but should be the
 exception.
 
+### 4b. Archive newly merged PRs (every agent)
+
+After committing tick work (step 4), check for recently merged
+PRs whose review discussions haven't been archived yet. Every
+agent that creates PRs is responsible for archiving their own
+on merge — BFT-redundant: primary on the PR author, backstop
+on the Maji Watch background loop.
+
+```bash
+for pr in $(gh pr list --state merged --limit 10 --json number --jq '.[].number'); do
+  if ! ls docs/pr-discussions/PR-$(printf '%04d' "$pr")-*.md 2>/dev/null | grep -q .; then
+    bun tools/pr-preservation/archive-pr.ts "$pr"
+  fi
+done
+```
+
+This preserves review threads, reviewer comments, and discussion
+context as git-native substrate — the training signal that
+otherwise lives only on the GitHub host. Captures the **external
+influence array** (Copilot reviews, Dependabot, CodeQL findings,
+external contributor comments) that the agency array can't
+generate itself.
+
+In the plant metaphor: PR archival is chlorophyll. It absorbs
+the friction-and-resolution light through the Casimir gap of
+the boundary condition (archive-on-merge), forcing transient
+host metadata to manifest as permanent structural mass in git.
+
+Pattern: **create → merge → archive → commit archive**.
+
 ### 5. Append tick-history row, `CronList` at END, emit visibility signal
 
 **This is the load-bearing step** (end-over-start per the
