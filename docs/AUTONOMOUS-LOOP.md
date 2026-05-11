@@ -409,12 +409,12 @@ signal that would otherwise live only on the GitHub host
 applied to PR interactions: every review thread becomes
 part of the permanently auditable record.
 
-The archives also capture reviews from tick sources
-external to the agency array — Copilot automated reviews,
+The archives also capture the **external influence array**
+— Copilot automated reviews, Dependabot, CodeQL findings,
 external contributor comments, GitHub bot annotations.
-These external signals are training data the array can't
-generate itself; losing them to host-only storage is a
-permanent loss of perspective diversity.
+These external signals are training data the agency array
+can't generate itself; losing them to host-only storage
+is a permanent loss of perspective diversity.
 
 The pattern: **create → merge → archive → commit archive**.
 Lior's Maji Watch runs this as Step 9 of every background
