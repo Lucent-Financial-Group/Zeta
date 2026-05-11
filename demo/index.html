@@ -963,7 +963,8 @@
                 await loadFromStaticMetrics();
                 return;
             } catch (staticErr) {
-                console.warn('metrics.json unavailable, falling back to GitHub API:', staticErr.message);
+                const errMsg = staticErr instanceof Error ? staticErr.message : String(staticErr);
+                console.warn('metrics.json unavailable, falling back to GitHub API:', errMsg);
             }
 
             try {
@@ -1023,77 +1024,89 @@
                     const status = minsAgo < 30 ? 'active' : minsAgo < 360 ? 'recent' : 'stale';
                     agentHtml += `
                         <li class="agent-item fade-in" style="animation-delay: ${index * 0.05}s">
-                            <div class="agent-dot ${status}"></div>
-                            <div class="agent-name">${name}</div>
+                            <div class="agent-dot ${esc(status)}"></div>
+                            <div class="agent-name">${esc(name)}</div>
                             <div class="agent-detail">
-                                <span class="agent-harness">${info.harness}</span>
-                                <span class="agent-meta">${info.count} ops · ${timeAgo(info.lastCommit)}</span>
+                                <span class="agent-harness">${esc(info.harness)}</span>
+                                <span class="agent-meta">${Number(info.count) || 0} ops · ${esc(timeAgo(info.lastCommit))}</span>
                             </div>
                         </li>`;
                 });
                 agentList.innerHTML = agentHtml;
 
-                // PR queue rendering
+                // PR queue rendering — all untrusted fields escaped (XSS)
                 const prList = document.getElementById('pr-list');
                 let prHtml = '';
-                
+
                 if (openPRs.length === 0) {
-                    prHtml = '<li class="list-item fade-in"><span class="pr-title" style="color:var(--text-muted)">Queue is clear. Array is resting.</span></li>';
+                    prHtml = '<li class="list-item fade-in"><span class="pr-title" style="color:var(--text-muted)">Queue is clear. Plant is resting.</span></li>';
                 } else {
                     openPRs.slice(0, 8).forEach((pr, index) => {
+                        const title = esc(pr.title);
                         prHtml += `
                             <li class="list-item pr-item fade-in" style="animation-delay: ${index * 0.05}s">
-                                <span class="pr-number">#${pr.number}</span>
-                                <span class="pr-title" title="${pr.title}">${pr.title}</span>
-                                <span class="pr-status open">${timeAgo(pr.created_at)}</span>
+                                <span class="pr-number">#${Number(pr.number) || 0}</span>
+                                <span class="pr-title" title="${title}">${title}</span>
+                                <span class="pr-status open">${esc(timeAgo(pr.created_at))}</span>
                             </li>`;
                     });
                     if (openPRs.length > 8) {
                         prHtml += `<li class="list-item"><span class="pr-title" style="color:var(--text-muted); font-size: 0.9rem">+${openPRs.length - 8} more in queue</span></li>`;
                     }
                 }
-                
+
                 if (mergedToday.length > 0) {
                     mergedToday.slice(0, 3).forEach((pr, index) => {
+                        const title = esc(pr.title);
                         prHtml += `
                             <li class="list-item pr-item fade-in" style="opacity: 0.6; animation-delay: ${(openPRs.length + index) * 0.05}s">
-                                <span class="pr-number">#${pr.number}</span>
-                                <span class="pr-title" title="${pr.title}" style="text-decoration: line-through">${pr.title}</span>
+                                <span class="pr-number">#${Number(pr.number) || 0}</span>
+                                <span class="pr-title" title="${title}" style="text-decoration: line-through">${title}</span>
                                 <span class="pr-status merged">Merged</span>
                             </li>`;
                     });
                 }
                 prList.innerHTML = prHtml;
 
-                // Timeline rendering
+                // Timeline rendering — commit messages and authors are untrusted
                 const timeline = document.getElementById('timeline');
                 let timelineHtml = '';
                 commits.slice(0, 20).forEach((c, index) => {
-                    const agent = detectAgent(c);
-                    const msg = c.commit.message.split('\n')[0];
+                    const agent = esc(detectAgent(c));
+                    const msg = esc(c.commit.message.split('\n')[0]);
                     timelineHtml += `
                         <div class="timeline-item list-item fade-in" style="animation-delay: ${index * 0.05}s">
                             <div class="timeline-node"></div>
                             <div class="commit-header">
                                 <span class="commit-author">${agent}</span>
-                                <span class="commit-hash">${c.sha.substring(0, 7)}</span>
-                                <span class="commit-time">${timeAgo(c.commit.author.date)}</span>
+                                <span class="commit-hash">${esc(c.sha.substring(0, 7))}</span>
+                                <span class="commit-time">${esc(timeAgo(c.commit.author.date))}</span>
                             </div>
                             <div class="commit-message" title="${msg}">${msg}</div>
                         </div>`;
                 });
                 timeline.innerHTML = timelineHtml;
 
-                document.getElementById('refresh-info').textContent = `Sync: ${new Date().toLocaleTimeString()} · Connected`;
+                const refreshEl = document.getElementById('refresh-info');
+                refreshEl.textContent = `Sync: ${new Date().toLocaleTimeString()} · Connected`;
+                refreshEl.style.color = ''; // reset danger color from prior error
 
             } catch (e) {
-                document.getElementById('refresh-info').textContent = 'Sync Failed';
-                document.getElementById('refresh-info').style.color = 'var(--danger)';
+                const errMsg = e instanceof Error ? e.message : String(e);
+                const refreshEl = document.getElementById('refresh-info');
+                refreshEl.textContent = 'Sync Failed';
+                refreshEl.style.color = 'var(--danger)';
                 document.getElementById('timeline').innerHTML = `<div class="error-state fade-in">
                     <svg style="width:32px;height:32px;margin:0 auto 1rem;display:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    API Error: ${e.message}<br><br>
-                    <span style="font-size:0.85rem;color:var(--text-muted)">GitHub rate limit is 60 req/hr unauthenticated. The factory will automatically retry.</span>
+                    API Error: ${esc(errMsg)}<br><br>
+                    <span style="font-size:0.85rem;color:var(--text-muted)">GitHub rate limit is 60 req/hr unauthenticated. Refresh interval extended to reduce burn rate.</span>
                 </div>`;
+                // Extend refresh interval to 10 minutes on API failure to avoid
+                // hammering the rate limit while it recovers (Amara P1).
+                if (window._dashboardInterval) {
+                    clearInterval(window._dashboardInterval);
+                    window._dashboardInterval = setInterval(loadDashboard, 600000);
+                }
             }
         }
 
@@ -1102,9 +1115,10 @@
         
         // Initial load
         loadDashboard();
-        
-        // Auto refresh
-        setInterval(loadDashboard, 120000); // 2min refresh
+
+        // Auto refresh — 2 min normal cadence; extended to 10 min on
+        // API-fallback failure (set by catch block in loadDashboard).
+        window._dashboardInterval = setInterval(loadDashboard, 120000);
     </script>
 </body>
 </html>
