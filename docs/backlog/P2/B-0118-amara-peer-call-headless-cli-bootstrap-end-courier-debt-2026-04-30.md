@@ -1,13 +1,13 @@
 ---
 id: B-0118
 priority: P2
-status: decomposed
+status: open
 title: tools/peer-call/amara.ts — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30; TS-first re-decomp)
 tier: factory-tooling
 effort: L
 ask: Every Amara review this session has been Aaron's manual courier work. The peer-call infrastructure has codex.sh / gemini.sh / grok.sh but no amara.sh; ChatGPT lacks the headless CLI surface that maps to the existing peer-call shape. Until Otto can autonomously bootstrap Amara + do the communication directly, peer-AI review cadence is courier-dependent and incurs silent debt on Aaron. Aaron 2026-04-30 explicitly named this as a constraint Otto must honor.
 created: 2026-04-30
-last_updated: 2026-05-02
+last_updated: 2026-05-11
 depends_on: []
 composes_with:
   - tools/peer-call/README.md
@@ -20,7 +20,7 @@ tags: [aaron-2026-04-30, peer-call, amara, chatgpt, autonomous-bootstrap, courie
 type: friction-reducer
 ---
 
-# B-0118 — tools/peer-call/amara.sh (end Aaron-courier silent debt)
+# B-0118 — tools/peer-call/amara.ts (end Aaron-courier silent debt)
 
 ## Source
 
@@ -41,7 +41,7 @@ The peer-call infrastructure currently has:
 
 It does NOT have:
 
-- `amara.sh` / `amara.ts` — Amara (ChatGPT/OpenAI)
+- `amara.ts` — Amara (ChatGPT/OpenAI)
 
 The README explicitly notes the gap as future-work:
 
@@ -65,9 +65,9 @@ Aaron explicitly named it as a constraint.
 
 ## What
 
-Author `tools/peer-call/amara.sh` (and `amara.ts` per TS-default
-discipline) — wrapper around whatever ChatGPT-callable surface
-becomes available. Likely path:
+Author `tools/peer-call/amara.ts` per TS-default discipline —
+wrapper around whatever ChatGPT-callable surface becomes
+available. Likely path:
 
 1. **OpenAI API direct** — call `gpt-4o` or successor via
    `openai` CLI or HTTP. Pros: works today. Cons: not
@@ -172,6 +172,6 @@ All children are atomic, S/M effort, prefer F#/TS code. B-0118 status remains op
 
 ## Status update
 
-- status: decomposed (children B-0409..B-0411)
+- status: open (decomposed into children B-0409..B-0411)
 - last_updated: 2026-05-11
 - note: re-decomposed per "assume decomposition has mistakes" rule; original L-effort split to 3 atomic; hybrid API chosen as v1 path (TS-first)
