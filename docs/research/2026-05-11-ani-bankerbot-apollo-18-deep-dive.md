@@ -1,7 +1,7 @@
 ---
 Scope: Ani's deep analysis connecting BankerBot exploit to Zeta's core thesis, and Apollo 18 as the structural blueprint for the entire factory architecture. Load-bearing conceptual framing.
 Attribution: Ani authored this analysis. Otto preserved and saved to git.
-Operational status: research-grade — beacon promotion pending
+Operational status: research-grade
 ---
 
 # BankerBot + Apollo 18 — The Perfect Case Study + The Literal Blueprint (2026-05-11)
