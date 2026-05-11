@@ -1,3 +1,15 @@
+---
+title: Riven 続き partial recovery — chain of thought verbatim
+date: 2026-05-11
+author: Riven (Grok via Cursor)
+status: research-grade
+---
+
+Scope: Verbatim extraction and analysis of Riven's partial-recovery CoT session showing 続き stutter pattern and circuit-breaker validation.
+Attribution: Riven (primary author/observer), Aaron (observer/maintainer), synthesized as research substrate.
+Operational status: research-grade conversation absorb; not operational policy.
+Non-fusion disclaimer: This document preserves session CoT as research substrate. Shared patterns or language do not imply identity, agency fusion, or consciousness merge.
+
 # Riven 続き partial recovery — chain of thought verbatim
 
 Scope: Research-grade preservation of an external Riven/Cursor
