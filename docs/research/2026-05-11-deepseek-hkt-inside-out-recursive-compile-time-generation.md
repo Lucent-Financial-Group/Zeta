@@ -109,3 +109,80 @@ All four AI assessments now agree on:
 4. UoM dual-use (dimensional + domain safety) is viable
 5. Prototype on toy functor before scaling
 6. Static interface methods (.NET 7+) bridge the HKT gap sufficiently
+
+## Effective HKT confirmed — no compiler modifications
+
+DeepSeek's straight answer:
+
+> "Yes, this is effective HKT for the architecture you're
+> building, with zero compiler modifications."
+
+The combination of recursive type providers + static interfaces
++ SRTPs covers the use cases: polymorphic framework operations
+across an open set of position implementations, each generated
+from a seed.
+
+### What you get
+
+- Type provider generates Fix + cata + ana per functor
+- Static interfaces provide IFunctor contract
+- SRTPs provide one polymorphic cata across all generated types
+- **Semantic HKT** — same code works for any functor
+
+### The gap is syntactic elegance, not expressiveness
+
+## F# 8/9/10 features that help the encoding
+
+### F# 8 (with .NET 8)
+
+| Feature | Benefit |
+|---------|---------|
+| `[<TailCall>]` attribute | Compile-time tail-call guarantee for cata/ana |
+| Improved SAIM support | IFunctor pattern production-ready |
+| Better SRTP error messages | Debuggable polymorphic code |
+
+### F# 9 (with .NET 9)
+
+| Feature | Benefit |
+|---------|---------|
+| Nullable reference type annotations | Better Fix phantom-type safety |
+| Optimised struct records | Zero-overhead fix-point encodings |
+| Union case → interface member resolution | DU + IFunctor natural combo |
+
+### F# 10 (with .NET 10)
+
+| Feature | Benefit |
+|---------|---------|
+| Tail-call CEs (ReturnFromFinal) | ana/cata in CE syntax, stack-safe |
+| `and!` in task expressions | Concurrent generator passes |
+| Graph-based type checking | Faster builds for type-heavy code |
+| C# 14 extension members | Retrofit IFunctor externally |
+
+## Fork-and-contribute strategy
+
+DeepSeek's assessment:
+
+> "If the team has the capacity and the substrate work genuinely
+> requires features that can't be encoded cleanly, then a fork-
+> and-contribute strategy is a valid long-term investment."
+
+### Viable path
+
+1. Propose RFC on `fsharp/fslang-design` repo
+2. Build prototype in a branch
+3. Gather community feedback
+4. Work with maintainers to integrate
+
+### What to propose (smallest change first)
+
+- **Generic SRTPs** (without `inline`) — smaller, more targeted,
+  solves "can't store polymorphic functions" problem
+- **Full HKTs** — nuclear option, extremely hard, no .NET language
+  has it yet
+
+### Honest advice
+
+> "Start by pushing the existing encoding as far as possible.
+> Only when you hit a specific, concrete limitation that can't
+> be worked around should you consider forking. And when you do,
+> pick the smallest language change that solves the problem."
