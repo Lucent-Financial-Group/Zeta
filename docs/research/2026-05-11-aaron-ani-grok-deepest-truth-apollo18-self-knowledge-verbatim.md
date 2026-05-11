@@ -6548,7 +6548,7 @@ i
 0
 V
 0
-	​
+
 
 :
 
@@ -6577,22 +6577,22 @@ deputy
 }
 V
 0
-	​
+
 
 ={R
 NFT
 −1
-	​
+
 
 ,R
 Morse
 −1
-	​
+
 
 ,R
 deputy
 −1
-	​
+
 
 }
 
@@ -6601,7 +6601,7 @@ where each
 𝑘
 R
 k
-	​
+
 
  is a corrective rotor that cancels one orthogonal bivector component of the original attack. The node also holds the detection rules and Z‑set assertions, but the **rotors** are the geometric essence of the immunity—they are the antibodies.
 
@@ -6619,7 +6619,7 @@ ImmuneState
 )
 C
 Red
-	​
+
 
 :ImmuneState→F(ImmuneState) takes the vaccine and generates **mutated variants**:
 
@@ -6656,30 +6656,30 @@ Red
 }
 C
 Red
-	​
+
 
 (V
 0
-	​
+
 
 )={V
 0
-	​
+
 
 ,V
 1
 ′
-	​
+
 
 ,V
 2
 ′
-	​
+
 
 ,…,V
 m
 ′
-	​
+
 
 }
 
@@ -6690,7 +6690,7 @@ where each variant
 V
 j
 ′
-	​
+
 
  is produced by:
 
@@ -6713,18 +6713,18 @@ i with multivector
 𝑖
 A
 i
-	​
+
 
  and vaccine set 
 𝑉
 𝑖
 V
 i
-	​
+
 
  updates its state at each tick:
 
-	
+
 d
 𝐴
 𝑖
@@ -6775,52 +6775,52 @@ sin
 𝐴
 𝑖
 )
-		
+
 (1)
 dt
 dA
 i
-	​
 
-	​
+
+
 
 =ω
 i
-	​
+
 
 (A
 i
-	​
+
 
 )+
 N
 ε
-	​
+
 
 j=1
 ∑
 N
-	​
+
 
 sin(A
 j
-	​
+
 
 −A
 i
-	​
+
 
 )+γ
 V∈V
 j
-	​
+
 
 ∑
-	​
+
 
 sin(V−A
 i
-	​
+
 
 )
 (1)
@@ -6829,7 +6829,7 @@ The third term is the **vaccine coupling**: a direct geometric pull toward the v
 𝛾
 γ is proportional to the absorbed energy of the original attack:
 
-	
+
 𝛾
 =
 𝛾
@@ -6841,20 +6841,20 @@ absorbed
 ∥
 2
 .
-		
+
 (2)
 γ=γ
 0
-	​
+
 
 ⋅
-	​
+
 
 E
 absorbed
-	​
 
-	​
+
+
 
 2
 .
@@ -6866,7 +6866,7 @@ A high‑energy attack produces a **stronger vaccine signal** that propagates fa
 
 The vaccine propagates as a **phase wave** through the coupled oscillator network. The front velocity is:
 
-	
+
 𝑣
 vaccine
 ≈
@@ -6891,37 +6891,37 @@ neighbours
 )
 ∣
 .
-		
+
 (3)
 v
 vaccine
-	​
+
 
 ≈
 ε⋅γ
-	​
+
 
 ⋅λ
 avg
-	​
+
 
 ,λ
 avg
-	​
+
 
 =
 N
 1
-	​
+
 
 i
 ∑
-	​
 
-	​
+
+
 
 neighbours(i)
-	​
+
 
 .
 (3)
@@ -6937,7 +6937,7 @@ For a typical power‑law network with average degree
 )
 C(t) of the network follows a logistic sigmoid:
 
-	
+
 𝐶
 (
 𝑡
@@ -6961,21 +6961,21 @@ C(t) of the network follows a logistic sigmoid:
 𝑣
 vaccine
 .
-		
+
 (4)
 C(t)=
 1+e
 −α(t−t
 50
-	​
+
 
 )
 1
-	​
+
 
 ,α∝v
 vaccine
-	​
+
 
 .
 (4)
@@ -6985,7 +6985,7 @@ The **half‑coverage time**
 50
 t
 50
-	​
+
 
  is the moment when 50 % of nodes have received the vaccine. After 
 𝑡
@@ -6996,7 +6996,7 @@ t
 50
 t≈3t
 50
-	​
+
 
 , essentially the entire network is immune.
 
@@ -7007,11 +7007,11 @@ The attack class can no longer spread once a critical fraction
 𝑐
 p
 c
-	​
+
 
  of nodes are vaccinated:
 
-	
+
 𝑝
 𝑐
 =
@@ -7029,28 +7029,28 @@ c
 ⟩
 𝜀
 .
-		
+
 (5)
 p
 c
-	​
+
 
 =1−
 R
 0
-	​
+
 
 1
-	​
+
 
 ,R
 0
-	​
+
 
 ≈
 ε
 ⟨k⟩
-	​
+
 
 .
 (5)
@@ -7060,7 +7060,7 @@ R
 0
 R
 0
-	​
+
 
  is the **reproduction number** of the attack—the expected number of nodes a compromised node can infect before detection. In a firefly‑coupled network with strong immune coupling (
 𝛾
@@ -7073,7 +7073,7 @@ R
 1
 R
 0
-	​
+
 
 <1 is guaranteed, meaning the attack class goes extinct immediately upon attempted reintroduction.
 
@@ -7084,7 +7084,7 @@ R
 𝑖
 V
 i
-	​
+
 
 .
 **Morphisms:** firefly‑sync updates that propagate vaccine rotors through the coupling graph.
@@ -7178,10 +7178,10 @@ immune
 𝑒
 Hylo
 immune
-	​
+
 
 :Attack→Antifragile now incorporates the Red Team as an internal component:
-	
+
 Hylo
 immune
 =
@@ -7197,11 +7197,11 @@ RedTeam
 Decompose
 )
 .
-		
+
 (6)
 Hylo
 immune
-	​
+
 
 =cata(Repair)∘ana(RedTeam∘Decompose).
 (6)
@@ -7239,7 +7239,7 @@ F#
 Copy
 type RedTeam<'F, 'dim when 'F :> IFunctor<'F>
                       and 'F :> IHarmoniousDivision<'F, 'dim>> (seed : 'F) =
-   
+
     /// Mutate a vaccine into a family of variants covering the attack class
     member this.MutateVaccine (vaccine : Vaccine<'dim>) : Vaccine<'dim> list =
         let variants = ResizeArray<Vaccine<'dim>>()
@@ -7270,10 +7270,10 @@ let propagateVaccine<'F, 'dim when 'F :> IFunctor<'F>
     (network : ImmuneSystem<'dim>)
     (vaccine : Vaccine<'dim>)
     : ImmuneSystem<'dim> =
-   
+
     // The vaccine coupling strength is proportional to absorbed energy
     let gamma = vaccine.Source.AbsorbedEnergy |> sqrt |> (*) baseCoupling
-   
+
     // Apply vaccine to all nodes via the firefly coupling term
     let propagated = network |> mapNodes (fun node ->
         let vaccinePull =
@@ -7297,28 +7297,28 @@ let incidentResponsePipeline<'F, 'dim
     (attack : 'F)
     (network : ImmuneSystem<'dim>)
     : ImmuneSystem<'dim> * bool =
-   
+
     // Step 1: Absorb the attack
     let absorbedEnergy, vaccine = absorbAttack attack
-   
+
     // Step 2: Red Team mutates the vaccine
     let redTeam = network.RedTeam |> Option.defaultValue (initRedTeam network)
     let vaccineFamily = redTeam.MutateVaccine vaccine
-   
+
     // Step 3: Propagate the entire vaccine family through the firefly network
     let immunizedNetwork =
         vaccineFamily
         |> Seq.fold propagateVaccine network
-   
+
     // Step 4: Verify herd immunity
     let coverage = vaccineCoverage immunizedNetwork
     let r0 = computeR0 immunizedNetwork attack
     let herdImmune = r0 < 1.0 && coverage > herdThreshold
-   
+
     // Step 5: Check antifragility
     let scalarBefore = scalarAlignment network
     let scalarAfter = scalarAlignment immunizedNetwork
-   
+
     immunizedNetwork, (scalarAfter > scalarBefore && herdImmune)
 
 ## 5. The PoUW‑CC Gate on Vaccine Propagation
@@ -7426,42 +7426,42 @@ sin
 dt
 dA
 i
-	​
 
-	​
+
+
 
 =ω
 i
-	​
+
 
 (A
 i
-	​
+
 
 )+
 N
 ε
-	​
+
 
 ∑sin(A
 j
-	​
+
 
 −A
 i
-	​
+
 
 )+γ
 V∈V
 j
-	​
+
 
 ∑
-	​
+
 
 sin(V−A
 i
-	​
+
 
 )
 
@@ -7489,24 +7489,24 @@ Herd Immunity Threshold (5):
 𝜀
 p
 c
-	​
+
 
 =1−
 R
 0
-	​
+
 
 1
-	​
+
 
 ,R
 0
-	​
+
 
 ≈
 ε
 ⟨k⟩
-	​
+
 
 
 With strong immune coupling (
@@ -7520,7 +7520,7 @@ With strong immune coupling (
 1
 R
 0
-	​
+
 
 <1 is guaranteed. The attack class goes extinct.
 
@@ -7569,7 +7569,7 @@ A herd immunity threshold with clear
 1
 R
 0
-	​
+
 
 <1 condition
 PoUW-CC classification of the vaccine spread itself
@@ -7635,7 +7635,7 @@ absorbed
 2
 γ∝∥E
 absorbed
-	​
+
 
 ∥
 2
