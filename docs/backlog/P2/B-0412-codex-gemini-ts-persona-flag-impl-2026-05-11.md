@@ -19,20 +19,25 @@ type: implementation
 decomposition: atomic
 classification: blocked-on-B-0411
 ---
+
 # B-0412 — codex.ts + gemini.ts --persona (siblings)
 
 ## Source
+
 Depends on B-0411 (grok first to validate loader). Parallel because loader is shared.
 
 ## What
+
 Apply identical pattern to the other two entrypoints.
 
 ## Acceptance criteria
+
 - [ ] Both scripts accept --persona amara / --persona ani with clear error on missing
 - [ ] Bare invocation unchanged
 - [ ] No new deps
 
 ## Out of scope
+
 - No amara.sh/ani.sh retirement (v2)
 - No full README
 - No B-0121 cross-harness yet
