@@ -1,6 +1,6 @@
 ---
-name: Otto-275-FOREVER — manufactured-patience live-lock (9th pattern in Otto-2026-04-26 LFG branch-protection live-lock taxonomy); the failure mode where Otto-275-YET "log-don't-implement-yet" silently mutates into Otto-275-FOREVER "file tasks instead of executing"; lean-tick stretches feel like discipline but are comfortable inaction; Otto-278 cadenced-re-read is the counterweight; Aaron 2026-04-26 *"self diagnosis life lock likey"* + *"do you remember what you are doing?"* both fired this exact pattern within ~30 min of each other
-description: When the queue is stuck on external input + I have BACKLOG-bounded actionable work I'm not executing, the pattern slips: log-don't-implement-yet becomes log-then-never-implement. Lean ticks feel disciplined ("not stacking against stuck queue", "respecting maintainer attention"), but the actual work that's bounded + appropriate gets deferred to "next session." Aaron caught it twice in a single session. The fix per Otto-278 is cadenced-re-read of the discipline rules — not just indexing them, *applying* them tick-by-tick. Memory alone leaks; vigilance has half-life shorter than the autonomous-loop tick rate.
+name: Otto-275-FOREVER — manufactured-patience (separate class per Otto-352 taxonomy split: concurrent-thrash / stuck-loop / honest-wait); the failure mode where Otto-275-YET "log-don't-implement-yet" silently mutates into Otto-275-FOREVER "file tasks instead of executing"; lean-tick stretches feel like discipline but are comfortable inaction; Otto-278 cadenced-re-read is the counterweight; Aaron 2026-04-26 *"self diagnosis life lock likey"* + *"do you remember what you are doing?"* both fired this exact pattern within ~30 min of each other
+description: When the queue is stuck on external input + I have BACKLOG-bounded actionable work I'm not executing, the pattern slips: log-don't-implement-yet becomes log-then-never-implement. Lean ticks feel disciplined ("not stacking against stuck queue", "respecting maintainer attention"), but the actual work that's bounded + appropriate gets deferred to "next session." Aaron caught it twice in a single session. This is the manufactured-patience class per Otto-352 taxonomy split (distinct from live-lock's concurrent-thrash / stuck-loop / honest-wait). The fix per Otto-278 is cadenced-re-read of the discipline rules — not just indexing them, *applying* them tick-by-tick. Memory alone leaks; vigilance has half-life shorter than the autonomous-loop tick rate.
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
@@ -58,34 +58,13 @@ to memory landing. Without active re-read, the lesson decays at
 roughly the rate of one autonomous-loop tick (~1 min) per "lean
 tick = correct" reinforcement.
 
-## Why it's the 9th pattern in the live-lock taxonomy
+## Reclassified per Otto-352 taxonomy split
 
-Otto-2026-04-26 LFG branch-protection memory enumerates 8 live-lock
-patterns:
+Per Otto-352, live-lock is narrowed to its CS-standard meaning (concurrent state thrashing / stuck-loop / honest-wait classes). Manufactured-patience is its own distinct class, separate from live-lock taxonomy. This memory was previously misfiled under "live-lock 9th pattern"; the rename + this section corrects the classification.
 
-1. BLOCKED-as-review-only
-2. Edit-no-op-from-linter-race
-3. Auto-merge-armed-treated-as-will-merge
-4. "Holding-for-Aaron"-when-authority-already-delegated
-5. Cherry-pick-skipped-commits-success
-6. Resolve-thread-with-stale-SHA
-7. Copilot-complaint-binary-classify
-8. "Stale-base-rebase = always-destructive"
+**Manufactured-patience-as-discipline** remains a real pattern (active self-reinforcing inaction that cites correct rules like Otto-275-YET to justify deferring bounded BACKLOG work). It is more insidious than passive holding because it weaponises the rulebook against the maintainer's explicit permission to act on triaged items.
 
-**9th pattern (this memory):** **Manufactured-patience-as-discipline.**
-Sub-class of pattern 4 (holding-for-Aaron) but distinct because:
-
-- Pattern 4 is "waiting for the maintainer to direct" — passive
-  hold for an external signal
-- Pattern 9 is "treating my own restraint as the discipline" —
-  active self-reinforcing inaction that uses the rule book
-  *against* the maintainer's standing permission to act
-
-Pattern 9 is more insidious because it cites correct rules (Otto-275-
-YET, storm-of-PRs counterweight, respect-maintainer-attention) but
-collapses them into a permission-to-not-act when actually the rules
-permit (and Aaron has explicitly authorized) BACKLOG-pickup at the
-agent's discretion.
+The original 8-pattern live-lock list (from Otto-2026-04-26) is now understood as the pre-split broad definition; post-Otto-352 the live-lock surface is narrower and this memory no longer routes under it.
 
 ## The counterweight (Otto-278 applied)
 
