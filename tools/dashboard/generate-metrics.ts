@@ -58,13 +58,13 @@ function timeAgo(date: string): string {
 }
 
 async function main() {
-  const [commits, openPRs, closedPRs] = await Promise.all([
+  const [commits, openPRs, closedPRs] = (await Promise.all([
     apiFetch(`${API}/commits?per_page=100`),
     apiFetch(`${API}/pulls?state=open&per_page=50`),
     apiFetch(
       `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`
     ),
-  ]);
+  ])) as [any[], any[], any[]];
 
   const now = Date.now();
   const h24 = 24 * 60 * 60 * 1000;
