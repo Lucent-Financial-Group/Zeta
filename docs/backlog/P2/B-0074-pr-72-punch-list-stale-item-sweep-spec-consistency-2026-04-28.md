@@ -143,6 +143,7 @@ Both require a targeted doc-audit pass — now decomposed into atomic children B
 B-0074 is broad friction-reducer (even after .1 slice); re-decomposed per "always re-decompose items during the build — assume decomposition has mistakes" into the 2 smallest dependency-ordered atomic child rows (TS-preferring where future verification tooling applies; no impl in this step).
 
 **Dependency order (buildable now, no deps):**
+
 - B-0074.2 — EAT §504 / §21.e wallet-acceptance prose audit (S, first)
 - B-0074.3 — wallet-v0 §377 / §8.1 bond-ledger vs INTENTIONAL-DEBT.md alignment (S, parallel)
 
