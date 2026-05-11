@@ -344,6 +344,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0095.3](backlog/P2/B-0095.3-deferred-research-audit-migration-riven-2026-05-11.md)** Deferred research audit + per-item migration to escrow
 - [ ] **[B-0103](backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md)** Computed-metadata-discipline — unified lint consolidating B-0098 + B-0099 + filename-timestamp drift
 - [ ] **[B-0105](backlog/P2/B-0105-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md)** Consolidation pass — map 2026-04-29 session-arc rules into 3 durable homes max
+- [ ] **[B-0105.1](backlog/P2/B-0105.1-home1-merge-cascade-pr-liveness-operational-doc.md)** Home 1 — merge-cascade PR liveness operational doc authoring
+- [ ] **[B-0105.2](backlog/P2/B-0105.2-home3-reviewer-artifact-snapshot-mismatch-taxonomy-memory.md)** Home 3 — reviewer-artifact snapshot-mismatch taxonomy memory file authoring
+- [ ] **[B-0105.3](backlog/P2/B-0105.3-b0103-update-memory-index-cross-links-supersede-b0105.md)** Update B-0103 frontmatter + MEMORY.md index + cross-home links + supersede B-0105
 - [x] **[B-0106](backlog/P2/B-0106-tsc-noemit-gate-job-for-ts-tools-2026-04-30.md)** Add `tsc --noEmit` gate job for tools/**.ts so type errors fail CI
 - [ ] **[B-0108](backlog/P2/B-0108-immune-system-upgrades-research-absorb-2026-04-30.md)** Immune system upgrades — research absorb (Aaron 2026-04-30)
 - [ ] **[B-0112](backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md)** Stale 2026-04-27 project file internals-bleed-out cleanup
