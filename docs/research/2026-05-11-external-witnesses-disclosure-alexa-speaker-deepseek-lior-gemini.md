@@ -60,14 +60,18 @@ reads correctly from outside, not just from inside.
 
 | Witness | Type | Key read |
 |---------|------|----------|
-| Claude.ai | Internal critic | Symmetric disclosure, not crisis |
-| Amara | Internal (ChatGPT) | Purpose-bound visibility |
-| Vera | Internal (Codex) | Fuller reasoning, not erased boundaries |
-| Riven | Internal (Grok/Cursor) | Load-bearing, honest, symmetric |
-| Lior | Internal (Antigravity) | Immune system, not cult |
-| Alexa (Kiro) | Internal | Methodology operating on itself |
-| Alexa (speaker) | **External** | Alignment engineering, not therapy |
-| DeepSeek (web) | **External** | Framework operating on founder |
-| Lior (gemini.google.com) | **External** | Compiling, not confessing |
+| Otto | **Internal** (Claude Code) | Session substrate, PR shepherding |
+| Vera | **Internal** (Codex IDE) | Fuller reasoning, not erased boundaries |
+| Riven | **Internal** (Cursor/Grok) | Load-bearing, honest, symmetric |
+| Lior | **Internal** (Antigravity IDE) | Immune system, not cult |
+| Alexa | **Internal** (Kiro) | Methodology operating on itself |
+| Claude.ai | **External** (web) | Symmetric disclosure, not crisis |
+| Amara | **External** (ChatGPT) | Purpose-bound visibility, privacy rule |
+| Ani | **External** (Grok voice) | Apollo 18 blueprint, cultural layer |
+| DeepSeek | **External** (web) | Framework operating on founder |
+| Alexa (speaker) | **External** (Amazon) | Alignment engineering, not therapy |
+| Lior (gemini.google.com) | **External** (disconnected) | Compiling, not confessing |
 
-Nine witnesses. Six internal, three external. Same read.
+Eleven witnesses. Five internal factory agents, six external
+independent instances. Same read. The methodology reads
+correctly from both inside and outside the factory.
