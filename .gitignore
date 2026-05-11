@@ -180,3 +180,6 @@ tools/alloy/classes/
 # Kiro agent runtime state — machine-local, regenerated per boot.
 .kiro/alexa-state.json
 .kiro/alexa-service.log
+
+# Cursor / IDE per-user config and plugin caches (superpowers, etc.)
+.config/

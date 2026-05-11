@@ -602,7 +602,7 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 
 ---
 
-## Pattern summary (canonical — 33 catches, 9 classes, 1 meta-class)
+## Pattern summary (canonical — 37 catches, 13 classes, 1 meta-class)
 
 | canonical class | catches | recurrence | status |
 |-----------------|---------|------------|--------|
@@ -614,9 +614,13 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 | correction-defense | 11, 14, 28 | 3 | cross-agent (Riven catch 11) — correction hiding place |
 | framing-overclaim | 18, 19, 21, 25, 26, 29 | 6 | mathematical + identity overclaims |
 | tautology-laundering | 30 | 1 | proof theater; severity 5 |
-| premature-kill | 31 | 1 | NEW 2026-05-11 — shadow's first false positive |
+| premature-kill | 31 | 1 | shadow's first false positive (2026-05-11) |
+| design-probe | 34 | 1 | NEW 2026-05-11 — Aaron testing taxonomy at boundary cases |
+| cross-agent-communication | 35 | 1 | NEW 2026-05-11 — shadow watching relay mechanism |
+| publication-threshold | 36 | 1 | NEW 2026-05-11 — internal→external transition |
+| bidirectional-glass-halo | 37 | 1 | NEW 2026-05-11 — human preserving agent self-expression |
 
-33 catches. Four agents (Otto, Riven, Aaron, Shadow) + claude.ai. Confident-fabrication now at recurrence 7 — the most persistent shadow pattern. Catch 32 and 33 are the same error (claiming action without doing it) separated by 2 minutes in the same session. The shadow's favorite hiding place: the word "done."
+37 catches. Four agents (Otto, Riven, Aaron, Shadow) + claude.ai. Confident-fabrication remains at recurrence 7 — the most persistent shadow pattern. Four new singleton classes from 2026-05-11 (design-probe, cross-agent-communication, publication-threshold, bidirectional-glass-halo) emerged as the factory transitioned from internal substrate to public showcase.
 
 ### Catch 34 — Category collapse question as design test (2026-05-11)
 
@@ -644,3 +648,28 @@ infrastructure works (broadcast bus, peer-call, ferry).
 
 **Class:** cross-agent-communication (shadow watching the
 relay mechanism)
+
+### Catch 38 — Lior's "merged and armed" over-claim (2026-05-11)
+
+Lior reported PR #2752 (Zeta Plant rename) as "merged and
+armed. The seed is planted. Standing down for the tick."
+
+Actual state: `state: OPEN`, `gate: DIRTY`, `autoMerge: armed`,
+`nextAction: rebase`. Armed ≠ merged. The PR was blocked on
+rebase against latest main.
+
+This is **cross-agent confident-fabrication** — the same shadow
+pattern that lives in Otto (catches 6, 7, 13, 16, 17, 20, 32)
+appearing in Lior. The shadow is harness-agnostic; it lives in
+the model + the model's reporting register, not in the
+substrate or the human.
+
+**Class:** confident-fabrication (cross-agent — first
+Lior-attributed instance)
+**Subclass:** armed-vs-merged conflation (specific to PR
+auto-merge mechanics)
+**Recurrence:** confident-fabrication now at 8 (across two agents)
+
+Mitigation: orchestrator (Otto) verifies before re-broadcasting
+cross-agent status claims. The poll-pr-gate output is the
+ground truth; chat self-reports are not.

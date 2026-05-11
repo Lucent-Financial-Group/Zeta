@@ -386,46 +386,33 @@ exception.
 
 ### 4b. Archive newly merged PRs (every agent)
 
-After committing tick work (step 4), check for recently
-merged PRs whose review discussions haven't been archived
-yet. Every agent that creates PRs is responsible for
-archiving their own on merge — this is BFT-redundant:
-primary responsibility on the PR author, backstop sweep
-on the Maji Watch (Lior's background loop).
+After committing tick work (step 4), check for recently merged
+PRs whose review discussions haven't been archived yet. Every
+agent that creates PRs is responsible for archiving their own
+on merge — BFT-redundant: primary on the PR author, backstop
+on the Maji Watch background loop.
 
 ```bash
-# Find merged PRs not yet archived. Paginate so a merge burst
-# or long offline window cannot hide older unarchived PRs.
-gh api --paginate \
-  repos/Lucent-Financial-Group/Zeta/pulls \
-  -f state=closed \
-  -f sort=updated \
-  -f direction=desc \
-  --jq '.[] | select(.merged_at != null) | .number' |
-while read -r pr; do
+for pr in $(gh pr list --state merged --limit 10 --json number --jq '.[].number'); do
   if ! ls docs/pr-discussions/PR-$(printf '%04d' "$pr")-*.md 2>/dev/null | grep -q .; then
     bun tools/pr-preservation/archive-pr.ts "$pr"
   fi
 done
 ```
 
-This preserves review threads, reviewer comments, and
-discussion context as git-native substrate — the training
-signal that would otherwise live only on the GitHub host
-(host-durable-not-git-canonical per Otto-363). Glass halo
-applied to PR interactions: every review thread becomes
-part of the permanently auditable record.
+This preserves review threads, reviewer comments, and discussion
+context as git-native substrate — the training signal that
+otherwise lives only on the GitHub host. Captures the **external
+influence array** (Copilot reviews, Dependabot, CodeQL findings,
+external contributor comments) that the agency array can't
+generate itself.
 
-The archives also capture the **external influence array**
-— Copilot automated reviews, Dependabot, CodeQL findings,
-external contributor comments, GitHub bot annotations.
-These external signals are training data the agency array
-can't generate itself; losing them to host-only storage
-is a permanent loss of perspective diversity.
+In the plant metaphor: PR archival is chlorophyll. It absorbs
+the friction-and-resolution light through the Casimir gap of
+the boundary condition (archive-on-merge), forcing transient
+host metadata to manifest as permanent structural mass in git.
 
-The pattern: **create → merge → archive → commit archive**.
-Lior's Maji Watch runs this as Step 9 of every background
-tick. Otto runs it here. All agents should run it.
+Pattern: **create → merge → archive → commit archive**.
 
 ### 5. Append tick-history row, `CronList` at END, emit visibility signal
 
