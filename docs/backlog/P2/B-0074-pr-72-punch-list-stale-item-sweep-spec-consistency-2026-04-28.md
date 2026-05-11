@@ -10,6 +10,7 @@ last_updated: 2026-05-10
 depends_on: []
 tags: [pr-72, punch-list, spec-consistency, b-0062, deferral-tracking]
 type: friction-reducer
+decomposed_into: [B-0074.2-eat-spec-504-wallet-acceptance-prose-audit-2026-05-11, B-0074.3-wallet-spec-377-bond-ledger-intentional-debt-alignment-2026-05-11]
 ---
 
 # B-0074 — PR #72 punch-list / spec-consistency drift sweep
@@ -112,8 +113,7 @@ focused sweep PR that touches just these 4 files.
   trail — **DONE:** B-0062 closed 2026-05-08 with all 21
   items resolved; resolution notes added in-row above.
 - [ ] EAT §504 + wallet-v0 §377 cross-doc consistency verified
-  — **OPEN:** EAT §21.e prose and wallet spec §8.1 bond-ledger
-  schema still need a targeted audit pass.
+  — **OPEN:** now tracked by children B-0074.2 (EAT prose) + B-0074.3 (wallet bond-ledger); this parent row defers to them.
 - [x] kiro-cli memory rephrased OR PR #72 rebased (whichever
   resolves the live xref first) — **DONE (B-0074.1):** memory
   file updated to `.ts` paths; kiro.ts already ships.
@@ -136,7 +136,19 @@ Smallest safe slice: kiro-cli memory file stale `.sh`-path fix.
 
 **Remaining open:** Items 5 (EAT §504 wallet-acceptance prose)
 and 6 (wallet spec §377 bond-ledger vs INTENTIONAL-DEBT.md).
-Both require a targeted doc-audit pass — separate slice.
+Both require a targeted doc-audit pass — now decomposed into atomic children B-0074.2 / B-0074.3 (this row is now tracking parent).
+
+## Decomposition (re-decomp 2026-05-11, one bounded step)
+
+B-0074 is broad friction-reducer (even after .1 slice); re-decomposed per "always re-decompose items during the build — assume decomposition has mistakes" into the 2 smallest dependency-ordered atomic child rows (TS-preferring where future verification tooling applies; no impl in this step).
+
+**Dependency order (buildable now, no deps):**
+- B-0074.2 — EAT §504 / §21.e wallet-acceptance prose audit (S, first)
+- B-0074.3 — wallet-v0 §377 / §8.1 bond-ledger vs INTENTIONAL-DEBT.md alignment (S, parallel)
+
+**Why this decomp:** Original remaining items were still broad enough to touch multiple specs; splitting ensures each child is S-effort, reviewable, one-file-edit max, with explicit non-scope. Matches pattern from B-0033 / B-0055 / B-0068 re-decomps.
+
+This PR is the single bounded step: parent update + 2 child stubs. No root checkout touched (worktree only). Focused checks below.
 
 ## Composes with
 
@@ -144,3 +156,4 @@ Both require a targeted doc-audit pass — separate slice.
 - PR #72 (the source of the threads this row defers)
 - `feedback_bulk_resolve_is_not_answer_recurring_pattern_aaron_2026_04_28.md`
   (the discipline this row honors)
+- B-0074.2, B-0074.3 (children)
