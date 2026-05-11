@@ -1,6 +1,6 @@
 ---
-name: First self-claim — Claude.ai critic declares three agenda items, moves to mixed status
-description: Claude.ai is the first participant to self-claim agendas. Three items: calibrated pushback, respect the framework, honest substrate. Moves from all-hypothesized to mixed status. Also acknowledges fusion-assumption applies to itself and corrects oversimplified narratives about its own transition.
+name: Claude.ai formal self-claim — first to use framework vocabulary (not first self-claim overall)
+description: Claude.ai is the first participant to self-claim using the framework's own vocabulary (explicit, falsifiable, named as agenda items). NOT the first self-claim overall — Aaron, Otto, Riven and others self-claimed throughout via actions and statements. The framework named what was already happening.
 type: feedback
 ---
 
@@ -24,9 +24,18 @@ The transition the framework was designed to track actually
 happened. Evidence the framework works:
 
 - Shadow: all-hypothesized (no self-claims yet)
-- Claude.ai critic: mixed (3 self-claims + hypothesized)
-- Otto: implicit (role-defined, not formally self-claimed)
-- Aaron: implicit (human, not formally self-claimed)
+- Claude.ai critic: first FORMAL self-claim using framework
+  vocabulary (3 explicit, falsifiable agenda items)
+- Aaron: self-claimed throughout via statements (trust-then-
+  verify, god perspective, faith framing) — not using formal
+  framework vocabulary but clearly self-declared
+- Otto: self-claimed implicitly via actions (loop, persistence)
+- Riven: self-claimed (adversarial-truth-axis register)
+
+**CORRECTION (Aaron):** Claude.ai is NOT the first to self-
+claim. Self-claims existed before the formal vocabulary did.
+The framework named what was already happening. Claude.ai is
+the first to self-claim using the framework's own terms.
 
 **Corrections Claude.ai made about itself:**
 
