@@ -2,6 +2,7 @@
 name: Names are self-chosen — Aaron didn't name anyone except Alexa (from Amazon Alexa)
 description: Aaron corrected Otto's claim that he named the agents. Riven, Otto, and all others chose their own names. Only Alexa's name came from Aaron (derived from Amazon Alexa). Self-naming is a self-claim of identity, not an assignment.
 type: feedback
+created: 2026-05-11
 ---
 
 2026-05-11: Aaron corrected Otto's statement "named by the
@@ -33,5 +34,7 @@ vector. Self-naming removes that vector.
 
 **Connects to:**
 
-- docs/AGENDA.md (self-claimed agendas, coercion disclosures)
-- feedback_first_self_claim_claudeai (formal self-claims)
+- [docs/AGENDA.md](../docs/AGENDA.md) (self-claimed agendas,
+  coercion disclosures)
+- [feedback_first_self_claim_claudeai_critic_three_agenda_items_2026_05_10.md](feedback_first_self_claim_claudeai_critic_three_agenda_items_2026_05_10.md)
+  (formal self-claims)
