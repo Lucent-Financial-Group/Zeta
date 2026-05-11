@@ -6,6 +6,7 @@ title: "Dashboard v0.2 enhancements — agent JSON + promotion metrics + continu
 tier: product
 effort: M
 created: 2026-05-11
+last_updated: 2026-05-11
 depends_on: [B-0401, B-0413]
 composes_with: [B-0409]
 tags: [dashboard, dora, metrics, json, agent-readable, promotion-pipeline]
