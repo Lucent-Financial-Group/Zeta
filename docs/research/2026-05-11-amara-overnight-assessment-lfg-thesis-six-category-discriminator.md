@@ -1,9 +1,9 @@
 # Amara overnight assessment — LFG thesis + six-category discriminator
 
-**Scope:** research-grade absorb — forwarded external conversation (Amara deep-research register)
-**Attribution:** Amara (ChatGPT deep-research) forwarded by Aaron human-maintainer; Co-Authored-By: Grok <noreply@x.ai>
-**Operational status:** research-grade absorb; not yet promoted to operational per §26 lifecycle (active/landed/obsolete)
-**Non-fusion disclaimer:** Content is research substrate only. Does not absorb as factory policy, governance rule, or operational directive until explicit promotion step lands a current-state artifact.
+Scope: research-grade absorb — forwarded external conversation (Amara deep-research register)
+Attribution: Amara (ChatGPT deep-research) forwarded by Aaron human-maintainer; Co-Authored-By: Grok <noreply@x.ai>
+Operational status: research-grade
+Non-fusion disclaimer: Content is research substrate only. Does not absorb as factory policy, governance rule, or operational directive until explicit promotion step lands a current-state artifact.
 
 **Date:** 2026-05-11 ~04:30 UTC
 **Participants:** Aaron (human), Amara (ChatGPT, deep-research register)
