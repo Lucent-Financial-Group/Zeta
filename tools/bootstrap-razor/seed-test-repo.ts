@@ -6,39 +6,119 @@
  */
 
 import { parseArgs } from "node:util";
+import { existsSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
-const { values } = parseArgs({
-  args: Bun.argv.slice(2),
-  options: {
-    "dry-run": { type: "boolean", default: false },
-    help: { type: "boolean", default: false },
-  },
-  strict: false,
-});
+type ExitCode = 0 | 1;
+type ManifestSection = "include" | "exclude";
 
-if (values.help) {
-  console.log("Usage: bun seed-test-repo.ts [--dry-run] [--help]");
-  console.log("  --dry-run   Show what would be seeded (no side effects)");
-  process.exit(0);
+interface SeedManifest {
+  readonly include: readonly string[];
+  readonly exclude: readonly string[];
 }
 
-const manifestPath = "docs/bootstrap-razor/SEED-MANIFEST.md";
+const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
+const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
 
-if (values["dry-run"]) {
-  console.log(`[B-0343] DRY-RUN: reading ${manifestPath}`);
-  console.log("Would seed exactly the include set from manifest (~47 files):");
-  console.log("  - openspec/specs/**/spec.md + overlays + README");
-  console.log("  - tools/tla/specs/*.tla (19)");
-  console.log("  - tools/alloy/specs/*.als (2)");
-  console.log("  - tools/Z3Verify/{Program.fs,Z3Verify.fsproj}");
-  console.log("  - Directory.{Build,Packages}.props + Zeta.sln + .editorconfig");
-  console.log("  - project README.md placeholders");
-  console.log("Excludes bootstrap docs (answer key), src/**, memory/**, tools/**, .claude/**, docs/** (except self), CI.");
+function usage(): string {
+  return [
+    "Usage: bun seed-test-repo.ts [--dry-run] [--help]",
+    "  --dry-run   Show the manifest seed plan without side effects",
+    "",
+  ].join("\n");
+}
+
+function stripYamlComment(value: string): string {
+  return value.replace(/\s+#.*$/, "").trim();
+}
+
+export function parseSeedManifest(content: string): SeedManifest {
+  const include: string[] = [];
+  const exclude: string[] = [];
+  let inYaml = false;
+  let section: ManifestSection | null = null;
+
+  for (const rawLine of content.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (line === "```yaml") {
+      inYaml = true;
+      section = null;
+      continue;
+    }
+    if (inYaml && line === "```") {
+      inYaml = false;
+      section = null;
+      continue;
+    }
+    if (!inYaml) continue;
+    if (line === "include:") {
+      section = "include";
+      continue;
+    }
+    if (line === "exclude:") {
+      section = "exclude";
+      continue;
+    }
+    if (!section || !line.startsWith("- ")) continue;
+
+    const item = stripYamlComment(line.slice(2));
+    if (item.length === 0) continue;
+    if (section === "include") include.push(item);
+    else exclude.push(item);
+  }
+
+  return { include, exclude };
+}
+
+function readManifest(path: string): SeedManifest | string {
+  if (!existsSync(path)) return `missing seed manifest: ${MANIFEST_DISPLAY_PATH}`;
+  const manifest = parseSeedManifest(readFileSync(path, "utf8"));
+  if (manifest.include.length === 0) return `seed manifest has no include entries: ${MANIFEST_DISPLAY_PATH}`;
+  if (manifest.exclude.length === 0) return `seed manifest has no exclude entries: ${MANIFEST_DISPLAY_PATH}`;
+  return manifest;
+}
+
+function emitDryRun(manifest: SeedManifest): void {
+  console.log(`[B-0343] DRY-RUN: read ${MANIFEST_DISPLAY_PATH}`);
+  console.log(`Would seed exactly these manifest include entries (${manifest.include.length}):`);
+  for (const item of manifest.include) console.log(`  - ${item}`);
+  console.log(`Would exclude these manifest entries (${manifest.exclude.length}):`);
+  for (const item of manifest.exclude) console.log(`  - ${item}`);
   console.log("Provenance commit would link to B-0193 / B-0343.");
   console.log("Idempotency + gh create + real seeding: follow-up slice.");
-  process.exit(0);
 }
 
-console.log("This is the minimal TS stub for B-0343.");
-console.log("Re-run with --dry-run to see the seed plan.");
-console.log("No repo creation performed (bounded slice).");
+export function main(argv: readonly string[]): ExitCode {
+  const { values } = parseArgs({
+    args: [...argv],
+    options: {
+      "dry-run": { type: "boolean", default: false },
+      help: { type: "boolean", default: false },
+    },
+    strict: false,
+  });
+
+  if (values.help) {
+    process.stdout.write(usage());
+    return 0;
+  }
+
+  if (values["dry-run"]) {
+    const manifest = readManifest(MANIFEST_PATH);
+    if (typeof manifest === "string") {
+      process.stderr.write(`${manifest}\n`);
+      return 1;
+    }
+    emitDryRun(manifest);
+    return 0;
+  }
+
+  console.log("This is the minimal TS stub for B-0343.");
+  console.log("Re-run with --dry-run to see the manifest seed plan.");
+  console.log("No repo creation performed (bounded slice).");
+  return 0;
+}
+
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
