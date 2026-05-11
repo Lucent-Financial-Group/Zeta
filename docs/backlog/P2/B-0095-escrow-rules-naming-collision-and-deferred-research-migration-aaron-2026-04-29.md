@@ -226,6 +226,7 @@ B-0095 was too broad (3 sub-asks + open-ended migration audit). Re-decomposed in
 This follows "always re-decompose — assume mistakes" and "if too broad, decompose before implementation". Children carry parent/depends_on links. Original row kept for provenance; status remains open until children close.
 
 Focused checks (run in worktree):
+
 - dotnet build -c Release → 0 warnings, 0 errors (gate passed pre-edit)
 - bun tools/github/refresh-worldview.ts → executed, no drift on this surface
 - No root checkout touched; all writes via dedicated /tmp worktree + claim branch
