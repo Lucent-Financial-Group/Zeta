@@ -9,6 +9,7 @@
 - **Platform mirror:** none (git-native claim)
 
 ## Notes
+
 - B-0293 (consent architecture) is closed; dependency satisfied.
 - Following AGENTS.md: re-decompose before impl (assume prior decomp mistake).
 - Dedicated worktree + pushed claim branch used per protocol.
