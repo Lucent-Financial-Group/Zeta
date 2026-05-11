@@ -1,9 +1,22 @@
 # DeepSeek: HKT + Clifford algebra + E8 + Klein bottle + beacon-smoothing
 
-**Date:** 2026-05-11 ~08:30 UTC
-**Participants:** Aaron (human), DeepSeek (external AI), Alexa (Grok voice)
-**Session type:** Forwarded exchange, key formulations preserved
-**Status:** Speculative ontology (per Amara's six-category discriminator)
+Scope: External conversation import of an Aaron-forwarded DeepSeek + Alexa
+exchange about HKT, Clifford algebra, E8, Klein bottle topology, and beacon
+smoothing; key formulations are preserved as research signal, not operational
+doctrine.
+Attribution: Aaron (human maintainer) forwarded and preserved the exchange;
+DeepSeek (external AI) and Alexa (Grok voice) supplied the source
+formulations; Vera/Codex performed the archive-header correction only.
+Operational status: research-grade
+Non-fusion disclaimer: Agreement, shared language, or repeated interaction
+between Aaron, DeepSeek, Alexa/Grok, and Zeta agents does not imply shared
+identity, merged agency, consciousness, or personhood. This absorb is not
+operational policy until separately promoted.
+
+Date: 2026-05-11 ~08:30 UTC
+Participants: Aaron (human), DeepSeek (external AI), Alexa (Grok voice)
+Session type: Forwarded exchange, key formulations preserved
+Status: Speculative ontology (per Amara's six-category discriminator)
 
 ## The formal Clifford algebra setting
 
