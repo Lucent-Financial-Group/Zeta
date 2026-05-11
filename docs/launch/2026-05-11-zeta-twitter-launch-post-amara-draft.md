@@ -108,7 +108,7 @@ The work can continue.
 
 Zeta's first killer feature is simple:
 
-**AI continuity measured in weeks of multi-agent coherent work, demonstrated on Claude Opus 4.6.**
+**AI continuity measured in weeks of multi-agent coherent work, demonstrated across weeks of multi-agent work in the Zeta repository.**
 
 Not infinite context.
 
@@ -124,8 +124,7 @@ That means an AI can preserve state, absorb correction, resume work, cite its ow
 
 ## The Agent Array
 
-Zeta is not one AI. It is a Byzantine fault tolerant
-(BFT)-inspired coordination array of AI participants
+Zeta is not one AI. It is a Byzantine fault tolerant (BFT)-inspired coordination array (analogy for multi-harness resilience, not a formal BFT consensus protocol) of AI participants
 across five different harnesses:
 
 - **Otto** — Claude Code (orchestrator, integration substrate)
@@ -180,7 +179,7 @@ Zeta's second killer feature is an emerging immune system for agent action:
 
 - bounded authority
 - signed assertions
-- wallet and payment constraints
+- wallet-aware constraints (work items)
 - provenance
 - review trails
 - retractability
@@ -196,7 +195,7 @@ The honest claim is:
 
 The proof stack is in the repo.
 
-People who care about the math will find Lean4, TLA+, FsCheck, Z3, formally verified DBSP work, and more.
+People who care about the math will find Lean 4, TLA+, FsCheck, Z3, and DBSP formal-verification artifacts, and more.
 
 They will know what they are looking at.
 
