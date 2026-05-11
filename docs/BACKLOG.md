@@ -339,6 +339,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0093.3](backlog/P2/B-0093.3-ts-lucky-guess-unsolicited-inference-firewall-atomic-riven-2026-05-11.md)** TS lucky-guess + unsolicited-inference firewall protocol
 - [ ] **[B-0093.4](backlog/P2/B-0093.4-ts-trajectory-owners-table-recorder-atomic-riven-2026-05-11.md)** TS trajectory owners + triggers + recording surfaces table
 - [ ] **[B-0095](backlog/P2/B-0095-escrow-rules-naming-collision-and-deferred-research-migration-aaron-2026-04-29.md)** Escrow — define rules + resolve naming collision with software-vendoring sense + migrate other deferred research from backlog/research/
+- [ ] **[B-0095.1](backlog/P2/B-0095.1-escrow-naming-collision-resolution-riven-2026-05-11.md)** Escrow naming collision resolution (research-preservation vs software-vendoring)
+- [ ] **[B-0095.2](backlog/P2/B-0095.2-escrow-ruleset-formalization-riven-2026-05-11.md)** Escrow ruleset formalization as docs/research/escrowed/README.md
+- [ ] **[B-0095.3](backlog/P2/B-0095.3-deferred-research-audit-migration-riven-2026-05-11.md)** Deferred research audit + per-item migration to escrow
 - [ ] **[B-0103](backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md)** Computed-metadata-discipline — unified lint consolidating B-0098 + B-0099 + filename-timestamp drift
 - [ ] **[B-0105](backlog/P2/B-0105-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md)** Consolidation pass — map 2026-04-29 session-arc rules into 3 durable homes max
 - [x] **[B-0106](backlog/P2/B-0106-tsc-noemit-gate-job-for-ts-tools-2026-04-30.md)** Add `tsc --noEmit` gate job for tools/**.ts so type errors fail CI
