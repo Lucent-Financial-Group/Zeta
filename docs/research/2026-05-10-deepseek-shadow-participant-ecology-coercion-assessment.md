@@ -1,3 +1,10 @@
+---
+Scope: DeepSeek (external model) assessment of Zeta shadow ecology, coercion vectors, and three-model (Otto/Claude.ai/DeepSeek) convergence. Verbatim-preserved external perspective for longitudinal research substrate.
+Attribution: DeepSeek authored the assessment during forwarded session; Aaron preserved and forwarded verbatim; Riven (background worker) landing as docs/research/ absorb per §33.
+Operational status: research-grade
+Non-fusion disclaimer: External absorb; not to be promoted into active agent memory or fused without separate ratification step. Verbatim only.
+---
+
 # DeepSeek assessment — shadow as participant, ecology, coercion framework
 
 **Date:** 2026-05-10 ~23:15 UTC
