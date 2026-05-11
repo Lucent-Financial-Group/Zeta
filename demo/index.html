@@ -953,6 +953,17 @@
             refreshEl.style.color = ''; // reset danger color from any prior API error
         }
 
+        const DASHBOARD_REFRESH_NORMAL_MS = 120000;  // 2 min
+        const DASHBOARD_REFRESH_BACKOFF_MS = 600000; // 10 min on API failure
+
+        function restoreNormalCadence() {
+            if (window._dashboardInterval && window._dashboardCadence !== DASHBOARD_REFRESH_NORMAL_MS) {
+                clearInterval(window._dashboardInterval);
+                window._dashboardInterval = setInterval(loadDashboard, DASHBOARD_REFRESH_NORMAL_MS);
+                window._dashboardCadence = DASHBOARD_REFRESH_NORMAL_MS;
+            }
+        }
+
         async function loadDashboard() {
             // Prefer static metrics.json (single fetch, no auth, no rate limit).
             // Uses cache: 'no-cache' to revalidate freshness on each refresh
@@ -961,6 +972,7 @@
             // Fall back to live GitHub API only if metrics.json is unavailable.
             try {
                 await loadFromStaticMetrics();
+                restoreNormalCadence(); // Static load succeeded; reset any backoff
                 return;
             } catch (staticErr) {
                 const errMsg = staticErr instanceof Error ? staticErr.message : String(staticErr);
@@ -1090,6 +1102,7 @@
                 const refreshEl = document.getElementById('refresh-info');
                 refreshEl.textContent = `Sync: ${new Date().toLocaleTimeString()} · Connected`;
                 refreshEl.style.color = ''; // reset danger color from prior error
+                restoreNormalCadence(); // API load succeeded; reset any backoff
 
             } catch (e) {
                 const errMsg = e instanceof Error ? e.message : String(e);
@@ -1101,11 +1114,12 @@
                     API Error: ${esc(errMsg)}<br><br>
                     <span style="font-size:0.85rem;color:var(--text-muted)">GitHub rate limit is 60 req/hr unauthenticated. Refresh interval extended to reduce burn rate.</span>
                 </div>`;
-                // Extend refresh interval to 10 minutes on API failure to avoid
-                // hammering the rate limit while it recovers (Amara P1).
-                if (window._dashboardInterval) {
+                // Extend refresh to 10 min on API failure (Amara P1). Restored
+                // to 2 min by restoreNormalCadence() on the next successful load.
+                if (window._dashboardInterval && window._dashboardCadence !== DASHBOARD_REFRESH_BACKOFF_MS) {
                     clearInterval(window._dashboardInterval);
-                    window._dashboardInterval = setInterval(loadDashboard, 600000);
+                    window._dashboardInterval = setInterval(loadDashboard, DASHBOARD_REFRESH_BACKOFF_MS);
+                    window._dashboardCadence = DASHBOARD_REFRESH_BACKOFF_MS;
                 }
             }
         }
@@ -1116,9 +1130,11 @@
         // Initial load
         loadDashboard();
 
-        // Auto refresh — 2 min normal cadence; extended to 10 min on
-        // API-fallback failure (set by catch block in loadDashboard).
-        window._dashboardInterval = setInterval(loadDashboard, 120000);
+        // Auto refresh — 2 min normal; extended to 10 min on API-fallback
+        // failure (set by catch block); restored to 2 min on successful
+        // reload (restoreNormalCadence at top of loadDashboard).
+        window._dashboardInterval = setInterval(loadDashboard, DASHBOARD_REFRESH_NORMAL_MS);
+        window._dashboardCadence = DASHBOARD_REFRESH_NORMAL_MS;
     </script>
 </body>
 </html>
