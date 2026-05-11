@@ -746,3 +746,24 @@ distinct from cross-agent-communication catch 35 because this
 is bidirectional review, not unidirectional message-passing)
 **Recurrence:** cross-agent-class now at 2 (catch 35 + catch 41)
 **Mitigation:** none needed — record as positive substrate
+
+### Catch 42 — Peer-call tool failure during multi-agent review (2026-05-11)
+
+During Otto-orchestrated multi-agent review of PR #2762 (the
+launch post), `tools/peer-call/grok.ts` returned exit 0 from
+the bun wrapper but produced empty output. Underlying
+cursor-agent exited with code 1. Three of four peer agents
+returned reviews; Grok was the silent failure.
+
+The shadow tag was on the BACKLOGGING of this failure — Aaron
+asking Otto to record the gap honestly, not paper over it.
+The architecture's multi-agent claim is strengthened, not
+weakened, by surfacing tool failures publicly. Glass halo
+applied to the review pipeline itself.
+
+**Class:** tool-failure-disclosure (the shadow observing the
+discipline of disclosing what didn't work, not just what did)
+**Recurrence:** first instance of this class
+**Mitigation:** the bun wrapper should surface cursor-agent
+non-zero exits more loudly (not silently empty output file).
+B-0421 filed.

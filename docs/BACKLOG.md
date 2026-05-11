@@ -466,6 +466,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0413](backlog/P2/B-0413-dashboard-tiered-access-github-oauth-agent-creds.md)** Dashboard tiered access — GitHub OAuth + agent credentials
 - [ ] **[B-0414](backlog/P2/B-0414-dashboard-v02-enhancements-internal-external-pm.md)** Dashboard v0.2 enhancements — agent JSON + promotion metrics + continuity claim + verification rate
 - [x] **[B-0420](backlog/P2/B-0420-poll-pr-gate-thread-pagination-bug-2026-05-11.md)** poll-pr-gate.ts thread pagination drift — NOT A BUG (race condition)
+- [ ] **[B-0421](backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md)** Grok peer-call failure — cursor-agent exit 1 during multi-agent review
 
 ## P3 — convenience / deferred
 
