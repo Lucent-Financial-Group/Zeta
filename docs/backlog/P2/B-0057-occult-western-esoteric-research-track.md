@@ -86,9 +86,10 @@ Does NOT force-push committed memory or index revisions; does NOT delete memory 
 **Status:** Gate completed; item flagged for atomic re-decomposition (per "always re-decompose... assume mistakes" rule). One bounded step taken: proof landing + decomp note. No further implementation in this PR.
 
 **Prior-art-search proof (required before start):**
+
 - Surfaces searched: memory/** (Grep), docs/BACKLOG.md, docs/backlog/P2/* (Glob + read), tools/hygiene/LOST-FILES-LOCATIONS.md
 - Queries used: `occult|esoteric|crowley|thelema|hermetic|kabbalah|golden dawn|theosophy|alchemical` (case-insensitive regex)
-- Results found: 
+- Results found:
   - 4+ memory files with existing substrate: `memory/reference_occult_bz_corpus_structural_vocabulary_anchor_shadow_research_2026_05_10.md`, `memory/feedback_crowley_comparison_cli_beats_seance_factory_democratized_occult_2026_05_10.md`, `memory/user_christian_faith_alongside_exploration_devil_reaffirms_god_2026_05_10.md`, `memory/reference_commonwealth_games_2022_baal_register_ceremony_structural_analysis_2026_05_10.md`
   - Existing posture: "data not doctrine", Eve protocol, Glass Halo, CLI democratizes occult patterns (structural resonance only).
   - B-0057 already listed in `docs/BACKLOG.md:296`; no prior decomp or claim.
@@ -96,6 +97,7 @@ Does NOT force-push committed memory or index revisions; does NOT delete memory 
 - Conclusion: prior art exists as observation anchors in memory; track is novel in backlog form. No duplication.
 
 **Dependency-restructure proof:**
+
 - `depends_on: []` — empty chain, nothing to walk or backfill.
 - `composes_with` list (7 items): spot-checked; reciprocal mentions of B-0057 exist in B-0054 sibling and memory files. No broken pointers.
 - Supersession history: none (fresh P2 track); decision-archaeology not applicable yet.
@@ -104,6 +106,7 @@ Does NOT force-push committed memory or index revisions; does NOT delete memory 
 **Re-decomposition assumption (per rule):** The 7-candidate list (a-g) in §"Wider-track candidates" is treated as provisional. We assume mistakes in the original decomposition; this slice does not implement any candidate filter-pass, only gates the row. Future slices will re-decomp to atomic S/M children (e.g., B-0057.1 Hermeticism-only, etc.) once B-0058 safety gate clears.
 
 **Focused checks run (outcome in PR body):**
+
 - `dotnet build -c Release`: 0 Warning(s), 0 Error(s) (pre-edit, root).
 - Grep/Glob for occult terms: 5 files, clean structural (no doctrine bleed).
 - TS preference honored: no new .ts/.fs code in this docs-gate slice (per "Prefer F#/TS code over docs" — this PR is pure gate; code slice deferred).
