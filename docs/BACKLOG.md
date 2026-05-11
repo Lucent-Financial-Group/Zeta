@@ -291,6 +291,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0054.8](backlog/P2/B-0054.8-music-corpus-progressive-rock-tool-nin.md)** Music corpus — progressive rock + Tool / Meshuggah / NIN first pass
 - [ ] **[B-0054.9](backlog/P2/B-0054.9-catalog-tier-games-portal-braid-outer-wilds-disco-elysium.md)** Catalog-tier game sweep — Portal, Braid, Outer Wilds, Disco Elysium
 - [ ] **[B-0055](backlog/P2/B-0055-frontier-edge-claims-CTF-flags.md)** Frontier edge-claims research track — plant flags on unclaimed intellectual territory (CTF-style, falsifiable, retractibly-defensible)
+- [ ] **[B-0055.2](backlog/P2/B-0055.2-atomic-decomposition-of-b0055-frontier-edge-claims.md)** Atomic decomposition of B-0055 — re-decompose the frontier edge-claims track into dependency-ordered S-effort children (assume prior slice mistakes)
 - [ ] **[B-0056](backlog/P2/B-0056-mythology-research-track.md)** Mythology research track — operational-resonance candidates from world-mythology bridge / messenger / boundary figures
 - [x] **[B-0056.1](backlog/P2/B-0056.1-mythology-resonance-catalog-v0.md)** Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance)
 - [ ] **[B-0057](backlog/P2/B-0057-occult-western-esoteric-research-track.md)** Occult / Western-esoteric tradition research track — operational-resonance candidates from Hermetic / Kabbalistic / Thelemic / Golden Dawn / Theosophical / alchemical lineages
