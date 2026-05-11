@@ -1,0 +1,188 @@
+#!/usr/bin/env bun
+/**
+ * B-0414: Generate demo/metrics.json from GitHub API.
+ *
+ * Called by the autonomous loop on each tick. Produces a static
+ * JSON file that both the HTML dashboard and agents can read
+ * without hitting the GitHub API directly.
+ *
+ * Usage:
+ *   bun tools/dashboard/generate-metrics.ts
+ *
+ * Output:
+ *   demo/metrics.json (overwritten each run)
+ */
+
+const OWNER = "Lucent-Financial-Group";
+const REPO = "Zeta";
+const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+
+const AGENT_MAP: Record<string, { harness: string; patterns: string[] }> = {
+  Otto: { harness: "Claude Code", patterns: ["Co-Authored-By: Claude"] },
+  Alexa: { harness: "Kiro/Qwen", patterns: ["kiro", "alexa", "qwen"] },
+  Lior: { harness: "Gemini/Antigravity", patterns: ["lior", "gemini"] },
+  Vera: { harness: "Codex IDE", patterns: ["codex", "vera"] },
+  Riven: { harness: "Cursor/Grok", patterns: ["riven", "grok"] },
+  Aaron: { harness: "Human", patterns: ["Aaron Stainback", "AceHack"] },
+};
+
+async function apiFetch(url: string) {
+  const token = process.env.GITHUB_TOKEN;
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const resp = await fetch(url, { headers });
+  if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}: ${url}`);
+  return resp.json();
+}
+
+function detectAgent(commit: any): string {
+  const msg = commit.commit?.message ?? "";
+  const author = commit.commit?.author?.name ?? "";
+  for (const [name, info] of Object.entries(AGENT_MAP)) {
+    if (info.patterns.some((p) => msg.includes(p) || author.includes(p))) {
+      return name;
+    }
+  }
+  return author.split(" ")[0] || "Unknown";
+}
+
+function timeAgo(date: string): string {
+  const mins = Math.floor((Date.now() - new Date(date).getTime()) / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+async function main() {
+  const [commits, openPRs, closedPRs] = await Promise.all([
+    apiFetch(`${API}/commits?per_page=100`),
+    apiFetch(`${API}/pulls?state=open&per_page=50`),
+    apiFetch(
+      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`
+    ),
+  ]);
+
+  const now = Date.now();
+  const h24 = 24 * 60 * 60 * 1000;
+  const commits24h = commits.filter(
+    (c: any) => now - new Date(c.commit.author.date).getTime() < h24
+  );
+  const mergedToday = closedPRs.filter(
+    (pr: any) => pr.merged_at && now - new Date(pr.merged_at).getTime() < h24
+  );
+
+  let avgLeadTimeMinutes: number | null = null;
+  if (mergedToday.length > 0) {
+    const totalMins = mergedToday.reduce((sum: number, pr: any) => {
+      return (
+        sum +
+        (new Date(pr.merged_at).getTime() - new Date(pr.created_at).getTime()) /
+          60000
+      );
+    }, 0);
+    avgLeadTimeMinutes = Math.round(totalMins / mergedToday.length);
+  }
+
+  const agentActivity: Record<
+    string,
+    { lastCommit: string; count: number; harness: string }
+  > = {};
+  for (const c of commits) {
+    const agent = detectAgent(c);
+    if (!agentActivity[agent]) {
+      agentActivity[agent] = {
+        lastCommit: c.commit.author.date,
+        count: 0,
+        harness: AGENT_MAP[agent]?.harness || "Unknown",
+      };
+    }
+    agentActivity[agent].count++;
+  }
+
+  const activeAgents = Object.values(agentActivity).filter(
+    (a) => now - new Date(a.lastCommit).getTime() < h24
+  ).length;
+
+  const agents = Object.entries(agentActivity)
+    .sort(
+      (a, b) =>
+        new Date(b[1].lastCommit).getTime() -
+        new Date(a[1].lastCommit).getTime()
+    )
+    .map(([name, info]) => ({
+      name,
+      harness: info.harness,
+      commits: info.count,
+      lastCommit: info.lastCommit,
+      lastCommitAgo: timeAgo(info.lastCommit),
+      status:
+        now - new Date(info.lastCommit).getTime() < 30 * 60000
+          ? "active"
+          : now - new Date(info.lastCommit).getTime() < 6 * 60 * 60000
+            ? "recent"
+            : "stale",
+    }));
+
+  const prQueue = openPRs.slice(0, 10).map((pr: any) => ({
+    number: pr.number,
+    title: pr.title,
+    createdAgo: timeAgo(pr.created_at),
+    state: "open",
+  }));
+
+  const recentMerged = mergedToday.slice(0, 5).map((pr: any) => ({
+    number: pr.number,
+    title: pr.title,
+    mergedAgo: timeAgo(pr.merged_at),
+    state: "merged",
+  }));
+
+  const recentCommits = commits.slice(0, 20).map((c: any) => ({
+    sha: c.sha.substring(0, 7),
+    message: c.commit.message.split("\n")[0],
+    agent: detectAgent(c),
+    date: c.commit.author.date,
+    dateAgo: timeAgo(c.commit.author.date),
+  }));
+
+  const metrics = {
+    generated: new Date().toISOString(),
+    schema_version: "0.1.0",
+    metrics: {
+      prs_merged_24h: mergedToday.length,
+      avg_lead_time_minutes: avgLeadTimeMinutes,
+      open_prs: openPRs.length,
+      last_merge:
+        mergedToday.length > 0 ? mergedToday[0].merged_at : null,
+      last_merge_ago:
+        mergedToday.length > 0 ? timeAgo(mergedToday[0].merged_at) : "none",
+      commits_24h: commits24h.length,
+      active_agents: activeAgents,
+      consecutive_days_operational: null,
+      verification_gate_pass_rate: null,
+      promotion_rate_mirror_to_beacon: null,
+    },
+    agents,
+    pr_queue: [...prQueue, ...recentMerged],
+    recent_commits: recentCommits,
+  };
+
+  const outPath = "demo/metrics.json";
+  await Bun.write(outPath, JSON.stringify(metrics, null, 2));
+  console.log(
+    `Wrote ${outPath}: ${mergedToday.length} PRs merged, ${commits24h.length} commits, ${activeAgents} active agents`
+  );
+}
+
+if (import.meta.main) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
+
+export { main };
