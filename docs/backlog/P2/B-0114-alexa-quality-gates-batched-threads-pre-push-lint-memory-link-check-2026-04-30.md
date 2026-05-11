@@ -188,3 +188,25 @@ Sub-item 3 is S (helper script, no infrastructure changes).
 boundary they're produced at — pre-push for locally-runnable
 checks, peer review for design, CI for what only CI can
 see."*
+
+## Decomposition (2026-05-11, re-decomposed per rules)
+
+Original 3-subitem framing was too coarse (mistake assumed per "always re-decompose"). Decomposed to 6 smallest dependency-ordered atomic child rows. Prefer TS implementations (Rule 0). Children are buildable in parallel where possible; pre-push and link-checker share hygiene/TS pattern from TS-migration trajectory.
+
+**Buildable now (no deps, S-effort each):**
+- B-0339 — TS pre-push hook entrypoint (skeleton + --no-verify discipline)
+- B-0340 — Memory path regex extractor + resolver (iterative-broaden, allowlist)
+
+**Blocked on B-0339:**
+- B-0341 — Port/integrate 3 hygiene lints (markdown, conflict-markers, tick-order) into pre-push TS hook
+
+**Blocked on B-0340:**
+- B-0342 — Full memory-link checker CLI (walk memory/**, report format, exit-nonzero)
+
+**Blocked on B-0339 + B-0340:**
+- B-0343 — Batched thread resolver TS helper (aliased GraphQL, PR# filter)
+
+**Blocked on B-0339 + B-0341 + B-0342 + B-0343:**
+- B-0344 — Setup integration + BACKLOG.md index update + claim close (meta)
+
+This decomposition is the single bounded step. Implementation of children follows in subsequent PRs.
