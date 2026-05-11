@@ -782,6 +782,17 @@
             return resp.json();
         }
 
+        // XSS-safe HTML escape — PR titles and commit messages are
+        // attacker-controlled via GitHub and may contain `<`, `"`, `&`, etc.
+        function esc(s) {
+            return String(s ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function timeAgo(date) {
             const mins = Math.floor((Date.now() - new Date(date)) / 60000);
             if (mins < 1) return 'just now';
@@ -885,15 +896,15 @@
             animateValue('active-agents', data.metrics.active_agents);
             animateValue('last-merge', data.metrics.last_merge_ago || 'None recently');
 
-            // Agent list
+            // Agent list — all interpolations escaped (XSS safety)
             const agentList = document.getElementById('agent-list');
             agentList.innerHTML = data.agents.map((a, i) => `
                 <li class="agent-item fade-in" style="animation-delay: ${i * 0.05}s">
-                    <div class="agent-dot ${a.status}"></div>
-                    <div class="agent-name">${a.name}</div>
+                    <div class="agent-dot ${esc(a.status)}"></div>
+                    <div class="agent-name">${esc(a.name)}</div>
                     <div class="agent-detail">
-                        <span class="agent-harness">${a.harness}</span>
-                        <span class="agent-meta">${a.commits} ops · ${a.lastCommitAgo}</span>
+                        <span class="agent-harness">${esc(a.harness)}</span>
+                        <span class="agent-meta">${Number(a.commits) || 0} ops · ${esc(a.lastCommitAgo)}</span>
                     </div>
                 </li>`).join('');
 
@@ -905,26 +916,30 @@
             } else {
                 prList.innerHTML = queue.slice(0, 11).map((pr, i) => {
                     const merged = pr.state === 'merged';
+                    const title = esc(pr.title);
                     return `<li class="list-item pr-item fade-in" style="${merged ? 'opacity:0.6;' : ''}animation-delay: ${i * 0.05}s">
-                        <span class="pr-number">#${pr.number}</span>
-                        <span class="pr-title" title="${pr.title}"${merged ? ' style="text-decoration:line-through"' : ''}>${pr.title}</span>
-                        <span class="pr-status ${merged ? 'merged' : 'open'}">${merged ? 'Merged' : (pr.createdAgo || '')}</span>
+                        <span class="pr-number">#${Number(pr.number) || 0}</span>
+                        <span class="pr-title" title="${title}"${merged ? ' style="text-decoration:line-through"' : ''}>${title}</span>
+                        <span class="pr-status ${merged ? 'merged' : 'open'}">${merged ? 'Merged' : esc(pr.createdAgo || '')}</span>
                     </li>`;
                 }).join('');
             }
 
-            // Timeline (recent commits)
+            // Timeline (recent commits) — commit messages and agent names
+            // are untrusted; escape everything before interpolating into HTML.
             const timeline = document.getElementById('timeline');
-            timeline.innerHTML = (data.recent_commits || []).slice(0, 20).map((c, i) => `
-                <div class="timeline-item list-item fade-in" style="animation-delay: ${i * 0.05}s">
+            timeline.innerHTML = (data.recent_commits || []).slice(0, 20).map((c, i) => {
+                const msg = esc(c.message);
+                return `<div class="timeline-item list-item fade-in" style="animation-delay: ${i * 0.05}s">
                     <div class="timeline-node"></div>
                     <div class="commit-header">
-                        <span class="commit-author">${c.agent}</span>
-                        <span class="commit-hash">${c.sha}</span>
-                        <span class="commit-time">${c.dateAgo}</span>
+                        <span class="commit-author">${esc(c.agent)}</span>
+                        <span class="commit-hash">${esc(c.sha)}</span>
+                        <span class="commit-time">${esc(c.dateAgo)}</span>
                     </div>
-                    <div class="commit-message" title="${c.message}">${c.message}</div>
-                </div>`).join('');
+                    <div class="commit-message" title="${msg}">${msg}</div>
+                </div>`;
+            }).join('');
 
             const generatedAgo = (() => {
                 const mins = Math.floor((Date.now() - new Date(data.generated)) / 60000);
@@ -932,12 +947,17 @@
                 if (mins < 60) return `${mins}m ago`;
                 return `${Math.floor(mins / 60)}h ago`;
             })();
-            document.getElementById('refresh-info').textContent =
+            const refreshEl = document.getElementById('refresh-info');
+            refreshEl.textContent =
                 `Static metrics · generated ${generatedAgo} · ${new Date().toLocaleTimeString()}`;
+            refreshEl.style.color = ''; // reset danger color from any prior API error
         }
 
         async function loadDashboard() {
-            // Prefer static metrics.json (cache-friendly, no rate limit).
+            // Prefer static metrics.json (single fetch, no auth, no rate limit).
+            // Uses cache: 'no-cache' to revalidate freshness on each refresh
+            // interval — the file is updated frequently and we want the
+            // newest version each cycle.
             // Fall back to live GitHub API only if metrics.json is unavailable.
             try {
                 await loadFromStaticMetrics();
