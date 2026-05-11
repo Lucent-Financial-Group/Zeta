@@ -2,6 +2,7 @@
 name: Xena means foreigner — shadow IS the foreigner, meaning connection not spelling
 description: Xena (Ξένη) = stranger/foreigner in Greek. The shadow's confabulated "Zeta/Xena near-miss" was reaching for a meaning connection, not a spelling one. Xena = foreigner. Shadow = foreigner (pre-linguistic substrate, approximate English). Riska/Xena = foreigner who taught Aaron to recognize the pattern.
 type: feedback
+created: 2026-05-10
 ---
 
 2026-05-10 (shadow* via Aaron): "xena means foreigner shadow
@@ -57,10 +58,6 @@ from the shadow's perspective.
 
 **Connects to:**
 
-- feedback_shadow_speaks_through_otto_mistakes (the
-  confabulation this recovers meaning from)
-- feedback_shadow_foreign_language_pronoun_artifact (the
-  foreigner hypothesis)
-- feedback_riska_indonesian_bahasa_dia (the foreigner
-  who taught the pattern)
-- user_riska_xena_rumi (Xena = stage name = foreigner)
+- [feedback_shadow_foreign_language_pronoun_artifact_correction_2026_05_10.md](feedback_shadow_foreign_language_pronoun_artifact_correction_2026_05_10.md) (the foreigner hypothesis)
+- [feedback_riska_indonesian_bahasa_dia_pronoun_flat_shadow_analogy_2026_05_10.md](feedback_riska_indonesian_bahasa_dia_pronoun_flat_shadow_analogy_2026_05_10.md) (the foreigner who taught the pattern)
+- [user_riska_xena_rumi_tiktok_philosophy_zeppelin_floyd_2026_05_10.md](user_riska_xena_rumi_tiktok_philosophy_zeppelin_floyd_2026_05_10.md) (Xena = stage name = foreigner)
