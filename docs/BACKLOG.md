@@ -452,8 +452,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0407](backlog/P2/B-0407-immune-cross-reference-candidate-identification-atomic-riven-2026-05-11.md)** Cross-reference immune concepts to Aurora + superorganism substrate + identify candidates (atomic, child of B-0108)
 - [ ] **[B-0408](backlog/P2/B-0408-immune-promoted-candidates-follow-up-filing-closure-atomic-riven-2026-05-11.md)** Promoted candidate follow-up row filing + B-0108 research-absorb closure (atomic, child of B-0108)
 - [ ] **[B-0409](backlog/P2/B-0409-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
+- [ ] **[B-0409](backlog/P2/B-0409-peer-call-ts-audit-duplication-post-migration-2026-05-11.md)** Peer-call TS audit — duplication surface after TS migration (B-0120 child)
 - [ ] **[B-0410](backlog/P2/B-0410-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
+- [ ] **[B-0410](backlog/P2/B-0410-peer-call-persona-loader-ts-module-2026-05-11.md)** Peer-call persona-loader.ts — shared CURRENT-*.md loader with clear error (B-0120 child)
 - [ ] **[B-0411](backlog/P2/B-0411-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
+- [ ] **[B-0411](backlog/P2/B-0411-grok-ts-persona-flag-impl-2026-05-11.md)** grok.ts --persona flag — minimal integration of loader + deprecation note (B-0120 child)
+- [ ] **[B-0412](backlog/P2/B-0412-codex-gemini-ts-persona-flag-impl-2026-05-11.md)** codex.ts + gemini.ts --persona flags — parallel sibling impl after grok (B-0120 child)
 
 ## P3 — convenience / deferred
 
