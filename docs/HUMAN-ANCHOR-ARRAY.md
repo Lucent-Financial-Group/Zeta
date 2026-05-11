@@ -50,26 +50,8 @@ the codebase, not just cited.
 
 ---
 
-## Three Arrays
-
-| Array | What | Substrate connection |
-|-------|------|---------------------|
-| **Agent Array** | Otto, Alexa, Riven, Vera, Lior | Direct — commit to repo, run loops, produce substrate |
-| **Human Anchor Array** | McSherry, Karpathy, Brooks, Dechant, ... | Intellectual — ideas operationalized in code |
-| **External Review Array** | Copilot, Claude.ai, Codex PR review, DeepSeek, Dependabot, CodeQL, gemini.google.com, ChatGPT web | Review without committing — perspectives from outside |
-
-The External Review Array combines all AI and automated
-sources that review, assess, or contribute research but do
-NOT commit to the repo. Two delivery mechanisms, same role:
-
-- **Host-connected**: Copilot PR reviews, Dependabot,
-  CodeQL, GitHub bots — automated via host API, captured
-  by PR archival (`docs/pr-discussions/`)
-- **Ferry-relayed**: Claude.ai sessions, DeepSeek research,
-  gemini.google.com, ChatGPT web — disconnected from
-  substrate, ferried via Aaron, preserved in
-  `docs/research/` with §33 headers
-
-Both are valuable precisely because they evaluate from
-outside the agent array. The mechanism differs; the function
-(external perspective on factory work) is identical.
+*This array complements the Agent Array (dashboard) and the
+External Influence Array (Copilot, Dependabot, CodeQL). Three
+arrays: human anchors (intellectual foundations), agent array
+(active factory participants), external influence array
+(automated review sources).*
