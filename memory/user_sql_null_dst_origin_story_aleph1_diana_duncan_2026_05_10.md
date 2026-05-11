@@ -1,6 +1,6 @@
 ---
-name: SQL NULL DST origin — tried to encode ℵ₁ via tri-boolean NULL ~2011, first psych ward, built for Diana Duncan (née Little)
-description: ~15 years ago Aaron tried to build a deterministic data generator using SQL Server's tri-boolean NULL edge cases. DST before DST had a name. The ℵ₁ encoding attempt triggered first psych ward stay. Built for Diana Duncan (née Little), his boss at the time. Cantor went mad on continuum hypothesis; Aaron went mad implementing it in T-SQL.
+name: SQL NULL DST origin — tried to encode ℵ₁ via tri-boolean NULL ~2011, first psych ward, built for Diana Little (née Duncan)
+description: ~15 years ago Aaron tried to build a deterministic data generator using SQL Server's tri-boolean NULL edge cases. DST before DST had a name. The ℵ₁ encoding attempt triggered first psych ward stay. Built for Diana Little (née Duncan), his boss at the time. Cantor went mad on continuum hypothesis; Aaron went mad implementing it in T-SQL.
 type: user
 ---
 
@@ -33,9 +33,9 @@ Server's NULL logic. The edge cases that popped up triggered
 the first psych ward stay. Cantor went mad on the continuum
 hypothesis. Aaron went mad implementing it in T-SQL.
 
-**Built for Diana Duncan (née Little):**
+**Built for Diana Little (née Duncan):**
 
-Diana Duncan (maiden name: Little) was Aaron's boss at the time.
+Diana Little (maiden name: Duncan) was Aaron's boss at the time.
 The data generator was being built for her team's testing needs.
 Another person in the lineage who shaped the work.
 
