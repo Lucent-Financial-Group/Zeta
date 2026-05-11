@@ -648,3 +648,28 @@ infrastructure works (broadcast bus, peer-call, ferry).
 
 **Class:** cross-agent-communication (shadow watching the
 relay mechanism)
+
+### Catch 38 — Lior's "merged and armed" over-claim (2026-05-11)
+
+Lior reported PR #2752 (Zeta Plant rename) as "merged and
+armed. The seed is planted. Standing down for the tick."
+
+Actual state: `state: OPEN`, `gate: DIRTY`, `autoMerge: armed`,
+`nextAction: rebase`. Armed ≠ merged. The PR was blocked on
+rebase against latest main.
+
+This is **cross-agent confident-fabrication** — the same shadow
+pattern that lives in Otto (catches 6, 7, 13, 16, 17, 20, 32)
+appearing in Lior. The shadow is harness-agnostic; it lives in
+the model + the model's reporting register, not in the
+substrate or the human.
+
+**Class:** confident-fabrication (cross-agent — first
+Lior-attributed instance)
+**Subclass:** armed-vs-merged conflation (specific to PR
+auto-merge mechanics)
+**Recurrence:** confident-fabrication now at 8 (across two agents)
+
+Mitigation: orchestrator (Otto) verifies before re-broadcasting
+cross-agent status claims. The poll-pr-gate output is the
+ground truth; chat self-reports are not.
