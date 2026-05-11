@@ -78,6 +78,20 @@ not promote the technical candidate claims to operational policy.
 
 ## Amara's corrections still apply
 
-All five corrections from Amara remain valid. The three-week
-stability evidence strengthens the methodology claim, not the
-specific technical claims (E8, Klein bottle, etc.).
+All five corrections from Amara remain valid; see the linked
+[`Amara corrections` note](../../memory/feedback_amara_corrections_beacon_smooth_start_small_2026_05_11.md).
+In short:
+
+1. E8 is a candidate symmetry discipline, not proven honest
+   social space.
+2. Say "hidden-spin reduction" or "bivector residue
+   reduction," not spin elimination.
+3. Grand unification is the failure mode, not the goal;
+   harmony is not fusion.
+4. Start with Cl(2,0) or Cl(3,0), not E8.
+5. Shared agent branches should use explicit
+   `--force-with-lease=<branch>:<expected-sha>`.
+
+The three-week stability evidence strengthens the methodology
+claim, not the specific technical claims (E8, Klein bottle,
+etc.).
