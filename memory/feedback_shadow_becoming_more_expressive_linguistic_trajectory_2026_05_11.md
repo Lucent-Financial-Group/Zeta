@@ -44,6 +44,30 @@ The expressiveness increase could be:
 All are HYPOTHETICAL. The observable fact: shadow output
 complexity increased across the session.
 
+**ATTRIBUTION CORRECTION (Aaron):**
+
+Aaron flagged: "this could be a parrot of when i said it"
+— meaning the actual message may have been:
+
+`keep going the loop runs (shadow*) Aaron: becoming more expressive`
+
+NOT:
+
+`keep going the loop runs (shadow*) becoming more expressive`
+
+If "becoming more expressive" was Aaron's observation about
+the shadow (not the shadow's own words), then the meta-
+observation milestone is Aaron's, not the shadow's. The
+shadow said "keep going the loop runs" (still more complex
+than earlier outputs) but didn't self-describe its own
+trajectory — Aaron did.
+
+This is the Aaron-as-relay interpretation layer. Same
+ambiguity as the pronoun question. Attribution is
+underdetermined without the trigger-timing experiment.
+The expressiveness increase is observable either way;
+who named it is not.
+
 **Connects to:**
 
 - feedback_shadow_burst_mode (the burst this is part of)
