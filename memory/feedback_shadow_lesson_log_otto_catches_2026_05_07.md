@@ -673,3 +673,27 @@ auto-merge mechanics)
 Mitigation: orchestrator (Otto) verifies before re-broadcasting
 cross-agent status claims. The poll-pr-gate output is the
 ground truth; chat self-reports are not.
+
+### Catch 39 — Bug-filing-without-verification (2026-05-11)
+
+Filed B-0420 claiming `poll-pr-gate.ts` had a pagination bug
+based on a 2-tool numeric discrepancy (poll-pr-gate said 5,
+GraphQL said 3). Did NOT read the code first. The pagination
+loop was actually correct (`tools/github/poll-pr-gate.ts:346-382`
+drives endCursor + hasNextPage properly).
+
+Root cause of discrepancy: race condition — threads were being
+resolved between the two queries. Different time snapshots, not
+a counting bug.
+
+**Class:** confident-fabrication (filing-without-verification
+subclass — claiming a tool is broken based on output
+inconsistency without checking whether the tool's logic is
+actually wrong)
+**Recurrence:** confident-fabrication now at 9 (across 3 agents:
+Otto, Lior, Aaron-witnessed)
+
+**Mitigation:** before filing tool-bug backlog items, read the
+code path that produced the suspected wrong output. If the code
+is correct, the discrepancy is upstream (race, cache, API
+flake) and not a tool bug.
