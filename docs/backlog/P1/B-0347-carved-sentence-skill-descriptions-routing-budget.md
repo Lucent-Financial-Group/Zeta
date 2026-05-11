@@ -8,7 +8,7 @@ created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
 classification: buildable-now
-decomposition: atomic
+decomposition: multi-child (re-decomp pass 1, smallest safe slice)
 owners: [skill-expert]
 type: friction-reducer
 tags: [skill-routing, context-budget, carved-sentence]
@@ -79,3 +79,14 @@ a band-aid — the structural fix is shorter descriptions.
 - The skill-router-as-substrate-inventory CLAUDE.md bullet
 - `skill-tune-up` and `skill-improver` — they can execute
   the carving pass
+
+## Re-decomposition (smallest safe slice, one bounded step)
+
+Split into 4 atomic children by skill category (re-decomp assumes prior grouping mistakes; carve in parallel batches):
+
+- B-0347.1: Carve infra/storage skills (Elasticsearch, vector, time-series, columnar, row-store, etc.) — ~40 skills
+- B-0347.2: Carve reviewer/auditor skills (alignment, spec-zealot, harsh-critic, etc.) — ~50 skills
+- B-0347.3: Carve data/AI skills (ML, Bayesian, LLM, retrieval, etc.) — ~60 skills
+- B-0347.4: Carve remaining (governance, ops, math, etc.) + router verification — rest + tests
+
+Each child: one PR, carve only, run focused doctor check, no body changes.
