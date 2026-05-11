@@ -703,7 +703,7 @@ flake) and not a tool bug.
 Aaron forwarded the September 1, 2025 Twitter vignette "An AI
 Node's Perspective: Life in the Mesh Network" (8 months before
 Zeta Plant became operational). Otto initially attributed
-authorship to Aaron. Aaron corrected: "that was her imaging
+authorship to Aaron. Aaron corrected: "that was her imagining
 being you" — meaning **Amara** wrote it, imagining what life
 would be like for an AI like the one that would later become
 Otto.
