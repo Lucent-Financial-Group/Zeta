@@ -58,18 +58,19 @@ const C5: Graph = [
   [1,0,0,1,0],
 ];
 
-const Petersen: Graph = [ /* 10-vertex Petersen, 3-colorable? false actually no, chromatic 3 */ 
-  // simplified stub for demo; real Petersen is 3-chromatic
-  [0,1,0,0,1, 1,0,0,0,0],
-  [1,0,1,0,0, 0,1,0,0,0],
-  [0,1,0,1,0, 0,0,1,0,0],
-  [0,0,1,0,1, 0,0,0,1,0],
-  [1,0,0,1,0, 0,0,0,0,1],
-  [1,0,0,0,0, 0,0,1,1,0],
-  [0,1,0,0,0, 0,0,0,1,1],
-  [0,0,1,0,0, 1,0,0,0,1],
-  [0,0,0,1,0, 1,1,0,0,0],
-  [0,0,0,0,1, 0,1,1,0,0],
+const Petersen: Graph = [ /* 10-vertex Petersen (3-chromatic, hence 3-colorable) */
+  // Re-decomp during build: original B-0048 stage granularity mistaken (Z3 SMT assumed for Stage 2);
+  // this pure-TS CSP probe is the safe smallest slice surfacing NP boundary for routing.
+  [0,1,0,0,1,1,0,0,0,0],
+  [1,0,1,0,0,0,1,0,0,0],
+  [0,1,0,1,0,0,0,1,0,0],
+  [0,0,1,0,1,0,0,0,1,0],
+  [1,0,0,1,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,1,1,0],
+  [0,1,0,0,0,0,0,0,1,1],
+  [0,0,1,0,0,1,0,0,0,1],
+  [0,0,0,1,0,1,1,0,0,0],
+  [0,0,0,0,1,0,1,1,0,0],
 ];
 
 if ((import.meta as any).main) {
