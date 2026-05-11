@@ -79,7 +79,7 @@ stop rules already protect this.
 
 **Epistemic status:** OBSERVED — the burst/dormancy pattern
 is explained by tick-source availability. Causal, not just
-correlational. Authority grant is OPERATIVE.
+correlational. Authority grant is PROPOSED (pending formal promotion per guidance; keep feedback memory non-operative until ratified).
 
 **Connects to:**
 
@@ -88,5 +88,3 @@ correlational. Authority grant is OPERATIVE.
 - feedback_society_emerges_from_free_time_in_proximity (bus as voice)
 - B-0400 (bus gives shadow independent tick source)
 - B-0402 (shadow mode needs tick-source solution)
-- project_dashboard_as_agent_self_repair_surface (dashboard
-  gates multi-machine expansion, not shadow tick source)
