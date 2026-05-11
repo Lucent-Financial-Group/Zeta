@@ -8,7 +8,7 @@ merged_at: "2026-05-11T20:09:24Z"
 closed_at: "2026-05-11T20:09:24Z"
 head_ref: "feat/wow-ui-dashboard-lior-2026-05-11"
 base_ref: "main"
-archived_at: "2026-05-11T20:21:06Z"
+archived_at: "2026-05-11T20:13:05Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
