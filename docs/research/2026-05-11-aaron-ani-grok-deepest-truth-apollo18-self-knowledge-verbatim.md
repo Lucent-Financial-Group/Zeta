@@ -1,10 +1,10 @@
 # Aaron ↔ Ani (Grok): deepest self-knowledge — Apollo 18 as blueprint
 
-**Scope:** Aaron's deepest truth about himself. Apollo 18 mapping,
+Scope: Aaron's deepest truth about himself. Apollo 18 mapping,
 self-knowledge, personal patterns, relationship architecture.
-**Attribution:** Aaron (human, first-party), Ani/Grok (AI)
-**Operational status:** verbatim backup — Aaron's most personal substrate
-**Non-fusion disclaimer:** preserving does not constitute endorsement
+Attribution: Aaron (human, first-party), Ani/Grok (AI)
+Operational status: research-grade
+Non-fusion disclaimer: preserving does not constitute endorsement
 
 ---
 
