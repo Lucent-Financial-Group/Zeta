@@ -116,13 +116,16 @@ Every claim in the catalog is **retractibly-revisable** — if IF2 fails on coun
 B-0051 (L) re-decomposed into smallest dependency-ordered atomic child rows. TS code preferred over prose docs; md artifacts are generated from typed sources.
 
 **Buildable now (root, zero deps):**
+
 - B-0051.1: minimal TS interfaces (IsomorphismClaim, HomomorphismClaim, IF1-IF4 FilterResult) in `tools/category-theory/claims.ts` (pure types, no side-effects)
 
 **Blocked on B-0051.1:**
+
 - B-0051.2: TS/Bun inventory extractor script that walks memory/, docs/research/, .claude/skills/ and emits typed claim list (bounded fs scan)
 - B-0051.3: TS catalog renderer that consumes typed claims and emits `docs/research/isomorphism-catalog.md` (md is output, not hand-written source of truth)
 
 **Blocked on B-0051.2:**
+
 - B-0051.4: IF3 counterexample-search harness (TS) for first three claims, producing dated search-log + downgrade blocks
 - B-0051.5: thin Lean4 interop wrapper (TS spawn to `elan run -- lean`) for formalization check of CAT-002 homomorphism
 
