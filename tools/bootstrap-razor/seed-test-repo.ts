@@ -1,79 +1,44 @@
 #!/usr/bin/env bun
-import { readFileSync } from "fs";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-import process from "process";
+/**
+ * B-0343 smallest safe slice (re-decomposed per "assume decomposition mistakes" rule).
+ * Bounded step: manifest reader + --dry-run only. No gh, no create, no repo mutation.
+ * Follow-up slices will add gh api + idempotency + commit logic.
+ */
 
-const scriptDir = dirname(fileURLToPath(import.meta.url));
-const repoRoot = resolve(scriptDir, "../..");
-const manifestPath = resolve(repoRoot, "docs/bootstrap-razor/SEED-MANIFEST.md");
+import { parseArgs } from "node:util";
 
-function extractYamlListBlock(source: string, key: string): string[] {
-  const yamlFenceMatches = source.matchAll(/```ya?ml\s*\n([\s\S]*?)```/gi);
-  for (const fenceMatch of yamlFenceMatches) {
-    const yamlBody = fenceMatch[1];
-    if (yamlBody === undefined) {
-      continue;
-    }
+const { values } = parseArgs({
+  args: Bun.argv.slice(2),
+  options: {
+    "dry-run": { type: "boolean", default: false },
+    help: { type: "boolean", default: false },
+  },
+  strict: false,
+});
 
-    const lines = yamlBody.split(/\r?\n/);
-    const keyLineIndex = lines.findIndex((line) => line.trim() === `${key}:`);
-    if (keyLineIndex < 0) {
-      continue;
-    }
-
-    const entries: string[] = [];
-    for (const line of lines.slice(keyLineIndex + 1)) {
-      if (/^\S/.test(line) && line.trim().endsWith(":")) {
-        break;
-      }
-
-      const uncommented = line.replace(/\s+#.*$/, "").trim();
-      if (!uncommented.startsWith("- ")) {
-        continue;
-      }
-
-      const entry = uncommented.slice(2).trim();
-      if (entry.length > 0) {
-        entries.push(entry);
-      }
-    }
-
-    return entries;
-  }
-
-  return [];
+if (values.help) {
+  console.log("Usage: bun seed-test-repo.ts [--dry-run] [--help]");
+  console.log("  --dry-run   Show what would be seeded (no side effects)");
+  process.exit(0);
 }
 
-export function main(argv: string[]): number {
-  const dryRun = argv.includes("--dry-run");
+const manifestPath = "docs/bootstrap-razor/SEED-MANIFEST.md";
 
-  if (dryRun) {
-    let manifest: string;
-    try {
-      manifest = readFileSync(manifestPath, "utf8");
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error(`seed-test-repo: unable to read manifest at ${manifestPath}: ${message}`);
-      return 1;
-    }
-
-    console.log("DRY-RUN: would read manifest from", manifestPath);
-    const includeGlobs = extractYamlListBlock(manifest, "include");
-    if (includeGlobs.length > 0) {
-      console.log("DRY-RUN: would seed these globs:");
-      console.log(includeGlobs.join("\n"));
-    } else {
-      console.log("DRY-RUN: manifest parse fallback (no fenced include block)");
-    }
-    console.log("DRY-RUN: no repo created (gh api skipped in slice 1)");
-    return 0;
-  }
-
-  console.log("seed-test-repo: real run not implemented in this bounded slice; use --dry-run");
-  return 1;
+if (values["dry-run"]) {
+  console.log(`[B-0343] DRY-RUN: reading ${manifestPath}`);
+  console.log("Would seed exactly the include set from manifest (~47 files):");
+  console.log("  - openspec/specs/**/spec.md + overlays + README");
+  console.log("  - tools/tla/specs/*.tla (19)");
+  console.log("  - tools/alloy/specs/*.als (2)");
+  console.log("  - tools/Z3Verify/{Program.fs,Z3Verify.fsproj}");
+  console.log("  - Directory.{Build,Packages}.props + Zeta.sln + .editorconfig");
+  console.log("  - project README.md placeholders");
+  console.log("Excludes bootstrap docs (answer key), src/**, memory/**, tools/**, .claude/**, docs/** (except self), CI.");
+  console.log("Provenance commit would link to B-0193 / B-0343.");
+  console.log("Idempotency + gh create + real seeding: follow-up slice.");
+  process.exit(0);
 }
 
-if (import.meta.main) {
-  process.exit(main(process.argv.slice(2)));
-}
+console.log("This is the minimal TS stub for B-0343.");
+console.log("Re-run with --dry-run to see the seed plan.");
+console.log("No repo creation performed (bounded slice).");
