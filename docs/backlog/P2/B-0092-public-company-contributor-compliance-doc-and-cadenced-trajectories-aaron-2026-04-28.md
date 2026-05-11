@@ -165,14 +165,14 @@ When picking this up:
 
 **Completed 2026-05-11 before decomposition work:**
 
-1. **Prior-art search**: 
+1. **Prior-art search**:
    - Ran `bun tools/github/refresh-worldview.ts` (0 open PRs, 62 claims, recent B-0090 re-decomp PR #2680).
    - Grep for compliance / insider / MNPI / 10b-5 across docs/backlog, memory/, docs/ — no colliding B-ID or active claim on B-0092.
    - Inspected B-0090 (cadenced audit), B-0091 (ServiceTitan rename), similar decomposition patterns in B-0088/ B-0055/ B-0090.
    - No prior-art surface satisfies the full rule; this row is the canonical generalization.
 
 2. **Dependency-restructure**:
-   - Original depends_on: [] 
+   - Original depends_on: []
    - Composes_with: B-0090, B-0091, B-0090 cadence framework.
    - Backfilled reciprocal: B-0090 now lists this as related compliance surface (will be done in follow-up).
    - No broken pointers; supersession clean (origin from memory/feedback_*_aaron_2026-04-28.md).
