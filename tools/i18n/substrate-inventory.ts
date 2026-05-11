@@ -20,18 +20,22 @@ interface Inventory {
 }
 
 function walk(dir: string, exts: string[], results: string[] = []): string[] {
+  const ignores = ["node_modules", "bin", ".lake", ".git", ".cursor", "private", "tmp", "worktrees", "target", "dist", ".next"];
   try {
     const entries = readdirSync(dir);
     for (const e of entries) {
       const p = join(dir, e);
+      if (ignores.some((i) => p.includes(i))) continue;
       const st = statSync(p);
-      if (st.isDirectory() && !p.includes("node_modules") && !p.includes("bin") && !p.includes(".lake")) {
+      if (st.isDirectory()) {
         walk(p, exts, results);
       } else if (st.isFile() && exts.includes(extname(p))) {
         results.push(p);
       }
     }
-  } catch {}
+  } catch (e) {
+    // per-dir error: continue (e.g. permission)
+  }
   return results;
 }
 
@@ -61,6 +65,12 @@ async function scan(): Promise<Inventory> {
   };
 }
 
-const inv = await scan();
-console.log(JSON.stringify(inv, null, 2));
-process.exit(0);
+export async function main() {
+  const inv = await scan();
+  console.log(JSON.stringify(inv, null, 2));
+  process.exit(0);
+}
+
+if (import.meta.main) {
+  await main();
+}
