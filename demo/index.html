@@ -595,7 +595,7 @@
             <div class="nav-tab" onclick="switchTab('external', this)">External Reviewers</div>
         </div>
 
-        <!-- TAB 1: FACTORY -->
+        <!-- TAB 1: PLANT -->
         <div id="tab-factory" class="tab-content active">
             <div class="panel" style="margin-bottom: 2rem;">
                 <div class="panel-header">
@@ -637,7 +637,7 @@
                         <h2>Recent Operations</h2>
                     </div>
                     <div class="timeline" id="timeline">
-                        <div class="loading-state">Syncing factory operations...</div>
+                        <div class="loading-state">Syncing plant operations...</div>
                     </div>
                 </div>
 
@@ -994,7 +994,7 @@
                 document.getElementById('timeline').innerHTML = `<div class="error-state fade-in">
                     <svg style="width:32px;height:32px;margin:0 auto 1rem;display:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     API Error: ${e.message}<br><br>
-                    <span style="font-size:0.85rem;color:var(--text-muted)">GitHub rate limit is 60 req/hr unauthenticated. The factory will automatically retry.</span>
+                    <span style="font-size:0.85rem;color:var(--text-muted)">GitHub rate limit is 60 req/hr unauthenticated. The plant will automatically retry.</span>
                 </div>`;
             }
         }
