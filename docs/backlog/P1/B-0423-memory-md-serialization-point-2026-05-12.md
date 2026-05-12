@@ -57,13 +57,67 @@ forces serialization.
    different topics never conflict. Smaller conflict
    surface within topics.
 
-## Recommended approach
+## Recommended approach (Aaron 2026-05-12 architectural input)
 
-Option 1 (append-only log + dynamic top-of-index view)
-preserves the wake-up fast-path ("read MEMORY.md first")
-while eliminating the serialization point. The generated
-view can be cached as a CURRENT-INDEX.md file that updates
-on append.
+> Aaron 2026-05-12: "also lets your autodream do the reindexing"
+> Aaron 2026-05-12: "but needs to run more often than anthorpic
+> alows on theri base"
+
+**AutoDream IS the heap→stack indexer**, but Anthropic's base
+cadence is not frequent enough. Architectural fix:
+
+1. **Heap layer** — New memory files commit to `memory/` with
+   complete frontmatter (name, description, type, created) but
+   DO NOT require synchronous MEMORY.md paired-edit. Eliminates
+   the serialization point — multi-agent parallel commits no
+   longer conflict.
+
+2. **Stack layer** — MEMORY.md is the indexed canonical view,
+   organized by topic / priority / recency.
+
+3. **High-cadence reindex** — Anthropic's base AutoDream
+   cadence is too slow. Solution: piggy-back on the autonomous-
+   loop cron (`<<autonomous-loop>>` firing every minute). On
+   each tick (or every N ticks for cost), the loop can run a
+   `reindex-memory-md` step:
+   - Read all `memory/*.md` files with frontmatter
+   - Generate a fresh MEMORY.md ordered by recency + topic
+   - Commit if changed
+   - Substrate-honest about the reindex cadence (last-reindex
+     timestamp visible at top of file)
+
+4. **Read-path during heap-only window** — agents reading
+   MEMORY.md see the stack-state-as-of-last-reindex (≤1-N
+   minutes stale). New memory files live in heap accessible
+   by direct path / filename / timestamp until next reindex.
+
+**Why this is the correct fix:**
+
+- Matches the 4-property substrate test (scale-free /
+  lock-free / weight-free / DST) — no synchronous
+  coordination point
+- Preserves the wake-up fast-path (read MEMORY.md first
+  still works; just shows last-reindexed-state)
+- Composes with the heap/stack framing in MEMORY.md preamble
+- The autonomous-loop cron is the existing high-frequency
+  mechanism; AutoDream-on-base-cadence is too slow but
+  AutoDream-via-autonomous-loop matches the architecture's
+  natural cadence
+
+**Implementation notes:**
+
+- Remove "MEMORY.md paired edit" required-check from CI
+  (it's enforcing the serialization that's the problem)
+- Update `memory/README.md` and
+  `memory/project_memory_format_standard.md` to document
+  heap-state-acceptable
+- Document the AutoDream reindex contract (what fields it
+  reads, what format it emits) so memory file authoring
+  can target the heap-acceptable schema
+- Implement `tools/memory/reindex-memory-md.ts` that the
+  autonomous-loop can call on each (or every N) tick
+- Keep stack/heap framing in MEMORY.md preamble so future
+  agents understand both layers
 
 ## Composes with
 
