@@ -998,8 +998,10 @@
 
                 const now = Date.now();
                 const h24 = 24 * 60 * 60 * 1000;
+                const h1 = 60 * 60 * 1000;
                 const commits24h = commits.filter(c => (now - new Date(c.commit.author.date)) < h24);
                 const mergedToday = closedPRs.filter(pr => pr.merged_at && (now - new Date(pr.merged_at)) < h24);
+                const mergedLastHour = mergedToday.filter(pr => (now - new Date(pr.merged_at)) < h1);
 
                 // DORA: lead time
                 let avgLeadTime = '-';
@@ -1025,6 +1027,8 @@
                 const mergeEl = document.getElementById('merge-velocity');
                 animateValue('merge-velocity', mergedToday.length);
                 mergeEl.className = `stat-value fade-in ${mergedToday.length >= 10 ? 'good' : mergedToday.length >= 3 ? '' : 'warn'}`;
+
+                animateValue('merge-velocity-1h', mergedLastHour.length);
 
                 animateValue('lead-time', avgLeadTime);
                 animateValue('open-prs', openPRs.length);

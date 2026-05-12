@@ -82,6 +82,13 @@ function mergedWithin(dateNow: number, windowMs: number) {
     pr.merged_at !== null && dateNow - new Date(pr.merged_at).getTime() < windowMs;
 }
 
+// maxPages is a safety cap bounding worst-case GitHub API request
+// volume per tick. Default 10 = up to 1000 closed PRs. Typical-case
+// is 1-2 requests because early-stop fires when (a) batch is empty,
+// (b) batch < 100 items (no more pages), or (c) oldest item in batch
+// predates the window cutoff. Cap protects pathological cases (e.g.
+// high-churn period where every PR stays "recently updated") without
+// leaving the loop unbounded. Per Copilot P1 on PR #2766.
 async function fetchClosedPRsUntilWindow(
   windowMs: number,
   maxPages = 10,
