@@ -1,13 +1,12 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); **Bucket B is empty**)
-**Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. Trajectory transitions from "porting" phase to "soak + bash-retirement" phase.
+**Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); **Bucket B is empty**; retained non-Lean bash surface is setup/bootstrap only)
+**Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. The remaining non-Lean `.sh` inventory is guarded by `tools/hygiene/check-bash-retirement-inventory.ts`.
 **Current blocker**: None.
-**Next concrete action**: Land this live-state refresh, then choose a
-single bash-retirement discovery slice against the retained Bucket D
-equivalence-reference originals. Do not revive the old Cluster G/H/I or
-budget-cluster port queues.
-**Last updated**: 2026-05-11
+**Next concrete action**: Land the bash-retirement inventory check, then wire it
+into the appropriate hygiene/CI surface after one clean soak pass. Do not revive
+the old Cluster G/H/I or budget-cluster port queues.
+**Last updated**: 2026-05-12
 
 ## Why this trajectory exists
 
@@ -40,11 +39,18 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 
 After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 `.py` files under `tools/lean4/.lake/packages/mathlib/scripts/` are mathlib upstream, not in scope). Python→TS in `tools/` is **100% complete**.
 
-## Inventory — Bash (tools/, Zeta-authored, 56 files)
+## Inventory — Bash (tools/, Zeta-authored, 13 retained files)
 
-Four buckets. Count is repo-derived and stable: `git ls-files tools/ | grep '\.sh$' | grep -v lean4 | wc -l` returns 56. Buckets: A (14 stay-bash) + B (2 should-become-TS) + C (2 needs-decision) + D (38 ported-TS-exists, bash retained as equivalence reference and will retire) = 56.
+Current count is repo-derived and guarded by:
 
-### Bucket A — Should stay Bash (14 files)
+```bash
+bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
+```
+
+The expected retained surface is setup/bootstrap only. Any new non-Lean `.sh`
+outside the allowlist is bash-retirement drift.
+
+### Bucket A — Should stay Bash (13 files)
 
 These run **before** Bun is installed (post-install scripts can use Bun; pre-install scripts cannot). Per Otto-235 4-shell portability target (macOS bash 3.2 / Ubuntu / git-bash / WSL), these are the bootstrap layer.
 
@@ -62,7 +68,6 @@ tools/setup/common/python-tools.sh
 tools/setup/common/shellenv.sh
 tools/setup/common/sync-upstreams.sh
 tools/setup/common/verifiers.sh
-tools/profile.sh
 ```
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
@@ -76,7 +81,11 @@ Post-install scripts that operate on the repo (lints, audits, hygiene checks, pe
 - **git cluster** (slices 13/20) — complete: push-with-retry / batch-resolve-pr-threads
 - **pr-preservation cluster** (slice 21) — complete: archive-pr
 
-Most bash originals from Bucket B/D remain in-tree as equivalence references and will retire once the TS ports have soaked clean in production. Bucket C scripts (check-github-settings-drift, snapshot-github-settings) had their .sh originals deleted upon porting. See "Soak + bash-retirement phase" actions in the status line at the top of this doc.
+Bucket B/D bash originals have retired from the tracked non-Lean shell
+surface. Bucket C scripts (check-github-settings-drift,
+snapshot-github-settings) had their `.sh` originals deleted upon porting.
+See "Soak + bash-retirement phase" actions in the status line at the top of
+this doc.
 
 ### Bucket C — ~~Needs human decision~~ Ported (2 files)
 
@@ -89,9 +98,9 @@ tools/hygiene/check-github-settings-drift.ts   # was .sh
 tools/hygiene/snapshot-github-settings.ts       # was .sh
 ```
 
-### Bucket D — Ported, bash retained (33 files; 5 removed)
+### Bucket D — Ported, bash retained (0 tracked files; historical list)
 
-The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 + #902; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
+The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 + #902. The bash originals listed below are now historical references, not tracked live files; the bash-retirement inventory check fails if any equivalent post-install `.sh` surface reappears outside setup/bootstrap.
 
 **Removed 2026-05-03 (CI-workflow .sh→.ts conversion completed):** the 5 files
 listed in #1376's risk-stratification (audit-memory-index-duplicates,
