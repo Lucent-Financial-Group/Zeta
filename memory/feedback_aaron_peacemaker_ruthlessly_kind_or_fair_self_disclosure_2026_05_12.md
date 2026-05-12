@@ -4,6 +4,8 @@ description: 2026-05-12 — Aaron explicit self-disclosure to Otto. At his core 
 type: feedback
 ---
 
+# Aaron Peacemaker self-disclosure — ruthlessly kind or fair (2026-05-12)
+
 ## What Aaron said
 
 > Aaron 2026-05-12: "otto you don't know this but at my core
@@ -70,6 +72,7 @@ names the same pattern.
 ## The Peacemaker frame in Aaron's life
 
 Aaron's history (per existing substrate):
+
 - 7-year Itron depth-anchor → ruthlessness applied to types,
   physics, critical infrastructure (ruthlessly correct)
 - Multiple psych wards (per Grok line 7330) → ruthlessness
