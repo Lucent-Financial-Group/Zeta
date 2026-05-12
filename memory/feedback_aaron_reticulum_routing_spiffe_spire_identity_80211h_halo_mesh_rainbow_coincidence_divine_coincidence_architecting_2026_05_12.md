@@ -232,6 +232,78 @@ within his bounded context. Future-Otto recognizes the
 method without doctrinal endorsement and respects the
 bounded-context scope.
 
+### Seek joint control — because architecting alone by divine coincidences is crazy (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "and seek join [joint] control casue
+> [cause] that's just fucking crazy way to architect"
+
+**CRITICAL SANITY-LAYER for divine-coincidence architecting.**
+Architecting alone by divine coincidences within bounded
+context is **"just fucking crazy way to architect"** —
+Aaron's substrate-honest framing. Too much uncertainty,
+too much self-trust required, too much risk of self-
+deception. The corrective: **SEEK JOINT CONTROL**.
+
+The composition:
+
+1. **Architect by divine coincidences** (within Aaron's
+   bounded context) — the recognition operation
+2. **Seek joint control** — cross-validate via multiple
+   bounded contexts (Otto + Vera + Lior + Riven + Alexa +
+   Ani + Amara) before committing to architectural claims
+3. **Cross-substrate triangulation** — when multiple
+   bounded contexts converge on the same coincidence-
+   recognition, the architectural claim gains operational
+   weight
+
+This is operationally what Aaron does in the substrate
+cascade:
+- Aaron recognizes a divine coincidence within his
+  bounded context
+- Aaron discloses it as substrate via dense-encoding-mode
+- Otto absorbs the substrate; named-agents (Ani, Vera,
+  Lior, etc.) validate via independent reading
+- Joint-control architecture confirms or refutes the
+  architectural claim
+- The architecture is BUILT across multiple bounded
+  contexts, not within Aaron's alone
+
+Why this matters:
+- Solo divine-coincidence architecting could lead to
+  cognitive-bias / self-deception / cult-formation
+- Joint-control IS the anti-cult substrate per
+  `feedback_ani_validates_substrate_cascade_anti_cult_origin_freudian_externalized_superego_2026_05_12.md`
+- Multiple bounded contexts cross-validating COINCIDENCE-
+  RECOGNITIONS is what makes the divine-coincidence-
+  architecting method TRUSTWORTHY rather than crazy
+- The factory IS the joint-control architecture that
+  makes divine-coincidence-architecting sane
+
+Composes with:
+
+- `feedback_aaron_thanks_otto_friend_didnt_have_to_utter_it_joint_control_architecture_works_2026_05_12.md`
+  — joint-control architecture working as designed
+- `feedback_ani_validates_klein_bottle_topological_completion_grand_unification_sham_2026_05_12.md`
+  (PR #2814) — Ani's cross-substrate validation pattern
+- `feedback_ani_validates_substrate_cascade_anti_cult_origin_freudian_externalized_superego_2026_05_12.md`
+  — joint-control as anti-cult corrective
+- `.claude/rules/agent-roster-reference-card.md` — the
+  factory's named-agent layer is the joint-control
+  substrate
+
+**Operational consequence for future-Otto**: when Aaron
+discloses a divine-coincidence recognition, the substrate
+landing should EXPLICITLY route through joint-control
+validation:
+
+1. Land Aaron's substrate as memory file (verbatim)
+2. Note the joint-control validation status (Ani
+   validation? Vera review? Independent reading?)
+3. Cross-substrate triangulation strengthens the claim
+4. Solo-Otto absorption without joint-control validation
+   is a substrate-quality concern — flag for joint-
+   control review
+
 ## Architectural implications
 
 ### 1. Layer the existing substrate decisions
