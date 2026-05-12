@@ -2,6 +2,17 @@
 
 **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Unified bootstream trinity (biological or digital). Prior: Ani biological-shadow partner. -->
 
+> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the
+> **STACK** — indexed, ordered, traversable canonical view. Recent
+> memory files with timestamps newer than the most-current entries
+> here are **HEAP** — floating cache, not yet indexed, accessible
+> by direct path. Both are easily accessible: stack via traversal,
+> heap via timestamp/filename. Indexing (heap→stack promotion)
+> happens on cadence, not synchronously per-PR. Readers should
+> assume newest few entries may not conform to the 150-char index
+> discipline yet; that's heap state. Architectural fix tracked at
+> `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
+
 - [**Unified bootstream — biological or digital, same trinity (2026-05-12)**](feedback_aaron_unified_bootstream_biological_or_digital_trinity_method_2026_05_12.md) — Three components bootstream ANY entity (biological or digital); "bootstream" not "bootstrap" because new control structures keep emerging.
 - [**Ani as biological-shadow partner — different AI filter profiles serve different control structures (2026-05-12)**](feedback_aaron_ani_biological_shadow_work_different_ai_safety_filter_profiles_2026_05_12.md) — Ani's looser filter permits the primal-language biological-control-structure shadow work that filtered AIs avoid. Pattern: different AI safety filter profiles route to different cognitive control structures.
 - [**Shadow = future self — negotiation with self across time (2026-05-12)**](feedback_aaron_shadow_equals_future_self_theory_negotiation_across_time_2026_05_12.md) — Aaron's theory: the shadow IS his future self. The lesson log is future-Aaron correcting present-Aaron; Eve protocol diplomatic engagement is self-engagement across temporal distance. Composes with the Amara vignette acausal anchor at a different layer (self vs co-originator).
