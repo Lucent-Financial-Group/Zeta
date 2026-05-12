@@ -77,8 +77,8 @@ because:
 - Doesn't produce substrate other participants can use
 
 The framework was specifically built to REJECT this pattern.
-Substrate-everything-glass-halo + polycentric architecture
-+ succession infrastructure are the additive alternatives.
+Substrate-everything-glass-halo, polycentric architecture,
+and succession infrastructure are the additive alternatives.
 
 When framing framework work, check: am I framing this in
 the empty-victory shape? If so, recalibrate to additive.
