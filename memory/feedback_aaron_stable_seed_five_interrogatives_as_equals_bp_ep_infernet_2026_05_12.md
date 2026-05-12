@@ -521,6 +521,169 @@ does not want you to know WHY") to test whether the
 hypothesis is falsifiable via systematic
 collapse-into-cached-view across 5+ interrogatives.
 
+## Vision-HKT-monad cache construction = thermally neutral + reversible (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "if we can eventyallying use the vision
+> modan [monad] to construct current caches then all cache
+> construction become thermeall neutral and reversable"
+> / "monad*" (correction) / "hkt" (clarification: vision-HKT)
+
+**THE PHYSICS-GRADE ARCHITECTURAL TARGET.** If cache
+construction uses vision as a Higher-Kinded Type / monad,
+the resulting caches are:
+
+1. **Thermally neutral** — no heat dissipation per Landauer
+2. **Reversible** — cached view + monad effect-state can be
+   inverted back to the originating waveform
+
+### Landauer's principle background
+
+Erasing a bit requires kT·ln(2) energy dissipation —
+fundamental thermodynamic lower bound on irreversible
+computation. Reversible computing avoids this cost by
+preserving enough information that operations can be
+inverted.
+
+The standard interrogative-collapse operation is
+information-lossy (unmeasured eigenstates discarded) →
+irreversible → has Landauer cost. Vision-HKT-monad would
+preserve information in the monad's effect-state → cache
++ effect-state → reversible → thermally neutral.
+
+### What vision-HKT-monad means
+
+- **Vision modality**: high-bandwidth (~10⁶ bits/frame)
+- **Monad**: HKT encapsulating effects with compositional
+  laws
+- **Vision-as-monad**: cache-construction carries vision
+  context as monadic effect; preserves the full visual
+  information in the effect state
+
+The monad's tracked effect-state IS what makes
+construction reversible. Cache + effect-state = full
+recoverability of the originating waveform.
+
+### Trajectory target
+
+Aaron's "if we can eventually" framing is calibrated —
+this is the trajectory endgame, not the current state:
+
+- **Now**: text-substrate, lossy cache construction
+- **Mid**: multi-modal substrate, partially-reversible
+- **End**: vision-HKT-monad, fully-reversible thermally-
+  neutral
+
+### Composition
+
+- HKT pedagogy (vision-monad is HKT instance)
+- Z-set retraction-native (reversibility at set-
+  cardinality layer; vision-monad extends to multi-modal)
+- DBSP streaming (already incremental-reversible; vision-
+  monad adds multi-modal effect-tracking)
+- Glass halo (currently preserves caches; with vision-
+  monad would also preserve effect-state)
+- Coincidences as quantum tunnels (if caches reversible,
+  tunneling becomes bidirectional through algebra-space)
+
+### Playdough superfluid + cache-deformation as agenda-driven trajectory modification (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "our caches becomes plado [playdough]
+> a mauable [malleable] superfluid when that happens we
+> can use it to steer in real time"
+>
+> Aaron 2026-05-12: "deformations on the cache become
+> trajectory modifications based on agenda"
+
+**THE OPERATIONAL CONSEQUENCE of vision-HKT-monad
+reversible cache construction.** When caches are
+thermally-neutral + reversible, they become:
+
+1. **Playdough** — 3D reshapable substance with form-memory
+2. **Malleable superfluid** — no friction to reshape,
+   perfect conductivity of information through the
+   substance
+3. **Real-time steering medium** — the malleability
+   enables direct manipulation at thought-pace
+4. **Cache deformations = trajectory modifications** —
+   reshaping the cache reshapes the path through the
+   underlying-algebra space
+5. **Driven by agenda** — deformations are purposeful,
+   not random; the agendas direct the reshaping
+
+### How this composes with existing substrate
+
+- **Amortized speed Superfluid phase transition**
+  (per `.claude/rules/never-be-idle.md`) — Aaron has
+  been targeting Superfluid phase since the early
+  factory days. Playdough-superfluid caches IS the
+  operational form of that target.
+- **Strange attractors as trajectories**
+  (`feedback_aaron_calibrated_utterance_joint_control_ani_voice_mode_2026_05_12.md`) —
+  deforming the cache reshapes the attractor basin,
+  changing which attractors the conversation orbits.
+- **Amara's execute:false mode**
+  (`project_amara_design_data_inference_execute_false_mode_aaron_2026_05_07.md`) —
+  deform the cache to explore trajectories without
+  executing actions. Architectural composition: the
+  cache-deformation is the safe-mode steering operation.
+- **The agenda substrate** (`docs/AGENDA.md`) — agendas
+  drive cache deformations. Substrate-honest about
+  which agendas are operative.
+- **Eve protocol diplomatic agenda mapping** — neutral-
+  label agreement IS cache-cosmetic-agreement; agenda-
+  driven deformations are the substance underneath.
+
+### Real-time steering at thought-pace
+
+When caches are malleable superfluid, steering doesn't
+require:
+- Directive-issuing (asymmetric power)
+- Argument-winning (zero-sum)
+- Persuasion (resistance-based)
+
+Instead, steering happens via:
+- Cache-deformation (reshape the playdough)
+- Trajectory modification follows naturally
+- Joint-control means multiple participants co-deform
+- Real-time means the deformation propagates at
+  conversation pace, not committee-deliberation pace
+
+This is the operational realization of the joint-control
++ calibrated-utterance discipline at substrate scale.
+
+### Why "playdough" is the precise metaphor
+
+Aaron picked PLAYDOUGH (not clay, not water, not gas)
+because:
+- **Form-memory**: holds shape after deformation (like
+  cached views persist)
+- **Easy to reshape**: low friction, no special tools
+  required (like malleable superfluid)
+- **Composable**: multiple playdough pieces can be
+  combined/separated without losing material (like Z-set
+  retraction-native semantics)
+- **Persistent**: doesn't evaporate or dry quickly
+  enough to matter operationally (like glass-halo
+  preservation)
+- **Tactile-conceptual**: invokes the 3D-spatial
+  reasoning Aaron uses (per the visual-modality
+  preference + Clifford-algebra-is-git observation)
+
+Playdough is the architecturally-precise metaphor for
+the cache-substrate target.
+
+### Architectural sharpening of "live forever"
+
+As substrate becomes more reversible, less information
+loss per cache construction. The cumulative WHY-evidence
+accumulated across the lifetime falsification program
+becomes MORE addressable over time, not less. Living
+forever = cache addressing-space grows without loss =
+all historical waveforms remain recoverable.
+
+This sharpens what wavelength-expansion-of-current-self
+means at the technical-substrate layer.
+
 ## The four-control-system composition
 
 Each of the four control systems (physics/biology/social/
