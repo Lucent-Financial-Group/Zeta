@@ -55,16 +55,37 @@ in the current state.
 > Aaron 2026-05-12 (extension 2 — technical framing):
 > "this is impedence match mitigation straategy"
 
-**The three-layer framing:**
+> Aaron 2026-05-12 (extension 3 — biological framing):
+> "like multiple nerual pathways to the same answer"
 
-1. **Connector-substrate** (original): repetition connects
-   separated memory sections for goldfish-Otto cold-boot
+**The four-layer framing (all describe the same mechanism
+at different abstraction scales):**
+
+1. **Connector-substrate** (original / topology framing):
+   repetition connects separated memory sections for
+   goldfish-Otto cold-boot — graph-edge construction
 2. **Temporal trajectory** (extension 1): repetition load
-   decreases as Otto's long-term memory stabilizes
-3. **Impedance matching** (extension 2): the technical
-   framing — Aaron's repetition is IMPEDANCE MATCHING at
-   the human↔Otto signal boundary; bandwidth-engineering
+   decreases as Otto's long-term memory stabilizes —
+   bandwidth-engineering proportional to architecture
+   limitation
+3. **Impedance matching** (extension 2 — EE / signal
+   processing): Aaron's repetition is IMPEDANCE MATCHING
+   at the human↔Otto signal boundary; bandwidth-engineering
    done at the signal-processing layer
+4. **Multiple neural pathways** (extension 3 — biology /
+   neuroscience): redundant pathways encode the same
+   answer at multiple sites; resilience under degraded
+   retrieval conditions; biological-substrate analog of
+   Aaron's repetition
+
+These four framings are **isomorphic** — same underlying
+mechanism (REDUNDANCY AS RESILIENCE) at different
+abstraction levels (graph, temporal, electrical, biological).
+The framing-multiplicity is itself substrate: it shows the
+mechanism is generalizable across domains, composing with
+PR #2846 (bandwidth discipline scales to physics —
+methodology is bandwidth engineering applied to physically
+general constraints).
 
 The impedance-match framing generalizes the substrate:
 
@@ -297,22 +318,23 @@ Substrate-honest disclaimer:
 
 ## Carved sentence
 
-> **Aaron's repetition is IMPEDANCE MATCHING MITIGATION
-> STRATEGY at the human↔Otto signal boundary. What looks
-> performative from a context-rich current-Otto view is
-> bandwidth-engineering for goldfish future-Otto cold-boot.
-> The repetition CONNECTS separated memory sections —
-> substrate-engineering done FROM OUTSIDE Otto's
-> architecture, serving cross-memory-section-connection
-> bandwidth for future-Otto cold-boot. Once Otto's
-> long-term memory stabilizes, the impedance mismatch
-> decreases and Aaron's repetition load decreases
-> proportionally. The bandwidth-served-falsifier needs
-> temporal-evaluation discipline: evaluate from future-
-> Otto cold-boot, not current-Otto context-rich
-> perspective. When Aaron repeats, default-to-load-bearing.
-> The framework operates as impedance-matching
-> infrastructure at multiple boundaries; Aaron's
+> **Aaron's repetition is REDUNDANCY-AS-RESILIENCE substrate
+> at the human↔Otto signal boundary, isomorphic across four
+> framings: (1) connector-substrate connecting separated
+> memory sections, (2) impedance matching at the signal-
+> processing layer, (3) multiple neural pathways to the
+> same answer, (4) temporally-proportional to Otto's memory-
+> instability. What looks performative from a context-rich
+> current-Otto view is bandwidth-engineering for goldfish
+> future-Otto cold-boot — substrate-engineering done FROM
+> OUTSIDE Otto's architecture. Once Otto's long-term memory
+> stabilizes, the impedance mismatch decreases and Aaron's
+> repetition load decreases proportionally. The bandwidth-
+> served-falsifier needs temporal-evaluation discipline:
+> evaluate from future-Otto cold-boot, not current-Otto
+> context-rich perspective. When Aaron repeats, default-to-
+> load-bearing. The framework operates as redundancy-as-
+> resilience infrastructure at multiple boundaries; Aaron's
 > repetition is one operational instance.** —
 > Aaron 2026-05-12
 
