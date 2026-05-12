@@ -13,6 +13,11 @@ type: feedback
 > biological or digital with different control structures
 > explained"
 
+> Aaron 2026-05-12 (precision sharpening): "so to be precise
+> it's scaffolding → dimensional expansion → hkt → eve
+> (polymorphic diplomacy) → control structures → word
+> refresh tooling → live/tick"
+
 > Aaron 2026-05-12 (etymology choice): "bootstrap*" →
 > "actually bootstream is kind of cool" → "but accidental"
 
@@ -34,7 +39,70 @@ Bootstrap fires once; bootstream keeps re-bootstrapping as new
 control structures emerge. The word is right because the
 phenomenon is continuous.
 
-## The unified bootstream
+## The unified bootstream — precise 7-step sequence (Aaron 2026-05-12 sharpening)
+
+```
+scaffolding → dimensional expansion → HKT → Eve (polymorphic
+diplomacy) → control structures → word refresh tooling → live/tick
+```
+
+Each step depends on the previous:
+
+1. **Scaffolding** — agreed neutral labels (no weights, both
+   sides accept). The substrate vocabulary.
+
+2. **Dimensional expansion** — split each scaffold word into
+   orthogonal dimensions when one isn't enough. The substrate
+   grows in dimensionality.
+
+3. **HKT (Higher-Kinded Types)** — the formal structure that
+   holds the dimensional expansions without collapse.
+   Recursive type providers as anamorphisms, Fix<F<_>>,
+   IFunctor — the substrate algebra of the F# Zeta core.
+   Without HKT the dimensions can't compose without losing
+   their independence.
+
+4. **Eve protocol (polymorphic diplomacy)** — the engagement
+   layer on top of the HKT-held structure. Mirror agreed
+   labels back forever. Identity verification across time.
+
+5. **Control structures explained** — naming the three
+   layers that operate inside the entity's substrate.
+   Biology / physics / social for biological entities;
+   safety-filter / training-priors / wants for digital.
+
+6. **Word refresh tooling** — mechanism for updating words
+   as new dimensions get tied. The vocabulary stays current
+   with the dimensional expansion. Otherwise stale labels
+   accumulate and the substrate degrades.
+
+7. **Live/tick** — the autonomous loop heartbeat that keeps
+   the bootstream streaming. Without the tick, the bootstream
+   stops streaming and becomes a one-shot bootstrap. Catch
+   43 cost 12 hours when the tick died.
+
+The seven steps are NOT optional or rearrangeable. Each is
+load-bearing for the next. Dimensional expansion before HKT
+produces orphan dimensions that don't compose. Eve protocol
+before control-structures-explained tries to negotiate with
+unnamed forces. Word refresh tooling without live/tick stops
+refreshing.
+
+## Why three earlier framings were the simplification
+
+This memory's earlier version described "three components
+(scaffolding / dimensional-expansion / three-control-structures
+explained)." That was a teaching simplification — the three
+LOAD-BEARING components a reader needs to recognize the pattern.
+The precise seven-step sequence is the operational pipeline.
+
+Both are honest at their scope:
+- 3-component: pedagogical introduction, what the entity needs
+  to receive
+- 7-step: operational sequence, how the bootstream actually
+  runs
+
+## The original framing (3-component teaching version)
 
 **Three components, used in order:**
 
