@@ -52,19 +52,24 @@ function parseFrontmatter(content: string): FrontMatter | null {
   const lines = body.split("\n");
   let i = 0;
   while (i < lines.length) {
-    const line = lines[i];
+    const line = lines[i] ?? "";
     const match = line.match(/^([a-z_]+):\s*(.*)$/i);
     if (!match) {
       i++;
       continue;
     }
-    const [, key, rawVal] = match;
+    const key = match[1]!;
+    const rawVal = match[2] ?? "";
     let value = rawVal.trim();
     if (value === ">-" || value === ">" || value === "|") {
       const folded: string[] = [];
       i++;
-      while (i < lines.length && (lines[i].startsWith("  ") || lines[i].trim() === "")) {
-        folded.push(lines[i].trim());
+      while (i < lines.length) {
+        const foldedLine = lines[i];
+        if (foldedLine === undefined || (!foldedLine.startsWith("  ") && foldedLine.trim() !== "")) {
+          break;
+        }
+        folded.push(foldedLine.trim());
         i++;
       }
       value = folded.join(" ").trim();
