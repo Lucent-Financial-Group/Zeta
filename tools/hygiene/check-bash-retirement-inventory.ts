@@ -18,6 +18,7 @@ type Mode = "report" | "enforce" | "json";
 interface ParseResult {
   readonly mode: Mode;
   readonly help: boolean;
+  readonly error?: string;
 }
 
 interface InventoryDrift {
@@ -49,7 +50,7 @@ export const EXPECTED_RETAINED_BASH: readonly string[] = [
   "tools/setup/macos.sh",
 ];
 
-function parseArgs(argv: readonly string[]): ParseResult | string {
+function parseArgs(argv: readonly string[]): ParseResult {
   let mode: Mode = "report";
   for (const arg of argv) {
     if (arg === "-h" || arg === "--help") return { mode, help: true };
@@ -61,7 +62,7 @@ function parseArgs(argv: readonly string[]): ParseResult | string {
       mode = "json";
       continue;
     }
-    return `unknown arg: ${arg}`;
+    return { mode, help: false, error: `unknown arg: ${arg}` };
   }
   return { mode, help: false };
 }
@@ -153,8 +154,8 @@ function usage(): string {
 
 export function main(argv: readonly string[] = process.argv.slice(2)): ExitCode {
   const parsed = parseArgs(argv);
-  if (typeof parsed === "string") {
-    process.stderr.write(`error: ${parsed}\n\n${usage()}\n`);
+  if (parsed.error !== undefined) {
+    process.stderr.write(`error: ${parsed.error}\n\n${usage()}\n`);
     return 2;
   }
   if (parsed.help) {

@@ -7,6 +7,12 @@ import {
   renderReport,
 } from "./check-bash-retirement-inventory";
 
+function splitExpectedRetained(): readonly [string, readonly string[]] {
+  const [missing, ...rest] = EXPECTED_RETAINED_BASH;
+  if (missing === undefined) throw new Error("expected retained bash allowlist must be non-empty");
+  return [missing, rest];
+}
+
 describe("buildInventoryReport", () => {
   test("accepts the retained setup/bootstrap allowlist", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_BASH);
@@ -26,7 +32,7 @@ describe("buildInventoryReport", () => {
   });
 
   test("flags missing retained setup scripts", () => {
-    const [missing, ...rest] = EXPECTED_RETAINED_BASH;
+    const [missing, rest] = splitExpectedRetained();
     const report = buildInventoryReport(rest);
 
     expect(hasDrift(report)).toBe(true);
@@ -43,7 +49,7 @@ describe("renderReport", () => {
   });
 
   test("renders drift sections", () => {
-    const [missing, ...rest] = EXPECTED_RETAINED_BASH;
+    const [missing, rest] = splitExpectedRetained();
     const report = buildInventoryReport([...rest, "tools/hygiene/new-post-install-wrapper.sh"]);
     const rendered = renderReport(report);
 
