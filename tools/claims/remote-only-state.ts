@@ -1,0 +1,294 @@
+#!/usr/bin/env bun
+// remote-only-state.ts -- inspect git-native claim state without local bus assumptions.
+
+import { spawnSync } from "node:child_process";
+import { resolve } from "node:path";
+
+export interface CommandResult {
+  status: number;
+  stdout: string;
+  stderr: string;
+}
+
+export interface CommandRunner {
+  run(command: string, args: readonly string[], options: { cwd?: string }): CommandResult;
+}
+
+export interface RemoteClaimRef {
+  sha: string;
+  ref: string;
+  branch: string;
+  slug: string;
+}
+
+export interface RemoteClaim {
+  ref: RemoteClaimRef;
+  claimPath: string;
+  body: string | null;
+  paths: string[];
+  durableTarget: string | null;
+  error: string | null;
+}
+
+export interface RemoteClaimState {
+  remote: string;
+  claims: RemoteClaim[];
+  errors: string[];
+}
+
+interface Args {
+  repoRoot: string;
+  remote: string;
+  fetch: boolean;
+  json: boolean;
+}
+
+const GIT_BIN = "/usr/bin/git";
+const CLAIM_REF_PREFIX = "refs/heads/claim/";
+
+function usage(): string {
+  return [
+    "Usage:",
+    "  bun tools/claims/remote-only-state.ts [--repo-root DIR] [--remote origin] [--no-fetch] [--json]",
+    "",
+    "Reads remote git claim branches as the coordination source of truth.",
+    "Does not inspect local broadcasts, heartbeats, terminal logs, or worktree names.",
+  ].join("\n");
+}
+
+function requireValue(flag: string, value: string | undefined): string {
+  if (value === undefined || value.startsWith("--")) {
+    throw new Error(`${flag} requires a value`);
+  }
+  return value;
+}
+
+function parseArgs(argv: readonly string[]): Args {
+  const args: Args = {
+    repoRoot: process.cwd(),
+    remote: "origin",
+    fetch: true,
+    json: false,
+  };
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === "--repo-root") {
+      args.repoRoot = requireValue(arg, argv[++i]);
+    } else if (arg === "--remote") {
+      args.remote = requireValue(arg, argv[++i]);
+    } else if (arg === "--no-fetch") {
+      args.fetch = false;
+    } else if (arg === "--json") {
+      args.json = true;
+    } else if (arg === "--help" || arg === "-h") {
+      process.stdout.write(`${usage()}\n`);
+      process.exit(0);
+    } else {
+      throw new Error(`unknown arg: ${arg}`);
+    }
+  }
+
+  return { ...args, repoRoot: resolve(args.repoRoot) };
+}
+
+function spawnRunner(): CommandRunner {
+  return {
+    run(command: string, args: readonly string[], options: { cwd?: string }): CommandResult {
+      const result = spawnSync(command, [...args], {
+        cwd: options.cwd,
+        encoding: "utf8",
+        maxBuffer: 32 * 1024 * 1024,
+      });
+      return {
+        status: result.status ?? 1,
+        stdout: result.stdout ?? "",
+        stderr: result.stderr ?? String(result.error ?? ""),
+      };
+    },
+  };
+}
+
+function git(runner: CommandRunner, repoRoot: string, args: readonly string[]): CommandResult {
+  return runner.run(GIT_BIN, ["-C", repoRoot, ...args], {});
+}
+
+function mustGit(runner: CommandRunner, repoRoot: string, args: readonly string[]): string {
+  const result = git(runner, repoRoot, args);
+  if (result.status !== 0) {
+    throw new Error(`git ${args.join(" ")} failed: ${result.stderr || result.stdout}`);
+  }
+  return result.stdout;
+}
+
+function normalizeRemote(remote: string): string {
+  if (!/^[A-Za-z0-9._/-]+$/.test(remote) || remote.startsWith("-") || remote.includes("..")) {
+    throw new Error(`unsafe remote name: ${remote}`);
+  }
+  return remote;
+}
+
+function normalizeSlug(slug: string): string {
+  if (!/^[A-Za-z0-9._-]+$/.test(slug) || slug.startsWith("-") || slug.includes("..")) {
+    throw new Error(`unsafe claim slug: ${slug}`);
+  }
+  return slug;
+}
+
+export function parseRemoteClaimRefs(output: string): RemoteClaimRef[] {
+  return output
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [sha, ref] = line.split(/\s+/, 2);
+      if (!sha || !ref) {
+        throw new Error(`invalid ls-remote row: ${line}`);
+      }
+      if (!ref.startsWith(CLAIM_REF_PREFIX)) {
+        throw new Error(`unexpected non-claim ref: ${ref}`);
+      }
+      const slug = normalizeSlug(ref.slice(CLAIM_REF_PREFIX.length));
+      return {
+        sha,
+        ref,
+        branch: `claim/${slug}`,
+        slug,
+      };
+    });
+}
+
+function stripInlineCode(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.startsWith("`") && trimmed.endsWith("`") && trimmed.length >= 2) {
+    return trimmed.slice(1, -1);
+  }
+  return trimmed;
+}
+
+export function parseDurableTarget(body: string): string | null {
+  const match = body.match(/^- \*\*Durable target:\*\* (.+)$/m);
+  return match?.[1]?.trim() ?? null;
+}
+
+export function parseClaimPaths(body: string): string[] {
+  const lines = body.split(/\r?\n/);
+  const paths: string[] = [];
+  let inPathSet = false;
+
+  for (const line of lines) {
+    if (line.trim() === "Initial intended path set:") {
+      inPathSet = true;
+      continue;
+    }
+    if (!inPathSet) {
+      continue;
+    }
+    if (line.startsWith("## ")) {
+      break;
+    }
+    const match = line.match(/^\s*-\s+(.+)$/);
+    if (match?.[1]) {
+      paths.push(stripInlineCode(match[1]));
+    }
+  }
+
+  return paths;
+}
+
+function claimPath(slug: string): string {
+  return `docs/claims/${normalizeSlug(slug)}.md`;
+}
+
+function readRemoteClaim(
+  runner: CommandRunner,
+  repoRoot: string,
+  remote: string,
+  ref: RemoteClaimRef,
+): RemoteClaim {
+  const path = claimPath(ref.slug);
+  const result = git(runner, repoRoot, ["show", `${remote}/${ref.branch}:${path}`]);
+  if (result.status !== 0) {
+    return {
+      ref,
+      claimPath: path,
+      body: null,
+      paths: [],
+      durableTarget: null,
+      error: result.stderr || result.stdout || "claim file unavailable",
+    };
+  }
+  return {
+    ref,
+    claimPath: path,
+    body: result.stdout,
+    paths: parseClaimPaths(result.stdout),
+    durableTarget: parseDurableTarget(result.stdout),
+    error: null,
+  };
+}
+
+export function collectRemoteClaimState(
+  runner: CommandRunner,
+  repoRoot: string,
+  remoteName = "origin",
+  fetch = true,
+): RemoteClaimState {
+  const remote = normalizeRemote(remoteName);
+  const errors: string[] = [];
+  if (fetch) {
+    const fetched = git(runner, repoRoot, ["fetch", "--prune", remote]);
+    if (fetched.status !== 0) {
+      errors.push(fetched.stderr || fetched.stdout || `git fetch --prune ${remote} failed`);
+    }
+  }
+
+  const refs = parseRemoteClaimRefs(mustGit(runner, repoRoot, ["ls-remote", "--heads", remote, "claim/*"]));
+  const claims = refs.map((ref) => readRemoteClaim(runner, repoRoot, remote, ref));
+  for (const claim of claims) {
+    if (claim.error) {
+      errors.push(`${claim.ref.branch}: ${claim.error}`);
+    }
+  }
+  return { remote, claims, errors };
+}
+
+function printState(state: RemoteClaimState, json: boolean): void {
+  if (json) {
+    process.stdout.write(`${JSON.stringify(state, null, 2)}\n`);
+    return;
+  }
+  process.stdout.write(`remote: ${state.remote}\n`);
+  process.stdout.write(`claims: ${state.claims.length}\n`);
+  for (const claim of state.claims) {
+    process.stdout.write(`- ${claim.ref.branch} ${claim.ref.sha.slice(0, 12)}\n`);
+    if (claim.durableTarget) {
+      process.stdout.write(`  target: ${claim.durableTarget}\n`);
+    }
+    for (const path of claim.paths) {
+      process.stdout.write(`  path: ${path}\n`);
+    }
+    if (claim.error) {
+      process.stdout.write(`  error: ${claim.error}\n`);
+    }
+  }
+  for (const error of state.errors) {
+    process.stderr.write(`${error}\n`);
+  }
+}
+
+export function main(argv: readonly string[]): number {
+  try {
+    const args = parseArgs(argv);
+    const state = collectRemoteClaimState(spawnRunner(), args.repoRoot, args.remote, args.fetch);
+    printState(state, args.json);
+    return state.errors.length === 0 ? 0 : 2;
+  } catch (error) {
+    process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n\n${usage()}\n`);
+    return 1;
+  }
+}
+
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}

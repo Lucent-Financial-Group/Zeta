@@ -1,13 +1,13 @@
 ---
 id: B-0318
 priority: P1
-status: open
+status: closed
 title: "Playwright GitHub read-only page snapshot tool — navigate + snapshot + extract"
 tier: agent-capability-expansion
 effort: S
 parent: B-0064
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0317]
 composes_with: [B-0064, B-0319, B-0323, B-0324]
 tags: [agent-capability, github-ui, playwright, read-only, snapshot]

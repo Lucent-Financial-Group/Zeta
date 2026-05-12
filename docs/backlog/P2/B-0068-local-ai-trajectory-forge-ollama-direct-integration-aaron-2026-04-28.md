@@ -201,3 +201,27 @@ fires first). No deadline.
 - /btw classification: directive-queued, cross-session,
   durable-backlog landing per the /btw skill's
   durability-escalation rule
+
+## Decomposition (2026-05-11, Riven one-bounded-step)
+
+Re-decomposed per "assume mistakes" rule into 3 smallest dependency-ordered atomic XS child rows (no implementation, research + inventory only; TS preferred where code surfaces).
+
+**Dependency-ordered atomic children:**
+
+- **B-0068.1** (XS, P2, root): Forge CLI + Ollama bridge research (WebSearch + matrix). Unblocks B-0068.3.
+- **B-0068.2** (XS, P2, root, TS): Hardware resource audit + model shortlist (executable `tools/local-ai/hardware-inventory.ts` stub). Parallel root.
+- **B-0068.3** (XS, P2): Direct local-model integration survey (llama.cpp/MLX/vLLM/ONNX). Depends on B-0068.1.
+
+**Pre-start checklist (backlog-item start gate applied):**
+
+1. Prior-art-search: rg across docs/ memory/ tools/ for ollama|forge|local-model|llama.cpp|MLX → only this umbrella + unrelated strings; zero collisions or prior rows.
+2. Dependency-restructure: original depends_on [] preserved; added composes_with reciprocal links on all children + parent update.
+3. Decision-archaeology: no superseding ADR/decision for local-AI trajectory; first landing.
+
+**Focused checks (run in dedicated worktree, outcome in this PR body):**
+
+- `dotnet build -c Release` (worktree): 0 Warning(s) 0 Error(s) — gate clean.
+- `rg -i 'ollama|forge cli|local model integration' docs/backlog docs/trajectories` → no prior decomp or impl.
+- Worktree isolated, root checkout untouched, branch pushed before any write.
+
+This decomp is the single bounded step; children are now claimable independently. Re-decomp assumed and applied (children kept minimal to avoid L→M sprawl).

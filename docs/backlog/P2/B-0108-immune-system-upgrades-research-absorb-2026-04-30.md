@@ -124,3 +124,40 @@ note as substrate (negative-result lineage).
 - [YouTube ARee1vUUdGI](https://www.youtube.com/watch?v=ARee1vUUdGI)
 - [YouTube miWmvIDapa0](https://www.youtube.com/watch?v=miWmvIDapa0)
 - [YouTube 1wlRg2KX1KM](https://www.youtube.com/watch?v=1wlRg2KX1KM)
+
+## Pre-start checklist (backlog-item start gate)
+
+**Prior-art search (2026-05-11):**
+
+- Refreshed worldview via `bun tools/github/refresh-worldview.ts` (no open duplicate claims for B-0108; 68 live claims surveyed, none overlap immune/aurora/superorganism absorb).
+- Grep for "immune" / "superorganism" / "aurora-immune" across docs/backlog/ and docs/research/ (only the existing aurora bridge note + this row; no prior absorb implementation).
+- Dependency check: `depends_on: []` clean; `composes_with: [B-0086]` verified (TS soak frame still relevant).
+- No conflicting worktree or origin/claim/* for this row.
+
+**Dependency-restructure:** No `depends_on` chain to walk (empty); reciprocal `composes_with` already present on B-0086 side per index hygiene. No broken pointers. Supersession history n/a (fresh research-absorb).
+
+This gate passed before any child-row creation or index regen.
+
+## Decomposition (re-decomp, one bounded step, 2026-05-11)
+
+B-0108 decomposed into 3 smallest atomic dependency-ordered child rows (research-absorb slices, TS-preferring per Rule 0).
+
+**Buildable now (no deps):**
+
+- B-0406 — Immune source material survey + note capture (atomic research pass)
+- B-0407 — Cross-reference + candidate translation identification (atomic)
+
+**Blocked on B-0406 + B-0407:**
+
+- B-0408 — Promoted-candidate follow-up row filing + absorb closure (atomic)
+
+Umbrella B-0108 now depends on the children for selection discipline; research note and candidate list live in the children. One bounded step: this PR only. Re-decomp assumed possible on review.
+
+**Children:**
+
+- B-0406
+- B-0407
+- B-0408
+
+`decomposition: clean`
+`last_updated: 2026-05-11`

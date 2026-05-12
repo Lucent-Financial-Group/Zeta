@@ -147,14 +147,23 @@ nc -z -w 3 <ip> 3389  # RDP
 ## Scope boundaries
 
 When an agent boots on a new node, it needs to know what's
-safe to touch without asking. These rules apply to all nodes:
+safe to touch without asking. Node classes are:
+
+- **Dev laptops / sandboxes**: full local autonomy (install, clone, test, background loops).
+- **CI / staging / shared nodes**: tool installs and non-prod work only; no prod data or credentials.
+- **Production nodes**: explicit timeboxed permission only.
+
+These rules apply per class:
 
 - **Dev laptops are sandboxes.** Everything except production
   systems is fair game — install tools, clone repos, create
   services, run tests, explore the machine.
 - **Production access requires explicit timeboxed permission.**
   The maintainer grants access to a specific prod system for
-  a specific duration. When the window closes, access stops.
+  a specific duration via access ticket + scheduled key install.
+  Revocation: on window close, controller runs key-revoke script
+  (removes from authorized_keys + disables scheduled task) or
+  account disable per ticket reference. Access stops automatically.
 - **No scope questions out the gate.** If you're on a dev
   laptop, act. Don't ask "is it okay to install bun?" — it's
   a dev machine, install it. The sandbox designation IS the

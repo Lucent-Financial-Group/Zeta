@@ -1,6 +1,6 @@
 ---
 name: steganography-expert
-description: Capability skill for steganography — hidden-channel detection, text/image/model steganography, invisible-Unicode smuggling, LSB channels, LLM-targeted steganographic prompt injection, watermarking (ML model outputs + content-authenticity), and provenance (C2PA / SynthID). Wear this hat when auditing external content for hidden payloads, when designing watermarking or provenance features, when extending BP-10 (invisible-Unicode lint), or when reviewing a tool that ingests untrusted text/binary data. Defense-oriented; pairs with prompt-protector.
+description: Steganography — hidden-channel detection, LSB, invisible-Unicode smuggling, LLM prompt injection, watermarking, C2PA/SynthID provenance.
 ---
 
 # Steganography Expert — the hidden-channel hat

@@ -1,0 +1,122 @@
+import { describe, expect, test } from "bun:test";
+import {
+  collectRemoteClaimState,
+  parseClaimPaths,
+  parseDurableTarget,
+  parseRemoteClaimRefs,
+  type CommandResult,
+  type CommandRunner,
+} from "./remote-only-state";
+
+class FakeRunner implements CommandRunner {
+  readonly calls: string[] = [];
+  private readonly responses: ReadonlyMap<string, CommandResult>;
+
+  constructor(responses: ReadonlyMap<string, CommandResult>) {
+    this.responses = responses;
+  }
+
+  run(command: string, args: readonly string[], _options: { cwd?: string }): CommandResult {
+    const key = [command, ...args].join("\0");
+    this.calls.push(key);
+    return this.responses.get(key) ?? { status: 1, stdout: "", stderr: `missing fake response: ${key}` };
+  }
+}
+
+function ok(stdout: string): CommandResult {
+  return { status: 0, stdout, stderr: "" };
+}
+
+function gitKey(args: readonly string[]): string {
+  return ["/usr/bin/git", "-C", "/repo/Zeta", ...args].join("\0");
+}
+
+const claimBody = [
+  "# Claim - task-remote-only",
+  "",
+  "- **Session ID:** codex/example",
+  "- **Harness:** codex",
+  "- **Durable target:** tools/claims/remote-only-state.ts",
+  "",
+  "## Notes",
+  "",
+  "Initial intended path set:",
+  "",
+  "- `tools/claims/remote-only-state.ts`",
+  "- `tools/claims/remote-only-state.test.ts`",
+  "",
+].join("\n");
+
+describe("parseRemoteClaimRefs", () => {
+  test("parses claim branch refs from ls-remote output", () => {
+    expect(
+      parseRemoteClaimRefs("abc123\trefs/heads/claim/task-remote-only\nfed456 refs/heads/claim/backlog-0209\n"),
+    ).toEqual([
+      {
+        sha: "abc123",
+        ref: "refs/heads/claim/task-remote-only",
+        branch: "claim/task-remote-only",
+        slug: "task-remote-only",
+      },
+      {
+        sha: "fed456",
+        ref: "refs/heads/claim/backlog-0209",
+        branch: "claim/backlog-0209",
+        slug: "backlog-0209",
+      },
+    ]);
+  });
+
+  test("fails closed on non-claim refs", () => {
+    expect(() => parseRemoteClaimRefs("abc123\trefs/heads/main\n")).toThrow("unexpected non-claim ref");
+  });
+});
+
+describe("claim file parsers", () => {
+  test("extract durable target and intended paths", () => {
+    expect(parseDurableTarget(claimBody)).toBe("tools/claims/remote-only-state.ts");
+    expect(parseClaimPaths(claimBody)).toEqual([
+      "tools/claims/remote-only-state.ts",
+      "tools/claims/remote-only-state.test.ts",
+    ]);
+  });
+});
+
+describe("collectRemoteClaimState", () => {
+  test("uses remote git surfaces and never local broadcast state", () => {
+    const responses = new Map<string, CommandResult>([
+      [gitKey(["fetch", "--prune", "origin"]), ok("")],
+      [
+        gitKey(["ls-remote", "--heads", "origin", "claim/*"]),
+        ok("abc123\trefs/heads/claim/task-remote-only\n"),
+      ],
+      [gitKey(["show", "origin/claim/task-remote-only:docs/claims/task-remote-only.md"]), ok(claimBody)],
+    ]);
+    const runner = new FakeRunner(responses);
+
+    const state = collectRemoteClaimState(runner, "/repo/Zeta");
+
+    expect(state.errors).toEqual([]);
+    expect(state.claims).toHaveLength(1);
+    expect(state.claims[0]?.ref.slug).toBe("task-remote-only");
+    expect(state.claims[0]?.paths).toContain("tools/claims/remote-only-state.ts");
+    expect(runner.calls.join("\n")).not.toContain("broadcast");
+    expect(runner.calls.join("\n")).not.toContain("agent-heartbeats");
+  });
+
+  test("records per-claim read failures without dropping the ref", () => {
+    const responses = new Map<string, CommandResult>([
+      [gitKey(["ls-remote", "--heads", "origin", "claim/*"]), ok("abc123\trefs/heads/claim/missing-file\n")],
+      [
+        gitKey(["show", "origin/claim/missing-file:docs/claims/missing-file.md"]),
+        { status: 128, stdout: "", stderr: "fatal: path not found" },
+      ],
+    ]);
+
+    const state = collectRemoteClaimState(new FakeRunner(responses), "/repo/Zeta", "origin", false);
+
+    expect(state.claims[0]?.ref.slug).toBe("missing-file");
+    expect(state.claims[0]?.body).toBeNull();
+    expect(state.errors[0]).toContain("claim/missing-file");
+  });
+});

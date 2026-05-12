@@ -5,123 +5,65 @@
 import { describe, expect, test } from "bun:test";
 import {
   buildRegistry,
-  extractAlignmentClauses,
-  extractBestPractices,
+  extractByRegex,
   extractGlassHaloDoctrines,
-  extractOttoPrinciples,
-  main,
-  type SourceText,
 } from "./concept_registry.ts";
 
-describe("extractAlignmentClauses", () => {
-  test("extracts heading labels in canonical clause order", () => {
-    const content = [
-      "### SD-2 Peer register",
-      "body",
-      "### HC-1 Consent-first",
-      "body",
-      "### DIR-5 Co-authorship is consent-preserving",
-    ].join("\n");
-    expect(extractAlignmentClauses(content)).toEqual([
-      {
-        id: "HC-1",
-        class: "alignment-clause",
-        source: "docs/ALIGNMENT.md",
-        label: "Consent-first",
-      },
-      {
-        id: "SD-2",
-        class: "alignment-clause",
-        source: "docs/ALIGNMENT.md",
-        label: "Peer register",
-      },
-      {
-        id: "DIR-5",
-        class: "alignment-clause",
-        source: "docs/ALIGNMENT.md",
-        label: "Co-authorship is consent-preserving",
-      },
-    ]);
+describe("extractByRegex", () => {
+  test("extracts alignment clause IDs from the canonical source", () => {
+    const concepts = extractByRegex(
+      "docs/ALIGNMENT.md",
+      /\b(HC-[1-7]|SD-[1-9]|DIR-[1-5])\b/g,
+      "alignment-clause",
+    );
+    const ids = new Set(concepts.map((concept) => concept.id));
+    expect(ids.has("HC-1")).toBe(true);
+    expect(ids.has("SD-9")).toBe(true);
+    expect(ids.has("DIR-5")).toBe(true);
+    expect(concepts.every((concept) => concept.conceptClass === "alignment-clause")).toBe(true);
   });
-});
 
-describe("extractBestPractices", () => {
-  test("extracts stable BP IDs and labels", () => {
-    const content = [
-      "- **BP-02** *Every skill has a block.*",
-      "- **BP-01** *Description is third-person.*",
-      "- **BP-WINDOW** *Window delta ledger.*",
-    ].join("\n");
-    expect(extractBestPractices(content).map((concept) => concept.id)).toEqual([
-      "BP-01",
-      "BP-02",
-      "BP-WINDOW",
-    ]);
-  });
-});
-
-describe("extractOttoPrinciples", () => {
-  test("deduplicates IDs across sources and keeps first source", () => {
-    const sources: readonly SourceText[] = [
-      { path: "CLAUDE.md", content: "Otto-357 says no directives here." },
-      { path: "memory/feedback_example.md", content: "Otto-357 repeated. Otto-363 substrate." },
-    ];
-    const concepts = extractOttoPrinciples(sources);
-    expect(concepts.map((concept) => concept.id)).toEqual(["Otto-357", "Otto-363"]);
-    expect(concepts[0]?.source).toBe("CLAUDE.md");
+  test("deduplicates repeated best-practice IDs", () => {
+    const concepts = extractByRegex(
+      "docs/AGENT-BEST-PRACTICES.md",
+      /\b(BP-\d+)\b/g,
+      "best-practice",
+    );
+    const ids = concepts.map((concept) => concept.id);
+    expect(ids.length).toBe(new Set(ids).size);
+    expect(ids).toContain("BP-01");
   });
 });
 
 describe("extractGlassHaloDoctrines", () => {
-  test("extracts known doctrine IDs from source phrases", () => {
-    const sources: readonly SourceText[] = [
-      {
-        path: "AGENTS.md",
-        content: "Truth over politeness. Total observability. No hidden reasoning.",
-      },
-      { path: "docs/ALIGNMENT.md", content: "Glass halo discipline matters." },
-    ];
-    expect(extractGlassHaloDoctrines(sources).map((concept) => concept.id)).toEqual([
-      "radical-honesty",
-      "total-observability",
-      "no-hidden-reasoning",
-      "glass-halo-discipline",
-    ]);
+  test("extracts anchored doctrine concepts from canonical sources", () => {
+    const concepts = extractGlassHaloDoctrines();
+    const byId = new Map(concepts.map((concept) => [concept.id, concept]));
+
+    expect(byId.has("radical-honesty")).toBe(true);
+    expect(byId.has("total-observability")).toBe(true);
+    expect(byId.has("substrate-or-it-didnt-happen")).toBe(true);
+    expect(byId.get("radical-honesty")?.anchorState).toBe("partially-anchored");
+    expect(byId.get("substrate-or-it-didnt-happen")?.anchorState).toBe("factory-native");
   });
 });
 
 describe("buildRegistry", () => {
-  test("builds the repository registry with all four concept classes", () => {
-    const registry = buildRegistry("2026-05-08T00:00:00.000Z");
-    expect(registry.schema).toBe("concept-registry-v1");
-    expect(registry.generated).toBe("2026-05-08T00:00:00.000Z");
+  test("builds a schema-v1.1 registry with all expected concept classes", () => {
+    const registry = buildRegistry();
+    expect(registry.schema).toBe("concept-registry-v1.1");
+    expect(registry.concepts.length).toBeGreaterThan(40);
+    expect(registry.anchoredCount).toBeGreaterThan(0);
+
+    expect(registry.summary["alignment-clause"]).toBeGreaterThanOrEqual(21);
+    expect(registry.summary["best-practice"]).toBeGreaterThanOrEqual(25);
+    expect(registry.summary["otto-principle"]).toBeGreaterThan(0);
+    expect(registry.summary["glass-halo-doctrine"]).toBeGreaterThan(0);
 
     const ids = new Set(registry.concepts.map((concept) => concept.id));
     expect(ids.has("HC-1")).toBe(true);
-    expect(ids.has("SD-9")).toBe(true);
-    expect(ids.has("DIR-5")).toBe(true);
     expect(ids.has("BP-01")).toBe(true);
-    expect(ids.has("BP-28")).toBe(true);
-    expect(ids.has("Otto-357")).toBe(true);
+    expect(ids.has("Otto-363")).toBe(true);
     expect(ids.has("radical-honesty")).toBe(true);
-    expect(ids.has("total-observability")).toBe(true);
-
-    const classes = new Set(registry.concepts.map((concept) => concept.class));
-    expect(classes).toEqual(new Set([
-      "alignment-clause",
-      "best-practice",
-      "otto-principle",
-      "glass-halo-doctrine",
-    ]));
-  });
-});
-
-describe("main", () => {
-  test("accepts --help", () => {
-    expect(main(["--help"])).toBe(0);
-  });
-
-  test("rejects unknown args", () => {
-    expect(main(["--bad"])).toBe(2);
   });
 });

@@ -1,14 +1,14 @@
 ---
 id: B-0309
 priority: P0
-status: open
+status: closed
 title: "Mechanical authorization check — CLAUDE.md discoverable-skill pointer"
 effort: XS
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: B-0160
 depends_on: [B-0308]
-classification: blocked
+classification: closed
 decomposition: atomic
 owners: [architect]
 type: friction-reducer

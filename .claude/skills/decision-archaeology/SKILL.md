@@ -1,6 +1,6 @@
 ---
 name: decision-archaeology
-description: Capability skill ("hat") — reconstructs "why is it like this?" by excavating layered evidence. Five investigation modes (existence / rejection / supersession / justification / attribution) guide the dig through git blame, git log -S/-L, ADRs under docs/DECISIONS/, round-history shards, memory/feedback_*.md memos, persona notebooks, WONT-DO archaeology, and conversation archives. Wear this when a new or returning contributor asks why a piece of the codebase looks the way it does, when the maintainer needs to know what removing or renaming something would cost, when tracing the decision-intent behind a rule or validator, or when reconstructing supersession chains across CURRENT-*.md files. Distinct from data-lineage-expert (data-flow provenance, not decision-intent), git-workflow-expert (branching conventions, not historical reconstruction), and code-review (correctness of proposed changes, not origin of existing ones).
+description: Decision archaeology — reconstruct "why is it like this?" via git blame, ADRs, round-history, memory memos, supersession chains.
 ---
 
 # Decision Archaeology — "Why Is It Like This?"

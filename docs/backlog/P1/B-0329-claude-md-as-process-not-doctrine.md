@@ -4,12 +4,21 @@ priority: P1
 status: open
 title: "Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing"
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: []
-decomposition: blob
+decomposition: decomposed
 classification: buildable-now
 type: friction-reducer
 owners: [architect]
+children:
+  - B-0348
+  - B-0349
+  - B-0350
+  - B-0351
+  - B-0352
+  - B-0353
+  - B-0354
+  - B-0355
 ---
 
 ## B-0329 — CLAUDE.md as process, not doctrine
@@ -55,6 +64,35 @@ The process-as-bootstrap pattern:
 3. Tested: fresh instance with bootstrap-only produces coherent first PR
 4. Template created for AGENTS.md, CODEX.md, CURSOR.md equivalents
 5. Other harness agents can follow the same pattern
+
+## Decomposition (B-0348..B-0355)
+
+Dependency graph:
+
+```
+B-0348 (classify bullets)
+  ├── B-0349 (extract batch 1: operational discipline)
+  ├── B-0350 (extract batch 2: autonomy/identity)
+  ├── B-0351 (extract batch 3: infrastructure/safety)
+  └── B-0352 (extract batch 4: meta/governance)
+        └── B-0353 (write bootstrap-process CLAUDE.md)
+              └── B-0354 (fresh-instance validation)
+                    └── B-0355 (cross-harness template)
+```
+
+| ID | Title | Depends on | Lines freed |
+|----|-------|-----------|-------------|
+| B-0348 | Classify all CLAUDE.md bullets into extraction tiers | — | 0 (analysis) |
+| B-0349 | Extract operational-discipline bullets to `.claude/rules/` | B-0348 | ~150 |
+| B-0350 | Extract autonomy/identity bullets to `.claude/rules/` | B-0348 | ~190 |
+| B-0351 | Extract infrastructure/safety bullets to `.claude/rules/` | B-0348 | ~240 |
+| B-0352 | Extract meta/governance bullets to `.claude/rules/` | B-0348 | ~300 |
+| B-0353 | Write bootstrap-process CLAUDE.md (<50 lines) | B-0349..B-0352 | final trim |
+| B-0354 | Fresh-instance validation test | B-0353 | 0 (test) |
+| B-0355 | Cross-harness bootstrap template | B-0354 | 0 (template) |
+
+B-0349..B-0352 are parallelizable — they each target disjoint
+bullet groups. B-0353 gates on all four extraction batches.
 
 ## Composes with
 

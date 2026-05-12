@@ -3,8 +3,11 @@
 **Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); **Bucket B is empty**)
 **Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. Trajectory transitions from "porting" phase to "soak + bash-retirement" phase.
 **Current blocker**: None.
-**Next concrete action**: Land the atomic child candidate below: refresh the trajectory's live-state references now that Bucket B ports and bash-retirement have advanced past the old Cluster G/H recommendations. This is a documentation/control-plane slice only; no script porting or bash deletion belongs in the child.
-**Last updated**: 2026-05-08
+**Next concrete action**: Land this live-state refresh, then choose a
+single bash-retirement discovery slice against the retained Bucket D
+equivalence-reference originals. Do not revive the old Cluster G/H/I or
+budget-cluster port queues.
+**Last updated**: 2026-05-11
 
 ## Why this trajectory exists
 
@@ -143,19 +146,40 @@ tools/budget/project-runway.sh                     # ported in #902 (budget clus
 budget, and git Bucket B scripts as `.ts` files. The former Bucket C
 GitHub-settings scripts have also been ported (B-0156).
 
-**Scope**: documentation/control-plane only. Update this resume and adjacent
-trajectory references so future agents do not revive already-completed Cluster
-G/H/I and budget-cluster port queues or schedule bash-retirement work that has
-already happened.
+**Live verification (2026-05-11)**:
 
-**Non-scope**: do not port the Bucket C scripts in this child. Bucket C still
-needs the documented shell-out-wrapper versus Octokit decision.
+- Upstream-source dates in `docs/best-practices/typescript.md`,
+  `docs/best-practices/bun.md`, and
+  `docs/best-practices/repo-scripting.md` remain inside the default
+  30-day Gate B window.
+- Sibling comparison points were rechecked read-only:
+  `/Users/acehack/Documents/src/repos/SQLSharp` is at short SHA
+  `7d3d9f6`; `/Users/acehack/Documents/src/repos/scratch/package.json`
+  mtime is `2026-04-15T22:06:37-0400`; and
+  `/Users/acehack/Documents/src/repos/scratch/tsconfig.json` mtime is
+  `2026-04-15T03:18:20-0400`.
+- Focused inventory returns only `.ts` paths for the peer-call, lint,
+  budget, git, and GitHub-settings targets listed below. Any `.sh`
+  result in that set is drift.
+- DST + coverage gate: this child is docs/control-plane only and adds no
+  runtime module or port. Per-port DST and coverage evidence remains in
+  `slice-audits.md`; the next code-bearing slice must re-run its own
+  Gate A checklist.
+
+**Scope**: documentation/control-plane only. Update this resume so future
+agents do not revive already-completed Cluster G/H/I and budget-cluster port
+queues.
+
+**Non-scope**: do not port or delete scripts in this child. Bucket C is
+already ported through the documented `gh api` shell-out-wrapper pattern; this
+child records that live state instead of reopening the shell-out-wrapper versus
+Octokit decision.
 
 **Focused check**:
 
 ```bash
 rg --files tools/peer-call tools/lint tools/budget tools/git tools/hygiene \
-  | rg '(peer-call/(codex|gemini|grok)\.(sh|ts)|lint/(no-empty-dirs|runner-version-freshness|no-directives-otto-prose|doc-comment-history-audit)\.(sh|ts)|budget/(daily-cost-report|project-runway|snapshot-burn)\.(sh|ts)|git/(batch-resolve-pr-threads|push-with-retry)\.(sh|ts)|hygiene/(check-github-settings-drift|snapshot-github-settings)\.sh)'
+  | rg '(peer-call/(codex|gemini|grok)\.(sh|ts)|lint/(no-empty-dirs|runner-version-freshness|no-directives-otto-prose|doc-comment-history-audit)\.(sh|ts)|budget/(daily-cost-report|project-runway|snapshot-burn)\.(sh|ts)|git/(batch-resolve-pr-threads|push-with-retry)\.(sh|ts)|hygiene/(check-github-settings-drift|snapshot-github-settings)\.(sh|ts))'
 ```
 
 **Gate B prerequisite (mandatory before first mutating action on the slice)**:
@@ -240,7 +264,10 @@ This audit is a one-off; it doesn't replace the per-tool/language expert + teach
 
 **Status**: deferred from this PR (no-fan-out during live lane). After #866 lands, the TS+Bun expert skill becomes a Lane C+ artifact or a sibling trajectory.
 
-**Why this matters for the migration**: each future slice (2 ports remaining in Bucket B; potentially 2 more in Bucket C if maintainer decides to port) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
+**Why this matters for the migration**: each future port or bash-retirement
+slice benefits from a current-docs anchor. Without it, ports drift toward
+whatever convention the most-recently-read TS file used; with it, ports
+converge on contemporary best practice.
 
 ## Operating notes (lane-discipline addendum)
 
@@ -315,3 +342,5 @@ If any source is unavailable or known-stale, surface that as a freshness gap rat
 - Do **not** mass-port multiple clusters in one PR (small slices, each measurable)
 - Do **not** open a new investigation lane during a port slice (lane discipline)
 - Do **not** treat this RESUME as authoritative for the trajectory direction without maintainer review — it's a starter inventory, refinement expected
+- Do **not** revive Cluster G/H/I, budget-cluster, peer-call-cluster, git-cluster,
+  or Bucket C porting queues; those are historical audit labels now.

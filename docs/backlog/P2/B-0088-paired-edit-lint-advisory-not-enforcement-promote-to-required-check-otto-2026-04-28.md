@@ -8,6 +8,7 @@ effort: S
 ask: autonomous-loop tick discovery 2026-04-28T20:23Z (paired-edit failures observed on PR #688/#689; both auto-merged anyway)
 created: 2026-04-28
 last_updated: 2026-05-02
+decomposed: true
 depends_on: []
 composes_with:
   - B-0087

@@ -1,6 +1,6 @@
 ---
 name: numerical-analysis-and-floating-point-expert
-description: Narrow capability skill ("hat") under the `mathematics-expert` umbrella. Covers IEEE 754 (binary32/binary64/bfloat16), fused-multiply-add, ULP bounds, condition numbers, Kahan / Neumaier compensated summation, the BV64 / Int62 budget Zeta uses for exact arithmetic, and the tropical-semiring (min-plus) numerical edges (infinity sentinels, overflow, saturating addition). Wear this when a prompt is about whether a computation is *numerically* correct on real hardware — conditioning, rounding, catastrophic cancellation, over/underflow, denormal handling. Defers to `applied-mathematics-expert` for algorithm choice and to `theoretical-mathematics-expert` / `formal-verification-expert` for proved numerical bounds.
+description: IEEE 754, ULP bounds, condition numbers, Kahan summation, rounding, catastrophic cancellation, denormals, BV64/Int62 exact arithmetic.
 ---
 
 # Numerical Analysis and Floating-Point Expert — Narrow

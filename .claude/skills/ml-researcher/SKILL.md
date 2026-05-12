@@ -1,6 +1,6 @@
 ---
 name: ml-researcher
-description: Capability skill for machine-learning research in the broader (non-AI-specific) sense — statistical learning theory, PAC-learning bounds, SGD / optimization theory, probabilistic modelling, Bayesian nonparametrics, causal inference, classical RL theory, information theory, learning-theoretic lower bounds, kernel methods, Gaussian processes, graphical models. Wear this hat when a task requires theoretical depth on algorithms (not architectures), convergence / generalisation / identifiability arguments, proof-level reading of ML papers, or deciding whether a method is theoretically justified vs empirically fitted. Complementary to ai-researcher (LLMs / generative / alignment / interpretability), ml-engineering-expert (applied training), and probability-and-bayesian-inference-expert (the probability substrate this skill reasons over).
+description: "ML theory research — PAC bounds, SGD/optimization, Bayesian nonparametrics, causal inference, kernel methods, convergence proofs."
 ---
 
 # ML Researcher — the ML-theory / classical-ML research hat

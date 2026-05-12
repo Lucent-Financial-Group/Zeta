@@ -1,6 +1,6 @@
 ---
 name: factory-optimizer
-description: Capability skill ("hat") — factory **objective-function maximiser**. Distinct from `factory-balance-auditor` (balancer — levels load across roster, fairness-oriented) and `factory-audit` (governance-rules compliance). This skill asks "which single intervention, applied now, most increases factory throughput or quality per unit of maintainer effort?" and names it. It ranks candidate interventions by expected-value uplift under a declared objective (publication velocity, P0 backlog burndown, reviewer latency, skill-coverage of research frontier), explicitly trading off fairness for impact. Sister skill to `factory-balance-auditor`: balancer asks "is load even?"; optimiser asks "what gets us the biggest win?" Both are needed because a balanced factory is not optimal and an optimal factory is not balanced — the two recommendations frequently disagree, and that disagreement is signal, not noise. Recommends only; the Architect integrates. Cadence: every 3-5 rounds, on round-close, or on-demand when the maintainer asks "what would most move the needle?"
+description: Factory objective-function maximiser — highest-uplift intervention per maintainer-effort; sister to factory-balance-auditor.
 ---
 
 # Factory Optimizer — Procedure

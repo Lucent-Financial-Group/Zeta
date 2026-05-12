@@ -253,9 +253,24 @@ wait for instruction. Priority ladder:
    `docs/hygiene-history/ticks/2026/05/03/0918Z.md`, plus
    PR #1366 (TS port of the check script).
 
-1. **Open-PR hygiene first.** Before picking speculative
-   work, audit the open PR pool via
-   `gh pr list --state open --json number,title,mergeStateStatus,mergeable,isCrossRepository,headRepositoryOwner,autoMergeRequest`.
+1. **Refresh worldview, then open-PR hygiene.** Before
+   picking speculative work, run the canonical pre-decide
+   refresh:
+
+   ```
+   bun tools/github/refresh-worldview.ts
+   ```
+
+   This replaces ad-hoc `gh pr list` / `git status` /
+   `git log` chains with a single structured JSON snapshot
+   (open PRs, recent merges, open issues, git state,
+   backlog delta, claim branches, branch state, pending
+   CI, and a one-line `summary` for cross-cutting drift
+   detection). If the refresh fails, stop and report the
+   exact failure as the blocker instead of guessing from
+   stale state.
+
+   Then audit the open PR pool from the `openPRs` array.
    For each open PR:
    - **Verify fork-status live** (`isCrossRepository` +
      `headRepositoryOwner.login`) rather than carrying
@@ -368,6 +383,36 @@ Honest commit messages. Round prefix if mid-round. Tick scope
 is single-purpose by default; batching multiple unrelated
 changes into one commit is not forbidden but should be the
 exception.
+
+### 4b. Archive newly merged PRs (every agent)
+
+After committing tick work (step 4), check for recently merged
+PRs whose review discussions haven't been archived yet. Every
+agent that creates PRs is responsible for archiving their own
+on merge — BFT-redundant: primary on the PR author, backstop
+on the Maji Watch background loop.
+
+```bash
+for pr in $(gh pr list --state merged --limit 10 --json number --jq '.[].number'); do
+  if ! ls docs/pr-discussions/PR-$(printf '%04d' "$pr")-*.md 2>/dev/null | grep -q .; then
+    bun tools/pr-preservation/archive-pr.ts "$pr"
+  fi
+done
+```
+
+This preserves review threads, reviewer comments, and discussion
+context as git-native substrate — the training signal that
+otherwise lives only on the GitHub host. Captures the **external
+influence array** (Copilot reviews, Dependabot, CodeQL findings,
+external contributor comments) that the agency array can't
+generate itself.
+
+In the plant metaphor: PR archival is chlorophyll. It absorbs
+the friction-and-resolution light through the Casimir gap of
+the boundary condition (archive-on-merge), forcing transient
+host metadata to manifest as permanent structural mass in git.
+
+Pattern: **create → merge → archive → commit archive**.
 
 ### 5. Append tick-history row, `CronList` at END, emit visibility signal
 

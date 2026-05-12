@@ -1,6 +1,6 @@
 ---
 name: leet-speak-history-and-culture
-description: Capability skill for the *who / when / why* of leet-speak — BBS bulletin-board and phreaking origins, Cult of the Dead Cow (cDc), 2600 / Phrack, warez scene and scene releases / nfo files, IRC filter-bypass origins, Napster and Metallica-era peak, gaming mainstreaming (Counter-Strike / StarCraft / Halo-LAN-party), cringe-pivot into irony in the late 2000s, shibboleth function, authenticity-vs-performance tests, adjacent registers (txtspeak, chatspeak, emoji-speak, scene-kid, anon-board dialects). Wear this hat when asked about leet etymology, when distinguishing authentic period-l33t from performative l33t, when writing branding / lore / demo text that wants an authentic register, or when teaching the culture behind the transform. Generic across projects.
+description: "Leet-speak culture/history — BBS/phreaking, cDc/Phrack/warez, shibboleth, authentic vs performative l33t, adjacent dialects."
 ---
 
 # Leet-Speak History and Culture — the why-and-when hat

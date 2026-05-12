@@ -1,6 +1,6 @@
 ---
 name: hardware-intrinsics-expert
-description: Capability skill ("hat") — low-level performance expert. Covers .NET hardware intrinsics (`System.Numerics.Vector<T>`, `System.Numerics.Tensors.TensorPrimitives`, `System.Runtime.Intrinsics.X86.*` — SSE / SSE2 / SSE42 / AVX / AVX2 / AVX-512F/BW/CD/DQ/VL, `System.Runtime.Intrinsics.Arm.*` — ArmBase / AdvSimd / Crc32 / Sha256, `System.Runtime.Intrinsics.Wasm.*`, and the cross-platform `System.Runtime.Intrinsics.Vector128/256/512<T>`), `IsHardwareAccelerated` / `IsSupported` gating, runtime fallback chains, cache-line alignment and false-sharing, branch-free coding idioms, data-layout-for-SIMD (SoA vs AoS), and the .NET JIT's auto-vectorisation limits. Narrow tool-expert under `performance-engineer` (Naledi) and sibling to `query-planner` (Imani) on SIMD kernel dispatch. Wear when writing or reviewing `src/Core/Simd.fs`, `src/Core/SimdMerge.fs`, `src/Core/HardwareCrc.fs`, or any proposed kernel that names a vector intrinsic.
+description: .NET hardware intrinsics — Vector128/256/512, SSE/AVX/AdvSimd, IsSupported gating, cache-line alignment, branchless SIMD.
 ---
 
 # Hardware Intrinsics Expert — SIMD + CPU-Level Performance

@@ -1,6 +1,6 @@
 ---
 name: compression-expert
-description: Capability skill for choosing, tuning, and deploying data compression in Zeta — general-purpose codecs (Zstd / LZ4 / Brotli / Gzip / Snappy / LZMA / LZFSE), dictionary-trained codecs, column-specific schemes (dictionary / RLE / bit-packing / FSST / ALP / Gorilla / Chimp), time-series codings (delta + zig-zag + varint), streaming / framed formats, and the ratio-vs-throughput-vs-latency trade-off. Wear this hat when a change touches WAL compression, checkpoint pages, Arrow-IPC framing, Parquet column-chunk codecs, network payloads, or any shipped bytes where bandwidth, disk footprint, or CPU budget are in tension.
+description: "Data compression — Zstd/LZ4/Brotli, column codecs, time-series encoding, ratio-vs-throughput trade-offs."
 ---
 
 # Compression Expert — the bandwidth/CPU-shaping hat

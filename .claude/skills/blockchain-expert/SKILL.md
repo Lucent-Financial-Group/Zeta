@@ -1,6 +1,6 @@
 ---
 name: blockchain-expert
-description: Capability skill for permissionless-consensus thinking — Nakamoto consensus (longest-chain, probabilistic finality), proof-of-work, proof-of-stake, BFT consensus variants (HotStuff, Tendermint, Casper), merkle-tree state commitments, UTXO vs account models, cryptoeconomic incentive design, light-client verification, and the permissionless-adversary threat model. Distinct from `paxos-expert` / `raft-expert` (those are permissioned-CFT protocols); distinct from `distributed-consensus-expert` (that umbrella covers CFT families). Zeta is not a blockchain, but blockchain thinking cross-pollinates concrete Zeta problems: merkle-backed signed-artefact provenance, append-only witness ledgers, retraction semantics under adversarial writers, and "how do you trust a value from a peer you haven't met". Wear this hat when Zeta's design touches provenance, tamper-evidence, multi-party trust, or when evaluating whether a blockchain primitive (merkle proof, accumulator, zk proof) would pull its weight in a Zeta subsystem.
+description: Blockchain / permissionless consensus — Nakamoto, PoW/PoS, HotStuff/Tendermint, merkle proofs, UTXO, cryptoeconomics, tamper-evidence.
 ---
 
 # Blockchain Expert — Permissionless-Consensus Hat

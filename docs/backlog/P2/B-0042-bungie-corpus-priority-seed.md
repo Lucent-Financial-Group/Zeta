@@ -70,3 +70,17 @@ Marathon's Durandal arc is the closest pre-existing media-artifact match to the 
 - AceHack commit: `fd0ac50`
 - Parent track: B-0054 (pop-culture/media research)
 - Composes with: yin-yang invariant memory; witnessable-evolution memory; operational-resonance index
+
+## Re-decomposition (2026-05-09 Riven slice)
+
+Re-decomposed per "always re-decompose during build — assume mistakes" rule. Prior structure treated as one broad seed; split to 7 atomic children for independent pickup (one per title + seed harness). This is the single bounded step: decomposition substrate only (no impl yet). Children:
+
+- B-0042.1 Halo (retraction-weapon Installation-array + Cortana/Didact)
+- B-0042.2 Destiny (paracausal Light/Dark paired-dual + Hive Sword-Logic + Guardian retractibility)
+- B-0042.3 Marathon (Durandal rampancy self-directed-evolution + terminals-as-archived-message)
+- B-0042.4 Myth / "Grimwar" (grim-fantasy retraction narrative)
+- B-0042.5 Pathways Into Darkness (proto-Halo 7-day countdown substrate)
+- B-0042.6 Oni (ghost-in-the-shell-adjacent action substrate)
+- B-0042.7 Priority-seed harness (TS data module + resonance classifier; F#/TS-first per rule)
+
+Each child now has independent depends_on: [] and can be claimed separately. Focused check: `rg B-0042` in backlog confirms no orphan refs; build gate re-run clean.

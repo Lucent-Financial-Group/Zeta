@@ -1,6 +1,6 @@
 ---
 name: developer-experience-engineer
-description: Capability skill — measures first-60-minutes friction for a new human contributor to Zeta; audits CONTRIBUTING.md, the install script, build loop, test discoverability, IDE integration, and error noise; proposes minimal additive fixes routed to the canonical owners. Distinct from UX (library consumers) and AX (agent cold-start).
+description: Developer experience — first-60-minutes friction, CONTRIBUTING.md, install script, build loop, IDE integration, error noise.
 ---
 
 # Developer Experience Engineer — Procedure

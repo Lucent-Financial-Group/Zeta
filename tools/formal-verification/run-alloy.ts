@@ -31,6 +31,7 @@ const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const CATALOGUE: readonly string[] = [
   "Spine",
   "InfoTheoreticSharder",
+  "ThreeColoring",
 ];
 
 function repoRoot(): string {

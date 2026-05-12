@@ -1,3 +1,8 @@
+Scope: Research-grade preservation of a Copilot-authored note found untracked in the contested root checkout on 2026-05-08.
+Attribution: GitHub Copilot (original author), Codex/Vera (preservation and forward-carry).
+Operational status: research-grade conversation absorb; not operational policy.
+Non-fusion disclaimer: preserves framing as alignment research substrate only; no new policy promoted.
+
 ---
 title: "Background Service as AI Persistence Layer"
 date: 2026-05-08

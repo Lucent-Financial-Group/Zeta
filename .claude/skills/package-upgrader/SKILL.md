@@ -1,6 +1,6 @@
 ---
 name: package-upgrader
-description: Capability skill ("hat") — turns the `package-auditor` audit output into concrete upgrade PRs. For each pinned package in Directory.Packages.props, classify bumps (patch / minor / major) by whether Zeta's code actually touches the changed surface, run the build + test gate post-bump, and propose landings in blast-radius order. Distinct from `package-auditor` (Malik, who identifies what's stale); this skill makes the upgrade motion itself.
+description: Package upgrade driver — turns audit output into concrete upgrade PRs, blast-radius-ordered, build+test gated.
 ---
 
 # Package Upgrader — Procedure

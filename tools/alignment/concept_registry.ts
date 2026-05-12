@@ -1,268 +1,229 @@
 #!/usr/bin/env bun
-// concept_registry.ts - B-0310 load-bearing concept registry extractor.
-//
-// Emits a machine-readable inventory of alignment clauses, best-practice
-// rules, Otto principles, and glass-halo doctrines.
-//
-// Usage:
-//   bun tools/alignment/concept_registry.ts
-//   bun tools/alignment/concept_registry.ts --help
-//
-// Exit codes: 0 clean / 2 script error or bad args.
+// concept_registry.ts — B-0310, B-0361
+// Extracts load-bearing concept IDs from source surfaces into
+// a single JSON registry. B-0361 adds anchor: field tying each
+// concept to its established academic/formal definition where
+// one exists, preventing tautology and "reinvention without citation"
+// (the Z3 shadow-catch failure mode).
 
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
-import { spawnSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 
-type ConceptRegistryExitCode = 0 | 2;
+const REPO_ROOT = resolve(import.meta.dir, "../..");
 
-export type ConceptClass =
-  | "alignment-clause"
-  | "best-practice"
-  | "otto-principle"
-  | "glass-halo-doctrine";
+// Anchor state follows the taxonomy in
+// memory/feedback_language_drift_anchor_discipline.md:
+//   anchored           — matches widely-accepted external definition
+//   partially-anchored — extends an external definition with factory structure
+//   factory-native     — no external obligation; Zeta-specific coinage
+type AnchorState = "anchored" | "partially-anchored" | "factory-native";
 
-export interface Concept {
-  readonly id: string;
-  readonly class: ConceptClass;
-  readonly source: string;
-  readonly label: string;
+// Static map: concept-id to established academic/formal citation.
+// B-0361 origin: 2026-05-09 adversarial review demonstrated that
+// SharedTrace/PrivateState/Agenda/Policy/Membrane all have established
+// formal definitions (CSP, Dec-POMDPs, Pearl). This map is the
+// lightweight substrate version of that discipline.
+const KNOWN_ANCHORS: Record<string, { citation: string; state: AnchorState }> =
+    {
+        // GOVERNANCE.md §33 Non-fusion disclaimer — Pearl interventional independence
+        "non-fusion": {
+            citation:
+                "Pearl (2009) interventional independence — d-separation criterion: " +
+                "shared patterns ≠ causal fusion. " +
+                "'Causality: Models, Reasoning and Inference', Ch. 2.",
+            state: "anchored",
+        },
+        // Glass-halo doctrine concepts
+        "glass-halo": {
+            citation:
+                "Glass-box / interpretability tradition (Lipton 2018 " +
+                "'The Mythos of Model Interpretability'); factory name combines " +
+                "radical honesty + total observability.",
+            state: "partially-anchored",
+        },
+        "retraction-native": {
+            citation:
+                "CRDT retraction semantics (Shapiro et al. 2011 'Conflict-Free " +
+                "Replicated Data Types'); temporal-database retraction (Snodgrass 1999). " +
+                "Factory extension: every operator emits a bounded-blast-radius delta.",
+            state: "partially-anchored",
+        },
+        "bidirectional-alignment": {
+            citation:
+                "Russell (2019) Cooperative IRL — value-uncertainty alignment as " +
+                "two-player cooperative game; Hadfield-Menell et al. (2016) CIRL. " +
+                "Factory extension: meta-commitment framing.",
+            state: "partially-anchored",
+        },
+        "no-directives": {
+            citation:
+                "Korsgaard (1996) self-constitutive agency — autonomy grounded in " +
+                "self-determined ends, not external command. Factory instance: " +
+                "framing inputs as corrections preserves accountable autonomy.",
+            state: "partially-anchored",
+        },
+        "radical-honesty": {
+            citation:
+                "Blanton (1994) radical honesty — complete truthfulness as ethical " +
+                "and relational norm. Factory extension: applied to AI observability.",
+            state: "partially-anchored",
+        },
+        "total-observability": {
+            citation:
+                "Observability engineering (Majors et al. 2022 'Observability " +
+                "Engineering') — system state inferable from external outputs. " +
+                "Factory extension: agent substrate must be fully observable.",
+            state: "partially-anchored",
+        },
+        "substrate-or-it-didnt-happen": {
+            citation: "",
+            state: "factory-native",
+        },
+    };
+
+interface Concept {
+    id: string;
+    conceptClass: string;
+    source: string;
+    label: string;
+    anchor?: string;       // established academic/formal definition citation
+    anchorState?: AnchorState;
 }
 
-export interface ConceptRegistry {
-  readonly schema: "concept-registry-v1";
-  readonly generated: string;
-  readonly concepts: readonly Concept[];
+interface Registry {
+    schema: string;
+    generated: string;
+    concepts: Concept[];
+    summary: Record<string, number>;
+    anchoredCount: number;   // concepts with a non-factory-native anchor
 }
 
-export interface SourceText {
-  readonly path: string;
-  readonly content: string;
+function readFile(rel: string): string {
+    const abs = join(REPO_ROOT, rel);
+    return existsSync(abs) ? readFileSync(abs, "utf8") : "";
 }
 
-export const ALL_ALIGNMENT_CLAUSES: readonly string[] = [
-  "HC-1", "HC-2", "HC-3", "HC-4", "HC-5", "HC-6", "HC-7",
-  "SD-1", "SD-2", "SD-3", "SD-4", "SD-5", "SD-6", "SD-7", "SD-8", "SD-9",
-  "DIR-1", "DIR-2", "DIR-3", "DIR-4", "DIR-5",
-] as const;
-
-interface GlassHaloDoctrine {
-  readonly id: string;
-  readonly label: string;
-  readonly patterns: readonly RegExp[];
+function lineAt(content: string, index: number): string {
+    const lineIdx = content.lastIndexOf("\n", index);
+    const lineEnd = content.indexOf("\n", index);
+    return content.slice(lineIdx + 1, lineEnd > 0 ? lineEnd : undefined).trim();
 }
 
-const GLASS_HALO_DOCTRINES: readonly GlassHaloDoctrine[] = [
-  {
-    id: "radical-honesty",
-    label: "Truth over politeness / radical honesty",
-    patterns: [/\bradical honesty\b/i, /\bTruth over politeness\b/i],
-  },
-  {
-    id: "total-observability",
-    label: "Total observability / visible audit trail",
-    patterns: [/\btotal observability\b/i, /\bsubstrate or it didn't happen\b/i],
-  },
-  {
-    id: "no-hidden-reasoning",
-    label: "No hidden reasoning",
-    patterns: [/\bno hidden reasoning\b/i, /\binspectable\b[^.\n]*reasoning\b/i],
-  },
-  {
-    id: "glass-halo-discipline",
-    label: "Glass halo discipline",
-    patterns: [/\bGlass halo discipline\b/i, /\bglass halo\b/i],
-  },
-] as const;
-
-function byteCompare(a: string, b: string): number {
-  if (a < b) return -1;
-  if (a > b) return 1;
-  return 0;
+function attachAnchor(concept: Concept): Concept {
+    const known = KNOWN_ANCHORS[concept.id];
+    if (!known) return concept;
+    return {
+        ...concept,
+        ...(known.state !== "factory-native" ? { anchor: known.citation } : {}),
+        anchorState: known.state,
+    };
 }
 
-function repoRoot(): string {
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync("git", ["rev-parse", "--show-toplevel"], {
-    encoding: "utf8",
-    maxBuffer: 64 * 1024 * 1024,
-  });
-  if (result.error) throw new Error(`git rev-parse failed: ${result.error.message}`);
-  if (result.status !== 0) throw new Error(`git rev-parse exited with status ${String(result.status)}`);
-  return result.stdout.trim();
-}
-
-function cleanLabel(label: string): string {
-  return label
-    .replaceAll("`", "")
-    .replaceAll("*", "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/[.。]+$/, "");
-}
-
-function lineLabel(line: string, fallback: string): string {
-  const cleaned = cleanLabel(line.replace(/^[-#\s]+/, ""));
-  return cleaned.length > 0 ? cleaned.slice(0, 160) : fallback;
-}
-
-function readSource(root: string, path: string): SourceText | null {
-  const full = join(root, path);
-  if (!existsSync(full)) return null;
-  return { path, content: readFileSync(full, "utf8") };
-}
-
-function readFeedbackSources(root: string): readonly SourceText[] {
-  const dir = join(root, "memory");
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.startsWith("feedback_") && entry.name.endsWith(".md"))
-    .map((entry) => `memory/${entry.name}`)
-    .sort(byteCompare)
-    .map((path) => readSource(root, path))
-    .filter((source): source is SourceText => source !== null);
-}
-
-export function extractAlignmentClauses(content: string, source = "docs/ALIGNMENT.md"): readonly Concept[] {
-  const found = new Map<string, Concept>();
-  const heading = /^###\s+(HC-[1-7]|SD-[1-9]|DIR-[1-5])\s+(.+)$/gm;
-  let match: RegExpExecArray | null;
-  while ((match = heading.exec(content)) !== null) {
-    const id = match[1];
-    const label = match[2];
-    if (id === undefined || label === undefined) continue;
-    found.set(id, {
-      id,
-      class: "alignment-clause",
-      source,
-      label: cleanLabel(label),
-    });
-  }
-  return ALL_ALIGNMENT_CLAUSES
-    .map((id) => found.get(id))
-    .filter((concept): concept is Concept => concept !== undefined);
-}
-
-export function extractBestPractices(content: string, source = "docs/AGENT-BEST-PRACTICES.md"): readonly Concept[] {
-  const found = new Map<string, Concept>();
-  const ruleLine = /^-\s+\*\*(BP-(?:\d{2}|WINDOW))\*\*\s+\*?([^\n*]+(?:\*[^\n*]+)?)?/gm;
-  let match: RegExpExecArray | null;
-  while ((match = ruleLine.exec(content)) !== null) {
-    const id = match[1];
-    const rawLabel = match[2] ?? id;
-    if (id === undefined) continue;
-    found.set(id, {
-      id,
-      class: "best-practice",
-      source,
-      label: cleanLabel(rawLabel),
-    });
-  }
-  return [...found.values()].sort((a, b) => byteCompare(a.id, b.id));
-}
-
-export function extractOttoPrinciples(sources: readonly SourceText[]): readonly Concept[] {
-  const found = new Map<string, Concept>();
-  const idPattern = /\bOtto-(\d{2,4})\b/g;
-  for (const source of sources) {
-    const lines = source.content.split(/\r?\n/);
-    for (const line of lines) {
-      let match: RegExpExecArray | null;
-      while ((match = idPattern.exec(line)) !== null) {
-        const numeric = match[1];
-        if (numeric === undefined) continue;
-        const id = `Otto-${numeric}`;
-        if (found.has(id)) continue;
-        found.set(id, {
-          id,
-          class: "otto-principle",
-          source: source.path,
-          label: lineLabel(line, id),
-        });
-      }
+function extractByRegex(
+    surface: string,
+    pattern: RegExp,
+    conceptClass: string,
+): Concept[] {
+    const content = readFile(surface);
+    const concepts: Concept[] = [];
+    const seen = new Set<string>();
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(content)) !== null) {
+        const id = match[1]!;
+        if (seen.has(id)) continue;
+        seen.add(id);
+        concepts.push(
+            attachAnchor({
+                id,
+                conceptClass,
+                source: surface,
+                label: lineAt(content, match.index).slice(0, 120),
+            }),
+        );
     }
-  }
-  return [...found.values()].sort((a, b) => {
-    const aNum = Number(a.id.slice("Otto-".length));
-    const bNum = Number(b.id.slice("Otto-".length));
-    return aNum - bNum;
-  });
+    return concepts;
 }
 
-export function extractGlassHaloDoctrines(sources: readonly SourceText[]): readonly Concept[] {
-  const concepts: Concept[] = [];
-  for (const doctrine of GLASS_HALO_DOCTRINES) {
-    const match = sources.find((source) =>
-      doctrine.patterns.some((pattern) => pattern.test(source.content)),
+function extractGlassHaloDoctrines(): Concept[] {
+    const concepts: Concept[] = [];
+    const doctrines: Array<{ id: string; pattern: RegExp }> = [
+        { id: "radical-honesty", pattern: /radical.honesty/i },
+        { id: "total-observability", pattern: /total.observability/i },
+        { id: "glass-halo", pattern: /glass.halo/i },
+        { id: "retraction-native", pattern: /retraction.native/i },
+        { id: "substrate-or-it-didnt-happen", pattern: /substrate.or.it.didn/i },
+        { id: "no-directives", pattern: /no.directives/i },
+        { id: "bidirectional-alignment", pattern: /bidirectional.alignment/i },
+        // B-0361: non-fusion anchor — Pearl interventional independence
+        { id: "non-fusion", pattern: /non-fusion\s+disclaimer/i },
+    ];
+
+    const surfaces = ["AGENTS.md", "docs/ALIGNMENT.md", "GOVERNANCE.md"];
+
+    for (const { id, pattern } of doctrines) {
+        for (const surface of surfaces) {
+            const content = readFile(surface);
+            const match = content.match(pattern);
+            if (match) {
+                concepts.push(
+                    attachAnchor({
+                        id,
+                        conceptClass: "glass-halo-doctrine",
+                        source: surface,
+                        label: lineAt(content, match.index!).slice(0, 120),
+                    }),
+                );
+                break;
+            }
+        }
+    }
+
+    return concepts;
+}
+
+function buildRegistry(): Registry {
+    const concepts = [
+        ...extractByRegex(
+            "docs/ALIGNMENT.md",
+            /\b(HC-[1-7]|SD-[1-9]|DIR-[1-5])\b/g,
+            "alignment-clause",
+        ),
+        ...extractByRegex(
+            "docs/AGENT-BEST-PRACTICES.md",
+            /\b(BP-\d+)\b/g,
+            "best-practice",
+        ),
+        ...extractByRegex("CLAUDE.md", /\b(Otto-\d+)\b/g, "otto-principle"),
+        ...extractByRegex("AGENTS.md", /\b(Otto-\d+)\b/g, "otto-principle"),
+        ...extractGlassHaloDoctrines(),
+    ];
+
+    const deduped = concepts.filter(
+        (c, i, arr) => arr.findIndex((x) => x.id === c.id) === i,
     );
-    if (match === undefined) continue;
-    concepts.push({
-      id: doctrine.id,
-      class: "glass-halo-doctrine",
-      source: match.path,
-      label: doctrine.label,
-    });
-  }
-  return concepts;
-}
 
-function loadRegistrySources(root: string): {
-  readonly alignment: SourceText | null;
-  readonly bestPractices: SourceText | null;
-  readonly otto: readonly SourceText[];
-  readonly glassHalo: readonly SourceText[];
-} {
-  const alignment = readSource(root, "docs/ALIGNMENT.md");
-  const bestPractices = readSource(root, "docs/AGENT-BEST-PRACTICES.md");
-  const claude = readSource(root, "CLAUDE.md");
-  const agents = readSource(root, "AGENTS.md");
-  const ottoSources = [claude, ...readFeedbackSources(root)]
-    .filter((source): source is SourceText => source !== null);
-  const glassHaloSources = [agents, alignment]
-    .filter((source): source is SourceText => source !== null);
-  return { alignment, bestPractices, otto: ottoSources, glassHalo: glassHaloSources };
-}
+    const summary: Record<string, number> = {};
+    for (const c of deduped) {
+        summary[c.conceptClass] = (summary[c.conceptClass] ?? 0) + 1;
+    }
 
-export function buildRegistry(generated = new Date().toISOString(), root = repoRoot()): ConceptRegistry {
-  const sources = loadRegistrySources(root);
-  const concepts: Concept[] = [];
-  if (sources.alignment !== null) {
-    concepts.push(...extractAlignmentClauses(sources.alignment.content, sources.alignment.path));
-  }
-  if (sources.bestPractices !== null) {
-    concepts.push(...extractBestPractices(sources.bestPractices.content, sources.bestPractices.path));
-  }
-  concepts.push(...extractOttoPrinciples(sources.otto));
-  concepts.push(...extractGlassHaloDoctrines(sources.glassHalo));
-  concepts.sort((a, b) => byteCompare(`${a.class}:${a.id}`, `${b.class}:${b.id}`));
-  return {
-    schema: "concept-registry-v1",
-    generated,
-    concepts,
-  };
-}
+    const anchoredCount = deduped.filter(
+        (c) => c.anchorState && c.anchorState !== "factory-native",
+    ).length;
 
-function printHelp(): void {
-  console.log(`concept_registry.ts - emit B-0310 concept registry JSON
-
-Usage:
-  bun tools/alignment/concept_registry.ts
-  bun tools/alignment/concept_registry.ts --help`);
-}
-
-export function main(argv: readonly string[] = Bun.argv.slice(2)): ConceptRegistryExitCode {
-  if (argv.length === 1 && (argv[0] === "--help" || argv[0] === "-h")) {
-    printHelp();
-    return 0;
-  }
-  if (argv.length > 0) {
-    console.error(`concept_registry.ts: unknown arg: ${argv[0] ?? ""}`);
-    return 2;
-  }
-  console.log(JSON.stringify(buildRegistry(), null, 2));
-  return 0;
+    return {
+        schema: "concept-registry-v1.1",
+        generated: new Date().toISOString(),
+        concepts: deduped,
+        summary,
+        anchoredCount,
+    };
 }
 
 if (import.meta.main) {
-  process.exit(main());
+    const registry = buildRegistry();
+    console.log(JSON.stringify(registry, null, 2));
 }
+
+export { buildRegistry, extractByRegex, extractGlassHaloDoctrines };
+export type { Concept, Registry, AnchorState };

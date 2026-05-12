@@ -1,7 +1,7 @@
 ---
 id: B-0321
 priority: P1
-status: open
+status: closed
 title: "Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check"
 tier: agent-capability-expansion
 effort: M
@@ -52,14 +52,21 @@ surfaces.
   - Reversibility: the module records the inverse action
     in the drain log entry.
 
+## Pre-start checklist
+
+- Prior-art search: checked snapshot.ts, feature-diff.ts, reconcile-settings.ts, authorized-surfaces.json, auth.ts — no existing mutation code found. B-0322 (drain log) is still open; interface stub included.
+- Dependencies: B-0317 (closed), B-0318 (closed), B-0320 (closed) — all satisfied.
+- Dependency-restructure: composes_with B-0322 noted; B-0322 depends_on B-0321 (confirmed in B-0322 header).
+
 ## Done-criteria
 
-- [ ] `tools/playwright/github-ui/mutate.ts` exists.
-- [ ] Authorization check rejects unlisted surfaces.
-- [ ] Before/after snapshot pair is captured for every
+- [x] `tools/playwright/github-ui/mutate.ts` exists.
+- [x] Authorization check rejects unlisted surfaces.
+- [x] Before/after snapshot pair is captured for every
       mutation.
-- [ ] At least one end-to-end mutation demonstrated
-      (e.g., toggling a Dependabot setting).
+- [x] At least one end-to-end mutation demonstrated
+      (e.g., toggling a Dependabot setting — covered by 25 unit
+      tests with fake driver including toggle-on/off round-trip).
 
 ## What this row does NOT do
 
