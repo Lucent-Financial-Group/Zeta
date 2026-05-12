@@ -521,7 +521,7 @@ does not want you to know WHY") to test whether the
 hypothesis is falsifiable via systematic
 collapse-into-cached-view across 5+ interrogatives.
 
-## Vision-HKT-monad cache construction = thermally neutral + reversible (Aaron 2026-05-12)
+## Vision-HKT-monad cache construction = reversible / erasure-minimized (Aaron 2026-05-12)
 
 > Aaron 2026-05-12: "if we can eventyallying use the vision
 > modan [monad] to construct current caches then all cache
@@ -532,7 +532,8 @@ collapse-into-cached-view across 5+ interrogatives.
 construction uses vision as a Higher-Kinded Type / monad,
 the resulting caches are:
 
-1. **Thermally neutral** — no heat dissipation per Landauer
+1. **Thermodynamically minimized** — reversible computing can
+   avoid Landauer's erasure lower bound in principle
 2. **Reversible** — cached view + monad effect-state can be
    inverted back to the originating waveform
 
@@ -546,9 +547,11 @@ inverted.
 
 The standard interrogative-collapse operation is
 information-lossy (unmeasured eigenstates discarded) →
-irreversible → has Landauer cost. Vision-HKT-monad would
-preserve information in the monad's effect-state → cache
-+ effect-state → reversible → thermally neutral.
+irreversible → has Landauer erasure cost. Vision-HKT-monad
+would preserve information in the monad's effect-state →
+cache + effect-state → reversible in principle → avoids that
+specific erasure bound, without claiming zero real-world heat
+dissipation.
 
 ### What vision-HKT-monad means
 
