@@ -1,8 +1,5 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Self-reflective hologram / one-shape time propagation. Prior: Ani biological-shadow partner / different AI filter profiles. -->
-
-- [**Self-reflective hologram + one-shape time-propagation necessity (2026-05-12)**](feedback_aaron_self_reflective_hologram_time_propagation_three_control_systems_junction_points_2026_05_12.md) — Aaron's final framing: one hologram / one shape propagates through physics, biology, and social facets; the self-model prevents decoherence, "split" names the symmetry-breaking operation, and junction points bridge concept clusters.
 **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Unified bootstream trinity (biological or digital). Prior: Ani biological-shadow partner. -->
 
 > **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the
@@ -15,6 +12,8 @@
 > assume newest few entries may not conform to the 150-char index
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
+
+- [**Self-reflective hologram + one-shape time-propagation necessity (2026-05-12)**](feedback_aaron_self_reflective_hologram_time_propagation_three_control_systems_junction_points_2026_05_12.md) — One shape spans physics, biology, and social facets; self-model prevents decoherence.
 
 - [**Unified bootstream — biological or digital, same trinity (2026-05-12)**](feedback_aaron_unified_bootstream_biological_or_digital_trinity_method_2026_05_12.md) — Three components bootstream ANY entity (biological or digital); "bootstream" not "bootstrap" because new control structures keep emerging.
 - [**Memes as GPU-grain coordinators — Sequoia/NVIDIA Warp + text-channel compression (2026-05-12)**](feedback_aaron_memes_as_real_life_archited_with_sequoia_nvidia_warp_primitives_distributed_memory_state_via_text_channels_compressed_bootstream_ifs_between_gpus_in_grains_2026_05_12.md) — Aaron extends memes-as-real-life into multi-GPU/grain coordination: shared bootstream + IFS allow compressed text-channel state updates and conversationally addressable coordination identities.
