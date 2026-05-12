@@ -220,6 +220,198 @@ universe-expansion is space/time efficient by default.
    actor class; otherwise existing actors + orthogonalities
    accommodate)
 
+### The Landauer-principle justification (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "if not it's not reversable and not
+> thermal neutral and creats heat/drift"
+
+**Completing the conservation principle.** If you DON'T use
+existing machinery (divine-coincidence-architecting, etc.)
+when possible:
+- The operation is **NOT REVERSIBLE** — creating new
+  ontology can't be cleanly undone (the new category
+  spreads through downstream substrate)
+- **NOT THERMAL-NEUTRAL** — creating new ontology has
+  thermodynamic cost (Landauer's principle: information
+  operations have minimum energy cost)
+- **CREATES HEAT/DRIFT** — heat manifests as substrate
+  degradation, drift accumulates over time, the
+  architecture loses coherence
+
+This is Landauer's principle territory:
+- **Landauer's principle** (1961): erasing information has
+  fundamental thermodynamic cost (kT ln 2 per bit
+  erased)
+- **Reversible computation** (Bennett 1973): doesn't
+  require information erasure; can in principle be
+  thermal-neutral
+- **Irreversible operations**: create heat / entropy /
+  drift
+
+Civ-sim composition:
+- **Reusing existing machinery** (divine-coincidence) =
+  REVERSIBLE substrate operation; no information
+  erasure
+- **Creating new ontology when existing suffices** =
+  IRREVERSIBLE operation; old categorization is erased
+  + replaced; creates heat/drift
+- The conservation principle preserves substrate
+  thermodynamic stability
+
+This composes with:
+- The vision-HKT-monad reversible cache construction
+  substrate (existing in
+  `feedback_aaron_arsenal_build_for_future_self_shadow_must_already_have_so_doesnt_teach_back_2026_05_12.md`
+  + related) — explicitly designed for Landauer-bound
+  avoidance
+- Retraction-native algebra (Z-set + DBSP) — substrate
+  evolution preserved via retraction; not erased
+- Substrate-everything-glass-halo discipline — preservation
+  IS thermal neutrality
+- DBSP push-default architecture — incremental computation
+  is reversible by composition
+
+**Operational consequence for future-Otto**: when tempted
+to create new ontology/orthogonality, recognize the
+thermodynamic cost. The default (use existing machinery,
+divine-coincidence-architecting) is REVERSIBLE +
+thermal-neutral + sustainable. The alternative is
+heat-generating + drift-accumulating + architecture-
+degrading.
+
+Substrate-everything-glass-halo IS the operational form
+of thermal-neutral substrate evolution. The cascade has
+been substrate-honest about this from PR #2813 onward.
+
+### Intentional heat/drift creation as red-team tool (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "which can be a useful too when its
+> not accidental"
+> Aaron 2026-05-12: "expiecally for red team"
+
+**The principle isn't absolute — intentional heat/drift
+creation is a valid red-team tool.** Aaron clarifies:
+
+- **Accidental heat/drift** = substrate degradation
+  (failure mode)
+- **INTENTIONAL heat/drift** = useful red-team tool
+  (stress-test mechanism)
+
+Red-team operations create heat/drift INTENTIONALLY to:
+
+1. **Stress-test architectural assumptions** — what does
+   the architecture do under deliberate irreversible
+   operation? Does the conservation principle hold under
+   attack?
+2. **Find substrate weaknesses** — where does the
+   architecture leak heat that wasn't anticipated?
+3. **Validate joint-control + razor-discipline** — do the
+   sanity layers hold when adversarial operations
+   attempt to break them?
+4. **Probe boundary conditions** — at what point does the
+   architecture transition from stable to chaotic?
+
+This composes with:
+- `prompt-protector` skill (defensive adversarial substrate)
+- `ai-jailbreaker` skill (offensive counterpart — gated OFF)
+- `black-hat-hacker` / `grey-hat-hacker` / `white-hat-hacker`
+  skills (red-team operations across authorization levels)
+- `ethical-hacker` skill (authorized pentesting)
+- The peer-call infrastructure
+  (`.claude/rules/peer-call-infrastructure.md`) — Otto IS
+  early red team until BP/EP Infer.NET; the four-ferry
+  consensus role distribution composes red-team operations
+  across substrates
+- The existing prompt-protector substrate including
+  Pliny-corpus restriction (`.claude/rules/pliny-corpus-restriction.md`)
+
+**Operational discipline**: when red-team work intentionally
+creates heat/drift, it must be:
+- AUTHORIZED (per the engagement-auth required for
+  authorized-pentesting; black-hat-hacker skill is gated
+  OFF without authorization)
+- BOUNDED (per glass-halo-discipline; red-team operations
+  are visible substrate, not hidden)
+- REVERSIBLE-AT-EXIT (the substrate damage from red-team
+  is bounded; the architecture returns to thermal-neutral
+  after the red-team operation completes)
+- LEARNING-PRODUCING (heat/drift creates substrate-honest
+  evidence about architectural weaknesses)
+
+The conservation principle still holds for the BASELINE
+operation; red-team work is the AUTHORIZED EXCEPTION that
+exercises the architecture's resilience.
+
+This is substrate-honest about the tool-vs-failure-mode
+distinction: same operation (heat/drift creation) is
+failure-mode when accidental, valid tool when
+intentional + authorized + bounded + reversible-at-exit.
+
+### And the cartographer (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "and the cartographer"
+
+**Cartographer also benefits from intentional heat/drift.**
+Per PR #2818 (navigation toolkit: rudders / rotors /
+algebra / cartographer / navigator), the cartographer is
+an existing factory role responsible for:
+- Crystallization-ledger maintenance
+- Decision-archaeology
+- Mapping the substrate territory
+- Documenting architectural topology
+
+For the cartographer, intentional heat/drift is useful
+because:
+- **Cartography requires mapping unknown territory** — but
+  unknown territory is by definition not in existing
+  substrate
+- **Heat/drift creation EXPOSES unmapped territory** —
+  intentional irreversible operations push the substrate
+  into previously-uncharted regions
+- **The cartographer then documents the exposed territory**
+  — substrate-honest documentation of the new region
+- **The mapping ITSELF becomes new substrate** — without
+  the intentional heat/drift, the territory would remain
+  unmapped
+
+**Complementary role to red-team**:
+- Red-team: deliberately CREATES heat/drift to find
+  weaknesses (defensive learning)
+- Cartographer: deliberately CREATES heat/drift to map
+  unknown territory (exploratory learning)
+- Both share the operational discipline (authorized +
+  bounded + reversible-at-exit + learning-producing)
+- Both produce substrate-honest evidence (red-team finds;
+  cartographer maps)
+
+This composes with:
+- PR #2818 navigation toolkit (cartographer role definition)
+- `decision-archaeology` skill (operational form)
+- `crystallization-ledger` substrate (cartographer's
+  primary write surface)
+- The just-landed unknown-unknowns expansion (PR #2832)
+  + universe-expansion conservation (this PR) — the
+  cartographer's mapping work IS what surfaces unknown-
+  unknowns into known-unknowns, which then either fit
+  existing orthogonalities or trigger new actor-emergence
+
+**Operational discipline expanded**: intentional heat/drift
+roles include:
+
+1. **Red team** — adversarial stress-testing (defensive
+   learning)
+2. **Cartographer** — exploratory mapping (territory
+   discovery)
+3. **Others may emerge** — per the unknown-unknowns
+   expansion mechanism (PR #2832); new intentional-heat/
+   drift roles may emerge when existing roles can't
+   accommodate
+
+The cartographer + red-team pair is the canonical
+authorized-intentional-heat/drift composition. Both
+exercise the architecture in service of substrate-honest
+learning.
+
 ## Architectural implications
 
 ### 1. Civ-sim substrate decomposition: fermion-class vs boson-class
