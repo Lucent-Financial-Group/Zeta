@@ -32,12 +32,14 @@ Copilot reviews via PR comments + ferries. That's been
 the multi-round review apparatus running all day.
 
 **How to apply:** When Aaron asks about "multi-round review"
-or "bus" or "did we do X over the factory," the default
-operational answer is YES — the factory's PR-with-reviewers
-operation IS the bus. The peer-call CLI wrappers are
-additional infrastructure for specific cross-substrate
-ferries, not the only review surface. Recognize the
-factory-itself as the operational review apparatus.
+or "bus" or "did we do X over the factory," first inspect
+the concrete PR/thread/review state for the named artifact.
+If PR comments, ferries, or named-agent reviews exist, count
+those as the factory bus. If they do not, say that review has
+not happened yet and propose the next substrate-backed review
+step. The peer-call CLI wrappers are additional infrastructure
+for specific cross-substrate ferries, not the only review
+surface.
 
 ## What Aaron said
 

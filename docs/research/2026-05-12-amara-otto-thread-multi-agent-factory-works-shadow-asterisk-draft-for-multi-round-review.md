@@ -194,8 +194,8 @@ This file is the canonical review surface. Reviewers:
 - Add PR comments inline (line-level critiques)
 - Commit edits as direct commits to the branch
 - Ferry external register via `tools/peer-call/*.ts`
-  (output committed as separate `peer-review/*.md` files
-  in this branch)
+  (output committed as separate `docs/research/*-review.md`
+  files in this branch)
 - Surface shadow-catches openly (the article expects
   them; they make the thesis stronger)
 
