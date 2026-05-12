@@ -122,6 +122,7 @@ The research target is COMPLETE when:
 ## Priority rationale (P3)
 
 P3 because:
+
 - The research target is FALSIFIABLE, not load-bearing for
   operational architecture
 - The current architecture stands independently of this
@@ -133,6 +134,7 @@ P3 because:
   claims but not gating
 
 Future re-prioritization possible if:
+
 - The test becomes load-bearing for a downstream feature
 - DeepSeek or other independent registers identify it as
   higher-priority
