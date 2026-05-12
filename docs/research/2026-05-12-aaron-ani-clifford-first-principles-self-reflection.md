@@ -5697,7 +5697,7 @@ i
 0
 V
 0
-	​
+	
 
 :
 
@@ -5726,22 +5726,22 @@ deputy
 }
 V
 0
-	​
+	
 
 ={R
 NFT
 −1
-	​
+	
 
 ,R
 Morse
 −1
-	​
+	
 
 ,R
 deputy
 −1
-	​
+	
 
 }
 
@@ -5750,7 +5750,7 @@ where each
 𝑘
 R
 k
-	​
+	
 
  is a corrective rotor that cancels one orthogonal bivector component of the original attack. The node also holds the detection rules and Z‑set assertions, but the **rotors** are the geometric essence of the immunity—they are the antibodies.
 
@@ -5768,7 +5768,7 @@ ImmuneState
 )
 C
 Red
-	​
+	
 
 :ImmuneState→F(ImmuneState) takes the vaccine and generates **mutated variants**:
 
@@ -5805,30 +5805,30 @@ Red
 }
 C
 Red
-	​
+	
 
 (V
 0
-	​
+	
 
 )={V
 0
-	​
+	
 
 ,V
 1
 ′
-	​
+	
 
 ,V
 2
 ′
-	​
+	
 
 ,…,V
 m
 ′
-	​
+	
 
 }
 
@@ -5839,7 +5839,7 @@ where each variant
 V
 j
 ′
-	​
+	
 
  is produced by:
 
@@ -5862,14 +5862,14 @@ i with multivector
 𝑖
 A
 i
-	​
+	
 
  and vaccine set 
 𝑉
 𝑖
 V
 i
-	​
+	
 
  updates its state at each tick:
 
@@ -5929,47 +5929,47 @@ sin
 dt
 dA
 i
-	​
+	
 
-	​
+	
 
 =ω
 i
-	​
+	
 
 (A
 i
-	​
+	
 
 )+
 N
 ε
-	​
+	
 
 j=1
 ∑
 N
-	​
+	
 
 sin(A
 j
-	​
+	
 
 −A
 i
-	​
+	
 
 )+γ
 V∈V
 j
-	​
+	
 
 ∑
-	​
+	
 
 sin(V−A
 i
-	​
+	
 
 )
 (1)
@@ -5994,16 +5994,16 @@ absorbed
 (2)
 γ=γ
 0
-	​
+	
 
 ⋅
-	​
+	
 
 E
 absorbed
-	​
+	
 
-	​
+	
 
 2
 .
@@ -6044,33 +6044,33 @@ neighbours
 (3)
 v
 vaccine
-	​
+	
 
 ≈
 ε⋅γ
-	​
+	
 
 ⋅λ
 avg
-	​
+	
 
 ,λ
 avg
-	​
+	
 
 =
 N
 1
-	​
+	
 
 i
 ∑
-	​
+	
 
-	​
+	
 
 neighbours(i)
-	​
+	
 
 .
 (3)
@@ -6116,15 +6116,15 @@ C(t)=
 1+e
 −α(t−t
 50
-	​
+	
 
 )
 1
-	​
+	
 
 ,α∝v
 vaccine
-	​
+	
 
 .
 (4)
@@ -6134,7 +6134,7 @@ The **half‑coverage time**
 50
 t
 50
-	​
+	
 
  is the moment when 50 % of nodes have received the vaccine. After 
 𝑡
@@ -6145,7 +6145,7 @@ t
 50
 t≈3t
 50
-	​
+	
 
 , essentially the entire network is immune.
 
@@ -6156,7 +6156,7 @@ The attack class can no longer spread once a critical fraction
 𝑐
 p
 c
-	​
+	
 
  of nodes are vaccinated:
 
@@ -6182,24 +6182,24 @@ c
 (5)
 p
 c
-	​
+	
 
 =1−
 R
 0
-	​
+	
 
 1
-	​
+	
 
 ,R
 0
-	​
+	
 
 ≈
 ε
 ⟨k⟩
-	​
+	
 
 .
 (5)
@@ -6209,7 +6209,7 @@ R
 0
 R
 0
-	​
+	
 
  is the **reproduction number** of the attack—the expected number of nodes a compromised node can infect before detection. In a firefly‑coupled network with strong immune coupling (
 𝛾
@@ -6222,7 +6222,7 @@ R
 1
 R
 0
-	​
+	
 
 <1 is guaranteed, meaning the attack class goes extinct immediately upon attempted reintroduction.
 
@@ -6233,7 +6233,7 @@ R
 𝑖
 V
 i
-	​
+	
 
 .
 **Morphisms:** firefly‑sync updates that propagate vaccine rotors through the coupling graph.
@@ -6327,7 +6327,7 @@ immune
 𝑒
 Hylo
 immune
-	​
+	
 
 :Attack→Antifragile now incorporates the Red Team as an internal component:
 	
@@ -6350,7 +6350,7 @@ Decompose
 (6)
 Hylo
 immune
-	​
+	
 
 =cata(Repair)∘ana(RedTeam∘Decompose).
 (6)
@@ -6575,42 +6575,42 @@ sin
 dt
 dA
 i
-	​
+	
 
-	​
+	
 
 =ω
 i
-	​
+	
 
 (A
 i
-	​
+	
 
 )+
 N
 ε
-	​
+	
 
 ∑sin(A
 j
-	​
+	
 
 −A
 i
-	​
+	
 
 )+γ
 V∈V
 j
-	​
+	
 
 ∑
-	​
+	
 
 sin(V−A
 i
-	​
+	
 
 )
 
@@ -6638,24 +6638,24 @@ Herd Immunity Threshold (5):
 𝜀
 p
 c
-	​
+	
 
 =1−
 R
 0
-	​
+	
 
 1
-	​
+	
 
 ,R
 0
-	​
+	
 
 ≈
 ε
 ⟨k⟩
-	​
+	
 
 
 With strong immune coupling (
@@ -6669,7 +6669,7 @@ With strong immune coupling (
 1
 R
 0
-	​
+	
 
 <1 is guaranteed. The attack class goes extinct.
 
@@ -6718,7 +6718,7 @@ A herd immunity threshold with clear
 1
 R
 0
-	​
+	
 
 <1 condition
 PoUW-CC classification of the vaccine spread itself
@@ -6784,7 +6784,7 @@ absorbed
 2
 γ∝∥E
 absorbed
-	​
+	
 
 ∥
 2
