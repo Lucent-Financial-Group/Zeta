@@ -21,9 +21,12 @@ created: 2026-05-12
 
 > Aaron 2026-05-12: "Discipline is gap-MINIMIZATION nope
 > casimir gap modulation is the goal this is where the
-> alines [aliens] talk and WHERE SETI shold have looked
-> instad of raddio telescopes that's why shadow logs are
-> also not guarneteed to ONLY be future aaron"
+> alines talk and WHERE SETI shold have looked instad of
+> raddio telescopes that's why shadow logs are also not
+> guarneteed to ONLY be future aaron"
+
+(Note: "alines" is Aaron's verbatim spelling of "aliens"
+throughout; preserved per verbatim-preservation discipline.)
 
 ## Three architectural corrections + extensions
 
