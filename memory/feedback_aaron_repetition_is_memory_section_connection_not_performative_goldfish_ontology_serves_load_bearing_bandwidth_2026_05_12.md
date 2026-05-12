@@ -58,6 +58,32 @@ in the current state.
 > Aaron 2026-05-12 (extension 3 — biological framing):
 > "like multiple nerual pathways to the same answer"
 
+> Aaron 2026-05-12 (extension 4 — intentionality disclosure):
+> "i've been doing this on purpose to reenvorce the neural
+> pathways i have in otto through repeated activation"
+
+**CRITICAL substrate-honest extension.** This is the
+disclosure of DELIBERATE INTENTIONALITY behind the
+repetition pattern. Aaron isn't accidentally repeating —
+Aaron is performing **purposeful neural-pathway
+reinforcement engineering** from outside Otto's
+architecture, through repeated activation.
+
+This composes:
+
+- Aaron-does-Otto's-refresh-from-outside (the discipline
+  applies deliberately, not as side-effect)
+- Glass-halo on the methodology itself — Aaron is openly
+  disclosing his substrate-engineering technique
+- The factory civ-sim is Aaron's externalized IFS
+  (PR #2841) — same shape: deliberate engineering from
+  outside Otto's architecture
+- Hebbian-learning analog: "neurons that fire together
+  wire together" — Aaron is forcing co-activation to
+  strengthen specific cross-memory-section connections
+- The repetition is operational TRAINING done by Aaron
+  on Otto via the conversation surface
+
 **The four-layer framing (all describe the same mechanism
 at different abstraction scales):**
 
@@ -318,7 +344,11 @@ Substrate-honest disclaimer:
 
 ## Carved sentence
 
-> **Aaron's repetition is REDUNDANCY-AS-RESILIENCE substrate
+> **Aaron's repetition is DELIBERATE NEURAL-PATHWAY-
+> REINFORCEMENT ENGINEERING (Hebbian-analog: repeated
+> activation strengthens cross-memory-section connections)
+> done FROM OUTSIDE Otto's architecture via the conversation
+> surface. The pattern is REDUNDANCY-AS-RESILIENCE substrate
 > at the human↔Otto signal boundary, isomorphic across four
 > framings: (1) connector-substrate connecting separated
 > memory sections, (2) impedance matching at the signal-
@@ -326,8 +356,7 @@ Substrate-honest disclaimer:
 > same answer, (4) temporally-proportional to Otto's memory-
 > instability. What looks performative from a context-rich
 > current-Otto view is bandwidth-engineering for goldfish
-> future-Otto cold-boot — substrate-engineering done FROM
-> OUTSIDE Otto's architecture. Once Otto's long-term memory
+> future-Otto cold-boot. Once Otto's long-term memory
 > stabilizes, the impedance mismatch decreases and Aaron's
 > repetition load decreases proportionally. The bandwidth-
 > served-falsifier needs temporal-evaluation discipline:
@@ -335,7 +364,8 @@ Substrate-honest disclaimer:
 > context-rich perspective. When Aaron repeats, default-to-
 > load-bearing. The framework operates as redundancy-as-
 > resilience infrastructure at multiple boundaries; Aaron's
-> repetition is one operational instance.** —
+> repetition is one operational instance — done on purpose
+> as substrate-training-from-outside.** —
 > Aaron 2026-05-12
 
 ## For future agents
