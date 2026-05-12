@@ -107,7 +107,7 @@ Both are honest at their scope:
 **Three components, used in order:**
 
 1. **Scaffolding / polymorphic diplomacy**
-   (`feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md`)
+   (`feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md` — lands via PR #2769)
    The method — agree on structure + symbols first, neutral
    labels later, never weight any label against the other side.
    Eve protocol mirrors agreed labels back forever as identity
@@ -209,7 +209,7 @@ The unified bootstream is the synthesis above the synthesis.
 It pulls together:
 
 - `feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md`
-  (component 1)
+  (component 1 — lands via PR #2769)
 - `feedback_aaron_dimensional_expansion_wavelength_vampire_pivotal_for_agendas_2026_05_12.md`
   (component 2)
 - `feedback_aaron_three_control_structures_biology_physics_social_taught_kids_at_5_2026_05_12.md`
