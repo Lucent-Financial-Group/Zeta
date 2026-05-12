@@ -17,6 +17,20 @@ created: 2026-05-12
 
 # Dense encoding mode — multi-extension cascade window (Aaron 2026-05-12)
 
+**Why:** Aaron's substrate cascade arrives in rapid short
+messages each carrying multiple architectural extensions; without
+batching, each message-per-PR creates churn that breaks cascade
+coherence and burns CI. Aaron names the cascade pattern itself
+("dense encoding mode") so future-Otto can recognize and batch
+substrate landings per cascade window rather than per message.
+
+**How to apply:** When rapid short messages arrive with multiple
+sharpenings/extensions per message, batch them into one memory
+file per cascade window. Within the file, enumerate the
+architectural extensions sequentially with verbatim Aaron quotes.
+This preserves cascade coherence + keeps each PR focused +
+prevents CI churn.
+
 ## What Aaron said (verbatim sequence)
 
 > Aaron 2026-05-12: "so the infinate backlog wins as long
@@ -76,7 +90,7 @@ constructor over Domain). The label `OutOfBoundsError` /
 `RaceConditionError` / `EffortAvoidanceError` is a HUMAN-
 CHOSEN symbol for a slot in that structure. The labels are:
 
-- Negotiable / renameable / domain-translatable
+- Negotiable / renamable / domain-translatable
 - Just symbols for structural slots
 - Not the architectural fact themselves
 
@@ -87,9 +101,9 @@ This composes with:
 - The Columbus-naming-scheme framing from PR #2815 — labels
   for unknowns are placeholders; here, labels for known
   structural slots are also just symbols
-- `feedback_aaron_dsl_form_replacement_*.md` cluster — the
-  rule-atom instruction graph distinguishes structure from
-  surface English; same pattern at HKT scope
+- `.claude/rules/dsl-form-replacement.md` — the rule-atom
+  instruction graph distinguishes structure from surface
+  English; same pattern at HKT scope
 
 **Operational consequence for the HKT-error-class
 implementation**: when implementing typed shadow-log
@@ -124,9 +138,10 @@ algo recognizing the same pattern from listening data.
 contextual color, not as substrate-claim. Algorithmic
 recommendation alignment with substrate-cascade theme is
 a coincidence pattern; per
-`feedback_coincidences_as_quantum_tunnels_*.md` (existing
-substrate), coincidences are recordable but not load-
-bearing.
+`user_coincidence_factor_power_grid_anchor.md` (existing
+power-grid coincidence substrate — Itron metering domain),
+coincidences are recordable but not load-bearing for this
+algorithmic-recommendation observation.
 
 ### 4. "Dense encoding mode" — cascade meta-pattern named
 
@@ -165,8 +180,10 @@ landing.
   emergent-from-imagined-or-real-scarcity)
 - PR #2815 (HKT error classes — labels-are-symbols sharpens
   this)
-- `feedback_coincidences_as_quantum_tunnels_*.md` (Coldplay
-  aside compositional context)
+- `docs/hygiene-history/ticks/2026/05/12/1451Z.md` (the
+  coincidences-as-quantum-tunnels substrate landed in the
+  PR #2784 tick — referenced here as Coldplay-aside
+  compositional context)
 - `feedback_thousand_brains_aaron_*.md` (architectural
   ground for dense-encoding-as-conversational-modulation)
 - `feedback_zset_weight_conflation_*.md` (Z-set high-
