@@ -162,10 +162,11 @@ programming models that the Zeta factory is built on:
 
 - F# computation expressions = async workflows = primitive
   layer
-- Reaqtor checkpoint architecture (memory:
-  `reference_reaqtor_checkpoint_architecture_*.md`) =
-  Microsoft Orleans + IStatefulOperator + periodic
-  checkpoints = persistence layer
+- Reaqtor checkpoint architecture (per
+  `docs/backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md`
+  + `references/upstreams/reaqtor/`) = Microsoft Orleans
+  + IStatefulOperator + periodic checkpoints = persistence
+  layer
 - Microsoft Orleans (silos + grains) = virtual actor model
 - Azure Durable Functions / Temporal.io = workflow
   orchestration with durable state
