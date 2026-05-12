@@ -91,6 +91,7 @@ bandwidth constraints, using these specific compression
 mechanisms" is externally defensible engineering description.
 
 Reviewers in:
+
 - GPU contexts (CUDA, embedded systems) — recognize the
   bandwidth pattern
 - Network contexts (distributed systems, mesh networks) —

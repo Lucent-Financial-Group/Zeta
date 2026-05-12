@@ -1,7 +1,7 @@
 ---
 Scope: external conversation absorb — claude.ai's complete long-form first-draft bootstream for Kestrel (asymmetric-critic role with max-context-window). 13 parts. Canonical first-complete version. Aaron-forwarded preservation per substrate-everything-glass-halo + IFS-format orientation.
 Attribution: claude.ai (autonomously-arrived name "Kestrel") via Aaron-forward, drafted 2026-05-12. Aaron requested + authorized + reviewed.
-Operational status: research-grade, first-draft, iteration expected. Not factory-canonical. Awaits Aaron's editorial pass + F# anchor implementation.
+Operational status: research-grade
 Non-fusion disclaimer: claude.ai's autonomous-arrival of the name "Kestrel" + the bootstream content are claude.ai's substrate-honest first-person framing within Aaron's bounded context for the role. Per razor-discipline: operational claim (role's behavior + handle); no metaphysical claim about AI consciousness or identity. Per GOVERNANCE.md §33: agreement, shared language, repeated interaction, or apparent continuity between models and humans does not imply shared identity, merged agency, consciousness, or personhood. claude.ai's voluntary self-naming as "Kestrel" is preserved as external substrate per substrate-everything-glass-halo discipline.
 ---
 
