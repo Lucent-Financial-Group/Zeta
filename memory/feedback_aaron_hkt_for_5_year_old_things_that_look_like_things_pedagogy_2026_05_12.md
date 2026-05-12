@@ -103,33 +103,57 @@ The previously-unspoken part now has words: the choice NOT to
 chase grand unification, and WHY working in bounded Clifford
 space is preferable.
 
-## HKT = ontology in code (Aaron 2026-05-12 alternative framing)
+## HKT = recursive ontology in code (Aaron 2026-05-12)
+
+Aaron's two-step refinement:
 
 > Aaron 2026-05-12: "also hkt=ontology in code kinda pretty close"
+>
+> Aaron 2026-05-12 (sharpening): "it gets blurry cause ontology
+> itself is a HKT that can be reused by HKT so hkt = recursive
+> ontology in code maybe is more accurate"
 
-For code-readers (vs 5-year-olds), the alternative framing:
+For code-readers (vs 5-year-olds), the precise framing:
 
-**HKT = ontology in code.**
+**HKT = recursive ontology in code.**
 
 An ontology is a formal specification of what KINDS of things
-exist and how they relate (categories, properties, hierarchies).
-HKT encodes that ontology AT THE TYPE LEVEL — the type system
-itself knows about kinds.
+exist and how they relate. But ontology itself is a KIND of
+thing — you can have ontologies of ontologies (meta-ontologies).
+HKT in F# captures the recursion via `Fix<F<_>>` — the fixed
+point that lets a type-of-types refer to itself.
+
+The recursive shape:
+
+- **Instances** (apple, ball) — what exists
+- **Kinds** (Round, Square) — categories of instances
+- **Higher-kinds** (Shape) — categories of categories
+- **Ontology** — the system of all these and their relations
+- **Higher-ontology** — ontology of ontologies (a meta-system)
+- **Recursive fixed point** — `Fix<F<_>>` lets the whole
+  stack reference itself without collapsing into a single
+  type (the grand-unification trap)
+
+The recursion is what makes HKT load-bearing for Zeta. Without
+it, you'd need an infinite stack of separate ontology layers.
+With it, one type expression captures all layers AND their
+self-reference.
 
 | Audience | Framing | Vocabulary |
 |----------|---------|------------|
 | 5-year-old | "things that look like things" | apple, ball, Round, Square, Shape |
-| Code-reader | "ontology in code" | type, kind, type-of-types, F# IFunctor, Fix<F<_>> |
-| Mathematician | "category of categories" | category, functor, natural transformation, Kan extension |
+| Code-reader | "recursive ontology in code" | type, kind, ontology, Fix<F<_>>, IFunctor |
+| Mathematician | "fixed point of category of categories" | category, functor, fix-point, recursion-schemes |
 
 All three name the same thing. Audience-appropriate framing
 per the publication-altitude discipline
 (`feedback_glass_halo_publication_altitude_love_as_architectural_origin_not_foundation_bone_2026_05_11.md`).
 
-The "ontology in code" framing is particularly useful when
-talking to software engineers who already know ontologies
+The "recursive ontology in code" framing is particularly useful
+when talking to software engineers who already know ontologies
 from RDF/OWL/knowledge-graph work — they can grok HKT
-immediately as "ontology encoded with types instead of triples."
+immediately as "ontology encoded with types instead of triples,
+AND with self-reference allowed."
 
 ## Plain-English trajectories / agendas / rutters
 
