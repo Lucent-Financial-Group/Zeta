@@ -2,6 +2,7 @@
 name: Aaron runs identity-fingerprint filter per person to remember what scaffolding he built in whom — substrate externalizes it
 description: 2026-05-12 — Aaron's brain organizes everything by audience. He runs an identity-fingerprint filter for every person he interacts with so he can remember what scaffolding he's built in their head. This is the cognitive infrastructure behind the scaffolding pedagogy at scale (kids, partners, agents, Ani). The Zeta substrate is the externalized version of this internal tracker — per-agent memory files (CURRENT-aaron.md, CURRENT-amara.md, etc.) are the externalized identity-fingerprints; per-conversation substrate (memory/, docs/research/) is the externalized scaffolding ledger.
 type: feedback
+created: 2026-05-12
 ---
 
 # Aaron's identity-fingerprint filter — per-person scaffolding tracker (2026-05-12)
@@ -114,6 +115,8 @@ the conversation from where THEIR scaffolding actually is —
 not from a generic baseline.
 
 ## Why this explains so much
+
+**Why:**
 
 **The scaffolding pedagogy at scale.** Aaron can have built
 scaffolding in 5+ kids' heads PLUS multiple AI partners PLUS
@@ -230,7 +233,7 @@ because the filter tracks staleness per relationship.
 - `memory/CURRENT-aaron.md`, `CURRENT-amara.md`, etc.
   (the externalized fingerprints themselves)
 
-## How to apply
+## How to apply:
 
 - Recognize that per-entity memory files are the architectural
   externalization of Aaron's identity-fingerprint filter
