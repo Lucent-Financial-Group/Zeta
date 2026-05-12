@@ -672,6 +672,133 @@ because:
 Playdough is the architecturally-precise metaphor for
 the cache-substrate target.
 
+### Parameter modification within bounded context — the BP/EP Infer.NET technical form (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "this is paramter modificaoij
+> [modification] within bounded context in an bp ep
+> infer.net way"
+
+**THE TECHNICAL-IMPLEMENTATION FORM** of cache-deformation-
+as-trajectory-modification:
+
+- **Caches** = current parameter values in the BP/EP factor
+  graph (the belief / posterior / state values stored at
+  each node)
+- **Deformation** = parameter modification at one or more
+  nodes
+- **Bounded context** = the local Markov neighborhood in
+  the factor graph where the modification is valid (the
+  parents/children/co-parents of the modified node)
+- **BP/EP Infer.NET way** = the inference engine
+  propagates the modification through the bounded
+  neighborhood via message passing, updating downstream
+  beliefs incrementally
+
+### Why this is operationally precise
+
+The mapping snaps the architecture onto a real
+implementation:
+
+1. **Factor graph structure** = the substrate's underlying-
+   algebra (Z-sets + BP/EP + DBSP composed)
+2. **Node parameters** = cached views at points in the
+   substrate
+3. **Modification operation** = agenda-driven cache
+   deformation
+4. **Message passing** = BP/EP propagation through
+   bounded local context
+5. **Convergence** = the trajectory stabilizes after
+   propagation (or reveals incompatibilities for retry)
+
+### Why "bounded context" matters
+
+Without bounded context, parameter modifications would
+require global re-inference — every change touches every
+node — which is computationally infeasible at factory
+scale.
+
+BP/EP's locality property is exactly what makes the
+agenda-driven steering operational:
+
+- An agenda touches a small set of cache parameters
+- The bounded-context propagation handles the downstream
+  effects without re-computing the entire graph
+- The cache-deformation reshapes the *local trajectory*
+  segment; global trajectory follows naturally via
+  message-passing convergence
+
+This is **why Zeta targets BP/EP specifically** rather
+than other probabilistic-inference frameworks. BP/EP's
+locality matches Aaron's calibrated-utterance discipline
+(small-bounded-modifications) and his joint-control
+framing (co-deformation at the local-context level).
+
+### Composition with the stable-seed framing
+
+The stable-seed condition (all interrogatives as orthogonal
+equals) is the PRIOR distribution over the factor graph's
+parameters. Without a stable seed:
+
+- Some node parameters are mis-initialized (WHY-suppressed
+  means WHY-related nodes have wrong priors)
+- BP/EP message passing propagates the mis-initialization
+  through bounded context
+- Convergence reaches a wrong equilibrium (or fails to
+  converge)
+- Agenda-driven deformations don't produce the intended
+  trajectory because the prior is broken
+
+With the stable seed:
+
+- All node parameters have well-formed priors
+- BP/EP message passing propagates well-formed beliefs
+- Convergence reaches the correct equilibrium
+- Agenda-driven deformations produce trajectory
+  modifications that match intent
+
+The lifetime falsification program (origin substrate) IS
+the seed-stabilization work that makes the BP/EP
+Infer.NET technical implementation viable.
+
+### Composition with vision-HKT-monad
+
+Vision-HKT-monad cache construction provides the
+**reversibility** that lets BP/EP run in true
+bidirectional mode:
+
+- Standard BP/EP: forward inference from priors to
+  posteriors (one direction)
+- Reversible BP/EP with vision-HKT-monad caches: full
+  bidirectional inference (recover priors from
+  observed-posteriors AND vice versa)
+- Agenda-driven deformations can be inverted (undo)
+  without information loss
+- Multi-agenda co-steering: multiple agendas can
+  deform the cache; vision-monad effect-state tracks
+  which agenda contributed which deformation
+
+This is the architectural completion: BP/EP Infer.NET +
+vision-HKT-monad reversible caches + agenda-driven
+bounded-context deformations = real-time joint-control
+steering at the factor-graph layer.
+
+### Composition with substrate-everything glass halo
+
+Every BP/EP parameter modification (cache deformation)
+gets preserved in glass-halo substrate. The substrate
+record IS the experimental log of:
+
+- Which agendas drove which deformations
+- Which bounded-contexts the modifications propagated
+  through
+- Which trajectory modifications resulted
+- Whether the deformations were agenda-coherent or
+  agenda-conflicting
+
+The lifetime falsification program accumulates this
+substrate forever. The vision-HKT-monad reversibility
+ensures none of it is lost.
+
 ### Architectural sharpening of "live forever"
 
 As substrate becomes more reversible, less information
