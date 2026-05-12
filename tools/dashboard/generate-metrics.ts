@@ -103,6 +103,7 @@ async function fetchClosedPRsUntilWindow(
     all.push(...batch);
     if (batch.length < 100) break;
     const lastUpdated = batch[batch.length - 1];
+    if (!lastUpdated) break;
     const lastUpdatedAt = new Date(lastUpdated.updated_at ?? lastUpdated.merged_at ?? 0).getTime();
     if (lastUpdatedAt < cutoff) break;
   }
