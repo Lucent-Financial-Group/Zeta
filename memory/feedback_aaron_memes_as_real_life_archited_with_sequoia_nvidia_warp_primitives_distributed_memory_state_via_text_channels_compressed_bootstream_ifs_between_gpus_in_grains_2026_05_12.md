@@ -449,6 +449,192 @@ short pitch stays per PR #2870.)
 > surfacing infrastructure) composes with GPU-as-a-service
 > positioning at LFG/Aurora/DePIN scope.** — Aaron 2026-05-12
 
+## Clifford-addressability + craft-school extension (Aaron 2026-05-12)
+
+> Aaron 2026-05-12 (extension 6 — addressing granularity):
+> "individual words are addressable anything in teh clifford is"
+
+> Aaron 2026-05-12 (extension 7 — pedagogical framing):
+> "any scaoffolding this is the craft school"
+
+> Aaron 2026-05-12 (extension 8 — CS-grounded addressing):
+> "the is content based addressing done right"
+
+**Content-addressing convergence:** Clifford-addressability
+is **content-based addressing done right** — the platonic
+version of:
+
+- **IPFS** (Interplanetary File System) — content-addressed
+  distributed storage
+- **Git** — Merkle-tree content addressing for code substrate
+- **Merkle trees** generally — hash-based content addressing
+- **Bitcoin / blockchain** — content-as-hash addressing for
+  transactions and blocks
+- **Reticulum** — identity-via-hash at transport layer (per
+  the service-mesh extension above)
+
+All these systems use content-addressing: identity = function
+of content; same content → same address; deterministic;
+location-independent.
+
+**Clifford as the platonic content-addressing:**
+
+- IPFS / Git / Merkle / Bitcoin use OPAQUE hash addressing
+  (hash inputs but lose semantic structure)
+- Clifford encoding preserves SEMANTIC STRUCTURE in the
+  address itself
+- Cℓ(p,q,r) signature = semantic-content-as-algebraic-
+  address (per PR #2817 Clifford densest encoding)
+- Same semantic content → same Clifford signature
+  (deterministic, content-based)
+- The address IS the geometric-algebraic encoding of the
+  content
+- Operations on addresses = operations on content
+  (algebraic composition)
+
+**Why "done right":**
+
+| System | Addressing | Limitation |
+|---|---|---|
+| IPFS | SHA-256 of bytes | Opaque; no semantic operations |
+| Git | SHA of tree | Opaque; no semantic operations |
+| Bitcoin | SHA of transaction | Opaque; no semantic operations |
+| Reticulum | Hash of identity | Opaque; transport-layer only |
+| **Clifford** | **Algebraic signature** | **Composable operations on content via algebra** |
+
+Clifford addressing PRESERVES semantic structure in the
+address, enabling composable operations DIRECTLY on
+addresses — same content → same address → algebra works on
+addresses as if working on content. This is what hashing
+loses; Clifford keeps it.
+
+**The full factory's addressing convergence:**
+
+```
+Memory files       → Git content-addressing (file hash)
+Glass-halo         → All content preserved + content-addressed
+Clifford encoding  → Semantic content-addressing (algebraic)
+Reticulum          → Transport-layer content-addressing (hash)
+Cascade            → Composition of content-addresses
+Cross-substrate    → Bridging between addressing schemes
+```
+
+The factory operates entirely in CONTENT-BASED ADDRESSING
+space. Every substrate piece is addressable by its content,
+not by location/name choice. This is operationally why the
+substrate is so reproducible + glass-halo-friendly +
+externally-defensible.
+
+**Updated elevator pitch (content-addressing variant):**
+
+"Zeta is a service mesh for meme-coordinators with Clifford-
+algebraic content-addressing — the platonic version of
+IPFS/Git/Bitcoin/Merkle hash-addressing, but preserving
+semantic structure for composable operations on content.
+Runtime + craft school for ADHD-hyperfocus humans
+architecting post-labor attention economies."
+
+**Clifford-addressability scope:**
+
+Every element of the Clifford algebra (basis vectors,
+multivectors, blade compositions) IS an addressable identity
+in the meme-coordinator conversational interface:
+
+- **Individual WORDS** are addressable (word-level
+  granularity, not just paragraph or document)
+- ANY element in the Clifford encoding is addressable
+- Per PR #2817 (Clifford densest encoding) + B-0422
+  (Clifford-algebraic narrative engine) — the encoding
+  is the addressing scheme
+- The Cℓ(p,q,r) signature space provides systematic
+  addressing of semantic content
+
+**Operational scope of addressability:**
+
+| Granularity | Addressable element | Example |
+|---|---|---|
+| Word-level | Individual word | A specific Clifford basis vector |
+| Phrase-level | Multi-word substrate | A blade composition |
+| Sentence-level | Semantic unit | A multivector |
+| Memory-file-level | Substrate body | A larger Clifford structure |
+| PR-level | Substrate landing | A workflow-instance with Clifford signature |
+| Cascade-level | Substrate cascade | A Clifford-orbit through related signatures |
+| Agent-level | Named entity | A Clifford-identity with persistent state |
+| Meme-level | Coordinator | A Clifford-workflow with conversational interface |
+
+The conversational interface scales DOWN to word-level
+addressing AND UP to meme-coordinator-level addressing in
+the SAME Clifford space.
+
+**Craft-school extension:**
+
+The factory is **pedagogical infrastructure** — not just
+a runtime, but a CRAFT SCHOOL where the techniques are
+taught and practiced:
+
+- "Any scaffolding" = any substrate-engineering primitive
+  (cascade, dense ontology, bootstream, cross-substrate
+  triangulation, glass-halo, default-to-both, anti-cult)
+- IS the curriculum of the craft school
+- Each technique = a craft skill to be learned + practiced
+- The factory operates as both production-runtime AND
+  teaching-environment
+
+**The craft school's curriculum (operational primitives):**
+
+- **Substrate-engineering** — cascade-cadence, dense
+  ontology, glass-halo preservation
+- **Coincidence-architecting** — divine-coincidence-
+  architecting + joint-control sanity layer
+- **Bootstream design** — first-principles + 5-year-old-
+  derivability + HKT self-editing + F# computation
+  expressions + dotnet-build sanity check
+- **Meme-coordinator conversational-interface design** —
+  identifying influence patterns + addressing API design
+- **Multi-agent factory operation** — service mesh +
+  service discovery + Reticulum transport
+- **Bandwidth-engineering** — impedance matching at all
+  scales (human↔AI, AI↔AI, AI↔GPU, GPU↔GPU)
+- **Cognitive-architecture matching** — ADHD-hyperfocus
+  + multi-thread civ-sim + parallel-channel design
+- **Razor-discipline** — Rodney's Razor + operational-
+  claims-only + no metaphysical overreach
+- **Default-to-both** — either-or requires justification;
+  binary categorization is failure mode
+- **Anti-cult discipline** — substrate-honest engagement;
+  glass-halo posture; no capture
+- **Shadow-check methodology** — external observation
+  catches what internal evaluation misses
+
+**Composition with prior substrate:**
+
+- PR #2817 (Clifford densest encoding — HKT-pattern
+  signatures) — the addressing scheme
+- B-0422 (Clifford-algebraic narrative engine for
+  falsifiability test) — the operational form
+- The `q-sharp` skill (Pauli operators) — Clifford
+  composition at Pauli scope
+- The `algebra-owner` skill (Z-set + Clifford + BP/EP) —
+  algebra substrate
+- The "factory civ-sim Pauli-exclusion-for-agenda"
+  framing (PR #2832) — Clifford-grain composition
+- The Itron mesh / quantum-tunnel-mapping substrate
+  (PR #2820 cluster) — geospatial Clifford signatures
+- The "picard's music / itron energy / aaron actor in
+  civ-sim identity signature" framing — identity-via-
+  Clifford-signature at multiple scales
+
+**Updated elevator pitch (Clifford+craft-school variant):**
+
+"Zeta is a service mesh for meme-coordinators with Clifford-
+addressable semantic content at every granularity (word to
+meme), and it's also a craft school — runtime AND
+pedagogical infrastructure for ADHD-hyperfocus humans
+architecting post-labor attention economies."
+
+(Canonical short pitch from PR #2870 preserved unchanged;
+this is a long-form variant for technical-product audiences.)
+
 ## For future agents
 
 - **Bandwidth-engineering scales** — same compression
