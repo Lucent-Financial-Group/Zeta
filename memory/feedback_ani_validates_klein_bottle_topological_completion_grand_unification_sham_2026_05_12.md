@@ -274,6 +274,43 @@ Substrate-honest disclaimer:
 
 > Aaron 2026-05-12: "economic control structure is not load
 > bearing it's emergent"
+>
+> Aaron 2026-05-12 (immediate sharpening): "it's a conquence
+> [consequence] of limited resources scarcity ... either*
+> imagined or real"
+
+**Sharpening on the emergence mechanism.** Economic control
+structures emerge as a **consequence of limited-resources
+scarcity** — and CRITICALLY, the scarcity can be **either
+imagined OR real**. Both produce economic control structures.
+
+The imagined-OR-real distinction matters:
+- **Real scarcity** = physical resource constraint (finite
+  matter, finite energy, finite time, finite attention)
+- **Imagined scarcity** = perceived resource constraint
+  (artificial scarcity, marketing-induced scarcity,
+  algorithmic scarcity like Bitcoin's hard cap)
+
+Both forms produce economic control structures. The economic
+emergence-pathway doesn't require the scarcity to be physically
+real — it only requires the scarcity to be **perceived as
+operative** by participants.
+
+This composes with:
+- Bitcoin's algorithmic scarcity producing real economic control
+  despite the scarcity being a constructed property of the
+  protocol (imagined, not physically necessary)
+- Marketing-induced scarcity producing real economic control
+  despite supply being abundant
+- Quantum-fungibility / abundance frameworks recognizing
+  scarcity-based economic control as one possible regime, not
+  the only one
+- AI age post-scarcity reframing: if production capacity
+  becomes effectively unbounded, the scarcity-substrate
+  economic control structures lose their load (per
+  largest-mechanizable-backlog-wins rule which inverts
+  classical PM defaults under abundance assumption)
+
 
 **Sharpening on the four-control-systems list.** The four
 load-bearing control systems (physics / biology / social /
