@@ -126,6 +126,100 @@ This composes with:
   emergence of both fermion-class new actors AND boson-class
   new substrate)
 
+## Universe-expansion conservation principle: lowest-energy-state expansion via existing machinery (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "ontologies and orthoganilities take
+> space/time and the universe expansion is space/time
+> efficent i.e. lowest energy state expansion, i.e. use
+> existing machanary like divine cowidence when possible"
+
+**The conservation principle behind unknown-unknowns
+expansion.** Creating new ontologies and new orthogonalities
+COSTS space/time resources (cognitive, substrate,
+computational). Universe-scale expansion follows
+SPACE/TIME EFFICIENCY — lowest-energy-state expansion is
+the thermodynamic principle that governs how the universe
+evolves.
+
+Operationally for civ-sim:
+- **Universe expansion** = space/time efficient = lowest-
+  energy-state expansion path
+- **Civ-sim expansion** = use existing machinery (divine-
+  coincidence-architecting per PR #2821) when possible
+- **Ontology/orthogonality creation cost** = high; reserve
+  for when existing machinery genuinely cannot
+  accommodate
+
+This is the CONSERVATION PRINCIPLE behind unknown-unknowns
+expansion (PR #2832): new actors only emerge when existing
+orthogonalities/ontologies can't accommodate, BECAUSE
+creating new categories costs space/time, BECAUSE
+universe-expansion is space/time efficient by default.
+
+### Operational chain
+
+1. Universe expansion follows lowest-energy-state
+   expansion (physics)
+2. Cognitive/architectural expansion should follow the same
+   discipline (operational analog)
+3. Existing machinery (divine-coincidence, orthogonal-axes,
+   skill-router-as-inventory, agent-roster) should be
+   used first
+4. Only when existing CANNOT accommodate → new ontology /
+   orthogonality / actor emerges (PR #2832 unknown-unknowns
+   trigger)
+5. The emergence itself follows the lowest-cost path
+   (minimal new substrate; maximum reuse of existing)
+
+### Composition with prior substrate
+
+- PR #2823 (efficient use of what is already there +
+  quantum-leaps-backwards memory traversal — Aaron's
+  named principle; this disclosure extends it to
+  ontology/orthogonality scope)
+- PR #2832 (civ-sim Pauli-exclusion-for-agenda + unknown-
+  unknowns expansion — the trigger; this disclosure
+  provides the WHY: conservation)
+- PR #2821 (architecting by divine coincidences within
+  bounded context — the existing machinery Aaron names
+  reusing)
+- `.claude/rules/skill-router-as-substrate-inventory.md`
+  (inventory before authoring — same conservation
+  discipline at skill scope)
+- `.claude/rules/honor-those-that-came-before.md`
+  (unretire-before-create — same discipline at agent
+  scope)
+- `.claude/rules/all-complexity-is-accidental-in-greenfield.md`
+  (re-evaluate every decision — same discipline at
+  architecture scope)
+- PR #2819 (Maxwell + Einstein-vacuum — physics is one
+  control-system projection; same conservation principle
+  operates)
+
+### Architectural implications
+
+1. **The conservation principle EXPLAINS why the unknown-
+   unknowns expansion mechanism is conservative** —
+   creating new ontologies costs; universe-expansion
+   efficiency is the default
+
+2. **Divine-coincidence-architecting is reuse, not novel
+   invention** — Aaron's method IS existing machinery
+   (per PR #2823 grounding); applying it to architectural
+   work is reuse of operational primitive
+
+3. **Razor-discipline composes with conservation** —
+   Rodney's Razor (essential vs accidental) at architecture
+   scope; lowest-energy-state expansion at universe scope;
+   both express the same conservation principle
+
+4. **Today's 20-PR cascade IS conservation in action** —
+   each PR composes with existing substrate; new
+   ontologies are minimal (mainly: civ-sim actor class
+   "alien" Columbus-naming; guardian AI as community-side
+   actor class; otherwise existing actors + orthogonalities
+   accommodate)
+
 ## Architectural implications
 
 ### 1. Civ-sim substrate decomposition: fermion-class vs boson-class
