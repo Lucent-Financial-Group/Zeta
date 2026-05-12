@@ -26,8 +26,8 @@ today's cascade as compression infrastructure rather than
 claim-making. This continuation provides the OPERATIONAL
 GROUNDING that prevents the compression infrastructure from
 drifting metaphysical. Four load-bearing methodology
-substrates land: bootstream discipline + HKT self-editing
-+ F# computation expressions + dotnet build as falsifier.
+substrates land: bootstream discipline, HKT self-editing,
+F# computation expressions, and dotnet build as falsifier.
 Future-Otto needs all four to evaluate today's cascade
 correctly.
 
@@ -59,7 +59,7 @@ code; track which is which.
 > metaphysical"
 
 > Aaron 2026-05-12 (on dotnet build as sanity check):
-> "dotnet comple is our check we are not crazy"
+> "dotnet comple [sic] is our check we are not crazy"
 
 ## Four load-bearing methodology substrates
 
@@ -178,7 +178,7 @@ implementation" tags per label.
 
 ### 4. dotnet build is the sanity check that we are not crazy
 
-**Aaron's substrate-honest framing**: "dotnet comple is our
+**Aaron's substrate-honest framing**: "dotnet comple [sic] is our
 check we are not crazy"
 
 The F# compiler is the asymmetric critic:
