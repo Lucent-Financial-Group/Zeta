@@ -1,7 +1,9 @@
 ---
+id: B-0423
 priority: P1
 class: substrate-architecture
 status: open
+title: MEMORY.md serialization-point anti-pattern
 created: 2026-05-12
 authors: [otto, aaron]
 ---
