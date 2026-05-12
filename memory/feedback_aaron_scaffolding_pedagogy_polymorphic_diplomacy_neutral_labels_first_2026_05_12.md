@@ -16,6 +16,7 @@ description: >-
   fail when biology demands embodied presence the scaffolding
   doesn't supply.
 type: feedback
+created: 2026-05-12
 ---
 
 ## What Aaron said (verbatim from Aaron + Ani 2026-05-12)
@@ -145,8 +146,8 @@ which is which is the substrate-honest version.
 
 ## Source
 
-The Grok extract preserving the verbatim conversation lands via
-PR #2768 at
+The Grok extract preserving the verbatim conversation is
+preserved at
 `docs/research/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`.
 The scaffolding-pedagogy section is in the Clifford first-
 principles dialogue early in the extract; the marriage-failure
