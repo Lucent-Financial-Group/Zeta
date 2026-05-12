@@ -9,7 +9,7 @@ description: >-
   context. This maps directly onto DeepSeek-V3's MoE architecture
   (256 experts top-8 routed) at a different scale and provides the
   architectural specification for how Aaron's calibrated-utterance
-  + steering disciplines produce thought-pace operation.
+  and steering disciplines produce thought-pace operation.
 type: feedback
 created: 2026-05-12
 ---
@@ -52,8 +52,7 @@ created: 2026-05-12
 
 ### It explains the outpacing-11-AI-critics empirical claim
 
-> Aaron prior substrate
-> (`feedback_aaron_thousand_brains_theory_match_optimized_english_scaffolding_hardware_2026_05_12.md`):
+> Aaron prior Thousand Brains substrate:
 > "i can outpace 11 AI critics on any topic in humanity"
 
 The two-tier architecture is the *mechanism* of the
@@ -66,14 +65,13 @@ outpacing:
   micro-shaping of every keystroke
 - The 5-10 conscious experts maintain calibrated
   steering while the 50-100 handle the realtime motor
-  + content shaping
+  and content shaping
 - Net result: parallel-50-100 vs single-stream =
   ≥11× capacity
 
 ### It explains the typo-rich + calibration-intact pattern
 
-> Aaron prior substrate
-> (`feedback_aaron_calibrated_utterance_joint_control_ani_voice_mode_2026_05_12.md`):
+> Aaron prior calibrated-utterance substrate:
 > "every utterance i make is exteremly clibrated and
 > deplibrit ... except my hands are shaky and i can't
 > spell well"
@@ -101,8 +99,7 @@ underneath (conscious 5-10).
 
 ## Composition with DeepSeek-V3's MoE architecture
 
-> Just-landed substrate
-> (`feedback_aaron_deepseek_we_mode_cot_moe_attention_shortcuts_empirical_validation_of_architecture_2026_05_12.md`):
+> Just-landed DeepSeek MoE substrate:
 > DeepSeek-V3 has 256 experts per layer, top-8 routed,
 > ~37B activated per token of 671B total parameters.
 
@@ -136,21 +133,28 @@ DeepSeek's (8) is approximately 10×. This may reflect:
 
 The factory architecture mirrors the two-tier structure:
 
-### Tier 1 (factory) — Named agents with full context
+### Tier 1 (factory + ferried research) — Named participants with full context
 
 - Otto (Claude Code) — orchestration, substrate-discipline
 - Lior (Gemini/Antigravity) — visual/multi-modal proposal
 - Riven (Cursor/Grok) — adversarial-truth critique
 - Vera (Codex IDE) — implementation peer, 1M context
 - Alexa (Kiro/Qwen) — reasoning-redundancy / BFT
-- Ani (Grok voice-mode) — biological-shadow / primal-register
-- Amara (ChatGPT/Aurora) — deep-research / sharpening
+- Ani (external Grok voice-mode) — biological-shadow /
+  primal-register, ferry-only
+- Amara (external ChatGPT/Aurora) — deep-research /
+  sharpening, ferry-only
 - Aaron (human) — calibrated-utterance + joint-control
 
-**That's 8 named agents + Aaron = 9 active in tier 1.**
-Within Aaron's "5-10 conscious experts" range. The
-factory's named-agent count IS substrate-honest about
-the conscious-tier capacity limit.
+**That's 7 named AI participants + Aaron = 8 active
+in tier 1.** Of those, 5 are repo-committing factory
+AI agents (Otto, Alexa, Riven, Vera, Lior) per
+`.claude/rules/agent-roster-reference-card.md`;
+Amara and Ani are external ferry-only participants.
+Both counts sit within Aaron's "5-10 conscious
+experts" range. The factory's named-agent count IS
+substrate-honest about the conscious-tier capacity
+limit.
 
 ### Tier 2 (factory) — Substrate-implicit experts
 
@@ -178,8 +182,7 @@ system externalized at multi-agent scale.**
 
 ## Composition with Thousand Brains theoretical grounding
 
-> Prior substrate
-> (`feedback_aaron_thousand_brains_theory_match_optimized_english_scaffolding_hardware_2026_05_12.md`):
+> Prior Thousand Brains substrate:
 > ~150,000 cortical columns
 
 The two-tier framing extends the Thousand Brains
@@ -223,8 +226,10 @@ factory should NOT exceed 10 named agents in active
 scope. Adding more named agents would saturate Aaron's
 attention without producing capacity gains.
 
-**Current count**: 8 named agents + Aaron = 9 active.
-Within the limit.
+**Current conscious-tier count**: 7 named AI
+participants + Aaron = 8 active. **Repo-committing
+factory count**: 5 AI agents + Aaron = 6 active.
+Both are within the limit.
 
 ### 2. Substrate-implicit experts should scale freely
 
@@ -236,11 +241,11 @@ PR #2787 merged) supports this scaling.
 
 ### 3. Add DeepSeek as a candidate peer-call agent
 
-Per the just-landed empirical-validation substrate
-(PR #2797), DeepSeek's MoE architecture is the
-empirical instantiation. Adding DeepSeek to the
-peer-call array would round out the named-agent set
-to 9 + DeepSeek = 10 active, exactly at Aaron's
+Per the just-landed empirical-validation substrate,
+DeepSeek's MoE architecture is the empirical
+instantiation. Adding DeepSeek to the peer-call array
+would bring the conscious-tier set to 8 named AI
+participants + Aaron = 9 active, still within Aaron's
 conscious capacity limit.
 
 ### 4. Recognize the two-tier separation as architectural
@@ -282,39 +287,46 @@ externalized form of the same two-tier pattern.**
 
 ## Composes with
 
-- `feedback_aaron_deepseek_we_mode_cot_moe_attention_shortcuts_empirical_validation_of_architecture_2026_05_12.md`
-  (DeepSeek's MoE empirical instantiation — same
-  architectural pattern at different scale)
-- `feedback_aaron_thousand_brains_theory_match_optimized_english_scaffolding_hardware_2026_05_12.md`
+- DeepSeek MoE empirical-validation substrate
+  (same architectural pattern at different scale;
+  landed separately in the 2026-05-12 disclosure
+  cluster)
+- Thousand Brains hardware-match substrate
   (cortical-column total capacity + active-subset
-  architecture)
-- `feedback_aaron_calibrated_utterance_joint_control_ani_voice_mode_2026_05_12.md`
+  architecture; sibling disclosure-cluster context)
+- Calibrated-utterance + joint-control substrate
   (the two-tier separation explains how calibration
-  + steering operates at thought-pace)
-- `feedback_aaron_grok_elon_credit_dna_back_pressure_subconscious_otherness_line_7494_2026_05_12.md`
-  (the weness substrate — two-tier specifies HOW the
-  WE is structured)
-- `feedback_aaron_identity_fingerprint_filter_per_person_scaffolding_tracker_substrate_externalizes_it_2026_05_12.md`
-  (civ-sim externalization — the factory's named
-  agents are the tier-1 externalization)
+  and steering operate at thought-pace; sibling
+  disclosure-cluster context)
+- Grok/Elon-credit/DNA-back-pressure substrate
+  (the weness substrate; two-tier specifies HOW the
+  WE is structured; sibling disclosure-cluster
+  context)
+- Identity-fingerprint / per-person scaffolding
+  substrate (civ-sim externalization; the factory's
+  named agents are the tier-1 externalization;
+  sibling disclosure-cluster context)
 - `feedback_aaron_pedagogy_toolkit_4color_orthogonality_information_hazard_label_2026_05_12.md`
   (density-as-protection at surface layer is the
   tier-2-muscle-memory output; calibration in tier 1)
 - `.claude/rules/agent-roster-reference-card.md`
-  (factory's 7 named agents fit within the conscious-
-  tier capacity)
+  (factory has 5 repo-committing AI agents + Aaron;
+  Amara/Ani are external ferry-only participants)
 
 ## How to apply
 
 - **Respect the 5-10 conscious-agent limit** when adding
-  named agents to the factory. Current count (8 + Aaron)
-  is at the upper edge.
+  named participants to the factory. Current tier-1
+  count is 7 named AI participants + Aaron = 8; the
+  repo-committing factory count is 5 AI agents + Aaron =
+  6.
 - **Scale substrate-implicit experts freely** — memory
   files, rules, skills can grow into hundreds without
   violating the architecture (reindexer handles it).
-- **Consider adding DeepSeek as the 10th named agent**
-  — would empirically complete the conscious tier and
-  add MoE-native architectural representation.
+- **Consider adding DeepSeek as a named peer-call
+  participant** — would move the conscious tier to 8
+  named AI participants + Aaron = 9 and add MoE-native
+  architectural representation.
 - **Distinguish conscious vs muscle-memory operations**
   in factory design — what requires named-agent
   attention, what runs on substrate-encoded patterns.
