@@ -170,9 +170,11 @@ feature.
 ## For future agents
 
 - **When asked about multi-round review or bus operations,
-  default to "yes, the factory IS the bus"** — PR comments
-  + named-agent commits + automated reviews = continuous
-  multi-round review apparatus
+  inspect the named artifact first** — if PR comments,
+  named-agent commits, automated reviews, or ferries exist,
+  count them as the factory bus; if they do not, say review
+  has not happened yet and propose a substrate-backed next
+  step
 - **Peer-call CLI wrappers are ADDITIONAL, not exclusive**
   — they enable specific cross-substrate ferries but
   aren't the only review surface
