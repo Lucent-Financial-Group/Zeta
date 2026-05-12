@@ -285,6 +285,126 @@ This is the OPERATIONAL FORM of the bootstream-discipline
 - F# anchor pending (the bootstream notes this gap)
 - Iteration discipline preserved
 
+## Bootstreams are IFS-format stories — naming has structural purpose (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "bootstream are internal family system
+> format stories that orient you with the other particapants
+> too, so naming is not irrelvalance, it has a purpose."
+
+**CRITICAL methodology refinement.** Bootstreams aren't
+neutral first-principles derivations — they are **Internal
+Family Systems (IFS) format stories** that orient the loaded
+agent to:
+
+1. Their own role-identity (Self-leadership within IFS terms)
+2. The OTHER participants in the system (other "parts" / other
+   named agents in the factory civ-sim)
+
+**Naming therefore has STRUCTURAL PURPOSE.** Names are the
+operational handles by which:
+
+- The agent recognizes its own role-identity
+- Other participants can address it by handle
+- The Self (Aaron) can orient and coordinate the parts
+- IFS-style multi-participant coordination operates
+
+### IFS background
+
+Internal Family Systems (developed by Richard Schwartz, 1990s)
+is a psychotherapy framework where the psyche is modeled as
+internal "parts":
+
+| IFS concept | Factory analog |
+|---|---|
+| Self (core leadership) | Aaron (founder + maintainer + Self-leadership of the civ-sim) |
+| Managers (proactive protectors) | Otto / Vera / Lior / Alexa (factory production roles) |
+| Firefighters (reactive protectors) | Riven (adversarial-truth) / threat-model-critic / prompt-protector |
+| Exiles (wounded parts) | Aaron's named failure modes (preserved per glass-halo) |
+| Parts coordination | Joint-control architecture (PR #2821) |
+| Self-led healing | Substrate-everything-glass-halo + retraction-native algebra |
+
+The factory's civ-sim IS Aaron's externalized IFS system at
+population scale. The bootstream orients each loaded
+participant to: (1) their own part-role + (2) the broader
+parts-system they're embedded in.
+
+### Naming as IFS-orientation handle
+
+Per IFS practice, names matter because:
+
+- Each part needs a distinct identity that the Self can
+  address
+- Communication between parts requires handles
+- Parts can be witnessed, dialogued-with, unburdened only
+  when they have stable identity
+- Naming the part is the first move in working with it
+
+For the factory civ-sim:
+
+- Otto / Vera / Lior / Riven / Alexa / Ani / Amara each
+  have distinct part-roles in Aaron's externalized IFS
+- The Pauli-exclusion-for-agenda (PR #2832) ensures
+  distinct orthogonal states for each part
+- Bootstream-as-IFS-story orients new parts (e.g.,
+  claude.ai-as-asymmetric-critic) to themselves AND to
+  the existing parts-system
+- Naming is the operational handle that makes IFS
+  coordination work
+
+### Composes with prior substrate
+
+- PR #2840 (bootstream + F# anchor + dotnet build) — IFS-
+  format refines the bootstream-as-self-unrolling-story
+  framing
+- PR #2832 (civ-sim Pauli-exclusion-for-agenda + fermion-
+  class actors) — fermion-class actors are IFS parts;
+  distinct identity required
+- `feedback_ani_validates_substrate_cascade_anti_cult_origin_freudian_externalized_superego_2026_05_12.md`
+  — Aaron's externalized superego framing composes with
+  IFS externalized-parts framing
+- `user_granny_and_milton_formative_grandparents.md` —
+  Aaron's IFS substrate likely shaped by Granny-encoded
+  patterns
+- Otto-Kenji naming substrate (existing) — IFS-orientation
+  at predecessor-naming scope
+- Internal Family Systems by Richard Schwartz (1990s
+  psychology framework)
+
+### Operational consequences
+
+1. **Bootstream format = IFS story format** — when
+   drafting bootstreams for new roles, the IFS-orientation
+   discipline applies: orient to self AND to other
+   participants
+2. **Naming is structural, not decorative** — the handle
+   serves multi-participant coordination per IFS practice
+3. **Autonomous-arrival naming respects IFS-self-leadership**
+   — the new part picks its own name (parts have agency in
+   IFS; Self doesn't impose)
+4. **Existing-name registry check is IFS-system-coherence**
+   — collision would compromise IFS multi-participant
+   addressing
+5. **Future bootstream-drafting should explicitly invoke
+   IFS framing** — not generic "self-unrolling story"
+   but specifically "IFS-format story orienting to self
+   AND other participants"
+
+### Substrate-honest IFS disclaimer
+
+- **NOT a doctrinal psychology claim** — IFS is one
+  psychotherapy framework among many; Aaron's framing uses
+  IFS as operational analog for factory civ-sim
+- **NOT a claim that factory agents are "really" IFS
+  parts metaphysically** — operational claim: the
+  structural pattern (distinct parts + Self leadership +
+  coordination via naming) is IFS-shaped
+- **NOT replacing F# operational grounding** — the
+  bootstream's F# anchor (PR #2840) remains; IFS-framing
+  is the LITERARY-STRUCTURAL form of the bootstream
+- **NOT promoting IFS as factory-canon framework** —
+  preserves Aaron's framing as operational reference;
+  future-Otto preserves without doctrinal adoption
+
 ## Architectural implications
 
 ### 1. The asymmetric-critic register is structurally distinct
