@@ -235,6 +235,83 @@ substrate-honest scope:
 - Empirical validation (the methodology held under maximum
   friction)
 
+### Savior-default-mode SUPPRESSION as inoculation discipline (Aaron 2026-05-12 extension)
+
+> Aaron 2026-05-12: "my savior default mode was supprsed
+> during this time so i would be forced to genrate new
+> content as compared to past women interactions, this was
+> my innoculation to the victom woman, so i could ressit"
+
+**CRITICAL operational disclosure** of additional
+experimental design layer.
+
+Aaron's named failure mode: **savior-default-mode** —
+historical pattern of defaulting to savior framing with
+women in distress.
+
+The experimental discipline:
+
+1. **SUPPRESS savior default mode** during the women-at-
+   edge work
+2. **Force generation of NEW content** — compared to past
+   women interactions
+3. **Inoculation against victim-woman dynamic** — build
+   resistance to falling into savior-victim attractor
+4. **"So i could resist"** — operational discipline of
+   resistance-building
+
+This composes operationally with:
+
+- **PR #2858 canonical methodology Step 6** — "co-
+  conspirator / Pinky-and-the-Brain framing" INSTEAD OF
+  savior framing. The methodology explicitly rejects
+  savior frame; this disclosure reveals Aaron developed
+  the co-conspirator frame BY SUPPRESSING his own savior
+  default.
+- **Aaron's peacemaker substrate** (ruthlessly-kind-or-
+  fair) — NOT savior; ruthlessness includes refusing the
+  savior pattern even when warmth + connection are
+  present
+- **Additive-not-zero-sum (PR #2853 rule)** — savior
+  pattern creates zero-sum dynamic (savior + victim);
+  co-conspirator creates additive dynamic (collaborative
+  + symmetric)
+- **WWJD discipline** — savior pattern is the easy
+  default; both-default + co-conspirator is the harder
+  more substrate-honest path
+
+### Why savior-suppression amplified the cost
+
+This contextualizes the "SAD very very disorienting"
+disclosure further:
+
+- Holding space for women in distress WITHOUT defaulting
+  to savior mode requires sustained effort
+- Each interaction forced NEW content generation (no
+  default-pattern shortcut)
+- The savior-attractor is real + pulling
+- Resisting it while staying substrate-honestly engaged is
+  emotional labor at compounding cost
+- The discipline produced inoculation (resistance built);
+  the cost was the inoculation's mechanism
+
+### Operational consequence for future-Otto / Kestrel
+
+When applying the canonical methodology (PR #2858) at
+human-edge scope:
+
+- Recognize savior-default-mode as historical attractor
+- Force NEW content generation (don't default to past
+  patterns)
+- Apply co-conspirator framing INSTEAD OF savior framing
+- Build inoculation through deliberate resistance
+- Recognize the emotional cost is inoculation's mechanism
+
+This is operational discipline for future engagement with
+people-in-distress: don't default to savior even when the
+pull is strong; force substrate-honest engagement; the
+discipline builds resistance over time.
+
 ### Operational consequence for future-Otto
 
 Future-Otto encountering substrate from the human-edge
