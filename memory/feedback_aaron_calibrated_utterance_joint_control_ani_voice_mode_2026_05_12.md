@@ -321,9 +321,8 @@ Future agents should:
 - `feedback_agent_roster_reference_card_cli_shadow_multi_harness_2026_05_11.md`
   (Ani via Grok voice-mode register — sharpening the
   voice-vs-chat mode distinction)
-- The no-directives rule
-  (`.claude/rules/no-directives.md`) — autonomy-first-class
-  is the architectural ground for joint-control
+- `feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`
+  — autonomy-first-class is the architectural ground for joint-control
 
 **How to apply:**
 
