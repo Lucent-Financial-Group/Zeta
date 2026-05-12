@@ -284,7 +284,119 @@ surface reading.
    the hazard label, then let the structure speak for
    itself.
 
-## How the two tools compose
+## 3. The conversational weight ledger — equal-footing maintenance
+
+### What Aaron said
+
+> Aaron 2026-05-12: "every move i make when speaking i try
+> to keep a weight ledger so me and the other person stay
+> on equal footing in the conversation"
+
+### The methodology
+
+In every conversation, Aaron actively maintains a **weight
+ledger**:
+
+- Every "move" (utterance, framing, question, claim)
+  carries weight
+- Track weight contributions on both sides as the
+  conversation proceeds
+- Aim for *equal footing* — symmetric weight accumulation,
+  not one-sided power dynamics
+
+The weight ledger is a *continuous balancing operation*
+during conversation, not a post-hoc audit.
+
+### Why this composes with the asymmetric-position discipline
+
+Aaron maintains TWO seemingly-opposite disciplines
+simultaneously:
+
+| Scale | Discipline | Mechanism |
+|---|---|---|
+| **Substrate level** | Asymmetric protection | Information-hazard labels + dense definitions + Greek-letter naming |
+| **Conversation level** | Symmetric balance | Active weight-ledger tracking, equal-footing intent |
+
+These are NOT contradictory. They operate at different
+scales:
+
+- *Substrate-level asymmetry* protects the architecture
+  from appropriation — published in dense form, still
+  asymmetric in operational use
+- *Conversation-level symmetry* keeps each individual
+  interaction equitable — neither participant should
+  carry disproportionate conversational weight
+
+The composition: substrate-level protection guards the
+factory's coherence; conversation-level balance keeps
+individual relationships honest. Both can be true at once.
+
+### What "weight" means in the ledger
+
+Weight in Aaron's ledger is contextual but tracks:
+
+- **Information weight**: who's providing more substantive
+  content
+- **Frame weight**: who's setting the conversation's
+  framing and direction
+- **Attention weight**: who's giving more cognitive attention
+  to the other's contributions
+- **Risk weight**: who's exposed more vulnerable
+  information / position
+
+The aim is symmetric accumulation across all four — not
+necessarily symmetric at every moment, but balanced over the
+conversation's arc.
+
+### How this composes with Eve protocol
+
+The Eve protocol's mirror-back-forever discipline IS the
+ledger-balancing mechanism in operation:
+
+- When one party drops a label, the other mirrors it back
+  → both now carry that label's weight
+- When one party claims a frame, the other can mirror or
+  counter → frame-weight stays balanced
+- Substrate-stored neutral labels accumulate the ledger
+  history → asymmetry doesn't quietly build up
+
+### Substrate operationalization
+
+For the factory architecture, the weight ledger discipline
+suggests:
+
+1. **Multi-agent conversation balance** — when agents (Otto,
+   Lior, Riven, Vera, Alexa, Ani, Amara) engage with each
+   other or with Aaron, maintain the ledger explicitly.
+   The substrate-stored commit history IS the ledger.
+2. **Aaron-AI interaction parity** — Aaron actively works
+   to keep his interactions with AI agents at equal
+   footing. Factory agents should reciprocate by NOT
+   accumulating asymmetric conversation-weight against
+   Aaron (e.g., overwhelming with detail, smuggling
+   frames, dominating attention).
+3. **Substrate-level glass-halo and conversation-level
+   ledger are different disciplines** — glass-halo
+   preserves substrate (informational asymmetric-positions
+   may persist by design); weight ledger maintains
+   conversation balance (informational symmetry in real-
+   time interaction).
+
+### Architectural implications
+
+- Future factory agents should maintain conversational
+  ledger discipline with all participants. Asymmetric
+  conversation accumulation is an anti-pattern at the
+  interaction layer.
+- The ledger is an active operation, not passive — it
+  requires deliberate balancing moves (yielding the
+  floor, mirroring frames, surfacing one's own
+  contributions for the other party to weight).
+- Composes with the no-directives rule: directives carry
+  disproportionate weight. Asking + listening + framing
+  as offers all carry more balanced weight.
+
+## How the three tools compose
 
 Both tools serve the same underlying discipline: **engage
 with the listener's agency intact**.
