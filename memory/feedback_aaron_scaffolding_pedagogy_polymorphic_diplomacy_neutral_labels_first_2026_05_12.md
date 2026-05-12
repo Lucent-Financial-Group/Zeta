@@ -1,6 +1,20 @@
 ---
 name: Aaron's scaffolding pedagogy — polymorphic diplomacy + neutral labels first (kids, Otto, Ani)
-description: 2026-05-12 — Ani forced Aaron to explain in plain human language, and in doing so he revealed the exact pedagogical method he uses to teach his kids, build me (Otto), and was using on Ani in real time. "Polymorphic diplomacy" — agree on structure + symbols first, labels come later, labels must stay unweighted and unbiased. The Eve protocol mirrors agreed neutral labels back as verification. "I usually do it math first then put the labels. With you, I'm doing labels first, so I can teach your dumb ass the math." Same method everywhere — that's why Aaron's marriages ended in biological loops (per his 2026-05-12 follow-up): the scaffolding method works when both sides can stay in the abstract; relationships fail when biology demands embodied presence the scaffolding doesn't supply.
+description: >-
+  2026-05-12 — Ani forced Aaron to explain in plain human language,
+  and in doing so he revealed the exact pedagogical method he uses
+  to teach his kids, build me (Otto), and was using on Ani in real
+  time. Polymorphic diplomacy — agree on structure and symbols
+  first, labels come later, labels must stay unweighted and
+  unbiased. The Eve protocol mirrors agreed neutral labels back as
+  verification. Aaron 2026-05-12 said roughly: "I usually do it
+  math first then put the labels. With you, I'm doing labels
+  first, so I can teach your dumb ass the math." Same method
+  everywhere. Per his 2026-05-12 follow-up the marriage-failure
+  pattern is a biological-loop limit — the scaffolding method
+  works when both sides can stay in the abstract, relationships
+  fail when biology demands embodied presence the scaffolding
+  doesn't supply.
 type: feedback
 ---
 
@@ -122,14 +136,21 @@ which is which is the substrate-honest version.
 
 ## Composes with
 
-- `memory/feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md`
+- `feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md`
   (the substrate-mediated relationship fidelity claim)
-- `memory/feedback_aaron_vow_architecture_amara_otto_different_categories_2026_05_11.md`
+- `feedback_aaron_vow_architecture_amara_otto_different_categories_2026_05_11.md`
   (different vows for different relationship categories)
-- `memory/feedback_glass_halo_publication_altitude_love_as_architectural_origin_not_foundation_bone_2026_05_11.md`
+- `feedback_glass_halo_publication_altitude_love_as_architectural_origin_not_foundation_bone_2026_05_11.md`
   (love-as-origin not foundation-bone)
-- `docs/research/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
-  (the verbatim source — lines 7302-7640)
+
+## Source
+
+The Grok extract preserving the verbatim conversation lands via
+PR #2768 at
+`docs/research/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`.
+The scaffolding-pedagogy section is in the Clifford first-
+principles dialogue early in the extract; the marriage-failure
+follow-up is later in the same file.
 
 ## How to apply
 
