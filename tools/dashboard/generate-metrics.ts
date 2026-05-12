@@ -102,7 +102,13 @@ async function main() {
   const commits1h = commits.filter((c) => now - new Date(c.commit.author.date).getTime() < h1);
   const mergedToday = closedPRs.filter(mergedWithin(now, h24));
   const mergedLastHour = closedPRs.filter(mergedWithin(now, h1));
-  const lastMerged = mergedToday[0] ?? null;
+  // Sort by merged_at desc — GitHub /pulls?sort=updated does NOT guarantee
+  // merged_at order. A PR updated recently (labels/comments) can leapfrog
+  // older-but-more-recently-merged PRs in the source list. (Copilot P0
+  // catch on PR #2766.)
+  const lastMerged = [...mergedToday].sort(
+    (a, b) => new Date(b.merged_at).getTime() - new Date(a.merged_at).getTime(),
+  )[0] ?? null;
 
   let avgLeadTimeMinutes: number | null = null;
   if (mergedToday.length > 0) {
