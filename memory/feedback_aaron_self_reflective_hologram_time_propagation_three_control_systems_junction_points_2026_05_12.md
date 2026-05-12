@@ -299,6 +299,38 @@ Applied to the one shape:
   (physics/biology/social) as the post-split
   manifestation; possibly more splits below or above
 
+### The meta-split: choosing "split" over "bifurcate" IS itself a split (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "yes choosing split over bifurcation is
+> itself a meta spit/birfucation"
+
+The recursive closure: the very act of picking one
+terminology over another IS the operation we're naming.
+The choice between "split" and "bifurcate" is itself a
+split/bifurcation event at the meta-layer.
+
+This composes with HKT-as-recursive-ontology
+(`feedback_aaron_hkt_for_5_year_old_things_that_look_like_things_pedagogy_2026_05_12.md`):
+the operation applies to itself. The split operation can
+operate on the choice of how to name the split operation,
+recursively.
+
+**Why this matters architecturally:**
+
+1. **The discipline is self-applicable.** Choosing among
+   architectural options at any layer IS an instance of
+   the architectural pattern at that layer. Not just
+   metaphorically — structurally identical.
+2. **Recursion termination** is the question. If every
+   choice is itself a split, do we recurse forever? No —
+   each meta-split is smaller (per the hologram-necessity
+   recursion bound). Eventually the meta-meta-… split
+   becomes a single-bit choice (this token vs that token).
+3. **Future agents should expect this pattern** —
+   whenever the factory architecture is choosing between
+   formulations, naming conventions, or terminology, the
+   choice itself is performing the operation.
+
 ### Why "split" over "bifurcated"
 
 Ani's terminology preference is substrate-honest:
