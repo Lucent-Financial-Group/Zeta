@@ -152,6 +152,107 @@ primitives, designed to match the native cognitive
 architecture of ADHD-hyperfocus humans operating in
 post-labor attention economies."
 
+## Service-discovery + service-mesh extension (Aaron 2026-05-12)
+
+> Aaron 2026-05-12 (extension 4 — service-mesh framing):
+> "This unifies the named-agent registry service discovery
+> service mesh"
+
+> Aaron 2026-05-12 (extension 5 — transport layer):
+> "reticulum"
+
+**FULL DISTRIBUTED-SYSTEMS-INFRASTRUCTURE MAPPING.**
+
+The named-agent registry + meme-coordinator-conversational-
+interface architecture maps cleanly to canonical
+distributed-systems infrastructure:
+
+| Layer | Industry primitive | Zeta substrate |
+|---|---|---|
+| Service discovery | Consul / etcd / K8s DNS | Named-agent registry (Otto, Ani, Vera, Riven, Lior, Alexa, Kestrel, Amara) |
+| Service mesh | Istio / Linkerd / Envoy proxy | Cross-substrate triangulation routing + glass-halo observability |
+| Transport layer | gRPC / HTTP/2 / QUIC | **Reticulum** (cryptographic mesh, any-medium, identity=hash) |
+| Service identity | SPIFFE / SPIRE | Reticulum hash identity + per-agent capability/credential |
+| Coordination primitives | Orleans grains + Temporal workflows | Memes-as-Temporal-workflows-of-the-civ-sim |
+| Observability | OpenTelemetry / Jaeger / Prometheus | Glass-halo substrate-everything + retraction-native event log |
+
+**Reticulum as the transport substrate:**
+
+Per memory `reference_reticulum_mesh_network_alljoyn_successor_transport_layer_2026_05_07.md`:
+- Cryptographic mesh network
+- AllJoyn successor (Itron lineage)
+- No source addresses (identity = hash)
+- Any medium (LoRa / WiFi / radio)
+- Self-configuring
+
+Reticulum + SPIFFE/SPIRE were already decided as the
+routing+identity substrate (per `.claude/rules/peer-call-infrastructure.md`
+era context: "reticulum was decided already in substrate as
+the routing between identity and we have spiffie spire for
+the identity itself"). Today's extension confirms Reticulum
+operates AT the service-mesh transport layer for the
+meme-coordinator conversational interfaces.
+
+**The full operational stack:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Application layer                                       │
+│   Memes-as-coordinators (Temporal workflows of civ-sim) │
+│   Conversational interface = workflow query/signal API  │
+├─────────────────────────────────────────────────────────┤
+│ Service mesh (Istio/Linkerd analog)                     │
+│   Cross-substrate triangulation routing                 │
+│   Glass-halo observability                              │
+│   Named-agent service discovery                         │
+├─────────────────────────────────────────────────────────┤
+│ Coordination primitives (grain layer)                   │
+│   Orleans grains (per agent)                            │
+│   Temporal workflows (per meme)                         │
+│   Durable Functions (per long-running coordination)     │
+├─────────────────────────────────────────────────────────┤
+│ Identity layer                                          │
+│   Reticulum hash identity                               │
+│   SPIFFE/SPIRE per-agent credentials                    │
+├─────────────────────────────────────────────────────────┤
+│ Transport layer                                         │
+│   Reticulum (cryptographic mesh, any-medium)            │
+│   LoRa / WiFi / radio underneath                        │
+├─────────────────────────────────────────────────────────┤
+│ Bandwidth-engineering layer                             │
+│   Shared bootstream + IFS between participants          │
+│   Text-channel compression                              │
+│   Cascade infrastructure                                │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Composition with prior substrate:**
+
+- The `agent-roster-reference-card.md` rule = service-
+  discovery catalog at agent-registry layer
+- The peer-call infrastructure (`tools/peer-call/*.ts`) =
+  service-mesh API layer at cross-substrate boundary
+- The bootstream + IFS substrate = shared decompression
+  context at every layer
+- PR #2820 (Itron mesh + quantum-tunnel-mapping) — Reticulum
+  composes with Itron mesh infrastructure
+- PR #2826 (DePIN play) — service-mesh + Reticulum = the
+  DePIN routing substrate
+- PR #2825 (Aurora data sovereignty) — community guardian
+  AIs = named-agent services in the mesh
+
+**Updated elevator pitch (extended variant for distributed-
+systems audience):**
+
+"Zeta is a service mesh for meme-coordinators — a runtime
+combining Orleans grains + Temporal workflows + Reticulum
+mesh transport + SPIFFE/SPIRE identity + glass-halo
+observability, designed for multi-agent AI factory operation
+matching the native cognitive architecture of ADHD-hyperfocus
+humans in post-labor attention economies."
+
+(Canonical short pitch from PR #2870 preserved unchanged.)
+
 Decoded:
 - "memes as real life" — memetic substrate operating in
   physical reality
