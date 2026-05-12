@@ -539,5 +539,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0393](backlog/P3/B-0393-operational-resonance-ab-experiment-infrastructure-design-2026-05-09.md)** A/B experiment infrastructure design — event-capture schema, experiment-registration, git-native result storage for dashboard
 - [ ] **[B-0394](backlog/P3/B-0394-operational-resonance-mvp-dashboard-surface-github-pages-2026-05-09.md)** MVP Operational Resonance Dashboard — first working "are things going as expected?" surface on GitHub Pages with tier grouping
 - [ ] **[B-0395](backlog/P3/B-0395-operational-resonance-conversation-interface-path-a-browser-local-llm-2026-05-09.md)** Conversation interface Path A — embed browser/local LLM (WebLLM or transformers.js) in dashboard for in-context review discussion
+- [ ] **[B-0422](backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md)** Clifford-algebraic narrative engine for testing the Pauli-symmetry-breaking-from-agenda-conservation prediction (research target identified by DeepSeek 2026-05-12)
 
 <!-- END AUTO-GENERATED -->
