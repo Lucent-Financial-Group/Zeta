@@ -52,18 +52,27 @@ describe("buildRegistry", () => {
   test("builds a schema-v1.1 registry with all expected concept classes", () => {
     const registry = buildRegistry();
     expect(registry.schema).toBe("concept-registry-v1.1");
-    expect(registry.concepts.length).toBeGreaterThan(40);
-    expect(registry.anchoredCount).toBeGreaterThan(0);
 
-    expect(registry.summary["alignment-clause"]).toBeGreaterThanOrEqual(21);
-    expect(registry.summary["best-practice"]).toBeGreaterThanOrEqual(25);
-    expect(registry.summary["otto-principle"]).toBeGreaterThan(0);
-    expect(registry.summary["glass-halo-doctrine"]).toBeGreaterThan(0);
+    expect(registry.summary["alignment-clause"]).toBe(21);
+    expect(Object.values(registry.summary).reduce((sum, count) => sum + count, 0)).toBe(
+      registry.concepts.length,
+    );
+    expect(registry.anchoredCount).toBe(
+      registry.concepts.filter(
+        (concept) => concept.anchorState && concept.anchorState !== "factory-native",
+      ).length,
+    );
+    expect(
+      registry.concepts.every(
+        (concept) => concept.id && concept.conceptClass && concept.source && concept.label,
+      ),
+    ).toBe(true);
 
-    const ids = new Set(registry.concepts.map((concept) => concept.id));
-    expect(ids.has("HC-1")).toBe(true);
-    expect(ids.has("BP-01")).toBe(true);
-    expect(ids.has("Otto-363")).toBe(true);
-    expect(ids.has("radical-honesty")).toBe(true);
+    const byId = new Map(registry.concepts.map((concept) => [concept.id, concept]));
+    expect(byId.get("HC-1")?.conceptClass).toBe("alignment-clause");
+    expect(byId.get("BP-01")?.conceptClass).toBe("best-practice");
+    expect(byId.get("Otto-363")?.conceptClass).toBe("otto-principle");
+    expect(byId.get("radical-honesty")?.conceptClass).toBe("glass-halo-doctrine");
+    expect(byId.get("radical-honesty")?.anchorState).toBe("partially-anchored");
   });
 });
