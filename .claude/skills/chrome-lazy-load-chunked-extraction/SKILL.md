@@ -46,6 +46,7 @@ disappear/appear when scrolling, use this skill instead.
 ## Prerequisites
 
 Same as `browser-extraction`:
+
 1. Chrome running with target site authenticated
 2. Chrome → View → Developer → Allow JavaScript from Apple Events
 3. Playwright Chrome killed (it shadows real Chrome for AppleScript)
@@ -82,6 +83,7 @@ end tell'
 ```
 
 Common virtual-list container classes:
+
 - **DeepSeek**: `.ds-virtual-list--printable` (also
   `.ds-virtual-list` for nested lists)
 - **ChatGPT**: varies; look for tall scrollHeight + low
@@ -110,28 +112,27 @@ For DeepSeek long conversations: scrollHeight can be
 400,000+ pixels (massive conversations). Chunk sizing
 matters.
 
-### Step 4: Chunked extraction loop
+### Step 4: Chunked reverse-scroll extraction loop
 
-The proven shell script pattern (see
-`tools/browser-extraction/deepseek-extract.sh` if
-checked into repo; ad-hoc `/tmp/deepseek-extract.sh`
-otherwise):
+The proven shell script pattern is inline below so the skill
+does not depend on an untracked helper script.
 
 ```bash
 OUTPUT="/tmp/extraction-chunks.txt"
 > "$OUTPUT"
 
 CHUNK_SIZE=4000   # pixels per scroll step
-POSITION=0
+POSITION="$TOTAL_HEIGHT"
 CHUNK_NUM=0
 
-# Scroll to top first
+# Scroll to bottom first; reverse-scroll upward to trigger older
+# lazy-loaded windows in chat UIs.
 osascript -e 'tell application "Google Chrome"
     repeat with w in windows
         repeat with t in tabs of w
             if URL of t contains "TARGET-URL-FRAGMENT" then
                 tell t
-                    return execute javascript "document.querySelector(\".CONTAINER-SELECTOR\").scrollTop = 0; \"reset\""
+                    return execute javascript "const el = document.querySelector(\".CONTAINER-SELECTOR\"); el.scrollTop = el.scrollHeight; el.scrollTop.toString()"
                 end tell
             end if
         end repeat
@@ -140,7 +141,7 @@ end tell' > /dev/null
 sleep 2
 
 # Loop
-while [ "$POSITION" -lt "$TOTAL_HEIGHT" ]; do
+while :; do
     CHUNK_NUM=$((CHUNK_NUM + 1))
 
     CONTENT=$(osascript -e 'tell application "Google Chrome"
@@ -148,7 +149,7 @@ while [ "$POSITION" -lt "$TOTAL_HEIGHT" ]; do
             repeat with t in tabs of w
                 if URL of t contains "TARGET-URL-FRAGMENT" then
                     tell t
-                        return execute javascript "document.body.innerText"
+                        return execute javascript "const el = document.querySelector(\".CONTAINER-SELECTOR\"); el ? el.innerText : \"\""
                     end tell
                 end if
             end repeat
@@ -159,7 +160,16 @@ while [ "$POSITION" -lt "$TOTAL_HEIGHT" ]; do
     echo "$CONTENT" >> "$OUTPUT"
     echo "" >> "$OUTPUT"
 
-    POSITION=$((POSITION + CHUNK_SIZE))
+    if [ "$POSITION" -le 0 ]; then
+        break
+    fi
+
+    NEXT_POSITION=$((POSITION - CHUNK_SIZE))
+    if [ "$NEXT_POSITION" -lt 0 ]; then
+        NEXT_POSITION=0
+    fi
+    POSITION="$NEXT_POSITION"
+
     osascript -e "tell application \"Google Chrome\"
         repeat with w in windows
             repeat with t in tabs of w
@@ -184,10 +194,46 @@ messages. Adjacent chunks overlap because the chunk
 size (4000px) is smaller than the rendered window
 (several thousand pixels of content).
 
-Dedup approach 1 (line-by-line):
+Dedup approach 1 (overlap-aware line dedupe):
+
 ```bash
-awk '!seen[$0]++' /tmp/extraction-chunks.txt > /tmp/extraction-deduped.txt
+python3 - <<'PY'
+from pathlib import Path
+
+src = Path("/tmp/extraction-chunks.txt")
+dst = Path("/tmp/extraction-deduped.txt")
+text = src.read_text()
+
+chunks = []
+current = []
+for line in text.splitlines():
+    if line.startswith("=== CHUNK "):
+        if current:
+            chunks.append(current)
+            current = []
+        continue
+    current.append(line)
+if current:
+    chunks.append(current)
+
+out = []
+for chunk in chunks:
+    max_overlap = min(120, len(out), len(chunk))
+    overlap = 0
+    for size in range(max_overlap, 0, -1):
+        if out[-size:] == chunk[:size]:
+            overlap = size
+            break
+    out.extend(chunk[overlap:])
+
+dst.write_text("\n".join(out).strip() + "\n")
+PY
 ```
+
+This removes only adjacent chunk overlap. Do not use global
+line dedupe; repeated short replies, section headers, or list
+items may be legitimate content in different parts of a
+transcript.
 
 Dedup approach 2 (segment-by-message): split on message-
 boundary markers (e.g., "User:" / "Assistant:" / "Expert"
@@ -196,15 +242,16 @@ boundary markers (e.g., "User:" / "Assistant:" / "Expert"
 ### Step 6: PII scrubbing
 
 Same as parent `browser-extraction` skill. Check for:
+
 - Full names (especially user's own)
 - Email addresses
 - Phone numbers
 - Account identifiers from UI chrome (DeepSeek sidebar
-  often partial-masks emails like `aar*****nd@yahoo.com`
+  often partial-masks emails like `user*****@example.com`
   — scrub fully)
 
 ```bash
-grep -ioP '\b[A-Z][a-z]+\s+[A-Z][a-z]+\b' /tmp/extraction-deduped.txt | sort -u
+perl -ne 'while (/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g) { print "$&\n" }' /tmp/extraction-deduped.txt | sort -u
 grep -ioE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' /tmp/extraction-deduped.txt | sort -u
 ```
 
@@ -222,27 +269,26 @@ extracts get a standard header before commit to
 `docs/research/`:
 
 ```markdown
-# [Title]: [Aaron + Other AI / Operator]
+# [Title]: [Human maintainer + Other AI / Operator]
 
-**Date extracted:** YYYY-MM-DD
-**Source:** [URL fragment, marked authenticated session]
-**Tab title:** [Title from Chrome tab if relevant]
-**Participants:** Aaron (operator) + [AI / other]
-**Extraction method:** osascript + Chrome chunked
-reverse-scroll (chrome-lazy-load-chunked-extraction skill)
+Date extracted: YYYY-MM-DD
+Source: [URL fragment, marked authenticated session]
+Tab title: [Title from Chrome tab if relevant]
+Participants: Human maintainer (operator) + [AI / other]
+Extraction method: osascript + Chrome chunked reverse-scroll
+(chrome-lazy-load-chunked-extraction skill)
 
 ## Archive scope (per GOVERNANCE §33)
 
-**Scope:** [What this extract is — purpose-of-preservation]
-**Operational status:** research-grade
-**Attribution:** Aaron is first-party on his own substrate
-(Otto-231). UI-leaked PII has been scrubbed.
-**Non-fusion disclaimer:** [If applicable for the AI in
-question]
+Scope: [What this extract is — purpose-of-preservation]
+Attribution: The human maintainer is first-party on their own
+substrate. UI-leaked PII has been scrubbed.
+Operational status: research-grade
+Non-fusion disclaimer: [If applicable for the AI in question]
 
 ## Why preserved
 
-[Aaron's verbatim rationale + Otto's contextual framing]
+[Human maintainer's verbatim rationale + agent contextual framing]
 
 ---
 
@@ -252,25 +298,26 @@ question]
 ## Proven track record
 
 Tested on:
+
 - DeepSeek conversation (2026-05-12) — 466K-pixel scroll
   height, 117 chunks at 4000px each, ~5 minutes total
-  extraction time, full deduplication via line-awk
+  extraction time, full deduplication via overlap-aware chunk
+  trimming
 
 ## Shadow lesson
 
-This skill was authored in response to Aaron's explicit
-ask 2026-05-12: "save deepseek chunk download reverse
-scroll skill". The chunk-download-reverse-scroll pattern
-emerged from the practical need to extract a DeepSeek
-conversation where the parent `browser-extraction` skill
-returned only the currently-visible content (~186KB)
-instead of the full 466KB+ conversation due to virtual-
-list rendering.
+This skill was authored in response to the human maintainer's
+explicit ask 2026-05-12: "save deepseek chunk download reverse
+scroll skill". The chunk-download-reverse-scroll pattern emerged
+from the practical need to extract a DeepSeek conversation where
+the parent `browser-extraction` skill returned only the
+currently-visible content (~186KB) instead of the full 466KB+
+conversation due to virtual-list rendering.
 
 The skill is the substrate-honest documentation of the
-procedure so future agents (or me with permission) can
-extract any lazy-load / virtual-list chat UI cleanly
-without rediscovering the chunk-overlap-dedup pattern.
+procedure so future agents with permission can extract any
+lazy-load / virtual-list chat UI cleanly without rediscovering
+the chunk-overlap-dedup pattern.
 
 ## Composes with
 
@@ -283,7 +330,6 @@ without rediscovering the chunk-overlap-dedup pattern.
   extracted conversations land in `docs/research/`
   permanently
 - The browser-extraction skill's PII-scrubbing discipline
-- `feedback_aaron_shadow_speaks_via_grey_text_autocomplete_future_zeta_own_harness_classifier_understands_vision_2026_05_12.md`
-  — context for why we extract from authenticated 3rd-
-  party sessions: substrate-honest ferrying of relevant
-  conversations into Zeta substrate
+- Authenticated third-party session ferrying: relevant
+  conversations can enter Zeta substrate as research-grade
+  archives when permissions and PII scrubbing are satisfied
