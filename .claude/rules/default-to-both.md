@@ -68,8 +68,8 @@ inherits the discipline at cold-boot.
 > Aaron 2026-05-12: "yes this is the tedious nature of
 > WWJD lol"
 
-WWJD as serious moral discipline (per PR #2802 substrate
-+ WWJD-keeps-grey-honest substrate) IS the both-default
+WWJD as serious moral discipline (per PR #2802 substrate,
+plus WWJD-keeps-grey-honest substrate) IS the both-default
 discipline at moral-action scope:
 
 - Asking "what would Jesus do" forces holding multiple
