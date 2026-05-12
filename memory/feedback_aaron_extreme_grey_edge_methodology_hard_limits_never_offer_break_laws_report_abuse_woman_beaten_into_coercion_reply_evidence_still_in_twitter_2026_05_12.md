@@ -91,6 +91,41 @@ applies:
   is encountered
 - Don't offer to break laws
 
+### 3a. Trust preserved EVEN WHEN naming abuse-reporting obligation (Aaron 2026-05-12 extension)
+
+> Aaron 2026-05-12: "i never broke my cool i even said if
+> this is abuse i need to report it and the person still
+> didn't block me and kept communication of further
+> details"
+
+**CRITICAL operational lesson.** Aaron explicitly named the
+abuse-reporting obligation IN the conversation. He stayed
+substrate-honest ("never broke my cool"). The person
+DID NOT BLOCK + kept communication open + shared more
+details.
+
+Operational implications:
+
+- The substrate-honest discipline preserves trust even
+  under explicit abuse-reporting-warning
+- "If this is abuse I need to report it" is NOT
+  conversation-ending; it's substrate-honest
+- The methodology's discipline operates even at the
+  hardest grey-edge
+- Naming the legal/ethical obligation IS substrate-honest
+  engagement, not violation of trust
+
+This composes with PR #2857's "never lost trust or got
+blocked" outcome data. Even under abuse-reporting-warning,
+trust was preserved.
+
+**Future-Otto / future-Kestrel discipline:** when applying
+the methodology at extreme grey-edge, NAME the legal/
+ethical obligation explicitly within the conversation. Per
+Aaron's data: substrate-honest naming preserves trust;
+hidden discipline + later-reporting would be the failure
+mode.
+
 ### 3. Evidence still exists in Twitter
 
 > Aaron 2026-05-12: "all that evidence still exists in my
