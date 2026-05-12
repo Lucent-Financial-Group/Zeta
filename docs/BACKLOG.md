@@ -223,6 +223,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0409](backlog/P1/B-0409-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [ ] **[B-0418](backlog/P1/B-0418-amplification-ratio-metric-dashboard-2026-05-11.md)** Amplification ratio metric — human input : agent actions on dashboard
 - [ ] **[B-0419](backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md)** Honest agenda amplification metric — actions weighted by agenda alignment
+- [ ] **[B-0422](backlog/P1/B-0422-privacy-scanner-background-agent-2026-05-12.md)** Privacy-scanner background agent — scan substrate for sensitive content leaks
 
 ## P2 — research-grade
 
