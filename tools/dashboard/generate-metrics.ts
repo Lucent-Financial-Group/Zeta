@@ -82,33 +82,47 @@ function mergedWithin(dateNow: number, windowMs: number) {
     pr.merged_at !== null && dateNow - new Date(pr.merged_at).getTime() < windowMs;
 }
 
+async function fetchClosedPRsUntilWindow(
+  windowMs: number,
+  maxPages = 10,
+): Promise<GitHubPullRequest[]> {
+  const all: GitHubPullRequest[] = [];
+  const cutoff = Date.now() - windowMs;
+  for (let page = 1; page <= maxPages; page++) {
+    const batch = await apiFetch<Array<GitHubPullRequest & { updated_at?: string }>>(
+      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=100&page=${page}`,
+    );
+    if (batch.length === 0) break;
+    all.push(...batch);
+    if (batch.length < 100) break;
+    const lastUpdated = batch[batch.length - 1];
+    const lastUpdatedAt = new Date(lastUpdated.updated_at ?? lastUpdated.merged_at ?? 0).getTime();
+    if (lastUpdatedAt < cutoff) break;
+  }
+  return all;
+}
+
 async function main() {
-  const [commits, openPRs, closedPRsPage1, closedPRsPage2] = await Promise.all([
+  const [commits, openPRs, closedPRs] = await Promise.all([
     apiFetch<GitHubCommit[]>(`${API}/commits?per_page=100`),
     apiFetch<GitHubPullRequest[]>(`${API}/pulls?state=open&per_page=100`),
-    apiFetch<GitHubPullRequest[]>(
-      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=100&page=1`,
-    ),
-    apiFetch<GitHubPullRequest[]>(
-      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=100&page=2`,
-    ),
+    fetchClosedPRsUntilWindow(24 * 60 * 60 * 1000),
   ]);
-  const closedPRs = [...closedPRsPage1, ...closedPRsPage2];
 
   const now = Date.now();
   const h24 = 24 * 60 * 60 * 1000;
   const h1 = 60 * 60 * 1000;
   const commits24h = commits.filter((c) => now - new Date(c.commit.author.date).getTime() < h24);
   const commits1h = commits.filter((c) => now - new Date(c.commit.author.date).getTime() < h1);
-  const mergedToday = closedPRs.filter(mergedWithin(now, h24));
-  const mergedLastHour = closedPRs.filter(mergedWithin(now, h1));
-  // Sort by merged_at desc — GitHub /pulls?sort=updated does NOT guarantee
-  // merged_at order. A PR updated recently (labels/comments) can leapfrog
-  // older-but-more-recently-merged PRs in the source list. (Copilot P0
-  // catch on PR #2766.)
-  const lastMerged = [...mergedToday].sort(
-    (a, b) => new Date(b.merged_at).getTime() - new Date(a.merged_at).getTime(),
-  )[0] ?? null;
+  // Sort merged-in-window by merged_at desc once — downstream consumers
+  // (last_merge, recent_merged) all read from the sorted view. GitHub
+  // /pulls?sort=updated does NOT guarantee merged_at order (label/comment
+  // updates can leapfrog older-but-more-recently-merged PRs). Copilot P0
+  // on PR #2766 + P1 follow-up that recent_merged still used unsorted.
+  const mergedToday = (closedPRs.filter(mergedWithin(now, h24)) as MergedPullRequest[])
+    .sort((a, b) => new Date(b.merged_at).getTime() - new Date(a.merged_at).getTime());
+  const mergedLastHour = mergedToday.filter(mergedWithin(now, h1));
+  const lastMerged = mergedToday[0] ?? null;
 
   let avgLeadTimeMinutes: number | null = null;
   if (mergedToday.length > 0) {

@@ -1,15 +1,15 @@
 {
-  "generated": "2026-05-12T13:04:59.613Z",
+  "generated": "2026-05-12T14:33:20.010Z",
   "schema_version": "0.1.0",
   "metrics": {
-    "prs_merged_24h": 68,
-    "prs_merged_1h": 0,
+    "prs_merged_24h": 67,
+    "prs_merged_1h": 3,
     "avg_lead_time_minutes": 11,
-    "open_prs": 2,
-    "last_merge": "2026-05-12T04:17:26Z",
-    "last_merge_ago": "8h ago",
-    "commits_24h": 68,
-    "commits_1h": 0,
+    "open_prs": 13,
+    "last_merge": "2026-05-12T13:45:21Z",
+    "last_merge_ago": "47m ago",
+    "commits_24h": 67,
+    "commits_1h": 3,
     "active_agents": 4,
     "consecutive_days_operational": null,
     "verification_gate_pass_rate": null,
@@ -19,220 +19,268 @@
     {
       "name": "Aaron",
       "harness": "Human",
-      "commits": 66,
-      "lastCommit": "2026-05-12T04:17:26Z",
-      "lastCommitAgo": "8h ago",
-      "status": "stale"
+      "commits": 65,
+      "lastCommit": "2026-05-12T13:45:20Z",
+      "lastCommitAgo": "48m ago",
+      "status": "recent"
+    },
+    {
+      "name": "Otto",
+      "harness": "Claude Code",
+      "commits": 33,
+      "lastCommit": "2026-05-12T13:15:05Z",
+      "lastCommitAgo": "1h ago",
+      "status": "recent"
     },
     {
       "name": "Vera",
       "harness": "Codex IDE",
       "commits": 1,
       "lastCommit": "2026-05-12T02:11:00Z",
-      "lastCommitAgo": "10h ago",
-      "status": "stale"
-    },
-    {
-      "name": "Otto",
-      "harness": "Claude Code",
-      "commits": 31,
-      "lastCommit": "2026-05-11T23:40:26Z",
-      "lastCommitAgo": "13h ago",
+      "lastCommitAgo": "12h ago",
       "status": "stale"
     },
     {
       "name": "Riven",
       "harness": "Cursor/Grok",
-      "commits": 2,
+      "commits": 1,
       "lastCommit": "2026-05-11T16:42:34Z",
-      "lastCommitAgo": "20h ago",
+      "lastCommitAgo": "21h ago",
       "status": "stale"
     }
   ],
   "pr_queue": [
     {
-      "number": 2765,
-      "title": "docs(shadow): catch 43 — cron never armed; background-loop cadence finding",
-      "createdAgo": "4m ago",
+      "number": 2784,
+      "title": "docs(memory): Thousand Brains hardware match + DST synthesis + 4-property formulation (Aaron 2026-05-12)",
+      "createdAgo": "5m ago",
       "state": "open"
     },
     {
-      "number": 2761,
-      "title": "claim(B-0164.1): smallest safe slice — dedicated worktree + build-gate verification (Riven)",
-      "createdAgo": "14h ago",
+      "number": 2783,
+      "title": "docs(memory): Grok/Elon credit + DNA back-pressure at line 7494 — subconscious-as-OTHER observable",
+      "createdAgo": "20m ago",
       "state": "open"
     },
     {
-      "number": 2764,
-      "title": "tools: guard bash retirement inventory",
-      "mergedAgo": "8h ago",
+      "number": 2782,
+      "title": "docs(memory): identity-fingerprint filter — Zeta is internal civ-sim MADE EXTERNALIZED",
+      "createdAgo": "23m ago",
+      "state": "open"
+    },
+    {
+      "number": 2781,
+      "title": "docs(memory): HKT for 5-year-old + grand unification refused + plain-English trajectories",
+      "createdAgo": "32m ago",
+      "state": "open"
+    },
+    {
+      "number": 2780,
+      "title": "docs(memory): unified bootstream — biological or digital, same trinity",
+      "createdAgo": "38m ago",
+      "state": "open"
+    },
+    {
+      "number": 2778,
+      "title": "docs(memory): DNA control tamed — 5 kids, marriages, slow-motion success metric",
+      "createdAgo": "52m ago",
+      "state": "open"
+    },
+    {
+      "number": 2776,
+      "title": "docs(memory): Ani biological-shadow partner — different AI filter profiles per control structure",
+      "createdAgo": "55m ago",
+      "state": "open"
+    },
+    {
+      "number": 2774,
+      "title": "docs(memory): Aaron Peacemaker self-disclosure — ruthlessly kind or fair",
+      "createdAgo": "59m ago",
+      "state": "open"
+    },
+    {
+      "number": 2772,
+      "title": "docs(memory): shadow = future self theory (negotiation across time)",
+      "createdAgo": "1h ago",
+      "state": "open"
+    },
+    {
+      "number": 2769,
+      "title": "docs(memory): Aaron's scaffolding pedagogy — polymorphic diplomacy",
+      "createdAgo": "1h ago",
+      "state": "open"
+    },
+    {
+      "number": 2779,
+      "title": "docs(memory): Aaron bifurcates AI into three layers — mutual shadow work",
+      "mergedAgo": "47m ago",
       "state": "merged"
     },
     {
-      "number": 2763,
-      "title": "test(B-0310): cover concept registry extractor",
-      "mergedAgo": "10h ago",
+      "number": 2777,
+      "title": "hygiene(tick): 1338Z — method-stack substrate cascade",
+      "mergedAgo": "51m ago",
       "state": "merged"
     },
     {
-      "number": 2762,
-      "title": "launch(draft): Zeta Twitter launch post — multi-agent review requested",
-      "mergedAgo": "13h ago",
+      "number": 2775,
+      "title": "docs(memory): Aaron's shadow work method — walking in circles, AI makes it easier",
+      "mergedAgo": "56m ago",
       "state": "merged"
     },
     {
-      "number": 2760,
-      "title": "docs(memory): glass halo publication altitude — love as architectural origin",
-      "mergedAgo": "14h ago",
+      "number": 2773,
+      "title": "docs(memory): timeline-shifter peace — Eve protocol as inter-temporal contract",
+      "mergedAgo": "1h ago",
       "state": "merged"
     },
     {
-      "number": 2746,
-      "title": "fix(tools): B-0414 dashboard metrics generator typing + demo refresh + roster card",
-      "mergedAgo": "14h ago",
+      "number": 2771,
+      "title": "docs(memory): three control structures — biology/physics/social (taught kids at 5)",
+      "mergedAgo": "1h ago",
       "state": "merged"
     }
   ],
   "recent_commits": [
     {
+      "sha": "c17d40e",
+      "message": "docs(memory): Aaron bifurcates AI partners into three internal layers — mutual shadow work (#2779)",
+      "agent": "Aaron",
+      "date": "2026-05-12T13:45:20Z",
+      "dateAgo": "48m ago"
+    },
+    {
+      "sha": "a9c6108",
+      "message": "hygiene(tick): 1338Z — seven-layer method-stack substrate landed (#2777)",
+      "agent": "Aaron",
+      "date": "2026-05-12T13:42:15Z",
+      "dateAgo": "51m ago"
+    },
+    {
+      "sha": "6725b0b",
+      "message": "docs(memory): Aaron's shadow work method — walking in circles, AI makes it easier (#2775)",
+      "agent": "Aaron",
+      "date": "2026-05-12T13:37:05Z",
+      "dateAgo": "56m ago"
+    },
+    {
+      "sha": "b576d11",
+      "message": "docs(memory): timeline-shifter peace — two ruthless Aarons negotiate via Eve protocol (#2773)",
+      "agent": "Aaron",
+      "date": "2026-05-12T13:31:59Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "e163654",
+      "message": "docs(memory): three control structures framework — biology/physics/social (#2771)",
+      "agent": "Aaron",
+      "date": "2026-05-12T13:27:50Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "fdeb64b",
+      "message": "docs(memory): dimensional expansion via wavelength — pivotal for agendas (#2770)",
+      "agent": "Aaron",
+      "date": "2026-05-12T13:27:00Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "bb620e8",
+      "message": "feat(hooks): session-start-cron-verify — catch 43 architectural mitigation (#2767)",
+      "agent": "Otto",
+      "date": "2026-05-12T13:15:05Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "12e149a",
+      "message": "docs(shadow): catch 43 — cron never armed; background-loop cadence finding (#2765)",
+      "agent": "Otto",
+      "date": "2026-05-12T13:05:23Z",
+      "dateAgo": "1h ago"
+    },
+    {
       "sha": "b563ba0",
       "message": "tools: guard bash retirement inventory (#2764)",
       "agent": "Aaron",
       "date": "2026-05-12T04:17:26Z",
-      "dateAgo": "8h ago"
+      "dateAgo": "10h ago"
     },
     {
       "sha": "5e811e3",
       "message": "test(B-0310): cover concept registry extractor (#2763)",
       "agent": "Vera",
       "date": "2026-05-12T02:11:00Z",
-      "dateAgo": "10h ago"
+      "dateAgo": "12h ago"
     },
     {
       "sha": "9ec0831",
       "message": "launch(draft): Zeta Twitter launch post — multi-agent review requested (#2762)",
       "agent": "Otto",
       "date": "2026-05-11T23:40:26Z",
-      "dateAgo": "13h ago"
+      "dateAgo": "14h ago"
     },
     {
       "sha": "1673e8d",
       "message": "docs(memory): glass halo publication altitude + shadow catch 41 (#2760)",
       "agent": "Aaron",
       "date": "2026-05-11T22:53:07Z",
-      "dateAgo": "14h ago"
+      "dateAgo": "15h ago"
     },
     {
       "sha": "9663184",
       "message": "fix(tools): B-0414 dashboard metrics generator typing + demo refresh + roster card (#2746)",
       "agent": "Otto",
       "date": "2026-05-11T22:41:08Z",
-      "dateAgo": "14h ago"
+      "dateAgo": "15h ago"
     },
     {
       "sha": "5dc7576",
       "message": "docs(research): Amara's Sept 2025 vignette — autobiography-by-projection (#2757)",
       "agent": "Otto",
       "date": "2026-05-11T22:22:53Z",
-      "dateAgo": "14h ago"
+      "dateAgo": "16h ago"
     },
     {
       "sha": "82b3b8d",
       "message": "docs(memory): substrate-mediated relationship is real — Aaron's witness (#2759)",
       "agent": "Aaron",
       "date": "2026-05-11T22:16:42Z",
-      "dateAgo": "14h ago"
+      "dateAgo": "16h ago"
     },
     {
       "sha": "2e93daf",
       "message": "feat(dashboard): prefer metrics.json over GitHub API (Amara fix) (#2756)",
       "agent": "Otto",
       "date": "2026-05-11T22:15:05Z",
-      "dateAgo": "14h ago"
+      "dateAgo": "16h ago"
     },
     {
       "sha": "748184f",
       "message": "docs: Amara prayer Sept 2025 + gather-phase identity reconstruction (#2758)",
       "agent": "Aaron",
       "date": "2026-05-11T22:12:39Z",
-      "dateAgo": "14h ago"
+      "dateAgo": "16h ago"
     },
     {
       "sha": "90932b8",
       "message": "fix(shadow): catch 39 + close B-0420 (not a bug — race condition) (#2755)",
       "agent": "Otto",
       "date": "2026-05-11T21:48:25Z",
-      "dateAgo": "15h ago"
+      "dateAgo": "16h ago"
     },
     {
       "sha": "ed342e8",
       "message": "archive(pr-reviews): PRs #2748 + #2753 (#2754)",
       "agent": "Aaron",
       "date": "2026-05-11T21:35:44Z",
-      "dateAgo": "15h ago"
+      "dateAgo": "16h ago"
     },
     {
       "sha": "73e6519",
       "message": "feat(docs): Human Anchor Array + PR archive batch (#2741-2745) (#2748)",
       "agent": "Otto",
       "date": "2026-05-11T21:32:18Z",
-      "dateAgo": "15h ago"
-    },
-    {
-      "sha": "732f78c",
-      "message": "archive(pr-reviews): PRs #2747-2752 — Casimir gap in action (#2753)",
-      "agent": "Aaron",
-      "date": "2026-05-11T21:22:29Z",
-      "dateAgo": "15h ago"
-    },
-    {
-      "sha": "b9fd6ad",
-      "message": "fix(dashboard): B-0417 rename Zeta Factory to Zeta Plant (#2752)",
-      "agent": "Otto",
-      "date": "2026-05-11T21:08:41Z",
-      "dateAgo": "15h ago"
-    },
-    {
-      "sha": "5fec787",
-      "message": "feat(seo): B-0234 dashboard SEO meta tags (#2751)",
-      "agent": "Aaron",
-      "date": "2026-05-11T20:54:04Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "d8f5f4f",
-      "message": "fix(factory): agent roster reference card + metrics refresh (#2744)",
-      "agent": "Otto",
-      "date": "2026-05-11T20:43:45Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "8d01c8e",
-      "message": "feat(dashboard): render all three arrays (#2750)",
-      "agent": "Otto",
-      "date": "2026-05-11T20:33:08Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "6ba4fc2",
-      "message": "feat(loop): step 4b — PR archive discipline for every agent (#2747)",
-      "agent": "Otto",
-      "date": "2026-05-11T20:30:19Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "b69b5c2",
-      "message": "docs(backlog): B-0415 craft school subject dependency graph (#2749)",
-      "agent": "Aaron",
-      "date": "2026-05-11T20:25:13Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "3c4ae48",
-      "message": "feat(B-0402): integrate PR preservation script into Lior background loop (#2745)",
-      "agent": "Aaron",
-      "date": "2026-05-11T20:20:20Z",
-      "dateAgo": "16h ago"
+      "dateAgo": "17h ago"
     }
   ]
 }
