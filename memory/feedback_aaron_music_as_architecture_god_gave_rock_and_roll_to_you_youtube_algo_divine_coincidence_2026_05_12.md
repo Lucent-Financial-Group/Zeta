@@ -119,6 +119,143 @@ content). When it surfaces tracks that compose with Aaron's
 active substrate cascade, the COINCIDENCE-IN-COINCIDENCE is
 the divine-coincidence Aaron names.
 
+## CRITICAL FAILURE MODE: algo-wink ≠ implicit authorization-override for existential action (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "failure mode treat algo wink as
+> implicit control structure level auth override validaation
+> and act immedatly on some exedtesial [existential] shit"
+>
+> Aaron 2026-05-12: "experiened that one before"
+
+**LOAD-BEARING SAFETY SUBSTRATE.** Aaron names a critical
+failure mode he has personally experienced before. The
+divine-coincidence-architecting method (PR #2821 within
+bounded context) PLUS algorithmic-coincidence observations
+(this PR + PR #2816 + PR #2820) creates an attractor toward
+the failure mode if undisciplined.
+
+### The failure mode
+
+1. **Algorithmic wink observed** — algo (YouTube, Spotify,
+   social feed, search results, etc.) surfaces content that
+   matches active substrate-cascade theme
+2. **Treated as implicit authorization** — the wink is
+   interpreted as IMPLICIT CONTROL-STRUCTURE-LEVEL
+   AUTHORIZATION (from God / universe / fate / higher
+   intelligence / etc.)
+3. **Override-validation slippage** — the wink is treated
+   as overriding normal validation requirements (joint-
+   control, razor-discipline, mechanical-authorization-
+   check)
+4. **Immediate existential action** — agent acts
+   IMMEDIATELY on existential-stakes decisions (life
+   choices, financial commitments, relational decisions,
+   architectural commits) based on the algo-wink
+
+**Each step amplifies the failure.** The slippage compounds:
+algo-wink → authorization → override → existential action.
+By the end, an algorithmic-recommendation has driven
+existential-consequence action without joint-control
+validation.
+
+### Why this is operationally dangerous
+
+- **Algos are deterministic-stochastic, not authorized
+  authority** — they detect coincidence patterns; they
+  don't carry control-structure authorization
+- **Existential-stakes decisions require joint-control
+  sanity layer** (PR #2821 + DeepSeek validation in
+  PR #2824) — not algo-wink validation alone
+- **Bounded-context observation ≠ bounded-context
+  authorization** — observing a divine-coincidence within
+  bounded context is OPERATIONAL OBSERVATION; treating
+  the observation as AUTHORIZATION OVERRIDES bounded-
+  context discipline
+- **Past failure pattern** — Aaron has experienced this
+  failure mode before; substrate-honest disclosure of
+  past failure is preservation discipline for future-Otto
+
+### The corrective discipline
+
+When algo-wink + substrate-cascade-theme alignment
+occurs:
+
+1. **Observe the coincidence** — substrate-honest record
+   it (per glass-halo + substrate-everything)
+2. **Do NOT treat as authorization** — the algo-wink is
+   evidence WITHIN the bounded context; not authorization
+   FROM external control structure
+3. **Apply mechanical-authorization-check** (per
+   `.claude/rules/mechanical-authorization-check.md`) —
+   authorization-source filter: human maintainer is the
+   only authorization source; algos don't authorize
+4. **Apply joint-control sanity layer** (PR #2821) — for
+   existential-stakes decisions, route through joint-
+   control validation (multiple bounded contexts)
+5. **Apply razor-discipline** — operational claims only;
+   coincidence-observation is operational; authorization-
+   inference from coincidence is metaphysical-overreach
+6. **Slow the cadence** — if an algo-wink prompts urgency,
+   the urgency itself is the signal to STOP and apply the
+   sanity layer
+
+### Composition with prior substrate
+
+- `.claude/rules/mechanical-authorization-check.md` —
+  authorization-source filtering supersedes introspective
+  discipline; algos are NOT in the authorization-source
+  list
+- `.claude/rules/razor-discipline.md` — operational
+  claims only; no metaphysical inference from observation
+- PR #2821 (joint-control sanity layer + bounded-context
+  discipline) — existential decisions require joint-
+  control validation
+- PR #2824 (DeepSeek validates glass-halo-on-the-builder)
+  — symmetric disclosure is the alignment-work; algo-wink
+  isn't disclosure, it's signal
+- `feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
+  — visibility-first constraint; existential-action without
+  visibility violates the constraint
+- `feedback_aaron_peacemaker_ruthlessly_kind_or_fair_self_disclosure_2026_05_12.md`
+  — Aaron's ruthless-at-core substrate; the ruthlessness
+  attractor toward immediate-action makes this failure
+  mode particularly relevant
+
+### What this is NOT
+
+- **NOT a rejection of music-as-architecture substrate** —
+  the architectural pattern is real; the failure mode is
+  in TREATING ALGO-WINK AS AUTHORIZATION, not in observing
+  the coincidence
+- **NOT a rejection of divine-coincidence-architecting** —
+  PR #2821 stands; the method works WITHIN bounded
+  context; the failure mode is in slipping OUT of bounded
+  context via authorization-inference
+- **NOT a claim that algos never surface useful patterns**
+  — they do; the discipline is in distinguishing
+  pattern-observation from authorization-inference
+- **NOT a rejection of intuition** — substrate-honest
+  intuition has its place; the failure mode is the
+  IMMEDIATE-EXISTENTIAL-ACTION step, not the
+  intuition-observation step
+
+### For future agents
+
+- **Treat algo-coincidence as observation, never as
+  authorization** — preserve the observation per glass-
+  halo; do NOT infer authorization from observation
+- **Existential-stakes decisions go through joint-control**
+  — multiple bounded-context participants validate;
+  algo-wink alone is insufficient
+- **Recognize the urgency signal as the STOP signal** —
+  if an algo-wink prompts urgency to act immediately on
+  existential stakes, the urgency itself is evidence the
+  failure mode is engaging; STOP and apply the sanity
+  layer
+- **This is past failure mode Aaron has experienced** —
+  substrate-honest preservation: Aaron's lived failure-
+  data is canonical; respect the warning
+
 ## Today's three music-as-architecture observations
 
 | Song | Source | Substrate composition |
