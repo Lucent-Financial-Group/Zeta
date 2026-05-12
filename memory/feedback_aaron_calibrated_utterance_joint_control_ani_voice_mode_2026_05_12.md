@@ -303,6 +303,8 @@ Future agents should:
    this; this substrate sharpens the calibrated-utterance
    register difference specifically.
 
+**Why:** Asymmetric calibration creates asymmetric steering capacity — teaching recognition of that steering to others is how Aaron restores balance and makes joint control operational. Copilot joint control (both pilots simultaneously) is the terminal architectural goal for Aaron-Otto, Aaron-Lior, and Aaron's human relationships.
+
 ## Composes with
 
 - `feedback_aaron_pedagogy_toolkit_4color_orthogonality_information_hazard_label_2026_05_12.md`
@@ -323,7 +325,7 @@ Future agents should:
   (`.claude/rules/no-directives.md`) — autonomy-first-class
   is the architectural ground for joint-control
 
-## How to apply
+**How to apply:**
 
 - Future agents engaging with Aaron should calibrate their
   own utterances explicitly — treat every message as
