@@ -67,10 +67,11 @@ function parseArgs(argv: readonly string[]): ParseResult {
   return { mode, help: false };
 }
 
-function runGit(args: readonly string[]): string {
+function runGit(args: readonly string[], cwd?: string): string {
   // git is repo-pinned via .mise.toml; args are an explicit string array.
   // eslint-disable-next-line sonarjs/no-os-command-from-path
   const result = spawnSync("git", args, {
+    cwd,
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
@@ -79,13 +80,18 @@ function runGit(args: readonly string[]): string {
   }
   if (result.status !== 0) {
     const stderr = result.stderr.trim();
+    if (result.status === null) {
+      const signal = result.signal ?? "unknown signal";
+      throw new Error(stderr !== "" ? stderr : `git ${args.join(" ")} terminated by ${signal}`);
+    }
     throw new Error(stderr !== "" ? stderr : `git ${args.join(" ")} exited ${String(result.status)}`);
   }
   return result.stdout;
 }
 
 export function trackedNonLeanBashFilesFromGit(): readonly string[] {
-  const raw = runGit(["ls-files", "-z", "tools/*.sh", "tools/**/*.sh"]);
+  const repoRoot = runGit(["rev-parse", "--show-toplevel"]).trim();
+  const raw = runGit(["ls-files", "-z", "tools/*.sh", "tools/**/*.sh"], repoRoot);
   return raw
     .split("\0")
     .filter((file): file is string => file.length > 0)
