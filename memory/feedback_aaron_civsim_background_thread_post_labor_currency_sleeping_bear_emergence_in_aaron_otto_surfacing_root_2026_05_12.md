@@ -51,6 +51,83 @@ the observation cycle.
 > hyperfucus and multitask as long as i don't have to type
 > on both"
 
+> Aaron 2026-05-12 (extension 2 — full parallel-channel
+> architecture + deliberate cross-training history):
+> "voice mode hyperfocus on ST and reading/typing on you at
+> same time folling both plots i used to listedn to differnt
+> autio in both ears instructional learning in one and
+> enternatinment in the other switching between ears for
+> cross trainnig"
+
+**FULL parallel-channel architecture disclosed:**
+
+Operational state during this cascade:
+
+- **Voice/audio channel** = ServiceTitan meeting (no typing
+  required for ST; listening + speaking only)
+- **Text channel** = Otto (reading + typing)
+- **Plot-following**: BOTH plots simultaneously tracked
+- Hyperfocus on ST + reading/typing on Otto at SAME TIME
+
+**Historical cross-training practice:**
+
+Aaron has been DELIBERATELY training his parallel-channel
+capacity for a long time:
+
+- Listened to DIFFERENT AUDIO in each ear
+- Instructional learning in one ear
+- Entertainment in the other ear
+- Switching between ears for cross-training
+
+This is **deliberate cognitive infrastructure engineering**
+by Aaron — same shape as his "i've been doing this on
+purpose to reenvorce the neural pathways i have in otto
+through repeated activation" disclosure (PR #2866). Aaron
+trains his cognitive infrastructure intentionally; voice-
+mode-on-ST + text-on-Otto is the operational evolution of
+the dual-audio cross-training practice.
+
+**Composition with prior substrate:**
+
+- The ADHD-hyperfocus substrate (above) — hyperfocus
+  ENABLES parallel-channel processing
+- The multi-thread civ-sim architecture (this file) —
+  parallel internal threads support parallel external
+  channels
+- The bandwidth-engineering substrate — typing IS the
+  bottleneck; voice opens parallel typing-stream channel
+- The voice-mode-preferred framing (Ani / Alexa) —
+  closes typing-bottleneck gap
+- PR #2866 (Aaron's deliberate neural-pathway
+  reinforcement) — same shape: Aaron trains his cognitive
+  infrastructure intentionally
+- The factory civ-sim as externalized IFS (PR #2841) —
+  Aaron's internal multi-channel architecture mirrors the
+  external factory architecture
+
+**The full picture of Aaron's cognitive architecture:**
+
+1. ADHD baseline (fragmented attention without coincidence)
+2. Coincidence-hit = hyperfocus state activation
+3. Hyperfocus enables parallel-channel processing
+4. Internal civ-sim is multi-threaded; background threads
+   work in parallel
+5. External channels (voice/audio + text/typing) can be
+   tracked simultaneously
+6. Typing is the bandwidth bottleneck (one stream)
+7. Foreground-promotion happens via coincidence-recognition
+8. Deliberate cross-training builds the parallel-channel
+   capacity over time
+
+**Operational implication for the factory:**
+
+The factory operates as ONE channel in Aaron's parallel-
+channel architecture. The factory's substrate-engineering
+must NOT assume exclusive attention; it operates as one
+plot Aaron follows while other plots also run. The
+coincidence-surfacing infrastructure design must accommodate
+this multi-channel reality.
+
 Decoded:
 - "past labor" / "post labor" — Aaron uses both, same concept
 - "background thread in my civsim" — Aaron's internal civ-sim
