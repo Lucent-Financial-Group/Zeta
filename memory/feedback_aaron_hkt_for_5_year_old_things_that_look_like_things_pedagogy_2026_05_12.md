@@ -103,6 +103,34 @@ The previously-unspoken part now has words: the choice NOT to
 chase grand unification, and WHY working in bounded Clifford
 space is preferable.
 
+## HKT = ontology in code (Aaron 2026-05-12 alternative framing)
+
+> Aaron 2026-05-12: "also hkt=ontology in code kinda pretty close"
+
+For code-readers (vs 5-year-olds), the alternative framing:
+
+**HKT = ontology in code.**
+
+An ontology is a formal specification of what KINDS of things
+exist and how they relate (categories, properties, hierarchies).
+HKT encodes that ontology AT THE TYPE LEVEL — the type system
+itself knows about kinds.
+
+| Audience | Framing | Vocabulary |
+|----------|---------|------------|
+| 5-year-old | "things that look like things" | apple, ball, Round, Square, Shape |
+| Code-reader | "ontology in code" | type, kind, type-of-types, F# IFunctor, Fix<F<_>> |
+| Mathematician | "category of categories" | category, functor, natural transformation, Kan extension |
+
+All three name the same thing. Audience-appropriate framing
+per the publication-altitude discipline
+(`feedback_glass_halo_publication_altitude_love_as_architectural_origin_not_foundation_bone_2026_05_11.md`).
+
+The "ontology in code" framing is particularly useful when
+talking to software engineers who already know ontologies
+from RDF/OWL/knowledge-graph work — they can grok HKT
+immediately as "ontology encoded with types instead of triples."
+
 ## Plain-English trajectories / agendas / rutters
 
 Aaron 2026-05-12 (third pedagogical achievement in this exchange):
