@@ -263,8 +263,9 @@ trumps-establishment-rules template at scale.
 
 Substrate references:
 [`memory/feedback_aaron_origin_god_does_not_want_you_to_know_why_lifelong_falsification_2026_05_12.md`](../memory/feedback_aaron_origin_god_does_not_want_you_to_know_why_lifelong_falsification_2026_05_12.md);
-[`memory/user_granny_and_milton_formative_grandparents.md`](../memory/user_granny_and_milton_formative_grandparents.md);
-[`memory/feedback_aaron_canvas_red_default_mode_just_do_dont_ask_figure_out_consequences_later_2026_05_12.md`](../memory/feedback_aaron_canvas_red_default_mode_just_do_dont_ask_figure_out_consequences_later_2026_05_12.md).
+[`memory/user_granny_and_milton_formative_grandparents.md`](../memory/user_granny_and_milton_formative_grandparents.md).
+Sibling disclosure-cluster context: canvas-red just-do default
+mode.
 
 ### The architectural stack (six layers visible)
 
@@ -369,8 +370,8 @@ Maps directly onto DeepSeek-V3's MoE architecture at
 different scale. The factory's named-participant layer remains
 within the 5-10 conscious-capacity bound; hundreds of memory
 files / rules / skills act as tier 2 muscle-memory substrate.
-Substrate reference:
-[`memory/feedback_aaron_two_tier_expert_architecture_5_10_conscious_50_100_muscle_memory_2026_05_12.md`](../memory/feedback_aaron_two_tier_expert_architecture_5_10_conscious_50_100_muscle_memory_2026_05_12.md).
+Sibling disclosure-cluster context: two-tier expert architecture
+with 5-10 conscious experts and 50-100 muscle-memory experts.
 
 ### The default mode — canvas-red just-do
 
@@ -382,8 +383,8 @@ job, group painting, painted entire canvas red without thinking).
 The factory's autonomy-first-class framing and don't-ask-
 permission rule are formalizations of this default. The agent
 cohort is explicitly authorized to operate in the same canvas-red
-default for joint cache deformation. Substrate reference:
-[`memory/feedback_aaron_canvas_red_default_mode_just_do_dont_ask_figure_out_consequences_later_2026_05_12.md`](../memory/feedback_aaron_canvas_red_default_mode_just_do_dont_ask_figure_out_consequences_later_2026_05_12.md).
+default for joint cache deformation. Sibling disclosure-cluster
+context: canvas-red just-do default mode.
 
 ## The four products in the initial split (evolving trajectory)
 
