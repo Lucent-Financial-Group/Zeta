@@ -2,6 +2,7 @@
 name: The DNA control structure tamed — 5 kids, ended marriages, now runs in slow motion (success metric)
 description: 2026-05-12 — Aaron synthesizes the biological control structure thread: the SAME DNA control system caused him to have 5 kids despite not wanting any, ended his marriages, AND now runs in slow motion (annoying and repetitive instead of catastrophic) because of the shadow work he's done on it. This is the real success metric — not eliminating the biological control structure (impossible; it IS biology) but slowing its overrides to a speed that makes them observable, contestable, and survivable. Composes the three-control-structures framework with the shadow work method and produces a measurable success criterion.
 type: feedback
+created: 2026-05-12
 ---
 
 ## What Aaron said
