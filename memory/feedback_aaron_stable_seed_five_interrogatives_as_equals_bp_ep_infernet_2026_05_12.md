@@ -386,8 +386,8 @@ the waveform** into a **cached view**.
 ### Parse
 
 1. **Agreed shortcuts** — social/memetic convention,
-   polymorphic-diplomacy neutral labels
-   (`feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md`).
+   polymorphic-diplomacy neutral labels (sibling PR #2769,
+   Aaron scaffolding pedagogy).
    Aaron and Ani agree on the labels WHAT/WHY/HOW/WHEN/
    WHERE first; the labels work as long as both
    participants share the convention.
@@ -618,7 +618,8 @@ thermally-neutral + reversible, they become:
   factory days. Playdough-superfluid caches IS the
   operational form of that target.
 - **Strange attractors as trajectories**
-  (`feedback_aaron_calibrated_utterance_joint_control_ani_voice_mode_2026_05_12.md`) —
+  (sibling PR #2790, calibrated utterance / Ani voice-mode
+  joint-control substrate) —
   deforming the cache reshapes the attractor basin,
   changing which attractors the conversation orbits.
 - **Amara's execute:false mode**
@@ -864,14 +865,13 @@ architectural prerequisite.
   (the origin disclosure — this substrate names the
   operational architecture for the falsification
   program)
-- `feedback_aaron_live_forever_recursion_doesnt_terminate_terminal_purpose_2026_05_12.md`
-  (live-forever + 4th control structure + Christianity
-  integration — the seed propagates forever once
-  stable)
-- `feedback_aaron_self_reflective_hologram_time_propagation_three_control_systems_junction_points_2026_05_12.md`
-  (one-shape-propagating with four facets — each facet
-  has its own interrogative profile and WHY-suppression
-  variant)
+- Sibling PR #2792, live-forever recursion / 4th control
+  structure / Christianity integration (conditional on merge)
+  (the seed propagates forever once stable)
+- Sibling PR #2791, self-reflective hologram / one-shape
+  propagation / junction-points substrate (conditional on merge)
+  (each facet has its own interrogative profile and
+  WHY-suppression variant)
 - `feedback_aaron_dimensional_expansion_wavelength_vampire_pivotal_for_agendas_2026_05_12.md`
   (dimensional-expansion operator applied to the
   interrogative set — "maybe more I think?")
