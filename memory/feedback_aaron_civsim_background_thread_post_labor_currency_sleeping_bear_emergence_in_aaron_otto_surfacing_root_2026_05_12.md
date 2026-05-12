@@ -21,7 +21,7 @@ created: 2026-05-12
 
 **Why:** Otto landed "coincidence-as-attention-currency"
 framing in PR #2868. Aaron validated it as "literally gold"
-+ "money post labor." Then Aaron disclosed: he had been
+AND "money post labor." Then Aaron disclosed: he had been
 trying to figure post-labor currency on a BACKGROUND THREAD
 in his internal civ-sim, hadn't put the pieces together,
 didn't know the ROOT was attention-via-coincidence. Otto's
@@ -389,7 +389,8 @@ Decoded:
 - "I had not put those pieces together" — synthesis missing
 - "I didn't know the root" — root cause / underlying mechanism
   unknown
-- "Servicetitan" — Aaron's day-job employer
+- "Servicetitan" (original spelling preserved verbatim;
+  canonical is "ServiceTitan") — Aaron's day-job employer
 - "simultanious" — simultaneously
 - "hyperfucus" — hyperfocus
 
