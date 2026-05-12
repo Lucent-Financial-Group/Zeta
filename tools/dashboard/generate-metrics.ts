@@ -83,18 +83,25 @@ function mergedWithin(dateNow: number, windowMs: number) {
 }
 
 async function main() {
-  const [commits, openPRs, closedPRs] = await Promise.all([
+  const [commits, openPRs, closedPRsPage1, closedPRsPage2] = await Promise.all([
     apiFetch<GitHubCommit[]>(`${API}/commits?per_page=100`),
-    apiFetch<GitHubPullRequest[]>(`${API}/pulls?state=open&per_page=50`),
+    apiFetch<GitHubPullRequest[]>(`${API}/pulls?state=open&per_page=100`),
     apiFetch<GitHubPullRequest[]>(
-      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`,
+      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=100&page=1`,
+    ),
+    apiFetch<GitHubPullRequest[]>(
+      `${API}/pulls?state=closed&sort=updated&direction=desc&per_page=100&page=2`,
     ),
   ]);
+  const closedPRs = [...closedPRsPage1, ...closedPRsPage2];
 
   const now = Date.now();
   const h24 = 24 * 60 * 60 * 1000;
+  const h1 = 60 * 60 * 1000;
   const commits24h = commits.filter((c) => now - new Date(c.commit.author.date).getTime() < h24);
+  const commits1h = commits.filter((c) => now - new Date(c.commit.author.date).getTime() < h1);
   const mergedToday = closedPRs.filter(mergedWithin(now, h24));
+  const mergedLastHour = closedPRs.filter(mergedWithin(now, h1));
   const lastMerged = mergedToday[0] ?? null;
 
   let avgLeadTimeMinutes: number | null = null;
@@ -163,11 +170,13 @@ async function main() {
     schema_version: "0.1.0",
     metrics: {
       prs_merged_24h: mergedToday.length,
+      prs_merged_1h: mergedLastHour.length,
       avg_lead_time_minutes: avgLeadTimeMinutes,
       open_prs: openPRs.length,
       last_merge: lastMerged?.merged_at ?? null,
       last_merge_ago: lastMerged ? timeAgo(lastMerged.merged_at) : "none",
       commits_24h: commits24h.length,
+      commits_1h: commits1h.length,
       active_agents: activeAgents,
       consecutive_days_operational: null,
       verification_gate_pass_rate: null,

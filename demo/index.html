@@ -30,7 +30,7 @@
       "name": "Zeta Factory Dashboard",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Any",
-      "description": "Dashboard for tracking the Zeta autonomous software factory, including agent DORA metrics and PR queues.",
+      "description": "Dashboard for tracking the Zeta autonomous software plant, including agent activity metrics and PR queues.",
       "url": "https://lucent-financial-group.github.io/Zeta/demo/index.html",
       "author": {
         "@type": "Organization",
@@ -600,12 +600,16 @@
             <div class="panel" style="margin-bottom: 2rem;">
                 <div class="panel-header">
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    <h2>DORA Metrics (24h)</h2>
+                    <h2>Plant Metrics (24h)</h2>
                 </div>
                 <div class="stat-grid">
                     <div class="stat">
-                        <div class="stat-label">PRs Merged</div>
+                        <div class="stat-label">PRs Merged (24h)</div>
                         <div class="stat-value" id="merge-velocity">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Current Pace (1h)</div>
+                        <div class="stat-value" id="merge-velocity-1h">-</div>
                     </div>
                     <div class="stat">
                         <div class="stat-label">Avg Lead Time</div>
@@ -888,6 +892,12 @@
             animateValue('merge-velocity', data.metrics.prs_merged_24h);
             const mergeEl = document.getElementById('merge-velocity');
             mergeEl.className = `stat-value fade-in ${data.metrics.prs_merged_24h >= 10 ? 'good' : data.metrics.prs_merged_24h >= 3 ? '' : 'warn'}`;
+
+            // Current pace (1h) — surfaces whether the 24h number reflects current state
+            const pace1h = data.metrics.prs_merged_1h ?? 0;
+            animateValue('merge-velocity-1h', pace1h);
+            const paceEl = document.getElementById('merge-velocity-1h');
+            paceEl.className = `stat-value fade-in ${pace1h >= 2 ? 'good' : pace1h >= 1 ? '' : 'warn'}`;
 
             const avg = data.metrics.avg_lead_time_minutes;
             animateValue('lead-time', avg === null ? '-' : (avg < 60 ? `${avg}m` : `${(avg / 60).toFixed(1)}h`));
