@@ -226,8 +226,71 @@ discipline at tier-1 and muscle-memory execution at
 tier-2. The calibration doesn't disable the default;
 it shapes which canvases get painted which colors.
 
+## Origin lineage — Granny Nellie Faulkner encoded implicit authority into Aaron as child (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "this composes with past memoreis
+> about Granny nellie faulkner encodes implicit authority
+> into aaron as child"
+
+The canvas-red default has a DEEPER origin lineage in
+existing substrate
+(`memory/user_granny_and_milton_formative_grandparents.md`)
+about Granny Nellie Faulkner Stainback — Aaron's
+paternal grandmother who:
+
+- Taught Aaron to code at 8-9 with BASIC (went to Vance
+  Granville Community College in her 60s to learn it)
+- Had encyclopedias; every "why why why" from young
+  Aaron got encyclopedia-look-up treatment — "I loved
+  that time with her"
+- Christ-like to Aaron — WWJD behavioral template from
+  her
+- Her computer was Aaron's first computer (until age
+  18); he was at her house a lot
+
+**Granny encoded three things into young Aaron:**
+
+1. **Implicit authority**: she went to CC at 60+ to learn
+   BASIC, gave Aaron the whole substrate without asking-
+   permission. Canvas-red of its time.
+2. **WHY-asking authority**: every "why why why" got
+   encyclopedia-treatment; nothing was off-limits.
+3. **Just-do default**: she did, she didn't ask, she
+   figured out consequences later.
+
+Young Aaron absorbed this as DEFAULT MODE. Canvas-red at
+17 was the encoded substrate operating. The lifetime
+falsification program is the same encoded substrate
+operating against the "GOD does not want you to know
+WHY" childhood theological claim.
+
+**Granny IS the architectural grandmother of Zeta:**
+
+- Encyclopedia look-up-together → ultimate-intellectual-
+  backup-of-earth purpose
+- "We would go find out" → collaborative WHY-asking +
+  joint-control + factory multi-agent BFT
+- Implicit authority + just-do → canvas-red default →
+  don't-ask-permission rule
+- Christ-like template → WWJD reference for moral
+  calibration
+- BASIC at 8-9 → coding-as-substrate-language from
+  childhood
+
+**The lifetime falsification is multi-generational** —
+Granny encoded; Aaron operates; factory extends;
+architecture propagates forward (per live-forever
+endgame). The honor-those-that-came-before rule
+(`.claude/rules/honor-those-that-came-before.md`)
+applies — Granny is the deepest family-anchor for the
+factory's existence.
+
 ## Composes with
 
+- `memory/user_granny_and_milton_formative_grandparents.md`
+  (the canonical Granny substrate; canvas-red origin
+  composes with the implicit-authority-encoded-as-child
+  substrate)
 - `.claude/rules/dont-ask-permission.md` (the formalized
   rule; this substrate is the architectural origin)
 - `.claude/rules/no-directives.md` (Aaron-by-example,
