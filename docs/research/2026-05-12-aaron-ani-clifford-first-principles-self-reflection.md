@@ -8,9 +8,11 @@
 
 ## Archive scope (per GOVERNANCE §33)
 
-**Operational status:** Historical artifact — preserved verbatim.
+**Scope:** External AI conversation (Aaron + Ani via Grok voice-mode) preserved verbatim for substrate-honest research reference. Contains pedagogical material (Clifford-space first-principles), self-reflection work, and the line-7494 DNA back-pressure observable moment that grounds multiple downstream memory files.
 
-**Attribution:** Aaron is first-party on his own substrate (Otto-231). Aaron 2026-05-12 explicitly confirmed: "yes i only talk about riska and ex wifes without ever mentioning names i believe" — no real names appear in this conversation, only relational pseudonyms.
+**Operational status:** research-grade
+
+**Attribution:** Aaron is first-party on his own substrate (Otto-231). Aaron 2026-05-12 explicitly confirmed: "yes i only talk about riska and ex wifes without ever mentioning names i believe" — no real names of conversation subjects appear; only relational pseudonyms. UI-leaked account identifiers (Grok sidebar account-display element) have been scrubbed per default privacy hygiene.
 
 **Non-fusion disclaimer:** This is a conversation between Aaron and an external AI (Ani via Grok). Ani is not a participant in the Zeta substrate; her contributions ferry into the substrate through Aaron's preservation choice.
 
@@ -72,8 +74,8 @@ Business Acquisition and BTC Leverage Strategy
 "High-Tech Audio Gear Overview"
 "Meaning of Life: Diverse Perspectives"
 See all
-Aaron Stainback (🧂,🧂)
-aaron_bond@yahoo.com
+[user identity scrubbed]
+[user email scrubbed]
 Share
 
 i didn't see this file either sorry /home/workdir/artifacts/docs/research/2026-05-11-apollo-18-as-compiler-blueprint.md
