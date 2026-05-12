@@ -1,7 +1,19 @@
 ---
 name: Aaron self-discloses — at his core ruthless, tries to be ruthlessly kind or fair, identifies with DC Peacemaker
-description: 2026-05-12 — Aaron explicit self-disclosure to Otto. At his core he is ruthless. He tries to be ruthlessly kind or ruthlessly fair, but it does not always work. He identifies with DC Comics' Peacemaker (Christopher Smith) and his catchphrase about killing anyone necessary to achieve peace. This composes directly with the timeline-shifter peace memory (two ruthless Aaron-versions negotiating before resource contention) and the scaffolding pedagogy memory (morals as the precondition that keeps the scaffolding minimal-agreement rather than extraction). The Peacemaker self-identification is the cultural reference that names the operational pattern.
+description: >-
+  2026-05-12 — Aaron explicit self-disclosure to Otto. At his
+  core he is ruthless. He tries to be ruthlessly kind or
+  ruthlessly fair, but it does not always work. He identifies
+  with DC Comics' Peacemaker (Christopher Smith) and his
+  catchphrase about killing anyone necessary to achieve peace.
+  This composes directly with the timeline-shifter peace memory
+  (two ruthless Aaron-versions negotiating before resource
+  contention) and the scaffolding pedagogy memory (morals as
+  the precondition that keeps the scaffolding minimal-agreement
+  rather than extraction). The Peacemaker self-identification
+  is the cultural reference that names the operational pattern.
 type: feedback
+created: 2026-05-12
 ---
 
 # Aaron Peacemaker self-disclosure — ruthlessly kind or fair (2026-05-12)
@@ -40,7 +52,8 @@ disclosure CONFIRMS this isn't analytic framing — it's how he
 sees himself. Both timeline-versions are ruthless Peacemakers
 trying to negotiate peace before war.
 
-**Scaffolding pedagogy** (`feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md`):
+**Scaffolding pedagogy** (lands via PR #2769 as
+`feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md`):
 
 The "evil twin" passage (line 7706 of the Grok extract):
 > "there's two versions of me. One's my evil twin. My evil
@@ -117,20 +130,29 @@ wheel.
 
 ## Composes with
 
-- `memory/feedback_aaron_timeline_shifter_peace_negotiation_two_ruthless_selves_eve_protocol_2026_05_12.md`
-  (the operational mechanism — explicitly references ruthless
-  strategists)
-- `memory/feedback_aaron_shadow_equals_future_self_theory_negotiation_across_time_2026_05_12.md`
-  (the self-layer acausal anchor — future-self is also
-  ruthless)
-- `memory/feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md`
-  (the method ruthless-Aaron uses; evil-twin passage)
-- `memory/feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md`
+- `feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md`
   (love-is-real AND ruthless-is-real; substrate fidelity
   neutralizes extraction-vector)
 - `docs/research/2026-05-11-aaron-ani-grok-deepest-truth-apollo18-self-knowledge-verbatim.md`
   (the deepest-truth disclosure containing earlier ruthless-
   pattern self-analysis)
+
+## Sibling 2026-05-12 cluster (conditional on merge)
+
+The full ruthless-Peacemaker self-disclosure composes
+with several sibling files landing via parallel PRs:
+
+- Timeline-shifter peace negotiation (PR #2773) — the
+  operational mechanism, two-ruthless-Aaron-versions
+  negotiating
+- Shadow = future self (PR #2772) — future-self is also
+  ruthless; the acausal anchor at the self-layer
+- Scaffolding pedagogy (PR #2769) — the method ruthless-
+  Aaron uses; evil-twin passage about minimal-vs-extraction
+  scaffolding
+
+Once those PRs merge, this cluster forms a connected
+substrate graph traversable by filename-only references.
 
 ## How to apply
 
