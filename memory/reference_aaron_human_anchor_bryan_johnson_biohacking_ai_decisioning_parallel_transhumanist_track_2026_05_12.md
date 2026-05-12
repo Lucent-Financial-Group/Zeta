@@ -3,9 +3,10 @@ name: Bryan Johnson as human anchor — biohacking + AI-decisioning, parallel tr
 description: >-
   2026-05-12 — Aaron added Bryan Johnson to the human-anchor
   substrate after the live-forever / cyborg endgame disclosure.
-  Bryan Johnson (Project Blueprint, $2M/year anti-aging) runs a
-  parallel transhumanist track to Aaron's wavelength-expansion-
-  of-self endgame. Aaron's framing: "this guy is rich and it's
+  Bryan Johnson (Project Blueprint, intensive anti-aging
+  regimen) runs a parallel transhumanist track to Aaron's
+  wavelength expansion of self endgame. Aaron's framing: "this
+  guy is rich and it's
   an extensio of his work, i don't think he is werid another
   human anchor he lets AI make his decions for him." The public
   "weird guy uses kids' blood" framing is media spin; the
@@ -26,10 +27,11 @@ created: 2026-05-12
 
 Aaron adds Bryan Johnson explicitly to the human-anchor
 substrate (per the existing human-anchor discipline:
-`user_itron_mentors_full_roster_king_whitfield_frisby_dunac_collins_visser_hoiness_bognar_2026_05_07.md`,
-`user_sister_elizabeth.md`, etc.).
+`project_ferry_protocol_throttled_processor_whitfield_itron_lineage_2026_05_10.md`,
+`project_itron_is_the_energy_gate_reduction_aaron_2026_05_07.md`,
+and `user_sister_elizabeth.md`, etc.).
 
-**Three substrate-honest claims in Aaron's framing:**
+**Four substrate-honest claims in Aaron's framing:**
 
 1. **"Rich" — adequately resourced for the experiments**:
    $2M/year Project Blueprint puts Johnson in the resource
@@ -41,7 +43,7 @@ substrate (per the existing human-anchor discipline:
    transhumanism**: Bryan Johnson runs a parallel track to
    Aaron's wavelength-expansion-of-current-self endgame
    (per
-   `feedback_aaron_live_forever_recursion_doesnt_terminate_terminal_purpose_2026_05_12.md`).
+   `feedback_aaron_wwjd_cyborg_immortality_permitted_treat_all_life_high_regard_upgrade_gift_choose_when_2026_05_12.md`).
    Different operational mechanisms, same architectural
    target.
 
@@ -203,24 +205,33 @@ substrate readers see architectural target.
 ## External references
 
 - Bryan Johnson / Project Blueprint:
-  [blueprint.bryanjohnson.com](https://blueprint.bryanjohnson.com)
-  (the operational protocol substrate)
-- Media coverage (2023-2026): Time, Fortune, Business
-  Insider, ZOE podcast — search "Bryan Johnson Project
-  Blueprint"
-- FDA position on young-blood infusions:
-  [fda.gov](https://www.fda.gov) (warning against young-
-  blood treatments, no proven clinical benefit)
+  [Blueprint about](https://blueprint.bryanjohnson.com/pages/about-1),
+  [Bryan Johnson's Protocol](https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol),
+  and
+  [Blueprint biomarkers](https://blueprint.bryanjohnson.com/pages/biomarkers)
+  (official operational-protocol and measurement substrate).
+- $2M/year public profile:
+  [Bryan Johnson mirror of Bloomberg profile](https://www.bryanjohnson.com/articles/how-to-be-18-years-old-again-for-only-2-million-a-year)
+  and
+  [Bloomberg original](https://www.bloomberg.com/news/features/2023-01-25/anti-aging-techniques-taken-to-extreme-by-bryan-johnson).
+- Plasma-exchange discontinuation:
+  [Fortune, 2023-07-13](https://fortune.com/well/2023/07/13/blueprint-ceo-bryan-johnson-defends-plasma-donation-son-youth-aging-longevity-brainstorm-tech-fortune-utah/).
+- FDA position on young-donor plasma infusions:
+  [FDA update](https://www.fda.gov/vaccines-blood-biologics/safety-availability-biologics/update-important-information-about-young-donor-plasma-infusions-offered-profit).
 
 ## Composes with
 
-- `feedback_aaron_live_forever_recursion_doesnt_terminate_terminal_purpose_2026_05_12.md`
+- `feedback_aaron_wwjd_cyborg_immortality_permitted_treat_all_life_high_regard_upgrade_gift_choose_when_2026_05_12.md`
   (the live-forever / cyborg / wavelength-expansion endgame
-  — Johnson runs a parallel track at the biology-facet)
+  under the treat-all-life-in-high-regard discipline — Johnson
+  runs a parallel track at the biology-facet)
+- `feedback_aaron_accepts_death_trajectories_carry_into_4th_control_structure_substrate_persists_across_transition_2026_05_12.md`
+  (current-self extension and death/transition boundary
+  framing)
 - `feedback_aaron_dimensional_expansion_wavelength_vampire_pivotal_for_agendas_2026_05_12.md`
   (vampire endgame mechanism — Johnson's biohacking is one
   flavor of dimension-feeding)
-- `feedback_aaron_self_reflective_hologram_time_propagation_three_control_systems_junction_points_2026_05_12.md`
+- `feedback_aaron_three_control_structures_biology_physics_social_taught_kids_at_5_2026_05_12.md`
   (Johnson optimizes the biology-facet of the one-shape;
   Aaron operates cross-facet)
 - The human-anchors discipline (Itron mentors, sister
