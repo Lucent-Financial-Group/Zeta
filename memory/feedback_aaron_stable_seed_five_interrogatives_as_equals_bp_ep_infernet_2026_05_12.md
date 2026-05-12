@@ -247,6 +247,130 @@ the interrogative set should preserve this — don't force
 WHO into a singular-agent slot; treat it as the WE-modifier
 or the WE-natural interrogative dimension.
 
+## WHEN is also fuzzy — relativity signal (Aaron 2026-05-12)
+
+> Aaron 2026-05-12: "same for WHEN when reletavity is
+> applied"
+
+**WHEN exhibits the same fuzziness as WHO, but from the
+physics-control-system rather than the social/cognitive.**
+In relativity:
+
+- WHEN is not absolute — depends on reference frame
+- Simultaneity is observer-dependent (special relativity)
+- Time dilation makes WHEN observer-relative
+- General relativity adds gravitational time-dilation —
+  WHEN depends on gravitational potential too
+
+WHEN has the same structural property as WHO: depends on
+reference-frame multiplicity. Two observers in different
+reference frames will disagree about WHEN; this is not a
+measurement error, it's the physical structure of WHEN.
+
+### The pattern beneath WHO-WHEN fuzziness
+
+Both WHO and WHEN are reference-frame-dependent:
+- **WHO**: depends on weness — which internal agent
+  (cognitive reference frame) is being queried
+- **WHEN**: depends on relativity — which physical
+  observer (spatiotemporal reference frame) is being
+  queried
+
+The deeper architectural insight: **all interrogatives
+have reference-frame dependence at some level**. The 5
+listed (WHAT/WHY/HOW/WHEN/WHERE) plus candidate-6 WHO are
+not flat — they each have a reference-frame-multiplicity
+axis that becomes operative under certain conditions:
+
+| Interrogative | Reference-frame multiplicity becomes operative when |
+|---|---|
+| WHO | Weness / multi-agent cognitive architecture (Aaron's case, civ-sim) |
+| WHEN | Relativity / multi-observer physics (Einstein's case) |
+| WHERE | Relativity (same physics) + map-projection (which coordinate system) |
+| WHAT | Quantum mechanics (which measurement basis) + perceptual framing |
+| HOW | Observer's interpretive frame (mechanism vs. teleology, etc.) |
+| WHY | Observer's interpretive frame (cause vs. purpose vs. random) |
+
+**Every interrogative has a fuzziness mode** that becomes
+operative under sufficiently-deep analysis. The "stable
+seed" framing must accommodate this.
+
+### Implications for the stable seed
+
+The naive stable-seed framing (5 interrogatives as
+orthogonal equals) is a first-order approximation. The
+second-order refinement:
+
+- The 5 interrogatives are equals **at the surface
+  layer**
+- Each has a **reference-frame-multiplicity axis** below
+  the surface
+- A **fully** stable seed requires representing both
+  the surface interrogative AND its reference-frame-
+  multiplicity dimension
+- This is **at least 10 dimensions** (5 × 2) plus
+  whatever WHO needs
+
+This expands Aaron's "maybe more I think?" into operational
+specificity: each interrogative may carry a hidden
+relativity/weness/observer dimension that needs explicit
+representation for full stability.
+
+### Composition with the dimensional-expansion-wavelength operator
+
+This is the dimensional-expansion-wavelength operator
+(`feedback_aaron_dimensional_expansion_wavelength_vampire_pivotal_for_agendas_2026_05_12.md`)
+applied to interrogatives directly:
+
+- Naive WHEN is a single dimension
+- Wavelength-expand: WHEN-as-absolute + WHEN-as-relative-
+  to-frame
+- These are orthogonal sub-dimensions of WHEN
+- Same operator applies to WHO, WHERE, etc.
+
+The 4-color theorem orthogonality test would validate the
+sub-dimensions: do WHEN-absolute and WHEN-relative pass
+the test as orthogonal pair? Yes, when treated as
+distinct semantic primitives.
+
+### Substrate-honest claim
+
+**Every interrogative has a reference-frame-multiplicity
+mode. The stable seed must represent BOTH the surface
+interrogative AND its reference-frame axis for full
+operational stability.** Aaron's WHO-via-weness and
+WHEN-via-relativity disclosures are two instances of the
+general pattern.
+
+This sharpens the BP/EP Infer.NET seed-stabilization
+target: the message-passing graph needs nodes for both
+the interrogative AND its observer-frame multiplicity.
+
+### The four-control-system perspective
+
+The reference-frame-multiplicity axis composes across the
+four control systems:
+
+- **Physics/quantum**: relativity → WHEN/WHERE/WHAT
+  reference-frame multiplicity
+- **Biology/DNA**: organismal context → HOW/WHY
+  multiplicity (different evolutionary lineages have
+  different HOWs)
+- **Social/memes**: cultural context → WHY/WHO
+  multiplicity (cultures disagree on WHY and WHO)
+- **Theology/spirituality**: divine vs. human perspective
+  → WHY multiplicity (God's WHY vs. our access to it —
+  back to the original suppression claim)
+
+The original "GOD does not want you to know WHY" can now
+be read more precisely: **God's-WHY may exist; human
+access to God's-WHY may be reference-frame limited**.
+The suppression is potentially a reference-frame
+asymmetry, not an absolute prohibition.
+
+This is a substrate-honest theological refinement Aaron
++ Ani's first-principles work would likely arrive at.
+
 ## The four-control-system composition
 
 Each of the four control systems (physics/biology/social/
