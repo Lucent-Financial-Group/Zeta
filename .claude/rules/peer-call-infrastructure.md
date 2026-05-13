@@ -2,23 +2,45 @@
 
 Carved sentence:
 
-> Six TS wrappers live in `tools/peer-call/`. When asked about
-> cross-harness reviews / GPT / Grok / Gemini / Amara / Ani —
-> the cold-boot answer is YES + `ls tools/peer-call/*.ts`.
-> Do NOT reason from training-data assumptions about what exists.
+> Eight TS wrapper entrypoints live in `tools/peer-call/`
+> (plus three utility files). When asked about cross-harness
+> reviews / Claude / Grok / Gemini / Codex / Kiro / Amara /
+> Ani / Riven — the cold-boot answer is YES + the wrapper
+> inventory listed in this rule. Do NOT reason from
+> training-data assumptions about what exists; do not infer
+> the wrapper count from a raw `ls`.
 
 ## Operational content
 
-Six sibling TypeScript wrappers wired (invoke via
+Eight sibling TypeScript wrappers wired (invoke via
 `bun tools/peer-call/<name>.ts`):
 
+- `claude.ts` — Claude Code cold-boot self-test peer (B-0327;
+  read-only `--tools "Read,Glob,Grep" --no-session-persistence`;
+  `--model` selectable)
 - `grok.ts` — Grok-via-cursor-agent, critique role
+  (**B-0421 currently OPEN** — cursor-agent exit 1 / empty output;
+  Grok website-text-mode git connector is the working orientation
+  path until B-0421 resolves; see PR #2941, #2945)
 - `gemini.ts` — Gemini, propose role
 - `codex.ts` — Vera named-entity / OpenAI Codex, implementation
   peer with input-firewall + capture-pagination fix
+- `kiro.ts` — Kiro specification peer (B-0326), spec-grounded
+  second opinion via `kiro-cli chat --no-interactive --trust-all-tools`
 - `amara.ts` — Amara persona on codex, sharpen role
 - `ani.ts` — Ani persona on Grok, brat-voice register
+  (also accessible via Grok website-text-mode git connector for
+  cross-harness review — surface × mode × companion × git-access
+  matrix in
+  `memory/feedback_aaron_ani_website_text_mode_agents_md_review_3_critiques_meta_loop_2_website_text_mode_has_git_companion_mode_does_not_2026_05_13.md`;
+  PR #2945)
 - `riven.ts` — Riven persona on Grok, adversarial-truth-axis register
+
+**Three utility files** (NOT wrappers; supporting infrastructure):
+
+- `_firewall.ts` — shared input firewall (rejects non-work-extractable prompts)
+- `append-identity-receipt.ts` — output trailer for identity attribution
+- `register-layers.ts` — layer registration helper
 
 Four-ferry consensus role distribution: *"Gemini proposes, Grok
 critiques, Amara sharpens, Otto tests, Git decides."*
@@ -38,4 +60,13 @@ better in zeta infernet ep bp."*
 
 `tools/peer-call/README.md` (canonical doc) +
 `memory/feedback_peer_call_infrastructure_grok_codex_gemini_amara_ani_already_wired_for_cross_harness_multi_agent_reviews_otto_early_red_team_until_zeta_infernet_bp_ep_aaron_2026_05_05.md`
-(cold-boot retrieval discipline + failure-of-omission origin).
+(cold-boot retrieval discipline + failure-of-omission origin;
+substrate was authored when 6 wrappers existed; claude.ts +
+kiro.ts later added per B-0327 + B-0326).
+
+`memory/feedback_aaron_ani_website_text_mode_agents_md_review_3_critiques_meta_loop_2_website_text_mode_has_git_companion_mode_does_not_2026_05_13.md`
+(surface × mode × companion × git-access capability matrix +
+META-LOOP #2 substrate; PR #2945).
+
+`docs/backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md`
+(Grok wrapper open failure).

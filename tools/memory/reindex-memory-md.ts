@@ -89,14 +89,15 @@ function dateFromFilename(filename: string): string {
   return `${match[1]}-${match[2]}-${match[3]}`;
 }
 
-async function collectEntries(): Promise<MemoryEntry[]> {
-  const files = await readdir(MEMORY_DIR);
+async function collectEntries(dir?: string): Promise<MemoryEntry[]> {
+  const targetDir = dir ?? MEMORY_DIR;
+  const files = await readdir(targetDir);
   const entries: MemoryEntry[] = [];
   for (const filename of files) {
     if (!filename.endsWith(".md")) continue;
     if (filename === "MEMORY.md" || filename === "README.md") continue;
     if (filename.startsWith("CURRENT-")) continue;
-    const filePath = join(MEMORY_DIR, filename);
+    const filePath = join(targetDir, filename);
     const content = await readFile(filePath, "utf8");
     const fm = parseFrontmatter(content);
     if (!fm) continue;
@@ -185,4 +186,4 @@ if (import.meta.main) {
   });
 }
 
-export { collectEntries, renderIndex, parseFrontmatter };
+export { collectEntries, renderIndex, parseFrontmatter, PREAMBLE_MARKER, PREAMBLE_END, MAX_STACK_ENTRIES };
