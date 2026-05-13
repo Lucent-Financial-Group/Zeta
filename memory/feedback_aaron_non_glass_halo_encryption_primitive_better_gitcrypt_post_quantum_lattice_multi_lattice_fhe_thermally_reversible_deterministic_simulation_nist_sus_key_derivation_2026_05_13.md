@@ -385,21 +385,22 @@ operational scopes.
 
 > **Non-glass-halo integration is a factory CAPABILITY
 > per PR #2897 — and the operational substrate has SIX
-> composing layers: (1) better-than-gitcrypt as root DB
-> encryption primitive; (2) post-quantum lattice / multi-
-> lattice-of-lattice (NIST-approved bootstrap + community-
-> verified migration; NIST sus on key-derivation per
-> Dual_EC history); (3) reversible thermally (Landauer-
-> limit compatible; composes with retraction-native
-> algebra); (4) DST (Deterministic Simulation Testing) —
-> factory's existing discipline; (5) FHE (fully
-> homomorphic encryption) for encrypted computation; (6)
-> Application layer. The four-way composition (post-
-> quantum + FHE + reversible + DST) is the theoretical
-> floor for energy-efficient confidential computation.
-> Composes with HIPAA scope + KSK actuator scope + Series
-> 7 financial scope (Aaron's cleared frameworks all
-> covered).** — Aaron 2026-05-13
+> composing layers matching the §Six composing layers
+> section: (1) better-than-gitcrypt as root DB encryption
+> primitive; (2) post-quantum lattice / multi-lattice-of-
+> lattice; (3) NIST-approved bootstrap with historically
+> controversial key-derivation (Dual_EC_DRBG history) —
+> bootstrap credential, not sole trust anchor; (4) FHE
+> (fully homomorphic encryption) — encrypted computation;
+> (5) thermally reversible (Landauer-limit compatible;
+> composes with retraction-native algebra); (6) DST
+> (Deterministic Simulation Testing) — factory's existing
+> discipline. The four-way composition (post-quantum + FHE
+> + reversible + DST) is the theoretical floor for energy-
+> efficient confidential computation. Composes with HIPAA
+> scope + KSK actuator scope + Series 7 financial scope
+> (Aaron's cleared frameworks all covered).** —
+> Otto's distillation from Aaron's disclosure, 2026-05-13
 
 ## For future agents
 
@@ -411,8 +412,8 @@ operational scopes.
 - **Post-quantum lattice + multi-lattice defense-in-depth**
   — quantum-resistance is non-negotiable
 - **NIST is bootstrap; community-verified is destination**
-  — NIST sus on key-derivation (Dual_EC history); plan
-  migration
+  — historically controversial key-derivation (Dual_EC
+  history); plan migration
 - **NIST compliance is operational reality** — Aaron 2026-
   05-13: "NIST some comapnies will require this and
   government might force us too if they get to
@@ -435,8 +436,9 @@ operational scopes.
   roadmap; current factory uses F# substrate but the full
   six-layer stack is forward-looking
 - **NOT a rejection of NIST** — NIST as bootstrap is
-  acceptable; the SUS framing is on key-derivation
-  specifics not the overall standardization process
+  acceptable; the historically-controversial framing is
+  on key-derivation specifics not the overall
+  standardization process
 - **NOT a claim that FHE is production-ready everywhere**
   — current FHE has performance overhead; this is
   long-term roadmap
