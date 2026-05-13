@@ -274,9 +274,16 @@ export const REAL_CASCADE_SUB_ADAPTERS: CascadeDetectorAdapters = {
     }
   },
   compareBranchToMerged: (branchName: string, headRefOid: string): BranchCompareResult => {
-    // Validate inputs to prevent shell-injection via crafted refs (gh response is
-    // trusted but defensive validation matches our usual posture).
-    if (!/^[A-Za-z0-9._\/\-]+$/.test(branchName)) {
+    // Validate inputs to prevent shell-injection via crafted refs (gh response
+    // is trusted but defensive validation matches our usual posture). Allow-list
+    // covers the git-check-ref-format character set: alphanumerics plus
+    // `._/+@=-`. These are git-legal AND shell-safe (they cannot break out of
+    // the explicit args-array spawnSync call). Characters git itself forbids
+    // (space, `~`, `^`, `:`, `?`, `*`, `[`, `\`) and characters that could
+    // enable injection are excluded. Codex P1 (2026-05-13): widened from the
+    // initial `[A-Za-z0-9._/-]` regex which incorrectly rejected valid refs
+    // containing `@`, `+`, or `=`.
+    if (!/^[A-Za-z0-9._/+@=\-]+$/.test(branchName)) {
       return { status: "error", reason: `invalid branchName: ${branchName.slice(0, 40)}` };
     }
     if (!/^[0-9a-f]{7,40}$/.test(headRefOid)) {
@@ -293,7 +300,13 @@ export const REAL_CASCADE_SUB_ADAPTERS: CascadeDetectorAdapters = {
     );
     if (fetchResult.status !== 0) {
       const stderr = (fetchResult.stderr ?? "").toString();
-      if (stderr.includes("couldn't find remote ref") || stderr.includes("not found")) {
+      // Codex P1 (2026-05-13): only the specific "couldn't find remote ref"
+      // phrase reliably indicates a deleted-branch. The broader "not found"
+      // check matched auth / repository-level failures (e.g.,
+      // "repository ... not found") and miscategorised them as branch
+      // deletion — silently dropping cascade-detection rather than
+      // surfacing the real error.
+      if (stderr.includes("couldn't find remote ref")) {
         return { status: "branch-deleted", reason: "branch not on origin (deleted post-merge)" };
       }
       return { status: "error", reason: `git fetch failed: ${stderr.slice(0, 200)}` };
