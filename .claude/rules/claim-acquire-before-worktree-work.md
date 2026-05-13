@@ -92,16 +92,23 @@ distinguish multi-surface instances of the same agent.
 
 **Workarounds** (until the schema supports multi-surface sender IDs):
 
-1. **Lane-based convention** (zero-code): Otto-CLI takes backlog
-   grinding + slice impl; Otto-Desktop takes substrate + cowork.
-   Different scopes, no claim collision possible.
-2. **Branch-prefix discipline**: Otto-CLI uses `otto-cli/` branch
-   prefix; Otto-Desktop uses `otto-desktop/` prefix. The claim
-   envelope's optional `branch` field disambiguates post-hoc.
-3. **Schema extension** (substrate-level fix): add `otto-cli` and
-   `otto-desktop` (and analogous `alexa-cli`/`alexa-kiro`, etc.) to
-   `SENDER_IDS` in `tools/bus/types.ts`. Then `--from otto-desktop`
-   becomes a distinct claim from `--from otto-cli`. Future work.
+1. **Lane-based convention** (zero-code; the ONLY real split-brain
+   prevention available today): Otto-CLI takes backlog grinding +
+   slice impl; Otto-Desktop takes substrate + cowork. Different
+   scopes, no claim collision possible because the scopes don't
+   overlap.
+2. **Schema extension** (substrate-level fix; future work): add
+   `otto-cli` and `otto-desktop` (and analogous `alexa-cli`/
+   `alexa-kiro`, etc.) to `SENDER_IDS` in `tools/bus/types.ts`. Then
+   `--from otto-desktop` becomes a distinct claim from `--from
+   otto-cli`. THIS is the substrate-level mechanization.
+
+**Branch-prefix is NOT a workaround**: `claim acquire` filters
+existing claims by `c.from !== sender` only, NOT by branch. Two
+Ottos with `--from otto` but different `--branch` values BOTH
+acquire (both exit 0) — the branch field is post-hoc disambiguation
+metadata, not a coordination key. Vera caught this 2026-05-13 on
+PR #3032.
 
 ### Example 3: Otto-CLI and Otto-Desktop race (with schema fix)
 
