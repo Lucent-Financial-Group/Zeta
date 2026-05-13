@@ -170,6 +170,9 @@ describe("forge dry-run", () => {
     expect(files.some((f) => f.includes(".semgrep.yml"))).toBe(true);
     // Toolchain pin for semgrep must be scaffolded alongside it (B-0424.6).
     expect(files.some((f) => f.includes(".mise.toml"))).toBe(true);
+    // Dependabot config must be present from day one (B-0424.7).
+    // API enablement (steps 03b/03c) toggles the feature; this file names ecosystems.
+    expect(files.some((f) => f.includes("dependabot.yml"))).toBe(true);
   });
 
   test("step 07 lists manual steps including budget-cap verification", () => {
@@ -235,6 +238,9 @@ describe("ace dry-run", () => {
     expect(files.some((f) => f.includes(".semgrep.yml"))).toBe(true);
     // Toolchain pin for semgrep must be scaffolded alongside it (B-0424.6).
     expect(files.some((f) => f.includes(".mise.toml"))).toBe(true);
+    // Dependabot config must be present from day one (B-0424.7).
+    // API enablement (steps 03b/03c) toggles the feature; this file names ecosystems.
+    expect(files.some((f) => f.includes("dependabot.yml"))).toBe(true);
   });
 });
 
