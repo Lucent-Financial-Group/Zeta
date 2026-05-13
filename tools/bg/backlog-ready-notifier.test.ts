@@ -9,11 +9,36 @@ import {
   type Adapters,
   type BacklogRow,
 } from "./backlog-ready-notifier";
+import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
 
-function fakeAdapters(nowIso: string, rows: BacklogRow[]): Adapters {
+type FakeAssignmentCall = {
+  from: SenderAgentId;
+  to: AgentId;
+  rowId: string;
+  priority: "P0" | "P1" | "P2" | "P3";
+  rationale: string;
+};
+
+function fakeAdapters(
+  nowIso: string,
+  rows: BacklogRow[],
+  capturedCalls: FakeAssignmentCall[] = [],
+): Adapters {
   return {
     now: () => new Date(nowIso),
     scanBacklog: () => rows,
+    publishAssignment: (from, to, rowId, priority, rationale): MessageEnvelope => {
+      capturedCalls.push({ from, to, rowId, priority, rationale });
+      return {
+        id: `env-${capturedCalls.length}`,
+        from,
+        to,
+        timestamp: nowIso,
+        expiresAt: nowIso,
+        topic: "work-assignment",
+        payload: { rowId, priority, rationale },
+      };
+    },
   };
 }
 
@@ -255,6 +280,71 @@ title: only a title
     });
   });
 
+  describe("bus publish (slice 4)", () => {
+    test("publishes work-assignment envelope for each ready row up to maxAssignments", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const result = pollOnce(
+        { ...DEFAULT_CONFIG, maxAssignments: 2 },
+        fakeAdapters(
+          "2026-05-13T18:00:00Z",
+          [ROW_OPEN_NO_DEPS, ROW_CLOSED, ROW_OPEN_DEPS_SATISFIED],
+          captured,
+        ),
+      );
+      expect(result.readyRowsFound).toBe(2);
+      expect(result.publishedEnvelopeIds).toHaveLength(2);
+      expect(captured).toHaveLength(2);
+      expect(captured[0]!.from).toBe("otto");
+      expect(captured[0]!.to).toBe("*");
+      expect(captured[0]!.rowId).toBe("B-9001");
+      expect(captured[0]!.priority).toBe("P1");
+      expect(captured[0]!.rationale).toContain("Ready-to-grind");
+    });
+
+    test("does NOT publish when noPublish: true (dry-run)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const result = pollOnce(
+        { ...DEFAULT_CONFIG, noPublish: true },
+        fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured),
+      );
+      expect(result.readyRowsFound).toBe(1);
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(captured).toHaveLength(0);
+      expect(result.note).toContain("publish skipped");
+    });
+
+    test("does NOT publish when ALL open rows have unsatisfied deps (no readies)", () => {
+      // Only ROW_OPEN_DEPS_UNSATISFIED is in this set — its dep (B-9999)
+      // isn't in the scan, so it's dangling/unsatisfied → not ready.
+      const captured: FakeAssignmentCall[] = [];
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_DEPS_UNSATISFIED], captured),
+      );
+      expect(result.readyRowsFound).toBe(0);
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(captured).toHaveLength(0);
+    });
+
+    test("caps published envelopes at maxAssignments even with many ready rows", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const manyRows: BacklogRow[] = Array.from({ length: 10 }, (_, i) => ({
+        id: `B-${String(8000 + i).padStart(4, "0")}`,
+        priority: "P2",
+        status: "open",
+        dependsOn: [],
+        filename: `B-${String(8000 + i).padStart(4, "0")}.md`,
+      }));
+      const result = pollOnce(
+        { ...DEFAULT_CONFIG, maxAssignments: 3 },
+        fakeAdapters("2026-05-13T18:00:00Z", manyRows, captured),
+      );
+      expect(result.readyRowsFound).toBe(10);
+      expect(result.publishedEnvelopeIds).toHaveLength(3);
+      expect(captured).toHaveLength(3);
+    });
+  });
+
   describe("parseArgs", () => {
     test("default config when no args", () => {
       expect(parseArgs([])).toEqual(DEFAULT_CONFIG);
@@ -268,6 +358,19 @@ title: only a title
       const config = parseArgs(["--poll-min", "20", "--backlog-dir", "/custom"]);
       expect(config.pollIntervalMin).toBe(20);
       expect(config.backlogDir).toBe("/custom");
+    });
+
+    test("--no-publish + --agent + --to + --max-assignments", () => {
+      const config = parseArgs([
+        "--no-publish",
+        "--agent", "vera",
+        "--to", "lior",
+        "--max-assignments", "5",
+      ]);
+      expect(config.noPublish).toBe(true);
+      expect(config.fromAgent).toBe("vera");
+      expect(config.toAgent).toBe("lior");
+      expect(config.maxAssignments).toBe(5);
     });
 
     test("rejects unknown flags", () => {
