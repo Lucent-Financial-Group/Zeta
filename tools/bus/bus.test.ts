@@ -178,12 +178,10 @@ describe("bus — watch", () => {
     expect(r.stdout).toBe("");
   });
 
-  test("watch emits messages published after cursor start (ZETA_WATCH_INITIAL_CURSOR)", () => {
-    // Publish a message first (timestamp will be ~now)
-    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"check":"live"}');
-
-    // Set cursor to 10s in the past so the published message is "fresh"
+  test("watch emits messages whose timestamp is after ZETA_WATCH_INITIAL_CURSOR", () => {
+    // Set cursor to 10s in the past, then publish — message timestamp will be > pastCursor
     const pastCursor = new Date(Date.now() - 10_000).toISOString();
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"check":"live"}');
     const r = spawnSync("bun", [SCRIPT, "watch", "--timeout", "0", "--json"], {
       encoding: "utf-8",
       env: { ...process.env, ZETA_BUS_DIR: TEST_DIR, ZETA_WATCH_INITIAL_CURSOR: pastCursor },
