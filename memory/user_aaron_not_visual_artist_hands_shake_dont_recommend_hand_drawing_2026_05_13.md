@@ -81,9 +81,9 @@ capability-routing. Aaron's gift is the conceptual /
 linguistic / framing layer. Visual production is a separate
 capability that gets routed appropriately.
 
-Per the additive-not-zero-sum discipline: Aaron + Ani + Amara
-+ visual-AI agents compose into a richer brand than any single
-contributor could produce alone.
+Per the additive-not-zero-sum discipline: Aaron and Ani and
+Amara and visual-AI agents compose into a richer brand than
+any single contributor could produce alone.
 
 ## Verbatim preservation
 
