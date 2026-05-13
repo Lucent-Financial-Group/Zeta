@@ -322,8 +322,10 @@ function main(): void {
       const hbDedup = new Map<SenderAgentId, HbEntry>();
       for (let i = 0; i < heartbeats.length; i++) {
         const h = heartbeats[i]!;
-        // Guard: skip envelopes with null or non-object payloads.
+        // Guard: skip non-object payloads and those missing a valid status enum.
         if (!h.payload || typeof h.payload !== "object" || Array.isArray(h.payload)) continue;
+        const hbStatus = (h.payload as HeartbeatPayload).status;
+        if (hbStatus !== "alive" && hbStatus !== "idle" && hbStatus !== "working") continue;
         const existing = hbDedup.get(h.from);
         if (!existing) {
           hbDedup.set(h.from, { envelope: h, mtime: msgMtimeMs(h.id), idx: i });

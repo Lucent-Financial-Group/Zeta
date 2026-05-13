@@ -344,6 +344,19 @@ describe("bus — status", () => {
     expect(r.stdout).toContain("src/Foo.fs");
   });
 
+  test("status skips malformed heartbeat (no status field) — does not overwrite valid entry", () => {
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
+    // malformed: valid object but missing status enum
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{}');
+
+    const r = run("status", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    expect(out.agents).toHaveLength(1);
+    expect(out.agents[0].agent).toBe("otto");
+    expect(out.agents[0].status).toBe("alive");
+  });
+
   test("status --json totals.shadowCatches counts shadow-catch messages", () => {
     run("publish", "--from", "otto", "--to", "*", "--topic", "shadow-catch", "--payload", '{"content":"test"}');
     run("publish", "--from", "vera", "--to", "otto", "--topic", "shadow-catch", "--payload", '{"content":"another"}');
