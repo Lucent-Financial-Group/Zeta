@@ -22,15 +22,23 @@ console.log(`[Lior Loop] Waking up at ${new Date().toISOString()}`);
 
 const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$GEMINI_PROMPT" --model gemini-3.1-pro-preview --yolo --skip-trust'], {
   env: { ...process.env, GEMINI_PROMPT: prompt },
-  stdio: "inherit"
+  stdio: ["inherit", "inherit", "pipe"]
 });
 
 if (result.error) {
   console.error(`[Lior Loop] Failed to spawn gemini: ${result.error.message}`);
-  // Swallow the error so launchd doesn't park the service
+  // Spawn failures (missing binary, OS errors) are not crash-loop candidates; suppress for launchd.
   process.exit(0);
 }
 
-console.log(`[Lior Loop] Finished with exit code ${result.status ?? "unknown"}`);
-// Always exit 0 so macOS launchd doesn't treat 429s (or other CLI crashes) as a crash-loop
+const exitCode = result.status ?? 1;
+const stderr = result.stderr?.toString() ?? "";
+console.log(`[Lior Loop] Finished with exit code ${exitCode}`);
+
+// Only suppress non-zero exits caused by 429 rate-limit responses so launchd doesn't park the
+// service on transient quota exhaustion. All other failures propagate so supervisors and
+// diagnostics retain a machine-readable failure signal.
+if (exitCode !== 0 && !stderr.includes("429")) {
+  process.exit(exitCode);
+}
 process.exit(0);
