@@ -506,6 +506,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0453](backlog/P2/B-0453-contributor-compliance-cross-reference-integration.md)** Cross-reference CONTRIBUTOR-COMPLIANCE.md into AGENTS.md / CONTRIBUTING.md / GOVERNANCE.md
 - [ ] **[B-0454](backlog/P2/B-0454-t1-t2-self-audit-and-cadenced-review-trajectories.md)** Encode T1 self-audit + T2 cadenced review (TS-preferred tooling + trajectory packet)
 - [ ] **[B-0455](backlog/P2/B-0455-t4-t5-onboarding-and-drift-retrospective-trajectories.md)** T4 onboarding briefing + T5 drift retrospective (trajectory packets)
+- [ ] **[B-0456](backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md)** Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
 
 ## P3 — convenience / deferred
 
