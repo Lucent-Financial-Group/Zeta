@@ -63,7 +63,7 @@ export type PollResult = {
   note: string;
 };
 
-/** Adapter abstraction so tests can inject deterministic time + filesystem + bus. */
+/** Adapter abstraction so tests can inject deterministic time + filesystem + bus + shell. */
 export type Adapters = {
   now: () => Date;
   scanBacklog: (backlogDir: string) => BacklogRow[];
@@ -74,6 +74,21 @@ export type Adapters = {
     priority: "P0" | "P1" | "P2" | "P3",
     rationale: string,
   ) => MessageEnvelope;
+  agentPatterns: Record<string, string[]>;
+  /** Returns git log output, or null if the git invocation fails (treat as indeterminate). */
+  execGitLog: (sinceMinutes: number) => string | null;
+  /** Returns `gh pr list` JSON output, or null if the gh invocation fails (treat as indeterminate). */
+  execGhPrList: () => string | null;
+};
+
+// Keys are lowercase to match the canonical bus agent IDs (SENDER_IDS in tools/bus/types.ts).
+// Only otto/alexa/riven/vera/lior are valid SENDER_IDS; aaron is a human, not a bus sender.
+export const AGENT_MAP: Record<string, string[]> = {
+  otto: ["Co-Authored-By: Claude"],
+  alexa: ["kiro", "alexa", "qwen"],
+  lior: ["lior", "gemini"],
+  vera: ["codex", "vera"],
+  riven: ["riven", "grok"],
 };
 
 function parseDependsOn(frontmatter: string): string[] {
@@ -141,8 +156,65 @@ const REAL_ADAPTERS: Adapters = {
       topic: "work-assignment",
       payload: { rowId, priority, rationale },
     }),
+  agentPatterns: AGENT_MAP,
+  execGitLog: (sinceMinutes: number) => {
+    const cutoff = Math.floor(Date.now() / 1000) - (sinceMinutes * 60);
+    const { spawnSync } = require("node:child_process");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no injection risk.
+    const result = spawnSync(
+      "git",
+      ["log", "--all", `--since=${cutoff}`, "--format=%an %B"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    );
+    if (result.status !== 0 || result.error) return null;
+    return result.stdout ?? "";
+  },
+  execGhPrList: () => {
+    const { spawnSync } = require("node:child_process");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection risk.
+    const result = spawnSync(
+      "gh",
+      ["pr", "list", "--state", "open", "--limit", "1000", "--json", "title,body,author"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    );
+    if (result.status !== 0 || result.error) return null;
+    return result.stdout ?? "";
+  },
 };
 
+/**
+ * Returns true if the agent has no commits in the last 30 minutes AND
+ * no currently open PRs. Returns false (conservative) when any adapter
+ * call fails — a sensor failure must not be mistaken for agent inactivity.
+ */
+export function isAgentQueueEmpty(
+  agentName: string,
+  adapters: Adapters = REAL_ADAPTERS,
+): boolean {
+  const patterns = adapters.agentPatterns[agentName.toLowerCase()] ?? [];
+  if (patterns.length === 0) return true; // unknown agent = queue empty
+
+  const logOutput = adapters.execGitLog(30);
+  if (logOutput === null) return false; // git unavailable — treat as busy
+  const logStr = logOutput.toLowerCase();
+  const hasCommits = patterns.some(p => logStr.includes(p.toLowerCase()));
+  if (hasCommits) return false;
+
+  const prOutput = adapters.execGhPrList();
+  if (prOutput === null) return false; // gh unavailable — treat as busy
+  const prStr = prOutput.toLowerCase();
+  const hasPRs = patterns.some(p => prStr.includes(p.toLowerCase()));
+  if (hasPRs) return false;
+
+  return true;
+}
+
+/**
+ * A dependency is "satisfied" iff the dep's row status is `closed` OR begins
+ * with `superseded-by-` (matching the canonical generator's checkbox logic
+ * in tools/backlog/generate-index.ts). A dangling reference (dep ID not
+ * present in the scan) is treated as UNSATISFIED.
+ */
 function isDepSatisfied(depStatus: string | undefined): boolean {
   if (depStatus === undefined) return false;
   return depStatus === "closed" || depStatus.startsWith("superseded-by-");

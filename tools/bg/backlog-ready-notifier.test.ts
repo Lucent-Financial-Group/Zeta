@@ -23,6 +23,8 @@ function fakeAdapters(
   nowIso: string,
   rows: BacklogRow[],
   capturedCalls: FakeAssignmentCall[] = [],
+  gitLogStr: string = "",
+  ghPrListStr: string = "",
 ): Adapters {
   return {
     now: () => new Date(nowIso),
@@ -39,6 +41,11 @@ function fakeAdapters(
         payload: { rowId, priority, rationale },
       };
     },
+    agentPatterns: {
+      "testagent": ["testagent"],
+    },
+    execGitLog: () => gitLogStr,
+    execGhPrList: () => ghPrListStr,
   };
 }
 
@@ -152,6 +159,48 @@ depends_on:
 title: only a title
 ---`;
       expect(parseRow(content, "x.md")).toBeNull();
+    });
+  });
+
+  describe("isAgentQueueEmpty", () => {
+    const { isAgentQueueEmpty } = require("./backlog-ready-notifier");
+
+    test("returns true when agent is unknown", () => {
+      const adapters = fakeAdapters("2026-05-13T18:00:00Z", [], [], "some git log", "some prs");
+      expect(isAgentQueueEmpty("UnknownAgent", adapters)).toBe(true);
+    });
+
+    test("returns true when known agent has no commits and no PRs", () => {
+      const adapters = fakeAdapters("2026-05-13T18:00:00Z", [], [], "other stuff", "[]");
+      expect(isAgentQueueEmpty("TestAgent", adapters)).toBe(true);
+    });
+
+    test("returns false when known agent has recent commits", () => {
+      const adapters = fakeAdapters("2026-05-13T18:00:00Z", [], [], "commit by testagent", "[]");
+      expect(isAgentQueueEmpty("TestAgent", adapters)).toBe(false);
+    });
+
+    test("returns false when known agent has open PRs", () => {
+      const prData = JSON.stringify([{ title: "test", body: "fixed by TestAgent", author: { login: "other" } }]);
+      const adapters = fakeAdapters("2026-05-13T18:00:00Z", [], [], "", prData);
+      expect(isAgentQueueEmpty("TestAgent", adapters)).toBe(false);
+    });
+
+    test("returns false (conservative-busy) when execGitLog returns null — git unavailable must not trigger assignment", () => {
+      const adapters: Adapters = {
+        ...fakeAdapters("2026-05-13T18:00:00Z", [], [], "irrelevant", "[]"),
+        execGitLog: () => null,
+      };
+      expect(isAgentQueueEmpty("TestAgent", adapters)).toBe(false);
+    });
+
+    test("returns false (conservative-busy) when execGhPrList returns null — gh unavailable must not trigger assignment", () => {
+      // git log is clean (no agent pattern), but gh fails → still conservative
+      const adapters: Adapters = {
+        ...fakeAdapters("2026-05-13T18:00:00Z", [], [], "no match here", "irrelevant"),
+        execGhPrList: () => null,
+      };
+      expect(isAgentQueueEmpty("TestAgent", adapters)).toBe(false);
     });
   });
 
