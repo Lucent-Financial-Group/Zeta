@@ -61,7 +61,7 @@ rules:
   # ────────────────────────────────────────────────────────────────
   - id: invisible-unicode-in-text
     patterns:
-      - pattern-regex: "[​‌‍⁠﻿‪-‮⁦-⁩\U000E0000-\U000E007F]"
+      - pattern-regex: "[\u200B\u200C\u200D\u2060\uFEFF\u202A-\u202E\u2066-\u2069\U000E0000-\U000E007F]"
     paths:
       include:
         - "**/*.md"
