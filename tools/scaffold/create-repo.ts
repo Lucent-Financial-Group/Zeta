@@ -22,7 +22,7 @@
 // Review the --dry-run output carefully before passing --apply.
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, statSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 // --- Types ---
@@ -115,22 +115,6 @@ function plan(
   const op: Operation = { step, description, command, data, status: "planned" };
   ops.push(op);
   return op;
-}
-
-function execute(op: Operation): void {
-  if (dryRun) return;
-  if (!op.command) {
-    op.status = "skipped";
-    return;
-  }
-  const parts = op.command.split(" ");
-  const result = gh(parts.slice(1)); // strip leading "gh"
-  if (result.ok) {
-    op.status = "executed";
-  } else {
-    op.status = "failed";
-    op.error = result.stderr || result.stdout;
-  }
 }
 
 function ghApiPatch(
