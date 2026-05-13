@@ -2,7 +2,9 @@
 id: B-0423
 priority: P1
 class: substrate-architecture
-status: decomposed
+status: closed
+closed: 2026-05-13
+closed_by: "all 5 child rows completed; heap architecture fully implemented"
 title: MEMORY.md serialization-point anti-pattern
 created: 2026-05-12
 last_updated: 2026-05-13
