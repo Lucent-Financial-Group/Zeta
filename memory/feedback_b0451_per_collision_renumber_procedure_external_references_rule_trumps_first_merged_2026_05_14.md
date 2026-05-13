@@ -78,14 +78,28 @@ Note where each row is referenced externally:
    baked into commits).
 
 The external-references rule trumps first-merged-wins. PR #3057
-and PR #3065 both bent first-merged-wins this way:
+is the canonical example of this rule bending the temporal order:
 
-- PR #3057 (B-0068.1): kept Riven's later row because B-0068.2/
-  B-0068.3 sibling rows reference it; renumbered Aaron's earlier
-  but orphan row.
-- PR #3065 (B-0370-0373): kept P1 set because B-0370 + B-0373 are
-  shipped AND have memory/PR-history references; renumbered the
-  P2 set whose references were all internal (parent body + chain).
+- PR #3057 (B-0068.1): kept Riven's LATER row because B-0068.2/
+  B-0068.3 sibling rows reference it; renumbered Aaron's EARLIER
+  but orphan row. External-references actively overrode
+  first-merged-wins here.
+
+PR #3065 (B-0370-0373) is a different case — both rules pointed
+the SAME direction (keep the P1 set):
+
+- First-merged-wins: P1 set was filed 2 days earlier (PR #2269
+  on 2026-05-09 vs PR #2683 on 2026-05-11).
+- External-references: B-0370 + B-0373 (P1) are shipped, with
+  references in PR-history doc + memory file.
+- Status-precedence: B-0370 + B-0373 (P1) are `status: closed`
+  effectively.
+
+PR #3065 is therefore the re-check pattern (substrate-honest
+re-examination after initial-analysis pointed at keeping P2
+because of its parent body description). The procedure's value
+isn't just mechanical — it's the re-examination step that catches
+when the first instinct doesn't match all the rules.
 
 ### 4. Pick next-free IDs
 
