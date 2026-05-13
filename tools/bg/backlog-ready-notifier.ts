@@ -15,7 +15,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { publish } from "../bus/bus";
-import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
+import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 
 export type NotifierConfig = {
   /** How often to poll, in minutes */
@@ -58,6 +58,8 @@ export type PollResult = {
   readyRowsFound: number;
   candidateIds: string[];
   publishedEnvelopeIds: string[];
+  /** Structured publish-failure reason; null on success or skip. */
+  lastPublishError: string | null;
   note: string;
 };
 
@@ -176,19 +178,27 @@ export function pollOnce(
   );
 
   const publishedEnvelopeIds: string[] = [];
+  let lastPublishError: string | null = null;
   if (!config.noPublish && readyRows.length > 0) {
     const toAssign = readyRows.slice(0, config.maxAssignments);
     for (const row of toAssign) {
       if (!isValidPriority(row.priority)) continue;
       const rationale = `Ready-to-grind: ${row.id} is open with all deps satisfied. Decomposition discipline (PR #2999) says decompose ambiguous parents into concrete slices.`;
-      const envelope = adapters.publishAssignment(
-        config.fromAgent,
-        config.toAgent,
-        row.id,
-        row.priority,
-        rationale,
-      );
-      publishedEnvelopeIds.push(envelope.id);
+      try {
+        const envelope = adapters.publishAssignment(
+          config.fromAgent,
+          config.toAgent,
+          row.id,
+          row.priority,
+          rationale,
+        );
+        publishedEnvelopeIds.push(envelope.id);
+      } catch (e) {
+        // Bus publish failure must NOT kill the poll loop. Captured in
+        // lastPublishError (structured + machine-readable per Riven P1).
+        lastPublishError = e instanceof Error ? e.message : String(e);
+        break; // stop the batch on first failure; next tick retries
+      }
     }
   }
 
@@ -196,7 +206,9 @@ export function pollOnce(
     ? ` (warning: ${danglingDeps.size} dangling dep ref(s) — first: ${[...danglingDeps].slice(0, 3).join(", ")})`
     : "";
 
-  const publishNote = config.noPublish
+  const publishNote = lastPublishError !== null
+    ? ` (publish failed: ${lastPublishError})`
+    : config.noPublish
     ? " (publish skipped per --no-publish)"
     : publishedEnvelopeIds.length > 0
     ? ` (published ${publishedEnvelopeIds.length} assignment envelope(s))`
@@ -208,6 +220,7 @@ export function pollOnce(
     readyRowsFound: readyRows.length,
     candidateIds: readyRows.slice(0, 10).map(r => r.id),
     publishedEnvelopeIds,
+    lastPublishError,
     note: readyRows.length > 0
       ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind; top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${publishNote}${danglingNote}`
       : `${openRows.length} open rows but none ready${danglingNote}`,
@@ -246,19 +259,16 @@ function parsePositiveInt(raw: string | undefined, name: string): number {
   return n;
 }
 
-const VALID_SENDER_IDS = ["otto", "alexa", "riven", "vera", "lior"] as const;
-const VALID_AGENT_IDS = [...VALID_SENDER_IDS, "*"] as const;
-
 function parseSenderId(raw: string | undefined): SenderAgentId {
   if (raw === undefined) throw new Error("--agent requires a value");
-  if ((VALID_SENDER_IDS as readonly string[]).includes(raw)) return raw as SenderAgentId;
-  throw new Error(`--agent must be one of ${VALID_SENDER_IDS.join(", ")}; got "${raw}"`);
+  if ((SENDER_IDS as readonly string[]).includes(raw)) return raw as SenderAgentId;
+  throw new Error(`--agent must be one of ${SENDER_IDS.join(", ")}; got "${raw}"`);
 }
 
 function parseAgentId(raw: string | undefined): AgentId {
   if (raw === undefined) throw new Error("--to requires a value");
-  if ((VALID_AGENT_IDS as readonly string[]).includes(raw)) return raw as AgentId;
-  throw new Error(`--to must be one of ${VALID_AGENT_IDS.join(", ")}; got "${raw}"`);
+  if ((AGENT_IDS as readonly string[]).includes(raw)) return raw as AgentId;
+  throw new Error(`--to must be one of ${AGENT_IDS.join(", ")}; got "${raw}"`);
 }
 
 const KNOWN_FLAGS = [
