@@ -178,7 +178,7 @@ goals):
 - The glass-halo discipline (substrate-honest about
   trust assumptions)
 - The factory's adversarial-truth-axis register (Riven
-  + Mateo security-researcher) — independent verification
+  and Mateo security-researcher) — independent verification
   of crypto choices
 
 ### 4. Fully encrypted computation (FHE)
