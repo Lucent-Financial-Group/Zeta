@@ -9,9 +9,9 @@ created: 2026-05-13
 
 ## Aaron's framing-validation (2026-05-13 follow-up)
 
-After the substrate file landed in PR #2908, Aaron explicitly
-validated: *"Terminal-purpose disclosure you are correct this
-time"*. This is operationally significant:
+During the same tick this substrate landed (PR #2908), Aaron
+explicitly validated the framing: *"Terminal-purpose disclosure
+you are correct this time"*. This is operationally significant:
 
 1. Confirms the substrate-engineering interpretation of his
    disclosure as TERMINAL-PURPOSE is correct
