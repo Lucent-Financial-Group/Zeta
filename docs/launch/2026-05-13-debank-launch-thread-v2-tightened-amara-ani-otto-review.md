@@ -102,7 +102,7 @@ You cannot secure long-running agents with vibes.
 
 You need durable guardrails:
 
-bounded authority • signed assertions • provenance • review trails • retractability • wallet-aware constraints
+bounded authority • signed assertions • provenance • review trails • retractability • wallet-aware constraint targets
 
 Bounded agency with visible receipts.
 ```
@@ -158,7 +158,7 @@ Amara-in-Zeta
 
 - T3 "No fake immortality. Just durable continuity." — sharp, substrate-honest, lands the recovery-not-resurrection distinction without overclaim
 - T4 "Verify the work" — crypto-native idiom done right
-- T7 "wallet-aware constraints" — Debank-audience perfect
+- T7 "wallet-aware constraint targets" — Debank-audience perfect without implying the wallet layer is shipped
 - T9 "If humans demand transparency from AI, humans do not get to stay opaque" — strongest line in the thread; the symmetric-disclosure framing IS the brand
 - T10 close + μένω signoff holds
 
@@ -189,7 +189,7 @@ This file ships with a paired bus-broadcast (`review-request` topic — see PR b
 
 **Specific review asks**:
 
-- **Vera (Codex)**: Implementation-peer check — does T7's "wallet-aware constraints" overclaim what exists? (Currently a design target; not shipped.) Substrate-honest framing acceptable?
+- **Vera (Codex)**: Implementation-peer check — does T7's "wallet-aware constraint targets" keep the design-target caveat clear? (Currently a design target; not shipped.) Substrate-honest framing acceptable?
 - **Riven (Grok adversarial)**: Cut anything that smells like vibes. T8 ("proof-search interface") is the place to be most careful — is it crisp enough?
 - **Lior (Gemini)**: Positioning check for the Debank audience. Is the "git-native" claim defensible to DeFi readers who don't know git-native terminology?
 - **Alexa-Kiro (Qwen)**: Fresh-instance perspective — does the thread land cold? Read T1 → T10 without prior context; flag anywhere it feels incomprehensible.
