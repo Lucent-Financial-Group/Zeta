@@ -1,0 +1,153 @@
+name: scaffold-stage1-create-repos
+
+# B-0424.2 — Stage 1 of the three-repo split: create LFG/Forge and LFG/ace
+# with the full best-practice checklist from
+# docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md.
+#
+# WHY workflow_dispatch only (no schedule):
+# This is an irreversible one-shot operation. Creating GitHub repos is
+# permanent; the workflow must be triggered by explicit maintainer action
+# from the GitHub UI after reviewing the PR that adds this file.
+#
+# PREREQUISITES before triggering:
+# 1. This workflow is merged to main.
+# 2. A GitHub secret named SCAFFOLD_STAGE1_PAT has been created in the
+#    LFG org (or Zeta repo) Settings → Secrets with a PAT that has:
+#    repo, read:org, workflow scopes on a user with LFG org owner/admin rights.
+#    (GITHUB_TOKEN cannot create org repos — its scope is the current repo only.)
+# 3. Verify dry-run output locally first:
+#    bun tools/scaffold/create-repo.ts --repo forge --dry-run
+#    bun tools/scaffold/create-repo.ts --repo ace  --dry-run
+#
+# SECURITY (safe-pattern compliance):
+# All workflow_dispatch inputs are routed via env: into run blocks and
+# quoted as "$VAR"; no ${{ expressions }} appear inside run-block scripts.
+# See .github/workflows/budget-snapshot-cadence.yml for the factory pattern.
+#
+# IDEMPOTENCY:
+# If a repo already exists, gh repo create exits non-zero → step fails loudly.
+# The workflow aborts; no partial state is silently swallowed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: "Which repo to create (forge, ace, or both)"
+        required: true
+        type: choice
+        options:
+          - forge
+          - ace
+          - both
+      confirm:
+        description: "Type CONFIRM (all caps) — creates real GitHub repos (irreversible)"
+        required: true
+        default: ""
+
+permissions:
+  # Top-level read-only (Scorecard TokenPermissions best-practice).
+  # Org repo creation uses SCAFFOLD_STAGE1_PAT, not GITHUB_TOKEN.
+  contents: read
+
+concurrency:
+  # One creation run at a time; no cancel so partial state isn't silently
+  # overridden — operator must inspect first.
+  group: scaffold-stage1-create-repos
+  cancel-in-progress: false
+
+jobs:
+  create-repos:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    permissions:
+      contents: read  # checkout only; all gh API calls use SCAFFOLD_STAGE1_PAT
+
+    steps:
+      - name: Validate CONFIRM input
+        env:
+          CONFIRM_INPUT: ${{ github.event.inputs.confirm }}
+        run: |
+          set -euo pipefail
+          if [ "$CONFIRM_INPUT" != "CONFIRM" ]; then
+            echo "ERROR: confirm input must be exactly CONFIRM (got: '$CONFIRM_INPUT')"
+            echo "Re-trigger the workflow with confirm=CONFIRM to proceed."
+            exit 1
+          fi
+          echo "Confirmation accepted. Proceeding with repo creation."
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Verify gh CLI authentication
+        env:
+          GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
+        run: |
+          set -euo pipefail
+          command -v bun >/dev/null
+          command -v gh >/dev/null
+          gh auth status
+
+      - name: Dry-run preview (informational)
+        env:
+          GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
+          REPO_INPUT: ${{ github.event.inputs.repo }}
+        run: |
+          set -euo pipefail
+          echo "=== DRY-RUN PREVIEW ==="
+          if [ "$REPO_INPUT" = "forge" ] || [ "$REPO_INPUT" = "both" ]; then
+            echo "--- Forge ---"
+            bun tools/scaffold/create-repo.ts --repo forge --dry-run
+          fi
+          if [ "$REPO_INPUT" = "ace" ] || [ "$REPO_INPUT" = "both" ]; then
+            echo "--- ace ---"
+            bun tools/scaffold/create-repo.ts --repo ace --dry-run
+          fi
+          echo "=== END DRY-RUN ==="
+
+      - name: Create Forge repo
+        if: ${{ github.event.inputs.repo == 'forge' || github.event.inputs.repo == 'both' }}
+        env:
+          GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
+        run: |
+          set -euo pipefail
+          bun tools/scaffold/create-repo.ts --repo forge --apply
+
+      - name: Create ace repo
+        if: ${{ github.event.inputs.repo == 'ace' || github.event.inputs.repo == 'both' }}
+        env:
+          GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
+        run: |
+          set -euo pipefail
+          bun tools/scaffold/create-repo.ts --repo ace --apply
+
+      - name: Post-creation summary
+        if: success()
+        env:
+          REPO_INPUT: ${{ github.event.inputs.repo }}
+        run: |
+          set -euo pipefail
+          echo "=== CREATION COMPLETE ==="
+          echo "Repos created: $REPO_INPUT"
+          echo ""
+          echo "Manual steps remaining (create-repo.ts step 07):"
+          echo "  1. Upload SVG social-preview PNG via GitHub UI"
+          echo "  2. Enable merge queue: Settings → Merge queue (no REST API)"
+          echo "  3. Wire OpenSSF Scorecard: copy .github/workflows/scorecard.yml from Zeta"
+          echo "  4. Add Semgrep GHA inline-untrusted-in-run rule"
+          echo "  5. Verify \$0 budget caps at LFG org billing settings"
+          echo "  6. Confirm CodeQL default-setup: Security → Code scanning"
+          echo ""
+          if [ "$REPO_INPUT" = "forge" ] || [ "$REPO_INPUT" = "both" ]; then
+            echo "  Forge: https://github.com/Lucent-Financial-Group/Forge"
+          fi
+          if [ "$REPO_INPUT" = "ace" ] || [ "$REPO_INPUT" = "both" ]; then
+            echo "  ace:   https://github.com/Lucent-Financial-Group/ace"
+          fi
+          echo ""
+          echo "After verifying the repos, update the ADR and close B-0424:"
+          echo "  docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md"
+          echo "  docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md"
