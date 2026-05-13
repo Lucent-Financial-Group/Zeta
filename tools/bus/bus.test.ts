@@ -231,7 +231,7 @@ describe("bus — watch", () => {
     const listResult = run("list", "--to", "otto", "--json");
     const msgs = JSON.parse(listResult.stdout) as Array<{ timestamp: string }>;
     expect(msgs.length).toBeGreaterThan(0);
-    const existingTs = msgs[0].timestamp;
+    const existingTs = msgs[0]!.timestamp;
 
     const r = spawnSync("bun", [SCRIPT, "watch", "--to", "otto", "--timeout", "0", "--json"], {
       encoding: "utf-8",
