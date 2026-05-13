@@ -364,13 +364,13 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0089](backlog/P2/B-0089-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md)** Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name
 - [ ] **[B-0090](backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md)** Cadenced lost-substrate recovery audit (worktrees + orphan branches + closed-not-merged PRs + draft PRs aged > N days)
 - [ ] **[B-0090.1](backlog/P2/B-0090.1-lost-substrate-3-bucket-classification-taxonomy.md)** Lost-substrate 3-bucket classification taxonomy (ALREADY-COVERED / NEEDS-RECOVERY / OBSOLETE)
-- [ ] **[B-0090.1](backlog/P2/B-0090.1-ts-worktree-survey-atomic-riven-2026-05-10.md)** TS survey tool for locked worktrees (git worktree list + 3-bucket classify)
-- [ ] **[B-0090.2](backlog/P2/B-0090.2-ts-orphan-branch-survey-atomic-riven-2026-05-10.md)** TS survey tool for orphan branches (unmerged + no-PR)
 - [ ] **[B-0090.2](backlog/P2/B-0090.2-worktree-branch-delta-audit.md)** Worktree-branch delta audit (locked .claude/worktrees/ only, last-N-days)
 - [ ] **[B-0090.3](backlog/P2/B-0090.3-closed-not-merged-pr-scan.md)** Closed-not-merged PRs + orphan branches + aged-draft-PRs scan (AceHack + LFG)
-- [ ] **[B-0090.3](backlog/P2/B-0090.3-ts-closed-pr-survey-atomic-riven-2026-05-10.md)** TS survey for closed-not-merged PRs aged + content diff
 - [ ] **[B-0090.4](backlog/P2/B-0090.4-cadence-and-hygiene-history-hook.md)** Cadence hook + hygiene-history append for lost-substrate audits (weekly/monthly)
-- [ ] **[B-0090.4](backlog/P2/B-0090.4-ts-draft-pr-aged-survey-atomic-riven-2026-05-10.md)** TS survey for draft PRs aged > N days + content snapshot
+- [ ] **[B-0090.5](backlog/P2/B-0090.5-ts-worktree-survey-atomic-riven-2026-05-10.md)** TS survey tool for locked worktrees (git worktree list + 3-bucket classify)
+- [ ] **[B-0090.6](backlog/P2/B-0090.6-ts-orphan-branch-survey-atomic-riven-2026-05-10.md)** TS survey tool for orphan branches (unmerged + no-PR)
+- [ ] **[B-0090.7](backlog/P2/B-0090.7-ts-closed-pr-survey-atomic-riven-2026-05-10.md)** TS survey for closed-not-merged PRs aged + content diff
+- [ ] **[B-0090.8](backlog/P2/B-0090.8-ts-draft-pr-aged-survey-atomic-riven-2026-05-10.md)** TS survey for draft PRs aged > N days + content snapshot
 - [x] **[B-0091](backlog/P2/B-0091-audit-and-rename-servicetitan-references-in-live-docs-aaron-2026-04-28.md)** Audit + rename ServiceTitan references in live (non-historical) repo surfaces — use generic "external UI demo" / "external CRM API demo" forward-going
 - [ ] **[B-0092](backlog/P2/B-0092-public-company-contributor-compliance-doc-and-cadenced-trajectories-aaron-2026-04-28.md)** Public-company contributor compliance — doc + cadenced trajectories (audit-on-commit, weekly/monthly compliance review, on-PR audit, on-onboarding briefing, drift retrospective)
 - [ ] **[B-0093](backlog/P2/B-0093-multi-ai-synthesis-enhancements-quarantine-lucky-guess-trajectory-owners-lattice-convergence-2026-04-28.md)** Multi-AI synthesis enhancements — mechanical quarantine + lucky-guess protocol + trajectory owners + lattice convergence + scanner self-destruct prevention (post-PR-#699 follow-ups)
