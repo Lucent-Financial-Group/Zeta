@@ -370,7 +370,7 @@ architecture.
 - `feedback_aaron_identity_fingerprint_filter_per_person_scaffolding_tracker_substrate_externalizes_it_2026_05_12.md`
   (the cognitive infrastructure — line 7496 shows the
   subconscious as a participant in the internal "we" with
-  its own veto power; defined in sibling PR #2782)
+  its own veto power; merged via PR #2782)
 - `docs/research/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   (source — line 7496)
 
