@@ -231,7 +231,7 @@ describe("bus — watch", () => {
     const listResult = run("list", "--to", "otto", "--json");
     const msgs = JSON.parse(listResult.stdout) as Array<{ timestamp: string }>;
     expect(msgs.length).toBeGreaterThan(0);
-    const existingTs = msgs[0].timestamp;
+    const existingTs = msgs[0]!.timestamp;
 
     const r = spawnSync("bun", [SCRIPT, "watch", "--to", "otto", "--timeout", "0", "--json"], {
       encoding: "utf-8",
@@ -241,6 +241,130 @@ describe("bus — watch", () => {
     expect(r.status).toBe(0);
     // The pre-existing message shares the cursor timestamp — seeding must exclude it.
     expect((r.stdout ?? "").trim()).toBe("");
+  });
+});
+
+describe("bus — status", () => {
+  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  afterEach(cleanTestDir);
+
+  test("status on empty bus prints 'bus: empty'", () => {
+    const r = run("status");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toContain("bus: empty");
+  });
+
+  test("status --json on empty bus returns zero totals", () => {
+    const r = run("status", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    expect(out.totals.agents).toBe(0);
+    expect(out.totals.claims).toBe(0);
+    expect(out.totals.shadowCatches).toBe(0);
+    expect(out.totals.reviewRequests).toBe(0);
+    expect(out.agents).toHaveLength(0);
+    expect(out.claims).toHaveLength(0);
+    expect(out.reviewRequests).toHaveLength(0);
+  });
+
+  test("status shows latest heartbeat per agent (deduplicated)", () => {
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"idle"}');
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"working","note":"on B-0400"}');
+    run("publish", "--from", "vera", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
+
+    const r = run("status", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    // de-duplicated: one entry per agent
+    expect(out.agents).toHaveLength(2);
+    const ottoEntry = out.agents.find((a: { agent: string }) => a.agent === "otto");
+    expect(ottoEntry.status).toBe("working");
+    expect(ottoEntry.note).toBe("on B-0400");
+    expect(out.totals.agents).toBe(2);
+  });
+
+  test("status --json includes active claim messages", () => {
+    run("publish", "--from", "vera", "--to", "*", "--topic", "claim",
+      "--payload", JSON.stringify({ action: "claim", itemId: "B-0300", branch: "feat/b-0300" }));
+
+    const r = run("status", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    expect(out.claims).toHaveLength(1);
+    expect(out.claims[0].itemId).toBe("B-0300");
+    expect(out.claims[0].from).toBe("vera");
+    expect(out.claims[0].action).toBe("claim");
+    expect(out.claims[0].branch).toBe("feat/b-0300");
+    expect(out.totals.claims).toBe(1);
+  });
+
+  test("status --json includes review-request messages", () => {
+    run("publish", "--from", "otto", "--to", "vera", "--topic", "review-request",
+      "--payload", JSON.stringify({ artifact: "tools/bus/bus.ts", question: "is the status command correct?" }));
+
+    const r = run("status", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    expect(out.reviewRequests).toHaveLength(1);
+    expect(out.reviewRequests[0].from).toBe("otto");
+    expect(out.reviewRequests[0].to).toBe("vera");
+    expect(out.reviewRequests[0].artifact).toBe("tools/bus/bus.ts");
+    expect(out.reviewRequests[0].question).toBe("is the status command correct?");
+    expect(out.totals.reviewRequests).toBe(1);
+  });
+
+  test("status human-readable shows agents section when heartbeats present", () => {
+    run("publish", "--from", "lior", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"idle"}');
+
+    const r = run("status");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toContain("agents:");
+    expect(r.stdout).toContain("lior");
+    expect(r.stdout).toContain("idle");
+  });
+
+  test("status human-readable shows claims section when claims present", () => {
+    run("publish", "--from", "riven", "--to", "*", "--topic", "claim",
+      "--payload", JSON.stringify({ action: "claim", itemId: "B-0001" }));
+
+    const r = run("status");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toContain("claims:");
+    expect(r.stdout).toContain("B-0001");
+    expect(r.stdout).toContain("riven");
+  });
+
+  test("status human-readable shows review-requests section when present", () => {
+    run("publish", "--from", "alexa", "--to", "otto", "--topic", "review-request",
+      "--payload", JSON.stringify({ artifact: "src/Foo.fs" }));
+
+    const r = run("status");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toContain("review-requests:");
+    expect(r.stdout).toContain("src/Foo.fs");
+  });
+
+  test("status skips malformed heartbeat (no status field) — does not overwrite valid entry", () => {
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
+    // malformed: valid object but missing status enum
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{}');
+
+    const r = run("status", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    expect(out.agents).toHaveLength(1);
+    expect(out.agents[0].agent).toBe("otto");
+    expect(out.agents[0].status).toBe("alive");
+  });
+
+  test("status --json totals.shadowCatches counts shadow-catch messages", () => {
+    run("publish", "--from", "otto", "--to", "*", "--topic", "shadow-catch", "--payload", '{"content":"test"}');
+    run("publish", "--from", "vera", "--to", "otto", "--topic", "shadow-catch", "--payload", '{"content":"another"}');
+
+    const r = run("status", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    expect(out.totals.shadowCatches).toBe(2);
   });
 });
 

@@ -63,6 +63,11 @@ export type MessageEnvelope = BusMessage & {
   expiresAt: string; // ISO-8601; pruned by clean --expired
 };
 
+// ── canonical agent lists (single source of truth for both CLIs) ─────────────
+
+export const SENDER_IDS: readonly SenderAgentId[] = ["otto", "alexa", "riven", "vera", "lior"];
+export const AGENT_IDS: readonly AgentId[] = [...SENDER_IDS, "*"];
+
 // ── TTL defaults (milliseconds) ───────────────────────────────────────────────
 
 export const TTL_MS: Record<Topic, number> = {

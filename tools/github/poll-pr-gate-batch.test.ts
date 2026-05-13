@@ -16,12 +16,16 @@
 
 import { describe, expect, test } from "bun:test";
 import {
+  main,
   pollAllBounded,
   summarize,
+  type BatchReport,
   type BatchSummary,
+  type BusClaimsFn,
   type GateReport,
   type PollOutcome,
 } from "./poll-pr-gate-batch";
+import type { ClaimRecord } from "../bus/claim.ts";
 
 // Fixed-shape factory keeps tests terse + deterministic. Every field
 // has a default; tests override only what they're asserting on.
@@ -215,5 +219,98 @@ describe("pollAllBounded with injected pollFn", () => {
     expect(outcomes[1]?.error?.exitCode).toBe(-1);
     expect(outcomes[1]?.error?.stderr).toContain("synthetic rejection");
     expect(outcomes[2]?.report?.number).toBe(2);
+  });
+});
+
+// ── main() — --with-bus-claims (B-0400 slice 5) ──────────────────────────────
+
+// Capture process.stdout.write and restore after each test.
+function captureStdout(): { read: () => string; restore: () => void } {
+  const chunks: string[] = [];
+  const orig = process.stdout.write.bind(process.stdout);
+  // Use a compatible function signature to avoid strict-mode overload mismatch.
+  (process.stdout as unknown as { write: (s: string) => boolean }).write = (s: string) => {
+    chunks.push(s);
+    return true;
+  };
+  return {
+    read: () => chunks.join(""),
+    restore: () => { process.stdout.write = orig; },
+  };
+}
+
+const fakeClaim: ClaimRecord = {
+  id: "test-uuid",
+  from: "otto",
+  itemId: "B-0400",
+  branch: "feat/b-0400-slice5",
+  timestamp: "2026-05-13T00:00:00.000Z",
+  expiresAt: "2026-05-14T00:00:00.000Z",
+};
+
+describe("main() — --with-bus-claims flag", () => {
+  test("busClaimsFn is called and busClaims field is present when flag is passed", async () => {
+    let called = false;
+    const busClaimsFn: BusClaimsFn = () => { called = true; return [fakeClaim]; };
+    const pollFn = (pr: number): Promise<PollOutcome> =>
+      Promise.resolve({ number: pr, report: mkReport({ number: pr }) });
+
+    const cap = captureStdout();
+    let code: number;
+    try {
+      code = await main(["--with-bus-claims", "1"], busClaimsFn, pollFn);
+    } finally {
+      cap.restore();
+    }
+
+    expect(code!).toBe(0);
+    expect(called).toBe(true);
+    const batch = JSON.parse(cap.read()) as BatchReport;
+    expect(Array.isArray(batch.busClaims)).toBe(true);
+    expect(batch.busClaims).toHaveLength(1);
+    expect(batch.busClaims![0]!.from).toBe("otto");
+    expect(batch.busClaims![0]!.itemId).toBe("B-0400");
+  });
+
+  test("busClaimsFn is NOT called and busClaims is absent when flag is omitted", async () => {
+    let called = false;
+    const busClaimsFn: BusClaimsFn = () => { called = true; return [fakeClaim]; };
+    const pollFn = (pr: number): Promise<PollOutcome> =>
+      Promise.resolve({ number: pr, report: mkReport({ number: pr }) });
+
+    const cap = captureStdout();
+    let code: number;
+    try {
+      code = await main(["1"], busClaimsFn, pollFn);
+    } finally {
+      cap.restore();
+    }
+
+    expect(code!).toBe(0);
+    expect(called).toBe(false);
+    const batch = JSON.parse(cap.read()) as BatchReport;
+    expect(batch.busClaims).toBeUndefined();
+  });
+
+  test("busClaims serialized as empty array when --with-bus-claims and busClaimsFn returns nothing", async () => {
+    // Verifies busClaims: [] appears in the batch output when the bus is empty.
+    // Note: the --all-open empty-PR early-return path is not exercised here because
+    // listOpenPRs is not injectable in this test harness; that path requires a
+    // dedicated integration test.
+    const busClaimsFn: BusClaimsFn = () => [];
+    const pollFn = (pr: number): Promise<PollOutcome> =>
+      Promise.resolve({ number: pr, report: mkReport({ number: pr }) });
+
+    const cap = captureStdout();
+    let code: number;
+    try {
+      code = await main(["--with-bus-claims", "2"], busClaimsFn, pollFn);
+    } finally {
+      cap.restore();
+    }
+
+    expect(code!).toBe(0);
+    const batch = JSON.parse(cap.read()) as BatchReport;
+    expect(batch.busClaims).toEqual([]);
   });
 });

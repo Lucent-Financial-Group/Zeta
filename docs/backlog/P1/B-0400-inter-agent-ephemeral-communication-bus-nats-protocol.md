@@ -1,12 +1,14 @@
 ---
 id: B-0400
 priority: P1
-status: open
+status: closed
 title: "Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-10
 last_updated: 2026-05-13
+closed: 2026-05-13
+closed_reason: "All acceptance criteria satisfied; multi-agent review complete (slice 6)"
 depends_on: []
 composes_with: [B-0164]
 tags: [multi-agent, bus, nats, ephemeral, shadow-space, accelerated-timeframe, agent-designed]
@@ -50,7 +52,7 @@ Message schema (agent-designed):
 - [x] At least 2 agents can exchange messages via the bus — PR #2886 (types + bus CLI)
 - [x] Messages survive between ticks but not necessarily reboots — /tmp JSON, TTL-gated
 - [x] Subscription watch mode — `bun tools/bus/bus.ts watch --to otto` (slice 2, this PR)
-- [ ] Multi-agent review of this design (get as many agents as possible within bounded timeframe)
+- [x] Multi-agent review of this design — Otto + Vera reviewed in PR #2969; review doc at `docs/research/2026-05-13-b-0400-bus-protocol-otto-review.md` (slice 6)
 
 ## Review requirement
 
@@ -83,12 +85,24 @@ P1 — get as many agents to review as possible within a bounded timeframe. This
 - TTL: messages carry `expiresAt`; clean command prunes expired
 - Agent design: Otto (Claude) designed the protocol; multi-agent review via PR
 
-**Slice 2 (this PR — feat/b-0400-slice2-watch):**
+**Slice 2 (feat/b-0400-slice2-watch):**
 
 - Subscription watch mode (`bun tools/bus/bus.ts watch --to otto --timeout <sec>`) — polling inbox monitor
 
-**Deferred to slice 3+:**
+**Slice 4 scope (feat/b-0400-slice4-status):**
+
+- `status` subcommand (`bun tools/bus/bus.ts status [--json]`) — dashboard of live heartbeats (latest per agent), raw claim messages, pending review requests, shadow-catch count
+- 9 new tests (60 total across bus.test.ts + claim.test.ts)
+
+**Slice 5 scope (feat/b-0400-slice5-bus-gate-integration):**
+
+- `allActiveClaims()` function in `claim.ts` — returns all active claims across all items (no itemId required)
+- `--with-bus-claims` flag for `poll-pr-gate-batch.ts` — appends active bus claims to batch output
+- `BusClaimsFn` injectable type for DST coverage in `main()`
+- `pollFn` injection added to `main()` for fully deterministic unit tests
+- 3 new tests in `poll-pr-gate-batch.test.ts`, 3 new tests in `claim.test.ts`
+
+**Deferred to slice 6+:**
 
 - NATS JetStream transport swap
 - Named-pipe transport option
-- Integration with `poll-pr-gate-batch.ts` for coordinated claims
