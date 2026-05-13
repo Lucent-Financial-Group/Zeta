@@ -60,7 +60,7 @@ Adds Semgrep governance to the Stage-1 scaffold templates for the Forge and ace 
 
 ### Reviewed changes
 
-Copilot reviewed 6 out of 6 changed files in this pull request and generated 2 comments.
+Copilot reviewed 5 out of 6 changed files in this pull request and generated 2 comments. (Archive note: the review listed 5 files in the per-file table; the 6th file, `tools/scaffold/forge/.mise.toml`, was added in the fix commit dbcad11d after this review was generated.)
 
 <details>
 <summary>Show a summary per file</summary>
