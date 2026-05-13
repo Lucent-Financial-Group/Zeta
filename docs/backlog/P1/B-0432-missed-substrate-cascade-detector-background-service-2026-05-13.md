@@ -23,9 +23,9 @@ architectural challenge from the human maintainer 2026-05-13:
 > *"you need to imagine how would you survive without this foreground
 > loop and you background should be strong enough to do that"*
 
-Operational example that surfaced this row: my Otto-section-missed-PR-
-#2980-by-3-min cascade — a feature-branch commit landed AFTER its parent
-PR squash-merged, leaving substrate on the branch but not on main.
+Operational example that surfaced this row: my Otto-section-missed-PR-#2980-by-3-min
+cascade — a feature-branch commit landed AFTER its parent PR squash-merged,
+leaving substrate on the branch but not on main.
 Caught manually + recovered via PR #2997, but the recovery was reactive.
 
 This row mechanizes detection of the failure class: substrate present
