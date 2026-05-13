@@ -276,7 +276,7 @@ text-format layer on top. Not the other way around.
 - PR #2898 (non-glass-halo encryption — encryption layer
   operates over either text or binary)
 - B-0428 (DBpedia Path B — DBpedia storage shape applies here)
-- B-0043 (universal-business-templates — storage substrate)
+- B-0043 (universal company + government information substrate — storage substrate scope)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
   (F# substrate is canonical; storage in F# composes)
 - `.claude/rules/dv2-data-split-discipline-activated.md`
@@ -409,6 +409,7 @@ B-0428 (DBpedia Path B — direct dotNetRDF + F# CE)
 DBSP + Z-set + Clifford + BP/EP F# substrate (algebra-owner
 skill)
 
-`docs/research/2026-05-13-amara-conversation-extract-*` (the
-canonical event-sourcing substrate Aaron-Amara conversation;
-currently deferred per semgrep findings)
+Aaron-Amara event-sourcing conversation (currently deferred
+from repo per PR #2924 semgrep findings on 524KB body text;
+preservation lives outside-repo until proper semgrep exclusion
+lands)
