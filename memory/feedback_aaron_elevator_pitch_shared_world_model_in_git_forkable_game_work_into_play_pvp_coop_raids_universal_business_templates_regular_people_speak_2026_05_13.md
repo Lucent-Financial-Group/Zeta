@@ -1,6 +1,6 @@
 ---
 name: Elevator pitch — shared world model in git, forkable game, work-into-play via PVP/co-op raids, universal business templates — regular people speak (Aaron 2026-05-13)
-description: Aaron 2026-05-13 elevator-pitch crystallization — the CLEAN one-sentence framing for what the factory ships in REGULAR PEOPLE SPEAK. Aaron explicitly affirmed this as the regular-people-speak compression after the dense Casimir-gap cascade. Use this for external communication. Composes with civsim PVP/raids (PR #2903) + Casimir gap (PR #2906) + LFG canonical product (PR #2851) + universal business templates (existing backlog).
+description: Aaron 2026-05-13 elevator-pitch crystallization — the CLEAN one-sentence framing for what the factory ships in REGULAR PEOPLE SPEAK. Aaron explicitly affirmed this as the regular-people-speak compression after the dense Casimir-gap cascade. Research-grade external communication guidance (not yet promoted to policy via ADR). Composes with civsim PVP/raids (PR #2903) + Casimir gap (PR #2906) + LFG canonical product (PR #2851) + universal business templates (existing backlog).
 type: feedback
 created: 2026-05-13
 ---
