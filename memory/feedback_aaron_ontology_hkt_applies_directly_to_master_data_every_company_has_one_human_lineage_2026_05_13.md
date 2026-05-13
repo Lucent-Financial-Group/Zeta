@@ -73,7 +73,7 @@ compose into general-purpose master-data infrastructure.
 
 ### 4. "Human lineage" sense
 
-Aaron's "in that human linage" phrasing IS load-bearing:
+Aaron's "in that human linage [sic — lineage]" phrasing IS load-bearing:
 
 - Master data IN THE LINEAGE-OF-HUMANS sense — humans, their
   relationships, their roles, their attributes, their changes
@@ -108,7 +108,7 @@ This connects to B-0043 (universal-business-templates):
 Higher-Kinded Types are PARAMETRIC over the type constructor.
 This is exactly what MDM needs:
 
-- HKT M&lt;'T&gt; can represent "MasterData entity 'T" where 'T
+- HKT `M<'T>` can represent "MasterData entity 'T" where 'T
   varies (Customer, Product, Employee, etc.)
 - The HKT machinery handles the structural concerns (versioning,
   identity, relationships) uniformly
@@ -168,9 +168,9 @@ or encrypted treatment of this disclosure).
 - PR #2815 (HKT error classes — universal/domain refinement)
 - B-0043 (universal-company-government-information-substrate
   — universal business templates already backlogged)
-- `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`
-- `memory/feedback_dv2_scope_universal_indexing.md`
-- `memory/feedback_aaron_data_vault_2_is_source_of_repo_split_smell_intuitions_needs_reactivation_alongside_scale_free_lock_free_weight_free_dst_2026_05_13.md`
+- `feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`
+- `feedback_dv2_scope_universal_indexing.md`
+- `feedback_aaron_data_vault_2_is_source_of_repo_split_smell_intuitions_needs_reactivation_alongside_scale_free_lock_free_weight_free_dst_2026_05_13.md`
   (this session's DV2.0 re-activation)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
   (HKT substrate operationally grounded by F# compiler)
