@@ -226,10 +226,10 @@ describe("bus — watch", () => {
 
   test("watch does not replay messages already at cursor timestamp (cursor seeding)", () => {
     // Publish a message, capture its timestamp, set cursor to that exact timestamp,
-    // then run watch — the seeded deliveredAtCursor must suppress that message.
-    run("publish", "--from", "vera", "--to", "otto", "--topic", "seeding-test", "--payload", '{"v":1}');
+    // then run watch — the seeded delivered Set must suppress that message.
+    run("publish", "--from", "vera", "--to", "otto", "--topic", "heartbeat", "--payload", '{"v":1}');
     const listResult = run("list", "--to", "otto", "--json");
-    const msgs = listResult.stdout.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const msgs = JSON.parse(listResult.stdout) as Array<{ timestamp: string }>;
     expect(msgs.length).toBeGreaterThan(0);
     const existingTs = msgs[0].timestamp;
 

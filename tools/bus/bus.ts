@@ -272,24 +272,22 @@ function main(): void {
         timeoutSec = parseInt(flags.timeout, 10);
       }
 
-      // cursor tracks the last-delivered timestamp + the IDs at that timestamp,
-      // so bursts of same-millisecond messages are never silently dropped.
-      // ZETA_WATCH_INITIAL_CURSOR allows tests to set a past cursor without timing hacks.
-      let cursorTimestamp = process.env.ZETA_WATCH_INITIAL_CURSOR ?? new Date().toISOString();
-      const deliveredAtCursor = new Set<string>();
-      // Seed with IDs already on disk at cursorTimestamp so same-ms pre-watch messages
-      // are not replayed when watch starts at a busy millisecond boundary.
+      // cursorTimestamp is fixed at watch-start (or ZETA_WATCH_INITIAL_CURSOR for tests).
+      // Delivered IDs are tracked in a Set so late-arriving messages with older timestamps
+      // (clock skew, concurrent publishers) are never dropped — avoiding the monotonic-cursor
+      // hazard where advancing to the newest timestamp permanently drops earlier writes.
+      const cursorTimestamp = process.env.ZETA_WATCH_INITIAL_CURSOR ?? new Date().toISOString();
+      const delivered = new Set<string>();
+      // Seed: exclude all messages already on disk at or before watch-start.
       for (const m of list({ topic: topicFilter, to: toFilter })) {
-        if (m.timestamp === cursorTimestamp) deliveredAtCursor.add(m.id);
+        if (m.timestamp <= cursorTimestamp) delivered.add(m.id);
       }
       const deadline = timeoutSec >= 0 ? Date.now() + timeoutSec * 1_000 : Infinity;
 
       const poll = () => {
         const msgs = list({ topic: topicFilter, to: toFilter });
         const fresh = msgs.filter(
-          (m) =>
-            m.timestamp > cursorTimestamp ||
-            (m.timestamp === cursorTimestamp && !deliveredAtCursor.has(m.id)),
+          (m) => m.timestamp >= cursorTimestamp && !delivered.has(m.id),
         );
         for (const m of fresh) {
           if (asJson) {
@@ -298,16 +296,12 @@ function main(): void {
             const p = JSON.stringify(m.payload).slice(0, 80);
             console.log(`${m.id}  ${m.topic}  ${m.from}→${m.to}  ${m.timestamp}  ${p}`);
           }
+          delivered.add(m.id);
         }
-        if (fresh.length > 0) {
-          const lastTs = fresh[fresh.length - 1]!.timestamp;
-          if (lastTs !== cursorTimestamp) {
-            cursorTimestamp = lastTs;
-            deliveredAtCursor.clear();
-          }
-          for (const m of fresh) {
-            if (m.timestamp === cursorTimestamp) deliveredAtCursor.add(m.id);
-          }
+        // Prune delivered set: remove IDs that have expired and left the bus.
+        const activeIds = new Set(msgs.map((m) => m.id));
+        for (const id of delivered) {
+          if (!activeIds.has(id)) delivered.delete(id);
         }
         if (Date.now() >= deadline) process.exit(0);
         setTimeout(poll, intervalMs);
