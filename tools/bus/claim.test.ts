@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync, utimesSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -274,6 +274,21 @@ describe("claim.ts — acquire lock cleanup (P1)", () => {
   test("no lock files remain after failed acquire", () => {
     run("acquire", "--from", "vera", "--item", "B-0555");
     run("acquire", "--from", "otto", "--item", "B-0555"); // blocked
+    const lockFiles = readdirSync(TEST_DIR).filter((f) => f.startsWith("acquire-"));
+    expect(lockFiles).toHaveLength(0);
+  });
+
+  test("stale lock (age > 5s) is reclaimed so acquire succeeds", () => {
+    // Simulate a lock file left by a crashed process by backdating its mtime.
+    // B-0777 → safe name is "B-0777" (hyphen preserved), so lock file is acquire-B-0777.lock.
+    const lockPath = join(TEST_DIR, "acquire-B-0777.lock");
+    const staleDate = new Date(Date.now() - 10_000); // 10s ago — beyond the 5s threshold
+    writeFileSync(lockPath, "");
+    utimesSync(lockPath, staleDate, staleDate);
+
+    const r = run("acquire", "--from", "otto", "--item", "B-0777");
+    expect(r.exitCode).toBe(0);
+    // Lock must be cleaned up after successful acquire.
     const lockFiles = readdirSync(TEST_DIR).filter((f) => f.startsWith("acquire-"));
     expect(lockFiles).toHaveLength(0);
   });

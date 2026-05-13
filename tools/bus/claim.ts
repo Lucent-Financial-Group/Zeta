@@ -14,11 +14,14 @@
 //   acquire: 0 = claim published, 1 = already claimed (no publish)
 //   release: 0 = release published, 1 = error
 
-import { openSync, closeSync, unlinkSync } from "node:fs";
+import { openSync, closeSync, unlinkSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
 import { SENDER_IDS } from "./types.ts";
 import type { AgentId, SenderAgentId, MessageEnvelope } from "./types.ts";
+
+// Stale lock threshold: a lock file older than this was left by a crashed process.
+const LOCK_STALE_MS = 5_000;
 
 // Per-item advisory file lock — guards acquire's check+publish against concurrent processes.
 function lockFilePath(itemId: string): string {
@@ -31,8 +34,17 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
   const lp = lockFilePath(itemId);
   let fd: number | undefined;
   // O_CREAT|O_EXCL ("wx"): atomic exclusive create — exactly one winner per race.
+  // Between retries, check whether an existing lock is stale (mtime age > LOCK_STALE_MS);
+  // if so, delete it — the holder crashed and will never release it otherwise.
   for (let i = 0; i < 3; i++) {
-    try { fd = openSync(lp, "wx"); break; } catch { /* retry */ }
+    try { fd = openSync(lp, "wx"); break; } catch {
+      try {
+        const st = statSync(lp);
+        if (Date.now() - st.mtimeMs > LOCK_STALE_MS) {
+          unlinkSync(lp); // reclaim stale lock left by a crashed process
+        }
+      } catch { /* lock already gone between stat and unlink — harmless */ }
+    }
   }
   if (fd === undefined) throw new Error(`${itemId}: acquire lock busy — retry`);
   try {
