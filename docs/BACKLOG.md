@@ -254,6 +254,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0444](backlog/P1/B-0444-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 - [ ] **[B-0445](backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md)** C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API
 - [ ] **[B-0448](backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md)** Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers
+- [ ] **[B-0449](backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md)** bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)
 
 ## P2 — research-grade
 
