@@ -1,41 +1,96 @@
 # tools/bg/ — Background services
 
-Background services that mechanize substrate-engineering
-disciplines so the foreground loop becomes OPTIONAL per the
-architectural challenge in PR #2998.
+Background services that mechanize substrate-engineering disciplines.
 
-## Current services
+## Architectural claim (substrate-honest)
 
-| Service | Slice | Purpose |
-|---------|-------|---------|
-| `standing-by-detector.ts` | B-0440.1 (skeleton) | Detect idle-foreground + nudge via bus when full impl lands |
+The architectural direction from PR #2998 was to make the foreground
+loop **OPTIONAL** by moving substrate-engineering work to durable
+background services. As of 2026-05-13, what has shipped is the
+**first reactive loops** for three failure-mode services:
 
-## Planned services (per B-0440/0441/0442)
+- detect → publish bus envelope
+- subscriber agents (slice 5+) can react autonomously
 
-- `standing-by-detector.ts` — catches the Standing-by failure mode (B-0440)
-- `backlog-ready-notifier.ts` — proactively assigns ready-to-grind rows (B-0441)
-- `missed-substrate-detector.ts` — catches branch-vs-merged-PR drift (B-0442)
+The current delivered surface does **NOT** make the foreground
+optional yet — these services **nudge** via bus envelopes. They do
+not open PRs, claim backlog rows, perform decomposition, or land
+substrate on their own. The "foreground optional" framing is
+**aspirational + directionally correct**, not yet operationally
+achieved.
+
+Per Riven's adversarial review (bus envelope `6c689634-14e7-4cf9-acf8-00c018f1bded`,
+2026-05-13): the gap between "nudges via bus" and "foreground loop
+is now optional" is large. Documented here so future readers don't
+overclaim.
+
+## Current services (as of 2026-05-13)
+
+| Service | File | Slice status | Detection signal | Bus topic |
+|---------|------|--------------|------------------|-----------|
+| Standing-by detector | `standing-by-detector.ts` | 1+2+3+4 live | commit-history (HEAD) + PR-activity (repo) via `gh`/`git` | `infinite-backlog-nudge` |
+| Backlog-ready notifier | `backlog-ready-notifier.ts` | 1+2+4 live | backlog-row scan (status + deps satisfied) | `work-assignment` |
+| Missed-substrate detector | `missed-substrate-detector.ts` | 1+2+4 live (slice 3 = STUB) | merged-PR fetch via `gh`; cascade detector is **STUB** — slice 3 plugs in real branch-vs-squash compare | `missed-substrate-cascade` |
+
+Per-service slice ordering (each service decomposes into 6 slices):
+
+- Slice 1: skeleton + no-op poll loop
+- Slice 2: real detection signal #1
+- Slice 3: real detection signal #2 (or comparator for B-0442)
+- Slice 4: bus-publish wiring
+- Slice 5: agent-side subscription / queue-state detection
+- Slice 6: cron registration + integration tests
 
 ## Composition
 
 All services compose with:
 
-- **B-0400 bus protocol** (`tools/bus/`) — transport for nudges + assignments + cascade alerts
+- **B-0400 bus protocol** (`tools/bus/`) — transport via `/tmp/zeta-bus/` JSON files
 - **Existing background infrastructure** — `com.zeta.claude-loop` launchd + cron heartbeat
+
+## Adapter pattern
+
+Every service uses **adapter injection** so unit tests are deterministic:
+
+- `now()` — clock
+- `lastCommitIso()` / `lastPrActivityIso()` / `scanBacklog()` / `fetchRecentMergedPRs()` — real-side-effect functions
+- `publishNudge()` / `publishAssignment()` / `publishCascade()` — bus IO
+
+Tests inject fake adapters; production uses `REAL_ADAPTERS`. The
+production code path is exercised via the CLI entry-point only.
+
+## Failure-mode handling (substrate-honest)
+
+- **Bus publish failures** caught + surfaced in structured `lastPublishError` field (per Riven's P1 catch); daemon loop survives transient bus IO errors
+- **`gh`-unavailable** surfaced explicitly as `fetchStatus: "gh-error"`; cannot be silently treated as "no PRs found"
+- **`git`-unavailable** surfaced as `lastCommitAt: null`; cannot be silently treated as "no commits ever"
+- **Daemon mode** (`runDaemon`) never accumulates results — no memory growth in long-running mode
 
 ## Running
 
 ```bash
 # One-shot mode (cron-driven; recommended)
 bun tools/bg/standing-by-detector.ts --once
+bun tools/bg/backlog-ready-notifier.ts --once
+bun tools/bg/missed-substrate-detector.ts --once
 
-# Loop mode (standalone daemon)
+# Daemon mode (standalone; runs forever)
 bun tools/bg/standing-by-detector.ts --poll-min 5 --idle-min 15
+
+# Dry-run (no bus publish)
+bun tools/bg/standing-by-detector.ts --once --no-publish
+
+# Send envelopes to a specific agent (default broadcast "*")
+bun tools/bg/backlog-ready-notifier.ts --once --to vera
 ```
 
-## Slice cadence
+## What's still pending
 
-Each service decomposes into ~6 implementation slices per its backlog row's
-"Decomposition into implementation slices" section. Slice 1 is the skeleton
-with a no-op poll loop; later slices add real detection logic, bus
-integration, and tests.
+- **B-0442.3** — Real branch-vs-squash comparator for missed-substrate-detector (slice 3 is a stub today)
+- **Slice 5 for all three** — subscriber agents that react to bus envelopes (e.g., auto-claim a `work-assignment`)
+- **Slice 6 for all three** — launchd / cron registration + integration tests
+
+When all of those land, the architectural claim "foreground loop is
+optional" approaches operational truth. Today the claim is
+"first reactive loops closed; nudges land; subscribers don't yet
+exist."
