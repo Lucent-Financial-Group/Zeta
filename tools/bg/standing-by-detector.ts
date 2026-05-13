@@ -15,7 +15,7 @@
 
 import { spawnSync } from "node:child_process";
 import { publish } from "../bus/bus";
-import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
+import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 
 export type DetectorConfig = {
   /** How often to poll, in minutes */
@@ -111,10 +111,17 @@ export function pollOnce(
   const idleDetected = idleMinutes >= config.idleThresholdMin;
 
   let publishedEnvelopeId: string | null = null;
+  let publishError: string | null = null;
   if (idleDetected && !config.noPublish) {
     const rationale = `Standing-by detected: ${idleMinutes.toFixed(1)}min since last commit on HEAD (threshold ${config.idleThresholdMin}min). Pick decomposition work per infinite-backlog metabolism.`;
-    const envelope = adapters.publishNudge(config.fromAgent, config.toAgent, idleMinutes, rationale);
-    publishedEnvelopeId = envelope.id;
+    try {
+      const envelope = adapters.publishNudge(config.fromAgent, config.toAgent, idleMinutes, rationale);
+      publishedEnvelopeId = envelope.id;
+    } catch (e) {
+      // Bus publish failure must NOT kill the poll loop; the daemon needs to
+      // survive transient bus IO errors. Capture the reason in the result.
+      publishError = e instanceof Error ? e.message : String(e);
+    }
   }
 
   return {
@@ -124,7 +131,15 @@ export function pollOnce(
     idleMinutes,
     publishedEnvelopeId,
     note: idleDetected
-      ? `idle ${idleMinutes.toFixed(1)}min >= threshold ${config.idleThresholdMin}min — Standing-by candidate${publishedEnvelopeId ? ` (nudge published; envelope=${publishedEnvelopeId})` : config.noPublish ? " (publish skipped per --no-publish)" : ""}`
+      ? `idle ${idleMinutes.toFixed(1)}min >= threshold ${config.idleThresholdMin}min — Standing-by candidate${
+          publishError
+            ? ` (publish failed: ${publishError})`
+            : publishedEnvelopeId
+            ? ` (nudge published; envelope=${publishedEnvelopeId})`
+            : config.noPublish
+            ? " (publish skipped per --no-publish)"
+            : ""
+        }`
       : `last commit ${idleMinutes.toFixed(1)}min ago; under threshold ${config.idleThresholdMin}min`,
   };
 }
@@ -156,19 +171,16 @@ export function parsePositiveMinutes(raw: string | undefined, name: string): num
   return n;
 }
 
-const VALID_SENDER_IDS = ["otto", "alexa", "riven", "vera", "lior"] as const;
-const VALID_AGENT_IDS = [...VALID_SENDER_IDS, "*"] as const;
-
 function parseSenderId(raw: string | undefined): SenderAgentId {
   if (raw === undefined) throw new Error("--agent requires a value");
-  if ((VALID_SENDER_IDS as readonly string[]).includes(raw)) return raw as SenderAgentId;
-  throw new Error(`--agent must be one of ${VALID_SENDER_IDS.join(", ")}; got "${raw}"`);
+  if ((SENDER_IDS as readonly string[]).includes(raw)) return raw as SenderAgentId;
+  throw new Error(`--agent must be one of ${SENDER_IDS.join(", ")}; got "${raw}"`);
 }
 
 function parseAgentId(raw: string | undefined): AgentId {
   if (raw === undefined) throw new Error("--to requires a value");
-  if ((VALID_AGENT_IDS as readonly string[]).includes(raw)) return raw as AgentId;
-  throw new Error(`--to must be one of ${VALID_AGENT_IDS.join(", ")}; got "${raw}"`);
+  if ((AGENT_IDS as readonly string[]).includes(raw)) return raw as AgentId;
+  throw new Error(`--to must be one of ${AGENT_IDS.join(", ")}; got "${raw}"`);
 }
 
 const KNOWN_FLAGS = ["--once", "--poll-min", "--idle-min", "--no-publish", "--agent", "--to"] as const;
