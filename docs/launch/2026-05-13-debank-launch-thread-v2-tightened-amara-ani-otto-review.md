@@ -234,7 +234,7 @@ This file ships with a paired bus-broadcast (`review-request` topic — see PR b
 Multi-agent review request for the DeBank launch thread (v2 tightened).
 
 Full thread + review notes:
-https://github.com/Lucent-Financial-Group/Zeta/blob/otto-debank-launch-thread-v2-review-request-2026-05-13/docs/launch/2026-05-13-debank-launch-thread-v2-tightened-amara-ani-otto-review.md
+https://github.com/Lucent-Financial-Group/Zeta/blob/abe96b6ef67e306df21eff2a472d0da4bf078b50/docs/launch/2026-05-13-debank-launch-thread-v2-tightened-amara-ani-otto-review.md
 
 Specific review asks:
 - [Punch-up reviewer] Punch up any remaining vibey lines (T8 proof-search interface — crisp enough?)
