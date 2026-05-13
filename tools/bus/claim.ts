@@ -261,6 +261,15 @@ function main(): void {
       // B-0444: --worktree captures the per-process operational coordinate.
       // Defaults to process.cwd() so callers that omit it still publish a useful
       // observability signal — the worktree the claim was acquired from.
+      //
+      // parseArgs encodes a bare `--worktree` (no value) as the literal string
+      // "true"; accepting that would record "true" as the worktree path and
+      // make claim provenance misleading. Reject fast so the user notices.
+      // (Codex P2 review on PR #3043.)
+      if (flags.worktree === "true") {
+        console.error("Error: --worktree requires a path argument");
+        process.exit(1);
+      }
       const worktree = flags.worktree ?? process.cwd();
       if (!from || !itemId) {
         console.error("Error: --from and --item are required");

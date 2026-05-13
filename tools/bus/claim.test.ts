@@ -319,6 +319,15 @@ describe("claim.ts — worktree field (B-0444)", () => {
     const r2 = run("acquire", "--from", "otto-cli", "--item", "B-0606", "--worktree", "/tmp/B");
     expect(r2.exitCode).toBe(0);
   });
+
+  // Codex P2 (PR #3043 review): bare `--worktree` (no value following)
+  // gets encoded by parseArgs as the literal string "true" and would
+  // otherwise be recorded as the worktree path. Reject fast.
+  test("bare --worktree (no value) is rejected with a clear error", () => {
+    const r = run("acquire", "--from", "otto", "--item", "B-0607", "--worktree");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--worktree requires a path argument");
+  });
 });
 
 describe("claim.ts — release", () => {
