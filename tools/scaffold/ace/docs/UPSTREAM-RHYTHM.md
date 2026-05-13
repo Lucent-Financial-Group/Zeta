@@ -4,8 +4,8 @@ This doc is **ace-specific** project configuration for the
 `fork-pr-workflow` skill. The skill itself is factory-generic
 and defers the upstream-cadence choice to project-level
 configuration (see
-`.claude/skills/fork-pr-workflow/SKILL.md` §"Optional
-overlay: batched upstream rhythm"). This doc is that
+`Lucent-Financial-Group/Zeta: .claude/skills/fork-pr-workflow/SKILL.md`
+§"Optional overlay: batched upstream rhythm"). This doc is that
 configuration for ace.
 
 ## Terminology — two surfaces
