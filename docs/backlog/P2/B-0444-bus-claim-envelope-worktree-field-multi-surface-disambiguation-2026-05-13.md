@@ -1,12 +1,14 @@
 ---
 id: B-0444
 priority: P2
-status: open
+status: closed
 title: "Bus claim envelope — add `worktree` field for multi-surface disambiguation + worktree-aware claim semantics"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-13
 last_updated: 2026-05-13
+closed_at: 2026-05-13
+closed_by_pr: 3043
 depends_on: [B-0400]
 composes_with: [B-0440, B-0441, B-0442]
 tags: [bus, claim, worktree, multi-foreground-surface, split-brain, B-0400-followup]

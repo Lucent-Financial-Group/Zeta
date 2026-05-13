@@ -251,10 +251,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0440](backlog/P1/B-0440-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
 - [ ] **[B-0441](backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
 - [ ] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
-- [ ] **[B-0444](backlog/P1/B-0444-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 - [ ] **[B-0445](backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md)** C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API
 - [ ] **[B-0448](backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md)** Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers
 - [ ] **[B-0449](backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md)** bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)
+- [ ] **[B-0450](backlog/P1/B-0450-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 
 ## P2 — research-grade
 
@@ -319,6 +319,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0050](backlog/P2/B-0050-lean-reflection-capability-skill-staged-trajectory.md)** Lean reflection — learn it properly, land a capability skill + scouting note (staged 5-stage trajectory)
 - [ ] **[B-0051](backlog/P2/B-0051-isomorphism-homomorphism-catalog-consolidation.md)** Isomorphism / homomorphism catalog — consolidate the category-theory surface, identify gaps, lift to coherent track
 - [ ] **[B-0054](backlog/P2/B-0054-pop-culture-media-research-track.md)** Pop-culture / media research track — operational-resonance sweep across film, TV, YouTube documentary, music, video games, conspiracy-corpus
+- [x] **[B-0054.1](backlog/P2/B-0054.1-media-catalog-schema-foundation.md)** Media-catalog schema foundation — typed TS schema + MR-001..004 seed entries
 - [ ] **[B-0054.10](backlog/P2/B-0054.10-bollywood-hindi-cinema-hindu-karmic-cycle.md)** Bollywood + Hindi cinema sweep + Hindu karmic-cycle substrate
 - [x] **[B-0054.2](backlog/P2/B-0054.2-video-game-priority-seeds-extension.md)** Video-game priority tier — Brütal Legend + Final Fantasy VI/VII
 - [ ] **[B-0054.3](backlog/P2/B-0054.3-video-game-mario-genshin.md)** Video-game priority tier — Super Mario + Genshin Impact
@@ -329,6 +330,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0054.8](backlog/P2/B-0054.8-music-corpus-progressive-rock-tool-nin.md)** Music corpus — progressive rock + Tool / Meshuggah / NIN first pass
 - [ ] **[B-0054.9](backlog/P2/B-0054.9-catalog-tier-games-portal-braid-outer-wilds-disco-elysium.md)** Catalog-tier game sweep — Portal, Braid, Outer Wilds, Disco Elysium
 - [ ] **[B-0055](backlog/P2/B-0055-frontier-edge-claims-CTF-flags.md)** Frontier edge-claims research track — plant flags on unclaimed intellectual territory (CTF-style, falsifiable, retractibly-defensible)
+- [x] **[B-0055.1](backlog/P2/B-0055.1-edge-claims-catalog-monolithic-slice.md)** Edge-claims catalog — monolithic TS implementation (11 CTF flags + schema)
 - [ ] **[B-0055.2](backlog/P2/B-0055.2-atomic-decomposition-of-b0055-frontier-edge-claims.md)** Atomic decomposition of B-0055 — re-decompose the frontier edge-claims track into dependency-ordered S-effort children (assume prior slice mistakes)
 - [ ] **[B-0056](backlog/P2/B-0056-mythology-research-track.md)** Mythology research track — operational-resonance candidates from world-mythology bridge / messenger / boundary figures
 - [x] **[B-0056.1](backlog/P2/B-0056.1-mythology-resonance-catalog-v0.md)** Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance)
@@ -501,7 +503,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0421](backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md)** Grok peer-call failure — cursor-agent exit 1 during multi-agent review
 - [ ] **[B-0430](backlog/P2/B-0430-peer-call-wrappers-codeql-insecure-tmp-file-all-8-wrappers-substrate-consistent-fix-2026-05-13.md)** Peer-call wrappers — CodeQL insecure-temp-file alert on autogenOutputPath() across all 8 wrappers (substrate-consistent fix needed)
 - [ ] **[B-0443](backlog/P2/B-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md)** Launch-substrate carve-out — persona naming allowed in docs/launch/** under existing closed-list pattern
-- [ ] **[B-0444](backlog/P2/B-0444-bus-claim-envelope-worktree-field-multi-surface-disambiguation-2026-05-13.md)** Bus claim envelope — add `worktree` field for multi-surface disambiguation + worktree-aware claim semantics
+- [x] **[B-0444](backlog/P2/B-0444-bus-claim-envelope-worktree-field-multi-surface-disambiguation-2026-05-13.md)** Bus claim envelope — add `worktree` field for multi-surface disambiguation + worktree-aware claim semantics
 - [ ] **[B-0446](backlog/P2/B-0446-lean4-formal-proof-completion-dbsp-core-identities-pm2-2026-05-13.md)** Lean 4 formal proof completion — DBSP chain rule + core stream-calculus identities
 - [ ] **[B-0447](backlog/P2/B-0447-nuget-package-metadata-completeness-pm2-2026-05-13.md)** NuGet package metadata completeness — description, tags, SourceLink, semantic versioning
 
