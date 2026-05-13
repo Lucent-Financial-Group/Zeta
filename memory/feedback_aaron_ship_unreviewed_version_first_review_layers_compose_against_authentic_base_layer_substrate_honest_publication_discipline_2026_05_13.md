@@ -138,7 +138,7 @@ review-as-additive-layer preserves both states.
 - `.claude/rules/methodology-hard-limits.md` (the carve-out
   — ethical floor still applies; ship-first doesn't override
   HARD LIMITS)
-- `memory/feedback_aaron_when_otto_gets_stuck_its_usually_aaron_ambiguous_task_not_agent_failure_upstream_cause_disclosure_2026_05_13.md`
+- `feedback_aaron_when_otto_gets_stuck_its_usually_aaron_ambiguous_task_not_agent_failure_upstream_cause_disclosure_2026_05_13.md`
   (same substrate-honest discipline disclosure session)
 
 ## Operational corollary

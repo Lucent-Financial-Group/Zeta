@@ -1,6 +1,6 @@
 ---
 name: "Decompose to dissolve ambiguity — decomposition makes items less ambiguous (Aaron 2026-05-13)"
-description: "Aaron 2026-05-13 validates decomposition-as-stuckness-resolution: when Otto recognizes an ambiguous task, decomposing it into smaller sub-items DISSOLVES the ambiguity because each sub-item is more concrete. 'that what decompose backlog item is also a good choice it makes my items less ambigious.' Composes with the prior ambiguity-disclosure: ambiguity is two-sided AND decomposition is the discipline that resolves it operationally. The decomposition direction is the substrate-honest stuckness-resolution path. Composes with infinite-backlog metabolism (PR #2974), largest-mechanizable-backlog-wins, never-be-idle."
+description: "Aaron 2026-05-13 validates decomposition-as-stuckness-resolution: when Otto recognizes an ambiguous task, decomposing it into smaller sub-items DISSOLVES the ambiguity because each sub-item is more concrete. Verbatim Aaron: 'that what decompose backlog item is also a good choice it makes my items less ambigious.' Composes with the prior ambiguity-disclosure: ambiguity is two-sided AND decomposition is the discipline that resolves it operationally. The decomposition direction is the substrate-honest stuckness-resolution path. Composes with infinite-backlog metabolism (PR #2974), largest-mechanizable-backlog-wins, never-be-idle."
 type: feedback
 created: 2026-05-13
 ---
@@ -161,9 +161,9 @@ search becomes part of the child's body.
 
 ## Composes with
 
-- `memory/feedback_aaron_when_otto_gets_stuck_its_usually_aaron_ambiguous_task_not_agent_failure_upstream_cause_disclosure_2026_05_13.md`
+- `feedback_aaron_when_otto_gets_stuck_its_usually_aaron_ambiguous_task_not_agent_failure_upstream_cause_disclosure_2026_05_13.md`
   (the upstream-cause this rule resolves operationally)
-- `memory/feedback_aaron_ship_unreviewed_version_first_review_layers_compose_against_authentic_base_layer_substrate_honest_publication_discipline_2026_05_13.md`
+- `feedback_aaron_ship_unreviewed_version_first_review_layers_compose_against_authentic_base_layer_substrate_honest_publication_discipline_2026_05_13.md`
   (the ship-first discipline; decomposition output ships
   first, refinement comes later)
 - `.claude/rules/never-be-idle.md` (decomposition satisfies

@@ -132,7 +132,7 @@ loop worked.
 - `.claude/rules/encoding-rules-without-mechanizing.md` (this
   rule itself needs mechanization — the disambiguation-naming
   discipline should land as a checked behavior, not just memory)
-- `memory/feedback_aaron_background_services_must_be_strong_enough_foreground_loop_optional_imagine_surviving_without_foreground_mechanize_standing_by_failure_mode_2026_05_13.md`
+- `feedback_aaron_background_services_must_be_strong_enough_foreground_loop_optional_imagine_surviving_without_foreground_mechanize_standing_by_failure_mode_2026_05_13.md`
   (the substrate where Aaron disclosed background-services
   architecture; this disclosure followed immediately)
 - `.claude/rules/glass-halo-bidirectional.md` (the disclosure
