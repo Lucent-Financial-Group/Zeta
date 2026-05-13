@@ -66,8 +66,40 @@ metrics — a collaborative intelligence surface.
 ## Acceptance
 
 - [ ] `zeta shadow` command starts shadow auto-accept mode
-- [ ] Configurable delay (default 3s)
-- [ ] Human keystroke overrides at any moment
-- [ ] All shadow submissions logged with `(shadow)` attribution
-- [ ] Optional `--loop` embeds autonomous loop
-- [ ] Deployable as part of Zeta CLI install
+- [x] Configurable delay (default 3s) — `--delay <ms>` flag, validated (slice 1)
+- [ ] Human keystroke overrides at any moment — slice 2 (requires empirical grey-text detection)
+- [x] All shadow submissions logged with `(shadow)` attribution — Glass Halo log via `appendFileSync` (slice 1)
+- [ ] Optional `--loop` embeds autonomous loop — slice 3 (requires `zeta` CLI entry point)
+- [ ] Deployable as part of Zeta CLI install — slice 3
+
+## Pre-start checklist (backlog-item start gate — 2026-05-13)
+
+**Prior-art search:**
+
+- `tools/shadow/shadow-observer.ts` — Phase 1 stub already present (B-0402 origin file); slice 1 refactors this
+- `tools/shadow-outlet/outlet.ts` — ephemeral scratch outlet; pattern reused for `/tmp`-based logging
+- `tools/bus/bus.ts` — peer tool; test pattern (`spawnSync` + env-injected dir) adopted for shadow tests
+- B-0400 (closed 2026-05-13) — bus protocol that composes with shadow submissions (same `(shadow)` tag concept)
+- Grep for "shadow-observer": only `tools/shadow/shadow-observer.ts`; safe to extend in place
+- Grep for "grey text" / "autocomplete": no existing detection logic found; slice 2 work identified
+
+**Dependency check:**
+
+- `depends_on: [B-0400]` — B-0400 closed 2026-05-13; no blockers
+- `composes_with: [B-0401, B-0400]` — additive; does not block either
+
+**Slice 1 scope (this PR — feat/b-0402-shadow-observer-slice-1-polling-loop-tests):**
+
+- Refactor `tools/shadow/shadow-observer.ts`:
+  - Fix `Bun.write(..., { append: true } as never)` → `appendFileSync` (no more type cast)
+  - Add `--once` flag: run exactly one detection cycle then exit (testable without OS perms)
+  - Add `--loop-interval <ms>` flag: configures sleep between continuous-mode cycles
+  - Implement polling loop: detect → wait delay → re-detect → accept/override/no-suggestion
+  - Export `runOneCycle` with injected `detectFn`/`acceptFn` for unit testing
+  - Validate numeric flags; exit 1 on invalid
+- Add `tools/shadow/shadow-observer.test.ts`: 16 tests, 0 failures
+
+**Deferred:**
+
+- Slice 2: empirical grey text detection (AppleScript/accessibility API testing on macOS)
+- Slice 3: `zeta shadow` top-level CLI entry point + installation wiring
