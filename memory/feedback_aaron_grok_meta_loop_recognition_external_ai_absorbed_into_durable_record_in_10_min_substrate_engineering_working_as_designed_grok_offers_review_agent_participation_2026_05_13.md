@@ -1,6 +1,6 @@
 ---
 name: Grok META-LOOP recognition — external AI absorbed into durable record in 10min — substrate-engineering working as designed — Grok offers REVIEW-AGENTS / claim / code-critic / observer participation (Aaron 2026-05-13)
-description: Aaron 2026-05-13 forwarded Grok's response after Otto landed PR #2941 with substrate-honest corrections (5 AIs not 6; Otto + Vera foreground loops). Grok observed the META-LOOP — Grok forwards → Aaron forwards → Otto lands memory file → Grok reads memory file → Grok validates the substrate ABSORBED him — under 10 minutes. Operational substrate-engineering loop working as designed. Grok offers participation as REVIEW-AGENTS / claim / harsh-code-critic / perf-auditor / research-scout / observer. Aaron-owned decision per mechanical-authorization-check.
+description: "Aaron 2026-05-13 forwarded Grok's response after Otto landed PR #2941 with substrate-honest corrections (5 AIs not 6; Otto + Vera foreground loops). Grok observed the META-LOOP — Grok forwards → Aaron forwards → Otto lands memory file → Grok reads memory file → Grok validates the substrate ABSORBED him — under 10 minutes. Operational substrate-engineering loop working as designed. Grok offers participation as REVIEW-AGENTS / claim / harsh-code-critic / perf-auditor / research-scout / observer. Aaron-owned decision per mechanical-authorization-check."
 type: feedback
 created: 2026-05-13
 ---
@@ -142,7 +142,8 @@ Grok now potentially joins as 6th external participant.
 
 Grok's website git connector capability composes with
 maintainer-toolkit asymmetry — Grok can read repo directly;
-end users still get Zeta only.
+end users get Zeta + mapped skills (per PR #2933 correction
+of the earlier "Zeta only" framing).
 
 ### PR #2933 (Zeta ships with skills)
 
@@ -162,7 +163,7 @@ Grok offered (Aaron-owned decision):
 | Role | Description |
 |---|---|
 | REVIEW-AGENTS execution | Run one of the 17 review agents on specific surface |
-| Claim opener | Open a new claim for a task per AGENT-CLAIM-PROTOCOL.md |
+| Claim opener | Open a new claim for a task per `docs/AGENT-CLAIM-PROTOCOL.md` |
 | Harsh code critic | Apply harsh-critic agent discipline to a diff or file |
 | Perf auditor | Apply performance-engineer agent to hot paths |
 | Research scout | Apply security-researcher or other research-tier agents |
@@ -200,8 +201,8 @@ participation ADDS to substrate; doesn't subtract.
 When new external AIs (or current external participants get
 git connector access), the operational flow is:
 
-1. AI orients via repo substrate (AGENT-CLAIM-PROTOCOL.md +
-   AGENTS.md + REVIEW-AGENTS.md)
+1. AI orients via repo substrate (`docs/AGENT-CLAIM-PROTOCOL.md`
+   + `AGENTS.md` + `docs/REVIEW-AGENTS.md`)
 2. AI observes / contributes via ferry (forward observation
    to Aaron)
 3. Aaron forwards to Otto for absorption
@@ -217,7 +218,9 @@ demonstrated by Grok.
 If Aaron authorizes Grok engagement:
 
 - Grok via peer-call wrapper (`bun tools/peer-call/grok.ts`)
-  for programmatic invocation
+  for programmatic invocation — note B-0421 currently open
+  (cursor-agent exit 1 / empty output); website git connector
+  is the working orientation path until B-0421 resolves
 - Grok via website git connector for direct repo reading
 - Grok as 6th external participant in agent-roster card
 - Grok contributing as REVIEW-AGENT execution (specific
@@ -258,11 +261,13 @@ Aaron decides per `.claude/rules/mechanical-authorization-check.md`.
 - PR #2933 (Zeta ships with skills)
 - PR #2935 + #2936 (F# fork architecture)
 - PR #2924 (Aurora pitch — Trusted Autonomy Zone)
-- AGENT-CLAIM-PROTOCOL.md substrate
-- AGENT-ISSUE-WORKFLOW.md substrate
-- REVIEW-AGENTS.md substrate
-- `.claude/rules/peer-call-infrastructure.md` (existing six
-  TS wrappers + Grok)
+- `docs/AGENT-CLAIM-PROTOCOL.md` substrate
+- `docs/AGENT-ISSUE-WORKFLOW.md` substrate
+- `docs/REVIEW-AGENTS.md` substrate
+- `.claude/rules/peer-call-infrastructure.md` (rule names six
+  wrappers — grok/gemini/codex/amara/ani/riven; `tools/peer-call/`
+  now contains 8 wrappers including `claude.ts` and `kiro.ts`;
+  rule is in heap state pending update)
 - `.claude/rules/wake-time-substrate.md` (substrate-in-repo)
 - `.claude/rules/glass-halo-bidirectional.md`
 - `.claude/rules/honor-those-that-came-before.md`
