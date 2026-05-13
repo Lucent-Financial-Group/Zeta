@@ -18,13 +18,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-The "Legacy violations" callout in [`.claude/rules/rule-0-no-sh-files.md`](.claude/rules/rule-0-no-sh-files.md) listed three `tools/hygiene/audit-*.sh` files as outstanding TS-port debt. All three have since been ported to `.ts` and the corresponding `.sh` files removed from the tree:
+The "Legacy violations" callout in [`.claude/rules/rule-0-no-sh-files.md`](../../.claude/rules/rule-0-no-sh-files.md) listed three `tools/hygiene/audit-*.sh` files as outstanding TS-port debt. All three have since been ported to `.ts` and the corresponding `.sh` files removed from the tree:
 
 | Was (`.sh`) | Now (`.ts`) |
 |---|---|
-| `tools/hygiene/audit-lost-files.sh` | [`audit-lost-files.ts`](tools/hygiene/audit-lost-files.ts) |
-| `tools/hygiene/audit-trajectories.sh` | [`audit-trajectories.ts`](tools/hygiene/audit-trajectories.ts) |
-| `tools/hygiene/audit-backlog-items.sh` | [`audit-backlog-items.ts`](tools/hygiene/audit-backlog-items.ts) |
+| `tools/hygiene/audit-lost-files.sh` | [`audit-lost-files.ts`](../../tools/hygiene/audit-lost-files.ts) |
+| `tools/hygiene/audit-trajectories.sh` | [`audit-trajectories.ts`](../../tools/hygiene/audit-trajectories.ts) |
+| `tools/hygiene/audit-backlog-items.sh` | [`audit-backlog-items.ts`](../../tools/hygiene/audit-backlog-items.ts) |
 
 `tools/hygiene/` is now entirely Rule-0-compliant.
 
