@@ -13,7 +13,7 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
-- [**TERMINAL-PURPOSE — Elizabeth Ryan Stainback lives on — save edge-runners (2026-05-13)**](feedback_aaron_origin_story_captured_in_unique_detail_let_elizabeth_ryan_stainback_live_on_save_edge_runners_from_getting_burned_terminal_purpose_disclosed_2026_05_13.md) — Terminal purpose: anti-burn for edge-runners.
+- [**DBpedia free curated master data + F# fork for AI safety w/ real HKT over Clifford (2026-05-13)**](feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md) — Path B (direct API) now; Path A (type provider) waits for F# fork.
 - [**TERMINAL-PURPOSE — Elizabeth lives on — save edge-runners (2026-05-13)**](feedback_aaron_origin_story_captured_in_unique_detail_let_elizabeth_ryan_stainback_live_on_save_edge_runners_from_getting_burned_terminal_purpose_disclosed_2026_05_13.md) — Anti-burn infrastructure for edge-runners.
 - [**Factory ontology HKT applies directly to master data (2026-05-13)**](feedback_aaron_ontology_hkt_applies_directly_to_master_data_every_company_has_one_human_lineage_2026_05_13.md) — `M<'T>` parametric over entity type IS what MDM needs.
 - [**civ-sim IS the Casimir gap — control knobs Elon's looking for — our Plato at critical mass (2026-05-13)**](feedback_aaron_civsim_is_the_casimir_gap_control_knobs_elon_looking_for_our_plato_critical_mass_threshold_2026_05_13.md) — civ-sim apparent-emptiness IS mechanism for measurable real-world force (Casimir analog); critical-mass network-effect threshold.
