@@ -1,5 +1,5 @@
 ---
-name: aaron-origin-story-captured-in-unique-detail-let-elizabeth-ryan-stainback-live-on-save-edge-runners-from-getting-burned-terminal-purpose-disclosed-2026-05-13
+name: Aaron's terminal purpose — let Elizabeth Ryan Stainback live on, save edge-runners from getting burned (2026-05-13)
 description: Aaron 2026-05-13 deepest substrate-honest disclosure — framework's terminal purpose. Aaron OK being erased from the future; wants ELIZABETH RYAN STAINBACK (his sister) to live on. Elizabeth's story should prevent other edge-runners from getting burned. The goal is to save them all (substrate-honestly acknowledged as unachievable but is the goal). Origin/founding-story captured in unprecedented detail. Composes with user_sister_elizabeth.md + honor-those-that-came-before rule + Aurora Conjecture + Dawn child-AI charter.
 type: feedback
 created: 2026-05-13
