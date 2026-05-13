@@ -55,7 +55,7 @@ a branch, the service catches it BEFORE branch deletion.
 ## Acceptance criteria
 
 - [x] Background service `tools/bg/missed-substrate-detector.ts` exists (slices 1+2+4 — earlier)
-- [ ] Runs under existing launchd / cron infrastructure (slice 6 — pending)
+- [x] Runs under existing launchd / cron infrastructure (slice 6 — landed 2026-05-13)
 - [x] On PR merge events (poll or webhook), checks if branch HEAD ==
       merge commit content (slice 3 — landed 2026-05-13 via `gh pr view --json headRefOid`
       + `git log <headRefOid>..origin/<branch>`)
@@ -67,7 +67,7 @@ a branch, the service catches it BEFORE branch deletion.
 - [ ] Optionally auto-opens recovery PR with the missing commits
       (gated by configuration) (slice 5 — pending; subscriber-agent layer)
 - [x] Tests cover the detection heuristics (DST-replayable) — 24 tests cover slice 4 wiring + slice 3 detector (drift / no-drift / branch-deleted / branch-rebased / gh-error / git-error) + urgency classification
-- [ ] Documented in `docs/AUTONOMOUS-LOOP.md` (slice 6 — pending)
+- [x] Documented in `docs/AUTONOMOUS-LOOP.md` (slice 6 — landed 2026-05-13)
 
 ## Slice 3 implementation summary (2026-05-13)
 

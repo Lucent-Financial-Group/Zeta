@@ -584,6 +584,12 @@ declared) against `CronList` and re-arms missing rows.
 
 ## Related artifacts
 
+- **Background Services Architecture** (B-0440, B-0441, B-0442) — the
+  proactive multi-agent loop is augmented by macOS `launchd` background
+  daemons (e.g. `missed-substrate-detector.ts`, `standing-by-detector.ts`)
+  that ensure failure modes and deadlocks are broken without human
+  intervention. See `tools/bg/`.
+
 - **`docs/hygiene-history/loop-tick-history.md`** — the
   factory's durable tick fire-log; appended to every tick
   at step 5 per the round-44 human-maintainer directive.
