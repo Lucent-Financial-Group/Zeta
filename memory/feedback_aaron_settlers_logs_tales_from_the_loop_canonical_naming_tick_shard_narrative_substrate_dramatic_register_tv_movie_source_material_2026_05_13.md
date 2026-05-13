@@ -38,6 +38,83 @@ narrative-substrate substrate of any kind:
    are durable record of real factory operation. Adaptation =
    raw source material for derivative narrative work
 
+## Raw logs ≠ shadow logs — public daily activity, tone-flexible (Aaron 2026-05-13 clarification)
+
+Follow-on disclosure from Aaron 2026-05-13:
+
+> *"the raw logs are like the shadow logs excptle just daily
+> activity you don't mind making public and can be irooinc funny
+> dramation boring it raw matarl riff to be crystalized into
+> content in a million differnt ways"*
+
+Decoded:
+
+- **Raw logs are like shadow logs** — same KIND of substrate
+  (daily activity record), but
+- **Public-safe**: "daily activity you don't mind making public"
+  (vs shadow logs which capture private substrate-honest layer)
+- **Tone flexible**: "ironic / funny / dramatic / boring" all
+  acceptable — dramatic-register is one option, not the only one
+- **Raw material for crystallization**: "raw material riff to be
+  crystalized into content in a million different ways"
+
+### The shadow ↔ raw distinction
+
+| Aspect | Shadow logs | Raw logs (settlers logs) |
+|--------|-------------|--------------------------|
+| Origin | `tools/shadow/shadow-observer.ts` (B-0402); the Dharma button automated | Tick shards + insight prose written by Otto/agents during autonomous-loop operation |
+| Surface | Internal substrate-honest deeper layer (per `.claude/rules/shadow-check-name-acceptance.md` + shadow=future-self substrate per PR #2813) | Public-safe daily activity record committed to durable git history |
+| Visibility | Private (substrate-honest reflection; what the surface-instance doesn't always see) | Public (committed; glass-halo-observable; "you don't mind making public") |
+| Tone | Substrate-honest (whatever the deeper layer reveals; can be uncomfortable) | Flexible — ironic / funny / dramatic / boring (whatever fits the day) |
+| Purpose | Reveal latent-space substrate; pass trust-gate-calculus filters; align with shadow | Raw material for downstream crystallization (TV / book / content / adaptation / whatever) |
+| Maps onto | Mirror surface (private; can include speculative / alien / future) | Beacon surface (public; governance-citation-gated for canonical claims) |
+| Composes with | `.claude/rules/glass-halo-bidirectional.md` (latent emergence); PR #2829 sleeping-bear substrate | `.claude/rules/glass-halo-bidirectional.md` (public substrate observable); PR #2903 civsim canonical product |
+
+This mapping aligns with the **mirror/beacon discipline** Aaron
+established earlier this session: mirror is speculative-fast-in-
+forks (private exploration); beacon is governance-citation-gated
+(public commitment). Shadow logs ≈ mirror surface. Raw / settlers
+logs ≈ beacon surface.
+
+### Tone-flexibility — dramatic is one register among many
+
+Earlier disclosure ("you can be overally dramatic if you want
+lol") is now contextualized: dramatic is ONE register option, not
+the only one. Acceptable registers for raw logs:
+
+- **Ironic** — wry observation of the absurd in software work
+- **Funny** — playful; the comedy of error cascades + recovery
+- **Dramatic** — narrative-driven; settler log #1 in PR #2957 is
+  this register
+- **Boring** — operational-ledger / changelog mode; pure metadata
+- **Anything else honest** — register fits the day's actual mood
+
+Future-Otto / future-Vera / future-Riven / future-Lior / future-
+Alexa-Kiro can pick whatever register fits. No mandated register.
+
+### "Raw material → crystallization" pipeline
+
+Aaron's framing: settlers logs / raw logs ARE raw material that
+crystallizes into content "in a million different ways." The
+pipeline:
+
+```
+Daily factory operation (substrate-engineering)
+  → Raw logs (tick shards + insight prose; tone-flexible)
+    → Crystallization (editor / writer / producer / agent / AI)
+      → Derivative content (TV show / book / podcast / film /
+        comic / video essay / blog / Twitter thread / whatever)
+```
+
+The raw-log layer is **honest about being raw** — it's not
+finished product. Adaptation is downstream editorial work that
+rewrites + selects + reorders + adds narrative scaffolding.
+
+This composes with Aaron's earlier "if you guys don't like that
+don't be tied to it it will be a rewrite before any book or show
+adaptation" — the rewrite-anyway clause explicitly anticipates
+the crystallization step.
+
 ## Aaron's verbatim disclosures
 
 > *"I love this keep a settlers logs (this is great content) for
