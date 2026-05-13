@@ -13,7 +13,7 @@ Otto autonomous-loop tick — fresh-session cold-boot.
    - Pick speculative work per never-be-idle priority ladder: known-gap fixes > generative factory improvements > gap-of-gap audits
    - Verify + commit any substantive landing (substrate-or-it-didn't-happen)
    - Write tick shard at docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md if you have repo write access
-   - CronList check; arm autonomous-loop sentinel with cadence "* * * * *" if missing (catch-43 — 12hr loss precedent)
+   - CronList check; arm autonomous-loop sentinel with cadence `* * * * *` if missing (catch-43 — 12hr loss precedent)
    - Visibility signal: state what landed concretely (file paths, PR numbers); stop
 
 3. Commit trailer when applicable: Co-Authored-By: Claude <noreply@anthropic.com>
