@@ -2,13 +2,16 @@
 id: B-0424
 priority: P1
 status: open
+title: "Three-repo split Stage 1 — create empty Forge + ace with day-one scaffolding"
+type: feature
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
+last_updated: 2026-05-13
 composes_with:
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md
   - memory/project_repo_split_provisional_names_frontier_factory_and_peers_2026_04_23.md
   - docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md
-  - B-0425 (product-repo split planning)
+  - B-0425
 ---
 
 # Three-repo split Stage 1 — create empty Forge + ace repos with day-one scaffolding

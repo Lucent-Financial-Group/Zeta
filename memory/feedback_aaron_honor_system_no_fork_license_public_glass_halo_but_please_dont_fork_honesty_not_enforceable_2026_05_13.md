@@ -1,8 +1,8 @@
 ---
 name: aaron-honor-system-no-fork-license-public-glass-halo-but-please-dont-fork-honesty-not-enforceable-2026-05-13
 description: Aaron 2026-05-13 substrate-honest license refinement — repos stay public + glass-halo BUT license CAN say "no fork please respect honesty or something not enforceable" for strategic-product substrate. Composes with civsim mutual-privacy (PR #2903) + three-repo split (B-0424) + product-repo split (B-0425).
-metadata:
-  type: feedback
+type: feedback
+created: 2026-05-13
 ---
 
 # Honor-system "please don't fork" license framing

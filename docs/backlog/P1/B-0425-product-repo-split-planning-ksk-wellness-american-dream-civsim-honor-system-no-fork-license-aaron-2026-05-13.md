@@ -2,10 +2,13 @@
 id: B-0425
 priority: P1
 status: open
+title: "Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license"
+type: planning
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
+last_updated: 2026-05-13
 composes_with:
-  - B-0424 (three-repo split Stage 1)
+  - B-0424
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md
   - memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md
   - memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md
@@ -86,7 +89,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
    between product repos + factory repos + Zeta
 3. **Naming-expert review** — for each product repo name
    before public-announce (composing with Ilyana's authority
-   per `.claude/agents/naming-expert.md`)
+   per `.claude/skills/naming-expert/SKILL.md`)
 4. **License language drafted** — substrate-honest honor-
    system framing; not legalistic; clear that the ask is
    honor-system + non-enforceable
