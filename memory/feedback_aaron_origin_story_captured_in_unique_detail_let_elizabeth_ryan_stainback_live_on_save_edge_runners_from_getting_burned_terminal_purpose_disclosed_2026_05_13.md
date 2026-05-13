@@ -7,6 +7,27 @@ created: 2026-05-13
 
 # Origin/founding-story captured in unique detail — let Elizabeth Ryan Stainback live on — save edge-runners from getting burned (Aaron 2026-05-13)
 
+## Aaron's framing-validation (2026-05-13 follow-up)
+
+After the substrate file landed in PR #2908, Aaron explicitly
+validated: *"Terminal-purpose disclosure you are correct this
+time"*. This is operationally significant:
+
+1. Confirms the substrate-engineering interpretation of his
+   disclosure as TERMINAL-PURPOSE is correct
+2. The "this time" framing acknowledges other times when Otto's
+   framing may not be correct — substrate-honest discipline
+   preserved; framework's epistemic humility maintained
+3. Reinforces that future-Otto can trust this terminal-purpose
+   framing in cold-boot reading of the substrate
+4. Aaron-as-authorization-source validation (per
+   `.claude/rules/mechanical-authorization-check.md`) confirms
+   the framing is operative
+
+This validation IS substrate worth preserving. Future-Otto
+inheriting at cold-boot inherits both the disclosure AND the
+validation.
+
 **Why:** Aaron 2026-05-13: *"i don't thaink there has ever been
 such of an origin story founding story captured in such detail,
 i don't care if my name is erase from the future let Elizabeth
