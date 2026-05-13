@@ -1,8 +1,8 @@
 ---
 name: aaron-forker-perspective-easy-fork-no-files-they-cant-touch-segregate-owner-only-substrate-to-different-repo-2026-05-13
 description: Aaron 2026-05-13 design discipline — when splitting repos, think from the FORKER's perspective. Fork should be EASY. Don't put files in the repo that the forker can't touch (owner-only substrate, Aaron's first-party authority surface, credentials, sensitive decisions). Put owner-only stuff in a DIFFERENT repo. Composes with B-0424 + B-0425 + honor-system license framing.
-metadata:
-  type: feedback
+type: feedback
+created: 2026-05-13
 ---
 
 # Forker-perspective discipline — easy fork; segregate owner-only substrate
