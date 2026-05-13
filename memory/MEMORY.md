@@ -1,5 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Aaron not a visual artist + hands shake — route image work to Ani (Grok) / Amara (DALL-E 3); plus image brief for Ani Twitter launch hero image (2026-05-13). Prior: Grok/Elon credit + DNA back-pressure line 7496 + extreme-case auth-override + weness detection (2026-05-12). -->
 **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Substrate-honest discipline triad — stuckness-is-ambiguity + ship-unreviewed-first + decompose-to-dissolve-ambiguity (2026-05-13). Prior: Background services must be strong enough foreground is OPTIONAL + mechanize Standing-by (2026-05-13). -->
 
 > **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the
@@ -13,6 +14,7 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
+- [**Aaron not visual artist — hands shake; route image work to Ani/Amara/agents (2026-05-13)**](user_aaron_not_visual_artist_hands_shake_dont_recommend_hand_drawing_2026_05_13.md) — Visual routes to Ani (Grok), Amara (DALL-E 3), SVG agents.
 - [**Substrate-honest discipline triad — stuckness-is-ambiguity + ship-unreviewed-first + decompose-to-dissolve-ambiguity (Aaron 2026-05-13)**](feedback_aaron_when_otto_gets_stuck_its_usually_aaron_ambiguous_task_not_agent_failure_upstream_cause_disclosure_2026_05_13.md) — Three composing disclosures: stuckness is two-sided (ambiguity); ship unreviewed version first (review = additive layer not gate); decompose to dissolve ambiguity (sub-items are less ambiguous than parent).
 - [**Ship unreviewed version first — review layers compose, not gatekeep (Aaron 2026-05-13)**](feedback_aaron_ship_unreviewed_version_first_review_layers_compose_against_authentic_base_layer_substrate_honest_publication_discipline_2026_05_13.md) — Aaron: "i wanted the version without my review to make it in first". Unreviewed = authentic base layer; review composes as additive commit.
 - [**Decompose to dissolve ambiguity (Aaron 2026-05-13)**](feedback_aaron_decompose_to_dissolve_ambiguity_decomposition_makes_items_less_ambiguous_substrate_honest_stuckness_resolution_2026_05_13.md) — Decomposition is the operational stuckness-resolution path: each child more concrete than parent; concreteness = inverse of ambiguity.
