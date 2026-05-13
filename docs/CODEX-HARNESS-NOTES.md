@@ -9,21 +9,23 @@ Codex does not have Claude Code's native `CronCreate` /
 `CronList` scheduled-task tools. On this machine, the Codex
 autonomous loop is therefore a macOS `launchd` job.
 
-| Field | Value |
-|---|---|
-| LaunchAgent label | `com.zeta.codex-loop` |
-| Plist | `~/Library/LaunchAgents/com.zeta.codex-loop.plist` |
-| Runner | `.codex/bin/codex-loop-tick.ts` |
-| Control clone | `~/.local/share/zeta-codex-loop/Zeta` |
-| Heartbeat cadence | 60 seconds (`StartInterval = 60`) |
-| Codex gate cadence | 15 minutes when `ZETA_CODEX_LOOP_RUN_CODEX=1` |
-| Logs | `~/Library/Logs/zeta-codex-loop/` |
-| State / lock | `~/Library/Application Support/ZetaCodexLoop/` |
+| Field              | Value                                              |
+| ------------------ | -------------------------------------------------- |
+| LaunchAgent label  | `com.zeta.codex-loop`                              |
+| Plist              | `~/Library/LaunchAgents/com.zeta.codex-loop.plist` |
+| Runner             | `.codex/bin/codex-loop-tick.ts`                    |
+| Control clone      | `~/.local/share/zeta-codex-loop/Zeta`              |
+| Heartbeat cadence  | 60 seconds (`StartInterval = 60`)                  |
+| Codex gate cadence | 15 minutes when `ZETA_CODEX_LOOP_RUN_CODEX=1`      |
+| Logs               | `~/Library/Logs/zeta-codex-loop/`                  |
+| State / lock       | `~/Library/Application Support/ZetaCodexLoop/`     |
 
 The runner writes a local heartbeat named
 `codex-launchd-loop.json` under the clone's
 `agent-heartbeats` directory, fetches remote refs, records
-active claim count / open PR count / dirty state, then exits.
+active claim count / open PR count / dirty state, and stamps
+the heartbeat with `origin`, `surface`, and `run_id`, then
+exits.
 Codex has no native in-harness cron callback in this session.
 The LaunchAgent is the loop substrate. It starts a bounded,
 read-only Codex gate report only when
@@ -32,6 +34,44 @@ read-only Codex gate report only when
 default gate interval is 900 seconds. The gate output lands in
 `ticks.log` / `ticks.err`; it does not appear inside the
 currently open chat transcript.
+
+Headless provenance is part of the service contract. The
+runner exports the following environment variables into the
+spawned `codex exec` process:
+
+| Variable                  | Default                    |
+| ------------------------- | -------------------------- |
+| `ZETA_AGENT_ORIGIN`       | `codex-launchd-loop`       |
+| `ZETA_AGENT_SURFACE`      | `codex-background-service` |
+| `ZETA_CODEX_LOOP_SESSION` | `codex/launchd-loop`       |
+| `ZETA_CODEX_LOOP_RUN_ID`  | current runner `run_id`    |
+
+The loop prompt instructs headless runs to carry those values
+into claim files, PR bodies/comments, broadcasts, cleanup
+records, and commit trailers when those surfaces are created
+by the background service. Background PR bodies use a
+searchable footer:
+
+```text
+Headless-Origin: codex-launchd-loop
+Headless-Surface: codex-background-service
+Codex-Loop-Run-Id: <run id>
+```
+
+Background commits keep the normal Codex harness trailer and
+add:
+
+```text
+Co-Authored-By: Codex <noreply@openai.com>
+Codex-Origin: codex-launchd-loop
+Codex-Surface: codex-background-service
+Codex-Loop-Run-Id: <run id>
+```
+
+Foreground Vera / Codex chat commits use the shared
+`Co-Authored-By` trailer without the `Codex-*` launchd
+trailers. This lets headless deployments count background PR
+work without relying on a GUI transcript.
 
 The runner invokes noninteractive Codex with
 `--dangerously-bypass-approvals-and-sandbox` by default because
