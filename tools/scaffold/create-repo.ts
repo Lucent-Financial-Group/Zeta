@@ -97,6 +97,10 @@ if (!repoArg || !REPO_CONFIGS[repoArg]) {
 const config = REPO_CONFIGS[repoArg];
 const ops: Operation[] = [];
 
+// Default branch — updated to the repo's actual default after step01 completes in --apply mode.
+// In --dry-run mode this stays "main" (documented LFG org default).
+let defaultBranch = "main";
+
 // --- Helpers ---
 
 function gh(args: string[]): { ok: boolean; stdout: string; stderr: string } {
@@ -210,6 +214,21 @@ function step01_createRepo(): void {
       allow_auto_merge: true,
     }
   );
+  // Plan 01b-merge-settings unconditionally so dry-run output is complete.
+  const mergeData: Record<string, unknown> = {
+    allow_squash_merge: true,
+    allow_merge_commit: false,
+    allow_rebase_merge: false,
+    delete_branch_on_merge: true,
+    allow_auto_merge: true,
+    ...(config.homepage ? { homepage: config.homepage } : {}),
+  };
+  const mergeOp = plan(
+    "01b-merge-settings",
+    "Apply merge/auto-merge settings (squash-only, auto-merge, delete-branch-on-merge)",
+    `gh api --method PATCH /repos/${config.org}/${config.name} --input -`,
+    mergeData
+  );
   if (!dryRun) {
     // Create repo
     const create = gh([
@@ -224,29 +243,32 @@ function step01_createRepo(): void {
     if (!create.ok) {
       op.status = "failed";
       op.error = create.stderr;
+      mergeOp.status = "skipped";
       return;
     }
+    // Detect actual default branch so step02 + step06 target the right branch.
+    const repoMeta = gh(["api", `/repos/${config.org}/${config.name}`]);
+    if (repoMeta.ok) {
+      try {
+        defaultBranch = (JSON.parse(repoMeta.stdout) as { default_branch: string }).default_branch;
+      } catch { /* keep "main" */ }
+    }
     // Apply merge settings (and optional homepage) via PATCH
-    ghApiPatch(
-      `/repos/${config.org}/${config.name}`,
-      {
-        allow_squash_merge: true,
-        allow_merge_commit: false,
-        allow_rebase_merge: false,
-        delete_branch_on_merge: true,
-        allow_auto_merge: true,
-        ...(config.homepage ? { homepage: config.homepage } : {}),
-      },
-      "Apply merge/auto-merge settings",
-      "01b-merge-settings"
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
+    const mergeResult = spawnSync(
+      "gh",
+      ["api", "--method", "PATCH", `/repos/${config.org}/${config.name}`, "--input", "-"],
+      { input: JSON.stringify(mergeData), encoding: "utf8", maxBuffer: 8 * 1024 * 1024 }
     );
+    mergeOp.status = mergeResult.status === 0 ? "executed" : "failed";
+    if (mergeOp.status === "failed") mergeOp.error = mergeResult.stderr;
     op.status = "executed";
   }
 }
 
 function step02_branchProtection(): void {
   ghApiPut(
-    `/repos/${config.org}/${config.name}/branches/main/protection`,
+    `/repos/${config.org}/${config.name}/branches/${defaultBranch}/protection`,
     {
       required_status_checks: {
         strict: true,
@@ -265,16 +287,16 @@ function step02_branchProtection(): void {
       block_creations: false,
       required_conversation_resolution: true,
     },
-    `Apply branch protection to ${config.name}/main (1 review, signed commits, linear history, no force-push)`,
+    `Apply branch protection to ${config.name}/${defaultBranch} (1 review, signed commits, linear history, no force-push)`,
     "02-branch-protection"
   );
 
   // Required signed commits uses POST to enable (DELETE to disable) — not PUT.
   // GitHub REST docs: POST /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures
   ghApiPost(
-    `/repos/${config.org}/${config.name}/branches/main/protection/required_signatures`,
+    `/repos/${config.org}/${config.name}/branches/${defaultBranch}/protection/required_signatures`,
     {},
-    `Require signed commits on ${config.name}/main`,
+    `Require signed commits on ${config.name}/${defaultBranch}`,
     "02b-required-signed-commits"
   );
 }
@@ -417,10 +439,10 @@ function step06_pushScaffoldFiles(): void {
       return;
     }
 
-    // New empty repos have no commits and no branches — ensure we're on `main`.
+    // New empty repos have no commits and no branches — ensure we're on the default branch.
     const gitOpts = { cwd: tmpDir, encoding: "utf8" as const };
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
-    const checkoutResult = spawnSync("git", ["checkout", "-b", "main"], gitOpts);
+    const checkoutResult = spawnSync("git", ["checkout", "-b", defaultBranch], gitOpts);
     if (checkoutResult.status !== 0 && checkoutResult.status !== null) {
       // Branch may already exist (non-empty clone); ignore the error.
     }
@@ -462,9 +484,9 @@ function step06_pushScaffoldFiles(): void {
       return;
     }
 
-    // Push HEAD as `main` regardless of local default-branch config.
+    // Push HEAD as the default branch (detected from repo API after creation, or "main" in dry-run).
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
-    const push = spawnSync("git", ["push", "--set-upstream", "origin", "HEAD:main"], gitOpts);
+    const push = spawnSync("git", ["push", "--set-upstream", "origin", `HEAD:${defaultBranch}`], gitOpts);
     op.status = push.status === 0 ? "executed" : "failed";
     if (op.status === "failed") op.error = push.stderr ?? "";
 
@@ -508,7 +530,18 @@ function step07_summary(): void {
 // --- Main ---
 
 step01_createRepo();
-step06_pushScaffoldFiles(); // must run before branch protection to allow direct push to main
+// Abort in --apply mode if repo creation failed — avoid mutating an existing or partial repository.
+if (!dryRun && ops.some((o) => o.step === "01-create-repo" && o.status === "failed")) {
+  const failedResult: RunResult = {
+    repo: `${config.org}/${config.name}`,
+    dryRun,
+    operations: ops,
+    summary: `ABORTED — step 01 (create-repo) failed; subsequent steps skipped to avoid mutating an existing repository.`,
+  };
+  console.log(JSON.stringify(failedResult, null, 2));
+  process.exit(1);
+}
+step06_pushScaffoldFiles(); // must run before branch protection to allow direct push to default branch
 step02_branchProtection();
 step03_enableSecurity();
 step04_codeqlDefaultSetup();
