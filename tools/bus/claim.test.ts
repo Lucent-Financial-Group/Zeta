@@ -235,13 +235,15 @@ describe("claim.ts — worktree field (B-0444)", () => {
   beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
   afterEach(cleanTestDir);
 
-  test("acquire defaults worktree to process.cwd() when --worktree omitted", () => {
+  test("acquire omits worktree from payload + JSON when --worktree not specified (Copilot review)", () => {
+    // Copilot review on PR #3043: defaulting to process.cwd() can record a
+    // plausible-looking but misleading coordinate when the caller is in an
+    // unrelated directory. New behavior: leave the field absent when omitted.
     const r = run("acquire", "--from", "otto", "--item", "B-0600", "--json");
     expect(r.exitCode).toBe(0);
     const out = JSON.parse(r.stdout);
     expect(out.acquired).toBe(true);
-    expect(typeof out.worktree).toBe("string");
-    expect(out.worktree.length).toBeGreaterThan(0);
+    expect(out.worktree).toBeUndefined();
   });
 
   test("acquire surfaces explicit --worktree value in check output", () => {
@@ -320,13 +322,26 @@ describe("claim.ts — worktree field (B-0444)", () => {
     expect(r2.exitCode).toBe(0);
   });
 
-  // Codex P2 (PR #3043 review): bare `--worktree` (no value following)
-  // gets encoded by parseArgs as the literal string "true" and would
-  // otherwise be recorded as the worktree path. Reject fast.
+  // Codex P2 (PR #3043 review round 1): bare `--worktree` (no value
+  // following) used to be encoded by parseArgs as the literal string "true"
+  // and would otherwise be recorded as the worktree path. parseArgs now
+  // distinguishes bare-flag (boolean true) from explicit string values.
   test("bare --worktree (no value) is rejected with a clear error", () => {
     const r = run("acquire", "--from", "otto", "--item", "B-0607", "--worktree");
     expect(r.exitCode).toBe(1);
     expect(r.stderr).toContain("--worktree requires a path argument");
+  });
+
+  // Codex P2 (PR #3043 review round 2): explicit `--worktree true` (where
+  // the literal string `true` is the intended path value) must NOT be
+  // rejected. The bare-flag check is on the boolean sentinel, not on the
+  // string content.
+  test("explicit --worktree true (literal string) is accepted as a valid path", () => {
+    const r = run("acquire", "--from", "otto", "--item", "B-0608", "--worktree", "true", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    expect(out.acquired).toBe(true);
+    expect(out.worktree).toBe("true");
   });
 });
 

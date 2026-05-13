@@ -199,10 +199,14 @@ export function allActiveClaims(): ClaimRecord[] {
 
 // ── CLI ───────────────────────────────────────────────────────────────────────
 
-function parseArgs(argv: string[]): { command: string; flags: Record<string, string> } {
+// A bare flag (e.g. `--json` with no value following) is represented as the
+// boolean literal `true` so it is distinguishable from an explicit string
+// value `"true"` — relevant for flags whose values are user-supplied paths /
+// branch names where `"true"` is a legitimate input (Codex P2 on PR #3043).
+function parseArgs(argv: string[]): { command: string; flags: Record<string, string | true> } {
   const args = argv.slice(2);
   const command = args[0] ?? "";
-  const flags: Record<string, string> = {};
+  const flags: Record<string, string | true> = {};
   for (let i = 1; i < args.length; i++) {
     const a = args[i]!;
     if (a.startsWith("--")) {
@@ -212,11 +216,21 @@ function parseArgs(argv: string[]): { command: string; flags: Record<string, str
         flags[key] = next;
         i++;
       } else {
-        flags[key] = "true";
+        flags[key] = true;
       }
     }
   }
   return { command, flags };
+}
+
+// Convenience: was the flag set with an explicit string value?
+function asString(v: string | true | undefined): string | undefined {
+  return typeof v === "string" ? v : undefined;
+}
+
+// Convenience: was the flag set at all (either bare or with a value)?
+function isSet(v: string | true | undefined): boolean {
+  return v !== undefined;
 }
 
 function usage(): void {
@@ -227,16 +241,17 @@ function usage(): void {
 
 Agents: ${SENDER_IDS.join(" | ")}
 
---worktree defaults to process.cwd() when not specified (B-0444).`);
+--worktree is optional (B-0444); when set, the value is recorded on the
+  claim envelope for observability. Omit to leave the field absent.`);
 }
 
 function main(): void {
   const { command, flags } = parseArgs(process.argv);
-  const asJson = flags.json === "true";
+  const asJson = isSet(flags.json); // bare `--json` is acceptable; any presence enables JSON
 
   switch (command) {
     case "check": {
-      const itemId = flags.item;
+      const itemId = asString(flags.item);
       if (!itemId) { console.error("Error: --item is required"); process.exit(1); }
 
       const claims = activeClaims(itemId);
@@ -255,22 +270,30 @@ function main(): void {
     }
 
     case "acquire": {
-      const from = flags.from as SenderAgentId | undefined;
-      const itemId = flags.item;
-      const branch = flags.branch;
-      // B-0444: --worktree captures the per-process operational coordinate.
-      // Defaults to process.cwd() so callers that omit it still publish a useful
-      // observability signal — the worktree the claim was acquired from.
+      const from = asString(flags.from) as SenderAgentId | undefined;
+      const itemId = asString(flags.item);
+      const branch = asString(flags.branch);
+      // B-0444: --worktree captures the per-process operational coordinate
+      // visible in `check` output. Two reviewer concerns reshape the original
+      // design (PR #3043 round 2):
       //
-      // parseArgs encodes a bare `--worktree` (no value) as the literal string
-      // "true"; accepting that would record "true" as the worktree path and
-      // make claim provenance misleading. Reject fast so the user notices.
-      // (Codex P2 review on PR #3043.)
-      if (flags.worktree === "true") {
+      //  - Codex P2 — bare `--worktree` (no value) should be a hard error so
+      //    `"true"` cannot get silently recorded as the worktree path, while
+      //    still allowing an explicit `--worktree true` to set the literal
+      //    string `true` as a valid path. `parseArgs` now distinguishes the
+      //    bare-flag case (boolean `true`) from the string-value case.
+      //
+      //  - Copilot — auto-defaulting `worktree` to `process.cwd()` records a
+      //    plausible-looking but potentially-misleading coordinate when the
+      //    caller is running from an unrelated directory (CI step that
+      //    `cd`'d, wrapper script, cron context). Make the field absent when
+      //    the caller did not opt in: `--worktree <path>` to set, omit to
+      //    leave undefined.
+      if (flags.worktree === true) {
         console.error("Error: --worktree requires a path argument");
         process.exit(1);
       }
-      const worktree = flags.worktree ?? process.cwd();
+      const worktree = asString(flags.worktree); // undefined when --worktree omitted
       if (!from || !itemId) {
         console.error("Error: --from and --item are required");
         process.exit(1);
@@ -317,7 +340,12 @@ function main(): void {
       }
 
       if (asJson) {
-        console.log(JSON.stringify({ itemId, acquired: true, messageId, worktree }));
+        console.log(JSON.stringify({
+          itemId,
+          acquired: true,
+          messageId,
+          ...(worktree !== undefined && { worktree }),
+        }));
       } else {
         const branchStr = branch ? ` (${branch})` : "";
         const worktreeStr = worktree ? ` [worktree: ${worktree}]` : "";
@@ -327,8 +355,8 @@ function main(): void {
     }
 
     case "release": {
-      const from = flags.from as SenderAgentId | undefined;
-      const itemId = flags.item;
+      const from = asString(flags.from) as SenderAgentId | undefined;
+      const itemId = asString(flags.item);
       if (!from || !itemId) {
         console.error("Error: --from and --item are required");
         process.exit(1);
