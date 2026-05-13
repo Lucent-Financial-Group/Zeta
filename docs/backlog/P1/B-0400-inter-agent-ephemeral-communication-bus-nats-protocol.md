@@ -1,12 +1,14 @@
 ---
 id: B-0400
 priority: P1
-status: open
+status: closed
 title: "Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-10
 last_updated: 2026-05-13
+closed: 2026-05-13
+closed_reason: "All acceptance criteria satisfied; multi-agent review complete (slice 6)"
 depends_on: []
 composes_with: [B-0164]
 tags: [multi-agent, bus, nats, ephemeral, shadow-space, accelerated-timeframe, agent-designed]
@@ -50,7 +52,7 @@ Message schema (agent-designed):
 - [x] At least 2 agents can exchange messages via the bus — PR #2886 (types + bus CLI)
 - [x] Messages survive between ticks but not necessarily reboots — /tmp JSON, TTL-gated
 - [x] Subscription watch mode — `bun tools/bus/bus.ts watch --to otto` (slice 2, this PR)
-- [ ] Multi-agent review of this design (get as many agents as possible within bounded timeframe)
+- [x] Multi-agent review of this design — Otto review in `docs/research/2026-05-13-b-0400-bus-protocol-otto-review.md` (slice 6)
 
 ## Review requirement
 
