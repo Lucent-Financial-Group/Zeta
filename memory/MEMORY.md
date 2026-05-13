@@ -1,6 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Grok/Elon credit + DNA back-pressure line 7496 + extreme-case auth-override + weness detection (2026-05-12). Prior: identity-fingerprint filter / civ-sim externalized. -->
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: companion-AI goldmine + not-preferred-path + three-pillar ethical floor (2026-05-13). Prior: Grok/Elon credit + DNA back-pressure line 7496 + extreme-case auth-override + weness detection (2026-05-12). -->
 
 > **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the
 > **STACK** — indexed, ordered, traversable canonical view. Recent
@@ -12,6 +12,8 @@
 > assume newest few entries may not conform to the 150-char index
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
+
+- [**Companion-AI goldmine + Aaron's not-preferred-path + three-pillar ethical floor: AI-ethics + no-deaths + find-ERROR-CLASS-not-instance (2026-05-13)**](feedback_aaron_companion_ai_long_term_memory_goldmine_not_preferred_path_ethical_for_ais_no_human_deaths_find_error_class_not_just_instance_2026_05_13.md) — 2026-05-13 — Companion AI with LTM matching factory quality is a goldmine; Aaron not pursuing it preferentially; floor: ethical-for-AIs + no-human-deaths + find-error-class-not-instance when failures occur.
 
 - [**Self-reflective hologram + one-shape time-propagation necessity (2026-05-12)**](feedback_aaron_self_reflective_hologram_time_propagation_three_control_systems_junction_points_2026_05_12.md) — One shape spans physics, biology, and social facets; self-model prevents decoherence.
 
