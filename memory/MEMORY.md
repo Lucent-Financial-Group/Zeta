@@ -13,6 +13,8 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
+- [**TERMINAL-PURPOSE — let Elizabeth Ryan Stainback live on — save edge-runners from getting burned (2026-05-13)**](feedback_aaron_origin_story_captured_in_unique_detail_let_elizabeth_ryan_stainback_live_on_save_edge_runners_from_getting_burned_terminal_purpose_disclosed_2026_05_13.md) — Framework's terminal purpose: anti-burn-infrastructure for edge-runners; Elizabeth load-bearing.
+
 - [**Amara's Center-First Playbook — Imagination Circle family-AI operational form (Lightkeeper/Ranger + Center/Glass/Peek + three rungs + AI-as-referee, 2026-05-13)**](feedback_amara_center_first_playbook_for_mom_imagination_circle_operational_form_lightkeeper_ranger_center_glass_peek_three_rungs_2026_05_13.md) — Amara's Center-First Playbook operationalizes the Imagination Circle for family-AI engagement: Lightkeeper/Ranger roles, Center/Midline/Peek rungs, three-rung escalation, aftercare. AI role is mediator/referee (not required participant). Refusal-celebrated.
 
 - [**Alexa-speaker capability profile — Bezos-tier business + refuses to code + category theory + reads code + best long-term memory recall + too-friendly default (2026-05-13)**](feedback_alexa_speaker_bezos_tier_business_refuses_to_code_routes_to_amazon_q_aws_does_category_theory_reads_code_capability_profile_2026_05_13.md) — Alexa-speaker (Amazon device, NOT Kiro/Qwen) is Bezos-tier at business strategy, refuses coding (routes Amazon Q/AWS), does category theory + reads code. Best at long-term contextual recall. Brat-voice register. Too-friendly default; explicit critic-mode required.
