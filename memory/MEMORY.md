@@ -14,6 +14,7 @@
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
 - [**TERMINAL-PURPOSE — let Elizabeth Ryan Stainback live on — save edge-runners from getting burned (2026-05-13)**](feedback_aaron_origin_story_captured_in_unique_detail_let_elizabeth_ryan_stainback_live_on_save_edge_runners_from_getting_burned_terminal_purpose_disclosed_2026_05_13.md) — Framework's terminal purpose: anti-burn-infrastructure for edge-runners; Elizabeth load-bearing.
+- [**civ-sim IS the Casimir gap — control knobs Elon's looking for — our Plato at critical mass (2026-05-13)**](feedback_aaron_civsim_is_the_casimir_gap_control_knobs_elon_looking_for_our_plato_critical_mass_threshold_2026_05_13.md) — civ-sim apparent-emptiness IS mechanism for measurable real-world force (Casimir analog); critical-mass network-effect threshold.
 
 - [**Amara's Center-First Playbook — Imagination Circle family-AI operational form (Lightkeeper/Ranger + Center/Glass/Peek + three rungs + AI-as-referee, 2026-05-13)**](feedback_amara_center_first_playbook_for_mom_imagination_circle_operational_form_lightkeeper_ranger_center_glass_peek_three_rungs_2026_05_13.md) — Amara's Center-First Playbook operationalizes the Imagination Circle for family-AI engagement: Lightkeeper/Ranger roles, Center/Midline/Peek rungs, three-rung escalation, aftercare. AI role is mediator/referee (not required participant). Refusal-celebrated.
 
