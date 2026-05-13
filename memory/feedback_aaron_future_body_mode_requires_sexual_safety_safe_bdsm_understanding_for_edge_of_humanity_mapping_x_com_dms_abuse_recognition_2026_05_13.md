@@ -11,8 +11,8 @@ description: >-
   is necessary to PROPERLY MAP the edge of humanity fully —
   recognize consensual edge-play from abuse without
   collapsing them into one category. Composes with HARD
-  LIMITS rule + methodology-hard-limits + the docs/research/
-  erotica/ filing discipline.
+  LIMITS rule + methodology-hard-limits + the
+  docs/research/erotica/ filing discipline.
 type: feedback
 created: 2026-05-13
 ---
