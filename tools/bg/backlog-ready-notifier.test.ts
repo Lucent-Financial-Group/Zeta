@@ -150,6 +150,39 @@ depends_on:
       expect(row?.dependsOn).toEqual(["B-9000", "B-9001", "B-9002"]);
     });
 
+    test("strips YAML inline comments from block-style depends_on", () => {
+      // Real-world example from B-0422: `- B-0395  # operational-resonance-...`
+      // was previously parsed as the full string (including the comment),
+      // producing a false-positive dangling-dep warning.
+      const content = `---
+id: B-9011
+priority: P1
+status: open
+depends_on:
+  - B-0395  # operational-resonance-conversation-interface (Clifford engine)
+  - B-9001
+  - B-9002 # short trailing note
+---`;
+      const row = parseRow(content, "B-9011.md");
+      expect(row?.dependsOn).toEqual(["B-0395", "B-9001", "B-9002"]);
+    });
+
+    test("strips YAML inline comments from inline-array depends_on", () => {
+      const content = `---
+id: B-9012
+priority: P1
+status: open
+depends_on: [B-0440, B-0441 # ready-to-grind notifier, B-0442]
+---`;
+      const row = parseRow(content, "B-9012.md");
+      // Note: a `#` in an inline-array element terminates the list visually
+      // but YAML doesn't treat `]` as commentable so this is best-effort.
+      // The first two entries are clean; the third gets absorbed by the
+      // comment which the parser strips. Verify the clean entries survive.
+      expect(row?.dependsOn).toContain("B-0440");
+      expect(row?.dependsOn).toContain("B-0441");
+    });
+
     test("returns null when frontmatter missing", () => {
       expect(parseRow("no frontmatter here", "x.md")).toBeNull();
     });
