@@ -81,6 +81,8 @@ export type ClaimRecord = {
   from: SenderAgentId;
   itemId: string;
   branch?: string;
+  /** Absolute path of the worktree this claim originated from (B-0444). */
+  worktree?: string;
   timestamp: string;
   expiresAt: string;
 };
@@ -109,7 +111,7 @@ export function activeClaims(itemId: string): ClaimRecord[] {
     const m = msgs[i]!;
     // Guard against null/non-object payloads written by buggy senders.
     if (!m.payload || typeof m.payload !== "object" || Array.isArray(m.payload)) continue;
-    const p = m.payload as { action: string; itemId: string; branch?: string };
+    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string };
     if (p.itemId !== itemId) continue;
     if (p.action !== "claim" && p.action !== "release") continue;
     const key = `${m.from}:${p.itemId}`;
@@ -131,13 +133,14 @@ export function activeClaims(itemId: string): ClaimRecord[] {
 
   const records: ClaimRecord[] = [];
   for (const { envelope: m } of byKey.values()) {
-    const p = m.payload as { action: string; itemId: string; branch?: string };
+    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string };
     if (p.action !== "claim") continue; // release means no active claim
     records.push({
       id: m.id,
       from: m.from,
       itemId: p.itemId,
       ...(p.branch !== undefined && { branch: p.branch }),
+      ...(p.worktree !== undefined && { worktree: p.worktree }),
       timestamp: m.timestamp,
       expiresAt: m.expiresAt,
     });
@@ -158,7 +161,7 @@ export function allActiveClaims(): ClaimRecord[] {
   for (let i = 0; i < msgs.length; i++) {
     const m = msgs[i]!;
     if (!m.payload || typeof m.payload !== "object" || Array.isArray(m.payload)) continue;
-    const p = m.payload as { action: string; itemId?: unknown; branch?: string };
+    const p = m.payload as { action: string; itemId?: unknown; branch?: string; worktree?: string };
     if (typeof p.itemId !== "string") continue;
     if (p.action !== "claim" && p.action !== "release") continue;
     const key = `${m.from}:${p.itemId}`;
@@ -179,13 +182,14 @@ export function allActiveClaims(): ClaimRecord[] {
 
   const records: ClaimRecord[] = [];
   for (const { envelope: m } of byKey.values()) {
-    const p = m.payload as { action: string; itemId: string; branch?: string };
+    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string };
     if (p.action !== "claim") continue;
     records.push({
       id: m.id,
       from: m.from,
       itemId: p.itemId,
       ...(p.branch !== undefined && { branch: p.branch }),
+      ...(p.worktree !== undefined && { worktree: p.worktree }),
       timestamp: m.timestamp,
       expiresAt: m.expiresAt,
     });
@@ -218,10 +222,12 @@ function parseArgs(argv: string[]): { command: string; flags: Record<string, str
 function usage(): void {
   console.log(`Usage:
   claim.ts check   --item <id> [--json]
-  claim.ts acquire --from <agent> --item <id> [--branch <branch>] [--json]
+  claim.ts acquire --from <agent> --item <id> [--branch <branch>] [--worktree <path>] [--json]
   claim.ts release --from <agent> --item <id> [--json]
 
-Agents: ${SENDER_IDS.join(" | ")}`);
+Agents: ${SENDER_IDS.join(" | ")}
+
+--worktree defaults to process.cwd() when not specified (B-0444).`);
 }
 
 function main(): void {
@@ -240,7 +246,9 @@ function main(): void {
         console.log(`${itemId}: unclaimed`);
       } else {
         for (const c of claims) {
-          console.log(`${itemId}: claimed by ${c.from}${c.branch ? ` (${c.branch})` : ""} since ${c.timestamp}`);
+          const branchStr = c.branch ? ` (${c.branch})` : "";
+          const worktreeStr = c.worktree ? ` [worktree: ${c.worktree}]` : "";
+          console.log(`${itemId}: claimed by ${c.from}${branchStr}${worktreeStr} since ${c.timestamp}`);
         }
       }
       process.exit(claims.length > 0 ? 1 : 0);
@@ -250,6 +258,10 @@ function main(): void {
       const from = flags.from as SenderAgentId | undefined;
       const itemId = flags.item;
       const branch = flags.branch;
+      // B-0444: --worktree captures the per-process operational coordinate.
+      // Defaults to process.cwd() so callers that omit it still publish a useful
+      // observability signal — the worktree the claim was acquired from.
+      const worktree = flags.worktree ?? process.cwd();
       if (!from || !itemId) {
         console.error("Error: --from and --item are required");
         process.exit(1);
@@ -272,7 +284,12 @@ function main(): void {
           }
           const env = publish(sender, "*" as AgentId, {
             topic: "claim",
-            payload: { action: "claim", itemId, ...(branch ? { branch } : {}) },
+            payload: {
+              action: "claim",
+              itemId,
+              ...(branch ? { branch } : {}),
+              ...(worktree ? { worktree } : {}),
+            },
           });
           return { acquired: true, claimedByOthers: [] as string[], messageId: env.id };
         }));
@@ -291,9 +308,11 @@ function main(): void {
       }
 
       if (asJson) {
-        console.log(JSON.stringify({ itemId, acquired: true, messageId }));
+        console.log(JSON.stringify({ itemId, acquired: true, messageId, worktree }));
       } else {
-        console.log(`${itemId}: claimed by ${sender}${branch ? ` (${branch})` : ""} — ${messageId}`);
+        const branchStr = branch ? ` (${branch})` : "";
+        const worktreeStr = worktree ? ` [worktree: ${worktree}]` : "";
+        console.log(`${itemId}: claimed by ${sender}${branchStr}${worktreeStr} — ${messageId}`);
       }
       break;
     }

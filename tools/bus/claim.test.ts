@@ -228,6 +228,99 @@ describe("claim.ts — acquire", () => {
   });
 });
 
+// B-0444 — worktree field on the claim envelope. Captures per-process operational
+// coordinate; surface-tagged sender IDs (PR #3037) already prevent split-brain
+// across surfaces, so worktree is for observability, not coordination.
+describe("claim.ts — worktree field (B-0444)", () => {
+  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  afterEach(cleanTestDir);
+
+  test("acquire defaults worktree to process.cwd() when --worktree omitted", () => {
+    const r = run("acquire", "--from", "otto", "--item", "B-0600", "--json");
+    expect(r.exitCode).toBe(0);
+    const out = JSON.parse(r.stdout);
+    expect(out.acquired).toBe(true);
+    expect(typeof out.worktree).toBe("string");
+    expect(out.worktree.length).toBeGreaterThan(0);
+  });
+
+  test("acquire surfaces explicit --worktree value in check output", () => {
+    const wt = "/tmp/zeta-test-worktree-B-0601";
+    run("acquire", "--from", "otto", "--item", "B-0601", "--worktree", wt);
+
+    const r = run("check", "--item", "B-0601");
+    expect(r.exitCode).toBe(1);
+    expect(r.stdout).toContain("claimed by otto");
+    expect(r.stdout).toContain(`[worktree: ${wt}]`);
+  });
+
+  test("check --json includes worktree on the claim record", () => {
+    const wt = "/tmp/zeta-test-worktree-B-0602";
+    run("acquire", "--from", "otto", "--item", "B-0602", "--worktree", wt);
+
+    const r = run("check", "--item", "B-0602", "--json");
+    expect(r.exitCode).toBe(1);
+    const out = JSON.parse(r.stdout);
+    expect(out.claims).toHaveLength(1);
+    expect(out.claims[0].worktree).toBe(wt);
+  });
+
+  test("acquire combines --branch and --worktree in output", () => {
+    const r = run(
+      "acquire",
+      "--from", "otto-cli",
+      "--item", "B-0603",
+      "--branch", "feat/b0603-test",
+      "--worktree", "/tmp/zeta-test-worktree-B-0603",
+    );
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toContain("(feat/b0603-test)");
+    expect(r.stdout).toContain("[worktree: /tmp/zeta-test-worktree-B-0603]");
+  });
+
+  test("activeClaims returns claim records WITH a worktree field when payload carries one", () => {
+    const wt = "/tmp/zeta-test-worktree-shape";
+    run("acquire", "--from", "otto", "--item", "B-0604", "--worktree", wt);
+    const r = run("check", "--item", "B-0604", "--json");
+    expect(r.exitCode).toBe(1);
+    const out = JSON.parse(r.stdout);
+    expect(out.claims[0].worktree).toBe(wt);
+    // Spot-check: branch is absent from the record (we didn't pass --branch)
+    expect(out.claims[0].branch).toBeUndefined();
+  });
+
+  test("two surfaces of the same identity in different worktrees — surface IDs still arbitrate, worktree is metadata only", () => {
+    const r1 = run(
+      "acquire",
+      "--from", "otto-cli",
+      "--item", "B-0605",
+      "--worktree", "/tmp/zeta-test-cli-worktree",
+    );
+    expect(r1.exitCode).toBe(0);
+
+    // otto-desktop on SAME item from a DIFFERENT worktree — REJECTED.
+    // Sender-ID surface tag (PR #3037) arbitrates; worktree is observability metadata.
+    const r2 = run(
+      "acquire",
+      "--from", "otto-desktop",
+      "--item", "B-0605",
+      "--worktree", "/tmp/zeta-test-desktop-worktree",
+    );
+    expect(r2.exitCode).toBe(1);
+    expect(r2.stderr).toContain("otto-cli");
+  });
+
+  test("same sender re-acquiring from a different worktree is idempotent (existing behavior preserved)", () => {
+    const r1 = run("acquire", "--from", "otto-cli", "--item", "B-0606", "--worktree", "/tmp/A");
+    expect(r1.exitCode).toBe(0);
+    // Same sender + same item from different worktree: still idempotent re-acquire,
+    // matching the pre-B-0444 same-sender behavior. The check filter is on `from`,
+    // not on (from, worktree). Substrate-honest design decision recorded in the row.
+    const r2 = run("acquire", "--from", "otto-cli", "--item", "B-0606", "--worktree", "/tmp/B");
+    expect(r2.exitCode).toBe(0);
+  });
+});
+
 describe("claim.ts — release", () => {
   beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
   afterEach(cleanTestDir);
