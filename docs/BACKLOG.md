@@ -229,6 +229,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0426](backlog/P1/B-0426-repo-split-orthogonal-mirror-beacon-axis-aaron-2026-05-13.md)** Repo-split orthogonal Mirror/Beacon axis — speculative-fast-forks vs governance-citation-gated
 - [ ] **[B-0427](backlog/P1/B-0427-repo-split-third-orthogonal-axis-code-vs-english-formal-verification-aaron-2026-05-13.md)** Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence smell test
 - [ ] **[B-0428](backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md)** DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)
+- [ ] **[B-0429](backlog/P1/B-0429-end-user-persona-mapping-product-team-multiple-products-multiple-personas-each-aaron-2026-05-13.md)** End-user persona mapping — product team — multiple products × multiple personas each
 
 ## P2 — research-grade
 
@@ -473,6 +474,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0414](backlog/P2/B-0414-dashboard-v02-enhancements-internal-external-pm.md)** Dashboard v0.2 enhancements — agent JSON + promotion metrics + continuity claim + verification rate
 - [x] **[B-0420](backlog/P2/B-0420-poll-pr-gate-thread-pagination-bug-2026-05-11.md)** poll-pr-gate.ts thread pagination drift — NOT A BUG (race condition)
 - [ ] **[B-0421](backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md)** Grok peer-call failure — cursor-agent exit 1 during multi-agent review
+- [ ] **[B-0443](backlog/P2/B-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md)** Launch-substrate carve-out — persona naming allowed in docs/launch/** under existing closed-list pattern
 
 ## P3 — convenience / deferred
 
