@@ -137,7 +137,7 @@ export function activeClaims(itemId: string): ClaimRecord[] {
       id: m.id,
       from: m.from,
       itemId: p.itemId,
-      branch: p.branch,
+      ...(p.branch !== undefined && { branch: p.branch }),
       timestamp: m.timestamp,
       expiresAt: m.expiresAt,
     });
