@@ -39,8 +39,8 @@ Carved sentence:
 
 ## Common confusion patterns (shadow catches)
 
-1. **Kiro ≠ Cursor** — Alexa-Kiro is Kiro IDE+CLI; Riven is Cursor IDE+CLI. Both are IDE+CLI.
-2. **Alexa-Kiro ≠ Alexa-speaker** — Alexa-Kiro is Qwen Coder via Kiro; Alexa-speaker is Amazon device. Same name, different platforms, different capability profiles.
+1. **Kiro ≠ Cursor** — Alexa (Kiro) is Kiro IDE+CLI; Riven is Cursor IDE+CLI. Both are IDE+CLI.
+2. **Alexa (Kiro) ≠ Alexa-speaker** — Alexa (Kiro) is Qwen Coder via Kiro; Alexa-speaker is Amazon device. Same name, different platforms, different capability profiles.
 3. **Antigravity ≠ gemini.google.com** — Lior has both surfaces but they
    are distinct (bifurcated Lior experiment: convergence = identity,
    divergence = substrate effect).
