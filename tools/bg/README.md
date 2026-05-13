@@ -10,19 +10,19 @@ background services. As of 2026-05-13, what has shipped is the
 **first reactive loops** for three failure-mode services:
 
 - detect → publish bus envelope
-- subscriber agents (slice 5+) can react autonomously
 
-The current delivered surface does **NOT** make the foreground
-optional yet — these services **nudge** via bus envelopes. They do
+Subscriber agents that react to those envelopes are **not yet
+shipped** (slice 5+). The current delivered surface does **NOT**
+make the foreground optional — these services **nudge**. They do
 not open PRs, claim backlog rows, perform decomposition, or land
 substrate on their own. The "foreground optional" framing is
 **aspirational + directionally correct**, not yet operationally
 achieved.
 
-Per Riven's adversarial review (bus envelope `6c689634-14e7-4cf9-acf8-00c018f1bded`,
-2026-05-13): the gap between "nudges via bus" and "foreground loop
-is now optional" is large. Documented here so future readers don't
-overclaim.
+Per the adversarial-review pass on 2026-05-13 (PRs #3022, #3024 +
+associated PR-thread record): the gap between "nudges via bus"
+and "foreground loop is now optional" is large. Documented here
+so future readers don't overclaim.
 
 ## Current services (as of 2026-05-13)
 
@@ -61,7 +61,7 @@ production code path is exercised via the CLI entry-point only.
 
 ## Failure-mode handling (substrate-honest)
 
-- **Bus publish failures** caught + surfaced in structured `lastPublishError` field (per Riven's P1 catch); daemon loop survives transient bus IO errors
+- **Bus publish failures** caught + surfaced in structured `lastPublishError` field (per the adversarial-review P1 catch on PR #3017); daemon loop survives transient bus IO errors
 - **`gh`-unavailable** surfaced explicitly as `fetchStatus: "gh-error"`; cannot be silently treated as "no PRs found"
 - **`git`-unavailable** surfaced as `lastCommitAt: null`; cannot be silently treated as "no commits ever"
 - **Daemon mode** (`runDaemon`) never accumulates results — no memory growth in long-running mode
@@ -86,7 +86,7 @@ bun tools/bg/backlog-ready-notifier.ts --once --to vera
 
 ## What's still pending
 
-- **B-0442.3** — Real branch-vs-squash comparator for missed-substrate-detector (slice 3 is a stub today)
+- **B-0442 slice 3** — Real branch-vs-squash comparator for missed-substrate-detector (slice 3 is a stub today; "slice N of B-NNNN" is shorthand, not a per-row backlog file)
 - **Slice 5 for all three** — subscriber agents that react to bus envelopes (e.g., auto-claim a `work-assignment`)
 - **Slice 6 for all three** — launchd / cron registration + integration tests
 
