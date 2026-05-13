@@ -2,6 +2,7 @@
 name: B-0451 per-collision renumber procedure
 description: Procedure for resolving duplicate-row-ID collisions in docs/backlog/ surfaced by tools/bg/audit-duplicate-row-ids.ts. Captures the external-references-rule precedence, the connected-component batching pattern, and the worktree-isolation gotcha. Derived from PRs #3053 (B-0444), #3057 (B-0068.1), #3058 (B-0090.x batch), #3065 (B-0370-0373 batch) shipped 2026-05-13/14.
 type: feedback
+created: 2026-05-14
 ---
 
 # B-0451 per-collision renumber procedure
@@ -33,12 +34,24 @@ resolve per PR (or batch a connected component, see step 7).
 
 ### 2. Find external references to each row
 
-For each colliding row, grep for its bare ID:
+For each colliding row, grep for its bare ID. Use **fixed-string
+match** (`-F`) so dotted sub-row IDs like `B-0068.1` aren't treated
+as regex (where `.` matches any character):
 
 ```bash
-grep -rn "B-0XXX\b" docs/ memory/ tools/ .claude/ 2>&1 \
-  | grep -vE "docs/backlog/.*/B-0XXX-"
+# Whole-row ID like B-0444 (no dot)
+grep -rnF "B-0XXX" docs/ memory/ tools/ .claude/ \
+  | grep -vE "docs/backlog/.*/B-0XXX-" \
+  | grep -E "B-0XXX([^0-9.]|$)"   # word-boundary substitute (portable)
+
+# Sub-row ID like B-0068.1 — escape the dot OR use -F as above
+grep -rnF "B-0068.1" docs/ memory/ tools/ .claude/ \
+  | grep -vE "docs/backlog/.*/B-0068\\.1-"
 ```
+
+(The `\b` word-boundary GNU-extension is not portable to BSD grep
+on macOS; the `[^0-9.]|$` filter is the portable equivalent. Codex
+P2 caught this in PR #3066 review.)
 
 Note where each row is referenced externally:
 - Parent row's body (e.g., `## Decomposition` section listing children)
