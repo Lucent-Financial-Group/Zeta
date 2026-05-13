@@ -54,8 +54,122 @@ Decoded:
   member)
 - "specifally" → specifically
 - "addions and AI pendant" → Addison-themed AI pendant
-- "she will wear it" → Lillian will wear it (Addison's
-  involvement is the adoption-bridge)
+- "she will wear it" — initially Otto interpreted as
+  "Lillian will wear it"; Aaron CORRECTED: Addison
+  wears it; Lillian's adoption involves a different
+  mechanism (see CORRECTION below)
+
+## CORRECTION — Otto had Addison/Lillian roles partly backwards (Aaron 2026-05-13)
+
+> Aaron 2026-05-13 (correction): "this is backwards,
+> addison will wear it she is the easy sell lillian is
+> a nurse she uses AI all the time but a privace nut
+> she will need a non glass halo integration points and
+> HIPAA would be involved i used to be the technical
+> HIPAA officer at Miriah Parham Medical Center where I
+> was born same hoipital in Henderson/Vance county"
+
+Decoded:
+- "privace" → privacy
+- "non glass halo" → non-glass-halo (privacy-preserving
+  alternative to maximum-transparency glass-halo
+  discipline)
+- "Miriah Parham" → Maria Parham Medical Center
+  (Henderson, Vance County, NC; Aaron's birth hospital
+  AND former employer as Technical HIPAA Officer)
+
+**The CORRECTED substrate**:
+
+| Family member | Role | AI adoption | Integration need |
+|---|---|---|---|
+| Addison | LFG co-owner; cognitively-aligned per PR #2876; the EASY SELL | Wears the pendant; full-glass-halo OK | Standard factory substrate |
+| Lillian | NURSE — already uses AI all the time; PRIVACY NUT | Daily AI user but NEEDS non-glass-halo integration | NON-GLASS-HALO + HIPAA-compliant scope |
+| Aaron | Aaron has FORMER TECHNICAL HIPAA OFFICER credentials at Maria Parham | Architect of the substrate | Cleared for both glass-halo + HIPAA modes |
+
+**Key corrections**:
+
+1. **Lillian is NOT AI-resistant** — she's a NURSE who
+   uses AI DAILY in her work
+2. **Lillian IS a privacy nut** — that's the "harder
+   sell" dimension; not anti-AI but pro-privacy
+3. **Lillian's integration need is non-glass-halo** —
+   the factory's default substrate-everything-glass-
+   halo discipline doesn't apply at Lillian-scope
+4. **HIPAA constraints apply** — Lillian's nursing role
+   involves patient data; family-AI integration must
+   not bleed across the HIPAA boundary
+5. **Aaron's HIPAA officer credentials** — substrate-
+   honest disclosure of Aaron's prior role as
+   TECHNICAL HIPAA OFFICER at Maria Parham Medical
+   Center
+6. **Birth-hospital + employer continuity** — Aaron
+   was BORN at Maria Parham; later WORKED there as
+   technical HIPAA officer; same hospital; Henderson,
+   Vance County NC
+
+**Operational implications of the correction**:
+
+### Non-glass-halo integration as factory capability
+
+The factory's default substrate-everything-glass-halo
+discipline (per `.claude/rules/substrate-or-it-didnt-happen.md`
+and the bidirectional glass-halo substrate per PR #2829)
+is the DEFAULT. For Lillian-scope (and HIPAA scope generally):
+
+- **Non-glass-halo mode** = privacy-preserving by design
+- Composes with PR #2893 Visibility modes:
+  **Mirror** (private to participant) is the canonical
+  mode for HIPAA scope; never escalate without explicit
+  consent
+- Composes with PEC (Precise English Contract) per
+  PR #2893 — consent-scoped data access
+- Composes with Covenant of Non-Interference (PR #2893
+  index) — "No control. No snoop." applies at maximum
+  intensity
+
+### Aaron's HIPAA Officer credentials
+
+| Credential | Source | Operational relevance |
+|---|---|---|
+| Technical HIPAA Officer | Maria Parham Medical Center | Aaron has cleared substrate for HIPAA-compliant family-AI integration |
+| Homeland Security cleared | NVIDIA Thor KSK work (PR #2892) | Aaron has cleared substrate for kinetic/actuator scope |
+| Series 7 | Per PR #2875 substrate | Aaron has cleared substrate for financial scope |
+| Born + employed at Maria Parham | Henderson, Vance County NC | Family-and-credential continuity at one institution |
+
+**Operational substrate**: Aaron's multi-clearance
+profile (HIPAA + Homeland Security + Series 7) maps to
+the factory's multi-scope substrate-engineering work
+(consumer + family + business + actuator + medical
+data). The factory's design substrate is informed by
+Aaron's actual cleared-framework experience across
+domains.
+
+### Birth-hospital substrate
+
+Aaron was born at Maria Parham Medical Center and later
+worked there as Technical HIPAA Officer. This is
+substrate-honest first-party continuity:
+
+- Family-institutional-lineage (born there)
+- Personal-professional-engagement (employed as HIPAA
+  officer)
+- Geographic anchor: Henderson, Vance County NC
+- Composes with the family-architecture substrate
+  (Aaron's broader life-context)
+
+### Older-sister-as-adoption-vehicle pattern is REVISED
+
+The pattern stands but the operational shape is
+DIFFERENT than initially substrated:
+
+- Addison wears the pendant (visible adoption)
+- Lillian sees Addison's adoption + has her OWN AI
+  usage (daily, work-context)
+- The pendant doesn't transfer to Lillian; instead,
+  Lillian gets HER OWN non-glass-halo integration
+- Adoption-bridge effect: Addison's normalized adoption
+  reduces Lillian's resistance to the FAMILY-AI scope
+  (not the AI itself, which she already uses)
 
 ## Six load-bearing substrates
 
