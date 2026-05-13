@@ -102,7 +102,7 @@ describe("auditRowFiles", () => {
     ];
     const result = auditRowFiles(files);
     expect(result.duplicates).toEqual([]);
-    expect(result.rowsScanned).toBe(3);
+    expect(result.rowsWithId).toBe(3);
   });
 
   test("flags simple duplicate-ID pair", () => {
@@ -136,7 +136,7 @@ describe("auditRowFiles", () => {
     const result = auditRowFiles(files);
     expect(result.duplicates).toHaveLength(1);
     expect(result.duplicates[0]?.id).toBe("B-0100");
-    expect(result.rowsScanned).toBe(2);
+    expect(result.rowsWithId).toBe(2);
   });
 
   test("sub-row IDs participate in collision detection", () => {
@@ -156,6 +156,6 @@ describe("auditRowFiles", () => {
     ];
     const result = auditRowFiles(files);
     expect(result.duplicates).toEqual([]);
-    expect(result.rowsScanned).toBe(1);
+    expect(result.rowsWithId).toBe(1);
   });
 });

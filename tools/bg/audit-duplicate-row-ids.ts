@@ -32,7 +32,12 @@ export type DuplicateGroup = {
 };
 
 export type AuditResult = {
-  rowsScanned: number;
+  /**
+   * Number of input files that contained an extractable `id:` field.
+   * Distinct from total files inspected — rows without `id:` (e.g., a
+   * README that got picked up by the file glob) are not counted.
+   */
+  rowsWithId: number;
   duplicates: DuplicateGroup[];
 };
 
@@ -90,9 +95,7 @@ export function auditRowFiles(files: string[]): AuditResult {
     idToFiles.set(id, list);
   }
   return {
-    rowsScanned: idToFiles.size > 0
-      ? [...idToFiles.values()].reduce((n, fs) => n + fs.length, 0)
-      : 0,
+    rowsWithId: [...idToFiles.values()].reduce((n, fs) => n + fs.length, 0),
     duplicates: findDuplicates(idToFiles),
   };
 }
@@ -103,6 +106,7 @@ export function auditRowFiles(files: string[]): AuditResult {
  */
 function main(): number {
   const repoRoot = resolve(import.meta.dir, "..", "..");
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
   const lsFiles = spawnSync(
     "git",
     ["-C", repoRoot, "ls-files", "docs/backlog/"],
@@ -120,11 +124,11 @@ function main(): number {
   const result = auditRowFiles(files);
 
   if (result.duplicates.length === 0) {
-    console.log(`audit-duplicate-row-ids: ${result.rowsScanned} rows scanned, no duplicate IDs`);
+    console.log(`audit-duplicate-row-ids: ${result.rowsWithId} rows with id field, no duplicate IDs`);
     return 0;
   }
 
-  console.error(`audit-duplicate-row-ids: ${result.duplicates.length} duplicate-ID group(s) found across ${result.rowsScanned} rows:`);
+  console.error(`audit-duplicate-row-ids: ${result.duplicates.length} duplicate-ID group(s) found across ${result.rowsWithId} rows with id field:`);
   for (const dup of result.duplicates) {
     console.error(`  ${dup.id}:`);
     for (const f of dup.files) {
