@@ -44,3 +44,68 @@ rules:
       `"$VAR"` in the shell.
     languages: [generic]
     severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 2 — Invisible Unicode codepoints (BP-10).
+  # Zero-width spaces (U+200B–U+200D), word-joiner (U+2060), BOM
+  # (U+FEFF), bidi overrides (U+202A–U+202E), isolates (U+2066–
+  # U+2069), and tag-characters (U+E0000–U+E007F) are steganographic
+  # carriers for hidden instructions — especially dangerous in
+  # `.md` and `.yml` files processed by LLMs.
+  #
+  # External anchors:
+  #   Trojan Source (Boucher & Anderson, USENIX 2023, arXiv 2111.00169)
+  #   — bidi-override range (U+202A–U+202E); CVE-2021-42574.
+  #   Goodside 2024-01-11 — tag-character range (U+E0000–U+E007F)
+  #   invisible prompt injection against ChatGPT.
+  # ────────────────────────────────────────────────────────────────
+  - id: invisible-unicode-in-text
+    patterns:
+      - pattern-regex: "[​‌‍⁠﻿‪-‮⁦-⁩\U000E0000-\U000E007F]"
+    paths:
+      include:
+        - "**/*.md"
+        - "**/*.ts"
+        - "**/*.yml"
+        - "**/*.yaml"
+        - "**/*.json"
+        - "**/*.toml"
+      exclude:
+        - "**/node_modules/**"
+        - "**/.git/**"
+    message: >-
+      Invisible Unicode codepoint detected. Zero-width spaces, word-
+      joiners, bidi overrides, and isolates are steganographic carriers
+      for hidden instructions in prompt-bearing documents and workflows.
+      If this character is legitimate (rare), justify in a comment;
+      otherwise strip it.
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 3 — GitHub Actions third-party action pinned by mutable tag.
+  # A tag like `@v4` or `@main` can be rewritten by the action author
+  # to point to malicious code on any future push. CVE-2025-30066
+  # (tj-actions/changed-files, March 2025) landed on 23,000+ repos
+  # via exactly this path.
+  #
+  # Fix: pin every third-party `uses:` to a full 40-char commit SHA;
+  # put the human-readable tag in a trailing `# vX.Y.Z` comment.
+  # Example: `uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2`
+  #
+  # Exempt: reusable workflows in this repo (`uses: ./...`).
+  # ────────────────────────────────────────────────────────────────
+  - id: gha-action-mutable-tag
+    patterns:
+      - pattern-regex: '(?m)^\s*-?\s*uses:\s+(?!\.\/)[^\s@#]+@(?:v?\d+(?:\.\d+)*|main|master|develop|latest|HEAD)\s*(?:#.*)?$'
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+        - ".github/workflows/*.yaml"
+    message: >-
+      Third-party GitHub Action pinned by a mutable tag. A tag-rewrite
+      attack (CVE-2025-30066, March 2025) landed malicious code on
+      23,000+ repos via this vector. Pin by the full 40-char commit SHA;
+      put the human-readable version in a trailing `# vX.Y.Z` comment.
+    languages: [generic]
+    severity: ERROR

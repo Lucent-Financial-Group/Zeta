@@ -10,7 +10,8 @@
 // Zero network — all data comes from the on-disk scaffold templates.
 
 import { spawnSync } from "node:child_process";
-import { dirname, resolve } from "node:path";
+import { readFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, test } from "bun:test";
 
@@ -261,5 +262,77 @@ describe("invalid --repo argument", () => {
     });
     expect(result.status).not.toBe(0);
     expect(result.stderr + result.stdout).toContain("Usage:");
+  });
+});
+
+// --- scaffold template content assertions (B-0424.8) ---
+//
+// These tests read the .semgrep.yml templates directly. The dry-run
+// subprocess tests above verify file presence; these verify content.
+// Zero network — readFileSync only.
+
+const SCAFFOLD_DIR = dirname(fileURLToPath(import.meta.url));
+
+// Required rule IDs and their purpose in the day-one security baseline.
+const REQUIRED_SEMGREP_RULES = [
+  "gha-untrusted-in-run-line",  // B-0424.6 — GHA workflow-injection (present from day one)
+  "invisible-unicode-in-text",   // B-0424.8 — BP-10 invisible Unicode / prompt injection
+  "gha-action-mutable-tag",      // B-0424.8 — supply-chain SHA-pin (CVE-2025-30066)
+] as const;
+
+describe("forge .semgrep.yml content (B-0424.8)", () => {
+  let content: string;
+  beforeAll(() => {
+    content = readFileSync(join(SCAFFOLD_DIR, "forge", ".semgrep.yml"), "utf8");
+  });
+
+  for (const ruleId of REQUIRED_SEMGREP_RULES) {
+    test(`contains rule id: ${ruleId}`, () => {
+      expect(content).toContain(`id: ${ruleId}`);
+    });
+  }
+
+  test("invisible-unicode rule targets .md, .ts, .yml, .toml", () => {
+    const ruleStart = content.indexOf("id: invisible-unicode-in-text");
+    expect(ruleStart).toBeGreaterThan(-1);
+    const ruleBlock = content.slice(ruleStart, ruleStart + 600);
+    expect(ruleBlock).toContain("**/*.md");
+    expect(ruleBlock).toContain("**/*.ts");
+    expect(ruleBlock).toContain("**/*.yml");
+    expect(ruleBlock).toContain("**/*.toml");
+  });
+
+  test("mutable-tag rule targets .github/workflows", () => {
+    const ruleStart = content.indexOf("id: gha-action-mutable-tag");
+    expect(ruleStart).toBeGreaterThan(-1);
+    const ruleBlock = content.slice(ruleStart, ruleStart + 400);
+    expect(ruleBlock).toContain(".github/workflows");
+  });
+});
+
+describe("ace .semgrep.yml content (B-0424.8)", () => {
+  let content: string;
+  beforeAll(() => {
+    content = readFileSync(join(SCAFFOLD_DIR, "ace", ".semgrep.yml"), "utf8");
+  });
+
+  for (const ruleId of REQUIRED_SEMGREP_RULES) {
+    test(`contains rule id: ${ruleId}`, () => {
+      expect(content).toContain(`id: ${ruleId}`);
+    });
+  }
+
+  test("invisible-unicode rule severity is ERROR", () => {
+    const ruleStart = content.indexOf("id: invisible-unicode-in-text");
+    expect(ruleStart).toBeGreaterThan(-1);
+    const ruleBlock = content.slice(ruleStart, ruleStart + 1200);
+    expect(ruleBlock).toContain("severity: ERROR");
+  });
+
+  test("mutable-tag rule severity is ERROR", () => {
+    const ruleStart = content.indexOf("id: gha-action-mutable-tag");
+    expect(ruleStart).toBeGreaterThan(-1);
+    const ruleBlock = content.slice(ruleStart, ruleStart + 800);
+    expect(ruleBlock).toContain("severity: ERROR");
   });
 });
