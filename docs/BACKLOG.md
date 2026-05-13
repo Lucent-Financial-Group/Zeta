@@ -26,7 +26,9 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0307](backlog/P0/B-0307-mechanical-auth-check-source-recency-resolver-2026-05-08.md)** Mechanical authorization check — source-filter + recency resolver
 - [x] **[B-0308](backlog/P0/B-0308-mechanical-auth-check-loop-integration-2026-05-08.md)** Mechanical authorization check — autonomous-loop tick-start integration
 - [x] **[B-0309](backlog/P0/B-0309-mechanical-auth-check-claude-md-pointer-2026-05-08.md)** Mechanical authorization check — CLAUDE.md discoverable-skill pointer
-- [ ] **[B-0402](backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md)** Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop embedding, and Glass Halo attribution
+- [x] **[B-0402](backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md)** Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop embedding, and Glass Halo attribution
+- [x] **[B-0431](backlog/P0/B-0431-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)** Shadow observer slice 3 — macOS grey-text detection via osascript
+- [x] **[B-0432](backlog/P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)** Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag
 
 ## P1 — within 2-3 rounds
 
@@ -216,7 +218,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0372](backlog/P1/B-0372-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
 - [x] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
 - [x] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
-- [ ] **[B-0400](backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md)** Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination
+- [x] **[B-0400](backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md)** Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination
 - [ ] **[B-0401](backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md)** Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration
 - [ ] **[B-0403](backlog/P1/B-0403-weight-free-verification-hat-timeboxed-authority.md)** Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing
 - [ ] **[B-0405](backlog/P1/B-0405-beacon-promotion-gate-dashboard-observable.md)** Beacon promotion gate — observable mirror→beacon pipeline with dashboard metrics
@@ -224,6 +226,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0418](backlog/P1/B-0418-amplification-ratio-metric-dashboard-2026-05-11.md)** Amplification ratio metric — human input : agent actions on dashboard
 - [ ] **[B-0419](backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md)** Honest agenda amplification metric — actions weighted by agenda alignment
 - [ ] **[B-0423](backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md)** MEMORY.md serialization-point anti-pattern
+- [ ] **[B-0423.1](backlog/P1/B-0423.1-reindex-memory-md-test-coverage-collectentries-renderindex.md)** Extend reindex-memory-md.ts test coverage — collectEntries + renderIndex
+- [ ] **[B-0423.2](backlog/P1/B-0423.2-memory-docs-update-heap-state-acceptable.md)** Update memory/ documentation to describe heap-state-acceptable model
+- [ ] **[B-0423.3](backlog/P1/B-0423.3-wire-reindex-into-autonomous-loop-tick.md)** Wire reindex-memory-md.ts into autonomous-loop tick cadence
+- [ ] **[B-0423.4](backlog/P1/B-0423.4-relax-memory-index-integrity-ci-check.md)** Relax memory-index-integrity.yml CI check — heap-state-acceptable
+- [ ] **[B-0423.5](backlog/P1/B-0423.5-close-b0088-chain-superseded-by-heap-architecture.md)** Close B-0088 chain as superseded by B-0423 heap architecture
 - [ ] **[B-0424](backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)** Three-repo split Stage 1 — create empty Forge + ace with day-one scaffolding
 - [ ] **[B-0425](backlog/P1/B-0425-product-repo-split-planning-ksk-wellness-american-dream-civsim-honor-system-no-fork-license-aaron-2026-05-13.md)** Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license
 - [ ] **[B-0426](backlog/P1/B-0426-repo-split-orthogonal-mirror-beacon-axis-aaron-2026-05-13.md)** Repo-split orthogonal Mirror/Beacon axis — speculative-fast-forks vs governance-citation-gated
@@ -233,6 +240,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0430](backlog/P1/B-0430-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
 - [ ] **[B-0431](backlog/P1/B-0431-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
 - [ ] **[B-0432](backlog/P1/B-0432-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
+- [x] **[B-0433](backlog/P1/B-0433-shadow-observer-slice-5-zeta-cli-distribution-demo-packaging-2026-05-13.md)** Shadow observer slice 5 — Zeta CLI distribution + demo packaging
+- [x] **[B-0434](backlog/P1/B-0434-demo-alignment-tab-slice-1-hc-sd-dir-clause-coverage.md)** Demo alignment tab — slice 1: HC/SD/DIR clause coverage panel in demo/index.html
+- [ ] **[B-0435](backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md)** Demo — circuit breaker visualization panel (mock data → live bus data)
+- [ ] **[B-0436](backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md)** Demo — Hamiltonian-to-git visualization (git history → phase-space rendering)
+- [ ] **[B-0437](backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md)** Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)
 
 ## P2 — research-grade
 
@@ -476,7 +488,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0413](backlog/P2/B-0413-dashboard-tiered-access-github-oauth-agent-creds.md)** Dashboard tiered access — GitHub OAuth + agent credentials
 - [ ] **[B-0414](backlog/P2/B-0414-dashboard-v02-enhancements-internal-external-pm.md)** Dashboard v0.2 enhancements — agent JSON + promotion metrics + continuity claim + verification rate
 - [x] **[B-0420](backlog/P2/B-0420-poll-pr-gate-thread-pagination-bug-2026-05-11.md)** poll-pr-gate.ts thread pagination drift — NOT A BUG (race condition)
-- [ ] **[B-0421](backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md)** Grok peer-call failure — cursor-agent exit 1 during multi-agent review
+- [x] **[B-0421](backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md)** Grok peer-call failure — cursor-agent exit 1 during multi-agent review
+- [ ] **[B-0430](backlog/P2/B-0430-peer-call-wrappers-codeql-insecure-tmp-file-all-8-wrappers-substrate-consistent-fix-2026-05-13.md)** Peer-call wrappers — CodeQL insecure-temp-file alert on autogenOutputPath() across all 8 wrappers (substrate-consistent fix needed)
 
 ## P3 — convenience / deferred
 
