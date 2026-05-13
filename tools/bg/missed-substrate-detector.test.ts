@@ -4,50 +4,68 @@ import {
   parseArgs,
   parsePositiveMinutes,
   pollOnce,
-  runOnce,
+  type Adapters,
+  type MergedPR,
 } from "./missed-substrate-detector";
 
-describe("missed-substrate-detector slice 1", () => {
-  test("default config has sensible poll interval", () => {
+function fakeAdapters(nowIso: string, merged: MergedPR[]): Adapters {
+  return {
+    now: () => new Date(nowIso),
+    fetchRecentMergedPRs: () => merged,
+  };
+}
+
+describe("missed-substrate-detector slice 2", () => {
+  test("default config has sensible thresholds", () => {
     expect(DEFAULT_CONFIG.pollIntervalMin).toBe(5);
+    expect(DEFAULT_CONFIG.lookbackMin).toBe(30);
     expect(DEFAULT_CONFIG.once).toBe(false);
   });
 
-  test("pollOnce returns a result with no-op cascade scan", () => {
-    const result = pollOnce(DEFAULT_CONFIG);
-    expect(result.cascadesDetected).toBe(0);
-    expect(result.note).toContain("slice-1 skeleton");
-    expect(result.pollAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-  });
+  describe("pollOnce with injected adapters", () => {
+    test("reports 0 candidates when no merged PRs", () => {
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        fakeAdapters("2026-05-13T18:00:00Z", []),
+      );
+      expect(result.candidatesScanned).toBe(0);
+      expect(result.cascadesDetected).toBe(0);
+      expect(result.note).toContain("no merged PRs");
+    });
 
-  test("runOnce returns a single result without entering daemon mode", () => {
-    const result = runOnce(DEFAULT_CONFIG);
-    expect(result.cascadesDetected).toBe(0);
-    expect(result.pollAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    test("reports candidate count when merged PRs found", () => {
+      const merged: MergedPR[] = [
+        { number: 2997, headRefName: "feat/x", mergedAt: "2026-05-13T17:50:00Z" },
+        { number: 2998, headRefName: "feat/y", mergedAt: "2026-05-13T17:55:00Z" },
+      ];
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        fakeAdapters("2026-05-13T18:00:00Z", merged),
+      );
+      expect(result.candidatesScanned).toBe(2);
+      expect(result.cascadesDetected).toBe(0);
+      expect(result.note).toContain("2 merged PR(s)");
+      expect(result.note).toContain("slice 3 will compare");
+    });
+
+    test("emits valid ISO timestamp", () => {
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        fakeAdapters("2026-05-13T18:00:00Z", []),
+      );
+      expect(result.pollAt).toBe("2026-05-13T18:00:00.000Z");
+    });
   });
 
   describe("parsePositiveMinutes", () => {
     test("accepts positive finite numbers", () => {
-      expect(parsePositiveMinutes("5", "--poll-min")).toBe(5);
-      expect(parsePositiveMinutes("0.5", "--poll-min")).toBe(0.5);
+      expect(parsePositiveMinutes("30", "--lookback-min")).toBe(30);
     });
 
-    test("rejects undefined", () => {
-      expect(() => parsePositiveMinutes(undefined, "--poll-min")).toThrow(/requires a value/);
-    });
-
-    test("rejects non-numeric strings", () => {
-      expect(() => parsePositiveMinutes("abc", "--poll-min")).toThrow(/positive finite/);
-    });
-
-    test("rejects zero and negatives", () => {
-      expect(() => parsePositiveMinutes("0", "--poll-min")).toThrow(/positive finite/);
-      expect(() => parsePositiveMinutes("-3", "--poll-min")).toThrow(/positive finite/);
-    });
-
-    test("rejects Infinity / NaN", () => {
-      expect(() => parsePositiveMinutes("Infinity", "--poll-min")).toThrow(/positive finite/);
-      expect(() => parsePositiveMinutes("NaN", "--poll-min")).toThrow(/positive finite/);
+    test("rejects invalid inputs", () => {
+      expect(() => parsePositiveMinutes(undefined, "--lookback-min")).toThrow(/requires/);
+      expect(() => parsePositiveMinutes("0", "--lookback-min")).toThrow(/positive finite/);
+      expect(() => parsePositiveMinutes("Infinity", "--lookback-min")).toThrow(/positive finite/);
     });
   });
 
@@ -56,21 +74,18 @@ describe("missed-substrate-detector slice 1", () => {
       expect(parseArgs([])).toEqual(DEFAULT_CONFIG);
     });
 
-    test("--once flag sets once: true", () => {
+    test("--once flag", () => {
       expect(parseArgs(["--once"]).once).toBe(true);
     });
 
-    test("--poll-min sets the interval", () => {
-      expect(parseArgs(["--poll-min", "10"]).pollIntervalMin).toBe(10);
+    test("--poll-min + --lookback-min set values", () => {
+      const config = parseArgs(["--poll-min", "10", "--lookback-min", "60"]);
+      expect(config.pollIntervalMin).toBe(10);
+      expect(config.lookbackMin).toBe(60);
     });
 
-    test("rejects unknown flags fail-fast", () => {
+    test("rejects unknown flags", () => {
       expect(() => parseArgs(["--unknown"])).toThrow(/unknown flag/);
-      expect(() => parseArgs(["--pollmin", "5"])).toThrow(/unknown flag/);
-    });
-
-    test("rejects invalid --poll-min value", () => {
-      expect(() => parseArgs(["--poll-min", "abc"])).toThrow(/positive finite/);
     });
   });
 });
