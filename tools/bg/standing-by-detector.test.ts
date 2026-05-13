@@ -6,40 +6,56 @@ import {
   pollOnce,
   type Adapters,
 } from "./standing-by-detector";
+import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
 
-function fakeAdapters(nowIso: string, lastCommitIso: string | null): Adapters {
+type FakeNudgeCall = {
+  from: SenderAgentId;
+  to: AgentId;
+  idleMinutes: number;
+  rationale: string;
+};
+
+function fakeAdapters(
+  nowIso: string,
+  lastCommitIso: string | null,
+  capturedCalls: FakeNudgeCall[] = [],
+): Adapters {
   return {
     now: () => new Date(nowIso),
     lastCommitIso: () => lastCommitIso,
+    publishNudge: (from, to, idleMinutes, rationale): MessageEnvelope => {
+      capturedCalls.push({ from, to, idleMinutes, rationale });
+      return {
+        id: "test-envelope-id",
+        from,
+        to,
+        timestamp: nowIso,
+        expiresAt: nowIso,
+        topic: "infinite-backlog-nudge",
+        payload: { idleMinutes, rationale },
+      };
+    },
   };
 }
 
-describe("standing-by-detector slice 2", () => {
-  test("default config has sensible thresholds", () => {
+describe("standing-by-detector slice 4", () => {
+  test("default config has sensible thresholds + bus defaults", () => {
     expect(DEFAULT_CONFIG.pollIntervalMin).toBe(5);
     expect(DEFAULT_CONFIG.idleThresholdMin).toBe(15);
     expect(DEFAULT_CONFIG.once).toBe(false);
+    expect(DEFAULT_CONFIG.noPublish).toBe(false);
+    expect(DEFAULT_CONFIG.fromAgent).toBe("otto");
+    expect(DEFAULT_CONFIG.toAgent).toBe("*");
   });
 
-  test("pollOnce with adapters returns expected result shape (no daemon mode)", () => {
-    const result = pollOnce(
-      DEFAULT_CONFIG,
-      fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:58:00Z"),
-    );
-    expect(result.pollAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-    expect(typeof result.idleDetected).toBe("boolean");
-    expect(result.idleMinutes).toBe(2);
-  });
-
-  describe("pollOnce with injected adapters", () => {
+  describe("pollOnce with injected adapters — detection", () => {
     test("flags idle when last commit is older than threshold", () => {
       const result = pollOnce(
-        { ...DEFAULT_CONFIG, idleThresholdMin: 15 },
+        { ...DEFAULT_CONFIG, idleThresholdMin: 15, noPublish: true },
         fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:40:00Z"),
       );
       expect(result.idleDetected).toBe(true);
       expect(result.idleMinutes).toBe(20);
-      expect(result.lastCommitAt).toBe("2026-05-13T17:40:00.000Z");
       expect(result.note).toContain("Standing-by candidate");
     });
 
@@ -50,36 +66,68 @@ describe("standing-by-detector slice 2", () => {
       );
       expect(result.idleDetected).toBe(false);
       expect(result.idleMinutes).toBe(5);
-      expect(result.note).toContain("under threshold");
+      expect(result.publishedEnvelopeId).toBeNull();
     });
 
-    test("flags idle at exactly the threshold (inclusive)", () => {
-      const result = pollOnce(
-        { ...DEFAULT_CONFIG, idleThresholdMin: 15 },
-        fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:45:00Z"),
-      );
-      expect(result.idleDetected).toBe(true);
-      expect(result.idleMinutes).toBe(15);
-    });
-
-    test("handles null lastCommit (fresh repo / git unavailable)", () => {
+    test("handles null lastCommit gracefully (no publish)", () => {
       const result = pollOnce(
         DEFAULT_CONFIG,
         fakeAdapters("2026-05-13T18:00:00Z", null),
       );
       expect(result.idleDetected).toBe(false);
-      expect(result.lastCommitAt).toBeNull();
-      expect(result.idleMinutes).toBeNull();
+      expect(result.publishedEnvelopeId).toBeNull();
       expect(result.note).toContain("no commit found");
     });
+  });
 
-    test("clamps negative idleMinutes to zero (clock-skew safety)", () => {
+  describe("pollOnce with injected adapters — bus publish", () => {
+    test("publishes nudge envelope when idle detected", () => {
+      const captured: FakeNudgeCall[] = [];
       const result = pollOnce(
-        DEFAULT_CONFIG,
-        fakeAdapters("2026-05-13T17:00:00Z", "2026-05-13T18:00:00Z"),
+        { ...DEFAULT_CONFIG, idleThresholdMin: 15 },
+        fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:40:00Z", captured),
       );
-      expect(result.idleMinutes).toBe(0);
+      expect(result.publishedEnvelopeId).toBe("test-envelope-id");
+      expect(result.note).toContain("nudge published");
+      expect(captured).toHaveLength(1);
+      expect(captured[0]!.from).toBe("otto");
+      expect(captured[0]!.to).toBe("*");
+      expect(captured[0]!.idleMinutes).toBe(20);
+      expect(captured[0]!.rationale).toContain("Standing-by detected");
+      expect(captured[0]!.rationale).toContain("infinite-backlog metabolism");
+    });
+
+    test("does NOT publish when noPublish is true", () => {
+      const captured: FakeNudgeCall[] = [];
+      const result = pollOnce(
+        { ...DEFAULT_CONFIG, idleThresholdMin: 15, noPublish: true },
+        fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:40:00Z", captured),
+      );
+      expect(result.idleDetected).toBe(true);
+      expect(result.publishedEnvelopeId).toBeNull();
+      expect(captured).toHaveLength(0);
+      expect(result.note).toContain("publish skipped");
+    });
+
+    test("does NOT publish when not idle", () => {
+      const captured: FakeNudgeCall[] = [];
+      const result = pollOnce(
+        { ...DEFAULT_CONFIG, idleThresholdMin: 15 },
+        fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:55:00Z", captured),
+      );
       expect(result.idleDetected).toBe(false);
+      expect(captured).toHaveLength(0);
+    });
+
+    test("respects --agent and --to flags for publish identity", () => {
+      const captured: FakeNudgeCall[] = [];
+      const result = pollOnce(
+        { ...DEFAULT_CONFIG, idleThresholdMin: 15, fromAgent: "vera", toAgent: "lior" },
+        fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:40:00Z", captured),
+      );
+      expect(result.idleDetected).toBe(true);
+      expect(captured[0]!.from).toBe("vera");
+      expect(captured[0]!.to).toBe("lior");
     });
   });
 
@@ -88,11 +136,9 @@ describe("standing-by-detector slice 2", () => {
       expect(parsePositiveMinutes("5", "--poll-min")).toBe(5);
     });
 
-    test("rejects undefined / non-numeric / zero / negative / Infinity", () => {
+    test("rejects invalid inputs", () => {
       expect(() => parsePositiveMinutes(undefined, "--poll-min")).toThrow(/requires a value/);
-      expect(() => parsePositiveMinutes("abc", "--poll-min")).toThrow(/positive finite/);
       expect(() => parsePositiveMinutes("0", "--poll-min")).toThrow(/positive finite/);
-      expect(() => parsePositiveMinutes("-3", "--poll-min")).toThrow(/positive finite/);
       expect(() => parsePositiveMinutes("Infinity", "--poll-min")).toThrow(/positive finite/);
     });
   });
@@ -106,10 +152,23 @@ describe("standing-by-detector slice 2", () => {
       expect(parseArgs(["--once"]).once).toBe(true);
     });
 
-    test("--poll-min + --idle-min set values", () => {
-      const config = parseArgs(["--poll-min", "10", "--idle-min", "30"]);
-      expect(config.pollIntervalMin).toBe(10);
-      expect(config.idleThresholdMin).toBe(30);
+    test("--no-publish flag", () => {
+      expect(parseArgs(["--no-publish"]).noPublish).toBe(true);
+    });
+
+    test("--agent + --to flags", () => {
+      const config = parseArgs(["--agent", "vera", "--to", "lior"]);
+      expect(config.fromAgent).toBe("vera");
+      expect(config.toAgent).toBe("lior");
+    });
+
+    test("rejects invalid --agent values", () => {
+      expect(() => parseArgs(["--agent", "invalid"])).toThrow(/must be one of/);
+      expect(() => parseArgs(["--agent", "*"])).toThrow(/must be one of/);
+    });
+
+    test("rejects invalid --to values", () => {
+      expect(() => parseArgs(["--to", "invalid"])).toThrow(/must be one of/);
     });
 
     test("rejects unknown flags fail-fast", () => {

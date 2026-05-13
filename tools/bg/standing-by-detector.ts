@@ -1,16 +1,21 @@
-// standing-by-detector.ts — B-0440 slice 2: commit-history poll via `git log`
+// standing-by-detector.ts — B-0440 slice 4: bus publish on idle detection
 //
-// Background service that detects when an agent has been Standing by (idle)
-// by comparing the timestamp of the most recent commit on HEAD against a
-// configurable idle threshold (`idleThresholdMin`). When the gap exceeds
-// the threshold the detector flags the agent as a Standing-by candidate.
+// Background service that detects Standing-by failure mode (idle agent
+// while cron fires) by comparing the timestamp of the most recent commit
+// on HEAD against a configurable idle threshold. Slice 4 adds bus publish:
+// when idle is detected, the detector publishes an `infinite-backlog-nudge`
+// envelope via the B-0400 protocol so any subscribing agent can react.
 //
-// PR-activity polling and bus-publish are still TBD (slices 3 + 4).
+// PR-activity polling is still TBD (slice 3). Slice 4 is wired ahead of
+// slice 3 because the bus publish path is small and unblocks the
+// full reactive loop (detect → nudge).
 //
-// Run: bun tools/bg/standing-by-detector.ts [--once] [--poll-min N] [--idle-min N]
-// Compose with: B-0440 + B-0400 (bus) + B-0441 (proactive notifier).
+// Run: bun tools/bg/standing-by-detector.ts [--once] [--poll-min N] [--idle-min N] [--no-publish] [--agent NAME]
+// Compose with: B-0440 + B-0400 (bus, PR #3016) + B-0441 (proactive notifier).
 
 import { spawnSync } from "node:child_process";
+import { publish } from "../bus/bus";
+import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 
 export type DetectorConfig = {
   /** How often to poll, in minutes */
@@ -19,26 +24,43 @@ export type DetectorConfig = {
   idleThresholdMin: number;
   /** When true, run a single poll and exit (for testing / cron-driven mode) */
   once: boolean;
+  /** When true, skip bus publish even on idle detection (dry-run mode). */
+  noPublish: boolean;
+  /** Bus sender identity (the detector publishes as this agent). */
+  fromAgent: SenderAgentId;
+  /** Bus recipient (default "*" = broadcast nudge to all agents). */
+  toAgent: AgentId;
 };
 
 export const DEFAULT_CONFIG: DetectorConfig = {
   pollIntervalMin: 5,
   idleThresholdMin: 15,
   once: false,
+  noPublish: false,
+  fromAgent: "otto",
+  toAgent: "*",
 };
 
 export type PollResult = {
   pollAt: string; // ISO-8601
   idleDetected: boolean;
-  lastCommitAt: string | null; // ISO-8601 of the most recent commit on HEAD, or null
+  lastCommitAt: string | null;
   idleMinutes: number | null;
+  /** Envelope ID if a nudge was published, null otherwise. */
+  publishedEnvelopeId: string | null;
   note: string;
 };
 
-/** Adapter abstraction so tests can inject a deterministic clock + git-log result. */
+/** Adapter abstraction so tests can inject deterministic time + git + bus. */
 export type Adapters = {
   now: () => Date;
   lastCommitIso: () => string | null;
+  publishNudge: (
+    from: SenderAgentId,
+    to: AgentId,
+    idleMinutes: number,
+    rationale: string,
+  ) => MessageEnvelope;
 };
 
 const REAL_ADAPTERS: Adapters = {
@@ -53,11 +75,17 @@ const REAL_ADAPTERS: Adapters = {
     const trimmed = result.stdout.trim();
     return trimmed.length > 0 ? trimmed : null;
   },
+  publishNudge: (from, to, idleMinutes, rationale) =>
+    publish(from, to, {
+      topic: "infinite-backlog-nudge",
+      payload: { idleMinutes, rationale },
+    }),
 };
 
 /**
- * Single poll iteration. Reads the most recent commit on HEAD and compares
- * its timestamp against the configured idle threshold.
+ * Single poll iteration. Reads the most recent commit on HEAD, compares
+ * against the idle threshold, and publishes a bus nudge when idle is
+ * detected (unless noPublish is set).
  */
 export function pollOnce(
   config: DetectorConfig,
@@ -72,6 +100,7 @@ export function pollOnce(
       idleDetected: false,
       lastCommitAt: null,
       idleMinutes: null,
+      publishedEnvelopeId: null,
       note: "no commit found on HEAD (fresh repo or git unavailable); cannot evaluate idle threshold",
     };
   }
@@ -81,13 +110,36 @@ export function pollOnce(
   const idleMinutes = Math.max(0, idleMs / 60_000);
   const idleDetected = idleMinutes >= config.idleThresholdMin;
 
+  let publishedEnvelopeId: string | null = null;
+  let publishError: string | null = null;
+  if (idleDetected && !config.noPublish) {
+    const rationale = `Standing-by detected: ${idleMinutes.toFixed(1)}min since last commit on HEAD (threshold ${config.idleThresholdMin}min). Pick decomposition work per infinite-backlog metabolism.`;
+    try {
+      const envelope = adapters.publishNudge(config.fromAgent, config.toAgent, idleMinutes, rationale);
+      publishedEnvelopeId = envelope.id;
+    } catch (e) {
+      // Bus publish failure must NOT kill the poll loop; the daemon needs to
+      // survive transient bus IO errors. Capture the reason in the result.
+      publishError = e instanceof Error ? e.message : String(e);
+    }
+  }
+
   return {
     pollAt: pollAt.toISOString(),
     idleDetected,
     lastCommitAt: lastCommit.toISOString(),
     idleMinutes,
+    publishedEnvelopeId,
     note: idleDetected
-      ? `idle ${idleMinutes.toFixed(1)}min >= threshold ${config.idleThresholdMin}min — Standing-by candidate (future slice: publish bus nudge)`
+      ? `idle ${idleMinutes.toFixed(1)}min >= threshold ${config.idleThresholdMin}min — Standing-by candidate${
+          publishError
+            ? ` (publish failed: ${publishError})`
+            : publishedEnvelopeId
+            ? ` (nudge published; envelope=${publishedEnvelopeId})`
+            : config.noPublish
+            ? " (publish skipped per --no-publish)"
+            : ""
+        }`
       : `last commit ${idleMinutes.toFixed(1)}min ago; under threshold ${config.idleThresholdMin}min`,
   };
 }
@@ -119,30 +171,45 @@ export function parsePositiveMinutes(raw: string | undefined, name: string): num
   return n;
 }
 
-const KNOWN_FLAGS = new Set(["--once", "--poll-min", "--idle-min"]);
+function parseSenderId(raw: string | undefined): SenderAgentId {
+  if (raw === undefined) throw new Error("--agent requires a value");
+  if ((SENDER_IDS as readonly string[]).includes(raw)) return raw as SenderAgentId;
+  throw new Error(`--agent must be one of ${SENDER_IDS.join(", ")}; got "${raw}"`);
+}
+
+function parseAgentId(raw: string | undefined): AgentId {
+  if (raw === undefined) throw new Error("--to requires a value");
+  if ((AGENT_IDS as readonly string[]).includes(raw)) return raw as AgentId;
+  throw new Error(`--to must be one of ${AGENT_IDS.join(", ")}; got "${raw}"`);
+}
+
+const KNOWN_FLAGS = ["--once", "--poll-min", "--idle-min", "--no-publish", "--agent", "--to"] as const;
 
 export function parseArgs(argv: string[]): DetectorConfig {
   const config: DetectorConfig = { ...DEFAULT_CONFIG };
 
   for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i]!; // i < argv.length guarantees defined; noUncheckedIndexedAccess needs explicit assertion
+    const arg = argv[i]!;
     if (arg === "--once") {
       config.once = true;
+    } else if (arg === "--no-publish") {
+      config.noPublish = true;
     } else if (arg === "--poll-min") {
       config.pollIntervalMin = parsePositiveMinutes(argv[++i], "--poll-min");
     } else if (arg === "--idle-min") {
       config.idleThresholdMin = parsePositiveMinutes(argv[++i], "--idle-min");
-    } else if (KNOWN_FLAGS.has(arg)) {
-      throw new Error(`internal: known flag ${arg} not handled`);
+    } else if (arg === "--agent") {
+      config.fromAgent = parseSenderId(argv[++i]);
+    } else if (arg === "--to") {
+      config.toAgent = parseAgentId(argv[++i]);
     } else {
-      throw new Error(`unknown flag: ${arg}; known flags: ${[...KNOWN_FLAGS].join(", ")}`);
+      throw new Error(`unknown flag: ${arg}; known flags: ${KNOWN_FLAGS.join(", ")}`);
     }
   }
 
   return config;
 }
 
-// CLI entry — only fires when invoked directly, not when imported by tests.
 if (import.meta.main) {
   const config = parseArgs(process.argv.slice(2));
   if (config.once) {
