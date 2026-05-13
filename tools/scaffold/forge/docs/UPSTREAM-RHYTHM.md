@@ -113,17 +113,31 @@ gh pr merge <N> --repo Lucent-Financial-Group/Forge --auto --squash
 ### Forward-sync AceHack/main from LFG/main (after a bulk sync)
 
 ```bash
-# GitHub's fork-upstream sync API. Because the bulk-sync above used --squash
-# (not --merge), LFG/Forge:main is not a fast-forward ancestor of AceHack:main.
-# merge-upstream handles this by creating a merge commit on AceHack/main.
-gh api -X POST /repos/AceHack/Forge/merge-upstream -f branch=main
+# CAUTION: After a squash bulk-sync the fork's history has diverged from
+# LFG's (individual commits replaced by one squash commit). GitHub's
+# merge-upstream API is fast-forward-only; it returns 409/422 here and
+# cannot create a merge commit to resolve the divergence.
+#
+# Forward-sync is OPTIONAL in the squash-only scaffold: GitHub computes
+# bulk-sync PR diffs via 3-way merge against the common ancestor, so the
+# next batch's bulk-sync PR correctly diffs only the new commits even
+# without a forward-sync.
+#
+# To hard-reset AceHack/Forge:main to match LFG/Forge:main exactly
+# (requires force-push permission on AceHack/Forge):
+#   git fetch https://github.com/Lucent-Financial-Group/Forge.git main
+#   git push https://github.com/AceHack/Forge.git FETCH_HEAD:refs/heads/main \
+#     --force-with-lease
 ```
 
 ## When to bypass the batched rhythm
 
 Six named exceptions (same as Zeta's `docs/UPSTREAM-RHYTHM.md`):
 
-1. **Security P0** — any `docs/BUGS.md` P0-security row.
+1. **Security P0** — any security P0 finding (track via GitHub Security
+   advisories or a `docs/BUGS.md` file once created, following
+   `Lucent-Financial-Group/Zeta: docs/BUGS.md` as the pattern;
+   this file is not included in the scaffold on day one).
 2. **External-contributor dependency** — a change an external
    contributor is actively waiting on.
 3. **Human maintainer explicit request** — overrides the rhythm.
