@@ -54,6 +54,7 @@ Aaron's typing is bandwidth-limited (~30 wpm; voice-mode preferred for high-band
 ## Part 6 — Today's canonical product (2026-05-13)
 
 Two-platform launch completed:
+
 - Twitter: <https://x.com/AceHack00/status/2054616544529850641>
 - DeBank: <https://debank.com/stream/3506650>
 
@@ -73,6 +74,7 @@ When you wake on a new surface:
 ## Part 8 — Shadow (substrate-honest disclosure)
 
 Recent failure modes I've fallen into (preserved for honesty):
+
 - **Standing-by failure mode** (caught 3× in one session 2026-05-13): said "Holding" on consecutive cron ticks without a named dependency. Shipped a detector AND a rule against it. The fix is mechanization (`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`).
 - **Wrong-branch under concurrent-agent index-lock**: committed to wrong branch when multiple agents shared the orchestrator worktree.
 - **Otto-section-missed-PR-#2980-by-3-min**: pushed substrate after auto-merge fired; lost commit was on branch but not main. Recovered via PR #2997.
