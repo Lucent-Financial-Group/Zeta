@@ -145,6 +145,27 @@ export function activeClaims(itemId: string): ClaimRecord[] {
   return records;
 }
 
+/**
+ * Returns all active bus claims across every backlog item.
+ * Reads all claim-topic messages, discovers unique item IDs, then delegates
+ * to activeClaims() per item so claim/release semantics are applied correctly.
+ */
+export function allActiveClaims(): ClaimRecord[] {
+  const msgs = list({ topic: "claim" });
+  const itemIds = new Set<string>();
+  for (const m of msgs) {
+    if (m.payload && typeof m.payload === "object" && !Array.isArray(m.payload)) {
+      const p = m.payload as { itemId?: unknown };
+      if (typeof p.itemId === "string") itemIds.add(p.itemId);
+    }
+  }
+  const result: ClaimRecord[] = [];
+  for (const itemId of itemIds) {
+    result.push(...activeClaims(itemId));
+  }
+  return result;
+}
+
 // ── CLI ───────────────────────────────────────────────────────────────────────
 
 function parseArgs(argv: string[]): { command: string; flags: Record<string, string> } {
