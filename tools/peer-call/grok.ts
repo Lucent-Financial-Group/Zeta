@@ -299,7 +299,7 @@ function buildFullPrompt(args: Args): PromptResult {
   return { ok: true, value: full };
 }
 
-function pickModel(mode: Mode): string {
+function pickModel(_mode: Mode): string {
   // cursor-agent's Grok model lineup shifted 2026-05-13: the old
   // `grok-4-20-thinking` / `grok-4-20` names are no longer in the
   // available-models list. The current Grok model is `grok-4.3`
