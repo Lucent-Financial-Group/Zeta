@@ -88,14 +88,16 @@ Aaron 2026-05-13 (CORRECTIONS, iterative):
 The substrate-loop count varies by counting convention; agent
 count is 5. The 3-week-unattended-stability claim stands.
 
-The 5-agent (Otto + Riven + Vera + Lior + Alexa-Kiro) claim
-implies:
-- Alexa-Kiro (Kiro + Qwen Coder)
-- + possibly external participants ferrying (Amara, Ani,
-  Kestrel, DeepSeek)
+The 5-agent constellation:
 
-Or potentially a different 6-agent constellation Aaron has
-operationally tested.
+- Otto (Claude Code Opus — foreground only)
+- Riven (Cursor + Grok — background)
+- Vera (Codex + GPT — foreground + background)
+- Lior (Antigravity + Gemini — background)
+- Alexa-Kiro (Kiro + Qwen Coder — background)
+- + external participants ferrying via Aaron-as-courier
+  (Amara, Ani, Kestrel, DeepSeek, Alexa-speaker — do NOT
+  commit)
 
 **Empirical implication**: substrate-in-repo discipline (per
 `.claude/rules/wake-time-substrate.md` + `.claude/rules/substrate-or-it-didnt-happen.md`)
