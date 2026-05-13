@@ -85,8 +85,11 @@ memories freely — that is the whole point of this folder.
   correction, a decision, a project fact). In the right type
   bucket: feedback / project / user / reference.
 - New memory files **must have valid frontmatter** (`name:`,
-  `description:`, `type:`, `created:` fields). The reindexer
-  requires these to build the MEMORY.md stack view.
+  `description:`, `type:` required; `created:` strongly recommended).
+  The reindexer only skips files with **no frontmatter block at all** —
+  missing individual fields use safe fallbacks (see
+  `memory/project_memory_format_standard.md` §6.4 for the full
+  fallback/enforcement table).
 - A synchronous MEMORY.md paired-edit is **no longer required**
   (heap-state model, B-0423). `MEMORY.md` is kept current by
   `tools/memory/reindex-memory-md.ts` running on cadence via the
