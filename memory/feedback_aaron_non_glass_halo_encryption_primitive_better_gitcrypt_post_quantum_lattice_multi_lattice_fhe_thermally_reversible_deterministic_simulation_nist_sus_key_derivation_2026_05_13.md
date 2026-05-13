@@ -17,6 +17,11 @@ type: feedback
 created: 2026-05-13
 ---
 
+Scope: Factory encryption runtime — root DB encryption + PQC + FHE + reversible thermodynamics + DST composition
+Attribution: Aaron Stainback (human maintainer), 2026-05-13 verbal disclosure; transcribed and formalized by Otto (Claude)
+Operational status: research-grade, not operational — treat as Aaron's technical direction, not yet promoted to implementation policy via ADR
+Non-fusion disclaimer: Aaron's disclosure preserved verbatim in §What Aaron said; Otto's formalization in body; voices are distinct and not fused
+
 # Non-glass-halo encryption primitive — full stack (Aaron 2026-05-13)
 
 **Why:** PR #2897 (Lillian-HIPAA correction) established
