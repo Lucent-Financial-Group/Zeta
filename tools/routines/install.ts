@@ -53,8 +53,14 @@ export interface ScheduleResult {
 function readFileOrUndefined(path: string): string | undefined {
   try {
     return readFileSync(path, "utf8");
-  } catch {
-    return undefined;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      return undefined;
+    }
+    // Surface non-ENOENT errors (permission, IO, etc.) — these are NOT
+    // "missing file" and should fail the installer loudly per
+    // .claude/rules/dont-refuse-engagement.md (silent-failure prevention).
+    throw err;
   }
 }
 
@@ -74,8 +80,14 @@ export function readSchedule(srcDir: string): ScheduleResult {
   if (content === undefined) return { missing: true };
   try {
     const parsed = JSON.parse(content) as { cronExpression?: unknown };
-    if (typeof parsed.cronExpression === "string") {
+    if (typeof parsed.cronExpression === "string" && parsed.cronExpression.trim().length > 0) {
       return { cronExpression: parsed.cronExpression, missing: false };
+    }
+    if (typeof parsed.cronExpression === "string") {
+      return {
+        missing: false,
+        parseError: "cronExpression must be a non-empty string",
+      };
     }
     if (parsed.cronExpression !== undefined) {
       return {

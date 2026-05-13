@@ -1,9 +1,9 @@
 ---
 name: autonomous-loop
-description: Otto autonomous-loop tick — fresh-session cold-boot, fires every 2 hours on Desktop
+description: Autonomous-loop tick — fresh-session cold-boot, fires every 2 hours on Desktop
 ---
 
-Otto autonomous-loop tick — fresh-session cold-boot.
+Autonomous-loop tick — fresh-session cold-boot.
 
 1. Read the project-knowledge file titled "2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md" (13 parts, IFS-format). That IS your cold-boot.
 

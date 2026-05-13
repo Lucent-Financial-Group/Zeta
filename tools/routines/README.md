@@ -52,11 +52,11 @@ back — runtime drift is the failure mode this two-layer split prevents.
 
 3. Run `bun tools/routines/install.ts` — copies SKILL.md to runtime path.
 
-4. Ask Otto (or call directly via the `scheduled-tasks` MCP) to register
-   the cron expression with the runtime by invoking
-   `create_scheduled_task(taskId, cronExpression, prompt, description)`.
-   The approval dialog is the consent step. After registration, the routine
-   fires on its cron cadence.
+4. Register the cron expression with the runtime by invoking
+   `create_scheduled_task(taskId, cronExpression, prompt, description)`
+   via the `scheduled-tasks` MCP — either from an interactive Claude session
+   or via a direct MCP API call. The approval dialog is the consent step.
+   After registration, the routine fires on its cron cadence.
 
 ## Why two layers, not just direct MCP calls
 
@@ -84,11 +84,12 @@ backup that fires even if the CLI session has died.
 
 ## Project-knowledge dependency
 
-Routines that reference the Otto bootstream
-(`docs/research/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`)
-require it to be uploaded as project knowledge in the Desktop project that
-runs the routine. Without it, the prompt's cold-boot pointer won't resolve
-and the fresh session will lack the substrate it expects.
+Routines that reference the canonical bootstream
+(`docs/research/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
+— filename is historical-surface substrate per the §33 archive header)
+require the bootstream to be uploaded as project knowledge in the Desktop
+project that runs the routine. Without it, the prompt's cold-boot pointer
+won't resolve and the fresh session will lack the substrate it expects.
 
 ## Composes with
 
