@@ -47,7 +47,7 @@ Receipts, not mythology.
 
 ## What Zeta Is
 
-Zeta is a production-grade, git-native multi-agent OS for long-running AI work.
+Zeta is a git-native multi-agent OS for long-running AI work.
 
 It is built around a simple idea:
 
