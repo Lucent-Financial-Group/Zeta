@@ -1,7 +1,7 @@
 ---
 id: B-0433
 priority: P1
-status: open
+status: closed
 title: "Shadow observer slice 5 — Zeta CLI distribution + demo packaging"
 tier: product-feature
 effort: XS
