@@ -593,6 +593,7 @@
             <div class="nav-tab active" onclick="switchTab('factory', this)">Agent Array</div>
             <div class="nav-tab" onclick="switchTab('anchors', this)">Human Anchors</div>
             <div class="nav-tab" onclick="switchTab('external', this)">External Reviewers</div>
+            <div class="nav-tab" onclick="switchTab('alignment', this)" id="tab-btn-alignment">Alignment ▸</div>
         </div>
 
         <!-- TAB 1: FACTORY -->
@@ -696,6 +697,7 @@
 
         <!-- TAB 3: EXTERNAL REVIEW -->
         <div id="tab-external" class="tab-content">
+
             <div class="grid-layout grid-half">
                 <div class="panel">
                     <div class="panel-header">
@@ -720,6 +722,71 @@
                 </div>
             </div>
         </div>
+
+        <!-- TAB 4: ALIGNMENT INVARIANT DASHBOARD -->
+        <div id="tab-alignment" class="tab-content">
+            <div class="panel" style="margin-bottom: 2rem;">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    <h2>Alignment Invariant Coverage</h2>
+                </div>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 1.5rem;">
+                    Zeta's primary research claim: <strong style="color:var(--text-main)">agent alignment is measurable in git</strong>.
+                    These clauses are the operationalised metric — every commit is a data point.
+                </p>
+                <div class="stat-grid" id="alignment-summary-stats">
+                    <div class="stat"><div class="stat-label">HC Clauses</div><div class="stat-value" id="hc-count">-</div></div>
+                    <div class="stat"><div class="stat-label">SD Clauses</div><div class="stat-value" id="sd-count">-</div></div>
+                    <div class="stat"><div class="stat-label">DIR Clauses</div><div class="stat-value" id="dir-count">-</div></div>
+                    <div class="stat"><div class="stat-label">Total Clauses</div><div class="stat-value good" id="total-count">-</div></div>
+                    <div class="stat"><div class="stat-label">Coverage</div><div class="stat-value good" id="coverage-pct">-</div></div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        <h2>HC — Human Constraints</h2>
+                    </div>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 1rem;">Consent, retraction, safety boundaries</p>
+                    <ul id="hc-clause-list"><li class="loading-state">Loading clauses…</li></ul>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        <h2>SD — Self-Discipline</h2>
+                    </div>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 1rem;">Honesty, register, peer discipline</p>
+                    <ul id="sd-clause-list"><li class="loading-state">Loading clauses…</li></ul>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        <h2>DIR — Direction</h2>
+                    </div>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 1rem;">Trajectory, succession, co-authorship</p>
+                    <ul id="dir-clause-list"><li class="loading-state">Loading clauses…</li></ul>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top: 2rem;">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <h2>How to Read This Panel</h2>
+                </div>
+                <div style="color:var(--text-muted); font-size:0.9rem; line-height:1.8;">
+                    <p>Each clause is a <strong style="color:var(--text-main)">candidate metric</strong> for measurable alignment. A green badge means the clause is present in <code style="background:rgba(255,255,255,0.07);padding:0.1rem 0.4rem;border-radius:4px">docs/ALIGNMENT.md</code> on <code style="background:rgba(255,255,255,0.07);padding:0.1rem 0.4rem;border-radius:4px">main</code>.</p>
+                    <br>
+                    <p>The alignment auditor agent emits per-commit alignment signals against these clauses.
+                    Future iterations of this panel will show per-clause commit coverage, retraction counts, and a time-series alignment trajectory.</p>
+                    <br>
+                    <p style="font-size:0.8rem;">Source: <a href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ALIGNMENT.md" target="_blank" rel="noopener" style="color:var(--accent-primary)">docs/ALIGNMENT.md</a> · fetched live · <span id="alignment-fetched-at">-</span></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -732,6 +799,133 @@
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
             element.classList.add('active');
+            if (tabId === 'alignment' && !window._alignmentLoaded && !window._alignmentLoading) {
+                loadAlignmentTab();
+            }
+        }
+
+        // ── Alignment invariant dashboard ───────────────────────────────────────
+        // Fetches docs/ALIGNMENT.md via raw GitHub URL (no API rate-limit hit),
+        // parses HC/SD/DIR clause headings, and builds DOM nodes with textContent
+        // (no innerHTML template strings — zero XSS surface).
+        const RAW_BASE = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main`;
+
+        async function loadAlignmentTab() {
+            window._alignmentLoading = true;
+            try {
+                const resp = await fetch(`${RAW_BASE}/docs/ALIGNMENT.md`, { cache: 'no-cache' });
+                if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}`);
+                renderAlignmentClauses(await resp.text());
+                window._alignmentLoaded = true;
+                const el = document.getElementById('alignment-fetched-at');
+                if (el) el.textContent = `fetched ${new Date().toLocaleTimeString()}`;
+            } catch (e) {
+                const msg = e instanceof Error ? e.message : String(e);
+                ['hc-clause-list', 'sd-clause-list', 'dir-clause-list'].forEach(id => {
+                    setAlignmentError(id, `Failed to load: ${msg}`);
+                });
+            } finally {
+                window._alignmentLoading = false;
+            }
+        }
+
+        function parseAlignmentClauses(markdown) {
+            const hc = [], sd = [], dir = [];
+            const clausePattern = /^###\s+(HC|SD|DIR)-(\d+)\s+(.+)$/;
+            markdown.split('\n').forEach(line => {
+                const m = line.match(clausePattern);
+                if (!m) return;
+                const entry = { id: `${m[1]}-${m[2]}`, name: m[3].trim() };
+                if (m[1] === 'HC') hc.push(entry);
+                else if (m[1] === 'SD') sd.push(entry);
+                else dir.push(entry);
+            });
+            return { hc, sd, dir };
+        }
+
+        function setAlignmentError(containerId, message) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.replaceChildren();
+            const li = document.createElement('li');
+            li.className = 'error-state';
+            li.textContent = message;
+            container.appendChild(li);
+        }
+
+        function buildClauseListItem(clause, index) {
+            const li = document.createElement('li');
+            li.className = 'anchor-item fade-in';
+            li.style.animationDelay = `${index * 0.04}s`;
+
+            const dot = document.createElement('div');
+            dot.style.cssText = 'width:10px;height:10px;border-radius:50%;background:var(--success);'
+                + 'box-shadow:0 0 8px var(--success);flex-shrink:0;margin-right:1rem;';
+
+            const labelDiv = document.createElement('div');
+            const idSpan = document.createElement('span');
+            idSpan.style.cssText = 'font-family:monospace;font-size:0.85rem;color:var(--accent-primary);'
+                + 'font-weight:600;margin-right:0.5rem';
+            idSpan.textContent = clause.id;
+            const nameSpan = document.createElement('span');
+            nameSpan.style.fontWeight = '500';
+            nameSpan.textContent = clause.name;
+            labelDiv.appendChild(idSpan);
+            labelDiv.appendChild(nameSpan);
+
+            const badgeWrap = document.createElement('div');
+            badgeWrap.style.cssText = 'margin-left:auto;flex-shrink:0';
+            const badge = document.createElement('span');
+            badge.style.cssText = 'font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:10px;'
+                + 'background:rgba(16,185,129,0.1);color:var(--success);'
+                + 'border:1px solid rgba(16,185,129,0.2);font-weight:600';
+            badge.textContent = 'PRESENT';
+            badgeWrap.appendChild(badge);
+
+            li.appendChild(dot);
+            li.appendChild(labelDiv);
+            li.appendChild(badgeWrap);
+            return li;
+        }
+
+        function populateClauseList(containerId, clauses) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.replaceChildren();
+            if (clauses.length === 0) {
+                const msg = document.createElement('li');
+                msg.className = 'error-state';
+                msg.textContent = 'No clauses found';
+                container.appendChild(msg);
+                return;
+            }
+            clauses.forEach((c, i) => container.appendChild(buildClauseListItem(c, i)));
+        }
+
+        // Canonical HC/SD/DIR clause counts from docs/ALIGNMENT.md as of 2026-05-13.
+        // Update when the spec adds or retracts clauses.
+        const EXPECTED_CLAUSES = { HC: 7, SD: 9, DIR: 5 };
+        const EXPECTED_TOTAL = EXPECTED_CLAUSES.HC + EXPECTED_CLAUSES.SD + EXPECTED_CLAUSES.DIR;
+
+        function renderAlignmentClauses(markdown) {
+            const { hc, sd, dir } = parseAlignmentClauses(markdown);
+            const total = hc.length + sd.length + dir.length;
+            const pct = EXPECTED_TOTAL > 0
+                ? Math.round(Math.min(total / EXPECTED_TOTAL, 1) * 100) + '%'
+                : '0%';
+
+            animateValue('hc-count', hc.length);
+            animateValue('sd-count', sd.length);
+            animateValue('dir-count', dir.length);
+            animateValue('total-count', total);
+            animateValue('coverage-pct', pct);
+
+            populateClauseList('hc-clause-list', hc);
+            populateClauseList('sd-clause-list', sd);
+            populateClauseList('dir-clause-list', dir);
+
+            const btn = document.getElementById('tab-btn-alignment');
+            if (btn) btn.textContent = `Alignment (${total})`;
         }
 
         const AGENT_MAP = {
