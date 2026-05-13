@@ -1,8 +1,8 @@
 ---
 name: aaron-civsim-is-the-casimir-gap-control-knobs-elon-looking-for-our-plato-critical-mass-threshold-2026-05-13
 description: Aaron 2026-05-13 strategic substrate — civ-sim IS the Casimir gap. Once enough people play it, civ-sim becomes the control knobs Elon Musk is looking for. Our Plato (Platonic-Republic-level political architecture) emerges at critical mass. Composes with strategic encryption authority (PR #2902) + forker-perspective discipline (PR #2905) + civsim PVP/raids/mutual-privacy (PR #2903).
-metadata:
-  type: feedback
+type: feedback
+created: 2026-05-13
 ---
 
 # civ-sim is the Casimir gap — control knobs Elon is looking for — our Plato at critical mass
