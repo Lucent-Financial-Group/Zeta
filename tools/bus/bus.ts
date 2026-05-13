@@ -286,9 +286,7 @@ function main(): void {
 
       const poll = () => {
         const msgs = list({ topic: topicFilter, to: toFilter });
-        const fresh = msgs.filter(
-          (m) => m.timestamp >= cursorTimestamp && !delivered.has(m.id),
-        );
+        const fresh = msgs.filter((m) => !delivered.has(m.id));
         for (const m of fresh) {
           if (asJson) {
             console.log(JSON.stringify(m));
