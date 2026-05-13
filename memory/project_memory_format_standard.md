@@ -279,7 +279,7 @@ skipped:
 |---|---|---|
 | `name:` | Falls back to filename (without `.md`) | Error — enforced |
 | `description:` | Falls back to `"(no description)"` | Error — enforced |
-| `type:` | Inferred from filename prefix if possible | Error — enforced |
+| `type:` | Not used by reindexer; B-0335 `--fix` auto-infers from filename prefix | Error — enforced |
 | `created:` | Falls back to date extracted from filename, or `"0000-00-00"` | Not enforced by B-0335 |
 
 Best practice: include all four fields so the index entry is
