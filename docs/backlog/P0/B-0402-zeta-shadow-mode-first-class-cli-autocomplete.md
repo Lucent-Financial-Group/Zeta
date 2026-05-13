@@ -68,7 +68,7 @@ metrics — a collaborative intelligence surface.
 
 ## Acceptance
 
-- [x] `zeta shadow` command starts shadow auto-accept mode — `tools/shadow/zeta-shadow.ts` entry-point (slice 4, PR #2985)
+- [x] `zeta-shadow` CLI starts shadow auto-accept mode — `tools/shadow/zeta-shadow.ts` entry-point (slice 4, PR #2985); shipped as standalone binary via `bin["zeta-shadow"]`; `zeta shadow` subcommand UX (dispatcher integration) is out-of-scope future work
 - [x] Configurable delay (default 3s) — `--delay <ms>` flag, validated (slice 1)
 - [x] External detector plug-in — `--detect-cmd <cmd>` wires any shell command as detector (slice 2)
 - [x] Human keystroke overrides at any moment — `detectGreyTextMacOS()` returns `"overridden"` on mid-delay suggestion disappearance (slice 3, PR #2983)

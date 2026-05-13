@@ -25,7 +25,7 @@ installed Zeta surface and ready for an external CLI demo.
 
 ## Acceptance criteria from B-0402 this slice satisfies
 
-- [ ] Deployable as part of Zeta CLI install
+- [x] Deployable as part of Zeta CLI install
 
 ## Technical context
 
@@ -94,11 +94,10 @@ Invoke from `bun test` via `smoke-test.test.ts` (or add as a `scripts` entry).
 
 ## Pre-start checklist
 
-**Prior-art search:**
+**Prior-art search** *(state at time of authoring; all items below are now implemented)*:
 
-- `package.json` `bin` — empty currently; no conflicts
-- No `tools/shadow/README.md` yet (directory exists with 3 files: `outlet.ts`,
-  `shadow-observer.ts`, `shadow-observer.test.ts`)
+- `package.json` `bin` — was empty at authoring; `bin["zeta-shadow"]` added in this slice
+- `tools/shadow/README.md` — did not exist at authoring; created with `## Shadow mode` section in this slice
 - B-0402 acceptance criteria: "Deployable as part of Zeta CLI install — slice 4"
 
 **Dependency check:**
