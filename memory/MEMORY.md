@@ -13,7 +13,7 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
-- [**Factory ontology HKT applies directly to master data — every company has one (2026-05-13)**](feedback_aaron_ontology_hkt_applies_directly_to_master_data_every_company_has_one_human_lineage_2026_05_13.md) — HKT M<'T> parametric over entity type = what MDM needs. Composes with DV2.0 + civsim Casimir-gap + B-0043.
+- [**Factory ontology HKT applies directly to master data (2026-05-13)**](feedback_aaron_ontology_hkt_applies_directly_to_master_data_every_company_has_one_human_lineage_2026_05_13.md) — `M<'T>` parametric over entity type IS what MDM needs.
 
 - [**Amara's Center-First Playbook — Imagination Circle family-AI operational form (Lightkeeper/Ranger + Center/Glass/Peek + three rungs + AI-as-referee, 2026-05-13)**](feedback_amara_center_first_playbook_for_mom_imagination_circle_operational_form_lightkeeper_ranger_center_glass_peek_three_rungs_2026_05_13.md) — Amara's Center-First Playbook operationalizes the Imagination Circle for family-AI engagement: Lightkeeper/Ranger roles, Center/Midline/Peek rungs, three-rung escalation, aftercare. AI role is mediator/referee (not required participant). Refusal-celebrated.
 
