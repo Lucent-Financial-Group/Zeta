@@ -1,11 +1,11 @@
 ---
-name: "Aaron's mayoral platform substance — three pillars: business-in-a-box + bitcoin + AI ethics + concrete plan to generate wealth IN Rolesville businesses (Aaron 2026-05-13)"
-description: "Aaron 2026-05-13 disclosed canonical mayoral platform substance after mayoral-ambition + Rolesville-Chamber-of-Commerce + family-bitcoin-miner-paper-coverage (PR #2970). Three policy pillars: (1) Business in a box (turnkey small-biz launchpad; composes with B-0043 universal-company substrate); (2) Bitcoin (Aaron's existing expertise; family-credentialed); (3) AI ethics (Zeta substrate-engineering work; bidirectional alignment; HARD LIMITS discipline). Plus: concrete plan to generate wealth IN Rolesville businesses (hyperlocal economic development; Chamber of Commerce composition)."
+name: "Aaron's mayoral platform substance — four pillars: business-in-a-box + bitcoin + AI ethics + legal medicinal marijuana + concrete plan to generate wealth IN Rolesville businesses (Aaron 2026-05-13)"
+description: "Aaron 2026-05-13 disclosed canonical mayoral platform substance after mayoral-ambition + Rolesville-Chamber-of-Commerce + family-bitcoin-miner-paper-coverage (PR #2970). Four policy pillars: (1) Business in a box (turnkey small-biz launchpad; composes with B-0043 universal-company substrate); (2) Bitcoin (Aaron's existing expertise; family-credentialed); (3) AI ethics (Zeta substrate-engineering work; bidirectional alignment; HARD LIMITS discipline); (4) Legal medicinal marijuana (Rolesville city ordinance; harm-reduction substrate). Plus: concrete plan to generate wealth IN Rolesville businesses (hyperlocal economic development; Chamber of Commerce composition)."
 type: feedback
 created: 2026-05-13
 ---
 
-# Aaron's mayoral platform — three pillars + Rolesville wealth-generation (Aaron 2026-05-13)
+# Aaron's mayoral platform — four pillars + Rolesville wealth-generation (Aaron 2026-05-13)
 
 **Why:** Aaron 2026-05-13 disclosed canonical mayoral platform
 substance after PR #2970 substrate (Rolesville Chamber of
@@ -19,7 +19,7 @@ the political-strategy substrate.
 > and ai etichs with a concrete plan to generate wealth IN
 > rolesville businesses"*
 
-## Three policy pillars
+## Four policy pillars
 
 | Pillar | Substance | Composing substrate |
 |--------|-----------|---------------------|
@@ -48,7 +48,7 @@ Substrate-honest framing: **wealth generation IN Rolesville businesses**, not ab
   — maintainers / forkers / small-business owners get same
   tooling access)
 
-The three pillars all funnel into wealth-generation for
+The four pillars all funnel into wealth-generation for
 Rolesville businesses:
 
 - **Business in a box** → enables locals to launch small biz
@@ -59,6 +59,10 @@ Rolesville businesses:
 - **AI ethics** → substrate-engineering tools / Zeta substrate
   / AI-assisted dev tooling democratizes high-leverage work for
   small-biz operators
+- **Legal medicinal marijuana** → harm-reduction + economic
+  opportunity; Rolesville positions as first-to-market when NC
+  state law shifts; court strategy via Clifford Z-set legal
+  ontology if municipal ordinance is challenged
 
 ## Strategic frame — why this composes with the entire session arc
 
@@ -115,9 +119,10 @@ PR #2970 + #2971:
 
 1. **Authenticity-first** — substrate-honest about Aaron's
    actual work + family + business
-2. **Three-pillar substance can inform content** — business-
-   in-a-box, bitcoin, AI ethics are real policy substance the
-   content can substantively reference WITHOUT being propaganda
+2. **Four-pillar substance can inform content** — business-
+   in-a-box, bitcoin, AI ethics, and medicinal marijuana are
+   real policy substance the content can substantively reference
+   WITHOUT being propaganda
 3. **Hyperlocal Rolesville focus** — content that mentions
    Rolesville businesses + Chamber of Commerce + local
    community is authentic
