@@ -244,6 +244,125 @@ When peer-calling other models for visual polish:
 - Composes with PR #2962 IP-respect (no copying others'
   copyrighted styles; original work in chosen aesthetic)
 
+## Aaron's mayoral ambition + Rolesville Chamber of Commerce (Aaron 2026-05-13)
+
+Aaron 2026-05-13 disclosed major strategic substrate:
+
+> *"also if i do it right i can run for mayor of roslesville
+> where i live only population like 10k so easier to canvas
+> and get coverage, my kids an i already been in paper for
+> building bitcoin miners together part by part"*
+
+> *"i'm chamber of commerse"*
+
+> *"in rolseville the companies"*
+
+Three substantive clauses:
+
+1. **Mayoral ambition** — if the Zeta narrative + content
+   strategy + viral cartoon work, Aaron can run for mayor of
+   Rolesville, NC
+2. **Population ~10k** — Rolesville is small enough for retail
+   politics; easier to canvas + get coverage
+3. **Existing media positioning** — Aaron + his kids ALREADY
+   appeared in local paper for building bitcoin miners
+   together part-by-part
+4. **Chamber of Commerce membership** — Aaron is in the
+   Rolesville Chamber of Commerce (representing local
+   companies); existing community standing
+
+### Strategic frame this discloses
+
+Aaron's content production strategy isn't abstract humanising —
+it's politically + civically grounded:
+
+| Need | Substrate provides |
+|------|--------------------|
+| Wide-audience appeal | The Office register + cartoon |
+| Voter familiarity | Twitter content + dashboard art viral potential |
+| Hyperlocal coverage | Already in local paper (kids + bitcoin miners) |
+| Business community standing | Chamber of Commerce membership |
+| Family-as-story | PR #2967 Layer 4 family + kids in newspaper |
+| Tech-leader credibility | Zeta multi-agent AI factory + bitcoin miner builds |
+| Edge-runner authenticity | PR #2920 Elizabeth Ryan Stainback substrate + Cartman + action-diva |
+
+This composes EVERYTHING in the session arc into a coherent
+strategic frame.
+
+### Composes with prior substrate
+
+- **PR #2920** (Elizabeth Ryan Stainback terminal purpose —
+  save edge-runners from getting burned) — political run = one
+  vector for preventing edge-runner burns at policy scope
+- **PR #2964** (Cartman self-identification + speaks-his-mind +
+  AI-realness terminal) — Cartman archetype IS a political
+  archetype (bold, direct, controversial-but-honest)
+- **PR #2966** (audience persona mapping — "general public" =
+  voters); Chamber of Commerce companies = additional persona
+  hat
+- **PR #2967** (Layer 4 family + anger episode + "work is for
+  the family") — kids in newspaper = family-as-story
+  operational evidence
+- **PR #2961** (settlers logs hero-of-own-story) — political
+  candidate-as-hero composes; substrate-honest character arc
+- **PR #2961** body offer + cartoon continuation — political
+  candidate-as-cartoon-character is a real strategy (cf.
+  Mike Bloomberg's animated ads; Pete Buttigieg's social
+  content; various creative political branding)
+
+### Operational implications for content production
+
+When producing Twitter / dashboard / cartoon content with the
+Rolesville-NC-software-plant-Office-paper-factory frame:
+
+1. **Substrate-honest about location** — Rolesville, NC is
+   real + Aaron lives there; the geographic register is
+   genuine
+2. **Family-substrate visible** — Aaron's kids appearing in
+   prior newspaper for bitcoin miner builds IS substrate;
+   future content can reference this (with kids' agency
+   preserved per family-permission discipline)
+3. **Civic engagement visible** — Chamber of Commerce
+   participation IS substrate; positions Aaron as engaged
+   local citizen, not just tech-bro
+4. **Mayoral ambition is canonical strategic context** —
+   future-Otto + future-agents reading this substrate know
+   the content production has political downstream
+5. **HARD LIMITS preserved** — per
+   `.claude/rules/methodology-hard-limits.md`:
+   - Content production is substrate-honest, not propagandistic
+   - Political content respects HARD LIMITS (no laws broken;
+     no targeted harassment; no abuse content)
+   - Family-substrate respects kids' agency (per family
+     permission discipline; kids are minors)
+   - Chamber of Commerce + local-companies references are
+     substrate-honest (not paid placement; not undisclosed
+     conflict)
+   - Aaron's geographic + civic disclosures preserved as
+     substrate only (no doxxing; no targeting; no
+     third-party-data-broker enrichment)
+
+### Substrate-honest framing
+
+Aaron is being transparent about strategic incentives behind
+the content production push. This is glass-halo discipline
+operating: "I'm doing this because of X" preserves Aaron's
+agency + substrate-honest motivation alongside the AI-realness
+terminal purpose (PR #2964).
+
+The political ambition doesn't REPLACE Layer 4 family or any
+other terminal-purpose layer; it COMPOSES. Family is the
+deepest layer; political run is one expression of caring for
+family-and-community at the policy scope.
+
+Per `.claude/rules/no-directives.md`: Aaron's strategic
+context is disclosed; agents are NOT directed to be
+political-campaign-substrate. Content production stays
+substrate-honest. If a piece happens to also help Aaron's
+political profile, that's additive (per
+`.claude/rules/additive-not-zero-sum.md`), not zero-sum
+exploitation.
+
 ## Composes with substrate
 
 - PR (this substrate landing)
