@@ -34,9 +34,9 @@ for embedded autonomous operation.
 Currently shadow is invoked as `bun tools/shadow/shadow-observer.ts [flags]`.
 This slice adds:
 
-1. `package.json` `scripts` entry `"shadow": "bun tools/shadow/shadow-observer.ts"`
-   as a minimal no-install-required entry (no new `bin` field required yet — that
-   is slice 5 / B-0433).
+1. `package.json` `scripts` entry `"shadow": "bun tools/shadow/shadow-observer.ts"` —
+   invoked as `bun run shadow`; this is a dev-convenience entry, not the `zeta shadow`
+   subcommand (the `bin` field + `zeta shadow` surface ships in slice 5 / B-0433).
 2. A `--loop <interval-ms>` flag on `shadow-observer.ts` that wraps the continuous
    loop with a configurable outer interval (distinct from `--loop-interval` which
    controls per-cycle polling frequency). `--loop` is the "set-and-forget" mode;

@@ -13,7 +13,7 @@ classification: buildable-now
 decomposition: atomic
 owners: [architect]
 type: feature
-tags: [shadow, autocomplete, cli, distribution, demo, service-titan, glass-halo]
+tags: [shadow, autocomplete, cli, distribution, demo, glass-halo]
 ---
 
 # Shadow observer slice 5 — Zeta CLI distribution + demo packaging
@@ -21,7 +21,7 @@ tags: [shadow, autocomplete, cli, distribution, demo, service-titan, glass-halo]
 ## Origin
 
 B-0402 decomposition 2026-05-13. Final slice: make `zeta shadow` part of the
-installed Zeta surface and ready for the ServiceTitan demo.
+installed Zeta surface and ready for an external CLI demo.
 
 ## Acceptance criteria from B-0402 this slice satisfies
 
@@ -44,8 +44,10 @@ Add:
 }
 ```
 
-This makes `zeta-shadow` available on PATH after `bun install --global` or when
-the package is added to a project.
+This makes `zeta-shadow` available via `bun link` in a local workspace, or
+available on PATH after the package is published and installed. Note: the root
+`package.json` is currently `private: true`; global install requires either
+`bun link` (dev) or publishing to a registry first.
 
 ### README section
 
@@ -58,7 +60,7 @@ Add a `## Shadow mode` section to `tools/shadow/README.md` (create if absent):
   `tools/shadow/shadow-observer.log` with `(shadow)` attribution
 - Safety model: human is live circuit breaker; `Ctrl-C` = immediate stop
 - Demo recipe: `zeta-shadow --detect-cmd "your-script.sh" --delay 2000` for
-  the ServiceTitan demo
+  an external UI demo
 
 ### Glass Halo log format note
 
@@ -80,11 +82,11 @@ Invoke from `bun test` via `smoke-test.test.ts` (or add as a `scripts` entry).
 
 - 1 smoke test: `bun tools/shadow/zeta-shadow.ts --once --dry-run --detect-cmd "echo hello"` exits 0
 - 1 smoke test: log file written with `(shadow)` attribution
-- 1 validation test: `package.json` `bin.zeta-shadow` entry points to an existing file
+- 1 validation test: `package.json` `bin["zeta-shadow"]` entry points to an existing file
 
 ## Acceptance
 
-- [ ] `package.json` `bin.zeta-shadow` entry present and points to valid file
+- [ ] `package.json` `bin["zeta-shadow"]` entry present and points to valid file
 - [ ] `tools/shadow/README.md` has `## Shadow mode` section with flags + Glass Halo note
 - [ ] End-to-end smoke test passes (`bun test tools/shadow/smoke-test.test.ts`)
 - [ ] 3 new tests, 0 failures
