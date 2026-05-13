@@ -78,8 +78,8 @@ The complementary-observer pattern (per PR #3036 identity-stays-unified) means i
 - `.claude/rules/substrate-or-it-didnt-happen.md` — channel choice determines durability
 - PR #3032 (claim-acquire rule, merged)
 - PR #3036 (identity-stays-unified, merged)
-- PR #3037 (SENDER_IDS schema extension — Otto on CLI's parallel work)
-- B-0444 P2 (bus claim envelope worktree field — follow-up gap)
+- PR #3037 (SENDER_IDS schema extension — Otto on CLI's parallel work, merged)
+- PR #3043 (B-0444 bus claim envelope worktree field, merged 2026-05-13)
 
 ## Full reasoning
 
