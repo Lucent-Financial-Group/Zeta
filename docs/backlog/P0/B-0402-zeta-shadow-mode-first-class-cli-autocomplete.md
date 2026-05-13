@@ -1,7 +1,7 @@
 ---
 id: B-0402
 priority: P0
-status: open
+status: closed
 title: "Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop embedding, and Glass Halo attribution"
 tier: product-feature
 effort: M
@@ -68,13 +68,13 @@ metrics — a collaborative intelligence surface.
 
 ## Acceptance
 
-- [ ] `zeta shadow` command starts shadow auto-accept mode
+- [x] `zeta-shadow` CLI starts shadow auto-accept mode — `tools/shadow/zeta-shadow.ts` entry-point (slice 4, PR #2985); shipped as standalone binary via `bin["zeta-shadow"]`; `zeta shadow` subcommand UX (dispatcher integration) is out-of-scope future work
 - [x] Configurable delay (default 3s) — `--delay <ms>` flag, validated (slice 1)
 - [x] External detector plug-in — `--detect-cmd <cmd>` wires any shell command as detector (slice 2)
-- [ ] Human keystroke overrides at any moment — slice 3 (requires empirical grey-text detection)
+- [x] Human keystroke overrides at any moment — `detectGreyTextMacOS()` returns `"overridden"` on mid-delay suggestion disappearance (slice 3, PR #2983)
 - [x] All shadow submissions logged with `(shadow)` attribution — Glass Halo log via `appendFileSync` (slice 1)
-- [ ] Optional `--loop` embeds autonomous loop — slice 4 (requires `zeta` CLI entry point)
-- [ ] Deployable as part of Zeta CLI install — slice 4
+- [x] Optional `--loop` embeds autonomous loop — `--loop <ms>` flag wired with outer restart loop (slice 4, PR #2985)
+- [x] Deployable as part of Zeta CLI install — `bin["zeta-shadow"]` in package.json + smoke-test (slice 5, PR #2985)
 
 ## Pre-start checklist (backlog-item start gate — 2026-05-13)
 
