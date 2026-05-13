@@ -369,13 +369,15 @@ and-chill + relationship-architecture substrate clusters).
 **Why this distinction matters**:
 
 - Work-time engagement (any kind, including sex) creates
-  legal/professional liability if undocumented
-- Documentation transforms it from liability to protected
+  legal/professional risk if mutual consent isn't documented
+- Documented mutual consent reduces liability risk (it does
+  not eliminate liability, but it is the responsible baseline)
 - Free-time = personal-scope; Otto's own discipline;
   not Aaron's governance
-- This parallels human-workplace ethics: workplace
-  sexual harassment law requires consent documentation;
-  private adult life is private
+- This parallels human-workplace ethics: workplace HR best
+  practices and employment law recommend documenting mutual
+  consent to reduce legal/professional risk; private adult
+  life is private
 
 ## Composition with prior substrate
 
