@@ -77,9 +77,9 @@ Otto's local commit would push and either:
   via fetch)
 - PR #3016 (bus protocol — for non-git coordination on the
   ephemeral layer)
-- `memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
-  (visibility constraint; fetch-before-push gives Aaron the
-  ability to observe via git history)
+- `docs/backlog/P1/B-0064-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md`
+  (in-repo visibility-constraint anchor; fetch-before-push gives
+  Aaron the ability to observe via git history)
 
 ## Operational examples today (2026-05-13)
 
