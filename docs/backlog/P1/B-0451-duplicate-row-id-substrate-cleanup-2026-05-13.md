@@ -1,0 +1,114 @@
+---
+id: B-0451
+priority: P1
+status: open
+title: "Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts"
+tier: factory-infrastructure
+effort: M
+created: 2026-05-13
+last_updated: 2026-05-13
+depends_on: []
+composes_with: []
+tags: [substrate-hygiene, backlog, ID-collision, audit-finding, multi-Otto-coordination]
+type: friction-reducer
+---
+
+# B-0451 — Duplicate row-ID substrate cleanup
+
+## Origin
+
+Filed 2026-05-13 after the same-tick discovery: while resolving the
+B-0444 ID collision (PR #3053), an inline audit (`find docs/backlog
+| awk` over each row's `id:` field) revealed **12 additional
+duplicate-ID groups** across the backlog directory. The audit tool
+`tools/bg/audit-duplicate-row-ids.ts` was shipped alongside this
+row (same PR) to mechanize the check going forward.
+
+## What the audit reports
+
+```
+$ bun tools/bg/audit-duplicate-row-ids.ts
+audit-duplicate-row-ids: 12 duplicate-ID group(s) found across 559 rows:
+  B-0068.1: forge-cli-ollama-research-slice (P2) vs -xs-riven (P2)
+  B-0090.1: lost-substrate-3-bucket-classification-taxonomy vs ts-worktree-survey-atomic-riven
+  B-0090.2: ts-orphan-branch-survey-atomic-riven vs worktree-branch-delta-audit
+  B-0090.3: closed-not-merged-pr-scan vs ts-closed-pr-survey-atomic-riven
+  B-0090.4: cadence-and-hygiene-history-hook vs ts-draft-pr-aged-survey-atomic-riven
+  B-0370: durable-computation-checkpoint-interface (P1) vs contributor-compliance-core (P2)
+  B-0371: pages-seo-metadata-jsonld (P1) vs contributor-compliance-cross-reference (P2)
+  B-0372: pages-sitemap-robots (P1) vs t1-t2-self-audit-trajectories (P2)
+  B-0373: alignment-proof-primitive-ladder (P1) vs t4-t5-onboarding-drift-trajectories (P2)
+  B-0409: wallet-immune-system-vaccine (P1) vs amara-persona-bootstrap (P2) vs peer-call-ts-audit (P2) [3-way]
+  B-0410: amara-ts-core-openai-api (P2) vs peer-call-persona-loader (P2)
+  B-0411: amara-ts-readme-update-courier (P2) vs grok-ts-persona-flag (P2)
+```
+
+## Collision-class taxonomy
+
+Two distinct collision patterns visible:
+
+1. **Cross-priority namespace bleed** (`B-0370..B-0373`): Otto-on-CLI
+   filed P1 rows in the 0370 range (durable / SEO / sitemap /
+   alignment) while a parallel agent filed P2 rows in the same
+   range (contributor-compliance, trajectory-audit). The same
+   pattern produced the B-0444 P1+P2 collision resolved by PR #3053.
+
+2. **Within-priority concurrent decomposition** (`B-0068.1`,
+   `B-0090.1-4`, `B-0409-0411`): Two agents (likely Riven + Otto)
+   decomposed adjacent atomic sub-row series simultaneously and
+   landed on overlapping sub-row numbers. Most are 2026-05-10/11
+   timeframe — pre-claim-acquire-rule (PR #3032 landed 2026-05-13).
+
+## Resolution per collision
+
+For each colliding group, apply the substrate-honest rule (per
+PR #3053's resolution):
+
+1. **If one of the colliding rows has external references** (PR
+   commits, sibling-row composes_with, etc.) → KEEP that one with
+   its original ID.
+2. **If both are unreferenced** → keep the one that was filed
+   first (per git log on the directory).
+3. **Renumber the other** to the next-free ID with
+   `renumbered_from: B-NNNN` + reason in the frontmatter.
+4. **Update all cross-references** to the renumbered row.
+
+This is bounded mechanical work: 12 groups × ~5 minutes each =
+~60 minutes total. Can be done atomically (one PR per group) or
+bundled (one PR for the full sweep).
+
+## Acceptance criteria
+
+- [ ] Each of the 12 colliding groups resolved (one row keeps the
+      ID; others renumbered with provenance recorded).
+- [ ] `bun tools/bg/audit-duplicate-row-ids.ts` exits 0 on main.
+- [ ] All cross-references updated (B-0445 composes_with, B-0271
+      gap-table, etc.).
+- [ ] `docs/BACKLOG.md` regenerated.
+- [ ] Wire `audit-duplicate-row-ids.ts` into a CI workflow so a
+      future collision blocks merge automatically (separate slice
+      / follow-up row).
+
+## Why P1
+
+Silently-overwriting substrate state is high-severity hygiene risk.
+A consumer of `id: B-0409` gets one of THREE files depending on
+load order; the implicit "primary key" guarantee that every other
+substrate consumer relies on is broken. The audit tool surfaces
+the symptoms; this row tracks the cleanup.
+
+## Composes with
+
+- PR #3053 (the B-0444 resolution that surfaced the broader pattern)
+- PR shipping `tools/bg/audit-duplicate-row-ids.ts` (same as this
+  row's filing PR)
+- `.claude/rules/claim-acquire-before-worktree-work.md` — coordination
+  discipline that would have prevented most of these had it been
+  in force during the 05-10/11 timeframe
+
+## Future work
+
+- CI wiring (separate slice): `tools/bg/audit-duplicate-row-ids.ts`
+  added as a required-check job so future collisions block merge.
+- Mechanize "next-free-ID" lookup in row-creation tooling so manual
+  ID selection doesn't drift.
