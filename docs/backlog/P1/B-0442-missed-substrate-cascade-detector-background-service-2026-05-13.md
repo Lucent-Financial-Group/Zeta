@@ -156,8 +156,8 @@ async function watchRecentMerges(bus: BusClient): Promise<void> {
 
 ## Pre-start checklist
 
-- [ ] Prior-art search: `tools/hygiene/audit-lost-files.sh` (legacy
-      bash; check for overlap; possible TS-port composition)
+- [ ] Prior-art search: `tools/hygiene/audit-lost-files.ts` (current
+      TS implementation; check for overlap; possible composition)
 - [ ] Dependency proof: B-0400 bus protocol slice ready
 - [ ] Verify detection heuristics handle GitHub squash-merge SHA
       resolution correctly
