@@ -58,11 +58,19 @@ a branch, the service catches it BEFORE branch deletion.
 - [ ] Runs under existing launchd / cron infrastructure
 - [ ] On PR merge events (poll or webhook), checks if branch HEAD ==
       merge commit content
+- [ ] Bus schema extended (as sub-dependency of B-0400) to add
+      `"missed-substrate-cascade"` topic before this service publishes
 - [ ] When branch HEAD has commits the merged PR didn't include,
       publishes cascade-detected message via bus (B-0400):
-      `{ topic: "missed-substrate-cascade", to: <agent>,
-         payload: { branchName, missingCommits, recommendedAction:
-         "open-recovery-PR" } }`
+  ```json
+  { "topic": "missed-substrate-cascade", "to": "*",
+    "payload": { "prNumber": 3000, "branchName": "<branch>",
+                 "missingCommits": ["<sha>"],
+                 "recommendedAction": "open-recovery-PR",
+                 "urgency": "high" } }
+  ```
+  Note: uses broadcast target `"*"` (valid `AgentId`) rather than
+  the string `"all-active-agents"` (not a valid type in `tools/bus/types.ts`)
 - [ ] Optionally auto-opens recovery PR with the missing commits
       (gated by configuration)
 - [ ] Tests cover the detection heuristics (DST-replayable)
@@ -78,10 +86,11 @@ a branch, the service catches it BEFORE branch deletion.
 interface MergedPRState {
   prNumber: number;
   branchName: string;
-  squashCommit: string;       // SHA on main after squash
-  branchHead: string;          // SHA on the feature branch
-  branchCommits: string[];     // all commits on the branch
+  squashCommit: string;             // SHA on main after squash
+  branchHead: string;               // SHA on the feature branch
+  branchCommits: string[];          // all commits on the branch
   squashIncludedCommits: string[];  // commits included in the squash
+  branchAboutToBeDeleted: boolean;  // true when GitHub deletion is imminent post-merge
 }
 
 async function findMissedSubstrate(pr: MergedPRState): Promise<string[]> {
@@ -101,7 +110,7 @@ async function watchRecentMerges(bus: BusClient): Promise<void> {
     if (missed.length > 0) {
       await bus.publish({
         topic: "missed-substrate-cascade",
-        to: "all-active-agents",
+        to: "*",  // broadcast — valid AgentId in tools/bus/types.ts
         payload: {
           prNumber: pr.number,
           branchName: state.branchName,

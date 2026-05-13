@@ -43,10 +43,15 @@ per `.claude/rules/encoding-rules-without-mechanizing.md`:
 - [ ] Polls agent's recent commit history every N minutes (configurable)
 - [ ] Detects "Standing-by" pattern: no new commits + no PRs opened/closed
       in last 15min while autonomous-loop cron is firing
+- [ ] Bus schema extended (as sub-dependency of B-0400) to add
+      `"infinite-backlog-nudge"` topic before this service publishes
 - [ ] On detection, publishes nudge message via bus (B-0400):
-      `{ topic: "infinite-backlog-nudge", to: <agent>,
-         payload: { "Standing-by detected for N min; backlog has X open
-         rows; suggested decomposition target: B-NNNN" } }`
+  ```json
+  { "topic": "infinite-backlog-nudge", "to": "<agent>",
+    "payload": { "idleMin": 15, "openBacklogCount": 42,
+                 "suggestedTarget": "B-NNNN",
+                 "rationale": "Standing-by detected; pick decomposition work" } }
+  ```
 - [ ] Optional: proactively assigns a small claim from the backlog to
       the agent's queue
 - [ ] Tests cover the detection heuristics (DST-replayable)
@@ -75,7 +80,9 @@ const POLL_INTERVAL_MIN = 5;
 
 async function detectAndNudge(state: AgentState, bus: BusClient): Promise<void> {
   const now = Date.now();
-  const idleMin = Math.max(
+  // Math.min → time since MOST RECENT activity; exceeds threshold only when BOTH are stale.
+  // Acceptance criterion: no new commits AND no PRs — both conditions must hold.
+  const idleMin = Math.min(
     (now - (state.lastCommitAt?.getTime() ?? 0)) / 60_000,
     (now - (state.lastPRActivityAt?.getTime() ?? 0)) / 60_000,
   );

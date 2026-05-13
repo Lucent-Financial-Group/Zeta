@@ -41,12 +41,16 @@ provides a less-ambiguous concrete claim — eliminating the
       rows (open, no blockers, dependencies satisfied)
 - [ ] Detects agent queue state (commits in last N minutes; current
       branch / open PR ownership)
+- [ ] Bus schema extended (as sub-dependency of B-0400) to add
+      `"work-assignment"` topic before this service publishes
 - [ ] When agent queue is empty AND ready-to-grind rows exist,
       publishes claim-assignment message via bus (B-0400):
-      `{ topic: "work-assignment", to: <agent>,
-         payload: { rowId: "B-NNNN", priority: "P1",
-         rationale: "queue-empty + dependencies-satisfied + smallest-effort-match",
-         decompositionSuggestion: <slice-breakdown> } }`
+  ```json
+  { "topic": "work-assignment", "to": "<agent>",
+    "payload": { "rowId": "B-NNNN", "priority": "P1",
+                 "rationale": "queue-empty + dependencies-satisfied + smallest-effort-match",
+                 "decompositionSuggestion": "<slice-breakdown>" } }
+  ```
 - [ ] Honors agent autonomy — assignment is suggestion, not directive
       (per `.claude/rules/no-directives.md`)
 - [ ] Tracks assignment history to avoid re-assigning same row
