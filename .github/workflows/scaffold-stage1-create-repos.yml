@@ -153,10 +153,9 @@ jobs:
           echo "Manual steps remaining (create-repo.ts step 07):"
           echo "  1. Upload SVG social-preview PNG via GitHub UI"
           echo "  2. Enable merge queue: Settings → Merge queue (no REST API)"
-          echo "  3. Wire OpenSSF Scorecard: copy .github/workflows/scorecard.yml from Zeta"
-          echo "  4. Add Semgrep GHA inline-untrusted-in-run rule"
-          echo "  5. Verify \$0 budget caps at LFG org billing settings"
-          echo "  6. Confirm CodeQL default-setup: Security → Code scanning"
+          echo "  3. Add Semgrep GHA inline-untrusted-in-run rule"
+          echo "  4. Verify \$0 budget caps at LFG org billing settings"
+          echo "  5. Confirm CodeQL default-setup: Security → Code scanning"
           echo ""
           if [ "$REPO_INPUT" = "forge" ] || [ "$REPO_INPUT" = "both" ]; then
             echo "  Forge: https://github.com/Lucent-Financial-Group/Forge"
