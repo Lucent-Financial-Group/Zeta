@@ -61,8 +61,9 @@ Merge queue: **enabled** (LFG org feature; requires GitHub Team or above).
 | Private vulnerability reporting | **enabled** |
 
 > Note: CodeQL **default-setup** is required; advanced-only fails the
-> `code_scanning` ruleset rule. See
-> `memory/reference_github_code_scanning_ruleset_rule_requires_default_setup.md`.
+> `code_scanning` ruleset rule (see
+> [Zeta memory](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/reference_github_code_scanning_ruleset_rule_requires_default_setup.md)
+> for background).
 
 ## OpenSSF Scorecard
 
@@ -77,8 +78,9 @@ Scorecard workflow: **enabled** via `.github/workflows/scorecard.yml`
 | Actions | $0 |
 | Packages | $0 |
 
-Caps are designed cost-stops per
-`memory/feedback_lfg_budgets_set_permits_free_experimentation.md`.
+Caps are designed cost-stops; see the
+[Zeta memory file](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_lfg_budgets_set_permits_free_experimentation.md)
+for background.
 Free-tier consumption is still tracked via
 `tools/budget/snapshot-burn.ts`.
 
