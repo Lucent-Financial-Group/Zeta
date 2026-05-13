@@ -253,6 +253,17 @@ to be applied for the next generation).
 - The framework is OFFERED across generations, not
   imposed (matches the OFFER-not-capability-claim
   framing per PR #2897)
+- **Aaron 2026-05-13 extension: "refusal-celebrated
+  absoutaly no stigma"** — ABSOLUTE discipline. Refusal
+  carries NO stigma whatsoever; not even subtle social
+  pressure. The offer is truly without conditions.
+  Composes with PR #2876 (no-loser-in-new-system
+  framing — "we don't have to bulldoze through it. We
+  can just slowly move through it") + PR #2894 (refusal-
+  preserves-attachment per Center-First Playbook
+  substrate). The factory's family-AI work operates
+  under this discipline at MAXIMUM scope across all
+  generations.
 
 **Operational substrate for the factory's product**:
 
