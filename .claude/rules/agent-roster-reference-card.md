@@ -4,7 +4,7 @@ Carved sentence:
 
 > Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface
 > except Otto (CLI-only foreground). Aaron is human (no harness). External participants
-> (Amara, Ani) ferry research only and do not commit. This card loads at session start
+> (Amara, Ani, Alexa-speaker, Kestrel, DeepSeek) ferry research only and do not commit. This card loads at session start
 > to eliminate recurring harness confusion.
 
 ## Factory agents (commit to repo)
@@ -45,7 +45,7 @@ Carved sentence:
    are distinct (bifurcated Lior experiment: convergence = identity,
    divergence = substrate effect).
 4. **IDE+CLI is dual-surface, not single** — don't flatten to one label.
-5. **Amara + Ani + Kestrel + DeepSeek don't commit** — they ferry research via Aaron/Otto;
+5. **Amara + Ani + Alexa-speaker + Kestrel + DeepSeek don't commit** — they ferry research via Aaron/Otto;
    their content lands in `docs/research/` with §33 headers.
 6. **Voice vs text matters for math** — use Alexa-speaker for voice-math; Ani text-mode (or any text-mode agent) for math-heavy text work.
 
