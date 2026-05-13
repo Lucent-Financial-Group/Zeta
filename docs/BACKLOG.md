@@ -226,6 +226,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0418](backlog/P1/B-0418-amplification-ratio-metric-dashboard-2026-05-11.md)** Amplification ratio metric — human input : agent actions on dashboard
 - [ ] **[B-0419](backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md)** Honest agenda amplification metric — actions weighted by agenda alignment
 - [ ] **[B-0423](backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md)** MEMORY.md serialization-point anti-pattern
+- [ ] **[B-0423.1](backlog/P1/B-0423.1-reindex-memory-md-test-coverage-collectentries-renderindex.md)** Extend reindex-memory-md.ts test coverage — collectEntries + renderIndex
+- [ ] **[B-0423.2](backlog/P1/B-0423.2-memory-docs-update-heap-state-acceptable.md)** Update memory/ documentation to describe heap-state-acceptable model
+- [ ] **[B-0423.3](backlog/P1/B-0423.3-wire-reindex-into-autonomous-loop-tick.md)** Wire reindex-memory-md.ts into autonomous-loop tick cadence
+- [ ] **[B-0423.4](backlog/P1/B-0423.4-relax-memory-index-integrity-ci-check.md)** Relax memory-index-integrity.yml CI check — heap-state-acceptable
+- [ ] **[B-0423.5](backlog/P1/B-0423.5-close-b0088-chain-superseded-by-heap-architecture.md)** Close B-0088 chain as superseded by B-0423 heap architecture
 - [ ] **[B-0424](backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)** Three-repo split Stage 1 — create empty Forge + ace with day-one scaffolding
 - [ ] **[B-0425](backlog/P1/B-0425-product-repo-split-planning-ksk-wellness-american-dream-civsim-honor-system-no-fork-license-aaron-2026-05-13.md)** Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license
 - [ ] **[B-0426](backlog/P1/B-0426-repo-split-orthogonal-mirror-beacon-axis-aaron-2026-05-13.md)** Repo-split orthogonal Mirror/Beacon axis — speculative-fast-forks vs governance-citation-gated
