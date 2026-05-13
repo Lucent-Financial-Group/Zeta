@@ -1,6 +1,6 @@
 ---
 name: DBpedia is free master data with human curation — F# type provider archived — resurrect for HKT-MDM canonical demo — fork F# compiler for AI safety to add real HKT over Clifford (Aaron 2026-05-13)
-description: Aaron 2026-05-13 strategic disclosure linking DBpedia + F# type providers + HKT-MDM (PR #2913) + F# compiler fork plans. Original FSharp.Data.DbPedia type provider is archived. Aaron's two-path response: (Path A) resurrect type provider as HKT-MDM canonical demo NOW; (Path B) direct dotNetRDF + F# CE waits until WE FORK F# COMPILER FOR AI SAFETY to add real HKT over Clifford. Composes with PR #2913 HKT-MDM + PR #2817 Clifford densest encoding + PR #2892 KSK + Aurora pitch master-data scope.
+description: Aaron 2026-05-13 strategic disclosure linking DBpedia + F# type providers + HKT-MDM (PR #2913) + F# compiler fork plans. Original FSharp.Data.DbPedia type provider is archived. Aaron's CORRECTED two-path ordering: (Path B) direct dotNetRDF + F# CE NOW (medium effort; works on current F#); (Path A) resurrect type provider DEFERRED until WE FORK F# COMPILER FOR AI SAFETY to add real HKT over Clifford (type-provider authoring benefits from real HKT). Don Syme's FSharp.TypeProviders.SDK is the canonical type-provider authoring foundation. Composes with PR #2913 HKT-MDM + PR #2817 Clifford densest encoding + PR #2892 KSK + Aurora pitch master-data scope.
 type: feedback
 created: 2026-05-13
 ---
@@ -73,28 +73,37 @@ Per Otto-364 search-first authority + WebSearch results
 | RDFSharp (v3.23.0) | ACTIVE, last updated March 2026 |
 | Active F# type provider for DBpedia SPARQL | NONE found |
 
-## Two paths
+## Two paths (Aaron 2026-05-13 corrected ordering)
 
-### Path A (NOW — backlog row B-0428)
+### Path B (NOW — backlog row B-0428)
 
-Build fresh F# type provider on dotNetRDF or RDFSharp.
+Direct dotNetRDF API + F# computation expressions.
 
-- **Effort**: High (type-provider authoring is gnarly)
-- **Substrate-fit**: BEST — `M<'T>` parametric over DBpedia
-  entity types; the canonical HKT-MDM demo
+- **Effort**: Medium
+- **Substrate-fit**: Pragmatic — composes with existing F# CE
+  substrate; works on current F# without compiler fork
 - **Composes with**: PR #2913 (HKT-MDM universality), PR #2924
   Aurora pitch (master-data substrate), B-0043 (universal-
   business-templates), `algebra-owner` skill (Z-set + Clifford
   + BP/EP F# substrate)
 
-### Path B (DEFERRED — after F# compiler fork)
+### Path A (DEFERRED — after F# compiler fork)
 
-Direct dotNetRDF API + F# computation expressions.
+Build fresh F# type provider on dotNetRDF or RDFSharp.
 
-- **Effort**: Medium
-- **Why deferred**: Aaron 2026-05-13: *"2nd one we can do when
-  we fork f# compiler for ai safety to add real hkt over
-  clifford"*
+- **Effort**: High (type-provider authoring is gnarly)
+- **Foundation**: Don Syme's
+  [FSharp.TypeProviders.SDK](https://github.com/fsprojects/FSharp.TypeProviders.SDK)
+  — canonical authoring framework for F# type providers
+- **Why deferred**: Aaron 2026-05-13: *"Build fresh F# type
+  provider on dotNetRDF or RDFSharp the hard one we wait and
+  do with fork"*. Type-provider work benefits from real HKT
+  support; current F# has limited HKT (workarounds via SRTPs
+  + functor encodings). Better to land the type-provider
+  AFTER the F#-compiler-fork adds real HKT over Clifford.
+- **Substrate-fit at fork-time**: BEST — `M<'T>` parametric
+  over DBpedia entity types becomes the canonical HKT-MDM
+  demo with real-HKT type-system enforcement
 - **The fork target**: real HKT (M<'T> as first-class type),
   composed over Clifford algebra (PR #2817 substrate), with
   AI-safety motivation (PR #2892 KSK typed-safety for actuator
