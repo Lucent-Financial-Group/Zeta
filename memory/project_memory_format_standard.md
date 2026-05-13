@@ -215,6 +215,14 @@ Each entry in `MEMORY.md` follows the pattern:
 - The hook should be distinct enough to decide relevance
   without reading the file.
 
+**Heap-state-acceptable (B-0423):** a new memory file does **not**
+require a same-PR MEMORY.md paired-edit. Files without an index
+entry are in **heap** state — valid and accessible by direct path.
+`tools/memory/reindex-memory-md.ts` promotes heap files to the
+stack view on cadence (called from the autonomous-loop tick).
+Agents may run it manually:
+`bun tools/memory/reindex-memory-md.ts`
+
 ## 6 Validation smoke check
 
 Three existing files validated against this standard:
@@ -257,6 +265,24 @@ Three existing files validated against this standard:
   and descriptive. **PASS.**
 - Composes-with: References `reference_autodream_feature.md`
   in description. File exists. **PASS.**
+
+### 6.4 Heap-state validation (B-0423)
+
+Under the heap-state-acceptable model, a memory file does not
+require a MEMORY.md paired-edit, but MUST satisfy the reindexer
+contract:
+
+| Field | Required | Notes |
+|---|---|---|
+| `name:` | **yes** | Used as display title in the index entry. |
+| `description:` | **yes** | Retrieval key — be specific. |
+| `type:` | **yes** | Must be `feedback`, `user`, `project`, or `reference`. |
+| `created:` | **yes** | ISO date `YYYY-MM-DD`. Used for newest-first sort. |
+
+Files missing any required field will be silently skipped by
+`tools/memory/reindex-memory-md.ts` (they never promote from
+heap to stack). B-0335 validation tooling enforces these fields
+mechanically.
 
 ## 7 Scope and boundaries
 

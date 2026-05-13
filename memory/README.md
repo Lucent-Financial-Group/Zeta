@@ -84,8 +84,15 @@ memories freely — that is the whole point of this folder.
 - Write new files when something durable is learned (a
   correction, a decision, a project fact). In the right type
   bucket: feedback / project / user / reference.
-- Update MEMORY.md to include new entries at the top
-  (newest-first). Keep the index terse.
+- New memory files **must have valid frontmatter** (`name:`,
+  `description:`, `type:`, `created:` fields). The reindexer
+  requires these to build the MEMORY.md stack view.
+- A synchronous MEMORY.md paired-edit is **no longer required**
+  (heap-state model, B-0423). `MEMORY.md` is kept current by
+  `tools/memory/reindex-memory-md.ts` running on cadence via the
+  autonomous-loop tick. Agents MAY run it manually to promote heap
+  files to the stack view immediately:
+  `bun tools/memory/reindex-memory-md.ts`
 - Revise existing entries when they drift, when a new
   maintainer message refines the rule, or when a memory
   folds into a newer one. Leave a correction note when the
@@ -93,6 +100,31 @@ memories freely — that is the whole point of this folder.
 - Delete entries when they are no longer useful or have been
   subsumed by a newer memory. The agents are trusted to curate
   their own corpus.
+
+## Stack-vs-heap model (B-0423)
+
+`MEMORY.md` is the **STACK** — an indexed, ordered, traversable
+canonical view of the heap. Files in `memory/` that have not yet
+been promoted to the MEMORY.md index are in **HEAP** state —
+floating cache, accessible by direct path, not yet visible through
+the index traversal.
+
+Both states are valid:
+
+- **Stack** (indexed): visible via MEMORY.md traversal; preferred
+  for retrieval when the index is current.
+- **Heap** (unindexed): accessible by direct path or timestamp/
+  filename; the normal state for recently-committed memory files
+  before the next reindex cadence fires.
+
+Heap→stack promotion happens on cadence (not per-PR) via
+`tools/memory/reindex-memory-md.ts` (B-0423), callable from the
+autonomous-loop tick. Readers should assume the newest few entries
+may be in heap state and check direct paths if the index seems
+stale.
+
+The architectural fix and its child implementation rows are tracked
+at `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
 The reason the *human* rule is stricter: humans deleting
 memories behind the agents' backs amounts to silently
