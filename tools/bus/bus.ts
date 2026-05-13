@@ -11,7 +11,7 @@
 //   bun tools/bus/bus.ts clean [--expired] [--from otto]
 
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import type { AgentId, MessageEnvelope, Topic, BusMessage } from "./types.ts";
 import { TTL_MS } from "./types.ts";
@@ -27,7 +27,10 @@ export function ensureDir(): void {
 }
 
 function envelopePath(id: string): string {
-  return join(BUS_DIR, `${id}.json`);
+  const busDir = resolve(BUS_DIR);
+  const p = resolve(busDir, `${id}.json`);
+  if (!p.startsWith(busDir + "/")) throw new Error(`Invalid message ID`);
+  return p;
 }
 
 // ── publish ───────────────────────────────────────────────────────────────────
@@ -167,6 +170,10 @@ function main(): void {
         console.error("Error: --payload must be valid JSON");
         process.exit(1);
       }
+      if (!(topic in TTL_MS)) {
+        console.error(`Error: unknown topic '${topic}'. Valid: ${Object.keys(TTL_MS).join(", ")}`);
+        process.exit(1);
+      }
       const msg = { topic, payload } as BusMessage;
       const env = publish(from, to, msg);
       if (asJson) {
@@ -179,8 +186,8 @@ function main(): void {
 
     case "list": {
       const envs = list({
-        topic: flags.topic as Topic | undefined,
-        to: flags.to as AgentId | undefined,
+        ...(flags.topic !== undefined ? { topic: flags.topic as Topic } : {}),
+        ...(flags.to !== undefined ? { to: flags.to as AgentId } : {}),
         includeExpired: flags["include-expired"] === "true",
       });
       if (asJson) {
@@ -217,7 +224,7 @@ function main(): void {
     case "clean": {
       const removed = clean({
         expiredOnly: flags.expired === "true",
-        from: flags.from as AgentId | undefined,
+        ...(flags.from !== undefined ? { from: flags.from as AgentId } : {}),
       });
       if (asJson) {
         console.log(JSON.stringify({ removed }));

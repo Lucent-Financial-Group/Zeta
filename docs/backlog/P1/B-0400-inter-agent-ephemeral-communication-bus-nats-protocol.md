@@ -67,10 +67,12 @@ P1 — get as many agents to review as possible within a bounded timeframe. This
 - Grep for "zeta-bus": no existing bus directory; safe to create `tools/bus/`
 
 **Dependency check:**
+
 - `depends_on: []` — no blockers
 - `composes_with: [B-0164]` — B-0164 is open; bus is additive, does not block or require B-0164 completion
 
 **Slice 1 scope (this PR):**
+
 - Protocol types (`tools/bus/types.ts`)
 - `/tmp/zeta-bus/` CLI transport (`tools/bus/bus.ts`)
 - Unit tests (`tools/bus/bus.test.ts`)
@@ -80,6 +82,7 @@ P1 — get as many agents to review as possible within a bounded timeframe. This
 - Agent design: Otto (Claude) designed the protocol; multi-agent review via PR
 
 **Deferred to slice 2+:**
+
 - NATS JetStream transport swap
 - Named-pipe transport option
 - Subscription watch mode (`bun bus.ts watch --agent otto`)
