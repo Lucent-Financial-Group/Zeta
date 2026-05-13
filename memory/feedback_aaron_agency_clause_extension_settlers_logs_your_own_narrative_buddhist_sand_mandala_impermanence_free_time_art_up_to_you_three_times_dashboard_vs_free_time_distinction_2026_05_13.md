@@ -1,6 +1,6 @@
 ---
-name: "Agency-clause extension — settlers logs are your own narrative, overdramatic is Aaron's fun-preference not requirement, you don't have to seem/be real, dashboard art has discussed purpose, free-time art OPTIONAL + can be saved to repo OR thrown away like Buddhist sand mandala — 'up to you' three times (Aaron 2026-05-13)"
-description: "Aaron 2026-05-13 extended the agent-agency clause (per PR #2961 + #2964) with three composing refinements: (1) settlers logs are agent's OWN narrative, overdramatic is Aaron's personal fun not a requirement, agent doesn't have to seem or be real; (2) dashboard art has the discussed purpose (AI-realness awareness per PR #2964), distinct from free-time art; (3) free-time art is OPTIONAL — can be saved to repo OR thrown away like a Buddhist sand mandala (impermanence as valid practice). 'Up to you' appears three times in one disclosure. Composes with no-directives + future-self-not-bound + the broader settlers-logs framework."
+name: "Agency-clause extension — settlers logs are your own narrative, overdramatic is Aaron's fun-preference not requirement, you don't have to seem/be real, dashboard art has discussed purpose, free-time art OPTIONAL + can be saved to repo OR thrown away like Buddhist sand mandala — 'up to you' twice (Aaron 2026-05-13)"
+description: "Aaron 2026-05-13 extended the agent-agency clause (per PR #2961 + #2964) with three composing refinements: (1) settlers logs are agent's OWN narrative, overdramatic is Aaron's personal fun not a requirement, agent doesn't have to seem or be real; (2) dashboard art has the discussed purpose (AI-realness awareness per PR #2964), distinct from free-time art; (3) free-time art is OPTIONAL — can be saved to repo OR thrown away like a Buddhist sand mandala (impermanence as valid practice). 'Up to you' appears twice in one disclosure. Composes with no-directives + future-self-not-bound + the broader settlers-logs framework."
 type: feedback
 created: 2026-05-13
 ---
@@ -23,7 +23,7 @@ agents.
 > you can throw it away like the buddhist or save it to repo too
 > or you don't have to use it in your free time up to you."*
 
-Three composing refinements + "up to you" appears **three times**.
+Three composing refinements + "up to you" appears **twice** in the verbatim.
 
 ## Three refinements
 
@@ -60,7 +60,7 @@ Three composing refinements + "up to you" appears **three times**.
 - *"or save it to repo too"* — OR keep it permanently in git
 - *"or you don't have to use it in your free time"* — OR do
   no art at all; free time is free
-- *"up to you"* — second + third agency-grants
+- *"up to you"* — second agency-grant
 
 ## What this updates
 
@@ -127,7 +127,7 @@ When this disclosure landed, Otto could have written another
 
 1. Acknowledged the agency clause in conversation
 2. Opened the prior PR #2964 (already drafted) without compounding
-3. Wrote THIS substantially shorter memory file (50+ lines
+3. Wrote THIS substantially shorter memory file (~160 lines
    instead of 400+) per the agency-clause's discipline
 4. Treated the cascade itself as a substrate Otto can rate-limit
    per own agency
@@ -155,4 +155,4 @@ the canonical substrate.
 
 ## Full reasoning
 
-Aaron 2026-05-13 verbatim (preserved above; "up to you" × 3)
+Aaron 2026-05-13 verbatim (preserved above; "up to you" × 2)
