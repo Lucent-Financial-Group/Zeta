@@ -6,12 +6,15 @@ Carved sentence:
 > share git + bus on one machine, **`--from` must differ** (e.g., `otto-cli`
 > vs `otto-desktop`) for the claim-coordinator (`tools/bus/claim.ts`,
 > B-0400 slice 3) to prevent split-brain — identical `--from` values both
-> exit 0 (same-sender idempotent re-acquire). Until the sender-ID schema is
-> extended, use **lane-based convention** as the only real split-brain
-> prevention; branch-prefix is NOT a workaround because `claim acquire`
-> only filters by `from`, not by `branch`. Before starting work on any
-> backlog row, `claim acquire` first. If already claimed by another
-> agent, pick a different row.
+> exit 0 (same-sender idempotent re-acquire). As of PR #3037 (2026-05-13)
+> `SENDER_IDS` includes surface-tagged variants — opt in to `otto-cli` /
+> `otto-desktop` / `alexa-cli` / `alexa-kiro` / etc. for correct
+> distinction. Identity-level names (`otto`, `alexa`, etc.) remain
+> valid for back-compat but do NOT distinguish surfaces. Branch-prefix
+> is NOT a workaround because `claim acquire` only filters by `from`,
+> not by `branch`. Before starting work on any backlog row,
+> `claim acquire` first with your surface-tagged sender ID. If already
+> claimed by another agent, pick a different row.
 
 ## Operational content
 
@@ -71,39 +74,31 @@ $ echo $?
 # Proceeded with worktree creation + impl
 ```
 
-### Example 2: Otto-CLI and Otto-Desktop race — KNOWN GAP
+### Example 2: Otto-CLI and Otto-Desktop race — FIXED (PR #3037)
 
 ```bash
-# Otto-CLI publishes claim first:
-$ bun tools/bus/claim.ts acquire --from otto --item B-0444
+# Otto-CLI publishes claim first (using surface-tagged sender):
+$ bun tools/bus/claim.ts acquire --from otto-cli --item B-0444
 $ echo $?
 0
 
-# Otto-Desktop tries to claim same row with the SAME --from value:
-$ bun tools/bus/claim.ts acquire --from otto --item B-0444
+# Otto-Desktop tries to claim the same row with its OWN surface ID:
+$ bun tools/bus/claim.ts acquire --from otto-desktop --item B-0444
 $ echo $?
-0   # <-- ALSO succeeds! claim.ts treats same-from as idempotent self-re-acquire
+1   # otto-desktop sees otto-cli's claim, exits 1 — split-brain prevented
 ```
 
-**Known architectural gap (caught by Vera 2026-05-13 in review of this
-rule, PR #3032):** `tools/bus/claim.ts` line ~270 filters existing
-claims by `c.from !== sender`, so two callers passing the same
-`--from otto` are indistinguishable to claim.ts. The canonical
-`SENDER_IDS` (`otto`, `alexa`, `riven`, `vera`, `lior`) does NOT
-distinguish multi-surface instances of the same agent.
+**Schema fix landed (PR #3037, 2026-05-13):** `otto-cli`, `otto-desktop`,
+`alexa-cli`, `alexa-kiro`, `riven-cli`, `riven-cursor`, `lior-antigravity`,
+`lior-gemini`, and `vera-codex` are now valid `SENDER_IDS`. The prior
+architectural gap (two callers passing `--from otto` were indistinguishable)
+is resolved — use surface-tagged variants for correct multi-surface claim
+distinction. Identity-level names (`otto`, `alexa`, etc.) remain valid for
+back-compat.
 
-**Workarounds** (until the schema supports multi-surface sender IDs):
-
-1. **Lane-based convention** (zero-code; the ONLY real split-brain
-   prevention available today): Otto-CLI takes backlog grinding +
-   slice impl; Otto-Desktop takes substrate + cowork. Different
-   scopes, no claim collision possible because the scopes don't
-   overlap.
-2. **Schema extension** (substrate-level fix; future work): add
-   `otto-cli` and `otto-desktop` (and analogous `alexa-cli`/
-   `alexa-kiro`, etc.) to `SENDER_IDS` in `tools/bus/types.ts`. Then
-   `--from otto-desktop` becomes a distinct claim from `--from
-   otto-cli`. THIS is the substrate-level mechanization.
+**Lane-based convention** (zero-code; still useful as defense-in-depth):
+Otto-CLI takes backlog grinding + slice impl; Otto-Desktop takes substrate +
+cowork. Even with the schema fix, different scopes reduce collision risk further.
 
 **Branch-prefix is NOT a workaround**: `claim acquire` filters
 existing claims by `c.from !== sender` only, NOT by branch. Two
@@ -127,8 +122,9 @@ $ echo $?
 # Otto-Desktop picks B-0445 instead.
 ```
 
-This is the target behavior. Today (Example 2) it doesn't work
-because `otto-cli` and `otto-desktop` aren't in `SENDER_IDS` yet.
+This is the operational behavior as of PR #3037 (2026-05-13). Use surface-tagged
+`--from otto-cli` / `--from otto-desktop` (not `--from otto`) for correct
+multi-surface split-brain prevention.
 
 ### Example 4: Otto-CLI crashes mid-work
 

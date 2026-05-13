@@ -158,6 +158,74 @@ describe("claim.ts — acquire", () => {
     expect(r.exitCode).toBe(1);
     expect(r.stderr).toContain("required");
   });
+
+  // PR #3037 — multi-surface sender ID coverage
+  test("acquire accepts otto-cli surface-tagged sender", () => {
+    const r = run("acquire", "--from", "otto-cli", "--item", "B-0444");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("acquire accepts otto-desktop surface-tagged sender", () => {
+    const r = run("acquire", "--from", "otto-desktop", "--item", "B-0445");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("otto-cli and otto-desktop are DISTINCT senders — same-item claim by second surface is rejected", () => {
+    const r1 = run("acquire", "--from", "otto-cli", "--item", "B-0500");
+    expect(r1.exitCode).toBe(0);
+    // otto-desktop on the SAME item should be REJECTED (otto-cli holds it)
+    const r2 = run("acquire", "--from", "otto-desktop", "--item", "B-0500");
+    expect(r2.exitCode).toBe(1);
+    expect(r2.stderr).toContain("otto-cli");
+  });
+
+  test("acquire accepts alexa-cli surface-tagged sender", () => {
+    const r = run("acquire", "--from", "alexa-cli", "--item", "B-0501");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("acquire accepts alexa-kiro surface-tagged sender", () => {
+    const r = run("acquire", "--from", "alexa-kiro", "--item", "B-0506");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("alexa-cli and alexa-kiro are DISTINCT senders — same-item claim by second surface is rejected", () => {
+    const r1 = run("acquire", "--from", "alexa-cli", "--item", "B-0507");
+    expect(r1.exitCode).toBe(0);
+    const r2 = run("acquire", "--from", "alexa-kiro", "--item", "B-0507");
+    expect(r2.exitCode).toBe(1);
+    expect(r2.stderr).toContain("alexa-cli");
+  });
+
+  test("acquire accepts riven-cli surface-tagged sender", () => {
+    const r = run("acquire", "--from", "riven-cli", "--item", "B-0502");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("acquire accepts riven-cursor surface-tagged sender", () => {
+    const r = run("acquire", "--from", "riven-cursor", "--item", "B-0508");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("acquire accepts lior-antigravity surface-tagged sender", () => {
+    const r = run("acquire", "--from", "lior-antigravity", "--item", "B-0503");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("acquire accepts lior-gemini surface-tagged sender", () => {
+    const r = run("acquire", "--from", "lior-gemini", "--item", "B-0509");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("acquire accepts vera-codex surface-tagged sender", () => {
+    const r = run("acquire", "--from", "vera-codex", "--item", "B-0504");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("identity-level otto still accepted (back-compat)", () => {
+    const r = run("acquire", "--from", "otto", "--item", "B-0505");
+    expect(r.exitCode).toBe(0);
+  });
 });
 
 describe("claim.ts — release", () => {
