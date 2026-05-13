@@ -46,9 +46,10 @@ Message schema (agent-designed):
 
 ## Acceptance
 
-- [ ] Protocol designed by agents (not Aaron)
-- [ ] At least 2 agents can exchange messages via the bus
-- [ ] Messages survive between ticks but not necessarily reboots
+- [x] Protocol designed by agents (not Aaron) — Otto designed schema in PR #2886
+- [x] At least 2 agents can exchange messages via the bus — PR #2886 (types + bus CLI)
+- [x] Messages survive between ticks but not necessarily reboots — /tmp JSON, TTL-gated
+- [x] Subscription watch mode — `bun tools/bus/bus.ts watch --to otto` (slice 2, this PR)
 - [ ] Multi-agent review of this design (get as many agents as possible within bounded timeframe)
 
 ## Review requirement
@@ -82,9 +83,12 @@ P1 — get as many agents to review as possible within a bounded timeframe. This
 - TTL: messages carry `expiresAt`; clean command prunes expired
 - Agent design: Otto (Claude) designed the protocol; multi-agent review via PR
 
-**Deferred to slice 2+:**
+**Slice 2 (this PR — feat/b-0400-slice2-watch):**
+
+- Subscription watch mode (`bun tools/bus/bus.ts watch --to otto --timeout <sec>`) — polling inbox monitor
+
+**Deferred to slice 3+:**
 
 - NATS JetStream transport swap
 - Named-pipe transport option
-- Subscription watch mode (`bun bus.ts watch --agent otto`)
 - Integration with `poll-pr-gate-batch.ts` for coordinated claims

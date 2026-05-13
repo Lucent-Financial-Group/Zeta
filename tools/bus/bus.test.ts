@@ -152,6 +152,98 @@ describe("bus — TTL expiry", () => {
   });
 });
 
+describe("bus — watch", () => {
+  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  afterEach(cleanTestDir);
+
+  test("watch --timeout 0 exits 0 with no messages", () => {
+    const r = run("watch", "--to", "otto", "--timeout", "0");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toBe("");
+  });
+
+  test("watch --timeout 0 does not surface pre-existing messages (cursor starts at call time)", () => {
+    // publish before watch starts — should NOT appear (cursor is set at watch start)
+    run("publish", "--from", "vera", "--to", "otto", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
+
+    const r = run("watch", "--to", "otto", "--timeout", "0", "--json");
+    expect(r.exitCode).toBe(0);
+    // no output because the message was published before watch started
+    expect(r.stdout).toBe("");
+  });
+
+  test("watch --timeout 0 with --json exits cleanly", () => {
+    const r = run("watch", "--timeout", "0", "--json");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toBe("");
+  });
+
+  test("watch emits messages whose timestamp is after ZETA_WATCH_INITIAL_CURSOR", () => {
+    // Set cursor to 10s in the past, then publish — message timestamp will be > pastCursor
+    const pastCursor = new Date(Date.now() - 10_000).toISOString();
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"check":"live"}');
+    const r = spawnSync("bun", [SCRIPT, "watch", "--timeout", "0", "--json"], {
+      encoding: "utf-8",
+      env: { ...process.env, ZETA_BUS_DIR: TEST_DIR, ZETA_WATCH_INITIAL_CURSOR: pastCursor },
+    });
+
+    expect(r.status).toBe(0);
+    const msgs = (r.stdout ?? "").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    expect(msgs.length).toBeGreaterThan(0);
+    expect(msgs[0].topic).toBe("heartbeat");
+    expect((msgs[0].payload as { check: string }).check).toBe("live");
+  });
+
+  test("watch --interval invalid value exits 1", () => {
+    const r = run("watch", "--interval", "abc", "--timeout", "0");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--interval");
+  });
+
+  test("watch --interval partial-string like '250ms' exits 1", () => {
+    const r = run("watch", "--interval", "250ms", "--timeout", "0");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--interval");
+  });
+
+  test("watch --interval scientific notation like '1e3' exits 1", () => {
+    const r = run("watch", "--interval", "1e3", "--timeout", "0");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--interval");
+  });
+
+  test("watch --timeout invalid value exits 1", () => {
+    const r = run("watch", "--timeout", "notanumber");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--timeout");
+  });
+
+  test("watch --timeout partial-string like '10sec' exits 1", () => {
+    const r = run("watch", "--timeout", "10sec");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--timeout");
+  });
+
+  test("watch does not replay messages already at cursor timestamp (cursor seeding)", () => {
+    // Publish a message, capture its timestamp, set cursor to that exact timestamp,
+    // then run watch — the seeded delivered Set must suppress that message.
+    run("publish", "--from", "vera", "--to", "otto", "--topic", "heartbeat", "--payload", '{"v":1}');
+    const listResult = run("list", "--to", "otto", "--json");
+    const msgs = JSON.parse(listResult.stdout) as Array<{ timestamp: string }>;
+    expect(msgs.length).toBeGreaterThan(0);
+    const existingTs = msgs[0].timestamp;
+
+    const r = spawnSync("bun", [SCRIPT, "watch", "--to", "otto", "--timeout", "0", "--json"], {
+      encoding: "utf-8",
+      env: { ...process.env, ZETA_BUS_DIR: TEST_DIR, ZETA_WATCH_INITIAL_CURSOR: existingTs },
+    });
+
+    expect(r.status).toBe(0);
+    // The pre-existing message shares the cursor timestamp — seeding must exclude it.
+    expect((r.stdout ?? "").trim()).toBe("");
+  });
+});
+
 describe("bus — error handling", () => {
   beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
   afterEach(cleanTestDir);

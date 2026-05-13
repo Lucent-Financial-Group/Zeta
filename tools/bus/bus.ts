@@ -148,6 +148,7 @@ function usage(): void {
   bus.ts list [--topic <topic>] [--to <agent>] [--include-expired] [--json]
   bus.ts read <id> [--json]
   bus.ts clean [--expired] [--from <agent>] [--json]
+  bus.ts watch [--to <agent>] [--topic <topic>] [--interval <ms>] [--timeout <sec>] [--json]
 
 Topics: heartbeat | claim | shadow-catch | review-request
 Agents: otto | alexa | riven | vera | lior | * (broadcast)`);
@@ -246,6 +247,65 @@ function main(): void {
       } else {
         console.log(`removed ${removed} message(s)`);
       }
+      break;
+    }
+
+    case "watch": {
+      const toFilter = flags.to as AgentId | undefined;
+      const topicFilter = flags.topic as Topic | undefined;
+      const intervalRaw = flags.interval ?? "2000";
+      if (!/^\d+$/.test(intervalRaw)) {
+        console.error("--interval must be a positive integer (milliseconds)");
+        process.exit(1);
+      }
+      const intervalMs = parseInt(intervalRaw, 10);
+      if (intervalMs <= 0) {
+        console.error("--interval must be a positive integer (milliseconds)");
+        process.exit(1);
+      }
+      let timeoutSec = -1;
+      if (flags.timeout !== undefined) {
+        if (!/^\d+$/.test(flags.timeout)) {
+          console.error("--timeout must be a non-negative integer (seconds)");
+          process.exit(1);
+        }
+        timeoutSec = parseInt(flags.timeout, 10);
+      }
+
+      // cursorTimestamp is fixed at watch-start (or ZETA_WATCH_INITIAL_CURSOR for tests).
+      // Delivered IDs are tracked in a Set so late-arriving messages with older timestamps
+      // (clock skew, concurrent publishers) are never dropped — avoiding the monotonic-cursor
+      // hazard where advancing to the newest timestamp permanently drops earlier writes.
+      const cursorTimestamp = process.env.ZETA_WATCH_INITIAL_CURSOR ?? new Date().toISOString();
+      const delivered = new Set<string>();
+      // Seed: exclude all messages already on disk at or before watch-start.
+      for (const m of list({ topic: topicFilter, to: toFilter })) {
+        if (m.timestamp <= cursorTimestamp) delivered.add(m.id);
+      }
+      const deadline = timeoutSec >= 0 ? Date.now() + timeoutSec * 1_000 : Infinity;
+
+      const poll = () => {
+        const msgs = list({ topic: topicFilter, to: toFilter });
+        const fresh = msgs.filter((m) => !delivered.has(m.id));
+        for (const m of fresh) {
+          if (asJson) {
+            console.log(JSON.stringify(m));
+          } else {
+            const p = JSON.stringify(m.payload).slice(0, 80);
+            console.log(`${m.id}  ${m.topic}  ${m.from}→${m.to}  ${m.timestamp}  ${p}`);
+          }
+          delivered.add(m.id);
+        }
+        // Prune delivered set: remove IDs that have expired and left the bus.
+        const activeIds = new Set(msgs.map((m) => m.id));
+        for (const id of delivered) {
+          if (!activeIds.has(id)) delivered.delete(id);
+        }
+        if (Date.now() >= deadline) process.exit(0);
+        setTimeout(poll, intervalMs);
+      };
+
+      poll();
       break;
     }
 
