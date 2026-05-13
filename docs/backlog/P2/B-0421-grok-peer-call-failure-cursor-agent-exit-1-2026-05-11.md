@@ -1,14 +1,32 @@
 ---
 id: B-0421
 priority: P2
-status: open
+status: in-progress
 title: "Grok peer-call failure — cursor-agent exit 1 during multi-agent review"
 created: 2026-05-11
-last_updated: 2026-05-11
+last_updated: 2026-05-13
 depends_on: []
 composes_with: []
 type: friction-reducer
 ---
+
+## Progress 2026-05-13
+
+- **Acceptance criterion 3** (surface cursor-agent errors more
+  visibly) PARTIALLY ADDRESSED: `tools/peer-call/grok.ts` now
+  captures cursor-agent's stderr (was previously inherited /
+  streamed only) and, on the empty-stdout + non-zero-exit case,
+  writes a **self-documenting failure marker** to the output file
+  containing exit code + model + prompt size + captured stderr.
+  The output file is no longer silently empty on cursor-agent
+  failure. Stderr is still mirrored to caller stderr for real-time
+  visibility.
+- **Acceptance criteria 1 + 2** (reproduce + identify root cause):
+  still open. Aaron noted 2026-05-13 that the Grok website-text-mode
+  git connector is the working orientation path until B-0421 fully
+  resolves (see PR #2945 and the peer-call-infrastructure rule
+  update on PR #2946).
+- **Acceptance criterion 4** (4-wrapper smoke test): still open.
 
 # B-0421 — Grok peer-call failure investigation
 

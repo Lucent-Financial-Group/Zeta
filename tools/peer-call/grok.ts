@@ -347,9 +347,11 @@ export function main(argv: readonly string[]): number {
   const outputFile = parsed.outputFile.length > 0 ? parsed.outputFile : autogenOutputPath("grok");
   ensureParentDir(outputFile);
 
-  // cursor-agent invocation: capture stdout so we can tee to file +
-  // emit OUTPUT-FILE marker. stderr passes through inherit. The
-  // user's prompt is one fixed argument after `--`; cursor-agent
+  // cursor-agent invocation: capture stdout + stderr so we can tee
+  // stdout to file, emit OUTPUT-FILE marker, AND write a self-
+  // documenting failure marker (including stderr) to the output
+  // file when cursor-agent exits non-zero with empty stdout (B-0421).
+  // The user's prompt is one fixed argument after `--`; cursor-agent
   // does its own argument parsing.
   const result = spawnSync(
     // eslint-disable-next-line sonarjs/no-os-command-from-path
@@ -367,31 +369,76 @@ export function main(argv: readonly string[]): number {
       fullPromptResult.value,
     ],
     {
-      stdio: ["inherit", "pipe", "inherit"],
+      stdio: ["inherit", "pipe", "pipe"],
       maxBuffer: SPAWN_MAX_BUFFER,
       encoding: "buffer",
     },
   );
 
   const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
-  // Tee: write full reply to file AND mirror to our stdout.
+  const stderrBuf: Buffer = (result.stderr as Buffer | null) ?? Buffer.alloc(0);
+  const exitCode = result.status ?? 1;
+
+  // Mirror captured stderr to our stderr (preserves prior visibility
+  // when stderr was inherited; user/caller still sees cursor-agent
+  // diagnostics after spawnSync returns).
+  if (stderrBuf.length > 0) {
+    process.stderr.write(stderrBuf);
+  }
+
+  // Pick what to write to the output file:
+  //   - success OR non-empty stdout: write stdout buffer as-is
+  //   - non-zero exit AND empty stdout: write self-documenting
+  //     failure marker including exit code + captured stderr
+  //     (B-0421 fix — output file is no longer silently empty on
+  //     cursor-agent failure)
+  const isEmptyFailure = exitCode !== 0 && stdoutBuf.length === 0;
+  let fileContent: Buffer;
+  if (isEmptyFailure) {
+    const stderrText =
+      stderrBuf.length > 0
+        ? stderrBuf.toString("utf8")
+        : "(empty — cursor-agent produced no stderr)\n";
+    const failureMarker =
+      `# cursor-agent failure (B-0421 self-documenting marker)\n` +
+      `\n` +
+      `Exit code: ${String(exitCode)}\n` +
+      `Model: ${model}\n` +
+      `Prompt size (bytes): ${String(Buffer.byteLength(fullPromptResult.value, "utf8"))}\n` +
+      `\n` +
+      `## Captured stderr\n` +
+      `\n` +
+      `\`\`\`\n${stderrText}\`\`\`\n`;
+    fileContent = Buffer.from(failureMarker, "utf8");
+  } else {
+    fileContent = stdoutBuf;
+  }
+
   try {
-    writeFileSync(outputFile, stdoutBuf);
+    writeFileSync(outputFile, fileContent);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     process.stderr.write(`error: failed to write output-file ${outputFile}: ${msg}\n`);
   }
-  process.stdout.write(stdoutBuf);
+
+  // Mirror file content to our stdout so shell pipelines see what
+  // we wrote (preserves prior tee behavior; failure marker is
+  // visible to callers reading stdout).
+  process.stdout.write(fileContent);
   // Final marker on its own line for `tail -1` recovery.
-  if (stdoutBuf.length > 0 && !stdoutBuf.subarray(-1).equals(Buffer.from("\n"))) {
+  if (fileContent.length > 0 && !fileContent.subarray(-1).equals(Buffer.from("\n"))) {
     process.stdout.write("\n");
   }
   process.stdout.write(`OUTPUT-FILE: ${outputFile}\n`);
 
-  const exitCode = result.status ?? 1;
   if (exitCode !== 0) {
     process.stderr.write("\n");
     process.stderr.write(`cursor-agent exited with code ${String(exitCode)}\n`);
+    if (isEmptyFailure) {
+      process.stderr.write(
+        `cursor-agent produced empty stdout; B-0421 failure marker written to ${outputFile}\n`,
+      );
+    }
     return 2;
   }
   return 0;
