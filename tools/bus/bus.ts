@@ -13,7 +13,7 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
-import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage } from "./types.ts";
+import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage, HeartbeatPayload, ClaimPayload, ReviewRequestPayload } from "./types.ts";
 import { TTL_MS, SENDER_IDS, AGENT_IDS } from "./types.ts";
 
 export const BUS_DIR = process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
@@ -149,6 +149,7 @@ function usage(): void {
   bus.ts read <id> [--json]
   bus.ts clean [--expired] [--from <agent>] [--json]
   bus.ts watch [--to <agent>] [--topic <topic>] [--interval <ms>] [--timeout <sec>] [--json]
+  bus.ts status [--json]
 
 Topics: heartbeat | claim | shadow-catch | review-request
 Agents: ${SENDER_IDS.join(" | ")} | * (broadcast)`);
@@ -305,6 +306,89 @@ function main(): void {
       };
 
       poll();
+      break;
+    }
+
+    case "status": {
+      // Latest heartbeat per sender (most-recent-wins, de-duplicated by agent id).
+      const heartbeats = list({ topic: "heartbeat" });
+      const agentMap = new Map<string, MessageEnvelope>();
+      for (const h of heartbeats) {
+        const existing = agentMap.get(h.from);
+        if (!existing || h.timestamp > existing.timestamp) agentMap.set(h.from, h);
+      }
+
+      // All active claim and review-request messages (raw — for authoritative
+      // claim ownership, use `claim.ts check` which handles release tombstones).
+      const claimMsgs = list({ topic: "claim" });
+      const reviewMsgs = list({ topic: "review-request" });
+      const shadowCount = list({ topic: "shadow-catch" }).length;
+
+      if (asJson) {
+        const out = {
+          agents: [...agentMap.values()].map((h) => ({
+            agent: h.from,
+            status: (h.payload as HeartbeatPayload).status,
+            note: (h.payload as HeartbeatPayload).note,
+            since: h.timestamp,
+            expiresAt: h.expiresAt,
+          })),
+          claims: claimMsgs.map((c) => ({
+            from: c.from,
+            action: (c.payload as ClaimPayload).action,
+            itemId: (c.payload as ClaimPayload).itemId,
+            branch: (c.payload as ClaimPayload).branch,
+            since: c.timestamp,
+            expiresAt: c.expiresAt,
+          })),
+          reviewRequests: reviewMsgs.map((r) => ({
+            from: r.from,
+            to: r.to,
+            artifact: (r.payload as ReviewRequestPayload).artifact,
+            question: (r.payload as ReviewRequestPayload).question,
+            since: r.timestamp,
+          })),
+          totals: {
+            agents: agentMap.size,
+            claims: claimMsgs.length,
+            shadowCatches: shadowCount,
+            reviewRequests: reviewMsgs.length,
+          },
+        };
+        console.log(JSON.stringify(out, null, 2));
+      } else {
+        if (agentMap.size === 0 && claimMsgs.length === 0 && reviewMsgs.length === 0 && shadowCount === 0) {
+          console.log("bus: empty");
+        } else {
+          if (agentMap.size > 0) {
+            console.log("agents:");
+            for (const [, h] of agentMap) {
+              const p = h.payload as HeartbeatPayload;
+              const note = p.note ? ` — ${p.note}` : "";
+              console.log(`  ${h.from}: ${p.status}${note}  (since ${h.timestamp})`);
+            }
+          }
+          if (claimMsgs.length > 0) {
+            console.log("claims:");
+            for (const c of claimMsgs) {
+              const p = c.payload as ClaimPayload;
+              const branch = p.branch ? ` (${p.branch})` : "";
+              console.log(`  ${p.itemId}: ${p.action} by ${c.from}${branch}`);
+            }
+          }
+          if (reviewMsgs.length > 0) {
+            console.log("review-requests:");
+            for (const r of reviewMsgs) {
+              const p = r.payload as ReviewRequestPayload;
+              const q = p.question ? ` — "${p.question}"` : "";
+              console.log(`  ${r.from}→${r.to}: ${p.artifact}${q}`);
+            }
+          }
+          if (shadowCount > 0) {
+            console.log(`shadow-catches: ${shadowCount}`);
+          }
+        }
+      }
       break;
     }
 
