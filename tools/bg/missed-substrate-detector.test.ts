@@ -1,13 +1,19 @@
 import { describe, expect, test } from "bun:test";
 import {
+  classifyCascadeUrgency,
   DEFAULT_CONFIG,
+  MAX_REPORTED_MISSING_COMMITS,
   parseArgs,
   parsePositiveMinutes,
   pollOnce,
+  realCascadeDetector,
   type Adapters,
+  type BranchCompareResult,
+  type CascadeDetectorAdapters,
   type CascadeFinding,
   type FetchResult,
   type MergedPR,
+  type PRRefsResult,
 } from "./missed-substrate-detector";
 import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
 
@@ -50,6 +56,20 @@ function adapters(opts: {
   };
 }
 
+function cascadeAdapters(opts: {
+  prRefs?: Partial<Record<number, PRRefsResult>>;
+  branchCompares?: Partial<Record<string, BranchCompareResult>>;
+  nowIso?: string;
+}): CascadeDetectorAdapters {
+  return {
+    now: () => new Date(opts.nowIso ?? "2026-05-13T18:00:00Z"),
+    fetchPRRefs: (prNumber: number) =>
+      opts.prRefs?.[prNumber] ?? { status: "error", reason: "no fake configured" },
+    compareBranchToMerged: (branchName: string) =>
+      opts.branchCompares?.[branchName] ?? { status: "error", reason: "no fake configured" },
+  };
+}
+
 describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect is stub)", () => {
   test("default config", () => {
     expect(DEFAULT_CONFIG.pollIntervalMin).toBe(5);
@@ -84,7 +104,6 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
       expect(result.candidatesScanned).toBe(2);
       expect(result.cascadesDetected).toBe(0);
       expect(result.note).toContain("no cascades detected");
-      expect(result.note).toContain("slice 3 plugs in real compare logic");
     });
 
     test("gh-error surfaces explicitly (does NOT silently treat as zero)", () => {
@@ -174,6 +193,120 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
       expect(result.cascadesDetected).toBe(1);
       expect(result.publishedEnvelopeIds).toHaveLength(0);
       expect(result.note).toContain("publish failed");
+    });
+  });
+
+  describe("realCascadeDetector (slice 3 — branch-vs-squash comparator)", () => {
+    const pr2980: MergedPR = {
+      number: 2980,
+      headRefName: "feat/launch-thread",
+      mergedAt: "2026-05-13T17:55:00Z",
+    };
+
+    test("detects cascade — branch has post-squash drift commits", () => {
+      const finding = realCascadeDetector(pr2980, cascadeAdapters({
+        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+        branchCompares: {
+          "feat/launch-thread": { status: "ok", missingCommits: ["bbb111", "ccc222"] },
+        },
+        nowIso: "2026-05-13T18:00:00Z",
+      }));
+      expect(finding).not.toBeNull();
+      expect(finding!.prNumber).toBe(2980);
+      expect(finding!.branchName).toBe("feat/launch-thread");
+      expect(finding!.missingCommits).toEqual(["bbb111", "ccc222"]);
+      expect(finding!.urgency).toBe("high"); // fresh (<1hr) → high
+    });
+
+    test("no cascade when missingCommits is empty (branch matches squash exactly)", () => {
+      const finding = realCascadeDetector(pr2980, cascadeAdapters({
+        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+        branchCompares: {
+          "feat/launch-thread": { status: "ok", missingCommits: [] },
+        },
+      }));
+      expect(finding).toBeNull();
+    });
+
+    test("returns null when branch was deleted post-merge (unrecoverable)", () => {
+      const finding = realCascadeDetector(pr2980, cascadeAdapters({
+        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+        branchCompares: {
+          "feat/launch-thread": { status: "branch-deleted", reason: "deleted" },
+        },
+      }));
+      expect(finding).toBeNull();
+    });
+
+    test("returns null when branch was rebased (too complex to auto-diagnose)", () => {
+      const finding = realCascadeDetector(pr2980, cascadeAdapters({
+        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+        branchCompares: {
+          "feat/launch-thread": { status: "branch-rebased", reason: "not ancestor" },
+        },
+      }));
+      expect(finding).toBeNull();
+    });
+
+    test("returns null when gh has no merge commit (closed-not-merged)", () => {
+      const finding = realCascadeDetector(pr2980, cascadeAdapters({
+        prRefs: { 2980: { status: "no-merge", reason: "no mergeCommit" } },
+        branchCompares: {
+          "feat/launch-thread": { status: "ok", missingCommits: ["should-not-reach"] },
+        },
+      }));
+      expect(finding).toBeNull();
+    });
+
+    test("returns null when gh errors (cannot diagnose without refs)", () => {
+      const finding = realCascadeDetector(pr2980, cascadeAdapters({
+        prRefs: { 2980: { status: "error", reason: "HTTP 503" } },
+      }));
+      expect(finding).toBeNull();
+    });
+
+    test("returns null when git compare errors", () => {
+      const finding = realCascadeDetector(pr2980, cascadeAdapters({
+        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+        branchCompares: {
+          "feat/launch-thread": { status: "error", reason: "git fatal" },
+        },
+      }));
+      expect(finding).toBeNull();
+    });
+  });
+
+  describe("classifyCascadeUrgency", () => {
+    const nowMs = new Date("2026-05-13T18:00:00Z").getTime();
+
+    test("high — fresh drift (<1hr) with any commits", () => {
+      expect(classifyCascadeUrgency(1, "2026-05-13T17:58:00Z", nowMs)).toBe("high");
+      expect(classifyCascadeUrgency(1, "2026-05-13T17:05:00Z", nowMs)).toBe("high");
+    });
+
+    test("high — 4+ missing commits regardless of age", () => {
+      expect(classifyCascadeUrgency(4, "2026-05-10T10:00:00Z", nowMs)).toBe("high");
+      expect(classifyCascadeUrgency(10, "2026-05-01T00:00:00Z", nowMs)).toBe("high");
+    });
+
+    test("medium — 2-3 missing commits, age 1hr-24hr", () => {
+      expect(classifyCascadeUrgency(2, "2026-05-13T10:00:00Z", nowMs)).toBe("medium");
+      expect(classifyCascadeUrgency(3, "2026-05-13T05:00:00Z", nowMs)).toBe("medium");
+    });
+
+    test("medium — single commit, age <24hr", () => {
+      expect(classifyCascadeUrgency(1, "2026-05-13T05:00:00Z", nowMs)).toBe("medium");
+    });
+
+    test("low — single commit, age >24hr (might be intentional WIP)", () => {
+      expect(classifyCascadeUrgency(1, "2026-05-11T05:00:00Z", nowMs)).toBe("low");
+    });
+  });
+
+  describe("slice 3 reporting bounds", () => {
+    test("MAX_REPORTED_MISSING_COMMITS is a sane cap", () => {
+      expect(MAX_REPORTED_MISSING_COMMITS).toBeGreaterThan(10);
+      expect(MAX_REPORTED_MISSING_COMMITS).toBeLessThan(500);
     });
   });
 

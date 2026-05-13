@@ -1,15 +1,23 @@
-// missed-substrate-detector.ts — B-0442 slice 4: bus publish on cascade detection
+// missed-substrate-detector.ts — B-0442 slice 3+4: real branch-vs-squash comparator
 //
 // Background service that detects branch-vs-merged-PR drift: commits landing
-// on a feature branch AFTER its parent PR squash-merged. Slice 4 closes the
-// drift-prevention reactive loop: fetch recent merged PRs, compare branch
-// HEAD against squash content (NOTE: slice 3 implements the actual compare;
-// slice 4 publishes envelopes for each detected cascade).
+// on a feature branch AFTER its parent PR squash-merged. Slice 4 shipped the
+// bus-publish wiring with a stub comparator; slice 3 (this file, 2026-05-13)
+// plugs in the real branch-vs-squash compare logic via `realCascadeDetector`.
 //
-// Slice 4 ships the bus-publish wiring with a stub comparator that ALWAYS
-// reports "no cascade detected" — slice 3 will plug in the real branch-vs-
-// squash compare logic. The bus envelope schema + flags + tests are
-// production-ready; the comparator stays no-op until slice 3.
+// Detection algorithm (slice 3):
+//   1. For each merged PR, fetch `headRefOid` from gh — the branch HEAD SHA
+//      *at merge time* (the SHA that was squashed).
+//   2. Fetch `origin/<branchName>` to get the branch's current state.
+//   3. If branch was deleted post-merge → return null (unrecoverable; the
+//      window for detection closed at branch deletion).
+//   4. Guard against rebases: if `headRefOid` is not an ancestor of the
+//      current branch HEAD, return null (situation too complex to
+//      auto-diagnose; would produce false-positive flood).
+//   5. Run `git log <headRefOid>..origin/<branchName>` — these are the
+//      commits added to the branch AFTER squash. If non-empty, cascade
+//      detected; build CascadeFinding with urgency classified by
+//      commit-count + merge-age.
 //
 // Run: bun tools/bg/missed-substrate-detector.ts [--once] [--poll-min N] [--lookback-min N] [--fetch-limit N] [--no-publish] [--agent NAME] [--to NAME]
 // Compose with: B-0442 + B-0400 (bus) + B-0440 / B-0441 (companion services).
@@ -70,9 +78,10 @@ export type Adapters = {
   now: () => Date;
   fetchRecentMergedPRs: (lookbackMin: number, fetchLimit: number) => FetchResult;
   /**
-   * Detect cascades on a single merged PR. Slice 3 replaces this stub with
-   * real branch-HEAD vs squash-content compare logic. Slice 4 keeps it as
-   * an injectable stub for testing the bus-publish path.
+   * Detect cascades on a single merged PR. Slice 4 keeps this as an
+   * injectable adapter for testing the bus-publish path; slice 3 wires
+   * REAL_ADAPTERS to `realCascadeDetector` composed with real gh + git
+   * sub-adapters (see `REAL_CASCADE_SUB_ADAPTERS`).
    */
   detectCascade: (pr: MergedPR) => CascadeFinding | null;
   publishCascade: (
@@ -81,6 +90,94 @@ export type Adapters = {
     finding: CascadeFinding,
   ) => MessageEnvelope;
 };
+
+/**
+ * Slice 3: result of fetching PR refs from gh. `headRefOid` is the branch
+ * HEAD SHA at merge time — the SHA that was squashed.
+ */
+export type PRRefsResult =
+  | { status: "ok"; headRefOid: string }
+  | { status: "no-merge"; reason: string }
+  | { status: "error"; reason: string };
+
+/**
+ * Slice 3: result of comparing the branch's current state against its
+ * state at merge time. `missingCommits` are commits added to the branch
+ * AFTER the squash — exactly the cascade signal.
+ */
+export type BranchCompareResult =
+  | { status: "ok"; missingCommits: string[] }
+  | { status: "branch-deleted"; reason: string }
+  | { status: "branch-rebased"; reason: string }
+  | { status: "error"; reason: string };
+
+/**
+ * Slice 3 sub-adapters for the real cascade detector. Decoupled so tests
+ * inject deterministic gh + git responses without needing a real repo.
+ */
+export type CascadeDetectorAdapters = {
+  fetchPRRefs: (prNumber: number) => PRRefsResult;
+  compareBranchToMerged: (
+    branchName: string,
+    headRefOid: string,
+  ) => BranchCompareResult;
+  now: () => Date;
+};
+
+/**
+ * Classify cascade urgency by commit count + merge-age. The Otto-section-
+ * missed-PR-#2980 case was 3 minutes old with 1 missing commit ⇒ "high".
+ */
+export function classifyCascadeUrgency(
+  missingCommitCount: number,
+  mergedAtIso: string,
+  nowMs: number,
+): "low" | "medium" | "high" {
+  const mergedAtMs = new Date(mergedAtIso).getTime();
+  const ageHours = (nowMs - mergedAtMs) / (1000 * 60 * 60);
+  if (missingCommitCount >= 4) return "high"; // multiple-commit drift = serious
+  if (ageHours < 1) return "high"; // fresh drift = likely about to be lost
+  if (missingCommitCount >= 2) return "medium";
+  if (ageHours < 24) return "medium"; // recent single-commit drift
+  return "low";
+}
+
+/**
+ * Slice 3: real branch-vs-squash cascade detector. Pure function composed
+ * with sub-adapters for testability. Returns null when no drift detected,
+ * when branch was deleted, when branch was rebased (too complex to
+ * auto-diagnose), or when gh/git errors prevent diagnosis.
+ */
+export function realCascadeDetector(
+  pr: MergedPR,
+  adapters: CascadeDetectorAdapters,
+): CascadeFinding | null {
+  const refs = adapters.fetchPRRefs(pr.number);
+  if (refs.status !== "ok") return null;
+
+  const compare = adapters.compareBranchToMerged(pr.headRefName, refs.headRefOid);
+  if (compare.status !== "ok") return null;
+  if (compare.missingCommits.length === 0) return null;
+
+  return {
+    prNumber: pr.number,
+    branchName: pr.headRefName,
+    missingCommits: compare.missingCommits,
+    urgency: classifyCascadeUrgency(
+      compare.missingCommits.length,
+      pr.mergedAt,
+      adapters.now().getTime(),
+    ),
+  };
+}
+
+/**
+ * Slice 3: maximum number of post-squash commits to surface in a single
+ * envelope. Caps the false-positive flood case where headRefOid is an
+ * ancestor of branchHead but the gap is unexpectedly large (e.g., the
+ * branch is being reused for follow-up work — not a cascade).
+ */
+export const MAX_REPORTED_MISSING_COMMITS = 50;
 
 const REAL_ADAPTERS: Adapters = {
   now: () => new Date(),
@@ -121,8 +218,9 @@ const REAL_ADAPTERS: Adapters = {
       return { status: "gh-error", reason: `JSON parse failed: ${e instanceof Error ? e.message : String(e)}` };
     }
   },
-  // Slice 3 will replace this stub with real branch-vs-squash compare.
-  detectCascade: (_pr: MergedPR) => null,
+  // Slice 3 (2026-05-13): real branch-vs-squash compare via gh + git.
+  detectCascade: (pr: MergedPR) =>
+    realCascadeDetector(pr, REAL_CASCADE_SUB_ADAPTERS),
   publishCascade: (from, to, finding) =>
     publish(from, to, {
       topic: "missed-substrate-cascade",
@@ -137,10 +235,112 @@ const REAL_ADAPTERS: Adapters = {
 };
 
 /**
+ * Slice 3 (2026-05-13): real production sub-adapters for the cascade
+ * detector. `fetchPRRefs` calls `gh pr view --json headRefOid`;
+ * `compareBranchToMerged` fetches the branch from origin and runs
+ * `git log <headRefOid>..origin/<branchName>` to find post-squash drift.
+ */
+export const REAL_CASCADE_SUB_ADAPTERS: CascadeDetectorAdapters = {
+  now: () => new Date(),
+  fetchPRRefs: (prNumber: number): PRRefsResult => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection risk.
+    const result = spawnSync(
+      "gh",
+      ["pr", "view", String(prNumber), "--json", "headRefOid,mergeCommit"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    if (result.status !== 0) {
+      return {
+        status: "error",
+        reason: `gh pr view ${prNumber} exited ${result.status}; stderr: ${(result.stderr ?? "").toString().slice(0, 200)}`,
+      };
+    }
+    if (!result.stdout) {
+      return { status: "error", reason: "gh pr view produced empty stdout" };
+    }
+    try {
+      const parsed = JSON.parse(result.stdout);
+      const headRefOid = parsed?.headRefOid;
+      const mergeCommit = parsed?.mergeCommit;
+      if (typeof headRefOid !== "string" || headRefOid.length === 0) {
+        return { status: "no-merge", reason: "PR has no headRefOid" };
+      }
+      if (!mergeCommit || typeof mergeCommit.oid !== "string") {
+        return { status: "no-merge", reason: "PR has no mergeCommit (closed-not-merged?)" };
+      }
+      return { status: "ok", headRefOid };
+    } catch (e) {
+      return { status: "error", reason: `JSON parse failed: ${e instanceof Error ? e.message : String(e)}` };
+    }
+  },
+  compareBranchToMerged: (branchName: string, headRefOid: string): BranchCompareResult => {
+    // Validate inputs to prevent shell-injection via crafted refs (gh response is
+    // trusted but defensive validation matches our usual posture).
+    if (!/^[A-Za-z0-9._\/\-]+$/.test(branchName)) {
+      return { status: "error", reason: `invalid branchName: ${branchName.slice(0, 40)}` };
+    }
+    if (!/^[0-9a-f]{7,40}$/.test(headRefOid)) {
+      return { status: "error", reason: `invalid headRefOid: ${headRefOid.slice(0, 40)}` };
+    }
+
+    // Fetch the latest branch state. If the branch was deleted post-merge,
+    // git fetch reports "couldn't find remote ref" — surface as branch-deleted.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; refs validated above.
+    const fetchResult = spawnSync(
+      "git",
+      ["fetch", "--quiet", "origin", branchName],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    if (fetchResult.status !== 0) {
+      const stderr = (fetchResult.stderr ?? "").toString();
+      if (stderr.includes("couldn't find remote ref") || stderr.includes("not found")) {
+        return { status: "branch-deleted", reason: "branch not on origin (deleted post-merge)" };
+      }
+      return { status: "error", reason: `git fetch failed: ${stderr.slice(0, 200)}` };
+    }
+
+    // Guard against rebases: if headRefOid is NOT an ancestor of the current
+    // branch HEAD, the branch was rewritten and we cannot trust a simple
+    // log-range. Surface branch-rebased; the situation needs manual review.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    const ancestorResult = spawnSync(
+      "git",
+      ["merge-base", "--is-ancestor", headRefOid, `origin/${branchName}`],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    if (ancestorResult.status === 1) {
+      return { status: "branch-rebased", reason: `${headRefOid.slice(0, 8)} is not ancestor of origin/${branchName} (rebase or force-push detected)` };
+    }
+    if (ancestorResult.status !== 0) {
+      return { status: "error", reason: `git merge-base failed: ${(ancestorResult.stderr ?? "").toString().slice(0, 200)}` };
+    }
+
+    // Now list commits on origin/<branch> not reachable from headRefOid —
+    // these are the post-squash drift commits (the cascade signal).
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    const logResult = spawnSync(
+      "git",
+      ["log", `${headRefOid}..origin/${branchName}`, "--format=%H"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    if (logResult.status !== 0) {
+      return { status: "error", reason: `git log failed: ${(logResult.stderr ?? "").toString().slice(0, 200)}` };
+    }
+    const allMissing = (logResult.stdout ?? "")
+      .trim()
+      .split("\n")
+      .filter(line => line.length > 0);
+    const missingCommits = allMissing.slice(0, MAX_REPORTED_MISSING_COMMITS);
+    return { status: "ok", missingCommits };
+  },
+};
+
+/**
  * Single poll iteration. Fetches merged PRs, runs the cascade detector
  * on each, and publishes a missed-substrate-cascade envelope per finding
- * (unless noPublish). Slice 4's detectCascade is a stub (returns null
- * for all PRs); slice 3 plugs in real logic.
+ * (unless noPublish). Slice 3 (2026-05-13) wired the real detector;
+ * REAL_ADAPTERS.detectCascade now calls `realCascadeDetector` with real
+ * gh + git sub-adapters.
  */
 export function pollOnce(
   config: DetectorConfig,
@@ -203,7 +403,7 @@ export function pollOnce(
       ? `${findings.length} cascade(s) detected in ${fetch.prs.length} merged PR(s)${publishSuffix}${truncatedSuffix}`
       : fetch.prs.length === 0
       ? `no merged PRs in last ${config.lookbackMin}min lookback window`
-      : `${fetch.prs.length} merged PR(s) in last ${config.lookbackMin}min; no cascades detected (slice 3 plugs in real compare logic)${truncatedSuffix}`,
+      : `${fetch.prs.length} merged PR(s) in last ${config.lookbackMin}min; no cascades detected${truncatedSuffix}`,
   };
 }
 
