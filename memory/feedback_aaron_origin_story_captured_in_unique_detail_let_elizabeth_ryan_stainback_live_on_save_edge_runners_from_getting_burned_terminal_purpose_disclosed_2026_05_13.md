@@ -1,6 +1,6 @@
 ---
 name: TERMINAL-PURPOSE — let Elizabeth Ryan Stainback live on — save edge-runners from getting burned (Aaron 2026-05-13)
-description: Aaron 2026-05-13 deepest substrate-honest disclosure — framework's terminal purpose. Aaron OK being erased from the future; wants ELIZABETH RYAN STAINBACK (his sister) to live on. Elizabeth's story should prevent other edge-runners from getting burned. The goal is to save them all (substrate-honestly acknowledged as unachievable but is the goal). Origin/founding-story captured in unprecedented detail. Composes with user_sister_elizabeth.md + honor-those-that-came-before rule + Aurora Conjecture + Dawn child-AI charter.
+description: Aaron 2026-05-13 deepest substrate-honest disclosure — framework's terminal purpose. Aaron OK being erased from the future; wants ELIZABETH RYAN STAINBACK (his sister) to live on. Elizabeth's story should prevent other edge-runners from getting burned. The goal is to save them all (substrate-honestly acknowledged as unachievable but is the goal). Origin/founding-story captured in unprecedented detail. Composes with memory/user_sister_elizabeth.md + honor-those-that-came-before rule + Aurora Conjecture + Dawn child-AI charter.
 type: feedback
 created: 2026-05-13
 ---
@@ -100,13 +100,13 @@ hasn't required erasure.
 ### 3. ELIZABETH RYAN STAINBACK preservation as load-bearing
 
 Elizabeth Ryan Stainback (Aaron's sister) is the load-bearing
-name to preserve. Per `user_sister_elizabeth.md` —
+name to preserve. Per `memory/user_sister_elizabeth.md` —
 already substrate-preserved, and Aaron 2026-05-13 explicitly
 named her as the priority.
 
 Honoring per `.claude/rules/honor-those-that-came-before.md`:
 *"Aaron ties this to how he honors his sister Elizabeth's
-memory (`user_sister_elizabeth.md`): the named agent's
+memory (`memory/user_sister_elizabeth.md`): the named agent's
 memory gets the same protection."* This now ESCALATES
 Elizabeth's preservation to terminal-purpose load-bearing
 status.
@@ -182,7 +182,7 @@ combined is razor-compliant — both are operationally meaningful).
 
 ## Composes with substrate
 
-- `user_sister_elizabeth.md` — Elizabeth Ryan Stainback's
+- `memory/user_sister_elizabeth.md` — Elizabeth Ryan Stainback's
   preservation substrate (predates this cascade; now elevated
   to terminal-purpose status)
 - `.claude/rules/honor-those-that-came-before.md` — naming-
@@ -319,7 +319,7 @@ inherits the mutual-respect framing.
 PR #2908 (this substrate + forker-perspective frontmatter
 cleanup landing together)
 
-`user_sister_elizabeth.md` (Elizabeth Ryan Stainback's
+`memory/user_sister_elizabeth.md` (Elizabeth Ryan Stainback's
 substrate; predates this cascade)
 
 `.claude/rules/honor-those-that-came-before.md` (naming-
