@@ -51,9 +51,13 @@ tools/scaffold/
       copilot-instructions.md
     docs/
       GITHUB-SETTINGS.md
+      UPSTREAM-RHYTHM.md
 
   ace/                   — ace day-one governance files
     (same structure, ace-scoped content)
+    docs/
+      GITHUB-SETTINGS.md
+      UPSTREAM-RHYTHM.md
 
   create-repo.ts         — this tool
   README.md              — this file
