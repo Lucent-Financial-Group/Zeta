@@ -3,8 +3,8 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { runOneCycle, log, detectViaCommand } from "./shadow-observer.ts";
-import type { ShadowConfig, ShadowEvent } from "./shadow-observer.ts";
+import { runOneCycle, log, detectViaCommand, detectGreyTextMacOS } from "./shadow-observer.ts";
+import type { ShadowConfig, ShadowEvent, OsascriptRunner } from "./shadow-observer.ts";
 
 const SCRIPT = join(import.meta.dir, "shadow-observer.ts");
 let TEST_DIR: string;
@@ -314,5 +314,179 @@ describe("shadow-observer — --detect-cmd CLI integration (slice 2)", () => {
     };
     const result = await runOneCycle(baseConfig, async () => null);
     expect(result).toBe("no-suggestion");
+  });
+});
+
+describe("shadow-observer — detectGreyTextMacOS unit (slice 3)", () => {
+  test("returns null + logs warning on non-darwin platform", async () => {
+    const warnings: string[] = [];
+    const origWarn = console.warn;
+    console.warn = (...args: unknown[]) => {
+      warnings.push(String(args[0]));
+    };
+    try {
+      const result = await detectGreyTextMacOS(undefined, undefined, "linux");
+      expect(result).toBeNull();
+      expect(warnings.some((m) => m.includes("non-macOS"))).toBe(true);
+    } finally {
+      console.warn = origWarn;
+    }
+  });
+
+  test("returns trimmed text when osascript exits 0 with stdout", async () => {
+    const mockRunner: OsascriptRunner = async () => ({
+      exitCode: 0,
+      stdout: "  some suggestion  \n",
+      stderr: "",
+    });
+    const result = await detectGreyTextMacOS(undefined, mockRunner);
+    expect(result).toBe("some suggestion");
+  });
+
+  test("returns null when osascript exits 0 with empty stdout", async () => {
+    const mockRunner: OsascriptRunner = async () => ({
+      exitCode: 0,
+      stdout: "   \n",
+      stderr: "",
+    });
+    const result = await detectGreyTextMacOS(undefined, mockRunner);
+    expect(result).toBeNull();
+  });
+
+  test("returns null + logs warning when osascript exits non-zero", async () => {
+    const warnings: string[] = [];
+    const origWarn = console.warn;
+    console.warn = (...args: unknown[]) => {
+      warnings.push(String(args[0]));
+    };
+    try {
+      const mockRunner: OsascriptRunner = async () => ({
+        exitCode: 1,
+        stdout: "",
+        stderr: "error: osascript failure",
+      });
+      const result = await detectGreyTextMacOS(undefined, mockRunner);
+      expect(result).toBeNull();
+      expect(
+        warnings.some((m) => m.includes("osascript exited") || m.includes("permission")),
+      ).toBe(true);
+    } finally {
+      console.warn = origWarn;
+    }
+  });
+});
+
+describe("shadow-observer — runOneCycle full cycle paths (slice 3)", () => {
+  let CYCLE_TEST_DIR: string;
+
+  beforeEach(() => {
+    CYCLE_TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-shadow-cycle-test-"));
+  });
+  afterEach(() => {
+    if (existsSync(CYCLE_TEST_DIR)) rmSync(CYCLE_TEST_DIR, { recursive: true, force: true });
+  });
+
+  function cycleConfig(): ShadowConfig {
+    return {
+      delayMs: 0,
+      dryRun: true,
+      logFile: join(CYCLE_TEST_DIR, "shadow.log"),
+      loopIntervalMs: 0,
+      once: true,
+    };
+  }
+
+  function readCycleLog(): ShadowEvent[] {
+    const p = join(CYCLE_TEST_DIR, "shadow.log");
+    if (!existsSync(p)) return [];
+    return readFileSync(p, "utf-8")
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l) as ShadowEvent);
+  }
+
+  // --- Overridden path ---
+
+  test("overridden path: detectFn called exactly twice", async () => {
+    let callCount = 0;
+    const detectFn = async () => {
+      callCount++;
+      return callCount === 1 ? "suggestion" : null;
+    };
+    await runOneCycle(cycleConfig(), detectFn);
+    expect(callCount).toBe(2);
+  });
+
+  test("overridden path: writes detected then overridden events to log", async () => {
+    let callCount = 0;
+    const detectFn = async () => {
+      callCount++;
+      return callCount === 1 ? "my-suggestion" : null;
+    };
+    await runOneCycle(cycleConfig(), detectFn);
+    const types = readCycleLog().map((e) => e.type);
+    expect(types).toContain("detected");
+    expect(types).toContain("overridden");
+  });
+
+  test("overridden path: detected event carries first-call suggestion content", async () => {
+    let callCount = 0;
+    const detectFn = async () => {
+      callCount++;
+      return callCount === 1 ? "hello-world" : null;
+    };
+    await runOneCycle(cycleConfig(), detectFn);
+    const detected = readCycleLog().find((e) => e.type === "detected");
+    expect(detected?.content).toBe("hello-world");
+  });
+
+  test("overridden path: re-detect throw is treated as override (returns overridden)", async () => {
+    let callCount = 0;
+    const detectFn = async () => {
+      callCount++;
+      if (callCount === 2) throw new Error("re-detect failure");
+      return "suggestion";
+    };
+    // runOneCycle catches re-detect throw → stillPresent = null → "overridden"
+    const result = await runOneCycle(cycleConfig(), detectFn);
+    expect(result).toBe("overridden");
+  });
+
+  // --- Accepted path ---
+
+  test("accepted path: detectFn called exactly twice", async () => {
+    let callCount = 0;
+    const detectFn = async () => {
+      callCount++;
+      return "suggestion";
+    };
+    await runOneCycle(cycleConfig(), detectFn, async () => true);
+    expect(callCount).toBe(2);
+  });
+
+  test("accepted path: writes detected then accepted events to log", async () => {
+    const detectFn = async () => "suggestion";
+    await runOneCycle(cycleConfig(), detectFn, async () => true);
+    const types = readCycleLog().map((e) => e.type);
+    expect(types).toContain("detected");
+    expect(types).toContain("accepted");
+  });
+
+  test("accepted path: dry-run accepted event content includes 'dry-run'", async () => {
+    const detectFn = async () => "suggestion";
+    await runOneCycle(cycleConfig(), detectFn, async () => true);
+    const accepted = readCycleLog().find((e) => e.type === "accepted");
+    expect(accepted?.content).toContain("dry-run");
+  });
+
+  test("accepted path: acceptFn called exactly once", async () => {
+    let acceptCallCount = 0;
+    const detectFn = async () => "suggestion";
+    const acceptFn = async (_cfg: ShadowConfig) => {
+      acceptCallCount++;
+      return true;
+    };
+    await runOneCycle(cycleConfig(), detectFn, acceptFn);
+    expect(acceptCallCount).toBe(1);
   });
 });
