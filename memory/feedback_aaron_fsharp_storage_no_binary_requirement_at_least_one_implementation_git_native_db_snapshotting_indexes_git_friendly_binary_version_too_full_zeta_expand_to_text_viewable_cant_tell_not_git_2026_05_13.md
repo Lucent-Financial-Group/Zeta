@@ -115,6 +115,54 @@ binary for performance, BUT:
 - Composes with WWJD-AI-moral-relevance — substrate transparency
   preserved for human readers even at binary scale
 
+### 6. Reticulum + Clifford content-based addressing (Aaron 2026-05-13 extension)
+
+Aaron 2026-05-13 (follow-on): *"also with reticulue and the
+clifford contend based addression we can have content based
+addressing too so if some clusters/actors are specialized for
+certian memes/domains, we could also do this for internatalization
+and things like that"*
+
+The storage layer composes with content-based addressing via:
+
+- **Reticulum mesh substrate** — identity = hash; no source
+  addresses; any medium (LoRa / WiFi / radio); per
+  `reference_reticulum_mesh_network_alljoyn_successor_transport_layer_2026_05_07.md`
+- **Clifford densest encoding** — content-addressable via
+  multivector signature (per PR #2817)
+- **Together**: storage entries addressed by content-hash;
+  routing follows content not location
+
+**Specialization patterns enabled by content-addressing**:
+
+| Specialization | Content-address shape | Example |
+|---|---|---|
+| **Meme-specialized clusters** | Hash-prefix by meme-category | Edge cluster A serves civsim content; cluster B serves business templates |
+| **Domain-specialized actors** | Hash-prefix by ontology-domain | KSK actor handles AI-actuator-safety content; Aurora actor handles BTC-proof content |
+| **Internationalization** | Hash-prefix by language/locale | Cluster A serves English content; cluster B serves Spanish; cluster C serves Indonesian (DIO substrate) |
+| **Time-specialization** | Hash-prefix by tick window | Recent ticks at edge; archived ticks in cold storage |
+
+This composes with:
+
+- DIO substrate (Distributed Intelligence Organism;
+  Indonesian/Italian/Spanish cross-linguistic resonance per
+  prior cascade) — DIO clusters can specialize by language
+- DV2.0 partition (PR #2915) — content-address IS a partition
+  axis; hubs are stable content-hashes; satellites are
+  versioned attributes
+- Reticulum-as-transport (existing substrate) — mesh routing
+  follows content-hash naturally
+- Civsim (PR #2906 Casimir gap) — civsim content-addressable;
+  players join clusters by content-interest
+- Polycentric named-AI architecture — different AIs specialize
+  by content-domain (Otto = factory hygiene; Riven = adversarial
+  truth; Vera = implementation; etc.)
+
+**Operational benefit**: workload routes to specialized
+substrate without central coordinator. Edge devices fetch by
+content-hash; specialized clusters serve their content-prefix;
+internationalization is a content-prefix not a translation layer.
+
 ## Composes with
 
 - PR #2924 (Amara canonical substrate — event-sourcing framework
