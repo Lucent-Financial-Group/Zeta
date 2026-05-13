@@ -302,6 +302,19 @@ describe("forge .semgrep.yml content (B-0424.8)", () => {
     expect(ruleBlock).toContain("**/*.toml");
   });
 
+  test("invisible-unicode pattern-regex uses \\uXXXX escapes, not literal invisible chars (BP-10 self-clean)", () => {
+    // The pattern-regex must not embed the very codepoints it detects.
+    // Literal invisible chars would make this template trip its own lint
+    // (bootstrap paradox). Verify the file is ASCII-clean in that line.
+    const ruleStart = content.indexOf("id: invisible-unicode-in-text");
+    expect(ruleStart).toBeGreaterThan(-1);
+    const ruleBlock = content.slice(ruleStart, ruleStart + 600);
+    const patternLine = ruleBlock.split("\n").find((l) => l.includes("pattern-regex"));
+    expect(patternLine).toBeDefined();
+    const invisibleRanges = /[\u200B-\u200D\u2060\uFEFF\u202A-\u202E\u2066-\u2069]/;
+    expect(invisibleRanges.test(patternLine!)).toBe(false);
+  });
+
   test("mutable-tag rule targets .github/workflows", () => {
     const ruleStart = content.indexOf("id: gha-action-mutable-tag");
     expect(ruleStart).toBeGreaterThan(-1);
@@ -327,6 +340,16 @@ describe("ace .semgrep.yml content (B-0424.8)", () => {
     expect(ruleStart).toBeGreaterThan(-1);
     const ruleBlock = content.slice(ruleStart, ruleStart + 1200);
     expect(ruleBlock).toContain("severity: ERROR");
+  });
+
+  test("invisible-unicode pattern-regex uses \\uXXXX escapes, not literal invisible chars (BP-10 self-clean)", () => {
+    const ruleStart = content.indexOf("id: invisible-unicode-in-text");
+    expect(ruleStart).toBeGreaterThan(-1);
+    const ruleBlock = content.slice(ruleStart, ruleStart + 600);
+    const patternLine = ruleBlock.split("\n").find((l) => l.includes("pattern-regex"));
+    expect(patternLine).toBeDefined();
+    const invisibleRanges = /[\u200B-\u200D\u2060\uFEFF\u202A-\u202E\u2066-\u2069]/;
+    expect(invisibleRanges.test(patternLine!)).toBe(false);
   });
 
   test("mutable-tag rule severity is ERROR", () => {
