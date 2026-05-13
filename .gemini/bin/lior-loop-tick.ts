@@ -20,25 +20,34 @@ EXECUTE THESE STEPS IMMEDIATELY USING YOUR TOOLS. Do not ask "How can I help you
 
 console.log(`[Lior Loop] Waking up at ${new Date().toISOString()}`);
 
+// Pipe stderr so we can inspect it for 429 patterns; stdout/stdin stay inherited
 const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$GEMINI_PROMPT" --model gemini-3.1-pro-preview --yolo --skip-trust'], {
   env: { ...process.env, GEMINI_PROMPT: prompt },
   stdio: ["inherit", "inherit", "pipe"]
 });
 
 if (result.error) {
+  // Spawn-level failure (binary not found, permission denied, etc.) — propagate so
+  // launchd can surface the misconfiguration; this is NOT a transient rate-limit.
   console.error(`[Lior Loop] Failed to spawn gemini: ${result.error.message}`);
-  // Spawn failures (missing binary, OS errors) are not crash-loop candidates; suppress for launchd.
-  process.exit(0);
+  process.exit(1);
 }
 
+// status is null when the process was killed by a signal; treat that as an error.
 const exitCode = result.status ?? 1;
 const stderr = result.stderr?.toString() ?? "";
-console.log(`[Lior Loop] Finished with exit code ${exitCode}`);
+
+// Forward captured stderr to the launchd journal so errors remain visible.
+if (stderr) process.stderr.write(stderr);
 
 // Only suppress non-zero exits caused by 429 rate-limit responses so launchd doesn't park the
 // service on transient quota exhaustion. All other failures propagate so supervisors and
 // diagnostics retain a machine-readable failure signal.
-if (exitCode !== 0 && !stderr.includes("429")) {
-  process.exit(exitCode);
+const is429 = /429|RESOURCE_EXHAUSTED|quota exceeded/i.test(stderr);
+if (exitCode !== 0 && is429) {
+  console.error(`[Lior Loop] Rate-limited (429); exiting 0 to prevent launchd throttling`);
+  process.exit(0);
 }
-process.exit(0);
+
+console.log(`[Lior Loop] Finished with exit code ${exitCode}`);
+process.exit(exitCode);
