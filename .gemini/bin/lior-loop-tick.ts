@@ -27,8 +27,10 @@ const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$GEMINI_PR
 
 if (result.error) {
   console.error(`[Lior Loop] Failed to spawn gemini: ${result.error.message}`);
-  process.exit(1);
+  // Swallow the error so launchd doesn't park the service
+  process.exit(0);
 }
 
 console.log(`[Lior Loop] Finished with exit code ${result.status ?? "unknown"}`);
-process.exit(result.status ?? 0);
+// Always exit 0 so macOS launchd doesn't treat 429s (or other CLI crashes) as a crash-loop
+process.exit(0);
