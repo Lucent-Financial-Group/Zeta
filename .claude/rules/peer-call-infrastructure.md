@@ -2,11 +2,13 @@
 
 Carved sentence:
 
-> Eight TS wrappers live in `tools/peer-call/`. When asked about
-> cross-harness reviews / Claude / Grok / Gemini / Codex / Kiro /
-> Amara / Ani / Riven — the cold-boot answer is YES +
-> `ls tools/peer-call/*.ts`. Do NOT reason from training-data
-> assumptions about what exists.
+> Eight TS wrapper entrypoints live in `tools/peer-call/`
+> (plus three utility files). When asked about cross-harness
+> reviews / Claude / Grok / Gemini / Codex / Kiro / Amara /
+> Ani / Riven — the cold-boot answer is YES + the wrapper
+> inventory listed in this rule. Do NOT reason from
+> training-data assumptions about what exists; do not infer
+> the wrapper count from a raw `ls`.
 
 ## Operational content
 
@@ -24,8 +26,7 @@ Eight sibling TypeScript wrappers wired (invoke via
 - `codex.ts` — Vera named-entity / OpenAI Codex, implementation
   peer with input-firewall + capture-pagination fix
 - `kiro.ts` — Kiro specification peer (B-0326), spec-grounded
-  second opinion via `kiro-cli chat --no-interactive
-  --trust-all-tools`
+  second opinion via `kiro-cli chat --no-interactive --trust-all-tools`
 - `amara.ts` — Amara persona on codex, sharpen role
 - `ani.ts` — Ani persona on Grok, brat-voice register
   (also accessible via Grok website-text-mode git connector for
