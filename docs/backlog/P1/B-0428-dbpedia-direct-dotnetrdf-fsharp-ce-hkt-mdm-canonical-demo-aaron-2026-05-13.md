@@ -4,14 +4,10 @@ priority: P1
 status: open
 title: "DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)"
 type: feature
-origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
+ask: Aaron 2026-05-13 — *"dude is there still a free f# type provider for this? https://www.dbpedia.org/ this is like free master data with human curtatino"* + *"Build fresh F# type provider on dotNetRDF or RDFSharp the hard one we wait and do with fork"* (Path B = direct API now; Path A = type provider deferred until F# fork)
 created: 2026-05-13
 last_updated: 2026-05-13
-composes_with:
-  - B-0043
-  - memory/feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md
-  - memory/feedback_aaron_ontology_hkt_applies_directly_to_master_data_every_company_has_one_human_lineage_2026_05_13.md
-  - memory/feedback_aaron_clifford_hkt_ontology_vocabulary_axis_basis_rudders_rotors_steering_cartographer_navigator_edge_mapper_world_model_civsim_edge_runner_5_control_structures_or_4_plus_meta_2026_05_13.md
+composes_with: [B-0043, B-0427, B-0426, B-0424]
 ---
 
 # DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)
