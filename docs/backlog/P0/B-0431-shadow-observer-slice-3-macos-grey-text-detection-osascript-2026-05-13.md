@@ -1,7 +1,7 @@
 ---
 id: B-0431
 priority: P0
-status: open
+status: closed
 title: "Shadow observer slice 3 — macOS grey-text detection via osascript"
 tier: product-feature
 effort: S
@@ -86,13 +86,17 @@ detector. This slice adds the built-in macOS implementation that fires when no
 
 ## Acceptance
 
-- [ ] `detectGreyTextMacOS()` exported from `tools/shadow/shadow-observer.ts`
-- [ ] Non-macOS guard logs warning and returns `null` without crashing
-- [ ] `detect-grey-text.applescript` present in `tools/shadow/`
-- [ ] Built-in `detectGreyText()` calls `detectGreyTextMacOS()` (stub replaced)
-- [ ] 12 new tests, 0 failures (`bun test tools/shadow/shadow-observer.test.ts`)
-- [ ] "Human keystroke overrides at any moment" B-0402 acceptance criterion satisfied
+- [x] `detectGreyTextMacOS()` exported from `tools/shadow/shadow-observer.ts`
+- [x] Non-macOS guard logs warning and returns `null` without crashing
+- [x] `detect-grey-text.applescript` present in `tools/shadow/`
+- [x] Built-in `detectGreyText()` calls `detectGreyTextMacOS()` (stub replaced)
+- [x] 12 new tests, 0 failures (`bun test tools/shadow/shadow-observer.test.ts`) — 39 total pass
+- [x] "Human keystroke overrides at any moment" B-0402 acceptance criterion satisfied
   (the re-detect path returns `"overridden"` when suggestion disappears during delay)
+
+## Shipped
+
+PR #2983 — merged 2026-05-13. All acceptance criteria verified post-merge.
 
 ## Pre-start checklist
 
