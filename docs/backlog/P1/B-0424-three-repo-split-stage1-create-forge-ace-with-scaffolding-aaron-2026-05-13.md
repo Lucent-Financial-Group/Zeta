@@ -19,8 +19,8 @@ Aaron 2026-05-13: *"let's split repos to make it easy backlog"* +
 *"that project repo split stuff alreday exists"* + *"Also there
 is backlog for repo split on products too"*.
 
-The three-repo split substrate already exists (memory file + ADR
-+ 4-stage migration plan from 2026-04-22). Stage 0 is done. This
+The three-repo split substrate already exists (memory file plus
+ADR plus 4-stage migration plan from 2026-04-22). Stage 0 is done. This
 backlog row tracks Stage 1 — make it easy to land.
 
 ## What Stage 1 produces
