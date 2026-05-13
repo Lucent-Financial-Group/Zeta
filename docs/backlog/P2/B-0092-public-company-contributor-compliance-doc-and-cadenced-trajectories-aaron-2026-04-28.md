@@ -179,16 +179,16 @@ When picking this up:
 
 **Decomposition note**: B-0092 treated as broad (doc + 5 trajectories). Re-decomposed per "always re-decompose... assume mistakes" into 4 atomic children below. T3 deferred per original scope.
 
-## Decomposition (2026-05-11, one bounded step)
+## Decomposition (2026-05-11, one bounded step; renumbered 2026-05-14)
 
-B-0092 decomposed into 4 smallest dependency-ordered atomic child rows (B-0370..B-0373). Parent now depends_on children; pickup order enforced by graph.
+B-0092 decomposed into 4 smallest dependency-ordered atomic child rows. Originally numbered B-0370..B-0373, renumbered to B-0452..B-0455 on 2026-05-14 to resolve ID collision with the earlier B-0370..B-0373 P1 set (durable/SEO/sitemap/alignment, from PR #2269). Parent now depends_on children; pickup order enforced by graph.
 
-- B-0370: Author core `docs/CONTRIBUTOR-COMPLIANCE.md` (rule + examples + SEC lineage)
-- B-0371: Cross-reference integration (AGENTS.md + CONTRIBUTING.md + GOVERNANCE.md)
-- B-0372: T1 self-audit + T2 weekly/monthly cadenced review (TS tooling preferred)
-- B-0373: T4 onboarding briefing + T5 drift retrospective (trajectory packets)
+- B-0452 (renumbered from B-0370): Author core `docs/CONTRIBUTOR-COMPLIANCE.md` (rule + examples + SEC lineage)
+- B-0453 (renumbered from B-0371): Cross-reference integration (AGENTS.md + CONTRIBUTING.md + GOVERNANCE.md)
+- B-0454 (renumbered from B-0372): T1 self-audit + T2 weekly/monthly cadenced review (TS tooling preferred)
+- B-0455 (renumbered from B-0373): T4 onboarding briefing + T5 drift retrospective (trajectory packets)
 
-`last_updated`: 2026-05-11
-`children`: [B-0370, B-0371, B-0372, B-0373]
+`last_updated`: 2026-05-14
+`children`: [B-0452, B-0453, B-0454, B-0455]
 `decomposition`: clean
-`depends_on`: [B-0370, B-0371, B-0372, B-0373]
+`depends_on`: [B-0452, B-0453, B-0454, B-0455]
