@@ -232,6 +232,14 @@ function step02_branchProtection(): void {
     `Apply branch protection to ${config.name}/main (1 review, signed commits, linear history, no force-push)`,
     "02-branch-protection"
   );
+
+  // Required signed commits is a separate endpoint — the main protection PUT does not cover it.
+  ghApiPut(
+    `/repos/${config.org}/${config.name}/branches/main/protection/required_signatures`,
+    {},
+    `Require signed commits on ${config.name}/main`,
+    "02b-required-signed-commits"
+  );
 }
 
 function step03_enableSecurity(): void {
@@ -433,11 +441,11 @@ function step07_summary(): void {
 // --- Main ---
 
 step01_createRepo();
+step06_pushScaffoldFiles(); // must run before branch protection to allow direct push to main
 step02_branchProtection();
 step03_enableSecurity();
 step04_codeqlDefaultSetup();
 step05_forkToAcehack();
-step06_pushScaffoldFiles();
 step07_summary();
 
 const failed = ops.filter((o) => o.status === "failed").length;
