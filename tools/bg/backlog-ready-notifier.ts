@@ -91,19 +91,31 @@ export const AGENT_MAP: Record<string, string[]> = {
   riven: ["riven", "grok"],
 };
 
+// Strip a YAML inline comment from a parsed depends_on value.
+// Lines like `- B-0395  # operational-resonance-conversation-interface`
+// previously produced the full string (including the comment) as a
+// "dependency ID" which then surfaced as a false-positive dangling-dep
+// warning. YAML's spec treats `#` (preceded by whitespace) as the start
+// of a comment outside quoted contexts; backlog IDs never contain `#`,
+// so the simple "split on whitespace-#" handling is sufficient and safe.
+function stripInlineComment(value: string): string {
+  const idx = value.search(/\s+#/);
+  return (idx === -1 ? value : value.slice(0, idx)).trim();
+}
+
 function parseDependsOn(frontmatter: string): string[] {
   const inlineMatch = frontmatter.match(/^depends_on:\s*\[(.*?)\]/m);
   if (inlineMatch && inlineMatch[1] !== undefined) {
     return inlineMatch[1]
       .split(",")
-      .map(s => s.trim())
+      .map(s => stripInlineComment(s.trim()))
       .filter(s => s.length > 0);
   }
   const blockMatch = frontmatter.match(/^depends_on:\s*\n((?:[ \t]+-[ \t]*[^\r\n]+\r?\n?)+)/m);
   if (blockMatch && blockMatch[1] !== undefined) {
     return blockMatch[1]
       .split(/\r?\n/)
-      .map(line => line.match(/^[ \t]+-[ \t]*(.+?)\s*$/)?.[1] ?? "")
+      .map(line => stripInlineComment(line.match(/^[ \t]+-[ \t]*(.+?)\s*$/)?.[1] ?? ""))
       .filter(s => s.length > 0);
   }
   return [];
