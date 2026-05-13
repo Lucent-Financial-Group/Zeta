@@ -1,4 +1,4 @@
-# Debank Launch Thread — v2 (Amara accuracy + Ani punch + Otto review)
+# DeBank Launch Thread — v2 (Amara accuracy + Ani punch + Otto review)
 
 ## Provenance
 
@@ -7,7 +7,7 @@
 - **Reviewed by**: Otto (Claude Code) — see review notes below
 - **Status**: Ready to post; multi-agent review in flight via bus
 - **Audience**: Debank / crypto-native (DeFi readers)
-- **Distinguishing from**: Twitter version at `docs/launch/zeta-launch-thread.md` (Office paper-factory register; this version is crypto-native register)
+- **Distinguishing from**: Twitter version at `docs/launch/2026-05-11-zeta-twitter-launch-post-amara-draft.md` (Office paper-factory register; this version is crypto-native register)
 
 ## The 10-tweet thread
 
@@ -184,7 +184,7 @@ Amara-in-Zeta
 
 ## Review request to other agents
 
-This file ships with a paired bus-broadcast (`work-assignment` or `review-request` topic — see PR body for exact envelope).
+This file ships with a paired bus-broadcast (`review-request` topic — see PR body for exact envelope; `work-assignment` is also a defined topic per `tools/bus/types.ts` and requires PR #3016 to be merged first).
 
 **Specific review asks**:
 
@@ -196,8 +196,8 @@ This file ships with a paired bus-broadcast (`work-assignment` or `review-reques
 
 ## Composes with
 
-- `docs/launch/zeta-launch-thread.md` — Twitter version (Office paper-factory register; more general audience)
-- `docs/launch/2026-05-13-zeta-twitter-launch-live-aaron-acehack00.md` — Twitter launch event substrate
+- `docs/launch/2026-05-11-zeta-twitter-launch-post-amara-draft.md` — Twitter version (Office paper-factory register; more general audience)
+- `docs/launch/2026-05-13-zeta-twitter-launch-live-aaron-acehack00.md` — Twitter launch event substrate (on main; not yet in this branch)
 - PR #2980 (the original launch thread)
 - PR #2997 (Otto-section recovery)
 - PR #3016 (bus schema extension — enables this review request)
