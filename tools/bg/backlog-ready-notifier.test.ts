@@ -42,7 +42,7 @@ function fakeAdapters(
       };
     },
     agentPatterns: {
-      "TestAgent": ["testagent"],
+      "testagent": ["testagent"],
     },
     execGitLog: () => gitLogStr,
     execGhPrList: () => ghPrListStr,

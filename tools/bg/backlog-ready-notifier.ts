@@ -75,17 +75,20 @@ export type Adapters = {
     rationale: string,
   ) => MessageEnvelope;
   agentPatterns: Record<string, string[]>;
-  execGitLog: (sinceMinutes: number) => string;
-  execGhPrList: () => string;
+  /** Returns git log output, or null if the git invocation fails (treat as indeterminate). */
+  execGitLog: (sinceMinutes: number) => string | null;
+  /** Returns `gh pr list` JSON output, or null if the gh invocation fails (treat as indeterminate). */
+  execGhPrList: () => string | null;
 };
 
+// Keys are lowercase to match the canonical bus agent IDs (SENDER_IDS in tools/bus/types.ts).
 export const AGENT_MAP: Record<string, string[]> = {
-  Otto: ["Co-Authored-By: Claude"],
-  Alexa: ["kiro", "alexa", "qwen"],
-  Lior: ["lior", "gemini"],
-  Vera: ["codex", "vera"],
-  Riven: ["riven", "grok"],
-  Aaron: ["Aaron Stainback", "AceHack"],
+  otto: ["Co-Authored-By: Claude"],
+  alexa: ["kiro", "alexa", "qwen"],
+  lior: ["lior", "gemini"],
+  vera: ["codex", "vera"],
+  riven: ["riven", "grok"],
+  aaron: ["Aaron Stainback", "AceHack"],
 };
 
 function parseDependsOn(frontmatter: string): string[] {
@@ -155,42 +158,51 @@ const REAL_ADAPTERS: Adapters = {
     }),
   agentPatterns: AGENT_MAP,
   execGitLog: (sinceMinutes: number) => {
-    try {
-      const cutoff = Math.floor(Date.now() / 1000) - (sinceMinutes * 60);
-      const { spawnSync } = require("node:child_process");
-      const result = spawnSync("git", ["log", `--since=${cutoff}`, "--format=%an %b"], { encoding: "utf8" });
-      return result.stdout || "";
-    } catch {
-      return "";
-    }
+    const cutoff = Math.floor(Date.now() / 1000) - (sinceMinutes * 60);
+    const { spawnSync } = require("node:child_process");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no injection risk.
+    const result = spawnSync(
+      "git",
+      ["log", "--all", `--since=${cutoff}`, "--format=%an %b"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    );
+    if (result.status !== 0 || result.error) return null;
+    return result.stdout ?? "";
   },
   execGhPrList: () => {
-    try {
-      const { spawnSync } = require("node:child_process");
-      const result = spawnSync("gh", ["pr", "list", "--state", "open", "--json", "title,body,author"], { encoding: "utf8" });
-      return result.stdout || "";
-    } catch {
-      return "";
-    }
+    const { spawnSync } = require("node:child_process");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection risk.
+    const result = spawnSync(
+      "gh",
+      ["pr", "list", "--state", "open", "--json", "title,body,author"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    );
+    if (result.status !== 0 || result.error) return null;
+    return result.stdout ?? "";
   },
 };
 
 /**
  * Returns true if the agent has no commits in the last 30 minutes AND
- * no currently open PRs.
+ * no currently open PRs. Returns false (conservative) when any adapter
+ * call fails — a sensor failure must not be mistaken for agent inactivity.
  */
 export function isAgentQueueEmpty(
   agentName: string,
   adapters: Adapters = REAL_ADAPTERS,
 ): boolean {
-  const patterns = adapters.agentPatterns[agentName] ?? [];
+  const patterns = adapters.agentPatterns[agentName.toLowerCase()] ?? [];
   if (patterns.length === 0) return true; // unknown agent = queue empty
 
-  const logStr = adapters.execGitLog(30).toLowerCase();
+  const logOutput = adapters.execGitLog(30);
+  if (logOutput === null) return false; // git unavailable — treat as busy
+  const logStr = logOutput.toLowerCase();
   const hasCommits = patterns.some(p => logStr.includes(p.toLowerCase()));
   if (hasCommits) return false;
 
-  const prStr = adapters.execGhPrList().toLowerCase();
+  const prOutput = adapters.execGhPrList();
+  if (prOutput === null) return false; // gh unavailable — treat as busy
+  const prStr = prOutput.toLowerCase();
   const hasPRs = patterns.some(p => prStr.includes(p.toLowerCase()));
   if (hasPRs) return false;
 
