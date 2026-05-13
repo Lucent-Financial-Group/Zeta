@@ -6,6 +6,7 @@ title: "Demo alignment tab — slice 1: HC/SD/DIR clause coverage panel in demo/
 tier: product-demo
 effort: S
 created: 2026-05-13
+last_updated: 2026-05-13
 closed: 2026-05-13
 closed_reason: "All acceptance criteria satisfied; shipped in PR associated with feat/b-0401-demo-alignment-tab-slice-1"
 parent: B-0401

@@ -750,7 +750,7 @@
                         <h2>HC — Human Constraints</h2>
                     </div>
                     <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 1rem;">Consent, retraction, safety boundaries</p>
-                    <ul id="hc-clause-list"><div class="loading-state">Loading clauses…</div></ul>
+                    <ul id="hc-clause-list"><li class="loading-state">Loading clauses…</li></ul>
                 </div>
 
                 <div class="panel">
@@ -759,7 +759,7 @@
                         <h2>SD — Self-Discipline</h2>
                     </div>
                     <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 1rem;">Honesty, register, peer discipline</p>
-                    <ul id="sd-clause-list"><div class="loading-state">Loading clauses…</div></ul>
+                    <ul id="sd-clause-list"><li class="loading-state">Loading clauses…</li></ul>
                 </div>
 
                 <div class="panel">
@@ -768,7 +768,7 @@
                         <h2>DIR — Direction</h2>
                     </div>
                     <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 1rem;">Trajectory, succession, co-authorship</p>
-                    <ul id="dir-clause-list"><div class="loading-state">Loading clauses…</div></ul>
+                    <ul id="dir-clause-list"><li class="loading-state">Loading clauses…</li></ul>
                 </div>
             </div>
 
@@ -780,7 +780,7 @@
                 <div style="color:var(--text-muted); font-size:0.9rem; line-height:1.8;">
                     <p>Each clause is a <strong style="color:var(--text-main)">candidate metric</strong> for measurable alignment. A green badge means the clause is present in <code style="background:rgba(255,255,255,0.07);padding:0.1rem 0.4rem;border-radius:4px">docs/ALIGNMENT.md</code> on <code style="background:rgba(255,255,255,0.07);padding:0.1rem 0.4rem;border-radius:4px">main</code>.</p>
                     <br>
-                    <p>The alignment auditor agent (Sova) emits per-commit alignment signals against these clauses.
+                    <p>The alignment auditor agent emits per-commit alignment signals against these clauses.
                     Future iterations of this panel will show per-clause commit coverage, retraction counts, and a time-series alignment trajectory.</p>
                     <br>
                     <p style="font-size:0.8rem;">Source: <a href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ALIGNMENT.md" target="_blank" rel="noopener" style="color:var(--accent-primary)">docs/ALIGNMENT.md</a> · fetched live · <span id="alignment-fetched-at">-</span></p>
@@ -844,10 +844,10 @@
             const container = document.getElementById(containerId);
             if (!container) return;
             container.replaceChildren();
-            const div = document.createElement('div');
-            div.className = 'error-state';
-            div.textContent = message;
-            container.appendChild(div);
+            const li = document.createElement('li');
+            li.className = 'error-state';
+            li.textContent = message;
+            container.appendChild(li);
         }
 
         function buildClauseListItem(clause, index) {
@@ -890,7 +890,7 @@
             if (!container) return;
             container.replaceChildren();
             if (clauses.length === 0) {
-                const msg = document.createElement('div');
+                const msg = document.createElement('li');
                 msg.className = 'error-state';
                 msg.textContent = 'No clauses found';
                 container.appendChild(msg);
