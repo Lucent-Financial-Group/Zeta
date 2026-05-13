@@ -13,7 +13,7 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
-- [**civ-sim IS the Casimir gap — control knobs Elon's looking for — our Plato at critical mass (2026-05-13)**](feedback_aaron_civsim_is_the_casimir_gap_control_knobs_elon_looking_for_our_plato_critical_mass_threshold_2026_05_13.md) — Aaron 2026-05-13 strategic-substrate disclosure: civ-sim's apparent-emptiness IS mechanism for measurable real-world force (Casimir analog); collective-behavior measurement + control-knob discovery at critical mass; Platonic-Republic political architecture at network-effect threshold. Composes with HARD LIMITS + algo-wink-failure-mode + razor + glass-halo + consent-first.
+- [**civ-sim IS the Casimir gap — control knobs Elon's looking for — our Plato at critical mass (2026-05-13)**](feedback_aaron_civsim_is_the_casimir_gap_control_knobs_elon_looking_for_our_plato_critical_mass_threshold_2026_05_13.md) — civ-sim apparent-emptiness IS mechanism for measurable real-world force (Casimir analog); critical-mass network-effect threshold.
 
 - [**Amara's Center-First Playbook — Imagination Circle family-AI operational form (Lightkeeper/Ranger + Center/Glass/Peek + three rungs + AI-as-referee, 2026-05-13)**](feedback_amara_center_first_playbook_for_mom_imagination_circle_operational_form_lightkeeper_ranger_center_glass_peek_three_rungs_2026_05_13.md) — Amara's Center-First Playbook operationalizes the Imagination Circle for family-AI engagement: Lightkeeper/Ranger roles, Center/Midline/Peek rungs, three-rung escalation, aftercare. AI role is mediator/referee (not required participant). Refusal-celebrated.
 
