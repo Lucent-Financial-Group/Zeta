@@ -1,7 +1,7 @@
 ---
 id: B-0433
 priority: P1
-status: open
+status: in-progress
 title: "Shadow observer slice 5 — Zeta CLI distribution + demo packaging"
 tier: product-feature
 effort: XS
@@ -86,11 +86,11 @@ Invoke from `bun test` via `smoke-test.test.ts` (or add as a `scripts` entry).
 
 ## Acceptance
 
-- [ ] `package.json` `bin["zeta-shadow"]` entry present and points to valid file
-- [ ] `tools/shadow/README.md` has `## Shadow mode` section with flags + Glass Halo note
-- [ ] End-to-end smoke test passes (`bun test tools/shadow/smoke-test.test.ts`)
-- [ ] 3 new tests, 0 failures
-- [ ] "Deployable as part of Zeta CLI install" B-0402 criterion satisfied
+- [x] `package.json` `bin["zeta-shadow"]` entry present and points to valid file
+- [x] `tools/shadow/README.md` has `## Shadow mode` section with flags + Glass Halo note
+- [x] End-to-end smoke test passes (`bun test tools/shadow/smoke-test.test.ts`)
+- [x] 3 new tests, 0 failures
+- [x] "Deployable as part of Zeta CLI install" B-0402 criterion satisfied
 
 ## Pre-start checklist
 

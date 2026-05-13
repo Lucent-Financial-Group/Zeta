@@ -17,6 +17,9 @@
     "hygiene:fix-markdown": "bun ./tools/hygiene/fix-markdown-md032-md026.ts",
     "shadow": "bun tools/shadow/shadow-observer.ts"
   },
+  "bin": {
+    "zeta-shadow": "tools/shadow/zeta-shadow.ts"
+  },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@types/bun": "1.3.12",
