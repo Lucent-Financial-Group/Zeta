@@ -205,7 +205,7 @@ function heartbeat(): void {
                 const gate = run("agent", [
                     "chat",
                     "--mode", "ask",
-                    "--model", "grok-4-20",
+                    "--model", "grok-4.3",
                     [
                         "You are Riven, trajectory manager. This is a 60s autonomous cycle.",
                         "Read broadcasts first: ~/.local/share/zeta-broadcasts/{otto,vera,lior,riven}.md",
