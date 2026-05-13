@@ -337,10 +337,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0057](backlog/P2/B-0057-occult-western-esoteric-research-track.md)** Occult / Western-esoteric tradition research track — operational-resonance candidates from Hermetic / Kabbalistic / Thelemic / Golden Dawn / Theosophical / alchemical lineages
 - [ ] **[B-0059](backlog/P2/B-0059-etymology-epistemology-research-track.md)** Etymology + epistemology research track — linguistic-substrate of kernel-vocabulary + three-filter discipline calibration
 - [ ] **[B-0068](backlog/P2/B-0068-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md)** Local AI trajectory — Forge CLI/harness + Ollama + direct local-model integration (umbrella)
-- [ ] **[B-0068.1](backlog/P2/B-0068.1-forge-cli-ollama-research-slice-aaron-2026-05-10.md)** Forge CLI + Ollama harness integration research slice (B-0068 child 1)
 - [ ] **[B-0068.1](backlog/P2/B-0068.1-forge-cli-ollama-research-xs-riven-2026-05-11.md)** Forge CLI + Ollama bridge research pass (WebSearch + capability matrix, XS)
 - [ ] **[B-0068.2](backlog/P2/B-0068.2-hardware-audit-model-shortlist-xs-riven-2026-05-11.md)** Hardware resource audit + model-candidate shortlist (TS inventory tool, XS)
 - [ ] **[B-0068.3](backlog/P2/B-0068.3-direct-local-integration-survey-xs-riven-2026-05-11.md)** Direct local-model integration alternatives survey (llama.cpp/MLX/vLLM, XS)
+- [ ] **[B-0068.4](backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md)** Forge CLI + Ollama harness integration research slice (B-0068 child 1, parallel scope)
 - [x] **[B-0069](backlog/P2/B-0069-heredoc-patterns-encode-into-commit-message-shape-skill-aaron-2026-04-28.md)** Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28)
 - [x] **[B-0070](backlog/P2/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28.md)** Orphan role-ref detector lint — catch ferry-N without named source on code surfaces (Aaron 2026-04-28)
 - [ ] **[B-0071](backlog/P2/B-0071-rename-otto-275-forever-out-of-live-lock-class-codex-pr-17-2026-04-28.md)** Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split
