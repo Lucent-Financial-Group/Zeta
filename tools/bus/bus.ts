@@ -259,10 +259,15 @@ function main(): void {
         process.exit(1);
       }
       const timeoutSec = flags.timeout !== undefined ? parseInt(flags.timeout, 10) : -1;
+      if (flags.timeout !== undefined && (!Number.isFinite(timeoutSec) || timeoutSec < 0)) {
+        console.error("--timeout must be a non-negative integer (seconds)");
+        process.exit(1);
+      }
 
       // cursor tracks the last-delivered timestamp + the IDs at that timestamp,
       // so bursts of same-millisecond messages are never silently dropped.
-      let cursorTimestamp = new Date().toISOString();
+      // ZETA_WATCH_INITIAL_CURSOR allows tests to set a past cursor without timing hacks.
+      let cursorTimestamp = process.env.ZETA_WATCH_INITIAL_CURSOR ?? new Date().toISOString();
       const deliveredAtCursor = new Set<string>();
       const deadline = timeoutSec >= 0 ? Date.now() + timeoutSec * 1_000 : Infinity;
 

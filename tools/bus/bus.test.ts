@@ -177,6 +177,36 @@ describe("bus — watch", () => {
     expect(r.exitCode).toBe(0);
     expect(r.stdout).toBe("");
   });
+
+  test("watch emits messages published after cursor start (ZETA_WATCH_INITIAL_CURSOR)", () => {
+    // Publish a message first (timestamp will be ~now)
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"check":"live"}');
+
+    // Set cursor to 10s in the past so the published message is "fresh"
+    const pastCursor = new Date(Date.now() - 10_000).toISOString();
+    const r = spawnSync("bun", [SCRIPT, "watch", "--timeout", "0", "--json"], {
+      encoding: "utf-8",
+      env: { ...process.env, ZETA_BUS_DIR: TEST_DIR, ZETA_WATCH_INITIAL_CURSOR: pastCursor },
+    });
+
+    expect(r.status).toBe(0);
+    const msgs = (r.stdout ?? "").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    expect(msgs.length).toBeGreaterThan(0);
+    expect(msgs[0].topic).toBe("heartbeat");
+    expect((msgs[0].payload as { check: string }).check).toBe("live");
+  });
+
+  test("watch --interval invalid value exits 1", () => {
+    const r = run("watch", "--interval", "abc", "--timeout", "0");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--interval");
+  });
+
+  test("watch --timeout invalid value exits 1", () => {
+    const r = run("watch", "--timeout", "notanumber");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--timeout");
+  });
 });
 
 describe("bus — error handling", () => {
