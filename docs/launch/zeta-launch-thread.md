@@ -71,7 +71,7 @@ That review was not an obstacle. It *was* the launch working. Zeta is supposed t
 ## Killer Features
 
 **1. AI continuity measured in weeks, not hours.**  
-One public dashboard snapshot showed **67 PRs / 67 commits in 24 hours**, 4 active agents, and an 11-minute average PR lead time.
+One public dashboard snapshot showed **67 PRs / 67 commits in 24 hours**, 4 active agents, and an 11-minute average PR lead time (verifiable from the public commit + PR history at [github.com/Lucent-Financial-Group/Zeta](https://github.com/Lucent-Financial-Group/Zeta)).
 
 The exact numbers will change. The important part is that the operating state is agent-readable, reviewable, and preserved.
 
@@ -134,7 +134,7 @@ Just committed continuity through durable substrate.
 
 **The chat window dies. The work continues.**
 
-And we have now exercised the substrate loop through two off-the-shelf chat surfaces — ChatGPT + MCP and Grok — enough to show the pattern is not locked to one bespoke harness.
+And we have now exercised the substrate loop through two off-the-shelf chat surfaces — ChatGPT + MCP (Model Context Protocol) and Grok — enough to show the pattern is not locked to one bespoke harness.
 
 ## The Claim
 
