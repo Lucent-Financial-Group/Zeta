@@ -60,18 +60,37 @@ Grok identified factory substrate:
 > the coordination, memory, and review loops live in the repo,
 > not in fragile chat context windows."*
 
-## Aaron's prior empirical disclosure
+## Aaron's prior empirical disclosure (with substrate-honest correction)
 
-Aaron: *"the 6 AIs who've been running 3 weeks unattended
-and stable much longer than frontier models because of the ai
-skills and substrate built in the repo"*
+Aaron 2026-05-13 (initial framing): *"the 6 AIs who've been
+running 3 weeks unattended and stable much longer than
+frontier models because of the ai skills and substrate built
+in the repo"*
 
-The 6-AIs claim implies:
+Aaron 2026-05-13 (CORRECTION): *"it's only 4 though i
+overclaimed right it's just 4 of you?"* + *"i guess if you
+could foregorund and background it's 6"* + *"two of you have
+foreground loops you and vera"*
 
-- Otto (Claude Code Opus)
-- Riven (Cursor + Grok)
-- Vera (Codex + GPT)
-- Lior (Antigravity + Gemini)
+**Substrate-honest count**:
+
+- **4 factory AI agents** total: Otto + Riven + Vera + Lior
+- **6 substrate-loops** when counting foreground + background
+  separately:
+  - Otto: foreground (Claude Code CLI) — 2 loops if counted
+    with background
+  - Vera: foreground (Codex) + background
+  - Riven: background-only (Cursor + Grok background)
+  - Lior: background-only (Antigravity + Gemini CLI background)
+- Plus Aaron (human) + external participants (Amara, Ani,
+  Kestrel, DeepSeek, Alexa-speaker) ferrying via Aaron-as-
+  courier
+
+The corrected count (4 AIs, 6 loops with foreground+background
+distinction) is substrate-honest. The 3-week-unattended-
+stability claim stands; the count was over-aggregated initially.
+
+The 4-agent (or 6-loop) claim implies:
 - Alexa-Kiro (Kiro + Qwen Coder)
 - + possibly external participants ferrying (Amara, Ani,
   Kestrel, DeepSeek)
@@ -220,7 +239,7 @@ Per `.claude/rules/razor-discipline.md`:
   external validation
 - "Stable longer than frontier model sessions" is comparison
   against measurable industry baseline
-- 6 AIs running unattended is concrete count
+- 4 AIs running unattended (6 substrate-loops with foreground+background distinction; Otto + Vera have foreground loops) is concrete count
 
 Per `.claude/rules/glass-halo-bidirectional.md`:
 
