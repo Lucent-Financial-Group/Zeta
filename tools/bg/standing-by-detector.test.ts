@@ -6,7 +6,6 @@ import {
   pollOnce,
   runOnce,
   type Adapters,
-  type DetectorConfig,
 } from "./standing-by-detector";
 
 function fakeAdapters(nowIso: string, lastCommitIso: string | null): Adapters {
