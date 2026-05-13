@@ -269,20 +269,25 @@ Three existing files validated against this standard:
 ### 6.4 Heap-state validation (B-0423)
 
 Under the heap-state-acceptable model, a memory file does not
-require a MEMORY.md paired-edit, but MUST satisfy the reindexer
-contract:
+require a MEMORY.md paired-edit. The reindexer
+(`tools/memory/reindex-memory-md.ts`) only skips files with **no
+frontmatter block at all**. Files with frontmatter but missing
+individual fields fall back to safe defaults rather than being
+skipped:
 
-| Field | Required | Notes |
+| Field | Behavior when missing | B-0335 enforcement |
 |---|---|---|
-| `name:` | **yes** | Used as display title in the index entry. |
-| `description:` | **yes** | Retrieval key — be specific. |
-| `type:` | **yes** | Must be `feedback`, `user`, `project`, or `reference`. |
-| `created:` | **yes** | ISO date `YYYY-MM-DD`. Used for newest-first sort. |
+| `name:` | Falls back to filename (without `.md`) | Error — enforced |
+| `description:` | Falls back to `"(no description)"` | Error — enforced |
+| `type:` | Inferred from filename prefix if possible | Error — enforced |
+| `created:` | Falls back to date extracted from filename, or `"0000-00-00"` | Not enforced by B-0335 |
 
-Files missing any required field will be silently skipped by
-`tools/memory/reindex-memory-md.ts` (they never promote from
-heap to stack). B-0335 validation tooling enforces these fields
-mechanically.
+Best practice: include all four fields so the index entry is
+useful. Files with missing `name`, `description`, or `type`
+will be flagged as errors by B-0335 validation
+(`tools/hygiene/validate-memory-schema.ts --enforce`). The
+`created` field is not yet mechanically enforced but strongly
+recommended for correct newest-first sort order.
 
 ## 7 Scope and boundaries
 
