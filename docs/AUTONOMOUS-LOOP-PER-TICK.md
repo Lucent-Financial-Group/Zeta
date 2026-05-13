@@ -88,8 +88,9 @@ regressions slipping through):
   dotnet gates above cover the F#/C# side)
 - `bun --bun tsc --noEmit` if TS code changed
 
-If any of these would fail, do NOT advance to step 5 (commit). Fix
-the gate failure first, then re-verify.
+If any of these would fail, do NOT commit (verify is the gating
+half of step 4; commit is the post-pass half). Fix the gate
+failure first, then re-verify before committing.
 
 ### 5. Write tick shard
 
