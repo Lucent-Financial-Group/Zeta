@@ -122,7 +122,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0268](backlog/P1/B-0268-canary-test-rules-autoload-verification-2026-05-08.md)** Verify .claude/rules/ auto-load — run canary test
 - [x] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
 - [x] **[B-0270](backlog/P1/B-0270-pm2-role-skill-definition-2026-05-08.md)** PM-2 role - skill definition + persona agent
-- [ ] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
+- [x] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
 - [ ] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
 - [ ] **[B-0273](backlog/P1/B-0273-atari-rom-safe-unsafe-folder-split-2026-05-08.md)** Atari 2600 ROM safe/unsafe folder split for license compliance
 - [ ] **[B-0274](backlog/P1/B-0274-pages-astro-workflow-scaffold-and-sha-pinning-2026-05-08.md)** Pages discoverability - Astro workflow scaffold and SHA pinning
@@ -225,12 +225,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0409](backlog/P1/B-0409-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [ ] **[B-0418](backlog/P1/B-0418-amplification-ratio-metric-dashboard-2026-05-11.md)** Amplification ratio metric — human input : agent actions on dashboard
 - [ ] **[B-0419](backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md)** Honest agenda amplification metric — actions weighted by agenda alignment
-- [ ] **[B-0423](backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md)** MEMORY.md serialization-point anti-pattern
-- [ ] **[B-0423.1](backlog/P1/B-0423.1-reindex-memory-md-test-coverage-collectentries-renderindex.md)** Extend reindex-memory-md.ts test coverage — collectEntries + renderIndex
-- [ ] **[B-0423.2](backlog/P1/B-0423.2-memory-docs-update-heap-state-acceptable.md)** Update memory/ documentation to describe heap-state-acceptable model
-- [ ] **[B-0423.3](backlog/P1/B-0423.3-wire-reindex-into-autonomous-loop-tick.md)** Wire reindex-memory-md.ts into autonomous-loop tick cadence
-- [ ] **[B-0423.4](backlog/P1/B-0423.4-relax-memory-index-integrity-ci-check.md)** Relax memory-index-integrity.yml CI check — heap-state-acceptable
-- [ ] **[B-0423.5](backlog/P1/B-0423.5-close-b0088-chain-superseded-by-heap-architecture.md)** Close B-0088 chain as superseded by B-0423 heap architecture
+- [x] **[B-0423](backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md)** MEMORY.md serialization-point anti-pattern
+- [x] **[B-0423.1](backlog/P1/B-0423.1-reindex-memory-md-test-coverage-collectentries-renderindex.md)** Extend reindex-memory-md.ts test coverage — collectEntries + renderIndex
+- [x] **[B-0423.2](backlog/P1/B-0423.2-memory-docs-update-heap-state-acceptable.md)** Update memory/ documentation to describe heap-state-acceptable model
+- [x] **[B-0423.3](backlog/P1/B-0423.3-wire-reindex-into-autonomous-loop-tick.md)** Wire reindex-memory-md.ts into autonomous-loop tick cadence
+- [x] **[B-0423.4](backlog/P1/B-0423.4-relax-memory-index-integrity-ci-check.md)** Relax memory-index-integrity.yml CI check — heap-state-acceptable
+- [x] **[B-0423.5](backlog/P1/B-0423.5-close-b0088-chain-superseded-by-heap-architecture.md)** Close B-0088 chain as superseded by B-0423 heap architecture
 - [ ] **[B-0424](backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)** Three-repo split Stage 1 — create empty Forge + ace with day-one scaffolding
 - [ ] **[B-0425](backlog/P1/B-0425-product-repo-split-planning-ksk-wellness-american-dream-civsim-honor-system-no-fork-license-aaron-2026-05-13.md)** Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license
 - [ ] **[B-0426](backlog/P1/B-0426-repo-split-orthogonal-mirror-beacon-axis-aaron-2026-05-13.md)** Repo-split orthogonal Mirror/Beacon axis — speculative-fast-forks vs governance-citation-gated
@@ -245,6 +245,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0440](backlog/P1/B-0440-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
 - [ ] **[B-0441](backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
 - [ ] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
+- [ ] **[B-0444](backlog/P1/B-0444-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
+- [ ] **[B-0445](backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md)** C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API
 
 ## P2 — research-grade
 
@@ -343,9 +345,9 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0081](backlog/P2/B-0081-path-gate-kotlin-scala-codex-pr-662.md)** codeql.yml path-gate should match `*.kt` + `*.scala` not just `*.java` — Codex P2 on PR #662
 - [ ] **[B-0082](backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md)** docs/GLOSSARY.md provenance entries use persona-name attribution; convert to role-refs
 - [x] **[B-0086](backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md)** Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)
-- [ ] **[B-0088](backlog/P2/B-0088-paired-edit-lint-advisory-not-enforcement-promote-to-required-check-otto-2026-04-28.md)** memory/MEMORY.md paired-edit lint is advisory only (not in required-status-checks); promote or remove the discoverability claim
-- [ ] **[B-0088.1](backlog/P2/B-0088.1-verify-paired-edit-job-in-required-status-checks-riven-2026-05-11.md)** Verify whether `check memory/MEMORY.md paired edit` appears in required_status_checks.contexts or ruleset
-- [ ] **[B-0088.2](backlog/P2/B-0088.2-decide-promote-vs-weaken-for-memory-paired-lint-riven-2026-05-11.md)** Maintainer decision gate — promote paired-edit lint to required or weaken its discoverability claim
+- [x] **[B-0088](backlog/P2/B-0088-paired-edit-lint-advisory-not-enforcement-promote-to-required-check-otto-2026-04-28.md)** memory/MEMORY.md paired-edit lint is advisory only (not in required-status-checks); promote or remove the discoverability claim
+- [x] **[B-0088.1](backlog/P2/B-0088.1-verify-paired-edit-job-in-required-status-checks-riven-2026-05-11.md)** Verify whether `check memory/MEMORY.md paired edit` appears in required_status_checks.contexts or ruleset
+- [x] **[B-0088.2](backlog/P2/B-0088.2-decide-promote-vs-weaken-for-memory-paired-lint-riven-2026-05-11.md)** Maintainer decision gate — promote paired-edit lint to required or weaken its discoverability claim
 - [ ] **[B-0088.3](backlog/P2/B-0088.3-audit-memory-reference-existence-lint-advisory-status-riven-2026-05-11.md)** Audit memory-reference-existence-lint.yml for advisory-vs-required parity (same class as B-0088)
 - [ ] **[B-0088.4](backlog/P2/B-0088.4-audit-memory-index-duplicate-lint-advisory-status-riven-2026-05-11.md)** Audit memory-index-duplicate-lint.yml for advisory-vs-required parity
 - [ ] **[B-0088.5](backlog/P2/B-0088.5-audit-backlog-index-integrity-lint-advisory-status-riven-2026-05-11.md)** Audit backlog-index-integrity.yml for advisory-vs-required parity (B-0088 sibling)
@@ -491,6 +493,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0421](backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md)** Grok peer-call failure — cursor-agent exit 1 during multi-agent review
 - [ ] **[B-0430](backlog/P2/B-0430-peer-call-wrappers-codeql-insecure-tmp-file-all-8-wrappers-substrate-consistent-fix-2026-05-13.md)** Peer-call wrappers — CodeQL insecure-temp-file alert on autogenOutputPath() across all 8 wrappers (substrate-consistent fix needed)
 - [ ] **[B-0443](backlog/P2/B-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md)** Launch-substrate carve-out — persona naming allowed in docs/launch/** under existing closed-list pattern
+- [ ] **[B-0446](backlog/P2/B-0446-lean4-formal-proof-completion-dbsp-core-identities-pm2-2026-05-13.md)** Lean 4 formal proof completion — DBSP chain rule + core stream-calculus identities
+- [ ] **[B-0447](backlog/P2/B-0447-nuget-package-metadata-completeness-pm2-2026-05-13.md)** NuGet package metadata completeness — description, tags, SourceLink, semantic versioning
 
 ## P3 — convenience / deferred
 

@@ -1,7 +1,7 @@
 ---
 id: B-0271
 priority: P1
-status: open
+status: closed
 title: "PM-2 role — first research pass on Zeta feature gaps"
 created: 2026-05-08
 last_updated: 2026-05-13
