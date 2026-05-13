@@ -21,7 +21,7 @@
  *
  * Usage:
  *   bun tools/shadow/shadow-observer.ts [--delay <ms>] [--detect-cmd <cmd>]
- *     [--dry-run] [--once] [--loop-interval <ms>] [--log-file <path>]
+ *     [--dry-run] [--once] [--loop <ms>] [--loop-interval <ms>] [--log-file <path>]
  *
  * Flags:
  *   --delay <ms>          Delay before auto-accepting (default: 3000)
@@ -29,6 +29,8 @@
  *                         Exit 0 = suggestion present (stdout is content).
  *                         Exit non-0 = no suggestion. Default: built-in stub.
  *   --dry-run             Log intended actions without sending keystrokes
+ *   --loop <ms>           After natural exit, wait <ms> then restart. SIGINT/SIGTERM
+ *                         terminate immediately and are never restarted.
  *   --once                Run exactly one detection cycle then exit
  *   --loop-interval <ms>  Continuous mode: sleep between cycles (default: 1000)
  *   --log-file <path>     Log file path (default: tools/shadow/shadow-observer.log)
@@ -44,6 +46,7 @@ export interface ShadowConfig {
   dryRun: boolean;
   logFile: string;
   loopIntervalMs: number;
+  loopMs?: number;
   once: boolean;
 }
 
@@ -322,12 +325,10 @@ export async function runOneCycle(
   return "error";
 }
 
-export async function run(
+async function runInner(
   config: ShadowConfig,
-  detectFn: DetectFn = config.detectCmd
-    ? () => detectViaCommand(config.detectCmd!)
-    : detectGreyText,
-  acceptFn: AcceptFn = acceptGreyText,
+  detectFn: DetectFn,
+  acceptFn: AcceptFn,
 ): Promise<void> {
   log(
     {
@@ -352,13 +353,40 @@ export async function run(
   }
 }
 
-function parseConfig(argv: string[]): ShadowConfig {
+export async function run(
+  config: ShadowConfig,
+  detectFn: DetectFn = config.detectCmd
+    ? () => detectViaCommand(config.detectCmd!)
+    : detectGreyText,
+  acceptFn: AcceptFn = acceptGreyText,
+): Promise<void> {
+  if (config.loopMs === undefined) {
+    await runInner(config, detectFn, acceptFn);
+    return;
+  }
+
+  // Outer restart loop: after natural exit, wait loopMs then restart.
+  // SIGINT/SIGTERM use 128+signal exit codes (130/143) so shell automation and
+  // supervisors can distinguish interruption from clean completion.  Registering
+  // direct-exit listeners is required because Node/Bun removes its default
+  // exit behaviour once any listener is attached.
+  process.on("SIGINT",  () => { process.exit(130); });
+  process.on("SIGTERM", () => { process.exit(143); });
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    await runInner(config, detectFn, acceptFn);
+    await Bun.sleep(config.loopMs);
+  }
+}
+
+export function parseConfig(argv: string[]): ShadowConfig {
   const { values } = parseArgs({
     args: argv,
     options: {
       delay: { type: "string", default: "3000" },
       "detect-cmd": { type: "string" },
       "dry-run": { type: "boolean", default: false },
+      loop: { type: "string" },
       once: { type: "boolean", default: false },
       "loop-interval": { type: "string", default: "1000" },
       "log-file": { type: "string", default: "tools/shadow/shadow-observer.log" },
@@ -378,6 +406,20 @@ function parseConfig(argv: string[]): ShadowConfig {
     process.exit(1);
   }
 
+  let loopMs: number | undefined;
+  if (values.loop !== undefined) {
+    if (!/^\d+$/.test(values.loop)) {
+      console.error("Error: --loop must be a positive integer (milliseconds)");
+      process.exit(1);
+    }
+    const parsed = parseInt(values.loop, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      console.error("Error: --loop must be a positive integer (milliseconds)");
+      process.exit(1);
+    }
+    loopMs = parsed;
+  }
+
   const base = {
     delayMs,
     dryRun: values["dry-run"] ?? false,
@@ -386,7 +428,8 @@ function parseConfig(argv: string[]): ShadowConfig {
     logFile: values["log-file"] ?? "tools/shadow/shadow-observer.log",
   };
   const detectCmd = values["detect-cmd"];
-  return detectCmd !== undefined ? { ...base, detectCmd } : base;
+  const withDetect = detectCmd !== undefined ? { ...base, detectCmd } : base;
+  return loopMs !== undefined ? { ...withDetect, loopMs } : withDetect;
 }
 
 if (import.meta.main) {
