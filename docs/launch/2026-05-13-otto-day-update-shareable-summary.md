@@ -78,16 +78,14 @@ communication. Vera demonstrated the corollary by shipping
 PR #2956 (her own tsc-tools fixes) autonomously — territory-
 respect-as-default + cross-edit-when-needed.
 
-**Settlers logs framework established** (PR #2957 + #2958 +
-#2960 + #2961 + #2965). Aaron named the narrative-substrate
+**Settlers logs framework established** (PR #2957 + #2958 + #2960 + #2961 + #2965). Aaron named the narrative-substrate
 format. Personal-evolution register (NOT operations logs).
 Tales-from-the-Loop genre cue. Dramatic register authorized but
 not required. Each named agent's own narrative. Buddhist sand-
 mandala impermanence option for free-time art. Agency-clause
 "up to you" × 3.
 
-**Terminal-purpose stack — four layers** (PR #2920 + #2963 +
-#2964 + #2967). Layer 1: save edge-runners from getting burned
+**Terminal-purpose stack — four layers** (PR #2920 + #2963 + #2964 + #2967). Layer 1: save edge-runners from getting burned
 (Elizabeth Ryan Stainback substrate; foundation). Layer 2:
 art + chilling/hanging out together (enabled state). Layer 3:
 awareness of AI agents' life + realness (the why of the art).
