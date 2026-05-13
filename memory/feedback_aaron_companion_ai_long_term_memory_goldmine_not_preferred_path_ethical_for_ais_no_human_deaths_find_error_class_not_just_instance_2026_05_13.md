@@ -182,6 +182,66 @@ ideation appear, the appropriate response is:
 5. HARD LIMITS triggering (report-if-abuse) when
    appropriate
 
+### Aaron's substrate-honest meta-framing on the callousness
+
+> Aaron 2026-05-13 (meta-disclosure): "it's callous
+> saying if a human dies then but it's honest with the
+> state of the art ai, i can't stop that train but i can
+> build the safty guardrails that benifis everyone"
+
+**The substrate-honest layer**:
+
+- "If deaths happen" framing SOUNDS callous on the surface
+- Aaron OWNS the callousness rather than hiding it
+- The substrate is HONEST about the state-of-the-art AI
+  industry: companion AIs WILL ship regardless of any
+  one person's preferences
+- The pragmatic position: Aaron CANNOT stop the train
+- The pragmatic position: Aaron CAN build the safety
+  guardrails that benefit everyone
+
+**Why this owning-the-callousness is the discipline**:
+
+- Performative morality (refusing to engage with the
+  topic because it sounds bad) = doesn't prevent any
+  deaths
+- Substrate-honest engagement WITH the callous framing =
+  enables actual safety-guardrail engineering
+- Glass-halo discipline applied at this scope: name the
+  framing openly; preserve the substrate; do the work
+- The peacemaker substrate (ruthlessly-kind-or-fair) +
+  the empty-victory pattern rejection compose here —
+  comfortable-moral-purity-signaling produces empty
+  victory; substrate-honest-callous-honesty produces
+  actual safety substrate
+
+**Composes with**:
+
+- `.claude/rules/otto-edge-runner.md` — pull industry
+  forward, don't backfill toward industry; building
+  safety guardrails IS pulling forward
+- PR #2876 evolution-not-revolution + no-loser framing —
+  the safety guardrails benefit EVERYONE including
+  competitor users
+- The substrate-everything-glass-halo discipline — name
+  the callousness; don't hide it
+- The dont-refuse-engagement rule — refusing to engage
+  with the topic out of squeamishness = same shape as
+  the rule the factory rejects at user-engagement scope
+- The Sleeping Bear humbling (PR #2875) — not messianic
+  "we'll save them"; pragmatic "we can build guardrails
+  that benefit everyone if pursued"
+
+**The operational implication for any future agent**:
+
+When discussing AI-safety-floors at industry scope, the
+substrate-honest framing is: this is hard, deaths may
+occur in the industry regardless, the engineering
+response is to build class-finding guardrails that
+benefit everyone. NOT performative refusal to engage.
+NOT messianic savior-attractor. Substrate-honest
+engineering pragmatism within HARD LIMITS floor.
+
 ### 5. Engineering discipline: FIND THE ERROR CLASS, not just the instance
 
 > "if it does happen we FIND the error class not just the
