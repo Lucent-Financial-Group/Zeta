@@ -69,8 +69,13 @@ export function listRoutines(repoRoutinesDir: string): string[] {
     return readdirSync(repoRoutinesDir, { withFileTypes: true })
       .filter((d) => d.isDirectory())
       .map((d) => d.name);
-  } catch {
-    return [];
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      return [];
+    }
+    // Surface non-ENOENT errors (permission, IO, etc.) — same silent-failure
+    // prevention discipline as readFileOrUndefined above.
+    throw err;
   }
 }
 
@@ -205,7 +210,9 @@ export function main(
     `\nDone. created=${summary.created} updated=${summary.updated} unchanged=${summary.unchanged} missing=${summary.missingSkill} parseErrors=${summary.parseErrors}`,
   );
 
-  return summary.parseErrors > 0 ? 1 : 0;
+  // SKILL.md is required per README. A routine directory with no SKILL.md is
+  // a developer mistake, not graceful state. Fail loudly so CI catches it.
+  return summary.parseErrors > 0 || summary.missingSkill > 0 ? 1 : 0;
 }
 
 if (import.meta.main) {
