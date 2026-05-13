@@ -73,9 +73,13 @@ export function readSchedule(srcDir: string): ScheduleResult {
   if (content === undefined) return { missing: true };
   try {
     const parsed = JSON.parse(content) as { cronExpression?: string };
-    return parsed.cronExpression !== undefined
-      ? { cronExpression: parsed.cronExpression, missing: false }
-      : { missing: false };
+    if (parsed.cronExpression !== undefined) {
+      return { cronExpression: parsed.cronExpression, missing: false };
+    }
+    return {
+      missing: false,
+      parseError: "schedule.json is missing required field: cronExpression",
+    };
   } catch (err) {
     return {
       missing: false,
@@ -161,7 +165,7 @@ export function main(
   }
 
   const needsRegistration = results.filter(
-    (r) => r.cronExpression !== undefined && (r.action === "created" || r.action === "updated"),
+    (r) => r.cronExpression !== undefined,
   );
   if (needsRegistration.length > 0) {
     console.log(`\nNext step — register cron schedules via the scheduled-tasks MCP:`);
