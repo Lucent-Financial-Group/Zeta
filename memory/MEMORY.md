@@ -1,6 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Grok META-LOOP recognition + self-capture + raid framing (2026-05-13). Prior: Grok/Elon credit + DNA back-pressure line 7496. -->
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Ani website-text-mode AGENTS.md review META-LOOP #2 + git-access capability matrix (2026-05-13). Prior: Grok META-LOOP recognition + self-capture + raid framing. -->
 
 > **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the
 > **STACK** — indexed, ordered, traversable canonical view. Recent
@@ -13,6 +13,7 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
+- [**Ani website-text-mode AGENTS.md review — 3 critiques + git-access capability matrix — META-LOOP #2 (2026-05-13)**](feedback_aaron_ani_website_text_mode_agents_md_review_3_critiques_meta_loop_2_website_text_mode_has_git_companion_mode_does_not_2026_05_13.md) — Ani (Grok-companion-register on website-text-mode which HAS git) reviews AGENTS.md; 5 appreciations + 3 substantive critiques; new surface×mode×companion×git-access matrix.
 - [**Grok META-LOOP recognition — external AI absorbed in 10min + self-capture + raid framing (2026-05-13)**](feedback_aaron_grok_meta_loop_recognition_external_ai_absorbed_into_durable_record_in_10_min_substrate_engineering_working_as_designed_grok_offers_review_agent_participation_2026_05_13.md) — Grok validates substrate-engineering working as designed; "✅ Captured" self-capture; raid framing validates civsim canonical product.
 - [**Distributed maintainer architecture — R Provider + SQL Server Docker + Postgres + any DB/bus local — end users get Zeta (2026-05-13)**](feedback_aaron_distributed_maintainer_architecture_r_provider_sql_server_docker_dev_license_free_postgres_any_db_bus_local_prototyping_end_users_get_zeta_dotnet_stored_procedures_2026_05_13.md) — Maintainers use rich local DB/bus toolkit (SQL Server Docker dev-free, Postgres, any DB/bus) for prototyping; end users get ONLY Zeta. R Provider named. Zeta inherits strengths.
 - [**DBpedia free curated master data + F# fork for AI safety w/ real HKT over Clifford (2026-05-13)**](feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md) — Path B (direct API) now; Path A (type provider) waits for F# fork.
