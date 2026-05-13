@@ -27,8 +27,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0308](backlog/P0/B-0308-mechanical-auth-check-loop-integration-2026-05-08.md)** Mechanical authorization check — autonomous-loop tick-start integration
 - [x] **[B-0309](backlog/P0/B-0309-mechanical-auth-check-claude-md-pointer-2026-05-08.md)** Mechanical authorization check — CLAUDE.md discoverable-skill pointer
 - [ ] **[B-0402](backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md)** Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop embedding, and Glass Halo attribution
-- [ ] **[B-0431](backlog/P0/B-0431-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)** Shadow observer slice 3 — macOS grey-text detection via osascript
-- [ ] **[B-0432](backlog/P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)** Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag
+- [x] **[B-0431](backlog/P0/B-0431-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)** Shadow observer slice 3 — macOS grey-text detection via osascript
+- [x] **[B-0432](backlog/P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)** Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag
 
 ## P1 — within 2-3 rounds
 
