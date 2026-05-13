@@ -33,6 +33,7 @@ for embedded autonomous operation.
 
 Currently shadow is invoked as `bun tools/shadow/shadow-observer.ts [flags]`.
 This slice adds:
+
 1. `package.json` `scripts` entry `"shadow": "bun tools/shadow/shadow-observer.ts"`
    as a minimal no-install-required entry (no new `bin` field required yet — that
    is slice 5 / B-0433).
@@ -94,6 +95,7 @@ parsing.
 ## Pre-start checklist
 
 **Prior-art search:**
+
 - `tools/shadow/shadow-observer.ts` — `parseConfig` currently private; wire export
 - `package.json` `scripts` — no `shadow` entry yet
 - B-0402 acceptance criteria:
@@ -101,6 +103,7 @@ parsing.
   - "Optional `--loop` embeds autonomous loop — slice 4 (requires `zeta` CLI entry point)"
 
 **Dependency check:**
+
 - `depends_on: [B-0431]` — real detector needed before CLI is useful end-to-end;
   however tests use `--detect-cmd` so implementation can proceed in parallel;
   classify as logically-depends (for demo coherence) not hard-blocks

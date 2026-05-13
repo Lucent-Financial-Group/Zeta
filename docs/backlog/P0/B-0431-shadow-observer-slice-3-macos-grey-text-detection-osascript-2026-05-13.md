@@ -97,6 +97,7 @@ detector. This slice adds the built-in macOS implementation that fires when no
 ## Pre-start checklist
 
 **Prior-art search:**
+
 - `tools/shadow/shadow-observer.ts` — current stub at `detectGreyText()`:L70-90
 - `--detect-cmd` (slice 2, PR #2975) — the injection point this slice plugs into
 - No existing `detect-grey-text.applescript` in repo (grep confirms)
@@ -104,5 +105,6 @@ detector. This slice adds the built-in macOS implementation that fires when no
   (requires empirical grey-text detection)"
 
 **Dependency check:**
+
 - `depends_on: []` — slice 1 + 2 already merged; no blockers
 - `parent: B-0402` — composes with existing polling loop + `--detect-cmd`

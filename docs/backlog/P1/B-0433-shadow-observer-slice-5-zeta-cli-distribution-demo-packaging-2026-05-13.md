@@ -50,6 +50,7 @@ the package is added to a project.
 ### README section
 
 Add a `## Shadow mode` section to `tools/shadow/README.md` (create if absent):
+
 - Installation: `bun install && bun run shadow -- --dry-run --once`
 - Flags: `--delay`, `--detect-cmd`, `--dry-run`, `--once`, `--loop-interval`,
   `--loop`, `--log-file`
@@ -68,6 +69,7 @@ is already Glass Halo compliant. Add a one-liner to README showing a sample
 ### End-to-end smoke test
 
 Add `tools/shadow/smoke-test.ts`:
+
 - Runs `bun tools/shadow/zeta-shadow.ts --once --dry-run --detect-cmd "echo hello"`
 - Asserts exit code 0
 - Asserts log file contains `"type":"accepted"` line
@@ -91,11 +93,13 @@ Invoke from `bun test` via `smoke-test.test.ts` (or add as a `scripts` entry).
 ## Pre-start checklist
 
 **Prior-art search:**
+
 - `package.json` `bin` — empty currently; no conflicts
 - No `tools/shadow/README.md` yet (directory exists with 3 files: `outlet.ts`,
   `shadow-observer.ts`, `shadow-observer.test.ts`)
 - B-0402 acceptance criteria: "Deployable as part of Zeta CLI install — slice 4"
 
 **Dependency check:**
+
 - `depends_on: [B-0432]` — needs `zeta-shadow.ts` entry point from slice 4
 - `parent: B-0402`
