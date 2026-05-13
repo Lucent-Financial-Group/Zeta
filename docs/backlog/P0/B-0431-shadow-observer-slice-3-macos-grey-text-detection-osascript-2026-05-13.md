@@ -1,7 +1,7 @@
 ---
 id: B-0431
 priority: P0
-status: done
+status: closed
 title: "Shadow observer slice 3 — macOS grey-text detection via osascript"
 tier: product-feature
 effort: S
