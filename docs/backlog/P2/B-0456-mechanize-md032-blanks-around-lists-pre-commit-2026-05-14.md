@@ -35,10 +35,10 @@ Examples this session:
 
 | Shard | Line | Pattern |
 |---|---|---|
-| 2228Z (PR #3044) | 88 | `Two PRs in flight, both auto-merge armed:` → `- ` |
-| 2348Z (PR #3058) | 41 | `Each row:` → `- ` |
-| 0017Z (PR #3065) | 51 | `Plus:` → `- ` |
-| 0024Z (PR #3065) | 66 | `infra issues that resolve when:` → `1.` |
+| 2228Z (PR #3044) | 88 | `Two PRs in flight, both auto-merge armed:` → bullet-list-with-no-blank-line |
+| 2348Z (PR #3058) | 41 | `Each row:` → bullet-list-with-no-blank-line |
+| 0017Z (PR #3065) | 51 | `Plus:` → bullet-list-with-no-blank-line |
+| 0024Z (PR #3065) | 66 | `infra issues that resolve when:` → numbered-list-with-no-blank-line |
 
 Each occurrence costs ~1 CI cycle on the markdownlint job + ~5
 minutes of agent attention to triage + fix.
