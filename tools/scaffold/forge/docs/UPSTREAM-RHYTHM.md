@@ -88,7 +88,7 @@ gh pr merge <N> --repo AceHack/Forge --auto --squash
 # Precondition: AceHack/Forge:main is ahead of
 # Lucent-Financial-Group/Forge:main by ~10 commits.
 # Check:
-gh api /repos/AceHack/Forge/compare/main...Lucent-Financial-Group:main \
+gh api /repos/AceHack/Forge/compare/Lucent-Financial-Group:main...main \
   --jq '.status,.ahead_by,.behind_by'
 
 # Open ONE bulk sync PR.

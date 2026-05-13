@@ -75,7 +75,7 @@ gh pr merge <N> --repo AceHack/ace --auto --squash
 # Precondition: AceHack/ace:main is ahead of
 # Lucent-Financial-Group/ace:main by ~10 commits.
 # Check:
-gh api /repos/AceHack/ace/compare/main...Lucent-Financial-Group:main \
+gh api /repos/AceHack/ace/compare/Lucent-Financial-Group:main...main \
   --jq '.status,.ahead_by,.behind_by'
 
 # Open ONE bulk sync PR.
