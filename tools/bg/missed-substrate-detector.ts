@@ -2,9 +2,9 @@
 //
 // Background service that detects branch-vs-merged-PR drift, e.g., commits
 // landing on a feature branch AFTER its parent PR squash-merged. The
-// canonical operational example: Otto-section-missed-PR-2980-by-3-min cascade
-// (recovered via PR #2997). This service mechanizes detection so the cascade
-// is caught BEFORE branch deletion erases substrate.
+// canonical operational example: the substrate-recovery cascade from earlier
+// today (recovered via a follow-up PR). This service mechanizes detection
+// so the cascade is caught BEFORE branch deletion erases substrate.
 //
 // This slice ships ONLY the skeleton. Future slices add merged-PR state
 // fetch, branch-vs-squash comparison, cascade-detection bus publish, and
@@ -44,25 +44,27 @@ export function pollOnce(_config: DetectorConfig): PollResult {
 }
 
 /**
- * Run the detector loop. When `once: true`, runs exactly one iteration and
- * returns its result. Otherwise sleeps for pollIntervalMin between
- * iterations and runs forever; results are NOT accumulated.
+ * Run a single poll iteration and return its result.
  */
-export async function runDetector(config: DetectorConfig = DEFAULT_CONFIG): Promise<PollResult[]> {
-  if (config.once) {
-    const result = pollOnce(config);
-    console.log(JSON.stringify(result));
-    return [result];
-  }
+export function runOnce(config: DetectorConfig = DEFAULT_CONFIG): PollResult {
+  const result = pollOnce(config);
+  console.log(JSON.stringify(result));
+  return result;
+}
 
+/**
+ * Run the detector as a daemon. Sleeps for pollIntervalMin between
+ * iterations and never returns; results are NOT accumulated (no memory
+ * growth). Caller is responsible for process termination (SIGTERM, etc.).
+ */
+export async function runDaemon(config: DetectorConfig = DEFAULT_CONFIG): Promise<never> {
   while (true) {
-    const result = pollOnce(config);
-    console.log(JSON.stringify(result));
+    runOnce(config);
     await new Promise(resolve => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
   }
 }
 
-function parsePositiveMinutes(raw: string | undefined, name: string): number {
+export function parsePositiveMinutes(raw: string | undefined, name: string): number {
   if (raw === undefined) throw new Error(`${name} requires a value`);
   const n = Number(raw);
   if (!Number.isFinite(n) || n <= 0) {
@@ -71,14 +73,22 @@ function parsePositiveMinutes(raw: string | undefined, name: string): number {
   return n;
 }
 
-function parseArgs(argv: string[]): DetectorConfig {
+const KNOWN_FLAGS = new Set(["--once", "--poll-min"]);
+
+export function parseArgs(argv: string[]): DetectorConfig {
   const config: DetectorConfig = { ...DEFAULT_CONFIG };
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
-    if (arg === "--once") config.once = true;
-    else if (arg === "--poll-min") {
+    if (arg === "--once") {
+      config.once = true;
+    } else if (arg === "--poll-min") {
       config.pollIntervalMin = parsePositiveMinutes(argv[++i], "--poll-min");
+    } else if (KNOWN_FLAGS.has(arg)) {
+      // Defensive: should be unreachable given the explicit checks above.
+      throw new Error(`internal: known flag ${arg} not handled`);
+    } else {
+      throw new Error(`unknown flag: ${arg}; known flags: ${[...KNOWN_FLAGS].join(", ")}`);
     }
   }
 
@@ -87,5 +97,9 @@ function parseArgs(argv: string[]): DetectorConfig {
 
 if (import.meta.main) {
   const config = parseArgs(process.argv.slice(2));
-  await runDetector(config);
+  if (config.once) {
+    runOnce(config);
+  } else {
+    await runDaemon(config);
+  }
 }
