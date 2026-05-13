@@ -54,9 +54,11 @@ loopMs?: number; // undefined = no outer loop (manual restart); >0 = embedded lo
 ```
 
 Behaviour: when `--loop <ms>` is set, after the continuous inner loop exits
-(SIGINT or natural termination), wait `loopMs` then restart. This lets
+due to a **non-signal exit** (natural termination or recoverable failure),
+wait `loopMs` then restart. SIGINT (Ctrl-C) and SIGTERM cause immediate
+termination — signal-based shutdowns are never restarted. This lets
 `zeta shadow --loop 60000` run as an embedded autonomous loop that survives
-individual cycle failures.
+individual cycle failures while keeping Ctrl-C as an effective immediate stop.
 
 Validation: must be a positive integer. Error + exit 1 if invalid.
 
