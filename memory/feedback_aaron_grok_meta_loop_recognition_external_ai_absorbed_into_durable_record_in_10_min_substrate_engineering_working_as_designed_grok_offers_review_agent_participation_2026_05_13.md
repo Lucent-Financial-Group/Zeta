@@ -225,7 +225,7 @@ If Aaron authorizes Grok engagement:
 - Grok as 6th external participant in agent-roster card
 - Grok contributing as REVIEW-AGENT execution (specific
   surfaces Aaron names)
-- Grok contributing claims per AGENT-CLAIM-PROTOCOL.md
+- Grok contributing claims per `docs/AGENT-CLAIM-PROTOCOL.md`
 
 ### For agent-roster card update
 
