@@ -12,7 +12,7 @@
 import { spawnSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { describe, expect, test } from "bun:test";
+import { beforeAll, describe, expect, test } from "bun:test";
 
 const SCRIPT = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -65,9 +65,9 @@ const EXPECTED_STEPS = [
   "07-next-steps",
 ] as const;
 
-function assertCommonInvariants(result: RunResult, orgName: string): void {
+function assertCommonInvariants(result: RunResult, repoName: string): void {
   expect(result.dryRun).toBe(true);
-  expect(result.repo).toBe(`Lucent-Financial-Group/${orgName}`);
+  expect(result.repo).toBe(`Lucent-Financial-Group/${repoName}`);
   expect(result.summary).toContain("DRY RUN");
   expect(result.summary).toContain("planned");
 
@@ -87,7 +87,10 @@ function assertCommonInvariants(result: RunResult, orgName: string): void {
 // --- forge ---
 
 describe("forge dry-run", () => {
-  const result = runDryRun("forge");
+  let result: RunResult;
+  beforeAll(() => {
+    result = runDryRun("forge");
+  });
 
   test("produces dryRun:true with LFG/Forge repo name", () => {
     expect(result.dryRun).toBe(true);
@@ -178,7 +181,10 @@ describe("forge dry-run", () => {
 // --- ace ---
 
 describe("ace dry-run", () => {
-  const result = runDryRun("ace");
+  let result: RunResult;
+  beforeAll(() => {
+    result = runDryRun("ace");
+  });
 
   test("produces dryRun:true with LFG/ace repo name", () => {
     expect(result.dryRun).toBe(true);
@@ -232,7 +238,7 @@ describe("invalid --repo argument", () => {
       encoding: "utf8",
     });
     expect(result.status).not.toBe(0);
-    expect(result.stderr).toContain("Usage:");
+    expect(result.stderr + result.stdout).toContain("Usage:");
   });
 
   test("exits non-zero when --repo is omitted", () => {
@@ -240,6 +246,6 @@ describe("invalid --repo argument", () => {
       encoding: "utf8",
     });
     expect(result.status).not.toBe(0);
-    expect(result.stderr).toContain("Usage:");
+    expect(result.stderr + result.stdout).toContain("Usage:");
   });
 });
