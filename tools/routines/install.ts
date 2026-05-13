@@ -73,9 +73,15 @@ export function readSchedule(srcDir: string): ScheduleResult {
   const content = readFileOrUndefined(path);
   if (content === undefined) return { missing: true };
   try {
-    const parsed = JSON.parse(content) as { cronExpression?: string };
-    if (parsed.cronExpression !== undefined) {
+    const parsed = JSON.parse(content) as { cronExpression?: unknown };
+    if (typeof parsed.cronExpression === "string") {
       return { cronExpression: parsed.cronExpression, missing: false };
+    }
+    if (parsed.cronExpression !== undefined) {
+      return {
+        missing: false,
+        parseError: `cronExpression must be a string; got ${typeof parsed.cronExpression}`,
+      };
     }
     return {
       missing: false,
@@ -137,7 +143,7 @@ export function syncRoutine(
 export function main(
   repoRoutinesDir: string = DEFAULT_REPO_ROUTINES_DIR,
   runtimeTasksDir: string = DEFAULT_RUNTIME_TASKS_DIR,
-): void {
+): number {
   console.log(`tools/routines/install.ts`);
   console.log(`  source: ${repoRoutinesDir}`);
   console.log(`  target: ${runtimeTasksDir}\n`);
@@ -147,7 +153,7 @@ export function main(
   );
   if (routines.length === 0) {
     console.log("No routines found under tools/routines/");
-    return;
+    return 0;
   }
 
   const results = routines.map((id) => syncRoutine(id, repoRoutinesDir, runtimeTasksDir));
@@ -186,8 +192,10 @@ export function main(
   console.log(
     `\nDone. created=${summary.created} updated=${summary.updated} unchanged=${summary.unchanged} missing=${summary.missingSkill} parseErrors=${summary.parseErrors}`,
   );
+
+  return summary.parseErrors > 0 ? 1 : 0;
 }
 
 if (import.meta.main) {
-  main();
+  process.exit(main());
 }
