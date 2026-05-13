@@ -64,13 +64,28 @@ jobs:
       contents: read  # checkout only; all gh API calls use SCAFFOLD_STAGE1_PAT
 
     steps:
+      - name: Validate actor allowlist
+        env:
+          ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          # Restrict execution to LFG org maintainers; write access alone is not sufficient.
+          # Update this list via PR when the maintainer roster changes.
+          ALLOWED="AceHack"
+          if ! echo "$ALLOWED" | grep -qw "$ACTOR"; then
+            echo "ERROR: '$ACTOR' is not in the maintainer allowlist."
+            echo "Only authorised LFG org maintainers may trigger this workflow."
+            exit 1
+          fi
+          echo "Actor '$ACTOR' is authorised. Proceeding."
+
       - name: Validate CONFIRM input
         env:
           CONFIRM_INPUT: ${{ github.event.inputs.confirm }}
         run: |
           set -euo pipefail
           if [ "$CONFIRM_INPUT" != "CONFIRM" ]; then
-            echo "ERROR: confirm input must be exactly CONFIRM (got: '$CONFIRM_INPUT')"
+            echo "ERROR: confirm input must be exactly 'CONFIRM' (all caps)."
             echo "Re-trigger the workflow with confirm=CONFIRM to proceed."
             exit 1
           fi
@@ -78,6 +93,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
