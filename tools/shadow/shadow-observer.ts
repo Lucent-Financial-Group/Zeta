@@ -35,6 +35,7 @@
  */
 
 import { appendFileSync } from "node:fs";
+import { join } from "node:path";
 import { parseArgs } from "util";
 
 export interface ShadowConfig {
@@ -67,17 +68,101 @@ export function log(event: ShadowEvent, logFile: string): void {
   }
 }
 
+/**
+ * Injectable osascript runner — for testing without real osascript.
+ * Production code uses the default `runOsascript` implementation.
+ */
+export type OsascriptRunner = (
+  scriptPath: string,
+  terminalApp?: string,
+) => Promise<{ exitCode: number; stdout: string; stderr: string }>;
+
+// osascript can hang waiting for an accessibility-permission dialog; 3 s cap.
+const OSASCRIPT_TIMEOUT_MS = 3000;
+
+async function runOsascript(
+  scriptPath: string,
+  terminalApp?: string,
+): Promise<{ exitCode: number; stdout: string; stderr: string }> {
+  const args = terminalApp
+    ? ["osascript", scriptPath, terminalApp]
+    : ["osascript", scriptPath];
+  const proc = Bun.spawn(args, { stdout: "pipe", stderr: "pipe" });
+
+  const runResult = async () => {
+    const exitCode = await proc.exited;
+    const stdout = await new Response(proc.stdout).text();
+    const stderr = await new Response(proc.stderr).text();
+    return { exitCode, stdout, stderr };
+  };
+
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(
+      () => reject(new Error(`osascript timed out after ${OSASCRIPT_TIMEOUT_MS}ms`)),
+      OSASCRIPT_TIMEOUT_MS,
+    ),
+  );
+
+  try {
+    return await Promise.race([runResult(), timeout]);
+  } catch (err) {
+    try { proc.kill(); } catch { /* ignore kill errors */ }
+    throw err;
+  }
+}
+
+/**
+ * Detect grey text (autocomplete suggestion) in the frontmost terminal
+ * emulator on macOS via the accessibility tree (osascript).
+ *
+ * @param terminalApp  Optional: target a specific terminal app by name.
+ * @param _runner      For testing: injectable osascript executor.
+ * @param _platform    For testing: override process.platform.
+ */
+export async function detectGreyTextMacOS(
+  terminalApp?: string,
+  _runner?: OsascriptRunner,
+  _platform?: string,
+): Promise<string | null> {
+  const platform = _platform ?? process.platform;
+  if (platform !== "darwin") {
+    console.warn("[shadow] detectGreyTextMacOS: skipping on non-macOS platform");
+    return null;
+  }
+
+  const runner = _runner ?? runOsascript;
+  const scriptPath = join(import.meta.dir, "detect-grey-text.applescript");
+
+  let result: { exitCode: number; stdout: string; stderr: string };
+  try {
+    result = await runner(scriptPath, terminalApp);
+  } catch (err) {
+    console.warn(`[shadow] detectGreyTextMacOS: spawn error: ${String(err)}`);
+    return null;
+  }
+
+  if (result.exitCode !== 0) {
+    const isPermDenied =
+      result.stderr.includes("-1002") ||
+      result.stderr.includes("-1743") ||
+      result.stderr.toLowerCase().includes("not permitted") ||
+      result.stderr.toLowerCase().includes("permission denied");
+    if (isPermDenied) {
+      console.warn("[shadow] detectGreyTextMacOS: accessibility permission denied");
+    } else {
+      console.warn(
+        `[shadow] detectGreyTextMacOS: osascript exited ${result.exitCode}, returning null`,
+      );
+    }
+    return null;
+  }
+
+  const trimmed = result.stdout.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
 export async function detectGreyText(): Promise<string | null> {
-  // Phase 1 stub: grey text detection requires empirical testing.
-  //
-  // Candidate approaches for slice 2:
-  //   a) AppleScript AXRole/AXValue on terminal accessibility tree
-  //   b) Screen capture + OCR with color filtering
-  //   c) Claude Code internal API (if exposed via IPC/socket)
-  //   d) Terminal emulator accessibility attributes
-  //
-  // Until empirically validated, returns null (no detection).
-  return null;
+  return detectGreyTextMacOS();
 }
 
 /**
