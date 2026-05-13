@@ -49,7 +49,7 @@ you can't tell it's not git"*
 - Snapshotting = commit
 - Branching storage state = git branch
 - This IS the database-inside-out pattern from the Aaron-Amara
-  event sourcing conversation (docs/research/2026-05-13-amara-*)
+  event sourcing conversation (PR #2924 Amara canonical substrate)
 
 ### 2. Git-native DB storage + snapshotting
 
@@ -409,6 +409,5 @@ B-0428 (DBpedia Path B — direct dotNetRDF + F# CE)
 DBSP + Z-set + Clifford + BP/EP F# substrate (algebra-owner
 skill)
 
-`docs/research/2026-05-13-amara-conversation-extract-*` (the
-canonical event-sourcing substrate Aaron-Amara conversation;
-currently deferred per semgrep findings)
+PR #2924 (canonical Aaron-Amara event-sourcing conversation
+substrate — research extract deferred)

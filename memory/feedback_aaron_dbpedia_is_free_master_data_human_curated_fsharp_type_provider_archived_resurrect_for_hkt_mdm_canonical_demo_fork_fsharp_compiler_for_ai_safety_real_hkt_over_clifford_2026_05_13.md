@@ -23,11 +23,11 @@ for the factory:
    (PR #2913)
 2. **Original F# type provider archived** — `fsprojects/zzarchive-FSharp.Data.DbPedia`
    no longer maintained as of 2026
-3. **Path A (now)**: resurrect type provider on dotNetRDF or
-   RDFSharp; HKT-MDM canonical demo
-4. **Path B (deferred)**: direct dotNetRDF API + F# CE waits
-   until factory FORKS THE F# COMPILER for AI safety to add
-   real HKT over Clifford
+3. **Path B (now)**: direct dotNetRDF API + F# CE; HKT-MDM
+   canonical demo (backlog row B-0428)
+4. **Path A (deferred)**: resurrect type provider on dotNetRDF
+   or RDFSharp — waits until factory FORKS THE F# COMPILER for
+   AI safety to add real HKT over Clifford
 5. **F# compiler fork motivation**: real HKT (M<'T> first-
    class) over Clifford algebra (PR #2817 substrate); AI safety
    typed-safety for actuator control (PR #2892 KSK)
@@ -84,8 +84,8 @@ Direct dotNetRDF API + F# computation expressions.
   substrate; works on current F# without compiler fork
 - **Composes with**: PR #2913 (HKT-MDM universality), PR #2924
   Aurora pitch (master-data substrate), B-0043 (universal-
-  business-templates), `algebra-owner` skill (Z-set + Clifford
-  + BP/EP F# substrate)
+  company-government-information-substrate), `algebra-owner`
+  skill (Z-set + Clifford + BP/EP F# substrate)
 
 ### Path A (DEFERRED — after F# compiler fork)
 
@@ -170,16 +170,16 @@ runtime checks but compile-time guarantees.
 
 ### For factory roadmap
 
-- Path A (DBpedia type provider) is achievable NOW
-- Path B (direct API) waits for F# fork
+- Path B (DBpedia direct dotNetRDF + F# CE) is achievable NOW
+- Path A (type provider) waits for F# fork
 - F# fork is its own multi-year-scope undertaking
 - F# fork composes with Soraya's formal-verification portfolio
   (per `.claude/agents/formal-verification-expert.md`)
 
-### For B-0043 (universal-business-templates)
+### For B-0043 (universal-company-government-information-substrate)
 
 DBpedia type provider would be the FIRST canonical demo of
-B-0043 (universal-business-templates). The template entities
+B-0043 (universal-company-government-information-substrate). The template entities
 come from DBpedia; the type-safety comes from F# type provider;
 the substrate composition demonstrates HKT-MDM working at
 internet scale.
@@ -213,7 +213,7 @@ substrate-honest-considered.
 - PR #2898 (non-glass-halo encryption — post-quantum lattice)
 - PR #2917 (vision monad Play-Doh — bounded substrate; the
   fork is bounded scope)
-- B-0043 (universal-business-templates already backlogged)
+- B-0043 (universal-company-government-information-substrate — already backlogged)
 - B-0428 (NEW — resurrect F# DBpedia type provider as HKT-MDM
   canonical demo; this PR's backlog row)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
@@ -235,8 +235,8 @@ When master-data substrate work surfaces:
    over entity type
 2. **Recognize DBpedia as canonical source** — free, curated,
    SPARQL-queryable, Wikipedia-scale
-3. **Path A for now**: type provider on dotNetRDF or RDFSharp
-4. **Path B deferred**: direct API + real HKT after F# fork
+3. **Path B for now**: direct dotNetRDF API + F# CE (B-0428)
+4. **Path A deferred**: type provider on dotNetRDF or RDFSharp — after F# fork
 5. **F# fork compositions**: real HKT + Clifford + AI safety;
    composes with KSK + post-quantum encryption + HARD LIMITS
 

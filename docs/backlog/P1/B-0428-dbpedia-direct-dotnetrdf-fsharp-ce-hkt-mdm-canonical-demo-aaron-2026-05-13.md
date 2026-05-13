@@ -40,8 +40,8 @@ dotNetRDF or RDFSharp the hard one we wait and do with fork"*.
 - Composes with existing F# CE substrate in the codebase
 - Demonstrates HKT-MDM (PR #2913) at internet scale via real
   human-curated master data
-- Unblocks B-0043 (universal-business-templates) canonical
-  demo
+- Unblocks B-0043 (universal-company-government-information-substrate)
+  canonical demo
 - Aurora pitch (PR #2924) gets a working demonstration
 
 ## Why Path A is deferred
@@ -142,7 +142,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - Working F# CE for SPARQL querying DBpedia
 - Demo project showing master-data ontology binding
 - Test coverage at query + HKT-binding scope
-- Composes with B-0043 universal-business-templates substrate
+- Composes with B-0043 (universal-company-government-information-substrate)
 - ADR recording the dotNetRDF-vs-RDFSharp choice + future-Path-A-
   after-F#-fork transition plan
 
