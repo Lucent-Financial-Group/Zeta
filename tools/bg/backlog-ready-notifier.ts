@@ -82,13 +82,13 @@ export type Adapters = {
 };
 
 // Keys are lowercase to match the canonical bus agent IDs (SENDER_IDS in tools/bus/types.ts).
+// Only otto/alexa/riven/vera/lior are valid SENDER_IDS; aaron is a human, not a bus sender.
 export const AGENT_MAP: Record<string, string[]> = {
   otto: ["Co-Authored-By: Claude"],
   alexa: ["kiro", "alexa", "qwen"],
   lior: ["lior", "gemini"],
   vera: ["codex", "vera"],
   riven: ["riven", "grok"],
-  aaron: ["Aaron Stainback", "AceHack"],
 };
 
 function parseDependsOn(frontmatter: string): string[] {
@@ -163,7 +163,7 @@ const REAL_ADAPTERS: Adapters = {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no injection risk.
     const result = spawnSync(
       "git",
-      ["log", "--all", `--since=${cutoff}`, "--format=%an %b"],
+      ["log", "--all", `--since=${cutoff}`, "--format=%an %B"],
       { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
     );
     if (result.status !== 0 || result.error) return null;
@@ -174,7 +174,7 @@ const REAL_ADAPTERS: Adapters = {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection risk.
     const result = spawnSync(
       "gh",
-      ["pr", "list", "--state", "open", "--json", "title,body,author"],
+      ["pr", "list", "--state", "open", "--limit", "1000", "--json", "title,body,author"],
       { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
     );
     if (result.status !== 0 || result.error) return null;

@@ -185,6 +185,23 @@ title: only a title
       const adapters = fakeAdapters("2026-05-13T18:00:00Z", [], [], "", prData);
       expect(isAgentQueueEmpty("TestAgent", adapters)).toBe(false);
     });
+
+    test("returns false (conservative-busy) when execGitLog returns null — git unavailable must not trigger assignment", () => {
+      const adapters: Adapters = {
+        ...fakeAdapters("2026-05-13T18:00:00Z", [], [], "irrelevant", "[]"),
+        execGitLog: () => null,
+      };
+      expect(isAgentQueueEmpty("TestAgent", adapters)).toBe(false);
+    });
+
+    test("returns false (conservative-busy) when execGhPrList returns null — gh unavailable must not trigger assignment", () => {
+      // git log is clean (no agent pattern), but gh fails → still conservative
+      const adapters: Adapters = {
+        ...fakeAdapters("2026-05-13T18:00:00Z", [], [], "no match here", "irrelevant"),
+        execGhPrList: () => null,
+      };
+      expect(isAgentQueueEmpty("TestAgent", adapters)).toBe(false);
+    });
   });
 
   describe("pollOnce with injected adapters", () => {
