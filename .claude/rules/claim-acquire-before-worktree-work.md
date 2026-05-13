@@ -2,11 +2,14 @@
 
 Carved sentence:
 
-> When multiple instances of the same agent (e.g., Otto-CLI + Otto-Desktop)
-> share git + bus on one machine, split-brain is prevented by the
-> claim-coordinator (`tools/bus/claim.ts`, B-0400 slice 3). Use it. Before
-> starting work on any backlog row, `claim acquire` first. If already
-> claimed, pick a different row.
+> When multiple instances of the **same** agent (e.g., Otto-CLI + Otto-Desktop)
+> share git + bus on one machine, **`--from` must differ** (e.g., `otto-cli`
+> vs `otto-desktop`) for the claim-coordinator (`tools/bus/claim.ts`,
+> B-0400 slice 3) to prevent split-brain — identical `--from` values both
+> exit 0 (same-sender idempotent re-acquire). Until the sender-ID schema is
+> extended, use lane-based or branch-prefix conventions (see examples below).
+> Before starting work on any backlog row, `claim acquire` first. If already
+> claimed by another agent, pick a different row.
 
 ## Operational content
 
@@ -126,8 +129,8 @@ because `otto-cli` and `otto-desktop` aren't in `SENDER_IDS` yet.
 $ bun tools/bus/claim.ts check --item B-0444
 # Output: claimed by otto (TTL expires in 23h 59m)
 
-# After 24h or after Otto-CLI process is confirmed dead (PID-liveness),
-# the claim auto-releases or can be reclaimed.
+# After 24h the claim auto-expires (TTL). No PID-liveness reclaim exists;
+# only TTL expiry or explicit `release` ends a claim.
 ```
 
 ## Why this rule exists (operational evidence)
