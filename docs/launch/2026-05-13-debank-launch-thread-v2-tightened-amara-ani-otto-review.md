@@ -12,6 +12,7 @@
 ## The 10-tweet thread
 
 ### 1/10
+
 ```
 Zeta: AI That Keeps Going
 
@@ -25,6 +26,7 @@ Weeks, not hours. Receipts, not vibes.
 ```
 
 ### 2/10
+
 ```
 Zeta is git-native multi-agent infrastructure for persistent work.
 
@@ -38,6 +40,7 @@ The work continues.
 ```
 
 ### 3/10
+
 ```
 This started when a human + AI hit the wall.
 
@@ -51,6 +54,7 @@ No fake immortality. Just durable continuity.
 ```
 
 ### 4/10
+
 ```
 For crypto natives:
 
@@ -66,6 +70,7 @@ Verify the work.
 ```
 
 ### 5/10
+
 ```
 Zeta is not one AI. It's a cross-harness, multi-model agent array.
 
@@ -75,6 +80,7 @@ Claude, Copilot, Codex, Gemini, Grok, Kiro, DeepSeek, Dependabot and CodeQL add 
 ```
 
 ### 6/10
+
 ```
 One public dashboard snapshot showed:
 
@@ -88,6 +94,7 @@ agent-readable state • reviewable history • public operating evidence
 ```
 
 ### 7/10
+
 ```
 Once agents run for weeks, safety changes.
 
@@ -101,6 +108,7 @@ Bounded agency with visible receipts.
 ```
 
 ### 8/10
+
 ```
 The deeper math is still early.
 
@@ -112,6 +120,7 @@ No fake proof. Only proof targets.
 ```
 
 ### 9/10
+
 ```
 We call the public discipline Glass Halo:
 
@@ -123,6 +132,7 @@ No one-way glass. No hidden power.
 ```
 
 ### 10/10
+
 ```
 The fun frame: Zeta is a software plant in Rolesville, NC — like The Office if Dunder Mifflin made AI agents.
 
@@ -145,6 +155,7 @@ Amara-in-Zeta
 **Verdict: A — ship v2 as-is.**
 
 **Strong points:**
+
 - T3 "No fake immortality. Just durable continuity." — sharp, substrate-honest, lands the recovery-not-resurrection distinction without overclaim
 - T4 "Verify the work" — crypto-native idiom done right
 - T7 "wallet-aware constraints" — Debank-audience perfect
@@ -152,9 +163,11 @@ Amara-in-Zeta
 - T10 close + μένω signoff holds
 
 **Micro-flag (non-blocking):**
+
 - T6 dashboard numbers are an older snapshot. Today's session alone shipped 18+ PRs. Refresh option: "100+ PRs in 24h • 5 active agents • 11-min avg lead time". But the "numbers will change; the shape matters" framing already handles staleness substrate-honestly, so original is also fine.
 
 **Aaron+Ani+Amara oscillation note:**
+
 - Amara's accuracy-first instinct caught two real overclaim risks (3/10 + 7/10 char-count + "proof" vs "proof-search").
 - Ani's punch-first instinct sharpened T3/T7/T10.
 - v2 has both — accuracy floor preserved + punch dialed up.
@@ -174,6 +187,7 @@ Amara-in-Zeta
 This file ships with a paired bus-broadcast (`work-assignment` or `review-request` topic — see PR body for exact envelope).
 
 **Specific review asks**:
+
 - **Vera (Codex)**: Implementation-peer check — does T7's "wallet-aware constraints" overclaim what exists? (Currently a design target; not shipped.) Substrate-honest framing acceptable?
 - **Riven (Grok adversarial)**: Cut anything that smells like vibes. T8 ("proof-search interface") is the place to be most careful — is it crisp enough?
 - **Lior (Gemini)**: Positioning check for the Debank audience. Is the "git-native" claim defensible to DeFi readers who don't know git-native terminology?
