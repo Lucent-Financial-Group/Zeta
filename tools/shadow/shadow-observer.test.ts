@@ -3,7 +3,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { runOneCycle, log } from "./shadow-observer.ts";
+import { runOneCycle, log, detectViaCommand } from "./shadow-observer.ts";
 import type { ShadowConfig, ShadowEvent } from "./shadow-observer.ts";
 
 const SCRIPT = join(import.meta.dir, "shadow-observer.ts");
@@ -204,5 +204,115 @@ describe("shadow-observer — log() unit", () => {
       dryRun: true,
     };
     expect(() => log(event, "/dev/null/nonexistent/path")).not.toThrow();
+  });
+});
+
+describe("shadow-observer — detectViaCommand unit (slice 2)", () => {
+  test("returns trimmed stdout when command exits 0 with text", async () => {
+    const result = await detectViaCommand("echo suggestion");
+    expect(result).toBe("suggestion");
+  });
+
+  test("returns null when command exits non-0 (false)", async () => {
+    const result = await detectViaCommand("false");
+    expect(result).toBeNull();
+  });
+
+  test("returns '(detected)' sentinel when command exits 0 with empty stdout", async () => {
+    const result = await detectViaCommand("true");
+    expect(result).toBe("(detected)");
+  });
+
+  test("returns null when command exits 1 with output (exit code wins)", async () => {
+    const result = await detectViaCommand("sh -c 'echo text; exit 1'");
+    expect(result).toBeNull();
+  });
+
+  test("returns multi-word trimmed stdout for compound echo", async () => {
+    const result = await detectViaCommand("echo hello world");
+    expect(result).toBe("hello world");
+  });
+
+  test("returns null when shell exits 127 (command not found inside sh)", async () => {
+    // sh -c wraps the cmd; unknown command → sh exits 127 (≠ 0) → null
+    const result = await detectViaCommand("this-command-absolutely-does-not-exist-zeta-test");
+    expect(result).toBeNull();
+  });
+});
+
+describe("shadow-observer — --detect-cmd CLI integration (slice 2)", () => {
+  let TEST_DIR: string;
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-shadow-detect-cmd-test-"));
+  });
+  afterEach(() => {
+    if (existsSync(TEST_DIR)) rmSync(TEST_DIR, { recursive: true, force: true });
+  });
+
+  const SCRIPT = join(import.meta.dir, "shadow-observer.ts");
+
+  function run2(...args: string[]): { stdout: string; stderr: string; exitCode: number } {
+    const r = spawnSync("bun", [SCRIPT, ...args, "--log-file", join(TEST_DIR, "shadow.log")], {
+      encoding: "utf-8",
+    });
+    return {
+      stdout: (r.stdout ?? "").trim(),
+      stderr: (r.stderr ?? "").trim(),
+      exitCode: r.status ?? 1,
+    };
+  }
+
+  function readLog2(): ShadowEvent[] {
+    const p = join(TEST_DIR, "shadow.log");
+    if (!existsSync(p)) return [];
+    return readFileSync(p, "utf-8")
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l) as ShadowEvent);
+  }
+
+  test("--detect-cmd 'echo suggestion' --dry-run --once logs detected + accepted", () => {
+    const r = run2("--detect-cmd", "echo suggestion", "--dry-run", "--once", "--delay", "0");
+    expect(r.exitCode).toBe(0);
+    const events = readLog2();
+    const types = events.map((e) => e.type);
+    expect(types).toContain("detected");
+    expect(types).toContain("accepted");
+  });
+
+  test("--detect-cmd 'echo suggestion' detected event has suggestion as content", () => {
+    run2("--detect-cmd", "echo suggestion", "--dry-run", "--once", "--delay", "0");
+    const events = readLog2();
+    const detected = events.find((e) => e.type === "detected");
+    expect(detected?.content).toBe("suggestion");
+  });
+
+  test("--detect-cmd 'false' --dry-run --once logs no-suggestion", () => {
+    run2("--detect-cmd", "false", "--dry-run", "--once");
+    const events = readLog2();
+    const types = events.map((e) => e.type);
+    expect(types).toContain("no-suggestion");
+    expect(types).not.toContain("accepted");
+  });
+
+  test("--detect-cmd 'true' --dry-run --once detects sentinel string", () => {
+    run2("--detect-cmd", "true", "--dry-run", "--once", "--delay", "0");
+    const events = readLog2();
+    const detected = events.find((e) => e.type === "detected");
+    expect(detected?.content).toBe("(detected)");
+  });
+
+  test("--detect-cmd does not override explicit detectFn in unit tests", async () => {
+    // When detectFn is passed explicitly to runOneCycle, it wins over detectCmd.
+    const baseConfig: ShadowConfig = {
+      delayMs: 0,
+      detectCmd: "echo should-not-appear",
+      dryRun: true,
+      logFile: "/dev/null",
+      loopIntervalMs: 0,
+      once: true,
+    };
+    const result = await runOneCycle(baseConfig, async () => null);
+    expect(result).toBe("no-suggestion");
   });
 });

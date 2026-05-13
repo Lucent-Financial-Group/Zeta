@@ -6,8 +6,8 @@
  * and auto-accepts after a configurable delay if no human keystroke
  * interrupts.
  *
- * Slice 1 (this file): polling loop infrastructure + testable dry-run mode.
- * Slice 2 (deferred): empirical grey text detection via AppleScript/accessibility.
+ * Slice 1 (PR #2973): polling loop infrastructure + testable dry-run mode.
+ * Slice 2 (this PR): --detect-cmd flag wires any shell command as the detector.
  * Slice 3 (deferred): `zeta shadow` top-level CLI entry point + installation.
  *
  * The Lost analogy: Desmond pushed the button every 108 minutes.
@@ -20,11 +20,14 @@
  * - --dry-run: logs intended actions without sending keystrokes
  *
  * Usage:
- *   bun tools/shadow/shadow-observer.ts [--delay <ms>] [--dry-run] [--once]
- *     [--loop-interval <ms>] [--log-file <path>]
+ *   bun tools/shadow/shadow-observer.ts [--delay <ms>] [--detect-cmd <cmd>]
+ *     [--dry-run] [--once] [--loop-interval <ms>] [--log-file <path>]
  *
  * Flags:
  *   --delay <ms>          Delay before auto-accepting (default: 3000)
+ *   --detect-cmd <cmd>    Shell command run each cycle to detect grey text.
+ *                         Exit 0 = suggestion present (stdout is content).
+ *                         Exit non-0 = no suggestion. Default: built-in stub.
  *   --dry-run             Log intended actions without sending keystrokes
  *   --once                Run exactly one detection cycle then exit
  *   --loop-interval <ms>  Continuous mode: sleep between cycles (default: 1000)
@@ -36,6 +39,7 @@ import { parseArgs } from "util";
 
 export interface ShadowConfig {
   delayMs: number;
+  detectCmd?: string;
   dryRun: boolean;
   logFile: string;
   loopIntervalMs: number;
@@ -74,6 +78,30 @@ export async function detectGreyText(): Promise<string | null> {
   //
   // Until empirically validated, returns null (no detection).
   return null;
+}
+
+/**
+ * Detect grey text via an external shell command (slice 2).
+ *
+ * The command is run as a subprocess. Contract:
+ *   - Exit 0: suggestion present. Stdout (trimmed) is the content.
+ *     Empty stdout → returns the sentinel "(detected)" so callers
+ *     see a non-null truthy string (e.g. `true` or a no-output AppleScript).
+ *   - Exit non-0: no suggestion → returns null.
+ *
+ * On spawn error (e.g. command not found) the promise rejects; the
+ * caller's try/catch (runOneCycle) handles it as "error".
+ */
+export async function detectViaCommand(cmd: string): Promise<string | null> {
+  const proc = Bun.spawn(["sh", "-c", cmd], {
+    stdout: "pipe",
+    stderr: "ignore",
+  });
+  const exitCode = await proc.exited;
+  if (exitCode !== 0) return null;
+  const raw = await new Response(proc.stdout).text();
+  const trimmed = raw.trim();
+  return trimmed.length > 0 ? trimmed : "(detected)";
 }
 
 export async function acceptGreyText(config: ShadowConfig): Promise<boolean> {
@@ -211,7 +239,9 @@ export async function runOneCycle(
 
 export async function run(
   config: ShadowConfig,
-  detectFn: DetectFn = detectGreyText,
+  detectFn: DetectFn = config.detectCmd
+    ? () => detectViaCommand(config.detectCmd!)
+    : detectGreyText,
   acceptFn: AcceptFn = acceptGreyText,
 ): Promise<void> {
   log(
@@ -242,6 +272,7 @@ function parseConfig(argv: string[]): ShadowConfig {
     args: argv,
     options: {
       delay: { type: "string", default: "3000" },
+      "detect-cmd": { type: "string" },
       "dry-run": { type: "boolean", default: false },
       once: { type: "boolean", default: false },
       "loop-interval": { type: "string", default: "1000" },
@@ -262,13 +293,15 @@ function parseConfig(argv: string[]): ShadowConfig {
     process.exit(1);
   }
 
-  return {
+  const base = {
     delayMs,
     dryRun: values["dry-run"] ?? false,
     once: values.once ?? false,
     loopIntervalMs,
     logFile: values["log-file"] ?? "tools/shadow/shadow-observer.log",
   };
+  const detectCmd = values["detect-cmd"];
+  return detectCmd !== undefined ? { ...base, detectCmd } : base;
 }
 
 if (import.meta.main) {

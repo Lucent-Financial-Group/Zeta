@@ -67,10 +67,11 @@ metrics — a collaborative intelligence surface.
 
 - [ ] `zeta shadow` command starts shadow auto-accept mode
 - [x] Configurable delay (default 3s) — `--delay <ms>` flag, validated (slice 1)
-- [ ] Human keystroke overrides at any moment — slice 2 (requires empirical grey-text detection)
+- [x] External detector plug-in — `--detect-cmd <cmd>` wires any shell command as detector (slice 2)
+- [ ] Human keystroke overrides at any moment — slice 3 (requires empirical grey-text detection)
 - [x] All shadow submissions logged with `(shadow)` attribution — Glass Halo log via `appendFileSync` (slice 1)
-- [ ] Optional `--loop` embeds autonomous loop — slice 3 (requires `zeta` CLI entry point)
-- [ ] Deployable as part of Zeta CLI install — slice 3
+- [ ] Optional `--loop` embeds autonomous loop — slice 4 (requires `zeta` CLI entry point)
+- [ ] Deployable as part of Zeta CLI install — slice 4
 
 ## Pre-start checklist (backlog-item start gate — 2026-05-13)
 
@@ -99,7 +100,21 @@ metrics — a collaborative intelligence surface.
   - Validate numeric flags; exit 1 on invalid
 - Add `tools/shadow/shadow-observer.test.ts`: 16 tests, 0 failures
 
+**Slice 2 scope (this PR — feat/b-0402-shadow-observer-slice-2-detect-cmd):**
+
+- Add `detectCmd?: string` to `ShadowConfig`
+- Implement `detectViaCommand(cmd: string): Promise<string | null>` (exported):
+  - Runs `sh -c <cmd>` via `Bun.spawn`
+  - Exit 0 + stdout → return trimmed stdout
+  - Exit 0 + empty stdout → return `"(detected)"` sentinel (supports `true`/no-output scripts)
+  - Exit non-0 → return `null` (no suggestion)
+- Add `--detect-cmd <cmd>` CLI flag; wires into `run()` as the live `detectFn`
+- Update usage comment in file header
+- 11 new tests (27 total, 0 failures):
+  - 6 `detectViaCommand` unit tests
+  - 5 `--detect-cmd` CLI integration tests
+
 **Deferred:**
 
-- Slice 2: empirical grey text detection (AppleScript/accessibility API testing on macOS)
-- Slice 3: `zeta shadow` top-level CLI entry point + installation wiring
+- Slice 3: empirical grey-text detection via AppleScript/accessibility API (macOS)
+- Slice 4: `zeta shadow` top-level CLI entry point + installation wiring
