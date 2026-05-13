@@ -9,9 +9,10 @@
  *
  * Does NOT register cron schedules with the MCP server — that requires an
  * active Claude session with the `scheduled-tasks` MCP server. After running
- * this installer, ask Otto (or call directly) to run `create_scheduled_task`
- * for any routines whose schedule.json lists a cronExpression not yet
- * registered. The approval dialog is the consent step.
+ * this installer, invoke `create_scheduled_task` from an interactive Claude
+ * session (or via direct MCP API call) for any routines whose schedule.json
+ * lists a cronExpression not yet registered. The approval dialog is the
+ * consent step.
  *
  * Pure functions (listRoutines, readSchedule, syncRoutine, main) are exported
  * and accept directory parameters so tests can drive them deterministically
@@ -169,7 +170,7 @@ export function main(
   );
   if (needsRegistration.length > 0) {
     console.log(`\nNext step — register cron schedules via the scheduled-tasks MCP:`);
-    console.log(`(in a Claude session, ask Otto to run create_scheduled_task for each)\n`);
+    console.log(`(invoke create_scheduled_task from an interactive Claude session, or via direct MCP API call)\n`);
     for (const r of needsRegistration) {
       console.log(`  create_scheduled_task(taskId="${r.taskId}", cronExpression="${r.cronExpression}", ...)`);
     }

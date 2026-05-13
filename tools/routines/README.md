@@ -4,8 +4,8 @@ Canonical source for Claude Desktop scheduled tasks (the "Routines" panel in
 the Desktop sidebar; same substrate as the `scheduled-tasks` MCP server).
 Each routine is a directory under `tools/routines/<id>/`:
 
-- `SKILL.md` — prompt body + YAML frontmatter (`name`, `description`)
-- `schedule.json` — cron expression + task metadata (cronExpression, notifyOnCompletion)
+- `SKILL.md` — **required** — prompt body + YAML frontmatter (`name`, `description`)
+- `schedule.json` — **optional** — cron expression + task metadata (cronExpression, notifyOnCompletion). Omit for ad-hoc routines that are registered manually rather than on a cron cadence.
 
 The runtime stores routines at `~/.claude/scheduled-tasks/<id>/SKILL.md`;
 this directory is the **canonical source** and the runtime location is
@@ -35,7 +35,7 @@ back — runtime drift is the failure mode this two-layer split prevents.
     Each fire is a fresh Claude session cold-boot.>
    ```
 
-2. Create `tools/routines/<id>/schedule.json`:
+2. (Optional) Create `tools/routines/<id>/schedule.json` for cron-scheduled routines:
 
    ```json
    {
@@ -45,6 +45,10 @@ back — runtime drift is the failure mode this two-layer split prevents.
      "notifyOnCompletion": true
    }
    ```
+
+   Skip this file for ad-hoc routines (those registered manually via the
+   MCP API rather than fired on a cron cadence). The installer will sync
+   the SKILL.md and report `(no schedule.json — ad-hoc routine, register manually)`.
 
 3. Run `bun tools/routines/install.ts` — copies SKILL.md to runtime path.
 
