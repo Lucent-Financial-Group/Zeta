@@ -27,6 +27,7 @@ first one after f# fork"* + *"Build fresh F# type provider on
 dotNetRDF or RDFSharp the hard one we wait and do with fork"*.
 
 **Corrected ordering**:
+
 - **Path B (THIS ROW — do NOW)**: Direct dotNetRDF API + F#
   computation expressions
 - **Path A (DEFERRED)**: Build F# type provider — waits for
@@ -85,7 +86,7 @@ let results = query |> DBpedia.run
 ### HKT-MDM ontology binding
 
 DBpedia entities → factory HKT `M<'T>` substrate (per PR
-#2913):
+\#2913):
 
 - `M<Person>` parametric over Person entity type
 - `M<Organization>` parametric over Organization
