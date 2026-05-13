@@ -6,11 +6,38 @@ title: "Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + 
 tier: product-demo
 effort: M
 created: 2026-05-10
+last_updated: 2026-05-13
+decomposition: decomposed
+children: [B-0434, B-0435, B-0436, B-0437]
 depends_on: [B-0400]
 composes_with: [B-0017, B-0188, B-0064, B-0154]
 tags: [demo, circuit-breaker, hamiltonian, alignment-ui, service-titan, enterprise, glass-halo]
 type: feature
 ---
+
+## Pre-start checklist (2026-05-13)
+
+**Prior-art search:**
+
+- `tools/hygiene/LOST-FILES-LOCATIONS.md` — no orphan alignment-UI files found
+- `demo/index.html` — existing dashboard with 3 tabs (Agent Array, Anchors, External); no alignment tab; confirmed prior art for the CSS/JS architecture this work extends
+- `docs/backlog/P2/B-0017-operational-resonance-dashboard-*.md` — B-0017 is open P2; B-0401 is the P1 vehicle that ships B-0017 components
+- `docs/backlog/P1/B-0154-github-pages-*.md` — B-0154 is open; its children (B-0232..B-0237) are the hosting surface; B-0401 slice-1 produces HTML/JS for that surface
+- B-0400 — confirmed closed (2026-05-13); dependency satisfied
+
+**Dependency check:**
+
+- `depends_on: [B-0400]` — B-0400 is closed ✓
+- No circular dependencies; `composes_with` are open items, not blockers
+
+**Decomposition into atomic child rows:**
+
+| Row | Slice | Status | Branch |
+|-----|-------|--------|--------|
+| B-0434 | Alignment invariant dashboard tab (HC/SD/DIR clause coverage panel in `demo/index.html`) | shipped → PR | feat/b-0401-demo-alignment-tab-slice-1 |
+| B-0435 | Circuit breaker visualization panel (mock data → live bus data) | open | — |
+| B-0436 | Hamiltonian-to-git visualization (git history → phase-space rendering) | open | — |
+| B-0437 | UX-of-math panel (bivector fingerprints, partial-credit scoring) | open | — |
 
 # Demo surface — circuit breaker + Hamiltonian-to-git + alignment UI
 

@@ -233,6 +233,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0428](backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md)** DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)
 - [ ] **[B-0429](backlog/P1/B-0429-end-user-persona-mapping-product-team-multiple-products-multiple-personas-each-aaron-2026-05-13.md)** End-user persona mapping — product team — multiple products × multiple personas each
 - [ ] **[B-0433](backlog/P1/B-0433-shadow-observer-slice-5-zeta-cli-distribution-demo-packaging-2026-05-13.md)** Shadow observer slice 5 — Zeta CLI distribution + demo packaging
+- [x] **[B-0434](backlog/P1/B-0434-demo-alignment-tab-slice-1-hc-sd-dir-clause-coverage.md)** Demo alignment tab — slice 1: HC/SD/DIR clause coverage panel in demo/index.html
+- [ ] **[B-0435](backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md)** Demo — circuit breaker visualization panel (mock data → live bus data)
+- [ ] **[B-0436](backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md)** Demo — Hamiltonian-to-git visualization (git history → phase-space rendering)
+- [ ] **[B-0437](backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md)** Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)
 
 ## P2 — research-grade
 
