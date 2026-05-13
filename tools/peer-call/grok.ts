@@ -377,39 +377,89 @@ export function main(argv: readonly string[]): number {
 
   const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
   const stderrBuf: Buffer = (result.stderr as Buffer | null) ?? Buffer.alloc(0);
-  const exitCode = result.status ?? 1;
+  // Distinguish spawn-success vs spawn-failure (per Copilot #2949
+  // round-1): spawnSync returns status: null on ENOENT / signal /
+  // maxBuffer-exceeded etc. and sets result.error / result.signal.
+  // Reporting exitCode=1 in those cases loses real diagnostic info.
+  const spawnError: Error | undefined = result.error;
+  const spawnSignal: NodeJS.Signals | null = result.signal ?? null;
+  const rawStatus: number | null = result.status ?? null;
+  const exitCode = rawStatus ?? 1;
+  // exitCodeDisplay carries the most-informative value for the
+  // failure marker: signal name if killed by signal, "null (spawn
+  // error)" if spawn failed, numeric otherwise.
+  const exitCodeDisplay =
+    spawnSignal !== null
+      ? `null (terminated by signal ${spawnSignal})`
+      : rawStatus === null
+        ? `null (spawn error — see error field)`
+        : String(rawStatus);
 
-  // Mirror captured stderr to our stderr (preserves prior visibility
-  // when stderr was inherited; user/caller still sees cursor-agent
-  // diagnostics after spawnSync returns).
+  // Mirror captured stderr to our stderr (post-exit; live streaming
+  // was lost when stderr changed from "inherit" to "pipe" per
+  // Copilot #2949 round-1; this is a trade-off for capturing stderr
+  // into the failure marker for output-file-only consumers).
   if (stderrBuf.length > 0) {
     process.stderr.write(stderrBuf);
   }
 
-  // Pick what to write to the output file:
-  //   - success OR non-empty stdout: write stdout buffer as-is
-  //   - non-zero exit AND empty stdout: write self-documenting
-  //     failure marker including exit code + captured stderr
-  //     (B-0421 fix — output file is no longer silently empty on
-  //     cursor-agent failure)
-  const isEmptyFailure = exitCode !== 0 && stdoutBuf.length === 0;
+  // Determine failure case for self-documenting marker:
+  //   - Empty stdout AND (non-zero exit OR spawn error OR signal)
+  //     → write self-documenting failure marker
+  //   - Otherwise → write stdout buffer (success path; preserves
+  //     existing JSON / stream-json contracts)
+  const isFailureCase =
+    stdoutBuf.length === 0 &&
+    (exitCode !== 0 || spawnError !== undefined || spawnSignal !== null);
   let fileContent: Buffer;
-  if (isEmptyFailure) {
+  if (isFailureCase) {
     const stderrText =
       stderrBuf.length > 0
         ? stderrBuf.toString("utf8")
-        : "(empty — cursor-agent produced no stderr)\n";
-    const failureMarker =
-      `# cursor-agent failure (B-0421 self-documenting marker)\n` +
-      `\n` +
-      `Exit code: ${String(exitCode)}\n` +
-      `Model: ${model}\n` +
-      `Prompt size (bytes): ${String(Buffer.byteLength(fullPromptResult.value, "utf8"))}\n` +
-      `\n` +
-      `## Captured stderr\n` +
-      `\n` +
-      `\`\`\`\n${stderrText}\`\`\`\n`;
-    fileContent = Buffer.from(failureMarker, "utf8");
+        : "(empty — cursor-agent produced no stderr)";
+    const errorMessage = spawnError !== undefined ? spawnError.message : "";
+    const promptBytes = Buffer.byteLength(fullPromptResult.value, "utf8");
+    // Emit the marker in a format that matches parsed.outputFormat
+    // so JSON/stream consumers don't break on Markdown input
+    // (per Copilot #2949 round-1).
+    if (parsed.outputFormat === "json") {
+      const obj = {
+        error: "cursor-agent failure (B-0421 self-documenting marker)",
+        exitCode: exitCodeDisplay,
+        model,
+        promptBytes,
+        signal: spawnSignal,
+        spawnError: errorMessage,
+        stderr: stderrText,
+      };
+      fileContent = Buffer.from(`${JSON.stringify(obj, null, 2)}\n`, "utf8");
+    } else if (parsed.outputFormat === "stream-json") {
+      const obj = {
+        type: "error",
+        message: "cursor-agent failure (B-0421 self-documenting marker)",
+        exitCode: exitCodeDisplay,
+        model,
+        promptBytes,
+        signal: spawnSignal,
+        spawnError: errorMessage,
+        stderr: stderrText,
+      };
+      fileContent = Buffer.from(`${JSON.stringify(obj)}\n`, "utf8");
+    } else {
+      // text → Markdown marker for human consumption
+      const failureMarker =
+        `# cursor-agent failure (B-0421 self-documenting marker)\n` +
+        `\n` +
+        `Exit code: ${exitCodeDisplay}\n` +
+        `Model: ${model}\n` +
+        `Prompt size (bytes): ${String(promptBytes)}\n` +
+        (errorMessage.length > 0 ? `Spawn error: ${errorMessage}\n` : "") +
+        `\n` +
+        `## Captured stderr\n` +
+        `\n` +
+        `\`\`\`\n${stderrText}${stderrText.endsWith("\n") ? "" : "\n"}\`\`\`\n`;
+      fileContent = Buffer.from(failureMarker, "utf8");
+    }
   } else {
     fileContent = stdoutBuf;
   }
@@ -431,10 +481,10 @@ export function main(argv: readonly string[]): number {
   }
   process.stdout.write(`OUTPUT-FILE: ${outputFile}\n`);
 
-  if (exitCode !== 0) {
+  if (exitCode !== 0 || spawnError !== undefined || spawnSignal !== null) {
     process.stderr.write("\n");
-    process.stderr.write(`cursor-agent exited with code ${String(exitCode)}\n`);
-    if (isEmptyFailure) {
+    process.stderr.write(`cursor-agent exited with code ${exitCodeDisplay}\n`);
+    if (isFailureCase) {
       process.stderr.write(
         `cursor-agent produced empty stdout; B-0421 failure marker written to ${outputFile}\n`,
       );
