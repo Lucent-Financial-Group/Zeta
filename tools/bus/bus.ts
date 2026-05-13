@@ -151,7 +151,7 @@ function usage(): void {
   bus.ts watch [--to <agent>] [--topic <topic>] [--interval <ms>] [--timeout <sec>] [--json]
 
 Topics: heartbeat | claim | shadow-catch | review-request
-Agents: otto | alexa | riven | vera | lior | * (broadcast)`);
+Agents: ${SENDER_IDS.join(" | ")} | * (broadcast)`);
 }
 
 // SENDER_IDS and AGENT_IDS imported from types.ts

@@ -20,7 +20,11 @@ import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
 import { SENDER_IDS } from "./types.ts";
 import type { AgentId, SenderAgentId, MessageEnvelope } from "./types.ts";
 
-// Stale lock threshold: a lock file older than this was left by a crashed process.
+// Stale lock threshold — a lock older than this is treated as a crash remnant.
+// The critical section (list + writeFileSync) runs in <50ms on /tmp; 5s is
+// 100× that, making false-positive reclamation of an active holder extremely
+// unlikely.  Claim coordination is advisory (not a hard lock), so the rare
+// theoretical race produces a duplicate advisory claim, not data corruption.
 const LOCK_STALE_MS = 5_000;
 
 // Per-item advisory file lock — guards acquire's check+publish against concurrent processes.
