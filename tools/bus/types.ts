@@ -3,7 +3,7 @@
 // Transport: /tmp/zeta-bus/ JSON files. No runtime dependencies.
 // Each message is one JSON file; TTL expiry pruned by `clean --expired`.
 //
-// Topic taxonomy (agent-designed, Otto 2026-05-13):
+// Topic taxonomy (agent-designed, 2026-05-13):
 //   heartbeat     — liveness signal; agents advertise they are alive
 //   claim         — work coordination; claim or release a backlog item
 //   shadow-catch  — share an observation or insight between agents
@@ -16,6 +16,9 @@ export type AgentId =
   | "vera"
   | "lior"
   | "*"; // broadcast
+
+/** Sender identity — excludes broadcast target "*" which is not a valid origin. */
+export type SenderAgentId = Exclude<AgentId, "*">;
 
 export type Topic = "heartbeat" | "claim" | "shadow-catch" | "review-request";
 
@@ -54,7 +57,7 @@ export type BusMessage =
 
 export type MessageEnvelope = BusMessage & {
   id: string;
-  from: AgentId;
+  from: SenderAgentId; // a specific named agent, never "*"
   to: AgentId; // specific agent or "*" for broadcast
   timestamp: string; // ISO-8601
   expiresAt: string; // ISO-8601; pruned by clean --expired

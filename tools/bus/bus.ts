@@ -13,7 +13,7 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
-import type { AgentId, MessageEnvelope, Topic, BusMessage } from "./types.ts";
+import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage } from "./types.ts";
 import { TTL_MS } from "./types.ts";
 
 export const BUS_DIR = process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
@@ -36,7 +36,7 @@ function envelopePath(id: string): string {
 // ── publish ───────────────────────────────────────────────────────────────────
 
 export function publish(
-  from: AgentId,
+  from: SenderAgentId,
   to: AgentId,
   message: BusMessage,
   ttlOverrideMs?: number,
@@ -67,7 +67,11 @@ export function list(opts: { topic?: Topic; to?: AgentId; includeExpired?: boole
     try {
       const raw = readFileSync(join(BUS_DIR, f), "utf-8");
       const env = JSON.parse(raw) as MessageEnvelope;
-      if (typeof env.id !== "string" || typeof env.topic !== "string") continue;
+      if (
+        typeof env.id !== "string" || typeof env.topic !== "string" ||
+        typeof env.timestamp !== "string" || typeof env.expiresAt !== "string" ||
+        typeof env.from !== "string" || typeof env.to !== "string"
+      ) continue;
       if (!opts.includeExpired && new Date(env.expiresAt) < now) continue;
       if (opts.topic && env.topic !== opts.topic) continue;
       if (opts.to && env.to !== opts.to && env.to !== "*") continue;
@@ -82,9 +86,9 @@ export function list(opts: { topic?: Topic; to?: AgentId; includeExpired?: boole
 // ── read ──────────────────────────────────────────────────────────────────────
 
 export function readMessage(id: string): MessageEnvelope | null {
-  const p = envelopePath(id);
-  if (!existsSync(p)) return null;
   try {
+    const p = envelopePath(id);
+    if (!existsSync(p)) return null;
     return JSON.parse(readFileSync(p, "utf-8")) as MessageEnvelope;
   } catch {
     return null;
@@ -149,18 +153,29 @@ Topics: heartbeat | claim | shadow-catch | review-request
 Agents: otto | alexa | riven | vera | lior | * (broadcast)`);
 }
 
+const SENDER_IDS: readonly string[] = ["otto", "alexa", "riven", "vera", "lior"];
+const AGENT_IDS: readonly string[] = [...SENDER_IDS, "*"];
+
 function main(): void {
   const { command, flags, positional } = parseArgs(process.argv);
   const asJson = flags.json === "true";
 
   switch (command) {
     case "publish": {
-      const from = flags.from as AgentId | undefined;
+      const from = flags.from as SenderAgentId | undefined;
       const to = (flags.to ?? "*") as AgentId;
       const topic = flags.topic as Topic | undefined;
       const payloadRaw = flags.payload;
       if (!from || !topic || !payloadRaw) {
         console.error("Error: --from, --topic, and --payload are required");
+        process.exit(1);
+      }
+      if (!SENDER_IDS.includes(from)) {
+        console.error(`Error: unknown sender '${from}'. Valid: ${SENDER_IDS.join(", ")}`);
+        process.exit(1);
+      }
+      if (!AGENT_IDS.includes(to)) {
+        console.error(`Error: unknown recipient '${to}'. Valid: ${AGENT_IDS.join(", ")}`);
         process.exit(1);
       }
       let payload: unknown;
