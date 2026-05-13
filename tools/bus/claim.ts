@@ -14,23 +14,31 @@
 //   acquire: 0 = claim published, 1 = already claimed (no publish)
 //   release: 0 = release published, 1 = error
 
-import { openSync, closeSync, unlinkSync, statSync } from "node:fs";
+import { openSync, closeSync, unlinkSync, statSync, writeSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
 import { SENDER_IDS } from "./types.ts";
 import type { AgentId, SenderAgentId, MessageEnvelope } from "./types.ts";
 
-// Stale lock threshold — a lock older than this is treated as a crash remnant.
-// The critical section (list + writeFileSync) runs in <50ms on /tmp; 5s is
-// 100× that, making false-positive reclamation of an active holder extremely
-// unlikely.  Claim coordination is advisory (not a hard lock), so the rare
-// theoretical race produces a duplicate advisory claim, not data corruption.
+// Stale lock threshold — age floor before a lock is a candidate for reclamation.
+// Used together with a PID liveness check: only reclaim if the holder process is
+// dead, preventing false-positive reclamation of a slow-but-live holder.
 const LOCK_STALE_MS = 5_000;
 
+// Returns true if a process with the given PID is running (signal 0 = liveness probe).
+// EPERM means the process exists but we lack permission — still alive.
+// ESRCH means the process does not exist — dead.
+function isProcessRunning(pid: number): boolean {
+  if (isNaN(pid) || pid <= 0) return false;
+  try { process.kill(pid, 0); return true; }
+  catch (e) { return (e as NodeJS.ErrnoException).code === "EPERM"; }
+}
+
 // Per-item advisory file lock — guards acquire's check+publish against concurrent processes.
+// encodeURIComponent produces a collision-free mapping: distinct item IDs always produce
+// distinct lock paths (e.g. "A/B" → "A%2FB", "A_B" → "A_B").
 function lockFilePath(itemId: string): string {
-  const safe = itemId.replace(/[^a-zA-Z0-9_-]/g, "_");
-  return join(BUS_DIR, `acquire-${safe}.lock`);
+  return join(BUS_DIR, `acquire-${encodeURIComponent(itemId)}.lock`);
 }
 
 function withAcquireLock<T>(itemId: string, fn: () => T): T {
@@ -38,16 +46,25 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
   const lp = lockFilePath(itemId);
   let fd: number | undefined;
   // O_CREAT|O_EXCL ("wx"): atomic exclusive create — exactly one winner per race.
-  // Between retries, check whether an existing lock is stale (mtime age > LOCK_STALE_MS);
-  // if so, delete it — the holder crashed and will never release it otherwise.
+  // Write our PID so stale-lock detection can verify the holder is still alive before
+  // reclaiming: age threshold guards against reading a newly-created empty file.
   for (let i = 0; i < 3; i++) {
-    try { fd = openSync(lp, "wx"); break; } catch {
+    try {
+      fd = openSync(lp, "wx");
+      writeSync(fd, String(process.pid));
+      break;
+    } catch (e) {
+      // Only do stale-lock recovery on EEXIST; other errors (permissions, I/O) bubble up.
+      if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
       try {
+        const content = readFileSync(lp, "utf8").trim();
+        const holderPid = parseInt(content, 10);
         const st = statSync(lp);
-        if (Date.now() - st.mtimeMs > LOCK_STALE_MS) {
+        // Reclaim only if the lock is old enough AND its holder process is dead.
+        if (Date.now() - st.mtimeMs > LOCK_STALE_MS && !isProcessRunning(holderPid)) {
           unlinkSync(lp); // reclaim stale lock left by a crashed process
         }
-      } catch { /* lock already gone between stat and unlink — harmless */ }
+      } catch { /* lock disappeared between reads — harmless */ }
     }
   }
   if (fd === undefined) throw new Error(`${itemId}: acquire lock busy — retry`);

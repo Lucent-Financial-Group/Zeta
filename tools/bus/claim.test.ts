@@ -313,11 +313,12 @@ describe("claim.ts — acquire lock cleanup (P1)", () => {
   });
 
   test("stale lock (age > 5s) is reclaimed so acquire succeeds", () => {
-    // Simulate a lock file left by a crashed process by backdating its mtime.
-    // B-0777 → safe name is "B-0777" (hyphen preserved), so lock file is acquire-B-0777.lock.
+    // Simulate a lock file left by a crashed process: backdate its mtime AND write a
+    // dead PID (0 is never a valid running process so isProcessRunning(0) = false).
+    // B-0777 → encodeURIComponent("B-0777") = "B-0777", so lock file is acquire-B-0777.lock.
     const lockPath = join(TEST_DIR, "acquire-B-0777.lock");
     const staleDate = new Date(Date.now() - 10_000); // 10s ago — beyond the 5s threshold
-    writeFileSync(lockPath, "");
+    writeFileSync(lockPath, "0");
     utimesSync(lockPath, staleDate, staleDate);
 
     const r = run("acquire", "--from", "otto", "--item", "B-0777");
