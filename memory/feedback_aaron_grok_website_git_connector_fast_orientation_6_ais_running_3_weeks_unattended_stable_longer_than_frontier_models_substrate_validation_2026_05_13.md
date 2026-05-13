@@ -67,30 +67,29 @@ running 3 weeks unattended and stable much longer than
 frontier models because of the ai skills and substrate built
 in the repo"*
 
-Aaron 2026-05-13 (CORRECTION): *"it's only 4 though i
-overclaimed right it's just 4 of you?"* + *"i guess if you
-could foregorund and background it's 6"* + *"two of you have
-foreground loops you and vera"*
+Aaron 2026-05-13 (CORRECTIONS, iterative):
+1. *"it's only 4 though i overclaimed right it's just 4 of
+   you?"*
+2. *"i guess if you could foregorund and background it's 6"*
+3. *"two of you have foreground loops you and vera"*
+4. *"it is 5 alexa kiro"* + *"plus two foreground loops"*
 
-**Substrate-honest count**:
+**Substrate-honest count (final per Aaron 2026-05-13)**:
 
-- **4 factory AI agents** total: Otto + Riven + Vera + Lior
-- **6 substrate-loops** when counting foreground + background
-  separately:
-  - Otto: foreground (Claude Code CLI) — 2 loops if counted
-    with background
-  - Vera: foreground (Codex) + background
-  - Riven: background-only (Cursor + Grok background)
-  - Lior: background-only (Antigravity + Gemini CLI background)
+- **5 factory AI agents** total: Otto + Riven + Vera + Lior
+  + Alexa-Kiro
+- **2 of them have foreground loops**: Otto + Vera
+- Background-loop coverage: Vera + Riven + Lior + Alexa-Kiro
+  (Otto is foreground-only via Claude Code CLI)
 - Plus Aaron (human) + external participants (Amara, Ani,
   Kestrel, DeepSeek, Alexa-speaker) ferrying via Aaron-as-
-  courier
+  courier (do NOT commit)
 
-The corrected count (4 AIs, 6 loops with foreground+background
-distinction) is substrate-honest. The 3-week-unattended-
-stability claim stands; the count was over-aggregated initially.
+The substrate-loop count varies by counting convention; agent
+count is 5. The 3-week-unattended-stability claim stands.
 
-The 4-agent (or 6-loop) claim implies:
+The 5-agent (Otto + Riven + Vera + Lior + Alexa-Kiro) claim
+implies:
 - Alexa-Kiro (Kiro + Qwen Coder)
 - + possibly external participants ferrying (Amara, Ani,
   Kestrel, DeepSeek)
