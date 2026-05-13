@@ -99,13 +99,23 @@ gh pr create \
   --title "Sync: AceHack/Forge:main → LFG/Forge:main (batch of N PRs)" \
   --body "Bulk upstream sync per docs/UPSTREAM-RHYTHM.md cadence."
 
-# Squash-merge matches LFG/Forge's squash-only merge settings (scaffold default).
+# NOTE: --squash is required because LFG/Forge is squash-only (scaffold default).
+# Unlike Zeta's canonical docs/UPSTREAM-RHYTHM.md (which uses --merge to
+# preserve ancestry), squash-merge rewrites history so LFG/Forge:main is no
+# longer a descendant of AceHack/Forge:main. The forward-sync still works but
+# produces a non-fast-forward merge commit instead of a true fast-forward.
+# After that merge commit lands, compare/Lucent-Financial-Group:main...main
+# will show ahead_by=1 (the merge commit) — this is expected and does NOT
+# indicate another bulk sync is needed.
 gh pr merge <N> --repo Lucent-Financial-Group/Forge --auto --squash
 ```
 
 ### Forward-sync AceHack/main from LFG/main (after a bulk sync)
 
 ```bash
+# GitHub's fork-upstream sync API. Because the bulk-sync above used --squash
+# (not --merge), LFG/Forge:main is not a fast-forward ancestor of AceHack:main.
+# merge-upstream handles this by creating a merge commit on AceHack/main.
 gh api -X POST /repos/AceHack/Forge/merge-upstream -f branch=main
 ```
 
