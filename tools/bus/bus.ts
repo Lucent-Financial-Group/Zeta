@@ -254,15 +254,25 @@ function main(): void {
       const toFilter = flags.to as AgentId | undefined;
       const topicFilter = flags.topic as Topic | undefined;
       const intervalMs = parseInt(flags.interval ?? "2000", 10);
+      if (!Number.isFinite(intervalMs) || intervalMs <= 0) {
+        console.error("--interval must be a positive integer (milliseconds)");
+        process.exit(1);
+      }
       const timeoutSec = flags.timeout !== undefined ? parseInt(flags.timeout, 10) : -1;
 
-      // cursor is a timestamp string; messages strictly newer than this are "fresh"
-      let cursor = new Date().toISOString();
+      // cursor tracks the last-delivered timestamp + the IDs at that timestamp,
+      // so bursts of same-millisecond messages are never silently dropped.
+      let cursorTimestamp = new Date().toISOString();
+      const deliveredAtCursor = new Set<string>();
       const deadline = timeoutSec >= 0 ? Date.now() + timeoutSec * 1_000 : Infinity;
 
       const poll = () => {
         const msgs = list({ topic: topicFilter, to: toFilter });
-        const fresh = msgs.filter((m) => m.timestamp > cursor);
+        const fresh = msgs.filter(
+          (m) =>
+            m.timestamp > cursorTimestamp ||
+            (m.timestamp === cursorTimestamp && !deliveredAtCursor.has(m.id)),
+        );
         for (const m of fresh) {
           if (asJson) {
             console.log(JSON.stringify(m));
@@ -271,7 +281,16 @@ function main(): void {
             console.log(`${m.id}  ${m.topic}  ${m.from}→${m.to}  ${m.timestamp}  ${p}`);
           }
         }
-        if (fresh.length > 0) cursor = fresh[fresh.length - 1]!.timestamp;
+        if (fresh.length > 0) {
+          const lastTs = fresh[fresh.length - 1]!.timestamp;
+          if (lastTs !== cursorTimestamp) {
+            cursorTimestamp = lastTs;
+            deliveredAtCursor.clear();
+          }
+          for (const m of fresh) {
+            if (m.timestamp === cursorTimestamp) deliveredAtCursor.add(m.id);
+          }
+        }
         if (Date.now() >= deadline) process.exit(0);
         setTimeout(poll, intervalMs);
       };
