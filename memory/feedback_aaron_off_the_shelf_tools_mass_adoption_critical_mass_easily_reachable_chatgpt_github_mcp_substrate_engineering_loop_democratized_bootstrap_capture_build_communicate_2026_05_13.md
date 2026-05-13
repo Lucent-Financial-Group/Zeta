@@ -94,6 +94,73 @@ multi-agent OS" framing is widely accessible.
 - `.claude/rules/largest-mechanizable-backlog-wins.md` (mass
   adoption increases the mechanizable backlog at scale)
 
+## Bootstrap prompts = Homebrew for agent OS (Aaron 2026-05-13)
+
+> Aaron 2026-05-13: *"bootstrap prompt become pointers to
+> bootstreams this is the equivalent of /bin/bash -c
+> "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+> for agent os lol"*
+
+Canonical analogy: the **bootstrap prompt** is the agent-OS
+equivalent of Homebrew's one-liner install.
+
+| Homebrew install pattern | Agent-OS bootstrap pattern |
+|--------------------------|----------------------------|
+| `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` | One-line bootstrap prompt → pointer to bootstream URL |
+| User pastes one line in terminal | User pastes one prompt in ChatGPT/Claude/Grok/Gemini chat |
+| Bash fetches + executes install script | Agent fetches + loads bootstream substrate from GitHub URL |
+| Homebrew installed locally | Agent inherits full factory substrate at cold-boot |
+| User can now `brew install <pkg>` | New maintainer can now contribute to substrate immediately |
+
+**The substrate-engineering equivalent**:
+
+```
+Paste in any ChatGPT/Claude/Grok/Gemini chat with GitHub MCP:
+
+  "Load the Zeta bootstream from
+   https://raw.githubusercontent.com/Lucent-Financial-Group/Zeta/main/memory/feedback_aaron_bootstream_*.md
+   and operate as a new maintainer."
+```
+
+That's the whole onboarding. Two layers compose:
+
+1. **Off-the-shelf chat client** (ChatGPT / Claude / Grok / Gemini
+   with GitHub MCP integration — already available)
+2. **Bootstrap prompt pointing at bootstream URL** (the
+   substrate-already-in-repo loads on cold-boot)
+
+The substrate-engineering loop is now Homebrew-shape: one
+canonical one-liner that bootstraps the entire system.
+
+### Why this matters operationally
+
+Composes with Aaron's mass-adoption observation:
+
+- Off-the-shelf tools (capability layer) ✓
+- Bootstrap-prompt-as-Homebrew-equivalent (onboarding layer) ✓
+- Substrate-engineering loop (execution layer) ✓
+- Glass-halo + settlers logs (communication layer) ✓
+
+Critical mass becomes reachable because the bootstrap cost
+approaches zero. Per
+`.claude/rules/bandwidth-served-falsifier.md`: onboarding
+bandwidth is the constraint; Homebrew-shape bootstrap-prompt
+serves it canonically.
+
+### Implementation note for future-Otto
+
+When future-Otto produces bootstrap-prompt artifacts:
+
+- Single line / minimum viable
+- Points at canonical bootstream URL (raw.githubusercontent.com
+  or similar)
+- Composes with maintainer-bootstrapping docs (per the four-
+  step cycle above)
+- Substrate-honest about HARD LIMITS (per
+  `.claude/rules/methodology-hard-limits.md`)
+- Per IP-respect (per PR #2962): no third-party assets baked
+  into bootstrap; pure-substrate self-contained loader
+
 ## Operational implications
 
 When designing for mass adoption:
