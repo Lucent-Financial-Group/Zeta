@@ -1,22 +1,21 @@
-// backlog-ready-notifier.ts — B-0441 slice 2: backlog row scan (real readiness detection)
+// backlog-ready-notifier.ts — B-0441 slice 4: bus publish (work-assignment topic)
 //
 // Background service that proactively surfaces ready-to-grind backlog rows
-// (open, dependencies satisfied) to agents whose queue is empty. Composes
-// with B-0440 (Standing-by detector): B-0440 catches the failure mode AFTER
-// it occurs (reactive); this service PREVENTS the failure mode by surfacing
-// work BEFORE the agent goes idle (proactive).
+// to agents whose queue is empty. Slice 4 adds bus publish: when ready
+// rows are found, the notifier publishes a `work-assignment` envelope per
+// ready candidate (capped) via the B-0400 protocol.
 //
-// Slice 2 adds real backlog parsing — scans docs/backlog/P*/B-*.md for rows
-// where status: open AND every depends_on row is closed. Reports the count
-// of ready rows and the first N row IDs as candidate work targets.
+// Queue-state detection (only assign when an agent's queue is empty) is
+// slice 5; slice 4 publishes unconditionally when ready rows exist so the
+// reactive loop is closed end-to-end.
 //
-// Queue-state detection (slice 3) and bus integration (slice 4) still TBD.
-//
-// Run: bun tools/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH]
+// Run: bun tools/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH] [--no-publish] [--agent NAME] [--to NAME] [--max-assignments N]
 // Compose with: B-0441 + B-0400 (bus) + B-0440 (reactive peer).
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { publish } from "../bus/bus";
+import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 
 export type NotifierConfig = {
   /** How often to poll, in minutes */
@@ -25,12 +24,24 @@ export type NotifierConfig = {
   once: boolean;
   /** Directory containing P{0..3}/B-NNNN-*.md backlog rows */
   backlogDir: string;
+  /** When true, skip bus publish (dry-run mode) */
+  noPublish: boolean;
+  /** Bus sender identity */
+  fromAgent: SenderAgentId;
+  /** Bus recipient (default "*" = broadcast) */
+  toAgent: AgentId;
+  /** Max number of work-assignment envelopes to publish per poll */
+  maxAssignments: number;
 };
 
 export const DEFAULT_CONFIG: NotifierConfig = {
   pollIntervalMin: 10,
   once: false,
   backlogDir: "docs/backlog",
+  noPublish: false,
+  fromAgent: "otto",
+  toAgent: "*",
+  maxAssignments: 3,
 };
 
 export type BacklogRow = {
@@ -45,22 +56,27 @@ export type PollResult = {
   pollAt: string; // ISO-8601
   totalOpenRows: number;
   readyRowsFound: number;
-  candidateIds: string[]; // up to first 10 ready row IDs
+  candidateIds: string[];
+  publishedEnvelopeIds: string[];
+  /** Structured publish-failure reason; null on success or skip. */
+  lastPublishError: string | null;
   note: string;
 };
 
-/** Adapter abstraction so tests can inject deterministic time + filesystem. */
+/** Adapter abstraction so tests can inject deterministic time + filesystem + bus. */
 export type Adapters = {
   now: () => Date;
   scanBacklog: (backlogDir: string) => BacklogRow[];
+  publishAssignment: (
+    from: SenderAgentId,
+    to: AgentId,
+    rowId: string,
+    priority: "P0" | "P1" | "P2" | "P3",
+    rationale: string,
+  ) => MessageEnvelope;
 };
 
-/**
- * Parse depends_on from frontmatter. Supports both YAML inline-flow
- * and block-style lists. Returns empty array when missing.
- */
 function parseDependsOn(frontmatter: string): string[] {
-  // Inline flow style: depends_on: [A, B, C]
   const inlineMatch = frontmatter.match(/^depends_on:\s*\[(.*?)\]/m);
   if (inlineMatch && inlineMatch[1] !== undefined) {
     return inlineMatch[1]
@@ -68,8 +84,6 @@ function parseDependsOn(frontmatter: string): string[] {
       .map(s => s.trim())
       .filter(s => s.length > 0);
   }
-
-  // Block style: depends_on:\n  - A\n  - B
   const blockMatch = frontmatter.match(/^depends_on:\s*\n((?:[ \t]+-[ \t]*[^\r\n]+\r?\n?)+)/m);
   if (blockMatch && blockMatch[1] !== undefined) {
     return blockMatch[1]
@@ -77,22 +91,17 @@ function parseDependsOn(frontmatter: string): string[] {
       .map(line => line.match(/^[ \t]+-[ \t]*(.+?)\s*$/)?.[1] ?? "")
       .filter(s => s.length > 0);
   }
-
   return [];
 }
 
-/** Parse a single backlog file's frontmatter into a BacklogRow. */
 export function parseRow(content: string, filename: string): BacklogRow | null {
   const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!fmMatch) return null;
   const frontmatter = fmMatch[1] ?? "";
-
   const idMatch = frontmatter.match(/^id:\s*(\S+)/m);
   const priorityMatch = frontmatter.match(/^priority:\s*(\S+)/m);
   const statusMatch = frontmatter.match(/^status:\s*(\S+)/m);
-
   if (!idMatch || !priorityMatch || !statusMatch) return null;
-
   return {
     id: idMatch[1] ?? "",
     priority: priorityMatch[1] ?? "",
@@ -113,7 +122,7 @@ const REAL_ADAPTERS: Adapters = {
       try {
         files = readdirSync(dir).filter(f => f.startsWith("B-") && f.endsWith(".md"));
       } catch {
-        continue; // priority dir doesn't exist; skip
+        continue;
       }
       for (const file of files) {
         try {
@@ -127,23 +136,26 @@ const REAL_ADAPTERS: Adapters = {
     }
     return rows;
   },
+  publishAssignment: (from, to, rowId, priority, rationale) =>
+    publish(from, to, {
+      topic: "work-assignment",
+      payload: { rowId, priority, rationale },
+    }),
 };
 
-/**
- * A dependency is "satisfied" iff the dep's row status is `closed` OR begins
- * with `superseded-by-` (matching the canonical generator's checkbox logic
- * in tools/backlog/generate-index.ts). A dangling reference (dep ID not
- * present in the scan) is treated as UNSATISFIED.
- */
 function isDepSatisfied(depStatus: string | undefined): boolean {
   if (depStatus === undefined) return false;
   return depStatus === "closed" || depStatus.startsWith("superseded-by-");
 }
 
+function isValidPriority(s: string): s is "P0" | "P1" | "P2" | "P3" {
+  return s === "P0" || s === "P1" || s === "P2" || s === "P3";
+}
+
 /**
- * Single poll iteration. Scans the backlog and classifies rows by readiness:
- * a row is "ready" iff it is open AND every dependency is satisfied
- * (closed or superseded). Dangling dep references are reported separately.
+ * Single poll iteration. Scans backlog, identifies ready-to-grind rows,
+ * and publishes up to maxAssignments work-assignment envelopes (unless
+ * noPublish).
  */
 export function pollOnce(
   config: NotifierConfig,
@@ -165,8 +177,41 @@ export function pollOnce(
     r.dependsOn.every(dep => isDepSatisfied(idToStatus.get(dep))),
   );
 
+  const publishedEnvelopeIds: string[] = [];
+  let lastPublishError: string | null = null;
+  if (!config.noPublish && readyRows.length > 0) {
+    const toAssign = readyRows.slice(0, config.maxAssignments);
+    for (const row of toAssign) {
+      if (!isValidPriority(row.priority)) continue;
+      const rationale = `Ready-to-grind: ${row.id} is open with all deps satisfied. Decomposition discipline (PR #2999) says decompose ambiguous parents into concrete slices.`;
+      try {
+        const envelope = adapters.publishAssignment(
+          config.fromAgent,
+          config.toAgent,
+          row.id,
+          row.priority,
+          rationale,
+        );
+        publishedEnvelopeIds.push(envelope.id);
+      } catch (e) {
+        // Bus publish failure must NOT kill the poll loop. Captured in
+        // lastPublishError (structured + machine-readable per Riven P1).
+        lastPublishError = e instanceof Error ? e.message : String(e);
+        break; // stop the batch on first failure; next tick retries
+      }
+    }
+  }
+
   const danglingNote = danglingDeps.size > 0
     ? ` (warning: ${danglingDeps.size} dangling dep ref(s) — first: ${[...danglingDeps].slice(0, 3).join(", ")})`
+    : "";
+
+  const publishNote = lastPublishError !== null
+    ? ` (publish failed: ${lastPublishError})`
+    : config.noPublish
+    ? " (publish skipped per --no-publish)"
+    : publishedEnvelopeIds.length > 0
+    ? ` (published ${publishedEnvelopeIds.length} assignment envelope(s))`
     : "";
 
   return {
@@ -174,9 +219,11 @@ export function pollOnce(
     totalOpenRows: openRows.length,
     readyRowsFound: readyRows.length,
     candidateIds: readyRows.slice(0, 10).map(r => r.id),
+    publishedEnvelopeIds,
+    lastPublishError,
     note: readyRows.length > 0
-      ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind (deps satisfied); top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${danglingNote}`
-      : `${openRows.length} open rows but none ready (all have unsatisfied deps)${danglingNote}; future slice 4 will publish bus assignments when ready rows exist`,
+      ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind; top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${publishNote}${danglingNote}`
+      : `${openRows.length} open rows but none ready${danglingNote}`,
   };
 }
 
@@ -187,10 +234,6 @@ export function runOnce(config: NotifierConfig = DEFAULT_CONFIG): PollResult {
   return result;
 }
 
-/**
- * Run the notifier as a daemon. Sleeps for pollIntervalMin between
- * iterations and never returns; results are NOT accumulated.
- */
 export async function runDaemon(config: NotifierConfig = DEFAULT_CONFIG): Promise<never> {
   while (true) {
     runOnce(config);
@@ -207,21 +250,58 @@ export function parsePositiveMinutes(raw: string | undefined, name: string): num
   return n;
 }
 
-const KNOWN_FLAGS = ["--once", "--poll-min", "--backlog-dir"] as const;
+function parsePositiveInt(raw: string | undefined, name: string): number {
+  if (raw === undefined) throw new Error(`${name} requires a value`);
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0 || !Number.isInteger(n)) {
+    throw new Error(`${name} must be a positive integer; got "${raw}"`);
+  }
+  return n;
+}
+
+function parseSenderId(raw: string | undefined): SenderAgentId {
+  if (raw === undefined) throw new Error("--agent requires a value");
+  if ((SENDER_IDS as readonly string[]).includes(raw)) return raw as SenderAgentId;
+  throw new Error(`--agent must be one of ${SENDER_IDS.join(", ")}; got "${raw}"`);
+}
+
+function parseAgentId(raw: string | undefined): AgentId {
+  if (raw === undefined) throw new Error("--to requires a value");
+  if ((AGENT_IDS as readonly string[]).includes(raw)) return raw as AgentId;
+  throw new Error(`--to must be one of ${AGENT_IDS.join(", ")}; got "${raw}"`);
+}
+
+const KNOWN_FLAGS = [
+  "--once",
+  "--poll-min",
+  "--backlog-dir",
+  "--no-publish",
+  "--agent",
+  "--to",
+  "--max-assignments",
+] as const;
 
 export function parseArgs(argv: string[]): NotifierConfig {
   const config: NotifierConfig = { ...DEFAULT_CONFIG };
 
   for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
+    const arg = argv[i]!;
     if (arg === "--once") {
       config.once = true;
+    } else if (arg === "--no-publish") {
+      config.noPublish = true;
     } else if (arg === "--poll-min") {
       config.pollIntervalMin = parsePositiveMinutes(argv[++i], "--poll-min");
     } else if (arg === "--backlog-dir") {
       const next = argv[++i];
       if (next === undefined) throw new Error("--backlog-dir requires a value");
       config.backlogDir = next;
+    } else if (arg === "--agent") {
+      config.fromAgent = parseSenderId(argv[++i]);
+    } else if (arg === "--to") {
+      config.toAgent = parseAgentId(argv[++i]);
+    } else if (arg === "--max-assignments") {
+      config.maxAssignments = parsePositiveInt(argv[++i], "--max-assignments");
     } else {
       throw new Error(`unknown flag: ${arg}; known flags: ${KNOWN_FLAGS.join(", ")}`);
     }
