@@ -7,7 +7,7 @@ tier: product-demo
 effort: M
 created: 2026-05-10
 last_updated: 2026-05-13
-decomposition: partial
+decomposition: decomposed
 children: [B-0434, B-0435, B-0436, B-0437]
 depends_on: [B-0400]
 composes_with: [B-0017, B-0188, B-0064, B-0154]

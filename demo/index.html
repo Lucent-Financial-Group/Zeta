@@ -799,7 +799,7 @@
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
             element.classList.add('active');
-            if (tabId === 'alignment' && !window._alignmentLoaded) {
+            if (tabId === 'alignment' && !window._alignmentLoaded && !window._alignmentLoading) {
                 loadAlignmentTab();
             }
         }
@@ -811,6 +811,7 @@
         const RAW_BASE = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main`;
 
         async function loadAlignmentTab() {
+            window._alignmentLoading = true;
             try {
                 const resp = await fetch(`${RAW_BASE}/docs/ALIGNMENT.md`, { cache: 'no-cache' });
                 if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}`);
@@ -823,6 +824,8 @@
                 ['hc-clause-list', 'sd-clause-list', 'dir-clause-list'].forEach(id => {
                     setAlignmentError(id, `Failed to load: ${msg}`);
                 });
+            } finally {
+                window._alignmentLoading = false;
             }
         }
 
