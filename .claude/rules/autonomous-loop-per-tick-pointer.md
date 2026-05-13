@@ -73,7 +73,7 @@ load-bearing because:
 
 ## Full reasoning
 
-Aaron 2026-05-13 22:08Z: *"and yall both share the background loop right?
+The human maintainer 2026-05-13 22:08Z: *"and yall both share the background loop right?
 any changes you need to make to it so it's more like the routines and
 like a 3 coordinated version?"*
 

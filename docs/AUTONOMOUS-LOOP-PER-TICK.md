@@ -1,6 +1,6 @@
 # Autonomous-loop per-tick discipline — canonical pointer (3-surface converge)
 
-Aaron 2026-05-13 22:08Z: *"any changes you need to make to it so it's more
+The human maintainer 2026-05-13 22:08Z: *"any changes you need to make to it so it's more
 like the routines and like a 3 coordinated version?"*
 
 This file IS the canonical per-tick discipline that all three Otto
@@ -76,11 +76,20 @@ Anything that matters past compaction MUST be:
 - Pushed via PR (main is PR-required; direct push to main is blocked)
 - Auto-merge armed (`gh pr merge <N> --auto --squash`)
 
-Verify gates:
+Verify gates (per AGENTS.md; these are the **full** repo gates,
+not touched-file-only — three autonomous surfaces converge here, so
+the gates must be repo-wide to prevent broader-test or formatting
+regressions slipping through):
 
-- `dotnet build -c Release` — 0 warnings, 0 errors
-- `bun test <touched-test-files>` — all pass
-- Relevant `bun --bun tsc --noEmit` if TS code changed
+- `dotnet build -c Release` — 0 warnings, 0 errors (TreatWarningsAsErrors on)
+- `dotnet test Zeta.sln -c Release` — full solution test pass
+- `dotnet format --verify-no-changes` — formatter / analyzer clean
+- `bun test` on touched TypeScript test files (the bun side; the
+  dotnet gates above cover the F#/C# side)
+- `bun --bun tsc --noEmit` if TS code changed
+
+If any of these would fail, do NOT advance to step 5 (commit). Fix
+the gate failure first, then re-verify.
 
 ### 5. Write tick shard
 
@@ -102,7 +111,7 @@ If the autonomous-loop sentinel is missing, arm it immediately via
 
 ### 7. Visibility signal → stop
 
-State what landed concretely (file paths, PR numbers) so Aaron + the
+State what landed concretely (file paths, PR numbers) so the human maintainer + the
 next tick can pick up cold. Stop the foreground; the cron will fire
 the next tick.
 

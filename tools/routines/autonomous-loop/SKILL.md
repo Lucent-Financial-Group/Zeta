@@ -23,4 +23,4 @@ Autonomous-loop tick — fresh-session cold-boot.
 Repo: the Zeta checkout on this machine (typically `~/Documents/src/repos/Zeta` on maintainer machines; consult project metadata or the bootstream if the checkout lives elsewhere).
 Self-contained — no prior conversation context available. Bootstream + repo state + GitHub state = full ground truth.
 
-This routine is git-tracked at tools/routines/autonomous-loop/SKILL.md in the Zeta repo; the canonical source lives there. The per-tick discipline is canonicalized at docs/AUTONOMOUS-LOOP-PER-TICK.md (3-surface converge per Aaron 2026-05-13 22:08Z).
+This routine is git-tracked at tools/routines/autonomous-loop/SKILL.md in the Zeta repo; the canonical source lives there. The per-tick discipline is canonicalized at docs/AUTONOMOUS-LOOP-PER-TICK.md (3-surface converge per the human maintainer 2026-05-13 22:08Z).
