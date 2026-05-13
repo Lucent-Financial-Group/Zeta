@@ -569,6 +569,29 @@ jobs:
           printf '  %s\n' "${files[@]}"
           shellcheck --format=gcc --severity=style "${files[@]}"
 
+  lint-bash-retirement-inventory:
+    # Bash-retirement guard for the TypeScript/Bun migration trajectory:
+    # Zeta-owned post-install repo scripts should not grow new `.sh`
+    # entrypoints after Bucket B reached zero. The retained shell surface is
+    # setup/bootstrap only because it runs before Bun exists.
+    name: lint (bash retirement inventory)
+    timeout-minutes: 3
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's pin in .mise.toml. The inventory guard is
+        # intentionally separate from shellcheck: shellcheck validates the
+        # retained setup scripts, while this job fails any new non-allowlisted
+        # tracked `.sh` surface before it reaches main.
+        run: ./tools/setup/install.sh
+
+      - name: Run bash-retirement inventory guard
+        run: bun run hygiene:check-bash-retirement-inventory
+
   lint-workflows:
     # actionlint catches .github/workflows/*.yml bugs: unknown
     # context refs, invalid runner labels, shellcheck-style warnings
