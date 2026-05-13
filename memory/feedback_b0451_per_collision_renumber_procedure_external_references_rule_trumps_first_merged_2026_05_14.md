@@ -44,14 +44,19 @@ grep -rnF "B-0XXX" docs/ memory/ tools/ .claude/ \
   | grep -vE "docs/backlog/.*/B-0XXX-" \
   | grep -E "B-0XXX([^0-9.]|$)"   # word-boundary substitute (portable)
 
-# Sub-row ID like B-0068.1 — escape the dot OR use -F as above
+# Sub-row ID like B-0068.1 — fixed-string for the literal, then
+# portable word-boundary filter (with escaped dot in the regex)
+# so a search for B-0068.1 doesn't also match B-0068.10 or B-0068.1.1.
 grep -rnF "B-0068.1" docs/ memory/ tools/ .claude/ \
-  | grep -vE "docs/backlog/.*/B-0068\\.1-"
+  | grep -vE "docs/backlog/.*/B-0068\\.1-" \
+  | grep -E "B-0068\\.1([^0-9.]|$)"   # word-boundary on the renumbered ID
 ```
 
 (The `\b` word-boundary GNU-extension is not portable to BSD grep
-on macOS; the `[^0-9.]|$` filter is the portable equivalent. Codex
-P2 caught this in PR #3066 review.)
+on macOS; the `[^0-9.]|$` filter is the portable equivalent. The
+trailing filter on the sub-row case prevents matching
+`B-0068.10` / `B-0068.1.1` when searching for `B-0068.1`. Codex /
+Copilot round-2 caught both issues in PR #3066 review.)
 
 Note where each row is referenced externally:
 - Parent row's body (e.g., `## Decomposition` section listing children)
