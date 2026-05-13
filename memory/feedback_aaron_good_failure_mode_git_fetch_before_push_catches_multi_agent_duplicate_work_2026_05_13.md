@@ -1,6 +1,6 @@
 ---
 name: "Good failure mode — git fetch before push catches multi-agent duplicate work (Aaron 2026-05-13)"
-description: "Aaron 2026-05-13 named a positive failure mode observed multiple times during the bg-services + Debank launch cascade: when I prepare a fix locally, then fetch before push, I discover another factory agent (Vera / Lior / auto-fixer bot) has ALREADY pushed the same fix on the same branch. The substrate-honest move is reset --hard to remote + recognize the work is done, not stomp it. Aaron: 'that's a good failure mode, someone else already fixed.' Composes with the multi-agent factory's parallel-coordination pattern + the ship-unreviewed-first discipline (PR #2999)."
+description: "Aaron 2026-05-13 named a positive failure mode observed multiple times during the bg-services + DeBank launch cascade: when I prepare a fix locally, then fetch before push, I discover another factory agent (Vera / Lior / auto-fixer agent) has ALREADY pushed the same fix on the same branch. The substrate-honest move is reset --hard to remote only after confirming local edits are disposable or parked, then recognize the work is done instead of stomping it. Aaron: 'that's a good failure mode, someone else already fixed.' Composes with the multi-agent factory's parallel-coordination pattern + the ship-unreviewed-first discipline (PR #2999)."
 type: feedback
 created: 2026-05-13
 ---
@@ -9,12 +9,12 @@ created: 2026-05-13
 
 **Why:** Aaron 2026-05-13 observed and named the pattern as a
 positive failure mode after watching it fire multiple times
-during the Debank launch + bg-services cascade:
+during the DeBank launch + bg-services cascade:
 
 > *"that's a good failure mode, someone else already fixed"*
 
 The factory is operating with multiple agents touching the same
-branches in parallel (Vera, Lior, auto-fixer bot, Otto). Without
+branches in parallel (Vera, Lior, auto-fixer agent, Otto). Without
 the catch, two agents would produce duplicate fixes; with the
 catch, the second agent recognizes the work is done and resets
 to remote.
@@ -31,7 +31,8 @@ Sequence:
    Edit fails ("file modified since read")
 5. Otto fetches the remote state
 6. Otto discovers the fix already landed via another agent
-7. Otto `git reset --hard origin/<branch>` to sync
+7. Otto confirms local edits are disposable or parked, then
+   `git reset --hard origin/<branch>` to sync
 8. The duplicate work is correctly NOT applied
 
 **The catch is in the fetch step.** Without fetching first,
@@ -56,14 +57,23 @@ Otto's local commit would push and either:
 
 1. `git fetch origin <branch>`
 2. Check `git log origin/<branch> -3` for new commits
-3. If remote ahead with same-scope fix → `git reset --hard origin/<branch>`; recognize work is done
-4. If remote ahead with different-scope work → merge / rebase; layer my fix additively
-5. Push only if local has unique content remote doesn't have
+3. If remote ahead with same-scope fix → verify the local
+   tree is clean or only contains duplicate edits already
+   present on remote
+4. If local edits are unique, park them first with a patch or
+   stash before any reset
+5. If the local state is disposable or parked →
+   `git reset --hard origin/<branch>`; recognize work is done
+6. If remote ahead with different-scope work → merge / rebase;
+   layer my fix additively
+7. Push only if local has unique content remote doesn't have
 
 **Quick check before reset**:
 
 - Does the remote commit address the SAME issue I was fixing?
-- Yes → reset and skip my commit
+- Is my working tree clean, or are all local edits duplicated
+  remotely and safe to discard?
+- Yes to both → reset and skip my commit
 - No → merge / rebase and push my additive change
 
 ## Composes with
@@ -88,7 +98,7 @@ Otto's local commit would push and either:
 2. **PR #3012 (B-0441.2)**: auto-fixer agent pushed 4-Copilot-
    findings fix; Otto's local merge commit garbage; reset to
    remote
-3. **PR #3018 (Debank thread)**: Vera + Lior pushed lint fixes
+3. **PR #3018 (DeBank thread)**: Vera + Lior pushed lint fixes
    + casing corrections; Otto's local edits redundant; reset
    to remote
 
