@@ -45,7 +45,7 @@ Followed by: *"exactly this is regular pepole speak"*
 | **In git** | Git-native + retraction-native + replayable + DST | Zeta + factory infrastructure |
 | **Can be forked** | Open glass-halo + forkable design + mutual-privacy | LFG/AceHack topology + B-0424 three-repo split + civsim forkable design |
 | **Game on top** | Civ-sim — turns serious substrate into play | PR #2903 civsim + PR #2906 Casimir-gap framing |
-| **Turn work into play** | RPG framing — factory IS the game; shadow IS friction | RPG framing memory (project_rpg_framing_factory_is_the_game_shadow_is_friction_aaron_2026_05_07.md) |
+| **Turn work into play** | RPG framing — factory IS the game; shadow IS friction | RPG framing substrate (see `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`) |
 | **PVP and co-op raids** | Destiny-style competitive + cooperative mechanics | PR #2903 civsim game design |
 | **Universal business templates** | Pre-built business-as-code substrate | Already backlogged (B-0043 universal-company-government-information-substrate) |
 
@@ -114,8 +114,8 @@ visibly at Layer 2; Layer 1 is bridge.
   v0.2 + PEC) — shared-world-model architecture
 - B-0043 (universal-company-government-information-substrate)
   — "universal business templates already backlogged"
-- `memory/project_rpg_framing_factory_is_the_game_shadow_is_friction_aaron_2026_05_07.md`
-  — RPG framing pre-existing substrate
+- `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`
+  — RPG/shadow framing substrate (existing; replaces planned non-existent pointer)
 - `.claude/rules/bandwidth-served-falsifier.md` — elevator
   pitch is bandwidth-engineering applied to communication
 - `.claude/rules/default-to-both.md` — both dense AND
@@ -184,8 +184,8 @@ PR #2902 (Otto strategic encryption authority)
 
 PR #2851 (LFG canonical product substrate)
 
-`memory/project_rpg_framing_factory_is_the_game_shadow_is_friction_aaron_2026_05_07.md`
-(RPG framing prior substrate)
+`memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`
+(RPG/shadow framing substrate — existing file replaces planned pointer)
 
 B-0043 (universal-company-government-information-substrate
 — "universal business templates already backlogged")
