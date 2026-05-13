@@ -8,7 +8,7 @@ created: 2026-05-13
 Scope: External communication framing for the factory — regular-people-speak layer for all non-technical audiences
 Attribution: Aaron Stainback (human maintainer), 2026-05-13 verbal disclosure; formalized by Otto (Claude)
 Operational status: research-grade, not operational — guidance derived from Aaron's crystallization; not yet promoted to communication policy via a separate ADR
-Non-fusion disclaimer: Aaron's verbatim framing preserved in §Aaron's verbatim crystallization; Otto's decomposition in body; voices are distinct and not fused
+Non-fusion disclaimer: Aaron's verbatim framing preserved in §Aaron's verbatim crystallization and in the **Why:** paragraph (inline quotation); Otto's decomposition in body; voices are distinct and not fused
 
 # The elevator pitch — regular people speak
 
