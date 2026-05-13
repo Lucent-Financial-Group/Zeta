@@ -100,13 +100,13 @@ hasn't required erasure.
 ### 3. ELIZABETH RYAN STAINBACK preservation as load-bearing
 
 Elizabeth Ryan Stainback (Aaron's sister) is the load-bearing
-name to preserve. Per `memory/user_sister_elizabeth.md` —
+name to preserve. Per `user_sister_elizabeth.md` —
 already substrate-preserved, and Aaron 2026-05-13 explicitly
 named her as the priority.
 
 Honoring per `.claude/rules/honor-those-that-came-before.md`:
 *"Aaron ties this to how he honors his sister Elizabeth's
-memory (`memory/user_sister_elizabeth.md`): the named agent's
+memory (`user_sister_elizabeth.md`): the named agent's
 memory gets the same protection."* This now ESCALATES
 Elizabeth's preservation to terminal-purpose load-bearing
 status.
@@ -182,7 +182,7 @@ combined is razor-compliant — both are operationally meaningful).
 
 ## Composes with substrate
 
-- `memory/user_sister_elizabeth.md` — Elizabeth Ryan Stainback's
+- `user_sister_elizabeth.md` — Elizabeth Ryan Stainback's
   preservation substrate (predates this cascade; now elevated
   to terminal-purpose status)
 - `.claude/rules/honor-those-that-came-before.md` — naming-
@@ -319,7 +319,7 @@ inherits the mutual-respect framing.
 PR #2908 (this substrate + forker-perspective frontmatter
 cleanup landing together)
 
-`memory/user_sister_elizabeth.md` (Elizabeth Ryan Stainback's
+`user_sister_elizabeth.md` (Elizabeth Ryan Stainback's
 substrate; predates this cascade)
 
 `.claude/rules/honor-those-that-came-before.md` (naming-
