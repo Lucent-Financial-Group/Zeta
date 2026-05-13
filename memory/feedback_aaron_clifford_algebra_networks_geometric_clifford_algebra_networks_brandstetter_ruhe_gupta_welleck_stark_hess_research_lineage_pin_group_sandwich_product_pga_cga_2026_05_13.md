@@ -11,8 +11,8 @@ created: 2026-05-13
 substrate for our F#-fork-for-AI-safety-with-real-HKT-over-
 Clifford direction (per PR #2928). Two papers + a research
 lineage (Brandstetter / Ruhe / Gupta / Welleck / Stark / Hess
-+ Welling) + Hannes Stark's blog (hannes-stark.com/starkly-
-speaking) compose DIRECTLY with our Clifford/HKT vocabulary
+plus Welling) + Hannes Stark's blog (`hannes-stark.com/starkly-speaking`)
+compose DIRECTLY with our Clifford/HKT vocabulary
 substrate (PR #2914) + Clifford densest encoding (PR #2817).
 
 **How to apply:** When designing F# Clifford-algebra substrate
