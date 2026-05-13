@@ -134,6 +134,79 @@ PR #2970 + #2971:
    - Aaron's political ambition is canonical substrate
      preserved here for transparency
 
+## Court strategy — Clifford Z-sets of precedence (Aaron 2026-05-13)
+
+> Aaron 2026-05-13: *"forcing us to use our legal ontologies
+> to crush the system in court with our clifford zsets of
+> presidence"*
+
+When state law (NC) preempts the Rolesville medicinal-marijuana
+ordinance, the strategy escalates to **court fight using
+Zeta's substrate-engineering on legal precedent**:
+
+- **Legal ontology** = the universal-company + government-
+  information substrate (B-0043 + B-0428 + the AGENTS.md
+  framework)
+- **Clifford Z-sets of precedence** = case law encoded as Z-set
+  algebra with Clifford-algebraic structure; same substrate as
+  PR #2935-2936 F# fork architecture applied to legal-domain
+- **"Crush the system in court"** = creative-substrate-
+  engineering wielded as legal weapon; the same cascade
+  pattern (PR #2947) applied to building case strategy
+
+The mayoral platform now has a TACTICAL dimension beyond
+policy positions: the court fight IS a demonstration of
+Zeta's substrate-engineering capabilities applied to law at
+scale. Win the policy via creative substrate-engineering.
+
+This composes Zeta's existing technical substrate (Clifford
+algebra; Z-sets; HKT over Clifford per PR #2935-2936; F#
+substrate; BP/EP algebra; legal ontology B-0043) into a real
+court strategy. The marijuana pillar becomes a USE CASE for
+the broader substrate capabilities.
+
+## Aaron's LexisNexis credentialing (Aaron 2026-05-13)
+
+> Aaron 2026-05-13: *"remember i worked for lexisnexis i build
+> legal natural language queries already"*
+
+Canonical professional-credentialing substrate. Aaron has REAL
+hands-on experience with:
+
+- LexisNexis (dominant legal-research / legal-database company;
+  industrial-scale legal data work)
+- Legal natural-language query construction
+- Translating legal precedent into queryable form at scale
+
+This grounds the Clifford-Z-set-of-precedence court strategy
+in actual experience, not theory. Aaron has:
+
+| Credential | Composing substrate |
+|------------|---------------------|
+| LexisNexis legal-NLQ work | Already preserved in some memory files; canonical professional substrate |
+| Itron co-inventor + grey-hat security | Itron patent substrate + HIPAA + Homeland Security + Series 7 |
+| Bitcoin miner builds with kids | PR #2970 paper coverage |
+| Zeta substrate-engineering owner | Entire factory substrate; 15+ PR session arc |
+| Rolesville Chamber of Commerce | PR #2970 |
+
+The legal-natural-language-query background composes DIRECTLY
+with:
+
+- B-0043 (universal-company + government-information substrate
+  — same shape as legal-precedent ontology)
+- The Clifford-Z-set-of-precedence court strategy (Aaron has
+  built the precursor systems)
+- The cartoon-continuation + content production (Aaron as
+  credentialed-professional + family-tech-builder + civic-
+  citizen + Chamber-member + lawyer-tooling-builder is rich
+  character substrate)
+
+**Substrate-honest framing**: this is Aaron's prior work
+disclosure. Per HARD LIMITS rule: no proprietary LexisNexis
+details revealed; just the fact-of-employment + general work
+domain. Composes with the broader Aaron-credentialing
+substrate.
+
 ## Composes with substrate
 
 - PR (this substrate landing)
