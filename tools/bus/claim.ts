@@ -10,13 +10,14 @@
 //   bun tools/bus/claim.ts release --from otto --item B-0400 [--json]
 //
 // Exit codes:
-//   check:   0 = unclaimed, 1 = already claimed by another agent
+//   check:   0 = unclaimed, 1 = claimed (by any agent — check has no --from)
 //   acquire: 0 = claim published, 1 = already claimed (no publish)
 //   release: 0 = release published, 1 = error
 
 import { openSync, closeSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
+import { SENDER_IDS } from "./types.ts";
 import type { AgentId, SenderAgentId, MessageEnvelope } from "./types.ts";
 
 // Per-item advisory file lock — guards acquire's check+publish against concurrent processes.
@@ -63,14 +64,18 @@ export function activeClaims(itemId: string): ClaimRecord[] {
   // so a malformed sender cannot silently clear a valid claim.
   const byKey = new Map<string, MessageEnvelope>();
   for (const m of msgs) {
+    // Guard against null/non-object payloads written by buggy senders.
+    if (!m.payload || typeof m.payload !== "object" || Array.isArray(m.payload)) continue;
     const p = m.payload as { action: string; itemId: string; branch?: string };
     if (p.itemId !== itemId) continue;
     if (p.action !== "claim" && p.action !== "release") continue;
     const key = `${m.from}:${p.itemId}`;
     const existing = byKey.get(key);
-    if (!existing || m.timestamp > existing.timestamp) {
-      byKey.set(key, m);
-    }
+    // Tiebreak equal timestamps by id (UUID lexicographic) for determinism.
+    const newer = !existing ||
+      m.timestamp > existing.timestamp ||
+      (m.timestamp === existing.timestamp && m.id > existing.id);
+    if (newer) byKey.set(key, m);
   }
 
   const records: ClaimRecord[] = [];
@@ -90,8 +95,6 @@ export function activeClaims(itemId: string): ClaimRecord[] {
 }
 
 // ── CLI ───────────────────────────────────────────────────────────────────────
-
-const SENDER_IDS: readonly string[] = ["otto", "alexa", "riven", "vera", "lior"];
 
 function parseArgs(argv: string[]): { command: string; flags: Record<string, string> } {
   const args = argv.slice(2);

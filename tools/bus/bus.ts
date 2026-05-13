@@ -14,7 +14,7 @@ import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, wr
 import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage } from "./types.ts";
-import { TTL_MS } from "./types.ts";
+import { TTL_MS, SENDER_IDS, AGENT_IDS } from "./types.ts";
 
 export const BUS_DIR = process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
 
@@ -154,8 +154,7 @@ Topics: heartbeat | claim | shadow-catch | review-request
 Agents: otto | alexa | riven | vera | lior | * (broadcast)`);
 }
 
-const SENDER_IDS: readonly string[] = ["otto", "alexa", "riven", "vera", "lior"];
-const AGENT_IDS: readonly string[] = [...SENDER_IDS, "*"];
+// SENDER_IDS and AGENT_IDS imported from types.ts
 
 function main(): void {
   const { command, flags, positional } = parseArgs(process.argv);
