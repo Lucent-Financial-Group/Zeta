@@ -288,12 +288,12 @@ goals):
 
 ## Architectural implications
 
-### 1. The non-glass-halo capability is operationally substantial
+### 1. The non-glass-halo capability direction (research-grade)
 
 PR #2897 named non-glass-halo as a factory CAPABILITY
 requirement (not just default-override). THIS file
-provides the operational substrate that makes the
-capability real.
+documents the research-grade roadmap for that direction;
+promotion to operational policy requires a separate ADR.
 
 Non-glass-halo integration ≠ "less safe". It means
 "privacy-preserving by encryption" rather than "privacy-
@@ -384,7 +384,7 @@ operational scopes.
 ## Carved sentence
 
 > **Non-glass-halo integration is a factory CAPABILITY
-> per PR #2897 — and the operational substrate has SIX
+> per PR #2897 — and this research-grade roadmap has SIX
 > composing layers matching the §Six composing layers
 > section: (1) better-than-gitcrypt as root DB encryption
 > primitive; (2) post-quantum lattice / multi-lattice-of-
