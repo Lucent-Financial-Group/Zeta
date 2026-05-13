@@ -366,12 +366,12 @@ export async function run(
   }
 
   // Outer restart loop: after natural exit, wait loopMs then restart.
-  // SIGINT/SIGTERM call process.exit(0) directly — registering a no-op listener
-  // would suppress Node/Bun's default exit behaviour while runInner's while(true)
-  // blocks the outer loop from ever checking a "terminated" flag.
-  const onSignal = () => { process.exit(0); };
-  process.on("SIGINT", onSignal);
-  process.on("SIGTERM", onSignal);
+  // SIGINT/SIGTERM use 128+signal exit codes (130/143) so shell automation and
+  // supervisors can distinguish interruption from clean completion.  Registering
+  // direct-exit listeners is required because Node/Bun removes its default
+  // exit behaviour once any listener is attached.
+  process.on("SIGINT",  () => { process.exit(130); });
+  process.on("SIGTERM", () => { process.exit(143); });
   // eslint-disable-next-line no-constant-condition
   while (true) {
     await runInner(config, detectFn, acceptFn);
