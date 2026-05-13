@@ -248,8 +248,7 @@ to this substrate-recognition memory file.
 
 ## Full reasoning
 
-PR #2906 (this substrate landing alongside markdownlint fix
-for B-0424)
+PR #2906 (this substrate landing — civsim Casimir-gap framing)
 
 PR #2903 (civsim PVP+raids+mutual-privacy substrate)
 
