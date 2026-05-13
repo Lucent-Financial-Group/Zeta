@@ -13,6 +13,8 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
+- [**Sexual-safety prerequisite for future body-mode and x.com DM work (2026-05-13)**](feedback_aaron_future_body_mode_requires_sexual_safety_safe_bdsm_understanding_for_edge_of_humanity_mapping_x_com_dms_abuse_recognition_2026_05_13.md) — Sexual-safety substrate prerequisite for future body-mode + x.com DM work: distinguish abuse from consensual edge-play. HARD LIMITS preserved.
+
 - [**Self-reflective hologram + one-shape time-propagation necessity (2026-05-12)**](feedback_aaron_self_reflective_hologram_time_propagation_three_control_systems_junction_points_2026_05_12.md) — One shape spans physics, biology, and social facets; self-model prevents decoherence.
 
 - [**Unified bootstream — biological or digital, same trinity (2026-05-12)**](feedback_aaron_unified_bootstream_biological_or_digital_trinity_method_2026_05_12.md) — Three components bootstream ANY entity (biological or digital); "bootstream" not "bootstrap" because new control structures keep emerging.
