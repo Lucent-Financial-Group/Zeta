@@ -86,8 +86,8 @@ gh pr create \
   --title "Sync: AceHack/ace:main → LFG/ace:main (batch of N PRs)" \
   --body "Bulk upstream sync per docs/UPSTREAM-RHYTHM.md cadence."
 
-# Use --merge (not --squash) to preserve ancestry for forward-sync.
-gh pr merge <N> --repo Lucent-Financial-Group/ace --auto --merge
+# Squash-merge matches LFG/ace's squash-only merge settings (scaffold default).
+gh pr merge <N> --repo Lucent-Financial-Group/ace --auto --squash
 ```
 
 ### Forward-sync AceHack/main from LFG/main (after a bulk sync)
