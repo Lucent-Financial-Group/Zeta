@@ -45,22 +45,31 @@ export function pollOnce(_config: NotifierConfig): PollResult {
 }
 
 /**
- * Run the notifier loop. When `once: true`, runs exactly one iteration.
+ * Run the notifier loop. When `once: true`, runs exactly one iteration and
+ * returns its result. Otherwise sleeps for pollIntervalMin between
+ * iterations and runs forever; results are NOT accumulated.
  */
 export async function runNotifier(config: NotifierConfig = DEFAULT_CONFIG): Promise<PollResult[]> {
-  const results: PollResult[] = [];
-
-  do {
+  if (config.once) {
     const result = pollOnce(config);
-    results.push(result);
     console.log(JSON.stringify(result));
+    return [result];
+  }
 
-    if (config.once) break;
-
+  while (true) {
+    const result = pollOnce(config);
+    console.log(JSON.stringify(result));
     await new Promise(resolve => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
-  } while (!config.once);
+  }
+}
 
-  return results;
+function parsePositiveMinutes(raw: string | undefined, name: string): number {
+  if (raw === undefined) throw new Error(`${name} requires a value`);
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0) {
+    throw new Error(`${name} must be a positive finite number; got "${raw}"`);
+  }
+  return n;
 }
 
 function parseArgs(argv: string[]): NotifierConfig {
@@ -69,8 +78,8 @@ function parseArgs(argv: string[]): NotifierConfig {
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--once") config.once = true;
-    else if (arg === "--poll-min" && i + 1 < argv.length) {
-      config.pollIntervalMin = Number(argv[++i]);
+    else if (arg === "--poll-min") {
+      config.pollIntervalMin = parsePositiveMinutes(argv[++i], "--poll-min");
     }
   }
 
