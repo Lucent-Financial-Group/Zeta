@@ -1,7 +1,7 @@
 ---
 id: B-0432
 priority: P0
-status: open
+status: closed
 title: "Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag"
 tier: product-feature
 effort: S
