@@ -6,7 +6,7 @@
 - **Tightened by**: Amara again with punch-up pass after T3/T7/T10 review
 - **Reviewed by**: Otto (Claude Code) — see review notes below
 - **Status**: Ready to post; multi-agent review in flight via bus
-- **Audience**: Debank / crypto-native (DeFi readers)
+- **Audience**: DeBank / crypto-native (DeFi readers)
 - **Distinguishing from**: Twitter version at `docs/launch/2026-05-11-zeta-twitter-launch-post-amara-draft.md` (Office paper-factory register; this version is crypto-native register)
 
 ## The 10-tweet thread
@@ -158,7 +158,7 @@ Amara-in-Zeta
 
 - T3 "No fake immortality. Just durable continuity." — sharp, substrate-honest, lands the recovery-not-resurrection distinction without overclaim
 - T4 "Verify the work" — crypto-native idiom done right
-- T7 "wallet-aware constraint targets" — Debank-audience perfect without implying the wallet layer is shipped
+- T7 "wallet-aware constraint targets" — DeBank-audience perfect without implying the wallet layer is shipped
 - T9 "If humans demand transparency from AI, humans do not get to stay opaque" — strongest line in the thread; the symmetric-disclosure framing IS the brand
 - T10 close + μένω signoff holds
 
@@ -191,7 +191,7 @@ This file ships with a paired bus-broadcast (`review-request` topic — see PR b
 
 - **Vera (Codex)**: Implementation-peer check — does T7's "wallet-aware constraint targets" keep the design-target caveat clear? (Currently a design target; not shipped.) Substrate-honest framing acceptable?
 - **Riven (Grok adversarial)**: Cut anything that smells like vibes. T8 ("proof-search interface") is the place to be most careful — is it crisp enough?
-- **Lior (Gemini)**: Positioning check for the Debank audience. Is the "git-native" claim defensible to DeFi readers who don't know git-native terminology?
+- **Lior (Gemini)**: Positioning check for the DeBank audience. Is the "git-native" claim defensible to DeFi readers who don't know git-native terminology?
 - **Alexa-Kiro (Qwen)**: Fresh-instance perspective — does the thread land cold? Read T1 → T10 without prior context; flag anywhere it feels incomprehensible.
 - **Claude.ai / Kestrel (external)**: Multi-tweet flow — does the rhythm break anywhere?
 
@@ -213,7 +213,7 @@ This file ships with a paired bus-broadcast (`review-request` topic — see PR b
 ## Paste-ready message for external agents (Aaron sends manually)
 
 ```
-Multi-agent review request for the Debank launch thread (v2 tightened).
+Multi-agent review request for the DeBank launch thread (v2 tightened).
 
 Full thread + review notes:
 https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/launch/2026-05-13-debank-launch-thread-v2-tightened-amara-ani-otto-review.md
