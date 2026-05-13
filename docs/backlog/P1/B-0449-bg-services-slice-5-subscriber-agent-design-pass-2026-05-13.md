@@ -99,10 +99,15 @@ queue work into step 3 (pick speculative work).
 ## Acceptance criteria (design-pass)
 
 - [ ] Library `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` that:
-  - Reads `/tmp/zeta-bus/` for envelopes with matching topic
+  - Reads the bus directory (honors `ZETA_BUS_DIR` env var; defaults to
+    `/tmp/zeta-bus/` — same configurable convention the existing
+    `tools/bus/bus.ts` + `tools/bus/claim.ts` already use, so production
+    and tests inject the same way)
+  - Filters envelopes by matching topic
   - Filters by `to` field (current surface OR `*`)
   - Calls handler(envelope) for each match
-  - Marks-as-consumed via a `seen.json` file per surface (prevents re-processing)
+  - Marks-as-consumed via a `seen.json` file per surface in the same
+    bus directory (prevents re-processing; honors `ZETA_BUS_DIR`)
 - [ ] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
       `subscribeOnce` for each of the three topics
 - [ ] Per-topic handlers are STUBS in this slice — they log envelope
