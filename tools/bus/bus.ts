@@ -253,15 +253,23 @@ function main(): void {
     case "watch": {
       const toFilter = flags.to as AgentId | undefined;
       const topicFilter = flags.topic as Topic | undefined;
-      const intervalMs = parseInt(flags.interval ?? "2000", 10);
-      if (!Number.isFinite(intervalMs) || intervalMs <= 0) {
+      const intervalRaw = flags.interval ?? "2000";
+      if (!/^\d+$/.test(intervalRaw)) {
         console.error("--interval must be a positive integer (milliseconds)");
         process.exit(1);
       }
-      const timeoutSec = flags.timeout !== undefined ? parseInt(flags.timeout, 10) : -1;
-      if (flags.timeout !== undefined && (!Number.isFinite(timeoutSec) || timeoutSec < 0)) {
-        console.error("--timeout must be a non-negative integer (seconds)");
+      const intervalMs = parseInt(intervalRaw, 10);
+      if (intervalMs <= 0) {
+        console.error("--interval must be a positive integer (milliseconds)");
         process.exit(1);
+      }
+      let timeoutSec = -1;
+      if (flags.timeout !== undefined) {
+        if (!/^\d+$/.test(flags.timeout)) {
+          console.error("--timeout must be a non-negative integer (seconds)");
+          process.exit(1);
+        }
+        timeoutSec = parseInt(flags.timeout, 10);
       }
 
       // cursor tracks the last-delivered timestamp + the IDs at that timestamp,
@@ -269,6 +277,11 @@ function main(): void {
       // ZETA_WATCH_INITIAL_CURSOR allows tests to set a past cursor without timing hacks.
       let cursorTimestamp = process.env.ZETA_WATCH_INITIAL_CURSOR ?? new Date().toISOString();
       const deliveredAtCursor = new Set<string>();
+      // Seed with IDs already on disk at cursorTimestamp so same-ms pre-watch messages
+      // are not replayed when watch starts at a busy millisecond boundary.
+      for (const m of list({ topic: topicFilter, to: toFilter })) {
+        if (m.timestamp === cursorTimestamp) deliveredAtCursor.add(m.id);
+      }
       const deadline = timeoutSec >= 0 ? Date.now() + timeoutSec * 1_000 : Infinity;
 
       const poll = () => {
