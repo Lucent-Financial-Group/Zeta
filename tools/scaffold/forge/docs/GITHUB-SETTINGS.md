@@ -80,7 +80,7 @@ Scorecard workflow: **enabled** via `.github/workflows/scorecard.yml`
 Caps are designed cost-stops per
 `memory/feedback_lfg_budgets_set_permits_free_experimentation.md`.
 Free-tier consumption is still tracked via
-`tools/budget/snapshot-burn.sh`.
+`tools/budget/snapshot-burn.ts`.
 
 ## CI safe-patterns (applied at workflow authoring time)
 

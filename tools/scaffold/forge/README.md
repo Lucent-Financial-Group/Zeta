@@ -44,8 +44,8 @@ Four dependency edges, zero DAG — this is why there are no submodules.
 ## Governance
 
 Forge is **Claude-owned** for governance (factory policy, BP-NN rules,
-skill catalog, persona registry). Aaron retains alignment-contract veto
-and budget authority. Full model:
+skill catalog, persona registry). The human maintainer retains
+alignment-contract veto and budget authority. Full model:
 [ADR 2026-04-22 §Ownership model](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md#ownership-model).
 
 ## Contributing

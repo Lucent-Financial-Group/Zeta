@@ -22,8 +22,9 @@
 // Review the --dry-run output carefully before passing --apply.
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
 // --- Types ---
 
@@ -69,11 +70,14 @@ const REPO_CONFIGS: Record<string, RepoConfig> = {
 };
 
 const FORK_ORG = "AceHack";
-const SCAFFOLD_DIR = new URL(".", import.meta.url).pathname;
+const SCAFFOLD_DIR = dirname(fileURLToPath(import.meta.url));
 
 // Required status checks for branch protection.
-// CI workflows must emit these check names once they exist.
-const REQUIRED_CHECKS = ["bun-test", "bun-lint", "codeql", "scorecard"];
+// Set empty at creation time — CI workflows that emit these check names don't
+// exist until they're wired in Stage 2. Setting them before the workflows land
+// deadlocks the new repo (no PR can merge to add the workflows). Add them via
+// `gh api --method PUT /repos/.../branches/main/protection` after CI is wired.
+const REQUIRED_CHECKS: string[] = [];
 
 // --- Argument parsing ---
 
@@ -95,6 +99,7 @@ const ops: Operation[] = [];
 // --- Helpers ---
 
 function gh(args: string[]): { ok: boolean; stdout: string; stderr: string } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
   const result = spawnSync("gh", args, {
     encoding: "utf8",
     maxBuffer: 8 * 1024 * 1024,
@@ -112,7 +117,13 @@ function plan(
   command: string,
   data?: Record<string, unknown>
 ): Operation {
-  const op: Operation = { step, description, command, data, status: "planned" };
+  const op: Operation = {
+    step,
+    description,
+    command,
+    ...(data !== undefined ? { data } : {}),
+    status: "planned",
+  };
   ops.push(op);
   return op;
 }
@@ -126,6 +137,7 @@ function ghApiPatch(
   const body = JSON.stringify(data);
   const op = plan(step, description, `gh api --method PATCH ${path} --input -`, data);
   if (!dryRun) {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
     const result = spawnSync(
       "gh",
       ["api", "--method", "PATCH", path, "--input", "-"],
@@ -146,6 +158,7 @@ function ghApiPut(
   const body = JSON.stringify(data);
   const op = plan(step, description, `gh api --method PUT ${path} --input -`, data);
   if (!dryRun) {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
     const result = spawnSync(
       "gh",
       ["api", "--method", "PUT", path, "--input", "-"],
@@ -324,6 +337,7 @@ function step05_forkToAcehack(): void {
     { organization: FORK_ORG }
   );
   if (!dryRun) {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
     const result = spawnSync(
       "gh",
       [
@@ -342,7 +356,8 @@ function step05_forkToAcehack(): void {
 }
 
 function step06_pushScaffoldFiles(): void {
-  const scaffoldPath = join(SCAFFOLD_DIR, repoArg);
+  // repoArg is validated by the process.exit(1) guard above; TS doesn't narrow module-level vars in nested functions.
+  const scaffoldPath = join(SCAFFOLD_DIR, repoArg as string);
   if (!existsSync(scaffoldPath)) {
     plan(
       "06-push-scaffold-files",
@@ -377,19 +392,35 @@ function step06_pushScaffoldFiles(): void {
       return;
     }
 
-    // Copy files
+    // New empty repos have no commits and no branches — ensure we're on `main`.
+    const gitOpts = { cwd: tmpDir, encoding: "utf8" as const };
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
+    const checkoutResult = spawnSync("git", ["checkout", "-b", "main"], gitOpts);
+    if (checkoutResult.status !== 0 && checkoutResult.status !== null) {
+      // Branch may already exist (non-empty clone); ignore the error.
+    }
+
+    // Copy files using native fs — avoids PATH-resolved mkdir/cp subprocesses.
     for (const src of files) {
       const rel = relative(scaffoldPath, src);
       const dst = join(tmpDir, rel);
-      const dstDir = dst.substring(0, dst.lastIndexOf("/"));
-      spawnSync("mkdir", ["-p", dstDir]);
-      spawnSync("cp", [src, dst]);
+      mkdirSync(dirname(dst), { recursive: true });
+      copyFileSync(src, dst);
     }
 
-    // Commit and push
-    const gitOpts = { cwd: tmpDir, encoding: "utf8" as const };
-    spawnSync("git", ["add", "-A"], gitOpts);
-    spawnSync(
+    // Commit and push — check each step's exit code.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
+    const addResult = spawnSync("git", ["add", "-A"], gitOpts);
+    if (addResult.status !== 0) {
+      op.status = "failed";
+      op.error = `git add failed: ${addResult.stderr ?? ""}`;
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
+      spawnSync("rm", ["-rf", tmpDir], { encoding: "utf8" });
+      return;
+    }
+
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
+    const commitResult = spawnSync(
       "git",
       [
         "commit",
@@ -398,12 +429,23 @@ function step06_pushScaffoldFiles(): void {
       ],
       gitOpts
     );
-    const push = spawnSync("git", ["push", "origin", "main"], gitOpts);
+    if (commitResult.status !== 0) {
+      op.status = "failed";
+      op.error = `git commit failed: ${commitResult.stderr ?? ""}`;
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
+      spawnSync("rm", ["-rf", tmpDir], { encoding: "utf8" });
+      return;
+    }
+
+    // Push HEAD as `main` regardless of local default-branch config.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
+    const push = spawnSync("git", ["push", "--set-upstream", "origin", "HEAD:main"], gitOpts);
     op.status = push.status === 0 ? "executed" : "failed";
     if (op.status === "failed") op.error = push.stderr ?? "";
 
     // Cleanup
-    spawnSync("rm", ["-rf", tmpDir]);
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- rm is PATH-resolved intentionally
+    spawnSync("rm", ["-rf", tmpDir], { encoding: "utf8" });
   }
 }
 
@@ -431,6 +473,7 @@ function step07_summary(): void {
         "Enable merge queue via GitHub UI: Settings → Merge queue (org feature, no API)",
         "Wire OpenSSF Scorecard workflow: copy from Zeta's .github/workflows/scorecard.yml",
         "Add Semgrep GHA inline-untrusted-in-run rule workflow",
+        "Add bun-test, bun-lint, codeql, scorecard as required status checks AFTER CI workflows are wired (branch protection was created with empty contexts to avoid deadlock)",
         "Verify budget caps $0 at org level: github.com/organizations/Lucent-Financial-Group/settings/billing",
         "Confirm CodeQL default-setup is active: Security → Code scanning → Default setup",
       ],
