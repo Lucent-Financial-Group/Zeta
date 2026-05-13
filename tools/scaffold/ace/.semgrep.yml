@@ -8,6 +8,8 @@
 # CI integration: wire `semgrep --config .semgrep.yml --error
 # --metrics=off` into the gate workflow. Semgrep version is pinned
 # via `pipx:semgrep` in `.mise.toml` — install with `mise install`.
+# (`pipx:` is mise's registry prefix; routes through `uv tool install`
+# when uv is present in the toolchain, per ADR 2026-04-27.)
 
 rules:
 
