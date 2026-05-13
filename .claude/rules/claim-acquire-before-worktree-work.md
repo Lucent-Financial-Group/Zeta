@@ -6,12 +6,15 @@ Carved sentence:
 > share git + bus on one machine, **`--from` must differ** (e.g., `otto-cli`
 > vs `otto-desktop`) for the claim-coordinator (`tools/bus/claim.ts`,
 > B-0400 slice 3) to prevent split-brain — identical `--from` values both
-> exit 0 (same-sender idempotent re-acquire). Until the sender-ID schema is
-> extended, use **lane-based convention** as the only real split-brain
-> prevention; branch-prefix is NOT a workaround because `claim acquire`
-> only filters by `from`, not by `branch`. Before starting work on any
-> backlog row, `claim acquire` first. If already claimed by another
-> agent, pick a different row.
+> exit 0 (same-sender idempotent re-acquire). As of PR #3037 (2026-05-13)
+> `SENDER_IDS` includes surface-tagged variants — opt in to `otto-cli` /
+> `otto-desktop` / `alexa-cli` / `alexa-kiro` / etc. for correct
+> distinction. Identity-level names (`otto`, `alexa`, etc.) remain
+> valid for back-compat but do NOT distinguish surfaces. Branch-prefix
+> is NOT a workaround because `claim acquire` only filters by `from`,
+> not by `branch`. Before starting work on any backlog row,
+> `claim acquire` first with your surface-tagged sender ID. If already
+> claimed by another agent, pick a different row.
 
 ## Operational content
 
@@ -99,11 +102,12 @@ distinguish multi-surface instances of the same agent.
    slice impl; Otto-Desktop takes substrate + cowork. Different
    scopes, no claim collision possible because the scopes don't
    overlap.
-2. **Schema extension** (substrate-level fix; future work): add
-   `otto-cli` and `otto-desktop` (and analogous `alexa-cli`/
-   `alexa-kiro`, etc.) to `SENDER_IDS` in `tools/bus/types.ts`. Then
-   `--from otto-desktop` becomes a distinct claim from `--from
-   otto-cli`. THIS is the substrate-level mechanization.
+2. **Schema extension** (substrate-level fix; **LANDED** 2026-05-13
+   via PR #3037): `otto-cli`, `otto-desktop`, `alexa-cli`,
+   `alexa-kiro`, `riven-cli`, `riven-cursor`, `lior-antigravity`,
+   `lior-gemini`, `vera-codex` are now valid `SENDER_IDS`. Use
+   surface-tagged variants for correct multi-surface claim
+   distinction. Identity-level names remain valid for back-compat.
 
 **Branch-prefix is NOT a workaround**: `claim acquire` filters
 existing claims by `c.from !== sender` only, NOT by branch. Two
