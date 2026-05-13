@@ -56,27 +56,23 @@ Both with full best-practice scaffolding applied at creation:
 - Declarative `docs/GITHUB-SETTINGS.md` per repo
 - Per-repo `docs/UPSTREAM-RHYTHM.md`
 
-## Pre-start checklist
+## Pre-start checklist — COMPLETED 2026-05-13 (B-0424.1)
 
-Before beginning Stage 1 work, complete per
-`.claude/rules/backlog-item-start-gate.md`:
+Per `.claude/rules/backlog-item-start-gate.md`:
 
-1. **Prior-art-search** — verify the existing substrate hasn't drifted:
-   - `memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md`
-   - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
-   - `memory/project_ace_package_manager_agent_negotiation_propagation.md`
-   - Compose with current LFG/AceHack topology
-     (`.claude/rules/lfg-acehack-topology.md`)
+1. **Prior-art-search** — completed 2026-05-13:
+   - `memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md` — read; substrate current, Stage 0 done (ADR exists)
+   - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` — read; full checklist present, no drift
+   - `memory/project_ace_package_manager_agent_negotiation_propagation.md` — file exists; ace name + Ouroboros design confirmed
+   - LFG/AceHack topology (`.claude/rules/lfg-acehack-topology.md`) — LFG is active dev; AceHack is mirror; Forge + ace repos do NOT yet exist at LFG — confirmed via worldview refresh (0 open PRs on main)
+   - No existing `tools/scaffold/` directory — clean slate, no prior art to extend
+   - Skill router checked: no existing scaffold or repo-creation skill
 
-2. **Dependency-restructure** — walk `composes_with:` chain;
-   reciprocal pointers added to the substrate files above as needed.
+2. **Dependency-restructure** — B-0425 (product-repo split planning) is sibling row, not a blocker for Stage 1. Reciprocal pointer in B-0425 not yet present; will add in a follow-up pass. Stage 1 is executable independently.
 
-3. **License question resolved** — apply B-0425's honor-system
-   "please don't fork" license framing if applicable to strategic
-   product-substrate repos. Factory (Forge) + package manager (ace)
-   + database (Zeta) are designed-to-be-forked per their open-source
-   nature; the honor-system framing applies to strategic *product*
-   repos (KSK / wellness / civsim strategic-substrate etc.), not these.
+3. **License question resolved** — Apache 2.0 (same as Zeta). Forge and ace are open-source/designed-to-be-forked; honor-system framing does not apply.
+
+4. **Scope decision** — B-0424 is too broad to implement in one PR. This PR (B-0424.1) implements the smallest safe slice: day-one governance file templates for Forge and ace + a TypeScript dry-run tool (`tools/scaffold/create-repo.ts`) that shows the GitHub API calls needed to complete Stage 1. Actual GitHub repo creation (irreversible external action) is deferred to a follow-up PR with Aaron's review.
 
 ## Composes with
 
