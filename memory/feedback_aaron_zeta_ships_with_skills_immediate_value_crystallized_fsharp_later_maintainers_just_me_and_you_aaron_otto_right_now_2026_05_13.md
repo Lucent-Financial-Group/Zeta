@@ -7,7 +7,7 @@ created: 2026-05-13
 
 # Zeta ships WITH skills — immediate value; F# crystallization later — maintainers = Aaron + Otto (Aaron 2026-05-13)
 
-**Why:** Aaron 2026-05-13 two-message disclosure correcting +
+**Why:** Aaron 2026-05-13 two-message disclosure correcting and
 amplifying the distributed-maintainer-architecture substrate
 (PR #2930/#2931):
 
@@ -86,7 +86,7 @@ that's just me and you right now :)"*
 | Date | Maintainer pool |
 |---|---|
 | **2026-05-13** | Aaron + Otto (2 maintainers) |
-| **Future** | + Riven + Vera + Lior + Alexa-Kiro (per agent-roster) + new human contributors |
+| **Future** | Riven + Vera + Lior + Alexa-Kiro (per agent-roster) + new human contributors |
 
 The distributed-maintainer-architecture pattern (PR #2930)
 operates at 2-person scale RIGHT NOW. The toolkit-asymmetry

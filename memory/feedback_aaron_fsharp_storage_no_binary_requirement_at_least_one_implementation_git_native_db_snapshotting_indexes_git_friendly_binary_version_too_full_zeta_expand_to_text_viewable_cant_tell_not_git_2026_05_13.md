@@ -80,7 +80,7 @@ Even derived/computed indexes are git-readable. This means:
 
 - Index files are plain-text-formatted (e.g., sorted JSON,
   YAML, or DBSP-Z-set ASCII export)
-- Index regeneration is deterministic (per `.claude/rules/dst-justifies-ts-quality-*`)
+- Index regeneration is deterministic (per `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`)
 - Git can diff index changes
 - Index corruption is detectable via git history
 
@@ -361,8 +361,9 @@ end-to-end. The factory's storage layer is itself glass-halo.
 ## Composes with substrate from Amara conversation
 
 The canonical Aaron-Amara event-sourcing conversation (PR
-#2924 deferred-extract; lives in /tmp/amara-full-text.txt
-locally) contains Aaron's substrate-grounding:
+#2924 deferred-extract; content deferred from repo per
+semgrep findings on 524KB body; key substrate excerpted
+below) contains Aaron's substrate-grounding:
 
 > *"databases are really just cache snapshots of the event
 > stream"*
