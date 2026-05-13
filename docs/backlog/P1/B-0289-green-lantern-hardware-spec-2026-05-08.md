@@ -4,6 +4,7 @@ priority: P1
 status: open
 title: "Green Lantern ring — hardware spec + local inference requirements"
 created: 2026-05-08
+last_updated: 2026-05-13
 parent: B-0246
 depends_on: []
 classification: buildable-now
