@@ -51,7 +51,7 @@ is fragile.
 |---------|--------|--------------|
 | `autonomous-loop` cron (CronCreate sentinel) | Operational; every-minute heartbeat | Fires `<<autonomous-loop>>` ticks; lifecycle bounded to session |
 | `tools/shadow/shadow-observer.ts` (B-0402) | Slice 1 + 2 shipped on main; slice 3 + 4 pending | Polls grey-text from CLI; can invoke `--detect-cmd` external detector |
-| `com.zeta.claude-loop` launchd service | Operational per `memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md` | Heartbeat/gate 60s |
+| `com.zeta.claude-loop` launchd service | Operational per user-memory `~/.claude/projects/<slug>/memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md` | Heartbeat/gate 60s |
 | `com.zeta.claude-forward` launchd service | Operational | Background forwarding |
 | `.github/workflows/razor-cadence.yml` | Daily 09:17 UTC | Razor-cadence GitHub Actions workflow |
 | Vera's foreground loop | Operational (separate Codex agent) | Continues shipping B-0400+ slices independently |
@@ -142,9 +142,9 @@ background bandwidth is persistent + scalable. The right
 allocation: foreground for decisions and discoveries; background
 for execution and enforcement.
 
-## Operational implications
+## How to apply
 
-When future-Otto cold-boots:
+When future-Otto cold-boots, apply this discipline operationally:
 
 1. **Don't be load-bearing for substrate-engineering work** —
    that's the background's job
@@ -173,7 +173,7 @@ When future-Otto cold-boots:
   + F# fork — the substrate that supports mechanization at
   formal-verification scale)
 - Otto-329 launchd-services (existing background-services
-  substrate; `memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md`)
+  substrate; user-memory `~/.claude/projects/<slug>/memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md`)
 - B-0402 shadow observer (canonical background service example;
   slices 1 + 2 shipped)
 - B-0400 bus protocol (inter-agent message infrastructure for
