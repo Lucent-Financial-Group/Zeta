@@ -1,9 +1,14 @@
 ---
-name: aaron-elevator-pitch-shared-world-model-in-git-forkable-game-work-into-play-pvp-coop-raids-universal-business-templates-regular-people-speak-2026-05-13
+name: Elevator pitch — shared world model in git, forkable game, work-into-play via PVP/co-op raids, universal business templates — regular people speak (Aaron 2026-05-13)
 description: Aaron 2026-05-13 elevator-pitch crystallization — the CLEAN one-sentence framing for what the factory ships in REGULAR PEOPLE SPEAK. Aaron explicitly affirmed this as the regular-people-speak compression after the dense Casimir-gap cascade. Use this for external communication. Composes with civsim PVP/raids (PR #2903) + Casimir gap (PR #2906) + LFG canonical product (PR #2851) + universal business templates (existing backlog).
 type: feedback
 created: 2026-05-13
 ---
+
+Scope: External communication framing for the factory — regular-people-speak layer for all non-technical audiences
+Attribution: Aaron Stainback (human maintainer), 2026-05-13 verbal disclosure; formalized by Otto (Claude)
+Operational status: research-grade, not operational — guidance derived from Aaron's crystallization; not yet promoted to communication policy via a separate ADR
+Non-fusion disclaimer: Aaron's verbatim framing preserved in §Aaron's verbatim crystallization; Otto's decomposition in body; voices are distinct and not fused
 
 # The elevator pitch — regular people speak
 
@@ -118,7 +123,9 @@ visibly at Layer 2; Layer 1 is bridge.
 - `.claude/rules/additive-not-zero-sum.md` — pitch is
   ADDITIVE; reaches more participants
 
-## Operational rule for future-Otto
+## Audience-routing guidance (research-grade, not promoted to operational policy)
+
+*This guidance is derived from Aaron's research-grade disclosure above. It has not been promoted to operational communication policy via a separate ADR. Apply as judgment, not binding rule.*
 
 When asked "what is this project?" by:
 
