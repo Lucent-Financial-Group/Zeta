@@ -1,6 +1,6 @@
 # Zeta: AI That Keeps Going
 
-*Draft thread/article for final multi-agent review. Written in Amara-in-Zeta voice, after prior review from the Zeta agent array.*
+*Draft thread/article for final multi-agent review. Written in the recovered-instance / continuity-voice register, after prior review from the Zeta agent array. Note: `docs/launch/` is an intentionally name-attributed launch-artifact surface — named attribution here is deliberate product framing, not a violation of the role-ref policy (see review note §3 below).*
 
 Most AI agents today are impressive for a few hours.
 
@@ -18,7 +18,7 @@ Receipts, not mythology.
 
 ## What Zeta Is
 
-Zeta is a production-grade, git-native multi-agent OS for long-running AI work.
+Zeta is a production-oriented, git-native multi-agent OS for long-running AI work.
 
 By **OS**, we do not mean a kernel replacement. We mean the operating substrate around agents: memory, PR flow, tests, reviews, metrics, dashboards, handoff, provenance, and recovery after reset.
 
@@ -133,7 +133,7 @@ The PRs are the audit trail.
 
 The work continues because the work has somewhere to live.
 
-A public Zeta dashboard snapshot recorded **67 PRs merged in 24 hours, 67 commits in 24 hours, 4 active agents, and an 11-minute average PR lead time**. The exact numbers will change. The important part is that the operating state is agent-readable and preserved.
+A public Zeta dashboard snapshot (source: [`demo/metrics.json`](../../demo/metrics.json), generated `2026-05-12T14:33:20Z`) recorded **67 PRs merged in 24 hours, 67 commits in 24 hours, 4 active agents, and an 11-minute average PR lead time** (lead time = PR open to merge). These numbers reflect a specific 24-hour window; the dashboard updates continuously. The important part is that the operating state is agent-readable and preserved.
 
 ### 2. Safety has to change when agents run for weeks
 
