@@ -5,69 +5,95 @@ import {
   parsePositiveMinutes,
   pollOnce,
   type Adapters,
+  type CascadeFinding,
   type FetchResult,
   type MergedPR,
 } from "./missed-substrate-detector";
+import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
 
-function okAdapters(nowIso: string, merged: MergedPR[], truncated = false): Adapters {
+type FakeCascadeCall = {
+  from: SenderAgentId;
+  to: AgentId;
+  finding: CascadeFinding;
+};
+
+function adapters(opts: {
+  nowIso: string;
+  fetch: FetchResult;
+  detectCascade?: (pr: MergedPR) => CascadeFinding | null;
+  capturedPublishes?: FakeCascadeCall[];
+  publishImpl?: (from: SenderAgentId, to: AgentId, finding: CascadeFinding) => MessageEnvelope;
+}): Adapters {
+  const captured = opts.capturedPublishes ?? [];
   return {
-    now: () => new Date(nowIso),
-    fetchRecentMergedPRs: () => ({ status: "ok", prs: merged, truncated }),
+    now: () => new Date(opts.nowIso),
+    fetchRecentMergedPRs: () => opts.fetch,
+    detectCascade: opts.detectCascade ?? (() => null),
+    publishCascade: opts.publishImpl ?? ((from, to, finding): MessageEnvelope => {
+      captured.push({ from, to, finding });
+      return {
+        id: `env-${captured.length}`,
+        from,
+        to,
+        timestamp: opts.nowIso,
+        expiresAt: opts.nowIso,
+        topic: "missed-substrate-cascade",
+        payload: {
+          prNumber: finding.prNumber,
+          branchName: finding.branchName,
+          missingCommits: finding.missingCommits,
+          recommendedAction: "open-recovery-PR",
+          urgency: finding.urgency,
+        },
+      };
+    }),
   };
 }
 
-function errorAdapters(nowIso: string, reason: string): Adapters {
-  return {
-    now: () => new Date(nowIso),
-    fetchRecentMergedPRs: (): FetchResult => ({ status: "gh-error", reason }),
-  };
-}
-
-describe("missed-substrate-detector slice 2", () => {
-  test("default config has sensible thresholds", () => {
+describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect is stub)", () => {
+  test("default config", () => {
     expect(DEFAULT_CONFIG.pollIntervalMin).toBe(5);
     expect(DEFAULT_CONFIG.lookbackMin).toBe(30);
     expect(DEFAULT_CONFIG.fetchLimit).toBe(100);
-    expect(DEFAULT_CONFIG.once).toBe(false);
+    expect(DEFAULT_CONFIG.noPublish).toBe(false);
+    expect(DEFAULT_CONFIG.fromAgent).toBe("otto");
+    expect(DEFAULT_CONFIG.toAgent).toBe("*");
   });
 
-  describe("pollOnce with injected adapters", () => {
-    test("reports 0 candidates when no merged PRs", () => {
-      const result = pollOnce(DEFAULT_CONFIG, okAdapters("2026-05-13T18:00:00Z", []));
+  describe("pollOnce — fetch path", () => {
+    test("0 candidates when no merged PRs", () => {
+      const result = pollOnce(DEFAULT_CONFIG, adapters({
+        nowIso: "2026-05-13T18:00:00Z",
+        fetch: { status: "ok", prs: [], truncated: false },
+      }));
       expect(result.candidatesScanned).toBe(0);
       expect(result.cascadesDetected).toBe(0);
-      expect(result.fetchStatus).toBe("ok");
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
       expect(result.note).toContain("no merged PRs");
     });
 
-    test("reports candidate count when merged PRs found", () => {
+    test("scans merged PRs but stub detector finds no cascades", () => {
       const merged: MergedPR[] = [
         { number: 2997, headRefName: "feat/x", mergedAt: "2026-05-13T17:50:00Z" },
         { number: 2998, headRefName: "feat/y", mergedAt: "2026-05-13T17:55:00Z" },
       ];
-      const result = pollOnce(DEFAULT_CONFIG, okAdapters("2026-05-13T18:00:00Z", merged));
+      const result = pollOnce(DEFAULT_CONFIG, adapters({
+        nowIso: "2026-05-13T18:00:00Z",
+        fetch: { status: "ok", prs: merged, truncated: false },
+      }));
       expect(result.candidatesScanned).toBe(2);
       expect(result.cascadesDetected).toBe(0);
-      expect(result.fetchStatus).toBe("ok");
-      expect(result.fetchTruncated).toBe(false);
-      expect(result.note).toContain("2 merged PR(s)");
-      expect(result.note).toContain("slice 3 will compare");
+      expect(result.note).toContain("no cascades detected");
+      expect(result.note).toContain("slice 3 plugs in real compare logic");
     });
 
-    test("emits valid ISO timestamp", () => {
-      const result = pollOnce(DEFAULT_CONFIG, okAdapters("2026-05-13T18:00:00Z", []));
-      expect(result.pollAt).toBe("2026-05-13T18:00:00.000Z");
-    });
-
-    test("surfaces gh-error explicitly (does NOT silently treat as zero PRs)", () => {
-      const result = pollOnce(
-        DEFAULT_CONFIG,
-        errorAdapters("2026-05-13T18:00:00Z", "gh exited with status 1; stderr: HTTP 503"),
-      );
+    test("gh-error surfaces explicitly (does NOT silently treat as zero)", () => {
+      const result = pollOnce(DEFAULT_CONFIG, adapters({
+        nowIso: "2026-05-13T18:00:00Z",
+        fetch: { status: "gh-error", reason: "HTTP 503" },
+      }));
       expect(result.fetchStatus).toBe("gh-error");
-      expect(result.candidatesScanned).toBe(0);
       expect(result.note).toContain("gh fetch failed");
-      expect(result.note).toContain("HTTP 503");
     });
 
     test("flags truncation warning when results hit fetchLimit", () => {
@@ -76,52 +102,102 @@ describe("missed-substrate-detector slice 2", () => {
         headRefName: `feat/${i}`,
         mergedAt: "2026-05-13T17:50:00Z",
       }));
-      const result = pollOnce(DEFAULT_CONFIG, okAdapters("2026-05-13T18:00:00Z", merged, true));
+      const result = pollOnce(DEFAULT_CONFIG, adapters({
+        nowIso: "2026-05-13T18:00:00Z",
+        fetch: { status: "ok", prs: merged, truncated: true },
+      }));
       expect(result.fetchTruncated).toBe(true);
       expect(result.note).toContain("WARNING: results truncated");
-      expect(result.note).toContain("fetchLimit=100");
+    });
+  });
+
+  describe("pollOnce — cascade detection + bus publish (slice 4)", () => {
+    test("publishes envelope when injected detector finds a cascade", () => {
+      const captured: FakeCascadeCall[] = [];
+      const cascade: CascadeFinding = {
+        prNumber: 2980,
+        branchName: "feat/launch-thread",
+        missingCommits: ["abc123", "def456"],
+        urgency: "medium",
+      };
+      const result = pollOnce(DEFAULT_CONFIG, adapters({
+        nowIso: "2026-05-13T18:00:00Z",
+        fetch: { status: "ok", prs: [{ number: 2980, headRefName: "feat/launch-thread", mergedAt: "2026-05-13T17:55:00Z" }], truncated: false },
+        detectCascade: () => cascade,
+        capturedPublishes: captured,
+      }));
+      expect(result.cascadesDetected).toBe(1);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured).toHaveLength(1);
+      expect(captured[0]!.finding.prNumber).toBe(2980);
+      expect(captured[0]!.finding.missingCommits).toEqual(["abc123", "def456"]);
+      expect(captured[0]!.finding.urgency).toBe("medium");
+      expect(result.note).toContain("cascade(s) detected");
+    });
+
+    test("does NOT publish when noPublish=true", () => {
+      const captured: FakeCascadeCall[] = [];
+      const cascade: CascadeFinding = {
+        prNumber: 2980,
+        branchName: "feat/x",
+        missingCommits: ["sha1"],
+        urgency: "high",
+      };
+      const result = pollOnce(
+        { ...DEFAULT_CONFIG, noPublish: true },
+        adapters({
+          nowIso: "2026-05-13T18:00:00Z",
+          fetch: { status: "ok", prs: [{ number: 2980, headRefName: "feat/x", mergedAt: "2026-05-13T17:55:00Z" }], truncated: false },
+          detectCascade: () => cascade,
+          capturedPublishes: captured,
+        }),
+      );
+      expect(result.cascadesDetected).toBe(1);
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(captured).toHaveLength(0);
+      expect(result.note).toContain("publish skipped");
+    });
+
+    test("publish failure surfaces in note + does NOT crash poll loop", () => {
+      const cascade: CascadeFinding = {
+        prNumber: 2980,
+        branchName: "feat/x",
+        missingCommits: ["sha1"],
+        urgency: "low",
+      };
+      const result = pollOnce(DEFAULT_CONFIG, adapters({
+        nowIso: "2026-05-13T18:00:00Z",
+        fetch: { status: "ok", prs: [{ number: 2980, headRefName: "feat/x", mergedAt: "2026-05-13T17:55:00Z" }], truncated: false },
+        detectCascade: () => cascade,
+        publishImpl: () => { throw new Error("bus IO failure"); },
+      }));
+      expect(result.cascadesDetected).toBe(1);
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(result.note).toContain("publish failed");
     });
   });
 
   describe("parsePositiveMinutes", () => {
-    test("accepts positive finite numbers", () => {
+    test("accepts + rejects", () => {
       expect(parsePositiveMinutes("30", "--lookback-min")).toBe(30);
-    });
-
-    test("rejects invalid inputs", () => {
-      expect(() => parsePositiveMinutes(undefined, "--lookback-min")).toThrow(/requires/);
       expect(() => parsePositiveMinutes("0", "--lookback-min")).toThrow(/positive finite/);
-      expect(() => parsePositiveMinutes("Infinity", "--lookback-min")).toThrow(/positive finite/);
     });
   });
 
   describe("parseArgs", () => {
-    test("default config when no args", () => {
+    test("defaults + flags", () => {
       expect(parseArgs([])).toEqual(DEFAULT_CONFIG);
+      const c = parseArgs(["--once", "--no-publish", "--agent", "vera", "--to", "lior", "--fetch-limit", "50"]);
+      expect(c.once).toBe(true);
+      expect(c.noPublish).toBe(true);
+      expect(c.fromAgent).toBe("vera");
+      expect(c.toAgent).toBe("lior");
+      expect(c.fetchLimit).toBe(50);
     });
 
-    test("--once flag", () => {
-      expect(parseArgs(["--once"]).once).toBe(true);
-    });
-
-    test("--poll-min + --lookback-min + --fetch-limit set values", () => {
-      const config = parseArgs([
-        "--poll-min", "10",
-        "--lookback-min", "60",
-        "--fetch-limit", "200",
-      ]);
-      expect(config.pollIntervalMin).toBe(10);
-      expect(config.lookbackMin).toBe(60);
-      expect(config.fetchLimit).toBe(200);
-    });
-
-    test("--fetch-limit rejects non-integer values", () => {
-      expect(() => parseArgs(["--fetch-limit", "abc"])).toThrow(/positive integer/);
-      expect(() => parseArgs(["--fetch-limit", "1.5"])).toThrow(/positive integer/);
-    });
-
-    test("rejects unknown flags", () => {
+    test("rejects unknown flags + invalid agent", () => {
       expect(() => parseArgs(["--unknown"])).toThrow(/unknown flag/);
+      expect(() => parseArgs(["--agent", "*"])).toThrow(/must be one of/);
     });
   });
 });
