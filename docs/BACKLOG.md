@@ -233,6 +233,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0428](backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md)** DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)
 - [ ] **[B-0429](backlog/P1/B-0429-end-user-persona-mapping-product-team-multiple-products-multiple-personas-each-aaron-2026-05-13.md)** End-user persona mapping — product team — multiple products × multiple personas each
 - [ ] **[B-0433](backlog/P1/B-0433-shadow-observer-slice-5-zeta-cli-distribution-demo-packaging-2026-05-13.md)** Shadow observer slice 5 — Zeta CLI distribution + demo packaging
+- [x] **[B-0434](backlog/P1/B-0434-demo-alignment-tab-slice-1-hc-sd-dir-clause-coverage.md)** Demo alignment tab — slice 1: HC/SD/DIR clause coverage panel in demo/index.html
 
 ## P2 — research-grade
 

@@ -18,6 +18,7 @@ type: feature
 ## Pre-start checklist (2026-05-13)
 
 **Prior-art search:**
+
 - `tools/hygiene/LOST-FILES-LOCATIONS.md` — no orphan alignment-UI files found
 - `demo/index.html` — existing dashboard with 3 tabs (Agent Array, Anchors, External); no alignment tab; confirmed prior art for the CSS/JS architecture this work extends
 - `docs/backlog/P2/B-0017-operational-resonance-dashboard-*.md` — B-0017 is open P2; B-0401 is the P1 vehicle that ships B-0017 components
@@ -25,6 +26,7 @@ type: feature
 - B-0400 — confirmed closed (2026-05-13); dependency satisfied
 
 **Dependency check:**
+
 - `depends_on: [B-0400]` — B-0400 is closed ✓
 - No circular dependencies; `composes_with` are open items, not blockers
 

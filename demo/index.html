@@ -811,11 +811,11 @@
         const RAW_BASE = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main`;
 
         async function loadAlignmentTab() {
-            window._alignmentLoaded = true;
             try {
                 const resp = await fetch(`${RAW_BASE}/docs/ALIGNMENT.md`, { cache: 'no-cache' });
                 if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}`);
                 renderAlignmentClauses(await resp.text());
+                window._alignmentLoaded = true;
                 const el = document.getElementById('alignment-fetched-at');
                 if (el) el.textContent = `fetched ${new Date().toLocaleTimeString()}`;
             } catch (e) {
