@@ -152,6 +152,33 @@ describe("bus — TTL expiry", () => {
   });
 });
 
+describe("bus — watch", () => {
+  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  afterEach(cleanTestDir);
+
+  test("watch --timeout 0 exits 0 with no messages", () => {
+    const r = run("watch", "--to", "otto", "--timeout", "0");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toBe("");
+  });
+
+  test("watch --timeout 0 does not surface pre-existing messages (cursor starts at call time)", () => {
+    // publish before watch starts — should NOT appear (cursor is set at watch start)
+    run("publish", "--from", "vera", "--to", "otto", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
+
+    const r = run("watch", "--to", "otto", "--timeout", "0", "--json");
+    expect(r.exitCode).toBe(0);
+    // no output because the message was published before watch started
+    expect(r.stdout).toBe("");
+  });
+
+  test("watch --timeout 0 with --json exits cleanly", () => {
+    const r = run("watch", "--timeout", "0", "--json");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toBe("");
+  });
+});
+
 describe("bus — error handling", () => {
   beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
   afterEach(cleanTestDir);

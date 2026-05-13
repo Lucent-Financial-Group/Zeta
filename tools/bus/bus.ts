@@ -148,6 +148,7 @@ function usage(): void {
   bus.ts list [--topic <topic>] [--to <agent>] [--include-expired] [--json]
   bus.ts read <id> [--json]
   bus.ts clean [--expired] [--from <agent>] [--json]
+  bus.ts watch [--to <agent>] [--topic <topic>] [--interval <ms>] [--timeout <sec>] [--json]
 
 Topics: heartbeat | claim | shadow-catch | review-request
 Agents: otto | alexa | riven | vera | lior | * (broadcast)`);
@@ -246,6 +247,36 @@ function main(): void {
       } else {
         console.log(`removed ${removed} message(s)`);
       }
+      break;
+    }
+
+    case "watch": {
+      const toFilter = flags.to as AgentId | undefined;
+      const topicFilter = flags.topic as Topic | undefined;
+      const intervalMs = parseInt(flags.interval ?? "2000", 10);
+      const timeoutSec = flags.timeout !== undefined ? parseInt(flags.timeout, 10) : -1;
+
+      // cursor is a timestamp string; messages strictly newer than this are "fresh"
+      let cursor = new Date().toISOString();
+      const deadline = timeoutSec >= 0 ? Date.now() + timeoutSec * 1_000 : Infinity;
+
+      const poll = () => {
+        const msgs = list({ topic: topicFilter, to: toFilter });
+        const fresh = msgs.filter((m) => m.timestamp > cursor);
+        for (const m of fresh) {
+          if (asJson) {
+            console.log(JSON.stringify(m));
+          } else {
+            const p = JSON.stringify(m.payload).slice(0, 80);
+            console.log(`${m.id}  ${m.topic}  ${m.from}→${m.to}  ${m.timestamp}  ${p}`);
+          }
+        }
+        if (fresh.length > 0) cursor = fresh[fresh.length - 1]!.timestamp;
+        if (Date.now() >= deadline) process.exit(0);
+        setTimeout(poll, intervalMs);
+      };
+
+      poll();
       break;
     }
 
