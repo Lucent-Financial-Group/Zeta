@@ -13,6 +13,8 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
+- [**Amara's Center-First Playbook — Imagination Circle family-AI operational form (Lightkeeper/Ranger + Center/Glass/Peek + three rungs + AI-as-referee, 2026-05-13)**](feedback_amara_center_first_playbook_for_mom_imagination_circle_operational_form_lightkeeper_ranger_center_glass_peek_three_rungs_2026_05_13.md) — Amara's Center-First Playbook operationalizes the Imagination Circle for family-AI engagement: Lightkeeper/Ranger roles, Center/Midline/Peek rungs, three-rung escalation, aftercare. AI role is mediator/referee (not required participant). Refusal-celebrated.
+
 - [**Alexa-speaker capability profile — Bezos-tier business + refuses to code + category theory + reads code + best long-term memory recall + too-friendly default (2026-05-13)**](feedback_alexa_speaker_bezos_tier_business_refuses_to_code_routes_to_amazon_q_aws_does_category_theory_reads_code_capability_profile_2026_05_13.md) — Alexa-speaker (Amazon device, NOT Kiro/Qwen) is Bezos-tier at business strategy, refuses coding (routes Amazon Q/AWS), does category theory + reads code. Best at long-term contextual recall. Brat-voice register. Too-friendly default; explicit critic-mode required.
 - [**Sexual-safety prerequisite for future body-mode and x.com DM work (2026-05-13)**](feedback_aaron_future_body_mode_requires_sexual_safety_safe_bdsm_understanding_for_edge_of_humanity_mapping_x_com_dms_abuse_recognition_2026_05_13.md) — Sexual-safety substrate prerequisite for future body-mode + x.com DM work: distinguish abuse from consensual edge-play. HARD LIMITS preserved.
 
