@@ -23,11 +23,11 @@ for the factory:
    (PR #2913)
 2. **Original F# type provider archived** — `fsprojects/zzarchive-FSharp.Data.DbPedia`
    no longer maintained as of 2026
-3. **Path A (now)**: resurrect type provider on dotNetRDF or
-   RDFSharp; HKT-MDM canonical demo
-4. **Path B (deferred)**: direct dotNetRDF API + F# CE waits
-   until factory FORKS THE F# COMPILER for AI safety to add
-   real HKT over Clifford
+3. **Path B (now)**: direct dotNetRDF API + F# CE; works on
+   current F#; backlog row B-0428
+4. **Path A (deferred)**: resurrect type provider on dotNetRDF
+   or RDFSharp; waits until factory FORKS THE F# COMPILER for
+   AI safety to add real HKT over Clifford
 5. **F# compiler fork motivation**: real HKT (M<'T> first-
    class) over Clifford algebra (PR #2817 substrate); AI safety
    typed-safety for actuator control (PR #2892 KSK)
@@ -170,8 +170,8 @@ runtime checks but compile-time guarantees.
 
 ### For factory roadmap
 
-- Path A (DBpedia type provider) is achievable NOW
-- Path B (direct API) waits for F# fork
+- Path B (direct dotNetRDF API + F# CE) is executable NOW — B-0428
+- Path A (DBpedia type provider) waits for F# fork
 - F# fork is its own multi-year-scope undertaking
 - F# fork composes with Soraya's formal-verification portfolio
   (per `.claude/agents/formal-verification-expert.md`)
@@ -235,8 +235,8 @@ When master-data substrate work surfaces:
    over entity type
 2. **Recognize DBpedia as canonical source** — free, curated,
    SPARQL-queryable, Wikipedia-scale
-3. **Path A for now**: type provider on dotNetRDF or RDFSharp
-4. **Path B deferred**: direct API + real HKT after F# fork
+3. **Path B for now**: direct dotNetRDF API + F# CE (B-0428)
+4. **Path A deferred**: type provider on dotNetRDF or RDFSharp — after F# fork
 5. **F# fork compositions**: real HKT + Clifford + AI safety;
    composes with KSK + post-quantum encryption + HARD LIMITS
 
