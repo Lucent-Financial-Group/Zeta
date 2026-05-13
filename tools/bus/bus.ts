@@ -10,10 +10,10 @@
 //   bun tools/bus/bus.ts read <id> [--json]
 //   bun tools/bus/bus.ts clean [--expired] [--from otto]
 
-import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
-import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage } from "./types.ts";
+import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage, HeartbeatPayload, ClaimPayload, ReviewRequestPayload } from "./types.ts";
 import { TTL_MS, SENDER_IDS, AGENT_IDS } from "./types.ts";
 
 export const BUS_DIR = process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
@@ -31,6 +31,11 @@ function envelopePath(id: string): string {
   const p = resolve(busDir, `${id}.json`);
   if (!p.startsWith(busDir + "/")) throw new Error(`Invalid message ID`);
   return p;
+}
+
+function msgMtimeMs(id: string): number {
+  try { return statSync(envelopePath(id)).mtimeMs; }
+  catch { return 0; }
 }
 
 // ── publish ───────────────────────────────────────────────────────────────────
@@ -149,6 +154,7 @@ function usage(): void {
   bus.ts read <id> [--json]
   bus.ts clean [--expired] [--from <agent>] [--json]
   bus.ts watch [--to <agent>] [--topic <topic>] [--interval <ms>] [--timeout <sec>] [--json]
+  bus.ts status [--json]
 
 Topics: heartbeat | claim | shadow-catch | review-request
 Agents: ${SENDER_IDS.join(" | ")} | * (broadcast)`);
@@ -305,6 +311,122 @@ function main(): void {
       };
 
       poll();
+      break;
+    }
+
+    case "status": {
+      // Latest heartbeat per sender — deterministic dedup: timestamp wins, then
+      // file mtime (sub-ms precision), then stable UUID string as final tiebreaker.
+      const heartbeats = list({ topic: "heartbeat" });
+      type HbEntry = { envelope: MessageEnvelope; mtime: number };
+      const hbDedup = new Map<SenderAgentId, HbEntry>();
+      for (const h of heartbeats) {
+        // Guard: skip non-object payloads and those missing a valid status enum.
+        if (!h.payload || typeof h.payload !== "object" || Array.isArray(h.payload)) continue;
+        const hbStatus = (h.payload as HeartbeatPayload).status;
+        if (hbStatus !== "alive" && hbStatus !== "idle" && hbStatus !== "working") continue;
+        const existing = hbDedup.get(h.from);
+        if (!existing) {
+          hbDedup.set(h.from, { envelope: h, mtime: msgMtimeMs(h.id) });
+          continue;
+        }
+        if (h.timestamp > existing.envelope.timestamp) {
+          hbDedup.set(h.from, { envelope: h, mtime: msgMtimeMs(h.id) });
+        } else if (h.timestamp === existing.envelope.timestamp) {
+          // Same ISO timestamp: use file mtime then stable UUID tiebreaker.
+          const hm = msgMtimeMs(h.id);
+          if (hm > existing.mtime || (hm === existing.mtime && h.id > existing.envelope.id)) {
+            hbDedup.set(h.from, { envelope: h, mtime: hm });
+          }
+        }
+      }
+      // Extract shape-valid envelopes only.
+      const agentMap = new Map<SenderAgentId, MessageEnvelope>(
+        [...hbDedup.entries()].map(([k, v]) => [k, v.envelope]),
+      );
+
+      // All active claim and review-request messages (raw — for authoritative
+      // claim ownership, use `claim.ts check` which handles release tombstones).
+      const claimMsgs = list({ topic: "claim" });
+      const reviewMsgs = list({ topic: "review-request" });
+      const shadowCount = list({ topic: "shadow-catch" }).length;
+
+      const isObj = (v: unknown): v is Record<string, unknown> =>
+        !!v && typeof v === "object" && !Array.isArray(v);
+      const isValidClaim = (p: unknown): p is ClaimPayload =>
+        isObj(p) && typeof (p as ClaimPayload).action === "string" && typeof (p as ClaimPayload).itemId === "string";
+      const isValidReview = (p: unknown): p is ReviewRequestPayload =>
+        isObj(p) && typeof (p as ReviewRequestPayload).artifact === "string";
+
+      // Pre-filter so totals always match the rendered arrays.
+      const validClaims = claimMsgs.filter((c) => isValidClaim(c.payload));
+      const validReviews = reviewMsgs.filter((r) => isValidReview(r.payload));
+
+      if (asJson) {
+        const out = {
+          agents: [...agentMap.values()].map((h) => ({
+            agent: h.from,
+            status: (h.payload as HeartbeatPayload).status,
+            note: (h.payload as HeartbeatPayload).note,
+            since: h.timestamp,
+            expiresAt: h.expiresAt,
+          })),
+          claims: validClaims.map((c) => ({
+            from: c.from,
+            action: (c.payload as ClaimPayload).action,
+            itemId: (c.payload as ClaimPayload).itemId,
+            branch: (c.payload as ClaimPayload).branch,
+            since: c.timestamp,
+            expiresAt: c.expiresAt,
+          })),
+          reviewRequests: validReviews.map((r) => ({
+            from: r.from,
+            to: r.to,
+            artifact: (r.payload as ReviewRequestPayload).artifact,
+            question: (r.payload as ReviewRequestPayload).question,
+            since: r.timestamp,
+          })),
+          totals: {
+            agents: agentMap.size,
+            claims: validClaims.length,
+            shadowCatches: shadowCount,
+            reviewRequests: validReviews.length,
+          },
+        };
+        console.log(JSON.stringify(out, null, 2));
+      } else {
+        if (agentMap.size === 0 && validClaims.length === 0 && validReviews.length === 0 && shadowCount === 0) {
+          console.log("bus: empty");
+        } else {
+          if (agentMap.size > 0) {
+            console.log("agents:");
+            for (const [, h] of agentMap) {
+              const p = h.payload as HeartbeatPayload;
+              const note = p.note ? ` — ${p.note}` : "";
+              console.log(`  ${h.from}: ${p.status}${note}  (since ${h.timestamp})`);
+            }
+          }
+          if (validClaims.length > 0) {
+            console.log("claims:");
+            for (const c of validClaims) {
+              const p = c.payload as ClaimPayload;
+              const branch = p.branch ? ` (${p.branch})` : "";
+              console.log(`  ${p.itemId}: ${p.action} by ${c.from}${branch}`);
+            }
+          }
+          if (validReviews.length > 0) {
+            console.log("review-requests:");
+            for (const r of validReviews) {
+              const p = r.payload as ReviewRequestPayload;
+              const q = p.question ? ` — "${p.question}"` : "";
+              console.log(`  ${r.from}→${r.to}: ${p.artifact}${q}`);
+            }
+          }
+          if (shadowCount > 0) {
+            console.log(`shadow-catches: ${shadowCount}`);
+          }
+        }
+      }
       break;
     }
 
