@@ -490,6 +490,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0420](backlog/P2/B-0420-poll-pr-gate-thread-pagination-bug-2026-05-11.md)** poll-pr-gate.ts thread pagination drift — NOT A BUG (race condition)
 - [x] **[B-0421](backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md)** Grok peer-call failure — cursor-agent exit 1 during multi-agent review
 - [ ] **[B-0430](backlog/P2/B-0430-peer-call-wrappers-codeql-insecure-tmp-file-all-8-wrappers-substrate-consistent-fix-2026-05-13.md)** Peer-call wrappers — CodeQL insecure-temp-file alert on autogenOutputPath() across all 8 wrappers (substrate-consistent fix needed)
+- [ ] **[B-0443](backlog/P2/B-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md)** Launch-substrate carve-out — persona naming allowed in docs/launch/** under existing closed-list pattern
 
 ## P3 — convenience / deferred
 
