@@ -529,7 +529,7 @@ function step07_summary(): void {
       manualSteps: [
         "Upload SVG social-preview PNG via GitHub UI (GitHub requires rasterized PNG format)",
         "Enable merge queue via GitHub UI: Settings → Merge queue (org feature, no API)",
-        "Add Semgrep GHA inline-untrusted-in-run rule workflow",
+        "Wire gate workflow: add `semgrep --config .semgrep.yml --error --metrics=off` step (.semgrep.yml is in scaffold files; CI job still needs wiring in Stage 2)",
         "Add bun-test, bun-lint, codeql, scorecard as required status checks AFTER CI workflows are wired (branch protection was created with empty contexts to avoid deadlock)",
         "Verify budget caps $0 at org level: github.com/organizations/Lucent-Financial-Group/settings/billing",
         "Confirm CodeQL default-setup is active: Security → Code scanning → Default setup",

@@ -166,6 +166,10 @@ describe("forge dry-run", () => {
     expect(files.some((f) => f.includes("GOVERNANCE.md"))).toBe(true);
     expect(files.some((f) => f.includes("SECURITY.md"))).toBe(true);
     expect(files.some((f) => f.includes("LICENSE"))).toBe(true);
+    // GHA injection protection must be present from day one (B-0424.6).
+    expect(files.some((f) => f.includes(".semgrep.yml"))).toBe(true);
+    // Toolchain pin for semgrep must be scaffolded alongside it (B-0424.6).
+    expect(files.some((f) => f.includes(".mise.toml"))).toBe(true);
   });
 
   test("step 07 lists manual steps including budget-cap verification", () => {
@@ -227,6 +231,10 @@ describe("ace dry-run", () => {
     expect(files.length).toBeGreaterThan(0);
     expect(files.some((f) => f.includes("README.md"))).toBe(true);
     expect(files.some((f) => f.includes("SECURITY.md"))).toBe(true);
+    // GHA injection protection must be present from day one (B-0424.6).
+    expect(files.some((f) => f.includes(".semgrep.yml"))).toBe(true);
+    // Toolchain pin for semgrep must be scaffolded alongside it (B-0424.6).
+    expect(files.some((f) => f.includes(".mise.toml"))).toBe(true);
   });
 });
 

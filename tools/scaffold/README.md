@@ -47,6 +47,7 @@ tools/scaffold/
     CODE_OF_CONDUCT.md
     CONTRIBUTING.md
     LICENSE
+    .semgrep.yml         — GHA injection rule (gha-untrusted-in-run-line)
     .github/
       copilot-instructions.md
     docs/
@@ -55,6 +56,7 @@ tools/scaffold/
 
   ace/                   — ace day-one governance files
     (same structure, ace-scoped content)
+    .semgrep.yml         — GHA injection rule (same as Forge)
     docs/
       GITHUB-SETTINGS.md
       UPSTREAM-RHYTHM.md
@@ -71,7 +73,8 @@ The tool prints these at the end, but for reference:
    (GitHub requires a rasterized PNG format — SVG not accepted)
 2. Enable merge queue via GitHub UI
    (Settings → Merge queue — org feature, no REST API)
-3. Add Semgrep GHA inline-untrusted-in-run rule
+3. Wire gate workflow: add `semgrep --config .semgrep.yml --error --metrics=off` step
+   (`.semgrep.yml` is already in the scaffold — only the CI job wiring is manual, done in Stage 2)
 4. Verify $0 budget caps at org level in GitHub billing settings
 5. Confirm CodeQL default-setup is active under Security → Code scanning
 
