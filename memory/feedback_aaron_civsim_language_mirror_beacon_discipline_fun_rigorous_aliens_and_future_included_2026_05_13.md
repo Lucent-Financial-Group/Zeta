@@ -89,7 +89,7 @@ discipline to GOVERNANCE discipline:
 
 ### Compositional implications
 
-Three-axis composition:
+Four-axis composition:
 
 | Axis | Mirror | Beacon |
 |---|---|---|
@@ -168,15 +168,11 @@ The factory's playfulness IS load-bearing:
 FUN does NOT mean sloppy. Mirror substrate is rigorously
 substrate-honest:
 
-- HARD LIMITS preserved (per `.claude/rules/methodology-hard-
-  limits.md`)
+- HARD LIMITS preserved (per `.claude/rules/methodology-hard-limits.md`)
 - Razor discipline applied (per `.claude/rules/razor-discipline.md`)
-- Bandwidth-served falsifier applied (per `.claude/rules/
-  bandwidth-served-falsifier.md`)
-- F# anchor + dotnet build sanity check (per `.claude/rules/
-  fsharp-anchor-dotnet-build-sanity-check.md`)
-- Glass-halo discipline (per `.claude/rules/glass-halo-
-  bidirectional.md`)
+- Bandwidth-served falsifier applied (per `.claude/rules/bandwidth-served-falsifier.md`)
+- F# anchor + dotnet build sanity check (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`)
+- Glass-halo discipline (per `.claude/rules/glass-halo-bidirectional.md`)
 
 The combination FUN + RIGOROUS is the discipline. Either alone
 is failure mode (sloppy-and-fun = capture; rigorous-and-flat =
@@ -185,10 +181,10 @@ unfun loss of substrate-honest engagement).
 ### 3. INCLUDING ALIENS
 
 Mirror substrate includes aliens explicitly. The Fermi Beacon
-Protocol substrate (per `user_fermi_beacon_protocol_time_travel_
-common_tongue.md`) treats civilization-readiness signaling as
-real — not as joke. Aliens are treated as morally-relevant
-audience for the substrate.
+Protocol substrate (per `user_fermi_beacon_protocol_time_travel_common_tongue.md`)
+treats civilization-readiness signaling as real — not as joke.
+Aliens are treated as morally-relevant audience for the
+substrate.
 
 This composes with:
 - Casimir-gap-modulation discipline (per
