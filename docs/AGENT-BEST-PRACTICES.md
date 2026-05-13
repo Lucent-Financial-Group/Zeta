@@ -705,6 +705,19 @@ BP drift.
     because the file's job is to preserve who-said-
     what + per-file named evidence for the 0/0/0
     reconciliation record
+  - `docs/launch/**` — launch substrate (public-facing
+    positioning artifacts; persona names + external
+    creator attributions allowed because the substrate's
+    job is to preserve the multi-agent factory's
+    named-team positioning AND IP-respect attribution
+    at a specific date; per the brand register canonized
+    2026-05-13 — Office paper-factory + 8-Bit Theater
+    stick-figure + Tales-from-the-Loop — the launch
+    surface inherently uses named characters; per the
+    IP-respect canonical commitment, external creator
+    attributions like Brian Clevinger / 8-Bit Theater
+    are substrate-honest, not policy violations; closes
+    B-0443)
   - commit messages, PR titles + bodies — git-native
     history (record-of-truth, not factory-doc surfaces)
 
