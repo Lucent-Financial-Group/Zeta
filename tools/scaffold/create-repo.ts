@@ -529,7 +529,6 @@ function step07_summary(): void {
       manualSteps: [
         "Upload SVG social-preview PNG via GitHub UI (GitHub requires rasterized PNG format)",
         "Enable merge queue via GitHub UI: Settings → Merge queue (org feature, no API)",
-        "Wire OpenSSF Scorecard workflow: copy from Zeta's .github/workflows/scorecard.yml",
         "Add Semgrep GHA inline-untrusted-in-run rule workflow",
         "Add bun-test, bun-lint, codeql, scorecard as required status checks AFTER CI workflows are wired (branch protection was created with empty contexts to avoid deadlock)",
         "Verify budget caps $0 at org level: github.com/organizations/Lucent-Financial-Group/settings/billing",

@@ -71,11 +71,9 @@ The tool prints these at the end, but for reference:
    (GitHub requires a rasterized PNG format — SVG not accepted)
 2. Enable merge queue via GitHub UI
    (Settings → Merge queue — org feature, no REST API)
-3. Wire OpenSSF Scorecard workflow
-   (copy from Zeta's `.github/workflows/scorecard.yml`)
-4. Add Semgrep GHA inline-untrusted-in-run rule
-5. Verify $0 budget caps at org level in GitHub billing settings
-6. Confirm CodeQL default-setup is active under Security → Code scanning
+3. Add Semgrep GHA inline-untrusted-in-run rule
+4. Verify $0 budget caps at org level in GitHub billing settings
+5. Confirm CodeQL default-setup is active under Security → Code scanning
 
 ## Origin
 
