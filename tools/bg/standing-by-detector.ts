@@ -1,10 +1,9 @@
 // standing-by-detector.ts — B-0440 slice 2: commit-history poll via `git log`
 //
-// Background service that detects when an agent has been "Standing by" for N
-// consecutive autonomous-loop ticks without producing substrate. Slice 2
-// adds real commit-history polling — the detector now reports the most
-// recent commit on the current branch and flags idle when the gap exceeds
-// idleThresholdMin.
+// Background service that detects when an agent has been Standing by (idle)
+// by comparing the timestamp of the most recent commit on HEAD against a
+// configurable idle threshold (`idleThresholdMin`). When the gap exceeds
+// the threshold the detector flags the agent as a Standing-by candidate.
 //
 // PR-activity polling and bus-publish are still TBD (slices 3 + 4).
 //
@@ -45,7 +44,7 @@ export type Adapters = {
 const REAL_ADAPTERS: Adapters = {
   now: () => new Date(),
   lastCommitIso: () => {
-    // execFile-style invocation (no shell) — no injection risk from argv.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no injection risk.
     const result = spawnSync("git", ["log", "-1", "--format=%cI", "HEAD"], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],

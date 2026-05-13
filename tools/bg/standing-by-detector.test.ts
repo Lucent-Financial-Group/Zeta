@@ -4,7 +4,6 @@ import {
   parseArgs,
   parsePositiveMinutes,
   pollOnce,
-  runOnce,
   type Adapters,
 } from "./standing-by-detector";
 
@@ -22,10 +21,14 @@ describe("standing-by-detector slice 2", () => {
     expect(DEFAULT_CONFIG.once).toBe(false);
   });
 
-  test("runOnce returns a result without entering daemon mode", () => {
-    const result = runOnce(DEFAULT_CONFIG);
+  test("pollOnce with adapters returns expected result shape (no daemon mode)", () => {
+    const result = pollOnce(
+      DEFAULT_CONFIG,
+      fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:58:00Z"),
+    );
     expect(result.pollAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     expect(typeof result.idleDetected).toBe("boolean");
+    expect(result.idleMinutes).toBe(2);
   });
 
   describe("pollOnce with injected adapters", () => {
