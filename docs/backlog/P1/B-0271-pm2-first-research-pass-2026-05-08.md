@@ -28,6 +28,7 @@ signals, user patterns, or competitor analysis.
 Research doc: `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md`
 
 6 gaps identified:
+
 - Gap 1 — Getting-started guide → **B-0444** (new P1)
 - Gap 2 — C# fluent operator surface → **B-0445** (new P1)
 - Gap 3 — Lean 4 formal proof completion → **B-0446** (new P2)

@@ -44,7 +44,7 @@ git root (e.g., `1.0.0-alpha.1`) so every `dotnet pack` produces a
 deterministic version tied to source.
 
 SourceLink: add `Microsoft.SourceLink.GitHub` to `Directory.Packages.props`
-+ `<PublishRepositoryUrl>true</PublishRepositoryUrl>` in `Directory.Build.props`
+and `<PublishRepositoryUrl>true</PublishRepositoryUrl>` in `Directory.Build.props`
 so debugger source-navigation works for downstream consumers.
 
 ## Why now
