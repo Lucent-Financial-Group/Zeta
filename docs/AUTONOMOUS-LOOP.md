@@ -414,6 +414,37 @@ host metadata to manifest as permanent structural mass in git.
 
 Pattern: **create → merge → archive → commit archive**.
 
+### 4c. Reindex MEMORY.md heap→stack on cadence (B-0423)
+
+After archiving PRs (step 4b), promote any unindexed heap memory
+files to the MEMORY.md stack view. Run a cheap staleness check first:
+
+```bash
+bun tools/memory/reindex-memory-md.ts --check
+```
+
+- **If output says `Index current`:** skip — no commit needed.
+- **If output says `Index STALE`:** run the reindexer and commit:
+
+```bash
+bun tools/memory/reindex-memory-md.ts
+git add memory/MEMORY.md
+git commit -m "chore(memory): reindex MEMORY.md stack from heap [B-0423]
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+**Cadence:** run `--check` every tick (it is fast — scans `memory/`
+frontmatter only). The full write + commit only fires when MEMORY.md
+is actually stale, so commit noise is proportional to real heap
+additions.
+
+**Why this step exists:** Memory files commit with frontmatter but
+without a synchronous MEMORY.md paired-edit (heap-state-acceptable
+per B-0423). Without this cadence step, MEMORY.md would go
+permanently stale once parallel agents stop doing paired edits.
+This step keeps the heap→stack promotion loop closed automatically.
+
 ### 5. Append tick-history row, `CronList` at END, emit visibility signal
 
 **This is the load-bearing step** (end-over-start per the
