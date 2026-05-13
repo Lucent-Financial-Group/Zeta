@@ -19,6 +19,6 @@ describe("standing-by-detector slice 1", () => {
     const config: DetectorConfig = { ...DEFAULT_CONFIG, once: true };
     const results = await runDetector(config);
     expect(results).toHaveLength(1);
-    expect(results[0].idleDetected).toBe(false);
+    expect(results[0]!.idleDetected).toBe(false);
   });
 });
