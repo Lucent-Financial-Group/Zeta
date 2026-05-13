@@ -79,7 +79,7 @@ export function parseArgs(argv: string[]): DetectorConfig {
   const config: DetectorConfig = { ...DEFAULT_CONFIG };
 
   for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
+    const arg = argv[i]!; // i < argv.length guarantees defined; noUncheckedIndexedAccess needs explicit assertion
     if (arg === "--once") {
       config.once = true;
     } else if (arg === "--poll-min") {
