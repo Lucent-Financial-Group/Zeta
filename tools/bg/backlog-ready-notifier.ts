@@ -55,31 +55,49 @@ export type Adapters = {
   scanBacklog: (backlogDir: string) => BacklogRow[];
 };
 
+/**
+ * Parse depends_on from frontmatter. Supports both YAML inline-flow
+ * and block-style lists. Returns empty array when missing.
+ */
+function parseDependsOn(frontmatter: string): string[] {
+  // Inline flow style: depends_on: [A, B, C]
+  const inlineMatch = frontmatter.match(/^depends_on:\s*\[(.*?)\]/m);
+  if (inlineMatch && inlineMatch[1] !== undefined) {
+    return inlineMatch[1]
+      .split(",")
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+  }
+
+  // Block style: depends_on:\n  - A\n  - B
+  const blockMatch = frontmatter.match(/^depends_on:\s*\n((?:[ \t]+-[ \t]*[^\r\n]+\r?\n?)+)/m);
+  if (blockMatch && blockMatch[1] !== undefined) {
+    return blockMatch[1]
+      .split(/\r?\n/)
+      .map(line => line.match(/^[ \t]+-[ \t]*(.+?)\s*$/)?.[1] ?? "")
+      .filter(s => s.length > 0);
+  }
+
+  return [];
+}
+
 /** Parse a single backlog file's frontmatter into a BacklogRow. */
 export function parseRow(content: string, filename: string): BacklogRow | null {
-  const fmMatch = /^---\r?\n([\s\S]*?)\r?\n---/.exec(content);
+  const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!fmMatch) return null;
   const frontmatter = fmMatch[1] ?? "";
 
-  const idMatch = /^id:\s*(\S+)/m.exec(frontmatter);
-  const priorityMatch = /^priority:\s*(\S+)/m.exec(frontmatter);
-  const statusMatch = /^status:\s*(\S+)/m.exec(frontmatter);
-  const depsMatch = /^depends_on:\s*\[(.*?)\]/m.exec(frontmatter);
+  const idMatch = frontmatter.match(/^id:\s*(\S+)/m);
+  const priorityMatch = frontmatter.match(/^priority:\s*(\S+)/m);
+  const statusMatch = frontmatter.match(/^status:\s*(\S+)/m);
 
   if (!idMatch || !priorityMatch || !statusMatch) return null;
-
-  const dependsOn = depsMatch && depsMatch[1]
-    ? depsMatch[1]
-        .split(",")
-        .map(s => s.trim())
-        .filter(s => s.length > 0)
-    : [];
 
   return {
     id: idMatch[1] ?? "",
     priority: priorityMatch[1] ?? "",
     status: statusMatch[1] ?? "",
-    dependsOn,
+    dependsOn: parseDependsOn(frontmatter),
     filename,
   };
 }
@@ -112,8 +130,20 @@ const REAL_ADAPTERS: Adapters = {
 };
 
 /**
+ * A dependency is "satisfied" iff the dep's row status is `closed` OR begins
+ * with `superseded-by-` (matching the canonical generator's checkbox logic
+ * in tools/backlog/generate-index.ts). A dangling reference (dep ID not
+ * present in the scan) is treated as UNSATISFIED.
+ */
+function isDepSatisfied(depStatus: string | undefined): boolean {
+  if (depStatus === undefined) return false;
+  return depStatus === "closed" || depStatus.startsWith("superseded-by-");
+}
+
+/**
  * Single poll iteration. Scans the backlog and classifies rows by readiness:
- * a row is "ready" iff it is open AND every dependency is closed.
+ * a row is "ready" iff it is open AND every dependency is satisfied
+ * (closed or superseded). Dangling dep references are reported separately.
  */
 export function pollOnce(
   config: NotifierConfig,
@@ -124,9 +154,20 @@ export function pollOnce(
   const openRows = allRows.filter(r => r.status === "open");
   const idToStatus = new Map(allRows.map(r => [r.id, r.status]));
 
+  const danglingDeps = new Set<string>();
+  for (const row of openRows) {
+    for (const dep of row.dependsOn) {
+      if (!idToStatus.has(dep)) danglingDeps.add(dep);
+    }
+  }
+
   const readyRows = openRows.filter(r =>
-    r.dependsOn.every(dep => idToStatus.get(dep) === "closed"),
+    r.dependsOn.every(dep => isDepSatisfied(idToStatus.get(dep))),
   );
+
+  const danglingNote = danglingDeps.size > 0
+    ? ` (warning: ${danglingDeps.size} dangling dep ref(s) — first: ${[...danglingDeps].slice(0, 3).join(", ")})`
+    : "";
 
   return {
     pollAt: pollAt.toISOString(),
@@ -134,8 +175,8 @@ export function pollOnce(
     readyRowsFound: readyRows.length,
     candidateIds: readyRows.slice(0, 10).map(r => r.id),
     note: readyRows.length > 0
-      ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind (deps satisfied); top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}`
-      : `${openRows.length} open rows but none ready (all have unsatisfied deps); future slice 4 will publish bus assignments when ready rows exist`,
+      ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind (deps satisfied); top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${danglingNote}`
+      : `${openRows.length} open rows but none ready (all have unsatisfied deps)${danglingNote}; future slice 4 will publish bus assignments when ready rows exist`,
   };
 }
 
@@ -166,7 +207,7 @@ export function parsePositiveMinutes(raw: string | undefined, name: string): num
   return n;
 }
 
-const KNOWN_FLAGS = new Set(["--once", "--poll-min", "--backlog-dir"]);
+const KNOWN_FLAGS = ["--once", "--poll-min", "--backlog-dir"] as const;
 
 export function parseArgs(argv: string[]): NotifierConfig {
   const config: NotifierConfig = { ...DEFAULT_CONFIG };
@@ -181,10 +222,8 @@ export function parseArgs(argv: string[]): NotifierConfig {
       const next = argv[++i];
       if (next === undefined) throw new Error("--backlog-dir requires a value");
       config.backlogDir = next;
-    } else if (KNOWN_FLAGS.has(arg)) {
-      throw new Error(`internal: known flag ${arg} not handled`);
     } else {
-      throw new Error(`unknown flag: ${arg}; known flags: ${[...KNOWN_FLAGS].join(", ")}`);
+      throw new Error(`unknown flag: ${arg}; known flags: ${KNOWN_FLAGS.join(", ")}`);
     }
   }
 

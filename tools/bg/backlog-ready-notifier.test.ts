@@ -104,6 +104,20 @@ status: closed
       expect(row?.dependsOn).toEqual([]);
     });
 
+    test("parses block-style depends_on YAML list", () => {
+      const content = `---
+id: B-9010
+priority: P1
+status: open
+depends_on:
+  - B-9000
+  - B-9001
+  - B-9002
+---`;
+      const row = parseRow(content, "B-9010.md");
+      expect(row?.dependsOn).toEqual(["B-9000", "B-9001", "B-9002"]);
+    });
+
     test("returns null when frontmatter missing", () => {
       expect(parseRow("no frontmatter here", "x.md")).toBeNull();
     });
@@ -179,6 +193,46 @@ title: only a title
       expect(result.totalOpenRows).toBe(0);
       expect(result.readyRowsFound).toBe(0);
       expect(result.candidateIds).toEqual([]);
+    });
+
+    test("treats superseded-by-* deps as satisfied (matches generate-index)", () => {
+      const supersededRow: BacklogRow = {
+        id: "B-8000",
+        priority: "P1",
+        status: "superseded-by-B-9999",
+        dependsOn: [],
+        filename: "B-8000.md",
+      };
+      const openWithSupersededDep: BacklogRow = {
+        id: "B-8001",
+        priority: "P1",
+        status: "open",
+        dependsOn: ["B-8000"],
+        filename: "B-8001.md",
+      };
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        fakeAdapters("2026-05-13T18:00:00Z", [supersededRow, openWithSupersededDep]),
+      );
+      expect(result.readyRowsFound).toBe(1);
+      expect(result.candidateIds).toEqual(["B-8001"]);
+    });
+
+    test("flags dangling dep references in note", () => {
+      const openWithDanglingDep: BacklogRow = {
+        id: "B-8002",
+        priority: "P2",
+        status: "open",
+        dependsOn: ["B-NONEXISTENT"],
+        filename: "B-8002.md",
+      };
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        fakeAdapters("2026-05-13T18:00:00Z", [openWithDanglingDep]),
+      );
+      expect(result.readyRowsFound).toBe(0);
+      expect(result.note).toContain("dangling dep ref");
+      expect(result.note).toContain("B-NONEXISTENT");
     });
   });
 
