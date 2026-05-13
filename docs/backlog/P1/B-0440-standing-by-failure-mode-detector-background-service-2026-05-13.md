@@ -1,5 +1,5 @@
 ---
-id: B-0430
+id: B-0440
 priority: P1
 status: open
 title: "Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus"
@@ -8,7 +8,7 @@ effort: M
 created: 2026-05-13
 last_updated: 2026-05-13
 depends_on: [B-0400]
-composes_with: [B-0402, B-0431, B-0432]
+composes_with: [B-0402, B-0441, B-0442]
 tags: [multi-agent, background-service, bus, mechanization, infinite-backlog, standing-by, anti-idle]
 type: feature
 ---
@@ -118,9 +118,9 @@ async function detectAndNudge(state: AgentState, bus: BusClient): Promise<void> 
   itself increases the mechanizable backlog)
 - B-0400 (bus protocol — transport for nudge messages)
 - B-0402 (shadow observer — canonical background service example)
-- B-0431 (backlog-row-ready notifier — composes; pre-assigns work the
+- B-0441 (backlog-row-ready notifier — composes; pre-assigns work the
   agent picks up)
-- B-0432 (missed-substrate cascade detector — composes; catches
+- B-0442 (missed-substrate cascade detector — composes; catches
   different failure mode in same family)
 - PR #2974 (infinite-backlog metabolism — the rule this mechanizes)
 - PR #2998 (background-services architecture — the substrate that

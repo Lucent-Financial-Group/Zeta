@@ -1,5 +1,5 @@
 ---
-id: B-0431
+id: B-0441
 priority: P1
 status: open
 title: "Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty"
@@ -8,7 +8,7 @@ effort: M
 created: 2026-05-13
 last_updated: 2026-05-13
 depends_on: [B-0400]
-composes_with: [B-0402, B-0430, B-0432]
+composes_with: [B-0402, B-0440, B-0442]
 tags: [multi-agent, background-service, bus, mechanization, infinite-backlog, work-assignment]
 type: feature
 ---
@@ -17,12 +17,12 @@ type: feature
 
 ## Origin
 
-Companion mechanization to B-0430. The substrate-honest architectural
+Companion mechanization to B-0440. The substrate-honest architectural
 challenge from the human maintainer 2026-05-13:
 
 > *"this is something background services should walk"*
 
-B-0430 catches the *failure mode* (Standing-by); this row prevents
+B-0440 catches the *failure mode* (Standing-by); this row prevents
 the failure mode by *proactively surfacing work* when the agent's
 queue is empty. The infinite-backlog metabolism rule (PR #2974)
 mandates that backlog work is always available; this service makes
@@ -105,14 +105,14 @@ async function notifyIfQueueEmpty(agent: string, bus: BusClient): Promise<void> 
 }
 ```
 
-## Composing with B-0430
+## Composing with B-0440
 
 | Service | Trigger | Output |
 |---------|---------|--------|
-| B-0430 Standing-by detector | Idle threshold + cron fires | Nudge: "you should pick work" |
-| B-0431 Backlog-ready notifier | Queue-empty + rows-ready | Assignment: "this row is ready" |
+| B-0440 Standing-by detector | Idle threshold + cron fires | Nudge: "you should pick work" |
+| B-0441 Backlog-ready notifier | Queue-empty + rows-ready | Assignment: "this row is ready" |
 
-B-0430 is reactive (catches failure mode after it occurs); B-0431 is
+B-0440 is reactive (catches failure mode after it occurs); B-0441 is
 proactive (prevents failure mode by pre-assigning work). Together they
 form a two-layer defense against the Standing-by pattern.
 
@@ -130,9 +130,9 @@ form a two-layer defense against the Standing-by pattern.
   include start-gate-relevant context)
 - B-0400 (bus protocol — transport for assignment messages)
 - B-0402 (shadow observer — canonical background service pattern)
-- B-0430 (Standing-by detector — composes; this prevents what B-0430
+- B-0440 (Standing-by detector — composes; this prevents what B-0440
   catches)
-- B-0432 (missed-substrate cascade detector — composes; full
+- B-0442 (missed-substrate cascade detector — composes; full
   background-services suite)
 - PR #2974 (infinite-backlog metabolism)
 - PR #2998 (background-services architecture)

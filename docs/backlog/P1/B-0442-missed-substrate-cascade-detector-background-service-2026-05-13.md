@@ -1,5 +1,5 @@
 ---
-id: B-0432
+id: B-0442
 priority: P1
 status: open
 title: "Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)"
@@ -8,7 +8,7 @@ effort: M
 created: 2026-05-13
 last_updated: 2026-05-13
 depends_on: [B-0400]
-composes_with: [B-0402, B-0430, B-0431]
+composes_with: [B-0402, B-0440, B-0441]
 tags: [multi-agent, background-service, bus, mechanization, drift-detection, race-condition]
 type: feature
 ---
@@ -17,7 +17,7 @@ type: feature
 
 ## Origin
 
-Companion mechanization to B-0430 + B-0431. The substrate-honest
+Companion mechanization to B-0440 + B-0441. The substrate-honest
 architectural challenge from the human maintainer 2026-05-13:
 
 > *"you need to imagine how would you survive without this foreground
@@ -142,9 +142,9 @@ async function watchRecentMerges(bus: BusClient): Promise<void> {
   surface drift detection at different scopes)
 - B-0400 (bus protocol — transport for cascade detection)
 - B-0402 (shadow observer — canonical pattern)
-- B-0430 (Standing-by detector — composes; full background-services
+- B-0440 (Standing-by detector — composes; full background-services
   suite)
-- B-0431 (backlog-ready notifier — composes; full suite)
+- B-0441 (backlog-ready notifier — composes; full suite)
 - `tools/hygiene/LOST-FILES-LOCATIONS.md` (the 15-class survey; this
   service mechanizes one of the classes)
 - PR #2980 (the operational example)

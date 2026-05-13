@@ -237,14 +237,14 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0427](backlog/P1/B-0427-repo-split-third-orthogonal-axis-code-vs-english-formal-verification-aaron-2026-05-13.md)** Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence smell test
 - [ ] **[B-0428](backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md)** DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)
 - [ ] **[B-0429](backlog/P1/B-0429-end-user-persona-mapping-product-team-multiple-products-multiple-personas-each-aaron-2026-05-13.md)** End-user persona mapping — product team — multiple products × multiple personas each
-- [ ] **[B-0430](backlog/P1/B-0430-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
-- [ ] **[B-0431](backlog/P1/B-0431-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
-- [ ] **[B-0432](backlog/P1/B-0432-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
 - [x] **[B-0433](backlog/P1/B-0433-shadow-observer-slice-5-zeta-cli-distribution-demo-packaging-2026-05-13.md)** Shadow observer slice 5 — Zeta CLI distribution + demo packaging
 - [x] **[B-0434](backlog/P1/B-0434-demo-alignment-tab-slice-1-hc-sd-dir-clause-coverage.md)** Demo alignment tab — slice 1: HC/SD/DIR clause coverage panel in demo/index.html
 - [ ] **[B-0435](backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md)** Demo — circuit breaker visualization panel (mock data → live bus data)
 - [ ] **[B-0436](backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md)** Demo — Hamiltonian-to-git visualization (git history → phase-space rendering)
 - [ ] **[B-0437](backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md)** Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)
+- [ ] **[B-0440](backlog/P1/B-0440-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
+- [ ] **[B-0441](backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
+- [ ] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
 
 ## P2 — research-grade
 
