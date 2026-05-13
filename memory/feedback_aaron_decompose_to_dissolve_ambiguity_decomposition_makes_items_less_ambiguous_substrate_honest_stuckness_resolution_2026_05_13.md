@@ -180,9 +180,12 @@ search becomes part of the child's body.
   operationalizes)
 - PR #2998 (background-services architecture — substrate
   that REQUIRED decomposition follow-up)
-- `memory/feedback_decomposition_is_iterative_mid_work_one_level_every_tick_aaron_2026_05_08.md`
-  (existing decomposition cadence substrate; this composes
-  + extends to ambiguity-resolution scope)
+- User-scope memory: `~/.claude/projects/<slug>/memory/feedback_decomposition_is_iterative_mid_work_one_level_every_tick_aaron_2026_05_08.md`
+  (existing decomposition cadence substrate at the user-memory
+  layer per MEMORY.md index; this composes + extends to
+  ambiguity-resolution scope; the project-memory equivalent would
+  be a follow-up landing if the cadence needs project-scope
+  visibility)
 
 ## Operational rule for future-Otto
 
