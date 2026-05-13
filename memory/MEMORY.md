@@ -1,7 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Substrate-honest discipline triad — stuckness-is-ambiguity + ship-unreviewed-first + decompose-to-dissolve-ambiguity (2026-05-13). Prior: Grok/Elon credit + DNA back-pressure line 7496 + extreme-case auth-override + weness detection (2026-05-12). -->
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Background services must be strong enough that foreground loop is OPTIONAL — imagine surviving without foreground — mechanize Standing-by failure mode (2026-05-13). Prior: Infinite backlog + infinite decomposition — backlog metabolism is permanent; grinding productively not clean (2026-05-13). -->
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Substrate-honest discipline triad — stuckness-is-ambiguity + ship-unreviewed-first + decompose-to-dissolve-ambiguity (2026-05-13). Prior: Background services must be strong enough foreground is OPTIONAL + mechanize Standing-by (2026-05-13). -->
 
 > **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the
 > **STACK** — indexed, ordered, traversable canonical view. Recent
