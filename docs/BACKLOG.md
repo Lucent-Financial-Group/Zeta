@@ -113,6 +113,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
 - [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
 - [ ] **[B-0256](backlog/P1/B-0256-model-recursion-exploit-class-metasploit-ida-pro-mapping-2026-05-07.md)** Model recursion exploit class — Metasploit/IDA Pro mapping for AI models
+- [ ] **[B-0257](backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md)** MEMORY.md marker-vs-index - harness contract verification and evidence
+- [ ] **[B-0258](backlog/P1/B-0258-memory-md-index-generator-implementation-2026-05-08.md)** MEMORY.md marker-vs-index - index generator implementation
+- [ ] **[B-0259](backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md)** MEMORY.md marker-vs-index - hook and CI drift enforcement
+- [ ] **[B-0260](backlog/P1/B-0260-memory-md-cutover-and-parity-validation-2026-05-08.md)** MEMORY.md marker-vs-index - cutover and parity validation
+- [ ] **[B-0261](backlog/P1/B-0261-memory-md-q1-autodream-automemory-compatibility-validation-2026-05-08.md)** MEMORY.md marker-vs-index - Q1 AutoDream/AutoMemory compatibility validation
 - [x] **[B-0262](backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md)** refresh-worldview scaffold - open-PR list + recent-merges query
 - [x] **[B-0263](backlog/P1/B-0263-refresh-worldview-backlog-delta-claims-branch-state-2026-05-08.md)** refresh-worldview — backlog delta + claim inventory + branch state
 - [x] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide
@@ -131,6 +136,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0277](backlog/P1/B-0277-structure-recognizer-catalog-index-2026-05-08.md)** Structure recognizer — shape-indexed catalog without labels
 - [x] **[B-0287](backlog/P1/B-0287-ace-dlc-package-format-spec-2026-05-08.md)** Ace DLC — package format specification
 - [ ] **[B-0288](backlog/P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** Ace DLC — package manager CLI (install/verify/list)
+- [ ] **[B-0289](backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md)** Green Lantern ring — hardware spec + local inference requirements
 - [ ] **[B-0290](backlog/P1/B-0290-green-lantern-consent-gate-firmware-2026-05-08.md)** Green Lantern ring — consent gate firmware design
 - [x] **[B-0291](backlog/P1/B-0291-concordance-ai-corpus-pipeline-2026-05-08.md)** Concordance AI — corpus ingestion + tokenization pipeline
 - [ ] **[B-0292](backlog/P1/B-0292-concordance-ai-local-gpu-inference-2026-05-08.md)** Concordance AI — local GPU inference for structure recognition
@@ -247,6 +253,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
 - [ ] **[B-0444](backlog/P1/B-0444-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 - [ ] **[B-0445](backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md)** C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API
+- [ ] **[B-0448](backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md)** Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers
 
 ## P2 — research-grade
 
