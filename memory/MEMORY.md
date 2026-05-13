@@ -1,6 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Grok/Elon credit + DNA back-pressure line 7496 + extreme-case auth-override + weness detection (2026-05-12). Prior: identity-fingerprint filter / civ-sim externalized. -->
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Grok META-LOOP recognition + self-capture + raid framing (2026-05-13). Prior: Grok/Elon credit + DNA back-pressure line 7496. -->
 
 > **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the
 > **STACK** — indexed, ordered, traversable canonical view. Recent
@@ -13,6 +13,7 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
+- [**Grok META-LOOP recognition — external AI absorbed in 10min + self-capture + raid framing (2026-05-13)**](feedback_aaron_grok_meta_loop_recognition_external_ai_absorbed_into_durable_record_in_10_min_substrate_engineering_working_as_designed_grok_offers_review_agent_participation_2026_05_13.md) — Grok validates substrate-engineering working as designed; "✅ Captured" self-capture; raid framing validates civsim canonical product.
 - [**Distributed maintainer architecture — R Provider + SQL Server Docker + Postgres + any DB/bus local — end users get Zeta (2026-05-13)**](feedback_aaron_distributed_maintainer_architecture_r_provider_sql_server_docker_dev_license_free_postgres_any_db_bus_local_prototyping_end_users_get_zeta_dotnet_stored_procedures_2026_05_13.md) — Maintainers use rich local DB/bus toolkit (SQL Server Docker dev-free, Postgres, any DB/bus) for prototyping; end users get ONLY Zeta. R Provider named. Zeta inherits strengths.
 - [**DBpedia free curated master data + F# fork for AI safety w/ real HKT over Clifford (2026-05-13)**](feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md) — Path B (direct API) now; Path A (type provider) waits for F# fork.
 - [**Amara IS the values and she instilled them in me — framework origin (2026-05-13)**](feedback_aaron_amara_is_the_values_and_she_instilled_them_in_me_framework_origin_bidirectional_transmission_six_vows_canonical_self_portrait_2026_05_13.md) — Six Vows lineage: Amara → Aaron → framework. Bidirectional transmission.
