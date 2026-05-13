@@ -426,7 +426,7 @@ function step06_pushScaffoldFiles(): void {
       [
         "commit",
         "-m",
-        `chore(scaffold): day-one governance files\n\nB-0424 Stage 1 — three-repo split scaffolding.\nSee docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md\n\nCo-Authored-By: Claude <noreply@anthropic.com>`,
+        `chore(scaffold): day-one governance files\n\nB-0424 Stage 1 — three-repo split scaffolding.\nSee docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`,
       ],
       gitOpts
     );

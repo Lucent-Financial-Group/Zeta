@@ -25,11 +25,11 @@ For each repo, in order:
 | Step | Description |
 |------|-------------|
 | 01 | Create repo (public, squash-merge only, auto-merge, delete-branch) |
+| 06 | Push day-one governance files from `tools/scaffold/<name>/` — **runs before branch protection** so files can be pushed directly to `main` |
 | 02 | Apply branch protection on `main` (1 review, signed commits, linear history, no force-push) |
 | 03 | Enable secret scanning + push protection, Dependabot, private vulnerability reporting |
 | 04 | Enable CodeQL **default-setup** (required for `code_scanning` ruleset rule) |
 | 05 | Fork repo to `AceHack/<name>` |
-| 06 | Push day-one governance files from `tools/scaffold/<name>/` |
 | 07 | Print manual steps remaining (SVG preview, merge queue, Scorecard workflow) |
 
 ## Template files
