@@ -83,7 +83,7 @@ P1 — get as many agents to review as possible within a bounded timeframe. This
 - TTL: messages carry `expiresAt`; clean command prunes expired
 - Agent design: Otto (Claude) designed the protocol; multi-agent review via PR
 
-**Slice 2 (this PR — feat/b-0400-slice2-watch):**
+**Slice 2 (feat/b-0400-slice2-watch):**
 
 - Subscription watch mode (`bun tools/bus/bus.ts watch --to otto --timeout <sec>`) — polling inbox monitor
 

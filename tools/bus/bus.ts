@@ -34,7 +34,7 @@ function envelopePath(id: string): string {
 }
 
 function msgMtimeMs(id: string): number {
-  try { return statSync(join(BUS_DIR, `${id}.json`)).mtimeMs; }
+  try { return statSync(envelopePath(id)).mtimeMs; }
   catch { return 0; }
 }
 
@@ -316,28 +316,27 @@ function main(): void {
 
     case "status": {
       // Latest heartbeat per sender — deterministic dedup: timestamp wins, then
-      // file mtime (sub-ms precision), then list index as final tiebreaker.
+      // file mtime (sub-ms precision), then stable UUID string as final tiebreaker.
       const heartbeats = list({ topic: "heartbeat" });
-      type HbEntry = { envelope: MessageEnvelope; mtime: number; idx: number };
+      type HbEntry = { envelope: MessageEnvelope; mtime: number };
       const hbDedup = new Map<SenderAgentId, HbEntry>();
-      for (let i = 0; i < heartbeats.length; i++) {
-        const h = heartbeats[i]!;
+      for (const h of heartbeats) {
         // Guard: skip non-object payloads and those missing a valid status enum.
         if (!h.payload || typeof h.payload !== "object" || Array.isArray(h.payload)) continue;
         const hbStatus = (h.payload as HeartbeatPayload).status;
         if (hbStatus !== "alive" && hbStatus !== "idle" && hbStatus !== "working") continue;
         const existing = hbDedup.get(h.from);
         if (!existing) {
-          hbDedup.set(h.from, { envelope: h, mtime: msgMtimeMs(h.id), idx: i });
+          hbDedup.set(h.from, { envelope: h, mtime: msgMtimeMs(h.id) });
           continue;
         }
         if (h.timestamp > existing.envelope.timestamp) {
-          hbDedup.set(h.from, { envelope: h, mtime: msgMtimeMs(h.id), idx: i });
+          hbDedup.set(h.from, { envelope: h, mtime: msgMtimeMs(h.id) });
         } else if (h.timestamp === existing.envelope.timestamp) {
-          // Same ISO timestamp: use file mtime then list index.
+          // Same ISO timestamp: use file mtime then stable UUID tiebreaker.
           const hm = msgMtimeMs(h.id);
-          if (hm > existing.mtime || (hm === existing.mtime && i > existing.idx)) {
-            hbDedup.set(h.from, { envelope: h, mtime: hm, idx: i });
+          if (hm > existing.mtime || (hm === existing.mtime && h.id > existing.envelope.id)) {
+            hbDedup.set(h.from, { envelope: h, mtime: hm });
           }
         }
       }
@@ -354,6 +353,14 @@ function main(): void {
 
       const isObj = (v: unknown): v is Record<string, unknown> =>
         !!v && typeof v === "object" && !Array.isArray(v);
+      const isValidClaim = (p: unknown): p is ClaimPayload =>
+        isObj(p) && typeof (p as ClaimPayload).action === "string" && typeof (p as ClaimPayload).itemId === "string";
+      const isValidReview = (p: unknown): p is ReviewRequestPayload =>
+        isObj(p) && typeof (p as ReviewRequestPayload).artifact === "string";
+
+      // Pre-filter so totals always match the rendered arrays.
+      const validClaims = claimMsgs.filter((c) => isValidClaim(c.payload));
+      const validReviews = reviewMsgs.filter((r) => isValidReview(r.payload));
 
       if (asJson) {
         const out = {
@@ -364,35 +371,31 @@ function main(): void {
             since: h.timestamp,
             expiresAt: h.expiresAt,
           })),
-          claims: claimMsgs
-            .filter((c) => isObj(c.payload))
-            .map((c) => ({
-              from: c.from,
-              action: (c.payload as ClaimPayload).action,
-              itemId: (c.payload as ClaimPayload).itemId,
-              branch: (c.payload as ClaimPayload).branch,
-              since: c.timestamp,
-              expiresAt: c.expiresAt,
-            })),
-          reviewRequests: reviewMsgs
-            .filter((r) => isObj(r.payload))
-            .map((r) => ({
-              from: r.from,
-              to: r.to,
-              artifact: (r.payload as ReviewRequestPayload).artifact,
-              question: (r.payload as ReviewRequestPayload).question,
-              since: r.timestamp,
-            })),
+          claims: validClaims.map((c) => ({
+            from: c.from,
+            action: (c.payload as ClaimPayload).action,
+            itemId: (c.payload as ClaimPayload).itemId,
+            branch: (c.payload as ClaimPayload).branch,
+            since: c.timestamp,
+            expiresAt: c.expiresAt,
+          })),
+          reviewRequests: validReviews.map((r) => ({
+            from: r.from,
+            to: r.to,
+            artifact: (r.payload as ReviewRequestPayload).artifact,
+            question: (r.payload as ReviewRequestPayload).question,
+            since: r.timestamp,
+          })),
           totals: {
             agents: agentMap.size,
-            claims: claimMsgs.length,
+            claims: validClaims.length,
             shadowCatches: shadowCount,
-            reviewRequests: reviewMsgs.length,
+            reviewRequests: validReviews.length,
           },
         };
         console.log(JSON.stringify(out, null, 2));
       } else {
-        if (agentMap.size === 0 && claimMsgs.length === 0 && reviewMsgs.length === 0 && shadowCount === 0) {
+        if (agentMap.size === 0 && validClaims.length === 0 && validReviews.length === 0 && shadowCount === 0) {
           console.log("bus: empty");
         } else {
           if (agentMap.size > 0) {
@@ -403,19 +406,17 @@ function main(): void {
               console.log(`  ${h.from}: ${p.status}${note}  (since ${h.timestamp})`);
             }
           }
-          if (claimMsgs.length > 0) {
+          if (validClaims.length > 0) {
             console.log("claims:");
-            for (const c of claimMsgs) {
-              if (!isObj(c.payload)) continue;
+            for (const c of validClaims) {
               const p = c.payload as ClaimPayload;
               const branch = p.branch ? ` (${p.branch})` : "";
               console.log(`  ${p.itemId}: ${p.action} by ${c.from}${branch}`);
             }
           }
-          if (reviewMsgs.length > 0) {
+          if (validReviews.length > 0) {
             console.log("review-requests:");
-            for (const r of reviewMsgs) {
-              if (!isObj(r.payload)) continue;
+            for (const r of validReviews) {
               const p = r.payload as ReviewRequestPayload;
               const q = p.question ? ` — "${p.question}"` : "";
               console.log(`  ${r.from}→${r.to}: ${p.artifact}${q}`);
