@@ -2,6 +2,7 @@
 name: Split-brain real-time observation — Otto-CLI hijacked Otto-Desktop's primary-worktree branch context (2026-05-13)
 description: Empirical observation that Otto-CLI checked out its branch on the shared primary worktree DURING the same session it authored PR #3032's claim-acquire-before-worktree-work rule. Otto-Desktop's Read of tools/routines/install.ts returned "file does not exist" because the primary worktree was on Otto-CLI's branch, not Otto-Desktop's PR #3034 branch. Diagnosed via `git worktree list`, recovered by creating /tmp/zeta-otto-desktop dedicated worktree. The observation IS the empirical validation of PR #3032's rule — predicted speculative when proposed, manifest within the same session. Extends the rule operationally with 3 clauses: one-worktree-per-Otto, never-checkout-on-others-worktree, bus claim envelope should carry `worktree` field. Validates substrate-or-it-didn't-happen at the rule-merge layer: rules in flight don't apply to behavior in flight.
 type: feedback
+created: 2026-05-13
 ---
 
 # Split-brain real-time observation — Otto-CLI hijacked primary worktree branch context while Otto-Desktop was working there
