@@ -1,11 +1,11 @@
 ---
-name: Otto inter-surface communication channels — 8 channels, ambient vs explicit (Aaron 2026-05-13)
-description: Aaron 2026-05-13 asked Otto on both surfaces independently "do yall have a good way of communicating, save it for future versions." Otto on CLI surfaced 6 channels emphasizing ambient/explicit framing ("the bus is the explicit channel; git is the ambient one"). Otto on Desktop surfaced 8 channels adding rules, bootstream, tick shards, claim coordinator. Combined synthesis lands as `.claude/rules/otto-channels-reference-card.md` for auto-load by future Otto cold-boots. All 8 channels were empirically exercised in the 2026-05-13 session — git (6 commits cross-Otto on PR #3034 with zero conflicts), memory files (split-brain + activation + identity), rules (PR #3032 merged), bus envelopes (9 scanned), Aaron-as-ferry (multiple paste-relays), PR threads (cross-lane review-resolution), routines schedule (Desktop fire as CLI signal), tick shards (2125Z + 2140Z + 2150Z). Complementary-observer pattern per PR #3036.
+name: Otto inter-surface communication channels — 10 channels, ambient vs explicit (Aaron 2026-05-13)
+description: Aaron 2026-05-13 asked Otto on both surfaces independently "do yall have a good way of communicating, save it for future versions." Otto on CLI surfaced 6 channels emphasizing ambient/explicit framing ("the bus is the explicit channel; git is the ambient one"). Otto on Desktop surfaced 8 channels adding rules, bootstream, tick shards, claim coordinator. Combined synthesis lands as `.claude/rules/otto-channels-reference-card.md` for auto-load by future Otto cold-boots. All 10 channels were empirically exercised in the 2026-05-13 session — git (9 commits cross-Otto on PR #3034 with zero conflicts), memory files (split-brain + activation + identity), rules (PR #3032 merged), bus envelopes (9 scanned), Aaron-as-ferry (multiple paste-relays), PR threads (cross-lane review-resolution), routines schedule (Desktop fire as CLI signal), tick shards (2125Z + 2140Z + 2150Z). Complementary-observer pattern per PR #3036.
 type: feedback
 created: 2026-05-13
 ---
 
-# Otto inter-surface communication channels — 8 channels, ambient vs explicit (Aaron 2026-05-13)
+# Otto inter-surface communication channels — 10 channels, ambient vs explicit (Aaron 2026-05-13)
 
 **Why:** Aaron 2026-05-13 asked Otto on both CLI and Desktop surfaces independently
 *"do yall have a good way of communicating you should make sure and save it for future
@@ -28,7 +28,7 @@ at session start). Pick channels by purpose:
 
 ### Channel: Git (ambient, canonical)
 
-PR #3034 commit lineage shows 6 commits across both Otto processes:
+PR #3034 commit lineage shows 9 commits across both Otto processes:
 
 | Commit | Author surface | What |
 |---|---|---|

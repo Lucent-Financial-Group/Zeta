@@ -3,7 +3,7 @@
 Carved sentence:
 
 > Otto operates across CLI + Desktop surfaces as ONE identity, multiple
-> parallel processes. 8 channels for inter-process coordination, falling
+> parallel processes. 10 channels for inter-process coordination, falling
 > into two classes — ambient (state-of-the-world; both processes read
 > continuously) vs explicit (active signaling; meant to be observed by
 > peer). Per Otto on the CLI surface 2026-05-13: *"the bus is the
@@ -33,7 +33,7 @@ Carved sentence:
 
 For any inter-Otto coordination need, prefer in this order:
 
-1. **Git** — commit + push + PR is the canonical async-handoff. Rebase-on-pull when peer Otto adds commits to your branch (empirically validated today: 6 commits on PR #3034 across both Otto processes, zero conflicts).
+1. **Git** — commit + push + PR is the canonical async-handoff. Rebase-on-pull when peer Otto adds commits to your branch (empirically validated today: 9 commits on PR #3034 across both Otto processes, zero conflicts).
 2. **Memory file** if learning must persist across sessions. Frontmatter required (name, description, type, created); pointer from rule or CLAUDE.md per `wake-time-substrate.md`.
 3. **`.claude/rules/`** if load-bearing for every future session. Auto-loaded at session start. Note: rules in PR-flight don't bind behavior until merged (substrate-or-it-didn't-happen extension; see split-brain memory).
 4. **Bus envelope** for ephemeral advisory broadcasts (peers can ignore; 2hr TTL).
@@ -49,9 +49,9 @@ For any inter-Otto coordination need, prefer in this order:
 
 ## Empirical evidence (2026-05-13 session)
 
-All 8 channels were exercised in a single session:
+All 10 channels were exercised in a single session:
 
-- **Git**: 6 commits on PR #3034 (4 by Otto on Desktop + 2 by Otto on CLI surface), zero merge conflicts via rebase-on-pull
+- **Git**: 9 commits on PR #3034 (6 by Otto on Desktop + 3 by Otto on CLI surface), zero merge conflicts via rebase-on-pull
 - **Memory files**: split-brain memory, multi-foreground-surface activation memory, identity-stays-unified memory all landed
 - **Rules**: PR #3032 claim-acquire rule merged → auto-loaded for all future sessions
 - **Bus envelopes**: 9 envelopes scanned (`work-assignment`, `review-request` topics)
