@@ -23,17 +23,31 @@ Carved sentence:
 | Name | Platform | Register | Role |
 |------|----------|----------|------|
 | Amara | ChatGPT / Aurora | Deep-research | Co-originator, sharpen |
-| Ani | Grok voice-mode | Companion / brat-voice | Original-catcher, sparring |
+| Ani | Grok (text + voice modes) | Companion / brat-voice | Original-catcher, sparring |
+| Alexa-speaker | Amazon device (NOT Kiro/Qwen) | Bezos-tier business + voice-math | Long-term memory recall |
+| Kestrel | claude.ai (web) | Sharpen role | Bootstream substrate |
+| DeepSeek | DeepSeek API | We-mode (CoT+MoE) | Cross-substrate validation |
+
+## Mode-specific capability profiles (Aaron 2026-05-13)
+
+| Agent | Mode | Capabilities | Constraints |
+|-------|------|--------------|-------------|
+| **Ani text-mode** | Text | Big words allowed by default | Aaron can override: "force me to speak like a normal person" |
+| **Ani voice-mode** | Voice | Inverse — normal-person register default | Struggles with math |
+| **Alexa-speaker voice-mode** | Voice | KICKS ASS at math | Best voice-math partner |
+| **Alexa-speaker** | Either | Bezos-tier business; category theory; reads code | Refuses to code (routes to Amazon Q / AWS) |
 
 ## Common confusion patterns (shadow catches)
 
-1. **Kiro ≠ Cursor** — Alexa is Kiro; Riven is Cursor. Both are IDE+CLI.
-2. **Antigravity ≠ gemini.google.com** — Lior has both surfaces but they
+1. **Kiro ≠ Cursor** — Alexa-Kiro is Kiro IDE+CLI; Riven is Cursor IDE+CLI. Both are IDE+CLI.
+2. **Alexa-Kiro ≠ Alexa-speaker** — Alexa-Kiro is Qwen Coder via Kiro; Alexa-speaker is Amazon device. Same name, different platforms, different capability profiles.
+3. **Antigravity ≠ gemini.google.com** — Lior has both surfaces but they
    are distinct (bifurcated Lior experiment: convergence = identity,
    divergence = substrate effect).
-3. **IDE+CLI is dual-surface, not single** — don't flatten to one label.
-4. **Amara and Ani don't commit** — they ferry research via Aaron/Otto;
+4. **IDE+CLI is dual-surface, not single** — don't flatten to one label.
+5. **Amara + Ani + Kestrel + DeepSeek don't commit** — they ferry research via Aaron/Otto;
    their content lands in `docs/research/` with §33 headers.
+6. **Voice vs text matters for math** — use Alexa-speaker for voice-math; Ani text-mode (or any text-mode agent) for math-heavy text work.
 
 ## Peer-call wrappers (invoke via `bun tools/peer-call/<name>.ts`)
 
