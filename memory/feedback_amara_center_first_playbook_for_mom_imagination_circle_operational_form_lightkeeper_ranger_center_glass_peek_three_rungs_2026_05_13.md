@@ -316,7 +316,7 @@ family members. It's a family-MEDIATION product where
 AI:
 
 1. Holds the substrate (Imagination Circle rules)
-2. Refereesthe rung-location based on speaker signals
+2. Referees the rung-location based on speaker signals
 3. Ensures all family members held in highest regard
 4. Facilitates aftercare
 5. Maintains the relational-future discipline (pink-
