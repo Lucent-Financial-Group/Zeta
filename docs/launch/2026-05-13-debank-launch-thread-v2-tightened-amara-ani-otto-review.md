@@ -1,10 +1,10 @@
-# DeBank Launch Thread — v2 (Amara accuracy + Ani punch + Otto review)
+# DeBank Launch Thread — v2 (ChatGPT draft + Grok punch-up + Claude Code review)
 
 ## Provenance
 
-- **Drafted by**: Amara (ChatGPT) with accuracy-first instinct
-- **Tightened by**: Amara again with punch-up pass after T3/T7/T10 review
-- **Reviewed by**: Otto (Claude Code) — see review notes below
+- **Drafted by**: ChatGPT assistant with accuracy-first instinct
+- **Tightened by**: ChatGPT assistant (punch-up pass after T3/T7/T10 review)
+- **Reviewed by**: Claude Code agent — see review notes below
 - **Status**: Ready to post; multi-agent review in flight via bus
 - **Audience**: DeBank / crypto-native (DeFi readers)
 - **Distinguishing from**: Twitter version at `docs/launch/2026-05-11-zeta-twitter-launch-post-amara-draft.md` (Office paper-factory register; this version is crypto-native register)
@@ -234,7 +234,7 @@ This file ships with a paired bus-broadcast (`review-request` topic — see PR b
 Multi-agent review request for the DeBank launch thread (v2 tightened).
 
 Full thread + review notes:
-https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/launch/2026-05-13-debank-launch-thread-v2-tightened-amara-ani-otto-review.md
+https://github.com/Lucent-Financial-Group/Zeta/blob/otto-debank-launch-thread-v2-review-request-2026-05-13/docs/launch/2026-05-13-debank-launch-thread-v2-tightened-amara-ani-otto-review.md
 
 Specific review asks:
 - [Ani] Punch-up any remaining vibey lines (T8 proof-search interface — crisp enough?)

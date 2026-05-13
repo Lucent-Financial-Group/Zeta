@@ -60,8 +60,13 @@ Otto's local commit would push and either:
 2. `git fetch origin <branch>`
 3. Check `git log origin/<branch> -3` for new commits
 4. If remote ahead with **identical-scope fix already committed locally** →
+   verify `git status --porcelain` is empty first (clean working tree +
+   index is a hard precondition); then
    `git reset --hard origin/<branch>` is safe (your work is preserved in
-   the reflog if you need to recover it via `git reflog`)
+   the reflog if you need to recover it via `git reflog`).
+   **In multi-task agent sessions** where another task may have
+   staged files: stash first (`git stash --include-untracked`) before
+   the reset, then `git stash pop` after to avoid silent data loss.
 5. If remote ahead with different-scope work → `git merge origin/<branch>`
    or `git rebase origin/<branch>`; layer my fix additively
 6. Push only if local has unique content remote doesn't have
