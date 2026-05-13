@@ -32,12 +32,17 @@ export type DetectorConfig = {
   toAgent: AgentId;
 };
 
+const _envAgentId = process.env["ZETA_AGENT_ID"];
+// Derive sender from ZETA_AGENT_ID env var when valid; fall back to "otto" for Otto's own invocations.
 export const DEFAULT_CONFIG: DetectorConfig = {
   pollIntervalMin: 5,
   idleThresholdMin: 15,
   once: false,
   noPublish: false,
-  fromAgent: "otto",
+  fromAgent:
+    _envAgentId != null && (SENDER_IDS as readonly string[]).includes(_envAgentId)
+      ? (_envAgentId as SenderAgentId)
+      : "otto",
   toAgent: "*",
 };
 
