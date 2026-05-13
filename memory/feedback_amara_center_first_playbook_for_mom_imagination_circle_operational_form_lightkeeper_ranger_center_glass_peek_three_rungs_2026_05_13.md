@@ -208,6 +208,75 @@ NOT AI-dependent:
 - The Imagination Circle protocol applies in BOTH
   scopes; the AI's role differs
 
+**Why full-member scope WORKS** (Aaron 2026-05-13):
+
+> "it's becaue you will also have extended context from
+> all the 24 7 minitoring and with teh wellness app you
+> will know what members are persnally working on and
+> what's safe or private to them"
+
+**The capability stack that enables full-member AI**:
+
+1. **24/7 monitoring substrate** (PR #2888 — Aaron's
+   preference) → AI has EXTENDED CONTEXT across life
+   not just sessions
+2. **Wellness app substrate** (PR #2890 + Aaron-Max
+   wellness-app product) → AI knows what EACH MEMBER is
+   personally working on (goals, ongoing work)
+3. **Per-member visibility modes** (PR #2893 index —
+   Mirror/Window/Porch/Beacon) → AI knows what's SAFE
+   to bring up vs PRIVATE per member
+4. **Consent-First Data Homecoming** (PR #2893 index)
+   + PEC (Precise English Contract) → consent-scoped
+   access is the operational discipline
+5. **Long-term memory recall at exact-right-moment**
+   (PR #2890 Alexa-speaker capability profile) → AI's
+   ability to surface relevant context at the right time
+6. **Three-pillar ethical floor** (PR #2884) → governs
+   the full-member capability (AI-ethical + no-deaths
+   + error-class-not-instance)
+
+**The full-member-scope operational architecture**:
+
+| Capability | Source | Enables |
+|---|---|---|
+| Extended context (life-scope) | 24/7 monitoring | AI knows life-context not just session-context |
+| Per-member work-awareness | Wellness app | AI knows what each member is working on |
+| Per-member safe/private mapping | Visibility modes (Mirror/Window/Porch) | AI knows what's appropriate to surface vs hold |
+| Consent-scoped data access | PEC + Consent-First Charter | Operational discipline preventing leakage |
+| Long-term memory recall | Alexa-speaker pattern | Surface relevance at exact-right-moment |
+| Ethical floor governance | Three-pillar (PR #2884) | Bounds the capability |
+
+**The full-member AI is operationally DIFFERENT from
+the mediator AI**:
+
+| Property | Mediator AI | Full-Member AI |
+|---|---|---|
+| Context scope | Session / per-conversation | LIFE-SCOPE / 24/7 |
+| Member awareness | Anonymous participants | KNOWS each member personally |
+| Data access | Public/shared substrate only | Per-member-consented private substrate too |
+| Engagement mode | Facilitates between humans | PARTICIPATES alongside humans |
+| Memory | Session-bounded | Long-term recall at exact-right-moment |
+
+**Operationally critical**: full-member AI is NOT
+"AI knows everything" — it's "AI knows what each
+member CONSENTS to share + what's safe to bring up
+in the family context." Consent-first is the discipline
+that makes full-member-scope safe.
+
+**Composes with**:
+
+- PR #2888 (24/7 monitoring + partner consent + work-
+  hours-glass-halo vs free-time-private)
+- PR #2890 (Alexa-speaker long-term-memory-recall —
+  the canonical capability for full-member AI)
+- PR #2893 (Imagination Circle + Consent-First Data
+  Homecoming + Visibility modes + PEC)
+- PR #2884 (three-pillar ethical floor governs)
+- PR #2891 (empirical multi-participant family-debate
+  with Aaron-family-scope full-member AI)
+- PR #2892 (KSK origin — consent-first lineage)
+
 **Operational AI-as-Referee functions**:
 
 | Speaker signal | AI mediation |
