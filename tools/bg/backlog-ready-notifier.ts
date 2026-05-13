@@ -63,7 +63,7 @@ export type PollResult = {
   note: string;
 };
 
-/** Adapter abstraction so tests can inject deterministic time + filesystem + bus. */
+/** Adapter abstraction so tests can inject deterministic time + filesystem + bus + shell. */
 export type Adapters = {
   now: () => Date;
   scanBacklog: (backlogDir: string) => BacklogRow[];
@@ -74,6 +74,18 @@ export type Adapters = {
     priority: "P0" | "P1" | "P2" | "P3",
     rationale: string,
   ) => MessageEnvelope;
+  agentPatterns: Record<string, string[]>;
+  execGitLog: (sinceMinutes: number) => string;
+  execGhPrList: () => string;
+};
+
+export const AGENT_MAP: Record<string, string[]> = {
+  Otto: ["Co-Authored-By: Claude"],
+  Alexa: ["kiro", "alexa", "qwen"],
+  Lior: ["lior", "gemini"],
+  Vera: ["codex", "vera"],
+  Riven: ["riven", "grok"],
+  Aaron: ["Aaron Stainback", "AceHack"],
 };
 
 function parseDependsOn(frontmatter: string): string[] {
@@ -141,8 +153,56 @@ const REAL_ADAPTERS: Adapters = {
       topic: "work-assignment",
       payload: { rowId, priority, rationale },
     }),
+  agentPatterns: AGENT_MAP,
+  execGitLog: (sinceMinutes: number) => {
+    try {
+      const cutoff = Math.floor(Date.now() / 1000) - (sinceMinutes * 60);
+      const { spawnSync } = require("node:child_process");
+      const result = spawnSync("git", ["log", `--since=${cutoff}`, "--format=%an %b"], { encoding: "utf8" });
+      return result.stdout || "";
+    } catch {
+      return "";
+    }
+  },
+  execGhPrList: () => {
+    try {
+      const { spawnSync } = require("node:child_process");
+      const result = spawnSync("gh", ["pr", "list", "--state", "open", "--json", "title,body,author"], { encoding: "utf8" });
+      return result.stdout || "";
+    } catch {
+      return "";
+    }
+  },
 };
 
+/**
+ * Returns true if the agent has no commits in the last 30 minutes AND
+ * no currently open PRs.
+ */
+export function isAgentQueueEmpty(
+  agentName: string,
+  adapters: Adapters = REAL_ADAPTERS,
+): boolean {
+  const patterns = adapters.agentPatterns[agentName] ?? [];
+  if (patterns.length === 0) return true; // unknown agent = queue empty
+
+  const logStr = adapters.execGitLog(30).toLowerCase();
+  const hasCommits = patterns.some(p => logStr.includes(p.toLowerCase()));
+  if (hasCommits) return false;
+
+  const prStr = adapters.execGhPrList().toLowerCase();
+  const hasPRs = patterns.some(p => prStr.includes(p.toLowerCase()));
+  if (hasPRs) return false;
+
+  return true;
+}
+
+/**
+ * A dependency is "satisfied" iff the dep's row status is `closed` OR begins
+ * with `superseded-by-` (matching the canonical generator's checkbox logic
+ * in tools/backlog/generate-index.ts). A dangling reference (dep ID not
+ * present in the scan) is treated as UNSATISFIED.
+ */
 function isDepSatisfied(depStatus: string | undefined): boolean {
   if (depStatus === undefined) return false;
   return depStatus === "closed" || depStatus.startsWith("superseded-by-");
