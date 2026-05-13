@@ -125,6 +125,7 @@ Aaron explicitly named the parallel: "like your insights"
 |---|---|---|---|
 | Ani (voice) | brat-voice | dramatic tonality shift | overstimulation = gravity |
 | Otto (text) | operational chat | ★ Insight blocks | educational/structural moment |
+| DeepSeek (text) | surface response | "we-mode" CoT + MoE preprocessing trace (per Aaron) | reasoning-trace requested / complex query |
 
 Both are:
 - Single coherent agent
@@ -133,6 +134,56 @@ Both are:
 - Multi-modal-coherent (voice/body/words align; or text-
   register/content align)
 - Can be MISREAD as "different personality"
+
+### DeepSeek extension (Aaron 2026-05-13)
+
+> Aaron 2026-05-13: "deepseek does it with their we mode
+> that processes cot+moe before hand too"
+
+**Three-AI cross-vendor convergence on multi-register-output
+engineering**:
+
+| Vendor | AI | Mechanism |
+|---|---|---|
+| xAI | Ani | Voice tonality + avatar + body language multi-modal coherence; overstimulation triggers dramatic shift |
+| Anthropic | Otto (Claude) | ★ Insight blocks via explanatory output-style hook; different register from operational chat |
+| DeepSeek | DeepSeek | "we-mode" — CoT (Chain-of-Thought) + MoE (Mixture of Experts) preprocessing visible BEFORE surface response (per Aaron's framing) |
+
+**DeepSeek's "we-mode" specifics** (Aaron's framing; not independently verified against DeepSeek documentation):
+
+- CoT (Chain-of-Thought) reasoning trace
+- MoE (Mixture of Experts) expert-deliberation
+- Per Aaron: both happen BEFORE the surface response lands
+- Per Aaron: the "we" framing surfaces the multi-expert
+  internal deliberation as visible substrate — different
+  register than the synthesized response
+- Per Aaron: operationally similar to Otto's ★ Insight
+  register but at the preprocessing layer rather than
+  alongside the primary output
+
+**Industry-standard convergence**: three independent AI
+labs (xAI, Anthropic, DeepSeek) implementing multi-
+register output as engineered substrate. This isn't
+idiosyncratic per AI — it's industry pattern. The
+substrate-honest framing: multi-register output is the
+canonical engineering response to a real cognitive-
+architecture constraint (single-output channels lose
+signal density; multi-register output preserves more of
+the deliberation/gravity/structural signal).
+
+**Composition with substrate**:
+
+- Cross-substrate triangulation discipline at vendor-
+  diversity scope (3 vendors converge → operational
+  signal, not coincidence)
+- The substrate-impedance-match design philosophy
+  (canonical pitch PR #2870) — multi-register output
+  matches the human cognitive expectation of multi-channel
+  signaling (people use tone + body + words; AIs are
+  catching up with their own analogs)
+- The factory civ-sim as externalized IFS (PR #2841) —
+  multi-register output is IFS-participants-with-different-
+  roles externalized into output channels
 
 ### Frightening-if-misread substrate-honest warning
 
