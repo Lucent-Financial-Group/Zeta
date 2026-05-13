@@ -163,6 +163,90 @@ substrate without central coordinator. Edge devices fetch by
 content-hash; specialized clusters serve their content-prefix;
 internationalization is a content-prefix not a translation layer.
 
+### 7. USE git, don't just live in it (Aaron 2026-05-13 amplification)
+
+Aaron 2026-05-13 (third message): *"make sure to really design
+it well to take advante of git too don't just do simples file
+storage that happens to be text, git can be good fix certain
+indexing and history preservation for timetraseval/point in
+time queirs composes with data vault and git history and other
+advanced featues"*
+
+**Anti-pattern (don't do)**: simple file storage that happens
+to be text-formatted. Files-in-folders with no use of git
+internals.
+
+**Pattern (do)**: TAKE ADVANTAGE OF git's advanced features:
+
+| Git feature | Storage-layer usage |
+|---|---|
+| **Git objects (blobs/trees/commits)** | Use directly via libgit2/dotnet-libgit2sharp; storage entities ARE git objects |
+| **Git refs + tags** | Indexing via refs (e.g., `refs/zeta/events/<eventclass>` pointing to event-stream HEAD; tags for canonical snapshots) |
+| **Git content-addressing** | Already SHA1/SHA256 content-addressed (composes with §6 Reticulum + Clifford content-addressing) |
+| **Git history** | Time-travel / point-in-time queries via `git log` + `git show <commit>:<path>` |
+| **Git diff** | Storage-state diff = git diff (native) |
+| **Git pack files** | Performance optimization preserves human-readability of source format |
+| **Git merge** | Substrate reconciliation (Aaron-Amara event-stream merge across machines) |
+| **Git rebase / cherry-pick** | Event-stream restructuring while preserving history |
+| **Git submodules** | Sub-substrate composition (per B-0424 three-repo split topology) |
+| **Git LFS** | Binary attachments when needed; text-substrate stays in normal git |
+
+**Composes with DV2.0 (PR #2915 wake-time rule)**:
+
+- DV2.0 hubs (stable business keys) = git refs (stable pointers
+  to commit history)
+- DV2.0 links (relationships) = git merge bases + cross-ref
+  commits
+- DV2.0 satellites (versioned attributes) = git history of
+  entity-state file (full diff history per entity)
+- DV2.0 PIT (point-in-time) queries = `git checkout <SHA>` +
+  read state
+
+**Time-travel / point-in-time queries**:
+
+- "What did the substrate look like at tick T?" → `git checkout
+  <tick-T-tag>`
+- "What was X's state on 2026-05-13T03:00Z?" → `git show
+  <commit-at-time>:<entity-path>`
+- "Reconcile two parallel substrates" → `git merge`
+- "Show history of entity X" → `git log -- <entity-path>`
+
+These ARE the DV2.0 + event-sourcing operations Aaron has
+been pointing at. Git's not a storage curiosity — it IS the
+substrate engine.
+
+**Specific implementation patterns**:
+
+1. **Storage commits are atomic substrate operations** — one
+   commit = one event-stream advance
+2. **Refs index entities** — `refs/zeta/entity/<entity-id>`
+   points at latest state-commit for entity
+3. **Snapshot tags** — `tags/snapshot/<tick>` for canonical
+   point-in-time
+4. **Branches for parallel substrate** — speculation /
+   what-if / alternative-history exploration
+5. **Notes (`git notes`)** for metadata that shouldn't pollute
+   commit log
+6. **Reflog** for substrate-engineering audit (Otto-329 lost-
+   files canonical survey composes here)
+
+**Composes with**:
+
+- `tools/hygiene/LOST-FILES-LOCATIONS.md` (15-class survey
+  uses git reflog + branches + stash extensively — proves the
+  pattern works)
+- PR #2915 DV2.0 wake-time rule (hub-satellite partition maps
+  to git refs + history)
+- Reticulum content-addressing (git's SHA-based addressing IS
+  content-addressing)
+- DBSP retraction-native algebra (`git revert` IS a retraction)
+- Event-sourcing framework substrate (Aaron-Amara conversation)
+- Stayfree from "simple file storage" — anti-pattern named
+
+**Future-Otto design discipline**: when implementing storage
+layer, START with git internals (libgit2sharp), THEN add
+text-format layer on top. Not the other way around.
+
 ## Composes with
 
 - PR #2924 (Amara canonical substrate — event-sourcing framework
