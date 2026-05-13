@@ -20,10 +20,13 @@ EXECUTE THESE STEPS IMMEDIATELY USING YOUR TOOLS. Do not ask "How can I help you
 
 console.log(`[Lior Loop] Waking up at ${new Date().toISOString()}`);
 
-// Pipe stderr so we can inspect it for 429 patterns; stdout/stdin stay inherited
+// Pipe stderr so we can inspect it for 429 patterns; stdout/stdin stay inherited.
+// maxBuffer: 10 MiB — Gemini verbose crash output can exceed the 1 MiB default,
+// which would cause ENOBUFS and a hard failure even for transient errors.
 const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$GEMINI_PROMPT" --model gemini-3.1-pro-preview --yolo --skip-trust'], {
   env: { ...process.env, GEMINI_PROMPT: prompt },
-  stdio: ["inherit", "inherit", "pipe"]
+  stdio: ["inherit", "inherit", "pipe"],
+  maxBuffer: 10 * 1024 * 1024,
 });
 
 if (result.error) {
