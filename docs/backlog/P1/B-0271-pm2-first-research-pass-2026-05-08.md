@@ -29,7 +29,7 @@ Research doc: `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pa
 
 6 gaps identified:
 
-- Gap 1 — Getting-started guide → **B-0444** (new P1)
+- Gap 1 — Getting-started guide → **B-0450** (new P1; renumbered from B-0444 on 2026-05-13 due to ID collision with the bus-envelope-worktree-field row shipped via PR #3043)
 - Gap 2 — C# fluent operator surface → **B-0445** (new P1)
 - Gap 3 — Lean 4 formal proof completion → **B-0446** (new P2)
 - Gap 4 — NuGet package metadata → **B-0447** (new P2)

@@ -1,5 +1,5 @@
 ---
-id: B-0444
+id: B-0450
 priority: P1
 status: open
 title: "Getting-started guide for Zeta library consumers — quickstart doc + sample project"
@@ -7,12 +7,14 @@ type: friction-reducer
 origin: PM-2 gap-prediction pass (B-0271) 2026-05-13
 created: 2026-05-13
 last_updated: 2026-05-13
+renumbered_from: B-0444
+renumbered_reason: "ID collision with separate B-0444 row (docs/backlog/P2/B-0444-bus-claim-envelope-worktree-field-...md, shipped via PR #3043). Per first-merged-wins, that row kept B-0444; this row renumbered to next-available B-0450 on 2026-05-13."
 depends_on: []
 composes_with: [B-0154, B-0445]
 tags: [consumer-ux, getting-started, quickstart, documentation, onboarding, csharp, samples]
 ---
 
-# B-0444 — Getting-started guide for library consumers
+# B-0450 — Getting-started guide for library consumers
 
 ## PM-2 signal
 
