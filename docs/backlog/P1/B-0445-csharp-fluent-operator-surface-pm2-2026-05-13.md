@@ -8,7 +8,7 @@ origin: PM-2 gap-prediction pass (B-0271) 2026-05-13
 created: 2026-05-13
 last_updated: 2026-05-13
 depends_on: []
-composes_with: [B-0444]
+composes_with: [B-0449]
 tags: [csharp, api-surface, fluent, operator, consumer-ux, dotnet]
 ---
 

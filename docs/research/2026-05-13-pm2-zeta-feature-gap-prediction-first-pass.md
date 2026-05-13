@@ -38,7 +38,7 @@
 - **Kill criteria:** if the Aurora pitch / factory-demo demo-path already covers this
   consumer moment, promote that as the canonical quickstart instead of creating a
   parallel doc.
-- **New backlog row:** B-0444
+- **New backlog row:** B-0449 (renumbered from B-0444 on 2026-05-13 to resolve collision with P2 B-0444 bus-claim-envelope-worktree-field)
 
 ---
 
@@ -193,7 +193,7 @@
 
 | Gap | Type | New row | Existing row | Priority |
 |-----|------|---------|-------------|----------|
-| Getting-started guide | UX / adoption | B-0444 | — | P1 |
+| Getting-started guide | UX / adoption | B-0449 | — | P1 |
 | C# fluent operator surface | API surface | B-0445 | — | P1 |
 | Lean 4 formal proof completion | Verification | B-0446 | — | P2 |
 | NuGet package metadata | Discoverability | B-0447 | — | P2 |
@@ -205,5 +205,5 @@
 ## Methodology note
 
 Surface-first discipline: every gap was checked against the existing 544 backlog rows
-before filing. New rows B-0444..B-0447 were verified as net-new coverage. Gaps 5 and 6
+before filing. New rows B-0445..B-0447 + B-0449 (originally filed as B-0444, renumbered to resolve collision) were verified as net-new coverage. Gaps 5 and 6
 point to existing rows rather than inflating the backlog.
