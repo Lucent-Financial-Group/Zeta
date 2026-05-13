@@ -1,7 +1,7 @@
 ---
 id: B-0421
 priority: P2
-status: open
+status: closed
 title: "Grok peer-call failure — cursor-agent exit 1 during multi-agent review"
 created: 2026-05-11
 last_updated: 2026-05-13
@@ -10,37 +10,46 @@ composes_with: []
 type: friction-reducer
 ---
 
-## Progress 2026-05-13
+## Progress 2026-05-13 — ALL 4 ACCEPTANCE CRITERIA CLOSED
 
 - **Acceptance criterion 3** (surface cursor-agent errors more
-  visibly) ADDRESSED: `tools/peer-call/grok.ts` now captures
-  cursor-agent's stderr (was previously inherited; streaming-only
-  visibility) and, on the empty-stdout + failure case, writes a
-  **self-documenting failure marker** to the output file containing
-  exit code (or signal name / spawn-error placeholder when
-  applicable) + model + prompt size + spawn-error message +
-  captured stderr. Format matches `parsed.outputFormat` (Markdown
-  for text, JSON for json, NDJSON for stream-json) so consumers
-  don't break on mixed formats. The output file is no longer
-  silently empty on cursor-agent failure. Trade-off: stderr is now
-  delivered post-exit (mirrored to caller stderr after spawnSync
-  returns), not in real-time — long-running hangs lose live stderr
-  streaming. Acceptable for the observability gain on the typical
-  exit-1 failure mode (which delivers stderr quickly).
+  visibly) ADDRESSED via PR #2949: `tools/peer-call/grok.ts` now
+  captures cursor-agent's stderr (was previously inherited;
+  streaming-only visibility) and, on the empty-stdout + failure
+  case, writes a **self-documenting failure marker** to the output
+  file containing exit code (or signal name / spawn-error
+  placeholder when applicable) + model + prompt size + spawn-error
+  message + captured stderr. Format matches `parsed.outputFormat`
+  (Markdown for text, JSON for json, NDJSON for stream-json) so
+  consumers don't break on mixed formats. The output file is no
+  longer silently empty on cursor-agent failure. Trade-off:
+  stderr is now delivered post-exit (mirrored to caller stderr
+  after spawnSync returns), not in real-time — long-running hangs
+  lose live stderr streaming. Acceptable for the observability
+  gain on the typical exit-1 failure mode (which delivers stderr
+  quickly).
 - **Acceptance criteria 1 + 2** (reproduce + identify root cause):
-  still open. Aaron noted 2026-05-13 that the Grok website-text-mode
-  git connector is the working orientation path until B-0421 fully
-  resolves (see PR #2945 and the peer-call-infrastructure rule
-  update on PR #2946). When the failure recurs, the captured
-  stderr in the new failure marker should expose the root cause.
+  CLOSED via this PR. Aaron 2026-05-13 authorized "yes — minimal
+  prompt invocation OK" via AskUserQuestion. Otto invoked grok.ts
+  with a 1-line substantive prompt; cursor-agent stderr surfaced:
+  ```
+  Cannot use this model: grok-4-20-thinking.
+  Available models: auto, composer-2-fast, composer-2,
+  gpt-5.3-codex-low, ..., grok-4.3, ... kimi-k2.5
+  ```
+  **Root cause**: cursor-agent's Grok model lineup shifted —
+  `grok-4-20-thinking` (the wrapper's default) and `grok-4-20`
+  (the wrapper's `--fast` mode) are no longer in the available-
+  models list. The current Grok model is **`grok-4.3`** (no
+  separate thinking/non-thinking variants). The fix is a 1-line
+  change in `pickModel()`.
 - **Acceptance criterion 4** (4-wrapper smoke test, generalized to
   8 wrappers): ADDRESSED via `tools/peer-call/smoke.test.ts`
   (PR #2950). 27 tests / 51 expect() calls / 613ms / all pass.
 
-Status remains `open` (per backlog frontmatter schema enum: open /
-closed / superseded-by-B-NNNN / deferred — there is no
-`in-progress` value). Acceptance criteria 1 + 2 still pending root-
-cause identification when the failure recurs.
+Row status: `closed` — all 4 acceptance criteria addressed.
+Composes with PR #2949 (#3 self-documenting marker), PR #2950
+(#4 smoke test), and this PR (#1 + #2 root cause + fix).
 
 # B-0421 — Grok peer-call failure investigation
 

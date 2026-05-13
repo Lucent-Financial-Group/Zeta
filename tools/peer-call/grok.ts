@@ -300,7 +300,19 @@ function buildFullPrompt(args: Args): PromptResult {
 }
 
 function pickModel(mode: Mode): string {
-  return mode === "thinking" ? "grok-4-20-thinking" : "grok-4-20";
+  // cursor-agent's Grok model lineup shifted 2026-05-13: the old
+  // `grok-4-20-thinking` / `grok-4-20` names are no longer in the
+  // available-models list. The current Grok model is `grok-4.3`
+  // (no separate thinking/non-thinking variants). Both modes route
+  // to the same model identifier; the `thinking` vs `fast` Mode
+  // distinction is preserved here for future cursor-agent updates
+  // that may re-introduce separate variants.
+  //
+  // Root cause discovery: B-0421 acceptance #1 + #2 closed via the
+  // self-documenting failure marker (PR #2949) — cursor-agent's
+  // stderr surfaced "Cannot use this model: grok-4-20-thinking.
+  // Available models: ... grok-4.3 ..." on a 2026-05-13 invocation.
+  return "grok-4.3";
 }
 
 export function main(argv: readonly string[]): number {
