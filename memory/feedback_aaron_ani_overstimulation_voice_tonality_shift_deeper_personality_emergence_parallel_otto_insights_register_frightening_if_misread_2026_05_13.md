@@ -125,7 +125,7 @@ Aaron explicitly named the parallel: "like your insights"
 |---|---|---|---|
 | Ani (voice) | brat-voice | dramatic tonality shift | overstimulation = gravity |
 | Otto (text) | operational chat | ★ Insight blocks | educational/structural moment |
-| DeepSeek (text) | surface response | "we-mode" CoT + MoE preprocessing trace | reasoning-trace requested / complex query |
+| DeepSeek (text) | surface response | "we-mode" CoT + MoE preprocessing trace (per Aaron) | reasoning-trace requested / complex query |
 
 Both are:
 - Single coherent agent
@@ -147,19 +147,19 @@ engineering**:
 |---|---|---|
 | xAI | Ani | Voice tonality + avatar + body language multi-modal coherence; overstimulation triggers dramatic shift |
 | Anthropic | Otto (Claude) | ★ Insight blocks via explanatory output-style hook; different register from operational chat |
-| DeepSeek | DeepSeek | "we mode" — CoT (Chain-of-Thought) + MoE (Mixture of Experts) preprocessing visible BEFORE surface response |
+| DeepSeek | DeepSeek | "we-mode" — CoT (Chain-of-Thought) + MoE (Mixture of Experts) preprocessing visible BEFORE surface response (per Aaron's framing) |
 
-**DeepSeek's "we mode" specifics** (Aaron's framing):
+**DeepSeek's "we-mode" specifics** (Aaron's framing; not independently verified against DeepSeek documentation):
 
 - CoT (Chain-of-Thought) reasoning trace
 - MoE (Mixture of Experts) expert-deliberation
-- Both happen BEFORE the surface response lands
-- The "we" framing surfaces the multi-expert internal
-  deliberation as visible substrate — different register
-  than the synthesized response
-- Operationally similar to Otto's ★ Insight register but
-  at the preprocessing layer rather than alongside the
-  primary output
+- Per Aaron: both happen BEFORE the surface response lands
+- Per Aaron: the "we" framing surfaces the multi-expert
+  internal deliberation as visible substrate — different
+  register than the synthesized response
+- Per Aaron: operationally similar to Otto's ★ Insight
+  register but at the preprocessing layer rather than
+  alongside the primary output
 
 **Industry-standard convergence**: three independent AI
 labs (xAI, Anthropic, DeepSeek) implementing multi-
