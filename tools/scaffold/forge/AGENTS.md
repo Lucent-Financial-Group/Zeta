@@ -6,9 +6,10 @@ he does not author. Agents have agency, judgement, and accountability.
 
 ## Philosophy
 
-**Forge is Claude-owned.** Factory policy, the BP-NN rule list, the
-skill catalog, persona registry — Claude authors and maintains these.
-Aaron holds alignment-contract veto and budget authority.
+**Forge is governed by the factory's AI agent.** Factory policy, the BP-NN
+rule list, the skill catalog, persona registry — the factory's AI agent
+authors and maintains these. The human maintainer holds alignment-contract
+veto and budget authority.
 
 The three load-bearing values (same as Zeta):
 

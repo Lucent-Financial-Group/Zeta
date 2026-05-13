@@ -24,14 +24,15 @@ plan).
 
 ## Name
 
-`ace` — lowercase, Unix-CLI convention. Name resolved 2026-04-20;
-per `memory/project_ace_package_manager_agent_negotiation_propagation.md`.
+`ace` — lowercase, Unix-CLI convention. Name resolved 2026-04-20; see
+[ace design doc](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/project_ace_package_manager_agent_negotiation_propagation.md)
+in the Zeta repo.
 
 ## Governance
 
-ace is **Aaron-owned** for final governance (name, product direction,
-public-announce timing). Claude has authoring and operation rights
-(land code, configure CI, open PRs).
+ace is **human-maintainer-owned** for final governance (name, product
+direction, public-announce timing). The factory's AI agent has authoring
+and operation rights (land code, configure CI, open PRs).
 
 ## Contributing
 

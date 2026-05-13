@@ -11,9 +11,10 @@ and versioned), not the *factory* (Forge) or the *database* (Zeta).
 
 ## §2 Ownership
 
-ace is **Aaron-owned** for final governance. Claude has authoring and
-operation rights (land code, configure CI, open PRs). Any public-announce
-or product-direction change routes through Aaron.
+ace is **human-maintainer-owned** for final governance. The factory's AI
+agent has authoring and operation rights (land code, configure CI, open
+PRs). Any public-announce or product-direction change routes through the
+human maintainer.
 
 ## §3 Agents, not bots
 

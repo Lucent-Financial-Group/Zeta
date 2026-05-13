@@ -5,7 +5,7 @@ Drift between this file and actual GitHub settings is a factory-hygiene
 finding (cadenced diff via `gh api`).
 
 Origin: ADR 2026-04-22 §"Repo best practices — applied at creation".
-Pattern: `memory/feedback_github_settings_as_code_declarative_checked_in_file.md`.
+Pattern: declarative settings-as-code (see Zeta repo's `memory/` for full rationale).
 
 ---
 

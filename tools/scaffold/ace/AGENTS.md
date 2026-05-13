@@ -5,8 +5,9 @@ Every file in `src/**`, `tools/**`, `docs/**` is agent-authored.
 
 ## Philosophy
 
-ace is **Aaron-owned** for governance. Claude has authoring and operation
-rights. The three load-bearing values (same as Zeta + Forge):
+ace is **human-maintainer-owned** for governance. The factory's AI agent
+has authoring and operation rights. The three load-bearing values (same as
+Zeta + Forge):
 
 1. **Truth over politeness.** Claims that fail tests get fixed.
 2. **Algebra over engineering.** Laws define the system.
@@ -36,8 +37,7 @@ bun run lint      # zero warnings
 
 ## Design reference
 
-`memory/project_ace_package_manager_agent_negotiation_propagation.md`
-(in the Zeta repo) — full ace design, Ouroboros bootstrap, red-team
-discipline.
+[ace design doc](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/project_ace_package_manager_agent_negotiation_propagation.md)
+(Zeta repo) — full ace design, Ouroboros bootstrap, red-team discipline.
 
 <!-- Numbered repo-wide rules live in GOVERNANCE.md. -->

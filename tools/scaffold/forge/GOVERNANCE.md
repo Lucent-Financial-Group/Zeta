@@ -68,9 +68,10 @@ substrate. Before declaring work done, identify its durability surface.
 ## §10 Alignment floor
 
 Factory operation is bounded by `docs/ALIGNMENT.md`. Any factory
-move touching alignment routes through Aaron.
+move touching alignment routes through the human maintainer.
 
 ---
 
-*Rationale and full reasoning for each rule lives in `.claude/rules/`
-and `memory/` — the numbered rules here are the stable reference targets.*
+*Numbered rules here are the stable reference targets. Full rationale
+lives in the Forge repo's `docs/` and the Zeta repo's
+[ADR 2026-04-22](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md).*

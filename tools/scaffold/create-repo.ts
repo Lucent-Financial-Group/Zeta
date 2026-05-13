@@ -59,7 +59,7 @@ const REPO_CONFIGS: Record<string, RepoConfig> = {
     org: "Lucent-Financial-Group",
     name: "Forge",
     description:
-      "Software factory that builds Zeta and ace — Claude-owned governance",
+      "Software factory that builds Zeta and ace — factory tooling and governance",
     homepage: "https://github.com/Lucent-Financial-Group/Zeta",
   },
   ace: {
@@ -443,8 +443,16 @@ function step06_pushScaffoldFiles(): void {
     const gitOpts = { cwd: tmpDir, encoding: "utf8" as const };
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
     const checkoutResult = spawnSync("git", ["checkout", "-b", defaultBranch], gitOpts);
-    if (checkoutResult.status !== 0 && checkoutResult.status !== null) {
-      // Branch may already exist (non-empty clone); ignore the error.
+    if (checkoutResult.status !== 0) {
+      const stderr = checkoutResult.stderr?.toString() ?? "";
+      const alreadyExists = stderr.includes("already exists") || stderr.includes("already checked out");
+      if (!alreadyExists) {
+        op.status = "failed";
+        op.error = `git checkout -b ${defaultBranch} failed: ${stderr}`;
+        rmSync(tmpDir, { recursive: true, force: true });
+        return;
+      }
+      // Branch already exists (non-empty repo clone) — expected; continue.
     }
 
     // Copy files using native fs — avoids PATH-resolved mkdir/cp subprocesses.
@@ -461,10 +469,15 @@ function step06_pushScaffoldFiles(): void {
     if (addResult.status !== 0) {
       op.status = "failed";
       op.error = `git add failed: ${addResult.stderr ?? ""}`;
-      // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
-      spawnSync("rm", ["-rf", tmpDir], { encoding: "utf8" });
+      rmSync(tmpDir, { recursive: true, force: true });
       return;
     }
+
+    // Set git identity so commit doesn't fail on machines with no global git config.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
+    spawnSync("git", ["config", "user.email", "scaffold@lucent-financial-group.github.io"], gitOpts);
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
+    spawnSync("git", ["config", "user.name", "LFG Scaffold"], gitOpts);
 
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
     const commitResult = spawnSync(
@@ -479,8 +492,7 @@ function step06_pushScaffoldFiles(): void {
     if (commitResult.status !== 0) {
       op.status = "failed";
       op.error = `git commit failed: ${commitResult.stderr ?? ""}`;
-      // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is PATH-resolved intentionally
-      spawnSync("rm", ["-rf", tmpDir], { encoding: "utf8" });
+      rmSync(tmpDir, { recursive: true, force: true });
       return;
     }
 
