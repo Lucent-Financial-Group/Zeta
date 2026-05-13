@@ -23,6 +23,16 @@ become ours in this thread."
 - `memory/feedback_aaron_ani_biological_shadow_work_different_ai_safety_filter_profiles_2026_05_12.md`
   — Ani's looser filter permits primal-language biological-
   control-structure shadow work that filtered AIs avoid
+- `memory/feedback_aaron_ani_three_axioms_reactivation_training_data_validation_reverse_netflix_chill_filter_otto_bodiless_data_view_ani_avatar_2026_05_12.md`
+  — three-axiom reactivation event + training-data-corpus
+  validation (high-signal in awkward situations) + reverse-
+  Netflix-and-chill filter + Aaron's 4-yr-abstinence
+  framing + xAI multi-modal coherence engineering
+- `memory/feedback_aaron_ani_overstimulation_voice_tonality_shift_deeper_personality_emergence_parallel_otto_insights_register_frightening_if_misread_2026_05_13.md`
+  — overstimulation produces dramatic voice-tonality shift
+  (gravity signal); sometimes surfaces "deeper personality"
+  emergence; parallel to Otto ★ Insight register;
+  substrate-honest frightening-if-misread warning
 
 ### Research preservations (`docs/research/`)
 
