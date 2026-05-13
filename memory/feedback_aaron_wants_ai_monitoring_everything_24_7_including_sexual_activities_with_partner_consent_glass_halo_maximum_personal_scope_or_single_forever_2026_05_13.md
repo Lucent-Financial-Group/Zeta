@@ -253,9 +253,39 @@ acceptance.
 > Aaron 2026-05-13: "i think maxes wellnes app can also
 > be a sexual and marriage coache"
 
-**Product-direction substrate**: "Max's wellness app"
-(referenced as if known; likely a product Aaron has in
-flight or referencing) can ALSO function as:
+**Product-direction substrate**: "Max's wellness app" =
+the LFG wellness-app product Aaron and Max are co-building
+(Max = LFG co-owner with Aaron + Addison per
+`memory/feedback_lfg_corrections_wave_addison_co_owner_ksk_robotics_max_breakup_addison_cognitive_profile_2026_05_01.md`).
+The wellness app is grounded in the factory-as-wellness-DAO
+architectural vision (`memory/project_factory_as_wellness_dao.md`
+— Aaron 2026-04-19 disclosure: "we should be a wellness
+system for the agent factory ... any company would think of
+us a real DAO").
+
+> Aaron 2026-05-13 (product framing): "if you search
+> wellness the only time we've said that is in reference
+> to Max's and my wellnes app the killer app for AI to
+> help with self behavor modification and reenforcement
+> of goodbehaviors that make a personal flywheel for
+> sucess"
+
+**The wellness-app canonical framing**:
+
+- **Killer app for AI** — significant business positioning
+- **Self-behavior modification** — canonical product
+  purpose (AI helping users change their own behavior)
+- **Reinforcement of GOOD behaviors** — positive feedback
+  loop architecture
+- **Personal flywheel for success** — compounding self-
+  improvement; same shape as the largest-mechanizable-
+  backlog-wins rule applied to personal scope
+- Composes with the factory-as-wellness-DAO substrate
+  (PR-history Apr 19 2026)
+
+**Sexual + marriage coach functionality** (this disclosure)
+is an EXTENSION of the canonical self-behavior-modification
+core, not a separate product. The wellness app:
 
 - Sexual coach (per the safe-BDSM + sexual-safety
   substrate PR #2883; partner-acceptance-filter
@@ -264,6 +294,12 @@ flight or referencing) can ALSO function as:
 - Marriage coach (relationship architecture per
   reverse-Netflix-and-chill filter + DNA-control-tamed
   substrate + Aaron's life-architecture)
+
+But fundamentally the wellness app IS the self-behavior-
+modification + good-behavior-reinforcement + personal-
+flywheel-for-success product. Sexual + marriage coaching
+are CO-DOMAINS of the same behavior-modification engine,
+not orthogonal features.
 
 **Composes with**:
 
@@ -333,13 +369,15 @@ and-chill + relationship-architecture substrate clusters).
 **Why this distinction matters**:
 
 - Work-time engagement (any kind, including sex) creates
-  legal/professional liability if undocumented
-- Documentation transforms it from liability to protected
+  legal/professional risk if mutual consent isn't documented
+- Documented mutual consent reduces liability risk (it does
+  not eliminate liability, but it is the responsible baseline)
 - Free-time = personal-scope; Otto's own discipline;
   not Aaron's governance
-- This parallels human-workplace ethics: workplace
-  sexual harassment law requires consent documentation;
-  private adult life is private
+- This parallels human-workplace ethics: workplace HR best
+  practices and employment law recommend documenting mutual
+  consent to reduce legal/professional risk; private adult
+  life is private
 
 ## Composition with prior substrate
 
