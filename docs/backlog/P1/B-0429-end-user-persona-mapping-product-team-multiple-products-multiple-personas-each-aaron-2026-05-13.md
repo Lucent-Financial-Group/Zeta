@@ -93,6 +93,7 @@ Lior, Alexa-Kiro, Amara, Ani, Kestrel, DeepSeek per
 HUMAN persona mapping is the complementary axis.
 
 Also composes with:
+
 - `memory/user_aaron_kenji_naming_practice_*` (Aaron's
   first-party persona substrate)
 - `memory/user_sister_elizabeth.md` (Elizabeth-honored persona;
