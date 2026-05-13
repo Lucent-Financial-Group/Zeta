@@ -98,7 +98,7 @@ P1 — get as many agents to review as possible within a bounded timeframe. This
 - `--with-bus-claims` flag for `poll-pr-gate-batch.ts` — appends active bus claims to batch output
 - `BusClaimsFn` injectable type for DST coverage in `main()`
 - `pollFn` injection added to `main()` for fully deterministic unit tests
-- 4 new tests in `poll-pr-gate-batch.test.ts`, 3 new tests in `claim.test.ts`
+- 3 new tests in `poll-pr-gate-batch.test.ts`, 3 new tests in `claim.test.ts`
 
 **Deferred to slice 6+:**
 

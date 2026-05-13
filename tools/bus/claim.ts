@@ -147,23 +147,50 @@ export function activeClaims(itemId: string): ClaimRecord[] {
 
 /**
  * Returns all active bus claims across every backlog item.
- * Reads all claim-topic messages, discovers unique item IDs, then delegates
- * to activeClaims() per item so claim/release semantics are applied correctly.
+ * Single pass over claim-topic messages — latest action per (from, itemId) wins.
  */
 export function allActiveClaims(): ClaimRecord[] {
   const msgs = list({ topic: "claim" });
-  const itemIds = new Set<string>();
-  for (const m of msgs) {
-    if (m.payload && typeof m.payload === "object" && !Array.isArray(m.payload)) {
-      const p = m.payload as { itemId?: unknown };
-      if (typeof p.itemId === "string") itemIds.add(p.itemId);
+
+  type Entry = { envelope: MessageEnvelope; mtime: number; idx: number };
+  const byKey = new Map<string, Entry>();
+
+  for (let i = 0; i < msgs.length; i++) {
+    const m = msgs[i]!;
+    if (!m.payload || typeof m.payload !== "object" || Array.isArray(m.payload)) continue;
+    const p = m.payload as { action: string; itemId?: unknown; branch?: string };
+    if (typeof p.itemId !== "string") continue;
+    if (p.action !== "claim" && p.action !== "release") continue;
+    const key = `${m.from}:${p.itemId}`;
+    const existing = byKey.get(key);
+    if (!existing) {
+      byKey.set(key, { envelope: m, mtime: messageMtimeMs(m.id), idx: i });
+      continue;
+    }
+    if (m.timestamp > existing.envelope.timestamp) {
+      byKey.set(key, { envelope: m, mtime: messageMtimeMs(m.id), idx: i });
+    } else if (m.timestamp === existing.envelope.timestamp) {
+      const mm = messageMtimeMs(m.id);
+      if (mm > existing.mtime || (mm === existing.mtime && i > existing.idx)) {
+        byKey.set(key, { envelope: m, mtime: mm, idx: i });
+      }
     }
   }
-  const result: ClaimRecord[] = [];
-  for (const itemId of itemIds) {
-    result.push(...activeClaims(itemId));
+
+  const records: ClaimRecord[] = [];
+  for (const { envelope: m } of byKey.values()) {
+    const p = m.payload as { action: string; itemId: string; branch?: string };
+    if (p.action !== "claim") continue;
+    records.push({
+      id: m.id,
+      from: m.from,
+      itemId: p.itemId,
+      ...(p.branch !== undefined && { branch: p.branch }),
+      timestamp: m.timestamp,
+      expiresAt: m.expiresAt,
+    });
   }
-  return result;
+  return records;
 }
 
 // ── CLI ───────────────────────────────────────────────────────────────────────

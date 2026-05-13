@@ -292,11 +292,11 @@ describe("main() — --with-bus-claims flag", () => {
     expect(batch.busClaims).toBeUndefined();
   });
 
-  test("busClaims is present on empty-PR result when --with-bus-claims and --all-open returns nothing", async () => {
-    // Simulate --all-open with zero open PRs (the early-return path in main).
-    // Requires a custom listOpenPRs mock — not injectable here, so we can only
-    // test the non-empty PR path. Verify that the empty-array branch is reached
-    // when busClaimsFn returns an empty list.
+  test("busClaims serialized as empty array when --with-bus-claims and busClaimsFn returns nothing", async () => {
+    // Verifies busClaims: [] appears in the batch output when the bus is empty.
+    // Note: the --all-open empty-PR early-return path is not exercised here because
+    // listOpenPRs is not injectable in this test harness; that path requires a
+    // dedicated integration test.
     const busClaimsFn: BusClaimsFn = () => [];
     const pollFn = (pr: number): Promise<PollOutcome> =>
       Promise.resolve({ number: pr, report: mkReport({ number: pr }) });
