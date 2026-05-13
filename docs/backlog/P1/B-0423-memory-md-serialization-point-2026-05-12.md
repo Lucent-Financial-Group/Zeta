@@ -5,6 +5,7 @@ class: substrate-architecture
 status: decomposed
 title: MEMORY.md serialization-point anti-pattern
 created: 2026-05-12
+last_updated: 2026-05-13
 authors: [otto, aaron]
 decomposed: true
 children: [B-0423.1, B-0423.2, B-0423.3, B-0423.4, B-0423.5]
