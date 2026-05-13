@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync, utimesSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -259,7 +259,41 @@ describe("claim.ts — unknown action protection (P2)", () => {
   });
 });
 
-// ── P1: acquire lock cleanup ──────────────────────────────────────────────────
+// ── P2: same-timestamp mtime tiebreak ────────────────────────────────────────
+
+describe("claim.ts — same-timestamp mtime tiebreak (P2)", () => {
+  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  afterEach(cleanTestDir);
+
+  test("release with later mtime wins over claim sharing the same ISO timestamp", () => {
+    const claimId = "00000000-0000-0000-0000-aaaaaaaaaaaa";
+    const releaseId = "00000000-0000-0000-0000-bbbbbbbbbbbb";
+    const ts = new Date().toISOString();
+    const exp = new Date(Date.now() + 86_400_000).toISOString();
+    const base = new Date();
+    const laterMs = new Date(base.getTime() + 50);
+
+    writeFileSync(join(TEST_DIR, `${claimId}.json`), JSON.stringify({
+      id: claimId, from: "otto", to: "*", topic: "claim",
+      timestamp: ts, expiresAt: exp,
+      payload: { action: "claim", itemId: "B-0999" },
+    }));
+    utimesSync(join(TEST_DIR, `${claimId}.json`), base, base);
+
+    writeFileSync(join(TEST_DIR, `${releaseId}.json`), JSON.stringify({
+      id: releaseId, from: "otto", to: "*", topic: "claim",
+      timestamp: ts, expiresAt: exp,
+      payload: { action: "release", itemId: "B-0999" },
+    }));
+    utimesSync(join(TEST_DIR, `${releaseId}.json`), laterMs, laterMs);
+
+    const r = run("check", "--item", "B-0999");
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout).toContain("unclaimed");
+  });
+});
+
+// ── P1: acquire lock cleanup + stale lock recovery ───────────────────────────
 
 describe("claim.ts — acquire lock cleanup (P1)", () => {
   beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });

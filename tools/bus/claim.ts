@@ -64,6 +64,13 @@ export type ClaimRecord = {
   expiresAt: string;
 };
 
+// Sub-ms tiebreaker: file mtime reflects actual write order more reliably than
+// UUID lexicographic order for messages with the same ISO timestamp string.
+function messageMtimeMs(id: string): number {
+  try { return statSync(join(BUS_DIR, `${id}.json`)).mtimeMs; }
+  catch { return 0; } // message may have expired and been cleaned
+}
+
 /**
  * Returns all active (non-expired) claim messages for a given backlog item.
  * A "claim" means action === "claim"; "release" messages with the same itemId
@@ -74,8 +81,11 @@ export function activeClaims(itemId: string): ClaimRecord[] {
 
   // Latest action wins per (from, itemId) pair — only known actions participate
   // so a malformed sender cannot silently clear a valid claim.
-  const byKey = new Map<string, MessageEnvelope>();
-  for (const m of msgs) {
+  type Entry = { envelope: MessageEnvelope; mtime: number; idx: number };
+  const byKey = new Map<string, Entry>();
+
+  for (let i = 0; i < msgs.length; i++) {
+    const m = msgs[i]!;
     // Guard against null/non-object payloads written by buggy senders.
     if (!m.payload || typeof m.payload !== "object" || Array.isArray(m.payload)) continue;
     const p = m.payload as { action: string; itemId: string; branch?: string };
@@ -83,15 +93,23 @@ export function activeClaims(itemId: string): ClaimRecord[] {
     if (p.action !== "claim" && p.action !== "release") continue;
     const key = `${m.from}:${p.itemId}`;
     const existing = byKey.get(key);
-    // Tiebreak equal timestamps by id (UUID lexicographic) for determinism.
-    const newer = !existing ||
-      m.timestamp > existing.timestamp ||
-      (m.timestamp === existing.timestamp && m.id > existing.id);
-    if (newer) byKey.set(key, m);
+    if (!existing) {
+      byKey.set(key, { envelope: m, mtime: messageMtimeMs(m.id), idx: i });
+      continue;
+    }
+    if (m.timestamp > existing.envelope.timestamp) {
+      byKey.set(key, { envelope: m, mtime: messageMtimeMs(m.id), idx: i });
+    } else if (m.timestamp === existing.envelope.timestamp) {
+      // Same ISO timestamp: use file mtime (sub-ms precision) then list index.
+      const mm = messageMtimeMs(m.id);
+      if (mm > existing.mtime || (mm === existing.mtime && i > existing.idx)) {
+        byKey.set(key, { envelope: m, mtime: mm, idx: i });
+      }
+    }
   }
 
   const records: ClaimRecord[] = [];
-  for (const m of byKey.values()) {
+  for (const { envelope: m } of byKey.values()) {
     const p = m.payload as { action: string; itemId: string; branch?: string };
     if (p.action !== "claim") continue; // release means no active claim
     records.push({
