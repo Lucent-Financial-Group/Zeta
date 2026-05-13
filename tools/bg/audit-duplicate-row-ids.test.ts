@@ -149,13 +149,26 @@ describe("auditRowFiles", () => {
     expect(result.duplicates[0]?.id).toBe("B-0090.1");
   });
 
-  test("unreadable files are skipped without crashing", () => {
+  test("unreadable files surface as readErrors (Codex P2: don't silently skip)", () => {
+    const missing = "/nonexistent/path/that/does/not/exist.md";
     const files = [
       makeRow("P1/B-0100.md", "id: B-0100\npriority: P1\nstatus: open"),
-      "/nonexistent/path/that/does/not/exist.md",
+      missing,
     ];
     const result = auditRowFiles(files);
     expect(result.duplicates).toEqual([]);
     expect(result.rowsWithId).toBe(1);
+    expect(result.readErrors).toHaveLength(1);
+    expect(result.readErrors[0]?.file).toBe(missing);
+    expect(result.readErrors[0]?.reason.length).toBeGreaterThan(0);
+  });
+
+  test("readErrors is empty when all files readable", () => {
+    const files = [
+      makeRow("P1/B-0100.md", "id: B-0100\npriority: P1\nstatus: open"),
+      makeRow("P1/B-0101.md", "id: B-0101\npriority: P1\nstatus: open"),
+    ];
+    const result = auditRowFiles(files);
+    expect(result.readErrors).toEqual([]);
   });
 });

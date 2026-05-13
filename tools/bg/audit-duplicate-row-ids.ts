@@ -31,6 +31,11 @@ export type DuplicateGroup = {
   files: string[];
 };
 
+export type ReadError = {
+  file: string;
+  reason: string;
+};
+
 export type AuditResult = {
   /**
    * Number of input files that contained an extractable `id:` field.
@@ -39,6 +44,13 @@ export type AuditResult = {
    */
   rowsWithId: number;
   duplicates: DuplicateGroup[];
+  /**
+   * Files the audit could not read (permission, missing-after-listing,
+   * IO error). Surfaced so the CLI can fail loudly per Codex P2 on
+   * PR #3056: silently skipping unreadable files would let collisions
+   * hide in any row the audit couldn't open.
+   */
+  readErrors: ReadError[];
 };
 
 /**
@@ -80,12 +92,17 @@ export function findDuplicates(idToFiles: Map<string, string[]>): DuplicateGroup
  */
 export function auditRowFiles(files: string[]): AuditResult {
   const idToFiles = new Map<string, string[]>();
+  const readErrors: ReadError[] = [];
   for (const f of files) {
     let content: string;
     try {
       content = readFileSync(f, "utf-8");
-    } catch {
-      // Unreadable files are surfaced as a parse-skip; do not crash.
+    } catch (err) {
+      // Codex P2 on PR #3056: silently swallowing read errors lets
+      // collisions hide in any row the audit couldn't open. Accumulate
+      // errors so the CLI can fail loudly — the caller's exit code
+      // logic checks `readErrors.length > 0` alongside `duplicates`.
+      readErrors.push({ file: f, reason: (err as Error).message });
       continue;
     }
     const id = extractId(content);
@@ -97,6 +114,7 @@ export function auditRowFiles(files: string[]): AuditResult {
   return {
     rowsWithId: [...idToFiles.values()].reduce((n, fs) => n + fs.length, 0),
     duplicates: findDuplicates(idToFiles),
+    readErrors,
   };
 }
 
@@ -123,16 +141,27 @@ function main(): number {
 
   const result = auditRowFiles(files);
 
-  if (result.duplicates.length === 0) {
+  // Read errors surface alongside duplicates: both fail the audit so a
+  // hidden duplicate inside an unreadable file can't slip through.
+  if (result.readErrors.length > 0) {
+    console.error(`audit-duplicate-row-ids: ${result.readErrors.length} file(s) could not be read:`);
+    for (const e of result.readErrors) {
+      console.error(`  - ${relative(repoRoot, e.file)}: ${e.reason}`);
+    }
+  }
+
+  if (result.duplicates.length === 0 && result.readErrors.length === 0) {
     console.log(`audit-duplicate-row-ids: ${result.rowsWithId} rows with id field, no duplicate IDs`);
     return 0;
   }
 
-  console.error(`audit-duplicate-row-ids: ${result.duplicates.length} duplicate-ID group(s) found across ${result.rowsWithId} rows with id field:`);
-  for (const dup of result.duplicates) {
-    console.error(`  ${dup.id}:`);
-    for (const f of dup.files) {
-      console.error(`    - ${relative(repoRoot, f)}`);
+  if (result.duplicates.length > 0) {
+    console.error(`audit-duplicate-row-ids: ${result.duplicates.length} duplicate-ID group(s) found across ${result.rowsWithId} rows with id field:`);
+    for (const dup of result.duplicates) {
+      console.error(`  ${dup.id}:`);
+      for (const f of dup.files) {
+        console.error(`    - ${relative(repoRoot, f)}`);
+      }
     }
   }
   return 1;
