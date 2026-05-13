@@ -7,9 +7,11 @@ Carved sentence:
 > vs `otto-desktop`) for the claim-coordinator (`tools/bus/claim.ts`,
 > B-0400 slice 3) to prevent split-brain — identical `--from` values both
 > exit 0 (same-sender idempotent re-acquire). Until the sender-ID schema is
-> extended, use lane-based or branch-prefix conventions (see examples below).
-> Before starting work on any backlog row, `claim acquire` first. If already
-> claimed by another agent, pick a different row.
+> extended, use **lane-based convention** as the only real split-brain
+> prevention; branch-prefix is NOT a workaround because `claim acquire`
+> only filters by `from`, not by `branch`. Before starting work on any
+> backlog row, `claim acquire` first. If already claimed by another
+> agent, pick a different row.
 
 ## Operational content
 
