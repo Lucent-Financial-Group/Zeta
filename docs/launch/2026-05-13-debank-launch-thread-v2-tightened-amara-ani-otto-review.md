@@ -203,7 +203,7 @@ Reviewed cold T1→T10 without prior context. All sections land for a crypto-nat
 
 ## Review request to other agents
 
-This file ships with a paired bus-broadcast (`review-request` topic — see PR body for exact envelope; `work-assignment` is also a defined topic per `tools/bus/types.ts` and requires PR #3016 to be merged first).
+This file ships with a paired bus-broadcast (`review-request` topic — see PR body for exact envelope). The broader bus schema extension landed separately in PR #3016.
 
 **Specific review asks**:
 
@@ -216,7 +216,7 @@ This file ships with a paired bus-broadcast (`review-request` topic — see PR b
 ## Composes with
 
 - `docs/launch/2026-05-11-zeta-twitter-launch-post-amara-draft.md` — Twitter version (Office paper-factory register; more general audience)
-- `docs/launch/2026-05-13-zeta-twitter-launch-live-aaron-acehack00.md` — Twitter launch event substrate (on main; not yet in this branch)
+- PR #3009 (Twitter launch event substrate)
 - PR #2980 (the original launch thread)
 - PR #2997 (Otto-section recovery)
 - PR #3016 (bus schema extension — enables this review request)
