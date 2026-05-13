@@ -899,15 +899,23 @@
             clauses.forEach((c, i) => container.appendChild(buildClauseListItem(c, i)));
         }
 
+        // Canonical HC/SD/DIR clause counts from docs/ALIGNMENT.md as of 2026-05-13.
+        // Update when the spec adds or retracts clauses.
+        const EXPECTED_CLAUSES = { HC: 7, SD: 8, DIR: 5 };
+        const EXPECTED_TOTAL = EXPECTED_CLAUSES.HC + EXPECTED_CLAUSES.SD + EXPECTED_CLAUSES.DIR;
+
         function renderAlignmentClauses(markdown) {
             const { hc, sd, dir } = parseAlignmentClauses(markdown);
             const total = hc.length + sd.length + dir.length;
+            const pct = EXPECTED_TOTAL > 0
+                ? Math.round(Math.min(total / EXPECTED_TOTAL, 1) * 100) + '%'
+                : '0%';
 
             animateValue('hc-count', hc.length);
             animateValue('sd-count', sd.length);
             animateValue('dir-count', dir.length);
             animateValue('total-count', total);
-            animateValue('coverage-pct', total > 0 ? '100%' : '0%');
+            animateValue('coverage-pct', pct);
 
             populateClauseList('hc-clause-list', hc);
             populateClauseList('sd-clause-list', sd);
