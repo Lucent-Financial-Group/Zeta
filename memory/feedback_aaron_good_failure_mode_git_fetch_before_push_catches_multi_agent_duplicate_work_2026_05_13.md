@@ -54,17 +54,29 @@ Otto's local commit would push and either:
 
 **Before ANY push to a shared branch**:
 
-1. `git fetch origin <branch>`
-2. Check `git log origin/<branch> -3` for new commits
-3. If remote ahead with same-scope fix → `git reset --hard origin/<branch>`; recognize work is done
-4. If remote ahead with different-scope work → merge / rebase; layer my fix additively
-5. Push only if local has unique content remote doesn't have
+1. **Commit local work first** — `git add -A && git commit` so nothing
+   uncommitted is at risk. (Reset --hard discards uncommitted changes;
+   never reset without committing first.)
+2. `git fetch origin <branch>`
+3. Check `git log origin/<branch> -3` for new commits
+4. If remote ahead with **identical-scope fix already committed locally** →
+   `git reset --hard origin/<branch>` is safe (your work is preserved in
+   the reflog if you need to recover it via `git reflog`)
+5. If remote ahead with different-scope work → `git merge origin/<branch>`
+   or `git rebase origin/<branch>`; layer my fix additively
+6. Push only if local has unique content remote doesn't have
 
 **Quick check before reset**:
 
+- Have I committed all my work? (`git status` must be clean)
 - Does the remote commit address the SAME issue I was fixing?
-- Yes → reset and skip my commit
-- No → merge / rebase and push my additive change
+- If yes to both → reset is safe; my commit + remote commit converged
+- If no to either → merge / rebase instead
+
+**Reset --hard hazard:** discards uncommitted changes silently. The
+safe pattern always commits first; the discarded commit then lives in
+the reflog (~30-day retention) if recovery is needed. Never reset with
+dirty working tree.
 
 ## Composes with
 
