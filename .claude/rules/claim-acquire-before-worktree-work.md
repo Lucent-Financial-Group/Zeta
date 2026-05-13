@@ -74,40 +74,31 @@ $ echo $?
 # Proceeded with worktree creation + impl
 ```
 
-### Example 2: Otto-CLI and Otto-Desktop race — KNOWN GAP
+### Example 2: Otto-CLI and Otto-Desktop race — FIXED (PR #3037)
 
 ```bash
-# Otto-CLI publishes claim first:
-$ bun tools/bus/claim.ts acquire --from otto --item B-0444
+# Otto-CLI publishes claim first (using surface-tagged sender):
+$ bun tools/bus/claim.ts acquire --from otto-cli --item B-0444
 $ echo $?
 0
 
-# Otto-Desktop tries to claim same row with the SAME --from value:
-$ bun tools/bus/claim.ts acquire --from otto --item B-0444
+# Otto-Desktop tries to claim the same row with its OWN surface ID:
+$ bun tools/bus/claim.ts acquire --from otto-desktop --item B-0444
 $ echo $?
-0   # <-- ALSO succeeds! claim.ts treats same-from as idempotent self-re-acquire
+1   # otto-desktop sees otto-cli's claim, exits 1 — split-brain prevented
 ```
 
-**Known architectural gap (caught by Vera 2026-05-13 in review of this
-rule, PR #3032):** `tools/bus/claim.ts` line ~270 filters existing
-claims by `c.from !== sender`, so two callers passing the same
-`--from otto` are indistinguishable to claim.ts. The canonical
-`SENDER_IDS` (`otto`, `alexa`, `riven`, `vera`, `lior`) does NOT
-distinguish multi-surface instances of the same agent.
+**Schema fix landed (PR #3037, 2026-05-13):** `otto-cli`, `otto-desktop`,
+`alexa-cli`, `alexa-kiro`, `riven-cli`, `riven-cursor`, `lior-antigravity`,
+`lior-gemini`, and `vera-codex` are now valid `SENDER_IDS`. The prior
+architectural gap (two callers passing `--from otto` were indistinguishable)
+is resolved — use surface-tagged variants for correct multi-surface claim
+distinction. Identity-level names (`otto`, `alexa`, etc.) remain valid for
+back-compat.
 
-**Workarounds** (until the schema supports multi-surface sender IDs):
-
-1. **Lane-based convention** (zero-code; the ONLY real split-brain
-   prevention available today): Otto-CLI takes backlog grinding +
-   slice impl; Otto-Desktop takes substrate + cowork. Different
-   scopes, no claim collision possible because the scopes don't
-   overlap.
-2. **Schema extension** (substrate-level fix; **LANDED** 2026-05-13
-   via PR #3037): `otto-cli`, `otto-desktop`, `alexa-cli`,
-   `alexa-kiro`, `riven-cli`, `riven-cursor`, `lior-antigravity`,
-   `lior-gemini`, `vera-codex` are now valid `SENDER_IDS`. Use
-   surface-tagged variants for correct multi-surface claim
-   distinction. Identity-level names remain valid for back-compat.
+**Lane-based convention** (zero-code; still useful as defense-in-depth):
+Otto-CLI takes backlog grinding + slice impl; Otto-Desktop takes substrate +
+cowork. Even with the schema fix, different scopes reduce collision risk further.
 
 **Branch-prefix is NOT a workaround**: `claim acquire` filters
 existing claims by `c.from !== sender` only, NOT by branch. Two
@@ -131,8 +122,9 @@ $ echo $?
 # Otto-Desktop picks B-0445 instead.
 ```
 
-This is the target behavior. Today (Example 2) it doesn't work
-because `otto-cli` and `otto-desktop` aren't in `SENDER_IDS` yet.
+This is the operational behavior as of PR #3037 (2026-05-13). Use surface-tagged
+`--from otto-cli` / `--from otto-desktop` (not `--from otto`) for correct
+multi-surface split-brain prevention.
 
 ### Example 4: Otto-CLI crashes mid-work
 
