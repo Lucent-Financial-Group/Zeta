@@ -44,17 +44,32 @@ export const DEFAULT_CONFIG: DetectorConfig = {
 export type PollResult = {
   pollAt: string; // ISO-8601
   idleDetected: boolean;
+  /** Most-recent commit on HEAD; null if no commit or git unavailable. */
   lastCommitAt: string | null;
+  /** Most-recent PR activity (opened OR closed OR reviewed) authored by `agentForActivity`; null if no PRs or gh unavailable. */
+  lastPrActivityAt: string | null;
+  /** Idle gap in minutes — computed from MAX of (lastCommitAt, lastPrActivityAt). */
   idleMinutes: number | null;
   /** Envelope ID if a nudge was published, null otherwise. */
   publishedEnvelopeId: string | null;
+  /** Structured publish-failure reason; null on success or skip. (Riven P1) */
+  lastPublishError: string | null;
   note: string;
 };
 
-/** Adapter abstraction so tests can inject deterministic time + git + bus. */
+/** Adapter abstraction so tests can inject deterministic time + git + gh + bus. */
 export type Adapters = {
   now: () => Date;
+  /** ISO-8601 of the most recent commit on HEAD, or null. */
   lastCommitIso: () => string | null;
+  /**
+   * ISO-8601 of the most-recently-updated PR in the repo (any author, any
+   * state). Per B-0440 AC: "no PRs opened/closed" is repo-level, not
+   * author-filtered — multiple factory agents share the AceHack account
+   * so author-filtering would miss most activity. Returns null when gh
+   * is unavailable OR there are no PRs.
+   */
+  lastPrActivityIso: () => string | null;
   publishNudge: (
     from: SenderAgentId,
     to: AgentId,
@@ -75,6 +90,32 @@ const REAL_ADAPTERS: Adapters = {
     const trimmed = result.stdout.trim();
     return trimmed.length > 0 ? trimmed : null;
   },
+  lastPrActivityIso: () => {
+    // gh pr list --state all --json updatedAt --limit 1
+    // Repo-level: any PR activity counts (factory agents share AceHack account).
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection risk.
+    const result = spawnSync(
+      "gh",
+      [
+        "pr", "list",
+        "--state", "all",
+        "--json", "updatedAt",
+        "--limit", "1",
+      ],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    );
+    if (result.status !== 0 || !result.stdout) return null;
+    try {
+      const parsed = JSON.parse(result.stdout);
+      if (!Array.isArray(parsed) || parsed.length === 0) return null;
+      const first = parsed[0];
+      if (typeof first !== "object" || first === null) return null;
+      const updatedAt = (first as { updatedAt?: unknown }).updatedAt;
+      return typeof updatedAt === "string" ? updatedAt : null;
+    } catch {
+      return null;
+    }
+  },
   publishNudge: (from, to, idleMinutes, rationale) =>
     publish(from, to, {
       topic: "infinite-backlog-nudge",
@@ -83,9 +124,16 @@ const REAL_ADAPTERS: Adapters = {
 };
 
 /**
- * Single poll iteration. Reads the most recent commit on HEAD, compares
- * against the idle threshold, and publishes a bus nudge when idle is
- * detected (unless noPublish is set).
+ * Single poll iteration. Per B-0440 AC: idle iff NO new commits AND
+ * NO PR activity within idleThresholdMin. The detector reads both signals
+ * and computes idle from MAX (most-recent) of the two timestamps. Either
+ * signal being recent means the agent is NOT standing by — even an
+ * agent doing PR-review-only / bus-coordination / claim-work with no
+ * commits is correctly NOT flagged.
+ *
+ * Resolves Riven's P0 finding (envelope 6c689634-...): the prior slice-2
+ * version only checked commit-history and produced false negatives on
+ * non-commit agent activity.
  */
 export function pollOnce(
   config: DetectorConfig,
@@ -93,54 +141,64 @@ export function pollOnce(
 ): PollResult {
   const pollAt = adapters.now();
   const lastCommitIso = adapters.lastCommitIso();
+  const lastPrActivityIso = adapters.lastPrActivityIso();
 
-  if (lastCommitIso === null) {
+  // If BOTH signals are null we have no data to evaluate idle threshold.
+  if (lastCommitIso === null && lastPrActivityIso === null) {
     return {
       pollAt: pollAt.toISOString(),
       idleDetected: false,
       lastCommitAt: null,
+      lastPrActivityAt: null,
       idleMinutes: null,
       publishedEnvelopeId: null,
-      note: "no commit found on HEAD (fresh repo or git unavailable); cannot evaluate idle threshold",
+      lastPublishError: null,
+      note: "no commit AND no PR activity found (fresh repo / git or gh unavailable); cannot evaluate idle threshold",
     };
   }
 
-  const lastCommit = new Date(lastCommitIso);
-  const idleMs = pollAt.getTime() - lastCommit.getTime();
+  // Compute idle from MAX of available signals (most-recent activity).
+  const commitMs = lastCommitIso !== null ? new Date(lastCommitIso).getTime() : 0;
+  const prMs = lastPrActivityIso !== null ? new Date(lastPrActivityIso).getTime() : 0;
+  const mostRecentMs = Math.max(commitMs, prMs);
+  const idleMs = pollAt.getTime() - mostRecentMs;
   const idleMinutes = Math.max(0, idleMs / 60_000);
   const idleDetected = idleMinutes >= config.idleThresholdMin;
 
   let publishedEnvelopeId: string | null = null;
-  let publishError: string | null = null;
+  let lastPublishError: string | null = null;
   if (idleDetected && !config.noPublish) {
-    const rationale = `Standing-by detected: ${idleMinutes.toFixed(1)}min since last commit on HEAD (threshold ${config.idleThresholdMin}min). Pick decomposition work per infinite-backlog metabolism.`;
+    const rationale = `Standing-by detected: ${idleMinutes.toFixed(1)}min since last activity (commit or PR; threshold ${config.idleThresholdMin}min). Pick decomposition work per infinite-backlog metabolism.`;
     try {
       const envelope = adapters.publishNudge(config.fromAgent, config.toAgent, idleMinutes, rationale);
       publishedEnvelopeId = envelope.id;
     } catch (e) {
-      // Bus publish failure must NOT kill the poll loop; the daemon needs to
-      // survive transient bus IO errors. Capture the reason in the result.
-      publishError = e instanceof Error ? e.message : String(e);
+      // Bus publish failure must NOT kill the poll loop; the daemon needs
+      // to survive transient bus IO. Captured both in lastPublishError
+      // (structured; machine-readable per Riven's P1 finding) and in note.
+      lastPublishError = e instanceof Error ? e.message : String(e);
     }
   }
 
   return {
     pollAt: pollAt.toISOString(),
     idleDetected,
-    lastCommitAt: lastCommit.toISOString(),
+    lastCommitAt: lastCommitIso !== null ? new Date(lastCommitIso).toISOString() : null,
+    lastPrActivityAt: lastPrActivityIso !== null ? new Date(lastPrActivityIso).toISOString() : null,
     idleMinutes,
     publishedEnvelopeId,
+    lastPublishError,
     note: idleDetected
       ? `idle ${idleMinutes.toFixed(1)}min >= threshold ${config.idleThresholdMin}min — Standing-by candidate${
-          publishError
-            ? ` (publish failed: ${publishError})`
+          lastPublishError
+            ? ` (publish failed: ${lastPublishError})`
             : publishedEnvelopeId
             ? ` (nudge published; envelope=${publishedEnvelopeId})`
             : config.noPublish
             ? " (publish skipped per --no-publish)"
             : ""
         }`
-      : `last commit ${idleMinutes.toFixed(1)}min ago; under threshold ${config.idleThresholdMin}min`,
+      : `last activity ${idleMinutes.toFixed(1)}min ago (commit=${lastCommitIso ?? "n/a"}, pr=${lastPrActivityIso ?? "n/a"}); under threshold ${config.idleThresholdMin}min`,
   };
 }
 
