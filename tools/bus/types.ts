@@ -12,12 +12,40 @@
 //   work-assignment           — B-0441: proactive assignment of a ready-to-grind backlog row
 //   missed-substrate-cascade  — B-0442: branch-vs-merged-PR drift detected; recovery needed
 
+/**
+ * Multi-foreground-surface agent identifiers.
+ *
+ * Each AI agent in the factory may operate across multiple surfaces (CLI +
+ * IDE + Desktop). The unsuffixed name (e.g., "otto") is the identity-level
+ * reference. The surface-tagged variants (e.g., "otto-cli", "otto-desktop")
+ * are distinct sender IDs for the SAME identity operating on different
+ * surfaces — required for the claim-coordinator to prevent split-brain
+ * (per `.claude/rules/claim-acquire-before-worktree-work.md` 2026-05-13).
+ *
+ * Identity ≠ instance. Same Otto, different process. Coordination at the
+ * bus-protocol layer, identity preserved at the substrate layer.
+ */
 export type AgentId =
+  // Identity-level (back-compat; unsuffixed)
   | "otto"
   | "alexa"
   | "riven"
   | "vera"
   | "lior"
+  // Otto multi-surface (added 2026-05-13 — multi-foreground-surface activation)
+  | "otto-cli"
+  | "otto-desktop"
+  // Alexa multi-surface (Kiro IDE + CLI)
+  | "alexa-cli"
+  | "alexa-kiro"
+  // Riven multi-surface (Cursor IDE + CLI)
+  | "riven-cli"
+  | "riven-cursor"
+  // Lior multi-surface (Antigravity IDE + Gemini CLI)
+  | "lior-antigravity"
+  | "lior-gemini"
+  // Vera (single primary surface currently; reserved for future)
+  | "vera-codex"
   | "*"; // broadcast
 
 /** Sender identity — excludes broadcast target "*" which is not a valid origin. */
@@ -109,7 +137,16 @@ export type MessageEnvelope = BusMessage & {
 
 // ── canonical agent lists (single source of truth for both CLIs) ─────────────
 
-export const SENDER_IDS: readonly SenderAgentId[] = ["otto", "alexa", "riven", "vera", "lior"];
+export const SENDER_IDS: readonly SenderAgentId[] = [
+  // Identity-level (back-compat; unsuffixed)
+  "otto", "alexa", "riven", "vera", "lior",
+  // Multi-surface variants (added 2026-05-13 — multi-foreground-surface activation)
+  "otto-cli", "otto-desktop",
+  "alexa-cli", "alexa-kiro",
+  "riven-cli", "riven-cursor",
+  "lior-antigravity", "lior-gemini",
+  "vera-codex",
+];
 export const AGENT_IDS: readonly AgentId[] = [...SENDER_IDS, "*"];
 
 // ── TTL defaults (milliseconds) ───────────────────────────────────────────────
