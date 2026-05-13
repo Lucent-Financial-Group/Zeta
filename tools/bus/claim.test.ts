@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -231,5 +231,50 @@ describe("claim.ts — unknown command", () => {
   test("unknown command exits 1", () => {
     const r = run("frobulate");
     expect(r.exitCode).toBe(1);
+  });
+});
+
+// ── P2: unknown action guard ──────────────────────────────────────────────────
+
+describe("claim.ts — unknown action protection (P2)", () => {
+  const BUS_SCRIPT = join(import.meta.dir, "bus.ts");
+
+  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  afterEach(cleanTestDir);
+
+  test("unknown action on claim topic does not clear an existing claim", () => {
+    run("acquire", "--from", "otto", "--item", "B-0300");
+
+    // Inject a message with an unknown action to simulate a buggy sender.
+    spawnSync(
+      "bun",
+      [BUS_SCRIPT, "publish", "--from", "vera", "--to", "*", "--topic", "claim",
+       "--payload", JSON.stringify({ action: "relinquish", itemId: "B-0300" })],
+      { encoding: "utf-8", env: { ...process.env, ZETA_BUS_DIR: TEST_DIR } },
+    );
+
+    const r = run("check", "--item", "B-0300");
+    expect(r.exitCode).toBe(1);
+    expect(r.stdout).toContain("claimed by otto");
+  });
+});
+
+// ── P1: acquire lock cleanup ──────────────────────────────────────────────────
+
+describe("claim.ts — acquire lock cleanup (P1)", () => {
+  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  afterEach(cleanTestDir);
+
+  test("no lock files remain in bus dir after acquire", () => {
+    run("acquire", "--from", "otto", "--item", "B-0555");
+    const lockFiles = readdirSync(TEST_DIR).filter((f) => f.startsWith("acquire-"));
+    expect(lockFiles).toHaveLength(0);
+  });
+
+  test("no lock files remain after failed acquire", () => {
+    run("acquire", "--from", "vera", "--item", "B-0555");
+    run("acquire", "--from", "otto", "--item", "B-0555"); // blocked
+    const lockFiles = readdirSync(TEST_DIR).filter((f) => f.startsWith("acquire-"));
+    expect(lockFiles).toHaveLength(0);
   });
 });

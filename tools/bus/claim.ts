@@ -14,8 +14,33 @@
 //   acquire: 0 = claim published, 1 = already claimed (no publish)
 //   release: 0 = release published, 1 = error
 
-import { publish, list } from "./bus.ts";
+import { openSync, closeSync, unlinkSync } from "node:fs";
+import { join } from "node:path";
+import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
 import type { AgentId, SenderAgentId, MessageEnvelope } from "./types.ts";
+
+// Per-item advisory file lock — guards acquire's check+publish against concurrent processes.
+function lockFilePath(itemId: string): string {
+  const safe = itemId.replace(/[^a-zA-Z0-9_-]/g, "_");
+  return join(BUS_DIR, `acquire-${safe}.lock`);
+}
+
+function withAcquireLock<T>(itemId: string, fn: () => T): T {
+  ensureDir();
+  const lp = lockFilePath(itemId);
+  let fd: number | undefined;
+  // O_CREAT|O_EXCL ("wx"): atomic exclusive create — exactly one winner per race.
+  for (let i = 0; i < 3; i++) {
+    try { fd = openSync(lp, "wx"); break; } catch { /* retry */ }
+  }
+  if (fd === undefined) throw new Error(`${itemId}: acquire lock busy — retry`);
+  try {
+    return fn();
+  } finally {
+    closeSync(fd);
+    try { unlinkSync(lp); } catch { /* best-effort */ }
+  }
+}
 
 export type ClaimRecord = {
   id: string;
@@ -34,11 +59,13 @@ export type ClaimRecord = {
 export function activeClaims(itemId: string): ClaimRecord[] {
   const msgs = list({ topic: "claim" });
 
-  // Latest action wins per (from, itemId) pair.
+  // Latest action wins per (from, itemId) pair — only known actions participate
+  // so a malformed sender cannot silently clear a valid claim.
   const byKey = new Map<string, MessageEnvelope>();
   for (const m of msgs) {
     const p = m.payload as { action: string; itemId: string; branch?: string };
     if (p.itemId !== itemId) continue;
+    if (p.action !== "claim" && p.action !== "release") continue;
     const key = `${m.from}:${p.itemId}`;
     const existing = byKey.get(key);
     if (!existing || m.timestamp > existing.timestamp) {
@@ -130,25 +157,41 @@ function main(): void {
         process.exit(1);
       }
 
-      const existing = activeClaims(itemId).filter((c) => c.from !== from);
-      if (existing.length > 0) {
-        const by = existing.map((c) => c.from).join(", ");
+      const sender = from; // capture narrowed type for use inside closure
+      let acquired = false;
+      let claimedByOthers: string[] = [];
+      let messageId: string | undefined;
+
+      try {
+        ({ acquired, claimedByOthers, messageId } = withAcquireLock(itemId, () => {
+          const existing = activeClaims(itemId).filter((c) => c.from !== sender);
+          if (existing.length > 0) {
+            return { acquired: false, claimedByOthers: existing.map((c) => c.from as string), messageId: undefined };
+          }
+          const env = publish(sender, "*" as AgentId, {
+            topic: "claim",
+            payload: { action: "claim", itemId, ...(branch ? { branch } : {}) },
+          });
+          return { acquired: true, claimedByOthers: [] as string[], messageId: env.id };
+        }));
+      } catch (err) {
+        console.error(`Error: ${(err as Error).message}`);
+        process.exit(1);
+      }
+
+      if (!acquired) {
         if (asJson) {
-          console.log(JSON.stringify({ itemId, acquired: false, claimedBy: existing.map((c) => c.from) }));
+          console.log(JSON.stringify({ itemId, acquired: false, claimedBy: claimedByOthers }));
         } else {
-          console.error(`${itemId}: already claimed by ${by} — not acquiring`);
+          console.error(`${itemId}: already claimed by ${claimedByOthers.join(", ")} — not acquiring`);
         }
         process.exit(1);
       }
 
-      const env = publish(from, "*" as AgentId, {
-        topic: "claim",
-        payload: { action: "claim", itemId, ...(branch ? { branch } : {}) },
-      });
       if (asJson) {
-        console.log(JSON.stringify({ itemId, acquired: true, messageId: env.id }));
+        console.log(JSON.stringify({ itemId, acquired: true, messageId }));
       } else {
-        console.log(`${itemId}: claimed by ${from}${branch ? ` (${branch})` : ""} — ${env.id}`);
+        console.log(`${itemId}: claimed by ${sender}${branch ? ` (${branch})` : ""} — ${messageId}`);
       }
       break;
     }
