@@ -1,5 +1,5 @@
 ---
-name: Non-glass-halo encryption primitive — better-than-gitcrypt as root DB encryption + post-quantum (lattice / multi-lattice-of-lattice) + NIST as bootstrap-only (sus key derivation) + FHE (fully encrypted computation) + thermally reversible + composes with deterministic simulation (Aaron 2026-05-13)
+name: Non-glass-halo encryption primitive — better-than-gitcrypt as root DB encryption + post-quantum (lattice / multi-lattice-of-lattice) + NIST as bootstrap-only (historically controversial DRBG standardization) + FHE (fully encrypted computation) + thermally reversible + composes with deterministic simulation (Aaron 2026-05-13)
 description: >-
   2026-05-13 — Aaron's substrate-honest technical-roadmap
   disclosure for the non-glass-halo encryption primitive
@@ -30,8 +30,10 @@ runtime substrate for the factory.
 **How to apply:** When designing or implementing
 encryption substrate for the factory (root DB
 encryption, HIPAA-scope substrate, KSK actuator-scope
-encryption, Aurora data sovereignty cryptography), this
-roadmap is canonical. Six layers compose.
+encryption, Aurora data sovereignty cryptography), treat
+this roadmap as research-grade substrate (Aaron's
+disclosure, not yet promoted to operational policy via a
+separate implementation ADR). Six layers compose.
 
 ## What Aaron said
 
@@ -96,8 +98,10 @@ filter pattern).
 goals):
 
 - Root-DB-scope (not just per-file)
-- Post-quantum by default (gitcrypt uses GPG/AES which
-  are quantum-vulnerable)
+- Post-quantum by default (gitcrypt's GPG key exchange
+  uses RSA/ECC which is Shor-vulnerable; AES-256
+  symmetric encryption is quantum-resilient, but the
+  key-exchange layer is the attack surface)
 - Reversible (compose with retraction-native algebra)
 - Auditable (composes with glass-halo discipline at
   encrypted scope)
