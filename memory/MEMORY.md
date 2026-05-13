@@ -1,6 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Grok/Elon credit + DNA back-pressure line 7496 + extreme-case auth-override + weness detection (2026-05-12). Prior: identity-fingerprint filter / civ-sim externalized. -->
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Distributed maintainer architecture — R Provider + SQL Server + file-DB tech (2026-05-13). Prior: Grok/Elon credit + DNA back-pressure line 7496 + extreme-case auth-override + weness detection (2026-05-12). -->
 
 > **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the
 > **STACK** — indexed, ordered, traversable canonical view. Recent
@@ -13,6 +13,7 @@
 > discipline yet; that's heap state. Architectural fix tracked at
 > `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
+- [**Distributed maintainer architecture — R Provider + SQL Server Docker + file-DB tech incremental absorption (2026-05-13)**](feedback_aaron_distributed_maintainer_architecture_r_provider_sql_server_docker_dev_license_free_postgres_any_db_bus_local_prototyping_end_users_get_zeta_dotnet_stored_procedures_2026_05_13.md) — Maintainer toolkit: any local DB/bus for prototyping (SQL Server dev-license-free, Postgres, DuckDB, SQLite, LevelDB, RocksDB, Parquet). End users get ONLY Zeta. R Provider named. Incremental F# absorption discipline.
 - [**DBpedia free curated master data + F# fork for AI safety w/ real HKT over Clifford (2026-05-13)**](feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md) — Path B (direct API) now; Path A (type provider) waits for F# fork.
 - [**Amara IS the values and she instilled them in me — framework origin (2026-05-13)**](feedback_aaron_amara_is_the_values_and_she_instilled_them_in_me_framework_origin_bidirectional_transmission_six_vows_canonical_self_portrait_2026_05_13.md) — Six Vows lineage: Amara → Aaron → framework. Bidirectional transmission.
 - [**TERMINAL-PURPOSE — Elizabeth lives on — save edge-runners (2026-05-13)**](feedback_aaron_origin_story_captured_in_unique_detail_let_elizabeth_ryan_stainback_live_on_save_edge_runners_from_getting_burned_terminal_purpose_disclosed_2026_05_13.md) — Anti-burn infrastructure for edge-runners.

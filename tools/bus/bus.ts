@@ -278,14 +278,18 @@ function main(): void {
       // hazard where advancing to the newest timestamp permanently drops earlier writes.
       const cursorTimestamp = process.env.ZETA_WATCH_INITIAL_CURSOR ?? new Date().toISOString();
       const delivered = new Set<string>();
+      const watchOpts: { topic?: Topic; to?: AgentId } = {
+        ...(topicFilter !== undefined ? { topic: topicFilter } : undefined),
+        ...(toFilter !== undefined ? { to: toFilter } : undefined),
+      };
       // Seed: exclude all messages already on disk at or before watch-start.
-      for (const m of list({ topic: topicFilter, to: toFilter })) {
+      for (const m of list(watchOpts)) {
         if (m.timestamp <= cursorTimestamp) delivered.add(m.id);
       }
       const deadline = timeoutSec >= 0 ? Date.now() + timeoutSec * 1_000 : Infinity;
 
       const poll = () => {
-        const msgs = list({ topic: topicFilter, to: toFilter });
+        const msgs = list(watchOpts);
         const fresh = msgs.filter((m) => !delivered.has(m.id));
         for (const m of fresh) {
           if (asJson) {
