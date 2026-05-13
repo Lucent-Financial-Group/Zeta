@@ -183,3 +183,4 @@ tools/alloy/classes/
 
 # Cursor / IDE per-user config and plugin caches (superpowers, etc.)
 .config/
+.kiro/
