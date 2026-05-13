@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test:typescript": "bun test",
     "hygiene:sort-tick-history": "bun ./tools/hygiene/sort-tick-history-canonical.ts",
-    "hygiene:fix-markdown": "bun ./tools/hygiene/fix-markdown-md032-md026.ts"
+    "hygiene:fix-markdown": "bun ./tools/hygiene/fix-markdown-md032-md026.ts",
+    "shadow": "bun tools/shadow/shadow-observer.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

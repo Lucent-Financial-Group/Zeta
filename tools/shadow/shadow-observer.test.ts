@@ -3,7 +3,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { runOneCycle, log, detectViaCommand, detectGreyTextMacOS } from "./shadow-observer.ts";
+import { runOneCycle, log, detectViaCommand, detectGreyTextMacOS, parseConfig } from "./shadow-observer.ts";
 import type { ShadowConfig, ShadowEvent, OsascriptRunner } from "./shadow-observer.ts";
 
 const SCRIPT = join(import.meta.dir, "shadow-observer.ts");
@@ -373,6 +373,159 @@ describe("shadow-observer — detectGreyTextMacOS unit (slice 3)", () => {
     } finally {
       console.warn = origWarn;
     }
+  });
+});
+
+describe("shadow-observer — --loop flag validation (slice 4)", () => {
+  let TEST_DIR: string;
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-shadow-loop-val-test-"));
+  });
+  afterEach(() => {
+    if (existsSync(TEST_DIR)) rmSync(TEST_DIR, { recursive: true, force: true });
+  });
+
+  function runLoop(...args: string[]): { stdout: string; stderr: string; exitCode: number } {
+    const r = spawnSync("bun", [SCRIPT, ...args, "--log-file", join(TEST_DIR, "shadow.log")], {
+      encoding: "utf-8",
+    });
+    return {
+      stdout: (r.stdout ?? "").trim(),
+      stderr: (r.stderr ?? "").trim(),
+      exitCode: r.status ?? 1,
+    };
+  }
+
+  test("--loop abc exits 1 with error message", () => {
+    const r = runLoop("--loop", "abc", "--once");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--loop");
+  });
+
+  test("--loop -1 exits 1 with error message", () => {
+    const r = runLoop("--loop", "-1", "--once");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--loop");
+  });
+
+  test("--loop 0 exits 1 with error message (zero is not positive)", () => {
+    const r = runLoop("--loop", "0", "--once");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("--loop");
+  });
+
+  test("--loop 1000 is accepted by parseConfig (loopMs=1000)", () => {
+    const config = parseConfig(["--loop", "1000", "--once"]);
+    expect(config.loopMs).toBe(1000);
+  });
+});
+
+describe("shadow-observer — --loop outer restart integration (slice 4)", () => {
+  let LOOP_DIR: string;
+  const ZETA_SHADOW = join(import.meta.dir, "zeta-shadow.ts");
+
+  beforeEach(() => {
+    LOOP_DIR = mkdtempSync(join(tmpdir(), "zeta-shadow-loop-int-test-"));
+  });
+  afterEach(() => {
+    if (existsSync(LOOP_DIR)) rmSync(LOOP_DIR, { recursive: true, force: true });
+  });
+
+  function logPath(): string {
+    return join(LOOP_DIR, "shadow.log");
+  }
+
+  function readEvents(): ShadowEvent[] {
+    const p = logPath();
+    if (!existsSync(p)) return [];
+    return readFileSync(p, "utf-8")
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l) as ShadowEvent);
+  }
+
+  test("--loop 100 --once --dry-run restarts: log shows ≥2 started events within 1200ms", async () => {
+    // Use --detect-cmd false so cycles complete instantly (no osascript overhead)
+    const proc = Bun.spawn(
+      [
+        "bun", ZETA_SHADOW,
+        "--loop", "100", "--once", "--dry-run", "--delay", "0",
+        "--detect-cmd", "false",
+        "--log-file", logPath(),
+      ],
+      { stdout: "ignore", stderr: "ignore" },
+    );
+    await Bun.sleep(1200);
+    proc.kill("SIGTERM");
+    await proc.exited;
+    const events = readEvents();
+    const startedCount = events.filter((e) => e.type === "started").length;
+    expect(startedCount).toBeGreaterThanOrEqual(2);
+  });
+
+  test("--loop 100 --detect-cmd 'echo hi' --once --dry-run --delay 0: detection runs across restarts", async () => {
+    const proc = Bun.spawn(
+      [
+        "bun", ZETA_SHADOW,
+        "--loop", "100",
+        "--once", "--dry-run", "--delay", "0",
+        "--detect-cmd", "echo hi",
+        "--log-file", logPath(),
+      ],
+      { stdout: "ignore", stderr: "ignore" },
+    );
+    await Bun.sleep(600);
+    proc.kill("SIGTERM");
+    await proc.exited;
+    const events = readEvents();
+    const detectedCount = events.filter((e) => e.type === "detected").length;
+    expect(detectedCount).toBeGreaterThanOrEqual(2);
+  });
+
+  test("SIGTERM stops outer loop: no new started events appear after kill", async () => {
+    const proc = Bun.spawn(
+      ["bun", ZETA_SHADOW, "--loop", "2000", "--once", "--dry-run", "--log-file", logPath()],
+      { stdout: "ignore", stderr: "ignore" },
+    );
+    // Let one cycle run, then kill
+    await Bun.sleep(300);
+    proc.kill("SIGTERM");
+    await proc.exited;
+    const countAfterKill = readEvents().filter((e) => e.type === "started").length;
+    // Wait and verify no extra restarts happened (loopMs=2000 so restart won't trigger before kill)
+    await Bun.sleep(300);
+    const countAfterWait = readEvents().filter((e) => e.type === "started").length;
+    expect(countAfterKill).toBe(countAfterWait);
+  });
+});
+
+describe("shadow-observer — zeta-shadow.ts smoke tests (slice 4)", () => {
+  let SMOKE_DIR: string;
+  const ZETA_SHADOW = join(import.meta.dir, "zeta-shadow.ts");
+
+  beforeEach(() => {
+    SMOKE_DIR = mkdtempSync(join(tmpdir(), "zeta-shadow-smoke-test-"));
+  });
+  afterEach(() => {
+    if (existsSync(SMOKE_DIR)) rmSync(SMOKE_DIR, { recursive: true, force: true });
+  });
+
+  test("zeta-shadow.ts --once --dry-run exits 0", () => {
+    const r = spawnSync(
+      "bun",
+      [ZETA_SHADOW, "--once", "--dry-run", "--log-file", join(SMOKE_DIR, "shadow.log")],
+      { encoding: "utf-8" },
+    );
+    expect(r.status).toBe(0);
+  });
+
+  test("zeta-shadow.ts with invalid flag exits 1", () => {
+    const r = spawnSync(
+      "bun",
+      [ZETA_SHADOW, "--bogus-flag-zeta"],
+      { encoding: "utf-8" },
+    );
+    expect(r.status).toBe(1);
   });
 });
 
