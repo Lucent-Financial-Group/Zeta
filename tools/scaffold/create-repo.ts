@@ -305,10 +305,11 @@ function step03_enableSecurity(): void {
     if (!result.ok) autoOp.error = result.stderr;
   }
 
-  // Private vulnerability reporting
-  ghApiPatch(
-    `/repos/${config.org}/${config.name}`,
-    { private_vulnerability_reporting_enabled: true },
+  // Private vulnerability reporting — requires the dedicated endpoint, not a repo PATCH field.
+  // Ref: https://docs.github.com/en/rest/repos/repos#enable-private-vulnerability-reporting-for-a-repository
+  ghApiPut(
+    `/repos/${config.org}/${config.name}/private-vulnerability-reporting`,
+    {},
     "Enable private vulnerability reporting",
     "03d-private-vuln-reporting"
   );
