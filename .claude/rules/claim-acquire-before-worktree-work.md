@@ -66,7 +66,7 @@ $ echo $?
 # Proceeded with worktree creation + impl
 ```
 
-### Example 2: Otto-CLI and Otto-Desktop race
+### Example 2: Otto-CLI and Otto-Desktop race — KNOWN GAP
 
 ```bash
 # Otto-CLI publishes claim first:
@@ -74,14 +74,51 @@ $ bun tools/bus/claim.ts acquire --from otto --item B-0444
 $ echo $?
 0
 
-# Otto-Desktop tries to claim same row a second later:
+# Otto-Desktop tries to claim same row with the SAME --from value:
 $ bun tools/bus/claim.ts acquire --from otto --item B-0444
 $ echo $?
-1
+0   # <-- ALSO succeeds! claim.ts treats same-from as idempotent self-re-acquire
+```
+
+**Known architectural gap (caught by Vera 2026-05-13 in review of this
+rule, PR #3032):** `tools/bus/claim.ts` line ~270 filters existing
+claims by `c.from !== sender`, so two callers passing the same
+`--from otto` are indistinguishable to claim.ts. The canonical
+`SENDER_IDS` (`otto`, `alexa`, `riven`, `vera`, `lior`) does NOT
+distinguish multi-surface instances of the same agent.
+
+**Workarounds** (until the schema supports multi-surface sender IDs):
+
+1. **Lane-based convention** (zero-code): Otto-CLI takes backlog
+   grinding + slice impl; Otto-Desktop takes substrate + cowork.
+   Different scopes, no claim collision possible.
+2. **Branch-prefix discipline**: Otto-CLI uses `otto-cli/` branch
+   prefix; Otto-Desktop uses `otto-desktop/` prefix. The claim
+   envelope's optional `branch` field disambiguates post-hoc.
+3. **Schema extension** (substrate-level fix): add `otto-cli` and
+   `otto-desktop` (and analogous `alexa-cli`/`alexa-kiro`, etc.) to
+   `SENDER_IDS` in `tools/bus/types.ts`. Then `--from otto-desktop`
+   becomes a distinct claim from `--from otto-cli`. Future work.
+
+### Example 3: Otto-CLI and Otto-Desktop race (with schema fix)
+
+```bash
+# Otto-CLI publishes claim first:
+$ bun tools/bus/claim.ts acquire --from otto-cli --item B-0444
+$ echo $?
+0
+
+# Otto-Desktop tries to claim same row with DIFFERENT --from:
+$ bun tools/bus/claim.ts acquire --from otto-desktop --item B-0444
+$ echo $?
+1   # Otto-Desktop sees otto-cli's claim, exits 1
 # Otto-Desktop picks B-0445 instead.
 ```
 
-### Example 3: Otto-CLI crashes mid-work
+This is the target behavior. Today (Example 2) it doesn't work
+because `otto-cli` and `otto-desktop` aren't in `SENDER_IDS` yet.
+
+### Example 4: Otto-CLI crashes mid-work
 
 ```bash
 # Otto-CLI process dies. Claim stays on bus with 24h TTL.
