@@ -366,19 +366,16 @@ export async function run(
   }
 
   // Outer restart loop: after natural exit, wait loopMs then restart.
-  // SIGINT/SIGTERM terminate the process directly — no restart.
-  let terminated = false;
-  const onSignal = () => { terminated = true; };
+  // SIGINT/SIGTERM call process.exit(0) directly — registering a no-op listener
+  // would suppress Node/Bun's default exit behaviour while runInner's while(true)
+  // blocks the outer loop from ever checking a "terminated" flag.
+  const onSignal = () => { process.exit(0); };
   process.on("SIGINT", onSignal);
   process.on("SIGTERM", onSignal);
-  try {
-    while (!terminated) {
-      await runInner(config, detectFn, acceptFn);
-      if (!terminated) await Bun.sleep(config.loopMs);
-    }
-  } finally {
-    process.off("SIGINT", onSignal);
-    process.off("SIGTERM", onSignal);
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    await runInner(config, detectFn, acceptFn);
+    await Bun.sleep(config.loopMs);
   }
 }
 
@@ -411,6 +408,10 @@ export function parseConfig(argv: string[]): ShadowConfig {
 
   let loopMs: number | undefined;
   if (values.loop !== undefined) {
+    if (!/^\d+$/.test(values.loop)) {
+      console.error("Error: --loop must be a positive integer (milliseconds)");
+      process.exit(1);
+    }
     const parsed = parseInt(values.loop, 10);
     if (!Number.isFinite(parsed) || parsed <= 0) {
       console.error("Error: --loop must be a positive integer (milliseconds)");
