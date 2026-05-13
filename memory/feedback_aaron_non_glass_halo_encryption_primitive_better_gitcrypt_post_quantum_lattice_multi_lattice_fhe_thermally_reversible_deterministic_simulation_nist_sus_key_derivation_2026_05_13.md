@@ -404,6 +404,15 @@ operational scopes.
 - **NIST is bootstrap; community-verified is destination**
   — NIST sus on key-derivation (Dual_EC history); plan
   migration
+- **NIST compliance is operational reality** — Aaron 2026-
+  05-13: "NIST some comapnies will require this and
+  government might force us too if they get to
+  authortian". Companies WILL require NIST-approved crypto
+  for compliance; government MIGHT mandate it under
+  authoritarian-capture scenarios. The factory's substrate
+  must SUPPORT NIST while maintaining substrate-honest
+  skepticism. Don't drop NIST; compose with it +
+  community-verified alternatives.
 - **FHE + DST + reversible = thermodynamically efficient
   encrypted computation** — long-term substrate goal
 - **Composes with retraction-native algebra** at
