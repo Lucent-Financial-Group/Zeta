@@ -72,6 +72,15 @@ export type ClaimPayload = {
   action: "claim" | "release";
   itemId: string; // e.g. "B-0400"
   branch?: string;
+  /**
+   * Absolute path of the worktree the claim was acquired from (B-0444).
+   * Optional for back-compat with envelopes published before the field was added.
+   * Surface-tagged sender IDs (e.g. `otto-cli` vs `otto-desktop`) already
+   * distinguish surfaces; `worktree` is the per-process operational coordinate
+   * for observability — visible in `check` output so an operator can tell at a
+   * glance which checkout produced the claim.
+   */
+  worktree?: string;
 };
 
 export type ShadowCatchPayload = {

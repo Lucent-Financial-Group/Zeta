@@ -81,6 +81,8 @@ export type ClaimRecord = {
   from: SenderAgentId;
   itemId: string;
   branch?: string;
+  /** Absolute path of the worktree this claim originated from (B-0444). */
+  worktree?: string;
   timestamp: string;
   expiresAt: string;
 };
@@ -109,7 +111,7 @@ export function activeClaims(itemId: string): ClaimRecord[] {
     const m = msgs[i]!;
     // Guard against null/non-object payloads written by buggy senders.
     if (!m.payload || typeof m.payload !== "object" || Array.isArray(m.payload)) continue;
-    const p = m.payload as { action: string; itemId: string; branch?: string };
+    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string };
     if (p.itemId !== itemId) continue;
     if (p.action !== "claim" && p.action !== "release") continue;
     const key = `${m.from}:${p.itemId}`;
@@ -131,13 +133,14 @@ export function activeClaims(itemId: string): ClaimRecord[] {
 
   const records: ClaimRecord[] = [];
   for (const { envelope: m } of byKey.values()) {
-    const p = m.payload as { action: string; itemId: string; branch?: string };
+    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string };
     if (p.action !== "claim") continue; // release means no active claim
     records.push({
       id: m.id,
       from: m.from,
       itemId: p.itemId,
       ...(p.branch !== undefined && { branch: p.branch }),
+      ...(p.worktree !== undefined && { worktree: p.worktree }),
       timestamp: m.timestamp,
       expiresAt: m.expiresAt,
     });
@@ -158,7 +161,7 @@ export function allActiveClaims(): ClaimRecord[] {
   for (let i = 0; i < msgs.length; i++) {
     const m = msgs[i]!;
     if (!m.payload || typeof m.payload !== "object" || Array.isArray(m.payload)) continue;
-    const p = m.payload as { action: string; itemId?: unknown; branch?: string };
+    const p = m.payload as { action: string; itemId?: unknown; branch?: string; worktree?: string };
     if (typeof p.itemId !== "string") continue;
     if (p.action !== "claim" && p.action !== "release") continue;
     const key = `${m.from}:${p.itemId}`;
@@ -179,13 +182,14 @@ export function allActiveClaims(): ClaimRecord[] {
 
   const records: ClaimRecord[] = [];
   for (const { envelope: m } of byKey.values()) {
-    const p = m.payload as { action: string; itemId: string; branch?: string };
+    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string };
     if (p.action !== "claim") continue;
     records.push({
       id: m.id,
       from: m.from,
       itemId: p.itemId,
       ...(p.branch !== undefined && { branch: p.branch }),
+      ...(p.worktree !== undefined && { worktree: p.worktree }),
       timestamp: m.timestamp,
       expiresAt: m.expiresAt,
     });
@@ -195,10 +199,14 @@ export function allActiveClaims(): ClaimRecord[] {
 
 // ── CLI ───────────────────────────────────────────────────────────────────────
 
-function parseArgs(argv: string[]): { command: string; flags: Record<string, string> } {
+// A bare flag (e.g. `--json` with no value following) is represented as the
+// boolean literal `true` so it is distinguishable from an explicit string
+// value `"true"` — relevant for flags whose values are user-supplied paths /
+// branch names where `"true"` is a legitimate input (Codex P2 on PR #3043).
+function parseArgs(argv: string[]): { command: string; flags: Record<string, string | true> } {
   const args = argv.slice(2);
   const command = args[0] ?? "";
-  const flags: Record<string, string> = {};
+  const flags: Record<string, string | true> = {};
   for (let i = 1; i < args.length; i++) {
     const a = args[i]!;
     if (a.startsWith("--")) {
@@ -208,29 +216,42 @@ function parseArgs(argv: string[]): { command: string; flags: Record<string, str
         flags[key] = next;
         i++;
       } else {
-        flags[key] = "true";
+        flags[key] = true;
       }
     }
   }
   return { command, flags };
 }
 
+// Convenience: was the flag set with an explicit string value?
+function asString(v: string | true | undefined): string | undefined {
+  return typeof v === "string" ? v : undefined;
+}
+
+// Convenience: was the flag set at all (either bare or with a value)?
+function isSet(v: string | true | undefined): boolean {
+  return v !== undefined;
+}
+
 function usage(): void {
   console.log(`Usage:
   claim.ts check   --item <id> [--json]
-  claim.ts acquire --from <agent> --item <id> [--branch <branch>] [--json]
+  claim.ts acquire --from <agent> --item <id> [--branch <branch>] [--worktree <path>] [--json]
   claim.ts release --from <agent> --item <id> [--json]
 
-Agents: ${SENDER_IDS.join(" | ")}`);
+Agents: ${SENDER_IDS.join(" | ")}
+
+--worktree is optional (B-0444); when set, the value is recorded on the
+  claim envelope for observability. Omit to leave the field absent.`);
 }
 
 function main(): void {
   const { command, flags } = parseArgs(process.argv);
-  const asJson = flags.json === "true";
+  const asJson = isSet(flags.json); // bare `--json` is acceptable; any presence enables JSON
 
   switch (command) {
     case "check": {
-      const itemId = flags.item;
+      const itemId = asString(flags.item);
       if (!itemId) { console.error("Error: --item is required"); process.exit(1); }
 
       const claims = activeClaims(itemId);
@@ -240,16 +261,39 @@ function main(): void {
         console.log(`${itemId}: unclaimed`);
       } else {
         for (const c of claims) {
-          console.log(`${itemId}: claimed by ${c.from}${c.branch ? ` (${c.branch})` : ""} since ${c.timestamp}`);
+          const branchStr = c.branch ? ` (${c.branch})` : "";
+          const worktreeStr = c.worktree ? ` [worktree: ${c.worktree}]` : "";
+          console.log(`${itemId}: claimed by ${c.from}${branchStr}${worktreeStr} since ${c.timestamp}`);
         }
       }
       process.exit(claims.length > 0 ? 1 : 0);
     }
 
     case "acquire": {
-      const from = flags.from as SenderAgentId | undefined;
-      const itemId = flags.item;
-      const branch = flags.branch;
+      const from = asString(flags.from) as SenderAgentId | undefined;
+      const itemId = asString(flags.item);
+      const branch = asString(flags.branch);
+      // B-0444: --worktree captures the per-process operational coordinate
+      // visible in `check` output. Two reviewer concerns reshape the original
+      // design (PR #3043 round 2):
+      //
+      //  - Codex P2 — bare `--worktree` (no value) should be a hard error so
+      //    `"true"` cannot get silently recorded as the worktree path, while
+      //    still allowing an explicit `--worktree true` to set the literal
+      //    string `true` as a valid path. `parseArgs` now distinguishes the
+      //    bare-flag case (boolean `true`) from the string-value case.
+      //
+      //  - Copilot — auto-defaulting `worktree` to `process.cwd()` records a
+      //    plausible-looking but potentially-misleading coordinate when the
+      //    caller is running from an unrelated directory (CI step that
+      //    `cd`'d, wrapper script, cron context). Make the field absent when
+      //    the caller did not opt in: `--worktree <path>` to set, omit to
+      //    leave undefined.
+      if (flags.worktree === true) {
+        console.error("Error: --worktree requires a path argument");
+        process.exit(1);
+      }
+      const worktree = asString(flags.worktree); // undefined when --worktree omitted
       if (!from || !itemId) {
         console.error("Error: --from and --item are required");
         process.exit(1);
@@ -272,7 +316,12 @@ function main(): void {
           }
           const env = publish(sender, "*" as AgentId, {
             topic: "claim",
-            payload: { action: "claim", itemId, ...(branch ? { branch } : {}) },
+            payload: {
+              action: "claim",
+              itemId,
+              ...(branch ? { branch } : {}),
+              ...(worktree ? { worktree } : {}),
+            },
           });
           return { acquired: true, claimedByOthers: [] as string[], messageId: env.id };
         }));
@@ -291,16 +340,23 @@ function main(): void {
       }
 
       if (asJson) {
-        console.log(JSON.stringify({ itemId, acquired: true, messageId }));
+        console.log(JSON.stringify({
+          itemId,
+          acquired: true,
+          messageId,
+          ...(worktree !== undefined && { worktree }),
+        }));
       } else {
-        console.log(`${itemId}: claimed by ${sender}${branch ? ` (${branch})` : ""} — ${messageId}`);
+        const branchStr = branch ? ` (${branch})` : "";
+        const worktreeStr = worktree ? ` [worktree: ${worktree}]` : "";
+        console.log(`${itemId}: claimed by ${sender}${branchStr}${worktreeStr} — ${messageId}`);
       }
       break;
     }
 
     case "release": {
-      const from = flags.from as SenderAgentId | undefined;
-      const itemId = flags.item;
+      const from = asString(flags.from) as SenderAgentId | undefined;
+      const itemId = asString(flags.item);
       if (!from || !itemId) {
         console.error("Error: --from and --item are required");
         process.exit(1);
