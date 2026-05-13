@@ -19,6 +19,6 @@ describe("backlog-ready-notifier slice 1", () => {
     const config: NotifierConfig = { ...DEFAULT_CONFIG, once: true };
     const results = await runNotifier(config);
     expect(results).toHaveLength(1);
-    expect(results[0].readyRowsFound).toBe(0);
+    expect(results[0]!.readyRowsFound).toBe(0);
   });
 });
