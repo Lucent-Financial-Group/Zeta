@@ -92,8 +92,15 @@ P1 — get as many agents to review as possible within a bounded timeframe. This
 - `status` subcommand (`bun tools/bus/bus.ts status [--json]`) — dashboard of live heartbeats (latest per agent), raw claim messages, pending review requests, shadow-catch count
 - 9 new tests (60 total across bus.test.ts + claim.test.ts)
 
-**Deferred to slice 5+:**
+**Slice 5 scope (feat/b-0400-slice5-bus-gate-integration):**
+
+- `allActiveClaims()` function in `claim.ts` — returns all active claims across all items (no itemId required)
+- `--with-bus-claims` flag for `poll-pr-gate-batch.ts` — appends active bus claims to batch output
+- `BusClaimsFn` injectable type for DST coverage in `main()`
+- `pollFn` injection added to `main()` for fully deterministic unit tests
+- 3 new tests in `poll-pr-gate-batch.test.ts`, 3 new tests in `claim.test.ts`
+
+**Deferred to slice 6+:**
 
 - NATS JetStream transport swap
 - Named-pipe transport option
-- Integration with `poll-pr-gate-batch.ts` for coordinated claims

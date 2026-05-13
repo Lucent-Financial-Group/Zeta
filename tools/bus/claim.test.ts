@@ -328,3 +328,57 @@ describe("claim.ts — acquire lock cleanup (P1)", () => {
     expect(lockFiles).toHaveLength(0);
   });
 });
+
+// ── allActiveClaims() ─────────────────────────────────────────────────────────
+
+describe("claim.ts — allActiveClaims()", () => {
+  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  afterEach(cleanTestDir);
+
+  function evalInBus(code: string): { stdout: string; status: number | null } {
+    const r = spawnSync("bun", ["-e", code], {
+      encoding: "utf-8",
+      env: { ...process.env, ZETA_BUS_DIR: TEST_DIR },
+    });
+    return { stdout: (r.stdout ?? "").trim(), status: r.status };
+  }
+
+  test("returns empty array when bus is empty", () => {
+    const r = evalInBus(`
+      const { allActiveClaims } = await import(${JSON.stringify(CLAIM_SCRIPT)});
+      console.log(JSON.stringify(allActiveClaims()));
+    `);
+    expect(r.status).toBe(0);
+    expect(JSON.parse(r.stdout)).toEqual([]);
+  });
+
+  test("returns all active claims across multiple items", () => {
+    run("acquire", "--from", "otto", "--item", "B-0400");
+    run("acquire", "--from", "vera", "--item", "B-0401");
+
+    const r = evalInBus(`
+      const { allActiveClaims } = await import(${JSON.stringify(CLAIM_SCRIPT)});
+      console.log(JSON.stringify(allActiveClaims()));
+    `);
+    expect(r.status).toBe(0);
+    const claims = JSON.parse(r.stdout) as Array<{ from: string; itemId: string }>;
+    expect(claims).toHaveLength(2);
+    const itemIds = claims.map((c) => c.itemId).sort();
+    expect(itemIds).toEqual(["B-0400", "B-0401"]);
+  });
+
+  test("released items are not included", () => {
+    run("acquire", "--from", "otto", "--item", "B-0400");
+    run("acquire", "--from", "vera", "--item", "B-0401");
+    run("release", "--from", "otto", "--item", "B-0400");
+
+    const r = evalInBus(`
+      const { allActiveClaims } = await import(${JSON.stringify(CLAIM_SCRIPT)});
+      console.log(JSON.stringify(allActiveClaims()));
+    `);
+    expect(r.status).toBe(0);
+    const claims = JSON.parse(r.stdout) as Array<{ itemId: string }>;
+    expect(claims).toHaveLength(1);
+    expect(claims[0]!.itemId).toBe("B-0401");
+  });
+});
