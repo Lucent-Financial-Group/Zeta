@@ -18,6 +18,6 @@ describe("missed-substrate-detector slice 1", () => {
     const config: DetectorConfig = { ...DEFAULT_CONFIG, once: true };
     const results = await runDetector(config);
     expect(results).toHaveLength(1);
-    expect(results[0].cascadesDetected).toBe(0);
+    expect(results[0]!.cascadesDetected).toBe(0);
   });
 });
