@@ -38,7 +38,7 @@ Merge queue: **enabled** (LFG org feature; requires GitHub Team or above).
 | Dismiss stale reviews on push | **enabled** |
 | Require review from code owners | disabled (no CODEOWNERS yet) |
 | Require status checks to pass | **enabled** |
-| Required status checks | `bun-test`, `bun-lint`, `codeql`, `scorecard` |
+| Required status checks | `bun-test`, `bun-lint`, `codeql`, `scorecard` _(added in Stage 2 after CI workflows are wired — empty at day-one to avoid deadlocking bootstrap)_ |
 | Require branches up to date | **enabled** (merge queue handles) |
 | Require conversation resolution | **enabled** |
 | Restrict pushes that create files | disabled |

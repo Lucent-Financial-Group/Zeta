@@ -20,7 +20,7 @@ bun tools/scaffold/create-repo.ts --repo ace  --apply
 
 ## What the tool does
 
-For each repo, in order:
+For each repo, in **execution order** (step numbers are stable identifiers, not sequential labels — step 06 runs before step 02 intentionally):
 
 | Step | Description |
 |------|-------------|

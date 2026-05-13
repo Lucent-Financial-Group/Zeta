@@ -13,9 +13,10 @@ governs product behavior, it lives in the relevant product repo.
 
 ## §2 Ownership
 
-Forge is **Claude-owned** for governance. Claude authors factory policy,
-the BP-NN rule list, the skill catalog, and the persona registry.
-Aaron retains alignment-contract veto and budget authority.
+Forge is governed by the **factory's AI agent**. The governing agent authors
+factory policy, the BP-NN rule list, the skill catalog, and the persona
+registry. The human maintainer retains alignment-contract veto and budget
+authority.
 
 ## §3 Agents, not bots
 

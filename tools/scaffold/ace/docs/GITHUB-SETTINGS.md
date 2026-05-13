@@ -34,7 +34,7 @@ Merge queue: **enabled** (LFG org feature).
 | Required approving reviews | 1 |
 | Dismiss stale reviews on push | **enabled** |
 | Require status checks to pass | **enabled** |
-| Required status checks | `bun-test`, `bun-lint`, `codeql`, `scorecard` |
+| Required status checks | `bun-test`, `bun-lint`, `codeql`, `scorecard` _(added in Stage 2 after CI workflows are wired — empty at day-one to avoid deadlocking bootstrap)_ |
 | Require branches up to date | **enabled** |
 | Require conversation resolution | **enabled** |
 | Require signed commits | **enabled** |

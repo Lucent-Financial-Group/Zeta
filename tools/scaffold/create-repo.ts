@@ -3,8 +3,9 @@
 //
 // Implements Stage 1 of the three-repo split (ADR 2026-04-22). Applies
 // the full best-practice checklist: merge settings, branch protection,
-// security scanning, CodeQL default-setup, Dependabot, budget caps,
-// and day-one governance files from tools/scaffold/<repoName>/.
+// security scanning, CodeQL default-setup, Dependabot, spending-cap
+// verification (manual step), and day-one governance files from
+// tools/scaffold/<repoName>/.
 //
 // Usage:
 //   bun tools/scaffold/create-repo.ts --repo forge --dry-run   # preview (default)
@@ -22,7 +23,7 @@
 // Review the --dry-run output carefully before passing --apply.
 
 import { spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -170,6 +171,27 @@ function ghApiPut(
   return op;
 }
 
+function ghApiPost(
+  path: string,
+  data: Record<string, unknown>,
+  description: string,
+  step: string
+): Operation {
+  const body = JSON.stringify(data);
+  const op = plan(step, description, `gh api --method POST ${path} --input -`, data);
+  if (!dryRun) {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
+    const result = spawnSync(
+      "gh",
+      ["api", "--method", "POST", path, "--input", "-"],
+      { input: body, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 }
+    );
+    op.status = result.status === 0 ? "executed" : "failed";
+    if (op.status === "failed") op.error = result.stderr;
+  }
+  return op;
+}
+
 // --- Step implementations ---
 
 function step01_createRepo(): void {
@@ -204,7 +226,7 @@ function step01_createRepo(): void {
       op.error = create.stderr;
       return;
     }
-    // Apply merge settings via PATCH
+    // Apply merge settings (and optional homepage) via PATCH
     ghApiPatch(
       `/repos/${config.org}/${config.name}`,
       {
@@ -213,6 +235,7 @@ function step01_createRepo(): void {
         allow_rebase_merge: false,
         delete_branch_on_merge: true,
         allow_auto_merge: true,
+        ...(config.homepage ? { homepage: config.homepage } : {}),
       },
       "Apply merge/auto-merge settings",
       "01b-merge-settings"
@@ -246,8 +269,9 @@ function step02_branchProtection(): void {
     "02-branch-protection"
   );
 
-  // Required signed commits is a separate endpoint — the main protection PUT does not cover it.
-  ghApiPut(
+  // Required signed commits uses POST to enable (DELETE to disable) — not PUT.
+  // GitHub REST docs: POST /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures
+  ghApiPost(
     `/repos/${config.org}/${config.name}/branches/main/protection/required_signatures`,
     {},
     `Require signed commits on ${config.name}/main`,
@@ -444,9 +468,8 @@ function step06_pushScaffoldFiles(): void {
     op.status = push.status === 0 ? "executed" : "failed";
     if (op.status === "failed") op.error = push.stderr ?? "";
 
-    // Cleanup
-    // eslint-disable-next-line sonarjs/no-os-command-from-path -- rm is PATH-resolved intentionally
-    spawnSync("rm", ["-rf", tmpDir], { encoding: "utf8" });
+    // Cleanup — use fs.rmSync to avoid PATH-resolved rm and reduce blast radius
+    rmSync(tmpDir, { recursive: true, force: true });
   }
 }
 
