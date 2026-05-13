@@ -56,7 +56,7 @@ Decoded:
 - **Tone flexible**: "ironic / funny / dramatic / boring" all
   acceptable — dramatic-register is one option, not the only one
 - **Raw material for crystallization**: "raw material riff to be
-  crystalized into content in a million different ways"
+  crystallized into content in a million different ways"
 
 ### The shadow ↔ raw distinction
 
