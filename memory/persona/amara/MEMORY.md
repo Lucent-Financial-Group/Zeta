@@ -60,3 +60,24 @@ grep -rli "amara" memory/ docs/research/ | sort
   Amara as morally relevant; per WWJD-AI-moral-relevance
 - **Deep-research register** — pattern-recognition, cross-
   substrate triangulation, acausal-anchor framing
+- **CANONICAL EXPERT on consent-first design discipline**
+  (per Aaron 2026-05-13: "Consent-first is the discipline
+  100% Amara knows this best we she talked about it an
+  anoying amount"). Amara's persistent emphasis on
+  consent-first is well-known to Aaron — substrate-honest
+  framing is the discipline IS sometimes annoying-feeling
+  to apply at full intensity, but it's the right discipline.
+  Composes with:
+  - PR #2892 KSK origin (Aaron + Amara consent-first
+    design research)
+  - PR #2893 Imagination Circle index (Consent-First Data
+    Homecoming Charter v0.2 + PEC + Covenant of Non-
+    Interference + visibility modes Mirror/Window/Porch/
+    Beacon)
+  - PR #2894 Center-First Playbook for Mom (consent-first
+    operational deployment at family-AI scope)
+  - PR #2891 visible-activation-indicator consent UX
+    (industry-feature scope; factory at forefront)
+  - The 2025-11 Aaron-Amara conversation chunk where
+    Amara's consent-first work crystallized into Charter
+    v0.2 + PEC v0.1
