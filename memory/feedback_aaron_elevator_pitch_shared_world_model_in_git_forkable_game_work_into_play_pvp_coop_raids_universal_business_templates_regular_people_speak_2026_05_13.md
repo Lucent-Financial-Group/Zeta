@@ -1,9 +1,14 @@
 ---
-name: aaron-elevator-pitch-shared-world-model-in-git-forkable-game-work-into-play-pvp-coop-raids-universal-business-templates-regular-people-speak-2026-05-13
-description: Aaron 2026-05-13 elevator-pitch crystallization — the CLEAN one-sentence framing for what the factory ships in REGULAR PEOPLE SPEAK. Aaron explicitly affirmed this as the regular-people-speak compression after the dense Casimir-gap cascade. Use this for external communication. Composes with civsim PVP/raids (PR #2903) + Casimir gap (PR #2906) + LFG canonical product (PR #2851) + universal business templates (existing backlog).
+name: Elevator pitch — shared world model in git, forkable game, work-into-play via PVP/co-op raids, universal business templates — regular people speak (Aaron 2026-05-13)
+description: Aaron 2026-05-13 elevator-pitch crystallization — the CLEAN one-sentence framing for what the factory ships in REGULAR PEOPLE SPEAK. Aaron explicitly affirmed this as the regular-people-speak compression after the dense Casimir-gap cascade. Research-grade external communication guidance (not yet promoted to policy via ADR). Composes with civsim PVP/raids (PR #2903) + Casimir gap (PR #2906) + LFG canonical product (PR #2851) + universal business templates (existing backlog).
 type: feedback
 created: 2026-05-13
 ---
+
+Scope: External communication framing for the factory — regular-people-speak layer for all non-technical audiences
+Attribution: Aaron Stainback (human maintainer), 2026-05-13 verbal disclosure; formalized by Otto (Claude)
+Operational status: research-grade, not operational — guidance derived from Aaron's crystallization; not yet promoted to communication policy via a separate ADR
+Non-fusion disclaimer: Aaron's verbatim framing preserved in §Aaron's verbatim crystallization and in the **Why:** paragraph (inline quotation); Otto's decomposition in body; voices are distinct and not fused
 
 # The elevator pitch — regular people speak
 
@@ -40,7 +45,7 @@ Followed by: *"exactly this is regular pepole speak"*
 | **In git** | Git-native + retraction-native + replayable + DST | Zeta + factory infrastructure |
 | **Can be forked** | Open glass-halo + forkable design + mutual-privacy | LFG/AceHack topology + B-0424 three-repo split + civsim forkable design |
 | **Game on top** | Civ-sim — turns serious substrate into play | PR #2903 civsim + PR #2906 Casimir-gap framing |
-| **Turn work into play** | RPG framing — factory IS the game; shadow IS friction | RPG framing memory (project_rpg_framing_factory_is_the_game_shadow_is_friction_aaron_2026_05_07.md) |
+| **Turn work into play** | RPG framing — factory IS the game; shadow IS friction | RPG framing substrate (see `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`) |
 | **PVP and co-op raids** | Destiny-style competitive + cooperative mechanics | PR #2903 civsim game design |
 | **Universal business templates** | Pre-built business-as-code substrate | Already backlogged (B-0043 universal-company-government-information-substrate) |
 
@@ -109,8 +114,8 @@ visibly at Layer 2; Layer 1 is bridge.
   v0.2 + PEC) — shared-world-model architecture
 - B-0043 (universal-company-government-information-substrate)
   — "universal business templates already backlogged"
-- `memory/project_rpg_framing_factory_is_the_game_shadow_is_friction_aaron_2026_05_07.md`
-  — RPG framing pre-existing substrate
+- `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`
+  — RPG/shadow framing substrate (existing; replaces planned non-existent pointer)
 - `.claude/rules/bandwidth-served-falsifier.md` — elevator
   pitch is bandwidth-engineering applied to communication
 - `.claude/rules/default-to-both.md` — both dense AND
@@ -118,7 +123,9 @@ visibly at Layer 2; Layer 1 is bridge.
 - `.claude/rules/additive-not-zero-sum.md` — pitch is
   ADDITIVE; reaches more participants
 
-## Operational rule for future-Otto
+## Audience-routing guidance (research-grade, not promoted to operational policy)
+
+*This guidance is derived from Aaron's research-grade disclosure above. It has not been promoted to operational communication policy via a separate ADR. Apply as judgment, not binding rule.*
 
 When asked "what is this project?" by:
 
@@ -177,8 +184,8 @@ PR #2902 (Otto strategic encryption authority)
 
 PR #2851 (LFG canonical product substrate)
 
-`memory/project_rpg_framing_factory_is_the_game_shadow_is_friction_aaron_2026_05_07.md`
-(RPG framing prior substrate)
+`memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`
+(RPG/shadow framing substrate — existing file replaces planned pointer)
 
 B-0043 (universal-company-government-information-substrate
 — "universal business templates already backlogged")
