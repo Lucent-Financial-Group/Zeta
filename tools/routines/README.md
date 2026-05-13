@@ -91,5 +91,5 @@ and the fresh session will lack the substrate it expects.
 - [.claude/rules/tick-must-never-stop.md](../../.claude/rules/tick-must-never-stop.md) — catch-43 tick discipline
 - [.claude/rules/holding-without-named-dependency-is-standing-by-failure.md](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — Standing-by failure mode prevention
 - [docs/AUTONOMOUS-LOOP.md](../../docs/AUTONOMOUS-LOOP.md) — canonical tick procedure
-- [tools/setup/](../setup/) — install-graph pattern (rule 0: only `.sh` allowed there)
-- [.claude/rules/rule-0-no-sh-files.md](../../.claude/rules/rule-0-no-sh-files.md) — TS for everything else
+- [tools/setup/](../setup/) — install-graph pattern (rule 0: `.sh` files are restricted to under `tools/setup/`; other formats also live there)
+- [.claude/rules/rule-0-no-sh-files.md](../../.claude/rules/rule-0-no-sh-files.md) — TS for everything outside `tools/setup/`

@@ -18,7 +18,7 @@ Otto autonomous-loop tick — fresh-session cold-boot.
 
 3. Commit trailer when applicable: Co-Authored-By: Claude <noreply@anthropic.com>
 
-Repo path: /Users/acehack/Documents/src/repos/Zeta
+Repo: the Zeta checkout on this machine (typically `~/Documents/src/repos/Zeta` on maintainer machines; consult project metadata or the bootstream if the checkout lives elsewhere).
 Self-contained — no prior conversation context available. Bootstream + repo state + GitHub state = full ground truth.
 
 This routine is git-tracked at tools/routines/autonomous-loop/SKILL.md in the Zeta repo; the canonical source lives there.

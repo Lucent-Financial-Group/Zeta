@@ -13,70 +13,100 @@
  * for any routines whose schedule.json lists a cronExpression not yet
  * registered. The approval dialog is the consent step.
  *
- * Composes with tools/setup/ install-graph pattern; obeys rule-0 (TS, not bash).
+ * Pure functions (listRoutines, readSchedule, syncRoutine, main) are exported
+ * and accept directory parameters so tests can drive them deterministically
+ * without touching the real `homedir()` or `import.meta.dir`.
+ *
+ * Composes with tools/setup/ install-graph pattern; obeys rule-0 (`.sh` files
+ * are restricted to tools/setup/; other formats also live there).
  */
 
-import {
-  existsSync,
-  readdirSync,
-  readFileSync,
-  mkdirSync,
-  writeFileSync,
-} from "node:fs";
+import { readdirSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 
-const REPO_ROUTINES_DIR = resolve(import.meta.dir);
-const RUNTIME_TASKS_DIR = join(homedir(), ".claude", "scheduled-tasks");
+export const DEFAULT_REPO_ROUTINES_DIR = resolve(import.meta.dir);
+export const DEFAULT_RUNTIME_TASKS_DIR = join(homedir(), ".claude", "scheduled-tasks");
 
-type Action =
+export type Action =
   | "created"
   | "updated"
   | "skipped-unchanged"
   | "skipped-missing-skill";
 
-interface SyncResult {
+export interface SyncResult {
   taskId: string;
   action: Action;
   runtimePath: string;
   cronExpression?: string;
   scheduleMissing?: boolean;
+  scheduleParseError?: string;
 }
 
-function listRoutines(): string[] {
-  if (!existsSync(REPO_ROUTINES_DIR)) return [];
-  return readdirSync(REPO_ROUTINES_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => d.name);
+export interface ScheduleResult {
+  cronExpression?: string;
+  missing: boolean;
+  parseError?: string;
 }
 
-function readSchedule(srcDir: string): { cronExpression?: string; missing: boolean } {
-  const path = join(srcDir, "schedule.json");
-  if (!existsSync(path)) return { missing: true };
+function readFileOrUndefined(path: string): string | undefined {
   try {
-    const parsed = JSON.parse(readFileSync(path, "utf8")) as { cronExpression?: string };
-    return { cronExpression: parsed.cronExpression, missing: false };
+    return readFileSync(path, "utf8");
   } catch {
-    return { missing: false };
+    return undefined;
   }
 }
 
-function syncRoutine(taskId: string): SyncResult {
-  const srcDir = join(REPO_ROUTINES_DIR, taskId);
+export function listRoutines(repoRoutinesDir: string): string[] {
+  try {
+    return readdirSync(repoRoutinesDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name);
+  } catch {
+    return [];
+  }
+}
+
+export function readSchedule(srcDir: string): ScheduleResult {
+  const path = join(srcDir, "schedule.json");
+  const content = readFileOrUndefined(path);
+  if (content === undefined) return { missing: true };
+  try {
+    const parsed = JSON.parse(content) as { cronExpression?: string };
+    return parsed.cronExpression !== undefined
+      ? { cronExpression: parsed.cronExpression, missing: false }
+      : { missing: false };
+  } catch (err) {
+    return {
+      missing: false,
+      parseError: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
+export function syncRoutine(
+  taskId: string,
+  repoRoutinesDir: string,
+  runtimeTasksDir: string,
+): SyncResult {
+  const srcDir = join(repoRoutinesDir, taskId);
   const srcSkill = join(srcDir, "SKILL.md");
-  const dstDir = join(RUNTIME_TASKS_DIR, taskId);
+  const dstDir = join(runtimeTasksDir, taskId);
   const dstSkill = join(dstDir, "SKILL.md");
 
-  if (!existsSync(srcSkill)) {
+  const srcContent = readFileOrUndefined(srcSkill);
+  if (srcContent === undefined) {
     return { taskId, action: "skipped-missing-skill", runtimePath: dstSkill };
   }
 
-  const srcContent = readFileSync(srcSkill, "utf8");
-  let action: Action = "created";
-
-  if (existsSync(dstSkill)) {
-    const dstContent = readFileSync(dstSkill, "utf8");
-    action = dstContent === srcContent ? "skipped-unchanged" : "updated";
+  const dstContent = readFileOrUndefined(dstSkill);
+  let action: Action;
+  if (dstContent === undefined) {
+    action = "created";
+  } else if (dstContent === srcContent) {
+    action = "skipped-unchanged";
+  } else {
+    action = "updated";
   }
 
   if (action !== "skipped-unchanged") {
@@ -84,34 +114,46 @@ function syncRoutine(taskId: string): SyncResult {
     writeFileSync(dstSkill, srcContent);
   }
 
-  const { cronExpression, missing } = readSchedule(srcDir);
+  const schedule = readSchedule(srcDir);
   return {
     taskId,
     action,
     runtimePath: dstSkill,
-    cronExpression,
-    scheduleMissing: missing,
+    ...(schedule.cronExpression !== undefined
+      ? { cronExpression: schedule.cronExpression }
+      : {}),
+    scheduleMissing: schedule.missing,
+    ...(schedule.parseError !== undefined
+      ? { scheduleParseError: schedule.parseError }
+      : {}),
   };
 }
 
-function main() {
+export function main(
+  repoRoutinesDir: string = DEFAULT_REPO_ROUTINES_DIR,
+  runtimeTasksDir: string = DEFAULT_RUNTIME_TASKS_DIR,
+): void {
   console.log(`tools/routines/install.ts`);
-  console.log(`  source: ${REPO_ROUTINES_DIR}`);
-  console.log(`  target: ${RUNTIME_TASKS_DIR}\n`);
+  console.log(`  source: ${repoRoutinesDir}`);
+  console.log(`  target: ${runtimeTasksDir}\n`);
 
-  const routines = listRoutines().filter((id) => id !== "install.ts" && !id.endsWith(".md"));
+  const routines = listRoutines(repoRoutinesDir).filter(
+    (id) => id !== "install.ts" && !id.endsWith(".md"),
+  );
   if (routines.length === 0) {
     console.log("No routines found under tools/routines/");
     return;
   }
 
-  const results = routines.map(syncRoutine);
+  const results = routines.map((id) => syncRoutine(id, repoRoutinesDir, runtimeTasksDir));
 
   for (const r of results) {
     const tag = `[${r.action}]`.padEnd(22, " ");
     console.log(`${tag} ${r.taskId}`);
     console.log(`  runtime: ${r.runtimePath}`);
-    if (r.cronExpression) {
+    if (r.scheduleParseError !== undefined) {
+      console.error(`  schedule.json malformed: ${r.scheduleParseError}`);
+    } else if (r.cronExpression !== undefined) {
       console.log(`  cron:    ${r.cronExpression}`);
     } else if (r.scheduleMissing) {
       console.log(`  cron:    (no schedule.json — ad-hoc routine, register manually)`);
@@ -119,7 +161,7 @@ function main() {
   }
 
   const needsRegistration = results.filter(
-    (r) => r.cronExpression && (r.action === "created" || r.action === "updated"),
+    (r) => r.cronExpression !== undefined && (r.action === "created" || r.action === "updated"),
   );
   if (needsRegistration.length > 0) {
     console.log(`\nNext step — register cron schedules via the scheduled-tasks MCP:`);
@@ -134,10 +176,13 @@ function main() {
     updated: results.filter((r) => r.action === "updated").length,
     unchanged: results.filter((r) => r.action === "skipped-unchanged").length,
     missingSkill: results.filter((r) => r.action === "skipped-missing-skill").length,
+    parseErrors: results.filter((r) => r.scheduleParseError !== undefined).length,
   };
   console.log(
-    `\nDone. created=${summary.created} updated=${summary.updated} unchanged=${summary.unchanged} missing=${summary.missingSkill}`,
+    `\nDone. created=${summary.created} updated=${summary.updated} unchanged=${summary.unchanged} missing=${summary.missingSkill} parseErrors=${summary.parseErrors}`,
   );
 }
 
-main();
+if (import.meta.main) {
+  main();
+}
