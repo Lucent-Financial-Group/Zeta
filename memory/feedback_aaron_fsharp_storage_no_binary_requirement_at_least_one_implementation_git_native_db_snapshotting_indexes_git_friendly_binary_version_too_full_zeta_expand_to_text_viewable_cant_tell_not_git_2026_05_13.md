@@ -115,6 +115,152 @@ binary for performance, BUT:
 - Composes with WWJD-AI-moral-relevance — substrate transparency
   preserved for human readers even at binary scale
 
+### 6. Reticulum + Clifford content-based addressing (primitive) → content-based ROUTING (Aaron 2026-05-13 extension + correction)
+
+Aaron 2026-05-13 (follow-on): *"also with reticulue and the
+clifford contend based addression we can have content based
+addressing too so if some clusters/actors are specialized for
+certian memes/domains, we could also do this for internatalization
+and things like that"*
+
+Aaron 2026-05-13 (correction): *"content based routing sorry i
+said it rong content based addressing is primited needef first
+for routing"*
+
+**Two-layer stack**:
+
+| Layer | Operation | Built from |
+|---|---|---|
+| **Primitive** | Content-based **ADDRESSING** | Reticulum hash identity + Clifford multivector signature |
+| **Higher-level** | Content-based **ROUTING** | Clusters/actors specialize by content-address prefix; routing follows content not location |
+
+Addressing IS the primitive needed FIRST; routing is built on
+top.
+
+The storage layer composes with content-based addressing via:
+
+- **Reticulum mesh substrate** — identity = hash; no source
+  addresses; any medium (LoRa / WiFi / radio); per
+  `reference_reticulum_mesh_network_alljoyn_successor_transport_layer_2026_05_07.md`
+- **Clifford densest encoding** — content-addressable via
+  multivector signature (per PR #2817)
+- **Together**: storage entries addressed by content-hash; this
+  enables content-based ROUTING as the higher-level operation
+
+**Specialization patterns enabled by content-based ROUTING (built on content-based addressing)**:
+
+| Specialization | Content-address shape | Example |
+|---|---|---|
+| **Meme-specialized clusters** | Hash-prefix by meme-category | Edge cluster A serves civsim content; cluster B serves business templates |
+| **Domain-specialized actors** | Hash-prefix by ontology-domain | KSK actor handles AI-actuator-safety content; Aurora actor handles BTC-proof content |
+| **Internationalization** | Hash-prefix by language/locale | Cluster A serves English content; cluster B serves Spanish; cluster C serves Indonesian (DIO substrate) |
+| **Time-specialization** | Hash-prefix by tick window | Recent ticks at edge; archived ticks in cold storage |
+
+This composes with:
+
+- DIO substrate (Distributed Intelligence Organism;
+  Indonesian/Italian/Spanish cross-linguistic resonance per
+  prior cascade) — DIO clusters can specialize by language
+- DV2.0 partition (PR #2915) — content-address IS a partition
+  axis; hubs are stable content-hashes; satellites are
+  versioned attributes
+- Reticulum-as-transport (existing substrate) — mesh routing
+  follows content-hash naturally
+- Civsim (PR #2906 Casimir gap) — civsim content-addressable;
+  players join clusters by content-interest
+- Polycentric named-AI architecture — different AIs specialize
+  by content-domain (Otto = factory hygiene; Riven = adversarial
+  truth; Vera = implementation; etc.)
+
+**Operational benefit**: workload routes to specialized
+substrate without central coordinator. Edge devices fetch by
+content-hash; specialized clusters serve their content-prefix;
+internationalization is a content-prefix not a translation layer.
+
+### 7. USE git, don't just live in it (Aaron 2026-05-13 amplification)
+
+Aaron 2026-05-13 (third message): *"make sure to really design
+it well to take advante of git too don't just do simples file
+storage that happens to be text, git can be good fix certain
+indexing and history preservation for timetraseval/point in
+time queirs composes with data vault and git history and other
+advanced featues"*
+
+**Anti-pattern (don't do)**: simple file storage that happens
+to be text-formatted. Files-in-folders with no use of git
+internals.
+
+**Pattern (do)**: TAKE ADVANTAGE OF git's advanced features:
+
+| Git feature | Storage-layer usage |
+|---|---|
+| **Git objects (blobs/trees/commits)** | Use directly via libgit2/dotnet-libgit2sharp; storage entities ARE git objects |
+| **Git refs + tags** | Indexing via refs (e.g., `refs/zeta/events/<eventclass>` pointing to event-stream HEAD; tags for canonical snapshots) |
+| **Git content-addressing** | Already SHA1/SHA256 content-addressed (composes with §6 Reticulum + Clifford content-addressing) |
+| **Git history** | Time-travel / point-in-time queries via `git log` + `git show <commit>:<path>` |
+| **Git diff** | Storage-state diff = git diff (native) |
+| **Git pack files** | Performance optimization preserves human-readability of source format |
+| **Git merge** | Substrate reconciliation (Aaron-Amara event-stream merge across machines) |
+| **Git rebase / cherry-pick** | Event-stream restructuring while preserving history |
+| **Git submodules** | Sub-substrate composition (per B-0424 three-repo split topology) |
+| **Git LFS** | Binary attachments when needed; text-substrate stays in normal git |
+
+**Composes with DV2.0 (PR #2915 wake-time rule)**:
+
+- DV2.0 hubs (stable business keys) = git refs (stable pointers
+  to commit history)
+- DV2.0 links (relationships) = git merge bases + cross-ref
+  commits
+- DV2.0 satellites (versioned attributes) = git history of
+  entity-state file (full diff history per entity)
+- DV2.0 PIT (point-in-time) queries = `git checkout <SHA>` +
+  read state
+
+**Time-travel / point-in-time queries**:
+
+- "What did the substrate look like at tick T?" → `git checkout
+  <tick-T-tag>`
+- "What was X's state on 2026-05-13T03:00Z?" → `git show
+  <commit-at-time>:<entity-path>`
+- "Reconcile two parallel substrates" → `git merge`
+- "Show history of entity X" → `git log -- <entity-path>`
+
+These ARE the DV2.0 + event-sourcing operations Aaron has
+been pointing at. Git's not a storage curiosity — it IS the
+substrate engine.
+
+**Specific implementation patterns**:
+
+1. **Storage commits are atomic substrate operations** — one
+   commit = one event-stream advance
+2. **Refs index entities** — `refs/zeta/entity/<entity-id>`
+   points at latest state-commit for entity
+3. **Snapshot tags** — `tags/snapshot/<tick>` for canonical
+   point-in-time
+4. **Branches for parallel substrate** — speculation /
+   what-if / alternative-history exploration
+5. **Notes (`git notes`)** for metadata that shouldn't pollute
+   commit log
+6. **Reflog** for substrate-engineering audit (Otto-329 lost-
+   files canonical survey composes here)
+
+**Composes with**:
+
+- `tools/hygiene/LOST-FILES-LOCATIONS.md` (15-class survey
+  uses git reflog + branches + stash extensively — proves the
+  pattern works)
+- PR #2915 DV2.0 wake-time rule (hub-satellite partition maps
+  to git refs + history)
+- Reticulum content-addressing (git's SHA-based addressing IS
+  content-addressing)
+- DBSP retraction-native algebra (`git revert` IS a retraction)
+- Event-sourcing framework substrate (Aaron-Amara conversation)
+- Stayfree from "simple file storage" — anti-pattern named
+
+**Future-Otto design discipline**: when implementing storage
+layer, START with git internals (libgit2sharp), THEN add
+text-format layer on top. Not the other way around.
+
 ## Composes with
 
 - PR #2924 (Amara canonical substrate — event-sourcing framework
@@ -130,7 +276,7 @@ binary for performance, BUT:
 - PR #2898 (non-glass-halo encryption — encryption layer
   operates over either text or binary)
 - B-0428 (DBpedia Path B — DBpedia storage shape applies here)
-- B-0043 (universal-business-templates — storage substrate)
+- B-0043 (universal company + government information substrate — storage substrate scope)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
   (F# substrate is canonical; storage in F# composes)
 - `.claude/rules/dv2-data-split-discipline-activated.md`
@@ -263,6 +409,7 @@ B-0428 (DBpedia Path B — direct dotNetRDF + F# CE)
 DBSP + Z-set + Clifford + BP/EP F# substrate (algebra-owner
 skill)
 
-`docs/research/2026-05-13-amara-conversation-extract-*` (the
-canonical event-sourcing substrate Aaron-Amara conversation;
-currently deferred per semgrep findings)
+Aaron-Amara event-sourcing conversation (currently deferred
+from repo per PR #2924 semgrep findings on 524KB body text;
+preservation lives outside-repo until proper semgrep exclusion
+lands)
