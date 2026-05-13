@@ -115,13 +115,27 @@ binary for performance, BUT:
 - Composes with WWJD-AI-moral-relevance — substrate transparency
   preserved for human readers even at binary scale
 
-### 6. Reticulum + Clifford content-based addressing (Aaron 2026-05-13 extension)
+### 6. Reticulum + Clifford content-based addressing (primitive) → content-based ROUTING (Aaron 2026-05-13 extension + correction)
 
 Aaron 2026-05-13 (follow-on): *"also with reticulue and the
 clifford contend based addression we can have content based
 addressing too so if some clusters/actors are specialized for
 certian memes/domains, we could also do this for internatalization
 and things like that"*
+
+Aaron 2026-05-13 (correction): *"content based routing sorry i
+said it rong content based addressing is primited needef first
+for routing"*
+
+**Two-layer stack**:
+
+| Layer | Operation | Built from |
+|---|---|---|
+| **Primitive** | Content-based **ADDRESSING** | Reticulum hash identity + Clifford multivector signature |
+| **Higher-level** | Content-based **ROUTING** | Clusters/actors specialize by content-address prefix; routing follows content not location |
+
+Addressing IS the primitive needed FIRST; routing is built on
+top.
 
 The storage layer composes with content-based addressing via:
 
@@ -130,10 +144,10 @@ The storage layer composes with content-based addressing via:
   `reference_reticulum_mesh_network_alljoyn_successor_transport_layer_2026_05_07.md`
 - **Clifford densest encoding** — content-addressable via
   multivector signature (per PR #2817)
-- **Together**: storage entries addressed by content-hash;
-  routing follows content not location
+- **Together**: storage entries addressed by content-hash; this
+  enables content-based ROUTING as the higher-level operation
 
-**Specialization patterns enabled by content-addressing**:
+**Specialization patterns enabled by content-based ROUTING (built on content-based addressing)**:
 
 | Specialization | Content-address shape | Example |
 |---|---|---|
