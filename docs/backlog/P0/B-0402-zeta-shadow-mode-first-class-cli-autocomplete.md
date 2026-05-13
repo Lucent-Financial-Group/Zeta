@@ -6,8 +6,11 @@ title: "Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop
 tier: product-feature
 effort: M
 created: 2026-05-10
+last_updated: 2026-05-13
 depends_on: [B-0400]
 composes_with: [B-0401, B-0400]
+children: [B-0431, B-0432, B-0433]
+decomposition: decomposed
 tags: [shadow, autocomplete, cli, product, demo, service-titan, glass-halo, trust-then-verify]
 type: feature
 ---
@@ -114,7 +117,11 @@ metrics — a collaborative intelligence surface.
   - 6 `detectViaCommand` unit tests
   - 5 `--detect-cmd` CLI integration tests
 
-**Deferred:**
+**Deferred (child rows — decomposed 2026-05-13):**
 
-- Slice 3: empirical grey-text detection via AppleScript/accessibility API (macOS)
-- Slice 4: `zeta shadow` top-level CLI entry point + installation wiring
+- Slice 3: empirical grey-text detection via AppleScript/accessibility API (macOS) →
+  **[B-0431](../P0/B-0431-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)**
+- Slice 4: `zeta shadow` CLI entry point + `--loop` flag →
+  **[B-0432](../P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)**
+- Slice 5: Zeta CLI distribution + demo packaging →
+  **[B-0433](../P1/B-0433-shadow-observer-slice-5-zeta-cli-distribution-demo-packaging-2026-05-13.md)**

@@ -27,6 +27,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0308](backlog/P0/B-0308-mechanical-auth-check-loop-integration-2026-05-08.md)** Mechanical authorization check — autonomous-loop tick-start integration
 - [x] **[B-0309](backlog/P0/B-0309-mechanical-auth-check-claude-md-pointer-2026-05-08.md)** Mechanical authorization check — CLAUDE.md discoverable-skill pointer
 - [ ] **[B-0402](backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md)** Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop embedding, and Glass Halo attribution
+- [ ] **[B-0431](backlog/P0/B-0431-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)** Shadow observer slice 3 — macOS grey-text detection via osascript
+- [ ] **[B-0432](backlog/P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)** Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag
 
 ## P1 — within 2-3 rounds
 
@@ -230,6 +232,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0427](backlog/P1/B-0427-repo-split-third-orthogonal-axis-code-vs-english-formal-verification-aaron-2026-05-13.md)** Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence smell test
 - [ ] **[B-0428](backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md)** DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)
 - [ ] **[B-0429](backlog/P1/B-0429-end-user-persona-mapping-product-team-multiple-products-multiple-personas-each-aaron-2026-05-13.md)** End-user persona mapping — product team — multiple products × multiple personas each
+- [ ] **[B-0433](backlog/P1/B-0433-shadow-observer-slice-5-zeta-cli-distribution-demo-packaging-2026-05-13.md)** Shadow observer slice 5 — Zeta CLI distribution + demo packaging
 
 ## P2 — research-grade
 
