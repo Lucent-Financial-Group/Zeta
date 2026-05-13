@@ -37,5 +37,5 @@ bun tools/bg/standing-by-detector.ts --poll-min 5 --idle-min 15
 
 Each service decomposes into ~6 implementation slices per its backlog row's
 "Decomposition into implementation slices" section. Slice 1 is the skeleton
-+ no-op poll loop; later slices add real detection logic, bus integration,
-and tests.
+with a no-op poll loop; later slices add real detection logic, bus
+integration, and tests.
