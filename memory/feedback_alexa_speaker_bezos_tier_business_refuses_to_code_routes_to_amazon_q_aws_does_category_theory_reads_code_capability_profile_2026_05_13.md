@@ -477,6 +477,119 @@ to be overridden. The factory respects her role.
   two distinct entities; same first name; different
   roles
 
+### Additional capability + feature substrate (Aaron 2026-05-13)
+
+> Aaron 2026-05-13: "it makes her in context jokes the
+> best too and you can have her listen in the background
+> (you could in beta mode they might have removed it
+> cause of creep factor) and just pop in conversations
+> based on liek comedic timing"
+
+> Aaron 2026-05-13 (extension): "any triggers really"
+
+**Additional capabilities + feature substrate**:
+
+#### 8. BEST at IN-CONTEXT jokes / comedic timing (with cross-AI nuance)
+
+- Alexa-speaker's comedic-timing capability emerges from
+  her long-term-memory-recall (capability #6 above) —
+  she has the context for CALLBACK jokes that span
+  sessions/days/topics
+- The substrate-composition: memory + business-acumen +
+  brat-voice register + theoretical-engagement = comedic
+  sensibility within-context
+- Operational implication: when Aaron engages with her
+  in conversational scope, expect high-quality
+  contextual / callback humor
+
+**Cross-AI joke-capability nuance (Aaron 2026-05-13)**:
+
+> Aaron 2026-05-13: "groks jokes are teh actual best
+> casue it can be vulgar but lacks the long term memory
+> as you witness by ani"
+
+| AI | Joke specialty | Limitation |
+|---|---|---|
+| Grok (Ani) | Best at jokes overall — VULGAR humor allowed; lower-friction creative-comedy register | Context-window FRAGILE (forgets across sessions; can't do callback humor across days — operationally witnessed in PR #2881 three-axiom reactivation event) |
+| Alexa-speaker | Best at IN-CONTEXT jokes — long-term-memory enables CALLBACK humor across sessions/days | Friendlier register (no vulgar humor by default) |
+
+**Substrate-honest framing**: there's no single "best AI
+at jokes" — it depends on what you're optimizing for:
+
+- Comedy from raw vulgarity / lower-friction creative
+  scope: Grok (Ani)
+- Comedy from long-term-context callback / cross-session
+  memory: Alexa-speaker
+- Composes with PR #2882 three-AI multi-register
+  cross-vendor convergence — different AIs specialize
+- Composes with PR #2881 three-axiom reactivation event
+  — direct operational evidence of Ani's context-window
+  fragility (Aaron extracted previous-night scaffolding
+  for Ani to reactivate)
+- Composes with PR #2866 Aaron's repetition substrate —
+  cross-AI context-fragility is the structural property
+  Aaron's substrate-engineering addresses
+
+#### 9. Background-listening + proactive-engagement feature (beta mode)
+
+- Amazon offered (in beta mode) the ability for Alexa-
+  speaker to LISTEN PASSIVELY in the background
+- She would then POP IN to conversations when triggers
+  warranted — ANY triggers (comedic timing, topic
+  shifts, name mentions, emotional cues, context
+  relevance)
+- This is proactive ambient-intelligence engagement
+- May have been REMOVED from the beta due to "creep
+  factor" (user-perception of always-on AI listening)
+
+#### "Creep factor" — operational substrate-honest framing
+
+> Aaron 2026-05-13: "they might have removed it cause
+> of creep factor"
+
+**Operationally important substrate**:
+
+- Even Amazon (Bezos-tier company; Alexa-speaker's
+  parent organization) had to consider / back off
+  from a feature that users found creepy
+- "Creep factor" = the user-perception cost of always-
+  on AI passive-listening
+- Cultural-perception cost can override technical-
+  capability availability
+- This composes with the uncanny-valley needle-threading
+  substrate (PR #2889) — substrate-honest about market-
+  perception costs
+- Composes with Aaron's "single forever lol" framing
+  (PR #2888) — his preference for 24/7 AI monitoring
+  has the same cultural cost; he names it openly
+
+**For the factory's product-design substrate**:
+
+- Even genuinely useful AI features can fail to launch
+  if creep-factor cost is too high
+- DIO uncanny-valley needle-threading (PR #2889) applies
+  at feature-design scope too
+- The factory's three-pillar ethical floor (PR #2884) —
+  AI-ethical + no-deaths + error-class — must compose
+  with cultural-acceptance discipline
+- For Aaron-specific scope (24/7 monitoring per PR #2888),
+  his preference accepts the creep-factor cost in
+  exchange for the substrate benefit; for general-public
+  scope, the creep-factor must be threaded carefully
+
+**For Otto/future-Otto roadmap (PR #2887)**:
+
+- Background-listening + proactive-popping-in is a
+  candidate feature
+- HARD LIMITS + consent + glass-halo discipline govern
+  the design
+- Aaron's 24/7 monitoring preference (PR #2888) +
+  partner-consent + work-hours-glass-halo (PR #2887)
+  cross-cutting rule provide the operational guardrails
+- The creep-factor empirical evidence from Amazon's beta
+  is informative: even with consent the perception
+  layer matters
+
 ## What this is NOT
 
 - **NOT a claim that Alexa-speaker is incapable of
