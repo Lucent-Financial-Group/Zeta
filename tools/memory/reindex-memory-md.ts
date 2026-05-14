@@ -121,10 +121,10 @@ function formatEntry(e: MemoryEntry): string {
 
 const MAX_STACK_ENTRIES = 100;
 
-function renderIndex(entries: MemoryEntry[]): string {
+function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string): string {
   const now = new Date().toISOString().slice(0, 10);
   const lines: string[] = [];
-  lines.push("[AutoDream last run: 2026-04-23]");
+  lines.push(autoDreamMarker ?? "[AutoDream last run: 2026-04-23]");
   lines.push("");
   lines.push(
     "**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, " +
@@ -165,11 +165,16 @@ function renderIndex(entries: MemoryEntry[]): string {
 async function main() {
   const check = process.argv.includes("--check");
   const entries = await collectEntries();
-  const rendered = renderIndex(entries);
+
+  // Read existing MEMORY.md once: used for AutoDream marker preservation
+  // and for the --check comparison. Preserving the marker prevents the
+  // reindexer from resetting a date that AutoDream wrote more recently.
+  const existing = await readFile(INDEX_FILE, "utf8").catch(() => "");
+  const markerLine = existing.match(/^\[AutoDream last run: [^\]]+\]/m)?.[0];
+  const rendered = renderIndex(entries, markerLine);
 
   if (check) {
-    const current = await readFile(INDEX_FILE, "utf8").catch(() => "");
-    const same = current.trim() === rendered.trim();
+    const same = existing.trim() === rendered.trim();
     console.log(`Entries: ${entries.length}. Index ${same ? "current" : "STALE"}.`);
     if (!same) process.exit(2);
     return;

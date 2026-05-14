@@ -156,6 +156,18 @@ describe("renderIndex", () => {
     expect(output).toContain("5 additional memory files in heap");
   });
 
+  test("preserves supplied autoDreamMarker verbatim", () => {
+    const marker = "[AutoDream last run: 2026-05-13]";
+    const output = renderIndex([makeEntry("x", "desc", "2026-05-01")], marker);
+    expect(output).toContain(marker);
+    expect(output).not.toContain("[AutoDream last run: 2026-04-23]");
+  });
+
+  test("falls back to hardcoded marker when autoDreamMarker is omitted", () => {
+    const output = renderIndex([makeEntry("x", "desc", "2026-05-01")]);
+    expect(output).toContain("[AutoDream last run: 2026-04-23]");
+  });
+
   test("uses filename stem as name when fm.name is absent", () => {
     const entry = {
       filename: "no_name_entry.md",
