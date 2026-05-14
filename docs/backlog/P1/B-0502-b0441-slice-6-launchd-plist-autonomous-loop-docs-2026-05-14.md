@@ -104,6 +104,7 @@ it wasn't designed for. `10 × 60 = 600` seconds.
 ## Why XS effort
 
 Copy-adapt of `.gemini/launchd/com.zeta.missed-substrate-detector.plist` with:
+
 - Label + log paths updated
 - ProgramArguments[1] updated to `backlog-ready-notifier.ts`
 - `StartInterval` adjusted to 600
