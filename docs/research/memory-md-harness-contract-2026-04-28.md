@@ -137,10 +137,13 @@ that the harness has been silently truncating the file.
 **Re-verification as of 2026-05-14:**
 
 ```
-wc -l < memory/MEMORY.md
+$ wc -l < memory/MEMORY.md
+     370
+$ wc -c < memory/MEMORY.md
+  108332
 ```
-*(agent: run the command and note the result here to validate against
-the >200 expectation)*
+
+Both exceed the caps (>200 lines, >25 KB). Truncation is confirmed active.
 
 ### Step 2 — Confirm one-line-per-file pointer format
 
@@ -241,9 +244,11 @@ harness format contract is violated. *Do not run this destructively on
    (B-0423) fills this gap: it re-sorts entries newest-first and enforces
    the 100-entry stack cap on cadence.
 4. **The AutoDream marker line (`[AutoDream last run: <date>]`) must be
-   preserved** — the reindexer hardcodes it to maintain compatibility with
-   AutoDream's session-start parser (which emits the warning message about
-   the last run date).
+   preserved** — `reindex-memory-md.ts::main()` reads the existing marker
+   from `MEMORY.md` via regex and passes it through to `renderIndex()`,
+   which uses it verbatim. Only if no marker is present does `renderIndex()`
+   fall back to a hardcoded date. This ensures AutoDream's written date is
+   never overwritten by a reindex pass.
 
 ---
 
