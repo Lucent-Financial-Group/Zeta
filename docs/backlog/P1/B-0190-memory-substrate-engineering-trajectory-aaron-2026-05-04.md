@@ -49,7 +49,7 @@ These are candidate sub-rows that should exist for memory work to be a planned d
 
 - **B-0006** (P1, open) — MEMORY.md compression pass to README cap. Per B-0006's own number-free framing (deliberately number-free per Otto-294 antifragile-smooth + Otto-285 precise-pointer rigor), current state is over the cap and the work is owed independent of the specific number. **Recalibration consideration**: if the entry count materially exceeds the original spec assumption, the per-entry char target may be unreachable without semantic loss; either narrow to bucket targets or accept the spec drift. Number-free per the parent row's framing.
 
-### Step 2 — Memory-format standardization (NEW — would be B-0xxx)
+### Step 2 — Memory-format standardization (B-0330)
 
 - Sister of B-0156 (TS standardization) for memory files. Standardize:
   - Frontmatter shape (`name:`, `description:`, `type:`, `originSessionId:` if applicable)
@@ -134,3 +134,4 @@ Per `tools/backlog/README.md`, `composes_with` is bidirectional. The reciprocal 
 ## The carved sentence
 
 **"Memory work needs a trajectory because memory IS substrate engineering, the most-active substrate domain, yet operates today as one-shot-tactical (drain the next tier) instead of multi-row-strategic. Long-horizon is the default; short-horizon shortcuts are deliberate, not accidental. Future agents picking the next memory action FIRST check the trajectory rows."**
+FIRST check the trajectory rows."**
