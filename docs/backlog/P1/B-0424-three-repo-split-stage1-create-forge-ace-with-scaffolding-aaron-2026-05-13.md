@@ -1,7 +1,7 @@
 ---
 id: B-0424
 priority: P1
-status: in-progress
+status: open
 title: "Three-repo split Stage 1 — create empty Forge + ace with day-one scaffolding"
 type: feature
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
@@ -96,16 +96,23 @@ manual-next-steps). No errors.
 
 ## Next step — `--apply` execution (requires Aaron sign-off)
 
-The tool is ready. Repo creation is irreversible so `--apply` needs an explicit decision:
+The tool is ready. Repo creation is irreversible so `--apply` needs an explicit decision.
+
+**Use the GitHub Actions workflow** (`.github/workflows/scaffold-stage1-create-repos.yml`),
+which provides actor allowlisting (AceHack only), a `CONFIRM` gate, `SCAFFOLD_STAGE1_PAT`
+secret handling, and concurrency protection:
+
+1. Ensure `SCAFFOLD_STAGE1_PAT` secret is set in LFG org/repo Settings → Secrets
+   (PAT with `repo`, `read:org`, `workflow` scopes for an org owner/admin account)
+2. Navigate to **Actions → scaffold-stage1-create-repos → Run workflow**
+3. Choose `repo: both` (or `forge`/`ace` individually), type `CONFIRM` in the confirm field
+4. The workflow runs a dry-run preview first, then creates the repos
+
+The dry-run can also be verified locally (no external effects):
 
 ```bash
-# Preview first (no external effects):
 bun tools/scaffold/create-repo.ts --repo forge --dry-run
 bun tools/scaffold/create-repo.ts --repo ace  --dry-run
-
-# Execute — creates LFG/Forge and LFG/ace:
-bun tools/scaffold/create-repo.ts --repo forge --apply
-bun tools/scaffold/create-repo.ts --repo ace  --apply
 ```
 
 After `--apply` completes, the checklist of manual steps from step 07 applies:
