@@ -18,13 +18,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Extends [`.claude/rules/zeta-expected-branch.md`](.claude/rules/zeta-expected-branch.md) with two primary defenses for multi-Otto-one-checkout topology. Promotes them from B-0519 RCA (grep-discoverable backlog row) to `.claude/rules/` (auto-loaded at cold-boot for every fresh session).
+Extends [`.claude/rules/zeta-expected-branch.md`](../../.claude/rules/zeta-expected-branch.md) with two primary defenses for multi-Otto-one-checkout topology. Promotes them from B-0519 RCA (grep-discoverable backlog row) to `.claude/rules/` (auto-loaded at cold-boot for every fresh session).
 
 ## Why promote from RCA to rule
 
-Per [claude-code-loading-taxonomy.md](.claude/rules/claude-code-loading-taxonomy.md): "I keep forgetting to do X" is the goldfish-ontology failure mode that needs direct-load surface (rule files), not router-loaded skills or grep-discoverable backlog rows. The defenses fire on every commit/PR call — every cold-boot Otto needs them in context from session start, not via grep.
+Per [claude-code-loading-taxonomy.md](../../.claude/rules/claude-code-loading-taxonomy.md): "I keep forgetting to do X" is the goldfish-ontology failure mode that needs direct-load surface (rule files), not router-loaded skills or grep-discoverable backlog rows. The defenses fire on every commit/PR call — every cold-boot Otto needs them in context from session start, not via grep.
 
-Per [skill-router-as-substrate-inventory.md](.claude/rules/skill-router-as-substrate-inventory.md): extend the existing rule rather than mint a new one — same failure mode (wrong-branch commits under multi-Otto contention).
+Per [skill-router-as-substrate-inventory.md](../../.claude/rules/skill-router-as-substrate-inventory.md): extend the existing rule rather than mint a new one — same failure mode (wrong-branch commits under multi-Otto contention).
 
 ## What's added
 
