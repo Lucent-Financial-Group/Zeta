@@ -75,6 +75,7 @@ role: "<1-sentence role description>"
 ```
 
 Body sections:
+
 - **Capabilities they bring** (technical fluency, domain expertise)
 - **Context of use** (when / where / why they engage)
 - **Value proposition** (what changes for them)

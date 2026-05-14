@@ -58,6 +58,7 @@ docs/personas/aurora-personas.md
 ```
 
 With:
+
 - All implicit pitch-deck personas formalised using template schema
 - Refused-persona entries with HARD LIMITS citation
 - Aurora Slide 9 preserved verbatim in refused-persona entries

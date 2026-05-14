@@ -58,6 +58,7 @@ docs/personas/wellness-personas.md
 ```
 
 With:
+
 - Family-AI personas from PR #2893 and PR #2894 formalised into template schema
 - Consent-first annotations for any persona involving health data
 - Refused-persona entries for data-harvesting actors

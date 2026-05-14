@@ -58,6 +58,7 @@ docs/personas/ksk-personas.md
 ```
 
 With:
+
 - Primary / secondary / adjacent / refused entries (template schema)
 - Refused-persona entries citing methodology-hard-limits HARD LIMITS clause
 - Security-domain capability fields populated

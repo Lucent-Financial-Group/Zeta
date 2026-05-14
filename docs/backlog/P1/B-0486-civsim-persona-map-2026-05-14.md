@@ -55,6 +55,7 @@ docs/personas/civsim-personas.md
 ```
 
 With:
+
 - Primary / secondary / adjacent / refused persona entries (template schema)
 - HARD LIMITS check for refused personas
 - Substrate references for each persona (which PR/memory supports it)
