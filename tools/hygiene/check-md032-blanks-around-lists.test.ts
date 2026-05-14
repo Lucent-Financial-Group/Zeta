@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
@@ -630,11 +631,13 @@ describe("loadMarkdownlintIgnores + stagedMarkdownFiles", () => {
     // (`docs/`). The helper must return only the scanned one.
     const dir = mkdtempSync(join(tmpdir(), "md032-test-repo-"));
     try {
-      // Initialize a minimal git repo + minimal config.
-      const { spawnSync: spawn } = require("node:child_process") as typeof import("node:child_process");
-      spawn("git", ["init", "-q", "-b", "main"], { cwd: dir });
-      spawn("git", ["config", "user.email", "test@example.com"], { cwd: dir });
-      spawn("git", ["config", "user.name", "test"], { cwd: dir });
+      // Initialize a minimal git repo + minimal config (module-scope
+      // `spawnSync` import — the in-test `require()` call previously
+      // here violated `@typescript-eslint/no-require-imports` per
+      // pre-CI review P1 on PR #3075 round 11).
+      spawnSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
+      spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: dir });
+      spawnSync("git", ["config", "user.name", "test"], { cwd: dir });
 
       writeFileSync(
         join(dir, ".markdownlint-cli2.jsonc"),
@@ -646,7 +649,7 @@ describe("loadMarkdownlintIgnores + stagedMarkdownFiles", () => {
       writeFileSync(join(dir, "memory", "ignored.md"), "# Ignored\n");
       writeFileSync(join(dir, "docs", "scanned.md"), "# Scanned\n");
 
-      spawn("git", ["add", "memory/ignored.md", "docs/scanned.md"], { cwd: dir });
+      spawnSync("git", ["add", "memory/ignored.md", "docs/scanned.md"], { cwd: dir });
 
       const result = stagedMarkdownFiles(dir);
       expect(result).toHaveLength(1);
