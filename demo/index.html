@@ -2049,6 +2049,21 @@
         }
 
         // ── UX of Math — bivector fingerprints ─────────────────────────────────
+        // HC-1 worked-example constants — single source of truth for canvas + formula text
+        const UXM_V1 = 0.85;
+        const UXM_V2 = 0.81;
+
+        function uxmInitCanvas() {
+            const canvas = document.getElementById('uxm-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = 900 * dpr;
+            canvas.height = 380 * dpr;
+            ctx.scale(dpr, dpr);
+        }
+
         function uxmMockData() {
             return [
                 { id: 'HC-1',  name: 'Non-deceptive',           v1: 0.85, v2: 0.81 },
@@ -2089,6 +2104,7 @@
             const btn = document.getElementById('tab-btn-ux-of-math');
             if (btn) btn.textContent = 'UX of Math (' + data.length + ')';
 
+            uxmInitCanvas();
             uxmDrawBivector(90);
             uxmRenderScoreBoard(data);
 
@@ -2130,17 +2146,16 @@
             const canvas = document.getElementById('uxm-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
+            if (!ctx) return;
             const dpr = window.devicePixelRatio || 1;
             const W = 900, H = 380;
-            canvas.width = W * dpr;
-            canvas.height = H * dpr;
-            ctx.scale(dpr, dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
             ctx.clearRect(0, 0, W, H);
 
             const OX = 100, OY = 310;
             const SCALE = 215;
-            const v1 = 0.85, v2 = 0.81;
+            const v1 = UXM_V1, v2 = UXM_V2;
             const thetaRad = thetaDeg * Math.PI / 180;
             const sinT = Math.sin(thetaRad);
             const cosT = Math.cos(thetaRad);
@@ -2266,13 +2281,13 @@
             const scoreVal = Math.round(area * 100);
             const annoLines = [
                 { text: 'Two witness dimensions:', bold: true,  color: 'rgba(255,255,255,0.85)' },
-                { text: '  v₁ = adherence strength = 0.85', bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: '  v₂ = evidence quality   = 0.81', bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  v₁ = adherence strength = ${UXM_V1}`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  v₂ = evidence quality   = ${UXM_V2}`, bold: false, color: 'rgba(148,163,184,0.85)' },
                 { text: '', bold: false, color: '' },
                 { text: 'Wedge product  (v₁ ∧ v₂):', bold: true,  color: 'rgba(255,255,255,0.85)' },
                 { text: '  = |v₁| · |v₂| · sin(θ)', bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: `  = 0.85 · 0.81 · sin(${thetaDeg}°)`, bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: `  = 0.85 · 0.81 · ${sinT.toFixed(3)}`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  = ${UXM_V1} · ${UXM_V2} · sin(${thetaDeg}°)`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  = ${UXM_V1} · ${UXM_V2} · ${sinT.toFixed(3)}`, bold: false, color: 'rgba(148,163,184,0.85)' },
                 { text: `  = ${area.toFixed(2)}`, bold: false, color: 'rgba(148,163,184,0.85)' },
                 { text: '', bold: false, color: '' },
                 { text: `Partial-credit score: ${scoreVal}%`, bold: true,
@@ -2305,13 +2320,13 @@
 
         function uxmUpdateThetaDisplay(thetaDeg) {
             const sinT = Math.sin(thetaDeg * Math.PI / 180);
-            const score = Math.round(0.85 * 0.81 * sinT * 100);
+            const score = Math.round(UXM_V1 * UXM_V2 * sinT * 100);
             const labelEl  = document.getElementById('uxm-theta-label');
             const formulaEl = document.getElementById('uxm-theta-formula');
             const explainEl = document.getElementById('uxm-theta-explain');
             if (labelEl)   labelEl.textContent = thetaDeg + '°';
             if (formulaEl) formulaEl.textContent =
-                '0.85 × 0.81 × ' + sinT.toFixed(3) + ' = ' + score + '%';
+                `${UXM_V1} × ${UXM_V2} × ` + sinT.toFixed(3) + ' = ' + score + '%';
             if (explainEl) {
                 explainEl.textContent =
                     thetaDeg === 90 ? 'θ = 90°: signals are independent — full weight'
