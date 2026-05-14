@@ -8,7 +8,7 @@ merged_at: "2026-05-14T05:21:45Z"
 closed_at: "2026-05-14T05:21:45Z"
 head_ref: "feat/b0258-document-ordering-formatting-2026-05-14"
 base_ref: "main"
-archived_at: "2026-05-14T06:03:58Z"
+archived_at: "2026-05-14T06:42:37Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

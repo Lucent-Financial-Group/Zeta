@@ -8,7 +8,7 @@ merged_at: "2026-05-14T05:00:36Z"
 closed_at: "2026-05-14T05:00:37Z"
 head_ref: "feat/b0257-harness-contract-verification-2026-05-14"
 base_ref: "main"
-archived_at: "2026-05-14T06:03:58Z"
+archived_at: "2026-05-14T06:42:36Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

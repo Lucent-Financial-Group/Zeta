@@ -8,7 +8,7 @@ merged_at: "2026-05-14T03:59:20Z"
 closed_at: "2026-05-14T03:59:21Z"
 head_ref: "docs/autonomous-loop-bg-services-wiring-status-2026-05-14"
 base_ref: "main"
-archived_at: "2026-05-14T06:04:00Z"
+archived_at: "2026-05-14T06:42:35Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
