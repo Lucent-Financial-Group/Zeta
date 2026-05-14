@@ -8,9 +8,7 @@ origin: B-0469 apply completion — 1-commit drift between scaffold-template tim
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: [B-0469]
-composes_with:
-  - docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md
-  - docs/DECISIONS/2026-05-14-product-repo-split-decisions.md
+composes_with: []
 ---
 
 # B-0470 — Bump civsim `.zeta-version` to apply-time Zeta main SHA
@@ -51,6 +49,11 @@ ce5c4101e9d3d78550215cc5ef8152cffb63b8cc
 - This is a low-urgency chore; the 1-commit difference has no functional impact
 - The `.zeta-version` will next be bumped when the first Zeta release tag is emitted
   (glue mechanism Stage 1)
+
+## Related
+
+- [Product-repo glue mechanism ADR](../../DECISIONS/2026-05-14-product-repo-glue-mechanism.md)
+- [Product-repo split decisions ADR](../../DECISIONS/2026-05-14-product-repo-split-decisions.md)
 
 ## Pre-start checklist
 
