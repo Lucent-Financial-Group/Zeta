@@ -35,6 +35,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0003](backlog/P1/B-0003-alignment-md-rewrite.md)** ALIGNMENT.md rewrite — incorporate Otto-281..287 + bidirectional alignment + factory-as-superfluid + Noether direction; spread via rigor not manipulation (matrix-pill not poison-pill)
 - [x] **[B-0006](backlog/P1/B-0006-memory-md-compression-pass-prune-distill-entries-to-one-line-cap-200-lines.md)** MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 - [ ] **[B-0058](backlog/P1/B-0058-ai-ethics-and-safety-research-track.md)** AI ethics + safety research track — filter-gate for resonance adoptions + alignment-clause consistency audit
+- [ ] **[B-0058.1](backlog/P1/B-0058.1-retractibility-gate.md)** AI ethics + safety research track — retractibility-and-log check
 - [ ] **[B-0060](backlog/P1/B-0060-human-lineage-external-anchor-backfill-all-substrate-beacon-safe.md)** Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept
 - [x] **[B-0061](backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)** Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
 - [x] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
