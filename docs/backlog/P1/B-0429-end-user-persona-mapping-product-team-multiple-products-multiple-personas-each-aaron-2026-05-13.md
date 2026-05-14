@@ -1,12 +1,23 @@
 ---
 id: B-0429
 priority: P1
-status: open
+status: decomposed
 title: "End-user persona mapping — product team — multiple products × multiple personas each"
 type: planning
 ask: Aaron 2026-05-13 — *"end users need to map personas backlog for prducot team we have mtiple differnt end users and need to clarity all our expected humans personas we also have several products that have several personas each"*
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
+decomposed_by: Otto, 2026-05-14
+children:
+  - B-0485
+  - B-0486
+  - B-0487
+  - B-0488
+  - B-0489
+  - B-0490
+  - B-0491
+  - B-0492
+  - B-0493
 composes_with: [B-0424, B-0425, B-0426, B-0427, B-0428, B-0043]
 ---
 
@@ -207,3 +218,55 @@ When designing skills or features for end users:
 4. **Apply HARD LIMITS** at persona scope
 5. **Compose with substrate-honest framing** (don't pretend
    product serves personas it doesn't)
+
+## Decomposition record (Otto, 2026-05-14)
+
+B-0429 decomposed into 9 dependency-ordered atomic child rows.
+
+### Dependency graph
+
+```
+B-0485 (gate: template + inventory)
+  ├── B-0486 (Civsim persona map)         ─┐
+  ├── B-0487 (Aurora persona map)          │
+  ├── B-0488 (KSK persona map)             ├─ parallel; all depend on B-0485
+  ├── B-0489 (Wellness persona map)        │
+  ├── B-0490 (AD 2.0 + DIO persona map)   │
+  └── B-0491 (Dawn + Univ biz personas)  ─┘
+                  │
+                  ▼
+          B-0492 (cross-product reuse + refused-personas registry)
+                  │
+                  ▼
+          B-0493 (skill catalog × persona cross-reference)
+```
+
+### Child rows
+
+| ID | Title | Type | Depends on | Status |
+|----|-------|------|------------|--------|
+| B-0485 | Persona-mapping framework + substrate inventory | research (gate) | — | open |
+| B-0486 | Civsim persona map | planning | B-0485 | open |
+| B-0487 | Aurora persona map | planning | B-0485 | open |
+| B-0488 | KSK persona map | planning | B-0485 | open |
+| B-0489 | Wellness app persona map | planning | B-0485 | open |
+| B-0490 | American Dream 2.0 + DIO persona map | planning | B-0485 | open |
+| B-0491 | Dawn + Universal biz templates persona map | planning | B-0485 | open |
+| B-0492 | Cross-product persona reuse + refused-personas registry | planning | B-0486..B-0491 | open |
+| B-0493 | Skill catalog × persona cross-reference | planning | B-0492 | open |
+
+### Prior-art search completed
+
+- Existing `memory/user_*.md` files: Aaron, Elizabeth — persona substrate found
+- Aurora pitch (PR #2924): implicit personas identified (BTC ecosystem, edge operators, ombud, liaison)
+- Imagination Circle (PR #2893): family-AI persona substrate found
+- Center-First Playbook (PR #2894): Mom + family personas found
+- Parenting history (PR #2900): Aaron's kids personas found
+- PR #2902: Aaron's grey-hat security expert persona found
+- WONT-DO.md: no persona-mapping refusals found
+
+### Dependency restructure
+
+- B-0424, B-0425, B-0426, B-0427, B-0428, B-0043: `composes_with:` verified in frontmatter
+- PR #2933 (ships-with-skills): verified as key motivation for B-0493
+- PR #2893 PEC v0.1 + Charter v0.2: mandatory for Dawn (B-0491) consent-first personas

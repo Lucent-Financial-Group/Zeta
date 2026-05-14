@@ -278,6 +278,15 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0482](backlog/P1/B-0482-dbpedia-sparql-fsharp-ce-computation-expression-2026-05-14.md)** DBpedia B-0428.3 — SPARQL F# computation expression (query authoring CE)
 - [ ] **[B-0483](backlog/P1/B-0483-dbpedia-hkt-mdm-entity-bindings-dv2-hub-satellite-2026-05-14.md)** DBpedia B-0428.4 — HKT-MDM entity bindings + DV2.0 hub-satellite types
 - [ ] **[B-0484](backlog/P1/B-0484-dbpedia-end-to-end-demo-project-2026-05-14.md)** DBpedia B-0428.5 — end-to-end demo project + integration test
+- [ ] **[B-0485](backlog/P1/B-0485-persona-mapping-framework-template-substrate-inventory-2026-05-14.md)** B-0429.1 — Persona-mapping framework: define per-persona template + audit existing persona substrate
+- [ ] **[B-0486](backlog/P1/B-0486-civsim-persona-map-2026-05-14.md)** B-0429.2 — Civsim persona map
+- [ ] **[B-0487](backlog/P1/B-0487-aurora-persona-map-2026-05-14.md)** B-0429.3 — Aurora persona map
+- [ ] **[B-0488](backlog/P1/B-0488-ksk-persona-map-2026-05-14.md)** B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map
+- [ ] **[B-0489](backlog/P1/B-0489-wellness-app-persona-map-2026-05-14.md)** B-0429.5 — Wellness app persona map
+- [ ] **[B-0490](backlog/P1/B-0490-american-dream-dio-persona-map-2026-05-14.md)** B-0429.6 — American Dream 2.0 + DIO persona map
+- [ ] **[B-0491](backlog/P1/B-0491-dawn-universal-biz-templates-persona-map-2026-05-14.md)** B-0429.7 — Dawn + Universal business templates persona map
+- [ ] **[B-0492](backlog/P1/B-0492-cross-product-persona-reuse-refused-registry-2026-05-14.md)** B-0429.8 — Cross-product persona reuse map + refused-personas registry
+- [ ] **[B-0493](backlog/P1/B-0493-skill-catalog-persona-crossref-2026-05-14.md)** B-0429.9 — Skill catalog × persona cross-reference
 
 ## P2 — research-grade
 
