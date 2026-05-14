@@ -91,7 +91,13 @@ function isListItemStart(line: string): boolean {
   // non-blockquote case — a 4-space-indented `    - option` is
   // indented code, not a list (pre-CI review P1 on PR #3075 round 16
   // refining round 14's accidental combined-indent permissiveness).
-  return /^ {0,3}(?:(?:>[ \t]?)+ {0,3})?([-+*]|\d{1,9}[.)])\s+/.test(line);
+  // The marker may be followed by `\s+` (marker + spaces + content)
+  // OR by end-of-line (`\s*$` — bare marker, empty list item, also
+  // valid per CommonMark). Without the EOL alternative, a label
+  // directly followed by an empty list item (`Label:\n-`) would not
+  // fire MD032 locally while markdownlint still reports it (pre-CI
+  // review P1 on PR #3075 round 18).
+  return /^ {0,3}(?:(?:>[ \t]?)+ {0,3})?([-+*]|\d{1,9}[.)])(\s+|\s*$)/.test(line);
 }
 
 /**
@@ -122,7 +128,12 @@ function isBlank(line: string): boolean {
  * round 12).
  */
 function isHeading(line: string): boolean {
-  return /^ {0,3}(?:(?:>[ \t]?)+ {0,3})?#{1,6}\s+/.test(line);
+  // The heading line may have content (`# Foo`, `\s+` after) OR be
+  // empty (`#` alone at end-of-line). An empty ATX heading is valid
+  // per CommonMark; a list directly followed by an empty heading
+  // should still terminate the list and trigger after-list MD032
+  // (pre-CI review P1 on PR #3075 round 18).
+  return /^ {0,3}(?:(?:>[ \t]?)+ {0,3})?#{1,6}(\s+|\s*$)/.test(line);
 }
 
 /**
@@ -137,10 +148,14 @@ function isHeading(line: string): boolean {
  * (the marker must be followed by a list-item body).
  */
 function isThematicBreak(line: string): boolean {
-  const trimmed = line.replace(/^ {0,3}/, "");
-  return /^(\*[ \t]*){3,}$/.test(trimmed)
-    || /^(-[ \t]*){3,}$/.test(trimmed)
-    || /^(_[ \t]*){3,}$/.test(trimmed);
+  // Strip optional leading blockquote prefix so `> ---` is also
+  // recognised as a thematic break inside a blockquote — markdownlint
+  // MD032 fires on the blockquoted list it terminates (pre-CI review
+  // P1 on PR #3075 round 18).
+  const stripped = line.replace(/^ {0,3}(?:(?:>[ \t]?)+ {0,3})?/, "");
+  return /^(\*[ \t]*){3,}$/.test(stripped)
+    || /^(-[ \t]*){3,}$/.test(stripped)
+    || /^(_[ \t]*){3,}$/.test(stripped);
 }
 
 /**
@@ -429,16 +444,21 @@ export function findMd032Violations(content: string): { line: number; context: s
 }
 
 /**
- * Walk a list of files; collect MD032 findings; return them as an
- * array. The CLI `main()` owns the output boundary (stderr emit,
- * exit code).
+ * Walk a list of WORKING-TREE files; collect MD032 findings.
  *
- * @param files - Paths to scan.
- * @param surfaceReadErrors - When true, throw on unreadable files so
- *   the caller (main) can exit non-zero. When false (default, used for
- *   --staged mode), unreadable files are skipped silently — push or CI
- *   will surface the underlying I/O error (pre-CI review P1 on PR #3075
- *   round 2).
+ * `--staged` mode does NOT go through this function — round-13
+ * moved staged-blob reads to `checkStagedFiles` (which uses
+ * `git show :path` and fails loud on read errors via round-14).
+ * This function is the explicit-CLI / direct-filesystem path.
+ *
+ * @param files - Paths to scan on the filesystem.
+ * @param surfaceReadErrors - When true (the only mode `main()` uses
+ *   for explicit CLI args), unreadable files throw so a typo doesn't
+ *   exit 0 with "no findings." The `surfaceReadErrors = false` branch
+ *   is kept for backwards-compat with callers that want the
+ *   pre-round-13 silent-skip semantics, but no longer used by
+ *   `main()` (pre-CI review P1 on PR #3075 round 18 docstring
+ *   refresh).
  */
 export function checkFiles(files: string[], surfaceReadErrors = false): Md032Finding[] {
   const all: Md032Finding[] = [];
@@ -453,7 +473,7 @@ export function checkFiles(files: string[], surfaceReadErrors = false): Md032Fin
           { cause: e },
         );
       }
-      continue; // --staged mode: silently skip; push/CI surfaces the I/O error
+      continue; // silent-skip path (no longer used by main() since round 13)
     }
     const findings = findMd032Violations(content);
     for (const finding of findings) {

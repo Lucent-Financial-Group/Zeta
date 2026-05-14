@@ -278,6 +278,64 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 18", () => {
+  test("blockquoted thematic break (`> ---`) terminates a blockquoted list (pre-CI review P1 on PR #3075 round 18)", () => {
+    // \`> - a / > --- / > - b\` — the blockquoted thematic break
+    // terminates the blockquoted list; MD032 fires on the second
+    // bullet (and the after-list side fires on \`> ---\`).
+    const content = `# Title
+
+> - item a
+> ---
+> - item b
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4);
+    expect(findings[1]?.line).toBe(5);
+  });
+
+  test("bare list marker (no content after `-`) IS recognised as a list-item (pre-CI review P1 on PR #3075 round 18)", () => {
+    // CommonMark allows empty list items written as a bare marker.
+    // A label directly followed by a bare-marker list-item must still
+    // fire MD032.
+    const content = `# Title
+
+Label:
+-
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("bare paren marker (`1)` no content) is also recognised", () => {
+    const content = `# Title
+
+Steps:
+1)
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("empty ATX heading directly after a list terminates the list (pre-CI review P1 on PR #3075 round 18)", () => {
+    // \`# \` (bare \`#\`) is a valid empty ATX heading. A list
+    // directly followed by it triggers after-list MD032.
+    const content = `# Title
+
+- item
+##
+
+Body.
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+});
+
 describe("findMd032Violations — round 17", () => {
   test("blockquoted fence with content-indent is recognised as a fence (pre-CI review P2 on PR #3075 round 17)", () => {
     // \`>  \\\`\\\`\\\`\` (blockquote marker + 2-space content indent +
