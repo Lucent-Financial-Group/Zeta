@@ -15,7 +15,7 @@ composes_with:
   - B-0482
   - B-0483
   - B-0484
-  - docs/backlog/P1/B-0043-universal-company-government-information-substrate.md
+  - docs/backlog/P3/B-0043-universal-company-government-information-substrate.md
   - memory/feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md
 ---
 
@@ -48,7 +48,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 |---------|------|----------------|
 | F# CE model | `src/Core/Dsl.fs` | CircuitBuilder pattern — applies to SparqlBuilder |
 | Package manifest | `Directory.Packages.props` | Confirm no RDF packages already present |
-| B-0043 parent | `docs/backlog/P1/B-0043-*.md` | Scope of universal-business-templates |
+| B-0043 parent | `docs/backlog/P3/B-0043-*.md` | Scope of universal-business-templates |
 | PR #2913 | GitHub | HKT-MDM universality — confirm `M<'T>` substrate shape |
 | DV2.0 rule | `.claude/rules/dv2-data-split-discipline-activated.md` | Hub-satellite partition applies |
 | Aaron's DBpedia memory | `memory/feedback_aaron_dbpedia_is_free_master_data_*.md` | Confirm Path A vs Path B ordering |

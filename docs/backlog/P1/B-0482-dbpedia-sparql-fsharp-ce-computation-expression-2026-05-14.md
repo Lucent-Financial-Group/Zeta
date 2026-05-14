@@ -15,7 +15,6 @@ composes_with:
   - B-0481
   - B-0483
   - B-0484
-  - B-0485
   - src/Core/Dsl.fs
   - .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md
 ---

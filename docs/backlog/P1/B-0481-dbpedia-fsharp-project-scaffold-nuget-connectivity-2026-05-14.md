@@ -86,12 +86,16 @@ Implement whichever CI strategy the ADR chose:
 
 - **Recorded fixture** (preferred): capture one real DBpedia response; replay
   in CI without network access
-- **Live endpoint** (fallback): mark test `[<Trait("Category", "Integration")>]`
-  so CI can skip without `--filter Category=Integration`
+- **Live endpoint** (fallback): mark test `[<Fact(Skip="Requires live DBpedia endpoint — use recorded fixture for CI")>]`
+  so the test is skipped by default; remove `Skip=` only when running locally against DBpedia
 
 The smoke test must:
 
-- Execute `SELECT ?label WHERE { <http://dbpedia.org/resource/Berlin> rdfs:label ?label . FILTER (LANG(?label) = 'en') }` (or recorded equivalent)
+- Execute the query below (or recorded equivalent):
+  ```sparql
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  SELECT ?label WHERE { <http://dbpedia.org/resource/Berlin> rdfs:label ?label . FILTER (LANG(?label) = 'en') }
+  ```
 - Assert at least one `rdfs:label` result
 - Pass under `dotnet test Zeta.sln -c Release`
 
