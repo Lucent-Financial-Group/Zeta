@@ -7,6 +7,7 @@ type: design
 origin: B-0426 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
+parent: B-0426
 depends_on:
   - B-0471
 composes_with:

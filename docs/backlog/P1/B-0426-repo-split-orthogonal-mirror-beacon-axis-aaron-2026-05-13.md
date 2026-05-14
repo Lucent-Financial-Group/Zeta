@@ -7,7 +7,7 @@ type: planning
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
 last_updated: 2026-05-14
-child_rows:
+children:
   - B-0471
   - B-0472
   - B-0473
@@ -105,7 +105,7 @@ child rows per `.claude/rules/backlog-item-start-gate.md`:
 
 | Row | Title | Type | Depends on |
 |-----|-------|------|------------|
-| **B-0471** | Mirror/Beacon prior-art audit | research | B-0426 |
+| **B-0471** | Mirror/Beacon prior-art audit | research | — (first in chain; parent: B-0426) |
 | **B-0472** | Two-axis classification matrix | design | B-0471 |
 | **B-0473** | Mirror→Beacon promotion gate protocol | design | B-0471 |
 | **B-0474** | Mirror/Beacon axis ADR | adr | B-0472, B-0473 |

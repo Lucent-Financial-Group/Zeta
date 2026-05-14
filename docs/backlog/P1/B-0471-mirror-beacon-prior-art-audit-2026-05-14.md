@@ -7,12 +7,12 @@ type: research
 origin: B-0426 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-depends_on:
-  - B-0426
+parent: B-0426
 composes_with:
   - B-0426
   - B-0472
   - B-0473
+  - B-0474
   - memory/feedback_otto_356_mirror_internal_vs_beacon_external_language_register_discipline_2026_04_27.md
   - memory/feedback_aaron_repo_split_orthogonal_mirror_beacon_axis_speculative_fast_forks_vs_governance_citation_gated_another_orthogonality_2026_05_13.md
   - docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md
@@ -34,7 +34,7 @@ beginning classification work with stale or contradictory substrate.
 Per `.claude/rules/backlog-item-start-gate.md`:
 
 - [ ] Prior-art search across wake-time-substrate, skill-router, orthogonal-axes
-- [ ] Walk `depends_on:` chain (B-0426 → B-0424/B-0425 already closed)
+- [ ] Walk `parent:` chain (B-0426 → B-0425 closed; B-0424 still open)
 - [ ] Backfill reciprocal `composes_with:` pointers on all referenced files
 
 ## Surfaces to audit
