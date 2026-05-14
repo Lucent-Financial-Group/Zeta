@@ -31,8 +31,62 @@ causes `git checkout -b new-branch` to appear successful while HEAD silently
 remains on a subagent's branch. The symptom: the commit lands on the wrong
 branch. Empirically observed twice on 2026-05-04 in a single session.
 
+The multi-Otto-one-checkout topology (see B-0519 RCA) exposes the same
+failure mode at a higher rate: parallel-Otto processes execute
+`git checkout <branch>` in the same physical worktree, silently moving
+HEAD between any two Bash-tool calls.
+
 Encoding the expected branch once at session start, then having the harness
-check it mechanically, removes the discipline-memory burden entirely.
+check it mechanically, was intended to remove the discipline-memory burden.
+
+## Field-test caveat (2026-05-14) — env-var hook is defense-in-depth, not primary
+
+`ZETA_EXPECTED_BRANCH` set in one Bash-tool call does NOT reliably persist
+to the call that runs `git commit`. Each Bash-tool invocation may spawn a
+fresh shell, so `export FOO=bar; do_thing` works within one call but
+`FOO` is unset for the next call's environment. The `PreToolUse` hook
+reads `process.env.ZETA_EXPECTED_BRANCH` of the spawned bash process —
+when that's unset, the hook is a no-op and the wrong-branch commit goes
+through.
+
+This is the failure mode observed on tick 2010Z (2026-05-14): the
+env-var-based hook did NOT catch a wrong-branch commit because the
+env var didn't survive across separate Bash-tool calls.
+
+**The substrate-honest primary catch is `git branch --show-current`
+immediately before `git commit`** — survives any harness-level
+shell-environment quirk because it's a direct query of git state, not
+a query of the agent's belief about git state.
+
+Field-tested on ticks 2010Z + 2026Z + 2030Z (2026-05-14); survived
+first-try after being adopted.
+
+## Companion defense — `gh pr create --head <my-branch>`
+
+The same parallel-Otto checkout that moves HEAD between `git push` and
+`gh pr create` can poison the PR-create call. Symptom:
+`gh pr create` opens a PR from a different Otto's branch, or fails with
+"could not determine the current branch: not on any branch."
+
+**Always use `gh pr create --head <my-branch> --base main`** with an
+EXPLICIT head ref. Removes implicit dependency on current-branch state.
+
+Field-tested on tick 2026Z (2026-05-14) after Pattern 6 was observed.
+
+## Composite operator-discipline at commit + PR time
+
+```bash
+# Before each git commit:
+test "$(git branch --show-current)" = "<expected>" || exit 1
+git commit -m "..."
+
+# Before each gh pr create:
+gh pr create --head <my-branch> --base main --title "..." --body "..."
+```
+
+Both are zero-code substrate (operator discipline) but they're the
+primary catches in this harness. The env-var hook stays as
+defense-in-depth.
 
 ## Hook wiring summary
 
@@ -57,3 +111,7 @@ unset ZETA_EXPECTED_BRANCH
 `memory/feedback_orchestrator_pre_commit_verify_branch_rule_aaron_2026_05_04.md`
 
 `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`
+
+`docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md`
+(RCA capturing the multi-Otto contamination patterns + the primary defenses
+this rule operationalizes; field-test tick shards 2010Z/2026Z/2030Z)
