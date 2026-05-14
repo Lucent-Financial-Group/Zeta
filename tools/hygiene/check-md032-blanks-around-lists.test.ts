@@ -190,6 +190,45 @@ Some prose:
 `;
     expect(findMd032Violations(content)).toEqual([]);
   });
+
+  test("inner fence with different delimiter does NOT close the outer block (Codex P2 PR #3075)", () => {
+    // A backtick-fenced block holding a literal tilde-fence example
+    // must keep the outer block open. The boolean toggle approach
+    // would flip out on the inner ~~~ and falsely flag the list-like
+    // lines that follow inside the outer block.
+    const content = `# Title
+
+\`\`\`
+showing a tilde fence inside:
+~~~
+Label:
+- item
+~~~
+end of example
+\`\`\`
+
+Real prose:
+
+- real item
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("inner fence shorter than outer does NOT close it (Codex P2 PR #3075)", () => {
+    // A four-backtick fence holding an inner three-backtick example
+    // must keep the outer block open — the closer needs at least the
+    // opener's length.
+    const content = `# Title
+
+\`\`\`\`
+\`\`\`
+Label:
+- item
+\`\`\`
+\`\`\`\`
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
 });
 
 describe("checkFiles", () => {

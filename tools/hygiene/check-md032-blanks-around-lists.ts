@@ -94,12 +94,24 @@ function isListFriendlyLeading(line: string, inList: boolean): boolean {
 }
 
 /**
- * A line that opens or closes a fenced code block (`\`\`\`` or `~~~`,
- * optionally followed by an info string). The token must be on its
- * own line (possibly indented up to 3 spaces, per CommonMark).
+ * Parse a fenced-code-block delimiter (`\`\`\`` or `~~~`, optionally
+ * followed by an info string), returning the fence character and run
+ * length. The token must be on its own line (possibly indented up to
+ * 3 spaces, per CommonMark) and the run must be 3+ chars.
+ *
+ * Tracking the (char, len) pair — not just a boolean — is what lets a
+ * fenced block containing an inner fence example with a *different*
+ * delimiter or *shorter* run keep the outer block open. Without this,
+ * a backtick fence holding a literal tilde-fence sample (or vice versa)
+ * toggles `inFencedCode` off prematurely and the list-like lines that
+ * follow inside the outer block get falsely flagged as MD032 violations
+ * (Codex P2 round 2 on PR #3075).
  */
-function isFenceLine(line: string): boolean {
-  return /^ {0,3}(```|~~~)/.test(line);
+function fenceInfo(line: string): { char: "`" | "~"; len: number } | null {
+  const m = line.match(/^ {0,3}(`{3,}|~{3,})/);
+  if (!m) return null;
+  const run = m[1] ?? "";
+  return { char: run[0] === "`" ? "`" : "~", len: run.length };
 }
 
 export function findMd032Violations(content: string): { line: number; context: string }[] {
@@ -107,8 +119,10 @@ export function findMd032Violations(content: string): { line: number; context: s
   const findings: { line: number; context: string }[] = [];
   // Track fenced-code-block state so list-like lines INSIDE code samples
   // (e.g., a documentation example showing a bad MD032 pattern) aren't
-  // flagged. Codex P2 on PR #3075.
-  let inFencedCode = false;
+  // flagged. The state remembers the opening delimiter (char + length)
+  // so a nested inner fence with a different char or shorter run can't
+  // close the outer block (Codex P2 round 2 on PR #3075).
+  let openFence: { char: "`" | "~"; len: number } | null = null;
   // Track whether we are inside a list block (reset by blank lines and
   // fence boundaries). Used by isListFriendlyLeading to avoid treating
   // ordinary indented prose as list continuation (Copilot P1 PR #3075).
@@ -122,12 +136,20 @@ export function findMd032Violations(content: string): { line: number; context: s
 
     // Update fence state BEFORE the list-start check so a fence line
     // itself never registers as a list-start candidate.
-    if (isFenceLine(cur)) {
-      inFencedCode = !inFencedCode;
+    const fence = fenceInfo(cur);
+    if (fence !== null) {
+      if (openFence === null) {
+        // Opening a new fence.
+        openFence = fence;
+      } else if (fence.char === openFence.char && fence.len >= openFence.len) {
+        // Matching closer (same char, run length >= opener).
+        openFence = null;
+      }
+      // else: inner fence with different char or shorter run — stays open.
       inList = false; // fence boundary also resets list context
       continue;
     }
-    if (inFencedCode) continue;
+    if (openFence !== null) continue;
 
     if (isBlank(cur)) {
       inList = false;
