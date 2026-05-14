@@ -1,17 +1,18 @@
 #!/usr/bin/env bun
 // create-repo.ts — scaffolds a new GitHub repo with B-0424 best-practice settings.
 //
-// Implements Stage 1 of the three-repo split (ADR 2026-04-22). Applies
-// the full best-practice checklist: merge settings, branch protection,
-// security scanning, CodeQL default-setup, Dependabot, spending-cap
-// verification (manual step), and day-one governance files from
-// tools/scaffold/<repoName>/.
+// Implements Stage 1 of the three-repo split (ADR 2026-04-22) and the
+// product-repo split (ADR 2026-05-14). Applies the full best-practice checklist:
+// merge settings, branch protection, security scanning, CodeQL default-setup,
+// Dependabot, spending-cap verification (manual step), and day-one governance
+// files from tools/scaffold/<repoName>/.
 //
 // Usage:
-//   bun tools/scaffold/create-repo.ts --repo forge --dry-run   # preview (default)
-//   bun tools/scaffold/create-repo.ts --repo ace  --dry-run
-//   bun tools/scaffold/create-repo.ts --repo forge --apply     # create for real
-//   bun tools/scaffold/create-repo.ts --repo ace  --apply
+//   bun tools/scaffold/create-repo.ts --repo forge  --dry-run   # preview (default)
+//   bun tools/scaffold/create-repo.ts --repo ace    --dry-run
+//   bun tools/scaffold/create-repo.ts --repo civsim --dry-run
+//   bun tools/scaffold/create-repo.ts --repo forge  --apply     # create for real
+//   bun tools/scaffold/create-repo.ts --repo civsim --apply
 //
 // Requires:
 //   gh CLI authenticated with: repo, read:org, workflow scopes
@@ -34,6 +35,8 @@ interface RepoConfig {
   name: string;
   description: string;
   homepage?: string;
+  /** Product repos skip the AceHack mirror step and use the honor-system license. */
+  isProduct?: boolean;
 }
 
 interface Operation {
@@ -55,6 +58,7 @@ interface RunResult {
 // --- Config ---
 
 const REPO_CONFIGS: Record<string, RepoConfig> = {
+  // Factory-infrastructure repos — Apache 2.0, forking welcome, AceHack mirror
   forge: {
     org: "Lucent-Financial-Group",
     name: "Forge",
@@ -67,6 +71,15 @@ const REPO_CONFIGS: Record<string, RepoConfig> = {
     name: "ace",
     description:
       "Package manager for the Lucent Financial Group software stack",
+  },
+  // Product repos — honor-system license, no AceHack mirror
+  // See ADR: docs/DECISIONS/2026-05-14-product-repo-split-decisions.md
+  civsim: {
+    org: "Lucent-Financial-Group",
+    name: "civsim",
+    description:
+      "Civilisation simulation — turn-based strategy with AI-directed factions and mutual-privacy design",
+    isProduct: true,
   },
 };
 
@@ -377,6 +390,17 @@ function step04_codeqlDefaultSetup(): void {
 }
 
 function step05_forkToAcehack(): void {
+  // Product repos are NOT mirrored to AceHack — AceHack is the factory backup
+  // mirror only. Per ADR 2026-05-14-product-repo-split-decisions.md.
+  if (config.isProduct) {
+    plan(
+      "05-fork-to-acehack",
+      `Skipped — product repos are not mirrored to ${FORK_ORG} (factory repos only)`,
+      "",
+      {}
+    ).status = "skipped";
+    return;
+  }
   const op = plan(
     "05-fork-to-acehack",
     `Fork ${config.org}/${config.name} → ${FORK_ORG}/${config.name}`,
@@ -521,20 +545,26 @@ function collectFiles(dir: string): string[] {
 }
 
 function step07_summary(): void {
+  const baseSteps = [
+    "Upload SVG social-preview PNG via GitHub UI (GitHub requires rasterized PNG format)",
+    "Enable merge queue via GitHub UI: Settings → Merge queue (org feature, no API)",
+    "Wire gate workflow: add `semgrep --config .semgrep.yml --error --metrics=off` step (.semgrep.yml is in scaffold files; CI job still needs wiring in Stage 2)",
+    "Add bun-test, bun-lint, codeql, scorecard as required status checks AFTER CI workflows are wired (branch protection was created with empty contexts to avoid deadlock)",
+    "Verify budget caps $0 at org level: github.com/organizations/Lucent-Financial-Group/settings/billing",
+    "Confirm CodeQL default-setup is active: Security → Code scanning → Default setup",
+  ];
+  const productSteps = config.isProduct
+    ? [
+        "Wire repository_dispatch subscription: configure Forge CI to emit release-tag events to this repo (glue mechanism Stage 1, per ADR 2026-05-14-product-repo-glue-mechanism.md)",
+        "Update .zeta-version pin file to the actual current Zeta main SHA after repo creation",
+        "Release bus claim: bun tools/bus/claim.ts release --from otto --item B-0469",
+      ]
+    : [];
   plan(
     "07-next-steps",
     "Manual steps required after this tool completes",
     "",
-    {
-      manualSteps: [
-        "Upload SVG social-preview PNG via GitHub UI (GitHub requires rasterized PNG format)",
-        "Enable merge queue via GitHub UI: Settings → Merge queue (org feature, no API)",
-        "Wire gate workflow: add `semgrep --config .semgrep.yml --error --metrics=off` step (.semgrep.yml is in scaffold files; CI job still needs wiring in Stage 2)",
-        "Add bun-test, bun-lint, codeql, scorecard as required status checks AFTER CI workflows are wired (branch protection was created with empty contexts to avoid deadlock)",
-        "Verify budget caps $0 at org level: github.com/organizations/Lucent-Financial-Group/settings/billing",
-        "Confirm CodeQL default-setup is active: Security → Code scanning → Default setup",
-      ],
-    }
+    { manualSteps: [...baseSteps, ...productSteps] }
   ).status = "planned";
 }
 
