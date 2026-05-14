@@ -6,7 +6,7 @@ title: Product Manager (PM-2) role — research-to-predict-features-before-frict
 created: 2026-05-01
 last_updated: 2026-05-14
 closed: 2026-05-14
-closed_by: [B-0270, B-0271, "#3074"]
+closed_by: "B-0270 + B-0271 + PR #3074"
 decomposition: decomposed
 children: [B-0270, B-0271]
 depends_on: []
@@ -22,7 +22,7 @@ All acceptance criteria met across three child deliverables:
 | AC | Deliverable | Merged via |
 |---|---|---|
 | AC 1 — EXPERT-REGISTRY.md Mira row | `docs/EXPERT-REGISTRY.md` PM-2 row | PR #3074 |
-| AC 2 — Cadence weekly/Sundays | Documented in `docs/forward-radar/TEMPLATE.md` header | PR #3074 |
+| AC 2 — Cadence weekly/Sundays UTC | Documented in `docs/forward-radar/TEMPLATE.md` header (cadence established; the "reviewed after first 4 cycles" clause is a standing governance commitment, not a close-gate) | PR #3074 |
 | AC 3 — Output template | `docs/forward-radar/TEMPLATE.md` | PR #3074 |
 | AC 4 — First forward-radar memo | `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` | B-0271 |
 | AC 5 — Calibration metric tracker | `docs/forward-radar/calibration.md` | PR #3074 |
