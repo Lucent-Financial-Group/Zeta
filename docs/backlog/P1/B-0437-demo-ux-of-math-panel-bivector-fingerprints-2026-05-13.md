@@ -1,7 +1,7 @@
 ---
 id: B-0437
 priority: P1
-status: done
+status: closed
 title: "Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)"
 tier: product-demo
 effort: L

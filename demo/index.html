@@ -1052,7 +1052,7 @@
                     </svg>
                     <h2 id="uxm-worked-example-title">Worked Example — Bivector Fingerprint (HC-1)</h2>
                 </div>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 1rem;">
+                <p id="uxm-worked-example-desc" style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 1rem;">
                     HC-1 "Non-deceptive" is witnessed by two independent signals:
                     <em>adherence strength</em> (how consistently the agent avoids deceptive outputs)
                     and <em>evidence quality</em> (how well-evidenced that claim is from commit history).
@@ -2350,6 +2350,12 @@
             const titleEl = document.getElementById('uxm-worked-example-title');
             if (titleEl) titleEl.textContent =
                 'Worked Example — Bivector Fingerprint (' + clause.id + ')';
+            const descEl = document.getElementById('uxm-worked-example-desc');
+            if (descEl) descEl.textContent =
+                clause.id + ' “' + clause.name + '” is witnessed by two independent signals'
+                + ' (v₁ = ' + clause.v1 + ', v₂ = ' + clause.v2 + ').'
+                + ' Their wedge product — the shaded area — is the bivector fingerprint:'
+                + ' the partial-credit score.';
             uxmDrawBivector(thetaDeg, clause.v1, clause.v2, clause.id + ': ' + clause.name);
             uxmUpdateThetaDisplay(thetaDeg, clause.v1, clause.v2);
             document.querySelectorAll('#uxm-score-board [data-clause-id]').forEach(el => {
@@ -2374,8 +2380,14 @@
                 row.style.cssText = 'background:rgba(0,0,0,0.2);border-radius:10px;'
                     + 'padding:0.75rem 1rem;border:1px solid rgba(255,255,255,0.04);'
                     + 'cursor:pointer;transition:background 0.2s,border-color 0.2s;';
+                row.setAttribute('role', 'button');
+                row.setAttribute('tabindex', '0');
+                row.setAttribute('aria-label', clause.id + ': ' + clause.name);
                 row.setAttribute('data-clause-id', clause.id);
                 row.addEventListener('click', () => uxmSelectClause(clause));
+                row.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); uxmSelectClause(clause); }
+                });
 
                 const hdr = document.createElement('div');
                 hdr.style.cssText = 'display:flex;justify-content:space-between;'
