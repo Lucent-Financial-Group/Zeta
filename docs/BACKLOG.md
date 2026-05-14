@@ -263,6 +263,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0451](backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md)** Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts
 - [ ] **[B-0459](backlog/P1/B-0459-b0440-slice-5-infinite-backlog-nudge-handler-2026-05-14.md)** B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler (standing-by failure-mode closer)
 - [ ] **[B-0460](backlog/P1/B-0460-b0441-slice-5-2-work-assignment-subscriber-handler-2026-05-14.md)** B-0441 slice 5.2 — work-assignment subscriber handler (agent-side claim-and-act)
+- [ ] **[B-0461](backlog/P1/B-0461-b0442-slice-5-3-missed-substrate-cascade-handler-2026-05-14.md)** B-0442 slice 5.3 — missed-substrate-cascade subscriber handler (branch-vs-merged-PR drift closer)
 - [ ] **[B-0463](backlog/P1/B-0463-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [x] **[B-0464](backlog/P1/B-0464-product-repo-honor-system-license-language-draft-2026-05-14.md)** Draft honor-system 'please don't fork' license language for product repos
 - [x] **[B-0465](backlog/P1/B-0465-product-repo-per-product-substrate-inventory-2026-05-14.md)** Per-product substrate inventory — 7 product candidates; repo-ready evaluation
@@ -313,6 +314,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0513](backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md)** B-0448 slice 7 — Memory file capturing empirical Cloud Routine bootstrap learning
 - [ ] **[B-0518](backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md)** Sharpen the holding-without-named-dependency rule — Aaron diagnosed CLAUDE.md bug
 - [ ] **[B-0520](backlog/P1/B-0520-new-surface-audit-alignment-check.md)** Mechanize new-surface audit for alignment-clause consistency
+- [ ] **[B-0522](backlog/P1/B-0522-fsharp-src-core-artifact-inventory.md)** F# src/Core/ artifact inventory (Decomposed from B-0139)
 
 ## P2 — research-grade
 
