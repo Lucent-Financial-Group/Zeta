@@ -119,6 +119,7 @@ let ``sparql CE produces correct PREFIX and SELECT`` () =
 ```
 
 At minimum:
+
 - PREFIX rendering test
 - SELECT variable test
 - WHERE clause (IsA, HasProp, Filter) tests

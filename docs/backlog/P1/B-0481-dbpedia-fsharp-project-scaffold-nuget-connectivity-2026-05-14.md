@@ -51,6 +51,7 @@ src/DBpedia.Tests/
 ```
 
 `DBpedia.fsproj` must:
+
 - Target `net10.0` (matches existing projects)
 - Reference chosen library (pinned version from ADR)
 - Include in `Zeta.sln`
@@ -82,12 +83,14 @@ Error surface: `Result<_, DbspError>` per the repo-wide result-over-exception ru
 ### 4. CI strategy (per ADR)
 
 Implement whichever CI strategy the ADR chose:
+
 - **Recorded fixture** (preferred): capture one real DBpedia response; replay
   in CI without network access
 - **Live endpoint** (fallback): mark test `[<Trait("Category", "Integration")>]`
   so CI can skip without `--filter Category=Integration`
 
 The smoke test must:
+
 - Execute `SELECT ?label WHERE { <http://dbpedia.org/resource/Berlin> rdfs:label ?label . FILTER (LANG(?label) = 'en') }` (or recorded equivalent)
 - Assert at least one `rdfs:label` result
 - Pass under `dotnet test Zeta.sln -c Release`
