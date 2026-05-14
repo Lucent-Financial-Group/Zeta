@@ -8,7 +8,7 @@ merged_at: "2026-05-14T19:36:45Z"
 closed_at: "2026-05-14T19:36:45Z"
 head_ref: "chore/b-0518-sharpen-holding-failure-rule-aaron-claude-md-bug-2026-05-14"
 base_ref: "main"
-archived_at: "2026-05-14T19:57:34Z"
+archived_at: "2026-05-14T19:37:59Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
