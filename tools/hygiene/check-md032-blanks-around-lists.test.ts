@@ -267,6 +267,68 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 12", () => {
+  test("ATX heading between two lists terminates the first list (pre-CI review P1 on PR #3075 round 12)", () => {
+    // CommonMark: a heading terminates the prior list. The second
+    // bullet starts a new list and needs a blank line; MD032 fires
+    // because the predecessor is the heading.
+    const content = `# Title
+
+- item a
+
+## Heading
+- item b
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(6);
+  });
+
+  test("heading immediately followed by list (no blank between blank-before-heading and the list line) fires MD032", () => {
+    const content = `- item a
+## Heading
+- item b
+`;
+    const findings = findMd032Violations(content);
+    // Two MD032 hits:
+    // - line 2 `## Heading` after `- item a`: heading right after list, no blank — but MD032 is about LISTS not headings, so this isn't flagged HERE.
+    // - line 3 `- item b` after the heading: a new list with non-blank predecessor.
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(3);
+  });
+
+  test("fenced code inside blockquote is recognised (pre-CI review P1 on PR #3075 round 12)", () => {
+    // A `> \`\`\`` line opens a blockquoted fenced code block.
+    // List-like content inside (`> Label:` / `> - item`) must NOT
+    // fire MD032 because markdownlint treats it as code.
+    const content = `# Title
+
+> Sample:
+>
+> \`\`\`
+> Label:
+> - item
+> \`\`\`
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("indented fence inside list-item-body still keeps list context (round-10 preservation)", () => {
+    // The round-10 case must remain clean: an indented fence is a
+    // child block of the list-item; the sibling bullet that follows
+    // is part of the same list.
+    const content = `# Title
+
+- item one
+  \`\`\`
+  code inside item
+  \`\`\`
+- item two
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+});
+
 describe("findMd032Violations — round 10", () => {
   test("indented fence inside a list item does not split the list (pre-CI review P1 on PR #3075 round 10)", () => {
     // A fenced code block can be a child block inside a list item.
@@ -287,12 +349,13 @@ describe("findMd032Violations — round 10", () => {
     expect(findMd032Violations(content)).toEqual([]);
   });
 
-  test("flush-left fence inside a list (lazy form) does not split the list", () => {
-    // Even when the fence is not indented under the bullet, the
-    // helper now keeps `inList` across fence transitions — false
-    // positives blocking valid code are worse than letting
-    // markdownlint catch a top-level fence-between-lists edge case
-    // in CI.
+  test("flush-left fence between bullets DOES split the list (pre-CI review P1 on PR #3075 round 12 — refines round 10)", () => {
+    // CommonMark: a flush-left (non-indented) fenced block is a
+    // top-level block that terminates the surrounding list. The
+    // second bullet that follows the fence-close is the start of a
+    // new list and requires a blank line — markdownlint MD032 fires.
+    // The round-10 test that asserted clean was the false negative
+    // (round-12 review caught it).
     const content = `# Title
 
 - item one
@@ -301,7 +364,10 @@ code at flush-left between bullets
 \`\`\`
 - item two
 `;
-    expect(findMd032Violations(content)).toEqual([]);
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    // Line 7 is "- item two" — the new-list-start after the fence-close.
+    expect(findings[0]?.line).toBe(7);
   });
 });
 

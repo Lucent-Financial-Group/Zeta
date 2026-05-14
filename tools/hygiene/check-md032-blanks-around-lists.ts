@@ -90,6 +90,20 @@ function isBlank(line: string): boolean {
 }
 
 /**
+ * ATX heading detection (`#` through `######` followed by a space).
+ * Optional leading blockquote markers are accepted so a heading
+ * inside a blockquote (`> ## title`) is still recognised.
+ *
+ * Headings are list-block terminators per CommonMark: a heading
+ * between two bullet lists splits them into separate lists, and
+ * MD032 fires on the second list (pre-CI review P1 on PR #3075
+ * round 12).
+ */
+function isHeading(line: string): boolean {
+  return /^ {0,3}(?:>\s?)*#{1,6}\s+/.test(line);
+}
+
+/**
  * A line is "list-friendly leading" if it can come right before a list
  * without an intervening blank. Two valid cases:
  *
@@ -136,7 +150,12 @@ function isListFriendlyLeading(line: string, inList: boolean): boolean {
  * P2 on PR #3075 round 2).
  */
 function fenceInfo(line: string): { char: "`" | "~"; len: number; closer: boolean } | null {
-  const m = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+  // Optional leading blockquote markers (`> `, `> > `) so a fenced
+  // block INSIDE a blockquote is recognised. Without this, a sample
+  // like `> \`\`\`` containing `> - item` would be reported as MD032
+  // even though markdownlint treats it as fenced code (pre-CI review
+  // P1 on PR #3075 round 12).
+  const m = line.match(/^ {0,3}(?:>\s?)*(`{3,}|~{3,})(.*)$/);
   if (!m) return null;
   const run = m[1] ?? "";
   const tail = m[2] ?? "";
@@ -203,13 +222,20 @@ export function findMd032Violations(content: string): { line: number; context: s
     if (fence !== null) {
       if (openFence === null) {
         // Opening a new fence. Info string permitted on opener.
-        // Do NOT reset `inList` — a fenced code block can be a child
-        // block inside a list item (e.g. `- item\n  \`\`\`\n  code\n
-        //   \`\`\`\n- next`), and markdownlint does not require a
-        // blank before the sibling item. Resetting here would make
-        // the sibling bullet look like a new list with a non-blank
-        // fence-close predecessor, producing a false MD032 finding
-        // (pre-CI review P1 on PR #3075 round 10).
+        //
+        // An INDENTED fence (1+ leading space, possibly after `>`
+        // blockquote markers) is a child block inside the current
+        // list-item body — keep `inList` so a sibling bullet that
+        // follows isn't false-flagged as a new list.
+        //
+        // A FLUSH-LEFT fence (zero leading space, no blockquote
+        // prefix) is a top-level block that terminates the prior
+        // list per CommonMark — reset `inList` so a list-start
+        // that follows fires MD032 correctly (pre-CI review P1
+        // on PR #3075 round 12, refining the round-10 over-relaxation).
+        if (!/^[ \t>]/.test(cur)) {
+          inList = false;
+        }
         openFence = { char: fence.char, len: fence.len };
         continue;
       }
@@ -226,9 +252,8 @@ export function findMd032Violations(content: string): { line: number; context: s
         fence.closer
       ) {
         openFence = null;
-        // Same rationale as opener: keep `inList` across the close
-        // so a sibling list-item that follows isn't reported as a
-        // new-list with non-blank predecessor.
+        // Keep `inList` across the close — the open already set the
+        // correct list-context state.
       }
       // else: still inside the code block — list state irrelevant.
       continue;
@@ -236,6 +261,21 @@ export function findMd032Violations(content: string): { line: number; context: s
     if (openFence !== null) continue;
 
     if (isBlank(cur)) {
+      inList = false;
+      continue;
+    }
+
+    if (isHeading(cur)) {
+      // ATX heading terminates the prior list per CommonMark. A list
+      // immediately after the heading is conceptually a new list; MD032
+      // requires a blank line between heading and list. The list-start
+      // branch already flags that case when prev = heading and inList
+      // = false (round-2 fix). What was missing: when a heading appears
+      // BETWEEN two bullet lists, the second bullet was treated as a
+      // continuation of the first list (false negative). Resetting
+      // inList here makes the second bullet a new-list candidate so
+      // its predecessor (the heading) triggers MD032 (pre-CI review
+      // P1 on PR #3075 round 12).
       inList = false;
       continue;
     }
