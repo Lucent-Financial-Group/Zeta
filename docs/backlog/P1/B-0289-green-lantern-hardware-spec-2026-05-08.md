@@ -26,6 +26,7 @@ budget, connectivity (Reticulum mesh, BLE, WiFi).
 ## Pre-start checklist (2026-05-14, otto-cli)
 
 **Prior-art search:**
+
 - `docs/research/*hardware*` — no results
 - `docs/research/*iot*` — no results
 - `docs/research/*jetson*` — no results
@@ -33,11 +34,13 @@ budget, connectivity (Reticulum mesh, BLE, WiFi).
 - No prior hardware spec doc found; clean slate
 
 **Dependency check:**
+
 - `depends_on: []` — no blocking dependencies
 - Parent B-0246 open; siblings B-0290 not yet started
 - B-0240, B-0242, B-0244, B-0245 (parent's deps) open but not blocking this research doc
 
 **Decomposition assessment:**
+
 - Item is `decomposition: atomic` and `classification: buildable-now`
 - Research doc deliverable confirmed; no further decomposition needed
 

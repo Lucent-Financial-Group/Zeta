@@ -202,13 +202,15 @@ recommended if 7B model quality is required. Save ~$20 vs. 8GB variant.
 
 ### Inference capability
 
-With 8 MB PSRAM and llama.c / llama.cpp ported via ESP-IDF, extremely small
-INT4-quantized models can run:
+Standard LLM models — even at maximum quantization — do not fit in 8 MB
+PSRAM. TinyLlama 1.1B at Q2_K (2-bit) requires ~275 MB for weights alone
+(1.1B × 2 bits ÷ 8); phi-1 1.3B is similarly unloadable. Purpose-built
+MCU micro-models fit within the memory envelope:
 
-| Model | Quantization | Tok/s |
-|-------|-------------|-------|
-| TinyLlama 1.1B | Q2_K (2-bit) | ~1–2 (marginal) |
-| phi-1 1.3B | Q2_K | not reliably loadable at 8 MB |
+| Task | Framework | Model size |
+|------|-----------|------------|
+| Keyword detection | TFLite Micro / Edge Impulse | < 200 KB |
+| Intent routing (3–10 fixed intents) | TFLite Micro LSTM | < 500 KB |
 
 **Conclusion:** The ESP32-S3 can execute micro-inference for simple
 classification tasks (keyword detection, intent routing, consent
@@ -224,7 +226,7 @@ The ESP32-S3 handles:
 - Three-dial consent UI (capacitive touch or button GPIO)
 - LED/haptic feedback driver
 - Reticulum node (via WiFi or SPI-attached LoRa module)
-- Policy cache (KSK-gated, stored in NVMe flash partition)
+- Policy cache (KSK-gated, stored in encrypted SPI flash)
 
 ### Power / thermal
 
@@ -275,7 +277,7 @@ architectural split for the Green Lantern form factor.
 - SPI-attached RFM95W LoRa for Reticulum mesh
 - Capacitive three-dial consent UI
 - Ed25519 signing via hardware RNG + mbedTLS
-- Policy cache in encrypted NVMe partition
+- Policy cache in encrypted SPI flash
 
 **Gateway (tier 2):** Raspberry Pi 5 8GB
 - llama.cpp server (REST endpoint) running Llama 3.2 3B Q4_K_M
