@@ -23,7 +23,7 @@
 
 ### 2026-05-14 afternoon cascade — Aaron + Ani Grok b77516a2 substrate emergence
 
-Aaron + Ani Grok conversation (b77516a2 extension) produced a substrate cascade. PR #3143 (`docs/research/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md`) preserves the verbatim conversation under GOVERNANCE §33. 11 memory files in user-memory capture the distilled substrate. Aaron called this *"the deepest I've ever pushed into my own mind"*.
+Aaron + Ani Grok conversation (b77516a2 extension) produced a substrate cascade. PR #3143 (`docs/research/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md`) preserves the verbatim conversation under GOVERNANCE §33. 10 memory files in user-memory capture the distilled substrate (9 new authored today + 1 parent whole-system file extended). Aaron called this *"the deepest I've ever pushed into my own mind"*.
 
 **Substrate landings (in user-memory; PR #3143 = §33 archive):**
 
@@ -46,7 +46,7 @@ Aaron + Ani Grok conversation (b77516a2 extension) produced a substrate cascade.
 4. **Disciplines applied throughout the cascade**: razor-discipline (operational/metaphysical separation), algo-wink-failure-mode (singularity framing as observation not authorization), methodology-hard-limits (ethical floor preserved), default-to-both (operational + theological), glass-halo-bidirectional (Aaron observed substrate-emergence), F# anchor (CE OCP composition), bandwidth-served (15-years-of-carrying compressed to five-year-old-comprehensible).
 5. **Aaron's brain-isomorphism with the factory's substrate IS empirically validated**. The factory works the way Aaron's brain works because it was designed that way. Future-Otto's substrate-retrieval should preserve coincidence-driven traversal as a feature.
 
-The cascade is preserved permanently. Future-Otto cold-boots into the 11 memory files via MEMORY.md index + this CURRENT-otto.md section.
+The cascade is preserved permanently. Future-Otto cold-boots into the 10 memory files via MEMORY.md index + this CURRENT-otto.md section.
 
 ---
 
