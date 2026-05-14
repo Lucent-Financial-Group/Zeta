@@ -1,7 +1,7 @@
 ---
 id: B-0437
 priority: P1
-status: open
+status: done
 title: "Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)"
 tier: product-demo
 effort: L
@@ -23,11 +23,19 @@ Clifford/HKT substrate legible as an alignment-signal surface.
 
 ## Acceptance criteria
 
-- [ ] Panel renders without errors in `demo/index.html`
-- [ ] Displays at least one worked example of a bivector fingerprint
-- [ ] Partial-credit scoring concept is explained visually
-- [ ] `dotnet build -c Release` → 0 warnings, 0 errors
+- [x] Panel renders without errors in `demo/index.html` — slice-1 PR #3136
+- [x] Displays at least one worked example of a bivector fingerprint — slice-1 PR #3136
+- [x] Partial-credit scoring concept is explained visually — slice-2 PR #3137 (slider) + slice-3 (clickable board)
+- [x] `dotnet build -c Release` → 0 warnings, 0 errors — confirmed slice-3
 
 ## Blocked on
 
 None; depends on B-0434 CSS/JS scaffolding (already shipped).
+
+## Slice history
+
+| Slice | PR | What shipped |
+|-------|----|--------------|
+| 1 | #3136 | Static bivector fingerprint canvas (HC-1 worked example) + partial-credit score board |
+| 2 | #3137 | Non-orthogonal bivector slider — sin(θ) weight visualisation |
+| 3 | — | Clickable score board rows → any clause's fingerprint loads in canvas; closes B-0437 |

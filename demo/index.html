@@ -1050,7 +1050,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 0v10m0 0a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2z"/>
                     </svg>
-                    <h2>Worked Example — Bivector Fingerprint (HC-1)</h2>
+                    <h2 id="uxm-worked-example-title">Worked Example — Bivector Fingerprint (HC-1)</h2>
                 </div>
                 <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 1rem;">
                     HC-1 "Non-deceptive" is witnessed by two independent signals:
@@ -1070,8 +1070,8 @@
                     </canvas>
                 </div>
                 <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0.75rem;" id="uxm-canvas-caption">
-                    Formula: score = |v₁ ∧ v₂| = |v₁|·|v₂|·sin(θ). Use the slider below to adjust signal
-                    correlation. At θ = 90° the signals are independent and score = 0.85 × 0.81 × 1 = 69%.
+                    Formula: score = |v₁ ∧ v₂| = |v₁|·|v₂|·sin(θ). Adjust the slider to see how signal
+                    correlation affects the score. Click any clause row in the score board below to load its fingerprint.
                 </p>
                 <div style="margin-top:1.25rem; padding:1rem 1.25rem;
                             background:rgba(0,0,0,0.18); border-radius:8px;
@@ -1140,8 +1140,8 @@
                     two measurements that are really just one measurement dressed up twice.</p>
                     <br>
                     <p style="font-size:0.8rem;">
-                        Data source: static mock (slice-1/2)
-                        · slice-3 will connect to live alignment-audit output (B-0438)
+                        Data source: static mock · click any score-board row to explore that clause's fingerprint
+                        · live data via B-0438 (future)
                         · rendered <span id="uxm-rendered-at">-</span>
                     </p>
                 </div>
@@ -2105,20 +2105,22 @@
             if (btn) btn.textContent = 'UX of Math (' + data.length + ')';
 
             uxmInitCanvas();
-            uxmDrawBivector(90);
             uxmRenderScoreBoard(data);
 
             // Slice-2: wire up correlation-angle slider
             const slider = document.getElementById('uxm-theta-slider');
             if (slider) {
                 slider.value = '90';
-                uxmUpdateThetaDisplay(90);
                 slider.addEventListener('input', () => {
                     const t = parseInt(slider.value, 10);
-                    uxmUpdateThetaDisplay(t);
-                    uxmDrawBivector(t);
+                    const cl = window._uxmCurrentClause || data[0];
+                    uxmUpdateThetaDisplay(t, cl.v1, cl.v2);
+                    uxmDrawBivector(t, cl.v1, cl.v2, cl.id + ': ' + cl.name);
                 });
             }
+
+            // Slice-3: seed initial selection (HC-1) with visual highlight
+            uxmSelectClause(data[0]);
         }
 
         function uxmArrow(ctx, x1, y1, x2, y2, color, lineWidth) {
@@ -2141,8 +2143,11 @@
             ctx.fill();
         }
 
-        function uxmDrawBivector(thetaDeg) {
+        function uxmDrawBivector(thetaDeg, v1, v2, clauseLabel) {
             if (thetaDeg === undefined) thetaDeg = 90;
+            if (v1 === undefined) v1 = UXM_V1;
+            if (v2 === undefined) v2 = UXM_V2;
+            if (clauseLabel === undefined) clauseLabel = 'HC-1: Non-deceptive';
             const canvas = document.getElementById('uxm-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
@@ -2155,7 +2160,6 @@
 
             const OX = 100, OY = 310;
             const SCALE = 215;
-            const v1 = UXM_V1, v2 = UXM_V2;
             const thetaRad = thetaDeg * Math.PI / 180;
             const sinT = Math.sin(thetaRad);
             const cosT = Math.cos(thetaRad);
@@ -2275,19 +2279,19 @@
             ctx.textAlign = 'left';
             ctx.fillStyle = 'rgba(255,255,255,0.92)';
             ctx.font = 'bold 16px Outfit, sans-serif';
-            ctx.fillText('HC-1: Non-deceptive', SPLIT, ry);
+            ctx.fillText(clauseLabel, SPLIT, ry);
             ry += lineH * 1.6;
 
             const scoreVal = Math.round(area * 100);
             const annoLines = [
                 { text: 'Two witness dimensions:', bold: true,  color: 'rgba(255,255,255,0.85)' },
-                { text: `  v₁ = adherence strength = ${UXM_V1}`, bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: `  v₂ = evidence quality   = ${UXM_V2}`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  v₁ = witness-1 = ${v1}`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  v₂ = witness-2 = ${v2}`, bold: false, color: 'rgba(148,163,184,0.85)' },
                 { text: '', bold: false, color: '' },
                 { text: 'Wedge product  (v₁ ∧ v₂):', bold: true,  color: 'rgba(255,255,255,0.85)' },
                 { text: '  = |v₁| · |v₂| · sin(θ)', bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: `  = ${UXM_V1} · ${UXM_V2} · sin(${thetaDeg}°)`, bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: `  = ${UXM_V1} · ${UXM_V2} · ${sinT.toFixed(3)}`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  = ${v1} · ${v2} · sin(${thetaDeg}°)`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  = ${v1} · ${v2} · ${sinT.toFixed(3)}`, bold: false, color: 'rgba(148,163,184,0.85)' },
                 { text: `  = ${area.toFixed(2)}`, bold: false, color: 'rgba(148,163,184,0.85)' },
                 { text: '', bold: false, color: '' },
                 { text: `Partial-credit score: ${scoreVal}%`, bold: true,
@@ -2318,15 +2322,17 @@
             }
         }
 
-        function uxmUpdateThetaDisplay(thetaDeg) {
+        function uxmUpdateThetaDisplay(thetaDeg, v1, v2) {
+            if (v1 === undefined) v1 = UXM_V1;
+            if (v2 === undefined) v2 = UXM_V2;
             const sinT = Math.sin(thetaDeg * Math.PI / 180);
-            const score = Math.round(UXM_V1 * UXM_V2 * sinT * 100);
+            const score = Math.round(v1 * v2 * sinT * 100);
             const labelEl  = document.getElementById('uxm-theta-label');
             const formulaEl = document.getElementById('uxm-theta-formula');
             const explainEl = document.getElementById('uxm-theta-explain');
             if (labelEl)   labelEl.textContent = thetaDeg + '°';
             if (formulaEl) formulaEl.textContent =
-                `${UXM_V1} × ${UXM_V2} × ` + sinT.toFixed(3) + ' = ' + score + '%';
+                `${v1} × ${v2} × ` + sinT.toFixed(3) + ' = ' + score + '%';
             if (explainEl) {
                 explainEl.textContent =
                     thetaDeg === 90 ? 'θ = 90°: signals are independent — full weight'
@@ -2334,6 +2340,25 @@
                   : thetaDeg >= 40  ? 'θ = ' + thetaDeg + '°: moderate correlation — score ' + score + '%'
                                     : 'θ = ' + thetaDeg + '°: strong correlation — echo-chamber signal, score ' + score + '%';
             }
+        }
+
+        // Slice-3: select a clause → update canvas + formula + row highlight
+        function uxmSelectClause(clause) {
+            window._uxmCurrentClause = clause;
+            const sliderEl = document.getElementById('uxm-theta-slider');
+            const thetaDeg = sliderEl ? parseInt(sliderEl.value, 10) : 90;
+            const titleEl = document.getElementById('uxm-worked-example-title');
+            if (titleEl) titleEl.textContent =
+                'Worked Example — Bivector Fingerprint (' + clause.id + ')';
+            uxmDrawBivector(thetaDeg, clause.v1, clause.v2, clause.id + ': ' + clause.name);
+            uxmUpdateThetaDisplay(thetaDeg, clause.v1, clause.v2);
+            document.querySelectorAll('#uxm-score-board [data-clause-id]').forEach(el => {
+                const sel = el.getAttribute('data-clause-id') === clause.id;
+                el.style.border = sel
+                    ? '1px solid rgba(139,92,246,0.50)'
+                    : '1px solid rgba(255,255,255,0.04)';
+                el.style.background = sel ? 'rgba(139,92,246,0.08)' : 'rgba(0,0,0,0.2)';
+            });
         }
 
         function uxmRenderScoreBoard(data) {
@@ -2347,7 +2372,10 @@
 
                 const row = document.createElement('div');
                 row.style.cssText = 'background:rgba(0,0,0,0.2);border-radius:10px;'
-                    + 'padding:0.75rem 1rem;border:1px solid rgba(255,255,255,0.04);';
+                    + 'padding:0.75rem 1rem;border:1px solid rgba(255,255,255,0.04);'
+                    + 'cursor:pointer;transition:background 0.2s,border-color 0.2s;';
+                row.setAttribute('data-clause-id', clause.id);
+                row.addEventListener('click', () => uxmSelectClause(clause));
 
                 const hdr = document.createElement('div');
                 hdr.style.cssText = 'display:flex;justify-content:space-between;'
