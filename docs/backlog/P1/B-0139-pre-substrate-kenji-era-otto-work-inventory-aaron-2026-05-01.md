@@ -7,7 +7,7 @@ created: 2026-05-01
 last_updated: 2026-05-14
 depends_on: []
 type: friction-reducer
-decomposition: decomposing
+decomposition: decomposed
 children: [B-0351, B-0353, B-0522]
 ---
 
