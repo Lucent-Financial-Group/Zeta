@@ -13,6 +13,31 @@ type: friction-reducer
 
 # B-0145 — Product Manager (PM-2) role — research-to-predict-features-before-friction
 
+## Pre-start checklist (2026-05-13)
+
+**Prior-art search:**
+- `.claude/skills/product-manager/SKILL.md` — exists (B-0270 closed) ✅
+- `.claude/agents/pm2.md` — exists, persona Mira (B-0270 closed) ✅
+- `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` — first research pass (B-0271 closed) ✅
+- `docs/EXPERT-REGISTRY.md` — PM-2/Mira entry missing ❌ → this slice adds it
+- `docs/forward-radar/` — directory missing ❌ → this slice creates TEMPLATE.md + calibration.md
+
+**Dependency check:**
+- B-0270 (closed): skill + agent ✅
+- B-0271 (closed): first research pass ✅
+- `depends_on: []` — no blockers
+
+**Remaining open acceptance criteria addressed by this slice:**
+- AC 1: EXPERT-REGISTRY.md row for Mira (PM-2)
+- AC 3: `docs/forward-radar/TEMPLATE.md`
+- AC 5: `docs/forward-radar/calibration.md`
+- AC 2 (cadence: weekly, Sundays UTC) is documented in TEMPLATE.md header
+- AC 4 (first memo) was addressed by B-0271 (research doc in docs/research/)
+
+**Branch:** `feat/pm2-forward-radar-b0145-2026-05-13`
+
+---
+
 ## What
 
 Define and operationalize a **Product Manager (PM-2)** role
