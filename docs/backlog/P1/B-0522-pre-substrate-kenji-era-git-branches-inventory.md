@@ -1,5 +1,5 @@
 ---
-id: B-0351
+id: B-0522
 priority: P1
 status: open
 title: Pre-substrate Kenji-era git branches and worktrees inventory
@@ -11,7 +11,7 @@ type: friction-reducer
 decomposition: atomic
 ---
 
-# B-0351 — Pre-substrate Kenji-era git branches and worktrees inventory
+# B-0522 — Pre-substrate Kenji-era git branches and worktrees inventory
 
 **Decomposed from:** B-0139
 
