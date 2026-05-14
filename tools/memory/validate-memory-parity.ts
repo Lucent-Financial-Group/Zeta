@@ -25,7 +25,7 @@
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { parseFrontmatter, collectEntries } from "./reindex-memory-md.ts";
+import { collectEntries } from "./reindex-memory-md.ts";
 
 const MEMORY_DIR = "memory";
 const OLD_INDEX_FILES = [
