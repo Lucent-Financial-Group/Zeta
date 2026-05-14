@@ -37,7 +37,7 @@ provides a less-ambiguous concrete claim — eliminating the
 ## Acceptance criteria
 
 - [ ] Background service `tools/bg/backlog-ready-notifier.ts` exists
-- [ ] Runs under existing launchd / cron infrastructure
+- [x] Runs under existing launchd / cron infrastructure (B-0502 — `.gemini/launchd/com.zeta.backlog-ready-notifier.plist`)
 - [ ] Periodically scans `docs/backlog/P*/B-*.md` for ready-to-grind
       rows (open, no blockers, dependencies satisfied)
 - [ ] Detects agent queue state (commits in last N minutes; current

@@ -29,7 +29,7 @@ so future readers don't overclaim.
 | Service | File | Slice status | Detection signal | Bus topic |
 |---------|------|--------------|------------------|-----------|
 | Standing-by detector | `standing-by-detector.ts` | 1+2+3+4 live | commit-history (HEAD) + PR-activity (repo) via `gh`/`git` | `infinite-backlog-nudge` |
-| Backlog-ready notifier | `backlog-ready-notifier.ts` | 1+2+4 live | backlog-row scan (status + deps satisfied) | `work-assignment` |
+| Backlog-ready notifier | `backlog-ready-notifier.ts` | 1+2+4+6 live (slice 3 pending B-0500) | backlog-row scan (status + deps satisfied) | `work-assignment` |
 | Missed-substrate detector | `missed-substrate-detector.ts` | 1+2+3+4 live | merged-PR fetch via `gh`; real branch-vs-squash compare via `gh pr view --json headRefOid` + `git log <headRefOid>..origin/<branch>` (slice 3 landed 2026-05-13) | `missed-substrate-cascade` |
 
 Per-service slice ordering (each service decomposes into 6 slices):

@@ -1,7 +1,7 @@
 ---
 id: B-0502
 priority: P1
-status: open
+status: in-progress
 title: "B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update"
 tier: factory-infrastructure
 effort: XS
