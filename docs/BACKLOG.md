@@ -257,7 +257,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0450](backlog/P1/B-0450-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 - [x] **[B-0451](backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md)** Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts
 - [ ] **[B-0463](backlog/P1/B-0463-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
-- [ ] **[B-0464](backlog/P1/B-0464-product-repo-honor-system-license-language-draft-2026-05-14.md)** Draft honor-system 'please don't fork' license language for product repos
+- [x] **[B-0464](backlog/P1/B-0464-product-repo-honor-system-license-language-draft-2026-05-14.md)** Draft honor-system 'please don't fork' license language for product repos
 - [ ] **[B-0465](backlog/P1/B-0465-product-repo-per-product-substrate-inventory-2026-05-14.md)** Per-product substrate inventory — 7 product candidates; repo-ready evaluation
 - [ ] **[B-0466](backlog/P1/B-0466-product-repo-naming-expert-review-2026-05-14.md)** Naming-expert review for product repo names — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn
 - [ ] **[B-0467](backlog/P1/B-0467-product-repo-cross-ref-glue-mechanism-design-2026-05-14.md)** Product-repo cross-ref glue mechanism design — how product repos reference Zeta/Forge/ace

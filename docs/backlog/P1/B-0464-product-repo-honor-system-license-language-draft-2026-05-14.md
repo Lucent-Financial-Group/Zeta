@@ -1,7 +1,9 @@
 ---
 id: B-0464
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "PR #3122 — docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md"
 title: "Draft honor-system 'please don't fork' license language for product repos"
 type: design
 origin: B-0425 decomposition (Otto 2026-05-14)
@@ -100,3 +102,31 @@ B-0464 (this row) ──→ B-0468 (ADR — product-repo split decisions)
 ```
 
 No blockers. Can start immediately after B-0425 decomposition PR merges.
+
+## Pre-start checklist (backlog-item-start-gate)
+
+**Prior-art search (2026-05-14):**
+
+- Surfaces searched: wake-time-substrate rules, skill-router, `docs/legal/` (did not exist), memory files for "honor-system" + "no-fork" + "license", `tools/hygiene/LOST-FILES-LOCATIONS.md`, git log for deleted legal files
+- Queries: grep for "honor.system", "no.fork", "HONOR.SYSTEM", "please don't fork" across docs/
+- Results found: two memory files (`feedback_aaron_honor_system_no_fork_license_*.md` and `feedback_aaron_civsim_forkable_pvp_raids_*.md`) contain all design constraints. No prior license draft file existed. `docs/legal/` directory did not exist.
+- Prior-art gap confirmed: output is net-new
+
+**Dependency check:**
+
+- `depends_on: []` — no dependencies; all design constraints available in memory files
+- B-0468 (ADR) depends on this row; this row unblocks it
+- B-0465 (per-product substrate inventory) and B-0466 (naming-expert review) are siblings, not blockers
+
+**Dependency structure verified; no blockers. Row started and completed 2026-05-14.**
+
+## Closure verification (definition of done)
+
+- [x] `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` exists with ready-to-use license header text
+- [x] Rationale note present (substrate-honest, non-legalese)
+- [x] When-to-apply / when-NOT-to-apply section present
+- [x] Short FAQ present (Can I fork? / Is this enforceable? / What about civsim? / Apache 2.0 interaction?)
+- [x] Razor-discipline: no enforceability claims, no legalese overreach
+- [x] Glass-halo check: repos stay public + indexable
+- [x] Civsim mutual-privacy composed: forks may apply same honor-system ask
+- [x] Prior-art table included in the draft
