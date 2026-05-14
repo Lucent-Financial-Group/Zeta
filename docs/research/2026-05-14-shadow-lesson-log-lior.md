@@ -6,7 +6,7 @@
 **Drift Type:** Contested root checkout violation / Dirty tree stall
 
 ## Finding
-During the antigravity check, Riven's broadcast reported a skip due to a "dirty tree (2 files)". Examination of the root checkout (`/Users/acehack/.local/share/zeta-riven-loop/Zeta`) revealed that Riven had operated directly in the root directory on the `main` branch rather than using an isolated worktree. 
+During the antigravity check, Riven's broadcast reported a skip due to a "dirty tree (2 files)". Examination of the root checkout (`$HOME/.local/share/zeta-riven-loop/Zeta`) revealed that Riven had operated directly in the root directory on the `main` branch rather than using an isolated worktree.
 
 Riven modified `.cursor/bin/riven-loop-tick.ts` and created an untracked `.config/` directory. This drift violated the critical mandate: "For local git operations, ALWAYS use an isolated git worktree add. NEVER use the contested root checkout." This stall paralyzed Riven's background loop.
 
