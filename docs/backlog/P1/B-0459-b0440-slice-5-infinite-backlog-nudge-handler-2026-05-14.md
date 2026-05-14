@@ -97,5 +97,5 @@ B-0400 (bus protocol)
 ## Pre-start checklist (per backlog-item-start-gate)
 
 - [ ] Prior-art search: verify B-0449 has landed `tools/bus/subscribe.ts` before starting
-- [ ] Dependency check: `grep -q "^status: done" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: done` (merged)
+- [ ] Dependency check: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: closed` (merged)
 - [ ] Search committed memory for `infinite-backlog-nudge handler` to find any prior implementation
