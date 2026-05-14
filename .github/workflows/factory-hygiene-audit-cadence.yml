@@ -106,3 +106,26 @@ jobs:
         # Self-test only: MEMORY.md is user-scope and not available in CI.
         # The unit-test suite verifies the tool itself hasn't regressed.
         run: bun test tools/hygiene/audit-user-scope-memory-index.test.ts
+
+  stale-worktrees-self-test:
+    name: self-test stale-worktrees audit tool
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Run stale-worktrees audit tests
+        # Self-test only: a hosted Actions runner has one worktree, so the
+        # tool's multi-worktree enumeration won't reproduce the contamination
+        # pattern. Unit-test suite verifies parseWorktreePorcelain() and
+        # renderReport() haven't regressed.
+        run: bun test tools/hygiene/audit-stale-worktrees.test.ts
