@@ -1,12 +1,13 @@
 name: factory-hygiene-audit-cadence
 
-# Daily cadence for the two factory-hygiene audit tools:
+# Daily cadence for the three factory-hygiene audit tools:
 #
 #   - tools/hygiene/audit-rule-cross-refs.ts (.claude/rules/ cross-ref audit)
 #   - tools/hygiene/audit-user-scope-memory-index.ts (MEMORY.md bloat audit)
+#   - tools/hygiene/audit-stale-worktrees.ts (git-worktree staleness audit)
 #
 # Per the session's razor-cadence item 4 + item 5 mechanization work
-# (PRs #3202 + #3208). Without an external trigger, the audits depend on
+# (PRs #3202 + #3208 + #3225). Without an external trigger, the audits depend on
 # agent-remembering-to-run-them, which `encoding-rules-without-mechanizing.md`
 # explicitly flags as the failure mode this workflow prevents.
 #
@@ -24,6 +25,7 @@ name: factory-hygiene-audit-cadence
 # Composes with:
 #   - tools/hygiene/audit-rule-cross-refs.ts (PR #3202)
 #   - tools/hygiene/audit-user-scope-memory-index.ts (PR #3208)
+#   - tools/hygiene/audit-stale-worktrees.ts (PR #3225)
 #   - .github/workflows/razor-cadence.yml (the issue-tracker cadence)
 #   - .github/workflows/git-hotspot-cadence.yml (template shape)
 #
@@ -42,6 +44,8 @@ on:
     paths:
       - "tools/hygiene/audit-rule-cross-refs.ts"
       - "tools/hygiene/audit-user-scope-memory-index.ts"
+      - "tools/hygiene/audit-stale-worktrees.ts"
+      - "tools/hygiene/audit-stale-worktrees.test.ts"
       - ".github/workflows/factory-hygiene-audit-cadence.yml"
 
 permissions:
