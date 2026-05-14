@@ -141,14 +141,16 @@ function fenceInfo(line: string): { char: "`" | "~"; len: number; closer: boolea
   const run = m[1] ?? "";
   const tail = m[2] ?? "";
   const char: "`" | "~" = run[0] === "`" ? "`" : "~";
-  // CommonMark: a fenced-code opener's info string MUST NOT contain
-  // the fence character. ` ```ts ` is a valid backtick-fence opener;
-  // ` ```ts`foo ` is not (it would be parsed as inline code, never as
-  // a fence). Tilde-fence info strings likewise cannot contain `~`.
-  // Treating such lines as fences would suppress real MD032 findings
-  // in ordinary prose that markdownlint never considers fenced (pre-CI
-  // review P1 on PR #3075 round 8).
-  if (tail.includes(char)) return null;
+  // CommonMark: a BACKTICK-fence opener's info string must not contain
+  // a backtick (otherwise the inline-code grammar takes over and the
+  // line is not a fence). A TILDE-fence opener's info string CAN
+  // contain tildes — only the backtick variant has the restriction.
+  // Treating ` ```ts`extra ` as a fence would suppress real MD032
+  // findings in ordinary prose; rejecting `~~~text~bad` as a fence
+  // would falsely flag list-like content inside a valid tilde-fenced
+  // block (pre-CI review P1 on PR #3075 round 8 + round 10
+  // refinement).
+  if (char === "`" && tail.includes("`")) return null;
   return {
     char,
     len: run.length,
@@ -201,8 +203,14 @@ export function findMd032Violations(content: string): { line: number; context: s
     if (fence !== null) {
       if (openFence === null) {
         // Opening a new fence. Info string permitted on opener.
+        // Do NOT reset `inList` — a fenced code block can be a child
+        // block inside a list item (e.g. `- item\n  \`\`\`\n  code\n
+        //   \`\`\`\n- next`), and markdownlint does not require a
+        // blank before the sibling item. Resetting here would make
+        // the sibling bullet look like a new list with a non-blank
+        // fence-close predecessor, producing a false MD032 finding
+        // (pre-CI review P1 on PR #3075 round 10).
         openFence = { char: fence.char, len: fence.len };
-        inList = false;
         continue;
       }
       // We're inside an open fence. Closing requires:
@@ -218,7 +226,9 @@ export function findMd032Violations(content: string): { line: number; context: s
         fence.closer
       ) {
         openFence = null;
-        inList = false;
+        // Same rationale as opener: keep `inList` across the close
+        // so a sibling list-item that follows isn't reported as a
+        // new-list with non-blank predecessor.
       }
       // else: still inside the code block — list state irrelevant.
       continue;

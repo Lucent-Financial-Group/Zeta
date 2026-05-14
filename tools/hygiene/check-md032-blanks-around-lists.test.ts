@@ -266,6 +266,44 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 10", () => {
+  test("indented fence inside a list item does not split the list (pre-CI review P1 on PR #3075 round 10)", () => {
+    // A fenced code block can be a child block inside a list item.
+    // Markdownlint does not require a blank line before the sibling
+    // bullet that follows the fence-close — the bullets are siblings
+    // of the same list. The earlier algorithm reset `inList = false`
+    // on fence transitions, which made the second bullet look like
+    // a new list with non-blank fence-close predecessor.
+    const content = `# Title
+
+- item one
+  \`\`\`
+  code inside item
+  \`\`\`
+- item two
+- item three
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("flush-left fence inside a list (lazy form) does not split the list", () => {
+    // Even when the fence is not indented under the bullet, the
+    // helper now keeps `inList` across fence transitions — false
+    // positives blocking valid code are worse than letting
+    // markdownlint catch a top-level fence-between-lists edge case
+    // in CI.
+    const content = `# Title
+
+- item one
+\`\`\`
+code at flush-left between bullets
+\`\`\`
+- item two
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+});
+
 describe("findMd032Violations — round 9", () => {
   test("blockquoted list with label directly above IS flagged (pre-CI review P1 on PR #3075 round 9)", () => {
     // markdownlint MD032 enforces blanks around lists even inside
@@ -388,16 +426,19 @@ Steps:
     expect(findings[0]?.line).toBe(4);
   });
 
-  test("tilde fence with tilde in info string is NOT a valid opener", () => {
-    // Symmetric: tilde-fence info strings cannot contain `~`.
+  test("tilde fence WITH tilde in info string IS a valid opener (pre-CI review P1 on PR #3075 round 10 — refines round 8)", () => {
+    // CommonMark: only BACKTICK fences forbid the fence char in the
+    // info string. Tilde fences may contain tildes in their info
+    // string. A `~~~text~bad` line opens a valid tilde-fenced block;
+    // list-like content inside it must NOT fire MD032.
     const content = `# Title
 
 ~~~text~bad
-- prose bullet
+- this is INSIDE a valid tilde-fenced block, not a list
+- second pseudo-bullet
+~~~
 `;
-    const findings = findMd032Violations(content);
-    expect(findings).toHaveLength(1);
-    expect(findings[0]?.line).toBe(4);
+    expect(findMd032Violations(content)).toEqual([]);
   });
 
   test("backtick fence with non-backtick info string IS still a valid opener (control)", () => {
