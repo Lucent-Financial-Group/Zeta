@@ -7,8 +7,8 @@ tier: factory-infrastructure
 effort: XS
 created: 2026-05-14
 last_updated: 2026-05-14
-depends_on: [B-0440]
-composes_with: [B-0441, B-0442]
+depends_on: []
+composes_with: [B-0440, B-0441, B-0442]
 tags: [background-service, launchd, mechanization, anti-idle]
 type: chore
 ---

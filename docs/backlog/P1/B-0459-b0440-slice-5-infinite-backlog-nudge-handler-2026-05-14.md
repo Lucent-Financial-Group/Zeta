@@ -7,8 +7,8 @@ tier: factory-infrastructure
 effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
-depends_on: [B-0440, B-0449]
-composes_with: [B-0441, B-0442, B-0448]
+depends_on: [B-0449]
+composes_with: [B-0440, B-0441, B-0442, B-0448]
 tags: [multi-agent, background-service, bus, subscriber-pattern, anti-idle, infinite-backlog]
 type: feature
 ---
