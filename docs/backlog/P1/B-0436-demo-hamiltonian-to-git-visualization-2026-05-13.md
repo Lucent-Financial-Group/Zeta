@@ -6,7 +6,7 @@ title: "Demo — Hamiltonian-to-git visualization (git history → phase-space r
 tier: product-demo
 effort: L
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 parent: B-0401
 depends_on: [B-0434]
 children: [B-0495, B-0496]

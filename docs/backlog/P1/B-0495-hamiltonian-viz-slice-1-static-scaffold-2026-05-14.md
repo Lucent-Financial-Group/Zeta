@@ -1,7 +1,9 @@
 ---
 id: B-0495
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "PR #3135"
 title: "Hamiltonian viz — slice-1: static panel scaffold in demo/index.html"
 tier: product-demo
 effort: S

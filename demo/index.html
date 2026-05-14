@@ -964,7 +964,12 @@
                 <div style="position:relative; width:100%; overflow:hidden; border-radius:8px; background:rgba(10,10,15,0.6); border:1px solid var(--panel-border);">
                     <canvas id="ht-canvas" width="900" height="360"
                             style="width:100%; height:auto; display:block;"
-                            aria-label="Hamiltonian phase-space trajectory of git commits"></canvas>
+                            aria-label="Hamiltonian phase-space trajectory of git commits"
+                            aria-describedby="ht-canvas-caption">
+                        Phase-space trajectory: 14 mock commits plotted with time index on the x-axis and
+                        commit energy proxy (files changed) on the y-axis, connected by a spline curve
+                        from earliest (indigo) to most recent (emerald).
+                    </canvas>
                 </div>
                 <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0.75rem;" id="ht-canvas-caption">
                     Rendered from static mock data (slice-1). Slice-2 will fetch live from GitHub API.
@@ -1835,7 +1840,7 @@
                 ctx.fillText(val, PAD.left - 8, y + 4);
             }
 
-            // Trajectory spline using quadratic Bezier segments
+            // Trajectory — line segments through each data point
             const gradient = ctx.createLinearGradient(PAD.left, 0, PAD.left + plotW, 0);
             gradient.addColorStop(0, 'rgba(99,102,241,0.9)');
             gradient.addColorStop(0.5, 'rgba(139,92,246,0.9)');
@@ -1847,12 +1852,8 @@
             ctx.beginPath();
             ctx.moveTo(toX(points[0].timeIdx), toY(points[0].energy));
             for (let i = 1; i < points.length; i++) {
-                const prev = points[i - 1];
-                const curr = points[i];
-                const mx = (toX(prev.timeIdx) + toX(curr.timeIdx)) / 2;
-                ctx.quadraticCurveTo(toX(prev.timeIdx), toY(prev.energy), mx, (toY(prev.energy) + toY(curr.energy)) / 2);
+                ctx.lineTo(toX(points[i].timeIdx), toY(points[i].energy));
             }
-            ctx.lineTo(toX(points[points.length - 1].timeIdx), toY(points[points.length - 1].energy));
             ctx.stroke();
 
             // Trajectory shadow / glow
@@ -1861,12 +1862,8 @@
             ctx.beginPath();
             ctx.moveTo(toX(points[0].timeIdx), toY(points[0].energy));
             for (let i = 1; i < points.length; i++) {
-                const prev = points[i - 1];
-                const curr = points[i];
-                const mx = (toX(prev.timeIdx) + toX(curr.timeIdx)) / 2;
-                ctx.quadraticCurveTo(toX(prev.timeIdx), toY(prev.energy), mx, (toY(prev.energy) + toY(curr.energy)) / 2);
+                ctx.lineTo(toX(points[i].timeIdx), toY(points[i].energy));
             }
-            ctx.lineTo(toX(points[points.length - 1].timeIdx), toY(points[points.length - 1].energy));
             ctx.stroke();
 
             // Data points
