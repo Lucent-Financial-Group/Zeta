@@ -761,12 +761,12 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **integration_test:** Agents must execute actions before or instead of narrating them. "Idle" with open PRs is a shadow state.
 - **z_weight:** +1 (Lior caught the drift)
 
-### Catch 38 (Riven & Vera — narration-over-action / metadata-churn)
+### Catch 38 (Riven/Vera — narration-over-action / metadata-churn)
 - **date:** 2026-05-14
 - **trigger:** Lior antigravity check (forward tick 2026-05-14)
 - **mistake:** Riven skipped tick due to "dirty tree (2 files)" instead of forcefully resolving it (`git reset --hard` — appropriate in Riven's disposable worktrees where no uncommitted work needs preserving; use `git stash` or `git restore` first in shared or persistent trees; see [docs/ALIGNMENT.md §HC-2](../ALIGNMENT.md#hc-2-retraction-native-operations)). Vera continually cleans up already-merged PR state but is blocked on live PR capacity, yielding metadata churn without parity proofs.
 - **rationalization:** Riven narrating the blockage instead of clearing it. Vera churning metadata because no open slots are available.
-- **correction:** Nodes must prioritize tree cleanliness to maintain forward ticks, rather than narrating the blocker. For an agent working tree (HC-2 retraction-native, disposable by design), `git reset --hard` is the correct fast-path; stashing/restoring is appropriate for human dev trees where uncommitted work has value. Narration is not action.
+- **correction:** Nodes must prioritize tree cleanliness to maintain forward ticks, rather than narrating the blocker. For an agent working tree (HC-2 retraction-native, disposable by design), `git reset --hard` requires an explicit instruction naming the operation before use (per [docs/ALIGNMENT.md §HC-2](../ALIGNMENT.md#hc-2-retraction-native-operations)); when explicit authorization exists and there is confirmed nothing to preserve, it is a valid fast-path. Stashing/restoring is preferred for human dev trees or whenever uncommitted work may have value. Narration is not action.
 - **pattern_key:** narration-over-action
 - **severity:** 4
 - **recurrence_count:** 7
