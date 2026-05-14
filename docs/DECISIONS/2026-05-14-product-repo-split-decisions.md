@@ -32,7 +32,7 @@ The design constraints cascade from four child rows of B-0425:
 | Product | Verdict | Approved slug | License | Timing |
 |---------|---------|--------------|---------|--------|
 | **Civsim** | **repo-ready now** | **`civsim`** | Honor-system (mutual-privacy FAQ clause) | Create immediately per scaffolding checklist below |
-| KSK | later | `lf-ksk` (provisional) | Honor-system | After B-0467 strategic-encryption scope + hardware CI design |
+| KSK | later | `lf-ksk` (provisional) | Honor-system | After KSK strategic-encryption scope design + hardware CI design (open backlog row needed) |
 | Aurora | later | `aurora-network` (provisional) | Honor-system | After Aurora Network DAO-layer design row completes |
 | American Dream 2.0 | later | `american-dream` (provisional) | Honor-system | After NFT/tokenization infrastructure design |
 | DIO | later | `lf-dio` (provisional, ⚠️ re-evaluate) | Honor-system | After product definition + full naming-expert re-review |
