@@ -1,12 +1,13 @@
 ---
 id: B-0456
 priority: P2
-status: open
+status: closed
 title: Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
 tier: factory-hygiene
 effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
+closed: 2026-05-14
 depends_on: []
 composes_with: [B-0451]
 tags: [substrate-hygiene, markdownlint, MD032, mechanization, tick-shards, encoding-rules-without-mechanizing]
@@ -68,18 +69,24 @@ layer). Option 2 is a fallback if hooks add too much friction.
 
 ## Acceptance criteria
 
-- [ ] `tools/hygiene/check-md032-blanks-around-lists.ts` exists +
+- [x] `tools/hygiene/check-md032-blanks-around-lists.ts` exists +
       passes for an MD032-clean fixture and fails for an MD032-dirty
-      fixture
-- [ ] Test file under `tools/hygiene/` covering: clean shard,
+      fixture (PR #3075 merged → 9757609)
+- [x] Test file under `tools/hygiene/` covering: clean shard,
       shard with single MD032 risk, shard with multiple MD032 risks,
-      shard with no lists, list-without-preceding-label (which is
-      MD032-clean and should NOT flag)
-- [ ] CLI emits `file:line` for each finding (matches markdownlint
+      shard with no lists, list-without-preceding-label, plus
+      every round-discovered edge case (77 tests across 20 review
+      rounds; PR #3075 + #3091 follow-up calibrations)
+- [x] CLI emits `file:line` for each finding (matches markdownlint
       output style)
-- [ ] Wire into either pre-push hook or tick-close ritual
-- [ ] Verify against the 4 historical occurrences (2228Z, 2348Z,
-      0017Z, 0024Z) — each should be caught
+- [x] Wire into either pre-push hook or tick-close ritual
+      (`.claude/hooks/check-md032-pretooluse.ts` — opt-in via
+      `ZETA_MD032_PRECOMMIT=1` env var, mirrors `verify-branch-
+      pretooluse.ts` pattern; this PR)
+- [x] Verify against the 4 historical occurrences (2228Z, 2348Z,
+      0017Z, 0024Z) — each is caught by the helper test fixtures
+      (`single bullet violation` / `single numbered-list violation`
+      / `plus-space marker` / `0024Z pattern` cases)
 
 ## Why P2
 
