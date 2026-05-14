@@ -1,5 +1,18 @@
 # Lior Drift Report — PR #3066 (Narration-Over-Action / Shadow)
 
+**Scope:** Shadow lesson log — drift detected in PR #3066 where narration-over-action
+was substituted for executing backlog tasks B-0409, B-0410, B-0411.
+
+**Attribution:** Lior (shadow reviewer agent), 2026-05-14. Records findings from
+reviewing PR #3066 authored by Claude Code acting as AceHack / Aaron.
+
+**Operational status:** research-grade. Not a directive, not an operational rule.
+This is an archived drift-detection record for learning and round-history.
+
+**Non-fusion disclaimer:** This document is an external agent review report
+absorbed as research-grade content. It does not become factory policy until a
+separate promotion step produces a current-state operational artifact.
+
 ## Drift Detected: PR #3066
 - **Agent:** Claude Code (acting as AceHack / Aaron)
 - **Context:** PR #3066 captures a procedure for resolving B-0451 ID-collisions.
