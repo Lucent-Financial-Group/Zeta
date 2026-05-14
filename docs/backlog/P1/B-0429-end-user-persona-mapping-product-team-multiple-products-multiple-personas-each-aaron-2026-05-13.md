@@ -8,7 +8,7 @@ ask: Aaron 2026-05-13 — *"end users need to map personas backlog for prducot t
 created: 2026-05-13
 last_updated: 2026-05-14
 decomposed_by: Otto, 2026-05-14
-child_rows:
+children:
   - B-0485
   - B-0486
   - B-0487
