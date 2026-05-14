@@ -504,7 +504,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0453](backlog/P2/B-0453-contributor-compliance-cross-reference-integration.md)** Cross-reference CONTRIBUTOR-COMPLIANCE.md into AGENTS.md / CONTRIBUTING.md / GOVERNANCE.md
 - [ ] **[B-0454](backlog/P2/B-0454-t1-t2-self-audit-and-cadenced-review-trajectories.md)** Encode T1 self-audit + T2 cadenced review (TS-preferred tooling + trajectory packet)
 - [ ] **[B-0455](backlog/P2/B-0455-t4-t5-onboarding-and-drift-retrospective-trajectories.md)** T4 onboarding briefing + T5 drift retrospective (trajectory packets)
-- [ ] **[B-0456](backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md)** Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
+- [x] **[B-0456](backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md)** Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
 - [ ] **[B-0457](backlog/P2/B-0457-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
 - [ ] **[B-0458](backlog/P2/B-0458-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
 - [ ] **[B-0462](backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
