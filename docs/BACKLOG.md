@@ -469,10 +469,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0359](backlog/P2/B-0359-probabilistic-type-system-language-level-confidence-primitives.md)** Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)
 - [ ] **[B-0360](backlog/P2/B-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md)** DBSP identity continuity — incremental views over agent state via D/I operators
 - [ ] **[B-0363](backlog/P2/B-0363-git-native-full-text-inverted-index.md)** Git-native full-text inverted index — Lucene-style search over repo substrate
-- [ ] **[B-0370](backlog/P2/B-0370-contributor-compliance-core-document-authoring.md)** Author core CONTRIBUTOR-COMPLIANCE.md (public-company MNPI rule + framing examples + SEC lineage)
-- [ ] **[B-0371](backlog/P2/B-0371-contributor-compliance-cross-reference-integration.md)** Cross-reference CONTRIBUTOR-COMPLIANCE.md into AGENTS.md / CONTRIBUTING.md / GOVERNANCE.md
-- [ ] **[B-0372](backlog/P2/B-0372-t1-t2-self-audit-and-cadenced-review-trajectories.md)** Encode T1 self-audit + T2 cadenced review (TS-preferred tooling + trajectory packet)
-- [ ] **[B-0373](backlog/P2/B-0373-t4-t5-onboarding-and-drift-retrospective-trajectories.md)** T4 onboarding briefing + T5 drift retrospective (trajectory packets)
 - [ ] **[B-0374](backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md)** F# Units of Measure for fusion-equation terms
 - [ ] **[B-0375](backlog/P2/B-0375-aurora-file-inventory-and-type-classification-2026-05-09.md)** Inventory and classify every file under docs/aurora/** (current-state doc vs courier-ferry history import)
 - [ ] **[B-0376](backlog/P2/B-0376-aurora-split-naming-decision-record-2026-05-09.md)** Architect decision record — canonical name for named-entity-conversation-imports directory
@@ -507,6 +503,11 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0444](backlog/P2/B-0444-bus-claim-envelope-worktree-field-multi-surface-disambiguation-2026-05-13.md)** Bus claim envelope — add `worktree` field for multi-surface disambiguation + worktree-aware claim semantics
 - [ ] **[B-0446](backlog/P2/B-0446-lean4-formal-proof-completion-dbsp-core-identities-pm2-2026-05-13.md)** Lean 4 formal proof completion — DBSP chain rule + core stream-calculus identities
 - [ ] **[B-0447](backlog/P2/B-0447-nuget-package-metadata-completeness-pm2-2026-05-13.md)** NuGet package metadata completeness — description, tags, SourceLink, semantic versioning
+- [ ] **[B-0452](backlog/P2/B-0452-contributor-compliance-core-document-authoring.md)** Author core CONTRIBUTOR-COMPLIANCE.md (public-company MNPI rule + framing examples + SEC lineage)
+- [ ] **[B-0453](backlog/P2/B-0453-contributor-compliance-cross-reference-integration.md)** Cross-reference CONTRIBUTOR-COMPLIANCE.md into AGENTS.md / CONTRIBUTING.md / GOVERNANCE.md
+- [ ] **[B-0454](backlog/P2/B-0454-t1-t2-self-audit-and-cadenced-review-trajectories.md)** Encode T1 self-audit + T2 cadenced review (TS-preferred tooling + trajectory packet)
+- [ ] **[B-0455](backlog/P2/B-0455-t4-t5-onboarding-and-drift-retrospective-trajectories.md)** T4 onboarding briefing + T5 drift retrospective (trajectory packets)
+- [ ] **[B-0456](backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md)** Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
 
 ## P3 — convenience / deferred
 
