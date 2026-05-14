@@ -544,6 +544,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0457](backlog/P2/B-0457-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
 - [ ] **[B-0458](backlog/P2/B-0458-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
 - [ ] **[B-0462](backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
+- [ ] **[B-0498](backlog/P2/B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md)** Substrate-evolution algebra (6 invariants + HKT − Rodney's Razor) rule-promotion after cooling period
 
 ## P3 — convenience / deferred
 
@@ -617,5 +618,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0394](backlog/P3/B-0394-operational-resonance-mvp-dashboard-surface-github-pages-2026-05-09.md)** MVP Operational Resonance Dashboard — first working "are things going as expected?" surface on GitHub Pages with tier grouping
 - [ ] **[B-0395](backlog/P3/B-0395-operational-resonance-conversation-interface-path-a-browser-local-llm-2026-05-09.md)** Conversation interface Path A — embed browser/local LLM (WebLLM or transformers.js) in dashboard for in-context review discussion
 - [ ] **[B-0422](backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md)** Clifford-algebraic narrative engine for testing the Pauli-symmetry-breaking-from-agenda-conservation prediction (research target identified by DeepSeek 2026-05-12)
+- [ ] **[B-0499](backlog/P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)** Z[i]-weighted DBSP refinement — Cartesian-dualism candidate from afternoon-cascade
 
 <!-- END AUTO-GENERATED -->
