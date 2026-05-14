@@ -87,10 +87,6 @@ bundled (one PR for the full sweep).
 - [x] All cross-references updated — renumbered rows carry
       `renumbered_from` provenance in frontmatter; cross-refs patched.
 - [x] `docs/BACKLOG.md` regenerated — updated in this close PR.
-- [ ] Wire `audit-duplicate-row-ids.ts` into a CI workflow so a
-      future collision blocks merge automatically (separate slice
-      / follow-up row — tracked as future work; does not block
-      closure of this row).
 
 ## Why P1
 
