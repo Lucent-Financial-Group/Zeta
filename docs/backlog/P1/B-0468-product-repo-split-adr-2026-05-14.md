@@ -1,7 +1,9 @@
 ---
 id: B-0468
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "docs/DECISIONS/2026-05-14-product-repo-split-decisions.md"
 title: "ADR — product-repo split decisions; closes B-0425"
 type: design
 origin: B-0425 decomposition (Otto 2026-05-14)

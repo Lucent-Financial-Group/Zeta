@@ -1,7 +1,9 @@
 ---
 id: B-0466
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "docs/research/2026-05-14-product-repo-naming-review-b0425.md"
 title: "Naming-expert review for product repo names — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn"
 type: design
 origin: B-0425 decomposition (Otto 2026-05-14)

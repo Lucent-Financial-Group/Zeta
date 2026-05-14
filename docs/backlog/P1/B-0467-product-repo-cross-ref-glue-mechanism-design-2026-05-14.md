@@ -1,7 +1,9 @@
 ---
 id: B-0467
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md"
 title: "Product-repo cross-ref glue mechanism design — how product repos reference Zeta/Forge/ace"
 type: design
 origin: B-0425 decomposition (Otto 2026-05-14)

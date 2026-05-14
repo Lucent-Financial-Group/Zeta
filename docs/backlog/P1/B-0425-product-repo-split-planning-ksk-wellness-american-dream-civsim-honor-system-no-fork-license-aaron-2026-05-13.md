@@ -1,12 +1,14 @@
 ---
 id: B-0425
 priority: P1
-status: decomposed
+status: closed
 title: "Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license"
 type: planning
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
 last_updated: 2026-05-14
+closed: 2026-05-14
+closed_by_adr: "docs/DECISIONS/2026-05-14-product-repo-split-decisions.md"
 decomposed_into:
   - B-0464
   - B-0465
