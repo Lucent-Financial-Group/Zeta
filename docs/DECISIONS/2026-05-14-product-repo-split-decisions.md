@@ -12,7 +12,7 @@
 The factory-infrastructure three-repo split (Zeta + Forge + ace) was decided in [the 2026-04-22 ADR](2026-04-22-three-repo-split-zeta-forge-ace.md). This is the **companion ADR for the product axis** — it answers which LFG product concepts get their own public GitHub repos, in what order, under what governance.
 
 Aaron 2026-05-13 articulated the dual-axis design:
-> *"so anytihgn you don't want them to fork specifically you have in a repo can still be public and such glass halo but the licence can say no fork please respect honesty or something not enforcable"* _(verbatim; typos preserved)_
+> *"so anytihgn you don't want them to fork specifically you have in a repo can still be public and such glass halo but the licence can say no fork please respect honesty or something not enforcable"* *(verbatim; typos preserved)*
 
 The design constraints cascade from four child rows of B-0425:
 
