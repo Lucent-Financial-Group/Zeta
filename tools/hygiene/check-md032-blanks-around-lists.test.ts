@@ -145,11 +145,53 @@ Steps:
     expect(findings).toHaveLength(1);
     expect(findings[0]?.line).toBe(4);
   });
+
+  test("list-like lines inside fenced code blocks are NOT flagged (Codex P2 PR #3075)", () => {
+    // A documentation example showing the bad pattern inside a code
+    // sample should not trip the helper.
+    const content = `# Title
+
+Example of the BAD pattern (this is just a code sample):
+
+\`\`\`
+Label:
+- item one
+- item two
+\`\`\`
+
+More prose.
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("tilde-fenced code blocks are also respected", () => {
+    const content = `# Title
+
+Example:
+
+~~~
+Label:
+- item one
+~~~
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("indent-as-code (4+ spaces) is NOT a list marker per CommonMark (Copilot P1 PR #3075)", () => {
+    // A 4-space-indented line is code, not a list.
+    const content = `# Title
+
+Some prose:
+    - option (this is a code block, not a list)
+    - another option
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
 });
 
 describe("checkFiles", () => {
   test("unreadable files are skipped without crashing", () => {
-    const result = checkFiles(["/nonexistent/path/that/does/not/exist.md"], "/tmp");
+    const result = checkFiles(["/nonexistent/path/that/does/not/exist.md"]);
     expect(result).toEqual([]);
   });
 });

@@ -51,11 +51,13 @@ export type Md032Finding = {
  *
  * Matches the three unordered-list markers (`-`, `+`, `*`) and the
  * ordered-list pattern (`1.`, `12.`, etc.), each followed by at least
- * one space. Markdown's actual grammar is more permissive but these
- * cover every case observed in the 5 session findings.
+ * one space. CommonMark allows list markers indented 0-3 spaces; 4+
+ * spaces is treated as indented code, not a list — `[ ]{0,3}` enforces
+ * that boundary so a code block line like `    - option` isn't falsely
+ * flagged as a list start (Copilot P1 on PR #3075).
  */
 function isListItemStart(line: string): boolean {
-  return /^\s*([-+*]|\d+\.)\s+/.test(line);
+  return /^ {0,3}([-+*]|\d+\.)\s+/.test(line);
 }
 
 /**
@@ -86,12 +88,32 @@ function isListFriendlyLeading(line: string): boolean {
   return false;
 }
 
+/**
+ * A line that opens or closes a fenced code block (`\`\`\`` or `~~~`,
+ * optionally followed by an info string). The token must be on its
+ * own line (possibly indented up to 3 spaces, per CommonMark).
+ */
+function isFenceLine(line: string): boolean {
+  return /^ {0,3}(```|~~~)/.test(line);
+}
+
 export function findMd032Violations(content: string): { line: number; context: string }[] {
   const lines = content.split(/\r?\n/);
   const findings: { line: number; context: string }[] = [];
+  // Track fenced-code-block state so list-like lines INSIDE code samples
+  // (e.g., a documentation example showing a bad MD032 pattern) aren't
+  // flagged. Codex P2 on PR #3075.
+  let inFencedCode = false;
   // Walk pairwise: each list-start line is checked against the line before.
   for (let i = 1; i < lines.length; i++) {
     const cur = lines[i] ?? "";
+    // Update fence state BEFORE the list-start check so a fence line
+    // itself never registers as a list-start candidate.
+    if (isFenceLine(cur)) {
+      inFencedCode = !inFencedCode;
+      continue;
+    }
+    if (inFencedCode) continue;
     if (!isListItemStart(cur)) continue;
     const prev = lines[i - 1] ?? "";
     if (isBlank(prev) || isListFriendlyLeading(prev)) continue;
@@ -104,11 +126,12 @@ export function findMd032Violations(content: string): { line: number; context: s
 }
 
 /**
- * Walk a list of files; collect findings; emit to stderr in
- * `file:line: context` style (matches markdownlint output shape).
- * Returns the total finding count.
+ * Walk a list of files; collect MD032 findings; return them as an
+ * array. The CLI `main()` owns the output boundary (stderr emit,
+ * exit code). Unreadable files are skipped silently — push or CI
+ * will surface the underlying I/O error.
  */
-export function checkFiles(files: string[], repoRoot: string): Md032Finding[] {
+export function checkFiles(files: string[]): Md032Finding[] {
   const all: Md032Finding[] = [];
   for (const f of files) {
     let content: string;
@@ -173,7 +196,7 @@ function main(): number {
     files = argv.map((f) => (f.startsWith("/") ? f : resolve(f)));
   }
 
-  const findings = checkFiles(files, repoRoot);
+  const findings = checkFiles(files);
 
   if (findings.length === 0) {
     console.log(`check-md032: ${files.length} file(s) scanned, no MD032 findings`);
