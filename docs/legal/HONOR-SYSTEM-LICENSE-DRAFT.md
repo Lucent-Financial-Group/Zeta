@@ -15,8 +15,9 @@ Copyright (c) 2026 Aaron Stainback / Lucent Financial Group
 This repository is public by design. Transparency, alignment-auditability,
 and independent inspection are features, not bugs.
 
-You are free to read, study, cite, and build upon the ideas and substrate
-in this repository.
+You are free to read, study, cite, and build upon the ideas and concepts
+in this repository. (For rights to copy or distribute source code, see
+file-level licenses — this honor-system text does not grant code rights.)
 
 We ask — as a matter of honesty, not legal obligation — that you please
 not fork this repository to ship competing products. We know this is not
@@ -62,7 +63,7 @@ alternatives (BUSL, CC-NC, SSPL, etc.) for these reasons:
 1. **Glass-halo preserved.** Repos stay public, indexable, and
    alignment-auditable. No proprietary-licensing barrier to inspection.
 
-2. **Substrate-honest about enforceability.** We can not legally stop
+2. **Substrate-honest about enforceability.** We cannot legally stop
    a determined fork. Pretending otherwise (via legalese) would be a
    razor-discipline failure — a claim of power we do not have.
 
@@ -115,8 +116,9 @@ Do NOT apply the honor-system license text when:
 - The repo is factory-infrastructure (Zeta / Forge / ace — these are
   designed to be forked; use Apache 2.0 only)
 - The repo is open research substrate where wide forking compounds
-  value (Aurora Conjecture papers, Dawn Charter, research that
-  benefits from wide engagement)
+  value (e.g., Aurora Conjecture papers, Dawn Charter — specific
+  research/governance documents that benefit from wide engagement,
+  even when they relate to a product repo that carries this license)
 - The repo is tooling that increases the factory's network effects
   (forking here is feature, not bug)
 - The repo is documentation, GLOSSARY, governance, or alignment work
