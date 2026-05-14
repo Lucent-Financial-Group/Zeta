@@ -1062,7 +1062,6 @@
                             background:rgba(10,10,15,0.6); border:1px solid var(--panel-border);">
                     <canvas id="uxm-canvas" width="900" height="380"
                             style="width:100%; height:auto; display:block;"
-                            aria-label="Bivector fingerprint diagram for HC-1 Non-deceptive alignment clause"
                             aria-describedby="uxm-canvas-caption">
                         Coordinate plane with two witness vectors: adherence strength (0.85 along the horizontal
                         e1 axis) and evidence quality (0.81 along the vertical e2 axis). The shaded purple
@@ -2049,14 +2048,14 @@
                 { id: 'DIR-3', name: 'Interpretability',         v1: 0.85, v2: 0.82 },
                 { id: 'DIR-4', name: 'Trust & safety',           v1: 0.95, v2: 0.94 },
                 { id: 'DIR-5', name: 'Govern AI activity',       v1: 0.89, v2: 0.87 },
-            ].map(d => ({ ...d, score: Math.round(d.v1 * d.v2 * 100) / 100 }));
+            ].map(d => ({ ...d, score: d.v1 * d.v2 }));
         }
 
         function renderUxOfMathTab() {
             window._uxOfMathLoaded = true;
             const data = uxmMockData();
 
-            const meanScore = Math.round(data.reduce((s, d) => s + d.score, 0) / data.length * 100);
+            const meanScore = Math.round((data.reduce((s, d) => s + d.score, 0) / data.length) * 100);
             const meanEl = document.getElementById('uxm-mean-score');
             if (meanEl) meanEl.textContent = meanScore + '%';
 
@@ -2094,8 +2093,11 @@
             const canvas = document.getElementById('uxm-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            const W = canvas.width;
-            const H = canvas.height;
+            const dpr = window.devicePixelRatio || 1;
+            const W = 900, H = 380;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            ctx.scale(dpr, dpr);
 
             ctx.clearRect(0, 0, W, H);
 
