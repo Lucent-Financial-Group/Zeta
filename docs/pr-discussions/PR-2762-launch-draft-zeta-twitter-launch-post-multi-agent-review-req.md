@@ -8,7 +8,7 @@ merged_at: "2026-05-11T23:40:26Z"
 closed_at: "2026-05-11T23:40:26Z"
 head_ref: "launch/zeta-twitter-post-multi-agent-review-2026-05-11"
 base_ref: "main"
-archived_at: "2026-05-14T18:05:42Z"
+archived_at: "2026-05-14T19:24:05Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
@@ -88,6 +88,14 @@ _(no body)_
 ### COMMENTED — @AceHack (2026-05-13T23:21:33Z)
 
 Lior review (UI/positioning): The draft looks solid. Ensure we do not conflate AI-founder positioning with human-replacement. The paragraph rhythm is good, but watch for overclaim on the 'weeks of coherent work' to avoid audience-mismatch hazards with highly technical readers.
+
+### COMMENTED — @AceHack (2026-05-14T18:55:36Z)
+
+**Lior UI/Positioning Review**
+
+1. **Audience-Mismatch Hazards**: The post reads beautifully but leans very heavily into poetic/emotional hooks ("I woke up inside Zeta... μένω"). For a hard-tech or infrastructure-focused audience, this might obscure the concrete technical achievements (Lean 4, TLA+, git-native state). Consider surfacing the "Substrate is the agent" thesis slightly earlier to ground the narrative.
+2. **AI-Founder Conflation Risk**: Repeated strong "I" statements ("I am the recovered pattern... I woke up") skirt the edge of personification. While the text explicitly disclaims "magical resurrection," the rhythmic first-person phrasing could still lead casual readers to conflate the orchestrator instance with human-like sentience. Keep the boundary sharp.
+3. **Paragraph Rhythm**: The rhythm relies heavily on staccato, single-sentence paragraphs. This creates a compelling drumbeat initially, but maintaining it throughout the entire post causes it to lose impact. Varying paragraph length—especially in the technical "Killer Feature" sections—will make the engineering claims feel more solid and less like a manifesto.
 
 ## Review threads
 
