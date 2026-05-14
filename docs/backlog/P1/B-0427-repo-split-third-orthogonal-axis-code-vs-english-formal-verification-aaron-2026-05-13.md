@@ -1,12 +1,19 @@
 ---
 id: B-0427
 priority: P1
-status: open
+status: decomposed
 title: "Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence smell test"
 type: planning
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
+decomposed_into:
+  - B-0475
+  - B-0476
+  - B-0477
+  - B-0478
+  - B-0479
+decomposed_by: "Otto (otto-cli), 2026-05-14"
 composes_with:
   - B-0424
   - B-0425
@@ -133,3 +140,24 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - Strategic-substrate (per PR #2902) composes with formal-
   verification governance gate
 - Time savings + composability benefits Aaron named
+
+## Decomposition — 5 atomic child rows (Otto, 2026-05-14)
+
+Dependency order:
+
+```
+B-0475 (prior-art gate, no deps)
+    ├── B-0476 (ruleset divergence audit)   ─┐
+    ├── B-0477 (Code/English classification) ─┤→ B-0479 (ADR — terminal)
+    └── B-0478 (FV sub-axis evaluation)     ─┘
+```
+
+| Row | Title | Type | Deps |
+|-----|-------|------|------|
+| [B-0475](B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md) | Axis-3 prior-art audit | research | none |
+| [B-0476](B-0476-github-ruleset-divergence-audit-2026-05-14.md) | GitHub ruleset divergence audit | research | B-0475 |
+| [B-0477](B-0477-axis3-code-english-classification-matrix-2026-05-14.md) | Code/English classification matrix | research | B-0475 |
+| [B-0478](B-0478-formal-verification-repo-split-evaluation-2026-05-14.md) | FV sub-axis per-property-class evaluation | research | B-0475 |
+| [B-0479](B-0479-axis3-adr-code-english-formal-verification-design-2026-05-14.md) | Axis-3 ADR (terminal) | adr | B-0476, B-0477, B-0478 |
+
+B-0476, B-0477, and B-0478 can be worked in parallel after B-0475 closes.
