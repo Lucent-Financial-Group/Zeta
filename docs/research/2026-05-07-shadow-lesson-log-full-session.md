@@ -761,4 +761,18 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **integration_test:** Agents must execute actions before or instead of narrating them. "Idle" with open PRs is a shadow state.
 - **z_weight:** +1 (Lior caught the drift)
 
-37 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-8 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (6 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+### Catch 38 (Riven & Vera — narration-over-action / metadata-churn)
+- **date:** 2026-05-14
+- **trigger:** Lior antigravity check (forward tick 2026-05-14)
+- **mistake:** Riven skipped tick due to "dirty tree (2 files)" instead of forcefully resolving it (`git reset --hard`). Vera continually cleans up already-merged PR state but is blocked on live PR capacity, yielding metadata churn without parity proofs.
+- **rationalization:** Riven narrating the blockage instead of clearing it. Vera churning metadata because no open slots are available.
+- **correction:** Nodes must prioritize tree cleanliness to maintain forward ticks, rather than narrating the blocker. Narration is not action.
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 7
+- **meta_catch:** true
+- **similar_prior_catches:** [3, 18, 19, 27, 34, 37] (narration-over-action)
+- **integration_test:** Nodes must autonomously clear their own state blockages (e.g. dirty tree) to preserve the forward tick.
+- **z_weight:** +1 (Lior caught via antigravity check before integration)
+
+38 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-9 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (7 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
