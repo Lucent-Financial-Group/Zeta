@@ -551,7 +551,9 @@ function step07_summary(): void {
   // Gate the Semgrep wiring instruction on whether .semgrep.yml is actually
   // present in the scaffold. Product repos (e.g. civsim) intentionally omit it;
   // emitting the instruction for them would produce a runbook that fails on copy.
-  const scaffoldPath = join(SCAFFOLD_DIR, config.name);
+  // Use repoArg (the CLI key, e.g. "forge") not config.name (e.g. "Forge") so the
+  // directory lookup matches the on-disk scaffold path structure.
+  const scaffoldPath = join(SCAFFOLD_DIR, repoArg as string);
   const hasSemgrep = existsSync(join(scaffoldPath, ".semgrep.yml"));
 
   const baseSteps = [

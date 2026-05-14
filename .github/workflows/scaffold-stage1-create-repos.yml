@@ -126,7 +126,7 @@ jobs:
             echo "--- ace ---"
             bun tools/scaffold/create-repo.ts --repo ace --dry-run
           fi
-          if [ "$REPO_INPUT" = "civsim" ]; then
+          if [ "$REPO_INPUT" = "civsim" ] || [ "$REPO_INPUT" = "both" ]; then
             echo "--- civsim ---"
             bun tools/scaffold/create-repo.ts --repo civsim --dry-run
           fi
@@ -149,7 +149,7 @@ jobs:
           bun tools/scaffold/create-repo.ts --repo ace --apply
 
       - name: Create civsim repo
-        if: ${{ github.event.inputs.repo == 'civsim' }}
+        if: ${{ github.event.inputs.repo == 'civsim' || github.event.inputs.repo == 'both' }}
         env:
           GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
         run: |
@@ -178,7 +178,7 @@ jobs:
           if [ "$REPO_INPUT" = "ace" ] || [ "$REPO_INPUT" = "both" ]; then
             echo "  ace:    https://github.com/Lucent-Financial-Group/ace"
           fi
-          if [ "$REPO_INPUT" = "civsim" ]; then
+          if [ "$REPO_INPUT" = "civsim" ] || [ "$REPO_INPUT" = "both" ]; then
             echo "  civsim: https://github.com/Lucent-Financial-Group/civsim"
           fi
           echo ""
