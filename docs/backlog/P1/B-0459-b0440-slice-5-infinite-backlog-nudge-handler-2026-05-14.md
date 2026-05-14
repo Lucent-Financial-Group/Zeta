@@ -7,6 +7,7 @@ tier: factory-infrastructure
 effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
+parent: B-0440
 depends_on: [B-0449]
 composes_with: [B-0440, B-0441, B-0442, B-0448]
 tags: [multi-agent, background-service, bus, subscriber-pattern, anti-idle, infinite-backlog]
@@ -96,5 +97,5 @@ B-0400 (bus protocol)
 ## Pre-start checklist (per backlog-item-start-gate)
 
 - [ ] Prior-art search: verify B-0449 has landed `tools/bus/subscribe.ts` before starting
-- [ ] Dependency check: `bun tools/bus/claim.ts check --item B-0449` — must be released (merged)
+- [ ] Dependency check: `grep -q "^status: done" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: done` (merged)
 - [ ] Search committed memory for `infinite-backlog-nudge handler` to find any prior implementation

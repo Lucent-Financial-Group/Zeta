@@ -6,9 +6,10 @@ title: "Standing-by failure-mode detector — background service that catches id
 tier: factory-infrastructure
 effort: M
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 depends_on: [B-0400]
 composes_with: [B-0402, B-0441, B-0442]
+children: [B-0459, B-0497]
 tags: [multi-agent, background-service, bus, mechanization, infinite-backlog, standing-by, anti-idle]
 type: feature
 ---

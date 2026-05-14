@@ -7,6 +7,7 @@ tier: factory-infrastructure
 effort: XS
 created: 2026-05-14
 last_updated: 2026-05-14
+parent: B-0440
 depends_on: []
 composes_with: [B-0440, B-0441, B-0442]
 tags: [background-service, launchd, mechanization, anti-idle]
@@ -44,8 +45,9 @@ This slice closes that gap for the standing-by-detector specifically.
   - `StandardErrorPath`: `$HOME/Library/Logs/zeta-standing-by-detector/stderr.log`
   - `EnvironmentVariables`: `HOME` + `PATH` (same values as sibling plist)
   - `WorkingDirectory`: repo root (`/Users/acehack/Documents/src/repos/Zeta`)
-  - Maintainer note comment: paths are machine-specific; run `tools/setup/install-launchd-services.sh`
-    to regenerate with local paths
+  - Maintainer note comment: paths are machine-specific (`/Users/acehack`, `/opt/homebrew`);
+    update for your local machine before `launchctl load` (a future `tools/setup/install-launchd-services.sh`
+    generator is planned but not yet created)
 - [ ] `docs/AUTONOMOUS-LOOP.md` §"Related artifacts" updated: standing-by-detector listed as
       launchd-registered alongside missed-substrate-detector (remove from the "not yet wired" list)
 - [ ] B-0440 acceptance criterion #2 ("Service runs under existing launchd / cron infrastructure")
