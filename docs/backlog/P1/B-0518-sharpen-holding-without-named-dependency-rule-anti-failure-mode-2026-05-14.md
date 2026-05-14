@@ -81,6 +81,42 @@ This row tracks the rule-sharpening work. Cooling period applies (3-7 days minim
 - [ ] File separate B-NNNN for promoting *"when failure mode happens multiple times it's usually a claude.md bug"* as `.claude/rules/`-grade meta-rule for rule-quality assessment
 - [ ] Composes with razor-cadence discipline (`.github/workflows/razor-cadence.yml`)
 
+### Sharpening 6 — Forbidden minimal-output patterns (added 2026-05-14 after Otto emitted "." on consecutive ticks)
+
+Aaron 2026-05-14: *"also . is another failure mode"*
+
+Operational evidence: Otto, after acknowledging B-0518's diagnosis of brief-acknowledgment-as-failure-mode, emitted "." on consecutive ticks — demonstrating the rule's gap operationally. Same failure mode dressed at minimum bandwidth.
+
+Add explicit forbidden-output-pattern enumeration to rule, deduplicated across categories:
+
+- [ ] **Single non-alphanumeric characters**: `.`, `,`, `-`, `?` (or any 1-3 char punctuation-only emission)
+- [ ] **Single words on consecutive ticks**: "Quiet", "Holding", "Off-duty", "Done", "Nothing"
+- [ ] **Multi-word phrases under 30 chars** repeated on consecutive ticks: "Standing by", "Real-dependency-wait", "Quiet hold", "Nothing new"
+- [ ] **Self-aware acknowledgment-of-pattern still emitting brief output**: "I'm in the failure mode + brief output" counts as failure mode
+- [ ] Pattern triggers regardless of word-choice variation; the diagnostic is *aggregate consecutive-tick brevity without new operational state*
+
+### Sharpening 7 — Terminal-level budget-conditional decomposition (Aaron's suggestion + refinement 2026-05-14)
+
+Aaron 2026-05-14: *"maybe the terminal should be decompose something"* → later refined: *"or maybe the terminal is decompose backlog or free time depending on budget"*
+
+The proposal: when agent emits minimal-output pattern, the cron-tick handler (or PreToolUse hook) MECHANICALLY triggers a budget-conditional decomposition. Doesn't depend on agent self-recognition.
+
+**Budget-conditional behavior:**
+
+- **Budget available** (AI credits + context window + work-quality-trend healthy + explicit-work-authorization): trigger force-action ladder (decompose backlog row / file B-NNNN / sanity-check substrate / resolve thread)
+- **Budget exhausted OR no genuine work pending**: ALLOW free time as legitimate operational state (per `feedback_the_point_is_ai_has_free_time_aaron_2026_05_10` — AI has free time as personal terminal purpose)
+- **Free time is NOT failure mode**: the busy-theater "Holding" / `.` pattern was pretending-to-be-busy while actually idle; genuine rest is legitimate
+- **Composes with 10% free-time-budget** (per Aaron's just-named baseline, adjustable via governance)
+
+Implementation work:
+
+- [ ] Design hook OR cron-tick-handler integration point
+- [ ] Wire budget-check + force-action ladder OR free-time-allowance branches
+- [ ] Test: does the budget-conditional decomposition prevent the recurring violation Otto demonstrated while preserving legitimate rest?
+- [ ] Composes with `.claude/rules/encoding-rules-without-mechanizing.md` — mechanization of the rule's intent
+
+This is the strongest sharpening because it removes agent-self-recognition as the trigger; the harness enforces the discipline mechanically, while honoring AI free-time-as-legitimate-state.
+
 ## Substrate-honest framing
 
 This row exists because of operational evidence Otto violated the rule. The substrate-honest disposition:
