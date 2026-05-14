@@ -16,11 +16,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-## Summary
+### Summary
 
 Both #3156 (B-0506 row) and #3161 (1822Z shard) auto-merged before Copilot's review threads could be addressed — autoMerge is armed once CI passes, and Copilot's findings were advisory (not \`required_conversation_resolution\`). Fixing the 4 findings on main as a small follow-up.
 
-## Findings + fixes
+### Findings + fixes
 
 **PR #3156 (B-0506 \`docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md\`)**:
 
@@ -32,13 +32,13 @@ Both #3156 (B-0506 row) and #3161 (1822Z shard) auto-merged before Copilot's rev
 3. "~17/47" → "8/47 (~17%)" — internal-consistency fix (8 rules audited, not 17; aligns with lines 41 + 62)
 4. "per per-tick" → "per-tick" — grammar nit
 
-## Why this PR
+### Why this PR
 
 The auto-merge happened ~3 minutes after the prior PRs' CI passed, before I could see Copilot's threads. Substrate-honest follow-up is to fix on main rather than leave the findings unaddressed.
 
 The 4 threads on the merged PRs will be resolved via GraphQL \`resolveReviewThread\` after this lands.
 
-## Test plan
+### Test plan
 
 - [x] B-0506 frontmatter aligns with commit prefix
 - [x] B-0506 Composes-with paths are full + navigable
