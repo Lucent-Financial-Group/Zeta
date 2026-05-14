@@ -316,6 +316,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0518](backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md)** Sharpen the holding-without-named-dependency rule — Aaron diagnosed CLAUDE.md bug
 - [ ] **[B-0520](backlog/P1/B-0520-new-surface-audit-alignment-check.md)** Mechanize new-surface audit for alignment-clause consistency
 - [ ] **[B-0522](backlog/P1/B-0522-pre-substrate-kenji-era-git-branches-inventory.md)** Pre-substrate Kenji-era git branches and worktrees inventory
+- [ ] **[B-0523](backlog/P1/B-0523-kenji-era-research-docs-cross-reference-audit.md)** Kenji-era research docs cross-reference audit (peeled from B-0139)
 
 ## P2 — research-grade
 

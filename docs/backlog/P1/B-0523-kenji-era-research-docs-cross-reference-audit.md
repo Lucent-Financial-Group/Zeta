@@ -1,5 +1,5 @@
 ---
-id: B-0353
+id: B-0523
 priority: P1
 status: open
 title: Kenji-era research docs cross-reference audit (peeled from B-0139)
@@ -11,7 +11,7 @@ type: friction-reducer
 decomposition: atomic
 ---
 
-# B-0353 — Kenji-era research docs cross-reference audit
+# B-0523 — Kenji-era research docs cross-reference audit
 
 **Priority:** P1
 **Parent:** B-0139
