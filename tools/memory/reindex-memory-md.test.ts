@@ -102,6 +102,18 @@ describe("collectEntries", () => {
     const alpha = entries.find((e) => e.fm.name === "alpha-entry");
     expect(alpha?.date).toBe("2026-05-01");
   });
+
+  test("scans subdirectories recursively", async () => {
+    const entries = await collectEntries(TESTDATA);
+    const gamma = entries.find((e) => e.fm.name === "gamma-entry");
+    expect(gamma).not.toBeUndefined();
+  });
+
+  test("uses subdir-relative path for subdirectory entries", async () => {
+    const entries = await collectEntries(TESTDATA);
+    const gamma = entries.find((e) => e.fm.name === "gamma-entry");
+    expect(gamma?.filename).toBe("subdir/gamma_2026_05_14.md");
+  });
 });
 
 describe("renderIndex", () => {
