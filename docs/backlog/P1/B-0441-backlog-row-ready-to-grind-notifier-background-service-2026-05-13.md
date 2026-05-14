@@ -6,9 +6,10 @@ title: "Backlog-row-ready-to-grind notifier — background service that proactiv
 tier: factory-infrastructure
 effort: M
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 depends_on: [B-0400]
 composes_with: [B-0402, B-0440, B-0442]
+children: [B-0500, B-0501, B-0502, B-0460]
 tags: [multi-agent, background-service, bus, mechanization, infinite-backlog, work-assignment]
 type: feature
 ---
@@ -141,11 +142,14 @@ form a two-layer defense against the Standing-by pattern.
 
 ## Pre-start checklist
 
-- [ ] Prior-art search: existing audit scripts in `tools/hygiene/`
-      (check for backlog-readiness-scan overlap)
-- [ ] Dependency proof: B-0400 bus protocol slice ready
-- [ ] Verify readiness-detection heuristics handle edge cases
-      (forked work, multi-agent claims, partial completion)
+- [x] Prior-art search: existing audit scripts in `tools/hygiene/`
+      (check for backlog-readiness-scan overlap) — no overlap found; `backlog-ready-notifier.ts`
+      is distinct from the hygiene audit scripts
+- [x] Dependency proof: B-0400 bus protocol slice ready — B-0400 status: closed (2026-05-13)
+- [x] Verify readiness-detection heuristics handle edge cases
+      (forked work, multi-agent claims, partial completion) — handled in existing tests;
+      `isAgentQueueEmpty` conservative-busy on adapter failure covers edge cases
+- [x] Decomposition: child rows created (B-0500, B-0501, B-0502, B-0460) — 2026-05-14
 
 ## Substrate-honest caveats
 
@@ -155,13 +159,19 @@ form a two-layer defense against the Standing-by pattern.
 - Agent autonomy must be preserved — service publishes, agent decides
 - Per razor-discipline: claim is design-level
 
-## Decomposition into implementation slices (TBD)
+## Decomposition into implementation slices
 
-When picked up for implementation:
+Using the canonical per-service slice ordering from `tools/bg/README.md`:
 
-- Slice 1: backlog row parsing + readiness detection
-- Slice 2: agent queue-state detection (commits + PRs)
-- Slice 3: assignment payload computation
-- Slice 4: bus integration
-- Slice 5: assignment history tracking
-- Slice 6: tests + documentation
+| Slice | Description | Status | Child row |
+|-------|-------------|--------|-----------|
+| 1 | Skeleton + no-op poll loop | ✅ shipped | — |
+| 2 | Real detection signal #1 (backlog-row scan: status + deps satisfied) | ✅ shipped | — |
+| 3 | Queue-state guard wiring (`isAgentQueueEmpty` into `pollOnce`) | ❌ open | B-0500 |
+| 4 | Bus-publish wiring (`work-assignment` topic) | ✅ shipped | — |
+| 5a | Assignment history dedup / cooldown (avoid re-assigning same row) | ❌ open | B-0501 |
+| 5.2 | Agent-side `work-assignment` subscriber handler (consume + act) | ❌ open | B-0460 |
+| 6 | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring | ❌ open | B-0502 |
+
+Slices 1, 2, 4 are live in `tools/bg/backlog-ready-notifier.ts` (per README "1+2+4 live").
+B-0460 depends on B-0449 (subscriber library design pass); B-0500/B-0501/B-0502 are independent.
