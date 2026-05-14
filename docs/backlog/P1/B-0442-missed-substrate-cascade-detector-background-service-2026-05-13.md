@@ -6,9 +6,10 @@ title: "Missed-substrate cascade detector — background service that catches br
 tier: factory-infrastructure
 effort: M
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 depends_on: [B-0400]
 composes_with: [B-0402, B-0440, B-0441]
+children: [B-0503, B-0504, B-0505]
 tags: [multi-agent, background-service, bus, mechanization, drift-detection, race-condition]
 type: feature
 ---
