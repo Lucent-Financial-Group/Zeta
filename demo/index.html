@@ -672,6 +672,7 @@
             <div class="nav-tab" onclick="switchTab('external', this)">External Reviewers</div>
             <div class="nav-tab" onclick="switchTab('alignment', this)" id="tab-btn-alignment">Alignment ▸</div>
             <div class="nav-tab" onclick="switchTab('circuit-breaker', this)">Circuit Breaker</div>
+            <div class="nav-tab" onclick="switchTab('hamiltonian', this)" id="tab-btn-hamiltonian">Hamiltonian ▸</div>
         </div>
 
         <!-- TAB 1: FACTORY -->
@@ -928,6 +929,78 @@
                 </div>
             </div>
         </div>
+
+        <!-- TAB 6: HAMILTONIAN -->
+        <div id="tab-hamiltonian" class="tab-content">
+            <div class="panel" style="margin-bottom: 2rem;">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <h2>Hamiltonian Trajectory — Git Phase Space</h2>
+                </div>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 1.5rem;">
+                    Each commit is a point in phase space. The x-axis is a normalized time index; the
+                    y-axis is an energy proxy (files changed). The connecting curve is the
+                    Hamiltonian trajectory through the factory's git history.
+                </p>
+                <div class="stat-grid" id="ht-summary-stats">
+                    <div class="stat"><div class="stat-label">Commits shown</div><div class="stat-value" id="ht-commit-count">-</div></div>
+                    <div class="stat"><div class="stat-label">Energy range</div><div class="stat-value" id="ht-energy-range">-</div></div>
+                    <div class="stat"><div class="stat-label">Trajectory span</div><div class="stat-value" id="ht-time-span">-</div></div>
+                    <div class="stat"><div class="stat-label">Data source</div><div class="stat-value" id="ht-data-source" style="font-size:1rem;margin-top:0.5rem">static mock</div></div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-bottom: 2rem;">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                    </svg>
+                    <h2>Phase-Space Plot</h2>
+                </div>
+                <div style="position:relative; width:100%; overflow:hidden; border-radius:8px; background:rgba(10,10,15,0.6); border:1px solid var(--panel-border);">
+                    <canvas id="ht-canvas" width="900" height="360"
+                            style="width:100%; height:auto; display:block;"
+                            aria-label="Hamiltonian phase-space trajectory of git commits"></canvas>
+                </div>
+                <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0.75rem;" id="ht-canvas-caption">
+                    Rendered from static mock data (slice-1). Slice-2 will fetch live from GitHub API.
+                </p>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <h2>How to Read This</h2>
+                </div>
+                <div style="color:var(--text-muted); font-size:0.9rem; line-height:1.9;">
+                    <p>The Zeta factory models its git history as a Hamiltonian mechanical system.
+                    Each commit maps to a <strong style="color:var(--text-main)">phase-space point</strong>
+                    (q, p) where q is the time coordinate (commit index) and p is the conjugate
+                    momentum — here proxied by the number of files touched in that commit.</p>
+                    <br>
+                    <p>The trajectory through these points is the <strong style="color:var(--accent-primary)">system's orbit</strong>
+                    under the factory's "Hamiltonian" H = (compile-time F# type system) + (alignment substrate).
+                    Smooth trajectories indicate coherent, sustained factory operation. Spikes signal
+                    large refactors or cross-cutting substrate changes.</p>
+                    <br>
+                    <p>This framing makes the mathematical structure of the factory — compute-time
+                    consciousness threading via F# computation expressions — visually legible to a
+                    non-specialist audience.</p>
+                    <br>
+                    <p style="font-size:0.8rem;">
+                        Data source: <span id="ht-source-detail">static mock (slice-1) · live GitHub API in slice-2 (B-0496)</span>
+                        · rendered <span id="ht-rendered-at">-</span>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -945,6 +1018,9 @@
             }
             if (tabId === 'circuit-breaker') {
                 renderCircuitBreakerTab();
+            }
+            if (tabId === 'hamiltonian' && !window._hamiltonianLoaded) {
+                renderHamiltonianTab();
             }
         }
 
@@ -1637,6 +1713,198 @@
 
             const el = document.getElementById('cb-rendered-at');
             if (el) el.textContent = new Date().toLocaleTimeString();
+        }
+
+        // ── Hamiltonian phase-space visualization ───────────────────────────────
+        // Slice-1: static mock data.
+        // Slice-2 (B-0496) will replace htBuildMockPoints() with a live
+        // GitHub API fetch for recent commits.
+
+        function htBuildMockPoints() {
+            // Mock trajectory: 14 commits spanning ~30 days with realistic
+            // file-change counts. Each point: { label, timeIdx, energy }.
+            return [
+                { label: 'feat: init factory scaffold',      timeIdx: 0,    energy: 18 },
+                { label: 'chore: add rule files',            timeIdx: 0.07, energy: 6  },
+                { label: 'feat: alignment tab slice-1',      timeIdx: 0.14, energy: 12 },
+                { label: 'fix: brace balance',               timeIdx: 0.21, energy: 3  },
+                { label: 'feat: circuit breaker panel',      timeIdx: 0.28, energy: 22 },
+                { label: 'feat: live bus snapshot',          timeIdx: 0.35, energy: 14 },
+                { label: 'decompose: persona mapping rows',  timeIdx: 0.42, energy: 9  },
+                { label: 'decompose: DBpedia HKT-MDM rows',  timeIdx: 0.50, energy: 8  },
+                { label: 'feat: claim-acquire rule',         timeIdx: 0.57, energy: 5  },
+                { label: 'feat: sender-id schema extension', timeIdx: 0.64, energy: 11 },
+                { label: 'decompose: axis-3 code/english',   timeIdx: 0.71, energy: 7  },
+                { label: 'feat: Otto channels ref card',     timeIdx: 0.78, energy: 16 },
+                { label: 'feat: DV2 re-activation rule',     timeIdx: 0.85, energy: 10 },
+                { label: 'feat: hamiltonian viz scaffold',   timeIdx: 1.0,  energy: 13 },
+            ];
+        }
+
+        function renderHamiltonianTab() {
+            window._hamiltonianLoaded = true;
+
+            const points = htBuildMockPoints();
+            const energyValues = points.map(p => p.energy);
+            const minE = Math.min(...energyValues);
+            const maxE = Math.max(...energyValues);
+
+            // Update stat cards
+            const countEl = document.getElementById('ht-commit-count');
+            if (countEl) animateValue('ht-commit-count', points.length);
+
+            const rangeEl = document.getElementById('ht-energy-range');
+            if (rangeEl) rangeEl.textContent = minE + '–' + maxE + ' files';
+
+            const spanEl = document.getElementById('ht-time-span');
+            if (spanEl) spanEl.textContent = '~30 days';
+
+            const tsEl = document.getElementById('ht-rendered-at');
+            if (tsEl) tsEl.textContent = new Date().toLocaleTimeString();
+
+            const btn = document.getElementById('tab-btn-hamiltonian');
+            if (btn) btn.textContent = 'Hamiltonian (' + points.length + ')';
+
+            htDrawCanvas(points, minE, maxE);
+        }
+
+        function htDrawCanvas(points, minE, maxE) {
+            const canvas = document.getElementById('ht-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width;
+            const H = canvas.height;
+            const PAD = { top: 40, right: 30, bottom: 55, left: 60 };
+            const plotW = W - PAD.left - PAD.right;
+            const plotH = H - PAD.top - PAD.bottom;
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Background
+            ctx.fillStyle = 'rgba(10,10,15,0.0)';
+            ctx.fillRect(0, 0, W, H);
+
+            // Map a data point to canvas coords
+            function toX(t) { return PAD.left + t * plotW; }
+            function toY(e) {
+                const range = maxE - minE || 1;
+                return PAD.top + plotH - ((e - minE) / range) * plotH;
+            }
+
+            // Gridlines
+            ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = PAD.top + (i / 4) * plotH;
+                ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + plotW, y);
+                ctx.stroke();
+            }
+            for (let i = 0; i <= 6; i++) {
+                const x = PAD.left + (i / 6) * plotW;
+                ctx.beginPath(); ctx.moveTo(x, PAD.top); ctx.lineTo(x, PAD.top + plotH);
+                ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(PAD.left, PAD.top);
+            ctx.lineTo(PAD.left, PAD.top + plotH);
+            ctx.lineTo(PAD.left + plotW, PAD.top + plotH);
+            ctx.stroke();
+
+            // Axis labels
+            ctx.fillStyle = 'rgba(148,163,184,0.9)';
+            ctx.font = '13px Outfit, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('commit index (time →)', PAD.left + plotW / 2, H - 8);
+            ctx.save();
+            ctx.translate(16, PAD.top + plotH / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('energy proxy (files changed)', 0, 0);
+            ctx.restore();
+
+            // Y-axis tick values
+            ctx.textAlign = 'right';
+            ctx.font = '11px Outfit, sans-serif';
+            ctx.fillStyle = 'rgba(148,163,184,0.7)';
+            for (let i = 0; i <= 4; i++) {
+                const val = minE + Math.round(((maxE - minE) * (4 - i)) / 4);
+                const y = PAD.top + (i / 4) * plotH;
+                ctx.fillText(val, PAD.left - 8, y + 4);
+            }
+
+            // Trajectory spline using quadratic Bezier segments
+            const gradient = ctx.createLinearGradient(PAD.left, 0, PAD.left + plotW, 0);
+            gradient.addColorStop(0, 'rgba(99,102,241,0.9)');
+            gradient.addColorStop(0.5, 'rgba(139,92,246,0.9)');
+            gradient.addColorStop(1, 'rgba(16,185,129,0.9)');
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 2.5;
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(toX(points[0].timeIdx), toY(points[0].energy));
+            for (let i = 1; i < points.length; i++) {
+                const prev = points[i - 1];
+                const curr = points[i];
+                const mx = (toX(prev.timeIdx) + toX(curr.timeIdx)) / 2;
+                ctx.quadraticCurveTo(toX(prev.timeIdx), toY(prev.energy), mx, (toY(prev.energy) + toY(curr.energy)) / 2);
+            }
+            ctx.lineTo(toX(points[points.length - 1].timeIdx), toY(points[points.length - 1].energy));
+            ctx.stroke();
+
+            // Trajectory shadow / glow
+            ctx.strokeStyle = 'rgba(139,92,246,0.18)';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(toX(points[0].timeIdx), toY(points[0].energy));
+            for (let i = 1; i < points.length; i++) {
+                const prev = points[i - 1];
+                const curr = points[i];
+                const mx = (toX(prev.timeIdx) + toX(curr.timeIdx)) / 2;
+                ctx.quadraticCurveTo(toX(prev.timeIdx), toY(prev.energy), mx, (toY(prev.energy) + toY(curr.energy)) / 2);
+            }
+            ctx.lineTo(toX(points[points.length - 1].timeIdx), toY(points[points.length - 1].energy));
+            ctx.stroke();
+
+            // Data points
+            points.forEach((p, i) => {
+                const x = toX(p.timeIdx);
+                const y = toY(p.energy);
+                const isFirst = i === 0;
+                const isLast = i === points.length - 1;
+
+                ctx.beginPath();
+                ctx.arc(x, y, isFirst || isLast ? 6 : 4, 0, 2 * Math.PI);
+                ctx.fillStyle = isFirst ? '#6366f1' : isLast ? '#10b981' : '#8b5cf6';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+
+            // Legend
+            const legendY = PAD.top + 6;
+            const items = [
+                { color: '#6366f1', label: 'start' },
+                { color: '#8b5cf6', label: 'commit' },
+                { color: '#10b981', label: 'HEAD' },
+            ];
+            let lx = PAD.left + plotW - 20;
+            ctx.textAlign = 'right';
+            ctx.font = '12px Outfit, sans-serif';
+            items.slice().reverse().forEach(item => {
+                ctx.fillStyle = 'rgba(148,163,184,0.85)';
+                ctx.fillText(item.label, lx, legendY + 4);
+                lx -= ctx.measureText(item.label).width + 18;
+                ctx.beginPath();
+                ctx.arc(lx + 12, legendY, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = item.color;
+                ctx.fill();
+                lx -= 18;
+            });
         }
 
         // Render static UI

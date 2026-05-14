@@ -9,6 +9,7 @@ created: 2026-05-13
 last_updated: 2026-05-13
 parent: B-0401
 depends_on: [B-0434]
+children: [B-0495, B-0496]
 tags: [demo, hamiltonian, git, phase-space, alignment-ui, github-pages, html, js]
 type: feature
 ---
