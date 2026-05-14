@@ -255,7 +255,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0449](backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md)** bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)
 - [ ] **[B-0450](backlog/P1/B-0450-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 - [ ] **[B-0451](backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md)** Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts
-- [ ] **[B-0460](backlog/P1/B-0460-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
+- [ ] **[B-0463](backlog/P1/B-0463-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 
 ## P2 — research-grade
 
@@ -507,7 +507,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0456](backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md)** Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
 - [ ] **[B-0457](backlog/P2/B-0457-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
 - [ ] **[B-0458](backlog/P2/B-0458-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
-- [ ] **[B-0459](backlog/P2/B-0459-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
+- [ ] **[B-0462](backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
 
 ## P3 — convenience / deferred
 
