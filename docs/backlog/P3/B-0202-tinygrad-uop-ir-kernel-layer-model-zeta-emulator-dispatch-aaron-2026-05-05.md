@@ -303,7 +303,7 @@ hand-wave alignment.
 
 ## Acceptance criteria
 
-(a) **[DECOMPOSED to B-0352] Read the source + walk one rewrite manually + map to Zeta retract semantics.** Verifier: a memo (committed under
+(a) **[DECOMPOSED to B-0521] Read the source + walk one rewrite manually + map to Zeta retract semantics.** Verifier: a memo (committed under
 `docs/research/`) walking through one ALU rewrite from
 [`tinygrad/uop/ops.py`](https://github.com/tinygrad/tinygrad/blob/master/tinygrad/uop/ops.py)
 plus [`tinygrad/codegen/simplify.py`](https://github.com/tinygrad/tinygrad/blob/master/tinygrad/codegen/simplify.py)

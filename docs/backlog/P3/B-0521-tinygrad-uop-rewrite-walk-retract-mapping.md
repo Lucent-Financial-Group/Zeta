@@ -1,5 +1,5 @@
 ---
-id: B-0352
+id: B-0521
 priority: P3
 status: open
 title: Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from B-0202)
@@ -13,16 +13,16 @@ tags: [tinygrad, uop-ir, retract-semantics]
 type: task
 ---
 
-# B-0352 -- Tinygrad UOp rewrite walk + retract mapping
+# B-0521 -- Tinygrad UOp rewrite walk + retract mapping
 
 This row was decomposed from B-0202.
 
 ## Acceptance criteria
 
-**Read the source + walk one rewrite manually + map to Zeta retract semantics.** 
+**Read the source + walk one rewrite manually + map to Zeta retract semantics.**
 
-Verifier: a memo (committed under `docs/research/`) walking through one ALU rewrite from `tinygrad/uop/ops.py` plus `tinygrad/codegen/simplify.py` step-by-step, mapping the rewrite to the closest equivalent in Zeta's existing retract semantics. 
+Verifier: a memo (committed under `docs/research/`) walking through one ALU rewrite from `tinygrad/uop/ops.py` plus `tinygrad/codegen/simplify.py` step-by-step, mapping the rewrite to the closest equivalent in Zeta's existing retract semantics.
 
-Pass: the walk is concrete + cites specific line numbers in the tinygrad source. 
+Pass: the walk is concrete + cites specific line numbers in the tinygrad source.
 
 Fail-falsifier: the walk reveals that PatternMatcher rewrites are NOT referentially transparent in practice (e.g. depend on iteration order, hidden global state, undocumented mutation), invalidating the DST-safe initial answer.

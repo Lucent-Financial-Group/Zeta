@@ -647,6 +647,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0515](backlog/P3/B-0515-architecture-as-externalization-of-aarons-dialectical-perception-dashboard-target-shift-2026-05-14.md)** Architecture-as-externalization-of-Aaron's-dialectical-perception — dashboard acceptance criteria target shift
 - [ ] **[B-0517](backlog/P3/B-0517-memory-md-index-bloat-cleanup-cadence-2026-05-14.md)** MEMORY.md index bloat cleanup + entry-length enforcement cadence
 - [ ] **[B-0519](backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md)** Multi-Otto branch-state contamination — RCA + mechanization candidate
+- [ ] **[B-0521](backlog/P3/B-0521-tinygrad-uop-rewrite-walk-retract-mapping.md)** Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from B-0202)
 
 <!-- END AUTO-GENERATED -->
-- [ ] [B-0352](docs/backlog/P3/B-0352-tinygrad-uop-rewrite-walk-retract-mapping.md) - Decomposed: Tinygrad UOp rewrite walk + retract mapping
