@@ -68,14 +68,25 @@ function isListItemStart(line: string): boolean {
   // ordered-list item per the spec — markdownlint will not flag MD032
   // on a label preceding it, so neither should this helper (pre-CI
   // review P1 on PR #3075 round 8).
-  return /^ {0,3}([-+*]|\d{1,9}[.)])\s+/.test(line);
+  //
+  // Optional leading blockquote prefixes (`>` and `> >`...) are
+  // accepted so a list inside a blockquote (e.g. `> - item` or
+  // `> > 1) nested`) is still recognised as a list-item start.
+  // markdownlint MD032 enforces blanks around lists even inside
+  // blockquotes (pre-CI review P1 on PR #3075 round 9).
+  return /^ {0,3}(>\s?)*([-+*]|\d{1,9}[.)])\s+/.test(line);
 }
 
 /**
- * A line is "blank" if it contains only whitespace.
+ * A line is "blank" if it contains only whitespace, OR if it is a
+ * blockquoted blank line — a line whose only non-whitespace content
+ * is `>` markers (e.g., `>`, `> `, `>>`). Markdownlint treats such
+ * lines as the blockquote-equivalent of a blank line, so a list
+ * inside a blockquote can be properly preceded by a `>`-only line
+ * without firing MD032 (pre-CI review P1 on PR #3075 round 9).
  */
 function isBlank(line: string): boolean {
-  return /^\s*$/.test(line);
+  return /^\s*$/.test(line) || /^ {0,3}(>\s?)+$/.test(line);
 }
 
 /**

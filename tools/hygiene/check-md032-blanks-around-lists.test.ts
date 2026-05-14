@@ -266,6 +266,70 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 9", () => {
+  test("blockquoted list with label directly above IS flagged (pre-CI review P1 on PR #3075 round 9)", () => {
+    // markdownlint MD032 enforces blanks around lists even inside
+    // blockquotes. `> Label:` followed by `> - item` must fire.
+    const content = `# Title
+
+> Label:
+> - item one
+> - item two
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("blockquoted list preceded by blockquoted blank line is clean", () => {
+    // A `>` (or `> `) line is the blockquote-equivalent of a blank
+    // and properly separates the label from the list.
+    const content = `# Title
+
+> Label:
+>
+> - item one
+> - item two
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("blockquoted ordered-list (`> 1.` / `> 1)`) is detected", () => {
+    const content = `# Title
+
+> Steps:
+> 1) first
+> 2) second
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("nested blockquote list is detected", () => {
+    // Double-`>` prefix; same rule applies.
+    const content = `# Title
+
+> > Label:
+> > - nested item
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("blockquoted list starting after blank line is clean (control)", () => {
+    const content = `# Title
+
+> - item one
+> - item two
+
+More prose.
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+});
+
 describe("findMd032Violations — round 8", () => {
   test("lazy (unindented) continuation does not split the list (pre-CI review P1 on PR #3075 round 8)", () => {
     // CommonMark allows a list-item paragraph to span multiple lines
