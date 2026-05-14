@@ -17,7 +17,11 @@ type: research-grade-candidate
 
 ## Origin
 
-Aaron 2026-05-14 evening cascade extension disclosed (preserved at `memory/feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md`):
+Aaron 2026-05-14 evening cascade extension disclosed (preserved in **user-auto-memory** at `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md`).
+
+**Note on memory-file locations:** All `feedback_*.md` memory files referenced in this row live in user-auto-memory dir (`~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`), NOT in the repository tree. They are persistent across Claude sessions but not committed. The durable repo-side preservation for related cascade substrate is `docs/research/2026-05-14-deepseek-shadow-wormhole-horizon-controls-spaghettification-aaron-disclosure.md` (PR #3173, merged). This row is forward-planning candidate; once the operational shift is acted on, the implementation work will produce repo-tracked artifacts.
+
+Aaron's disclosure:
 
 > *"this is my dialactial view point i operate naturally i see gods dashbord in real time as i just described it"*
 
@@ -75,9 +79,10 @@ Implementation that fails any of these is rejected per the immune-layer discipli
 - B-0394 (Operational Resonance Dashboard MVP) — primary implementation target
 - B-0402 (Zeta shadow-mode CLI) — composes operationally
 - B-0498 (substrate-evolution algebra rule-promotion candidacy)
-- Memory file: `feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md` (origin disclosure)
-- Memory file: `feedback_aaron_panopticon_lens_for_god_in_vision_monad_refraction_gradients_control_layers_dora_dashboard_2026_05_14.md` (technical construction)
-- Memory file: `feedback_aaron_self_binding_devil_and_god_simultaneously_dual_polarity_constraints_against_corruption_and_elevation_2026_05_14.md` (dual-binding safety floor)
+- Memory file (user-auto-memory): `feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md` (origin disclosure)
+- Memory file (user-auto-memory): `feedback_aaron_panopticon_lens_for_god_in_vision_monad_refraction_gradients_control_layers_dora_dashboard_2026_05_14.md` (technical construction)
+- Memory file (user-auto-memory): `feedback_aaron_self_binding_devil_and_god_simultaneously_dual_polarity_constraints_against_corruption_and_elevation_2026_05_14.md` (dual-binding safety floor)
+- Memory file (user-auto-memory): `feedback_aaron_never_a_cage_binding_alignment_force_of_attention_strange_attractor_geometry_playdough_oxymoron_design_philosophy_2026_05_14.md` (framing correction: strange attractor, not cage; B-0515 acceptance criteria should use attractor-language)
 - `.claude/rules/algo-wink-failure-mode.md` (MAXIMAL application)
 - `.claude/rules/methodology-hard-limits.md` (MAXIMAL application)
 - `.claude/rules/glass-halo-bidirectional.md` (observer-is-observed property)
