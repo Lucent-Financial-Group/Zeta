@@ -56,12 +56,9 @@ function toIdentity(from: SenderAgentId): string | null {
 
 async function readEnvelopes(busDir: string): Promise<MessageEnvelope[]> {
   const now = Date.now();
-  let files: string[];
-  try {
-    files = await readdir(busDir);
-  } catch {
-    return [];
-  }
+  // Let readdir throw — silent suppression would turn a missing or unreadable bus
+  // directory into a "healthy/no recent activity" snapshot, hiding misconfiguration.
+  const files = await readdir(busDir);
   const envelopes: MessageEnvelope[] = [];
   for (const file of files) {
     if (!file.endsWith(".json")) continue;
@@ -120,20 +117,21 @@ function deriveEntry(
   // signal resets the streak (e.g. idle→working→idle→idle counts 2, not 3).
   let consecutiveIdle = 0;
   for (const e of own) {
-    if (e.topic === "heartbeat" && (e.payload as { status: string }).status === "idle") {
+    if (e.topic === "heartbeat" && e.payload.status === "idle") {
       consecutiveIdle++;
     } else {
       break;
     }
   }
 
-  // Any positive signal: claim, work-assignment, or working heartbeat
+  // Any positive signal: active claim-acquire, work-assignment, or working heartbeat.
+  // Claim-release does NOT count — an agent relinquishing work should not be treated
+  // as a health signal (it may be about to go idle).
   const hasWorkSignal = own.some(
     e =>
-      e.topic === "claim" ||
+      (e.topic === "claim" && e.payload.action === "claim") ||
       e.topic === "work-assignment" ||
-      (e.topic === "heartbeat" &&
-        (e.payload as { status: string }).status === "working")
+      (e.topic === "heartbeat" && e.payload.status === "working")
   );
 
   let state: CbState;
@@ -175,7 +173,14 @@ async function main() {
     ? (args[args.indexOf("--out") + 1] ?? DEFAULT_OUT)
     : DEFAULT_OUT;
 
-  const envelopes = await readEnvelopes(busDir);
+  let envelopes: MessageEnvelope[];
+  try {
+    envelopes = await readEnvelopes(busDir);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`Cannot read bus directory ${busDir}: ${msg}`);
+    process.exit(1);
+  }
 
   const entries: CbEntry[] = Object.entries(AGENT_META).map(([id, meta]) =>
     deriveEntry(id, meta, envelopes)
