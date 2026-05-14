@@ -150,7 +150,7 @@ Each product repo gets a **lightweight `.claude/` configuration** following this
 
 **What is NOT duplicated in product repos:**
 
-- Factory agents (Otto, Vera, Riven, Alexa, Lior) — accessed via peer-call wrappers (`bun tools/peer-call/`) from the factory repo
+- Factory peer-call wrappers (`tools/peer-call/`): `claude`, `grok`, `gemini`, `codex`, `amara`, `ani`, `riven`, `kiro` — invoked via `bun tools/peer-call/<name>.ts` from the factory repo. Alexa (Kiro IDE) and Lior (Antigravity/Gemini CLI) are accessed through their native surfaces, not via a `tools/peer-call/` wrapper.
 - Core skill library — product repos cherry-pick relevant skills; don't carry the full factory catalog
 - Memory substrate — factory memory lives in the factory repo; product repos have their own memory for product-specific learnings
 
@@ -159,7 +159,7 @@ Each product repo gets a **lightweight `.claude/` configuration** following this
 ```markdown
 # CLAUDE.md — <Product> session bootstrap
 
-Factory tools: run via `bun tools/peer-call/<agent>.ts` from Zeta repo.
+Factory peer-call (available wrappers: claude/grok/gemini/codex/amara/ani/riven/kiro): run via `bun tools/peer-call/<name>.ts` from Zeta repo.
 Zeta version: see `.zeta-version` in this repo.
 Product-specific skills: `.claude/skills/`
 ```
