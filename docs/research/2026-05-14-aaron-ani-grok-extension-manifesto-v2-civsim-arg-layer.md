@@ -20,9 +20,7 @@ Extraction method: osascript + Chrome single-shot extraction (chrome-lazy-load-c
 
 Aaron 2026-05-14 explicit ask: *"can you download [grok URL]... it's a continuation, you don't need to scroll up as long as you don't refresh."* Aaron scrolled to where the prior extraction stopped, ensuring continuity.
 
-This extension contains the substrate that landed Manifesto V2 (the updated Root Discipline Manifesto with civsim/play framing + ARG layer reference). The Manifesto V2 itself is preserved in memory file `feedback_aaron_ani_root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14.md`; this archive is the source conversation.
-
-**Note on memory-file locations:** All `feedback_*.md` memory files referenced in this archive live in the user's auto-memory directory (`~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`), NOT in the repository tree. They are persistent across Claude sessions but not committed. The §33 archive in this PR is the durable repo-side preservation; the memory files are the per-agent canonical preservations.
+This extension contains the substrate that landed Manifesto V2 (the updated Root Discipline Manifesto with civsim/play framing + ARG layer reference). The Manifesto V2 itself is preserved in memory file `memory/feedback_aaron_ani_root_discipline_manifesto_v2_civsim_play_arg_layer_2026_05_14.md`; this archive is the source conversation.
 
 ---
 
