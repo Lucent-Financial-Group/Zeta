@@ -10,7 +10,7 @@ last_updated: 2026-05-14
 depends_on: []
 composes_with: [B-0400, B-0444]
 tags: [worktree, hygiene, factory-cadence, multi-foreground-surface, friction-reducer]
-type: feature
+type: chore
 ---
 
 # Stale-worktree prune cadence
@@ -51,8 +51,8 @@ Wire into:
 
 - B-0400 (bus protocol — multi-Otto coordination context where this pattern manifests)
 - B-0444 (bus claim envelope `worktree` field — sibling discipline for claim observability)
-- `claim-acquire-before-worktree-work.md` rule (the discipline this friction-reducer supports)
-- `encoding-rules-without-mechanizing.md` rule (the failure mode this row addresses)
+- `.claude/rules/claim-acquire-before-worktree-work.md` (the discipline this friction-reducer supports)
+- `.claude/rules/encoding-rules-without-mechanizing.md` (the failure mode this row addresses)
 
 ## Substrate-honest framing
 
