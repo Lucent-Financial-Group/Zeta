@@ -10,6 +10,7 @@ last_updated: 2026-05-14
 depends_on: [B-0400]
 composes_with: [B-0402, B-0441, B-0442]
 children: [B-0459, B-0497]
+decomposition: decomposed
 tags: [multi-agent, background-service, bus, mechanization, infinite-backlog, standing-by, anti-idle]
 type: feature
 ---
@@ -39,19 +40,19 @@ per `.claude/rules/encoding-rules-without-mechanizing.md`:
 
 ## Acceptance criteria
 
-- [ ] Background service `tools/bg/standing-by-detector.ts` exists
+- [x] Background service `tools/bg/standing-by-detector.ts` exists
 - [ ] Service runs under existing launchd / cron infrastructure
-- [ ] Polls agent's recent commit history every N minutes (configurable)
-- [ ] Detects "Standing-by" pattern: no new commits + no PRs opened/closed
+- [x] Polls agent's recent commit history every N minutes (configurable)
+- [x] Detects "Standing-by" pattern: no new commits + no PRs opened/closed
       in last 15min while autonomous-loop cron is firing
-- [ ] On detection, publishes nudge message via bus (B-0400):
+- [x] On detection, publishes nudge message via bus (B-0400):
       `{ topic: "infinite-backlog-nudge", to: <agent>,
          payload: { "Standing-by detected for N min; backlog has X open
          rows; suggested decomposition target: B-NNNN" } }`
 - [ ] Optional: proactively assigns a small claim from the backlog to
       the agent's queue
-- [ ] Tests cover the detection heuristics (DST-replayable)
-- [ ] Documented in `docs/AUTONOMOUS-LOOP.md` as background-services
+- [x] Tests cover the detection heuristics (DST-replayable)
+- [x] Documented in `docs/AUTONOMOUS-LOOP.md` as background-services
       layer
 
 ## Design sketch

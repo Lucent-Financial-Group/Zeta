@@ -58,9 +58,13 @@ This slice implements the handler that reads and acts on that envelope.
   - Reads each matching envelope from the bus dir (honors `ZETA_BUS_DIR`)
   - Logs envelope content (topic, idleMinutes, rationale) to the current tick shard
   - Marks envelope as consumed via `seen.json` per `subscribeOnce` contract
-  - Takes no further action in this slice (full backlog-grind trigger is slice 5.2)
+  - Triggers decomposition or backlog-grind action: inspects envelope payload and
+    queues speculative work in step 3 (pick speculative work) of the same tick
+    (per B-0449 §"Option C" design: subscriber wires into step 1 and queues into step 3)
 - [ ] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
-      `subscribeOnce("infinite-backlog-nudge", handler)` after `git fetch` + `gh poll-pr-gate`
+      `subscribeOnce("infinite-backlog-nudge", handler)` after
+      `bun tools/github/poll-pr-gate-batch.ts --all-open` + `git fetch origin main`
+      (matching the current step-1 order: poll-pr-gate-batch first, then git fetch)
 - [ ] Unit tests for handler: DST-replayable with fake bus dir + injected envelopes
   - Test: envelope present → logged, consumed, no error
   - Test: no envelope → no-op, no error
@@ -69,12 +73,15 @@ This slice implements the handler that reads and acts on that envelope.
 
 ## Scope clarification (what is NOT in scope)
 
-Per B-0449 design, this slice delivers **stub behavior only**:
-> Per-topic handlers are STUBS in this slice — they log envelope to tick shard but take no action.
+Per B-0449's Option C design, B-0449 itself delivers **no-action stub handlers** (log + consume
+only). B-0459 is the follow-up that **fleshes out** the `infinite-backlog-nudge` handler to
+trigger decomposition or backlog-grind action (per B-0449 §"Subsequent slices flesh out:
+`infinite-backlog-nudge` handler → triggers decomposition or backlog grind (slice 5.1)").
 
 The Optional AC in B-0440 ("proactively assigns a small claim from the backlog to the agent's queue")
-requires interpreting the envelope and taking backlog-grind action. That is slice 5.2 — a separate
-follow-up row after this stub lands and proves stable.
+is a **proxy-pick** behavior: reading the envelope's suggested target row and queuing it for the
+tick's step 3. That is the deliverable of this slice. A separate follow-up row (slice 5.2) would
+handle more complex strategies (e.g., decomposing a large item rather than picking a leaf row).
 
 ## Dependency chain
 
@@ -97,5 +104,5 @@ B-0400 (bus protocol)
 ## Pre-start checklist (per backlog-item-start-gate)
 
 - [ ] Prior-art search: verify B-0449 has landed `tools/bus/subscribe.ts` before starting
-- [ ] Dependency check: `grep -q "^status: done" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: done` (merged)
+- [ ] Dependency check: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: closed` (merged)
 - [ ] Search committed memory for `infinite-backlog-nudge handler` to find any prior implementation
