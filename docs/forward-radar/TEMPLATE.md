@@ -1,10 +1,11 @@
 # Forward-Radar Memo Template
 
-> **PM-2 / Mira** — proactive product-discovery output surface.
+> **PM-2 role** — proactive product-discovery output surface.
 > One memo per research cycle (default: weekly, Sundays UTC).
 > Distinct from `docs/ROUND-HISTORY` (backward look) and
 > `docs/backlog/` rows (atomic work items). The memo is a
 > _forward look_ — what is coming, not what shipped.
+> The persona-to-role mapping lives in `docs/EXPERT-REGISTRY.md`.
 
 ---
 
@@ -14,7 +15,7 @@
 id: FR-YYYY-MM-DD
 period-start: YYYY-MM-DD
 period-end: YYYY-MM-DD
-author: pm2 (Mira)
+author: pm2
 signal-sources: [list below]
 predicted-gaps-filed: [B-NNNN, ...]
 tech-radar-changes: [list below]
@@ -48,7 +49,7 @@ List every surface consulted this cycle. Mark each as:
 ## 2 · Predicted feature gaps
 
 _One sub-section per predicted gap. File a `B-NNNN` row immediately;
-link it here. Mira predicts, Otto delivers — keep these rows short
+link it here. PM-2 predicts, PM-1 delivers — keep these rows short
 and buildable._
 
 ### Gap N — [Short gap name]

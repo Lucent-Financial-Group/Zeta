@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: Product Manager (PM-2) role — research-to-predict-features-before-friction
 created: 2026-05-01
-last_updated: 2026-05-02
+last_updated: 2026-05-13
 decomposition: decomposed
 children: [B-0270, B-0271]
 depends_on: []
@@ -16,6 +16,7 @@ type: friction-reducer
 ## Pre-start checklist (2026-05-13)
 
 **Prior-art search:**
+
 - `.claude/skills/product-manager/SKILL.md` — exists (B-0270 closed) ✅
 - `.claude/agents/pm2.md` — exists, persona Mira (B-0270 closed) ✅
 - `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` — first research pass (B-0271 closed) ✅
@@ -23,11 +24,13 @@ type: friction-reducer
 - `docs/forward-radar/` — directory missing ❌ → this slice creates TEMPLATE.md + calibration.md
 
 **Dependency check:**
+
 - B-0270 (closed): skill + agent ✅
 - B-0271 (closed): first research pass ✅
 - `depends_on: []` — no blockers
 
 **Remaining open acceptance criteria addressed by this slice:**
+
 - AC 1: EXPERT-REGISTRY.md row for Mira (PM-2)
 - AC 3: `docs/forward-radar/TEMPLATE.md`
 - AC 5: `docs/forward-radar/calibration.md`
