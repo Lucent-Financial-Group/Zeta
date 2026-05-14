@@ -111,6 +111,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0246](backlog/P1/B-0246-green-lantern-ring-iot-device-genesis-seed-local-inference-2026-05-07.md)** Green Lantern ring — IoT wearable running Genesis Seed with local inference + consent gating
 - [ ] **[B-0247](backlog/P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** Ace DLC content packs — distributable kernel extensions via package manager
 - [ ] **[B-0248](backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md)** Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool
+- [ ] **[B-0248.1](backlog/P1/B-0248.1-maintainer-fork-onboarding.md)** Multi-site fork — maintainer fork onboarding and mirror-sync setup for Addison and Max
 - [ ] **[B-0250](backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md)** Coincidence detection as Rx join — DORA mechanism for detecting correlated events across trajectories
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
 - [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
@@ -263,6 +264,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0451](backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md)** Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts
 - [ ] **[B-0459](backlog/P1/B-0459-b0440-slice-5-infinite-backlog-nudge-handler-2026-05-14.md)** B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler (standing-by failure-mode closer)
 - [ ] **[B-0460](backlog/P1/B-0460-b0441-slice-5-2-work-assignment-subscriber-handler-2026-05-14.md)** B-0441 slice 5.2 — work-assignment subscriber handler (agent-side claim-and-act)
+- [ ] **[B-0461](backlog/P1/B-0461-b0442-slice-5-3-missed-substrate-cascade-handler-2026-05-14.md)** B-0442 slice 5.3 — missed-substrate-cascade subscriber handler (branch-vs-merged-PR drift closer)
 - [ ] **[B-0463](backlog/P1/B-0463-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [x] **[B-0464](backlog/P1/B-0464-product-repo-honor-system-license-language-draft-2026-05-14.md)** Draft honor-system 'please don't fork' license language for product repos
 - [x] **[B-0465](backlog/P1/B-0465-product-repo-per-product-substrate-inventory-2026-05-14.md)** Per-product substrate inventory — 7 product candidates; repo-ready evaluation
