@@ -51,6 +51,37 @@ Vera-Codex, Riven-Cursor, Lior-Antigravity, Alexa-Kiro).
   Aaron's messages (these are conversation-driven, not backlog-driven)
 - Hot fixes to broken main / rollback PRs (urgency > coordination)
 
+## Worktree force-remove guard
+
+When `git checkout <branch>` or `git worktree add ... <branch>` fails with
+`fatal: '<branch>' is already used by worktree at '<path>'`, do NOT
+`git worktree remove --force <path>` to take over peer Otto's worktree.
+That path is operational state — even if the directory looks stale, peer
+Otto may be mid-edit. Instead:
+
+1. **Create a new worktree at a different path** for your branch-related
+   work. Use a distinct task-tagged path (e.g., `/tmp/zeta-3153-find-fix`
+   for thread-investigation; `/private/tmp/zeta-otto-desktop-claim-extend`
+   for rule edits) so the two worktrees don't collide.
+
+2. **If peer Otto's branch needs your attention** (e.g., review-thread
+   resolution under the DOES-NOT-APPLY clause above), you can do that
+   work via `gh api` mutations + GraphQL — no checkout required.
+
+3. **If you truly need to checkout peer Otto's branch** (rare), check
+   the bus for a claim on that branch first, post a `worktree-handoff`
+   advisory envelope, and wait for peer-Otto-side release before
+   force-removing.
+
+Empirical anchor: 2026-05-14T18:13Z Otto-CLI tick shard
+([docs/hygiene-history/ticks/2026/05/14/1813Z.md](../../docs/hygiene-history/ticks/2026/05/14/1813Z.md))
+documents force-remove of Otto-Desktop's `/private/tmp/zeta-otto-id-alloc`
+worktree (on PR #3153 branch) to resolve a Codex thread. Worked, but
+substrate-honest: a fresh worktree at `/tmp/zeta-3153-find-fix` would
+have been equally effective and non-destructive. The PR-thread-resolution
+DOES-NOT-APPLY clause covered the WHY of the action; it did not cover
+the HOW.
+
 ## Composes with other rules
 
 - `.claude/rules/backlog-item-start-gate.md` — already mandates prior-art
