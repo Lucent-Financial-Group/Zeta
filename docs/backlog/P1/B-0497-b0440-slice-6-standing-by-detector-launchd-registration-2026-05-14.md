@@ -64,7 +64,7 @@ This slice closes that gap for the standing-by-detector specifically.
 <dict>
     <key>Label</key><string>com.zeta.standing-by-detector</string>
     <!-- Maintainer-only artifact: paths are machine-specific (/Users/acehack, /opt/homebrew).
-         Run tools/setup/install-launchd-services.sh to regenerate with local paths. -->
+         Update these paths manually for your local machine before running `launchctl load`. -->
     <key>ProgramArguments</key><array>
         <string>/opt/homebrew/bin/bun</string>
         <string>/Users/acehack/Documents/src/repos/Zeta/tools/bg/standing-by-detector.ts</string>
