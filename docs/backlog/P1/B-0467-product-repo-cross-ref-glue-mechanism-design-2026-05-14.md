@@ -6,6 +6,7 @@ title: "Product-repo cross-ref glue mechanism design — how product repos refer
 type: design
 origin: B-0425 decomposition (Otto 2026-05-14)
 created: 2026-05-14
+last_updated: 2026-05-14
 depends_on:
   - B-0465
   - B-0424

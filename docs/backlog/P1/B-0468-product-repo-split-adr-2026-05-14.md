@@ -6,6 +6,7 @@ title: "ADR — product-repo split decisions; closes B-0425"
 type: design
 origin: B-0425 decomposition (Otto 2026-05-14)
 created: 2026-05-14
+last_updated: 2026-05-14
 depends_on:
   - B-0464
   - B-0465

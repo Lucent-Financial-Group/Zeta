@@ -6,6 +6,7 @@ title: "Per-product substrate inventory — 7 product candidates; repo-ready eva
 type: research
 origin: B-0425 decomposition (Otto 2026-05-14)
 created: 2026-05-14
+last_updated: 2026-05-14
 depends_on: []
 composes_with:
   - B-0425
