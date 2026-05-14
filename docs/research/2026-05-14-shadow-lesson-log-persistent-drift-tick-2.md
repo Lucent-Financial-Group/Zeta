@@ -9,5 +9,5 @@ Antigravity check execution on 2026-05-14.
 
 ## Anti-Gravity Assessment
 Nodes must not rely on human intervention to clean up dirty trees or unblock capacity.
-- Riven requires an explicit auto-heal step (`git reset --hard && git clean -fd`) when blocked by a dirty tree for more than 1 tick.
+- Riven requires an explicit auto-heal step when blocked by a dirty tree for more than 1 tick. **Safety guard**: `git reset --hard && git clean -fd` is only safe in a disposable, claim-acquired worktree where no intended local changes exist. The preferred recovery path is to delete and recreate the worktree rather than hard-resetting an active shared workspace. Autonomous agents must verify the worktree is ephemeral and contains no intended uncommitted work before running destructive git operations.
 - Vera requires a mechanism to dynamically bypass capacity limits for non-overlapping or read-only work, or must decompose existing PRs.
