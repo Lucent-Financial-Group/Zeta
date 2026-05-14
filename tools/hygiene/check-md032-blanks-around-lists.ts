@@ -207,7 +207,15 @@ function fenceInfo(line: string): { char: "`" | "~"; len: number; closer: boolea
   // like `> \`\`\`` containing `> - item` would be reported as MD032
   // even though markdownlint treats it as fenced code (pre-CI review
   // P1 on PR #3075 round 12).
-  const m = line.match(/^ {0,3}(?:>\s?)*(`{3,}|~{3,})(.*)$/);
+  // Same blockquote-prefix structure as `isListItemStart`: optional
+  // blockquote chain (each `>` with 0-1 space) followed by 0-3 spaces
+  // of content indentation, then the fence run. Without the inner
+  // indent slot, `>  \`\`\`` (a fence-opener in a blockquote whose
+  // content is indented 1-2 spaces) was not recognised, and the
+  // helper treated inner `> - item` lines as real lists (pre-CI
+  // review P2 on PR #3075 round 17 refining the round-12 blockquote-
+  // fence support).
+  const m = line.match(/^ {0,3}(?:(?:>[ \t]?)+ {0,3})?(`{3,}|~{3,})(.*)$/);
   if (!m) return null;
   const run = m[1] ?? "";
   const tail = m[2] ?? "";

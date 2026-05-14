@@ -278,6 +278,24 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 17", () => {
+  test("blockquoted fence with content-indent is recognised as a fence (pre-CI review P2 on PR #3075 round 17)", () => {
+    // \`>  \\\`\\\`\\\`\` (blockquote marker + 2-space content indent +
+    // fence) is a valid blockquoted fenced code block per CommonMark.
+    // Previous regex only allowed `>\\s?` between blockquote and
+    // fence and missed these; the helper then treated inner
+    // `> - item` lines as real lists.
+    const content = `# Title
+
+>  \`\`\`
+> Label:
+> - inside the fence, not a list
+>  \`\`\`
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+});
+
 describe("findMd032Violations — round 16", () => {
   test("after-list MD032: list directly followed by heading fires on heading line (pre-CI review P1 on PR #3075 round 16)", () => {
     // The list at line 3 isn't followed by a blank; the heading at
