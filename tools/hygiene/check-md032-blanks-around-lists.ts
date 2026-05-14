@@ -167,7 +167,28 @@ function isThematicBreak(line: string): boolean {
  * one fires (pre-CI review P1 on PR #3075 round 15).
  */
 function isBlockquoteLine(line: string): boolean {
-  return /^ {0,3}>/.test(line);
+  // Match top-level blockquote only — indent 0-1 spaces. CommonMark
+  // allows 0-3 leading spaces for top-level block starts in general,
+  // but list-item continuation indent is typically 2 spaces (for
+  // `- item` or `* item`), so a `>` at 2-3 leading spaces is usually
+  // a child block inside the enclosing list-item body. The 0-1 cap
+  // is the practical heuristic that distinguishes the two:
+  //
+  //   - top bullet
+  //     > 2-space-indented quote (CHILD: list continues)
+  //   - sibling bullet
+  //
+  //   - top bullet
+  //    > 1-space-indented quote (TOP-LEVEL: terminates list)
+  //   - new list
+  //
+  // The earlier `^ {0,3}>` matched both cases as top-level and
+  // produced false positives on real content (PR #3075 0645Z.md
+  // follow-up); the earlier post-fix `^>` matched neither indent
+  // case and regressed Copilot's `- a / ` `> quote` (one-space-
+  // indented top-level) case. `^ {0,1}>` is the calibration that
+  // matches Copilot + Codex round-20 input shapes.
+  return /^ {0,1}>/.test(line);
 }
 
 /**

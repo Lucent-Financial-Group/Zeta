@@ -278,6 +278,57 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 20 (post-merge follow-up)", () => {
+  test("indented blockquote inside a list-item body does NOT terminate the list (PR #3075 follow-up false-positive fix)", () => {
+    // The round-15 + round-16 fixes (blockquote-line terminates a
+    // top-level list, with after-list MD032 firing) over-fired on
+    // an indented `>` line that's the body of a list-item. Found
+    // on `docs/hygiene-history/ticks/2026/05/13/0645Z.md` after
+    // PR #3075 merged. Fix: only column-0 `>` lines terminate the
+    // surrounding list — indented `>` is list-item-body content.
+    const content = `# Title
+
+- first bullet
+- second bullet describes a thing
+  > the thing's exact quoted words
+- third bullet
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("1-space-indented blockquote between bullets still terminates (CommonMark top-level)", () => {
+    // Per CommonMark, a `>` at indent 0-3 is a top-level blockquote;
+    // the round-20 heuristic caps at 0-1 (because 2+ is list-item
+    // continuation indent in most cases). A 1-space-indented `>`
+    // after a bullet is top-level and terminates the list.
+    const content = `# Title
+
+- item a
+ > 1-space-indented blockquote (still top-level)
+- item b
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4);
+    expect(findings[1]?.line).toBe(5);
+  });
+
+  test("column-0 blockquote between bullets still terminates (control)", () => {
+    // Regression-guard: the round-15/16 behavior for top-level
+    // blockquote-after-list is preserved.
+    const content = `# Title
+
+- item a
+> a quoted line at column 0
+- item b
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4);
+    expect(findings[1]?.line).toBe(5);
+  });
+});
+
 describe("findMd032Violations — round 19", () => {
   test("HTML comment regions are skipped (pre-CI review P2 on PR #3075 round 19)", () => {
     // A multi-line HTML comment with a commented-out MD032 example
