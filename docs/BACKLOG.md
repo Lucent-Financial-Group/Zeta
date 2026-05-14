@@ -54,7 +54,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 - [x] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 - [x] **[B-0144](backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md)** Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
-- [ ] **[B-0145](backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md)** Product Manager (PM-2) role — research-to-predict-features-before-friction
+- [x] **[B-0145](backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md)** Product Manager (PM-2) role — research-to-predict-features-before-friction
 - [ ] **[B-0154](backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md)** GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)
 - [ ] **[B-0155](backlog/P1/B-0155-github-settings-ruleset-split-git-native-preferred-aaron-2026-05-01.md)** GitHub settings refactor — split single ruleset into multiple smaller always-on rulesets, prefer git-native over legacy UI/CLI-only settings (Aaron 2026-05-01)
 - [ ] **[B-0156](backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md)** TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
@@ -113,8 +113,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
 - [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
 - [ ] **[B-0256](backlog/P1/B-0256-model-recursion-exploit-class-metasploit-ida-pro-mapping-2026-05-07.md)** Model recursion exploit class — Metasploit/IDA Pro mapping for AI models
-- [ ] **[B-0257](backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md)** MEMORY.md marker-vs-index - harness contract verification and evidence
-- [ ] **[B-0258](backlog/P1/B-0258-memory-md-index-generator-implementation-2026-05-08.md)** MEMORY.md marker-vs-index - index generator implementation
+- [x] **[B-0257](backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md)** MEMORY.md marker-vs-index - harness contract verification and evidence
+- [x] **[B-0258](backlog/P1/B-0258-memory-md-index-generator-implementation-2026-05-08.md)** MEMORY.md marker-vs-index - index generator implementation
 - [ ] **[B-0259](backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md)** MEMORY.md marker-vs-index - hook and CI drift enforcement
 - [ ] **[B-0260](backlog/P1/B-0260-memory-md-cutover-and-parity-validation-2026-05-08.md)** MEMORY.md marker-vs-index - cutover and parity validation
 - [ ] **[B-0261](backlog/P1/B-0261-memory-md-q1-autodream-automemory-compatibility-validation-2026-05-08.md)** MEMORY.md marker-vs-index - Q1 AutoDream/AutoMemory compatibility validation

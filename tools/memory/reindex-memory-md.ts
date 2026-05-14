@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * B-0423: Reindex memory/MEMORY.md from the memory/ heap.
+ * B-0258 / B-0423: Reindex memory/MEMORY.md from the memory/ heap.
  *
  * Architectural fix for the MEMORY.md serialization-point
  * anti-pattern (B-0423). Reads frontmatter from every
@@ -12,12 +12,44 @@
  * Anthropic's base AutoDream allows.
  *
  * Usage:
- *   bun tools/memory/reindex-memory-md.ts            # write
- *   bun tools/memory/reindex-memory-md.ts --check    # dry-run
+ *   bun tools/memory/reindex-memory-md.ts            # write MEMORY.md
+ *   bun tools/memory/reindex-memory-md.ts --check    # dry-run; exit 2 if stale
  *
  * Heap-state-acceptable: memory files commit with frontmatter
  * but do NOT require synchronous MEMORY.md paired-edit. This
  * reindexer catches them up to the stack on cadence.
+ *
+ * ## Ordering
+ *
+ * Entries are sorted descending by the `created` YAML frontmatter
+ * field (ISO date, e.g. `2026-05-14`). When `created` is absent the
+ * date is extracted from the filename via the pattern YYYY-MM-DD or
+ * YYYY_MM_DD; files with no parseable date sort to `0000-00-00` and
+ * appear at the bottom. Ties between entries sharing the same date
+ * are broken by lexicographic filename order (readdir order within a
+ * date bucket).
+ *
+ * ## Formatting
+ *
+ * Each entry renders as a single Markdown list item:
+ *
+ *   - [**<name>**](<filename>) — <description>
+ *
+ * `name` comes from the `name` frontmatter field; falls back to the
+ * filename stem when absent. `description` comes from the
+ * `description` frontmatter field (truncated to 240 characters with
+ * a trailing "…" when longer). The index is capped at
+ * MAX_STACK_ENTRIES (100) most-recent entries; an overflow note is
+ * appended when additional files exist.
+ *
+ * ## Stability
+ *
+ * Repeated runs with no source-file changes produce byte-for-byte
+ * identical output within a calendar day (the "Last reindex" date
+ * is the only field that advances, and only across day boundaries).
+ * The `--check` flag exits 0 when the on-disk MEMORY.md matches the
+ * generated output, 2 when stale — suitable for CI or loop health
+ * checks.
  */
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
@@ -104,7 +136,10 @@ async function collectEntries(dir?: string): Promise<MemoryEntry[]> {
     const date = fm.created || dateFromFilename(filename);
     entries.push({ filename, fm, date, mtime: 0 });
   }
-  entries.sort((a, b) => b.date.localeCompare(a.date));
+  entries.sort((a, b) => {
+    const dateCmp = b.date.localeCompare(a.date);
+    return dateCmp !== 0 ? dateCmp : a.filename.localeCompare(b.filename);
+  });
   return entries;
 }
 
