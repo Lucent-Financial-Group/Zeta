@@ -6,7 +6,7 @@ title: "Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with N
 created: 2026-05-10
 last_updated: 2026-05-10
 closed: 2026-05-10
-closed_by: PR #2391
+closed_by: "PR #2391"
 depends_on: []
 composes_with: [B-0367]
 classification: buildable-now
