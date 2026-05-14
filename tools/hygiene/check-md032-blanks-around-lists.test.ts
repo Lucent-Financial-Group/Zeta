@@ -278,6 +278,73 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 15", () => {
+  test("thematic break (`---`) between two lists terminates the first list (pre-CI review P1 on PR #3075 round 15)", () => {
+    const content = `# Title
+
+- item a
+---
+- item b
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(5); // "- item b"
+  });
+
+  test("thematic break with asterisks (`***`) also terminates", () => {
+    const content = `# Title
+
+- item a
+***
+- item b
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(5);
+  });
+
+  test("blockquote line after a top-level list terminates the list", () => {
+    // \`- a / > quote / - b\` — the blockquote opens a new block, the
+    // top-level list ends, the new bullet needs a blank line.
+    const content = `# Title
+
+- item a
+> a quoted line that opens a new blockquote
+- item b
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(5);
+  });
+
+  test("blockquote continuation does NOT terminate a blockquoted list (control)", () => {
+    // \`> - a / > continued text / > - b\` — the second bullet is a
+    // sibling of the same blockquoted list; the \`>\` line is a
+    // continuation, not a block-terminator.
+    const content = `# Title
+
+> - blockquoted item a
+> continued text wraps inside the quote
+> - blockquoted item b
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("`---` after a list-item line that ends in `-` is still a thematic break", () => {
+    // Regression-guard: \`---\` is a thematic break per CommonMark
+    // even though it looks like three list-marker characters (the
+    // isListItemStart regex requires whitespace after the marker).
+    const content = `# Title
+
+- a
+---
+
+More prose.
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+});
+
 describe("findMd032Violations — round 14", () => {
   test("blockquote marker with multiple spaces before list marker is detected (pre-CI review P1 on PR #3075 round 14)", () => {
     // CommonMark allows multiple spaces after `>`; `>   - item` is a

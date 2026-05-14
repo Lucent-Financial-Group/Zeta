@@ -115,6 +115,36 @@ function isHeading(line: string): boolean {
 }
 
 /**
+ * CommonMark thematic break: a line containing only 3+ matching
+ * `-`/`*`/`_` characters with optional spaces (indented up to 3
+ * spaces). Thematic breaks are list-block terminators per
+ * CommonMark — `- a / --- / - b` is a list, a thematic break, then
+ * a NEW list (pre-CI review P1 on PR #3075 round 15).
+ *
+ * Note: `---` is parsed as a thematic break, not as a list item,
+ * because `isListItemStart` requires trailing whitespace + content
+ * (the marker must be followed by a list-item body).
+ */
+function isThematicBreak(line: string): boolean {
+  const trimmed = line.replace(/^ {0,3}/, "");
+  return /^(\*[ \t]*){3,}$/.test(trimmed)
+    || /^(-[ \t]*){3,}$/.test(trimmed)
+    || /^(_[ \t]*){3,}$/.test(trimmed);
+}
+
+/**
+ * Detect a line that starts a blockquote (any line whose first
+ * non-whitespace char is `>`). Used to terminate a TOP-LEVEL list
+ * when a blockquote appears after it. A blockquote-prefixed line
+ * that itself opens a blockquoted list-item / heading / fence /
+ * blank is handled by the respective specific check before this
+ * one fires (pre-CI review P1 on PR #3075 round 15).
+ */
+function isBlockquoteLine(line: string): boolean {
+  return /^ {0,3}>/.test(line);
+}
+
+/**
  * A line is "list-friendly leading" if it can come right before a list
  * without an intervening blank. Two valid cases:
  *
@@ -197,11 +227,17 @@ export function findMd032Violations(content: string): { line: number; context: s
   // so a nested inner fence with a different char or shorter run can't
   // close the outer block (pre-CI review P2 on PR #3075 round 2).
   let openFence: { char: "`" | "~"; len: number } | null = null;
-  // Track whether we are inside a list block (reset by blank lines and
-  // fence boundaries). Used by isListFriendlyLeading to avoid treating
-  // ordinary indented prose as list continuation (pre-CI review P1 on
-  // PR #3075 round 2).
-  let inList = false;
+  // Track whether we are inside a list block AND whether that list is
+  // top-level (no blockquote prefix) or blockquoted. The distinction
+  // matters at block-transition boundaries: a top-level list is
+  // terminated by a blockquote line, while a blockquoted list is
+  // CONTINUED by a `>` line (pre-CI review P1 on PR #3075 round 15;
+  // refines the round-2 boolean inList).
+  //
+  //   false  — not in a list
+  //   "top"  — in a top-level list (no `>` prefix on the list-item)
+  //   "block" — in a blockquoted list (list-item had `>` prefix)
+  let inList: false | "top" | "block" = false;
 
   // Determine the start-of-content cursor, skipping YAML front matter if
   // present. Markdownlint treats the YAML block between leading `---`
@@ -301,37 +337,47 @@ export function findMd032Violations(content: string): { line: number; context: s
 
     if (isListItemStart(cur)) {
       // Only check the predecessor when ENTERING a new list. When
-      // `inList` is already true, this list-item is a sibling/nested
-      // member of the same list and the previous line (a sibling
-      // item or a lazy-continuation of the previous item's paragraph)
-      // is not subject to MD032 (pre-CI review P1 on PR #3075 round 8
-      // — without this guard, an unindented continuation between two
-      // list items would falsely fire on the second bullet).
-      if (!inList && i > startLine) {
+      // `inList` is already non-false, this list-item is a sibling/
+      // nested member of the same list and the previous line (a
+      // sibling item or a lazy-continuation of the previous item's
+      // paragraph) is not subject to MD032 (pre-CI review P1 on
+      // PR #3075 round 8).
+      if (inList === false && i > startLine) {
         // The `i > startLine` guard (rather than `i > 0`) means a list
         // immediately after a YAML front-matter block is treated as
         // start-of-content, not as missing-blank-line.
         const prev = lines[i - 1] ?? "";
-        if (!isBlank(prev) && !isListFriendlyLeading(prev, inList)) {
+        if (!isBlank(prev) && !isListFriendlyLeading(prev, false)) {
           findings.push({
             line: i + 1, // 1-indexed
             context: cur.slice(0, 60),
           });
         }
       }
-      inList = true;
+      // Classify the new (or continuing) list by its blockquote prefix.
+      // The first list-item in a list determines whether it's "top"
+      // or "block"; subsequent items inherit that classification (a
+      // mixed `- top / > - block` sequence is rare and handled by the
+      // block-transition reset below, not by re-classifying mid-list).
+      inList = /^ {0,3}>/.test(cur) ? "block" : "top";
+    } else if (isThematicBreak(cur)) {
+      // Thematic break (`---`, `***`, `___`) terminates any list per
+      // CommonMark — `- a / --- / - b` is two lists separated by a
+      // thematic break. The next list-start must fire MD032 if not
+      // preceded by a blank (pre-CI review P1 on PR #3075 round 15).
+      inList = false;
+    } else if (isBlockquoteLine(cur) && inList === "top") {
+      // A blockquote line after a TOP-LEVEL list terminates it — the
+      // blockquote opens a new block type. For a blockquoted list
+      // (`inList === "block"`), `>` lines are continuations / siblings
+      // and don't reset (pre-CI review P1 on PR #3075 round 15).
+      inList = false;
     } else {
-      // Non-list, non-blank, non-heading, non-fence line. CommonMark
-      // allows BOTH indented and lazy (unindented) continuations of a
-      // list-item paragraph, so we keep `inList` unchanged here — the
-      // list block only ends on a blank line, an ATX heading, or a
-      // fence boundary (all handled above). The earlier algorithm reset
-      // `inList = false` on unindented prose, which made
-      //   - first line
-      //   continued text
-      //   - next item
-      // produce a false MD032 on the second bullet because the helper
-      // had already considered the list ended (pre-CI review P1 on PR
+      // Other non-list, non-blank, non-heading, non-fence,
+      // non-thematic-break lines (including lazy unindented
+      // paragraph continuations of a list item). CommonMark allows
+      // these to span multiple lines without ending the list block,
+      // so we leave `inList` unchanged (pre-CI review P1 on PR
       // #3075 round 8).
     }
   }
