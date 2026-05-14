@@ -1,18 +1,21 @@
 ---
-id: B-0409
+id: B-0460
 priority: P1
 status: open
 title: "Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec"
 tier: product
 effort: L
 created: 2026-05-11
+last_updated: 2026-05-14
 depends_on: [B-0400, B-0401, B-0403]
 composes_with: [B-0294, B-0321]
-tags: [wallet, immune-system, security, lfg, clifford, poucc, antifragile]
+renumbered_from: B-0409
+renumbered_reason: "Was in a 3-way ID collision with B-0120 child B-0409 (peer-call-ts-audit) + B-0118 child B-0409 (amara-persona-bootstrap). Per B-0451 sweep: B-0120 frontmatter `children: [B-0409, ...]` + `depends_on: [B-0409, ...]` are the strongest references, so peer-call B-0409 keeps the ID. This row + the amara B-0409 (→ B-0459) renumbered. No incoming references to wallet-immune-B-0409 from other rows beyond composes_with B-0294 + B-0321 (which are unaffected — those refs point FROM here)."
+tags: [wallet, immune-system, security, lfg, clifford, poucc, antifragile, renumbered]
 type: feature
 ---
 
-# Wallet immune system — vaccine spread + PoUW-CC + attack absorption
+# Wallet immune system — vaccine spread + PoUW-CC + attack absorption (renumbered from B-0409)
 
 ## Origin
 
