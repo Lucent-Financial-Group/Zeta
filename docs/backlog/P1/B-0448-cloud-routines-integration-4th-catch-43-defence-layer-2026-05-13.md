@@ -1,14 +1,15 @@
 ---
 id: B-0448
 priority: P1
-status: open
+status: decomposed
 title: "Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers"
 type: feature
 origin: Aaron 2026-05-13 — "yes that sounds good about the backlog too" (authorizing the Cloud Routines row that Otto on the Desktop surface offered to file) + 2026-05-13 Claude Desktop research synthesis
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 depends_on: []
 composes_with: [B-0440, B-0441, B-0442, B-0444]
+child_rows: [B-0507, B-0508, B-0509, B-0510, B-0511, B-0512, B-0513]
 tags: [routines, scheduled-tasks, claude-desktop, cloud-routines, catch-43, github-event-trigger, autonomous-loop, api-trigger]
 ---
 
@@ -151,6 +152,22 @@ restructure:
       research-grade question for the implementing slice)
 - [ ] Update this row with a "Pre-start checklist" completed section
       before any code/substrate work begins
+
+## Decomposition result (2026-05-14)
+
+Decomposed into 7 atomic child rows (PR: see `child_rows` field above):
+
+| Slice | Row | Title | Depends on |
+|-------|-----|-------|------------|
+| 1 | B-0507 | Research Cloud Routines auth + registration API surface | (none — unblocked) |
+| 2 | B-0508 | Define cloud-schedule.json schema | B-0507 |
+| 3 | B-0509 | Extend install.ts to detect + surface cloud-schedule.json | B-0507, B-0508 |
+| 4 | B-0510 | Author autonomous-loop/cloud-schedule.json | B-0507, B-0508 |
+| 5 | B-0511 | Register Cloud Routine + empirical first-fire observation | B-0507–B-0510 |
+| 6 | B-0512 | Update README.md with 4-layer catch-43 table | B-0507, B-0511 |
+| 7 | B-0513 | Memory file capturing empirical bootstrap learning | B-0511 |
+
+Start with B-0507. Close parent B-0448 when all 7 slices close.
 
 ## Decomposition hint (per `.claude/rules/largest-mechanizable-backlog-wins.md`)
 
