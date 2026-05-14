@@ -1,12 +1,18 @@
 ---
 id: B-0428
 priority: P1
-status: open
+status: decomposed
 title: "DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)"
 type: feature
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
+children:
+  - B-0480
+  - B-0481
+  - B-0482
+  - B-0483
+  - B-0484
 composes_with:
   - B-0043
   - memory/feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md
@@ -169,6 +175,21 @@ HKT over Clifford), open a separate backlog row for:
   Clifford-grade type-checking
 - Composes with this row's direct-API substrate (transition
   path documented in this row's ADR)
+
+## Decomposition (Otto, 2026-05-14)
+
+This row was too broad to implement atomically. Decomposed into 5 dependency-ordered
+child rows:
+
+| Row | Title | Type | Depends on |
+|-----|-------|------|------------|
+| [B-0480](B-0480-dbpedia-library-choice-adr-prior-art-audit-2026-05-14.md) | Library-choice ADR + prior-art audit | research (gate) | — |
+| [B-0481](B-0481-dbpedia-fsharp-project-scaffold-nuget-connectivity-2026-05-14.md) | F# project scaffold + NuGet + connectivity smoke | feature | B-0480 |
+| [B-0482](B-0482-dbpedia-sparql-fsharp-ce-computation-expression-2026-05-14.md) | SPARQL F# computation expression | feature | B-0481 |
+| [B-0483](B-0483-dbpedia-hkt-mdm-entity-bindings-dv2-hub-satellite-2026-05-14.md) | HKT-MDM entity bindings + DV2.0 hub-satellite | feature | B-0482 |
+| [B-0484](B-0484-dbpedia-end-to-end-demo-project-2026-05-14.md) | End-to-end demo project (closes B-0428) | feature | B-0483 |
+
+**Work on B-0480 first.** All subsequent rows depend on the library-choice ADR.
 
 ## Composes with
 
