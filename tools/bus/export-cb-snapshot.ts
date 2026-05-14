@@ -115,11 +115,17 @@ function deriveEntry(
     };
   }
 
-  // Count idle heartbeats in the non-expired window
-  const idleHeartbeats = own.filter(
-    e => e.topic === "heartbeat" && (e.payload as { status: string }).status === "idle"
-  );
-  const consecutiveIdle = idleHeartbeats.length;
+  // Walk newest-first and count the trailing run of idle heartbeats.
+  // Stop at the first envelope that is not an idle heartbeat so that a working
+  // signal resets the streak (e.g. idle→working→idle→idle counts 2, not 3).
+  let consecutiveIdle = 0;
+  for (const e of own) {
+    if (e.topic === "heartbeat" && (e.payload as { status: string }).status === "idle") {
+      consecutiveIdle++;
+    } else {
+      break;
+    }
+  }
 
   // Any positive signal: claim, work-assignment, or working heartbeat
   const hasWorkSignal = own.some(
@@ -135,10 +141,10 @@ function deriveEntry(
 
   if (consecutiveIdle >= THRESHOLD) {
     state = "OPEN";
-    note = `Tripped — ${consecutiveIdle} idle heartbeats exceeded threshold (${THRESHOLD})`;
+    note = `Tripped — ${consecutiveIdle} consecutive idle heartbeats exceeded threshold (${THRESHOLD})`;
   } else if (consecutiveIdle > 0) {
     state = "HALF_OPEN";
-    note = `${consecutiveIdle} idle heartbeat(s) — watching; threshold ${THRESHOLD}`;
+    note = `${consecutiveIdle} consecutive idle heartbeat(s) — watching; threshold ${THRESHOLD}`;
   } else if (hasWorkSignal) {
     state = "CLOSED";
     note = "Active work detected — normal operation";
@@ -160,27 +166,33 @@ function deriveEntry(
 
 // ── main ──────────────────────────────────────────────────────────────────────
 
-const args = process.argv.slice(2);
-const busDir = args.includes("--bus-dir")
-  ? (args[args.indexOf("--bus-dir") + 1] ?? DEFAULT_BUS_DIR)
-  : DEFAULT_BUS_DIR;
-const outPath = args.includes("--out")
-  ? (args[args.indexOf("--out") + 1] ?? DEFAULT_OUT)
-  : DEFAULT_OUT;
+async function main() {
+  const args = process.argv.slice(2);
+  const busDir = args.includes("--bus-dir")
+    ? (args[args.indexOf("--bus-dir") + 1] ?? DEFAULT_BUS_DIR)
+    : DEFAULT_BUS_DIR;
+  const outPath = args.includes("--out")
+    ? (args[args.indexOf("--out") + 1] ?? DEFAULT_OUT)
+    : DEFAULT_OUT;
 
-const envelopes = await readEnvelopes(busDir);
+  const envelopes = await readEnvelopes(busDir);
 
-const entries: CbEntry[] = Object.entries(AGENT_META).map(([id, meta]) =>
-  deriveEntry(id, meta, envelopes)
-);
+  const entries: CbEntry[] = Object.entries(AGENT_META).map(([id, meta]) =>
+    deriveEntry(id, meta, envelopes)
+  );
 
-const snapshot = {
-  generatedAt: new Date().toISOString(),
-  source: "tools/bus/export-cb-snapshot.ts",
-  busDir,
-  envelopeCount: envelopes.length,
-  entries,
-};
+  const snapshot = {
+    generatedAt: new Date().toISOString(),
+    source: "tools/bus/export-cb-snapshot.ts",
+    busDir,
+    envelopeCount: envelopes.length,
+    entries,
+  };
 
-await writeFile(outPath, JSON.stringify(snapshot, null, 2) + "\n");
-console.log(`Wrote ${entries.length} entries (${envelopes.length} envelopes) → ${outPath}`);
+  await writeFile(outPath, JSON.stringify(snapshot, null, 2) + "\n");
+  console.log(`Wrote ${entries.length} entries (${envelopes.length} envelopes) → ${outPath}`);
+}
+
+if (import.meta.main) {
+  main();
+}
