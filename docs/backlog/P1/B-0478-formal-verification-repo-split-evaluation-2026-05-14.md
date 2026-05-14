@@ -45,8 +45,8 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 | Tool class | What it produces | Current location in Zeta |
 |------------|-----------------|--------------------------|
-| **TLA+** | `.tla` / `.cfg` specification files | TBD — search `find . -name '*.tla'` |
-| **Lean 4** | `.lean` proof files | TBD — search `find . -name '*.lean'` |
+| **TLA+** | `.tla` / `.cfg` specification files | TBD — search `find . -name '*.tla' -not -path './references/*'` |
+| **Lean 4** | `.lean` proof files | TBD — search `find . -name '*.lean' -not -path './references/*'` |
 | **Z3 / F* refinements** | SMT constraint files / `.fst` | TBD |
 | **FsCheck** | Property-test source (in `.fs` test projects) | Within `tests/` alongside source |
 | **Stryker.NET** | Mutation test configuration | `stryker-config.json`; results in CI |

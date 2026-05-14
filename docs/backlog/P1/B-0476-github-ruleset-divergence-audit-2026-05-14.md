@@ -70,7 +70,7 @@ For each repo / proposed repo, document each of these ruleset dimensions:
 4. **Tag protection**: protected / unrestricted
 5. **Fork policy**: public forks allowed / restricted / blocked
 6. **PR merge strategies**: squash / merge / rebase — required or optional
-7. **Auto-merge policy**: arms or blocks
+7. **Auto-merge policy**: enabled (merges automatically when checks pass) vs disabled (manual merge required)
 
 ### Divergence smell test application
 

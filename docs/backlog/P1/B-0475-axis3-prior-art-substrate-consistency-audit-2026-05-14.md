@@ -51,7 +51,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 | Aaron's Axis-3 framing | `memory/feedback_aaron_repo_split_third_orthogonal_axis_code_vs_english_formal_verification_maybe_split_ruleset_divergence_is_smell_2026_05_13.md` | Framing matches B-0427 body |
 | B-0424 (factory split) | `docs/backlog/P1/B-0424-*.md` | Stage-1 factory split — does Axis-3 affect Stage-1 scope? |
 | DV2.0 rule | `.claude/rules/dv2-data-split-discipline-activated.md` | DV2.0 hub-satellite partition directly informs Code/English cut |
-| GOVERNANCE.md §N | `GOVERNANCE.md` | Any sections that classify "docs belonging in repo" per engineering-practices |
+| GOVERNANCE.md (repo-placement sections) | `GOVERNANCE.md` | Search for "repo" or "directory" headings — any sections that classify which docs belong in which repo per engineering-practices (e.g. `grep -n "^## " GOVERNANCE.md` to enumerate sections) |
 
 ## Questions this audit must answer
 
