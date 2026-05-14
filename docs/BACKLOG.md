@@ -173,6 +173,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
 - [x] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
 - [ ] **[B-0329](backlog/P1/B-0329-claude-md-as-process-not-doctrine.md)** Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing
+- [ ] **[B-0329](backlog/P1/B-0329-new-surface-audit-alignment-check.md)** Mechanize new-surface audit for alignment-clause consistency
 - [x] **[B-0330](backlog/P1/B-0330-memory-format-standardization-step2-b0190.md)** Memory-format standardization — define frontmatter shape, filename conventions, section headers
 - [x] **[B-0331](backlog/P1/B-0331-memory-ontology-classification-audit-step3-b0190.md)** Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
 - [x] **[B-0332](backlog/P1/B-0332-memory-load-bearing-vs-decorative-classifier-step7-b0190.md)** Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces
@@ -288,7 +289,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0485](backlog/P1/B-0485-persona-mapping-framework-template-substrate-inventory-2026-05-14.md)** B-0429.1 — Persona-mapping framework: define per-persona template + audit existing persona substrate
 - [x] **[B-0486](backlog/P1/B-0486-civsim-persona-map-2026-05-14.md)** B-0429.2 — Civsim persona map
 - [ ] **[B-0487](backlog/P1/B-0487-aurora-persona-map-2026-05-14.md)** B-0429.3 — Aurora persona map
-- [ ] **[B-0488](backlog/P1/B-0488-ksk-persona-map-2026-05-14.md)** B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map
+- [x] **[B-0488](backlog/P1/B-0488-ksk-persona-map-2026-05-14.md)** B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map
 - [ ] **[B-0489](backlog/P1/B-0489-wellness-app-persona-map-2026-05-14.md)** B-0429.5 — Wellness app persona map
 - [ ] **[B-0490](backlog/P1/B-0490-american-dream-dio-persona-map-2026-05-14.md)** B-0429.6 — American Dream 2.0 + DIO persona map
 - [ ] **[B-0491](backlog/P1/B-0491-dawn-universal-biz-templates-persona-map-2026-05-14.md)** B-0429.7 — Dawn + Universal business templates persona map
