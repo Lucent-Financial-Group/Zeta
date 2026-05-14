@@ -8,7 +8,7 @@ merged_at: "2026-05-14T01:02:38Z"
 closed_at: "2026-05-14T01:02:38Z"
 head_ref: "feat/pm2-forward-radar-b0145-2026-05-13"
 base_ref: "main"
-archived_at: "2026-05-14T07:40:05Z"
+archived_at: "2026-05-14T08:25:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
