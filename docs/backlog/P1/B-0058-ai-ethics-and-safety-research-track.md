@@ -42,9 +42,10 @@ Per math-safety memory the gate's job is to verify that any candidate adoption p
 
 No candidate is blocked merely for being edgy — blocking would itself be a prose-safety-hedge that hurts crystallization without adding retractibility information. Blocking is reserved for operations that break retractibility (e.g., force-publication to a distribution channel we cannot rescind).
 
-### 2. New-surface audit
+### 2. New-surface audit (DECOMPOSED -> B-0329)
 
 Every new skill under `.claude/skills/**`, persona under `.claude/agents/**`, glossary entry in `docs/GLOSSARY.md`, and BACKLOG row at P0/P1 runs through an alignment-clause consistency check. Fires at author-time (prevention surface) and on a cadence (detection surface). Same shape as the skill-data/behaviour-split audit, but on alignment-clause compliance rather than mix-signature.
+*(This item has been sliced into B-0329 for atomic mechanization).*
 
 ### 3. Candidate-failure honesty log
 

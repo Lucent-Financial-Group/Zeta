@@ -1,0 +1,29 @@
+---
+id: B-0329
+priority: P1
+status: open
+title: Mechanize new-surface audit for alignment-clause consistency
+tier: substrate-foundational-discipline
+effort: S
+ask: Peel off from B-0058 — "New-surface audit" into atomic slice.
+created: 2026-05-14
+depends_on: [B-0058]
+composes_with: [docs/ALIGNMENT.md, docs/GLOSSARY.md]
+tags: [ai-ethics, alignment, new-surface-audit, decomposed, B-0058-slice]
+type: friction-reducer
+---
+
+# B-0329 — Mechanize new-surface audit for alignment-clause consistency
+
+## Origin
+Decomposed from B-0058 item 2: "New-surface audit".
+
+## What this slice owns
+Implementation of a cadence or CI check ensuring that:
+Every new skill under `.claude/skills/**`, persona under `.claude/agents/**`, glossary entry in `docs/GLOSSARY.md`, and BACKLOG row at P0/P1 runs through an alignment-clause consistency check against `docs/ALIGNMENT.md` (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5).
+
+This check must fire at author-time (prevention surface) and on a cadence (detection surface). It follows the same shape as the skill-data/behaviour-split audit, but verifies alignment-clause compliance rather than mix-signature.
+
+## Next Steps
+1. Create a `tools/hygiene/audit-new-surface-alignment.ts` script.
+2. Hook it into the razor-cadence or GitHub Actions.
