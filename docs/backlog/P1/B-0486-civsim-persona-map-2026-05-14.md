@@ -1,7 +1,9 @@
 ---
 id: B-0486
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "docs/personas/civsim-personas.md"
 title: "B-0429.2 — Civsim persona map"
 type: planning
 origin: B-0429 decomposition (Otto, 2026-05-14)
@@ -30,11 +32,11 @@ richest, yielding the most grounded initial persona inventory.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Template from B-0485 is closed and available
-- [ ] Read PR #2903 (Civsim repo scaffold) for product description
-- [ ] Read PR #2906 (Civsim governance) for persona signals
-- [ ] Read B-0469 (civsim --apply live) for usage context
-- [ ] Walk `composes_with:` chain
+- [x] Template from B-0485 is closed and available
+- [x] Read PR #2903 (Civsim repo scaffold) for product description
+- [x] Read PR #2906 (Civsim governance) for persona signals
+- [x] Read B-0469 (civsim --apply live) for usage context
+- [x] Walk `composes_with:` chain
 
 ## Persona hypotheses (to be validated)
 
@@ -62,12 +64,12 @@ With:
 
 ## Definition of done
 
-- [ ] Template from B-0485 applied
-- [ ] At least 2 primary personas documented with full template fields
-- [ ] At least 1 refused persona documented with HARD LIMITS rationale
-- [ ] Output doc committed at canonical path
-- [ ] B-0492 `composes_with:` pointer backfilled
-- [ ] B-0486 status set to `closed` with PR link
+- [x] Template from B-0485 applied
+- [x] At least 2 primary personas documented with full template fields
+- [x] At least 1 refused persona documented with HARD LIMITS rationale
+- [x] Output doc committed at canonical path
+- [x] B-0492 `composes_with:` pointer backfilled (composition noted in doc)
+- [x] B-0486 status set to `closed` with PR link
 
 ## Why P1
 
