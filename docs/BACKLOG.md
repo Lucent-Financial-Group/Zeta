@@ -649,3 +649,4 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0519](backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md)** Multi-Otto branch-state contamination — RCA + mechanization candidate
 
 <!-- END AUTO-GENERATED -->
+- [ ] [B-0352](docs/backlog/P3/B-0352-tinygrad-uop-rewrite-walk-retract-mapping.md) - Decomposed: Tinygrad UOp rewrite walk + retract mapping
