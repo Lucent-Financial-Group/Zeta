@@ -1,12 +1,13 @@
 ---
 id: B-0451
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
 title: "Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 depends_on: []
 composes_with: []
 tags: [substrate-hygiene, backlog, ID-collision, audit-finding, multi-Otto-coordination]
@@ -79,15 +80,17 @@ bundled (one PR for the full sweep).
 
 ## Acceptance criteria
 
-- [ ] Each of the 12 colliding groups resolved (one row keeps the
-      ID; others renumbered with provenance recorded).
-- [ ] `bun tools/bg/audit-duplicate-row-ids.ts` exits 0 on main.
-- [ ] All cross-references updated (B-0445 composes_with, B-0271
-      gap-table, etc.).
-- [ ] `docs/BACKLOG.md` regenerated.
+- [x] Each of the 12 colliding groups resolved — all 12 groups
+      renumbered across PRs #3056–#3073; sweep complete 2026-05-14.
+- [x] `bun tools/bg/audit-duplicate-row-ids.ts` exits 0 — verified
+      2026-05-14: "561 rows with id field, no duplicate IDs", exit 0.
+- [x] All cross-references updated — renumbered rows carry
+      `renumbered_from` provenance in frontmatter; cross-refs patched.
+- [x] `docs/BACKLOG.md` regenerated — updated in this close PR.
 - [ ] Wire `audit-duplicate-row-ids.ts` into a CI workflow so a
       future collision blocks merge automatically (separate slice
-      / follow-up row).
+      / follow-up row — tracked as future work; does not block
+      closure of this row).
 
 ## Why P1
 
