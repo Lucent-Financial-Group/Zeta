@@ -75,6 +75,7 @@ For each repo / proposed repo, document each of these ruleset dimensions:
 ### Divergence smell test application
 
 For each pair of repos (or substrate clusters), flag:
+
 - **Same rulesets** → smell test passes; same repo boundary is OK
 - **Divergent rulesets** → smell test fires; document as candidate-split signal
 
@@ -87,6 +88,7 @@ docs/research/2026-05-14-github-ruleset-divergence-audit-b0476.md
 ```
 
 Containing:
+
 - Per-repo ruleset enumeration (from `gh api` calls)
 - Divergence comparison matrix
 - Candidate-split signals identified (each with smell-test rationale)

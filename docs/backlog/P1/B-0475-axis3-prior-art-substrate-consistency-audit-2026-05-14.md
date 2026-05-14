@@ -72,6 +72,7 @@ docs/research/2026-05-14-axis3-prior-art-audit-b0475.md
 ```
 
 Containing:
+
 - Summary of all surfaces found, their current state, and whether they are
   consistent with each other
 - Any conflicts or stale references identified

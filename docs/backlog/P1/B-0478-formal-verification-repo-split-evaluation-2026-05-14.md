@@ -67,6 +67,7 @@ TLA+ specs describe protocol-level behavior — more loosely coupled.)
 ### 2. Change-rate argument (DV2.0)
 
 Does this artifact change at the same rate as the code it verifies?
+
 - FsCheck properties → change when the API changes → same rate → co-locate
 - TLA+ specs → change when the protocol changes → potentially different rate
 - CodeQL rules → change when vulnerability classes change → could diverge
@@ -117,6 +118,7 @@ docs/research/2026-05-14-formal-verification-repo-split-evaluation-b0478.md
 ```
 
 Containing:
+
 - Per-tool-class evaluation (all 5 criteria)
 - Recommendation: split / co-locate / hybrid
 - For any "split" recommendation: proposed repo name and scope

@@ -57,6 +57,7 @@ Content whose primary purpose is executable, compilable, or directly testable:
 - Configuration files (`.editorconfig`, `Directory.Build.props`, etc.)
 
 **Engineering-docs exception** — these stay with Code:
+
 - README, CONTRIBUTING, CHANGELOG
 - ADRs and architecture diagrams
 - API documentation, GLOSSARY-for-code
@@ -113,6 +114,7 @@ docs/research/2026-05-14-axis3-code-english-classification-matrix-b0477.md
 ```
 
 Containing:
+
 - Precise Axis-3 tier definitions (Code + English + engineering-docs exception)
 - Per-repo classification matrix (all existing and proposed repos)
 - Split recommendations with DV2.0 change-rate rationale
