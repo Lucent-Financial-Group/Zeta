@@ -262,6 +262,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0466](backlog/P1/B-0466-product-repo-naming-expert-review-2026-05-14.md)** Naming-expert review for product repo names — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn
 - [x] **[B-0467](backlog/P1/B-0467-product-repo-cross-ref-glue-mechanism-design-2026-05-14.md)** Product-repo cross-ref glue mechanism design — how product repos reference Zeta/Forge/ace
 - [x] **[B-0468](backlog/P1/B-0468-product-repo-split-adr-2026-05-14.md)** ADR — product-repo split decisions; closes B-0425
+- [x] **[B-0469](backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md)** Scaffold Lucent-Financial-Group/civsim public repo (Stage 1)
 
 ## P2 — research-grade
 
