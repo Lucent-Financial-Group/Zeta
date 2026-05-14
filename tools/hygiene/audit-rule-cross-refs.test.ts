@@ -78,6 +78,28 @@ describe("refExists", () => {
     test("returns false for a glob that matches no files in any segment", () => {
         expect(refExists({ fromRule: "test.md", raw: "no-such-dir-*/nothing-*.md", kind: "path" })).toBe(false);
     });
+
+    test("resolves brace-expansion patterns (Codex P2 re-review on PR #3202)", () => {
+        // lost-files-surface.md references feedback_rule_number_{one,two,three,...}_*aaron_*.md.
+        // Brace globs should expand to alternatives, each tested as a star-glob.
+        expect(
+            refExists({
+                fromRule: "test.md",
+                raw: "memory/feedback_rule_number_{one,two,three,four,five,six,seven}_*aaron_2026_05_05.md",
+                kind: "path",
+            }),
+        ).toBe(true);
+    });
+
+    test("returns false for brace pattern where no alternative matches", () => {
+        expect(
+            refExists({
+                fromRule: "test.md",
+                raw: "no-such-dir/{alpha,beta,gamma}-no-match.md",
+                kind: "path",
+            }),
+        ).toBe(false);
+    });
 });
 
 describe("renderReport", () => {

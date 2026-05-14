@@ -118,11 +118,48 @@ function escapeForGlobRegex(s: string): string {
         .replace(/\*/g, ".*");
 }
 
+// Expand bash-style brace globs (`{a,b,c}` → 3 alternatives). Caught by Codex
+// P2 thread on PR #3202: rules like lost-files-surface.md use brace-expansion
+// patterns (e.g., `feedback_rule_number_{one,two,three}_*aaron_*.md`) that
+// don't match if `{` and `}` are escaped literally.
+//
+// Expands the FIRST brace group encountered, then recurses on each expansion.
+// Most patterns have only one brace group; nested braces are uncommon in
+// practice.
+function expandBraces(pattern: string): string[] {
+    const idx = pattern.indexOf("{");
+    if (idx === -1) return [pattern];
+    let depth = 0;
+    let close = -1;
+    for (let i = idx; i < pattern.length; i++) {
+        if (pattern[i] === "{") depth++;
+        else if (pattern[i] === "}") {
+            depth--;
+            if (depth === 0) {
+                close = i;
+                break;
+            }
+        }
+    }
+    if (close === -1) return [pattern];
+    const before = pattern.slice(0, idx);
+    const after = pattern.slice(close + 1);
+    const body = pattern.slice(idx + 1, close);
+    const alternatives = body.split(",");
+    const results: string[] = [];
+    for (const alt of alternatives) {
+        const expanded = before + alt + after;
+        for (const sub of expandBraces(expanded)) results.push(sub);
+    }
+    return results;
+}
+
 // Resolve a path that may contain `*` wildcards in any segment (not only the
 // last). Walks segment-by-segment from the leftmost directory: wildcards in
 // earlier segments expand to directory listings, wildcards in the final segment
-// match file basenames. Caught by Codex P2 thread on PR #3202.
-function globResolves(pattern: string): boolean {
+// match file basenames. Caught by Codex P2 thread on PR #3202. Brace-glob
+// support added in second iteration per Codex re-review.
+function globResolvesSingle(pattern: string): boolean {
     const segments = pattern.split("/");
     let candidates: string[] = pattern.startsWith("/") ? ["/"] : ["."];
     for (let i = 0; i < segments.length; i++) {
@@ -166,10 +203,20 @@ function globResolves(pattern: string): boolean {
     return false;
 }
 
+// Public globResolves: expand braces first, then check each expansion via the
+// star-only single resolver. Returns true if ANY expansion has a match.
+function globResolves(pattern: string): boolean {
+    for (const expanded of expandBraces(pattern)) {
+        if (existsSync(expanded)) return true;
+        if (expanded.includes("*") && globResolvesSingle(expanded)) return true;
+    }
+    return false;
+}
+
 function refExists(ref: Ref): boolean {
     if (ref.kind === "path") {
         if (existsSync(ref.raw)) return true;
-        if (ref.raw.includes("*")) return globResolves(ref.raw);
+        if (ref.raw.includes("*") || ref.raw.includes("{")) return globResolves(ref.raw);
         return false;
     }
     if (ref.kind === "backlog-id") {
