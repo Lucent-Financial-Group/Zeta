@@ -1,12 +1,12 @@
 ---
 id: B-0424
 priority: P1
-status: open
+status: in-progress
 title: "Three-repo split Stage 1 — create empty Forge + ace with day-one scaffolding"
 type: feature
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
 composes_with:
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md
   - memory/project_repo_split_provisional_names_frontier_factory_and_peers_2026_04_23.md
@@ -73,6 +73,51 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 3. **License question resolved** — Apache 2.0 (same as Zeta). Forge and ace are open-source/designed-to-be-forked; honor-system framing does not apply.
 
 4. **Scope decision** — B-0424 is too broad to implement in one PR. This PR (B-0424.1) implements the smallest safe slice: day-one governance file templates for Forge and ace + a TypeScript dry-run tool (`tools/scaffold/create-repo.ts`) that shows the GitHub API calls needed to complete Stage 1. Actual GitHub repo creation (irreversible external action) is deferred to a follow-up PR with Aaron's review.
+
+## Completed slices — all merged 2026-05-13
+
+All scaffolding code is in `main`. Tests pass: 30/30 (bun test tools/scaffold/create-repo.test.ts).
+
+| Slice | PR | Description |
+|-------|-----|-------------|
+| B-0424.1 | #2994 | Forge + ace day-one governance templates + dry-run `create-repo.ts` tool |
+| B-0424.2 | #2996 | `workflow_dispatch` gate for Stage 1 repo creation (safe apply entrypoint) |
+| B-0424.3 | #3003 | `UPSTREAM-RHYTHM.md` templates for Forge + ace scaffold dirs |
+| B-0424.4 | #3019 | OpenSSF Scorecard workflow to Forge + ace scaffold dirs |
+| B-0424.5 | #3025 | Dry-run test suite for `create-repo.ts` (18 tests) |
+| B-0424.6 | #3026 | `.semgrep.yml` GHA injection rule to forge+ace scaffold templates |
+| B-0424.7 | #3027 | `.github/dependabot.yml` to forge+ace scaffold templates |
+| B-0424.8 | #3028 | BP-10 invisible-Unicode + mutable-tag rules to forge+ace scaffold templates |
+
+**Dry-run verified 2026-05-14** — both repos produce 12 planned operations (create, merge-settings,
+push-scaffold, branch-protection, signed-commits, secret-scanning, dependabot-alerts,
+dependabot-security-updates, private-vuln-reporting, codeql-default-setup, fork-to-acehack,
+manual-next-steps). No errors.
+
+## Next step — `--apply` execution (requires Aaron sign-off)
+
+The tool is ready. Repo creation is irreversible so `--apply` needs an explicit decision:
+
+```bash
+# Preview first (no external effects):
+bun tools/scaffold/create-repo.ts --repo forge --dry-run
+bun tools/scaffold/create-repo.ts --repo ace  --dry-run
+
+# Execute — creates LFG/Forge and LFG/ace:
+bun tools/scaffold/create-repo.ts --repo forge --apply
+bun tools/scaffold/create-repo.ts --repo ace  --apply
+```
+
+After `--apply` completes, the checklist of manual steps from step 07 applies:
+1. Upload SVG social-preview PNG via GitHub UI (requires rasterized PNG)
+2. Enable merge queue via GitHub UI (Settings → Merge queue — no REST API)
+3. Wire Semgrep gate step into CI (`.semgrep.yml` already in scaffold; CI job wired in Stage 2)
+4. Add required status checks after CI workflows land (branch protection created with empty contexts to avoid deadlock)
+5. Verify $0 budget caps at org level: github.com/organizations/Lucent-Financial-Group/settings/billing
+6. Confirm CodeQL default-setup active: Security → Code scanning → Default setup
+
+B-0424 closes when both repos exist at LFG/Forge + LFG/ace and the ADR is updated with
+Stage 1 completion note.
 
 ## Composes with
 
