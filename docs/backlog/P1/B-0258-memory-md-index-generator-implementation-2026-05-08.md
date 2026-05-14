@@ -33,12 +33,14 @@ memory-file frontmatter so manual edits are no longer required.
 ## Pre-start checklist (completed 2026-05-14)
 
 Prior-art search:
+
 - `tools/memory/reindex-memory-md.ts` — already implemented under B-0423
   (PR #3004, merged 2026-05-13). Generator is complete; 18/18 tests pass.
 - B-0257 dependency (harness contract verification) — merged via PR #3097.
 - No duplicate or conflicting generator found in `tools/`.
 
 Dependency walk:
+
 - B-0257 (harness contract verification): MERGED ✓
 - B-0066 (parent): open (B-0258 closure advances it)
 

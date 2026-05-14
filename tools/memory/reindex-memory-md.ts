@@ -136,7 +136,10 @@ async function collectEntries(dir?: string): Promise<MemoryEntry[]> {
     const date = fm.created || dateFromFilename(filename);
     entries.push({ filename, fm, date, mtime: 0 });
   }
-  entries.sort((a, b) => b.date.localeCompare(a.date));
+  entries.sort((a, b) => {
+    const dateCmp = b.date.localeCompare(a.date);
+    return dateCmp !== 0 ? dateCmp : a.filename.localeCompare(b.filename);
+  });
   return entries;
 }
 
