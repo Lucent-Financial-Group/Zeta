@@ -99,7 +99,7 @@ let run (endpoint: Endpoint) (query: SparqlQuery) : Result<SparqlResult list, Db
     query |> QueryRenderer.render |> Client.query endpoint
 ```
 
-## Tests (`src/DBpedia.Tests/SparqlCeTests.fs`)
+## Tests (`tests/DBpedia.Tests/SparqlCeTests.fs`)
 
 All tests are **pure** (no network): render a query and assert the SPARQL
 string. Example:
@@ -137,7 +137,7 @@ dotnet test  Zeta.sln -c Release
 - [ ] `Sparql.fs` (query model) in `src/DBpedia/`
 - [ ] `SparqlBuilder.fs` (CE builder) in `src/DBpedia/`
 - [ ] `QueryRenderer.fs` (pure renderer) in `src/DBpedia/`
-- [ ] `SparqlCeTests.fs` in `src/DBpedia.Tests/` with ≥ 4 tests
+- [ ] `SparqlCeTests.fs` in `tests/DBpedia.Tests/` with ≥ 4 tests
 - [ ] All tests pure (no network required)
 - [ ] `dotnet build -c Release` — 0 warnings 0 errors
 - [ ] `dotnet test Zeta.sln -c Release` — all tests green

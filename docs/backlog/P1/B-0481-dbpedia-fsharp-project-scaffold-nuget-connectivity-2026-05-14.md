@@ -45,7 +45,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 src/DBpedia/
   DBpedia.fsproj       ← references the library from B-0480 ADR
   Client.fs            ← minimal SPARQL client wrapper
-src/DBpedia.Tests/
+tests/DBpedia.Tests/
   DBpedia.Tests.fsproj
   ConnectivityTests.fs ← smoke test(s)
 ```
@@ -111,7 +111,7 @@ Both must pass before PR opens.
 ## Definition of done
 
 - [ ] `src/DBpedia/DBpedia.fsproj` added to `Zeta.sln`
-- [ ] `src/DBpedia.Tests/DBpedia.Tests.fsproj` added to `Zeta.sln`
+- [ ] `tests/DBpedia.Tests/DBpedia.Tests.fsproj` added to `Zeta.sln`
 - [ ] Chosen NuGet package in `Directory.Packages.props`
 - [ ] Connectivity smoke test passes (live or recorded per ADR)
 - [ ] `dotnet build -c Release` — 0 warnings 0 errors

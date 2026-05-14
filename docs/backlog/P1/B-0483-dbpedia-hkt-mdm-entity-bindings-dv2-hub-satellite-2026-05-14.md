@@ -101,7 +101,7 @@ module Event =
 
 `SparqlRow` is the result row type returned by `Client.query` (defined in B-0481).
 
-## Tests (`src/DBpedia.Tests/EntityBindingTests.fs`)
+## Tests (`tests/DBpedia.Tests/EntityBindingTests.fs`)
 
 All tests are pure (use fixture rows, not network). For each entity type:
 

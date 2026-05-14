@@ -43,7 +43,7 @@ implies is more appropriate.
 ### Preferred: xUnit integration test (recorded fixture)
 
 ```fsharp
-// src/DBpedia.Tests/DemoIntegrationTests.fs
+// tests/DBpedia.Tests/DemoIntegrationTests.fs
 [<Trait("Category", "Integration")>]
 module DemoIntegrationTests
 
@@ -124,7 +124,7 @@ an explicit workflow change (add `--filter "Category!=Integration"` to both
 
 ## Definition of done
 
-- [ ] End-to-end demo test in `src/DBpedia.Tests/DemoIntegrationTests.fs`
+- [ ] End-to-end demo test in `tests/DBpedia.Tests/DemoIntegrationTests.fs`
 - [ ] Demo test passes with recorded fixture or live endpoint per ADR
 - [ ] Output visibly labels hub and satellite with DV2.0 language
 - [ ] ADR from B-0480 updated with Path-A transition plan section
