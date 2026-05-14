@@ -7,7 +7,7 @@ tier: foundation
 effort: L
 ask: Aaron 2026-05-04 verbatim *"seems like your memory work needs a trajectory i don't think we have one for that"* + same-tick *"long horizon is our default and so should future agents remember and short horizon short cuts should be deliberate and not accidentally based on the middle path"*
 created: 2026-05-04
-last_updated: 2026-05-04
+last_updated: 2026-05-14
 depends_on: []
 composes_with: [B-0006, B-0066, B-0140, B-0156, B-0171, B-0193]
 tags: [memory, substrate-engineering, trajectory, long-horizon-default, foundation, mid-path-discipline]
@@ -134,4 +134,3 @@ Per `tools/backlog/README.md`, `composes_with` is bidirectional. The reciprocal 
 ## The carved sentence
 
 **"Memory work needs a trajectory because memory IS substrate engineering, the most-active substrate domain, yet operates today as one-shot-tactical (drain the next tier) instead of multi-row-strategic. Long-horizon is the default; short-horizon shortcuts are deliberate, not accidental. Future agents picking the next memory action FIRST check the trajectory rows."**
-FIRST check the trajectory rows."**
