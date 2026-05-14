@@ -142,7 +142,7 @@ async function collectEntriesRecursive(
     // Use path relative to baseDir so subdirectory files appear as
     // "observed-phenomena/file.md" — correct both as link target in
     // MEMORY.md (relative to memory/) and as parity-validator key.
-    const filename = relative(baseDir, itemPath);
+    const filename = relative(baseDir, itemPath).replace(/\\/g, "/");
     const date = fm.created || dateFromFilename(item.name);
     entries.push({ filename, fm, date, mtime: 0 });
   }
