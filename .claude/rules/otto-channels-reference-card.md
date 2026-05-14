@@ -39,13 +39,50 @@ For any inter-Otto coordination need, prefer in this order:
 4. **Bus envelope** for ephemeral advisory broadcasts (peers can ignore; 2hr TTL).
 5. **Claim coordinator** for backlog row exclusion (note: until SENDER_IDS schema extension lands per PR #3037, multi-surface Otto instances share a sender ID and idempotently re-acquire).
 6. **Aaron as ferry** when high-bandwidth context transfer is needed.
+7. **ID allocation** (B-NNNN backlog row numbers, decision IDs) — check BOTH on-disk + in-flight PRs before picking a number. See the ID allocation discipline section below.
 
 ## Lane discipline
 
 - Each Otto operates in its own dedicated worktree (per `claim-acquire-before-worktree-work.md`)
 - Primary worktree `/Users/acehack/Documents/src/repos/Zeta` is bus-contended — treat as read-only by autonomous Ottos
 - Otto on the CLI surface typically uses `/private/tmp/zeta-mf*` family
-- Otto on the Desktop surface uses `/tmp/zeta-otto-desktop` or task-specific paths (e.g., `/tmp/zeta-otto-cloud`, `/tmp/zeta-otto-comms`)
+- Otto on the Desktop surface uses `/tmp/zeta-otto-desktop` or task-specific paths (e.g., `/tmp/zeta-otto-cloud`, `/tmp/zeta-otto-comms`, `/tmp/zeta-otto-id-alloc`)
+
+## ID allocation discipline (multi-surface)
+
+Allocating a new monotonically-increasing ID across multi-Otto surfaces
+(backlog row numbers `B-NNNN`, decision-archaeology IDs, claim coordinator
+items if numeric, etc.) requires checking BOTH ambient surfaces — not just
+on-disk state:
+
+1. **On-disk check** — what's currently merged:
+
+   ```bash
+   find docs/backlog -name "B-*.md" -printf "%f\n" \
+     | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -3
+   ```
+
+2. **In-flight check** — what peer Otto is filing right now:
+
+   ```bash
+   gh pr list --state all --search "B-NNNN" --limit 5
+   ```
+
+   Run for the candidate number AND the next few above it.
+
+The on-disk check shows merged state; the in-flight check shows what peer
+Otto is filing concurrently. Skip either and the race-mode failure manifests
+— empirical collision 2026-05-13:
+
+- Otto on Desktop ran on-disk check, saw `B-0448` highest, picked `B-0449` for [PR #3052](https://github.com/Lucent-Financial-Group/Zeta/pull/3052) (resolving an earlier `B-0444` collision)
+- Otto on CLI already had `B-0449-bg-services-slice-5-subscriber-agent-design-pass` in flight ([PR #3046](https://github.com/Lucent-Financial-Group/Zeta/pull/3046))
+- Otto on CLI flagged PR #3052 "Request Changes" (blocked auto-merge), shipped corrected [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) using `B-0450`
+- Drift captured in [`docs/research/2026-05-13-shadow-lesson-log-backlog-collision.md`](../../docs/research/2026-05-13-shadow-lesson-log-backlog-collision.md) ([PR #3054](https://github.com/Lucent-Financial-Group/Zeta/pull/3054))
+
+Substrate-honest takeaway: the `refresh-before-decide` invariant
+(`.claude/rules/refresh-before-decide.md`) applies at the per-ID-allocation
+scope, not just per-tick. The "highest on disk + 1" heuristic is incomplete;
+PRs in flight are also state.
 
 ## Empirical evidence (2026-05-13 session)
 
@@ -80,6 +117,8 @@ The complementary-observer pattern (per PR #3036 identity-stays-unified) means i
 - PR #3036 (identity-stays-unified, merged)
 - PR #3037 (SENDER_IDS schema extension — Otto on CLI's parallel work, merged)
 - PR #3043 (B-0444 bus claim envelope worktree field, merged 2026-05-13)
+- PR #3053 (B-0444 ID collision renumber → B-0450, merged 2026-05-13) + PR #3054 (shadow lesson log for B-0449 drift, merged 2026-05-13) — the empirical collision that surfaced the ID-allocation-discipline section above
+- `.claude/rules/refresh-before-decide.md` — the invariant ID allocation discipline extends to ID-allocation scope
 
 ## Full reasoning
 
