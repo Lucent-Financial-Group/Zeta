@@ -36,7 +36,7 @@ interface RunResult {
   summary: string;
 }
 
-function runDryRun(repo: "forge" | "ace"): RunResult {
+function runDryRun(repo: "forge" | "ace" | "civsim"): RunResult {
   const result = spawnSync("bun", [SCRIPT, "--repo", repo, "--dry-run"], {
     encoding: "utf8",
     maxBuffer: 4 * 1024 * 1024,
@@ -242,6 +242,75 @@ describe("ace dry-run", () => {
     // Dependabot config must be present from day one (B-0424.7).
     // API enablement (steps 03b/03c) toggles the feature; this file names ecosystems.
     expect(files.some((f) => f.includes("dependabot.yml"))).toBe(true);
+  });
+});
+
+// --- civsim (product repo) ---
+
+describe("civsim dry-run", () => {
+  let result: RunResult;
+  beforeAll(() => {
+    result = runDryRun("civsim");
+  });
+
+  test("produces dryRun:true with LFG/civsim repo name", () => {
+    expect(result.dryRun).toBe(true);
+    expect(result.repo).toBe("Lucent-Financial-Group/civsim");
+  });
+
+  test("contains all 12 expected step IDs", () => {
+    const steps = result.operations.map((o) => o.step);
+    for (const expected of EXPECTED_STEPS) {
+      expect(steps).toContain(expected);
+    }
+    expect(result.operations).toHaveLength(EXPECTED_STEPS.length);
+  });
+
+  test("step 05 is skipped — product repos are not mirrored to AceHack", () => {
+    const op = result.operations.find((o) => o.step === "05-fork-to-acehack");
+    expect(op).toBeDefined();
+    expect(op!.status).toBe("skipped");
+  });
+
+  test("all non-skipped operations are planned in dry-run mode", () => {
+    for (const op of result.operations) {
+      if (op.step !== "05-fork-to-acehack") {
+        expect(op.status).toBe("planned");
+      }
+    }
+  });
+
+  test("step 06 lists civsim scaffold files — minimal product set without .semgrep.yml", () => {
+    const op = result.operations.find((o) => o.step === "06-push-scaffold-files");
+    expect(op).toBeDefined();
+    const files = (op!.data as { files: string[] }).files;
+    expect(files.some((f) => f.includes("README.md"))).toBe(true);
+    expect(files.some((f) => f.includes("LICENSE"))).toBe(true);
+    expect(files.some((f) => f.includes("CONTRIBUTING.md"))).toBe(true);
+    expect(files.some((f) => f.includes(".zeta-version"))).toBe(true);
+    // civsim scaffold intentionally omits .semgrep.yml (product repo, not factory)
+    expect(files.some((f) => f.includes(".semgrep.yml"))).toBe(false);
+  });
+
+  test("step 07 omits semgrep wiring instruction — .semgrep.yml not in civsim scaffold", () => {
+    const op = result.operations.find((o) => o.step === "07-next-steps");
+    expect(op).toBeDefined();
+    const manual = (op!.data as { manualSteps: string[] }).manualSteps;
+    expect(manual.some((s) => s.includes(".semgrep.yml"))).toBe(false);
+  });
+
+  test("step 07 includes repository_dispatch glue wiring step", () => {
+    const op = result.operations.find((o) => o.step === "07-next-steps");
+    expect(op).toBeDefined();
+    const manual = (op!.data as { manualSteps: string[] }).manualSteps;
+    expect(manual.some((s) => s.toLowerCase().includes("repository_dispatch"))).toBe(true);
+  });
+
+  test("step 07 includes B-0469 claim release with correct item ID", () => {
+    const op = result.operations.find((o) => o.step === "07-next-steps");
+    expect(op).toBeDefined();
+    const manual = (op!.data as { manualSteps: string[] }).manualSteps;
+    expect(manual.some((s) => s.includes("B-0469"))).toBe(true);
   });
 });
 

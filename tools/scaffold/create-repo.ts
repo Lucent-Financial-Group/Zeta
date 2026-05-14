@@ -37,6 +37,8 @@ interface RepoConfig {
   homepage?: string;
   /** Product repos skip the AceHack mirror step and use the honor-system license. */
   isProduct?: boolean;
+  /** Backlog item ID referenced in the post-creation claim-release reminder (e.g. "B-0469"). */
+  backlogItem?: string;
 }
 
 interface Operation {
@@ -80,6 +82,7 @@ const REPO_CONFIGS: Record<string, RepoConfig> = {
     description:
       "Civilisation simulation — turn-based strategy with AI-directed factions and mutual-privacy design",
     isProduct: true,
+    backlogItem: "B-0469",
   },
 };
 
@@ -545,19 +548,28 @@ function collectFiles(dir: string): string[] {
 }
 
 function step07_summary(): void {
+  // Gate the Semgrep wiring instruction on whether .semgrep.yml is actually
+  // present in the scaffold. Product repos (e.g. civsim) intentionally omit it;
+  // emitting the instruction for them would produce a runbook that fails on copy.
+  const scaffoldPath = join(SCAFFOLD_DIR, config.name);
+  const hasSemgrep = existsSync(join(scaffoldPath, ".semgrep.yml"));
+
   const baseSteps = [
     "Upload SVG social-preview PNG via GitHub UI (GitHub requires rasterized PNG format)",
     "Enable merge queue via GitHub UI: Settings → Merge queue (org feature, no API)",
-    "Wire gate workflow: add `semgrep --config .semgrep.yml --error --metrics=off` step (.semgrep.yml is in scaffold files; CI job still needs wiring in Stage 2)",
+    ...(hasSemgrep
+      ? ["Wire gate workflow: add `semgrep --config .semgrep.yml --error --metrics=off` step (.semgrep.yml is in scaffold files; CI job still needs wiring in Stage 2)"]
+      : []),
     "Add bun-test, bun-lint, codeql, scorecard as required status checks AFTER CI workflows are wired (branch protection was created with empty contexts to avoid deadlock)",
     "Verify budget caps $0 at org level: github.com/organizations/Lucent-Financial-Group/settings/billing",
     "Confirm CodeQL default-setup is active: Security → Code scanning → Default setup",
   ];
+  const claimItem = config.backlogItem ?? "<B-NNNN>";
   const productSteps = config.isProduct
     ? [
         "Wire repository_dispatch subscription: configure Forge CI to emit release-tag events to this repo (glue mechanism Stage 1, per ADR 2026-05-14-product-repo-glue-mechanism.md)",
         "Update .zeta-version pin file to the actual current Zeta main SHA after repo creation",
-        "Release bus claim: bun tools/bus/claim.ts release --from otto --item B-0469",
+        `Release bus claim: bun tools/bus/claim.ts release --from <agent> --item ${claimItem}`,
       ]
     : [];
   plan(

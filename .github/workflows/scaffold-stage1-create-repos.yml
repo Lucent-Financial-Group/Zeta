@@ -1,8 +1,9 @@
 name: scaffold-stage1-create-repos
 
-# B-0424.2 — Stage 1 of the three-repo split: create LFG/Forge and LFG/ace
-# with the full best-practice checklist from
-# docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md.
+# B-0424.2 / B-0469 — Stage 1 of the three-repo split: create LFG/Forge, LFG/ace,
+# and product repos (LFG/civsim) with the full best-practice checklist from
+# docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md and
+# docs/DECISIONS/2026-05-14-product-repo-split-decisions.md.
 #
 # WHY workflow_dispatch only (no schedule):
 # This is an irreversible one-shot operation. Creating GitHub repos is
@@ -16,8 +17,9 @@ name: scaffold-stage1-create-repos
 #    repo, read:org, workflow scopes on a user with LFG org owner/admin rights.
 #    (GITHUB_TOKEN cannot create org repos — its scope is the current repo only.)
 # 3. Verify dry-run output locally first:
-#    bun tools/scaffold/create-repo.ts --repo forge --dry-run
-#    bun tools/scaffold/create-repo.ts --repo ace  --dry-run
+#    bun tools/scaffold/create-repo.ts --repo forge  --dry-run
+#    bun tools/scaffold/create-repo.ts --repo ace    --dry-run
+#    bun tools/scaffold/create-repo.ts --repo civsim --dry-run
 #
 # SECURITY (safe-pattern compliance):
 # All workflow_dispatch inputs are routed via env: into run blocks and
@@ -32,12 +34,13 @@ on:
   workflow_dispatch:
     inputs:
       repo:
-        description: "Which repo to create (forge, ace, or both)"
+        description: "Which repo to create (forge, ace, civsim, or both)"
         required: true
         type: choice
         options:
           - forge
           - ace
+          - civsim
           - both
       confirm:
         description: "Type CONFIRM (all caps) — creates real GitHub repos (irreversible)"
@@ -123,6 +126,10 @@ jobs:
             echo "--- ace ---"
             bun tools/scaffold/create-repo.ts --repo ace --dry-run
           fi
+          if [ "$REPO_INPUT" = "civsim" ]; then
+            echo "--- civsim ---"
+            bun tools/scaffold/create-repo.ts --repo civsim --dry-run
+          fi
           echo "=== END DRY-RUN ==="
 
       - name: Create Forge repo
@@ -141,6 +148,14 @@ jobs:
           set -euo pipefail
           bun tools/scaffold/create-repo.ts --repo ace --apply
 
+      - name: Create civsim repo
+        if: ${{ github.event.inputs.repo == 'civsim' }}
+        env:
+          GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
+        run: |
+          set -euo pipefail
+          bun tools/scaffold/create-repo.ts --repo civsim --apply
+
       - name: Post-creation summary
         if: success()
         env:
@@ -153,17 +168,22 @@ jobs:
           echo "Manual steps remaining (create-repo.ts step 07):"
           echo "  1. Upload SVG social-preview PNG via GitHub UI"
           echo "  2. Enable merge queue: Settings → Merge queue (no REST API)"
-          echo "  3. Add Semgrep GHA inline-untrusted-in-run rule"
+          echo "  3. Add Semgrep GHA inline-untrusted-in-run rule (factory repos only)"
           echo "  4. Verify \$0 budget caps at LFG org billing settings"
           echo "  5. Confirm CodeQL default-setup: Security → Code scanning"
           echo ""
           if [ "$REPO_INPUT" = "forge" ] || [ "$REPO_INPUT" = "both" ]; then
-            echo "  Forge: https://github.com/Lucent-Financial-Group/Forge"
+            echo "  Forge:  https://github.com/Lucent-Financial-Group/Forge"
           fi
           if [ "$REPO_INPUT" = "ace" ] || [ "$REPO_INPUT" = "both" ]; then
-            echo "  ace:   https://github.com/Lucent-Financial-Group/ace"
+            echo "  ace:    https://github.com/Lucent-Financial-Group/ace"
+          fi
+          if [ "$REPO_INPUT" = "civsim" ]; then
+            echo "  civsim: https://github.com/Lucent-Financial-Group/civsim"
           fi
           echo ""
-          echo "After verifying the repos, update the ADR and close B-0424:"
+          echo "After verifying the repos, update the relevant ADR and backlog rows:"
           echo "  docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md"
+          echo "  docs/DECISIONS/2026-05-14-product-repo-split-decisions.md"
           echo "  docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md"
+          echo "  docs/backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md"

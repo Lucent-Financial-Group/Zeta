@@ -1,12 +1,14 @@
 ---
 id: B-0469
 priority: P1
-status: open
+status: closed
 title: "Scaffold Lucent-Financial-Group/civsim public repo (Stage 1)"
 type: infrastructure
 origin: B-0468 ADR Stage 1 (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
+resolved: 2026-05-14
+closed_by: PR #3126
 depends_on:
   - B-0464
   - B-0465
