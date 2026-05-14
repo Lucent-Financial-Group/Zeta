@@ -266,6 +266,90 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 8", () => {
+  test("lazy (unindented) continuation does not split the list (pre-CI review P1 on PR #3075 round 8)", () => {
+    // CommonMark allows a list-item paragraph to span multiple lines
+    // including unindented continuations. The second bullet here is
+    // part of the SAME list as the first, so no MD032 should fire.
+    const content = `# Title
+
+- first line
+continued text wraps unindented
+- next item
+- third item
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("10+ digit numeric prefix is NOT an ordered-list marker (pre-CI review P1 on PR #3075 round 8)", () => {
+    // CommonMark caps ordered-list markers at 1-9 digits. A label
+    // followed by `1234567890. value` is plain prose, not a list, so
+    // markdownlint does not flag it — neither should this helper.
+    const content = `# Title
+
+Some prose:
+1234567890. value (not a list per CommonMark — 10 digits exceeds cap)
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("9-digit numeric prefix IS still detected (boundary)", () => {
+    // The cap is inclusive at 9 digits; this MUST still fire.
+    const content = `# Title
+
+Steps:
+123456789. nine-digit step
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("backtick fence with backtick in info string is NOT a valid opener (pre-CI review P1 on PR #3075 round 8)", () => {
+    // CommonMark: a backtick fence's info string must not contain a
+    // backtick. A line like ` ```ts`extra ` is NOT a fence opener;
+    // treating it as one would suppress real MD032 findings in the
+    // prose that follows. With the fix, the list-start that follows
+    // the (invalid) fence line + prose still fires MD032.
+    const content = `# Title
+
+\`\`\`ts\`bad
+- prose bullet, NOT inside a fence
+- second bullet
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    // Line 4 is `- prose bullet` immediately after the invalid
+    // "fence" line (which is plain prose under the new rule).
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("tilde fence with tilde in info string is NOT a valid opener", () => {
+    // Symmetric: tilde-fence info strings cannot contain `~`.
+    const content = `# Title
+
+~~~text~bad
+- prose bullet
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("backtick fence with non-backtick info string IS still a valid opener (control)", () => {
+    // A plain info string like `ts` (no backticks) is a valid fence
+    // opener; list-like content inside MUST NOT fire MD032.
+    const content = `# Title
+
+\`\`\`ts
+function foo() {}
+- this is inside a code fence and must NOT be flagged
+\`\`\`
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+});
+
 describe("findMd032Violations — round 7", () => {
   test("YAML front matter is skipped (pre-CI review P2 on PR #3075 round 7)", () => {
     // markdownlint treats the YAML block between leading `---` fences

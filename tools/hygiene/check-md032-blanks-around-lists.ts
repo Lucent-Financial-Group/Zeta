@@ -63,7 +63,12 @@ export type Md032Finding = {
  * flagged as a list start (pre-CI review P1 on PR #3075 round 1).
  */
 function isListItemStart(line: string): boolean {
-  return /^ {0,3}([-+*]|\d+[.)])\s+/.test(line);
+  // CommonMark caps ordered-list markers at 9 digits (`{1,9}`); a
+  // longer numeric prefix like `1234567890. value` is not an
+  // ordered-list item per the spec — markdownlint will not flag MD032
+  // on a label preceding it, so neither should this helper (pre-CI
+  // review P1 on PR #3075 round 8).
+  return /^ {0,3}([-+*]|\d{1,9}[.)])\s+/.test(line);
 }
 
 /**
@@ -124,8 +129,17 @@ function fenceInfo(line: string): { char: "`" | "~"; len: number; closer: boolea
   if (!m) return null;
   const run = m[1] ?? "";
   const tail = m[2] ?? "";
+  const char: "`" | "~" = run[0] === "`" ? "`" : "~";
+  // CommonMark: a fenced-code opener's info string MUST NOT contain
+  // the fence character. ` ```ts ` is a valid backtick-fence opener;
+  // ` ```ts`foo ` is not (it would be parsed as inline code, never as
+  // a fence). Tilde-fence info strings likewise cannot contain `~`.
+  // Treating such lines as fences would suppress real MD032 findings
+  // in ordinary prose that markdownlint never considers fenced (pre-CI
+  // review P1 on PR #3075 round 8).
+  if (tail.includes(char)) return null;
   return {
-    char: run[0] === "`" ? "`" : "~",
+    char,
     len: run.length,
     closer: /^\s*$/.test(tail),
   };
@@ -206,9 +220,14 @@ export function findMd032Violations(content: string): { line: number; context: s
     }
 
     if (isListItemStart(cur)) {
-      if (i > startLine) {
-        // Check whether the immediately preceding line requires a blank.
-        // Pass inList so the continuation exemption is context-aware.
+      // Only check the predecessor when ENTERING a new list. When
+      // `inList` is already true, this list-item is a sibling/nested
+      // member of the same list and the previous line (a sibling
+      // item or a lazy-continuation of the previous item's paragraph)
+      // is not subject to MD032 (pre-CI review P1 on PR #3075 round 8
+      // — without this guard, an unindented continuation between two
+      // list items would falsely fire on the second bullet).
+      if (!inList && i > startLine) {
         // The `i > startLine` guard (rather than `i > 0`) means a list
         // immediately after a YAML front-matter block is treated as
         // start-of-content, not as missing-blank-line.
@@ -222,9 +241,18 @@ export function findMd032Violations(content: string): { line: number; context: s
       }
       inList = true;
     } else {
-      // Non-list non-blank line: if indented it MAY be a list-item body
-      // continuation — preserve inList. Otherwise the list block ended.
-      if (!/^\s+\S/.test(cur)) inList = false;
+      // Non-list, non-blank, non-heading, non-fence line. CommonMark
+      // allows BOTH indented and lazy (unindented) continuations of a
+      // list-item paragraph, so we keep `inList` unchanged here — the
+      // list block only ends on a blank line, an ATX heading, or a
+      // fence boundary (all handled above). The earlier algorithm reset
+      // `inList = false` on unindented prose, which made
+      //   - first line
+      //   continued text
+      //   - next item
+      // produce a false MD032 on the second bullet because the helper
+      // had already considered the list ended (pre-CI review P1 on PR
+      // #3075 round 8).
     }
   }
   return findings;
@@ -358,8 +386,17 @@ export function stagedMarkdownFiles(repoRoot: string): string[] {
     ["-C", repoRoot, "diff", "--name-only", "--cached", "--diff-filter=AMR"],
     { encoding: "utf-8" },
   );
-  if (r.status !== 0) {
-    throw new Error(`git diff --cached failed: ${r.stderr?.trim() ?? "unknown error"}`);
+  if (r.status !== 0 || r.error) {
+    // `spawnSync` returns `r.error` when the process couldn't be
+    // launched at all (e.g., `git` not on PATH, EACCES) — in that case
+    // `r.status` is null and `r.stderr` is typically empty. Surfacing
+    // `r.error.message` makes the failure diagnosable instead of just
+    // "unknown error" (pre-CI review P2 on PR #3075 round 8).
+    const reason =
+      r.error?.message ??
+      (r.stderr ? r.stderr.trim() : "") ??
+      "unknown error";
+    throw new Error(`git diff --cached failed: ${reason || "unknown error"}`);
   }
   const ignoreRes = loadMarkdownlintIgnores(repoRoot).map(globToRegex);
   return (r.stdout ?? "")
