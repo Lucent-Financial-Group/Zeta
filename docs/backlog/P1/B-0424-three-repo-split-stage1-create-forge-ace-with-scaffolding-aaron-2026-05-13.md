@@ -109,6 +109,7 @@ bun tools/scaffold/create-repo.ts --repo ace  --apply
 ```
 
 After `--apply` completes, the checklist of manual steps from step 07 applies:
+
 1. Upload SVG social-preview PNG via GitHub UI (requires rasterized PNG)
 2. Enable merge queue via GitHub UI (Settings → Merge queue — no REST API)
 3. Wire Semgrep gate step into CI (`.semgrep.yml` already in scaffold; CI job wired in Stage 2)
