@@ -53,7 +53,7 @@
  */
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 
 const MEMORY_DIR = "memory";
 const INDEX_FILE = join(MEMORY_DIR, "MEMORY.md");
@@ -121,21 +121,37 @@ function dateFromFilename(filename: string): string {
   return `${match[1]}-${match[2]}-${match[3]}`;
 }
 
-async function collectEntries(dir?: string): Promise<MemoryEntry[]> {
-  const targetDir = dir ?? MEMORY_DIR;
-  const files = await readdir(targetDir);
-  const entries: MemoryEntry[] = [];
-  for (const filename of files) {
-    if (!filename.endsWith(".md")) continue;
-    if (filename === "MEMORY.md" || filename === "README.md") continue;
-    if (filename.startsWith("CURRENT-")) continue;
-    const filePath = join(targetDir, filename);
-    const content = await readFile(filePath, "utf8");
+async function collectEntriesRecursive(
+  baseDir: string,
+  currentDir: string,
+  entries: MemoryEntry[],
+): Promise<void> {
+  const items = await readdir(currentDir, { withFileTypes: true });
+  for (const item of items) {
+    const itemPath = join(currentDir, item.name);
+    if (item.isDirectory()) {
+      await collectEntriesRecursive(baseDir, itemPath, entries);
+      continue;
+    }
+    if (!item.name.endsWith(".md")) continue;
+    if (item.name === "MEMORY.md" || item.name === "README.md") continue;
+    if (item.name.startsWith("CURRENT-")) continue;
+    const content = await readFile(itemPath, "utf8");
     const fm = parseFrontmatter(content);
     if (!fm) continue;
-    const date = fm.created || dateFromFilename(filename);
+    // Use path relative to baseDir so subdirectory files appear as
+    // "observed-phenomena/file.md" — correct both as link target in
+    // MEMORY.md (relative to memory/) and as parity-validator key.
+    const filename = relative(baseDir, itemPath);
+    const date = fm.created || dateFromFilename(item.name);
     entries.push({ filename, fm, date, mtime: 0 });
   }
+}
+
+async function collectEntries(dir?: string): Promise<MemoryEntry[]> {
+  const targetDir = dir ?? MEMORY_DIR;
+  const entries: MemoryEntry[] = [];
+  await collectEntriesRecursive(targetDir, targetDir, entries);
   entries.sort((a, b) => {
     const dateCmp = b.date.localeCompare(a.date);
     return dateCmp !== 0 ? dateCmp : a.filename.localeCompare(b.filename);
