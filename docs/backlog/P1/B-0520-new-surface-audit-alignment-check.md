@@ -1,5 +1,5 @@
 ---
-id: B-0329
+id: B-0520
 priority: P1
 status: open
 title: Mechanize new-surface audit for alignment-clause consistency
@@ -8,13 +8,14 @@ effort: S
 ask: Peel off from B-0058 — "New-surface audit" into atomic slice.
 created: 2026-05-14
 last_updated: 2026-05-14
+renumbered_from: "B-0329 (2026-05-14, ID collision with B-0329-claude-md-as-process-not-doctrine.md caught by Copilot review on PR #3247)"
 depends_on: [B-0058]
 composes_with: [docs/ALIGNMENT.md, docs/GLOSSARY.md]
 tags: [ai-ethics, alignment, new-surface-audit, decomposed, B-0058-slice]
 type: friction-reducer
 ---
 
-# B-0329 — Mechanize new-surface audit for alignment-clause consistency
+# B-0520 — Mechanize new-surface audit for alignment-clause consistency
 
 ## Origin
 

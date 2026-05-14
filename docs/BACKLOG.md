@@ -288,7 +288,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0485](backlog/P1/B-0485-persona-mapping-framework-template-substrate-inventory-2026-05-14.md)** B-0429.1 — Persona-mapping framework: define per-persona template + audit existing persona substrate
 - [x] **[B-0486](backlog/P1/B-0486-civsim-persona-map-2026-05-14.md)** B-0429.2 — Civsim persona map
 - [ ] **[B-0487](backlog/P1/B-0487-aurora-persona-map-2026-05-14.md)** B-0429.3 — Aurora persona map
-- [ ] **[B-0488](backlog/P1/B-0488-ksk-persona-map-2026-05-14.md)** B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map
+- [x] **[B-0488](backlog/P1/B-0488-ksk-persona-map-2026-05-14.md)** B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map
 - [ ] **[B-0489](backlog/P1/B-0489-wellness-app-persona-map-2026-05-14.md)** B-0429.5 — Wellness app persona map
 - [ ] **[B-0490](backlog/P1/B-0490-american-dream-dio-persona-map-2026-05-14.md)** B-0429.6 — American Dream 2.0 + DIO persona map
 - [ ] **[B-0491](backlog/P1/B-0491-dawn-universal-biz-templates-persona-map-2026-05-14.md)** B-0429.7 — Dawn + Universal business templates persona map
@@ -312,6 +312,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0512](backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md)** B-0448 slice 6 — Update tools/routines/README.md with 4-layer catch-43 table
 - [ ] **[B-0513](backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md)** B-0448 slice 7 — Memory file capturing empirical Cloud Routine bootstrap learning
 - [ ] **[B-0518](backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md)** Sharpen the holding-without-named-dependency rule — Aaron diagnosed CLAUDE.md bug
+- [ ] **[B-0520](backlog/P1/B-0520-new-surface-audit-alignment-check.md)** Mechanize new-surface audit for alignment-clause consistency
 
 ## P2 — research-grade
 
