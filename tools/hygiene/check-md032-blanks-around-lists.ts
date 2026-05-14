@@ -69,22 +69,27 @@ function isBlank(line: string): boolean {
 
 /**
  * A line is "list-friendly leading" if it can come right before a list
- * without an intervening blank. Three valid cases:
+ * without an intervening blank. Two valid cases:
  *
- * 1. ATX heading directly above list (markdownlint allows by default).
- * 2. Already a list-item line (the prior bullet — sibling/nested list).
- * 3. An indented continuation of a list item (the prior bullet's body
- *    text wraps onto multiple lines — markdown treats indented lines
- *    inside a list block as part of the previous item).
+ * 1. Already a list-item line (the prior bullet — sibling/nested list).
+ * 2. An indented continuation of a list item — BUT ONLY when we are
+ *    already confirmed to be inside a list block (`inList === true`).
+ *    Without the `inList` guard, ordinary prose indented 1–3 spaces
+ *    (which CommonMark permits) would be treated as list continuation
+ *    and suppress a real MD032 violation (Copilot P1 on PR #3075).
+ *
+ * Note: ATX headings are intentionally NOT list-friendly. markdownlint's
+ * blanks-around-lists check requires a blank line before a list even
+ * when the preceding line is a heading — treating headings as exempt
+ * produces false negatives in CI (Copilot P1 on PR #3075).
  */
-function isListFriendlyLeading(line: string): boolean {
-  // ATX heading: # ## ### etc. (with required space after).
-  if (/^#{1,6}\s+/.test(line)) return true;
+function isListFriendlyLeading(line: string, inList: boolean): boolean {
   // Already a list item — nested or sibling list, both fine.
   if (isListItemStart(line)) return true;
-  // Indented continuation of a list-item body (a leading space typically
-  // means we're inside a list block, not a new paragraph).
-  if (/^\s+\S/.test(line)) return true;
+  // Indented continuation of a list-item body — only suppress if we are
+  // already inside an established list block so that arbitrary indented
+  // prose lines do not get a free pass.
+  if (inList && /^\s+\S/.test(line)) return true;
   return false;
 }
 
@@ -104,23 +109,49 @@ export function findMd032Violations(content: string): { line: number; context: s
   // (e.g., a documentation example showing a bad MD032 pattern) aren't
   // flagged. Codex P2 on PR #3075.
   let inFencedCode = false;
-  // Walk pairwise: each list-start line is checked against the line before.
-  for (let i = 1; i < lines.length; i++) {
+  // Track whether we are inside a list block (reset by blank lines and
+  // fence boundaries). Used by isListFriendlyLeading to avoid treating
+  // ordinary indented prose as list continuation (Copilot P1 PR #3075).
+  let inList = false;
+
+  // Start at i=0 so a fenced-code open on the very first line is recorded.
+  // The original i=1 start caused the fence-state to be wrong for files
+  // whose first line is a fence marker (Copilot P1 on PR #3075).
+  for (let i = 0; i < lines.length; i++) {
     const cur = lines[i] ?? "";
+
     // Update fence state BEFORE the list-start check so a fence line
     // itself never registers as a list-start candidate.
     if (isFenceLine(cur)) {
       inFencedCode = !inFencedCode;
+      inList = false; // fence boundary also resets list context
       continue;
     }
     if (inFencedCode) continue;
-    if (!isListItemStart(cur)) continue;
-    const prev = lines[i - 1] ?? "";
-    if (isBlank(prev) || isListFriendlyLeading(prev)) continue;
-    findings.push({
-      line: i + 1, // 1-indexed
-      context: cur.slice(0, 60),
-    });
+
+    if (isBlank(cur)) {
+      inList = false;
+      continue;
+    }
+
+    if (isListItemStart(cur)) {
+      if (i > 0) {
+        // Check whether the immediately preceding line requires a blank.
+        // Pass inList so the continuation exemption is context-aware.
+        const prev = lines[i - 1] ?? "";
+        if (!isBlank(prev) && !isListFriendlyLeading(prev, inList)) {
+          findings.push({
+            line: i + 1, // 1-indexed
+            context: cur.slice(0, 60),
+          });
+        }
+      }
+      inList = true;
+    } else {
+      // Non-list non-blank line: if indented it MAY be a list-item body
+      // continuation — preserve inList. Otherwise the list block ended.
+      if (!/^\s+\S/.test(cur)) inList = false;
+    }
   }
   return findings;
 }
@@ -128,21 +159,28 @@ export function findMd032Violations(content: string): { line: number; context: s
 /**
  * Walk a list of files; collect MD032 findings; return them as an
  * array. The CLI `main()` owns the output boundary (stderr emit,
- * exit code). Unreadable files are skipped silently — push or CI
- * will surface the underlying I/O error.
+ * exit code).
+ *
+ * @param files - Paths to scan.
+ * @param surfaceReadErrors - When true, throw on unreadable files so
+ *   the caller (main) can exit non-zero. When false (default, used for
+ *   --staged mode), unreadable files are skipped silently — push or CI
+ *   will surface the underlying I/O error (Copilot P1 on PR #3075).
  */
-export function checkFiles(files: string[]): Md032Finding[] {
+export function checkFiles(files: string[], surfaceReadErrors = false): Md032Finding[] {
   const all: Md032Finding[] = [];
   for (const f of files) {
     let content: string;
     try {
       content = readFileSync(f, "utf-8");
-    } catch {
-      // Unreadable — skip silently. The audit-duplicate-row-ids tool's
-      // round-2 review pushed in the opposite direction (surface read
-      // errors) but here we're a fast pre-push helper; the user will
-      // see the broken file at push time or in CI anyway.
-      continue;
+    } catch (e) {
+      if (surfaceReadErrors) {
+        throw Object.assign(
+          new Error(`Cannot read '${f}': ${(e as NodeJS.ErrnoException).message ?? String(e)}`),
+          { cause: e },
+        );
+      }
+      continue; // --staged mode: silently skip; push/CI surfaces the I/O error
     }
     const findings = findMd032Violations(content);
     for (const finding of findings) {
@@ -158,6 +196,8 @@ export function checkFiles(files: string[]): Md032Finding[] {
 
 /**
  * Collect staged `.md` files via `git diff --name-only --cached`.
+ * Throws if the git command fails so the caller can exit non-zero
+ * instead of silently scanning zero files (Copilot P1 on PR #3075).
  */
 function stagedMarkdownFiles(repoRoot: string): string[] {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
@@ -167,8 +207,7 @@ function stagedMarkdownFiles(repoRoot: string): string[] {
     { encoding: "utf-8" },
   );
   if (r.status !== 0) {
-    console.error(`git diff failed: ${r.stderr ?? ""}`);
-    return [];
+    throw new Error(`git diff --cached failed: ${r.stderr?.trim() ?? "unknown error"}`);
   }
   return (r.stdout ?? "")
     .split("\n")
@@ -179,10 +218,16 @@ function stagedMarkdownFiles(repoRoot: string): string[] {
 function main(): number {
   const repoRoot = resolve(import.meta.dir, "..", "..");
   const argv = process.argv.slice(2);
+  const isStaged = argv.includes("--staged");
 
-  let files: string[];
-  if (argv.includes("--staged")) {
-    files = stagedMarkdownFiles(repoRoot);
+  let files: string[] = [];
+  if (isStaged) {
+    try {
+      files = stagedMarkdownFiles(repoRoot);
+    } catch (e) {
+      console.error(`check-md032: ${(e as Error).message}`);
+      return 1;
+    }
     if (files.length === 0) {
       console.log("check-md032: no staged .md files");
       return 0;
@@ -196,7 +241,15 @@ function main(): number {
     files = argv.map((f) => (f.startsWith("/") ? f : resolve(f)));
   }
 
-  const findings = checkFiles(files);
+  let findings: Md032Finding[];
+  try {
+    // Surface read errors for explicit file paths; suppress for --staged
+    // (CI will catch the broken file at push time).
+    findings = checkFiles(files, !isStaged);
+  } catch (e) {
+    console.error(`check-md032: ${(e as Error).message}`);
+    return 1;
+  }
 
   if (findings.length === 0) {
     console.log(`check-md032: ${files.length} file(s) scanned, no MD032 findings`);

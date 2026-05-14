@@ -85,16 +85,19 @@ More prose.
     expect(findMd032Violations(content)).toEqual([]);
   });
 
-  test("heading directly followed by list is clean (heading is list-friendly)", () => {
-    // Markdown allows a list immediately after a heading without a blank
-    // line — markdownlint by default permits this and we follow.
+  test("heading directly followed by list produces a finding (MD032 requires blank before list)", () => {
+    // markdownlint's blanks-around-lists check requires a blank line
+    // before a list even when the preceding line is a heading — treating
+    // headings as exempt produces false negatives in CI (Copilot P1 #3075).
     const content = `## Heading
 
 # Top-Level
 - item one
 - item two
 `;
-    expect(findMd032Violations(content)).toEqual([]);
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4); // "- item one" immediately after "# Top-Level"
   });
 
   test("nested list (list-item then deeper list) is clean", () => {
