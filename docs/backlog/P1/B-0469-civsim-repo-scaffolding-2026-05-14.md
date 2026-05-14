@@ -75,16 +75,18 @@ in the PR description as a manual follow-up.
 
 ## ADR scaffolding checklist (from B-0468)
 
-- [ ] Repo created: `Lucent-Financial-Group/civsim`
-- [ ] Visibility: **public** (glass-halo)
-- [ ] LICENSE: honor-system text (mutual-privacy FAQ clause)
-- [ ] `.zeta-version` pin file (immutable SHA/tag reference)
-- [ ] Branch protection on `main`: `required_conversation_resolution` + squash-only + no-force-push
-- [ ] CodeQL: enabled
-- [ ] `.claude/CLAUDE.md`: product-scoped bootstrap
-- [ ] Initial README: product carved sentence + honor-system license note
-- [ ] `repository_dispatch` subscription: wired for Zeta release-tag events
-- [ ] Claim released on bus after merge
+**`--apply` executed 2026-05-14T10:52Z by Otto (this session):**
+
+- [x] Repo created: `Lucent-Financial-Group/civsim` — https://github.com/Lucent-Financial-Group/civsim
+- [x] Visibility: **public** (glass-halo)
+- [x] LICENSE: honor-system text (mutual-privacy FAQ clause)
+- [x] `.zeta-version` pin file — pushed as `eaea0682...` (Zeta main at scaffold-template time); follow-up B-0470 bumps to `ce5c4101...` (Zeta main at apply-time)
+- [x] Branch protection on `main`: `required_conversation_resolution` + squash-only + no-force-push
+- [x] CodeQL: enabled (default-setup via API)
+- [x] `.claude/CLAUDE.md`: product-scoped bootstrap
+- [x] Initial README: product carved sentence + honor-system license note
+- [ ] `repository_dispatch` subscription: wired for Zeta release-tag events (glue mechanism; manual Forge CI config — pending when Forge ships)
+- [ ] Claim released on bus — pending PR merge
 
 ## Key differences from factory repos (forge/ace)
 
