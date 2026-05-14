@@ -8,7 +8,7 @@ merged_at: "2026-05-14T22:42:31Z"
 closed_at: "2026-05-14T22:42:32Z"
 head_ref: "shard/tick-2236Z-off-duty-checkpoint-otto-cli-2026-05-14"
 base_ref: "main"
-archived_at: "2026-05-14T23:09:18Z"
+archived_at: "2026-05-14T23:26:37Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
