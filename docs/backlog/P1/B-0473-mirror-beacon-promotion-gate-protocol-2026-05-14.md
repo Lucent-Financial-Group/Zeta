@@ -48,6 +48,7 @@ From `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicaliza
 > an external citation that did the same work in another domain."
 
 At repo scope, this means:
+
 - What citation threshold is required? (≥1 published work? ≥N?)
 - What citation types count? (academic papers, RFCs, published standards,
   industry specs with version + date?)
@@ -58,6 +59,7 @@ At repo scope, this means:
 ### 2. Alignment-floor check
 
 Beacon repos carry alignment-floor expectations. Specify:
+
 - Which `docs/ALIGNMENT.md` clauses are required at Beacon tier?
   (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5)
 - Is a passing alignment-audit required before promotion?
@@ -67,6 +69,7 @@ Beacon repos carry alignment-floor expectations. Specify:
 ### 3. Governance sign-off
 
 Specify who must approve a Mirror→Beacon promotion:
+
 - Aaron only?
 - Aaron + alignment-auditor audit passing?
 - PR process (merge to main = approval)?
@@ -75,10 +78,12 @@ Specify who must approve a Mirror→Beacon promotion:
 ### 4. Fork-engagement protocol change
 
 On promotion, fork-engagement protocol shifts:
+
 - Mirror: "forks encouraged to advance substrate (agree + push back)"
 - Beacon: "forks encouraged to validate / propose-promotion"
 
 Specify:
+
 - Is this change documented in the repo's README/CONTRIBUTING?
 - Is the license clause affected (honor-system language changes)?
 - Who updates the fork-engagement docs on promotion?
@@ -86,6 +91,7 @@ Specify:
 ### 5. Demotion criteria (Beacon→Mirror)
 
 Should downward mobility be possible? Specify:
+
 - Can a Beacon repo be demoted to Mirror?
 - Under what circumstances?
 - What happens to existing citation lineage?
@@ -99,6 +105,7 @@ docs/research/2026-05-14-mirror-beacon-promotion-gate-protocol-b0473.md
 ```
 
 Containing:
+
 - The 5 gate dimensions above, each with concrete answers
 - A single-page checklist a future agent can use when proposing promotion
 - A `PromotionProposal` template (frontmatter-based, analogous to ADR format)

@@ -89,6 +89,7 @@ docs/research/2026-05-14-mirror-beacon-two-axis-classification-matrix-b0472.md
 ```
 
 Containing:
+
 - Completed two-axis matrix (all rows filled with rationale)
 - Per-repo classification rationale (1-3 sentences each)
 - Any repos where classification is genuinely ambiguous (flag for B-0474 ADR)

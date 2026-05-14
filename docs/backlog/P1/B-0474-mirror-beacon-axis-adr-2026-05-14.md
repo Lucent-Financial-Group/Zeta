@@ -89,6 +89,7 @@ Required sections:
 ## Closing B-0426
 
 This ADR PR also:
+
 - Updates B-0426 status to `closed`
 - Updates B-0471/B-0472/B-0473/B-0474 to `closed`
 - Releases the `otto-cli` claim on B-0426
