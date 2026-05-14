@@ -35,6 +35,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0003](backlog/P1/B-0003-alignment-md-rewrite.md)** ALIGNMENT.md rewrite — incorporate Otto-281..287 + bidirectional alignment + factory-as-superfluid + Noether direction; spread via rigor not manipulation (matrix-pill not poison-pill)
 - [x] **[B-0006](backlog/P1/B-0006-memory-md-compression-pass-prune-distill-entries-to-one-line-cap-200-lines.md)** MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 - [ ] **[B-0058](backlog/P1/B-0058-ai-ethics-and-safety-research-track.md)** AI ethics + safety research track — filter-gate for resonance adoptions + alignment-clause consistency audit
+- [ ] **[B-0058.1](backlog/P1/B-0058.1-retractibility-gate.md)** AI ethics + safety research track — retractibility-and-log check
 - [ ] **[B-0060](backlog/P1/B-0060-human-lineage-external-anchor-backfill-all-substrate-beacon-safe.md)** Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept
 - [x] **[B-0061](backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)** Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
 - [x] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
@@ -251,9 +252,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0440](backlog/P1/B-0440-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
 - [ ] **[B-0441](backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
 - [ ] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
-- [ ] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
-- [ ] **[B-0504](backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md)** B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags
-- [ ] **[B-0505](backlog/P1/B-0505-b0442-slice5c-docs-autonomous-loop-acceptance-close-2026-05-14.md)** B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close
 - [x] **[B-0445](backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md)** C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API
 - [ ] **[B-0448](backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md)** Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers
 - [ ] **[B-0449](backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md)** bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)
@@ -302,6 +300,13 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
 - [ ] **[B-0504](backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md)** B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags
 - [ ] **[B-0505](backlog/P1/B-0505-b0442-slice5c-docs-autonomous-loop-acceptance-close-2026-05-14.md)** B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close
+- [ ] **[B-0507](backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md)** B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)
+- [ ] **[B-0508](backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md)** B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/
+- [ ] **[B-0509](backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md)** B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json
+- [ ] **[B-0510](backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md)** B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)
+- [ ] **[B-0511](backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md)** B-0448 slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation
+- [ ] **[B-0512](backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md)** B-0448 slice 6 — Update tools/routines/README.md with 4-layer catch-43 table
+- [ ] **[B-0513](backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md)** B-0448 slice 7 — Memory file capturing empirical Cloud Routine bootstrap learning
 
 ## P2 — research-grade
 
