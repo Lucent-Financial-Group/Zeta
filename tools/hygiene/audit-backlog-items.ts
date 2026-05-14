@@ -28,6 +28,10 @@
 //   6. Top-10 most-blocked rows (rows whose depends_on chain blocks the most
 //      downstream rows)
 //   7. Unclosed-but-merged rows (head-keyword matches recent merged-PR title)
+//   8. Duplicate IDs (multiple files claiming the same `id: B-NNNN`) —
+//      factory-wide uniqueness violation per tools/backlog/README.md.
+//      Surfaced 2026-05-14 (Copilot caught two files claiming B-0329 on
+//      PR #3247; PR #3249 added this audit class).
 //
 // Usage:
 //   bun tools/hygiene/audit-backlog-items.ts
@@ -543,6 +547,54 @@ async function reportMergedCandidates(
   console.log("");
 }
 
+function reportDuplicateIds(rows: readonly BacklogRow[]): number {
+  console.log(
+    "## 8. Duplicate IDs (factory-wide uniqueness violation)",
+  );
+  console.log("");
+  const byId = new Map<string, BacklogRow[]>();
+  for (const r of rows) {
+    const list = byId.get(r.id);
+    if (list === undefined) {
+      byId.set(r.id, [r]);
+    } else {
+      list.push(r);
+    }
+  }
+  const duplicates: Array<readonly [string, readonly BacklogRow[]]> = [];
+  for (const [id, list] of byId) {
+    if (list.length > 1) duplicates.push([id, list]);
+  }
+  duplicates.sort((a, b) => a[0].localeCompare(b[0]));
+  console.log(`**Duplicate-ID groups: ${duplicates.length}**`);
+  if (duplicates.length > 0) {
+    console.log("");
+    for (const [id, list] of duplicates) {
+      console.log(`### ${id} (${list.length} files claim this ID)`);
+      for (const r of list) {
+        console.log(
+          `  - ${r.path} (tier=${r.tier}, status=${r.status})`,
+        );
+      }
+      console.log("");
+    }
+    console.log(
+      "Resolution: renumber all-but-one of the colliding files to the next",
+    );
+    console.log(
+      "available B-NNNN ID; update frontmatter `id:`, body heading, and add a",
+    );
+    console.log(
+      "`renumbered_from:` breadcrumb. Per tools/backlog/README.md, backlog",
+    );
+    console.log(
+      "IDs must be factory-wide unique so edge references resolve unambiguously.",
+    );
+  }
+  console.log("");
+  return duplicates.length;
+}
+
 async function main(): Promise<number> {
   if (!existsSync(BACKLOG_ROOT)) {
     process.stderr.write(`ERROR: ${BACKLOG_ROOT} not found\n`);
@@ -580,6 +632,8 @@ async function main(): Promise<number> {
   const ghAvailable = await hasCommand("gh");
   await reportMergedCandidates(rows, ghAvailable);
 
+  const duplicateIdGroups = reportDuplicateIds(rows);
+
   console.log("## Summary");
   console.log("");
   console.log(`  - Total backlog rows: ${totalRows}`);
@@ -588,6 +642,7 @@ async function main(): Promise<number> {
     `  - Broken composes_with edges (B-NNNN refs only): ${brokenComposes}`,
   );
   console.log(`  - Orphan rows (no incoming graph edge): ${orphanCount}`);
+  console.log(`  - Duplicate-ID groups: ${duplicateIdGroups}`);
   console.log("");
   console.log(
     "Composes with: tools/hygiene/audit-lost-files.ts (sibling pattern),",
