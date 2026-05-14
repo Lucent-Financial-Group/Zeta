@@ -586,11 +586,15 @@ declared) against `CronList` and re-arms missing rows.
 
 - **Background Services Architecture** (B-0440, B-0441, B-0442) — the
   proactive multi-agent loop is augmented by macOS `launchd` background
-  daemons that ensure failure modes and deadlocks are broken without human
-  intervention. See `tools/bg/`. Currently launchd-registered:
-  `missed-substrate-detector.ts` (`.gemini/launchd/com.zeta.missed-substrate-detector.plist`).
-  `standing-by-detector.ts` is not yet wired to launchd (slice 5+ pending).
-  Note: plist files contain machine-specific paths and are maintainer-only artifacts.
+  daemons that ensure failure modes and deadlocks are broken without
+  human intervention. See `tools/bg/`. Currently 4 services exist in
+  `tools/bg/`; only `missed-substrate-detector.ts` is launchd-registered
+  (`.gemini/launchd/com.zeta.missed-substrate-detector.plist`). The other
+  three (`backlog-ready-notifier.ts`, `standing-by-detector.ts`,
+  `audit-duplicate-row-ids.ts`) are invokable on demand via
+  `bun tools/bg/<name>.ts --once` but not yet wired to launchd (B-0441
+  acceptance #2 + B-0442 slice 5+ pending). Note: plist files contain
+  machine-specific paths and are maintainer-only artifacts.
 
 - **`docs/hygiene-history/loop-tick-history.md`** — the
   factory's durable tick fire-log; appended to every tick
