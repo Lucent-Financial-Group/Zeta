@@ -1070,9 +1070,33 @@
                     </canvas>
                 </div>
                 <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0.75rem;" id="uxm-canvas-caption">
-                    Static mock data (slice-1). Formula: score = |v1 ^ v2| = |v1|*|v2|*sin(theta).
-                    Axes are orthogonal (theta = 90 deg, sin = 1) so score = adherence x evidence = 0.85 x 0.81 = 0.69.
+                    Formula: score = |v₁ ∧ v₂| = |v₁|·|v₂|·sin(θ). Use the slider below to adjust signal
+                    correlation. At θ = 90° the signals are independent and score = 0.85 × 0.81 × 1 = 69%.
                 </p>
+                <div style="margin-top:1.25rem; padding:1rem 1.25rem;
+                            background:rgba(0,0,0,0.18); border-radius:8px;
+                            border:1px solid var(--panel-border);">
+                    <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:0.65rem;">
+                        <label for="uxm-theta-slider"
+                               style="color:var(--text-muted); font-size:0.85rem; white-space:nowrap;">
+                            Signal correlation (θ):
+                        </label>
+                        <input type="range" id="uxm-theta-slider"
+                               min="25" max="90" value="90" step="5"
+                               style="flex:1; min-width:120px; max-width:280px;
+                                      accent-color:var(--accent-primary); cursor:pointer;"
+                               aria-label="Angle between witness signals in degrees, 25 to 90">
+                        <span id="uxm-theta-label"
+                              style="color:var(--accent-primary); font-weight:700; font-size:0.9rem;
+                                     min-width:3.5ch; text-align:right;">90°</span>
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.7;">
+                        Score = v₁ × v₂ × sin(θ) =
+                        <strong style="color:var(--accent-primary);" id="uxm-theta-formula">0.85 × 0.81 × 1.000 = 69%</strong>
+                        &ensp;·&ensp;
+                        <span id="uxm-theta-explain">θ = 90°: signals are independent — full weight</span>
+                    </div>
+                </div>
             </div>
 
             <div class="panel" style="margin-bottom: 2rem;">
@@ -1116,8 +1140,8 @@
                     two measurements that are really just one measurement dressed up twice.</p>
                     <br>
                     <p style="font-size:0.8rem;">
-                        Data source: static mock (slice-1)
-                        · slice-2 will connect to live alignment-audit output (B-0438)
+                        Data source: static mock (slice-1/2)
+                        · slice-3 will connect to live alignment-audit output (B-0438)
                         · rendered <span id="uxm-rendered-at">-</span>
                     </p>
                 </div>
@@ -2065,8 +2089,20 @@
             const btn = document.getElementById('tab-btn-ux-of-math');
             if (btn) btn.textContent = 'UX of Math (' + data.length + ')';
 
-            uxmDrawBivector();
+            uxmDrawBivector(90);
             uxmRenderScoreBoard(data);
+
+            // Slice-2: wire up correlation-angle slider
+            const slider = document.getElementById('uxm-theta-slider');
+            if (slider) {
+                slider.value = '90';
+                uxmUpdateThetaDisplay(90);
+                slider.addEventListener('input', () => {
+                    const t = parseInt(slider.value, 10);
+                    uxmUpdateThetaDisplay(t);
+                    uxmDrawBivector(t);
+                });
+            }
         }
 
         function uxmArrow(ctx, x1, y1, x2, y2, color, lineWidth) {
@@ -2089,7 +2125,8 @@
             ctx.fill();
         }
 
-        function uxmDrawBivector() {
+        function uxmDrawBivector(thetaDeg) {
+            if (thetaDeg === undefined) thetaDeg = 90;
             const canvas = document.getElementById('uxm-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
@@ -2101,12 +2138,19 @@
 
             ctx.clearRect(0, 0, W, H);
 
-            const OX = 100, OY = 310;   // origin pixel coords
-            const SCALE = 215;          // 1.0 unit = 215px
-            const v1 = 0.85;            // HC-1 adherence strength (e1 axis)
-            const v2 = 0.81;            // HC-1 evidence quality   (e2 axis)
-            const ex1 = OX + v1 * SCALE;
-            const ey2 = OY - v2 * SCALE;
+            const OX = 100, OY = 310;
+            const SCALE = 215;
+            const v1 = 0.85, v2 = 0.81;
+            const thetaRad = thetaDeg * Math.PI / 180;
+            const sinT = Math.sin(thetaRad);
+            const cosT = Math.cos(thetaRad);
+
+            // Parallelogram corners: O, P1 (v1 along e1), P12 (v1+v2), P2 (v2 at angle theta)
+            const ex1  = OX + v1 * SCALE;                    // P1 x
+            const v2px = OX + v2 * SCALE * cosT;             // P2 x
+            const v2py = OY - v2 * SCALE * sinT;             // P2 y  (canvas y is inverted)
+            const px12 = ex1 + v2 * SCALE * cosT;            // P12 x
+            const py12 = OY  - v2 * SCALE * sinT;            // P12 y
 
             // Gridlines
             ctx.strokeStyle = 'rgba(255,255,255,0.05)';
@@ -2145,33 +2189,35 @@
                 ctx.fillText(t.toFixed(2), OX - 6, OY - t * SCALE + 4);
             });
 
-            // Bivector area (shaded rectangle)
+            // Bivector area (shaded parallelogram — at theta=90 this is the original rectangle)
             ctx.fillStyle = 'rgba(139,92,246,0.20)';
             ctx.strokeStyle = 'rgba(139,92,246,0.50)';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.moveTo(OX, OY);
             ctx.lineTo(ex1, OY);
-            ctx.lineTo(ex1, ey2);
-            ctx.lineTo(OX, ey2);
+            ctx.lineTo(px12, py12);
+            ctx.lineTo(v2px, v2py);
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
 
-            // Dashed closing sides
+            // Dashed closing sides (opposite edges)
             ctx.strokeStyle = 'rgba(139,92,246,0.30)';
             ctx.lineWidth = 1;
             ctx.setLineDash([4, 4]);
-            ctx.beginPath(); ctx.moveTo(ex1, OY); ctx.lineTo(ex1, ey2); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(OX, ey2); ctx.lineTo(ex1, ey2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(ex1, OY); ctx.lineTo(px12, py12); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(v2px, v2py); ctx.lineTo(px12, py12); ctx.stroke();
             ctx.setLineDash([]);
 
-            // Area label inside rectangle
-            const areaLabel = (v1 * v2).toFixed(2);
+            // Area label at centroid of parallelogram
+            const area = v1 * v2 * sinT;
+            const midX = (OX + ex1 + px12 + v2px) / 4;
+            const midY = (OY + OY   + py12 + v2py) / 4;
             ctx.fillStyle = 'rgba(167,139,250,0.9)';
             ctx.font = 'bold 16px Outfit, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('area = ' + areaLabel, OX + (ex1 - OX) / 2, OY - (OY - ey2) / 2);
+            ctx.fillText('area = ' + area.toFixed(2), midX, midY);
 
             // v1 arrow (indigo, along e1)
             uxmArrow(ctx, OX, OY, ex1, OY, '#6366f1', 2.5);
@@ -2180,12 +2226,31 @@
             ctx.textAlign = 'center';
             ctx.fillText('v₁ = ' + v1, OX + (ex1 - OX) / 2, OY - 12);
 
-            // v2 arrow (emerald, along e2)
-            uxmArrow(ctx, OX, OY, OX, ey2, '#10b981', 2.5);
+            // v2 arrow (emerald, at angle theta from e1 axis)
+            uxmArrow(ctx, OX, OY, v2px, v2py, '#10b981', 2.5);
             ctx.fillStyle = '#10b981';
             ctx.font = 'bold 13px Outfit, sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText('v₂ = ' + v2, OX - 10, OY - (OY - ey2) / 2);
+            ctx.textAlign = thetaDeg > 60 ? 'right' : 'left';
+            const v2LabelX = thetaDeg > 60 ? v2px - 10 : v2px + 10;
+            const v2LabelY = (OY + v2py) / 2;
+            ctx.fillText('v₂ = ' + v2, v2LabelX, v2LabelY);
+
+            // Theta arc annotation (show angle between v1 and v2)
+            if (thetaDeg < 90) {
+                const arcR = 36;
+                ctx.strokeStyle = 'rgba(251,191,36,0.65)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(OX, OY, arcR, -thetaRad, 0);   // 0 = e1 direction; -thetaRad = v2 direction
+                ctx.stroke();
+                ctx.fillStyle = 'rgba(251,191,36,0.9)';
+                ctx.font = 'bold 12px Outfit, sans-serif';
+                ctx.textAlign = 'left';
+                const midAng = -thetaRad / 2;
+                ctx.fillText('θ=' + thetaDeg + '°',
+                    OX + (arcR + 6) * Math.cos(midAng),
+                    OY + (arcR + 6) * Math.sin(midAng));
+            }
 
             // Right-panel formula annotation
             const SPLIT = W / 2 + 10;
@@ -2198,18 +2263,22 @@
             ctx.fillText('HC-1: Non-deceptive', SPLIT, ry);
             ry += lineH * 1.6;
 
+            const scoreVal = Math.round(area * 100);
             const annoLines = [
-                { text: 'Two witness dimensions:', bold: true, color: 'rgba(255,255,255,0.85)' },
-                { text: '  v₁ = adherence strength = 0.85',  bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: '  v₂ = evidence quality   = 0.81',  bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: 'Two witness dimensions:', bold: true,  color: 'rgba(255,255,255,0.85)' },
+                { text: '  v₁ = adherence strength = 0.85', bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: '  v₂ = evidence quality   = 0.81', bold: false, color: 'rgba(148,163,184,0.85)' },
                 { text: '', bold: false, color: '' },
-                { text: 'Wedge product  (v₁ ∧ v₂):', bold: true, color: 'rgba(255,255,255,0.85)' },
+                { text: 'Wedge product  (v₁ ∧ v₂):', bold: true,  color: 'rgba(255,255,255,0.85)' },
                 { text: '  = |v₁| · |v₂| · sin(θ)', bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: '  = 0.85 · 0.81 · sin(90°)', bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: '  = 0.85 · 0.81 · 1', bold: false, color: 'rgba(148,163,184,0.85)' },
-                { text: '  = 0.69', bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  = 0.85 · 0.81 · sin(${thetaDeg}°)`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  = 0.85 · 0.81 · ${sinT.toFixed(3)}`, bold: false, color: 'rgba(148,163,184,0.85)' },
+                { text: `  = ${area.toFixed(2)}`, bold: false, color: 'rgba(148,163,184,0.85)' },
                 { text: '', bold: false, color: '' },
-                { text: 'Partial-credit score: 69%', bold: true, color: 'rgba(52,211,153,0.95)' },
+                { text: `Partial-credit score: ${scoreVal}%`, bold: true,
+                  color: scoreVal >= 80 ? 'rgba(52,211,153,0.95)'
+                                        : scoreVal >= 60 ? 'rgba(251,191,36,0.95)'
+                                                         : 'rgba(239,68,68,0.95)' },
             ];
 
             annoLines.forEach(line => {
@@ -2222,9 +2291,34 @@
             ry += 14;
             ctx.fillStyle = 'rgba(148,163,184,0.55)';
             ctx.font = '11px Outfit, sans-serif';
-            ctx.fillText('θ = 90° because adherence (e₁) ⊥ evidence (e₂)', SPLIT, ry);
-            ctx.fillText('Slice-1 uses axis-aligned orthogonal witnesses.', SPLIT, ry + 16);
-            ctx.fillText('Slice-2 will introduce non-orthogonal signals.', SPLIT, ry + 32);
+            if (thetaDeg === 90) {
+                ctx.fillText('θ = 90°: e₁ ⊥ e₂ — witnesses are independent.', SPLIT, ry);
+                ctx.fillText('Try the slider below to see correlation effects.', SPLIT, ry + 16);
+            } else if (thetaDeg <= 35) {
+                ctx.fillText(`θ = ${thetaDeg}°: signals strongly correlated ("echo-chamber").`, SPLIT, ry);
+                ctx.fillText('Low independence → small bivector area → low score.', SPLIT, ry + 16);
+            } else {
+                ctx.fillText(`θ = ${thetaDeg}°: partial correlation — sin(${thetaDeg}°) = ${sinT.toFixed(3)}.`, SPLIT, ry);
+                ctx.fillText('Score penalised: correlated evidence is weighted less.', SPLIT, ry + 16);
+            }
+        }
+
+        function uxmUpdateThetaDisplay(thetaDeg) {
+            const sinT = Math.sin(thetaDeg * Math.PI / 180);
+            const score = Math.round(0.85 * 0.81 * sinT * 100);
+            const labelEl  = document.getElementById('uxm-theta-label');
+            const formulaEl = document.getElementById('uxm-theta-formula');
+            const explainEl = document.getElementById('uxm-theta-explain');
+            if (labelEl)   labelEl.textContent = thetaDeg + '°';
+            if (formulaEl) formulaEl.textContent =
+                '0.85 × 0.81 × ' + sinT.toFixed(3) + ' = ' + score + '%';
+            if (explainEl) {
+                explainEl.textContent =
+                    thetaDeg === 90 ? 'θ = 90°: signals are independent — full weight'
+                  : thetaDeg >= 65  ? 'θ = ' + thetaDeg + '°: mild correlation — score ' + score + '%'
+                  : thetaDeg >= 40  ? 'θ = ' + thetaDeg + '°: moderate correlation — score ' + score + '%'
+                                    : 'θ = ' + thetaDeg + '°: strong correlation — echo-chamber signal, score ' + score + '%';
+            }
         }
 
         function uxmRenderScoreBoard(data) {
