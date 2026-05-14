@@ -9,6 +9,8 @@ import {
   globToRegex,
   loadMarkdownlintIgnores,
   stagedMarkdownFiles,
+  readStagedBlob,
+  checkStagedFiles,
 } from "./check-md032-blanks-around-lists.ts";
 
 describe("findMd032Violations", () => {
@@ -652,6 +654,82 @@ describe("globToRegex", () => {
     const re = globToRegex("file.md");
     expect(re.test("file.md")).toBe(true);
     expect(re.test("fileXmd")).toBe(false);
+  });
+});
+
+describe("readStagedBlob + checkStagedFiles", () => {
+  test("readStagedBlob returns staged content, not working-tree content (pre-CI review P1 on PR #3075 round 13)", () => {
+    // Stage a file with one content; edit working tree to a different
+    // content. `readStagedBlob` must return the staged version.
+    const dir = mkdtempSync(join(tmpdir(), "md032-staged-blob-"));
+    try {
+      spawnSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
+      spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: dir });
+      spawnSync("git", ["config", "user.name", "test"], { cwd: dir });
+
+      const filePath = join(dir, "shard.md");
+      writeFileSync(filePath, "# Staged version\nclean content\n");
+      spawnSync("git", ["add", "shard.md"], { cwd: dir });
+
+      // Now edit working tree.
+      writeFileSync(filePath, "# Working-tree version\ndifferent content\n");
+
+      const staged = readStagedBlob(dir, "shard.md");
+      expect(staged).toContain("Staged version");
+      expect(staged).not.toContain("Working-tree version");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("checkStagedFiles flags MD032 on staged blob, not on working-tree (round-13 divergence test)", () => {
+    // The staged blob has a clean shard; the working tree has an
+    // MD032-violating shard. `checkStagedFiles` must report clean
+    // (staged content is clean — what CI will lint).
+    const dir = mkdtempSync(join(tmpdir(), "md032-staged-blob-"));
+    try {
+      spawnSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
+      spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: dir });
+      spawnSync("git", ["config", "user.name", "test"], { cwd: dir });
+
+      const filePath = join(dir, "shard.md");
+      // Staged: clean (label, blank, list).
+      writeFileSync(filePath, "# Title\n\nLabel:\n\n- item\n");
+      spawnSync("git", ["add", "shard.md"], { cwd: dir });
+
+      // Working tree: violates MD032 (label, no blank, list).
+      writeFileSync(filePath, "# Title\n\nLabel:\n- item\n");
+
+      const findings = checkStagedFiles(dir);
+      expect(findings).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("checkStagedFiles flags MD032 when staged blob IS violating (control)", () => {
+    // Staged is violating; working tree is clean. Helper must flag
+    // the staged content (what CI will lint).
+    const dir = mkdtempSync(join(tmpdir(), "md032-staged-blob-"));
+    try {
+      spawnSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
+      spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: dir });
+      spawnSync("git", ["config", "user.name", "test"], { cwd: dir });
+
+      const filePath = join(dir, "shard.md");
+      // Staged: violates.
+      writeFileSync(filePath, "# Title\n\nLabel:\n- item\n");
+      spawnSync("git", ["add", "shard.md"], { cwd: dir });
+
+      // Working tree: cleaned up.
+      writeFileSync(filePath, "# Title\n\nLabel:\n\n- item\n");
+
+      const findings = checkStagedFiles(dir);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.file).toBe(`${dir}/shard.md`);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 

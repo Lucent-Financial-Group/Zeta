@@ -467,22 +467,94 @@ export function stagedMarkdownFiles(repoRoot: string): string[] {
     .map((line) => `${repoRoot}/${line}`);
 }
 
+/**
+ * Read the STAGED blob content for a given repo-relative path via
+ * `git show :path`. The `:path` refspec returns the version in the
+ * index (what `git commit` will record + what CI will lint), not the
+ * working-tree copy.
+ *
+ * Without this, `--staged` mode would scan the working-tree copy of
+ * each staged path. If a user stages a file, then edits it again
+ * before pushing, the gate could pass/fail on content different from
+ * what CI sees (pre-CI review P1 on PR #3075 round 13).
+ *
+ * Throws on git failure so the caller can fail loudly.
+ */
+export function readStagedBlob(repoRoot: string, repoRelPath: string): string {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
+  const r = spawnSync(
+    "git",
+    ["-C", repoRoot, "show", `:${repoRelPath}`],
+    { encoding: "utf-8" },
+  );
+  if (r.status !== 0 || r.error) {
+    const reason =
+      r.error?.message ??
+      (r.stderr ? r.stderr.trim() : "") ??
+      "unknown error";
+    throw new Error(
+      `git show :${repoRelPath} failed: ${reason || "unknown error"}`,
+    );
+  }
+  return r.stdout ?? "";
+}
+
+/**
+ * Scan staged Markdown files using their STAGED blob content (the
+ * version `git commit` will record), not the working-tree copy.
+ * Composes `stagedMarkdownFiles` (path discovery + ignore-glob
+ * filtering) with `readStagedBlob` (content read from the index).
+ *
+ * Returns the same `Md032Finding[]` shape as `checkFiles` for a
+ * single output channel in `main()`. The reported `file` field is
+ * the absolute path for diagnostic display; the content scanned IS
+ * the staged blob (pre-CI review P1 on PR #3075 round 13).
+ */
+export function checkStagedFiles(repoRoot: string): Md032Finding[] {
+  const paths = stagedMarkdownFiles(repoRoot);
+  const all: Md032Finding[] = [];
+  for (const absPath of paths) {
+    const repoRel = absPath.startsWith(`${repoRoot}/`)
+      ? absPath.slice(repoRoot.length + 1)
+      : absPath;
+    let content: string;
+    try {
+      content = readStagedBlob(repoRoot, repoRel);
+    } catch {
+      // Per round-2 discipline, `--staged` skips unreadable entries
+      // silently — push/CI surfaces the underlying I/O error.
+      continue;
+    }
+    for (const v of findMd032Violations(content)) {
+      all.push({ file: absPath, line: v.line, context: v.context });
+    }
+  }
+  return all;
+}
+
 export function main(): number {
   const repoRoot = resolve(import.meta.dir, "..", "..");
   const argv = process.argv.slice(2);
   const isStaged = argv.includes("--staged");
 
-  let files: string[] = [];
+  let findings: Md032Finding[];
+  let fileCount: number;
+
   if (isStaged) {
+    // `--staged` reads the index (staged blobs) — what CI will lint —
+    // not the working-tree copy, so an edit-after-stage doesn't make
+    // this gate diverge from CI (pre-CI review P1 on PR #3075 round 13).
     try {
-      files = stagedMarkdownFiles(repoRoot);
+      const paths = stagedMarkdownFiles(repoRoot);
+      if (paths.length === 0) {
+        console.log("check-md032: no staged .md files");
+        return 0;
+      }
+      fileCount = paths.length;
+      findings = checkStagedFiles(repoRoot);
     } catch (e) {
       console.error(`check-md032: ${(e as Error).message}`);
       return 1;
-    }
-    if (files.length === 0) {
-      console.log("check-md032: no staged .md files");
-      return 0;
     }
   } else if (argv.length === 0) {
     console.error(
@@ -490,21 +562,19 @@ export function main(): number {
     );
     return 1;
   } else {
-    files = argv.map((f) => (f.startsWith("/") ? f : resolve(f)));
-  }
-
-  let findings: Md032Finding[];
-  try {
-    // Surface read errors for explicit file paths; suppress for --staged
-    // (CI will catch the broken file at push time).
-    findings = checkFiles(files, !isStaged);
-  } catch (e) {
-    console.error(`check-md032: ${(e as Error).message}`);
-    return 1;
+    const files = argv.map((f) => (f.startsWith("/") ? f : resolve(f)));
+    fileCount = files.length;
+    try {
+      // Surface read errors for explicit file paths.
+      findings = checkFiles(files, true);
+    } catch (e) {
+      console.error(`check-md032: ${(e as Error).message}`);
+      return 1;
+    }
   }
 
   if (findings.length === 0) {
-    console.log(`check-md032: ${files.length} file(s) scanned, no MD032 findings`);
+    console.log(`check-md032: ${fileCount} file(s) scanned, no MD032 findings`);
     return 0;
   }
 
