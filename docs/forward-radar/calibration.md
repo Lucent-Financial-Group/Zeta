@@ -40,7 +40,7 @@ to evaluate.
 
 | Cycle | Period | Friction-encounters | Predicted | Lead-time% | PM-2 rows filed | Picked up (4 rounds) | Action-rate% | Notes |
 |---|---|---|---|---|---|---|---|---|
-| FR-0 (cold-start) | — | — | — | 0% (baseline) | 0 | — | — | Role activated; metrics begin next cycle |
+| FR-0 (cold-start) | — | — | — | n/a (0/0) | 0 | — | n/a (0/0) | Role activated; metrics begin next cycle |
 
 ---
 
@@ -65,6 +65,7 @@ anti-patterns: "more bureaucracy" and "research without action."_
    is zero, record `n/a (0/0)` per the zero-denominator rule
    above.
 4. Count PM-2 B-rows older than 4 rounds; count how many the
-   PM-1 role picked up. Divide for Action-rate%. Same
-   zero-denominator rule applies.
+   PM-1 role picked up **within those 4 rounds** (late pickups
+   after the 4-round window do not count). Divide for
+   Action-rate%. Same zero-denominator rule applies.
 5. Add a row to the calibration log above.
