@@ -10,6 +10,7 @@ head_ref: "chore/b-0442-decompose-slice5-2026-05-14"
 base_ref: "main"
 archived_at: "2026-05-14T18:24:10Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
+archive_note: "PR #3151 merged at 18:08Z; this archive PR was branched from commit 09fa6185 (pre-merge). The referenced files (B-0503, B-0504, B-0505, docs/BACKLOG.md) were added to main by PR #3151 (commit 759af2d6) and are present on main. They do not appear in this archive PR's diff because this is a documentation-only record, not a re-application of those changes."
 ---
 
 # PR #3151: chore(b-0442): decompose into atomic child rows B-0503/B-0504/B-0505
