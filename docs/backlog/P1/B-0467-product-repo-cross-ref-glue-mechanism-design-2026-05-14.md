@@ -9,9 +9,9 @@ created: 2026-05-14
 last_updated: 2026-05-14
 depends_on:
   - B-0465
-  - B-0424
 composes_with:
   - B-0425
+  - B-0424
   - B-0426
   - B-0427
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md
