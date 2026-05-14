@@ -278,8 +278,79 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 16", () => {
+  test("after-list MD032: list directly followed by heading fires on heading line (pre-CI review P1 on PR #3075 round 16)", () => {
+    // The list at line 3 isn't followed by a blank; the heading at
+    // line 4 violates the "blank after list" side of MD032.
+    const content = `# Title
+
+- item
+## Heading
+
+Body text.
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("after-list MD032: list directly followed by thematic break fires", () => {
+    const content = `# Title
+
+- item
+---
+
+Body text.
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("after-list MD032 is suppressed when blank line separates list from heading (control)", () => {
+    const content = `# Title
+
+- item
+
+## Heading
+
+Body.
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("blockquote indent inside quote is capped at 0-3 spaces (round 16 refining round 14)", () => {
+    // \`>     - item\` is 5 spaces inside the blockquote — that's
+    // indented code, not a list per CommonMark. Should NOT be
+    // recognised as a list-start, so the preceding label shouldn't
+    // fire MD032.
+    const content = `# Title
+
+Some prose:
+>     - this is 5-space-indented inside the quote, not a list
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("blockquote indent within cap (0-3 spaces) IS still a list", () => {
+    // \`>   - item\` is 3 spaces — still a blockquoted list.
+    const content = `# Title
+
+Label:
+>   - item
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+});
+
 describe("findMd032Violations — round 15", () => {
   test("thematic break (`---`) between two lists terminates the first list (pre-CI review P1 on PR #3075 round 15)", () => {
+    // Two findings: after-list MD032 at line 4 (thematic break with
+    // no blank before it) AND before-list MD032 at line 5 (`- item b`
+    // after non-blank thematic break). Both sides of MD032 fire here
+    // (round 16 round-out).
     const content = `# Title
 
 - item a
@@ -287,8 +358,9 @@ describe("findMd032Violations — round 15", () => {
 - item b
 `;
     const findings = findMd032Violations(content);
-    expect(findings).toHaveLength(1);
-    expect(findings[0]?.line).toBe(5); // "- item b"
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4); // `---` after list with no blank
+    expect(findings[1]?.line).toBe(5); // `- item b` after non-blank
   });
 
   test("thematic break with asterisks (`***`) also terminates", () => {
@@ -299,13 +371,15 @@ describe("findMd032Violations — round 15", () => {
 - item b
 `;
     const findings = findMd032Violations(content);
-    expect(findings).toHaveLength(1);
-    expect(findings[0]?.line).toBe(5);
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4);
+    expect(findings[1]?.line).toBe(5);
   });
 
   test("blockquote line after a top-level list terminates the list", () => {
-    // \`- a / > quote / - b\` — the blockquote opens a new block, the
-    // top-level list ends, the new bullet needs a blank line.
+    // `- a / > quote / - b` — both sides of MD032 fire: after-list
+    // at line 4 (blockquote with no blank before it) and before-list
+    // at line 5 (new bullet after non-blank).
     const content = `# Title
 
 - item a
@@ -313,8 +387,9 @@ describe("findMd032Violations — round 15", () => {
 - item b
 `;
     const findings = findMd032Violations(content);
-    expect(findings).toHaveLength(1);
-    expect(findings[0]?.line).toBe(5);
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4);
+    expect(findings[1]?.line).toBe(5);
   });
 
   test("blockquote continuation does NOT terminate a blockquoted list (control)", () => {
@@ -330,10 +405,13 @@ describe("findMd032Violations — round 15", () => {
     expect(findMd032Violations(content)).toEqual([]);
   });
 
-  test("`---` after a list-item line that ends in `-` is still a thematic break", () => {
+  test("`---` after a list-item line that ends in `-` is still a thematic break (with after-list MD032)", () => {
     // Regression-guard: \`---\` is a thematic break per CommonMark
     // even though it looks like three list-marker characters (the
     // isListItemStart regex requires whitespace after the marker).
+    // After the round-16 after-list-MD032 fix, this also fires on
+    // line 4: the list at line 3 isn't followed by a blank, so the
+    // thematic break violates the "blank after list" side of MD032.
     const content = `# Title
 
 - a
@@ -341,7 +419,9 @@ describe("findMd032Violations — round 15", () => {
 
 More prose.
 `;
-    expect(findMd032Violations(content)).toEqual([]);
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4); // `---` immediately after list
   });
 });
 
@@ -386,10 +466,14 @@ describe("findMd032Violations — round 14", () => {
 - item two
 `;
     const findings = findMd032Violations(content);
-    expect(findings).toHaveLength(1);
-    // Line 7 = "- item two" — the new-list-start after the blockquoted
-    // fence terminates the prior list.
-    expect(findings[0]?.line).toBe(7);
+    // Two findings per the round-16 round-out: the blockquoted fence
+    // at line 4 immediately follows the list-item without a blank
+    // (after-list side of MD032), and the new bullet at line 7 lands
+    // immediately after the fence-close without a blank (before-list
+    // side of MD032).
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4);
+    expect(findings[1]?.line).toBe(7);
   });
 });
 
@@ -410,17 +494,18 @@ describe("findMd032Violations — round 12", () => {
     expect(findings[0]?.line).toBe(6);
   });
 
-  test("heading immediately followed by list (no blank between blank-before-heading and the list line) fires MD032", () => {
+  test("heading immediately followed by list (no blank) fires MD032 on BOTH sides (pre-CI review P1 on PR #3075 round 16)", () => {
     const content = `- item a
 ## Heading
 - item b
 `;
     const findings = findMd032Violations(content);
-    // Two MD032 hits:
-    // - line 2 `## Heading` after `- item a`: heading right after list, no blank — but MD032 is about LISTS not headings, so this isn't flagged HERE.
-    // - line 3 `- item b` after the heading: a new list with non-blank predecessor.
-    expect(findings).toHaveLength(1);
-    expect(findings[0]?.line).toBe(3);
+    // After the round-16 after-list fix, both sides of MD032 fire:
+    // - line 2 `## Heading` after `- item a` (list not followed by blank)
+    // - line 3 `- item b` after the heading (new list not preceded by blank)
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(2);
+    expect(findings[1]?.line).toBe(3);
   });
 
   test("fenced code inside blockquote is recognised (pre-CI review P1 on PR #3075 round 12)", () => {
@@ -475,13 +560,10 @@ describe("findMd032Violations — round 10", () => {
     expect(findMd032Violations(content)).toEqual([]);
   });
 
-  test("flush-left fence between bullets DOES split the list (pre-CI review P1 on PR #3075 round 12 — refines round 10)", () => {
-    // CommonMark: a flush-left (non-indented) fenced block is a
-    // top-level block that terminates the surrounding list. The
-    // second bullet that follows the fence-close is the start of a
-    // new list and requires a blank line — markdownlint MD032 fires.
-    // The round-10 test that asserted clean was the false negative
-    // (round-12 review caught it).
+  test("flush-left fence between bullets DOES split the list (round 12 + round 16)", () => {
+    // Both sides of MD032 fire after the round-16 round-out:
+    // - line 4: fence-open immediately after `- item one` (after-list)
+    // - line 7: `- item two` immediately after fence-close (before-list)
     const content = `# Title
 
 - item one
@@ -491,9 +573,9 @@ code at flush-left between bullets
 - item two
 `;
     const findings = findMd032Violations(content);
-    expect(findings).toHaveLength(1);
-    // Line 7 is "- item two" — the new-list-start after the fence-close.
-    expect(findings[0]?.line).toBe(7);
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4);
+    expect(findings[1]?.line).toBe(7);
   });
 });
 

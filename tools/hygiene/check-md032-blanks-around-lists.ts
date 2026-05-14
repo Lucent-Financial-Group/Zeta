@@ -74,13 +74,24 @@ function isListItemStart(line: string): boolean {
   // `> > 1) nested`) is still recognised as a list-item start.
   // markdownlint MD032 enforces blanks around lists even inside
   // blockquotes (pre-CI review P1 on PR #3075 round 9).
-  // The blockquote-prefix `(>[ \t]*)*` allows multiple spaces after
-  // each `>` marker. CommonMark blockquote syntax is `>` followed by
-  // optional whitespace; `>   - item` (3 spaces between `>` and the
-  // marker) is a valid blockquoted list. The earlier `>\s?` regex
-  // only allowed 0-1 space and missed those (pre-CI review P1 on PR
-  // #3075 round 14).
-  return /^ {0,3}(>[ \t]*)*([-+*]|\d{1,9}[.)])\s+/.test(line);
+  // Blockquote-prefix matching: each `>` marker has at most ONE
+  // optional space immediately after it (per CommonMark spec on
+  // blockquote markers). Additional spaces before the list marker
+  // are counted toward the list-item indent which is CAPPED at 0-3
+  // (4+ is indented code, not a list — same rule as the top-level
+  // case). Earlier rounds allowed unbounded post-`>` whitespace and
+  // would treat `>     - item` (5+ spaces, indented code inside the
+  // quote) as a list (pre-CI review P1 on PR #3075 round 16).
+  // Two-branch indent: when there's no blockquote prefix, allow up
+  // to 3 leading spaces (the standard list-item indent cap). When
+  // there IS a blockquote prefix (`(>[ \t]?)+`), allow 0-3 leading
+  // spaces BEFORE the prefix AND 0-3 spaces AFTER (the list-item
+  // indent cap inside the blockquote sub-context). Making the
+  // blockquote-chain optional keeps the 0-3 total cap for the
+  // non-blockquote case — a 4-space-indented `    - option` is
+  // indented code, not a list (pre-CI review P1 on PR #3075 round 16
+  // refining round 14's accidental combined-indent permissiveness).
+  return /^ {0,3}(?:(?:>[ \t]?)+ {0,3})?([-+*]|\d{1,9}[.)])\s+/.test(line);
 }
 
 /**
@@ -111,7 +122,7 @@ function isBlank(line: string): boolean {
  * round 12).
  */
 function isHeading(line: string): boolean {
-  return /^ {0,3}(?:>[ \t]*)*#{1,6}\s+/.test(line);
+  return /^ {0,3}(?:(?:>[ \t]?)+ {0,3})?#{1,6}\s+/.test(line);
 }
 
 /**
@@ -283,12 +294,17 @@ export function findMd032Violations(content: string): { line: number; context: s
         // A BLOCKQUOTED fence (`> \`\`\``) is ALSO treated as a
         // top-level block boundary — the blockquote opens a new
         // block context, which terminates an enclosing top-level
-        // list. Earlier rounds treated `[ \t>]` symmetrically and
-        // kept `inList` on blockquoted fences, but that was a false
-        // negative for `- item / > \`\`\`code\`\`\` / - new-item`
-        // where the second bullet starts a new list and needs a
-        // blank (pre-CI review P1 on PR #3075 round 14).
+        // list (pre-CI review P1 on PR #3075 round 14).
         if (!/^[ \t]/.test(cur)) {
+          // Also fire MD032 here if the list above wasn't blank-
+          // separated (the after-list side, pre-CI review P1 on
+          // PR #3075 round 16).
+          if (inList !== false && i > 0) {
+            const prev = lines[i - 1] ?? "";
+            if (!isBlank(prev)) {
+              findings.push({ line: i + 1, context: cur.slice(0, 60) });
+            }
+          }
           inList = false;
         }
         openFence = { char: fence.char, len: fence.len };
@@ -323,14 +339,24 @@ export function findMd032Violations(content: string): { line: number; context: s
     if (isHeading(cur)) {
       // ATX heading terminates the prior list per CommonMark. A list
       // immediately after the heading is conceptually a new list; MD032
-      // requires a blank line between heading and list. The list-start
-      // branch already flags that case when prev = heading and inList
-      // = false (round-2 fix). What was missing: when a heading appears
-      // BETWEEN two bullet lists, the second bullet was treated as a
-      // continuation of the first list (false negative). Resetting
-      // inList here makes the second bullet a new-list candidate so
-      // its predecessor (the heading) triggers MD032 (pre-CI review
-      // P1 on PR #3075 round 12).
+      // requires a blank line between heading and list (round-2 fix +
+      // round-12 round-out: when a heading appears BETWEEN two bullet
+      // lists, the second bullet was being treated as a continuation
+      // of the first list — false negative; resetting inList here
+      // makes the second bullet a new-list candidate so its predecessor
+      // triggers MD032 — pre-CI review P1 on PR #3075 round 12).
+      //
+      // The other MD032 side: when a heading appears DIRECTLY after a
+      // list-item (no blank in between), the LIST itself is also not
+      // surrounded by blank lines. Fire MD032 at the heading's line
+      // (pre-CI review P1 on PR #3075 round 16 — the after-list side
+      // of MD032 that was previously missing).
+      if (inList !== false && i > 0) {
+        const prev = lines[i - 1] ?? "";
+        if (!isBlank(prev)) {
+          findings.push({ line: i + 1, context: cur.slice(0, 60) });
+        }
+      }
       inList = false;
       continue;
     }
@@ -362,15 +388,25 @@ export function findMd032Violations(content: string): { line: number; context: s
       inList = /^ {0,3}>/.test(cur) ? "block" : "top";
     } else if (isThematicBreak(cur)) {
       // Thematic break (`---`, `***`, `___`) terminates any list per
-      // CommonMark — `- a / --- / - b` is two lists separated by a
-      // thematic break. The next list-start must fire MD032 if not
-      // preceded by a blank (pre-CI review P1 on PR #3075 round 15).
+      // CommonMark (round 15). Also fire MD032 at this line if the
+      // list above wasn't blank-separated (after-list side, round 16).
+      if (inList !== false && i > 0) {
+        const prev = lines[i - 1] ?? "";
+        if (!isBlank(prev)) {
+          findings.push({ line: i + 1, context: cur.slice(0, 60) });
+        }
+      }
       inList = false;
     } else if (isBlockquoteLine(cur) && inList === "top") {
-      // A blockquote line after a TOP-LEVEL list terminates it — the
-      // blockquote opens a new block type. For a blockquoted list
-      // (`inList === "block"`), `>` lines are continuations / siblings
-      // and don't reset (pre-CI review P1 on PR #3075 round 15).
+      // A blockquote line after a TOP-LEVEL list terminates it
+      // (round 15). Fire MD032 if the list above wasn't blank-
+      // separated (after-list side, round 16).
+      if (i > 0) {
+        const prev = lines[i - 1] ?? "";
+        if (!isBlank(prev)) {
+          findings.push({ line: i + 1, context: cur.slice(0, 60) });
+        }
+      }
       inList = false;
     } else {
       // Other non-list, non-blank, non-heading, non-fence,
@@ -575,10 +611,20 @@ export function readStagedBlob(repoRoot: string, repoRelPath: string): string {
  * the absolute path for diagnostic display; the content scanned IS
  * the staged blob (pre-CI review P1 on PR #3075 round 13).
  */
-export function checkStagedFiles(repoRoot: string): Md032Finding[] {
-  const paths = stagedMarkdownFiles(repoRoot);
+export function checkStagedFiles(
+  repoRoot: string,
+  paths?: string[],
+): Md032Finding[] {
+  // Allow the caller to pass in the discovered staged-path list to
+  // avoid running `git diff --name-only --cached` twice in one
+  // invocation. When omitted, `stagedMarkdownFiles` is called here
+  // (kept for callers that just want a one-shot run). Passing the
+  // pre-discovered list also avoids `fileCount` divergence if the
+  // index changes between the two calls (pre-CI review P2 on PR
+  // #3075 round 16).
+  const targets = paths ?? stagedMarkdownFiles(repoRoot);
   const all: Md032Finding[] = [];
-  for (const absPath of paths) {
+  for (const absPath of targets) {
     const repoRel = absPath.startsWith(`${repoRoot}/`)
       ? absPath.slice(repoRoot.length + 1)
       : absPath;
@@ -617,7 +663,11 @@ export function main(): number {
         return 0;
       }
       fileCount = paths.length;
-      findings = checkStagedFiles(repoRoot);
+      // Pass the discovered paths through to avoid a second
+      // `git diff --name-only --cached` invocation + any divergence
+      // if the index changes between the two calls (pre-CI review
+      // P2 on PR #3075 round 16).
+      findings = checkStagedFiles(repoRoot, paths);
     } catch (e) {
       console.error(`check-md032: ${(e as Error).message}`);
       return 1;
