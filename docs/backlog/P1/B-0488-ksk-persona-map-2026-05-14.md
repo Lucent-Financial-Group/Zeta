@@ -1,7 +1,8 @@
 ---
 id: B-0488
 priority: P1
-status: in-progress
+status: closed
+closed_by: "PR #3235 (2026-05-14)"
 title: "B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map"
 type: planning
 origin: B-0429 decomposition (Otto, 2026-05-14)
@@ -65,12 +66,12 @@ With:
 
 ## Definition of done
 
-- [ ] Template from B-0485 applied
-- [ ] Grey-hat / ethical researcher primary persona fully documented
-- [ ] At least 2 refused personas with explicit HARD LIMITS rationale
-- [ ] Output doc committed at canonical path
-- [ ] B-0492 `composes_with:` pointer backfilled
-- [ ] B-0488 status set to `closed` with PR link
+- [x] Template from B-0485 applied
+- [x] Grey-hat / ethical researcher primary persona fully documented (folded into `ksk-security-engineer` per glossary's "small bit of code that gets disproportionate review" framing — engineering itself IS the ethical-research operating mode for this product)
+- [x] At least 2 refused personas with explicit HARD LIMITS rationale (R1 `ksk-refused-weapons-control` + R2 `ksk-refused-apt-operator`)
+- [x] Output doc committed at canonical path (`docs/personas/ksk-personas.md`)
+- [x] B-0492 `composes_with:` pointer backfilled (already present in B-0492 frontmatter — verified 2026-05-14)
+- [x] B-0488 status set to `closed` with PR link (PR #3235; this commit)
 
 ## Why P1
 
