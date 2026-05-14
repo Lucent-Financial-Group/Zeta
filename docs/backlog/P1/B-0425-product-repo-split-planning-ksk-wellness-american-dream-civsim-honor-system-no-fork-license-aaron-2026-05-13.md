@@ -1,12 +1,19 @@
 ---
 id: B-0425
 priority: P1
-status: open
+status: decomposed
 title: "Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license"
 type: planning
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
+decomposed_into:
+  - B-0464
+  - B-0465
+  - B-0466
+  - B-0467
+  - B-0468
+closed_by: B-0468
 composes_with:
   - B-0424
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md
@@ -78,21 +85,71 @@ please" license:
 7. **Dawn** (child-AI charter) — alignment-floor for next-
    generation AI participants
 
-## Pre-start checklist
+## Pre-start checklist — COMPLETED 2026-05-14 (decomposition)
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-1. **Prior-art-search** — verify each product has substrate
-   established to justify its own repo (not just an idea-sized
-   substrate); some products may not be repo-ready yet
-2. **Dependency-restructure** — clear `composes_with:` graph
-   between product repos + factory repos + Zeta
-3. **Naming-expert review** — for each product repo name
-   before public-announce (composing with Ilyana's authority
-   per `.claude/skills/naming-expert/SKILL.md`)
-4. **License language drafted** — substrate-honest honor-
-   system framing; not legalistic; clear that the ask is
-   honor-system + non-enforceable
+1. **Prior-art-search** — ✓ Completed 2026-05-14:
+   - `memory/feedback_aaron_honor_system_no_fork_license_*` — read; substrate current
+   - `memory/feedback_aaron_civsim_forkable_*` — read; civsim multi-player + mutual
+     privacy design confirmed; forkable by design
+   - `memory/feedback_aaron_ksk_kinetic_safeguard_kernel_*` — read; KSK origin from
+     Aaron + Amara consent-first design; Homeland Security clearance substrate confirmed
+   - `memory/project_three_repo_split_zeta_forge_ace_*` — read; B-0424 pattern confirmed
+   - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` — read; sibling ADR
+   - Skill router check: no existing product-repo-split skill; this is greenfield
+   - No duplicate rows in backlog for this planning work
+
+2. **Dependency-restructure** — ✓ Completed 2026-05-14:
+   - `composes_with:` graph updated in frontmatter (B-0424 as sibling, memory files)
+   - B-0424 already has `composes_with: B-0425` pointer
+   - Five child rows authored (B-0464–B-0468) with explicit `depends_on:` edges
+
+3. **Naming-expert review** — ✓ Scoped to child row B-0466
+   (per `.claude/skills/naming-expert/SKILL.md`); Ilyana's authority is exercised
+   at B-0466 execution time, not at decomposition time
+
+4. **License language drafted** — ✓ Scoped to child row B-0464
+   (independent of per-product research; can start immediately)
+
+## Decomposition — COMPLETED 2026-05-14
+
+This row is too broad to implement atomically. Decomposed 2026-05-14 into 5
+dependency-ordered child rows. The row status is `decomposed`; B-0425 closes
+when B-0468 merges its ADR.
+
+### Child rows — dependency graph
+
+```
+B-0464 ─────────────────────────────→ B-0468 (closes B-0425)
+B-0465 →──→ B-0466 →────────────────→ B-0468
+         └──→ B-0467 ────────────────→ B-0468
+B-0424 ──────→ B-0467
+```
+
+### Child row summary
+
+| Row | Title | Depends on | Type |
+|-----|-------|------------|------|
+| **B-0464** | Honor-system "please don't fork" license language draft | none | design |
+| **B-0465** | Per-product substrate inventory — 7 candidates, repo-ready eval | none | research |
+| **B-0466** | Naming-expert review for product repo names | B-0465 | design |
+| **B-0467** | Product-repo cross-ref glue mechanism design | B-0465, B-0424 | design |
+| **B-0468** | ADR — product-repo split decisions (closes B-0425) | B-0464, B-0465, B-0466, B-0467 | design |
+
+### What can start immediately (no blockers)
+
+- **B-0464** — license language; pure design against established constraints
+- **B-0465** — substrate inventory; pure research / grep work
+
+### What is unblocked by B-0465
+
+- **B-0466** — needs to know which products get repos before reviewing slugs
+- **B-0467** — needs product list + B-0424 pattern to design the glue mechanism
+
+### What requires all four to complete
+
+- **B-0468** — the ADR synthesizes everything; closes B-0425 when merged
 
 ## What this row does NOT commit to
 
