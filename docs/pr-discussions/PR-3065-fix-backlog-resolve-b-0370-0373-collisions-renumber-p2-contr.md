@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Third per-collision cleanup from the [B-0451](docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) sweep. Four collisions form one connected cluster (B-0092 parent + internal `depends_on` chain).
+Third per-collision cleanup from the [B-0451](../backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) sweep. Four collisions form one connected cluster (B-0092 parent + internal `depends_on` chain).
 
 ## The collisions
 
@@ -35,7 +35,7 @@ Per first-merged-wins + external-references:
 
 - The P1 set was filed 2 days earlier via [#2269](https://github.com/Lucent-Financial-Group/Zeta/pull/2269) (itself a prior collision-resolution sweep).
 - B-0370 P1 + B-0373 P1 are already shipped (`[x]` in BACKLOG.md).
-- External P1 references in [PR review history](docs/history/pr-reviews/PR-2369-fix-backlog-refresh-generated-index-after-pr-2367.md) and a [memory file](memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md).
+- External P1 references in [PR review history](../history/pr-reviews/PR-2369-fix-backlog-refresh-generated-index-after-pr-2367.md) and a [memory file](../../memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md).
 - The P2 set's references are internal (parent + chain) — editable in this PR.
 
 → Keep P1 set; renumber P2 set as a unit:
@@ -52,7 +52,7 @@ B-0373 → B-0455 (T4+T5 trajectories)
 - `B-0453.depends_on: [B-0370]` → `[B-0452]`
 - `B-0454.depends_on: [B-0370]` → `[B-0452]`
 - `B-0455.depends_on: [B-0370, B-0371]` → `[B-0452, B-0453]`
-- [B-0092](docs/backlog/P2/B-0092-public-company-contributor-compliance-doc-and-cadenced-trajectories-aaron-2026-04-28.md) parent body §Decomposition updated to new IDs with renumber note
+- [B-0092](../backlog/P2/B-0092-public-company-contributor-compliance-doc-and-cadenced-trajectories-aaron-2026-04-28.md) parent body §Decomposition updated to new IDs with renumber note
 
 Each row has `renumbered_from: B-NNNN` + reason in frontmatter.
 
@@ -62,7 +62,7 @@ Each row has `renumbered_from: B-NNNN` + reason in frontmatter.
 |---|---|---|
 | Duplicate-ID groups | 11 | 7 |
 
-[B-0451](docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) cleanup progress: **1/12 → 9/12** (after [#3058](https://github.com/Lucent-Financial-Group/Zeta/pull/3058) merges too).
+[B-0451](../backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) cleanup progress: **1/12 → 9/12** (after [#3058](https://github.com/Lucent-Financial-Group/Zeta/pull/3058) merges too).
 
 Remaining 3 groups: `B-0409` (3-way), `B-0410`, `B-0411`.
 
