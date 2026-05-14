@@ -1,7 +1,9 @@
 ---
 id: B-0485
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "docs/research/2026-05-14-persona-mapping-framework-b0485.md"
 title: "B-0429.1 — Persona-mapping framework: define per-persona template + audit existing persona substrate"
 type: research
 origin: B-0429 decomposition (Otto, 2026-05-14)
@@ -39,13 +41,13 @@ existing work.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Survey `memory/user_*.md` files for existing persona substrate
-- [ ] Read Aurora pitch (PR #2924) for implicit persona enumeration
-- [ ] Read Imagination Circle substrate (PR #2893) for family-AI personas
-- [ ] Read Center-First Playbook (PR #2894) for Mom + family member personas
-- [ ] Read parenting-history substrate (PR #2900) for Aaron's kids personas
-- [ ] Walk `composes_with:` chain (B-0429 → B-0424 → B-0425)
-- [ ] Otto-364: check WONT-DO.md for any refused persona-mapping work
+- [x] Survey `memory/user_*.md` files for existing persona substrate
+- [x] Read Aurora pitch (PR #2924) for implicit persona enumeration
+- [x] Read Imagination Circle substrate (PR #2893) for family-AI personas
+- [x] Read Center-First Playbook (PR #2894) for Mom + family member personas
+- [x] Read parenting-history substrate (PR #2900) for Aaron's kids personas
+- [x] Walk `composes_with:` chain (B-0429 → B-0424 → B-0425)
+- [x] Otto-364: check WONT-DO.md for any refused persona-mapping work
 
 ## Existing persona substrate to inventory
 
@@ -100,12 +102,12 @@ Containing:
 
 ## Definition of done
 
-- [ ] Per-persona capture template defined and documented
-- [ ] All existing persona substrate inventoried (table complete)
-- [ ] Conflicts / stale references flagged
-- [ ] Output doc committed at canonical path
-- [ ] B-0486..B-0491 unblocked (no remaining template ambiguity)
-- [ ] B-0485 status set to `closed` with PR link
+- [x] Per-persona capture template defined and documented
+- [x] All existing persona substrate inventoried (table complete)
+- [x] Conflicts / stale references flagged
+- [x] Output doc committed at canonical path
+- [x] B-0486..B-0491 unblocked (no remaining template ambiguity)
+- [x] B-0485 status set to `closed` with PR link
 
 ## Why P1 / gate
 

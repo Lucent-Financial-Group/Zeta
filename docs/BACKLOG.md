@@ -279,8 +279,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0482](backlog/P1/B-0482-dbpedia-sparql-fsharp-ce-computation-expression-2026-05-14.md)** DBpedia B-0428.3 — SPARQL F# computation expression (query authoring CE)
 - [ ] **[B-0483](backlog/P1/B-0483-dbpedia-hkt-mdm-entity-bindings-dv2-hub-satellite-2026-05-14.md)** DBpedia B-0428.4 — HKT-MDM entity bindings + DV2.0 hub-satellite types
 - [ ] **[B-0484](backlog/P1/B-0484-dbpedia-end-to-end-demo-project-2026-05-14.md)** DBpedia B-0428.5 — end-to-end demo project + integration test
-- [ ] **[B-0485](backlog/P1/B-0485-persona-mapping-framework-template-substrate-inventory-2026-05-14.md)** B-0429.1 — Persona-mapping framework: define per-persona template + audit existing persona substrate
-- [ ] **[B-0486](backlog/P1/B-0486-civsim-persona-map-2026-05-14.md)** B-0429.2 — Civsim persona map
+- [x] **[B-0485](backlog/P1/B-0485-persona-mapping-framework-template-substrate-inventory-2026-05-14.md)** B-0429.1 — Persona-mapping framework: define per-persona template + audit existing persona substrate
+- [x] **[B-0486](backlog/P1/B-0486-civsim-persona-map-2026-05-14.md)** B-0429.2 — Civsim persona map
 - [ ] **[B-0487](backlog/P1/B-0487-aurora-persona-map-2026-05-14.md)** B-0429.3 — Aurora persona map
 - [ ] **[B-0488](backlog/P1/B-0488-ksk-persona-map-2026-05-14.md)** B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map
 - [ ] **[B-0489](backlog/P1/B-0489-wellness-app-persona-map-2026-05-14.md)** B-0429.5 — Wellness app persona map
