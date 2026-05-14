@@ -167,7 +167,20 @@ function isThematicBreak(line: string): boolean {
  * one fires (pre-CI review P1 on PR #3075 round 15).
  */
 function isBlockquoteLine(line: string): boolean {
-  return /^ {0,3}>/.test(line);
+  // Match column-0 blockquote only. An indented `>` (1+ leading
+  // spaces) is part of a list-item body / continuation indent and
+  // must NOT terminate the enclosing list. The earlier `^ {0,3}>`
+  // pattern fired false positives on real content like a list-item
+  // body containing an indented quotation:
+  //
+  //   - bullet describes a thing
+  //     > the thing's exact words
+  //   - next bullet (was falsely flagged after the round-15/16 fixes
+  //     because the indented `> ...` terminated the list)
+  //
+  // Found on main in `docs/hygiene-history/ticks/2026/05/13/0645Z.md`
+  // after the round-19 helper landed (PR #3075 follow-up).
+  return /^>/.test(line);
 }
 
 /**
