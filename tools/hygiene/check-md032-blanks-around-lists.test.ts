@@ -1,5 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import { findMd032Violations, checkFiles } from "./check-md032-blanks-around-lists.ts";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import {
+  findMd032Violations,
+  checkFiles,
+  globToRegex,
+  loadMarkdownlintIgnores,
+  stagedMarkdownFiles,
+} from "./check-md032-blanks-around-lists.ts";
 
 describe("findMd032Violations", () => {
   test("clean shard (every list preceded by a blank line)", () => {
@@ -257,9 +266,141 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 6", () => {
+  test("paren ordered-list marker (`1)`) is detected (pre-CI review P1 on PR #3075 round 6)", () => {
+    // markdownlint + CommonMark treat both `1.` and `1)` as ordered-
+    // list markers. The earlier regex `\d+\.` only matched the dot
+    // form, so a `Label:` followed by `1) item` would fail MD032 in
+    // CI but pass this pre-check.
+    const content = `# Title
+
+Steps:
+1) first step
+2) second step
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("multi-digit paren marker is also detected", () => {
+    const content = `# Title
+
+Steps:
+12) step twelve
+13) step thirteen
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+});
+
 describe("checkFiles", () => {
-  test("unreadable files are skipped without crashing", () => {
+  test("unreadable files are skipped without crashing (default mode)", () => {
     const result = checkFiles(["/nonexistent/path/that/does/not/exist.md"]);
     expect(result).toEqual([]);
+  });
+
+  test("surfaceReadErrors=true throws on unreadable file (pre-CI review P2 on PR #3075 round 6)", () => {
+    // The default silent-skip mode is for `--staged` (CI surfaces the
+    // I/O error). When the caller explicitly opted in via the
+    // `surfaceReadErrors` flag (used by `main()` for explicit CLI
+    // file args), an unreadable file must throw so a typo doesn't
+    // exit 0 with "no findings."
+    expect(() =>
+      checkFiles(["/nonexistent/path/that/does/not/exist.md"], true),
+    ).toThrow(/Cannot read/);
+  });
+});
+
+describe("globToRegex", () => {
+  test("`**` matches any depth", () => {
+    const re = globToRegex("memory/**");
+    expect(re.test("memory/file.md")).toBe(true);
+    expect(re.test("memory/persona/x/y/z.md")).toBe(true);
+    expect(re.test("docs/memory/file.md")).toBe(false);
+  });
+
+  test("single `*` matches one path segment, not `/`", () => {
+    const re = globToRegex("docs/research/2026-*-*.md");
+    expect(re.test("docs/research/2026-05-13-foo.md")).toBe(true);
+    expect(re.test("docs/research/2026foo.md")).toBe(false); // no `-` separators after `2026`
+    expect(re.test("docs/research/sub/2026-05-13-foo.md")).toBe(false);
+  });
+
+  test("literal dots are escaped", () => {
+    const re = globToRegex("file.md");
+    expect(re.test("file.md")).toBe(true);
+    expect(re.test("fileXmd")).toBe(false);
+  });
+});
+
+describe("loadMarkdownlintIgnores + stagedMarkdownFiles", () => {
+  test("loadMarkdownlintIgnores returns [] when config absent", () => {
+    const dir = mkdtempSync(join(tmpdir(), "md032-test-"));
+    try {
+      expect(loadMarkdownlintIgnores(dir)).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("loadMarkdownlintIgnores parses JSONC with line comments", () => {
+    const dir = mkdtempSync(join(tmpdir(), "md032-test-"));
+    try {
+      writeFileSync(
+        join(dir, ".markdownlint-cli2.jsonc"),
+        `// header comment\n{\n  "ignores": [\n    // ignore agent logs\n    "memory/**",\n    "docs/pr-preservation/**"\n  ]\n}\n`,
+      );
+      expect(loadMarkdownlintIgnores(dir)).toEqual([
+        "memory/**",
+        "docs/pr-preservation/**",
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("stagedMarkdownFiles throws on bad repo path (pre-CI review P2 on PR #3075 round 6)", () => {
+    // A `git -C <nonexistent>` invocation fails with a non-zero
+    // status; the helper must throw rather than silently treat the
+    // gate as "no staged .md files" (the failure mode the round-2
+    // fix originally addressed; this test prevents regression).
+    expect(() =>
+      stagedMarkdownFiles("/nonexistent/dir/that/is/not/a/repo"),
+    ).toThrow(/git diff --cached failed/);
+  });
+
+  test("stagedMarkdownFiles applies ignore globs (pre-CI review P1 on PR #3075 round 6)", () => {
+    // Build a temp git repo with two staged .md files: one in an
+    // ignored subtree (`memory/`) and one in a scanned subtree
+    // (`docs/`). The helper must return only the scanned one.
+    const dir = mkdtempSync(join(tmpdir(), "md032-test-repo-"));
+    try {
+      // Initialize a minimal git repo + minimal config.
+      const { spawnSync: spawn } = require("node:child_process") as typeof import("node:child_process");
+      spawn("git", ["init", "-q", "-b", "main"], { cwd: dir });
+      spawn("git", ["config", "user.email", "test@example.com"], { cwd: dir });
+      spawn("git", ["config", "user.name", "test"], { cwd: dir });
+
+      writeFileSync(
+        join(dir, ".markdownlint-cli2.jsonc"),
+        `{ "ignores": ["memory/**"] }\n`,
+      );
+
+      mkdirSync(join(dir, "memory"), { recursive: true });
+      mkdirSync(join(dir, "docs"), { recursive: true });
+      writeFileSync(join(dir, "memory", "ignored.md"), "# Ignored\n");
+      writeFileSync(join(dir, "docs", "scanned.md"), "# Scanned\n");
+
+      spawn("git", ["add", "memory/ignored.md", "docs/scanned.md"], { cwd: dir });
+
+      const result = stagedMarkdownFiles(dir);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(`${dir}/docs/scanned.md`);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

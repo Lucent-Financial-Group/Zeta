@@ -49,15 +49,21 @@ export type Md032Finding = {
 /**
  * Detect whether a line is a list-item start.
  *
- * Matches the three unordered-list markers (`-`, `+`, `*`) and the
- * ordered-list pattern (`1.`, `12.`, etc.), each followed by at least
- * one space. CommonMark allows list markers indented 0-3 spaces; 4+
- * spaces is treated as indented code, not a list — `[ ]{0,3}` enforces
- * that boundary so a code block line like `    - option` isn't falsely
+ * Matches the three unordered-list markers (`-`, `+`, `*`) and both
+ * ordered-list punctuation forms (`1.` and `1)`, plus multi-digit
+ * variants like `12.` / `12)`), each followed by at least one space.
+ * CommonMark + markdownlint treat both `1.` and `1)` as ordered-list
+ * markers; omitting `1)` lets a `Label:` followed by `1) item` pass
+ * locally while still firing MD032 in CI (pre-CI review P1 on PR
+ * #3075 round 6).
+ *
+ * CommonMark allows list markers indented 0-3 spaces; 4+ spaces is
+ * treated as indented code, not a list — `[ ]{0,3}` enforces that
+ * boundary so a code block line like `    - option` isn't falsely
  * flagged as a list start (pre-CI review P1 on PR #3075 round 1).
  */
 function isListItemStart(line: string): boolean {
-  return /^ {0,3}([-+*]|\d+\.)\s+/.test(line);
+  return /^ {0,3}([-+*]|\d+[.)])\s+/.test(line);
 }
 
 /**
@@ -244,14 +250,88 @@ export function checkFiles(files: string[], surfaceReadErrors = false): Md032Fin
 }
 
 /**
+ * Convert a markdownlint-cli2 `ignores` glob into an anchored regex.
+ *
+ * Supported syntax (matches the subset used in `.markdownlint-cli2.jsonc`):
+ *
+ * - `**` — any number of path segments, including the following `/`
+ *   (so `memory/**` matches `memory/anything/deep`)
+ * - `*` — any sequence of non-`/` characters (one segment)
+ * - `?` — any single non-`/` character
+ * - Everything else is matched literally (with regex specials escaped).
+ */
+export function globToRegex(glob: string): RegExp {
+  let re = "^";
+  let i = 0;
+  while (i < glob.length) {
+    const c = glob[i] ?? "";
+    if (c === "*" && glob[i + 1] === "*") {
+      re += ".*";
+      i += 2;
+      if (glob[i] === "/") i++;
+    } else if (c === "*") {
+      re += "[^/]*";
+      i++;
+    } else if (c === "?") {
+      re += "[^/]";
+      i++;
+    } else if (".+^$|()[]{}\\".includes(c)) {
+      re += "\\" + c;
+      i++;
+    } else {
+      re += c;
+      i++;
+    }
+  }
+  re += "$";
+  return new RegExp(re);
+}
+
+/**
+ * Read `ignores` from `.markdownlint-cli2.jsonc` (JSONC with line
+ * comments). Returns `[]` when the file is absent or unparseable —
+ * a missing config is not a gate failure; CI will surface a real
+ * misconfiguration on its own.
+ */
+export function loadMarkdownlintIgnores(repoRoot: string): string[] {
+  const cfg = `${repoRoot}/.markdownlint-cli2.jsonc`;
+  let raw: string;
+  try {
+    raw = readFileSync(cfg, "utf-8");
+  } catch {
+    return [];
+  }
+  // Strip `// ...` line comments. The config does not use `/* ... */`
+  // block comments today; if that ever changes, extend here.
+  const stripped = raw.replace(/\/\/[^\n]*/g, "");
+  try {
+    const json = JSON.parse(stripped) as { ignores?: unknown };
+    if (Array.isArray(json.ignores)) {
+      return json.ignores.filter((g): g is string => typeof g === "string");
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Collect staged `.md` files via `git diff --name-only --cached`.
+ *
  * Throws if the git command fails so the caller can exit non-zero
  * instead of silently scanning zero files (pre-CI review P1 on
  * PR #3075 round 2). Includes renames (`R`) so `git mv old.md new.md`
  * with edits is still scanned — markdownlint will lint `new.md` in
  * CI regardless (pre-CI review P2 on PR #3075 round 3).
+ *
+ * Applies the markdownlint-cli2 `ignores` list so paths under
+ * `memory/**`, `docs/pr-preservation/**`, `docs/history/pr-reviews/**`,
+ * the date-prefixed `docs/research/2026-*-*.md`, etc., are NOT scanned
+ * locally — those are verbatim / archive surfaces that CI itself
+ * ignores, so a pre-push gate that flagged them would diverge from
+ * CI behavior (pre-CI review P1 on PR #3075 round 6).
  */
-function stagedMarkdownFiles(repoRoot: string): string[] {
+export function stagedMarkdownFiles(repoRoot: string): string[] {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
   const r = spawnSync(
     "git",
@@ -261,9 +341,11 @@ function stagedMarkdownFiles(repoRoot: string): string[] {
   if (r.status !== 0) {
     throw new Error(`git diff --cached failed: ${r.stderr?.trim() ?? "unknown error"}`);
   }
+  const ignoreRes = loadMarkdownlintIgnores(repoRoot).map(globToRegex);
   return (r.stdout ?? "")
     .split("\n")
     .filter((line) => line.endsWith(".md"))
+    .filter((line) => !ignoreRes.some((re) => re.test(line)))
     .map((line) => `${repoRoot}/${line}`);
 }
 
