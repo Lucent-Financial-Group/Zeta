@@ -1,6 +1,6 @@
 ---
 name: B-0451 per-collision renumber procedure
-description: Procedure for resolving duplicate-row-ID collisions in docs/backlog/ surfaced by tools/bg/audit-duplicate-row-ids.ts. Captures the external-references-rule precedence, the connected-component batching pattern, and the worktree-isolation gotcha. Derived from PRs #3053 (B-0444), #3057 (B-0068.1), #3058 (B-0090.x batch), #3065 (B-0370-0373 batch) shipped 2026-05-13/14.
+description: Procedure for resolving duplicate-row-ID collisions in docs/backlog/ surfaced by tools/bg/audit-duplicate-row-ids.ts. Captures the external-references-rule precedence, the connected-component batching pattern, and the worktree-isolation gotcha. Derived from PRs #3053 (B-0444, merged), #3057 (B-0068.1, merged), #3058 (B-0090.x batch, merged), and the in-flight PR #3065 (B-0370-0373 batch) at session 2026-05-13/14.
 type: feedback
 created: 2026-05-14
 ---
