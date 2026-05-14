@@ -33,12 +33,26 @@ const OLD_INDEX_FILES = [
   "INDEX-POST-LINE-200.md",
 ];
 
-/** Extract all .md link targets from markdown link syntax: (...filename.md) */
+// Non-memory repo paths whose links should not be validated as memory files
+const SKIP_PREFIXES = ["docs/", "tools/", ".github/", "src/"];
+
+/** Extract all .md link targets from markdown link syntax: (...path/to/file.md) */
 function extractLinkedFilenames(content: string): string[] {
-  const pattern = /\([a-zA-Z0-9_\-\.]+\.md\)/g;
+  // Allow path separators so sub-directory links like ](subdir/file.md) are captured
+  const pattern = /\(([a-zA-Z0-9_\-\.\/]+\.md)\)/g;
   const results: string[] = [];
   for (const m of content.matchAll(pattern)) {
-    const raw = m[0].slice(1, -1); // strip parens
+    let raw = m[1];
+    // Strip leading "memory/" prefix — validator joins with MEMORY_DIR anyway
+    if (raw.startsWith("memory/")) {
+      raw = raw.slice("memory/".length);
+    }
+    // Skip non-memory repo paths (e.g. docs/research/...)
+    if (SKIP_PREFIXES.some((p) => raw.startsWith(p))) continue;
+    // Skip prose false-positives where an intermediate component ends with .md
+    // e.g. "AGENTS.md/GEMINI.md" is not a real memory path
+    const parts = raw.split("/");
+    if (parts.slice(0, -1).some((p) => p.endsWith(".md"))) continue;
     results.push(raw);
   }
   return [...new Set(results)];
