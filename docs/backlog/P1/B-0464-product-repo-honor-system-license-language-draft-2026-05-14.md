@@ -63,6 +63,7 @@ The text MUST NOT:
 A new file: `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md`
 
 Contents:
+
 - The actual license header text (copy-paste-ready for a product repo's LICENSE file)
 - A brief rationale comment explaining the honor-system framing
 - Notes on when to apply vs when NOT to apply (per the memory file's discipline)

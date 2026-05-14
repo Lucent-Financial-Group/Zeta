@@ -96,6 +96,7 @@ A new design section in `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-a
 `docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md`
 
 Structure:
+
 - Decision context (product-vs-factory-repo shape difference)
 - Three options evaluated (A/B/C)
 - Decision: recommended staged approach

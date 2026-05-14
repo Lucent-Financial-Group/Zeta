@@ -26,6 +26,7 @@ Author the **Architecture Decision Record** capturing all product-repo split dec
 This row closes B-0425 when merged.
 
 The ADR synthesizes the outputs of all prior child rows:
+
 - B-0464 (license language)
 - B-0465 (substrate inventory + repo-readiness verdicts)
 - B-0466 (approved repo slugs)
