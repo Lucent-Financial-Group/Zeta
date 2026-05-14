@@ -311,6 +311,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0511](backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md)** B-0448 slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation
 - [ ] **[B-0512](backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md)** B-0448 slice 6 — Update tools/routines/README.md with 4-layer catch-43 table
 - [ ] **[B-0513](backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md)** B-0448 slice 7 — Memory file capturing empirical Cloud Routine bootstrap learning
+- [ ] **[B-0518](backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md)** Sharpen the holding-without-named-dependency rule — Aaron diagnosed CLAUDE.md bug
 
 ## P2 — research-grade
 
@@ -641,5 +642,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0506](backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md)** Stale-worktree prune cadence — mechanize `git worktree prune --expire=now`
 - [ ] **[B-0514](backlog/P3/B-0514-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md)** Author missing memory file: feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md
 - [ ] **[B-0515](backlog/P3/B-0515-architecture-as-externalization-of-aarons-dialectical-perception-dashboard-target-shift-2026-05-14.md)** Architecture-as-externalization-of-Aaron's-dialectical-perception — dashboard acceptance criteria target shift
+- [ ] **[B-0517](backlog/P3/B-0517-memory-md-index-bloat-cleanup-cadence-2026-05-14.md)** MEMORY.md index bloat cleanup + entry-length enforcement cadence
+- [ ] **[B-0519](backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md)** Multi-Otto branch-state contamination — RCA + mechanization candidate
 
 <!-- END AUTO-GENERATED -->
