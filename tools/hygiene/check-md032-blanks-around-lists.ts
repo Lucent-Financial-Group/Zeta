@@ -74,7 +74,13 @@ function isListItemStart(line: string): boolean {
   // `> > 1) nested`) is still recognised as a list-item start.
   // markdownlint MD032 enforces blanks around lists even inside
   // blockquotes (pre-CI review P1 on PR #3075 round 9).
-  return /^ {0,3}(>\s?)*([-+*]|\d{1,9}[.)])\s+/.test(line);
+  // The blockquote-prefix `(>[ \t]*)*` allows multiple spaces after
+  // each `>` marker. CommonMark blockquote syntax is `>` followed by
+  // optional whitespace; `>   - item` (3 spaces between `>` and the
+  // marker) is a valid blockquoted list. The earlier `>\s?` regex
+  // only allowed 0-1 space and missed those (pre-CI review P1 on PR
+  // #3075 round 14).
+  return /^ {0,3}(>[ \t]*)*([-+*]|\d{1,9}[.)])\s+/.test(line);
 }
 
 /**
@@ -86,7 +92,12 @@ function isListItemStart(line: string): boolean {
  * without firing MD032 (pre-CI review P1 on PR #3075 round 9).
  */
 function isBlank(line: string): boolean {
-  return /^\s*$/.test(line) || /^ {0,3}(>\s?)+$/.test(line);
+  // A blockquoted blank may have arbitrary whitespace after each `>`
+  // (e.g., `>   ` is still a blockquoted blank). The earlier `>\s?`
+  // only allowed 0-1 space; lines like `>   ` were treated as
+  // non-blank and could cause false MD032 on a blockquoted list
+  // that's properly separated (pre-CI review P1 on PR #3075 round 14).
+  return /^\s*$/.test(line) || /^ {0,3}(>[ \t]*)+$/.test(line);
 }
 
 /**
@@ -100,7 +111,7 @@ function isBlank(line: string): boolean {
  * round 12).
  */
 function isHeading(line: string): boolean {
-  return /^ {0,3}(?:>\s?)*#{1,6}\s+/.test(line);
+  return /^ {0,3}(?:>[ \t]*)*#{1,6}\s+/.test(line);
 }
 
 /**
@@ -223,17 +234,25 @@ export function findMd032Violations(content: string): { line: number; context: s
       if (openFence === null) {
         // Opening a new fence. Info string permitted on opener.
         //
-        // An INDENTED fence (1+ leading space, possibly after `>`
-        // blockquote markers) is a child block inside the current
-        // list-item body — keep `inList` so a sibling bullet that
-        // follows isn't false-flagged as a new list.
+        // An INDENTED fence (1+ leading space) is a child block
+        // inside the current list-item body — keep `inList` so a
+        // sibling bullet that follows isn't false-flagged as a new
+        // list.
         //
-        // A FLUSH-LEFT fence (zero leading space, no blockquote
-        // prefix) is a top-level block that terminates the prior
-        // list per CommonMark — reset `inList` so a list-start
-        // that follows fires MD032 correctly (pre-CI review P1
-        // on PR #3075 round 12, refining the round-10 over-relaxation).
-        if (!/^[ \t>]/.test(cur)) {
+        // A FLUSH-LEFT fence (zero leading space) is a top-level
+        // block that terminates the prior list per CommonMark —
+        // reset `inList` so a list-start that follows fires MD032
+        // correctly (pre-CI review P1 on PR #3075 round 12).
+        //
+        // A BLOCKQUOTED fence (`> \`\`\``) is ALSO treated as a
+        // top-level block boundary — the blockquote opens a new
+        // block context, which terminates an enclosing top-level
+        // list. Earlier rounds treated `[ \t>]` symmetrically and
+        // kept `inList` on blockquoted fences, but that was a false
+        // negative for `- item / > \`\`\`code\`\`\` / - new-item`
+        // where the second bullet starts a new list and needs a
+        // blank (pre-CI review P1 on PR #3075 round 14).
+        if (!/^[ \t]/.test(cur)) {
           inList = false;
         }
         openFence = { char: fence.char, len: fence.len };
@@ -517,14 +536,15 @@ export function checkStagedFiles(repoRoot: string): Md032Finding[] {
     const repoRel = absPath.startsWith(`${repoRoot}/`)
       ? absPath.slice(repoRoot.length + 1)
       : absPath;
-    let content: string;
-    try {
-      content = readStagedBlob(repoRoot, repoRel);
-    } catch {
-      // Per round-2 discipline, `--staged` skips unreadable entries
-      // silently — push/CI surfaces the underlying I/O error.
-      continue;
-    }
+    // `git show :path` failing AFTER `git diff --cached` listed the
+    // path is a genuine git/index anomaly — the path is staged for
+    // commit but unreadable from the index. Silent-skip would let
+    // the local gate diverge from CI; instead, `readStagedBlob`
+    // throws and we propagate (caller exits non-zero). This refines
+    // the round-2 "silent skip" discipline, which was about
+    // working-tree filesystem reads — staged-blob reads are a
+    // different I/O class (pre-CI review P1 on PR #3075 round 14).
+    const content = readStagedBlob(repoRoot, repoRel);
     for (const v of findMd032Violations(content)) {
       all.push({ file: absPath, line: v.line, context: v.context });
     }

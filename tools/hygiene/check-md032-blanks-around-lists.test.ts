@@ -13,6 +13,15 @@ import {
   checkStagedFiles,
 } from "./check-md032-blanks-around-lists.ts";
 
+/**
+ * Test-only helper: invoke `git` with an explicit args array in a
+ * given cwd. The single-line suppression carries the same rationale
+ * the production helpers use — git is on PATH by SDK convention,
+ * args are constants in this file (no user input), no shell.
+ */
+// eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input.
+const git = (args: string[], cwd: string) => spawnSync("git", args, { cwd });
+
 describe("findMd032Violations", () => {
   test("clean shard (every list preceded by a blank line)", () => {
     const content = `# Title
@@ -266,6 +275,54 @@ Real prose:
 - real item
 `;
     expect(findMd032Violations(content)).toEqual([]);
+  });
+});
+
+describe("findMd032Violations — round 14", () => {
+  test("blockquote marker with multiple spaces before list marker is detected (pre-CI review P1 on PR #3075 round 14)", () => {
+    // CommonMark allows multiple spaces after `>`; `>   - item` is a
+    // valid blockquoted list. The earlier regex `>\s?` only allowed
+    // 0-1 space and missed these.
+    const content = `# Title
+
+> Label:
+>   - item with extra indent inside quote
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+
+  test("blockquoted blank line with multiple trailing spaces is treated as blank", () => {
+    // `>   ` (multiple spaces after `>`) is a blockquoted blank line.
+    // A list immediately after it must NOT fire MD032.
+    const content = `# Title
+
+> Label:
+>${"   "}
+> - item
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("flush-left blockquoted fence between bullets terminates the list (pre-CI review P1 on PR #3075 round 14)", () => {
+    // `- item / > \`\`\` / code / \`\`\` / - new-item` — the
+    // column-0 blockquote opens a new top-level block, terminating
+    // the surrounding list. The new bullet needs a blank line; MD032
+    // fires.
+    const content = `# Title
+
+- item one
+> \`\`\`
+> code inside blockquoted fence
+> \`\`\`
+- item two
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    // Line 7 = "- item two" — the new-list-start after the blockquoted
+    // fence terminates the prior list.
+    expect(findings[0]?.line).toBe(7);
   });
 });
 
@@ -663,13 +720,13 @@ describe("readStagedBlob + checkStagedFiles", () => {
     // content. `readStagedBlob` must return the staged version.
     const dir = mkdtempSync(join(tmpdir(), "md032-staged-blob-"));
     try {
-      spawnSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
-      spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: dir });
-      spawnSync("git", ["config", "user.name", "test"], { cwd: dir });
+      git(["init", "-q", "-b", "main"], dir);
+      git(["config", "user.email", "test@example.com"], dir);
+      git(["config", "user.name", "test"], dir);
 
       const filePath = join(dir, "shard.md");
       writeFileSync(filePath, "# Staged version\nclean content\n");
-      spawnSync("git", ["add", "shard.md"], { cwd: dir });
+      git(["add", "shard.md"], dir);
 
       // Now edit working tree.
       writeFileSync(filePath, "# Working-tree version\ndifferent content\n");
@@ -688,14 +745,14 @@ describe("readStagedBlob + checkStagedFiles", () => {
     // (staged content is clean — what CI will lint).
     const dir = mkdtempSync(join(tmpdir(), "md032-staged-blob-"));
     try {
-      spawnSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
-      spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: dir });
-      spawnSync("git", ["config", "user.name", "test"], { cwd: dir });
+      git(["init", "-q", "-b", "main"], dir);
+      git(["config", "user.email", "test@example.com"], dir);
+      git(["config", "user.name", "test"], dir);
 
       const filePath = join(dir, "shard.md");
       // Staged: clean (label, blank, list).
       writeFileSync(filePath, "# Title\n\nLabel:\n\n- item\n");
-      spawnSync("git", ["add", "shard.md"], { cwd: dir });
+      git(["add", "shard.md"], dir);
 
       // Working tree: violates MD032 (label, no blank, list).
       writeFileSync(filePath, "# Title\n\nLabel:\n- item\n");
@@ -707,19 +764,28 @@ describe("readStagedBlob + checkStagedFiles", () => {
     }
   });
 
+  test("checkStagedFiles throws when staged-blob read fails (pre-CI review P1 on PR #3075 round 14)", () => {
+    // A genuine git/index anomaly — pointing checkStagedFiles at a
+    // non-git directory — must throw rather than silently treat as
+    // "no findings." This refines the round-2 silent-skip discipline,
+    // which was about working-tree reads; staged-blob reads are a
+    // different I/O class.
+    expect(() => checkStagedFiles("/nonexistent/dir/that/is/not/a/repo")).toThrow(/git/);
+  });
+
   test("checkStagedFiles flags MD032 when staged blob IS violating (control)", () => {
     // Staged is violating; working tree is clean. Helper must flag
     // the staged content (what CI will lint).
     const dir = mkdtempSync(join(tmpdir(), "md032-staged-blob-"));
     try {
-      spawnSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
-      spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: dir });
-      spawnSync("git", ["config", "user.name", "test"], { cwd: dir });
+      git(["init", "-q", "-b", "main"], dir);
+      git(["config", "user.email", "test@example.com"], dir);
+      git(["config", "user.name", "test"], dir);
 
       const filePath = join(dir, "shard.md");
       // Staged: violates.
       writeFileSync(filePath, "# Title\n\nLabel:\n- item\n");
-      spawnSync("git", ["add", "shard.md"], { cwd: dir });
+      git(["add", "shard.md"], dir);
 
       // Working tree: cleaned up.
       writeFileSync(filePath, "# Title\n\nLabel:\n\n- item\n");
@@ -779,9 +845,9 @@ describe("loadMarkdownlintIgnores + stagedMarkdownFiles", () => {
       // `spawnSync` import — the in-test `require()` call previously
       // here violated `@typescript-eslint/no-require-imports` per
       // pre-CI review P1 on PR #3075 round 11).
-      spawnSync("git", ["init", "-q", "-b", "main"], { cwd: dir });
-      spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: dir });
-      spawnSync("git", ["config", "user.name", "test"], { cwd: dir });
+      git(["init", "-q", "-b", "main"], dir);
+      git(["config", "user.email", "test@example.com"], dir);
+      git(["config", "user.name", "test"], dir);
 
       writeFileSync(
         join(dir, ".markdownlint-cli2.jsonc"),
@@ -793,7 +859,7 @@ describe("loadMarkdownlintIgnores + stagedMarkdownFiles", () => {
       writeFileSync(join(dir, "memory", "ignored.md"), "# Ignored\n");
       writeFileSync(join(dir, "docs", "scanned.md"), "# Scanned\n");
 
-      spawnSync("git", ["add", "memory/ignored.md", "docs/scanned.md"], { cwd: dir });
+      git(["add", "memory/ignored.md", "docs/scanned.md"], dir);
 
       const result = stagedMarkdownFiles(dir);
       expect(result).toHaveLength(1);
