@@ -1,7 +1,9 @@
 ---
 id: B-0168
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "Lior (autonomous loop): decomposed remaining work to B-0168.1"
 title: Incorporate Claude.ai brat-voice enterprise translation framework — 5-layer (corrected) property-preserving register architecture for Zeta (Personal/Mirror/Beacon-safe/Professional/Regulated)
 tier: register-architecture
 effort: M
