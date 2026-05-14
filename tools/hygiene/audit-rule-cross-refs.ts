@@ -110,21 +110,66 @@ function pullRefs(content: string, ruleFile: string): Ref[] {
     });
 }
 
+// Escape regex metacharacters except `*`, which we replace with `.*` afterwards.
+// Explicitly escapes backslash too (per CodeQL 81 finding).
+function escapeForGlobRegex(s: string): string {
+    return s
+        .replace(/[\\^$+?.()|[\]{}]/g, "\\$&")
+        .replace(/\*/g, ".*");
+}
+
+// Resolve a path that may contain `*` wildcards in any segment (not only the
+// last). Walks segment-by-segment from the leftmost directory: wildcards in
+// earlier segments expand to directory listings, wildcards in the final segment
+// match file basenames. Caught by Codex P2 thread on PR #3202.
+function globResolves(pattern: string): boolean {
+    const segments = pattern.split("/");
+    let candidates: string[] = pattern.startsWith("/") ? ["/"] : ["."];
+    for (let i = 0; i < segments.length; i++) {
+        const seg = segments[i]!;
+        if (i === 0 && pattern.startsWith("/")) continue;
+        if (seg === "") continue;
+        const isLast = i === segments.length - 1;
+        const hasWild = seg.includes("*");
+        const next: string[] = [];
+        for (const base of candidates) {
+            if (!hasWild) {
+                const child = base === "." ? seg : `${base}/${seg}`;
+                if (isLast) {
+                    if (existsSync(child)) return true;
+                } else if (existsSync(child) && statSync(child).isDirectory()) {
+                    next.push(child);
+                }
+                continue;
+            }
+            if (!existsSync(base) || !statSync(base).isDirectory()) continue;
+            const regex = new RegExp("^" + escapeForGlobRegex(seg) + "$");
+            let entries: string[];
+            try {
+                entries = readdirSync(base);
+            } catch {
+                continue;
+            }
+            for (const entry of entries) {
+                if (!regex.test(entry)) continue;
+                const child = base === "." ? entry : `${base}/${entry}`;
+                if (isLast) {
+                    if (existsSync(child)) return true;
+                } else if (existsSync(child) && statSync(child).isDirectory()) {
+                    next.push(child);
+                }
+            }
+        }
+        candidates = next;
+        if (candidates.length === 0 && !isLast) return false;
+    }
+    return false;
+}
+
 function refExists(ref: Ref): boolean {
     if (ref.kind === "path") {
         if (existsSync(ref.raw)) return true;
-        if (ref.raw.includes("*")) {
-            const lastSlash = ref.raw.lastIndexOf("/");
-            const dir = lastSlash >= 0 ? ref.raw.slice(0, lastSlash) : ".";
-            const filePart = lastSlash >= 0 ? ref.raw.slice(lastSlash + 1) : ref.raw;
-            if (!existsSync(dir) || !statSync(dir).isDirectory()) return false;
-            const regex = new RegExp("^" + filePart.replace(/\./g, "\\.").replace(/\*/g, ".*") + "$");
-            try {
-                return readdirSync(dir).some((f) => regex.test(f));
-            } catch {
-                return false;
-            }
-        }
+        if (ref.raw.includes("*")) return globResolves(ref.raw);
         return false;
     }
     if (ref.kind === "backlog-id") {
@@ -236,4 +281,4 @@ if (import.meta.main) {
     process.exit(main(process.argv.slice(2)));
 }
 
-export { audit, pullRefs, refExists, renderReport };
+export { audit, globResolves, pullRefs, refExists, renderReport };

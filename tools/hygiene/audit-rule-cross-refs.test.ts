@@ -67,6 +67,17 @@ describe("refExists", () => {
         // memory/feedback_*.md will match many files.
         expect(refExists({ fromRule: "test.md", raw: "memory/feedback_*.md", kind: "path" })).toBe(true);
     });
+
+    test("resolves a glob with wildcard in a directory segment (Codex P2 catch on PR #3202)", () => {
+        // docs/backlog/P*/B-*.md is referenced from backlog-item-start-gate.md.
+        // Earlier implementation treated the substring before the last "/" as a
+        // literal directory; this regression test covers the directory-segment wildcard.
+        expect(refExists({ fromRule: "test.md", raw: "docs/backlog/P*/B-*.md", kind: "path" })).toBe(true);
+    });
+
+    test("returns false for a glob that matches no files in any segment", () => {
+        expect(refExists({ fromRule: "test.md", raw: "no-such-dir-*/nothing-*.md", kind: "path" })).toBe(false);
+    });
 });
 
 describe("renderReport", () => {
