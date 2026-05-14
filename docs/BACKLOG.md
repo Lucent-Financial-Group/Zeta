@@ -218,6 +218,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0366.3](backlog/P1/B-0366.3-fpga-vhdl-toffoli-synthesis-design.md)** FPGA synthesis design — VHDL/Verilog Toffoli gate network for Z-set join
 - [ ] **[B-0366.4](backlog/P1/B-0366.4-fpga-power-measurement-experimental-protocol.md)** FPGA empirical power measurement — experimental protocol for Landauer validation
 - [ ] **[B-0367](backlog/P1/B-0367-first-class-uncertainty-semiring-parameterized-weight.md)** First-class uncertainty — semiring-parameterized weight type for DBSP
+- [ ] **[B-0367.1](backlog/P1/B-0367.1-semiring-concrete-instances.md)** Semiring slice 1: Implement concrete ISemiring<'W> instances (IntegerRing, TropicalSemiring, IntervalRing)
+- [ ] **[B-0367.2](backlog/P1/B-0367.2-zset-semiring-parameterization.md)** Semiring slice 2: ZSet<'K, 'W when 'W: ISemiring> parameterization
+- [ ] **[B-0367.3](backlog/P1/B-0367.3-openspec-uncertainty-expressions.md)** Semiring slice 3: OpenSpec uncertainty expressions
+- [ ] **[B-0367.4](backlog/P1/B-0367.4-z3-semiring-axiom-lemmas.md)** Semiring slice 4: Z3 semiring axiom lemmas
 - [ ] **[B-0368](backlog/P1/B-0368-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md)** Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
 - [x] **[B-0369](backlog/P1/B-0369-durable-computation-survey-8-systems-2026-05-08.md)** Durable computation survey — compare 8 systems against Zeta's gap
 - [x] **[B-0370](backlog/P1/B-0370-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
