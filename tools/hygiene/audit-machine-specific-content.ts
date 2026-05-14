@@ -72,7 +72,7 @@ const PATTERN_NAMES: readonly string[] = [
 ];
 
 const EXCLUDE_RE =
-  /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-machine-specific-content\.(sh|ts)|\.gemini\/(launchd|service)\/.*\.plist)/;
+  /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-machine-specific-content\.(sh|ts)|\.gemini\/(launchd|service)\/[^/]+\.plist$)/;
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
 
