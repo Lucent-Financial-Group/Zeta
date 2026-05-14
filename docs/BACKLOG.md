@@ -173,7 +173,6 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
 - [x] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
 - [ ] **[B-0329](backlog/P1/B-0329-claude-md-as-process-not-doctrine.md)** Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing
-- [ ] **[B-0329](backlog/P1/B-0329-new-surface-audit-alignment-check.md)** Mechanize new-surface audit for alignment-clause consistency
 - [x] **[B-0330](backlog/P1/B-0330-memory-format-standardization-step2-b0190.md)** Memory-format standardization — define frontmatter shape, filename conventions, section headers
 - [x] **[B-0331](backlog/P1/B-0331-memory-ontology-classification-audit-step3-b0190.md)** Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
 - [x] **[B-0332](backlog/P1/B-0332-memory-load-bearing-vs-decorative-classifier-step7-b0190.md)** Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces
@@ -313,6 +312,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0512](backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md)** B-0448 slice 6 — Update tools/routines/README.md with 4-layer catch-43 table
 - [ ] **[B-0513](backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md)** B-0448 slice 7 — Memory file capturing empirical Cloud Routine bootstrap learning
 - [ ] **[B-0518](backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md)** Sharpen the holding-without-named-dependency rule — Aaron diagnosed CLAUDE.md bug
+- [ ] **[B-0520](backlog/P1/B-0520-new-surface-audit-alignment-check.md)** Mechanize new-surface audit for alignment-clause consistency
 
 ## P2 — research-grade
 
