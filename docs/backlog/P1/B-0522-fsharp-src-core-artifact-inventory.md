@@ -15,4 +15,5 @@ parent: B-0139
 Decomposed from B-0139.
 
 ## What
+
 Inventory F# implementation work in `src/Core/` that has substantial Kenji-era contribution not currently mapped to substrate-class memory entries. Catalog, classify, and integrate into substrate references.
