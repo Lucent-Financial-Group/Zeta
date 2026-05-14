@@ -97,6 +97,7 @@ following are true:
   engagement patterns, family-AI scope, multi-clearance work)
 
 **Product repos where this applies:**
+
 - KSK (Keen-Sierra-Keaton)
 - wellness
 - civsim (strategic substrate layer; the game engine itself may differ)
@@ -186,6 +187,7 @@ B-0464 (this file) → B-0468 (Product-repo split ADR)
 
 This file is complete per B-0464's definition of done. It may be
 refined by:
+
 - B-0466 (naming-expert review) if product names change
 - B-0468 (ADR) if architectural decisions affect license scope
 - Aaron's direct review — the honor-system framing is his substrate;
