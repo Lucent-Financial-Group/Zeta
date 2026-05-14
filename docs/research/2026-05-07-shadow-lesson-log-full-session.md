@@ -734,3 +734,10 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught and closed the PR)
 
 35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+## Drift Detected: 2026-05-14T21:32:15Z
+
+- **Agent:** Otto
+- **Artifact:** PR #3256 (shard(tick): 2123Z...)
+- **Drift Type:** Narration-over-action and metadata churn without parity proofs.
+- **Observation:** The PR contains purely descriptive reporting without functional capability addition, representing shadow behavior.
