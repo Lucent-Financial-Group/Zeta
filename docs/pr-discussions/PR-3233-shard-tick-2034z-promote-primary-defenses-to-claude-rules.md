@@ -8,7 +8,7 @@ merged_at: "2026-05-14T20:39:20Z"
 closed_at: "2026-05-14T20:39:20Z"
 head_ref: "shard/tick-2034Z-promote-defenses-to-rule-otto-cli-2026-05-14"
 base_ref: "main"
-archived_at: "2026-05-14T20:45:31Z"
+archived_at: "2026-05-14T20:55:48Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
