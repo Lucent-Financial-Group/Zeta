@@ -115,7 +115,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0256](backlog/P1/B-0256-model-recursion-exploit-class-metasploit-ida-pro-mapping-2026-05-07.md)** Model recursion exploit class — Metasploit/IDA Pro mapping for AI models
 - [x] **[B-0257](backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md)** MEMORY.md marker-vs-index - harness contract verification and evidence
 - [x] **[B-0258](backlog/P1/B-0258-memory-md-index-generator-implementation-2026-05-08.md)** MEMORY.md marker-vs-index - index generator implementation
-- [ ] **[B-0259](backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md)** MEMORY.md marker-vs-index - hook and CI drift enforcement
+- [x] **[B-0259](backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md)** MEMORY.md marker-vs-index - hook and CI drift enforcement
 - [ ] **[B-0260](backlog/P1/B-0260-memory-md-cutover-and-parity-validation-2026-05-08.md)** MEMORY.md marker-vs-index - cutover and parity validation
 - [ ] **[B-0261](backlog/P1/B-0261-memory-md-q1-autodream-automemory-compatibility-validation-2026-05-08.md)** MEMORY.md marker-vs-index - Q1 AutoDream/AutoMemory compatibility validation
 - [x] **[B-0262](backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md)** refresh-worldview scaffold - open-PR list + recent-merges query
