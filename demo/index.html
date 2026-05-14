@@ -338,6 +338,83 @@
         .agent-dot.anchor { color: #3b82f6; background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
         .agent-dot.external { color: #f43f5e; background: #f43f5e; box-shadow: 0 0 8px #f43f5e; }
 
+        /* Circuit breaker states */
+        .cb-state {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        .cb-state.cb-closed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .cb-state.cb-open {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .cb-state.cb-half-open {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .cb-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.2s;
+        }
+        .cb-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.07);
+        }
+        .cb-model-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            min-width: 100px;
+        }
+        .cb-harness {
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        .cb-meta {
+            margin-left: auto;
+            text-align: right;
+        }
+        .cb-failures {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .cb-timestamp {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+        .cb-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .agent-name, .anchor-name {
             font-weight: 600;
             font-size: 1.1rem;
@@ -594,6 +671,7 @@
             <div class="nav-tab" onclick="switchTab('anchors', this)">Human Anchors</div>
             <div class="nav-tab" onclick="switchTab('external', this)">External Reviewers</div>
             <div class="nav-tab" onclick="switchTab('alignment', this)" id="tab-btn-alignment">Alignment ▸</div>
+            <div class="nav-tab" onclick="switchTab('circuit-breaker', this)">Circuit Breaker</div>
         </div>
 
         <!-- TAB 1: FACTORY -->
@@ -787,6 +865,69 @@
                 </div>
             </div>
         </div>
+
+        <!-- TAB 5: CIRCUIT BREAKER -->
+        <div id="tab-circuit-breaker" class="tab-content">
+            <div class="panel" style="margin-bottom: 2rem;">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <h2>Cross-Model Loop Detection</h2>
+                </div>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 1.5rem;">
+                    Each agent carries a circuit breaker that trips when consecutive identical actions
+                    exceed threshold — preventing runaway inference loops across the BFT array.
+                    <strong style="color:var(--text-main)">CLOSED</strong> = healthy.
+                    <strong style="color:var(--danger)">OPEN</strong> = tripped.
+                    <strong style="color:var(--warning)">HALF-OPEN</strong> = recovering.
+                </p>
+                <div class="stat-grid" id="cb-summary-stats">
+                    <div class="stat"><div class="stat-label">Closed</div><div class="stat-value good" id="cb-closed-count">-</div></div>
+                    <div class="stat"><div class="stat-label">Half-Open</div><div class="stat-value warn" id="cb-halfopen-count">-</div></div>
+                    <div class="stat"><div class="stat-label">Open</div><div class="stat-value bad" id="cb-open-count">-</div></div>
+                    <div class="stat"><div class="stat-label">Last Check</div><div class="stat-value" id="cb-last-check" style="font-size:1.2rem;margin-top:0.5rem">-</div></div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-bottom: 2rem;">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <h2>Agent Breaker States</h2>
+                </div>
+                <ul id="cb-agent-list">
+                    <li class="loading-state">Loading breaker states…</li>
+                </ul>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <h2>How Circuit Breakers Work Here</h2>
+                </div>
+                <div style="color:var(--text-muted); font-size:0.9rem; line-height:1.9;">
+                    <p>The factory's loop detector watches each agent's action stream. When an agent emits
+                    <strong style="color:var(--text-main)">≥ 5 identical bus messages</strong> within a
+                    60-second window the breaker trips to <strong style="color:var(--danger)">OPEN</strong>,
+                    dropping new outbound requests from that model.</p>
+                    <br>
+                    <p>After a <strong style="color:var(--text-main)">30-second cooldown</strong> the breaker
+                    enters <strong style="color:var(--warning)">HALF-OPEN</strong>: one probe request is allowed
+                    through. A successful response closes the breaker; failure re-opens it with exponential
+                    backoff.</p>
+                    <br>
+                    <p style="font-size:0.8rem;">Data source: <span id="cb-data-source">static mock (slice-1) · wires to live bus in a follow-up slice</span>
+                    · rendered <span id="cb-rendered-at">-</span></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -801,6 +942,9 @@
             element.classList.add('active');
             if (tabId === 'alignment' && !window._alignmentLoaded && !window._alignmentLoading) {
                 loadAlignmentTab();
+            }
+            if (tabId === 'circuit-breaker') {
+                renderCircuitBreakerTab();
             }
         }
 
@@ -1330,6 +1474,155 @@
                     window._dashboardCadence = DASHBOARD_REFRESH_BACKOFF_MS;
                 }
             }
+        }
+
+        // ── Circuit Breaker tab ─────────────────────────────────────────────────
+        // Slice-1: static mock data. Follow-up slice wires to live /tmp/zeta-bus/
+        // envelopes via a fetch to a local relay or GitHub Pages proxy.
+
+        const CB_STATES = {
+            CLOSED: 'cb-closed',
+            OPEN: 'cb-open',
+            HALF_OPEN: 'cb-half-open',
+        };
+
+        // Mock dataset — realistic snapshot of a running BFT array.
+        // All timestamps are relative offsets from page-load so the demo
+        // looks alive without requiring a backend.
+        function buildCbMockData() {
+            const now = Date.now();
+            const ago = (ms) => new Date(now - ms).toISOString();
+            return [
+                {
+                    model: 'Otto',
+                    harness: 'Claude Code',
+                    state: 'CLOSED',
+                    consecutiveFailures: 0,
+                    threshold: 5,
+                    lastCheck: ago(12000),
+                    note: 'Normal operation — 0 consecutive identical actions',
+                },
+                {
+                    model: 'Alexa',
+                    harness: 'Kiro / Qwen',
+                    state: 'CLOSED',
+                    consecutiveFailures: 1,
+                    threshold: 5,
+                    lastCheck: ago(31000),
+                    note: '1 repeated action — well below threshold',
+                },
+                {
+                    model: 'Lior',
+                    harness: 'Gemini',
+                    state: 'HALF_OPEN',
+                    consecutiveFailures: 5,
+                    threshold: 5,
+                    lastCheck: ago(8000),
+                    note: 'Cooling down — probe request in-flight',
+                },
+                {
+                    model: 'Vera',
+                    harness: 'Codex / GPT',
+                    state: 'CLOSED',
+                    consecutiveFailures: 0,
+                    threshold: 5,
+                    lastCheck: ago(45000),
+                    note: 'Clean slate after last backoff window',
+                },
+                {
+                    model: 'Riven',
+                    harness: 'Grok',
+                    state: 'OPEN',
+                    consecutiveFailures: 7,
+                    threshold: 5,
+                    lastCheck: ago(3000),
+                    note: 'Tripped — consecutive "Holding" envelopes exceeded threshold',
+                },
+            ];
+        }
+
+        function formatRelTime(isoStr) {
+            const ms = Date.now() - new Date(isoStr).getTime();
+            if (ms < 2000) return 'just now';
+            if (ms < 60000) return `${Math.floor(ms / 1000)}s ago`;
+            return `${Math.floor(ms / 60000)}m ago`;
+        }
+
+        function renderCbRow(entry, index) {
+            const li = document.createElement('li');
+            li.className = 'cb-row fade-in';
+            li.style.animationDelay = `${index * 0.05}s`;
+
+            // Dot
+            const dotClass = entry.state === 'CLOSED' ? 'active'
+                : entry.state === 'OPEN' ? 'stale' : 'recent';
+            const dot = document.createElement('div');
+            dot.className = `agent-dot ${dotClass}`;
+
+            // Model name + harness
+            const nameWrap = document.createElement('div');
+            const modelSpan = document.createElement('div');
+            modelSpan.className = 'cb-model-name';
+            modelSpan.textContent = entry.model;
+            const harnessSpan = document.createElement('div');
+            harnessSpan.className = 'cb-harness';
+            harnessSpan.textContent = entry.harness;
+            nameWrap.appendChild(modelSpan);
+            nameWrap.appendChild(harnessSpan);
+
+            // Note
+            const noteSpan = document.createElement('div');
+            noteSpan.className = 'cb-note';
+            noteSpan.title = entry.note;
+            noteSpan.textContent = entry.note;
+
+            // State badge
+            const badge = document.createElement('span');
+            const badgeClass = entry.state === 'CLOSED' ? CB_STATES.CLOSED
+                : entry.state === 'OPEN' ? CB_STATES.OPEN : CB_STATES.HALF_OPEN;
+            badge.className = `cb-state ${badgeClass}`;
+            badge.textContent = entry.state.replace('_', '-');
+
+            // Meta (failures + timestamp)
+            const metaWrap = document.createElement('div');
+            metaWrap.className = 'cb-meta';
+            const failSpan = document.createElement('div');
+            failSpan.className = 'cb-failures';
+            failSpan.textContent = `${entry.consecutiveFailures}/${entry.threshold} consecutive`;
+            const tsSpan = document.createElement('div');
+            tsSpan.className = 'cb-timestamp';
+            tsSpan.textContent = `checked ${formatRelTime(entry.lastCheck)}`;
+            metaWrap.appendChild(failSpan);
+            metaWrap.appendChild(tsSpan);
+
+            li.appendChild(dot);
+            li.appendChild(nameWrap);
+            li.appendChild(noteSpan);
+            li.appendChild(badge);
+            li.appendChild(metaWrap);
+            return li;
+        }
+
+        function renderCircuitBreakerTab() {
+            const entries = buildCbMockData();
+
+            const closed = entries.filter(e => e.state === 'CLOSED').length;
+            const open = entries.filter(e => e.state === 'OPEN').length;
+            const halfOpen = entries.filter(e => e.state === 'HALF_OPEN').length;
+
+            animateValue('cb-closed-count', closed);
+            animateValue('cb-halfopen-count', halfOpen);
+            animateValue('cb-open-count', open);
+            animateValue('cb-last-check', new Date().toLocaleTimeString());
+
+            const list = document.getElementById('cb-agent-list');
+            if (list) {
+                list.replaceChildren();
+                entries.forEach((e, i) => list.appendChild(renderCbRow(e, i)));
+            }
+
+            const el = document.getElementById('cb-rendered-at');
+            if (el) el.textContent = new Date().toLocaleTimeString();
         }
 
         // Render static UI
