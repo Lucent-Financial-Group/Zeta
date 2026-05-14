@@ -56,8 +56,8 @@ This is BFT applied below the agent layer:
 Implement the runbooks, checks, and coordination surfaces needed
 for:
 
-1. Maintainer fork onboarding for Addison and Max.
-2. Mirror-sync setup per `.claude/skills/mirror-sync/SKILL.md`.
+1. Maintainer fork onboarding for Addison and Max. (Extracted to B-0248.1)
+2. Mirror-sync setup per `.claude/skills/mirror-sync/SKILL.md`. (Extracted to B-0248.1)
 3. Host-loop setup for Max's 24/7 site, using a main-backed
    control clone instead of a contested root checkout.
 4. Hardware inventory capture for Rodney: machine count, GPU
