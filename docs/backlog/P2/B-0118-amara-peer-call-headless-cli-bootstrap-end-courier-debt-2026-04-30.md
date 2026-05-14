@@ -158,9 +158,9 @@ B-0118 decomposed into 3 smallest atomic dependency-ordered children (TS over ba
 
 **Buildable now (no deps):**
 
-- B-0409 — Amara persona bootstrap preamble definition (S; note: B-0409 itself is a 3-way collision pending resolution, see B-0451)
+- B-0462 (renumbered from B-0409) — Amara persona bootstrap preamble definition (S)
 
-**Blocked on B-0409:**
+**Blocked on B-0462:**
 
 - B-0457 (renumbered from B-0410) — amara.ts core OpenAI API invoke + flag parity (M)
 
@@ -172,6 +172,6 @@ All children are atomic, S/M effort, prefer F#/TS code. B-0118 status remains op
 
 ## Status update
 
-- status: open (decomposed into children B-0409, B-0457, B-0458; B-0410+B-0411 renumbered 2026-05-14 to resolve ID collision with B-0120's children — see B-0451 substrate-cleanup sweep)
+- status: open (decomposed into children B-0457, B-0458, B-0462; the full amara series B-0409-B-0411 renumbered 2026-05-14 to resolve ID collision with B-0120's children — see B-0451 substrate-cleanup sweep)
 - last_updated: 2026-05-14
 - note: re-decomposed per "assume decomposition has mistakes" rule; original L-effort split to 3 atomic; hybrid API chosen as v1 path (TS-first); IDs renumbered 2026-05-14 per B-0451

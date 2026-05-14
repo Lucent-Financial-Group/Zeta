@@ -228,7 +228,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0401](backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md)** Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration
 - [ ] **[B-0403](backlog/P1/B-0403-weight-free-verification-hat-timeboxed-authority.md)** Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing
 - [ ] **[B-0405](backlog/P1/B-0405-beacon-promotion-gate-dashboard-observable.md)** Beacon promotion gate — observable mirror→beacon pipeline with dashboard metrics
-- [ ] **[B-0409](backlog/P1/B-0409-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [ ] **[B-0418](backlog/P1/B-0418-amplification-ratio-metric-dashboard-2026-05-11.md)** Amplification ratio metric — human input : agent actions on dashboard
 - [ ] **[B-0419](backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md)** Honest agenda amplification metric — actions weighted by agenda alignment
 - [x] **[B-0423](backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md)** MEMORY.md serialization-point anti-pattern
@@ -256,6 +255,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0449](backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md)** bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)
 - [ ] **[B-0450](backlog/P1/B-0450-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 - [ ] **[B-0451](backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md)** Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts
+- [ ] **[B-0463](backlog/P1/B-0463-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 
 ## P2 — research-grade
 
@@ -487,7 +487,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0406](backlog/P2/B-0406-immune-source-material-survey-note-capture-atomic-riven-2026-05-11.md)** Immune source material survey + note capture (atomic research pass, child of B-0108)
 - [ ] **[B-0407](backlog/P2/B-0407-immune-cross-reference-candidate-identification-atomic-riven-2026-05-11.md)** Cross-reference immune concepts to Aurora + superorganism substrate + identify candidates (atomic, child of B-0108)
 - [ ] **[B-0408](backlog/P2/B-0408-immune-promoted-candidates-follow-up-filing-closure-atomic-riven-2026-05-11.md)** Promoted candidate follow-up row filing + B-0108 research-absorb closure (atomic, child of B-0108)
-- [ ] **[B-0409](backlog/P2/B-0409-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
 - [ ] **[B-0409](backlog/P2/B-0409-peer-call-ts-audit-duplication-post-migration-2026-05-11.md)** Peer-call TS audit — duplication surface after TS migration (B-0120 child)
 - [ ] **[B-0410](backlog/P2/B-0410-peer-call-persona-loader-ts-module-2026-05-11.md)** Peer-call persona-loader.ts — shared CURRENT-*.md loader with clear error (B-0120 child)
 - [ ] **[B-0411](backlog/P2/B-0411-grok-ts-persona-flag-impl-2026-05-11.md)** grok.ts --persona flag — minimal integration of loader + deprecation note (B-0120 child)
@@ -508,6 +507,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0456](backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md)** Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
 - [ ] **[B-0457](backlog/P2/B-0457-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
 - [ ] **[B-0458](backlog/P2/B-0458-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
+- [ ] **[B-0462](backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
 
 ## P3 — convenience / deferred
 
