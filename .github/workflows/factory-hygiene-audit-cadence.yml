@@ -1,12 +1,13 @@
 name: factory-hygiene-audit-cadence
 
-# Daily cadence for the two factory-hygiene audit tools:
+# Daily cadence for the three factory-hygiene audit tools:
 #
 #   - tools/hygiene/audit-rule-cross-refs.ts (.claude/rules/ cross-ref audit)
 #   - tools/hygiene/audit-user-scope-memory-index.ts (MEMORY.md bloat audit)
+#   - tools/hygiene/audit-stale-worktrees.ts (git-worktree staleness audit)
 #
 # Per the session's razor-cadence item 4 + item 5 mechanization work
-# (PRs #3202 + #3208). Without an external trigger, the audits depend on
+# (PRs #3202 + #3208 + #3225). Without an external trigger, the audits depend on
 # agent-remembering-to-run-them, which `encoding-rules-without-mechanizing.md`
 # explicitly flags as the failure mode this workflow prevents.
 #
@@ -24,6 +25,7 @@ name: factory-hygiene-audit-cadence
 # Composes with:
 #   - tools/hygiene/audit-rule-cross-refs.ts (PR #3202)
 #   - tools/hygiene/audit-user-scope-memory-index.ts (PR #3208)
+#   - tools/hygiene/audit-stale-worktrees.ts (PR #3225)
 #   - .github/workflows/razor-cadence.yml (the issue-tracker cadence)
 #   - .github/workflows/git-hotspot-cadence.yml (template shape)
 #
@@ -42,6 +44,8 @@ on:
     paths:
       - "tools/hygiene/audit-rule-cross-refs.ts"
       - "tools/hygiene/audit-user-scope-memory-index.ts"
+      - "tools/hygiene/audit-stale-worktrees.ts"
+      - "tools/hygiene/audit-stale-worktrees.test.ts"
       - ".github/workflows/factory-hygiene-audit-cadence.yml"
 
 permissions:
@@ -106,3 +110,26 @@ jobs:
         # Self-test only: MEMORY.md is user-scope and not available in CI.
         # The unit-test suite verifies the tool itself hasn't regressed.
         run: bun test tools/hygiene/audit-user-scope-memory-index.test.ts
+
+  stale-worktrees-self-test:
+    name: self-test stale-worktrees audit tool
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Run stale-worktrees audit tests
+        # Self-test only: a hosted Actions runner has one worktree, so the
+        # tool's multi-worktree enumeration won't reproduce the contamination
+        # pattern. Unit-test suite verifies parseWorktreePorcelain() and
+        # renderReport() haven't regressed.
+        run: bun test tools/hygiene/audit-stale-worktrees.test.ts
