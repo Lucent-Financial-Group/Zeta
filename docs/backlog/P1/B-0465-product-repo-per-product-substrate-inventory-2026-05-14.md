@@ -1,12 +1,13 @@
 ---
 id: B-0465
 priority: P1
-status: open
+status: closed
 title: "Per-product substrate inventory — 7 product candidates; repo-ready evaluation"
 type: research
 origin: B-0425 decomposition (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
+closed_by: PR that merges this row update
 depends_on: []
 composes_with:
   - B-0425
@@ -15,6 +16,16 @@ composes_with:
   - memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md
   - .claude/rules/backlog-item-start-gate.md
   - .claude/rules/dv2-data-split-discipline-activated.md
+---
+
+## Pre-start checklist (completed 2026-05-14T0940Z)
+
+1. **Prior-art search** — Searched skill router (no "product-substrate-inventory" skill exists; new work); grepped memory/ and docs/ for all 7 product terms (ksk, civsim, wellness, american dream, DIO, aurora, dawn); checked docs/backlog/ for existing rows. Surfaces searched: memory/*.md, docs/research/*.md, docs/backlog/*.md.
+
+2. **Dependency-restructure** — No `depends_on:` chain (this row has none). Verified B-0466 and B-0467 both correctly list B-0465 as dependency. B-0468 lists B-0465. All reciprocal pointers confirmed correct.
+
+3. **Output produced** — `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md`
+
 ---
 
 # B-0465 — Per-product substrate inventory: 7 candidates, repo-ready evaluation
