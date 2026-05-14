@@ -220,12 +220,15 @@ export function checkFiles(files: string[], surfaceReadErrors = false): Md032Fin
  * Collect staged `.md` files via `git diff --name-only --cached`.
  * Throws if the git command fails so the caller can exit non-zero
  * instead of silently scanning zero files (Copilot P1 on PR #3075).
+ * Includes renames (`R`) so `git mv old.md new.md` with edits is
+ * still scanned — markdownlint will lint `new.md` in CI regardless
+ * (Codex P2 on PR #3075).
  */
 function stagedMarkdownFiles(repoRoot: string): string[] {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
   const r = spawnSync(
     "git",
-    ["-C", repoRoot, "diff", "--name-only", "--cached", "--diff-filter=AM"],
+    ["-C", repoRoot, "diff", "--name-only", "--cached", "--diff-filter=AMR"],
     { encoding: "utf-8" },
   );
   if (r.status !== 0) {
