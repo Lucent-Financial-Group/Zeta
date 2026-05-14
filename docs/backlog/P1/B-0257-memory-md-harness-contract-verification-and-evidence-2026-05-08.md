@@ -20,6 +20,7 @@ consume `memory/MEMORY.md` before any cutover.
 ## Pre-start checklist (2026-05-14)
 
 **Prior-art search:**
+
 - `docs/research/memory-md-harness-contract-2026-04-28.md` — comprehensive Phase 0 report written 2026-04-28 covering hard caps, format contract, AutoDream compat, Option A/B/C analysis. Found via `find docs/research -name "*memory*"`.
 - `memory/reference_automemory_anthropic_feature.md` — AutoMemory feature reference with AutoDream cadence details.
 - `memory/project_memory_format_standard.md` — MEMORY.md index entry format standard (§5, §6.4 heap-state model).

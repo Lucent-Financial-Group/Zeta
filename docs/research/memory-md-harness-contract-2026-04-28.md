@@ -137,7 +137,7 @@ that the harness has been silently truncating the file.
 **Re-verification as of 2026-05-14:**
 
 ```
-$ wc -l < memory/MEMORY.md
+wc -l < memory/MEMORY.md
 ```
 *(agent: run the command and note the result here to validate against
 the >200 expectation)*
@@ -163,6 +163,7 @@ bun tools/memory/reindex-memory-md.ts --check
 ```
 
 **Expected signal:**
+
 - Exit 0 (`Index current`): MEMORY.md matches what `reindex-memory-md.ts`
   would generate — format is internally consistent.
 - Exit 2 (`Index STALE`): divergence between heap files and the rendered
@@ -191,11 +192,12 @@ has been active since then, AutoDream is either flag-gated or the cadence
 conditions (≥5 sessions since last cycle AND ≥24 hours) were not met.
 
 **Write-back compatibility assertion:** the reindexer in
-`tools/memory/reindex-memory-md.ts::renderIndex()` preserves the
-`[AutoDream last run: 2026-04-23]` marker verbatim (line 127 of the file).
-This ensures that if AutoDream later writes its own updated marker, the
-reindexer will preserve it on the next pass rather than overwriting it
-with a stale date.
+`tools/memory/reindex-memory-md.ts::main()` reads the existing
+`[AutoDream last run: <date>]` marker from `MEMORY.md` before rendering
+and passes it to `renderIndex()`, which uses it verbatim. If no marker
+is present (e.g., first run), `renderIndex()` falls back to a hardcoded
+date. This ensures that if AutoDream writes a newer date, the reindexer
+will preserve it on the next pass rather than overwriting it.
 
 ### Step 5 — Confirm marker-only (Option A) would break format
 
