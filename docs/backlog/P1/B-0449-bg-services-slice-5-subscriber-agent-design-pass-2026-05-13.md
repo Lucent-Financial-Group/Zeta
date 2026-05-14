@@ -133,9 +133,16 @@ from the implementation work (per-topic handlers).
 Once Option C is adopted (or alternative chosen), three follow-up
 rows track per-topic handler implementation:
 
-- B-0450 — `infinite-backlog-nudge` handler (slice 5.1)
-- B-0451 — `work-assignment` handler (slice 5.2)
-- B-0452 — `missed-substrate-cascade` handler (slice 5.3)
+- B-0459 — `infinite-backlog-nudge` handler (slice 5.1)
+- B-0460 — `work-assignment` handler (slice 5.2)
+- B-0461 — `missed-substrate-cascade` handler (slice 5.3)
+
+(The original draft of this row reserved B-0450/B-0451/B-0452;
+those slots were subsequently allocated by the 2026-05-13 collision-
+renumber cascade — B-0450 to the PM-2 getting-started guide,
+B-0451 to the duplicate-row-id substrate-cleanup, B-0452 to the
+P2 contributor-compliance series. Reservations were aspirational,
+not allocated; the slice-5 family is now scheduled at B-0459+.)
 
 ## Substrate-honest framing
 
