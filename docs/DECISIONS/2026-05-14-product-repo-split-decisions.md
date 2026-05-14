@@ -12,7 +12,7 @@
 The factory-infrastructure three-repo split (Zeta + Forge + ace) was decided in [the 2026-04-22 ADR](2026-04-22-three-repo-split-zeta-forge-ace.md). This is the **companion ADR for the product axis** — it answers which LFG product concepts get their own public GitHub repos, in what order, under what governance.
 
 Aaron 2026-05-13 articulated the dual-axis design:
-> *"so anytihgn you don't want them to fork specifically you have in a repo can still be public and such glass halo but the licence can say no fork please respect honesty or something not enforcable"*
+> *"so anytihgn you don't want them to fork specifically you have in a repo can still be public and such glass halo but the licence can say no fork please respect honesty or something not enforcable"* _(verbatim; typos preserved)_
 
 The design constraints cascade from four child rows of B-0425:
 
@@ -102,7 +102,7 @@ Each product repo carries a lightweight `.claude/` configuration (product-scoped
 - [ ] Repo created: `Lucent-Financial-Group/civsim`
 - [ ] Visibility: **public** (glass-halo)
 - [ ] LICENSE: honor-system text from `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` (mutual-privacy FAQ clause)
-- [ ] `.zeta-version` pin file: points at Zeta `main` HEAD SHA
+- [ ] `.zeta-version` pin file: contains an immutable reference — a pinned commit SHA or release tag (capture the current `main` HEAD SHA at creation time; update via explicit bump, not branch pointer)
 - [ ] Branch protection on `main`: `required_conversation_resolution` + squash-only + no-force-push
 - [ ] CodeQL: enabled (default code-scanning workflows)
 - [ ] `.claude/CLAUDE.md`: product-scoped bootstrap (references Forge for factory tools; cites `.zeta-version`)

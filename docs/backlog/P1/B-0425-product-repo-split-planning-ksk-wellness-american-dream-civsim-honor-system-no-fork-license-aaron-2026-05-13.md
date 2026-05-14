@@ -8,14 +8,13 @@ origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
 last_updated: 2026-05-14
 closed: 2026-05-14
-closed_by_adr: "docs/DECISIONS/2026-05-14-product-repo-split-decisions.md"
+closed_by: "docs/DECISIONS/2026-05-14-product-repo-split-decisions.md"
 decomposed_into:
   - B-0464
   - B-0465
   - B-0466
   - B-0467
   - B-0468
-closed_by: B-0468
 composes_with:
   - B-0424
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md

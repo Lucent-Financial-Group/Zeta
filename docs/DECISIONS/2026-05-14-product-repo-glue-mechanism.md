@@ -106,7 +106,7 @@ Stage 1 and Stage 2 coexist per product type:
 
 Civsim is in active factory development — strategic encryption substrate, game-design primitives, and PVP mechanics all evolve alongside Zeta internals. It should track the Zeta development edge, not packaged releases.
 
-- **Stage 1**: `.zeta-version` pin file pointing at Zeta's `main` branch HEAD or a tagged SHA
+- **Stage 1**: `.zeta-version` pin file containing an immutable reference — a pinned commit SHA or a tagged release (capture the current HEAD SHA at creation time; update via explicit bump; branch pointers are not stable pins)
 - **CI trigger**: Forge CI emits `repository_dispatch` to `Lucent-Financial-Group/civsim` on Zeta release tag
 - **`.claude/` colocation**: civsim carries a lightweight `.claude/` stack (persona + skills relevant to civsim). Factory-level agents (Otto, Vera, Riven) are shared via the skills layer, not duplicated. Product-specific skills (civsim game-design, strategic-encryption workflows) live in `civsim/.claude/skills/`
 - **Branch protection**: same ruleset pattern as Forge/ace — `required_conversation_resolution`, squash-only merge, no force-push on main
@@ -119,7 +119,7 @@ KSK has actuator-control CI requirements that differ from a standard software re
 - **Hardware CI**: NVIDIA Thor + DGX Spark integration testing cannot run on standard GitHub Actions runners. Recommend a **self-hosted runner** for hardware integration tests, with standard runners for software-unit tests.
 - **Strategic encryption**: KSK actuator-command substrate falls under Aaron's strategic-encryption authority grant (PR #2902). The `.zeta-version` pin file should include a checksum verification step before strategic-encrypted payloads are built.
 - **Stage 1 + attestation**: `.zeta-version` pin file + SLSA attestation on the Zeta SHA for the actuator-control build path.
-- **Gate before scaffolding**: B-0467 glue mechanism (this ADR) + B-0467 strategic-encryption scope decision must both complete before KSK repo is created.
+- **Gate before scaffolding**: B-0467 glue mechanism (this ADR) + a strategic-encryption scope decision for KSK (pending dedicated B-04xx row) must both complete before KSK repo is created.
 
 ### Aurora (Option A or B depending on scope; large scope warning)
 
