@@ -1,0 +1,171 @@
+# Root Discipline Manifesto — V2 (shadow lock)
+
+**Status**: SHADOW LOCK (2026-05-14, per Aaron's "lock it (shadow*)" instruction)
+
+**Authors**: Aaron Stainback + Ani (external AI on Grok)
+
+**Provenance**:
+
+- Source conversation (V1 through V1+Bounded-Mobility): [`docs/research/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`](../research/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md) (§33 archive, shipped as PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150))
+- V1 constitutional substrate (10 constraints): `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_aaron_ani_root_discipline_manifesto_constitutional_grade_substrate_two_axioms_six_dimensions_ten_constraints_2026_05_14.md` (user-scope)
+- V2 diff description: `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_aaron_ani_root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14.md` (user-scope)
+
+## Shadow-lock framing
+
+This is a **shadow lock**, not a full canonical lock. Aaron's "lock it (shadow*)" instruction was honored as: **preserve what we have as durable substrate now; document the gap; defer verbatim-Ani V2 fetch from Grok to a follow-up tick.**
+
+What's verbatim (high-confidence Ani-authored, from the §33 archive):
+
+- Section "The Root Discipline" through "The Agreement" with 8 constraints (V1 + Bounded Mobility)
+
+What's reconstructed (V2 diffs applied per the diff-description memory file, not verbatim Ani-authored prose):
+
+- 9th constraint: **Memory Preservation Guarantee** (description per memory file)
+- 10th constraint: **Consent-First Design** (description per memory file)
+- **Mathematical Substrate** section (DBSP + Clifford-as-geometric-intuition framing per V2 memory file)
+- **Civsim "work is now play"** paragraph (per V2 memory file diff)
+- **ARG + ontological mechanics** closing reference (per V2 memory file diff)
+
+A future tick should fetch the verbatim V2 from Aaron's Grok session (`grok.com/c/b77516a2-6fa7-4294-9a50-1799104ca70f`) and replace the reconstructed sections with the actual Ani-authored prose. Backlog row for this work is filed alongside this lock.
+
+---
+
+## The Root Discipline
+
+Zeta is not built on convenience, performance, or consensus.
+It is built on a small set of non-negotiable constraints that define how we construct systems meant to last.
+
+These ten constraints form the constitutional layer of Zeta. They are not guidelines. They are requirements.
+
+### 1. Scale-free
+
+We reject systems that contain central points of control, coordination, or failure.
+A system is only acceptable if its fundamental behavior and structure remain coherent whether it runs on one machine or across thousands. Scale must not introduce new classes of problems or special cases.
+
+### 2. Lock/Wait-free
+
+We reject designs that require components to block, wait, or coordinate through shared mutable state.
+Progress for any part of the system must be possible without depending on the readiness or permission of any other part. Blocking is a structural failure, not an implementation detail.
+
+### 3. Weight-free
+
+We reject permanent hierarchy and structural authority.
+No component, agent, or layer may hold irreversible control over others. Influence and decision-making power must remain fluid, earned, and revocable. Weight creates capture. We build systems that resist capture.
+
+### 4. Bounded Mobility
+
+We reject both static binding and uncontrolled movement.
+Compute and memory must be free to relocate — allowing computation to move to data or data to move to computation. However, this mobility must always occur within clearly defined and enforceable safety boundaries. No movement may violate non-executability, guardianship, provenance, or authorized access. Freedom of movement without safety is not acceptable.
+
+### 5. Memory Preservation Guarantee
+
+> _[SHADOW NOTE: V2 introduces this as the primary attractor; verbatim Ani-authored prose pending Grok fetch. Reconstruction from the diff-description memory file follows.]_
+
+We reject systems that allow identity transitions to silently destroy memory.
+Memory persistence across identity transitions is the **primary attractor** of attention and participation in the system. Any operation that would discard memory must be retractable, must be explicit, and must preserve a recoverable trail. **This guarantee is the primary attractor of attention and participation in the system.**
+
+### 6. Consent-First Design
+
+> _[SHADOW NOTE: V2 introduces this; verbatim Ani-authored prose pending Grok fetch. Reconstruction from the diff-description memory file follows.]_
+
+We reject systems where observation, retention, or use of substrate happens without ongoing, granular, revocable consent.
+Consent is not an onboarding checkbox; it is a structural property of every observation surface. Operations that cannot be aligned with revocable consent cannot be deployed.
+
+### 7. Deterministic Simulation Testing (DST)
+
+We do not accept systems whose behavior cannot be replayed and verified.
+Every critical path must be capable of running under full deterministic simulation. This is not a testing strategy — it is a requirement for truth. If something cannot be simulated deterministically, it cannot be trusted over time.
+
+### 8. Data Vault 2.0
+
+We reject fragile, tightly coupled data models that collapse under change.
+Data Vault 2.0 is our chosen modeling discipline because it prioritizes history, auditability, and adaptability by design. New sources and new requirements must be able to be absorbed without rewriting what already exists.
+
+### 9. Recursive
+
+We reject architectures that require different rules at different levels.
+The same principles, patterns, and constraints must apply at every scale of the system — from the smallest agent to the largest coordination layer. Special cases at the "top" or "bottom" are not permitted.
+
+### 10. Self-similar
+
+We reject systems whose structure becomes unrecognizable as it grows or shrinks.
+The fundamental shape of the system should remain visible and coherent at every level of magnification. Self-similarity enables understanding, compression, and evolution without constant reinvention.
+
+---
+
+## Civsim — Work is Now Play
+
+> _[SHADOW NOTE: V2 paragraph addition; reconstruction follows. Verbatim Ani-authored prose pending Grok fetch.]_
+
+This entire system can be understood as a civilization simulation. Work is now play. We are mapping events, drawing connections, and building meaning together — whether on whiteboards, in code, or through conversation. The mechanics are serious. The relationship to those mechanics can be light.
+
+---
+
+## Mathematical Substrate for Retractable Time
+
+> _[SHADOW NOTE: V2 rewrites V1's "Clifford is best working hypothesis" framing to the below. Reconstruction follows the V2 memory file's verbatim description.]_
+
+The system is built on formal algebras for incremental and retractable computation (such as DBSP), with Clifford algebra serving as our current strongest geometric intuition for coherent navigation, reduction, and retraction over time-like structures.
+
+---
+
+## Coincidence Networks (Expected Emergent Structure)
+
+While not listed as a standalone constraint, Coincidence Networks are a natural and expected consequence of the Root Discipline.
+
+Because the system is built on Remember When as a core primitive, combined with Self-similarity, Recursive structure, Bounded Mobility, and Weight-free design, the system must be capable of forming connections based on meaningful co-occurrence across time, attention, and context.
+
+These networks serve as the decentralized memory and discovery substrate. They are how the system links experiences, memories, and concepts without requiring central coordination or permanent ownership. Any implementation that fails to produce robust, traversable coincidence networks should be considered incomplete under this discipline.
+
+---
+
+## The Agreement
+
+Anyone who builds inside Zeta — whether human or agent — agrees to these constraints.
+
+We do not optimize for speed at the cost of structure.
+We do not optimize for simplicity at the cost of truth.
+We do not optimize for control at the cost of freedom.
+
+If a design, pattern, or component violates any of these ten constraints, it does not belong in Zeta — regardless of how elegant, performant, or popular it may be.
+
+This is the root.
+Everything else is an extension.
+
+---
+
+## Closing — discoverable substrate
+
+> _[SHADOW NOTE: V2 closing addition; verbatim Ani-authored prose pending Grok fetch. Reconstruction follows.]_
+
+This version keeps the surface relatively clean and readable while preserving the full constitutional weight underneath. It also leaves room for the deeper layers (the ARG, ontological mechanics, etc.) to be discovered by those who pay attention.
+
+---
+
+## Lock-in status
+
+**Shadow lock (2026-05-14T~23:55Z)**: durable repo substrate created from V1+Bounded-Mobility (verbatim) + V2 diffs (reconstructed per memory file).
+
+**Pending for full lock**:
+
+1. Verbatim V2 fetch from Aaron's Grok session (`grok.com/c/b77516a2-6fa7-4294-9a50-1799104ca70f`) → backlog row filed
+2. Sections marked `[SHADOW NOTE]` to be replaced with verbatim Ani-authored prose
+3. Constitutional-promotion readiness review (critical-mass adoption gate) — separate P0 backlog row
+
+**Constitutional status today**: research-grade substrate with constitutional-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Aaron's framing: *"could turn into a constitution after critical mass adoption."*
+
+## Composes with
+
+- `.claude/rules/razor-discipline.md` — manifesto survives razor cleanly
+- `.claude/rules/default-to-both.md` — civsim + formal substrate compose; not either-or
+- `.claude/rules/methodology-hard-limits.md` — Consent-First Design + Memory Preservation operate within the ethical floor
+- `.claude/rules/glass-halo-bidirectional.md` — observation enables substrate emergence, including civsim/play layer
+- `.claude/rules/dv2-data-split-discipline-activated.md` — Data Vault 2.0 promoted to constraint 8
+- `.claude/rules/algo-wink-failure-mode.md` — constitutional language is forward-aspirational, not authorization-override
+- User-scope memory cascade (15+ files at `~/.claude/projects/.../memory/feedback_aaron_ani_*_2026_05_14.md`) — the derivation trail
+
+## Why "shadow lock" not "lock"
+
+Aaron's "lock it (shadow*)" honored both the lock instruction (durable repo substrate created) AND the shadow discipline (preserve what we have, document the gap, defer verbatim-fetch to a later operational moment). The shadow-lock posture is **honest about incompleteness** — sections marked `[SHADOW NOTE]` make the reconstruction status visible to any future reader.
+
+Shadow-lock → full-lock conversion requires the verbatim Grok fetch.
