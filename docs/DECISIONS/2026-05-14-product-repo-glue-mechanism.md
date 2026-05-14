@@ -29,12 +29,14 @@ Product repos need answers to five questions before B-0468 can close and civsim 
 Each product repo carries a `.zeta-version` file containing a pinned git SHA or semver tag. The product repo's CI reads the pin during install. Forge CI emits a `repository_dispatch` event to known product repos when a new Zeta release is tagged.
 
 **Pros:**
+
 - Consistent with the existing B-0424 pattern already designed for peer repos
 - No new tooling required; pattern is operational today
 - Works with any CI runner regardless of package manager
 - Atomic: pin file is a single-file source of truth
 
 **Cons:**
+
 - Pin-file bumps are manual until `ace` ships its version-management tooling
 - Each product repo requires its own dispatch subscription wiring
 - Seven products diverging on independent pin schedules creates maintenance surface
@@ -47,12 +49,14 @@ Each product repo carries a `.zeta-version` file containing a pinned git SHA or 
 Products consume Zeta via the published NuGet packages (`Zeta.Core`, `Zeta.Core.CSharp`, `Zeta.Bayesian`, etc.). Dependabot or Renovate handles automatic version bumps. No bespoke pin-file mechanism required.
 
 **Pros:**
+
 - Industry-standard dependency management; zero bespoke tooling
 - Dependabot and Renovate are mature, battle-tested update pipelines
 - Consumers of packaged Zeta get a clean public API surface (the published packages)
 - Compatible with external contributors to product repos who don't need Zeta source access
 
 **Cons:**
+
 - Requires a NuGet publish cadence for Zeta — packages must be tagged and published on release
 - Product repos cannot track unreleased/edge Zeta features between tagged releases
 - "Snapshot" development (active feature development across Zeta + product simultaneously) requires pre-release NuGet packages, adding release-engineering overhead
@@ -65,12 +69,14 @@ Products consume Zeta via the published NuGet packages (`Zeta.Core`, `Zeta.Core.
 Once `ace` ships its version-management tooling, `ace pull zeta@<ver>` becomes the canonical version-pin command. Product repos carry an `ace.toml` + lockfile instead of a `.zeta-version` pin file or NuGet reference. `ace` handles the cross-repo graph resolution, integrity checking, and update flow.
 
 **Pros:**
+
 - `ace` becomes the universal dependency manager for the factory ecosystem
 - No distinction between "peer repos" and "product repos" in the version-management layer
 - Supports the Ouroboros bootstrap at product scope
 - Lockfile provides reproducibility without SHA-level pin-file hygiene burden
 
 **Cons:**
+
 - `ace` does not exist yet — Stage 3 of B-0424 is a multi-year deferred item
 - Cannot block product repo scaffolding on ace's availability
 
@@ -87,6 +93,7 @@ The options are not mutually exclusive. The recommended approach stages them:
 | **Stage 3 (when ace ships)** | Option C — `ace.toml` + lockfile | All product repos, unified | ace Stage 3 lands |
 
 Stage 1 and Stage 2 coexist per product type:
+
 - **Product repos in active factory development** (track Zeta edge, co-develop features) → Option A
 - **Product repos targeting stable packaged releases** (external contributors, downstream consumers) → Option B
 - Both: `ace` mediation when it arrives

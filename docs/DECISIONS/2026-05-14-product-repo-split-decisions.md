@@ -44,6 +44,7 @@ The design constraints cascade from four child rows of B-0425:
 `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` is the template applied to all product repo LICENSE files.
 
 Key properties (substrate-honest):
+
 - Repos remain **public** — glass-halo discipline preserved
 - Forking is **asked against, not prohibited** — honor-system; non-enforceable
 - Civsim **exception**: forks are welcome by design; the mutual-privacy clause asks forks to apply the same honor-system ask to their own strategic substrate
@@ -115,6 +116,7 @@ Not a blocker for repo creation. Substrate migration follows in a dedicated B-04
 ### Stage 2 — "Later" product repos (as each reaches repo-ready)
 
 Each "later" product follows the same scaffolding checklist when it achieves `repo-ready now` status. Requires:
+
 1. Re-run B-0465-style substrate inventory check
 2. Re-review provisional slug (especially DIO)
 3. Apply honor-system license

@@ -238,7 +238,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0423.4](backlog/P1/B-0423.4-relax-memory-index-integrity-ci-check.md)** Relax memory-index-integrity.yml CI check — heap-state-acceptable
 - [x] **[B-0423.5](backlog/P1/B-0423.5-close-b0088-chain-superseded-by-heap-architecture.md)** Close B-0088 chain as superseded by B-0423 heap architecture
 - [ ] **[B-0424](backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)** Three-repo split Stage 1 — create empty Forge + ace with day-one scaffolding
-- [ ] **[B-0425](backlog/P1/B-0425-product-repo-split-planning-ksk-wellness-american-dream-civsim-honor-system-no-fork-license-aaron-2026-05-13.md)** Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license
+- [x] **[B-0425](backlog/P1/B-0425-product-repo-split-planning-ksk-wellness-american-dream-civsim-honor-system-no-fork-license-aaron-2026-05-13.md)** Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license
 - [ ] **[B-0426](backlog/P1/B-0426-repo-split-orthogonal-mirror-beacon-axis-aaron-2026-05-13.md)** Repo-split orthogonal Mirror/Beacon axis — speculative-fast-forks vs governance-citation-gated
 - [ ] **[B-0427](backlog/P1/B-0427-repo-split-third-orthogonal-axis-code-vs-english-formal-verification-aaron-2026-05-13.md)** Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence smell test
 - [ ] **[B-0428](backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md)** DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)
@@ -258,10 +258,10 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0451](backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md)** Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts
 - [ ] **[B-0463](backlog/P1/B-0463-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [x] **[B-0464](backlog/P1/B-0464-product-repo-honor-system-license-language-draft-2026-05-14.md)** Draft honor-system 'please don't fork' license language for product repos
-- [ ] **[B-0465](backlog/P1/B-0465-product-repo-per-product-substrate-inventory-2026-05-14.md)** Per-product substrate inventory — 7 product candidates; repo-ready evaluation
-- [ ] **[B-0466](backlog/P1/B-0466-product-repo-naming-expert-review-2026-05-14.md)** Naming-expert review for product repo names — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn
-- [ ] **[B-0467](backlog/P1/B-0467-product-repo-cross-ref-glue-mechanism-design-2026-05-14.md)** Product-repo cross-ref glue mechanism design — how product repos reference Zeta/Forge/ace
-- [ ] **[B-0468](backlog/P1/B-0468-product-repo-split-adr-2026-05-14.md)** ADR — product-repo split decisions; closes B-0425
+- [x] **[B-0465](backlog/P1/B-0465-product-repo-per-product-substrate-inventory-2026-05-14.md)** Per-product substrate inventory — 7 product candidates; repo-ready evaluation
+- [x] **[B-0466](backlog/P1/B-0466-product-repo-naming-expert-review-2026-05-14.md)** Naming-expert review for product repo names — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn
+- [x] **[B-0467](backlog/P1/B-0467-product-repo-cross-ref-glue-mechanism-design-2026-05-14.md)** Product-repo cross-ref glue mechanism design — how product repos reference Zeta/Forge/ace
+- [x] **[B-0468](backlog/P1/B-0468-product-repo-split-adr-2026-05-14.md)** ADR — product-repo split decisions; closes B-0425
 
 ## P2 — research-grade
 
