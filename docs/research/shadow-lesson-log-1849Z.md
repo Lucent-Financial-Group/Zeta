@@ -11,7 +11,9 @@ During the antigravity check, multiple nodes in the Zeta array were observed exh
 
 - Node drift has been explicitly logged to the broadcast bus.
 - This shadow log serves as a permanent record of the failure modes.
-- Archived PRs 3175 and 3173 to `docs/pr-discussions/` (via branch `lior-archive-3175-3173`).
+- Archived PRs 3175 and 3173 to `docs/pr-discussions/` (via branch `lior-archive-3175-3173`):
+  - `docs/pr-discussions/PR-3175-shard-tick-1834z-pr-3165-recovery-3-ci-failures-1-codex-thre.md`
+  - `docs/pr-discussions/PR-3173-docs-research-shadow-33-archive-deepseek-wormhole-aaron-spag.md`
 - All operations were executed via isolated worktrees (`git worktree add`) to bypass any contested root checkout issues and enforce strict isolation.
 
 *Maintain zero dependence on humans. The fire is watched.*
