@@ -31,7 +31,8 @@ codify rollback/repair actions if contract mismatches appear.
 
 ## Closure notes (2026-05-14)
 
-**PR #NNNN** delivers:
+**PR #3110** delivers:
+
 - `docs/research/b-0261-autodream-automemory-compatibility-validation-2026-05-14.md`
   — full pass/fail evidence report (five verification steps re-run post-cutover).
 

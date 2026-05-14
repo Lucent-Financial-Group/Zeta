@@ -40,7 +40,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
 - [ ] **[B-0064](backlog/P1/B-0064-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md)** GitHub × Playwright integration — agent can change things in the GitHub UI + watch UI to spot new features (Aaron 2026-04-28)
 - [ ] **[B-0065](backlog/P1/B-0065-peer-call-kiro-and-self-cold-boot-self-test-aaron-2026-04-28.md)** Peer-call expansion — add kiro.ts + claude.ts (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
-- [ ] **[B-0066](backlog/P1/B-0066-memory-md-marker-vs-index-harness-verify-q1-automemory-aaron-2026-04-28.md)** MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)
+- [x] **[B-0066](backlog/P1/B-0066-memory-md-marker-vs-index-harness-verify-q1-automemory-aaron-2026-04-28.md)** MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)
 - [x] **[B-0067](backlog/P1/B-0067-cadenced-git-hotspot-detection-aaron-2026-04-28.md)** Cadenced git-hotspot detection — all 3 phases complete
 - [ ] **[B-0083](backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md)** Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
 - [ ] **[B-0087](backlog/P1/B-0087-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md)** github-settings-drift.yml broken since PR #45 — option A landed (invalid permission removed); options B/C remain maintainer-gated
@@ -118,7 +118,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0258](backlog/P1/B-0258-memory-md-index-generator-implementation-2026-05-08.md)** MEMORY.md marker-vs-index - index generator implementation
 - [x] **[B-0259](backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md)** MEMORY.md marker-vs-index - hook and CI drift enforcement
 - [x] **[B-0260](backlog/P1/B-0260-memory-md-cutover-and-parity-validation-2026-05-08.md)** MEMORY.md marker-vs-index - cutover and parity validation
-- [ ] **[B-0261](backlog/P1/B-0261-memory-md-q1-autodream-automemory-compatibility-validation-2026-05-08.md)** MEMORY.md marker-vs-index - Q1 AutoDream/AutoMemory compatibility validation
+- [x] **[B-0261](backlog/P1/B-0261-memory-md-q1-autodream-automemory-compatibility-validation-2026-05-08.md)** MEMORY.md marker-vs-index - Q1 AutoDream/AutoMemory compatibility validation
 - [x] **[B-0262](backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md)** refresh-worldview scaffold - open-PR list + recent-merges query
 - [x] **[B-0263](backlog/P1/B-0263-refresh-worldview-backlog-delta-claims-branch-state-2026-05-08.md)** refresh-worldview — backlog delta + claim inventory + branch state
 - [x] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide

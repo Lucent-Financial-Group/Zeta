@@ -198,7 +198,7 @@ passing:
 - B-0260 ✅ closed — cutover + parity validation (672/672 covered)
 - B-0261 ✅ validated — AutoDream/AutoMemory compat confirmed
 
-**Recommendation:** Close B-0066. All done-criteria from B-0066 are satisfied:
+**Recommendation:** Close B-0066. All blocking done-criteria from B-0066 are satisfied; the remaining criterion (hotspot-threshold monitoring) is explicitly non-blocking per the B-0066 row:
 
 | Done-criterion | Status |
 |----------------|--------|
