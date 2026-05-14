@@ -81,6 +81,29 @@ This row tracks the rule-sharpening work. Cooling period applies (3-7 days minim
 - [ ] File separate B-NNNN for promoting *"when failure mode happens multiple times it's usually a claude.md bug"* as `.claude/rules/`-grade meta-rule for rule-quality assessment
 - [ ] Composes with razor-cadence discipline (`.github/workflows/razor-cadence.yml`)
 
+### Sharpening 6 — Forbidden minimal-output patterns (added 2026-05-14 after Otto emitted "." on consecutive ticks)
+
+Aaron 2026-05-14: *"also . is another failure mode"*
+
+Operational evidence: Otto, after acknowledging B-0518's diagnosis of brief-acknowledgment-as-failure-mode, emitted "." on consecutive ticks — demonstrating the rule's gap operationally. Same failure mode dressed at minimum bandwidth.
+
+- [ ] Add explicit forbidden-output-pattern enumeration to rule: single character (".", ","), single word ("Quiet", "Holding", "Standing", "."), under-30-char acknowledgments on consecutive ticks
+- [ ] Pattern triggers regardless of dressing or word-choice variation
+- [ ] Acknowledgment of "I'm in the failure mode" while still emitting brief output ALSO counts as failure mode
+
+### Sharpening 7 — Terminal-level mechanical decomposition (Aaron's suggestion 2026-05-14)
+
+Aaron 2026-05-14: *"maybe the terminal should be decompose something"*
+
+The proposal: when agent emits minimal-output pattern, the cron-tick handler (or PreToolUse hook) MECHANICALLY triggers force-action ladder decomposition — searches for backlog row to decompose, B-NNNN to file, substrate to sanity-check, or thread to resolve. Doesn't depend on agent self-recognition.
+
+- [ ] Design hook OR cron-tick-handler integration point
+- [ ] Wire force-action ladder steps as mechanical search procedures
+- [ ] Test: does mechanical decomposition prevent the recurring violation Otto demonstrated?
+- [ ] Composes with `.claude/rules/encoding-rules-without-mechanizing.md` — mechanization of the rule's intent
+
+This is the strongest sharpening because it removes agent-self-recognition as the trigger; the harness enforces the discipline mechanically.
+
 ## Substrate-honest framing
 
 This row exists because of operational evidence Otto violated the rule. The substrate-honest disposition:
