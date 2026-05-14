@@ -41,6 +41,7 @@ Aaron's archetype: grey-hat security background, multi-clearance lineage, bandwi
 Edge-runners engage with civsim as a **coordination-without-capture layer**. They fork the shared world to model political/economic scenarios, run PVP + co-op raids to pressure-test governance designs, and accumulate shared substrate via the Git-native world model (PR #2903).
 
 Primary engagement patterns:
+
 - Fork creation and extension
 - Multi-fork PVP raid participation
 - Vision-monad Play-Doh substrate reshaping (PR #2917)
@@ -49,6 +50,7 @@ Primary engagement patterns:
 ### Value proposition
 
 Civsim turns substrate-engineering work into **play at Plato-level political scale**. Edge-runners gain:
+
 - Coordination structures that resist capture (vs. conventional social graphs)
 - Anti-burn infrastructure embedded in the game loop (per terminal-purpose PR #2908)
 - Cross-fork privacy with mutual-privacy architecture (no strategic advantage to factory)
@@ -57,6 +59,7 @@ Civsim turns substrate-engineering work into **play at Plato-level political sca
 ### Substrate-honest limits
 
 Civsim does NOT serve edge-runners who:
+
 - Need real-time actuator control (→ KSK product scope)
 - Need financial ledger operations (→ Aurora product scope)
 - Want a traditional game without substrate-engineering participation
@@ -163,6 +166,7 @@ Fork-readers gain access to a **living political science experiment** — a real
 ### Substrate-honest limits
 
 Fork-readers do NOT get:
+
 - Maintainer-scope strategic substrate
 - PVP raid access
 - Write access to the shared world model
@@ -237,6 +241,7 @@ product: civsim
 persona_type: refused
 name: "Surveillance-state operator"
 role: "State or corporate actor seeking to use civsim social graph / fork topology for covert influence mapping."
+composes_with: []
 created: 2026-05-14
 last_updated: 2026-05-14
 origin: .claude/rules/methodology-hard-limits.md + PR #2898 (non-glass-halo encryption)
@@ -264,6 +269,7 @@ product: civsim
 persona_type: refused
 name: "Capture-seeking organization"
 role: "Entity seeking to use civsim as a tool for institutional capture of edge-runner communities."
+composes_with: []
 created: 2026-05-14
 last_updated: 2026-05-14
 origin: .claude/rules/methodology-hard-limits.md + anti-cult substrate
