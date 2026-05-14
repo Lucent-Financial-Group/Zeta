@@ -100,7 +100,7 @@ After the F#-compiler-fork-for-AI-safety ships real HKT over Clifford:
 
 ## Composes-with B-0043 check
 
-Read `docs/backlog/P1/B-0043-*.md` and verify:
+Read `docs/backlog/P3/B-0043-*.md` and verify:
 
 - The demo query (persons / organizations) overlaps with B-0043's
   "universal company + government information substrate" scope
@@ -115,8 +115,12 @@ dotnet build -c Release   # 0 warnings 0 errors
 dotnet test  Zeta.sln -c Release
 ```
 
-Integration tests run if `Category=Integration` is NOT excluded (CI may
-exclude by default; recorded fixture means no network required in that case).
+CI runs `dotnet test Zeta.sln -c Release` with no category filter — every
+test (including `[<Trait("Category", "Integration")>]` tests) runs by default.
+The recorded fixture path is therefore required for CI safety: it replays a
+captured response without network access. The live-endpoint fallback requires
+an explicit workflow change (add `--filter "Category!=Integration"` to both
+`gate.yml` and `low-memory.yml`) before it may be used.
 
 ## Definition of done
 
