@@ -489,9 +489,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0408](backlog/P2/B-0408-immune-promoted-candidates-follow-up-filing-closure-atomic-riven-2026-05-11.md)** Promoted candidate follow-up row filing + B-0108 research-absorb closure (atomic, child of B-0108)
 - [ ] **[B-0409](backlog/P2/B-0409-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
 - [ ] **[B-0409](backlog/P2/B-0409-peer-call-ts-audit-duplication-post-migration-2026-05-11.md)** Peer-call TS audit — duplication surface after TS migration (B-0120 child)
-- [ ] **[B-0410](backlog/P2/B-0410-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
 - [ ] **[B-0410](backlog/P2/B-0410-peer-call-persona-loader-ts-module-2026-05-11.md)** Peer-call persona-loader.ts — shared CURRENT-*.md loader with clear error (B-0120 child)
-- [ ] **[B-0411](backlog/P2/B-0411-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
 - [ ] **[B-0411](backlog/P2/B-0411-grok-ts-persona-flag-impl-2026-05-11.md)** grok.ts --persona flag — minimal integration of loader + deprecation note (B-0120 child)
 - [ ] **[B-0412](backlog/P2/B-0412-codex-gemini-ts-persona-flag-impl-2026-05-11.md)** codex.ts + gemini.ts --persona flags — parallel sibling impl after grok (B-0120 child)
 - [ ] **[B-0413](backlog/P2/B-0413-dashboard-tiered-access-github-oauth-agent-creds.md)** Dashboard tiered access — GitHub OAuth + agent credentials
@@ -508,6 +506,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0454](backlog/P2/B-0454-t1-t2-self-audit-and-cadenced-review-trajectories.md)** Encode T1 self-audit + T2 cadenced review (TS-preferred tooling + trajectory packet)
 - [ ] **[B-0455](backlog/P2/B-0455-t4-t5-onboarding-and-drift-retrospective-trajectories.md)** T4 onboarding briefing + T5 drift retrospective (trajectory packets)
 - [ ] **[B-0456](backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md)** Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
+- [ ] **[B-0457](backlog/P2/B-0457-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
+- [ ] **[B-0458](backlog/P2/B-0458-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
 
 ## P3 — convenience / deferred
 
