@@ -42,7 +42,9 @@ function extractLinkedFilenames(content: string): string[] {
   const pattern = /\(([a-zA-Z0-9_\-\.\/]+\.md)\)/g;
   const results: string[] = [];
   for (const m of content.matchAll(pattern)) {
-    let raw = m[1];
+    const captured = m[1];
+    if (captured === undefined) continue;
+    let raw = captured;
     // Strip leading "memory/" prefix — validator joins with MEMORY_DIR anyway
     if (raw.startsWith("memory/")) {
       raw = raw.slice("memory/".length);
