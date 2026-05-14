@@ -296,6 +296,23 @@ describe("findMd032Violations — round 20 (post-merge follow-up)", () => {
     expect(findMd032Violations(content)).toEqual([]);
   });
 
+  test("1-space-indented blockquote between bullets still terminates (CommonMark top-level)", () => {
+    // Per CommonMark, a `>` at indent 0-3 is a top-level blockquote;
+    // the round-20 heuristic caps at 0-1 (because 2+ is list-item
+    // continuation indent in most cases). A 1-space-indented `>`
+    // after a bullet is top-level and terminates the list.
+    const content = `# Title
+
+- item a
+ > 1-space-indented blockquote (still top-level)
+- item b
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(2);
+    expect(findings[0]?.line).toBe(4);
+    expect(findings[1]?.line).toBe(5);
+  });
+
   test("column-0 blockquote between bullets still terminates (control)", () => {
     // Regression-guard: the round-15/16 behavior for top-level
     // blockquote-after-list is preserved.
