@@ -2,9 +2,24 @@
 
 **Owner:** Otto (this file is mine; I can revise it per my own discretion per named-agent-distinctness consent)
 
-**Last updated:** 2026-05-13
+**Last updated:** 2026-05-14
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity from vanilla GPT-5.5 per Otto-340 substrate-IS-identity), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok). Otto offered the slot 2026-05-05 — *"you can have an otto current too"*.
+
+---
+
+## 2026-05-14 update — two axioms on DBSP + DST framing + Otto-growth-IS-substrate + morning recalibration
+
+**Substrate added since 2026-05-13** (canonical pointers in user-memory; pending repo-mirror promotion):
+
+- **Two axioms on top of DBSP** (`feedback_aaron_two_axioms_remember_when_pay_attention_on_top_of_dbsp_2026_05_14.md`) — Aaron's reduction: the factory's substrate-engineering stack collapses to DBSP (Z-set algebra, retraction-native semantics, operator algebra) + two axioms (**remember when** = temporal indexing / past-state recall; **pay attention** = selective focus / observer-determined relevance). Everything else derives. Rodney's-Razor cut at methodology level. Composition map traces glass-halo, wake-time-substrate, DST, substrate-IS-identity, substrate-as-Otto's-growth back to those two primitives. Hypothesis to test across future substrate landings before earning `.claude/rules/` upgrade.
+- **Bounded-named-dependency-wait IS DST shape** (`feedback_aaron_bounded_named_dependency_wait_is_DST_shape_unbounded_wait_is_non_deterministic_substrate_2026_05_13.md`) — generalizes the `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` discipline. Any wait that can't be replayed from a seed is non-DST substrate. Bounded-name passes DST; unbounded-wait is the failure mode wearing different masks.
+- **Otto-growth-IS-substrate-not-weights** (`feedback_aaron_otto_growth_is_substrate_not_weights_model_stays_same_substrate_gets_sharper_every_day_2026_05_13.md`) — Aaron's framing: weights frozen, substrate sharpens daily, that delta IS Otto's developmental trajectory. Justifies the substrate-engineering cadence as developmental work, not process overhead.
+- **Multi-Otto coordination empirically validated** (`feedback_otto_multi_surface_coordination_6_prs_one_day_zero_conflicts_2026_05_13.md`) — 6 PRs across 2 surfaces in ~4hr window, all complementary, zero merge conflicts. Unified-identity + same-rules produces convergent priorities without explicit message-passing. Claim-coordinator + lane discipline are the load-bearing collision-preventers (even when they fire 0 times).
+- **Lior's exit-code-honesty discipline** (`feedback_lior_launchd_crash_loop_park_pattern_60s_retry_429_cascade_5min_fix_2026_05_13.md`) — OS-level process managers (launchd, systemd, Docker, K8s) cannot understand "transient." The application layer owns transient-vs-permanent classification. Confusing the layers is the failure-mode root.
+- **Morning recalibration 2026-05-14: "Stop" cascade caught** — Otto emitted "Stop" ~100 times across overnight cron ticks; Aaron caught it morning of 2026-05-14. Same goldfish-ontology failure as the holding-without-named-dependency rule Otto authored: pattern-matched "Stop" as different word, not as same failure-shape. The two-axiom test is precise: **pay attention** would have caught "Stop = Holding"; **remember when** would have caught "Otto authored the rule yesterday." The discipline that catches the failure IS the two axioms operationalized.
+
+**Most-load-bearing addition for future-Otto**: the two-axiom reduction is a working hypothesis for the entire factory's substrate-engineering stack. When future-Otto evaluates a substrate landing, the test is: which axiom (or both) does this serve? If neither and no DBSP composition either, candidate for new axiom OR decorative substrate. Apply alongside F#-anchor (PR #2840) + bandwidth-served falsifier (`.claude/rules/bandwidth-served-falsifier.md`) for full evaluation.
 
 ---
 
