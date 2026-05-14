@@ -54,7 +54,7 @@ export type Md032Finding = {
  * one space. CommonMark allows list markers indented 0-3 spaces; 4+
  * spaces is treated as indented code, not a list — `[ ]{0,3}` enforces
  * that boundary so a code block line like `    - option` isn't falsely
- * flagged as a list start (Copilot P1 on PR #3075).
+ * flagged as a list start (pre-CI review P1 on PR #3075 round 1).
  */
 function isListItemStart(line: string): boolean {
   return /^ {0,3}([-+*]|\d+\.)\s+/.test(line);
@@ -76,12 +76,13 @@ function isBlank(line: string): boolean {
  *    already confirmed to be inside a list block (`inList === true`).
  *    Without the `inList` guard, ordinary prose indented 1–3 spaces
  *    (which CommonMark permits) would be treated as list continuation
- *    and suppress a real MD032 violation (Copilot P1 on PR #3075).
+ *    and suppress a real MD032 violation (pre-CI review P1 on PR #3075
+ *    round 2).
  *
  * Note: ATX headings are intentionally NOT list-friendly. markdownlint's
  * blanks-around-lists check requires a blank line before a list even
  * when the preceding line is a heading — treating headings as exempt
- * produces false negatives in CI (Copilot P1 on PR #3075).
+ * produces false negatives in CI (pre-CI review P1 on PR #3075 round 2).
  */
 function isListFriendlyLeading(line: string, inList: boolean): boolean {
   // Already a list item — nested or sibling list, both fine.
@@ -94,24 +95,34 @@ function isListFriendlyLeading(line: string, inList: boolean): boolean {
 }
 
 /**
- * Parse a fenced-code-block delimiter (`\`\`\`` or `~~~`, optionally
- * followed by an info string), returning the fence character and run
- * length. The token must be on its own line (possibly indented up to
- * 3 spaces, per CommonMark) and the run must be 3+ chars.
+ * Parse a fenced-code-block delimiter (`\`\`\`` or `~~~`), returning
+ * the fence character, run length, and whether the line could close
+ * an open fence. The token must be on its own line (indented up to 3
+ * spaces per CommonMark) and the run must be 3+ chars.
+ *
+ * `closer === true` when the line has only whitespace after the run.
+ * Per CommonMark, an opening fence may carry an info string (e.g.,
+ * ` ```ts `), but a closing fence cannot. Treating every fence line
+ * as a potential closer would let an inner same-delimiter info-string
+ * line (a code-sample example) terminate the outer block prematurely
+ * and falsely flag the list-like lines that follow inside the outer
+ * block as MD032 violations (pre-CI review P1 on PR #3075 round 4).
  *
  * Tracking the (char, len) pair — not just a boolean — is what lets a
  * fenced block containing an inner fence example with a *different*
- * delimiter or *shorter* run keep the outer block open. Without this,
- * a backtick fence holding a literal tilde-fence sample (or vice versa)
- * toggles `inFencedCode` off prematurely and the list-like lines that
- * follow inside the outer block get falsely flagged as MD032 violations
- * (Codex P2 round 2 on PR #3075).
+ * delimiter or *shorter* run keep the outer block open (pre-CI review
+ * P2 on PR #3075 round 2).
  */
-function fenceInfo(line: string): { char: "`" | "~"; len: number } | null {
-  const m = line.match(/^ {0,3}(`{3,}|~{3,})/);
+function fenceInfo(line: string): { char: "`" | "~"; len: number; closer: boolean } | null {
+  const m = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
   if (!m) return null;
   const run = m[1] ?? "";
-  return { char: run[0] === "`" ? "`" : "~", len: run.length };
+  const tail = m[2] ?? "";
+  return {
+    char: run[0] === "`" ? "`" : "~",
+    len: run.length,
+    closer: /^\s*$/.test(tail),
+  };
 }
 
 export function findMd032Violations(content: string): { line: number; context: string }[] {
@@ -121,16 +132,18 @@ export function findMd032Violations(content: string): { line: number; context: s
   // (e.g., a documentation example showing a bad MD032 pattern) aren't
   // flagged. The state remembers the opening delimiter (char + length)
   // so a nested inner fence with a different char or shorter run can't
-  // close the outer block (Codex P2 round 2 on PR #3075).
+  // close the outer block (pre-CI review P2 on PR #3075 round 2).
   let openFence: { char: "`" | "~"; len: number } | null = null;
   // Track whether we are inside a list block (reset by blank lines and
   // fence boundaries). Used by isListFriendlyLeading to avoid treating
-  // ordinary indented prose as list continuation (Copilot P1 PR #3075).
+  // ordinary indented prose as list continuation (pre-CI review P1 on
+  // PR #3075 round 2).
   let inList = false;
 
   // Start at i=0 so a fenced-code open on the very first line is recorded.
   // The original i=1 start caused the fence-state to be wrong for files
-  // whose first line is a fence marker (Copilot P1 on PR #3075).
+  // whose first line is a fence marker (pre-CI review P1 on PR #3075
+  // round 2).
   for (let i = 0; i < lines.length; i++) {
     const cur = lines[i] ?? "";
 
@@ -139,14 +152,27 @@ export function findMd032Violations(content: string): { line: number; context: s
     const fence = fenceInfo(cur);
     if (fence !== null) {
       if (openFence === null) {
-        // Opening a new fence.
-        openFence = fence;
-      } else if (fence.char === openFence.char && fence.len >= openFence.len) {
-        // Matching closer (same char, run length >= opener).
-        openFence = null;
+        // Opening a new fence. Info string permitted on opener.
+        openFence = { char: fence.char, len: fence.len };
+        inList = false;
+        continue;
       }
-      // else: inner fence with different char or shorter run — stays open.
-      inList = false; // fence boundary also resets list context
+      // We're inside an open fence. Closing requires:
+      // - matching delimiter char
+      // - run length >= opener's
+      // - no info string / trailing text (closer === true)
+      // Otherwise the fence-like line is still inside the code block
+      // (an inner same-delim opener with info string, or different
+      // delimiter / shorter run) and the outer block stays open.
+      if (
+        fence.char === openFence.char &&
+        fence.len >= openFence.len &&
+        fence.closer
+      ) {
+        openFence = null;
+        inList = false;
+      }
+      // else: still inside the code block — list state irrelevant.
       continue;
     }
     if (openFence !== null) continue;
@@ -187,7 +213,8 @@ export function findMd032Violations(content: string): { line: number; context: s
  * @param surfaceReadErrors - When true, throw on unreadable files so
  *   the caller (main) can exit non-zero. When false (default, used for
  *   --staged mode), unreadable files are skipped silently — push or CI
- *   will surface the underlying I/O error (Copilot P1 on PR #3075).
+ *   will surface the underlying I/O error (pre-CI review P1 on PR #3075
+ *   round 2).
  */
 export function checkFiles(files: string[], surfaceReadErrors = false): Md032Finding[] {
   const all: Md032Finding[] = [];
@@ -219,10 +246,10 @@ export function checkFiles(files: string[], surfaceReadErrors = false): Md032Fin
 /**
  * Collect staged `.md` files via `git diff --name-only --cached`.
  * Throws if the git command fails so the caller can exit non-zero
- * instead of silently scanning zero files (Copilot P1 on PR #3075).
- * Includes renames (`R`) so `git mv old.md new.md` with edits is
- * still scanned — markdownlint will lint `new.md` in CI regardless
- * (Codex P2 on PR #3075).
+ * instead of silently scanning zero files (pre-CI review P1 on
+ * PR #3075 round 2). Includes renames (`R`) so `git mv old.md new.md`
+ * with edits is still scanned — markdownlint will lint `new.md` in
+ * CI regardless (pre-CI review P2 on PR #3075 round 3).
  */
 function stagedMarkdownFiles(repoRoot: string): string[] {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
@@ -240,7 +267,7 @@ function stagedMarkdownFiles(repoRoot: string): string[] {
     .map((line) => `${repoRoot}/${line}`);
 }
 
-function main(): number {
+export function main(): number {
   const repoRoot = resolve(import.meta.dir, "..", "..");
   const argv = process.argv.slice(2);
   const isStaged = argv.includes("--staged");

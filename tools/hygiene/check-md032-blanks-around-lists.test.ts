@@ -88,7 +88,8 @@ More prose.
   test("heading directly followed by list produces a finding (MD032 requires blank before list)", () => {
     // markdownlint's blanks-around-lists check requires a blank line
     // before a list even when the preceding line is a heading — treating
-    // headings as exempt produces false negatives in CI (Copilot P1 #3075).
+    // headings as exempt produces false negatives in CI (pre-CI review
+    // P1 on PR #3075 round 2).
     const content = `## Heading
 
 # Top-Level
@@ -149,7 +150,7 @@ Steps:
     expect(findings[0]?.line).toBe(4);
   });
 
-  test("list-like lines inside fenced code blocks are NOT flagged (Codex P2 PR #3075)", () => {
+  test("list-like lines inside fenced code blocks are NOT flagged (pre-CI review P2 on PR #3075 round 1)", () => {
     // A documentation example showing the bad pattern inside a code
     // sample should not trip the helper.
     const content = `# Title
@@ -180,7 +181,7 @@ Label:
     expect(findMd032Violations(content)).toEqual([]);
   });
 
-  test("indent-as-code (4+ spaces) is NOT a list marker per CommonMark (Copilot P1 PR #3075)", () => {
+  test("indent-as-code (4+ spaces) is NOT a list marker per CommonMark (pre-CI review P1 on PR #3075 round 1)", () => {
     // A 4-space-indented line is code, not a list.
     const content = `# Title
 
@@ -191,7 +192,7 @@ Some prose:
     expect(findMd032Violations(content)).toEqual([]);
   });
 
-  test("inner fence with different delimiter does NOT close the outer block (Codex P2 PR #3075)", () => {
+  test("inner fence with different delimiter does NOT close the outer block (pre-CI review P2 on PR #3075 round 2)", () => {
     // A backtick-fenced block holding a literal tilde-fence example
     // must keep the outer block open. The boolean toggle approach
     // would flip out on the inner ~~~ and falsely flag the list-like
@@ -214,7 +215,7 @@ Real prose:
     expect(findMd032Violations(content)).toEqual([]);
   });
 
-  test("inner fence shorter than outer does NOT close it (Codex P2 PR #3075)", () => {
+  test("inner fence shorter than outer does NOT close it (pre-CI review P2 on PR #3075 round 2)", () => {
     // A four-backtick fence holding an inner three-backtick example
     // must keep the outer block open — the closer needs at least the
     // opener's length.
@@ -226,6 +227,31 @@ Label:
 - item
 \`\`\`
 \`\`\`\`
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("inner same-delimiter fence with info string does NOT close the outer block (pre-CI review P1 on PR #3075 round 4)", () => {
+    // Per CommonMark, a closing fence may only be followed by spaces;
+    // an info-string suffix (` \`\`\`ts `) is a fence line that the
+    // outer block treats as content. Treating any same-delim fence as
+    // a closer lets the inner code-sample opener terminate the outer
+    // block prematurely and falsely flag the list-like lines that
+    // follow inside the outer block.
+    const content = `# Title
+
+\`\`\`
+showing a nested code-sample with info string:
+\`\`\`ts
+Label:
+- item
+\`\`\`
+end of example
+\`\`\`
+
+Real prose:
+
+- real item
 `;
     expect(findMd032Violations(content)).toEqual([]);
   });
