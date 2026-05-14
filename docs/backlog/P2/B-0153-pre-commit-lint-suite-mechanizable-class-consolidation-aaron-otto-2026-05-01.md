@@ -4,7 +4,7 @@ priority: P2
 status: open
 title: Pre-commit lint suite — consolidate the 13 mechanizable lint-classes characterized 2026-05-01
 created: 2026-05-01
-last_updated: 2026-05-02
+last_updated: 2026-05-14
 depends_on: []
 type: friction-reducer
 ---
@@ -53,9 +53,22 @@ implementation should use as stable class identifiers.
    blanks-around-lists rule. Fix-pattern: prose-reflow with
    connectives ("plus", "and", comma-list, "/"). Aaron-affirmed
    as *"very high quality decision"* (Aaron typed "decison").
+   **MECHANIZED 2026-05-14** via B-0456 →
+   `tools/hygiene/check-md032-blanks-around-lists.ts` plus the
+   opt-in `.claude/hooks/check-md032-pretooluse.ts` PreToolUse
+   harness hook (gated on `ZETA_MD032_PRECOMMIT=1`). 77 tests
+   covering blockquote contexts, fenced code blocks, YAML front
+   matter, HTML comments, thematic breaks, after-list MD032, and
+   staged-blob reads. Full 584-file `docs/hygiene-history/**`
+   corpus validates clean.
 2. **MD038 / no-space-in-code**: spaces inside inline-code spans
-   (e.g., `` `| ` ``) trigger MD038. Fix: tighten code-span or
-   replace with prose.
+   trigger MD038. Fix: tighten code-span or replace with prose.
+   **Empirical evidence accumulated 2026-05-14**: hit at least 3
+   times during the B-0456 PR cycle (PRs 3075, 3090, 3092) on
+   tick-shard code spans containing a `>` marker plus spaces —
+   the backtick-rich span ends at the first matching backtick
+   rather than the intended close. Next-to-grind class after
+   MD032 per this row's coverage matrix.
 3. **Inline-code broken across lines**: backtick-fenced filenames
    that wrap mid-token break CommonMark inline-code spans. Fix:
    move full filename to own line.
