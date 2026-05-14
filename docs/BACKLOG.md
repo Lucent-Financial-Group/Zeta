@@ -290,6 +290,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0494](backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md)** Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot
 - [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
+- [ ] **[B-0459](backlog/P1/B-0459-b0440-slice-5-infinite-backlog-nudge-handler-2026-05-14.md)** B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler stub (depends on B-0449)
+- [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
 
 ## P2 — research-grade
 

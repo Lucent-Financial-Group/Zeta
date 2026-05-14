@@ -130,31 +130,33 @@ async function detectAndNudge(state: AgentState, bus: BusClient): Promise<void> 
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-To complete before starting implementation:
+Completed 2026-05-14 during decomposition pass:
 
-- [ ] Prior-art search: existing background services in
-      `tools/shadow/`, `tools/bg/` (verify no overlap)
-- [ ] Dependency proof: B-0400 bus protocol slice ready
-- [ ] Search committed memory for `Standing-by detector` to find any
-      prior decomposition
+- [x] Prior-art search: `tools/bg/` surveyed — `standing-by-detector.ts` + tests already exist
+      (slices 1–4 shipped); no overlap with `tools/shadow/`; B-0400 bus protocol confirmed ready
+- [x] Dependency proof: B-0400 bus protocol merged (PR #2939 + #2959 + #3016); `publish()` API stable
+- [x] Search committed memory for `Standing-by detector` — no prior decomposition rows found;
+      B-0449 covers subscriber design; B-0459 + B-0497 filed as part of this decomposition
 
-## Substrate-honest caveats
+## Substrate-honest caveats (updated 2026-05-14)
 
-- Design sketch only; implementation slice not started
-- The threshold values (15 min idle; 5 min poll) are speculative
-  defaults; first implementation should make them configurable
-- The nudge payload schema is illustrative; actual schema lands
-  during implementation
-- Per razor-discipline: claim is design-level; substrate-honest claim
-  is operational-design, not deployed-service
+- Slices 1–4 are SHIPPED: `tools/bg/standing-by-detector.ts` + `tools/bg/standing-by-detector.test.ts`
+  are in production-quality state (commit-history + PR-activity poll + bus publish + structured
+  publish-error surface)
+- Threshold values (15 min idle; 5 min poll) are configurable via CLI flags (`--idle-min`, `--poll-min`)
+- Nudge payload schema is live: `{ topic: "infinite-backlog-nudge", payload: { idleMinutes, rationale } }`
+- Per razor-discipline: this row is now operational (slices 1–4 deployed, slices 5–6 tracked below)
 
-## Decomposition into implementation slices (TBD)
+## Decomposition into implementation slices (updated 2026-05-14)
 
-When this row is picked up for implementation:
+| Slice | Title | Status | Row |
+|-------|-------|--------|-----|
+| 1 | Skeleton service + no-op poll loop | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
+| 2 | Commit-history poll via `git log` | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
+| 3 | PR-activity poll via `gh` | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
+| 4 | Nudge payload computation + bus publish | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
+| 5.1 | `infinite-backlog-nudge` subscriber handler stub | 🔲 Open | B-0459 (depends on B-0449) |
+| 6 | launchd plist registration + AUTONOMOUS-LOOP.md update | 🔲 Open | B-0497 (independent) |
 
-- Slice 1: skeleton service + cron registration + no-op poll loop
-- Slice 2: commit-history poll via git log
-- Slice 3: PR-activity poll via gh CLI
-- Slice 4: nudge payload computation + bus publish
-- Slice 5: integration with agent subscribers
-- Slice 6: tests + documentation
+**B-0449** is the cross-cutting design pass for the subscriber pattern across all three bg services
+(B-0440 + B-0441 + B-0442). B-0459 and B-0497 are the leaf rows for B-0440 specifically.
