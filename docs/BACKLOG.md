@@ -257,6 +257,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0450](backlog/P1/B-0450-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 - [x] **[B-0451](backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md)** Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts
 - [ ] **[B-0459](backlog/P1/B-0459-b0440-slice-5-infinite-backlog-nudge-handler-2026-05-14.md)** B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler (standing-by failure-mode closer)
+- [ ] **[B-0460](backlog/P1/B-0460-b0441-slice-5-2-work-assignment-subscriber-handler-2026-05-14.md)** B-0441 slice 5.2 — work-assignment subscriber handler (agent-side claim-and-act)
 - [ ] **[B-0463](backlog/P1/B-0463-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [x] **[B-0464](backlog/P1/B-0464-product-repo-honor-system-license-language-draft-2026-05-14.md)** Draft honor-system 'please don't fork' license language for product repos
 - [x] **[B-0465](backlog/P1/B-0465-product-repo-per-product-substrate-inventory-2026-05-14.md)** Per-product substrate inventory — 7 product candidates; repo-ready evaluation
@@ -292,6 +293,12 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
 - [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
+- [ ] **[B-0500](backlog/P1/B-0500-b0441-slice-3-queue-state-guard-poll-once-wiring-2026-05-14.md)** B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce
+- [ ] **[B-0501](backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md)** B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)
+- [ ] **[B-0502](backlog/P1/B-0502-b0441-slice-6-launchd-plist-autonomous-loop-docs-2026-05-14.md)** B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update
+- [ ] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
+- [ ] **[B-0504](backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md)** B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags
+- [ ] **[B-0505](backlog/P1/B-0505-b0442-slice5c-docs-autonomous-loop-acceptance-close-2026-05-14.md)** B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close
 
 ## P2 — research-grade
 
@@ -619,5 +626,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0395](backlog/P3/B-0395-operational-resonance-conversation-interface-path-a-browser-local-llm-2026-05-09.md)** Conversation interface Path A — embed browser/local LLM (WebLLM or transformers.js) in dashboard for in-context review discussion
 - [ ] **[B-0422](backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md)** Clifford-algebraic narrative engine for testing the Pauli-symmetry-breaking-from-agenda-conservation prediction (research target identified by DeepSeek 2026-05-12)
 - [ ] **[B-0499](backlog/P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)** Z[i]-weighted DBSP refinement — Cartesian-dualism candidate from afternoon-cascade
+- [ ] **[B-0506](backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md)** Stale-worktree prune cadence — mechanize `git worktree prune --expire=now`
+- [ ] **[B-0514](backlog/P3/B-0514-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md)** Author missing memory file: feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md
 
 <!-- END AUTO-GENERATED -->
