@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key><string>com.zeta.backlog-ready-notifier</string>
+    <!-- Maintainer-only artifact: paths are machine-specific (/Users/acehack, /opt/homebrew).
+         Run tools/setup/install-launchd-services.sh to regenerate with local paths. -->
+    <key>ProgramArguments</key><array>
+        <string>/opt/homebrew/bin/bun</string>
+        <string>/Users/acehack/Documents/src/repos/Zeta/tools/bg/backlog-ready-notifier.ts</string>
+        <string>--once</string>
+    </array>
+    <key>StartInterval</key><integer>600</integer>
+    <key>RunAtLoad</key><true/>
+    <key>StandardOutPath</key><string>/Users/acehack/Library/Logs/zeta-backlog-ready-notifier/stdout.log</string>
+    <key>StandardErrorPath</key><string>/Users/acehack/Library/Logs/zeta-backlog-ready-notifier/stderr.log</string>
+    <key>EnvironmentVariables</key><dict>
+        <key>HOME</key><string>/Users/acehack</string>
+        <key>PATH</key><string>/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+    <key>WorkingDirectory</key><string>/Users/acehack/Documents/src/repos/Zeta</string>
+</dict>
+</plist>
