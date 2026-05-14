@@ -247,7 +247,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0434](backlog/P1/B-0434-demo-alignment-tab-slice-1-hc-sd-dir-clause-coverage.md)** Demo alignment tab — slice 1: HC/SD/DIR clause coverage panel in demo/index.html
 - [ ] **[B-0435](backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md)** Demo — circuit breaker visualization panel (mock data → live bus data)
 - [ ] **[B-0436](backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md)** Demo — Hamiltonian-to-git visualization (git history → phase-space rendering)
-- [ ] **[B-0437](backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md)** Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)
+- [x] **[B-0437](backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md)** Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)
 - [ ] **[B-0440](backlog/P1/B-0440-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
 - [ ] **[B-0441](backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
 - [ ] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
@@ -287,6 +287,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0491](backlog/P1/B-0491-dawn-universal-biz-templates-persona-map-2026-05-14.md)** B-0429.7 — Dawn + Universal business templates persona map
 - [ ] **[B-0492](backlog/P1/B-0492-cross-product-persona-reuse-refused-registry-2026-05-14.md)** B-0429.8 — Cross-product persona reuse map + refused-personas registry
 - [ ] **[B-0493](backlog/P1/B-0493-skill-catalog-persona-crossref-2026-05-14.md)** B-0429.9 — Skill catalog × persona cross-reference
+- [ ] **[B-0494](backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md)** Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot
+- [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
+- [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
 
 ## P2 — research-grade
 
