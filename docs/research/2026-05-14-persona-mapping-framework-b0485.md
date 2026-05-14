@@ -10,21 +10,24 @@
 
 Every per-product persona doc (B-0486..B-0491) MUST use this template.
 
-### 1a. YAML frontmatter
+### 1a. YAML data block
+
+> **Note:** Per-product persona docs embed YAML as body-section code snippets,
+> not file frontmatter. The `---` delimiters shown here are YAML document markers
+> included for schema completeness only; they are **not required** in per-product docs
+> where the YAML blocks appear inside ` ```yaml ``` ` fences in the markdown body.
 
 ```yaml
----
 persona_id: <product-slug>-<persona-slug>          # e.g. civsim-edge-runner
 product: <product name>                             # e.g. civsim
 persona_type: primary | secondary | adjacent | refused
 name: "<descriptive handle>"                        # e.g. "Edge-runner"
 role: "<1-sentence role description>"
 composes_with:
-  - <other persona_ids that interact with this one>
+  - <other persona_ids that interact with this one>  # use [] for refused personas
 created: YYYY-MM-DD
 last_updated: YYYY-MM-DD
 origin: <source — memory file, PR, Aaron disclosure>
----
 ```
 
 ### 1b. Body scaffold
@@ -241,7 +244,7 @@ Aaron is the primary consumer/designer for every product. This creates redundanc
 "Dawn" in the backlog refers to a "child-AI charter" but it's unclear if this is:
 (a) An AI system *for* Aaron's children
 (b) A charter *about* AI rights for new-generation AIs
-(c) Both (per `default-to-both.md`)
+(c) Both (per `.claude/rules/default-to-both.md`)
 
 **Resolution:** B-0491 (Dawn persona doc) should resolve this ambiguity by consulting `docs/WONT-DO.md` (no emulation of minors without consent-chain) and Aaron's disclosed parenting method.
 
