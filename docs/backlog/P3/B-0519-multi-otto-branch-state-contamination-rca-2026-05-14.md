@@ -53,11 +53,60 @@ git checkout -B <new-branch-name> origin/main
 
 The `-f` flag forces checkout even with conflicting working tree state; the `-B` flag forces local branch to track the specified remote.
 
+## Additional contamination patterns (2026-05-14T20:10Z + 20:26Z)
+
+Field-test of the workaround procedure surfaced two more contamination
+mechanisms not in the original RCA above:
+
+### Pattern 5 — HEAD detached at origin/main between operations
+
+After `git push origin <my-branch>` and before `gh pr create`, another Otto
+process executed `git checkout origin/main` in the same physical checkout.
+`gh pr create` then failed with "could not determine the current branch: not
+on any branch". The local branch ref still existed; only HEAD was detached.
+
+Recovery: `git checkout <my-branch>` to reattach HEAD before retrying
+`gh pr create`.
+
+### Pattern 6 — `gh pr create` poisoned by implicit current-branch
+
+Even after re-checkout, a third Otto-process check-out moved HEAD to
+`fix/b-0518-sharpen-...` between the recovery `checkout` and the next
+`gh pr create`. The retry then attempted to open a PR from that wrong
+branch.
+
+Recovery: `gh pr create --head <my-branch>` with an EXPLICIT head ref,
+so the call doesn't depend on the (poisoned) current-branch state.
+
 ## Mechanization candidates
 
 ### Cheap
 
 Pre-commit hook that checks `git symbolic-ref HEAD` against `$ZETA_EXPECTED_BRANCH` (the existing harness hook at `.claude/hooks/verify-branch-pretooluse.ts` already does this when the env var is set). The catch: agents don't reliably export `ZETA_EXPECTED_BRANCH` before every `git checkout -b`. Could augment with a session-start hook that auto-exports the expected branch name from the most-recent `git checkout -b` command.
+
+**Secondary catch surfaced 2026-05-14**: the env-var hook also doesn't
+reliably fire because `ZETA_EXPECTED_BRANCH` set in one Bash-tool call
+doesn't always persist to the call that runs `git commit` — each invocation
+may spawn a fresh shell. The substrate-honest primary catch is
+`git branch --show-current` immediately before `git commit`. The env-var
+hook stays as defense-in-depth.
+
+### Cheap (new — for Pattern 5/6)
+
+Two-line discipline that survived field-test:
+
+1. **Always run `git branch --show-current` immediately before `git commit`.**
+   Primary catch for wrong-branch commits. Survived ticks 2010Z + 2026Z
+   first-try after being adopted.
+2. **Always use `gh pr create --head <my-branch>` with explicit head ref.**
+   Removes implicit dependency on current-branch state, which can be
+   poisoned by parallel-Otto checkouts between `git push` and `gh pr create`.
+
+These two are zero-code substrate (operator discipline), but they're
+specifically the kind of thing that needs to be in cold-boot substrate
+because a fresh-session Otto won't remember them otherwise. Carried in
+`.claude/rules/` would be the right home if/when this is promoted from
+P3 to actively-mechanized.
 
 ### Substantial
 
@@ -82,3 +131,11 @@ This row captures a pattern, not a specific fix. The full mechanization (substan
 ## Origin tick
 
 `docs/hygiene-history/ticks/2026/05/14/1954Z.md` — this tick's shard documents the RCA + filing.
+
+## Field-test ticks (Patterns 5 + 6)
+
+- `docs/hygiene-history/ticks/2026/05/14/2010Z.md` — first untangle field-test
+  + secondary failure (env-var-based hook didn't catch wrong-branch commit).
+- `docs/hygiene-history/ticks/2026/05/14/2026Z.md` — Pattern 5 + Pattern 6
+  surfaced; `git branch --show-current` + `gh pr create --head` defenses
+  validated.
