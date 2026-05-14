@@ -58,7 +58,9 @@ on-disk state:
 1. **On-disk check** — what's currently merged:
 
    ```bash
-   find docs/backlog -name "B-*.md" -printf "%f\n" \
+   # Portable across GNU + BSD find (macOS/Linux). The `B-NNNN` pattern only
+   # appears once per filename in practice, so extracting from full paths is safe.
+   find docs/backlog -name "B-*.md" -type f \
      | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -3
    ```
 
