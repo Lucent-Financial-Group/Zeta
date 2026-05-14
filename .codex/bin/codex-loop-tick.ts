@@ -17,6 +17,9 @@ const codexTimeoutMs = Number(process.env.ZETA_CODEX_LOOP_CODEX_TIMEOUT_SECONDS 
 const codexBypassApprovals = process.env.ZETA_CODEX_LOOP_BYPASS_APPROVALS !== "0";
 const dryRun = process.env.ZETA_CODEX_LOOP_DRY_RUN === "1";
 const codexStateFile = join(stateDir, "last-codex-run.json");
+const loopOrigin = process.env.ZETA_CODEX_LOOP_ORIGIN ?? "codex-launchd-loop";
+const loopSurface = process.env.ZETA_CODEX_LOOP_SURFACE ?? "codex-background-service";
+const loopSession = process.env.ZETA_CODEX_LOOP_SESSION ?? "codex/launchd-loop";
 
 function nowIso(): string {
   return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
@@ -31,12 +34,18 @@ function ensureRuntimeDirs(): void {
   mkdirSync(logDir, { recursive: true });
 }
 
-function run(command: string, args: string[], timeoutMs: number): { status: number; stdout: string; stderr: string } {
+function run(
+  command: string,
+  args: string[],
+  timeoutMs: number,
+  extraEnv: Record<string, string> = {},
+): { status: number; stdout: string; stderr: string } {
   const result = spawnSync(command, args, {
     cwd: worktree,
     encoding: "utf8",
     env: {
       ...process.env,
+      ...extraEnv,
       PATH: `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${join(home, ".local/bin")}`,
     },
     timeout: timeoutMs,
@@ -145,11 +154,43 @@ export function codexExecArgs(config: { worktree: string; prompt: string; bypass
   return args;
 }
 
-export function buildCodexPrompt(config: { home?: string } = {}): string {
+export function codexLoopEnv(config: {
+  runId: string;
+  origin?: string;
+  surface?: string;
+  session?: string;
+}): Record<string, string> {
+  return {
+    ZETA_AGENT_ORIGIN: config.origin ?? loopOrigin,
+    ZETA_AGENT_SURFACE: config.surface ?? loopSurface,
+    ZETA_CODEX_LOOP_RUN_ID: config.runId,
+    ZETA_CODEX_LOOP_SESSION: config.session ?? loopSession,
+  };
+}
+
+export function buildCodexPrompt(config: {
+  home?: string;
+  runId?: string;
+  origin?: string;
+  surface?: string;
+  session?: string;
+} = {}): string {
   const broadcastDir = join(config.home ?? home, ".local/share/zeta-broadcasts");
+  const promptRunId = config.runId ?? process.env.ZETA_CODEX_LOOP_RUN_ID ?? "unknown";
+  const promptOrigin = config.origin ?? loopOrigin;
+  const promptSurface = config.surface ?? loopSurface;
+  const promptSession = config.session ?? loopSession;
 
   return [
     "Act as the Codex background service for Zeta. This is an active self-owned work loop, not a monitor.",
+    [
+      "Provenance posture: this run is headless/background Codex, not foreground Codex chat.",
+      `Record this surface as ${promptSurface}, origin as ${promptOrigin}, session as ${promptSession}, and run id as ${promptRunId}.`,
+      "For any branch, claim file, PR body, PR comment, broadcast, or cleanup record created by this run, include the surface/origin/run-id fields when the format has room.",
+      `For PR bodies created by this run, include a provenance footer with \`Headless-Origin: ${promptOrigin}\`, \`Headless-Surface: ${promptSurface}\`, and \`Codex-Loop-Run-Id: ${promptRunId}\`.`,
+      `For commits created by this run, include the required \`Co-Authored-By: Codex <noreply@openai.com>\` trailer plus \`Codex-Origin: ${promptOrigin}\`, \`Codex-Surface: ${promptSurface}\`, and \`Codex-Loop-Run-Id: ${promptRunId}\`.`,
+      "For new loop-owned claims, prefer slugs and branches beginning with `codex-loop-` so headless work is distinguishable from foreground Vera work.",
+    ].join(" "),
     [
       "Cold-start by reading the repo rules before deciding:",
       "`AGENTS.md`, `.codex/AGENTS.md`, `docs/ALIGNMENT.md`, `docs/AUTONOMOUS-LOOP.md`, `docs/AGENT-CLAIM-PROTOCOL.md`, and `docs/AGENT-ISSUE-WORKFLOW.md`.",
@@ -265,8 +306,11 @@ export function main(): number {
     heartbeatTmp,
     `${JSON.stringify(
       {
-        session: "codex/launchd-loop",
+        session: loopSession,
         harness: "codex",
+        surface: loopSurface,
+        origin: loopOrigin,
+        run_id: runId,
         claim: "host-codex-loop",
         branch,
         worktree,
@@ -286,7 +330,7 @@ export function main(): number {
 
   appendFileSync(
     join(logDir, "heartbeat.log"),
-    `${nowIso()} run_id=${runId} branch=${branch} fetch=${fetchStatus} claims=${claims.length} open_prs=${openPrCount} dirty=${dirty.length} mode=heartbeat\n`,
+    `${nowIso()} run_id=${runId} origin=${loopOrigin} surface=${loopSurface} branch=${branch} fetch=${fetchStatus} claims=${claims.length} open_prs=${openPrCount} dirty=${dirty.length} mode=heartbeat\n`,
   );
 
   if (dryRun) {
@@ -314,16 +358,29 @@ export function main(): number {
     return 0;
   }
 
-  const prompt = buildCodexPrompt();
-
   const codexStartedAt = nowIso();
-  writeCodexState({ run_id: runId, started_at: codexStartedAt, status: "running" });
+  const codexEnv = codexLoopEnv({ runId, origin: loopOrigin, surface: loopSurface, session: loopSession });
+  const prompt = buildCodexPrompt({ runId, origin: loopOrigin, surface: loopSurface, session: loopSession });
+  writeCodexState({
+    run_id: runId,
+    started_at: codexStartedAt,
+    status: "running",
+    origin: loopOrigin,
+    surface: loopSurface,
+  });
   log(`codex forward gate start run_id=${runId} timeout=${Math.round(codexTimeoutMs / 1000)}s`);
-  const codex = run("codex", codexExecArgs({ worktree, prompt, bypassApprovals: codexBypassApprovals }), codexTimeoutMs);
+  const codex = run("codex", codexExecArgs({ worktree, prompt, bypassApprovals: codexBypassApprovals }), codexTimeoutMs, codexEnv);
   appendFileSync(join(logDir, "ticks.log"), codex.stdout);
   appendFileSync(join(logDir, "ticks.err"), codex.stderr);
   log(`codex forward gate end run_id=${runId} status=${codex.status}`);
-  writeCodexState({ run_id: runId, started_at: codexStartedAt, finished_at: nowIso(), status: codex.status });
+  writeCodexState({
+    run_id: runId,
+    started_at: codexStartedAt,
+    finished_at: nowIso(),
+    status: codex.status,
+    origin: loopOrigin,
+    surface: loopSurface,
+  });
   return codex.status;
 }
 

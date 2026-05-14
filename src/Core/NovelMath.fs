@@ -56,6 +56,30 @@ type TropicalWeight =
             | _ -> invalidArg "other" "not a TropicalWeight"
 
 
+// ─── TropicalSemiring — ISemiring<TropicalWeight> implementation ──
+
+/// `ISemiring<TropicalWeight>` over `(ℤ∪{∞}, min, +)`.
+/// Note: the tropical semiring has NO additive inverse (Negate),
+/// so `Negate` raises `InvalidOperationException` — this is a
+/// *semiring*, not a ring. Callers that need retraction must use
+/// `IntegerRing` or `IntervalRing`.
+[<Sealed>]
+type TropicalSemiring() =
+    interface ISemiring<TropicalWeight> with
+        member _.Zero = TropicalWeight.Zero
+        member _.One  = TropicalWeight.One
+        member _.Add  a b = a + b   // min
+        member _.Mul  a b = a * b   // saturating +
+        member _.Negate _ =
+            raise (System.InvalidOperationException(
+                "TropicalSemiring has no additive inverse — use IntegerRing for retraction"))
+
+[<RequireQualifiedAccess>]
+module TropicalSemiring =
+    /// Singleton instance.
+    let Instance : ISemiring<TropicalWeight> = TropicalSemiring()
+
+
 // ═══════════════════════════════════════════════════════════════════
 // KLL quantile sketch (Karnin, Lang, Liberty — FOCS 2016)
 // ═══════════════════════════════════════════════════════════════════

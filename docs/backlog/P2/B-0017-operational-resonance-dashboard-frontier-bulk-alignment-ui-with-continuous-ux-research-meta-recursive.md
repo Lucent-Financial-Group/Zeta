@@ -1,14 +1,16 @@
 ---
 id: B-0017
 priority: P2
-status: open
+status: decomposed
 title: Operational Resonance Dashboard — the bulk-alignment UI within Frontier; minimise time-to-answer "are things going as expected?"; continuous UX research + meta-recursive research-on-research; every pixel earns its way via ongoing A/B experiments
 tier: research-and-product
 effort: XL
 ask: Aaron 2026-04-25
 created: 2026-04-25
-last_updated: 2026-05-04
+last_updated: 2026-05-09
 depends_on: []
+children: [B-0388, B-0389, B-0390, B-0391, B-0392, B-0393, B-0394, B-0395]
+decomposition: clean
 composes_with: [feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md, project_retractability_by_design_is_the_foundation_licensing_trust_based_batch_review_frontier_ui_2026_04_24.md, feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md, project_factory_is_git_native_github_first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md]
 tags: [frontier, ui, ux, dashboard, bulk-alignment, operational-resonance, ux-research, a-b-experiments, meta-recursive-research, research-program, pop-factor, wow-factor]
 type: feature
@@ -205,3 +207,44 @@ B-0017 was rediscovered; B-0188 closed as duplicate, this
 section preserves the architectural direction in the canonical
 row. Lineage:
 `memory/feedback_bulk_review_ui_in_github_pages_tier_aware_conversation_interface_local_ai_aaron_2026_05_04.md`.
+
+## Decomposition (2026-05-09)
+
+B-0017 is XL effort spanning naming, research, infrastructure,
+and UI. Decomposed into 8 dependency-ordered atomic child rows.
+
+**Dependency-ordered atomic child rows:**
+
+| ID | Title | Priority | Effort | Depends on |
+|----|-------|----------|--------|-----------|
+| B-0388 | Naming lock — naming-expert review, candidates, Aaron sign-off | P3 | S | — |
+| B-0389 | UX + psychology research scope doc — Chomsky, pre-attentive, cognitive load, UX methodology | P3 | S | — |
+| B-0390 | "Time-to-answer" metric formalization — baseline, measurement methodology, acceptance criteria | P3 | S | — |
+| B-0391 | GitHub Pages static shell — index page, nav shell, CI deploy config | P3 | S | B-0388 |
+| B-0392 | Tier-aware bulk grouping model ADR — Tier 0-4 mapped to reviewer attention levels | P3 | S | B-0390 |
+| B-0393 | A/B experiment infrastructure design — event-capture schema, experiment registration, git-native results | P3 | M | B-0390, B-0391 |
+| B-0394 | MVP dashboard surface — first working "are things going as expected?" page on GH Pages | P3 | L | B-0390, B-0391, B-0392 |
+| B-0395 | Conversation interface Path A — browser/local LLM (WebLLM/transformers.js) embedded in dashboard | P3 | L | B-0394 |
+
+**Dependency order:**
+
+```
+B-0388 (naming) ──────────────────────────────────┐
+B-0389 (research scope) ─── (informs all design)  │
+B-0390 (metric) ──────────────────────────────────┤
+  │                                                │
+  ├─ B-0392 (tier model) ──────────────────────┐  │
+  └─ B-0391 (GH Pages shell) ◄── B-0388 ───┐  │  │
+       │                                    │  │  │
+       ├─ B-0393 (A/B infra) ───────────────┘  │  │
+       └─ B-0394 (MVP) ◄─ B-0390, B-0392 ──────┘  │
+            └─ B-0395 (conversation interface)     │
+                                                   │
+(B-0391 also uses locked name from B-0388) ────────┘
+```
+
+B-0388, B-0389, and B-0390 are parallelizable root atoms.
+B-0393 is a parallel dep for B-0394 — can be stubbed if
+B-0393 lags. B-0395 is strictly last.
+
+B-0017 becomes the tracking/parent row (`status: decomposed`).

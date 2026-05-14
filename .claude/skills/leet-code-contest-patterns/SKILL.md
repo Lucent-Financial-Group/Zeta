@@ -1,6 +1,6 @@
 ---
 name: leet-code-contest-patterns
-description: Capability skill for competitive programming (Codeforces Div-1, ICPC regionals, IOI) — rolling hash + polynomial string matching, segment tree with lazy propagation, sparse table / RMQ, heavy-light decomposition, link-cut trees / Euler tour trees, Aho-Corasick multi-pattern matching, suffix array / automaton, Mo's algorithm (offline sqrt decomposition), persistent data structures (segment tree, union-find), convex hull trick / Li Chao tree, bitmask DP, digit DP, SOS (sum over subsets) DP, matrix exponentiation, FFT / NTT for polynomial multiplication, max-flow / min-cut (Dinic, ISAP), 2-SAT, Tarjan SCC / biconnected components, Euler tour + LCA / RMQ, centroid decomposition, sqrt decomposition and block-based solutions. Wear this hat when a problem exceeds the interview-grade fifteen-pattern catalogue — when the constraints push past n ≤ 10^5, when queries are online + range + update, when strings run into 10^6, when graphs run into link-cut territory. Generic across projects; sits above leet-code-patterns and leet-code-dsa-toolbox.
+description: Competitive programming — segment trees, HLD, suffix arrays, FFT/NTT, max-flow, 2-SAT, centroid decomp; Codeforces/ICPC.
 ---
 
 # Leet-Code Contest Patterns — the Div-1 / ICPC hat

@@ -3,7 +3,7 @@
 Substrate-claim-checker per the verify-then-claim discipline memo
 (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
 
-Catches two of the seven sub-classes B-0170 names:
+Catches 5 B-0170 check-types:
 
 - **Count drift** (v0.4.4) — between narrative claims (e.g. "18+ drift
   instances", "13-row table", "5 procedure skills") and the actual
@@ -11,15 +11,28 @@ Catches two of the seven sub-classes B-0170 names:
   `check-counts.ts`.
 - **Existence drift** (v0.5) — claims that a file or directory exists
   when it doesn't on disk. Implemented in `check-existence.ts`.
+- **Path-form drift** (v0.7) — same physical file referenced with
+  inconsistent path forms within a single document. Implemented in
+  `check-path-forms.ts`.
+- **Cross-surface count drift** (v0.8) — count claims in YAML
+  frontmatter `description:` fields that don't match any body table.
+  Catches eval-set instances #19 and #20 (frontmatter claims a count
+  that diverges from the actual table row count). Implemented in
+  `check-cross-surface.ts`.
+- **Convention drift** (v0.9) — claims that a current ADR supersedes
+  an earlier ADR when the earlier ADR lacks the reciprocal top-of-file
+  `Superseded by` marker naming the superseding ADR. Implemented in
+  `check-convention.ts`.
 
-The remaining 5 sub-classes (semantic-equivalence, empirical-output,
-convention, path-form, self-recursive) are deferred to v0.6+.
+The remaining deferred check-types include semantic-equivalence,
+empirical-output, and self-recursive drift.
 
 ## Usage
 
 ```bash
 bun tools/substrate-claim-checker/check-counts.ts <file>
 bun tools/substrate-claim-checker/check-counts.ts memory/feedback_*.md
+bun tools/substrate-claim-checker/check-convention.ts docs/DECISIONS/*.md
 ```
 
 Exit code 0 = no drift detected (warnings alone are non-blocking per the v0.6 severity model — see "v0.6 — gitignore awareness for existence-drift" below). Exit code 1 = drift detected (or
@@ -53,13 +66,14 @@ input error).
   or blockquotes) aren't recognized yet. v1 candidate: relax the
   leading-anchor in `findTables` from `^\|` to `^\s*\|`.
 
-## What this does NOT do (v0)
+## Drift classes
 
-- **Existence drift** (file/dir/tool claimed to exist; doesn't) — v1
+- **Count drift** (claimed markdown-table row count doesn't match) — shipped v0
+- **Existence drift** (file/dir/tool claimed to exist; doesn't) — shipped v0.5
+- **Path-form drift** (fully-qualified vs bare paths inconsistent) — shipped v0.7
+- **Convention drift** (recommended pattern doesn't match canonical) — shipped v0.9
 - **Semantic-equivalence drift** (command substitution claims) — v1
 - **Empirical-output drift** (run-the-command-and-compare) — v1
-- **Convention drift** (recommended pattern doesn't match canonical) — v1
-- **Path-form drift** (fully-qualified vs bare paths inconsistent) — v1
 - **Self-recursive drift** (the memo about drift contains its own drift) — v1
 
 ## Composes with
@@ -166,3 +180,96 @@ If both are present, drift wins for exit code (1).
 ### Implementation
 
 Uses `git check-ignore --quiet <path>` via `spawnSync` (no shell — avoids command injection) to ask git directly. Exit code 0 from git = path IS gitignored; exit code 1 = NOT gitignored. The 5-second timeout guards against pathological cases.
+
+## v0.7 — `check-path-forms.ts` (path-form drift)
+
+The third sub-class checker, covering **path-form drift** — when the same physical file is referenced with inconsistent path forms within a single document.
+
+### What it catches
+
+A document references the same file using different string forms:
+
+- `tools/substrate-claim-checker/check-counts.ts` on line 3
+- `check-counts.ts` on line 7
+
+Both resolve to the same on-disk file, but a reader may not realize they're the same, and a grep for the full path misses the bare form.
+
+### How it works
+
+1. Extracts all path claims via `findPathClaims()` (reused from `check-existence.ts`)
+2. Resolves each claim to an absolute path using the same 3-root resolution (file dir → parent dir → repo root)
+3. Groups claims by resolved absolute path
+4. For groups with >1 distinct string form, emits a path-form drift finding
+
+Non-resolving paths are skipped (that's `check-existence.ts`'s domain).
+
+### Usage
+
+```bash
+bun tools/substrate-claim-checker/check-path-forms.ts <file>
+bun tools/substrate-claim-checker/check-path-forms.ts <file1> <file2> ...
+```
+
+Exit codes: `0` clean, `1` drift detected or input error.
+
+### Known limitations (v0.7)
+
+- **Same-directory prose vs usage-example forms**: a README documenting
+  its own directory naturally uses bare filenames in prose (`check-counts.ts`)
+  and fully-qualified paths in usage examples
+  (`tools/substrate-claim-checker/check-counts.ts`). Both are intentional.
+  v1 candidate: exempt paths inside fenced code blocks from grouping, since
+  usage examples conventionally show repo-root-relative invocations.
+
+## v0.8 — `check-cross-surface.ts` (cross-surface count drift)
+
+The fourth sub-class checker, covering **cross-surface count drift** —
+when the YAML frontmatter `description:` field claims a count that
+doesn't match any table in the document body.
+
+### Empirical eval-set (from the verify-then-claim memo)
+
+- **Instance #19**: frontmatter description said "9 drift instances"
+  but the body table had 15+ rows.
+- **Instance #20**: frontmatter description updated to "18+" but the
+  body table still had only 15 rows — the count-drift fix itself
+  introduced opposite-direction drift.
+
+### How it works
+
+1. Parses YAML frontmatter (leading `---` block)
+2. Extracts count claims from the `description:` field using the
+   same noun vocabulary as `check-counts.ts`
+3. Finds all markdown tables in the document body
+4. For each count claim, checks if ANY body table satisfies it
+   (exact match for `N noun`; at-least match for `N+ noun`)
+5. Reports drift if no table satisfies the claim
+
+### "Any-table" semantics
+
+Frontmatter precedes the entire body, so the "nearest table within
+50 lines" heuristic used by `check-counts.ts` is inapplicable. Instead,
+any table in the body can satisfy the claim. A multi-table file
+(drift-instances table + sub-classes table) passes if either table
+matches.
+
+### Usage
+
+```bash
+bun tools/substrate-claim-checker/check-cross-surface.ts <file>
+bun tools/substrate-claim-checker/check-cross-surface.ts <file1> <file2> ...
+```
+
+Exit codes: `0` clean, `1` drift detected or input error.
+
+### Known limitations (v0.8)
+
+- **Only `description:` field scanned**: other frontmatter fields
+  (e.g., `title:`, custom fields) are not checked. v0.9 candidate.
+- **Body-only tables**: section headings that embed counts
+  (e.g., `## 7 sub-classes`) are not compared. v0.9 candidate.
+- **No table semantics**: the checker doesn't know which table
+  corresponds to which claim — it uses any-table permissive
+  matching. A document with a 15-row drift table and a 3-row
+  sub-classes table would pass a "15 sub-classes" claim
+  (false negative). v0.9 noun-matching would address this.

@@ -1,6 +1,6 @@
 ---
 name: github-repo-transfer
-description: Capability skill ("hat") — behaviour layer for transferring a GitHub repository between owners (user→org, org→org, user→user). Wear when executing a transfer, diagnosing post-transfer drift, capturing a pre-transfer scorecard, or teaching the routine to a contributor. This file is the **routine** only; the **data** (known silent drifts, what-survives inventory, adapter mapping, worked examples) lives at `docs/GITHUB-REPO-TRANSFER.md` per the human maintainer's data/behaviour split. The declarative scorecard lives at `docs/GITHUB-SETTINGS.md` + `tools/hygiene/github-settings.expected.json`. Fire-history at `docs/hygiene-history/repo-transfer-history.md`. The routine is graceful-degradation-aware (pre-transfer scorecard → diff after → heal silent drifts) and cartographer-backed (every firing adds a row that a future offline agent can read without re-querying `gh api`).
+description: GitHub repo transfer — pre-transfer scorecard, silent-drift healing, post-transfer verification, cartographer history.
 record_source: "architect, round 44"
 load_datetime: "2026-04-22"
 last_updated: "2026-04-22"

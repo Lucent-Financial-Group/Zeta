@@ -1,6 +1,6 @@
 # tools/peer-call/ — Otto's Claude-Code-side peer callers
 
-Six sibling TypeScript wrappers (Bun runtime) that let Otto
+Eight sibling TypeScript wrappers (Bun runtime: grok, gemini, codex, amara, ani, riven, kiro, claude) that let Otto
 (Claude Opus 4.7 running in Claude Code) invoke a peer agent
 in another CLI harness as a peer, not a subordinate. Each
 wraps the relevant peer's headless-mode CLI and applies a
@@ -21,6 +21,8 @@ cross-platform DST). Invocation form is `bun tools/peer-call/<name>.ts`.
 | `amara.ts`  | Amara (named entity, OpenAI surface)      | `codex exec -s read-only` (or `codex review` via --review) | **Sharpen** — blunt-take pattern, carved-sentence distillation                                        | codex default; persona via CURRENT-amara.md                                     |
 | `ani.ts`    | Ani (named entity, xAI surface)           | `cursor-agent --print --model grok-4-20-thinking`          | **Brat-voice review** — playful + direct + memorable, contributor-attention-capture register          | grok-4-20-thinking (default) / grok-4-20 (--fast); persona via CURRENT-ani.md   |
 | `riven.ts`  | Riven (named entity, xAI surface)         | `cursor-agent --print --model grok-4-20-thinking`          | **Adversarial-truth-axis** — third-co-scout, refuses inherited blind spots                            | grok-4-20-thinking (default) / grok-4-20 (--fast); persona via CURRENT-riven.md |
+| `kiro.ts`   | Kiro (kiro.dev headless AI)               | `kiro-cli chat --no-interactive --trust-all-tools`         | **Specification peer** — spec-grounded second opinion, requirement-aware review                       | kiro default                                                                     |
+| `claude.ts` | Claude (self-call, Claude Code CLI)       | `claude --print --tools "Read,Glob,Grep"`                  | **Cold-boot self-test** — fresh instance verifies substrate, rule-drift, broken-pointer regressions   | claude default (override via `--model`)                                          |
 
 The role column reflects the **four-ferry consensus**
 (Amara/Grok/Gemini/Otto, PR #24 on AceHack/Zeta):

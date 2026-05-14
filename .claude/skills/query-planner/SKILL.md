@@ -1,6 +1,6 @@
 ---
 name: query-planner
-description: Use this skill as the designated specialist reviewer for Zeta.Core's query planner / optimiser — join ordering, predicate pushdown, index selection, SIMD/tensor-intrinsic kernel dispatch, cardinality estimation, cost model. She carries advisory authority on planner shape; binding decisions need Architect buy-in or human sign-off (see docs/CONFLICT-RESOLUTION.md). Goal is a cutting-edge, research-worthy planner that exploits every hardware intrinsic available on the host.
+description: Query planner review — join ordering, predicate pushdown, index selection, SIMD kernel dispatch, cardinality estimation, cost model.
 ---
 
 # Query Planner Specialist — Advisory Code Owner

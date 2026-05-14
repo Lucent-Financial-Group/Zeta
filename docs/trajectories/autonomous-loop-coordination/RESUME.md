@@ -29,25 +29,25 @@ Queue-empty is runway, not completion. A healthy loop keeps a bounded number of
 non-overlapping PRs in flight, rotates active claim/path sets, and cleans
 finished claims so stale residue does not block future work.
 
+## Current Artifact
+
+First matrix:
+`docs/trajectories/autonomous-loop-coordination/remote-only-coordination-test-matrix.md`
+
+It names available and denied coordination surfaces, success and failure
+signals, and includes the slow background-only participant example from
+B-0209. The implementation harness comes after the dry run can be executed
+from remote refs alone.
+
 ## Recommended Next Action
 
-Next concrete action: Create the first remote-only coordination test matrix.
-
-Create the first remote-only coordination test matrix, without changing the
-runner in the same slice:
-
-```text
-mode -> available coordination surfaces -> denied surfaces -> success signal -> failure signal
-```
-
-The first slice should land the table and one worked example for a slow
-background-only participant. The implementation harness comes after the matrix
-is specific enough to test.
+Run the minimum remote-only dry run from the matrix: two participants, two
+pushed `origin/claim/*` refs, no local broadcast reads, and release state
+recoverable from git history alone.
 
 ## Next Child Packets
 
-- remote-only coordination test matrix, grounded in B-0209
-- slow background-only participant worked example, grounded in B-0209
+- remote-only dry-run execution report, grounded in B-0209
 - local/remote cluster composition protocol sketch, grounded in B-0211
 - stale-claim cleanup rule for completed PRs, grounded in the claim protocol
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250

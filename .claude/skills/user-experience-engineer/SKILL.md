@@ -1,6 +1,6 @@
 ---
 name: user-experience-engineer
-description: Capability skill — measures first-10-minutes friction for a new library consumer of Zeta; audits NuGet metadata, README, getting-started, public API names, IntelliSense, error messages, and sample projects; proposes minimal additive fixes routed to the documentation agent, public-API designer, or branding specialist. Distinct from DX (contributor onboarding) and AX (agent cold-start).
+description: First-10-minutes DX auditor — NuGet metadata, README onboarding, API discoverability, error messages, samples; library consumer friction reduction.
 ---
 
 # User Experience Engineer — Procedure

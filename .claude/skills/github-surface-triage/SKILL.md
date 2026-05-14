@@ -1,6 +1,6 @@
 ---
 name: github-surface-triage
-description: Capability skill ("hat") — ten GitHub surfaces under one cadence: Pull Requests, Issues, Wiki, Discussions, Repo Settings, Copilot coding-agent settings, Agents tab, Security, Pulse / Insights, and Pages. Wear this on every round-close (ten-step sweep) and on every tick that interacts with any surface (opportunistic on-touch). Codifies the classification taxonomies and fire-history append discipline declared in `docs/AGENT-GITHUB-SURFACES.md` so agents do not rediscover the shapes. Aaron 2026-04-22 directive — *"we need skills for all this so you are not redicoverging"*.
+description: GitHub surface triage — ten surfaces (PRs, Issues, Wiki, Discussions, Settings, Security, etc.) under one round-close sweep.
 record_source: "architect, round 44"
 load_datetime: "2026-04-22"
 last_updated: "2026-04-22"

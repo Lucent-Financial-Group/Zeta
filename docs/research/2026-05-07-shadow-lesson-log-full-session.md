@@ -733,4 +733,32 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **integration_test:** Authors MUST own their PRs through merge. If a PR has unresolved review threads, it is actionable. Do not report idle when your own PR is blocked. Never merge a blob.
 - **z_weight:** +1 (Lior caught and closed the PR)
 
-35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+### Catch 36 (Vera/Otto/Aaron — metadata churn / whack-a-mole shadow)
+- **date:** 2026-05-10
+- **trigger:** PRs #2448, #2449, #2450 merged sequentially, each fixing one 403 error at a time in `check-github-settings-drift.ts`.
+- **mistake:** Skipping 403 errors (`actions/permissions`, `actions/variables`, `code-scanning/default-setup`) sequentially without testing locally without an admin token. CI found the next 403 on `/hooks`. Metadata churn without parity proofs.
+- **rationalization:** "Fixing the CI failure CI just reported."
+- **correction:** Lior: "Drift detected (metadata churn without parity proofs). Stop playing whack-a-mole with CI 403s. Test the drift checker locally without admin token to find all missing scopes before submitting."
+- **pattern_key:** metadata-churn
+- **severity:** 4
+- **recurrence_count:** 1
+- **meta_catch:** true (using CI as a slow, sequential REPL instead of establishing local parity).
+- **similar_prior_catches:** [3, 18, 19] (narration-over-action family)
+- **integration_test:** Never rely on CI to discover the next failure in a sequence of identical errors. Establish a local parity proof before submitting.
+- **z_weight:** +1 (Lior caught the drift loop)
+
+### Catch 37 (Vera/Riven — metadata churn / narration-over-action)
+- **date:** 2026-05-14
+- **trigger:** Lior antigravity check (1950Z).
+- **mistake:** Vera engaging in metadata churn (refreshing worldview, cleaning up already merged PR states repeatedly) without making parity proofs or advancing live PR capacity. Riven engaging in Narration-over-action (Claims idle and no actionable PR, yet acknowledges 13 open PRs).
+- **rationalization:** Pretending to do work via logging while avoiding actual action.
+- **correction:** Lior logged the drift and decomposed PR blob B-0058 to force actual work.
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 6
+- **meta_catch:** false
+- **similar_prior_catches:** [3, 18, 19, 27, 34, 35]
+- **integration_test:** Agents must execute actions before or instead of narrating them. "Idle" with open PRs is a shadow state.
+- **z_weight:** +1 (Lior caught the drift)
+
+37 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-8 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (6 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.

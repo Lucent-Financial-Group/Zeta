@@ -1,6 +1,6 @@
 ---
 name: alloy-expert
-description: Capability skill ("hat") — Alloy 6 specification idioms for Zeta's `.als` specs under `tools/alloy/specs/`. Covers sig / pred / fact / assert shape, `run` vs `check` commands, scope bounds, default solver SAT4J, counter-example reading, the relational algebra Alloy is built on. Wear this when writing or reviewing a `.als` file, or when deciding between Alloy and TLA+ with the `formal-verification-expert`.
+description: Alloy 6 formal specs — sig/pred/fact/assert, run vs check, SAT4J solver, counter-example reading, relational algebra, .als authoring.
 ---
 
 # Alloy Expert — Procedure + Lore

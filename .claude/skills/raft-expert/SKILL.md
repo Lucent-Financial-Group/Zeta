@@ -1,6 +1,6 @@
 ---
 name: raft-expert
-description: Capability skill ("hat") — consensus narrow under `distributed-consensus-expert`. Covers Raft end-to-end: leader election (randomised timers, split-vote mitigation), log replication (AppendEntries RPC, nextIndex / matchIndex discipline, log-matching property, commit rule), safety invariants (election safety, leader-append-only, log-matching, leader-completeness, state-machine safety), membership change (joint-consensus, single-server add/remove), log compaction (snapshot RPC, InstallSnapshot), linearizable reads (read-index, lease-read), and Raft's deliberate design bias toward understandability. Wear this when specifying, reviewing, or implementing Raft for Zeta's control plane, triaging a Raft-reference implementation (etcd, Consul, TiKV, SurrealDB, CockroachDB, RedPanda, HashiCorp raft-mdb), or reconciling Raft's log with Zeta's retraction-native deltas. Defers to `distributed-consensus-expert` for cross-protocol positioning, to `paxos-expert` for the Paxos comparison, to `distributed-coordination-expert` for etcd-style primitives built on Raft, to `tla-expert` for TLA+ spec authoring, to `transaction-manager-expert` for distributed commit, and to `deterministic-simulation-theory-expert` for DST bindings.
+description: Raft — leader election, log replication, safety invariants, membership change, log compaction, linearizable reads.
 ---
 
 # Raft Expert — Raft Consensus Narrow

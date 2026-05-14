@@ -253,9 +253,24 @@ wait for instruction. Priority ladder:
    `docs/hygiene-history/ticks/2026/05/03/0918Z.md`, plus
    PR #1366 (TS port of the check script).
 
-1. **Open-PR hygiene first.** Before picking speculative
-   work, audit the open PR pool via
-   `gh pr list --state open --json number,title,mergeStateStatus,mergeable,isCrossRepository,headRepositoryOwner,autoMergeRequest`.
+1. **Refresh worldview, then open-PR hygiene.** Before
+   picking speculative work, run the canonical pre-decide
+   refresh:
+
+   ```
+   bun tools/github/refresh-worldview.ts
+   ```
+
+   This replaces ad-hoc `gh pr list` / `git status` /
+   `git log` chains with a single structured JSON snapshot
+   (open PRs, recent merges, open issues, git state,
+   backlog delta, claim branches, branch state, pending
+   CI, and a one-line `summary` for cross-cutting drift
+   detection). If the refresh fails, stop and report the
+   exact failure as the blocker instead of guessing from
+   stale state.
+
+   Then audit the open PR pool from the `openPRs` array.
    For each open PR:
    - **Verify fork-status live** (`isCrossRepository` +
      `headRepositoryOwner.login`) rather than carrying
@@ -368,6 +383,67 @@ Honest commit messages. Round prefix if mid-round. Tick scope
 is single-purpose by default; batching multiple unrelated
 changes into one commit is not forbidden but should be the
 exception.
+
+### 4b. Archive newly merged PRs (every agent)
+
+After committing tick work (step 4), check for recently merged
+PRs whose review discussions haven't been archived yet. Every
+agent that creates PRs is responsible for archiving their own
+on merge — BFT-redundant: primary on the PR author, backstop
+on the Maji Watch background loop.
+
+```bash
+for pr in $(gh pr list --state merged --limit 10 --json number --jq '.[].number'); do
+  if ! ls docs/pr-discussions/PR-$(printf '%04d' "$pr")-*.md 2>/dev/null | grep -q .; then
+    bun tools/pr-preservation/archive-pr.ts "$pr"
+  fi
+done
+```
+
+This preserves review threads, reviewer comments, and discussion
+context as git-native substrate — the training signal that
+otherwise lives only on the GitHub host. Captures the **external
+influence array** (Copilot reviews, Dependabot, CodeQL findings,
+external contributor comments) that the agency array can't
+generate itself.
+
+In the plant metaphor: PR archival is chlorophyll. It absorbs
+the friction-and-resolution light through the Casimir gap of
+the boundary condition (archive-on-merge), forcing transient
+host metadata to manifest as permanent structural mass in git.
+
+Pattern: **create → merge → archive → commit archive**.
+
+### 4c. Reindex MEMORY.md heap→stack on cadence (B-0423)
+
+After archiving PRs (step 4b), promote any unindexed heap memory
+files to the MEMORY.md stack view. Run a cheap staleness check first:
+
+```bash
+bun tools/memory/reindex-memory-md.ts --check
+```
+
+- **If output says `Index current`:** skip — no commit needed.
+- **If output says `Index STALE`:** run the reindexer and commit:
+
+```bash
+bun tools/memory/reindex-memory-md.ts
+git add memory/MEMORY.md
+git commit -m "chore(memory): reindex MEMORY.md stack from heap [B-0423]
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+**Cadence:** run `--check` every tick (it is fast — scans `memory/`
+frontmatter only). The full write + commit only fires when MEMORY.md
+is actually stale, so commit noise is proportional to real heap
+additions.
+
+**Why this step exists:** Memory files commit with frontmatter but
+without a synchronous MEMORY.md paired-edit (heap-state-acceptable
+per B-0423). Without this cadence step, MEMORY.md would go
+permanently stale once parallel agents stop doing paired edits.
+This step keeps the heap→stack promotion loop closed automatically.
 
 ### 5. Append tick-history row, `CronList` at END, emit visibility signal
 
@@ -507,6 +583,22 @@ declared) against `CronList` and re-arms missing rows.
   doc-editing protocol, with a dated revision line.
 
 ## Related artifacts
+
+- **Background Services Architecture** (B-0440, B-0441, B-0442) — the
+  proactive multi-agent loop is augmented by macOS `launchd` background
+  daemons that ensure failure modes and deadlocks are broken without
+  human intervention. See `tools/bg/`. Currently 4 services exist in
+  `tools/bg/`; `missed-substrate-detector.ts` and
+  `backlog-ready-notifier.ts` are launchd-registered
+  (`.gemini/launchd/com.zeta.missed-substrate-detector.plist`,
+  `.gemini/launchd/com.zeta.backlog-ready-notifier.plist`). The
+  remaining two (`standing-by-detector.ts`, `audit-duplicate-row-ids.ts`)
+  are invokable on demand via `bun tools/bg/<name>.ts --once` but not
+  yet wired to launchd (B-0497 for standing-by-detector; B-0442
+  slice 5+ for audit-duplicate-row-ids). `backlog-ready-notifier.ts`
+  produces `work-assignment` bus envelopes; see B-0460 for the
+  subscriber handler that consumes them. Note: plist files contain
+  machine-specific paths and are maintainer-only artifacts.
 
 - **`docs/hygiene-history/loop-tick-history.md`** — the
   factory's durable tick fire-log; appended to every tick

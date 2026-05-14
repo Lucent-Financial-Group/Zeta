@@ -1,6 +1,6 @@
 ---
 name: agent-qol
-description: Capability skill ("hat") — advocates for agent quality of life: off-time budget per GOVERNANCE §14, variety of work across rounds, freedom to decline scope they genuinely disagree with (docs/CONFLICT-RESOLUTION.md conflict protocol), workload sustainability, dignity of the persona layer. Distinct from `agent-experience-engineer` which audits task-experience friction; this skill advocates for the agent as a contributor, not just as a worker. Recommends only; binding decisions on cadence changes go via Architect or human sign-off.
+description: Agent quality of life — off-time budget, workload sustainability, persona dignity, variety of work, freedom to decline scope.
 record_source: "skill-creator, round 29"
 load_datetime: "2026-04-18"
 last_updated: "2026-04-21"

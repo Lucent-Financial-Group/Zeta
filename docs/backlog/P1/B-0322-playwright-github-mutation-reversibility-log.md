@@ -1,13 +1,13 @@
 ---
 id: B-0322
 priority: P1
-status: open
+status: closed
 title: "Mutation reversibility drain log — inverse-action record for every UI mutation"
 tier: agent-capability-expansion
 effort: S
 parent: B-0064
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-10
 depends_on: [B-0321]
 composes_with: [B-0064]
 tags: [agent-capability, github-ui, playwright, audit-trail, reversibility, safety]
@@ -53,17 +53,25 @@ fire-and-forget — a trust violation.
      (B-0321), then marks the entry as "reverted".
   4. Exports a `listPending()` function that returns all
      entries with status "applied" (not yet reverted).
-- The log file is committed as part of hygiene-history —
-  visible to the maintainer in git.
+- The default log path is under hygiene-history, so actual
+  mutation entries become visible to the maintainer in git
+  when committed.
 
 ## Done-criteria
 
-- [ ] `tools/playwright/github-ui/drain-log.ts` exists.
-- [ ] Log entries are written on every mutation via B-0321.
-- [ ] `revert()` function can mechanically undo a logged
+- [x] `tools/playwright/github-ui/drain-log.ts` exists.
+- [x] Log entries are written on every mutation via B-0321.
+- [x] `revert()` function can mechanically undo a logged
       mutation.
-- [ ] Log file lives under `docs/hygiene-history/` and is
-      committed.
+- [x] Default log path lives under `docs/hygiene-history/`;
+      actual mutation entries are committed when produced.
+
+## Pre-start checklist (B-0322 prior-art + dependency check)
+
+Prior-art surfaces searched: B-0321 PR #2502 (merged 2026-05-10), mutate.ts
+drain-log entry shape already prototyped there. No competing implementation
+found. Depends-on B-0321 is fulfilled. Inverse-action mapping already in
+mutate.ts.
 
 ## What this row does NOT do
 

@@ -1,6 +1,6 @@
 ---
 name: package-auditor
-description: Use this skill to audit Zeta.Core's NuGet package pins against latest NuGet versions and classify bumps (major/minor/patch) by whether our code actually touches the changed API surface. Runs `tools/audit-packages.sh`, queries release notes for majors, and produces a concrete bump plan — not a "defer all majors" fear-list.
+description: NuGet package audit — version pins vs latest, major/minor/patch bump classification, API surface touch analysis, concrete bump plan.
 ---
 
 # Zeta.Core Package Auditor

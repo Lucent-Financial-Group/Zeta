@@ -1,6 +1,6 @@
 ---
 name: query-optimizer-expert
-description: Capability skill ("hat") — cost-based query optimisation hat. Owns the cost model, cardinality estimation, statistics maintenance, logical rewrite rules (predicate pushdown, projection pushdown, subquery unnesting, view merging, outer-join simplification, constant folding, common-subexpression elimination), join-order enumeration (dynamic programming vs greedy vs IKKBZ vs genetic), and the translation-rule library. Hand-off contract with `query-planner` (Imani): **query-optimizer-expert owns logical rewrites + cost model + statistics**; **query-planner owns physical plan tree + SIMD kernel dispatch + runtime adaptive re-planning**. Wear this when the question is "should we rewrite this query shape?" or "is the cost estimate tight?", not "which SIMD lane fires?". Defers to `query-planner` for physical plan shape, to `relational-algebra-expert` for equivalence proofs, to `algebra-owner` for retraction-native preservation, and to `sql-expert` for SQL semantics.
+description: Query optimizer — cost model, cardinality estimation, logical rewrite rules, join-order enumeration, statistics.
 ---
 
 # Query Optimizer Expert — Logical Rewrites + Cost Model

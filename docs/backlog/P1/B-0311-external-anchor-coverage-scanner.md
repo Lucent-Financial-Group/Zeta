@@ -1,13 +1,13 @@
 ---
 id: B-0311
 priority: P1
-status: open
+status: closed
 title: "External-anchor coverage scanner — per-concept anchor presence/absence audit"
 tier: substrate-quality
 effort: S
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0310]
 composes_with: [B-0060, B-0310, B-0312, B-0313, B-0314, B-0315, B-0316]
 tags: [substrate-quality, tooling, external-anchors, human-lineage, beacon-safety]

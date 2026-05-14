@@ -1,6 +1,6 @@
 ---
 name: verification-drift-auditor
-description: the `verification-drift-auditor` — audits every verification artifact in the repo (Lean proofs, TLA+ specs, Z3 lemmas, FsCheck properties) that claims fidelity to an external source, and catches drift between what the source (paper, textbook, RFC) says and what our formalisation actually proves. Motivating case: round-35 chain-rule theorem was labelled "Proposition 3.2" but proved a strictly weaker Theorem-3.3 corollary. Runs under formal-verification-expert (Soraya).
+description: Verification drift detection — audits Lean proofs, TLA+ specs, Z3 queries, Semgrep rules against their external source for staleness and breakage.
 ---
 
 # Verification Drift Auditor — Procedure

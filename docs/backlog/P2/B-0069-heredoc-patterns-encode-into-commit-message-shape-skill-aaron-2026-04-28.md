@@ -1,7 +1,7 @@
 ---
 id: B-0069
 priority: P2
-status: open
+status: closed
 title: Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28)
 effort: S
 ask: maintainer Aaron 2026-04-28 /btw aside

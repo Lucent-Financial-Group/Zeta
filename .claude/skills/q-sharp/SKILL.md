@@ -1,6 +1,6 @@
 ---
 name: q-sharp
-description: Capability skill ("hat") — Q# operator-algebra reasoning for Microsoft Quantum Development Kit. Covers type-level adjointability + controllability constraints (`Unit is Adj + Ctl`), Pauli-as-typed-value (`PauliX`/`PauliY`/`PauliZ`) measurement-basis selection, `within / apply` conjugation pattern, Jordan-Wigner transformation as library concern (`Microsoft.Quantum.Chemistry`), and the B-0189 BP/EP-runtime-acceleration research lane. Wear when reading or writing `.qs` files, comparing Q# to Cirq / Qiskit / OpenQASM, or evaluating Q# as a formal-verification target alongside `lean4-expert` / `tla-expert` / `z3-expert` / `f-star-expert`.
+description: Q# operator-algebra — adjointability, Pauli measurement, within/apply conjugation, Jordan-Wigner, BP/EP research lane.
 ---
 
 # Q# operator-algebra skill

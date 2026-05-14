@@ -1,6 +1,6 @@
 ---
 name: project-structure-reviewer
-description: Capability skill ("hat") — audits repo layout at a regular cadence: folder tree shape, file placement, naming conventions, missing/misplaced artefacts, tech-debt-shaped-as-disorganization. Distinct from `factory-audit` (governance + persona coverage) and `skill-gap-finder` (absent skills); this skill owns the *physical* layout. Cadence: every 3-5 rounds, or after any rename campaign (per GOVERNANCE §30), or when a new contributor's first-PR walk surfaces layout confusion.
+description: Repo layout audit — folder tree shape, file placement, naming conventions, misplaced artifacts, tech-debt-as-disorganization.
 ---
 
 # Project Structure Reviewer — Procedure

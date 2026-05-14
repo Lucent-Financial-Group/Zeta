@@ -1,6 +1,6 @@
 ---
 name: naming-expert
-description: Capability skill for naming decisions in code, docs, APIs, modules, files, and commits. Covers the Phil Karlton aphorism ("only two hard things in CS — cache invalidation and naming things"), ubiquitous language (Evans DDD), domain-type naming (Wlaschin), API-surface naming (aligns with public-api-designer), rename-as-governance (a public rename is a breaking change), and the anti-patterns (Hungarian notation, cryptic abbreviations, pluralisation drift, negated booleans, stuttering prefixes). Use this skill whenever a new type, function, module, file, package, or public member is being named, whenever a rename is being proposed, or whenever a reviewer questions whether a name is carrying its weight. Also use it when a canonical-home discriminator (BP-HOME) needs a name that won't collide with another artifact type. Deliberately opinionated — names are load-bearing contracts, not decoration.
+description: Naming decisions for code, APIs, modules, commits — ubiquitous language, rename-as-governance, anti-patterns, BP-HOME discriminators.
 ---
 
 # Naming Expert — Names as Load-Bearing Contracts

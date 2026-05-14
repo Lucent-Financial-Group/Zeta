@@ -71,7 +71,7 @@ PR descriptions, commit messages, `docs/hygiene-history/**`,
 or memory files.
 
 **Source:** `memory/feedback_code_comments_explain_code_not_history_otto_220_*.md`
-and the lint at `tools/lint/doc-comment-history-audit.sh`.
+and the lint at `tools/lint/doc-comment-history-audit.ts`.
 
 ### name-attribution role references
 
