@@ -26,6 +26,7 @@ Verbatim from B-0449:
 
 > Once Option C is adopted (or alternative chosen), three follow-up rows track per-topic handler
 > implementation:
+>
 > - B-0459 — `infinite-backlog-nudge` handler (slice 5.1)
 
 This row is that follow-up. It depends on B-0449 landing `tools/bus/subscribe.ts`; if B-0449 is

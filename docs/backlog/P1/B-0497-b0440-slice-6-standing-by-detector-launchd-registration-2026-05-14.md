@@ -87,6 +87,7 @@ This slice closes that gap for the standing-by-detector specifically.
 ## Why XS effort
 
 This is a one-file copy-adapt of `.gemini/launchd/com.zeta.missed-substrate-detector.plist` with:
+
 - Label changed: `missed-substrate-detector` → `standing-by-detector`
 - ProgramArguments[1] changed to `standing-by-detector.ts`
 - Log paths changed to `zeta-standing-by-detector`

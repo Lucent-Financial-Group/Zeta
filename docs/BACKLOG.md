@@ -256,6 +256,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0449](backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md)** bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)
 - [ ] **[B-0450](backlog/P1/B-0450-getting-started-guide-for-library-consumers-pm2-2026-05-13.md)** Getting-started guide for Zeta library consumers — quickstart doc + sample project
 - [x] **[B-0451](backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md)** Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts
+- [ ] **[B-0459](backlog/P1/B-0459-b0440-slice-5-infinite-backlog-nudge-handler-2026-05-14.md)** B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler (standing-by failure-mode closer)
 - [ ] **[B-0463](backlog/P1/B-0463-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [x] **[B-0464](backlog/P1/B-0464-product-repo-honor-system-license-language-draft-2026-05-14.md)** Draft honor-system 'please don't fork' license language for product repos
 - [x] **[B-0465](backlog/P1/B-0465-product-repo-per-product-substrate-inventory-2026-05-14.md)** Per-product substrate inventory — 7 product candidates; repo-ready evaluation
@@ -290,7 +291,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0494](backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md)** Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot
 - [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
-- [ ] **[B-0459](backlog/P1/B-0459-b0440-slice-5-infinite-backlog-nudge-handler-2026-05-14.md)** B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler stub (depends on B-0449)
 - [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
 
 ## P2 — research-grade
