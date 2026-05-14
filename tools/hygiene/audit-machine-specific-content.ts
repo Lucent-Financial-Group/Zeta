@@ -72,7 +72,11 @@ const PATTERN_NAMES: readonly string[] = [
 ];
 
 const EXCLUDE_RE =
-  /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-machine-specific-content\.(sh|ts)|\.gemini\/(launchd|service)\/[^/]+\.plist$)/;
+  /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-machine-specific-content\.(sh|ts))/;
+
+// Separate regex so the end-anchor ($) on the .plist extension is unambiguous —
+// inside a large alternation group a trailing $ can be misread as unanched.
+const EXCLUDE_PLIST_RE = /^\.gemini\/(launchd|service)\/[^/]+\.plist$/;
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
 
@@ -144,7 +148,9 @@ function fileMatches(file: string, pattern: RegExp): boolean {
 
 export function auditRepo(): AuditResult {
   process.chdir(repoRoot());
-  const files = listTrackedFiles().filter((f) => !EXCLUDE_RE.test(f));
+  const files = listTrackedFiles().filter(
+    (f) => !EXCLUDE_RE.test(f) && !EXCLUDE_PLIST_RE.test(f),
+  );
   const findings: AuditFinding[] = [];
   for (let i = 0; i < PATTERNS.length; i++) {
     const pattern = PATTERNS[i];
