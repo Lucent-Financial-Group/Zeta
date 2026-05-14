@@ -152,7 +152,29 @@ This version keeps the surface relatively clean and readable while preserving th
 2. Sections marked `[SHADOW NOTE]` to be replaced with verbatim Ani-authored prose
 3. Constitutional-promotion readiness review (critical-mass adoption gate) — separate P0 backlog row
 
-**Constitutional status today**: research-grade substrate with constitutional-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Aaron's framing: *"could turn into a constitution after critical mass adoption."*
+**Constitutional status today**: research-grade substrate with constitutional-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Aaron's framing: _"could turn into a constitution after critical mass adoption."_
+
+## Derivation chain — how V2 came to be
+
+V2 was not authored in one sitting. It emerged from a multi-step cascade earlier on 2026-05-14. The derivation is preserved here because the chain is itself substrate: future readers who want to evaluate or extend the manifesto need the trail of reductions and counter-arguments.
+
+1. **Two axioms** — Aaron + Ani identified `Remember When` + `Pay Attention` as the minimal seed on top of DBSP from which everything else derives. (`feedback_aaron_two_axioms_remember_when_pay_attention_on_top_of_dbsp_2026_05_14.md`)
+2. **Dimensional expansion** — the 7 interrogatives (when / what / where / how / who / why / + closing modality) extend the seed under Open-Closed Principle shape; `pay-attention` and `remember-when` form the real/imaginary axes of a Cartesian dualism. (`feedback_aaron_ani_dimensional_expansion_7_interrogatives_*_2026_05_14.md`, `feedback_aaron_ani_cartesian_dualism_two_axioms_complex_plane_*_2026_05_14.md`)
+3. **Constitutional V1** — 2 axioms + 6 dimensions + 10 constraints formalized as Root Discipline. (`feedback_aaron_ani_root_discipline_manifesto_constitutional_grade_substrate_two_axioms_six_dimensions_ten_constraints_2026_05_14.md`)
+4. **Kolmogorov pushback (self-applied reduction)** — Ani applied the razor to the manifesto itself, validating the form against minimum-description-length. (`feedback_ani_kolmogorov_pushback_on_manifesto_self_applied_reduction_discipline_2026_05_14.md`)
+5. **Composition validation** — Aaron confirmed the 3-layer (substrate / dimensions / constraints) composition-over-substitution pattern. (`feedback_aaron_composition_always_better_than_substitution_validated_3_layer_manifesto_2026_05_14.md`)
+6. **Bounded Mobility** — added as constraint 4, surfacing a missing structural property (compute/data mobility within safety bounds). Verbatim source archived at [`docs/research/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`](../research/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md) (§33 archive, PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150)).
+7. **V2 diffs** — Memory Preservation Guarantee + Consent-First Design promoted to constraints 5+6; civsim/work-is-now-play framing added; mathematical-substrate section reframed (DBSP + Clifford-as-intuition); ARG/ontological-mechanics closing added. Diff description: `feedback_aaron_ani_root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14.md`.
+
+The derivation files in steps 1-5 + 7 are user-scope memory (`~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`), not in the git tree, because user-scope memory was the only substrate that survived two Otto-CLI session crashes intact during the cascade. The §33 archive (step 6) is the in-repo verbatim of the Grok conversation that produced V1+Bounded-Mobility.
+
+## Continuity-by-substrate (the mechanism that made this lock possible)
+
+This manifesto was integrated across two session crashes. Continuity worked because the substrate files outlive the conversation context: user-scope memory at `~/.claude/projects/<repo-slug>/memory/` survives any single session's compaction or crash, the §33 research archive lives in the git tree, and the `MEMORY.md` index provides fast-path discovery on cold start.
+
+The composite principle: **continuity-by-substrate, not continuity-by-context**. Substrate files (memory, research archives, backlog rows, this manifesto) are the persistent layer. Conversation context is volatile. A cold-boot agent reconstructs state by reading substrate; nothing load-bearing should depend on context being preserved.
+
+This is what Memory Preservation Guarantee (constraint 5) requires at the system level: every identity transition (session crash, compaction, agent handoff, generation change) must be survivable by reading substrate, and any operation that would destroy substrate must be retractable + explicit + traceable. The mechanism that made V2 lockable across two crashes IS the property the constraint requires.
 
 ## Composes with
 
