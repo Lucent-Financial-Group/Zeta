@@ -1,7 +1,7 @@
 ---
 id: B-0488
 priority: P1
-status: open
+status: in-progress
 title: "B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map"
 type: planning
 origin: B-0429 decomposition (Otto, 2026-05-14)
