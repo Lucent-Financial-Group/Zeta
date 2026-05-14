@@ -264,6 +264,10 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0468](backlog/P1/B-0468-product-repo-split-adr-2026-05-14.md)** ADR — product-repo split decisions; closes B-0425
 - [x] **[B-0469](backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md)** Scaffold Lucent-Financial-Group/civsim public repo (Stage 1)
 - [ ] **[B-0470](backlog/P1/B-0470-civsim-zeta-version-pin-bump-2026-05-14.md)** Bump civsim .zeta-version from scaffold-template SHA to apply-time Zeta main SHA
+- [ ] **[B-0471](backlog/P1/B-0471-mirror-beacon-prior-art-audit-2026-05-14.md)** Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate
+- [ ] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
+- [ ] **[B-0473](backlog/P1/B-0473-mirror-beacon-promotion-gate-protocol-2026-05-14.md)** Mirror→Beacon promotion gate protocol — concrete criteria for repo-level graduation
+- [ ] **[B-0474](backlog/P1/B-0474-mirror-beacon-axis-adr-2026-05-14.md)** Mirror/Beacon axis ADR — two-axis design decision (extends 2026-04-22 ADR)
 
 ## P2 — research-grade
 

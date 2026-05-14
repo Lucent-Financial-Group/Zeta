@@ -1,12 +1,17 @@
 ---
 id: B-0426
 priority: P1
-status: open
+status: decomposed
 title: "Repo-split orthogonal Mirror/Beacon axis — speculative-fast-forks vs governance-citation-gated"
 type: planning
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
+children:
+  - B-0471
+  - B-0472
+  - B-0473
+  - B-0474
 composes_with:
   - B-0424
   - B-0425
@@ -93,7 +98,38 @@ per-repo evaluation per the pre-start checklist below.
 - Beacon substrate doesn't sand off the Mirror-richness
 - Both tiers are first-class; not hierarchy
 
-## Pre-start checklist
+## Decomposition (2026-05-14)
+
+This row was decomposed on 2026-05-14 into 4 dependency-ordered atomic
+child rows per `.claude/rules/backlog-item-start-gate.md`:
+
+| Row | Title | Type | Depends on |
+|-----|-------|------|------------|
+| **B-0471** | Mirror/Beacon prior-art audit | research | — (first in chain; parent: B-0426) |
+| **B-0472** | Two-axis classification matrix | design | B-0471 |
+| **B-0473** | Mirror→Beacon promotion gate protocol | design | B-0471 |
+| **B-0474** | Mirror/Beacon axis ADR | adr | B-0472, B-0473 |
+
+Dependency order: B-0471 → B-0472 (parallel with B-0473) → B-0474.
+
+B-0474 closes this row when merged.
+
+## Pre-start checklist (decomposition gate — completed 2026-05-14)
+
+Prior-art search completed per `.claude/rules/backlog-item-start-gate.md`:
+
+- [x] Otto-356 register discipline (existing; consistent with B-0426)
+- [x] `memory/feedback_aaron_repo_split_orthogonal_mirror_beacon_axis_*.md` (exists; current)
+- [x] `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` (exists; defines promotion gate)
+- [x] `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md` (B-0425 closed; Axis-1 positions set)
+- [x] `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` (Zeta/Forge/ace three-repo split context)
+- [x] B-0424 still open (Stage-1 factory repo split unblocked by this classification)
+- [x] Dependency chain: B-0471 → B-0472 ∥ B-0473 → B-0474 established
+
+**Substrate-ready signal:** decomposition is clean; child rows are independent
+and bounded. No blockers found.
+
+## Original pre-start checklist (per-repo work — applies to each child row)
 
 Before splitting any repo on the Mirror/Beacon axis, complete
 per `.claude/rules/backlog-item-start-gate.md`:
