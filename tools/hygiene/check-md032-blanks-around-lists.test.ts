@@ -266,6 +266,69 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 7", () => {
+  test("YAML front matter is skipped (pre-CI review P2 on PR #3075 round 7)", () => {
+    // markdownlint treats the YAML block between leading `---` fences
+    // as metadata, not as Markdown content. List-like front-matter keys
+    // (e.g., `tags:` followed by `- item`) must not fire MD032.
+    const content = `---
+tick: 2026-05-14T01:30Z
+tags:
+- alpha
+- beta
+- gamma
+---
+
+# Real Title
+
+Real prose with no lists.
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("front matter does NOT mask a real MD032 in body content", () => {
+    // A `Label:` then `- bullet` AFTER the front matter is still
+    // flagged — only the front-matter block itself is exempt.
+    const content = `---
+title: foo
+---
+
+Body label:
+- bullet
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(6);
+  });
+
+  test("list immediately after closing front-matter `---` is treated as start-of-content (no false positive)", () => {
+    // The line right after the YAML block is conceptually "start of
+    // content"; a list there must NOT be flagged as missing-blank-line
+    // against the closing `---`.
+    const content = `---
+title: foo
+---
+- first body item
+- second body item
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("a leading `---` without a closing fence is NOT treated as front matter", () => {
+    // Defensive: if the first line is `---` but no closing `---` exists
+    // (the file is malformed or just happens to start with a thematic
+    // break), the scanner falls back to whole-file scanning.
+    const content = `---
+
+Body label:
+- bullet
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(4);
+  });
+});
+
 describe("findMd032Violations — round 6", () => {
   test("paren ordered-list marker (`1)`) is detected (pre-CI review P1 on PR #3075 round 6)", () => {
     // markdownlint + CommonMark treat both `1.` and `1)` as ordered-

@@ -146,11 +146,28 @@ export function findMd032Violations(content: string): { line: number; context: s
   // PR #3075 round 2).
   let inList = false;
 
-  // Start at i=0 so a fenced-code open on the very first line is recorded.
-  // The original i=1 start caused the fence-state to be wrong for files
-  // whose first line is a fence marker (pre-CI review P1 on PR #3075
-  // round 2).
-  for (let i = 0; i < lines.length; i++) {
+  // Determine the start-of-content cursor, skipping YAML front matter if
+  // present. Markdownlint treats the YAML block between leading `---`
+  // fences as metadata, NOT as Markdown content — list-like keys (e.g.,
+  // `tags:` followed by `- item`) inside front matter must not fire
+  // MD032 locally (pre-CI review P2 on PR #3075 round 7).
+  let startLine = 0;
+  if (lines[0] === "---") {
+    let j = 1;
+    while (j < lines.length && lines[j] !== "---") j++;
+    if (j < lines.length) {
+      // Closing `---` found; skip everything through it.
+      startLine = j + 1;
+    }
+    // No closing fence → not a real front matter block; fall back to
+    // scanning the whole file from line 0.
+  }
+
+  // Start at startLine so a fenced-code open on the first content line
+  // is still recorded; the original i=1 start (back when no front-matter
+  // skip existed) caused the fence-state to be wrong for files whose
+  // first line was a fence marker (pre-CI review P1 on PR #3075 round 2).
+  for (let i = startLine; i < lines.length; i++) {
     const cur = lines[i] ?? "";
 
     // Update fence state BEFORE the list-start check so a fence line
@@ -189,9 +206,12 @@ export function findMd032Violations(content: string): { line: number; context: s
     }
 
     if (isListItemStart(cur)) {
-      if (i > 0) {
+      if (i > startLine) {
         // Check whether the immediately preceding line requires a blank.
         // Pass inList so the continuation exemption is context-aware.
+        // The `i > startLine` guard (rather than `i > 0`) means a list
+        // immediately after a YAML front-matter block is treated as
+        // start-of-content, not as missing-blank-line.
         const prev = lines[i - 1] ?? "";
         if (!isBlank(prev) && !isListFriendlyLeading(prev, inList)) {
           findings.push({
