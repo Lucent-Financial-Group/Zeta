@@ -260,6 +260,19 @@ export function findMd032Violations(content: string): { line: number; context: s
   // flagged. The state remembers the opening delimiter (char + length)
   // so a nested inner fence with a different char or shorter run can't
   // close the outer block (pre-CI review P2 on PR #3075 round 2).
+  // Track HTML comment state. Markdownlint ignores list-like content
+  // inside `<!-- ... -->` blocks (including `markdownlint-disable` /
+  // `markdownlint-enable` comments). The earlier algorithm scanned
+  // every non-fence line and could flag commented-out examples as
+  // real MD032 violations (pre-CI review P2 on PR #3075 round 19).
+  //
+  // Conservative model: a line is treated as inside-comment when an
+  // unclosed `<!--` has been seen and not yet closed by `-->`. Lines
+  // that contain `<!--` on the same line as `-->` (inline comments)
+  // are skipped entirely for MD032 purposes — partial-line markdown
+  // around an inline comment is rare and not worth the extra
+  // complexity.
+  let inHtmlComment = false;
   let openFence: { char: "`" | "~"; len: number } | null = null;
   // Track whether we are inside a list block AND whether that list is
   // top-level (no blockquote prefix) or blockquoted. The distinction
@@ -296,6 +309,21 @@ export function findMd032Violations(content: string): { line: number; context: s
   // first line was a fence marker (pre-CI review P1 on PR #3075 round 2).
   for (let i = startLine; i < lines.length; i++) {
     const cur = lines[i] ?? "";
+
+    // Update HTML-comment state BEFORE every other check. A line that
+    // begins inside a comment (or contains `<!--` without a matching
+    // `-->` on the same line) is treated as comment content for MD032
+    // purposes (pre-CI review P2 on PR #3075 round 19).
+    if (inHtmlComment) {
+      if (cur.includes("-->")) inHtmlComment = false;
+      continue;
+    }
+    const openIdx = cur.indexOf("<!--");
+    if (openIdx !== -1) {
+      const closeAfter = cur.indexOf("-->", openIdx + 4);
+      if (closeAfter === -1) inHtmlComment = true;
+      continue;
+    }
 
     // Update fence state BEFORE the list-start check so a fence line
     // itself never registers as a list-start candidate.

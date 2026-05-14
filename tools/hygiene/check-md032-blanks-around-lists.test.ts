@@ -278,6 +278,50 @@ Real prose:
   });
 });
 
+describe("findMd032Violations — round 19", () => {
+  test("HTML comment regions are skipped (pre-CI review P2 on PR #3075 round 19)", () => {
+    // A multi-line HTML comment with a commented-out MD032 example
+    // inside must not fire — markdownlint ignores comment content.
+    const content = `# Title
+
+<!--
+Label:
+- inside comment, not a list
+-->
+
+Body text.
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("markdownlint-disable comment with multi-line body is skipped", () => {
+    // markdownlint-disable / -enable comments are HTML comments
+    // that markdownlint itself uses to control its own scanning.
+    // Helpers should mirror that behavior.
+    const content = `# Title
+
+<!-- markdownlint-disable MD032
+Label:
+- documenting the rule
+-->
+`;
+    expect(findMd032Violations(content)).toEqual([]);
+  });
+
+  test("HTML comment does NOT mask a real MD032 in non-commented body", () => {
+    const content = `# Title
+
+<!-- a comment -->
+
+Body label:
+- bullet
+`;
+    const findings = findMd032Violations(content);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.line).toBe(6);
+  });
+});
+
 describe("findMd032Violations — round 18", () => {
   test("blockquoted thematic break (`> ---`) terminates a blockquoted list (pre-CI review P1 on PR #3075 round 18)", () => {
     // \`> - a / > --- / > - b\` — the blockquoted thematic break
