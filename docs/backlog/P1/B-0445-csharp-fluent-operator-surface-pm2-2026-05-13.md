@@ -1,12 +1,14 @@
 ---
 id: B-0445
 priority: P1
-status: open
+status: closed
 title: "C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API"
 type: feature
 origin: PM-2 gap-prediction pass (B-0271) 2026-05-13
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-14
+closed: 2026-05-14
+closed_by: "PR #3120"
 depends_on: []
 composes_with: [B-0444]
 tags: [csharp, api-surface, fluent, operator, consumer-ux, dotnet]

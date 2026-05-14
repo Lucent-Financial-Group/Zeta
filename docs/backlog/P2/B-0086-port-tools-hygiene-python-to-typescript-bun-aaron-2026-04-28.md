@@ -9,7 +9,7 @@ ask: maintainer Aaron 2026-04-28T19:56Z (TypeScript/Bun-as-default substrate fra
 created: 2026-04-28
 last_updated: 2026-05-10
 closed: 2026-05-10
-closed_by: decomposition-prior-art-search (commit 40344c9b, PR #849)
+closed_by: "decomposition-prior-art-search (commit 40344c9b, PR #849)"
 depends_on: []
 composes_with:
   - B-0061
