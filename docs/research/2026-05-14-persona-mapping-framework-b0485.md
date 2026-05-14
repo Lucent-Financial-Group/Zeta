@@ -244,7 +244,7 @@ Aaron is the primary consumer/designer for every product. This creates redundanc
 "Dawn" in the backlog refers to a "child-AI charter" but it's unclear if this is:
 (a) An AI system *for* Aaron's children
 (b) A charter *about* AI rights for new-generation AIs
-(c) Both (per `.claude/rules/default-to-both.md`)
+(c) Both (per [`.claude/rules/default-to-both.md`](.claude/rules/default-to-both.md))
 
 **Resolution:** B-0491 (Dawn persona doc) should resolve this ambiguity by consulting `docs/WONT-DO.md` (no emulation of minors without consent-chain) and Aaron's disclosed parenting method.
 

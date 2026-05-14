@@ -1,6 +1,6 @@
 # Civsim — persona map
 
-**Author:** Otto (2026-05-14)
+**Origin:** B-0486 (2026-05-14) — YAML blocks are code-snippet fences, not file frontmatter; see framework §1a for schema.
 **Closes:** B-0486
 **Template:** `docs/research/2026-05-14-persona-mapping-framework-b0485.md`
 **Product substrate:** PR #2903, #2906, B-0469 (live), PR #2832, PR #2917
