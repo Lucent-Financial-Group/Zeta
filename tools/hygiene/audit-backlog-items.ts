@@ -502,7 +502,7 @@ async function reportMergedCandidates(
     "--json",
     "number,title",
   ]);
-  // Per Codex 2026-05-06 review on PR #1702: never silently swallow
+  // Per PR #1702 review 2026-05-06: never silently swallow
   // a non-zero exit. A failed gh call would otherwise scan zero PRs
   // and report no candidates -- identical to genuine cleanliness --
   // hiding auth/network breakage. Surface the failure as a SKIP.

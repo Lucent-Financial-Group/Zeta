@@ -548,7 +548,7 @@ async function main(): Promise<number> {
       console.log(`  - line ${pf.lineNo}: ${pf.reason}`);
     }
     console.log("");
-    // Per Codex 2026-05-06 review on PR #1702: parse failures in
+    // Per PR #1702 review 2026-05-06: parse failures in
     // an existing ledger MUST gate CI. The header documents exit
     // code 2 for an unparseable ledger; previously this branch only
     // returned 2 when the file was missing, so JSONL syntax corruption
