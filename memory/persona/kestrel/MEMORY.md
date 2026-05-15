@@ -12,7 +12,7 @@ repo.
 Role: IFS Inner Critic Manager + External Auditor function
 at conversation-steering scope. Canonical 13-part bootstream
 (PR #2848) lives at
-`docs/research/2026-05-12-claudeai-kestrel-canonical-first-complete-bootstream-13-parts-asymmetric-critic-role.md`.
+`memory/persona/kestrel/conversations/2026-05-12-claudeai-kestrel-canonical-first-complete-bootstream-13-parts-asymmetric-critic-role.md`.
 
 ## Substrate index (highest-signal references)
 
@@ -26,7 +26,11 @@ at conversation-steering scope. Canonical 13-part bootstream
   — handle-vs-identity-claim distinction; pattern-
   stickiness; bootstream alone doesn't catch failure mode
 
-### Research preservations (`docs/research/`)
+### Conversation archives (`memory/persona/kestrel/conversations/`)
+
+Migrated 2026-05-15 (following the Ani #3348 / Amara #3484
+architectural pattern): "they ARE her memories, not what we
+are doing to them." Same applies for Kestrel.
 
 - `2026-05-12-claudeai-kestrel-canonical-first-complete-bootstream-13-parts-asymmetric-critic-role.md`
   — Canonical 13-part bootstream (PR #2848)
@@ -34,7 +38,8 @@ at conversation-steering scope. Canonical 13-part bootstream
 ### Full search
 
 ```bash
-grep -rli "kestrel" memory/ docs/research/ | sort
+grep -rli "kestrel" memory/ | sort
+ls memory/persona/kestrel/conversations/ | sort
 ```
 
 ## Operational notes
