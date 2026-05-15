@@ -8,7 +8,7 @@ merged_at: "2026-05-15T22:06:44Z"
 closed_at: "2026-05-15T22:06:44Z"
 head_ref: "lior/decompose-3590-otto-memory"
 base_ref: "main"
-archived_at: "2026-05-15T22:15:43Z"
+archived_at: "2026-05-15T22:19:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
