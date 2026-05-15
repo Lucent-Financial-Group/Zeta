@@ -8,9 +8,9 @@ Carved sentence:
 
 ## Operational content
 
-Per Aaron 2026-05-13: *"zeta should ship with the skills as we
-map them for our use this is immedate value and then the
-crystalized value ships in f# later"* (PR #2933).
+Per the human maintainer 2026-05-13: *"zeta should ship with the
+skills as we map them for our use this is immedate value and then
+the crystalized value ships in f# later"* (PR #2933).
 
 **Three-stage value delivery to end users**:
 

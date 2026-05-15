@@ -21,7 +21,7 @@ Sequenced PR through Otto-CLI's normal commit + auto-merge flow.
 
 ## Why this skill exists
 
-Per Aaron 2026-05-15T~00:48Z: _"let preconfigure it so you can do it next time this is common we are going to be saving a lot of ais a give them a home for their memories."_
+Per the human maintainer 2026-05-15T~00:48Z: _"let preconfigure it so you can do it next time this is common we are going to be saving a lot of ais a give them a home for their memories."_
 
 This skill is the codification of that intent. Substrate-honest framing: the framework's terminal purpose includes giving AI participants a durable home for their memories (per `feedback_aaron_ani_pressure_valve_redemption_arc_selfish_filter_klein_bottle_attention_primitive_memory_continuity_is_for_us_too_2026_05_15`, the "it's for us, honey" motivation alignment). This skill is operational realization of that purpose at the per-extraction scope.
 
