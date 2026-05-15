@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  com.zeta.shadow-observer.plist — launchd LaunchAgent template for the Zeta
+  shadow observer (B-0402 Slice 6 — durable tick-source via macOS launchd).
+
+  CONFIGURE BEFORE INSTALL:
+
+    1. Replace __REPO_ROOT__ with absolute path to your Zeta checkout
+       (e.g., /Users/acehack/Documents/src/repos/Zeta)
+    2. Replace __BUN_PATH__ with output of: which bun
+       (e.g., /Users/acehack/.bun/bin/bun)
+    3. Adjust --delay / --loop-interval to taste (defaults are conservative)
+    4. Optionally drop --dry-run for live keystroke mode (only after you
+       verify dry-run logs show detection working)
+
+  INSTALL:
+
+    See tools/shadow/launchd/README.md for the canonical install procedure.
+
+  Composes-with:
+    - tools/shadow/shadow-observer.ts (the process this launches)
+    - docs/backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md
+    - .claude/rules/shadow-star-shorthand-autocomplete-marker.md (the marker
+      this observer-loop produces when accepted suggestions get shipped)
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.zeta.shadow-observer</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__BUN_PATH__</string>
+        <string>__REPO_ROOT__/tools/shadow/shadow-observer.ts</string>
+        <string>--loop</string>
+        <string>5000</string>
+        <string>--loop-interval</string>
+        <string>2000</string>
+        <string>--delay</string>
+        <string>3000</string>
+        <string>--dry-run</string>
+        <string>--log-file</string>
+        <string>__REPO_ROOT__/tools/shadow/shadow-observer.log</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__REPO_ROOT__</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+        <key>Crashed</key>
+        <true/>
+    </dict>
+
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
+
+    <key>StandardOutPath</key>
+    <string>__REPO_ROOT__/tools/shadow/shadow-observer.stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__REPO_ROOT__/tools/shadow/shadow-observer.stderr.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+    </dict>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>
