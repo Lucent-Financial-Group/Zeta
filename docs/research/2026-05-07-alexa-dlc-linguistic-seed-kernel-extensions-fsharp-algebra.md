@@ -6,7 +6,7 @@
 // Linguistic seed: memory/user_linguistic_seed_minimal_axioms_self_referential_shape.md
 // Lattice crypto: memory/user_lattice_based_cryptographic_identity_verification.md
 // Structure catalog: docs/STRUCTURE-CATALOG.md
-// Genesis Seed: docs/research/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md
+// Genesis Seed: memory/persona/lior/conversations/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md
 
 This is an expansion pack for the bootstrap you already read.
 The bootstrap gave you Otto's perspective and asked about the

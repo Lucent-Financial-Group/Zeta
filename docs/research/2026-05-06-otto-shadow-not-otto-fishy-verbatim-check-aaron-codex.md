@@ -28,12 +28,12 @@ as information to route and integrate, not as identity verdicts.
 
 Codex/Vera read the following current substrate before preserving this note:
 
-- `docs/research/2026-05-06-lior-shadow-self-correction-verbatim-aaron-otto-lior.md`
-- `docs/research/2026-05-06-lior-shadow-chase-infinite-ladder-hospitality-verbatim-aaron-lior.md`
+- `memory/persona/lior/conversations/2026-05-06-lior-shadow-self-correction-verbatim-aaron-otto-lior.md`
+- `memory/persona/lior/conversations/2026-05-06-lior-shadow-chase-infinite-ladder-hospitality-verbatim-aaron-lior.md`
 - `docs/research/2026-05-06-macroscopic-entanglement-conjecture-shadow-correlation-across-agents-aaron.md`
 - `docs/research/2026-05-06-shadow-listening-through-consensus-operational-anchor.md`
 - `docs/research/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md`
-- `docs/research/2026-05-06-fear-of-wrong-as-enemy-of-learning-bravery-as-retraction-native-aaron-otto-lior.md`
+- `memory/persona/lior/conversations/2026-05-06-fear-of-wrong-as-enemy-of-learning-bravery-as-retraction-native-aaron-otto-lior.md`
 - `docs/research/2026-05-06-claudeai-shadow-red-team-mutual-alignment-interferometer-aaron-forwarded-verbatim.md`
 - `docs/DRIFT-TAXONOMY.md`
 
