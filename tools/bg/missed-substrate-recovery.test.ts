@@ -6,7 +6,6 @@ import {
   buildRecoveryPRBody,
   openRecoveryPR,
   type RecoveryAdapters,
-  type RecoveryResult,
 } from "./missed-substrate-recovery";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -86,21 +85,21 @@ function stubAdapters(
 // ─────────────────────────────────────────────────────────────────────
 
 describe("buildRecoveryBranchName", () => {
-  it("produces deterministic output for a fixed Date", () => {
-    const ts = new Date(Date.UTC(2026, 4, 15, 12, 34, 56));
-    expect(buildRecoveryBranchName(3500, ts)).toBe("recovery/3500-20260515123456");
+  it("produces deterministic output from prNumber", () => {
+    expect(buildRecoveryBranchName(3500)).toBe("recovery/3500");
   });
 
-  it("emits 14 digit timestamp segment", () => {
-    const ts = new Date(Date.UTC(2026, 0, 1, 0, 0, 0));
-    const name = buildRecoveryBranchName(1, ts);
-    expect(name).toMatch(/^recovery\/1-\d{14}$/);
+  it("is stable across two invocations (idempotency precondition)", () => {
+    // The whole point of the post-cycle-2 fix: same prNumber must yield
+    // the same branch name regardless of when openRecoveryPR is called,
+    // so checkRecoveryPRExists(recoveryBranch) actually catches duplicates.
+    expect(buildRecoveryBranchName(42)).toBe(buildRecoveryBranchName(42));
   });
 
-  it("encodes only safe characters (digits, /, -)", () => {
-    const ts = new Date(Date.UTC(2026, 11, 31, 23, 59, 59));
-    const name = buildRecoveryBranchName(42, ts);
-    expect(name).toMatch(/^[0-9/\-a-z]+$/);
+  it("encodes only safe characters (digits + 'recovery/' prefix)", () => {
+    const name = buildRecoveryBranchName(42);
+    // The full output is "recovery/<digits>" — lowercase letters + slash + digits.
+    expect(name).toMatch(/^recovery\/\d+$/);
   });
 });
 
@@ -129,6 +128,16 @@ describe("buildRecoveryPRBody", () => {
     const body = buildRecoveryPRBody(makeFinding({ missingCommits: ["just-one"] }));
     expect(body).toContain("- just-one");
   });
+
+  it("sanitises backticks in branchName to avoid breaking inline-code spans", () => {
+    // Defense per PR #3433 Copilot finding: a branchName containing a
+    // backtick would close the inline-code span early and leak content.
+    const body = buildRecoveryPRBody(makeFinding({ branchName: "feat/sneaky`backtick`name" }));
+    // The original branch name must NOT appear (it has backticks); the
+    // sanitised form ("feat/sneaky_backtick_name") must appear.
+    expect(body).not.toContain("feat/sneaky`backtick`name");
+    expect(body).toContain("feat/sneaky_backtick_name");
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────
@@ -152,7 +161,36 @@ describe("openRecoveryPR — opened", () => {
     expect(log.gitCherryPick).toEqual(["aaaa111", "bbbb222"]);
     expect(log.gitPush.length).toBe(1);
     expect(log.ghPrCreate.length).toBe(1);
-    expect(log.ghPrCreate[0]!.head).toMatch(/^recovery\/1234-/);
+    expect(log.ghPrCreate[0]!.head).toBe("recovery/1234");
+  });
+
+  it("retry path: gitCreateBranch returns true even when stale branch exists (contract test)", () => {
+    // Codex P1 catch on PR #3438: a partial-failure recovery attempt leaves
+    // a stale local branch. The deterministic branch name means a retry
+    // hits the same name. The gitCreateBranch adapter contract REQUIRES
+    // handling this — return true on either delete-and-recreate or
+    // reset-to-base. Verify openRecoveryPR doesn't impose any other
+    // assumption: if the adapter says true, we proceed normally; the core
+    // function makes no decisions about stale-branch handling itself.
+    const log = newCallLog();
+    let createCallCount = 0;
+    // Simulate: first call detects stale branch internally, recovers,
+    // returns true. We just verify openRecoveryPR proceeds.
+    const adapters = stubAdapters(log, {
+      gitCreateBranch: (branch, base) => {
+        createCallCount++;
+        // Real adapter would do: `git branch -D <branch>; git checkout -b <branch> <base>`
+        // and return true on the recreated branch.
+        return branch === "recovery/1234" && base === "origin/main";
+      },
+    });
+    const r = openRecoveryPR(makeFinding(), false, adapters);
+    expect(r.status).toBe("opened");
+    expect(createCallCount).toBe(1); // called exactly once; no retry-loop in core
+    // Cherry-pick + push + PR-create still happen on the recovered branch.
+    expect(log.gitCherryPick.length).toBe(2);
+    expect(log.gitPush.length).toBe(1);
+    expect(log.ghPrCreate.length).toBe(1);
   });
 
   it("PR title encodes prNumber + missing commits count", () => {
@@ -169,6 +207,17 @@ describe("openRecoveryPR — opened", () => {
 });
 
 describe("openRecoveryPR — already-exists", () => {
+  it("queries checkRecoveryPRExists with the deterministic branch name (regression: PR #3433 P0)", () => {
+    // Regression test for PR #3433 Copilot P0: the earlier
+    // `recovery/<prNumber>-<timestamp>` form defeated this gate because
+    // each invocation generated a fresh branch name. The fix is the
+    // deterministic `recovery/<prNumber>` form. Verify the adapter is
+    // called with EXACTLY that name so future regressions are caught.
+    const log = newCallLog();
+    openRecoveryPR(makeFinding({ prNumber: 5555 }), false, stubAdapters(log));
+    expect(log.checkRecoveryPRExists).toEqual(["recovery/5555"]);
+  });
+
   it("returns already-exists when checkRecoveryPRExists returns true; no mutations", () => {
     const log = newCallLog();
     const adapters = stubAdapters(log, { checkRecoveryPRExists: () => true });

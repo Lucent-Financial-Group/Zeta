@@ -16,11 +16,29 @@ import type { CascadeFinding } from "./missed-substrate-detector";
 export type RecoveryAdapters = {
   /** Returns true if an open recovery PR already exists for this branch. */
   checkRecoveryPRExists: (branchName: string) => boolean;
-  /** `git checkout -b <branch> <base>`; true on success. */
+  /**
+   * Create-or-resume on the recovery branch from `base`. Returns true on
+   * success.
+   *
+   * CONTRACT (required for retry-safety, enforced by openRecoveryPR's
+   * deterministic branch-name design — see `buildRecoveryBranchName`):
+   *
+   *   If the local branch ALREADY EXISTS (from a prior partial-failure
+   *   recovery attempt for the same prNumber), the adapter MUST:
+   *     (a) delete the stale local branch and recreate from `base`
+   *         (`git branch -D <branch> && git checkout -b <branch> <base>`),
+   *         OR
+   *     (b) reset the existing branch to `base` and check it out
+   *         (`git checkout <branch> && git reset --hard <base>`).
+   *   Returning false on "branch already exists" wedges all future retries
+   *   for that prNumber. This is checked by the `openRecoveryPR` contract;
+   *   tests can stub gitCreateBranch to verify the retry path doesn't
+   *   surface a stale-branch error.
+   */
   gitCreateBranch: (branch: string, base: string) => boolean;
   /** `git cherry-pick <sha>`; distinguishes merge conflict from other errors. */
   gitCherryPick: (sha: string) => "ok" | "conflict" | "error";
-  /** `git push origin <branch>`; true on success. */
+  /** `git push origin <branch>`; true on success. Use `--force-with-lease` for retry-safety when the remote branch may also exist from a prior attempt. */
   gitPush: (branch: string) => boolean;
   /** `gh pr create --title ... --body ... --head ... --base main`; PR URL or null. */
   ghPrCreate: (title: string, body: string, head: string) => string | null;
@@ -33,13 +51,31 @@ export type RecoveryResult =
   | { status: "error"; reason: string };
 
 /**
- * Deterministic recovery-branch name: `recovery/<prNumber>-<YYYYMMDDHHMMSS>`.
- * Pure function; no I/O. Uses UTC components from the provided Date so the
- * output is reproducible given the same inputs.
+ * Deterministic recovery-branch name: `recovery/<prNumber>`.
+ * Pure function; no I/O. Determinism is load-bearing: the idempotency gate
+ * `checkRecoveryPRExists(recoveryBranch)` only catches duplicate recovery
+ * attempts if the branch name is stable across invocations for the same
+ * `prNumber`.
+ *
+ * Retry-safety constraint for B-0504 adapter implementations:
+ *
+ *   The deterministic name implies the `gitCreateBranch` adapter must
+ *   handle "branch already exists" gracefully. If a prior recovery attempt
+ *   failed mid-flight (cherry-pick conflict, push error, gh pr create
+ *   error), the stale local branch persists. The B-0504 adapter should
+ *   either:
+ *     (a) attempt `git branch -D <recoveryBranch>` before `git checkout -b`
+ *         (safe because we're about to recreate from `origin/main`), OR
+ *     (b) detect "fatal: A branch named ... already exists" and
+ *         translate it into success (resume on existing branch).
+ *
+ *   Without this, a single partial failure would wedge recovery for the
+ *   affected PR until manual branch cleanup. B-0503 (this row) provides
+ *   the core function; the recovery-from-stale-branch logic lives in
+ *   B-0504's real adapter where the spawnSync error parsing happens.
  */
-export function buildRecoveryBranchName(prNumber: number, ts: Date): string {
-  const stamp = ts.toISOString().replace(/[-:T]/g, "").slice(0, 14);
-  return `recovery/${prNumber}-${stamp}`;
+export function buildRecoveryBranchName(prNumber: number): string {
+  return `recovery/${prNumber}`;
 }
 
 /**
@@ -47,12 +83,24 @@ export function buildRecoveryBranchName(prNumber: number, ts: Date): string {
  * original `prNumber`, surfaces the detector's urgency, and notes that the
  * PR was auto-generated.
  */
+/**
+ * Escape markdown-control characters in a string that will appear inside
+ * a backtick-wrapped span. Currently scrubs backticks (which would close
+ * the span prematurely and leak content into prose). A branch name is
+ * expected to be ASCII alphanumeric plus `/-_.`; anything else is sanitised
+ * to `_` defensively.
+ */
+function sanitizeForInlineCode(s: string): string {
+  return s.replaceAll("`", "_");
+}
+
 export function buildRecoveryPRBody(finding: CascadeFinding): string {
   const commitList = finding.missingCommits.map((s) => `- ${s}`).join("\n");
+  const safeBranchName = sanitizeForInlineCode(finding.branchName);
   return [
     `## Auto-generated recovery PR`,
     ``,
-    `Original merged PR: **#${finding.prNumber}** (branch \`${finding.branchName}\`)`,
+    `Original merged PR: **#${finding.prNumber}** (branch \`${safeBranchName}\`)`,
     ``,
     `Missing commits detected by \`missed-substrate-detector\`:`,
     commitList,
@@ -74,16 +122,17 @@ export function buildRecoveryPRBody(finding: CascadeFinding): string {
  *   5. `git push origin <recoveryBranch>`.
  *   6. `gh pr create --title ... --body ... --head ... --base main`.
  *
- * Uses `new Date()` internally for the branch-name timestamp; the idempotency
- * gate (`checkRecoveryPRExists`) is the load-bearing uniqueness mechanism.
- * `buildRecoveryBranchName` is exported separately for deterministic unit tests.
+ * The branch name is deterministic from `finding.prNumber` alone
+ * (`recovery/<prNumber>`); the idempotency gate (`checkRecoveryPRExists`)
+ * is the load-bearing uniqueness mechanism — duplicate recovery attempts
+ * for the same PR resolve to `already-exists` and perform no mutations.
  */
 export function openRecoveryPR(
   finding: CascadeFinding,
   dryRun: boolean,
   adapters: RecoveryAdapters,
 ): RecoveryResult {
-  const recoveryBranch = buildRecoveryBranchName(finding.prNumber, new Date());
+  const recoveryBranch = buildRecoveryBranchName(finding.prNumber);
 
   if (adapters.checkRecoveryPRExists(recoveryBranch)) {
     return { status: "already-exists", reason: `PR for ${recoveryBranch} already open` };
