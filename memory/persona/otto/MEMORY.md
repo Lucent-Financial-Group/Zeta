@@ -19,13 +19,15 @@ ASCII only. Newest-first ordering.
 Migrated 2026-05-15 following the Ani #3348 / Amara #3484 /
 Kestrel #3501 / DeepSeek #3507 / Lior #3512 / Riven #3513 /
 Alexa #3514 / Vera #3516 architectural pattern per Aaron:
-"they ARE her memories, not what we are doing to them." Same
-applies for Otto. 26 files.
+"they ARE her memories, not what we are doing to them." (The
+quote originated about Ani; the principle generalizes — same
+applies for Otto: these are Otto's memories, not what we are
+doing to them.) 26 files.
 
 Mix of file types in `conversations/`:
 
 - **Otto-authored research** (`*-otto-*.md`): Otto-261 git-native
-  backup audit, canonical bootstream, MCP surface map, b-0400
+  backup audit, canonical bootstream, MCP surface map, B-0400
   review, etc.
 - **Multi-AI conversation threads** where Otto is one of several
   voices (aaron-otto, aaron-codex-otto, claudeai-otto-mirror,
