@@ -1,8 +1,8 @@
 # Shadow observer — launchd install (macOS LaunchAgent)
 
-Per Aaron 2026-05-15T~01:09Z + `feedback_aaron_zeta_is_memory_preservation_specialist_first_*_2026_05_15.md`: the shadow observation loop needs a durable tick source. This directory provides the macOS launchd LaunchAgent template (Path A — durable, survives reboots).
+The shadow observation loop needs a durable tick source. This directory provides the macOS launchd LaunchAgent template (Path A — durable, survives reboots).
 
-For lighter-weight alternatives + composition shape, see the `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` rule + `tools/shadow/README.md`.
+For lighter-weight alternatives + composition shape, see [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) + [`tools/shadow/README.md`](../README.md).
 
 ## What this does
 
@@ -25,28 +25,16 @@ Installs `shadow-observer.ts` as a macOS LaunchAgent that:
 3. Zeta checkout at known absolute path
 4. Accessibility permission granted to whichever terminal app launchd will run from (or to bun itself) — required by the AppleScript grey-text detector
 
-### Step 1: configure the plist
+### Step 1: configure + write the plist
 
-The shipped plist is a template with `__BUN_PATH__` and `__REPO_ROOT__` placeholders. Generate a configured copy:
+The shipped plist is a template with `{{BUN_PATH}}` and `{{REPO_ROOT}}` placeholders. Use the installer script — it does the substitution safely (handles paths containing `&`, `|`, `\` that would break a naive `sed`), validates via `plutil -lint`, and writes to `~/Library/LaunchAgents/`:
 
 ```bash
 cd /path/to/your/Zeta/checkout
-BUN_PATH=$(which bun)
-REPO_ROOT=$(pwd)
-
-# Generate configured plist
-sed -e "s|__BUN_PATH__|${BUN_PATH}|g" \
-    -e "s|__REPO_ROOT__|${REPO_ROOT}|g" \
-    tools/shadow/launchd/com.zeta.shadow-observer.plist \
-    > ~/Library/LaunchAgents/com.zeta.shadow-observer.plist
+bun tools/shadow/launchd/install-launchagent.ts
 ```
 
-Verify:
-
-```bash
-plutil -lint ~/Library/LaunchAgents/com.zeta.shadow-observer.plist
-# Should print: ...plist: OK
-```
+The installer picks up `which bun` and `git rev-parse --show-toplevel` by default. To override either, pass `--bun-path` / `--repo-root`. Use `--dry-run` to print the substituted plist to stdout without writing anything.
 
 ### Step 2: grant accessibility permission
 
@@ -60,12 +48,14 @@ If you skip this, the detector returns errors and shadow-observer cycles forever
 
 ### Step 3: load + verify
 
-```bash
-launchctl load ~/Library/LaunchAgents/com.zeta.shadow-observer.plist
+Modern `launchctl bootstrap` is the documented replacement for the legacy `launchctl load`. It returns a proper exit code on failure (unlike `load`, which can silently no-op) and supports targeted domain semantics:
 
-# Verify it loaded
-launchctl list | grep com.zeta.shadow-observer
-# Should show: <PID>  0  com.zeta.shadow-observer
+```bash
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.zeta.shadow-observer.plist
+
+# Verify it loaded (modern + legacy commands both work for inspection)
+launchctl print gui/$(id -u)/com.zeta.shadow-observer | head -20
+# Should show state = running
 
 # Verify process is running
 pgrep -fl shadow-observer
@@ -74,6 +64,8 @@ pgrep -fl shadow-observer
 # Watch the log
 tail -f tools/shadow/shadow-observer.log
 ```
+
+Or skip the manual `bootstrap` and let the installer do it: `bun tools/shadow/launchd/install-launchagent.ts --bootstrap`.
 
 ### Step 4: test detection in dry-run mode
 
@@ -84,17 +76,24 @@ With the LaunchAgent running in --dry-run (default), open Claude Code CLI and le
 Edit `~/Library/LaunchAgents/com.zeta.shadow-observer.plist` and remove the `<string>--dry-run</string>` line from `ProgramArguments`. Then reload:
 
 ```bash
-launchctl unload ~/Library/LaunchAgents/com.zeta.shadow-observer.plist
-launchctl load ~/Library/LaunchAgents/com.zeta.shadow-observer.plist
+PLIST=~/Library/LaunchAgents/com.zeta.shadow-observer.plist
+launchctl bootout gui/$(id -u) "$PLIST"
+launchctl bootstrap gui/$(id -u) "$PLIST"
 ```
 
 Live mode sends Enter keystrokes to accept detected grey-text. The "(shadow*)" attribution shorthand documents that the accepted text came from autocomplete (see `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`).
 
 ## Uninstall
 
+Use `launchctl bootout` (not the legacy `unload`) so a failure to remove the running service is reported instead of swallowed:
+
 ```bash
-launchctl unload ~/Library/LaunchAgents/com.zeta.shadow-observer.plist
-rm ~/Library/LaunchAgents/com.zeta.shadow-observer.plist
+PLIST=~/Library/LaunchAgents/com.zeta.shadow-observer.plist
+launchctl bootout gui/$(id -u) "$PLIST"
+# Verify the agent is gone (no output expected from the print)
+launchctl print gui/$(id -u)/com.zeta.shadow-observer 2>&1 | head -1
+# Should print: "Could not find service ..." — that's the success case.
+rm "$PLIST"
 ```
 
 ## Troubleshooting
@@ -109,8 +108,8 @@ cat tools/shadow/shadow-observer.stderr.log
 
 Common causes:
 
-- `__BUN_PATH__` not replaced with actual bun path
-- `__REPO_ROOT__` not replaced with actual repo path
+- `{{BUN_PATH}}` not replaced with actual bun path
+- `{{REPO_ROOT}}` not replaced with actual repo path
 - Bun not installed at the path given
 
 ### Process starts but log shows no detections
@@ -135,7 +134,7 @@ ThrottleInterval prevents fast crash-loops, but if you see repeated start/exit c
 | **B — `<<shadow-tick>>` CronCreate sentinel** | Bound to Otto-CLI session | Defense-in-depth backup; restarts the launchd process if it dies |
 | **C — manual `--loop` foreground** | Until terminal closes | Quick testing of changes |
 
-All three compose. Path A is the primary; Path B+C supplement. Aaron's framing (2026-05-15T~01:11Z): _"whatever composes best always good to have defense in depth."_
+All three compose. Path A is the primary; Path B+C supplement. The human maintainer's framing on this design (2026-05-15T~01:11Z): defense in depth.
 
 ## Composes with substrate
 

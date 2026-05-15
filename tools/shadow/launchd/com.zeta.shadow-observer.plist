@@ -4,19 +4,18 @@
   com.zeta.shadow-observer.plist — launchd LaunchAgent template for the Zeta
   shadow observer (B-0402 Slice 6 — durable tick-source via macOS launchd).
 
-  CONFIGURE BEFORE INSTALL:
+  This file is a TEMPLATE. Mustache-style placeholders in the body get
+  replaced with the local bun path and the local Zeta repo root.
 
-    1. Replace __REPO_ROOT__ with absolute path to your Zeta checkout
-       (e.g., /Users/acehack/Documents/src/repos/Zeta)
-    2. Replace __BUN_PATH__ with output of: which bun
-       (e.g., /Users/acehack/.bun/bin/bun)
-    3. Adjust --delay / --loop-interval to taste (defaults are conservative)
-    4. Optionally drop --dry-run for live keystroke mode (only after you
-       verify dry-run logs show detection working)
+  DO NOT manually substitute. Run the installer:
 
-  INSTALL:
+      bun tools/shadow/launchd/install-launchagent.ts
 
-    See tools/shadow/launchd/README.md for the canonical install procedure.
+  The installer substitutes the placeholders safely (no shell-metacharacter
+  risk with paths containing &, |, \), runs plutil -lint on the result,
+  writes to ~/Library/LaunchAgents/, and optionally bootstraps via
+  launchctl. See tools/shadow/launchd/README.md for the full install
+  procedure (incl. accessibility permission) and the uninstall recipe.
 
   Composes-with:
     - tools/shadow/shadow-observer.ts (the process this launches)
@@ -31,8 +30,8 @@
 
     <key>ProgramArguments</key>
     <array>
-        <string>__BUN_PATH__</string>
-        <string>__REPO_ROOT__/tools/shadow/shadow-observer.ts</string>
+        <string>{{BUN_PATH}}</string>
+        <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.ts</string>
         <string>--loop</string>
         <string>5000</string>
         <string>--loop-interval</string>
@@ -41,19 +40,23 @@
         <string>3000</string>
         <string>--dry-run</string>
         <string>--log-file</string>
-        <string>__REPO_ROOT__/tools/shadow/shadow-observer.log</string>
+        <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.log</string>
     </array>
 
     <key>WorkingDirectory</key>
-    <string>__REPO_ROOT__</string>
+    <string>{{REPO_ROOT}}</string>
 
     <key>RunAtLoad</key>
     <true/>
 
     <key>KeepAlive</key>
     <dict>
-        <key>SuccessfulExit</key>
-        <false/>
+        <!-- Crash-only restart: KeepAlive dict keys are OR-combined.
+             SuccessfulExit=false would also relaunch on any non-zero exit
+             (configuration errors, missing accessibility permission), which
+             would mask config bugs as crash-loops. Crashed=true on its own
+             gives the documented "relaunch on signal-termination only"
+             semantic. Per Codex review on PR #3342. -->
         <key>Crashed</key>
         <true/>
     </dict>
@@ -62,10 +65,10 @@
     <integer>60</integer>
 
     <key>StandardOutPath</key>
-    <string>__REPO_ROOT__/tools/shadow/shadow-observer.stdout.log</string>
+    <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.stdout.log</string>
 
     <key>StandardErrorPath</key>
-    <string>__REPO_ROOT__/tools/shadow/shadow-observer.stderr.log</string>
+    <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.stderr.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
