@@ -44,7 +44,7 @@ Three already-merged rows were published as work-assignments at the observed tic
 
 ## Composes with
 
-- [B-0441](../P1/B-0441-backlog-ready-notifier-2026-05-13.md) (the notifier this row fixes)
+- [B-0441](../P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md) (the notifier this row fixes)
 - [B-0442](../P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md) (closed by PR #3518; surfaced this bug)
 - [B-0532](../P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) (related: backlog-state consistency under multi-Otto contention)
 - [`.claude/rules/refresh-before-decide.md`](../../../.claude/rules/refresh-before-decide.md) (the discipline this row mechanizes for the notifier)
