@@ -258,7 +258,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0437](backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md)** Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)
 - [ ] **[B-0440](backlog/P1/B-0440-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
 - [ ] **[B-0441](backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
-- [ ] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
+- [x] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
 - [x] **[B-0445](backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md)** C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API
 - [ ] **[B-0448](backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md)** Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers
 - [ ] **[B-0449](backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md)** bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)
@@ -305,9 +305,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0500](backlog/P1/B-0500-b0441-slice-3-queue-state-guard-poll-once-wiring-2026-05-14.md)** B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce
 - [ ] **[B-0501](backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md)** B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)
 - [ ] **[B-0502](backlog/P1/B-0502-b0441-slice-6-launchd-plist-autonomous-loop-docs-2026-05-14.md)** B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update
-- [ ] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
-- [ ] **[B-0504](backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md)** B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags
-- [ ] **[B-0505](backlog/P1/B-0505-b0442-slice5c-docs-autonomous-loop-acceptance-close-2026-05-14.md)** B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close
+- [x] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
+- [x] **[B-0504](backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md)** B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags
+- [x] **[B-0505](backlog/P1/B-0505-b0442-slice5c-docs-autonomous-loop-acceptance-close-2026-05-14.md)** B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close
 - [ ] **[B-0507](backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md)** B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)
 - [ ] **[B-0508](backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md)** B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/
 - [ ] **[B-0509](backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md)** B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json

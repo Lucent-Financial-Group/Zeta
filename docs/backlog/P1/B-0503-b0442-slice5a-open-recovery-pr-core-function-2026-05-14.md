@@ -38,7 +38,7 @@ for opening a recovery PR, independently testable before any wiring into
 
 ## Acceptance criteria
 
-- [x] New file `tools/bg/missed-substrate-recovery.ts` exports: (landed; spec drift noted: `buildRecoveryBranchName(prNumber)` shipped without the `ts: Date` parameter — the timestamp suffix was dropped in favor of a deterministic `recovery/<prNumber>` name; covered by docs in PR #3458 — "deterministic branch name `recovery/<prNumber>`")
+- [x] New file `tools/bg/missed-substrate-recovery.ts` exports: (landed on origin/main; design sketch below has been reconciled with as-shipped — `buildRecoveryBranchName` simplified to `(prNumber)` per PR #3458 docs)
   - `RecoveryAdapters` — interface with five adapters injected by callers:
     - `checkRecoveryPRExists(branchName: string) => boolean`
       — calls `gh pr list --head <branchName> --state open` to detect existing
@@ -61,9 +61,8 @@ for opening a recovery PR, independently testable before any wiring into
     | { status: "cherry-pick-conflict"; sha: string; attemptedCount: number }
     | { status: "error";          reason: string }
     ```
-  - `buildRecoveryBranchName(prNumber: number, ts: Date) => string`
-    — deterministic branch name `recovery/<prNumber>-<YYYYMMDDHHMMSS>`;
-      pure function; no I/O.
+  - `buildRecoveryBranchName(prNumber: number) => string`
+    — deterministic branch name `recovery/<prNumber>`; pure function; no I/O.
   - `buildRecoveryPRBody(finding: CascadeFinding) => string`
     — markdown body for the recovery PR listing `missingCommits`,
       the original `prNumber`, and a note that this was auto-generated.
@@ -115,9 +114,8 @@ export type RecoveryResult =
   | { status: "cherry-pick-conflict";    sha: string; attemptedCount: number }
   | { status: "error";                   reason: string };
 
-export function buildRecoveryBranchName(prNumber: number, ts: Date): string {
-  const stamp = ts.toISOString().replace(/[-:T]/g, "").slice(0, 14);
-  return `recovery/${prNumber}-${stamp}`;
+export function buildRecoveryBranchName(prNumber: number): string {
+  return `recovery/${prNumber}`;
 }
 
 export function buildRecoveryPRBody(finding: CascadeFinding): string {
@@ -141,7 +139,7 @@ export function openRecoveryPR(
   dryRun: boolean,
   adapters: RecoveryAdapters,
 ): RecoveryResult {
-  const recoveryBranch = buildRecoveryBranchName(finding.prNumber, new Date());
+  const recoveryBranch = buildRecoveryBranchName(finding.prNumber);
 
   const exists = adapters.checkRecoveryPRExists(recoveryBranch);
   if (exists) {
@@ -193,15 +191,15 @@ adapter implementations. The real adapters (in B-0504) must validate SHA
 inputs from `CascadeFinding.missingCommits` with the same allow-list regex
 already used in `compareBranchToMerged`.
 
-## Why `openRecoveryPR` uses `new Date()` internally for the branch name
+## Why the recovery branch name is `recovery/<prNumber>` (no timestamp)
 
-The recovery branch name includes a timestamp to ensure uniqueness across
-multiple recovery attempts for the same PR number. Using `new Date()` inside
-`openRecoveryPR` rather than injecting it via adapters is intentional: the
-idempotency gate (`checkRecoveryPRExists`) already prevents duplicate
-recovery PRs; the timestamp is not load-bearing for correctness. For tests
-that need to verify the branch name, `buildRecoveryBranchName` is exported
-and tested separately.
+The original sketch included a `<YYYYMMDDHHMMSS>` suffix to guarantee
+uniqueness across multiple recovery attempts. The shipped implementation
+dropped it: the idempotency gate (`checkRecoveryPRExists`) already prevents
+duplicate recovery PRs for the same source PR, so a single deterministic
+name per `prNumber` is correct AND simpler to test. Documented in PR #3458's
+`docs/AUTONOMOUS-LOOP.md` update — "deterministic branch name
+`recovery/<prNumber>`".
 
 ## Dependency chain
 
