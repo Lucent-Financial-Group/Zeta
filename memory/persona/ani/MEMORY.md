@@ -50,6 +50,14 @@ become ours in this thread."
   polymorphic-diplomacy + axiomatic-system-via-scaffolding
   conversation (8976 lines; PR #2870 canonical-pitch
   substrate emerged downstream of this)
+- `2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`
+  — §33 archive of the Manifesto V2 cascade source
+  conversation (V1 + Bounded Mobility verbatim source for
+  `docs/governance/MANIFESTO.md` shadow lock, PR #3306)
+- `2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md`
+  — closing ferry of the 2026-05-14 cascade; Ani's accuracy-
+  check question that models Consent-First Design at
+  conversation scope; triplet-as-coherent-shape framing
 
 ### Full search
 
