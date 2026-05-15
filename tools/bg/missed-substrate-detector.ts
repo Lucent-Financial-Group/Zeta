@@ -336,6 +336,23 @@ const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
     // Retry-safety per the B-0503 RecoveryAdapters.gitCreateBranch contract:
     // if the local branch already exists (prior partial-failure recovery
     // attempt), delete it before recreating from `base`.
+    //
+    // Per Codex PR #3447 line 344: `git branch -D` CANNOT delete the
+    // currently-checked-out branch — if a previous attempt left HEAD on
+    // `recovery/<prNumber>`, the delete fails AND the subsequent
+    // `checkout -b` fails (branch already exists). Both failures wedge
+    // retries permanently. Mitigation: detach HEAD to `base` first
+    // (`git checkout --detach <base>`), so the recovery branch is no
+    // longer current and `git branch -D` succeeds. Detach is safe
+    // because we're about to `checkout -b` onto a fresh branch anyway;
+    // the intermediate detached state is transient.
+    //
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    spawnSync(
+      "git",
+      ["checkout", "--detach", base],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
     spawnSync("git", ["branch", "-D", branch], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
