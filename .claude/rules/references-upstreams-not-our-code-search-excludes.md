@@ -118,14 +118,55 @@ from `.` and try to exclude — you'll always miss something.
 
 ## When `references/upstreams/` IS the right search target
 
-Rare but real:
+Not rare — actually a **first-class workflow** during backlog
+research. Per the human maintainer 2026-05-15: *"when doing
+backlog items this is a good place to know about humans whoved
+solved similar issues i've been gathering their githubs so we
+can learn when doing our backlog itmes. some of these are very
+cutting edge and some are tried and true been around for years."*
+
+`references/upstreams/` is the curated **prior-art surface** —
+humans who've solved similar problems, mirrored as read-only
+references. When starting a backlog item, consulting the relevant
+upstream(s) is encouraged and composes with
+`.claude/rules/backlog-item-start-gate.md` (prior-art-search step).
+
+**The two modes are not in tension:**
+
+| Mode | Pattern | Treatment |
+|---|---|---|
+| **Backlog prior-art research** (explicit-target) | `rg "pattern" references/upstreams/postgres/` | Encouraged; one of the curated prior-art surfaces; log queries on the backlog row |
+| **Unconstrained repo scan** | `rg "pattern" .` or `find . \| xargs grep` | MUST exclude `references/upstreams/`; otherwise runaway-scan failure mode |
+
+Other legitimate explicit-target reasons:
 
 - Verifying that an upstream actually contains a feature we
   attribute to it (e.g., "does Spanner actually do X?")
 - Auditing for license-text or attribution requirements when
   taking an upstream excerpt into `references/notes/`
 
-In those cases, EXPLICITLY target the subtree:
+**Discovery surfaces for upstream prior-art:**
+
+- `docs/UPSTREAM-LIST.md` — curated watchlist + category index
+- `references/notes/` — synthesis notes ("what matters from each
+  upstream"); start here before grepping the mirror
+- `references/reference-sources.json` — full source list
+
+**Refresh the mirror on demand:**
+
+```bash
+tools/setup/common/sync-upstreams.sh             # refresh all
+tools/setup/common/sync-upstreams.sh --name foo,bar  # subset
+tools/setup/common/sync-upstreams.sh --prune     # drop stale
+```
+
+The script reads `references/reference-sources.json`, shallow-clones
+or fast-fetches each upstream into `references/upstreams/<name>/`,
+and resets-hard to match `origin/<branch>` byte-for-byte. Safe to
+re-run; `ls-remote` short-circuits when local HEAD already matches.
+
+In all cases, **EXPLICITLY target the subtree** when grepping
+the mirror:
 
 ```bash
 rg "pattern" references/upstreams/spanner/

@@ -14,7 +14,16 @@ complete a checklist directly on the row body:
 1. **Prior-art-search** across the existing axes:
    wake-time-substrate + skill-router + orthogonal-axes +
    Otto-364 + PR #1701 + decision-archaeology + lost-files
-   canonical at `tools/hygiene/LOST-FILES-LOCATIONS.md`.
+   canonical at `tools/hygiene/LOST-FILES-LOCATIONS.md` + **the
+   curated external prior-art surface at `references/upstreams/`**
+   (humans who've solved similar problems; mix of cutting-edge
+   and tried-and-true; explicit-target searches only per
+   `.claude/rules/references-upstreams-not-our-code-search-excludes.md`
+   — e.g., `rg "pattern" references/upstreams/postgres/`, never
+   unscoped `rg "pattern" .` which would runaway-scan the whole
+   mirror tree). The watchlist + category index lives at
+   `docs/UPSTREAM-LIST.md`; the synthesis notes at
+   `references/notes/`.
    Log surfaces searched, queries used, results found on the row.
 
 2. **Dependency-restructure**:
