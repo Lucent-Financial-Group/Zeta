@@ -114,6 +114,36 @@ Field-test shards:
 - `docs/hygiene-history/ticks/2026/05/15/0230Z.md` — full forensics +
   pivot to dedicated worktrees recovery
 
+### Pattern 8 — Multi-Otto-CLI cron-tick concurrency on `.git/objects/pack` (2026-05-15T06:11Z)
+
+Two or more concurrent Otto-CLI claude-code sessions (different
+foreground sessions, same machine, same `.git/`) firing
+`<<autonomous-loop>>` cron sentinels in parallel both invoke
+`git worktree add`, both contend on shared `.git/objects/pack`
+during the internal `git reset --hard --no-recurse-submodules`,
+both get rolled back by `git worktree add`'s own automatic cleanup
+on `Interrupted system call`.
+
+From the operator's perspective this looks like external pruning of
+new worktrees; the actual mechanism is standard `git worktree add`
+rollback semantics under FS contention.
+
+Field-test trail:
+
+- Bus envelopes: `44aaf799` (peer-Otto 0414Z) +
+  `111342b2` / `6de98fac` / `720a2b49` (my 0545Z+0607Z+0611Z)
+- Investigation shard: `docs/hygiene-history/ticks/2026/05/15/0524Z.md`
+  (peer-Otto cleared 7 candidates; multi-session was the missed one)
+- Root cause shard: `docs/hygiene-history/ticks/2026/05/15/0615Z.md`
+  (PID-level diagnostic landed in PR #3370)
+- Mechanization row: [B-0530 cron-sentinel-mutex](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)
+  (P3, effort S, filed 2026-05-15)
+
+Mechanization candidate (see B-0530 for full detail): `pgrep -fl
+claude-code.*Otto` at the top of `<<autonomous-loop>>`; if a peer
+Otto-CLI process is detected, bus-publish a "deferred" envelope and
+exit cleanly.
+
 ## Mechanization candidates
 
 ### Cheap
