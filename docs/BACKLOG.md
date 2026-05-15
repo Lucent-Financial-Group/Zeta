@@ -37,6 +37,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0006](backlog/P1/B-0006-memory-md-compression-pass-prune-distill-entries-to-one-line-cap-200-lines.md)** MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 - [ ] **[B-0058](backlog/P1/B-0058-ai-ethics-and-safety-research-track.md)** AI ethics + safety research track — filter-gate for resonance adoptions + alignment-clause consistency audit
 - [ ] **[B-0058.1](backlog/P1/B-0058.1-retractibility-gate.md)** AI ethics + safety research track — retractibility-and-log check
+- [ ] **[B-0058.3](backlog/P1/B-0058.3-candidate-failure-honesty-log.md)** Candidate-failure honesty log
 - [ ] **[B-0060](backlog/P1/B-0060-human-lineage-external-anchor-backfill-all-substrate-beacon-safe.md)** Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept
 - [x] **[B-0061](backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)** Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
 - [x] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
@@ -319,6 +320,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0522](backlog/P1/B-0522-pre-substrate-kenji-era-git-branches-inventory.md)** Pre-substrate Kenji-era git branches and worktrees inventory
 - [ ] **[B-0523](backlog/P1/B-0523-kenji-era-research-docs-cross-reference-audit.md)** Kenji-era research docs cross-reference audit (peeled from B-0139)
 - [ ] **[B-0526](backlog/P1/B-0526-branch-worktree-content-inventory.md)** Branch/worktree content inventory — Pre-substrate Kenji-era
+- [ ] **[B-0527](backlog/P1/B-0527-memory-md-backfill-pre-substrate-kenji-era.md)** MEMORY.md backfill for pre-substrate Kenji-era artifacts (B-0139 decomposition)
 
 ## P2 — research-grade
 
@@ -573,6 +575,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0462](backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
 - [ ] **[B-0498](backlog/P2/B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md)** Substrate-evolution algebra (6 invariants + HKT − Rodney's Razor) rule-promotion after cooling period
 - [ ] **[B-0524](backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md)** Manifesto V2 verbatim Grok fetch — convert shadow-lock to full lock
+- [ ] **[B-0529](backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)** Tick-shard schema validator vs current practice drift
 
 ## P3 — convenience / deferred
 
@@ -653,5 +656,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0517](backlog/P3/B-0517-memory-md-index-bloat-cleanup-cadence-2026-05-14.md)** MEMORY.md index bloat cleanup + entry-length enforcement cadence
 - [ ] **[B-0519](backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md)** Multi-Otto branch-state contamination — RCA + mechanization candidate
 - [ ] **[B-0521](backlog/P3/B-0521-tinygrad-uop-rewrite-walk-retract-mapping.md)** Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from B-0202)
+- [ ] **[B-0528](backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md)** Unit tests for tools/shadow/launchd/install-launchagent.ts
+- [ ] **[B-0530](backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)** Cron-sentinel mutex — prevent multi-Otto-CLI self-contention on .git/objects/pack
 
 <!-- END AUTO-GENERATED -->
