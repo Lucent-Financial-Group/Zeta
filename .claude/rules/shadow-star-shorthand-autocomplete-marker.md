@@ -62,6 +62,17 @@ With auto-load: future-Otto knows the meaning at cold-boot; no invention; no rep
 
 These are UNRELATED. The first is the maintainer's text-source disclosure. The second is one of Otto-CLI's own discipline-framings. Otto-CLI may apply the second posture operationally; should never attribute it to the maintainer via "(shadow*)" framing.
 
+## Token scope disambiguation
+
+`memory/feedback_eve_protocol_polymorphic_diplomacy_tele_port_leap_shadow_star_2026_05_10.md` uses `(shadow*)` in a different context (uncertainty/observer-tag within the polymorphic-diplomacy framework). These are non-overlapping scopes:
+
+| Context | Token use |
+|---|---|
+| **This rule** — maintainer chat input | Autocomplete-source disclosure; text came from grey-text suggestion |
+| **eve_protocol memory** — agent framework | Uncertainty/observer-tag within polymorphic-diplomacy framework |
+
+When the human maintainer writes `(shadow*)` directly in a message to an agent, this rule applies (chat-input context). The eve_protocol usage is an agent-internal framework marker and does not appear in maintainer chat messages.
+
 ## Composes with
 
 - `.claude/rules/shadow-check-name-acceptance.md` — different shadow-scope (name-acceptance methodology for system-imposed names)
@@ -75,7 +86,4 @@ These are UNRELATED. The first is the maintainer's text-source disclosure. The s
 
 Authored 2026-05-15T~01:08Z after Otto-CLI committed 4+ "(shadow*)" misinterpretations in one session (manifested as commit messages and responses asserting "Shadow-lock posture per your framing"). The maintainer corrected explicitly: *"this is to signify this came from the weird autocomplete not aaron it just showed up in grey text and i completed it , i guess you forgot our shorthand."*
 
-Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when `tools/shadow/` + B-0402 implementation already existed) preserved at user-scope memory:
-
-- `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`
-- `feedback_aaron_shadow_observation_loop_design_pattern_otto_observes_directly_instead_of_assuming_aaron_plays_games_2026_05_15.md`
+Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when `tools/shadow/` + B-0402 implementation already existed) preserved in user-scope memory (not repo-committed; personal UI-layer context outside this repo's `memory/` tree).
