@@ -45,7 +45,8 @@ Never act on stale state. Minimum refresh:
 #### When peers are detected
 
 If the mutex check reports `peerDetected: true` (or exits with code
-1..250), the tick body should:
+2..250 — `Math.min(1 + peerCount, 250)`; exit 1 is not reachable when
+peers are detected), the tick body should:
 
 1. **Avoid `git worktree add`** — the worktree-prune-race RCA in PR
    #3370 documents that concurrent `git worktree add` from a peer
@@ -63,16 +64,19 @@ If the mutex check reports `peerDetected: true` (or exits with code
    ```bash
    bun tools/bus/bus.ts publish --from otto-cli --to '*' \
      --topic shadow-catch \
-     --payload '{"finding":"tick deferred — peer Otto-CLI detected", ...}'
+     --payload '{"finding":"tick deferred — peer Otto-CLI detected"}'
    ```
 
 4. **Re-check next tick** — peer-Otto-CLI sessions typically wrap
    their cron-tick work within 1-3 minutes; the contention window
    resolves naturally.
 
-If the mutex exits with code 251 (`PGREP_ERROR_EXIT`), the mutex
-itself is unreliable — proceed with normal work but log the failure
-in the tick shard for future-Otto context.
+If the mutex exits with code 251 (`PGREP_ERROR_EXIT`), pgrep itself
+failed — mutex state is unknown. Treat the same as peer-detected for
+git-mutating operations: **defer `git worktree add`**, continue with
+non-git-mutating work, and log the failure in the tick shard for
+future-Otto context. The safe assumption under unknown state is to
+avoid operations that contend on `.git/objects/pack`.
 
 ### 2. Apply Holding-without-named-dependency discipline
 
