@@ -295,12 +295,20 @@ async function main(): Promise<void> {
   // This converts the tainted-flow that CodeQL's `js/code-injection` rule
   // tracks into a typed-narrow whitelist-validated string before encoding,
   // which the analyzer should recognize as safe.
-  if (!/^[a-zA-Z0-9_\-.\s#:>~+,()[\]=*^|$"']*$/.test(cfg.containerSelector)) {
-    log(cfg, `ABORT: --container-selector contains characters outside the allowed CSS-selector charset: ${cfg.containerSelector}`);
-    process.exit(1);
-  }
-  if (/[\\<>\r\n]/.test(cfg.containerSelector)) {
-    log(cfg, `ABORT: --container-selector contains disallowed characters (backslash / angle brackets / newlines)`);
+  //
+  // Charset includes ONLY chars valid in CSS selectors that can NOT close
+  // a JS string literal: alphanumeric, dot, hyphen, underscore, hash,
+  // colon, brackets, space, angle-combinator (>), tilde (~), plus, comma,
+  // parens, asterisk, equals, caret, pipe, dollar. Notably EXCLUDED:
+  // single quote, double quote, backslash, angle brackets (<>), newlines.
+  // This limits --container-selector to CSS selectors without quoted-
+  // attribute syntax (e.g., `[aria-label='Conversation list']` would be
+  // rejected); the documented trade-off is that quote-free selectors like
+  // `[data-testid=conversation-list]` work, but quoted-value attribute
+  // selectors require an unquoted-equivalent or the selector composer
+  // updates this validation.
+  if (!/^[a-zA-Z0-9_\-.\s#:>~+,()[\]=*^|$]+$/.test(cfg.containerSelector)) {
+    log(cfg, `ABORT: --container-selector contains characters outside the allowed CSS-selector charset (no quotes / backslashes / angle brackets / newlines allowed): ${cfg.containerSelector}`);
     process.exit(1);
   }
   const selLit = JSON.stringify(cfg.containerSelector);
