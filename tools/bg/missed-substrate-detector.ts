@@ -263,9 +263,45 @@ const REAL_ADAPTERS: Adapters = {
   // `openRecoveryPR` core function (B-0503) with real spawnSync wrappers
   // for each git/gh sub-operation. See `REAL_RECOVERY_ADAPTERS` below for
   // the sub-adapter implementations + their security validation.
-  openRecoveryPR: (finding, dryRun) =>
-    openRecoveryPR(finding, dryRun, REAL_RECOVERY_ADAPTERS),
+  //
+  // WORKING-TREE SAFETY GATE (per Copilot PR #3447 review on line 349):
+  // the real recovery adapters mutate whatever git checkout this detector
+  // runs in (`git branch -D`, `git checkout -b`, `git cherry-pick`,
+  // `git push --force-with-lease`). Running them against a dirty working
+  // tree would clobber uncommitted work or leak commits into the wrong
+  // tree. We refuse to proceed in non-dry-run mode if the working tree
+  // is not clean — operators are expected to run auto-recovery from a
+  // dedicated scratch worktree (`git worktree add /tmp/zeta-recovery
+  // <branch>` is the canonical shape).
+  openRecoveryPR: (finding, dryRun) => {
+    if (!dryRun && !isWorkingTreeClean()) {
+      return {
+        status: "error",
+        reason:
+          "refusing recovery: working tree is not clean. Run auto-recovery from a dedicated `git worktree add` scratch dir, or pass --recovery-dry-run to skip mutations.",
+      };
+    }
+    return openRecoveryPR(finding, dryRun, REAL_RECOVERY_ADAPTERS);
+  },
 };
+
+/**
+ * Slice 5b (B-0504): pre-mutation safety check. Returns true if `git
+ * status --porcelain` reports no modified/untracked/deleted files in
+ * the current checkout. Used as the gate before `REAL_ADAPTERS.openRecoveryPR`
+ * runs any mutating sub-adapter — see the comment block on that adapter
+ * for the failure mode this prevents.
+ */
+function isWorkingTreeClean(): boolean {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+  const r = spawnSync(
+    "git",
+    ["status", "--porcelain"],
+    { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+  );
+  if (r.status !== 0) return false; // conservative: assume dirty on git error
+  return (r.stdout ?? "").trim().length === 0;
+}
 
 /**
  * Slice 5b (B-0504): real production sub-adapters for openRecoveryPR.
