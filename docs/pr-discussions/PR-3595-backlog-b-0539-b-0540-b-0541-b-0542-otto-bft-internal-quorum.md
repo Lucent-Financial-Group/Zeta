@@ -8,7 +8,7 @@ merged_at: "2026-05-15T21:55:32Z"
 closed_at: "2026-05-15T21:55:32Z"
 head_ref: "backlog/b-0539-otto-bft-internal-quorum-otto-cli-2026-05-15"
 base_ref: "main"
-archived_at: "2026-05-15T22:15:44Z"
+archived_at: "2026-05-15T22:19:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
