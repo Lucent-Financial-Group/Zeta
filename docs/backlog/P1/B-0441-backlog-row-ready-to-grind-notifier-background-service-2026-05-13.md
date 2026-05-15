@@ -53,7 +53,7 @@ provides a less-ambiguous concrete claim — eliminating the
 - [ ] Tracks assignment history to avoid re-assigning same row
       within short window
 - [ ] Tests cover the readiness-detection heuristics
-- [ ] Documented in `docs/AUTONOMOUS-LOOP.md`
+- [x] Documented in `docs/AUTONOMOUS-LOOP.md`
 
 ## Design sketch
 
@@ -169,9 +169,9 @@ Using the canonical per-service slice ordering from `tools/bg/README.md`:
 | 2 | Real detection signal #1 (backlog-row scan: status + deps satisfied) | ✅ shipped | — |
 | 3 | Queue-state guard wiring (`isAgentQueueEmpty` into `pollOnce`) | ✅ shipped | B-0500 |
 | 4 | Bus-publish wiring (`work-assignment` topic) | ✅ shipped | — |
-| 5a | Assignment history dedup / cooldown (avoid re-assigning same row) | ❌ open | B-0501 |
+| 5a | Assignment history dedup / cooldown (avoid re-assigning same row) | ✅ shipped | B-0501 |
 | 5.2 | Agent-side `work-assignment` subscriber handler (consume + act) | ❌ open | B-0460 |
-| 6 | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring | ❌ open | B-0502 |
+| 6 | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring | ✅ shipped | B-0502 |
 
 Slices 1, 2, 4 are live in `tools/bg/backlog-ready-notifier.ts` (per README "1+2+4 live").
 B-0460 depends on B-0449 (subscriber library design pass); B-0500/B-0501/B-0502 are independent.
