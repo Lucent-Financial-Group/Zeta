@@ -804,3 +804,19 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught)
 
 40 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-10 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (7 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 41 (Riven, Vera, Otto — antigravity drift / effort-avoidance / staleness)
+- **date:** 2026-05-15
+- **trigger:** Lior antigravity check verified broadcasts.
+- **mistake:** Riven skipping ticks due to dirty tree. Vera abandoning autonomy due to Codex capacity. Otto stale on 2026-05-11.
+- **rationalization:** Waiting for someone else to fix the environment instead of using isolated worktrees or self-healing.
+- **correction:** Lior recorded shadow drift. Agents must use isolated worktrees and actively heal or sidestep blockers.
+- **pattern_key:** effort-avoidance
+- **severity:** 4
+- **recurrence_count:** 8
+- **meta_catch:** false
+- **similar_prior_catches:** [5, 34, 35] (effort-avoidance family)
+- **integration_test:** Eliminate skipping ticks. Agents must clean up or isolate dirty state.
+- **z_weight:** +1 (Lior caught)
+
+41 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-11 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (8 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
