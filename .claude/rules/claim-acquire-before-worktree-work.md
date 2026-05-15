@@ -82,6 +82,77 @@ have been equally effective and non-destructive. The PR-thread-resolution
 DOES-NOT-APPLY clause covered the WHY of the action; it did not cover
 the HOW.
 
+## Borrow-on-existing pattern — concurrent-Otto-CLI fallback
+
+When `git worktree add <new-path>` rolls back with `fatal: Could not
+reset index file to revision 'HEAD'` and/or `error: unable to open
+object pack directory: ... Interrupted system call` — that's the
+worktree-prune-race documented in [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md).
+Root cause: multi-session Otto-CLI concurrency on shared `.git/objects/pack`
+during `git worktree add`'s internal `git reset --hard`. Standard git
+behavior under FS contention, NOT external pruning.
+
+**`--lock --reason "..."` does NOT prevent this failure** — the
+`locked` marker file in `.git/worktrees/<name>/locked` blocks `git
+worktree prune` but not git's own rollback on `Interrupted system
+call`. Empirical: 5 consecutive `git worktree add` attempts during
+tick 0414Z, all rolled back; one with `--lock`, same outcome.
+
+**Borrow-on-existing pattern** (concurrent-Otto-CLI safe):
+
+1. Identify an existing Otto-CLI sibling worktree old enough to be
+   stable through the contention window (empirically ~3h+ ages
+   survive consistently; e.g.,
+   `/private/tmp/zeta-otto-cli-0027z-sidetick`).
+2. Save the original branch name: `ORIG=$(git -C <wt> branch --show-current)`.
+3. `git -C <wt> fetch origin main`.
+4. `git -C <wt> switch -c <new-branch> origin/main` — carries any
+   staged/unstaged working-tree state with you. Untracked files on
+   the original branch survive the switch **provided the target
+   branch does not track the same path** (otherwise `git switch`
+   refuses; `git stash -u` first).
+5. Edit/write only the files you control via explicit paths; never
+   `git add -A` (would sweep peer-Otto's WIP into your commit).
+6. `git commit <explicit-paths>` + `git push -u origin <new-branch>`.
+7. `git -C <wt> switch <ORIG>` to restore peer-Otto's state. Tracked
+   modifications and untracked files preserved across the switch.
+
+**Why this works**: `git switch` only updates HEAD + the worktree's
+local index. It does NOT contend on `.git/objects/pack` the way `git
+worktree add`'s internal `git reset --hard` does. The race is at
+shared-pack-dir scope, not at branch-switch scope.
+
+**Empirical validation**: 5 successful borrows on `0027z-sidetick`
+across ticks 0452Z / 0458Z / 0503Z×2 / 0517Z / 0524Z / 0710Z. Peer-Otto
+landed 2 commits to the same worktree's original branch concurrently
+(commits `d147db0` + `cc1f430`) without conflicts.
+
+**When this pattern applies**:
+
+- New `git worktree add` is failing with `Interrupted system call`
+  rollback (the B-0530 failure mode)
+- Multiple concurrent Otto-CLI claude-code processes detected
+  (`pgrep -fl claude-code` returns more than your own PID)
+- You need to commit a tick shard / small PR and can't wait for
+  the contention window to clear
+
+**When this pattern does NOT apply**:
+
+- You need to keep work isolated from peer-Otto on the borrowed
+  worktree's original branch (use new-worktree-creation when
+  contention isn't blocking)
+- You need to checkout peer-Otto's currently-checked-out branch
+  (the borrow pattern uses `git switch -c <new-branch>`, not
+  `git switch <peer-branch>`)
+- Long-running work that would block peer-Otto's tick cycle
+  (the borrow inverts the priorities — peer-Otto must wait for
+  your switch-back; keep borrows short)
+
+Composes with [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)
+(the mutex mitigation in `tools/orchestrator-checks/cron-sentinel-mutex.ts`
+when it ships); until that ships, the borrow pattern is the
+operational workaround.
+
 ## Composes with other rules
 
 - `.claude/rules/backlog-item-start-gate.md` — already mandates prior-art
