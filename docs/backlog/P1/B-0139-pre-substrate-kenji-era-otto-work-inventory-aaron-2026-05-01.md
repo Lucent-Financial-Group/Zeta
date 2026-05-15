@@ -4,10 +4,11 @@ priority: P1
 status: in-progress
 title: Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 created: 2026-05-01
-last_updated: 2026-05-08
+last_updated: 2026-05-15
 depends_on: []
+children: [B-0329]
 type: friction-reducer
-decomposition: blob
+decomposition: sliceable
 ---
 
 # B-0139 — Pre-substrate Kenji-era inventory
