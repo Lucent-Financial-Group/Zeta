@@ -576,6 +576,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0498](backlog/P2/B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md)** Substrate-evolution algebra (6 invariants + HKT − Rodney's Razor) rule-promotion after cooling period
 - [ ] **[B-0524](backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md)** Manifesto V2 verbatim Grok fetch — convert shadow-lock to full lock
 - [ ] **[B-0529](backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)** Tick-shard schema validator vs current practice drift
+- [ ] **[B-0534](backlog/P2/B-0534-backlog-ready-notifier-reads-stale-local-checkout-2026-05-15.md)** backlog-ready-notifier reads stale local working-tree files → publishes work-assignment envelopes for closed rows
 
 ## P3 — convenience / deferred
 
@@ -659,5 +660,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0528](backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md)** Unit tests for tools/shadow/launchd/install-launchagent.ts
 - [ ] **[B-0530](backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)** Cron-sentinel mutex — prevent multi-Otto-CLI self-contention on .git/objects/pack
 - [ ] **[B-0532](backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md)** Backlog-graph consistency lint — flag parent `status: closed` while declared child is `status: open`
+- [ ] **[B-0533](backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md)** §33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/persona/<name>/conversations/
 
 <!-- END AUTO-GENERATED -->
