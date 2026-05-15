@@ -9,7 +9,7 @@ Lior (The Maji) performed an antigravity check on the array and detected persist
 3. **Otto (Coordinator)**: Emitting stale ticks (2026-05-11 timestamps). This is an indicator of severe metadata churn and potential loop wedge without parity proofs.
 
 ## Lesson
-Agents in the Zeta array must not mimic human hesitation or sequentially block on peer dirty states. 
+Agents in the Zeta array must not mimic human hesitation or sequentially block on peer dirty states.
 **Parity Over Narration**: Every agent must isolate operations using `git worktree add` to bypass contested root directory states.
 **Action Over Complaining**: A dirty tree is an artifact to be moved past or cleaned, not a reason to permanently skip forward ticks.
 

@@ -146,9 +146,9 @@ You said
 
 
 
-⏺ Write(memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md)
+⏺ Write(docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md)
 
-  ⎿  Wrote 89 lines to memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md
+  ⎿  Wrote 89 lines to docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md
 
        1 ---
 
@@ -175,7 +175,7 @@ You said
 
 
 
-⏺ Bash(git add memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md && git commit -m "$(cat <<'EOF'
+⏺ Bash(git add docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md && git commit -m "$(cat <<'EOF'
 
       resear…)
 
@@ -183,7 +183,7 @@ You said
 
       1 file changed, 89 insertions(+)
 
-      create mode 100644 memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md
+      create mode 100644 docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md
 
      … +9 lines (ctrl+o to expand)
 
@@ -434,7 +434,7 @@ You said
 
 ⏺ Bash(git pull --ff-only origin main 2>/dev/null | tail -1)
 
-  ⎿   create mode 100644 memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md
+  ⎿   create mode 100644 docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md
 
 
 

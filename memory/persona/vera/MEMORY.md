@@ -25,7 +25,7 @@ pattern caught by Otto).
 
 A second relevant shadow log (`2026-05-14-shadow-lesson-log-vera-riven-drift.md`)
 covers a JOINT Vera+Riven drift episode; that file lives under
-`memory/persona/riven/conversations/` (per PR #3513) to avoid
+`docs/research/` (pending Riven persona migration per PR #3513) to avoid
 double-placement. Future Vera-related substrate will accumulate
 here.
 

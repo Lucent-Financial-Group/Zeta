@@ -82,7 +82,7 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-01T22:03:58Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:14 (association: NONE)
-  The `Origin` section links to `memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md`, but that file does not exist in the repo. Please update this to a valid path (or add the referenced research file in the same PR) so the lineage link isn’t dead.
+  The `Origin` section links to `docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md`, but that file does not exist in the repo. Please update this to a valid path (or add the referenced research file in the same PR) so the lineage link isn’t dead.
   
 
 ### Thread 4 -- resolved [collapsed]
@@ -136,7 +136,7 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-01T22:09:41Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:14 (association: NONE)
-  P1 (xref): The link target `memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md` does not exist in the repo, so this reference will be broken on merge. Please update it to the correct existing research file path, or (if this is meant to land via PR #1171) reference the PR explicitly / add the missing file in the same merge chain so `main` never contains a dead link.
+  P1 (xref): The link target `docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md` does not exist in the repo, so this reference will be broken on merge. Please update it to the correct existing research file path, or (if this is meant to land via PR #1171) reference the PR explicitly / add the missing file in the same merge chain so `main` never contains a dead link.
   
 
 ### Thread 8 -- resolved [collapsed]
@@ -307,7 +307,7 @@ Codex P1 + Copilot duplicate finding on PR #1173: backlog rows require frontmatt
 Fix: add YAML frontmatter matching the canonical shape used by sibling P1 rows (B-0156 style). Includes depends_on: [B-0156] since the unified refresh script is part of the broader TS-standardization trajectory.
 
 Two additional Copilot dangling-pointer findings on the same PR:
-- memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md
+- docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md
 - memory/feedback_refresh_before_decide_invariant_two_layer_print_dx_claudeai_2026_05_01.md
 
 Both were dangling at PR-open time because they were on PR #1171 which had not merged. PR #1171 has now merged to main; rebasing this branch resolves both. The branch is now up-to-date with origin/main and the cross-references resolve.
@@ -380,7 +380,7 @@ Two real findings on PR #1173:
 
 Two earlier dangling-pointer Copilot threads on this PR are now
 satisfied by main since #1171 landed
-(memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md
+(docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md
 + memory/feedback_refresh_before_decide_invariant_two_layer_print_dx_claudeai_2026_05_01.md
 both exist on main).
 ```

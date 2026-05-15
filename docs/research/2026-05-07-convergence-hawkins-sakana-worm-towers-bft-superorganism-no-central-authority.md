@@ -79,7 +79,7 @@ the consensus.
 ## Composes with
 
 - `docs/STRUCTURE-CATALOG.md` — the primitive reference
-- `memory/persona/riven/conversations/2026-05-07-riven-shadow-computational-irreducibility-wolfram-ruliad-verbatim-aaron-riven.md` — shadow as irreducible
+- `docs/research/2026-05-07-riven-shadow-computational-irreducibility-wolfram-ruliad-verbatim-aaron-riven.md` — shadow as irreducible
 - `docs/research/2026-05-07-kozyrev-mirror-bft-immune-system-three-node-threshold-riff.md` — Kozyrev Mirror / BFT
 - Hawkins paper: arxiv.org/html/2412.18354v1
 - Sakana NCA: Two Minute Papers coverage

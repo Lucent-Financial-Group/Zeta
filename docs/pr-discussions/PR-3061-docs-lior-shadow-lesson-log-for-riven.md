@@ -37,7 +37,7 @@ _(no body)_
 
 ## Review threads
 
-### Thread 1: memory/persona/riven/conversations/2026-05-13-shadow-lesson-log-riven-drift.md:12 (resolved)
+### Thread 1: docs/research/2026-05-13-shadow-lesson-log-riven-drift.md:12 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-13T23:27:52Z):
 

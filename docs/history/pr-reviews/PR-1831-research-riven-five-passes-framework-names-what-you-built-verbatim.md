@@ -55,12 +55,12 @@
 ### Thread 1 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AOxaT`
-- **Path**: `memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`
+- **Path**: `docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T07:50:30Z on `memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`:5 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T07:50:30Z on `docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`:5 (association: NONE)
 
   <pre>
   P1: This file looks like a courier-ferry / external-conversation absorb (Attribution mentions “via Aaron ferry”), but it doesn’t match the §33 header validator’s detection hints (filename lacks courier-ferry/cross-ferry/etc, and the first 20 lines don’t contain “external conversation” / “courier-ferry capture” etc). As a result, CI may silently skip enforcing the required §33 labels/enum status on future edits. Consider adding a small hint phrase in the first-20-lines (e.g., in Scope or Non-fusion disclaimer) or adjusting the filename so the validator reliably audits it.
@@ -70,12 +70,12 @@
 ### Thread 2 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AOxat`
-- **Path**: `memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`
+- **Path**: `docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T07:50:31Z on `memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`:89 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T07:50:31Z on `docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`:89 (association: NONE)
 
   <pre>
   P1: The “Composes with” list references “Per-user MEMORY.md entry …” items, but there’s no corresponding in-repo memory file or matching text to anchor these references (repo-wide search only finds these phrases in this doc). If these are meant to be navigable in-repo references, please replace with concrete file paths; if they’re intentionally out-of-repo, consider rewording so it doesn’t read like a missing file/link in the repository.
@@ -88,7 +88,7 @@
 
 **Touched files (intersect with thread paths):**
 
-- `memory/persona/riven/conversations/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`
+- `docs/research/2026-05-07-riven-five-passes-framework-names-what-you-built-structure-first-verbatim-aaron-riven.md`
 
 **Message:**
 
