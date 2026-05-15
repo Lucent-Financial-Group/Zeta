@@ -40,7 +40,7 @@ import { homedir } from "node:os";
 import { join, isAbsolute, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 
-interface Args {
+export interface Args {
   bunPath: string;
   repoRoot: string;
   dryRun: boolean;
@@ -53,8 +53,11 @@ interface Args {
  * undefined so the caller can emit the documented actionable error
  * instead of a raw exception.
  */
-function tryDetect(cmd: string, args: string[]): string | undefined {
+export function tryDetect(cmd: string, args: string[]): string | undefined {
   try {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- which / git
+    // are standard dev-environment dependencies invoked by name; same
+    // convention as tools/github/poll-pr-gate.ts + tools/peer-call/.
     return execFileSync(cmd, args, { encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] }).trim();
   } catch {
     return undefined;
@@ -68,7 +71,7 @@ function tryDetect(cmd: string, args: string[]): string | undefined {
  * WorkingDirectory, and log paths, all of which would fail under
  * launchd (which has no defined cwd unless explicit).
  */
-function requireAbsolute(name: string, value: string): string {
+export function requireAbsolute(name: string, value: string): string {
   if (!isAbsolute(value)) {
     console.error(`${name} must be an absolute path; got "${value}". Use \`${resolve(value)}\` if that's what you meant.`);
     process.exit(1);
@@ -76,7 +79,7 @@ function requireAbsolute(name: string, value: string): string {
   return value;
 }
 
-function parseArgs(argv: string[]): Args {
+export function parseArgs(argv: string[]): Args {
   let bunPath: string | undefined;
   let repoRoot: string | undefined;
   let dryRun = false;
@@ -173,7 +176,7 @@ tools/shadow/launchd/README.md before live mode is useful.
  * but escaping them is conservative and matches XML 1.0 predefined-entity
  * recommendations.
  */
-function xmlEscape(s: string): string {
+export function xmlEscape(s: string): string {
   return s
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -182,7 +185,7 @@ function xmlEscape(s: string): string {
     .replaceAll("'", "&apos;");
 }
 
-function substitutePlaceholders(template: string, repoRoot: string, bunPath: string): string {
+export function substitutePlaceholders(template: string, repoRoot: string, bunPath: string): string {
   // String replace is metacharacter-safe (unlike sed). No escaping needed
   // for shell — but the values are about to land in XML text nodes, so
   // they DO need XML-entity escaping (else `/Users/foo & bar/Zeta`
@@ -203,13 +206,15 @@ function substitutePlaceholders(template: string, repoRoot: string, bunPath: str
   return result;
 }
 
-function plutilLint(content: string): void {
+export function plutilLint(content: string): void {
   // Write to a temp path so plutil can read it. Use a deterministic temp path
   // to keep this simple; if multiple invocations race, the loser overwrites
   // the winner's temp file but each writes its own content first.
   const tmp = join("/tmp", `zeta-shadow-launchagent-${process.pid}.plist`);
   writeFileSync(tmp, content, "utf-8");
   try {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- plutil
+    // is a macOS-standard system binary present on all install targets.
     execFileSync("plutil", ["-lint", tmp], { stdio: "pipe" });
   } catch (e) {
     const err = e as { stdout?: Buffer; stderr?: Buffer };
@@ -220,7 +225,7 @@ function plutilLint(content: string): void {
   }
 }
 
-function main(): void {
+export function main(): void {
   const args = parseArgs(process.argv.slice(2));
   const templatePath = join(args.repoRoot, "tools/shadow/launchd/com.zeta.shadow-observer.plist");
   if (!existsSync(templatePath)) {
@@ -285,14 +290,19 @@ function main(): void {
   }
 
   if (args.bootstrap) {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- `id`,
+    // `launchctl` are macOS-standard system binaries; same convention
+    // as tools/github/poll-pr-gate.ts.
     const uid = execFileSync("id", ["-u"], { encoding: "utf-8" }).trim();
     const domain = `gui/${uid}`;
     // bootout first (idempotent — fine if not loaded)
     try {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path
       execFileSync("launchctl", ["bootout", domain, destPath], { stdio: "pipe" });
     } catch {
       // Not loaded — fine.
     }
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
     execFileSync("launchctl", ["bootstrap", domain, destPath], { stdio: "inherit" });
     console.error(`Bootstrapped com.zeta.shadow-observer in ${domain}`);
   } else {

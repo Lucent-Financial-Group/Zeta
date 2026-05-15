@@ -51,12 +51,30 @@
 
     <key>KeepAlive</key>
     <dict>
-        <!-- Crash-only restart: KeepAlive dict keys are OR-combined.
-             SuccessfulExit=false would also relaunch on any non-zero exit
-             (configuration errors, missing accessibility permission), which
-             would mask config bugs as crash-loops. Crashed=true on its own
-             gives the documented "relaunch on signal-termination only"
-             semantic. -->
+        <!-- Restart on crashes AND non-zero exits. KeepAlive dict keys
+             are OR-combined; this combination relaunches on:
+               - signal termination (Crashed=true)
+               - any non-zero exit code (SuccessfulExit=false)
+             The shadow observer is a long-running event loop where Bun
+             runtime errors (unhandled exception, OOM, AppleScript bridge
+             failure) exit non-zero rather than signal-terminate. Without
+             SuccessfulExit=false, those failure modes would leave the
+             agent dead until next login.
+
+             Reviewer-conflict resolution: an earlier reviewer pointed
+             out that SuccessfulExit=false also restarts on config
+             errors (missing accessibility permission, bad
+             ProgramArguments). ThrottleInterval=60s (below) caps the
+             retry rate so config-error loops produce one launch per
+             minute — visible in `launchctl print` and in
+             shadow-observer.stderr.log — rather than wedging the
+             system. The --dry-run default on first install means a
+             config error surfaces in the log rather than as live
+             keystroke injection. Net trade-off: prefer covering Bun
+             crashes (likely + recoverable) over avoiding observable
+             config-error loops (unlikely + visible). -->
+        <key>SuccessfulExit</key>
+        <false/>
         <key>Crashed</key>
         <true/>
     </dict>
