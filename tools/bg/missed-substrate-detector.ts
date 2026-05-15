@@ -25,6 +25,11 @@
 import { spawnSync } from "node:child_process";
 import { publish } from "../bus/bus";
 import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
+import {
+  openRecoveryPR,
+  type RecoveryAdapters,
+  type RecoveryResult,
+} from "./missed-substrate-recovery";
 
 export type DetectorConfig = {
   pollIntervalMin: number;
@@ -34,6 +39,12 @@ export type DetectorConfig = {
   noPublish: boolean;
   fromAgent: SenderAgentId;
   toAgent: AgentId;
+  /** Slice 5b (B-0504): when true, pollOnce calls openRecoveryPR for each
+   *  CascadeFinding after detecting cascades. Default false. */
+  autoRecover: boolean;
+  /** Slice 5b (B-0504): when true AND autoRecover is true, recovery runs
+   *  in dry-run mode (no git mutations; log intent only). Default false. */
+  recoveryDryRun: boolean;
 };
 
 export const DEFAULT_CONFIG: DetectorConfig = {
@@ -44,6 +55,8 @@ export const DEFAULT_CONFIG: DetectorConfig = {
   noPublish: false,
   fromAgent: "otto",
   toAgent: "*",
+  autoRecover: false,
+  recoveryDryRun: false,
 };
 
 export type MergedPR = {
@@ -70,6 +83,11 @@ export type PollResult = {
   fetchStatus: "ok" | "gh-error";
   fetchTruncated: boolean;
   publishedEnvelopeIds: string[];
+  /** Slice 5b (B-0504): count of findings for which openRecoveryPR was
+   *  attempted. 0 when config.autoRecover=false or adapter missing. */
+  recoveryAttempts: number;
+  /** Slice 5b (B-0504): count of openRecoveryPR results with status="opened". */
+  recoveryOpened: number;
   note: string;
 };
 
@@ -89,6 +107,15 @@ export type Adapters = {
     to: AgentId,
     finding: CascadeFinding,
   ) => MessageEnvelope;
+  /**
+   * Slice 5b (B-0504): optional recovery adapter. When provided AND
+   * `config.autoRecover === true`, `pollOnce` invokes this for each
+   * `CascadeFinding` after detection. Optional (`?`) so existing tests
+   * that don't exercise the recovery path don't need to provide it;
+   * `pollOnce` treats a missing adapter as `autoRecover=false`
+   * regardless of the config flag.
+   */
+  openRecoveryPR?: (finding: CascadeFinding, dryRun: boolean) => RecoveryResult;
 };
 
 /**
@@ -232,6 +259,147 @@ const REAL_ADAPTERS: Adapters = {
         urgency: finding.urgency,
       },
     }),
+  // Slice 5b (B-0504): production recovery adapter. Composes the pure
+  // `openRecoveryPR` core function (B-0503) with real spawnSync wrappers
+  // for each git/gh sub-operation. See `REAL_RECOVERY_ADAPTERS` below for
+  // the sub-adapter implementations + their security validation.
+  //
+  // WORKING-TREE SAFETY GATE (per Copilot PR #3447 review on line 349):
+  // the real recovery adapters mutate whatever git checkout this detector
+  // runs in (`git branch -D`, `git checkout -b`, `git cherry-pick`,
+  // `git push --force-with-lease`). Running them against a dirty working
+  // tree would clobber uncommitted work or leak commits into the wrong
+  // tree. We refuse to proceed in non-dry-run mode if the working tree
+  // is not clean — operators are expected to run auto-recovery from a
+  // dedicated scratch worktree (`git worktree add /tmp/zeta-recovery
+  // <branch>` is the canonical shape).
+  openRecoveryPR: (finding, dryRun) => {
+    if (!dryRun && !isWorkingTreeClean()) {
+      return {
+        status: "error",
+        reason:
+          "refusing recovery: working tree is not clean. Run auto-recovery from a dedicated `git worktree add` scratch dir, or pass --recovery-dry-run to skip mutations.",
+      };
+    }
+    return openRecoveryPR(finding, dryRun, REAL_RECOVERY_ADAPTERS);
+  },
+};
+
+/**
+ * Slice 5b (B-0504): pre-mutation safety check. Returns true if `git
+ * status --porcelain` reports no modified/untracked/deleted files in
+ * the current checkout. Used as the gate before `REAL_ADAPTERS.openRecoveryPR`
+ * runs any mutating sub-adapter — see the comment block on that adapter
+ * for the failure mode this prevents.
+ */
+function isWorkingTreeClean(): boolean {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+  const r = spawnSync(
+    "git",
+    ["status", "--porcelain"],
+    { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+  );
+  if (r.status !== 0) return false; // conservative: assume dirty on git error
+  return (r.stdout ?? "").trim().length === 0;
+}
+
+/**
+ * Slice 5b (B-0504): real production sub-adapters for openRecoveryPR.
+ *
+ * Each adapter wraps a `spawnSync` call with args-as-array (no shell, no
+ * injection). Per the B-0503 security note + the `compareBranchToMerged`
+ * pattern, branch names and commit SHAs from `CascadeFinding` are
+ * already validated by `realCascadeDetector` (allow-list regex); these
+ * adapters trust the validated inputs.
+ *
+ * `gitCreateBranch` honors the B-0503 retry-safety contract: if the local
+ * branch already exists (from a prior partial-failure attempt), it deletes
+ * and recreates from `base` so the recovery retry doesn't wedge.
+ */
+const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
+  checkRecoveryPRExists: (branchName: string) => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection.
+    const r = spawnSync(
+      "gh",
+      ["pr", "list", "--head", branchName, "--state", "open", "--json", "number"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    if (r.status !== 0) return false; // conservative: assume no existing PR on gh failure
+    try {
+      const parsed = JSON.parse(r.stdout ?? "[]");
+      return Array.isArray(parsed) && parsed.length > 0;
+    } catch {
+      return false;
+    }
+  },
+  gitCreateBranch: (branch: string, base: string) => {
+    // Retry-safety per the B-0503 RecoveryAdapters.gitCreateBranch contract:
+    // if the local branch already exists (prior partial-failure recovery
+    // attempt), delete it before recreating from `base`.
+    //
+    // Per Codex PR #3447 line 344: `git branch -D` CANNOT delete the
+    // currently-checked-out branch — if a previous attempt left HEAD on
+    // `recovery/<prNumber>`, the delete fails AND the subsequent
+    // `checkout -b` fails (branch already exists). Both failures wedge
+    // retries permanently. Mitigation: detach HEAD to `base` first
+    // (`git checkout --detach <base>`), so the recovery branch is no
+    // longer current and `git branch -D` succeeds. Detach is safe
+    // because we're about to `checkout -b` onto a fresh branch anyway;
+    // the intermediate detached state is transient.
+    //
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    spawnSync(
+      "git",
+      ["checkout", "--detach", base],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    spawnSync("git", ["branch", "-D", branch], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    const r = spawnSync(
+      "git",
+      ["checkout", "-b", branch, base],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    return r.status === 0;
+  },
+  gitCherryPick: (sha: string) => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    const r = spawnSync(
+      "git",
+      ["cherry-pick", sha],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    if (r.status === 0) return "ok";
+    const stderr = (r.stderr ?? "").toString();
+    // git cherry-pick exits 1 with "CONFLICT" in stderr on merge conflict.
+    if (stderr.includes("CONFLICT")) return "conflict";
+    return "error";
+  },
+  gitPush: (branch: string) => {
+    // --force-with-lease honors the B-0503 retry-safety hint: a prior
+    // attempt may have pushed an incomplete branch; --force-with-lease
+    // overwrites only if the remote matches what we last fetched (safer
+    // than --force).
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    const r = spawnSync(
+      "git",
+      ["push", "--force-with-lease", "origin", branch],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    return r.status === 0;
+  },
+  ghPrCreate: (title: string, body: string, head: string) => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array.
+    const r = spawnSync(
+      "gh",
+      ["pr", "create", "--title", title, "--body", body, "--head", head, "--base", "main"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    if (r.status !== 0) return null;
+    const url = (r.stdout ?? "").toString().trim();
+    return url.length > 0 ? url : null;
+  },
 };
 
 /**
@@ -370,6 +538,8 @@ export function pollOnce(
       fetchStatus: "gh-error",
       fetchTruncated: false,
       publishedEnvelopeIds: [],
+      recoveryAttempts: 0,
+      recoveryOpened: 0,
       note: `gh fetch failed; cannot evaluate drift this tick. ${fetch.reason}`,
     };
   }
@@ -394,6 +564,31 @@ export function pollOnce(
     }
   }
 
+  // Slice 5b (B-0504): recovery loop. Runs only when `config.autoRecover`
+  // is true AND the optional `openRecoveryPR` adapter is provided. Recovery
+  // failures (adapter throws) are logged into recoveryNotes and do NOT
+  // throw — the poll cycle completes successfully even when individual
+  // recovery attempts error out, so the next poll can re-try.
+  let recoveryAttempts = 0;
+  let recoveryOpened = 0;
+  const recoveryNotes: string[] = [];
+  if (config.autoRecover && adapters.openRecoveryPR !== undefined) {
+    for (const finding of findings) {
+      recoveryAttempts++;
+      try {
+        const rr = adapters.openRecoveryPR(finding, config.recoveryDryRun);
+        if (rr.status === "opened") {
+          recoveryOpened++;
+          recoveryNotes.push(`recovery PR ${rr.prUrl} for #${finding.prNumber} (${rr.cherryPickedCount} commits)`);
+        } else {
+          recoveryNotes.push(`recovery ${rr.status} for #${finding.prNumber}`);
+        }
+      } catch (e) {
+        recoveryNotes.push(`recovery error for #${finding.prNumber}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+  }
+
   const truncatedSuffix = fetch.truncated
     ? ` (WARNING: results truncated at fetchLimit=${config.fetchLimit}; raise --fetch-limit or shorten --lookback-min)`
     : "";
@@ -404,6 +599,7 @@ export function pollOnce(
     : publishedEnvelopeIds.length > 0
     ? ` (published ${publishedEnvelopeIds.length} cascade envelope(s))`
     : "";
+  const recoverySuffix = recoveryNotes.length > 0 ? `; ${recoveryNotes.join("; ")}` : "";
 
   return {
     pollAt: pollAt.toISOString(),
@@ -412,8 +608,10 @@ export function pollOnce(
     fetchStatus: "ok",
     fetchTruncated: fetch.truncated,
     publishedEnvelopeIds,
+    recoveryAttempts,
+    recoveryOpened,
     note: findings.length > 0
-      ? `${findings.length} cascade(s) detected in ${fetch.prs.length} merged PR(s)${publishSuffix}${truncatedSuffix}`
+      ? `${findings.length} cascade(s) detected in ${fetch.prs.length} merged PR(s)${publishSuffix}${truncatedSuffix}${recoverySuffix}`
       : fetch.prs.length === 0
       ? `no merged PRs in last ${config.lookbackMin}min lookback window`
       : `${fetch.prs.length} merged PR(s) in last ${config.lookbackMin}min; no cascades detected${truncatedSuffix}`,
@@ -463,7 +661,7 @@ function parseAgentId(raw: string | undefined): AgentId {
   throw new Error(`--to must be one of ${AGENT_IDS.join(", ")}; got "${raw}"`);
 }
 
-const KNOWN_FLAGS = ["--once", "--poll-min", "--lookback-min", "--fetch-limit", "--no-publish", "--agent", "--to"] as const;
+const KNOWN_FLAGS = ["--once", "--poll-min", "--lookback-min", "--fetch-limit", "--no-publish", "--agent", "--to", "--auto-recover", "--recovery-dry-run"] as const;
 
 export function parseArgs(argv: string[]): DetectorConfig {
   const config: DetectorConfig = { ...DEFAULT_CONFIG };
@@ -484,6 +682,10 @@ export function parseArgs(argv: string[]): DetectorConfig {
       config.fromAgent = parseSenderId(argv[++i]);
     } else if (arg === "--to") {
       config.toAgent = parseAgentId(argv[++i]);
+    } else if (arg === "--auto-recover") {
+      config.autoRecover = true;
+    } else if (arg === "--recovery-dry-run") {
+      config.recoveryDryRun = true;
     } else {
       throw new Error(`unknown flag: ${arg}; known flags: ${KNOWN_FLAGS.join(", ")}`);
     }

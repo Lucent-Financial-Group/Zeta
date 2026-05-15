@@ -15,6 +15,7 @@ import {
   type MergedPR,
   type PRRefsResult,
 } from "./missed-substrate-detector";
+import type { RecoveryResult } from "./missed-substrate-recovery";
 import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
 
 type FakeCascadeCall = {
@@ -332,5 +333,149 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
       expect(() => parseArgs(["--unknown"])).toThrow(/unknown flag/);
       expect(() => parseArgs(["--agent", "*"])).toThrow(/must be one of/);
     });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────
+// Slice 5b (B-0504): auto-recover wiring
+// ─────────────────────────────────────────────────────────────────────
+
+describe("missed-substrate-detector slice 5b (auto-recover wiring)", () => {
+  // Helper: build a CascadeFinding for tests
+  function makeFinding(prNumber = 1234): CascadeFinding {
+    return {
+      prNumber,
+      branchName: `feat/test-${prNumber}`,
+      missingCommits: ["aaa111", "bbb222"],
+      urgency: "medium",
+    };
+  }
+
+  // Helper: extend the existing `adapters()` helper with an openRecoveryPR
+  // override. Returns the captured RecoveryResult adapter calls.
+  function adaptersWithRecovery(opts: {
+    nowIso: string;
+    fetch: FetchResult;
+    detectCascade?: (pr: MergedPR) => CascadeFinding | null;
+    openRecoveryPR?: (finding: CascadeFinding, dryRun: boolean) => RecoveryResult;
+    recoveryCalls?: Array<{ finding: CascadeFinding; dryRun: boolean }>;
+  }): Adapters {
+    const base = adapters(opts);
+    if (opts.openRecoveryPR !== undefined) {
+      const captured = opts.recoveryCalls ?? [];
+      base.openRecoveryPR = (finding, dryRun) => {
+        captured.push({ finding, dryRun });
+        return opts.openRecoveryPR!(finding, dryRun);
+      };
+    }
+    return base;
+  }
+
+  test("autoRecover=false (default): recoveryAttempts=0; adapter never called", () => {
+    let adapterCalled = false;
+    const config = { ...DEFAULT_CONFIG, once: true };
+    const finding = makeFinding();
+    const result = pollOnce(config, adaptersWithRecovery({
+      nowIso: "2026-05-15T12:00:00Z",
+      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
+      detectCascade: () => finding,
+      openRecoveryPR: () => {
+        adapterCalled = true;
+        return { status: "opened", prUrl: "https://example/pr/1", cherryPickedCount: 2 };
+      },
+    }));
+    expect(result.recoveryAttempts).toBe(0);
+    expect(result.recoveryOpened).toBe(0);
+    expect(adapterCalled).toBe(false);
+  });
+
+  test("autoRecover=true, adapter returns opened: recoveryOpened=1; note contains PR URL", () => {
+    const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, noPublish: true };
+    const finding = makeFinding();
+    const result = pollOnce(config, adaptersWithRecovery({
+      nowIso: "2026-05-15T12:00:00Z",
+      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
+      detectCascade: () => finding,
+      openRecoveryPR: () => ({ status: "opened", prUrl: "https://example.com/pr/9999", cherryPickedCount: 2 }),
+    }));
+    expect(result.recoveryAttempts).toBe(1);
+    expect(result.recoveryOpened).toBe(1);
+    expect(result.note).toContain("https://example.com/pr/9999");
+  });
+
+  test("autoRecover=true, recoveryDryRun=true: adapter receives dryRun=true; note reflects dry-run", () => {
+    const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, recoveryDryRun: true, noPublish: true };
+    const finding = makeFinding();
+    const calls: Array<{ finding: CascadeFinding; dryRun: boolean }> = [];
+    const result = pollOnce(config, adaptersWithRecovery({
+      nowIso: "2026-05-15T12:00:00Z",
+      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
+      detectCascade: () => finding,
+      openRecoveryPR: () => ({ status: "opened", prUrl: "dry-run", cherryPickedCount: 0 }),
+      recoveryCalls: calls,
+    }));
+    expect(calls).toHaveLength(1);
+    expect(calls[0]!.dryRun).toBe(true);
+    expect(result.recoveryAttempts).toBe(1);
+    expect(result.recoveryOpened).toBe(1);
+    expect(result.note).toContain("dry-run");
+  });
+
+  test("autoRecover=true, adapter returns already-exists: recoveryOpened=0; note contains already-exists", () => {
+    const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, noPublish: true };
+    const result = pollOnce(config, adaptersWithRecovery({
+      nowIso: "2026-05-15T12:00:00Z",
+      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
+      detectCascade: () => makeFinding(),
+      openRecoveryPR: () => ({ status: "already-exists", reason: "PR for recovery/1234 already open" }),
+    }));
+    expect(result.recoveryAttempts).toBe(1);
+    expect(result.recoveryOpened).toBe(0);
+    expect(result.note).toContain("already-exists");
+  });
+
+  test("autoRecover=true, adapter throws: recoveryOpened=0; note contains 'recovery error'; poll completes", () => {
+    const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, noPublish: true };
+    const result = pollOnce(config, adaptersWithRecovery({
+      nowIso: "2026-05-15T12:00:00Z",
+      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
+      detectCascade: () => makeFinding(),
+      openRecoveryPR: () => { throw new Error("simulated adapter blowup"); },
+    }));
+    expect(result.recoveryAttempts).toBe(1);
+    expect(result.recoveryOpened).toBe(0);
+    expect(result.note).toContain("recovery error");
+    expect(result.note).toContain("simulated adapter blowup");
+    // The poll itself completed successfully — fetchStatus=ok, no exception.
+    expect(result.fetchStatus).toBe("ok");
+  });
+
+  test("parseArgs sets autoRecover/recoveryDryRun flags + DEFAULT_CONFIG defaults", () => {
+    expect(parseArgs([]).autoRecover).toBe(false);
+    expect(parseArgs([]).recoveryDryRun).toBe(false);
+    expect(parseArgs(["--auto-recover"]).autoRecover).toBe(true);
+    expect(parseArgs(["--recovery-dry-run"]).recoveryDryRun).toBe(true);
+    // --recovery-dry-run without --auto-recover is silently accepted.
+    const c = parseArgs(["--recovery-dry-run"]);
+    expect(c.recoveryDryRun).toBe(true);
+    expect(c.autoRecover).toBe(false);
+    // Combined.
+    const both = parseArgs(["--auto-recover", "--recovery-dry-run"]);
+    expect(both.autoRecover).toBe(true);
+    expect(both.recoveryDryRun).toBe(true);
+  });
+
+  test("autoRecover=true but adapter undefined: recoveryAttempts=0 (treats missing adapter as autoRecover=false)", () => {
+    const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, noPublish: true };
+    // Don't pass openRecoveryPR to adapters() — it's optional.
+    const result = pollOnce(config, adapters({
+      nowIso: "2026-05-15T12:00:00Z",
+      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
+      detectCascade: () => makeFinding(),
+    }));
+    // Cascade was detected but adapter is missing → recovery skipped silently.
+    expect(result.cascadesDetected).toBe(1);
+    expect(result.recoveryAttempts).toBe(0);
+    expect(result.recoveryOpened).toBe(0);
   });
 });
