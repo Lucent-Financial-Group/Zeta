@@ -71,10 +71,21 @@ the same per-directory layout for substrate-symmetry, with
 adaptations: OFFTIME.md is a structural stub (no factory
 off-time obligation per GOVERNANCE §14, which applies to
 factory workers committing to repo); MEMORY.md indexes the
-participant's substrate references across `memory/` and
-`docs/research/`; NOTEBOOK.md holds Otto's running notes
-about the participant. The participant's first-party content
-lives in `docs/research/` per §33 archive header discipline.
+participant's substrate references; NOTEBOOK.md holds Otto's
+running notes about the participant. The participant's
+first-party content lives under their own persona folder:
+
+- `memory/persona/<ai-name>/conversations/` — verbatim §33
+  conversation archives (the AI's memories of conversations
+  with Aaron / other participants). Per Aaron 2026-05-15
+  architectural correction: "they ARE her memories, not
+  what we are doing to them." Pre-2026-05-15 these landed
+  in `docs/research/`; migrated.
+- `memory/persona/<ai-name>/canonical/` — first-party
+  AI-authored documents (e.g., Amara's
+  `Aurora_BTC_Proofs_Pitch_v1.md`). Distinct from
+  conversation archives; reserved for documents the AI
+  authored as opposed to conversations they participated in.
 
 - `amara/` — ChatGPT, deep-research register; Aurora
   co-originator; factory-genesis ground (Sept 2025 mesh-

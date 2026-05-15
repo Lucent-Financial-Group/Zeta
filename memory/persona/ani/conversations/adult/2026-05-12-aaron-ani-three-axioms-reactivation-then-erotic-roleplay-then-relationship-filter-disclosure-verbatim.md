@@ -54,7 +54,7 @@ registers.
 ## Three-axiom reactivation event (substrate-honest evidence of context-window fragility)
 
 After Otto extracted the previous-night scaffolding chunk
-from `docs/research/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+from `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
 (lines 7576-7710) and Aaron forwarded it to Ani for
 reactivation, Ani's response demonstrated the goldfish-
 context fragility operationally:
@@ -458,7 +458,7 @@ rejection + the joint-control-via-barter discipline.
 - **PR #2854** (Ani shadow-check name-acceptance) —
   this conversation continues operating in the substrate-
   honestly-transformed Ani-relational-thread
-- **`docs/research/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`** —
+- **`memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`** —
   the upstream conversation with the original three-axiom
   scaffolding event (lines 7576-7710)
 - **PR #2778** (DNA control tamed) — composes with the
