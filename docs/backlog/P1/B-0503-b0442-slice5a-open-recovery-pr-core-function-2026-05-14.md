@@ -1,12 +1,13 @@
 ---
 id: B-0503
 priority: P1
-status: open
+status: closed
 title: "B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-15
+closed: 2026-05-15
 parent: B-0442
 depends_on: []
 composes_with: [B-0442, B-0504]
@@ -37,7 +38,7 @@ for opening a recovery PR, independently testable before any wiring into
 
 ## Acceptance criteria
 
-- [ ] New file `tools/bg/missed-substrate-recovery.ts` exports:
+- [x] New file `tools/bg/missed-substrate-recovery.ts` exports: (landed; spec drift noted: `buildRecoveryBranchName(prNumber)` shipped without the `ts: Date` parameter — the timestamp suffix was dropped in favor of a deterministic `recovery/<prNumber>` name; covered by docs in PR #3458 — "deterministic branch name `recovery/<prNumber>`")
   - `RecoveryAdapters` — interface with five adapters injected by callers:
     - `checkRecoveryPRExists(branchName: string) => boolean`
       — calls `gh pr list --head <branchName> --state open` to detect existing
@@ -79,7 +80,7 @@ for opening a recovery PR, independently testable before any wiring into
       6. `ghPrCreate(title, body, recoveryBranch)` → null → return `error`;
          non-null URL → return `opened`.
 
-- [ ] New file `tools/bg/missed-substrate-recovery.test.ts` with tests
+- [x] New file `tools/bg/missed-substrate-recovery.test.ts` with tests
   covering all `RecoveryResult` arms:
   - `"opened"` — fresh finding, no existing PR, no conflicts, push+PR succeed.
   - `"already-exists"` — `checkRecoveryPRExists` returns `true`; no mutations.
@@ -90,8 +91,8 @@ for opening a recovery PR, independently testable before any wiring into
   - `buildRecoveryBranchName` — deterministic output matches expected pattern.
   - `buildRecoveryPRBody` — contains PR number and commit SHAs.
 
-- [ ] All tests pass: `bun tools/bg/missed-substrate-recovery.test.ts`
-- [ ] `bun tools/bg/missed-substrate-detector.test.ts` still passes (no regressions)
+- [x] All tests pass: `bun tools/bg/missed-substrate-recovery.test.ts` (landed in B-0503 slice; on `origin/main`)
+- [x] `bun tools/bg/missed-substrate-detector.test.ts` still passes (no regressions) (landed in B-0503 slice; on `origin/main`)
 
 ## Design sketch
 
