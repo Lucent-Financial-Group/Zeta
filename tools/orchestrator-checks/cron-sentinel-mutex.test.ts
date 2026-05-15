@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { describe, it, expect } from "bun:test";
-import { checkPeerSessions, formatResult } from "./cron-sentinel-mutex";
+import { checkPeerSessions, formatResult, mainResult, PGREP_ERROR_EXIT } from "./cron-sentinel-mutex";
 import type { spawnSync } from "node:child_process";
 
 type SpawnSync = typeof spawnSync;
@@ -108,5 +108,36 @@ describe("formatResult", () => {
     expect(out).toContain("2 peer");
     expect(out).toContain("100 cmd a");
     expect(out).toContain("200 cmd b");
+  });
+});
+
+describe("mainResult", () => {
+  it("returns 0 when no peers and no error", () => {
+    expect(mainResult({ myPid: 1, peerPids: [], peerLines: [], peerDetected: false })).toBe(0);
+  });
+
+  it("returns 1 + peer count when peers detected", () => {
+    expect(mainResult({ myPid: 1, peerPids: [99], peerLines: ["99 ..."], peerDetected: true })).toBe(2);
+    expect(mainResult({ myPid: 1, peerPids: [99, 100, 101], peerLines: [], peerDetected: true })).toBe(4);
+  });
+
+  it("clamps peer-count exit code to 250", () => {
+    const manyPeers = Array.from({ length: 300 }, (_, i) => i);
+    expect(mainResult({ myPid: 1, peerPids: manyPeers, peerLines: [], peerDetected: true })).toBe(250);
+  });
+
+  it("returns PGREP_ERROR_EXIT (251) when pgrepError is set, even with no peers", () => {
+    expect(mainResult({
+      myPid: 1, peerPids: [], peerLines: [], peerDetected: false,
+      pgrepError: "ENOENT: pgrep not found",
+    })).toBe(PGREP_ERROR_EXIT);
+    expect(PGREP_ERROR_EXIT).toBe(251);
+  });
+
+  it("returns PGREP_ERROR_EXIT even when peers were also detected (error takes precedence)", () => {
+    expect(mainResult({
+      myPid: 1, peerPids: [99], peerLines: [], peerDetected: true,
+      pgrepError: "pgrep exited with status 2",
+    })).toBe(PGREP_ERROR_EXIT);
   });
 });

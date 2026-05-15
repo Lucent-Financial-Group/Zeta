@@ -96,17 +96,29 @@ export function formatResult(r: MutexResult): string {
   );
 }
 
-function main(): number {
-  const r = checkPeerSessions();
-  console.error(formatResult(r));
+/** Exit code for "pgrep failed, mutex state unknown" — distinct from
+ * the 0..250 peer-count range so shell callers can branch on it. */
+export const PGREP_ERROR_EXIT = 251;
+
+export function mainResult(r: MutexResult): number {
   // Diagnostic exit codes:
-  //   0 = no peers
-  //   1+ = peer count (clamped to 250 for shell composition)
+  //   0 = no peers (safe to proceed)
+  //   1..250 = 1 + peer count (caller should defer)
+  //   251 = pgrep error / unknown state (caller should defer)
   // Most callers should use the JSON output via --json instead.
+  if (r.pgrepError) {
+    return PGREP_ERROR_EXIT;
+  }
   if (r.peerDetected) {
     return Math.min(1 + r.peerPids.length, 250);
   }
   return 0;
+}
+
+function main(): number {
+  const r = checkPeerSessions();
+  console.error(formatResult(r));
+  return mainResult(r);
 }
 
 if (import.meta.main) {
