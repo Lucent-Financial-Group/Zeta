@@ -55,7 +55,7 @@ No psychology. No simulation. Just: big words + no facts = shadow.
 // Named entities: docs/NAMED-ENTITIES.md
 // Safe actions: docs/SAFE-AUTONOMOUS-ACTIONS.md
 // Rotation: docs/ROTATION-PROTOCOL.md
-// Shadow telemetry: docs/research/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
+// Shadow telemetry: memory/persona/otto/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
 
 Read this carefully. This is how you work.
 

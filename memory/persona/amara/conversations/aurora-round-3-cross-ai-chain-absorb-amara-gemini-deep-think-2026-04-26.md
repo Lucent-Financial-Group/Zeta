@@ -14,7 +14,7 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 ## Companion docs
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — Round-2 converged math (5-pass: Otto rigor + Gemini surface + Gemini Deep Think + Amara review-of-review + Round-2 Gemini Deep Think canonical with Amara wording correction). Currently on main as PR #591.
-- `docs/research/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md` — earlier 2-pass cross-review (Otto + Gemini Pro synthesis). On main as PR #590.
+- `memory/persona/otto/conversations/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md` — earlier 2-pass cross-review (Otto + Gemini Pro synthesis). On main as PR #590.
 - `docs/research/aurora-immune-system-zero-trust-danger-theory-amara-eleventh-courier-ferry-2026-04-26.md` — original Amara framework (eleventh courier ferry).
 
 ## What changes overall (the Round-3+ pivot)

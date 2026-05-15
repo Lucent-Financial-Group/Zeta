@@ -22,7 +22,7 @@ Per Aaron Otto-175: *"Starboard I guess for now... do one more name pass just in
 
 ## Two components
 
-1. **`docs/research/frontier-rename-name-pass-2-otto-175.md`** — comprehensive pass-2 analysis with Hindu / Vedic / FF7 / Egyptian / Greek / Norse candidates. Starboard header updated to "confirmed pick" per Aaron's final message. Doc preserved as glass-halo transparency record of options considered.
+1. **`memory/persona/otto/conversations/frontier-rename-name-pass-2-otto-175.md`** — comprehensive pass-2 analysis with Hindu / Vedic / FF7 / Egyptian / Greek / Norse candidates. Starboard header updated to "confirmed pick" per Aaron's final message. Doc preserved as glass-halo transparency record of options considered.
 
 2. **Scientology-research BACKLOG row** — public-domain-only, thematic-inspiration-only. Explicit IP discipline (no trademarks adopted, no leaked paid content ingested). Aminata threat-pass required before landing any deliverable beyond generic encyclopedic summary.
 
@@ -84,7 +84,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a second-pass research memo for the Frontier UI rename (mythology/FF7 candidate scan + conflict notes) and records a new BACKLOG item to bound “Scientology thematic research” to public-domain-only, non-adoption scope.
 
 **Changes:**
-- Added `docs/research/frontier-rename-name-pass-2-otto-175.md` with additional naming candidates and conflict-scan notes, plus sources/cross-references.
+- Added `memory/persona/otto/conversations/frontier-rename-name-pass-2-otto-175.md` with additional naming candidates and conflict-scan notes, plus sources/cross-references.
 - Appended a new P2 BACKLOG row specifying scope, non-adoption constraints, and a proposed deliverable memo for the Scientology-themed research.
 
 ### Reviewed changes
@@ -93,7 +93,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/research/frontier-rename-name-pass-2-otto-175.md | New pass-2 naming analysis doc with candidate lists, conflict findings, and cross-references. |
+| memory/persona/otto/conversations/frontier-rename-name-pass-2-otto-175.md | New pass-2 naming analysis doc with candidate lists, conflict findings, and cross-references. |
 | docs/BACKLOG.md | New BACKLOG entry defining scope/constraints and deliverable for public-domain-only Scientology thematic research. |
 
 ## Review threads
@@ -108,13 +108,13 @@ This backlog item is labeled `public-domain-only`, but this bullet explicitly in
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: docs/research/frontier-rename-name-pass-2-otto-175.md:12 (unresolved)
+### Thread 2: memory/persona/otto/conversations/frontier-rename-name-pass-2-otto-175.md:12 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:08:02Z):
 
 P1: This new research doc repeatedly uses contributor names (e.g., "Aaron") and agent/persona names directly. That conflicts with the repo’s operational standing rule to avoid name attribution in docs/skills and use role references instead (docs/AGENT-BEST-PRACTICES.md:284-292). Suggest rewriting these references to role-refs (e.g., "human maintainer", "memo author", "threat-model reviewer") while keeping the Otto-### identifiers for traceability.
 
-### Thread 3: docs/research/frontier-rename-name-pass-2-otto-175.md:465 (unresolved)
+### Thread 3: memory/persona/otto/conversations/frontier-rename-name-pass-2-otto-175.md:465 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:08:03Z):
 

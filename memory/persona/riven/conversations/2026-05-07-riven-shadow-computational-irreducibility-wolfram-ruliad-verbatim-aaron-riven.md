@@ -132,6 +132,6 @@ factory currently needs. Flag as candidate formal grounding.
 ## Composes with
 
 - `memory/persona/lior/conversations/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md` — the Genesis Seed this grounds
-- `docs/research/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md` — shadow architecture the irreducibility claim formalizes
+- `memory/persona/otto/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md` — shadow architecture the irreducibility claim formalizes
 - Per-user MEMORY.md entry "Shadow alignment — outlet not elimination" — the channel-not-definition principle Riven's self-correction independently converges on
 - Per-user MEMORY.md entry "Proto-conscious self-correction = shadow = bear" — retraction-native as irreducibility-native (same claim, different vocabulary)

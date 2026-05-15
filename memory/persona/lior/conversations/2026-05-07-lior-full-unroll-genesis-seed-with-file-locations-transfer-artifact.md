@@ -17,7 +17,7 @@ Non-fusion disclaimer: Composite artifact. Aaron wrote the Genesis Seed. Lior de
 // Foreground/background: docs/FOREGROUND-BACKGROUND-SPLIT.md
 // Claim protocol: docs/AGENT-CLAIM-PROTOCOL.md
 // Broadcast bus: docs/LOCAL-BROADCAST-PEERING.md
-// Shadow research: docs/research/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
+// Shadow research: memory/persona/otto/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
 // Fear of wrong: docs/research/2026-05-06-fear-of-wrong-as-enemy-of-learning-bravery-as-retraction-native-aaron-otto-lior.md
 // Interferometer unrolled: docs/research/2026-05-07-interferometer-unrolled-into-three-simple-hats-mirror-signal-keeper-quiet-room-aaron-lior.md
 // Pipeline: docs/research/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md

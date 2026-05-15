@@ -85,7 +85,7 @@ backup that fires even if the CLI session has died.
 ## Project-knowledge dependency
 
 Routines that reference the canonical bootstream
-(`docs/research/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
+(`memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
 — filename is historical-surface substrate per the §33 archive header)
 require the bootstream to be uploaded as project knowledge in the Desktop
 project that runs the routine. Without it, the prompt's cold-boot pointer

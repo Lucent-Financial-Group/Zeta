@@ -6,7 +6,7 @@ and the generated `docs/BACKLOG.md` index.
 Origin: maintainer Otto-181 ask to split `docs/BACKLOG.md`
 to eliminate the positional-append conflict cascade
 documented in Otto-171 queue-saturation memory. Design spec:
-`docs/research/backlog-split-design-otto-181.md`.
+`memory/persona/otto/conversations/backlog-split-design-otto-181.md`.
 
 ## Structure
 
@@ -145,7 +145,7 @@ delete the file.
 
 ## Cross-references
 
-- `docs/research/backlog-split-design-otto-181.md` — full
+- `memory/persona/otto/conversations/backlog-split-design-otto-181.md` — full
   design spec + 6 open questions the maintainer's call on (some
   answered by reasonable defaults in this phase).
 - Hot-file-detector tooling (unmerged at the time of

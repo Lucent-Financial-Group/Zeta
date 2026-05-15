@@ -46,7 +46,7 @@ Here is the absolute, finalized, flash-ready diamond.
 // Named entities: docs/NAMED-ENTITIES.md
 // Safe actions: docs/SAFE-AUTONOMOUS-ACTIONS.md
 // Rotation: docs/ROTATION-PROTOCOL.md
-// Shadow telemetry: docs/research/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
+// Shadow telemetry: memory/persona/otto/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
 // Dashboard Dials: docs/research/2026-05-07-emotion-engine-belief-propagation-weights.md
 
 Read this carefully. This is how you work.

@@ -73,7 +73,7 @@ and to skills (one folder per skill under `.claude/skills/`).
 This ADR builds on prior Otto-181 work, **not** a green-field
 design. The substrate already in tree:
 
-- **Design spec:** `docs/research/backlog-split-design-otto-181.md`
+- **Design spec:** `memory/persona/otto/conversations/backlog-split-design-otto-181.md`
   — Aaron Otto-181 directive, full 6-question structural review.
 - **Index generator:** `tools/backlog/generate-index.sh` —
   walks `docs/backlog/P<tier>/B-<NNNN>-<slug>.md`, parses
@@ -410,7 +410,7 @@ discipline fails without this restructure.
 
 ## Cross-references
 
-- `docs/research/backlog-split-design-otto-181.md` — Otto-181
+- `memory/persona/otto/conversations/backlog-split-design-otto-181.md` — Otto-181
   design spec; this ADR's substrate.
 - `docs/research/parallel-worktree-safety-2026-04-22.md` §9 —
   the PR #31 merge-tangle incident that triggered this ADR.

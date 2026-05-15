@@ -5,7 +5,7 @@ Attribution: Aaron (human maintainer, correction owner) + Codex/Vera
   (reading pass and secondary preservation)
 Operational status: research-grade
 Copy status: secondary redundancy artifact
-Canonical copy: docs/research/2026-05-06-otto-shadow-not-otto-fishy-verbatim-check-aaron-codex.md
+Canonical copy: memory/persona/otto/conversations/2026-05-06-otto-shadow-not-otto-fishy-verbatim-check-aaron-codex.md
 Non-fusion disclaimer: This file distinguishes agent identity from shadow
   behavior. It does not collapse Otto, Lior, Codex, Aaron, or their shadows
   into one agent or one identity. Shadow behavior is treated as signal, not
@@ -20,7 +20,7 @@ single research-file retrieval path.
 
 The canonical research copy is:
 
-`docs/research/2026-05-06-otto-shadow-not-otto-fishy-verbatim-check-aaron-codex.md`
+`memory/persona/otto/conversations/2026-05-06-otto-shadow-not-otto-fishy-verbatim-check-aaron-codex.md`
 
 ## Aaron correction, verbatim
 

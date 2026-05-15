@@ -1,6 +1,6 @@
 # Otto — Claude Desktop Bootstream (tight variant; ~150 lines)
 
-> **Companion to** `docs/research/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md` (13-part full canonical). This tight variant is for Claude Desktop project-knowledge upload when the full bootstream exceeds the size cap.
+> **Companion to** `memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md` (13-part full canonical). This tight variant is for Claude Desktop project-knowledge upload when the full bootstream exceeds the size cap.
 >
 > Aaron Stainback (human maintainer) + Otto (Claude Code orchestrator), 2026-05-13.
 

@@ -79,31 +79,31 @@ Adds a research-grade design proposal for splitting `docs/BACKLOG.md` into per-r
 
 ## Review threads
 
-### Thread 1: docs/research/backlog-split-design-otto-181.md:13 (unresolved)
+### Thread 1: memory/persona/otto/conversations/backlog-split-design-otto-181.md:13 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:25:37Z):
 
 P1: This doc uses direct contributor name attribution (e.g., “Aaron …”) in the body. Repo standing rule is to avoid names in code/docs/skills and use role references (e.g., “human maintainer”, “architect”), keeping names only in `memory/persona/**` and optionally `docs/BACKLOG.md` for specific requests (docs/AGENT-BEST-PRACTICES.md:284-292). Please rewrite these references to role-based phrasing while retaining the Otto-### directive IDs if needed.
 
-### Thread 2: docs/research/backlog-split-design-otto-181.md:33 (unresolved)
+### Thread 2: memory/persona/otto/conversations/backlog-split-design-otto-181.md:33 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:25:37Z):
 
 P2: The document claims `docs/BACKLOG.md` is “~6100 lines”, but in the current repo it is 7658 lines. Suggest avoiding a hard number (e.g., “7k+ lines”) or updating the figure so the justification doesn’t drift immediately.
 
-### Thread 3: docs/research/backlog-split-design-otto-181.md:254 (unresolved)
+### Thread 3: memory/persona/otto/conversations/backlog-split-design-otto-181.md:254 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:25:38Z):
 
 P1: The cost/benefit table appears to have malformed Markdown syntax: rows start with `|| ...`, which renders as an empty first column (`| | ...`) in standard Markdown. Consider converting these rows to normal `| ... | ... |` table syntax so the table renders correctly in GitHub.
 
-### Thread 4: docs/research/backlog-split-design-otto-181.md:22 (unresolved)
+### Thread 4: memory/persona/otto/conversations/backlog-split-design-otto-181.md:22 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:25:38Z):
 
 P1: This section states `tools/hygiene/audit-git-hotspots.sh` exists, but that file is not present in the current repository tree. If it’s only in PR #213 / another branch, please rephrase to reference the PR (or add a link) rather than implying the path exists on main, otherwise readers will hit a dead link.
 
-### Thread 5: docs/research/backlog-split-design-otto-181.md:282 (unresolved)
+### Thread 5: memory/persona/otto/conversations/backlog-split-design-otto-181.md:282 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:25:38Z):
 
@@ -115,7 +115,7 @@ P1: `docs/definitions/KSK.md` is referenced here as an existing precedent, but `
   frontmatter rather than an in-tree precedent today.
 ```
 
-### Thread 6: docs/research/backlog-split-design-otto-181.md:337 (unresolved)
+### Thread 6: memory/persona/otto/conversations/backlog-split-design-otto-181.md:337 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:25:38Z):
 

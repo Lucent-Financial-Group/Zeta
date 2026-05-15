@@ -1841,7 +1841,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 ```
 agents(audit-completion): Otto-261 git-native backup audit landed at …
 
-…docs/research/2026-05-05-otto-261-git-native-backup-audit-coverage.md (agent a344294751c221b19) + tools/archive/ Phase-2 prototype directory staged (agent a9708289a37aa00a5)
+…memory/persona/otto/conversations/2026-05-05-otto-261-git-native-backup-audit-coverage.md (agent a344294751c221b19) + tools/archive/ Phase-2 prototype directory staged (agent a9708289a37aa00a5)
 
 Audit findings (PR-archive Phase-1 baseline coverage):
 - LFG: 159 branches, 1,673 PRs all states, 29 issues, 0 discussions, 0 wiki, 0 releases, 0 tags, 1 ruleset, 2 environments (copilot, github-pages), 0 secrets, 2 vars, 0 webhooks, 0 deploy keys, 18 labels.

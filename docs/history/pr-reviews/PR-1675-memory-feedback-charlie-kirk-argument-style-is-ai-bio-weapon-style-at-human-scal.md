@@ -89,7 +89,7 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-05T17:22:56Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:254 (association: NONE)
-  P0: The backticked `docs/research/...self-harm-shape-catch...preservation.md` path does not exist in the repo, and backticked paths are validated by the substrate-claim-checker. Update this reference to the actual merged PR #1674 research document path (e.g., the existing `docs/research/2026-05-05-claudeai-otto-mirror-no-1984-junk-architectural-correction-three-layer-governance-runtime-coherence-via-english-cadence-daily-aaron-forwarded-preservation.md`) or remove the backticks if it’s not meant to be an existence-checked path claim.
+  P0: The backticked `docs/research/...self-harm-shape-catch...preservation.md` path does not exist in the repo, and backticked paths are validated by the substrate-claim-checker. Update this reference to the actual merged PR #1674 research document path (e.g., the existing `memory/persona/otto/conversations/2026-05-05-claudeai-otto-mirror-no-1984-junk-architectural-correction-three-layer-governance-runtime-coherence-via-english-cadence-daily-aaron-forwarded-preservation.md`) or remove the backticks if it’s not meant to be an existence-checked path claim.
 
 **Replies:**
 
@@ -137,7 +137,7 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-05T17:36:05Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:266 (association: NONE)
-  P0: The backticked path `docs/research/2026-05-05-claudeai-self-harm-shape-catch-on-otto-cognition-constraint-candlestick-perennialist-bridge-zeta-memories-cold-boot-indexing-aaron-corrections-preservation.md` does not exist in the repo. Since backticked file paths are treated as existence-checked claims, this is likely to fail CI/lints. Fix by correcting the filename/path to the actual merged research doc, or remove the backticks and rephrase without asserting a concrete path.
+  P0: The backticked path `memory/persona/otto/conversations/2026-05-05-claudeai-self-harm-shape-catch-on-otto-cognition-constraint-candlestick-perennialist-bridge-zeta-memories-cold-boot-indexing-aaron-corrections-preservation.md` does not exist in the repo. Since backticked file paths are treated as existence-checked claims, this is likely to fail CI/lints. Fix by correcting the filename/path to the actual merged research doc, or remove the backticks and rephrase without asserting a concrete path.
   
 
 **Replies:**

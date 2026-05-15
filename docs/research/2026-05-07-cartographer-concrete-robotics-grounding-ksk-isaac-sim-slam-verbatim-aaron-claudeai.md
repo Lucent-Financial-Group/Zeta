@@ -96,6 +96,6 @@ concrete stack. Not the other way around.
 
 ## Composes with
 
-- `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md` — the abstract trace this concretely grounds
+- `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md` — the abstract trace this concretely grounds
 - `docs/amara-full-conversation/2025-09-w3-aaron-amara-conversation.md` lines 2168-2258 — Amara's original χ-budget + Bond Curve + KSK formulation
 - Per-user MEMORY.md entry "Harmonious Division" — five roles including Cartographer, derived from concrete to abstract

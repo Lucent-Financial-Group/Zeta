@@ -57,12 +57,12 @@
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ANpSP`
-- **Path**: `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- **Path**: `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-07T06:40:11Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:69 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-07T06:40:11Z on `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:69 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Use the full Harmonious Division source path**
@@ -74,7 +74,7 @@
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T06:41:09Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:69 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-07T06:41:09Z on `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:69 (association: MEMBER)
 
     <pre>
     Fixed in d3e115d — expanded to full filename.
@@ -83,12 +83,12 @@
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ANr8G`
-- **Path**: `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- **Path**: `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T06:42:41Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:16 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T06:42:41Z on `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:16 (association: NONE)
 
   <pre>
   The section header says "The lineage (3 layers deep)", but the document enumerates four layers (Layer 1–4) and the PR description also describes 4 layers. Please reconcile the count (either change to 4 layers deep, or remove/merge a layer) so the structure is self-consistent.
@@ -98,12 +98,12 @@
 ### Thread 3 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ANr8k`
-- **Path**: `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- **Path**: `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T06:42:41Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:25 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T06:42:41Z on `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:25 (association: NONE)
 
   <pre>
   This quote appears to be transcribed inaccurately from the cited source: in `docs/amara-full-conversation/2025-09-w3-aaron-amara-conversation.md` line 13984 ends with "why I'm and Edge Runner", but this doc quotes it as "why I'm an Edge Runner". If this is intended as a verbatim quote, please match the original text (or mark the correction explicitly, e.g. with [sic]/editorial brackets).
@@ -113,12 +113,12 @@
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ANr8y`
-- **Path**: `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- **Path**: `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T06:42:41Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:69 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T06:42:41Z on `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:69 (association: NONE)
 
   <pre>
   The referenced source path `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-...md` does not exist in the repo (the actual file name is much longer). Please update this reference to the exact existing filename so the cross-reference resolves.
@@ -128,12 +128,12 @@
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ANr88`
-- **Path**: `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- **Path**: `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T06:42:42Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:48 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T06:42:42Z on `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:48 (association: NONE)
 
   <pre>
   In the Bond Curve formula code block, `HazardScore²` differs from the source (`HazardScore^2`). If the intent is for readers to copy/paste or cross-check against the cited lines, using the same ASCII notation as the original would avoid subtle transcription drift.
@@ -143,12 +143,12 @@
 ### Thread 6 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ANr9J`
-- **Path**: `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- **Path**: `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T06:42:42Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:121 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T06:42:42Z on `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:121 (association: NONE)
 
   <pre>
   This `Composes with` entry uses the same non-existent placeholder path `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-...md`. Please replace it with the exact existing filename so link-checking and manual navigation work.
@@ -161,7 +161,7 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 
 **Message:**
 
@@ -185,7 +185,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 
 **Message:**
 
@@ -201,7 +201,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
+- `memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`
 
 **Message:**
 

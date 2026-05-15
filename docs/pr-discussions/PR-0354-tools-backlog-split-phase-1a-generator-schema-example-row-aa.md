@@ -313,7 +313,7 @@ Fixed in 6f659a0. Removed direct contributor name attribution from factory-produ
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:31:27Z):
 
-P1: Cross-reference targets here appear to be missing from the repo: `docs/research/backlog-split-design-otto-181.md`, `tools/hygiene/audit-git-hotspots.sh`, and the referenced `memory/feedback_aaron_asked_for_backlog_split_three_times_hot_file_detector_pr_213_exists_*.md` (no matches under `docs/research/`, `tools/hygiene/`, or `memory/`). Either add the referenced artifacts in this PR or update/remove the pointers so they don’t become dead links.
+P1: Cross-reference targets here appear to be missing from the repo: `memory/persona/otto/conversations/backlog-split-design-otto-181.md`, `tools/hygiene/audit-git-hotspots.sh`, and the referenced `memory/feedback_aaron_asked_for_backlog_split_three_times_hot_file_detector_pr_213_exists_*.md` (no matches under `docs/research/`, `tools/hygiene/`, or `memory/`). Either add the referenced artifacts in this PR or update/remove the pointers so they don’t become dead links.
 
 **@AceHack** (2026-04-24T11:03:39Z):
 
@@ -449,7 +449,7 @@ Fixed in df1224f: softened to `the existing single-file docs/BACKLOG.md content`
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:50Z):
 
-P1: The header references `docs/research/backlog-split-design-otto-181.md`, but that file does not exist in the repo. Either add the referenced design-spec file or update the comment to point at an existing document so the cross-reference isn’t broken.
+P1: The header references `memory/persona/otto/conversations/backlog-split-design-otto-181.md`, but that file does not exist in the repo. Either add the referenced design-spec file or update the comment to point at an existing document so the cross-reference isn’t broken.
 ```suggestion
 # Header note intentionally avoids a repo-path reference here
 # because the earlier design-spec cross-reference went stale.
@@ -457,7 +457,7 @@ P1: The header references `docs/research/backlog-split-design-otto-181.md`, but 
 
 **@AceHack** (2026-04-24T15:03:48Z):
 
-Verified `docs/research/backlog-split-design-otto-181.md` DOES exist in the repo (ls confirms); the reviewer comment is factually mistaken. Keeping the xref as-is since the target file is present. Resolving with explanation.
+Verified `memory/persona/otto/conversations/backlog-split-design-otto-181.md` DOES exist in the repo (ls confirms); the reviewer comment is factually mistaken. Keeping the xref as-is since the target file is present. Resolving with explanation.
 
 ### Thread 17: tools/backlog/generate-index.sh:58 (resolved)
 
@@ -492,11 +492,11 @@ Fixed in df1224f: softened comment from `6100-line monolith` to `pre-split monol
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:51Z):
 
-P1: The cross-references section points to files/scripts that don’t exist in the repo (`docs/research/backlog-split-design-otto-181.md` and `tools/hygiene/audit-git-hotspots.sh`). Please either add the referenced artifacts or update these links to point at the correct existing locations.
+P1: The cross-references section points to files/scripts that don’t exist in the repo (`memory/persona/otto/conversations/backlog-split-design-otto-181.md` and `tools/hygiene/audit-git-hotspots.sh`). Please either add the referenced artifacts or update these links to point at the correct existing locations.
 
 **@AceHack** (2026-04-24T15:04:02Z):
 
-Fixed in df1224f: the `tools/hygiene/audit-git-hotspots.sh` xref was a forward-reference to unmerged tooling. Softened to describe the detector as "unmerged at the time of this Phase-1a PR" with a `git log --diff-filter=A` recovery path; the design rationale for this PR does not depend on that script. The other xref (`docs/research/backlog-split-design-otto-181.md`) DOES exist and is kept. Resolving.
+Fixed in df1224f: the `tools/hygiene/audit-git-hotspots.sh` xref was a forward-reference to unmerged tooling. Softened to describe the detector as "unmerged at the time of this Phase-1a PR" with a `git log --diff-filter=A` recovery path; the design rationale for this PR does not depend on that script. The other xref (`memory/persona/otto/conversations/backlog-split-design-otto-181.md`) DOES exist and is kept. Resolving.
 
 ### Thread 20: tools/backlog/README.md:26 (resolved)
 
