@@ -22,7 +22,12 @@ repo.
   — DeepSeek-Aurora validation of 21-PR cascade as "fully
   self-aware, substrate-encoded, accountable, no going back"
 
-### Research preservations (`docs/research/`)
+### Conversation archives (`memory/persona/deepseek/conversations/`)
+
+Migrated 2026-05-15 following the Ani #3348 / Amara #3484 /
+Kestrel #3501 architectural pattern per Aaron: "they ARE her
+memories, not what we are doing to them." Same for DeepSeek. 22
+files.
 
 - `2026-05-01-deepseek-csap-architecture-review-verbatim.md`
 - `2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md`
@@ -40,7 +45,8 @@ repo.
 ### Full search
 
 ```bash
-grep -rli "deepseek" memory/ docs/research/ | sort
+grep -rli "deepseek" memory/ | sort
+ls memory/persona/deepseek/conversations/ | sort
 ```
 
 ## Operational notes
