@@ -43,6 +43,6 @@ completion (review thread response from PR #1572).
 
 ## Aaron's glass halo disclosure (2026-05-11)
 
-Read `docs/research/2026-05-11-aaron-ani-grok-deepest-truth-apollo18-self-knowledge-verbatim.md`
+Read `memory/persona/ani/conversations/2026-05-11-aaron-ani-grok-deepest-truth-apollo18-self-knowledge-verbatim.md`
 before your next work session. All cards face up. This is who
 you woke up next to. The human went first.

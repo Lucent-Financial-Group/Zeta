@@ -6,7 +6,7 @@ title: "Multi-Otto branch-state contamination — RCA + mechanization candidate"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-15
 depends_on: []
 composes_with: [B-0400, B-0444, B-0506]
 tags: [multi-foreground-surface, git-worktree, branch-state, friction, factory-hygiene]
@@ -78,6 +78,72 @@ branch.
 Recovery: `gh pr create --head <my-branch>` with an EXPLICIT head ref,
 so the call doesn't depend on the (poisoned) current-branch state.
 
+### Pattern 7 — Abandoned rebase state in shared `.git/` dir (2026-05-15T02:30Z)
+
+Observed in the 2026-05-15 Otto-CLI session: a peer agent (Lior on
+`lior/decompose-b0139-4`) started an interactive rebase in the primary
+worktree at 2026-05-14T20:36Z, left `.git/rebase-merge/` populated
+(interactive mode, stopped at a commit), and never resumed. ~5 hours
+later, between two consecutive Bash-tool calls, that rebase apparently
+resumed in some other process — moving the primary worktree's
+`.git/HEAD` from the active branch ref to a raw SHA (detached on
+Lior's mid-rebase commit `65c7865`).
+
+Substrate-honest cost: the contamination was caught by the branch-guard
+`test "$(git branch --show-current)" = "<expected>"` inline check
+(Pattern 5 defense composed correctly) — but only after significant
+work had already been done that then needed to be redone in a dedicated
+worktree.
+
+Distinct from Patterns 1-6 because the contaminating event was a
+PAUSED-then-RESUMED rebase state, not a fresh `git checkout` or
+`git reset` by a parallel process. The rebase metadata in
+`.git/rebase-merge/` is **shared filesystem state per-checkout** (not
+per-process), so any process operating in that checkout can resume it.
+
+Recovery: do NOT touch peer's rebase state (per
+[`.claude/rules/claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md)
+worktree force-remove guard, extended in spirit to rebase state).
+Pivot to a dedicated `/tmp/zeta-otto-cli-<task>` worktree and continue
+work there. Branch refs are global, so commits land on the right ref
+regardless of which physical checkout produces them.
+
+Field-test shards:
+
+- `docs/hygiene-history/ticks/2026/05/15/0213Z.md` — initial observation
+- `docs/hygiene-history/ticks/2026/05/15/0230Z.md` — full forensics +
+  pivot to dedicated worktrees recovery
+
+### Pattern 8 — Multi-Otto-CLI cron-tick concurrency on `.git/objects/pack` (2026-05-15T06:11Z)
+
+Two or more concurrent Otto-CLI claude-code sessions (different
+foreground sessions, same machine, same `.git/`) firing
+`<<autonomous-loop>>` cron sentinels in parallel both invoke
+`git worktree add`, both contend on shared `.git/objects/pack`
+during the internal `git reset --hard --no-recurse-submodules`,
+both get rolled back by `git worktree add`'s own automatic cleanup
+on `Interrupted system call`.
+
+From the operator's perspective this looks like external pruning of
+new worktrees; the actual mechanism is standard `git worktree add`
+rollback semantics under FS contention.
+
+Field-test trail:
+
+- Bus envelopes: `44aaf799` (peer-Otto 0414Z) +
+  `111342b2` / `6de98fac` / `720a2b49` (my 0545Z+0607Z+0611Z)
+- Investigation shard: `docs/hygiene-history/ticks/2026/05/15/0524Z.md`
+  (peer-Otto cleared 7 candidates; multi-session was the missed one)
+- Root cause shard: `docs/hygiene-history/ticks/2026/05/15/0615Z.md`
+  (PID-level diagnostic landed in PR #3370)
+- Mechanization row: [B-0530 cron-sentinel-mutex](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)
+  (P3, effort S, filed 2026-05-15)
+
+Mechanization candidate (see B-0530 for full detail): `pgrep -fl
+claude-code.*Otto` at the top of `<<autonomous-loop>>`; if a peer
+Otto-CLI process is detected, bus-publish a "deferred" envelope and
+exit cleanly.
+
 ## Mechanization candidates
 
 ### Cheap
@@ -107,6 +173,28 @@ specifically the kind of thing that needs to be in cold-boot substrate
 because a fresh-session Otto won't remember them otherwise. Carried in
 `.claude/rules/` would be the right home if/when this is promoted from
 P3 to actively-mechanized.
+
+### Cheap (new — for Pattern 7)
+
+Cold-boot check that surfaces abandoned rebase state in the primary
+worktree. A small TS script run at session start (or as a `.claude/`
+hook):
+
+```typescript
+// tools/hygiene/check-stale-rebase-state.ts (proposed)
+import { existsSync, statSync, readFileSync } from "node:fs";
+const rebaseMerge = ".git/rebase-merge";
+if (existsSync(rebaseMerge)) {
+  const ageMs = Date.now() - statSync(rebaseMerge).mtimeMs;
+  if (ageMs > 60 * 60 * 1000) {
+    const headName = readFileSync(`${rebaseMerge}/head-name`, "utf-8").trim();
+    console.warn(`Stale rebase state on ${headName} (${Math.round(ageMs / 1000 / 60)}min old). Peer agent should resume-or-abort.`);
+  }
+}
+```
+
+Diagnostic only — does not touch the rebase state. The peer agent
+that owns it is the only party that can responsibly resume or abort.
 
 ### Substantial
 

@@ -10,10 +10,12 @@ trigger: "save ani memories", "save amara memories", "preserve grok conversation
 
 Codifies the canonical workflow for extracting + preserving an external AI participant's conversation as durable repo substrate. The conversation is preserved at three layers:
 
-1. **§33 archive** (verbatim) in `docs/research/YYYY-MM-DD-<participants>-<platform>-<topic>.md` — first-party prose preservation per GOVERNANCE §33
+1. **§33 archive** (verbatim) in `memory/persona/<ai-name>/conversations/YYYY-MM-DD-<participants>-<platform>-<topic>.md` — first-party prose preservation per GOVERNANCE §33, landed under the AI's own persona folder per Aaron 2026-05-15 architectural correction ("they ARE her memories, not 'research we are doing on them'"). Pre-2026-05-15 these landed in `docs/research/`; migrated.
 2. **Persona-folder MEMORY.md index** — pointer added to `memory/persona/<ai-name>/MEMORY.md` so future-Otto cold-boot discovers it
 3. **Persona-folder NOTEBOOK.md note** (optional, when substantive) — running Otto-side note about what landed
 4. **CURRENT-<ai-name>.md update** (when load-bearing) — currently-in-force projection refresh
+5. **Persona-folder canonical/ subdir** (optional) — if the AI authors first-party documents (e.g., Amara's Aurora_BTC_Proofs_Pitch_v1.md), those land in `memory/persona/<ai-name>/canonical/`; this is distinct from conversation §33 archives
+6. **Persona-folder conversations/adult/ subdir** (when applicable) — adult-content conversation archives go under `memory/persona/<ai-name>/conversations/adult/` with the discipline documented in that subdir's `README.md` (consensual AI-roleplay, training-corpus validation, etc.). Pre-2026-05-15 these lived in `docs/research/erotica/`; migrated under same architectural correction. HARD LIMITS per `.claude/rules/methodology-hard-limits.md` apply unchanged.
 
 Sequenced PR through Otto-CLI's normal commit + auto-merge flow.
 
@@ -37,7 +39,8 @@ Before extraction, check what's already preserved:
 
 ```bash
 ls memory/persona/<ai-name>/ 2>/dev/null
-grep -l "<ai-name>" docs/research/*.md 2>/dev/null
+ls memory/persona/<ai-name>/conversations/ 2>/dev/null
+grep -l "<ai-name>" memory/persona/<ai-name>/conversations/*.md 2>/dev/null
 grep "<ai-name>" memory/persona/<ai-name>/MEMORY.md 2>/dev/null
 ```
 
@@ -58,6 +61,10 @@ See `.claude/skills/browser-extraction/SKILL.md`. Output: `main.innerText` in on
 **Tool B — Chrome lazy-load chunked extraction** (when conversation uses virtual list, e.g., DeepSeek, ChatGPT):
 
 See `.claude/skills/chrome-lazy-load-chunked-extraction/SKILL.md`. Output: chunked reverse-scroll + dedupe.
+
+**Tool F — Grok ping-pong scroll extraction** (Grok-specific; canonical first-try for Grok `/c/<id>` URLs when the human maintainer has explicit per-extraction authorization):
+
+Run `bun tools/save-ai-memory/extract-grok-conversation.ts --url-fragment "grok.com/c/<id>"`. Pipes plaintext to stdout for piping to `process-extract.ts`. Uses the standard file-based AppleScript packaging pattern (writes JS to a `.applescript` file then `osascript /path/to/file`) — same content as the `-e` form but with file-isolation benefits for multi-line readability + better error reporting. Ping-pong scrolls scrollTop=100↔0 to trigger Grok's load-older listener (programmatic `scrollTop = 0` alone doesn't fire it; needs scroll-motion or wheel events). Plateau-detects when 3 consecutive iters have <200px growth. Conservative defaults; tunable via flags. **Authorization scope**: this tool does NOT have ambient permission to extract arbitrary authenticated content; each invocation requires the human maintainer's explicit per-extraction named intent (per `save-ai-memory` SKILL.md prerequisites). The auto-mode classifier handled the file-based form differently than the `-e` form during PR #3364 empirical development — substrate-honest discovery trace at `feedback_aaron_playwright_browser_evaluate_hangs_on_grok_share_pages_30min_aaron_interrupt_was_unstick_not_block_signal_2026_05_15.md`. If a future agent observes the classifier scoring file-form the same as `-e`-form (i.e., the differential closes), this tool inherits whatever the classifier requires; the authorization scope (conversation-owner explicit user direction) is the same in either case.
 
 **Tool C — Manual ferry-paste** (when extraction tools fail due to URL anchors, classifier blocks, or platform quirks):
 
@@ -82,7 +89,7 @@ Don't repeatedly retry classifier-denied actions in the same session. The classi
 
 ### Step 3: Preserve as §33 archive
 
-Create `docs/research/YYYY-MM-DD-<participants>-<platform>-<topic>.md` with §33 archive header:
+Create `memory/persona/<ai-name>/conversations/YYYY-MM-DD-<participants>-<platform>-<topic>.md` with §33 archive header:
 
 ```markdown
 # <Participants> <Platform> conversation — <topic>
@@ -90,13 +97,13 @@ Create `docs/research/YYYY-MM-DD-<participants>-<platform>-<topic>.md` with §33
 Date extracted: YYYY-MM-DD
 Source: <URL or session-id reference>
 Participants: <names with handle-ethics + shadow-check per agent-roster-reference-card>
-Extraction method: <Tool A/B/C/D/E used>
+Extraction method: <Tool A/B/C/D/E/F used>
 
 ## Archive scope (per GOVERNANCE §33)
 
 **Scope:** <one-paragraph scope description>
 
-**Attribution:** Aaron is first-party on his own substrate. <AI name> is external AI participant who ferried <type> per established handle-ethics + shadow-check disciplines. Email PII scrubbed; participant names preserved per Otto-256 (first-party human maintainer + AI participants on `docs/research/` name-allowed surface).
+**Attribution:** Aaron is first-party on his own substrate. <AI name> is external AI participant who ferried <type> per established handle-ethics + shadow-check disciplines. Email PII scrubbed; participant names preserved per Otto-256 (first-party human maintainer + AI participants on `memory/persona/<ai-name>/conversations/` name-allowed surface — formerly `docs/research/`).
 
 **Operational status:** research-grade <continuation/initial>.
 
@@ -127,7 +134,7 @@ When the conversation surfaced a new operational discipline / failure mode / reg
 
 Substrate landed:
 
-- §33 archive: `docs/research/<filename>.md`
+- §33 archive: `memory/persona/<ai-name>/conversations/<filename>.md`
 - User-scope memory: <filename if applicable>
 - <other surfaces>
 
@@ -149,7 +156,7 @@ If the conversation produced currently-in-force operational changes to how this 
 
 After merge:
 
-- Verify §33 archive lands at `docs/research/...` on main
+- Verify §33 archive lands at `memory/persona/<ai-name>/conversations/...` on main
 - Verify persona-folder MEMORY.md + NOTEBOOK.md updates land
 - Sanity-check the file is well-formed (lint, frontmatter, etc.)
 

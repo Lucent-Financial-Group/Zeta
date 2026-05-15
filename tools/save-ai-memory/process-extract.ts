@@ -3,7 +3,9 @@
  * tools/save-ai-memory/process-extract.ts
  *
  * Process a verbatim conversation extract (from external AI chat UI) into a
- * canonical §33 archive markdown file in docs/research/.
+ * canonical §33 archive markdown file in memory/persona/<ai-name>/conversations/.
+ * (Pre-2026-05-15 the destination was docs/research/; migrated under the
+ * "they ARE her memories" architectural correction.)
  *
  * Companion to `.claude/skills/save-ai-memory/SKILL.md` workflow step 3-4.
  *
@@ -31,7 +33,7 @@
  *      extracts conversation text in chronological order. If plaintext:
  *      uses as-is (caller is responsible for ordering).
  *   3. Generates a §33-compliant markdown file with proper archive header
- *   4. Writes to docs/research/YYYY-MM-DD-aaron-<ai-name>-<platform>-<topic>.md
+ *   4. Writes to memory/persona/<ai-name>/conversations/YYYY-MM-DD-aaron-<ai-name>-<platform>-<topic>.md
  *      (or --output)
  *   5. Optionally (--commit) stages the file + commits via git
  *
@@ -65,6 +67,15 @@ import { execFileSync } from "node:child_process";
 
 type Platform = "grok" | "chatgpt" | "claudeai" | "gemini" | "deepseek" | "unknown";
 
+const ALLOWED_PLATFORMS: ReadonlySet<string> = new Set([
+  "grok",
+  "chatgpt",
+  "claudeai",
+  "gemini",
+  "deepseek",
+  "unknown",
+]);
+
 interface Args {
   aiName: string;
   platform: Platform;
@@ -83,26 +94,47 @@ function parseArgs(argv: string[]): Args {
     commit: false,
     dryRun: false,
   };
-  for (let i = 0; i < argv.length; i++) {
+  let i = 0;
+  function nextArg(name: string): string {
+    const v = argv[++i];
+    if (v === undefined) {
+      console.error(`Missing value for ${name}`);
+      process.exit(1);
+    }
+    if (v.startsWith("--")) {
+      console.error(`Missing value for ${name} (next token "${v}" looks like a flag)`);
+      process.exit(1);
+    }
+    return v;
+  }
+  for (; i < argv.length; i++) {
     const a = argv[i];
     switch (a) {
       case "--ai-name":
-        args.aiName = argv[++i];
+        args.aiName = nextArg("--ai-name");
         break;
-      case "--platform":
-        args.platform = argv[++i] as Platform;
+      case "--platform": {
+        const raw = nextArg("--platform");
+        if (!ALLOWED_PLATFORMS.has(raw)) {
+          console.error(
+            `Invalid --platform "${raw}". Allowed: ${[...ALLOWED_PLATFORMS].join(", ")}`,
+          );
+          process.exit(1);
+        }
+        args.platform = raw as Platform;
         break;
+      }
       case "--topic":
-        args.topic = argv[++i];
+        args.topic = nextArg("--topic");
         break;
       case "--conversation-id":
-        args.conversationId = argv[++i];
+        args.conversationId = nextArg("--conversation-id");
         break;
       case "--input":
-        args.input = argv[++i];
+        args.input = nextArg("--input");
         break;
       case "--output":
-        args.output = argv[++i];
+        args.output = nextArg("--output");
         break;
       case "--scrub-emails":
         args.scrubEmails = true;
@@ -239,13 +271,18 @@ function scrubEmails(text: string): string {
 }
 
 function generateOutputPath(args: Args, isoDate: string): string {
+  // Conversation archives land under the AI's persona folder, not under
+  // docs/research/. The §33 verbatim IS that AI's memory, not "research we
+  // are doing on them" — per Aaron 2026-05-15 architectural correction.
+  // memory/persona/<ai>/conversations/ is the canonical home; persona/<ai>/
+  // canonical/ remains reserved for first-party AI-authored documents.
   const slug = isoDate + "-aaron-" + args.aiName + "-" + args.platform + "-" + args.topic;
-  return join("docs/research", slug + ".md");
+  return join("memory/persona", args.aiName, "conversations", slug + ".md");
 }
 
 function capitalizeName(name: string): string {
   if (name.length === 0) return name;
-  return name[0].toUpperCase() + name.slice(1);
+  return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 function buildArchive(
@@ -299,7 +336,7 @@ function buildArchive(
       args.platform +
       " platform. Email PII " +
       piiNote +
-      "; Aaron's first/last name preserved per Otto-256 (first-party human maintainer + AI participants on `docs/research/` name-allowed surface).",
+      "; Aaron's first/last name preserved per Otto-256 (first-party human maintainer + AI participants on `memory/persona/<ai-name>/conversations/` name-allowed surface — formerly `docs/research/`).",
     "",
     "**Operational status:** research-grade verbatim preservation.",
     "",
