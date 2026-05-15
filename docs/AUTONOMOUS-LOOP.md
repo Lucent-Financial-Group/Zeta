@@ -600,6 +600,33 @@ declared) against `CronList` and re-arms missing rows.
   subscriber handler that consumes them. Note: plist files contain
   machine-specific paths and are maintainer-only artifacts.
 
+  **`missed-substrate-detector` auto-recovery** (B-0442 slice 5, landed
+  2026-05-15 via B-0503 + B-0504): the detector can optionally open a
+  recovery PR for each `CascadeFinding`:
+
+  - `--auto-recover` (default `off`): when set, after detecting a
+    cascade gap on a merged PR, the detector calls `openRecoveryPR`
+    (from `tools/bg/missed-substrate-recovery.ts`) which checks out a
+    deterministic `recovery/<prNumber>` branch from `origin/main`,
+    cherry-picks each missing commit, and opens a PR via `gh pr
+    create`. Enable only when running from a **dedicated `git worktree
+    add` scratch dir** — the real adapters mutate the current working
+    tree and refuse to fire when the tree is not clean.
+  - `--recovery-dry-run` (default `off`): when set together with
+    `--auto-recover`, the recovery path logs intent without performing
+    any git mutations or `gh pr create` call. Useful for verifying the
+    detector finds the cascade you expect before granting it write
+    permission.
+  - **Idempotency**: the recovery branch name is deterministic per PR
+    number, so a previously-open recovery PR for the same PR number
+    will be detected by `gh pr list --head recovery/<prN> --state
+    open` and the recovery is skipped (returns `already-exists`).
+  - **Conflict handling**: if cherry-pick hits a merge conflict, the
+    adapter runs `git cherry-pick --abort` and `openRecoveryPR`
+    returns `cherry-pick-conflict` without pushing partial state; a
+    human must resolve the conflict manually (e.g., open a recovery
+    PR by hand from the same `recovery/<prN>` branch).
+
 - **`docs/hygiene-history/loop-tick-history.md`** — the
   factory's durable tick fire-log; appended to every tick
   at step 5 per the round-44 human-maintainer directive.
