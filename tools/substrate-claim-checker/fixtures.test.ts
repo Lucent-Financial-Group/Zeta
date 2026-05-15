@@ -20,8 +20,15 @@ describe("eval-set fixtures / count drift", () => {
   test("count-drift-9-vs-15.md — claim '9 drift instances' vs 15-row table is detected", () => {
     const result = checkCounts(join(fixtures, "count-drift-9-vs-15.md"));
     expect(result.ok).toBe(true);
-    expect(result.findings.length).toBeGreaterThanOrEqual(1);
+    // Per PR #3611 review threads (chatgpt-codex-connector + copilot):
+    // assert exact finding count and pin the body claim's line so a
+    // regression in body-claim detection cannot be masked by an
+    // HTML-comment match. The fixture's provenance comment is
+    // intentionally worded to not restate the `<number> <noun>` pair
+    // from the body claim.
+    expect(result.findings.length).toBe(1);
     const finding = result.findings[0]!;
+    expect(finding.line).toBe(24);
     expect(finding.claimedCount).toBe(9);
     expect(finding.actualCount).toBe(15);
     expect(finding.claim).toContain("drift instances");
