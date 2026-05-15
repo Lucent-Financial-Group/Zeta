@@ -51,9 +51,9 @@ Every new skill under `.claude/skills/**`, persona under `.claude/agents/**`, gl
 
 Candidates that fail the ethics+safety gate are recorded as failure-data on the honesty dashboard, NOT silently dropped. Rubber-stamping is the exact failure-mode the three-filter discipline exists to prevent — this gate extends that discipline into the ethics axis.
 
-### 4. Alignment-clause drift detector (DECOMPOSED -> B-0366)
+### 4. Alignment-clause drift detector (DECOMPOSED -> B-0531)
 
-*(This item has been sliced into B-0366 for atomic mechanization).*
+*(This item has been sliced into B-0531 for atomic mechanization).*
 
 ### 5. Blast-radius-before-rewrite discipline audit
 

@@ -1,5 +1,5 @@
 ---
-id: B-0366
+id: B-0531
 priority: P1
 status: open
 title: Alignment-clause drift detector
@@ -16,14 +16,17 @@ tags: [ai-ethics, ai-safety, alignment, drift-detector]
 type: friction-reducer
 ---
 
-# B-0366 — Alignment-clause drift detector
+# B-0531 — Alignment-clause drift detector
 
 ## Origin
+
 Decomposed from B-0058 Step 4 to isolate the drift detector implementation for atomic execution.
 
 ## Ask
+
 If a clause in `docs/ALIGNMENT.md` is about to be weakened or removed via the renegotiation protocol, this track generates the impact-survey across factory surfaces that touch the clause. Answers "who depends on this clause, and what breaks if it moves?" before the renegotiation is accepted.
 
 ## Owner / effort
+
 - **Owner:** Alignment-auditor (Sova)
 - **Effort:** S
