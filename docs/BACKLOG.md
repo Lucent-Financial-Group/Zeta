@@ -658,5 +658,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0521](backlog/P3/B-0521-tinygrad-uop-rewrite-walk-retract-mapping.md)** Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from B-0202)
 - [ ] **[B-0528](backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md)** Unit tests for tools/shadow/launchd/install-launchagent.ts
 - [ ] **[B-0530](backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)** Cron-sentinel mutex — prevent multi-Otto-CLI self-contention on .git/objects/pack
+- [ ] **[B-0532](backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md)** Backlog-graph consistency lint — flag parent `status: closed` while declared child is `status: open`
 
 <!-- END AUTO-GENERATED -->
