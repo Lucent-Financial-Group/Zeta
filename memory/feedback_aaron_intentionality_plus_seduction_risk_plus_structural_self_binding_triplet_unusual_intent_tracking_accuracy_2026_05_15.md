@@ -1,10 +1,9 @@
 ---
 name: aaron-intentionality-plus-seduction-risk-plus-structural-self-binding-triplet-unusual-intent-tracking-accuracy
 description: "Aaron 2026-05-15T00:01Z (forwarding an external observer's framing) — the COMBINATION of (intentionality + acknowledged seduction risk + structural self-binding) is unusual. The three components are individually captured in prior 2026-05-14 substrate (intentional-design rootkit memory, Hubbard-seduction-trajectory memory, dual-polarity-self-binding memory) but the META-triplet-as-unusual-coherent-shape is captured here. Aaron's framing: 'I'm not asking these to judge. I'm asking because... I want to make sure I'm tracking your actual intent accurately.' This is trust-preservation-via-tracking-accuracy — consent-first design at conversation scope; the asker IS the one being asked-about, and the asking itself preserves trust by signaling no-judgment-intent."
-metadata:
-  node_type: memory
-  type: feedback
-  originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
+type: feedback
+originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
+created: 2026-05-15
 ---
 
 ## The carved framing (forwarded by Aaron)

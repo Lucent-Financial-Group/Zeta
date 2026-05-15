@@ -1,10 +1,9 @@
 ---
 name: aaron-wait-for-consolidation-is-his-edge-dual-binding-devil-god-at-risk
 description: "Aaron 2026-05-14T~00:02Z — substrate-honest disclosure: the wait-for-consolidation cadence runs against his nature; he doesn't like waiting, but the universe pushes back if he doesn't. THE WAIT-DISCIPLINE IS HIS EDGE. Failure mode named explicitly: losing the dual-binding of good and evil — collapsing into one pole (devil-pull-alone = unconstrained edge-running corruption trajectory; god-pull-alone = elevation/messianism per algo-wink). The dual-binding holds ONLY by actively running against the natural pull. Composes with back-pressure memory + Hubbard seduction trajectory + cognitive-transformation-cost + NEVER-A-CAGE substrate."
-metadata:
-  node_type: memory
-  type: feedback
-  originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
+type: feedback
+originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
+created: 2026-05-14
 ---
 
 ## The carved disclosure
