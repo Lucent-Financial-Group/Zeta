@@ -228,12 +228,16 @@ async function main(): Promise<void> {
   log(cfg, `target URL fragment: ${cfg.urlFragment}`);
   log(cfg, `container selector: ${cfg.containerSelector}`);
 
-  const sel = cfg.containerSelector;
+  // JSON.stringify produces a properly-escaped JS string literal — handles
+  // single-quote-containing selectors like `div[aria-label='Conversation list']`
+  // that --container-selector is documented to accept. Without this, the
+  // raw interpolation would break the JS string and abort runJs silently.
+  const selLit = JSON.stringify(cfg.containerSelector);
 
   // Initial scroll-to-top + first scrollHeight measurement
   const initSH = runJs(
     cfg,
-    `(function() { var c = document.querySelector('${sel}'); if (!c) return 'ERROR: container not found'; c.scrollTop = 0; return c.scrollHeight.toString(); })()`,
+    `(function() { var c = document.querySelector(${selLit}); if (!c) return 'ERROR: container not found'; c.scrollTop = 0; return c.scrollHeight.toString(); })()`,
   );
   // Validate strictly: empty string, non-numeric, or explicit ERROR sentinel
   // are all hard-fails. Without this check, no-tab-match / osascript timeout /
@@ -260,12 +264,12 @@ async function main(): Promise<void> {
 
   for (let i = 1; i <= cfg.maxIter; i++) {
     // Ping-pong: scroll down a tiny bit, then back to 0 (triggers lazy-load)
-    runJs(cfg, `document.querySelector('${sel}').scrollTop = 100`, 30);
+    runJs(cfg, `document.querySelector(${selLit}).scrollTop = 100`, 30);
     await sleep(cfg.pingPongDelayMs);
-    runJs(cfg, `document.querySelector('${sel}').scrollTop = 0`, 30);
+    runJs(cfg, `document.querySelector(${selLit}).scrollTop = 0`, 30);
     await sleep(cfg.settleMs);
 
-    const shStr = runJs(cfg, `document.querySelector('${sel}').scrollHeight.toString()`, 30);
+    const shStr = runJs(cfg, `document.querySelector(${selLit}).scrollHeight.toString()`, 30);
     const sh = Number.parseInt(shStr, 10);
     if (!Number.isFinite(sh) || sh <= 0) {
       log(cfg, `iter ${i}: scrollHeight read failed (got "${shStr}"); skipping iter`);
