@@ -33,13 +33,20 @@ export type RecoveryResult =
   | { status: "error"; reason: string };
 
 /**
- * Deterministic recovery-branch name: `recovery/<prNumber>-<YYYYMMDDHHMMSS>`.
- * Pure function; no I/O. Uses UTC components from the provided Date so the
- * output is reproducible given the same inputs.
+ * Deterministic recovery-branch name: `recovery/<prNumber>`.
+ * Pure function; no I/O. Determinism is load-bearing: the idempotency gate
+ * `checkRecoveryPRExists(recoveryBranch)` only catches duplicate recovery
+ * attempts if the branch name is stable across invocations for the same
+ * `prNumber`. The earlier `recovery/<prNumber>-<timestamp>` form defeated
+ * the gate (every invocation produced a fresh branch name; the gate never
+ * fired). See PR #3433 Copilot P0 catch.
+ *
+ * The `ts` parameter is retained for backward compatibility with callers
+ * passing a Date; it is now unused. Tests should pass any Date (even
+ * `new Date(0)`); the output depends only on `prNumber`.
  */
-export function buildRecoveryBranchName(prNumber: number, ts: Date): string {
-  const stamp = ts.toISOString().replace(/[-:T]/g, "").slice(0, 14);
-  return `recovery/${prNumber}-${stamp}`;
+export function buildRecoveryBranchName(prNumber: number, _ts: Date): string {
+  return `recovery/${prNumber}`;
 }
 
 /**
@@ -47,12 +54,24 @@ export function buildRecoveryBranchName(prNumber: number, ts: Date): string {
  * original `prNumber`, surfaces the detector's urgency, and notes that the
  * PR was auto-generated.
  */
+/**
+ * Escape markdown-control characters in a string that will appear inside
+ * a backtick-wrapped span. Currently scrubs backticks (which would close
+ * the span prematurely and leak content into prose). A branch name is
+ * expected to be ASCII alphanumeric plus `/-_.`; anything else is sanitised
+ * to `_` defensively.
+ */
+function sanitizeForInlineCode(s: string): string {
+  return s.replaceAll("`", "_");
+}
+
 export function buildRecoveryPRBody(finding: CascadeFinding): string {
   const commitList = finding.missingCommits.map((s) => `- ${s}`).join("\n");
+  const safeBranchName = sanitizeForInlineCode(finding.branchName);
   return [
     `## Auto-generated recovery PR`,
     ``,
-    `Original merged PR: **#${finding.prNumber}** (branch \`${finding.branchName}\`)`,
+    `Original merged PR: **#${finding.prNumber}** (branch \`${safeBranchName}\`)`,
     ``,
     `Missing commits detected by \`missed-substrate-detector\`:`,
     commitList,
@@ -74,9 +93,12 @@ export function buildRecoveryPRBody(finding: CascadeFinding): string {
  *   5. `git push origin <recoveryBranch>`.
  *   6. `gh pr create --title ... --body ... --head ... --base main`.
  *
- * Uses `new Date()` internally for the branch-name timestamp; the idempotency
- * gate (`checkRecoveryPRExists`) is the load-bearing uniqueness mechanism.
- * `buildRecoveryBranchName` is exported separately for deterministic unit tests.
+ * The branch name is deterministic from `finding.prNumber` alone
+ * (`recovery/<prNumber>`); the idempotency gate (`checkRecoveryPRExists`)
+ * is the load-bearing uniqueness mechanism — duplicate recovery attempts
+ * for the same PR resolve to `already-exists` and perform no mutations.
+ * `new Date()` is no longer needed here; the date argument to
+ * `buildRecoveryBranchName` is retained for caller back-compat but unused.
  */
 export function openRecoveryPR(
   finding: CascadeFinding,
