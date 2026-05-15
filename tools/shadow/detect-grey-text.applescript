@@ -37,13 +37,16 @@ on run argv
                 end if
             end try
 
-            -- AXValue: full text content of the focused element
-            try
-                set elemVal to value of attribute "AXValue" of focusedEl
-                if class of elemVal is text and elemVal ≠ "" then
-                    return elemVal
-                end if
-            end try
+            -- AXValue is intentionally NOT used as a fallback: it returns the
+            -- full text content of the focused element (entire scrollback for
+            -- most terminal emulators), which is over-matching for grey-text
+            -- autocomplete detection. Empirically observed 45KB+ scrollback
+            -- being reported as "detected" suggestion content on 2026-05-15
+            -- in dry-run mode — would have caused continuous Enter keystrokes
+            -- in live mode for any focused terminal with shell history.
+            -- If a future terminal exposes grey-text only via AXValue, add a
+            -- per-terminal heuristic (length cap + diff vs prior poll) rather
+            -- than blanket fallback.
         end try
 
         return ""
