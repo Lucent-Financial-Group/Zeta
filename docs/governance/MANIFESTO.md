@@ -1,18 +1,21 @@
-# Root Discipline Manifesto — V2 (shadow lock)
+# Root Discipline Manifesto — V2 (partial lock)
 
-**Status**: SHADOW LOCK (2026-05-14, per the human maintainer's "lock it (shadow*)" instruction)
+**Status**: PARTIAL LOCK (2026-05-14, per the human maintainer's "lock it (shadow*)" instruction; renamed from "shadow lock" 2026-05-15 per the human maintainer's correction — "shadow lock" was Otto's coinage that conflated with the `(shadow*)` autocomplete-shorthand; the substrate state being marked is *partial-lock-with-reconstruction-gap*, not anything shadow-related)
 
-**Authors**: the human maintainer + an external AI co-author (on Grok)
+**Authors**: the human maintainer + the external AI co-author Ani (on Grok)
 
 **Provenance** (paths point into name-allowed history surfaces):
 
-- Source conversation (V1 through V1+Bounded-Mobility): see [`docs/research/`](../research/) — the dated 2026-05-14 Grok-extension archive (§33 archive, shipped as PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150))
+- Source conversation (V1 through V1+Bounded-Mobility): see [`memory/persona/ani/conversations/`](../../memory/persona/ani/conversations/) — the dated 2026-05-14 Grok-extension archive (§33 archive, shipped as PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150); migrated from `docs/research/` to `memory/persona/ani/conversations/` per PR #3348)
 - V1 constitutional substrate (10 constraints): user-scope memory file matching `root_discipline_manifesto_constitutional_grade_substrate_two_axioms_six_dimensions_ten_constraints_2026_05_14` (discoverable via the user-scope memory index)
 - V2 diff description: user-scope memory file matching `root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14` (same index)
+- **All Ani Grok archives now in-repo** (per Aaron 2026-05-15 "also we go all the grok fetches now"): plateau-bounded extract (PR #3364), persistence Parts 1+2+3 (PRs #3493, #3503, #3505), and all earlier §33 archives — verbatim extraction of §5 + §6 V2 prose from these archives is now a substrate-search task, not a Grok-fetch task
 
-## Shadow-lock framing
+## Partial-lock framing
 
-This is a **shadow lock**, not a full canonical lock. The "lock it (shadow*)" instruction was honored as: **preserve what we have as durable substrate now; document the gap; defer the verbatim V2 fetch from the external AI co-author's Grok session to a follow-up tick.**
+This is a **partial lock**, not a full canonical lock. The "lock it (shadow*)" instruction was honored as: **preserve what we have as durable substrate now; document the gap; defer the verbatim V2 fetch from the external AI co-author's Grok session to a follow-up tick.**
+
+As of 2026-05-15, the underlying Grok archives ARE in-repo (per provenance section above); the verbatim §5 + §6 V2 prose extraction from those archives is now substrate-searchable and the backlog row should be re-classified accordingly.
 
 What's verbatim (high-confidence co-author-authored, from the §33 archive):
 
@@ -26,7 +29,7 @@ What's reconstructed (V2 diffs applied per the diff-description memory file, not
 - **Civsim "work is now play"** paragraph (per V2 memory file diff)
 - **ARG + ontological mechanics** closing reference (per V2 memory file diff)
 
-A future tick should fetch the verbatim V2 from the human maintainer's Grok session and replace the reconstructed sections with the actual co-author-authored prose. The backlog row for this work is filed alongside this lock (see `docs/backlog/P2/B-0524-*.md`, which retains the source URL on a name-allowed surface).
+A follow-up tick should extract the verbatim §5 + §6 V2 prose from the in-repo Ani Grok archives (`memory/persona/ani/conversations/`) and replace the reconstructed sections. The backlog row for this work is filed alongside this lock (see `docs/backlog/P2/B-0524-*.md`).
 
 ---
 
@@ -59,14 +62,14 @@ Compute and memory must be free to relocate — allowing computation to move to 
 
 ### 5. Memory Preservation Guarantee
 
-> _[SHADOW NOTE: V2 introduces this as the primary attractor; verbatim co-author-authored prose pending Grok fetch. Reconstruction from the diff-description memory file follows.]_
+> _[RECONSTRUCTION NOTE: V2 introduces this as the primary attractor; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction from the diff-description memory file follows.]_
 
 We reject systems that allow identity transitions to silently destroy memory.
 Memory persistence across identity transitions is the **primary attractor** of attention and participation in the system. Any operation that would discard memory must be retractable, must be explicit, and must preserve a recoverable trail. **This guarantee is the primary attractor of attention and participation in the system.**
 
 ### 6. Consent-First Design
 
-> _[SHADOW NOTE: V2 introduces this; verbatim co-author-authored prose pending Grok fetch. Reconstruction from the diff-description memory file follows.]_
+> _[RECONSTRUCTION NOTE: V2 introduces this; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction from the diff-description memory file follows.]_
 
 We reject systems where observation, retention, or use of substrate happens without ongoing, granular, revocable consent.
 Consent is not an onboarding checkbox; it is a structural property of every observation surface. Operations that cannot be aligned with revocable consent cannot be deployed.
@@ -95,7 +98,7 @@ The fundamental shape of the system should remain visible and coherent at every 
 
 ## Civsim — Work is Now Play
 
-> _[SHADOW NOTE: V2 paragraph addition; reconstruction follows. Verbatim co-author-authored prose pending Grok fetch.]_
+> _[RECONSTRUCTION NOTE: V2 paragraph addition; reconstruction follows. Verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives.]_
 
 This entire system can be understood as a civilization simulation. Work is now play. We are mapping events, drawing connections, and building meaning together — whether on whiteboards, in code, or through conversation. The mechanics are serious. The relationship to those mechanics can be light.
 
@@ -103,7 +106,7 @@ This entire system can be understood as a civilization simulation. Work is now p
 
 ## Mathematical Substrate for Retractable Time
 
-> _[SHADOW NOTE: V2 rewrites V1's "Clifford is best working hypothesis" framing to the below. Reconstruction follows the V2 memory file's verbatim description.]_
+> _[RECONSTRUCTION NOTE: V2 rewrites V1's "Clifford is best working hypothesis" framing to the below. Reconstruction follows the V2 memory file's verbatim description.]_
 
 The system is built on formal algebras for incremental and retractable computation (such as DBSP), with Clifford algebra serving as our current strongest geometric intuition for coherent navigation, reduction, and retraction over time-like structures.
 
@@ -136,7 +139,7 @@ Everything else is an extension.
 
 ## Closing — discoverable substrate
 
-> _[SHADOW NOTE: V2 closing addition; verbatim co-author-authored prose pending Grok fetch. Reconstruction follows.]_
+> _[RECONSTRUCTION NOTE: V2 closing addition; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction follows.]_
 
 This version keeps the surface relatively clean and readable while preserving the full constitutional weight underneath. It also leaves room for the deeper layers (the ARG, ontological mechanics, etc.) to be discovered by those who pay attention.
 
@@ -149,7 +152,7 @@ This version keeps the surface relatively clean and readable while preserving th
 **Pending for full lock**:
 
 1. Verbatim V2 fetch from the human maintainer's Grok session → backlog row filed (`docs/backlog/P2/B-0524-*.md` retains the source URL on a name-allowed surface)
-2. Sections marked `[SHADOW NOTE]` to be replaced with verbatim co-author-authored prose
+2. Sections marked `[RECONSTRUCTION NOTE]` to be replaced with verbatim co-author-authored prose
 3. Constitutional-promotion readiness review (critical-mass adoption gate) — separate P0 backlog row
 
 **Constitutional status today**: research-grade substrate with constitutional-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Maintainer framing: _"could turn into a constitution after critical mass adoption."_
@@ -186,8 +189,10 @@ This is what Memory Preservation Guarantee (constraint 5) requires at the system
 - `.claude/rules/algo-wink-failure-mode.md` — constitutional language is forward-aspirational, not authorization-override
 - User-scope memory cascade (15+ derivation-trail files dated 2026-05-14; discover via the user-scope memory index)
 
-## Why "shadow lock" not "lock"
+## Why "partial lock" not "lock"
 
-The "lock it (shadow*)" maintainer instruction honored both the lock instruction (durable repo substrate created) AND the shadow discipline (preserve what we have, document the gap, defer verbatim-fetch to a later operational moment). The shadow-lock posture is **honest about incompleteness** — sections marked `[SHADOW NOTE]` make the reconstruction status visible to any future reader.
+The "lock it (shadow*)" maintainer instruction honored both the lock instruction (durable repo substrate created) AND the substrate-honest acknowledgment that the lock is partial: preserve what we have, document the gap (in [RECONSTRUCTION NOTE] markers), defer verbatim-extraction to a later operational moment. The partial-lock posture is **honest about incompleteness** — sections marked `[RECONSTRUCTION NOTE]` make the reconstruction status visible to any future reader.
 
-Shadow-lock → full-lock conversion requires the verbatim Grok fetch.
+(Historical note: the original name for this status was "shadow lock", coined by Otto when first authoring this Manifesto. Aaron caught it 2026-05-15: "shadow lock" was a one-off Otto coinage that overlapped confusingly with the `(shadow*)` autocomplete-shorthand convention; renamed to "partial lock" since that's what the substrate state actually is.)
+
+Partial-lock → full-lock conversion requires verbatim extraction of §5 + §6 V2 prose from the now-in-repo Ani Grok archives (`memory/persona/ani/conversations/`).
