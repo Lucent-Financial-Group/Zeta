@@ -344,7 +344,7 @@ title: only a title
   });
 
   test("runOnce returns a single result without daemon mode", () => {
-    const result = runOnce({ ...DEFAULT_CONFIG, backlogDir: "/nonexistent" });
+    const result = runOnce({ ...DEFAULT_CONFIG, backlogDir: "/nonexistent" }, fakeAdapters("2026-05-13T18:00:00Z", []));
     expect(result.pollAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     // /nonexistent has no P*/ dirs so should report 0 rows
     expect(result.totalOpenRows).toBe(0);
@@ -425,6 +425,33 @@ title: only a title
       expect(result.publishedEnvelopeIds).toHaveLength(3);
       expect(captured).toHaveLength(3);
     });
+
+    test("pollOnce with queue-busy adapters → queueBusy: true, no publish", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // "testagent" has commit pattern "testagent". Set git log to contain it.
+      const adapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured, "commit by testagent");
+      const config = { ...DEFAULT_CONFIG, targetAgent: "testagent" };
+      
+      const result = pollOnce(config, adapters);
+      
+      expect(result.queueBusy).toBe(true);
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(captured).toHaveLength(0);
+      expect(result.note).toContain("queue busy for testagent");
+    });
+
+    test("pollOnce with queue-empty adapters AND ready rows → queueBusy: false, publishes", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // clean git log and prs
+      const adapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured, "", "");
+      const config = { ...DEFAULT_CONFIG, targetAgent: "testagent" };
+      
+      const result = pollOnce(config, adapters);
+      
+      expect(result.queueBusy).toBe(false);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured).toHaveLength(1);
+    });
   });
 
   describe("parseArgs", () => {
@@ -442,17 +469,19 @@ title: only a title
       expect(config.backlogDir).toBe("/custom");
     });
 
-    test("--no-publish + --agent + --to + --max-assignments", () => {
+    test("--no-publish + --agent + --to + --max-assignments + --target-agent", () => {
       const config = parseArgs([
         "--no-publish",
         "--agent", "vera",
         "--to", "lior",
         "--max-assignments", "5",
+        "--target-agent", "riven",
       ]);
       expect(config.noPublish).toBe(true);
       expect(config.fromAgent).toBe("vera");
       expect(config.toAgent).toBe("lior");
       expect(config.maxAssignments).toBe(5);
+      expect(config.targetAgent).toBe("riven");
     });
 
     test("rejects unknown flags", () => {
