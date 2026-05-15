@@ -59,7 +59,11 @@ on-disk state:
    (regardless of local worktree state):
 
    ```bash
-   git fetch origin main
+   # `git fetch origin` (no branch arg) updates ALL configured remote-tracking
+   # refs reliably; the form `git fetch origin main` updates FETCH_HEAD but
+   # may not refresh refs/remotes/origin/main under all configs (refspec
+   # overrides, partial-clone, etc.).
+   git fetch origin
    git ls-tree -r origin/main -- docs/backlog/ \
      | awk '{print $4}' | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -5
    ```
@@ -69,10 +73,10 @@ on-disk state:
    an abandoned rebase, on a feature branch that's behind, etc.), which
    gives misleading "what's free" answers. Empirical anchor: tick 0742Z
    on 2026-05-15 — Otto-CLI's primary worktree was stuck on detached HEAD
-   `65c7865` from an 8h-stale Lior rebase; local `find` showed B-0526 as
-   the top, missing B-0527 + B-0528 (which were taken by PRs #3334 + #3342
-   on `origin/main`). The mis-allocation was caught by Copilot review but
-   reached a public PR-comment first; correction comment had to follow.
+   `65c7865` from an 8h-stale peer-agent rebase; local `find` showed B-0526
+   as the top, missing B-0527 + B-0528 (which were taken by PRs #3334 +
+   #3342 on `origin/main`). The mis-allocation was caught by Copilot review
+   but reached a public PR-comment first; correction comment had to follow.
    See [PR #3381](https://github.com/Lucent-Financial-Group/Zeta/pull/3381)
    (which lands `docs/hygiene-history/ticks/2026/05/15/0742Z.md` carrying
    the full trace), plus the correction comment on
