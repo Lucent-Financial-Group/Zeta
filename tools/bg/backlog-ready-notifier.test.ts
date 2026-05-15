@@ -523,8 +523,68 @@ title: only a title
       const adapters = fakeAdapters("2026-05-13T18:15:00Z", [ROW_CLOSED, ROW_OPEN_DEPS_SATISFIED], captured, "", "", history, written);
       
       pollOnce(DEFAULT_CONFIG, adapters);
-      
+
       expect(written[0]!.entries.map(e => e.rowId)).toEqual(["B-9001", "B-9002"]); // B-9999 was pruned
+    });
+
+    test("cooldown rows track the actually-published row (not toAssign[i]) when invalid-priority row is skipped (Codex P2)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const written: AssignmentHistory[] = [];
+      // First row has invalid priority — it will be skipped via `continue`
+      // in pollOnce. Second row publishes successfully. Without the
+      // publishedPairs fix, cooldown history would record the SKIPPED
+      // row's id (toAssign[0]) instead of the published one.
+      const ROW_BAD_PRIORITY: BacklogRow = {
+        id: "B-9100",
+        priority: "XX" as unknown as "P1",
+        status: "open",
+        dependsOn: [],
+        filename: "B-9100-bad-priority.md",
+      };
+      const adapters = fakeAdapters("2026-05-15T22:00:00Z", [ROW_BAD_PRIORITY, ROW_OPEN_NO_DEPS], captured, "", "", null, written);
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured).toHaveLength(1);
+      expect(captured[0]!.rowId).toBe("B-9001");
+      // Cooldown row must reference the actually-published row B-9001, NOT
+      // the wrong-indexed B-9100 (the skipped one at toAssign[0]).
+      expect(written).toHaveLength(1);
+      expect(written[0]!.entries.map(e => e.rowId)).toEqual(["B-9001"]);
+    });
+
+    test("readHistoryFile returns malformed shape ({}) → treated as empty, does not throw (Codex P1)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const written: AssignmentHistory[] = [];
+      // History adapter returns an object that parses as JSON but lacks
+      // `.entries`. Without normalizeHistory, pollOnce would call .filter
+      // on undefined and throw, aborting the notifier loop.
+      const adapters = fakeAdapters(
+        "2026-05-15T22:00:00Z",
+        [ROW_OPEN_NO_DEPS],
+        captured, "", "",
+        { } as unknown as AssignmentHistory,
+        written,
+      );
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+
+      // No throw → result is well-formed; falls through to first-assignment behavior.
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(result.skippedDueToCooldown).toHaveLength(0);
+    });
+
+    test("readHistoryFile returns malformed entries (non-array) → entries treated as empty (Codex P1)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const written: AssignmentHistory[] = [];
+      const adapters = fakeAdapters(
+        "2026-05-15T22:00:00Z",
+        [ROW_OPEN_NO_DEPS],
+        captured, "", "",
+        { entries: "garbage" } as unknown as AssignmentHistory,
+        written,
+      );
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
     });
   });
 
@@ -568,6 +628,17 @@ title: only a title
 
     test("rejects --backlog-dir without value", () => {
       expect(() => parseArgs(["--backlog-dir"])).toThrow(/requires a value/);
+    });
+
+    test("rejects unknown --target-agent (Copilot review: typo silently no-ops queue check)", () => {
+      expect(() => parseArgs(["--target-agent", "ott"])).toThrow(/--target-agent must be one of/);
+    });
+
+    test("--target-agent accepts known identity keys (otto/alexa/lior/vera/riven)", () => {
+      for (const name of ["otto", "alexa", "lior", "vera", "riven"]) {
+        const config = parseArgs(["--target-agent", name]);
+        expect(config.targetAgent).toBe(name);
+      }
     });
   });
 });

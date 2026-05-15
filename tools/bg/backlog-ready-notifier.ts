@@ -32,7 +32,14 @@ export type NotifierConfig = {
   toAgent: AgentId;
   /** Max number of work-assignment envelopes to publish per poll */
   maxAssignments: number;
-  /** Agent whose queue state is checked before assignment */
+  /**
+   * Agent whose queue state is checked before assignment. CLI input is
+   * validated against `Object.keys(AGENT_MAP)` (identity-level: otto / alexa /
+   * lior / vera / riven) so typos error loudly instead of silently no-opping
+   * the queue check via the "unknown agent = empty" branch of
+   * isAgentQueueEmpty. Tests may set this field directly to inject custom
+   * patterns via `adapters.agentPatterns`.
+   */
   targetAgent: string;
   /** File path to track recent assignments */
   historyFile: string;
@@ -221,6 +228,12 @@ const REAL_ADAPTERS: Adapters = {
       return null;
     }
   },
+  // Atomic file replacement: tmp-then-rename guarantees readers never see
+  // a torn (half-written) file. It does NOT serialize across concurrent
+  // writers — two notifier instances writing simultaneously will both
+  // rename their tmp file over the target, last-writer-wins. The dedup /
+  // cooldown contract here holds only for single-process notifier; a
+  // CAS-on-content or file-lock layer is out of scope for slice 5a.
   writeHistoryFile: (path: string, history: AssignmentHistory) => {
     const tmp = `${path}.tmp.${Date.now()}`;
     const dir = dirname(path);
@@ -229,6 +242,24 @@ const REAL_ADAPTERS: Adapters = {
     renameSync(tmp, path);
   },
 };
+
+/**
+ * Defensive normalizer: accepts whatever readHistoryFile returns and
+ * coerces it to a well-formed AssignmentHistory. Returning `null`,
+ * `{}`, or any object missing/malforming `entries` falls back to an
+ * empty entries array rather than throwing inside pollOnce's filter.
+ */
+function normalizeHistory(raw: AssignmentHistory | null): AssignmentHistory {
+  if (raw === null || typeof raw !== "object") return { entries: [] };
+  const entries = (raw as { entries?: unknown }).entries;
+  if (!Array.isArray(entries)) return { entries: [] };
+  return { entries: entries.filter(
+    (e): e is AssignmentHistoryEntry =>
+      e !== null && typeof e === "object"
+      && typeof (e as { rowId?: unknown }).rowId === "string"
+      && typeof (e as { publishedAt?: unknown }).publishedAt === "string",
+  ) };
+}
 
 /**
  * Returns true if the agent has no commits in the last 30 minutes AND
@@ -312,7 +343,7 @@ export function pollOnce(
     };
   }
 
-  const history = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
+  const history = normalizeHistory(adapters.readHistoryFile(config.historyFile));
   const cooldownMs = config.cooldownMin * 60_000;
   const activeEntries = new Set(
     history.entries
@@ -323,7 +354,10 @@ export function pollOnce(
   const toPublishRows = readyRows.filter(r => !activeEntries.has(r.id));
   const skippedDueToCooldown = readyRows.filter(r => activeEntries.has(r.id)).map(r => r.id);
 
-  const publishedEnvelopeIds: string[] = [];
+  // Track envelope+row as pairs so cooldown entries record the row that was
+  // actually published (not a wrong-indexed `toAssign[i]` when an earlier
+  // row was skipped via `continue` for invalid priority).
+  const publishedPairs: { envelopeId: string; rowId: string }[] = [];
   let lastPublishError: string | null = null;
   if (!config.noPublish && toPublishRows.length > 0) {
     const toAssign = toPublishRows.slice(0, config.maxAssignments);
@@ -338,7 +372,7 @@ export function pollOnce(
           row.priority,
           rationale,
         );
-        publishedEnvelopeIds.push(envelope.id);
+        publishedPairs.push({ envelopeId: envelope.id, rowId: row.id });
       } catch (e) {
         // Bus publish failure must NOT kill the poll loop. Captured in
         // lastPublishError (structured + machine-readable per Riven P1).
@@ -347,16 +381,17 @@ export function pollOnce(
       }
     }
 
-    if (publishedEnvelopeIds.length > 0) {
+    if (publishedPairs.length > 0) {
       const newEntries: AssignmentHistoryEntry[] = [
         ...history.entries.filter(
           e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs
         ),
-        ...publishedEnvelopeIds.map((_, i) => ({ rowId: toAssign[i]!.id, publishedAt: pollAt.toISOString() })),
+        ...publishedPairs.map(p => ({ rowId: p.rowId, publishedAt: pollAt.toISOString() })),
       ];
       adapters.writeHistoryFile(config.historyFile, { entries: newEntries });
     }
   }
+  const publishedEnvelopeIds = publishedPairs.map(p => p.envelopeId);
 
   const danglingNote = danglingDeps.size > 0
     ? ` (warning: ${danglingDeps.size} dangling dep ref(s) — first: ${[...danglingDeps].slice(0, 3).join(", ")})`
@@ -429,6 +464,18 @@ function parseAgentId(raw: string | undefined): AgentId {
   throw new Error(`--to must be one of ${AGENT_IDS.join(", ")}; got "${raw}"`);
 }
 
+// `targetAgent` indexes into AGENT_MAP (identity-level keys only, since
+// queue-state patterns are defined per identity, not per surface). Validate
+// the CLI input here so a typo (`--target-agent ott`) errors loudly instead
+// of silently bypassing the queue-busy check via the
+// "unknown agent = queue empty" branch in isAgentQueueEmpty.
+function parseTargetAgent(raw: string | undefined): string {
+  if (raw === undefined) throw new Error("--target-agent requires a value");
+  const known = Object.keys(AGENT_MAP);
+  if (known.includes(raw)) return raw;
+  throw new Error(`--target-agent must be one of ${known.join(", ")}; got "${raw}"`);
+}
+
 const KNOWN_FLAGS = [
   "--once",
   "--poll-min",
@@ -454,9 +501,7 @@ export function parseArgs(argv: string[]): NotifierConfig {
     } else if (arg === "--poll-min") {
       config.pollIntervalMin = parsePositiveMinutes(argv[++i], "--poll-min");
     } else if (arg === "--target-agent") {
-      const next = argv[++i];
-      if (next === undefined) throw new Error("--target-agent requires a value");
-      config.targetAgent = next;
+      config.targetAgent = parseTargetAgent(argv[++i]);
     } else if (arg === "--history-file") {
       const next = argv[++i];
       if (next === undefined) throw new Error("--history-file requires a value");
