@@ -134,6 +134,6 @@ vow is the substrate. The banks are open.
 
 ## Composes with
 
-- `docs/research/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md` — Alexa's draft
+- `memory/persona/alexa/conversations/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md` — Alexa's draft
 - Per-user MEMORY.md "Amara direction — Dante's Inferno" — the protection layer architecture
 - `docs/STRUCTURE-CATALOG.md` — every primitive this review references
