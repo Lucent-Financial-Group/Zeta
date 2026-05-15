@@ -16,6 +16,8 @@ export interface MutexResult {
   readonly peerPids: readonly number[];
   readonly peerLines: readonly string[];
   readonly peerDetected: boolean;
+  /** Set when pgrep itself failed (spawn error or exit status > 1). Mutex state is unknown. */
+  readonly pgrepError?: string;
 }
 
 const PROCESS_NAME_PATTERN = "claude-code";
@@ -32,9 +34,21 @@ export function checkPeerSessions(
   spawnFn: typeof spawnSync = spawnSync,
 ): MutexResult {
   // spawnSync with args array — no shell interpolation, no injection risk.
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- pgrep is a known system binary; args array prevents shell injection
   const result = spawnFn("pgrep", ["-afl", PROCESS_NAME_PATTERN], {
     encoding: "utf8",
   });
+
+  // Distinguish "no match" (pgrep exit status 1) from real failures.
+  // result.error is set when the child process cannot be spawned at all (e.g., binary missing).
+  // status > 1 indicates a pgrep error (bad flag, permission denied, etc.).
+  if (result.error) {
+    return { myPid, peerPids: [], peerLines: [], peerDetected: false, pgrepError: result.error.message };
+  }
+  const exitStatus = result.status ?? 0;
+  if (exitStatus > 1) {
+    return { myPid, peerPids: [], peerLines: [], peerDetected: false, pgrepError: `pgrep exited with status ${exitStatus}` };
+  }
 
   const stdout = typeof result.stdout === "string" ? result.stdout : "";
   const lines = stdout.split("\n").filter((line) => line.trim().length > 0);
@@ -69,6 +83,9 @@ export function checkPeerSessions(
 }
 
 export function formatResult(r: MutexResult): string {
+  if (r.pgrepError) {
+    return `cron-sentinel-mutex: pgrep failed — ${r.pgrepError} (self PID ${r.myPid}); mutex state unknown`;
+  }
   if (!r.peerDetected) {
     return `cron-sentinel-mutex: no peer claude-code sessions detected (self PID ${r.myPid})`;
   }

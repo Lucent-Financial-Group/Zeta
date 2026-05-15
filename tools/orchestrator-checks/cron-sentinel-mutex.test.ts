@@ -5,7 +5,7 @@ import type { spawnSync } from "node:child_process";
 
 type SpawnSync = typeof spawnSync;
 
-function fakeSpawn(stdoutLines: string[], status = 0): SpawnSync {
+function fakeSpawn(stdoutLines: string[], status = 0, error?: Error): SpawnSync {
   return (() => ({
     pid: 1,
     output: [],
@@ -13,6 +13,7 @@ function fakeSpawn(stdoutLines: string[], status = 0): SpawnSync {
     stderr: "",
     status,
     signal: null,
+    error,
   })) as unknown as SpawnSync;
 }
 
@@ -68,6 +69,19 @@ describe("checkPeerSessions", () => {
     const r = checkPeerSessions(555, fakeSpawn(lines, 0));
     expect(r.peerDetected).toBe(false);
   });
+
+  it("returns pgrepError when spawn fails (binary missing or permission denied)", () => {
+    const r = checkPeerSessions(1, fakeSpawn([], 0, new Error("ENOENT: pgrep not found")));
+    expect(r.peerDetected).toBe(false);
+    expect(r.pgrepError).toBe("ENOENT: pgrep not found");
+    expect(r.peerPids).toEqual([]);
+  });
+
+  it("returns pgrepError when pgrep exits with status > 1 (runtime error)", () => {
+    const r = checkPeerSessions(1, fakeSpawn([], 2));
+    expect(r.peerDetected).toBe(false);
+    expect(r.pgrepError).toBe("pgrep exited with status 2");
+  });
 });
 
 describe("formatResult", () => {
@@ -75,6 +89,13 @@ describe("formatResult", () => {
     const out = formatResult({ myPid: 42, peerPids: [], peerLines: [], peerDetected: false });
     expect(out).toContain("no peer");
     expect(out).toContain("self PID 42");
+  });
+
+  it("formats pgrep error case with unknown-mutex-state message", () => {
+    const out = formatResult({ myPid: 42, peerPids: [], peerLines: [], peerDetected: false, pgrepError: "ENOENT: pgrep not found" });
+    expect(out).toContain("pgrep failed");
+    expect(out).toContain("ENOENT: pgrep not found");
+    expect(out).toContain("mutex state unknown");
   });
 
   it("formats peer-detected case with multi-line summary", () => {
