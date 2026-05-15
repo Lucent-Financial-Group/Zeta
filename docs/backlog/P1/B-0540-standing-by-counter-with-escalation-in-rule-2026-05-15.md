@@ -43,6 +43,7 @@ Sharpen the rule to add a counter-with-escalation clause:
 ## Operational discipline
 
 The counter is per-session, per-Otto-surface. Resets on:
+
 - Aaron speaking
 - A named dependency surfacing (PR merge, CI failure, etc.)
 - Actually picking real decomposition work
