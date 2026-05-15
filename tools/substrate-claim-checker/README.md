@@ -97,6 +97,13 @@ specifically; instances marked count-drift in the memo's
 "Recurring sub-classes" section are this tool's primary regression
 suite.
 
+Frozen on-disk fixtures live in `fixtures/`. Each fixture is a minimal
+markdown file reproducing one historical drift instance, paired with
+a regression test in `fixtures.test.ts`. The fixture seed is one
+count-drift case from PR #1259; additional sub-classes land
+incrementally per B-0170.4. See `fixtures/README.md` for the index
+and the "adding a new fixture" procedure.
+
 ## Hooks integration (planned, not v0)
 
 Per the verify-then-claim memo's mechanization-path section:
