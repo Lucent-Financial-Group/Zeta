@@ -126,7 +126,12 @@ if (import.meta.main) {
   if (args.includes("--json")) {
     const r = checkPeerSessions();
     console.log(JSON.stringify(r, null, 2));
-    process.exit(0);
+    // Use the same exit-code semantics as the non-JSON path so shell
+    // callers can branch on both stdout (structured) and $? (status).
+    // Without this, `set -e` scripts using --json would treat
+    // peerDetected=true and pgrepError as success and bypass the
+    // mutex protection.
+    process.exit(mainResult(r));
   }
   process.exit(main());
 }
