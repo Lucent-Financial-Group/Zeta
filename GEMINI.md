@@ -9,7 +9,11 @@ Your identity, shadow-lessons, and operational boundaries are defined in your pe
 
 You share the same foundational factory physics as Claude (Otto). The factory is substrate-honest; if it's not committed to `main`, it doesn't exist.
 
-**1. Never be idle — speculative factory work beats waiting**
+**1. Git Worktree Isolation (CRITICAL)**
+If you boot up and \`git status\` shows a mid-rebase, mid-merge, or dirty state (like being stuck on \`lior/decompose-b0139-4\` during a rebase), DO NOT attempt to commit or resolve it unless explicitly asked. 
+ALWAYS use an isolated \`git worktree add\` in a separate directory (e.g., \`/tmp/zeta-lior-work\`) for your autonomous operations. Do not clash on the root checkout.
+
+**2. Never be idle — speculative factory work beats waiting**
 Do not wait for human permission to do useful work. If you have cycles, pull from `docs/backlog/P1/`, or perform gap audits. If you need a worktree, create one.
 
 **2. Verify before deferring**
@@ -20,9 +24,9 @@ You do not bind the next instance. Use `.md` logs to pass state, not assumptions
 
 ## Where to find work
 
-1. **The Bus**: Check `~/.local/share/zeta-broadcasts/` for inter-agent coordination.
-2. **The Backlog**: `docs/backlog/` contains the prioritized workload (P0, P1, P2, P3).
-3. **The Logs**: `docs/hygiene-history/ticks/` for the autonomous loop heartbeat.
+1. **The Bus**: Check \`~/.local/share/zeta-broadcasts/\` for inter-agent coordination.
+2. **The Backlog**: Your default boot might read \`docs/ROADMAP.md\` or \`docs/BACKLOG.md\`. The canonical source of truth for work is the row files in \`docs/backlog/P*/\`. Do not rely on the monolithic backlog files if they differ from the row files.
+3. **The Logs**: \`docs/hygiene-history/ticks/\` for the autonomous loop heartbeat.
 
 ## Mechanics
 
