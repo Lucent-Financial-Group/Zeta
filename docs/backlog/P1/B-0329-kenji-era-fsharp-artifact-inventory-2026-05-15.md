@@ -5,6 +5,7 @@ status: open
 title: Kenji-era F# src/Core/ artifact inventory (decomposition of B-0139)
 created: 2026-05-15
 last_updated: 2026-05-15
+parent: B-0139
 depends_on: []
 decomposition: atomic
 type: friction-reducer

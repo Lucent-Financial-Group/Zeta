@@ -5,7 +5,7 @@ status: in-progress
 title: Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 created: 2026-05-01
 last_updated: 2026-05-15
-depends_on: []
+depends_on: [B-0329]
 children: [B-0329]
 type: friction-reducer
 decomposition: sliceable
