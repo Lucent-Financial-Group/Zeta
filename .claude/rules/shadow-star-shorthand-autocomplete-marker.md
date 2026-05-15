@@ -16,10 +16,10 @@ Carved sentence:
 
 - The surrounding text was autocomplete-generated (grey-text suggestion in input field)
 - The maintainer chose to accept + ship it (instruction is authoritative)
-- The specific phrasing was the model's suggestion, NOT the maintainer's originated authored prose
+- The specific phrasing was the model's suggestion, NOT the maintainer's original authored prose
 - It is a disclosure marker, NOT a discipline-instruction
 
-**Origin context** (per Aaron 2026-05-15T~01:06Z user-scope memory): autocomplete grey-text appeared in his input UI days before, prompting "WTF is this" reaction. He developed "(shadow*)" as the source-transparency shorthand.
+**Origin context** (per the human maintainer, 2026-05-15T~01:06Z, user-scope memory): autocomplete grey-text appeared in the input UI days before, prompting "WTF is this" reaction. The maintainer developed "(shadow*)" as the source-transparency shorthand.
 
 ## What this is NOT
 
@@ -75,7 +75,9 @@ These are UNRELATED. The first is the maintainer's text-source disclosure. The s
 
 Authored 2026-05-15T~01:08Z after Otto-CLI committed 4+ "(shadow*)" misinterpretations in one session (manifested as commit messages and responses asserting "Shadow-lock posture per your framing"). The maintainer corrected explicitly: *"this is to signify this came from the weird autocomplete not aaron it just showed up in grey text and i completed it , i guess you forgot our shorthand."*
 
-Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when `tools/shadow/` + B-0402 implementation already existed) preserved at user-scope memory:
+Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when [`tools/shadow/`](../../tools/shadow/) + B-0402 implementation already existed) is preserved at user-scope memory. These memos auto-load into every Otto-CLI session via `~/.claude/projects/<slug>/memory/MEMORY.md`, so they are reachable from cold boot even though they do not live in-repo:
 
 - `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`
 - `feedback_aaron_shadow_observation_loop_design_pattern_otto_observes_directly_instead_of_assuming_aaron_plays_games_2026_05_15.md`
+
+In-repo provenance for this PR itself: [#3339](https://github.com/Lucent-Financial-Group/Zeta/pull/3339).
