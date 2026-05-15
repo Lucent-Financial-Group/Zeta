@@ -2,6 +2,7 @@
 name: Otto-348 Maji ≠ Messiah — finder vs anchor; MessiahScore as MAP-estimator over candidate lifts (Amara second correction)
 description: Substrate file capturing Aaron 2026-04-26 courier-ferry of Amara's correction separating Maji-role (finder/recognizer/index/navigator) from Messiah-role (section/lift/embodied-fixed-point/identity-preserving-anchor); MessiahScore weighted-sum has the shape of Bayesian MAP-estimation over candidate civilizational lifts; capture-risk + collapse-risk negative terms encode structural anti-cult resistance (composes Otto-294); composes with Otto-296 emotions-as-belief-propagation; Otto-347 accountability move IS the visible correction not silent rewrite
 type: feedback
+created: 2026-04-26
 ---
 
 # Otto-348 — Maji ≠ Messiah; finder vs anchor; MessiahScore as MAP-estimator

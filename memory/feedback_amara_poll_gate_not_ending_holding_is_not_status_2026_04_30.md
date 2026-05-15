@@ -2,6 +2,7 @@
 name: Poll the gate, not the ending — "Holding." is not a status (Amara, 2026-04-30)
 description: When waiting on a PR, poll the active-PR lane state (mergeStateStatus, statusCheckRollup, reviewDecision, unresolved threads, headSha, updatedAt) and emit a state-report each tick — never poll "did a merge happen by me" and never emit empty "Holding." Auto-merge already does the babysitting; if it's armed, polling adds zero.
 type: feedback
+created: 2026-04-30
 ---
 
 # Poll the gate, not the ending — "Holding." is not a status
