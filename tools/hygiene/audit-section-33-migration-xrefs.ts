@@ -32,10 +32,12 @@
 //
 //   bun tools/hygiene/audit-section-33-migration-xrefs.ts                # detect-only
 //   bun tools/hygiene/audit-section-33-migration-xrefs.ts --report PATH  # write markdown report
+//   bun tools/hygiene/audit-section-33-migration-xrefs.ts --enforce      # exit non-zero on findings
 //
 // Exit codes:
 //
-//   0   always (detect-only; humans triage candidates before fixing)
+//   0   no findings, OR detect-only mode (default)
+//   1   findings present AND --enforce flag set (CI gate)
 //   64  argument error
 //
 // Composes with: audit-rule-cross-refs.ts (template), B-0532 (sibling lint pattern),
@@ -48,10 +50,11 @@ const PERSONA_BASE = "memory/persona";
 const LIVE_NAV_SURFACES = [".claude/rules", ".claude/agents", ".claude/commands", ".claude/skills", "memory", "docs/backlog"];
 const ROOT_MD = ["CLAUDE.md", "AGENTS.md", "README.md", "GOVERNANCE.md"];
 
-type AuditExitCode = 0 | 64;
+type AuditExitCode = 0 | 1 | 64;
 
 interface Args {
     readonly report: string | null;
+    readonly enforce: boolean;
 }
 
 interface DeadXref {
@@ -71,6 +74,7 @@ interface AuditResult {
 
 function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "error"; message: string } {
     let report: string | null = null;
+    let enforce = false;
     let i = 0;
     while (i < argv.length) {
         const a = argv[i]!;
@@ -79,11 +83,14 @@ function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "erro
             if (!next) return { kind: "error", message: "--report requires a path" };
             report = next;
             i += 2;
+        } else if (a === "--enforce") {
+            enforce = true;
+            i += 1;
         } else {
             return { kind: "error", message: `Unknown argument: ${a}` };
         }
     }
-    return { kind: "args", args: { report } };
+    return { kind: "args", args: { report, enforce } };
 }
 
 // Build basename to persona index by walking memory/persona/*/conversations/
@@ -274,6 +281,10 @@ function main(argv: string[]): AuditExitCode {
         console.log(report);
     }
 
+    if (parsed.args.enforce && result.deadXrefs.length > 0) {
+        console.error(`error: ${result.deadXrefs.length} dead xref(s) found; --enforce flag set`);
+        return 1;
+    }
     return 0;
 }
 

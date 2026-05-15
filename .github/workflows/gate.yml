@@ -736,6 +736,34 @@ jobs:
       - name: Run check-archive-header-section33
         run: bun tools/hygiene/check-archive-header-section33.ts
 
+  lint-section-33-migration-xrefs:
+    # Fail if any live-nav surface (.claude/, memory/*.md top-level,
+    # docs/backlog/, repo-root *.md) still references docs/research/<basename>
+    # where <basename> has been migrated to memory/persona/<persona>/conversations/.
+    #
+    # Sibling of lint-archive-header-section33 (B-0036): same shape, different
+    # failure-class. The §33 migration pattern moves files but does not
+    # auto-update backlinks; without this lint, dead xrefs accumulate silently
+    # (empirical baseline 2026-05-15 before cleanup: 10 dead xrefs across 6 files;
+    # full discovery: PR #3513 → Codex P2 → narrow fix PR #3529 → scanner
+    # PR #3548 → baseline cleanup PR #3552).
+    #
+    # B-0533 Slice B.3 + B.4 — wire the scanner to gate.yml in --enforce mode
+    # after PR #3552 backfilled all pre-existing violations to 0.
+    name: lint (§33 migration xrefs)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Run audit-section-33-migration-xrefs (--enforce)
+        run: bun tools/hygiene/audit-section-33-migration-xrefs.ts --enforce
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a
