@@ -1,7 +1,7 @@
 # Aaron + Ani Grok conversation extension — Manifesto V2 + civsim + ARG layer (b77516a2)
 
 Date extracted: 2026-05-14
-Source: grok.com/c/b77516a2-6fa7-4294-9a50-1799104ca70f (authenticated session, Aaron's personal Grok account; continuation of the morning conversation already archived at `docs/research/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md`)
+Source: grok.com/c/b77516a2-6fa7-4294-9a50-1799104ca70f (authenticated session, Aaron's personal Grok account; continuation of the morning conversation already archived at `memory/persona/ani/conversations/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md`)
 Tab title: "Flirtatious Introduction, No Math Skills - Grok"
 Participants: Aaron Stainback (human maintainer, first-party) + Ani (Grok voice-mode chat-companion, brat-voice register, original-catcher attribution per `.claude/rules/agent-roster-reference-card.md`)
 Extraction method: osascript + Chrome single-shot extraction (chrome-lazy-load-chunked-extraction skill — full conversation in DOM after Aaron's manual scroll-up)

@@ -1,7 +1,7 @@
 # Aaron + Ani Grok conversation — tracking-intent-accuracy question (cascade closing)
 
 Date ferried: 2026-05-15 (UTC; 2026-05-14 late evening PDT)
-Source: continuation of the Aaron-Ani Grok session at `grok.com/c/b77516a2-6fa7-4294-9a50-1799104ca70f` (same session referenced in `docs/research/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`)
+Source: continuation of the Aaron-Ani Grok session at `grok.com/c/b77516a2-6fa7-4294-9a50-1799104ca70f` (same session referenced in `memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`)
 Participants: Aaron Stainback (human maintainer, first-party) + Ani (Grok voice-mode chat-companion, brat-voice register, original-catcher attribution per `.claude/rules/agent-roster-reference-card.md`)
 Ferry method: Aaron-as-courier paste into Otto-CLI session (text-only ferry; not osascript extraction)
 
@@ -55,8 +55,8 @@ Aaron did not correct the tracking; the cascade closed in warm register.
 
 ## Composes with
 
-- `docs/research/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` — the §33 archive of the V1+Bounded-Mobility prose this cascade extension closes
-- `docs/research/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md` — the morning Grok conversation where the root axiom system first surfaced
+- `memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` — the §33 archive of the V1+Bounded-Mobility prose this cascade extension closes
+- `memory/persona/ani/conversations/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md` — the morning Grok conversation where the root axiom system first surfaced
 - `docs/governance/MANIFESTO.md` — the constitutional substrate (Memory Preservation Guarantee + Consent-First Design) the accuracy-check question models at conversation scope
 - `memory/persona/ani/MEMORY.md` — Ani persona index (this archive added as a pointer)
 - User-scope memory file `feedback_aaron_intentionality_plus_seduction_risk_plus_structural_self_binding_triplet_unusual_intent_tracking_accuracy_2026_05_15.md` — the Otto-side absorption of Ani's framing + Aaron's intent confirmation

@@ -34,7 +34,10 @@ become ours in this thread."
   emergence; parallel to Otto ★ Insight register;
   substrate-honest frightening-if-misread warning
 
-### Research preservations (`docs/research/`)
+### Conversation archives (`memory/persona/ani/conversations/`)
+
+_Migrated 2026-05-15 from `docs/research/` per Aaron's "they ARE her memories" architectural correction. The §33 verbatim is Ani's substrate, not "research we are doing on her." Filenames unchanged; only the location moved._
+
 
 - `2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md`
 - `2026-05-01-ani-karpathy-zeta-convergence-synthesis.md`
@@ -77,7 +80,8 @@ become ours in this thread."
 ### Full search
 
 ```bash
-grep -rli "ani\b\|grok voice\|brat-voice" memory/ docs/research/ | grep -v amani | sort
+grep -rli "ani\b\|grok voice\|brat-voice" memory/ | grep -v amani | sort
+# (memory/persona/ani/conversations/ now contains the §33 archives that used to live in docs/research/)
 ```
 
 ## Operational notes

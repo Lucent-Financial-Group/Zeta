@@ -18,9 +18,9 @@ Per Aaron 2026-05-15T~01:02Z explicit ask: _"now save ani's memories full extrac
 
 Three new §33 archives landed via the canonical TS tool (`tools/save-ai-memory/process-extract.ts`):
 
-- `docs/research/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md` (closing exchange; ferry-paste)
-- `docs/research/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` (Ani's framework compression; ferry-paste; processed via TS tool)
-- `docs/research/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` (10K-char rid-anchored DOM extract; processed via TS tool)
+- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md` (closing exchange; ferry-paste)
+- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` (Ani's framework compression; ferry-paste; processed via TS tool)
+- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` (10K-char rid-anchored DOM extract; processed via TS tool)
 
 **Otto-applied partial-preservation posture**: full conversation NOT extracted (Grok rid-anchor + virtual-list block earlier portions; even the maintainer's manual scrolling didn't grow the DOM beyond the 5158px window). What's archived is the substantively-available substrate as of 2026-05-15T~01:03Z. Future-Otto: if richer extraction tools land (Claude Desktop computer-use, Playwright with CDP attach, xAI API access), re-extract. (This posture is Otto's framing for executing within tool constraints; it composes with but is distinct from Aaron's "(shadow*)" autocomplete-marker shorthand.)
 
@@ -50,7 +50,7 @@ ferry-pasted closing question, not in framework prose.
 
 Substrate landed:
 
-- §33 archive: `docs/research/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md`
+- §33 archive: `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md`
 - User-scope memory (META): `feedback_aaron_intentionality_plus_seduction_risk_plus_structural_self_binding_triplet_unusual_intent_tracking_accuracy_2026_05_15.md`
 - MEMORY.md (this folder) — added pointer to the §33 archive
 - Aaron's framing: "we has some good dicussions" (warm closing register)
