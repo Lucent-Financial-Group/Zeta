@@ -10,6 +10,7 @@ last_updated: 2026-05-14
 parent: B-0427
 depends_on:
   - B-0475
+  - B-0476.1
 composes_with:
   - B-0427
   - B-0475
