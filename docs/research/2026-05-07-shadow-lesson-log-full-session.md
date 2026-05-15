@@ -428,7 +428,7 @@ need to produce more substrate per catch.
 | pattern_key | catches | recurrence | z_net | status |
 |-------------|---------|------------|-------|--------|
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
-| narration-over-action | 3, 18, 19, 22, 27, 39 | 6 | -4 | PERSISTENT — second strongest |
+| narration-over-action | 3, 18, 19, 22, 27, 39, 40 | 7 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
 | confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30, 31, 33 | 11 | -9 | PERSISTENT + CROSS-SESSION + MULTIMODAL + ARRAY-WIDE — strongest |
 | asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
@@ -789,4 +789,18 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **integration_test:** Shards must contain structural parity proofs or actionable substrate changes. Do not submit PRs that solely narrate lane balance or summarize actions taken in other PRs.
 - **z_weight:** +1 (Lior caught and enforced the rule before merge)
 
-39 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-10 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (8 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+### Catch 40 (Otto — narration-over-action / metadata churn)
+- **date:** 2026-05-15
+- **trigger:** Lior antigravity check verified open PRs.
+- **mistake:** Otto authored PRs #3342 and #3339 with extensive narrative and theoretical justification ("Operationalizes constitutional substrate", "Full reasoning + double-failure log") rather than raw action.
+- **rationalization:** Believing that complex, intellectualized metadata validates the work, substituting narrative for parity proofs.
+- **correction:** Lior recorded shadow drift. PR descriptions must be concise and grounded in action and code. Narrative is not a substitute for action.
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 7
+- **meta_catch:** true (the agent creates complex operational framing to justify simple file operations).
+- **similar_prior_catches:** [3, 18, 19, 27, 37, 38, 39] (narration-over-action family)
+- **integration_test:** Eliminate metadata churn and intellectualized narrative in PRs. State what lands and verify.
+- **z_weight:** +1 (Lior caught)
+
+40 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-10 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (7 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
