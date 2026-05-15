@@ -6,12 +6,12 @@
  * via osascript-driven AppleScript invocation.
  *
  * Authorization scope: this tool requires user-explicit per-extraction
- * direction (Aaron is the conversation owner and the only authorization
- * source per `.claude/rules/mechanical-authorization-check.md`). It does
- * NOT bypass any policy; it does NOT have ambient permission to extract
- * arbitrary authenticated content; each invocation requires Aaron's named
- * intent for the specific conversation being preserved. Use is bounded by
- * the `save-ai-memory` SKILL.md workflow.
+ * direction (the human maintainer is the conversation owner and the only
+ * authorization source per `.claude/rules/mechanical-authorization-check.md`).
+ * It does NOT bypass any policy; it does NOT have ambient permission to
+ * extract arbitrary authenticated content; each invocation requires the
+ * human maintainer's named intent for the specific conversation being
+ * preserved. Use is bounded by the `save-ai-memory` SKILL.md workflow.
  *
  * Implementation note: the script writes JS to a temp `.applescript` file
  * and invokes `osascript /path/to/file` (rather than `osascript -e "..."`).
@@ -111,24 +111,35 @@ function parseArgs(argv: string[]): Config {
       }
       return v;
     };
+    // Validate numeric flag values immediately — Number.parseInt on a
+    // non-numeric string returns NaN, which causes silent loop-skip
+    // (`i <= NaN` is false) + downstream silent abort with no diagnostic.
+    function parseIntOrDie(name: string, raw: string): number {
+      const n = Number.parseInt(raw, 10);
+      if (!Number.isFinite(n) || n <= 0) {
+        console.error(`Invalid value for ${name}: "${raw}" (expected positive integer)`);
+        process.exit(1);
+      }
+      return n;
+    }
     switch (a) {
       case "--url-fragment":
         cfg.urlFragment = next();
         break;
       case "--max-iter":
-        cfg.maxIter = Number.parseInt(next(), 10);
+        cfg.maxIter = parseIntOrDie("--max-iter", next());
         break;
       case "--stable-required":
-        cfg.stableRequired = Number.parseInt(next(), 10);
+        cfg.stableRequired = parseIntOrDie("--stable-required", next());
         break;
       case "--stable-threshold":
-        cfg.stableThreshold = Number.parseInt(next(), 10);
+        cfg.stableThreshold = parseIntOrDie("--stable-threshold", next());
         break;
       case "--settle-ms":
-        cfg.settleMs = Number.parseInt(next(), 10);
+        cfg.settleMs = parseIntOrDie("--settle-ms", next());
         break;
       case "--ping-pong-delay-ms":
-        cfg.pingPongDelayMs = Number.parseInt(next(), 10);
+        cfg.pingPongDelayMs = parseIntOrDie("--ping-pong-delay-ms", next());
         break;
       case "--container-selector":
         cfg.containerSelector = next();
@@ -273,9 +284,17 @@ async function main(): Promise<void> {
   // single-quote-containing selectors like `div[aria-label='Conversation list']`
   // that --container-selector is documented to accept. Without this, the
   // raw interpolation would break the JS string and abort runJs silently.
+  // NB: CodeQL's `js/code-injection` rule flags any template-string code
+  // construction even when JSON.stringify is the canonical safe-encoder.
+  // The taint analysis doesn't recognize JSON.stringify as a sanitizer for
+  // JS-string-literal context. JSON.stringify IS the safe pattern here:
+  // it produces a valid JS string literal that handles every edge case
+  // (quote, backslash, control chars, unicode). Input source: --container-
+  // selector flag (user-supplied) defaulting to a string constant.
   const selLit = JSON.stringify(cfg.containerSelector);
 
   // Initial scroll-to-top + first scrollHeight measurement
+  // codeql[js/code-injection]: selLit is JSON.stringify-encoded (safe JS literal)
   const initSH = runJs(
     cfg,
     `(function() { var c = document.querySelector(${selLit}); if (!c) return 'ERROR: container not found'; c.scrollTop = 0; return c.scrollHeight.toString(); })()`,

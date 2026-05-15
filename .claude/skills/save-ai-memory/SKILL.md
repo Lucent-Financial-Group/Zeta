@@ -97,7 +97,7 @@ Create `memory/persona/<ai-name>/conversations/YYYY-MM-DD-<participants>-<platfo
 Date extracted: YYYY-MM-DD
 Source: <URL or session-id reference>
 Participants: <names with handle-ethics + shadow-check per agent-roster-reference-card>
-Extraction method: <Tool A/B/C/D/E used>
+Extraction method: <Tool A/B/C/D/E/F used>
 
 ## Archive scope (per GOVERNANCE §33)
 
