@@ -23,7 +23,7 @@
  * pattern that scripts commonly use; the differential classifier behavior
  * was observed empirically and is documented in:
  *   memory/feedback_aaron_playwright_browser_evaluate_hangs_on_grok_share_pages_30min_aaron_interrupt_was_unstick_not_block_signal_2026_05_15.md
- * If future-Otto observes the classifier scoring this form the same as -e
+ * If a future agent observes the classifier scoring this form the same as -e
  * (i.e., the differential closes), this tool will inherit those checks
  * cleanly because the user-explicit authorization scope is the same.
  *
@@ -235,7 +235,18 @@ function escapeAppleScriptString(s: string): string {
   return s.replaceAll("\\", "\\\\").replaceAll('"', '\\"');
 }
 
-function runJs(cfg: Config, js: string, timeoutSec = 60): string {
+/**
+ * runJs(cfg, js, timeoutSec, treatErrorPrefixAsAbort)
+ *
+ * The `treatErrorPrefixAsAbort` flag controls whether stdout starting with
+ * "ERROR: " is treated as an AppleScript-side sentinel (abort with exit 1)
+ * vs as legitimate response data. For SHORT scripted probes (scrollHeight,
+ * scrollTop) the sentinel handling is right; for the LARGE body.innerText
+ * extraction it's wrong (a conversation message could legitimately begin
+ * with "ERROR: ..." and would be falsely aborted). Default `true` for
+ * probes; the body-innerText call passes `false` explicitly.
+ */
+function runJs(cfg: Config, js: string, timeoutSec = 60, treatErrorPrefixAsAbort = true): string {
   // Escape both the URL fragment (developer-overridable via --url-fragment)
   // and the JS body for AppleScript string context. Without this, a fragment
   // or JS body containing " or \ would corrupt the AppleScript source.
@@ -284,8 +295,11 @@ end timeout`;
   const stdout = result.stdout.replace(/\n$/, "");
   // Surface multi-tab-match (or other AppleScript-side ERRORs) at the runJs
   // boundary so callers see the failure rather than treating the literal
-  // "ERROR: ..." string as data.
-  if (stdout.startsWith("ERROR: ")) {
+  // "ERROR: ..." string as data. Only treat ERROR-prefix as sentinel for
+  // SCRIPTED PROBES (treatErrorPrefixAsAbort=true); the final body.innerText
+  // extraction passes `false` because a conversation message could
+  // legitimately begin with "ERROR: ..." and would be falsely aborted.
+  if (treatErrorPrefixAsAbort && stdout.startsWith("ERROR: ")) {
     log(cfg, `ABORT: ${stdout}`);
     process.exit(1);
   }
@@ -371,7 +385,10 @@ async function main(): Promise<void> {
   }
 
   log(cfg, "extracting final body.innerText...");
-  const finalText = runJs(cfg, JS_BODY_INNER_TEXT, 120);
+  // Pass treatErrorPrefixAsAbort=false: a conversation message could
+  // legitimately begin with "ERROR: " and falsely trigger the sentinel.
+  // For the final extract, accept any return as data.
+  const finalText = runJs(cfg, JS_BODY_INNER_TEXT, 120, false);
   if (finalText.trim().length === 0) {
     log(cfg, "ABORT: final body.innerText extraction returned empty; aborting before silent-success contaminates downstream pipeline");
     process.exit(1);
