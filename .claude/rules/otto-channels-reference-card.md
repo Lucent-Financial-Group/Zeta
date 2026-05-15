@@ -69,17 +69,30 @@ on-disk state:
    ```
 
    **Symptom → fix mapping** (recorded 2026-05-15 after recurring
-   multi-Otto contention this session): if `git fetch origin main`
-   prints `! <oldsha>..<newsha>  main  -> origin/main  (unable to
-   update local ref)`, the local remote-tracking ref didn't update
-   even though `FETCH_HEAD` did. Switch to `git fetch origin` (no
-   branch arg) — the all-refs form acquires whatever ref-lock is
-   held differently and reliably updates `refs/remotes/origin/main`.
-   If branch creation is urgent and the fetch is still wedged,
-   `git switch -c <new-branch> FETCH_HEAD` bypasses the stale
-   `origin/main` ref entirely. Empirical anchors: ticks 1632Z + 1719Z
-   + 1737Z hit the wedge; tick 1752Z's `git fetch origin` (no arg)
-   cleared it on first call (`33c527e..ae5dc2e main -> origin/main`).
+   multi-Otto contention this session): if a fetch prints
+   `! <oldsha>..<newsha>  main  -> origin/main  (unable to update
+   local ref)`, the local remote-tracking ref didn't update even
+   though `FETCH_HEAD` did. **BOTH the branch-specific form
+   (`git fetch origin main`) AND the no-arg form (`git fetch origin`)
+   can hit this** — the wedge is per-worktree-process ref-lock
+   contention with peer Otto-CLI sessions sharing the same `.git/`
+   directory, not a property of the fetch invocation. Empirical
+   tick 1808Z: primary worktree's `git fetch origin` (no arg) hit
+   the wedge while a sidetick's `git fetch origin` succeeded
+   (`b004681..324dc84 main -> origin/main`) in the same minute.
+
+   **The ultimate workaround** is `git switch -c <new-branch>
+   FETCH_HEAD` — `FETCH_HEAD` always updates regardless of whether
+   the named remote-tracking ref does, so branch creation can
+   bypass the wedge entirely. If you need `origin/main` to actually
+   update (e.g., for `git log origin/main` queries), retry the
+   fetch from a different worktree or wait for the peer to release
+   the ref-lock — the wedge clears on its own within minutes.
+
+   Empirical anchors: ticks 1632Z + 1719Z + 1737Z + 1808Z all hit
+   the wedge with different command forms; tick 1752Z's `git fetch
+   origin` worked. The discriminator is per-process contention, not
+   command shape.
 
    **Important**: do NOT use `find docs/backlog -name "B-*.md"` on the local
    worktree. The local working tree may be on a stale HEAD (detached from
