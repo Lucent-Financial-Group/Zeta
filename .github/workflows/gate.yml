@@ -764,6 +764,32 @@ jobs:
       - name: Run audit-section-33-migration-xrefs (--enforce)
         run: bun tools/hygiene/audit-section-33-migration-xrefs.ts --enforce
 
+  lint-backlog-id-uniqueness:
+    # Fail if any B-NNNN ID is claimed by more than one backlog row file.
+    # Cross-agent ID-allocation collisions (Otto-CLI vs Otto-Desktop on
+    # B-0444 2026-05-13; Lior vs Otto-CLI on B-0532+B-0533 2026-05-15) cost
+    # ~15 min coordination effort each at observed ~20% rate. The
+    # duplicate-ID detection logic was added to audit-backlog-items.ts
+    # 2026-05-14 (PR #3249, Copilot caught two files claiming B-0329 on
+    # PR #3247) but ran detect-only — this job is the CI gate that turns
+    # codified-but-not-enforced into a control.
+    #
+    # B-0535 — sibling of lint-section-33-migration-xrefs + lint-archive-
+    # header-section33: catch-once-then-lint pattern at ID-allocation scope.
+    name: lint (backlog ID uniqueness)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Run audit-backlog-items (--enforce-duplicate-ids)
+        run: bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a

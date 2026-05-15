@@ -34,11 +34,14 @@
 //      PR #3247; PR #3249 added this audit class).
 //
 // Usage:
-//   bun tools/hygiene/audit-backlog-items.ts
+//   bun tools/hygiene/audit-backlog-items.ts                       # detect-only
+//   bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
+//       # exit non-zero on duplicate-ID groups (B-0535 CI gate)
 //
 // Exit codes:
-//   0 -- survey ran (findings reported in body)
-//   1 -- fatal invocation error (e.g., backlog dir missing)
+//   0 -- survey ran (findings reported in body); detect-only mode
+//   1 -- fatal invocation error (e.g., backlog dir missing) OR
+//        duplicate-ID groups found AND --enforce-duplicate-ids set
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -601,6 +604,15 @@ async function main(): Promise<number> {
     return 1;
   }
 
+  const argv = process.argv.slice(2);
+  const enforceDuplicateIds = argv.includes("--enforce-duplicate-ids");
+  for (const arg of argv) {
+    if (arg !== "--enforce-duplicate-ids") {
+      process.stderr.write(`error: unknown argument: ${arg}\n`);
+      return 1;
+    }
+  }
+
   const today = nowIso();
   const nowEpoch = Math.floor(Date.now() / 1000);
 
@@ -651,6 +663,13 @@ async function main(): Promise<number> {
     "  memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md",
   );
   console.log("  (typed-edge backlog graph).");
+
+  if (enforceDuplicateIds && duplicateIdGroups > 0) {
+    process.stderr.write(
+      `\nerror: ${duplicateIdGroups} duplicate-ID group(s) found; --enforce-duplicate-ids set (B-0535 gate)\n`,
+    );
+    return 1;
+  }
 
   return 0;
 }
