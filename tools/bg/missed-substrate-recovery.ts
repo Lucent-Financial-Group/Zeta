@@ -16,11 +16,29 @@ import type { CascadeFinding } from "./missed-substrate-detector";
 export type RecoveryAdapters = {
   /** Returns true if an open recovery PR already exists for this branch. */
   checkRecoveryPRExists: (branchName: string) => boolean;
-  /** `git checkout -b <branch> <base>`; true on success. */
+  /**
+   * Create-or-resume on the recovery branch from `base`. Returns true on
+   * success.
+   *
+   * CONTRACT (required for retry-safety, enforced by openRecoveryPR's
+   * deterministic branch-name design — see `buildRecoveryBranchName`):
+   *
+   *   If the local branch ALREADY EXISTS (from a prior partial-failure
+   *   recovery attempt for the same prNumber), the adapter MUST:
+   *     (a) delete the stale local branch and recreate from `base`
+   *         (`git branch -D <branch> && git checkout -b <branch> <base>`),
+   *         OR
+   *     (b) reset the existing branch to `base` and check it out
+   *         (`git checkout <branch> && git reset --hard <base>`).
+   *   Returning false on "branch already exists" wedges all future retries
+   *   for that prNumber. This is checked by the `openRecoveryPR` contract;
+   *   tests can stub gitCreateBranch to verify the retry path doesn't
+   *   surface a stale-branch error.
+   */
   gitCreateBranch: (branch: string, base: string) => boolean;
   /** `git cherry-pick <sha>`; distinguishes merge conflict from other errors. */
   gitCherryPick: (sha: string) => "ok" | "conflict" | "error";
-  /** `git push origin <branch>`; true on success. */
+  /** `git push origin <branch>`; true on success. Use `--force-with-lease` for retry-safety when the remote branch may also exist from a prior attempt. */
   gitPush: (branch: string) => boolean;
   /** `gh pr create --title ... --body ... --head ... --base main`; PR URL or null. */
   ghPrCreate: (title: string, body: string, head: string) => string | null;

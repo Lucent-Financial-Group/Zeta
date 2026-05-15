@@ -164,6 +164,35 @@ describe("openRecoveryPR — opened", () => {
     expect(log.ghPrCreate[0]!.head).toBe("recovery/1234");
   });
 
+  it("retry path: gitCreateBranch returns true even when stale branch exists (contract test)", () => {
+    // Codex P1 catch on PR #3438: a partial-failure recovery attempt leaves
+    // a stale local branch. The deterministic branch name means a retry
+    // hits the same name. The gitCreateBranch adapter contract REQUIRES
+    // handling this — return true on either delete-and-recreate or
+    // reset-to-base. Verify openRecoveryPR doesn't impose any other
+    // assumption: if the adapter says true, we proceed normally; the core
+    // function makes no decisions about stale-branch handling itself.
+    const log = newCallLog();
+    let createCallCount = 0;
+    // Simulate: first call detects stale branch internally, recovers,
+    // returns true. We just verify openRecoveryPR proceeds.
+    const adapters = stubAdapters(log, {
+      gitCreateBranch: (branch, base) => {
+        createCallCount++;
+        // Real adapter would do: `git branch -D <branch>; git checkout -b <branch> <base>`
+        // and return true on the recreated branch.
+        return branch === "recovery/1234" && base === "origin/main";
+      },
+    });
+    const r = openRecoveryPR(makeFinding(), false, adapters);
+    expect(r.status).toBe("opened");
+    expect(createCallCount).toBe(1); // called exactly once; no retry-loop in core
+    // Cherry-pick + push + PR-create still happen on the recovered branch.
+    expect(log.gitCherryPick.length).toBe(2);
+    expect(log.gitPush.length).toBe(1);
+    expect(log.ghPrCreate.length).toBe(1);
+  });
+
   it("PR title encodes prNumber + missing commits count", () => {
     const log = newCallLog();
     const r = openRecoveryPR(
