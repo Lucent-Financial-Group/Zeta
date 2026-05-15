@@ -115,7 +115,7 @@ interface FrontmatterFields {
   readonly childrenRefs: readonly string[];
 }
 
-const B_REF_RE = /B-\d{4}/g;
+const B_REF_RE = /B-\d{4}(?:\.\d+)*/g;
 
 function parseFrontmatter(text: string): FrontmatterFields {
   const lines = text.split("\n");
