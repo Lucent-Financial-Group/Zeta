@@ -1,7 +1,7 @@
 ---
 id: B-0460
 priority: P1
-status: open
+status: shipped
 title: "B-0441 slice 5.2 — work-assignment subscriber handler (agent-side claim-and-act)"
 tier: factory-infrastructure
 effort: S
@@ -51,9 +51,9 @@ This slice implements the per-tick handler that reads and acts on that envelope.
 
 ## Acceptance criteria
 
-- [ ] B-0449 has landed `tools/bus/subscribe.ts` exporting `subscribeOnce(topic, handler)`
+- [x] B-0449 has landed `tools/bus/subscribe.ts` exporting `subscribeOnce(topic, handler)`
       (this row blocks until B-0449 is merged — see dependency chain)
-- [ ] Per-tick handler for `work-assignment` topic (Option C architecture per B-0449):
+- [x] Per-tick handler for `work-assignment` topic (Option C architecture per B-0449):
   - Reads each matching envelope from the bus dir (honors `ZETA_BUS_DIR`)
   - Logs envelope content (topic, rowId, priority, rationale) to the current tick shard
   - Marks envelope as consumed via `seen.json` per `subscribeOnce` contract
@@ -62,17 +62,17 @@ This slice implements the per-tick handler that reads and acts on that envelope.
     (per B-0449 Option C: subscriber wires into step 1 and queues work into step 3)
   - Optional AC: invokes `bun tools/bus/claim.ts acquire --from <surface> --item <rowId>`
     to claim the row proactively (only when the claim exits 0; skip on conflict)
-- [ ] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
+- [x] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
       `subscribeOnce("work-assignment", workAssignmentHandler)` alongside the
       `infinite-backlog-nudge` subscriber call added by B-0459
-- [ ] Unit tests (DST-replayable with fake bus dir + injected envelopes):
+- [x] Unit tests (DST-replayable with fake bus dir + injected envelopes):
   - Work-assignment envelope present → logged, consumed, no error,
     `rowId` surfaced as speculative-work candidate
   - No envelope → no-op, no error
   - Malformed envelope (missing `rowId`) → logged as warning, consumed, no throw
   - Claim-acquire Optional AC: when claim exits 0 → `acquire` was called with correct
     `--item` value
-- [ ] `tools/bg/README.md` §"What's still pending" updated: slice 5.2 stub landed
+- [x] `tools/bg/README.md` §"What's still pending" updated: slice 5.2 stub landed
 
 ## Scope (what is NOT in scope)
 
@@ -106,8 +106,8 @@ either can land first once B-0449 merges.
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- [ ] Verify B-0449 is merged: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md`
-- [ ] Verify `tools/bus/subscribe.ts` exists and exports `subscribeOnce`
-- [ ] Read B-0459 implementation as the canonical sibling reference before writing
-- [ ] Check `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 current text to know exact
+- [x] Verify B-0449 is merged: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md`
+- [x] Verify `tools/bus/subscribe.ts` exists and exports `subscribeOnce`
+- [x] Read B-0459 implementation as the canonical sibling reference before writing
+- [x] Check `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 current text to know exact
       insertion point for the new `subscribeOnce("work-assignment", ...)` call
