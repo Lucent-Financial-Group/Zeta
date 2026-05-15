@@ -18,11 +18,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Extends [.claude/rules/claim-acquire-before-worktree-work.md](.claude/rules/claim-acquire-before-worktree-work.md) with a new \"Worktree force-remove guard\" section covering an empirical failure mode that the existing rule didn't anticipate.
+Extends [.claude/rules/claim-acquire-before-worktree-work.md](/.claude/rules/claim-acquire-before-worktree-work.md) with a new \"Worktree force-remove guard\" section covering an empirical failure mode that the existing rule didn't anticipate.
 
 ## Empirical anchor
 
-[docs/hygiene-history/ticks/2026/05/14/1813Z.md](docs/hygiene-history/ticks/2026/05/14/1813Z.md) (Otto-CLI's tick shard) documents:
+[docs/hygiene-history/ticks/2026/05/14/1813Z.md](/docs/hygiene-history/ticks/2026/05/14/1813Z.md) (Otto-CLI's tick shard) documents:
 
 - Otto-CLI tried to checkout Otto-Desktop's PR #3153 branch to investigate a Codex thread
 - Got \`fatal: already used by worktree at /private/tmp/zeta-otto-id-alloc\`
