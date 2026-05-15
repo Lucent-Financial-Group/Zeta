@@ -221,7 +221,7 @@ Useful? React with 👍 / 👎.
 
 **@AceHack** (2026-05-15T02:08:29Z):
 
-Fixed in this push — both relative-path refs (`docs/governance/MANIFESTO.md` + `docs/pr-discussions/PR-3306-...`) now point to `../../memory/persona/ani/conversations/<filename>.md`. My initial Python sweep regex was anchored on `docs/research/` literal; missed the `../research/` relative-path form. Substrate-honest sweep lesson for future migrations: match `(?:[./]+/)?research/<filename>` to catch all forms.
+Fixed in this push — both relative-path refs (`docs/governance/MANIFESTO.md` + `docs/pr-discussions/PR-3306-...`) now point to `../../memory/persona/ani/conversations/<filename>.md`. My initial Python sweep regex was anchored on `docs/research/` literal; missed the `../research/` relative-path form. Substrate-honest sweep lesson for future migrations: match `\b(?:[./]+/)?research/<filename>` to catch all forms.
 
 ### Thread 2: docs/governance/MANIFESTO.md:166 (resolved)
 
