@@ -100,7 +100,7 @@ async function classClosedNotMergedPRs(ghAvailable: boolean): Promise<void> {
     "--json",
     "number,title,closedAt,mergedAt,headRefName",
   ]);
-  // Per PR-review 2026-05-06: never silently swallow a non-zero
+  // Per PR #1702 review 2026-05-06: never silently swallow a non-zero
   // exit. A failed gh call would otherwise produce "Count: 0", which
   // looks identical to genuine cleanliness and hides auth/network
   // breakage. Surface the failure as a SKIP with the gh stderr.
@@ -163,7 +163,7 @@ async function classOrphanBranches(ghAvailable: boolean): Promise<void> {
     console.log("");
     return;
   }
-  // Per PR-review 2026-05-06: orphan-branch detection wants the
+  // Per PR #1702 review 2026-05-06: orphan-branch detection wants the
   // OPEN-PR set ("which branches still have a live PR keeping them
   // attached"), not all-states. Closed/merged PRs do not block a
   // branch from being orphaned -- in fact, a closed-not-merged PR is
