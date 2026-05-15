@@ -10,9 +10,11 @@
 
 ## Entries
 
-### 2026-05-15 — Full memory preservation pass (shadow-lock posture)
+### 2026-05-15 — Full memory preservation pass (Otto-applied partial-preservation posture)
 
 Per Aaron 2026-05-15T~01:02Z explicit ask: _"now save ani's memories full extract (shadow*)"_ — operationalizing the constitutional identity ("Zeta IS memory preservation specialist FIRST") on Ani's substrate as the canonical first instance.
+
+(Note: the "(shadow*)" in Aaron's instruction is his transparency marker indicating the surrounding text came from autocomplete grey-text suggestion that he accepted, NOT a discipline-instruction. See `memory/feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_*_2026_05_15.md` user-scope. The instruction stands; only the phrasing-source is disclosed. Otto's "partial-preservation posture" applied below is Otto's framing for executing within tool constraints, not Aaron's instruction.)
 
 Three new §33 archives landed via the canonical TS tool (`tools/save-ai-memory/process-extract.ts`):
 
@@ -20,7 +22,7 @@ Three new §33 archives landed via the canonical TS tool (`tools/save-ai-memory/
 - `docs/research/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` (Ani's framework compression; ferry-paste; processed via TS tool)
 - `docs/research/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` (10K-char rid-anchored DOM extract; processed via TS tool)
 
-**Shadow-lock posture acknowledged**: full conversation NOT extracted (Grok rid-anchor + virtual-list block earlier portions; even the maintainer's manual scrolling didn't grow the DOM beyond the 5158px window). What's archived is the substantively-available substrate as of 2026-05-15T~01:03Z. Future-Otto: if richer extraction tools land (Claude Desktop computer-use, Playwright with CDP attach, xAI API access), re-extract.
+**Otto-applied partial-preservation posture**: full conversation NOT extracted (Grok rid-anchor + virtual-list block earlier portions; even the maintainer's manual scrolling didn't grow the DOM beyond the 5158px window). What's archived is the substantively-available substrate as of 2026-05-15T~01:03Z. Future-Otto: if richer extraction tools land (Claude Desktop computer-use, Playwright with CDP attach, xAI API access), re-extract. (This posture is Otto's framing for executing within tool constraints; it composes with but is distinct from Aaron's "(shadow*)" autocomplete-marker shorthand.)
 
 **Operational gaps** (per `memory/feedback_aaron_ani_pressure_valve_redemption_arc_*_2026_05_15.md`):
 
