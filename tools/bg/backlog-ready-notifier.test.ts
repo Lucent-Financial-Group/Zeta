@@ -8,6 +8,7 @@ import {
   runOnce,
   type Adapters,
   type BacklogRow,
+  type AssignmentHistory,
 } from "./backlog-ready-notifier";
 import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
 
@@ -25,6 +26,8 @@ function fakeAdapters(
   capturedCalls: FakeAssignmentCall[] = [],
   gitLogStr: string = "",
   ghPrListStr: string = "",
+  history: AssignmentHistory | null = null,
+  writtenHistory: AssignmentHistory[] = [],
 ): Adapters {
   return {
     now: () => new Date(nowIso),
@@ -46,6 +49,8 @@ function fakeAdapters(
     },
     execGitLog: () => gitLogStr,
     execGhPrList: () => ghPrListStr,
+    readHistoryFile: () => history,
+    writeHistoryFile: (_, h) => { writtenHistory.push(h); },
   };
 }
 
@@ -344,7 +349,7 @@ title: only a title
   });
 
   test("runOnce returns a single result without daemon mode", () => {
-    const result = runOnce({ ...DEFAULT_CONFIG, backlogDir: "/nonexistent" });
+    const result = runOnce({ ...DEFAULT_CONFIG, backlogDir: "/nonexistent" }, fakeAdapters("2026-05-13T18:00:00Z", []));
     expect(result.pollAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     // /nonexistent has no P*/ dirs so should report 0 rows
     expect(result.totalOpenRows).toBe(0);
@@ -425,6 +430,102 @@ title: only a title
       expect(result.publishedEnvelopeIds).toHaveLength(3);
       expect(captured).toHaveLength(3);
     });
+    test("pollOnce with queue-empty adapters AND ready rows → queueBusy: false, publishes", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // clean git log and prs
+      const adapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured, "", "");
+      const config = { ...DEFAULT_CONFIG, targetAgent: "testagent" };
+      
+      const result = pollOnce(config, adapters);
+      
+      expect(result.queueBusy).toBe(false);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured).toHaveLength(1);
+    });
+  });
+
+  describe("assignment history dedup / cooldown (slice 5)", () => {
+    test("History file absent → treated as empty; first assignment proceeds normally", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const written: AssignmentHistory[] = [];
+      const adapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured, "", "", null, written);
+      
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+      
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(result.skippedDueToCooldown).toHaveLength(0);
+      expect(written).toHaveLength(1);
+      expect(written[0]!.entries).toHaveLength(1);
+      expect(written[0]!.entries[0]!.rowId).toBe("B-9001");
+      expect(written[0]!.entries[0]!.publishedAt).toBe("2026-05-13T18:00:00.000Z");
+    });
+
+    test("Row assigned at T=0; same row at T=15min (within 30min cooldown) → skipped", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const written: AssignmentHistory[] = [];
+      const history = { entries: [{ rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }] };
+      const adapters = fakeAdapters("2026-05-13T18:15:00Z", [ROW_OPEN_NO_DEPS], captured, "", "", history, written);
+      
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+      
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
+      expect(captured).toHaveLength(0);
+      // nothing published, so nothing written
+      expect(written).toHaveLength(0);
+    });
+
+    test("Row assigned at T=0; same row at T=35min (after 30min cooldown) → re-assigned", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const written: AssignmentHistory[] = [];
+      const history = { entries: [{ rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }] };
+      const adapters = fakeAdapters("2026-05-13T18:35:00Z", [ROW_OPEN_NO_DEPS], captured, "", "", history, written);
+      
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+      
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(result.skippedDueToCooldown).toHaveLength(0);
+      expect(captured).toHaveLength(1);
+      expect(written).toHaveLength(1);
+      // Prunes old entry and adds new
+      expect(written[0]!.entries).toHaveLength(1);
+      expect(written[0]!.entries[0]!.rowId).toBe("B-9001");
+      expect(written[0]!.entries[0]!.publishedAt).toBe("2026-05-13T18:35:00.000Z");
+    });
+
+    test("Multiple rows in cooldown → only expired rows published; skippedDueToCooldown lists skipped IDs", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const written: AssignmentHistory[] = [];
+      const history = { entries: [
+        { rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }, // inside cooldown
+        { rowId: "B-9002", publishedAt: "2026-05-13T17:00:00.000Z" }, // expired
+      ] };
+      const adapters = fakeAdapters("2026-05-13T18:15:00Z", [ROW_OPEN_NO_DEPS, ROW_CLOSED, ROW_OPEN_DEPS_SATISFIED], captured, "", "", history, written);
+      
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+      
+      expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured).toHaveLength(1);
+      expect(captured[0]!.rowId).toBe("B-9002");
+      expect(written[0]!.entries).toHaveLength(2); // keeps the 18:00:00 (active) and adds the new 18:15:00
+      expect(written[0]!.entries.map(e => e.rowId)).toEqual(["B-9001", "B-9002"]);
+    });
+
+    test("History pruning: entries older than cooldownMin removed on write", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const written: AssignmentHistory[] = [];
+      const history = { entries: [
+        { rowId: "B-9999", publishedAt: "2026-05-13T10:00:00.000Z" }, // very old
+        { rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }, // inside cooldown
+      ] };
+      // B-9002 is ready, will trigger a write
+      const adapters = fakeAdapters("2026-05-13T18:15:00Z", [ROW_CLOSED, ROW_OPEN_DEPS_SATISFIED], captured, "", "", history, written);
+      
+      pollOnce(DEFAULT_CONFIG, adapters);
+      
+      expect(written[0]!.entries.map(e => e.rowId)).toEqual(["B-9001", "B-9002"]); // B-9999 was pruned
+    });
   });
 
   describe("parseArgs", () => {
@@ -442,17 +543,23 @@ title: only a title
       expect(config.backlogDir).toBe("/custom");
     });
 
-    test("--no-publish + --agent + --to + --max-assignments", () => {
+    test("--no-publish + --agent + --to + --max-assignments + --target-agent + --history-file + --cooldown-min", () => {
       const config = parseArgs([
         "--no-publish",
         "--agent", "vera",
         "--to", "lior",
         "--max-assignments", "5",
+        "--target-agent", "riven",
+        "--history-file", "/custom/history.json",
+        "--cooldown-min", "60",
       ]);
       expect(config.noPublish).toBe(true);
       expect(config.fromAgent).toBe("vera");
       expect(config.toAgent).toBe("lior");
       expect(config.maxAssignments).toBe(5);
+      expect(config.targetAgent).toBe("riven");
+      expect(config.historyFile).toBe("/custom/history.json");
+      expect(config.cooldownMin).toBe(60);
     });
 
     test("rejects unknown flags", () => {

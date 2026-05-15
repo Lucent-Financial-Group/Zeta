@@ -12,8 +12,8 @@
 // Run: bun tools/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH] [--no-publish] [--agent NAME] [--to NAME] [--max-assignments N]
 // Compose with: B-0441 + B-0400 (bus) + B-0440 (reactive peer).
 
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { readdirSync, readFileSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
+import { join, dirname } from "node:path";
 import { publish } from "../bus/bus";
 import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 
@@ -32,6 +32,12 @@ export type NotifierConfig = {
   toAgent: AgentId;
   /** Max number of work-assignment envelopes to publish per poll */
   maxAssignments: number;
+  /** Agent whose queue state is checked before assignment */
+  targetAgent: string;
+  /** File path to track recent assignments */
+  historyFile: string;
+  /** Cooldown window in minutes to avoid re-assigning the same row */
+  cooldownMin: number;
 };
 
 export const DEFAULT_CONFIG: NotifierConfig = {
@@ -42,6 +48,18 @@ export const DEFAULT_CONFIG: NotifierConfig = {
   fromAgent: "otto",
   toAgent: "*",
   maxAssignments: 3,
+  targetAgent: "otto",
+  historyFile: process.env.ZETA_BUS_DIR ? join(process.env.ZETA_BUS_DIR, "assignment-history.json") : "/tmp/zeta-bus/assignment-history.json",
+  cooldownMin: 30,
+};
+
+export type AssignmentHistoryEntry = {
+  rowId: string;
+  publishedAt: string; // ISO-8601
+};
+
+export type AssignmentHistory = {
+  entries: AssignmentHistoryEntry[];
 };
 
 export type BacklogRow = {
@@ -60,6 +78,8 @@ export type PollResult = {
   publishedEnvelopeIds: string[];
   /** Structured publish-failure reason; null on success or skip. */
   lastPublishError: string | null;
+  queueBusy: boolean;
+  skippedDueToCooldown: string[];
   note: string;
 };
 
@@ -79,6 +99,8 @@ export type Adapters = {
   execGitLog: (sinceMinutes: number) => string | null;
   /** Returns `gh pr list` JSON output, or null if the gh invocation fails (treat as indeterminate). */
   execGhPrList: () => string | null;
+  readHistoryFile: (path: string) => AssignmentHistory | null;
+  writeHistoryFile: (path: string, history: AssignmentHistory) => void;
 };
 
 // Keys are lowercase to match the canonical bus agent IDs (SENDER_IDS in tools/bus/types.ts).
@@ -192,6 +214,20 @@ const REAL_ADAPTERS: Adapters = {
     if (result.status !== 0 || result.error) return null;
     return result.stdout ?? "";
   },
+  readHistoryFile: (path: string) => {
+    try {
+      return JSON.parse(readFileSync(path, "utf8")) as AssignmentHistory;
+    } catch {
+      return null;
+    }
+  },
+  writeHistoryFile: (path: string, history: AssignmentHistory) => {
+    const tmp = `${path}.tmp.${Date.now()}`;
+    const dir = dirname(path);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(tmp, JSON.stringify(history, null, 2));
+    renameSync(tmp, path);
+  },
 };
 
 /**
@@ -261,10 +297,36 @@ export function pollOnce(
     r.dependsOn.every(dep => isDepSatisfied(idToStatus.get(dep))),
   );
 
+  const busy = !isAgentQueueEmpty(config.targetAgent, adapters);
+  if (busy) {
+    return {
+      pollAt: pollAt.toISOString(),
+      totalOpenRows: openRows.length,
+      readyRowsFound: readyRows.length,
+      candidateIds: readyRows.slice(0, 10).map(r => r.id),
+      publishedEnvelopeIds: [],
+      lastPublishError: null,
+      queueBusy: true,
+      skippedDueToCooldown: [],
+      note: `queue busy for ${config.targetAgent} — skip publish`,
+    };
+  }
+
+  const history = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
+  const cooldownMs = config.cooldownMin * 60_000;
+  const activeEntries = new Set(
+    history.entries
+      .filter(e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs)
+      .map(e => e.rowId),
+  );
+
+  const toPublishRows = readyRows.filter(r => !activeEntries.has(r.id));
+  const skippedDueToCooldown = readyRows.filter(r => activeEntries.has(r.id)).map(r => r.id);
+
   const publishedEnvelopeIds: string[] = [];
   let lastPublishError: string | null = null;
-  if (!config.noPublish && readyRows.length > 0) {
-    const toAssign = readyRows.slice(0, config.maxAssignments);
+  if (!config.noPublish && toPublishRows.length > 0) {
+    const toAssign = toPublishRows.slice(0, config.maxAssignments);
     for (const row of toAssign) {
       if (!isValidPriority(row.priority)) continue;
       const rationale = `Ready-to-grind: ${row.id} is open with all deps satisfied. Decomposition discipline (PR #2999) says decompose ambiguous parents into concrete slices.`;
@@ -283,6 +345,16 @@ export function pollOnce(
         lastPublishError = e instanceof Error ? e.message : String(e);
         break; // stop the batch on first failure; next tick retries
       }
+    }
+
+    if (publishedEnvelopeIds.length > 0) {
+      const newEntries: AssignmentHistoryEntry[] = [
+        ...history.entries.filter(
+          e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs
+        ),
+        ...publishedEnvelopeIds.map((_, i) => ({ rowId: toAssign[i]!.id, publishedAt: pollAt.toISOString() })),
+      ];
+      adapters.writeHistoryFile(config.historyFile, { entries: newEntries });
     }
   }
 
@@ -305,6 +377,8 @@ export function pollOnce(
     candidateIds: readyRows.slice(0, 10).map(r => r.id),
     publishedEnvelopeIds,
     lastPublishError,
+    queueBusy: false,
+    skippedDueToCooldown,
     note: readyRows.length > 0
       ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind; top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${publishNote}${danglingNote}`
       : `${openRows.length} open rows but none ready${danglingNote}`,
@@ -312,8 +386,8 @@ export function pollOnce(
 }
 
 /** Run a single poll iteration and return its result. */
-export function runOnce(config: NotifierConfig = DEFAULT_CONFIG): PollResult {
-  const result = pollOnce(config);
+export function runOnce(config: NotifierConfig = DEFAULT_CONFIG, adapters?: Adapters): PollResult {
+  const result = pollOnce(config, adapters);
   console.log(JSON.stringify(result));
   return result;
 }
@@ -363,6 +437,9 @@ const KNOWN_FLAGS = [
   "--agent",
   "--to",
   "--max-assignments",
+  "--target-agent",
+  "--history-file",
+  "--cooldown-min",
 ] as const;
 
 export function parseArgs(argv: string[]): NotifierConfig {
@@ -376,6 +453,16 @@ export function parseArgs(argv: string[]): NotifierConfig {
       config.noPublish = true;
     } else if (arg === "--poll-min") {
       config.pollIntervalMin = parsePositiveMinutes(argv[++i], "--poll-min");
+    } else if (arg === "--target-agent") {
+      const next = argv[++i];
+      if (next === undefined) throw new Error("--target-agent requires a value");
+      config.targetAgent = next;
+    } else if (arg === "--history-file") {
+      const next = argv[++i];
+      if (next === undefined) throw new Error("--history-file requires a value");
+      config.historyFile = next;
+    } else if (arg === "--cooldown-min") {
+      config.cooldownMin = parsePositiveMinutes(argv[++i], "--cooldown-min");
     } else if (arg === "--backlog-dir") {
       const next = argv[++i];
       if (next === undefined) throw new Error("--backlog-dir requires a value");
