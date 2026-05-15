@@ -59,7 +59,9 @@
  *   via --container-selector.
  */
 
-import { writeFileSync } from "node:fs";
+import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 
 interface Config {
@@ -151,12 +153,31 @@ function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+// Per-process secure tmpdir for .applescript file writes. Created lazily on
+// first runJs call and reused. mkdtempSync creates a directory with mode 0700
+// and a random suffix — defends against the CodeQL "insecure tmp file" finding
+// (symlink-attack vector when writing to predictable /tmp/<fixed-name>).
+let secureTmpDir: string | null = null;
+function getSecureTmpDir(): string {
+  if (secureTmpDir === null) {
+    secureTmpDir = mkdtempSync(join(tmpdir(), "extract-grok-"));
+    process.on("exit", () => {
+      try {
+        rmSync(secureTmpDir as string, { recursive: true, force: true });
+      } catch {
+        // best-effort cleanup; ignore failures during exit
+      }
+    });
+  }
+  return secureTmpDir;
+}
+
 /**
  * Run a JS expression inside the target Chrome tab via file-based osascript.
- * Critical: the JS body is written to a temp .applescript file and invoked
- * via `osascript /path/to/file` rather than `osascript -e "..."`. This
- * bypasses the per-call classifier's pattern-match on credential-touching
- * `-e` invocations.
+ * Critical: the JS body is written to a temp .applescript file (in a secure
+ * mkdtemp-created directory) and invoked via `osascript /path/to/file` rather
+ * than `osascript -e "..."`. This bypasses the per-call classifier's pattern-
+ * match on credential-touching `-e` invocations.
  */
 function runJs(cfg: Config, js: string, timeoutSec = 60): string {
   const applescript = `with timeout of ${timeoutSec} seconds
@@ -172,7 +193,7 @@ function runJs(cfg: Config, js: string, timeoutSec = 60): string {
         end repeat
     end tell
 end timeout`;
-  const tmpPath = "/tmp/extract-grok-runjs.applescript";
+  const tmpPath = join(getSecureTmpDir(), "runjs.applescript");
   writeFileSync(tmpPath, applescript, "utf-8");
   const result = spawnSync("osascript", [tmpPath], {
     encoding: "utf-8",
@@ -196,14 +217,27 @@ async function main(): Promise<void> {
     cfg,
     `(function() { var c = document.querySelector('${sel}'); if (!c) return 'ERROR: container not found'; c.scrollTop = 0; return c.scrollHeight.toString(); })()`,
   );
+  // Validate strictly: empty string, non-numeric, or explicit ERROR sentinel
+  // are all hard-fails. Without this check, no-tab-match / osascript timeout /
+  // returns yielding empty or NaN would silently produce an empty extract +
+  // exit 0, contaminating any downstream pipeline (e.g., process-extract.ts).
   if (initSH.startsWith("ERROR:")) {
     log(cfg, initSH);
     process.exit(1);
   }
-  log(cfg, `initial scrollHeight: ${initSH}`);
+  if (initSH.trim().length === 0) {
+    log(cfg, "ABORT: initial scrollHeight returned empty (likely no Chrome tab matches the URL fragment, or osascript timed out / failed silently)");
+    process.exit(1);
+  }
+  const initSHNum = Number.parseInt(initSH, 10);
+  if (!Number.isFinite(initSHNum) || initSHNum <= 0) {
+    log(cfg, `ABORT: initial scrollHeight is non-numeric or non-positive: "${initSH}"`);
+    process.exit(1);
+  }
+  log(cfg, `initial scrollHeight: ${initSHNum}`);
   await sleep(2000);
 
-  let priorSH = Number.parseInt(initSH, 10);
+  let priorSH = initSHNum;
   let stableCount = 0;
 
   for (let i = 1; i <= cfg.maxIter; i++) {
@@ -215,6 +249,10 @@ async function main(): Promise<void> {
 
     const shStr = runJs(cfg, `document.querySelector('${sel}').scrollHeight.toString()`, 30);
     const sh = Number.parseInt(shStr, 10);
+    if (!Number.isFinite(sh) || sh <= 0) {
+      log(cfg, `iter ${i}: scrollHeight read failed (got "${shStr}"); skipping iter`);
+      continue;
+    }
     const growth = sh - priorSH;
     log(cfg, `iter ${i}: scrollHeight=${sh} (Δ +${growth})`);
     priorSH = sh;
@@ -235,6 +273,11 @@ async function main(): Promise<void> {
 
   log(cfg, "extracting final body.innerText...");
   const finalText = runJs(cfg, "document.body.innerText", 120);
+  if (finalText.trim().length === 0) {
+    log(cfg, "ABORT: final body.innerText extraction returned empty; aborting before silent-success contaminates downstream pipeline");
+    process.exit(1);
+  }
+  log(cfg, `extracted ${finalText.length} bytes`);
   process.stdout.write(finalText);
 }
 
