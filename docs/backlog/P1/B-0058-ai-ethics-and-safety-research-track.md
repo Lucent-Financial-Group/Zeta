@@ -9,7 +9,7 @@ ask: Aaron 2026-04-21 — *"ai ethic and safety backlog whoops we should have do
 created: 2026-04-26
 last_updated: 2026-05-14
 decomposition: decomposed
-children: [B-0058.1]
+children: [B-0058.1, B-0530]
 depends_on: []
 composes_with: [docs/ALIGNMENT.md, .claude/agents/alignment-auditor.md, feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md, user_faith_wisdom_and_paths.md, feedback_blast_radius_pricing_standing_rule_alignment_signal.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, B-0056, B-0057, B-0059]
 tags: [ai-ethics, ai-safety, alignment, sova, alignment-auditor, HC-clauses, SD-clauses, DIR-clauses, filter-gate, resonance-adoptions, consistency-audit, blast-radius, P1-priority-upgrade, chronology-preserved]
