@@ -65,8 +65,13 @@ a branch, the service catches it BEFORE branch deletion.
       `{ topic: "missed-substrate-cascade", to: <agent>,
          payload: { branchName, missingCommits, recommendedAction:
          "open-recovery-PR" } }` (slice 4 — earlier)
-- [ ] Optionally auto-opens recovery PR with the missing commits
-      (gated by configuration) (slice 5 — pending; subscriber-agent layer)
+- [x] Optionally auto-opens recovery PR with the missing commits
+      (gated by configuration) (slice 5 — landed 2026-05-15 via
+      B-0503 (`openRecoveryPR` core + `RecoveryAdapters` contract) +
+      B-0504 (wire `--auto-recover` into `pollOnce` + real
+      `REAL_RECOVERY_ADAPTERS` with 5-layer safety: type-contract,
+      delete-and-recreate, working-tree-clean gate, detach-HEAD-before-
+      delete, post-cherry-pick `--abort`))
 - [x] Tests cover the detection heuristics (DST-replayable) — 24 tests cover slice 4 wiring + slice 3 detector (drift / no-drift / branch-deleted / branch-rebased / gh-error / git-error) + urgency classification
 - [x] Documented in `docs/AUTONOMOUS-LOOP.md` (slice 6 — landed 2026-05-13)
 
