@@ -3,13 +3,20 @@ Eval-set fixture for substrate-claim-checker (B-0170).
 
 Reproduces the count-drift pattern surfaced in PR #1259
 `review(pr-1257-postmerge): verify-then-claim count drift
-(9→18+) frontmatter + body + MEMORY.md` — narrative claims
-"9 drift instances" while the body table actually contains
-15 data rows.
+(9→18+) frontmatter + body + MEMORY.md` — the body narrative
+claims a smaller count than the body table actually records.
+The exact values are visible inline below.
 
 The fixture is intentionally minimal: only the count claim,
 the table, and enough framing for the checker to find the
 nearest-table within its 50-line window.
+
+NOTE: this comment intentionally avoids restating the exact
+`<number> <noun>` pair from the body claim. Restating it would
+produce a spurious second matching claim from the HTML
+provenance and let regressions in body-claim detection slip
+past `fixtures.test.ts` (per PR #3611 review threads from
+chatgpt-codex-connector + copilot-pull-request-reviewer).
 -->
 
 # Drift catalogue (eval-set fixture)
