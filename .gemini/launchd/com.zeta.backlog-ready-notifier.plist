@@ -4,7 +4,7 @@
 <dict>
     <key>Label</key><string>com.zeta.backlog-ready-notifier</string>
     <!-- Maintainer-only artifact: paths are machine-specific (/Users/acehack, /opt/homebrew).
-         Run tools/setup/install-launchd-services.sh to regenerate with local paths. -->
+         Update these paths manually for your local machine before running `launchctl load`. -->
     <key>ProgramArguments</key><array>
         <string>/opt/homebrew/bin/bun</string>
         <string>/Users/acehack/Documents/src/repos/Zeta/tools/bg/backlog-ready-notifier.ts</string>
