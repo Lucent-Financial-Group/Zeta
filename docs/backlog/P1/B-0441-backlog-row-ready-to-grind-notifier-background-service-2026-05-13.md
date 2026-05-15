@@ -167,7 +167,7 @@ Using the canonical per-service slice ordering from `tools/bg/README.md`:
 |-------|-------------|--------|-----------|
 | 1 | Skeleton + no-op poll loop | ✅ shipped | — |
 | 2 | Real detection signal #1 (backlog-row scan: status + deps satisfied) | ✅ shipped | — |
-| 3 | Queue-state guard wiring (`isAgentQueueEmpty` into `pollOnce`) | ❌ open | B-0500 |
+| 3 | Queue-state guard wiring (`isAgentQueueEmpty` into `pollOnce`) | ✅ shipped | B-0500 |
 | 4 | Bus-publish wiring (`work-assignment` topic) | ✅ shipped | — |
 | 5a | Assignment history dedup / cooldown (avoid re-assigning same row) | ❌ open | B-0501 |
 | 5.2 | Agent-side `work-assignment` subscriber handler (consume + act) | ❌ open | B-0460 |

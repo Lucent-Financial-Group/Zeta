@@ -32,6 +32,8 @@ export type NotifierConfig = {
   toAgent: AgentId;
   /** Max number of work-assignment envelopes to publish per poll */
   maxAssignments: number;
+  /** Agent whose queue state is checked before assignment */
+  targetAgent: string;
 };
 
 export const DEFAULT_CONFIG: NotifierConfig = {
@@ -42,6 +44,7 @@ export const DEFAULT_CONFIG: NotifierConfig = {
   fromAgent: "otto",
   toAgent: "*",
   maxAssignments: 3,
+  targetAgent: "otto",
 };
 
 export type BacklogRow = {
@@ -60,6 +63,7 @@ export type PollResult = {
   publishedEnvelopeIds: string[];
   /** Structured publish-failure reason; null on success or skip. */
   lastPublishError: string | null;
+  queueBusy: boolean;
   note: string;
 };
 
@@ -246,6 +250,8 @@ export function pollOnce(
   adapters: Adapters = REAL_ADAPTERS,
 ): PollResult {
   const pollAt = adapters.now();
+  const busy = !isAgentQueueEmpty(config.targetAgent, adapters);
+
   const allRows = adapters.scanBacklog(config.backlogDir);
   const openRows = allRows.filter(r => r.status === "open");
   const idToStatus = new Map(allRows.map(r => [r.id, r.status]));
@@ -260,6 +266,19 @@ export function pollOnce(
   const readyRows = openRows.filter(r =>
     r.dependsOn.every(dep => isDepSatisfied(idToStatus.get(dep))),
   );
+
+  if (busy) {
+    return {
+      pollAt: pollAt.toISOString(),
+      totalOpenRows: openRows.length,
+      readyRowsFound: readyRows.length,
+      candidateIds: readyRows.slice(0, 10).map(r => r.id),
+      publishedEnvelopeIds: [],
+      lastPublishError: null,
+      queueBusy: true,
+      note: `queue busy for ${config.targetAgent} — skip publish`,
+    };
+  }
 
   const publishedEnvelopeIds: string[] = [];
   let lastPublishError: string | null = null;
@@ -305,6 +324,7 @@ export function pollOnce(
     candidateIds: readyRows.slice(0, 10).map(r => r.id),
     publishedEnvelopeIds,
     lastPublishError,
+    queueBusy: false,
     note: readyRows.length > 0
       ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind; top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${publishNote}${danglingNote}`
       : `${openRows.length} open rows but none ready${danglingNote}`,
@@ -312,15 +332,18 @@ export function pollOnce(
 }
 
 /** Run a single poll iteration and return its result. */
-export function runOnce(config: NotifierConfig = DEFAULT_CONFIG): PollResult {
-  const result = pollOnce(config);
+export function runOnce(
+  config: NotifierConfig = DEFAULT_CONFIG,
+  adapters: Adapters = REAL_ADAPTERS,
+): PollResult {
+  const result = pollOnce(config, adapters);
   console.log(JSON.stringify(result));
   return result;
 }
 
-export async function runDaemon(config: NotifierConfig = DEFAULT_CONFIG): Promise<never> {
+export async function runDaemon(config: NotifierConfig = DEFAULT_CONFIG, adapters: Adapters = REAL_ADAPTERS): Promise<never> {
   while (true) {
-    runOnce(config);
+    runOnce(config, adapters);
     await new Promise(resolve => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
   }
 }
@@ -363,6 +386,7 @@ const KNOWN_FLAGS = [
   "--agent",
   "--to",
   "--max-assignments",
+  "--target-agent",
 ] as const;
 
 export function parseArgs(argv: string[]): NotifierConfig {
@@ -386,6 +410,10 @@ export function parseArgs(argv: string[]): NotifierConfig {
       config.toAgent = parseAgentId(argv[++i]);
     } else if (arg === "--max-assignments") {
       config.maxAssignments = parsePositiveInt(argv[++i], "--max-assignments");
+    } else if (arg === "--target-agent") {
+      const next = argv[++i];
+      if (next === undefined) throw new Error("--target-agent requires a value");
+      config.targetAgent = next;
     } else {
       throw new Error(`unknown flag: ${arg}; known flags: ${KNOWN_FLAGS.join(", ")}`);
     }
