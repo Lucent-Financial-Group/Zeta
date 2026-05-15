@@ -48,7 +48,7 @@ import { join, relative } from "node:path";
 
 const PERSONA_BASE = "memory/persona";
 const LIVE_NAV_SURFACES = [".claude/rules", ".claude/agents", ".claude/commands", ".claude/skills", "memory", "docs/backlog"];
-const ROOT_MD = ["CLAUDE.md", "AGENTS.md", "README.md", "GOVERNANCE.md"];
+const ROOT_MD = readdirSync(".").filter(f => f.endsWith(".md"));
 
 type AuditExitCode = 0 | 1 | 64;
 
