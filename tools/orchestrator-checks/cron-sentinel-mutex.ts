@@ -1,0 +1,103 @@
+#!/usr/bin/env bun
+// cron-sentinel-mutex.ts -- detect concurrent Otto-CLI claude-code sessions
+// so the <<autonomous-loop>> tick can defer when a peer is mid-flight.
+//
+// Per docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md
+// + the worktree-prune-race root-cause analysis in PR #3370 (Pattern 8 of
+// docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md).
+//
+// Composes with the sibling check at tools/orchestrator-checks/verify-branch.ts
+// which uses the same spawnSync pattern (no shell, args as array).
+
+import { spawnSync } from "node:child_process";
+
+export interface MutexResult {
+  readonly myPid: number;
+  readonly peerPids: readonly number[];
+  readonly peerLines: readonly string[];
+  readonly peerDetected: boolean;
+}
+
+const PROCESS_NAME_PATTERN = "claude-code";
+
+/**
+ * Find concurrent claude-code processes other than this process.
+ * Uses pgrep -afl (BSD-compatible). The pgrep exit code is non-zero
+ * when zero processes match, which is a legitimate result and not an
+ * error. The function returns a structured result; the caller (the
+ * autonomous-loop tick body) decides whether to defer.
+ */
+export function checkPeerSessions(
+  myPid: number = process.pid,
+  spawnFn: typeof spawnSync = spawnSync,
+): MutexResult {
+  // spawnSync with args array — no shell interpolation, no injection risk.
+  const result = spawnFn("pgrep", ["-afl", PROCESS_NAME_PATTERN], {
+    encoding: "utf8",
+  });
+
+  const stdout = typeof result.stdout === "string" ? result.stdout : "";
+  const lines = stdout.split("\n").filter((line) => line.trim().length > 0);
+
+  const peerLines: string[] = [];
+  const peerPids: number[] = [];
+
+  for (const line of lines) {
+    const match = /^(\d+)\s+(.*)$/.exec(line);
+    if (!match) continue;
+    const pidStr = match[1];
+    if (!pidStr) continue;
+    const pid = Number.parseInt(pidStr, 10);
+    if (!Number.isFinite(pid)) continue;
+    if (pid === myPid) continue;
+    // Skip ancestors / disclaimer-helper / finder-service matches:
+    // require the claude-code stdio-mode flags to mark a real peer.
+    const cmdline = match[2] ?? "";
+    if (!cmdline.includes("--output-format") && !cmdline.includes("--input-format")) {
+      continue;
+    }
+    peerPids.push(pid);
+    peerLines.push(line);
+  }
+
+  return {
+    myPid,
+    peerPids,
+    peerLines,
+    peerDetected: peerPids.length > 0,
+  };
+}
+
+export function formatResult(r: MutexResult): string {
+  if (!r.peerDetected) {
+    return `cron-sentinel-mutex: no peer claude-code sessions detected (self PID ${r.myPid})`;
+  }
+  const peerSummary = r.peerLines.length > 0 ? "\n  " + r.peerLines.join("\n  ") : "";
+  return (
+    `cron-sentinel-mutex: ${r.peerPids.length} peer claude-code session(s) detected (self PID ${r.myPid})` +
+    peerSummary
+  );
+}
+
+function main(): number {
+  const r = checkPeerSessions();
+  console.error(formatResult(r));
+  // Diagnostic exit codes:
+  //   0 = no peers
+  //   1+ = peer count (clamped to 250 for shell composition)
+  // Most callers should use the JSON output via --json instead.
+  if (r.peerDetected) {
+    return Math.min(1 + r.peerPids.length, 250);
+  }
+  return 0;
+}
+
+if (import.meta.main) {
+  const args = process.argv.slice(2);
+  if (args.includes("--json")) {
+    const r = checkPeerSessions();
+    console.log(JSON.stringify(r, null, 2));
+    process.exit(0);
+  }
+  process.exit(main());
+}
