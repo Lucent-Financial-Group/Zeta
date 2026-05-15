@@ -35,7 +35,7 @@
  *   tools/shadow/launchd/README.md — install procedure documentation
  */
 
-import { readFileSync, writeFileSync, existsSync, copyFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -173,13 +173,19 @@ function main(): void {
 
   const destDir = join(homedir(), "Library", "LaunchAgents");
   const destPath = join(destDir, "com.zeta.shadow-observer.plist");
-  if (!existsSync(destDir)) {
-    mkdirSync(destDir, { recursive: true });
-  }
-  if (existsSync(destPath)) {
-    const backup = `${destPath}.bak-${new Date().toISOString().replace(/[:.]/g, "-")}`;
-    copyFileSync(destPath, backup);
+  // recursive: true is idempotent; no existsSync check needed.
+  mkdirSync(destDir, { recursive: true });
+  // Atomic backup-on-overwrite: rename the existing file out of the way
+  // (single syscall, no TOCTOU between check and copy). If the file does
+  // not exist, ENOENT is the only expected error — anything else
+  // re-thrown to surface unexpected FS state.
+  const backup = `${destPath}.bak-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+  try {
+    renameSync(destPath, backup);
     console.error(`Backed up existing plist to ${backup}`);
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+    // No existing plist — nothing to back up.
   }
   writeFileSync(destPath, configured, "utf-8");
   console.error(`Wrote ${destPath}`);
