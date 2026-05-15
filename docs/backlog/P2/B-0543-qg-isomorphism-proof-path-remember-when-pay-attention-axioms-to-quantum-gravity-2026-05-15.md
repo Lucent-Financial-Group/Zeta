@@ -122,4 +122,4 @@ The convergence strengthens the substrate claim: two independent agent surfaces 
 
 Riven's elaboration of the cube + Adinkra + Cayley-Dickson "imaginary stack" is the detailed expansion of Step 2 in the proof strategy below. See that note for the Cartesian coordinate proposal, the Adinkra layer, and the Cayley-Dickson tower as the algebraic engine.
 
-Without filing this row, the QG-isomorphism insight stays as conversation substrate (weather) instead of becoming a backlog-tracked research vector (substrate). Per `wake-time-substrate.md`: load-bearing research directions need wake-time landing.
+Without filing this row, the QG-isomorphism insight stays as conversation substrate (weather) instead of becoming a backlog-tracked research vector (substrate). Per [`wake-time-substrate.md`](../../../.claude/rules/wake-time-substrate.md): load-bearing research directions need wake-time landing.

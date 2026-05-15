@@ -2,7 +2,7 @@
 id: B-0544
 title: QG isomorphism Step 1 — Formalize Remember-When + Pay-Attention as categorical primitives (topos with internal monad + modal operator)
 priority: P2
-status: in_progress
+status: open
 type: research
 created: 2026-05-15
 ask: Otto

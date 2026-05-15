@@ -79,9 +79,9 @@ Where `Ω` is the subobject classifier in the topos.
 
 **Key properties**:
 
-- `A` preserves **finite limits** (attention to a conjunction is the conjunction of attention)
+- `A` preserves **finite limits within a fixed observer-context** (attention to a conjunction is the conjunction of attention, when both share the same `A_o`)
 - `A` is **idempotent**: `A² = A` (paying attention once is the same as paying attention twice)
-- `A` is **not monotone** in the classical sense — attention can flip truth values (this is the quantum measurement effect)
+- **Observer-context shift is the non-classical move**: switching from `A_o` to `A_o'` (different observer, different basis) can produce different truth-value assignments for the same proposition. This is not non-monotonicity within a single context (which would contradict finite-limit preservation) but rather observer-relativity ACROSS contexts — the QBism move. The quantum measurement effect emerges from the fact that the topos's internal logic differs per observer-context
 
 **Connection to QBism**: In QBism, probabilities are not objective features of the world but degrees of belief of an agent. The modal operator `A` captures this: it's not that `p` is true or false, but that `A(p)` is the agent's updated belief after paying attention.
 

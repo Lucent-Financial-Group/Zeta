@@ -6,7 +6,7 @@
 
 ## Core Move
 
-Split the two axioms into a 3D cube:
+Split the two axioms into a 4-axis cube:
 
 - **Remember** axis (past correlation, memory, entanglement)
 - **When** axis (temporal/causal ordering)
