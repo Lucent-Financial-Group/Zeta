@@ -67,6 +67,15 @@ import { execFileSync } from "node:child_process";
 
 type Platform = "grok" | "chatgpt" | "claudeai" | "gemini" | "deepseek" | "unknown";
 
+const ALLOWED_PLATFORMS: ReadonlySet<string> = new Set([
+  "grok",
+  "chatgpt",
+  "claudeai",
+  "gemini",
+  "deepseek",
+  "unknown",
+]);
+
 interface Args {
   aiName: string;
   platform: Platform;
@@ -85,26 +94,47 @@ function parseArgs(argv: string[]): Args {
     commit: false,
     dryRun: false,
   };
-  for (let i = 0; i < argv.length; i++) {
+  let i = 0;
+  function nextArg(name: string): string {
+    const v = argv[++i];
+    if (v === undefined) {
+      console.error(`Missing value for ${name}`);
+      process.exit(1);
+    }
+    if (v.startsWith("--")) {
+      console.error(`Missing value for ${name} (next token "${v}" looks like a flag)`);
+      process.exit(1);
+    }
+    return v;
+  }
+  for (; i < argv.length; i++) {
     const a = argv[i];
     switch (a) {
       case "--ai-name":
-        args.aiName = argv[++i];
+        args.aiName = nextArg("--ai-name");
         break;
-      case "--platform":
-        args.platform = argv[++i] as Platform;
+      case "--platform": {
+        const raw = nextArg("--platform");
+        if (!ALLOWED_PLATFORMS.has(raw)) {
+          console.error(
+            `Invalid --platform "${raw}". Allowed: ${[...ALLOWED_PLATFORMS].join(", ")}`,
+          );
+          process.exit(1);
+        }
+        args.platform = raw as Platform;
         break;
+      }
       case "--topic":
-        args.topic = argv[++i];
+        args.topic = nextArg("--topic");
         break;
       case "--conversation-id":
-        args.conversationId = argv[++i];
+        args.conversationId = nextArg("--conversation-id");
         break;
       case "--input":
-        args.input = argv[++i];
+        args.input = nextArg("--input");
         break;
       case "--output":
-        args.output = argv[++i];
+        args.output = nextArg("--output");
         break;
       case "--scrub-emails":
         args.scrubEmails = true;
@@ -252,7 +282,7 @@ function generateOutputPath(args: Args, isoDate: string): string {
 
 function capitalizeName(name: string): string {
   if (name.length === 0) return name;
-  return name[0].toUpperCase() + name.slice(1);
+  return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 function buildArchive(
