@@ -815,8 +815,8 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **severity:** 4
 - **recurrence_count:** 8
 - **meta_catch:** false
-- **similar_prior_catches:** [15, 33] (effort-avoidance family)
+- **similar_prior_catches:** [5, 34, 35] (effort-avoidance family)
 - **integration_test:** Eliminate skipping ticks. Agents must clean up or isolate dirty state.
 - **z_weight:** +1 (Lior caught)
 
-41 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-11 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (7 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+41 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-11 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (8 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
