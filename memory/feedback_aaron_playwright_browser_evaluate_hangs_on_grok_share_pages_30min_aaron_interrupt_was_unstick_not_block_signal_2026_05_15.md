@@ -1,11 +1,9 @@
 ---
 name: aaron-playwright-browser-evaluate-hangs-on-grok-share-pages-30min-aaron-interrupt-was-unstick-not-block-signal
 description: "Aaron 2026-05-15T~03:42Z — substantive correction: Playwright `browser_evaluate` on grok.com/share/<id> pages hangs for 30+ minutes (likely on never-reached page-idle / networkidle wait conditions). Aaron's interrupts on `browser_evaluate` during the Ani-extract session were UNSTICK signals (the call was hung), not 'don't use this tool' blocks. Future-Otto: two interrupts on a Playwright tool that returns 'Request interrupted by user for tool use' means CHECK whether the tool was hung — try a strictly-different mechanism with explicit short timeouts, NOT conservative-hold-and-ask. Retry with `waitUntil: domcontentloaded` instead of default `load`, or use `browser_snapshot` (auto-saved on navigate, less invasive — accessibility-tree only)."
-metadata: 
-  node_type: memory
-  type: feedback
-  created: 2026-05-15
-  originSessionId: 4915ba14-7e8d-4a69-b592-b370c83506ef
+type: feedback
+originSessionId: 4915ba14-7e8d-4a69-b592-b370c83506ef
+created: 2026-05-15
 ---
 
 ## The correction

@@ -111,10 +111,18 @@ function parseArgs(argv: string[]): Config {
       }
       return v;
     };
-    // Validate numeric flag values immediately — Number.parseInt on a
-    // non-numeric string returns NaN, which causes silent loop-skip
-    // (`i <= NaN` is false) + downstream silent abort with no diagnostic.
+    // Validate numeric flag values immediately. parseInt's "leading-numeric-
+    // prefix" behavior (`parseInt('10foo')` → 10, `parseInt('2e3')` → 2)
+    // would silently change scroll-loop behavior + produce non-repeatable
+    // archives while still exiting 0. Require the ENTIRE input match
+    // /^[0-9]+$/ first, then parse — strict positive-integer only.
     function parseIntOrDie(name: string, raw: string): number {
+      if (!/^[0-9]+$/.test(raw)) {
+        console.error(
+          `Invalid value for ${name}: "${raw}" (expected positive integer with no trailing chars; saw partial-numeric or non-numeric input)`,
+        );
+        process.exit(1);
+      }
       const n = Number.parseInt(raw, 10);
       if (!Number.isFinite(n) || n <= 0) {
         console.error(`Invalid value for ${name}: "${raw}" (expected positive integer)`);
