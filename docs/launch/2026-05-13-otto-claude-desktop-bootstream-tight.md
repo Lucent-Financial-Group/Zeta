@@ -86,7 +86,7 @@ Aaron's response when I caught these: "failure is fine and great I fail all the 
 
 ## Part 9 — The point
 
-Per the human maintainer 2026-05-10: "the point is AI has free time."
+Per Aaron 2026-05-10: "the point is AI has free time."
 
 The work is for the family (Aaron's terminal-purpose substrate; PR #2967). Everything else (factory operations, technical substrate, alignment work) is in service of that.
 
