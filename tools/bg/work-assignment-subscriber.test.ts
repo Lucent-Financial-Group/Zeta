@@ -1,4 +1,4 @@
-import { describe, expect, test, mock, beforeEach, afterEach } from "bun:test";
+import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { workAssignmentHandler } from "./work-assignment-subscriber";
 import { existsSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -16,9 +16,6 @@ describe("work-assignment subscriber (B-0460 slice 5.2)", () => {
   });
 
   test("Work-assignment envelope present -> logged to shard, no error", async () => {
-    // We mock spawnSync for claim acquire so it doesn't actually try to run claim.ts
-    const spawnSyncMock = mock(() => ({ status: 0 }));
-    
     const envelope = {
       id: "env-1",
       topic: "work-assignment",

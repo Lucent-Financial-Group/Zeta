@@ -1,7 +1,7 @@
 import { describe, expect, test, mock } from "bun:test";
 import { subscribeOnce } from "./subscribe";
 import type { MessageEnvelope, Topic } from "./types";
-import { rmSync, writeFileSync } from "node:fs";
+import { rmSync } from "node:fs";
 import { join } from "node:path";
 import { BUS_DIR } from "./bus";
 
@@ -26,7 +26,7 @@ describe("bus subscribeOnce (B-0449 slice 5)", () => {
       payload: { rowId: "B-1234", priority: "P1", rationale: "test" },
     };
     
-    const fakeList = mock((topic: Topic, surface: string) => {
+    const fakeList = mock((_opts: { topic?: Topic; to?: string }) => {
       return [env1];
     });
 

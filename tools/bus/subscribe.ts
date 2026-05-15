@@ -30,7 +30,7 @@ export async function subscribeOnce<T extends Topic>(
   }
 
   // Get all envelopes matching topic and targeted at this surface (or broadcast)
-  const envelopes = adapters.list(topic, surface as any);
+  const envelopes = adapters.list({ topic, to: surface as any });
   
   let newlySeen = false;
 
