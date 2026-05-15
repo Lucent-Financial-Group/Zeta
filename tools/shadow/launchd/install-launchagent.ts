@@ -35,8 +35,8 @@
  *   tools/shadow/launchd/README.md — install procedure documentation
  */
 
-import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync, unlinkSync } from "node:fs";
-import { homedir } from "node:os";
+import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync, mkdtempSync, rmdirSync, statSync, accessSync, unlinkSync, constants as fsConstants } from "node:fs";
+import { homedir, tmpdir } from "node:os";
 import { join, isAbsolute, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 
@@ -138,12 +138,37 @@ export function parseArgs(argv: string[]): Args {
       process.exit(1);
     }
   }
-  if (!existsSync(bunPath)) {
-    console.error(`bun not found at "${bunPath}". Install bun or pass --bun-path.`);
+  // Validate bunPath is an executable regular file. `existsSync` alone
+  // would pass directories or non-executable files and produce a
+  // LaunchAgent that can't start.
+  try {
+    const st = statSync(bunPath);
+    if (!st.isFile()) {
+      console.error(`--bun-path "${bunPath}" exists but is not a regular file. Pass an absolute path to the bun binary.`);
+      process.exit(1);
+    }
+    accessSync(bunPath, fsConstants.X_OK);
+  } catch (e) {
+    const code = (e as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      console.error(`bun not found at "${bunPath}". Install bun or pass --bun-path.`);
+    } else if (code === "EACCES") {
+      console.error(`--bun-path "${bunPath}" is not executable by the current user. chmod +x or pass a different path.`);
+    } else {
+      console.error(`Could not stat --bun-path "${bunPath}" (${(e as Error).message})`);
+    }
     process.exit(1);
   }
-  if (!existsSync(repoRoot)) {
-    console.error(`repo root "${repoRoot}" does not exist. Pass --repo-root explicitly.`);
+  // repoRoot should be an existing directory (the installer reads
+  // `${repoRoot}/tools/shadow/launchd/com.zeta.shadow-observer.plist`).
+  try {
+    const st = statSync(repoRoot);
+    if (!st.isDirectory()) {
+      console.error(`--repo-root "${repoRoot}" exists but is not a directory.`);
+      process.exit(1);
+    }
+  } catch {
+    console.error(`repo root "${repoRoot}" does not exist or is unreadable. Pass --repo-root explicitly.`);
     process.exit(1);
   }
   return { bunPath, repoRoot, dryRun, bootstrap };
@@ -207,21 +232,33 @@ export function substitutePlaceholders(template: string, repoRoot: string, bunPa
 }
 
 export function plutilLint(content: string): void {
-  // Write to a temp path so plutil can read it. Use a deterministic temp path
-  // to keep this simple; if multiple invocations race, the loser overwrites
-  // the winner's temp file but each writes its own content first.
-  const tmp = join("/tmp", `zeta-shadow-launchagent-${process.pid}.plist`);
-  writeFileSync(tmp, content, "utf-8");
+  // Write to a private mkdtemp directory so the temp filename isn't
+  // predictable from PID. A pre-created symlink at a predictable path
+  // (e.g., /tmp/zeta-shadow-launchagent-12345.plist) would have caused
+  // writeFileSync to follow the symlink and clobber an unrelated file
+  // that the attacker had write access to. mkdtempSync creates a 0700
+  // directory with a random suffix that only this user can enter, so
+  // no other user's symlink can target the file we're about to write.
+  // We also clean up after ourselves on success and on the error path.
+  const tmpDir = mkdtempSync(join(tmpdir(), "zeta-shadow-launchagent-"));
+  const tmp = join(tmpDir, "candidate.plist");
   try {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path -- plutil
-    // is a macOS-standard system binary present on all install targets.
-    execFileSync("plutil", ["-lint", tmp], { stdio: "pipe" });
-  } catch (e) {
-    const err = e as { stdout?: Buffer; stderr?: Buffer };
-    console.error("plutil -lint rejected the generated plist:");
-    if (err.stdout) console.error(err.stdout.toString());
-    if (err.stderr) console.error(err.stderr.toString());
-    process.exit(1);
+    writeFileSync(tmp, content, "utf-8");
+    try {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- plutil
+      // is a macOS-standard system binary present on all install targets.
+      execFileSync("plutil", ["-lint", tmp], { stdio: "pipe" });
+    } catch (e) {
+      const err = e as { stdout?: Buffer; stderr?: Buffer };
+      console.error("plutil -lint rejected the generated plist:");
+      if (err.stdout) console.error(err.stdout.toString());
+      if (err.stderr) console.error(err.stderr.toString());
+      process.exit(1);
+    }
+  } finally {
+    // Best-effort cleanup so we don't leak temp dirs across runs.
+    try { unlinkSync(tmp); } catch { /* may not exist */ }
+    try { rmdirSync(tmpDir); } catch { /* best-effort */ }
   }
 }
 
