@@ -109,11 +109,11 @@ This row closes when:
 
 - Original "atomic" overstated scope (done-criteria spans 7 check-types + hooks + fixtures + self-test).
 - Re-decomposed into 4 smallest atomic dependency-ordered children (TS-first, one-bounded-slice each):
-  - B-0170.1: semantic-equivalence-drift checker TS (command-substitution claims)
+  - B-0170.1: semantic-equivalence-drift checker TS (command-substitution claims) — **shipped 2026-05-15** (`check-semantic-equivalence.ts` v1.0, warning-severity lexical detection; catches eval-set instance #12)
   - B-0170.2: empirical-output-drift checker TS (run-and-compare)
-  - B-0170.3: self-recursive-drift checker TS (memo-about-X contains X)
+  - B-0170.3: self-recursive-drift checker TS (memo-about-X contains X) — in flight under sibling claim `otto-cli/b0170-3-self-recursive-checker-2026-05-15`
   - B-0170.4: fixture-tests + eval-set coverage for all shipped + new check-types
 
-This slice lands the gate + re-decomp only (doc update; no new TS yet — next slice will land B-0170.1 code).
+Previous slice landed the gate + re-decomp only. This slice ships B-0170.1 code (smallest safe slice: lexical detection, warning severity, no execution).
 
 **Classification update:** decomposition: decomposed (was atomic); status remains open; last_updated bumped.

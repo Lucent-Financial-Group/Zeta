@@ -3,7 +3,7 @@
 Substrate-claim-checker per the verify-then-claim discipline memo
 (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
 
-Catches 5 B-0170 check-types:
+Catches 6 B-0170 check-types:
 
 - **Count drift** (v0.4.4) — between narrative claims (e.g. "18+ drift
   instances", "13-row table", "5 procedure skills") and the actual
@@ -23,9 +23,15 @@ Catches 5 B-0170 check-types:
   an earlier ADR when the earlier ADR lacks the reciprocal top-of-file
   `Superseded by` marker naming the superseding ADR. Implemented in
   `check-convention.ts`.
+- **Semantic-equivalence drift** (v1.0 / B-0170.1) — lexical detection
+  of equivalence claims between shell commands (e.g. "X is equivalent
+  to Y", "replaced X with Y — equivalent"). v0 emits `warning`
+  severity only — automated falsification of command equivalence is
+  out of scope. Catches eval-set instance #12. Implemented in
+  `check-semantic-equivalence.ts`.
 
-The remaining deferred check-types include semantic-equivalence,
-empirical-output, and self-recursive drift.
+The remaining deferred check-types include empirical-output and
+self-recursive drift.
 
 ## Usage
 
@@ -71,10 +77,11 @@ input error).
 - **Count drift** (claimed markdown-table row count doesn't match) — shipped v0
 - **Existence drift** (file/dir/tool claimed to exist; doesn't) — shipped v0.5
 - **Path-form drift** (fully-qualified vs bare paths inconsistent) — shipped v0.7
+- **Cross-surface count drift** (frontmatter description vs body tables) — shipped v0.8
 - **Convention drift** (recommended pattern doesn't match canonical) — shipped v0.9
-- **Semantic-equivalence drift** (command substitution claims) — v1
-- **Empirical-output drift** (run-the-command-and-compare) — v1
-- **Self-recursive drift** (the memo about drift contains its own drift) — v1
+- **Semantic-equivalence drift** (command substitution claims) — shipped v1.0 (warning-only)
+- **Empirical-output drift** (run-the-command-and-compare) — v1+
+- **Self-recursive drift** (the memo about drift contains its own drift) — v1+
 
 ## Composes with
 
@@ -273,3 +280,57 @@ Exit codes: `0` clean, `1` drift detected or input error.
   matching. A document with a 15-row drift table and a 3-row
   sub-classes table would pass a "15 sub-classes" claim
   (false negative). v0.9 noun-matching would address this.
+
+## v1.0 — `check-semantic-equivalence.ts` (semantic-equivalence drift, B-0170.1)
+
+The sixth sub-class checker, covering **semantic-equivalence drift** —
+prose claims that two shell command forms are equivalent when their
+semantics differ.
+
+### Empirical eval-set (from the verify-then-claim memo)
+
+- **Instance #12**: "replaced `` `ls|grep` `` with `` `find -iname` `` —
+  claimed equivalent" (`find -iname` is shell-glob, not regex alternation)
+- **Instance #13**: "replaced earlier with `` `grep -ilrE PATTERN docs/DECISIONS/` `` —
+  claimed equivalent" (`grep -r` searches file contents, not filenames)
+
+### What v0 catches (lexical only, warning severity)
+
+Five phrase patterns linking two backticked tokens:
+
+- `` `X` is equivalent to `Y` ``
+- `` `X` does the same as `Y` ``
+- `` `X` (same as `Y`) `` / `` `X` (equivalent to `Y`) ``
+- `replaced `` `X` `` with `` `Y` `` — equivalent` / `same` / `identical`
+- `` `X` ≡ `Y` `` (triple-bar)
+
+At least one side of the pair must contain a shell-shaped token
+(common UNIX tools or `|`/`<`/`>`) to avoid flagging prose metaphors.
+
+### Severity model
+
+v0 emits **`warning`** only — exit code stays at `0` when warnings
+are the only findings. Automated falsification of command equivalence
+is out of scope (would require execution and would still miss
+semantic differences in edge cases). The `drift` severity is reserved
+for future versions that can falsify equivalence empirically (e.g.,
+sandboxed execution + output comparison).
+
+### Usage
+
+```bash
+bun tools/substrate-claim-checker/check-semantic-equivalence.ts <file>
+bun tools/substrate-claim-checker/check-semantic-equivalence.ts <file1> <file2> ...
+```
+
+Exit codes: `0` clean *or* warnings only, `1` drift detected or input error.
+
+### Known limitations (v1.0)
+
+- **Single-line patterns only**: equivalence claims wrapped across
+  line breaks are not joined. v1.1 candidate: paragraph-scope scanning.
+- **Lexical detection only**: no execution; flagged claims may be
+  true equivalences (false positives). The output is a human-review
+  surface, not a verdict.
+- **Fenced code-block skip**: claims inside ``` ``` ``` fences are
+  intentionally skipped (mirrors `check-counts.ts` / `check-cross-surface.ts`).
