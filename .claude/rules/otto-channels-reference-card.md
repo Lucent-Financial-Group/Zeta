@@ -73,7 +73,10 @@ on-disk state:
    the top, missing B-0527 + B-0528 (which were taken by PRs #3334 + #3342
    on `origin/main`). The mis-allocation was caught by Copilot review but
    reached a public PR-comment first; correction comment had to follow.
-   See `docs/hygiene-history/ticks/2026/05/15/0742Z.md` for the trace.
+   See [PR #3381](https://github.com/Lucent-Financial-Group/Zeta/pull/3381)
+   (which lands `docs/hygiene-history/ticks/2026/05/15/0742Z.md` carrying
+   the full trace), plus the correction comment on
+   [PR #3323](https://github.com/Lucent-Financial-Group/Zeta/pull/3323).
 
 2. **In-flight check** — what peer Otto is filing right now:
 
