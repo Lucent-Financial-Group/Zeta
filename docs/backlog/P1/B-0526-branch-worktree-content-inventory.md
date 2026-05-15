@@ -21,6 +21,7 @@ decomposition: atomic
 ## What
 
 Inventory pre-substrate / Kenji-era past-recovery git branches and worktrees. This is an atomic slice decomposed from B-0139.
+
 Scope includes:
 
 1. **Past-recovery git branches** that haven't been triaged or merged.
