@@ -4,8 +4,9 @@ title: Cross-surface bus detector — Standing-by quorum across Otto surfaces (e
 priority: P1
 status: open
 type: slice
+parent: B-0539
 created: 2026-05-15
-ask: aaron
+ask: Aaron
 effort: M
 tags: [substrate, bus, otto-bft, standing-by-detector]
 depends_on: []
@@ -51,9 +52,18 @@ the failure mode has BFT-quorum confirmation."
 
 ## Operational notes
 
-- The 3-surface BFT pattern matches the standard Byzantine Fault
-  Tolerance threshold: with 3 nodes, a quorum of 2 reliably
-  catches when 1 is in failure mode
+- **Terminology correction (per Copilot review)**: 2-of-3 quorum
+  across the Otto surfaces is **crash-fault-tolerant (CFT)**,
+  NOT Byzantine-fault-tolerant in the classical sense. Classical
+  BFT requires `3f+1` nodes to tolerate `f` byzantine faults —
+  for `f=1` that's 4 nodes, not 3. The Otto-BFT framing in the
+  umbrella (B-0539) uses Aaron's verbatim phrasing ("you have
+  your own internal BFT"); the operational reality is closer to
+  CFT — sufficient to catch a single Otto-surface that's stuck
+  (silently failing to progress) but not designed to handle a
+  byzantine surface that's actively lying about its state. The
+  3-surface quorum still works for the Standing-by-detection use
+  case because the failure mode is silent-stuck, not adversarial
 - Extending PR #3017's bus envelope shape; minimal new mechanism
 - Composes with the `infinite-backlog-nudge` topic (existing) —
   could replace or supplement

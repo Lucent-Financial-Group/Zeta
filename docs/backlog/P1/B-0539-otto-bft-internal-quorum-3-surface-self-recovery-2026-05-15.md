@@ -4,8 +4,9 @@ title: Otto-BFT — internal-quorum self-recovery across 3 Otto surfaces (Standi
 priority: P1
 status: open
 type: umbrella
+decomposition: decomposed
 created: 2026-05-15
-ask: aaron
+ask: Aaron
 effort: M
 tags: [substrate, multi-otto, bft, self-recovery, holding-rule]
 depends_on: []

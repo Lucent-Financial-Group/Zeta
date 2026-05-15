@@ -4,8 +4,9 @@ title: Standing-by counter-with-escalation in the rule (N consecutive brief-acks
 priority: P1
 status: open
 type: slice
+parent: B-0539
 created: 2026-05-15
-ask: aaron
+ask: Aaron
 effort: S
 tags: [substrate, holding-rule, otto-bft]
 depends_on: []
