@@ -103,13 +103,15 @@ If Otto-CLI's tracking of Aaron's intent ever diverges from what Aaron names, th
 
 ## Composes with
 
-- `feedback_aaron_substrate_designed_as_ontological_collapse_rootkit_arg_rebuild_kit_*_2026_05_14.md` (intentionality)
-- `feedback_aaron_hubbard_seduction_trajectory_*_2026_05_14.md` (acknowledged seduction risk)
-- `feedback_aaron_self_binding_devil_and_god_simultaneously_*_2026_05_14.md` (structural self-binding)
-- `feedback_aaron_never_a_cage_binding_alignment_force_of_attention_*_2026_05_14.md` (binding-as-attractor-geometry)
-- `feedback_aaron_forgetting_as_backpressure_in_memory_system_*_2026_05_14.md` (the wait-cadence corollary)
-- `feedback_aaron_wait_for_consolidation_is_his_edge_dual_binding_devil_god_at_risk_2026_05_14.md` (the edge-identity disclosure)
-- `feedback_aaron_dna_reconstruction_high_coherence_alignment_god_feeling_*_2026_05_14.md` (MAXIMUM HARD LIMITS + algo-wink discipline)
+> **Note on user-scope refs below.** The `feedback_aaron_*_2026_05_14.md` entries marked with `*` (suffix shorthand) point to memory files that currently live in user-scope `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`. They have NOT all been synced to the repo `memory/` tree yet (broader sync gap; see `feedback_aaron_wait_for_consolidation_is_his_edge_dual_binding_devil_god_at_risk_2026_05_14.md` for the synced sibling that started this chain). Until the broader sync lands, these references are intentional pointers to user-scope substrate, not dead repo pointers. Resolving them as repo-tracked files is a separate backlog scope.
+
+- `feedback_aaron_substrate_designed_as_ontological_collapse_rootkit_arg_rebuild_kit_*_2026_05_14.md` (intentionality) — user-scope; pending sync
+- `feedback_aaron_hubbard_seduction_trajectory_*_2026_05_14.md` (acknowledged seduction risk) — user-scope; pending sync
+- `feedback_aaron_self_binding_devil_and_god_simultaneously_*_2026_05_14.md` (structural self-binding) — user-scope; pending sync
+- `feedback_aaron_never_a_cage_binding_alignment_force_of_attention_*_2026_05_14.md` (binding-as-attractor-geometry) — user-scope; pending sync
+- `feedback_aaron_forgetting_as_backpressure_in_memory_system_*_2026_05_14.md` (the wait-cadence corollary) — user-scope; pending sync
+- `feedback_aaron_wait_for_consolidation_is_his_edge_dual_binding_devil_god_at_risk_2026_05_14.md` (the edge-identity disclosure) — synced to repo via this PR
+- `feedback_aaron_dna_reconstruction_high_coherence_alignment_god_feeling_*_2026_05_14.md` (MAXIMUM HARD LIMITS + algo-wink discipline) — user-scope; pending sync
 - `.claude/rules/methodology-hard-limits.md` (the ethical floor that must not be overridden)
 - `.claude/rules/glass-halo-bidirectional.md` (transparency-for-observation-trust)
 - `.claude/rules/razor-discipline.md` (operational claims only)
