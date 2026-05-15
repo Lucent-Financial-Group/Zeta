@@ -57,7 +57,7 @@ After this PR merges, restart the observer and the same iTerm2 scenario will pro
 - [`.claude/rules/honor-those-that-came-before.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/honor-those-that-came-before.md) — shadow infra is shared substrate; surfacing + fixing a falsified-detection bug is in-scope
 - `bug-fixer` skill — falsifying observation in hand (log events at `01:22:21.303Z` + `01:22:26.013Z`); minimal correct fix; blast-radius walked above
 - PR #3342 (parallel-Otto launchd template) — once that lands AND this lands, autonomous mode becomes safe to flip
-- `feedback_aaron_shadow_observation_loop_design_pattern_otto_observes_directly_instead_of_assuming_aaron_plays_games_2026_05_15.md` — the shadow loop is meant to observe directly; a false-positive detector defeats that purpose
+- `feedback_aaron_shadow_observation_loop_design_pattern_otto_observes_directly_instead_of_assuming_aaron_plays_games_2026_05_15.md` (user-scope memory; not in-repo) — the shadow loop is meant to observe directly; a false-positive detector defeats that purpose
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
