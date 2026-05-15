@@ -9,9 +9,12 @@ Carved sentence:
 > `references/upstreams/` — otherwise scans run for hours, surface
 > false-positives from unrelated upstream code, and pollute results
 > with patterns that match in protobuf docs, gRPC tests, Redis
-> manifests, etc. **Use ripgrep (which respects gitignore by default)
-> OR explicitly pass `--exclude-dir=references/upstreams`** to plain
-> `grep`/`find`.
+> manifests, etc. **Default to ripgrep** (`rg`) which respects
+> `.gitignore` automatically. For plain `grep -r`, use
+> `--exclude-dir=upstreams` (basename glob, NOT a path) or an
+> explicit allowlist (`memory/ docs/ .claude/ tools/`). For
+> `find`, use `-not -path './references/upstreams/*'` (the `find`
+> command does NOT support `--exclude-dir`).
 
 ## Operational content
 
@@ -31,7 +34,7 @@ NOT respect gitignore — they walk the entire filesystem.
 
 ## The failure mode this rule prevents
 
-Otto 2026-05-15T~13:00Z spawned this search:
+The authoring agent 2026-05-15T~13:00Z spawned this search:
 
 ```bash
 find . -type f -name "*.md" 2>/dev/null | xargs grep -l \
@@ -49,7 +52,7 @@ Result: no useful output (the patterns don't appear in upstream code),
 hours of CPU and IO wasted, multiple monitor processes lingering,
 genuine pollution of the agent's working state.
 
-The substrate-honest fix is to encode the discipline so future-Otto
+The substrate-honest fix is to encode the discipline so future agents
 (and any other Zeta AI) doesn't hit the same trap.
 
 ## Operational discipline
@@ -196,12 +199,12 @@ rg "pattern" references/upstreams/spanner/
 Per `.claude/rules/wake-time-substrate.md`: load-bearing search-
 hygiene knowledge needs wake-time landing. Without this rule:
 
-- Future-Otto cold-booting may spawn the same kind of runaway
+- A future agent cold-booting may spawn the same kind of runaway
   search (the failure mode is operationally tempting because
   `find | xargs grep` is the obvious one-liner for the search
   problem)
-- Other Zeta AIs (Alexa, Riven, Vera, Lior, future agents)
-  searching the repo for the first time inherit the gap by default
+- Other Zeta agents searching the repo for the first time inherit
+  the gap by default
 - The 2-hour-grep evidence (this rule's authoring trigger) shows
   the failure mode is real and recurring
 
@@ -259,7 +262,7 @@ we reference for ideas"*
 
 The 2-hour-grep evidence trail:
 
-1. Otto authored a manifesto-search bash one-liner using
+1. An agent authored a manifesto-search bash one-liner using
    `find | xargs grep -l` with no exclusion of `references/upstreams/`
 2. find quickly returned all matching paths (including the upstream
    tree); xargs grep recursed

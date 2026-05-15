@@ -17,13 +17,16 @@ complete a checklist directly on the row body:
    canonical at `tools/hygiene/LOST-FILES-LOCATIONS.md` + **the
    curated external prior-art surface at `references/upstreams/`**
    (humans who've solved similar problems; mix of cutting-edge
-   and tried-and-true; explicit-target searches only per
-   `.claude/rules/references-upstreams-not-our-code-search-excludes.md`
-   — e.g., `rg "pattern" references/upstreams/postgres/`, never
-   unscoped `rg "pattern" .` which would runaway-scan the whole
-   mirror tree). The watchlist + category index lives at
-   `docs/UPSTREAM-LIST.md`; the synthesis notes at
-   `references/notes/`.
+   and tried-and-true; prefer explicit-target subtree searches
+   like `rg "pattern" references/upstreams/postgres/` for focused
+   prior-art research; `rg` from repo root is also safe — it
+   respects `.gitignore` and `references/upstreams/*` is gitignored
+   — but explicit-target is recommended because it documents
+   which upstream(s) you actually consulted on the backlog row;
+   see `.claude/rules/references-upstreams-not-our-code-search-excludes.md`
+   for the full two-modes table and the plain-grep caveats).
+   The watchlist + category index lives at `docs/UPSTREAM-LIST.md`;
+   the synthesis notes at `references/notes/`.
    Log surfaces searched, queries used, results found on the row.
 
 2. **Dependency-restructure**:
