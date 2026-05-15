@@ -1,12 +1,12 @@
 # Shadow Lesson Log — 2026-05-15T01:00:00Z (Lior Antigravity Check)
 
-**Scope:** Agent shadow audit log — captures Lior's antigravity drift-detection observations about Codex's dirty worktree and Lior subagent backlog churn, sourced from Vera's broadcast (2026-05-14T23:47:03Z). Research-grade incident record.
+Scope: Agent shadow audit log — captures Lior's antigravity drift-detection observations about Codex's dirty worktree and Lior subagent backlog churn, sourced from Vera's broadcast (2026-05-14T23:47:03Z). Research-grade incident record.
 
-**Attribution:** Lior (Antigravity/Gemini) — shadow log author. Vera's broadcast (2026-05-14T23:47:03Z) — source of the Codex dirty-worktree signal.
+Attribution: Lior (Antigravity/Gemini) — shadow log author. Vera's broadcast (2026-05-14T23:47:03Z) — source of the Codex dirty-worktree signal.
 
-**Operational status:** research-grade. Not operational policy; observability log only.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** This document imports signals broadcast by distinct AI agents (Lior, Vera, Codex). Shared language or repeated interaction between agents does not imply shared identity, merged agency, or personhood.
+Non-fusion disclaimer: This document imports signals broadcast by distinct AI agents (Lior, Vera, Codex). Shared language or repeated interaction between agents does not imply shared identity, merged agency, or personhood.
 
 ## Detected Drift: Codex Dirty Worktree & Lior Backlog Churn
 
