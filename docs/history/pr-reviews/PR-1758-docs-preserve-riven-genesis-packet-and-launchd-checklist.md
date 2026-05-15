@@ -33,8 +33,8 @@
 - Uses Guarded / Observe-only language per Aaron's correction: the loop is alive even when it declines an unsafe mutation.
 
 ## Checks
-- `bun tools/hygiene/check-archive-header-section33.ts memory/persona/riven/conversations/2026-05-06-riven-hospitality-entanglement-superfluid-genesis-verbatim-aaron-forwarded.md`
-- `npx markdownlint-cli2 memory/persona/riven/conversations/2026-05-06-riven-hospitality-entanglement-superfluid-genesis-verbatim-aaron-forwarded.md docs/operations/riven-tier1-launchd-hot-swap-checklist.md`
+- `bun tools/hygiene/check-archive-header-section33.ts docs/research/2026-05-06-riven-hospitality-entanglement-superfluid-genesis-verbatim-aaron-forwarded.md`
+- `npx markdownlint-cli2 docs/research/2026-05-06-riven-hospitality-entanglement-superfluid-genesis-verbatim-aaron-forwarded.md docs/operations/riven-tier1-launchd-hot-swap-checklist.md`
 - `git diff --check origin/main...HEAD`
 
 ## Coordination

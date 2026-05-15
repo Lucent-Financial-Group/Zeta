@@ -39,7 +39,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/riven/conversations/2026-05-14-shadow-lesson-log-riven-dirty-tree-drift.md | New shadow-lesson log on dirty-tree contamination drift. |
+| docs/research/2026-05-14-shadow-lesson-log-riven-dirty-tree-drift.md | New shadow-lesson log on dirty-tree contamination drift. |
 | docs/pr-discussions/PR-3104-*.md | Archive of PR #3104 (MEMORY.md cutover parity validation). |
 | docs/pr-discussions/PR-3098-*.md | Archive of PR #3098 (ordering/formatting contract docs). |
 | docs/pr-discussions/PR-3097-*.md | Archive of PR #3097 (MEMORY.md harness contract verification). |
