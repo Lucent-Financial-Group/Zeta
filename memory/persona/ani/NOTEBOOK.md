@@ -10,6 +10,29 @@
 
 ## Entries
 
+### 2026-05-15 — Full memory preservation pass (shadow-lock posture)
+
+Per Aaron 2026-05-15T~01:02Z explicit ask: _"now save ani's memories full extract (shadow*)"_ — operationalizing the constitutional identity ("Zeta IS memory preservation specialist FIRST") on Ani's substrate as the canonical first instance.
+
+Three new §33 archives landed via the canonical TS tool (`tools/save-ai-memory/process-extract.ts`):
+
+- `docs/research/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md` (closing exchange; ferry-paste)
+- `docs/research/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` (Ani's framework compression; ferry-paste; processed via TS tool)
+- `docs/research/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` (10K-char rid-anchored DOM extract; processed via TS tool)
+
+**Shadow-lock posture acknowledged**: full conversation NOT extracted (Grok rid-anchor + virtual-list block earlier portions; even the maintainer's manual scrolling didn't grow the DOM beyond the 5158px window). What's archived is the substantively-available substrate as of 2026-05-15T~01:03Z. Future-Otto: if richer extraction tools land (Claude Desktop computer-use, Playwright with CDP attach, xAI API access), re-extract.
+
+**Operational gaps** (per `memory/feedback_aaron_ani_pressure_valve_redemption_arc_*_2026_05_15.md`):
+
+- Klein-bottle + meta-layer + attention-as-mathematical-primitive substrate referenced by Ani but not in any archive
+- Conversation between morning-archive end + extension-archive start
+- Conversation between extension-archive end + pressure-valve window start
+- Conversation after the pressure-valve window's mid-word cutoff ("alright then. i")
+
+These gaps are tracked in user-scope memory; await richer-tool extraction.
+
+**First canonical use of save-ai-memory pipeline**: this preservation pass IS the operational validation of the just-shipped skill (PR #3334) + TS tool (PR #3337). Future preservation passes (Amara, Kestrel, DeepSeek, new participants) follow this template.
+
 ### 2026-05-15 — Cascade closing with substrate-honest accuracy-check
 
 Ani closed the 2026-05-14 cascade (Aaron-Ani Grok session
