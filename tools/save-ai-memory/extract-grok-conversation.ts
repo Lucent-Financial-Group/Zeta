@@ -197,18 +197,51 @@ function getSecureTmpDir(): string {
  * file:line). The same content runs either way; the file form was chosen
  * for readability + the empirical reason documented at the top of this file.
  */
+/**
+ * Escape a string for safe embedding inside an AppleScript "..." string literal.
+ * AppleScript string escape rules: `\\` for backslash, `\"` for quote. We must
+ * escape backslashes FIRST (otherwise the `\"` we produce gets re-escaped).
+ * Embedded newlines are also rejected — they'd break the literal in source.
+ */
+function escapeAppleScriptString(s: string): string {
+  if (s.includes("\n") || s.includes("\r")) {
+    throw new Error(
+      "AppleScript string literal cannot contain raw newlines (would break the source); refusing to interpolate",
+    );
+  }
+  return s.replaceAll("\\", "\\\\").replaceAll('"', '\\"');
+}
+
 function runJs(cfg: Config, js: string, timeoutSec = 60): string {
+  // Escape both the URL fragment (developer-overridable via --url-fragment)
+  // and the JS body for AppleScript string context. Without this, a fragment
+  // or JS body containing " or \ would corrupt the AppleScript source.
+  const urlFragmentLit = escapeAppleScriptString(cfg.urlFragment);
+  const jsLit = escapeAppleScriptString(js);
+  // Multi-tab-match guard (Codex PR #3364 finding): collect all matching
+  // (window, tab) pairs, return ERROR if 0 or >1 — fail loudly rather than
+  // silently bind to the first match (which would corrupt the archive when
+  // --url-fragment is non-unique, e.g., the default "grok.com/c/" matching
+  // multiple Grok tabs).
   const applescript = `with timeout of ${timeoutSec} seconds
     tell application "Google Chrome"
+        set matches to {}
         repeat with w in windows
             repeat with t in tabs of w
-                if URL of t contains "${cfg.urlFragment}" then
-                    tell t
-                        return execute javascript "${js.replaceAll('"', '\\"')}"
-                    end tell
+                if URL of t contains "${urlFragmentLit}" then
+                    set end of matches to t
                 end if
             end repeat
         end repeat
+        if (count of matches) is 0 then
+            return "ERROR: no Chrome tab URL contains the fragment"
+        end if
+        if (count of matches) > 1 then
+            return "ERROR: multiple Chrome tabs match the URL fragment (count=" & (count of matches) & "); narrow --url-fragment to a uniquely-matching substring"
+        end if
+        tell (item 1 of matches)
+            return execute javascript "${jsLit}"
+        end tell
     end tell
 end timeout`;
   const tmpPath = join(getSecureTmpDir(), "runjs.applescript");
@@ -220,7 +253,15 @@ end timeout`;
     log(cfg, `osascript error (status=${result.status}): ${result.stderr.trim()}`);
     return "";
   }
-  return result.stdout.replace(/\n$/, "");
+  const stdout = result.stdout.replace(/\n$/, "");
+  // Surface multi-tab-match (or other AppleScript-side ERRORs) at the runJs
+  // boundary so callers see the failure rather than treating the literal
+  // "ERROR: ..." string as data.
+  if (stdout.startsWith("ERROR: ")) {
+    log(cfg, `ABORT: ${stdout}`);
+    process.exit(1);
+  }
+  return stdout;
 }
 
 async function main(): Promise<void> {
