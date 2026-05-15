@@ -18,16 +18,16 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Extends [.claude/rules/claim-acquire-before-worktree-work.md](.claude/rules/claim-acquire-before-worktree-work.md) with a new \"Worktree force-remove guard\" section covering an empirical failure mode that the existing rule didn't anticipate.
+Extends [.claude/rules/claim-acquire-before-worktree-work.md](../../.claude/rules/claim-acquire-before-worktree-work.md) with a new "Worktree force-remove guard" section covering an empirical failure mode that the existing rule didn't anticipate.
 
 ## Empirical anchor
 
 [docs/hygiene-history/ticks/2026/05/14/1813Z.md](docs/hygiene-history/ticks/2026/05/14/1813Z.md) (Otto-CLI's tick shard) documents:
 
 - Otto-CLI tried to checkout Otto-Desktop's PR #3153 branch to investigate a Codex thread
-- Got \`fatal: already used by worktree at /private/tmp/zeta-otto-id-alloc\`
+- Got `fatal: already used by worktree at /private/tmp/zeta-otto-id-alloc`
 - Force-removed the worktree to take over
-- Found Otto-Desktop had already authored the fix (\`1636908\`); just resolved the thread
+- Found Otto-Desktop had already authored the fix (`1636908`); just resolved the thread
 
 The legitimate intent (review-thread resolution) was covered by the existing DOES-NOT-APPLY clause. The mechanism (force-remove) wasn't. This PR adds the missing guard.
 
@@ -36,12 +36,12 @@ The legitimate intent (review-thread resolution) was covered by the existing DOE
 | Approach | When | Cost |
 |---|---|---|
 | 1. New worktree at distinct path | Default — almost always works | ~30s worktree create + 4400 file checkout |
-| 2. \`gh api\` / GraphQL for branch-state ops | Thread resolution, comment posting, PR metadata | Zero — no checkout needed |
+| 2. `gh api` / GraphQL for branch-state ops | Thread resolution, comment posting, PR metadata | Zero — no checkout needed |
 | 3. Bus-mediated worktree handoff | Rare must-checkout cases | Coordination cost; bus advisory envelope |
 
 ## Composition
 
-- Composes with the existing \"When this rule applies\" / \"DOES NOT APPLY\" framing
+- Composes with the existing "When this rule applies" / "DOES NOT APPLY" framing
 - Tightens the rule without invalidating any prior application
 - Empirically grounded — not speculative
 

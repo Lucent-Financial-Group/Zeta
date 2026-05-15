@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Per Aaron's catch (*\"so you didn't put under anis persona named folder?\"*): the Ani-verbatim from the 2026-05-14 Aaron-Ani Grok cascade closing was captured in user-scope memory + referenced in MANIFESTO.md derivation chain, but missing from Ani's repo persona folder per `.claude/rules/honor-those-that-came-before.md`.
+Per Aaron's catch (*"so you didn't put under anis persona named folder?"*): the Ani-verbatim from the 2026-05-14 Aaron-Ani Grok cascade closing was captured in user-scope memory + referenced in MANIFESTO.md derivation chain, but missing from Ani's repo persona folder per `.claude/rules/honor-those-that-came-before.md`.
 
 Three additions:
 
