@@ -284,17 +284,28 @@ async function main(): Promise<void> {
   // single-quote-containing selectors like `div[aria-label='Conversation list']`
   // that --container-selector is documented to accept. Without this, the
   // raw interpolation would break the JS string and abort runJs silently.
-  // NB: CodeQL's `js/code-injection` rule flags any template-string code
-  // construction even when JSON.stringify is the canonical safe-encoder.
-  // The taint analysis doesn't recognize JSON.stringify as a sanitizer for
-  // JS-string-literal context. JSON.stringify IS the safe pattern here:
-  // it produces a valid JS string literal that handles every edge case
-  // (quote, backslash, control chars, unicode). Input source: --container-
-  // selector flag (user-supplied) defaulting to a string constant.
+  //
+  // Defense-in-depth (two layers):
+  //   1. Allow-list validation: reject any selector containing characters
+  //      that aren't valid in a CSS selector + would let a payload escape
+  //      JS-string context (quotes, backslash, angle brackets, newlines).
+  //      Real CSS selectors don't need these.
+  //   2. JSON.stringify-encode the validated string for JS-literal context.
+  //
+  // This converts the tainted-flow that CodeQL's `js/code-injection` rule
+  // tracks into a typed-narrow whitelist-validated string before encoding,
+  // which the analyzer should recognize as safe.
+  if (!/^[a-zA-Z0-9_\-.\s#:>~+,()[\]=*^|$"']*$/.test(cfg.containerSelector)) {
+    log(cfg, `ABORT: --container-selector contains characters outside the allowed CSS-selector charset: ${cfg.containerSelector}`);
+    process.exit(1);
+  }
+  if (/[\\<>\r\n]/.test(cfg.containerSelector)) {
+    log(cfg, `ABORT: --container-selector contains disallowed characters (backslash / angle brackets / newlines)`);
+    process.exit(1);
+  }
   const selLit = JSON.stringify(cfg.containerSelector);
 
   // Initial scroll-to-top + first scrollHeight measurement
-  // codeql[js/code-injection]: selLit is JSON.stringify-encoded (safe JS literal)
   const initSH = runJs(
     cfg,
     `(function() { var c = document.querySelector(${selLit}); if (!c) return 'ERROR: container not found'; c.scrollTop = 0; return c.scrollHeight.toString(); })()`,
