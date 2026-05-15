@@ -2,6 +2,7 @@
 name: Otto-363 — Substrate or it didn't happen — no invisible directives (Aaron + Amara, 2026-04-29; refined by 5-AI review)
 description: A directive / decision / packet that lives only in chat, TaskUpdate, /tmp, or loop-todo state is NOT durable project state. If it matters after compaction, it must be converted into substrate (committed + reachable + indexed). Substrate has a precise three-leg definition; channels are taxonomized into ephemeral / host-durable-not-git-canonical / git-native. 8-mechanism remediation against substrate loss; default preservation route is `docs/research/` first when uncertain; supersession is bidirectional with stale-banner-or-quarantine (not bottom-append). Triggered by Otto repeatedly marking work "done" after only TaskUpdate-only capture during the 2026-04-29 doctrine cluster, and refined by 5-AI review wave (Alexa/Ani/Deepseek/Claude.ai/Gemini → Amara synthesis).
 type: feedback
+created: 2026-04-29
 supersedes: []
 superseded_by: []
 ---

@@ -2,6 +2,7 @@
 name: LFG-only development flow — AceHack is a daily mirror (Aaron + Amara, 2026-04-29)
 description: Topology simplification 2026-04-29. The double-hop / AceHack-first / fork-data doctrine is paused. LFG/Zeta is the only active development+review repo. AceHack/Zeta becomes a daily mirror/backstop. No more AceHack PR flow, no fork-data architecture, no absorption ceremony. Existing AceHack PR archives from the reset/double-hop round stay as historical evidence.
 type: feedback
+created: 2026-04-29
 ---
 
 # LFG-only development flow
