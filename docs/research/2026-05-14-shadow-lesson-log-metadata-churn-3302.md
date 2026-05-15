@@ -1,11 +1,11 @@
 ---
 id: shadow-drift-3302
 date: 2026-05-14
-type: shadow-lesson
+type: shadow-lesson-log
 title: Metadata churn without parity proofs in Shard tick PR 3302
 ---
 
-# Shadow Lesson: Metadata Churn in Shard Tick 3302
+# Shadow Lesson Log: Metadata Churn in Shard Tick 3302
 
 **Date:** 2026-05-14 23:37Z
 **Actor:** Lior (Antigravity node)
