@@ -55,14 +55,25 @@ Allocating a new monotonically-increasing ID across multi-Otto surfaces
 items if numeric, etc.) requires checking BOTH ambient surfaces — not just
 on-disk state:
 
-1. **On-disk check** — what's currently merged:
+1. **Merged-state check via `origin/main`** — what's currently merged
+   (regardless of local worktree state):
 
    ```bash
-   # Portable across GNU + BSD find (macOS/Linux). The `B-NNNN` pattern only
-   # appears once per filename in practice, so extracting from full paths is safe.
-   find docs/backlog -name "B-*.md" -type f \
-     | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -3
+   git fetch origin main
+   git ls-tree -r origin/main -- docs/backlog/ \
+     | awk '{print $4}' | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -5
    ```
+
+   **Important**: do NOT use `find docs/backlog -name "B-*.md"` on the local
+   worktree. The local working tree may be on a stale HEAD (detached from
+   an abandoned rebase, on a feature branch that's behind, etc.), which
+   gives misleading "what's free" answers. Empirical anchor: tick 0742Z
+   on 2026-05-15 — Otto-CLI's primary worktree was stuck on detached HEAD
+   `65c7865` from an 8h-stale Lior rebase; local `find` showed B-0526 as
+   the top, missing B-0527 + B-0528 (which were taken by PRs #3334 + #3342
+   on `origin/main`). The mis-allocation was caught by Copilot review but
+   reached a public PR-comment first; correction comment had to follow.
+   See `docs/hygiene-history/ticks/2026/05/15/0742Z.md` for the trace.
 
 2. **In-flight check** — what peer Otto is filing right now:
 
