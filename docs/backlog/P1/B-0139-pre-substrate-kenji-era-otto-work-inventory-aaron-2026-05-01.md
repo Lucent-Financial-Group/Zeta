@@ -73,7 +73,7 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 
 ## Status
 
-**In progress.** First slice landed: `tools/hygiene/audit-formal-artifacts.ts` — a TS script (Rule 0 compliant) that catalogs all formal verification artifacts (Lean4, TLA+, Z3, Alloy, formal tests) and cross-references each against docs/ for substrate-status. Finds 30 artifacts (4295 lines); 24 referenced in substrate, 6 unreferenced TLA+ specs (`AsyncStreamEnumerator.tla`, `BftConsensus.tla`, `ChaosEnvDeterminism.tla`, `ConsistentHashRebalance.tla`, `FeatureFlagsResolution.tla`, `InfoTheoreticSharder.tla`). Remaining slices: docs/research/ cross-reference audit, branch/worktree content inventory, MEMORY.md backfill (decomposed to B-0527).
+**In progress.** First slice landed: `tools/hygiene/audit-formal-artifacts.ts` — a TS script (Rule 0 compliant) that catalogs all formal verification artifacts (Lean4, TLA+, Z3, Alloy, formal tests) and cross-references each against docs/ for substrate-status. Finds 30 artifacts (4295 lines); 24 referenced in substrate, 6 unreferenced TLA+ specs (`AsyncStreamEnumerator.tla`, `BftConsensus.tla`, `ChaosEnvDeterminism.tla`, `ConsistentHashRebalance.tla`, `FeatureFlagsResolution.tla`, `InfoTheoreticSharder.tla`). Remaining slices: docs/research/ cross-reference audit (decomposed to B-0523), branch/worktree content inventory (decomposed to B-0526), F# src/Core built-artifact catalog (acceptance criterion 2 — not yet covered by audit-formal-artifacts.ts), MEMORY.md backfill (decomposed to B-0527).
 
 ## Verify-before-deferring note
 
