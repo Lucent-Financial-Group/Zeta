@@ -4,9 +4,10 @@ priority: P1
 status: open
 title: "Fractal BFT — N maintainers × n(odd) nodes, local broadcast + remote git composition"
 created: 2026-05-06
-last_updated: 2026-05-06
-decomposition: atomic
+last_updated: 2026-05-15
+decomposition: blob
 depends_on: [B-0209]
+children: [B-0527]
 type: feature
 ---
 
