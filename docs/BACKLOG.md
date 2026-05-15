@@ -318,7 +318,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0520](backlog/P1/B-0520-new-surface-audit-alignment-check.md)** Mechanize new-surface audit for alignment-clause consistency
 - [ ] **[B-0522](backlog/P1/B-0522-pre-substrate-kenji-era-git-branches-inventory.md)** Pre-substrate Kenji-era git branches and worktrees inventory
 - [ ] **[B-0523](backlog/P1/B-0523-kenji-era-research-docs-cross-reference-audit.md)** Kenji-era research docs cross-reference audit (peeled from B-0139)
-- [ ] **[B-0526](backlog/P1/B-0526-branch-worktree-content-inventory.md)** Branch/worktree content inventory — Pre-substrate Kenji-era
+- [ ] **[B-0526](backlog/P1/B-0526-branch-worktree-content-inventory.md)** Closed-PR metadata inventory — Pre-substrate Kenji-era
 
 ## P2 — research-grade
 

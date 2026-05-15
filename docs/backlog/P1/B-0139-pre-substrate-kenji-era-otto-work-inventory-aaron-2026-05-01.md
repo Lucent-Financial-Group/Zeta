@@ -73,7 +73,7 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 
 ## Status
 
-**In progress.** First slice landed: `tools/hygiene/audit-formal-artifacts.ts` — a TS script (Rule 0 compliant) that catalogs all formal verification artifacts (Lean4, TLA+, Z3, Alloy, formal tests) and cross-references each against docs/ for substrate-status. Finds 30 artifacts (4295 lines); 24 referenced in substrate, 6 unreferenced TLA+ specs (`AsyncStreamEnumerator.tla`, `BftConsensus.tla`, `ChaosEnvDeterminism.tla`, `ConsistentHashRebalance.tla`, `FeatureFlagsResolution.tla`, `InfoTheoreticSharder.tla`). Remaining slices: F# src/Core/ artifact inventory, docs/research/ cross-reference audit, MEMORY.md backfill. Branch/worktree content inventory peeled off to B-0526.
+**In progress.** First slice landed: `tools/hygiene/audit-formal-artifacts.ts` — a TS script (Rule 0 compliant) that catalogs all formal verification artifacts (Lean4, TLA+, Z3, Alloy, formal tests) and cross-references each against docs/ for substrate-status. Finds 30 artifacts (4295 lines); 24 referenced in substrate, 6 unreferenced TLA+ specs (`AsyncStreamEnumerator.tla`, `BftConsensus.tla`, `ChaosEnvDeterminism.tla`, `ConsistentHashRebalance.tla`, `FeatureFlagsResolution.tla`, `InfoTheoreticSharder.tla`). Remaining slices: F# src/Core/ artifact inventory, docs/research/ cross-reference audit, MEMORY.md backfill. Closed-PR metadata inventory peeled off to B-0526 (non-overlapping with B-0522 which owns branch/worktree content).
 
 ## Verify-before-deferring note
 
