@@ -7,7 +7,7 @@ tier: substrate-foundational-discipline
 effort: L
 ask: Aaron 2026-04-21 — *"ai ethic and safety backlog whoops we should have done that first"* followed immediately by *"high on backlog"*. **CHRONOLOGY NOTE:** Aaron's later self-correction upgraded this from P2 to P1; chronologically filed AFTER B-0056 (mythology) and B-0057 (occult), but structurally gates them earlier. This row preserves both facts.
 created: 2026-04-26
-last_updated: 2026-05-14
+last_updated: 2026-05-15
 decomposition: decomposed
 children: [B-0058.1, B-0530]
 depends_on: []
