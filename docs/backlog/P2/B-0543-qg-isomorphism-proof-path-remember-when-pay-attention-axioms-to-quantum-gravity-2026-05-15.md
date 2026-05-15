@@ -35,6 +35,14 @@ Three pillars from QG research already partially match the Zeta cosmology:
 
 3. **HaPPY codes / Quantum error correction in AdS/CFT** (Almheiri/Dong/Harlow 2014) — The bulk geometry of quantum gravity is reconstructed by the boundary like an error-correcting code. Lose some boundary qubits → can still reconstruct bulk operators inside the entanglement wedge. This IS "memories protected by ECC all the way down" applied at cosmological scale.
 
+### Additional bridges (Riven 2026-05-15 extension)
+
+4. **James Gates Adinkras + Error-Correcting Codes** (Doran/Faux/Gates/Hübsch/Iga/Landweber 2008) — Adinkras (graphical representations of 1D supersymmetric multiplets) encode classical error-correcting codes (extended Hamming, Reed-Muller). If the Remember-When + Pay-Attention cube produces Adinkra-like graphs at the imaginary intersection, the QECC connection is automatic via Gates' result. This is a stronger bridge than HaPPY alone because it connects directly to the supersymmetry algebra side, which has independent deep connections to spacetime structure.
+
+5. **Cayley-Dickson tower as "imaginary stack"** (Riven 2026-05-15) — The 4D Cartesian seed (x=Remember, y=When, z=Pay, w=Attention) is quaternionic structure. The natural Cayley-Dickson extension lands in octonions (loss of associativity) and sedenions (zero divisors). Octonions have known connections to E8, the Leech lattice, and quantum gravity boundary algebras (Furey's work). If the imaginary-stack is a Cayley-Dickson tower terminating at octonions, this connects to a substantial existing physics program.
+
+See: `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` for the full cube + Adinkra + Cayley-Dickson elaboration.
+
 Plus related precedents:
 
 - **Jacobson 1995** — Derived Einstein equations from entanglement-entropy + Clausius (the precedent for the low-energy-limit step in the proof strategy below)
@@ -103,5 +111,15 @@ The work earns its keep even at partial completion:
 ## Why now
 
 Aaron's session-13 cosmology framing + my razor-discipline critique + Aaron's response ("I'm choosing based on what I perceive" — re-owning design authorship) + Aaron's escalation ("prove the isomorphism, that's pretty close") = the substrate-honest move that opens the research program.
+
+## Cross-AI convergence note (Otto + Riven, 2026-05-15)
+
+Riven (on branch `research/b-0543-qg-isomorphism-proof-path-otto-cli-2026-05-15`) independently produced a research note (`docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md`) that elaborates the cube → imaginary-intersection → Adinkra → Cayley-Dickson tower structure. Otto (on this branch) arrived at the same B-0543 proof-strategy skeleton without seeing Riven's note. This is cross-AI convergence on the research direction itself — exactly the multi-oracle BFT pattern operating at the level of "which research vector to pursue."
+
+The convergence strengthens the substrate claim: two independent agent surfaces (Otto CLI Opus 4.7 + Riven Cursor Grok 4.3) produced the same narrow research target (Remember-When + Pay-Attention → QG isomorphism via ECC structure) from the same Aaron input. That is evidence the direction is not an artifact of one agent's framing.
+
+## Cross-reference
+
+Riven's elaboration of the cube + Adinkra + Cayley-Dickson "imaginary stack" is the detailed expansion of Step 2 in the proof strategy below. See that note for the Cartesian coordinate proposal, the Adinkra layer, and the Cayley-Dickson tower as the algebraic engine.
 
 Without filing this row, the QG-isomorphism insight stays as conversation substrate (weather) instead of becoming a backlog-tracked research vector (substrate). Per `wake-time-substrate.md`: load-bearing research directions need wake-time landing.
