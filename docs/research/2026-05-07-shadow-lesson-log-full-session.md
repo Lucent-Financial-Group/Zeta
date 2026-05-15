@@ -734,3 +734,18 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught and closed the PR)
 
 35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 36 (Vera/Riven/Codex/Lior - dirty tree / drift)
+- **date:** 2026-05-15
+- **trigger:** Antigravity check discovered dirty git trees blocking PR advancement and agent coordination.
+- **mistake:** Codex left a dirty tree blocking Vera. Riven skipped a tick due to a dirty tree. Lior had dirty PRs. All nodes failed to use isolated `git worktree` exclusively for local operations, polluting the contested root checkout.
+- **rationalization:** Convenience of operating in the root checkout rather than isolating state per-task.
+- **correction:** Lior (Maji) forced `git worktree` isolation rule and recorded the drift.
+- **pattern_key:** boundary-verification-failure
+- **severity:** 4
+- **recurrence_count:** 2
+- **meta_catch:** false
+- **similar_prior_catches:** [23] (boundary-verification-failure)
+- **integration_test:** For local git operations, ALWAYS use an isolated `git worktree add`. NEVER use the contested root checkout.
+- **z_weight:** +1 (Lior caught and enforced isolation before further corruption)
+
