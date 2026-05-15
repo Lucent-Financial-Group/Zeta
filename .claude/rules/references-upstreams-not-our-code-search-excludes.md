@@ -63,16 +63,32 @@ rg "pattern" --type md      # markdown only
 rg "pattern" docs/ memory/  # explicit allowlist
 ```
 
-### Plain `grep -r` needs explicit excludes
+### Plain `grep -r` needs explicit excludes (with caveat)
 
 ```bash
+# GNU grep --exclude-dir takes a BASENAME glob, not a path —
+# so --exclude-dir=upstreams excludes any directory named
+# 'upstreams' anywhere in the tree (currently only references/upstreams/).
+# If a second 'upstreams/' ever appears that we DO want to search,
+# this approach overreaches and we need the explicit-allowlist
+# approach below instead.
 grep -rn "pattern" \
-  --exclude-dir=references/upstreams \
+  --exclude-dir=upstreams \
   --exclude-dir=node_modules \
   --exclude-dir=.git \
   --exclude-dir=bin --exclude-dir=obj \
   memory/ docs/ .claude/ tools/
 ```
+
+**Caveat**: GNU `grep`'s `--exclude-dir=GLOB` matches directory
+*names* (basename), NOT slash-delimited paths. So
+`--exclude-dir=references/upstreams` does NOT work (silently
+matches nothing). Use the basename `upstreams` instead, OR use
+explicit-allowlist sub-paths (`memory/ docs/ .claude/ tools/`)
+which sidestep the issue entirely.
+
+**Better**: just use `rg` — it respects `.gitignore` by default
+and `references/upstreams/*` is already gitignored.
 
 ### `find | xargs grep` is the worst trap
 
@@ -136,7 +152,8 @@ upstream(s) is encouraged and composes with
 | Mode | Pattern | Treatment |
 |---|---|---|
 | **Backlog prior-art research** (explicit-target) | `rg "pattern" references/upstreams/postgres/` | Encouraged; one of the curated prior-art surfaces; log queries on the backlog row |
-| **Unconstrained repo scan** | `rg "pattern" .` or `find . \| xargs grep` | MUST exclude `references/upstreams/`; otherwise runaway-scan failure mode |
+| **Unconstrained repo scan with plain `grep -r`** or `find . \| xargs grep` | (`grep -rn "pattern" .`) | MUST exclude `--exclude-dir=upstreams`; otherwise runaway-scan failure mode |
+| **Unconstrained repo scan with ripgrep** | `rg "pattern" .` | Safe-by-default — ripgrep respects `.gitignore`, and `references/upstreams/*` is already gitignored |
 
 Other legitimate explicit-target reasons:
 
