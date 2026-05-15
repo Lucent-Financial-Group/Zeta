@@ -45,5 +45,10 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
 - **Result-over-exception** — errors surface as `Result<_, DbspError>`; no exceptions on hot paths.
 - **Memory fast-path** — read `~/.claude/projects/<slug>/memory/CURRENT-*.md` before raw
   `feedback_*.md` logs; CURRENT files win on conflict with older raw memories.
+- **`references/upstreams/` is NOT our code — ALWAYS exclude from search/scan operations.**
+  Mirror state of OTHER repos (protobuf, gRPC, Redis, etc.); gitignored; gigabytes; the only
+  folder where a naive `find | xargs grep` becomes a 2-hour runaway. Prefer `rg` (respects
+  gitignore by default); plain `grep -r` needs `--exclude-dir=references/upstreams`. Full:
+  `.claude/rules/references-upstreams-not-our-code-search-excludes.md`.
 - **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
   are razored (cooling-period required, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
