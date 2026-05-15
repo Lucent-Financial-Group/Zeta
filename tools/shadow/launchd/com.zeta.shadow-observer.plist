@@ -56,7 +56,7 @@
              (configuration errors, missing accessibility permission), which
              would mask config bugs as crash-loops. Crashed=true on its own
              gives the documented "relaunch on signal-termination only"
-             semantic. Per Codex review on PR #3342. -->
+             semantic. -->
         <key>Crashed</key>
         <true/>
     </dict>

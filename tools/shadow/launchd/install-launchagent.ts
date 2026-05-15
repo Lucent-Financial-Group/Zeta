@@ -35,9 +35,9 @@
  *   tools/shadow/launchd/README.md — install procedure documentation
  */
 
-import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync, unlinkSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { join, isAbsolute, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 
 interface Args {
@@ -45,6 +45,35 @@ interface Args {
   repoRoot: string;
   dryRun: boolean;
   bootstrap: boolean;
+}
+
+/**
+ * Tries `which bun` (or `git rev-parse --show-toplevel`) and returns
+ * the trimmed stdout. If the command isn't on PATH or errors, returns
+ * undefined so the caller can emit the documented actionable error
+ * instead of a raw exception.
+ */
+function tryDetect(cmd: string, args: string[]): string | undefined {
+  try {
+    return execFileSync(cmd, args, { encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Enforce that a user-supplied path override is absolute. LaunchAgent
+ * plists are persistent and must not depend on the installer's cwd —
+ * `--repo-root .` would write relative paths into ProgramArguments,
+ * WorkingDirectory, and log paths, all of which would fail under
+ * launchd (which has no defined cwd unless explicit).
+ */
+function requireAbsolute(name: string, value: string): string {
+  if (!isAbsolute(value)) {
+    console.error(`${name} must be an absolute path; got "${value}". Use \`${resolve(value)}\` if that's what you meant.`);
+    process.exit(1);
+  }
+  return value;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -69,10 +98,10 @@ function parseArgs(argv: string[]): Args {
     const a = argv[i];
     switch (a) {
       case "--bun-path":
-        bunPath = nextArg("--bun-path");
+        bunPath = requireAbsolute("--bun-path", nextArg("--bun-path"));
         break;
       case "--repo-root":
-        repoRoot = nextArg("--repo-root");
+        repoRoot = requireAbsolute("--repo-root", nextArg("--repo-root"));
         break;
       case "--dry-run":
         dryRun = true;
@@ -84,19 +113,33 @@ function parseArgs(argv: string[]): Args {
       case "-h":
         printHelp();
         process.exit(0);
+      default:
+        // Unknown flag — refuse before performing any filesystem action.
+        // Otherwise a typo like `--dryrun` or `--bootstap` would silently
+        // proceed with default-installation behavior.
+        console.error(`Unknown argument: ${a}. Run with --help to see supported flags.`);
+        process.exit(1);
     }
   }
   if (!bunPath) {
-    bunPath = execFileSync("which", ["bun"], { encoding: "utf-8" }).trim();
+    bunPath = tryDetect("which", ["bun"]);
+    if (!bunPath) {
+      console.error("Could not detect bun via `which bun`. Install bun or pass --bun-path <absolute-path>.");
+      process.exit(1);
+    }
   }
   if (!repoRoot) {
-    repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
+    repoRoot = tryDetect("git", ["rev-parse", "--show-toplevel"]);
+    if (!repoRoot) {
+      console.error("Could not detect repo root via `git rev-parse --show-toplevel` (not in a git checkout?). Pass --repo-root <absolute-path>.");
+      process.exit(1);
+    }
   }
-  if (!bunPath || !existsSync(bunPath)) {
+  if (!existsSync(bunPath)) {
     console.error(`bun not found at "${bunPath}". Install bun or pass --bun-path.`);
     process.exit(1);
   }
-  if (!repoRoot || !existsSync(repoRoot)) {
+  if (!existsSync(repoRoot)) {
     console.error(`repo root "${repoRoot}" does not exist. Pass --repo-root explicitly.`);
     process.exit(1);
   }
@@ -120,13 +163,35 @@ tools/shadow/launchd/README.md before live mode is useful.
 `);
 }
 
+/**
+ * XML-text escape: substituted values go inside <string>…</string> nodes,
+ * so any of `& < >` would either produce an invalid plist (`&` without a
+ * matching `;`) or alter the parsed value. Apple's plutil rejects raw `&`
+ * in text nodes outright. We escape before substitution.
+ *
+ * `'` and `"` aren't strictly required to be escaped inside element text,
+ * but escaping them is conservative and matches XML 1.0 predefined-entity
+ * recommendations.
+ */
+function xmlEscape(s: string): string {
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
+}
+
 function substitutePlaceholders(template: string, repoRoot: string, bunPath: string): string {
-  // String replace is metacharacter-safe (unlike sed). No escaping needed.
+  // String replace is metacharacter-safe (unlike sed). No escaping needed
+  // for shell — but the values are about to land in XML text nodes, so
+  // they DO need XML-entity escaping (else `/Users/foo & bar/Zeta`
+  // produces an invalid plist).
   // Placeholders use `{{NAME}}` (Mustache-style) so the template header
   // comment can document them without itself being substituted.
   const result = template
-    .replaceAll("{{BUN_PATH}}", bunPath)
-    .replaceAll("{{REPO_ROOT}}", repoRoot);
+    .replaceAll("{{BUN_PATH}}", xmlEscape(bunPath))
+    .replaceAll("{{REPO_ROOT}}", xmlEscape(repoRoot));
   // Sanity check: any remaining {{NAME}} markers indicate a new placeholder
   // the script doesn't know about. Refuse to write a partial substitution.
   const leftover = result.match(/\{\{[A-Z_]+\}\}/g);
@@ -175,19 +240,43 @@ function main(): void {
   const destPath = join(destDir, "com.zeta.shadow-observer.plist");
   // recursive: true is idempotent; no existsSync check needed.
   mkdirSync(destDir, { recursive: true });
-  // Atomic backup-on-overwrite: rename the existing file out of the way
-  // (single syscall, no TOCTOU between check and copy). If the file does
-  // not exist, ENOENT is the only expected error — anything else
-  // re-thrown to surface unexpected FS state.
+
+  // Atomic write-then-promote pattern:
+  //   1. Write the new content to a temp file alongside destPath
+  //   2. If destPath exists, rename it to the timestamped backup
+  //   3. Atomically rename the temp file into destPath
+  // If step 1 or 3 fails, the existing destPath is still intact (or
+  // restored from backup). Avoids the previous failure mode where
+  // renameSync(destPath, backup) succeeded but the subsequent
+  // writeFileSync failed, leaving destPath missing.
+  const tmpDest = `${destPath}.tmp-${process.pid}`;
   const backup = `${destPath}.bak-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+  writeFileSync(tmpDest, configured, "utf-8");
+  let backedUp = false;
   try {
     renameSync(destPath, backup);
+    backedUp = true;
     console.error(`Backed up existing plist to ${backup}`);
   } catch (e) {
-    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") {
+      // Couldn't back up for a reason other than absence — clean up
+      // temp file and bail out so we don't lose the existing plist.
+      try { unlinkSync(tmpDest); } catch { /* tmp may already be gone */ }
+      throw e;
+    }
     // No existing plist — nothing to back up.
   }
-  writeFileSync(destPath, configured, "utf-8");
+  try {
+    renameSync(tmpDest, destPath);
+  } catch (e) {
+    // Promote failed. If we successfully moved the old plist aside,
+    // restore it so the caller's existing install is untouched.
+    if (backedUp) {
+      try { renameSync(backup, destPath); } catch { /* original lost; manual cleanup needed */ }
+    }
+    try { unlinkSync(tmpDest); } catch { /* tmp may already be gone */ }
+    throw e;
+  }
   console.error(`Wrote ${destPath}`);
 
   if (args.bootstrap) {
@@ -207,4 +296,9 @@ function main(): void {
   }
 }
 
-main();
+// Bun convention: only invoke main() when this file is the entry point.
+// Lets tests / helpers `import { ... } from "./install-launchagent.ts"`
+// without triggering filesystem or launchctl side effects.
+if (import.meta.main) {
+  main();
+}
