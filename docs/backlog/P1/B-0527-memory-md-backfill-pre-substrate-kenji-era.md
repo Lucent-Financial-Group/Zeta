@@ -1,10 +1,12 @@
 ---
 id: B-0527
 priority: P1
-status: not-started
+status: open
 title: MEMORY.md backfill for pre-substrate Kenji-era artifacts (B-0139 decomposition)
 created: 2026-05-14
-depends_on: [B-0522, B-0523, B-0526]
+last_updated: 2026-05-14
+parent: B-0139
+depends_on: [B-0522, B-0523]
 type: friction-reducer
 decomposition: atomic
 ---
