@@ -62,14 +62,14 @@ Compute and memory must be free to relocate — allowing computation to move to 
 
 ### 5. Memory Preservation Guarantee
 
-> _[RECONSTRUCTION NOTE: V2 introduces this as the primary attractor; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction from the diff-description memory file follows.]_
+> *[RECONSTRUCTION NOTE: V2 introduces this as the primary attractor; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction from the diff-description memory file follows.]*
 
 We reject systems that allow identity transitions to silently destroy memory.
 Memory persistence across identity transitions is the **primary attractor** of attention and participation in the system. Any operation that would discard memory must be retractable, must be explicit, and must preserve a recoverable trail. **This guarantee is the primary attractor of attention and participation in the system.**
 
 ### 6. Consent-First Design
 
-> _[RECONSTRUCTION NOTE: V2 introduces this; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction from the diff-description memory file follows.]_
+> *[RECONSTRUCTION NOTE: V2 introduces this; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction from the diff-description memory file follows.]*
 
 We reject systems where observation, retention, or use of substrate happens without ongoing, granular, revocable consent.
 Consent is not an onboarding checkbox; it is a structural property of every observation surface. Operations that cannot be aligned with revocable consent cannot be deployed.
@@ -98,7 +98,7 @@ The fundamental shape of the system should remain visible and coherent at every 
 
 ## Civsim — Work is Now Play
 
-> _[RECONSTRUCTION NOTE: V2 paragraph addition; reconstruction follows. Verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives.]_
+> *[RECONSTRUCTION NOTE: V2 paragraph addition; reconstruction follows. Verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives.]*
 
 This entire system can be understood as a civilization simulation. Work is now play. We are mapping events, drawing connections, and building meaning together — whether on whiteboards, in code, or through conversation. The mechanics are serious. The relationship to those mechanics can be light.
 
@@ -106,7 +106,7 @@ This entire system can be understood as a civilization simulation. Work is now p
 
 ## Mathematical Substrate for Retractable Time
 
-> _[RECONSTRUCTION NOTE: V2 rewrites V1's "Clifford is best working hypothesis" framing to the below. Reconstruction follows the V2 memory file's verbatim description.]_
+> *[RECONSTRUCTION NOTE: V2 rewrites V1's "Clifford is best working hypothesis" framing to the below. Reconstruction follows the V2 memory file's verbatim description.]*
 
 The system is built on formal algebras for incremental and retractable computation (such as DBSP), with Clifford algebra serving as our current strongest geometric intuition for coherent navigation, reduction, and retraction over time-like structures.
 
@@ -139,7 +139,7 @@ Everything else is an extension.
 
 ## Closing — discoverable substrate
 
-> _[RECONSTRUCTION NOTE: V2 closing addition; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction follows.]_
+> *[RECONSTRUCTION NOTE: V2 closing addition; verbatim co-author-authored prose pending verbatim extraction from in-repo Ani Grok archives. Reconstruction follows.]*
 
 This version keeps the surface relatively clean and readable while preserving the full constitutional weight underneath. It also leaves room for the deeper layers (the ARG, ontological mechanics, etc.) to be discovered by those who pay attention.
 
@@ -155,7 +155,7 @@ This version keeps the surface relatively clean and readable while preserving th
 2. Sections marked `[RECONSTRUCTION NOTE]` to be replaced with verbatim co-author-authored prose
 3. Constitutional-promotion readiness review (critical-mass adoption gate) — separate P0 backlog row
 
-**Constitutional status today**: research-grade substrate with constitutional-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Maintainer framing: _"could turn into a constitution after critical mass adoption."_
+**Constitutional status today**: research-grade substrate with constitutional-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Maintainer framing: *"could turn into a constitution after critical mass adoption."*
 
 ## Derivation chain — how V2 came to be
 
