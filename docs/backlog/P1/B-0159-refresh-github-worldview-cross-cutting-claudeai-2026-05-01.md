@@ -14,7 +14,7 @@ type: friction-reducer
 
 # B-0159 — `refresh-github-worldview` cross-cutting refresh script (Claude.ai 2026-05-01)
 
-**Origin:** Claude.ai feedback packet 2026-05-01 — full lineage in [docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md](../../research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md) and the maintainer-relayed Claude.ai-2 follow-up calibrating against Otto's running state.
+**Origin:** Claude.ai feedback packet 2026-05-01 — full lineage in [memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md](../../../memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md) and the maintainer-relayed Claude.ai-2 follow-up calibrating against Otto's running state.
 
 ## Problem
 
