@@ -1,11 +1,11 @@
 ---
 id: B-0526
 priority: P1
-status: not-started
+status: open
 title: Branch/worktree content inventory — Pre-substrate Kenji-era
 created: 2026-05-14
 last_updated: 2026-05-14
-depends_on: [B-0139]
+depends_on: []
 type: friction-reducer
 decomposition: atomic
 ---
@@ -32,4 +32,4 @@ Scope includes:
 ## Composes with
 
 - **B-0139** (Parent blob row).
-- **Task #321** (Recovery lane — branch/worktree/stash inventory).
+- **#321** (Recovery lane — branch/worktree/stash inventory).
