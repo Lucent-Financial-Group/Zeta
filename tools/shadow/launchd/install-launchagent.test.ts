@@ -9,6 +9,15 @@
  * with --dry-run so we don't touch `~/Library/LaunchAgents/`.
  */
 import { describe, it, expect } from "bun:test";
+
+// `plutil` is a macOS-only system binary. On Linux CI, the
+// install-launchagent.ts target binary is also macOS-only (the whole
+// LaunchAgent install is macOS), so the tests that exercise the plutil
+// integration are skipped on non-darwin. Pure-helper tests (xmlEscape,
+// substitutePlaceholders, requireAbsolute, tryDetect, argument-validation
+// via subprocess) run cross-platform.
+const IS_DARWIN = process.platform === "darwin";
+const itDarwin = IS_DARWIN ? it : it.skip;
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -79,7 +88,7 @@ describe("xmlEscape", () => {
 });
 
 describe("substitutePlaceholders + xmlEscape (integration)", () => {
-  it("substituted values containing & < > produce plutil-valid plist", () => {
+  itDarwin("substituted values containing & < > produce plutil-valid plist", () => {
     // Use a minimal valid plist template
     const tpl = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -160,7 +169,7 @@ describe("requireAbsolute", () => {
 // ─────────────────────────────────────────────────────────────────────
 
 describe("--dry-run", () => {
-  it("writes rendered plist to stdout, not to ~/Library/LaunchAgents/", () => {
+  itDarwin("writes rendered plist to stdout, not to ~/Library/LaunchAgents/", () => {
     // Use the actual repo template via --repo-root <wt path>, --bun-path /opt/homebrew/bin/bun (or any abs).
     const repoRoot = process.cwd();
     const bunPath = process.execPath;  // bun itself is an absolute path
@@ -227,14 +236,14 @@ describe("tryDetect", () => {
 // ─────────────────────────────────────────────────────────────────────
 
 describe("plutilLint", () => {
-  it("returns without throwing for a valid plist", () => {
+  itDarwin("returns without throwing for a valid plist", () => {
     const valid = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict/></plist>`;
     expect(() => plutilLint(valid)).not.toThrow();
   });
 
-  it("exits with code 1 (via subprocess) for an invalid plist", () => {
+  itDarwin("exits with code 1 (via subprocess) for an invalid plist", () => {
     // plutilLint calls process.exit(1) on failure; can't test in-process.
     const proc = spawnSync(
       "bun",
