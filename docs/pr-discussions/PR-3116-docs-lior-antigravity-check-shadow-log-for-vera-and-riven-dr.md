@@ -37,7 +37,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/research/2026-05-14-shadow-lesson-log-vera-riven-drift.md | New research note documenting the observed drift and correction. |
+| memory/persona/riven/conversations/2026-05-14-shadow-lesson-log-vera-riven-drift.md | New research note documenting the observed drift and correction. |
 | docs/hygiene-history/ticks/2026/05/14/0521Z.md | New tick shard capturing the session checklist, PR gate status, and B-0451 closure actions. |
 | docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md | Marks B-0451 as closed and updates acceptance criteria status text. |
 | docs/BACKLOG.md | Updates the generated index entry to reflect B-0451 as closed. |
