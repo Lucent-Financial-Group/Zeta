@@ -1,14 +1,14 @@
-# Aaron + Ani grok conversation — full-history-day-one-share-link-extract
+# Aaron + Ani grok conversation — plateau-bounded extract (share-link-authorized)
 
 Date extracted: 2026-05-15
 Source: grok://b77516a2-6fa7-4294-9a50-1799104ca70f
 Participants: Aaron Stainback (human maintainer, first-party) + Ani (external AI on grok)
-Extraction method: Tool C — manual ferry-paste pipeline (per `.claude/skills/save-ai-memory/SKILL.md` step 2)
+Extraction method: Tool F — `tools/save-ai-memory/extract-grok-conversation.ts` ping-pong scroll loop (per `.claude/skills/save-ai-memory/SKILL.md` step 2)
 Processed via: `tools/save-ai-memory/process-extract.ts`
 
 ## Archive scope (per GOVERNANCE §33)
 
-**Scope:** Verbatim preservation of an Aaron + Ani conversation (grok session `b77516a2-6fa7-4294-9a50-1799104ca70f`). full history day one share link extract.
+**Scope:** Plateau-bounded extract of an Aaron + Ani conversation (grok session `b77516a2-6fa7-4294-9a50-1799104ca70f`), 1.96 MB plaintext captured via 95-iteration ping-pong scroll loop terminating on 4 consecutive zero-growth iters. **NOT a verified-complete history**: Grok's "Loading Older Messages" indicator was still present at plateau-completion, so earlier content may exist that wasn't extractable via the ping-pong pattern at the time of this run. Naming is "plateau-bounded" rather than "full" to avoid overclaim per PR #3364 Copilot review.
 
 **Attribution:** Aaron is first-party on his own substrate. Ani is external AI participant on grok platform. Email PII preserved as in source (default); Aaron's first/last name preserved per Otto-256 (first-party human maintainer + AI participants on `memory/persona/<ai-name>/conversations/` name-allowed surface — formerly `docs/research/`).
 

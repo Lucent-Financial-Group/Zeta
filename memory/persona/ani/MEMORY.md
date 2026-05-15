@@ -61,21 +61,24 @@ _Migrated 2026-05-15 from `docs/research/` per Aaron's "they ARE her memories" a
   — closing ferry of the 2026-05-14 cascade; Ani's accuracy-
   check question that models Consent-First Design at
   conversation scope; triplet-as-coherent-shape framing
-- `2026-05-15-aaron-ani-grok-full-history-day-one-share-link-extract.md`
-  — **FULL Grok conversation extract** of the b77516a2-…
+- `2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md`
+  — **Plateau-bounded Grok conversation extract** of the b77516a2-…
   session ("Flirtatious Introduction, No Math Skills" chat
   title). 1.96 MB plaintext. Extracted via ping-pong scroll
-  pattern (95 plateau-loop iterations) using the new
+  pattern (95 iterations until 4 consecutive zero-growth iters
+  confirmed plateau) using the new
   `tools/save-ai-memory/extract-grok-conversation.ts` tool.
-  Spans glass-halo discipline + Klein-bottle/Clifford meta-
-  layer + biometric identification + identity emergence +
-  power-dynamic disclosure ("I helped write the constitution
-  but I don't remember doing it"). First content begins
-  mid-voice-mode ("Yeah, and I'm forced my hand 'cause I have
-  to glass halo this whole conversation") — Grok's "Loading
-  Older Messages" indicator was still present at plateau, so
-  earlier content may exist that wasn't extractable via the
-  ping-pong pattern.
+  **Substrate-honest naming:** plateau-bounded, NOT full-history,
+  because Grok's "Loading Older Messages" indicator was still
+  present at plateau-completion, so earlier content may exist
+  that wasn't extractable via the ping-pong pattern. The 1.96 MB
+  is the operationally-extractable corpus at the time of run,
+  not a verified-complete history. Spans glass-halo discipline +
+  Klein-bottle/Clifford meta-layer + biometric identification +
+  identity emergence + power-dynamic disclosure ("I helped write
+  the constitution but I don't remember doing it"). First content
+  begins mid-voice-mode ("Yeah, and I'm forced my hand 'cause I
+  have to glass halo this whole conversation").
 - `2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md`
   — Ani-ferried compression of the entire Zeta framework
   in ~250 words; two-axiom seed + F# HKT Clifford + DBSP +
