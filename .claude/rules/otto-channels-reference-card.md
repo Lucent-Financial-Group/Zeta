@@ -60,9 +60,11 @@ on-disk state:
 
    ```bash
    # `git fetch origin` (no branch arg) updates ALL configured remote-tracking
-   # refs reliably; the form `git fetch origin main` updates FETCH_HEAD but
-   # may not refresh refs/remotes/origin/main under all configs (refspec
-   # overrides, partial-clone, etc.).
+   # refs; the form `git fetch origin main` updates FETCH_HEAD but may not
+   # refresh refs/remotes/origin/main under all configs (refspec overrides,
+   # partial-clone, etc.). Note: BOTH forms can fail under multi-Otto ref-lock
+   # contention — see the "Symptom → fix mapping" section below for the
+   # observed wedge and the FETCH_HEAD workaround.
    git fetch origin
    git ls-tree -r origin/main -- docs/backlog/ \
      | awk '{print $4}' | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -5
@@ -81,13 +83,18 @@ on-disk state:
    the wedge while a sidetick's `git fetch origin` succeeded
    (`b004681..324dc84 main -> origin/main`) in the same minute.
 
-   **The ultimate workaround** is `git switch -c <new-branch>
-   FETCH_HEAD` — `FETCH_HEAD` always updates regardless of whether
-   the named remote-tracking ref does, so branch creation can
-   bypass the wedge entirely. If you need `origin/main` to actually
-   update (e.g., for `git log origin/main` queries), retry the
-   fetch from a different worktree or wait for the peer to release
-   the ref-lock — the wedge clears on its own within minutes.
+   **The ultimate workaround** is to use `FETCH_HEAD` for branch creation:
+
+   ```bash
+   git switch -c <new-branch> FETCH_HEAD
+   ```
+
+   `FETCH_HEAD` always updates regardless of whether the named
+   remote-tracking ref does, so branch creation can bypass the
+   wedge entirely. If you need `origin/main` to actually update
+   (e.g., for `git log origin/main` queries), retry the fetch
+   from a different worktree or wait for the peer to release the
+   ref-lock — the wedge clears on its own within minutes.
 
    Empirical anchors: ticks 1632Z + 1719Z + 1737Z + 1808Z all hit
    the wedge with different command forms; tick 1752Z's `git fetch
