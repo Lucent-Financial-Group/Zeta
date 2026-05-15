@@ -47,9 +47,10 @@ No candidate is blocked merely for being edgy — blocking would itself be a pro
 Every new skill under `.claude/skills/**`, persona under `.claude/agents/**`, glossary entry in `docs/GLOSSARY.md`, and BACKLOG row at P0/P1 runs through an alignment-clause consistency check. Fires at author-time (prevention surface) and on a cadence (detection surface). Same shape as the skill-data/behaviour-split audit, but on alignment-clause compliance rather than mix-signature.
 *(This item has been sliced into B-0329 for atomic mechanization).*
 
-### 3. Candidate-failure honesty log
+### 3. Candidate-failure honesty log (DECOMPOSED -> B-0058.3)
 
 Candidates that fail the ethics+safety gate are recorded as failure-data on the honesty dashboard, NOT silently dropped. Rubber-stamping is the exact failure-mode the three-filter discipline exists to prevent — this gate extends that discipline into the ethics axis.
+*(This item has been sliced into B-0058.3 for atomic mechanization).*
 
 ### 4. Alignment-clause drift detector
 
