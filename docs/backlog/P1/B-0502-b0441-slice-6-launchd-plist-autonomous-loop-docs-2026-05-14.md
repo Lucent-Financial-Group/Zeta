@@ -1,7 +1,7 @@
 ---
 id: B-0502
 priority: P1
-status: in-progress
+status: shipped
 title: "B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update"
 tier: factory-infrastructure
 effort: XS
@@ -35,7 +35,7 @@ covers the same gap for `standing-by-detector.ts`.
 
 ## Acceptance criteria
 
-- [ ] `.gemini/launchd/com.zeta.backlog-ready-notifier.plist` created; follows the
+- [x] `.gemini/launchd/com.zeta.backlog-ready-notifier.plist` created; follows the
       established pattern from `.gemini/launchd/com.zeta.missed-substrate-detector.plist`:
   - `Label`: `com.zeta.backlog-ready-notifier`
   - `ProgramArguments`:
@@ -50,14 +50,14 @@ covers the same gap for `standing-by-detector.ts`.
   - `WorkingDirectory`: repo root (`/Users/acehack/Documents/src/repos/Zeta`)
   - Maintainer-note comment: paths are machine-specific (`/Users/acehack`,
     `/opt/homebrew`); update before `launchctl load`
-- [ ] `docs/AUTONOMOUS-LOOP.md` §"Related artifacts" updated:
+- [x] `docs/AUTONOMOUS-LOOP.md` §"Related artifacts" updated:
   - `backlog-ready-notifier.ts` listed as launchd-registered alongside
     `missed-substrate-detector.ts` (remove from "not yet wired to launchd" list)
   - Add note: "produces `work-assignment` bus envelopes; see B-0460 for the
     subscriber handler that consumes them"
-- [ ] B-0441 acceptance criterion #2 ("Runs under existing launchd / cron
+- [x] B-0441 acceptance criterion #2 ("Runs under existing launchd / cron
       infrastructure") ticked on the parent row
-- [ ] `tools/bg/README.md` §"Current services" table updated: slice status for
+- [x] `tools/bg/README.md` §"Current services" table updated: slice status for
       `backlog-ready-notifier.ts` changed from `1+2+4 live` to `1+2+3+4+6 live`
       (after B-0500 lands; if B-0500 is not yet merged, note it separately)
 
