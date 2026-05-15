@@ -6,8 +6,8 @@
 // across runs because every input is fixed and every random/time source
 // is excluded by construction.
 //
-// Per Aaron 2026-05-01 (the rule this tool was written to satisfy):
-// *"DST is bascically impossible there [in bash], not in ts."* These
+// Per the human maintainer 2026-05-01 (the rule this tool was written
+// to satisfy): *"DST is bascically impossible there [in bash], not in ts."* These
 // tests are the worked-example proof that a TS tool ported from a bash
 // equivalent can carry DST grade-A coverage that the bash form
 // structurally cannot.
