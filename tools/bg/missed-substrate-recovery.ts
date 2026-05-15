@@ -37,15 +37,9 @@ export type RecoveryResult =
  * Pure function; no I/O. Determinism is load-bearing: the idempotency gate
  * `checkRecoveryPRExists(recoveryBranch)` only catches duplicate recovery
  * attempts if the branch name is stable across invocations for the same
- * `prNumber`. The earlier `recovery/<prNumber>-<timestamp>` form defeated
- * the gate (every invocation produced a fresh branch name; the gate never
- * fired). See PR #3433 Copilot P0 catch.
- *
- * The `ts` parameter is retained for backward compatibility with callers
- * passing a Date; it is now unused. Tests should pass any Date (even
- * `new Date(0)`); the output depends only on `prNumber`.
+ * `prNumber`.
  */
-export function buildRecoveryBranchName(prNumber: number, _ts: Date): string {
+export function buildRecoveryBranchName(prNumber: number): string {
   return `recovery/${prNumber}`;
 }
 
@@ -97,15 +91,13 @@ export function buildRecoveryPRBody(finding: CascadeFinding): string {
  * (`recovery/<prNumber>`); the idempotency gate (`checkRecoveryPRExists`)
  * is the load-bearing uniqueness mechanism — duplicate recovery attempts
  * for the same PR resolve to `already-exists` and perform no mutations.
- * `new Date()` is no longer needed here; the date argument to
- * `buildRecoveryBranchName` is retained for caller back-compat but unused.
  */
 export function openRecoveryPR(
   finding: CascadeFinding,
   dryRun: boolean,
   adapters: RecoveryAdapters,
 ): RecoveryResult {
-  const recoveryBranch = buildRecoveryBranchName(finding.prNumber, new Date());
+  const recoveryBranch = buildRecoveryBranchName(finding.prNumber);
 
   if (adapters.checkRecoveryPRExists(recoveryBranch)) {
     return { status: "already-exists", reason: `PR for ${recoveryBranch} already open` };

@@ -85,21 +85,19 @@ function stubAdapters(
 // ─────────────────────────────────────────────────────────────────────
 
 describe("buildRecoveryBranchName", () => {
-  it("produces deterministic output from prNumber alone", () => {
-    expect(buildRecoveryBranchName(3500, new Date())).toBe("recovery/3500");
+  it("produces deterministic output from prNumber", () => {
+    expect(buildRecoveryBranchName(3500)).toBe("recovery/3500");
   });
 
-  it("is stable across two invocations with different Dates (idempotency precondition)", () => {
+  it("is stable across two invocations (idempotency precondition)", () => {
     // The whole point of the post-cycle-2 fix: same prNumber must yield
     // the same branch name regardless of when openRecoveryPR is called,
     // so checkRecoveryPRExists(recoveryBranch) actually catches duplicates.
-    const a = buildRecoveryBranchName(42, new Date(Date.UTC(2026, 0, 1)));
-    const b = buildRecoveryBranchName(42, new Date(Date.UTC(2027, 11, 31)));
-    expect(a).toBe(b);
+    expect(buildRecoveryBranchName(42)).toBe(buildRecoveryBranchName(42));
   });
 
   it("encodes only safe characters (digits + 'recovery/' prefix)", () => {
-    const name = buildRecoveryBranchName(42, new Date());
+    const name = buildRecoveryBranchName(42);
     // The full output is "recovery/<digits>" — lowercase letters + slash + digits.
     expect(name).toMatch(/^recovery\/\d+$/);
   });
