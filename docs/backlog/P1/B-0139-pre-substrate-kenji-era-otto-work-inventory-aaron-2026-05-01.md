@@ -8,7 +8,7 @@ last_updated: 2026-05-14
 depends_on: []
 type: friction-reducer
 decomposition: decomposed
-children: [B-0522, B-0523]
+children: [B-0522, B-0523, B-0526]
 ---
 
 # B-0139 — Pre-substrate Kenji-era inventory
