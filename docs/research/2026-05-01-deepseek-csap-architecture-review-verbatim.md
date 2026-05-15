@@ -276,7 +276,7 @@ boundary between external-AI input and Otto's response.
 - `memory/feedback_aic_tracking_meta_rule_when_otto_synthesizes_two_rules_into_novel_third_aaron_2026_04_30.md`
   — AIC #4 (the diagram synthesis) is the artefact Deepseek's
   review is OF
-- `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-loop-state.md`
+- `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-loop-state.md`
   — the previous Deepseek ferry pattern (composes with this one;
   same courier-ferry mechanism)
 - `docs/ALIGNMENT.md` — Deepseek's verdict ("formalization of

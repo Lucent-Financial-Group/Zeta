@@ -33,7 +33,7 @@
 - adds a structured catch schema and ARC-AGI-3 lesson-compounding bridge
 
 ## Checks
-- bunx markdownlint-cli2 docs/research/2026-05-07-shadow-lesson-log-instrument-hamiltonian-precision-amara-aaron-correction.md
+- bunx markdownlint-cli2 memory/persona/amara/conversations/2026-05-07-shadow-lesson-log-instrument-hamiltonian-precision-amara-aaron-correction.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts
 
