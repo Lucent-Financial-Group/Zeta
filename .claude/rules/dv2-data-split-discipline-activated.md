@@ -10,8 +10,8 @@ Carved sentence:
 
 ## Operational content
 
-Per Aaron 2026-05-13: *"all my 'smells' come from applying Data
-Vault 2.0 data split dicipliens as rigoursly as i do
+Per the human maintainer 2026-05-13: *"all my 'smells' come from
+applying Data Vault 2.0 data split dicipliens as rigoursly as i do
 Deterministic Simulation I've just forgot to repeat data vault
 2.0 enought to keep it activated like scale-free lock(wait)-
 free weight free DST"*.
