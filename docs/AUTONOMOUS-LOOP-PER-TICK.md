@@ -41,7 +41,9 @@ Never act on stale state. Minimum refresh:
 - `bun tools/orchestrator-checks/cron-sentinel-mutex.ts --json` — detect concurrent Otto-CLI peer sessions
   ([B-0530](backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md);
   Pattern 8 of [B-0519](backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md))
+- `bun tools/bg/infinite-backlog-subscriber.ts` — consume `infinite-backlog-nudge` bus envelopes
 - `bun tools/bg/work-assignment-subscriber.ts` — consume `work-assignment` bus envelopes and queue for step 3
+- `bun tools/bg/missed-substrate-subscriber.ts` — consume `missed-substrate-cascade` bus envelopes and report drift
 
 #### When peers are detected
 

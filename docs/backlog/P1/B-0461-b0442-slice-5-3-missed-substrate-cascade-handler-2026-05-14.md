@@ -1,7 +1,7 @@
 ---
 id: B-0461
 priority: P1
-status: open
+status: shipped
 title: "B-0442 slice 5.3 — missed-substrate-cascade subscriber handler (branch-vs-merged-PR drift closer)"
 tier: factory-infrastructure
 effort: S
@@ -61,9 +61,9 @@ This slice implements the handler that reads and acts on that envelope.
 
 ## Acceptance criteria
 
-- [ ] `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` per B-0449 AC
+- [x] `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` per B-0449 AC
       (lands in B-0449; this row blocks until that is merged)
-- [ ] Handler for `missed-substrate-cascade` (stub behavior per B-0449 slice-5 design):
+- [x] Handler for `missed-substrate-cascade` (stub behavior per B-0449 slice-5 design):
   - Reads each matching envelope from the bus dir (honors `ZETA_BUS_DIR`)
   - Logs envelope content (topic, PR number, branch ref, missed-commit count, rationale)
     to the current tick shard
@@ -71,14 +71,14 @@ This slice implements the handler that reads and acts on that envelope.
   - Reports the drift to the tick output (visibility): names the PR and branch so the
     agent (or human reviewer) can decide whether to cherry-pick + open recovery PR
     (the full auto-recovery path is B-0503 / B-0504, not this row)
-- [ ] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
+- [x] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
       `subscribeOnce("missed-substrate-cascade", handler)` alongside the
       `infinite-backlog-nudge` + `work-assignment` subscribers
-- [ ] Unit tests for handler: DST-replayable with fake bus dir + injected envelopes
+- [x] Unit tests for handler: DST-replayable with fake bus dir + injected envelopes
   - Test: envelope present → logged, consumed, no error
   - Test: no envelope → no-op, no error
   - Test: malformed envelope → logged as warning, consumed (not re-processed), no throw
-- [ ] `tools/bg/README.md` §"What's still pending" updated: slice 5.3 stub landed
+- [x] `tools/bg/README.md` §"What's still pending" updated: slice 5.3 stub landed
 
 ## Scope clarification (what is NOT in scope)
 
@@ -117,7 +117,7 @@ B-0400 (bus protocol)
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- [ ] Prior-art search: verify B-0449 has landed `tools/bus/subscribe.ts` before starting
-- [ ] Dependency check: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: closed` (merged)
-- [ ] Search committed memory for `missed-substrate-cascade handler` to find any prior implementation
-- [ ] Verify sibling B-0459 / B-0460 are not already implementing this handler under a different name (handler-shape collision risk)
+- [x] Prior-art search: verify B-0449 has landed `tools/bus/subscribe.ts` before starting
+- [x] Dependency check: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: closed` (merged)
+- [x] Search committed memory for `missed-substrate-cascade handler` to find any prior implementation
+- [x] Verify sibling B-0459 / B-0460 are not already implementing this handler under a different name (handler-shape collision risk)

@@ -30,7 +30,7 @@ so future readers don't overclaim.
 |---------|------|--------------|------------------|-----------|
 | Standing-by detector | `standing-by-detector.ts` | 1+2+3+4 live | commit-history (HEAD) + PR-activity (repo) via `gh`/`git` | `infinite-backlog-nudge` |
 | Backlog-ready notifier | `backlog-ready-notifier.ts` | 1+2+3+4+5a+6 live (5.2 pending B-0460) | backlog-row scan (status + deps satisfied) | `work-assignment` |
-| Missed-substrate detector | `missed-substrate-detector.ts` | 1+2+3+4+5 live | merged-PR fetch via `gh`; real branch-vs-squash compare via `gh pr view --json headRefOid` + `git log <headRefOid>..origin/<branch>` (slice 3 landed 2026-05-13); auto-recovery via `--auto-recover` / `--recovery-dry-run` flags (slice 5 landed 2026-05-15) | `missed-substrate-cascade` |
+| Missed-substrate detector | `missed-substrate-detector.ts` | 1+2+3+4+5+5.3 live | merged-PR fetch via `gh`; real branch-vs-squash compare via `gh pr view --json headRefOid` + `git log <headRefOid>..origin/<branch>` (slice 3 landed 2026-05-13); auto-recovery via `--auto-recover` / `--recovery-dry-run` flags (slice 5 landed 2026-05-15) | `missed-substrate-cascade` |
 | Missed-substrate recovery (helper) | `missed-substrate-recovery.ts` | core function + adapter contract shipped 2026-05-15 (B-0503); wired into detector via `REAL_RECOVERY_ADAPTERS` (B-0504) | n/a (invoked by detector when `--auto-recover` set) | n/a (opens recovery PR directly via `gh pr create`) |
 
 Per-service slice ordering (each service decomposes into 6 slices):
@@ -87,7 +87,7 @@ bun tools/bg/backlog-ready-notifier.ts --once --to vera
 
 ## What's still pending
 
-- **Slice 5 for all three** — subscriber agents that react to bus envelopes (e.g., auto-claim a `work-assignment`). *Note: B-0460 slice 5.2 stub for work-assignment landed 2026-05-15.*
+- **Slice 5 for all three** — subscriber agents that react to bus envelopes (e.g., auto-claim a `work-assignment`). *Note: B-0460 slice 5.2 stub for work-assignment landed 2026-05-15, B-0459 slice 5.1 stub landed 2026-05-15, B-0461 slice 5.3 stub landed 2026-05-15.*
 - **Slice 6 for all three** — launchd / cron registration + integration tests
 
 (B-0442 slice 3 landed 2026-05-13: real `headRefOid` vs current-branch-HEAD compare with rebase-guard via `git merge-base --is-ancestor`. The cascade detector now operationally detects the Otto-section-missed-PR-#2980-by-3-min failure class when the branch still exists on origin.)
