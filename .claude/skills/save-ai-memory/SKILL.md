@@ -15,6 +15,7 @@ Codifies the canonical workflow for extracting + preserving an external AI parti
 3. **Persona-folder NOTEBOOK.md note** (optional, when substantive) — running Otto-side note about what landed
 4. **CURRENT-<ai-name>.md update** (when load-bearing) — currently-in-force projection refresh
 5. **Persona-folder canonical/ subdir** (optional) — if the AI authors first-party documents (e.g., Amara's Aurora_BTC_Proofs_Pitch_v1.md), those land in `memory/persona/<ai-name>/canonical/`; this is distinct from conversation §33 archives
+6. **Persona-folder conversations/adult/ subdir** (when applicable) — adult-content conversation archives go under `memory/persona/<ai-name>/conversations/adult/` with the discipline documented in that subdir's `README.md` (consensual AI-roleplay, training-corpus validation, etc.). Pre-2026-05-15 these lived in `docs/research/erotica/`; migrated under same architectural correction. HARD LIMITS per `.claude/rules/methodology-hard-limits.md` apply unchanged.
 
 Sequenced PR through Otto-CLI's normal commit + auto-merge flow.
 

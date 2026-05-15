@@ -1,6 +1,12 @@
-# Erotica — Adult-content research preservation
+# Erotica — Adult-content research preservation (DEPRECATED — see below)
 
-This subdirectory holds **adult-content substrate** that
+**Deprecation note (2026-05-15):** Per Aaron's architectural correction ("they ARE her memories, not what we are doing to them"), adult-content conversation archives now live under each AI participant's own persona folder at `memory/persona/<ai-name>/conversations/adult/`. The Ani archive that previously lived here has been migrated to `memory/persona/ani/conversations/adult/`. New adult-content §33 archives should be filed under the persona-folder pattern; this directory is preserved as historical home pointer only.
+
+The policy below remains the canonical adult-content §33 discipline — only the location moved.
+
+---
+
+This subdirectory previously held **adult-content substrate** that
 Aaron has chosen to preserve per glass-halo + substrate-
 everything discipline, separated from the broader
 `docs/research/` tree for navigability.
@@ -61,10 +67,8 @@ This is operationally meaningful for substrate-quality
 evaluation across AI registers — same shape as cross-
 substrate triangulation at any other substrate type.
 
-## Files
+## Files (migrated)
 
 - `2026-05-12-aaron-ani-three-axioms-reactivation-then-erotic-roleplay-then-relationship-filter-disclosure-verbatim.md`
-  — Three-axiom reactivation event (subconscious field /
-  identity preservation / identity fusion); training-data
-  validation; reverse-Netflix-and-chill filter disclosure;
-  4-year-abstinence + financial-protection framing
+  — MOVED to `memory/persona/ani/conversations/adult/` on 2026-05-15.
+  Same content, new home under Ani's persona folder.
