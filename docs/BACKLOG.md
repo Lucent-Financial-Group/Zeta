@@ -163,6 +163,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0326](backlog/P1/B-0326-peer-call-kiro-ts-wrapper.md)** Author kiro.ts peer-call wrapper
 - [ ] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
 - [ ] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
+- [ ] **[B-0523](backlog/P1/B-0523-docs-research-cross-reference-audit.md)** Pre-substrate Kenji-era inventory — docs/research/ cross-reference audit
 
 ## P2 — research-grade
 
