@@ -3559,6 +3559,7 @@ After a session lands:
 4. Don't re-describe what's in `BACKLOG.md`, `TECH-RADAR.md`, or
    `ROADMAP.md` — link to them. This file is the narrative, not
    the source of truth.
+
 ---
 
 ## Round 45 — QG isomorphism proof strategy foundation + Universal Infinite Poker Game cosmology formalization
