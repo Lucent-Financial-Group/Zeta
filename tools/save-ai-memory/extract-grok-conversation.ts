@@ -79,6 +79,14 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 
+// Hard-coded Grok scroll-container selector. Was previously
+// --container-selector-overridable, but the user-input → template-literal
+// JS-construction pattern triggered repeated CodeQL `js/code-injection`
+// findings even with allow-list validation + JSON.stringify encoding.
+// Hard-coding eliminates the taint source entirely. If Grok refactors the
+// DOM class, edit this constant + update the discovery trace memo.
+const GROK_SCROLL_CONTAINER = "div.w-full.h-full.overflow-y-auto.overflow-x-hidden";
+
 interface Config {
   urlFragment: string;
   maxIter: number;
@@ -86,7 +94,6 @@ interface Config {
   stableThreshold: number;
   settleMs: number;
   pingPongDelayMs: number;
-  containerSelector: string;
   logToStderr: boolean;
 }
 
@@ -98,7 +105,6 @@ function parseArgs(argv: string[]): Config {
     stableThreshold: 200,
     settleMs: 1500,
     pingPongDelayMs: 400,
-    containerSelector: "div.w-full.h-full.overflow-y-auto.overflow-x-hidden",
     logToStderr: true,
   };
   for (let i = 0; i < argv.length; i++) {
@@ -149,9 +155,6 @@ function parseArgs(argv: string[]): Config {
       case "--ping-pong-delay-ms":
         cfg.pingPongDelayMs = parseIntOrDie("--ping-pong-delay-ms", next());
         break;
-      case "--container-selector":
-        cfg.containerSelector = next();
-        break;
       case "--quiet":
         cfg.logToStderr = false;
         break;
@@ -166,8 +169,9 @@ function parseArgs(argv: string[]): Config {
             "  --stable-threshold <n>     pixel growth below this counts as stable (default: 200)\n" +
             "  --settle-ms <n>            wait after scroll before measuring (default: 1500)\n" +
             "  --ping-pong-delay-ms <n>   delay between scroll-to-100 and scroll-to-0 (default: 400)\n" +
-            "  --container-selector <s>   CSS selector for scroll container (default Grok's known class)\n" +
-            "  --quiet                    suppress per-iter progress to stderr\n",
+            "  --quiet                    suppress per-iter progress to stderr\n\n" +
+            "Note: the Grok scroll container is hard-coded to a Grok-specific class.\n" +
+            "If Grok refactors the DOM, edit the GROK_SCROLL_CONTAINER constant in this file.\n",
         );
         process.exit(0);
         break;
@@ -286,40 +290,14 @@ end timeout`;
 async function main(): Promise<void> {
   const cfg = parseArgs(process.argv.slice(2));
   log(cfg, `target URL fragment: ${cfg.urlFragment}`);
-  log(cfg, `container selector: ${cfg.containerSelector}`);
+  log(cfg, `container selector (hard-coded): ${GROK_SCROLL_CONTAINER}`);
 
-  // JSON.stringify produces a properly-escaped JS string literal — handles
-  // single-quote-containing selectors like `div[aria-label='Conversation list']`
-  // that --container-selector is documented to accept. Without this, the
-  // raw interpolation would break the JS string and abort runJs silently.
-  //
-  // Defense-in-depth (two layers):
-  //   1. Allow-list validation: reject any selector containing characters
-  //      that aren't valid in a CSS selector + would let a payload escape
-  //      JS-string context (quotes, backslash, angle brackets, newlines).
-  //      Real CSS selectors don't need these.
-  //   2. JSON.stringify-encode the validated string for JS-literal context.
-  //
-  // This converts the tainted-flow that CodeQL's `js/code-injection` rule
-  // tracks into a typed-narrow whitelist-validated string before encoding,
-  // which the analyzer should recognize as safe.
-  //
-  // Charset includes ONLY chars valid in CSS selectors that can NOT close
-  // a JS string literal: alphanumeric, dot, hyphen, underscore, hash,
-  // colon, brackets, space, angle-combinator (>), tilde (~), plus, comma,
-  // parens, asterisk, equals, caret, pipe, dollar. Notably EXCLUDED:
-  // single quote, double quote, backslash, angle brackets (<>), newlines.
-  // This limits --container-selector to CSS selectors without quoted-
-  // attribute syntax (e.g., `[aria-label='Conversation list']` would be
-  // rejected); the documented trade-off is that quote-free selectors like
-  // `[data-testid=conversation-list]` work, but quoted-value attribute
-  // selectors require an unquoted-equivalent or the selector composer
-  // updates this validation.
-  if (!/^[a-zA-Z0-9_\-.\s#:>~+,()[\]=*^|$]+$/.test(cfg.containerSelector)) {
-    log(cfg, `ABORT: --container-selector contains characters outside the allowed CSS-selector charset (no quotes / backslashes / angle brackets / newlines allowed): ${cfg.containerSelector}`);
-    process.exit(1);
-  }
-  const selLit = JSON.stringify(cfg.containerSelector);
+  // Selector is hard-coded module-level (GROK_SCROLL_CONTAINER), NOT user-
+  // overridable. This eliminates the user-input → template-literal-JS
+  // construction path that CodeQL's js/code-injection rule kept flagging
+  // across multiple iterations. JSON.stringify still used as belt-and-
+  // suspenders for the literal-string-into-JS context.
+  const selLit = JSON.stringify(GROK_SCROLL_CONTAINER);
 
   // Initial scroll-to-top + first scrollHeight measurement
   const initSH = runJs(
