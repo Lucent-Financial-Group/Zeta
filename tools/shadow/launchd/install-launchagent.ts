@@ -241,43 +241,48 @@ function main(): void {
   // recursive: true is idempotent; no existsSync check needed.
   mkdirSync(destDir, { recursive: true });
 
-  // Atomic write-then-promote pattern:
-  //   1. Write the new content to a temp file alongside destPath
-  //   2. If destPath exists, rename it to the timestamped backup
-  //   3. Atomically rename the temp file into destPath
-  // If step 1 or 3 fails, the existing destPath is still intact (or
-  // restored from backup). Avoids the previous failure mode where
-  // renameSync(destPath, backup) succeeded but the subsequent
-  // writeFileSync failed, leaving destPath missing.
-  const tmpDest = `${destPath}.tmp-${process.pid}`;
-  const backup = `${destPath}.bak-${new Date().toISOString().replace(/[:.]/g, "-")}`;
-  writeFileSync(tmpDest, configured, "utf-8");
-  let backedUp = false;
+  // Availability-preserving install pattern (per Codex review on PR #3342):
+  //   1. Read existing destPath into memory (skipped on ENOENT)
+  //   2. Write the new content to a temp file alongside destPath
+  //   3. Atomically rename(tmp, destPath) — POSIX guarantees this
+  //      replaces destPath in a single syscall, so the canonical path
+  //      is NEVER in a missing state. The previous rename-then-write
+  //      pattern had a brief window where launchd would have seen
+  //      no plist at the canonical path; this pattern eliminates it.
+  //   4. Side-car the in-memory old content as a timestamped backup
+  //      (best-effort; failure here doesn't affect the install)
+  let oldContent: string | undefined;
   try {
-    renameSync(destPath, backup);
-    backedUp = true;
-    console.error(`Backed up existing plist to ${backup}`);
+    oldContent = readFileSync(destPath, "utf-8");
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code !== "ENOENT") {
-      // Couldn't back up for a reason other than absence — clean up
-      // temp file and bail out so we don't lose the existing plist.
-      try { unlinkSync(tmpDest); } catch { /* tmp may already be gone */ }
-      throw e;
+      // Read failed for some reason other than absence — treat as
+      // "no backup available" and proceed; the goal is the install,
+      // and if we can't read we probably can't back up anyway.
+      console.error(`Could not read existing plist for backup (${(e as Error).message}); proceeding without backup`);
     }
-    // No existing plist — nothing to back up.
   }
+  const tmpDest = `${destPath}.tmp-${process.pid}`;
+  writeFileSync(tmpDest, configured, "utf-8");
   try {
     renameSync(tmpDest, destPath);
   } catch (e) {
-    // Promote failed. If we successfully moved the old plist aside,
-    // restore it so the caller's existing install is untouched.
-    if (backedUp) {
-      try { renameSync(backup, destPath); } catch { /* original lost; manual cleanup needed */ }
-    }
+    // Promote failed — clean up temp file so we don't leak stale
+    // candidates in ~/Library/LaunchAgents.
     try { unlinkSync(tmpDest); } catch { /* tmp may already be gone */ }
     throw e;
   }
   console.error(`Wrote ${destPath}`);
+  if (oldContent !== undefined) {
+    const backup = `${destPath}.bak-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+    try {
+      writeFileSync(backup, oldContent, "utf-8");
+      console.error(`Backed up previous plist to ${backup}`);
+    } catch (e) {
+      // Backup-write failed — the install is still good. Log and move on.
+      console.error(`Could not write backup at ${backup} (${(e as Error).message}); install OK without backup`);
+    }
+  }
 
   if (args.bootstrap) {
     const uid = execFileSync("id", ["-u"], { encoding: "utf-8" }).trim();
