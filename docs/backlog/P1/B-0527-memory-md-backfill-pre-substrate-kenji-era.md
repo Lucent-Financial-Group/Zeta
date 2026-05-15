@@ -6,7 +6,7 @@ title: MEMORY.md backfill for pre-substrate Kenji-era artifacts (B-0139 decompos
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: B-0139
-depends_on: [B-0522, B-0523]
+depends_on: [B-0522, B-0523, B-0526]
 type: friction-reducer
 decomposition: atomic
 ---
