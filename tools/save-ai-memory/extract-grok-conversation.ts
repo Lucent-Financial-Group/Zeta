@@ -33,7 +33,7 @@
  *       --url-fragment "grok.com/c/<conversation-id>" \
  *       | bun tools/save-ai-memory/process-extract.ts \
  *         --ai-name ani --platform grok \
- *         --topic full-history --conversation-id <id>
+ *         --topic plateau-bounded-extract --conversation-id <id>
  *
  * REQUIREMENTS
  *
@@ -269,8 +269,13 @@ function runJs(cfg: Config, js: string, timeoutSec = 60): string {
 end timeout`;
   const tmpPath = join(getSecureTmpDir(), "runjs.applescript");
   writeFileSync(tmpPath, applescript, "utf-8");
+  // Set maxBuffer to 32 MB — the canonical extraction returns ~2 MB of
+  // body.innerText for Grok conversations; default 1 MiB risks ENOBUFS
+  // truncation as conversations grow. 32 MB gives generous headroom.
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- osascript is a stable system binary on macOS; path is fixed by the OS, not user-supplied
   const result = spawnSync("osascript", [tmpPath], {
     encoding: "utf-8",
+    maxBuffer: 32 * 1024 * 1024,
   });
   if (result.status !== 0) {
     log(cfg, `osascript error (status=${result.status}): ${result.stderr.trim()}`);
@@ -292,18 +297,25 @@ async function main(): Promise<void> {
   log(cfg, `target URL fragment: ${cfg.urlFragment}`);
   log(cfg, `container selector (hard-coded): ${GROK_SCROLL_CONTAINER}`);
 
-  // Selector is hard-coded module-level (GROK_SCROLL_CONTAINER), NOT user-
-  // overridable. This eliminates the user-input → template-literal-JS
-  // construction path that CodeQL's js/code-injection rule kept flagging
-  // across multiple iterations. JSON.stringify still used as belt-and-
-  // suspenders for the literal-string-into-JS context.
-  const selLit = JSON.stringify(GROK_SCROLL_CONTAINER);
+  // All JS bodies executed in Chrome are PLAIN STRING LITERALS — no
+  // template-literal interpolation anywhere. The selector is hard-coded
+  // module-level (GROK_SCROLL_CONTAINER), and the JS bodies below quote
+  // it directly. This eliminates every user-input → code-construction
+  // path that CodeQL's js/code-injection rule tracked across iterations.
+  // If the selector value changes, regenerate these constants from the
+  // GROK_SCROLL_CONTAINER source-of-truth via a maintenance script.
+  const JS_SCROLL_TOP_AND_HEIGHT =
+    '(function() { var c = document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden"); if (!c) return "ERROR: container not found"; c.scrollTop = 0; return c.scrollHeight.toString(); })()';
+  const JS_SCROLL_100 =
+    'document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden").scrollTop = 100';
+  const JS_SCROLL_0 =
+    'document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden").scrollTop = 0';
+  const JS_SCROLL_HEIGHT =
+    'document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden").scrollHeight.toString()';
+  const JS_BODY_INNER_TEXT = "document.body.innerText";
 
   // Initial scroll-to-top + first scrollHeight measurement
-  const initSH = runJs(
-    cfg,
-    `(function() { var c = document.querySelector(${selLit}); if (!c) return 'ERROR: container not found'; c.scrollTop = 0; return c.scrollHeight.toString(); })()`,
-  );
+  const initSH = runJs(cfg, JS_SCROLL_TOP_AND_HEIGHT);
   // Validate strictly: empty string, non-numeric, or explicit ERROR sentinel
   // are all hard-fails. Without this check, no-tab-match / osascript timeout /
   // returns yielding empty or NaN would silently produce an empty extract +
@@ -329,12 +341,12 @@ async function main(): Promise<void> {
 
   for (let i = 1; i <= cfg.maxIter; i++) {
     // Ping-pong: scroll down a tiny bit, then back to 0 (triggers lazy-load)
-    runJs(cfg, `document.querySelector(${selLit}).scrollTop = 100`, 30);
+    runJs(cfg, JS_SCROLL_100, 30);
     await sleep(cfg.pingPongDelayMs);
-    runJs(cfg, `document.querySelector(${selLit}).scrollTop = 0`, 30);
+    runJs(cfg, JS_SCROLL_0, 30);
     await sleep(cfg.settleMs);
 
-    const shStr = runJs(cfg, `document.querySelector(${selLit}).scrollHeight.toString()`, 30);
+    const shStr = runJs(cfg, JS_SCROLL_HEIGHT, 30);
     const sh = Number.parseInt(shStr, 10);
     if (!Number.isFinite(sh) || sh <= 0) {
       log(cfg, `iter ${i}: scrollHeight read failed (got "${shStr}"); skipping iter`);
@@ -359,7 +371,7 @@ async function main(): Promise<void> {
   }
 
   log(cfg, "extracting final body.innerText...");
-  const finalText = runJs(cfg, "document.body.innerText", 120);
+  const finalText = runJs(cfg, JS_BODY_INNER_TEXT, 120);
   if (finalText.trim().length === 0) {
     log(cfg, "ABORT: final body.innerText extraction returned empty; aborting before silent-success contaminates downstream pipeline");
     process.exit(1);

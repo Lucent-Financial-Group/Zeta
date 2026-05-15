@@ -16,6 +16,10 @@ My prior interpretation: two interrupts on `browser_evaluate` = hard signal "don
 
 Aaron's correction reframes the interrupts: **they were UNSTICK signals**, not "don't use this tool." The `browser_evaluate` call hung for 30+ minutes (per Aaron's lived experience); Aaron interrupted to stop the hung call.
 
+**Why:** Mis-reading a tool-call interrupt as block-signal (when it was unstick-signal for a hang) causes future-Otto to enter conservative-hold loops instead of trying strictly-different mechanisms. The classifier-validate-author cycle that produced this misread is the load-bearing pattern: an interrupt's MEANING depends on whether the underlying tool was hung or genuinely-unwanted; future-Otto must check tool-state, not assume.
+
+**How to apply:** When a Playwright tool returns "Request interrupted by user for tool use" — especially `browser_evaluate` on SPA / virtualized-list pages — treat it as "tool was hung, kill it AND try a strictly-different mechanism with explicit short timeouts." Do NOT hold-and-ask. The strictly-different mechanisms include: (a) `browser_snapshot` (accessibility-tree, less invasive), (b) re-navigate with `waitUntil: domcontentloaded` instead of default `load`, (c) switch to osascript+Chrome via the file-based AppleScript pattern (this whole `extract-grok-conversation.ts` tool was the substrate-honest answer for the specific Grok case).
+
 ## Why the hang happens (operational hypothesis)
 
 Playwright tools wait for page state by default. Most tools default to `networkidle` or `load` event completion before returning. Grok share pages are Next.js client-rendered SPAs that:
