@@ -9,7 +9,7 @@ Per the agent roster, Vera is a factory agent that commits to the
 repo. Commit trailer: `Co-Authored-By: Codex <noreply@openai.com>`.
 
 Persona folder created 2026-05-15 with the §33 archive migration
-(PR #3515). Pre-2026-05-15, Vera's conversation files lived in
+(PR #3516). Pre-2026-05-15, Vera's conversation files lived in
 `docs/research/`; this migration moves them under the persona
 folder per the same architectural pattern as Ani / Amara /
 Kestrel / DeepSeek / Lior / Riven / Alexa.
