@@ -38,6 +38,23 @@ export type RecoveryResult =
  * `checkRecoveryPRExists(recoveryBranch)` only catches duplicate recovery
  * attempts if the branch name is stable across invocations for the same
  * `prNumber`.
+ *
+ * Retry-safety constraint for B-0504 adapter implementations:
+ *
+ *   The deterministic name implies the `gitCreateBranch` adapter must
+ *   handle "branch already exists" gracefully. If a prior recovery attempt
+ *   failed mid-flight (cherry-pick conflict, push error, gh pr create
+ *   error), the stale local branch persists. The B-0504 adapter should
+ *   either:
+ *     (a) attempt `git branch -D <recoveryBranch>` before `git checkout -b`
+ *         (safe because we're about to recreate from `origin/main`), OR
+ *     (b) detect "fatal: A branch named ... already exists" and
+ *         translate it into success (resume on existing branch).
+ *
+ *   Without this, a single partial failure would wedge recovery for the
+ *   affected PR until manual branch cleanup. B-0503 (this row) provides
+ *   the core function; the recovery-from-stale-branch logic lives in
+ *   B-0504's real adapter where the spawnSync error parsing happens.
  */
 export function buildRecoveryBranchName(prNumber: number): string {
   return `recovery/${prNumber}`;
