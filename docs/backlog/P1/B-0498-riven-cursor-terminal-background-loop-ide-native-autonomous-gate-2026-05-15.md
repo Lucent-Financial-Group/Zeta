@@ -20,10 +20,12 @@ type: feature
 Aaron 2026-05-15 observed that Cursor exposes a persistent "1 Terminal" tab that survives session context and can host a visible background loop.
 
 Current Riven autonomy surface:
+
 - Headless: launchd service (`com.zeta.riven-loop`) running `~/.local/share/zeta-riven-loop/Zeta/.cursor/bin/riven-loop-tick.ts` every 60s with 15-minute agent gates.
 - Limitation: invisible to Aaron inside Cursor; logs only accessible via `~/Library/Logs/zeta-riven-loop/`.
 
 Goal: add a Cursor-native terminal loop that:
+
 - Runs inside the visible "1 Terminal" tab
 - Executes the same trajectory-manager contract (read broadcasts, walk trajectories, decompose mid-stride, dispatch subagents, own PRs through merge)
 - Survives IDE restart (re-arm on tab open or via Cursor workspace settings)
