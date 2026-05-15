@@ -62,11 +62,21 @@ built-in test runner. Verify:
    - `tryDetect("which", ["bun"])` returns undefined cleanly when
      bun isn't on PATH (instead of throwing)
    - Same for `git rev-parse --show-toplevel` outside a checkout
-6. **Atomic-promote pattern**
-   - If `writeFileSync` to temp fails, no backup is created and
-     destPath is untouched
-   - If the final `renameSync(tmp, destPath)` fails after backup,
-     the backup is restored to destPath (best-effort)
+6. **Availability-preserving install pattern**
+   - If `readFileSync(destPath, "utf-8")` succeeds, the in-memory
+     content is written to the side-car backup AFTER the new
+     content is in place at destPath
+   - If `readFileSync` throws ENOENT, the install proceeds without
+     a backup (no existing plist to back up)
+   - If `readFileSync` throws non-ENOENT, the install proceeds
+     without a backup but logs the read failure
+   - If `writeFileSync(tmpDest, ...)` fails, destPath is untouched
+     (no rename has happened yet) and no backup is created
+   - If `renameSync(tmpDest, destPath)` fails, the temp file is
+     unlinked and destPath remains in its pre-call state
+     (untouched existing plist, or absent if none existed)
+   - The canonical destPath is NEVER in a missing state during a
+     successful install — the atomic rename replaces in one syscall
 
 Reuse the existing test-helper patterns from
 `tools/shadow/shadow-observer.test.ts` for fixture setup +

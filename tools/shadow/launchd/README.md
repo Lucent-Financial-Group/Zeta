@@ -9,8 +9,8 @@ For lighter-weight alternatives + composition shape, see [`.claude/rules/shadow-
 Installs `shadow-observer.ts` as a macOS LaunchAgent that:
 
 - Starts at user login (RunAtLoad)
-- Restarts on crash (KeepAlive on Crashed only)
-- Throttles restart attempts to once per 60s (ThrottleInterval)
+- Restarts on crash AND on non-zero exit (KeepAlive `Crashed=true` + `SuccessfulExit=false`) — covers signal-termination AND Bun runtime errors that exit non-zero
+- Throttles restart attempts to once per 60s (ThrottleInterval) — caps any config-error restart loop to one launch per minute (visible in `launchctl print` + `shadow-observer.stderr.log`)
 - Logs to `tools/shadow/shadow-observer.{log,stdout.log,stderr.log}`
 - Polls every 2 seconds (--loop-interval 2000)
 - Accepts grey-text suggestions after 3-second delay (--delay 3000)
