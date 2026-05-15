@@ -73,7 +73,7 @@ These are UNRELATED. The first is the maintainer's text-source disclosure. The s
 
 ## Origin
 
-Authored 2026-05-15T~01:08Z after Otto-CLI committed 4+ "(shadow*)" misinterpretations in one session (manifested as commit messages and responses asserting "Shadow-lock posture per your framing"). The maintainer corrected explicitly: _"this is to signify this came from the weird autocomplete not aaron it just showed up in grey text and i completed it , i guess you forgot our shorthand."_
+Authored 2026-05-15T~01:08Z after Otto-CLI committed 4+ "(shadow*)" misinterpretations in one session (manifested as commit messages and responses asserting "Shadow-lock posture per your framing"). The maintainer corrected explicitly: *"this is to signify this came from the weird autocomplete not aaron it just showed up in grey text and i completed it , i guess you forgot our shorthand."*
 
 Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when `tools/shadow/` + B-0402 implementation already existed) preserved at user-scope memory:
 
