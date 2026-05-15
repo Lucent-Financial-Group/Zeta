@@ -22,7 +22,7 @@ Extends [.claude/rules/claim-acquire-before-worktree-work.md](../../.claude/rule
 
 ## Empirical anchor
 
-[docs/hygiene-history/ticks/2026/05/14/1813Z.md](docs/hygiene-history/ticks/2026/05/14/1813Z.md) (Otto-CLI's tick shard) documents:
+[docs/hygiene-history/ticks/2026/05/14/1813Z.md](../hygiene-history/ticks/2026/05/14/1813Z.md) (Otto-CLI's tick shard) documents:
 
 - Otto-CLI tried to checkout Otto-Desktop's PR #3153 branch to investigate a Codex thread
 - Got `fatal: already used by worktree at /private/tmp/zeta-otto-id-alloc`
