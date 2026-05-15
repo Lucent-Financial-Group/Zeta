@@ -372,6 +372,20 @@ const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
     );
     if (r.status === 0) return "ok";
     const stderr = (r.stderr ?? "").toString();
+    // Per Codex PR #3447 line 377: when cherry-pick fails (conflict or
+    // error), the repo is left in CHERRY_PICK_HEAD state with a
+    // conflicted index/worktree. Future polls then fail
+    // `isWorkingTreeClean()` and refuse all recovery — one conflict
+    // wedges the daemon. Abort the in-progress cherry-pick before
+    // returning so the working tree returns to a clean state. The
+    // caller (openRecoveryPR) returns immediately on conflict/error
+    // without pushing, so aborting here doesn't lose intentional state.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
+    spawnSync(
+      "git",
+      ["cherry-pick", "--abort"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
     // git cherry-pick exits 1 with "CONFLICT" in stderr on merge conflict.
     if (stderr.includes("CONFLICT")) return "conflict";
     return "error";
