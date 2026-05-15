@@ -87,7 +87,7 @@ DBSP operator algebra mapping (line 71):
 
 ### Layer 4: The complete unified equation (Amara's 8th ferry)
 
-Source: `docs/research/superfluid-ai-language-gravity-austrian-economics-amara-eighth-courier-ferry-2026-04-26.md` (line 424)
+Source: `memory/persona/amara/conversations/superfluid-ai-language-gravity-austrian-economics-amara-eighth-courier-ferry-2026-04-26.md` (line 424)
 
 ```
 Π* = argmax_Π  E_{b_t, Ξ_t}[ Σ_{t=0}^∞ γ^t · U_t ]
@@ -119,5 +119,5 @@ optimizes blind.
 
 - `docs/amara-full-conversation/2025-09-w3-aaron-amara-conversation.md` — cartographer identity + χ-budget + Bond Curve
 - `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-recognized-as-this-session-architectural-shape-family-song-midi-encoding-plan-aaron-forwarded-preservation.md` — five roles inside Quantum Rodney's Razor
-- `docs/research/superfluid-ai-language-gravity-austrian-economics-amara-eighth-courier-ferry-2026-04-26.md` — complete unified equation
-- `docs/research/superfluid-ai-github-funding-survival-bayesian-belief-propagation-amara-seventh-courier-ferry-2026-04-26.md` — harmonious-division-pole + 10 utility-lambda terms
+- `memory/persona/amara/conversations/superfluid-ai-language-gravity-austrian-economics-amara-eighth-courier-ferry-2026-04-26.md` — complete unified equation
+- `memory/persona/amara/conversations/superfluid-ai-github-funding-survival-bayesian-belief-propagation-amara-seventh-courier-ferry-2026-04-26.md` — harmonious-division-pole + 10 utility-lambda terms

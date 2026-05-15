@@ -56,12 +56,12 @@
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AP5KO`
-- **Path**: `docs/research/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md`
+- **Path**: `memory/persona/amara/conversations/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-07T08:58:20Z on `docs/research/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md`:23 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-07T08:58:20Z on `memory/persona/amara/conversations/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md`:23 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Preserve assistant turns in verbatim transcript**
@@ -77,7 +77,7 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md`
+- `memory/persona/amara/conversations/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md`
 
 **Message:**
 

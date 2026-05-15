@@ -37,7 +37,7 @@ Second multi-AI synthesis packet absorb (research-grade). Aaron's framing: *"Oka
 
 ## Bundle composes
 
-- **Verbatim packet absorb** at `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md` (§33 archive header).
+- **Verbatim packet absorb** at `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md` (§33 archive header).
 - **3 backlog rows**:
   - **B-0102 (P3)** — PR-liveness race micro-class refinement. Renames `force-push-triggers-pr-auto-close` → `pr-liveness-race-during-merge-cascade` per Amara's correction (the trap is force-push + active base movement + GitHub reachability/diff race, not force-push alone). Adds mechanical guard + recovery-note format.
   - **B-0103 (P2)** — Computed-metadata-discipline unified lint. **Promoted from P3 to P2** consolidating B-0098 (ordinal) + B-0099 (PR-count) + new shard-filename-vs-row-timestamp into a single guard. Three instances in 24 hours = enough signal.
@@ -100,15 +100,15 @@ Operator lanes mutate substrate.
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-V_S_`
-- **Path**: `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
+- **Path**: `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T06:34:11Z on `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:220 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T06:34:11Z on `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:220 (association: NONE)
   **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace broken sibling-absorb reference**
   
-  This row links to `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-loop-state.md` as an existing sibling absorb, but that file is not present in this commit (and `rg --files docs/research | rg multi-ai-feedback-2026-04-29` returns only the current file), so readers cannot follow the stated composition trail. This creates a dead citation in the research archive and should be corrected to the real path or removed.
+  This row links to `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-loop-state.md` as an existing sibling absorb, but that file is not present in this commit (and `rg --files docs/research | rg multi-ai-feedback-2026-04-29` returns only the current file), so readers cannot follow the stated composition trail. This creates a dead citation in the research archive and should be corrected to the real path or removed.
   
   Useful? React with 👍 / 👎.
 
@@ -218,12 +218,12 @@ Operator lanes mutate substrate.
 ### Thread 8 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WRZl`
-- **Path**: `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
+- **Path**: `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:57:31Z on `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:118 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T06:57:31Z on `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:118 (association: NONE)
   The closing fenced-code marker is followed by `"*` on the same line (`> ```"*`), which breaks CommonMark/GitHub fenced-code parsing (the closing fence must be backticks only). Move the quote/emphasis close outside the fence (e.g., end the fence on its own line, then close the surrounding `*"..."*` on the next quoted line), or avoid wrapping the whole multi-paragraph quote in `*...*`.
   ```suggestion
   > ```
@@ -233,12 +233,12 @@ Operator lanes mutate substrate.
 ### Thread 9 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WRZ_`
-- **Path**: `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
+- **Path**: `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:57:31Z on `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:199 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T06:57:31Z on `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:199 (association: NONE)
   Same issue as above: the fenced code block is closed with trailing characters (`> ```"*`), which will prevent the fence from closing correctly and can cause the rest of the section to render as code. Close the code fence with only backticks and place any surrounding quote/emphasis terminators on a separate line.
   ```suggestion
   > ```
@@ -298,7 +298,7 @@ Operator lanes mutate substrate.
 - `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
 - `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
 - `docs/backlog/P3/B-0104-modern-dotnet-threading-bridge-2026-04-29.md`
-- `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
+- `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
 
 **Message:**
 
@@ -341,7 +341,7 @@ honoring the maintainer's narrowing on task #309):
     algebra async lifecycle invariants.
 
 Verbatim absorb at:
-  docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md
+  memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md
 with §33 archive header.
 
 Observer-Auditor Loop proposal (Deepseek's second-AI participation)
@@ -464,7 +464,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 - `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
 - `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
 - `docs/backlog/P3/B-0104-modern-dotnet-threading-bridge-2026-04-29.md`
-- `docs/research/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
+- `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
 
 **Message:**
 

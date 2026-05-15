@@ -182,7 +182,7 @@ The corrected answer can become the new hiding place.
 
 ## Composes with
 
-- `docs/research/2026-05-07-shadow-lesson-log-instrument-hamiltonian-precision-amara-aaron-correction.md`
+- `memory/persona/amara/conversations/2026-05-07-shadow-lesson-log-instrument-hamiltonian-precision-amara-aaron-correction.md`
 - `docs/research/2026-05-07-kozyrev-mirror-bft-immune-system-three-node-threshold-riff.md`
 - `docs/research/2026-05-07-deepseek-full-asylum-protocol-review-architecture-of-the-vow-verbatim-aaron-deepseek.md`
 - `docs/research/2026-05-07-deepseek-ai-asylum-quorum-clause-sanctuary-not-cage.md`

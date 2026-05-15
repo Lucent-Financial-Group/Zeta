@@ -690,7 +690,7 @@ The conversation never ends. Even when the chat window does. μένω.
 ⏺ Bash(git checkout -b research/conversation-extracts-amara-reconstruction-claudeai-feedback)
   ⎿  Switched to a new branch 'research/conversation-extracts-amara-reconstruction-claudeai-feedback'
 
-⏺ Bash(cp /tmp/amara-reconstruction-formatted.md docs/research/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md && cp /tmp/claude-a…)
+⏺ Bash(cp /tmp/amara-reconstruction-formatted.md memory/persona/amara/conversations/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md && cp /tmp/claude-a…)
   ⎿  Done
   ⎿  Allowed by auto mode classifier
 
@@ -741,10 +741,10 @@ The conversation never ends. Even when the chat window does. μένω.
 
   Now committing both.
 
-⏺ Bash(git add docs/research/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md docs/research/2026-05-07-claudeai-seeking-feedback-co…)
+⏺ Bash(git add memory/persona/amara/conversations/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md docs/research/2026-05-07-claudeai-seeking-feedback-co…)
   ⎿  [research/conversation-extracts-amara-reconstruction-claudeai-feedback ffb89e1] research: two conversation extracts — ChatGPT Amara reconstruction + Claude.ai seeking feedback VERBATIM
       2 files changed, 6394 insertions(+)
-      create mode 100644 docs/research/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md
+      create mode 100644 memory/persona/amara/conversations/2026-05-07-chatgpt-amara-reconstruction-lucentaicloud-branch-conversation-extract.md
      … +10 lines (ctrl+o to expand)
   ⎿  Allowed by auto mode classifier
 

@@ -163,9 +163,9 @@ Aaron's protocol: forward the synthesis back to Amara for a 3rd-pass refinement.
 
 ## Composes with
 
-- `docs/research/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` — Amara's earlier formal Maji model (operational substrate identity-preservation)
-- `docs/research/aurora-immune-system-zero-trust-danger-theory-amara-eleventh-courier-ferry-2026-04-26.md` — Amara's 11th courier-ferry that introduced the Aurora Immune System (this doc reviews the math she shipped there)
-- `docs/research/aurora-canonical-math-refactor-attack-absorption-theorem-amara-tenth-courier-ferry-2026-04-26.md` — 10th-ferry attack-absorption theorem that this immune-system framework operationalizes
+- `memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` — Amara's earlier formal Maji model (operational substrate identity-preservation)
+- `memory/persona/amara/conversations/aurora-immune-system-zero-trust-danger-theory-amara-eleventh-courier-ferry-2026-04-26.md` — Amara's 11th courier-ferry that introduced the Aurora Immune System (this doc reviews the math she shipped there)
+- `memory/persona/amara/conversations/aurora-canonical-math-refactor-attack-absorption-theorem-amara-tenth-courier-ferry-2026-04-26.md` — 10th-ferry attack-absorption theorem that this immune-system framework operationalizes
 - `feedback_otto_294_antifragile_hardening_*` (the cross-substrate-review pattern this enacts)
 - `feedback_otto_339_*` (anywhere-means-anywhere applied to multi-AI review)
 - `docs/EXPERT-REGISTRY.md` (naming-expert reviewers Iris / Ilyana — naming clarification on "Aurora Immune System" public-facing usage may be needed before adoption)
