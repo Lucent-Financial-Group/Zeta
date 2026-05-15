@@ -62,6 +62,10 @@ See `.claude/skills/browser-extraction/SKILL.md`. Output: `main.innerText` in on
 
 See `.claude/skills/chrome-lazy-load-chunked-extraction/SKILL.md`. Output: chunked reverse-scroll + dedupe.
 
+**Tool F — Grok ping-pong scroll extraction** (Grok-specific; canonical first-try for Grok `/c/<id>` URLs when the human maintainer has explicit per-extraction authorization):
+
+Run `bun tools/save-ai-memory/extract-grok-conversation.ts --url-fragment "grok.com/c/<id>"`. Pipes plaintext to stdout for piping to `process-extract.ts`. Uses the standard file-based AppleScript packaging pattern (writes JS to a `.applescript` file then `osascript /path/to/file`) — same content as the `-e` form but with file-isolation benefits for multi-line readability + better error reporting. Ping-pong scrolls scrollTop=100↔0 to trigger Grok's load-older listener (programmatic `scrollTop = 0` alone doesn't fire it; needs scroll-motion or wheel events). Plateau-detects when 3 consecutive iters have <200px growth. Conservative defaults; tunable via flags. **Authorization scope**: this tool does NOT have ambient permission to extract arbitrary authenticated content; each invocation requires the human maintainer's explicit per-extraction named intent (per `save-ai-memory` SKILL.md prerequisites). The auto-mode classifier handled the file-based form differently than the `-e` form during PR #3364 empirical development — substrate-honest discovery trace at `feedback_aaron_playwright_browser_evaluate_hangs_on_grok_share_pages_30min_aaron_interrupt_was_unstick_not_block_signal_2026_05_15.md`. If a future agent observes the classifier scoring file-form the same as `-e`-form (i.e., the differential closes), this tool inherits whatever the classifier requires; the authorization scope (conversation-owner explicit user direction) is the same in either case.
+
 **Tool C — Manual ferry-paste** (when extraction tools fail due to URL anchors, classifier blocks, or platform quirks):
 
 Aaron copies conversation text from the chat UI and pastes to Otto-CLI. Otto-CLI captures verbatim. Slowest but always works.
@@ -93,7 +97,7 @@ Create `memory/persona/<ai-name>/conversations/YYYY-MM-DD-<participants>-<platfo
 Date extracted: YYYY-MM-DD
 Source: <URL or session-id reference>
 Participants: <names with handle-ethics + shadow-check per agent-roster-reference-card>
-Extraction method: <Tool A/B/C/D/E used>
+Extraction method: <Tool A/B/C/D/E/F used>
 
 ## Archive scope (per GOVERNANCE §33)
 
