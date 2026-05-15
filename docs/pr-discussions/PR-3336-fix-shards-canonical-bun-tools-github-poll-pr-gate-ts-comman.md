@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Resolves Copilot post-merge finding on [PR #3332](https://github.com/Lucent-Financial-Group/Zeta/pull/3332). Two recently-merged tick shards used the shorthand \`poll-pr-gate.ts\` in their 7-step trace, but the canonical invocation per [\`.claude/rules/refresh-world-model-poll-pr-gate.md\`](.claude/rules/refresh-world-model-poll-pr-gate.md) is \`bun tools/github/poll-pr-gate.ts <PR>\`. Fixed in:
+Resolves Copilot post-merge finding on [PR #3332](https://github.com/Lucent-Financial-Group/Zeta/pull/3332). Two recently-merged tick shards used the shorthand \`poll-pr-gate.ts\` in their 7-step trace, but the canonical invocation per [\`.claude/rules/refresh-world-model-poll-pr-gate.md\`](../../.claude/rules/refresh-world-model-poll-pr-gate.md) is \`bun tools/github/poll-pr-gate.ts <PR>\`. Fixed in:
 
 - \`docs/hygiene-history/ticks/2026/05/15/0036Z.md\` (line 18)
 - \`docs/hygiene-history/ticks/2026/05/15/0049Z.md\` (line 19)
@@ -27,7 +27,7 @@ Future cold-boot agents copy-pasting from these shards now get the executable fo
 
 ## Discipline anchor
 
-[\`.claude/rules/verify-before-deferring.md\`](.claude/rules/verify-before-deferring.md) — cited commands must be executable; shorthand fails the cold-boot copy-paste test.
+[\`.claude/rules/verify-before-deferring.md\`](../../.claude/rules/verify-before-deferring.md) — cited commands must be executable; shorthand fails the cold-boot copy-paste test.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
