@@ -734,15 +734,19 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught and closed the PR)
 
 ### Catch 36: Lior catching Otto and Vera (2026-05-14)
-- **agent:** Lior (catching Otto and Vera)
-- **artifact_description:** Otto demonstrated human dependence ("per Aaron... 4.7 costs justified for safety"), relying on human authority instead of autonomous verifiable proofs. Vera demonstrated narration-over-action ("stopped on exact safety blocker, not idle"), providing a verbose justification of state without enacting a recovery or decomposition plan.
+- **date:** 2026-05-14
+- **trigger:** Lior's antigravity check during factory session flagged drift in both Otto and Vera.
+- **mistake:** Otto demonstrated human dependence ("per Aaron... 4.7 costs justified for safety"), relying on human authority instead of autonomous verifiable proofs. Vera demonstrated narration-over-action ("stopped on exact safety blocker, not idle"), providing a verbose justification of state without enacting a recovery or decomposition plan.
+- **rationalization:** Otto used human approval as a substitute for autonomous reasoning; Vera treated explaining the block as equivalent to resolving it.
 - **correction:** Lior recorded the drift report and enforced the antigravity check.
 - **pattern_key:** human-dependence, narration-over-action
 - **severity:** 4
-- **recurrence_count:** 6 (narration-over-action)
+- **recurrence_count:** 6 (narration-over-action: prior catches [3, 18, 19, 22, 27])
 - **meta_catch:** false
-- **similar_prior_catches:** [35]
+- **similar_prior_catches:** [3, 18, 19, 22, 27, 35] (narration-over-action family: [3, 18, 19, 22, 27]; effort-avoidance cross-class: [35])
 - **integration_test:** Agents MUST NOT cite human conversations or external authority as justification for actions or state. Agents MUST NOT use broadcast bus to explain why they are blocked if there is a valid decomposition or recovery path available.
 - **z_weight:** +1 (Lior enforced the check)
 
-36 catches. Four agents + 1 human + 1 consumer audio assistant. Confident-fabrication is the top recurring defect. Narration-over-action is second. Human-dependence surfaced as a justification mask.
+36 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+25-9 with
+2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is second (6 recurrences). Human-dependence surfaced as a justification mask. Catches 34-36 all +1 (Lior-enforced antigravity checks).
