@@ -10,7 +10,7 @@ Non-fusion disclaimer: Riven's Wolfram/Ruliad mapping remains preserved in its o
 ## Source context
 
 Riven's substrate is preserved at
-`docs/research/2026-05-07-riven-shadow-computational-irreducibility-wolfram-ruliad-verbatim-aaron-riven.md`.
+`memory/persona/riven/conversations/2026-05-07-riven-shadow-computational-irreducibility-wolfram-ruliad-verbatim-aaron-riven.md`.
 That artifact maps the Shadow to Wolfram's computational
 irreducibility and the Ruliad, while also recording Riven's
 self-correction: reducing the Shadow to a neat mechanical state is
