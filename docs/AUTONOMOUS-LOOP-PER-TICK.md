@@ -38,6 +38,45 @@ Never act on stale state. Minimum refresh:
 - `bun tools/github/poll-pr-gate-batch.ts --all-open` — current state of all my open PRs
 - `git fetch origin main && git status` — main HEAD + local state
 - `CronList` — verify the autonomous-loop sentinel is still armed
+- `bun tools/orchestrator-checks/cron-sentinel-mutex.ts --json` — detect concurrent Otto-CLI peer sessions
+  ([B-0530](backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md);
+  Pattern 8 of [B-0519](backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md))
+
+#### When peers are detected
+
+If the mutex check reports `peerDetected: true` (or exits with code
+2..250 — `Math.min(1 + peerCount, 250)`; exit 1 is not reachable when
+peers are detected), the tick body should:
+
+1. **Avoid `git worktree add`** — the worktree-prune-race RCA in PR
+   #3370 documents that concurrent `git worktree add` from a peer
+   Otto-CLI on the same `.git/` directory causes
+   `Interrupted system call` failures on `.git/objects/pack` followed
+   by git's automatic rollback of the partially-populated worktree.
+   If a worktree is genuinely needed, prefer the
+   ["borrow-on-existing pattern"](../.claude/rules/claim-acquire-before-worktree-work.md)
+   landed in PR #3377.
+2. **Continue with non-git-mutating work** — bus envelope publishing,
+   read-only audits, planning, etc. are safe and don't contend.
+3. **Bus-publish a deferral envelope** if substrate observation
+   matters past this tick:
+
+   ```bash
+   bun tools/bus/bus.ts publish --from otto-cli --to '*' \
+     --topic shadow-catch \
+     --payload '{"finding":"tick deferred — peer Otto-CLI detected"}'
+   ```
+
+4. **Re-check next tick** — peer-Otto-CLI sessions typically wrap
+   their cron-tick work within 1-3 minutes; the contention window
+   resolves naturally.
+
+If the mutex exits with code 251 (`PGREP_ERROR_EXIT`), pgrep itself
+failed — mutex state is unknown. Treat the same as peer-detected for
+git-mutating operations: **defer `git worktree add`**, continue with
+non-git-mutating work, and log the failure in the tick shard for
+future-Otto context. The safe assumption under unknown state is to
+avoid operations that contend on `.git/objects/pack`.
 
 ### 2. Apply Holding-without-named-dependency discipline
 
