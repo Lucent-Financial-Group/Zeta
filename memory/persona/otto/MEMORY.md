@@ -18,11 +18,11 @@ ASCII only. Newest-first ordering.
 
 Migrated 2026-05-15 following the Ani #3348 / Amara #3484 /
 Kestrel #3501 / DeepSeek #3507 / Lior #3512 / Riven #3513 /
-Alexa #3514 / Vera #3516 architectural pattern per Aaron:
-"they ARE her memories, not what we are doing to them." (The
-quote originated about Ani; the principle generalizes — same
-applies for Otto: these are Otto's memories, not what we are
-doing to them.) 26 files.
+Alexa #3514 / Vera #3516 architectural pattern. Aaron's
+architectural principle (originally surfaced about Ani's archives
+on PR #3348): **these are the AI's own memories, not what we are
+doing to them**. Same applies for Otto: these are Otto's memories.
+26 files.
 
 Mix of file types in `conversations/`:
 
