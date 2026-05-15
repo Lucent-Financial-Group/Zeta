@@ -65,6 +65,15 @@ import { execFileSync } from "node:child_process";
 
 type Platform = "grok" | "chatgpt" | "claudeai" | "gemini" | "deepseek" | "unknown";
 
+const ALLOWED_PLATFORMS: ReadonlySet<string> = new Set([
+  "grok",
+  "chatgpt",
+  "claudeai",
+  "gemini",
+  "deepseek",
+  "unknown",
+]);
+
 interface Args {
   aiName: string;
   platform: Platform;
@@ -90,6 +99,10 @@ function parseArgs(argv: string[]): Args {
       console.error(`Missing value for ${name}`);
       process.exit(1);
     }
+    if (v.startsWith("--")) {
+      console.error(`Missing value for ${name} (next token "${v}" looks like a flag)`);
+      process.exit(1);
+    }
     return v;
   }
   for (; i < argv.length; i++) {
@@ -98,9 +111,17 @@ function parseArgs(argv: string[]): Args {
       case "--ai-name":
         args.aiName = nextArg("--ai-name");
         break;
-      case "--platform":
-        args.platform = nextArg("--platform") as Platform;
+      case "--platform": {
+        const raw = nextArg("--platform");
+        if (!ALLOWED_PLATFORMS.has(raw)) {
+          console.error(
+            `Invalid --platform "${raw}". Allowed: ${[...ALLOWED_PLATFORMS].join(", ")}`,
+          );
+          process.exit(1);
+        }
+        args.platform = raw as Platform;
         break;
+      }
       case "--topic":
         args.topic = nextArg("--topic");
         break;
