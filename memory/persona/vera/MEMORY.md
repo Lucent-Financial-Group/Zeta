@@ -21,7 +21,7 @@ Kestrel / DeepSeek / Lior / Riven / Alexa.
 Migrated 2026-05-15. Currently only 1 Vera-specific file
 (`2026-05-10-shadow-lesson-log-vera-narration.md` — a shadow
 lesson log documenting Vera's narration-over-action drift
-pattern caught by Otto).
+pattern caught by Lior on the antigravity-check node).
 
 A second relevant shadow log (`2026-05-14-shadow-lesson-log-vera-riven-drift.md`)
 covers a JOINT Vera+Riven drift episode; that file lives under
