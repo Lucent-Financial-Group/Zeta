@@ -40,7 +40,9 @@ The first case is a hard error (graph inconsistency landed); the second is a sof
 
 ## Acceptance criteria
 
-- [ ] New file `tools/lint/backlog-graph-consistency.ts` that:
+> **Path-naming variance note** (added 2026-05-16 with Status section): the implementation shipped via PR #3567 lives at `tools/hygiene/audit-backlog-items.ts` (extending the existing tool per skill-router-as-substrate-inventory decision), NOT at the originally-proposed `tools/lint/backlog-graph-consistency.ts`. Same behavior, different home; the Acceptance bullets below describe the behavior contract regardless of file path.
+
+- [ ] New file `tools/lint/backlog-graph-consistency.ts` (shipped as `tools/hygiene/audit-backlog-items.ts` extension) that:
   - Walks all `docs/backlog/P*/B-*.md` files
   - Parses each file's YAML frontmatter for `id`, `status`, `children`, `parent`
   - For each row with `status: closed`: every `child` in its declared `children: [...]` must also be `status: closed` (hard error)
