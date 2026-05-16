@@ -72,6 +72,24 @@ const SKIP_SECTIONS: readonly RegExp[] = [
 const PATH_REGEX =
     /(?<![A-Za-z0-9])(?:tools|\.claude|docs)\/[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*\.(?:ts|tsx|md|fs|fsi|cs|sh|yml|yaml|json)/g;
 
+// Inline cross-reference patterns. Even inside an Acceptance / Proposed
+// mechanization / Scope section, a line matching these patterns is a
+// cross-reference, not a deliverable. Discovered empirically in B-0518
+// (Sharpening 4's "Composes with `.claude/rules/encoding-rules-without-
+// mechanizing.md`" bullet — a sibling reference inside a primary
+// sub-section, not a deliverable).
+//
+// See `memory/feedback_audit_backlog_status_drift_second_false_positive_class_inline_composes_with_otto_cli_2026_05_16.md`
+// for full reasoning + regression-test spec.
+const INLINE_CROSSREF_PATTERNS: readonly RegExp[] = [
+    /\bcomposes[\s-]?with\b/i,
+    /\bsister\s+(?:mechanism|rule|tool|module|process)/i,
+    /\bcross[\s-]?reference/i,
+    /\bsee\s+(?:also\s+)?[`\[]/i,
+    /\bper\s+[`\[]/i,
+    /\b(?:references?|cites?)\s+[`\[]/i,
+] as const;
+
 export interface BacklogRow {
     readonly id: string;
     readonly path: string;
@@ -120,6 +138,11 @@ export function extractPrimaryArtifacts(body: string): string[] {
             continue;
         }
         if (!inPrimarySection) continue;
+
+        // Skip inline cross-reference lines (e.g. "Composes with `tools/x.ts`"
+        // bullets inside an Acceptance sub-section — these are siblings, not
+        // deliverables).
+        if (INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))) continue;
 
         for (const match of line.matchAll(PATH_REGEX)) {
             const candidate = match[0];

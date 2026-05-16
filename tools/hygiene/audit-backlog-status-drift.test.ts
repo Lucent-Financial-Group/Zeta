@@ -142,6 +142,41 @@ Add \`tools/scope-target.ts\`.
         expect(extractPrimaryArtifacts(body)).toEqual(["tools/scope-target.ts"]);
     });
 
+    test("INLINE_CROSSREF: 'Composes with X' bullet inside Acceptance section is NOT a deliverable", () => {
+        // Empirical case from B-0518 (Sharpening 4): an Acceptance sub-section
+        // contains "Composes with `.claude/rules/encoding-rules-without-mechanizing.md`"
+        // as a bullet — that's a sibling reference, not a deliverable.
+        const body = `## Acceptance
+
+- [ ] New \`tools/foo.ts\`
+- [ ] Composes with \`.claude/rules/bar.md\`
+`;
+        const paths = extractPrimaryArtifacts(body);
+        expect(paths).toEqual(["tools/foo.ts"]);
+        expect(paths).not.toContain(".claude/rules/bar.md");
+    });
+
+    test("INLINE_CROSSREF: 'sister mechanism' references skip", () => {
+        const body = `## Proposed mechanization
+
+- New \`tools/audit.ts\`
+- Sister mechanism: \`tools/orchestrator-checks/verify-branch.ts\`
+`;
+        expect(extractPrimaryArtifacts(body)).toEqual(["tools/audit.ts"]);
+    });
+
+    test("INLINE_CROSSREF: 'see also' / 'per' / 'references' patterns skip", () => {
+        const body = `## Acceptance
+
+- New \`tools/x.ts\`
+- See also \`tools/sibling-a.ts\` for shape
+- Per \`.claude/rules/some-rule.md\` discipline
+- References \`docs/some-doc.md\` for background
+`;
+        const paths = extractPrimaryArtifacts(body);
+        expect(paths).toEqual(["tools/x.ts"]);
+    });
+
     test("Empirical case from B-0553: composes_with paths NOT in primary sections must be skipped", () => {
         const body = `---
 id: B-0116
