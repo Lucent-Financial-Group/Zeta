@@ -162,6 +162,48 @@ describe("shadow-observer — freshness guard (fix #3 for new-console zsh abort)
     expect(verdict).toBe("skipped-fresh-window");
     expect(detectCalled).toBe(false);
   });
+
+  test("runOneCycle skips cycle when frontmost probe returns null (per docstring contract)", async () => {
+    const { runOneCycle, _resetFrontmostHistory } = await import("./shadow-observer.ts");
+    _resetFrontmostHistory();
+    const config: ShadowConfig = {
+      delayMs: 0,
+      dryRun: true,
+      logFile: "/dev/null",
+      loopIntervalMs: 0,
+      once: true,
+      restoreArrow: true,
+      freshnessThresholdMs: 5000,
+    };
+    let detectCalled = false;
+    let restoreCalled = false;
+    const detectFn = async () => { detectCalled = true; return "should-not-fire"; };
+    const acceptFn = async () => true;
+    const restoreArrowFn = async () => { restoreCalled = true; return { verdict: "should-not-fire", delta: "" }; };
+    const getFrontmostStateFn = async () => null;
+    const fixedNow = () => 1_000_000;
+
+    const verdict = await runOneCycle(config, detectFn, acceptFn, restoreArrowFn, getFrontmostStateFn, fixedNow);
+    expect(verdict).toBe("skipped-fresh-window");
+    expect(detectCalled).toBe(false);
+    expect(restoreCalled).toBe(false);
+  });
+
+  test("checkWindowFresh evicts oldest entry when history reaches FRONTMOST_HISTORY_MAX", async () => {
+    const { checkWindowFresh, FRONTMOST_HISTORY_MAX } = await import("./shadow-observer.ts");
+    const history = new Map<string, number>();
+    // Fill to capacity
+    for (let i = 0; i < FRONTMOST_HISTORY_MAX; i++) {
+      checkWindowFresh({ pid: 1000 + i, name: "App" }, 5000, 1_000_000 + i, history);
+    }
+    expect(history.size).toBe(FRONTMOST_HISTORY_MAX);
+    expect(history.has("1000|App")).toBe(true);
+    // One more insertion → oldest evicted
+    checkWindowFresh({ pid: 9999, name: "NewApp" }, 5000, 2_000_000, history);
+    expect(history.size).toBe(FRONTMOST_HISTORY_MAX);
+    expect(history.has("1000|App")).toBe(false);
+    expect(history.has("9999|NewApp")).toBe(true);
+  });
 });
 
 describe("shadow-observer — runOneCycle unit (injected fns)", () => {

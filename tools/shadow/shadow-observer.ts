@@ -330,7 +330,13 @@ export interface FrontmostState {
  *  `${pid}|${name}`. Value is the ms-since-epoch when this combination
  *  was first observed as frontmost. Module-level state is consistent with
  *  the procedural shape of this file; `_resetFrontmostHistory` is exported
- *  for test isolation. */
+ *  for test isolation.
+ *
+ *  Bounded to FRONTMOST_HISTORY_MAX entries — when full, the oldest
+ *  insertion is evicted (Map preserves insertion order). Bound prevents
+ *  unbounded growth on long-running launch agents that observe many
+ *  distinct pids across app restarts. */
+export const FRONTMOST_HISTORY_MAX = 256;
 const frontmostHistory: Map<string, number> = new Map();
 
 /** Test helper — clears the per-process frontmost history. */
@@ -373,12 +379,15 @@ export async function getFrontmostState(
   return { pid, name };
 }
 
-/** Pure freshness check. Updates `frontmostHistory` as a side-effect
- *  (records first-seen for the key) so subsequent cycles can measure
- *  age. Returns true if the window has been frontmost for at least
- *  `thresholdMs`, false if it's too fresh (caller should skip the cycle).
+/** Freshness check with side-effect: records first-seen ms in `history`
+ *  on first sighting so subsequent cycles can measure age. Returns true
+ *  if the window has been frontmost for at least `thresholdMs`, false
+ *  if too fresh (caller should skip the cycle).
  *
- *  Threshold of 0 disables the guard (always returns true). */
+ *  When `history` grows past FRONTMOST_HISTORY_MAX, evicts the oldest
+ *  insertion (Map preserves insertion order) to keep memory bounded.
+ *
+ *  Threshold of 0 disables the guard (always returns true; no mutation). */
 export function checkWindowFresh(
   state: FrontmostState,
   thresholdMs: number,
@@ -389,6 +398,10 @@ export function checkWindowFresh(
   const key = `${state.pid}|${state.name}`;
   const firstSeen = history.get(key);
   if (firstSeen === undefined) {
+    if (history.size >= FRONTMOST_HISTORY_MAX) {
+      const oldestKey = history.keys().next().value;
+      if (oldestKey !== undefined) history.delete(oldestKey);
+    }
     history.set(key, nowMs);
     return false; // first sighting → too fresh
   }
@@ -406,9 +419,26 @@ export async function runOneCycle(
   // Freshness guard: skip AX-heavy detection + restore-arrow keypresses
   // while the frontmost window is still settling. Prevents interference
   // with shell init (e.g. zsh .zshrc loading in a freshly-opened terminal).
+  //
+  // Per `getFrontmostState`'s contract, null = "unknown, skip cycle" — so a
+  // probe failure (no accessibility permission, osascript error) also skips
+  // the AX-heavy work below, not just a too-fresh window.
   if (config.freshnessThresholdMs > 0) {
     const state = await getFrontmostStateFn();
-    if (state !== null && !checkWindowFresh(state, config.freshnessThresholdMs, nowMs())) {
+    if (state === null) {
+      log(
+        {
+          timestamp: new Date().toISOString(),
+          type: "skipped-fresh-window",
+          content: "frontmost-unknown (probe returned null)",
+          delayMs: config.delayMs,
+          dryRun: config.dryRun,
+        },
+        config.logFile,
+      );
+      return "skipped-fresh-window";
+    }
+    if (!checkWindowFresh(state, config.freshnessThresholdMs, nowMs())) {
       log(
         {
           timestamp: new Date().toISOString(),
