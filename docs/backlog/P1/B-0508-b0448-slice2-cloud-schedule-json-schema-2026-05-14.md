@@ -1,7 +1,7 @@
 ---
 id: B-0508
 priority: P1
-status: open
+status: closed
 title: "B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/"
 type: feature
 origin: B-0448 decomposition (Otto, 2026-05-14)
@@ -88,12 +88,12 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Acceptance criteria
 
-- [ ] `tools/routines/cloud-schedule.schema.json` authored (or TS type exported)
-- [ ] README updated to document `cloud-schedule.json` alongside `schedule.json`
-- [ ] TypeScript exported type for `CloudScheduleResult` in `install.ts` (or a
+- [x] `tools/routines/cloud-schedule.schema.json` authored (or TS type exported)
+- [x] README updated to document `cloud-schedule.json` alongside `schedule.json`
+- [x] TypeScript exported type for `CloudScheduleResult` in `install.ts` (or a
   separate `cloud-install.ts` if the installer logic warrants splitting)
-- [ ] `dotnet build -c Release` still passes (no F# changes in this slice)
-- [ ] B-0508 closed with PR link
+- [x] `dotnet build -c Release` still passes (no F# changes in this slice)
+- [x] B-0508 closed with PR link
 
 ## Why schema-first
 

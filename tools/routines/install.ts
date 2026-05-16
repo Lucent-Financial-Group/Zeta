@@ -44,6 +44,17 @@ export interface SyncResult {
   scheduleParseError?: string;
 }
 
+export type CloudTrigger =
+  | { type: "scheduled"; cronExpression: string }
+  | { type: "github_event"; event: string; repos: string[] }
+  | { type: "api" };
+
+export interface CloudScheduleResult {
+  trigger?: CloudTrigger;
+  missing: boolean;
+  parseError?: string;
+}
+
 export interface ScheduleResult {
   cronExpression?: string;
   missing: boolean;

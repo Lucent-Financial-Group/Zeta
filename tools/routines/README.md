@@ -5,7 +5,8 @@ the Desktop sidebar; same substrate as the `scheduled-tasks` MCP server).
 Each routine is a directory under `tools/routines/<id>/`:
 
 - `SKILL.md` — **required** — prompt body + YAML frontmatter (`name`, `description`)
-- `schedule.json` — **optional** — cron expression + task metadata (cronExpression, notifyOnCompletion). Omit for ad-hoc routines that are registered manually rather than on a cron cadence.
+- `schedule.json` — **optional** — cron expression + task metadata (cronExpression, notifyOnCompletion) for Desktop routines. Omit for ad-hoc routines.
+- `cloud-schedule.json` — **optional** — configuration for running as an Anthropic Cloud Routine (trigger, repos, connectors). See `cloud-schedule.schema.json`.
 
 The runtime stores routines at `~/.claude/scheduled-tasks/<id>/SKILL.md`;
 this directory is the **canonical source** and the runtime location is

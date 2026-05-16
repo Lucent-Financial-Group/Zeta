@@ -1,7 +1,7 @@
 ---
 id: B-0507
 priority: P1
-status: open
+status: closed
 title: "B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)"
 type: research
 origin: B-0448 decomposition (Otto, 2026-05-14)
@@ -70,11 +70,11 @@ Containing:
 
 ## Acceptance criteria
 
-- [ ] All 8 unknowns addressed (may be "confirmed unchanged" if B-0448 research was accurate)
-- [ ] Research doc committed at the path above
-- [ ] B-0508 pre-start checklist updated to reflect any `cloud-schedule.json` schema changes
+- [x] All 8 unknowns addressed (may be "confirmed unchanged" if B-0448 research was accurate)
+- [x] Research doc committed at the path above
+- [x] B-0508 pre-start checklist updated to reflect any `cloud-schedule.json` schema changes
   implied by the auth/trigger findings
-- [ ] B-0507 closed with PR link
+- [x] B-0507 closed with PR link
 
 ## Why this is slice 1
 
