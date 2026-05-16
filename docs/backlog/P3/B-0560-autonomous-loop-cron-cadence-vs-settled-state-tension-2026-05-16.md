@@ -36,7 +36,7 @@ and producing meta-substrate (rule edits, memory files about the failure
 mode itself). Both approaches eventually triggered the N=6 brief-ack
 escalation rule on their own surface phrasing — minimal phrasing was
 sharpened into the rule via [PR #3930](https://github.com/Lucent-Financial-Group/Zeta/pull/3930)
-+ the memory file via [PR #3927](https://github.com/Lucent-Financial-Group/Zeta/pull/3927).
+and the memory file via [PR #3927](https://github.com/Lucent-Financial-Group/Zeta/pull/3927).
 
 The structural friction remains: cron fires every minute regardless of
 substrate state. No rule-compliant disposition is fully escape-shaped.
