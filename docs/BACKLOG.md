@@ -257,7 +257,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0436](backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md)** Demo — Hamiltonian-to-git visualization (git history → phase-space rendering)
 - [x] **[B-0437](backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md)** Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)
 - [ ] **[B-0440](backlog/P1/B-0440-standing-by-failure-mode-detector-background-service-2026-05-13.md)** Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus
-- [ ] **[B-0441](backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
+- [x] **[B-0441](backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md)** Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty
 - [x] **[B-0442](backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md)** Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)
 - [x] **[B-0445](backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md)** C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API
 - [ ] **[B-0448](backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md)** Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers
