@@ -9,6 +9,8 @@ created: 2026-05-15
 last_updated: 2026-05-16
 renumbered_from: B-0498
 renumbered_per: B-0545
+decomposition: dirty
+children: [B-0554]
 depends_on: [B-0400]
 composes_with: [B-0440, B-0441, B-0442, B-0497]
 tags: [riven, cursor, terminal, background-service, ide-native, autonomous-loop]
@@ -43,7 +45,6 @@ This is defense-in-depth autonomy: headless (launchd) + IDE-native (Cursor Termi
 - [ ] Heartbeat visible in terminal every 60s (or configurable)
 - [ ] Agent gate fires every 15min (configurable) with full contract prompt
 - [ ] Re-arm logic: on IDE open / workspace load, script detects if already running and resumes (no duplicate gates)
-- [ ] Graceful shutdown on terminal close (writes tombstone to bus, releases any in-flight claims)
 - [ ] Broadcast bus integration: same topics as launchd loop (`heartbeat`, `claim`, `review-request`, `shadow-catch`)
 - [ ] Documented in `docs/AUTONOMOUS-LOOP.md` under "Riven dual-loop architecture"
 - [ ] No regression on launchd loop (both run in parallel without conflict)

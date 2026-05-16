@@ -38,24 +38,35 @@
 //   64  argument error
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 
 /**
- * Detect the repo root via `git rev-parse --show-toplevel`. Falls back to the
- * current working directory if git isn't available or this isn't a git repo.
+ * Detect the repo root. Strategy (in order of preference):
+ *
+ *   1. `git rev-parse --show-toplevel` from cwd — works when invoked from
+ *      anywhere inside a git worktree.
+ *   2. Derive from this file's own location (`import.meta.dir`) — works
+ *      when invoked from outside any git repo (e.g., `cd /tmp && bun
+ *      /path/to/tools/hygiene/audit-backlog-status-drift.ts`). The tool
+ *      lives at `<repo>/tools/hygiene/`, so the repo root is two levels
+ *      up from this file.
  *
  * Invariant: relative-path reads inside this tool resolve against the repo
- * root regardless of where the tool was invoked from. Without this, running
- * the tool from any subdirectory would false-negative every existsSync check.
+ * root regardless of where the tool was invoked from — including from
+ * outside any git repo.
  *
- * Per B-0557 slice 3.
+ * Per B-0557 slice 3 (initial via git rev-parse) + this fix (true
+ * cwd-independence via import.meta.dir fallback).
  */
 export function detectRepoRoot(): string {
     try {
         return execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
     } catch {
-        return process.cwd();
+        // Fallback: this file lives at <repo>/tools/hygiene/<name>.ts;
+        // resolve two levels up to reach the repo root. import.meta.dir is
+        // Bun-native and gives the directory containing THIS module file.
+        return resolve(import.meta.dir, "../..");
     }
 }
 
@@ -120,7 +131,7 @@ export function parseFrontmatter(body: string): Record<string, string> {
     const match = body.match(/^---\n([\s\S]*?)\n---/);
     if (!match) return {};
     const fm: Record<string, string> = {};
-    for (const line of match[1].split("\n")) {
+    for (const line of (match[1] ?? "").split("\n")) {
         const colonIdx = line.indexOf(":");
         if (colonIdx === -1) continue;
         const key = line.slice(0, colonIdx).trim();
@@ -185,12 +196,21 @@ export function extractPrimaryArtifacts(body: string): string[] {
         const inPrimarySection = sectionMode === "primary";
         if (!inPrimarySection) continue;
 
-        // Skip inline cross-reference lines (e.g. "Composes with `tools/x.ts`"
-        // bullets inside an Acceptance sub-section — these are siblings, not
-        // deliverables).
-        if (INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))) continue;
+        // Mixed-bullet handling per B-0557 slice 4: extract paths from the
+        // segment BEFORE the first inline cross-reference keyword. Pure
+        // cross-ref bullets ("Composes with X") naturally produce an empty
+        // pre-cutoff segment; mixed bullets ("Add `tools/foo.ts` per [X]")
+        // extract the deliverable while ignoring the citation.
+        let cutoffIndex = line.length;
+        for (const re of INLINE_CROSSREF_PATTERNS) {
+            const m = line.match(re);
+            if (m && typeof m.index === "number" && m.index < cutoffIndex) {
+                cutoffIndex = m.index;
+            }
+        }
+        const extractableSegment = line.slice(0, cutoffIndex);
 
-        for (const match of line.matchAll(PATH_REGEX)) {
+        for (const match of extractableSegment.matchAll(PATH_REGEX)) {
             const candidate = match[0];
             // Skip backlog-row cross-references (these are siblings, not deliverables).
             if (candidate.startsWith("docs/backlog/")) continue;

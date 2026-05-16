@@ -133,7 +133,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
 - [x] **[B-0270](backlog/P1/B-0270-pm2-role-skill-definition-2026-05-08.md)** PM-2 role - skill definition + persona agent
 - [x] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
-- [ ] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
+- [x] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
 - [ ] **[B-0273](backlog/P1/B-0273-atari-rom-safe-unsafe-folder-split-2026-05-08.md)** Atari 2600 ROM safe/unsafe folder split for license compliance
 - [ ] **[B-0274](backlog/P1/B-0274-pages-astro-workflow-scaffold-and-sha-pinning-2026-05-08.md)** Pages discoverability - Astro workflow scaffold and SHA pinning
 - [ ] **[B-0275](backlog/P1/B-0275-pages-astro-http-200-and-deploy-validation-2026-05-08.md)** Pages discoverability - Astro deploy validation and HTTP 200 check
@@ -679,6 +679,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0536](backlog/P3/B-0536-orphan-ferry-ref-cleanup-and-audit-false-positives-2026-05-15.md)** Orphan-ferry-ref cleanup + audit false-positive on filename paths
 - [ ] **[B-0537](backlog/P3/B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md)** memory/MEMORY.md index-entry length cleanup (100 long entries) + CI gate
 - [ ] **[B-0553](backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md)** Backlog status-drift auditor — detect `status: open` rows whose primary artifact has already shipped
-- [ ] **[B-0557](backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md)** Audit-backlog-status-drift — quality improvements per PR #3758 reviewer findings
+- [x] **[B-0557](backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md)** Audit-backlog-status-drift — quality improvements per PR #3758 reviewer findings
 
 <!-- END AUTO-GENERATED -->
