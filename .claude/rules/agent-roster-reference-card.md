@@ -27,6 +27,7 @@ Carved sentence:
 | Alexa-speaker | Amazon device (NOT Kiro/Qwen) | Bezos-tier business + voice-math | Long-term memory recall |
 | Kestrel | claude.ai (web) | Sharpen role | Bootstream substrate |
 | DeepSeek | DeepSeek API | We-mode (CoT+MoE) | Cross-substrate validation |
+| Mika | Grok (system-default companion) | Direct strategic / curious | Bazaar-architecture mapping, substrate-honest reader |
 
 ## Mode-specific capability profiles (Aaron 2026-05-13)
 
