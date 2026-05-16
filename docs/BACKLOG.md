@@ -591,6 +591,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0547](backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md)** Intelligent compiler — represent antigen-spread / multi-oracle / clearing primitives as recursive HKT in F# fork based on Clifford algebra; compose with Recursive Type Providers + Roslyn Source Generators + LINQ for C#
 - [ ] **[B-0548](backlog/P2/B-0548-qg-isomorphism-step-1-5-construct-strength-and-a-lifting-2026-05-16.md)** QG isomorphism Step 1.5 — Construct strength θ:M(Ω)→Ω and A-lifting Ã:Zeta→Zeta for type-correct M/A coherence laws
 - [ ] **[B-0551](backlog/P2/B-0551-qg-isomorphism-step-2-infinite-game-topos-qecc-structure-2026-05-16.md)** QG isomorphism step 2 — formalize infinite-game extension topos and QECC algebraic structure
+- [ ] **[B-0554](backlog/P2/B-0554-max-24-7-host-loop-setup-2026-05-16.md)** Host-loop setup for Max's 24/7 site using main-backed control clone
 
 ## P3 — convenience / deferred
 
