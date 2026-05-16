@@ -1,7 +1,7 @@
 ---
 id: B-0441
 priority: P1
-status: closed
+status: open
 title: "Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty"
 tier: factory-infrastructure
 effort: M
@@ -176,3 +176,11 @@ Using the canonical per-service slice ordering from `tools/bg/README.md`:
 
 Slices 1, 2, 4 are live in `tools/bg/backlog-ready-notifier.ts` (per README "1+2+4 live").
 B-0460 depends on B-0449 (subscriber library design pass); B-0500/B-0501/B-0502 are independent.
+
+## Closure status (2026-05-16)
+
+**Notifier-side: complete.** All 8 acceptance criteria checked (slices 1, 2, 3, 4, 5a, 6 shipped per the decomposition table; tests in `tools/bg/backlog-ready-notifier.test.ts`; launchd plist via B-0502; docs in `docs/AUTONOMOUS-LOOP.md`). Empirically confirmed live during the 2026-05-16 session via `bun tools/bg/backlog-ready-notifier.ts --once` — returned the documented JSON shape with `queueBusy: true` correctly suppressing publication.
+
+**Row stays `status: open`** because child **B-0460** (slice 5.2, agent-side subscriber handler) is genuinely the remaining unshipped scope, and the `--enforce-parent-child-status` lint (B-0532 gate) correctly requires parent rows to stay open while any child is open. Closing this row would violate that invariant.
+
+When B-0460 lands and closes, this row is ready to flip to `closed` with no further substrate work.
