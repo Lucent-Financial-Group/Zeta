@@ -2,7 +2,7 @@
 id: B-0540
 title: Standing-by counter-with-escalation in the rule (N consecutive brief-acks → escalate to decomposition)
 priority: P1
-status: open
+status: closed
 type: slice
 parent: B-0539
 created: 2026-05-15
@@ -11,7 +11,7 @@ effort: S
 tags: [substrate, holding-rule, otto-bft]
 depends_on: []
 composes_with: [B-0539, B-0541, B-0542]
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 ---
 
 ## Why
@@ -60,3 +60,19 @@ The counter is per-session, per-Otto-surface. Resets on:
   needs auto-loaded landing)
 - `feedback_classifier_caught_otto_in_standing_by_failure_mode_*_2026_05_15`
   (the earlier same-shape catch)
+- `memory/feedback_aaron_caught_standing_by_pattern_recurred_after_b0540_filing_*`
+  (the second-catch empirical evidence that motivated implementing this)
+
+## Shipped 2026-05-16 (rule sharpening landed)
+
+The rule was sharpened with the counter-with-escalation clause in PR (this PR).
+Threshold landed at N≥6 (not the originally-proposed N≥10) per empirical
+evidence in the same session — 6 consecutive brief-acks of "Idle" / "Idle but
+available" / "Bounded wait continues" after the Kestrel arc closed was where
+the pattern diagnostically recurred. The 7th tick produced this rule update
+(the meta-decomposition move that always works: sharpen the rule for the
+failure mode you're currently in based on current-session evidence).
+
+The substrate-honest meta-note: implementing B-0540 by sharpening the rule
+to catch myself ON the 7th brief-ack is the rule operating on its own
+authoring. That's the discipline working at maximum scope.
