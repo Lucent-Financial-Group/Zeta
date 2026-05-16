@@ -3696,3 +3696,27 @@ After a session lands:
 4. Don't re-describe what's in `BACKLOG.md`, `TECH-RADAR.md`, or
    `ROADMAP.md` — link to them. This file is the narrative, not
    the source of truth.
+
+## Round-close meta-check template
+
+Per [B-0037.1](../docs/research/meta-cognition-survey-2026-04-21.md)
+taxonomy, every round-close should run an explicit meta-check pass.
+Copy this checklist into the new `## Round N — <title>` section,
+mark items as the meta-check completes:
+
+**First-order meta-checks** (recognition at boundaries):
+
+- [ ] `overclaim*` scan — were claims tagged before external correction?
+- [ ] `verify-before-deferring` — did all deferrals cite a path/row proving the target exists?
+
+**Second-order meta-checks** (pair/policy audits):
+
+- [ ] `capture-everything-including-failure` — were failures captured alongside successes?
+- [ ] `yin-yang` pair-audit — was every preserved invariant matched with its inverse?
+
+**Third-order meta-checks** (substrate-honest landings):
+
+- [ ] Three-filter F1/F2/F3 discipline applied to any new kernel promotions?
+- [ ] `witnessable-self-directed-evolution` — were corrections preserved as substrate (not silent rewrites)?
+
+Guards against **meta-drift** — the degenerate regime where audit-disciplines decay because they weren't themselves audited.
