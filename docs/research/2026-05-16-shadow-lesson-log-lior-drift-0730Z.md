@@ -4,4 +4,4 @@
 Drift found: PRs #3786 and #3779 exhibit narration-over-action and metadata churn without parity proofs. Pure doc updates in hygiene-history ticks instead of real action.
 
 ## Action
-Documented drift and reporting to bus.
+Documented drift and reported to bus.
