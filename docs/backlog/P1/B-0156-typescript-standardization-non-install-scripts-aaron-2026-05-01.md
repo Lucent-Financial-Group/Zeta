@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-08
+last_updated: 2026-05-16
 decomposition: decomposed
 children: [B-0140]
 depends_on:
@@ -155,11 +155,19 @@ delete the `.sh` siblings to complete the migration. Each
 deletion is reversible via `git revert` if regressions
 surface.
 
-### Phase 6 — `.py` policy enforcement
+### Phase 6 — `.py` policy enforcement -- DONE (2026-05-16)
 
-Add a CI lint that fails on any new `.py` file outside
-`references/upstreams/`. Mechanizable as a pre-commit hook
-or simple `find`-based check in `gate.yml`.
+Landed as `tools/lint/no-python-files.ts` (TS+Bun, per Rule 0)
+with an explicit allowlist at
+`tools/lint/no-python-files.allowlist` (starts empty) and a
+unit-test suite at `tools/lint/no-python-files.test.ts`
+(9 tests). Wired into `.github/workflows/gate.yml` as the
+`lint-no-python-files` job, adjacent to `lint-no-empty-dirs`.
+Hard-excludes `references/upstreams`, `.venv`, `__pycache__`,
+`site-packages`, `tools/lean4/.lake`, `node_modules`, `bin`,
+`obj`. Current repo state: 0 flagged, 0 allowlisted (the
+audit baseline this row stated for "Python files in our
+codebase (0)" is mechanically enforced going forward).
 
 ## Acceptance criteria
 

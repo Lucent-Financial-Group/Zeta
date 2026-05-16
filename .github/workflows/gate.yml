@@ -874,6 +874,29 @@ jobs:
       - name: Run no-empty-dirs
         run: bun tools/lint/no-empty-dirs.ts
 
+  lint-no-python-files:
+    # Fail if a committed .py file exists outside the allowlist /
+    # vendored-toolchain hard-excludes. Per B-0156 Phase 6
+    # (Aaron 2026-05-01: "any .py" should be ported to TS or
+    # excluded). Script under tools/lint/ respects .gitignore and
+    # the explicit allowlist at tools/lint/no-python-files.allowlist;
+    # references/upstreams, .venv, __pycache__, site-packages, .lake
+    # are hard-excluded by the script itself.
+    # No untrusted input used in run: — only a fixed repo path.
+    name: lint (no python files)
+    timeout-minutes: 3
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain
+        run: ./tools/setup/install.sh
+
+      - name: Run no-python-files
+        run: bun tools/lint/no-python-files.ts
+
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in
     # .markdownlint-cli2.jsonc. Round 33 static-analysis expansion
