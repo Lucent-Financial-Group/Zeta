@@ -680,5 +680,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0537](backlog/P3/B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md)** memory/MEMORY.md index-entry length cleanup (100 long entries) + CI gate
 - [ ] **[B-0553](backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md)** Backlog status-drift auditor — detect `status: open` rows whose primary artifact has already shipped
 - [ ] **[B-0557](backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md)** Audit-backlog-status-drift — quality improvements per PR #3758 reviewer findings
+- [ ] **[B-0558](backlog/P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity
 
 <!-- END AUTO-GENERATED -->
