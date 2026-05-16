@@ -177,6 +177,38 @@ Add \`tools/scope-target.ts\`.
         expect(paths).toEqual(["tools/x.ts"]);
     });
 
+    test("MIXED_BULLET: deliverable BEFORE inline cross-ref token is extracted", () => {
+        // B-0557 slice 4 (Codex P1 on PR #3758): mixed bullets where a path
+        // appears before a cross-ref token should still extract the path.
+        const body = `## Acceptance
+
+- Add \`tools/deliverable.ts\` per [B-0123] convention
+- Wire \`tools/foo.ts\` (see also \`tools/sibling.ts\` for shape)
+`;
+        const paths = extractPrimaryArtifacts(body);
+        expect(paths).toContain("tools/deliverable.ts");
+        expect(paths).toContain("tools/foo.ts");
+        // The post-cross-ref paths are siblings, NOT deliverables.
+        expect(paths).not.toContain("tools/sibling.ts");
+    });
+
+    test("MIXED_BULLET: pure cross-ref bullets still skip (regression check)", () => {
+        // Sanity: bullets that LEAD with a cross-ref keyword still produce no
+        // extraction — the pre-cutoff segment is just the bullet marker.
+        const body = `## Acceptance
+
+- New \`tools/primary.ts\`
+- Composes with \`.claude/rules/bar.md\`
+- See also \`tools/legacy.ts\` for prior art
+- Per \`tools/older.ts\` convention
+`;
+        const paths = extractPrimaryArtifacts(body);
+        expect(paths).toEqual(["tools/primary.ts"]);
+        expect(paths).not.toContain(".claude/rules/bar.md");
+        expect(paths).not.toContain("tools/legacy.ts");
+        expect(paths).not.toContain("tools/older.ts");
+    });
+
     test("Empirical case from B-0553: composes_with paths NOT in primary sections must be skipped", () => {
         const body = `---
 id: B-0116
