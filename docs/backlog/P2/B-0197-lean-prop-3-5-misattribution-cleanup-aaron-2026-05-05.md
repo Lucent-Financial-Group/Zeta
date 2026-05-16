@@ -7,7 +7,7 @@ tier: hygiene+correctness
 effort: S
 ask: PR #1593 cross-check finding -- the "Prop 3.5 unspoken precondition" framing is misattributed; arXiv:2203.16684 has no Proposition 3.5; the closest candidate (Theorem 3.3 "for an LTI operator Q we have Q^Delta = Q") states time-invariance EXPLICITLY in its statement, contradicting the Lean header's "unspoken premise" / "smuggled in as a convention" prose.
 created: 2026-05-05
-last_updated: 2026-05-05
+last_updated: 2026-05-16
 depends_on: []
 composes_with: [B-0195]
 tags: [lean, formal-verification, dbsp, citation-correction, hygiene]
