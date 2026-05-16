@@ -32,10 +32,18 @@ equally actionable wastes commits and can introduce regressions.
 
 Verification anchors:
 
-- **Direct line-level inspection**: `awk 'NR==N { print NR": ["$0"]" }' <file>`
-  to read the exact bytes the reviewer is commenting on.
-- **`gh api repos/.../pulls/<N>` + `git log <PR-cited-PR>`**: confirm
-  historical / cross-reference claims, not memory.
+- **Direct line-level inspection**: substitute the literal line number for
+  `<N>` via `-v` — `awk -v N=22 'NR==N { print NR": ["$0"]" }' <file>` —
+  to read the exact bytes the reviewer is commenting on. (Without
+  `-v N=…`, awk treats `N` as an uninitialized variable equal to 0 and
+  prints nothing.)
+- **`gh api repos/<owner>/<repo>/pulls/<N>`** to fetch PR metadata
+  (state, merge_commit_sha, head SHA); **`gh pr view <N> --json
+  commits,mergeCommit`** to inspect commits; plus
+  `git log --grep '#<N>'` to find the merge commit by PR-number in the
+  local repo: confirm historical / cross-reference claims, not memory.
+  (Plain `git log <N>` does NOT work — git log expects
+  refs/commits/paths, not PR numbers.)
 - **Local lint/build**: re-run the relevant check locally to see
   if the reviewer's failure-mode reproduces.
 
