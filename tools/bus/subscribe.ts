@@ -3,6 +3,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { BUS_DIR, ensureDir, list } from "./bus";
 import type { MessageEnvelope, Topic } from "./types";
 
+const SURFACE_RE = /^[a-z0-9_-]{1,64}$/;
+
 /**
  * Reads envelopes from the bus matching the given topic and recipient,
  * calls the handler for each unseen envelope, and marks them as seen
@@ -14,18 +16,28 @@ export async function subscribeOnce<T extends Topic>(
   handler: (envelope: MessageEnvelope & { topic: T }) => Promise<void> | void,
   adapters = { list }
 ): Promise<void> {
+  // P1 defense-in-depth: surface is interpolated into a filename; constrain
+  // to a safe charset so a stray "../" cannot escape BUS_DIR.
+  if (!SURFACE_RE.test(surface)) {
+    throw new Error(`subscribeOnce: invalid surface "${surface}" (must match ${SURFACE_RE})`);
+  }
+
   ensureDir();
   const seenFile = join(BUS_DIR, `seen-${surface}.json`);
   let seenIds: Set<string>;
 
-  // Rely on a single readFileSync + catch instead of existsSync+read; this
-  // avoids a TOCTOU race (CodeQL js/file-system-race) and is functionally
-  // equivalent for our local-only seen.json.
+  // Single readFileSync + ENOENT-aware catch. Other errors (permission,
+  // JSON corruption) re-throw so we never silently drop seen-state and
+  // re-deliver already-handled envelopes.
   try {
     const data = JSON.parse(readFileSync(seenFile, "utf8"));
     seenIds = new Set(Array.isArray(data) ? data : []);
-  } catch {
-    seenIds = new Set();
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      seenIds = new Set();
+    } else {
+      throw err;
+    }
   }
 
   // Get all envelopes matching topic and targeted at this surface (or broadcast)
