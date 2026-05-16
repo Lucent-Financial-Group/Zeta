@@ -13,6 +13,7 @@
 import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
 import { checkFile as checkCounts } from "./check-counts.ts";
+import { checkFile as checkCrossSurface } from "./check-cross-surface.ts";
 import { checkFile as checkExistence } from "./check-existence.ts";
 import { checkFile as checkPathForms } from "./check-path-forms.ts";
 
@@ -54,6 +55,25 @@ describe("eval-set fixtures / existence drift", () => {
       "docs/_fixture_existence_drift_target_b0170_2026_05_15.md",
     );
     expect(finding.severity).toBe("drift");
+  });
+});
+
+describe("eval-set fixtures / cross-surface count drift", () => {
+  test("cross-surface-drift-9-vs-15.md — frontmatter '9 drift instances' vs 15-row body table is detected", () => {
+    const result = checkCrossSurface(join(fixtures, "cross-surface-drift-9-vs-15.md"));
+    expect(result.ok).toBe(true);
+    // Same PR #3611 discipline applied to cross-surface drift:
+    // pin exact finding count + claim shape so a regression in
+    // frontmatter-claim extraction or any-table satisfaction logic
+    // cannot pass silently. The fixture's body holds a single
+    // 15-row table; the frontmatter claims 9 — no table satisfies.
+    expect(result.findings.length).toBe(1);
+    const finding = result.findings[0]!;
+    expect(finding.field).toBe("description");
+    expect(finding.claimedCount).toBe(9);
+    expect(finding.claimIsMinimum).toBe(false);
+    expect(finding.claim).toContain("drift instances");
+    expect(finding.actualCounts).toEqual([15]);
   });
 });
 

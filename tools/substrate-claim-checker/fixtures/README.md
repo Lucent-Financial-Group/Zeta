@@ -24,6 +24,7 @@ axis.
 | count drift | `count-drift-9-vs-15.md` | PR #1259 (`review(pr-1257-postmerge): verify-then-claim count drift (9→18+) frontmatter + body + MEMORY.md`) | "9 drift instances" claim vs 15-row table |
 | existence drift | `existence-drift-missing-doc.md` | PR #1252 — verify-then-claim memo body table instance #8 (`future-domain memo references docs/courier-ferry-protocol.md` / doesn't exist) | backtick-quoted synthetic path resolves at no candidate root |
 | path-form drift | `path-form-drift-bare-vs-qualified.md` | verify-then-claim memo **instance #15 / PR #1256** (adjacent ADR citations mixing fully-qualified with bare filename — path-form sub-class #6 of the 7-class list) — synthetic exemplar; instance #15's literal substance is captured in a follow-on fixture (B-0170.4.1) | same on-disk file referenced as both `check-counts.ts` and `tools/substrate-claim-checker/check-counts.ts` |
+| cross-surface count drift | `cross-surface-drift-9-vs-15.md` | verify-then-claim memo **instance #19** — YAML frontmatter `description:` (and MEMORY.md index in the historical case) claimed "9 drift instances" while the body table already held 15 rows; check-cross-surface "any-table" semantics fire when zero body tables match the claim | frontmatter description claims "9 drift instances" vs 15-row body table — one finding |
 
 Add a new row when a new fixture lands.
 
