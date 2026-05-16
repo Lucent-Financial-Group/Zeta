@@ -2,14 +2,16 @@
 id: B-0547
 title: Intelligent compiler — represent antigen-spread / multi-oracle / clearing primitives as recursive HKT in F# fork based on Clifford algebra; compose with Recursive Type Providers + Roslyn Source Generators + LINQ for C#
 priority: P2
-status: open
-type: research
+status: decomposed
+type: umbrella
+decomposition: decomposed
 created: 2026-05-15
 ask: Otto-CLI
 effort: XL
 tags: [research, fsharp-fork, hkt, recursive-hkt, clifford-algebra, ai-type-safety, computation-expressions, recursive-type-providers, roslyn-source-generators, linq, intelligent-compiler, antigen-spread-representation]
 depends_on: []
 composes_with: [B-0543, B-0546]
+decomposed_into: [B-0547.1]
 last_updated: 2026-05-16
 ---
 
