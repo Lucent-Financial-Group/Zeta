@@ -6,7 +6,7 @@ title: TypeScript standardization — port every .sh outside install graph + eve
 created: 2026-05-01
 last_updated: 2026-05-16
 decomposition: decomposed
-children: [B-0140]
+children: [B-0140, B-0156.1]
 depends_on:
   - B-0086
   - B-0122
