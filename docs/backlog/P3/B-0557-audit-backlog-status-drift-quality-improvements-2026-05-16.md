@@ -1,12 +1,13 @@
 ---
 id: B-0557
 priority: P3
-status: open
+status: closed
 title: "Audit-backlog-status-drift — quality improvements per PR #3758 reviewer findings"
 tier: factory-hygiene
 effort: S
 created: 2026-05-16
 last_updated: 2026-05-16
+closed: 2026-05-16
 depends_on: [B-0553]
 composes_with: [B-0553]
 tags: [audit, hygiene, follow-up, reviewer-findings, mechanization]
