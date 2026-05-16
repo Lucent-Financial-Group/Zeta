@@ -80,3 +80,25 @@ Composes with the broader [`.claude/rules/encoding-rules-without-mechanizing.md`
 - PR [#3518](https://github.com/Lucent-Financial-Group/Zeta/pull/3518) (the originating incident)
 - B-0442 / B-0503 / B-0504 / B-0505 (the chain that surfaced the failure mode)
 - `tools/hygiene/audit-backlog-items.ts` (existing backlog auditing; potential composition target)
+
+## Status (2026-05-16)
+
+Per the row-close gate triage (per [`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md) step 0 — substrate-drift discriminator merged via PR #3757), this row is **partial completion, NOT drift**.
+
+**Shipped via PR [#3567](https://github.com/Lucent-Financial-Group/Zeta/pull/3567)** (`feat(B-0532): parent-child status-mismatch lint (hard-error slice) + gate.yml wiring`):
+
+- Hard-error: parent `status: closed` + declared child `status: open` → exit 1
+- `--enforce-parent-child-status` flag on `tools/hygiene/audit-backlog-items.ts` (extended existing tool per skill-router-as-substrate-inventory; same shape as B-0535)
+- `--json` flag for machine-readable output
+- Gate.yml job `lint-backlog-parent-child-status` wired
+
+**Pending (Slice 2 — not yet a sub-row):**
+
+- Soft warning: all children closed but parent open (closure-candidate surface)
+- Bidirectional consistency: if Y has `parent: X` then X's `children` must include Y, and vice versa
+- Test file `tools/hygiene/audit-backlog-items.test.ts` covering hard-error / bidirectional / soft-warning / pass-case scenarios
+- Documentation in `docs/AGENT-BEST-PRACTICES.md` under the row-status-flip discipline section
+
+Row stays `status: open` until Slice 2 lands. The partial-vs-drift distinction is exactly the discriminator that PR #3757's step-0 rule extension and [B-0553](B-0553-audit-backlog-status-drift-detection-2026-05-16.md) mechanize at the discipline + lint scope respectively.
+
+Audit anchor: 2026-05-16T05:43Z Otto-CLI tick verified that lines mentioning `soft.warning`, `bidirectional` in `tools/hygiene/audit-backlog-items.ts` produce no matches; `ls tools/hygiene/*test*` matching parent-child returns no results; `grep -E 'row-status-flip|backlog-graph|parent-child' docs/AGENT-BEST-PRACTICES.md` returns no results. Empirical confirmation of the partial state.
