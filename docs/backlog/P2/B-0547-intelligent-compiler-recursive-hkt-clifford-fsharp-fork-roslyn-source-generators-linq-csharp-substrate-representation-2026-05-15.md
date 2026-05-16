@@ -10,7 +10,7 @@ effort: XL
 tags: [research, fsharp-fork, hkt, recursive-hkt, clifford-algebra, ai-type-safety, computation-expressions, recursive-type-providers, roslyn-source-generators, linq, intelligent-compiler, antigen-spread-representation]
 depends_on: []
 composes_with: [B-0543, B-0546]
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 ---
 
 ## Why
