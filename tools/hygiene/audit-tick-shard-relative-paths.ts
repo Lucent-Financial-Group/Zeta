@@ -48,8 +48,8 @@
 // audit-memory-references.ts (relative-link resolution pattern), the
 // blocked-green-ci-investigate-threads.md rule (why this lint exists).
 
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join, relative, resolve, dirname } from "node:path";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { join, relative, resolve, dirname, sep as PATH_SEP } from "node:path";
 import { spawnSync } from "node:child_process";
 
 // repo root via git rev-parse — same safe pattern as check-tick-history-shard-schema.ts
@@ -207,7 +207,12 @@ function checkLink(link: LinkRef): Finding | null {
   const abs = resolve(base, stripped);
   const rel = repoRelative(abs);
 
-  if (!abs.startsWith(ROOT + "/") && abs !== ROOT) {
+  // Use platform-correct path separator (PATH_SEP from node:path), so the
+  // repo-boundary check works on Windows where resolve() returns paths with
+  // backslash separators. ROOT itself comes from `git rev-parse --show-toplevel`
+  // which returns forward-slash paths on all platforms; resolve() normalises
+  // separators to the platform's native form, so we compare with PATH_SEP.
+  if (!abs.startsWith(ROOT + PATH_SEP) && abs !== ROOT) {
     return {
       file: repoRelative(link.file),
       line: link.line,
@@ -235,16 +240,29 @@ function checkLink(link: LinkRef): Finding | null {
 export function main(argv: readonly string[]): 0 | 1 | 64 {
   const args = parseArgs(argv);
 
-  // Validate --files inputs before reading: a missing path should produce
-  // a structured exit (64), not an uncaught readFileSync exception that
-  // crashes the run partway through.
+  // Validate --files inputs before reading: a missing OR non-file path
+  // should produce a structured exit (64), not an uncaught readFileSync
+  // exception that crashes the run partway through. A directory passing
+  // existsSync would later throw EISDIR inside extractLinks; reject
+  // upfront with a clear message.
   if (args.files) {
-    const missing: string[] = [];
+    const bad: { path: string; reason: string }[] = [];
     for (const f of args.files) {
-      if (!existsSync(resolve(f))) missing.push(f);
+      const abs = resolve(f);
+      if (!existsSync(abs)) {
+        bad.push({ path: f, reason: "not found" });
+        continue;
+      }
+      try {
+        if (!statSync(abs).isFile()) {
+          bad.push({ path: f, reason: "not a regular file" });
+        }
+      } catch (e) {
+        bad.push({ path: f, reason: `stat failed (${(e as Error).message})` });
+      }
     }
-    if (missing.length > 0) {
-      for (const m of missing) process.stderr.write(`input not found: ${m}\n`);
+    if (bad.length > 0) {
+      for (const b of bad) process.stderr.write(`input ${b.reason}: ${b.path}\n`);
       return 64;
     }
   }
