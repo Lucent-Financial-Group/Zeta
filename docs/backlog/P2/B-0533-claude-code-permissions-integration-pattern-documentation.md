@@ -1,10 +1,11 @@
 ---
 id: B-0533
+parent: B-0368
 priority: P2
 status: open
 title: Document Claude Code permissions integration pattern in CLAUDE.md
 created: 2026-05-15
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 depends_on: [B-0532]
 decomposition: atomic
 type: documentation

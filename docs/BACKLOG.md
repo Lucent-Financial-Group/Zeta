@@ -573,6 +573,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0462](backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
 - [ ] **[B-0498](backlog/P2/B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md)** Substrate-evolution algebra (6 invariants + HKT − Rodney's Razor) rule-promotion after cooling period
 - [ ] **[B-0524](backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md)** Manifesto V2 verbatim Grok fetch — convert shadow-lock to full lock
+- [ ] **[B-0532](backlog/P2/B-0532-claude-code-permissions-hardcoded-safety-gates-investigation.md)** Investigate hardcoded safety gates vs settings-allowable actions for Claude Code
+- [ ] **[B-0533](backlog/P2/B-0533-claude-code-permissions-integration-pattern-documentation.md)** Document Claude Code permissions integration pattern in CLAUDE.md
 
 ## P3 — convenience / deferred
 
