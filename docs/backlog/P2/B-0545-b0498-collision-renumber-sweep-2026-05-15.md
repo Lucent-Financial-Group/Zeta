@@ -3,14 +3,16 @@ id: B-0545
 priority: P2
 title: B-0498 ID collision — renumber sweep (Riven cursor-terminal scaffold → new ID)
 type: substrate-correction
-status: open
+status: done
 created: 2026-05-15
+completed: 2026-05-16
 filed_by: otto-cli
+completed_by: otto-cli
 depends_on: []
 composes_with:
   - "memory/feedback_b0451_per_collision_renumber_procedure_external_references_rule_trumps_first_merged_2026_05_14.md"
   - "B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14"
-  - "B-0498-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15"
+  - "B-0549-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15"
 ---
 
 # B-0545 — B-0498 ID collision renumber sweep
@@ -86,3 +88,17 @@ P2 cadence: address within the next 1-2 weeks; pair with the renumber sweep tool
 - The `b0451_per_collision_renumber_procedure` memory (2026-05-14) — same shape, second instance
 - The `claim-acquire-before-worktree-work.md` rule's "ID allocation discipline" section — this collision is an instance the discipline is meant to prevent
 - `refresh-before-decide.md` invariant at ID-allocation scope — both surfaces (merged + in-flight) must be checked; the Riven-cursor row at 2026-05-15 likely skipped the on-disk B-0498 P2 check
+
+## Resolution (2026-05-16)
+
+Renumber executed in this same PR:
+
+- Renamed `docs/backlog/P1/B-0498-riven-cursor-terminal-*-2026-05-15.md` → `docs/backlog/P1/B-0549-riven-cursor-terminal-*-2026-05-15.md`
+- Updated frontmatter: `id: B-0498` → `id: B-0549`; added `renumbered_from: B-0498` and `renumbered_per: B-0545` breadcrumbs (per audit-tool recommendation)
+- Updated cross-reference: `docs/research/2026-05-15-riven-cursor-terminal-loop-design.md` Backlog line
+- Updated this row's `composes_with` to point at the new ID
+- Did **NOT** edit tick shards (`docs/hygiene-history/ticks/2026/05/15/2217Z.md`), merged-PR title (#3603), or the PR-3619 PR-discussion archive — all immutable historical artifacts. Readers resolve `B-0498` (Riven sense) → B-0549 via the renumbered_from breadcrumb.
+
+**Renumber target refresh**: B-0545 originally noted B-0546 as next-free at filing time (22:55Z 2026-05-15), but B-0546/B-0547/B-0548 were claimed in the intervening 27h. Picked B-0549 after re-running `git ls-tree origin/main -- docs/backlog/` per `refresh-before-decide.md` at ID-allocation scope.
+
+**Verification**: `bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids` → 0 duplicate-ID groups (was 1 before this PR).
