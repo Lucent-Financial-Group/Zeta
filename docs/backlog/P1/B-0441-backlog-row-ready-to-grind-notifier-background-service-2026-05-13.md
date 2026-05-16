@@ -50,8 +50,8 @@ provides a less-ambiguous concrete claim — eliminating the
          decompositionSuggestion: <slice-breakdown> } }` (Slice 4, shipped)
 - [x] Honors agent autonomy — assignment is suggestion, not directive
       (per `.claude/rules/no-directives.md`) — by design; envelope is advisory
-- [x] Tracks assignment history to avoid re-assigning same row
-      within short window (Slice 5a, B-0501 shipped)
+- [ ] Tracks assignment history to avoid re-assigning same row
+      within short window (Slice 5a, B-0501 open — `historyFile`/cooldown logic not yet in `tools/bg/backlog-ready-notifier.ts`)
 - [x] Tests cover the readiness-detection heuristics
       (`tools/bg/backlog-ready-notifier.test.ts`)
 - [x] Documented in `docs/AUTONOMOUS-LOOP.md`
@@ -185,4 +185,4 @@ B-0460 depends on B-0449 (subscriber library design pass); B-0500/B-0501/B-0502 
 
 **Row stays `status: open`** because children **B-0501** (slice 5a) and **B-0460** (slice 5.2, agent-side subscriber handler) are both genuinely the remaining unshipped scope, and the `--enforce-parent-child-status` lint (B-0532 gate) correctly requires parent rows to stay open while any child is open. Closing this row would violate that invariant.
 
-When B-0501 and B-0460 land and close, this row is ready to flip to `closed` with no further substrate work.
+When B-0501 and B-0460 land and close, this row is ready to flip to `closed` — **with one caveat**: child row **B-0502** currently carries `status: shipped`, which is NOT in the lint's `CLOSED_STATUSES` set (`{closed, landed, superseded, merged, done}` in `tools/hygiene/audit-backlog-items.ts:245`) and is NOT among the documented statuses in `tools/backlog/README.md` (`open / closed / superseded-by-B-NNNN / deferred / decomposed`). Before closing B-0441, B-0502 must either be flipped to a documented closed status (e.g., `closed`) OR the `shipped` value must be added to `CLOSED_STATUSES` + the README enum. Otherwise the `--enforce-parent-child-status` (B-0532) lint will still fail.
