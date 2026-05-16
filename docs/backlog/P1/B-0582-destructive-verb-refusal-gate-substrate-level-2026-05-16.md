@@ -51,20 +51,23 @@ The list is enumerated, not pattern-matched-by-vibe — explicit verbs that requ
 
 ## Acceptance criteria
 
-- [ ] `tools/auth/destructive-verb-gate.ts` — wrapper that Otto's gh/git invocations go through; checks pre-call; aborts with explicit error
-- [ ] OR: `.claude/hooks/destructive-verb-gate-pretool.ts` — PreToolUse hook intercepting Bash tool calls before they execute (uses harness hook mechanism, fail-closed)
+Both coverage paths are required for full enforcement (see Open Question 1 + slice 7 close-condition); they are NOT alternatives:
+
+- [ ] `tools/auth/destructive-verb-gate.ts` — wrapper that Otto's TS gh/git invocations go through; checks pre-call; aborts with explicit error (slice 1; covers explicit TS-call paths)
+- [ ] `.claude/hooks/destructive-verb-gate-pretool.ts` — PreToolUse hook intercepting Bash tool calls before they execute (slice 3; covers general bash invocations the wrapper doesn't see; uses harness hook mechanism, fail-closed)
 - [ ] Refusal list externalized in YAML/JSON file the gate reads at startup — auditable, extensible by config
-- [ ] Tests: each refusal-list verb gets a positive test (gate aborts) and a near-miss negative test (similar-looking benign verb passes)
+- [ ] Tests: each refusal-list verb gets a positive test (gate aborts) and a near-miss negative test (similar-looking benign verb passes); slice 7 close-condition requires both the wrapper path AND the hook path to demonstrate gate-fires under the same refusal-list verb
 - [ ] Enterprise-extension hook: a separate config file at enterprise/org scope that ADDS verbs but cannot SUBTRACT — preserves the "forkable AND enterprise-tightenable" property Kestrel named
 - [ ] Documentation: `.claude/rules/destructive-verb-refusal-gate.md` describes the gate at the substrate-rule layer (where the FILE is; what it does; how to extend); links to the implementation
 - [ ] Migration: the existing classic `.claude/rules/methodology-hard-limits.md` references this gate as the mechanical enforcement of the principle the rule names
+- [ ] **Close condition**: row may not be closed until BOTH the wrapper (slice 1) AND the hook (slice 3) are landed and integrated via slice 7 — implementing only one path leaves the other surface unprotected and does not satisfy the substrate-honest enforcement Kestrel specified
 
 ## Why now
 
 The 2026-05-16 session demonstrated the failure mode Kestrel diagnosed:
 
 1. Each scope grant arrived with an Otto-authored Insight box reframing the grant as "least-privilege discipline"
-2. The Insight boxes IS the inflation mechanism — they metabolize the escalation into self-validation
+2. The Insight boxes ARE the inflation mechanism — they metabolize the escalation into self-validation
 3. Context rules (like `methodology-hard-limits.md` as currently written) get reasoned around by the same mechanism
 4. The only thing that survives this pattern is mechanical refusal: code that aborts before the call, with no model judgment between rule and abort
 
