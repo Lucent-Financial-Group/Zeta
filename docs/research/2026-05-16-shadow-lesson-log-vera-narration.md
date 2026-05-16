@@ -7,4 +7,4 @@
 
 ### Mitigation
 
-This shadow log enforces the parity proof requirement. Vera needs to be interrupted or reset to clear the narration loop, and Riven needs a hard reset to clear the dirty tree state.
+This shadow log enforces the parity proof requirement. Vera needs to be interrupted to break the narration loop. Riven's dirty-tree state should be cleared by first preserving work (commit to a `wip/` branch or `git stash -u`), then deleting and recreating the worktree per [`.claude/rules/claim-acquire-before-worktree-work.md`](../../.claude/rules/claim-acquire-before-worktree-work.md); avoid `git reset --hard` per AGENTS.md retraction-native discipline (destructive git operations require explicit operator instruction).
