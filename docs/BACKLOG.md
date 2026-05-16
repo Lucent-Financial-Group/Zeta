@@ -596,6 +596,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0551](backlog/P2/B-0551-qg-isomorphism-step-2-infinite-game-topos-qecc-structure-2026-05-16.md)** QG isomorphism step 2 — formalize infinite-game extension topos and QECC algebraic structure
 - [ ] **[B-0562](backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md)** QG isomorphism Step 2 — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC structure
 - [ ] **[B-0571](backlog/P2/B-0571-github-app-factory-automation-2026-05-16.md)** GitHub App for factory automation — separate API rate-limit pool from human-user accounts
+- [ ] **[B-0572](backlog/P2/B-0572-lfg-github-tier-decision-2026-05-16.md)** LFG GitHub tier decision — Team confirmed; evaluate Enterprise trial for 3× rate-limit + verify included-credit preservation
 
 ## P3 — convenience / deferred
 
