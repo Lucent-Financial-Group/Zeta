@@ -125,18 +125,28 @@ export function parseFrontmatter(body: string): Record<string, string> {
 export function extractPrimaryArtifacts(body: string): string[] {
     const lines = body.split("\n");
     const artifacts = new Set<string>();
-    let inPrimarySection = false;
+    type SectionMode = "primary" | "skip" | "other";
+    let sectionMode: SectionMode = "other";
 
     for (const line of lines) {
         if (line.startsWith("## ")) {
+            // Tri-state classification — PRIMARY_SECTIONS gate extraction,
+            // SKIP_SECTIONS are explicitly recognised cross-reference sections
+            // (Composes with / Origin / Resolution / etc.), and everything
+            // else is "other" (no extraction, no skip-list match needed).
+            // Making SKIP_SECTIONS load-bearing per the github-code-quality
+            // finding on PR #3758: an unused constant is dead code; the
+            // policy data should drive behaviour.
             if (PRIMARY_SECTIONS.some((re) => re.test(line))) {
-                inPrimarySection = true;
+                sectionMode = "primary";
+            } else if (SKIP_SECTIONS.some((re) => re.test(line))) {
+                sectionMode = "skip";
             } else {
-                // Any other ## heading (including skip-listed ones) ends primary mode.
-                inPrimarySection = false;
+                sectionMode = "other";
             }
             continue;
         }
+        const inPrimarySection = sectionMode === "primary";
         if (!inPrimarySection) continue;
 
         // Skip inline cross-reference lines (e.g. "Composes with `tools/x.ts`"
