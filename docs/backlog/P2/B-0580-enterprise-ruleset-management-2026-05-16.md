@@ -90,6 +90,69 @@ A tracked work-stream for managing GitHub rulesets coherently across the three l
 
 ## Pre-start checklist
 
-- [ ] Prior-art search: `tools/github/` for any existing ruleset tooling (none expected; backlog row authoring time)
-- [ ] Dependency proof: no blockers; this is a fresh feature area
+- [x] Prior-art search: `tools/github/` for any existing ruleset tooling (none expected; backlog row authoring time)
+- [x] Dependency proof: no blockers; this is a fresh feature area
 - [x] Layer-context confirmed via Aaron's 2026-05-16 framing + the `16490134` ruleset he created
+
+## First-discovery — Slice 1+2 done ad-hoc (2026-05-16)
+
+After Aaron granted `admin:enterprise` scope this session, the work for Slices 1 + 2 became immediately doable from the command line:
+
+```bash
+# Slice 1 (enumeration) — proven trivially
+$ gh api enterprises/lucent-financial-group/rulesets --jq '[.[] | {id, name, target}]'
+[{"id":16490134,"name":"Default","target":"branch"}]
+
+# Slice 2 (audit) — full ruleset content
+$ gh api enterprises/lucent-financial-group/rulesets/16490134
+{
+  "id": 16490134, "name": "Default", "target": "branch",
+  "source_type": "Enterprise", "source": "lucent-financial-group",
+  "enforcement": "active",
+  "conditions": {"repository_name": {"include": ["~ALL"]}},
+  "rules": [
+    {"type": "deletion"},
+    {"type": "non_fast_forward"},
+    {"type": "copilot_code_review", "parameters": {
+      "review_on_push": true, "review_draft_pull_requests": true
+    }}
+  ]
+}
+```
+
+**Translated** — across all repos under LFG enterprise (`~ALL`):
+
+1. **`deletion`** — block branch deletion (deletion of branches via API/UI is refused)
+2. **`non_fast_forward`** — block force-push. Same content as the rule referenced in `.claude/rules/lfg-acehack-topology.md`, **but now this rule lives at the enterprise tier, cascading to all member orgs/repos.** Worth a tiny substrate update in `lfg-acehack-topology.md` clarifying the layer-of-residence.
+3. **`copilot_code_review` with `review_on_push: true, review_draft_pull_requests: true`** — every push fires a Copilot code review; every draft PR gets one. Each review consumes a Copilot premium request, which means cost compounds with push frequency.
+
+### Cost-composition note (load-bearing for Enterprise trial)
+
+The `copilot_code_review` rule will consume Copilot premium requests on every push. Composes-cleanly with the Enterprise-trial spending-limit work:
+
+- Enterprise rule enables Copilot reviewing → fires on every push (potentially many during active development)
+- Spending limit set to `$0` for Copilot premium requests → fail-closes once included credits exhaust
+- Net effect: reviews happen freely within included credits; stop cleanly when the budget hits zero; no surprise overage
+
+The composition is healthy IFF the spending limit is set BEFORE the included Copilot budget exhausts. Aaron is setting `$0` limits via the billing UI (UI-only — the GitHub billing API redesign doesn't expose write endpoints for spending limits, even with `manage_billing:enterprise` scope).
+
+### Why the ad-hoc work doesn't replace Slices 1+2 implementation
+
+The command-line discoveries above answered the immediate audit questions but did NOT create reproducible tooling. The slices remain open because:
+
+- Future-Otto needs to re-enumerate after any ruleset addition; the script needs to exist as substrate
+- The audit table format needs to be machine-parseable for cross-layer diff (Slice 3)
+- Policy-as-code apply (Slice 5) needs the read-side to inform the write-side schema
+
+Slices 1+2 implementation is now well-understood (one `gh api` call each); coding them up is small follow-on work.
+
+### Updated answers to Open questions
+
+| Open Q | Answer (2026-05-16 first-discovery) |
+|---|---|
+| 1. What's in `16490134`? | See JSON above — 3 rules: deletion, non_fast_forward, copilot_code_review |
+| 2. Other enterprise rulesets? | NO — `16490134` is the only one currently |
+| 3. LFG org-level rulesets? | (Still open — needs separate `gh api orgs/Lucent-Financial-Group/rulesets` call) |
+| 4. AceHack rulesets | Out of scope; documented in `mirror-sync` skill |
+| 5. Authority gradient for `non_fast_forward` | EMPIRICALLY at enterprise tier (`16490134`). Cascades to all member orgs/repos. |
+| 6. Policy-as-code adoption | Still deferred to Slice 5; UI-clickthrough is the current surface for enterprise rulesets (read API works; write API surface for some operations may still need investigation) |
