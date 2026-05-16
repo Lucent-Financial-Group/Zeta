@@ -128,24 +128,56 @@ interface BaselineEntry {
   readonly target: string;
 }
 
+function isBaselineEntry(v: unknown): v is BaselineEntry {
+  if (v === null || typeof v !== "object") return false;
+  const o = v as Record<string, unknown>;
+  return (
+    typeof o["file"] === "string" &&
+    typeof o["line"] === "number" &&
+    Number.isInteger(o["line"]) &&
+    (o["line"] as number) >= 1 &&
+    typeof o["target"] === "string"
+  );
+}
+
 function loadBaseline(path: string): readonly BaselineEntry[] {
   const absolutePath = resolve(path);
   if (!existsSync(absolutePath)) {
     process.stderr.write(`baseline file not found: ${path}\n`);
     process.exit(64);
   }
+  let data: unknown;
   try {
     const text = readFileSync(absolutePath, "utf8");
-    const data: unknown = JSON.parse(text);
-    if (!Array.isArray(data)) {
-      process.stderr.write(`baseline file is not a JSON array: ${path}\n`);
-      process.exit(64);
-    }
-    return data as readonly BaselineEntry[];
+    data = JSON.parse(text);
   } catch (e) {
     process.stderr.write(`baseline parse failed: ${path}: ${(e as Error).message}\n`);
     process.exit(64);
   }
+  if (!Array.isArray(data)) {
+    process.stderr.write(`baseline file is not a JSON array: ${path}\n`);
+    process.exit(64);
+  }
+  // Validate each entry: malformed entries must surface as exit 64 (the
+  // documented "argument error / baseline file missing or malformed" code),
+  // not as silent mismatches that would turn grandfathered findings into
+  // "new" ones under --enforce.
+  const bad: { index: number; reason: string }[] = [];
+  for (let i = 0; i < data.length; i++) {
+    if (!isBaselineEntry(data[i])) {
+      bad.push({
+        index: i,
+        reason: "missing or wrong-typed file/line/target (expect {file: string, line: integer >= 1, target: string})",
+      });
+    }
+  }
+  if (bad.length > 0) {
+    for (const b of bad) {
+      process.stderr.write(`baseline entry [${b.index}] invalid: ${b.reason}\n`);
+    }
+    process.exit(64);
+  }
+  return data as readonly BaselineEntry[];
 }
 
 function isInBaseline(f: Finding, baseline: readonly BaselineEntry[]): boolean {
@@ -365,7 +397,7 @@ export function main(argv: readonly string[]): 0 | 1 | 64 {
       shardsScanned: shards.length,
       findings,
       newFindings,
-      baselineMatched: baselineMatched.length,
+      baselineMatched,
       baselineLoaded: baseline.length,
     }, null, 2) + "\n");
   } else if (findings.length === 0) {
