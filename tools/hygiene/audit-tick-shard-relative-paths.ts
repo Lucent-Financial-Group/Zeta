@@ -33,16 +33,23 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts                # detect-only
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce      # exit 1 on findings (CI gate)
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --files <p...> # scan specific files
-//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --json         # JSON output
+//   bun tools/hygiene/audit-tick-shard-relative-paths.ts                       # detect-only
+//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce             # exit 1 on findings
+//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce --baseline FILE # exit 1 only on NEW findings (grandfather mechanism)
+//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --files <p...>        # scan specific files
+//   bun tools/hygiene/audit-tick-shard-relative-paths.ts --json                # JSON output (includes newFindings + baselineMatched fields)
+//
+// The `--baseline` flag avoids the tick-shard-immutability tension at
+// CI-gate scope: ship `--enforce --baseline tools/hygiene/audit-tick-shard-relative-paths.baseline.json`
+// in CI, and only NEW findings (not in the baseline) fail the gate.
+// Grandfathered findings stay visible in detect-only output. Same shape
+// as Stryker `--reset` or ESLint suppressions.
 //
 // Exit codes:
 //
-//   0   no findings, OR detect-only mode (default)
-//   1   findings present AND --enforce flag set
-//   64  argument error
+//   0   no NEW findings (or detect-only mode, default)
+//   1   NEW findings present AND --enforce flag set
+//   64  argument error / baseline file missing or malformed
 //
 // Composes with: audit-section-33-migration-xrefs.ts (sibling template),
 // audit-memory-references.ts (relative-link resolution pattern), the
@@ -70,17 +77,27 @@ interface Args {
   enforce: boolean;
   json: boolean;
   files: readonly string[] | null;
+  baseline: string | null;
 }
 
 function parseArgs(argv: readonly string[]): Args {
   let enforce = false;
   let json = false;
   let files: string[] | null = null;
+  let baseline: string | null = null;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
     if (a === "--enforce") enforce = true;
     else if (a === "--json") json = true;
-    else if (a === "--files") {
+    else if (a === "--baseline") {
+      const next = argv[i + 1];
+      if (!next || next.startsWith("--")) {
+        process.stderr.write("--baseline requires a path argument\n");
+        process.exit(64);
+      }
+      baseline = next;
+      i++;
+    } else if (a === "--files") {
       files = [];
       while (i + 1 < argv.length && !argv[i + 1]!.startsWith("--")) {
         files.push(argv[++i]!);
@@ -90,7 +107,52 @@ function parseArgs(argv: readonly string[]): Args {
       process.exit(64);
     }
   }
-  return { enforce, json, files };
+  return { enforce, json, files, baseline };
+}
+
+// Baseline of known-acceptable findings — historical residue that pre-dates
+// the audit's introduction. Loading the baseline lets `--enforce` reject only
+// NEW findings (`new_findings - baseline`), while still surfacing the
+// pre-existing 10 as detect-only signal. Same shape as Stryker's `--reset`
+// or ESLint suppressions: don't edit historical artifacts; track what's
+// grandfathered so new violations still fail CI.
+//
+// File format: JSON array of `{file, line, target}` objects. The triple
+// is the match key. `reason` and `resolved` are NOT part of the match (a
+// fix that changes the resolution but keeps the same file/line/target
+// would NOT match — that's intentional; if the link target shape changes,
+// the baseline entry no longer applies).
+interface BaselineEntry {
+  readonly file: string;
+  readonly line: number;
+  readonly target: string;
+}
+
+function loadBaseline(path: string): readonly BaselineEntry[] {
+  const absolutePath = resolve(path);
+  if (!existsSync(absolutePath)) {
+    process.stderr.write(`baseline file not found: ${path}\n`);
+    process.exit(64);
+  }
+  try {
+    const text = readFileSync(absolutePath, "utf8");
+    const data: unknown = JSON.parse(text);
+    if (!Array.isArray(data)) {
+      process.stderr.write(`baseline file is not a JSON array: ${path}\n`);
+      process.exit(64);
+    }
+    return data as readonly BaselineEntry[];
+  } catch (e) {
+    process.stderr.write(`baseline parse failed: ${path}: ${(e as Error).message}\n`);
+    process.exit(64);
+  }
+}
+
+function isInBaseline(f: Finding, baseline: readonly BaselineEntry[]): boolean {
+  for (const b of baseline) {
+    if (b.file === f.file && b.line === f.line && b.target === f.target) return true;
+  }
+  return false;
 }
 
 // shard discovery
@@ -288,10 +350,36 @@ export function main(argv: readonly string[]): 0 | 1 | 64 {
     }
   }
 
+  // Partition findings against baseline (if loaded). New findings are
+  // unmatched; baseline findings are grandfathered.
+  const baseline = args.baseline ? loadBaseline(args.baseline) : [];
+  const newFindings: Finding[] = [];
+  const baselineMatched: Finding[] = [];
+  for (const f of findings) {
+    if (isInBaseline(f, baseline)) baselineMatched.push(f);
+    else newFindings.push(f);
+  }
+
   if (args.json) {
-    process.stdout.write(JSON.stringify({ shardsScanned: shards.length, findings }, null, 2) + "\n");
+    process.stdout.write(JSON.stringify({
+      shardsScanned: shards.length,
+      findings,
+      newFindings,
+      baselineMatched: baselineMatched.length,
+      baselineLoaded: baseline.length,
+    }, null, 2) + "\n");
   } else if (findings.length === 0) {
     process.stdout.write(`ok: scanned ${shards.length} tick shards; 0 broken relative-path links\n`);
+  } else if (args.baseline) {
+    process.stdout.write(`scanned ${shards.length} tick shards; ${findings.length} broken relative-path links (${baselineMatched.length} grandfathered by baseline, ${newFindings.length} new):\n\n`);
+    if (newFindings.length > 0) {
+      process.stdout.write("NEW findings (not in baseline):\n");
+      for (const f of newFindings) {
+        process.stdout.write(`  ${f.file}:${f.line}  ${f.reason}\n`);
+        process.stdout.write(`    target:   ${f.target}\n`);
+        process.stdout.write(`    resolved: ${f.resolved}\n\n`);
+      }
+    }
   } else {
     process.stdout.write(`scanned ${shards.length} tick shards; ${findings.length} broken relative-path links:\n\n`);
     for (const f of findings) {
@@ -301,7 +389,17 @@ export function main(argv: readonly string[]): 0 | 1 | 64 {
     }
   }
 
-  if (args.enforce && findings.length > 0) return 1;
+  // Exit logic:
+  //   --enforce + no baseline → exit 1 on any finding
+  //   --enforce + baseline    → exit 1 on NEW findings only (grandfathered ones pass)
+  //   default                 → exit 0 (detect-only)
+  if (args.enforce) {
+    if (args.baseline) {
+      if (newFindings.length > 0) return 1;
+    } else {
+      if (findings.length > 0) return 1;
+    }
+  }
   return 0;
 }
 
