@@ -331,6 +331,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0554](backlog/P1/B-0554-riven-terminal-loop-graceful-shutdown-tombstone.md)** Riven Cursor Terminal loop graceful shutdown tombstone
 - [ ] **[B-0559](backlog/P1/B-0559-verify-before-state-claim-audit-lesson.md)** Class-level lesson encoded as a verify-before-state-claim audit (decomposed from B-0139)
 - [ ] **[B-0570](backlog/P1/B-0570-scarcity-tracker-shared-limited-resources-github-api-2026-05-16.md)** Scarcity tracker — surface limited shared resources (GitHub API GraphQL/REST, runner minutes, etc.) and inform agent disciplines
+- [ ] **[B-0582](backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md)** Substrate-level destructive-verb refusal gate — mechanical pre-call abort, forkable, enterprise-extensible (Kestrel layer-one)
 
 ## P2 — research-grade
 
