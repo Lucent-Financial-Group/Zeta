@@ -671,12 +671,13 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0517](backlog/P3/B-0517-memory-md-index-bloat-cleanup-cadence-2026-05-14.md)** MEMORY.md index bloat cleanup + entry-length enforcement cadence
 - [ ] **[B-0519](backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md)** Multi-Otto branch-state contamination — RCA + mechanization candidate
 - [ ] **[B-0521](backlog/P3/B-0521-tinygrad-uop-rewrite-walk-retract-mapping.md)** Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from B-0202)
-- [ ] **[B-0528](backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md)** Unit tests for tools/shadow/launchd/install-launchagent.ts
+- [x] **[B-0528](backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md)** Unit tests for tools/shadow/launchd/install-launchagent.ts
 - [x] **[B-0530](backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)** Cron-sentinel mutex — prevent multi-Otto-CLI self-contention on .git/objects/pack
 - [ ] **[B-0532](backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md)** Backlog-graph consistency lint — flag parent `status: closed` while declared child is `status: open`
 - [ ] **[B-0533](backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md)** §33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/persona/<name>/conversations/
 - [x] **[B-0535](backlog/P3/B-0535-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md)** Backlog ID-uniqueness lint — extension of B-0532 to catch cross-agent B-NNNN collisions
 - [ ] **[B-0536](backlog/P3/B-0536-orphan-ferry-ref-cleanup-and-audit-false-positives-2026-05-15.md)** Orphan-ferry-ref cleanup + audit false-positive on filename paths
 - [ ] **[B-0537](backlog/P3/B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md)** memory/MEMORY.md index-entry length cleanup (100 long entries) + CI gate
+- [ ] **[B-0553](backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md)** Backlog status-drift auditor — detect `status: open` rows whose primary artifact has already shipped
 
 <!-- END AUTO-GENERATED -->
