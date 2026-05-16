@@ -8,7 +8,7 @@ effort: S
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0506, B-0528, B-0530, B-0535, B-0532, B-0535]
+composes_with: [B-0506, B-0528, B-0530, B-0532, B-0535]
 tags: [backlog, hygiene, drift, factory-cadence, mechanization, friction-reducer]
 type: feature
 ---
@@ -41,7 +41,7 @@ Not P4 because the 4-catch empirical evidence is recent and concrete.
    - **Critically: do NOT extract paths from `composes_with:` (frontmatter), `Composes with` section, or rule citations.** A naive `grep -oE 'tools/[a-z0-9_/-]+\.ts'` over the whole body has empirical false-positive rate of ~100% (4-of-4 candidates in the 0500Z manual scan).
 3. For each extracted primary-artifact path, check whether it exists on disk
 4. Report rows where ALL primary-artifact paths exist (likely drift)
-5. With `--prune-claims`, release any matching `bus.ts claim acquire` entries for the row
+5. With `--prune-claims`, release any matching `bun tools/bus/claim.ts acquire ...` entries for the row (the canonical claim-CLI invocation)
 6. With `--open-close-pr`, auto-open close-row PRs (status: open → closed + Resolution section + `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` regen)
 
 ### Section parsing — the load-bearing detail
@@ -113,4 +113,4 @@ These four cases drive the section-aware parsing requirement.
 
 ## Origin tick
 
-[`docs/hygiene-history/ticks/2026/05/16/0415Z.md`](../../hygiene-history/ticks/2026/05/16/0415Z.md) + [`0425Z.md`](../../hygiene-history/ticks/2026/05/16/0425Z.md) + [`0436Z.md`](../../hygiene-history/ticks/2026/05/16/0436Z.md) + [`0438Z.md`](../../hygiene-history/ticks/2026/05/16/0438Z.md) + [`0448Z.md`](../../hygiene-history/ticks/2026/05/16/0448Z.md) — the 5-shard trail documenting the 4 drift catches that motivated this row.
+Otto-CLI's 3-shard trail that landed on main: [`docs/hygiene-history/ticks/2026/05/16/0415Z.md`](../../hygiene-history/ticks/2026/05/16/0415Z.md) + [`0425Z.md`](../../hygiene-history/ticks/2026/05/16/0425Z.md) + [`0438Z.md`](../../hygiene-history/ticks/2026/05/16/0438Z.md). (An earlier draft cited `0436Z.md` and `0448Z.md`; those were intermediate shards that didn't land independently — `0436Z`'s content was rolled forward into `0438Z` via cherry-pick recovery; `0448Z`'s content lives on a peer-Otto-Desktop branch rather than its own merged PR.) Peer Otto-Desktop's parallel shards across the same window: [`0402Z.md`](../../hygiene-history/ticks/2026/05/16/0402Z.md) + [`0437Z.md`](../../hygiene-history/ticks/2026/05/16/0437Z.md) + [`0444Z.md`](../../hygiene-history/ticks/2026/05/16/0444Z.md) + [`0451Z.md`](../../hygiene-history/ticks/2026/05/16/0451Z.md).
