@@ -45,11 +45,13 @@ import { execFileSync } from "node:child_process";
  * Detect the repo root via `git rev-parse --show-toplevel`. Falls back to the
  * current working directory if git isn't available or this isn't a git repo.
  *
- * Per B-0557 slice 3 (Copilot P1 on PR #3758): the audit tool previously
- * assumed cwd = repo root; running from a subdirectory caused all
- * `existsSync(p)` checks to fail and produced false negatives.
+ * Invariant: relative-path reads inside this tool resolve against the repo
+ * root regardless of where the tool was invoked from. Without this, running
+ * the tool from any subdirectory would false-negative every existsSync check.
+ *
+ * Per B-0557 slice 3.
  */
-function detectRepoRoot(): string {
+export function detectRepoRoot(): string {
     try {
         return execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
     } catch {
