@@ -170,7 +170,7 @@ Using the canonical per-service slice ordering from `tools/bg/README.md`:
 | 2 | Real detection signal #1 (backlog-row scan: status + deps satisfied) | ✅ shipped | — |
 | 3 | Queue-state guard wiring (`isAgentQueueEmpty` into `pollOnce`) | ✅ shipped | B-0500 |
 | 4 | Bus-publish wiring (`work-assignment` topic) | ✅ shipped | — |
-| 5a | Assignment history dedup / cooldown (avoid re-assigning same row) | ✅ shipped | B-0501 |
+| 5a | Assignment history dedup / cooldown (avoid re-assigning same row) | ❌ open | B-0501 |
 | 5.2 | Agent-side `work-assignment` subscriber handler (consume + act) | ❌ open | B-0460 |
 | 6 | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring | ✅ shipped | B-0502 |
 
@@ -179,8 +179,10 @@ B-0460 depends on B-0449 (subscriber library design pass); B-0500/B-0501/B-0502 
 
 ## Closure status (2026-05-16)
 
-**Notifier-side: complete.** All 8 acceptance criteria checked (slices 1, 2, 3, 4, 5a, 6 shipped per the decomposition table; tests in `tools/bg/backlog-ready-notifier.test.ts`; launchd plist via B-0502; docs in `docs/AUTONOMOUS-LOOP.md`). Empirically confirmed live during the 2026-05-16 session via `bun tools/bg/backlog-ready-notifier.ts --once` — returned the documented JSON shape with `queueBusy: true` correctly suppressing publication.
+**Notifier-side: partially complete.** Slices 1, 2, 3, 4, 6 are shipped (skeleton + detection + queue-state guard + bus-publish + launchd wiring; tests in `tools/bg/backlog-ready-notifier.test.ts`; docs in `docs/AUTONOMOUS-LOOP.md`). Empirically confirmed live during the 2026-05-16 session via `bun tools/bg/backlog-ready-notifier.ts --once` — returned the documented JSON shape with `queueBusy: true` correctly suppressing publication.
 
-**Row stays `status: open`** because child **B-0460** (slice 5.2, agent-side subscriber handler) is genuinely the remaining unshipped scope, and the `--enforce-parent-child-status` lint (B-0532 gate) correctly requires parent rows to stay open while any child is open. Closing this row would violate that invariant.
+**Slice 5a (assignment-history dedup / cooldown) is NOT yet shipped.** Child row B-0501 is still `status: open` with unchecked acceptance criteria; `tools/bg/backlog-ready-notifier.ts` does not yet contain `historyFile`/cooldown logic. Per codex + copilot review on PR #3945, the prior version of this row overstated 5a as shipped — corrected here.
 
-When B-0460 lands and closes, this row is ready to flip to `closed` with no further substrate work.
+**Row stays `status: open`** because children **B-0501** (slice 5a) and **B-0460** (slice 5.2, agent-side subscriber handler) are both genuinely the remaining unshipped scope, and the `--enforce-parent-child-status` lint (B-0532 gate) correctly requires parent rows to stay open while any child is open. Closing this row would violate that invariant.
+
+When B-0501 and B-0460 land and close, this row is ready to flip to `closed` with no further substrate work.
