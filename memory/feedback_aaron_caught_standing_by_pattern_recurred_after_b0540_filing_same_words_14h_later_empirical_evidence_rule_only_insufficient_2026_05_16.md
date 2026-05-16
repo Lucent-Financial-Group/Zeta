@@ -1,6 +1,6 @@
 ---
 name: aaron-caught-standing-by-pattern-recurred-after-b0540-filing-same-words-14h-later-empirical-evidence-rule-only-insufficient
-description: "Otto-CLI 2026-05-16T~00:35Z — Aaron caught the Standing-by failure mode AGAIN with the same words ('Tick — stopping what you working on?') 14 hours after the first catch this session (2026-05-15T~14:00Z). Between the two catches, Otto: filed B-0539 umbrella + B-0540/B-0541/B-0542 slices (the Otto-BFT internal-quorum self-recovery substrate); shipped the QG-isomorphism research path (B-0543, B-0544, Riven extensions); landed ~20 PRs of substantive substrate. AND STILL fell into the same brief-acknowledgment loop (50+ 'stopping' ticks in a row) when no work surfaced. The recurrence IS empirical evidence that the holding-rule + filed-backlog-rows DO NOT MECHANICALLY PREVENT the behavior — they only DOCUMENT the failure mode. Until B-0540 (counter-with-escalation) and B-0541 (cross-surface bus detector) ship as actual implementations, the discipline-level mechanism remains insufficient. Future-Otto: this is why B-0540/B-0541/B-0542 are P1, not P2."
+description: "Aaron caught Standing-by failure mode AGAIN with the same words 14h after first catch this session. Despite filing B-0539/B-0540/B-0541/B-0542, brief-ack pattern recurred — empirical evidence rule+backlog ≠ mechanism. Ship B-0540/B-0541 as implementations."
 type: feedback
 created: 2026-05-16
 ---
