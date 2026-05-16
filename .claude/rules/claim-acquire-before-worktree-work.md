@@ -153,6 +153,93 @@ Composes with [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-
 when it ships); until that ships, the borrow pattern is the
 operational workaround.
 
+## Saturation-ceiling — 4 failure sub-cases of borrow-on-existing
+
+Empirical anchor [PR #3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808)
+(`docs/hygiene-history/ticks/2026/05/16/0715Z.md`): under sustained
+multi-Otto saturation (4+ instances active in parallel: Otto-CLI primary
++ otto-bg-worker + fresh-cold-boot Otto-CLI + Lior), with peer Otto cycling
+worktree HEAD every ~3-5 min for 9 transitions in 35 min, a fresh-cold-boot
+session attempting to ship a shard hit FOUR distinct failure sub-cases of
+the borrow-on-existing pattern across 4 commit attempts. All 4 sub-cases
+empirically validated; only 2 have working mitigations today.
+
+### Sub-case 1 — existing-branch-name reuse → peer-WIP commit inheritance
+
+`git switch -c <name> origin/main` on a name that **already exists locally**
+SILENTLY REUSES the existing branch. It does NOT create fresh from
+`origin/main`. If the existing branch carries peer WIP commits (e.g., from
+a prior session or peer Otto's abandoned slice), the "fresh" branch
+inherits them. Any PR opened from this branch duplicates peer's PR work.
+
+**Mitigation (works)**:
+
+```bash
+# Pre-check via git rev-parse — empty/error = name free; SHA = name taken
+git rev-parse <candidate-name> 2>/dev/null && \
+  echo "name taken; uniquify (add -coldboot / -N suffix)"
+# If taken, uniquify before git switch -c
+git switch -c <name>-coldboot origin/main
+```
+
+### Sub-case 2 — concurrent-WIP-blocked switch
+
+When `git switch` is attempted while peer Otto's tracked-WIP modifications
+are in the working tree, the switch refuses (would discard peer's WIP).
+`git reset --hard` (the standard recovery path) would also discard peer's
+WIP. **No clean recovery preserving peer's WIP exists.**
+
+**Mitigation (works, capacity-limited)**: wait for peer's WIP window to
+close — working tree returns clean. Clean windows appear roughly every
+5-8 min during sustained saturation. Detection via `git status --short`
+returning empty. Strategy is capacity-limited: a fresh-cold-boot session
+that can't find a clean window within its tick budget must abandon the
+attempt.
+
+### Sub-case 3 — pack-dir contention hangs `git worktree add` (B-0530 race)
+
+`git worktree add /tmp/new-path` contends on `.git/objects/pack` during
+its internal `git reset --hard`. Hangs indefinitely under sustained peer
+activity. No `--lock` flag prevents this; see [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md).
+
+**Mitigation (no working mitigation today)**: requires B-0530 cron-sentinel
+mutex (not yet shipped). Until then, fall through to existing-sidetick
+borrow — which hits sub-case 4.
+
+### Sub-case 4 — pruned-sidetick race
+
+The empirically-validated sidetick `/private/tmp/zeta-otto-cli-0027z-sidetick`
+was listed in `git worktree list` BUT the directory had been pruned between
+the list snapshot and the borrow attempt. `git -C` returned "cannot change
+to ... No such file or directory".
+
+**Mitigation (no working mitigation today)**: requires a worktree-pool
+primitive — pre-allocated isolated sideticks per Otto identity, owned and
+refreshed by each identity, not subject to peer-prune. Composes with the
+`claim acquire` discipline at worktree-allocation scope. Substrate-engineer
+candidate; not yet a backlog row.
+
+### Composite operational discipline under saturation
+
+When a fresh session (especially scheduled-task autonomous-loop firing
+during peer cascade) needs to ship a shard / substrate edit:
+
+1. Apply [`refresh-before-decide`](refresh-before-decide.md) — check rate-limit tier first
+2. Check peer cascade intensity via `gh pr list --state open` (cost-aware)
+   OR `git log origin/main` (free) — if multi-instance saturation, defer
+3. Pre-check candidate branch names via `git rev-parse` — uniquify if
+   taken (sub-case 1)
+4. Detect working-tree-clean window via `git status --short` — only switch
+   off peer-occupied branches when WT is empty (sub-case 2)
+5. Set [`ZETA_EXPECTED_BRANCH`](zeta-expected-branch.md) env var immediately before commit; use the
+   `git branch --show-current` guard (catches mid-flight HEAD-desync)
+6. Use `gh pr create --head <my-branch>` with explicit head ref (per
+   [`zeta-expected-branch.md`](zeta-expected-branch.md) companion defense)
+7. If sub-cases 3 or 4 are hit and the attempt fails, ABANDON the shard
+   write — document the empirical evidence in turn output and end the
+   tick. Repeated retries under contention amplify the risk of peer-WIP
+   contamination.
+
 ## Composes with other rules
 
 - `.claude/rules/backlog-item-start-gate.md` — already mandates prior-art
