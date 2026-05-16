@@ -6,8 +6,7 @@ title: Claude Code `/permissions` feature — research current API + integrate t
 created: 2026-05-02
 last_updated: 2026-05-08
 depends_on: []
-decomposition: decomposed
-children: [B-0532, B-0533]
+decomposition: parent
 classification: buildable-now
 type: friction-reducer
 ---

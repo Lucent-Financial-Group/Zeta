@@ -1,12 +1,14 @@
 ---
 id: B-0505
 priority: P1
-status: open
+status: closed
 title: "B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close"
 tier: factory-infrastructure
 effort: XS
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-15
+closed: 2026-05-15
+closed_by_pr: 3458
 parent: B-0442
 depends_on: [B-0504]
 composes_with: [B-0442, B-0503, B-0504]

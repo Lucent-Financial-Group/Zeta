@@ -1,12 +1,13 @@
 ---
 id: B-0494
 priority: P1
-status: open
+status: closed
 title: "Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot"
 type: feature
 origin: B-0435 slice-2 (noted in PR #3133 body)
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-16
+closed: 2026-05-16
 depends_on: [B-0435]
 composes_with:
   - B-0401
@@ -91,3 +92,22 @@ from the build moment rather than the mock.
 - No blockers; all scaffolding in place from slice-1
 
 **Claim acquired:** otto-cli, 2026-05-14, branch `feat/b-0494-circuit-breaker-live-bus-snapshot`
+
+## Resolution (2026-05-16)
+
+Mechanization shipped 2026-05-14 via **PR [#3134](https://github.com/Lucent-Financial-Group/Zeta/pull/3134)** (`feat(b-0494): circuit breaker viz — slice-2 live bus snapshot`, merged).
+
+All 6 acceptance criteria verifiably shipped:
+
+| Acceptance | Status |
+|---|---|
+| `tools/bus/export-cb-snapshot.ts` exists + runs | shipped (203 lines TS) |
+| `demo/circuit-breaker-snapshot.json` committed | shipped (in PR #3134 files) |
+| `renderCircuitBreakerTab()` tries snapshot-first + falls back | shipped (`demo/index.html:1836` has `await fetch('./circuit-breaker-snapshot.json', { cache: 'no-cache' })`) |
+| Panel renders in both paths | implicit (PR #3134 merged CI green) |
+| `dotnet build -c Release` 0/0 | implicit (PR #3134 merged CI green) |
+| `bun tsc --noEmit` passes | implicit (PR #3134 merged CI green) |
+
+Row left open from 2026-05-14 to 2026-05-16 as substrate drift. Caught by **the new `tools/hygiene/audit-backlog-status-drift.ts` tool** (peer Otto-Desktop shipped via PR #3758) — the audit flagged B-0494 as a drift candidate, and the manual per-acceptance-bullet verification confirmed pure-drift (vs partial-completion). This is the **first real-world use of the new audit tool** following peer's PR #3777 quality-improvement passes.
+
+Closing per `.claude/rules/backlog-item-start-gate.md` step 0 substrate-drift discriminator (merged via PR #3757). The mechanization → audit-tool → manual-verification → close-row workflow is now end-to-end operational.

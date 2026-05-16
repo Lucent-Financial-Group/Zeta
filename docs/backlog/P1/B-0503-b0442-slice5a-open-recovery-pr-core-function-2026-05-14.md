@@ -1,12 +1,13 @@
 ---
 id: B-0503
 priority: P1
-status: open
+status: closed
 title: "B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-15
+closed: 2026-05-15
 parent: B-0442
 depends_on: []
 composes_with: [B-0442, B-0504]
@@ -37,7 +38,7 @@ for opening a recovery PR, independently testable before any wiring into
 
 ## Acceptance criteria
 
-- [ ] New file `tools/bg/missed-substrate-recovery.ts` exports:
+- [x] New file `tools/bg/missed-substrate-recovery.ts` exports: (landed on origin/main; design sketch below has been reconciled with as-shipped — `buildRecoveryBranchName` simplified to `(prNumber)` per PR #3458 docs)
   - `RecoveryAdapters` — interface with five adapters injected by callers:
     - `checkRecoveryPRExists(branchName: string) => boolean`
       — calls `gh pr list --head <branchName> --state open` to detect existing
@@ -60,9 +61,8 @@ for opening a recovery PR, independently testable before any wiring into
     | { status: "cherry-pick-conflict"; sha: string; attemptedCount: number }
     | { status: "error";          reason: string }
     ```
-  - `buildRecoveryBranchName(prNumber: number, ts: Date) => string`
-    — deterministic branch name `recovery/<prNumber>-<YYYYMMDDHHMMSS>`;
-      pure function; no I/O.
+  - `buildRecoveryBranchName(prNumber: number) => string`
+    — deterministic branch name `recovery/<prNumber>`; pure function; no I/O.
   - `buildRecoveryPRBody(finding: CascadeFinding) => string`
     — markdown body for the recovery PR listing `missingCommits`,
       the original `prNumber`, and a note that this was auto-generated.
@@ -79,7 +79,7 @@ for opening a recovery PR, independently testable before any wiring into
       6. `ghPrCreate(title, body, recoveryBranch)` → null → return `error`;
          non-null URL → return `opened`.
 
-- [ ] New file `tools/bg/missed-substrate-recovery.test.ts` with tests
+- [x] New file `tools/bg/missed-substrate-recovery.test.ts` with tests
   covering all `RecoveryResult` arms:
   - `"opened"` — fresh finding, no existing PR, no conflicts, push+PR succeed.
   - `"already-exists"` — `checkRecoveryPRExists` returns `true`; no mutations.
@@ -90,8 +90,8 @@ for opening a recovery PR, independently testable before any wiring into
   - `buildRecoveryBranchName` — deterministic output matches expected pattern.
   - `buildRecoveryPRBody` — contains PR number and commit SHAs.
 
-- [ ] All tests pass: `bun tools/bg/missed-substrate-recovery.test.ts`
-- [ ] `bun tools/bg/missed-substrate-detector.test.ts` still passes (no regressions)
+- [x] All tests pass: `bun tools/bg/missed-substrate-recovery.test.ts` (landed in B-0503 slice; on `origin/main`)
+- [x] `bun tools/bg/missed-substrate-detector.test.ts` still passes (no regressions) (landed in B-0503 slice; on `origin/main`)
 
 ## Design sketch
 
@@ -114,9 +114,8 @@ export type RecoveryResult =
   | { status: "cherry-pick-conflict";    sha: string; attemptedCount: number }
   | { status: "error";                   reason: string };
 
-export function buildRecoveryBranchName(prNumber: number, ts: Date): string {
-  const stamp = ts.toISOString().replace(/[-:T]/g, "").slice(0, 14);
-  return `recovery/${prNumber}-${stamp}`;
+export function buildRecoveryBranchName(prNumber: number): string {
+  return `recovery/${prNumber}`;
 }
 
 export function buildRecoveryPRBody(finding: CascadeFinding): string {
@@ -140,7 +139,7 @@ export function openRecoveryPR(
   dryRun: boolean,
   adapters: RecoveryAdapters,
 ): RecoveryResult {
-  const recoveryBranch = buildRecoveryBranchName(finding.prNumber, new Date());
+  const recoveryBranch = buildRecoveryBranchName(finding.prNumber);
 
   const exists = adapters.checkRecoveryPRExists(recoveryBranch);
   if (exists) {
@@ -192,15 +191,15 @@ adapter implementations. The real adapters (in B-0504) must validate SHA
 inputs from `CascadeFinding.missingCommits` with the same allow-list regex
 already used in `compareBranchToMerged`.
 
-## Why `openRecoveryPR` uses `new Date()` internally for the branch name
+## Why the recovery branch name is `recovery/<prNumber>` (no timestamp)
 
-The recovery branch name includes a timestamp to ensure uniqueness across
-multiple recovery attempts for the same PR number. Using `new Date()` inside
-`openRecoveryPR` rather than injecting it via adapters is intentional: the
-idempotency gate (`checkRecoveryPRExists`) already prevents duplicate
-recovery PRs; the timestamp is not load-bearing for correctness. For tests
-that need to verify the branch name, `buildRecoveryBranchName` is exported
-and tested separately.
+The original sketch included a `<YYYYMMDDHHMMSS>` suffix to guarantee
+uniqueness across multiple recovery attempts. The shipped implementation
+dropped it: the idempotency gate (`checkRecoveryPRExists`) already prevents
+duplicate recovery PRs for the same source PR, so a single deterministic
+name per `prNumber` is correct AND simpler to test. Documented in PR #3458's
+`docs/AUTONOMOUS-LOOP.md` update — "deterministic branch name
+`recovery/<prNumber>`".
 
 ## Dependency chain
 

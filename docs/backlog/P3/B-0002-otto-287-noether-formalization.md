@@ -28,7 +28,7 @@ analogously."*
 ## What's owed
 
 Per the research direction in
-`docs/research/otto-287-noether-formalization-2026-04-25.md`,
+`memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md`,
 four steps:
 
 1. **Define the cognitive action $S = \int (W - F) \, dt$.**
@@ -80,7 +80,7 @@ beyond is upside.
 
 - `memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`
   — the substrate captured this observation
-- `docs/research/otto-287-noether-formalization-2026-04-25.md`
+- `memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md`
   — the research direction
 - `memory/feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md`
   — Otto-286 precision discipline enables Step 1
