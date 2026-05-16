@@ -115,6 +115,97 @@ describe("shadow-observer — dry-run once mode", () => {
   });
 });
 
+describe("shadow-observer — freshness guard (fix #3 for new-console zsh abort)", () => {
+  test("checkWindowFresh returns false on first sighting (window too fresh)", async () => {
+    const { checkWindowFresh } = await import("./shadow-observer.ts");
+    const history = new Map<string, number>();
+    const result = checkWindowFresh({ pid: 1234, name: "Terminal" }, 5000, 1_000_000, history);
+    expect(result).toBe(false);
+    expect(history.get("1234|Terminal")).toBe(1_000_000);
+  });
+
+  test("checkWindowFresh returns true after threshold elapsed", async () => {
+    const { checkWindowFresh } = await import("./shadow-observer.ts");
+    const history = new Map<string, number>([["1234|Terminal", 1_000_000]]);
+    expect(checkWindowFresh({ pid: 1234, name: "Terminal" }, 5000, 1_004_999, history)).toBe(false);
+    expect(checkWindowFresh({ pid: 1234, name: "Terminal" }, 5000, 1_005_000, history)).toBe(true);
+    expect(checkWindowFresh({ pid: 1234, name: "Terminal" }, 5000, 1_010_000, history)).toBe(true);
+  });
+
+  test("checkWindowFresh threshold 0 always returns true (guard disabled)", async () => {
+    const { checkWindowFresh } = await import("./shadow-observer.ts");
+    const history = new Map<string, number>();
+    expect(checkWindowFresh({ pid: 1234, name: "Terminal" }, 0, 1_000_000, history)).toBe(true);
+    expect(history.size).toBe(0); // disabled means no history mutation
+  });
+
+  test("runOneCycle returns skipped-fresh-window + skips detection when window fresh", async () => {
+    const { runOneCycle, _resetFrontmostHistory } = await import("./shadow-observer.ts");
+    _resetFrontmostHistory();
+    const config: ShadowConfig = {
+      delayMs: 0,
+      dryRun: true,
+      logFile: "/dev/null",
+      loopIntervalMs: 0,
+      once: true,
+      restoreArrow: false,
+      freshnessThresholdMs: 5000,
+    };
+    let detectCalled = false;
+    const detectFn = async () => { detectCalled = true; return "should-not-fire"; };
+    const acceptFn = async () => true;
+    const restoreArrowFn = async () => ({ verdict: "should-not-fire", delta: "" });
+    const getFrontmostStateFn = async () => ({ pid: 9999, name: "iTerm2" });
+    const fixedNow = () => 1_000_000;
+
+    const verdict = await runOneCycle(config, detectFn, acceptFn, restoreArrowFn, getFrontmostStateFn, fixedNow);
+    expect(verdict).toBe("skipped-fresh-window");
+    expect(detectCalled).toBe(false);
+  });
+
+  test("runOneCycle skips cycle when frontmost probe returns null (per docstring contract)", async () => {
+    const { runOneCycle, _resetFrontmostHistory } = await import("./shadow-observer.ts");
+    _resetFrontmostHistory();
+    const config: ShadowConfig = {
+      delayMs: 0,
+      dryRun: true,
+      logFile: "/dev/null",
+      loopIntervalMs: 0,
+      once: true,
+      restoreArrow: true,
+      freshnessThresholdMs: 5000,
+    };
+    let detectCalled = false;
+    let restoreCalled = false;
+    const detectFn = async () => { detectCalled = true; return "should-not-fire"; };
+    const acceptFn = async () => true;
+    const restoreArrowFn = async () => { restoreCalled = true; return { verdict: "should-not-fire", delta: "" }; };
+    const getFrontmostStateFn = async () => null;
+    const fixedNow = () => 1_000_000;
+
+    const verdict = await runOneCycle(config, detectFn, acceptFn, restoreArrowFn, getFrontmostStateFn, fixedNow);
+    expect(verdict).toBe("skipped-fresh-window");
+    expect(detectCalled).toBe(false);
+    expect(restoreCalled).toBe(false);
+  });
+
+  test("checkWindowFresh evicts oldest entry when history reaches FRONTMOST_HISTORY_MAX", async () => {
+    const { checkWindowFresh, FRONTMOST_HISTORY_MAX } = await import("./shadow-observer.ts");
+    const history = new Map<string, number>();
+    // Fill to capacity
+    for (let i = 0; i < FRONTMOST_HISTORY_MAX; i++) {
+      checkWindowFresh({ pid: 1000 + i, name: "App" }, 5000, 1_000_000 + i, history);
+    }
+    expect(history.size).toBe(FRONTMOST_HISTORY_MAX);
+    expect(history.has("1000|App")).toBe(true);
+    // One more insertion → oldest evicted
+    checkWindowFresh({ pid: 9999, name: "NewApp" }, 5000, 2_000_000, history);
+    expect(history.size).toBe(FRONTMOST_HISTORY_MAX);
+    expect(history.has("1000|App")).toBe(false);
+    expect(history.has("9999|NewApp")).toBe(true);
+  });
+});
+
 describe("shadow-observer — runOneCycle unit (injected fns)", () => {
   const baseConfig: ShadowConfig = {
     delayMs: 0,
@@ -123,6 +214,7 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
     loopIntervalMs: 0,
     once: true,
     restoreArrow: false,
+    freshnessThresholdMs: 0,
   };
 
   test("returns no-suggestion when detectFn returns null", async () => {
@@ -413,6 +505,7 @@ describe("shadow-observer — --detect-cmd CLI integration (slice 2)", () => {
       loopIntervalMs: 0,
       once: true,
       restoreArrow: false,
+    freshnessThresholdMs: 0,
     };
     const result = await runOneCycle(baseConfig, async () => null);
     expect(result).toBe("no-suggestion");
@@ -659,6 +752,7 @@ describe("shadow-observer — runOneCycle full cycle paths (slice 3)", () => {
       loopIntervalMs: 0,
       once: true,
       restoreArrow: false,
+    freshnessThresholdMs: 0,
     };
   }
 
