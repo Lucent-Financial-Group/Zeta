@@ -7,8 +7,10 @@ tier: research+architecture-direction
 effort: L
 ask: Aaron 2026-05-05 verbatim *"so linquist seed open for extension closed for modification and then composable kernel extensions as carved sentances/memes. so docs can be formally verified based on invariants. and with enough compsable extension self editing, also implments in f# computational expriessions composition for ease."*
 created: 2026-05-05
-last_updated: 2026-05-05
+last_updated: 2026-05-16
 depends_on: []
+children: [B-0204.1]
+decomposition: decomposed
 composes_with: [B-0152, B-0196, B-0193, B-0202, B-0203, B-0205]
 tags: [linguistic-seed, kernel-substrate, ocp, mercer-closed, carved-sentences, memes, dawkins, mdl-two-part-code, formal-verification, lean, z3, tla, f-sharp, computational-expression, kernel-builder, self-editing, value-neutrality, alignment-discipline, mom-skill-apprenticeship, bootstrap-razor]
 type: feature
