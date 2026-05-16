@@ -55,11 +55,19 @@ export interface ShadowConfig {
   loopMs?: number;
   once: boolean;
   restoreArrow: boolean;
+  /** Skip AX-heavy detection + restore-arrow keypresses while the frontmost
+   *  window has been frontmost for less than this many milliseconds.
+   *  Prevents interference with shell init (e.g. zsh .zshrc loading in a
+   *  freshly-opened terminal). CLI default 0 (disabled) so test fixtures
+   *  see deterministic detection on first cycle; production sets 5000ms via
+   *  the launchd plist (`--freshness-threshold-ms 5000`) — explicit-flag
+   *  discipline keeps the production safety choice visible in the config. */
+  freshnessThresholdMs: number;
 }
 
 export interface ShadowEvent {
   timestamp: string;
-  type: "started" | "detected" | "accepted" | "overridden" | "no-suggestion" | "error" | "restore-arrow";
+  type: "started" | "detected" | "accepted" | "overridden" | "no-suggestion" | "error" | "restore-arrow" | "skipped-fresh-window";
   content?: string;
   /** v2 delta-detect: the suffix-extension of the input field's text after the → press
    *  (the restored autocomplete content). Empty when no text changed (the
@@ -309,12 +317,112 @@ export async function acceptGreyText(config: ShadowConfig): Promise<boolean> {
   return (await proc.exited) === 0;
 }
 
+/** Minimal state describing the frontmost application.
+ *  Returned by `getFrontmostState` (cheap query — no AXValue traversal).
+ *  Used by the freshness-threshold guard to skip AX-heavy cycles while a
+ *  newly-focused window is still settling. */
+export interface FrontmostState {
+  pid: number;
+  name: string;
+}
+
+/** Per-process history of frontmost-window first-seen timestamps. Key is
+ *  `${pid}|${name}`. Value is the ms-since-epoch when this combination
+ *  was first observed as frontmost. Module-level state is consistent with
+ *  the procedural shape of this file; `_resetFrontmostHistory` is exported
+ *  for test isolation. */
+const frontmostHistory: Map<string, number> = new Map();
+
+/** Test helper — clears the per-process frontmost history. */
+export function _resetFrontmostHistory(): void {
+  frontmostHistory.clear();
+}
+
+/** Query the frontmost application's pid + name via osascript. Cheap (no
+ *  AXValue traversal, no key injection). Returns null on any error or
+ *  non-darwin platform — caller treats null as "unknown, skip cycle." */
+export async function getFrontmostState(
+  _runner?: OsascriptRunner,
+  _platform?: string,
+): Promise<FrontmostState | null> {
+  const platform = _platform ?? process.platform;
+  if (platform !== "darwin") return null;
+
+  const runner = _runner ?? runOsascript;
+  const scriptPath = join(import.meta.dir, "get-frontmost-state.applescript");
+
+  let result: { exitCode: number; stdout: string; stderr: string };
+  try {
+    result = await runner(scriptPath);
+  } catch {
+    return null;
+  }
+  if (result.exitCode !== 0) return null;
+
+  const trimmed = result.stdout.trim();
+  if (trimmed.length === 0) return null;
+
+  const sepIdx = trimmed.indexOf("|");
+  if (sepIdx === -1) return null;
+
+  const pidStr = trimmed.slice(0, sepIdx);
+  const name = trimmed.slice(sepIdx + 1);
+  const pid = parseInt(pidStr, 10);
+  if (!Number.isFinite(pid) || pid <= 0 || name.length === 0) return null;
+
+  return { pid, name };
+}
+
+/** Pure freshness check. Updates `frontmostHistory` as a side-effect
+ *  (records first-seen for the key) so subsequent cycles can measure
+ *  age. Returns true if the window has been frontmost for at least
+ *  `thresholdMs`, false if it's too fresh (caller should skip the cycle).
+ *
+ *  Threshold of 0 disables the guard (always returns true). */
+export function checkWindowFresh(
+  state: FrontmostState,
+  thresholdMs: number,
+  nowMs: number,
+  history: Map<string, number> = frontmostHistory,
+): boolean {
+  if (thresholdMs <= 0) return true;
+  const key = `${state.pid}|${state.name}`;
+  const firstSeen = history.get(key);
+  if (firstSeen === undefined) {
+    history.set(key, nowMs);
+    return false; // first sighting → too fresh
+  }
+  return nowMs - firstSeen >= thresholdMs;
+}
+
 export async function runOneCycle(
   config: ShadowConfig,
   detectFn: DetectFn = detectGreyText,
   acceptFn: AcceptFn = acceptGreyText,
   restoreArrowFn: RestoreArrowFn = () => pressRestoreArrow(config),
-): Promise<"accepted" | "no-suggestion" | "overridden" | "error"> {
+  getFrontmostStateFn: () => Promise<FrontmostState | null> = getFrontmostState,
+  nowMs: () => number = Date.now,
+): Promise<"accepted" | "no-suggestion" | "overridden" | "error" | "skipped-fresh-window"> {
+  // Freshness guard: skip AX-heavy detection + restore-arrow keypresses
+  // while the frontmost window is still settling. Prevents interference
+  // with shell init (e.g. zsh .zshrc loading in a freshly-opened terminal).
+  if (config.freshnessThresholdMs > 0) {
+    const state = await getFrontmostStateFn();
+    if (state !== null && !checkWindowFresh(state, config.freshnessThresholdMs, nowMs())) {
+      log(
+        {
+          timestamp: new Date().toISOString(),
+          type: "skipped-fresh-window",
+          content: `${state.name} (pid ${state.pid}) frontmost <${config.freshnessThresholdMs}ms`,
+          delayMs: config.delayMs,
+          dryRun: config.dryRun,
+        },
+        config.logFile,
+      );
+      return "skipped-fresh-window";
+    }
+  }
+
   if (config.restoreArrow) {
     let result: RestoreArrowResult;
     try {
@@ -511,6 +619,7 @@ export function parseConfig(argv: string[]): ShadowConfig {
       "loop-interval": { type: "string", default: "1000" },
       "log-file": { type: "string", default: "tools/shadow/shadow-observer.log" },
       "restore-arrow": { type: "boolean", default: false },
+      "freshness-threshold-ms": { type: "string", default: "0" },
     },
     strict: true,
   });
@@ -541,6 +650,12 @@ export function parseConfig(argv: string[]): ShadowConfig {
     loopMs = parsed;
   }
 
+  const freshnessThresholdMs = parseInt(values["freshness-threshold-ms"] ?? "0", 10);
+  if (!Number.isFinite(freshnessThresholdMs) || freshnessThresholdMs < 0) {
+    console.error("Error: --freshness-threshold-ms must be a non-negative integer (milliseconds)");
+    process.exit(1);
+  }
+
   const base = {
     delayMs,
     dryRun: values["dry-run"] ?? false,
@@ -548,6 +663,7 @@ export function parseConfig(argv: string[]): ShadowConfig {
     loopIntervalMs,
     logFile: values["log-file"] ?? "tools/shadow/shadow-observer.log",
     restoreArrow: values["restore-arrow"] ?? false,
+    freshnessThresholdMs,
   };
   const detectCmd = values["detect-cmd"];
   const withDetect = detectCmd !== undefined ? { ...base, detectCmd } : base;

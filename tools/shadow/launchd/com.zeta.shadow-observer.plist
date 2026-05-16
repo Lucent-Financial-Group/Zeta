@@ -32,6 +32,13 @@
       was erased by an autonomous-loop cron tick. Non-destructive: no-op
       when no autocomplete + cursor at end of input. NOT suppressed by
       --dry-run (the two flags are orthogonal).
+    - --freshness-threshold-ms 5000: skip AX-heavy detection + restore-arrow
+      keypresses while the frontmost window has been frontmost for less than
+      5 seconds. Prevents interference with shell init (e.g. zsh .zshrc
+      loading in a freshly-opened terminal). Fix #3 from the 2026-05-16
+      observation that the prior --restore-arrow + AX-poll combination on
+      a still-initializing new terminal could abort zsh interactive init,
+      requiring a reboot to recover.
 -->
 <plist version="1.0">
 <dict>
@@ -50,6 +57,8 @@
         <string>3000</string>
         <string>--dry-run</string>
         <string>--restore-arrow</string>
+        <string>--freshness-threshold-ms</string>
+        <string>5000</string>
         <string>--log-file</string>
         <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.log</string>
     </array>
