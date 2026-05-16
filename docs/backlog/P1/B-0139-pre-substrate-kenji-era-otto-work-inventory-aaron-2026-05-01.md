@@ -8,7 +8,7 @@ last_updated: 2026-05-14
 depends_on: []
 type: friction-reducer
 decomposition: decomposed
-children: [B-0522, B-0523, B-0526, B-0527]
+children: [B-0522, B-0523, B-0526, B-0527, B-0555, B-0559]
 ---
 
 # B-0139 — Pre-substrate Kenji-era inventory
@@ -78,3 +78,4 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 ## Verify-before-deferring note
 
 The triggering incident (B-0131 "TRACTABLE START" overclaim) was a real verify-before-state-claim failure caused by lineage-discontinuity-pre-substrate. The inventory work eliminates the failure mode by making pre-substrate Kenji-era work substrate-discoverable rather than only repo-discoverable. The class-level lesson (per B-0130 audit-suite candidates) is *grep-the-codebase-before-claiming-clean-start*; the inventory makes that grep efficient by pre-cataloging the targets.
+aloging the targets.
