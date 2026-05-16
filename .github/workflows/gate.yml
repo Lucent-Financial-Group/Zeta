@@ -764,6 +764,38 @@ jobs:
       - name: Run audit-section-33-migration-xrefs (--enforce)
         run: bun tools/hygiene/audit-section-33-migration-xrefs.ts --enforce
 
+  lint-tick-shard-relative-paths:
+    # Fail if any tick shard at docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
+    # contains a broken relative-path link (target resolves outside the repo
+    # root or to a missing file). Tick shards live 5 directories below docs/,
+    # so the count-the-`..` pattern is error-prone — the agent shipped 5-`..`
+    # paths twice in one session (PR #3676 / PR #3679, 2026-05-16) where
+    # `../../../../../.claude/rules/X.md` lands at `docs/.claude/...` instead
+    # of repo root. Copilot caught both via review threads.
+    #
+    # Lifecycle: discovery #3676/#3679 → narrow fix #3680 → scanner #3692 →
+    # filter + quality rounds #3692 (fixups) → baseline mechanism #3699 →
+    # CI enforce gate (this job). The `--baseline` flag grandfathers the 10
+    # pre-existing findings recorded in audit-tick-shard-relative-paths.baseline.json
+    # so historical residue in immutable shards doesn't block — new violations
+    # still fail. Same shape as Stryker `--reset` or ESLint suppressions.
+    name: lint (tick-shard relative-paths)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Run audit-tick-shard-relative-paths (--enforce --baseline)
+        run: |
+          bun tools/hygiene/audit-tick-shard-relative-paths.ts \
+            --enforce \
+            --baseline tools/hygiene/audit-tick-shard-relative-paths.baseline.json
+
   lint-backlog-id-uniqueness:
     # Fail if any B-NNNN ID is claimed by more than one backlog row file.
     # Cross-agent ID-allocation collisions (Otto-CLI vs Otto-Desktop on
