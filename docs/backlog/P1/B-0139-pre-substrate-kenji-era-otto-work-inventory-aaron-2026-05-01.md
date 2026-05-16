@@ -7,7 +7,8 @@ created: 2026-05-01
 last_updated: 2026-05-08
 depends_on: []
 type: friction-reducer
-decomposition: blob
+decomposition: decomposing
+composes_with: [B-0555]
 ---
 
 # B-0139 — Pre-substrate Kenji-era inventory
