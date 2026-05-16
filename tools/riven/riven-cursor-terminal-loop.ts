@@ -15,6 +15,7 @@
 // Both run in parallel for defense-in-depth autonomy.
 
 import { publish } from "../bus/bus";
+import type { HeartbeatPayload } from "../bus/types";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -50,7 +51,7 @@ function log(msg: string): void {
   console.log(`[${nowIso()}] ${msg}`);
 }
 
-function publishHeartbeat(status: "alive" | "shutdown", note?: string): void {
+function publishHeartbeat(status: HeartbeatPayload["status"], note?: string): void {
   try {
     publish("riven", "*", {
       topic: "heartbeat",
@@ -139,7 +140,7 @@ async function main(): Promise<void> {
   // Graceful shutdown
   process.on("SIGINT", () => {
     log("Riven Cursor Terminal loop shutting down");
-    publishHeartbeat("shutdown", "terminal-closed");
+    publishHeartbeat("alive", "shutdown:terminal-closed");
     process.exit(0);
   });
 
