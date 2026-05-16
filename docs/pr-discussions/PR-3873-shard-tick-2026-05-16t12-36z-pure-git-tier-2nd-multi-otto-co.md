@@ -20,7 +20,7 @@ Deferred-PR landing under pure-git tier discipline (branch pushed when GraphQL=0
 
 ## Shard
 
-[`docs/hygiene-history/ticks/2026/05/16/1236Z.md`](docs/hygiene-history/ticks/2026/05/16/1236Z.md) — 2nd multi-Otto contamination observation of this session. HEAD bounced back to the PR #3871 branch under peer-Otto's `fix_branch` shell function (PID 75933 observed at 12:21Z firing `git switch <branch>` against the shared `.git/`).
+[`docs/hygiene-history/ticks/2026/05/16/1236Z.md`](../hygiene-history/ticks/2026/05/16/1236Z.md) — 2nd multi-Otto contamination observation of this session. HEAD bounced back to the PR #3871 branch under peer-Otto's `fix_branch` shell function (PID 75933 observed at 12:21Z firing `git switch <branch>` against the shared `.git/`).
 
 ## Pattern stable
 

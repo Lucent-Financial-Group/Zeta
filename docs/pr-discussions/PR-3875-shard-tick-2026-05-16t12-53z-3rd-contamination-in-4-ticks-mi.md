@@ -20,7 +20,7 @@ Final shard in the 12:21Z/12:36Z/12:53Z deferred-PR cluster. Push completed ~10 
 
 ## Shard
 
-[`docs/hygiene-history/ticks/2026/05/16/1253Z.md`](docs/hygiene-history/ticks/2026/05/16/1253Z.md) — 3rd multi-Otto contamination observation. HEAD at tick start: `otto-cli-audit-subclass-catalog-2026-05-16-1156z` (3rd distinct peer branch this session).
+[`docs/hygiene-history/ticks/2026/05/16/1253Z.md`](../hygiene-history/ticks/2026/05/16/1253Z.md) — 3rd multi-Otto contamination observation. HEAD at tick start: `otto-cli-audit-subclass-catalog-2026-05-16-1156z` (3rd distinct peer branch this session).
 
 ## Pattern stable across 4 ticks
 
