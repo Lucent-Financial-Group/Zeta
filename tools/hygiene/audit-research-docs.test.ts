@@ -29,6 +29,10 @@ describe("auditResearchDocsInRoots", () => {
         "# relative reference\n",
       );
       writeFileSync(
+        join(root, "docs", "research", "relative-link.md"),
+        "# relative markdown link reference\n",
+      );
+      writeFileSync(
         join(root, "docs", "research", "rationale.txt"),
         "explicit unindexed rationale: archived raw OCR source\n",
       );
@@ -50,6 +54,7 @@ describe("auditResearchDocsInRoots", () => {
           "docs/research/full.md",
           "docs/research/colon.md: annotated reference",
           "nested/relative.md",
+          "[relative](../docs/research/relative-link.md)",
           "docs/research/boundary.md.bak",
           "prefixdocs/research/boundary.md",
           "",
@@ -78,6 +83,7 @@ describe("auditResearchDocsInRoots", () => {
         "docs/research/nested/relative.md",
         "docs/research/non-md-memory-only.md",
         "docs/research/rationale.txt",
+        "docs/research/relative-link.md",
       ]);
       expect(result.memoryFiles).toEqual([
         "memory/MEMORY.md",
@@ -87,6 +93,7 @@ describe("auditResearchDocsInRoots", () => {
         "docs/research/colon.md",
         "docs/research/full.md",
         "docs/research/nested/relative.md",
+        "docs/research/relative-link.md",
       ]);
       expect(result.explicitlyUnindexed).toEqual([
         "docs/research/rationale.txt",

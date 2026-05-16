@@ -47,9 +47,9 @@ function escapeRegExp(text: string): string {
 function hasPathReference(content: string, candidate: string): boolean {
   const escaped = escapeRegExp(candidate);
   const pathChar = String.raw`A-Za-z0-9._~/-`;
-  return new RegExp(String.raw`(^|[^${pathChar}])${escaped}($|[^${pathChar}])`).test(
-    content,
-  );
+  return new RegExp(
+    String.raw`(^|[^${pathChar}])(?:\.\./)*${escaped}($|[^${pathChar}])`,
+  ).test(content);
 }
 
 async function listFiles(root: string): Promise<readonly string[]> {
