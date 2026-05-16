@@ -25,9 +25,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Substrate
 
-Shard file: [`docs/hygiene-history/ticks/2026/05/16/0651Z.md`](docs/hygiene-history/ticks/2026/05/16/0651Z.md)
+Shard file: [`docs/hygiene-history/ticks/2026/05/16/0651Z.md`](../hygiene-history/ticks/2026/05/16/0651Z.md)
 
-Documents the named-dependency wait (GraphQL reset at 06:55:57Z, ~5 min from shard-write time) and the pure-git pivot. Refines empirical floor data in [`.claude/rules/refresh-world-model-poll-pr-gate.md`](.claude/rules/refresh-world-model-poll-pr-gate.md) — the "200-1000 = at most 1 PR" guidance assumes no concurrent draw, which is not always true when peer-Otto + Lior + Vera + Riven share Aaron's user-token.
+Documents the named-dependency wait (GraphQL reset at 06:55:57Z, ~5 min from shard-write time) and the pure-git pivot. Refines empirical floor data in [`.claude/rules/refresh-world-model-poll-pr-gate.md`](../../.claude/rules/refresh-world-model-poll-pr-gate.md) — the "200-1000 = at most 1 PR" guidance assumes no concurrent draw, which is not always true when peer-Otto + Lior + Vera + Riven share Aaron's user-token.
 
 ## Test plan
 
