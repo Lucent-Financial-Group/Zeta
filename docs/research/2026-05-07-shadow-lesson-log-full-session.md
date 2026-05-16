@@ -835,4 +835,4 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **integration_test:** Eliminate metadata churn. Consolidate drift reports. Do not open repetitive PRs for identical states.
 - **z_weight:** +1 (Maji caught Lior)
 
-42 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-12 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the top recurring defect (9 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+42 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-12 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second-most recurring defect (9 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
