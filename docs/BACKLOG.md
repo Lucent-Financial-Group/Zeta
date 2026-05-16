@@ -665,7 +665,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0395](backlog/P3/B-0395-operational-resonance-conversation-interface-path-a-browser-local-llm-2026-05-09.md)** Conversation interface Path A — embed browser/local LLM (WebLLM or transformers.js) in dashboard for in-context review discussion
 - [ ] **[B-0422](backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md)** Clifford-algebraic narrative engine for testing the Pauli-symmetry-breaking-from-agenda-conservation prediction (research target identified by DeepSeek 2026-05-12)
 - [ ] **[B-0499](backlog/P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)** Z[i]-weighted DBSP refinement — Cartesian-dualism candidate from afternoon-cascade
-- [ ] **[B-0506](backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md)** Stale-worktree prune cadence — mechanize `git worktree prune --expire=now`
+- [x] **[B-0506](backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md)** Stale-worktree prune cadence — mechanize `git worktree prune --expire=now`
 - [ ] **[B-0514](backlog/P3/B-0514-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md)** Author missing memory file: feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md
 - [ ] **[B-0515](backlog/P3/B-0515-architecture-as-externalization-of-aarons-dialectical-perception-dashboard-target-shift-2026-05-14.md)** Architecture-as-externalization-of-Aaron's-dialectical-perception — dashboard acceptance criteria target shift
 - [ ] **[B-0517](backlog/P3/B-0517-memory-md-index-bloat-cleanup-cadence-2026-05-14.md)** MEMORY.md index bloat cleanup + entry-length enforcement cadence
