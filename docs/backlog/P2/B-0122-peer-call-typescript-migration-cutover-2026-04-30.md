@@ -1,13 +1,13 @@
 ---
 id: B-0122
 priority: P2
-status: open
+status: closed
 title: Peer-call scripts TypeScript migration — post-install cutover (the maintainer 2026-04-30)
 tier: factory-tooling
 effort: M
 ask: The maintainer 2026-04-30 flagged "why are these not ts, are we done with the cutover? these are post install scripts." Per the install-script language strategy memory (`memory/project_install_script_language_strategy_post_install_typescript_pre_install_bash_powershell_python_for_ai_ml_2026_04_27.md`), peer-call scripts qualify as post-install (they require external CLIs already installed) and should migrate from bash to TypeScript-on-bun. Otto-215 already named "Bun-TS post-install migration before substantive Windows work" as the framing. This row tracks the concrete migration of `tools/peer-call/*.sh` to `tools/peer-call/*.ts`.
 created: 2026-04-30
-last_updated: 2026-05-02
+last_updated: 2026-05-16
 depends_on: []
 composes_with:
   - tools/peer-call/codex.sh
@@ -201,3 +201,29 @@ the cutover?" — which reads as both (a) status query and
 immediate purposes (answering: no, not done) and (b) for
 backlog-purposes (filing the action). If the maintainer's
 follow-up is "do it now" the row promotes to P1.
+
+## Resolution
+
+Closed 2026-05-16 via audit-triage discovery of pure drift.
+
+**Migration is complete**:
+
+```
+$ ls tools/peer-call/*.sh 2>&1
+(zsh: no matches found)
+$ ls tools/peer-call/*.ts | wc -l
+12
+```
+
+Zero `.sh` files remain; 12 `.ts` files ship (codex.ts, grok.ts, gemini.ts, amara.ts, ani.ts, riven.ts, kiro.ts, claude.ts plus 3 utility files per `.claude/rules/peer-call-infrastructure.md`).
+
+**Drift class**: #1 (pure drift) — Rule 0 (`no more .sh files except install-graph`) operationally enforced; peer-call migration is the canonical example cited in Rule 0 itself.
+
+**Composes with**:
+
+- `.claude/rules/rule-0-no-sh-files.md` (Rule 0 cites peer-call migration as the canonical example)
+- `.claude/rules/peer-call-infrastructure.md` (lists the 12 TypeScript files as current state)
+- B-0118 (amara peer-call umbrella — closed via PR #3902 this session) and the rest of the amara cluster
+- `memory/project_install_script_language_strategy_post_install_typescript_pre_install_bash_powershell_python_for_ai_ml_2026_04_27.md` (the install-script language strategy this row implements)
+
+last_updated bumped 2026-05-02 → 2026-05-16 per row-close discipline.
