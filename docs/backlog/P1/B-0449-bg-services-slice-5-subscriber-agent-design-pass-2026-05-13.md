@@ -1,7 +1,7 @@
 ---
 id: B-0449
 priority: P1
-status: open
+status: shipped
 title: "bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)"
 tier: factory-infrastructure
 effort: M
@@ -98,7 +98,7 @@ queue work into step 3 (pick speculative work).
 
 ## Acceptance criteria (design-pass)
 
-- [ ] Library `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` that:
+- [x] Library `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` that:
   - Reads the bus directory (honors `ZETA_BUS_DIR` env var; defaults to
     `/tmp/zeta-bus/` — same configurable convention the existing
     `tools/bus/bus.ts` + `tools/bus/claim.ts` already use, so production
@@ -108,17 +108,17 @@ queue work into step 3 (pick speculative work).
   - Calls handler(envelope) for each match
   - Marks-as-consumed via a `seen.json` file per surface in the same
     bus directory (prevents re-processing; honors `ZETA_BUS_DIR`)
-- [ ] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
+- [x] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
       `subscribeOnce` for each of the three topics
-- [ ] Per-topic handlers are STUBS in this slice — they log envelope
+- [x] Per-topic handlers are STUBS in this slice — they log envelope
       to tick shard but take no action. Subsequent slices flesh out:
   - `infinite-backlog-nudge` handler → triggers decomposition or
     backlog grind (slice 5.1)
   - `work-assignment` handler → claim-and-implement an ambiguous
     item (slice 5.2)
   - `missed-substrate-cascade` handler → open recovery PR (slice 5.3)
-- [ ] Tests cover `subscribeOnce` (DST-replayable with fake bus dir)
-- [ ] Substrate-honest disclaimer in `tools/bg/README.md` updated:
+- [x] Tests cover `subscribeOnce` (DST-replayable with fake bus dir)
+- [x] Substrate-honest disclaimer in `tools/bg/README.md` updated:
       "subscribers consume envelopes but actions are STUB; slice 5.N
       flesh out per-topic behavior"
 
