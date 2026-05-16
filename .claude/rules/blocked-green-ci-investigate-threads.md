@@ -85,6 +85,26 @@ Resolve these no-op (the prose was correct at write-time;
 substrate edits would be retroactive rewriting). Stale ≠
 false; it just means the action window closed.
 
+### Stale-armed-PR resolution patterns
+
+Empirical anchor 2026-05-16T13:10Z-16:33Z (one session, 5 stale-armed PR investigations):
+
+A stale-armed PR is one with auto-merge armed for hours/days where checks fail or merge conflicts persist. Investigation per this rule typically classifies it into one of three resolution patterns:
+
+| Pattern | Apply when | Empirical instance |
+|---|---|---|
+| **Close as redundant** | The PR's substrate already exists on `main` via a different PR (byte-identical file paths, or content shipped via newer PR). Close with substrate-honest comment + cross-link to the merged equivalent. Preserves alternate-content version in branch history per [`lost-files-surface`](lost-files-surface.md) | [#3823](https://github.com/Lucent-Financial-Group/Zeta/pull/3823) — 07:58Z shard already on main via different PR; closed at 13:31Z |
+| **Re-land via cherry-pick** | The PR's substrate is genuinely new but the branch is too stale to merge (CI fails on unrelated evolved files, merge conflicts on regenerated index files). Cherry-pick the substrate onto a fresh branch off current main, manually re-apply auto-generated files via the generator (e.g., `bun tools/backlog/generate-index.ts`), fix any lint issues that surface | [#3817 → #3894](https://github.com/Lucent-Financial-Group/Zeta/pull/3894) (B-0558 worktree-pool); [#3779 → #3904](https://github.com/Lucent-Financial-Group/Zeta/pull/3904) (0630Z shard re-land) |
+| **Forward-signal comment** | The PR is too large (e.g., 61 files in [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545)) or otherwise impractical to re-land in a single tick. Leave a comment naming the two viable resolution paths (rebase OR cherry-pick) AND flagging any newer PRs that may supersede the substrate. Forward signal for whoever picks it up next | [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545#issuecomment-4467314174) — DIRTY 19+ hr, 61-file conflict |
+
+**Decision tree** (in order):
+
+1. Does the substrate already exist on `main` via a different PR? → **Close as redundant**
+2. Is the substrate small enough to re-land in 1-2 ticks? → **Re-land via cherry-pick**
+3. Otherwise → **Forward-signal comment** (the PR sits until someone else has the budget)
+
+Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md) rate-limit tiers — re-land requires normal-tier GraphQL budget; forward-signal works at any tier.
+
 ## Full reasoning
 
 `memory/feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`
