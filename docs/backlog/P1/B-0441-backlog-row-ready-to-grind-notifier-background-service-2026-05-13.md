@@ -1,12 +1,12 @@
 ---
 id: B-0441
 priority: P1
-status: open
+status: closed
 title: "Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-13
-last_updated: 2026-05-14
+last_updated: 2026-05-16
 depends_on: [B-0400]
 composes_with: [B-0402, B-0440, B-0442]
 children: [B-0500, B-0501, B-0502, B-0460]
@@ -36,23 +36,24 @@ provides a less-ambiguous concrete claim — eliminating the
 
 ## Acceptance criteria
 
-- [ ] Background service `tools/bg/backlog-ready-notifier.ts` exists
+- [x] Background service `tools/bg/backlog-ready-notifier.ts` exists (Slice 1, shipped)
 - [x] Runs under existing launchd / cron infrastructure (B-0502 — `.gemini/launchd/com.zeta.backlog-ready-notifier.plist`)
-- [ ] Periodically scans `docs/backlog/P*/B-*.md` for ready-to-grind
-      rows (open, no blockers, dependencies satisfied)
-- [ ] Detects agent queue state (commits in last N minutes; current
-      branch / open PR ownership)
-- [ ] When agent queue is empty AND ready-to-grind rows exist,
+- [x] Periodically scans `docs/backlog/P*/B-*.md` for ready-to-grind
+      rows (open, no blockers, dependencies satisfied) (Slice 2, shipped)
+- [x] Detects agent queue state (commits in last N minutes; current
+      branch / open PR ownership) (Slice 3, B-0500 shipped)
+- [x] When agent queue is empty AND ready-to-grind rows exist,
       publishes claim-assignment message via bus (B-0400):
       `{ topic: "work-assignment", to: <agent>,
          payload: { rowId: "B-NNNN", priority: "P1",
          rationale: "queue-empty + dependencies-satisfied + smallest-effort-match",
-         decompositionSuggestion: <slice-breakdown> } }`
-- [ ] Honors agent autonomy — assignment is suggestion, not directive
-      (per `.claude/rules/no-directives.md`)
-- [ ] Tracks assignment history to avoid re-assigning same row
-      within short window
-- [ ] Tests cover the readiness-detection heuristics
+         decompositionSuggestion: <slice-breakdown> } }` (Slice 4, shipped)
+- [x] Honors agent autonomy — assignment is suggestion, not directive
+      (per `.claude/rules/no-directives.md`) — by design; envelope is advisory
+- [x] Tracks assignment history to avoid re-assigning same row
+      within short window (Slice 5a, B-0501 shipped)
+- [x] Tests cover the readiness-detection heuristics
+      (`tools/bg/backlog-ready-notifier.test.ts`)
 - [x] Documented in `docs/AUTONOMOUS-LOOP.md`
 
 ## Design sketch
