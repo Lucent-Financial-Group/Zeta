@@ -1,7 +1,7 @@
 ---
 id: B-0500
 priority: P1
-status: closed
+status: open
 title: "B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce"
 tier: factory-infrastructure
 effort: XS
@@ -34,7 +34,7 @@ work-assignment envelopes on every poll cycle.
 
 ## Acceptance criteria
 
-- [x] `pollOnce` consults `isAgentQueueEmpty(config.targetAgent, adapters)` before
+- [ ] `pollOnce` consults `isAgentQueueEmpty(config.targetAgent, adapters)` before
       publishing any work-assignment envelopes
   - When queue is NOT empty → skip publish; include `"queueBusy: true"` in the
     `PollResult` note field; return early (no envelopes published)
@@ -42,14 +42,14 @@ work-assignment envelopes on every poll cycle.
   - Conservative default: adapter failures (`execGitLog → null`, `execGhPrList → null`)
     are treated as queue BUSY (do not trigger assignment) — matches the existing
     `isAgentQueueEmpty` behavior
-- [x] `NotifierConfig` gains a `targetAgent` field (default `"otto"`); `parseArgs`
+- [ ] `NotifierConfig` gains a `targetAgent` field (default `"otto"`); `parseArgs`
       wires `--target-agent <agent>` flag (accepts any string; not restricted to
       `SENDER_IDS` because the agent patterns map is the actual lookup)
-- [x] `PollResult` gains a `queueBusy: boolean` field; `pollOnce` populates it
-- [x] Adapters interface unchanged (already includes `execGitLog` + `execGhPrList`
+- [ ] `PollResult` gains a `queueBusy: boolean` field; `pollOnce` populates it
+- [ ] Adapters interface unchanged (already includes `execGitLog` + `execGhPrList`
       + `agentPatterns` — exactly what `isAgentQueueEmpty` needs)
-- [x] Existing tests updated to pass `targetAgent` where `DEFAULT_CONFIG` is used
-- [x] New tests added:
+- [ ] Existing tests updated to pass `targetAgent` where `DEFAULT_CONFIG` is used
+- [ ] New tests added:
   - `pollOnce` with queue-busy adapters → `publishedEnvelopeIds` empty,
     `queueBusy: true`, no `publishAssignment` calls
   - `pollOnce` with queue-empty adapters AND ready rows → envelopes published,
@@ -91,7 +91,7 @@ B-0441 (slices 1+2+4 shipped — backlog-ready-notifier.ts functional)
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- [x] Verify `isAgentQueueEmpty` signature in `backlog-ready-notifier.ts` before writing
-- [x] Run `bun tools/bg/backlog-ready-notifier.test.ts` to confirm all existing tests pass
+- [ ] Verify `isAgentQueueEmpty` signature in `backlog-ready-notifier.ts` before writing
+- [ ] Run `bun tools/bg/backlog-ready-notifier.test.ts` to confirm all existing tests pass
       before adding new ones
-- [x] Verify `PollResult` type is exported (it is — used in test file)
+- [ ] Verify `PollResult` type is exported (it is — used in test file)

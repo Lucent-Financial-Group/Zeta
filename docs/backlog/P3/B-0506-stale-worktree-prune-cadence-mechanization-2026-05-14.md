@@ -1,13 +1,12 @@
 ---
 id: B-0506
 priority: P3
-status: closed
+status: open
 title: "Stale-worktree prune cadence — mechanize `git worktree prune --expire=now`"
 tier: factory-hygiene
 effort: S
 created: 2026-05-14
-last_updated: 2026-05-16
-closed: 2026-05-16
+last_updated: 2026-05-14
 depends_on: []
 composes_with: [B-0400, B-0444]
 tags: [worktree, hygiene, factory-cadence, multi-foreground-surface, friction-reducer]
@@ -66,22 +65,3 @@ This is a P3 friction-reducer, not a P0 substrate gap. The cleanup is straightfo
 ## Origin tick
 
 `docs/hygiene-history/ticks/2026/05/14/1817Z.md` — this tick's shard documents the empirical observation and the manual cleanup.
-
-## Resolution (2026-05-16)
-
-Mechanization shipped 2026-05-14 via **PR #3225** (`feat(B-0506): mechanize stale-worktree audit — audit-stale-worktrees.ts (clean branch)`, merged).
-
-The shipped tool [`tools/hygiene/audit-stale-worktrees.ts`](../../../tools/hygiene/audit-stale-worktrees.ts) implements every behavior named in "Proposed mechanization" above:
-
-| Specified behavior | Status |
-|---|---|
-| Enumerate via `git worktree list --porcelain` | shipped |
-| Existence-check each working-tree path | shipped |
-| Markdown summary report (`--report PATH`) | shipped |
-| `--prune` runs `git worktree prune --expire=now -v` | shipped |
-| Exit codes (0 / 64 / 128) | shipped |
-| DST-friendly (only timestamp non-deterministic) | shipped |
-
-Phase 2 (GHA cron wire-up + per-Otto-process worktree isolation) is **out of scope** per the tool's own header comment and would compose with `factory-hygiene-audit-cadence.yml` if/when needed; that's a separate row, not a B-0506 obligation.
-
-Row left open from 2026-05-14 to 2026-05-16 due to substrate drift — the mechanization PR landed but this row was never marked closed. Caught this tick by Otto-CLI 2026-05-16T04:19Z while picking a P3 friction-reducer; tried to claim+implement, discovered the tool already existed at the proposed path. Closing instead.
