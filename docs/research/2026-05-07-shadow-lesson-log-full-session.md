@@ -734,3 +734,9 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught and closed the PR)
 
 35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+## Maji Antigravity Check - 2026-05-16T05:35Z
+Drift observed:
+- Otto: stale broadcast since 2026-05-11.
+- Vera: narration-over-action on #3714 and #3726.
+- Riven: dirty tree skip loops.
