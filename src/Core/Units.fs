@@ -108,6 +108,52 @@ module Units =
 
 
     // ============================================================================
+    // Currency: smallest defensible compile-time-rejection demonstration of
+    // the F#-fork-for-AI-safety thesis applied to financial substrate.
+    //
+    // Empirical anchor: arxiv 2504.09246 (Mündler/He/Wang/Sen/Song/Vechev,
+    // PLDI 2025) — 94% of LLM-generated COMPILATION errors are type-check
+    // failures; type-constrained generation more than halves them. The
+    // currency-mixing failure class is in that set: `usd + eur` is a
+    // type-check failure under explicit currency UoM, regardless of which
+    // model generated it.
+    //
+    // Why ISO-4217 lower-case names: F# UoM type names live in the value
+    // namespace per-measure, so `[<Measure>] type usd` makes `100.0<usd>`
+    // syntactically valid. Lower-case matches the existing `tick / ms / ns
+    // / s / prob / pct` convention in this file. Per-currency types stay
+    // distinct (no `Currency` enum + tagged float): the whole point is
+    // that the type system rejects `usd + eur` at compile time, which
+    // requires the currencies to be DISTINCT UoMs, not values of a shared
+    // enum that the compiler can't disambiguate.
+    //
+    // Scope: starter set covers the canonical AML / payment-rail use case
+    // (USD / EUR / GBP / JPY). New currencies opt in by adding one line
+    // here. There's no global currency registry; that's the point. A
+    // backend that only ever handles USD never sees the others, and a
+    // multi-currency backend has to explicitly enumerate which ones it
+    // supports + provide explicit conversion rates at each crossing.
+    // ============================================================================
+
+    /// US dollar. ISO-4217 currency code (lower-case to match the
+    /// `tick / ms / prob` convention in this file).
+    [<Measure>]
+    type usd
+
+    /// Euro. ISO-4217 EUR.
+    [<Measure>]
+    type eur
+
+    /// British pound sterling. ISO-4217 GBP.
+    [<Measure>]
+    type gbp
+
+    /// Japanese yen. ISO-4217 JPY.
+    [<Measure>]
+    type jpy
+
+
+    // ============================================================================
     // Conversion helpers (explicit by design — conversion IS the safety boundary).
     // ============================================================================
 
@@ -180,3 +226,41 @@ module Units =
     let expectedArrivals (rate: float<per_tick>) (window: int64<tick>) : float =
         let windowFloat = LanguagePrimitives.FloatWithMeasure<tick> (float window)
         rate * windowFloat
+
+
+    // ============================================================================
+    // Currency conversion (explicit rate at every crossing — the safety boundary).
+    //
+    // The signature `rate: float<'Target/'Source>` forces the caller to
+    // declare both the rate direction AND the magnitude at the call site.
+    // The unit algebra cancels naturally: `<'Target/'Source> * <'Source>
+    // = <'Target>`, no cast needed, no implicit conversion possible.
+    //
+    // Same shape as `logicalToWall (rate: float<ms/tick>)` — the rate is
+    // a typed scalar that names its own direction. A bug where the caller
+    // passes a USD/EUR rate to a EUR→USD conversion is a compile error,
+    // not a runtime miscalculation. A bug where the caller forgets to
+    // convert and writes `usdAmount + eurAmount` directly is a compile
+    // error. Currency-mixing failures are eliminated from the runtime
+    // failure-class entirely.
+    //
+    // Generic over both source and target so the same function handles
+    // every pair (USD↔EUR, EUR↔GBP, etc.) without combinatorial helpers.
+    // The compiler instantiates the generics at each call site.
+    // ============================================================================
+
+    /// Convert money from one currency to another given an explicit rate.
+    /// `rate` has the unit algebra `<'Target/'Source>` so the conversion
+    /// cancels: `<'Target/'Source> * <'Source> = <'Target>`. This makes
+    /// the rate direction (FROM→TO) visible at the call site.
+    ///
+    /// Validates `rate > 0` since FX rates are always positive (negative
+    /// would invert direction silently — that's exactly the kind of
+    /// implicit-conversion failure this signature is designed to prevent).
+    let convertCurrency<[<Measure>] 'Source, [<Measure>] 'Target>
+        (rate: float<'Target/'Source>)
+        (amount: float<'Source>)
+        : float<'Target> =
+        if float rate <= 0.0 then
+            invalidArg "rate" $"FX rate must be positive (got %f{float rate})"
+        amount * rate

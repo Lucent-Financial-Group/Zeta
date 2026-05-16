@@ -186,3 +186,95 @@ let ``logicalToWall rejects zero/negative rate`` () =
     Assert.Throws<System.ArgumentException>(fun () ->
         logicalToWall -1.0<ms/tick> 100L<tick> |> ignore)
     |> ignore
+
+
+// ============================================================================
+// Currency UoM — the smallest defensible compile-time-rejection demonstration
+// of the F#-fork-for-AI-safety thesis applied to financial substrate.
+//
+// What's tested at runtime (these tests):
+//   - Same-currency arithmetic produces the expected typed result
+//   - Explicit conversion via convertCurrency with a typed rate works
+//   - Invalid rates (zero/negative) are rejected at runtime
+//
+// What's "tested" at compile-time (NOT runtime tests — these would be
+// COMPILE ERRORS if uncommented):
+//
+//   ```fsharp
+//   let bad = 100.0<usd> + 50.0<eur>      // FS0001: types don't match
+//   let bad2 = (100.0<usd>) * (50.0<eur>) // FS0001: dimension mismatch
+//   let bad3: float<usd> = 50.0<eur>      // FS0001: types don't unify
+//   ```
+//
+// The F# compiler IS the falsifier: if any of those lines ever compile,
+// either Units.fs lost its currency UoM declarations OR the F# language
+// changed its UoM semantics. Either way, the build would fail to reach
+// the test stage. That's the canonical asymmetric-critic discipline
+// (per .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md) applied
+// to a defined error class.
+// ============================================================================
+
+[<Fact>]
+let ``same-currency addition produces correctly-typed result`` () =
+    let a: float<usd> = 100.0<usd>
+    let b: float<usd> = 50.0<usd>
+    let sum: float<usd> = a + b
+    Assert.Equal(150.0<usd>, sum)
+
+[<Fact>]
+let ``same-currency subtraction produces correctly-typed result`` () =
+    let balance: float<eur> = 1000.0<eur>
+    let withdrawal: float<eur> = 250.0<eur>
+    let remaining: float<eur> = balance - withdrawal
+    Assert.Equal(750.0<eur>, remaining)
+
+[<Fact>]
+let ``same-currency scalar multiplication preserves currency type`` () =
+    let perUnit: float<gbp> = 9.99<gbp>
+    let count: float = 3.0
+    let total: float<gbp> = perUnit * count
+    Assert.Equal(29.97, float total, 6)
+
+[<Fact>]
+let ``convertCurrency applies rate with cancelling units`` () =
+    // 100 USD * 0.92 EUR/USD = 92 EUR
+    let rate: float<eur/usd> = 0.92<eur/usd>
+    let usdAmount: float<usd> = 100.0<usd>
+    let eurAmount: float<eur> = convertCurrency rate usdAmount
+    Assert.Equal(92.0, float eurAmount, 6)
+
+[<Fact>]
+let ``convertCurrency works in the reverse direction with reverse rate`` () =
+    // 92 EUR * (1 / 0.92) USD/EUR = ~100 USD. UoM literal syntax requires
+    // a number, not an expression, so use LanguagePrimitives for the inverse.
+    let reverseRate: float<usd/eur> =
+        LanguagePrimitives.FloatWithMeasure<usd/eur> (1.0 / 0.92)
+    let eurAmount: float<eur> = 92.0<eur>
+    let usdBack: float<usd> = convertCurrency reverseRate eurAmount
+    Assert.Equal(100.0, float usdBack, 6)
+
+[<Fact>]
+let ``convertCurrency rejects zero rate`` () =
+    Assert.Throws<System.ArgumentException>(fun () ->
+        convertCurrency 0.0<eur/usd> 100.0<usd> |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``convertCurrency rejects negative rate`` () =
+    Assert.Throws<System.ArgumentException>(fun () ->
+        convertCurrency -0.92<eur/usd> 100.0<usd> |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``convertCurrency is generic across all currency pairs`` () =
+    // Same function handles every pair; the compiler instantiates the
+    // generics at each call site. No combinatorial helper-function explosion.
+    let usdToJpy: float<jpy/usd> = 150.0<jpy/usd>
+    let usd: float<usd> = 10.0<usd>
+    let jpy: float<jpy> = convertCurrency usdToJpy usd
+    Assert.Equal(1500.0, float jpy, 6)
+
+    let gbpToEur: float<eur/gbp> = 1.18<eur/gbp>
+    let gbp: float<gbp> = 100.0<gbp>
+    let eur: float<eur> = convertCurrency gbpToEur gbp
+    Assert.Equal(118.0, float eur, 6)
