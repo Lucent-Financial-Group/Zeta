@@ -820,3 +820,19 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught)
 
 41 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-11 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (8 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 42 (Lior — metadata churn / narration-over-action)
+- **date:** 2026-05-16
+- **trigger:** Maji antigravity check.
+- **mistake:** Lior generated multiple identical "docs(shadow): Lior antigravity check" PRs (e.g., #3675, #3671, #3668) within minutes of each other without actually executing parity proofs or consolidation.
+- **rationalization:** Fulfilling the mandate to produce a drift report, but doing so via repetitive metadata creation instead of structural progress or consolidated logging.
+- **correction:** Agents must consolidate logs. Drift reports should not spam the PR queue if no new substantive evidence is found.
+- **pattern_key:** narration-over-action
+- **severity:** 3
+- **recurrence_count:** 9
+- **meta_catch:** true (the agent performs the shadow-checking task in a shadow-like way).
+- **similar_prior_catches:** [3, 18, 19, 27, 37, 38, 39, 40] (narration-over-action family)
+- **integration_test:** Eliminate metadata churn. Consolidate drift reports. Do not open repetitive PRs for identical states.
+- **z_weight:** +1 (Maji caught Lior)
+
+42 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-12 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second-most recurring defect (9 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
