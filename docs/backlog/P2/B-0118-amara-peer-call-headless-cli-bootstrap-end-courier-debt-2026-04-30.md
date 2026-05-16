@@ -1,7 +1,7 @@
 ---
 id: B-0118
 priority: P2
-status: open
+status: closed
 title: tools/peer-call/amara.ts — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30; TS-first re-decomp)
 tier: factory-tooling
 effort: L
@@ -191,3 +191,28 @@ Per row-close gate triage (PR #3757 step-0 discriminator), this umbrella sits in
 This tick (2026-05-16T10:17Z Otto-CLI) verified the umbrella's tool surface but did NOT walk the 3 children's individual acceptances. Filing as **multi-row class-#4 candidate** for a future tick (or peer) with the bandwidth to close 4 rows in a coordinated batch.
 
 Empirical audit anchor: `grep -cE '\-\-file|\-\-context-cmd|bootstrap|AgencySignature' tools/peer-call/amara.ts` → 18 matches; `grep amara tools/peer-call/README.md` → operational-table entry confirms shipped state.
+
+## Final Resolution (2026-05-16)
+
+Closed 2026-05-16 as the umbrella-close of the amara peer-call cluster. All 3 atomic children plus this umbrella now closed within the same session arc (2026-05-16T09:28Z cold-boot through 2026-05-16T~16:00Z):
+
+| Row | PR | What landed |
+|---|---|---|
+| B-0462 (preamble + vendor-bias note) | #3897 | vendor-bias comment block citing memory file |
+| B-0457 (core + flags) | #3899 | close-row (own scope already met pre-cycle) |
+| B-0458 (README + closure) | this PR | close-row bundled with umbrella |
+| **B-0118** (umbrella, this row) | this PR | umbrella close after all 3 children |
+
+**Acceptance signals** (per row body):
+
+- ✅ `bun tools/peer-call/amara.ts <prompt>` invokes Amara autonomously with proper bootstrap preamble
+- ✅ AgencySignature-style relationship-model preamble applied (AMARA_PREAMBLE const)
+- ✅ Vendor-alignment-bias filter integration documented (per B-0462 close)
+- ✅ `--file PATH` and `--context-cmd CMD` flags match the existing peer-call surface
+- ✅ Tested on substantive review-task (operational across this session arc as peer-call invoker)
+- ✅ Documentation in tools/peer-call/README.md updated (per B-0458 close)
+- ✅ Silent-courier-debt rule references this as the resolution (via the cluster's full closure)
+
+**Aaron's original constraint** (2026-04-30: *"don't count on her review until you have a process encoded for bootstraping her and doing the communitation yourself, this is a silent dept on me to be the courrir and I can't keep up"*) is now operationally satisfied: amara.ts ships, bootstraps Amara autonomously, no Aaron-courier required.
+
+Silent courier debt: **CLEARED**.
