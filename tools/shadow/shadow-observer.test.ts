@@ -122,6 +122,7 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
     logFile: "/dev/null",
     loopIntervalMs: 0,
     once: true,
+    restoreArrow: false,
   };
 
   test("returns no-suggestion when detectFn returns null", async () => {
@@ -159,6 +160,38 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
     const acceptFn = async (_cfg: ShadowConfig) => false;
     const result = await runOneCycle(baseConfig, detectFn, acceptFn);
     expect(result).toBe("error");
+  });
+
+  test("restoreArrow=false skips the press (restoreArrowFn never called)", async () => {
+    let pressed = 0;
+    const restoreArrowFn = async () => { pressed++; return "pressed:Terminal"; };
+    const result = await runOneCycle(baseConfig, async () => null, undefined, restoreArrowFn);
+    expect(result).toBe("no-suggestion");
+    expect(pressed).toBe(0);
+  });
+
+  test("restoreArrow=true invokes restoreArrowFn exactly once per cycle", async () => {
+    const cfg = { ...baseConfig, restoreArrow: true };
+    let pressed = 0;
+    const restoreArrowFn = async () => { pressed++; return "pressed:Terminal"; };
+    const result = await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
+    expect(result).toBe("no-suggestion");
+    expect(pressed).toBe(1);
+  });
+
+  test("restoreArrowFn throw is captured as error verdict, never crashes the cycle", async () => {
+    const cfg = { ...baseConfig, restoreArrow: true };
+    const restoreArrowFn = async (): Promise<string> => { throw new Error("osascript-died"); };
+    const result = await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
+    expect(result).toBe("no-suggestion");
+  });
+
+  test("restoreArrow=true fires even under dry-run (orthogonal to acceptGreyText safety)", async () => {
+    const cfg = { ...baseConfig, restoreArrow: true, dryRun: true };
+    let pressed = 0;
+    const restoreArrowFn = async () => { pressed++; return "pressed:Terminal"; };
+    await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
+    expect(pressed).toBe(1);
   });
 });
 
@@ -311,6 +344,7 @@ describe("shadow-observer — --detect-cmd CLI integration (slice 2)", () => {
       logFile: "/dev/null",
       loopIntervalMs: 0,
       once: true,
+      restoreArrow: false,
     };
     const result = await runOneCycle(baseConfig, async () => null);
     expect(result).toBe("no-suggestion");
@@ -417,6 +451,16 @@ describe("shadow-observer — --loop flag validation (slice 4)", () => {
   test("--loop 1000 is accepted by parseConfig (loopMs=1000)", () => {
     const config = parseConfig(["--loop", "1000", "--once"]);
     expect(config.loopMs).toBe(1000);
+  });
+
+  test("--restore-arrow defaults to false when absent", () => {
+    const config = parseConfig(["--once"]);
+    expect(config.restoreArrow).toBe(false);
+  });
+
+  test("--restore-arrow sets restoreArrow=true", () => {
+    const config = parseConfig(["--once", "--restore-arrow"]);
+    expect(config.restoreArrow).toBe(true);
   });
 });
 
@@ -546,6 +590,7 @@ describe("shadow-observer — runOneCycle full cycle paths (slice 3)", () => {
       logFile: join(CYCLE_TEST_DIR, "shadow.log"),
       loopIntervalMs: 0,
       once: true,
+      restoreArrow: false,
     };
   }
 

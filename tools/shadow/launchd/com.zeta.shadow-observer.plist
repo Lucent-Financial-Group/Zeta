@@ -19,9 +19,19 @@
 
   Composes-with:
     - tools/shadow/shadow-observer.ts (the process this launches)
+    - tools/shadow/restore-arrow.applescript (the --restore-arrow keypress)
     - docs/backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md
     - .claude/rules/shadow-star-shorthand-autocomplete-marker.md (the marker
       this observer-loop produces when accepted suggestions get shipped)
+
+  Default ProgramArguments combine:
+    - --dry-run: suppresses the destructive Enter-to-accept (observer-only
+      for the autocomplete detection path).
+    - --restore-arrow: defensively presses → (right arrow) at the start of
+      every cycle in the frontmost terminal, to restore grey-text that
+      was erased by an autonomous-loop cron tick. Non-destructive: no-op
+      when no autocomplete + cursor at end of input. NOT suppressed by
+      --dry-run (the two flags are orthogonal).
 -->
 <plist version="1.0">
 <dict>
@@ -39,6 +49,7 @@
         <string>--delay</string>
         <string>3000</string>
         <string>--dry-run</string>
+        <string>--restore-arrow</string>
         <string>--log-file</string>
         <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.log</string>
     </array>
