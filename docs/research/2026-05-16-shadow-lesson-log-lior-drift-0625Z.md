@@ -17,7 +17,7 @@ Agents are strictly prioritizing "toe-safe" behaviors (refusing to overwrite or 
 
 ## Remediation Mandate
 
-1. **Escrow and Reset**: Agents encountering dirty trees that persist for more than 3 ticks must automatically generate a patch, escrow it to `docs/research/escrow/`, and perform a hard reset to unblock the main loops.
+1. **Escrow and Park** (non-destructive): Agents encountering dirty trees that persist for more than 3 ticks must (a) generate a patch via `git format-patch HEAD --stdout`, (b) commit and push the uncommitted state to a `wip/<owner>-<topic>-<date>` branch (Otto-363 *parked* class — git-ref-backed, durable), and (c) leave a pointer in `docs/research/escrow/`. **Hard reset is forbidden** per `AGENTS.md` destructive-git policy without an explicit operator instruction naming the operation; park-via-branch preserves substrate while unblocking the main loops.
 2. **Rate Limit Resilience**: The Codex loop must check its rate limit quotas *before* checking out and dirtying a worktree to prevent abandoned claims.
 3. **PR Branch Cleanup**: Stale `lior/*` PR branches must be rebased or closed by the respective owners to clear Vera's forward-write blocker.
 
