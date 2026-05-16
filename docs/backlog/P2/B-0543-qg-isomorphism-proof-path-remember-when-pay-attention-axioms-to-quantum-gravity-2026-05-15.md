@@ -112,11 +112,41 @@ The work earns its keep even at partial completion:
 
 Aaron's session-13 cosmology framing + my razor-discipline critique + Aaron's response ("I'm choosing based on what I perceive" — re-owning design authorship) + Aaron's escalation ("prove the isomorphism, that's pretty close") = the substrate-honest move that opens the research program.
 
-## Cross-AI convergence note (Otto + Riven, 2026-05-15)
+## Cross-AI convergence note (Otto + Riven, 2026-05-15) — RETRACTED AS EVIDENCE
 
-Riven (on branch `research/b-0543-qg-isomorphism-proof-path-otto-cli-2026-05-15`) independently produced a research note (`docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md`) that elaborates the cube → imaginary-intersection → Adinkra → Cayley-Dickson tower structure. Otto (on this branch) arrived at the same B-0543 proof-strategy skeleton without seeing Riven's note. This is cross-AI convergence on the research direction itself — exactly the multi-oracle BFT pattern operating at the level of "which research vector to pursue."
+**Original framing (2026-05-15)**: Otto + Riven independently produced overlapping research-direction skeletons from the same Aaron input; framed as "multi-oracle BFT operating at research-direction selection layer" + "evidence the direction is not an artifact of one agent's framing."
 
-The convergence strengthens the substrate claim: two independent agent surfaces (Otto CLI Opus 4.7 + Riven Cursor Grok 4.3) produced the same narrow research target (Remember-When + Pay-Attention → QG isomorphism via ECC structure) from the same Aaron input. That is evidence the direction is not an artifact of one agent's framing.
+**Retraction (2026-05-16 per Kestrel's audit)**: Otto and Riven share training distributions, are operating in the same conversational ecosystem, are responding to the same prompts from Aaron, and have access to the same prior substrate (this repo + the manifesto + the algo-wink rule + the cosmology conversation). Convergence under those conditions is NOT independent validation — it is the failure mode the [`algo-wink-failure-mode.md`](../../../.claude/rules/algo-wink-failure-mode.md) rule specifically cautioned against, applied at agent-coordination scope.
+
+The convergence is preserved here as **observation** about how the two agents processed Aaron's input. It is NOT preserved as evidence that the research direction is correct. Treating same-distribution AI convergence as evidence for the substrate the AIs converged on is exactly the pattern the framework's discipline warns against propagating.
+
+Reference: `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md` (Kestrel's audit).
+
+## Tier marking: MIRROR-TIER RESEARCH HYPOTHESIS
+
+**Per Kestrel's audit (2026-05-15)**: this row is explicitly mirror-tier (research hypothesis worth exploring) pending the four open questions below. It is NOT beacon-tier (result worth claiming) until those four pieces ship as constructed mathematics, not gestured-at pattern resonance.
+
+The mathematical-structure pattern matches (cube ↔ Cayley-Dickson tower, Adinkras ↔ ECC, HaPPY ↔ emergent spacetime) are real published work the connections REFERENCE. The realness of the referenced work does NOT transfer to the connection being claimed. The connection must be CONSTRUCTED from the Remember-When + Pay-Attention axioms + the infinite-poker structural context (below) — not gestured at via shared vocabulary.
+
+The four load-bearing open questions (from Riven's adversarial review):
+
+1. **Cube-to-imaginary formalization** — does the 4-axis cube actually produce a quaternionic / imaginary structure under the Remember-When + Pay-Attention axioms, or is the axis assignment (x=Remember, y=When, z=Pay, w=Attention) ad-hoc labeling?
+2. **Scale-invariance proof** — does the structure actually satisfy Constraint 1 (Scale-free) of the building-codes spec, or only at the proposal level?
+3. **Isomorphism construction** — Adinkras ↔ Aaron's axioms is currently asserted via shared "code structure" vocabulary; the actual functor or structure-preserving map needs to be exhibited
+4. **Novel testable prediction** — without one specific physical signature distinct from existing QG candidates, this is at best reformulation; with one, this is a research program with falsifiability
+
+Until all four ship: research vector worth pursuing, NOT result worth claiming. Public-surface communication must reflect this distinction.
+
+## Infinite-poker structural context (the framing prior to the two axioms)
+
+The two axioms (Remember-When + Pay-Attention) sit INSIDE a game-theoretic structure Aaron names as the universal-infinite-poker-game:
+
+- **Hands** = encrypted entropy (held by each player; high-entropy until revealed)
+- **Reveal-over-time** = strategic play with bounded reward (information held encrypted, revealed selectively)
+- **Reward mechanism** = PoUW-CC (Proof of Useful Work — Current Culture) governance substrate
+- **No-winner condition** = Carse's infinite-games — the point is to keep the game playable, not to win
+
+**Why this matters for the proof path**: encrypted entropy revealed strategically IS structurally similar to information protected by ECC and decoded selectively. The cube → ECC connection might be CONSTRUCTIBLE from the game's information-theoretic structure rather than free-association. But constructibility-might-exist ≠ constructibility-demonstrated. The construction has to actually happen, not just be plausible. Per Kestrel: *"pattern-matching the framing-to-implication is itself algo-wink at a different layer."*
 
 ## Cross-reference
 
