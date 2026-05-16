@@ -308,8 +308,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
 - [x] **[B-0504](backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md)** B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags
 - [x] **[B-0505](backlog/P1/B-0505-b0442-slice5c-docs-autonomous-loop-acceptance-close-2026-05-14.md)** B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close
-- [ ] **[B-0507](backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md)** B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)
-- [ ] **[B-0508](backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md)** B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/
+- [x] **[B-0507](backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md)** B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)
+- [x] **[B-0508](backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md)** B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/
 - [ ] **[B-0509](backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md)** B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json
 - [ ] **[B-0510](backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md)** B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)
 - [ ] **[B-0511](backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md)** B-0448 slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation
@@ -593,6 +593,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0547](backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md)** Intelligent compiler — represent antigen-spread / multi-oracle / clearing primitives as recursive HKT in F# fork based on Clifford algebra; compose with Recursive Type Providers + Roslyn Source Generators + LINQ for C#
 - [ ] **[B-0548](backlog/P2/B-0548-qg-isomorphism-step-1-5-construct-strength-and-a-lifting-2026-05-16.md)** QG isomorphism Step 1.5 — Construct strength θ:M(Ω)→Ω and A-lifting Ã:Zeta→Zeta for type-correct M/A coherence laws
 - [ ] **[B-0551](backlog/P2/B-0551-qg-isomorphism-step-2-infinite-game-topos-qecc-structure-2026-05-16.md)** QG isomorphism step 2 — formalize infinite-game extension topos and QECC algebraic structure
+- [ ] **[B-0562](backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md)** QG isomorphism Step 2 — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC structure
 
 ## P3 — convenience / deferred
 

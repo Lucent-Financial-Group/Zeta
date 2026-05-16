@@ -17,8 +17,9 @@ last_updated: 2026-05-16
 
 Step 2 of the 4-step proof strategy from B-0543: show that the infinite-game extension (Remember/When + Pay/Attention cube + Adinkra layer + Cayley-Dickson tower) produces a topos with QEC algebraic structure (HaPPY-like).
 
-Per the proof strategy:
+Per the proof strategy (quoting item 2 of 4 from B-0543; numbering preserved):
 
+<!-- markdownlint-disable-next-line MD029 -->
 > 2. **Show the infinite-game extension produces a topos that has the algebraic structure of a quantum-error-correcting code** (HaPPY-like). The game-theoretic structure of "multiple players reconstructing shared state under noise" is structurally identical to "boundary observers reconstructing bulk operators under noise."
 
 This is the bridge from the categorical foundation (Step 1) to quantum gravity. Without this step, the cosmology remains a mathematical curiosity without connection to known physics.
