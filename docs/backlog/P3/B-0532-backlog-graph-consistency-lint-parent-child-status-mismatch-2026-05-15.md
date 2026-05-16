@@ -6,7 +6,7 @@ title: "Backlog-graph consistency lint — flag parent `status: closed` while de
 tier: factory-infrastructure
 effort: S
 created: 2026-05-15
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 depends_on: []
 composes_with: [B-0442, B-0503, B-0504, B-0505]
 tags: [backlog, lint, mechanization, multi-agent, drift-detection]
