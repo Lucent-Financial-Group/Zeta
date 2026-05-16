@@ -3,11 +3,11 @@
   "title": "Cloud Routine Schedule",
   "description": "Configuration for an Anthropic Cloud Routine",
   "type": "object",
-  "required": ["taskId", "trigger"],
+  "required": ["trigger"],
   "properties": {
     "taskId": {
       "type": "string",
-      "description": "The unique identifier of the routine, matching the directory name and SKILL.md name"
+      "description": "Optional; the unique identifier of the routine. When present, MUST match the containing directory name (install.ts derives the canonical taskId from the directory at tools/routines/install.ts ~line 131-181). Listed here for self-documentation and for cloud-side tooling that consumes cloud-schedule.json without a filesystem layout; if omitted, the directory name is authoritative."
     },
     "trigger": {
       "type": "object",
@@ -38,7 +38,7 @@
               "items": {
                 "type": "string"
               },
-              "description": "List of GitHub repositories to attach the trigger to (e.g. Lucent-Financial-Group/Zeta)"
+              "description": "Trigger-scope: GitHub repositories whose webhook events fire this routine (e.g. Lucent-Financial-Group/Zeta). Distinct from the top-level `repos` field which controls runtime-environment repo access."
             }
           },
           "required": ["type", "event", "repos"]
@@ -58,7 +58,7 @@
       "items": {
         "type": "string"
       },
-      "description": "List of repositories accessible to the routine environment"
+      "description": "Runtime-scope: GitHub repositories the routine's cloud environment is granted access to (read/write per cloud-side ACL). Distinct from the trigger-scope `trigger.repos` (only valid when `trigger.type == \"github_event\"`), which selects which repos' webhooks fire the routine."
     },
     "connectors": {
       "type": "array",
