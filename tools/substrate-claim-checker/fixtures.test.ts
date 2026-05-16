@@ -13,6 +13,7 @@
 import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
 import { checkFile as checkCounts } from "./check-counts.ts";
+import { checkFile as checkExistence } from "./check-existence.ts";
 
 const fixtures = join(import.meta.dir, "fixtures");
 
@@ -33,5 +34,24 @@ describe("eval-set fixtures / count drift", () => {
     expect(finding.actualCount).toBe(15);
     expect(finding.claim).toContain("drift instances");
     expect(finding.claimIsMinimum).toBe(false);
+  });
+});
+
+describe("eval-set fixtures / existence drift", () => {
+  test("existence-drift-missing-doc.md — backtick-quoted path that doesn't exist anywhere is detected", () => {
+    const result = checkExistence(join(fixtures, "existence-drift-missing-doc.md"));
+    expect(result.ok).toBe(true);
+    // Same PR #3611 discipline applied to existence-drift: exact count
+    // and pin the body claim's line so a regression in body-claim
+    // detection cannot be masked by an HTML-comment match. The fixture
+    // path is intentionally synthetic (won't be created accidentally),
+    // so the test stays stable across substrate evolution.
+    expect(result.findings.length).toBe(1);
+    const finding = result.findings[0]!;
+    expect(finding.line).toBe(24);
+    expect(finding.pathClaim).toBe(
+      "docs/_fixture_existence_drift_target_b0170_2026_05_15.md",
+    );
+    expect(finding.severity).toBe("drift");
   });
 });
