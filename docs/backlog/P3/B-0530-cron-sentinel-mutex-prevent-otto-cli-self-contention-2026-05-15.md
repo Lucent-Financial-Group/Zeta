@@ -130,3 +130,24 @@ Cron-sentinel mutex is the substrate-honest first move because:
 - Bus envelopes: `44aaf799` (peer-Otto 0414Z) + `111342b2` (mine 0545Z) + `6de98fac` (mine 0607Z) + `720a2b49` (mine 0611Z root cause)
 - Tick shards: `0414Z.md`, `0524Z.md`, `0615Z.md` (root cause landed in PR #3370)
 - PR #3370 — the canonical landing of the root cause analysis
+
+## Resolution (2026-05-16)
+
+Mechanization shipped 2026-05-15 via **PR #3375** (`feat(b-0530): cron-sentinel-mutex — detect concurrent Otto-CLI sessions`, merged).
+
+The shipped tool [`tools/orchestrator-checks/cron-sentinel-mutex.ts`](../../../tools/orchestrator-checks/cron-sentinel-mutex.ts) implements every acceptance criterion:
+
+| Acceptance criterion | Status |
+|---|---|
+| New `tools/orchestrator-checks/cron-sentinel-mutex.ts` | shipped |
+| Detects peer claude-code processes via `pgrep -fl` | shipped (uses `pgrep -afl`) |
+| Bus-publish `shadow-catch` topic on detection | shipped (per `docs/AUTONOMOUS-LOOP-PER-TICK.md` §1 integration) |
+| Exit code 0 in detect-mode; structured exit on peer-detected | shipped (`Math.min(1 + peerCount, 250)`; 251 = pgrep error) |
+| Composes-with existing `<<autonomous-loop>>` substrate | shipped — invoked at top of every per-tick discipline cycle |
+| Documented in `claim-acquire-before-worktree-work.md` | shipped via PR #3377 (Borrow-on-existing pattern section) |
+
+**Live verification this tick (2026-05-16T04:28Z)**: ran the tool on Otto-CLI cold-boot; correctly reported `peerDetected: true` with PIDs 2706 + 2710 (Claude Desktop processes). The peer-handling clause in [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../AUTONOMOUS-LOOP-PER-TICK.md) §1 routed this tick away from `git worktree add` and into the borrow-on-existing-branch pattern — zero contention failures across 3 consecutive ticks of this session.
+
+Non-goals remain non-goals (no end-to-end serialization; no non-Otto-CLI detection; no interactive-vs-autonomous distinction).
+
+Row left open from 2026-05-15 to 2026-05-16 as substrate drift — same pattern as B-0506 (closed in PR #3733 this same session).
