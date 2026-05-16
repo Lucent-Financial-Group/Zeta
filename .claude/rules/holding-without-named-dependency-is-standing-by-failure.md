@@ -215,14 +215,25 @@ This bypasses local-ref contamination at push time because:
 
 1. `git branch <name> <sha>` creates a FRESH named ref anchored to the
    exact SHA — peer-agent `git switch -c <other-name>` or `git checkout
-   -b` operations don't advance an already-named ref pointing at a
-   different SHA
-2. `git push origin <src>:<dst>` with explicit-refspec source reads the
-   named ref by hash, not by name resolution that might race with peer
-   operations on shared `.git/refs/heads/`
-3. The commit-SHA is the durable handle — even if local branches get
-   poisoned with peer's commits, the SHA still resolves to your work via
-   the object store (not the ref namespace)
+   -b` operations don't write to an already-named ref pointing at a
+   different SHA, **provided the name is unique to your session**.
+   This — the fresh unique name — is what the pattern actually protects
+   against; peers don't know the ref name, so they can't repoint it.
+2. `git push origin <src>:<dst>` does NOT inherently bypass ref-name
+   resolution when `<src>` is a branch name. Per `git-push(1)`, `<src>`
+   is "an arbitrary SHA-1 expression" — Git resolves it through the
+   local ref namespace (`.git/refs/heads/<src>`) before updating the
+   remote, the same as `git push -u origin <branch>` does. The explicit
+   refspec form's only advantage here is removing the implicit
+   current-branch dependency; the race-resistance comes entirely from
+   bullet 1's fresh-unique-name property, not from the refspec syntax.
+3. To push entirely by SHA and skip local ref resolution at push time,
+   use the literal SHA as `<src>`: `git push origin <commit-sha>:<dst>`
+   (or, equivalently, `git push origin $(git rev-parse <name>):<dst>`).
+   Git pushes the object directly without consulting `.git/refs/heads/`.
+   The fresh-unique-name pattern (bullet 1) is usually sufficient and
+   more readable, but the literal-SHA form is the strongest defense
+   when peer contention on local refs is severe.
 
 Note on what `git push -u origin <branch>` actually does: it pushes the
 named local ref `refs/heads/<branch>` (NOT the current HEAD, unless
