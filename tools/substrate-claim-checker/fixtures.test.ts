@@ -70,6 +70,12 @@ describe("eval-set fixtures / path-form drift", () => {
     // synthetic file.
     expect(result.findings.length).toBe(1);
     const finding = result.findings[0]!;
+    // Pin to body-claim line for the synthetic exemplar.
+    // Historical anchor: verify-then-claim memo instance #15 / PR #1256
+    // (path-form drift: fully-qualified vs bare paths in adjacent ADR citations,
+    // path-form sub-class #6 of the 7-class list). This fixture covers the
+    // sub-class via a synthetic exemplar; instance #15's literal substance
+    // is captured in a follow-on fixture (B-0170.4.1).
     expect(finding.line).toBe(28);
     expect(finding.resolvedPath).toBe(
       "tools/substrate-claim-checker/check-counts.ts",
