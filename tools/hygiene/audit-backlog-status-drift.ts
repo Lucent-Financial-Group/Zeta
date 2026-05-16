@@ -194,7 +194,7 @@ export function enumerateOpenRows(backlogDir: string = "docs/backlog"): BacklogR
             // Per B-0557 slice 2 (Copilot P1 on PR #3758): don't let one
             // unreadable directory abort the whole audit. Warn and continue.
             process.stderr.write(
-                `audit-backlog-status-drift: unable to read directory ${dir}: ${(err as Error).message}\n`,
+                `audit-backlog-status-drift: unable to read directory ${dir}: ${(err instanceof Error ? err.message : String(err))}\n`,
             );
             continue;
         }
@@ -208,7 +208,7 @@ export function enumerateOpenRows(backlogDir: string = "docs/backlog"): BacklogR
                 // Per B-0557 slice 2: don't let one unreadable row file abort
                 // the whole audit. Warn and skip the row.
                 process.stderr.write(
-                    `audit-backlog-status-drift: unable to read ${path}: ${(err as Error).message}\n`,
+                    `audit-backlog-status-drift: unable to read ${path}: ${(err instanceof Error ? err.message : String(err))}\n`,
                 );
                 continue;
             }
