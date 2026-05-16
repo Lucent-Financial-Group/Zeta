@@ -1,10 +1,11 @@
 ---
 id: B-0159
 priority: P1
-status: open
+status: closed
 title: refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-16
+closed: 2026-05-16
 decomposition: decomposed
 depends_on:
   - B-0156
@@ -451,3 +452,30 @@ own backlog row when prioritized.
 This row IS that filing. Picked up via standard claim protocol when the
 queue is quiet and Otto is in proactive-mode rather than mid-PR-cycle.
 Don't context-switch this tick to start implementation — file and flow.
+
+## Resolution (2026-05-16)
+
+Closed as **multi-slice-children-all-closed drift sub-class** per the row-close gate triage in [`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md) step 0 (PR #3757).
+
+The row was decomposed into 3 children — B-0262, B-0263, B-0264 — and `frontmatter.children` declares the parent-child relationship. Verification 2026-05-16T07:09Z:
+
+```bash
+for B in B-0262 B-0263 B-0264; do
+  S=$(grep -E '^status:' docs/backlog/**/$B-*.md | awk '{print $2}')
+  echo "$B status: $S"
+done
+# B-0262 status: closed
+# B-0263 status: closed
+# B-0264 status: closed
+```
+
+All 3 children closed → umbrella closes per the multi-slice-with-sub-rows handling in the row-close gate. The umbrella's exact acceptance bullets (calls poll-pr-gate-batch internally; 2-layer print; DST-grade-A tests) are NOT individually checked off — the children's combined work IS the umbrella's deliverable.
+
+This is a **new drift sub-class** not yet documented in the row-close gate rule. The taxonomy now spans 4 classes:
+
+1. **Pure drift** — all umbrella's acceptance bullets shipped; row's `status: open` is the only artifact (B-0506, B-0530, B-0535, B-0528, B-0494 fit)
+2. **Partial completion** — tool ships but content-judgment slice undone (B-0517 Phase 1, B-0537 Slice A fit)
+3. **Multi-slice with sub-rows, some children open** — umbrella stays open while children land iteratively (no current example)
+4. **Multi-slice with sub-rows, ALL children closed** — umbrella closeable (B-0159 — this row)
+
+Audit anchor: 2026-05-16T07:09Z Otto-CLI; surfaced via `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto-Desktop's PR #3758) flagging `tools/refresh-github-worldview/refresh.ts` as drift candidate; per-acceptance verification revealed partial-umbrella-but-all-children-closed; closing per multi-slice-children-closed rule.
