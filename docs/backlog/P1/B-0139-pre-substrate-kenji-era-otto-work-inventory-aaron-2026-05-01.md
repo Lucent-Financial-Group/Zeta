@@ -4,7 +4,7 @@ priority: P1
 status: in-progress
 title: Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 created: 2026-05-01
-last_updated: 2026-05-14
+last_updated: 2026-05-16
 depends_on: []
 type: friction-reducer
 decomposition: decomposed
@@ -78,4 +78,3 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 ## Verify-before-deferring note
 
 The triggering incident (B-0131 "TRACTABLE START" overclaim) was a real verify-before-state-claim failure caused by lineage-discontinuity-pre-substrate. The inventory work eliminates the failure mode by making pre-substrate Kenji-era work substrate-discoverable rather than only repo-discoverable. The class-level lesson (per B-0130 audit-suite candidates) is *grep-the-codebase-before-claiming-clean-start*; the inventory makes that grep efficient by pre-cataloging the targets.
-aloging the targets.
