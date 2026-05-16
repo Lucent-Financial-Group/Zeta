@@ -96,11 +96,43 @@ The full structure is a topos equipped with both the memory monad and the attent
 Zeta_{RA} = (Zeta, M, A)
 ```
 
-With coherence conditions:
+**Type-correctness of the coherence conditions** — substrate-honest reformulation
+(addresses [PR #3614](https://github.com/Lucent-Financial-Group/Zeta/pull/3614)
+Codex P1 finding: the original laws were not well-typed under the stated signatures
+`M : Zeta → Zeta` and `A : Ω → Ω`):
 
-1. **Memory of attention**: `M(A(p)) = A(M(p))` (memory preserves attention structure)
-2. **Attention to memory**: `A(μ_X) = μ_{A(X)} ∘ A(M(A(X)))` (attention commutes with memory flattening)
-3. **Unit coherence**: `A(η_X) = η_{A(X)}` (attention preserves embeddings)
+Under the stated signatures, `A(μ_X)` would apply `A` to a morphism (but `A`
+acts on `Ω` only), and `A(M(p))` would require `M(p) ∈ Ω` (but `M(p)` lives in
+`M(Ω)` under `M`'s functor-action on the morphism `p : 1 → Ω`). The originally
+proposed laws need either (a) a lifting of `A` to an endofunctor on `Zeta`, or
+(b) explicit strength data on `M`, or (c) restriction to propositional content.
+
+The three resolution paths and their costs:
+
+| Path | Construction | Cost | Status |
+|---|---|---|---|
+| (a) Lawvere-Tierney-style lifting | Define `Ã : Zeta → Zeta` induced by `A` through the subobject classifier; restate laws using `Ã`, not `A` | Standard for closure operators; needs adaptation since `A` is *not* a closure operator (no `p ≤ A(p)`) | Open — research-grade |
+| (b) Strength data on `M` | Define `θ : M(Ω) → Ω` ("Heyting strength"); restate using `θ` to mediate `M`/`Ω` interactions | Standard for monads on toposes when one wants Eilenberg-Moore semantics | Open — needs explicit `θ` construction |
+| (c) Restrict to propositional content | Phrase laws only for `p : X → Ω` (subobject-classifier morphisms); drop laws involving `μ_X, η_X` directly | Loses some of the originally-intended structure | Provisional Law 1' below |
+
+**Provisional Law 1' (type-correct under path (c))** — for any `X` in `Zeta`
+and any `p : X → Ω` (subobject of `X`):
+
+```text
+A_*(p) := A ∘ p                  (the A-modalized subobject; type X → Ω)
+M_*(p) := θ ∘ M(p) : M(X) → Ω    (assumes strength θ from path (b))
+```
+
+Memory-attention coherence (provisional): `A_*(M_*(p)) = M_*(A_*(p))` —
+i.e., `A ∘ θ ∘ M(p) = θ ∘ M(A ∘ p)` as morphisms `M(X) → Ω`. Both sides are
+type-correct given a chosen `θ`. This law expresses that **attention to a
+memory-image is the memory-image of attention** at the level of subobjects.
+
+**Laws 2 (μ-coherence) and 3 (η-coherence) are deferred** to Step 1.5 below;
+their type-correct formulation requires path (a) — defining `Ã` as a lifting
+of `A` to `Zeta` — which is itself open research. Until that lifting is
+constructed, the original `A(μ_X)` and `A(η_X)` expressions are formal
+placeholders, not mechanically-checkable laws.
 
 ### Categorical semantics of the infinite poker game
 
@@ -114,9 +146,26 @@ With this structure in place, we can model the infinite poker game:
 
 The **no-win condition** (Carse's infinite game) is modeled by the requirement that no player can collapse the subobject classifier to a single truth value — `A` must always have non-trivial action, preserving the game's openness.
 
-### Next steps (Steps 2-4)
+### Next steps (Steps 1.5, 2-4)
 
-With Step 1 complete, the next steps are:
+Step 1 is **partially complete**: the primitive `M` and `A` are defined; the
+combined-structure coherence laws are reformulated provisionally for the
+propositional case (Law 1') and deferred for `μ`/`η` coherence (Laws 2, 3).
+
+1.5. **Construct the `A`-lifting `Ã : Zeta → Zeta` and the strength `θ : M(Ω) → Ω`**
+   so Laws 2 and 3 can be stated and proven type-correctly. Possible approaches:
+   - Investigate whether `A`'s observer-relative non-monotonicity rules out a
+     Lawvere-Tierney-style lifting entirely (the standard construction requires
+     `A` to be at least a *closure operator*, which we've explicitly denied; an
+     alternative lifting may exist but is not in the standard toolbox).
+   - Define `θ` via the Eilenberg-Moore algebra structure on `Ω` (does `Ω`
+     carry a natural `M`-algebra structure? if `M` preserves the subobject
+     classifier in a suitable sense, yes; this is the "internal modal logic"
+     pattern for monads on toposes).
+   - Alternatively, weaken the claim: the combined structure is a topos with
+     a monad `M` and an *Ω-internal* modal operator `A`, where coherence is
+     only required at the propositional level (Law 1'). The infinite-poker
+     semantics may not actually need Laws 2 and 3.
 
 2. **Show the infinite-game extension produces a topos with QEC algebraic structure** (HaPPY-like)
 3. **Show the emergent geometry satisfies Einstein equations in low-energy limit**

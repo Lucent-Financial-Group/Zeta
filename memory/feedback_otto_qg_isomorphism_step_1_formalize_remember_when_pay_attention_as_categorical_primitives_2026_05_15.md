@@ -47,7 +47,7 @@ created: 2026-05-15
 
 **Combined structure `Zeta_{RA}`**:
 - Topos equipped with both `M` and `A`
-- Coherence conditions: `M(A(p)) = A(M(p))`, `A(μ_X) = μ_{A(X)} ∘ A(M(A(X)))`, `A(η_X) = η_{A(X)}`
+- Coherence conditions: provisional only — under stated signatures (`M : Zeta → Zeta`, `A : Ω → Ω`), the originally-proposed laws `M(A(p)) = A(M(p))`, `A(μ_X) = μ_{A(X)} ∘ A(M(A(X)))`, `A(η_X) = η_{A(X)}` are **not well-typed** (Codex P1 on PR #3614). Step 1.5 reformulation: Law 1' restated propositionally as `A ∘ θ ∘ M(p) = θ ∘ M(A ∘ p)` (requires strength `θ : M(Ω) → Ω`); Laws 2 and 3 deferred until an `A`-lifting `Ã : Zeta → Zeta` is constructed (open research; complicated by `A` *not* being a closure operator).
 
 ### Why this matters
 
@@ -64,6 +64,7 @@ This formalization:
 2. How does the attention modal operator `A` interact with the subobject classifier's Heyting algebra structure?
 3. Can we derive the Clifford algebra structure from this categorical foundation?
 4. What is the topos-theoretic analog of the no-cloning theorem?
+5. **Step 1.5 (new, from PR #3614 Codex feedback)**: Construct the strength `θ : M(Ω) → Ω` (path (b) — needed for Law 1') and the `A`-lifting `Ã : Zeta → Zeta` (path (a) — needed for Laws 2, 3). The `Ã` construction is complicated by `A` *not* being a closure operator, so the standard Lawvere-Tierney lifting doesn't apply directly. Alternatives: weaken to propositional-only coherence (Law 1' only), or find a non-standard lifting that respects the observer-relative non-monotonicity.
 
 ### Next steps
 
