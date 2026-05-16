@@ -35,7 +35,13 @@ Aaron's clarification (2026-05-15):
 
 > *"without that people can get stuck in the death spirall called out by wanting a memtic theory of desire book"*
 
-The reference is to **René Girard's Mimetic Theory of Desire** (Girard 1961, *Mensonge romantique et vérité romanesque* / *Deceit, Desire, and the Novel*; expanded in *Things Hidden Since the Foundation of the World* + *Violence and the Sacred*).
+The reference Aaron specifically named (2026-05-15):
+
+> *"this book specifcally Wanting - The Power of Mimetic Desire in Everyday Life"*
+
+**Luke Burgis, *Wanting: The Power of Mimetic Desire in Everyday Life* (2021)** — the contemporary accessible application of Girard's framework, written for general audience. Burgis applies mimetic theory to careers, relationships, technology, social media, organizational behavior. It's the gateway-literacy text for the substrate-level discipline Aaron is naming.
+
+The deeper source is **René Girard's Mimetic Theory of Desire** (Girard 1961, *Mensonge romantique et vérité romanesque* / *Deceit, Desire, and the Novel*; expanded in *Things Hidden Since the Foundation of the World* + *Violence and the Sacred*). Burgis is Girard-derived but more accessible.
 
 Girard's framework:
 
