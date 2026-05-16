@@ -38,24 +38,35 @@
 //   64  argument error
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 
 /**
- * Detect the repo root via `git rev-parse --show-toplevel`. Falls back to the
- * current working directory if git isn't available or this isn't a git repo.
+ * Detect the repo root. Strategy (in order of preference):
+ *
+ *   1. `git rev-parse --show-toplevel` from cwd — works when invoked from
+ *      anywhere inside a git worktree.
+ *   2. Derive from this file's own location (`import.meta.dir`) — works
+ *      when invoked from outside any git repo (e.g., `cd /tmp && bun
+ *      /path/to/tools/hygiene/audit-backlog-status-drift.ts`). The tool
+ *      lives at `<repo>/tools/hygiene/`, so the repo root is two levels
+ *      up from this file.
  *
  * Invariant: relative-path reads inside this tool resolve against the repo
- * root regardless of where the tool was invoked from. Without this, running
- * the tool from any subdirectory would false-negative every existsSync check.
+ * root regardless of where the tool was invoked from — including from
+ * outside any git repo.
  *
- * Per B-0557 slice 3.
+ * Per B-0557 slice 3 (initial via git rev-parse) + this fix (true
+ * cwd-independence via import.meta.dir fallback).
  */
 export function detectRepoRoot(): string {
     try {
         return execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
     } catch {
-        return process.cwd();
+        // Fallback: this file lives at <repo>/tools/hygiene/<name>.ts;
+        // resolve two levels up to reach the repo root. import.meta.dir is
+        // Bun-native and gives the directory containing THIS module file.
+        return resolve(import.meta.dir, "../..");
     }
 }
 
