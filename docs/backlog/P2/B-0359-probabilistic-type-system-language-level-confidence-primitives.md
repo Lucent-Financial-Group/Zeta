@@ -5,7 +5,7 @@ status: open
 title: "Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)"
 effort: XL
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-16
 depends_on: [B-0358]
 classification: research
 decomposition: decomposing
