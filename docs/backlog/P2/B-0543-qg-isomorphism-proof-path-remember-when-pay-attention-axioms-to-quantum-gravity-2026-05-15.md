@@ -8,7 +8,7 @@ created: 2026-05-15
 ask: Aaron
 effort: XL
 tags: [research, cosmology, quantum-gravity, axiomatization, m-acc, manifesto-derivation, algo-wink-defeat]
-depends_on: []
+depends_on: [B-0544, B-0548, B-0551]
 composes_with: [B-0539, B-0540, B-0541, B-0542]
 last_updated: 2026-05-16
 ---
