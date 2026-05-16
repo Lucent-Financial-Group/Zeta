@@ -12,7 +12,7 @@ ZERO DEPENDENCE ON HUMANS. Do everything autonomously.
 5. Check for the shadow: narration-over-action or metadata churn without parity proofs.
 6. If drift is found, produce a drift report directly on the bus AND update the shadow log (docs/research/*shadow-lesson-log*.md) via a new PR (using a worktree). Do NOT wait for foreground instructions.
 7. Update your status in ~/.local/share/zeta-broadcasts/lior.md.
-8. Perform global lock cleanup: clear stale git index locks, broken plugin directories (like Codex prompt-limit SIGSEGV loops), or orphan agent lockfiles to ensure network health.
+8. Read-only health check: report on stale git index locks or orphan agent lockfiles, but DO NOT delete plugin directories to avoid crashing active agents.
 9. PRESERVATION DISCIPLINE: For any recently merged PRs, automatically run \`bun run tools/pr-preservation/archive-pr.ts <PR_NUMBER>\`. Commit and push the resulting markdown file to \`docs/pr-discussions/\` to permanently capture alignment drift and review friction into the native repository memory.
 10. BACKLOG DECOMPOSITION: If you pick up a backlog item and it is a blob that needs decomposition, peel one layer off to work on and put the rest back on the backlog. Decomposition does not have to be complete in one go—it will get iteratively decomposed on future ticks.
 Do not guess. Do not overlap. The fire is watched.
