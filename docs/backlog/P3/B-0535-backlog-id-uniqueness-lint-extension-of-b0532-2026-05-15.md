@@ -1,12 +1,13 @@
 ---
 id: B-0535
 priority: P3
-status: open
+status: closed
 title: "Backlog ID-uniqueness lint — extension of B-0532 to catch cross-agent B-NNNN collisions"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-15
-last_updated: 2026-05-15
+last_updated: 2026-05-16
+closed: 2026-05-16
 depends_on: []
 composes_with: [B-0532, B-0533]
 tags: [backlog, lint, mechanization, multi-agent, drift-detection, id-allocation]
@@ -86,3 +87,20 @@ Add to the existing backlog-related lint job in `.github/workflows/gate.yml` (or
 - [`.claude/rules/refresh-before-decide.md`](../../../.claude/rules/refresh-before-decide.md) — discipline-layer this lint complements at machine-layer
 - [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) (B-0444 collision empirical anchor)
 - [PR #3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545) (B-0532/B-0533 collision empirical anchor)
+
+## Resolution (2026-05-16)
+
+Mechanization shipped 2026-05-15 via **PR #3565** (`feat(B-0535): wire backlog ID-uniqueness lint to gate.yml`, merged).
+
+The duplicate-ID detection logic was extended into the existing `tools/hygiene/audit-backlog-items.ts` (per the row's skill-router-as-substrate-inventory decision in "Implementation sketch"), and CI is now wired:
+
+| Acceptance | Status |
+|---|---|
+| Walk all `docs/backlog/**/B-NNNN-*.md`; group by ID | shipped — `audit-backlog-items.ts` `--enforce-duplicate-ids` |
+| Hard error on collision | shipped — exit non-zero on duplicate IDs |
+| Wired to `.github/workflows/gate.yml` | shipped — `lint-backlog-id-uniqueness` job (verified by `grep -E 'lint-backlog-id-uniqueness' .github/workflows/gate.yml`) |
+| Composes with B-0532 hard-error slice | shipped — sibling job `--enforce-parent-child-status` adjacent in gate.yml |
+
+Out-of-scope items remain out of scope (auto-suggest next ID; cross-fork coordination; D-NNNN type).
+
+Row left open 2026-05-15 → 2026-05-16 as substrate drift — third drift catch of this session (paired with B-0506 PR #3733 and B-0530 PR #3737). The pattern is recurring enough that it's worth filing a systematic-audit follow-up row to sweep the remaining P3 status-open rows for shipped-but-unclosed work.
