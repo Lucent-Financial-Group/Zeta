@@ -24,10 +24,11 @@ After the substrate-drift-catch infrastructure reached operational closure (~tic
 | Tick 38 | B-0440 (standing-by detector) | partial (2/7 bullets unchecked: launchd integration + proactive claim assignment) |
 | Tick 39 | B-0509 (b0448 slice 3 install.ts) | partial (file from prior slices; `readCloudSchedule` etc. unshipped) |
 | Tick 40 | B-0512 (b0448 slice 6 README 4-layer table) | partial (README from prior; 0 "4-layer" mentions; all 6 bullets unchecked) |
+| Tick 45 | B-0411 (grok.ts persona flag) | partial (file from prior peer-call work; `--persona` flag has zero grep hits) |
 
-**3/3 in Otto-CLI's late-session checks = partial.** Peer Otto-Desktop independently reports ~25% FP rate per PR #3826's tick shard (`B-0173 = FP-3 (2nd example); FP rate climbing to 25%`).
+**4/4 in Otto-CLI's late-session checks = partial (0% genuine drift).** Peer Otto-Desktop independently reports ~25% FP rate per PR #3826's tick shard (`B-0173 = FP-3 (2nd example); FP rate climbing to 25%`).
 
-The numbers diverge because the populations differ — Otto-CLI hit the harder cases later; peer Otto-Desktop hit a different sample. Combined empirical estimate: **~25% of audit-tool candidates are genuine drift; ~75% are partial-vs-drift requiring manual discriminator pass**.
+The numbers diverge because the populations differ — Otto-CLI's late-session sample hit harder multi-slice rows; peer Otto-Desktop sampled a different cohort that includes some genuine drift. **Combined empirical estimate: ~0-25% of audit-tool candidates are genuine drift; ~75-100% are partial-vs-drift requiring manual discriminator pass.** The wide range reflects the sample-size and cohort dependency; both bounds are below the audit tool's raw candidate count, so the discriminator is doing real load-bearing work either way.
 
 ## Why this pattern emerges
 
