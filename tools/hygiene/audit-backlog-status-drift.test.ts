@@ -178,8 +178,10 @@ Add \`tools/scope-target.ts\`.
     });
 
     test("MIXED_BULLET: deliverable BEFORE inline cross-ref token is extracted", () => {
-        // B-0557 slice 4 (Codex P1 on PR #3758): mixed bullets where a path
-        // appears before a cross-ref token should still extract the path.
+        // B-0557 slice 4: mixed bullets where a path appears before a
+        // cross-ref token should still extract the path. The previous behaviour
+        // skipped the WHOLE line when any cross-ref keyword matched, dropping
+        // the deliverable along with the citation.
         const body = `## Acceptance
 
 - Add \`tools/deliverable.ts\` per [B-0123] convention
