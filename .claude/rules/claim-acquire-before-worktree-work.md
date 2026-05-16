@@ -182,9 +182,13 @@ in the opposite direction.
 **Mitigation (works)**:
 
 ```bash
-# Pre-check via git rev-parse — empty/error = name free; SHA = name taken
-git rev-parse <candidate-name> 2>/dev/null && \
+# Pre-check via git show-ref --verify on refs/heads/ — precise local-branch check.
+# Do NOT use `git rev-parse <name>`: it resolves HEAD, tags, and (in some
+# configs) remote-tracking refs as success, producing false positives that
+# trigger needless uniquification.
+if git show-ref --verify --quiet "refs/heads/<candidate-name>"; then
   echo "name taken; uniquify (add -coldboot / -N suffix)"
+fi
 # If taken, uniquify before git switch -c
 git switch -c <name>-coldboot origin/main
 ```
@@ -194,14 +198,27 @@ git switch -c <name>-coldboot origin/main
 When `git switch` is attempted while peer Otto's tracked-WIP modifications
 are in the working tree, the switch refuses (would discard peer's WIP).
 `git reset --hard` (the standard recovery path) would also discard peer's
-WIP. **No clean recovery preserving peer's WIP exists.**
+WIP. **No clean recovery exists that BOTH (a) lands a fresh-target
+worktree AND (b) leaves peer's WIP exactly as observed.** `git switch
+-m/--merge <target>` (per `git switch -h`: "perform a 3-way merge with
+the new branch") is the closest partial recovery — it carries tracked
+local changes onto the target branch, possibly with merge conflicts to
+resolve. The peer's WIP is preserved AS-MIGRATED, not as-observed, and
+conflict resolution can corrupt peer's intent. Use only when (a) the WIP
+shape is well-understood, (b) the migration semantics match the peer's
+expectation, and (c) the post-switch worktree is reserved for the
+borrowing session (so peer's next operation doesn't read a partially-
+merged tree as authoritative).
 
 **Mitigation (works, capacity-limited)**: wait for peer's WIP window to
 close — working tree returns clean. Clean windows appear roughly every
 5-8 min during sustained saturation. Detection via `git status --short`
 returning empty. Strategy is capacity-limited: a fresh-cold-boot session
 that can't find a clean window within its tick budget must abandon the
-attempt.
+attempt. The `git switch -m` partial-recovery path above is acceptable
+under the three conditions stated; default remains "wait for clean
+window" because the migration-not-preservation semantics are easy to
+mistake for true peer-WIP preservation.
 
 ### Sub-case 3 — pack-dir contention hangs `git worktree add` (B-0530 race)
 
