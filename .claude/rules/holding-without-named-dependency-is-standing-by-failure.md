@@ -195,6 +195,61 @@ worked because the edit content was preserved in conversation context;
 without that, the work would have been lost. Conversation-context
 preservation is the only fallback once unstaged edits are destroyed.
 
+**Push-time mitigation — explicit-branch-push** (2026-05-16T16:40Z empirical anchor):
+when a peer agent's `git switch` race has advanced the LOCAL BRANCH REF
+(not just HEAD) to point at peer's commits, the subsequent `git push -u
+origin <branch>` correctly pushes that local ref — but the ref now points
+at peer's commits, not yours. `git push` reads the named local ref by
+design; the failure is upstream of push: peer's operations contaminated
+the local ref between your commit and your push. The safer pattern when
+the commit is already made and reachable by SHA:
+
+```bash
+# Create branch ref pointing at the desired SHA without moving HEAD:
+git branch <new-branch-name> <commit-sha>
+# Explicit-refspec push (no -u, no implicit current-branch):
+git push origin <new-branch-name>:<new-branch-name>
+```
+
+This bypasses local-ref contamination at push time because:
+
+1. `git branch <name> <sha>` creates a FRESH named ref anchored to the
+   exact SHA — peer-agent `git switch -c <other-name>` or `git checkout
+   -b` operations don't write to an already-named ref pointing at a
+   different SHA, **provided the name is unique to your session**.
+   This — the fresh unique name — is what the pattern actually protects
+   against; peers don't know the ref name, so they can't repoint it.
+2. `git push origin <src>:<dst>` does NOT inherently bypass ref-name
+   resolution when `<src>` is a branch name. Per `git-push(1)`, `<src>`
+   is "an arbitrary SHA-1 expression" — Git resolves it through the
+   local ref namespace (`.git/refs/heads/<src>`) before updating the
+   remote, the same as `git push -u origin <branch>` does. The explicit
+   refspec form's only advantage here is removing the implicit
+   current-branch dependency; the race-resistance comes entirely from
+   bullet 1's fresh-unique-name property, not from the refspec syntax.
+3. To push entirely by SHA and skip local ref resolution at push time,
+   use the literal SHA as `<src>`: `git push origin <commit-sha>:<dst>`
+   (or, equivalently, `git push origin $(git rev-parse <name>):<dst>`).
+   Git pushes the object directly without consulting `.git/refs/heads/`.
+   The fresh-unique-name pattern (bullet 1) is usually sufficient and
+   more readable, but the literal-SHA form is the strongest defense
+   when peer contention on local refs is severe.
+
+Note on what `git push -u origin <branch>` actually does: it pushes the
+named local ref `refs/heads/<branch>` (NOT the current HEAD, unless
+`<branch>` happens to match `git symbolic-ref HEAD`). The footgun is
+distinct: contention on `refs/heads/<branch>` itself, where a peer
+agent's branch operations may have repointed your named ref to a
+different SHA between commit and push. The mitigation above works
+because it creates a FRESH ref with a name that peer agents don't know
+to write to.
+
+Empirical anchor: session 2026-05-16T16:30Z-16:40Z had ≥3 mid-commit
+local-ref-contamination events while attempting to push a rule edit. The
+final successful pattern (PR #3910) used this explicit-branch-push
+sequence after `git switch -c` + `git push -u` had pushed peer-contaminated
+ref state twice.
+
 Composes with the rate-limit operational tiers documented in
 [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)
 and the saturation-ceiling taxonomy in
