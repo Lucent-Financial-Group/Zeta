@@ -3,8 +3,8 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { runOneCycle, log, detectViaCommand, detectGreyTextMacOS, parseConfig } from "./shadow-observer.ts";
-import type { ShadowConfig, ShadowEvent, OsascriptRunner } from "./shadow-observer.ts";
+import { runOneCycle, log, detectViaCommand, detectGreyTextMacOS, parseConfig, parseRestoreArrowOutput, RESTORE_ARROW_SEP } from "./shadow-observer.ts";
+import type { ShadowConfig, ShadowEvent, OsascriptRunner, RestoreArrowResult } from "./shadow-observer.ts";
 
 const SCRIPT = join(import.meta.dir, "shadow-observer.ts");
 let TEST_DIR: string;
@@ -164,7 +164,7 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
 
   test("restoreArrow=false skips the press (restoreArrowFn never called)", async () => {
     let pressed = 0;
-    const restoreArrowFn = async () => { pressed++; return "pressed:Terminal"; };
+    const restoreArrowFn = async () => { pressed++; return { verdict: "pressed:Terminal", delta: "" }; };
     const result = await runOneCycle(baseConfig, async () => null, undefined, restoreArrowFn);
     expect(result).toBe("no-suggestion");
     expect(pressed).toBe(0);
@@ -173,7 +173,7 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
   test("restoreArrow=true invokes restoreArrowFn exactly once per cycle", async () => {
     const cfg = { ...baseConfig, restoreArrow: true };
     let pressed = 0;
-    const restoreArrowFn = async () => { pressed++; return "pressed:Terminal"; };
+    const restoreArrowFn = async () => { pressed++; return { verdict: "pressed:Terminal", delta: "" }; };
     const result = await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
     expect(result).toBe("no-suggestion");
     expect(pressed).toBe(1);
@@ -181,7 +181,7 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
 
   test("restoreArrowFn throw is captured as error verdict, never crashes the cycle", async () => {
     const cfg = { ...baseConfig, restoreArrow: true };
-    const restoreArrowFn = async (): Promise<string> => { throw new Error("osascript-died"); };
+    const restoreArrowFn = async (): Promise<RestoreArrowResult> => { throw new Error("osascript-died"); };
     const result = await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
     expect(result).toBe("no-suggestion");
   });
@@ -189,9 +189,77 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
   test("restoreArrow=true fires even under dry-run (orthogonal to acceptGreyText safety)", async () => {
     const cfg = { ...baseConfig, restoreArrow: true, dryRun: true };
     let pressed = 0;
-    const restoreArrowFn = async () => { pressed++; return "pressed:Terminal"; };
+    const restoreArrowFn = async () => { pressed++; return { verdict: "pressed:Terminal", delta: "" }; };
     await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
     expect(pressed).toBe(1);
+  });
+
+  test("v2 delta is captured in log event (delta + deltaLen fields)", async () => {
+    const tmpDir = mkdtempSync(join(tmpdir(), "zeta-shadow-delta-test-"));
+    try {
+      const cfg = { ...baseConfig, restoreArrow: true, logFile: join(tmpDir, "log") };
+      const restoreArrowFn = async () => ({ verdict: "pressed:Terminal", delta: "restored-autocomplete-content" });
+      await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
+      const events = readFileSync(join(tmpDir, "log"), "utf-8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as ShadowEvent);
+      const restoreEvent = events.find((e) => e.type === "restore-arrow");
+      expect(restoreEvent).toBeDefined();
+      expect(restoreEvent!.content).toBe("pressed:Terminal");
+      expect(restoreEvent!.delta).toBe("restored-autocomplete-content");
+      expect(restoreEvent!.deltaLen).toBe(29);
+    } finally {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  test("v2 empty delta still logs deltaLen=0 (the common no-op restore)", async () => {
+    const tmpDir = mkdtempSync(join(tmpdir(), "zeta-shadow-delta-test-"));
+    try {
+      const cfg = { ...baseConfig, restoreArrow: true, logFile: join(tmpDir, "log") };
+      const restoreArrowFn = async () => ({ verdict: "pressed:Terminal", delta: "" });
+      await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
+      const events = readFileSync(join(tmpDir, "log"), "utf-8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as ShadowEvent);
+      const restoreEvent = events.find((e) => e.type === "restore-arrow");
+      expect(restoreEvent!.delta).toBe("");
+      expect(restoreEvent!.deltaLen).toBe(0);
+    } finally {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("shadow-observer — parseRestoreArrowOutput unit (v2 delta-detect)", () => {
+  test("pressed verdict with delta: parses verdict + delta on Unit-Separator delimiter", () => {
+    const r = parseRestoreArrowOutput(`pressed:Terminal${RESTORE_ARROW_SEP}some-restored-text\n`);
+    expect(r.verdict).toBe("pressed:Terminal");
+    expect(r.delta).toBe("some-restored-text");
+  });
+
+  test("pressed verdict with empty delta: still parses cleanly", () => {
+    const r = parseRestoreArrowOutput(`pressed:iTerm2${RESTORE_ARROW_SEP}\n`);
+    expect(r.verdict).toBe("pressed:iTerm2");
+    expect(r.delta).toBe("");
+  });
+
+  test("skipped verdict carries empty delta", () => {
+    const r = parseRestoreArrowOutput(`skipped:not-terminal:Safari${RESTORE_ARROW_SEP}\n`);
+    expect(r.verdict).toBe("skipped:not-terminal:Safari");
+    expect(r.delta).toBe("");
+  });
+
+  test("legacy v1 output (no separator) yields verdict-only result", () => {
+    const r = parseRestoreArrowOutput("pressed:Terminal\n");
+    expect(r.verdict).toBe("pressed:Terminal");
+    expect(r.delta).toBe("");
+  });
+
+  test("delta containing newlines is preserved (only trailing newlines stripped)", () => {
+    const r = parseRestoreArrowOutput(`pressed:Terminal${RESTORE_ARROW_SEP}line-1\nline-2\n`);
+    expect(r.delta).toBe("line-1\nline-2");
+  });
+
+  test("delta containing leading whitespace is preserved (autocomplete may start with space)", () => {
+    const r = parseRestoreArrowOutput(`pressed:Terminal${RESTORE_ARROW_SEP} starts-with-space`);
+    expect(r.delta).toBe(" starts-with-space");
   });
 });
 
