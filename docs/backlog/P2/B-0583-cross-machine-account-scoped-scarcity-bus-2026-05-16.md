@@ -99,3 +99,12 @@ The 2026-05-16 session demonstrated that all agents on this machine (Otto-CLI + 
 - [x] Dependency proof: no blockers; design exploration row
 - [x] Empirical motivation: 2026-05-16 session demonstrated 3-4 agents sharing AceHack bucket; ServiceTitan-replication multiplies cross-machine
 - [x] Constraint identified: Copilot review cost trap under enterprise ruleset #16490134
+
+## Decomposition into implementation slices
+
+| Slice | Description | Effort | Status |
+|-------|-------------|--------|--------|
+| 1 | \`tools/bg/scarcity-tracker-gist-experiment.ts\` — standalone script to test the Gist append-only updates approach | S | extracted |
+| 2 | Ruleset carve-out experiment — test if a long-lived branch can bypass Copilot review | M | open |
+| 3 | Evaluate experiments and select final design | S | open |
+| 4 | Integrate selected design into \`tools/bg/scarcity-tracker.ts\` | M | open |
