@@ -302,7 +302,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
 - [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
-- [ ] **[B-0500](backlog/P1/B-0500-b0441-slice-3-queue-state-guard-poll-once-wiring-2026-05-14.md)** B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce
+- [ ] **[B-0498](backlog/P1/B-0498-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md)** Riven Cursor Terminal background loop — IDE-native autonomous gate with manager contract
+- [x] **[B-0500](backlog/P1/B-0500-b0441-slice-3-queue-state-guard-poll-once-wiring-2026-05-14.md)** B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce
 - [ ] **[B-0501](backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md)** B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)
 - [ ] **[B-0502](backlog/P1/B-0502-b0441-slice-6-launchd-plist-autonomous-loop-docs-2026-05-14.md)** B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update
 - [x] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
@@ -321,6 +322,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0523](backlog/P1/B-0523-kenji-era-research-docs-cross-reference-audit.md)** Kenji-era research docs cross-reference audit (peeled from B-0139)
 - [ ] **[B-0526](backlog/P1/B-0526-branch-worktree-content-inventory.md)** Branch/worktree content inventory — Pre-substrate Kenji-era
 - [ ] **[B-0527](backlog/P1/B-0527-memory-md-backfill-pre-substrate-kenji-era.md)** MEMORY.md backfill for pre-substrate Kenji-era artifacts (B-0139 decomposition)
+- [x] **[B-0538](backlog/P1/B-0538-create-gemini-md-for-fresh-instances-2026-05-15.md)** Create GEMINI.md to bootstrap fresh Antigravity/Gemini instances with factory context
+- [ ] **[B-0539](backlog/P1/B-0539-otto-bft-internal-quorum-3-surface-self-recovery-2026-05-15.md)** Otto-BFT — internal-quorum self-recovery across 3 Otto surfaces (Standing-by escalation + cross-surface detector + background-service prompt-clicker)
+- [ ] **[B-0540](backlog/P1/B-0540-standing-by-counter-with-escalation-in-rule-2026-05-15.md)** Standing-by counter-with-escalation in the rule (N consecutive brief-acks → escalate to decomposition)
+- [ ] **[B-0541](backlog/P1/B-0541-cross-surface-bus-detector-standing-by-quorum-2026-05-15.md)** Cross-surface bus detector — Standing-by quorum across Otto surfaces (extension of PR #3017 detector)
+- [ ] **[B-0542](backlog/P1/B-0542-background-service-clicks-past-stuck-prompts-2026-05-15.md)** Background service clicks past stuck prompts on foreground Otto surfaces (3-surface BFT recovery node)
+- [ ] **[B-0549](backlog/P1/B-0549-docs-research-audit-2026-05-16.md)** Docs/research cross-reference audit
 
 ## P2 — research-grade
 
@@ -577,6 +584,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0524](backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md)** Manifesto V2 verbatim Grok fetch — convert shadow-lock to full lock
 - [ ] **[B-0529](backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)** Tick-shard schema validator vs current practice drift
 - [ ] **[B-0534](backlog/P2/B-0534-backlog-ready-notifier-reads-stale-local-checkout-2026-05-15.md)** backlog-ready-notifier reads stale local working-tree files → publishes work-assignment envelopes for closed rows
+- [ ] **[B-0543](backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md)** QG isomorphism proof path — Remember-When + Pay-Attention root axioms → infinite-poker-game → quantum gravity (defeat the algo-wink critique by grounding the cosmology in falsifiable physics)
+- [ ] **[B-0544](backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md)** QG isomorphism Step 1 — Formalize Remember-When + Pay-Attention as categorical primitives (topos with internal monad + modal operator)
+- [ ] **[B-0545](backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md)** B-0498 ID collision — renumber sweep (Riven cursor-terminal scaffold → new ID)
+- [ ] **[B-0546](backlog/P2/B-0546-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md)** Recast docs/governance/MANIFESTO.md from "manifesto" framing to "building codes" framing per Aaron's correction + Kestrel's reframe — the document is best-practices-with-default-moral-oracle, not ideological commitment
+- [ ] **[B-0547](backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md)** Intelligent compiler — represent antigen-spread / multi-oracle / clearing primitives as recursive HKT in F# fork based on Clifford algebra; compose with Recursive Type Providers + Roslyn Source Generators + LINQ for C#
+- [ ] **[B-0548](backlog/P2/B-0548-qg-isomorphism-step-1-5-construct-strength-and-a-lifting-2026-05-16.md)** QG isomorphism Step 1.5 — Construct strength θ:M(Ω)→Ω and A-lifting Ã:Zeta→Zeta for type-correct M/A coherence laws
 
 ## P3 — convenience / deferred
 
@@ -661,5 +674,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0530](backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)** Cron-sentinel mutex — prevent multi-Otto-CLI self-contention on .git/objects/pack
 - [ ] **[B-0532](backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md)** Backlog-graph consistency lint — flag parent `status: closed` while declared child is `status: open`
 - [ ] **[B-0533](backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md)** §33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/persona/<name>/conversations/
+- [ ] **[B-0535](backlog/P3/B-0535-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md)** Backlog ID-uniqueness lint — extension of B-0532 to catch cross-agent B-NNNN collisions
+- [ ] **[B-0536](backlog/P3/B-0536-orphan-ferry-ref-cleanup-and-audit-false-positives-2026-05-15.md)** Orphan-ferry-ref cleanup + audit false-positive on filename paths
+- [ ] **[B-0537](backlog/P3/B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md)** memory/MEMORY.md index-entry length cleanup (100 long entries) + CI gate
 
 <!-- END AUTO-GENERATED -->
