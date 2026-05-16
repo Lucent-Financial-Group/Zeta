@@ -61,13 +61,46 @@ export interface ShadowEvent {
   timestamp: string;
   type: "started" | "detected" | "accepted" | "overridden" | "no-suggestion" | "error" | "restore-arrow";
   content?: string;
+  /** v2 delta-detect: the suffix-extension of the input field's text after the → press
+   *  (the restored autocomplete content). Empty when no text changed (the
+   *  common no-op case). Present only on `restore-arrow` events. */
+  delta?: string;
+  /** v2 delta-detect: character length of delta. Cheap at-a-glance scan of the log
+   *  to find non-trivial restores without scrolling the content. */
+  deltaLen?: number;
   delayMs: number;
   dryRun: boolean;
 }
 
+/** v2 delta-detect: structured result from pressRestoreArrow. The
+ *  AppleScript returns one stdout line "<verdict><delta>" (ASCII Unit
+ *  Separator); this type is the parsed form. */
+export interface RestoreArrowResult {
+  /** "pressed:<app>" | "skipped:<reason>" | "error:<reason>" */
+  verdict: string;
+  /** The restored content (suffix-extension) if any; empty string when nothing changed. */
+  delta: string;
+}
+
 export type DetectFn = () => Promise<string | null>;
 export type AcceptFn = (config: ShadowConfig) => Promise<boolean>;
-export type RestoreArrowFn = () => Promise<string>;
+export type RestoreArrowFn = () => Promise<RestoreArrowResult>;
+
+/** ASCII Unit Separator — delimiter between verdict and delta in the
+ *  restore-arrow AppleScript output. Unlikely to appear in user input. */
+export const RESTORE_ARROW_SEP = "";
+
+/** Parse the restore-arrow AppleScript stdout line into verdict + delta. */
+export function parseRestoreArrowOutput(raw: string): RestoreArrowResult {
+  const idx = raw.indexOf(RESTORE_ARROW_SEP);
+  if (idx === -1) {
+    // v1 AppleScript without sep — verdict only, no delta material
+    return { verdict: raw.trim(), delta: "" };
+  }
+  // Don't trim the delta — leading/trailing whitespace may be meaningful
+  // for autocomplete-restored content. The verdict portion is trimmed.
+  return { verdict: raw.slice(0, idx).trim(), delta: raw.slice(idx + 1).replace(/\n+$/, "") };
+}
 
 export function log(event: ShadowEvent, logFile: string): void {
   const line = JSON.stringify(event);
@@ -231,10 +264,10 @@ export async function pressRestoreArrow(
   _config: ShadowConfig,
   _runner?: OsascriptRunner,
   _platform?: string,
-): Promise<string> {
+): Promise<RestoreArrowResult> {
   const platform = _platform ?? process.platform;
   if (platform !== "darwin") {
-    return "skipped:not-macos";
+    return { verdict: "skipped:not-macos", delta: "" };
   }
 
   const runner = _runner ?? runOsascript;
@@ -244,14 +277,17 @@ export async function pressRestoreArrow(
   try {
     result = await runner(scriptPath);
   } catch (err) {
-    return `error:${String(err)}`;
+    return { verdict: `error:${String(err)}`, delta: "" };
   }
 
   if (result.exitCode !== 0) {
-    return `error:osascript-exit-${result.exitCode}`;
+    return { verdict: `error:osascript-exit-${result.exitCode}`, delta: "" };
   }
-  const trimmed = result.stdout.trim();
-  return trimmed.length > 0 ? trimmed : "error:empty-output";
+
+  if (result.stdout.length === 0) {
+    return { verdict: "error:empty-output", delta: "" };
+  }
+  return parseRestoreArrowOutput(result.stdout);
 }
 
 export async function acceptGreyText(config: ShadowConfig): Promise<boolean> {
@@ -280,17 +316,19 @@ export async function runOneCycle(
   restoreArrowFn: RestoreArrowFn = () => pressRestoreArrow(config),
 ): Promise<"accepted" | "no-suggestion" | "overridden" | "error"> {
   if (config.restoreArrow) {
-    let verdict: string;
+    let result: RestoreArrowResult;
     try {
-      verdict = await restoreArrowFn();
+      result = await restoreArrowFn();
     } catch (err) {
-      verdict = `error:${String(err)}`;
+      result = { verdict: `error:${String(err)}`, delta: "" };
     }
     log(
       {
         timestamp: new Date().toISOString(),
         type: "restore-arrow",
-        content: verdict,
+        content: result.verdict,
+        delta: result.delta,
+        deltaLen: result.delta.length,
         delayMs: config.delayMs,
         dryRun: config.dryRun,
       },
