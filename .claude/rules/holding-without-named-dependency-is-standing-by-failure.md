@@ -195,6 +195,33 @@ worked because the edit content was preserved in conversation context;
 without that, the work would have been lost. Conversation-context
 preservation is the only fallback once unstaged edits are destroyed.
 
+**Push-time mitigation — explicit-branch-push** (2026-05-16T16:40Z empirical anchor):
+when peer Otto's `git switch` race has moved HEAD between commit and push,
+`git push -u origin <branch>` reads the CURRENT HEAD at push time (which
+may have moved off my branch) and pushes the wrong branch to my intended
+remote ref. The safer pattern when the commit is already made and reachable
+by SHA:
+
+```bash
+# Create branch ref pointing at the desired SHA without moving HEAD:
+git branch <new-branch-name> <commit-sha>
+# Explicit-refspec push (no -u, no implicit current-branch):
+git push origin <new-branch-name>:<new-branch-name>
+```
+
+This bypasses HEAD-state confusion at push time because:
+
+1. `git branch <name> <sha>` creates the ref without changing HEAD (peer
+   Otto's HEAD movements don't affect the named ref)
+2. `git push origin <src>:<dst>` reads the source ref directly, not HEAD
+3. The commit-SHA is the durable handle — even if local branches get
+   poisoned with peer's commits, the SHA still resolves to my work
+
+Empirical anchor: session 2026-05-16T16:30Z-16:40Z had ≥3 mid-commit
+HEAD-contamination events while attempting to push a rule edit. The
+final successful pattern (PR #3910) used this explicit-branch-push
+sequence after `git switch -c` + `git push -u` had failed twice.
+
 Composes with the rate-limit operational tiers documented in
 [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)
 and the saturation-ceiling taxonomy in
