@@ -1,7 +1,7 @@
 ---
 id: B-0459
 priority: P1
-status: open
+status: shipped
 title: "B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler (standing-by failure-mode closer)"
 tier: factory-infrastructure
 effort: S
@@ -52,24 +52,24 @@ This slice implements the handler that reads and acts on that envelope.
 
 ## Acceptance criteria
 
-- [ ] `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` per B-0449 AC
+- [x] `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` per B-0449 AC
       (lands in B-0449; this row blocks until that is merged)
-- [ ] Handler for `infinite-backlog-nudge` (stub behavior per B-0449 slice-5 design):
+- [x] Handler for `infinite-backlog-nudge` (stub behavior per B-0449 slice-5 design):
   - Reads each matching envelope from the bus dir (honors `ZETA_BUS_DIR`)
   - Logs envelope content (topic, idleMinutes, rationale) to the current tick shard
   - Marks envelope as consumed via `seen.json` per `subscribeOnce` contract
   - Triggers decomposition or backlog-grind action: inspects envelope payload and
     queues speculative work in step 3 (pick speculative work) of the same tick
     (per B-0449 §"Option C" design: subscriber wires into step 1 and queues into step 3)
-- [ ] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
+- [x] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
       `subscribeOnce("infinite-backlog-nudge", handler)` after
       `bun tools/github/poll-pr-gate-batch.ts --all-open` + `git fetch origin main`
       (matching the current step-1 order: poll-pr-gate-batch first, then git fetch)
-- [ ] Unit tests for handler: DST-replayable with fake bus dir + injected envelopes
+- [x] Unit tests for handler: DST-replayable with fake bus dir + injected envelopes
   - Test: envelope present → logged, consumed, no error
   - Test: no envelope → no-op, no error
   - Test: malformed envelope → logged as warning, consumed (not re-processed), no throw
-- [ ] `tools/bg/README.md` §"What's still pending" updated: slice 5.1 stub landed
+- [x] `tools/bg/README.md` §"What's still pending" updated: slice 5.1 stub landed
 
 ## Scope clarification (what is NOT in scope)
 
@@ -103,6 +103,6 @@ B-0400 (bus protocol)
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- [ ] Prior-art search: verify B-0449 has landed `tools/bus/subscribe.ts` before starting
-- [ ] Dependency check: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: closed` (merged)
-- [ ] Search committed memory for `infinite-backlog-nudge handler` to find any prior implementation
+- [x] Prior-art search: verify B-0449 has landed `tools/bus/subscribe.ts` before starting
+- [x] Dependency check: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: closed` (merged)
+- [x] Search committed memory for `infinite-backlog-nudge handler` to find any prior implementation
