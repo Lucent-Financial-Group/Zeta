@@ -14,6 +14,7 @@ import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
 import { checkFile as checkCounts } from "./check-counts.ts";
 import { checkFile as checkExistence } from "./check-existence.ts";
+import { checkFile as checkPathForms } from "./check-path-forms.ts";
 
 const fixtures = join(import.meta.dir, "fixtures");
 
@@ -53,5 +54,30 @@ describe("eval-set fixtures / existence drift", () => {
       "docs/_fixture_existence_drift_target_b0170_2026_05_15.md",
     );
     expect(finding.severity).toBe("drift");
+  });
+});
+
+describe("eval-set fixtures / path-form drift", () => {
+  test("path-form-drift-bare-vs-qualified.md — same file referenced as bare basename and fully-qualified path is detected", () => {
+    const result = checkPathForms(join(fixtures, "path-form-drift-bare-vs-qualified.md"));
+    expect(result.ok).toBe(true);
+    // PR #3611 discipline applied to path-form drift: pin exact count
+    // and exact body-claim line so a regression in body-claim detection
+    // cannot be masked by an HTML-comment match. The fixture targets
+    // check-counts.ts (a sibling that ships with the checker), so the
+    // 3-root resolution (fileDir / parentDir / repoRoot) collapses both
+    // forms onto the same absolute path without depending on any
+    // synthetic file.
+    expect(result.findings.length).toBe(1);
+    const finding = result.findings[0]!;
+    expect(finding.line).toBe(28);
+    expect(finding.resolvedPath).toBe(
+      "tools/substrate-claim-checker/check-counts.ts",
+    );
+    const forms = finding.forms.map((f) => f.path).sort();
+    expect(forms).toEqual([
+      "check-counts.ts",
+      "tools/substrate-claim-checker/check-counts.ts",
+    ]);
   });
 });
