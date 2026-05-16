@@ -70,7 +70,7 @@ const SKIP_SECTIONS: readonly RegExp[] = [
 
 // Path classes we treat as primary artifacts when mentioned in primary sections.
 const PATH_REGEX =
-    /(?<![A-Za-z0-9])(?:tools|\.claude|docs)\/[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*\.(?:ts|tsx|md|fs|fsi|cs|sh|yml|yaml|json)/g;
+    /(?<![A-Za-z0-9])(?:tools|\.claude|docs)\/[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*\.(?:tsx|ts|fsi|fs|yaml|yml|md|cs|sh|json)/g;
 
 // Inline cross-reference patterns. Even inside an Acceptance / Proposed
 // mechanization / Scope section, a line matching these patterns is a
