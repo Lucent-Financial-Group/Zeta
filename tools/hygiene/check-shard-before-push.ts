@@ -41,12 +41,13 @@ interface Args {
   files: readonly string[];
 }
 
-function parseArgs(argv: readonly string[]): Args {
+type ParseResult = { ok: true; args: Args } | { ok: false; exitCode: 64; message: string };
+
+function parseArgs(argv: readonly string[]): ParseResult {
   if (argv.length === 0) {
-    process.stderr.write("usage: check-shard-before-push.ts <shard-path>...\n");
-    process.exit(64);
+    return { ok: false, exitCode: 64, message: "usage: check-shard-before-push.ts <shard-path>..." };
   }
-  return { files: argv };
+  return { ok: true, args: { files: argv } };
 }
 
 // MD032 paragraph-immediately-followed-by-bullet detection.
@@ -60,11 +61,31 @@ interface Md032Finding {
   readonly bullet: string;
 }
 
+// Per-line "inside fenced code block" tracking. A `- ` line inside ``` ``` ```
+// fences is not a markdown list item — markdownlint correctly ignores it,
+// and so must this scanner. Same pattern as audit-tick-shard-relative-paths.ts.
+function buildCodeFenceFlags(lines: readonly string[]): boolean[] {
+  const flags = new Array<boolean>(lines.length).fill(false);
+  let inFence = false;
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i]!.trim();
+    if (trimmed.startsWith("```")) {
+      inFence = !inFence;
+      flags[i] = inFence; // the fence-marker line itself is "inside" the closing-toggle direction
+    } else {
+      flags[i] = inFence;
+    }
+  }
+  return flags;
+}
+
 function checkMd032(file: string): Md032Finding[] {
   const text = readFileSync(file, "utf8");
   const lines = text.split("\n");
+  const fenceFlags = buildCodeFenceFlags(lines);
   const findings: Md032Finding[] = [];
   for (let i = 1; i < lines.length; i++) {
+    if (fenceFlags[i]) continue; // skip lines inside fenced code blocks
     const prev = lines[i - 1]!;
     const cur = lines[i]!;
     // Trigger: cur starts with "- " bullet AND prev is non-blank
@@ -107,11 +128,33 @@ function runRelativePathAudit(file: string): boolean {
   );
   const out = r.stdout ?? "";
   const err = r.stderr ?? "";
-  // Output format: "ok: scanned N tick shards; 0 broken relative-path links\n"
-  // OR "scanned N tick shards; M broken relative-path links:\n\n  file:line  ...\n"
-  if (out.includes("0 broken relative-path links")) {
-    return true;
+
+  // The audit script in detect-only mode (no --enforce) exits 0 even with
+  // findings; we need to inspect the output. But ANY non-zero exit (crash,
+  // argument error, signal) is unambiguously a failure regardless of stdout.
+  if (r.status !== 0) {
+    process.stdout.write(out);
+    if (err) process.stderr.write(err);
+    process.stderr.write(`audit exited with status ${r.status}\n`);
+    return false;
   }
+
+  // Exit 0 + findings: parse the output. Match the canonical "X broken
+  // relative-path links" suffix; treat "0 broken" as clean, anything else
+  // as findings. Tolerate future wording tweaks by allowing whitespace
+  // variation around the digit.
+  const FINDINGS_RE = /;\s*(\d+)\s+broken relative-path links/;
+  const m = out.match(FINDINGS_RE);
+  if (!m) {
+    // Unexpected output format — echo and fail loud rather than silent-pass.
+    process.stdout.write(out);
+    if (err) process.stderr.write(err);
+    process.stderr.write("audit produced unrecognized output format\n");
+    return false;
+  }
+  const count = Number(m[1]);
+  if (count === 0) return true;
+
   // findings present — print them
   process.stdout.write(out);
   if (err) process.stderr.write(err);
@@ -121,7 +164,12 @@ function runRelativePathAudit(file: string): boolean {
 // main
 
 export function main(argv: readonly string[]): 0 | 1 | 64 {
-  const args = parseArgs(argv);
+  const parsed = parseArgs(argv);
+  if (!parsed.ok) {
+    process.stderr.write(`${parsed.message}\n`);
+    return parsed.exitCode;
+  }
+  const args = parsed.args;
 
   // Validate inputs (per the validation pattern from the audit script).
   const bad: { path: string; reason: string }[] = [];
