@@ -34,14 +34,14 @@ Documented in `gate.yml` job comments + the `audit-section-33-migration-xrefs.ts
 
 | Step | PR | Output |
 |------|-----|--------|
-| Discovery | review on PR #3513 | Codex P2 catch on Riven section-33 archive migration |
+| Discovery | review on PR #3513 | Reviewer P2 catch on the section-33 archive-migration PR |
 | Narrow fix | PR #3529 | Per-file backlink update |
 | Scanner | PR #3548 | `audit-section-33-migration-xrefs.ts` (detect-only) |
 | Quality | inline | (none recorded; first-pass quality was sufficient) |
-| Baseline | PR #3552 | Cleanup-via-edit (mutable surfaces); baseline freezes to 0 findings |
-| CI enforce | PR #3552 | Same PR wires `--enforce` (no baseline flag needed; cleanup was complete) |
+| Baseline (cleanup-to-zero) | PR #3552 | Cleanup-via-edit (mutable surfaces); baseline shrinks to 0 findings |
+| CI enforce | PR #3555 | `--enforce` flag + gate.yml `lint-section-33-migration-xrefs` job (Slice B.3 + B.4) |
 
-Calendar duration: ~4 weeks (PR #3513 → PR #3552).
+Calendar duration: ~4 weeks (PR #3513 → PR #3555).
 
 ## Worked example: tick-shard relative-path audit
 
