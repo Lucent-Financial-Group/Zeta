@@ -39,6 +39,23 @@
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
+
+/**
+ * Detect the repo root via `git rev-parse --show-toplevel`. Falls back to the
+ * current working directory if git isn't available or this isn't a git repo.
+ *
+ * Per B-0557 slice 3 (Copilot P1 on PR #3758): the audit tool previously
+ * assumed cwd = repo root; running from a subdirectory caused all
+ * `existsSync(p)` checks to fail and produced false negatives.
+ */
+function detectRepoRoot(): string {
+    try {
+        return execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
+    } catch {
+        return process.cwd();
+    }
+}
 
 type PrimarySectionMatcher = RegExp;
 
@@ -244,6 +261,17 @@ function reportJson(candidates: readonly BacklogRow[]): void {
 }
 
 function main(): number {
+    // chdir to repo root so subsequent relative-path reads/existence-checks
+    // work regardless of invocation cwd. Per B-0557 slice 3.
+    try {
+        process.chdir(detectRepoRoot());
+    } catch (err) {
+        process.stderr.write(
+            `audit-backlog-status-drift: unable to chdir to repo root: ${(err as Error).message}\n`,
+        );
+        return 64;
+    }
+
     const args = process.argv.slice(2);
 
     const KNOWN_FLAGS = new Set(["--json", "--check", "--help", "-h"]);
