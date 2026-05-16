@@ -21,6 +21,10 @@ describe("auditResearchDocsInRoots", () => {
         "# full reference\n",
       );
       writeFileSync(
+        join(root, "docs", "research", "colon.md"),
+        "# colon reference\n",
+      );
+      writeFileSync(
         join(root, "docs", "research", "nested", "relative.md"),
         "# relative reference\n",
       );
@@ -33,6 +37,10 @@ describe("auditResearchDocsInRoots", () => {
         "# non markdown memory mention only\n",
       );
       writeFileSync(
+        join(root, "docs", "research", "boundary.md"),
+        "# boundary reference\n",
+      );
+      writeFileSync(
         join(root, "docs", "research", "missing.jpg"),
         "image placeholder\n",
       );
@@ -40,7 +48,10 @@ describe("auditResearchDocsInRoots", () => {
         join(root, "memory", "MEMORY.md"),
         [
           "docs/research/full.md",
+          "docs/research/colon.md: annotated reference",
           "nested/relative.md",
+          "docs/research/boundary.md.bak",
+          "prefixdocs/research/boundary.md",
           "",
         ].join("\n"),
       );
@@ -60,6 +71,8 @@ describe("auditResearchDocsInRoots", () => {
       });
 
       expect(result.researchFiles).toEqual([
+        "docs/research/boundary.md",
+        "docs/research/colon.md",
         "docs/research/full.md",
         "docs/research/missing.jpg",
         "docs/research/nested/relative.md",
@@ -71,6 +84,7 @@ describe("auditResearchDocsInRoots", () => {
         "memory/persona/CURRENT.md",
       ]);
       expect(result.referenced).toEqual([
+        "docs/research/colon.md",
         "docs/research/full.md",
         "docs/research/nested/relative.md",
       ]);
@@ -78,6 +92,7 @@ describe("auditResearchDocsInRoots", () => {
         "docs/research/rationale.txt",
       ]);
       expect(result.unreferenced).toEqual([
+        "docs/research/boundary.md",
         "docs/research/missing.jpg",
         "docs/research/non-md-memory-only.md",
       ]);

@@ -40,6 +40,18 @@ function repoRelative(path: string, repoRoot: string): string {
   return normalizePath(relative(repoRoot, path));
 }
 
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function hasPathReference(content: string, candidate: string): boolean {
+  const escaped = escapeRegExp(candidate);
+  const pathChar = String.raw`A-Za-z0-9._~/-`;
+  return new RegExp(String.raw`(^|[^${pathChar}])${escaped}($|[^${pathChar}])`).test(
+    content,
+  );
+}
+
 async function listFiles(root: string): Promise<readonly string[]> {
   const entries = await readdir(root, { withFileTypes: true });
   const paths = await Promise.all(
@@ -60,7 +72,10 @@ async function listFiles(root: string): Promise<readonly string[]> {
 function isReferenced(path: string, content: string, roots: AuditRoots): boolean {
   const normalized = repoRelative(path, roots.repoRoot);
   const researchRelative = normalizePath(relative(roots.researchDir, path));
-  return content.includes(normalized) || content.includes(researchRelative);
+  return (
+    hasPathReference(content, normalized) ||
+    hasPathReference(content, researchRelative)
+  );
 }
 
 async function hasExplicitUnindexedRationale(path: string): Promise<boolean> {
