@@ -12,6 +12,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
+import { checkFile as checkConvention } from "./check-convention.ts";
 import { checkFile as checkCounts } from "./check-counts.ts";
 import { checkFile as checkCrossSurface } from "./check-cross-surface.ts";
 import { checkFile as checkExistence } from "./check-existence.ts";
@@ -74,6 +75,44 @@ describe("eval-set fixtures / cross-surface count drift", () => {
     expect(finding.claimIsMinimum).toBe(false);
     expect(finding.claim).toContain("drift instances");
     expect(finding.actualCounts).toEqual([15]);
+  });
+});
+
+describe("eval-set fixtures / convention drift", () => {
+  test("convention-drift-no-reciprocity.md — ADR supersession claim against target lacking 'Superseded by' marker is detected", () => {
+    const result = checkConvention(
+      join(fixtures, "convention-drift-no-reciprocity.md"),
+    );
+    expect(result.ok).toBe(true);
+    // PR #3611 discipline applied to convention drift: pin exact finding
+    // count and exact body-claim line so a regression in body-claim
+    // detection cannot be masked by a comment-side match. The fixture
+    // references a co-located synthetic target stub
+    // (`convention-drift-target-no-marker.md`) that intentionally omits
+    // the canonical `> **Superseded by** [link]` blockquote at its top,
+    // so the 3-root resolution (fileDir / parentDir / repoRoot) finds
+    // the target without depending on any production ADR whose
+    // reciprocity status may evolve.
+    expect(result.findings.length).toBe(1);
+    const finding = result.findings[0]!;
+    expect(finding.line).toBe(29);
+    expect(finding.target).toBe(
+      "tools/substrate-claim-checker/fixtures/convention-drift-target-no-marker.md",
+    );
+    expect(finding.reason).toContain("not reciprocated");
+    expect(finding.reason).toContain("Superseded by");
+  });
+
+  test("convention-drift-target-no-marker.md — target stub alone produces no finding (counter-fixture)", () => {
+    const result = checkConvention(
+      join(fixtures, "convention-drift-target-no-marker.md"),
+    );
+    expect(result.ok).toBe(true);
+    // The target stub makes no supersession claim, so the checker
+    // should emit zero findings. This counter-fixture pins the
+    // asymmetry: only the claim-making file should fire, never the
+    // target-only file.
+    expect(result.findings.length).toBe(0);
   });
 });
 
