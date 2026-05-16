@@ -106,7 +106,7 @@ The work earns its keep even at partial completion:
 - `docs/governance/MANIFESTO.md` V2.1 — Constraints 1 (Scale-free), 5 (Memory Preservation), 10 (Self-similar), 11 (Default Oracle) become physical necessities rather than design preferences
 - Memory file `feedback_otto_qg_isomorphism_proof_path_remember_when_pay_attention_axioms_infinite_poker_to_quantum_gravity_aaron_otto_2026_05_15.md` (the on-the-fly substrate that produced this row)
 - B-0539 (Otto-BFT internal-quorum umbrella) — the proof strategy's "multi-oracle as physical necessity" claim composes with the operational BFT work
-- B-0422 (Pauli-symmetry-breaking falsifier test if it exists) — adjacent falsifiability work
+- [B-0422](../P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) (Pauli-symmetry-breaking falsifier test) — adjacent falsifiability work
 
 ## Why now
 

@@ -34,7 +34,7 @@ Create a categorical model `Zeta_{RA}` that:
 
 The model should:
 
-- Connect to DBSP incrementalization (the `D ∘ Q ∘ I` monad)
+- Connect to DBSP via the incrementalization identity `Q^Δ = D ∘ Q ∘ I` (a wrapping/conjugation identity over streams — not asserting `D ∘ Q ∘ I` itself satisfies monad unit/multiplication laws; whether the topos's memory monad `M` and the DBSP `I`/`D` pair share a deeper categorical relationship is an open question to investigate, not a settled identity)
 - Connect to QBism (observer-relative truth values)
 - Connect to quantum error correction (the structure that will emerge in Step 2)
 
