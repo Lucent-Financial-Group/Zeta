@@ -156,21 +156,28 @@ operational workaround.
 ## Saturation-ceiling — 4 failure sub-cases of borrow-on-existing
 
 Empirical anchor [PR #3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808)
-(`docs/hygiene-history/ticks/2026/05/16/0715Z.md`): under sustained
-multi-Otto saturation (4+ instances active in parallel: Otto-CLI
-primary, otto-bg-worker, fresh-cold-boot Otto-CLI, and Lior), with peer Otto cycling
-worktree HEAD every ~3-5 min for 9 transitions in 35 min, a fresh-cold-boot
-session attempting to ship a shard hit FOUR distinct failure sub-cases of
-the borrow-on-existing pattern across 4 commit attempts. All 4 sub-cases
-empirically validated; only 2 have working mitigations today.
+(closed-without-merge; shard for `0715Z` was the PR's payload, hence never
+landed on `origin/main`): under sustained multi-Otto saturation (4+
+instances active in parallel: Otto-CLI primary, otto-bg-worker,
+fresh-cold-boot Otto-CLI, and peer-agent global-lock-cleanup loop), with
+peer Otto cycling worktree HEAD every ~3-5 min for 9 transitions in
+35 min, a fresh-cold-boot session attempting to ship a shard hit FOUR
+distinct failure sub-cases of the borrow-on-existing pattern across 4
+commit attempts. All 4 sub-cases empirically validated; only 2 have
+working mitigations today.
 
-### Sub-case 1 — existing-branch-name reuse → peer-WIP commit inheritance
+### Sub-case 1 — existing-branch-name collision → peer-WIP commit inheritance via recovery path
 
 `git switch -c <name> origin/main` on a name that **already exists locally**
-SILENTLY REUSES the existing branch. It does NOT create fresh from
-`origin/main`. If the existing branch carries peer WIP commits (e.g., from
-a prior session or peer Otto's abandoned slice), the "fresh" branch
+fails with `fatal: a branch named '<name>' already exists` (exit 128).
+The hazard is the recovery path: an agent reacting to that error often
+runs `git switch <name>` (without `-c`) which silently checks out the
+existing branch — if that branch carries peer WIP commits (e.g., from a
+prior session or peer Otto's abandoned slice), the "fresh" workstream
 inherits them. Any PR opened from this branch duplicates peer's PR work.
+The `-C` (capital) variant of `git switch` would force-reset the existing
+branch to `origin/main` instead, which destroys peer WIP — equally bad
+in the opposite direction.
 
 **Mitigation (works)**:
 
