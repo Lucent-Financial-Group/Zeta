@@ -2,6 +2,7 @@
 id: B-0055
 priority: P2
 status: open
+decomposition: B-0534 peeled off
 title: Frontier edge-claims research track — plant flags on unclaimed intellectual territory (CTF-style, falsifiable, retractibly-defensible)
 tier: edge-claim-staking
 effort: L
