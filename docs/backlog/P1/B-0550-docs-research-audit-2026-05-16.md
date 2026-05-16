@@ -24,7 +24,7 @@ B-0550 so backlog IDs remain factory-wide unique.
 
 ## What
 
-Build `tools/hygiene/audit-research-docs.ts` to audit all files under `docs/research/` and verify they are referenced in `MEMORY.md` or other substrate memory files.
+Build `tools/hygiene/audit-research-docs.ts` to audit all files under `docs/research/` and verify each path is referenced in `memory/**/*.md` or carries an explicit unindexed-rationale marker.
 
 ## Status
 

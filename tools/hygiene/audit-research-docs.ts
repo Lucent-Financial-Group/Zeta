@@ -1,5 +1,6 @@
 import { readdir, readFile } from "node:fs/promises";
-import { join, relative } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 type AuditExitCode = 0 | 2 | 64;
 
@@ -7,26 +8,37 @@ interface AuditResult {
   readonly researchFiles: readonly string[];
   readonly memoryFiles: readonly string[];
   readonly referenced: readonly string[];
+  readonly explicitlyUnindexed: readonly string[];
   readonly unreferenced: readonly string[];
 }
 
-const RESEARCH_DIR = "docs/research";
-const MEMORY_DIR = "memory";
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..");
+const RESEARCH_DIR = join(REPO_ROOT, "docs", "research");
+const MEMORY_DIR = join(REPO_ROOT, "memory");
+const RESEARCH_LABEL = "docs/research";
+const MEMORY_LABEL = "memory";
+const UNINDEXED_RATIONALE_RE =
+  /\b(?:unindexed[_ -]?rationale|explicit unindexed rationale)\b/i;
 
 function normalizePath(path: string): string {
   return path.replaceAll("\\", "/");
 }
 
-async function listMarkdownFiles(root: string): Promise<readonly string[]> {
+function repoRelative(path: string): string {
+  return normalizePath(relative(REPO_ROOT, path));
+}
+
+async function listFiles(root: string): Promise<readonly string[]> {
   const entries = await readdir(root, { withFileTypes: true });
   const paths = await Promise.all(
     entries.map(async (entry): Promise<readonly string[]> => {
       const path = join(root, entry.name);
       if (entry.isDirectory()) {
-        return listMarkdownFiles(path);
+        return listFiles(path);
       }
-      if (entry.isFile() && entry.name.endsWith(".md")) {
-        return [normalizePath(path)];
+      if (entry.isFile()) {
+        return [path];
       }
       return [];
     }),
@@ -35,15 +47,20 @@ async function listMarkdownFiles(root: string): Promise<readonly string[]> {
 }
 
 function isReferenced(path: string, content: string): boolean {
-  const normalized = normalizePath(path);
+  const normalized = repoRelative(path);
   const researchRelative = normalizePath(relative(RESEARCH_DIR, path));
   return content.includes(normalized) || content.includes(researchRelative);
 }
 
+async function hasExplicitUnindexedRationale(path: string): Promise<boolean> {
+  const content = await readFile(path, "utf8");
+  return UNINDEXED_RATIONALE_RE.test(content);
+}
+
 export async function auditResearchDocs(): Promise<AuditResult> {
   const [researchFiles, memoryFiles] = await Promise.all([
-    listMarkdownFiles(RESEARCH_DIR),
-    listMarkdownFiles(MEMORY_DIR),
+    listFiles(RESEARCH_DIR),
+    listFiles(MEMORY_DIR),
   ]);
 
   const memoryContents = await Promise.all(
@@ -52,16 +69,25 @@ export async function auditResearchDocs(): Promise<AuditResult> {
   const combinedMemoryContent = memoryContents.join("\n");
 
   const referenced: string[] = [];
+  const explicitlyUnindexed: string[] = [];
   const unreferenced: string[] = [];
   for (const file of researchFiles) {
     if (isReferenced(file, combinedMemoryContent)) {
-      referenced.push(file);
+      referenced.push(repoRelative(file));
+    } else if (await hasExplicitUnindexedRationale(file)) {
+      explicitlyUnindexed.push(repoRelative(file));
     } else {
-      unreferenced.push(file);
+      unreferenced.push(repoRelative(file));
     }
   }
 
-  return { researchFiles, memoryFiles, referenced, unreferenced };
+  return {
+    researchFiles: researchFiles.map(repoRelative),
+    memoryFiles: memoryFiles.map(repoRelative),
+    referenced,
+    explicitlyUnindexed,
+    unreferenced,
+  };
 }
 
 function describeIoError(err: unknown): string {
@@ -87,15 +113,20 @@ export async function main(): Promise<AuditExitCode> {
   }
 
   process.stderr.write(
-    `research-doc audit on ${RESEARCH_DIR} against ${MEMORY_DIR}/**/*.md\n`,
+    `research-doc audit on ${RESEARCH_LABEL} against ${MEMORY_LABEL}/**/*\n`,
   );
   process.stderr.write(`  research docs: ${String(result.researchFiles.length)}\n`);
   process.stderr.write(`  memory docs:   ${String(result.memoryFiles.length)}\n`);
   process.stderr.write(`  referenced:    ${String(result.referenced.length)}\n`);
+  process.stderr.write(
+    `  unindexed rationale: ${String(result.explicitlyUnindexed.length)}\n`,
+  );
   process.stderr.write(`  unreferenced:  ${String(result.unreferenced.length)}\n`);
 
   if (result.unreferenced.length === 0) {
-    process.stderr.write("\nall research docs are referenced from memory substrate\n");
+    process.stderr.write(
+      "\nall research docs are referenced from memory substrate or carry explicit unindexed rationale\n",
+    );
     return 0;
   }
 
