@@ -199,8 +199,8 @@ commutation with delay. Three candidate upgrades were considered:
   commute with `zInv`.
 * **Time-invariance** — `f ∘ zInv = zInv ∘ f` as stream
   operators. This IS B2; adding it as an axiom closes B2
-  trivially. In DBSP literature this corresponds to the LTI condition [corrected 2026-05-05: ~~unspoken premise of~~ paper makes it explicit via Theorem 3.3]
-  ~~Budiu et al. Proposition 3.5~~ Budiu et al. Theorem 3.3 ([corrected 2026-05-05: paper states LTI condition explicitly via Theorem 3.3, not in an unspoken premise]).
+  trivially. In DBSP literature this corresponds to the LTI
+  condition: ~~unspoken premise of Budiu et al. Proposition 3.5~~ Budiu et al. Theorem 3.3 [corrected 2026-05-05: paper states `Q^Delta = Q` for LTI operators explicitly via Theorem 3.3, not in an unspoken premise].
 * **Pointwise action** — `f s n = φ (s n)` for some
   `AddMonoidHom φ`. Strong; implies both causal and time-
   invariant. But **disqualifies** the DBSP primitives: `I s n =
