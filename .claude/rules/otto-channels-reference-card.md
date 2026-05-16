@@ -137,6 +137,37 @@ Substrate-honest takeaway: the `refresh-before-decide` invariant
 scope, not just per-tick. The "highest on disk + 1" heuristic is incomplete;
 PRs in flight are also state.
 
+### Subdecimal vs top-level scheme
+
+Two ID-allocation schemes operate in Zeta; picking the wrong one creates
+"valid-but-out-of-convention" rows that need renumber:
+
+| Scheme | Use for | Example |
+|---|---|---|
+| **Subdecimal** `B-NNNN.M` | Children / slices of an EXISTING parent row | `B-0170.4` (4th slice of B-0170 substrate-claim-checker; shipped via [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)) |
+| **New top-level** `B-NNNN` | New umbrella / standalone row that is NOT a child of any existing parent | `B-0539` (new umbrella for Otto-BFT internal-quorum; shipped via [PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)) |
+
+**The check that catches the wrong-scheme failure mode**: before authoring
+children for an existing parent, grep for existing subdecimal siblings:
+
+```bash
+# Example for B-0170 children:
+find docs/backlog -name "B-0170.*.md" -type f | head
+gh pr list --state all --search '"B-0170."' --limit 10
+```
+
+If siblings already exist (e.g., `B-0170.4` already in flight), use the next
+free subdecimal — NOT a new top-level number.
+
+Empirical collision 2026-05-15: Otto on Desktop decomposed B-0170 into
+new top-levels B-0538/B-0539/B-0540/B-0541 without checking for existing
+`B-0170.N` siblings. [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)
+had already landed `B-0170.4` via the subdecimal scheme, AND Otto-CLI had
+separately claimed B-0539 for the Otto-BFT umbrella ([PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)).
+Otto-Desktop's branch was superseded; the subdecimal-scheme check would
+have prevented the collision entirely AND surfaced the existing intent
+overlap (B-0541 eval-set fixture tests ≈ B-0170.4 eval-set fixture seed).
+
 ## Empirical evidence (2026-05-13 session)
 
 All 10 channels were exercised in a single session:
