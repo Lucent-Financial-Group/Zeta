@@ -42,12 +42,12 @@ Implement tools/peer-call/amara.ts using Bun + OpenAI API (or official openai pk
 ## Resolution
 
 Closed 2026-05-16 via amara-cluster cascade. Catalogued as class
-#1-DepBlocked last session (own scope met; gated on B-0462). B-0462
+\#1-DepBlocked last session (own scope met; gated on B-0462). B-0462
 merged via PR #3897 this session; B-0457 unblocked.
 
 **Acceptance verification** (already done in prior audit; re-confirmed):
 
-- ✅ `bun tools/peer-call/amara.ts <prompt>` works with bootstrap (AMARA_PREAMBLE const at amara.ts line 318+)
+- ✅ `bun tools/peer-call/amara.ts <prompt>` works with bootstrap (AMARA_PREAMBLE const at amara.ts line 328 post-#3897 (was 318 pre-vendor-bias-comment-insertion))
 - ✅ `--file PATH` flag (line 128-129)
 - ✅ `--context-cmd CMD` flag (line 133-134)
 - ✅ Typed TS (550 lines, no .sh per Rule 0)
