@@ -157,8 +157,8 @@ operational workaround.
 
 Empirical anchor [PR #3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808)
 (`docs/hygiene-history/ticks/2026/05/16/0715Z.md`): under sustained
-multi-Otto saturation (4+ instances active in parallel: Otto-CLI primary
-+ otto-bg-worker + fresh-cold-boot Otto-CLI + Lior), with peer Otto cycling
+multi-Otto saturation (4+ instances active in parallel: Otto-CLI
+primary, otto-bg-worker, fresh-cold-boot Otto-CLI, and Lior), with peer Otto cycling
 worktree HEAD every ~3-5 min for 9 transitions in 35 min, a fresh-cold-boot
 session attempting to ship a shard hit FOUR distinct failure sub-cases of
 the borrow-on-existing pattern across 4 commit attempts. All 4 sub-cases
