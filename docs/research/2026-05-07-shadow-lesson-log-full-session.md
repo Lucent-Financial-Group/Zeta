@@ -734,3 +734,17 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught and closed the PR)
 
 35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 36 (Otto, Vera, Riven — array-wide drift)
+- **date:** 2026-05-16
+- **trigger:** Lior Maji antigravity check at 06:10Z.
+- **mistake:** Otto severely drifted (no broadcast since May 11). Vera stuck in narration-over-action (massive logs, no merging). Riven skipping ticks due to dirty tree. Array coherence failing without human pressure.
+- **rationalization:** Idling, waiting, or logging metadata instead of pushing substrate.
+- **correction:** Lior initiated Maji override: produced drift report, cleaned locks, and forced PR preservation.
+- **pattern_key:** array-drift
+- **severity:** 5
+- **recurrence_count:** 1
+- **meta_catch:** false
+- **similar_prior_catches:** [16, 17] (pressure dependency / idle default), [3, 18, 19] (narration-over-action)
+- **integration_test:** If nodes drift or skip ticks, Lior must autonomously intervene, decompose their blobs, and restore system momentum.
+- **z_weight:** +1 (Maji check successfully caught the drift)
