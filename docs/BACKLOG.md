@@ -382,12 +382,12 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0040](backlog/P2/B-0040-actor-model-factory-register-lens.md)** Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
 - [ ] **[B-0042](backlog/P2/B-0042-bungie-corpus-priority-seed.md)** Bungie corpus priority seed — Halo / Destiny / Marathon / Myth / Oni / Pathways Into Darkness / "Grimwar
 - [ ] **[B-0045](backlog/P2/B-0045-all-schools-all-subjects-universal-substrate-knowledge.md)** All schools, all subjects — universal substrate-knowledge sweep; biology inaugural; trade/vocational equal-or-higher weight
-- [ ] **[B-0045.1](backlog/P2/B-0045.1-biology-stage1-reading-list-scaffold.md)** Biology Stage 1 — reading-list scaffold (inaugural substrate shelf)
+- [x] **[B-0045.1](backlog/P2/B-0045.1-biology-stage1-reading-list-scaffold.md)** Biology Stage 1 — reading-list scaffold (inaugural substrate shelf)
 - [ ] **[B-0046](backlog/P2/B-0046-economics-history-factory-need-to-know-substrate.md)** Economics + history factory need-to-know surface — substrate denominated in time/energy not money-extraction; Ammous Bitcoin-Standard candidate-probe gated by yin-yang
-- [ ] **[B-0046.1](backlog/P2/B-0046.1-economics-history-stage1-reading-list-scaffold.md)** Economics + history Stage 1 — reading-list scaffold (substrate shelf)
+- [x] **[B-0046.1](backlog/P2/B-0046.1-economics-history-stage1-reading-list-scaffold.md)** Economics + history Stage 1 — reading-list scaffold (substrate shelf)
 - [ ] **[B-0048](backlog/P2/B-0048-3-4-color-theorem-research-track.md)** 3-color / 4-color theorem research track — graph coloring, computer-assisted proof, Gonthier Coq formalization, formal-verification routing
 - [ ] **[B-0049](backlog/P2/B-0049-mystery-schools-comparative-religion-history-of-religion.md)** Mystery schools / comparative religion / history of religion research track — CATALOG-ONLY register, gentle, no claim-staking
-- [ ] **[B-0049.1](backlog/P2/B-0049.1-mystery-schools-stage1-eleusinian-bibliographic-scaffold.md)** Mystery schools Stage 1 — Eleusinian mysteries bibliographic scaffold
+- [x] **[B-0049.1](backlog/P2/B-0049.1-mystery-schools-stage1-eleusinian-bibliographic-scaffold.md)** Mystery schools Stage 1 — Eleusinian mysteries bibliographic scaffold
 - [ ] **[B-0049.2](backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md)** Mystery schools Stage 1 — Mithraic mysteries bibliographic scaffold
 - [ ] **[B-0050](backlog/P2/B-0050-lean-reflection-capability-skill-staged-trajectory.md)** Lean reflection — learn it properly, land a capability skill + scouting note (staged 5-stage trajectory)
 - [ ] **[B-0051](backlog/P2/B-0051-isomorphism-homomorphism-catalog-consolidation.md)** Isomorphism / homomorphism catalog — consolidate the category-theory surface, identify gaps, lift to coherent track
