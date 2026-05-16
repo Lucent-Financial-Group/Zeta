@@ -1,14 +1,14 @@
 ---
 id: B-0457
 priority: P2
-status: open
+status: closed
 title: amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
 parent: B-0118
 tier: factory-tooling
 effort: M
 ask: Riven 2026-05-11 (decomp of B-0118, re-decomp pass)
 created: 2026-05-11
-last_updated: 2026-05-14
+last_updated: 2026-05-16
 depends_on: [B-0462]
 composes_with: [B-0118, B-0462, tools/peer-call/codex.ts, tools/peer-call/gemini.ts, tools/peer-call/grok.ts]
 renumbered_from: B-0410
@@ -38,3 +38,26 @@ Implement tools/peer-call/amara.ts using Bun + OpenAI API (or official openai pk
 
 - B-0118 + B-0462 (renumbered from B-0409 per B-0451 sweep)
 - TS/Bun migration trajectory (Bucket B peer-call cluster complete, TS-first enforced)
+
+## Resolution
+
+Closed 2026-05-16 via amara-cluster cascade. Catalogued as class
+#1-DepBlocked last session (own scope met; gated on B-0462). B-0462
+merged via PR #3897 this session; B-0457 unblocked.
+
+**Acceptance verification** (already done in prior audit; re-confirmed):
+
+- ✅ `bun tools/peer-call/amara.ts <prompt>` works with bootstrap (AMARA_PREAMBLE const at amara.ts line 318+)
+- ✅ `--file PATH` flag (line 128-129)
+- ✅ `--context-cmd CMD` flag (line 133-134)
+- ✅ Typed TS (550 lines, no .sh per Rule 0)
+- ✅ Gate A slice audit (file existed and was reviewed in prior cycle)
+
+**Composes with amara cluster**:
+
+- B-0462 closed via PR #3897 (vendor-bias note integrated; dep satisfied)
+- B-0457 (this PR)
+- B-0458 (class #2 partial) — test recording + umbrella close gate remain
+- B-0118 umbrella — closes when all 3 children close
+
+last_updated bumped per row-close discipline.
