@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { BUS_DIR, ensureDir, list } from "./bus";
 import type { MessageEnvelope, Topic } from "./types";
 
@@ -17,21 +17,20 @@ export async function subscribeOnce<T extends Topic>(
   ensureDir();
   const seenFile = join(BUS_DIR, `seen-${surface}.json`);
   let seenIds: Set<string>;
-  
+
+  // Rely on a single readFileSync + catch instead of existsSync+read; this
+  // avoids a TOCTOU race (CodeQL js/file-system-race) and is functionally
+  // equivalent for our local-only seen.json.
   try {
-    if (existsSync(seenFile)) {
-      const data = JSON.parse(readFileSync(seenFile, "utf8"));
-      seenIds = new Set(Array.isArray(data) ? data : []);
-    } else {
-      seenIds = new Set();
-    }
+    const data = JSON.parse(readFileSync(seenFile, "utf8"));
+    seenIds = new Set(Array.isArray(data) ? data : []);
   } catch {
     seenIds = new Set();
   }
 
   // Get all envelopes matching topic and targeted at this surface (or broadcast)
   const envelopes = adapters.list({ topic, to: surface as any });
-  
+
   let newlySeen = false;
 
   for (const envelope of envelopes) {
