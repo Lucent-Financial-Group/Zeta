@@ -15,7 +15,7 @@ parent: B-0139
 **Effort:** S
 
 ## What
-Encode the verify-before-state-claim audit lesson from B-0139. When filing a backlog row for new formalization or engineering work, the array must grep the codebase for existing implementations BEFORE asserting "TRACTABLE START" or similar clean-start framing.
+Encode the verify-before-state-claim audit lesson from B-0139. When filing a backlog row for new formalization or engineering work, the agent must grep the codebase for existing implementations BEFORE asserting "TRACTABLE START" or similar clean-start framing.
 
 ## Why
 This is a class-level lesson explicitly required by B-0139 (Acceptance Criterion 6) to prevent lineage-discontinuity failure modes.
