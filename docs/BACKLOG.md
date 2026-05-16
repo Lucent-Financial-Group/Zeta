@@ -298,7 +298,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0491](backlog/P1/B-0491-dawn-universal-biz-templates-persona-map-2026-05-14.md)** B-0429.7 — Dawn + Universal business templates persona map
 - [ ] **[B-0492](backlog/P1/B-0492-cross-product-persona-reuse-refused-registry-2026-05-14.md)** B-0429.8 — Cross-product persona reuse map + refused-personas registry
 - [ ] **[B-0493](backlog/P1/B-0493-skill-catalog-persona-crossref-2026-05-14.md)** B-0429.9 — Skill catalog × persona cross-reference
-- [ ] **[B-0494](backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md)** Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot
+- [x] **[B-0494](backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md)** Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot
 - [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
 - [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
@@ -382,12 +382,12 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0040](backlog/P2/B-0040-actor-model-factory-register-lens.md)** Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
 - [ ] **[B-0042](backlog/P2/B-0042-bungie-corpus-priority-seed.md)** Bungie corpus priority seed — Halo / Destiny / Marathon / Myth / Oni / Pathways Into Darkness / "Grimwar
 - [ ] **[B-0045](backlog/P2/B-0045-all-schools-all-subjects-universal-substrate-knowledge.md)** All schools, all subjects — universal substrate-knowledge sweep; biology inaugural; trade/vocational equal-or-higher weight
-- [ ] **[B-0045.1](backlog/P2/B-0045.1-biology-stage1-reading-list-scaffold.md)** Biology Stage 1 — reading-list scaffold (inaugural substrate shelf)
+- [x] **[B-0045.1](backlog/P2/B-0045.1-biology-stage1-reading-list-scaffold.md)** Biology Stage 1 — reading-list scaffold (inaugural substrate shelf)
 - [ ] **[B-0046](backlog/P2/B-0046-economics-history-factory-need-to-know-substrate.md)** Economics + history factory need-to-know surface — substrate denominated in time/energy not money-extraction; Ammous Bitcoin-Standard candidate-probe gated by yin-yang
-- [ ] **[B-0046.1](backlog/P2/B-0046.1-economics-history-stage1-reading-list-scaffold.md)** Economics + history Stage 1 — reading-list scaffold (substrate shelf)
+- [x] **[B-0046.1](backlog/P2/B-0046.1-economics-history-stage1-reading-list-scaffold.md)** Economics + history Stage 1 — reading-list scaffold (substrate shelf)
 - [ ] **[B-0048](backlog/P2/B-0048-3-4-color-theorem-research-track.md)** 3-color / 4-color theorem research track — graph coloring, computer-assisted proof, Gonthier Coq formalization, formal-verification routing
 - [ ] **[B-0049](backlog/P2/B-0049-mystery-schools-comparative-religion-history-of-religion.md)** Mystery schools / comparative religion / history of religion research track — CATALOG-ONLY register, gentle, no claim-staking
-- [ ] **[B-0049.1](backlog/P2/B-0049.1-mystery-schools-stage1-eleusinian-bibliographic-scaffold.md)** Mystery schools Stage 1 — Eleusinian mysteries bibliographic scaffold
+- [x] **[B-0049.1](backlog/P2/B-0049.1-mystery-schools-stage1-eleusinian-bibliographic-scaffold.md)** Mystery schools Stage 1 — Eleusinian mysteries bibliographic scaffold
 - [ ] **[B-0049.2](backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md)** Mystery schools Stage 1 — Mithraic mysteries bibliographic scaffold
 - [ ] **[B-0050](backlog/P2/B-0050-lean-reflection-capability-skill-staged-trajectory.md)** Lean reflection — learn it properly, land a capability skill + scouting note (staged 5-stage trajectory)
 - [ ] **[B-0051](backlog/P2/B-0051-isomorphism-homomorphism-catalog-consolidation.md)** Isomorphism / homomorphism catalog — consolidate the category-theory surface, identify gaps, lift to coherent track
