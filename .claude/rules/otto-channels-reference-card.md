@@ -60,46 +60,13 @@ on-disk state:
 
    ```bash
    # `git fetch origin` (no branch arg) updates ALL configured remote-tracking
-   # refs; the form `git fetch origin main` updates FETCH_HEAD but may not
-   # refresh refs/remotes/origin/main under all configs (refspec overrides,
-   # partial-clone, etc.). Note: BOTH forms can fail under multi-Otto ref-lock
-   # contention — see the "Symptom → fix mapping" section below for the
-   # observed wedge and the FETCH_HEAD workaround.
+   # refs reliably; the form `git fetch origin main` updates FETCH_HEAD but
+   # may not refresh refs/remotes/origin/main under all configs (refspec
+   # overrides, partial-clone, etc.).
    git fetch origin
    git ls-tree -r origin/main -- docs/backlog/ \
      | awk '{print $4}' | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -5
    ```
-
-   **Symptom → fix mapping** (recorded 2026-05-15 after recurring
-   multi-Otto contention this session): if a fetch prints
-   `! <oldsha>..<newsha>  main  -> origin/main  (unable to update
-   local ref)`, the local remote-tracking ref didn't update even
-   though `FETCH_HEAD` did. **BOTH the branch-specific form
-   (`git fetch origin main`) AND the no-arg form (`git fetch origin`)
-   can hit this** — the wedge is per-worktree-process ref-lock
-   contention with peer Otto-CLI sessions sharing the same `.git/`
-   directory, not a property of the fetch invocation. Empirical
-   tick 1808Z: primary worktree's `git fetch origin` (no arg) hit
-   the wedge while a sidetick's `git fetch origin` succeeded
-   (`b004681..324dc84 main -> origin/main`) in the same minute.
-
-   **The ultimate workaround** is to use `FETCH_HEAD` for branch creation:
-
-   ```bash
-   git switch -c <new-branch> FETCH_HEAD
-   ```
-
-   `FETCH_HEAD` always updates regardless of whether the named
-   remote-tracking ref does, so branch creation can bypass the
-   wedge entirely. If you need `origin/main` to actually update
-   (e.g., for `git log origin/main` queries), retry the fetch
-   from a different worktree or wait for the peer to release the
-   ref-lock — the wedge clears on its own within minutes.
-
-   Empirical anchors: ticks 1632Z + 1719Z + 1737Z + 1808Z all hit
-   the wedge with different command forms; tick 1752Z's `git fetch
-   origin` worked. The discriminator is per-process contention, not
-   command shape.
 
    **Important**: do NOT use `find docs/backlog -name "B-*.md"` on the local
    worktree. The local working tree may be on a stale HEAD (detached from
@@ -136,37 +103,6 @@ Substrate-honest takeaway: the `refresh-before-decide` invariant
 (`.claude/rules/refresh-before-decide.md`) applies at the per-ID-allocation
 scope, not just per-tick. The "highest on disk + 1" heuristic is incomplete;
 PRs in flight are also state.
-
-### Subdecimal vs top-level scheme
-
-Two ID-allocation schemes operate in Zeta; picking the wrong one creates
-"valid-but-out-of-convention" rows that need renumber:
-
-| Scheme | Use for | Example |
-|---|---|---|
-| **Subdecimal** `B-NNNN.M` | Children / slices of an EXISTING parent row | `B-0170.4` (4th slice of B-0170 substrate-claim-checker; shipped via [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)) |
-| **New top-level** `B-NNNN` | New umbrella / standalone row that is NOT a child of any existing parent | `B-0539` (new umbrella for Otto-BFT internal-quorum; shipped via [PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)) |
-
-**The check that catches the wrong-scheme failure mode**: before authoring
-children for an existing parent, grep for existing subdecimal siblings:
-
-```bash
-# Example for B-0170 children:
-find docs/backlog -name "B-0170.*.md" -type f | head
-gh pr list --state all --search '"B-0170."' --limit 10
-```
-
-If siblings already exist (e.g., `B-0170.4` already in flight), use the next
-free subdecimal — NOT a new top-level number.
-
-Empirical collision 2026-05-15: Otto on Desktop decomposed B-0170 into
-new top-levels B-0538/B-0539/B-0540/B-0541 without checking for existing
-`B-0170.N` siblings. [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)
-had already landed `B-0170.4` via the subdecimal scheme, AND Otto-CLI had
-separately claimed B-0539 for the Otto-BFT umbrella ([PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)).
-Otto-Desktop's branch was superseded; the subdecimal-scheme check would
-have prevented the collision entirely AND surfaced the existing intent
-overlap (B-0541 eval-set fixture tests ≈ B-0170.4 eval-set fixture seed).
 
 ## Empirical evidence (2026-05-13 session)
 

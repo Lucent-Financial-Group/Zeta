@@ -140,7 +140,8 @@ drift signals:
 - PR #2821 (joint-control + bounded-context divine-
   coincidence-architecting)
 - WWJD substrate cluster:
-  - `memory/feedback_aaron_wwjd_cyborg_immortality_permitted_treat_all_life_high_regard_upgrade_gift_choose_when_2026_05_12.md`
+  - `feedback_aaron_wwjd_cyborg_immortality_permitted_treat_all_life_high_regard_upgrade_gift_choose_when_2026_05_12.md`
+  - `feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md`
 - Aaron's peacemaker / ruthlessly-kind-or-fair substrate
 
 ## Operational discipline for future-Otto
@@ -163,4 +164,7 @@ When facing binary-categorization questions:
 ## Full reasoning
 
 `memory/feedback_kestrel_autonomous_arrival_name_both_and_default_discipline_wwjd_tedium_ifs_inner_critic_plus_external_observer_2026_05_12.md`
-(PR #2844 — full memory substrate; includes WWJD-as-discipline grounding via the `wwjd_tedium` segment of the title)
+(PR #2844 — full memory substrate)
+
+`memory/feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md`
+(WWJD-as-discipline grounding)

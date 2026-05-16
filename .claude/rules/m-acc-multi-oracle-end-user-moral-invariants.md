@@ -131,8 +131,8 @@ references m/acc:
 - `.claude/rules/honor-those-that-came-before.md` (per anti-cult,
   no central moral authority; this rule names the structural
   alternative)
-- `.claude/skills/naming-expert/SKILL.md` convention applies if m/acc
-  goes public-surface (Ilyana review)
+- `.claude/rules/naming-expert.md` convention applies if m/acc goes
+  public-surface (Ilyana review)
 
 ## Composes with substrate
 
