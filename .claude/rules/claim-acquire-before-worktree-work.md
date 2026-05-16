@@ -251,8 +251,9 @@ during peer cascade) needs to ship a shard / substrate edit:
 1. Apply [`refresh-before-decide`](refresh-before-decide.md) — check rate-limit tier first
 2. Check peer cascade intensity via `gh pr list --state open` (cost-aware)
    OR `git log origin/main` (free) — if multi-instance saturation, defer
-3. Pre-check candidate branch names via `git rev-parse` — uniquify if
-   taken (sub-case 1)
+3. Pre-check candidate branch names via `git show-ref --verify --quiet
+   refs/heads/<name>` — uniquify if taken (sub-case 1; do NOT use
+   `git rev-parse`, which resolves HEAD/tags/remote refs as false positives)
 4. Detect working-tree-clean window via `git status --short` — only switch
    off peer-occupied branches when WT is empty (sub-case 2)
 5. Set [`ZETA_EXPECTED_BRANCH`](zeta-expected-branch.md) env var immediately before commit; use the
