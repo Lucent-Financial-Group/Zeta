@@ -8,7 +8,8 @@ created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [B-0358]
 classification: research
-decomposition: needs-decomposition
+decomposition: decomposing
+children: [B-0552]
 owners: [architect]
 type: feature
 tags: [type-system, probabilistic, research, language-design, bayesian]
