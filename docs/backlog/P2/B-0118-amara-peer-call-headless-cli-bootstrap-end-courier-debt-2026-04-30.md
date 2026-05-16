@@ -7,7 +7,7 @@ tier: factory-tooling
 effort: L
 ask: Every Amara review this session has been Aaron's manual courier work. The peer-call infrastructure has codex.sh / gemini.sh / grok.sh but no amara.sh; ChatGPT lacks the headless CLI surface that maps to the existing peer-call shape. Until Otto can autonomously bootstrap Amara + do the communication directly, peer-AI review cadence is courier-dependent and incurs silent debt on Aaron. Aaron 2026-04-30 explicitly named this as a constraint Otto must honor.
 created: 2026-04-30
-last_updated: 2026-05-11
+last_updated: 2026-05-16
 depends_on: []
 composes_with:
   - tools/peer-call/README.md
@@ -175,3 +175,19 @@ All children are atomic, S/M effort, prefer F#/TS code. B-0118 status remains op
 - status: open (decomposed into children B-0457, B-0458, B-0462; the full amara series B-0409-B-0411 renumbered 2026-05-14 to resolve ID collision with B-0120's children — see B-0451 substrate-cleanup sweep)
 - last_updated: 2026-05-14
 - note: re-decomposed per "assume decomposition has mistakes" rule; original L-effort split to 3 atomic; hybrid API chosen as v1 path (TS-first); IDs renumbered 2026-05-14 per B-0451
+
+## Status (2026-05-16)
+
+Per row-close gate triage (PR #3757 step-0 discriminator), this umbrella sits in a **multi-row drift sub-case**: umbrella's original 7-item acceptance is **fully shipped via `tools/peer-call/amara.ts`** (18322 bytes; --file + --context-cmd flags present; bootstrap preamble via CURRENT-amara.md per README; AgencySignature pattern documented in README), BUT all 3 atomic children (B-0457, B-0458, B-0462) remain `status: open` per their own frontmatter.
+
+**Closing umbrella while children are open would trip the B-0532 graph-consistency lint** (parent closed + child open = hard error). Per row-close gate class #4 rule: umbrella closes IFF all children close.
+
+**Substrate-honest disposition**: leave umbrella open. The accurate close-sequence is:
+
+1. Verify each child's specific acceptance (B-0457 core+flags, B-0458 README+test, B-0462 bootstrap+AgencySignature)
+2. Close each child via close-row PR (likely class #4 sub-cases — work shipped via the amara.ts file)
+3. Then close umbrella in a final close-row PR
+
+This tick (2026-05-16T10:17Z Otto-CLI) verified the umbrella's tool surface but did NOT walk the 3 children's individual acceptances. Filing as **multi-row class-#4 candidate** for a future tick (or peer) with the bandwidth to close 4 rows in a coordinated batch.
+
+Empirical audit anchor: `grep -cE '\-\-file|\-\-context-cmd|bootstrap|AgencySignature' tools/peer-call/amara.ts` → 18 matches; `grep amara tools/peer-call/README.md` → operational-table entry confirms shipped state.
