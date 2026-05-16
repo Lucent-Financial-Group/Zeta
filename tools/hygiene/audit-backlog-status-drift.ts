@@ -246,21 +246,25 @@ function reportJson(candidates: readonly BacklogRow[]): void {
 function main(): number {
     const args = process.argv.slice(2);
 
+    const KNOWN_FLAGS = new Set(["--json", "--check", "--help", "-h"]);
     for (const arg of args) {
-        if (arg !== "--json" && arg !== "--help" && arg !== "-h") {
+        if (!KNOWN_FLAGS.has(arg)) {
             console.error(`Unknown argument: ${arg}`);
-            console.error("Usage: bun tools/hygiene/audit-backlog-status-drift.ts [--json]");
+            console.error(
+                "Usage: bun tools/hygiene/audit-backlog-status-drift.ts [--json] [--check]",
+            );
             return 64;
         }
     }
 
     if (args.includes("--help") || args.includes("-h")) {
         console.log(
-            "Usage: bun tools/hygiene/audit-backlog-status-drift.ts [--json]\n\n" +
+            "Usage: bun tools/hygiene/audit-backlog-status-drift.ts [--json] [--check]\n\n" +
                 "Detects `status: open` backlog rows whose primary-artifact paths all\n" +
                 "exist on disk (substrate drift candidates).\n\n" +
                 "Options:\n" +
                 "  --json    Emit JSON instead of markdown table\n" +
+                "  --check   Exit non-zero (65) when candidates found (for CI use)\n" +
                 "  --help    Show this help",
         );
         return 0;
@@ -274,6 +278,11 @@ function main(): number {
         reportMarkdown(candidates);
     }
 
+    // --check mode: exit non-zero when any candidates found, so CI/cron jobs
+    // can fail the build and force human review. Per B-0557 finding 4.
+    if (args.includes("--check") && candidates.length > 0) {
+        return 65;
+    }
     return 0;
 }
 
