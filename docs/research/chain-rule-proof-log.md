@@ -110,10 +110,10 @@ Neither axiom closes B2. The failure cases were:
    group-homomorphism axiom at the stream level forces this.
 
 B2 is the statement that linear stream operators *commute with
-delay*. At the DBSP paper level this is the LTI condition (~~smuggled in as a
-convention~~ Budiu et al. Theorem 3.3 explicitly states `Q^Delta = Q` for LTI operators) [corrected 2026-05-05: paper makes it explicit]
-naming the sub-property]; in Lean it must be an explicit part of the contract.
-
+B2 is the statement that linear stream operators *commute with
+delay*. At the DBSP paper level this is the LTI condition: ~~smuggled in as a
+convention (Budiu et al. Proposition 3.5 uses it without naming it)~~
+[corrected 2026-05-05: Budiu et al. Theorem 3.3 explicitly states `Q^Delta = Q` for LTI operators; the paper makes it explicit, not smuggled-in]; in Lean it must be an explicit part of the contract.
 ### Round-35 resolution — the hierarchy
 
 Instead of forcing one monolithic predicate, round 35 landed a
