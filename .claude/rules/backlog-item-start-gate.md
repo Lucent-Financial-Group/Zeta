@@ -87,8 +87,9 @@ PR merge?" is correlated with full completion but does NOT imply it.
 
 The `claim acquire` step (per
 [`.claude/rules/claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md))
-+ an **existence-check** on the row's proposed-mechanization path BEFORE
-writing implementation is the corresponding pre-impl-time discipline.
+combined with an **existence-check** on the row's proposed-mechanization
+path BEFORE writing implementation is the corresponding pre-impl-time
+discipline.
 Existence-check cost is ~3 seconds; saves the entire tick if the work
 already shipped.
 
@@ -111,4 +112,4 @@ partial-completion candidates (B-0517 Phase 1 cleanup undone; B-0537
 Slice A cleanup undone) that a naive sweep would have miscategorized.
 Empirical anchor: shards
 [`docs/hygiene-history/ticks/2026/05/16/0425Z.md`](../../docs/hygiene-history/ticks/2026/05/16/0425Z.md)
-+ [`0444Z.md`](../../docs/hygiene-history/ticks/2026/05/16/0444Z.md).
+and [`0444Z.md`](../../docs/hygiene-history/ticks/2026/05/16/0444Z.md).
