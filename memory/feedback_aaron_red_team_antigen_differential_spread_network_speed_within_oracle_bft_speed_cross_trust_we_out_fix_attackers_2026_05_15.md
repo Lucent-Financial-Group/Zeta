@@ -11,6 +11,32 @@ created: 2026-05-15
 
 (2026-05-15 to Kestrel on claude.ai, answering the threat-catalog-governance question.)
 
+## Aaron's correction (2026-05-16) — representation strategy is the new piece
+
+Otto-CLI initially framed this as "genuinely new architecture." Aaron corrected:
+
+> *"we've spoken about this before and representing these as hkt in a f# fork based on clifford algebra for ai type safety and computation expression that compose"*
+
+The architecture itself is **established prior substrate** (immune-system-pattern + multi-oracle + red-team-as-antigen has been discussed before). What's load-bearing is the **representation strategy**:
+
+- **HKT (Higher-Kinded Types) in an F# fork** — type-level representation of the antigen / oracle / clearing primitives
+- **Based on Clifford algebra** — geometric algebra as the algebraic substrate for the type system (composes with existing Clifford-as-Dirac-equation-foundation substrate per `algebra-owner` skill)
+- **For AI type safety** — the F# compiler is the asymmetric critic per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`; types either compose or they don't
+- **Computation expressions that compose** — F# CE OCP (Closed-Modification, Open-Extension; per the 7-interrogatives + F# CE OCP alignment substrate)
+
+So the substrate-honest read: the immune-system architecture is established design. The path-to-implementation is via the F# fork with HKT over Clifford algebra + composable computation expressions. That's the spec-quality leverage (per `feedback_aaron_genie_bottle_offshore_firm_spec_quality_enables_ai_autonomy_*.md`) that lets the design ship as substrate that the compiler can verify.
+
+Composes with prior substrate cluster:
+
+- PR #2928 (F# fork for AI safety strategic substrate)
+- PR #2935 (F# fork concrete architecture)
+- PR #2936 (Recursive Type Providers + Roslyn Source Generators)
+- PR #2913 (HKT-MDM universality — DV2.0 hub-satellite as natural HKT instance)
+- PR #2914 (Clifford/HKT vocabulary list)
+- `algebra-owner` skill (Z-set + Clifford + BP/EP existing F# substrate)
+- `q-sharp` skill (Pauli operators)
+- `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
+
 ## The architecture, decomposed
 
 ### Red team → antigen
