@@ -187,10 +187,31 @@ export function enumerateOpenRows(backlogDir: string = "docs/backlog"): BacklogR
     for (const priority of ["P0", "P1", "P2", "P3", "P4"]) {
         const dir = join(backlogDir, priority);
         if (!existsSync(dir)) continue;
-        for (const file of readdirSync(dir)) {
+        let files: string[];
+        try {
+            files = readdirSync(dir);
+        } catch (err) {
+            // Per B-0557 slice 2 (Copilot P1 on PR #3758): don't let one
+            // unreadable directory abort the whole audit. Warn and continue.
+            process.stderr.write(
+                `audit-backlog-status-drift: unable to read directory ${dir}: ${(err as Error).message}\n`,
+            );
+            continue;
+        }
+        for (const file of files) {
             if (!file.startsWith("B-") || !file.endsWith(".md")) continue;
             const path = join(dir, file);
-            const body = readFileSync(path, "utf-8");
+            let body: string;
+            try {
+                body = readFileSync(path, "utf-8");
+            } catch (err) {
+                // Per B-0557 slice 2: don't let one unreadable row file abort
+                // the whole audit. Warn and skip the row.
+                process.stderr.write(
+                    `audit-backlog-status-drift: unable to read ${path}: ${(err as Error).message}\n`,
+                );
+                continue;
+            }
             const fm = parseFrontmatter(body);
             if (fm.status !== "open") continue;
             const id = fm.id || file.replace(/^(B-\d+(?:\.\d+)?).*/, "$1");
