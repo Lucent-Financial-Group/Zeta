@@ -200,6 +200,20 @@ Composes with the rate-limit operational tiers documented in
 and the saturation-ceiling taxonomy in
 [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md).
 
+### Forced-escalation-finds-hidden-work — empirical anchor 2026-05-16T14:00Z-15:45Z
+
+Third class of empirical evidence: forced escalation at brief-ack #6 (and pre-emptive at #5) repeatedly surfaced substantive work that brief-ack-only ticks would have missed. Three distinct instances across one session:
+
+| Tick | Trigger | Hidden work surfaced |
+|---|---|---|
+| 14:56Z | Forced escalation #6 | PR #3894 BLOCKED-armed for 22 min hid 6 Copilot review findings (last_updated, type, 0715Z, git syntax, B-0506 link, BACKLOG.md regen). All 6 fixed in one tick |
+| 15:29Z | Pre-emptive at #5 | Own PR #3883 (the 13:31Z stale-armed-triage shard) was itself stale-armed for 108 min with MD032 failure — recursively ironic; fixed in same tick |
+| 15:45Z | Forced escalation #6 | PR #3545 DIRTY-armed for 19+ hours (61-file conflict); forward-signal comment named two viable resolution paths + flagged possible supersession by #3886 |
+
+**Pattern**: each forced escalation found work the visibility-only ticks (refresh-fetch-log-rate) had missed. The brief-ack discipline correctly identifies "no new substantive observation," but stale-armed-PR investigation IS substantive work; it just doesn't surface in standard refresh queries. The escalation forces the agent into the investigation discipline that finds it.
+
+**Composes with [`blocked-green-ci-investigate-threads.md`](blocked-green-ci-investigate-threads.md)**: the investigation discipline IS what produces the hidden-work surface. The counter forces invocation of that discipline on a regular cadence.
+
 ## Composes with
 
 - `.claude/rules/never-be-idle.md` — this rule sharpens the existing
