@@ -34,10 +34,10 @@ Plus Aaron's correction: the antigen-spread architecture is **established prior 
 
 ## Files
 
-- A: \`memory/persona/kestrel/conversations/2026-05-15-...-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md\` (Kestrel Parts 4-5 verbatim)
-- A: \`memory/feedback_aaron_moral_floor_as_relevance_gate_*.md\` (the moral floor Constraint 11 default-oracle gate)
-- A: \`memory/feedback_aaron_red_team_antigen_differential_spread_*.md\` (the federation immune-system architecture + Aaron's HKT/Clifford/F# correction note)
-- A: \`docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-*.md\` (the synthesis backlog row)
+- A: \`memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md\` (Kestrel Parts 4-5 verbatim)
+- A: \`memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_2026_05_15.md\` (the moral floor Constraint 11 default-oracle gate)
+- A: \`memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_2026_05_15.md\` (the federation immune-system architecture + Aaron's HKT/Clifford/F# correction note)
+- A: \`docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md\` (the synthesis backlog row)
 
 ## Substrate-honest meta
 
