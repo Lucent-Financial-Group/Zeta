@@ -129,14 +129,14 @@ export function extractPrimaryArtifacts(body: string): string[] {
     let sectionMode: SectionMode = "other";
 
     for (const line of lines) {
-        if (line.startsWith("## ")) {
-            // Tri-state classification — PRIMARY_SECTIONS gate extraction,
-            // SKIP_SECTIONS are explicitly recognised cross-reference sections
-            // (Composes with / Origin / Resolution / etc.), and everything
-            // else is "other" (no extraction, no skip-list match needed).
-            // Making SKIP_SECTIONS load-bearing per the github-code-quality
-            // finding on PR #3758: an unused constant is dead code; the
-            // policy data should drive behaviour.
+        const isH2 = /^## \S/.test(line);
+        const isH3 = /^### \S/.test(line);
+
+        if (isH2) {
+            // H2: tri-state classification — PRIMARY_SECTIONS gate extraction,
+            // SKIP_SECTIONS are explicitly recognised cross-reference sections,
+            // everything else is "other" (no extraction). Making SKIP_SECTIONS
+            // load-bearing per github-code-quality finding on PR #3758.
             if (PRIMARY_SECTIONS.some((re) => re.test(line))) {
                 sectionMode = "primary";
             } else if (SKIP_SECTIONS.some((re) => re.test(line))) {
@@ -144,6 +144,23 @@ export function extractPrimaryArtifacts(body: string): string[] {
             } else {
                 sectionMode = "other";
             }
+            continue;
+        }
+        if (isH3) {
+            // H3: per Codex P2 on PR #3758. Two cases:
+            // (1) `### Acceptance criteria` as top-level heading (no ## parent)
+            //     — must enter primary mode, else systematic false negatives.
+            // (2) `### Sharpening N` nested inside `## Acceptance criteria` —
+            //     must NOT reset mode (parent already set primary). Inherit.
+            // Strategy: rewrite ### → ## for pattern matching; if pattern
+            // matches, switch mode; else KEEP current mode (inherit parent).
+            const asH2 = line.replace(/^### /, "## ");
+            if (PRIMARY_SECTIONS.some((re) => re.test(asH2))) {
+                sectionMode = "primary";
+            } else if (SKIP_SECTIONS.some((re) => re.test(asH2))) {
+                sectionMode = "skip";
+            }
+            // else: keep current mode (nested H3 inherits parent's classification)
             continue;
         }
         const inPrimarySection = sectionMode === "primary";
