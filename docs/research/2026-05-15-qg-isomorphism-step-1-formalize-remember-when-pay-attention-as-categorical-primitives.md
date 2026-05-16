@@ -154,10 +154,14 @@ propositional case (Law 1') and deferred for `μ`/`η` coherence (Laws 2, 3).
 
 1.5. **Construct the `A`-lifting `Ã : Zeta → Zeta` and the strength `θ : M(Ω) → Ω`**
    so Laws 2 and 3 can be stated and proven type-correctly. Possible approaches:
-   - Investigate whether `A`'s observer-relative non-monotonicity rules out a
-     Lawvere-Tierney-style lifting entirely (the standard construction requires
-     `A` to be at least a *closure operator*, which we've explicitly denied; an
-     alternative lifting may exist but is not in the standard toolbox).
+   - Investigate whether `A`'s **failure to be a closure operator** (we've
+     explicitly denied `p ≤ A(p)`) rules out a Lawvere-Tierney-style lifting
+     entirely (the standard Lawvere-Tierney construction requires `A` to be a
+     closure operator; an alternative lifting may exist but is not in the
+     standard toolbox). Note: this is distinct from non-monotonicity within a
+     single observer-context (which would contradict finite-limit preservation
+     and is explicitly disclaimed earlier in the doc); the obstruction is
+     closure-operator failure, not non-monotonicity.
    - Define `θ` via the Eilenberg-Moore algebra structure on `Ω` (does `Ω`
      carry a natural `M`-algebra structure? if `M` preserves the subobject
      classifier in a suitable sense, yes; this is the "internal modal logic"

@@ -64,7 +64,7 @@ This formalization:
 2. How does the attention modal operator `A` interact with the subobject classifier's Heyting algebra structure?
 3. Can we derive the Clifford algebra structure from this categorical foundation?
 4. What is the topos-theoretic analog of the no-cloning theorem?
-5. **Step 1.5 (new, from PR #3614 Codex feedback)**: Construct the strength `θ : M(Ω) → Ω` (path (b) — needed for Law 1') and the `A`-lifting `Ã : Zeta → Zeta` (path (a) — needed for Laws 2, 3). The `Ã` construction is complicated by `A` *not* being a closure operator, so the standard Lawvere-Tierney lifting doesn't apply directly. Alternatives: weaken to propositional-only coherence (Law 1' only), or find a non-standard lifting that respects the observer-relative non-monotonicity.
+5. **Step 1.5 (new, from PR #3614 Codex feedback)**: Construct the strength `θ : M(Ω) → Ω` (path (b) — needed for Law 1') and the `A`-lifting `Ã : Zeta → Zeta` (path (a) — needed for Laws 2, 3). The `Ã` construction is complicated by `A` **not being a closure operator** (no `p ≤ A(p)` assumption), so the standard Lawvere-Tierney lifting doesn't apply directly. Alternatives: weaken to propositional-only coherence (Law 1' only), or find a non-standard lifting that handles the closure-operator failure. (Note: this obstruction is closure-operator failure, NOT non-monotonicity within a single observer-context — within a context `A` preserves finite limits and is therefore monotone; the non-classical move is observer-context shift, which is a distinct property.)
 
 ### Next steps
 

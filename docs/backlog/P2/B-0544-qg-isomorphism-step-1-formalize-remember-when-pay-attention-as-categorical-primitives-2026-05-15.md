@@ -10,7 +10,7 @@ effort: L
 tags: [research, category-theory, topos-theory, axiomatization, qg-isomorphism]
 depends_on: [B-0543]
 composes_with: []
-last_updated: 2026-05-15
+last_updated: 2026-05-16
 ---
 
 ## Why
