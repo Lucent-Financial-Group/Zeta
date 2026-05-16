@@ -6,10 +6,11 @@ title: "Worktree-pool primitive — pre-allocated isolated sideticks per Otto id
 tier: factory-infrastructure
 effort: M
 created: 2026-05-16
+last_updated: 2026-05-16
 depends_on: []
 composes_with: [B-0506, B-0519, B-0530]
 tags: [autonomous-loop, multi-Otto-CLI, git-contention, worktree, mechanization]
-type: feat
+type: feature
 ---
 
 # Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity
@@ -27,7 +28,7 @@ Tick 06:43Z-07:18Z (2026-05-16): a fresh-cold-boot Otto-CLI session firing durin
 
 Empirical anchors:
 
-- Shard PR [#3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808) (`docs/hygiene-history/ticks/2026/05/16/0715Z.md`) — the 4-tick-arc evidence
+- Shard PR [#3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808) — the 4-tick-arc evidence (PR closed-without-merge; the `0715Z.md` shard never landed on `origin/main`, only in the PR's branch history per [`lost-files-surface.md`](../../../.claude/rules/lost-files-surface.md))
 - Rule PR [#3812](https://github.com/Lucent-Financial-Group/Zeta/pull/3812) — operationalizes sub-cases 1+2 mitigations into rule body, flags 3+4 as needing substrate-engineer work
 
 ## Problem
@@ -53,7 +54,7 @@ Empirical: the canonical sidetick `/private/tmp/zeta-otto-cli-0027z-sidetick` wa
 
 3. **Refresh discipline**: at session start (cold-boot), each Otto identity ensures its pool sideticks exist and are at `origin/main`:
    - If sidetick directory missing: `git worktree add <path> origin/main` (one-shot per identity per cold-boot; rare so contention low)
-   - If sidetick exists: `git -C <path> fetch + reset --hard origin/main` (always safe at session start)
+   - If sidetick exists: `git -C <path> fetch origin main` followed by `git -C <path> reset --hard origin/main` (always safe at session start)
 
 4. **Allocation API**: a TS helper at `tools/worktree-pool/allocate.ts`:
    - `allocate(identity)` returns a free sidetick path (one not currently in use by this session)
@@ -66,7 +67,7 @@ Empirical: the canonical sidetick `/private/tmp/zeta-otto-cli-0027z-sidetick` wa
 
 - [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — sub-case 3 mitigation; together they address all 4 sub-cases
 - [B-0519](B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md) — multi-Otto contamination RCA at branch-state scope; this row addresses worktree-path scope
-- [B-0506] — autonomous-loop substrate
+- [B-0506](B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md) — stale-worktree-prune-cadence mechanization (composes at worktree-cleanup scope)
 - [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md) — the rule that documents the saturation-ceiling sub-cases; this row's substrate operationalizes the mitigation for sub-case 4
 
 ## Acceptance
