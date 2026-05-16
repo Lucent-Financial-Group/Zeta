@@ -22,6 +22,7 @@ axis.
 | Sub-class | Fixture | Anchor PR / history | Expected finding |
 |---|---|---|---|
 | count drift | `count-drift-9-vs-15.md` | PR #1259 (`review(pr-1257-postmerge): verify-then-claim count drift (9→18+) frontmatter + body + MEMORY.md`) | "9 drift instances" claim vs 15-row table |
+| existence drift | `existence-drift-missing-doc.md` | PR #1252 — verify-then-claim memo body table instance #8 (`future-domain memo references docs/courier-ferry-protocol.md` / doesn't exist) | backtick-quoted synthetic path resolves at no candidate root |
 
 Add a new row when a new fixture lands.
 
