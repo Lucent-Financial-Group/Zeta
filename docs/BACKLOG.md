@@ -683,5 +683,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0553](backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md)** Backlog status-drift auditor — detect `status: open` rows whose primary artifact has already shipped
 - [x] **[B-0557](backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md)** Audit-backlog-status-drift — quality improvements per PR #3758 reviewer findings
 - [ ] **[B-0558](backlog/P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity
+- [ ] **[B-0560](backlog/P3/B-0560-autonomous-loop-cron-cadence-vs-settled-state-tension-2026-05-16.md)** Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence
 
 <!-- END AUTO-GENERATED -->
