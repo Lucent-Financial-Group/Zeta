@@ -97,8 +97,12 @@ legitimate short bounded waits.
 To reset the counter, the work must be:
 
 - **Concrete artifact** (memory file written, PR opened, rule updated,
-  backlog row filed, review thread resolved) — NOT just an internal
-  decision to "look at something"
+  backlog row filed, review thread resolved, OR branch-pushed-no-PR
+  during pure-git tier — see [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)
+  rate-limit operational tiers; pure-git ships substrate via branch
+  push and defers PR creation to post-reset, which still counts as
+  concrete artifact) — NOT just an internal decision to "look at
+  something"
 - **Bounded scope** (small enough to ship in one tick cycle, not a
   multi-session project that becomes its own architecture-stairs trap)
 - **Not the same brief-ack-with-fancier-words** ("genuine quiet" /
@@ -128,6 +132,73 @@ produces a memory of failures, not prevention
 rule is the mechanization: a specific cold-boot-loaded rule that
 fires on the exact failure pattern, rather than relying on the
 agent to introspect the broader never-be-idle rule.
+
+### Cascade-saturation empirical anchor (2026-05-16, session ~07:46-07:50Z)
+
+Second class of empirical evidence: the rule operating CORRECTLY through
+sustained rate-limit cascade saturation. A fresh-cold-boot Otto-CLI
+session ran through:
+
+- Cycle 1 (06:43Z-06:51Z): brief-acks #1→#2→#3 during pure-git tier with
+  bounded-wait naming; counter reset via named-dep (rate-limit recovery)
+  per condition #2
+- Cycle 2 (07:26Z-07:30Z): brief-acks #1→#2→#3→#4 during CI wait; pre-emptive
+  decomposition at #4 (rule PR shipped) per condition #3
+- Cycle 3 (07:36Z-07:40Z): #1→#2→#3→#4→#5 during deep extreme cost-aware tier;
+  pre-emptive decomposition at #5 (B-0558 backlog row branch pushed)
+- Cycle 4 (07:46Z-07:50Z): #1→#2→#3→#4→#5 during pure-git tier post-PR-flood;
+  pre-emptive meta-fallback at #6 territory (THIS rule edit)
+
+Empirical anchors validated:
+
+1. Counter discipline allows #1-#5 with explicit bounded-wait naming. Counter
+   discipline FORCES escalation at #6.
+2. Pre-emptive decomposition at #4 OR #5 is substrate-honest when a clear
+   high-value substrate edit is ready. Waiting for forced #6 is also valid
+   when the channel is saturated and the right work isn't yet identified.
+3. The meta-fallback ("sharpen this rule with current session's evidence")
+   ALWAYS works at #6 because the session's behavior is always observable.
+   THIS sub-section is the meta-fallback firing on the session that ran the
+   cascade — recursively self-documenting.
+4. Pure-git tier (rate at 0/5000) is fully compatible with concrete-artifact
+   counter reset: branch push without PR creation counts. The deferred-PR
+   pattern lets pure-git ticks continue producing substrate even when
+   GraphQL is exhausted.
+5. Multi-cycle observation: cascade saturation creates RECURRING brief-ack
+   cycles as named-deps surface and re-bind. Each cycle independently
+   ran through #1-#5 without hitting #6 forced escalation — the counter
+   does not accumulate across cycles separated by named-dep resets.
+
+### Sub-case 5 — peer-side destructive git operation discards unstaged edits
+
+Discovered while authoring THIS sub-section (07:50Z): peer Otto running a
+destructive git operation (e.g., `git reset --hard`, `git stash + checkout`,
+or aggressive worktree-cleanup) in the shared worktree DISCARDED my
+unstaged tracked-modifications that the borrow-on-existing pattern relies
+on to "follow me" across `git switch`.
+
+This is a 5th failure sub-case for [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md)'s saturation-ceiling taxonomy:
+peer-side destructive git operations are NOT prevented by `git switch`
+semantics — `git switch` only refuses when modifications would be
+overwritten BY THE SWITCH, not when peer-side commands run between
+Edit and commit.
+
+**Mitigation**: commit edits IMMEDIATELY after authoring; do not rely on
+unstaged tracked-modifications to survive across multiple Bash calls
+during peer saturation. The Edit-then-add-then-commit sequence should
+happen within a single Bash call (or two adjacent calls with no
+intervening peer activity).
+
+**Empirical**: this commit's edits had to be RE-APPLIED after peer's
+destructive operation discarded the first authoring attempt. The fix
+worked because the edit content was preserved in conversation context;
+without that, the work would have been lost. Conversation-context
+preservation is the only fallback once unstaged edits are destroyed.
+
+Composes with the rate-limit operational tiers documented in
+[`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)
+and the saturation-ceiling taxonomy in
+[`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md).
 
 ## Composes with
 

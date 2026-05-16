@@ -76,3 +76,20 @@ Same as B-0553 — friction-reducer. Each improvement is small and additive; tog
 ## Origin tick
 
 Tick 15 of the 2026-05-16 session. PR #3758 review-cycle 2 produced these 4 findings on commit `e5e7143`; this row captures them as follow-up substrate so PR #3758 can ship cleanly.
+
+## Resolution (2026-05-16)
+
+All four slices shipped within the same 2026-05-16 session that filed this row:
+
+| Slice | Finding | PR | Merge commit |
+|---|---|---|---|
+| 1 | `--check` flag for CI integration | [#3783](https://github.com/Lucent-Financial-Group/Zeta/pull/3783) | `0a57a814` |
+| 2 | try/catch on FS reads (don't abort on bad file) | [#3788](https://github.com/Lucent-Financial-Group/Zeta/pull/3788) | `6809f6e3` |
+| 3 | chdir to repo root via `git rev-parse` (cwd-independent) + 2 regression tests | [#3790](https://github.com/Lucent-Financial-Group/Zeta/pull/3790) | `472024dc` |
+| 4 | Mixed-bullet extraction (paths before cross-ref tokens are deliverables) + tsc-strict guard | [#3809](https://github.com/Lucent-Financial-Group/Zeta/pull/3809) | `eb04e3d` |
+
+**Acceptance bullets**: every bullet in the Acceptance section has a corresponding merged PR. Verified per `.claude/rules/backlog-item-start-gate.md` step 0 partial-vs-drift discriminator.
+
+**Test count**: 16 (B-0553 first slice) → 20 (after slices 3 + 4 added 2 + 2 regression tests). All passing on main.
+
+**Infrastructure-eats-itself**: this row was caught as a genuine drift candidate by the audit tool it specified. The 6-layer substrate-drift-catch infrastructure has now reached full operational closure on main.
