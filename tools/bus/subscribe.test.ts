@@ -5,7 +5,7 @@ import { rmSync } from "node:fs";
 import { join } from "node:path";
 import { BUS_DIR } from "./bus";
 
-describe("bus subscribeOnce (B-0449 slice 5)", () => {
+describe("bus subscribeOnce (B-0459 slice 1)", () => {
   const seenFile = join(BUS_DIR, "seen-test-surface.json");
 
   // Helper to clear state
