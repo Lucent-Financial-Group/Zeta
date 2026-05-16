@@ -5,7 +5,7 @@ priority: P2
 status: open
 type: research
 created: 2026-05-15
-ask: Aaron
+ask: Otto-CLI
 effort: XL
 tags: [research, fsharp-fork, hkt, recursive-hkt, clifford-algebra, ai-type-safety, computation-expressions, recursive-type-providers, roslyn-source-generators, linq, intelligent-compiler, antigen-spread-representation]
 depends_on: []
@@ -111,10 +111,14 @@ Each stage earns its keep. The POC stage alone (recursive HKT working in fork) a
 - `theoretical-physics-expert` skill (Clifford algebra in physics anchors)
 - PR #2928, #2935, #2936, #2913, #2914 (existing F# fork substrate this row synthesizes)
 
-## Origin
+## Origin (agent-backlogged synthesis)
 
-Aaron 2026-05-16 to Otto-CLI: *"this is backlog too an intellignt compiler mabye at least we talked abou it recursive hkt on itself and recursive type proveders and roslyn source generators and linq for c#"*
+This is an **agent-backlogged row** (`ask: Otto-CLI`), not maintainer-requested. The synthesis — putting recursive HKT on itself + Clifford algebra + F# fork + Recursive Type Providers + Roslyn Source Generators + LINQ + DV2.0-hub-satellite-as-natural-HKT-instance together as ONE implementation target — was Otto-CLI authoring from existing principles in substrate (PRs #2928, #2935, #2936, #2913, #2914 + the `algebra-owner` skill + `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` + `.claude/rules/dv2-data-split-discipline-activated.md`).
 
-Framing context: Aaron caught Otto-CLI's "genuinely new architecture" framing of the antigen-spread mechanism. The architecture is established prior substrate; the NEW piece is the implementation strategy (HKT/Clifford/F# fork/Roslyn). Aaron's "this is backlog too" surfaces the synthesis as worth tracking as its own backlog row even though each piece has prior PR substrate. This row is the synthesis-tracking, not the originating substrate.
+Aaron's role: confirmed *"this is backlog too"* + named the components in passing (*"recursive hkt on itself and recursive type proveders and roslyn source generators and linq for c#"*). His confirmation surfaced the synthesis as worth tracking as its own row even though each piece has prior PR substrate.
+
+Aaron 2026-05-16 corrected Otto-CLI's initial attribution: *"this is an item so agent backloged not me an agent put this togeter based on teh principles"*. The honest framing per `.claude/rules/no-directives.md` (autonomy first-class): the agent put the synthesis together based on the substrate's principles, with maintainer confirmation. The agent owns the synthesis; the maintainer owns the principles.
 
 Per `feedback_aaron_cool_side_project_deflation_*.md`: "intelligent compiler maybe" framing accepts uncertainty about whether full intelligent-compiler capability is achievable — the substrate-honest framing is "at least we talked about it; here's the spec." Earns its keep at each completion-stage; doesn't require the speculative-end to be valuable.
+
+Per `feedback_aaron_genie_bottle_offshore_firm_spec_quality_enables_ai_autonomy_*.md`: agent-backlogged synthesis IS the spec-quality leverage operating — the agent synthesizes from principles, the maintainer confirms or corrects, the substrate composes. This row is one instance of that workflow operating correctly.
