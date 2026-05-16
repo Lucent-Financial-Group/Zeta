@@ -324,7 +324,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0527](backlog/P1/B-0527-memory-md-backfill-pre-substrate-kenji-era.md)** MEMORY.md backfill for pre-substrate Kenji-era artifacts (B-0139 decomposition)
 - [x] **[B-0538](backlog/P1/B-0538-create-gemini-md-for-fresh-instances-2026-05-15.md)** Create GEMINI.md to bootstrap fresh Antigravity/Gemini instances with factory context
 - [ ] **[B-0539](backlog/P1/B-0539-otto-bft-internal-quorum-3-surface-self-recovery-2026-05-15.md)** Otto-BFT — internal-quorum self-recovery across 3 Otto surfaces (Standing-by escalation + cross-surface detector + background-service prompt-clicker)
-- [ ] **[B-0540](backlog/P1/B-0540-standing-by-counter-with-escalation-in-rule-2026-05-15.md)** Standing-by counter-with-escalation in the rule (N consecutive brief-acks → escalate to decomposition)
+- [x] **[B-0540](backlog/P1/B-0540-standing-by-counter-with-escalation-in-rule-2026-05-15.md)** Standing-by counter-with-escalation in the rule (N consecutive brief-acks → escalate to decomposition)
 - [ ] **[B-0541](backlog/P1/B-0541-cross-surface-bus-detector-standing-by-quorum-2026-05-15.md)** Cross-surface bus detector — Standing-by quorum across Otto surfaces (extension of PR #3017 detector)
 - [ ] **[B-0542](backlog/P1/B-0542-background-service-clicks-past-stuck-prompts-2026-05-15.md)** Background service clicks past stuck prompts on foreground Otto surfaces (3-surface BFT recovery node)
 - [ ] **[B-0549](backlog/P1/B-0549-docs-research-audit-2026-05-16.md)** Docs/research cross-reference audit
