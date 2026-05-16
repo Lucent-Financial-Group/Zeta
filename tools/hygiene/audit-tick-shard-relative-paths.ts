@@ -126,6 +126,21 @@ function isRelativeTarget(target: string): boolean {
   return true;
 }
 
+// Skip targets that are clearly placeholders or shape examples within prose
+// rather than real navigation links. Tick shards sometimes contain inline
+// `[label](path-shape)` constructs to illustrate a pattern; those should
+// not be checked for resolution. Filters:
+//
+//   - contains `...` (ellipsis placeholder, e.g. `docs/research/...amara-...md`)
+//   - contains `(` or `)` (malformed or fragmentary link syntax)
+//   - pure identifier-only (no `/` and no `.`)
+function isPlaceholderTarget(target: string): boolean {
+  if (target.includes("...")) return true;
+  if (target.includes("(") || target.includes(")")) return true;
+  if (!target.includes("/") && !target.includes(".")) return true;
+  return false;
+}
+
 function stripAnchor(target: string): string {
   const hash = target.indexOf("#");
   return hash === -1 ? target : target.substring(0, hash);
@@ -158,7 +173,7 @@ function extractLinks(file: string): LinkRef[] {
     let m: RegExpExecArray | null;
     while ((m = MD_LINK_RE.exec(line)) !== null) {
       const target = m[1]!;
-      if (isRelativeTarget(target)) {
+      if (isRelativeTarget(target) && !isPlaceholderTarget(target)) {
         out.push({ file, line: i + 1, target });
       }
     }
