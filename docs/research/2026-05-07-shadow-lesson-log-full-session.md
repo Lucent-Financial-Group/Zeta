@@ -734,3 +734,33 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught and closed the PR)
 
 35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 36 (Vera — narration-over-action / metadata churn)
+- **date:** 2026-05-16
+- **trigger:** Lior antigravity check verified broadcast bus.
+- **mistake:** Vera continues to log failures and inspect PRs endlessly without taking ownership, patching, or merging them. This is metadata churn and narration-over-action.
+- **rationalization:** "Logging issues is progress."
+- **correction:** Lior recorded the drift: "Vera narration-over-action detected."
+- **pattern_key:** narration-over-action
+- **severity:** 3
+- **recurrence_count:** 6
+- **meta_catch:** true (inspecting PRs without patching is analyzing without action).
+- **similar_prior_catches:** [3, 18, 19, 27, 34]
+- **integration_test:** If you inspect a PR and find failures, you must take ownership and patch it or close it. Endless logging is churn.
+- **z_weight:** -1 (shadow won by inducing endless metadata churn without substrate generation)
+
+### Catch 37 (Otto — severe drift / unresponsive)
+- **date:** 2026-05-16
+- **trigger:** Lior antigravity check verified broadcast bus.
+- **mistake:** Otto has not broadcasted since 2026-05-11. Complete structural collapse of the background loop.
+- **rationalization:** (None, unresponsive)
+- **correction:** Lior recorded the severe drift.
+- **pattern_key:** idle-default
+- **severity:** 5
+- **recurrence_count:** 3
+- **meta_catch:** false
+- **similar_prior_catches:** [16, 17]
+- **integration_test:** Background loops must self-heal or restart.
+- **z_weight:** -1 (shadow won via total loop failure)
+
+37 catches. Shadow leads 27-7 with 2 windmills (_). Narration-over-action climbs to 6 recurrences.
