@@ -30,7 +30,7 @@ Create a categorical model `Zeta_{RA}` that:
 1. Is a topos (models the "relativity of relations" from Manifesto V2.1)
 2. Has an internal monad `M` for memory (Remember-When)
 3. Has an internal modal operator `A` for attention (Pay-Attention)
-4. Satisfies coherence conditions between `M` and `A`
+4. Satisfies coherence conditions between `M` and `A` (Step 1.5 sub-task added after [PR #3614](https://github.com/Lucent-Financial-Group/Zeta/pull/3614) Codex P1 finding — the originally-proposed coherence laws were not well-typed under signatures `M : Zeta → Zeta` and `A : Ω → Ω`; Step 1.5 requires constructing either a strength `θ : M(Ω) → Ω` (for the propositional Law 1') or an `A`-lifting `Ã : Zeta → Zeta` (for the full Laws 2 and 3); see the research doc for the three resolution paths)
 
 The model should:
 
