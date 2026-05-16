@@ -139,7 +139,7 @@ async function main(): Promise<void> {
   // Graceful shutdown
   process.on("SIGINT", () => {
     log("Riven Cursor Terminal loop shutting down");
-    publishHeartbeat("shutdown", "terminal-closed");
+    publishHeartbeat("idle", "terminal-closed");
     process.exit(0);
   });
 

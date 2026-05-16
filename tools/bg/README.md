@@ -87,7 +87,7 @@ bun tools/bg/backlog-ready-notifier.ts --once --to vera
 
 ## What's still pending
 
-- **Slice 5 for all three** — subscriber agents that react to bus envelopes (e.g., auto-claim a `work-assignment`)
+- **Slice 5 for all three** — subscriber agents that react to bus envelopes (e.g., auto-claim a `work-assignment`). *Note: B-0460 slice 5.2 stub for work-assignment landed 2026-05-15, B-0459 slice 5.1 stub landed 2026-05-15.*
 - **Slice 6 for all three** — launchd / cron registration + integration tests
 
 (B-0442 slice 3 landed 2026-05-13: real `headRefOid` vs current-branch-HEAD compare with rebase-guard via `git merge-base --is-ancestor`. The cascade detector now operationally detects the Otto-section-missed-PR-#2980-by-3-min failure class when the branch still exists on origin.)
