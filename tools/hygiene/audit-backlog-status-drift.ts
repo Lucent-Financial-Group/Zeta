@@ -185,12 +185,21 @@ export function extractPrimaryArtifacts(body: string): string[] {
         const inPrimarySection = sectionMode === "primary";
         if (!inPrimarySection) continue;
 
-        // Skip inline cross-reference lines (e.g. "Composes with `tools/x.ts`"
-        // bullets inside an Acceptance sub-section — these are siblings, not
-        // deliverables).
-        if (INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))) continue;
+        // Mixed-bullet handling per B-0557 slice 4: extract paths from the
+        // segment BEFORE the first inline cross-reference keyword. Pure
+        // cross-ref bullets ("Composes with X") naturally produce an empty
+        // pre-cutoff segment; mixed bullets ("Add `tools/foo.ts` per [X]")
+        // extract the deliverable while ignoring the citation.
+        let cutoffIndex = line.length;
+        for (const re of INLINE_CROSSREF_PATTERNS) {
+            const m = line.match(re);
+            if (m && typeof m.index === "number" && m.index < cutoffIndex) {
+                cutoffIndex = m.index;
+            }
+        }
+        const extractableSegment = line.slice(0, cutoffIndex);
 
-        for (const match of line.matchAll(PATH_REGEX)) {
+        for (const match of extractableSegment.matchAll(PATH_REGEX)) {
             const candidate = match[0];
             // Skip backlog-row cross-references (these are siblings, not deliverables).
             if (candidate.startsWith("docs/backlog/")) continue;
