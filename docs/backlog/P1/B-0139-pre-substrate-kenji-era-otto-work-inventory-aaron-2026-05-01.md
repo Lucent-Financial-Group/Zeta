@@ -4,11 +4,11 @@ priority: P1
 status: in-progress
 title: Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 created: 2026-05-01
-last_updated: 2026-05-14
+last_updated: 2026-05-16
 depends_on: []
 type: friction-reducer
 decomposition: decomposed
-children: [B-0522, B-0523, B-0526, B-0527]
+children: [B-0522, B-0523, B-0526, B-0527, B-0528]
 ---
 
 # B-0139 — Pre-substrate Kenji-era inventory
@@ -73,7 +73,7 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 
 ## Status
 
-**In progress.** First slice landed: `tools/hygiene/audit-formal-artifacts.ts` — a TS script (Rule 0 compliant) that catalogs all formal verification artifacts (Lean4, TLA+, Z3, Alloy, formal tests) and cross-references each against docs/ for substrate-status. Finds 30 artifacts (4295 lines); 24 referenced in substrate, 6 unreferenced TLA+ specs (`AsyncStreamEnumerator.tla`, `BftConsensus.tla`, `ChaosEnvDeterminism.tla`, `ConsistentHashRebalance.tla`, `FeatureFlagsResolution.tla`, `InfoTheoreticSharder.tla`). Remaining slices: F# src/Core/ artifact inventory. Decomposed: docs/research cross-reference audit → B-0523; F# src/Core inventory → B-0522; branch/worktree content inventory → B-0526; MEMORY.md backfill → B-0527.
+**In progress.** First slice landed: `tools/hygiene/audit-formal-artifacts.ts` — a TS script (Rule 0 compliant) that catalogs all formal verification artifacts (Lean4, TLA+, Z3, Alloy, formal tests) and cross-references each against docs/ for substrate-status. Finds 30 artifacts (4295 lines); 24 referenced in substrate, 6 unreferenced TLA+ specs (`AsyncStreamEnumerator.tla`, `BftConsensus.tla`, `ChaosEnvDeterminism.tla`, `ConsistentHashRebalance.tla`, `FeatureFlagsResolution.tla`, `InfoTheoreticSharder.tla`). Remaining slices: none. Decomposed: docs/research cross-reference audit → B-0523; F# src/Core inventory → B-0522; branch/worktree content inventory → B-0526; MEMORY.md backfill → B-0527; Class-level lesson encoded → B-0528.
 
 ## Verify-before-deferring note
 
