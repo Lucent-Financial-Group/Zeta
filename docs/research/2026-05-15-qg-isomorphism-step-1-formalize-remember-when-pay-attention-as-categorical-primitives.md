@@ -45,7 +45,7 @@ M : Zeta → Zeta
 
 **Key properties**:
 
-- `M` is **idempotent** up to coherence: `μ ∘ Mμ = μ ∘ μ_M` (memory reconstruction is confluent)
+- `M` satisfies the **monad associativity law**: `μ ∘ Mμ = μ ∘ μ_M` (memory flattening is associative — this is the standard monad coherence, not idempotence; an idempotent monad would additionally satisfy `μ ∘ η_M = id`)
 - `M` preserves **pullbacks** (memory of relations is the relation of memories)
 - `M` has a **comonoid structure** `δ : M → M²` (coherence with self-similarity)
 
@@ -53,12 +53,13 @@ M : Zeta → Zeta
 
 - **Pure values**: `η` embeds a fact into memory
 - **Sequencing**: `μ` composes memory operations (remember A, then remember B, then reconstruct C)
-- **Idempotence**: remembering the same thing twice is the same as remembering it once (up to reconstruction noise)
+- **Associativity**: composing memory flattens is order-independent (`μ ∘ Mμ = μ ∘ μ_M`) — note this is the monad associativity law, not idempotence; whether memory is *additionally* idempotent (`μ ∘ η_M = id`) is a separate physical assumption that requires its own justification
 
-**Connection to DBSP**: The incrementalization operator `D ∘ Q ∘ I` (differentiate ∘ query ∘ integrate) is a monad on streams. The `I` (integrate) step is the "remember" operation; the `D` (differentiate) step is the "pay attention" operation. The monad laws correspond to:
+**Connection to DBSP**: The DBSP **incrementalization identity** `Q^Δ = D ∘ Q ∘ I` (the lifted-differential of any query equals differentiate ∘ query ∘ integrate) describes how a query `Q` on a stream is rewritten as the differentiation of its lifted form on the integrated stream. This is a *wrapping/conjugation identity*, not a monad structure on streams; the `D ∘ Q ∘ I` composition is not claimed here to satisfy monad unit/multiplication laws. The structural analogy that motivates the proof path is:
 
-- `η` = integrate then immediately differentiate returns the original delta
-- `μ` = integrate twice then differentiate = integrate once then differentiate (the three-term bilinear formula)
+- `I` (integrate) is the "remember" operation
+- `D` (differentiate) is the "pay attention" operation
+- Whether the memory-monad `M` defined above on the topos and the DBSP `I`/`D` pair share a deeper categorical relationship (e.g., comonad-monad adjunction, distributive law) is an open question to investigate, not a settled identity
 
 #### 3. Internal modal operator for attention (Pay-Attention)
 

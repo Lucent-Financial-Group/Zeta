@@ -12,7 +12,7 @@ created: 2026-05-15
 1. **Created research document**: `docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md`
    - Formalizes the two root axioms (Remember-When + Pay-Attention) as categorical primitives
    - Models them as a topos with internal monad `M` for memory + internal modal operator `A` for attention
-   - Connects to DBSP incrementalization (the `D ∘ Q ∘ I` monad)
+   - Connects to DBSP incrementalization via the **incrementalization identity** `Q^Δ = D ∘ Q ∘ I` (the lifted-differential of any query equals differentiate ∘ query ∘ integrate — this is a wrapping/conjugation identity, not a monad on streams)
    - Connects to QBism (observer-relative truth values)
    - Provides categorical semantics of the infinite poker game
 
@@ -37,7 +37,7 @@ created: 2026-05-15
 - `M X` = space of memory states over object `X`
 - `μ : M² → M` = flatten nested memory (reconstruct from partial degradation)
 - `η : Id → M` = embed object into its memory (the "I am here now" state)
-- Idempotent up to coherence, preserves pullbacks, has comonoid structure
+- Satisfies monad associativity (`μ ∘ Mμ = μ ∘ μ_M`) — *not* idempotence; preserves pullbacks; has comonoid structure
 
 **Internal modal operator `A` for attention (Pay-Attention)**:
 - `A : Ω → Ω` where `Ω` is the subobject classifier
@@ -60,7 +60,7 @@ This formalization:
 
 ### Open questions
 
-1. What is the precise relationship between the memory monad `M` and the DBSP incrementalization monad?
+1. What is the precise relationship between the memory monad `M` (a monad on the topos `Zeta`) and the DBSP `I`/`D` pair (the integrate/differentiate operators participating in the incrementalization identity `Q^Δ = D ∘ Q ∘ I`)? Possible structural relations to investigate: comonad-monad adjunction (with `I` comonadic and `D` left-adjoint), distributive law, or no direct categorical correspondence.
 2. How does the attention modal operator `A` interact with the subobject classifier's Heyting algebra structure?
 3. Can we derive the Clifford algebra structure from this categorical foundation?
 4. What is the topos-theoretic analog of the no-cloning theorem?
