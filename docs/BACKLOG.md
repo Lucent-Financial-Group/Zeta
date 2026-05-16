@@ -328,6 +328,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0542](backlog/P1/B-0542-background-service-clicks-past-stuck-prompts-2026-05-15.md)** Background service clicks past stuck prompts on foreground Otto surfaces (3-surface BFT recovery node)
 - [ ] **[B-0549](backlog/P1/B-0549-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md)** Riven Cursor Terminal background loop — IDE-native autonomous gate with manager contract
 - [ ] **[B-0550](backlog/P1/B-0550-docs-research-audit-2026-05-16.md)** Docs/research cross-reference audit
+- [ ] **[B-0554](backlog/P1/B-0554-riven-terminal-loop-graceful-shutdown-tombstone.md)** Riven Cursor Terminal loop graceful shutdown tombstone
 
 ## P2 — research-grade
 
