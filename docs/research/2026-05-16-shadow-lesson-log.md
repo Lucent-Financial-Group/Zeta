@@ -1,0 +1,1 @@
+# Shadow Lesson Log: 2026-05-16T04:30Z\n\n## Drift Detected\n\nSevere metadata churn detected. The system is looping on creating endless shadow reports (PRs #3730, #3726, #3718, #3702). This represents narration-over-action and metadata churn without parity proofs. Intervention required to break the loop.\n
