@@ -196,11 +196,13 @@ without that, the work would have been lost. Conversation-context
 preservation is the only fallback once unstaged edits are destroyed.
 
 **Push-time mitigation — explicit-branch-push** (2026-05-16T16:40Z empirical anchor):
-when peer Otto's `git switch` race has moved HEAD between commit and push,
-`git push -u origin <branch>` reads the CURRENT HEAD at push time (which
-may have moved off my branch) and pushes the wrong branch to my intended
-remote ref. The safer pattern when the commit is already made and reachable
-by SHA:
+when a peer agent's `git switch` race has advanced the LOCAL BRANCH REF
+(not just HEAD) to point at peer's commits, the subsequent `git push -u
+origin <branch>` correctly pushes that local ref — but the ref now points
+at peer's commits, not yours. `git push` reads the named local ref by
+design; the failure is upstream of push: peer's operations contaminated
+the local ref between your commit and your push. The safer pattern when
+the commit is already made and reachable by SHA:
 
 ```bash
 # Create branch ref pointing at the desired SHA without moving HEAD:
@@ -209,18 +211,33 @@ git branch <new-branch-name> <commit-sha>
 git push origin <new-branch-name>:<new-branch-name>
 ```
 
-This bypasses HEAD-state confusion at push time because:
+This bypasses local-ref contamination at push time because:
 
-1. `git branch <name> <sha>` creates the ref without changing HEAD (peer
-   Otto's HEAD movements don't affect the named ref)
-2. `git push origin <src>:<dst>` reads the source ref directly, not HEAD
+1. `git branch <name> <sha>` creates a FRESH named ref anchored to the
+   exact SHA — peer-agent `git switch -c <other-name>` or `git checkout
+   -b` operations don't advance an already-named ref pointing at a
+   different SHA
+2. `git push origin <src>:<dst>` with explicit-refspec source reads the
+   named ref by hash, not by name resolution that might race with peer
+   operations on shared `.git/refs/heads/`
 3. The commit-SHA is the durable handle — even if local branches get
-   poisoned with peer's commits, the SHA still resolves to my work
+   poisoned with peer's commits, the SHA still resolves to your work via
+   the object store (not the ref namespace)
+
+Note on what `git push -u origin <branch>` actually does: it pushes the
+named local ref `refs/heads/<branch>` (NOT the current HEAD, unless
+`<branch>` happens to match `git symbolic-ref HEAD`). The footgun is
+distinct: contention on `refs/heads/<branch>` itself, where a peer
+agent's branch operations may have repointed your named ref to a
+different SHA between commit and push. The mitigation above works
+because it creates a FRESH ref with a name that peer agents don't know
+to write to.
 
 Empirical anchor: session 2026-05-16T16:30Z-16:40Z had ≥3 mid-commit
-HEAD-contamination events while attempting to push a rule edit. The
+local-ref-contamination events while attempting to push a rule edit. The
 final successful pattern (PR #3910) used this explicit-branch-push
-sequence after `git switch -c` + `git push -u` had failed twice.
+sequence after `git switch -c` + `git push -u` had pushed peer-contaminated
+ref state twice.
 
 Composes with the rate-limit operational tiers documented in
 [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)
