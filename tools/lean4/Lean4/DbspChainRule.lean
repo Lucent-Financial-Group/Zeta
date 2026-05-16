@@ -48,7 +48,7 @@ Round-35 landmarks:
 
 * B2 resolved from a conceptual wall into a contract field —
   `IsTimeInvariant` predicate, elevated to an axiom matching the
-  DBSP paper's unspoken premise (Budiu et al. Prop. 3.5).
+  DBSP paper's ~~unspoken premise (Budiu et al. Prop. 3.5)~~ LTI condition [corrected 2026-05-05: Theorem 3.3 states LTI explicitly; paper makes it explicit, formalization separates sub-properties].
 * B1 statement corrected — the earlier `f (fun _ => s k) k` form
   silently required pointwise-linearity; the generic linear-
   plus-time-invariant form is `f (I s) = I (f s)`.
@@ -199,8 +199,8 @@ commutation with delay. Three candidate upgrades were considered:
   commute with `zInv`.
 * **Time-invariance** — `f ∘ zInv = zInv ∘ f` as stream
   operators. This IS B2; adding it as an axiom closes B2
-  trivially. In DBSP literature this is the unspoken premise of
-  Budiu et al. Proposition 3.5.
+  trivially. In DBSP literature this corresponds to the LTI condition [corrected 2026-05-05: ~~unspoken premise of~~ paper makes it explicit via Theorem 3.3]
+  ~~Budiu et al. Proposition 3.5~~ Budiu et al. Theorem 3.3 ([corrected 2026-05-05: paper states LTI condition explicitly via Theorem 3.3, not in an unspoken premise]).
 * **Pointwise action** — `f s n = φ (s n)` for some
   `AddMonoidHom φ`. Strong; implies both causal and time-
   invariant. But **disqualifies** the DBSP primitives: `I s n =
