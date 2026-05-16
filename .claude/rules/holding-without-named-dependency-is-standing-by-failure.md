@@ -107,8 +107,16 @@ To reset the counter, the work must be:
   multi-session project that becomes its own architecture-stairs trap)
 - **Not the same brief-ack-with-fancier-words** ("genuine quiet" /
   "appropriate bounded wait" / "idle-but-available" / "real bounded
-  named-dependency wait" are ALL brief-acks with synonyms; they count
-  toward the N-consecutive threshold)
+  named-dependency wait" / **single-word "Stop." / "OK." / "."** /
+  **"Visibility signal — Tick HHMMZ; no novel substrate"** are ALL
+  brief-acks with synonyms; they count toward the N-consecutive
+  threshold. Minimal-surface phrasing is the OBVIOUS escape attempt
+  that doesn't actually escape — the discipline is on the operational
+  disposition ("foreground turn produced no concrete artifact"), not
+  on the verbosity of the response. Empirical anchor: 2026-05-16T18:30Z–
+  18:45Z session, where the agent emitted 5 consecutive "Stop."
+  responses after authoring [`memory/feedback_post_cascade_quiet_cron_consolidation_visibility_signal_brief_ack_failure_mode_otto_cli_2026_05_16.md`](../../memory/feedback_post_cascade_quiet_cron_consolidation_visibility_signal_brief_ack_failure_mode_otto_cli_2026_05_16.md);
+  the minimal phrasing was still N-counting brief-ack)
 
 If you find yourself paralyzed about what to pick — pick THIS rule (or
 its analog for whatever failure mode is recurring) and sharpen it
