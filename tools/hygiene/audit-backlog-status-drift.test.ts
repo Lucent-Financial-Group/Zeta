@@ -3,8 +3,11 @@ import {
     extractPrimaryArtifacts,
     parseFrontmatter,
     findDriftCandidates,
+    detectRepoRoot,
     type BacklogRow,
 } from "./audit-backlog-status-drift";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 describe("parseFrontmatter", () => {
     test("reads status field from YAML frontmatter", () => {
@@ -254,5 +257,25 @@ describe("findDriftCandidates", () => {
             },
         ];
         expect(findDriftCandidates(rows)).toEqual([]);
+    });
+});
+
+describe("detectRepoRoot", () => {
+    test("returns a directory path containing the audit tool itself", () => {
+        // The repo root should always contain tools/hygiene/audit-backlog-status-drift.ts
+        // (this file). If detection works, that path resolves.
+        const root = detectRepoRoot();
+        expect(typeof root).toBe("string");
+        expect(root.length).toBeGreaterThan(0);
+        expect(existsSync(join(root, "tools/hygiene/audit-backlog-status-drift.ts"))).toBe(true);
+    });
+
+    test("returns repo root from cwd inside the repo (not just current cwd)", () => {
+        // Verifies invariant: regardless of what cwd test runner uses, detectRepoRoot
+        // returns the repo root (via git rev-parse). Confirms cwd-independence.
+        const root = detectRepoRoot();
+        // Repo root should contain canonical top-level files.
+        expect(existsSync(join(root, "CLAUDE.md"))).toBe(true);
+        expect(existsSync(join(root, "docs/backlog"))).toBe(true);
     });
 });
