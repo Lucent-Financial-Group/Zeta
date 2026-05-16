@@ -56,6 +56,7 @@ import { spawnSync } from "node:child_process";
 
 function repoRoot(): string {
   if (process.env["REPO_ROOT"]) return process.env["REPO_ROOT"]!;
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input.
   const r = spawnSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" });
   return r.status === 0 ? r.stdout.trim() : process.cwd();
 }
@@ -117,9 +118,14 @@ interface LinkRef {
 // Excludes images (preceded by `!`) and reference-style links.
 const MD_LINK_RE = /(?<!!)\[(?:[^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
 
+// URI-scheme prefixes that mark a target as absolute (non-relative).
+// Any `<scheme>:` prefix is treated as absolute except for ambiguous
+// cases (e.g. a Windows-style drive letter `C:` would never appear
+// inside a tick shard, so the generic `<scheme>:` rule is safe).
+const URI_SCHEME_RE = /^[A-Za-z][A-Za-z0-9+.-]*:/;
+
 function isRelativeTarget(target: string): boolean {
-  if (target.startsWith("http://") || target.startsWith("https://")) return false;
-  if (target.startsWith("mailto:")) return false;
+  if (URI_SCHEME_RE.test(target)) return false; // http(s)://, mailto:, ftp:, file:, tel:, data:, etc.
   if (target.startsWith("//")) return false;
   if (target.startsWith("#")) return false;
   if (target.startsWith("/")) return false;
@@ -226,8 +232,22 @@ function checkLink(link: LinkRef): Finding | null {
 
 // main
 
-function main(argv: readonly string[]): 0 | 1 | 64 {
+export function main(argv: readonly string[]): 0 | 1 | 64 {
   const args = parseArgs(argv);
+
+  // Validate --files inputs before reading: a missing path should produce
+  // a structured exit (64), not an uncaught readFileSync exception that
+  // crashes the run partway through.
+  if (args.files) {
+    const missing: string[] = [];
+    for (const f of args.files) {
+      if (!existsSync(resolve(f))) missing.push(f);
+    }
+    if (missing.length > 0) {
+      for (const m of missing) process.stderr.write(`input not found: ${m}\n`);
+      return 64;
+    }
+  }
 
   const shards = args.files
     ? args.files.map((f) => resolve(f))
@@ -267,4 +287,6 @@ function main(argv: readonly string[]): 0 | 1 | 64 {
   return 0;
 }
 
-process.exit(main(process.argv.slice(2)));
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
