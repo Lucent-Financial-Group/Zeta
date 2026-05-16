@@ -298,7 +298,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0491](backlog/P1/B-0491-dawn-universal-biz-templates-persona-map-2026-05-14.md)** B-0429.7 — Dawn + Universal business templates persona map
 - [ ] **[B-0492](backlog/P1/B-0492-cross-product-persona-reuse-refused-registry-2026-05-14.md)** B-0429.8 — Cross-product persona reuse map + refused-personas registry
 - [ ] **[B-0493](backlog/P1/B-0493-skill-catalog-persona-crossref-2026-05-14.md)** B-0429.9 — Skill catalog × persona cross-reference
-- [ ] **[B-0494](backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md)** Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot
+- [x] **[B-0494](backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md)** Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot
 - [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
 - [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
