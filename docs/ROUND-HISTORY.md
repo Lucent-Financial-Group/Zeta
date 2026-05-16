@@ -12,6 +12,7 @@ New rounds are appended at the top.
 Newest first. Anchor links work in markdown renderers that
 slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 
+- [Round 45 — QG isomorphism proof strategy foundation + Universal Infinite Poker Game cosmology formalization](#round-45--qg-isomorphism-proof-strategy-foundation--universal-infinite-poker-game-cosmology-formalization)
 - [Round 44 — in-flight](#round-44--in-flight)
 - [Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry](#round-43--invariant-substrates-program--empirical-bp-03-harness-evidence--agent-cadence-telemetry)
 - [Round 42 — First repeated iteration of Round-41 cadences + vibe-coding external legibility](#round-42--first-repeated-iteration-of-round-41-cadences--vibe-coding-external-legibility)
@@ -41,8 +42,10 @@ slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 - [Round 17 — storage specialist, BloomFilter, durability skeleton](#round-17--storage-specialist-bloomfilter-durability-skeleton)
 - [Round 16 — SDL / threat model / she-her storage specialist](#round-16--sdl--threat-model--she-her-storage-specialist)
 
-Round 44 (current) is in-flight; the synthesis row lands at
-round-close. When this file hits 5000 lines, split the pre-
+Round 45 is the most recent landed round; Round 44 remains
+in-flight per its own label (synthesis row lands at round-close
+per the file convention; no partial synthesis). When this file
+hits 5000 lines, split the pre-
 round-N portion into `docs/_archive/ROUND-HISTORY-pre-N.md`
 and leave this file as a rolling window of the most recent
 ~20 rounds; no ADR is needed for a mechanical archive move.
@@ -84,13 +87,26 @@ Formalize Remember-When + Pay-Attention as categorical primitives:
 - **Internal modal operator `A`**: models Pay-Attention (QBism's observer-relative
   probability assignment, generalizes quantum measurement projection)
 
-The combined structure `Zeta_{RA}` satisfies coherence conditions between `M` and `A`.
+The combined structure `Zeta_{RA}` is intended to satisfy coherence conditions
+between `M` and `A`. Post-round, [PR #3636](https://github.com/Lucent-Financial-Group/Zeta/pull/3636) + [PR #3639](https://github.com/Lucent-Financial-Group/Zeta/pull/3639) established that the
+originally-proposed laws (`M(A(p)) = A(M(p))`, `A(μ_X) = μ_{A(X)} ∘ A(M(A(X)))`,
+`A(η_X) = η_{A(X)}`) are not well-typed under the stated signatures
+`M : Zeta → Zeta`, `A : Ω → Ω`. Only a **provisional propositional Law 1'**
+(`A_*(M_*(p)) = M_*(A_*(p))` over `p : X → Ω`, contingent on a strength
+`θ : M(Ω) → Ω`) is type-correct; Laws 2 (μ-coherence) and 3 (η-coherence)
+are deferred to a new Step 1.5 pending an `A`-lifting `Ã : Zeta → Zeta`
+(blocked by `A` not being a closure operator). See the Step 1 research doc
+for the resolution-paths table.
 
 **Operational connections**:
 
-- `M` connects to DBSP incrementalization (`D ∘ Q ∘ I` monad)
+- `M` connects to DBSP via the **incrementalization identity** `Q^Δ = D ∘ Q ∘ I`
+  (a wrapping/conjugation identity over streams, not a monad — corrected by
+  [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626))
 - `A` connects to QBism (observer-relative truth values)
-- The monad laws correspond to integrate-differentiate coherence
+- Whether the monad `M` on `Zeta` and the DBSP `I`/`D` pair share a deeper
+  categorical relationship (e.g., comonad-monad adjunction, distributive
+  law) is an open question, not a settled identity
 
 **Why this matters**: This formalization grounds the Manifesto V2.1 axioms in
 category theory, provides a mathematical foundation for the "Remember-When + Pay-Attention"
@@ -128,8 +144,11 @@ The work earns its keep even at partial completion:
 
 ### Arc 5 — Open questions
 
-- What is the precise relationship between the memory monad `M` and the DBSP
-  incrementalization monad? Are they the same structure, or is one a specialization?
+- What is the precise relationship between the memory monad `M` (a monad on
+  the topos `Zeta`) and the DBSP `I`/`D` pair (the integrate/differentiate
+  operators participating in the incrementalization *identity* `Q^Δ = D ∘ Q ∘ I`,
+  not a monad — per [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626))? Possible structural relations: comonad-monad
+  adjunction, distributive law, or no direct categorical correspondence.
 - How does the attention modal operator `A` interact with the subobject classifier's
   Heyting algebra structure? QBism suggests it should be non-Boolean.
 - Can we derive the Clifford algebra structure from this categorical foundation?
