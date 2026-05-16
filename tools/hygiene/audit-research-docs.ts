@@ -12,10 +12,21 @@ interface AuditResult {
   readonly unreferenced: readonly string[];
 }
 
+interface AuditRoots {
+  readonly repoRoot: string;
+  readonly researchDir: string;
+  readonly memoryDir: string;
+}
+
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..");
 const RESEARCH_DIR = join(REPO_ROOT, "docs", "research");
 const MEMORY_DIR = join(REPO_ROOT, "memory");
+const DEFAULT_ROOTS: AuditRoots = {
+  repoRoot: REPO_ROOT,
+  researchDir: RESEARCH_DIR,
+  memoryDir: MEMORY_DIR,
+};
 const RESEARCH_LABEL = "docs/research";
 const MEMORY_LABEL = "memory";
 const UNINDEXED_RATIONALE_RE =
@@ -25,8 +36,8 @@ function normalizePath(path: string): string {
   return path.replaceAll("\\", "/");
 }
 
-function repoRelative(path: string): string {
-  return normalizePath(relative(REPO_ROOT, path));
+function repoRelative(path: string, repoRoot: string): string {
+  return normalizePath(relative(repoRoot, path));
 }
 
 async function listFiles(root: string): Promise<readonly string[]> {
@@ -46,9 +57,9 @@ async function listFiles(root: string): Promise<readonly string[]> {
   return paths.flat().sort((a, b) => a.localeCompare(b));
 }
 
-function isReferenced(path: string, content: string): boolean {
-  const normalized = repoRelative(path);
-  const researchRelative = normalizePath(relative(RESEARCH_DIR, path));
+function isReferenced(path: string, content: string, roots: AuditRoots): boolean {
+  const normalized = repoRelative(path, roots.repoRoot);
+  const researchRelative = normalizePath(relative(roots.researchDir, path));
   return content.includes(normalized) || content.includes(researchRelative);
 }
 
@@ -58,10 +69,17 @@ async function hasExplicitUnindexedRationale(path: string): Promise<boolean> {
 }
 
 export async function auditResearchDocs(): Promise<AuditResult> {
-  const [researchFiles, memoryFiles] = await Promise.all([
-    listFiles(RESEARCH_DIR),
-    listFiles(MEMORY_DIR),
+  return auditResearchDocsInRoots(DEFAULT_ROOTS);
+}
+
+export async function auditResearchDocsInRoots(
+  roots: AuditRoots,
+): Promise<AuditResult> {
+  const [researchFiles, allMemoryFiles] = await Promise.all([
+    listFiles(roots.researchDir),
+    listFiles(roots.memoryDir),
   ]);
+  const memoryFiles = allMemoryFiles.filter((path) => path.endsWith(".md"));
 
   const memoryContents = await Promise.all(
     memoryFiles.map(async (path) => readFile(path, "utf8")),
@@ -72,18 +90,18 @@ export async function auditResearchDocs(): Promise<AuditResult> {
   const explicitlyUnindexed: string[] = [];
   const unreferenced: string[] = [];
   for (const file of researchFiles) {
-    if (isReferenced(file, combinedMemoryContent)) {
-      referenced.push(repoRelative(file));
+    if (isReferenced(file, combinedMemoryContent, roots)) {
+      referenced.push(repoRelative(file, roots.repoRoot));
     } else if (await hasExplicitUnindexedRationale(file)) {
-      explicitlyUnindexed.push(repoRelative(file));
+      explicitlyUnindexed.push(repoRelative(file, roots.repoRoot));
     } else {
-      unreferenced.push(repoRelative(file));
+      unreferenced.push(repoRelative(file, roots.repoRoot));
     }
   }
 
   return {
-    researchFiles: researchFiles.map(repoRelative),
-    memoryFiles: memoryFiles.map(repoRelative),
+    researchFiles: researchFiles.map((path) => repoRelative(path, roots.repoRoot)),
+    memoryFiles: memoryFiles.map((path) => repoRelative(path, roots.repoRoot)),
     referenced,
     explicitlyUnindexed,
     unreferenced,
