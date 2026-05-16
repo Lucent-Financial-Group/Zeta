@@ -587,9 +587,9 @@ truth for any rule that applies across harnesses.
   every session; it redirects the read-order into
   this file plus a few Claude-Code-specific ground
   rules.
-- **`GEMINI.md`** — Gemini CLI equivalent.
-  Currently absent; add if and when we use Gemini
-  CLI against this repo.
+- **`GEMINI.md`** — Gemini CLI equivalent. Present
+  at repo root; bootstrap pointer tree for fresh
+  Gemini instances (per B-0538).
 - **`CODEX.md`** or **`.codex/AGENTS.md`** —
   OpenAI Codex equivalent. Present at
   `.codex/AGENTS.md`; it is additive and may not
