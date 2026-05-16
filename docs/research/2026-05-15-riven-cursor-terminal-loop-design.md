@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-15
 **Status:** Design approved; implementation queued
-**Backlog:** B-0498
+**Backlog:** B-0549 (renumbered from B-0498 per B-0545, 2026-05-16)
 
 ## Problem
 

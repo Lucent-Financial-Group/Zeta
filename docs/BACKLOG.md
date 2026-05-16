@@ -302,7 +302,6 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
 - [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
-- [ ] **[B-0498](backlog/P1/B-0498-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md)** Riven Cursor Terminal background loop — IDE-native autonomous gate with manager contract
 - [x] **[B-0500](backlog/P1/B-0500-b0441-slice-3-queue-state-guard-poll-once-wiring-2026-05-14.md)** B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce
 - [ ] **[B-0501](backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md)** B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)
 - [ ] **[B-0502](backlog/P1/B-0502-b0441-slice-6-launchd-plist-autonomous-loop-docs-2026-05-14.md)** B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update
@@ -327,6 +326,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0540](backlog/P1/B-0540-standing-by-counter-with-escalation-in-rule-2026-05-15.md)** Standing-by counter-with-escalation in the rule (N consecutive brief-acks → escalate to decomposition)
 - [ ] **[B-0541](backlog/P1/B-0541-cross-surface-bus-detector-standing-by-quorum-2026-05-15.md)** Cross-surface bus detector — Standing-by quorum across Otto surfaces (extension of PR #3017 detector)
 - [ ] **[B-0542](backlog/P1/B-0542-background-service-clicks-past-stuck-prompts-2026-05-15.md)** Background service clicks past stuck prompts on foreground Otto surfaces (3-surface BFT recovery node)
+- [ ] **[B-0549](backlog/P1/B-0549-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md)** Riven Cursor Terminal background loop — IDE-native autonomous gate with manager contract
 
 ## P2 — research-grade
 
