@@ -93,7 +93,7 @@ hundreds of real per-row files now in tree. Retiring this item per Phase 3 inten
 - `tools/backlog/README.md` — schema spec.
 - `tools/backlog/generate-index.ts` — the generator this
   file exercises.
-- `docs/research/backlog-split-design-otto-181.md` — full
+- `memory/persona/otto/conversations/backlog-split-design-otto-181.md` — full
   design spec.
 - `.github/workflows/backlog-index-integrity.yml` — Phase 1b CI gate
   (now landed; was cited as future work in this row's original body).
