@@ -37,6 +37,14 @@ Empirical from the 2026-05-16T04:15Z–05:53Z cascade window (12+ tick autonomou
 | 200–1000 | **Extreme cost-aware** | Skip batch-polling entirely. Open at most 1 PR per tick. Avoid `gh api graphql` thread sweeps. Inline `gh api rate_limit --jq` (REST, free) to monitor without burning budget. |
 | 0–200 | **Pure-git** | Zero `gh` calls except `gh api rate_limit` (REST, free). All substrate landings via `git fetch` + `git push` to a branch; PR creation deferred to post-reset tick. Tick shards still committed and pushed (no GraphQL needed). |
 
+### `git log --since="N min ago"` is the wrong query for recent main merges
+
+Empirical anchor 2026-05-16T15:14Z: a squash-merged PR (e.g., #3894 merged at 15:11Z) was invisible to `git log origin/main --since="20 min ago"` even though `git log origin/main | head -3` correctly showed it at the top. Root cause: `--since` filters on **commit date** (preserved from original authoring), not **merge date**. A squash-merge collapses N commits authored hours/days ago into one commit whose `committer-date` may match the merge but whose `author-date` (used by `--since`) is the original authoring time. PRs squashed from older branches drop out of "recent" `--since` windows even though they just landed.
+
+**Mitigation**: prefer `git log origin/main | head -N` over `git log origin/main --since="N min ago"` when checking recent merges. The `head` form sorts by topological / log order which IS merge-recency-correct. If a date filter is required, use `--committer-date-order` paired with explicit author/committer date selection.
+
+Composes with the local-ref-staleness pattern below (`unable to update local ref` wedge): both fail in the same direction — they make recent activity invisible to naive queries. Verification: `git ls-remote origin main` returns the ground-truth SHA regardless of local ref state.
+
 ### `gh api rate_limit` is REST (free)
 
 `gh api rate_limit` consults the REST endpoint, not the GraphQL endpoint. Polling it does not consume the GraphQL budget being monitored. Safe to invoke every tick during cost-aware mode without further depleting the budget.
