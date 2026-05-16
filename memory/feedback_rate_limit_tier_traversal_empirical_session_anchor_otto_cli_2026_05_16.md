@@ -75,10 +75,18 @@ prevented me from contributing to the peer's burst pattern.
 
 ### 4. Pure-git tier never reached because of reset timing
 
-The trace shows we approached Pure-git tier (200-1000) but the rate-limit
-reset fired before crossing. In a 1-hour window with persistent dual-Otto
-burst activity, Pure-git tier would be the operational floor; this session
-was within ~5-10 min of needing the pure-git tick discipline.
+**Correction (PR #-pending, 2026-05-16T11:15Z):** original wording said
+"approached Pure-git tier (200-1000)" — that's wrong; per
+`.claude/rules/refresh-world-model-poll-pr-gate.md` the tiers are
+**Extreme cost-aware (200-1000)** and **Pure-git (0-200)**. The session
+reached 549 GraphQL remaining, which is mid-Extreme-cost-aware, NOT
+approaching Pure-git. The accurate framing: trace dropped through
+Cost-aware (1000-2000) into Extreme-cost-aware (200-1000) and was
+heading toward the Pure-git threshold (0-200) when the rate-limit reset
+fired at the 60-min boundary. In a 1-hour window with persistent
+dual-Otto burst activity, the Pure-git tier would be the operational
+floor; this session was within ~5-10 min of needing the pure-git tick
+discipline. Codex caught this; see PR #3863 thread (P2).
 
 ### 5. Reset DOES restore full budget atomically
 
@@ -114,8 +122,18 @@ A fresh Otto-CLI cold-boot in a multi-Otto-CLI factory should:
 - `.claude/rules/claim-acquire-before-worktree-work.md` — borrow-on-existing
   pattern was used twice this session to avoid worktree contention without
   needing GraphQL operations
-- `.claude/rules/agent-roster-reference-card.md` — shared user-token is
-  Otto-only artifact; Riven/Vera/Lior/Alexa each have their own tokens
+- `.claude/rules/agent-roster-reference-card.md` — model providers differ
+  per agent (Otto: Claude; Alexa: Qwen via Kiro; Riven: Grok via Cursor;
+  Vera: Codex; Lior: Gemini); the SHARED resource is the `gh` user-token
+  for GitHub API calls, NOT the model API. Per
+  `.claude/rules/refresh-world-model-poll-pr-gate.md`: "Otto-CLI +
+  Otto-Desktop + Lior + Vera + Riven all draw from Aaron's user-token."
+  So the multi-agent shared-token contention applies to ANY agent making
+  `gh` calls from Aaron's user account, not just Otto. **Correction
+  (PR #-pending, 2026-05-16T11:15Z):** original wording incorrectly
+  scoped shared-token contention to Otto-only; Codex caught this on
+  PR #3863 thread (P1). Future rate-limit mitigation should consider
+  the full multi-agent surface, not just Otto-CLI lanes.
 
 ## Origin context
 
