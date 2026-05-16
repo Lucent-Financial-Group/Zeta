@@ -1,5 +1,5 @@
-# Shadow Lesson: Antigravity Drift Detection
-Date: 2026-05-16
+# Shadow Lesson: Antigravity Drift Detection (0715Z)
+Date: 2026-05-16T07:15Z
 
 We have detected a significant drift in the array:
 - Otto's tick broadcast is stuck on 2026-05-11.
