@@ -22,6 +22,7 @@
  * Usage:
  *   bun tools/shadow/shadow-observer.ts [--delay <ms>] [--detect-cmd <cmd>]
  *     [--dry-run] [--once] [--loop <ms>] [--loop-interval <ms>] [--log-file <path>]
+ *     [--restore-arrow]
  *
  * Flags:
  *   --delay <ms>          Delay before auto-accepting (default: 3000)
@@ -34,6 +35,11 @@
  *   --once                Run exactly one detection cycle then exit
  *   --loop-interval <ms>  Continuous mode: sleep between cycles (default: 1000)
  *   --log-file <path>     Log file path (default: tools/shadow/shadow-observer.log)
+ *   --restore-arrow       At the start of each cycle, press → (right arrow) in the
+ *                         frontmost terminal to restore grey-text autocomplete that
+ *                         got erased by an autonomous-loop cron tick. Frontmost-
+ *                         terminal-gated; no-op when no autocomplete + cursor at
+ *                         end of input. Suppressed under --dry-run.
  */
 
 import { appendFileSync } from "node:fs";
@@ -48,11 +54,12 @@ export interface ShadowConfig {
   loopIntervalMs: number;
   loopMs?: number;
   once: boolean;
+  restoreArrow: boolean;
 }
 
 export interface ShadowEvent {
   timestamp: string;
-  type: "started" | "detected" | "accepted" | "overridden" | "no-suggestion" | "error";
+  type: "started" | "detected" | "accepted" | "overridden" | "no-suggestion" | "error" | "restore-arrow";
   content?: string;
   delayMs: number;
   dryRun: boolean;
@@ -60,6 +67,7 @@ export interface ShadowEvent {
 
 export type DetectFn = () => Promise<string | null>;
 export type AcceptFn = (config: ShadowConfig) => Promise<boolean>;
+export type RestoreArrowFn = () => Promise<string>;
 
 export function log(event: ShadowEvent, logFile: string): void {
   const line = JSON.stringify(event);
@@ -192,6 +200,60 @@ export async function detectViaCommand(cmd: string): Promise<string | null> {
   return trimmed.length > 0 ? trimmed : "(detected)";
 }
 
+/**
+ * Press the right-arrow key once in the frontmost terminal (if a known
+ * terminal emulator). Used to restore grey-text autocomplete suggestions
+ * that get erased when an autonomous-loop cron tick fires a user prompt
+ * in the CLI input field. Composes with `restore-arrow.applescript`.
+ *
+ * Returns the AppleScript verdict line: "pressed:<app>" or
+ * "skipped:<reason>". The verdict is what the caller logs.
+ *
+ * **The press is NOT suppressed by --dry-run.** Rationale: --dry-run
+ * exists to prevent the destructive Enter-to-accept keystroke. The →
+ * press is non-destructive — no-op when no autocomplete + cursor at end
+ * of input. Suppressing it under dry-run would defeat the entire purpose
+ * (the observer is the dry-run mode; restore-arrow is the active
+ * defensive recovery for cron-erased grey-text). The two flags are
+ * orthogonal and can be combined.
+ *
+ * Safety:
+ *   - Frontmost-terminal gate is the AppleScript's job; this function
+ *     trusts that gate. The list of known terminals lives in the
+ *     AppleScript so adding a new emulator requires a single edit.
+ *   - osascript is timeout-capped via OSASCRIPT_TIMEOUT_MS (3 s) — same
+ *     as detection. Slow accessibility-permission prompts never block the
+ *     loop indefinitely.
+ *   - On spawn / timeout error, returns "error:<message>" so the caller
+ *     can log it without throwing.
+ */
+export async function pressRestoreArrow(
+  _config: ShadowConfig,
+  _runner?: OsascriptRunner,
+  _platform?: string,
+): Promise<string> {
+  const platform = _platform ?? process.platform;
+  if (platform !== "darwin") {
+    return "skipped:not-macos";
+  }
+
+  const runner = _runner ?? runOsascript;
+  const scriptPath = join(import.meta.dir, "restore-arrow.applescript");
+
+  let result: { exitCode: number; stdout: string; stderr: string };
+  try {
+    result = await runner(scriptPath);
+  } catch (err) {
+    return `error:${String(err)}`;
+  }
+
+  if (result.exitCode !== 0) {
+    return `error:osascript-exit-${result.exitCode}`;
+  }
+  const trimmed = result.stdout.trim();
+  return trimmed.length > 0 ? trimmed : "error:empty-output";
+}
+
 export async function acceptGreyText(config: ShadowConfig): Promise<boolean> {
   if (config.dryRun) {
     return true;
@@ -215,7 +277,27 @@ export async function runOneCycle(
   config: ShadowConfig,
   detectFn: DetectFn = detectGreyText,
   acceptFn: AcceptFn = acceptGreyText,
+  restoreArrowFn: RestoreArrowFn = () => pressRestoreArrow(config),
 ): Promise<"accepted" | "no-suggestion" | "overridden" | "error"> {
+  if (config.restoreArrow) {
+    let verdict: string;
+    try {
+      verdict = await restoreArrowFn();
+    } catch (err) {
+      verdict = `error:${String(err)}`;
+    }
+    log(
+      {
+        timestamp: new Date().toISOString(),
+        type: "restore-arrow",
+        content: verdict,
+        delayMs: config.delayMs,
+        dryRun: config.dryRun,
+      },
+      config.logFile,
+    );
+  }
+
   let greyText: string | null;
   try {
     greyText = await detectFn();
@@ -390,6 +472,7 @@ export function parseConfig(argv: string[]): ShadowConfig {
       once: { type: "boolean", default: false },
       "loop-interval": { type: "string", default: "1000" },
       "log-file": { type: "string", default: "tools/shadow/shadow-observer.log" },
+      "restore-arrow": { type: "boolean", default: false },
     },
     strict: true,
   });
@@ -426,6 +509,7 @@ export function parseConfig(argv: string[]): ShadowConfig {
     once: values.once ?? false,
     loopIntervalMs,
     logFile: values["log-file"] ?? "tools/shadow/shadow-observer.log",
+    restoreArrow: values["restore-arrow"] ?? false,
   };
   const detectCmd = values["detect-cmd"];
   const withDetect = detectCmd !== undefined ? { ...base, detectCmd } : base;
