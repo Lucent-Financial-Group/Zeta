@@ -20,6 +20,8 @@ describe("auditResearchDocsInRoots", () => {
         join(root, "docs", "research", "full.md"),
         "# full reference\n",
       );
+      const absolutePath = join(root, "docs", "research", "absolute.md");
+      writeFileSync(absolutePath, "# absolute reference\n");
       writeFileSync(
         join(root, "docs", "research", "colon.md"),
         "# colon reference\n",
@@ -52,6 +54,7 @@ describe("auditResearchDocsInRoots", () => {
         join(root, "memory", "MEMORY.md"),
         [
           "docs/research/full.md",
+          absolutePath.replaceAll("\\", "/"),
           "docs/research/colon.md: annotated reference",
           "nested/relative.md",
           "[relative](../docs/research/relative-link.md)",
@@ -76,6 +79,7 @@ describe("auditResearchDocsInRoots", () => {
       });
 
       expect(result.researchFiles).toEqual([
+        "docs/research/absolute.md",
         "docs/research/boundary.md",
         "docs/research/colon.md",
         "docs/research/full.md",
@@ -90,6 +94,7 @@ describe("auditResearchDocsInRoots", () => {
         "memory/persona/CURRENT.md",
       ]);
       expect(result.referenced).toEqual([
+        "docs/research/absolute.md",
         "docs/research/colon.md",
         "docs/research/full.md",
         "docs/research/nested/relative.md",

@@ -70,9 +70,11 @@ async function listFiles(root: string): Promise<readonly string[]> {
 }
 
 function isReferenced(path: string, content: string, roots: AuditRoots): boolean {
+  const absolute = normalizePath(path);
   const normalized = repoRelative(path, roots.repoRoot);
   const researchRelative = normalizePath(relative(roots.researchDir, path));
   return (
+    hasPathReference(content, absolute) ||
     hasPathReference(content, normalized) ||
     hasPathReference(content, researchRelative)
   );
