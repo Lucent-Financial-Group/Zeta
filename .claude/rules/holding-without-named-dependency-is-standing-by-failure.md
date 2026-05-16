@@ -19,11 +19,11 @@ When the autonomous-loop cron fires and you find yourself about to type
 
 1. **Is there a SPECIFIC named dependency with a bounded ETA?**
    - PR #NNNN in CI (specific check name, expected minutes)
-   - Aaron's reply to a specific question
+   - The human maintainer's reply to a specific question
    - External service / data-fetch with known latency
 
    If YES → say so explicitly: "Real-dependency-wait on PR #NNNN CI
-   (~5min ETA)" or "Awaiting Aaron's pick between A/B" — NOT "Holding".
+   (~5min ETA)" or "Awaiting the human maintainer's pick between A/B" — NOT "Holding".
 
 2. **If NO named dependency** → you are in Standing-by failure mode.
    Per the infinite-backlog metabolism rule, ALWAYS more decomposition
@@ -47,7 +47,7 @@ signals** ("Holding" / "Standing by" / "Waiting" / "Bounded wait
 continues" / "Idle" / "Idle but available" / equivalent) WITHOUT:
 
 - A named dependency surfacing (PR merge, CI failure, review thread)
-- Aaron speaking
+- human maintainer speaking
 - Actually picking real decomposition work
 
 **...escalate to decomposition immediately.** The N-consecutive pattern
@@ -67,7 +67,7 @@ allowance was for the "wait briefly for a named signal" case, not the
 
 The counter is per-session, per-Otto-surface. Resets on ANY of:
 
-- Aaron speaking (the conversation became active again)
+- human maintainer speaking (the conversation became active again)
 - A named dependency surfacing (PR merge, CI failure, etc.)
 - Actually picking real decomposition work (file a memory observation,
   sanity-check substrate landed on main from prior PRs, audit a
@@ -87,8 +87,8 @@ B-0540 implementation itself) on the 7th tick. N=6 is the threshold
 the empirical evidence supports.
 
 Lower bound: N≥3 would over-trigger on legitimate bounded waits where
-peer Otto / Aaron is actively engaged. Upper bound: N≥10 (the original
-B-0540 proposal) waits too long and Aaron catches it before the rule
+peer Otto / human maintainer is actively engaged. Upper bound: N≥10 (the original
+B-0540 proposal) waits too long and the human maintainer catches it before the rule
 fires. N=6 catches the pattern before it compounds AND allows
 legitimate short bounded waits.
 
