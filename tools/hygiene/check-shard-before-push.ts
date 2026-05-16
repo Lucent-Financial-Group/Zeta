@@ -79,6 +79,15 @@ function buildCodeFenceFlags(lines: readonly string[]): boolean[] {
   return flags;
 }
 
+// A line starting with whitespace is typically a wrap-continuation of the
+// previous structural element (list-item continuation, blockquote-continuation,
+// fenced-block-continuation). markdownlint correctly treats these as part
+// of the prior element, NOT as a paragraph that would need a blank line
+// before a following list. Detect by leading whitespace on the prev line.
+function isContinuationLine(line: string): boolean {
+  return /^\s/.test(line);
+}
+
 function checkMd032(file: string): Md032Finding[] {
   const text = readFileSync(file, "utf8");
   const lines = text.split("\n");
@@ -90,9 +99,11 @@ function checkMd032(file: string): Md032Finding[] {
     const cur = lines[i]!;
     // Trigger: cur starts with "- " bullet AND prev is non-blank
     //          AND prev is not itself a structural marker (#, >, *, -, |, ```)
+    //          AND prev is not a wrap-continuation of a prior structural element
     if (!cur.startsWith("- ")) continue;
     if (prev.trim() === "") continue;
     if (/^[#>*\-|`]/.test(prev)) continue;
+    if (isContinuationLine(prev)) continue;
     findings.push({ file, line: i + 1, paragraph: prev, bullet: cur });
   }
   return findings;
