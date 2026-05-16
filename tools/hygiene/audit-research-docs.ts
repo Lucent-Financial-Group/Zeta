@@ -1,3 +1,6 @@
+#!/usr/bin/env bun
+// audit-research-docs.ts - report docs/research files missing memory-substrate references.
+
 import { readdir, readFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -177,7 +180,7 @@ export async function main(): Promise<AuditExitCode> {
 }
 
 if (import.meta.main) {
-  main()
+  void main()
     .then((code) => process.exit(code))
     .catch((err: unknown) => {
       process.stderr.write(
