@@ -51,7 +51,7 @@ The dashboard's $2,863.18 in included-usage discounts is the load-bearing number
 - [ ] Verify Enterprise's per-service included-credit table at <https://docs.github.com/en/enterprise-cloud@latest/billing/concepts/product-billing> — confirm each line item is equal-or-more at Enterprise tier
 - [ ] If verification passes: start promotional Enterprise trial; observe for at least one billing cycle to confirm discounts persisted
 - [ ] If verification reveals at-risk line items: document which ones and decide case-by-case
-- [ ] Document tier + verification findings in `docs/AUTH.md` or `docs/SCARCITY.md`
+- [ ] Document tier + verification findings in a new `docs/SCARCITY.md` (neither `docs/AUTH.md` nor `docs/SCARCITY.md` exists today — this acceptance item creates the canonical file)
 - [ ] Update B-0570 scarcity tracker to report 15000/hr limit if upgraded (currently assumes 5000/hr)
 
 ## Composes with
