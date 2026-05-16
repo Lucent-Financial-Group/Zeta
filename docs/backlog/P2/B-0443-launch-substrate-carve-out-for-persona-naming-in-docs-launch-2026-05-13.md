@@ -1,12 +1,12 @@
 ---
 id: B-0443
 priority: P2
-status: open
+status: closed
 title: "Launch-substrate carve-out — persona naming allowed in docs/launch/** under existing closed-list pattern"
 tier: governance
 effort: S
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-16
 depends_on: []
 composes_with: [B-0429]
 tags: [governance, launch-substrate, persona-naming, agent-best-practices, copilot-recurring-finding]
@@ -159,3 +159,36 @@ The carve-out is the substrate-honest option.
 the amendment extends)
 
 PR #2997 + PR #3001 (the recurring policy-finding observations)
+
+## Resolution
+
+Closed 2026-05-16 via audit-triage discovery of substrate drift.
+
+**Deliverable shipped**: `docs/AGENT-BEST-PRACTICES.md` line 709
+contains the carve-out for `docs/launch/**` with the exact rationale
+proposed in this row:
+
+> `docs/launch/**` — launch substrate (public-facing positioning
+> artifacts; persona names + external creator attributions allowed
+> because the substrate's job is to preserve the multi-agent
+> factory's named-team positioning AND IP-respect attribution at a
+> specific date...)
+
+**Drift class**: #1 (pure drift) — the amendment is present in
+AGENT-BEST-PRACTICES.md but the row's `status: open` was never
+updated.
+
+**Acceptance verification** (zero gh):
+
+- ✅ Policy line added to AGENT-BEST-PRACTICES.md closed-list (line 709)
+- ✅ Rationale preserves multi-agent transparency value ("multi-agent factory's named-team positioning")
+- ✅ Cross-references IP-respect commitment ("IP-respect attribution")
+- ✅ Future PRs creating docs/launch/** files no longer trigger persona-naming policy findings (forward-going; observable as absence of recurring Copilot/Codex findings on launch substrate PRs)
+
+**Surfaced by**: `tools/hygiene/audit-backlog-status-drift.ts` candidate
+list + manual existence + content-coverage check (`grep -nE "docs/launch"
+docs/AGENT-BEST-PRACTICES.md`).
+
+**Composes with**: PR #2997 + PR #3001 (the recurring policy-finding
+observations that triggered the carve-out); PR #2980 (the launch thread
+already operating with persona naming throughout).
