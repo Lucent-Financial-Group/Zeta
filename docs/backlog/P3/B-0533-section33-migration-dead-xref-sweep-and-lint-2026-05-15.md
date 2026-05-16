@@ -89,3 +89,21 @@ Composes with [B-0532](B-0532-backlog-graph-consistency-lint-parent-child-status
 - [B-0532](B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) — static-lint mechanization sibling
 - [PR #3513](https://github.com/Lucent-Financial-Group/Zeta/pull/3513), [PR #3529](https://github.com/Lucent-Financial-Group/Zeta/pull/3529) — the empirical anchor for this row
 - [`.claude/rules/encoding-rules-without-mechanizing.md`](../../../.claude/rules/encoding-rules-without-mechanizing.md) — fix-once-then-lint pattern; this row applies it to the migration xref class
+
+## Status (2026-05-16)
+
+Per the row-close gate triage (per [`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md) step 0 — substrate-drift discriminator merged via PR #3757), this row is **partial completion, NOT drift**.
+
+**Shipped (Slice B — lint tool + gate.yml wiring):**
+
+- `tools/hygiene/audit-section-33-migration-xrefs.ts` (slightly different name than the row's proposed `lint-section-33-xrefs.ts`; functionally equivalent) — via PR [#3548](https://github.com/Lucent-Financial-Group/Zeta/pull/3548) + PR [#3555](https://github.com/Lucent-Financial-Group/Zeta/pull/3555) (`Slice B.3 + B.4 — --enforce flag + gate.yml wiring`)
+- Gate.yml job `lint-section-33-migration-xrefs` is present
+
+**Pending (Slice A — sweep):**
+
+- The actual sweep of dead xrefs in live-nav surfaces is **not done**. Empirical evidence: multiple recent PRs (e.g., #3670, #3659, #3643, #3633, #3599) show the `lint (§33 migration xrefs)` non-required check FAILING — meaning dead xrefs persist in the tree. The lint is correctly catching what Slice A was supposed to clean up.
+- Per the row's Proposed solution: "Per-persona PR batching (8 small PRs, ~3-15 files each)". The 8 persona-batched PRs are pending; some may have been done in fragments (Lior's archive PRs) but the lint failures suggest the work is incomplete.
+
+Row stays `status: open` until Slice A's persona-batched sweep PRs land. The partial-vs-drift distinction is exactly the discriminator that PR #3757's step-0 rule extension mechanizes at the discipline scope.
+
+Audit anchor: 2026-05-16T05:48Z Otto-CLI tick verified via pure-git (no `gh`) that `tools/hygiene/audit-section-33-migration-xrefs.ts` exists and `grep 'lint-section-33-migration-xrefs' .github/workflows/gate.yml` finds the job. The Slice A pending state is inferred from the session-collected warnings list (non-required check failures across 5+ open PRs).
