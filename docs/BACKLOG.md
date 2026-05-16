@@ -327,6 +327,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0541](backlog/P1/B-0541-cross-surface-bus-detector-standing-by-quorum-2026-05-15.md)** Cross-surface bus detector — Standing-by quorum across Otto surfaces (extension of PR #3017 detector)
 - [ ] **[B-0542](backlog/P1/B-0542-background-service-clicks-past-stuck-prompts-2026-05-15.md)** Background service clicks past stuck prompts on foreground Otto surfaces (3-surface BFT recovery node)
 - [ ] **[B-0549](backlog/P1/B-0549-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md)** Riven Cursor Terminal background loop — IDE-native autonomous gate with manager contract
+- [ ] **[B-0550](backlog/P1/B-0550-docs-research-audit-2026-05-16.md)** Docs/research cross-reference audit
 
 ## P2 — research-grade
 
