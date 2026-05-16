@@ -581,7 +581,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0456](backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md)** Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
 - [ ] **[B-0457](backlog/P2/B-0457-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md)** amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
 - [ ] **[B-0458](backlog/P2/B-0458-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md)** amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
-- [ ] **[B-0462](backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
+- [x] **[B-0462](backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md)** Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)
 - [ ] **[B-0498](backlog/P2/B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md)** Substrate-evolution algebra (6 invariants + HKT − Rodney's Razor) rule-promotion after cooling period
 - [ ] **[B-0524](backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md)** Manifesto V2 verbatim Grok fetch — convert shadow-lock to full lock
 - [ ] **[B-0529](backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)** Tick-shard schema validator vs current practice drift
