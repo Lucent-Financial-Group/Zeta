@@ -1,14 +1,12 @@
 ---
 id: B-0442
 priority: P1
-status: closed
+status: open
 title: "Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-13
-last_updated: 2026-05-15
-closed: 2026-05-15
-closed_by_pr: 3458
+last_updated: 2026-05-14
 depends_on: [B-0400]
 composes_with: [B-0402, B-0440, B-0441]
 children: [B-0503, B-0504, B-0505]

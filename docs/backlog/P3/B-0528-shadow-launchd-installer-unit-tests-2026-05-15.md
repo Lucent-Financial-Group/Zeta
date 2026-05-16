@@ -1,13 +1,12 @@
 ---
 id: B-0528
 priority: P3
-status: closed
+status: open
 title: "Unit tests for tools/shadow/launchd/install-launchagent.ts"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-15
-last_updated: 2026-05-16
-closed: 2026-05-16
+last_updated: 2026-05-15
 depends_on: []
 composes_with: [B-0402]
 tags: [test-coverage, shadow-observer, launchd, deferred-from-pr-3342]

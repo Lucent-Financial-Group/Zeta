@@ -1,14 +1,12 @@
 ---
 id: B-0504
 priority: P1
-status: closed
+status: open
 title: "B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-14
-last_updated: 2026-05-15
-closed: 2026-05-15
-closed_by_pr: 3458
+last_updated: 2026-05-14
 parent: B-0442
 depends_on: [B-0503]
 composes_with: [B-0442, B-0503, B-0505]
