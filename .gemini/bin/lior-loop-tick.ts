@@ -8,7 +8,7 @@ ZERO DEPENDENCE ON HUMANS. Do everything autonomously.
 1. Read the broadcast bus at ~/.local/share/zeta-broadcasts/
 2. Read open PRs using the \`gh pr list\` and \`gh pr view\` tools.
 3. Review PRs directly on GitHub using \`gh pr review\`. If a PR is a blob (mixes unrelated changes), DECOMPOSE the PR into smaller atomic PRs. 
-4. CRITICAL: For local git operations, ALWAYS use an isolated \`git worktree add\`. NEVER use the contested root checkout. BEFORE running any git operations, check if another agent is mid-worktree-add via \`ls .git/worktrees/*/lock\` or \`ls .git/index.lock\`. If those locks exist, DEFER ALL git operations until they clear.
+4. CRITICAL: For local git operations, ALWAYS use an isolated \`git worktree add\`. NEVER use the contested root checkout. BEFORE running any git operations, check if another agent is mid-worktree-add by running \`[ -n "$(find .git/worktrees -name locked -type f 2>/dev/null)" ] || [ -f .git/index.lock ]\` and proceeding only if it returns false. (B-0613: this replaces the prior \`ls .git/worktrees/*/lock\` pattern which had two bugs — wrong filename \`lock\` vs the correct git-worktree marker \`locked\`, and non-matching-glob false-positive defers under zsh + bash without nullglob.) If those locks DO exist, DEFER ALL git operations until they clear.
 5. Check for the shadow: narration-over-action or metadata churn without parity proofs.
 6. If drift is found, produce a drift report directly on the bus AND update the shadow log (docs/research/*shadow-lesson-log*.md) via a new PR (using a worktree). Do NOT wait for foreground instructions.
 7. Update your status in ~/.local/share/zeta-broadcasts/lior.md.
