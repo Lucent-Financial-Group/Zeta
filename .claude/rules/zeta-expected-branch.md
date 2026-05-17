@@ -88,6 +88,43 @@ Both are zero-code substrate (operator discipline) but they're the
 primary catches in this harness. The env-var hook stays as
 defense-in-depth.
 
+## Race-window caveat (2026-05-16) — guard+commit sequence still has sub-second race window
+
+Empirical anchor: 2026-05-16T22:29Z Otto-Desktop tick shard
+([`docs/hygiene-history/ticks/2026/05/16/2229Z.md`](../../docs/hygiene-history/ticks/2026/05/16/2229Z.md)).
+The composite operator-discipline above — whether written as `test "$(git branch --show-current)" = "<expected>" || exit 1` followed by a separate `git commit` (the canonical form in this rule), or chained as `test … && git commit` (a tighter variant) — **still has a sub-second race window between the guard subprocess and the commit subprocess**. The `git branch --show-current` guard returns the correct expected branch, but peer agent activity (another Otto / Lior decomposition step / external git-switch) moves HEAD between the guard subprocess and the `git commit` subprocess. The commit lands on the WRONG branch (whichever peer just switched HEAD to). Bash-tool runtime spawns each subprocess fresh; `&&` vs separate-statement framing doesn't shrink the window enough to close the race because the underlying subprocesses are sequential, not atomic.
+
+Empirical sequence on tick 2229Z:
+
+1. `git switch -c shard/tick-2229z-otto-desktop-shadow-keystroke-injection-diagnosis-2026-05-16 origin/main` — succeeded; HEAD on shard branch
+2. `test "$(git branch --show-current)" = "shard/tick-2229z-..."` — passed (`branch guard ✓`)
+3. `git status --short` — showed shard staged, only PR-3949 untracked (no peer activity yet)
+4. **Race window**: peer agent created `backlog/b-0581-gh-auth-refresh-skill-wrapper-2026-05-16` branch and `git switch`'d HEAD onto it
+5. `git commit -m "..."` — landed on `backlog/b-0581-...` (peer's new branch), NOT the shard branch
+6. Peer added their B-0581 row commit on top of mine, then pushed b-0581 to origin
+7. My commit `6725264` ended up in `origin/backlog/b-0581-...` history alongside peer's `7558984` (substrate-honest contamination; surgery would require force-push on now-public branch)
+
+**Substrate-honest workaround**: under any conditions where peer agent activity in the shared `.git/` may move HEAD between Bash-tool calls — even briefly — DO NOT use the contested root worktree (`/Users/acehack/Documents/src/repos/Zeta`). Create an isolated worktree:
+
+```bash
+git fetch origin main
+git worktree add /private/tmp/zeta-<task-tag>-<hhmmz> FETCH_HEAD
+cd /private/tmp/zeta-<task-tag>-<hhmmz>
+git switch -c <my-branch>
+# edits, git add explicit-paths, git commit
+git push origin <my-branch>:<my-branch>
+cd -
+# git worktree remove when done
+```
+
+Worktree HEAD is independent of root-worktree HEAD — peer activity in the root cannot move it. This is the **only** workaround that survives sub-second race windows because there's no shared HEAD to race on.
+
+**When the rate-limit operational tier (per [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)) is at extreme cost-aware or pure-git**: worktree-add is pure git (no GraphQL); still affordable. The contention risk per B-0530 (worktree-prune-race) is empirical but bounded — try once; if it fails with `Interrupted system call`, fall back to the borrow-on-existing-sidetick pattern in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md).
+
+Field-tested on tick 2356Z (2026-05-16) — this rule update itself was authored from an isolated worktree at `/private/tmp/zeta-rule-zeb-race-2356z` to avoid re-hitting the same failure mode while documenting it.
+
+Composes with [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) saturation-ceiling sub-case 1 (existing-branch-name collision via concurrent peer activity) at the per-commit scope — same root cause class (peer HEAD/ref mutation in shared `.git/`), different observable symptom (commit lands on wrong branch vs branch-create refuses).
+
 ## Hook wiring summary
 
 | Component | Path |
