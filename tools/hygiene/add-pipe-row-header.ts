@@ -69,7 +69,7 @@ function repoRelative(p: string): string {
   return normalizeToPosix(relative(ROOT, p));
 }
 
-function parseShardPath(absPath: string): ShardInfo | null {
+export function parseShardPath(absPath: string): ShardInfo | null {
   const rel = repoRelative(absPath);
   if (!rel.startsWith(SHARD_PREFIX)) return null;
   if (!rel.endsWith(".md")) return null;
@@ -122,8 +122,7 @@ function firstNonEmptyLine(content: string): string | null {
 //      path/filename. A shard with a pipe-row whose timestamp does
 //      NOT match the path would still fail the validator; treating
 //      it as compliant here would silently skip a real violation.
-//      (Copilot P1 + Codex P2 catch on PR #3990.)
-function alreadyCompliant(content: string, info: ShardInfo): boolean {
+export function alreadyCompliant(content: string, info: ShardInfo): boolean {
   const first = firstNonEmptyLine(content);
   if (!first) return false;
   const pipeCount = (first.match(/\|/g) ?? []).length;
@@ -137,7 +136,7 @@ function alreadyCompliant(content: string, info: ShardInfo): boolean {
   return parsedIso.slice(0, 16) === info.iso.slice(0, 16);
 }
 
-function buildHeader(iso: string): string {
+export function buildHeader(iso: string): string {
   // Placeholders for fields we cannot reconstruct from the path alone.
   // The H1 body below carries the substantive content; the pipe-row
   // exists for validator + machine-parseability.
@@ -236,7 +235,7 @@ export function processOne(absPath: string, write: boolean): Action {
   // an interruption or disk-full mid-write would corrupt the shard body
   // this tool is trying to PRESERVE. Same-directory rename is atomic
   // on POSIX. Tempfile name includes pid+timestamp to prevent collisions
-  // between concurrent writers. (Copilot P1 catch on PR #3990.)
+  // between concurrent writers.
   const tempPath = `${absPath}.tmp-${process.pid}-${Date.now()}`;
   try {
     writeFileSync(tempPath, newContent, "utf8");
@@ -257,11 +256,15 @@ export function processOne(absPath: string, write: boolean): Action {
   }
 }
 
+const KNOWN_FLAGS = new Set(["--write", "--files"]);
+
 export function main(argv: string[]): number {
   let write = false;
   let filesFlagSeen = false;
   const files: string[] = [];
   let inFiles = false;
+  const unknownFlags: string[] = [];
+  const strayPositional: string[] = [];
 
   for (const a of argv) {
     if (a === "--write") {
@@ -272,14 +275,37 @@ export function main(argv: string[]): number {
       inFiles = true;
     } else if (inFiles) {
       files.push(a);
+    } else if (a.startsWith("--")) {
+      // Reject unknown flags. A typo like `--file <path>` (missing `s`)
+      // would otherwise leave filesFlagSeen=false and fall through to a
+      // full-tree write. Fail-closed on unrecognized options.
+      if (!KNOWN_FLAGS.has(a)) unknownFlags.push(a);
+    } else {
+      // Positional args outside --files mode have no defined meaning.
+      // Tracking them lets us surface caller mistakes before they
+      // become silent no-ops or bulk writes.
+      strayPositional.push(a);
     }
+  }
+
+  if (unknownFlags.length > 0) {
+    process.stderr.write(
+      `error: unrecognized flag(s): ${unknownFlags.join(", ")}; known flags: --write, --files\n`,
+    );
+    return 1;
+  }
+
+  if (strayPositional.length > 0) {
+    process.stderr.write(
+      `error: unexpected positional argument(s): ${strayPositional.join(", ")}; paths only allowed after --files\n`,
+    );
+    return 1;
   }
 
   // Fail-closed: `--files` with zero paths must NOT silently fall back
   // to a full-tree scan. Under `--write`, that would prepend headers
-  // across all 359 non-compliant shards from a caller typo or an
-  // empty dynamically-generated file list. Treat as explicit error.
-  // (Codex P1 finding on PR #3990.)
+  // across all non-compliant shards from a caller typo or an empty
+  // dynamically-generated file list. Treat as explicit error.
   if (filesFlagSeen && files.length === 0) {
     process.stderr.write(
       "error: --files specified but no paths provided; refusing to fall back to full-tree scan\n",
@@ -288,13 +314,32 @@ export function main(argv: string[]): number {
   }
 
   let shards: string[];
+  let droppedInputs: string[] = [];
   if (filesFlagSeen) {
-    shards = files
-      .map((p) => resolve(ROOT, p))
-      .filter((p) => repoRelative(p).startsWith(SHARD_PREFIX))
-      .filter((p) => repoRelative(p).endsWith(".md"))
-      .filter((p) => basename(p) !== "README.md")
-      .filter(isFile);
+    const resolvedInputs = files.map((p) => ({
+      input: p,
+      abs: resolve(ROOT, p),
+    }));
+    shards = [];
+    for (const { input, abs } of resolvedInputs) {
+      const rel = repoRelative(abs);
+      const keep =
+        rel.startsWith(SHARD_PREFIX) &&
+        rel.endsWith(".md") &&
+        basename(abs) !== "README.md" &&
+        isFile(abs);
+      if (keep) shards.push(abs);
+      else droppedInputs.push(input);
+    }
+    // Fail-closed: silently dropping paths that don't exist, aren't .md,
+    // or sit outside the shard tree turns typos and stale generated path
+    // lists into `scanned 0` clean runs. Surface them as errors instead.
+    if (droppedInputs.length > 0) {
+      process.stderr.write(
+        `error: --files paths filtered out (missing, outside shard tree, or not .md): ${droppedInputs.join(", ")}\n`,
+      );
+      return 1;
+    }
   } else {
     if (!isDir(SHARD_DIR)) {
       process.stderr.write(`error: ${SHARD_DIR} does not exist\n`);
@@ -332,7 +377,15 @@ export function main(argv: string[]): number {
       `errors=${counts["error"]}\n`,
   );
 
-  return counts["error"] > 0 ? 1 : 0;
+  // Exit non-zero when any shards were left unprocessed for reasons that
+  // a --write caller would want to know about. `skip-unparseable-name`
+  // counts as a failure: it means a file matched our shard-tree scope
+  // but the filename didn't fit any known HHMMZ form, so the validator
+  // would still reject it. Treating that as a clean run lets validator-
+  // breaking files slip through a --write automation.
+  // `skip-empty` is also surfaced — an empty shard file is malformed.
+  const unprocessed = counts["error"] + counts["skip-unparseable-name"] + counts["skip-empty"];
+  return unprocessed > 0 ? 1 : 0;
 }
 
 if (import.meta.main) {
