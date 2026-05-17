@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -59,10 +59,11 @@ describe("findEdgesInFile", () => {
     }
   });
 
-  test("ignores memory/feedback_ in non-path contexts (still matches if path-shaped)", () => {
-    // The regex matches any `memory/feedback_*.md` shape; this is intentional
-    // since substrate sometimes references files in prose. The dangling check
-    // is the safety net.
+  test("matches memory/feedback_*.md anywhere in prose (intentional — dangling check is the filter)", () => {
+    // The regex intentionally matches the path shape anywhere in markdown
+    // (prose, list items, link targets, code blocks). The dangling check
+    // in isDangling() / auditSurface() is the safety net that distinguishes
+    // real-but-missing refs from incidental string matches.
     const { root, cleanup } = setupFixtureRepo();
     try {
       const file = join(root, "test.md");
@@ -79,47 +80,92 @@ describe("findEdgesInFile", () => {
 });
 
 describe("isDangling", () => {
-  test("returns true when the file does not exist under ROOT", () => {
+  // The lazy `repoRoot()` function reads `REPO_ROOT` on each call, so
+  // these tests fully exercise the env-var override path against a
+  // tmpdir fixture rather than depending on the real repo layout.
+
+  test("returns true when the file does not exist under REPO_ROOT", () => {
     const { root, cleanup } = setupFixtureRepo();
     try {
       process.env["REPO_ROOT"] = root;
-      // Note: import statics capture ROOT at import time, so this test
-      // proves the function's logical contract even if the in-process ROOT
-      // is fixed to the repo root. Use a path that definitely doesn't exist
-      // at the actual ROOT.
-      expect(isDangling("memory/feedback_definitely-does-not-exist-xyz123.md")).toBe(true);
+      expect(isDangling("memory/feedback_does-not-exist.md")).toBe(true);
     } finally {
       delete process.env["REPO_ROOT"];
       cleanup();
     }
   });
 
-  test("returns false when the file exists at the actual ROOT", () => {
-    // The real repo root has an existing audit memo we can use as the
-    // existence proof (the audit memo itself, which DOES exist).
-    expect(
-      isDangling(
-        "memory/feedback_otto_cli_audit_in_repo_rules_cite_user_scope_only_memory_files_5_dangling_refs_cold_boot_invisible_2026_05_17.md",
-      ),
-    ).toBe(false);
+  test("returns false when the file exists under REPO_ROOT", () => {
+    const { root, cleanup } = setupFixtureRepo();
+    try {
+      // Create the fixture memory file inside the tmpdir and verify the
+      // lazy repoRoot() picks it up.
+      mkdirSync(join(root, "memory"), { recursive: true });
+      writeFileSync(join(root, "memory", "feedback_exists.md"), "x\n", "utf8");
+      process.env["REPO_ROOT"] = root;
+      expect(isDangling("memory/feedback_exists.md")).toBe(false);
+    } finally {
+      delete process.env["REPO_ROOT"];
+      cleanup();
+    }
   });
 });
 
 describe("auditSurface", () => {
-  test("returns empty report for nonexistent surface", () => {
-    const r = auditSurface(".claude/nonexistent-surface-for-test");
-    expect(r.scanned).toBe(0);
-    expect(r.edges).toEqual([]);
-    expect(r.uniqueRefs).toBe(0);
-    expect(r.uniqueDanglingRefs).toBe(0);
+  test("returns empty report for nonexistent surface (fixture)", () => {
+    // Use a tmpdir fixture so the test does NOT depend on the real repo
+    // layout (otherwise it would start failing if a real surface ever got
+    // a name colliding with the placeholder).
+    const { root, cleanup } = setupFixtureRepo();
+    try {
+      process.env["REPO_ROOT"] = root;
+      const r = auditSurface("some/missing/surface");
+      expect(r.scanned).toBe(0);
+      expect(r.edges).toEqual([]);
+      expect(r.uniqueRefs).toBe(0);
+      expect(r.uniqueDanglingRefs).toBe(0);
+    } finally {
+      delete process.env["REPO_ROOT"];
+      cleanup();
+    }
   });
 
-  test(".claude/agents has known clean state per audit memo", () => {
-    // Per the #4041 audit memo: .claude/agents has 0 dangling / 0 unique refs.
-    // This test ratchets that empirical state.
-    const r = auditSurface(".claude/agents");
-    expect(r.edges).toEqual([]);
-    expect(r.uniqueDanglingRefs).toBe(0);
+  test("returns empty edges when scanned files have no memory/feedback_ refs", () => {
+    const { root, cleanup } = setupFixtureRepo();
+    try {
+      mkdirSync(join(root, "clean"), { recursive: true });
+      writeFileSync(join(root, "clean", "a.md"), "# header\nno refs\n", "utf8");
+      writeFileSync(join(root, "clean", "b.md"), "more prose\n", "utf8");
+      process.env["REPO_ROOT"] = root;
+      const r = auditSurface("clean");
+      expect(r.scanned).toBe(2);
+      expect(r.edges).toEqual([]);
+      expect(r.uniqueDanglingRefs).toBe(0);
+    } finally {
+      delete process.env["REPO_ROOT"];
+      cleanup();
+    }
+  });
+
+  test("reports dangling edges when ref target is absent under REPO_ROOT", () => {
+    const { root, cleanup } = setupFixtureRepo();
+    try {
+      mkdirSync(join(root, "surface"), { recursive: true });
+      writeFileSync(
+        join(root, "surface", "citing.md"),
+        "see memory/feedback_missing.md\n",
+        "utf8",
+      );
+      process.env["REPO_ROOT"] = root;
+      const r = auditSurface("surface");
+      expect(r.scanned).toBe(1);
+      expect(r.edges).toHaveLength(1);
+      expect(r.edges[0]?.ref).toBe("memory/feedback_missing.md");
+      expect(r.uniqueDanglingRefs).toBe(1);
+    } finally {
+      delete process.env["REPO_ROOT"];
+      cleanup();
+    }
   });
 });
 

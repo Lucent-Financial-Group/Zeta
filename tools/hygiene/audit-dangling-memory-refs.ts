@@ -45,9 +45,10 @@ const DEFAULT_SURFACES = [
   "memory/persona",
 ] as const;
 
-// Match `memory/feedback_<name>.md` where the file is referenced as a path
-// (NOT just a string in code). Captures the leading "memory/" prefix so
-// the captured string can be used directly with fs operations.
+// Match `memory/feedback_<name>.md` anywhere in markdown — paths in
+// prose, list items, link targets, and code blocks all count as
+// citations from the dangling-ref perspective. The captured string has
+// the leading "memory/" prefix and can be used directly with fs ops.
 const MEM_REF_RE = /memory\/feedback_[A-Za-z0-9_-]+\.md/g;
 
 interface DanglingEdge {
@@ -220,31 +221,72 @@ function renderHuman(out: AuditOutput): string {
   return lines.join("\n");
 }
 
+const KNOWN_FLAGS = new Set(["--json", "--surfaces"]);
+
 export function main(argv: string[]): number {
   let json = false;
+  let surfacesFlagSeen = false;
   let collectingSurfaces = false;
   const customSurfaces: string[] = [];
+  const unknownFlags: string[] = [];
+  const strayPositional: string[] = [];
 
   for (const a of argv) {
     if (a === "--json") {
       json = true;
       collectingSurfaces = false;
     } else if (a === "--surfaces") {
+      surfacesFlagSeen = true;
       collectingSurfaces = true;
     } else if (collectingSurfaces) {
       customSurfaces.push(a);
+    } else if (a.startsWith("--")) {
+      // Unknown --flag (typo like --surface or --jons). Reject so
+      // CI/operators notice the mistake rather than silently auditing
+      // the default scope.
+      if (!KNOWN_FLAGS.has(a)) unknownFlags.push(a);
+    } else {
+      // Stray positional arg outside --surfaces collection. Surfaces
+      // a typo in flag spelling before it triggers a wrong-scope run.
+      strayPositional.push(a);
     }
   }
 
-  const surfaces =
-    customSurfaces.length > 0 ? customSurfaces : [...DEFAULT_SURFACES];
-
-  // Validate at least one surface exists; otherwise it's a configuration
-  // error rather than a clean run.
-  const anyDirExists = surfaces.some((s) => isDir(join(repoRoot(), s)));
-  if (!anyDirExists) {
+  if (unknownFlags.length > 0) {
     process.stderr.write(
-      `error: none of the requested surfaces exist under ROOT=${repoRoot()}\n`,
+      `error: unrecognized flag(s): ${unknownFlags.join(", ")}; known flags: --json, --surfaces\n`,
+    );
+    return 2;
+  }
+
+  if (strayPositional.length > 0) {
+    process.stderr.write(
+      `error: unexpected positional argument(s): ${strayPositional.join(", ")}; paths only allowed after --surfaces\n`,
+    );
+    return 2;
+  }
+
+  // Fail-closed: `--surfaces` with zero paths must NOT silently fall
+  // back to DEFAULT_SURFACES. An empty CI variable expansion or caller
+  // typo would silently widen the audit scope.
+  if (surfacesFlagSeen && customSurfaces.length === 0) {
+    process.stderr.write(
+      "error: --surfaces specified but no paths provided; refusing to fall back to DEFAULT_SURFACES\n",
+    );
+    return 2;
+  }
+
+  const surfaces = surfacesFlagSeen ? customSurfaces : [...DEFAULT_SURFACES];
+
+  // Per-surface existence check. `--surfaces docs/research docs/typo`
+  // must fail rather than silently audit only docs/research and return
+  // 0/1 — false-green in CI is the failure mode here.
+  const missingSurfaces = surfaces.filter(
+    (s) => !isDir(join(repoRoot(), s)),
+  );
+  if (missingSurfaces.length > 0) {
+    process.stderr.write(
+      `error: requested surface(s) do not exist under ROOT=${repoRoot()}: ${missingSurfaces.join(", ")}\n`,
     );
     return 2;
   }
