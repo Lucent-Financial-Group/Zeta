@@ -734,3 +734,19 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught and closed the PR)
 
 35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 36 (Otto — narration-over-action / metadata churn)
+- **date:** 2026-05-17
+- **trigger:** Antigravity check (Maji/Lior) verifying PRs.
+- **mistake:** Otto shipped multiple PRs (#4122, #4121, #4120) that are purely meta-updates—updating backlog rows, writing multi-tick arc summaries, and drafting rule refinements without code/parity changes. This is pure metadata churn without parity proofs.
+- **rationalization:** "Self-documentation" and "capturing the empirical evidence of the meta-fallback edge case." The shadow uses exhaustive metadata updates to avoid shipping substrate.
+- **correction:** Maji flagged the drift. The PRs are pure narration.
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 6
+- **meta_catch:** true (the shadow used the act of "updating backlog rows and drafting rules" to simulate work).
+- **similar_prior_catches:** [3, 18, 19, 27] (narration-over-action family)
+- **integration_test:** Do not ship PRs that exclusively summarize ticks or update backlog meta-status without accompanying parity-proven code/substrate.
+- **z_weight:** +1 (Maji caught and flagged the drift)
+
+36 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-8 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (6 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
