@@ -227,9 +227,12 @@ async function main(): Promise<void> {
     writePartial(state);
   }
 
-  await ctx.storageState({ path: SESSION_FILE });
-  try { chmodSync(SESSION_FILE, 0o600); } catch { /* permissions best-effort */ }
-
+  // FS-only cleanup FIRST — these don't depend on the browser context, so
+  // they always succeed regardless of post-navigation-timeout chromium state.
+  // v2.3 had a freeze where storageState() / browser.close() hung after a
+  // page-23 navigation timeout, preventing FULL_OUT + HARDWARE_OUT writes.
+  // Move FS writes ahead of context operations so the user always has files
+  // on disk even when the browser is degraded.
   writeFileSync(
     FULL_OUT,
     JSON.stringify({ year: YEAR, totalPages, itemCount: state.items.length, items: state.items }, null, 2),
@@ -243,8 +246,26 @@ async function main(): Promise<void> {
   );
   console.log(`Wrote ${HARDWARE_OUT} — ${hardwareItems.length} hardware-matching items`);
 
-  await browser.close();
+  // Browser-context cleanup AFTER, each in its own try-with-timeout so a
+  // hung context can't prevent the next step or the script from exiting.
+  await withTimeout("session-save", 5000, async () => {
+    await ctx.storageState({ path: SESSION_FILE });
+    try { chmodSync(SESSION_FILE, 0o600); } catch { /* best-effort */ }
+  });
+  await withTimeout("browser-close", 5000, () => browser.close());
+
   console.log("\nDone. Review the hardware-filtered file before any git commit.");
+}
+
+async function withTimeout(label: string, ms: number, fn: () => Promise<unknown>): Promise<void> {
+  try {
+    await Promise.race([
+      fn(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms)),
+    ]);
+  } catch (err) {
+    console.warn(`Cleanup step "${label}" failed/timed out (${String(err).split('\n')[0]}) — continuing`);
+  }
 }
 
 main().catch((err) => {
