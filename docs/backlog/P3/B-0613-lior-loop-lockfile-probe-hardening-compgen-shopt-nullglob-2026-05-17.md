@@ -109,7 +109,7 @@ Editing `.gemini/bin/lior-loop-tick.ts` while Lior is actively running (`ps -A |
 - [`memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md`](../../../memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md) — peer-Otto's `c95e396` correction names this row's substrate
 - [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md) — saturation-ceiling discipline informs the implementation-hazard mitigation
 - [PR #4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) — 5 review threads on `.gemini/bin/lior-loop-tick.ts:11` resolved via deferral pointer to this row (when filed)
-- [B-0530](../P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — multi-Otto contention mitigation context
+- [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — multi-Otto contention mitigation context
 
 ## Status
 
