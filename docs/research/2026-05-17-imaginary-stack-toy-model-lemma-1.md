@@ -87,6 +87,13 @@ The 16-dimensional algebra obtained by two Cayley-Dickson doublings on the 4D (R
 
 for a small constant ε (ideally 0 in the exact arithmetic case), whenever the missing coordinates lie in a subspace spanned by a fixed 4-dimensional "code subspace" determined by the multiplication table.
 
+**Note on field choice (ℝ vs ZMod 17).** The lemma above is the ℝ-valued statement — an orthonormal basis on a real vector space and the norm `‖·‖` are well-defined there. The Lean toy model in `tools/lean4/ImaginaryStack/ToyModel.lean` instead uses `F := ZMod 17` for exact arithmetic and enumerability; over a finite field the ambient norm is not defined, so the inequality `‖v − R(proj_S(v))‖ ≤ ε · ‖v‖` degenerates to *exact* reconstruction (`ε = 0`) on the code subspace, with the role of the norm replaced by the count of disagreeing coordinates (Hamming distance on `F¹⁶`). Both versions are intended:
+
+- **ℝ-valued lemma** — the structural claim to lift to the continuous case (step 5 of the proof program).
+- **`ZMod 17` instantiation** — the computable existence proof that can be enumerated by SMT or Lean's `decide` tactic.
+
+The reviewer's concern that the ℝ-based norm inequality and the finite-field Lean type are mixed is correct; this note makes the two layers explicit so a proof engineer can pick the relevant version.
+
 ## Next Steps for a Proof Engineer
 
 1. Encode the 16-dimensional multiplication table in Lean 4 (or Z3 as an SMT problem).
