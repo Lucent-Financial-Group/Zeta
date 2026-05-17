@@ -1,6 +1,6 @@
 ---
 name: dimensional-modeling-expert
-description: Capability skill ("hat") — Kimball-school dimensional modelling. Owns the star schema (fact + dimension tables), conformed dimensions, the bus matrix, slowly-changing-dimension (SCD) types 0/1/2/3/6/7, degenerate dimensions, junk dimensions, outrigger dimensions, role-playing dimensions, mini-dimensions, factless fact tables, periodic / accumulating / transaction fact-table grains, snowflaking (and when to resist it), and the Kimball lifecycle. The rival school to Inmon's CIF; the downstream consumer of Data Vault 2.0 — DV raw + business vault feeds disposable Kimball marts. Wear this when designing the reporting layer a business analyst will actually query, choosing a fact grain, designing conformed dimensions across subject areas, or answering SCD questions. Defers to `data-vault-expert` for DV upstream modelling, `corporate-information-factory-expert` for the Inmon school it competes with, `bitemporal-modeling-expert` for the rigorous valid-time / transaction-time alternative to SCD2, `normal-forms-expert` for 1NF-6NF positioning, and `sql-expert` / `sql-engine-expert` for DDL + execution.
+description: Kimball dimensional modelling — star schema, SCD types, conformed dimensions, bus matrix, fact grain, snowflaking.
 ---
 
 # Dimensional Modeling Expert — Kimball Narrow

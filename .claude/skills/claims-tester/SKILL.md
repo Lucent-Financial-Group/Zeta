@@ -1,6 +1,6 @@
 ---
 name: claims-tester
-description: Use this skill whenever a doc comment, README, or commit message makes a **claim** about the behaviour of Zeta.Core code — e.g. "O(1) retraction", "beats consistent hashing on skewed data", "zero-alloc hot path", "handles late events correctly". The skill designs empirical tests that either prove or disprove the claim with real measurements, and reports honest findings (including when the claim fails).
+description: "Empirical claim tester — designs falsifying tests for O(n), zero-alloc, performance, and correctness claims in code."
 ---
 
 # Zeta.Core Claims Tester

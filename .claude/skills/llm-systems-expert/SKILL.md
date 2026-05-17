@@ -1,6 +1,6 @@
 ---
 name: llm-systems-expert
-description: Capability skill for LLM application architecture — context-window budgets, retrieval-augmented generation (RAG), agent loops, tool-use orchestration, multi-model routing, streaming, caching, cost/latency envelopes, evaluation wiring, safety rails. Wear this hat when designing or reviewing an LLM-powered system (agent frameworks, chatbots, code assistants, RAG pipelines, batch-inference jobs) rather than a single prompt. Pairs with prompt-engineering-expert (the prompt craft) and ai-evals-expert (the measurement loop).
+description: LLM application systems — RAG, agent loops, tool orchestration, context budgets, multi-model routing, cost/latency, evals.
 ---
 
 # LLM Systems Expert — the application-architecture hat

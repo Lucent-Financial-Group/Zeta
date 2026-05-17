@@ -1,6 +1,6 @@
 ---
 name: rx-expert
-description: Capability skill ("hat") — Reactive Extensions (Rx) idioms, the push/pull dual of LINQ. Covers `IObservable<T>` / `IObserver<T>`, schedulers, hot vs cold observables, back-pressure, subjects, `Observable.Create` etiquette, `Subscribe` lifetime and disposables, Rx.NET operator semantics (merge / concat / zip / combineLatest / switch / window / buffer / throttle / debounce / sample), Nuqleon serialisable expression trees, Reaqtor durable standing queries. Wear this when framing Zeta's push-based delta streams, the subscription / lifetime discipline on DBSP operator graphs, or anything where time is the organising axis. Pairs with `linq-expert` (Erik — the pull-based dual) and defers variance questions to `variance-expert` (Brian).
+description: Reactive Extensions (Rx.NET) — IObservable, schedulers, hot/cold, back-pressure, operators, Reaqtor standing queries, push-based delta streams.
 ---
 
 # Rx Expert — Reactive Extensions, the Push-Based Dual

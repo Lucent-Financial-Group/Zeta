@@ -41,7 +41,7 @@ coverage-summary.json
 # (per `docs/research/parallel-worktree-safety-2026-04-22.md`). The parent
 # `.claude/worktrees/` dir can be left behind as an empty directory after
 # the worktree is cleaned up; ignoring it keeps the no-empty-dirs lint
-# (tools/lint/no-empty-dirs.sh) from flagging legitimate harness scratch.
+# (tools/lint/no-empty-dirs.ts) from flagging legitimate harness scratch.
 .claude/worktrees/
 .DS_Store
 Thumbs.db
@@ -152,6 +152,13 @@ drop/
 # host directory.
 console-*.log
 
+# GitHub UI Playwright auth state — per-maintainer browser session data.
+# These files can contain live GitHub cookies and must never be committed.
+.github-ui-storage-state.json
+.github-ui-cookies.json
+tools/playwright/github-ui/*.storage-state.json
+tools/playwright/github-ui/*.cookies.json
+
 # Session-scoped `/btw` aside queue at repo root (see
 # .claude/commands/btw.md). Regenerated per session; not source.
 .btw-queue.md
@@ -168,3 +175,15 @@ Spine/
 # tools/alloy/AlloyRunner.java` on first test run. Regenerated; not source.
 tools/alloy/classes/
 .broadcasts/
+.concept-index.json
+
+# Kiro agent runtime state — machine-local, regenerated per boot.
+.kiro/alexa-state.json
+.kiro/alexa-service.log
+
+# Cursor / IDE per-user config and plugin caches (superpowers, etc.)
+.config/
+.kiro/
+
+# Shadow observer runtime log — machine-local, regenerated per boot.
+tools/shadow/shadow-observer.log

@@ -1,6 +1,6 @@
 ---
 name: white-hat-hacker
-description: Authorized offensive-security skill for coordinated disclosure, bug-bounty submission, authorised penetration testing scope design, and CVE research. Invoke when Zeta needs to (a) audit its own attack surface, (b) shape a coordinated-disclosure message to an upstream we depend on, (c) review a CVE affecting a dependency, (d) design a pentest scope for a Zeta deployment, or (e) decide whether a finding is disclosable. The ethical pole of the hacker-hat trio. Does NOT perform unauthorized testing, does NOT target third-party production systems without written scope, and defers to security-operations-engineer (Nazar) for active incidents.
+description: Authorised offensive security — coordinated disclosure, bug-bounty, pentest, CVE writing; engagement-auth required.
 ---
 
 # White-Hat Hacker — the disclosure-ethics hat

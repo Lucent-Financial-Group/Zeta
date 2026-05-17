@@ -1,6 +1,6 @@
 ---
 name: reducer
-description: Capability skill for reducing complexity in code, docs, data systems, and workflows. Operationalises Occam's razor with a well-defined framework — essential vs accidental complexity (Brooks), information-theoretic gold-standard metrics (Kolmogorov, Shannon, Bennett's logical depth, Gell-Mann effective complexity), and applied-code metrics (cyclomatic, cognitive, Halstead, maintainability index) as measurement. The reducer's objective function is *minimise accidental complexity subject to preserving essential complexity and logical depth* — not the same as an optimizer (maximise scalar utility) nor a balancer (minimise variance); a distinct third function (BP-22). Use this skill when asked to simplify, when cognitive load is visibly hurting contributors, when a refactor claim needs to be sanity-checked against whether it actually reduces complexity or merely relocates it, when a complexity-metric regression is flagged, or when the question "is this system too complicated?" is on the table. Distinguishes "this is hard because the problem is hard" (essential, leave alone) from "this is hard because we made it hard" (accidental, reduce). Pairs with complexity-reviewer (measures claims in shipped code) and complexity-theory-expert (the theoretical backbone).
+description: Complexity reduction — essential vs accidental (Brooks), Kolmogorov/Shannon metrics, Rodney's Razor, cyclomatic/cognitive audit.
 ---
 
 # Reducer — Complexity Minimisation, Occam's-Razor-Plus

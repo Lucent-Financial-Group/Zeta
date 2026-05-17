@@ -2,6 +2,7 @@
 name: Poll the gate, not the ending — "Holding." is not a status (Amara, 2026-04-30)
 description: When waiting on a PR, poll the active-PR lane state (mergeStateStatus, statusCheckRollup, reviewDecision, unresolved threads, headSha, updatedAt) and emit a state-report each tick — never poll "did a merge happen by me" and never emit empty "Holding." Auto-merge already does the babysitting; if it's armed, polling adds zero.
 type: feedback
+created: 2026-04-30
 ---
 
 # Poll the gate, not the ending — "Holding." is not a status
@@ -376,7 +377,7 @@ Which always returned `[]` because no PR was in flight — Otto was
 polling for whether a PR Otto hadn't filed had merged. The "Holding."
 output gave no auditable content. Amara's full catch + suggestions
 preserved verbatim in
-`docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`.
+`memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`.
 
 ## Correction-class note (Claude.ai 2026-04-30)
 

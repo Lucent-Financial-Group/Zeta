@@ -1,6 +1,6 @@
 ---
 name: semgrep-rule-authoring
-description: Capability skill ("hat") — Semgrep rule authoring discipline for Zeta's `.semgrep.yml` (14 custom rules codifying F# anti-patterns from prior reviewer findings). Covers rule anatomy, pattern vs pattern-regex vs pattern-either, path include/exclude, severity levels, message discipline, the "codifies a prior review finding" convention. Wear this when writing or reviewing a new Semgrep rule.
+description: Semgrep rule authoring — rule anatomy, pattern/regex/either, severity, message discipline, prior-review-finding codification.
 ---
 
 # Semgrep Rule Authoring — Procedure + Lore

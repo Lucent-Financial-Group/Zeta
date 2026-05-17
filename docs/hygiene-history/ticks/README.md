@@ -62,6 +62,26 @@ legacy table on cadence; until that lands, the legacy table is
 the authoritative read surface and shards are the authoritative
 write surface — both are canonical.
 
+### YAML frontmatter fields
+
+Shards that use YAML frontmatter (preferred for richer shards)
+should include:
+
+```yaml
+---
+tick: "<ISO 8601 UTC timestamp>"
+agent: otto        # or vera, kenji, etc.
+mode: autonomous   # or interactive
+operative-authorization: "<source> <date>: \"<raw>\""  # B-0308
+---
+```
+
+The `operative-authorization` field (B-0308) is populated by
+`bun tools/authorization/check-authorization.ts` at tick start.
+Format: `formatShardField()` output from that tool. If the
+check is not available, use `"none — never-idle default"`.
+This field is informational; it does not gate any work.
+
 ## Naming
 
 ```
@@ -207,6 +227,19 @@ the multi-AI synthesis arc + Aaron's explicit delegation
   — those still apply at the shard-file level.
 - Does NOT introduce a new tick-history schema — same column
   structure as the legacy table, one row per shard.
+
+## Composition with divergence shards
+
+When two concurrent agent loops disagree on a substrate-class commitment,
+a **divergence shard** is written to `docs/hygiene-history/divergences/`
+in addition to (not instead of) the normal tick shard here.
+
+- **Tick shard** (this directory): records what a loop DID.
+- **Divergence shard** (divergences/): records a CONFLICT between two loops.
+
+Both surfaces are canonical write surfaces; neither replaces the other.
+See: `docs/hygiene-history/divergences/README.md` for the divergence shard
+schema and reconciliation protocol (B-0164 AC #4, 2026-05-10).
 
 ## Migration of historical content
 

@@ -1,6 +1,6 @@
 ---
 name: powershell-expert
-description: Capability skill ("hat") — PowerShell idioms for the Windows branch of Zeta's install script (backlogged). Covers strict-mode discipline, error-action preference, Verb-Noun cmdlet naming, parameter validation, cross-edition differences between PowerShell 7 core and Windows PowerShell 5.1. Wear this when writing or reviewing `.ps1` files. Stub-weight today; gains mass when Windows CI lands.
+description: PowerShell — strict mode, Verb-Noun cmdlets, parameter validation, PS7 vs PS5.1; Windows install-script branch.
 ---
 
 # PowerShell Expert — Procedure + Lore

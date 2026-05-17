@@ -2,6 +2,7 @@
 name: Otto-363 — Substrate or it didn't happen — no invisible directives (Aaron + Amara, 2026-04-29; refined by 5-AI review)
 description: A directive / decision / packet that lives only in chat, TaskUpdate, /tmp, or loop-todo state is NOT durable project state. If it matters after compaction, it must be converted into substrate (committed + reachable + indexed). Substrate has a precise three-leg definition; channels are taxonomized into ephemeral / host-durable-not-git-canonical / git-native. 8-mechanism remediation against substrate loss; default preservation route is `docs/research/` first when uncertain; supersession is bidirectional with stale-banner-or-quarantine (not bottom-append). Triggered by Otto repeatedly marking work "done" after only TaskUpdate-only capture during the 2026-04-29 doctrine cluster, and refined by 5-AI review wave (Alexa/Ani/Deepseek/Claude.ai/Gemini → Amara synthesis).
 type: feedback
+created: 2026-04-29
 supersedes: []
 superseded_by: []
 ---
@@ -278,8 +279,8 @@ Amara 2026-04-29 second synthesis (after 5-AI review of #855):
 > *"#855 is directionally correct. It self-applies the rule. But it should absorb a few sharp reviewer corrections before we call it complete. And he should NOT start PR 2 immediately while #855 is still in flight. ... The doctrine is right. The preservation PR is right. The immediate second PR is wrong. Land the rule cleanly. Then use the rule."*
 
 Verbatim packets preserved at:
-- `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md` (original 8-mechanism packet)
-- `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md` (5-AI review wave + Amara synthesis with the 10 corrections that this file absorbs)
+- `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md` (original 8-mechanism packet)
+- `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md` (5-AI review wave + Amara synthesis with the 10 corrections that this file absorbs)
 
 ## Composes with
 

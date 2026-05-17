@@ -7,14 +7,60 @@ tier: foundation
 effort: L
 ask: Aaron 2026-05-05 forwarded Claude.ai conversation + verbatim *"specs and open spec the source of truth we are going to delete every9ign else and you have to be able to recrate everyign in 23 hours"* + same-tick verbatim *"i need to set a date to say razor the existing substrate to ride it of my necessary bootstrap or it would not exist"*
 created: 2026-05-05
-last_updated: 2026-05-05
+last_updated: 2026-05-08
+decomposition: decomposed
 depends_on: []
+children: [B-0339, B-0340, B-0341, B-0342, B-0343, B-0344, B-0345, B-0346]
 composes_with: [B-0006, B-0190, B-0192, B-0204, B-0205]
 tags: [bootstrap-razor, specs-as-source-of-truth, recreation-test, openspec, falsifiability, foundation, greenfield-discipline]
 type: friction-reducer
 ---
 
 # B-0193 -- Bootstrap razor + 23-hour recreation test
+
+## Decomposition status (2026-05-08)
+
+This row is now an umbrella. The 6 acceptance criteria decompose into
+8 child rows across 3 phases. Execution flows through the children;
+this row tracks the trajectory shape.
+
+### Dependency graph
+
+```
+B-0339 (keep-vs-cut)──┬──→ B-0341 (seed manifest)──→ B-0343 (seeding script)──┐
+                       │                                                        │
+                       └──→ B-0342 (success metrics)───────────────────────────┤
+                                                                                ▼
+B-0340 (spec audit)────────→ B-0341                            B-0344 (experiment)
+                                                                        │
+                                                                        ▼
+                                                               B-0345 (findings)
+                                                                        │
+                                                                        ▼
+                                                               B-0346 (backport)
+```
+
+### Child row map
+
+| Child | Phase | Title | Depends on | Effort |
+|-------|-------|-------|------------|--------|
+| B-0339 | 1 | Keep-vs-cut criteria documentation | — | S |
+| B-0340 | 1 | Spec completeness audit (inventory.ts) | — | S |
+| B-0341 | 2 | Minimal bootstrap seed manifest | B-0339, B-0340 | S |
+| B-0342 | 2 | Recreation success metrics / rubric | B-0339 | S |
+| B-0343 | 2 | Test-repo seeding script (TS) | B-0341 | M |
+| B-0344 | 3 | Run 23-hour recreation experiment | B-0342, B-0343 | L |
+| B-0345 | 3 | Document findings (research-grade) | B-0344 | M |
+| B-0346 | 3 | Back-port spec gaps to OpenSpec | B-0345 | M |
+
+### Buildable now (no deps)
+
+- **B-0339** — Keep-vs-cut criteria documentation
+- **B-0340** — Spec completeness audit
+
+### Human-gated
+
+- **B-0344** — Aaron sets the experiment date (AC 2)
 
 ## Aaron's verbatim ask
 

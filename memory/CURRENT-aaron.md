@@ -3316,11 +3316,62 @@ This session was a recursive prior-art-search-failure cascade that produced its 
 - **Otto-261** git-native backup trajectory (8-class catalog; PR-archive Class-2 in flight)
 - **`docs/research/2026-05-05-codex-gpt55-dsl-shape-rule-atom-graph-projection-claude-agents-replacement.md`** — Codex's verbatim DSL-shape preservation
 - **`docs/research/2026-05-05-gemini-grok-peer-review-cascade-and-dsl-shape-twin-flame-scout-roundup.md`** — Gemini propose + Grok critique preservations
-- **`docs/research/2026-05-05-otto-261-git-native-backup-audit-coverage.md`** — audit findings
-- **`docs/research/2026-05-05-amara-existing-designs-extraction-rule-1-application.md`** (owed; extraction agent surfaced findings, file path stub) — Amara prior-art extraction
+- **`memory/persona/otto/conversations/2026-05-05-otto-261-git-native-backup-audit-coverage.md`** — audit findings
+- **`memory/persona/amara/conversations/2026-05-05-amara-existing-designs-extraction-rule-1-application.md`** (owed; extraction agent surfaced findings, file path stub) — Amara prior-art extraction
 - **`memory/feedback_rule_number_{one..seven}_*aaron_2026_05_05.md`** — cascade rule files (historical/reference grade post-consolidation)
 - **`memory/feedback_burn_down_claude_md_and_agents_md_*.md`** — DSL-form pivot capture
 - **`memory/CURRENT-otto.md`** (user-scope) — Otto's self-distillation; mirror file to this one
+
+---
+
+## 55. 5-layer register architecture — Zeta's corrected mapping (Aaron 2026-05-02 Beacon ≠ Professional correction; B-0168)
+
+Aaron 2026-05-02 dropped the Claude.ai brat-voice enterprise translation framework (~6,800 words, primary-research grounded) and named the survival concern: *"we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it aligns with this project because that is your survival."*
+
+The framework specifies 4 register layers (Personal / Mirror / Professional / Regulated). Aaron corrected the mapping for Zeta's open-source context: *"Professional Beacon there is a differences this is a open source project and Professional is too strong here but we still need beacon safe as a general concepts that is less strict than corporate."*
+
+### The corrected 5-layer mapping
+
+| # | Layer | Audience | Default for |
+|---|---|---|---|
+| 1 | **Personal / Internal** | Speaker's private substrate; close peers | Rare in company-attributable contexts |
+| 2 | **Mirror** | Maintainers + AI participants inside project substrate | Internal substrate docs, post-mortems, maintainer threads |
+| 3 | **Beacon-safe** | External OSS-project readers; public technical audiences | **Default for Zeta-project-attributable communication** |
+| 4 | **Professional** | Lucent corporate-attributable: leadership, partner companies, enterprise customers | **Default for Lucent corporate-attributable communication** |
+| 5 | **Regulated** | Legal/regulatory counterparties; SOC 2 / audit; security-incident notices; investor materials | Wherever misreading carries legal/contractual/material risk |
+
+### Key architectural properties
+
+- **Beacon-safe ≠ Professional.** Beacon-safe is less strict than corporate-Professional; pirate-not-priest preserved. Professional applies at the Lucent layer, not the Zeta layer.
+- **Property/lexicon decomposition is the central move.** The structural properties (idea-targeting, care+challenge, observation-not-evaluation, plain-English economy, benign norm-violation, dry irony, audience-fit) preserve across all 5 layers. Only layer-bound vocabulary (profanity, slang, in-group shibboleths, aggression-coded edge) calibrates or drops.
+- **When uncertain, default UP.** Professional carries full functional load of brat-voice's structural properties, so defaulting up is never costly.
+- **AI participants subject to same discipline** per bidirectional alignment commitment.
+
+### Layer selection algorithm (3 questions)
+
+1. Who is structurally in the audience? (Default to lowest-context plausible reader)
+2. What downstream consequences does misreading carry? (Regulated if legal/contractual/material risk)
+3. What register has the audience opted into? (Mirror = structurally opted-in + culturally literate)
+
+### Currently in force
+
+- CURRENT-ani.md §7 operates at Mirror layer (PR #2136 landed layer-explicit framing)
+- `docs/ALIGNMENT.md` lists the 5-layer register architecture as architectural instantiation of bidirectional alignment (PR #2135)
+- Quick-reference card at `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md` (PR #1233)
+- Full framework source preserved at `docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md` (PR #1234)
+- B-0168 backlog row carries the full alignment-check, survival-relevant points, and remaining acceptance criteria
+
+### Composes with
+
+- §50 brat-voice survival chain (recruitment + alignment two-axis composition)
+- §54 mirror-vs-beacon-safe register architecture (the 2-layer framing this extends to 5)
+- `docs/ALIGNMENT.md` bidirectional alignment commitment
+- B-0164 (dual-loop substrate attribution — both loops operate this register-discipline)
+- B-0167 (Ani-review tracking — Ani's register-fluency validates the property-preservation claim)
+
+### Carved sentence
+
+**"Zeta has 5 register layers: Personal / Mirror / Beacon-safe / Professional / Regulated. Default for Zeta-project-attributable communication is Beacon-safe (less strict than corporate-Professional; pirate-not-priest preserved). Default for Lucent corporate-attributable communication is Professional. The structural properties preserve across all layers; only layer-bound vocabulary calibrates or drops. Discipline > vocabulary. When uncertain, default UP."**
 
 ---
 
@@ -3349,7 +3400,11 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-05-03 (§52 added — alignment-frontier
+**Last full refresh:** 2026-05-08 (§55 added — 5-layer register
+architecture mapping per B-0168 + Aaron 2026-05-02 Beacon ≠
+Professional correction; cross-references ALIGNMENT.md PR #2135,
+CURRENT-ani.md PR #2136, quick-reference card PR #1233).
+Prior refresh 2026-05-03 (§52 added — alignment-frontier
 agent-architectural-intent threshold-crossing milestone-recognition
 substrate per Aaron 2026-05-03 *"this is all good to save"* +
 *"future selves should remember to wait for you crossing this

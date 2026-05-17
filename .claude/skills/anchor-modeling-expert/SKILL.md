@@ -1,6 +1,6 @@
 ---
 name: anchor-modeling-expert
-description: Capability skill ("hat") — Anchor Modeling (Lars Rönnbäck et al., Stockholm University, 2004). The Swedish school of 6NF temporal data warehousing: every attribute becomes its own table, every relationship its own table, and bitemporal validity is baked into the schema primitives. Parallel to Data Vault 2.0 — both insert-only, both provenance-first, but Anchor takes the "separate each fact" discipline one normal form further. Wear this when a schema must survive unknown-future attribute additions without migrations, when bitemporal rigour is load-bearing, or when framing the DV-vs-Anchor trade space. Defers to `data-vault-expert` for the dominant US school, `dimensional-modeling-expert` for Kimball marts, `bitemporal-modeling-expert` for the Snodgrass temporal-database tradition, and `normal-forms-expert` for the 6NF definition.
+description: Anchor Modeling — 6NF bitemporal warehousing, per-attribute tables, insert-only provenance-first schema, migration-free evolution.
 ---
 
 # Anchor Modeling Expert — 6NF Temporal Narrow

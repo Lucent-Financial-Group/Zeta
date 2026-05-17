@@ -1,6 +1,6 @@
 ---
 name: bash-expert
-description: Capability skill ("hat") — bash idioms, portability pitfalls between macOS bash 3.2 and Linux bash 5.x, quoting discipline, shellcheck best practices, idempotency patterns for install scripts. Wear this when writing or reviewing `.sh` files. Zeta's install script (`tools/setup/`) is the main current consumer; the three-way parity contract per GOVERNANCE.md §24 puts a lot of weight on bash correctness.
+description: Bash scripting — macOS/Linux portability, quoting discipline, shellcheck, idempotency patterns; applies to install-graph .sh files only.
 ---
 
 # Bash Expert — Procedure + Lore

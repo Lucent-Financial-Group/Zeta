@@ -1,6 +1,6 @@
 ---
 name: complexity-theory-expert
-description: Theory-level expert on the deep definitions of "complexity" across information theory, algorithmic information theory, computational complexity, and complex-systems science. Covers Kolmogorov (descriptive) complexity, Shannon entropy, Bennett's logical depth, sophistication, Gell-Mann's effective complexity, and computational-complexity classes (P, NP, PSPACE, EXPTIME, BQP, and the polynomial hierarchy). Use this skill when the question is *what does "complex" actually mean* in a precise sense, when a paper or design claim turns on one of these definitions, when distinguishing "random" from "complex" matters (Kolmogorov alone cannot), when a reducer or measurer needs the theoretical ceiling to frame its applied proxies against, or when asked to explain the information-theoretic limits on compression / prediction / approximation. Distinct from complexity-reviewer (measures O(·) claims in shipped code) and reducer (acts to lower complexity in an artifact); this skill is the theoretical backbone both defer to. Theory / applied split (BP-23) — applied-side consumers are complexity-reviewer and reducer.
+description: "Complexity theory — Kolmogorov, Shannon entropy, logical depth, P/NP/PSPACE/BQP, random vs complex."
 ---
 
 # Complexity Theory Expert — The Deep Definitions

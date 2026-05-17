@@ -158,6 +158,7 @@ function isFutureStateContext(line: string, contextBefore: string, contextAfter:
     "could become", "would become", "may need",
     "if implemented", "when implemented",
     "**proposed**", "proposed, not yet",
+    "not yet landed", "not landed yet",
   ];
   for (const marker of futureMarkers) {
     if (window.includes(marker)) return true;

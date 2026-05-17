@@ -1,0 +1,6 @@
+{
+  "taskId": "autonomous-loop",
+  "cronExpression": "0 */2 * * *",
+  "description": "Otto autonomous-loop tick — fresh-session cold-boot, fires every 2 hours on Desktop",
+  "notifyOnCompletion": true
+}

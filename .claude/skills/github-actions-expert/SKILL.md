@@ -1,6 +1,6 @@
 ---
 name: github-actions-expert
-description: Capability skill ("hat") — GitHub Actions workflow idioms, security hardening, concurrency, caching, matrix semantics, reusable workflows, least-privilege tokens, SHA pinning discipline. Wear this when writing or reviewing `.github/workflows/*.yml`. Zeta's first workflow is being designed this round; discipline baked in early prevents the supply-chain and cost regressions that bite later.
+description: GitHub Actions — workflow idioms, security hardening, concurrency, caching, matrix, reusable workflows, SHA pinning.
 ---
 
 # GitHub Actions Expert — Procedure + Lore

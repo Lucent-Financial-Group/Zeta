@@ -7,7 +7,7 @@ open Zeta.Core
 
 // ═══════════════════════════════════════════════════════════════════
 // Compression dimension — high-repetition strings compress well
-// (low ratio / low suspicion); random-like strings do not.
+// (low ratio / low disagreement); random-like strings do not.
 // ═══════════════════════════════════════════════════════════════════
 
 [<Fact>]
@@ -107,10 +107,79 @@ let ``groundingWith uses the caller's predicate`` () =
 
 
 [<Fact>]
+let ``groundingWithScore returns gradient average`` () =
+    let claims =
+        SignalQuality.claimsOf [ ("solid-fact", 1L); ("partial-fact", 1L); ("vibe", 1L) ]
+    let scorer (s: string) =
+        match s with
+        | "solid-fact" -> 1.0
+        | "partial-fact" -> 0.6
+        | _ -> 0.0
+    SignalQuality.groundingWithScore scorer claims
+    |> should (equalWithin 1e-9) ((1.0 + 0.6 + 0.0) / 3.0)
+
+
+[<Fact>]
+let ``groundingWithScore clamps to 0-1`` () =
+    let claims = SignalQuality.claimsOf [ ("x", 1L) ]
+    SignalQuality.groundingWithScore (fun _ -> 1.5) claims
+    |> should (equalWithin 1e-9) 1.0
+
+
+[<Fact>]
+let ``groundingWithScore ignores retracted claims`` () =
+    let claims =
+        SignalQuality.claimsOf [ ("a", 1L); ("b", 1L); ("b", -1L) ]
+    // only "a" is asserted; scorer returns 0.8 for all
+    SignalQuality.groundingWithScore (fun _ -> 0.8) claims
+    |> should (equalWithin 1e-9) 0.8
+
+
+[<Fact>]
+let ``groundingWithScore weights scores by claim weight`` () =
+    // strong-claim has weight 9, weak-claim weight 1
+    // scorer: strong=1.0, weak=0.0
+    // weighted avg = (1.0*9 + 0.0*1) / (9+1) = 0.9
+    let claims =
+        SignalQuality.claimsOf [ ("strong-claim", 9L); ("weak-claim", 1L) ]
+    let scorer (s: string) = if s = "strong-claim" then 1.0 else 0.0
+    SignalQuality.groundingWithScore scorer claims
+    |> should (equalWithin 1e-9) 0.9
+
+
+[<Fact>]
 let ``falsifiabilityWith returns 1.0 on an empty claim store`` () =
     let empty = ZSet<string>.Empty
     SignalQuality.falsifiabilityWith (fun _ -> false) empty
     |> should (equalWithin 1e-9) 1.0
+
+
+[<Fact>]
+let ``falsifiabilityWithScore returns gradient average`` () =
+    let claims =
+        SignalQuality.claimsOf [ ("testable-claim", 1L); ("vague-claim", 1L); ("unfalsifiable", 1L) ]
+    let scorer (s: string) =
+        match s with
+        | "testable-claim" -> 1.0
+        | "vague-claim" -> 0.5
+        | _ -> 0.0
+    SignalQuality.falsifiabilityWithScore scorer claims
+    |> should (equalWithin 1e-9) 0.5
+
+
+[<Fact>]
+let ``falsifiabilityWithScore clamps to 0-1`` () =
+    let claims = SignalQuality.claimsOf [ ("over", 1L) ]
+    SignalQuality.falsifiabilityWithScore (fun _ -> 2.5) claims
+    |> should (equalWithin 1e-9) 1.0
+
+
+[<Fact>]
+let ``falsifiabilityWithScore ignores retracted claims`` () =
+    let claims =
+        SignalQuality.claimsOf [ ("alive", 1L); ("dead", 1L); ("dead", -1L) ]
+    SignalQuality.falsifiabilityWithScore (fun _ -> 0.8) claims
+    |> should (equalWithin 1e-9) 0.8
 
 
 // ═══════════════════════════════════════════════════════════════════

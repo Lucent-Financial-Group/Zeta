@@ -1,6 +1,6 @@
 ---
 name: push-pull-dataflow-expert
-description: Capability skill ("hat") — dataflow-direction specialization under `execution-model-expert`. Covers the **orthogonal** axis to iterator-vs-batch: push vs pull semantics in operator dataflow. Pull (Volcano) means consumers request rows from producers; push means producers emit rows to consumers. The choice interacts with streaming (push-native), blocking operators (push needs flow control), codegen (push fuses more naturally), and back-pressure. Wear this when framing a new operator's interface, debugging a pipeline stall, or reconciling a "streaming" proposal against a "materialise this" proposal. Zeta's call: **push-based by default**, matching the streaming-incremental substrate; pull is the exception for on-demand snapshot materialisation. Defers to `execution-model-expert` for cross-model framing, to `streaming-incremental-expert` for delta-flow specifics, to `query-planner` for plan shape, and to `algebra-owner` for retraction-native semantics.
+description: Push vs pull dataflow — operator direction, streaming vs materialise, back-pressure, Zeta push-default.
 ---
 
 # Push-Pull Dataflow Expert — Dataflow Direction

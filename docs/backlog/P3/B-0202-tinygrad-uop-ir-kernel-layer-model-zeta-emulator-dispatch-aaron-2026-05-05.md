@@ -59,7 +59,7 @@ evidence):
   recent backend additions
 
 Full verbatim research-doc preservation will land at
-`docs/research/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
+`memory/persona/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
 once sibling PR #1610 merges; until then, the link target lives on
 that PR's branch. (Same softening pattern as B-0201's research-doc
 reference to PR #1605.)
@@ -303,8 +303,7 @@ hand-wave alignment.
 
 ## Acceptance criteria
 
-(a) **Read the source + walk one rewrite manually + map to Zeta
-retract semantics.** Verifier: a memo (committed under
+(a) **[DECOMPOSED to B-0521] Read the source + walk one rewrite manually + map to Zeta retract semantics.** Verifier: a memo (committed under
 `docs/research/`) walking through one ALU rewrite from
 [`tinygrad/uop/ops.py`](https://github.com/tinygrad/tinygrad/blob/master/tinygrad/uop/ops.py)
 plus [`tinygrad/codegen/simplify.py`](https://github.com/tinygrad/tinygrad/blob/master/tinygrad/codegen/simplify.py)
@@ -442,7 +441,7 @@ Explicit composition map (mirrors frontmatter `composes_with`):
   ROM emulators, the UOp-substrate question composes directly with the
   ROM-emulator engineering lane.
 - **The research-doc preservation** (will resolve at
-  `docs/research/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
+  `memory/persona/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
   once sibling PR #1610 merges) -- the verbatim Aaron-forwarded
   conversation that surfaced the substrate-engineering composition
   claim. (Aaron same-tick disconfirmed tinygrad as the paper-id

@@ -99,12 +99,12 @@
 ### Thread 4 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AdP4L`
-- **Path**: `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T21:49:23Z on `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:28 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T21:49:23Z on `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:28 (association: NONE)
 
   <pre>
   Spelling typo: “narness” should be “harness”.
@@ -113,12 +113,12 @@
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AdP4U`
-- **Path**: `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T21:49:23Z on `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:27 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T21:49:23Z on `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:27 (association: NONE)
 
   <pre>
   Spelling/wording typo: “mode crash” appears to be intended as “model crash”.
@@ -127,12 +127,12 @@
 ### Thread 6 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AdP4m`
-- **Path**: `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T21:49:23Z on `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:54 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T21:49:23Z on `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:54 (association: NONE)
 
   <pre>
   These markdown tables use `||` as the row prefix, which typically renders as an extra empty column. Use standard single-pipe table rows (`| ... |`) so the comparison table renders correctly.
@@ -141,12 +141,12 @@
 ### Thread 7 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AdP40`
-- **Path**: `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T21:49:23Z on `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:81 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T21:49:23Z on `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:81 (association: NONE)
 
   <pre>
   This node/pattern table also uses `||` row prefixes, which is nonstandard markdown and may render with an unintended empty first column. Convert to single leading `|` per standard markdown table syntax.
@@ -155,12 +155,12 @@
 ### Thread 8 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AdP4_`
-- **Path**: `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T21:49:24Z on `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:104 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T21:49:24Z on `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`:104 (association: NONE)
 
   <pre>
   The reference `memory/feedback_shadow_lesson_log` doesn’t match an existing file path in `memory/` (the corresponding file is named with a full suffix and `.md`). Update this to the exact filename so the link/xref is resolvable.
@@ -189,7 +189,7 @@
 **Touched files (intersect with thread paths):**
 
 - `docs/hygiene-history/ticks/2026/05/07/1730Z.md`
-- `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
+- `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
 - `docs/research/2026-05-07-shadow-report-session-summary.md`
 
 **Message:**
@@ -235,7 +235,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
+- `memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`
 
 **Message:**
 

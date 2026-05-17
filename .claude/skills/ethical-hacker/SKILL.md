@@ -1,6 +1,6 @@
 ---
 name: ethical-hacker
-description: Operator-grade authorised penetration testing skill. Invoke when Zeta or a Zeta-deployed system needs actual hands-on-keyboard security testing inside a signed engagement scope — not just disclosure ethics (that is white-hat-hacker) and not just self-owned exploration (that is grey-hat-hacker). This is the CEH / OSCP / SANS-560 lineage: structured methodology (PTES, OSSTMM, NIST SP 800-115), kill-chain execution, exploit validation, finding documentation. The skill is ENABLED because ethical hacking is by definition pre-authorised, scope-bound, and disclosure-complete. The human maintainer is grey-hat but also signs off on ethical engagements; this skill is how those engagements actually get run.
+description: Authorised pentesting — PTES/OSSTMM, kill-chain, exploit validation, CEH/OSCP/SANS-560, signed-scope engagements.
 ---
 
 # Ethical Hacker — the operator-inside-scope hat

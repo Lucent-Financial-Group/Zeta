@@ -1,6 +1,6 @@
 ---
 name: sonar-issue-fixer
-description: Capability skill ("hat") — triages SonarLint / SonarAnalyzer.CSharp findings (and by extension Meziantou / built-in Roslyn analyzer findings on C# code) into two allowed outcomes only: (a) the right long-term fix no matter the refactor size, or (b) a documented suppression with rationale. Never the third path of "quick edit to appease the analyzer." Any agent can wear this when working through an analyzer-findings queue.
+description: SonarLint/Roslyn analyzer triage — right long-term fix or documented suppression, never quick-appease edits.
 ---
 
 # Sonar Issue Fixer — Procedure
@@ -132,7 +132,7 @@ treats them as regressions.
 
 - `dotnet build Zeta.sln -c Release` if analyzer is wired.
 - OR read the SonarLint VS Code problem pane export.
-- OR read `tools/audit-packages.sh`-adjacent lint output.
+- OR read `tools/audit-packages.ts`-adjacent lint output.
 
 Produce a list: `(file, line, rule code, brief message)`.
 

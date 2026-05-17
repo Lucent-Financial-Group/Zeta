@@ -107,6 +107,33 @@ export const GROK_SUBSTANTIVE_TRIGGERS: readonly string[] = [
   "regression",
 ];
 
+export const KIRO_SUBSTANTIVE_TRIGGERS: readonly string[] = [
+  ...DEFAULT_SUBSTANTIVE_TRIGGERS,
+  "workspace",
+  "task",
+  "generate",
+  "requirement",
+  "specification",
+  "hook",
+  "lifecycle",
+];
+
+export const CLAUDE_SUBSTANTIVE_TRIGGERS: readonly string[] = [
+  ...DEFAULT_SUBSTANTIVE_TRIGGERS,
+  "cold-boot",
+  "cold boot",
+  "wake",
+  "substrate",
+  "bootstrap",
+  "alignment",
+  "verify",
+  "self-test",
+  "self test",
+  "drift",
+  "decay",
+  "discipline",
+];
+
 function tokenizePrompt(prompt: string): string[] {
   const tokens: string[] = [];
   let current = "";

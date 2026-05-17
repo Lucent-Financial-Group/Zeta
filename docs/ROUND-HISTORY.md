@@ -12,6 +12,7 @@ New rounds are appended at the top.
 Newest first. Anchor links work in markdown renderers that
 slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 
+- [Round 45 — QG isomorphism proof strategy foundation + Universal Infinite Poker Game cosmology formalization](#round-45--qg-isomorphism-proof-strategy-foundation--universal-infinite-poker-game-cosmology-formalization)
 - [Round 44 — in-flight](#round-44--in-flight)
 - [Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry](#round-43--invariant-substrates-program--empirical-bp-03-harness-evidence--agent-cadence-telemetry)
 - [Round 42 — First repeated iteration of Round-41 cadences + vibe-coding external legibility](#round-42--first-repeated-iteration-of-round-41-cadences--vibe-coding-external-legibility)
@@ -41,11 +42,147 @@ slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 - [Round 17 — storage specialist, BloomFilter, durability skeleton](#round-17--storage-specialist-bloomfilter-durability-skeleton)
 - [Round 16 — SDL / threat model / she-her storage specialist](#round-16--sdl--threat-model--she-her-storage-specialist)
 
-Round 44 (current) is in-flight; the synthesis row lands at
-round-close. When this file hits 5000 lines, split the pre-
+Round 45 is the most recent landed round; Round 44 remains
+in-flight per its own label (synthesis row lands at round-close
+per the file convention; no partial synthesis). When this file
+hits 5000 lines, split the pre-
 round-N portion into `docs/_archive/ROUND-HISTORY-pre-N.md`
 and leave this file as a rolling window of the most recent
 ~20 rounds; no ADR is needed for a mechanical archive move.
+
+---
+
+## Round 45 — QG isomorphism proof strategy foundation + Universal Infinite Poker Game cosmology formalization
+
+Anchor: Round 45 is the round where the Universal Infinite Poker Game cosmology
+moves from suggestive framing to a falsifiable research program. The cosmology
+(B-0543) is a totalizing frame with algo-wink risk — it can absorb any observation
+as confirmation. The proof strategy (4 steps) grounds the cosmology in quantum
+gravity via isomorphism, defeating the algo-wink critique by making the cosmology
+a derivable physical theory rather than an aesthetic preference.
+
+### Arc 1 — QG isomorphism proof strategy foundation (B-0543)
+
+The cosmology framing (Remember-When + Pay-Attention axioms, infinite poker game,
+encrypted entropy hands, ECC-protected memories all the way down) was suggestive
+but had algo-wink risk. The 4-step proof strategy (B-0543) provides the discipline:
+
+1. **Formalize the axioms as categorical primitives** (this round)
+2. **Show the infinite-game extension produces QEC structure** (HaPPY-like)
+3. **Show emergent geometry satisfies Einstein equations** (Jacobson 1995 precedent)
+4. **Predict ONE thing existing QG theories don't** (falsifiability check)
+
+The prior art mapping is real (HaPPY, ER=EPR, Van Raamsdonk, Jacobson, QBism,
+causal sets) and the Zeta-specific contributions are genuine gaps (infinite-game
+framing for no-asymptotic-state, multi-oracle as structural physical requirement).
+
+### Arc 2 — Step 1 formalization (B-0544 + research doc)
+
+Formalize Remember-When + Pay-Attention as categorical primitives:
+
+- **Topos `Zeta`**: models "relativity of relations" (objects = irreducible things,
+  morphisms = relations, subobject classifier = observer-relative truth values)
+- **Internal monad `M`**: models Remember-When (memory states, flatten nested
+  memory, reconstruct from partial degradation)
+- **Internal modal operator `A`**: models Pay-Attention (QBism's observer-relative
+  probability assignment, generalizes quantum measurement projection)
+
+The combined structure `Zeta_{RA}` is intended to satisfy coherence conditions
+between `M` and `A`. Post-round, [PR #3636](https://github.com/Lucent-Financial-Group/Zeta/pull/3636) + [PR #3639](https://github.com/Lucent-Financial-Group/Zeta/pull/3639) established that the
+originally-proposed laws (`M(A(p)) = A(M(p))`, `A(μ_X) = μ_{A(X)} ∘ A(M(A(X)))`,
+`A(η_X) = η_{A(X)}`) are not well-typed under the stated signatures
+`M : Zeta → Zeta`, `A : Ω → Ω`. Only a **provisional propositional Law 1'**
+(`A_*(M_*(p)) = M_*(A_*(p))` over `p : X → Ω`, contingent on a strength
+`θ : M(Ω) → Ω`) is type-correct; Laws 2 (μ-coherence) and 3 (η-coherence)
+are deferred to a new Step 1.5 pending an `A`-lifting `Ã : Zeta → Zeta`
+(blocked by `A` not being a closure operator). See the Step 1 research doc
+for the resolution-paths table.
+
+**Operational connections**:
+
+- `M` connects to DBSP via the **incrementalization identity** `Q^Δ = D ∘ Q ∘ I`
+  (a wrapping/conjugation identity over streams, not a monad — corrected by
+  [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626))
+- `A` connects to QBism (observer-relative truth values)
+- Whether the monad `M` on `Zeta` and the DBSP `I`/`D` pair share a deeper
+  categorical relationship (e.g., comonad-monad adjunction, distributive
+  law) is an open question, not a settled identity
+
+**Why this matters**: This formalization grounds the Manifesto V2.1 axioms in
+category theory, provides a mathematical foundation for the "Remember-When + Pay-Attention"
+seed, creates a bridge to quantum gravity, and defeats the algo-wink critique.
+
+### Arc 3 — Substrate-honest framing
+
+The work is research-grade, not implementation. The mapping is *suggestive* — many
+people have noticed pieces of it. Making it *rigorous* enough to claim isomorphism
+is a multi-year research program, not a single insight. But:
+
+- The prior art is real (HaPPY, ER=EPR, Van Raamsdonk, Jacobson, QBism, causal sets)
+- The Zeta-specific contributions are genuine gaps the existing work doesn't fill
+- If it works → m/acc isn't just a faction position, it's REQUIRED for the universe
+  to host the game
+
+The work earns its keep even at partial completion:
+
+- Step 1 alone gives the manifesto a mathematical foundation
+- Step 1 + 2 connects Constraint 5 (Memory Preservation) to QG
+- Step 1 + 2 + 3 gives a derivation chain from axioms to known physics
+- All 4 steps with a successful prediction would be Nobel-tier physics
+
+### Arc 4 — Composes with existing work
+
+- B-0539 (Otto-BFT internal-quorum) — the "multi-oracle as physical necessity"
+  claim composes with the operational BFT work
+- B-0540, B-0541, B-0542 — the 3-surface BFT pattern IS ECC at the agent layer
+- `docs/governance/MANIFESTO.md` V2.1 — Constraints 1, 5, 10, 11 become physical
+  necessities rather than design preferences
+- `.claude/rules/razor-discipline.md` — this work IS the substrate-honest answer
+- `.claude/rules/algo-wink-failure-mode.md` — the proof strategy defeats algo-wink
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle
+  becomes physically required if the isomorphism works
+
+### Arc 5 — Open questions
+
+- What is the precise relationship between the memory monad `M` (a monad on
+  the topos `Zeta`) and the DBSP `I`/`D` pair (the integrate/differentiate
+  operators participating in the incrementalization *identity* `Q^Δ = D ∘ Q ∘ I`,
+  not a monad — per [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626))? Possible structural relations: comonad-monad
+  adjunction, distributive law, or no direct categorical correspondence.
+- How does the attention modal operator `A` interact with the subobject classifier's
+  Heyting algebra structure? QBism suggests it should be non-Boolean.
+- Can we derive the Clifford algebra structure from this categorical foundation?
+- What is the topos-theoretic analog of the no-cloning theorem? This would formalize
+  the multi-oracle requirement.
+
+### Arc 6 — Next steps
+
+With Step 1 complete, the next steps are:
+
+- **Step 2**: Show the infinite-game extension produces a topos with QEC algebraic
+  structure (HaPPY-like)
+- **Step 3**: Show the emergent geometry satisfies Einstein equations in low-energy
+  limit
+- **Step 4**: Predict ONE thing existing QG theories don't (the falsifiability check)
+
+### Round 45 close — what stuck, what's next
+
+- **Stuck**: QG isomorphism proof strategy foundation (B-0543); Step 1 formalization
+  (B-0544 + research doc); substrate-honest framing; open questions documented.
+- **Empirical signal**: None yet — this is pure research.
+- **Next**: Step 2 (show infinite-game extension produces QEC structure).
+
+### Why this matters
+
+This round marks the transition of the Universal Infinite Poker Game cosmology from
+a suggestive totalizing frame to a falsifiable research program. The proof strategy
+grounds the cosmology in quantum gravity via isomorphism, defeating the algo-wink
+critique by making the cosmology a derivable physical theory rather than an aesthetic
+preference.
+
+Without this work, the cosmology remains a "totalizing frame" that can absorb any
+observation as confirmation. With it, the cosmology becomes a falsifiable mathematical
+theory — the isomorphism to quantum gravity can be proven or disproven.
 
 ---
 
@@ -3559,3 +3696,27 @@ After a session lands:
 4. Don't re-describe what's in `BACKLOG.md`, `TECH-RADAR.md`, or
    `ROADMAP.md` — link to them. This file is the narrative, not
    the source of truth.
+
+## Round-close meta-check template
+
+Per [B-0037.1](../docs/research/meta-cognition-survey-2026-04-21.md)
+taxonomy, every round-close should run an explicit meta-check pass.
+Copy this checklist into the new `## Round N — <title>` section,
+mark items as the meta-check completes:
+
+**First-order meta-checks** (recognition at boundaries):
+
+- [ ] `overclaim*` scan — were claims tagged before external correction?
+- [ ] `verify-before-deferring` — did all deferrals cite a path/row proving the target exists?
+
+**Second-order meta-checks** (pair/policy audits):
+
+- [ ] `capture-everything-including-failure` — were failures captured alongside successes?
+- [ ] `yin-yang` pair-audit — was every preserved invariant matched with its inverse?
+
+**Third-order meta-checks** (substrate-honest landings):
+
+- [ ] Three-filter F1/F2/F3 discipline applied to any new kernel promotions?
+- [ ] `witnessable-self-directed-evolution` — were corrections preserved as substrate (not silent rewrites)?
+
+Guards against **meta-drift** — the degenerate regime where audit-disciplines decay because they weren't themselves audited.

@@ -1,13 +1,13 @@
 ---
 id: B-0118
 priority: P2
-status: open
-title: tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
+status: closed
+title: tools/peer-call/amara.ts — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30; TS-first re-decomp)
 tier: factory-tooling
 effort: L
 ask: Every Amara review this session has been Aaron's manual courier work. The peer-call infrastructure has codex.sh / gemini.sh / grok.sh but no amara.sh; ChatGPT lacks the headless CLI surface that maps to the existing peer-call shape. Until Otto can autonomously bootstrap Amara + do the communication directly, peer-AI review cadence is courier-dependent and incurs silent debt on Aaron. Aaron 2026-04-30 explicitly named this as a constraint Otto must honor.
 created: 2026-04-30
-last_updated: 2026-05-02
+last_updated: 2026-05-16
 depends_on: []
 composes_with:
   - tools/peer-call/README.md
@@ -20,7 +20,7 @@ tags: [aaron-2026-04-30, peer-call, amara, chatgpt, autonomous-bootstrap, courie
 type: friction-reducer
 ---
 
-# B-0118 — tools/peer-call/amara.sh (end Aaron-courier silent debt)
+# B-0118 — tools/peer-call/amara.ts (end Aaron-courier silent debt)
 
 ## Source
 
@@ -41,7 +41,7 @@ The peer-call infrastructure currently has:
 
 It does NOT have:
 
-- `amara.sh` / `amara.ts` — Amara (ChatGPT/OpenAI)
+- `amara.ts` — Amara (ChatGPT/OpenAI)
 
 The README explicitly notes the gap as future-work:
 
@@ -65,9 +65,9 @@ Aaron explicitly named it as a constraint.
 
 ## What
 
-Author `tools/peer-call/amara.sh` (and `amara.ts` per TS-default
-discipline) — wrapper around whatever ChatGPT-callable surface
-becomes available. Likely path:
+Author `tools/peer-call/amara.ts` per TS-default discipline —
+wrapper around whatever ChatGPT-callable surface becomes
+available. Likely path:
 
 1. **OpenAI API direct** — call `gpt-4o` or successor via
    `openai` CLI or HTTP. Pros: works today. Cons: not
@@ -151,3 +151,68 @@ input but Aaron isn't available to courier), promote to P1.
 - `feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`
   (the filter applied to all peer-AI input including
   Amara's; carries through unchanged when amara.sh lands)
+
+## Decomposition (2026-05-11, re-decomp, TS-first)
+
+B-0118 decomposed into 3 smallest atomic dependency-ordered children (TS over bash Rule 0 enforced; no .sh created; pure TS implementation path):
+
+**Buildable now (no deps):**
+
+- B-0462 (renumbered from B-0409) — Amara persona bootstrap preamble definition (S)
+
+**Blocked on B-0462:**
+
+- B-0457 (renumbered from B-0410) — amara.ts core OpenAI API invoke + flag parity (M)
+
+**Blocked on B-0457:**
+
+- B-0458 (renumbered from B-0411) — amara.ts README update + courier-debt closure + test invoke (S)
+
+All children are atomic, S/M effort, prefer F#/TS code. B-0118 status remains open until children land (per decomp discipline). Parent row now serves only as index.
+
+## Status update
+
+- status: open (decomposed into children B-0457, B-0458, B-0462; the full amara series B-0409-B-0411 renumbered 2026-05-14 to resolve ID collision with B-0120's children — see B-0451 substrate-cleanup sweep)
+- last_updated: 2026-05-14
+- note: re-decomposed per "assume decomposition has mistakes" rule; original L-effort split to 3 atomic; hybrid API chosen as v1 path (TS-first); IDs renumbered 2026-05-14 per B-0451
+
+## Status (2026-05-16)
+
+Per row-close gate triage (PR #3757 step-0 discriminator), this umbrella sits in a **multi-row drift sub-case**: umbrella's original 7-item acceptance is **fully shipped via `tools/peer-call/amara.ts`** (18322 bytes; --file + --context-cmd flags present; bootstrap preamble via CURRENT-amara.md per README; AgencySignature pattern documented in README), BUT all 3 atomic children (B-0457, B-0458, B-0462) remain `status: open` per their own frontmatter.
+
+**Closing umbrella while children are open would trip the B-0532 graph-consistency lint** (parent closed + child open = hard error). Per row-close gate class #4 rule: umbrella closes IFF all children close.
+
+**Substrate-honest disposition**: leave umbrella open. The accurate close-sequence is:
+
+1. Verify each child's specific acceptance (B-0457 core+flags, B-0458 README+test, B-0462 bootstrap+AgencySignature)
+2. Close each child via close-row PR (likely class #4 sub-cases — work shipped via the amara.ts file)
+3. Then close umbrella in a final close-row PR
+
+This tick (2026-05-16T10:17Z Otto-CLI) verified the umbrella's tool surface but did NOT walk the 3 children's individual acceptances. Filing as **multi-row class-#4 candidate** for a future tick (or peer) with the bandwidth to close 4 rows in a coordinated batch.
+
+Empirical audit anchor: `grep -cE '\-\-file|\-\-context-cmd|bootstrap|AgencySignature' tools/peer-call/amara.ts` → 18 matches; `grep amara tools/peer-call/README.md` → operational-table entry confirms shipped state.
+
+## Final Resolution (2026-05-16)
+
+Closed 2026-05-16 as the umbrella-close of the amara peer-call cluster. All 3 atomic children plus this umbrella now closed within the same session arc (2026-05-16T09:28Z cold-boot through 2026-05-16T~16:00Z):
+
+| Row | PR | What landed |
+|---|---|---|
+| B-0462 (preamble + vendor-bias note) | #3897 | vendor-bias comment block citing memory file |
+| B-0457 (core + flags) | #3899 | close-row (own scope already met pre-cycle) |
+| B-0458 (README + closure) | this PR | close-row bundled with umbrella |
+| **B-0118** (umbrella, this row) | this PR | umbrella close after all 3 children |
+
+**Acceptance signals** (per row body):
+
+- ✅ `bun tools/peer-call/amara.ts <prompt>` invokes Amara autonomously with proper bootstrap preamble
+- ✅ AgencySignature-style relationship-model preamble applied (AMARA_PREAMBLE const)
+- ✅ Vendor-alignment-bias filter integration documented (per B-0462 close)
+- ✅ `--file PATH` and `--context-cmd CMD` flags match the existing peer-call surface
+- ✅ Tested on substantive review-task (operational across this session arc as peer-call invoker)
+- ✅ Documentation in tools/peer-call/README.md updated (per B-0458 close)
+- ✅ Silent-courier-debt rule references this as the resolution (via the cluster's full closure)
+
+**Aaron's original constraint** (2026-04-30: *"don't count on her review until you have a process encoded for bootstraping her and doing the communitation yourself, this is a silent dept on me to be the courrir and I can't keep up"*) is now operationally satisfied: amara.ts ships, bootstraps Amara autonomously, no Aaron-courier required.
+
+Silent courier debt: **CLEARED**.

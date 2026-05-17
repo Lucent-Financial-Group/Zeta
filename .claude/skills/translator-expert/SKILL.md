@@ -1,6 +1,6 @@
 ---
 name: translator-expert
-description: Theory and reference skill for cross-domain technical translation — compiling any expert ontology to a minimal first-principles English intermediate representation so arbitrary domains can translate to each other through the shared basis. Use when writing documentation that spans audiences (researcher + engineer, operator + architect), bridging two sibling fields, designing a GLOSSARY.md entry, or preparing teaching material that must land for a reader without prior domain context. Complements naming-expert (within-domain naming) and etymology-expert (word-history). Invoke proactively whenever a document has two plausible audiences with disjoint vocabularies.
+description: Cross-domain translation — expert ontology to shared vocabulary across programming languages, algebras, formalisms.
 facet: expert × theory × reference
 ---
 
