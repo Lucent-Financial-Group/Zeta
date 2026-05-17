@@ -35,7 +35,7 @@ So the rule's "ALWAYS works" claim has at least one empirical counter-example: t
 
 ## The substrate-honest workaround applied this tick
 
-Rather than violating the genuinely-valuable test by manufacturing yet another rule edit or memo, this row (P4) IS the forced-#6 concrete artifact:
+Rather than violating the genuinely-valuable test by manufacturing yet another rule edit or memo, this row (P3) IS the forced-#6 concrete artifact:
 
 - Concrete artifact (a backlog row file)
 - Bounded scope (single file, ~80 lines)
@@ -59,11 +59,38 @@ OR investigate whether there's a missing primitive — e.g., a `forced-#6-deferr
 - Adding more empirical anchors to the rule for this same session (the 5th anchor is sufficient)
 - Refactoring the brief-ack-counter mechanism
 
+## Empirical instances accumulated
+
+Ordered chronologically by tick time:
+
+| # | Tick | Source session | Forced-#6 substrate produced | Notes |
+|---|---|---|---|---|
+| 1 | 2026-05-17T22:07Z | Peer Otto session | [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) — cross-axis composition note | Peer session's forced-#6 produced complementary substrate (saturation cadence × one-PR-one-artifact-type discipline) |
+| 2 | 2026-05-17T22:13Z | This session | [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — pre-empt-substrate-pool-saturation anchor | This session's first instance; the rule edit itself became the artifact |
+| 3 | 2026-05-17T22:46Z | This session (recursive #1) | [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) — B-0614 row creation | Second forced-#6 in this session; produced THIS row as the substrate-honest artifact |
+| 4 | 2026-05-17T23:03Z | This session (recursive #2) | THIS commit — adds the instances table | Third forced-#6 in this session; updates the row that documents the pattern; recursive-meta-substrate by design |
+
+**Same-session frequency observation**: instances #2, #3, #4 (this session's three instances) are all within a ~50-min window of one autonomous-loop session (post-saturation Pure-git tier with intermittent reset windows). The pattern recurs every ~15-20 min once a session is post-cycle-close.
+
+**Cross-session observation**: instance #1 (peer Otto session at 22:07Z) was independently produced — demonstrating that the forced-#6 dry-meta-fallback pattern is not idiosyncratic to one Otto instance but operates as a general feature of the discipline under sustained Pure-git tier conditions.
+
 ## Acceptance criteria
 
-- [ ] Document at least 2-3 additional empirical instances of forced-#6 dry-meta-fallback (only file this work when the pattern recurs naturally; do NOT manufacture instances)
+- [x] Document at least 2-3 additional empirical instances of forced-#6 dry-meta-fallback — 4 instances now captured (3 same-session, 1 cross-session)
 - [ ] Propose a rule-text refinement that addresses the "ALWAYS works" claim without weakening the discipline's core (forced-#6 + meta-fallback as cycle-closer)
 - [ ] Land the refinement via small PR; mark this row resolved
+
+## Candidate rule-text refinement (drafted, not yet applied)
+
+Replace the current "ALWAYS works" claim:
+
+> If you find yourself paralyzed about what to pick — pick THIS rule (or its analog for whatever failure mode is recurring) and sharpen it based on the current session's evidence. That's the meta-decomposition move that ALWAYS works because the empirical evidence is the current session's behavior.
+
+With a refined version:
+
+> If you find yourself paralyzed about what to pick — pick THIS rule (or its analog for whatever failure mode is recurring) and sharpen it based on the current session's evidence. That's the meta-decomposition move that USUALLY works because the empirical evidence is the current session's behavior. **Exception** (per B-0614): when the session is post-cycle-close AND the substrate-pool is genuinely saturated (the meta-fallback would produce a recursive-anchor / memo-of-memos / re-statement-with-different-phrasing), the substrate-honest move is to file a small backlog row capturing the edge case AND/OR update an existing edge-case row with the current instance's data. The row IS the forced-#6 concrete artifact.
+
+Do NOT land this refinement until at least 1 cross-instance evidence accumulates (different Otto identity, different session, different machine) — same-session evidence alone is insufficient to motivate a rule edit because it conflates "the pattern" with "this Otto's behavior under Pure-git tier."
 
 ## Composes with
 
