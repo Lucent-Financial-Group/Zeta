@@ -40,6 +40,7 @@ The original B-0570 design captures scarcity-as-substrate; this row refines the 
 | Gist with append-only updates | YES via gist API | None | Trivial; gist API supports updates | Less greppable at scale; informal |
 
 The "right" choice depends on:
+
 - Whether per-poll history is needed (multiple files) or current state only (one file)
 - Whether agents are the writers (multi-writer concurrency) or GitHub Actions is (single-writer)
 - How often updates fire (every-minute vs every-hour)
