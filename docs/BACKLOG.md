@@ -311,7 +311,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0507](backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md)** B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)
 - [x] **[B-0508](backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md)** B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/
 - [ ] **[B-0509](backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md)** B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json
-- [ ] **[B-0510](backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md)** B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)
+- [x] **[B-0510](backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md)** B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)
 - [ ] **[B-0511](backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md)** B-0448 slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation
 - [ ] **[B-0512](backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md)** B-0448 slice 6 — Update tools/routines/README.md with 4-layer catch-43 table
 - [ ] **[B-0513](backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md)** B-0448 slice 7 — Memory file capturing empirical Cloud Routine bootstrap learning
