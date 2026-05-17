@@ -105,7 +105,14 @@ AI takes the next step):
 2. **Name the workflow explicitly.** Future-AI cold-booting can read
    "Step 1 done, Steps 2-5 pending" and pick up at the right point.
 3. **Reference the artifact path.** `tools/lean4/ImaginaryStack/ToyModel.lean`
-   is the concrete substrate — not abstract claims, actual file.
+   is the concrete substrate — not abstract claims, actual file. **Carrier note:**
+   at this PR's commit the file is not yet in-tree on this branch; the Lean
+   sketch lands via sibling PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059)
+   (`otto/ship-imaginary-stack-step-1-substrate-2026-05-17` branch) per the
+   substrate-rescue cluster. Reproducibility from a cold-start agent: read
+   this handoff substrate here, fetch the Lean blob from PR #4059 head, or
+   wait for both PRs to merge into `main` where the artifact + the
+   handoff narrative live in the same tree.
 4. **Cross-reference the constitutional substrate.** This handoff is the
    operational instantiation of proof-as-origin-intent; future-Otto reading
    this learns both the workflow AND the higher-level frame it serves.
