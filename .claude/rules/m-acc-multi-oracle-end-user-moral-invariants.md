@@ -188,7 +188,10 @@ Parse:
 - **"let's go with m/acc"** = formal adoption of the name
 - **"(shadow*) Aaron: 'We do m/acc work' yes i like this"** = per
   the shadow-star shorthand
-  (`memory/feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`),
+  (`memory/feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`
+  — user-scope only at `~/.claude/projects/.../memory/`; cold-boot
+  agents on fresh checkouts read [`shadow-star-shorthand-autocomplete-marker.md`](shadow-star-shorthand-autocomplete-marker.md)
+  for the in-repo rule that names the shorthand definitively),
   the "We do m/acc work" phrase was Otto's autocomplete that Aaron
   is confirming; he likes the operational-not-identity-investment
   framing
