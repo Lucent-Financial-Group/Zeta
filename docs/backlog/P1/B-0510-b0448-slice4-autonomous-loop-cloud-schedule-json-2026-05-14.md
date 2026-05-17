@@ -6,7 +6,7 @@ title: "B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Clo
 type: feature
 origin: B-0448 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-17
 parent: B-0448
 depends_on:
   - B-0507
@@ -99,7 +99,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 - [x] `tools/routines/autonomous-loop/cloud-schedule.json` committed
 - [x] File validates against the JSON schema from B-0508 (or equivalent TS type)
-- [x] `bun tools/routines/install.ts` output includes the Cloud Routine next-step block
-  for `autonomous-loop`
+- [ ] `bun tools/routines/install.ts` output includes the Cloud Routine next-step block
+  for `autonomous-loop` (tracked in open row B-0509; not yet implemented)
 - [x] `notes` field documents the Desktop-vs-Cloud duality (schedule.json companion)
 - [x] B-0510 closed with PR link
