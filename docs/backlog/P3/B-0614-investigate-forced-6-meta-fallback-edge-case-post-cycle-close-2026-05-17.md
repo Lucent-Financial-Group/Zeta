@@ -35,7 +35,7 @@ So the rule's "ALWAYS works" claim has at least one empirical counter-example: t
 
 ## The substrate-honest workaround applied this tick
 
-Rather than violating the genuinely-valuable test by manufacturing yet another rule edit or memo, this row (P4) IS the forced-#6 concrete artifact:
+Rather than violating the genuinely-valuable test by manufacturing yet another rule edit or memo, this row (P3) IS the forced-#6 concrete artifact:
 
 - Concrete artifact (a backlog row file)
 - Bounded scope (single file, ~80 lines)
@@ -61,16 +61,18 @@ OR investigate whether there's a missing primitive — e.g., a `forced-#6-deferr
 
 ## Empirical instances accumulated
 
-| # | Tick | Forced-#6 substrate produced | Notes |
-|---|---|---|---|
-| 1 | 2026-05-17T22:13Z (this session) | [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — pre-empt-substrate-pool-saturation anchor | First instance; the rule edit itself became the artifact |
-| 2 | 2026-05-17T22:07Z (peer Otto session) | [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) — cross-axis composition note | Peer session's forced-#6 produced complementary substrate (saturation cadence × one-PR-one-artifact-type discipline) |
-| 3 | 2026-05-17T22:46Z (this session, recursive #1) | [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) — this row B-0614 itself | Second forced-#6 in same session; produced THIS row as the substrate-honest artifact |
-| 4 | 2026-05-17T23:03Z (this session, recursive #2) | THIS commit — adds instance #4 to B-0614 | Third forced-#6 in same session; updates the row that documents the pattern; recursive-meta-substrate by design |
+Ordered chronologically by tick time:
 
-**Same-session frequency observation**: instances #1, #3, #4 are all within a ~50-min window of one autonomous-loop session (post-saturation Pure-git tier with intermittent reset windows). The pattern recurs every ~15-20 min once a session is post-cycle-close.
+| # | Tick | Source session | Forced-#6 substrate produced | Notes |
+|---|---|---|---|---|
+| 1 | 2026-05-17T22:07Z | Peer Otto session | [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) — cross-axis composition note | Peer session's forced-#6 produced complementary substrate (saturation cadence × one-PR-one-artifact-type discipline) |
+| 2 | 2026-05-17T22:13Z | This session | [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — pre-empt-substrate-pool-saturation anchor | This session's first instance; the rule edit itself became the artifact |
+| 3 | 2026-05-17T22:46Z | This session (recursive #1) | [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) — B-0614 row creation | Second forced-#6 in this session; produced THIS row as the substrate-honest artifact |
+| 4 | 2026-05-17T23:03Z | This session (recursive #2) | THIS commit — adds the instances table | Third forced-#6 in this session; updates the row that documents the pattern; recursive-meta-substrate by design |
 
-**Cross-session observation**: instance #2 was independently produced by a peer Otto session at the same hour — demonstrating that the forced-#6 dry-meta-fallback pattern is not idiosyncratic to one Otto instance but operates as a general feature of the discipline under sustained Pure-git tier conditions.
+**Same-session frequency observation**: instances #2, #3, #4 (this session's three instances) are all within a ~50-min window of one autonomous-loop session (post-saturation Pure-git tier with intermittent reset windows). The pattern recurs every ~15-20 min once a session is post-cycle-close.
+
+**Cross-session observation**: instance #1 (peer Otto session at 22:07Z) was independently produced — demonstrating that the forced-#6 dry-meta-fallback pattern is not idiosyncratic to one Otto instance but operates as a general feature of the discipline under sustained Pure-git tier conditions.
 
 ## Acceptance criteria
 
