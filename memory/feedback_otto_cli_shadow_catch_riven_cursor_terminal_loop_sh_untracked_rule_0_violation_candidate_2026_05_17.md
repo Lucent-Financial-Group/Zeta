@@ -9,7 +9,7 @@ created: 2026-05-17
 
 ## Observation
 
-On 2026-05-17T22:07Z cold-boot, the primary worktree at `/Users/acehack/Documents/src/repos/Zeta` had an UNTRACKED `.sh` file at `tools/riven/riven-cursor-terminal-loop.sh` (last modified 2026-05-17T17:28Z). Local-only; never committed to any branch on origin.
+On 2026-05-17T22:07Z cold-boot, the primary worktree (the maintainer-machine checkout that hosts `origin`) had an UNTRACKED `.sh` file at `tools/riven/riven-cursor-terminal-loop.sh` (last modified 2026-05-17T17:28Z). Local-only; never committed to any branch on origin.
 
 The file is a 95-line bash launcher with the following responsibilities:
 
