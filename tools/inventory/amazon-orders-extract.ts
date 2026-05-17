@@ -69,8 +69,33 @@ interface Partial {
   items: Item[];
 }
 
+interface PlaywrightRuntime {
+  chromium: {
+    launch(options: { headless: boolean }): Promise<{
+      close(): Promise<void>;
+      newContext(options?: { storageState?: string }): Promise<{
+        storageState(options: { path: string }): Promise<void>;
+        newPage(): Promise<{
+          goto(url: string): Promise<unknown>;
+          waitForLoadState(state: string, options: { timeout: number }): Promise<void>;
+          waitForTimeout(ms: number): Promise<void>;
+          evaluate<T, A>(fn: (arg: A) => T | Promise<T>, arg: A): Promise<T>;
+          evaluate<T>(fn: () => T | Promise<T>): Promise<T>;
+        }>;
+      }>;
+    }>;
+  };
+}
+
 async function ensureModule(name: string): Promise<boolean> {
   try { await import(name); return true; } catch { return false; }
+}
+
+async function loadPlaywright(): Promise<PlaywrightRuntime> {
+  const runtimeImport = new Function("name", "return import(name)") as (
+    name: string,
+  ) => Promise<PlaywrightRuntime>;
+  return runtimeImport("playwright");
 }
 
 async function installIfMissing(): Promise<void> {
@@ -83,7 +108,7 @@ async function installIfMissing(): Promise<void> {
 }
 
 async function ensureChromium(): Promise<void> {
-  const { chromium } = await import("playwright");
+  const { chromium } = await loadPlaywright();
   try {
     const b = await chromium.launch({ headless: true });
     await b.close();
@@ -142,7 +167,7 @@ async function main(): Promise<void> {
   await ensureChromium();
   mkdirSync(YEAR_DIR, { recursive: true });
 
-  const { chromium } = await import("playwright");
+  const { chromium } = await loadPlaywright();
   console.log(`Extracting Amazon orders for year ${YEAR}${RESTART ? " (--restart)" : ""}...`);
   console.log(`Output directory: ${YEAR_DIR}`);
 
@@ -208,7 +233,7 @@ async function main(): Promise<void> {
           const href = link.href ?? "";
           if (title.length < 5 || title.length > 300) return;
           if (HARDCODED.test(title)) return;
-          const dedup = href.split("?")[0];
+          const dedup = href.split("?")[0] ?? href;
           if (seen.has(dedup)) return;
           seen.add(dedup);
           let date: string | null = null;
