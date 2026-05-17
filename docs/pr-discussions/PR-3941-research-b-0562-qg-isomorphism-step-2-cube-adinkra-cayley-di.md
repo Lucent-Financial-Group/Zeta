@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Step 2 of the 4-step QG isomorphism proof path opened in [B-0543](docs/backlog/) / [#3614](https://github.com/Lucent-Financial-Group/Zeta/pull/3614). Unfolds the two axioms (Remember-When + Pay-Attention) into a 4-axis cube, grafts the Adinkra-Gates supermultiplet layer on cube vertices, lifts through a Cayley-Dickson tower (R → C → H → O → S → T), and proposes the algebraic shape that matches HaPPY (holographic perfect-tensor) QEC codes.
+Step 2 of the 4-step QG isomorphism proof path opened in [B-0543](../backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) / [#3614](https://github.com/Lucent-Financial-Group/Zeta/pull/3614). Unfolds the two axioms (Remember-When + Pay-Attention) into a 4-axis cube, grafts the Adinkra-Gates supermultiplet layer on cube vertices, lifts through a Cayley-Dickson tower (R → C → H → O → S → T), and proposes the algebraic shape that matches HaPPY (holographic perfect-tensor) QEC codes.
 
 ## Why this is Step 2
 
