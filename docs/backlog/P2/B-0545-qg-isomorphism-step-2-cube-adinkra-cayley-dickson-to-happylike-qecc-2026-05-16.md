@@ -89,7 +89,7 @@ Without Step 2, the cosmology remains a mathematical curiosity without connectio
 
 - A concrete mathematical bridge from the Manifesto V2.1 axioms to quantum gravity
 - A falsifiable prediction: the specific structure of the QEC code (Adinkra + Cayley-Dickson) should leave observable signatures in the low-energy limit
-- A multi-oracle necessity proof: the infinite-game structure requires multiple observers, which is exactly the multi-oracle requirement
+- A multi-oracle necessity proof: the infinite-game structure requires multiple observers
 
 ## Open questions
 
