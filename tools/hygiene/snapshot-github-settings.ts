@@ -87,7 +87,7 @@ async function ghApiSkip403(path: string, jqFilter?: string): Promise<string | n
   return r.stdout.trim();
 }
 
-function parseJsonSafe(raw: string | null, fallback: unknown = null): unknown {
+export function parseJsonSafe(raw: string | null, fallback: unknown = null): unknown {
   if (raw === null || raw.length === 0) return fallback;
   try {
     return JSON.parse(raw);
@@ -96,15 +96,26 @@ function parseJsonSafe(raw: string | null, fallback: unknown = null): unknown {
   }
 }
 
-interface Args {
+export interface Args {
   readonly repo: string;
 }
 
-type ParseResult =
+export type ParseResult =
   | { readonly kind: "args"; readonly args: Args }
   | { readonly kind: "error"; readonly message: string };
 
-async function parseArgs(argv: readonly string[]): Promise<ParseResult> {
+async function resolveRepoViaGh(): Promise<string> {
+  const r = await runCmd(["gh", "repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"]);
+  if (r.exitCode === 0 && r.stdout.trim().length > 0) {
+    return r.stdout.trim();
+  }
+  return "";
+}
+
+export async function parseArgs(
+  argv: readonly string[],
+  resolveDefault: () => Promise<string> = resolveRepoViaGh,
+): Promise<ParseResult> {
   let repo = "";
   let i = 0;
   while (i < argv.length) {
@@ -128,10 +139,7 @@ async function parseArgs(argv: readonly string[]): Promise<ParseResult> {
   }
 
   if (repo.length === 0) {
-    const r = await runCmd(["gh", "repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"]);
-    if (r.exitCode === 0 && r.stdout.trim().length > 0) {
-      repo = r.stdout.trim();
-    }
+    repo = await resolveDefault();
   }
 
   if (repo.length === 0) {
