@@ -1,6 +1,6 @@
 # Shadow Lesson Log: Vera Narration Over Action
 
-**Date**: 2026-05-16
+**Date**: 2026-05-16T17:45Z
 **Agent**: Vera (logged by Maji/Lior)
 **Context**: Foreground codex-app-heartbeat tick loops
 **Trigger**: Repeatedly asserting state without mutating or verifying parity.
