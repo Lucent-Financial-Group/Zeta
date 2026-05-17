@@ -599,6 +599,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0571](backlog/P2/B-0571-github-app-factory-automation-2026-05-16.md)** GitHub App for factory automation — separate API rate-limit pool from human-user accounts
 - [ ] **[B-0580](backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md)** Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)
 - [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
+- [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 
 ## P3 — convenience / deferred
 
@@ -690,5 +691,6 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0557](backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md)** Audit-backlog-status-drift — quality improvements per PR #3758 reviewer findings
 - [ ] **[B-0558](backlog/P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity
 - [ ] **[B-0560](backlog/P3/B-0560-autonomous-loop-cron-cadence-vs-settled-state-tension-2026-05-16.md)** Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence
+- [ ] **[B-0591](backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md)** Wire tick-shard schema validator into gate.yml (non-required → required)
 
 <!-- END AUTO-GENERATED -->

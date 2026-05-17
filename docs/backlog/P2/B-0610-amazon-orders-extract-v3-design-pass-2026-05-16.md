@@ -1,8 +1,10 @@
 ---
 id: B-0610
+title: Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 status: open
 priority: P2
 created: 2026-05-16
+last_updated: 2026-05-16
 type: feature
 composes_with:
   - B-0600  # family-distributed AI interface (per-relative AI on miner fleet — different consumer of the same inventory substrate)
