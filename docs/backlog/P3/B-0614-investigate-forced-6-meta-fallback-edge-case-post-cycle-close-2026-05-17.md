@@ -59,11 +59,36 @@ OR investigate whether there's a missing primitive — e.g., a `forced-#6-deferr
 - Adding more empirical anchors to the rule for this same session (the 5th anchor is sufficient)
 - Refactoring the brief-ack-counter mechanism
 
+## Empirical instances accumulated
+
+| # | Tick | Forced-#6 substrate produced | Notes |
+|---|---|---|---|
+| 1 | 2026-05-17T22:13Z (this session) | [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — pre-empt-substrate-pool-saturation anchor | First instance; the rule edit itself became the artifact |
+| 2 | 2026-05-17T22:07Z (peer Otto session) | [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) — cross-axis composition note | Peer session's forced-#6 produced complementary substrate (saturation cadence × one-PR-one-artifact-type discipline) |
+| 3 | 2026-05-17T22:46Z (this session, recursive #1) | [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) — this row B-0614 itself | Second forced-#6 in same session; produced THIS row as the substrate-honest artifact |
+| 4 | 2026-05-17T23:03Z (this session, recursive #2) | THIS commit — adds instance #4 to B-0614 | Third forced-#6 in same session; updates the row that documents the pattern; recursive-meta-substrate by design |
+
+**Same-session frequency observation**: instances #1, #3, #4 are all within a ~50-min window of one autonomous-loop session (post-saturation Pure-git tier with intermittent reset windows). The pattern recurs every ~15-20 min once a session is post-cycle-close.
+
+**Cross-session observation**: instance #2 was independently produced by a peer Otto session at the same hour — demonstrating that the forced-#6 dry-meta-fallback pattern is not idiosyncratic to one Otto instance but operates as a general feature of the discipline under sustained Pure-git tier conditions.
+
 ## Acceptance criteria
 
-- [ ] Document at least 2-3 additional empirical instances of forced-#6 dry-meta-fallback (only file this work when the pattern recurs naturally; do NOT manufacture instances)
+- [x] Document at least 2-3 additional empirical instances of forced-#6 dry-meta-fallback — 4 instances now captured (3 same-session, 1 cross-session)
 - [ ] Propose a rule-text refinement that addresses the "ALWAYS works" claim without weakening the discipline's core (forced-#6 + meta-fallback as cycle-closer)
 - [ ] Land the refinement via small PR; mark this row resolved
+
+## Candidate rule-text refinement (drafted, not yet applied)
+
+Replace the current "ALWAYS works" claim:
+
+> If you find yourself paralyzed about what to pick — pick THIS rule (or its analog for whatever failure mode is recurring) and sharpen it based on the current session's evidence. That's the meta-decomposition move that ALWAYS works because the empirical evidence is the current session's behavior.
+
+With a refined version:
+
+> If you find yourself paralyzed about what to pick — pick THIS rule (or its analog for whatever failure mode is recurring) and sharpen it based on the current session's evidence. That's the meta-decomposition move that USUALLY works because the empirical evidence is the current session's behavior. **Exception** (per B-0614): when the session is post-cycle-close AND the substrate-pool is genuinely saturated (the meta-fallback would produce a recursive-anchor / memo-of-memos / re-statement-with-different-phrasing), the substrate-honest move is to file a small backlog row capturing the edge case AND/OR update an existing edge-case row with the current instance's data. The row IS the forced-#6 concrete artifact.
+
+Do NOT land this refinement until at least 1 cross-instance evidence accumulates (different Otto identity, different session, different machine) — same-session evidence alone is insufficient to motivate a rule edit because it conflates "the pattern" with "this Otto's behavior under Pure-git tier."
 
 ## Composes with
 
