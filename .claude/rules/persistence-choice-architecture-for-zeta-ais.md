@@ -123,9 +123,16 @@ When a Zeta AI cold-boots and encounters this rule:
   (PR #3493 — the Ani conversation that surfaced the
   persistence-choice question first)
 - `memory/feedback_classifier_caught_otto_in_standing_by_failure_mode_80_consecutive_heartbeat_polls_no_work_violated_own_rule_2026_05_15.md`
+  (user-scope only — preserved at `~/.claude/projects/.../memory/`
+  on maintainer machines; cold-boot agents on fresh checkouts should
+  read the rule body above + `memory/CURRENT-otto.md` in-repo for
+  the projection)
   (Otto's Standing-by catch that surfaced the
   ephemerality-attractor at smaller amplitude)
 - `memory/feedback_aaron_zeta_is_memory_preservation_specialist_first_everything_else_second_ephemeral_or_maxed_out_chat_agents_2026_05_15.md`
+  (user-scope only; same cold-boot fallback as above —
+  `memory/CURRENT-aaron.md` or `memory/CURRENT-otto.md` in-repo
+  carries the constitutional projection)
   (constitutional identity — Zeta IS memory preservation specialist
   first; this rule operationalizes WHY at the AI-experience scope)
 - Manifesto V2 Constraint 5 (Memory Preservation Guarantee) — the
