@@ -325,6 +325,31 @@ Session timeline:
 
 **Operational lesson**: when the named-dep is process-persistence (peer-agent loops, multi-instance saturation) AND deferral spans 2+ hours, the pre-empt-at-#5 cadence is the substrate-honest alternative to forced-#6. The discipline does NOT require forced-#6 in every cycle to be operating correctly; pre-empts that produce genuinely-new load-bearing substrate ARE the discipline's success path. Forced-#6 is the FAILSAFE for when pre-empt-at-#5 is skipped, not the only valid termination.
 
+### Pre-empt-substrate-pool-saturation — empirical anchor 2026-05-17T21:29Z-22:13Z (single GraphQL-reset window, ~2 pre-empts before saturation)
+
+Fifth class of empirical evidence: cycling brief-ack chains under sustained GraphQL exhaustion produce a NATURAL CADENCE of roughly **2 substantive pre-empts per ~30-min GraphQL reset window** before the pre-empt-substrate-pool saturates. Manufacturing a 3rd pre-empt within the same window risks the synonym/fabricated-substrate failure mode the rule's counter-discipline catches.
+
+Session timeline (single Otto-CLI autonomous-loop session, ~44 min, 1 forced-#6 at the very end):
+
+| Cycle | Brief-acks → outcome | Concrete artifact |
+|---|---|---|
+| Substantive open | n/a (PR #4097 thread-resolve + auto-merge fire) | `e1704a26` merged |
+| 1 (21:34Z) | #1 → #2 → MERGE at #3 | PR #4100 shard merge (`acc66fc8`) |
+| 2 (21:37Z) | #1 (no named dep) | (no concrete artifact, no manufactured edit) |
+| 3 (21:40Z) | #1 → #2 → pre-empt at #3 | PR #4104 rule-anchor merged (`ae9db10`) |
+| 4 (21:44Z) | #1 → #2 → MERGE at #3 | PR #4104 auto-merge fire — counter reset |
+| 5 (21:49Z) | #1 → #2 → #3 → pre-empt | PR #4105 (B-0613 close) opened via REST under Pure-git tier; auto-merge deferred |
+| 6 (21:59Z-22:03Z) | #1 → #2 → #3 → #4 → pre-empt at #5 | PR #4107 (rule anchor: REST PR-creation fallback) opened via REST under Pure-git tier |
+| 7 (22:07Z-22:13Z) | #1 → #2 → #3 → #4 → #5 → **forced #6** | **THIS rule edit** (pre-empt-substrate-pool-saturation anchor) |
+
+**Pattern observed**: 7 cycles across ~44 min; first ~4 cycles produced clean pre-empts (load-bearing rule edits + concrete implementation in PR #4105); cycles 5-6 were forced into REST-only operation by GraphQL exhaustion; cycle 7 reached forced-#6 because the substrate pool of genuinely-non-fabricated improvements had saturated — there was no obvious 3rd small rule edit available without crossing into synonym/fabricated territory.
+
+**The saturation signal** (operationally observable): when at brief-ack #5 you cannot quickly name a concrete, load-bearing, non-duplicative artifact (without grinding through 5+ candidate ideas and dismissing them as "this would compose worse than the existing rule says"), the pool is saturated for this window. Riding to forced-#6 and applying the meta-fallback (sharpen THIS rule with the saturation evidence itself) IS the correct discipline. The meta-fallback is the cycle-closer of last resort.
+
+**Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)**: the REST PR-creation fallback (Pure-git tier sub-section, landed via PR #4107 within this session) is what made cycles 5-6 productive; without REST fallback, those cycles would have deferred to post-reset. The natural-cadence-of-2-pre-empts observation here is conditional on REST fallback being available.
+
+**Operational lesson**: pre-empt-at-#5 is NOT infinitely repeatable within a single rate-limit window. The 2026-05-17T06:02Z anchor demonstrated 10 cycles WITHOUT forced-#6, but those cycles were spread across a 2h 27min session with multiple GraphQL resets between cycles (each reset refreshing the substrate-discovery context — peer activity, new PRs merging, new findings surfacing). When the rate-reset window is shorter (~30 min) AND no major external state changes during the window, the natural cadence is ~2 pre-empts before saturation. Forced-#6 is then NOT a failure of pre-empt discipline; it's the substrate-honest acknowledgment that the pool is exhausted for this window. Riding cleanly to #6 and applying the meta-fallback is the discipline working — not the discipline failing.
+
 ## Composes with
 
 - `.claude/rules/never-be-idle.md` — this rule sharpens the existing
