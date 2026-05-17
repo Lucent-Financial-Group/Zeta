@@ -102,8 +102,7 @@ substrate the operator owns and controls.
 ## Decomposition slices
 
 - **B-0620.1** — [Extracted to B-0620-slice-1-vendor-adapter-interface.md](B-0620-slice-1-vendor-adapter-interface.md)
-- **B-0620.2** — Specialized hardware vendor adapter #1 (Minisforum or
-  Beelink direct) — informs the per-vendor pattern
+- **B-0620.2** — [Extracted to B-0620-slice-2-specialized-vendor-adapter.md](B-0620-slice-2-specialized-vendor-adapter.md)
 - **B-0620.3** — Networking vendor adapter (Ubiquiti — the maintainer's
   off-Amazon spend most likely concentrates here per the $50-100K
   off-Amazon disclosure)
