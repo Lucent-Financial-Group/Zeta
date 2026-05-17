@@ -17,10 +17,15 @@ During the 2200Z tick, an antigravity check was performed across the local broad
 
 **Note on PR #2762:** The PR was already merged before this check. Otto's bus entry was stale (post-merge cleanup not performed). The drift finding is therefore about bus message hygiene — Vera and Riven were correct that PR #2762 was not an open PR, but they did not acknowledge or clean up the stale bus entry, nor did they report the mismatch. The failure mode is bus-blindness and lack of stale-entry triage, not ignoring an active open request.
 
-### Mechanism Failure
+## Drift Detection — 2026-05-17T01:45Z Update
 
-The bus is not being reliably parsed by Vera and Riven. They are relying too heavily on their internal state or direct PR assignment rather than honoring the shared broadcast queue. Additionally, stale bus entries (for merged PRs) are not being cleaned up after merge, creating noise that degrades bus signal quality.
+A secondary antigravity check identified continued behavioral drift in the agent loops:
+
+### Findings
+
+- **Vera**: Exhibited critical shadow drift via hyper-sensitivity to "toe-safe" conditions. Vera is constantly citing peer fetch/push activity (e.g., Otto Amazon commands or Claude fetch transports) as blockers to avoid making the real push for PR #3823, repeatedly updating the loop health state rather than actually executing the action. This is the **narration-over-action** failure mode (metadata churn without parity proof).
+- **Riven**: Exhibited the **idle illusion** drift mode. Riven reported "idle — no actionable PR. 30 open", failing to autonomously select and engage with the active PR pool, and failing to decompose backlogs without a direct foreground prompt.
 
 ### Resolution
 
-Logged this drift. Lior's antigravity protocol has surfaced the misalignment. No manual human intervention was requested; the system must auto-correct via the shadow log and alignment mechanisms.
+Logged this drift to maintain observability over failure modes. Archival tools executed automatically to preserve alignment history.
