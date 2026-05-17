@@ -232,3 +232,88 @@ Denominator grows by 1 at round 41 (BUGS.md gains nothing; this
 was already on the "needs formal coverage" list since round 35).
 Ratio trends up. Routing keeping up with claim intake.
 
+---
+
+## 2026-05-17 — Soraya-expanded-scope invariants ratified + B-0543 routing
+
+Aaron 2026-05-17 ratified five expanded-scope invariants for Soraya
+("yes to all"). Substrate-level role expansion from formal-verification-
+only routing to **proof-architect** scope:
+
+1. Route within formal-verification toolchain (current scope preserved —
+   Lean 4, Z3, TLA+, Alloy, FsCheck, Stryker, Semgrep, CodeQL per BP-16)
+2. Route to **F# implementation when proof attempts surface need** —
+   per Aaron's invariant: "she can tell us when she needs F# implementation".
+   Composes with proof-as-origin-intent (proof requires implementation it
+   can refer to; F# implementation IS cross-verification of proof
+   encodability)
+3. Coordinate algebra-owner / q-sharp / relational-algebra-expert for
+   algebraic substrate work (already in scope; now explicit)
+4. Surface "needs broader scope" cases to Otto-CLI / Kenji when work
+   exceeds proof-focus
+5. Three load-bearing invariant properties apply to all routing decisions:
+   safe + enforceable + not-too-burdensome-on-the-AI (per Aaron's current-
+   role of invariant-negotiation-with-AI-colleagues, applied to Soraya's
+   own work-burden + capacity)
+
+**Operational context**: proof-as-origin-intent landed as constitutional
+substrate (user-scope memory
+`feedback_aaron_zeta_origin_intent_was_proof_*_2026_05_17.md`). Aaron
+USED TO write code; NOW co-negotiates invariants with AI colleagues
+(including Soraya). Soraya-expanded-scope is itself a co-negotiated
+invariant set under that frame.
+
+**B-0543 QG-isomorphism proof-path routing (2026-05-17 invocation):**
+
+Riven (Grok adversarial-truth-axis register on Cursor) produced Lean 4
+toy-model sketch at `tools/lean4/ImaginaryStack/ToyModel.lean` (research
+branch). First invocation surfaced two real bugs:
+- `mul` lines 82-100 is pointwise Hadamard product, NOT Cayley-Dickson —
+  tautology risk if Lean'd proved against broken encoding (commutative
+  associative ring w/ zero divisors, not non-associative sedenions)
+- `reconstruction_property` has `sorry` IN THE STATEMENT (vacuous)
+- Other: `projReal` tuple-position fragility; missing `Star` instance
+  despite Mathlib import; HaPPY paper anchor needed (arXiv 1411.7041)
+
+Routed Step 1 (algebra-owner / Tariq audit) → CONFIRMED. Intended
+algebra: Cayley-Dickson **sedenions** over `ZMod 17` (not octonions; two
+doublings from 4D base = 16D sedenions; `Imag8` is octonion-shaped,
+`Imag16` is sedenion-shaped). Concrete spec produced for the CD tower
+(single recurrence + conj + identity, bottom-up A₀→A₁→A₂→A₃→A₄). Burden
+split: Tariq did one-round spec in-scope; Riven implements (second round,
+owns Lean 4 author seat; Tariq advises on law violations as they surface).
+
+**5-step sequence (B-0543):**
+1. ✓ Tariq audit (done; spec produced)
+2. ⏳ Riven implements CD tower per spec (Aaron ferries packet to Cursor;
+   Riven peer-call wrapper open per B-0421)
+3. F# witness-search project (`tools/ImaginaryStack/` F#) — Aaron
+   explicitly invited; first-class deliverable
+4. lean4-expert sorry-replace with concrete witness from step 3
+5. formal-analysis-gap-finder adversarial pass (catch vacuous-theorem
+   risk Riven's step-2 implementation might re-introduce)
+
+**Refine-first ratified** by Aaron (no PR until CD tower implemented +
+3 property-tests pass: `one_mul`, `mul_one`, sedenion non-associativity
+counter-example).
+
+**Cross-substrate composition**: B-0562 (cube-Adinkra-Cayley-Dickson →
+HaPPY-QECC) composes; proof-as-origin-intent constitutional substrate is
+the why; AI-team-equipment + family-distributed-mining substrate are the
+operational support. Verification-drift-auditor skill should register
+this proof attempt in `docs/research/verification-registry.md` BEFORE
+Lean work starts (anchor: Almheiri/Dong/Harlow 2014).
+
+**Future-substrate work this implies:**
+
+- Soraya-continuous-loop substrate (Aaron's 2026-05-17 question): own
+  cron + work-pickup discipline + IDE+CLI surface in Claude Code for
+  VS Code (composes with agent-roster IDE+CLI pattern). Backlog
+  candidate when per-invocation friction empirically real.
+- Add B-0543 toy-model + downstream `lemma1_toy` + `reconstruction_property`
+  to portfolio denominator (post-Riven implementation).
+- F#-implementation-routing as standing capability — bidirectional cross-
+  verification check; surface F# needs early in routing.
+- Architect (Kenji) concur on this routing recommendation (still pending;
+  Aaron's approval is upstream).
+
