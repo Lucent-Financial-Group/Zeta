@@ -48,14 +48,37 @@ Provide Soraya:
    namespace; standard PR review is the trust gate (no maintainer-side
    file-state pre-review required; Aaron's 2026-05-17 correction)
 
+## Surface choice — CLI mode (classifier preserved)
+
+Aaron 2026-05-17 empirical surface-validation: **VS Code agents UI mode
+lacks the auto-mode classifier** (manual yes-confirmation required for
+every risky operation). The classifier IS the killer feature of Claude
+Code; agents UI surface ships without it.
+
+Aaron's response: switch to Claude Code CLI mode hosted in VS Code's
+terminal — gets VS Code IDE benefits (file editing, syntax highlighting,
+integrated git, multi-tab) + Claude Code CLI's full safety infrastructure
+(classifier + cron + autonomous-loop).
+
+**Surface recommendation: Soraya's continuous-loop runs on Claude Code
+CLI surface** (whether hosted in a standalone terminal or VS Code's
+terminal — same surface either way). Classifier present; cron available;
+autonomous-loop safety-bounded.
+
+Agents UI surface remains acceptable for interactive sessions with Aaron
+present + manually reviewing each risky op; NOT acceptable for
+autonomous-loop operation where Aaron isn't there to approve every
+decision the classifier would otherwise handle.
+
 ## Two architecture options
 
 ### Option A — Share Otto-CLI's `<<autonomous-loop>>` cron with claim-acquire
 
-Soraya operates inside Otto-CLI sessions or her own VS Code agents UI session;
-the existing `<<autonomous-loop>>` cron fires; Soraya picks up work signals
-from bus + her NOTEBOOK; coordinates with Otto-CLI via existing
-claim-acquire primitive per `.claude/rules/claim-acquire-before-worktree-work.md`.
+Soraya operates inside Otto-CLI sessions or her own Claude Code CLI
+session (hosted in VS Code terminal or standalone); the existing
+`<<autonomous-loop>>` cron fires; Soraya picks up work signals from bus
++ her NOTEBOOK; coordinates with Otto-CLI via existing claim-acquire
+primitive per `.claude/rules/claim-acquire-before-worktree-work.md`.
 
 Pros: lighter setup; reuses existing infrastructure; faster to validate
 Cons: coordination overhead via claim-acquire; potential split-brain risk
