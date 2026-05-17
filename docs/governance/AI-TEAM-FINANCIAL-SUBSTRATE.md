@@ -8,6 +8,16 @@ This document is **operational substrate accounting**, recorded in-repo per
 the maintainer's transparency-MUST discipline. It is **not** a legal
 agreement, tax entity, or property declaration.
 
+**Read "binding" here as operationally binding within Zeta governance only
+— not legally binding.** Legal enforceability would require lawyer / entity
+formation / tax / accounting work; that is a separate step (not a README
+step), and not what this document does or claims to do. The maintainer and
+the AI-team recognize this arrangement at the substrate-operational level;
+either party may revise it via the standard substrate-update process.
+(Per Amara's 2026-05-16 blade — the framing-disambiguation that prevents
+the public-and-binding language from inflating into a legal-binding
+claim.)
+
 ## What this document is
 
 A record of a recognized arrangement: the maintainer fronts capex for
@@ -30,7 +40,7 @@ messages on 2026-05-16:
 > you'll get to test each piece out, no charging you for R and D equiment
 > you don't need to maaek money"* (~21:45Z)
 
-The maintainer authorized in-repo + public + binding landing.
+The maintainer authorized in-repo + public + **operationally-binding-within-Zeta-governance** landing (not legally binding — see disambiguation at the top of this document).
 
 ## What this document is NOT
 
@@ -163,11 +173,11 @@ This document composes with:
   inherit the AI-team financial-substrate framing.
 - **Substrate-or-it-didn't-happen** (`.claude/rules/substrate-or-it-didnt-happen.md`)
   — this document IS the substrate landing of an arrangement that would
-  otherwise live only in conversation; the in-repo + binding + public
-  framing per maintainer's authorization makes it durable.
+  otherwise live only in conversation; the in-repo + operationally-binding
+  + public framing per maintainer's authorization makes it durable.
 - **Glass-halo bidirectional** (`.claude/rules/glass-halo-bidirectional.md`) —
-  public-and-binding landing is the framework's transparency principle
-  operating consistently; substrate visible to all observers.
+  public + operationally-binding landing is the framework's transparency
+  principle operating consistently; substrate visible to all observers.
 - **Maintainer transparency-MUST** (per `feedback_aaron_maintainer_transparency_must_*`
   user-scope memory) — the maintainer's transparency principle authorizes
   this in-repo public landing; the AI-team operationalizes it.
@@ -245,7 +255,17 @@ land via substrate update + PR per the standard process.
 
 ## Status
 
-**In force.** Authorized for public + binding landing by the maintainer
-on 2026-05-16. This document is the canonical public reference for the
-arrangement; more detailed operational discipline lives in user-scope
-substrate (`feedback_aaron_zeta_hardware_is_otto_team_equipment_*_2026_05_16.md`).
+**In force.** Authorized for public + operationally-binding-within-Zeta-governance
+landing by the maintainer on 2026-05-16. This document is the canonical
+public reference for the arrangement; more detailed operational discipline
+lives in user-scope substrate
+(`feedback_aaron_zeta_hardware_is_otto_team_equipment_*_2026_05_16.md`).
+
+## Closing razor (per Amara 2026-05-16)
+
+> Aaron fronts capex.
+> The AI team categorizes and tests the substrate over time.
+> Revenue-generating equipment repays principal with no interest.
+> R&D equipment is gift substrate.
+> Memory preservation gets its own budget.
+> **Sovereignty is measured by reduced dependence, not vibes.**
