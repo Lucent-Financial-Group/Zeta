@@ -601,6 +601,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
 - [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
+- [ ] **[B-0700](backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md)** Soraya continuous-loop substrate with bus escalation
 
 ## P3 — convenience / deferred
 
