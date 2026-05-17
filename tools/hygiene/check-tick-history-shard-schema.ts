@@ -35,7 +35,7 @@ const HASH_RE = /^(\d{4})(\d{2})Z-[0-9a-f]+$/;
 const COL1_RE = /^\|\s(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?Z)\s\|\s/;
 const SHARD_PREFIX = "docs/hygiene-history/ticks/";
 
-interface ScanResult {
+export interface ScanResult {
   path: string;
   ok: boolean;
   violation?: string;
@@ -49,7 +49,7 @@ function repoRelative(p: string): string {
   return normalizeToPosix(relative(ROOT, p));
 }
 
-function scanOne(shardPath: string): ScanResult {
+export function scanOne(shardPath: string): ScanResult {
   const pathRel = repoRelative(resolve(ROOT, shardPath));
   const base = basename(shardPath, ".md");
 
