@@ -8,9 +8,9 @@ created: 2026-05-15
 ask: Otto-CLI
 effort: XL
 tags: [research, fsharp-fork, hkt, recursive-hkt, clifford-algebra, ai-type-safety, computation-expressions, recursive-type-providers, roslyn-source-generators, linq, intelligent-compiler, antigen-spread-representation]
-depends_on: []
+depends_on: [B-0614]
 composes_with: [B-0543, B-0546]
-last_updated: 2026-05-16
+last_updated: 2026-05-17
 ---
 
 ## Why
@@ -49,7 +49,7 @@ The synthesis is bringing these existing pieces together as ONE implementation t
 
 ### Core requirements
 
-1. **Recursive HKT representation** — HKT that can be applied to itself (M<M<'T>> as a type-level computation, not just nested generic). Enables representing the antigen-propagation as a recursive type — Antigen<Oracle<Antigen<...>>>.
+1. **[DECOMPOSED to B-0614] Recursive HKT representation** — HKT that can be applied to itself (M<M<'T>> as a type-level computation, not just nested generic). Enables representing the antigen-propagation as a recursive type — Antigen<Oracle<Antigen<...>>>.
 
 2. **Clifford-algebraic type substrate** — the type-level operators (memory monad M, attention modal A, antigen propagation, market clearing) live in a Clifford-algebra type substrate. Composes with existing `algebra-owner` skill F# substrate.
 
