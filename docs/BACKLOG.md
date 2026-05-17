@@ -302,6 +302,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0495](backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md)** Hamiltonian viz — slice-1: static panel scaffold in demo/index.html
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
 - [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
+- [ ] **[B-0498](backlog/P1/B-0498-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md)** Riven Cursor Terminal background loop — IDE-native autonomous gate with manager contract
 - [x] **[B-0500](backlog/P1/B-0500-b0441-slice-3-queue-state-guard-poll-once-wiring-2026-05-14.md)** B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce
 - [ ] **[B-0501](backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md)** B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)
 - [ ] **[B-0502](backlog/P1/B-0502-b0441-slice-6-launchd-plist-autonomous-loop-docs-2026-05-14.md)** B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update
@@ -599,6 +600,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0571](backlog/P2/B-0571-github-app-factory-automation-2026-05-16.md)** GitHub App for factory automation — separate API rate-limit pool from human-user accounts
 - [ ] **[B-0580](backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md)** Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)
 - [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
+- [ ] **[B-0584](backlog/P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md)** Imaginary stack Step 1 — formalize 4D cube (R/W/P/A) and imaginary intersection as categorical/algebraic primitives
+- [ ] **[B-0590](backlog/P2/B-0590-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)** 20-machine Otto fleet replication with bare-metal OS install — KVM-driven provisioning + Beelink-class mini-PC hardware preference
 
 ## P3 — convenience / deferred
 
