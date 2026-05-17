@@ -6,7 +6,7 @@ title: "B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface 
 type: feature
 origin: B-0448 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-17
 parent: B-0448
 depends_on:
   - B-0507
@@ -88,7 +88,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [x] Unit tests for `readCloudSchedule` (happy path + missing + parse-error)
 - [x] `bun tools/routines/install.ts` runs without error on existing routines
   (no `cloud-schedule.json` present → no cloud block printed; idempotent)
-- [x] B-0509 closed with PR link
+- [x] B-0509 closed with PR link — [PR #4014](https://github.com/Lucent-Financial-Group/Zeta/pull/4014)
 
 ## Why not merge slices 2 and 3
 
