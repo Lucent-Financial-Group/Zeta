@@ -277,6 +277,52 @@ Third class of empirical evidence: forced escalation at brief-ack #6 (and pre-em
 
 **Composes with [`blocked-green-ci-investigate-threads.md`](blocked-green-ci-investigate-threads.md)**: the investigation discipline IS what produces the hidden-work surface. The counter forces invocation of that discipline on a regular cadence.
 
+### Sustained-Lior-with-pre-empt-success — empirical anchor 2026-05-17T06:02Z-08:29Z (full session arc, 0 forced-#6, 2 PRs through)
+
+Fourth class of empirical evidence: the counter discipline operating SUCCESSFULLY across a sustained ~2h 27min session where named-dep (Lior in `ps -A`) persisted at 3 procs throughout AND pre-empt-at-#5 produced concrete substrate every cycle, preventing ANY forced #6 escalation. Two PRs landed (#4046 + #4048) carrying 12 substrate artifacts total.
+
+Session timeline:
+
+| Window | Ticks | Outcome |
+|---|---|---|
+| 06:02Z | 1 substantive | 0602Z shard + PR #4015 3-thread verification + A/B/C commit plan |
+| 06:07Z | 1 substantive | Bus envelope `da3cd5d2` (work-assignment for B-0510) |
+| 06:11Z-06:15Z | 4 brief-acks | Refresh observations only |
+| 06:16Z | pre-empt #5 | canary-rule-binding memory file |
+| 06:18Z-06:21Z | 4 brief-acks | Refresh observations only |
+| 06:23Z | pre-empt #5 | B-0611 backlog row filed (35 dangling refs cleanup) |
+| 06:30Z-06:34Z | 4 brief-acks | Refresh observations only |
+| 06:37Z | pre-empt #5 | Slice 1 recipe memo |
+| 06:39Z-06:43Z | 4 brief-acks | Refresh observations only |
+| 06:44Z | pre-empt #5 | B-0611 row update — audit-tool semi-automation bullet |
+| 06:45Z-06:48Z | 4 brief-acks | Refresh observations only |
+| 06:49Z | pre-empt #5 | Slice 2 recipe memo (Option E pattern discovered) |
+| 06:51Z-06:58Z | 4 brief-acks + tier shift | GraphQL exhausted → Pure-git tier briefly |
+| 06:59Z | pre-empt #5 | Slice 3 recipe memo (mixed-types observation) |
+| 07:23Z | pre-empt #5 | Slice 4 recipe memo (audit-prep complete) |
+| 07:28Z | pre-empt #5 | 0728Z session-summary shard |
+| 07:32Z | substantive | **PR #4015 merged** (bus envelope `da3cd5d2` validated end-to-end via peer-Otto execution chain — 78min handoff latency) |
+| 07:37Z | pre-empt #5 | Bus envelope `ac6d2aec` (B-0611 cleanup advertisement) |
+| 07:39Z | maintainer-speaks | Aaron: *"commit the deferred substrate"* |
+| 07:40Z | substantive | Isolated-worktree workflow → commit `432d49b` (11 files; new race-window-caveat rule followed) |
+| 07:55Z | pre-empt #5 | PR body file prepared |
+| 08:00Z | substantive | **PR #4046 opened + auto-armed** |
+| 08:02Z | substantive | 4 lint-fix commit pushed |
+| 08:11Z | substantive | **PR #4046 merged** → `de9693b` on main |
+| 08:18Z | substantive | PR #4048 opened (worked-example memo follow-up) |
+| 08:25Z | substantive | 3-thread fix commit + threads resolved |
+| 08:29Z | substantive | **PR #4048 merged** → `a1d0ec3` on main |
+
+**Pattern observed**: ~35 brief-ack ticks distributed across 8 pre-empt-at-#5 cycles (each cycle: #1-#4 brief-acks → #5 concrete substrate → counter resets). Never reached forced #6. Each pre-empt artifact was load-bearing AND bounded AND not duplicative — 4 slice recipes (one per surface), 1 canary-binding memo, 1 backlog row, 2 bus envelopes, 1 session-summary shard, 1 worked-example memo.
+
+**Substrate-coordination empirical anchor**: bus envelope `da3cd5d2` (work-assignment for B-0510) was operationally validated when peer-Otto landed commit `bcee230d` at 07:28Z with title literally matching the published A/B/C plan; auto-merge then fired at 07:32Z. The bus-envelope-as-cross-Otto-coordination path empirically works for bounded substrate work with verified-truthy findings on a live PR. (Second bus envelope `ac6d2aec` for B-0611 cleanup was still alive at session-close, not yet picked up — suggests bus envelopes work better for "execute this specific plan against this specific PR" than for "author new substrate from a 4-slice menu.")
+
+**Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)**: the session traversed Normal → Cost-aware → Pure-git → back to Normal tiers; brief-ack cadence operated correctly across all tiers (bus envelope publish + filesystem substrate writes worked under pure-git).
+
+**Composes with [`zeta-expected-branch.md`](zeta-expected-branch.md)**: the new race-window-caveat section (landed mid-session) was followed for both commits via isolated worktree at `/private/tmp/zeta-b0611-substrate-0740z` and `/private/tmp/zeta-worked-example-0817z`. ls-tree count 53 post-commit on both PRs confirmed no canary corruption per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md).
+
+**Operational lesson**: when named-dep is process-persistence (Lior, peer-Otto saturation) AND deferral spans 2+ hours, the pre-empt-at-#5 cadence is the substrate-honest alternative to forced-#6. The discipline does NOT require forced-#6 in every cycle to be operating correctly; pre-empts that produce genuinely-new load-bearing substrate ARE the discipline's success path. Forced-#6 is the FAILSAFE for when pre-empt-at-#5 is skipped, not the only valid termination.
+
 ## Composes with
 
 - `.claude/rules/never-be-idle.md` — this rule sharpens the existing
