@@ -308,9 +308,9 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
 - [x] **[B-0504](backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md)** B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags
 - [x] **[B-0505](backlog/P1/B-0505-b0442-slice5c-docs-autonomous-loop-acceptance-close-2026-05-14.md)** B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close
-- [ ] **[B-0507](backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md)** B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)
-- [ ] **[B-0508](backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md)** B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/
-- [ ] **[B-0509](backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md)** B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json
+- [x] **[B-0507](backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md)** B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)
+- [x] **[B-0508](backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md)** B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/
+- [x] **[B-0509](backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md)** B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json
 - [ ] **[B-0510](backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md)** B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)
 - [ ] **[B-0511](backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md)** B-0448 slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation
 - [ ] **[B-0512](backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md)** B-0448 slice 6 — Update tools/routines/README.md with 4-layer catch-43 table
@@ -330,6 +330,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0550](backlog/P1/B-0550-docs-research-audit-2026-05-16.md)** Docs/research cross-reference audit
 - [ ] **[B-0554](backlog/P1/B-0554-riven-terminal-loop-graceful-shutdown-tombstone.md)** Riven Cursor Terminal loop graceful shutdown tombstone
 - [ ] **[B-0559](backlog/P1/B-0559-verify-before-state-claim-audit-lesson.md)** Class-level lesson encoded as a verify-before-state-claim audit (decomposed from B-0139)
+- [ ] **[B-0570](backlog/P1/B-0570-scarcity-tracker-shared-limited-resources-github-api-2026-05-16.md)** Scarcity tracker — surface limited shared resources (GitHub API GraphQL/REST, runner minutes, etc.) and inform agent disciplines
+- [ ] **[B-0582](backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md)** Substrate-level destructive-verb refusal gate — mechanical pre-call abort, forkable, enterprise-extensible (Kestrel layer-one)
 
 ## P2 — research-grade
 
@@ -593,6 +595,14 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0547](backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md)** Intelligent compiler — represent antigen-spread / multi-oracle / clearing primitives as recursive HKT in F# fork based on Clifford algebra; compose with Recursive Type Providers + Roslyn Source Generators + LINQ for C#
 - [ ] **[B-0548](backlog/P2/B-0548-qg-isomorphism-step-1-5-construct-strength-and-a-lifting-2026-05-16.md)** QG isomorphism Step 1.5 — Construct strength θ:M(Ω)→Ω and A-lifting Ã:Zeta→Zeta for type-correct M/A coherence laws
 - [ ] **[B-0551](backlog/P2/B-0551-qg-isomorphism-step-2-infinite-game-topos-qecc-structure-2026-05-16.md)** QG isomorphism step 2 — formalize infinite-game extension topos and QECC algebraic structure
+- [ ] **[B-0562](backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md)** QG isomorphism Step 2 — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC structure
+- [ ] **[B-0571](backlog/P2/B-0571-github-app-factory-automation-2026-05-16.md)** GitHub App for factory automation — separate API rate-limit pool from human-user accounts
+- [ ] **[B-0580](backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md)** Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)
+- [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
+- [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
+- [ ] **[B-0700](backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md)** 
+- [ ] **[B-0701](backlog/P2/B-0701-soraya-decision-authority-scope-2026-05-17.md)** 
+- [ ] **[B-0702](backlog/P2/B-0702-burden-tracking-as-management-primitive-2026-05-17.md)** 
 
 ## P3 — convenience / deferred
 
@@ -683,5 +693,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0553](backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md)** Backlog status-drift auditor — detect `status: open` rows whose primary artifact has already shipped
 - [x] **[B-0557](backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md)** Audit-backlog-status-drift — quality improvements per PR #3758 reviewer findings
 - [ ] **[B-0558](backlog/P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity
+- [ ] **[B-0560](backlog/P3/B-0560-autonomous-loop-cron-cadence-vs-settled-state-tension-2026-05-16.md)** Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence
+- [ ] **[B-0591](backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md)** Wire tick-shard schema validator into gate.yml (non-required → required)
 
 <!-- END AUTO-GENERATED -->
