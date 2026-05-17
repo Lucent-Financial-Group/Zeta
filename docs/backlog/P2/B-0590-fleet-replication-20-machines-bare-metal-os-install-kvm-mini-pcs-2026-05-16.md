@@ -8,8 +8,8 @@ effort: XL
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0570, B-0571, B-0580, B-0581, B-0582, B-0583]
-tags: [fleet, replication, bare-metal, kvm, hardware, infrastructure, otto-multi-machine, mini-pc, ocu link, ai-cpu]
+composes_with: [B-0570, B-0571, B-0580, B-0582, B-0583]
+tags: [fleet, replication, bare-metal, kvm, hardware, infrastructure, otto-multi-machine, mini-pc, oculink, ai-cpu]
 type: feature
 ---
 
@@ -146,13 +146,10 @@ Total: XL overall; iterative — slice 7 (pilot) is the gate to slice 8 (scale).
 - B-0570 (scarcity tracker — 20 Ottos × API calls = 20× the GraphQL pressure; tracker MUST be cross-machine; B-0583 is the substrate-location row for this)
 - B-0571 (GitHub App for factory automation — per-machine PATs don't scale; App is the right pattern for 20-machine fleet)
 - B-0580 (Enterprise ruleset management — fleet-wide governance via ruleset; per-machine deviation is risk)
-- B-0581 (gh-auth-refresh wrapper skill — per-human scope-grant workflow; for fleet, the App pattern subsumes this)
 - B-0582 (substrate-level destructive-verb refusal gate — even more important at fleet scale; 20 machines = 20 potential blast radii)
 - B-0583 (cross-machine account-scoped scarcity bus — the bus IS what 20 fleet members coordinate over)
 - `.claude/skills/replicate/SKILL.md` (per-machine replication primitive; fleet orchestration sits above)
 - `.claude/skills/make-persistent/SKILL.md` (service registration; cloud-init drives this at scale)
-- The `feedback_aaron_servicetitan_funding_*_2026_05_16.md` substrate (funding context — 24-month runway + infrastructure-grade design affordable; 20-machine fleet is within that envelope)
-- The `feedback_aaron_thank_the_host_disposition_*_2026_05_16.md` substrate (own hardware is "playing nice with corporate" — fleet on owned hardware = no IT-policy friction)
 
 ## Substrate-honest caveats
 
