@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+/// <reference lib="dom" />
 /**
  * Personal Amazon order-history extractor (v2.3).
  *
@@ -166,8 +167,8 @@ async function main(): Promise<void> {
   try { chmodSync(SESSION_FILE, 0o600); } catch { /* permissions best-effort */ }
 
   const totalPages = await page.evaluate(() => {
-    const items = Array.from(document.querySelectorAll(".a-pagination li, ul.a-pagination li, [aria-label*='pagination'] li"));
-    const numbers = items.map((li) => li.textContent?.trim() ?? "").filter((t) => /^\d+$/.test(t));
+    const items = Array.from(document.querySelectorAll<Element>(".a-pagination li, ul.a-pagination li, [aria-label*='pagination'] li"));
+    const numbers = items.map((li: Element) => li.textContent?.trim() ?? "").filter((t: string) => /^\d+$/.test(t));
     return numbers.length > 0 ? Math.max(...numbers.map(Number)) : 1;
   });
   console.log(`Detected total pages: ${totalPages}`);
