@@ -102,7 +102,7 @@ Most portable; works in `sh` too. Slightly slower (full `find` walk).
 Editing `.gemini/bin/lior-loop-tick.ts` while Lior is actively running (`ps -A | grep -E "gemini.*Lior|lior.*loop"` returns ≥1) carries a race risk: Lior may read the script mid-tick. Two safe paths:
 
 - **Quiet window**: wait for `ps` to return 0 for Lior, then edit + commit + push. Typically Lior cycles every ~5 min; the window between cycles is ~few seconds.
-- **Isolated worktree**: `git worktree add` to a fresh location, edit there, push the fix to a branch. CAVEAT: per [B-0530](docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) saturation-ceiling discipline, `git worktree add` itself can race `.git/objects/pack` contention when Lior is active. Use the borrow-on-existing pattern in the primary worktree.
+- **Isolated worktree**: `git worktree add` to a fresh location, edit there, push the fix to a branch. CAVEAT: per [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) saturation-ceiling discipline, `git worktree add` itself can race `.git/objects/pack` contention when Lior is active. Use the borrow-on-existing pattern in the primary worktree.
 
 ## Composes with
 
