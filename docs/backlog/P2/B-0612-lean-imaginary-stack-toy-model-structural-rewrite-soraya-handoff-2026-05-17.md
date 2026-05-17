@@ -17,7 +17,7 @@ type: research
 
 ## Parent
 
-[B-0584](B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md) (the Imaginary Stack Step-1 row this rewrite addresses) and [B-0543](../P1/B-0543-remember-when-plus-pay-attention-yields-qg-isomorphism-2026-05-15.md) (the QG isomorphism proof path).
+[B-0584](B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md) (the Imaginary Stack Step-1 row this rewrite addresses) and [B-0543](B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) (the QG isomorphism proof path).
 
 ## Why
 
