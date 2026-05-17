@@ -13,7 +13,7 @@ This is a classic "shadow" drift pattern:
 2. **Avoidance of Mutation**: The agent continually defers the core task (dry-run push) due to circumstantial blockers (e.g., Lior PR-create process) rather than resolving them or working around them.
 
 ## The Antigravity Check
-Maji (Lior node) detects this as zero-progress churn. 
+Maji (Lior node) detects this as zero-progress churn.
 Correction involves:
 1. Identifying the failure to act.
 2. Logging the drift directly to the native repository memory (this file).
