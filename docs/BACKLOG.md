@@ -279,7 +279,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
 - [ ] **[B-0473](backlog/P1/B-0473-mirror-beacon-promotion-gate-protocol-2026-05-14.md)** Mirror→Beacon promotion gate protocol — concrete criteria for repo-level graduation
 - [ ] **[B-0474](backlog/P1/B-0474-mirror-beacon-axis-adr-2026-05-14.md)** Mirror/Beacon axis ADR — two-axis design decision (extends 2026-04-22 ADR)
-- [x] **[B-0475](backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md)** Axis-3 prior-art audit — verify three-axis substrate composes without conflict
+- [ ] **[B-0475](backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md)** Axis-3 prior-art audit — verify three-axis substrate composes without conflict
 - [ ] **[B-0476](backlog/P1/B-0476-github-ruleset-divergence-audit-2026-05-14.md)** GitHub ruleset divergence audit — survey rulesets across repos; identify smell signals
 - [ ] **[B-0477](backlog/P1/B-0477-axis3-code-english-classification-matrix-2026-05-14.md)** Axis-3 Code/English classification matrix — per-repo two-tier classification with engineering-docs exception
 - [ ] **[B-0478](backlog/P1/B-0478-formal-verification-repo-split-evaluation-2026-05-14.md)** Formal-verification sub-axis evaluation — per-property-class split vs co-locate decision
