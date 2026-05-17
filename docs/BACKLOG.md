@@ -60,7 +60,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0145](backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md)** Product Manager (PM-2) role — research-to-predict-features-before-friction
 - [ ] **[B-0154](backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md)** GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)
 - [ ] **[B-0155](backlog/P1/B-0155-github-settings-ruleset-split-git-native-preferred-aaron-2026-05-01.md)** GitHub settings refactor — split single ruleset into multiple smaller always-on rulesets, prefer git-native over legacy UI/CLI-only settings (Aaron 2026-05-01)
-- [ ] **[B-0156](backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md)** TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
+- [x] **[B-0156](backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md)** TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 - [ ] **[B-0158](backlog/P1/B-0158-claude-rules-pattern-carved-sentences-only-aaron-2026-05-01.md)** Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint (Aaron 2026-05-01)
 - [x] **[B-0159](backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md)** refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)
 - [x] **[B-0161](backlog/P1/B-0161-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md)** Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)
