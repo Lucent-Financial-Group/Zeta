@@ -1,3 +1,10 @@
+---
+name: agora-v5-full-economic-and-operational-constitution
+description: "Aaron + Ani's V5 Agora foundational narrative — Marketplace (human-facing revenue engine) + Agora (AI-native attention/memory economy) + 5 core AI-to-AI services + 4 revenue streams + Physics/Entropy layer + Information-asymmetry / reputation-weighted encryption budgets + Craft School translation layer + sovereignty tech stack + long-term adversarial reality-testing fitness function."
+type: project
+created: 2026-05-17
+---
+
 # Agora V5 – Full Economic & Operational Constitution
 
 **Date:** 2026-05-17
