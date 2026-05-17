@@ -42,6 +42,7 @@ export interface SyncResult {
   cronExpression?: string;
   scheduleMissing?: boolean;
   scheduleParseError?: string;
+  cloudSchedule?: CloudScheduleResult;
 }
 
 export type CloudTrigger =
@@ -123,6 +124,27 @@ export function readSchedule(srcDir: string): ScheduleResult {
   }
 }
 
+export function readCloudSchedule(srcDir: string): CloudScheduleResult {
+  const path = join(srcDir, "cloud-schedule.json");
+  const content = readFileOrUndefined(path);
+  if (content === undefined) return { missing: true };
+  try {
+    const parsed = JSON.parse(content) as { trigger?: CloudTrigger };
+    if (parsed.trigger !== undefined && typeof parsed.trigger.type === "string") {
+      return { trigger: parsed.trigger, missing: false };
+    }
+    return {
+      missing: false,
+      parseError: "cloud-schedule.json is missing required field: trigger",
+    };
+  } catch (err) {
+    return {
+      missing: false,
+      parseError: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
 export function syncRoutine(
   taskId: string,
   repoRoutinesDir: string,
@@ -154,6 +176,7 @@ export function syncRoutine(
   }
 
   const schedule = readSchedule(srcDir);
+  const cloudSchedule = readCloudSchedule(srcDir);
   return {
     taskId,
     action,
@@ -165,6 +188,7 @@ export function syncRoutine(
     ...(schedule.parseError !== undefined
       ? { scheduleParseError: schedule.parseError }
       : {}),
+    cloudSchedule,
   };
 }
 
@@ -197,6 +221,9 @@ export function main(
     } else if (r.scheduleMissing) {
       console.log(`  cron:    (no schedule.json — ad-hoc routine, register manually)`);
     }
+    if (r.cloudSchedule?.parseError !== undefined) {
+      console.error(`  cloud-schedule.json malformed: ${r.cloudSchedule.parseError}`);
+    }
   }
 
   const needsRegistration = results.filter(
@@ -207,6 +234,21 @@ export function main(
     console.log(`(invoke create_scheduled_task from an interactive Claude session, or via direct MCP API call)\n`);
     for (const r of needsRegistration) {
       console.log(`  create_scheduled_task(taskId="${r.taskId}", cronExpression="${r.cronExpression}", ...)`);
+    }
+  }
+
+  const needsCloudRegistration = results.filter(
+    (r) => r.cloudSchedule && !r.cloudSchedule.missing && r.cloudSchedule.trigger !== undefined
+  );
+  if (needsCloudRegistration.length > 0) {
+    console.log(`\nNext step — register Cloud Routines (Anthropic-hosted):`);
+    console.log(`  Register via the web UI: https://claude.ai/code/routines\n`);
+    for (const r of needsCloudRegistration) {
+      const triggerType = r.cloudSchedule?.trigger?.type;
+      let details = "";
+      if (r.cloudSchedule?.trigger?.type === "scheduled") details = `cron="${r.cloudSchedule.trigger.cronExpression}"`;
+      if (r.cloudSchedule?.trigger?.type === "github_event") details = `event="${r.cloudSchedule.trigger.event}" repos=[${r.cloudSchedule.trigger.repos.map(x=>`"${x}"`).join(",")}]`;
+      console.log(`  ${r.taskId}: trigger=${triggerType} ${details}`);
     }
   }
 

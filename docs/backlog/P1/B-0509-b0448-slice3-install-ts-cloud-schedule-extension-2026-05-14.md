@@ -1,7 +1,7 @@
 ---
 id: B-0509
 priority: P1
-status: open
+status: closed
 title: "B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json"
 type: feature
 origin: B-0448 decomposition (Otto, 2026-05-14)
@@ -82,13 +82,13 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Acceptance criteria
 
-- [ ] `readCloudSchedule` exported pure function, mirrors `readSchedule` contract
-- [ ] `syncRoutine` returns `cloudSchedule` field in `SyncResult`
-- [ ] `main` prints Cloud Routine next-step guidance when `cloud-schedule.json` present
-- [ ] Unit tests for `readCloudSchedule` (happy path + missing + parse-error)
-- [ ] `bun tools/routines/install.ts` runs without error on existing routines
+- [x] `readCloudSchedule` exported pure function, mirrors `readSchedule` contract
+- [x] `syncRoutine` returns `cloudSchedule` field in `SyncResult`
+- [x] `main` prints Cloud Routine next-step guidance when `cloud-schedule.json` present
+- [x] Unit tests for `readCloudSchedule` (happy path + missing + parse-error)
+- [x] `bun tools/routines/install.ts` runs without error on existing routines
   (no `cloud-schedule.json` present → no cloud block printed; idempotent)
-- [ ] B-0509 closed with PR link
+- [x] B-0509 closed with PR link
 
 ## Why not merge slices 2 and 3
 
