@@ -30,7 +30,14 @@
 //   1   one or more files could not be processed
 //   2   tick shard directory missing
 
-import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  readdirSync,
+  readFileSync,
+  renameSync,
+  statSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { basename, join, relative, resolve } from "node:path";
 
 const ROOT = resolve(process.env["REPO_ROOT"] ?? process.cwd());
@@ -107,12 +114,27 @@ function firstNonEmptyLine(content: string): string | null {
   return null;
 }
 
-function alreadyCompliant(content: string): boolean {
+// Mirrors the validator's compliance contract:
+//   1. First non-empty line has ≥7 pipes (≥6 columns)
+//   2. First column matches COL1_RE (| ISO-8601 timestamp |)
+//   3. Parsed timestamp's YYYY-MM-DDTHH:MM prefix matches info.iso —
+//      the validator enforces date+hour+minute matching against the
+//      path/filename. A shard with a pipe-row whose timestamp does
+//      NOT match the path would still fail the validator; treating
+//      it as compliant here would silently skip a real violation.
+//      (Copilot P1 + Codex P2 catch on PR #3990.)
+function alreadyCompliant(content: string, info: ShardInfo): boolean {
   const first = firstNonEmptyLine(content);
   if (!first) return false;
   const pipeCount = (first.match(/\|/g) ?? []).length;
   if (pipeCount < 7) return false;
-  return COL1_RE.test(first);
+  const match = COL1_RE.exec(first);
+  if (!match) return false;
+  const parsedIso = match[1] ?? "";
+  // Validator checks YYYY-MM-DD (slice 0-10) + HH (11-13) + MIN (14-16);
+  // it does NOT check seconds. The slice(0, 16) prefix captures exactly
+  // the validator's matching surface for both HH:MMZ and HH:MM:SSZ forms.
+  return parsedIso.slice(0, 16) === info.iso.slice(0, 16);
 }
 
 function buildHeader(iso: string): string {
@@ -198,7 +220,7 @@ export function processOne(absPath: string, write: boolean): Action {
     return { rel: info.rel, status: "skip-empty" };
   }
 
-  if (alreadyCompliant(content)) {
+  if (alreadyCompliant(content, info)) {
     return { rel: info.rel, status: "skip-already-compliant" };
   }
 
@@ -209,10 +231,24 @@ export function processOne(absPath: string, write: boolean): Action {
     return { rel: info.rel, status: "would-prepend" };
   }
 
+  // Atomic write: write to a same-directory temp file, then rename.
+  // Direct writeFileSync truncates the original before bytes are durable —
+  // an interruption or disk-full mid-write would corrupt the shard body
+  // this tool is trying to PRESERVE. Same-directory rename is atomic
+  // on POSIX. Tempfile name includes pid+timestamp to prevent collisions
+  // between concurrent writers. (Copilot P1 catch on PR #3990.)
+  const tempPath = `${absPath}.tmp-${process.pid}-${Date.now()}`;
   try {
-    writeFileSync(absPath, newContent, "utf8");
+    writeFileSync(tempPath, newContent, "utf8");
+    renameSync(tempPath, absPath);
     return { rel: info.rel, status: "prepended" };
   } catch (e) {
+    // Clean up tempfile if rename failed after write succeeded.
+    try {
+      unlinkSync(tempPath);
+    } catch {
+      /* tempfile may not exist if write failed before creating it */
+    }
     return {
       rel: info.rel,
       status: "error",
