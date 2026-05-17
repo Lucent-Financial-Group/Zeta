@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -12,8 +12,6 @@ import {
 
 function setupFixtureRepo(): { root: string; cleanup: () => void } {
   const root = mkdtempSync(join(tmpdir(), "audit-dangling-memory-refs-test-"));
-  const env = { ROOT: root };
-
   return {
     root,
     cleanup: () => rmSync(root, { recursive: true, force: true }),

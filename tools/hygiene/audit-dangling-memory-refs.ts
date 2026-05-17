@@ -2,7 +2,7 @@
 // audit-dangling-memory-refs.ts — find in-repo citations to `memory/feedback_*.md`
 // paths that do NOT exist in-repo (dangling).
 //
-// Background: Aaron's Otto-CLI auto-loads user-scope memory at
+// Background: the maintainer's Otto-CLI auto-loads user-scope memory at
 // `~/.claude/projects/.../memory/`, so citations of the form
 // `memory/feedback_<name>.md` resolve transparently. A cold-boot agent on
 // a fresh checkout (different machine, new contributor, CI agent) does NOT
@@ -29,7 +29,12 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
-const ROOT = resolve(process.env["REPO_ROOT"] ?? process.cwd());
+// Lazy resolver so REPO_ROOT can be set per-call (e.g., by tests using
+// tmpdir fixtures). A module-level `const ROOT` would capture the value
+// at import time and ignore later overrides.
+function repoRoot(): string {
+  return resolve(process.env["REPO_ROOT"] ?? process.cwd());
+}
 
 const DEFAULT_SURFACES = [
   ".claude/agents",
@@ -64,7 +69,7 @@ function normalizeToPosix(p: string): string {
 }
 
 function repoRelative(p: string): string {
-  return normalizeToPosix(relative(ROOT, p));
+  return normalizeToPosix(relative(repoRoot(), p));
 }
 
 function isDir(p: string): boolean {
@@ -128,12 +133,12 @@ export function findEdgesInFile(absPath: string): DanglingEdge[] {
 }
 
 export function isDangling(ref: string): boolean {
-  const abs = join(ROOT, ref);
+  const abs = join(repoRoot(), ref);
   return !isFile(abs);
 }
 
 export function auditSurface(surfaceRel: string): SurfaceReport {
-  const surfaceAbs = join(ROOT, surfaceRel);
+  const surfaceAbs = join(repoRoot(), surfaceRel);
   if (!isDir(surfaceAbs)) {
     return {
       surface: surfaceRel,
@@ -185,7 +190,7 @@ export function runAudit(surfaces: readonly string[]): AuditOutput {
     for (const e of r.edges) allDanglingRefs.add(e.ref);
   }
   return {
-    root: ROOT,
+    root: repoRoot(),
     surfaces: reports,
     totals: {
       surfacesScanned: reports.length,
@@ -236,10 +241,10 @@ export function main(argv: string[]): number {
 
   // Validate at least one surface exists; otherwise it's a configuration
   // error rather than a clean run.
-  const anyDirExists = surfaces.some((s) => isDir(join(ROOT, s)));
+  const anyDirExists = surfaces.some((s) => isDir(join(repoRoot(), s)));
   if (!anyDirExists) {
     process.stderr.write(
-      `error: none of the requested surfaces exist under ROOT=${ROOT}\n`,
+      `error: none of the requested surfaces exist under ROOT=${repoRoot()}\n`,
     );
     return 2;
   }
