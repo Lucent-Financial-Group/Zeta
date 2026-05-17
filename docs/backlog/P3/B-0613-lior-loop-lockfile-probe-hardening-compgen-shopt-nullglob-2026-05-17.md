@@ -2,7 +2,7 @@
 id: B-0613
 priority: P3
 status: closed
-title: "Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with `compgen -G` or `shopt -s nullglob` to avoid non-matching-glob false-positives"
+title: "Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)"
 tier: bug
 effort: S
 created: 2026-05-17
