@@ -696,5 +696,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0560](backlog/P3/B-0560-autonomous-loop-cron-cadence-vs-settled-state-tension-2026-05-16.md)** Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence
 - [ ] **[B-0591](backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md)** Wire tick-shard schema validator into gate.yml (non-required → required)
 - [x] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)
+- [ ] **[B-0614](backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md)** Investigate forced-#6 meta-fallback edge case — when cycle has already-closed AND substrate-pool is genuinely saturated, the rule's 'ALWAYS works' claim has a counter-example
 
 <!-- END AUTO-GENERATED -->
