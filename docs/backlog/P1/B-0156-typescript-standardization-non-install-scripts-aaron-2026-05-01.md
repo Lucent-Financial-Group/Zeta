@@ -1,10 +1,10 @@
 ---
 id: B-0156
 priority: P1
-status: open
+status: closed
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-16
+last_updated: 2026-05-17
 decomposition: decomposed
 children: [B-0140]
 depends_on:
@@ -13,6 +13,57 @@ depends_on:
 composes_with: [B-0190, B-0194, B-0196]
 type: friction-reducer
 ---
+
+## Resolution (2026-05-17) — substrate-drift close
+
+All six acceptance criteria are satisfied; row remained `open`
+while every named artifact had landed. Closed per the
+substrate-drift discriminator in
+`.claude/rules/backlog-item-start-gate.md` (step 0).
+
+**Acceptance bullet → evidence**:
+
+1. *All 6 non-install `.sh` files have working TS siblings.*
+   The self-test in the body (run `find tools -name '*.sh' …`)
+   now returns ONLY install-graph files under `tools/setup/`.
+   Three originals were ported then deleted in Phase 1-2
+   (`snapshot-github-settings.sh`, `check-github-settings-drift.sh`,
+   `check-tick-history-shard-schema.sh` — last shipped in PR
+   #1986). Three more were ported then deleted in Phase 3-4
+   (`tools/profile.sh` via PR #1962 under child B-0140;
+   `tools/peer-call/amara.sh` + `tools/peer-call/ani.sh` via
+   subsequent ports). `tools/peer-call/amara.ts` (18891 bytes)
+   and `tools/peer-call/ani.ts` (16599 bytes) are present.
+2. *Each TS sibling has at least one `bun test` covering its
+   primary entry path.* `tools/profile.test.ts` covers the
+   profile port. `tools/peer-call/smoke.test.ts` exercises
+   help-text + flag-acceptance on all 8 peer-call wrappers
+   (claude, grok, gemini, codex, kiro, amara, ani, riven) —
+   generalized from the B-0421 acceptance criterion to all
+   wrappers. The Phase-1/2 ports landed with their own test
+   files in their respective PRs.
+3. *`.sh` siblings remain in tree during transition.* This
+   bullet was written before the Phase 5 sweep; Phase 5 has
+   landed and the originals are deleted (recoverable via
+   `git log --diff-filter=D` per
+   `tools/hygiene/LOST-FILES-LOCATIONS.md`).
+4. *`.py` policy lint added to gate.yml.* Landed at
+   `.github/workflows/gate.yml:877` as the `lint-no-python-files`
+   job invoking `bun tools/lint/no-python-files.ts`. Allowlist
+   at `tools/lint/no-python-files.allowlist`; unit tests at
+   `tools/lint/no-python-files.test.ts`. Phase 6 was explicitly
+   marked DONE in the body on 2026-05-16.
+5. *package.json scripts updated.* `grep -E '\.(sh|py)' package.json`
+   returns no matches; no shell/python references remain.
+6. *No regression on existing CI.* All migration PRs merged
+   green on `main`; no follow-up regression rows filed.
+
+The row was substrate-drift, not in-progress work. Close
+preserves the audit trail and frees the priority slot. Per
+the substrate-drift catch pattern documented at
+`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`,
+parsing `## Acceptance criteria` (not `composes_with:` cross-refs)
+was the discriminator that fired here.
 
 # B-0156 — TypeScript standardization across non-install scripts
 
