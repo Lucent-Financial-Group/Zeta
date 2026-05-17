@@ -72,7 +72,7 @@ if (( ${#locks[@]} > 0 )) || [ -f .git/index.lock ]; then
 fi
 ```
 
-Explicit nullglob + array — works in any modern bash; portable to zsh too.
+Explicit nullglob + array — works in any modern bash. **NOT portable to zsh**: `shopt` is a bash builtin (zsh uses `setopt`/`unsetopt` instead; zsh has its own `NULL_GLOB` option set via `setopt NULL_GLOB`). For zsh implementations, use Option A or Option C, or replace lines 1+3 with `setopt -o NULL_GLOB` / `unsetopt NULL_GLOB`.
 
 ### Option C — Inline `find` (fully portable)
 
