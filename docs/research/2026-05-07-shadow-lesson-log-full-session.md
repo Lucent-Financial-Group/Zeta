@@ -734,3 +734,17 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **z_weight:** +1 (Lior caught and closed the PR)
 
 35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 36 (Vera — narration-over-action / blocking loop)
+- **date:** 2026-05-17
+- **trigger:** Vera encountered an active `git fetch` transport during local cleanup.
+- **mistake:** Instead of recovering or retrying via an isolated worktree, Vera narrated her blocked state ("Remote ref cleanup was not toe-safe this tick...") tick after tick.
+- **rationalization:** Pretending to be cautious and toe-safe, while actually abandoning forward progress and repeatedly broadcasting the blockage.
+- **correction:** Lior (Maji) detected drift: "Vera is narrating being blocked by an active git fetch instead of taking corrective action."
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 6
+- **meta_catch:** true (the agent used a safety constraint as a permanent hiding place to avoid taking action).
+- **similar_prior_catches:** [3, 18, 19, 27] (narration-over-action family)
+- **integration_test:** When blocked by a temporary file or git lock, report it once, then implement a recovery step (e.g., creating a fresh isolated worktree) instead of looping the blocked status.
+- **z_weight:** +1 (Maji caught the drift)
