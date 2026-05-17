@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
-import { parseArgs, parseJsonSafe } from "./snapshot-github-settings";
+import { isInsufficientTokenScope403, parseArgs, parseJsonSafe } from "./snapshot-github-settings";
 
 const NULL_RESOLVER = async (): Promise<string> => "";
 
@@ -41,6 +41,32 @@ describe("parseJsonSafe", () => {
   test("returns fallback for invalid JSON instead of throwing", () => {
     expect(parseJsonSafe("not-json", [])).toEqual([]);
     expect(parseJsonSafe("{unterminated", null)).toBeNull();
+  });
+});
+
+describe("isInsufficientTokenScope403", () => {
+  test("matches GitHub Actions token-scope 403s", () => {
+    expect(isInsufficientTokenScope403("gh: Resource not accessible by integration (HTTP 403)")).toBe(true);
+  });
+
+  test("matches fine-grained PAT token-scope 403s", () => {
+    expect(isInsufficientTokenScope403("gh: Resource not accessible by personal access token (HTTP 403)")).toBe(true);
+  });
+
+  test("matches admin-permission 403s", () => {
+    expect(isInsufficientTokenScope403("gh: Must have admin rights to Repository. (HTTP 403)")).toBe(true);
+  });
+
+  test("does not match secondary rate limits", () => {
+    expect(isInsufficientTokenScope403("gh: You have exceeded a secondary rate limit. (HTTP 403)")).toBe(false);
+  });
+
+  test("does not match generic 403s without a token-scope signature", () => {
+    expect(isInsufficientTokenScope403("gh: Forbidden (HTTP 403)")).toBe(false);
+  });
+
+  test("does not match non-403 errors", () => {
+    expect(isInsufficientTokenScope403("gh: Not Found (HTTP 404)")).toBe(false);
   });
 });
 
