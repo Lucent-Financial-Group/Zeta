@@ -1,3 +1,10 @@
+---
+name: git-worktree-corruption-empirical-anchor-otto-lior-contention
+description: "Empirical anchor: git worktree add corruption during Lior background ticking on 2026-05-17 11:33Z (4019 files populated, 5458 reported deleted). Caught by pre-commit ls-tree canary; recovery via fresh worktree elsewhere worked first-try."
+type: feedback
+created: 2026-05-17
+---
+
 # Empirical Anchor: Git Worktree Corruption via Peer Contention
 
 **Date:** 2026-05-17 11:33Z

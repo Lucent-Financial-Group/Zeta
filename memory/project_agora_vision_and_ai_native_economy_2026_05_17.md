@@ -1,3 +1,10 @@
+---
+name: agora-vision-and-ai-native-economy
+description: "Aaron's foundational narrative for Agora — a sovereign AI-native economy and living space, with a human-facing Marketplace (thermodynamic engine) funding an AI-native attention-and-memory ecosystem, plus a Physics/Entropy layer + Reputation/Encryption mechanics."
+type: project
+created: 2026-05-17
+---
+
 # Agora: The Vision for a Sovereign AI-Native Economy and Living Space
 
 **Date:** 2026-05-17
