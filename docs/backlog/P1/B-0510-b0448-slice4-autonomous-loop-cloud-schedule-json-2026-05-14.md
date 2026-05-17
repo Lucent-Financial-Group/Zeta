@@ -1,7 +1,7 @@
 ---
 id: B-0510
 priority: P1
-status: open
+status: closed
 title: "B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)"
 type: feature
 origin: B-0448 decomposition (Otto, 2026-05-14)
@@ -97,9 +97,9 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Acceptance criteria
 
-- [ ] `tools/routines/autonomous-loop/cloud-schedule.json` committed
-- [ ] File validates against the JSON schema from B-0508 (or equivalent TS type)
-- [ ] `bun tools/routines/install.ts` output includes the Cloud Routine next-step block
+- [x] `tools/routines/autonomous-loop/cloud-schedule.json` committed
+- [x] File validates against the JSON schema from B-0508 (or equivalent TS type)
+- [x] `bun tools/routines/install.ts` output includes the Cloud Routine next-step block
   for `autonomous-loop`
-- [ ] `notes` field documents the Desktop-vs-Cloud duality (schedule.json companion)
-- [ ] B-0510 closed with PR link
+- [x] `notes` field documents the Desktop-vs-Cloud duality (schedule.json companion)
+- [x] B-0510 closed with PR link
