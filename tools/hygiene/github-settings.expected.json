@@ -41,13 +41,13 @@
         "status": "disabled"
       },
       "secret_scanning_non_provider_patterns": {
-        "status": "enabled"
+        "status": "disabled"
       },
       "secret_scanning_push_protection": {
         "status": "enabled"
       },
       "secret_scanning_validity_checks": {
-        "status": "enabled"
+        "status": "disabled"
       }
     },
     "squash_merge_commit_message": "COMMIT_MESSAGES",
@@ -270,11 +270,6 @@
       "state": "active"
     },
     {
-      "name": "factory-hygiene-audit-cadence",
-      "path": ".github/workflows/factory-hygiene-audit-cadence.yml",
-      "state": "active"
-    },
-    {
       "name": "gate",
       "path": ".github/workflows/gate.yml",
       "state": "active"
@@ -300,11 +295,6 @@
       "state": "active"
     },
     {
-      "name": "memory-index-drift",
-      "path": ".github/workflows/memory-index-drift.yml",
-      "state": "active"
-    },
-    {
       "name": "memory-index-duplicate-lint",
       "path": ".github/workflows/memory-index-duplicate-lint.yml",
       "state": "active"
@@ -317,11 +307,6 @@
     {
       "name": "memory-reference-existence-lint",
       "path": ".github/workflows/memory-reference-existence-lint.yml",
-      "state": "active"
-    },
-    {
-      "name": "pages-build-deployment",
-      "path": "dynamic/pages/pages-build-deployment",
       "state": "active"
     },
     {
@@ -342,11 +327,6 @@
     {
       "name": "role-ref-current-state-surfaces-lint",
       "path": ".github/workflows/role-ref-current-state-surfaces-lint.yml",
-      "state": "active"
-    },
-    {
-      "name": "scaffold-stage1-create-repos",
-      "path": ".github/workflows/scaffold-stage1-create-repos.yml",
       "state": "active"
     },
     {
@@ -373,7 +353,7 @@
     }
   ],
   "pages": {
-    "build_type": "legacy",
+    "build_type": "workflow",
     "https_enforced": true,
     "public": true,
     "source": {

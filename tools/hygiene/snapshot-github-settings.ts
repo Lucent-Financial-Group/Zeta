@@ -92,6 +92,27 @@ async function ghApiOptional(path: string, jqFilter?: string): Promise<string | 
   return r.stdout.trim();
 }
 
+export function isInsufficientTokenScope403(stderr: string): boolean {
+  if (!stderr.includes("HTTP 403")) {
+    return false;
+  }
+
+  const lower = stderr.toLowerCase();
+  if (lower.includes("secondary rate limit") || lower.includes("abuse detection") || lower.includes("rate limit")) {
+    return false;
+  }
+
+  return (
+    lower.includes("resource not accessible by integration") ||
+    lower.includes("not accessible by integration") ||
+    lower.includes("must have admin rights") ||
+    lower.includes("requires admin") ||
+    lower.includes("insufficient oauth scope") ||
+    lower.includes("missing the required scope") ||
+    lower.includes("requires one of the following oauth scopes")
+  );
+}
+
 // Like ghApiOptional but only silences HTTP 403 token-scope errors; all other
 // failures are fatal so they don't get silently swallowed by the sentinel path.
 async function ghApiSkip403(path: string, jqFilter?: string): Promise<string | null> {
@@ -101,7 +122,7 @@ async function ghApiSkip403(path: string, jqFilter?: string): Promise<string | n
   }
   const r = await runCmd(args);
   if (r.exitCode !== 0) {
-    if (r.stderr.includes("HTTP 403")) {
+    if (isInsufficientTokenScope403(r.stderr)) {
       return null;
     }
     throw new Error(`gh api ${path} failed (exit ${r.exitCode}): ${r.stderr.trim()}`);
@@ -118,7 +139,7 @@ async function ghApiOptionalScopeAware(path: string, jqFilter?: string): Promise
   if (r.exitCode === 0) {
     return { kind: "ok", stdout: r.stdout.trim() };
   }
-  if (r.stderr.includes("HTTP 403")) {
+  if (isInsufficientTokenScope403(r.stderr)) {
     return { kind: "insufficient-token-scope" };
   }
   if (r.stderr.includes("HTTP 404")) {
@@ -266,18 +287,18 @@ export async function snapshot(repo: string): Promise<string> {
 
   // Vulnerability alerts: 204 = enabled, 404 = disabled
   const vulnAlertsResult = await runCmd(["gh", "api", `/repos/${repo}/vulnerability-alerts`]);
-  const vulnerabilityAlertsEnabled =
-    vulnAlertsResult.exitCode === 0
-      ? true
-      : vulnAlertsResult.stderr.includes("HTTP 403")
-        ? insufficientTokenScope
-        : vulnAlertsResult.stderr.includes("HTTP 404")
-          ? false
-          : (() => {
-              throw new Error(
-                `gh api /repos/${repo}/vulnerability-alerts failed (exit ${vulnAlertsResult.exitCode}): ${vulnAlertsResult.stderr.trim()}`
-              );
-            })();
+  let vulnerabilityAlertsEnabled: boolean | typeof insufficientTokenScope;
+  if (vulnAlertsResult.exitCode === 0) {
+    vulnerabilityAlertsEnabled = true;
+  } else if (isInsufficientTokenScope403(vulnAlertsResult.stderr)) {
+    vulnerabilityAlertsEnabled = insufficientTokenScope;
+  } else if (vulnAlertsResult.stderr.includes("HTTP 404")) {
+    vulnerabilityAlertsEnabled = false;
+  } else {
+    throw new Error(
+      `gh api /repos/${repo}/vulnerability-alerts failed (exit ${vulnAlertsResult.exitCode}): ${vulnAlertsResult.stderr.trim()}`
+    );
+  }
 
   // Rulesets
   const rulesetIdsRaw = await ghApiOptional(`/repos/${repo}/rulesets`, "[.[].id] | sort | .[]");
