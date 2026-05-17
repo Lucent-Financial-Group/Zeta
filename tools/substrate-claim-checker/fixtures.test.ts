@@ -12,6 +12,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
+import { checkFile as checkConvention } from "./check-convention.ts";
 import { checkFile as checkCounts } from "./check-counts.ts";
 import { checkFile as checkCrossSurface } from "./check-cross-surface.ts";
 import { checkFile as checkExistence } from "./check-existence.ts";
@@ -105,5 +106,30 @@ describe("eval-set fixtures / path-form drift", () => {
       "check-counts.ts",
       "tools/substrate-claim-checker/check-counts.ts",
     ]);
+  });
+});
+
+describe("eval-set fixtures / convention drift", () => {
+  test("convention-drift-no-reciprocal-marker.md — Supersedes-ADR claim with target lacking reciprocal '**Superseded by**' marker is detected", () => {
+    const result = checkConvention(join(fixtures, "convention-drift-no-reciprocal-marker.md"));
+    expect(result.ok).toBe(true);
+    // PR #3611 discipline applied to convention drift: pin exact
+    // finding count + claim line + target so a regression in either
+    // claim extraction or reciprocal-marker scanning cannot pass
+    // silently. The fixture pair is self-contained — the predecessor
+    // ADR support file lives as a sibling under fixtures/ so the
+    // 3-root resolution (fileDir / parentDir / repoRoot) finds it via
+    // fileDir without depending on any real repo ADR pair.
+    expect(result.findings.length).toBe(1);
+    const finding = result.findings[0]!;
+    // Body claim is on the line carrying `Supersedes ADR \`...\`` in
+    // the fixture; pinning the line catches regressions where the
+    // checker's logical-line scanner drifts off the physical line.
+    expect(finding.line).toBe(36);
+    expect(finding.target).toBe(
+      "tools/substrate-claim-checker/fixtures/_convention-drift-target-adr.md",
+    );
+    expect(finding.reason).toContain("not reciprocated");
+    expect(finding.reason).toContain("Superseded by");
   });
 });
