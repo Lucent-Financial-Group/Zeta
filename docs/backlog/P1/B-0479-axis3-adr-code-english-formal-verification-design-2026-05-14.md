@@ -1,7 +1,7 @@
 ---
 id: B-0479
 priority: P1
-status: open
+status: closed
 title: "Axis-3 ADR — Code/English + formal-verification three-axis design decision"
 type: adr
 origin: B-0427 decomposition (Otto, 2026-05-14)
@@ -40,12 +40,12 @@ the three ADRs form the complete three-axis repo-split design.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0476 output doc reviewed (ruleset divergence audit complete)
-- [ ] B-0477 output doc reviewed (classification matrix complete)
-- [ ] B-0478 output doc reviewed (FV evaluation complete)
-- [ ] 2026-04-22 ADR reviewed for consistent framing
-- [ ] B-0474 (Axis-2 ADR) reviewed — check whether it is closed or in-flight
-- [ ] Ambiguous cases from B-0477 and B-0478 resolved
+- [x] B-0476 output doc reviewed (ruleset divergence audit complete)
+- [x] B-0477 output doc reviewed (classification matrix complete)
+- [x] B-0478 output doc reviewed (FV evaluation complete)
+- [x] 2026-04-22 ADR reviewed for consistent framing
+- [x] B-0474 (Axis-2 ADR) reviewed — check whether it is closed or in-flight
+- [x] Ambiguous cases from B-0477 and B-0478 resolved
 
 ## ADR structure (output doc template)
 
@@ -117,13 +117,13 @@ This ADR PR also:
 
 ## Definition of done
 
-- [ ] ADR written and committed at canonical path
-- [ ] All three Axis-3 decisions formally recorded
+- [x] ADR written and committed at canonical path
+- [x] All three Axis-3 decisions formally recorded
   (Code/English tiers + FV sub-axis + ruleset smell test)
-- [ ] All ambiguous repos from B-0477 and B-0478 resolved with explicit reasoning
-- [ ] Three-axis matrix complete (Axis 1 + 2 + 3 for all repos)
-- [ ] B-0427 closed; all 5 child rows closed
-- [ ] PR merged; claim released
+- [x] All ambiguous repos from B-0477 and B-0478 resolved with explicit reasoning
+- [x] Three-axis matrix complete (Axis 1 + 2 + 3 for all repos)
+- [x] B-0427 closed; all 5 child rows closed
+- [x] PR merged; claim released
 
 ## Why P1
 

@@ -1,12 +1,14 @@
 ---
 id: B-0427
 priority: P1
-status: decomposed
+status: closed
 title: "Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence smell test"
 type: planning
 origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
 last_updated: 2026-05-14
+closed: 2026-05-14
+closed_by: "docs/DECISIONS/2026-05-14-axis3-code-english-formal-verification-design.md"
 decomposed_into:
   - B-0475
   - B-0476
@@ -81,14 +83,14 @@ The smell test IS the substrate-honest decision criterion.
 Per `.claude/rules/backlog-item-start-gate.md`:
 
 1. **Prior-art search** — verify the existing three-axis
-   substrate composes without conflict (Done via B-0475)
+   substrate composes without conflict
 2. **Dependency restructure** — walk composes_with chain
 3. **Per-repo three-axis classification** owed for existing
    and proposed repos (Done via B-0477)
 4. **Ruleset audit** — survey existing rulesets; document
    divergences as candidate-split signals
 5. **Soraya consultation** for formal-verification sub-axis
-   (per-property-class evaluation) (Done via B-0478)
+   (per-property-class evaluation)
 
 ## What this row does NOT commit to
 

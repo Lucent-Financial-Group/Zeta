@@ -1,7 +1,7 @@
 ---
 id: B-0478
 priority: P1
-status: closed
+status: open
 title: "Formal-verification sub-axis evaluation — per-property-class split vs co-locate decision"
 type: research
 origin: B-0427 decomposition (Otto, 2026-05-14)
@@ -37,9 +37,9 @@ This row can run in parallel with B-0477 after B-0475 completes.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [x] B-0475 output doc reviewed
-- [x] Check whether any FV substrate is already documented as "candidate for split"
-- [x] Invoke the `formal-verification-expert` skill (Soraya) for routing guidance
+- [ ] B-0475 output doc reviewed
+- [ ] Check whether any FV substrate is already documented as "candidate for split"
+- [ ] Invoke the `formal-verification-expert` skill (Soraya) for routing guidance
 
 ## FV tool classes to evaluate
 
@@ -127,12 +127,12 @@ Containing:
 
 ## Definition of done
 
-- [x] All 8 FV tool classes evaluated (5 criteria each)
-- [x] FsCheck co-locate decision documented
-- [x] Split vs co-locate recommendation produced for each class
-- [x] Any "split" cases include proposed repo scope
-- [x] Output doc committed and referenced from B-0427
-- [x] B-0478 closed with PR link
+- [ ] All 8 FV tool classes evaluated (5 criteria each)
+- [ ] FsCheck co-locate decision documented
+- [ ] Split vs co-locate recommendation produced for each class
+- [ ] Any "split" cases include proposed repo scope
+- [ ] Output doc committed and referenced from B-0427
+- [ ] B-0478 closed with PR link
 
 ## Why P1
 
