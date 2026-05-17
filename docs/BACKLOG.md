@@ -310,7 +310,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0505](backlog/P1/B-0505-b0442-slice5c-docs-autonomous-loop-acceptance-close-2026-05-14.md)** B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close
 - [x] **[B-0507](backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md)** B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)
 - [x] **[B-0508](backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md)** B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/
-- [ ] **[B-0509](backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md)** B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json
+- [x] **[B-0509](backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md)** B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json
 - [ ] **[B-0510](backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md)** B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)
 - [ ] **[B-0511](backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md)** B-0448 slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation
 - [ ] **[B-0512](backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md)** B-0448 slice 6 — Update tools/routines/README.md with 4-layer catch-43 table
@@ -600,6 +600,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0580](backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md)** Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)
 - [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
 - [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
+- [ ] **[B-0700](backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md)** 
+- [ ] **[B-0701](backlog/P2/B-0701-soraya-decision-authority-scope-2026-05-17.md)** 
+- [ ] **[B-0702](backlog/P2/B-0702-burden-tracking-as-management-primitive-2026-05-17.md)** 
 
 ## P3 — convenience / deferred
 
