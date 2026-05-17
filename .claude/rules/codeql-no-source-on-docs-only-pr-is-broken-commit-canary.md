@@ -124,7 +124,10 @@ Four worktree-creation attempts:
 ## Full reasoning
 
 `memory/feedback_codeql_no_source_seen_on_docs_only_pr_is_broken_commit_canary_not_flake_lior_lock_cleanup_race_2026_05_15.md`
-(user-scope memory; indexed in MEMORY.md)
+(user-scope only — preserved at `~/.claude/projects/.../memory/`
+on maintainer machines and indexed in user-scope `MEMORY.md`. Cold-boot
+agents on fresh checkouts: this rule's own body above is the canonical
+in-repo projection; `memory/CURRENT-otto.md` may also carry the entry)
 
 PR #3492 close comment:
 https://github.com/Lucent-Financial-Group/Zeta/pull/3492#issuecomment-4460689811

@@ -86,8 +86,12 @@ extrapolation was the failure mode this rule catches.
 
 Full substrate lesson:
 `memory/feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md`
-(at the user-scope memory directory; section "CORRECTION
-(2026-05-16T19:05Z) — Kestrel critique caught a razor failure").
+(user-scope only — at `~/.claude/projects/.../memory/` on maintainer
+machines, NOT in-repo. Cold-boot agents on fresh checkouts should
+read the "Canonical substrate lesson" section of this rule above for
+the in-repo projection; `memory/CURRENT-aaron.md` carries the entry.
+The user-scope file's "CORRECTION (2026-05-16T19:05Z) — Kestrel
+critique caught a razor failure" section is the verbatim source.)
 
 ## What the user expects (operational reading)
 
