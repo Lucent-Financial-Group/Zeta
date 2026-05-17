@@ -628,3 +628,76 @@ When the asymmetric-critic function operates:
   meta-loop CAN'T touch) — design pattern that distinguishes legitimate
   filter from 1984-infrastructure across all future filter-class
   components
+
+---
+
+# Part 2 follow-up — substrate-honest verification on Knots adoption + maintainers
+
+Per Aaron 2026-05-17 follow-up: "you should likely validate my 20% framing
+too with latest evidence also i think they have multiple maintiners now too"
+
+Verification via WebSearch 2026-05-17:
+
+**On adoption percentage (Aaron's ~20% claim):**
+
+- Aaron's ~20% framing is **historically accurate** for the September 2025
+  peak through January 2026 window. Sources:
+  - [Bitcoin Knots Surges to 25% of Public Node Share (Bitbo, Sept 2025)](https://bitbo.io/news/bitcoin-knots-node-surge/)
+  - [25% of All Public Bitcoin Nodes Now Reportedly Run Bitcoin Knots (bitcoinnews.com, Sept 2025)](https://bitcoinnews.com/adoption/bitcoin-knots-25-percent-all-public-nodes/)
+  - [Bitcoin Knots Captures 19% of Active Bitcoin Nodes (The Currency Analytics)](https://thecurrencyanalytics.com/bitcoin/bitcoin-knots-captures-19-of-active-bitcoin-nodes-amidst-core-update-controversy-196265)
+  - January 2026 reading: ~22% per the Knots-maintainers search results
+- **Current (Feb 2026) is contested** — conflicting recent data:
+  - [Bitcoin Node Flow: The 7.5% Knots Signal (ainvest, Feb 2026)](https://www.ainvest.com/news/bitcoin-node-flow-7-5-knots-signal-core-open-stance-2602/)
+    suggests significant decline post-Core v30 release
+  - January 2026 reading at ~22% per another source
+  - The two readings differ; current state needs Knots Discord / direct
+    network-measurement to resolve
+- **Kestrel's "tiny operator base / three-operator implementation / five
+  users" framing remains cleanly invalidated** regardless of which current
+  figure is right. Even 7.5% of public Bitcoin nodes is thousands of
+  operators, not five. Aaron's correction on this point holds.
+
+**On multiple maintainers (Aaron's claim):**
+
+- **Not supported by current public sources** as of 2026-05-17 search:
+  - [Luke Dashjr - Wikipedia](https://en.wikipedia.org/wiki/Luke_Dashjr)
+    characterizes Knots as Luke Dashjr's project
+  - [Bitcoin Knots official site](https://bitcoinknots.org/) doesn't
+    publicly list multiple co-maintainers
+  - [Knots Maintainer Luke Dashjr Plans to Hardfork Bitcoin to Fight Spam](https://news.bitcoinprotocol.org/knots-maintainer-luke-dashjr-plans-to-hardfork-bitcoin-to-fight-spam/)
+    refers to him as THE maintainer (singular)
+  - [Bitcoin Knots vs Bitcoin Core: 7 Key Differences (2026)](https://endlessmining.com/the-difference-between-bitcoin-knots-and-bitcoin-core/)
+    discusses single-maintainer concern
+- **Possible Aaron has inside info** about new maintainers that isn't yet
+  public, OR additional maintainers operate under Dashjr's lead without
+  distinct public credit. Aaron is part of Knots Discord per his earlier
+  disclosure and may know operational reality that public sources don't
+  yet reflect.
+- **Kestrel's "single-maintainer trust concentration" framing remains
+  empirically supported by current public sources** unless Aaron has
+  evidence otherwise. The constructive-obligation insight (don't relocate
+  centralization through any fork that becomes itself a centralization
+  vector) partially survives.
+
+**Substrate-honest mixed result:**
+
+- Aaron's adoption framing: historically accurate; current state contested
+- Aaron's multi-maintainer framing: not publicly supported; may be inside
+  info ahead of public-record
+- Kestrel's "tiny operator base": empirically wrong, regardless of recent
+  figure
+- Kestrel's "single-maintainer": empirically supported by current sources
+- Kestrel's constructive-obligation principle (any new fork must answer
+  the centralization-relocation question on the first page): partially
+  valid — Aaron's existing Knots context handles the "right argument"
+  side; the build-question for "what's a relay/validation architecture
+  that resolves home-miner-dilemma without trust concentration" remains
+  the open question both protocol-politics sides have not answered
+
+Future-Otto: when validating per-substrate factual claims, the
+verification-result-is-often-mixed pattern operates. Don't collapse to
+"Aaron was right" or "Kestrel was right" — the discipline is reporting
+the mixed result honestly. This composes with
+`.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md`
++ `.claude/rules/search-first-authority.md` — verify before asserting,
+report substrate-honestly when the verification splits.
