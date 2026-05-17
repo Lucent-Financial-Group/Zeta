@@ -277,17 +277,17 @@ export async function snapshot(repo: string): Promise<string> {
   );
   const codeql = codeqlRaw === null ? { _skipped: "insufficient-token-scope" } : parseJsonSafe(codeqlRaw);
 
-  // Counts — hooks requires admin token; falls back to a sentinel when the
+  // Counts — these admin-level endpoints fall back to a sentinel when the
   // GITHUB_TOKEN in CI lacks that scope (HTTP 403). Other errors remain fatal
   // so transient API failures are not silently hidden from the drift check.
   const webhooksCountRaw = await ghApiSkip403(`/repos/${repo}/hooks`, "length");
-  const deployKeysCountRaw = await ghApi(`/repos/${repo}/keys`, "length");
-  const actionsSecretsCountRaw = await ghApi(`/repos/${repo}/actions/secrets`, ".secrets | length");
+  const deployKeysCountRaw = await ghApiSkip403(`/repos/${repo}/keys`, "length");
+  const actionsSecretsCountRaw = await ghApiSkip403(`/repos/${repo}/actions/secrets`, ".secrets | length");
   const dependabotSecretsCountRaw = await ghApiOptional(`/repos/${repo}/dependabot/secrets`, ".secrets | length");
 
   const webhooksCount = webhooksCountRaw === null ? { _skipped: "insufficient-token-scope" } : (parseInt(webhooksCountRaw, 10) || 0);
-  const deployKeysCount = parseInt(deployKeysCountRaw, 10) || 0;
-  const actionsSecretsCount = parseInt(actionsSecretsCountRaw, 10) || 0;
+  const deployKeysCount = deployKeysCountRaw === null ? { _skipped: "insufficient-token-scope" } : (parseInt(deployKeysCountRaw, 10) || 0);
+  const actionsSecretsCount = actionsSecretsCountRaw === null ? { _skipped: "insufficient-token-scope" } : (parseInt(actionsSecretsCountRaw, 10) || 0);
   const dependabotSecretsCount = parseInt(dependabotSecretsCountRaw ?? "0", 10) || 0;
 
   const result = {
