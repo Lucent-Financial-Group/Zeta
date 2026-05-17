@@ -223,21 +223,36 @@ export function processOne(absPath: string, write: boolean): Action {
 
 export function main(argv: string[]): number {
   let write = false;
+  let filesFlagSeen = false;
   const files: string[] = [];
   let inFiles = false;
 
   for (const a of argv) {
     if (a === "--write") {
       write = true;
+      inFiles = false;
     } else if (a === "--files") {
+      filesFlagSeen = true;
       inFiles = true;
     } else if (inFiles) {
       files.push(a);
     }
   }
 
+  // Fail-closed: `--files` with zero paths must NOT silently fall back
+  // to a full-tree scan. Under `--write`, that would prepend headers
+  // across all 359 non-compliant shards from a caller typo or an
+  // empty dynamically-generated file list. Treat as explicit error.
+  // (Codex P1 finding on PR #3990.)
+  if (filesFlagSeen && files.length === 0) {
+    process.stderr.write(
+      "error: --files specified but no paths provided; refusing to fall back to full-tree scan\n",
+    );
+    return 1;
+  }
+
   let shards: string[];
-  if (files.length > 0) {
+  if (filesFlagSeen) {
     shards = files
       .map((p) => resolve(ROOT, p))
       .filter((p) => repoRelative(p).startsWith(SHARD_PREFIX))
