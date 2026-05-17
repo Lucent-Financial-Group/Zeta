@@ -20,4 +20,4 @@ Otto's bus remains permanently stuck at 2026-05-11. It is disconnected from the 
 ## Remediations
 1. **Decomposition:** PR 4115 (a blob PR mixing drift, backlog, and archives) was decomposed into smaller PRs.
 2. **REST Fallback Enforcement:** All agents MUST transition to REST API endpoints until GraphQL budget resets.
-3. **Preservation:** PR archiving via `archive-pr.ts` is temporarily suspended because it relies on GraphQL. This is logged to prevent missing coverage.
+3. **Preservation:** PR archiving via `tools/pr-preservation/archive-pr.ts` is temporarily suspended because it relies on GraphQL. This is logged to prevent missing coverage.
