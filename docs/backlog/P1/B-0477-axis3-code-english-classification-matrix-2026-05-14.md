@@ -1,7 +1,7 @@
 ---
 id: B-0477
 priority: P1
-status: open
+status: closed
 title: "Axis-3 Code/English classification matrix — per-repo two-tier classification with engineering-docs exception"
 type: research
 origin: B-0427 decomposition (Otto, 2026-05-14)
@@ -38,9 +38,9 @@ This is the substrate-honest application of Aaron's Code/English split:
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0475 output doc reviewed (prior-art audit complete; no blocking conflicts)
-- [ ] Walk `depends_on:` chain — B-0475 closed
-- [ ] Check B-0476 progress — ruleset audit can run in parallel; note any
+- [x] B-0475 output doc reviewed (prior-art audit complete; no blocking conflicts)
+- [x] Walk `depends_on:` chain — B-0475 closed
+- [x] Check B-0476 progress — ruleset audit can run in parallel; note any
   divergences already found that constrain classification
 
 ## Axis-3 tier definitions
@@ -122,14 +122,14 @@ Containing:
 
 ## Definition of done
 
-- [ ] Tier definitions written (Code/English/engineering-docs exception)
-- [ ] All existing repos classified (LFG/Zeta, AceHack/Zeta, LFG/civsim)
-- [ ] All proposed repos classified (Forge, product repos from B-0425)
-- [ ] DV2.0 change-rate analysis performed for each candidate
-- [ ] Split recommendations stated (or "co-locate" with rationale)
-- [ ] Ambiguous cases flagged for B-0479
-- [ ] Output doc committed and referenced from B-0427
-- [ ] B-0477 closed with PR link
+- [x] Tier definitions written (Code/English/engineering-docs exception)
+- [x] All existing repos classified (LFG/Zeta, AceHack/Zeta, LFG/civsim)
+- [x] All proposed repos classified (Forge, product repos from B-0425)
+- [x] DV2.0 change-rate analysis performed for each candidate
+- [x] Split recommendations stated (or "co-locate" with rationale)
+- [x] Ambiguous cases flagged for B-0479
+- [x] Output doc committed and referenced from B-0427
+- [x] B-0477 closed with PR link
 
 ## Why P1
 

@@ -84,7 +84,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
    substrate composes without conflict
 2. **Dependency restructure** — walk composes_with chain
 3. **Per-repo three-axis classification** owed for existing
-   and proposed repos
+   and proposed repos (Done via B-0477)
 4. **Ruleset audit** — survey existing rulesets; document
    divergences as candidate-split signals
 5. **Soraya consultation** for formal-verification sub-axis
