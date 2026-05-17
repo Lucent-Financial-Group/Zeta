@@ -279,7 +279,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
 - [ ] **[B-0473](backlog/P1/B-0473-mirror-beacon-promotion-gate-protocol-2026-05-14.md)** Mirror→Beacon promotion gate protocol — concrete criteria for repo-level graduation
 - [ ] **[B-0474](backlog/P1/B-0474-mirror-beacon-axis-adr-2026-05-14.md)** Mirror/Beacon axis ADR — two-axis design decision (extends 2026-04-22 ADR)
-- [ ] **[B-0475](backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md)** Axis-3 prior-art audit — verify three-axis substrate composes without conflict
+- [x] **[B-0475](backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md)** Axis-3 prior-art audit — verify three-axis substrate composes without conflict
 - [ ] **[B-0476](backlog/P1/B-0476-github-ruleset-divergence-audit-2026-05-14.md)** GitHub ruleset divergence audit — survey rulesets across repos; identify smell signals
 - [ ] **[B-0477](backlog/P1/B-0477-axis3-code-english-classification-matrix-2026-05-14.md)** Axis-3 Code/English classification matrix — per-repo two-tier classification with engineering-docs exception
 - [ ] **[B-0478](backlog/P1/B-0478-formal-verification-repo-split-evaluation-2026-05-14.md)** Formal-verification sub-axis evaluation — per-property-class split vs co-locate decision
@@ -599,6 +599,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0571](backlog/P2/B-0571-github-app-factory-automation-2026-05-16.md)** GitHub App for factory automation — separate API rate-limit pool from human-user accounts
 - [ ] **[B-0580](backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md)** Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)
 - [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
+- [ ] **[B-0584](backlog/P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md)** Imaginary stack Step 1 — formalize 4D cube (R/W/P/A) and imaginary intersection as categorical/algebraic primitives
 - [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
 
