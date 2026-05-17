@@ -23,7 +23,7 @@ It is not 100% certain that Lior caused the corruption. It could be peer-Otto ac
 
 ## Substrate Update (Action Taken)
 To provide belt-and-suspenders safety against this known failure mode:
-1. **Lior Loop Updated:** Lior's launchd runner (`.gemini/launchd/com.zeta.lior-loop.plist`) and tick prompt (`.gemini/bin/lior-loop-tick.ts`) have been updated with a strict lock-deferral protocol.
-2. **Protocol:** Lior must explicitly check `ls .git/worktrees/*/lock` and `.git/index.lock`. If another agent is mid-worktree-add, Lior is instructed to defer ALL git operations (even read-only ones) until the lock clears.
+1. **Lior Loop Updated:** Lior's tick prompt (`.gemini/bin/lior-loop-tick.ts`, invoked by the launchd runner at `.gemini/launchd/com.zeta.lior-loop.plist`) has been updated with a strict lock-deferral protocol. The plist itself is unchanged in this PR — only the prompt the launchd job runs got the new step.
+2. **Protocol (high-level intent):** Lior must explicitly check for `.git/worktrees/*/lock` and `.git/index.lock` before any git op. If another agent is mid-worktree-add, Lior defers ALL git operations (even read-only ones) until the lock clears. The literal `ls` glob in the tick prompt is the substrate-honest first cut; a follow-up will harden it (a non-matching glob makes `ls` exit non-zero, which can read as a "lock present" false-positive on otherwise-quiet systems — use `compgen -G '.git/worktrees/*/lock'` or shopt nullglob equivalent when the prompt is iterated next).
 
 This composes directly with `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`, anchoring the empirical reality that `.git/` contention is a live hazard in multi-agent factory nodes.
