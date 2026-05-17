@@ -49,6 +49,10 @@ describe("isInsufficientTokenScope403", () => {
     expect(isInsufficientTokenScope403("gh: Resource not accessible by integration (HTTP 403)")).toBe(true);
   });
 
+  test("matches fine-grained PAT token-scope 403s", () => {
+    expect(isInsufficientTokenScope403("gh: Resource not accessible by personal access token (HTTP 403)")).toBe(true);
+  });
+
   test("matches admin-permission 403s", () => {
     expect(isInsufficientTokenScope403("gh: Must have admin rights to Repository. (HTTP 403)")).toBe(true);
   });

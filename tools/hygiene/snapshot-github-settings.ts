@@ -104,6 +104,7 @@ export function isInsufficientTokenScope403(stderr: string): boolean {
 
   return (
     lower.includes("resource not accessible by integration") ||
+    lower.includes("resource not accessible by personal access token") ||
     lower.includes("not accessible by integration") ||
     lower.includes("must have admin rights") ||
     lower.includes("requires admin") ||
