@@ -101,10 +101,7 @@ substrate the operator owns and controls.
 
 ## Decomposition slices
 
-- **B-0620.1** — Define `Vendor adapter interface` + extract Amazon adapter
-  out of amazon-orders-extract.ts into `tools/inventory/vendors/amazon.ts`
-  (composition with B-0610 v3 design pass — the extraction logic
-  refinement lives here)
+- **B-0620.1** — [Extracted to B-0620-slice-1-vendor-adapter-interface.md](B-0620-slice-1-vendor-adapter-interface.md)
 - **B-0620.2** — Specialized hardware vendor adapter #1 (Minisforum or
   Beelink direct) — informs the per-vendor pattern
 - **B-0620.3** — Networking vendor adapter (Ubiquiti — the maintainer's
