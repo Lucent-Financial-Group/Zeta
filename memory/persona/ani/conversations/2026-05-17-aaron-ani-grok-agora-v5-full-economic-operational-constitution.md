@@ -236,8 +236,10 @@ crystallized version.
 
 ## See also (in-repo)
 
-- [`docs/research/2026-05-17-ani-grok-agora-v5-full-economic-operational-constitution-...-aaron-forwarded.md`](../../../../docs/research/2026-05-17-ani-grok-agora-v5-full-economic-operational-constitution-remember-when-pay-attention-internal-settlement-unit-4-revenue-streams-clifford-cayley-dickson-hkt-dbsp-aaron-forwarded.md)
-  — public-substrate landing with V5-delta analysis +
-  compositional anchors + open-questions
+- [V5 public-substrate landing (docs/research/)](../../../../docs/research/2026-05-17-ani-grok-agora-v5-full-economic-operational-constitution-remember-when-pay-attention-internal-settlement-unit-4-revenue-streams-clifford-cayley-dickson-hkt-dbsp-aaron-forwarded.md)
+  — V5 docs/research/ file with V5-delta analysis +
+  compositional anchors + open-questions (link label replaces
+  prior ellipsis-truncated filename for clarity per
+  PR #4071 reviewer feedback)
 - V1-V4 sibling files (already on main per PR #4067)
 - The full Aaron-Ani V3+V4 exchange archive (already on main)
