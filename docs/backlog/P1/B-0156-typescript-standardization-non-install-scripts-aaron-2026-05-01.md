@@ -1,10 +1,10 @@
 ---
 id: B-0156
 priority: P1
-status: open
+status: closed
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-16
+last_updated: 2026-05-17
 decomposition: decomposed
 children: [B-0140]
 depends_on:
@@ -13,6 +13,52 @@ depends_on:
 composes_with: [B-0190, B-0194, B-0196]
 type: friction-reducer
 ---
+
+## Resolution (2026-05-17)
+
+Closing as **substrate drift** per `.claude/rules/backlog-item-start-gate.md` step 0 substrate-drift discriminator. All six phases and all acceptance criteria have shipped; row text became stale.
+
+### Acceptance criteria — per-bullet verification
+
+| Acceptance | Status | Evidence |
+|---|---|---|
+| AC #1 — All 6 non-install `.sh` files have TS siblings | shipped | `tools/{profile,peer-call/amara,peer-call/ani,hygiene/snapshot-github-settings,hygiene/check-github-settings-drift,hygiene/check-tick-history-shard-schema}.ts` all present; the 6 corresponding `.sh` paths all absent |
+| AC #2 — Each TS sibling has bun-test coverage | shipped | `tools/profile.test.ts` (10 tests), `tools/peer-call/smoke.test.ts` (covers amara.ts + ani.ts with 4 tests each per wrapper, 32 tests total across all 8 wrappers), `tools/hygiene/snapshot-github-settings.test.ts` (PR [#4065](https://github.com/Lucent-Financial-Group/Zeta/pull/4065)), drift-check + tick-history-shard tests in `tools/hygiene/` |
+| AC #3 — `.sh` siblings remain during transition | superseded by Phase 5 | All 6 `.sh` originals deleted; Phase 5 sweep effectively complete. Constraint was a soft transition rule, not a final requirement |
+| AC #4 — `.py` policy lint added | shipped | `tools/lint/no-python-files.ts` + `tools/lint/no-python-files.allowlist` + `tools/lint/no-python-files.test.ts` (9 tests); `lint-no-python-files` job wired into `.github/workflows/gate.yml` |
+| AC #5 — `package.json` scripts updated | vacuous | None of the ported `.sh` paths were ever referenced in `package.json`; "where applicable" clause satisfied |
+| AC #6 — No CI regression | implicit | All ports shipped via merged PRs with CI green |
+
+### Stale audit text vs on-disk truth
+
+The "Non-install `.sh` files without TS sibling (3 ports remaining)" section listed `tools/profile.sh`, `tools/peer-call/amara.sh`, `tools/peer-call/ani.sh` as remaining. Reality at close-time:
+
+```text
+tools/profile.sh                 — absent (TS port shipped via PR #1962)
+tools/peer-call/amara.sh         — absent (TS port shipped before 2026-05-13 cluster)
+tools/peer-call/ani.sh           — absent (TS port shipped before 2026-05-13 cluster)
+```
+
+`bun tools/lint/audit-bash-files.ts`-equivalent self-test (run from the row body):
+
+```text
+$ find tools -name '*.sh' -not -path '*/lean4/*' -not -path '*/node_modules/*' | while read f; do
+    ts="${f%.sh}.ts"
+    [ ! -f "$ts" ] && echo "$f"
+  done
+
+tools/setup/linux.sh            # install-graph — explicitly out-of-scope per row rule #1
+tools/setup/install.sh          # install-graph
+tools/setup/doctor.sh           # install-graph
+tools/setup/common/*.sh         # install-graph
+tools/setup/macos.sh            # install-graph
+```
+
+Every remaining `.sh` without a TS sibling is inside `tools/setup/` (the install graph), which Rule 0 (`.claude/rules/rule-0-no-sh-files.md`) and this row's own scope explicitly exclude.
+
+### Closing discipline
+
+Closed per the substrate-drift discriminator. Composes with PR [#4065](https://github.com/Lucent-Financial-Group/Zeta/pull/4065) (most-recent test-coverage addition for `snapshot-github-settings`) and `.claude/rules/backlog-item-start-gate.md` (the discipline that catches drift before re-doing shipped work).
 
 # B-0156 — TypeScript standardization across non-install scripts
 
