@@ -1,10 +1,10 @@
 ---
 id: B-0156
 priority: P1
-status: open
+status: closed
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-16
+last_updated: 2026-05-17
 decomposition: decomposed
 children: [B-0140]
 depends_on:
@@ -12,6 +12,72 @@ depends_on:
   - B-0122
 composes_with: [B-0190, B-0194, B-0196]
 type: friction-reducer
+---
+
+## Resolution (2026-05-17) — substrate-drift close
+
+All six acceptance criteria verified met on `origin/main` at row-close
+time. Row body's Phase 3 / Phase 4 / Phase 5 sections describe work
+already complete; the row had drifted out-of-sync with disk reality.
+
+**Substrate-drift discriminator (per
+[`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md)
+step 0):**
+
+| Acceptance bullet | Disk evidence | Status |
+|---|---|---|
+| 1. All 6 non-install `.sh` files have working TS siblings | `tools/peer-call/amara.ts`, `tools/peer-call/ani.ts`, `tools/profile.ts`, plus the three hygiene ports from PR #2060 + #1986 | Met |
+| 2. Each TS sibling has bun-test coverage | `tools/peer-call/smoke.test.ts` (amara + ani), `tools/profile.test.ts`, `tools/hygiene/check-tick-history-shard-schema.test.ts`, etc. | Met |
+| 3. `.sh` siblings remain during transition / sweep complete | `ls tools/peer-call/amara.sh tools/peer-call/ani.sh tools/profile.sh` → `No such file or directory` (all three swept) | Met (sweep, not transition) |
+| 4. `.py` policy lint added to `gate.yml` | PR #3949 `feat(B-0156): Phase 6 .py policy CI gate — no-python-files lint` merged via commit `bd99605a3`; `tools/lint/no-python-files.ts` + `tools/lint/no-python-files.allowlist` (empty) + `.github/workflows/gate.yml` `lint-no-python-files` job | Met |
+| 5. package.json scripts updated where applicable | Tools are invoked via `bun tools/...` direct entrypoints (the canonical pattern in this repo); "where applicable" qualifier means no npm-script wrapping is required for these tools | Met |
+| 6. No CI regression | Self-test `find tools -name '*.sh' -not -path '*/lean4/*' -not -path '*/node_modules/*'` filtered against missing `.ts` siblings returns only install-graph files (explicitly out-of-scope per the row body) | Met |
+
+**Self-test output at close time** (2026-05-17, run from worktree off
+`origin/main`):
+
+```text
+$ find tools -name '*.sh' -not -path '*/lean4/*' -not -path '*/node_modules/*' \
+    | while read f; do ts="${f%.sh}.ts"; [ ! -f "$ts" ] && echo "$f"; done
+tools/setup/linux.sh
+tools/setup/install.sh
+tools/setup/doctor.sh
+tools/setup/common/python-tools.sh
+tools/setup/common/dotnet-tools.sh
+tools/setup/common/mise.sh
+tools/setup/common/shellenv.sh
+tools/setup/common/elan.sh
+tools/setup/common/sync-upstreams.sh
+tools/setup/common/verifiers.sh
+tools/setup/common/curl-fetch.sh
+tools/setup/common/profile-edit.sh
+tools/setup/macos.sh
+```
+
+All 13 remaining `.sh`-without-`.ts`-sibling entries are install-graph
+files — explicitly out-of-scope per the "Pre-install graph" section
+of this row. They MUST stay bash (chicken-and-egg: bun isn't on PATH
+until `install.sh` finishes). PowerShell siblings for Windows reach
+are tracked separately (task #305), orthogonal to TS scope.
+
+**Net result**: the TS-port trajectory the row named is fully landed.
+Phase 3 (peer-call), Phase 4 (profile), Phase 5 (bash sweep), and
+Phase 6 (.py policy) all completed without explicit per-phase PR
+attribution in the row body — the work shipped across multiple
+commits and the row body never caught up. Closing as drift per
+[`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](../../../memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md)
++ the section-aware drift-discriminator pattern in
+[`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md)
+step 0.
+
+**Phase descriptions in the body below are preserved unchanged** as
+historical record of the trajectory — Phase 1 + Phase 2 + Phase 6
+were already marked DONE inline; Phase 3, 4, 5 descriptions remain
+as-written even though they're complete (per
+[`.claude/rules/honor-those-that-came-before.md`](../../../.claude/rules/honor-those-that-came-before.md)
+substrate preservation discipline). Future readers: trust the
+frontmatter `status: closed` + this Resolution section over the
+phase-list inline status markers.
 ---
 
 # B-0156 — TypeScript standardization across non-install scripts
