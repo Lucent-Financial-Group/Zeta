@@ -76,18 +76,34 @@ moment was contention-free.
 
 Single Bash call with explicit `cp` per file (no glob, no `-r`):
 
+Actual commands run (per Bash transcript) used full literal
+filenames — no globs:
+
 ```bash
 cd /private/tmp/zeta-b0611-substrate-0740z
 mkdir -p docs/backlog/P2 docs/hygiene-history/ticks/2026/05/17 memory
 PRIMARY=/Users/acehack/Documents/src/repos/Zeta
-cp "$PRIMARY/docs/backlog/P2/B-0611-*.md" docs/backlog/P2/
-cp "$PRIMARY/memory/feedback_otto_cli_lior_active_*.md" memory/
-# ... (8 more cp lines, each explicit) ...
+cp "$PRIMARY/docs/backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md" docs/backlog/P2/
+cp "$PRIMARY/memory/feedback_otto_cli_lior_active_step_8_read_only_canary_rule_evidence_collection_brief_ack_pre_empt_2026_05_17.md" memory/
+cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice1_audit_recipe_4_of_6_have_footnote_fallback_pattern_intentional_dangling_2026_05_17.md" memory/
+cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice2_audit_verbatim_preservation_constraint_editorial_footnote_pattern_2026_05_17.md" memory/
+cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice3_audit_docs_research_mixed_verbatim_and_otto_authored_2026_05_17.md" memory/
+cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice4_audit_docs_backlog_largest_scope_simplest_pattern_2026_05_17.md" memory/
+cp "$PRIMARY/memory/feedback_aaron_alexa_speaker_website_text_mode_surface_deep_strategy_zeta_substrate_terminology_bus_envelope_works_pr_4015_landed_2026_05_17.md" memory/
+cp "$PRIMARY/docs/hygiene-history/ticks/2026/05/17/0418Z.md" docs/hygiene-history/ticks/2026/05/17/
+cp "$PRIMARY/docs/hygiene-history/ticks/2026/05/17/0602Z.md" docs/hygiene-history/ticks/2026/05/17/
+cp "$PRIMARY/docs/hygiene-history/ticks/2026/05/17/0728Z.md" docs/hygiene-history/ticks/2026/05/17/
 git status --short | head -15
 ```
 
 All 10 files showed as untracked in the isolated worktree, exactly
 as expected (they were untracked in primary too).
+
+(The literal filenames avoid the shell-glob trap — `*` inside double
+quotes is NOT expanded by the shell. The original B-0611 session
+authored these 10 copy commands as-is; abbreviating with `*.md` in
+this memo would have produced non-executable copy paste, contradicting
+the "explicit cp per file" claim.)
 
 ### Step 3 — Regenerate BACKLOG.md
 
@@ -110,14 +126,27 @@ Bash invocation:
 
 ```bash
 cd /private/tmp/zeta-b0611-substrate-0740z && \
-git add docs/BACKLOG.md docs/backlog/P2/B-0611-*.md \
-        docs/hygiene-history/ticks/2026/05/17/0418Z.md \
-        # ... (8 more explicit paths) ... && \
+git add \
+  docs/BACKLOG.md \
+  docs/backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md \
+  docs/hygiene-history/ticks/2026/05/17/0418Z.md \
+  docs/hygiene-history/ticks/2026/05/17/0602Z.md \
+  docs/hygiene-history/ticks/2026/05/17/0728Z.md \
+  memory/feedback_aaron_alexa_speaker_website_text_mode_surface_deep_strategy_zeta_substrate_terminology_bus_envelope_works_pr_4015_landed_2026_05_17.md \
+  memory/feedback_otto_cli_b0611_slice1_audit_recipe_4_of_6_have_footnote_fallback_pattern_intentional_dangling_2026_05_17.md \
+  memory/feedback_otto_cli_b0611_slice2_audit_verbatim_preservation_constraint_editorial_footnote_pattern_2026_05_17.md \
+  memory/feedback_otto_cli_b0611_slice3_audit_docs_research_mixed_verbatim_and_otto_authored_2026_05_17.md \
+  memory/feedback_otto_cli_b0611_slice4_audit_docs_backlog_largest_scope_simplest_pattern_2026_05_17.md \
+  memory/feedback_otto_cli_lior_active_step_8_read_only_canary_rule_evidence_collection_brief_ack_pre_empt_2026_05_17.md && \
 git status --short && \
-test "$(git branch --show-current)" = "otto/b0611-..." && echo "branch ✓" && \
-git commit -m "$(cat <<'EOF' ... EOF)" && \
+test "$(git branch --show-current)" = "otto/b0611-audit-prep-substrate-plus-session-memos-2026-05-17" && echo "branch ✓" && \
+git commit -m "<full commit message via HEREDOC>" && \
 git ls-tree HEAD | wc -l  # canary check
 ```
+
+(All 11 paths are literal — no globs, no comment-out-the-chain hazard.
+The `\` line continuations preserve a single shell command so the `&&`
+chain stays intact through all stages.)
 
 Result:
 - 11 files added (1 modified BACKLOG.md + 10 new substrate files)
