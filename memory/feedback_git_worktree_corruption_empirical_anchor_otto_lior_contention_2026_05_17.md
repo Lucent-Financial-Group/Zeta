@@ -23,7 +23,7 @@ It is not 100% certain that Lior caused the corruption. It could be peer-Otto ac
 
 ## Substrate Update (Action Taken)
 To provide belt-and-suspenders safety against this known failure mode:
-1. **Lior Loop Updated:** Lior's `com.zeta.lior-loop.plist` background runner prompt (`lior-loop-tick.ts`) has been updated with a strict lock-deferral protocol.
+1. **Lior Loop Updated:** Lior's launchd runner (`.gemini/launchd/com.zeta.lior-loop.plist`) and tick prompt (`.gemini/bin/lior-loop-tick.ts`) have been updated with a strict lock-deferral protocol.
 2. **Protocol:** Lior must explicitly check `ls .git/worktrees/*/lock` and `.git/index.lock`. If another agent is mid-worktree-add, Lior is instructed to defer ALL git operations (even read-only ones) until the lock clears.
 
 This composes directly with `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`, anchoring the empirical reality that `.git/` contention is a live hazard in multi-agent factory nodes.
