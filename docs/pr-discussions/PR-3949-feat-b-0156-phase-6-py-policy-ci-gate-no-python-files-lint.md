@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Smallest safe slice of [B-0156](docs/backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md) (TypeScript standardization). Closes Phase 6 — `.py` policy CI enforcement.
+Smallest safe slice of [B-0156](../backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md) (TypeScript standardization). Closes Phase 6 — `.py` policy CI enforcement.
 
 Substrate-drift discriminator at session start confirmed Phases 1-5 = DONE (all six named non-install `.sh` files already ported to `.ts` and deleted; `tools/profile.ts`, `tools/peer-call/amara.ts`, `tools/peer-call/ani.ts`, `tools/hygiene/{snapshot,check}-github-settings.ts`, `tools/hygiene/check-tick-history-shard-schema.ts` all exist). Phase 6 (`.py` policy enforcement) was the only outstanding acceptance bullet.
 
