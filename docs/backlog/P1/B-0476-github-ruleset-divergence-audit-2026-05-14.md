@@ -1,7 +1,7 @@
 ---
 id: B-0476
 priority: P1
-status: open
+status: closed
 title: "GitHub ruleset divergence audit — survey rulesets across repos; identify smell signals"
 type: research
 origin: B-0427 decomposition (Otto, 2026-05-14)
@@ -36,9 +36,9 @@ candidate-split signals.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0475 output doc reviewed (prior-art audit complete; no blocking conflicts)
-- [ ] Walk `depends_on:` chain — B-0475 closed with output doc committed
-- [ ] Prior-art search: any existing ruleset documentation in substrate?
+- [x] B-0475 output doc reviewed (prior-art audit complete; no blocking conflicts)
+- [x] Walk `depends_on:` chain — B-0475 closed with output doc committed
+- [x] Prior-art search: any existing ruleset documentation in substrate?
 
 ## What to survey
 
@@ -111,12 +111,12 @@ gh api repos/Lucent-Financial-Group/civsim/rulesets --jq '.[] | {id,name,target,
 
 ## Definition of done
 
-- [ ] All existing repos surveyed (LFG/Zeta, AceHack/Zeta, LFG/civsim)
-- [ ] Proposed repo expected rulesets documented
-- [ ] Divergence matrix complete
-- [ ] Candidate-split signals identified and documented
-- [ ] Output doc committed and referenced from B-0427
-- [ ] B-0476 closed with PR link
+- [x] All existing repos surveyed (LFG/Zeta, AceHack/Zeta, LFG/civsim)
+- [x] Proposed repo expected rulesets documented
+- [x] Divergence matrix complete
+- [x] Candidate-split signals identified and documented
+- [x] Output doc committed and referenced from B-0427
+- [x] B-0476 closed with PR link
 
 ## Why P1
 

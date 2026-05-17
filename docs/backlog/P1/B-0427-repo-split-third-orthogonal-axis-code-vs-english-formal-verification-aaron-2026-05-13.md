@@ -86,7 +86,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 3. **Per-repo three-axis classification** owed for existing
    and proposed repos
 4. **Ruleset audit** — survey existing rulesets; document
-   divergences as candidate-split signals
+   divergences as candidate-split signals (Done via B-0476)
 5. **Soraya consultation** for formal-verification sub-axis
    (per-property-class evaluation)
 
