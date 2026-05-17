@@ -69,6 +69,37 @@ When the tier hits Pure-git mode:
 
 The branch sits on origin pushed-but-unPRed; PR creation in the post-reset tick costs ~5-10 GraphQL but covers all the deferred branches at once. Net cost is the same; spread across time.
 
+### REST PR-creation fallback under Pure-git tier (empirical anchor 2026-05-17T21:54Z)
+
+`gh pr create` uses the GitHub GraphQL `createPullRequest` mutation, so it fails under Pure-git tier. However, the **REST endpoint `POST /repos/{owner}/{repo}/pulls`** is on a separate budget (`resources.core` not `resources.graphql`) — when GraphQL is at 0/5000, REST is typically still at thousands available.
+
+This means PR creation does NOT have to defer when the branch is ready and a future tick can't be relied on. Inline JSON + `gh api -X POST` works:
+
+```bash
+cat <<'EOF' > /tmp/pr-body.json
+{
+  "title": "feat(...): ...",
+  "head": "branch-name",
+  "base": "main",
+  "body": "<markdown>"
+}
+EOF
+gh api -X POST repos/Lucent-Financial-Group/Zeta/pulls --input /tmp/pr-body.json \
+  --jq '{number: .number, url: .html_url, state: .state}'
+```
+
+Empirical instance: [PR #4105](https://github.com/Lucent-Financial-Group/Zeta/pull/4105) (B-0613 close — Option C portable `find` for Lior tick-prompt lockfile probe) was opened via this REST path at 2026-05-17T21:54Z when GraphQL was 0/5000 (28 min from reset). REST `resources.core` was at 4838 at the time.
+
+**Caveats:**
+
+- `gh pr merge --auto` uses GraphQL (`enablePullRequestAutoMerge` mutation) — there is NO equivalent REST endpoint for auto-merge arming. The PR opened via REST sits without auto-merge until a post-reset tick can run `gh pr merge <N> --auto --squash`.
+- `gh pr comment` uses GraphQL — REST equivalent is `POST /repos/{owner}/{repo}/issues/{N}/comments`.
+- `resolveReviewThread` is GraphQL-only — REST has no equivalent.
+- REST PR creation does NOT bypass branch protection / required checks; the PR enters the same blocked state as a GraphQL-created one.
+- JSON body in `--input` must escape backslashes, quotes, and embedded `$` sigils carefully. Use a HEREDOC + temp file; do not inline the JSON in a `gh api` command line.
+
+When this fallback applies: when a substantive substrate landing is ready, GraphQL is exhausted, but you want the PR open + visible BEFORE the reset window so reviewers can pick it up. Without auto-merge arming, the next post-reset tick must explicitly run `gh pr merge <N> --auto --squash`.
+
 ### Composes with counter-with-escalation
 
 When rate-limit forces brief-acks (deferring substantive PR work), the [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md) counter-with-escalation counter still ticks. At brief-ack #6 the rule triggers forced decomposition. **Editing this rule, a memory file, or any other substrate via pure-git workflow IS decomposition that resets the counter** — the work is bounded, concrete, committed, pushed. Counter reset condition #3 ("Actually picking real decomposition work — Concrete artifact") is satisfied.
