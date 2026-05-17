@@ -2,15 +2,18 @@
 /**
  * Personal Amazon order-history extractor (v2.3).
  *
- * RUN BY HUMAN, NOT BY OTTO. Per B-0582 destructive-verb-refusal-gate.
+ * Human-driven only — not agent-invocable. Agent-driven scraping of
+ * authenticated personal accounts is refused at the safety-classifier
+ * layer per B-0582 (destructive-verb-refusal-gate). The legitimate
+ * path is the operator running this script in their own session.
  *
  * v2.3 changes vs v2.2:
  *   - **Per-page incremental writes** — after every page extraction,
  *     the in-progress accumulator is written to disk. A crash mid-run
  *     no longer loses all data; the partial file has everything up
- *     through the last completed page. (Aaron 2026-05-16: browser
- *     crashed on page 22 of 23, losing all 22 pages of in-memory data
- *     with v2.2.)
+ *     through the last completed page. (Empirical anchor: browser
+ *     chromium process crashed on page 22 of 23 with v2.2 — losing
+ *     all 22 pages of in-memory data.)
  *   - Resume-from-partial: if a partial file exists for the year, the
  *     script reads it on startup, skips pages already completed, and
  *     resumes from the next un-extracted page. Pass --restart to
@@ -21,18 +24,18 @@
  *   - Session persistence — subsequent runs skip login
  *   - Output: ~/.local/share/zeta-inventory/amazon/<year>/
  *   - Default year = current year
- *   - Press-Enter pause after browser opens (keeps it open until user
- *     confirms — sidesteps wait-for-selector timing issues)
+ *   - Press-Enter pause after browser opens (sidesteps wait-for-selector
+ *     timing issues)
  *   - Container-agnostic extraction (finds /dp/ links, walks ancestors
  *     for date + price)
  *
  * Usage:
- *     bun /tmp/amazon-orders-extract.ts          # current year
- *     bun /tmp/amazon-orders-extract.ts 2025     # specific year
- *     bun /tmp/amazon-orders-extract.ts 2025 --restart   # ignore partial
+ *     bun tools/inventory/amazon-orders-extract.ts                 # current year
+ *     bun tools/inventory/amazon-orders-extract.ts 2025            # specific year
+ *     bun tools/inventory/amazon-orders-extract.ts 2025 --restart  # ignore partial
  */
 
-import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import { chmodSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { homedir } from "node:os";
@@ -160,6 +163,7 @@ async function main(): Promise<void> {
   );
 
   await ctx.storageState({ path: SESSION_FILE });
+  try { chmodSync(SESSION_FILE, 0o600); } catch { /* permissions best-effort */ }
 
   const totalPages = await page.evaluate(() => {
     const items = Array.from(document.querySelectorAll(".a-pagination li, ul.a-pagination li, [aria-label*='pagination'] li"));
@@ -224,6 +228,7 @@ async function main(): Promise<void> {
   }
 
   await ctx.storageState({ path: SESSION_FILE });
+  try { chmodSync(SESSION_FILE, 0o600); } catch { /* permissions best-effort */ }
 
   writeFileSync(
     FULL_OUT,
