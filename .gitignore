@@ -191,3 +191,4 @@ tools/shadow/shadow-observer.log
 # Personal data extracted by tools/inventory/amazon-orders-extract.ts — never appropriate for git commit by default
 amazon-items-full.json
 amazon-items-hardware-filtered.json
+amazon-items-partial.json

@@ -69,13 +69,14 @@ interface Partial {
   items: Item[];
 }
 
-function ensureModule(name: string): boolean {
-  try { require.resolve(name); return true; } catch { return false; }
+async function ensureModule(name: string): Promise<boolean> {
+  try { await import(name); return true; } catch { return false; }
 }
 
-function installIfMissing(): void {
-  if (!ensureModule("playwright")) {
+async function installIfMissing(): Promise<void> {
+  if (!(await ensureModule("playwright"))) {
     console.log("Installing playwright (first-run setup)...");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- first-run bootstrap: invoking the user's bun from $PATH is intentional + the script itself runs via `bun ...` so the same PATH governs invocation
     const r = spawnSync("bun", ["install", "playwright"], { stdio: "inherit" });
     if (r.status !== 0) { console.error("Failed. Run manually: bun install playwright"); process.exit(1); }
   }
@@ -90,6 +91,7 @@ async function ensureChromium(): Promise<void> {
     const msg = String(err);
     if (msg.includes("Executable doesn't exist") || msg.includes("Looks like Playwright Test or Playwright was just installed")) {
       console.log("Installing chromium binary (first-run setup)...");
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- first-run bootstrap: invoking bunx from $PATH is intentional + matches the parent bun invocation
       const r = spawnSync("bunx", ["playwright", "install", "chromium"], { stdio: "inherit" });
       if (r.status !== 0) { console.error("Failed. Run manually: bunx playwright install chromium"); process.exit(1); }
     } else { throw err; }
@@ -129,10 +131,14 @@ function loadPartial(): Partial {
 
 function writePartial(state: Partial): void {
   writeFileSync(PARTIAL_FILE, JSON.stringify(state, null, 2));
+  // Best-effort 0600 on partial — same rationale as session file: file
+  // contains real personal-purchase data + (in future) accounting-grade
+  // titles/dates/prices the maintainer is preserving for their accountant.
+  try { chmodSync(PARTIAL_FILE, 0o600); } catch { /* best-effort */ }
 }
 
 async function main(): Promise<void> {
-  installIfMissing();
+  await installIfMissing();
   await ensureChromium();
   mkdirSync(YEAR_DIR, { recursive: true });
 
@@ -238,6 +244,7 @@ async function main(): Promise<void> {
     FULL_OUT,
     JSON.stringify({ year: YEAR, totalPages, itemCount: state.items.length, items: state.items }, null, 2),
   );
+  try { chmodSync(FULL_OUT, 0o600); } catch { /* best-effort — personal financial data */ }
   console.log(`\nWrote ${FULL_OUT} — ${state.items.length} items`);
 
   const hardwareItems = state.items.filter((i) => HARDWARE_KEYWORDS.test(i.title));
@@ -245,6 +252,7 @@ async function main(): Promise<void> {
     HARDWARE_OUT,
     JSON.stringify({ year: YEAR, itemCount: hardwareItems.length, items: hardwareItems }, null, 2),
   );
+  try { chmodSync(HARDWARE_OUT, 0o600); } catch { /* best-effort — personal financial data */ }
   console.log(`Wrote ${HARDWARE_OUT} — ${hardwareItems.length} hardware-matching items`);
 
   // Browser-context cleanup AFTER, each in its own try-with-timeout so a
