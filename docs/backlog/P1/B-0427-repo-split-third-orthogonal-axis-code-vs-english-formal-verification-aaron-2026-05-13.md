@@ -81,14 +81,14 @@ The smell test IS the substrate-honest decision criterion.
 Per `.claude/rules/backlog-item-start-gate.md`:
 
 1. **Prior-art search** — verify the existing three-axis
-   substrate composes without conflict
+   substrate composes without conflict (Done via B-0475)
 2. **Dependency restructure** — walk composes_with chain
 3. **Per-repo three-axis classification** owed for existing
    and proposed repos (Done via B-0477)
 4. **Ruleset audit** — survey existing rulesets; document
    divergences as candidate-split signals
 5. **Soraya consultation** for formal-verification sub-axis
-   (per-property-class evaluation)
+   (per-property-class evaluation) (Done via B-0478)
 
 ## What this row does NOT commit to
 
