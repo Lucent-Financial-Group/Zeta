@@ -1,9 +1,9 @@
 import { describe, expect, test, mock } from "bun:test";
 import { subscribeOnce } from "./subscribe";
 import type { MessageEnvelope } from "./types";
-import { rmSync } from "node:fs";
+import { chmodSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { BUS_DIR } from "./bus";
+import { BUS_DIR, ensureDir } from "./bus";
 
 describe("bus subscribeOnce (B-0459 slice 1)", () => {
   const seenFile = join(BUS_DIR, "seen-test-surface.json");
@@ -40,6 +40,41 @@ describe("bus subscribeOnce (B-0459 slice 1)", () => {
     // Call again, should not trigger handler because it was recorded in seen-test-surface.json
     await subscribeOnce("work-assignment", "test-surface", handler, { list: fakeList as any });
     expect(handler).toHaveBeenCalledTimes(1); // Still 1
+  });
+
+  test("propagates seen-file write failures to caller", async () => {
+    const surface = "test-write-fail";
+    const failSeenFile = join(BUS_DIR, `seen-${surface}.json`);
+
+    // Pre-create the seen file as readable-but-not-writable so the read
+    // succeeds (empty array) and the write throws EACCES. This catches
+    // the failure mode where a write error would have been silently
+    // logged, leaving subscribeOnce believing persistence succeeded.
+    ensureDir();
+    writeFileSync(failSeenFile, "[]");
+    chmodSync(failSeenFile, 0o444);
+
+    try {
+      const env: MessageEnvelope = {
+        id: "env-write-fail",
+        from: "otto",
+        to: surface as any,
+        timestamp: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 10000).toISOString(),
+        topic: "work-assignment",
+        payload: { rowId: "B-3333", priority: "P2", rationale: "test3" },
+      };
+
+      const fakeList = mock(() => [env]);
+      const handler = mock(async (_env: MessageEnvelope) => {});
+
+      await expect(
+        subscribeOnce("work-assignment", surface, handler, { list: fakeList as any }),
+      ).rejects.toThrow();
+    } finally {
+      chmodSync(failSeenFile, 0o644);
+      try { rmSync(failSeenFile); } catch {}
+    }
   });
 
   test("does not mark as seen if handler throws", async () => {

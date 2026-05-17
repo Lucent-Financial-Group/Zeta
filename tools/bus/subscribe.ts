@@ -59,10 +59,8 @@ export async function subscribeOnce<T extends Topic>(
   }
 
   if (newlySeen) {
-    try {
-      writeFileSync(seenFile, JSON.stringify(Array.from(seenIds), null, 2));
-    } catch (err) {
-      console.error(`[subscribeOnce] Failed to write seen file:`, err);
-    }
+    // Symmetric with read-side: surface persistence failures to the caller so
+    // already-handled envelopes don't silently re-deliver on the next poll.
+    writeFileSync(seenFile, JSON.stringify(Array.from(seenIds), null, 2));
   }
 }
