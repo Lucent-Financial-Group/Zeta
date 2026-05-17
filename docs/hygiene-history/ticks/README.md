@@ -50,37 +50,89 @@ conflicts).
 
 ## Shard file schema
 
-Each shard is a single-row Markdown file. Required first line:
+Each shard's first non-empty line MUST be a 6-column pipe-row
+matching the validator at
+[`tools/hygiene/check-tick-history-shard-schema.ts`](../../../tools/hygiene/check-tick-history-shard-schema.ts):
 
 ```
 | <ISO 8601 UTC timestamp> | <model id> | <cron sentinel> | <body> | <PR ref> | <observation> |
 ```
 
-Same column structure as the legacy single-table format. A
-generator script (follow-up work) collates shards into the
+Same column structure as the legacy single-table format. The ISO
+timestamp's date + hour + minute MUST match the shard's path
+(`YYYY/MM/DD`) and filename. Three filename forms are accepted by
+the validator:
+
+- `HHMMZ` (e.g., `0215Z.md`) — bare per-minute name
+- `HHMMZ-<hex>` (e.g., `0215Z-01.md`) — same-minute disambiguation
+  suffix (see "Naming" below)
+- `HHMMSSZ-<hex>` (e.g., `021501Z-abc.md`) — content-hash form
+  for high-concurrency multi-agent writes
+
+The validator does not enforce seconds equality, so both `HH:MMZ`
+and `HH:MM:SSZ` forms are accepted in the timestamp column.
+
+### Hybrid format (preferred for rich shards)
+
+Per the B-0529 Recommendation (Option 3 "hybrid"), the canonical
+shard shape is **the pipe-row first line followed by an H1-rich
+Markdown body**. The pipe-row gives machine-parseable metadata
+(satisfies the validator + future shard-collation projector); the
+body below carries the substantive content (headline H1,
+sub-sections, prose, links).
+
+```markdown
+| 2026-05-17T00:12Z | opus-4-7 / autonomous-loop | <cron-id> | <body summary> | #3990 | <observation> |
+
+# Tick 2026-05-17 0012Z — <headline>
+
+## Surface
+
+<rich body content here>
+```
+
+The validator only inspects the first non-empty line; the body's
+content is unconstrained markdown. For retrofit of older
+H1-first-only shards, the
+[`tools/hygiene/add-pipe-row-header.ts`](../../../tools/hygiene/add-pipe-row-header.ts)
+tool prepends a placeholder pipe-row above the existing body,
+preserving substantive content while satisfying the validator.
+
+A generator script (follow-up work) collates shards into the
 legacy table on cadence; until that lands, the legacy table is
 the authoritative read surface and shards are the authoritative
 write surface — both are canonical.
 
-### YAML frontmatter fields
+### Optional body metadata (B-0308 and related)
 
-Shards that use YAML frontmatter (preferred for richer shards)
-should include:
+The pipe-row remains canonical and MUST be the first non-empty
+line; the validator inspects only that line. Optional structured
+metadata MAY appear inside the H1 body — NOT as file-head YAML
+frontmatter (file-head frontmatter would push `---` to the first
+non-empty line and fail the validator). A common shape is a YAML
+block placed below the pipe-row and H1:
+
+````markdown
+| <ISO 8601 UTC timestamp> | <model id> | <cron sentinel> | <body summary> | <PR ref> | <observation> |
+
+# Tick <YYYY-MM-DD> <HHMMZ> — <headline>
 
 ```yaml
----
 tick: "<ISO 8601 UTC timestamp>"
 agent: otto        # or vera, kenji, etc.
 mode: autonomous   # or interactive
 operative-authorization: "<source> <date>: \"<raw>\""  # B-0308
----
 ```
+
+<rich body content here>
+````
 
 The `operative-authorization` field (B-0308) is populated by
 `bun tools/authorization/check-authorization.ts` at tick start.
 Format: `formatShardField()` output from that tool. If the
 check is not available, use `"none — never-idle default"`.
-This field is informational; it does not gate any work.
+These fields are informational; the validator does not inspect
+them and they do not gate any work.
 
 ## Naming
 
