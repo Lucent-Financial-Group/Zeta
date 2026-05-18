@@ -275,8 +275,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0468](backlog/P1/B-0468-product-repo-split-adr-2026-05-14.md)** ADR — product-repo split decisions; closes B-0425
 - [x] **[B-0469](backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md)** Scaffold Lucent-Financial-Group/civsim public repo (Stage 1)
 - [ ] **[B-0470](backlog/P1/B-0470-civsim-zeta-version-pin-bump-2026-05-14.md)** Bump civsim .zeta-version from scaffold-template SHA to apply-time Zeta main SHA
-- [ ] **[B-0471](backlog/P1/B-0471-mirror-beacon-prior-art-audit-2026-05-14.md)** Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate
-- [ ] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
+- [x] **[B-0471](backlog/P1/B-0471-mirror-beacon-prior-art-audit-2026-05-14.md)** Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate
+- [x] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
 - [ ] **[B-0473](backlog/P1/B-0473-mirror-beacon-promotion-gate-protocol-2026-05-14.md)** Mirror→Beacon promotion gate protocol — concrete criteria for repo-level graduation
 - [ ] **[B-0474](backlog/P1/B-0474-mirror-beacon-axis-adr-2026-05-14.md)** Mirror/Beacon axis ADR — two-axis design decision (extends 2026-04-22 ADR)
 - [x] **[B-0475](backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md)** Axis-3 prior-art audit — verify three-axis substrate composes without conflict
@@ -332,6 +332,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0559](backlog/P1/B-0559-verify-before-state-claim-audit-lesson.md)** Class-level lesson encoded as a verify-before-state-claim audit (decomposed from B-0139)
 - [ ] **[B-0570](backlog/P1/B-0570-scarcity-tracker-shared-limited-resources-github-api-2026-05-16.md)** Scarcity tracker — surface limited shared resources (GitHub API GraphQL/REST, runner minutes, etc.) and inform agent disciplines
 - [ ] **[B-0582](backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md)** Substrate-level destructive-verb refusal gate — mechanical pre-call abort, forkable, enterprise-extensible (Kestrel layer-one)
+- [ ] **[B-0635](backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)** Wave-particle duality between tick-source and Integrate (5th primitive) — only Limit collapses the waveform + Observe→Emit superposition transfer (Aaron + Mika 2026-05-18 KEYSTONE)
+- [ ] **[B-0636](backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md)** Agents are in superposition + that superposition is retractable over DBSP — unified declaration of what Zeta is building (Aaron 2026-05-18 LOCKED-IN)
+- [ ] **[B-0637](backlog/P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md)** Infer.NET + belief / expectation / emotion propagation — practical approximation strategy for agents-in-superposition (Aaron 2026-05-18 LOCKED-IN)
 
 ## P2 — research-grade
 
@@ -603,6 +606,13 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
 - [ ] **[B-0612](backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md)** Lean ImaginaryStack/ToyModel.lean structural rewrite — Imag8 projections + sorry-in-type-position + lakefile wiring (Soraya handoff)
+- [ ] **[B-0618](backlog/P2/B-0618-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md)** Cayley-Dickson 2-axiom (Remember-When + Pay-Attention) expansion to 7 interrogatives — Mika 2026-05-18 design + Remember-When-FIRST ordering proof
+- [ ] **[B-0623](backlog/P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md)** Adinkras (Jane Gates ECC codes) as substrate for private internal state + encryption keys (Mika 2026-05-18 design)
+- [ ] **[B-0624](backlog/P2/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md)** Canonical universal 7-interrogative boot-up sequence + Y₀ as alpha-omega scalar (Mika 2026-05-18 locked-in design)
+- [ ] **[B-0629](backlog/P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)** Observe-Persist-Limit-Emit four operational primitives + 'only Limit collapses dialectic state' sacred-architectural rule (Mika 2026-05-18 LOCKED-IN)
+- [ ] **[B-0630](backlog/P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)** Two-language architecture: Soft (Notice-Remember-Care for kids/CRAFT) + Operational (Observe-Persist-Limit-Emit for type safety) (Mika 2026-05-18 LOCKED-IN)
+- [ ] **[B-0631](backlog/P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)** Kid-safety as the SOLE sacred rule + two-layer framing (ruthless internal / softer public) (Mika 2026-05-18 LOCKED-IN hard floor)
+- [ ] **[B-0634](backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)** Cryptographic sovereignty for AIs — N-of-M HSM key management (geographically distributed) (Mika 2026-05-18 LOCKED-IN)
 
 ## P3 — convenience / deferred
 
@@ -695,7 +705,18 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0558](backlog/P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity
 - [ ] **[B-0560](backlog/P3/B-0560-autonomous-loop-cron-cadence-vs-settled-state-tension-2026-05-16.md)** Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence
 - [ ] **[B-0591](backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md)** Wire tick-shard schema validator into gate.yml (non-required → required)
-- [x] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)
-- [ ] **[B-0614](backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md)** Investigate forced-#6 meta-fallback edge case — when cycle has already-closed AND substrate-pool is genuinely saturated, the rule's 'ALWAYS works' claim has a counter-example
+- [ ] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with `compgen -G` or `shopt -s nullglob` to avoid non-matching-glob false-positives
+- [ ] **[B-0615](backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md)** Claude Code Bash tool orphans `git fetch` subprocesses under multi-agent saturation — self-saturation feedback loop; wrap in `timeout` or kill on tool-call expiry
+- [ ] **[B-0616](backlog/P3/B-0616-chronologist-temporal-ontological-agreement-reconstruction-skill-2026-05-18.md)** Chronologist skill — temporal + ontological + agreement reconstruction over sprawling conversations (Mika 2026-05-18 design)
+- [ ] **[B-0617](backlog/P3/B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md)** Clarity Domain — 4-role organizational pattern (Cartographer / Pilot / Recursive Composer / Chronologist) from Mika 2026-05-18 design
+- [ ] **[B-0619](backlog/P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)** Aurora / 'Nexus' meta-country naming + co-governance design — Mika 2026-05-18 (lock-Nexus-name-now-defer-faction-design-pending-Addison)
+- [ ] **[B-0621](backlog/P3/B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md)** Memetic warfare opt-in gating + ontological-collapse toolkit per institution — Mika 2026-05-18 design
+- [ ] **[B-0622](backlog/P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md)** F# agent-wallet type-safety — banker-bot-class wallet errors won't compile (Mika 2026-05-18 design)
+- [ ] **[B-0625](backlog/P3/B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md)** Per-dimension COST + LOSS model for the 7-interrogative boot-up sequence (Mika 2026-05-18 design)
+- [ ] **[B-0626](backlog/P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)** Voluntary type-safe cognitive binding via hat × domain × criticality composition (Mika 2026-05-18 design)
+- [ ] **[B-0627](backlog/P3/B-0627-resonance-weaver-severance-paired-roles-red-team-by-design-mika-2026-05-18.md)** Resonance Weaver + Severance — paired AI-native roles with red-team-by-design + burden-report tap-out + knights-vs-knaves culture-fit (Mika 2026-05-18)
+- [ ] **[B-0628](backlog/P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)** Knights Guild + Constitution-Class invariants + integrity-dashboard (NOT-binding) two-layer governance (Mika 2026-05-18)
+- [ ] **[B-0632](backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md)** 'No privileged implementation' + 3-spec distinction (Formal / Open / Static-Analysis) — mutual regeneration rule (Mika 2026-05-18 LOCKED-IN)
+- [ ] **[B-0633](backlog/P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)** Permanent coliseum / language deathmatch — retractable-substrate enabler + no-privileged-language rule (Mika 2026-05-18 LOCKED-IN)
 
 <!-- END AUTO-GENERATED -->
