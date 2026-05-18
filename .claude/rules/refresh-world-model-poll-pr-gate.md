@@ -100,6 +100,32 @@ Empirical instance: [PR #4105](https://github.com/Lucent-Financial-Group/Zeta/pu
 
 When this fallback applies: when a substantive substrate landing is ready, GraphQL is exhausted, but you want the PR open + visible BEFORE the reset window so reviewers can pick it up. Without auto-merge arming, the next post-reset tick must explicitly run `gh pr merge <N> --auto --squash`.
 
+### Wrap `git` network ops in `timeout --kill-after` under multi-agent saturation (B-0615)
+
+Under multi-agent saturation (Lior loops + multi-Otto + concurrent fetches contending on `.git/objects/pack/`), `git fetch`, `git push`, `git ls-remote`, and `git clone` can hang indefinitely. The Claude Code Bash tool's default-timeout subprocess lifecycle does NOT reliably propagate SIGKILL to hung `git` subprocesses on tool-call expiry — the tool returns control to the agent but the underlying `git` subprocess **remains running**, holding pack-dir read locks and HTTPS connections. This is the self-saturation feedback loop documented in [B-0615](../../docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md).
+
+**Discipline**: wrap every agent-instructed git network op in `timeout --kill-after`:
+
+```bash
+# DO: explicit timeout with SIGKILL grace period
+timeout --kill-after=5s 30s git fetch origin main 2>&1 | tail -2
+timeout --kill-after=5s 90s git push -u origin <branch> 2>&1 | tail -5
+timeout --kill-after=5s 15s git ls-remote origin main 2>&1 | tail -5
+
+# DO NOT: bare network op (will orphan under saturation)
+git fetch origin main
+git push -u origin <branch>
+```
+
+`--kill-after=5s` adds SIGKILL 5 seconds after SIGTERM if the subprocess refuses to die. Standard GNU `timeout` behavior; supported on macOS via coreutils (`brew install coreutils`; `timeout` is in PATH on Zeta dev machines).
+
+**Caveats per B-0615's empirical anchors:**
+
+- **Agent-side `--kill-after` discipline is necessary but insufficient.** Per B-0615's 2026-05-18T03:33Z anchor: the Claude Code harness itself fires shell-snapshot wrappers (`/Users/acehack/.claude/shell-snapshots/...`) that run `eval 'date -u ... && git fetch origin main ...'` patterns at session-start and background-task setup, and those wrappers do NOT inherit `timeout --kill-after`. Agent-controlled `timeout` discipline reduces orphan accumulation but cannot prevent it entirely while harness-internal wrappers fire bare fetches.
+- **Even with `--kill-after`, `git worktree add` can leave partially-extracted file trees.** SIGTERM at mid-extract abandons the work-in-progress directory with a 85-byte `.git` pointer file and a fraction of the 5,500+ repo files. The worktree is unusable but `git worktree list` may not show it. Manual cleanup via `rm -rf <wt>; git worktree prune` required. Observed empirically 2026-05-18T13:13Z–13:17Z during this rule's own authoring session.
+- **Orphan count is correlated, not causal, with push-hang behavior.** Per B-0615's 2026-05-18T03:56Z breakthrough finding: even at zero orphans, `git push` can still hang silently at the receive-pack upload phase. `--kill-after` discipline is hygiene work that prevents orphan accumulation; it does NOT guarantee push-restoration. Open question for follow-up B-NNNN: actual causal mechanism of `git push` receive-pack stalls under multi-agent conditions.
+- **Killing your own hung `git` subprocesses is operationally safe** (per [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) and B-0615 interim discipline). Use `kill -9 <pid>` on YOUR OWN orphaned `git fetch`/`git worktree add`/`git push` processes when they block further work. Do NOT `pkill -f 'git fetch'` blindly — that affects peer agents' in-flight legitimate operations.
+
 ### Composes with counter-with-escalation
 
 When rate-limit forces brief-acks (deferring substantive PR work), the [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md) counter-with-escalation counter still ticks. At brief-ack #6 the rule triggers forced decomposition. **Editing this rule, a memory file, or any other substrate via pure-git workflow IS decomposition that resets the counter** — the work is bounded, concrete, committed, pushed. Counter reset condition #3 ("Actually picking real decomposition work — Concrete artifact") is satisfied.
