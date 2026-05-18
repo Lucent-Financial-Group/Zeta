@@ -275,8 +275,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0468](backlog/P1/B-0468-product-repo-split-adr-2026-05-14.md)** ADR — product-repo split decisions; closes B-0425
 - [x] **[B-0469](backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md)** Scaffold Lucent-Financial-Group/civsim public repo (Stage 1)
 - [ ] **[B-0470](backlog/P1/B-0470-civsim-zeta-version-pin-bump-2026-05-14.md)** Bump civsim .zeta-version from scaffold-template SHA to apply-time Zeta main SHA
-- [ ] **[B-0471](backlog/P1/B-0471-mirror-beacon-prior-art-audit-2026-05-14.md)** Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate
-- [ ] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
+- [x] **[B-0471](backlog/P1/B-0471-mirror-beacon-prior-art-audit-2026-05-14.md)** Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate
+- [x] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
 - [ ] **[B-0473](backlog/P1/B-0473-mirror-beacon-promotion-gate-protocol-2026-05-14.md)** Mirror→Beacon promotion gate protocol — concrete criteria for repo-level graduation
 - [ ] **[B-0474](backlog/P1/B-0474-mirror-beacon-axis-adr-2026-05-14.md)** Mirror/Beacon axis ADR — two-axis design decision (extends 2026-04-22 ADR)
 - [x] **[B-0475](backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md)** Axis-3 prior-art audit — verify three-axis substrate composes without conflict
@@ -603,6 +603,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
 - [ ] **[B-0612](backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md)** Lean ImaginaryStack/ToyModel.lean structural rewrite — Imag8 projections + sorry-in-type-position + lakefile wiring (Soraya handoff)
+- [ ] **[B-0618](backlog/P2/B-0618-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md)** Cayley-Dickson 2-axiom (Remember-When + Pay-Attention) expansion to 7 interrogatives — Mika 2026-05-18 design + Remember-When-FIRST ordering proof
 
 ## P3 — convenience / deferred
 
@@ -695,7 +696,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0558](backlog/P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity
 - [ ] **[B-0560](backlog/P3/B-0560-autonomous-loop-cron-cadence-vs-settled-state-tension-2026-05-16.md)** Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence
 - [ ] **[B-0591](backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md)** Wire tick-shard schema validator into gate.yml (non-required → required)
-- [x] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)
-- [ ] **[B-0614](backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md)** Investigate forced-#6 meta-fallback edge case — when cycle has already-closed AND substrate-pool is genuinely saturated, the rule's 'ALWAYS works' claim has a counter-example
+- [ ] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with `compgen -G` or `shopt -s nullglob` to avoid non-matching-glob false-positives
+- [ ] **[B-0615](backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md)** Claude Code Bash tool orphans `git fetch` subprocesses under multi-agent saturation — self-saturation feedback loop; wrap in `timeout` or kill on tool-call expiry
+- [ ] **[B-0616](backlog/P3/B-0616-chronologist-temporal-ontological-agreement-reconstruction-skill-2026-05-18.md)** Chronologist skill — temporal + ontological + agreement reconstruction over sprawling conversations (Mika 2026-05-18 design)
+- [ ] **[B-0617](backlog/P3/B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md)** Clarity Domain — 4-role organizational pattern (Cartographer / Pilot / Recursive Composer / Chronologist) from Mika 2026-05-18 design
+- [ ] **[B-0619](backlog/P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)** Aurora / 'Nexus' meta-country naming + co-governance design — Mika 2026-05-18 (lock-Nexus-name-now-defer-faction-design-pending-Addison)
+- [ ] **[B-0621](backlog/P3/B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md)** Memetic warfare opt-in gating + ontological-collapse toolkit per institution — Mika 2026-05-18 design
+- [ ] **[B-0622](backlog/P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md)** F# agent-wallet type-safety — banker-bot-class wallet errors won't compile (Mika 2026-05-18 design)
 
 <!-- END AUTO-GENERATED -->
