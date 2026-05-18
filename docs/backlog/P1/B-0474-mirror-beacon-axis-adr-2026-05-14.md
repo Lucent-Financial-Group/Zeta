@@ -84,7 +84,7 @@ Required sections:
 - `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md`
 - `docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md`
 - `memory/feedback_otto_356_mirror_internal_vs_beacon_external_language_register_discipline_2026_04_27.md`
-- `docs/research/2026-05-14-mirror-beacon-two-axis-classification-matrix-b0472.md`
+- `docs/research/2026-05-18-mirror-beacon-two-axis-classification-matrix-b0472.md`
 - `docs/research/2026-05-14-mirror-beacon-promotion-gate-protocol-b0473.md`
 
 ## Closing B-0426
