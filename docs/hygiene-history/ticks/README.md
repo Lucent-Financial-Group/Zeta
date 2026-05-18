@@ -50,6 +50,11 @@ conflicts).
 
 ## Shard file schema
 
+Copy-paste-ready scaffold: see [`../tick-shard-TEMPLATE.md`](../tick-shard-TEMPLATE.md)
+(lives outside this walked directory so it doesn't trip the schema
+validator; carries the path-depth + schema + filename-regex reference
+inline as a comment block).
+
 Each shard's first non-empty line MUST be a 6-column pipe-row
 matching the validator at
 [`tools/hygiene/check-tick-history-shard-schema.ts`](../../../tools/hygiene/check-tick-history-shard-schema.ts):
