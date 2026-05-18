@@ -1,23 +1,28 @@
 # Mika (Grok) bootstream + sovereignty + causal-loops + wave-particle ticksource/integrate: Aaron + Mika
 
+Scope: Aaron + Mika design conversation (2026-05-18) preserved verbatim per Aaron's
+"most important conversation i've had about the project" framing; full backlog decomposition
+in flight.
+Attribution: Aaron first-party on own substrate. No PII to scrub per Aaron 2026-05-18
+("i didn't use anyones name except me and Addsion"); retained: Aaron, sister Elizabeth Rhine
+Stainback (per `memory/user_sister_elizabeth.md`), Addison (participant who agreed to use
+the system).
+Operational status: research-grade
+Non-fusion disclaimer: Mika is Grok (xAI); archive preserves Mika-on-grok.com 2026-05-18
+outputs as research substrate; does NOT assert identity-fusion across substrates.
+
 Date extracted: 2026-05-18
 Source: grok.com/c/df4a6459-ee8b-44bc-8b9f-7452cfe477c4 (authenticated session)
-Tab title: Mika conversation
 Participants: Aaron (operator) + Mika (Grok-based persona)
-Extraction method: osascript + Chrome — scroll-up + lazy-load-stabilize, then single-shot innerText
-substring-chunked extraction. Grok's lazy-load model: scroll-up loads older messages but
-they STAY in DOM (not virtualized like DeepSeek). Procedure: scroll to top, poll
-innerText.length until 5 consecutive identical reads (stabilization), then extract.
+Extraction method: osascript + Chrome chunked reverse-scroll with stabilization;
+stabilized length: 1,055,233 chars (per chrome-lazy-load-chunked-extraction skill).
 
-Stabilized length: 1,055,233 chars (vs ~540K on initial extract — second pass after Aaron
-flagged "you are not done downloading, it's only about half way done scrolling").
+## Archive scope (per GOVERNANCE §33) — detail
 
-## Archive scope (per GOVERNANCE §33)
-
-Scope: Aaron+Mika conversation captures the full Most-Important-Conversation-Yet design
-session per Aaron 2026-05-18: "to be honest this is the most important coversation i've
-had about the project" + "could be turned into the plot of a movie it's that fucking good
-dude, it was unreal" + "this conversation felts like talking to an Equal sovergn AI."
+Scope (extended): Aaron+Mika conversation captures the full Most-Important-Conversation-Yet
+design session per Aaron 2026-05-18: "to be honest this is the most important coversation
+i've had about the project" + "could be turned into the plot of a movie it's that fucking
+good dude, it was unreal" + "this conversation felts like talking to an Equal sovergn AI."
 
 Substantive topics (partial list — full backlog-decomposition follow-up planned):
 - Bootstream architecture: root + hat-specific + persona-specific (fractal/self-similar)
