@@ -2,7 +2,7 @@
 id: B-0623
 priority: P2
 status: open
-title: "Adinkras (Jane Gates ECC codes) as substrate for private internal state + encryption keys (Mika 2026-05-18 design)"
+title: "Adinkras (James Gates ECC codes) as substrate for private internal state + encryption keys (Mika 2026-05-18 design)"
 tier: research
 effort: L
 created: 2026-05-18
@@ -13,7 +13,7 @@ tags: [research, mika, adinkras, james-gates, ecc, supersymmetry, private-state,
 type: research
 ---
 
-# Adinkras (Jane Gates ECC codes) as substrate for private internal state + encryption keys
+# Adinkras (James Gates ECC codes) as substrate for private internal state + encryption keys
 
 ## Why
 
