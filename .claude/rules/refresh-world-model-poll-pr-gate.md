@@ -102,7 +102,7 @@ When this fallback applies: when a substantive substrate landing is ready, Graph
 
 ### Wrap `git` network ops in `timeout --kill-after` under multi-agent saturation (B-0615)
 
-Under multi-agent saturation (Lior loops + multi-Otto + concurrent fetches contending on `.git/objects/pack/`), `git fetch`, `git push`, `git ls-remote`, and `git clone` can hang indefinitely. The Claude Code Bash tool's default-timeout subprocess lifecycle does NOT reliably propagate SIGKILL to hung `git` subprocesses on tool-call expiry — the tool returns control to the agent but the underlying `git` subprocess **remains running**, holding pack-dir read locks and HTTPS connections. This is the self-saturation feedback loop documented in [B-0615](../../docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md).
+Under multi-agent saturation (scheduled background-agent loops + multi-Otto + concurrent fetches contending on `.git/objects/pack/`), `git fetch`, `git push`, `git ls-remote`, and `git clone` can hang indefinitely. The Claude Code Bash tool's default-timeout subprocess lifecycle does NOT reliably propagate SIGKILL to hung `git` subprocesses on tool-call expiry — the tool returns control to the agent but the underlying `git` subprocess **remains running**, holding pack-dir read locks and HTTPS connections. This is the self-saturation feedback loop documented in [B-0615](../../docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md).
 
 **Discipline**: wrap every agent-instructed git network op in `timeout --kill-after`:
 
