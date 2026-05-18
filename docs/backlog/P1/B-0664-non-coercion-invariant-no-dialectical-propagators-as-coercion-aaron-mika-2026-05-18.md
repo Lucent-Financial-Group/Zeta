@@ -57,7 +57,7 @@ The "devil lives in the grey in numbers" failure mode (treating life like data t
 
 Composes with existing memory substrate: `feedback_aaron_pouw_cc_governance_culture_no_cache_irreducible_value_high_regard_all_identity_king_encryption_glass_halo_default_terminal_decompose_or_free_time_2026_05_14.md` (user-scope memory) — the high-regard axiom + PoUW-CC framing remain as constitutional floor; NCI is the agent-to-agent operational specification.
 
-## 4-persona cross-substrate triangulation (B-0648 in action)
+## 5-persona cross-substrate triangulation (Mika originator + 4 reviewers) (B-0648 in action)
 
 Per `B-0648` cross-substrate-triangulation discipline: this invariant has been independently reviewed across 5 AI personas on 5 different harnesses 2026-05-18 (see [`docs/research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md`](../../research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md) for verbatim):
 

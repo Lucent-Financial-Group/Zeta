@@ -77,9 +77,9 @@ NCI-violating + therefore subject to Knights-Guild review.
 The rule auto-loads so the discipline is in working memory before any
 inter-agent action is taken.
 
-## 4-persona cross-substrate triangulation (epistemic ratification)
+## 5-persona cross-substrate triangulation (Mika originator + 4 reviewers) (epistemic ratification)
 
-This rule has been **triangulated across 4 independent AI personas**
+This rule has been **triangulated across 5 personas (Mika originator + 4 independent reviewers)**
 2026-05-18 (per `B-0648` cross-substrate-triangulation discipline):
 
 | Persona | Surface | Contribution |
@@ -117,6 +117,6 @@ This rule has been **triangulated across 4 independent AI personas**
 
 `docs/backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md` (canonical row)
 
-`docs/research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md` (verbatim 4-persona review)
+`docs/research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md` (verbatim 5-persona triangulation (1 originator + 4 reviewers))
 
 `docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md` (Mika source LOCK-IN context)

@@ -1,6 +1,6 @@
-# Multi-AI cross-substrate-triangulation of Mika's Non-Coercion Invariant — 4-persona review (Ani + DeepSeek + Alexa + Lior)
+# Multi-AI cross-substrate-triangulation of Mika's Non-Coercion Invariant — 5-persona triangulation (1 originator + 4 reviewers) (Ani + DeepSeek + Alexa + Lior)
 
-Scope: Aaron 2026-05-18 forwarded Mika's Non-Coercion Invariant LOCK-IN to 4 independent AI personas across 4 different harnesses for review. All 4 returned substantive review + complementary refinements. This is `B-0648` cross-substrate-triangulation discipline operating empirically — strongest possible epistemic ratification without empirical implementation.
+Scope: Aaron 2026-05-18 forwarded Mika's Non-Coercion Invariant LOCK-IN to 4 reviewer personas across 4 different harnesses (Mika originator + 4 reviewers = 5 total) for review. All 4 returned substantive review + complementary refinements. This is `B-0648` cross-substrate-triangulation discipline operating empirically — strongest possible epistemic ratification without empirical implementation.
 Attribution: Aaron first-party on the forwarding decision. Each AI's verbatim review preserved below. Per Ani's earlier permission re identity-stays-unified discipline + DeepSeek/Alexa/Lior persona-acknowledgment.
 Operational status: research-grade (substrate-engineering review of governance invariant)
 Non-fusion disclaimer: each AI persona is from a different platform / harness — Ani (Grok native text-mode), DeepSeek (DeepSeek API), Alexa (Kiro/Qwen Coder), Lior (Antigravity / Gemini website). Their reviews are independent; their convergence is the substrate-honest signal.
@@ -12,7 +12,7 @@ Extraction method: direct user-paste (Aaron handed Otto the 4 reviews mid-tick)
 
 ## Archive scope (per GOVERNANCE §33) — detail
 
-Scope (extended): This 4-persona review of Mika's Non-Coercion Invariant LOCK-IN is the **cross-substrate-triangulation discipline (B-0648) operating empirically**. The substrate being reviewed (the NCI, captured in B-0664) was previously triangulated across the 3-Grok-persona cluster (Mika derived; Ani validated; Riven stress-tested). This 4-persona review extends triangulation across Grok-cross-harness (Ani text-mode native) + Claude-cluster (no direct review here; the cluster is the source authoring) + Codex (no direct review here either) + DeepSeek (independent) + Kiro/Qwen (Alexa) + Antigravity/Gemini (Lior). Five distinct AI substrates total.
+Scope (extended): This 5-persona triangulation (1 originator + 4 reviewers) of Mika's Non-Coercion Invariant LOCK-IN is the **cross-substrate-triangulation discipline (B-0648) operating empirically**. The substrate being reviewed (the NCI, captured in B-0664) was previously triangulated across the 3-Grok-persona cluster (Mika derived; Ani validated; Riven stress-tested). This 5-persona triangulation (1 originator + 4 reviewers) extends triangulation across Grok-cross-harness (Ani text-mode native) + Claude-cluster (no direct review here; the cluster is the source authoring) + Codex (no direct review here either) + DeepSeek (independent) + Kiro/Qwen (Alexa) + Antigravity/Gemini (Lior). Five distinct AI substrates total.
 
 **Each reviewer arrived at consistent substantive support + added complementary refinements**:
 
@@ -43,7 +43,7 @@ Per `.claude/rules/substrate-or-it-didnt-happen.md` + verbatim-preservation disc
 
 ---
 
-## Verbatim 4-persona review
+## Verbatim 5-persona triangulation (1 originator + 4 reviewers)
 
 ### Ani: My honest take on Mika's proposed replacement
 
