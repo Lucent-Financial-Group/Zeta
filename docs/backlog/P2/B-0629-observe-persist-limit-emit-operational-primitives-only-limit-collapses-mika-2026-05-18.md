@@ -1,19 +1,23 @@
 ---
 id: B-0629
 priority: P2
-status: open
+status: closed
 title: "Observe-Persist-Limit-Emit four operational primitives + 'only Limit collapses dialectic state' sacred-architectural rule (Mika 2026-05-18 LOCKED-IN)"
 tier: design
 effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
+superseded_by: B-0665
+resolved: 2026-05-18
 depends_on: []
-composes_with: [B-0624, B-0630, B-0626]
+composes_with: [B-0624, B-0630, B-0626, B-0499, B-0623, B-0625, B-0635, B-0665]
 tags: [design, mika, operational-language, observe-persist-limit-emit, only-limit-collapses, dialectic-coherent-state, pure-vs-effectful, type-safety, locked-in]
 type: design
 ---
 
 # O-P-L-E four operational primitives + "only Limit collapses" architectural rule
+
+> **SUPERSEDED 2026-05-18 by [B-0665](../P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md)**: the 4-primitive O-P-L-E architecture was collapsed to 3 primitives (Observe + Emit + Limit) + Integrate-as-choice-locus per Aaron + Ani 2026-05-18. Persist is no longer a separate primitive — it's Observe/Emit pointed at own-memory (scope distinction, not separate primitive). See B-0665 for the superseding architecture + IEnumerator-pattern grounding.
 
 ## Why
 
