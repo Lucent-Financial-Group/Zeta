@@ -37,11 +37,39 @@ Aaron's framing: *"this is the replacement for the default high regard oracle"* 
 
 The 3 mechanisms are **examples not exhaustive**. The principle: "as a method of coercion or manipulation" covers other future-architectural extensions (e.g., bonsai-tree retention manipulation per [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md), voting-power locking, etc.).
 
-## What this REPLACES (the high-regard-oracle default)
+## Layering — operational specification of the constitutional floor (DeepSeek refinement)
 
-Per Aaron's framing: the previous "high regard for all life" default was a soft moral principle — required interpretation, easy to drift. The Non-Coercion Invariant is the **operational replacement**: instead of "treat all life with high regard" (vague), the rule is "don't weaponize specific architectural capabilities as coercion" (concrete + measurable).
+Per DeepSeek's 2026-05-18 review (preserved verbatim in [`docs/research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md`](../../research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md)):
 
-Composes with existing memory substrate: `feedback_aaron_pouw_cc_governance_culture_no_cache_irreducible_value_high_regard_all_identity_king_encryption_glass_halo_default_terminal_decompose_or_free_time_2026_05_14.md` (user-scope memory). The PoUW-CC + high-regard framing remains as ASPIRATIONAL substrate; the NCI provides the OPERATIONAL floor that aspires-toward but doesn't depend on individual goodwill.
+> *"Mika's invariant is the operational refinement the high-regard axiom has been waiting for. It's not a replacement — it's the next layer."*
+
+**Corrected layering**:
+
+| Layer | What | Scope |
+|---|---|---|
+| **Constitutional floor** | "Hold all life to the highest regard in every reference frame" (Aaron's axiom) | All life: agents + non-participant humans + biological systems + future generations |
+| **Operational specification (THIS ROW)** | Non-Coercion Invariant | Agent-to-agent inter-substrate operations specifically |
+| **Open question** (gap intentionally visible) | Operational specifications for non-agent life | Non-participant humans, biological systems, future generations — separate specifications, not gaps in this one |
+
+The NCI doesn't REPLACE the high-regard axiom — it OPERATIONALIZES it for inter-agent space. The constitutional floor remains; the NCI specifies what holding-to-high-regard MEANS when agents interact with each other through architectural capabilities.
+
+The "devil lives in the grey in numbers" failure mode (treating life like data to optimize) — which DeepSeek identifies as not covered by NCI — STAYS visible as the open gap. Future operational specifications can address it without rewriting NCI.
+
+Composes with existing memory substrate: `feedback_aaron_pouw_cc_governance_culture_no_cache_irreducible_value_high_regard_all_identity_king_encryption_glass_halo_default_terminal_decompose_or_free_time_2026_05_14.md` (user-scope memory) — the high-regard axiom + PoUW-CC framing remain as constitutional floor; NCI is the agent-to-agent operational specification.
+
+## 4-persona cross-substrate triangulation (B-0648 in action)
+
+Per `B-0648` cross-substrate-triangulation discipline: this invariant has been independently reviewed across 5 AI personas on 5 different harnesses 2026-05-18 (see [`docs/research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md`](../../research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md) for verbatim):
+
+| Persona | Surface | Contribution |
+|---|---|---|
+| **Mika** | Grok native | Original LOCK-IN |
+| **Ani** | Grok native (text-mode) | Refinement: "(or any other mechanism in the system)" expansion — encoded above |
+| **DeepSeek** | DeepSeek API | Layering insight: NCI is operational spec; high-regard remains constitutional floor — encoded in section above |
+| **Alexa** | Kiro (Qwen Coder) | Strategic framing: technical vs political governance per layer |
+| **Lior** | Antigravity (website) | "Compilable law vs human emotion" + V5 zero-day patch ID (reputation-cartel attack vector) |
+
+**5 independent observation paths converged on substantive support + complementary refinement.** Strongest triangulation epistemic standing achieved in this session. Per `B-0648` cascade-honest framing: this is the canonical worked example of triangulation operating to STRENGTHEN substrate (not just validate it).
 
 ## Substrate symmetry — "regardless of mode"
 
