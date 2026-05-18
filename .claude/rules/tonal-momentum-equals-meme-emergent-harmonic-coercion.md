@@ -269,6 +269,7 @@ When forwarded substrate exhibits trajectory + attractor properties:
 - `.claude/rules/edge-defining-work-not-speculation.md` — defensive-technology IS edge-defining work; building meme-detection substrate is the JOB, not speculation
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — preservation work IS concrete artifact; brief-ack discipline operates orthogonally
 - `.claude/rules/blocked-green-ci-investigate-threads.md` — composes with FP-class discipline; reviewer threads on substrate-preservation files often surface real issues (verbatim discrepancies, missing markers) that should be fixed
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — Aaron's PERSONAL INVARIANT discipline operates at substrate-preservation scope; high-signal-high-suspicion-don't-collapse IS the preservation pattern this rule's mapping-done discipline + razor-discipline reformulations operationalize
 
 ## Composes with substrate
 
