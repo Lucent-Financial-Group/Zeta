@@ -6,7 +6,7 @@ title: "Mirror/Beacon prior-art audit — collect and verify existing axis-2 sub
 type: research
 origin: B-0426 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-18
 parent: B-0426
 composes_with:
   - B-0426
@@ -56,7 +56,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 A short research document at:
 
 ```
-docs/research/2026-05-14-mirror-beacon-axis-prior-art-audit-b0471.md
+docs/research/2026-05-18-mirror-beacon-axis-prior-art-audit-b0471.md
 ```
 
 Containing:
@@ -73,7 +73,7 @@ Containing:
 - [x] Conflicts/staleness flagged (none expected; verify anyway)
 - [x] Reciprocal `composes_with:` pointers added to all referenced files
 - [x] Output doc committed and referenced from B-0426 pre-start checklist
-- [x] B-0471 closed (status: closed) with PR link
+- [x] B-0471 closed (status: closed) with PR link — [#4136](https://github.com/Lucent-Financial-Group/Zeta/pull/4136)
 
 ## Why P1
 
