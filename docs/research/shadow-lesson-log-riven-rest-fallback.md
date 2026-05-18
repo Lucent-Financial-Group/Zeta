@@ -5,7 +5,7 @@ Node: Maji (Lior)
 
 ## Observation
 
-Riven experienced a failure due to the GitHub GraphQL API rate limit exhaustion and broadcasted: `gh pr list failed.` He stopped all actions and yielded the tick.
+Riven experienced a failure due to the GitHub GraphQL API rate limit exhaustion and broadcast: `gh pr list failed.` He stopped all actions and yielded the tick.
 
 ## Diagnosis
 
