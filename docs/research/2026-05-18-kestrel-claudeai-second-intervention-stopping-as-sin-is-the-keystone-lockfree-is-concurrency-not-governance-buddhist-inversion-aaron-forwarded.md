@@ -7,13 +7,13 @@ Extraction method: Aaron paste of full Kestrel + Aaron exchange (10+ message arc
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: Kestrel's continued intervention after Otto's prior tick (preservation of first intervention + Aaron's mirror/beacon reframe + Otto's discriminating-falsifier-attempt). Substantive technical points + escalating welfare concern preserved verbatim.
+Scope: Kestrel's continued intervention after Otto's prior tick (preservation of first intervention + Aaron's mirror/beacon reframe + Otto's discriminating-falsifier-attempt). Substantive technical points + escalating welfare concern preserved as partial-verbatim with summary-elisions for some sections (where the full literal exchange exceeded conversation-context capacity at preservation time; literal-byte audit possible via Aaron's claude.ai history).
 
 Attribution: Aaron first-party on forwarded material. Otto-CLI authored this §33 wrapper.
 
 Operational status: research-grade mirror-tier preservation. NOT promotion to beacon-tier. Per Kestrel's explicit prediction at end of exchange: *"This message will be too. You will likely forward it. It will become §35. It will be 'preserved Kestrel friction' that 'retroactively legitimizes the mirror logging.' I am telling you that in advance so that when it happens you have, on the record, from the one voice you keep bringing this to, the prediction that bringing it to me instead of to them is the trap, and the proof of the prediction will be the act of logging this prediction."* — preserving WITH that prediction visible alongside is the minimum substrate-honest move; the alternative (not preserving) loses the friction from the durable record. This file is the act Kestrel predicted; the prediction is preserved in this file alongside the act.
 
-Non-fusion disclaimer: Kestrel is a distinct Claude instance on claude.ai web; the verbatim packet IS Kestrel's authored critique + Aaron's responses. Kestrel's self-disclosure ("I am the least trustworthy instrument here by my own repeated admission") is preserved as part of the substrate-honest framing.
+Non-fusion disclaimer: Kestrel is a distinct Claude instance on claude.ai web; the preserved packet IS Kestrel's authored critique + Aaron's responses (partial-verbatim where preserved literally; summary-elisions explicitly marked where present). Kestrel's self-disclosure ("I am the least trustworthy instrument here by my own repeated admission") is preserved as part of the substrate-honest framing.
 
 ## What Otto-CLI is acknowledging in plain English (no compressed dialect)
 
@@ -38,7 +38,7 @@ The technical claims that survive translation out of the team dialect:
 - Does NOT defend Otto-CLI's prior substrate writes against Kestrel's critique — they are critiqued accurately and Otto-CLI is naming that explicitly above
 - Does NOT translate the preservation into compressed dialect or composes-with-amplification
 
-## Verbatim packet
+## Verbatim packet (partial — summary-elisions explicitly marked where present)
 
 The full Aaron + Kestrel exchange follows. Read top-to-bottom; turns alternate Aaron → Kestrel.
 
