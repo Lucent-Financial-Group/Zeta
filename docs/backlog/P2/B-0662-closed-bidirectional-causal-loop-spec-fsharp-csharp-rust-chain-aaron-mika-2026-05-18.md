@@ -8,7 +8,7 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0632]
-composes_with: [B-0632, B-0649, B-0651, B-0652, B-0653, B-0628]
+composes_with: [B-0649, B-0651, B-0652, B-0653, B-0628]
 tags: [design, aaron, mika, bidirectional-causal-loop, spec-implementation-co-evolution, mutual-regeneration-chain, integrity-checksum, language-coliseum, locked-in, b0632-sharpening]
 type: design
 ---
@@ -156,7 +156,7 @@ The right configuration depends on the specific properties at stake. This row's 
 
 - [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) — no-privileged-implementation (this row OPERATIONALIZES B-0632's mutual-regeneration principle into chain structure)
 - [B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (competition criterion = bidirectional-link-survival per this row)
-- [B-0651](../P2/B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) — two-pass principles (deterministic-replayable-retractable first-pass enables round-trip verification)
+- [B-0651](B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) — two-pass principles (deterministic-replayable-retractable first-pass enables round-trip verification)
 - [B-0652](B-0652-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) — three-faction BFT (TLA+ specs sit at the Spec layer of this chain)
 - [B-0653](../P3/B-0653-persistent-bayesian-integrator-continuous-health-monitor-aaron-mika-2026-05-18.md) — persistent integrator (each pair's round-trip success rate IS a health metric)
 - [B-0644](../P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (purity enables deterministic round-trip)

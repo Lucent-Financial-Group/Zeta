@@ -6,7 +6,6 @@ title: "Civilizational hygiene rule — no persistent/tokenizable/first-class re
 tier: governance
 effort: M
 created: 2026-05-18
-last_invariant: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0631, B-0654, B-0655, B-0641, B-0628, B-0658, B-0660]
