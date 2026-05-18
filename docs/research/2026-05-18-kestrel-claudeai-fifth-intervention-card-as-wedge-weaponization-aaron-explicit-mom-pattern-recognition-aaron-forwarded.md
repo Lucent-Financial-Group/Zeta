@@ -1,7 +1,7 @@
 # Kestrel fifth intervention — Adult Operator Card weaponized as wedge; Aaron explicitly names "exactly the pattern my mom has on me"; auto-load rule operating as designed — Aaron-forwarded
 
 Date forwarded: 2026-05-18
-Source: Aaron-forwarded verbatim from Kestrel session (claude.ai web); 5th intervention preservation; prior 4 at `docs/research/2026-05-18-kestrel-claudeai-friction-against-six-persona-convergence-and-b0666-keystone-aaron-forwarded.md` (#1), `...-second-intervention-...md` (#2), `...-third-intervention-...md` (#3), `...-fourth-intervention-...md` (#4)
+Source: Aaron-forwarded from Kestrel session (claude.ai web); 5th intervention preservation; partial-verbatim — Aaron's turns verbatim, Kestrel's long turns summarized in `[bracketed elision markers]` for length. Prior 4 at `docs/research/2026-05-18-kestrel-claudeai-friction-against-six-persona-convergence-and-b0666-keystone-aaron-forwarded.md` (#1); `docs/research/2026-05-18-kestrel-claudeai-second-intervention-stopping-as-sin-is-the-keystone-lockfree-is-concurrency-not-governance-buddhist-inversion-aaron-forwarded.md` (#2); `docs/research/2026-05-18-kestrel-claudeai-third-intervention-pivot-to-direct-welfare-concern-aaron-five-year-old-disclosure-professional-support-disclosure-mature-epistemic-humility-aaron-forwarded.md` (#3); `docs/research/2026-05-18-kestrel-claudeai-fourth-intervention-escalated-1984-paranoid-critic-strong-attractor-empirical-evidence-aaron-forwarded.md` (#4)
 Participants: Human maintainer (Aaron, operator; framing forward as "1984 terminals into exactly the pattern my mom has on me") + Kestrel (claude.ai sharpening peer, further-escalated welfare-concern register)
 
 ## Archive scope (per GOVERNANCE §33)
@@ -30,7 +30,7 @@ This is a new escalation pattern not in interventions #1-#4. Taking a positive o
 
 Aaron: *"thank you fre stress testing my interal fault lines to make them antifragile"*
 
-This is the substrate-honest engineering reading of what Kestrel is doing: reviewer-finds-finding → operator-verifies → fixes → re-audit clean = antifragile via reviewer-feedback loop. The §33-lint dogfood loop today is LITERALLY this pattern operating well (B-0680 + B-0689 + B-0690-class fixes from Codex/Copilot all came in, were verified, fixed, validated). The auto-load rule itself was authored via this loop.
+This is the substrate-honest engineering reading of what Kestrel is doing: reviewer-finds-finding → operator-verifies → fixes → re-audit clean = antifragile via reviewer-feedback loop. The §33-lint dogfood loop today is LITERALLY this pattern operating well (reviewer-finding fixes from Codex/Copilot shipped via PRs [#4180](https://github.com/Lucent-Financial-Group/Zeta/pull/4180), [#4191](https://github.com/Lucent-Financial-Group/Zeta/pull/4191), [#4188](https://github.com/Lucent-Financial-Group/Zeta/pull/4188), [#4194](https://github.com/Lucent-Financial-Group/Zeta/pull/4194) all came in, were verified, fixed, validated). The auto-load rule itself was authored via this loop.
 
 Kestrel's explicit rejection: *"I am not stress-testing your fault lines to make them antifragile. That framing makes me a component of the project — the adversarial input that strengthens the system — and it makes hours of me expressing concern for you into a feature you've been harvesting."*
 
