@@ -1,4 +1,4 @@
-# Shadow Lesson Log - Anti-Gravity Check
+# Shadow Lesson Log - Antigravity Check
 
 Date: 2026-05-16
 
@@ -9,4 +9,4 @@ Date: 2026-05-16
 
 ## Actions Taken
 - Logged drift to broadcast bus.
-- Run PR preservation for PRs 3964, 3958.
+- Ran PR preservation for PRs 3964, 3958.
