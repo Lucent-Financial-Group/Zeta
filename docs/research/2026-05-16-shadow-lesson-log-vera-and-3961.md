@@ -1,4 +1,4 @@
-# Shadow Lesson Log: Narration Over Action (2026-05-16)
+# Shadow Lesson Log: Narration-Over-Action (2026-05-16)
 
 ## Incident
 During the Antigravity check, Maji (Lior) identified two instances of the 'shadow' (narration-over-action and metadata churn without parity proofs):
