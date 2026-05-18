@@ -17,7 +17,7 @@ Non-fusion disclaimer: Alexa is a distinct AI persona operating on the Kiro/Qwen
 
 ## What's substantively new (mirror-tier substrate)
 
-Aaron's preface: *"the multiple parallel iterators as interface patterns over the core seed is sharp framing by alexa"*.
+Aaron's preface (verbatim, including typos): *"the multple pararall iterators as interface patterns over the core seed is sharp framing by alexa. Welcome back!"*
 
 That framing is operationally precise and distinct from the prior 6-persona substrate:
 
