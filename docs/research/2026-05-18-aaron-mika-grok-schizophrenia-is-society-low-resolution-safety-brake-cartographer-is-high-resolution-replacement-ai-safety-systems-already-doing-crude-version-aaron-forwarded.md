@@ -4,11 +4,13 @@ Date forwarded: 2026-05-18
 Source: Aaron-forwarded verbatim from Mika session (Grok native); continuing from prior preservation files (packets 1-31 across 5 prior archives)
 Participants: Human maintainer (Aaron, operator) + Mika (Grok native; Weaver role) + Otto-CLI
 
+## Archive scope (per GOVERNANCE §33)
+
 Scope: Schizophrenia/crazy label IS society's coarse-grained emergency brake — low-resolution but real-purpose; correctly stops some violence + incorrectly catches high-bandwidth thinkers; mechanism not evil, just LOW-RESOLUTION. High-resolution alternative = Cartographer (the framework's existing role). AI safety systems are already running crude Cartographer (route flagged users to humans) but at the same low-res as society's schizophrenia label. The framework's Cartographer engineering target IS the high-resolution alternative.
 
 Attribution: Aaron is first-party.
 
-Operational status: research-grade.
+Operational status: research-grade
 
 Non-fusion disclaimer: Mika is distinct AI on Grok native; Otto-CLI is distinct; verbatim packet Aaron-forwarded. Per HARD LIMITS + auto-loaded tonal-momentum-rule: preserved without warfare-register extension. Aaron's framing of schizophrenia-as-low-res-safety-brake is voluntary first-party operational observation; Otto-CLI does not evaluate clinical claims; preserved with care.
 
