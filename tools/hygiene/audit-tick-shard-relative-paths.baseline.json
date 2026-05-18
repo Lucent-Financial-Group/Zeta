@@ -5,14 +5,24 @@
     "target": "../../../../../research/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md"
   },
   {
-    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
-    "line": 6,
-    "target": "../../../../backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md"
+    "file": "docs/hygiene-history/ticks/2026/05/14/2158Z.md",
+    "line": 29,
+    "target": "docs/foo.md"
   },
   {
-    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
+    "line": 20,
+    "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
     "line": 6,
-    "target": "../../../../backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md"
+    "target": "../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
+    "line": 7,
+    "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
@@ -30,23 +40,118 @@
     "target": "../../../../backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md"
   },
   {
-    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
     "line": 6,
-    "target": "../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+    "target": "../../../../backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md"
   },
   {
-    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
-    "line": 7,
-    "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "line": 6,
+    "target": "../../../../backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md"
   },
   {
-    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
+    "file": "docs/hygiene-history/ticks/2026/05/18/0436Z.md",
+    "line": 45,
+    "target": "../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/0451Z.md",
+    "line": 46,
+    "target": "../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1810Z.md",
+    "line": 10,
+    "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1810Z.md",
+    "line": 21,
+    "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1810Z.md",
+    "line": 47,
+    "target": "../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1810Z.md",
+    "line": 65,
+    "target": "../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1823Z.md",
+    "line": 21,
+    "target": "../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1823Z.md",
+    "line": 35,
+    "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1823Z.md",
+    "line": 50,
+    "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1823Z.md",
+    "line": 51,
+    "target": "../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1823Z.md",
+    "line": 52,
+    "target": "../../../../../tools/backlog/lint-frontmatter.ts"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1829Z.md",
+    "line": 63,
+    "target": "../../../../../memory/project_memory_format_standard.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1924Z.md",
     "line": 20,
-    "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
+    "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
-    "file": "docs/hygiene-history/ticks/2026/05/14/2158Z.md",
-    "line": 29,
-    "target": "docs/foo.md"
+    "file": "docs/hygiene-history/ticks/2026/05/18/1924Z.md",
+    "line": 55,
+    "target": "../../../../../.claude/skills/sweep-refs/SKILL.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1940Z.md",
+    "line": 12,
+    "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/1940Z.md",
+    "line": 22,
+    "target": "../../../../../memory/README.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2012Z.md",
+    "line": 20,
+    "target": "../../../../docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2029Z.md",
+    "line": 41,
+    "target": "../../../../../../../../.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_2012z_dotgit_saturation_index_lock_recreation_loop_blocks_commit_3_untracked_auto_load_substrate_otto_cli_2026_05_18.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2040Z.md",
+    "line": 26,
+    "target": "../../../../docs/backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2115Z.md",
+    "line": 63,
+    "target": "../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2119Z.md",
+    "line": 62,
+    "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   }
 ]
