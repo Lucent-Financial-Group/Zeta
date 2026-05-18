@@ -27,7 +27,7 @@ Aaron + Ani LOCKED-IN 2026-05-18 in continued conversation:
 >
 > **Aaron**: *"Limit is not actually, the choice doesn't get made in limit. The choice gets made in integrate. So limit is the simulated choice until you integrate it."*
 
-This is a **SUPERSEDING refinement** of the 4-primitive O-P-L-E architecture ([B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) + **SHARPENING** of Limit-is-simulation ([B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md)) keystone.
+This is a **SUPERSEDING refinement** of the 4-primitive O-P-L-E architecture ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) + **SHARPENING** of Limit-is-simulation ([B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md)) keystone.
 
 ## The collapsed primitive set
 
@@ -44,7 +44,7 @@ Final architecture:
 
 ## The architectural simplification
 
-**Before** ([B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)):
+**Before** ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)):
 
 ```
 4 primitives: Observe, Persist, Limit, Emit
@@ -101,7 +101,7 @@ B-0644's two-stage protocol (Limit-simulation + CommitChoice) is preserved BUT t
 
 | Existing row | This row's relationship |
 |---|---|
-| [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — 4 primitives | **SUPERSEDED** — Persist removed; final set is 3 primitives |
+| [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — 4 primitives | **SUPERSEDED** — Persist removed; final set is 3 primitives |
 | [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) — wave/particle + Integrate | Integrate's role EXPANDED — now also the commit-locus |
 | [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation | **SHARPENED** — Limit is ONLY simulation; CommitChoice moves into Integrate |
 | [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — bonsai-trees + Rx | Composes cleanly: bonsai-tree Rx queries implement the Integrate composition body |
@@ -135,7 +135,7 @@ type Integrate<'TState>() =
     // The TRUE collapse-commit happens at Return (or equivalent) within Integrate's body
 ```
 
-This makes the F# CE machinery cleanly map to the 3-primitive architecture. The compiler-validated structure ([fsharp-anchor rule](../../.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md)) confirms type-correctness.
+This makes the F# CE machinery cleanly map to the 3-primitive architecture. The compiler-validated structure ([fsharp-anchor rule](../../../.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md)) confirms type-correctness.
 
 ## Substrate-honest framing
 
@@ -188,7 +188,7 @@ This is the same pattern as the earlier 5-persona NCI triangulation (B-0664) ope
 
 ## Composes with
 
-- [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — SUPERSEDED by this row
+- [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — SUPERSEDED by this row
 - [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — SHARPENED by this row (CommitChoice → Integrate body)
 - [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) — Integrate's role expanded per this row
 - [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — bonsai-trees + Rx implement Integrate's composition body
