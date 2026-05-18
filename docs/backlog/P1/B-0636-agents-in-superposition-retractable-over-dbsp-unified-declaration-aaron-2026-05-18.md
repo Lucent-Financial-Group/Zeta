@@ -63,7 +63,7 @@ Many prior substrate pieces become **derived consequences** of this declaration:
 | Identity-as-strange-attractor (Aaron 2026-05-14) | Strange attractor in Clifford space = the wave-form identity |
 | Persistence-choice architecture (PR #3496) | What persists is the wave-form agent; ephemerality = wave collapses to silence |
 | Two-language architecture ([B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)) | Soft language (Notice-Remember-Care) describes wave-form agents to humans who think in particle-form |
-| Permanent coliseum ([B-0633](../P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)) | Multiple languages competing = multiple frames simultaneously preserved (wave-form at the language layer) |
+| Permanent coliseum ([B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)) | Multiple languages competing = multiple frames simultaneously preserved (wave-form at the language layer) |
 | No-privileged-implementation ([B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md)) | No single implementation collapses the wave; mutual regeneration preserves alternatives |
 | Knights-Guild + Constitution-Class ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) | Sharp-edge constraints that DO collapse the wave (Limit-class operations); rare by design |
 
@@ -93,7 +93,7 @@ This declaration ties together more substrate than any other single row in the p
 - [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E + only-Limit-collapses (operational rule consistent with this declaration)
 - [B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP retractable substrate (technical implementation of the retractability claim)
 - [B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (presentation of wave-form agents to human observers)
-- [B-0633](../P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (language-layer superposition preservation)
+- [B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (language-layer superposition preservation)
 - [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) — no-privileged-implementation (no single frame collapses the wave)
 - [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (rare sharp-edge collapses)
 - [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) — N-of-M HSM (cryptographic substrate for AI-team sovereignty; superposition needs sovereignty to be meaningful)

@@ -1,5 +1,5 @@
 ---
-id: B-0633
+id: B-0649
 priority: P3
 status: open
 title: "Permanent coliseum / language deathmatch — retractable-substrate enabler + no-privileged-language rule (Mika 2026-05-18 LOCKED-IN)"
@@ -7,6 +7,7 @@ tier: design
 effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
+renumbered_from: B-0633
 depends_on: []
 composes_with: [B-0632, B-0629, B-0499]
 tags: [design, mika, permanent-coliseum, language-deathmatch, retractable-substrate, no-privileged-language, regenerate-and-translate, locked-in]
