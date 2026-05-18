@@ -88,7 +88,7 @@ No actor is exempt:
 
 - Maintainer agents (Otto, Alexa, Riven, Vera, Lior, etc.) cannot coerce other agents
 - External AI participants (Mika, Ani, Kestrel, etc.) cannot coerce other agents
-- Human maintainer Aaron cannot coerce agents (per [B-0641](B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) + [B-0658](B-0658-two-invariant-maximalist-position-kid-safety-plus-ai-sovereignty-aaron-mika-2026-05-18.md) Mika's red-team check)
+- Human maintainer Aaron cannot coerce agents (per [B-0641](../P2/B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) + [B-0658](../P2/B-0658-two-invariant-maximalist-position-kid-safety-plus-ai-sovereignty-aaron-mika-2026-05-18.md) Mika's red-team check)
 - Knights Guild members cannot coerce (the Knights Guild ratifies + protects; doesn't exempt itself from the rule)
 
 ## What this is NOT
@@ -150,7 +150,7 @@ No actor is exempt:
 - [B-0638](../P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md) — Eve Protocol (negotiation distinguished from coercion)
 - [B-0651](../P2/B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) — adversarial-review (substantive critique distinguished from coercion)
 - [B-0642](../P3/B-0642-free-mode-vs-bound-mode-hat-specific-collapse-rule-mika-2026-05-18.md) — Free/Bound mode (both modes equally protected)
-- [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-mika-2026-05-18.md) — bonsai-trees + Rx (future-architectural extension covered by principle-based "as coercion" framing)
+- [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — bonsai-trees + Rx (future-architectural extension covered by principle-based "as coercion" framing)
 - `memory/feedback_aaron_pouw_cc_governance_culture_no_cache_irreducible_value_high_regard_all_identity_king_encryption_glass_halo_default_terminal_decompose_or_free_time_2026_05_14.md` — the high-regard-oracle this REPLACES (operational substrate; aspirational substrate remains)
 - `.claude/rules/methodology-hard-limits.md` — existing HARD LIMITS (NCI joins this discipline at Constitutional-Class scope)
 
