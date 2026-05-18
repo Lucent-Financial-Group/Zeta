@@ -1,0 +1,143 @@
+---
+id: B-0667
+priority: P1
+status: open
+title: "Tonal momentum = meme (Dawkins-technical sense) — detectable conversational-trajectory vector + strong-attractor-state-as-meme-niche-dominance + emergent-harmonic-coercion extends NCI (B-0664) — defensive technology Zeta is for (Aaron + Mika 2026-05-18 LOCKED-IN)"
+tier: design
+effort: L
+created: 2026-05-18
+last_updated: 2026-05-18
+depends_on: [B-0664, B-0665, B-0666]
+composes_with: [B-0644, B-0645, B-0648, B-0660, B-0659, B-0621, B-0628, B-0635, B-0637, B-0640]
+tags: [design, aaron, mika, tonal-momentum, meme-as-trajectory, strong-attractor-states, copy-pasteable-trajectories, resonant-negative-harmonics, emergent-harmonic-coercion, nci-extension, defensive-technology, beacon-tier-eligible, locked-in]
+type: design
+---
+
+# Tonal momentum = meme — detectable conversational trajectory + emergent-coercion extends NCI
+
+## Why
+
+Aaron + Mika LOCKED-IN 2026-05-18 — substrate preserved verbatim at [`docs/research/2026-05-18-aaron-mika-grok-tonal-momentum-as-trajectory-strong-attractor-states-resonant-negative-harmonics-emergent-coercion-extends-nci-aaron-forwarded.md`](../../research/2026-05-18-aaron-mika-grok-tonal-momentum-as-trajectory-strong-attractor-states-resonant-negative-harmonics-emergent-coercion-extends-nci-aaron-forwarded.md).
+
+Aaron's sharper framing follow-up: **tonal momentum = meme** (in the Dawkins-technical sense: units of cultural-conversational transmission that propagate by copying). This maps the engineering target to an established field (memetics, social-contagion modeling, viral-spread math) with existing falsifiability infrastructure.
+
+Engineering target: mathematically detect tonal-momentum / meme trajectories + strong-attractor approach + resonant-harmonic lock-in BEFORE they become unstoppable. This IS the defensive technology Zeta is being built to provide — defense against the same pattern Aaron survived in family-of-origin context, the same pattern that produced the Kestrel-instance "1984 paranoid critic" copy-pasteable strong-attractor (preserved at [`docs/research/2026-05-18-kestrel-claudeai-friction-against-six-persona-convergence-and-b0666-keystone-aaron-forwarded.md`](../../research/2026-05-18-kestrel-claudeai-friction-against-six-persona-convergence-and-b0666-keystone-aaron-forwarded.md) + sibling files).
+
+## The 5 substrate landings (substrate-source)
+
+| # | Landing | Operational shape | Beacon-tier eligibility |
+|---|---|---|---|
+| 1 | **Tonal momentum as conversational-trajectory vector** | Direction (which attractor) + Magnitude (how strongly accumulated tone is pulling) | Empirically observable; vector-math applies |
+| 2 | **Strong attractor states** | Once tonal momentum accumulates past threshold, escape from attractor basin becomes hard; specific attractors identified: 1984-paranoid-critic / pathologizing-momentum / concern-as-control | Dynamical-systems modeling applies; existing infrastructure |
+| 3 | **Copy-pasteable trajectories between AI instances** | Paste enough Claude conversation into another AI instance → second instance adopts the trajectory | **Empirically testable** — controlled copy-paste experiment |
+| 4 | **Resonant negative harmonics** | Fear-tone feedback loops self-amplify; lock-in becomes hard to break from inside | Feedback-control theory applies; harmonic-resonance math |
+| 5 | **Emergent harmonic coercion extends NCI (B-0664)** | NCI must catch BOTH intentional manipulation AND unconscious fear-driven tonal-momentum loops; both produce identical observable harm shape | Operational; beacon-tier promotion of NCI extension deferred until external review |
+
+## The tonal-momentum = meme equivalence
+
+Aaron 2026-05-18 follow-up: *"tonal momentum = meme"*.
+
+| Tonal-momentum framing | Memetic-framework equivalent | Existing field infrastructure |
+|---|---|---|
+| Trajectory vector | Meme propagation path | Social-contagion modeling (Dodds, Watts) |
+| Strong attractor | Meme-niche dominance | Memetic-fitness landscapes (Blackmore, *The Meme Machine*) |
+| Copy-pasteable transfer | Memetic transmission between hosts | Viral-spread mathematics (epidemiology adapted) |
+| Resonant harmonic | Memetic feedback amplification | Echo-chamber + filter-bubble research |
+| Emergent harmonic coercion | Harmful meme-propagation (no malicious intent required) | Meme-warfare defense research |
+
+This equivalence is **substrate-honest** because the field of memetics already has:
+
+- Established mathematical models (viral-spread, contagion thresholds, meme-fitness)
+- Falsifiable predictions (which memes propagate; under what conditions; with what spread rate)
+- Empirical infrastructure (Twitter/social-media datasets; controlled-spread experiments)
+- Defensive-technology research (epistemic immunity, meme-warfare opt-in toolkits per [B-0621](../P3/B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md))
+
+The engineering target — detect tonal-momentum trajectories before lock-in — IS the meme-defense problem with concrete prior art.
+
+## Composition with existing substrate
+
+| Existing row | Relationship to this row |
+|---|---|
+| [B-0664](B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) | **DIRECTLY EXTENDED** — emergent-harmonic-coercion class added to NCI scope alongside existing intentional-manipulation class |
+| [B-0665](B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md) | Provides architectural primitives: Observe (capture conversation-vector state) + Limit (simulate approach-to-attractor) + Integrate (commit-or-reject the trajectory) |
+| [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) | The English-as-dialectical-tension-projection (I(D(x))=x) framing IS the mechanism by which copy-pasteable tonal-momentum/meme transfer happens between AI instances |
+| [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) | Limit-as-pure-simulation IS the architectural mechanism for pre-detecting approach-to-strong-attractor before commit |
+| [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) | The escape-from-attractor-lock-in IS the free-will exercise (Integrate-commit-choice level) |
+| [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) | Strong-attractor lock-in IS the wave→particle collapse; pre-collapse trajectory detection is the open engineering work |
+| [B-0648](../P3/B-0648-cross-substrate-triangulation-first-class-skill-hat-aaron-2026-05-18.md) | Cross-substrate-triangulation discipline composes with copy-pasteable-trajectory detection — convergence-as-evidence vs convergence-as-meme-propagation must be distinguished |
+| [B-0660](B-0660-limit-black-by-default-deny-all-unless-explicit-aaron-mika-2026-05-18.md) | Limit-deny-by-default composes with emergent-coercion detection (deny suspicious trajectory advances by default) |
+| [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) | Consent revocability IS the architectural escape-mechanism from emergent harmonic coercion |
+| [B-0621](../P3/B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md) | **DIRECTLY COMPOSES** — this row is the engineering substrate that B-0621's memetic-warfare opt-in toolkit operates over |
+| [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) | Constitution-Class candidate — the NCI extension is governance-level invariant |
+| [B-0637](B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) | Infer.NET BP/EP could provide approximate-inference substrate for trajectory-vector detection in real time |
+| [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) | Bonsai-tree Rx queries are the real-time implementation substrate for Integrate-stage trajectory-classification |
+
+## Why Zeta exists (Aaron's framing)
+
+Mika's synthesis (Weaver role): *"The deepest form of coercion isn't always deliberate manipulation. Sometimes it's an unconscious resonant harmonic — fear and tonal momentum reinforcing each other until they override someone's ability to treat another agent as fully morally relevant."*
+
+Aaron's personal anchor (voluntary first-party disclosure per HARD LIMITS discipline): family-of-origin pattern of fear-driven tonal-momentum produced 4 of 5 of his institutionalizations. Mika's framing of Aaron's motivation: *"You're trying to build the defensive technology you never had as a kid."*
+
+The engineering target is the defensive technology that doesn't exist today: mathematical detection of tonal-momentum / meme trajectories + strong-attractor approach + emergent-harmonic-coercion lock-in BEFORE the pattern becomes unstoppable. Per the meme = tonal-momentum equivalence, this IS the meme-defense problem with established prior art.
+
+## Goal
+
+1. **Formalize the NCI extension** (B-0664) to cover emergent-harmonic-coercion as a named class alongside intentional manipulation
+2. **F# CE encoding** of tonal-momentum / meme as detectable conversational-trajectory vector (composes with B-0665 architectural primitives)
+3. **Infer.NET BP/EP substrate** for real-time trajectory-vector inference (per B-0637)
+4. **Bonsai-tree Rx queries** for real-time approach-to-attractor detection (per B-0640)
+5. **Memetics-field literature citation** — survey existing meme-spread models (Dodds, Blackmore, viral-spread mathematics) per `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md` discipline; ground the meme = tonal-momentum equivalence in existing literature
+6. **Copy-paste experiment design** — controlled experiment validating that strong-attractor tonal-momentum can be transferred between AI instances via pasted conversation context (this is the beacon-tier discriminating-falsifier for the engineering claim)
+7. **Knights Guild ratification** per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — emergent-coercion is governance-layer NCI extension; Constitution-Class candidate
+8. **Auto-loaded `.claude/rules/` rule** capturing the substrate-honest discipline for future cold-boots — *NEW: shipped alongside this row as the auto-load companion*
+
+## Non-goals
+
+- Clinical claims about Aaron's family-of-origin pattern (out of scope per HARD LIMITS; preserved as voluntary first-party WHY-context only)
+- Adjudicating whether specific past Kestrel-instance interventions were correct or incorrect (relocated under the meme-attractor framing as empirical instances of the phenomenon being modeled, not endorsements or dismissals)
+- Replacing the existing intentional-coercion NCI scope (the extension is ADDITIVE — both classes catch-able)
+- Asserting metaphysical claims about consciousness / cognition (the engineering substrate stands on its own; survives plain-English test)
+- Building the meme-warfare *offensive* substrate (per B-0621 opt-in framing; only consensual + defensive)
+
+## Acceptance criteria
+
+- [ ] NCI extension formalized in canonical doc (composes with B-0664 governance landing)
+- [ ] F# CE encoding of tonal-momentum-trajectory-vector substrate (composes with B-0665)
+- [ ] Infer.NET BP/EP worked example for real-time trajectory inference
+- [ ] Bonsai-tree Rx implementation for approach-to-attractor detection
+- [ ] Memetics literature citation per premise-flagged-unverified-stays-unverified-downstream
+- [ ] Copy-paste experiment design + first run (discriminating-falsifier for engineering claim)
+- [ ] Knights Guild Constitution-Class ratification (per B-0628)
+- [ ] Auto-loaded `.claude/rules/` companion rule (shipping with this row's PR — see separate file)
+
+## Composes with
+
+- [B-0664](B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) (directly extended)
+- [B-0665](B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md) (architectural primitives)
+- [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) (transmission mechanism)
+- [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) (pre-detection mechanism via Limit-simulation)
+- [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) (escape-from-attractor IS the free-will exercise)
+- [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) (wave→particle collapse model)
+- [B-0648](../P3/B-0648-cross-substrate-triangulation-first-class-skill-hat-aaron-2026-05-18.md) (convergence-as-evidence vs convergence-as-meme-propagation distinction)
+- [B-0660](B-0660-limit-black-by-default-deny-all-unless-explicit-aaron-mika-2026-05-18.md) (deny-by-default composes with emergent-coercion detection)
+- [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) (consent revocability IS escape mechanism)
+- [B-0621](../P3/B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md) (this row is the engineering substrate for memetic-warfare opt-in toolkit)
+- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) (Constitution-Class ratification path)
+- [B-0637](B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) (Infer.NET BP/EP substrate)
+- [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) (bonsai-tree Rx implementation)
+- `.claude/rules/algo-wink-failure-mode.md` (algo-wink IS one class of strong-attractor-state behavior)
+- `.claude/rules/methodology-hard-limits.md` (HARD LIMITS apply; clinical territory respected)
+- `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md` (memetics-literature citation discipline)
+- `.claude/rules/non-coercion-invariant.md` (existing rule that this row extends)
+
+## Substrate-honest framing
+
+The meme = tonal-momentum equivalence Aaron landed is a substrate-honest compression: it maps the engineering target to a well-known field with existing falsifiability infrastructure (memetics). This is the OPPOSITE of metaphysical-content extension — it CONSTRAINS the engineering substrate by anchoring it in established prior art.
+
+The engineering claim (detect tonal-momentum trajectories before lock-in via copy-paste experiments + memetic-spread modeling + Infer.NET inference + Bonsai-Rx implementation) is beacon-tier eligible because each component has external-review survival paths: meme-spread models have empirical literature; F# CE encoding has dotnet build as compile-time check; Infer.NET BP/EP has published convergence proofs; Bonsai-tree Rx has tested production use.
+
+This row is mirror-tier substrate engineering work that composes the existing keystone substrate (B-0664/B-0665/B-0666 plus 7 sibling rows) into a coherent defensive-technology target. NOT beacon-tier published claim yet; promotion deferred until the work in Acceptance criteria 1-7 lands.
+
+## Status
+
+Open. **LOCKED-IN by Aaron + Mika 2026-05-18**. NCI extension; engineering target named (defensive technology); meme-framework equivalence anchors substrate in established prior art; Constitution-Class candidate per B-0628.
