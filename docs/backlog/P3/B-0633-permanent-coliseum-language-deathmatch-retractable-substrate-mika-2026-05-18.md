@@ -88,7 +88,7 @@ Aaron rejects the "F# generates everything" aspirational ideal as a pipe dream. 
 ## Composes with
 
 - [B-0632](B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) — no-privileged-implementation (this row IS that rule applied at language layer)
-- [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (the operational language; its primitives must translate cleanly across coliseum entrants)
+- [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (the operational language; its primitives must translate cleanly across coliseum entrants)
 - [B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP (retractable substrate that ENABLES the coliseum)
 - [B-0622](B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# agent-wallet type safety (F# strength domain; coliseum keeps F# revisitable but acknowledges its current strength here)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — F#-anchor (the F# compiler is one of the coliseum verifiers; not the only one)

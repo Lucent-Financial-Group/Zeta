@@ -82,7 +82,7 @@ This insight ties together MANY previously-disjoint substrate pieces:
 | **Z-of-I DBSP retractable substrate** ([B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)) | Makes Limit's retractability ACTUALLY work; collapse decisions can be unwound |
 | **Two-language architecture** ([B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)) | Soft-language Care = wave-form intent; Operational Limit = particle-form constraint application; the bridge IS Integrate |
 | **No-privileged-implementation** ([B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md)) | The wave/particle duality means there's no privileged "the one true form" either; both are equally real |
-| **Permanent coliseum** ([B-0633](B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)) | Translation between languages can happen in wave-form (carrying superposition) OR particle-form (single-reading); coliseum supports both |
+| **Permanent coliseum** ([B-0633](../P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)) | Translation between languages can happen in wave-form (carrying superposition) OR particle-form (single-reading); coliseum supports both |
 | **Adinkras / James-Gates ECC** ([B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md)) | ECC IS what allows the wave to be reconstructed if a Limit-collapse turns out wrong |
 | **F#-anchor + dotnet-build sanity check** rule | F# computation expressions are the substrate `Integrate` is built on; this rule's F# anchor proves the wave-form composition compiles |
 
@@ -135,7 +135,7 @@ This is the F# type-level encoding of the architectural rule.
 - [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (the four primitives that exist in both particle AND wave form per this row)
 - [B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (Care = wave-form intent; Limit = particle-form constraint; bridge IS Integrate)
 - [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) — no-privileged-implementation (the wave/particle duality applies at the spec/implementation layer too)
-- [B-0633](B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (translation can happen in wave OR particle form)
+- [B-0633](../P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (translation can happen in wave OR particle form)
 - [B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP retractable substrate (makes Limit's wave-form collapse actually retractable)
 - [B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras/Gates ECC (the error-correcting code that allows superposition reconstruction)
 - [B-0624](../P2/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — 7-interrogative cold-boot (orientation discipline before entering the wave-form composition)

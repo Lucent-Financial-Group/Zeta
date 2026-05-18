@@ -98,8 +98,8 @@ Aaron + Mika earlier discussed (line 1090s area in soft language design): the ga
 
 - [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E operational primitives (the technical half of this row)
 - [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — 7-interrogative cold-boot sequence (the orientation discipline that PRECEDES choosing a language)
-- [B-0625](B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (each language has different per-primitive costs)
-- [B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality determines which language is REQUIRED)
+- [B-0625](../P3/B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (each language has different per-primitive costs)
+- [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality determines which language is REQUIRED)
 - [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred rule (kids interface with the Soft language; this row's CRAFT curriculum work is the operational substrate)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2978 + 1090s + 2440-2454 — source design + LOCK-IN
 

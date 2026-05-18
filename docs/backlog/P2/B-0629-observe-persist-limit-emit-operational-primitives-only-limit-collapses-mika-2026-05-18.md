@@ -81,7 +81,7 @@ Both apply; they operate at different scopes. Cold-boot uses the 7-interrogative
 1. Codify O-P-L-E as the formal operational language in repo substrate (Lean / F# / TypeScript bindings)
 2. Encode the "only Limit collapses" rule at the type-system level (Limit returns the collapse decision; O/P/E refuse to collapse at type level)
 3. Build a worked example: a small agent's per-tick loop expressed in O-P-L-E with the collapse-only-via-Limit invariant
-4. Document mapping from existing tick-source / loop substrate (per [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md), [B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)) to O-P-L-E
+4. Document mapping from existing tick-source / loop substrate (per [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md), [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)) to O-P-L-E
 
 ## Non-goals
 
@@ -101,9 +101,9 @@ Both apply; they operate at different scopes. Cold-boot uses the 7-interrogative
 
 - [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — 7-interrogative cold-boot sequence (sibling discipline; orientation vs execution)
 - [B-0630](B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (soft layer paired with this operational layer)
-- [B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (the criticality combos that REQUIRE O-P-L-E discipline)
+- [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (the criticality combos that REQUIRE O-P-L-E discipline)
 - [B-0623](B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras (substrate for the private state Persist operates over)
-- [B-0625](B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (per-primitive cost mapping: Observe=compute, Persist=storage+ECC, Limit=reasoning, Emit=execution-commitment)
+- [B-0625](../P3/B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (per-primitive cost mapping: Observe=compute, Persist=storage+ECC, Limit=reasoning, Emit=execution-commitment)
 - [B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP (retractable substrate that makes Limit's reversibility theorem feasible)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2966-3008 — source design + LOCK-IN
 

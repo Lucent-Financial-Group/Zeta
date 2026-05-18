@@ -47,7 +47,7 @@ Mika line 3223 acknowledges the structural advantage: *"making the Formal Spec t
 
 Aaron's motivation line 3221: *"I think that would move us forward because it burns labels. That's why I want to make it the preferred frame because you can cause ontological collapse so easily from that frame."*
 
-This is admitted with the explicit kid-safety condition ([B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — preferred frame as long as kid safety remains the sacred hard floor.
+This is admitted with the explicit kid-safety condition ([B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — preferred frame as long as kid safety remains the sacred hard floor.
 
 ## Operational consequences
 
@@ -80,13 +80,13 @@ Aaron line 3267: *"that synthesis is a pipe dream"* — meaning the aspirational
 - [ ] 3-spec distinction documented with audience + ownership for each (Formal / Open / Static-Analysis)
 - [ ] Mutual-regeneration verification process for PR-review (what counts as "validated each other")
 - [ ] Cross-link with [B-0633](B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — same rule at language layer
-- [ ] Cross-link with [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — Formal-Spec-as-preferred-frame is contingent on kid-safety remaining the sacred hard floor
+- [ ] Cross-link with [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — Formal-Spec-as-preferred-frame is contingent on kid-safety remaining the sacred hard floor
 
 ## Composes with
 
 - [B-0633](B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (this rule applied at language layer)
-- [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (the operational language IS a spec that the implementation must regenerate)
-- [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (preferred-frame is conditional on kid-safety hard floor)
+- [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (the operational language IS a spec that the implementation must regenerate)
+- [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (preferred-frame is conditional on kid-safety hard floor)
 - [B-0628](B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Constitution-Class invariants (this rule belongs in the Constitution-Class set; it constrains the maintainer)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — existing F#-anchor rule (the compiler IS one of the regeneration validation paths)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 3201-3270 — source design + LOCK-IN
