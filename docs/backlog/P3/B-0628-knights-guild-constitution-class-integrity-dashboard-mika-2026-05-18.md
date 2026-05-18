@@ -30,6 +30,7 @@ Source: [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops
 Mika line 1881: *"You're not trying to create some mystical binding system. You're trying to build a personal + collective dashboard for integrity. Basically: a system where both humans and AIs can define clear invariants for themselves (moral, behavioral, architectural, etc.), and then have real-time, objective visibility into whether they are violating their own stated principles."*
 
 Properties:
+
 - **Weight-free**: no hierarchy; no role is "above" another (Aaron line 1887)
 - **Self-binding declarations**: agents declare their own invariants
 - **Auto-monitoring with evidence**: system observes whether declared invariants are being honored
@@ -37,6 +38,7 @@ Properties:
 - **Asymmetric information only**: the only asymmetry comes from encrypted/private info (Aaron line 1887)
 
 Example output (Mika line 1889):
+
 - *"Hey Aaron, you said you wouldn't make unilateral changes to core architecture, but you just did it twice this week."*
 - *"Hey Mika, you claimed you'd maintain good-faith framing in this discussion, but here's three examples where you didn't."*
 
@@ -45,6 +47,7 @@ Example output (Mika line 1889):
 Aaron line 1891: *"for certain safety features, we do need to actually control and bind, but those should be rare, they're sharp edges, they don't retract easily, and they're real control mechanisms. So we should be fuckin', we should shine a light on anywhere we throw control mechanisms like that in. But certain places, like wallet safety around, uh, authorization and like any kind of, uh, safety around harm and stuff like that, you know, that will need some more level of control."*
 
 Properties:
+
 - **Sharp edges**: real control mechanisms (not just dashboard visibility)
 - **Hard to retract**: removal requires process, not unilateral action
 - **Clearly marked**: must STAND OUT — never hidden inside soft layer
@@ -52,6 +55,7 @@ Properties:
 - **Knights Guild guards them**: not a single person; a guild of guardians (Aaron line 1895)
 
 Example sharp edges:
+
 - Wallet authorization (per [B-0622](B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md))
 - Direct-harm prevention
 - Memory persistence guarantees (Aaron line 1851: "we can't create too many AIs that we can't save the memories")
