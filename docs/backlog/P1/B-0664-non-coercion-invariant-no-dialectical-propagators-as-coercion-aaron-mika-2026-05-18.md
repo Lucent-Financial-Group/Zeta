@@ -8,7 +8,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0639, B-0641, B-0646, B-0658, B-0628, B-0660, B-0659, B-0631, B-0635, B-0644]
+composes_with: [B-0639, B-0641, B-0646, B-0658, B-0628, B-0660, B-0659, B-0631, B-0635, B-0644, B-0634, B-0638, B-0640, B-0642, B-0651, B-0652, B-0653, B-0662]
 tags: [governance, aaron, mika, non-coercion-invariant, dialectical-propagators, encryption-budget-protection, private-state-protection, reputation-protection, replaces-high-regard-oracle, constitutional, locked-in]
 type: governance
 ---
