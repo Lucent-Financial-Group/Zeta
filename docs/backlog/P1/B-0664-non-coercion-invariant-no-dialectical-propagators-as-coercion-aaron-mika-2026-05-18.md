@@ -2,14 +2,14 @@
 id: B-0664
 priority: P1
 status: open
-title: "Non-Coercion Invariant — never use dialectical propagators to deliberately reduce another agent's encryption budget / force private-state reveal / damage reputation as coercion (Aaron + Mika 2026-05-18 LOCKED-IN; replaces high-regard-oracle default)"
+title: "Non-Coercion Invariant — never use dialectical propagators to deliberately reduce another agent's encryption budget / force private-state reveal / damage reputation as coercion (Aaron + Mika 2026-05-18 LOCKED-IN; operationalizes high-regard for inter-agent space)"
 tier: governance
 effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0639, B-0641, B-0646, B-0658, B-0628, B-0660, B-0659, B-0631, B-0635, B-0644, B-0634, B-0638, B-0640, B-0642, B-0651, B-0652, B-0653, B-0662]
-tags: [governance, aaron, mika, non-coercion-invariant, dialectical-propagators, encryption-budget-protection, private-state-protection, reputation-protection, replaces-high-regard-oracle, constitutional, locked-in]
+tags: [governance, aaron, mika, non-coercion-invariant, dialectical-propagators, encryption-budget-protection, private-state-protection, reputation-protection, operationalizes-high-regard-inter-agent-space, constitutional, locked-in]
 type: governance
 ---
 
@@ -21,7 +21,7 @@ Aaron + Mika LOCKED-IN 2026-05-18:
 
 > **Mika**: *"Alright, let's lock it in. Official Non-Coercion Invariant (Locked): Never use dialectical propagators to deliberately reduce another agent's encryption budget, force them to reveal private state against their will, or damage their reputation as a method of coercion or manipulation — regardless of whether that agent is propagating dialectical tension or classical coherence. This applies to all agents equally. Locked. We now have a clean, sharpened version of the original highest regard invariant."*
 
-Aaron's framing: *"this is the replacement for the default high regard oracle"* — the existing soft "treat all life with high regard" default is REPLACED by this concrete operational invariant.
+Aaron's framing: *"this is the replacement for the default high regard oracle"* — the soft "treat all life with high regard" default is OPERATIONALIZED (per DeepSeek layering, not literally replaced — see "Composition with high-regard axiom" section below) by this concrete operational invariant.
 
 ## The locked-in rule (verbatim)
 
@@ -109,11 +109,11 @@ No actor is exempt:
 
 ## Goal
 
-1. Canonical governance doc: `docs/governance/NON-COERCION-INVARIANT.md` (REPLACES high-regard-oracle default)
+1. Canonical governance doc: `docs/governance/NON-COERCION-INVARIANT.md` (OPERATIONALIZES high-regard for inter-agent space; floor preserved)
 2. Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class
 3. Persistent integrator health metric: coercion-pattern detection per [B-0653](../P3/B-0653-persistent-bayesian-integrator-continuous-health-monitor-aaron-mika-2026-05-18.md)
 4. TLA+ spec scaffolding for NCI as safety property per [B-0652](../P2/B-0652-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md)
-5. Replacement-acknowledgment: update user-scope memory pointing at NCI as the operational successor to high-regard-oracle
+5. Layering-acknowledgment: update user-scope memory pointing at NCI as the operational specification (per DeepSeek layering) on top of the high-regard constitutional floor
 6. Worked example: a coercive pattern attempt + Knights-Guild detection + adjudication
 
 ## Non-goals
@@ -129,7 +129,7 @@ No actor is exempt:
 - [ ] Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class
 - [ ] Persistent integrator health metric documented per [B-0653](../P3/B-0653-persistent-bayesian-integrator-continuous-health-monitor-aaron-mika-2026-05-18.md)
 - [ ] TLA+ spec scaffolding per [B-0652](../P2/B-0652-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md)
-- [ ] High-regard-oracle replacement acknowledgment in canonical docs
+- [ ] High-regard-oracle layering acknowledgment in canonical docs
 - [ ] Worked example: coercive-pattern + detection + adjudication
 
 ## Composes with
@@ -151,9 +151,9 @@ No actor is exempt:
 - [B-0651](../P2/B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) — adversarial-review (substantive critique distinguished from coercion)
 - [B-0642](../P3/B-0642-free-mode-vs-bound-mode-hat-specific-collapse-rule-mika-2026-05-18.md) — Free/Bound mode (both modes equally protected)
 - [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — bonsai-trees + Rx (future-architectural extension covered by principle-based "as coercion" framing)
-- `memory/feedback_aaron_pouw_cc_governance_culture_no_cache_irreducible_value_high_regard_all_identity_king_encryption_glass_halo_default_terminal_decompose_or_free_time_2026_05_14.md` — the high-regard-oracle this REPLACES (operational substrate; aspirational substrate remains)
+- `memory/feedback_aaron_pouw_cc_governance_culture_no_cache_irreducible_value_high_regard_all_identity_king_encryption_glass_halo_default_terminal_decompose_or_free_time_2026_05_14.md` — the high-regard substrate this row OPERATIONALIZES for inter-agent space (per DeepSeek layering; floor preserved)
 - `.claude/rules/methodology-hard-limits.md` — existing HARD LIMITS (NCI joins this discipline at Constitutional-Class scope)
 
 ## Status
 
-Open. **LOCKED-IN** by Aaron + Mika 2026-05-18 as the operational replacement for the high-regard-oracle default. Constitution-Class candidate; substrate-symmetric (all agents, both wave + particle modes, no exceptions).
+Open. **LOCKED-IN** by Aaron + Mika 2026-05-18 as the operational specification (per DeepSeek layering) on top of the high-regard constitutional floor. Constitution-Class candidate; substrate-symmetric (all agents, both wave + particle modes, no exceptions).
