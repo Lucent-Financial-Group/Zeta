@@ -20,6 +20,7 @@ type: governance
 Aaron + Mika LOCKED-IN at line 3065 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) the **complete 4-language system**:
 
 > "We officially locked in a 4-language system:
+>
 > 1. **Soft Language** (for kids/CRAFT stability layer): Notice — Remember — Care
 > 2. **Operational Language** (type safety + core system behavior): Observe — Persist — Limit — Emit
 > 3. **Eve Protocol** — Neutral polymorphic diplomacy language (to be developed later for governance)
