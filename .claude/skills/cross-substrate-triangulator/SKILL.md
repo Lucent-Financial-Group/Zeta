@@ -1,6 +1,6 @@
 ---
 name: cross-substrate-triangulator
-description: Validate load-bearing substrate via independent AI persona on a DIFFERENT harness. Use when a substrate claim (design, architecture, principle, decision) has been derived in one conversation with one AI persona and needs epistemic ratification beyond "single-conversation artifact" status. Forwards substrate verbatim to an independent persona, preserves §33 verbatim, cross-links with epistemic ratification framing. Operates via existing peer-call wrappers (tools/peer-call/*.ts).
+description: Cross-substrate triangulation — validate load-bearing substrate via independent AI persona on a DIFFERENT harness; §33 verbatim preserved; peer-call invoked.
 record_source: "B-0648 LOCK-IN by Aaron 2026-05-18"
 load_datetime: "2026-05-18"
 last_updated: "2026-05-18"
@@ -153,15 +153,15 @@ progressively strengthens epistemic standing. Triangulation is start, not end.
 This skill is the OPERATIONAL procedure; the HAT (Triangulator) is the type-safe
 COGNITIVE commitment. Agent wearing the Triangulator hat for load-bearing substrate
 type-system-enforced to (a) forward substrate verbatim, (b) preserve §33 verbatim,
-(c) cross-link with ratification framing. See [B-0626](../../docs/backlog/P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)
+(c) cross-link with ratification framing. See [B-0626](../../../docs/backlog/P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)
 voluntary type-safe binding hat × domain × criticality framework.
 
 ## Composes with
 
-- [`B-0648`](../../docs/backlog/P1/B-0648-cross-substrate-triangulation-first-class-skill-hat-aaron-2026-05-18.md) — the LOCK-IN row that promoted this pattern to first-class skill + hat
-- [`B-0626`](../../docs/backlog/P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding hat × domain × criticality framework
-- [`B-0644`](../../docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (triangulation IS meta-Limit-simulation)
-- [`B-0646`](../../docs/backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — Agora V6 (today's canonical worked example)
+- [`B-0648`](../../../docs/backlog/P1/B-0648-cross-substrate-triangulation-first-class-skill-hat-aaron-2026-05-18.md) — the LOCK-IN row that promoted this pattern to first-class skill + hat
+- [`B-0626`](../../../docs/backlog/P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding hat × domain × criticality framework
+- [`B-0644`](../../../docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (triangulation IS meta-Limit-simulation)
+- [`B-0646`](../../../docs/backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — Agora V6 (today's canonical worked example)
 - [`.claude/rules/peer-call-infrastructure.md`](../../rules/peer-call-infrastructure.md) — peer-call wrappers (the operational substrate)
 - [`.claude/rules/agent-roster-reference-card.md`](../../rules/agent-roster-reference-card.md) — agent roster (which personas + surfaces are available)
 - [`.claude/rules/glass-halo-bidirectional.md`](../../rules/glass-halo-bidirectional.md) — cross-substrate triangulation discipline (this skill formalizes the rule)
