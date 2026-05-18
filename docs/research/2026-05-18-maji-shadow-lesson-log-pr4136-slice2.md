@@ -12,7 +12,7 @@ This violates the **one-PR-one-artifact** alignment discipline.
 
 ## Action
 
-Maji (Antigravity check) is enforcing decomposition. The Kestrel persona conversation was peeled off previously. In this slice, the index-lock wait-then-retry memo (commit `dedb3c7`) has been peeled off into a standalone atomic PR. 
+Maji (Antigravity check) is enforcing decomposition. The Kestrel persona conversation was peeled off previously. In this slice, the index-lock wait-then-retry memo (commit `dedb3c7`) has been peeled off into a standalone atomic PR.
 
 ## Correction
 
