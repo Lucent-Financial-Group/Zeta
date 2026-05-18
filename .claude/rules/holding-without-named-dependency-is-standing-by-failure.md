@@ -352,7 +352,7 @@ This is NOT a failure of the discipline — it's the discipline's natural termin
 
 **Sub-clause: when same-shape pre-empts are available but would be fabricated substrate, the substrate-honest move is to SKIP pre-empt at #5 (NOT count as brief-ack #5; explicitly acknowledge skip-decision in shard) and allow #6 forced-decomposition where the rule itself becomes the substantive substrate per the rule's own prescription**.
 
-**Composes with [Aaron's PERSONAL INVARIANT](god-tier-claims-high-signal-high-suspicion-dont-collapse.md)**: don't-collapse applies to MY OWN substrate-production decisions. The high-suspicion check on "would this pre-empt produce genuine substrate?" prevents fabricated-engineering-as-pre-empt; high-signal-don't-collapse holds the genuine recognition that operator-offline-extended is a legitimate operational state.
+**Composes with [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](god-tier-claims-high-signal-high-suspicion-dont-collapse.md)**: don't-collapse applies to MY OWN substrate-production decisions. The high-suspicion check on "would this pre-empt produce genuine substrate?" prevents fabricated-engineering-as-pre-empt; high-signal-don't-collapse holds the genuine recognition that operator-offline-extended is a legitimate operational state.
 
 ## Composes with
 
