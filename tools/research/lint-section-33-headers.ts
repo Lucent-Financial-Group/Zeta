@@ -66,7 +66,15 @@ function parseArgs(argv: string[]): Args {
         const next = argv[i + 1];
         if (a === "--file" && next) { args.files.push(next); i++; }
         else if (a === "--strict") { args.strict = true; }
-        else if (a === "--max-header" && next) { args.maxHeader = parseInt(next, 10); i++; }
+        else if (a === "--max-header" && next) {
+            const parsed = Number(next);
+            if (!Number.isFinite(parsed) || parsed < 1 || !Number.isInteger(parsed)) {
+                process.stderr.write(`--max-header requires a positive integer; got: ${next}\n`);
+                process.exit(2);
+            }
+            args.maxHeader = parsed;
+            i++;
+        }
         else if (a === "--base-dir" && next) { args.baseDir = next; i++; }
         else if (a === "--help" || a === "-h") {
             process.stdout.write("Usage: bun tools/research/lint-section-33-headers.ts [--file PATH] [--strict] [--max-header N]\n");
@@ -78,8 +86,10 @@ function parseArgs(argv: string[]): Args {
 }
 
 function isSection33File(content: string, maxHeader: number): boolean {
+    // Use same window as label-checking so detection + check stay consistent
+    // (per Copilot finding: inconsistent windows could detect-but-not-check)
     const lines = content.split("\n");
-    const window = lines.slice(0, Math.max(maxHeader, 30)).join("\n");
+    const window = lines.slice(0, maxHeader).join("\n");
     return SECTION_33_DETECTOR.test(window);
 }
 
@@ -96,12 +106,20 @@ function findMissingLabels(content: string, maxHeader: number): Array<{ label: s
     return missing;
 }
 
-function lintFile(path: string, maxHeader: number): Finding[] {
+function lintFile(path: string, maxHeader: number, errorOnUnreadable: boolean): Finding[] {
     const findings: Finding[] = [];
     let content: string;
     try {
         content = readFileSync(path, "utf8");
-    } catch (e) {
+    } catch {
+        if (errorOnUnreadable) {
+            findings.push({
+                file: path,
+                line: 0,
+                priority: "P0",
+                message: `cannot read file (typo'd path, moved, or permissions)`,
+            });
+        }
         return findings;
     }
     if (!isSection33File(content, maxHeader)) return findings;
@@ -122,7 +140,7 @@ function walkResearch(baseDir: string, files: string[]): void {
     let entries: string[];
     try {
         entries = readdirSync(baseDir);
-    } catch (e) {
+    } catch {
         return;
     }
     for (const entry of entries) {
@@ -140,18 +158,21 @@ function walkResearch(baseDir: string, files: string[]): void {
 function main(): void {
     const args = parseArgs(process.argv.slice(2));
     const files: string[] = [];
-    if (args.files.length > 0) {
+    const explicitFiles = args.files.length > 0;
+    if (explicitFiles) {
         files.push(...args.files);
     } else {
         walkResearch(args.baseDir, files);
     }
     const findings: Finding[] = [];
     let scanned = 0;
-    let s33 = 0;
+    let filesWithFindings = 0;
     for (const f of files) {
         scanned++;
-        const fileFindings = lintFile(f, args.maxHeader);
-        if (fileFindings.length > 0) s33++;
+        // Error on unreadable only when caller passed --file explicitly; suppress
+        // for tree walks where missing/transient entries are not user-actionable.
+        const fileFindings = lintFile(f, args.maxHeader, explicitFiles);
+        if (fileFindings.length > 0) filesWithFindings++;
         findings.push(...fileFindings);
     }
     // Group findings by file for readable output
@@ -169,9 +190,13 @@ function main(): void {
     if (findings.length === 0) {
         process.stdout.write(`OK: 0 findings across ${scanned} files\n`);
     } else {
-        process.stdout.write(`\nTotal: ${findings.length} finding(s) across ${byFile.size} file(s) (of ${scanned} scanned)\n`);
+        process.stdout.write(`\nTotal: ${findings.length} finding(s) across ${filesWithFindings} file(s) (of ${scanned} scanned)\n`);
     }
-    process.exit(args.strict && findings.length > 0 ? 1 : 0);
+    // Exit non-zero on any P0 (unreadable file) OR on findings when --strict.
+    const hasP0 = findings.some(f => f.priority === "P0");
+    process.exit(hasP0 || (args.strict && findings.length > 0) ? 1 : 0);
 }
 
-main();
+if (import.meta.main) {
+    main();
+}
