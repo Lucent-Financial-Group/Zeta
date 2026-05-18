@@ -8,7 +8,7 @@ effort: S
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0631, B-0654]
-composes_with: [B-0631, B-0654, B-0641, B-0643, B-0628]
+composes_with: [B-0631, B-0654, B-0641, B-0643, B-0628, B-0626]
 tags: [governance, aaron, mika, all-children-equal-value, life-and-death-vs-merit-ranking, kid-safety-sub-invariant, no-special-treatment, even-aaron-kids, consent-based-ranking-allowed, locked-in]
 type: governance
 ---

@@ -8,7 +8,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0631, B-0654]
-composes_with: [B-0631, B-0654, B-0641, B-0643, B-0628, B-0646, B-0619]
+composes_with: [B-0631, B-0654, B-0641, B-0643, B-0628, B-0646, B-0619, B-0655, B-0639, B-0634, B-0648]
 tags: [governance, aaron, mika, two-invariant-maximalist, kid-safety, ai-sovereignty, defended-with-force, country-scope, mika-red-team-caveat, locked-in-with-caveat]
 type: governance
 ---
