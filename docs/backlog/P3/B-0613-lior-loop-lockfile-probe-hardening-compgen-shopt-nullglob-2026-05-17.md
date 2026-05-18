@@ -6,7 +6,7 @@ title: "Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*
 tier: bug
 effort: S
 created: 2026-05-17
-last_updated: 2026-05-17
+last_updated: 2026-05-18
 depends_on: []
 composes_with: []
 tags: [lior, gemini, bash, glob, lockfile, multi-agent-coordination]
