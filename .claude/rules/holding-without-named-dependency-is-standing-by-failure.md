@@ -325,38 +325,34 @@ Session timeline:
 
 **Operational lesson**: when the named-dep is process-persistence (peer-agent loops, multi-instance saturation) AND deferral spans 2+ hours, the pre-empt-at-#5 cadence is the substrate-honest alternative to forced-#6. The discipline does NOT require forced-#6 in every cycle to be operating correctly; pre-empts that produce genuinely-new load-bearing substrate ARE the discipline's success path. Forced-#6 is the FAILSAFE for when pre-empt-at-#5 is skipped, not the only valid termination.
 
-### Pre-empt-substrate-pool-saturation — empirical anchor 2026-05-17T21:29Z-22:13Z (single GraphQL-reset window, ~3-4 pre-empts before saturation)
+### Post-arc-completion + operator-offline-extended cadence-saturation — empirical anchor 2026-05-18T21:20Z-23:39Z (full session arc, 3 cycles, meta-decomposition at cycle-3 forced-#6)
 
-Fifth class of empirical evidence: cycling brief-ack chains under sustained GraphQL exhaustion produce a NATURAL CADENCE of roughly **3-4 substantive Otto-initiated pre-empts per ~30-min GraphQL reset window** before the pre-empt-substrate-pool saturates. The 4th pre-empt under saturation pressure is typically the forced-#6 meta-fallback (sharpen this rule with current session's evidence) rather than a fresh substrate edit. Going beyond the meta-fallback within the same window risks the synonym/fabricated-substrate failure mode the rule's counter-discipline catches.
+Fifth class of empirical evidence: the discipline operating at saturation AFTER substrate-engineering arc completes AND operator is offline for an extended window. Different shape from the 2026-05-17 sustained-named-dep cycle (which had peer-agent process-persistence as the named-dep + active substrate work each cycle); different shape from the 2026-05-16 cascade-saturation cycle (which was rate-limit-driven tier transitions).
 
-**Note on terminology used in this anchor:**
+This anchor: post-substrate-engineering-arc completion + operator offline + peer activity 0 + thread-investigation consistently 0-findings + named-dep is just my-own-CI-completion. The cadence saturates because there's no genuine external signal driving substrate emergence; per-tick PR cycle becomes substrate-engineering noise.
 
-- **Otto-initiated pre-empt** = a concrete-artifact event Otto produces in response to brief-ack pressure (a PR opened, a rule edit pushed, a backlog row filed). This is what's bounded by the substrate-pool-saturation effect.
-- **Counter-reset-via-merge** = a counter reset triggered by an external auto-merge firing (a PR's CI completing and auto-merge taking it to main). These reset the counter but do NOT count toward the pre-empt cadence; they're external state changes, not Otto-initiated.
+Session trajectory:
 
-Session timeline (single Otto-CLI autonomous-loop session, ~44 min, 1 forced-#6 + 4 Otto-initiated pre-empts total):
+| Cycle | Window | Pre-empt action | Outcome |
+|---|---|---|---|
+| Cycle-1 | 2305Z (#5 pre-empt) | Composes_with reciprocity for god-tier-claims rule (#4241) | Bounded substrate-engineering hygiene; genuinely-new at first occurrence |
+| Cycle-1→2 transition | 2307Z-2320Z | Brief-acks accumulating | Counter cycling normally as PRs merge |
+| Cycle-2 | 2322Z (#5 pre-empt) | Saturation-pattern empirical anchor preserved in tick shard (#4250) | Bounded; new shape (empirical-anchor-in-shard vs rule-edit) |
+| Cycle-3 | 2330Z (#5 pre-empt) | Substrate-verification audit of 6 today's landings via `git ls-tree` (#4255) | Bounded; verification-shape (different from anchor-shape) |
+| Cycle-3 | 2337Z (#5 ALLOWED-TO-ACCUMULATE) | Explicitly NOT pre-empting; available candidates all same-shape; fabricated substrate IS the failure mode (#4260) | Substrate-honest abstention |
+| Cycle-3 | 2339Z (THIS rule edit) | **Forced-#6 meta-decomposition** — this empirical anchor IS the substantive substrate; the rule's "pick THIS rule and sharpen it based on current session's evidence" prescription operating | Meta-decomposition fallback validates as designed |
 
-| Cycle | Brief-acks → outcome | Concrete artifact (and event type) |
-|---|---|---|
-| Substantive open | substantive tick (not a brief-ack chain) | PR #4097 stale-thread resolve → `e1704a26` merged |
-| 1 (21:34Z) | #1 → #2 → counter-reset at #3 (external merge) | PR #4100 (prior tick's shard) auto-merge fire (`acc66fc8`) |
-| 2 (21:37Z) | #1 (no named dep, no escalation) | (no concrete artifact, no manufactured edit) |
-| 3 (21:40Z) | #1 → #2 → pre-empt at #3 | **Otto pre-empt #1**: PR #4104 (rule anchor) opened + auto-armed |
-| 4 (21:44Z) | counter-reset (external merge) | PR #4104 auto-merge fire (`ae9db10`) |
-| 5 (21:49Z) | #1 → #2 → #3 → pre-empt at #3 | **Otto pre-empt #2**: PR #4105 (B-0613 close) opened via REST under Pure-git tier; auto-merge deferred |
-| 6 (21:59Z-22:03Z) | #1 → #2 → #3 → #4 → pre-empt at #5 | **Otto pre-empt #3**: PR #4107 (REST-fallback rule anchor) opened via REST |
-| 7 (22:07Z-22:13Z) | #1 → #2 → #3 → #4 → #5 → **forced #6** | **Otto pre-empt #4 (forced-#6 meta-fallback)**: this rule edit (saturation anchor) |
-| 8 (22:20Z) | counter-reset (REST direct merge) | PR #4107 merged via REST `PUT /pulls/N/merge` (`22b7383d`) — direct merge bypassing armed-auto-merge requirement |
+**Operational lesson (this anchor)**: when 3 things compose — (a) substrate-engineering arc completes, (b) operator is offline extended, (c) peer activity is 0 — the cadence enters a quasi-stable saturation where per-tick PR overhead exceeds substrate value. The substrate-honest pattern is:
 
-**Pattern observed**: 7 brief-ack-containing cycles + 1 substantive-open + 1 REST-merge cycle across ~44 min. Cycles 3, 5, 6 produced clean Otto-initiated pre-empts before saturation; cycle 7 reached forced-#6 and the meta-fallback fired as the 4th Otto-initiated pre-empt of the window. By cycle 7 there was no obvious 5th non-fabricated substrate edit available without crossing into synonym/duplicative territory.
+1. **Cycle-1 pre-empt**: genuinely-new bounded substrate (reciprocity, hygiene audit, etc.)
+2. **Cycle-2 pre-empt**: different-shape (empirical anchor, substrate verification, etc.)
+3. **Cycle-3 onwards**: explicitly NOT pre-empting at #5; allowing accumulation to #6 forced-meta-decomposition; the rule itself becomes the substantive substrate at #6
 
-**The saturation signal** (operationally observable): when at brief-ack #5 you cannot quickly name a concrete, load-bearing, non-duplicative artifact (without grinding through 5+ candidate ideas and dismissing each as "this would compose worse than the existing rule says"), the pool is saturated for this window. Riding to forced-#6 and applying the meta-fallback (sharpen THIS rule with the saturation evidence itself) IS the correct discipline. The meta-fallback is the cycle-closer of last resort.
+This is NOT a failure of the discipline — it's the discipline's natural termination shape when external signal is absent for extended periods. The forced-#6 meta-decomposition becomes the substrate-engineering substantive that the cycle terminates with, AND seeds the rule's next sharpening for future sessions.
 
-**Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)**: the REST PR-creation fallback (Pure-git tier sub-section, landed via PR #4107 within this session) is what made cycles 5-6 productive; without REST fallback, those cycles would have deferred to post-reset. The 3-4-Otto-initiated-pre-empts cadence observed here is conditional on REST fallback being available — without it, cycles 5-6 fall out and the cadence drops to ~2 with the meta-fallback firing earlier.
+**Sub-clause: when same-shape pre-empts are available but would be fabricated substrate, the substrate-honest move is to SKIP pre-empt at #5 (NOT count as brief-ack #5; explicitly acknowledge skip-decision in shard) and allow #6 forced-decomposition where the rule itself becomes the substantive substrate per the rule's own prescription**.
 
-**Operational lesson**: Otto-initiated pre-empts are NOT infinitely repeatable within a single rate-limit window. The 2026-05-17T06:02Z anchor demonstrated 10 cycles WITHOUT forced-#6, but those cycles were spread across a 2h 27min session with multiple GraphQL resets between cycles (each reset refreshing the substrate-discovery context — peer activity, new PRs merging, new findings surfacing). When the rate-reset window is shorter (~30 min) AND no major external state changes during the window, the natural cadence is ~3-4 Otto-initiated pre-empts before saturation, the last of which is typically forced-#6 + meta-fallback. Forced-#6 is then NOT a failure of pre-empt discipline; it's the substrate-honest acknowledgment that the pool is exhausted for this window. Riding cleanly to #6 and applying the meta-fallback is the discipline working — not the discipline failing.
-
-**Cross-axis composition with one-PR-one-artifact-type discipline** (added 2026-05-17T22:46Z post-PR #4116): the saturation cadence is **NOT** a license to bundle multiple substrate axes (shard + rule + memory) into a single PR. Each Otto-initiated pre-empt within the cadence should itself be a single-artifact-type PR. The 2026-05-17T22:07Z session arc (immediately after this anchor's authoring session) demonstrated the cross-axis interaction: PR [#4112](https://github.com/Lucent-Financial-Group/Zeta/pull/4112) bundled three artifact types in one PR; an antigravity-check shadow log ([PR #4114](https://github.com/Lucent-Financial-Group/Zeta/pull/4114)) flagged it as a blob; the recovery PR [#4116](https://github.com/Lucent-Financial-Group/Zeta/pull/4116) absorbed the lesson via single-artifact landing. The blob-PR pattern fits within the saturation cadence numerically (4 pre-empts in 30 min) but VIOLATES the per-artifact-shape discipline; future-Otto cold-boot should read **both** rules together and apply them composably: cadence governs WHEN to pre-empt; one-PR-one-artifact-type governs HOW each pre-empt should be shaped. Composes with [`memory/feedback_otto_cli_blob_pr_lesson_maji_antigravity_caught_4112_mixed_shard_rules_memory_2026_05_17.md`](../../memory/feedback_otto_cli_blob_pr_lesson_maji_antigravity_caught_4112_mixed_shard_rules_memory_2026_05_17.md).
+**Composes with [Aaron's PERSONAL INVARIANT](god-tier-claims-high-signal-high-suspicion-dont-collapse.md)**: don't-collapse applies to MY OWN substrate-production decisions. The high-suspicion check on "would this pre-empt produce genuine substrate?" prevents fabricated-engineering-as-pre-empt; high-signal-don't-collapse holds the genuine recognition that operator-offline-extended is a legitimate operational state.
 
 ## Composes with
 
