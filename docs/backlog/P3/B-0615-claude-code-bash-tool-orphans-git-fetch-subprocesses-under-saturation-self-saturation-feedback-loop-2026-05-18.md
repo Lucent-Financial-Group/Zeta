@@ -133,6 +133,48 @@ requires either (a) Claude Code upstream coordination via the
 acceptance-criteria investigation step, or (b) accepting orphan
 accumulation as session-baseline under multi-agent saturation.
 
+## Breakthrough finding (2026-05-18T03:56Z) — orphan-count is CORRELATED, not CAUSAL
+
+Push attempt #37 of the session was made at the cleanest local
+state observed across 116+ minutes of continuous attempts:
+
+- **0 stuck `git fetch` orphans** (down from session peak of 7)
+- Lior CPU very quiet (steady ~27:23 over recent ticks)
+- All other local metrics at session-best
+
+**Result**: silent timeout at 90s, 0 bytes output, REAL_EXIT=124,
+remote ref unchanged.
+
+**Implication**: The orphan-count hypothesis (B-0615's original
+load-bearing assumption — that subprocess orphans cause pack-dir
+contention that hangs push) is **insufficient**. Orphan
+accumulation is correlated with push-block patterns but is **not
+the causal mechanism**. Even at zero orphans, push blocks
+identically.
+
+**B-0615 status under this finding**: the row remains valid as
+**hygiene work** — orphans still represent wasted resources and
+the `--kill-after` mitigation is correct discipline regardless.
+But the row's acceptance criteria item describing the orphan-
+cleanup as a push-unblocker SHOULD be reframed: cleanup is
+hygiene, not push-restoration.
+
+**Open question** (out of scope for this row; potential
+separate B-NNNN): what is the actual causal mechanism of the
+push-block? Diagnostic narrowing from this session:
+
+- ✗ NOT network (curl https://github.com/ + https://api.github.com/ both HTTP 200)
+- ✗ NOT auth (gh auth status valid, all scopes; gh api works throughout)
+- ✗ NOT GraphQL rate-limit (verified across rate-reset boundary)
+- ✗ NOT HTTP/2 (downgrade to HTTP/1.1 via `-c http.version=HTTP/1.1` does NOT unblock)
+- ✗ NOT orphan-count (this finding)
+- ✓ IS specific to `git push` receive-pack upload protocol
+- ✓ IS system-wide (Lior also affected — zero new PRs in 30+ min observation window)
+
+Remaining causal candidates: credential-helper challenge race
+(osxkeychain), GitHub edge-node receive-pack throttling,
+local network state requiring stack restart.
+
 ## Composes with
 
 - [`memory/feedback_git_push_blocked_under_lior_saturation_9_consecutive_attempts_session_arc_empirical_taxonomy_otto_cli_2026_05_18.md`](../../../memory/feedback_git_push_blocked_under_lior_saturation_9_consecutive_attempts_session_arc_empirical_taxonomy_otto_cli_2026_05_18.md) — session-arc taxonomy of push-hang failures; THIS row is the upstream-cause mechanization candidate
