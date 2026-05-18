@@ -122,7 +122,7 @@ This is the cleanest possible substrate-grounding of "informed consent" semantic
 
 ## Composes with
 
-- [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E primitives (this row sharpens the semantics of the Limit primitive)
+- [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E primitives (this row sharpens the semantics of the Limit primitive)
 - [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (this row says consent IS the Stage-1 simulation output)
 - [B-0641](../P2/B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) — First Moral Invariant (this row IS the architectural mechanism that makes B-0641 hold)
 - [B-0654](../P2/B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) — Child Safety > Consent (priority operates over the Limit-derived consent boundary)

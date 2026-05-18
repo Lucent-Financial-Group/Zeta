@@ -124,7 +124,7 @@ Each prior example is a domain-specific instance; this row is the substrate-prim
 
 ## Composes with
 
-- [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (this row defines the default-state of the Limit primitive)
+- [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (this row defines the default-state of the Limit primitive)
 - [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (the deny-default applies at Stage-1 simulation)
 - [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) — consent-as-Limit-operation (consent is the explicit Allow on top of deny-default)
 - [B-0641](../P2/B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) — First Moral Invariant (deny-default + re-evaluation-every-tick = revocability for free)
