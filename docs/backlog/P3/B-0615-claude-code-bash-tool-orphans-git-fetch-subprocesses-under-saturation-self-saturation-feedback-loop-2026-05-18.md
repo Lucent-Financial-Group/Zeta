@@ -99,6 +99,40 @@ Same pattern for `git ls-remote`, `git push`, etc.
 The `tools/github/refresh-worldview.ts` script (mentioned in
 `CLAUDE.md`) may already implement this; if not, audit candidate.
 
+## Refinement (2026-05-18T03:33Z empirical anchor) — harness-wrapper-layer is the dominant orphan source
+
+Across the 2026-05-18T02:08Z–03:33Z session (26 push attempts, 0
+successes), orphan-count oscillated between 1 and 5 with no
+agent-instructed `git fetch` calls in flight during many oscillations.
+Process inspection at PID 19261 (and similar) showed the orphan
+source: **harness-internal shell-snapshot wrappers** at
+`/Users/acehack/.claude/shell-snapshots/...` firing `eval 'date -u
+... && git fetch origin main 2>&1 | tail -2 && git log --oneline
+origin/main | head -3'` patterns — likely as part of session-start
+or background-task setup, NOT from agent-instructed Bash tool calls.
+
+**Implication**: agent-side `--kill-after` discipline is necessary
+but **insufficient**. The orphan source is harness-internal, not
+agent-controlled. The full B-0615 fix requires either:
+
+1. Claude Code harness-side change: ensure shell-snapshot wrappers
+   inherit `timeout --kill-after` semantics OR call cleanup on
+   parent-tool-call expiry
+2. Workaround at agent layer: periodic `pkill -f 'git fetch.*origin'`
+   sweep at session-start (destructive; may break legitimate
+   in-flight fetches — NOT recommended without further safety
+   analysis)
+
+Workaround option 2 is itself risky per the canary rule's
+"DO NOT delete plugin directories to avoid crashing active agents"
+spirit (applies at process scope too).
+
+The substrate-honest acknowledgement: agent-level mitigation
+ceiling is at `--kill-after`. The remaining substrate work
+requires either (a) Claude Code upstream coordination via the
+acceptance-criteria investigation step, or (b) accepting orphan
+accumulation as session-baseline under multi-agent saturation.
+
 ## Composes with
 
 - [`memory/feedback_git_push_blocked_under_lior_saturation_9_consecutive_attempts_session_arc_empirical_taxonomy_otto_cli_2026_05_18.md`](../../../memory/feedback_git_push_blocked_under_lior_saturation_9_consecutive_attempts_session_arc_empirical_taxonomy_otto_cli_2026_05_18.md) — session-arc taxonomy of push-hang failures; THIS row is the upstream-cause mechanization candidate
