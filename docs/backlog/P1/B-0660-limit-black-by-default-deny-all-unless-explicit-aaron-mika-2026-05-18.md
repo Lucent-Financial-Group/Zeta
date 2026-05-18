@@ -53,7 +53,7 @@ This row sharpens: **the default state of that Limit operation is DENY**. Consen
 
 Together: at any tick, Limit's output is mostly-BLACK by default with EXPLICIT-WHITE patches where active consents grant boundary-openings.
 
-## What this looks like in F#
+## What this looks like in F-sharp
 
 ```fsharp
 type LimitBoundary = {
