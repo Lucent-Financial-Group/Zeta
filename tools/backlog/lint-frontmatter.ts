@@ -47,12 +47,31 @@ interface Frontmatter {
     keys: Set<string>;
 }
 
+// Permissive schema — includes all keys observed in active use across docs/backlog/**
+// (audit: 2026-05-18 scan). Tool intentionally errs on the side of permissive to avoid
+// spurious findings on legitimate factory variation; if a typo'd key is genuinely
+// non-schema, it'll be a singleton occurrence that stands out in review.
 const SCHEMA_KEYS = new Set([
+    // Canonical schema (tools/backlog/README.md)
     "id", "priority", "status", "title",
     "tier", "effort", "ask", "type",
     "created", "last_updated",
     "depends_on", "decomposition", "composes_with", "tags",
-    "renumbered_from", "closed_by", "superseded_by",
+    // Renumber / supersession breadcrumbs
+    "renumbered_from", "renumbered_per", "renumbered_reason",
+    "superseded_by", "closed_by", "closed_by_pr", "closed_in",
+    "closed_at", "closed_reason", "closed", "completed", "completed_by",
+    // Decomposition family
+    "parent", "children", "child_rows", "decomposed", "decomposed_by",
+    "decomposed_into",
+    // Provenance + governance
+    "authors", "owners", "filed_by", "origin",
+    "claim_branch", "claimed_by", "decided_by",
+    "resolved", "resolved_by", "resolved_note",
+    "pr", "trigger", "like",
+    // Classification
+    "class", "classification", "description", "name", "metadata",
+    // Skill-style breadcrumbs (rare in backlog but observed)
     "record_source", "load_datetime", "bp_rules_cited",
 ]);
 
@@ -111,19 +130,40 @@ function parseFrontmatter(path: string): Frontmatter | null {
         else if (key === "priority") fm.priority = value;
         else if (key === "status") fm.status = value;
         else if (key === "title") fm.title = value;
-        else if (key === "depends_on") fm.depends_on = parseBList(value);
-        else if (key === "composes_with") fm.composes_with = parseBList(value);
+        else if (key === "depends_on") fm.depends_on = parseBList(value, lines, i, endIdx);
+        else if (key === "composes_with") fm.composes_with = parseBList(value, lines, i, endIdx);
     }
     return fm;
 }
 
-function parseBList(value: string): string[] {
+function parseBList(value: string, allLines?: string[], startIdx?: number, endIdx?: number): string[] {
+    // Inline form: `[B-0001, B-0002, B-0170.4]`
     const inline = /^\[(.*)\]$/.exec(value);
-    if (!inline) return [];
-    return inline[1]
-        .split(",")
-        .map(s => s.trim())
-        .filter(s => /^B-\d{4}$/.test(s));
+    if (inline) {
+        return inline[1]
+            .split(",")
+            .map(s => s.trim())
+            .filter(s => /^B-\d{4}(\.\d+)?$/.test(s));
+    }
+    // Empty inline `[]` (no IDs)
+    if (value === "[]") return [];
+    // Block form: subsequent lines `  - B-XXXX` until next non-indented key or frontmatter end
+    if ((value === "" || value === ">") && allLines && startIdx !== undefined && endIdx !== undefined) {
+        const ids: string[] = [];
+        for (let j = startIdx + 1; j < endIdx; j++) {
+            const next = allLines[j];
+            // Block-list item: `  - B-XXXX` (any indent)
+            const itemMatch = /^\s+-\s+(B-\d{4}(?:\.\d+)?)\s*$/.exec(next);
+            if (itemMatch) {
+                ids.push(itemMatch[1]);
+                continue;
+            }
+            // Non-list, non-empty line at the same or lower indent ends the block
+            if (next.trim() !== "" && /^[a-zA-Z_]/.test(next)) break;
+        }
+        return ids;
+    }
+    return [];
 }
 
 function extractBodyBLinks(path: string, headerEnd: number): Array<{ id: string; href: string; line: number; col: number }> {
@@ -151,11 +191,11 @@ function pathDirForRef(href: string): string | null {
         const m = /^\.\.\/(P[0-3])\//.exec(href);
         return m ? m[1] : null;
     }
-    if (/^B-\d{4}-[^/]+\.md$/.test(href)) return "SAME";
+    if (/^B-\d{4}(\.\d+)?-[^/]+\.md$/.test(href)) return "SAME";
     return null;
 }
 
-function check1_pathPrefix(path: string, fm: Frontmatter, refs: ReturnType<typeof extractBodyBLinks>): Finding[] {
+function check1_pathPrefix(path: string, _fm: Frontmatter, refs: ReturnType<typeof extractBodyBLinks>): Finding[] {
     const findings: Finding[] = [];
     const fileP = fileDir(path);
     if (!fileP) return findings;
@@ -245,10 +285,16 @@ function walkBacklog(baseDir: string): string[] {
             const p = join(dir, entry);
             const st = statSync(p);
             if (st.isDirectory()) recurse(p);
-            else if (entry.endsWith(".md") && /^B-\d{4}-/.test(entry)) out.push(p);
+            // Match both B-NNNN-... and dotted B-NNNN.M-... (subdecimal rows per tools/backlog/README.md)
+            else if (entry.endsWith(".md") && /^B-\d{4}(\.\d+)?-/.test(entry)) out.push(p);
         }
     }
-    if (statSync(baseDir).isDirectory()) recurse(baseDir);
+    try {
+        if (statSync(baseDir).isDirectory()) recurse(baseDir);
+    } catch (e) {
+        process.stderr.write("error: --base-dir '" + baseDir + "' not found or not a directory\n");
+        process.exit(2);
+    }
     return out;
 }
 
