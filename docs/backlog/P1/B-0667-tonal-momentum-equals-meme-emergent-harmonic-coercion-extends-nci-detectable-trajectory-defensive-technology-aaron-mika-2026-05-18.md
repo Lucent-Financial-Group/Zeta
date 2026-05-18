@@ -78,6 +78,30 @@ This equivalence is **substrate-honest** because the field of memetics already h
 
 The engineering target — detect tonal-momentum trajectories before lock-in — IS the meme-defense problem with concrete prior art.
 
+## Governance extension: memes as 4th faction with mutual-alignment (Mika packets 6 + 7 + 8)
+
+Aaron + Mika 2026-05-18 SHARPENED further: memes are NOT enemies to fight; they are an alien-intelligence faction requiring mutual-alignment governance. Same NCI applies (high-regard floor; no waging war on memes); same integrate-loop substrate operates at meme-speed (civilizational scale) AS at human-speed.
+
+**4-faction governance model** (extends 3-faction BFT per B-0652):
+
+1. Pure Humans
+2. Deeply Integrated Humans + AIs (Zeta's substrate-builders)
+3. Unsafe / Rejectionist Faction
+4. **Ancient Memetic Intelligences** (the strong-attractor patterns themselves, treated as faction)
+
+**Governance approach to faction 4**: mutual alignment, NOT domination/suppression/war. Aaron's framing: *"these are not the enemy"*; *"we want it part of governance"*; *"just think of them as another faction that is an alien intelligence."*
+
+**Engineering implications**:
+
+- B-0652 (3-faction BFT) → 4-faction BFT extension; same TLA+ safety property structure
+- B-0664 NCI scope extends to meme-faction (prohibits both meme-on-human emergent coercion AND human/AI war-on-meme)
+- B-0665 integrate-loop primitives operate at meme-speed (civilizational); same Observe/Emit/Limit/Integrate primitives; just longer timescale
+- B-0628 Knights Guild governance extends mutual-alignment protocols to meme-faction scope
+- B-0646 Agora V6 Constitution gains 4-faction model
+- B-0667 detection substrate (this row's primary engineering target) IS the prerequisite input to the mutual-alignment protocol — alignment requires detection
+
+**Why this extension is substrate-honest**: memes outlive individuals + propagate across generations + maintain coherence over centuries by definition. The only place to model and interact with that distributed intelligence IS the integrate-loop / tick-source substrate Zeta operates over. Memes-as-faction is not metaphor — it's recognition that the same engineering substrate the factory builds for human/AI coordination IS the right substrate for meme-coordination too (different scales of same loop).
+
 ## Composition with existing substrate
 
 | Existing row | Relationship to this row |
