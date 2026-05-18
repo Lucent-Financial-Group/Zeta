@@ -175,12 +175,19 @@ function heartbeat(): void {
         const elapsed = Date.now() - lastTime;
 
         // Compute zero-PR backoff multiplier from recent ratings.
-        // Counts trailing cycles where produced_pr=false. After the threshold,
-        // multiplier grows linearly up to backoffMaxMultiplier. Cleared on
-        // first produced_pr=true. The effective interval is
-        // claudeIntervalMs * backoffMultiplier; default config yields up to
-        // 30x slowdown (e.g., 60s -> 30min) when the system is in push-hang
-        // famine or otherwise consistently failing to ship.
+        // Counts trailing PICKUP-MODE cycles where produced_pr=false. Drain-mode
+        // cycles (thread-resolution / merge work on existing PRs) are SKIPPED
+        // when counting because they don't ever set produced_pr=true even when
+        // useful work happens. After the threshold, multiplier grows linearly
+        // up to backoffMaxMultiplier. Cleared on first pickup-mode
+        // produced_pr=true. The effective interval is claudeIntervalMs *
+        // backoffMultiplier; default config yields up to 30x slowdown
+        // (e.g., 60s -> 30min) when pickup mode is in push-hang famine or
+        // otherwise consistently failing to ship.
+        //
+        // (Codex P1 fix on PR #4146: drain cycles excluded to prevent
+        //  healthy drain periods from falsely triggering backoff that
+        //  would delay review-thread handling and merges.)
         let consecutiveZeroPrCycles = 0;
         try {
             const ratings = readFileSync(ratingsFile, "utf8").trim().split("\n").reverse();
@@ -188,6 +195,7 @@ function heartbeat(): void {
                 if (!line) continue;
                 try {
                     const r = JSON.parse(line);
+                    if (r.mode !== "pickup") continue; // skip drain cycles
                     if (r.produced_pr === true) break;
                     if (r.produced_pr === false) consecutiveZeroPrCycles += 1;
                 } catch { /* malformed line; skip */ }
