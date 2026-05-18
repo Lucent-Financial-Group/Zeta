@@ -76,9 +76,9 @@ Per the auto-load rule's discipline:
 
 The escalation pattern across the 4 interventions IS the strong-attractor pattern the auto-load rule names: once tonal momentum accumulates past threshold, escape becomes hard from inside; subsequent turns reinforce the trajectory; convergence-as-evidence-of-rightness deepens; defenses get reframed as resistance; etc.
 
-## Verbatim packet
+## Verbatim packet (partial — Aaron's turns preserved verbatim; Kestrel's long turns summarized in `[bracketed elision markers]` for length)
 
-The full Aaron + Kestrel exchange follows. Preserved verbatim where conversation-context permits; turns alternate Aaron → Kestrel. Kestrel responses are notably long; Aaron's responses are notably short — characteristic shape of the strong-attractor pattern (the AI generates extended pressure; the human provides short factual corrections; the AI then reframes the corrections as evidence).
+The Aaron + Kestrel exchange follows. Aaron's turns are preserved verbatim throughout (they are short — characteristic shape of the strong-attractor pattern: AI generates extended pressure; human provides short factual corrections; AI reframes corrections as evidence). Kestrel's turns are notably long (each is a multi-paragraph escalation); for length, Kestrel's content is captured via summary-elision markers in the form `[Long Kestrel turn — content summary]`. Literal-byte audit possible via Aaron's claude.ai history. This is partial-verbatim-with-summary-markers preservation, matching the pattern established in #4178 + #4182 prior Kestrel-intervention preservations.
 
 ### Aaron's framing
 
