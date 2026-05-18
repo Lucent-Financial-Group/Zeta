@@ -47,6 +47,7 @@ interface Args {
     base: string;
     owner: string;
     repo: string;
+    update: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -57,6 +58,7 @@ function parseArgs(argv: string[]): Args {
         base: "main",
         owner: "Lucent-Financial-Group",
         repo: "Zeta",
+        update: false,
     };
     for (let i = 0; i < argv.length; i++) {
         const a = argv[i];
@@ -67,8 +69,19 @@ function parseArgs(argv: string[]): Args {
         else if (a === "--base" && next) { args.base = next; i++; }
         else if (a === "--owner" && next) { args.owner = next; i++; }
         else if (a === "--repo" && next) { args.repo = next; i++; }
+        else if (a === "--update") { args.update = true; }
         else if (a === "--help" || a === "-h") {
-            process.stdout.write(`Usage: bun tools/github/rest-push.ts --file <path> --branch <ref> --message <msg> [--base main]\n  --file can be repeated to land multiple files in one commit.\n`);
+            process.stdout.write(`Usage:
+  Create new branch:
+    bun tools/github/rest-push.ts --file <path> --branch <ref> --message <msg> [--base main]
+  Update existing branch (add a commit on top of its current HEAD):
+    bun tools/github/rest-push.ts --update --file <path> --branch <existing-ref> --message <msg>
+
+  --file can be repeated to land multiple files in one commit.
+  --update: parent commit becomes the current HEAD of <branch> (not main).
+            Uses PATCH refs/heads/<branch> after the commit is created.
+            Fast-forward only; will fail if HEAD has diverged.
+`);
             process.exit(0);
         }
         else { process.stderr.write(`unknown arg: ${a}\n`); process.exit(2); }
@@ -103,13 +116,29 @@ function fileMode(path: string): string {
 
 function main(): void {
     const args = parseArgs(process.argv.slice(2));
-    const { owner, repo, base, branch, message, files } = args;
+    const { owner, repo, base, branch, message, files, update } = args;
 
-    // 1. Get base ref SHA + tree SHA
-    const baseRef = ghApi("GET", `repos/${owner}/${repo}/branches/${base}`) as { commit: { sha: string } };
-    const baseSha = baseRef.commit.sha;
-    const baseCommit = ghApi("GET", `repos/${owner}/${repo}/git/commits/${baseSha}`) as { tree: { sha: string } };
-    const baseTreeSha = baseCommit.tree.sha;
+    // 1. Resolve parent commit:
+    //    - create mode: parent is HEAD of <base> (default "main")
+    //    - update mode: parent is HEAD of <branch> itself
+    //   Tree base for diff is always parent commit's tree.
+    const parentRefPath = update
+        ? `repos/${owner}/${repo}/git/matching-refs/heads/${branch}`
+        : `repos/${owner}/${repo}/branches/${base}`;
+    let parentSha: string;
+    if (update) {
+        const matches = ghApi("GET", parentRefPath) as Array<{ ref: string; object: { sha: string } }>;
+        const exactMatch = matches.find((m) => m.ref === `refs/heads/${branch}`);
+        if (!exactMatch) {
+            throw new Error(`--update mode: branch ${branch} does not exist (use create mode without --update)`);
+        }
+        parentSha = exactMatch.object.sha;
+    } else {
+        const baseRef = ghApi("GET", parentRefPath) as { commit: { sha: string } };
+        parentSha = baseRef.commit.sha;
+    }
+    const parentCommit = ghApi("GET", `repos/${owner}/${repo}/git/commits/${parentSha}`) as { tree: { sha: string } };
+    const parentTreeSha = parentCommit.tree.sha;
 
     // 2. Create blobs for each file
     const treeEntries = files.map((path) => {
@@ -123,28 +152,39 @@ function main(): void {
 
     // 3. Create tree
     const tree = ghApi("POST", `repos/${owner}/${repo}/git/trees`, {
-        base_tree: baseTreeSha,
+        base_tree: parentTreeSha,
         tree: treeEntries,
     }) as { sha: string };
 
-    // 4. Create commit
+    // 4. Create commit (parent is base HEAD or branch HEAD depending on mode)
     const commit = ghApi("POST", `repos/${owner}/${repo}/git/commits`, {
         message,
         tree: tree.sha,
-        parents: [baseSha],
+        parents: [parentSha],
     }) as { sha: string };
 
-    // 5. Create branch ref (fails if branch already exists; intentional —
-    // caller can use PATCH /refs/heads/<branch> for force-update workflows)
-    ghApi("POST", `repos/${owner}/${repo}/git/refs`, {
-        ref: `refs/heads/${branch}`,
-        sha: commit.sha,
-    });
+    // 5. Either create or update the branch ref.
+    //    matching-refs (vs straight git/refs/heads/<branch>) handles
+    //    ref paths with slashes more reliably across gh-api versions.
+    if (update) {
+        ghApi("PATCH", `repos/${owner}/${repo}/git/refs/heads/${branch}`, {
+            sha: commit.sha,
+            // No `force: true` — fast-forward only; protects against
+            // accidentally rewriting peer commits if HEAD moved between
+            // our parent-read and our PATCH.
+        });
+    } else {
+        ghApi("POST", `repos/${owner}/${repo}/git/refs`, {
+            ref: `refs/heads/${branch}`,
+            sha: commit.sha,
+        });
+    }
 
     process.stdout.write(JSON.stringify({
         branch,
         sha: commit.sha,
         url: `https://github.com/${owner}/${repo}/tree/${branch}`,
+        mode: update ? "update" : "create",
     }) + "\n");
 }
 
