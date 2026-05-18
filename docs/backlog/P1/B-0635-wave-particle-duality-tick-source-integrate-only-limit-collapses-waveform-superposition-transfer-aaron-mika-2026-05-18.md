@@ -8,12 +8,15 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0629]
-composes_with: [B-0629, B-0630, B-0632, B-0649, B-0499]
-tags: [design, aaron, mika, wave-particle-duality, tick-source, integrate, fifth-primitive, fsharp-computation-expression, only-limit-collapses, superposition-transfer, keystone, locked-in]
+composes_with: [B-0629, B-0630, B-0632, B-0649, B-0499, B-0665, B-0667]
+tags: [design, aaron, mika, wave-particle-duality, tick-source, integrate, fifth-primitive, fsharp-computation-expression, only-limit-collapses, superposition-transfer, keystone, locked-in, integrate-role-expanded-by-b0665]
+extended_by: B-0665
 type: design
 ---
 
 # Wave-particle duality: tick-source (particle) + Integrate (wave) — keystone architectural insight
+
+> **EXTENDED 2026-05-18 by [B-0665](B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md)**: Integrate's role per B-0665 is EXPANDED beyond wave-composer (this row's scope) to also include the commit-locus (the choice-point where Limit-simulation becomes Integrate-commitment). Wave-particle duality + only-Limit-collapses preserved; Integrate's responsibility broadened. Per B-0665's 4→3 primitive collapse (Observe + Emit + Limit + Integrate-as-separate), this row's substrate composes cleanly with the sharpened architecture.
 
 ## Why
 
