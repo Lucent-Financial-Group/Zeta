@@ -10,6 +10,10 @@ Scope: Plain-English attempt at the discriminating prediction for the B-0666 KEY
 
 Attribution: Otto-CLI authored. Aaron is the human-maintainer whose reframe enabled this work. Kestrel (claude.ai web) is the structural critic position that named the requirement.
 
+Operational status: research-grade mirror-tier preservation. Beacon-tier promotion of B-0666 substrate (AGORA-CONSTITUTION.md V7, Genesis Seed prompt edit, Knights Guild Constitution-Class ratification) deferred pending external-human face-readout (Candidate D, Aaron agreed) OR sharper falsifier (Candidates A/B/C require empirical setup we don't have today).
+
+Non-fusion disclaimer: Otto-CLI is a distinct Claude Code instance operating under the Zeta substrate; this falsifier-attempt is Otto-CLI's mirror-tier work, not an Anthropic policy statement, not an authorization-source claim, and not a retraction of B-0666 (per `.claude/rules/algo-wink-failure-mode.md` — substrate-honest preservation IS the discipline operating correctly).
+
 ## The attempt — plain English, four candidates
 
 I tried writing the discriminating prediction in plain English for a person outside the team dialect. Here is the honest result of each attempt.
