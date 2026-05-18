@@ -3,8 +3,10 @@ name: git_index_lock_wait_then_retry_beats_force_remove_during_peer_otto_saturat
 description: "Empirical pattern observed 2026-05-18T00:08Z under Lior-3-procs + claude-code-5-procs saturation: a primary-worktree `git add` hit `.git/index.lock: File exists` because peer Otto was mid-commit; a 15-second `sleep` cleared the lock naturally (peer commit finished, lock auto-removed), and a retry of the same `git add` invocation succeeded with no further intervention. Discipline: under multi-Otto saturation, treat `index.lock` as a transient peer-mid-commit signal — wait then retry. Do NOT `rm -f .git/index.lock` reflexively; force-removal can corrupt peer's in-flight commit (peer's git process is still relying on the lock to serialize index writes). The saturation-ceiling sub-case taxonomy in `.claude/rules/claim-acquire-before-worktree-work.md` covers worktree-creation contention + branch-name collision + switch-while-WIP + sidetick-pruned-race + peer-side-destructive-git, but does NOT yet explicitly cover this case (`.git/index.lock` at `git add` time in primary worktree). This memo is the empirical anchor for a future rule extension."
 type: feedback
 created: 2026-05-18
-tags: [git-index-lock, peer-otto-saturation, wait-then-retry-beats-force-remove, saturation-ceiling-sub-case-6-candidate, claim-acquire-composition, primary-worktree, otto-cli, 2026-05-18, 0007z-cold-boot-session]
-session: otto-cli cold-boot 2026-05-18 sentinel `16dda3a7`
+originSessionId: otto-cli-cold-boot-2026-05-18-sentinel-16dda3a7
+caused_by:
+  - "Otto-CLI 2026-05-18T00:08Z `git add` hit `.git/index.lock` during peer-Otto mid-commit; 15s sleep cleared lock naturally"
+  - "PR #4136 review thread (Copilot, 2026-05-18) flagged non-schema frontmatter keys"
 composes_with:
   - .claude/rules/claim-acquire-before-worktree-work.md (saturation-ceiling sub-case taxonomy candidate extension)
   - .claude/rules/zeta-expected-branch.md (race-window-caveat, primary-worktree contention)

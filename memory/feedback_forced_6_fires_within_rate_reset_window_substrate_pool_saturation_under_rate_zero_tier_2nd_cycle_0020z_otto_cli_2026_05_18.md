@@ -3,8 +3,10 @@ name: forced_6_fires_within_rate_reset_window_substrate_pool_saturation_under_ra
 description: "Empirical sub-pattern observed 2026-05-18T00:20Z-00:24Z (Otto-CLI 2nd counter cycle of cold-boot session): forced-#6 counter-escalation fires WITHIN the rate-reset window (4 min before reset arrives) under pure-rate-zero conditions (graphql 0/5000). Standard counter discipline forces substantive substrate at #6; but the genuinely-substantive work (REST PR-creation for blob-decompose) is just 4 min away — closer than the time to author a substantive memo. Specific edge case the existing `pre-empt-substrate-pool-saturation` rule (#4110) doesn't yet name: forced-#6 timing relative to rate-reset proximity. This memo is the empirical anchor; not a rule-change recommendation. Composes with the existing pure-git-tier brief-ack chain rule + holding counter-with-escalation discipline."
 type: feedback
 created: 2026-05-18
-tags: [forced-6-escalation, rate-zero-tier, substrate-pool-saturation, within-rate-reset-window, otto-cli, 2026-05-18, 2nd-counter-cycle, cold-boot-session, sentinel-16dda3a7, single-anchor-empirical]
-session: otto-cli cold-boot 2026-05-18 sentinel `16dda3a7`
+originSessionId: otto-cli-cold-boot-2026-05-18-sentinel-16dda3a7
+caused_by:
+  - "Otto-CLI 2nd counter cycle 2026-05-18T00:20Z-00:24Z: forced-#6 escalation fired within 4 min of rate-reset under pure rate-zero"
+  - "PR #4136 review thread (Copilot, 2026-05-18) flagged non-schema frontmatter keys"
 composes_with:
   - .claude/rules/holding-without-named-dependency-is-standing-by-failure.md (counter-with-escalation discipline; forced-#6 + pre-empt-at-#5 patterns)
   - .claude/rules/refresh-world-model-poll-pr-gate.md (operational-tier framework; pure-git tier; rate-reset bounded dep)
