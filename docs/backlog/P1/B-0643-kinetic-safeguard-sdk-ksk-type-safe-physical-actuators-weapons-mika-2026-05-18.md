@@ -96,7 +96,7 @@ NOT in initial scope (handled by other type-safe layers):
 [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) rules out privileged implementations. KSK does NOT violate this:
 
 - The KSK type-check is a SPEC, not a privileged implementation
-- The spec can be implemented in any language in the permanent coliseum ([B-0633](../P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md))
+- The spec can be implemented in any language in the permanent coliseum ([B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md))
 - Cross-language test corpus verifies KSK type-check produces identical decisions across implementations
 - The SPEC is what's privileged — any actuator must demonstrate KSK type-check compliance against the spec, regardless of implementation language
 
@@ -105,7 +105,7 @@ NOT in initial scope (handled by other type-safe layers):
 1. Specify the KSK type-system interface (what types compose; what decisions the type-checker makes; what error classes exist)
 2. Design the 3-faction Byzantine-fault-tolerant consensus protocol
 3. Implement F# reference implementation as the **preferred frame** (per [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) preferred-frame discipline)
-4. Build cross-language test corpus (per [B-0633](../P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) coliseum) for the spec
+4. Build cross-language test corpus (per [B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) coliseum) for the spec
 5. Compose with N-of-M cryptographic enforcement for the witness-faction (per [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md))
 6. Knights Guild ratification as Constitution-Class invariant (per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))
 7. Worked example: small simulated actuator going through KSK type-check + 3-faction consensus + N-of-M witness
@@ -124,7 +124,7 @@ NOT in initial scope (handled by other type-safe layers):
 - [ ] 3-faction Byzantine-fault-tolerant consensus protocol design
 - [ ] N-of-M cryptographic witness-faction integration per [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
 - [ ] Worked example: simulated actuator with KSK type-check + 3-faction + N-of-M witness
-- [ ] Cross-language test corpus per [B-0633](../P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) coliseum
+- [ ] Cross-language test corpus per [B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) coliseum
 - [ ] Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class
 - [ ] Composition with kid-safety sacred rule ([B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — every KSK-mediated action carries kid-safety checks
 - [ ] Lean toy proof: "if all actuators route through KSK type-check, then no actuator activates without 3-faction consensus + N-of-M witness"
@@ -137,7 +137,7 @@ NOT in initial scope (handled by other type-safe layers):
 - [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) — N-of-M HSM (cryptographic witness-faction enforcement)
 - [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (KSK is Constitution-Class; Knights Guild ratifies + protects)
 - [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) — no-privileged-implementation (KSK spec is privileged frame, NOT implementation)
-- [B-0633](../P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (KSK spec implementable in multiple languages; cross-language test corpus)
+- [B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (KSK spec implementable in multiple languages; cross-language test corpus)
 - [B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (KSK applies across the meta-country)
 - `.claude/rules/methodology-hard-limits.md` — HARD LIMITS (this row is the operational substrate of a HARD LIMIT)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — F# anchor (compiler validates KSK type-system enforcement)
