@@ -2,8 +2,9 @@
 // lint-section-33-headers.ts - §33 archive-boundary-header lint for docs/research/ files.
 //
 // Per GOVERNANCE.md §33: every §33 archive file must declare 4 labels in its
-// header block (within first ~25 lines) so external readers + downstream tooling
-// can identify scope / attribution / operational status / non-fusion provenance:
+// header block (within first 30 lines; configurable via --max-header) so
+// external readers + downstream tooling can identify
+// scope / attribution / operational status / non-fusion provenance:
 //
 //   1. Scope:
 //   2. Attribution:
@@ -24,6 +25,11 @@
 //   bun tools/research/lint-section-33-headers.ts --file <path>  # lint specific file
 //   bun tools/research/lint-section-33-headers.ts --strict       # exit 1 on findings
 //   bun tools/research/lint-section-33-headers.ts --max-header N # header block window (default 30)
+//   bun tools/research/lint-section-33-headers.ts --base-dir D   # scan directory (default docs/research)
+//
+// Label format: accepts plain (`Scope: text`), bold-inline (`**Scope:**`),
+// and ATX-heading (`## Scope`) variants. List-form (`- **Scope:** ...`) is NOT
+// accepted; §33 archive labels must appear as top-level lines.
 //
 // Closes Task #26 (mirror-tier mechanization candidate; complements B-0533
 // dead-xref sweep + B-0663 backlog-frontmatter lint).
@@ -83,7 +89,7 @@ function parseArgs(argv: string[]): Args {
         }
         else if (a === "--base-dir" && next) { args.baseDir = next; i++; }
         else if (a === "--help" || a === "-h") {
-            process.stdout.write("Usage: bun tools/research/lint-section-33-headers.ts [--file PATH] [--strict] [--max-header N]\n");
+            process.stdout.write("Usage: bun tools/research/lint-section-33-headers.ts [--file PATH] [--strict] [--max-header N] [--base-dir D]\n");
             process.exit(0);
         }
         else { process.stderr.write("unknown arg: " + a + "\n"); process.exit(2); }
