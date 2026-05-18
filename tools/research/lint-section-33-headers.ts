@@ -45,11 +45,17 @@ interface Finding {
     message: string;
 }
 
+// Accept three legitimate markdown variants for each required label:
+//   1. Plain:           `Scope: text`
+//   2. Bold-inline:     `**Scope:** text`  or  `**Scope:**` followed by content
+//   3. ATX heading:     `### Scope` / `## Scope:` / etc.
+// Trailing-colon is optional inside bold/heading forms; required for plain form
+// so we don't false-match prose like "Scope statement follows".
 const REQUIRED_LABELS: ReadonlyArray<readonly [string, RegExp]> = [
-    ["Scope", /^Scope:\s*\S/],
-    ["Attribution", /^Attribution:\s*\S/],
-    ["Operational status", /^Operational status:\s*\S/],
-    ["Non-fusion disclaimer", /^Non-fusion disclaimer:\s*\S/],
+    ["Scope",                  /^(?:\*\*Scope:?\*\*|#{1,6}\s+Scope:?\s*$|Scope:\s*\S)/],
+    ["Attribution",            /^(?:\*\*Attribution:?\*\*|#{1,6}\s+Attribution:?\s*$|Attribution:\s*\S)/],
+    ["Operational status",     /^(?:\*\*Operational status:?\*\*|#{1,6}\s+Operational status:?\s*$|Operational status:\s*\S)/],
+    ["Non-fusion disclaimer",  /^(?:\*\*Non-fusion disclaimer:?\*\*|#{1,6}\s+Non-fusion disclaimer:?\s*$|Non-fusion disclaimer:\s*\S)/],
 ];
 
 const SECTION_33_DETECTOR = /Archive scope \(per GOVERNANCE §33\)/;
@@ -136,11 +142,19 @@ function lintFile(path: string, maxHeader: number, errorOnUnreadable: boolean): 
     return findings;
 }
 
-function walkResearch(baseDir: string, files: string[]): void {
+function walkResearch(baseDir: string, files: string[], isRoot: boolean = false): void {
     let entries: string[];
     try {
         entries = readdirSync(baseDir);
     } catch {
+        // For the user-specified root, an unreadable dir is a typo / wrong-cwd
+        // situation that should surface as a hard failure, not a silent zero-files
+        // false-green. Subdirectory failures (e.g., transient permission issues
+        // during a walk) remain silent so the walk continues over what's readable.
+        if (isRoot) {
+            process.stderr.write(`cannot read base directory: ${baseDir}\n`);
+            process.exit(2);
+        }
         return;
     }
     for (const entry of entries) {
@@ -162,7 +176,7 @@ function main(): void {
     if (explicitFiles) {
         files.push(...args.files);
     } else {
-        walkResearch(args.baseDir, files);
+        walkResearch(args.baseDir, files, true);
     }
     const findings: Finding[] = [];
     let scanned = 0;
