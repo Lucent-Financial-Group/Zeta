@@ -2,7 +2,7 @@
 // lint-section-33-headers.ts - §33 archive-boundary-header lint for docs/research/ files.
 //
 // Per GOVERNANCE.md §33: every §33 archive file must declare 4 labels in its
-// header block (within first 30 lines; configurable via --max-header) so
+// header block (within first 20 lines; configurable via --max-header) so
 // external readers + downstream tooling can identify
 // scope / attribution / operational status / non-fusion provenance:
 //
@@ -18,13 +18,13 @@
 //
 // Detection: a file is treated as §33-bearing if it contains either:
 //   - "## Archive scope (per GOVERNANCE §33)" heading, OR
-//   - "Archive scope (per GOVERNANCE §33)" anywhere in first 30 lines
+//   - "Archive scope (per GOVERNANCE §33)" anywhere in first 20 lines
 //
 // Usage:
 //   bun tools/research/lint-section-33-headers.ts                # lint all docs/research/
 //   bun tools/research/lint-section-33-headers.ts --file <path>  # lint specific file
 //   bun tools/research/lint-section-33-headers.ts --strict       # exit 1 on findings
-//   bun tools/research/lint-section-33-headers.ts --max-header N # header block window (default 30)
+//   bun tools/research/lint-section-33-headers.ts --max-header N # header block window (default 20 per §33 spec)
 //   bun tools/research/lint-section-33-headers.ts --base-dir D   # scan directory (default docs/research)
 //
 // Label format: accepts plain (`Scope: text`), bold-inline (`**Scope:**`),
@@ -70,7 +70,7 @@ function parseArgs(argv: string[]): Args {
     const args: Args = {
         files: [],
         strict: false,
-        maxHeader: 30,
+        maxHeader: 20,
         baseDir: "docs/research",
     };
     for (let i = 0; i < argv.length; i++) {
@@ -98,10 +98,15 @@ function parseArgs(argv: string[]): Args {
 }
 
 function isSection33File(content: string, maxHeader: number): boolean {
-    // Use same window as label-checking so detection + check stay consistent
-    // (per Copilot finding: inconsistent windows could detect-but-not-check)
+    // Detection window deliberately >= check window. The §33 spec requires
+    // labels in first 20 lines, but the "Archive scope (per GOVERNANCE §33)"
+    // marker heading can land further down. Using a fixed lower bound of 30
+    // for detection prevents the silent-skip failure mode (file with marker
+    // on lines 21-30 + labels in first 20 lines would otherwise be skipped
+    // when maxHeader=20). Per Codex P2 finding on PR #4191.
+    const detectionWindow = Math.max(maxHeader, 30);
     const lines = content.split("\n");
-    const window = lines.slice(0, maxHeader).join("\n");
+    const window = lines.slice(0, detectionWindow).join("\n");
     return SECTION_33_DETECTOR.test(window);
 }
 
