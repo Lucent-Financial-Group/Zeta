@@ -2,7 +2,7 @@
 // lint-section-33-headers.ts - §33 archive-boundary-header lint for docs/research/ files.
 //
 // Per GOVERNANCE.md §33: every §33 archive file must declare 4 labels in its
-// header block (within first 30 lines; configurable via --max-header) so
+// header block (within first 20 lines; configurable via --max-header) so
 // external readers + downstream tooling can identify
 // scope / attribution / operational status / non-fusion provenance:
 //
@@ -18,7 +18,7 @@
 //
 // Detection: a file is treated as §33-bearing if it contains either:
 //   - "## Archive scope (per GOVERNANCE §33)" heading, OR
-//   - "Archive scope (per GOVERNANCE §33)" anywhere in first 30 lines
+//   - "Archive scope (per GOVERNANCE §33)" anywhere in first 20 lines
 //
 // Usage:
 //   bun tools/research/lint-section-33-headers.ts                # lint all docs/research/
@@ -70,7 +70,7 @@ function parseArgs(argv: string[]): Args {
     const args: Args = {
         files: [],
         strict: false,
-        maxHeader: 30,
+        maxHeader: 20,
         baseDir: "docs/research",
     };
     for (let i = 0; i < argv.length; i++) {

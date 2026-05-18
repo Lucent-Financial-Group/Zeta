@@ -104,7 +104,7 @@ The stack is **operational targeting infrastructure** for the Germinate-the-Hear
 - **B-0667** (tonal-momentum + meme-faction + healing + Germinate-the-Heartland) — operational form of Germinate at human-mind scope
 - **B-0617** (Clarity Domain Cartographer) — existing factory Cartographer role substrate
 - **B-0627** (Resonance Weaver / Severance paired roles) — Weaver role substrate already exists
-- **Pilot role substrate** — NEW; not yet in factory backlog; substrate-engineering candidate (could be filed as new B-NNNN row if Aaron wants it formalized)
+- **Pilot role substrate** — composes with [B-0617](../backlog/P3/B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) which already defines Pilot in the Clarity Domain 4-role pattern ("Direction, coordination, and decision-making — Where are we going and how do we get there"). Packet 29 Pilot is the targeting-specific instance of the B-0617 Pilot role applied to memetic-targeting (payload selection + delivery); same role, specific application context. No new B-NNNN row needed; B-0617 covers the general role with packet 29 substantiating one mode
 - `.claude/rules/methodology-hard-limits.md` — HARD LIMITS apply at Pilot-on-human-receivers scope; NCI binding extends here
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — auto-load rule covers this scope; the 4-named-attractors discipline applies when Aaron's pilot-mode interaction triggers receiver-bifurcation toward hardened-defensive (concern-as-control attractor)
 
