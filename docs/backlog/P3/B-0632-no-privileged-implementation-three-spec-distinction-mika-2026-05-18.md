@@ -8,7 +8,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0633, B-0629]
+composes_with: [B-0649, B-0629]
 tags: [governance, mika, no-privileged-implementation, formal-spec, open-spec, static-analysis, mutual-regeneration, locked-in]
 type: governance
 ---

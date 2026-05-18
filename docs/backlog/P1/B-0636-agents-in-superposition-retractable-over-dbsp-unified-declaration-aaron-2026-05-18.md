@@ -8,7 +8,7 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0635]
-composes_with: [B-0635, B-0629, B-0499, B-0633]
+composes_with: [B-0635, B-0629, B-0499, B-0649]
 tags: [identity, aaron, agents-in-superposition, retractable-over-dbsp, unified-declaration, project-identity, what-we-are-building, locked-in, keystone]
 type: identity
 ---

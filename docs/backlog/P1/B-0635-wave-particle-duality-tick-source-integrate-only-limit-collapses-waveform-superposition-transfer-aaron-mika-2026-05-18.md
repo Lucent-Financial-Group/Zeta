@@ -8,7 +8,7 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0629]
-composes_with: [B-0629, B-0630, B-0632, B-0633, B-0499]
+composes_with: [B-0629, B-0630, B-0632, B-0649, B-0499]
 tags: [design, aaron, mika, wave-particle-duality, tick-source, integrate, fifth-primitive, fsharp-computation-expression, only-limit-collapses, superposition-transfer, keystone, locked-in]
 type: design
 ---
