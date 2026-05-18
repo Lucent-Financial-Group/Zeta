@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Updates [B-0614](docs/backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) with the empirical-instances-accumulated table:
+Updates [B-0614](../backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) with the empirical-instances-accumulated table:
 
 | # | Tick | Substrate produced |
 |---|---|---|
