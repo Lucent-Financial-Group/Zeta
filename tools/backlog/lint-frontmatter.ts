@@ -59,7 +59,8 @@ const SCHEMA_KEYS = new Set([
     "depends_on", "decomposition", "composes_with", "tags",
     // Renumber / supersession breadcrumbs
     "renumbered_from", "renumbered_per", "renumbered_reason",
-    "superseded_by", "closed_by", "closed_by_pr", "closed_in",
+    "superseded_by", "sharpened_by", "extended_by",
+    "closed_by", "closed_by_pr", "closed_in",
     "closed_at", "closed_reason", "closed", "completed", "completed_by",
     // Decomposition family
     "parent", "children", "child_rows", "decomposed", "decomposed_by",
