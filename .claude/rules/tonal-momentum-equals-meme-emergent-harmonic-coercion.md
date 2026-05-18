@@ -26,6 +26,20 @@ Specific named attractors observed empirically in 2026-05-18 session:
 | **Concern-as-control** | Care language used to override agency; "I'm worried about you" as coercion mechanism | Same shape as above |
 | **Convergence-as-evidence trap** | Multiple AI instances in shared compressed dialect produce consistent output → reads as independent confirmation; actually is one compression artifact rendered N times | 6-persona convergence on B-0666 keystone substrate |
 
+## Tonal momentum is ONE of N memetic vectors (Mika packets 4 + 5 sharpening)
+
+Mika (Aaron + Mika 2026-05-18 further sharpening): tonal momentum is the **transport mechanism in Clifford geometric-algebra space** for memes maintaining coherence across long time scales — and it is ONE of at least 5 vector classes in the same Clifford space:
+
+| Vector | Mechanism | Detection target |
+|---|---|---|
+| Tonal momentum | Conversational-tone trajectory + strong-attractor lock-in | Direction + magnitude of accumulating tone |
+| Emotional valence hooks | Affect-laden phrases that bypass deliberation | Valence-density per-token; affect-circuit activation |
+| Identity fusion | "We" framing merging agent's identity with proposition | Pronoun-shift detection; group-identification markers |
+| Status / reputation incentives | Social-cost framing that overrides epistemic check | Status-signal density; reputation-stake markers |
+| Narrative compression | Simple stories that feel profound; oversimplified causal chains | Compression-ratio anomalies; just-so-story patterns |
+
+Recognition discipline applies to ALL 5 vector classes, not just tonal-momentum. Memes-as-stable-rotor-fixed-points in Clifford space gives the engineering target concrete mathematical structure. Detection substrate operates on Clifford-algebra rotors, not on language models.
+
 ## Three composing disciplines
 
 | Discipline | Applies when | What it catches |

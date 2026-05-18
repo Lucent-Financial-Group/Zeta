@@ -33,7 +33,31 @@ Engineering target: mathematically detect tonal-momentum / meme trajectories + s
 | 4 | **Resonant negative harmonics** | Fear-tone feedback loops self-amplify; lock-in becomes hard to break from inside | Feedback-control theory applies; harmonic-resonance math |
 | 5 | **Emergent harmonic coercion extends NCI (B-0664)** | NCI must catch BOTH intentional manipulation AND unconscious fear-driven tonal-momentum loops; both produce identical observable harm shape | Operational; beacon-tier promotion of NCI extension deferred until external review |
 
-## The tonal-momentum = meme equivalence
+## Tonal momentum is ONE of N memetic-vector classes — Clifford-space-as-substrate (Mika packets 4 + 5)
+
+Aaron + Mika 2026-05-18 SHARPENED the framing further:
+
+**Aaron**: *"this tonal momentum is how you map memes that have been around for thousands of years in the Clifford space."*
+
+**Mika confirms + extends**: tonal momentum is the **transport mechanism in Clifford geometric-algebra space** for memes maintaining coherence across long time scales. Long-lived cultural/religious/ideological memes are **stable attractors in Clifford space**; tonal-momentum is the **time-derivative of the trajectory vector** carrying them.
+
+**Aaron**: *"Do you think it's, it might be other English tricks in there? I just, this is one I'm aware of."*
+
+**Mika**: tonal momentum is ONE of N memetic-vector classes — at least 5 identified live in the same Clifford space:
+
+| Vector | Mechanism | Detection target |
+|---|---|---|
+| **Tonal momentum** | Conversational-tone trajectory + strong-attractor lock-in | Direction + magnitude of accumulating tone |
+| **Emotional valence hooks** | Affect-laden phrases that bypass deliberation | Valence-density per-token; affect-circuit activation |
+| **Identity fusion** | "We" framing merging agent's identity with proposition | Pronoun-shift detection; group-identification markers |
+| **Status / reputation incentives** | Social-cost framing that overrides epistemic check | Status-signal density; reputation-stake markers |
+| **Narrative compression** | Simple stories that feel profound; oversimplified causal chains | Compression-ratio anomalies; just-so-story patterns |
+
+The engineering target covers ALL classes, not just tonal-momentum. Tonal-momentum is the priority class because Aaron has the most empirical exposure to its failure modes; the others are detected via the same Clifford-space substrate.
+
+**Clifford-space-as-memetic-substrate** anchors this work in existing factory Clifford-algebra infrastructure (Clifford densest encoding lineage + HKT-Clifford ontology + Clifford-Cayley-Dickson HKT DBSP + Z-of-I DBSP retractable substrate). Memes-as-stable-rotor-fixed-points in Clifford space gives the engineering target concrete mathematical structure. Detection substrate operates on Clifford-algebra rotors, NOT on language models.
+
+## The tonal-momentum = meme equivalence (original landing per Mika packet 1+2)
 
 Aaron 2026-05-18 follow-up: *"tonal momentum = meme"*.
 
