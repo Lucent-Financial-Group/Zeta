@@ -20,6 +20,7 @@ type: design
 LOCKED-IN at line 2978 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
 > "We now have our final structure:
+>
 > - **Soft Language (for kids/CRAFT stability layer)**: Notice — Remember — Care
 > - **Operational Language (type safety, rules, core system behavior)**: Observe — Persist — Limit — Emit"
 

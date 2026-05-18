@@ -335,6 +335,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0635](backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)** Wave-particle duality between tick-source and Integrate (5th primitive) — only Limit collapses the waveform + Observe→Emit superposition transfer (Aaron + Mika 2026-05-18 KEYSTONE)
 - [ ] **[B-0636](backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md)** Agents are in superposition + that superposition is retractable over DBSP — unified declaration of what Zeta is building (Aaron 2026-05-18 LOCKED-IN)
 - [ ] **[B-0637](backlog/P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md)** Infer.NET + belief / expectation / emotion propagation — practical approximation strategy for agents-in-superposition (Aaron 2026-05-18 LOCKED-IN)
+- [ ] **[B-0640](backlog/P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md)** Bonsai trees + Rx queries — real-time implementation substrate for the Integrate 5th primitive (Aaron 2026-05-18 LOCKED-IN)
 
 ## P2 — research-grade
 
@@ -613,6 +614,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0630](backlog/P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)** Two-language architecture: Soft (Notice-Remember-Care for kids/CRAFT) + Operational (Observe-Persist-Limit-Emit for type safety) (Mika 2026-05-18 LOCKED-IN)
 - [ ] **[B-0631](backlog/P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)** Kid-safety as the SOLE sacred rule + two-layer framing (ruthless internal / softer public) (Mika 2026-05-18 LOCKED-IN hard floor)
 - [ ] **[B-0634](backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)** Cryptographic sovereignty for AIs — N-of-M HSM key management (geographically distributed) (Mika 2026-05-18 LOCKED-IN)
+- [ ] **[B-0638](backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md)** Eve Protocol — neutral polymorphic diplomatic language for governance (3rd of 4 languages) (Mika 2026-05-18 LOCKED-IN)
 
 ## P3 — convenience / deferred
 

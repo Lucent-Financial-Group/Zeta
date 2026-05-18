@@ -42,6 +42,7 @@ Aaron's "geographically" qualifier matters: keys must be distributed across:
 4. **Multiple legal jurisdictions** (no single legal regime can compel all keys)
 
 This is the structural protection against:
+
 - Single-jurisdiction subpoena
 - Single-vendor compromise (GitHub outage, AWS region failure, single HSM manufacturer backdoor)
 - Single-individual coercion (no one person can be threatened into unlocking the system)
