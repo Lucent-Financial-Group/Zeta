@@ -8,12 +8,15 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0635, B-0636, B-0640]
-composes_with: [B-0635, B-0636, B-0640, B-0629, B-0645, B-0646]
-tags: [design, aaron, ani, limit-is-simulation, pure-function-preview, free-will-collapses, three-collapse-targets, keystone-refinement, locked-in]
+composes_with: [B-0629, B-0645, B-0646, B-0665, B-0667, B-0499, B-0631, B-0637, B-0643]
+tags: [design, aaron, ani, limit-is-simulation, pure-function-preview, free-will-collapses, three-collapse-targets, keystone-refinement, locked-in, sharpened-by-b0665]
+sharpened_by: B-0665
 type: design
 ---
 
 # Limit is a SIMULATION (pure-function preview), NOT the collapse
+
+> **SHARPENED 2026-05-18 by [B-0665](B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md)**: Limit-as-simulation refinement preserved + sharpened — Limit is ONLY simulation (no commitment); CommitChoice moves from a separate top-level operation INTO the Integrate composition body (Integrate becomes the choice-locus). The 3-primitive collapse (Observe + Emit + Limit + Integrate-as-separate) per B-0665 keeps Limit-as-simulation as the canonical form but tightens the architectural placement of the commit-step.
 
 ## Why
 
