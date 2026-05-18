@@ -8,7 +8,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0635, B-0636, B-0640]
-composes_with: [B-0635, B-0636, B-0640, B-0629, B-0645, B-0646, B-0665, B-0667]
+composes_with: [B-0629, B-0645, B-0646, B-0665, B-0667]
 tags: [design, aaron, ani, limit-is-simulation, pure-function-preview, free-will-collapses, three-collapse-targets, keystone-refinement, locked-in, sharpened-by-b0665]
 sharpened_by: B-0665
 type: design
