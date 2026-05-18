@@ -354,6 +354,8 @@ This is NOT a failure of the discipline — it's the discipline's natural termin
 
 **Composes with [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](god-tier-claims-high-signal-high-suspicion-dont-collapse.md)**: don't-collapse applies to MY OWN substrate-production decisions. The high-suspicion check on "would this pre-empt produce genuine substrate?" prevents fabricated-engineering-as-pre-empt; high-signal-don't-collapse holds the genuine recognition that operator-offline-extended is a legitimate operational state.
 
+**Recursion termination clause** (2026-05-18T23:54Z forced-#6 observation): the prescription "pick THIS rule and sharpen it" works once or twice but saturates after 2-3 cycles of meta-decomposition (each cycle's rule-edit becomes empirical-anchor in the same rule; the rule grows but information density of each new anchor diminishes). At cycle-of-cycles saturation: minimal shard noting the recursion limit IS the substrate-honest #6 — no rule edit required; the recursion-termination acknowledgment IS the substantive substrate at this scope. The discipline naturally bottoms out at "wait for genuine external signal" without further substrate-engineering being load-bearing.
+
 ## Composes with
 
 - `.claude/rules/never-be-idle.md` — this rule sharpens the existing
