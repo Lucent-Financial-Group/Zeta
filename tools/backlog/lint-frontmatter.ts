@@ -170,7 +170,7 @@ function extractBodyBLinks(path: string, headerEnd: number): Array<{ id: string;
     const content = readFileSync(path, "utf8");
     const lines = content.split("\n");
     const refs: Array<{ id: string; href: string; line: number; col: number }> = [];
-    const re = /\[(B-\d{4})\]\(([^)]+)\)/g;
+    const re = /\[(B-\d{4}(?:\.\d+)?)\]\(([^)]+)\)/g;
     for (let i = headerEnd + 1; i < lines.length; i++) {
         const line = lines[i];
         let m: RegExpExecArray | null;
