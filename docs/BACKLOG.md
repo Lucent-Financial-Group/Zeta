@@ -697,5 +697,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0591](backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md)** Wire tick-shard schema validator into gate.yml (non-required → required)
 - [x] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)
 - [ ] **[B-0614](backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md)** Investigate forced-#6 meta-fallback edge case — when cycle has already-closed AND substrate-pool is genuinely saturated, the rule's 'ALWAYS works' claim has a counter-example
+- [ ] **[B-0633](backlog/P3/B-0633-aggregate-tier-counter-escalation-holding-rule-2026-05-18.md)** Add aggregate-tier counter escalation to holding-without-named-dependency rule — per-chain N=6 alone misses across-chain dwell when peer main-moves provide periodic resets
 
 <!-- END AUTO-GENERATED -->
