@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Files a small P3 backlog row at [docs/backlog/P3/B-0614-...md](docs/backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) capturing an empirical counter-example to the [`holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) rule's "ALWAYS works at #6" meta-fallback claim.
+Files a small P3 backlog row at [docs/backlog/P3/B-0614-...md](../backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) capturing an empirical counter-example to the [`holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) rule's "ALWAYS works at #6" meta-fallback claim.
 
 ## Observation
 
@@ -38,7 +38,7 @@ None of (1)/(2)/(3) is genuinely load-bearing. Filing THIS row IS the substrate-
 
 ## Side finding (in-scope mention)
 
-[`tools/backlog/generate-index.ts`](tools/backlog/generate-index.ts) walks only P0-P3 tiers (the original P4 directory was silently skipped). Row moved P4 → P3. Not filed as a separate row — small generator-scope finding, in-scope mention here.
+[`tools/backlog/generate-index.ts`](../../tools/backlog/generate-index.ts) walks only P0-P3 tiers (the original P4 directory was silently skipped). Row moved P4 → P3. Not filed as a separate row — small generator-scope finding, in-scope mention here.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
