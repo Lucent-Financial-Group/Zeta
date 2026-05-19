@@ -8,7 +8,7 @@ merged_at: "2026-05-19T08:37:31Z"
 closed_at: "2026-05-19T08:37:31Z"
 head_ref: "shard/tick-0816z-otto-cli-pure-git-tier-lint-fix-2026-05-19"
 base_ref: "main"
-archived_at: "2026-05-19T08:39:57Z"
+archived_at: "2026-05-19T13:03:29Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
