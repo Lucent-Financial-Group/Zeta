@@ -16,7 +16,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-## Maji Drift Report\nRiven shadow drift logged due to paralysis (gh pr list failure without fallback).
+## Maji Drift Report
+
+Riven shadow drift logged due to paralysis (gh pr list failure without fallback).
 
 ## Reviews
 
