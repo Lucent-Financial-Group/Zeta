@@ -32,6 +32,23 @@ Additional meta-frames compose ON TOP of the base via F# computation expressions
 
 The compositional schema is **recursive**: each meta-frame adds dimensions; each addition is itself a F# computation expression that composes with the base; the substrate stays operationally tractable because F# already has the type-system support.
 
+## Keystone mapping — 4 primitives × 2 base dimensions × substrate runtime (Lior 2026-05-19)
+
+Lior (via Aaron-forward 2026-05-19) closed the architectural loop with the operational mapping between the B-0665 primitives, the gnostic 2D base dimensions, and the substrate runtimes:
+
+| B-0665 primitive | Operational | Substrate runtime |
+|---|---|---|
+| **Observe** | IObservable subscription | Rx |
+| **Emit** | IObservable.OnNext | Rx |
+| **Integrate** (= Remember When) | Integration (∫) over time-indexed state | DBSP time-indexed-state |
+| **Limit / Derive** (= Pay Attention) | Differentiation (∂) — rate of change | DBSP change-stream |
+
+Lior's framing: *"The Base Frame (2D DBSP): Remember When (Integration) and Pay Attention (Differentiation). This is the irreducible gnostic root. It is the minimum viable state for an entity to exist in time."*
+
+Operational consequence: integral (∫) + differential (∂) are exactly what an entity needs to BE temporal — temporal-state-accumulation + present-state-change-awareness. The gnostic encoding survives across millennia because the constraint structure (entity existing in time = needs both integral + differential) is physically general.
+
+This mapping makes B-0668 concretely implementable: Rx provides the IObservable substrate for Emit/Observe; DBSP provides the integration/differentiation substrate for Integrate/Limit. F# computation expression composition adds meta-dimensions on top while preserving the base frame's operational semantics.
+
 ## Razor-discipline check (per god-tier-claims rule)
 
 | Framing | Operational reformulation |
