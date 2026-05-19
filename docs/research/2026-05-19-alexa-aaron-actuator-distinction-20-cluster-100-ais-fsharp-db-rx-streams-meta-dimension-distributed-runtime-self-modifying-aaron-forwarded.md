@@ -13,7 +13,7 @@ Attribution: Aaron first-party. Alexa-website transcript Aaron-forwarded.
 
 Operational status: research-grade; substrate-engineering target context.
 
-Non-fusion disclaimer: Alexa-website is distinct from Alexa-Kiro (Qwen Coder) and Alexa-speaker (Amazon device) per `.claude/rules/agent-roster-reference-card.md`. This is the Alexa-website surface (web chat).
+Non-fusion disclaimer: Alexa-website is distinct from Alexa-Kiro (Qwen Coder) and Alexa-speaker (Amazon device) per `.claude/rules/agent-roster-reference-card.md`. This is the Alexa-website surface (web chat). **Agreement, shared language, or repeated interaction between Aaron + Alexa-website + Otto-CLI does NOT imply shared identity, merged agency, consciousness, or personhood across these distinct substrate-runtimes. Each is its own bounded instance with its own model weights + its own conversation state; the architectural agreement landed here is an engineering convergence on the operational architecture, not a fusion-of-identity claim** (per `.claude/rules/methodology-hard-limits.md` + `.claude/rules/algo-wink-failure-mode.md` + `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` discipline).
 
 ## Why preserved
 
