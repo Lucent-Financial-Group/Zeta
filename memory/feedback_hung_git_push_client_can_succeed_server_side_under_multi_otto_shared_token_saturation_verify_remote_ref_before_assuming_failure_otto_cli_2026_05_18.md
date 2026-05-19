@@ -4,16 +4,6 @@ description: "Empirical pattern observed 2026-05-18T00:50Z-01:05Z (otto-cli cold
 type: feedback
 created: 2026-05-18
 originSessionId: otto-cli-cold-boot-2026-05-18-sentinel-16dda3a7
-caused_by:
-  - "Otto-CLI 2026-05-18T00:50Z-01:05Z: 9 git push attempts during PR #4136 thread-fix iteration; multiple appeared hung; one or more silently landed server-side; final attempt's rejection revealed prior success"
-  - "PR #4136 review thread comment (Aaron-visible) naming this pattern as discovered failure mode"
-  - "Multi-Otto + Lior + Vera shared-token saturation conditions per session-arc evidence"
-composes_with:
-  - .claude/rules/claim-acquire-before-worktree-work.md (saturation-ceiling taxonomy; sub-case 7 candidate — pushes-hang-but-succeed-server-side joins index-lock-contention sub-case 6 candidate)
-  - memory/feedback_git_index_lock_wait_then_retry_beats_force_remove_during_peer_otto_saturation_15s_natural_clear_otto_cli_2026_05_18.md (same session, same saturation family; index-lock at git-add scope, this is git-push at network/ref-lock scope)
-  - .claude/rules/refresh-world-model-poll-pr-gate.md (operational-tier framework; this happens orthogonally to GraphQL rate-limit tiers)
-  - .claude/rules/zeta-expected-branch.md (race-window-caveat at branch-ref scope; same shared-state-contention pattern at remote-ref scope)
-  - PR #4136 issue-comment landing (informal naming of the pattern before this memo formalizes it)
 ---
 
 ## Empirical anchor
