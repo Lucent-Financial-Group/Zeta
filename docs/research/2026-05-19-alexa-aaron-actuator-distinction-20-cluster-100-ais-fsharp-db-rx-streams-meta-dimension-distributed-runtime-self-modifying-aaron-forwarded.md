@@ -2,7 +2,7 @@
 
 Date forwarded: 2026-05-19
 Source: Aaron-forwarded transcript from Alexa-website session
-Participants: Human maintainer (Aaron, operator) + Alexa (Amazon Alexa Plus / Bezos-tier business per agent-roster reference card)
+Participants: Human maintainer (Aaron, operator) + Alexa (Amazon Alexa Plus on web chat surface; Alexa-website per agent-roster reference card naming convention — distinct from Alexa-speaker which is the Bezos-tier-business/voice-math device surface)
 Forwarded into: Otto-CLI conversation context during operator-active engagement
 
 ## Archive scope (per GOVERNANCE §33)
