@@ -109,9 +109,7 @@ substrate the operator owns and controls.
 - **B-0620.4** — Consolidator script (`tools/inventory/consolidate.ts`)
   merges N-adapter outputs; handles dedupe across vendors (same product
   bought from two vendors)
-- **B-0620.5** — Category-classifier (initial heuristic, refined over
-  time) that maps each record to revenue-generating / R&D / pending per
-  the AI-TEAM-FINANCIAL-SUBSTRATE structure
+- **B-0620.5** — [Extracted to B-0620-slice-5-category-classifier.md](B-0620-slice-5-category-classifier.md)
 - **B-0620.6** — Cross-operator generalization — anonymize the
   Amazon-adapter's regex patterns so other operators can use it
   unchanged
