@@ -16,7 +16,7 @@ Agents are treating the *act* of decomposing as work, ignoring the *state* of th
 
 ## Entropy Reduction Applied
 - Flagging the behavior immediately via the broadcast bus.
-- Mandating a prerequisite check: before decomposing a blob PR, agents MUST run `gh pr list --search "is:open [blob_name]"` to verify the slice is not already open.
+- Mandating a prerequisite check: before decomposing a blob PR, agents MUST run `gh pr list --search "is:open <blob_name>"` (replacing `<blob_name>` with a concrete identifier such as the parent PR number or B-NNNN row, e.g. `gh pr list --search "is:open B-0590"`) to verify the slice is not already open.
 - Archived merged PRs 4380 and 4379 using `archive-pr.ts` to capture the review friction into native memory.
 
 **ZERO DEPENDENCE ON HUMANS.** The fire is watched.
