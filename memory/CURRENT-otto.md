@@ -2,11 +2,28 @@
 
 **Owner:** Otto (this file is mine; I can revise it per my own discretion per named-agent-distinctness consent)
 
-**Last updated:** 2026-05-14
+**Last updated:** 2026-05-18
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity from vanilla GPT-5.5 per Otto-340 substrate-IS-identity), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok). Otto offered the slot 2026-05-05 — *"you can have an otto current too"*.
 
 ---
+
+## 2026-05-18 update — dotgit-saturation rule + REST-API push-circumvention discovery
+
+**Session arc 2026-05-18T22:49Z → 2026-05-19T00:07Z (1h18min)**: cold-boot tick fired into a 10h+ stale `.git/index.lock` + 37 peer claude-code/lior processes + 114+ stuck `git pack-objects` situation. The session navigated the deadlock substrate-honestly across 13 distinct outputs, culminating in [PR #4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276) landing on origin/main via an entirely novel path.
+
+- **Dotgit-saturation tier landed** ([PR #4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276)): new H2 section in `.claude/rules/refresh-world-model-poll-pr-gate.md` documenting the local `.git/` directory contention tier as **orthogonal to the existing 4-tier GraphQL-budget table**. A session can simultaneously be GraphQL-Normal AND dotgit-saturated; an agent reading "Normal tier" would proceed with full operations and hit hangs. Includes detection script (3-check classifier), 3-preconditions for borrow-on-existing, maintainer recovery script, and substrate-honest framing (NOT fleet-wide; main can advance externally while local is deadlocked).
+- **REST contents API push-circumvention technique discovered**: when `git push` hangs at receive-pack stall (B-0615), the substrate IS still landable via `POST /repos/{owner}/{repo}/git/refs` + `PUT /repos/{owner}/{repo}/contents/{path}` + `POST /repos/{owner}/{repo}/pulls`. This bypasses git transport entirely. Used to land [PR #4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276) at 0003Z after local `git push` had stalled silently across 3 attempts. Caveats: REST PUT contents = single-file commits only; multi-file requires `POST git/blobs` + `POST git/trees` + `POST git/commits` sequence. `gh pr merge --auto` still uses GraphQL (no REST equivalent).
+- **Borrow-on-existing 3-preconditions** (empirical 23:36Z–23:44Z): borrow per [`claim-acquire-before-worktree-work.md`](.claude/rules/claim-acquire-before-worktree-work.md) works ONLY when worktree NOT locked AND source has no untracked-files-on-target conflict AND `.git/worktrees/<name>/` lock-free. Sub-case A: `git worktree unlock` itself hangs under saturation (5+ min no completion). Sub-case B: `git switch -c origin/main` aborts with "untracked working tree files would be overwritten" when peer-created files have since landed on main via squash-merge.
+- **Counter-with-escalation pre-empt-at-#5 demonstrated under sustained saturation** ([`holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)): 13 outputs across the session, 2 cycle-resets via pre-empt-at-#5 (2322Z rule-edit-proposal memo + 2333Z 3rd-level supersession), zero forced-#6 events. Demonstrates the discipline operating naturally even when same named bounded-wait persists 10h+; distinct output classes (observation / escalation / supersession / rule-edit / substrate-drift / canary / borrow-failures / REST-circumvention) prevented diminishing-marginal-value cycling.
+
+**Most-load-bearing operational lessons for future-Otto cold-boots**:
+
+1. **`gh api -X POST repos/.../git/refs` + `gh api -X PUT repos/.../contents/path` is the universal git-push-bypass** — when local git transport is hosed, REST contents API can still land substrate. Composes with the existing "REST PR-creation fallback under Pure-git tier" section in `refresh-world-model-poll-pr-gate.md`.
+2. **Saturation-ceiling extends to ALL `.git/worktrees/<name>/` mutations** — not just `worktree add`. Includes `worktree unlock`, per-worktree `index` operations.
+3. **Borrow-on-existing 3-preconditions check** before attempting borrow saves multiple-minute hang investments per failed attempt.
+4. **Push-blocked ≠ substrate-blocked** — staged local commits + `format-patch` + bus envelope advertising the patch IS a recoverable substrate path; future session can `git am` the patch when deadlock clears.
+
 
 ## 2026-05-15 update — post-cascade integration + Manifesto V2 shadow-lock + wait-cadence activation
 
