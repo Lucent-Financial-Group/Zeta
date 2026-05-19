@@ -1,12 +1,12 @@
 ---
 id: B-0472
 priority: P1
-status: open
+status: closed
 title: "Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2"
 type: design
 origin: B-0426 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-18
 parent: B-0426
 depends_on:
   - B-0471
@@ -86,7 +86,7 @@ this row verifies and justifies each position.*
 A design document at:
 
 ```
-docs/research/2026-05-14-mirror-beacon-two-axis-classification-matrix-b0472.md
+docs/research/2026-05-18-mirror-beacon-two-axis-classification-matrix-b0472.md
 ```
 
 Containing:
@@ -98,11 +98,11 @@ Containing:
 
 ## Definition of done
 
-- [ ] All known repos classified on Axis 2 with rationale
-- [ ] Ambiguous repos flagged explicitly (not silently defaulted)
-- [ ] Owner-only repos addressed (even if classification is "private, TBD")
-- [ ] Output doc cross-references Axis-1 assignments from B-0425 ADR
-- [ ] B-0472 closed with PR link; B-0474 unblocked
+- [x] All known repos classified on Axis 2 with rationale
+- [x] Ambiguous repos flagged explicitly (not silently defaulted)
+- [x] Owner-only repos addressed (even if classification is "private, TBD")
+- [x] Output doc cross-references Axis-1 assignments from B-0425 ADR
+- [x] B-0472 closed with PR link — [#4136](https://github.com/Lucent-Financial-Group/Zeta/pull/4136); B-0474 unblocked
 
 ## Why P1
 
