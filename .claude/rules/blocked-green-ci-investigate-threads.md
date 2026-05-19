@@ -139,6 +139,30 @@ A stale-armed PR is one with auto-merge armed for hours/days where checks fail o
 
 Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md) rate-limit tiers — re-land requires normal-tier GraphQL budget; forward-signal works at any tier.
 
+### Auto-merge-race-with-follow-up-commit anti-pattern
+
+Empirical anchor 2026-05-19T08:03Z-08:16Z ([PR #4357](https://github.com/Lucent-Financial-Group/Zeta/pull/4357)):
+
+Arming auto-merge while a **non-required check is failing** + pushing a **follow-up commit** to fix that check is a race window. The CLEAN-gate transition fires on required-checks-only state; if all required checks complete before the follow-up commit's CI run starts, auto-merge fires on the **first commit's content** and the follow-up lands on main never.
+
+Empirical sequence on PR #4357:
+
+1. First commit `45128146` pushed; auto-merge armed; lint (tick-shard relative-paths, non-required) failed on this commit
+2. Follow-up commit `9c9c8e69` pushed ~5 min later fixing the lint
+3. CI on first commit completed before lint job on second commit started
+4. Required-checks state went green → auto-merge fired on `45128146` → merge commit `cfba8a64` contained the un-fixed lint state
+5. Substrate-honest correction required a second PR ([#4358](https://github.com/Lucent-Financial-Group/Zeta/pull/4358)) to land the fix
+
+**Operational discipline** (one of three resolutions in order):
+
+1. **Don't arm auto-merge until all desired commits are pushed** — preferred; arming is cheap and reversible (`gh pr merge --disable-auto`)
+2. **If arming early, treat non-required failures as if required during the arm window** — fix in-place before arming; check `bun tools/github/poll-pr-gate.ts <PR>` for `warnings` field listing non-required failures
+3. **Accept that the first-commit content is what ships** — substrate-honest if the follow-up is cosmetic; otherwise ship the follow-up as a separate PR like #4358
+
+**Detection**: `bun tools/github/poll-pr-gate.ts <PR>` surfaces non-required failures in the `warnings` array even when `gate: "CLEAN"` is reachable. Treat any `warnings` entry as a race-window indicator when auto-merge is armed and a follow-up commit is staged.
+
+Composes with the stale-armed-PR resolution patterns above — race-merged content stays on main as substrate, even if the follow-up fix lands separately; the substrate-honest correction never deletes the race-merged commit, only adds the fix.
+
 ## Full reasoning
 
 `memory/feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`
