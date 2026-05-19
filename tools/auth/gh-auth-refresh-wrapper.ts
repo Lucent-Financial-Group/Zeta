@@ -16,11 +16,14 @@ export async function main(): Promise<number> {
     stderr: "pipe",
   });
 
-  const decoder = new TextDecoder();
   let codeCaptured = false;
 
   const handleOutput = async (stream: ReadableStream, isStderr: boolean) => {
     const out = isStderr ? process.stderr : process.stdout;
+    // Per-invocation TextDecoder: TextDecoder is stateful (retains partial
+    // multi-byte sequences between decode() calls). Two concurrent handleOutput
+    // calls (stdout + stderr) sharing one decoder can corrupt cross-stream output.
+    const decoder = new TextDecoder();
     // Buffer text across chunks: gh output may split prompts across
     // arbitrary chunk boundaries, so per-chunk includes() can miss them.
     let buffer = "";
