@@ -604,6 +604,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
 - [ ] **[B-0612](backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md)** Lean ImaginaryStack/ToyModel.lean structural rewrite — Imag8 projections + sorry-in-type-position + lakefile wiring (Soraya handoff)
+- [ ] **[B-0702](backlog/P2/B-0702-burden-tracking-as-management-primitive-2026-05-17.md)** Burden tracking as management primitive — invariant #3 aggregator (B-0700 batch)
 
 ## P3 — convenience / deferred
 
