@@ -7,7 +7,7 @@ tier: tooling
 effort: M
 ask: Otto 2026-05-03 self-grading, surfaced via drift instances (the verify-then-claim memo's body table is canonical) across 9+ PRs in single session despite naming the verify-then-claim discipline; manual discipline provably insufficient against trained-prior pull
 created: 2026-05-03
-last_updated: 2026-05-11
+last_updated: 2026-05-19
 depends_on: []
 decomposition: decomposed
 classification: buildable-now
@@ -49,7 +49,7 @@ Per the verify-then-claim catalogue:
 | Existence drift | ✓ shipped | "file/dir/tool exists" claim vs `ls` / `test -e` |
 | Semantic-equivalence drift | v0.9 | command substitution equivalence claims |
 | Empirical-output drift | v0.9 | "command returns X" vs actual output |
-| Convention drift | v0.9 | recommended pattern matches canonical convention |
+| Convention drift | ✓ shipped (v0.9 — ADR supersession reciprocity; `check-convention.ts`) | recommended pattern matches canonical convention |
 | Path-form drift | ✓ shipped | fully-qualified vs bare paths consistent across document |
 | Self-recursive drift | v0.9 | the memo about X contains its own X |
 | Cross-surface count drift (frontmatter ↔ body ↔ section heading ↔ carved sentence ↔ MEMORY.md) | ✓ shipped (v0.8 — frontmatter description vs body table; full cross-surface v0.9) | five surfaces should match consistent N |
