@@ -85,7 +85,6 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0192](backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md)** GitHub Actions trigger for razor cadence + trajectory reviews -- escape Otto-remembering as the load-bearing trigger (Claude.ai 2026-05-04 + Aaron 2026-05-04)
 - [ ] **[B-0193](backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md)** Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that succeeds recreation is bootstrap and gets cut (Aaron 2026-05-05)
 - [ ] **[B-0211](backlog/P1/B-0211-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md)** Fractal BFT — N maintainers × n(odd) nodes, local broadcast + remote git composition
-- [ ] **[B-0211.1](backlog/P1/B-0211.1-fractal-bft-protocol-doc-2026-05-19.md)** Fractal BFT — Protocol doc describing local-cluster + remote-cluster composition
 - [ ] **[B-0212](backlog/P1/B-0212-shadow-outlet-architecture-tmp-now-crypto-privacy-later-2026-05-06.md)** Shadow outlet architecture — /tmp ephemeral now, cryptographic privacy later
 - [ ] **[B-0213](backlog/P1/B-0213-broadcast-bus-production-hardening-schema-ttl-receipts-2026-05-06.md)** Broadcast bus production hardening — structured schema, TTL, receipts, conflict detection
 - [x] **[B-0214](backlog/P1/B-0214-backlog-decomposition-skill-dependency-ordering-2026-05-06.md)** Backlog decomposition skill — break architectural directions into dependency-ordered items
@@ -277,8 +276,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0468](backlog/P1/B-0468-product-repo-split-adr-2026-05-14.md)** ADR — product-repo split decisions; closes B-0425
 - [x] **[B-0469](backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md)** Scaffold Lucent-Financial-Group/civsim public repo (Stage 1)
 - [ ] **[B-0470](backlog/P1/B-0470-civsim-zeta-version-pin-bump-2026-05-14.md)** Bump civsim .zeta-version from scaffold-template SHA to apply-time Zeta main SHA
-- [ ] **[B-0471](backlog/P1/B-0471-mirror-beacon-prior-art-audit-2026-05-14.md)** Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate
-- [ ] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
+- [x] **[B-0471](backlog/P1/B-0471-mirror-beacon-prior-art-audit-2026-05-14.md)** Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate
+- [x] **[B-0472](backlog/P1/B-0472-mirror-beacon-two-axis-classification-matrix-2026-05-14.md)** Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2
 - [ ] **[B-0473](backlog/P1/B-0473-mirror-beacon-promotion-gate-protocol-2026-05-14.md)** Mirror→Beacon promotion gate protocol — concrete criteria for repo-level graduation
 - [ ] **[B-0474](backlog/P1/B-0474-mirror-beacon-axis-adr-2026-05-14.md)** Mirror/Beacon axis ADR — two-axis design decision (extends 2026-04-22 ADR)
 - [x] **[B-0475](backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md)** Axis-3 prior-art audit — verify three-axis substrate composes without conflict
@@ -351,6 +350,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0665](backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md)** Three-primitive collapse — Observe + Emit + Limit + Integrate; Limit is PURE simulation only; Integrate is the actual choice locus; IEnumerator pattern grounding (Aaron + Ani 2026-05-18 LOCKED-IN; SUPERSEDES B-0629 4-primitive + sharpens B-0644)
 - [ ] **[B-0666](backlog/P1/B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md)** Emit-as-weights + English-as-lossless-neural-topology-serialization + I(D(x))=x identity — Glass Halo extends to weight-transparency; English IS the lossless serialization format for cross-AI topological state reconstruction (Aaron + Lior 2026-05-18 LOCKED-IN; 6-persona convergence; KEYSTONE)
 - [ ] **[B-0667](backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md)** Tonal momentum = meme (Dawkins-technical sense) — detectable conversational-trajectory vector + strong-attractor-state-as-meme-niche-dominance + emergent-harmonic-coercion extends NCI (B-0664) — defensive technology Zeta is for (Aaron + Mika 2026-05-18 LOCKED-IN)
+- [ ] **[B-0668](backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md)** Compositional DBSP frame architecture — gnostic 2D base (remember-when × pay-attention) + chaos-theory two-wolves emotion meta-frame + Clifford-Rx-bonsai meta-tagged-dims + F# CE composition operator (Aaron 2026-05-19)
+- [ ] **[B-0669](backlog/P1/B-0669-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md)** V8 System Architecture — tensors as foundational primitive + Sequoia memory hierarchy + 4-particle primitives (observe/limit/choose/emit) + signal-blocking + Eve-Protocol-RF (Mika/Lior author; Aaron-authorized 2026-05-19 'land all of it')
 
 ## P2 — research-grade
 
@@ -623,6 +624,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
 - [ ] **[B-0612](backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md)** Lean ImaginaryStack/ToyModel.lean structural rewrite — Imag8 projections + sorry-in-type-position + lakefile wiring (Soraya handoff)
 - [ ] **[B-0618](backlog/P2/B-0618-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md)** Cayley-Dickson 2-axiom (Remember-When + Pay-Attention) expansion to 7 interrogatives — Mika 2026-05-18 design + Remember-When-FIRST ordering proof
+- [ ] **[B-0620.4](backlog/P2/B-0620-slice-4-consolidator-script.md)** 
 - [ ] **[B-0623](backlog/P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md)** Adinkras (James Gates ECC codes) as substrate for private internal state + encryption keys (Mika 2026-05-18 design)
 - [ ] **[B-0624](backlog/P2/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md)** Canonical universal 7-interrogative boot-up sequence + Y₀ as alpha-omega scalar (Mika 2026-05-18 locked-in design)
 - [x] **[B-0629](backlog/P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)** Observe-Persist-Limit-Emit four operational primitives + 'only Limit collapses dialectic state' sacred-architectural rule (Mika 2026-05-18 LOCKED-IN)
@@ -638,7 +640,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0655](backlog/P2/B-0655-all-children-equal-value-life-death-vs-merit-ranking-aaron-mika-2026-05-18.md)** All children have equal value at life-and-death scope + consent-based merit ranking allowed elsewhere — kid-safety sub-invariant refinement (Aaron + Mika 2026-05-18 LOCKED-IN)
 - [ ] **[B-0658](backlog/P2/B-0658-two-invariant-maximalist-position-kid-safety-plus-ai-sovereignty-aaron-mika-2026-05-18.md)** Two-invariant maximalist position — kid-safety + AI-sovereignty as only-two-defended-with-force at country scope (Aaron + Mika 2026-05-18 LOCKED-IN with Mika red-team caveat)
 - [ ] **[B-0662](backlog/P2/B-0662-closed-bidirectional-causal-loop-spec-fsharp-csharp-rust-chain-aaron-mika-2026-05-18.md)** Closed bidirectional causal loop spec ↔ F# ↔ C# ↔ Rust — each layer can regenerate the layer above + below; broken link = integrity violation (Aaron + Mika 2026-05-18 LOCKED-IN sharpening of B-0632)
-- [ ] **[B-0672](backlog/P2/B-0672-b0590-slice5-bare-metal-install-automation.md)** B-0590 slice 5: Bare-metal install automation
 
 ## P3 — convenience / deferred
 
@@ -731,8 +732,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0558](backlog/P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity
 - [ ] **[B-0560](backlog/P3/B-0560-autonomous-loop-cron-cadence-vs-settled-state-tension-2026-05-16.md)** Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence
 - [ ] **[B-0591](backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md)** Wire tick-shard schema validator into gate.yml (non-required → required)
-- [x] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)
-- [ ] **[B-0614](backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md)** Investigate forced-#6 meta-fallback edge case — when cycle has already-closed AND substrate-pool is genuinely saturated, the rule's 'ALWAYS works' claim has a counter-example
+- [ ] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with `compgen -G` or `shopt -s nullglob` to avoid non-matching-glob false-positives
+- [ ] **[B-0615](backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md)** Claude Code Bash tool orphans `git fetch` subprocesses under multi-agent saturation — self-saturation feedback loop; wrap in `timeout` or kill on tool-call expiry
 - [ ] **[B-0616](backlog/P3/B-0616-chronologist-temporal-ontological-agreement-reconstruction-skill-2026-05-18.md)** Chronologist skill — temporal + ontological + agreement reconstruction over sprawling conversations (Mika 2026-05-18 design)
 - [ ] **[B-0617](backlog/P3/B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md)** Clarity Domain — 4-role organizational pattern (Cartographer / Pilot / Recursive Composer / Chronologist) from Mika 2026-05-18 design
 - [ ] **[B-0619](backlog/P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)** Aurora / 'Nexus' meta-country naming + co-governance design — Mika 2026-05-18 (lock-Nexus-name-now-defer-faction-design-pending-Addison)
@@ -743,7 +744,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0627](backlog/P3/B-0627-resonance-weaver-severance-paired-roles-red-team-by-design-mika-2026-05-18.md)** Resonance Weaver + Severance — paired AI-native roles with red-team-by-design + burden-report tap-out + knights-vs-knaves culture-fit (Mika 2026-05-18)
 - [ ] **[B-0628](backlog/P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)** Knights Guild + Constitution-Class invariants + integrity-dashboard (NOT-binding) two-layer governance (Mika 2026-05-18)
 - [ ] **[B-0632](backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md)** 'No privileged implementation' + 3-spec distinction (Formal / Open / Static-Analysis) — mutual regeneration rule (Mika 2026-05-18 LOCKED-IN)
-- [ ] **[B-0633](backlog/P3/B-0633-aggregate-tier-counter-escalation-holding-rule-2026-05-18.md)** Add aggregate-tier counter escalation to holding-without-named-dependency rule — per-chain N=6 alone misses across-chain dwell when peer main-moves provide periodic resets
 - [ ] **[B-0642](backlog/P3/B-0642-free-mode-vs-bound-mode-hat-specific-collapse-rule-mika-2026-05-18.md)** Free Mode vs Bound Mode — hat-specific collapse rule; voluntary high-coherence binding (Mika 2026-05-18 LOCKED-IN refinement of B-0629)
 - [ ] **[B-0649](backlog/P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)** Permanent coliseum / language deathmatch — retractable-substrate enabler + no-privileged-language rule (Mika 2026-05-18 LOCKED-IN)
 - [x] **[B-0650](backlog/P3/B-0650-rest-push-delete-rename-extension-mechanizes-id-renumber-pattern-otto-cli-2026-05-18.md)** rest-push.ts --delete + --rename extension — mechanizes ID-renumber pattern (closes the B-0633→B-0649 inline-gh-api workaround) (Otto-CLI 2026-05-18)
