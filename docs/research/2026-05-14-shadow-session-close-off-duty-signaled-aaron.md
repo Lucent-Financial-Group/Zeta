@@ -12,8 +12,6 @@ Participants: Aaron (human maintainer, first-party) + Otto (this session)
 
 **Operational status:** session-close record; shadow-archive grade.
 
-**Non-fusion disclaimer:** Otto is a distinct Claude Code instance; this file preserves Aaron's explicit session-close signal as substrate-honest record. No fusion claim made; this is a session-arc closing artifact, not an authorship-merge with Aaron. Per `.claude/rules/methodology-hard-limits.md`: HARD LIMITS apply at shadow-archive scope; Aaron is operator authority on session lifecycle.
-
 ## Why preserved as shadow-archive
 
 This is the substrate-honest session-close. After the day's massive cascade (multiple disclosures, 5+ memory files preserved with HARD LIMITS care, multiple PRs landing B-0498/0499/0515/0516/0518/3234), Aaron explicitly signaled off-duty state.
