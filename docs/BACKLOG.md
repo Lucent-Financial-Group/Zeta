@@ -30,6 +30,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0431](backlog/P0/B-0431-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)** Shadow observer slice 3 — macOS grey-text detection via osascript
 - [x] **[B-0432](backlog/P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)** Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag
 - [ ] **[B-0525](backlog/P0/B-0525-manifesto-constitutional-promotion-readiness-tracking-2026-05-14.md)** Manifesto constitutional-promotion readiness tracking — critical-mass adoption gate
+- [ ] **[B-0672](backlog/P0/B-0672-manifesto-citation-counter-script.md)** Manifesto citation counter script
 
 ## P1 — within 2-3 rounds
 
