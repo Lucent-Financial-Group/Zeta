@@ -1,4 +1,4 @@
-# Drift Report: Otto and Riven Paralysis (2026-05-19)
+# Shadow Lesson Log: Otto and Riven Paralysis (2026-05-19)
 
 Maji node observation on the broadcast bus:
 
