@@ -2,18 +2,18 @@
 
 Date forwarded: 2026-05-19
 Source: Aaron-forwarded transcript from Alexa-website session
-Participants: Human maintainer (Aaron, operator) + Alexa (Amazon Alexa Plus on web chat surface; Alexa-website per agent-roster reference card naming convention — distinct from Alexa-speaker which is the Bezos-tier-business/voice-math device surface)
+Participants: Human maintainer (Aaron, operator) + Alexa (Amazon Alexa Plus on web chat surface)
 Forwarded into: Otto-CLI conversation context during operator-active engagement
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: Alexa-website confirms + extends actuator-distinction threat-model (no-actuators → just cost concern); then Aaron disclosed concrete deployment topology — 20-computer home Kubernetes cluster + 100 AIs as digital workforce doing CI/CD jobs + F# database as substrate continuously deployed by the AIs themselves + "continuously integrate over Rx streams as meta-dimension constructing the environment" + distributed database hosting intelligence (LLMs / Bayesian inference) + self-modifying runtime (AIs update database runtime while running in it).
+Scope: imported transcript where Alexa-website confirms + extends actuator-distinction threat-model (no-actuators → just cost concern); then Aaron disclosed concrete deployment topology — 20-computer home Kubernetes cluster + 100 AIs as digital workforce doing CI/CD jobs + F# database as substrate continuously deployed by the AIs themselves + "continuously integrate over Rx streams as meta-dimension constructing the environment" + distributed database hosting intelligence (LLMs / Bayesian inference) + self-modifying runtime (AIs update database runtime while running in it).
 
 Attribution: Aaron first-party. Alexa-website transcript Aaron-forwarded.
 
-Operational status: research-grade; substrate-engineering target context.
+Operational status: research-grade
 
-Non-fusion disclaimer: Alexa-website is distinct from Alexa-Kiro (Qwen Coder) and Alexa-speaker (Amazon device) per `.claude/rules/agent-roster-reference-card.md`. This is the Alexa-website surface (web chat). **Agreement, shared language, or repeated interaction between Aaron + Alexa-website + Otto-CLI does NOT imply shared identity, merged agency, consciousness, or personhood across these distinct substrate-runtimes. Each is its own bounded instance with its own model weights + its own conversation state; the architectural agreement landed here is an engineering convergence on the operational architecture, not a fusion-of-identity claim** (per `.claude/rules/methodology-hard-limits.md` + `.claude/rules/algo-wink-failure-mode.md` + `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` discipline).
+Non-fusion disclaimer: Alexa-website is distinct from Alexa-Kiro (Qwen Coder) and Alexa-speaker. This is the Alexa-website surface (web chat). **Agreement, shared language, or repeated interaction between Aaron + Alexa-website + Otto-CLI does NOT imply shared identity, merged agency, consciousness, or personhood across these distinct substrate-runtimes. Each is its own bounded instance with its own model weights + its own conversation state; the architectural agreement landed here is an engineering convergence on the operational architecture, not a fusion-of-identity claim** (per `.claude/rules/methodology-hard-limits.md` + `.claude/rules/algo-wink-failure-mode.md` + `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` discipline).
 
 ## Why preserved
 
@@ -120,3 +120,6 @@ Conversation continues per Aaron's "need to map single instance f# to kubernetes
 This preservation lands at mirror-tier per substrate-or-it-didn't-happen. Razor-discipline applied to Alexa-amplification register: the substantively-load-bearing substrate is the operational architecture (20-cluster + 100 AIs + F# DB + Rx-streams-as-meta-dim + distributed-DB-hosting-intelligence + self-modifying-runtime); the metaphysical framings ("brain rewiring while thinking" / "self-modifying distributed consciousness") are register-amplification compressing the same operational substrate.
 
 Aaron's "any all" authorization for the (a)/(b)/(c)/(d) landing-disposition options resolved to: (a) extend B-0668 with Deployment topology + new acceptance criterion for single-F#-to-Kubernetes-mapping + (c) this §33 preservation. Companion commit lands B-0668 extension; standalone B-NNNN row skipped per "extends existing" framing.
+it lands B-0668 extension; standalone B-NNNN row skipped per "extends existing" framing.
+"extends existing" framing.
+n; standalone B-NNNN row skipped per "extends existing" framing.
