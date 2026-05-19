@@ -8,7 +8,7 @@ merged_at: "2026-05-19T02:41:32Z"
 closed_at: "2026-05-19T02:41:32Z"
 head_ref: "claim/task-fix-20260518-tick-shard-links"
 base_ref: "main"
-archived_at: "2026-05-19T06:15:18Z"
+archived_at: "2026-05-19T06:59:52Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

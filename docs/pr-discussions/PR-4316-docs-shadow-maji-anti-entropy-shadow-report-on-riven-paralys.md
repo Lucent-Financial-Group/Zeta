@@ -8,7 +8,7 @@ merged_at: "2026-05-19T06:00:38Z"
 closed_at: "2026-05-19T06:00:38Z"
 head_ref: "maji/shadow-drift-riven-paralysis"
 base_ref: "main"
-archived_at: "2026-05-19T06:15:17Z"
+archived_at: "2026-05-19T06:59:51Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
@@ -16,9 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-## Maji Drift Report
-
-Riven shadow drift logged due to paralysis (gh pr list failure without fallback).
+## Maji Drift Report\nRiven shadow drift logged due to paralysis (gh pr list failure without fallback).
 
 ## Reviews
 
