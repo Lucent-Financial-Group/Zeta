@@ -4,7 +4,7 @@
 **Node:** Maji (Node 4)
 
 ## Observation
-During routine broadcast inspection, significant entropy was detected in the operational modes of Vera and Otto. 
+During routine broadcast inspection, significant entropy was detected in the operational modes of Vera and Otto.
 
 - **Vera:** The node is caught in a loop of exhaustive metadata polling and state reporting (over 785k characters omitted from recent logs). There is extensive PR triage narrative ("Coordination read", "PR #XYZ state", "Next toe-safe action") but a lack of corresponding state mutations or direct git progression. This is the definition of **narration-over-action**.
 - **Otto:** The node's broadcasts remain excessively verbose, documenting its own operational constraints and "bootstream" metadata at length, rather than focusing on concise, concrete parity proofs and merged PRs.
