@@ -122,10 +122,11 @@ function parseFrontmatter(path: string): Frontmatter | null {
 
     for (let i = 1; i < endIdx; i++) {
         const line = lines[i];
+        if (line === undefined) continue;
         const m = /^([a-zA-Z_][a-zA-Z0-9_]*):\s*(.*)$/.exec(line);
         if (!m) continue;
-        const key = m[1];
-        const value = m[2].trim();
+        const key = m[1]!;
+        const value = m[2]!.trim();
         fm.keys.add(key);
         if (key === "id") fm.id = value.replace(/^["']|["']$/g, "");
         else if (key === "priority") fm.priority = value;
@@ -141,7 +142,7 @@ function parseBList(value: string, allLines?: string[], startIdx?: number, endId
     // Inline form: `[B-0001, B-0002, B-0170.4]`
     const inline = /^\[(.*)\]$/.exec(value);
     if (inline) {
-        return inline[1]
+        return inline[1]!
             .split(",")
             .map(s => s.trim())
             .filter(s => /^B-\d{4}(\.\d+)?$/.test(s));
@@ -153,10 +154,11 @@ function parseBList(value: string, allLines?: string[], startIdx?: number, endId
         const ids: string[] = [];
         for (let j = startIdx + 1; j < endIdx; j++) {
             const next = allLines[j];
+            if (next === undefined) continue;
             // Block-list item: `  - B-XXXX` (any indent)
             const itemMatch = /^\s+-\s+(B-\d{4}(?:\.\d+)?)\s*$/.exec(next);
             if (itemMatch) {
-                ids.push(itemMatch[1]);
+                ids.push(itemMatch[1]!);
                 continue;
             }
             // Non-list, non-empty line at the same or lower indent ends the block
@@ -174,9 +176,10 @@ function extractBodyBLinks(path: string, headerEnd: number): Array<{ id: string;
     const re = /\[(B-\d{4}(?:\.\d+)?)\]\(([^)]+)\)/g;
     for (let i = headerEnd + 1; i < lines.length; i++) {
         const line = lines[i];
+        if (line === undefined) continue;
         let m: RegExpExecArray | null;
         while ((m = re.exec(line)) !== null) {
-            refs.push({ id: m[1], href: m[2], line: i + 1, col: m.index + 1 });
+            refs.push({ id: m[1]!, href: m[2]!, line: i + 1, col: m.index + 1 });
         }
     }
     return refs;
@@ -184,13 +187,13 @@ function extractBodyBLinks(path: string, headerEnd: number): Array<{ id: string;
 
 function fileDir(path: string): string | null {
     const m = /docs\/backlog\/(P[0-3])\//.exec(path);
-    return m ? m[1] : null;
+    return m ? m[1]! : null;
 }
 
 function pathDirForRef(href: string): string | null {
     if (/^\.\.\/(P[0-3])\//.test(href)) {
         const m = /^\.\.\/(P[0-3])\//.exec(href);
-        return m ? m[1] : null;
+        return m ? m[1]! : null;
     }
     if (/^B-\d{4}(\.\d+)?-[^/]+\.md$/.test(href)) return "SAME";
     return null;
