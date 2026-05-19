@@ -130,7 +130,7 @@ For 20-machine Otto fleet specifically: **NixOS** likely wins — declarative co
 |-------|-------------|--------|--------|
 | 1 | KVM capability survey: test Comet Pro virtual-media mount + automation API; document features | S | open |
 | 2 | Hardware purchasing list: 2-3 specific mini-PC models with reasoning + URLs + price | S | open |
-| 3 | Control box setup: small Beelink running PXE + DHCP + HTTP for installer serving | M | open |
+| 3 | Control box setup: small Beelink running PXE + DHCP + HTTP for installer serving | M | decomposed to B-0670 |
 | 4 | OS choice decision: NixOS vs Debian/Ubuntu vs Talos; rationale documented | S | open |
 | 5 | Bare-metal install automation: cloud-init / preseed / nixos-anywhere config that installs OS + Otto in one pass | M-L | open |
 | 6 | Per-machine identity provisioning: each machine gets unique hostname + Otto-instance-id; cloud-init handles | S | open |
