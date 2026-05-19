@@ -50,6 +50,13 @@ export async function main(): Promise<number> {
         console.log(`🚀 ONE-TIME CODE CAPTURED: ${code} 🚀`);
         console.log(`========================================================`);
         console.log(`\n`);
+        // gh waits at "Press Enter to open github.com in your browser..."
+        // after printing the code. Pump a newline so the device flow
+        // continues to the token-store step; without this the wrapper
+        // hangs indefinitely because the child stdin is piped and the
+        // operator can't satisfy the prompt manually.
+        proc.stdin.write("\n");
+        proc.stdin.flush();
       }
 
       // Keep buffer bounded across long sessions.
