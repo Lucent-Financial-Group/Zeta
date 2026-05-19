@@ -130,6 +130,99 @@ git push -u origin <branch>
 
 When rate-limit forces brief-acks (deferring substantive PR work), the [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md) counter-with-escalation counter still ticks. At brief-ack #6 the rule triggers forced decomposition. **Editing this rule, a memory file, or any other substrate via pure-git workflow IS decomposition that resets the counter** — the work is bounded, concrete, committed, pushed. Counter reset condition #3 ("Actually picking real decomposition work — Concrete artifact") is satisfied.
 
+## Dotgit-saturation tier (orthogonal to GraphQL tier)
+
+The GraphQL tiers above index API-quota constraint. A second orthogonal constraint is local `.git/` directory contention — sustained multi-Otto + multi-Lior peer activity in the shared checkout can leave the `.git/` in a deadlock state where:
+
+- `git fetch` succeeds at network layer but warns `unable to update local ref` (FETCH_HEAD populates; remote-tracking ref may or may not advance)
+- `git worktree add` hangs indefinitely on internal `git reset --hard` competing for `.git/objects/pack/`
+- `git worktree unlock` also hangs (empirical 2026-05-18T23:36Z: 5+ min no completion)
+- Stuck `git pack-objects` / `git maintenance` / `git repack` processes accumulate (empirical anchor 2026-05-18T23:18Z: 114 stuck `git pack-objects` + 52 maintenance + 52 repack = 234 total git plumbing procs; oldest 43:43 elapsed)
+- `.git/index.lock` may be present, 0 bytes, with no `lsof` holders — stale but not auto-cleared
+- `git switch` on stale-against-evolving-main worktree aborts with `untracked working tree files would be overwritten` when peer-created files have since landed on `origin/main` via squash-merge
+
+### Detection
+
+```bash
+# Stale lock check (size 0 + age > 1h + lsof empty = stale)
+ls -la .git/index.lock 2>/dev/null
+lsof .git/index.lock 2>/dev/null  # empty = no holder
+
+# Stuck git plumbing count
+ps -A | grep -E "git pack-objects|git maintenance|git repack" \
+  | grep -v grep | wc -l
+
+# Worktree-add canary (20s timeout suffices per empirical 2026-05-18T23:14Z–23:32Z)
+timeout 20 git worktree add /private/tmp/dotgit-canary HEAD 2>&1
+rm -rf /private/tmp/dotgit-canary  # cleanup if it succeeded
+```
+
+If stuck-plumbing > ~10 OR worktree-add canary hangs past 20s OR `.git/index.lock` is > 1h stale → **dotgit-saturated**.
+
+### Operational stance under dotgit-saturation
+
+The tier applies REGARDLESS of GraphQL remaining (a session can simultaneously be GraphQL-Normal + dotgit-saturated). Substrate landing options narrow to surfaces independent of `.git/`:
+
+| Surface | Available under dotgit-saturation? |
+|---|---|
+| Bus envelopes (`/tmp/zeta-bus/*.json`) | yes |
+| User-scope memory (`~/.claude/projects/.../memory/*.md`) | yes |
+| GraphQL queries (`gh api`, `gh pr comment`, `gh api graphql`) | yes (subject to GraphQL tier) |
+| PR forward-signal comments | yes (subject to GraphQL tier) |
+| In-repo commits via root worktree | blocked (contested, peer-WIP) |
+| Fresh isolated worktree creation | blocked (hangs on pack-dir) |
+| In-repo tick shards | blocked (worktree-required) |
+| Borrow-on-existing isolated worktree | conditional — see THREE preconditions below |
+
+### Borrow-on-existing preconditions (empirical 2026-05-18T23:36Z–23:44Z)
+
+Borrow-on-existing per [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) works **only when ALL THREE hold**:
+
+1. **Worktree NOT locked** — `git worktree unlock` itself hangs under saturation
+2. **Source has no untracked-files-on-target conflict** — locally-created files that target branch now tracks (via squash-merge) abort the switch
+3. **`.git/worktrees/<name>/` itself lock-free** — same root-cause class as `.git/objects/pack/` contention; can hang per-worktree
+
+Failing any of the three, falls back to user-scope substrate + bus envelopes until deadlock clears.
+
+### Recovery script (maintainer-side; not for autonomous agents)
+
+```bash
+# Step 1: verify safe to remove lock
+lsof .git/index.lock  # must be empty
+
+# Step 2: remove stale lock
+rm .git/index.lock
+
+# Step 3: kill stuck plumbing
+kill -9 $(ps -A | grep -E "git pack-objects|git maintenance|git repack" \
+  | grep -v grep | awk '{print $1}')
+
+# Step 4: clean tmp pack files left behind
+git -C $REPO gc --prune=now
+
+# Step 5: verify recovery
+git fetch origin main
+timeout 5 git worktree add /private/tmp/recovery-test origin/main
+ls /private/tmp/recovery-test | wc -l  # should be > 50
+rm -rf /private/tmp/recovery-test
+git worktree prune
+```
+
+**Autonomous agents do NOT run this script** — destructive `.git/` mutation against shared checkout requires maintainer coordination per existing governance discipline.
+
+### Substrate-honest scope framing
+
+Dotgit-saturation is operationally observable but **NOT fleet-wide** — `origin/main` can advance externally while this checkout is deadlocked. Per empirical 2026-05-18T22:49Z–23:44Z anchor: main advanced 10 SHAs in ~55 min from external commits while local worktree-add canary hung repeatedly. Re-classification matters: dotgit-saturation on ONE machine is a local-cleanup item; it is NOT a factory emergency unless multiple machines hit it simultaneously (which has not been empirically observed).
+
+Peer Otto-CLI instances on the SAME machine can still land in-repo commits when they (a) pre-allocated isolated worktrees before deadlock formed AND (b) their worktrees stay clean enough to avoid the three preconditions above. Empirical evidence: [PRs #4255 + #4256](https://github.com/Lucent-Financial-Group/Zeta/pulls) (collision-suffix `-c` pattern) opened DURING the 10h deadlock window.
+
+### Composes with
+
+- saturation-ceiling sub-case 3 (worktree-add hangs under contention) in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) — this tier IS that sub-case at the discovery-and-naming scope
+- [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md) — different failure mode of same `.git/`-contention class (corruption vs deadlock)
+- [`holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md) — dotgit-saturation IS a named bounded-wait; brief-acks with this named dep are non-failure-mode under the counter rule
+- [B-0615](../../docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md) — the same `.git/` contention class
+
 ## Full reasoning
 
 `memory/feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md`
