@@ -607,6 +607,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0524](backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md)** Manifesto V2 verbatim Grok fetch — convert shadow-lock to full lock
 - [ ] **[B-0529](backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)** Tick-shard schema validator vs current practice drift
 - [ ] **[B-0534](backlog/P2/B-0534-backlog-ready-notifier-reads-stale-local-checkout-2026-05-15.md)** backlog-ready-notifier reads stale local working-tree files → publishes work-assignment envelopes for closed rows
+- [ ] **[B-0534](backlog/P2/B-0534-edge-claims-defense-surface-backfill.md)** Edge-claims defense surface backfill — ensure all 11 flags have dedicated files
 - [ ] **[B-0543](backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md)** QG isomorphism proof path — Remember-When + Pay-Attention root axioms → infinite-poker-game → quantum gravity (defeat the algo-wink critique by grounding the cosmology in falsifiable physics)
 - [ ] **[B-0544](backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md)** QG isomorphism Step 1 — Formalize Remember-When + Pay-Attention as categorical primitives (topos with internal monad + modal operator)
 - [ ] **[B-0545](backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md)** B-0498 ID collision — renumber sweep (Riven cursor-terminal scaffold → new ID)
