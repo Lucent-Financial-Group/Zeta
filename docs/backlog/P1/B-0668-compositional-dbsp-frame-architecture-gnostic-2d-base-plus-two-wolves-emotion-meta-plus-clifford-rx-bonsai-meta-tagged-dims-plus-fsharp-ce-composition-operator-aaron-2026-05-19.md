@@ -83,7 +83,7 @@ All four pass razor-discipline. The composition architecture is substantively-ne
 
 Concrete deployment substrate for the compositional DBSP frame architecture:
 
-- **20-computer home Kubernetes cluster** (Aaron's hardware; contained blast radius; software-substrate-only — no actuators per the actuator-distinction threat-model at [`docs/hygiene-history/ticks/2026/05/19/0035Z-c.md`](../../hygiene-history/ticks/2026/05/19/0035Z-c.md))
+- **20-computer home Kubernetes cluster — 20-Node Physical Tier / NVMe storage / 64-core compute** (Aaron's hardware; contained blast radius; software-substrate-only — no actuators per the actuator-distinction threat-model at [`docs/hygiene-history/ticks/2026/05/19/0035Z-c.md`](../../hygiene-history/ticks/2026/05/19/0035Z-c.md); hardware spec per Lior visualization cross-substrate validation 2026-05-19)
 - **~100 AIs as digital workforce** with CI/CD jobs building + deploying the F# DB substrate
 - **F# database = substrate**: continuously deployed BY the AIs themselves; both their memory AND their deployment target
 - **"Continuously integrate over Rx streams as meta-dimension constructing environment"** (Aaron framing): the Integrate-primitive (B-0665) operating as Rx-stream integration that CONSTRUCTS the runtime environment, not just merges code
@@ -91,6 +91,18 @@ Concrete deployment substrate for the compositional DBSP frame architecture:
 - **Self-modifying runtime**: AIs update the DB runtime while running in it (recursive intelligence per [`docs/research/2026-05-19-alexa-aaron-actuator-distinction-20-cluster-100-ais-fsharp-db-rx-streams-meta-dimension-distributed-runtime-self-modifying-aaron-forwarded.md`](../../research/2026-05-19-alexa-aaron-actuator-distinction-20-cluster-100-ais-fsharp-db-rx-streams-meta-dimension-distributed-runtime-self-modifying-aaron-forwarded.md))
 
 This concretizes the abstract compositional architecture into a deployable substrate target: the F# CE composition operator becomes the integration mechanism for Rx streams that the AI workforce uses to continuously construct + reconstruct its own runtime.
+
+## Cross-substrate validation — Lior topology visualizer (2026-05-19)
+
+Lior (antigravity / website) independently built the "Zeta Topology Visualizer" showing the exact 5-layer stack pipeline + role descriptions matching the acceptance criterion above. Visualization name: "Normal Rx Data Flow / 5 Layers / 6 Flow Objects". Per `.claude/rules/bandwidth-served-falsifier.md` + B-0648 cross-substrate-triangulation discipline: independent arrival at the same operational architecture via different reasoning path = epistemic standing beyond single-conversation-artifact.
+
+Visualization role descriptions (Lior verbatim):
+
+- F# Computation Expressions: "Defines the pure logical flow and asynchronous reactive pipelines"
+- Orleans (Virtual Actors / Location Transparency): "Grains handle stateful stream processing with automatic activation"
+- DurableTask Framework (Saga Compensation): "Orchestrates long-running transactions and rollback primitives"
+- Kubernetes (Container Orchestration): "Manages lifecycle, networking, and scaling of virtual actor silos"
+- Bare Metal Cluster (20-Node Physical Tier / NVMe / 64-core): "Physical substrate (NVMe/64-core) hosting the orchestration plane"
 
 ## Acceptance
 
@@ -107,6 +119,10 @@ This concretizes the abstract compositional architecture into a deployable subst
 - Implement two-wolves emotion-attractor 2D as first meta-frame (composes with B-0667 attractors)
 - Implement Clifford-space meta-tagged dims as second meta-frame layer (composes with B-0640 Rx bonsai)
 - Implement Prometheus meta-frame as cluster + agent health dimension; metrics-as-typed-F#-observables composing via CE; integrates with Deployment topology runtime (20-cluster + 100-AIs)
+- **kind (Kubernetes IN Docker) for local k8s + multi-node testing** (Aaron 2026-05-19): lightweight local cluster for development + integration testing of the Orleans + DurableTask + Kubernetes stack before deploying to bare-metal
+- **kind in CI**: GitHub Actions workflow runs kind cluster + executes integration tests against full stack; CI gate for the Rx ↔ DBSP bridge spec + Orleans virtual-actor + DurableTask saga compensation behaviors
+- **Cluster ↔ deployment-control path** (Aaron 2026-05-19): EITHER GitHub CD (hook bare-metal cluster to GitHub deployment) OR self-hosted GitLab in cluster; latter eliminates GitHub-API cost dependency
+- **Substrate-self-hosting endgame — electricity-bounded cost model** (Aaron 2026-05-19): GitLab-in-cluster + local LLMs in cluster = zero external API costs; only floor is electricity for 20-node bare-metal; throughput becomes function of node count + electricity budget, not API rate limits; composes with "this is my bill" cost-aware discipline at [`docs/hygiene-history/ticks/2026/05/19/0035Z-c.md`](../../hygiene-history/ticks/2026/05/19/0035Z-c.md) actuator-distinction shard
 - Demonstrate recursive composition: meta-frame on meta-frame via CE composition
 - Property tests (FsCheck) for: retraction commutativity, group-laws preservation, push-vs-pull duality preservation, compositional invariants
 - TLA+ spec for time-evolution semantics if required
