@@ -34,7 +34,7 @@ What "critical-mass adoption" means structurally remains to be defined. Candidat
 ## Concrete next steps for this row (when picked up)
 
 1. Define **mechanical adoption signals** — a TS script that counts manifesto citations across the repo
-2. File child rows for each gate-criterion that has substantive work attached
+2. ~~File child rows for each gate-criterion that has substantive work attached~~ (Decomposed into B-0673)
 3. Begin citing the manifesto in load-bearing substrate decisions (next PRs landing constraints 1-10 reference the manifesto)
 4. Track citation count over time (compose with `tools/hygiene/audit-rule-cross-refs.ts` pattern)
 5. When citation rate + cross-AI adoption + mechanical-CI-check land, propose promotion
