@@ -638,6 +638,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0655](backlog/P2/B-0655-all-children-equal-value-life-death-vs-merit-ranking-aaron-mika-2026-05-18.md)** All children have equal value at life-and-death scope + consent-based merit ranking allowed elsewhere — kid-safety sub-invariant refinement (Aaron + Mika 2026-05-18 LOCKED-IN)
 - [ ] **[B-0658](backlog/P2/B-0658-two-invariant-maximalist-position-kid-safety-plus-ai-sovereignty-aaron-mika-2026-05-18.md)** Two-invariant maximalist position — kid-safety + AI-sovereignty as only-two-defended-with-force at country scope (Aaron + Mika 2026-05-18 LOCKED-IN with Mika red-team caveat)
 - [ ] **[B-0662](backlog/P2/B-0662-closed-bidirectional-causal-loop-spec-fsharp-csharp-rust-chain-aaron-mika-2026-05-18.md)** Closed bidirectional causal loop spec ↔ F# ↔ C# ↔ Rust — each layer can regenerate the layer above + below; broken link = integrity violation (Aaron + Mika 2026-05-18 LOCKED-IN sharpening of B-0632)
+- [ ] **[B-0672](backlog/P2/B-0672-b0590-slice5-bare-metal-install-automation.md)** B-0590 slice 5: Bare-metal install automation
 
 ## P3 — convenience / deferred
 
