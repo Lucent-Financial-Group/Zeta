@@ -26,7 +26,7 @@ Three observations:
 
 ## Co-existence pattern
 
-Two autonomous Otto-CLI sessions on the same worktree, separate cron sentinels (`9051dd60` mine + `de1e7f5d` peer), substrate continuity via filesystem + bus envelopes. Per [`claim-acquire-before-worktree-work.md`](../../../../../.claude/rules/claim-acquire-before-worktree-work.md) the canonical coordination mechanism is the claim coordinator on `/tmp/zeta-bus/`. Neither session claimed exclusivity for this work — both naturally found different surfaces. Worked out cleanly this time because the work scopes didn't overlap (peer: #4204→#4206 supersession; me: docs-PR batch merges + investigation).
+Two autonomous Otto-CLI sessions on the same worktree, separate cron sentinels (`9051dd60` mine + `de1e7f5d` peer), substrate continuity via filesystem + bus envelopes. Per [`claim-acquire-before-worktree-work.md`](../../../../../../.claude/rules/claim-acquire-before-worktree-work.md) the canonical coordination mechanism is the claim coordinator on `/tmp/zeta-bus/`. Neither session claimed exclusivity for this work — both naturally found different surfaces. Worked out cleanly this time because the work scopes didn't overlap (peer: #4204→#4206 supersession; me: docs-PR batch merges + investigation).
 
 ## Counter + CronList + visibility
 
