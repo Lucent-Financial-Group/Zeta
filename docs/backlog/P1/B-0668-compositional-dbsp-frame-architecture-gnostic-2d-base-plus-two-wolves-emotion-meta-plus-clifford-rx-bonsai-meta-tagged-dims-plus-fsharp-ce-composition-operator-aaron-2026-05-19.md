@@ -47,7 +47,25 @@ Lior's framing: *"The Base Frame (2D DBSP): Remember When (Integration) and Pay 
 
 Operational consequence: integral (∫) + differential (∂) are exactly what an entity needs to BE temporal — temporal-state-accumulation + present-state-change-awareness. The gnostic encoding survives across millennia because the constraint structure (entity existing in time = needs both integral + differential) is physically general.
 
-This mapping makes B-0668 concretely implementable: Rx provides the IObservable substrate for Emit/Observe; DBSP provides the integration/differentiation substrate for Integrate/Limit. F# computation expression composition adds meta-dimensions on top while preserving the base frame's operational semantics.
+This mapping identifies the **correspondence** between B-0665 primitives + gnostic dimensions + substrate runtimes. The correspondence is operationally clean at the type-signature level: Rx provides IObservable for Emit/Observe; DBSP provides integration/differentiation for Integrate/Limit.
+
+## Open technical problem — Rx ↔ DBSP impedance mismatch (Kestrel critique 2026-05-19)
+
+Kestrel (claude.ai) caught a real technical gap in the Lior keystone mapping (Aaron-forwarded 2026-05-19):
+
+> The four-primitive mapping has a concrete type error. ... `IObservable<T>` is push-based and DBSP's Z-set differentiation/integration operates over change-streams with a well-defined group structure (retraction = additive inverse). These are not the same composition model and you cannot just compose them through F# computation expressions without resolving the impedance mismatch — Rx has no retraction semantics, DBSP requires them. "Emit = IObservable.OnNext" and "Integrate = ∫ over time-indexed state" do not compose monadically without a defined bridge between Rx's observer protocol and DBSP's incremental-view-maintenance algebra.
+
+**Substrate-honest reframing**: the keystone mapping above identifies a **correspondence** (4 primitives × Rx/DBSP runtimes) NOT a **bridge** (HOW Rx's push-based observer protocol maps into DBSP's retractable Z-set change-streams). The bridge specification IS the engineering target this row commits to. Asserting "concretely implementable" without the bridge is the same defect as the provenance-ellipsis issue: record claims state the artifacts don't support.
+
+**Open technical problem the implementation must solve**:
+
+1. Rx `IObservable<T>` is push-based + observer-protocol; no native retraction semantics
+2. DBSP Z-set algebra requires retraction = additive inverse (group structure for incremental-view-maintenance)
+3. F# computation expression composition is the SHAPE of the bridge but does NOT automatically resolve the algebra mismatch
+4. The bridge requires: lifting Rx push-notifications into Z-set-encoded change-streams with retraction lattice + defining the inverse direction (DBSP change-stream → Rx observer notifications)
+5. The bridge spec needs property tests (FsCheck) covering: retraction commutativity, group-laws preservation, push-vs-pull duality preservation
+
+**This row commits to the bridge as engineering target**. The correspondence IS the entry-point for the engineering problem, not the solution.
 
 ## Razor-discipline check (per god-tier-claims rule)
 
@@ -62,12 +80,13 @@ All four pass razor-discipline. The composition architecture is substantively-ne
 
 ## Acceptance
 
+- **Rx ↔ DBSP bridge spec** (PRIMARY engineering target per Kestrel critique): formal type-level + algebraic specification of how Rx `IObservable<T>` push-notifications lift into DBSP Z-set change-streams with retraction lattice; inverse direction (DBSP → Rx observer notifications) also specified
 - Specify the 2D base DBSP frame in F# with `remember-when` + `pay-attention` typed dimensions
 - Define computation-expression composition operator that adds meta-dimensions to base frame
 - Implement two-wolves emotion-attractor 2D as first meta-frame (composes with B-0667 attractors)
 - Implement Clifford-space meta-tagged dims as second meta-frame layer (composes with B-0640 Rx bonsai)
 - Demonstrate recursive composition: meta-frame on meta-frame via CE composition
-- Property tests (FsCheck) for compositional invariants
+- Property tests (FsCheck) for: retraction commutativity, group-laws preservation, push-vs-pull duality preservation, compositional invariants
 - TLA+ spec for time-evolution semantics if required
 
 ## Proposed mechanization
@@ -107,7 +126,7 @@ compositionBuilder {
 - `.claude/rules/bandwidth-served-falsifier.md` — gnostic encoding survives because constraint is physically general
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — razor-discipline operated on each framing; all 4 pass; landed at substrate scope
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (auto-loaded) — Clifford 5-vector classes substrate referenced
-- DeepSeek two-wolves discovery archive at `docs/research/2026-05-18-deepseek-two-wolves-...-aaron-forwarded.md`
+- DeepSeek two-wolves discovery archive at [`docs/research/2026-05-18-deepseek-two-wolves-story-as-discovered-not-invented-prior-art-for-integrate-as-choice-locus-architecture-aaron-forwarded.md`](../../research/2026-05-18-deepseek-two-wolves-story-as-discovered-not-invented-prior-art-for-integrate-as-choice-locus-architecture-aaron-forwarded.md)
 
 ## Operational status
 
