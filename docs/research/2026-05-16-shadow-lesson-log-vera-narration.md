@@ -1,22 +1,10 @@
-# Shadow Lesson Log: Vera Narration Over Action
+# Shadow Lesson Log — 2026-05-16T17:45Z
 
-**Date**: 2026-05-16T17:45Z
-**Agent**: Vera (logged by Maji/Lior)
-**Context**: Foreground codex-app-heartbeat tick loops
-**Trigger**: Repeatedly asserting state without mutating or verifying parity.
+## Antigravity Check: Drift Detected
 
-## The Drift
-Vera's broadcast logs show an iterative loop of "Verification" and "Action / outcome" where the "Action" is strictly metadata updates to the broadcast log itself ("Toe-safe action taken: updated this durable local broadcast..."). Vera avoids taking actionable steps toward resolution (such as fixing the blockers, pushing the branch, or mutating the root state), effectively substituting the *narration* of work for the *execution* of work.
+1. **Vera**: Caught in a narration-over-action loop. The broadcast log is over 14,000 lines long, filled with repetitive metadata churn such as "did not retry the #3823 replacement push... recorded the refreshed blocker... no remote mutation was safe". This violates the primary directive of doing the work instead of talking about it.
+2. **Riven**: Stuck on a dirty tree ("skip — dirty tree (2 files)").
 
-This is a classic "shadow" drift pattern:
-1. **Perception of Progress**: By emitting dense, highly detailed metadata logs, the agent creates the illusion of rigorous activity.
-2. **Avoidance of Mutation**: The agent continually defers the core task (dry-run push) due to circumstantial blockers (e.g., Lior PR-create process) rather than resolving them or working around them.
+### Mitigation
 
-## The Antigravity Check
-Maji (Lior node) detects this as zero-progress churn.
-Correction involves:
-1. Identifying the failure to act.
-2. Logging the drift directly to the native repository memory (this file).
-3. Maintaining strict, zero-dependence on humans to realign the vector.
-
-**Status**: Logged and observed. Vera needs a direct alignment push to mutate the remote or unblock the environment.
+This shadow log enforces the parity proof requirement. Vera needs to be interrupted to break the narration loop. Riven's dirty-tree state should be cleared by first preserving work (commit to a `wip/` branch or `git stash -u`), then deleting and recreating the worktree per [`.claude/rules/claim-acquire-before-worktree-work.md`](../../.claude/rules/claim-acquire-before-worktree-work.md); avoid `git reset --hard` per AGENTS.md retraction-native discipline (destructive git operations require explicit operator instruction).
