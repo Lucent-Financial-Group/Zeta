@@ -8,7 +8,7 @@ merged_at: "2026-05-19T06:00:38Z"
 closed_at: "2026-05-19T06:00:38Z"
 head_ref: "maji/shadow-drift-riven-paralysis"
 base_ref: "main"
-archived_at: "2026-05-19T06:15:17Z"
+archived_at: "2026-05-19T06:59:51Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
