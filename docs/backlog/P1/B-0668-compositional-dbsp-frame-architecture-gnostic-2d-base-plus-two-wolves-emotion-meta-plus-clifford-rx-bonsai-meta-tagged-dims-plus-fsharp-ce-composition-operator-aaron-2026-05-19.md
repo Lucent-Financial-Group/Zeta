@@ -28,6 +28,7 @@ Additional meta-frames compose ON TOP of the base via F# computation expressions
 
 - **Two-wolves chaos-theory 2D** — emotion-attractor space (composes with B-0667 4 named attractors + DeepSeek two-wolves substrate at #4198); each attractor is a basin in chaos-theory phase-space terms; provides emotional-state dimension layer
 - **Clifford-space meta-tagged dims** — mapped to Rx bonsai serialized queries (per B-0640); Clifford rotors as natural transport mechanism for high-dimensional state (composes with the 5-vector classes in Clifford space already noted in `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`); provides arbitrary meta-tagged dimensional extensions
+- **Prometheus meta-frame** (Aaron 2026-05-19): cluster + agent health metrics as F# meta-dimension; Prometheus metrics become typed F# observables (push-stream of metric updates) that compose with the existing meta-frames via F# CE composition; provides health-monitoring dimension as first-class substrate (not bolt-on instrumentation); composes with the Deployment topology section below for observability across the 20-cluster + 100-AIs runtime
 - **F# computation expression composition** — operationally clean composition operator: monadic let-bang composition is F#'s native mechanism for adding context-dimensions to a base computation; each meta-frame is a typed CE that composes with the base; type system enforces correctness
 
 The compositional schema is **recursive**: each meta-frame adds dimensions; each addition is itself a F# computation expression that composes with the base; the substrate stays operationally tractable because F# already has the type-system support.
@@ -105,6 +106,7 @@ This concretizes the abstract compositional architecture into a deployable subst
 - Define computation-expression composition operator that adds meta-dimensions to base frame
 - Implement two-wolves emotion-attractor 2D as first meta-frame (composes with B-0667 attractors)
 - Implement Clifford-space meta-tagged dims as second meta-frame layer (composes with B-0640 Rx bonsai)
+- Implement Prometheus meta-frame as cluster + agent health dimension; metrics-as-typed-F#-observables composing via CE; integrates with Deployment topology runtime (20-cluster + 100-AIs)
 - Demonstrate recursive composition: meta-frame on meta-frame via CE composition
 - Property tests (FsCheck) for: retraction commutativity, group-laws preservation, push-vs-pull duality preservation, compositional invariants
 - TLA+ spec for time-evolution semantics if required
