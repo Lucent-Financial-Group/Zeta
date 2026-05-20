@@ -5,8 +5,8 @@ status: open
 title: "Fractal BFT — N maintainers × n(odd) nodes, local broadcast + remote git composition"
 created: 2026-05-06
 last_updated: 2026-05-19
-decomposition: blob
-children: [B-0211.1]
+decomposition: clean
+children: [B-0211.1, B-0211.2, B-0211.3]
 depends_on: [B-0209]
 type: feature
 ---
