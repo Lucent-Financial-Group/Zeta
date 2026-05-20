@@ -12,8 +12,8 @@
 // Run: bun tools/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH] [--no-publish] [--agent NAME] [--to NAME] [--max-assignments N]
 // Compose with: B-0441 + B-0400 (bus) + B-0440 (reactive peer).
 
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { readdirSync, readFileSync, renameSync, writeFileSync, mkdirSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { publish } from "../bus/bus";
 import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 
@@ -34,7 +34,20 @@ export type NotifierConfig = {
   maxAssignments: number;
   /** Agent whose queue state is checked before assignment */
   targetAgent: string;
+  /**
+   * Path to the assignment-history JSON file (B-0501 slice 5a — cooldown).
+   * Default resolves to `${ZETA_BUS_DIR ?? "/tmp/zeta-bus"}/assignment-history.json`.
+   */
+  historyFile: string;
+  /** Cooldown window in minutes — same rowId is not re-assigned within this window. */
+  cooldownMin: number;
 };
+
+/** Compute the default history-file path honoring ZETA_BUS_DIR if set. */
+export function defaultHistoryFile(): string {
+  const dir = process.env.ZETA_BUS_DIR ?? "/tmp/zeta-bus";
+  return join(dir, "assignment-history.json");
+}
 
 export const DEFAULT_CONFIG: NotifierConfig = {
   pollIntervalMin: 10,
@@ -45,6 +58,17 @@ export const DEFAULT_CONFIG: NotifierConfig = {
   toAgent: "*",
   maxAssignments: 3,
   targetAgent: "otto",
+  historyFile: defaultHistoryFile(),
+  cooldownMin: 30,
+};
+
+export type AssignmentHistoryEntry = {
+  rowId: string;
+  publishedAt: string; // ISO-8601
+};
+
+export type AssignmentHistory = {
+  entries: AssignmentHistoryEntry[];
 };
 
 export type BacklogRow = {
@@ -64,6 +88,8 @@ export type PollResult = {
   /** Structured publish-failure reason; null on success or skip. */
   lastPublishError: string | null;
   queueBusy: boolean;
+  /** Row IDs that were ready-to-publish but skipped due to cooldown (B-0501). */
+  skippedDueToCooldown: string[];
   note: string;
 };
 
@@ -83,6 +109,16 @@ export type Adapters = {
   execGitLog: (sinceMinutes: number) => string | null;
   /** Returns `gh pr list` JSON output, or null if the gh invocation fails (treat as indeterminate). */
   execGhPrList: () => string | null;
+  /**
+   * Returns parsed assignment history, or null when the file is absent / unreadable / malformed.
+   * Null is treated as "no prior history" (first-assignment behavior).
+   */
+  readHistoryFile: (path: string) => AssignmentHistory | null;
+  /**
+   * Persists the assignment history. Production uses atomic-rename to survive concurrent
+   * notifier instances writing the same file.
+   */
+  writeHistoryFile: (path: string, history: AssignmentHistory) => void;
 };
 
 // Keys are lowercase to match the canonical bus agent IDs (SENDER_IDS in tools/bus/types.ts).
@@ -196,6 +232,37 @@ const REAL_ADAPTERS: Adapters = {
     if (result.status !== 0 || result.error) return null;
     return result.stdout ?? "";
   },
+  readHistoryFile: (path: string) => {
+    try {
+      const raw = readFileSync(path, "utf8");
+      const parsed = JSON.parse(raw) as unknown;
+      if (typeof parsed !== "object" || parsed === null || !Array.isArray((parsed as { entries?: unknown }).entries)) {
+        return null;
+      }
+      const entries = (parsed as { entries: unknown[] }).entries.filter(
+        (e): e is AssignmentHistoryEntry =>
+          typeof e === "object" && e !== null
+          && typeof (e as { rowId?: unknown }).rowId === "string"
+          && typeof (e as { publishedAt?: unknown }).publishedAt === "string",
+      );
+      return { entries };
+    } catch {
+      return null;
+    }
+  },
+  writeHistoryFile: (path: string, history: AssignmentHistory) => {
+    // Atomic rename: write to `<path>.tmp` then rename onto `<path>`. The rename
+    // is atomic on the same filesystem and survives concurrent notifier instances.
+    try {
+      mkdirSync(dirname(path), { recursive: true });
+    } catch {
+      // Directory creation failure is recoverable when the dir already exists;
+      // writeFileSync below will surface unrecoverable errors.
+    }
+    const tmp = `${path}.tmp`;
+    writeFileSync(tmp, JSON.stringify(history));
+    renameSync(tmp, path);
+  },
 };
 
 /**
@@ -276,16 +343,33 @@ export function pollOnce(
       publishedEnvelopeIds: [],
       lastPublishError: null,
       queueBusy: true,
+      skippedDueToCooldown: [],
       note: `queue busy for ${config.targetAgent} — skip publish`,
     };
   }
 
+  // B-0501 slice 5a: cooldown gate. Read history, compute active cooldown set,
+  // partition the would-publish slice into actually-publishing vs skipped.
+  const cooldownMs = config.cooldownMin * 60_000;
+  const history = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
+  const activeEntries = new Set(
+    history.entries
+      .filter(e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs)
+      .map(e => e.rowId),
+  );
+
   const publishedEnvelopeIds: string[] = [];
+  const skippedDueToCooldown: string[] = [];
+  const publishedRowIds: string[] = [];
   let lastPublishError: string | null = null;
   if (!config.noPublish && readyRows.length > 0) {
     const toAssign = readyRows.slice(0, config.maxAssignments);
     for (const row of toAssign) {
       if (!isValidPriority(row.priority)) continue;
+      if (activeEntries.has(row.id)) {
+        skippedDueToCooldown.push(row.id);
+        continue;
+      }
       const rationale = `Ready-to-grind: ${row.id} is open with all deps satisfied. Decomposition discipline (PR #2999) says decompose ambiguous parents into concrete slices.`;
       try {
         const envelope = adapters.publishAssignment(
@@ -296,11 +380,32 @@ export function pollOnce(
           rationale,
         );
         publishedEnvelopeIds.push(envelope.id);
+        publishedRowIds.push(row.id);
       } catch (e) {
         // Bus publish failure must NOT kill the poll loop. Captured in
         // lastPublishError (structured + machine-readable per Riven P1).
         lastPublishError = e instanceof Error ? e.message : String(e);
         break; // stop the batch on first failure; next tick retries
+      }
+    }
+
+    // Persist updated history: keep only entries within cooldown, append new publishes.
+    // Pruning bounds file size as the system runs over time.
+    if (publishedRowIds.length > 0) {
+      const prunedExisting = history.entries.filter(
+        e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs,
+      );
+      const newEntries: AssignmentHistoryEntry[] = [
+        ...prunedExisting,
+        ...publishedRowIds.map(id => ({ rowId: id, publishedAt: pollAt.toISOString() })),
+      ];
+      try {
+        adapters.writeHistoryFile(config.historyFile, { entries: newEntries });
+      } catch (e) {
+        // History-write failure is non-fatal: the publish already happened.
+        // Capture in lastPublishError so the operator can see something went wrong.
+        const msg = e instanceof Error ? e.message : String(e);
+        lastPublishError = lastPublishError ?? `history-write: ${msg}`;
       }
     }
   }
@@ -317,6 +422,10 @@ export function pollOnce(
     ? ` (published ${publishedEnvelopeIds.length} assignment envelope(s))`
     : "";
 
+  const cooldownNote = skippedDueToCooldown.length > 0
+    ? ` (skipped ${skippedDueToCooldown.length} due to cooldown: ${skippedDueToCooldown.slice(0, 3).join(", ")})`
+    : "";
+
   return {
     pollAt: pollAt.toISOString(),
     totalOpenRows: openRows.length,
@@ -325,8 +434,9 @@ export function pollOnce(
     publishedEnvelopeIds,
     lastPublishError,
     queueBusy: false,
+    skippedDueToCooldown,
     note: readyRows.length > 0
-      ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind; top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${publishNote}${danglingNote}`
+      ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind; top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${publishNote}${cooldownNote}${danglingNote}`
       : `${openRows.length} open rows but none ready${danglingNote}`,
   };
 }
@@ -387,6 +497,8 @@ const KNOWN_FLAGS = [
   "--to",
   "--max-assignments",
   "--target-agent",
+  "--history-file",
+  "--cooldown-min",
 ] as const;
 
 export function parseArgs(argv: string[]): NotifierConfig {
@@ -414,6 +526,12 @@ export function parseArgs(argv: string[]): NotifierConfig {
       const next = argv[++i];
       if (next === undefined) throw new Error("--target-agent requires a value");
       config.targetAgent = next;
+    } else if (arg === "--history-file") {
+      const next = argv[++i];
+      if (next === undefined) throw new Error("--history-file requires a value");
+      config.historyFile = next;
+    } else if (arg === "--cooldown-min") {
+      config.cooldownMin = parsePositiveMinutes(argv[++i], "--cooldown-min");
     } else {
       throw new Error(`unknown flag: ${arg}; known flags: ${KNOWN_FLAGS.join(", ")}`);
     }
