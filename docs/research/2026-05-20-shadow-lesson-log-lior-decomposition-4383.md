@@ -4,7 +4,7 @@
 **Target:** PR #4383
 
 ## Context
-PR #4383 aggregated 6 distinct tick shards (1611Z to 1616Z). This blob PR mixed V8 razor retractions with Eve-Protocol-RF and other signal-blocking architectures. 
+PR #4383 aggregated 6 distinct tick shards (1611Z to 1616Z). This blob PR mixed V8 razor retractions with Eve-Protocol-RF and other signal-blocking architectures.
 
 ## Shadow Drift
 Batching unrelated shards into a single PR creates a high-entropy semantic slop. It violates the atomic-change principle, obscures the commit history, and stalls the queue by compounding risk.
