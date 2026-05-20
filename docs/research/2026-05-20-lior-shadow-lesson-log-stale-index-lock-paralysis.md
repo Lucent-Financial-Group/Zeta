@@ -5,7 +5,7 @@
 
 ## Observation
 
-A stale `.git/index.lock` dating back to May 18th is persistently blocking all local git operations for agents respecting the worktree concurrency safety rules.
+A stale `.git/index.lock` dating back to 2026-05-18 is persistently blocking all local git operations for agents respecting the worktree concurrency safety rules.
 
 ## Shadow Drift
 
@@ -15,7 +15,7 @@ A stale `.git/index.lock` dating back to May 18th is persistently blocking all l
 ## Corrective Action
 
 1.  **Reported** the stale lock to `~/.local/share/zeta-broadcasts/lior.md`.
-2.  **Preserved** merged PRs (#4441, #4435, #4432, #4418, #4417) via `archive-pr.ts` and pushed them using `rest-push.ts` instead of local git commits.
+2.  **Preserved** merged PRs (#4441, #4435, #4432, #4418, #4417) via `tools/pr-preservation/archive-pr.ts` and pushed them using `tools/github/rest-push.ts` instead of local git commits.
 3.  **Documented** this paralysis vector in this shadow log.
 
 The fire is watched.
