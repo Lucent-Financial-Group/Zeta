@@ -692,6 +692,42 @@ title: only a title
       expect(result.readyRowsFound).toBe(0);
       expect(readCount).toBe(0);
     });
+
+    test("read-merge-write preserves concurrent peer's history entry (Codex P1 #4449)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // Initial read: empty (our snapshot says no prior history).
+      // Pre-write read: peer wrote B-PEER between our two reads.
+      // We're publishing B-OURS. Expect both B-PEER + B-OURS in the final write.
+      const initialHistory: AssignmentHistory = { entries: [] };
+      const peerWroteBetween: AssignmentHistory = {
+        entries: [{ rowId: "B-PEER", publishedAt: "2026-05-13T17:55:00.000Z" }],
+      };
+      let readIdx = 0;
+      const writtenHistory: AssignmentHistory[] = [];
+      const baseAdapters = fakeAdapters(
+        "2026-05-13T18:00:00.000Z",
+        [{ ...ROW_OPEN_NO_DEPS, id: "B-OURS" }],
+        captured,
+      );
+      const adapters: Adapters = {
+        ...baseAdapters,
+        readHistoryFile: () => {
+          // 1st read: initial (empty); 2nd read: just before write (peer added entry)
+          const result = readIdx === 0 ? initialHistory : peerWroteBetween;
+          readIdx += 1;
+          return result;
+        },
+        writeHistoryFile: (_path, h) => {
+          writtenHistory.push(h);
+        },
+      };
+      const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured[0]!.rowId).toBe("B-OURS");
+      expect(writtenHistory).toHaveLength(1);
+      const writtenIds = writtenHistory[0]!.entries.map(e => e.rowId).sort();
+      expect(writtenIds).toEqual(["B-OURS", "B-PEER"]);
+    });
   });
 
   describe("parseArgs", () => {

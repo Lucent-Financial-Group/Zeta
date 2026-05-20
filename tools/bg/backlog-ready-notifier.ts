@@ -257,6 +257,19 @@ const REAL_ADAPTERS: Adapters = {
     // can clobber the other's write or have its rename target disappear.
     // Uniqueness via `process.pid` + 6 random bytes makes collisions effectively
     // impossible. The rename onto `path` is atomic per-filesystem.
+    //
+    // The `flag: "wx"` (O_WRONLY|O_CREAT|O_EXCL) is mandatory for security
+    // (CodeQL js/insecure-temporary-file): without O_EXCL an attacker who
+    // can write to the bus directory could pre-create a symlink at our temp
+    // path pointing elsewhere; we'd then write through the symlink. O_EXCL
+    // fails the create if the file exists, defeating that attack.
+    //
+    // Residual race (B-0501 spec atomic-write-note + Codex PR #4449 P1
+    // finding): the read-modify-write cycle is not flock-serialised, so two
+    // concurrent instances can each compute history-deltas from the same
+    // pre-write snapshot and the later rename wins. The B-0501 spec accepts
+    // this as best-effort noise. The caller in `pollOnce` mitigates further
+    // by reading history again RIGHT BEFORE write and merging.
     try {
       mkdirSync(dirname(path), { recursive: true });
     } catch {
@@ -264,7 +277,7 @@ const REAL_ADAPTERS: Adapters = {
       // writeFileSync below will surface unrecoverable errors.
     }
     const tmp = `${path}.tmp.${process.pid}.${randomBytes(6).toString("hex")}`;
-    writeFileSync(tmp, JSON.stringify(history));
+    writeFileSync(tmp, JSON.stringify(history), { flag: "wx" });
     renameSync(tmp, path);
   },
 };
@@ -400,12 +413,28 @@ export function pollOnce(
 
     // Persist updated history: keep only entries within cooldown, append new publishes.
     // Pruning bounds file size as the system runs over time.
+    //
+    // Read-merge-write under concurrent notifier instances (Codex PR #4449 P1):
+    // re-read the on-disk history immediately before computing the next write
+    // and union any rowIds another instance recorded between our initial read
+    // and this point. This reduces (but does not strictly eliminate) the
+    // read-modify-write race the B-0501 spec atomic-write-note classified as
+    // acceptable noise. Strict elimination would require flock or an append-
+    // only log, both out of scope for slice 5a.
     if (publishedRowIds.length > 0) {
-      const prunedExisting = history.entries.filter(
-        e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs,
+      const onDiskNow = adapters.readHistoryFile(config.historyFile) ?? history;
+      const ourPublishedSet = new Set(publishedRowIds);
+      const mergedExisting = [
+        // Keep our snapshot's entries plus any extras a concurrent writer added.
+        // Filter both by cooldown window AND skip dupes our own publishes will re-add.
+        ...history.entries,
+        ...onDiskNow.entries.filter(e => !history.entries.some(h => h.rowId === e.rowId && h.publishedAt === e.publishedAt)),
+      ].filter(
+        e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs
+             && !ourPublishedSet.has(e.rowId),
       );
       const newEntries: AssignmentHistoryEntry[] = [
-        ...prunedExisting,
+        ...mergedExisting,
         ...publishedRowIds.map(id => ({ rowId: id, publishedAt: pollAt.toISOString() })),
       ];
       try {
