@@ -222,4 +222,29 @@ Claims 99 rows.
       rmSync(dir, { recursive: true, force: true });
     }
   });
+
+  test("dispatches a repeated topic only once (no finding amplification)", () => {
+    const dir = tmp();
+    try {
+      const content = `---
+self-check: [count, count]
+---
+
+# Body claims 5 sub-classes.
+
+| a | b |
+|---|---|
+| 1 | 2 |
+`;
+      const f = write(dir, "dupe-dispatch.md", content);
+      const result = checkFile(f);
+      expect(result.ok).toBe(true);
+      // Without the dispatch-level dedup, the count checker would
+      // fire twice and emit each drift finding twice.
+      expect(result.findings.length).toBe(1);
+      expect(result.findings[0]!.topic).toBe("count");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });

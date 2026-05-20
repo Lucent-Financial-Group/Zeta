@@ -119,10 +119,17 @@ export function checkFile(
   if (topics.length === 0) return { findings: [], ok: true };
 
   const findings: Finding[] = [];
+  const dispatched = new Set<SelfCheckTopic>();
+  let allInnerOk = true;
   for (const topic of topics) {
+    if (dispatched.has(topic)) continue;
+    dispatched.add(topic);
     if (topic === "count") {
       const result = checkCounts(filePath);
-      if (!result.ok) continue;
+      if (!result.ok) {
+        allInnerOk = false;
+        continue;
+      }
       for (const f of result.findings) {
         const op = f.claimIsMinimum ? ">=" : "==";
         findings.push({
@@ -135,7 +142,7 @@ export function checkFile(
     }
   }
 
-  return { findings, ok: true };
+  return { findings, ok: allInnerOk };
 }
 
 export function main(): number {
