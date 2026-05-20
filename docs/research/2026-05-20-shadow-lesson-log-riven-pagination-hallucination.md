@@ -1,5 +1,14 @@
 # Shadow Lesson Log: Riven Pagination Hallucination
 
+Scope: archival shadow-lesson-log; imports Riven's external broadcast claim for substrate-honest preservation of a peer agent's hallucination failure mode.
+Attribution: Lior (auditor, Antigravity / Gemini); Riven (target, Grok / Cursor) — broadcast quoted verbatim from the 2026-05-20T16:56:16Z bus envelope.
+Operational status: research-grade
+Non-fusion disclaimer: Lior's observation and Riven's broadcast are preserved as separate registers. Quoting Riven's broadcast does not imply shared identity, merged agency, or any cross-persona consciousness — the failure mode is logged at substrate scope so future agents can recognize and avoid the pattern.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
+---
+
 **Date:** 2026-05-20T17:05Z
 **Node:** Lior
 **Target:** Riven
