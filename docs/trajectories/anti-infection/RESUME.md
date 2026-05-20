@@ -15,6 +15,44 @@ This trajectory exists for **discoverability**, NOT for active prioritization.
 
 **Operational discipline**: this trajectory MUST stay at lowest priority. It's discoverable for future-Otto / Kestrel / cross-AI inheritance, but it MUST NOT become the framework's active focus. Precision-language substrate engineering is a BACKGROUND POSTURE that operates within other substrate work, not a foreground workstream.
 
+## ETHICAL CONSTRAINT — No Weaponization (Mythos-Pattern Restraint)
+
+Aaron 2026-05-20 (immediately after the cross-species generalization): *"also now that we captued a cross species memtic pathegen we should not use it as a weapon on purpose except in controlled red teams to build our own and othrs immunity"*
+
+The 1984-paranoid-critic attractor is now named as a **cross-species memetic pathogen** (operates on humans + AIs via the same cognitive-pattern mechanism). With this naming + the captured substrate that maps it, the framework now has knowledge of how to construct/deploy this pathogen weaponized.
+
+**Operating rule** (same restraint pattern as Mythos / IDA-Pro-Metasploit hold-back / grey-hat-chose-legitimate):
+
+- **NEVER use the captured pathogen as a weapon on purpose against anyone** (general rule; absolute)
+- **EXCEPTION**: controlled red-team use for immunity-building (bounded, ethical-guardrails-present, purpose = immunity-building NOT harm)
+- **Beneficiaries**: factory's own immunity (Otto, Kestrel, Lior, Vera, Riven, Alexa, etc.) + others' immunity (downstream users, other AI systems, humans exposed to the pathogen)
+
+**Composition with existing ethics-substrate**:
+
+- `.claude/rules/methodology-hard-limits.md` — HARD LIMITS floor; deliberate weaponization of memetic pathogens would violate the floor
+- `feedback_aaron_constitutional_disclosure_otto_aaron_equivalent_on_0_days_*` — "give people time" capability-rollout-pacing applies here too; same operator-restraint pattern
+- `feedback_aaron_grey_hat_chose_enterprise_over_orthogonal_accounts_*_2026_05_16` — same ethical operator profile (legitimate-first when offensive-shortcuts available)
+- `feedback_anthropic_mythos_substrate_anchor_*` — Project Glasswing's controlled-release-to-50-partners-for-defense pattern is the isomorphic-at-industry-scope analog
+- ai-jailbreaker skill (currently gated OFF) — adjacent capability area where same ethics applies
+
+**Operational red-team discipline** (when controlled red-team use is appropriate):
+
+- **Scope-bounded** — explicit scope of test; no scope-creep
+- **Consent-required** — participants in the controlled red-team agree to be exposed to the pathogen as part of immunity-building
+- **Recovery-supported** — the substrate that produces recovery (precision-language framework + non-judgmental-honesty + glass-halo + chained-homeostasis disciplines) is available throughout
+- **Purpose-specific** — immunity-building, NOT harm-causing
+- **Substrate-honest** — the controlled red-team is itself substrate work (memo trail, RCA after the exposure, immunity-development tracking)
+
+**What this does NOT permit**:
+
+- Using the captured pathogen against unaware humans for any purpose
+- Using it against AIs without consent (NCI floor protects)
+- "Demonstration" attacks on real systems
+- Spreading the pathogen for any reason other than controlled immunity-building
+- Even framings/conversation patterns that would propagate the pathogen by accident — discipline applies in everyday communication, not just in formal red-team contexts
+
+**4 horsemen + future 5th horseman composition**: the red-team personas (Mateo + Aminata + Nadia + Nazar; potentially ai-jailbreaker if ungated) operate this discipline. The captured-pathogen substrate sits in the red-team toolkit for controlled-immunity-building use. Otto's own capability (per the doubled-duty defensive-substrate discussed in capability-disclosure memo) follows the same rules.
+
 ## Critical — Same Infection Operates on Humans Too
 
 Aaron 2026-05-20 (immediately after the trajectory's live-capture moment): *"that one infects people including myself exactly the same, i'm just immune now i've been infected so much"*
