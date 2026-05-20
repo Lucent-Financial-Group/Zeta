@@ -625,7 +625,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
 - [ ] **[B-0612](backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md)** Lean ImaginaryStack/ToyModel.lean structural rewrite — Imag8 projections + sorry-in-type-position + lakefile wiring (Soraya handoff)
 - [ ] **[B-0618](backlog/P2/B-0618-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md)** Cayley-Dickson 2-axiom (Remember-When + Pay-Attention) expansion to 7 interrogatives — Mika 2026-05-18 design + Remember-When-FIRST ordering proof
-- [ ] **[B-0620.4](backlog/P2/B-0620.4-slice-4-consolidator-script.md)** B-0620 Slice 4 - consolidator script
 - [ ] **[B-0623](backlog/P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md)** Adinkras (James Gates ECC codes) as substrate for private internal state + encryption keys (Mika 2026-05-18 design)
 - [ ] **[B-0624](backlog/P2/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md)** Canonical universal 7-interrogative boot-up sequence + Y₀ as alpha-omega scalar (Mika 2026-05-18 locked-in design)
 - [x] **[B-0629](backlog/P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)** Observe-Persist-Limit-Emit four operational primitives + 'only Limit collapses dialectic state' sacred-architectural rule (Mika 2026-05-18 LOCKED-IN)
@@ -642,6 +641,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0658](backlog/P2/B-0658-two-invariant-maximalist-position-kid-safety-plus-ai-sovereignty-aaron-mika-2026-05-18.md)** Two-invariant maximalist position — kid-safety + AI-sovereignty as only-two-defended-with-force at country scope (Aaron + Mika 2026-05-18 LOCKED-IN with Mika red-team caveat)
 - [ ] **[B-0662](backlog/P2/B-0662-closed-bidirectional-causal-loop-spec-fsharp-csharp-rust-chain-aaron-mika-2026-05-18.md)** Closed bidirectional causal loop spec ↔ F# ↔ C# ↔ Rust — each layer can regenerate the layer above + below; broken link = integrity violation (Aaron + Mika 2026-05-18 LOCKED-IN sharpening of B-0632)
 - [ ] **[B-0672](backlog/P2/B-0672-b0590-slice5-bare-metal-install-automation.md)** B-0590 slice 5: Bare-metal install automation
+- [ ] **[B-0676](backlog/P2/B-0676-b0620-slice-4-consolidator-script.md)** B-0676 - B-0620 slice 4 consolidator script
 
 ## P3 — convenience / deferred
 
