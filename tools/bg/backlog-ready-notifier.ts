@@ -12,6 +12,7 @@
 // Run: bun tools/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH] [--no-publish] [--agent NAME] [--to NAME] [--max-assignments N]
 // Compose with: B-0441 + B-0400 (bus) + B-0440 (reactive peer).
 
+import { randomBytes } from "node:crypto";
 import { readdirSync, readFileSync, renameSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { publish } from "../bus/bus";
@@ -251,15 +252,18 @@ const REAL_ADAPTERS: Adapters = {
     }
   },
   writeHistoryFile: (path: string, history: AssignmentHistory) => {
-    // Atomic rename: write to `<path>.tmp` then rename onto `<path>`. The rename
-    // is atomic on the same filesystem and survives concurrent notifier instances.
+    // Atomic rename with a PROCESS-UNIQUE temp filename. Two notifier instances
+    // running concurrently must NOT share the same temp path — otherwise one
+    // can clobber the other's write or have its rename target disappear.
+    // Uniqueness via `process.pid` + 6 random bytes makes collisions effectively
+    // impossible. The rename onto `path` is atomic per-filesystem.
     try {
       mkdirSync(dirname(path), { recursive: true });
     } catch {
       // Directory creation failure is recoverable when the dir already exists;
       // writeFileSync below will surface unrecoverable errors.
     }
-    const tmp = `${path}.tmp`;
+    const tmp = `${path}.tmp.${process.pid}.${randomBytes(6).toString("hex")}`;
     writeFileSync(tmp, JSON.stringify(history));
     renameSync(tmp, path);
   },
@@ -348,23 +352,28 @@ export function pollOnce(
     };
   }
 
-  // B-0501 slice 5a: cooldown gate. Read history, compute active cooldown set,
-  // partition the would-publish slice into actually-publishing vs skipped.
+  // B-0501 slice 5a: cooldown gate. History is read lazily inside the publish
+  // branch so dry-runs (`--no-publish`) and ready-row-empty polls don't pay the
+  // disk-IO + JSON-parse cost on every cycle. The scan walks readyRows in order
+  // and applies cooldown PER ROW so cooled-down rows don't consume the
+  // maxAssignments quota and silently block later eligible rows from publishing.
   const cooldownMs = config.cooldownMin * 60_000;
-  const history = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
-  const activeEntries = new Set(
-    history.entries
-      .filter(e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs)
-      .map(e => e.rowId),
-  );
-
   const publishedEnvelopeIds: string[] = [];
   const skippedDueToCooldown: string[] = [];
   const publishedRowIds: string[] = [];
   let lastPublishError: string | null = null;
+  let history: AssignmentHistory | null = null;
+
   if (!config.noPublish && readyRows.length > 0) {
-    const toAssign = readyRows.slice(0, config.maxAssignments);
-    for (const row of toAssign) {
+    history = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
+    const activeEntries = new Set(
+      history.entries
+        .filter(e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs)
+        .map(e => e.rowId),
+    );
+
+    for (const row of readyRows) {
+      if (publishedEnvelopeIds.length >= config.maxAssignments) break;
       if (!isValidPriority(row.priority)) continue;
       if (activeEntries.has(row.id)) {
         skippedDueToCooldown.push(row.id);

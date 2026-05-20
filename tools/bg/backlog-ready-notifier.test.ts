@@ -622,6 +622,76 @@ title: only a title
     test("--history-file rejects missing value", () => {
       expect(() => parseArgs(["--history-file"])).toThrow(/requires a value/);
     });
+
+    test("cooled-down rows do NOT consume maxAssignments quota — later eligible rows still publish (Codex P1 #4449)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // First 3 ready rows are in cooldown; 4th and 5th are eligible.
+      // With maxAssignments=3, all 3 publishes should go to the 4th, 5th, and... wait we need 3 eligible.
+      // Re-cast: 3 in cooldown + 3 eligible; maxAssignments=3 must publish the 3 eligible.
+      const history: HistoryStore = {
+        read: {
+          entries: [
+            { rowId: "B-COOLED-1", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "B-COOLED-2", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "B-COOLED-3", publishedAt: "2026-05-13T18:00:00.000Z" },
+          ],
+        },
+        written: [],
+      };
+      const rows: BacklogRow[] = [
+        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-1" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-2" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-3" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-1" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-2" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-3" },
+      ];
+      // Poll at T+15min — cooldown 30min still active for COOLED-* rows.
+      const adapters = fakeAdapters(
+        "2026-05-13T18:15:00.000Z",
+        rows,
+        captured,
+        "",
+        "",
+        history,
+      );
+      const result = pollOnce({ ...DEFAULT_CONFIG, maxAssignments: 3, cooldownMin: 30 }, adapters);
+      expect(result.publishedEnvelopeIds).toHaveLength(3);
+      expect(captured.map(c => c.rowId)).toEqual(["B-ELIG-1", "B-ELIG-2", "B-ELIG-3"]);
+      expect(result.skippedDueToCooldown).toEqual(["B-COOLED-1", "B-COOLED-2", "B-COOLED-3"]);
+    });
+
+    test("readHistoryFile NOT called when noPublish: true (Copilot P1 #4449 — defer history IO)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      let readCount = 0;
+      const baseAdapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured);
+      const adapters: Adapters = {
+        ...baseAdapters,
+        readHistoryFile: (_path) => {
+          readCount += 1;
+          return null;
+        },
+      };
+      const result = pollOnce({ ...DEFAULT_CONFIG, noPublish: true }, adapters);
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(readCount).toBe(0);
+    });
+
+    test("readHistoryFile NOT called when readyRows is empty (Copilot P1 #4449 — defer history IO)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      let readCount = 0;
+      const baseAdapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_CLOSED], captured);
+      const adapters: Adapters = {
+        ...baseAdapters,
+        readHistoryFile: (_path) => {
+          readCount += 1;
+          return null;
+        },
+      };
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+      expect(result.readyRowsFound).toBe(0);
+      expect(readCount).toBe(0);
+    });
   });
 
   describe("parseArgs", () => {
