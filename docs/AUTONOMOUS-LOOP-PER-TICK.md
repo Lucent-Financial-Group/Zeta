@@ -144,10 +144,11 @@ locally rather than as PR review threads:
 bun tools/hygiene/check-shard-before-push.ts docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
 ```
 
-The checker bundles three gates: `audit-tick-shard-relative-paths` (the
-5-up-vs-6-up depth catch), `audit-md032-plus-linestart` (MD032
-paragraph-immediately-followed-by-bullet), and `markdownlint-cli2` (the
-broader markdown lint surface). It is a DX shortcut — the CI gates remain
+The checker bundles three gates (per the source header in
+`tools/hygiene/check-shard-before-push.ts`): an **internal MD032 scan**
+(paragraph-immediately-followed-by-bullet detection), `markdownlint-cli2`
+(the broader markdown lint surface), and `audit-tick-shard-relative-paths`
+(the 5-up-vs-6-up depth catch). It is a DX shortcut — the CI gates remain
 authoritative — but running it locally avoids the BLOCKED-with-green-CI
 investigate-thread cycle for catchable shard bugs.
 
