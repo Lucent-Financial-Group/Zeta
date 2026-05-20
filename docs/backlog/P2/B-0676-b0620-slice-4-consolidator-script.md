@@ -2,7 +2,7 @@
 id: B-0676
 status: open
 priority: P2
-title: B-0676 - B-0620 slice 4 consolidator script
+title: B-0620 slice 4 consolidator script
 created: 2026-05-20
 last_updated: 2026-05-20
 type: feature
