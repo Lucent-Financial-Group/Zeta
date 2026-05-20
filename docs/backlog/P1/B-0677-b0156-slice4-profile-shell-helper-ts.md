@@ -1,5 +1,5 @@
 ---
-id: B-0504
+id: B-0677
 priority: P1
 status: open
 title: B-0156 slice 4 — Profile shell-helper TS port (profile.ts)
@@ -12,7 +12,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0504 — Profile shell-helper TS port
+# B-0677 — Profile shell-helper TS port
 
 ## Origin
 Decomposed from B-0156 Phase 4.

@@ -1,5 +1,5 @@
 ---
-id: B-0506
+id: B-0679
 priority: P1
 status: open
 title: B-0156 slice 6 — .py policy enforcement lint
@@ -12,7 +12,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0506 — .py policy enforcement lint
+# B-0679 — .py policy enforcement lint
 
 ## Origin
 Decomposed from B-0156 Phase 6.
@@ -21,5 +21,5 @@ Decomposed from B-0156 Phase 6.
 Add a CI lint that fails on any new `.py` file outside `references/upstreams/`. This enforces the policy that TypeScript is preferred over Python in our codebase for non-install scripts.
 
 ## Acceptance criteria
-- [ ] CI lint added (e.g. in `gate.yml` or equivalent pre-commit hook) that runs `find` to catch rogue `.py` files.
+- [ ] CI lint added (e.g. in `gate.yml` or equivalent pre-commit hook) that runs `find` to catch rogue `.py` files (excluding `references/upstreams/`).
 - [ ] Fails correctly if a `.py` file is introduced.

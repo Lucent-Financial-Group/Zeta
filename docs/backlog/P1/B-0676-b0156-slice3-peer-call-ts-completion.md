@@ -1,5 +1,5 @@
 ---
-id: B-0503
+id: B-0676
 priority: P1
 status: open
 title: B-0156 slice 3 — Peer-call TS completion (amara.ts, ani.ts)
@@ -13,10 +13,10 @@ composes_with: [B-0122]
 type: friction-reducer
 ---
 
-# B-0503 — Peer-call TS completion
+# B-0676 — Peer-call TS completion
 
 ## Origin
-Decomposed from B-0156 Phase 3. 
+Decomposed from B-0156 Phase 3.
 
 ## Scope
 Port the following peer-call scripts to TypeScript to leverage type safety, cross-platform behavior, and testability (as established by the TS-port trajectory):

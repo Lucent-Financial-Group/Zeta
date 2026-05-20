@@ -1,5 +1,5 @@
 ---
-id: B-0505
+id: B-0678
 priority: P1
 status: open
 title: B-0156 slice 5 — Bash sweep (deletion of .sh siblings post-port)
@@ -12,7 +12,7 @@ depends_on: [B-0503, B-0504]
 type: friction-reducer
 ---
 
-# B-0505 — Bash sweep
+# B-0678 — Bash sweep
 
 ## Origin
 Decomposed from B-0156 Phase 5.
