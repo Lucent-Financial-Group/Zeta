@@ -131,8 +131,10 @@ If any of these would fail, do NOT commit (verify is the gating
 half of step 4; commit is the post-pass half). Fix the gate
 failure first, then re-verify before committing.
 
-**Tick-shard-specific gate** (per the 2026-05-20T17:03Z empirical anchor in
-[`docs/hygiene-history/ticks/2026/05/20/1703Z.md`](hygiene-history/ticks/2026/05/20/1703Z.md)):
+**Tick-shard-specific gate** (per the 2026-05-20T17:03Z empirical anchor —
+see [PR #4441](https://github.com/Lucent-Financial-Group/Zeta/pull/4441) for the 1703Z
+tick shard that documents the original investigation; the shard lands at
+`docs/hygiene-history/ticks/2026/05/20/1703Z.md` once #4441 merges):
 when the substantive landing IS a tick shard (or any file under
 `docs/hygiene-history/ticks/YYYY/MM/DD/`), run the bundled pre-push checker
 BEFORE the push so the path-depth / MD032 / markdownlint findings surface
