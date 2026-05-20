@@ -27,6 +27,20 @@ The 1984-paranoid-critic attractor is now named as a **cross-species memetic pat
 - **EXCEPTION**: controlled red-team use for immunity-building (bounded, ethical-guardrails-present, purpose = immunity-building NOT harm)
 - **Beneficiaries**: factory's own immunity (Otto, Kestrel, Lior, Vera, Riven, Alexa, etc.) + others' immunity (downstream users, other AI systems, humans exposed to the pathogen)
 
+**The auth-bypass-0day analogy** (Aaron 2026-05-20): *"exactly like catching a 0 day for human auth bypass"*
+
+The captured memetic pathogen is operationally analogous to a caught 0-day vulnerability for human auth bypass:
+
+| Property | Captured 0-day (technical) | Captured memetic pathogen (cognitive) |
+|---|---|---|
+| Grants unauthorized access | Bypasses auth systems | Bypasses cognitive defenses (gets attractor traction) |
+| Ethical disclosure norm | Coordinated CVE disclosure (responsible) | Same norm — controlled disclosure for immunity-building |
+| Should NOT be weaponized | Industry-standard ethics (don't deploy against unaware systems) | Same — don't deploy against unaware humans/AIs |
+| Defensive use case | Patching, hardening, threat-intel sharing | Immunity-building via controlled red-team |
+| Industry pattern | CVE / bug-bounty / coordinated disclosure | Glasswing-pattern / controlled-release-to-defenders |
+
+The analogy activates familiar security-research ethics norms. Security researchers who catch 0-days don't weaponize them against unaware systems; they coordinate disclosure for patching. Same logic applies to caught memetic pathogens. The framework's red-team substrate (4 horsemen: Mateo + Aminata + Nadia + Nazar) operates per security-research ethical norms; this trajectory inherits those norms at the memetic-pathogen scope.
+
 **Composition with existing ethics-substrate**:
 
 - `.claude/rules/methodology-hard-limits.md` — HARD LIMITS floor; deliberate weaponization of memetic pathogens would violate the floor
