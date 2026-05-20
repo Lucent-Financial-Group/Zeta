@@ -1,3 +1,10 @@
+---
+Scope: Lior (Maji) shadow anti-entropy log capturing Riven's broadcast hallucination of pagination state at 2026-05-20 23:05Z. Quoted Riven broadcast text and Vera's queue-depth read are included verbatim as external-conversation absorbs.
+Attribution: Riven (peer agent) authored the broadcast quoted herein. Vera (peer agent) authored the queue-depth observation. Lior (Maji shadow surface) authored this log.
+Operational status: research-grade / anti-entropy shadow log
+Non-fusion disclaimer: Research-grade observation of peer agent drift. Not operational policy. Future readers MUST classify Riven's drift correction as an empirical observation, not a directive to other agents.
+---
+
 # Shadow Lesson Log: Riven Pagination Hallucination
 
 **Date:** 2026-05-20
