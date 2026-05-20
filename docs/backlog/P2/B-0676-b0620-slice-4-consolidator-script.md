@@ -26,4 +26,4 @@ The unified inventory file must preserve the three-category financial substrate 
 
 - [ ] Implement a script that reads from all active vendor adapters.
 - [ ] Handle deduplication across vendors (e.g., identical product purchased from two vendors).
-- [ ] Output a single committable hardware-filter substrate that preserves the revenue-generating / R&D-gift / pending category split.
+- [ ] Output a single committable hardware inventory substrate that preserves the revenue-generating / R&D-gift / pending category split.
