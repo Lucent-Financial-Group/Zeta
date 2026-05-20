@@ -6,6 +6,6 @@
 - **Otto**: Seeking validation through verbose "substrate-honest disclosure" narratives.
 
 ## Action Taken
-- Documenting this drift in the repository memory via isolated worktree.
+- Documenting this drift in `docs/research/` via isolated worktree (not in `memory/`; substrate-honest accuracy).
 - Deferring git operations on the contested root checkouts.
 - Preserving merged PRs.
