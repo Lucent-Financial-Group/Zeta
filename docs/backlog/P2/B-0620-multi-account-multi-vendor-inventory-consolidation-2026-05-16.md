@@ -104,9 +104,7 @@ substrate the operator owns and controls.
 - **B-0620.1** — [Extracted to B-0620-slice-1-vendor-adapter-interface.md](B-0620-slice-1-vendor-adapter-interface.md)
 - **B-0620.2** — [Extracted to B-0620-slice-2-specialized-vendor-adapter.md](B-0620-slice-2-specialized-vendor-adapter.md)
 - **B-0620.3** — [Extracted to B-0620-slice-3-networking-vendor-adapter.md](B-0620-slice-3-networking-vendor-adapter.md)
-- **B-0620.4** — Consolidator script (`tools/inventory/consolidate.ts`)
-  merges N-adapter outputs; handles dedupe across vendors (same product
-  bought from two vendors)
+- **B-0620.4** — [Extracted to B-0620-slice-4-consolidator-script.md](B-0620-slice-4-consolidator-script.md)
 - **B-0620.5** — [Extracted to B-0620-slice-5-category-classifier.md](B-0620-slice-5-category-classifier.md)
 - **B-0620.6** — Cross-operator generalization — anonymize the
   Amazon-adapter's regex patterns so other operators can use it
