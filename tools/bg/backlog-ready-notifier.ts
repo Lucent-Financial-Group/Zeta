@@ -375,10 +375,9 @@ export function pollOnce(
   const skippedDueToCooldown: string[] = [];
   const publishedRowIds: string[] = [];
   let lastPublishError: string | null = null;
-  let history: AssignmentHistory | null = null;
 
   if (!config.noPublish && readyRows.length > 0) {
-    history = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
+    const history: AssignmentHistory = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
     const activeEntries = new Set(
       history.entries
         .filter(e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs)
