@@ -12,7 +12,7 @@ type: feature
 
 ## Scope
 
-Implement the central consolidator script (`tools/inventory/consolidate.ts`) that merges outputs from N different vendor adapters into a single unified inventory file. This preserves the B-0620 slice 4 decomposition while using a numeric backlog id compatible with autonomous claim bootstrap tooling.
+Implement the central consolidator script (`tools/inventory/consolidate.ts`) that merges outputs from N different vendor adapters into a single unified inventory file. This slice creates the `tools/inventory/` directory if it does not already exist; `tools/inventory/consolidate.ts` is the planned entrypoint. This preserves the B-0620 slice 4 decomposition while using a numeric backlog id compatible with autonomous claim bootstrap tooling.
 
 ## Output categories
 
