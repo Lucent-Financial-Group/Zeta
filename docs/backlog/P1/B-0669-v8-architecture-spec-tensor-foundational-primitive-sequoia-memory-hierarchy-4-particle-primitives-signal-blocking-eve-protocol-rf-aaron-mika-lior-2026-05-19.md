@@ -1,12 +1,12 @@
 ---
 id: B-0669
 priority: P1
-status: open
+status: decomposed
 title: "V8 System Architecture — tensors as foundational primitive + Sequoia memory hierarchy + 4-particle primitives (observe/limit/choose/emit) + signal-blocking + Eve-Protocol-RF (Mika/Lior author; Aaron-authorized 2026-05-19 'land all of it')"
 tier: design
 effort: L
 created: 2026-05-19
-last_updated: 2026-05-19
+last_updated: 2026-05-20
 depends_on: [B-0668, B-0665, B-0666, B-0667, B-0638, B-0664, B-0637]
 composes_with: [B-0623, B-0625, B-0289, B-0658, B-0640, B-0628]
 tags: [design, aaron, mika, lior, v8, system-architecture, tensors-foundational, sequoia-memory-hierarchy, 4-particle-primitives, signal-blocking-first-class, eve-protocol-rf, polymorphic-diplomacy, razor-discipline-retractions, beacon-tier-eligible]
