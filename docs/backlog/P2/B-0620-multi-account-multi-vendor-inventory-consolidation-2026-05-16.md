@@ -103,9 +103,7 @@ substrate the operator owns and controls.
 
 - **B-0620.1** — [Extracted to B-0620-slice-1-vendor-adapter-interface.md](B-0620-slice-1-vendor-adapter-interface.md)
 - **B-0620.2** — [Extracted to B-0620-slice-2-specialized-vendor-adapter.md](B-0620-slice-2-specialized-vendor-adapter.md)
-- **B-0620.3** — Networking vendor adapter (Ubiquiti — the maintainer's
-  off-Amazon spend most likely concentrates here per the $50-100K
-  off-Amazon disclosure)
+- **B-0620.3** — [Extracted to B-0620-slice-3-networking-vendor-adapter.md](B-0620-slice-3-networking-vendor-adapter.md)
 - **B-0620.4** — Consolidator script (`tools/inventory/consolidate.ts`)
   merges N-adapter outputs; handles dedupe across vendors (same product
   bought from two vendors)
