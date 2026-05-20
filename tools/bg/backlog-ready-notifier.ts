@@ -12,8 +12,7 @@
 // Run: bun tools/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH] [--no-publish] [--agent NAME] [--to NAME] [--max-assignments N]
 // Compose with: B-0441 + B-0400 (bus) + B-0440 (reactive peer).
 
-import { randomBytes } from "node:crypto";
-import { readdirSync, readFileSync, renameSync, writeFileSync, mkdirSync } from "node:fs";
+import { readdirSync, readFileSync, renameSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { publish } from "../bus/bus";
 import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
@@ -252,19 +251,21 @@ const REAL_ADAPTERS: Adapters = {
     }
   },
   writeHistoryFile: (path: string, history: AssignmentHistory) => {
-    // Atomic rename with a PROCESS-UNIQUE temp filename. Two notifier instances
-    // running concurrently must NOT share the same temp path — otherwise one
-    // can clobber the other's write or have its rename target disappear.
-    // Uniqueness via `process.pid` + 6 random bytes makes collisions effectively
-    // impossible. The rename onto `path` is atomic per-filesystem.
+    // Atomic rename via a PRIVATE temp directory.
     //
-    // The `flag: "wx"` (O_WRONLY|O_CREAT|O_EXCL) is mandatory for security
-    // (CodeQL js/insecure-temporary-file): without O_EXCL an attacker who
-    // can write to the bus directory could pre-create a symlink at our temp
-    // path pointing elsewhere; we'd then write through the symlink. O_EXCL
-    // fails the create if the file exists, defeating that attack.
+    // Pattern: `mkdtempSync` creates a directory with mode 0700 and a
+    // cryptographically-unguessable suffix in the parent of `path`. We write
+    // the history into that private directory then rename onto `path`. This
+    // defeats:
+    //   - Symlink attack: attacker cannot pre-create our temp path because the
+    //     dir name is unguessable AND world-not-accessible (0700 mode).
+    //   - Concurrent-notifier collision: each instance gets its own private
+    //     subdirectory; no shared temp filename.
+    //   - The CodeQL `js/insecure-temporary-file` rule, which flags any
+    //     predictable filename creation in an OS temp dir even when O_EXCL
+    //     would defeat the attack.
     //
-    // Residual race (B-0501 spec atomic-write-note + Codex PR #4449 P1
+    // Residual race (B-0501 spec atomic-write-note + a PR #4449 review
     // finding): the read-modify-write cycle is not flock-serialised, so two
     // concurrent instances can each compute history-deltas from the same
     // pre-write snapshot and the later rename wins. The B-0501 spec accepts
@@ -276,9 +277,22 @@ const REAL_ADAPTERS: Adapters = {
       // Directory creation failure is recoverable when the dir already exists;
       // writeFileSync below will surface unrecoverable errors.
     }
-    const tmp = `${path}.tmp.${process.pid}.${randomBytes(6).toString("hex")}`;
-    writeFileSync(tmp, JSON.stringify(history), { flag: "wx" });
-    renameSync(tmp, path);
+    const tmpDir = mkdtempSync(join(dirname(path), ".history-tmp-"));
+    const tmp = join(tmpDir, "assignment-history.json");
+    try {
+      writeFileSync(tmp, JSON.stringify(history), { flag: "wx" });
+      renameSync(tmp, path);
+    } finally {
+      // Best-effort cleanup of the private temp dir (the file inside was
+      // renamed out so the dir is usually empty; rmSync handles either case).
+      try {
+        rmSync(tmpDir, { recursive: true, force: true });
+      } catch {
+        // Cleanup failure is non-fatal: the temp dir's contents already moved
+        // to `path` (the load-bearing operation succeeded); leftover empty
+        // dir is at worst a noise issue.
+      }
+    }
   },
 };
 
@@ -413,13 +427,13 @@ export function pollOnce(
     // Persist updated history: keep only entries within cooldown, append new publishes.
     // Pruning bounds file size as the system runs over time.
     //
-    // Read-merge-write under concurrent notifier instances (Codex PR #4449 P1):
-    // re-read the on-disk history immediately before computing the next write
-    // and union any rowIds another instance recorded between our initial read
-    // and this point. This reduces (but does not strictly eliminate) the
-    // read-modify-write race the B-0501 spec atomic-write-note classified as
-    // acceptable noise. Strict elimination would require flock or an append-
-    // only log, both out of scope for slice 5a.
+    // Read-merge-write under concurrent notifier instances (PR #4449 review
+    // finding): re-read the on-disk history immediately before computing the
+    // next write and union any rowIds another instance recorded between our
+    // initial read and this point. This reduces (but does not strictly
+    // eliminate) the read-modify-write race the B-0501 spec atomic-write-note
+    // classified as acceptable noise. Strict elimination would require flock
+    // or an append-only log, both out of scope for slice 5a.
     if (publishedRowIds.length > 0) {
       const onDiskNow = adapters.readHistoryFile(config.historyFile) ?? history;
       const ourPublishedSet = new Set(publishedRowIds);
