@@ -153,5 +153,10 @@
     "file": "docs/hygiene-history/ticks/2026/05/18/2119Z.md",
     "line": 62,
     "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/19/0007Z-c.md",
+    "line": 7,
+    "target": "../../../../../../docs/backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md"
   }
 ]
