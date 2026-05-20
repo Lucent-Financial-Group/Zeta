@@ -86,6 +86,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0193](backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md)** Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that succeeds recreation is bootstrap and gets cut (Aaron 2026-05-05)
 - [ ] **[B-0211](backlog/P1/B-0211-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md)** Fractal BFT — N maintainers × n(odd) nodes, local broadcast + remote git composition
 - [ ] **[B-0211.1](backlog/P1/B-0211.1-fractal-bft-protocol-doc-2026-05-19.md)** Fractal BFT — Protocol doc describing local-cluster + remote-cluster composition
+- [ ] **[B-0211.2](backlog/P1/B-0211.2-fractal-bft-remote-agent-test.md)** Fractal BFT — remote-only test agent coordination with 3-node cluster
+- [ ] **[B-0211.3](backlog/P1/B-0211.3-fractal-bft-maintainer-scaling.md)** Fractal BFT — protocol scales to 2+ maintainers without modification
 - [ ] **[B-0212](backlog/P1/B-0212-shadow-outlet-architecture-tmp-now-crypto-privacy-later-2026-05-06.md)** Shadow outlet architecture — /tmp ephemeral now, cryptographic privacy later
 - [ ] **[B-0213](backlog/P1/B-0213-broadcast-bus-production-hardening-schema-ttl-receipts-2026-05-06.md)** Broadcast bus production hardening — structured schema, TTL, receipts, conflict detection
 - [x] **[B-0214](backlog/P1/B-0214-backlog-decomposition-skill-dependency-ordering-2026-05-06.md)** Backlog decomposition skill — break architectural directions into dependency-ordered items
