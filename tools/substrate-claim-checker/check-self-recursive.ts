@@ -57,14 +57,40 @@ export interface Finding {
 const SUPPORTED_TOPICS: ReadonlySet<string> = new Set<SelfCheckTopic>(["count"]);
 
 /**
+ * Strip a YAML inline comment from the directive, respecting flow-sequence
+ * brackets. A `#` preceded by whitespace (or at the start of the directive)
+ * begins an inline comment that runs to end of line, but only when not
+ * inside `[...]` flow-sequence brackets.
+ */
+function stripInlineComment(s: string): string {
+  let depth = 0;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c === "[") depth++;
+    else if (c === "]") depth--;
+    else if (
+      c === "#" &&
+      depth === 0 &&
+      (i === 0 || /\s/.test(s[i - 1]!))
+    ) {
+      return s.slice(0, i).trimEnd();
+    }
+  }
+  return s;
+}
+
+/**
  * Parse the `self-check:` frontmatter directive into a topic list.
  *
  * Accepts: bare token `count`, or array form `[count]` / `[count, x]`.
+ * YAML inline comments (`# ...` preceded by whitespace, outside flow
+ * brackets) are stripped before tokenisation, so
+ * `self-check: count # enable for this memo` is treated as `count`.
  * Unknown topics are dropped with a stderr warning so misspellings do
  * not silently disable the check.
  */
 export function parseDirective(raw: string): SelfCheckTopic[] {
-  const stripped = raw.trim();
+  const stripped = stripInlineComment(raw.trim());
   if (stripped === "") return [];
 
   let parts: string[];

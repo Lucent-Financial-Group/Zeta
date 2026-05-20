@@ -64,6 +64,28 @@ describe("parseDirective", () => {
     expect(parseDirective(`"count"`)).toEqual(["count"]);
     expect(parseDirective(`["count"]`)).toEqual(["count"]);
   });
+
+  test("strips YAML inline comments from bare-token directive", () => {
+    // Regression for the false-negative where `self-check: count # note`
+    // was parsed as topic `count # note` and silently no-op'd.
+    expect(parseDirective("count # enable for this memo")).toEqual(["count"]);
+    expect(parseDirective("count   #trailing")).toEqual(["count"]);
+  });
+
+  test("strips YAML inline comments after array form", () => {
+    expect(parseDirective("[count] # outer note")).toEqual(["count"]);
+    expect(parseDirective("[count, count] #dup-with-note")).toEqual([
+      "count",
+      "count",
+    ]);
+  });
+
+  test("preserves `#` inside a quoted token (no preceding whitespace)", () => {
+    // `#` not preceded by whitespace is not a comment marker in YAML.
+    // After quote-strip the literal "count#x" is rejected as unknown topic,
+    // which is the substrate-honest outcome (we don't invent a new topic).
+    expect(parseDirective("count#x")).toEqual([]);
+  });
 });
 
 describe("checkFile", () => {
