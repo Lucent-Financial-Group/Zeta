@@ -1,5 +1,7 @@
 ---
 id: B-0600
+title: Family-distributed AI interface for the miner fleet — per-relative AI identity with accountability
+last_updated: 2026-05-20
 status: open
 priority: P2
 created: 2026-05-16
