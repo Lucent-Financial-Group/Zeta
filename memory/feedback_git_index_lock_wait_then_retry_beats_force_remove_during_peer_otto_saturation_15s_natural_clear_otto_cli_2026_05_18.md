@@ -80,7 +80,7 @@ Under conditions where multiple agents share `.git/`:
 git add / git commit / git push fails with "Unable to create .git/index.lock: File exists"
 ├─ Is `.git/index.lock` still present after 15s? (`sleep 15 && ls .git/index.lock`)
 │  ├─ No → retry the original command (peer commit completed)
-│  └─ Yes → check if any git process is still alive (`ps -A | grep -E "git.{0,30}commit|git.{0,30}add"`)
+│  └─ Yes → check if any index-writing git process is still alive (`ps -A | grep -E "git.{0,30}(commit|add|merge|rebase|checkout|reset|stash|pull|cherry-pick|am|apply|update-index|read-tree|write-tree|gc|repack|pack-objects|maintenance)"`) — list expanded per Codex P1 review on PR #4140; the original `commit|add`-only pattern would misclassify a live `git merge` / `rebase` / `checkout` / `reset` / `stash` peer as "Dead" and trigger the lock-removal branch against a real in-flight writer
 │     ├─ Alive → wait another 15s; repeat
 │     └─ Dead → check lock mtime; if > 5 minutes old, peer crashed mid-commit
 │        ├─ Peer crashed → `git fsck` first to validate index integrity, then carefully `rm` the lock
