@@ -1,12 +1,12 @@
 ---
 id: B-0156
 priority: P1
-status: closed
+status: decomposed
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-17
-decomposition: decomposed
-children: [B-0140]
+last_updated: 2026-05-20
+decomposition: clean
+children: [B-0140, B-0676, B-0677, B-0678, B-0679]
 depends_on:
   - B-0086
   - B-0122
