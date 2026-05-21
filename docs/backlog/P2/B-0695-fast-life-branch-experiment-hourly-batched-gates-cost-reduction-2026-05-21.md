@@ -61,6 +61,7 @@ Classic Linus `dev/main` pattern adapted to Zeta:
 ### Promotion path
 
 `fast` → `life` via squash-merge with full gate:
+
 - Hourly batched promotion (cron-cadence; not per-PR)
 - Promotion PR runs the full gate matrix once for the entire batch
 - Copilot/Codex 100k-line review covers the batched content in one pass
@@ -103,22 +104,27 @@ Classic Linus `dev/main` pattern adapted to Zeta:
 ## Acceptance
 
 ### Phase 1
+
 - `fast` branch created on origin; branch-protection rules configured
 - `life` branch (or rename main → life) configured with strict rules
 - Documentation in `docs/CONTRIBUTING.md` (or new) for the workflow
 
 ### Phase 2
+
 - Hourly cron script triggers promotion-PR creation
 - Reviewer routing empirically validated (one promotion-PR cycle produces Copilot+Codex threads)
 
 ### Phase 3
+
 - Soraya promotion-gate blocks promotion when verification-result envelopes show `fail`
 - Bypass mechanism for human override (operator authority preserved)
 
 ### Phase 4
+
 - Atomic-commit discipline documented + enforced (rebase-on-pull pattern; squash-merge at promotion)
 
 ### Phase 5
+
 - 2-week A/B comparison documented
 - Outcome-driven decision: stay with fast/life OR revert to per-PR cadence
 
