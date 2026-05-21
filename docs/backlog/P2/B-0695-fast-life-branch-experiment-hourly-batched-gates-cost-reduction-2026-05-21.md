@@ -2,7 +2,7 @@
 id: B-0695
 priority: P2
 status: open
-title: fast/life branch experiment — hourly batched CI gates with promotion-path; reduces per-PR CI cost ~70% while preserving Copilot/Codex 100k-line review capability + Soraya-promotion-gate
+title: fast/life branch experiment — hourly batched CI gates with promotion-path; per-PR CI cost reduction is burst-dependent (cost-neutral at 1 PR/hr; ~33% reduction at example 6 PRs/hr burst per corrected math; Phase 5 measures empirical savings) while preserving Copilot/Codex 100k-line review capability + Soraya-promotion-gate
 tier: operational
 effort: L
 ask: aaron 2026-05-21 ("we can start to loose up and have hourly gates or something and play with branches like fast/life branch")
