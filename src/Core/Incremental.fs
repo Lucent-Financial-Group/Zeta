@@ -77,6 +77,77 @@ type IncrementalExtensions =
         let prev = this.DelayZSet integrated   // z^-1(I(Δa)) = snapshot before this tick
         this.DistinctIncremental(prev, delta)
 
+    /// **Capability-aware incremental dispatcher.** Picks the right
+    /// incrementalization for `q` based on the algebra capability tag
+    /// on the operator `q` produces:
+    ///
+    ///   - `IsLinear  = true`  →  `Q^Δ = Q` (trivial; deltas pass through)
+    ///   - `IsSink    = true`  →  throws (sinks are terminal; can't be
+    ///                            incrementalized — see PR 2's
+    ///                            sink-terminality enforcement)
+    ///   - otherwise           →  `D ∘ Q ∘ I` fallback (always correct
+    ///                            but expensive — materializes the full
+    ///                            integrated relation every tick)
+    ///
+    /// ## How the dispatch works
+    ///
+    /// `q` is a `Stream → Stream` factory. We probe it by applying to
+    /// the delta `input`; the resulting `Stream<'TOut>.Op` carries the
+    /// capability tags from PR 1. We then either return the probed
+    /// output directly (linear case — the probed op IS the correct
+    /// incremental result because linear ops commute with `D`/`I`) or
+    /// throw (sink case) or rebuild via the `D ∘ Q ∘ I` fallback.
+    ///
+    /// ## Known cost: orphan operator in the non-linear fallback path
+    ///
+    /// When the fallback fires, the probed operator stays registered
+    /// in the circuit with no consumers — the scheduler will still tick
+    /// it every cycle (wasted work), but it produces no observable
+    /// output. Pruning unreachable operators at `Circuit.Build()` time
+    /// is a future improvement; the dispatcher's correctness doesn't
+    /// depend on it.
+    ///
+    /// ## When NOT to use this
+    ///
+    /// For bilinear joins, use `IncrementalJoin` directly — it has a
+    /// richer signature (key functions, combine function) that this
+    /// unary dispatcher can't express. A `IncrementalAutoJoin`
+    /// dispatcher for bilinear ops can be added in a later PR.
+    ///
+    /// ## Reads
+    ///
+    /// `Op.IsLinear` and `Op.IsSink` (PR 1). For internal operators
+    /// these are overridden in the concrete subclasses; for plugin
+    /// operators they're surfaced via the `PluginOperatorAdapter`
+    /// marker detection.
+    [<Extension>]
+    static member IncrementalAuto<'K when 'K : comparison>
+        (this: Circuit,
+         q: Func<Stream<ZSet<'K>>, Stream<ZSet<'K>>>,
+         input: Stream<ZSet<'K>>) : Stream<ZSet<'K>> =
+        // Probe: apply q to input directly to inspect the resulting
+        // operator's capability tag. Registration is a side effect;
+        // see "orphan operator" note above.
+        let probedOutput = q.Invoke input
+        let resultOp = probedOutput.Op
+        if resultOp.IsSink then
+            invalidOp
+                (sprintf
+                    "IncrementalAuto: cannot incrementalize a sink operator. \
+                     '%s' (id=%d) declared IsSink=true; sinks are terminal \
+                     and excluded from relational composition. Use a \
+                     non-sink operator, or consume the sink's output \
+                     directly without incrementalization."
+                    resultOp.Name resultOp.Id)
+        elif resultOp.IsLinear then
+            // Q^Δ = Q. For linear q, q(delta) IS the delta of q(full).
+            // The probed output is correct as-is; return directly.
+            probedOutput
+        else
+            // Generic D ∘ Q ∘ I fallback. The probed op above is orphan
+            // in the circuit — wasteful but functionally correct.
+            this.IncrementalizeZSet(q, input)
+
 
 /// F#-idiomatic piping. `stream |> Stream.map f |> Stream.filter p` is
 /// equivalent to `circuit.Filter(circuit.Map(stream, f), p)` but reads in
