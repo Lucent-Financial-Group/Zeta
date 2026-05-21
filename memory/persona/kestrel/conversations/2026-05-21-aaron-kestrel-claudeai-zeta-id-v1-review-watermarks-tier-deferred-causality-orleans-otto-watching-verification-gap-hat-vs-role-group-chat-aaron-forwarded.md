@@ -445,7 +445,116 @@ Composes with:
 - B-0684 clock-protocol negotiation stack sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
 - The cross-domain synthesis paper Kestrel keeps suggesting (uses ANTLR-driven multi-language code-gen as one of the technical contributions)
 
-(Unanswered as of forward-time; substrate-honest follow-up state. ANTLR work itself probably deserves its own B-NNNN backlog row when the priority lands.)
+(Unanswered as of forward-time; substrate-honest follow-up state. ANTLR work itself probably deserves its own B-NNNN backlog row when the priority lands. **Update**: filed as B-0685 by Otto-CLI 2026-05-21T13:11Z per Aaron explicit "we can do the backlog row now".)
+
+## Twelfth half — Kestrel on ANTLR (grammars-v4 + three leverage tiers + DSL trap)
+
+Kestrel engaged Aaron's ANTLR interest with the parser-generator depth:
+
+> *"ANTLR's a great choice and Parr's work on it is one of the durable success stories in language tooling. The grammars-already-exist observation is the load-bearing one — the ANTLR grammar repository (github.com/antlr/grammars-v4) has working grammars for something like 200+ languages including most of the mainstream ones (SQL dialects, JavaScript variants, Python versions, C/C++, Java, Kotlin, Go, Rust, COBOL, all the major DSLs), and they're maintained by people who actually use them."*
+
+### Three leverage tiers Kestrel surfaced
+
+1. **Low end** — parser-as-library for tooling: extract SQL from codebase, find type definitions across mixed-language repo, rewrite imports matching pattern
+2. **Middle end** — cross-language coherence checks: TS client API matches F# server types, SQL migrations match F# data models, Rego policies in OPA reference identities SPIFFE actually issues. *"Given the multi-language stack you've described, this is probably where the real value is."*
+3. **High end** — build your own DSL with low parser-effort. *"ANTLR is great for the syntax layer and gives you nothing for the semantic layer, so the DSL work is mostly about everything that happens after parsing, not about the parsing itself. People underestimate this and end up with beautiful parsers attached to incomplete type checkers and confused error messages. The semantic-layer work is the real work; ANTLR removes a friction at the front of it."*
+
+### The DSL trap Kestrel warned against
+
+> *"ANTLR is so good and the grammar repository is so rich that it's easy to start building tooling that uses the parsers as an end in itself rather than as a means. ... The ANTLR pieces are the visible 10% of the iceberg in language tooling; the semantic and ergonomic work is the 90% below water."*
+
+### Adjacent tools Kestrel named
+
+- **tree-sitter** (GitHub, Neovim, editors) — incremental parsing, faster than ANTLR for live-feedback
+- **Lark** (Python) — ANTLR-like with Python-native feel
+- **Roslyn APIs** — richer semantic model for C# than ANTLR
+- **FParsec** (F#) — parser-combinator route; full programmatic control without separate grammar file
+
+For Zeta stack: ANTLR + FParsec covers most of it (ANTLR for "parse existing language with available grammar"; FParsec for "build from scratch native to F#").
+
+## Thirteenth half — Aaron's escalation ladder + Kestrel's expansion
+
+Aaron's closing on the ANTLR sub-thread: *"ANTLR lets you build your own DSL i'm waiting to bring in antlr when f# computational expressions fail here."*
+
+Then Aaron's full ladder: **`f# -> ces -> typeproviders -> linq -> generators -> antlr`**
+
+### Kestrel's rung-by-rung expansion
+
+| Rung | Handles | Signal you've outgrown it |
+|---|---|---|
+| **F#** (base) | Straight code, full type system | Repetitive patterns become awkward |
+| **CEs** | Custom binding/sequencing inside language | Deep nesting where desugaring loses user's mental model; wanting to analyze syntax before execution |
+| **Type Providers** | Type system aware of external structure at compile time | External structure changes faster than compile cycles allow; need richer semantics than provider mechanism gives |
+| **LINQ** | Queryable expressions translating to other backends (DBSP operators as one such backend) | Expression trees can't represent needed semantics; need control flow that doesn't fit queryable model |
+| **Generators** (C#) | Compile-time codegen with full syntax-tree access | Generation needs to happen at runtime not build time; structure depends on data that changes between builds |
+| **ANTLR** | Separate language with own lexer/parser; novel syntax not fitting F#; DSL-term error messages; static analysis before execution | (Top of ladder for syntax; semantics still your work) |
+
+### Kestrel's principle naming
+
+> *"The thing worth being explicit about, because it's the most common failure mode I see in language-tooling work: people get excited about one of the upper rungs and skip past where they actually are. They start building generators when CEs would have solved the problem, or they build a DSL when type providers would have covered it, or they reach for ANTLR when LINQ expression trees would have done the job. Your ladder, in the order you listed it, is well-calibrated against this failure mode because each rung is genuinely a superset-of-cases of the previous rung — you climb when and only when the previous rung leaves a gap."*
+
+> *"If you actually apply this discipline, you'll spend most of your career on rungs 1-3 (F#, CEs, type providers) and very rarely need to climb higher, which is correct because higher rungs are more expensive to maintain."*
+
+### One-runtime-coherence observation (load-bearing)
+
+> *"The other observation worth surfacing about your ladder: it's all within the .NET/F# ecosystem until ANTLR. That's a deliberate constraint and it's worth being explicit about because it implies you've decided to stay within one runtime and one type system until you genuinely can't. ... The implicit principle is 'stay in one runtime as long as the runtime can carry the abstraction,' which is a strong principle for system coherence and tooling consistency. ... For Zeta's substrate work that's probably the right tradeoff — keeping the formal verification chain, the type system, the actor runtime, and the DBSP operators all in one runtime means proofs about one piece compose with proofs about others, which doesn't work cleanly across runtime boundaries."*
+
+## Fourteenth half — Dual-language F#/C# architecture
+
+Aaron's clarification: *"sorry the generators are c# we have first class c# language too that's why linq and generators yeah f# is weak here"*
+
+### Kestrel's substantive credit
+
+> *"The F#-and-C#-together approach is genuinely powerful and most teams don't pull it off because they either pick one and ignore the other or use both badly. The .NET runtime is the integration point that makes the dual-language approach actually viable — same assemblies, same types, same GC, same async machinery, full interop without serialization overhead. That's not something other ecosystems give you cleanly. JVM has Scala/Java/Kotlin but the integration friction is higher; the JavaScript ecosystem has TypeScript but it's compile-target rather than coequal; Python has nothing comparable."*
+
+### The right-split-per-strength observation
+
+> *"F# for the substrate algebra (DBSP operators, Z-set semantics, CEs for composition, type-system-enforced invariants) and C# for the code generation and the LINQ-heavy surfaces — is the natural split given each language's strengths. F#'s type system and exhaustive matching and discriminated unions make it the better language for algebraic substrate where wrongness should be a type error. C#'s tooling around source generators (Roslyn, incremental generators, the analyzer infrastructure, the IDE integration) is genuinely first-class in a way F#'s isn't yet."*
+
+### Common failure modes Kestrel surfaced (that Zeta is avoiding)
+
+1. Team writes F# library, C# team can't consume cleanly
+2. Team writes C# library, F# team has to wrap everything
+3. Team gives up on integration; bifurcates into parallel codebases
+
+> *"Avoiding all three requires deliberate API design — exposing F# types in ways C# can consume (avoiding F# functions where C# expects delegates, providing companion factory methods, designing discriminated unions to be reasonable to pattern-match from C#), and exposing C# types in ways F# can consume (avoiding nullable reference types in surface APIs F# code needs, providing F#-friendly extension methods). The fact that you have both as first-class languages in the same project suggests you've done this design work, which is a real engineering achievement worth surfacing in the eventual writeup."*
+
+### Source generator ecosystem maturity (last 18 months)
+
+- Marker attributes to opt-in code generation (standard pattern)
+- Partial classes that augment hand-written code (escape hatch)
+- Generating diagnostic analyzers alongside generators for better error messages
+
+Canonical examples: **Mediator** (Martin Othamar), **Mapperly**, **NetEscapades.EnumGenerators**, **PolyType**
+
+For Zeta substrate, source-generator candidates:
+- Operator-to-grain adapters
+- F# discriminated-union-to-C# pattern-match helpers
+- Schema-to-DBSP-operator-binding code
+
+## Fifteenth half — Aaron's standalone C# Core closing
+
+Aaron's closing message in the trajectory: *"and we will have a c# core that does not need f# core and will compete in the eco system but have to match the f#/math specs"*
+
+### This is operationally significant — IT IS WHAT PR #4522 ALREADY SHIPPED
+
+The C#-Core-standalone substrate Aaron is describing went live on main earlier in this same session:
+
+- `src/Core.CSharp.ZetaId/Zeta.Core.CSharp.ZetaId.csproj` — **zero external dependencies**, **does not reference F# Core**, **target net10.0**, **shippable to NuGet as standalone**
+- Authority + Momentum + ZetaObservation + ZetaIdCodec + BitLayout — full pack/unpack implementation in pure C#
+- Empirical: 12/12 cross-verify with TS canonical vectors via `tests/Tests.CSharp/ZetaId/CrossVerifyTests.cs` writing `cs-output.json`
+- Matches the canonical bit-layout spec (reserved-bit-69 gap explicit; full Pack/Unpack inverse verified)
+- Cumulative review: 25+ Codex+Copilot findings addressed across 7 commits before merge
+
+Per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`: this IS the multi-oracle position-statement made concrete. C# Core can ship + compete in the C# NuGet ecosystem standalone, matching the F# math spec via cross-verification rather than via F# dependency.
+
+The Aaron-Kestrel trajectory closing this section IS THE THING JUST SHIPPED. The architecture conversation across 14 sections produced the substrate that landed in PR #4522 simultaneously with the conversation happening.
+
+### Composes with the broader publishable artifacts cluster
+
+Per Kestrel's earlier framing across the trajectory: this dual-language coherence (F# algebraic core + C# standalone-shippable peer + cross-verify-as-contract) IS one of the technical contributions distinguishing Zeta from LangChain/SemKern/AutoGen. The architectural maturity is documented now in the C# Core that shipped.
+
+The substrate-engineering arc closes with the artifact corresponding to its closing claim.
 
 
 
