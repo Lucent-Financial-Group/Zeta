@@ -654,6 +654,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0685](backlog/P2/B-0685-antlr-grammars-cross-language-codegen-substrate-2026-05-21.md)** ANTLR grammars as cross-language codegen substrate — leverage existing open-source grammars for description-layer-driven multi-language emission
 - [ ] **[B-0687](backlog/P2/B-0687-zetaparse-fsharp-native-lr-glr-grammar-substrate-with-antlr-compatible-importer-amara-2026-05-21.md)** ZetaParse — F#-native LR/GLR grammar substrate with ANTLR-compatible importer
 - [ ] **[B-0688](backlog/P2/B-0688-zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-seeded-deterministic-simulation-amara-aaron-2026-05-21.md)** Zeta incremental compiler host — DBSP Z-sets + Rx meta-AST tags + seeded deterministic simulation hardening
+- [ ] **[B-0690](backlog/P2/B-0690-zetaid-v1-to-v2-migration-path-cross-verify-harness-extension-2026-05-21.md)** ZetaId v1 → v2 migration path — back-compat-vs-cutover decision + cross-verify harness extension for v2 vectors + peer-oracle migration coordination
 
 ## P3 — convenience / deferred
 
