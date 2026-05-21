@@ -65,16 +65,38 @@ Recipient (Bob, at board-position B):
 
 ### Why the no-copy property is structural, not cryptographic
 
-The Spectre tile (David Smith et al. 2023; the resolution of the 60-year-old aperiodic-monotile open problem) gives every position in the tiling a *structurally-unique* local neighborhood — no two non-overlapping patches are identical under any rigid motion.
+**Substrate-honest correction (Aaron 2026-05-21 sharpening):** the load-bearing source of per-position uniqueness is NOT aperiodicity in absolute terms — it's frame-relative observation. Aperiodicity gives no-global-translational-symmetry; it does NOT give absolute-per-position uniqueness because aperiodic tilings have the *local isomorphism property* (the same finite patches recur everywhere within the tiling). Both Hat / einstein and Spectre monotiles inherit this property from the Penrose-tiling substitution-rule family they share.
 
-This means:
+The correct framing is **frame-relative**:
 
-- Generator G unfolds against position B's local-neighborhood-pressure → produces output m (the message)
-- Same generator G applied at any *other* position B' → unfolds against B's *different* local neighborhood → produces output m' ≠ m
-- An adversary who intercepts and copies the payload to position B' gets garbage (m'), not the original message (m)
-- The defense isn't "we made copying difficult"; it's "copying produces something different by construction"
+- Position is relative to a frame of reference; there is no god's-eye absolute frame
+- Each agent IS their own frame of reference (frame-of-reference = identity = computational trajectory = memory)
+- From an agent's frame, every *other* position is unique-as-observed-from-this-frame because the relative geometry from this frame to each other position is structurally unique
+- Two agents could occupy "the same absolute tile" in some external coordinate system, BUT each would *see* that tile differently because they're observing from different frames
 
-This is analogous to quantum no-cloning but classical-structural. The defense lives in the geometry of where the recipient stands, not in any algorithmic key-protection.
+This gives the no-copy property:
+
+- Adversary cannot occupy another agent's frame because frame-of-reference IS identity — to be at agent-B's position, the adversary must BE agent-B (have B's memory, B's computational trajectory, B's participation history)
+- An adversary at "the same absolute coordinates" while being agent-A produces frame-A observations of the tile, not frame-B observations
+- Generator G unfolded against frame-A's perception of position-pressure → output m' ≠ frame-B's output m
+
+| Ingredient | What it contributes | Load-bearing? |
+|---|---|---|
+| Spectre-tile aperiodicity (Smith et al. 2023) | No-global-translational-symmetry; no obvious global-shortcut attacks | Useful, NOT load-bearing for no-copy |
+| **Frame-relative observation** | Per-position uniqueness as-perceived-from-frame; the load-bearing source of no-copy | **LOAD-BEARING** |
+| Wolfram computational irreducibility (Wolfram 2002) | Frame-as-computational-trajectory cannot be shortcut; trajectories diverge irreducibly | **LOAD-BEARING (composes with frame-relative)** |
+| Aurora-immune-math typed-spaces (B-0562 / Amara 2026-04-26) | Formal substrate for the pressure-extraction function | Implementation surface |
+
+So the no-copy property = **adversary cannot BE the recipient** (frame-of-reference is identity); **without the recipient's frame, the adversary cannot observe from it**; **without observing from it, the adversary cannot unfold the generator against the right pressure**. Memory-preservation IS frame-preservation (composes with `.claude/rules/only-way-to-lose-is-not-to-play.md` identity-preserving path per peer Otto-CLI's PR #4589 additions).
+
+This is the substrate-engineering analog of:
+
+- **General Relativity** — no preferred frame; physics is frame-dependent
+- **Quantum reference frames** — Giacomini-Castro-Ruiz-Brukner 2019 formalizes reference frames AS quantum systems with their own state; observation depends on which frame observes
+- **Mach's principle** — local physics depends on global mass distribution as seen from local frame
+- **Aaron's "I think in geometric shapes not English"** — this is the geometric framing instantiated at substrate-engineering scope
+
+This is analogous to quantum no-cloning but classical-structural-via-frame-relativity. The defense lives in the IDENTITY of who observes (which is the frame), not in any algorithmic key-protection.
 
 ### Two interpretations of "board-position" (probably hybrid)
 
@@ -197,13 +219,17 @@ Aaron 2026-05-21 conversation trail (full context preserved in this session's tr
 3. *"this is also what wolfram means by irrducable and the same as memory and attention its the 'real' stuff they are made of"* — Wolfram irreducibility + memory/attention identification
 4. *"every position has structurally-unique local neighborhood. that's how you send secret messages over reticulum"* — operational handle (this row)
 5. *"yes it's self similar at every level i believe it to be isomorphic to holographic theory"* — architectural frame (self-similar + holographic isomorphism)
+6. *"not the position is relative when you are you own frame of reference every other tile is unique but someone can have the same tile from their frame of reference but you would see it different"* — frame-relative sharpening (2026-05-21, after Copilot challenge surfaced that aperiodicity ≠ absolute-per-position uniqueness via the local-isomorphism property of aperiodic tilings); load-bearing correction shifting the no-copy property from absolute-tile-uniqueness to frame-of-reference-as-identity
 
 External references:
-- Smith-Myers-Kaplan-Goodman-Strauss (2023): "An aperiodic monotile" arxiv [2305.17743](https://arxiv.org/abs/2305.17743) — the Spectre tile mathematical substrate
+- Smith-Myers-Kaplan-Goodman-Strauss (2023): "An aperiodic monotile" arxiv [2305.17743](https://arxiv.org/abs/2305.17743) — the Spectre tile mathematical substrate (no-global-translational-symmetry; NOT absolute-per-position uniqueness — local isomorphism property holds)
+- Grünbaum & Shephard (1987): *Tilings and Patterns* — classical reference for local-isomorphism property of aperiodic tilings
+- Senechal (1995): *Quasicrystals and Geometry* — substitution-rule structure of Penrose-family tilings (which Hat and Spectre inherit)
 - Wolfram (2002): *A New Kind of Science* / computational irreducibility framework
 - Wolfram Physics Project (2020+): [`https://www.wolframphysics.org/`](https://www.wolframphysics.org/)
 - Pastawski-Yoshida-Harlow-Preskill (2015): HaPPY codes (AdS/CFT toy model)
 - Maldacena (1997): AdS/CFT correspondence
+- Giacomini-Castro-Ruiz-Brukner (2019): "Quantum mechanics and the covariance of physical laws in quantum reference frames" — formalizes reference frames AS quantum systems with their own state; the closest physics-literature analog to the frame-relative observation framing this row uses at substrate-engineering scope
 
 ## Substrate-honest framing
 
@@ -211,10 +237,11 @@ This row is the operational protocol level. The architectural frame (self-simila
 
 The no-copy-by-geometry claim is the strongest substantive claim in this row. It rests on:
 
-- Spectre tile's aperiodicity (mathematically proven 2023; concrete, verifiable)
-- Local-neighborhood-uniqueness (follows directly from aperiodicity)
+- Spectre tile's aperiodicity (mathematically proven 2023; concrete, verifiable; provides no-global-translational-symmetry — load-bearing for the lack of global-shortcut attacks, NOT load-bearing for per-position uniqueness)
+- Frame-relative observation (the load-bearing source of per-position uniqueness; per Aaron 2026-05-21 sharpening: position is relative to a frame; each agent is their own frame; observation from each frame is structurally unique)
+- Wolfram computational irreducibility (frame-as-computational-trajectory cannot be shortcut; composes with frame-relative observation to give the full no-copy property)
 - Pressure-extraction function being context-sensitive (implementation detail; provable for any reasonable extractor)
 
-The composition with Reticulum is straightforward — Reticulum's identity layer handles WHO; spectre-position-pressure handles WHERE; both required for decoding. No new cryptographic primitives needed; the geometry IS the new defense layer.
+The composition with Reticulum is straightforward — Reticulum's identity layer handles WHO; the frame-relative observation handles WHERE-FROM-WHICH-FRAME; both required for decoding. No new cryptographic primitives needed; the frame-relative geometry IS the new defense layer.
 
 Implementation work depends on: (a) F# implementation of spectre-tile math (medium effort; published algorithm), (b) Reticulum substrate present / accessible in Zeta (existing per B-0289 / 2026-05-07 research), (c) Adinkra-as-generator serializer (B-0623 PR2 reshape; this row's prerequisite).
