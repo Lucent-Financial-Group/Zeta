@@ -63,6 +63,44 @@ let ``IncrementalAuto with linear Map produces same delta stream as direct Q`` (
 // ─────────────────────────────────────────────────────────────────
 
 [<Fact>]
+let ``IncrementalAuto with terminal-linear-but-inner-non-linear chain falls back (Map ∘ Distinct)`` () =
+    // Regression test for the bug Codex flagged: checking only the
+    // probed terminal op's IsLinear misses non-linear ops inside the
+    // chain. `q(s) = Map(Distinct(s))` ends on a linear Map but the
+    // composed query is non-linear; the dispatcher MUST fall back to
+    // D∘Q∘I to produce correct incremental semantics.
+    let c = Circuit()
+    let input = c.ZSetInput<int>()
+    let mapAfterDistinct =
+        Func<Stream<ZSet<int>>, Stream<ZSet<int>>>(fun s ->
+            c.Map(c.Distinct s, Func<int, int>(fun x -> x * 10)))
+
+    let reference = c.IncrementalizeZSet(mapAfterDistinct, input.Stream)
+    let subject   = c.IncrementalAuto(mapAfterDistinct, input.Stream)
+
+    let refHandle = c.Output reference
+    let subHandle = c.Output subject
+
+    // Scenario: duplicate insertions across ticks. If the dispatcher
+    // incorrectly took the Q^Δ=Q path, the subject would emit the
+    // Map of the delta directly each tick — wrong because Distinct
+    // clamps cumulative state, so the second insertion of key 1
+    // should produce no new output. The reference path (D∘Q∘I)
+    // computes this correctly; subject must match.
+    let deltas =
+        [ ZSet.ofSeq [ (1, 1L) ]      // distinct: {1→1}, mapped: {10→1}; emit Δ {10→+1}
+          ZSet.ofSeq [ (1, 1L) ]      // distinct: still {1→1}; mapped same; emit Δ {} (no change)
+          ZSet.ofSeq [ (2, 1L) ]      // distinct: {1,2}; mapped: {10,20}; emit Δ {20→+1}
+          ZSet.ofSeq [ (1, -2L) ]     // distinct: {2}; mapped: {20}; emit Δ {10→-1}
+        ]
+
+    for delta in deltas do
+        input.Send delta
+        c.Step()
+        subHandle.Current |> should equal refHandle.Current
+
+
+[<Fact>]
 let ``IncrementalAuto with non-linear Distinct falls back to D-Q-I`` () =
     let c = Circuit()
     let input = c.ZSetInput<int>()

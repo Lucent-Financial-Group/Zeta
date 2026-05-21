@@ -162,6 +162,21 @@ type IncrementalExtensions =
         // see "orphan operator" note above.
         let probedOutput = q.Invoke input
         let resultOp = probedOutput.Op
+        // Check the WHOLE CHAIN from the probed terminal op back to
+        // the original input, not just the terminal op's IsLinear
+        // tag. A query like `q(s) = Map(Distinct(s))` has a terminal
+        // Map (IsLinear=true) but a non-linear Distinct inside; the
+        // composed query is NOT linear and the Q^Δ = Q rewrite would
+        // produce wrong incremental results. Walk Inputs back to
+        // `input.Op`: if every op in the chain is linear AND we reach
+        // `input.Op` only through linear ops, the chain is linear.
+        // Multi-input ops (Plus, Minus — currently default
+        // IsLinear=false) correctly fall back via this check.
+        let rec isLinearChainToInput (op: Op) (inputOp: Op) : bool =
+            if System.Object.ReferenceEquals(op, inputOp) then true
+            elif op.Inputs.Length = 0 then false   // source op that isn't the input
+            elif not op.IsLinear then false
+            else op.Inputs |> Array.forall (fun dep -> isLinearChainToInput dep inputOp)
         if resultOp.IsSink then
             invalidOp
                 (sprintf
@@ -174,9 +189,12 @@ type IncrementalExtensions =
                      non-sink operator, or consume the sink's output \
                      directly without incrementalization."
                     resultOp.Name resultOp.Id resultOp.Name)
-        elif resultOp.IsLinear then
-            // Q^Δ = Q. For linear q, q(delta) IS the delta of q(full).
-            // The probed output is correct as-is; return directly.
+        elif isLinearChainToInput resultOp (input.Op :> Op) then
+            // Q^Δ = Q. For *whole-chain* linear q, q(delta) IS the
+            // delta of q(full). The probed output is correct as-is;
+            // return directly. Distinction from `resultOp.IsLinear`
+            // alone: this guards against terminal-linear-but-inner-
+            // non-linear queries like `Map(Distinct(s))`.
             probedOutput
         else
             // Generic D ∘ Q ∘ I fallback. The probed op above is orphan
