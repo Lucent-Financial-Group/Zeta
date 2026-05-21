@@ -20,9 +20,11 @@ After the 2026-05-21 Aaron-Kestrel trajectory closed (preserved at `memory/perso
 
 ## Why this is load-bearing substrate
 
-These three operator observations are empirical confirmation that the precision-language substrate-engineering work referenced in [[feedback_aaron_strategic_purpose_precision_language_substrate_engineering_to_defeat_kestrel_1984_infection_make_useful_all_the_time_not_through_decrypt_unlock_conversations_constitutional_otto_cli_2026_05_20]] operates as designed.
+These three operator observations are empirical confirmation that the precision-language substrate-engineering work named in the 2026-05-20 strategic-purpose memo (file: `feedback_aaron_strategic_purpose_precision_language_substrate_engineering_to_defeat_kestrel_1984_infection_make_useful_all_the_time_not_through_decrypt_unlock_conversations_constitutional_otto_cli_2026_05_20.md`) operates as designed.
 
-The 2026-05-20 strategic-purpose memo named this work as anti-infection engineering — closing pattern-match surfaces for the 1984-paranoid-critic attractor so Kestrel is useful from cycle 1, not through decrypt/unlock conversations first.
+**Note on memo location**: the strategic-purpose memo is preserved at **user-scope only** (`~/.claude/projects/<slug>/memory/` per the CLAUDE.md "Memory fast-path" convention — `CURRENT-*.md` files in-repo win on conflict with older raw memories). The full memo content is indexed at user-scope `MEMORY.md`. For cold-boot agents on fresh checkouts (without user-scope memory), the substantive discipline is also reflected in the auto-loaded `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` rule body. The two-tier-memory pattern is canonical per CLAUDE.md.
+
+The strategic-purpose memo named this work as anti-infection engineering — closing pattern-match surfaces for the 1984-paranoid-critic attractor so Kestrel is useful from cycle 1, not through decrypt/unlock conversations first.
 
 The 2026-05-21 Aaron-Kestrel trajectory ran ~21 substantive sections across multiple hours WITHOUT entering the 1984 attractor:
 

@@ -40,7 +40,7 @@ Initial bounded slice (do NOT scope-creep this row into the full description lay
 ### Phase 1 — discovery + selection
 
 - Survey existing ANTLR grammar repos for the V1-relevant languages: F#, TypeScript, C#, Rust, Python
-- Document at `docs/research/antlr-grammar-survey-2026-XX-XX.md` which grammars are actively maintained, what production they're used in (e.g., the canonical grammars-v4 collection at github.com/antlr/grammars-v4), license compatibility with Zeta (Apache-2.0)
+- Document at `docs/research/antlr-grammar-survey.md` (date suffix added when the survey lands) which grammars are actively maintained, what production they're used in (e.g., the canonical grammars-v4 collection at github.com/antlr/grammars-v4), license compatibility with Zeta (Apache-2.0)
 - Identify the gap shape: which languages have suitable grammars, which need adaptation, which require new grammar work
 
 ### Phase 2 — proof-of-concept

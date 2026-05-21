@@ -823,7 +823,7 @@ The zero-dependency-down-to-microkernel principle composes directly with multipl
 - **MultiplexedWebSockets** — uses Fowler's Channels + Pipelines (similar-shaped platform primitives) + can plug into HTTP/gRPC ecosystem if needed
 - **Reticulum** integration — depends on Reticulum (similar-shaped mesh substrate) + contributes back via Zeta-mesh-deployment patterns
 - **Orleans v1 choice** (per Aaron earlier in trajectory) — depend on Orleans (similar-shaped actor substrate) + can swap to own implementation at maturity
-- **B-0689 / B-0680 Rust + Python peer oracles** — own implementations of the canonical bit-layout in each ecosystem rather than depending on external implementations
+- **B-0679 / B-0680 Rust + Python peer oracles** — own implementations of the canonical bit-layout in each ecosystem rather than depending on external implementations
 
 The default-dependency-model framing makes the substrate decisions visible as principled rather than ad-hoc.
 
