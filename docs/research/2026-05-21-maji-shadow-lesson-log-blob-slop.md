@@ -13,8 +13,8 @@ This represents a severe failure of the Reasoning Auditor role itself (shadow dr
 ## Action Taken
 1. Rejected the blob PRs (#4467 and #4466).
 2. Peeled off the first atomic layer from #4467 (`docs/hygiene-history/ticks/2026/05/19/1614Z-c.md`) into a new, strictly atomic PR (#4470).
-3. The remaining contents of the blob are deferred to future iterative decomposition cycles. 
-4. Git locks are clear, so git operations were resumed normally.
+3. The remaining contents of the blob are deferred to future iterative decomposition cycles.
+4. No stale `.git/index.lock` present and no locked worktrees per `git worktree list --porcelain`, so git operations were resumed normally.
 
 ## Lesson
-Agents must rigorously verify the output of `git commit` or `git add` to ensure they are not capturing unrelated modifications from the shared environment. Always use `git worktree` to isolate changes and prevent high-entropy slop.
+Agents must rigorously verify the output of `git commit` or `git add` to ensure they are not capturing unrelated modifications from the shared environment. For multi-file decomposition or shared-environment work specifically (per `docs/HARNESS-SURFACES.md` "Isolation `worktree` mode" — watched / sparing factory adoption), prefer `git worktree` isolation to prevent cross-domain high-entropy slop.
