@@ -2,10 +2,10 @@
 id: B-0690
 priority: P2
 status: open
-title: ZetaId v1 → v2 migration path — back-compat-vs-cutover decision + cross-verify harness extension for v2 vectors + peer-oracle migration coordination
+title: ZetaId v1 → v2 migration path
 tier: research-grade
 effort: M
-ask: otto-cli 2026-05-21 substantive-analysis identification (Aaron-approved per never-be-idle ladder)
+ask: otto-cli 2026-05-21 substantive-analysis identification
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0681, B-0682]
@@ -18,7 +18,9 @@ type: feature
 
 ## Context
 
-V2 spec hardening (B-0681) + canonical string encoding (B-0682) together define the V2 wire format. Both rows are filed; both compose with the multi-oracle peer-oracle work (B-0679 Rust + B-0680 Python). What's missing is the coordination row: how do we transition the 3 shipped V1 oracles (TS PR #4517 + C# PR #4522 + F# PR #4548) to V2?
+V2 spec hardening (B-0681) + canonical string encoding (B-0682) together define the V2 wire format. 
+Both rows are filed; both compose with the multi-oracle peer-oracle work (B-0679 Rust + B-0680 Python). 
+What's missing is the coordination row: how do we transition the 3 shipped V1 oracles (TS PR #4517 + C# PR #4522 + F# PR #4548) to V2?
 
 This row addresses the gap between "V2 spec finalized" and "V2 oracles deployed." It's the release-coordination substrate, not the spec substrate.
 
@@ -54,7 +56,8 @@ Three viable paths:
 **Pros**: clean spec; old IDs stay accessible; emit surface is V2-only
 **Cons**: parse-time translation cost; spec complexity
 
-**Recommendation (initial)**: Path A for the V2 release; Path C as eventual long-term move. Path B is the substrate-honest reading if V1 IDs aren't actually deployed anywhere yet (V1 just shipped today; no production drift).
+**Recommendation (initial)**: Path A for the V2 release; Path C as eventual long-term move. 
+Path B is the substrate-honest reading if V1 IDs aren't actually deployed anywhere yet (V1 just shipped today; no production drift).
 
 ## Scope
 
@@ -74,15 +77,19 @@ Update `tests/cross-verification/zeta-id/` for V2:
 
 - `vectors-v2.yaml` — canonical V2 test vectors (after B-0681 + B-0682 land)
 - `compare.ts` — extend to handle both V1 and V2 outputs (or replace with V2-only per Phase 1 path decision)
-- `ts-output-v2.json` + `cs-output-v2.json` + `fsharp-output-v2.json` + (B-0679 rust-output-v2.json) + (B-0680 python-output-v2.json)
+- `ts-output-v2.json` + `cs-output-v2.json` + `fsharp-output-v2.json` 
++ (B-0679 rust-output-v2.json) + (B-0680 python-output-v2.json)
 
 ### Phase 3 — Per-oracle V2 implementation
 
 Update each oracle to emit V2:
 
-- TS: `src/Core.TypeScript/zeta-id/zeta-id.ts` — V2 codec + cross-verify against vectors-v2.yaml
-- C#: `src/Core.CSharp.ZetaId/` — V2 codec + cross-verify (+ Pack-time revalidation already in place)
-- F#: `src/Core.FSharp.ZetaId/` — V2 codec + cross-verify (+ `int64<ms>` measure-units preserved + Pack-time revalidation)
+- TS: `src/Core.TypeScript/zeta-id/zeta-id.ts` 
+— V2 codec + cross-verify against vectors-v2.yaml
+- C#: `src/Core.CSharp.ZetaId/` 
+— V2 codec + cross-verify (+ Pack-time revalidation already in place)
+- F#: `src/Core.FSharp.ZetaId/` 
+— V2 codec + cross-verify (+ `int64<ms>` measure-units preserved + Pack-time revalidation)
 - Rust (B-0679): V2 codec from the start
 - Python (B-0680): V2 codec from the start
 
