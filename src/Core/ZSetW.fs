@@ -50,9 +50,20 @@ type ZEntryW<'K, 'W> =
 /// shape as `ZSet<'K>` — a future migration can unify them.
 ///
 /// Operations live in the `ZSetW` module and take an `ISemiring<'W>`
-/// as a runtime argument so the same ZSetW value can be interpreted
-/// under different semirings if needed. The common case is to pass
-/// the ring's `Instance` singleton.
+/// as a runtime argument. The common case is to pass the ring's
+/// `Instance` singleton.
+///
+/// **Important — same ZSetW value across different rings is unsafe**:
+/// the on-disk representation of a `ZSetW<'K, 'W>` depends on the ring
+/// used to construct it. `ring.Add` decides what consolidates;
+/// `ring.Zero` decides what gets dropped. Re-interpreting a `ZSetW`
+/// constructed with one ring under a different ring with different
+/// `Zero` / `Add` semantics can silently produce wrong answers (entries
+/// that should be dropped under the second ring are still present;
+/// duplicate keys that the first ring already collapsed via `Add` are
+/// gone). Always use the same ring for all operations on a given value;
+/// to move data between rings, project explicitly (e.g., reconstruct
+/// via `ofSeq` under the target ring).
 [<Struct; IsReadOnly; CustomEquality; NoComparison>]
 type ZSetW<'K, 'W when 'K : comparison> =
     val internal entries: ImmutableArray<ZEntryW<'K, 'W>>
@@ -126,6 +137,7 @@ type ZSetW<'K, 'W when 'K : comparison> =
 
 
 [<RequireQualifiedAccess>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module ZSetW =
 
     /// Empty Z-set over weight semiring 'W.
@@ -177,28 +189,60 @@ module ZSetW =
 
     /// Z-set sum: `(a + b)(k) = a(k) `ring.Add` b(k)`. Output is
     /// sorted by key with zero entries dropped.
+    ///
+    /// Both inputs are already sorted by key (ZSetW invariant), so this
+    /// is a linear two-pointer merge — O(|a| + |b|) — not the
+    /// O(n log n) a `SortedDictionary` rebuild would cost.
     let sum (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
-        let agg = SortedDictionary<'K, 'W>()
         let aSpan = a.AsSpan()
-        for i in 0 .. aSpan.Length - 1 do
-            agg.[aSpan.[i].Key] <- aSpan.[i].Weight
         let bSpan = b.AsSpan()
-        for i in 0 .. bSpan.Length - 1 do
-            let k = bSpan.[i].Key
-            let w = bSpan.[i].Weight
-            match agg.TryGetValue(k) with
-            | true, existing -> agg.[k] <- ring.Add existing w
-            | false, _ -> agg.[k] <- w
-        let zero = ring.Zero
-        let eq = EqualityComparer<'W>.Default
-        let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>()
-        for kv in agg do
-            if not (eq.Equals(kv.Value, zero)) then
-                builder.Add(ZEntryW(kv.Key, kv.Value))
-        ZSetW(builder.ToImmutable())
+        if aSpan.IsEmpty then b
+        elif bSpan.IsEmpty then a
+        else
+            let zero = ring.Zero
+            let eq = EqualityComparer<'W>.Default
+            let cmp = Comparer<'K>.Default
+            // Upper bound on output length is |a| + |b|; zero entries dropped
+            // shrinks it. Use a builder sized to the upper bound; trim via
+            // ToImmutable rather than MoveToImmutable since the final count
+            // may be strictly less than the allocated capacity.
+            let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(aSpan.Length + bSpan.Length)
+            let mutable i = 0
+            let mutable j = 0
+            while i < aSpan.Length && j < bSpan.Length do
+                let kA = aSpan.[i].Key
+                let kB = bSpan.[j].Key
+                let c = cmp.Compare(kA, kB)
+                if c < 0 then
+                    builder.Add(aSpan.[i])
+                    i <- i + 1
+                elif c > 0 then
+                    builder.Add(bSpan.[j])
+                    j <- j + 1
+                else
+                    let combined = ring.Add aSpan.[i].Weight bSpan.[j].Weight
+                    if not (eq.Equals(combined, zero)) then
+                        builder.Add(ZEntryW(kA, combined))
+                    i <- i + 1
+                    j <- j + 1
+            while i < aSpan.Length do
+                builder.Add(aSpan.[i])
+                i <- i + 1
+            while j < bSpan.Length do
+                builder.Add(bSpan.[j])
+                j <- j + 1
+            ZSetW(builder.ToImmutable())
 
     /// Negate every weight via `ring.Negate` — additive inverse. The
     /// ring axiom `negate a `Add` a = zero` is required for retraction.
+    ///
+    /// **Requires a full ring**: this calls `ring.Negate` on every entry's
+    /// weight. Semirings WITHOUT additive inverse (e.g., `TropicalSemiring`,
+    /// whose `Negate` raises `InvalidOperationException` per its docstring)
+    /// cannot satisfy this and the exception propagates verbatim. Callers
+    /// that work over non-ring semirings must avoid `negate`/`difference`
+    /// and use ring-specific equivalents (for tropical: there is no
+    /// retraction — "minimum so far" is monotone-decreasing only).
     let negate (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         let span = a.AsSpan()
         let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(span.Length)
@@ -207,6 +251,10 @@ module ZSetW =
         ZSetW(builder.MoveToImmutable())
 
     /// Difference: `a - b = a `sum` (negate b)`.
+    ///
+    /// Same ring-requires-additive-inverse caveat as `negate` — semirings
+    /// without `Negate` (e.g., `TropicalSemiring`) will surface
+    /// `InvalidOperationException` from the underlying `ring.Negate` call.
     let difference (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         sum ring a (negate ring b)
 
