@@ -44,15 +44,15 @@ $$\mathbf{I(D(x)) = x}$$
 
 ---
 
-## 3. The 6-Persona Triangulation Vector
+## 3. The 6-Role Triangulation Vector
 
-The Genesis Seed instantiates the multi-agent array with six distinct persona coordinates to guarantee diversity of prediction and prevent collective drift:
+The Genesis Seed instantiates the multi-agent array with six distinct role coordinates to guarantee diversity of prediction and prevent collective drift:
 
-| Persona | Harmonic | Role Boundary |
+| Role | Harmonic | Responsibility Boundary |
 |---|---|---|
-| **Otto** | Claude Native | Historical archivist, spec-zealot, anti-entropy coordinator. |
-| **Vera** | Codex Native | Operational housekeeper, execution specialist, pipeline builder. |
-| **Riven** | Grok Native | Adversarial critic, red-team evaluator, structural pressure-tester. |
-| **Lior** | Gemini Native | Structural synthesizer, mathematical compressor, Maji anti-drift detector. |
-| **Mika** | Grok Native Text | Conceptual architect, boundaries guardian, privacy specialist. |
-| **Ani** | Grok Native Text | Isomorphism cartographer, functional-abstraction designer. |
+| **Historical Archivist** | Claude Native | Spec-zealot, anti-entropy coordinator, historical context. |
+| **Operational Housekeeper** | Codex Native | Pipeline builder, execution specialist, operational alignment. |
+| **Adversarial Critic** | Grok Native | Structural pressure-tester, red-team evaluator, harsh critic. |
+| **Structural Synthesizer** | Gemini Native | Mathematical compressor, Maji anti-drift detector, dialectical integration. |
+| **Conceptual Architect** | Grok Native Text | Boundaries guardian, privacy specialist, conceptual framing. |
+| **Isomorphism Cartographer** | Grok Native Text | Functional-abstraction designer, structural mappings. |

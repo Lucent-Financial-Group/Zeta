@@ -68,7 +68,7 @@ type InferNetTopology(numNodes: int, numProjections: int) =
             // Add Gaussian noise using Box-Muller transform
             let noise = 
                 if noiseSigma > 0.0 then
-                    let u1 = rand.NextDouble()
+                    let u1 = max 1e-15 (rand.NextDouble())
                     let u2 = rand.NextDouble()
                     noiseSigma * sqrt(-2.0 * log u1) * cos(2.0 * Math.PI * u2)
                 else 0.0
