@@ -18,7 +18,7 @@ and long-running autonomous operation.
 
 ## Features to add
 
-1. **Structured JSON schema** — machine-parseable by background loops
+1. ~~**Structured JSON schema** — machine-parseable by background loops~~ (Decomposed into [B-0676](./B-0676-broadcast-bus-structured-schema.md))
 2. **TTL/expiry** — broadcasts older than N hours auto-stale
 3. **Asks/offers matching** — loop A posts ask, loop B's tick sees match
 4. **Priority signals** — P0 broadcasts interrupt idle ticks
