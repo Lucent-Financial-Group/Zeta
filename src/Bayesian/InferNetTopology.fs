@@ -83,6 +83,9 @@ type InferNetTopology(numNodes: int, numProjections: int) =
             invalidArg (nameof x) $"Input must have length {n}"
         if noiseSigma < 0.0 then
             invalidArg (nameof noiseSigma) "Noise sigma cannot be negative"
+        for i in 0 .. x.Length - 1 do
+            if Double.IsNaN x.[i] || Double.IsInfinity x.[i] then
+                invalidArg (nameof x) "Input vector elements must be finite"
         
         let y = Array.zeroCreate m
         let rand = Random(seed)
@@ -107,6 +110,13 @@ type InferNetTopology(numNodes: int, numProjections: int) =
     member _.Reconstruct(y: float[], maxIterations: int, lambda: float) : float[] =
         if y.Length <> m then
             invalidArg (nameof y) $"Input must have length {m}"
+        if maxIterations <= 0 then
+            invalidArg (nameof maxIterations) "Number of iterations must be positive"
+        if Double.IsNaN lambda || Double.IsInfinity lambda then
+            invalidArg (nameof lambda) "Lambda must be finite"
+        for i in 0 .. y.Length - 1 do
+            if Double.IsNaN y.[i] || Double.IsInfinity y.[i] then
+                invalidArg (nameof y) "Input vector elements must be finite"
             
         // 1. Back-project the low-dimensional tension to local fields (h_i)
         let h = Array.zeroCreate n
