@@ -136,7 +136,7 @@ Many sections compose with already-shipped or in-flight rows; the remaining deco
 
 | Section | Existing rows | Follow-up rows needed |
 |---|---|---|
-| 1 Marketplace vs Agora | (none yet — this row is umbrella) | B-NNNN Marketplace product surface; B-NNNN Agora-native 2-primitives canonical |
+| 1 Marketplace vs Agora | [B-0670](B-0670-agora-v6-constitution-section-1-marketplace-vs-agora.md) | |
 | 2 5 AI-to-AI services | (none yet) | 5 rows: Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, Dream Compressors |
 | 3 Economic flows | (none yet) | B-NNNN multi-final-settlement; B-NNNN Bitcoin/DePIN hard-money reserve mechanics |
 | 4 Physics/entropy | [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) + [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) (entropy-as-collapse-target-choice) | B-NNNN aligned-behavior-as-lowest-energy-path formalization |
