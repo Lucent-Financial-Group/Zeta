@@ -645,6 +645,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0676](backlog/P2/B-0676-b0620-slice-4-consolidator-script.md)** B-0620 slice 4 consolidator script
 - [ ] **[B-0677](backlog/P2/B-0677-b0620-slice-6-cross-operator-generalization.md)** B-0620 slice 6 cross-operator generalization
 - [ ] **[B-0678](backlog/P2/B-0678-b0620-slice-5-category-classifier.md)** B-0620 slice 5 category classifier
+- [ ] **[B-0679](backlog/P2/B-0679-zeta-id-rust-implementation-2026-05-21.md)** ZetaId V1 — Rust implementation as full peer oracle
+- [ ] **[B-0680](backlog/P2/B-0680-zeta-id-python-implementation-2026-05-21.md)** ZetaId V1 — Python implementation as full peer oracle
 
 ## P3 — convenience / deferred
 
