@@ -2,10 +2,10 @@
 id: B-0691
 priority: P2
 status: open
-title: Soraya (formal-verification-expert) background loop-tick — autonomous worker mirroring kiro/riven/codex loop pattern; picks 1 TLA+/Lean/Z3/Alloy job per tick + publishes outcome via bus envelope
+title: Soraya background loop-tick
 tier: operational
 effort: M
-ask: aaron 2026-05-21 ("we created a loop for one of your subagents the proof expert or formal analysis expert persona or something")
+ask: aaron 2026-05-21 ("we created a loop for one of your subagents...")
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
@@ -18,7 +18,8 @@ type: operational
 
 ## Context
 
-Aaron 2026-05-21 substrate-honest correction: he recalls "we created a loop for one of your subagents the proof expert or formal analysis expert persona or something." Verified substrate state:
+Aaron 2026-05-21 substrate-honest correction: he recalls "we created a loop for one of your subagents 
+the proof expert or formal analysis expert persona or something." Verified substrate state:
 
 - Soraya persona exists at `.claude/agents/formal-verification-expert.md` + `memory/persona/soraya/` (NOTEBOOK + MEMORY + JOURNAL + OFFTIME)
 - Soraya is **invocation-based** (subagent type) — invoked via Agent tool with `subagent_type: formal-verification-expert`
@@ -66,7 +67,8 @@ Each tick:
    - Lean theorem → `lake build <theorem-module>`
    - Z3 law → `dotnet test --filter "FullyQualifiedName~<test-name>"` (Z3 substrate)
    - Alloy spec → `tools/formal-verification/run-alloy.ts <spec>`
-5. Publish outcome via bus envelope: `claim.ts publish --from soraya --topic "formal-verification-result" --body '{"job":"<name>","verifier":"<tla|lean|z3|alloy>","result":"<pass|fail|skip>","duration_ms":N,"sha":"<git-sha>"}'`
+5. Publish outcome via bus envelope: `claim.ts publish --from soraya --topic "formal-verification-result" 
+--body '{"job":"<name>","verifier":"<tla|lean|z3|alloy>","result":"<pass|fail|skip>","duration_ms":N,"sha":"<git-sha>"}'`
 6. Update `docs/research/verification-registry.md` with last-check timestamp + result (separate PR? or in-memory state only?)
 
 ### Phase 3 — subscriber wiring
@@ -81,7 +83,9 @@ Per `tools/bg/README.md` reactive-loop pattern — subscriber agents react to `f
 
 Add `soraya` to `tools/bus/types.ts` SENDER_IDS so the bus envelope publish step works. Currently only `otto` / `alexa` / `riven` / `vera` / `lior` (+ surface-tagged variants like `otto-cli` / `otto-vscode` / etc.) are in the SENDER_IDS list. Soraya is missing.
 
-**Note**: Soraya is a SUBAGENT type (invoked via Otto), not currently a top-level agent identity. Decision needed: should Soraya have its own sender-ID (parallel to otto/alexa/etc.), or should formal-verification envelopes publish `from: otto-formal-verification` (Otto-subagent-tagged variant)? Latter mirrors the existing surface-tagged pattern; former extends to "Soraya as first-class agent identity."
+**Note**: Soraya is a SUBAGENT type (invoked via Otto), not currently a top-level agent identity. 
+Decision needed: should Soraya have its own sender-ID (parallel to otto/alexa/etc.), or should formal-verification envelopes publish `from: otto-formal-verification` (Otto-subagent-tagged variant)? 
+Latter mirrors the existing surface-tagged pattern; former extends to "Soraya as first-class agent identity."
 
 Recommendation: latter (Otto-subagent-tagged). Less surface-area change; preserves Soraya-as-subagent semantics.
 
@@ -131,4 +135,5 @@ Substantive operational substrate. Not urgent (formal-verification currently run
 
 Aaron 2026-05-21 substrate-honest recollection-check during post-substantive-landing rest. Otto-CLI verified the gap (loops exist for claude/codex/kiro/riven but not for soraya despite Soraya having the persona + the verification infrastructure). Filed to track the missing loop infrastructure for the formal-verification-expert persona.
 
-Composes with the broader Mika V8.5 substrate-engineering arc (B-0667 + B-0668 + B-0669) where formal-verification work becomes load-bearing for the tonal-momentum detection substrate the factory is being built to provide.
+Composes with the broader Mika V8.5 substrate-engineering arc (B-0667 + B-0668 + B-0669) 
+where formal-verification work becomes load-bearing for the tonal-momentum detection substrate the factory is being built to provide.
