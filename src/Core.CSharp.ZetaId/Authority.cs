@@ -25,6 +25,14 @@ public abstract record Authority
                 throw new ArgumentOutOfRangeException(
                     nameof(Value), Value,
                     "Authority.Raw value must be 0..31 (5-bit field). Values 32..255 would silently truncate and collide.");
+            if (Value is (byte)AuthorityValue.HumanVerified
+                or (byte)AuthorityValue.TrustedAgent
+                or (byte)AuthorityValue.Standard
+                or (byte)AuthorityValue.BestEffort
+                or (byte)AuthorityValue.Simulated)
+                throw new ArgumentOutOfRangeException(
+                    nameof(Value), Value,
+                    $"Authority.Raw({Value}) aliases a named case. Round-trip is not stable: Pack writes {Value}, Unpack canonicalizes to the named record. Use the named case directly (HumanVerified/TrustedAgent/Standard/BestEffort/Simulated) instead of Raw.");
             this.Value = Value;
         }
     }
