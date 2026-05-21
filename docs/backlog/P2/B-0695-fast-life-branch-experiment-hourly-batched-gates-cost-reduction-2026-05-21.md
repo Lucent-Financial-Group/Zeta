@@ -9,7 +9,7 @@ ask: aaron 2026-05-21 ("we can start to loose up and have hourly gates or someth
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0691, B-0032]
+composes_with: [B-0691, B-0032]  # B-0691 row pending merge via PR #4562; implementation already shipped via PR #4565
 tags: [ci-cadence, branch-model, fast-branch, life-branch, hourly-batched-gates, promotion-path, soraya-promotion-gate, cost-reduction]
 type: operational
 ---
@@ -80,7 +80,7 @@ Classic Linus `dev/main` pattern adapted to Zeta:
 - Codex/Copilot configured to review at promotion-PR time (not per-PR on `fast`)
 - Hourly cron triggers promotion-PR creation: scoops merged-on-fast commits since last promotion + opens promotion PR against `life`
 - Promotion PR triggers full gate matrix + AI reviewers
-- Per `.claude/skills/skill-reviewer/SKILL.md` (if exists) — reviewer routing logic
+- Reviewer-routing implementation tracked separately (no existing skill at this path; new tool or `.github/workflows/` job to be authored as part of this PR's Phase 2)
 
 ### Phase 3 — Soraya-promotion-gate
 
@@ -132,9 +132,7 @@ Classic Linus `dev/main` pattern adapted to Zeta:
 
 This is research-grade operational substrate. The classic Linus dev/main pattern is well-trodden. The Zeta contribution is the Soraya-promotion-gate (formal-verification state controls promotion) + the 100k-line AI-reviewer batch model (preserves review depth at lower per-PR cost).
 
-Aaron's correction-of-Otto-CLI-framing (Copilot/Codex 100k-line capability) is load-bearing. Without that correction, the "loses per-PR review granularity" concern would be a real cost. With it, the only loss is regression-triage-by-commit (manageable via atomic-commit discipline) — and the gain is ~70% CI cost reduction (12 PRs/day × 30 checks = 360 runs → 24 hourly batches × 30 checks = 720 runs MAX; usually fewer because most hours have <12 PRs).
-
-Wait, 24 hourly × 30 = 720 > 12 PRs × 30 = 360. The math depends on PR-arrival distribution: if PRs arrive in bursts (cascade pattern today), batching consolidates them; if PRs are evenly distributed (1 per hour), batching makes no difference. The empirical A/B (Phase 5) settles which Zeta's actual distribution is.
+Aaron's correction-of-Otto-CLI-framing (Copilot/Codex 100k-line capability) is load-bearing. Without that correction, the "loses per-PR review granularity" concern would be a real cost. With it, the only loss is regression-triage-by-commit (manageable via atomic-commit discipline). The actual cost-benefit picture is **burst-dependent**, not a fixed percentage — see the "Substrate-honest cost-benefit (corrected math)" section below for the empirical numbers (cost-neutral at 1 PR/hr; ~33% reduction in the example 6-PRs-in-2-hours burst case). Phase 5 measures the real distribution.
 
 ## Substrate-honest cost-benefit (corrected math)
 
