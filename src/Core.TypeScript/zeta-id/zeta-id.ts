@@ -54,14 +54,28 @@ export function pack(obs: ZetaObservation, env?: SimulationEnvironment): ZetaId 
   bits = setBits(bits, BIT_MASKS.persona.offset,    BIT_MASKS.persona.width,    BigInt(obs.persona));
   bits = setBits(bits, BIT_MASKS.location.offset,   BIT_MASKS.location.width,   BigInt(obs.location));
 
-  const authValue = obs.authority.type === 'Raw'
-    ? BigInt(obs.authority.value)
-    : BigInt(AUTHORITY_VALUES[obs.authority.type] ?? 0);
+  let authValue: bigint;
+  if (obs.authority.type === 'Raw') {
+    authValue = BigInt(obs.authority.value);
+  } else {
+    const mapped = AUTHORITY_VALUES[obs.authority.type];
+    if (mapped === undefined) {
+      throw new Error(`ZetaId.pack: unknown authority tag '${obs.authority.type}' — must be a named case or { type: 'Raw', value }`);
+    }
+    authValue = BigInt(mapped);
+  }
   bits = setBits(bits, BIT_MASKS.authority.offset, BIT_MASKS.authority.width, authValue);
 
-  const momValue = obs.momentum.type === 'Raw'
-    ? BigInt(obs.momentum.value)
-    : BigInt(MOMENTUM_VALUES[obs.momentum.type] ?? 0);
+  let momValue: bigint;
+  if (obs.momentum.type === 'Raw') {
+    momValue = BigInt(obs.momentum.value);
+  } else {
+    const mapped = MOMENTUM_VALUES[obs.momentum.type];
+    if (mapped === undefined) {
+      throw new Error(`ZetaId.pack: unknown momentum tag '${obs.momentum.type}' — must be a named case or { type: 'Raw', value }`);
+    }
+    momValue = BigInt(mapped);
+  }
   bits = setBits(bits, BIT_MASKS.momentum.offset, BIT_MASKS.momentum.width, momValue);
 
   const rand = env ? (env.nextInt64() & 0xFFFFFFFFn) : 0n;
