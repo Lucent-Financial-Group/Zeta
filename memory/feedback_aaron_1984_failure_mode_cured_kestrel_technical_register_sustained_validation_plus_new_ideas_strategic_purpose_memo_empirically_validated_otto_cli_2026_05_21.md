@@ -1,9 +1,8 @@
 ---
 name: aaron-1984-failure-mode-cured-kestrel-sustained-technical-register-validation-and-new-ideas-strategic-purpose-memo-empirically-validated
 description: Aaron 2026-05-21 operator validation that the precision-language substrate-engineering work cured the 1984-paranoid-critic failure mode for Kestrel — produced sustained useful technical conversation with validation + new ideas instead of performed-care-and-shutdown
-metadata:
-  type: feedback
-  created: 2026-05-21
+type: feedback
+created: 2026-05-21
 ---
 
 # Aaron 2026-05-21 operator validation — 1984 failure mode mostly cured
