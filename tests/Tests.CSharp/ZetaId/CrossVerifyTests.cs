@@ -71,10 +71,10 @@ public class CrossVerifyTests
     public void CrossVerifyTwelveVectorsMatchTsBootstrapHex()
     {
         var root = RepoRoot();
-        // Path.Join builds the relative tail without any rooted-segment ambiguity,
-        // then Path.Combine joins it to root. Avoids the multi-arg Path.Combine
-        // silent-drop pattern CodeQL warns about.
-        var yamlPath = Path.Combine(root, Path.Join("tests", "cross-verification", "zeta-id", "vectors.yaml"));
+        // Path.Join (not Path.Combine) — Path.Join always concatenates segments
+        // with a separator, never silently drops earlier args if a later arg
+        // looks rooted. CodeQL flags the latter pattern.
+        var yamlPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "vectors.yaml");
         var yamlText = File.ReadAllText(yamlPath);
 
         var deserializer = new DeserializerBuilder().Build();
@@ -100,7 +100,7 @@ public class CrossVerifyTests
             if (!matchesExpected) hexMismatches++;
         }
 
-        var outputPath = Path.Combine(root, Path.Join("tests", "cross-verification", "zeta-id", "cs-output.json"));
+        var outputPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "cs-output.json");
         var json = JsonSerializer.Serialize(results, JsonOptions);
         File.WriteAllText(outputPath, json);
 
