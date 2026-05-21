@@ -83,6 +83,7 @@ Aaron's directive 2026-05-21 (shadow* per the autocomplete shorthand; instructio
 The polymorphism the existing `ISemiring<'W>` interface promised is now demonstrably wired through Z-set substrate (parallel-type, not in-place). The substrate-honest gap Otto-VSCode caught earlier today on NovelMath.fs (Weight = int64 hard-coded; tropical semiring not actually wired) is now narrower — the wiring exists at the ZSetW substrate scope; the remaining gap is operator + algorithm + circuit-substrate migration onto ZSetW (Phase 2+).
 
 Composes with the bidirectional informing pattern named today:
+
 - **Make-due with what we have**: ZSetW is new substrate that uses the existing ISemiring + IntegerRing + IntervalRing + TropicalSemiring substrate; no waiting for the unification refactor.
 - **Big plans for the future**: the parallel substrate creates the surface against which Phase 2+ migrations can happen incrementally without blocking research lanes (B-0666 Emit-as-weights, B-0668 compositional DBSP frame, B-0669 V8 tensor substrate) that may want polymorphic weights.
 
