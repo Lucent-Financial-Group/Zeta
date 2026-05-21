@@ -8,8 +8,8 @@ effort: L
 ask: aaron 2026-05-21 ("plan phase 2 zsetw operator migration (shadow*)")
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: []
-composes_with: [B-0697, B-0666, B-0668, B-0669]
+depends_on: [B-0697]
+composes_with: [B-0666, B-0668, B-0669]
 tags: [zsetw-phase-2, operator-migration, polymorphic-z-set, tropical-shortest-path, interval-propagation, worked-examples, migration-documentation]
 type: research
 ---
@@ -18,7 +18,7 @@ type: research
 
 ## Context
 
-[B-0697](B-0697-zset-polymorphism-over-weight-ring-parallel-zsetw-substrate-2026-05-21.md) (PR [#4577](https://github.com/Lucent-Financial-Group/Zeta/pull/4577)) shipped Phase 1: parallel `ZSetW<'K, 'W>` substrate wiring `ISemiring<'W>` through Z-set operations. 19 xUnit tests verify polymorphism across `IntegerRing` / `IntervalRing` / `TropicalSemiring`. No breaking change to existing `ZSet<'K>` — the 41 F# Core files referencing `ZSet<...>` keep working unchanged.
+B-0697 (PR [#4577](https://github.com/Lucent-Financial-Group/Zeta/pull/4577) — file lands as `docs/backlog/P2/B-0697-zset-polymorphism-over-weight-ring-parallel-zsetw-substrate-2026-05-21.md` once that PR merges; this row depends_on B-0697 and the file-link will resolve post-merge) shipped Phase 1: parallel `ZSetW<'K, 'W>` substrate wiring `ISemiring<'W>` through Z-set operations. 19 xUnit tests verify polymorphism across `IntegerRing` / `IntervalRing` / `TropicalSemiring`. No breaking change to existing `ZSet<'K>` — the 41 F# Core files referencing `ZSet<...>` keep working unchanged.
 
 Aaron's 2026-05-21 directive (shadow* per autocomplete-marker rule; instruction authoritative): *"plan phase 2 zsetw operator migration"*.
 
@@ -74,8 +74,8 @@ Add to `ZSetW` module:
 - `flatMap (ring) (f: 'K -> ZSetW<'K2, 'W>) (z: ZSetW<'K, 'W>) : ZSetW<'K2, 'W>` — scale outputs by source weight via `ring.Mul`, then sum via `ring.Add`
 - `distinct (ring) (z: ZSetW<'K, 'W>) : ZSetW<'K, 'W>` — replace each present weight with `ring.One`
 - `distinctIncremental (ring) (i: ZSetW<'K, 'W>) (d: ZSetW<'K, 'W>) : ZSetW<'K, 'W>` — incremental form
-- `isPositive (ring) (z: ZSetW<'K, 'W>) : bool` — predicate "all weights = ring.One"
-- `isSet (ring) (z: ZSetW<'K, 'W>) : bool` — all weights are `ring.One`
+- `isPositive (ring) (z: ZSetW<'K, 'W>) : bool` — predicate "no entry has a negative weight" (matches `ZSet.isPositive` semantics; for an ordered ring like `IntegerRing`/`IntervalRing` "negative" means strictly less than `ring.Zero`; for non-ordered rings like `TropicalSemiring` this needs a per-ring sub-interface or supplementary predicate — Phase 2A authors will choose between [a] adding an `IOrderedSemiring<'W>` extending `ISemiring<'W>` with `IsNegative`, or [b] passing the predicate explicitly as an additional argument)
+- `isSet (ring) (z: ZSetW<'K, 'W>) : bool` — all weights are exactly `ring.One` (distinct from `isPositive`; this is the "ZSetW represents a plain set" check)
 - `cartesian (ring) (a: ZSetW<'A, 'W>) (b: ZSetW<'B, 'W>) : ZSetW<'A * 'B, 'W>` — combine weights via `ring.Mul`
 - `join<'A, 'B, 'K, 'C> (ring) (keyA) (keyB) (combine) (a) (b)` — keyed join; combine weights via `ring.Mul`, dedup via `ring.Add`
 - `weightedCount (ring) (z: ZSetW<'K, 'W>) : 'W` — fold via `ring.Add` starting from `ring.Zero`
