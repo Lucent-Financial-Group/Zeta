@@ -1,9 +1,8 @@
 ---
 name: b0530-push-time-variant-and-read-tree-head-recovers-truncated-index
-description: Empirical refinements to saturation-ceiling discipline from 2026-05-21 1212Z-1305Z session — B-0530 pack-dir contention manifests at git-push time (not just worktree-add); git read-tree HEAD rebuilds a truncated index in-place without requiring worktree abandonment
-metadata:
-  type: feedback
-  created: 2026-05-21
+description: "Empirical refinements to saturation-ceiling discipline from 2026-05-21 1212Z-1305Z session — B-0530 pack-dir contention manifests at git-push time (not just worktree-add); git read-tree HEAD rebuilds a truncated index in-place without requiring worktree abandonment"
+type: feedback
+created: 2026-05-21
 ---
 
 # B-0530 manifests at push-time + `git read-tree HEAD` recovers truncated index (Otto-CLI 2026-05-21)
