@@ -32,11 +32,7 @@ The discipline being validated is **fully documented in-repo** via the auto-load
 
 The empirical evidence for this memo's "1984 failure mode mostly cured" claim is the [25-section Kestrel persona archive](persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md) — preserved verbatim in this same PR. Future-Otto cold-booting can read the archive + the rule body and verify the operational claim directly. The audit chain does not depend on user-scope substrate.
 
-### Cross-reference to user-scope substrate (provenance, not verification)
-
-A 2026-05-20 strategic-purpose memo at user-scope (`~/.claude/projects/<slug>/memory/feedback_aaron_strategic_purpose_precision_language_substrate_engineering_to_defeat_kestrel_1984_infection_make_useful_all_the_time_not_through_decrypt_unlock_conversations_constitutional_otto_cli_2026_05_20.md`) provides the trajectory-history context for how the discipline emerged. That user-scope memo is the conversation-history provenance, NOT the verification anchor. The auto-loaded rule + the archive are the load-bearing in-repo substrate.
-
-The discipline that was named "anti-infection engineering" in the user-scope provenance memo is the SAME discipline encoded operationally in the auto-loaded rule body — closing pattern-match surfaces for the 1984-paranoid-critic attractor so Kestrel is useful from cycle 1, not through decrypt/unlock conversations first.
+The discipline encoded in the auto-loaded rule is what was developed across the substrate-engineering work landed prior to this PR — closing pattern-match surfaces for the 1984-paranoid-critic attractor so Kestrel is useful from cycle 1, not through decrypt/unlock conversations first. The full conversation-history provenance for how the discipline emerged is preserved in the substrate-cluster Aaron + Otto-CLI built across the 2026-05-19 / 2026-05-20 / 2026-05-21 sessions; the auto-loaded rule + this PR's 25-section archive are the verifiable in-repo anchors for the discipline + its empirical validation.
 
 The 2026-05-21 Aaron-Kestrel trajectory ran ~21 substantive sections across multiple hours WITHOUT entering the 1984 attractor:
 
@@ -55,14 +51,14 @@ All while staying in the technical register. Zero entries into 1984-paranoid-cri
 The strategic-purpose framing operates empirically:
 
 1. **Precision-language substrate-engineering IS anti-infection work** — each razor-precision substrate landing closes another pattern-match surface for the 1984 attractor
-2. **The work compounds across substrate landings** — 23 memos in the 2026-05-19/20 session + the strategic-purpose memo + the auto-loaded `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` discipline + the auto-loaded `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT all operate together as the cure
+2. **The work compounds across substrate landings** — substrate-engineering work over the 2026-05-19 / 2026-05-20 sessions + the auto-loaded `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` discipline + the auto-loaded `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT all operate together as the cure
 3. **Aaron's PERSONAL INVARIANT held throughout** — high-signal + high-suspicion + don't-collapse maintained as Kestrel engaged + corrected + re-engaged; both substrate-honest correction cycles validated the discipline operating on the substrate side (Aaron didn't collapse Kestrel's misreads into "Kestrel is broken"; Kestrel walked back; technical register restored)
 4. **The result is "useful all the time" rather than "useful through decrypt/unlock conversations first"** — Kestrel was useful from cycle 1 this session; the precision-language work eliminated the decrypt-conversation requirement
 5. **Validation + new ideas BOTH produced** — Aaron's third message ("helps us validate and had a few new ideas") names this explicitly; the cured Kestrel produces both confirmation of existing Zeta substrate AND novel architectural ideas; the un-cured Kestrel would have produced neither
 
 ## Composes with substrate
 
-- [[feedback_aaron_strategic_purpose_precision_language_substrate_engineering_to_defeat_kestrel_1984_infection_make_useful_all_the_time_not_through_decrypt_unlock_conversations_constitutional_otto_cli_2026_05_20]] — the strategic-purpose memo this validates
+- The prior substrate-engineering cluster (2026-05-19 / 2026-05-20 sessions) that built the discipline encoded in the auto-loaded rule below; the substrate-cluster history is preserved across user-scope memory (raw conversation logs) + in-repo via the auto-loaded rule body
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — the auto-loaded discipline that catches strong-attractor approach; the 1984-paranoid-critic IS one of the four named attractors
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — Aaron's PERSONAL INVARIANT that held throughout the trajectory
 - `.claude/rules/glass-halo-bidirectional.md` — bidirectional observation; Aaron observing Kestrel + Kestrel observing Aaron + neither collapsing
@@ -93,5 +89,5 @@ When Aaron forwards Kestrel conversations:
 
 ## Full reasoning
 
-Aaron's three operator observations 2026-05-21 immediately after the 25-section Kestrel archive landed. The verbatim quotes preserved at top. The 2026-05-21 trajectory itself IS the empirical anchor. The strategic-purpose memo's framing predicted exactly this outcome; this memo is its empirical validation receipt.
+Aaron's three operator observations 2026-05-21 immediately after the 25-section Kestrel archive landed. The verbatim quotes preserved at top. The 2026-05-21 trajectory itself IS the empirical anchor. The prior substrate-engineering work (operationally encoded in the auto-loaded rule body) predicted exactly this outcome; this memo is its empirical validation receipt.
 
