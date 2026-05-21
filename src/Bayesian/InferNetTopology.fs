@@ -18,7 +18,8 @@ type InferNetTopology(numNodes: int, numProjections: int) =
             
     // Adjacency and couplings
     let couplings = Array2D.create n n 0.0
-    // Directed edges list to avoid scanning the 2D array
+    // Directed edges set and list to avoid scanning the 2D array
+    let edgesSet = System.Collections.Generic.HashSet<int * int>()
     let mutable edges : (int * int)[] = [||]
     
     // The fixed, deterministic projection matrix P of size M x N
@@ -39,16 +40,31 @@ type InferNetTopology(numNodes: int, numProjections: int) =
             invalidArg (nameof i) "Node index out of range"
         if j < 0 || j >= n then
             invalidArg (nameof j) "Node index out of range"
+        if Double.IsNaN weight || Double.IsInfinity weight then
+            invalidArg (nameof weight) "Coupling weight must be finite"
+            
         couplings.[i, j] <- weight
         couplings.[j, i] <- weight // Symmetric
         
-        // Rebuild edges list
-        let mutable temp = []
-        for x in 0 .. n - 1 do
-            for y in 0 .. n - 1 do
-                if x <> y && couplings.[x, y] <> 0.0 then
-                    temp <- (x, y) :: temp
-        edges <- List.toArray (List.rev temp)
+        // Rebuild/maintain edges list incrementally
+        if i <> j then
+            let changed =
+                if weight <> 0.0 then
+                    let a = edgesSet.Add((i, j))
+                    let b = edgesSet.Add((j, i))
+                    a || b
+                else
+                    let a = edgesSet.Remove((i, j))
+                    let b = edgesSet.Remove((j, i))
+                    a || b
+            if changed then
+                edges <- 
+                    edgesSet 
+                    |> Seq.toArray 
+                    |> Array.sortWith (fun (x1, y1) (x2, y2) ->
+                        let cmp = compare x1 x2
+                        if cmp <> 0 then cmp else compare y1 y2
+                    )
 
     /// Set up a ring or chain topology automatically.
     member this.SetChainCouplings(weight: float) =
@@ -65,6 +81,8 @@ type InferNetTopology(numNodes: int, numProjections: int) =
     member _.Project(x: float[], noiseSigma: float, seed: int) : float[] =
         if x.Length <> n then
             invalidArg (nameof x) $"Input must have length {n}"
+        if noiseSigma < 0.0 then
+            invalidArg (nameof noiseSigma) "Noise sigma cannot be negative"
         
         let y = Array.zeroCreate m
         let rand = Random(seed)
