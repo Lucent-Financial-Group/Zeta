@@ -39,7 +39,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Zeta.SubstrateDiscovery", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.CSharp.ZetaId", "Core.CSharp.ZetaId", "{2B92D7A6-03F2-015D-D094-D9294E13579E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zeta.Core.CSharp.ZetaId", "src\Core.CSharp.ZetaId\Zeta.Core.CSharp.ZetaId.csproj", "{568961BA-BD40-4A81-BC1B-5AAB81A768EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zeta.Core.CSharp.ZetaId", "src\Core.CSharp.ZetaId\Zeta.Core.CSharp.ZetaId.csproj", "{568961BA-BD40-4A81-BC1B-5AAB81A768EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,10 +11,21 @@ public class CrossVerifyTests
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
+    // Bounds-check int→byte cast before constructing Raw or casting to enum.
+    // Without this, e.g. AuthorityRaw=256 wraps to 0 BEFORE Authority.Raw's
+    // 0..31 check fires, silently producing wrong packed ID.
+    private static byte CheckByte(int value, string fieldName)
+    {
+        if (value < 0 || value > 255)
+            throw new InvalidOperationException(
+                $"vectors.yaml field '{fieldName}' = {value} is outside the 0..255 byte range; would wrap silently on int→byte cast.");
+        return (byte)value;
+    }
+
     private static Authority ToAuthority(FlatVector v)
     {
         if (string.Equals(v.AuthorityType, "Raw", StringComparison.Ordinal))
-            return new Authority.Raw((byte)v.AuthorityRaw!.Value);
+            return new Authority.Raw(CheckByte(v.AuthorityRaw!.Value, nameof(v.AuthorityRaw)));
 
         return v.AuthorityType switch
         {
@@ -30,7 +41,7 @@ public class CrossVerifyTests
     private static Momentum ToMomentum(FlatVector v)
     {
         if (string.Equals(v.MomentumType, "Raw", StringComparison.Ordinal))
-            return new Momentum.Raw((byte)v.MomentumRaw!.Value);
+            return new Momentum.Raw(CheckByte(v.MomentumRaw!.Value, nameof(v.MomentumRaw)));
 
         return v.MomentumType switch
         {
@@ -45,15 +56,15 @@ public class CrossVerifyTests
 
     private static Zeta.Core.CSharp.ZetaId.ZetaObservation ToObservation(FlatVector v) =>
         new(
-            Version:    (IdVersion)v.Version,
+            Version:    (IdVersion)CheckByte(v.Version, nameof(v.Version)),
             Timestamp:  v.Timestamp,
-            Chromosome: (Chromosome)v.Chromosome,
-            Category:   (Category)v.Category,
-            Firefly:    (Firefly)v.Firefly,
+            Chromosome: (Chromosome)CheckByte(v.Chromosome, nameof(v.Chromosome)),
+            Category:   (Category)CheckByte(v.Category, nameof(v.Category)),
+            Firefly:    (Firefly)CheckByte(v.Firefly, nameof(v.Firefly)),
             Authority:  ToAuthority(v),
-            Persona:    (Persona)v.Persona,
+            Persona:    (Persona)CheckByte(v.Persona, nameof(v.Persona)),
             Momentum:   ToMomentum(v),
-            Location:   (Location)v.Location
+            Location:   (Location)CheckByte(v.Location, nameof(v.Location))
         );
 
     private static string RepoRoot()

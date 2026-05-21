@@ -9,7 +9,7 @@ namespace Zeta.Core.CSharp.ZetaId;
 // mapping layer (AWS/GCP/Azure/DO region names, account/subscription IDs,
 // etc.) ships in a separate follow-up PR. The core enum stays small +
 // stable; the rich layer lives in CloudEvents-wrapped envelopes per
-// CNCF CloudEvents spec (cncf.io/cloudevents) — also backlogged.
+// CNCF CloudEvents spec (https://cloudevents.io/) — also backlogged.
 public enum Location : byte
 {
     EastUsVa         = 1,   // AWS us-east-1, Azure East US, GCP us-east4

@@ -9,6 +9,18 @@ public static class ZetaIdCodec
 
     public static UInt128 Pack(ZetaObservation obs, ISimulationEnvironment env)
     {
+        // ZetaObservation is a readonly record struct; default-init has null
+        // Authority/Momentum (since they're abstract records). Reject so
+        // Pack fails loudly instead of NRE'ing inside Authority.ToByte.
+        // Analyzer (CA2208/MA0015) requires paramName to match an actual method
+        // parameter, so we use nameof(obs) + describe the offending field in
+        // the message text.
+        ArgumentNullException.ThrowIfNull(env);
+        if (obs.Authority is null)
+            throw new ArgumentException("ZetaObservation.Authority must not be null. Default-initialized ZetaObservation has null Authority/Momentum; pass an explicit value.", nameof(obs));
+        if (obs.Momentum is null)
+            throw new ArgumentException("ZetaObservation.Momentum must not be null. Default-initialized ZetaObservation has null Authority/Momentum; pass an explicit value.", nameof(obs));
+
         if (obs.Timestamp < 0 || obs.Timestamp > MaxTimestamp)
             throw new ArgumentOutOfRangeException(
                 nameof(obs), obs.Timestamp,
