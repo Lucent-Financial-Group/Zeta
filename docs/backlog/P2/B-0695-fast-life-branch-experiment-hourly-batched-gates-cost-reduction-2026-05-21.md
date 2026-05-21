@@ -172,7 +172,7 @@ So the answer is **per-pattern, not universal**. Fast/life experiment should tes
 
 ## Why P2
 
-Substantive operational substrate; not urgent (per-PR cadence works today); high value (potential ~70% CI cost reduction during cascade bursts + improved CI-vs-iteration cadence decoupling); bounded scope (5 phases; each days-to-weeks).
+Substantive operational substrate; not urgent (per-PR cadence works today); potential value is burst-dependent CI cost reduction (cost-neutral at 1 PR/hr; ~33% reduction in the example 6-PRs-in-2-hours burst case per corrected math) + improved CI-vs-iteration cadence decoupling; bounded scope (5 phases; each days-to-weeks); Phase 5 measures the empirical distribution.
 
 Does NOT block any current substantive work. The Soraya promotion-gate composition (Phase 3) is the substrate-honest tie to formal-verification growth (Aaron's #2 priority).
 
