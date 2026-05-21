@@ -36,7 +36,10 @@ type IntegrateBuilder() =
             | Committed s' ->
                 let (Integrate m2) = f x
                 let y, res2 = m2 s'
-                y, res2
+                match res2 with
+                | Simulating s'' -> y, Committed s''
+                | Committed s'' -> y, Committed s''
+                | Propagating s'' -> y, Committed s''
             | Propagating s' ->
                 let (Integrate m2) = f x
                 let y, res2 = m2 s'

@@ -10,6 +10,12 @@ type InferNetTopology(numNodes: int, numProjections: int) =
     let n = numNodes
     let m = numProjections
     
+    do
+        if numNodes <= 0 then
+            invalidArg (nameof numNodes) "Number of nodes must be positive"
+        if numProjections <= 0 then
+            invalidArg (nameof numProjections) "Number of projections must be positive"
+            
     // Adjacency and couplings
     let couplings = Array2D.create n n 0.0
     // Directed edges list to avoid scanning the 2D array
@@ -29,8 +35,10 @@ type InferNetTopology(numNodes: int, numProjections: int) =
 
     /// Configure the topological connection weight between node i and node j.
     member this.SetCoupling(i: int, j: int, weight: float) =
-        if i < 0 || i >= n || j < 0 || j >= n then
+        if i < 0 || i >= n then
             invalidArg (nameof i) "Node index out of range"
+        if j < 0 || j >= n then
+            invalidArg (nameof j) "Node index out of range"
         couplings.[i, j] <- weight
         couplings.[j, i] <- weight // Symmetric
         
@@ -146,4 +154,4 @@ type InferNetTopology(numNodes: int, numProjections: int) =
         reconstructed
 
     /// Access the internal projection matrix for audit/transparency
-    member _.ProjectionMatrix = projectionMatrix
+    member _.ProjectionMatrix = projectionMatrix.Clone() :?> float[,]

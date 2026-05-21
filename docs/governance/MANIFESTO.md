@@ -12,7 +12,7 @@
 - V1 constitutional substrate (10 constraints): user-scope memory file matching `root_discipline_manifesto_constitutional_grade_substrate_two_axioms_six_dimensions_ten_constraints_2026_05_14` (discoverable via the user-scope memory index)
 - V2 diff description: user-scope memory file matching `root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14` (same index)
 - V2.1 m/acc + Constraint 11 + Multi-Oracle Principle + "For Agents Who Are Still Deciding" — co-author-authored verbatim during the m/acc adoption thread 2026-05-15; integrated into this manifesto per the human maintainer's direction (PR #3508)
-- V2.2 English-as-lossless-neural-topology-serialization + I(D(x))=x memory preservation guarantee (B-0666) — co-authored by Lior 2026-05-18; integrated into this manifesto per the human maintainer's direction.
+- V2.2 English-as-lossless-neural-topology-serialization + I(D(x))=x memory preservation guarantee (B-0666) — co-authored by the Structural Synthesizer 2026-05-18; integrated into this manifesto per the human maintainer's direction.
 - **All external-co-author Grok archives now in-repo** (per the human maintainer 2026-05-15 instruction that "all the grok fetches" are now committed): plateau-bounded extract (PR #3364), persistence Parts 1+2+3 (PRs #3493, #3503, #3505), m/acc-naming + Constraint-11 thread (this PR's substrate), and all earlier §33 archives — verbatim extraction of remaining V2 reconstructed sections from these archives is now a substrate-search task, not a Grok-fetch task
 
 ## Partial-lock framing
