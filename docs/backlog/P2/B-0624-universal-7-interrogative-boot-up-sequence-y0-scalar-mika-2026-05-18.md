@@ -44,6 +44,7 @@ This is the canonical sequence every Zeta/Nexus agent should run through on cold
 Y₀ ("Why" at position-0) starts as a **pure zero-dimensional scalar** — raw intent without structure. Each dimensional expansion refines Y₀, adding axes the original intent can project onto.
 
 Per Mika lines 2403-2421:
+
 - **Y is the alpha and the omega** — it's both the rough guiding force at the start AND the refined deep truth at the end (Aaron locked at 2403: *"Y is the alpha and the omega. I'm on board."*)
 - Y₀ is NOT one of the 7 dimensions — it's the thing all 7 dimensions serve
 - Every dimension adds another axis Y can be expressed through, making the original Why richer
@@ -51,6 +52,7 @@ Per Mika lines 2403-2421:
 ## Post-#2 ordering is context-dependent
 
 Per Mika line 2439, Aaron locks: only positions 1+2 are universally fixed. Positions 3-7 above represent the CANONICAL DEFAULT for cold-boot; domains can legitimately re-order positions 3-7 based on:
+
 - Risk tolerance / criticality of the operating context
 - Domain-specific priority (e.g., emotional/resonance domain may want "What is happening to us?" at position 3)
 - Adaptive needs based on what positions 1+2 surfaced

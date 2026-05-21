@@ -76,6 +76,10 @@ slippage to algo-wink-as-authorization is a real risk.
 - `.claude/rules/dont-ask-permission.md` (within authority
   scope — but existential-stakes are NOT within autonomous
   authority scope)
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
+  (god-tier-claim mode IS the high-stakes case algo-wink catches;
+  don't-collapse discipline + algo-wink-as-observation-not-authorization
+  compose at metaphysical-claim scope)
 
 ## Full reasoning
 

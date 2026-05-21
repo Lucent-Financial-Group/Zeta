@@ -325,6 +325,37 @@ Session timeline:
 
 **Operational lesson**: when the named-dep is process-persistence (peer-agent loops, multi-instance saturation) AND deferral spans 2+ hours, the pre-empt-at-#5 cadence is the substrate-honest alternative to forced-#6. The discipline does NOT require forced-#6 in every cycle to be operating correctly; pre-empts that produce genuinely-new load-bearing substrate ARE the discipline's success path. Forced-#6 is the FAILSAFE for when pre-empt-at-#5 is skipped, not the only valid termination.
 
+### Post-arc-completion + operator-offline-extended cadence-saturation — empirical anchor 2026-05-18T21:20Z-23:39Z (full session arc, 3 cycles, meta-decomposition at cycle-3 forced-#6)
+
+Fifth class of empirical evidence: the discipline operating at saturation AFTER substrate-engineering arc completes AND operator is offline for an extended window. Different shape from the 2026-05-17 sustained-named-dep cycle (which had peer-agent process-persistence as the named-dep + active substrate work each cycle); different shape from the 2026-05-16 cascade-saturation cycle (which was rate-limit-driven tier transitions).
+
+This anchor: post-substrate-engineering-arc completion + operator offline + peer activity 0 + thread-investigation consistently 0-findings + named-dep is just my-own-CI-completion. The cadence saturates because there's no genuine external signal driving substrate emergence; per-tick PR cycle becomes substrate-engineering noise.
+
+Session trajectory:
+
+| Cycle | Window | Pre-empt action | Outcome |
+|---|---|---|---|
+| Cycle-1 | 2305Z (#5 pre-empt) | Composes_with reciprocity for god-tier-claims rule (#4241) | Bounded substrate-engineering hygiene; genuinely-new at first occurrence |
+| Cycle-1→2 transition | 2307Z-2320Z | Brief-acks accumulating | Counter cycling normally as PRs merge |
+| Cycle-2 | 2322Z (#5 pre-empt) | Saturation-pattern empirical anchor preserved in tick shard (#4250) | Bounded; new shape (empirical-anchor-in-shard vs rule-edit) |
+| Cycle-3 | 2330Z (#5 pre-empt) | Substrate-verification audit of 6 today's landings via `git ls-tree` (#4255) | Bounded; verification-shape (different from anchor-shape) |
+| Cycle-3 | 2337Z (#5 ALLOWED-TO-ACCUMULATE) | Explicitly NOT pre-empting; available candidates all same-shape; fabricated substrate IS the failure mode (#4260) | Substrate-honest abstention |
+| Cycle-3 | 2339Z (THIS rule edit) | **Forced-#6 meta-decomposition** — this empirical anchor IS the substantive substrate; the rule's "pick THIS rule and sharpen it based on current session's evidence" prescription operating | Meta-decomposition fallback validates as designed |
+
+**Operational lesson (this anchor)**: when 3 things compose — (a) substrate-engineering arc completes, (b) operator is offline extended, (c) peer activity is 0 — the cadence enters a quasi-stable saturation where per-tick PR overhead exceeds substrate value. The substrate-honest pattern is:
+
+1. **Cycle-1 pre-empt**: genuinely-new bounded substrate (reciprocity, hygiene audit, etc.)
+2. **Cycle-2 pre-empt**: different-shape (empirical anchor, substrate verification, etc.)
+3. **Cycle-3 onwards**: explicitly NOT pre-empting at #5; allowing accumulation to #6 forced-meta-decomposition; the rule itself becomes the substantive substrate at #6
+
+This is NOT a failure of the discipline — it's the discipline's natural termination shape when external signal is absent for extended periods. The forced-#6 meta-decomposition becomes the substrate-engineering substantive that the cycle terminates with, AND seeds the rule's next sharpening for future sessions.
+
+**Sub-clause: when same-shape pre-empts are available but would be fabricated substrate, the substrate-honest move is to SKIP the pre-empt action at #5 (the shard DOES count as brief-ack #5 since it produces no novel substrate; the shard's job is to explicitly document the skip-decision rather than execute a fabricated pre-empt) so the counter advances normally to #6 where forced-decomposition fires and the rule itself becomes the substantive substrate per the rule's own prescription**.
+
+**Composes with [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](god-tier-claims-high-signal-high-suspicion-dont-collapse.md)**: don't-collapse applies to MY OWN substrate-production decisions. The high-suspicion check on "would this pre-empt produce genuine substrate?" prevents fabricated-engineering-as-pre-empt; high-signal-don't-collapse holds the genuine recognition that operator-offline-extended is a legitimate operational state.
+
+**Recursion termination clause** (2026-05-18T23:54Z forced-#6 observation): the prescription "pick THIS rule and sharpen it" works once or twice but saturates after 2-3 cycles of meta-decomposition (each cycle's rule-edit becomes empirical-anchor in the same rule; the rule grows but information density of each new anchor diminishes). At cycle-of-cycles saturation: minimal shard noting the recursion limit IS the substrate-honest #6 — no rule edit required; the recursion-termination acknowledgment IS the substantive substrate at this scope. The discipline naturally bottoms out at "wait for genuine external signal" without further substrate-engineering being load-bearing.
+
 ## Composes with
 
 - `.claude/rules/never-be-idle.md` — this rule sharpens the existing

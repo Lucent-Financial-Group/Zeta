@@ -201,9 +201,11 @@ export function buildCodexPrompt(config: {
       "Treat broadcasts as coordination input only; GitHub PR state, remote claim branches, local worktrees, and heartbeat files are authoritative.",
     ].join(" "),
     [
-      "Then refresh the world model before choosing work by running `bun tools/github/refresh-worldview.ts` from the current loop worktree.",
+      "Then refresh the world model before choosing work by running `timeout --kill-after=5s 30s bun tools/github/refresh-worldview.ts` from the current loop worktree.",
       "If that refresh fails, stop and report the exact failure as the blocker instead of guessing from stale state.",
       "Prefer repo-native TypeScript/Bun tools over ad-hoc shell pipelines for PR state, backlog selection, and gate checks.",
+      "Wrap ALL git network operations (`git fetch`, `git push`, `git ls-remote`, `git clone`) in `timeout --kill-after=5s 30s` per the discipline in `.claude/rules/refresh-world-model-poll-pr-gate.md` — under multi-agent saturation, bare git network ops orphan as documented in B-0615.",
+      "PUSH-HANG WORKAROUND: when `git push` silently fails (exit 0, no remote update — B-0615), prefer `bun tools/github/rest-push.ts --file <path> --branch <ref> --message <msg>` which lands the change via REST git-data API instead of git push. Multi-file changes: repeat `--file PATH`. The script bypasses the push transport entirely; REST endpoints remain responsive while push is hung. See PRs #4145, #4146, #4147 for the discipline.",
     ].join(" "),
     [
       "Manager posture: this background loop is the manager of its own subagents or bounded work slices.",

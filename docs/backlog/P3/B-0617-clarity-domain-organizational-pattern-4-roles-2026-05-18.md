@@ -26,6 +26,7 @@ Captured in [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-l
 > "New Domain: The Clarity Domain — This domain is responsible for helping the entire civilization think, understand, and make progress clearly. It sits as its own independent function, separate from both the emotional layer and the technical layer.
 >
 > The Four Roles:
+>
 > - **The Cartographer** — Real-time system visibility and mapping. Answers: Where are we and what's actually going on?
 > - **The Pilot** — Direction, coordination, and decision-making. Answers: Where are we going and how do we get there?
 > - **The Recursive Composer** — Continuous forward momentum on large, messy problems. Their job is to keep slicing off one clean, usable piece at a time without getting stuck.
@@ -45,6 +46,7 @@ The 4 roles map roughly to 4 of the 7 interrogatives Aaron listed at line 2385 (
 ## Goal
 
 Decide:
+
 1. Adopt the Clarity Domain as a formal organizational pattern in Zeta governance docs (or not)
 2. If adopted, map existing personas/agents to which-hat-when (e.g., Otto wears Pilot for tick-decisions; Kestrel wears Cartographer for sharpening dialogues; etc.)
 3. Build the missing hat-skills: Chronologist explicitly has B-0616; check whether Cartographer / Pilot / Recursive Composer need their own skill files or are covered by existing `factory-audit`, `architect`, `backlog-decomposer` skills

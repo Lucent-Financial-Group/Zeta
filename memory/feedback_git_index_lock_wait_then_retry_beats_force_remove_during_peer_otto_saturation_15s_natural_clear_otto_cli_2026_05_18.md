@@ -4,15 +4,20 @@ description: "Empirical pattern observed 2026-05-18T00:08Z under Lior-3-procs + 
 type: feedback
 created: 2026-05-18
 originSessionId: otto-cli-cold-boot-2026-05-18-sentinel-16dda3a7
-caused_by:
-  - "Otto-CLI 2026-05-18T00:08Z `git add` hit `.git/index.lock` during peer-Otto mid-commit; 15s sleep cleared lock naturally"
-  - "PR #4136 review thread (Copilot, 2026-05-18) flagged non-schema frontmatter keys"
-composes_with:
-  - .claude/rules/claim-acquire-before-worktree-work.md (saturation-ceiling sub-case taxonomy candidate extension)
-  - .claude/rules/zeta-expected-branch.md (race-window-caveat, primary-worktree contention)
-  - .claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md (Lior-active-means-no-worktree-creation canary)
-  - .claude/rules/refresh-world-model-poll-pr-gate.md (operational-tier discipline; this happened in pure-git tier)
 ---
+
+## Caused by
+
+- Otto-CLI 2026-05-18T00:08Z `git add` hit `.git/index.lock` during peer-Otto mid-commit; 15s sleep cleared lock naturally
+- PR #4136 review thread (Copilot, 2026-05-18) flagged non-schema frontmatter keys; keys moved from frontmatter to body sections per `memory/project_memory_format_standard.md §1.3` ("No extra fields beyond the above without a governance discussion")
+
+## Composes with
+
+- `.claude/rules/claim-acquire-before-worktree-work.md` (saturation-ceiling sub-case taxonomy candidate extension)
+- `.claude/rules/zeta-expected-branch.md` (race-window-caveat, primary-worktree contention)
+- `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` (Lior-active-means-no-worktree-creation canary)
+- `.claude/rules/refresh-world-model-poll-pr-gate.md` (operational-tier discipline; this happened in pure-git tier)
+
 
 ## Empirical anchor
 

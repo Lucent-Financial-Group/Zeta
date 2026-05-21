@@ -33,6 +33,12 @@ const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
 const claudeModel = process.env.ZETA_CLAUDE_LOOP_MODEL ?? "sonnet";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
 const ratingsFile = join(stateDir, "model-ratings.jsonl");
+// Zero-PR backoff: when N consecutive cycles produce 0 PRs (per ratings file),
+// multiply the effective interval to stop burning model tokens. Prevents the
+// system from spending budget on cycles that consistently fail to ship a PR
+// (e.g., during system-wide push hangs). Reset when a cycle produces a PR.
+const backoffThreshold = Number(process.env.ZETA_CLAUDE_LOOP_BACKOFF_THRESHOLD ?? "3");
+const backoffMaxMultiplier = Number(process.env.ZETA_CLAUDE_LOOP_BACKOFF_MAX_MULTIPLIER ?? "30");
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -168,7 +174,30 @@ function heartbeat(): void {
         const lastTime = lastRun.updated_at ? new Date(lastRun.updated_at).getTime() : 0;
         const elapsed = Date.now() - lastTime;
 
-        if (elapsed >= claudeIntervalMs) {
+        // Compute zero-PR backoff multiplier from recent ratings.
+        // Counts trailing cycles where produced_pr=false. After the threshold,
+        // multiplier grows linearly up to backoffMaxMultiplier. Cleared on
+        // first produced_pr=true. The effective interval is
+        // claudeIntervalMs * backoffMultiplier; default config yields up to
+        // 30x slowdown (e.g., 60s -> 30min) when the system is in push-hang
+        // famine or otherwise consistently failing to ship.
+        let consecutiveZeroPrCycles = 0;
+        try {
+            const ratings = readFileSync(ratingsFile, "utf8").trim().split("\n").reverse();
+            for (const line of ratings) {
+                if (!line) continue;
+                try {
+                    const r = JSON.parse(line);
+                    if (r.produced_pr === true) break;
+                    if (r.produced_pr === false) consecutiveZeroPrCycles += 1;
+                } catch { /* malformed line; skip */ }
+            }
+        } catch { /* no ratings file yet */ }
+        const overThreshold = Math.max(0, consecutiveZeroPrCycles - backoffThreshold);
+        const backoffMultiplier = Math.min(backoffMaxMultiplier, 1 + overThreshold);
+        const effectiveIntervalMs = claudeIntervalMs * backoffMultiplier;
+
+        if (elapsed >= effectiveIntervalMs) {
             const prNum = Number(prCount) || 0;
             const workMode = prNum === 0 ? "pickup" : "drain";
             claudeStatus = "running";
@@ -191,7 +220,7 @@ function heartbeat(): void {
                     const preamble = [
                         `You are Otto's background worker in Lucent-Financial-Group/Zeta.`,
                         `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
-                        `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
+                        `2) Run "timeout --kill-after=5s 30s bun tools/github/refresh-worldview.ts" to get current state.`,
                         `3) Read active trajectories at docs/trajectories/*/RESUME.md.`,
                         `4) Build gate: "dotnet build -c Release" must end with 0 warnings 0 errors.`,
                         `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code over docs.`,
@@ -199,6 +228,7 @@ function heartbeat(): void {
                         `Always re-decompose items during the build — assume decomposition has mistakes.`,
                         `OPERATIVE AUTHORIZATION (B-0308, ${authCheck.json?.queriedAt ?? "unknown"}): ${authCheck.interpretation}.`,
                         `Include "operative-authorization: ${authCheck.shardField}" in your tick-history shard frontmatter.`,
+                        `PUSH-HANG WORKAROUND: under multi-agent saturation "git push" silently fails (exit 0, no remote update — see B-0615). When push hangs, use REST git-data API as bypass: (1) base64 file -> POST /repos/.../git/blobs (2) POST /repos/.../git/trees with base_tree+new blob (3) POST /repos/.../git/commits with new tree+parent SHA (4) POST /repos/.../git/refs to create branch -> then POST /repos/.../pulls to open. See PR #4145 for a worked example. Always wrap "git fetch", "git push", "git ls-remote", "git clone" in "timeout --kill-after=5s 30s" per the rule in .claude/rules/refresh-world-model-poll-pr-gate.md.`,
                     ].join(" ");
 
                     prompt = executionPrompt.length > 0
@@ -207,7 +237,7 @@ function heartbeat(): void {
                 } else {
                     prompt = [
                         `You are Otto's background worker in Lucent-Financial-Group/Zeta.`,
-                        `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
+                        `Read CLAUDE.md first. Run "timeout --kill-after=5s 30s bun tools/github/refresh-worldview.ts".`,
                         `Build gate: "dotnet build -c Release" (0 warnings).`,
                         `OPERATIVE AUTHORIZATION (B-0308, ${authCheck.json?.queriedAt ?? "unknown"}): ${authCheck.interpretation}.`,
                         `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
@@ -215,6 +245,7 @@ function heartbeat(): void {
                         `check out branch, read review comments, fix code issues, push,`,
                         `reply to threads, resolve via GraphQL, arm auto-merge`,
                         `(gh pr merge NUMBER --auto --squash). Own your PRs through merge.`,
+                        `PUSH-HANG WORKAROUND: if "git push" silently fails (exit 0, no remote update — B-0615), use REST git-data API bypass: base64 file -> POST .../git/blobs -> POST .../git/trees (with base_tree) -> POST .../git/commits -> POST .../git/refs. See PR #4145 for worked example. Always wrap git network ops in "timeout --kill-after=5s 30s".`,
                     ].join(" ");
                 }
 
@@ -295,13 +326,32 @@ function heartbeat(): void {
                 }
             }
         } else {
-            const remaining = Math.round((claudeIntervalMs - elapsed) / 1000);
-            dueIn = `due_in=${remaining}s`;
+            const remaining = Math.round((effectiveIntervalMs - elapsed) / 1000);
+            const backoffNote = backoffMultiplier > 1 ? ` backoff_x${backoffMultiplier}_zero_pr_cycles=${consecutiveZeroPrCycles}` : "";
+            dueIn = `due_in=${remaining}s${backoffNote}`;
             claudeStatus = "wait";
         }
     }
 
-    const summary = `heartbeat complete run_id=${runId} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} claude=${claudeStatus} model=${claudeModel} ${dueIn}`.trim();
+    // PR-shipping rate metric: count PRs produced in last N cycles per ratings file.
+    // Useful for visibility into when the loop is in famine vs healthy throughput.
+    let recentShipRate = "n/a";
+    try {
+        const ratings = readFileSync(ratingsFile, "utf8").trim().split("\n").reverse().slice(0, 10);
+        let shipped = 0;
+        let total = 0;
+        for (const line of ratings) {
+            if (!line) continue;
+            try {
+                const r = JSON.parse(line);
+                total += 1;
+                if (r.produced_pr === true) shipped += 1;
+            } catch { /* skip malformed */ }
+        }
+        if (total > 0) recentShipRate = `${shipped}/${total}`;
+    } catch { /* no ratings yet */ }
+
+    const summary = `heartbeat complete run_id=${runId} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} claude=${claudeStatus} model=${claudeModel} ship_rate=${recentShipRate} ${dueIn}`.trim();
     log(summary);
 
     writeFileSync(hbFile, JSON.stringify({

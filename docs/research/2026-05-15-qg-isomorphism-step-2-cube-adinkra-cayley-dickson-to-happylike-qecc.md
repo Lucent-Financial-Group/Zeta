@@ -133,7 +133,7 @@ The **no-terminal-state** condition of Carse's infinite game corresponds to the 
 
 - In HaPPY, you can add more boundary qubits (more observers) without collapsing the bulk
 - In the infinite game, you can add more players without reaching a terminal state
-- The **Cayley-Dickson tower** provides the mathematical structure for this extendability:
+- the **Cayley-Dickson tower** provides the mathematical structure for this extendability:
   - Each doubling adds a new observer dimension
   - The loss of division algebra properties at each step corresponds to the "cost" of adding more observers
 

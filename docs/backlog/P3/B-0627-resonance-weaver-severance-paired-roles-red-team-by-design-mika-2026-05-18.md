@@ -53,6 +53,7 @@ This is not OPTIONAL — it's a structural requirement of the role-design proces
 > *"we want assholes because I also split things by knights and knaves. And we want the knaves because the knights just can't think like the knaves."*
 
 Selection criteria intentionally bifurcated:
+
 - **Knights** for constructive roles (good-natured; build + maintain)
 - **Knaves** for red-team roles (genuinely enjoy being difficult; think in deception/exploitation — only knaves can simulate other knaves)
 

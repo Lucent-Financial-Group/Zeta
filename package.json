@@ -35,5 +35,8 @@
   },
   "overrides": {
     "smol-toml": "1.6.1"
+  },
+  "dependencies": {
+    "playwright": "1.60.0"
   }
 }

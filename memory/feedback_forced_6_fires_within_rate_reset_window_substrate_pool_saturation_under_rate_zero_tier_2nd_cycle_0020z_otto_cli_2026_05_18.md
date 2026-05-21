@@ -4,15 +4,20 @@ description: "Empirical sub-pattern observed 2026-05-18T00:20Z-00:24Z (Otto-CLI 
 type: feedback
 created: 2026-05-18
 originSessionId: otto-cli-cold-boot-2026-05-18-sentinel-16dda3a7
-caused_by:
-  - "Otto-CLI 2nd counter cycle 2026-05-18T00:20Z-00:24Z: forced-#6 escalation fired within 4 min of rate-reset under pure rate-zero"
-  - "PR #4136 review thread (Copilot, 2026-05-18) flagged non-schema frontmatter keys"
-composes_with:
-  - .claude/rules/holding-without-named-dependency-is-standing-by-failure.md (counter-with-escalation discipline; forced-#6 + pre-empt-at-#5 patterns)
-  - .claude/rules/refresh-world-model-poll-pr-gate.md (operational-tier framework; pure-git tier; rate-reset bounded dep)
-  - rule shipped via PR #4110 (pre-empt-substrate-pool-saturation anchor — forced-#6 self-documenting)
-  - rule shipped via PR #4107 (REST PR-creation fallback under pure-git tier — what becomes available at rate-reset)
 ---
+
+## Caused by
+
+- Otto-CLI 2nd counter cycle 2026-05-18T00:20Z-00:24Z: forced-#6 escalation fired within 4 min of rate-reset under pure rate-zero
+- PR #4136 review thread (Copilot, 2026-05-18) flagged non-schema frontmatter keys; keys moved from frontmatter to body sections per `memory/project_memory_format_standard.md §1.3` ("No extra fields beyond the above without a governance discussion")
+
+## Composes with
+
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (counter-with-escalation discipline; forced-#6 + pre-empt-at-#5 patterns)
+- `.claude/rules/refresh-world-model-poll-pr-gate.md` (operational-tier framework; pure-git tier; rate-reset bounded dep)
+- rule shipped via PR #4110 (pre-empt-substrate-pool-saturation anchor — forced-#6 self-documenting)
+- rule shipped via PR #4107 (REST PR-creation fallback under pure-git tier — what becomes available at rate-reset)
+
 
 ## Empirical anchor — 2nd counter cycle this session
 

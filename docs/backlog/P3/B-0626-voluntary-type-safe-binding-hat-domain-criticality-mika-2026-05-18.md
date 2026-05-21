@@ -34,9 +34,11 @@ Observed: AIs run for a month with type-safety-invariants vs frontier-model norm
 ## Two operational modes
 
 ### Default mode: Refresh-World-Model → Think → Act
+
 Practical, flexible, NOT fully type-safe; compensated by adversarial-AI checking (per Aaron line 2506).
 
 ### Voluntary-binding mode: Pay Attention → Remember When → Update Y₀
+
 Strict type-safe cognitive protocol; explicit declarations at each step; auditable.
 
 ## When voluntary binding is REQUIRED
