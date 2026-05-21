@@ -38,11 +38,13 @@ Verified Kestrel framing earlier in the trajectory:
 Initial bounded slice (do NOT scope-creep this row into the full description layer):
 
 ### Phase 1 — discovery + selection
+
 - Survey existing ANTLR grammar repos for the V1-relevant languages: F#, TypeScript, C#, Rust, Python
 - Document at `docs/research/antlr-grammar-survey-2026-XX-XX.md` which grammars are actively maintained, what production they're used in (e.g., the canonical grammars-v4 collection at github.com/antlr/grammars-v4), license compatibility with Zeta (Apache-2.0)
 - Identify the gap shape: which languages have suitable grammars, which need adaptation, which require new grammar work
 
 ### Phase 2 — proof-of-concept
+
 Pick ONE concrete use case from existing Zeta substrate where ANTLR-driven cross-language generation would replace hand-maintained code:
 
 - **Option A**: emit ZetaId Pack/Unpack implementations across F# / TS / C# / Rust / Python from a single bit-layout grammar (composes with B-0682)
@@ -52,7 +54,9 @@ Pick ONE concrete use case from existing Zeta substrate where ANTLR-driven cross
 Choose ONE for the PoC; the others wait for follow-up rows.
 
 ### Phase 3 — integration substrate
+
 If PoC succeeds:
+
 - Bun-runnable codegen pipeline at `tools/codegen/antlr/` consuming grammar input + emitting per-language outputs
 - CI gate verifying emitted code matches the manually-maintained reference implementations (drift detection)
 - Documentation at `docs/codegen/antlr-pipeline.md`
@@ -60,14 +64,17 @@ If PoC succeeds:
 ## Acceptance
 
 ### Phase 1
+
 - Survey document landed; license + maintenance status for each target language captured
 - Decision: which grammars to depend on vs which to author
 
 ### Phase 2
+
 - One use-case PoC produces output that matches hand-written reference for the same use case
 - Empirical: compile-and-test-first on the generated code (per the V8 cycle lesson — never trust speculative review without `dotnet build` / `bun test` / etc. confirming)
 
 ### Phase 3 (later, may split into separate row)
+
 - Codegen pipeline reproducible; CI gate prevents silent drift
 
 ## Substrate-honest framing
