@@ -647,6 +647,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0678](backlog/P2/B-0678-b0620-slice-5-category-classifier.md)** B-0620 slice 5 category classifier
 - [ ] **[B-0679](backlog/P2/B-0679-zeta-id-rust-implementation-2026-05-21.md)** ZetaId V1 — Rust implementation as full peer oracle
 - [ ] **[B-0680](backlog/P2/B-0680-zeta-id-python-implementation-2026-05-21.md)** ZetaId V1 — Python implementation as full peer oracle
+- [ ] **[B-0681](backlog/P2/B-0681-zeta-id-v2-spec-hardening-2026-05-21.md)** ZetaId v2 — entropy budget + HLC monotonicity + Firefly bit drop + vocabularies DRAFT marker
+- [ ] **[B-0682](backlog/P2/B-0682-zeta-id-canonical-string-encoding-endianness-2026-05-21.md)** ZetaId canonical string encoding (Crockford base32) + endianness + bit-numbering spec
+- [ ] **[B-0683](backlog/P2/B-0683-tier-deferred-causality-worked-example-zsets-2026-05-21.md)** Tier-deferred causality worked example — 2-tier Z-set composition demonstrating different observable orderings
 
 ## P3 — convenience / deferred
 

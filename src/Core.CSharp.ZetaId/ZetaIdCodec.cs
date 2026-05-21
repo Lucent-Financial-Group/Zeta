@@ -4,8 +4,16 @@ public static class ZetaIdCodec
 {
     private static BitLayout Layout => BitLayout.Default;
 
+    // Timestamp is packed into a 48-bit field; valid range [0, 2^48 - 1].
+    private const long MaxTimestamp = (1L << 48) - 1;
+
     public static UInt128 Pack(ZetaObservation obs, ISimulationEnvironment env)
     {
+        if (obs.Timestamp < 0 || obs.Timestamp > MaxTimestamp)
+            throw new ArgumentOutOfRangeException(
+                nameof(obs), obs.Timestamp,
+                $"ZetaObservation.Timestamp must be 0..{MaxTimestamp} (48-bit field). Values outside this range would silently truncate and collide.");
+
         UInt128 id = 0;
 
         id = SetBits(id, Layout.Version,    (ulong)(byte)obs.Version);

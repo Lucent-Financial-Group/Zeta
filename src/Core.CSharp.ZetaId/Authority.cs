@@ -7,7 +7,27 @@ public abstract record Authority
     public sealed record Standard()      : Authority;
     public sealed record BestEffort()    : Authority;
     public sealed record Simulated()     : Authority;
-    public sealed record Raw(byte Value) : Authority;
+
+    /// <summary>
+    /// Raw escape for values not in the named set. Authority is packed
+    /// into a 5-bit field so Value MUST be 0..31. Constructor throws
+    /// ArgumentOutOfRangeException for Value > 31 to prevent silent
+    /// truncation + collision (e.g. Raw(255) would otherwise mask to 31
+    /// and round-trip as HumanVerified).
+    /// </summary>
+    public sealed record Raw : Authority
+    {
+        public byte Value { get; }
+
+        public Raw(byte Value)
+        {
+            if (Value > 31)
+                throw new ArgumentOutOfRangeException(
+                    nameof(Value), Value,
+                    "Authority.Raw value must be 0..31 (5-bit field). Values 32..255 would silently truncate and collide.");
+            this.Value = Value;
+        }
+    }
 
     internal static byte ToByte(Authority authority) => authority switch
     {
