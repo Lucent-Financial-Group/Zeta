@@ -153,7 +153,7 @@ Composes with [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-
 when it ships); until that ships, the borrow pattern is the
 operational workaround.
 
-## Saturation-ceiling — 4 failure sub-cases of borrow-on-existing
+## Saturation-ceiling — 5 failure sub-cases of borrow-on-existing
 
 Empirical anchor [PR #3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808)
 (closed-without-merge; shard for `0715Z` was the PR's payload, hence never
@@ -163,8 +163,10 @@ fresh-cold-boot Otto-CLI, and peer-agent global-lock-cleanup loop), with
 peer Otto cycling worktree HEAD every ~3-5 min for 9 transitions in
 35 min, a fresh-cold-boot session attempting to ship a shard hit FOUR
 distinct failure sub-cases of the borrow-on-existing pattern across 4
-commit attempts. All 4 sub-cases empirically validated; only 2 have
-working mitigations today.
+commit attempts. All 4 of those sub-cases empirically validated; only 2
+have working mitigations today. **A fifth sub-case (3b — pack-dir
+contention at push time) was added in 2026-05-21 (PR [#4536](https://github.com/Lucent-Financial-Group/Zeta/pull/4536)) with a working mitigation
+(REST git-data API bypass).**
 
 ### Sub-case 1 — existing-branch-name collision → peer-WIP commit inheritance via recovery path
 
@@ -258,11 +260,21 @@ different mitigations because the exit codes differ.
 `POST/PATCH .../git/refs`) works for sub-case 3b as well as B-0615.
 Empirical anchor: [PR #4535](https://github.com/Lucent-Financial-Group/Zeta/pull/4535)
 (2026-05-21) — the memo about this very failure mode was blocked from
-landing by `git push` exit 124 timeouts, then shipped successfully via
-the REST bypass.
+landing by repeated `timeout`-wrapped `git push` runs surfacing exit 124
+(GNU `timeout`'s "command killed by timeout" status — NOT a native
+`git push` exit code; the contention was hanging the push indefinitely
+until the wrapper killed it). The same commits then shipped successfully
+via the REST bypass.
 
-**Cost**: ~5-6 REST calls total per commit (well within Normal-tier
-GraphQL budget). No `.git/objects/pack` reads happen locally because
+**Cost**: ~5-6 REST calls total per commit, consuming the **REST/core
+budget** (5000/hr per token; check via `gh api rate_limit --jq
+'.resources.core'`). REST/core is independent of the GraphQL budget
+discussed in [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md);
+the tier classification in that rule (Normal / Cost-aware / Extreme /
+Pure-git) is GraphQL-budget-scoped and does NOT translate directly to
+REST/core. Empirically: even at GraphQL Extreme cost-aware tier (200–1000
+remaining), REST/core typically has thousands remaining and the bypass
+is affordable. No `.git/objects/pack` reads happen locally because
 GitHub does the object packing server-side from the blob you uploaded.
 
 **Composes with the rate-limit operational tiers** documented in
