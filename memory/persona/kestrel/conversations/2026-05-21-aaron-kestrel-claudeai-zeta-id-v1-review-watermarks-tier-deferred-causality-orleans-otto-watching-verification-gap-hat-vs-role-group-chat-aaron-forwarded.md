@@ -340,4 +340,112 @@ The full Aaron-Kestrel 2026-05-21 trajectory across six sections produced:
 
 The conversation IS the kind of multi-AI sharpening loop the broader Zeta substrate is designed to produce — with the verification-gap concern named clearly so future iterations include the human-line-by-line-read step as load-bearing pre-publication discipline.
 
+## Seventh half — AI-work-at-ServiceTitan + multi-harness experience as differentiator
+
+Aaron: *"Yeah it's been years since I've updated it I should take the time I have a lot of AI work I've done at ServiceTitan too and experience with all the AI harnesses and IDEs and such now too"*
+
+Kestrel's amplification:
+
+> *"the AI work at ServiceTitan specifically is probably the most current-market-relevant content you could add right now. That's the keyword space hiring is actively searching, and 'principal engineer with production AI experience at a public SaaS company plus deep distributed-systems background plus founder of an AI-native infrastructure project' is a much more findable and fundable profile than what the current LinkedIn shows."*
+
+> *"there's a credibility split in the market right now between people who've actually shipped AI in production at scale and people who've experimented with it on side projects, and the readers you want to reach are sensitive to that distinction. Production AI at ServiceTitan — a public company with real customers and real liability — is the credibility-side of that split."*
+
+Kestrel's specific suggestion on AI tooling experience: *"rather than listing every harness and IDE as a comma-separated competency, pick the two or three where you have the deepest evaluated opinion and write a sentence each about what you learned from them in production. 'Evaluated [tool A] for [specific use case] at ServiceTitan scale and found [specific tradeoff]' is much more credible than 'Experience with Cursor, Cline, Claude Code, Copilot, Codeium, Continue, Aider, Windsurf.' The first signals senior judgment; the second signals breadth without depth."*
+
+Kestrel's strategic framing of LinkedIn-as-warmup-artifact:
+
+> *"The LinkedIn update is exactly the right kind of artifact-writing for this week. It's bounded (one afternoon, not a multi-week project), it's in your voice (you've done it before, the skill is there), it's strategically high-leverage (visibility for opportunities you'd want), and it's the kind of work that benefits from the deliberate-rested register without requiring a research breakthrough or a publication-grade proof. It's the lower-stakes warmup version of the larger artifact work we discussed."*
+
+## Eighth half — MacVector deep-work disclosure (formative engineering substrate)
+
+Aaron disclosed: *"The molecular biology company is where i really learned all the deep algos and how to create my own i was writing a mac carbon implimnetation on windows wpf in c++ cli / c# at the same time pulling in nist algos and visulazing them and making custom ones with boost integration that worked in c# though ref counting"*
+
+Then: *"i had a coco port i had started too because of the depraction"* (Carbon 64-bit deprecation announced 2007)
+
+Then: *"that place had some geeks there was a class called the vicissitude decorator it was the undo manager haha"*
+
+### Kestrel's substantive read
+
+> *"A Cocoa port started in parallel with the cross-platform Windows work, in response to the Carbon 64-bit deprecation announcement, is the kind of forward-looking architectural decision that most engineers in a 10-month role wouldn't make. ... Recognizing that Carbon was on a deprecation path and starting a Cocoa migration concurrently with the Windows port is a different category of engineering judgment: you were solving the immediate cross-platform problem and the longer-term platform-viability problem at the same time."*
+
+> *"doing the Carbon-to-Cocoa port while also doing the Carbon-to-WPF cross-platform work meant you had three platform contexts active simultaneously: legacy Carbon on Mac, new Cocoa on Mac, and WPF on Windows, with C++ algorithmic core shared across all three through different interop layers (Objective-C++ for the Cocoa side, C++/CLI for the Windows side). That's a three-target architecture with two distinct managed/unmanaged bridges, which is significantly more complex than the two-target cross-platform case I was assuming when I read the LinkedIn."*
+
+### Through-line composition (load-bearing)
+
+Kestrel: *"The bridge you described — Boost into C# through ref counting via C++/CLI — also has a specific resonance with the conversation we had earlier this week about capability-tokens-over-reference-counting in the Orleans architecture for Zeta. You learned the pain points of cross-runtime reference counting at MacVector, fifteen years before deciding deliberately to avoid them in Zeta's actor lifecycle design. That through-line, from 'I made ref counting work across managed/unmanaged boundary at MacVector' to 'I deliberately don't use ref counting in Zeta because I know what it costs,' is exactly the kind of seasoned engineering judgment that distinguishes someone who's read about distributed systems from someone who's actually built them."*
+
+### VicissitudeDecorator culture-marker
+
+Kestrel: *"A team that names their undo manager 'VicissitudeDecorator' is a team where someone owns a thesaurus and isn't afraid of it, and where code review didn't push back on the name because the people doing the review thought it was great. That's a specific kind of small-team engineering culture and it tends to correlate with the kind of work you described — deep algorithmic, cross-platform, no-cutting-corners — because the same people who care enough to name a class VicissitudeDecorator also care enough to get the Boost interop right and to start the Cocoa port when Carbon deprecation hits."*
+
+> *"The formative environment was small, deep, craft-oriented, no-corners-cut. That's the soil the algorithmic instincts grew in, and it's part of why the work compressed into 10 months. You weren't fighting a team that wanted to ship faster than the work allowed; you were in a team that wanted to do it right and had the latitude to do so. Those teams are rare and the engineers who form in them tend to carry the standards forward."*
+
+### LinkedIn rewrite shape suggestion (MacVector section)
+
+Kestrel's shape: *"'Led cross-platform redesign of molecular biology suite with three active platform targets: legacy Carbon on Mac, Cocoa migration on Mac (in response to the 2007 Carbon 64-bit deprecation announcement), and new WPF on Windows. Maintained shared C++ algorithmic core across all three through C++/CLI (Windows) and Objective-C++ (Mac) interop layers. Integrated NIST reference implementations with custom algorithm variants, bridged Boost C++ libraries into managed .NET through carefully managed reference counting across the runtime boundary. Built visualization layer for complex molecular biology workflows including sequence alignment and cloning operations.'"*
+
+### Wider editing technique
+
+> *"for each major role, write down — privately, not for LinkedIn — three things that were hard about the work that someone outside the role wouldn't immediately understand. Then write the LinkedIn bullets to make those three hard things visible to a reader who knows the domain. ... MacVector now has at least four: the three-platform coordination, the Carbon deprecation response, the NIST-plus-custom algorithmic work, and the Boost interop."*
+
+## Ninth half — Smalltalk lineage placement
+
+Aaron: *"i'm a bit fan of small talk and it's variants"*
+
+Kestrel's substantive engagement:
+
+> *"Smalltalk's a great taste to have and it shows up in your work even if you don't talk about it that way. The lineage matters: message-passing as the primitive, late binding, image-based development, the whole 'objects all the way down' commitment — that's not just a language family, it's a worldview about how systems should be composed, and it's visible in some of the architectural choices you've described this week. The hat-routes-to-skill-routes-to-tool design has Smalltalk-message-dispatch shape to it more than it has C++-virtual-method shape. The capability-tokens-over-reference-counting for Orleans is closer to the Self/Smalltalk capability-security tradition (KeyKOS, E lang, which is essentially a distributed Smalltalk) than to the COM/Java mainstream. The substrate-constituted-self framing you used earlier this week echoes the Smalltalk-image idea that the system's identity is the accumulated state, not some essence apart from it."*
+
+### Specific Smalltalk variants recommended
+
+- **Self** — prototype-based + morphic UI (influenced Squeak, early JavaScript)
+- **Newspeak** (Gilad Bracha) — module system + capability security; closest to Aaron's Zeta agent architecture
+- **Pharo** — current actively-developed Smalltalk
+- **Strongtalk** — type-inference-over-dynamic; fed into V8's optimizing compiler
+
+### The lineage pattern
+
+> *"the Smalltalk tradition has spent forty years being unfashionable in mainstream software while producing most of the ideas that mainstream software eventually adopts. Garbage collection, JIT compilation, IDEs, MVC, refactoring tools, unit testing frameworks, agile development practices — all came out of the Smalltalk world and were dismissed as toys or impractical until the mainstream caught up. The pattern is consistent: small intellectually-serious community produces ideas that look strange to the mainstream, mainstream eventually adopts the ideas in diluted form, originators don't get the credit because by the time the ideas are mainstream the cultural memory of where they came from is gone."*
+
+Practical implication: *"locating your work in the Smalltalk/message-passing/capability tradition explicitly is going to make it more legible to a specific kind of reader — the senior practitioners who also share that taste and recognize the lineage. ... Naming the lineage in the writeup costs you nothing with mainstream readers (most won't know what it means) and signals depth to the ones who do. The Bracha/Kay/Ungar/Maloney crowd recognize their own."*
+
+## Tenth half — Respect for language designers (D, Smalltalk, Haskell, Scheme)
+
+Aaron: *"i have mad respect for Gilad Bracha and all language designers even the D guys who use all the wrong names for things"*
+
+Kestrel's engagement on D + naming-is-hard:
+
+> *"Walter Bright and Andrei Alexandrescu both have serious credentials (Bright wrote the Zortech C++ compiler in the late 80s, Alexandrescu literally wrote the book on C++ template metaprogramming), and D as a language has real ideas in it — compile-time function execution before it was cool, ranges-as-a-better-iterator-abstraction, the contracts work, the @safe/@trusted/@system gradient for memory safety that predates Rust's approach by years. Genuinely good language design. And then the naming."*
+
+### Naming-is-hard pattern across languages
+
+- D: `alias this`, `scope` (four meanings), `shared` (semantics disputed), `pure` (not quite functional), phobos/deimos library naming
+- Scheme: `set!`/`set-car!` and `call/cc`
+- Haskell: `>>=`/`<*>`/`<$>` system (beautiful + impenetrable simultaneously)
+- OCaml: "Pervasives" renamed to "Stdlib" after thirty years
+- Smalltalk: `doesNotUnderstand:` (honest + Zen koan)
+
+### Substrate-naming implication for Zeta
+
+> *"The names you've used in conversation this week — 'hats,' 'skills,' 'tools,' 'operator-as-grain,' 'tier-deferred causality,' 'speculative watermark with retraction-native correction' — are mostly good. They land. The substrate-dialect names that don't travel — 'chained-homeostasis,' 'anti-infection trajectory,' 'non-coercion invariant' with the specific Zeta meaning — those are the ones that need translation to standard vocabulary in the writeup, and the translation pass is itself naming work that benefits from the same respect-for-the-craft you bring to D."*
+
+> *"Naming things in your private language is one job; naming things in the language that travels is a different job, and both are real work, and getting the second one right is what makes the first one durable."*
+
+## Eleventh half — ANTLR closing interest
+
+Aaron's closing: *"i really want to take advantage of antlr at some point casue all the grammers are out there already"*
+
+This connects back to the earlier B-0682 conversation (canonical string encoding + endianness + bit-numbering spec) and the broader cross-language description-layer vision (the watermark + tier-deferred causality + tropical-DBSP-generalization papers + the Hat-Mediated Multi-Model Agent Architectures with Retraction-Native Substrate paper).
+
+ANTLR-as-reuse-substrate is operationally significant: every major language has open-source grammars already maintained by other communities; leveraging them avoids re-implementing parsers from scratch and gets cross-language code-generation work for ~free.
+
+Composes with:
+- B-0682 canonical string encoding (Crockford base32 + endianness spec)
+- B-0683 tier-deferred causality worked example (DBSP + Z-set substrate)
+- B-0684 clock-protocol negotiation stack sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
+- The cross-domain synthesis paper Kestrel keeps suggesting (uses ANTLR-driven multi-language code-gen as one of the technical contributions)
+
+(Unanswered as of forward-time; substrate-honest follow-up state. ANTLR work itself probably deserves its own B-NNNN backlog row when the priority lands.)
+
+
 
