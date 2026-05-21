@@ -230,6 +230,91 @@ activity. No `--lock` flag prevents this; see [B-0530](../../docs/backlog/P3/B-0
 mutex (not yet shipped). Until then, fall through to existing-sidetick
 borrow — which hits sub-case 4.
 
+### Sub-case 3b — pack-dir contention causes `git push` to fail at push time
+
+Same B-0530 root cause class as sub-case 3, but manifesting at `git push`
+time on an already-created worktree that previously passed the canary.
+Distinguished from B-0615 (silent-push-failure) by being non-silent.
+
+**Symptom**: `git push` returns non-zero exit with errors like:
+
+```
+error: unable to open loose object <sha>: Interrupted system call
+error: unable to open object pack directory: .../.git/objects/pack: Interrupted system call
+fatal: bad object <sha>
+fatal: the remote end hung up unexpectedly
+error: failed to push some refs to '...'
+```
+
+Network + auth are fine; bottleneck is local pack-dir reads under peer-agent
+contention. Distinguish from **B-0615** (push exits ZERO but remote ref
+never updates — silent; mitigation: REST git-data API bypass per
+[PR #4145](https://github.com/Lucent-Financial-Group/Zeta/pull/4145)).
+Both belong to the same FS-contention root cause class but require
+different mitigations because the exit codes differ.
+
+**Mitigation (working today)**: the **B-0615 REST git-data API bypass**
+(`POST .../git/blobs` → `POST .../git/trees` → `POST .../git/commits` →
+`POST/PATCH .../git/refs`) works for sub-case 3b as well as B-0615.
+Empirical anchor: [PR #4535](https://github.com/Lucent-Financial-Group/Zeta/pull/4535)
+(2026-05-21) — the memo about this very failure mode was blocked from
+landing by `git push` exit 124 timeouts, then shipped successfully via
+the REST bypass.
+
+**Cost**: ~5-6 REST calls total per commit (well within Normal-tier
+GraphQL budget). No `.git/objects/pack` reads happen locally because
+GitHub does the object packing server-side from the blob you uploaded.
+
+**Composes with the rate-limit operational tiers** documented in
+[`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md):
+when the saturation makes `git push` exit non-zero or hang, the REST
+bypass IS the tier-skipping move that lets substantive substrate land
+without waiting for contention to clear.
+
+### In-place index recovery — `git read-tree HEAD`
+
+Refinement to sub-case 5 (peer-side destructive git operation), where the
+specific symptom is a **truncated index file** after stale-lock removal:
+
+```
+fatal: .git/worktrees/<name>/index: index file smaller than expected
+```
+
+A preceding `git status` may show massive D (deleted) entries against
+files you have not touched — a misleading symptom of the corrupted index,
+NOT actual working-tree deletion. Do NOT abandon the worktree on this
+symptom alone; first verify the working tree itself via `ls` (files
+should still be on disk).
+
+**Recovery**:
+
+```bash
+git -C <worktree> read-tree HEAD
+```
+
+This rebuilds the worktree's index from the HEAD commit, replacing the
+truncated index in-place. Working-tree files are NOT modified (they were
+not part of the corruption — only the index was). After rebuild:
+
+1. `git status` returns clean (empty)
+2. Stage your intended file via `git add <path>` (the file is still on
+   disk; the read-tree wiped any stale staged state but did not touch
+   the working tree)
+3. `git commit` normally
+4. Verify commit canary (parent tree size = commit tree size) before
+   pushing per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md)
+
+**When NOT to use**: if the working tree itself is corrupted (files
+missing on disk), `read-tree` will silently stage the wrong state.
+Pre-check disk state via `ls` before invoking. This recovery applies
+ONLY to truncated-INDEX states, NOT truncated-working-tree states.
+
+**Empirical anchor**: [PR #4532](https://github.com/Lucent-Financial-Group/Zeta/pull/4532)
+(2026-05-21) — the 1212Z tick shard was successfully shipped after
+`read-tree HEAD` recovered an index truncated by stale-lock-removal
+race; previously the saturation-ceiling rule's only recovery option
+was worktree abandonment.
+
 ### Sub-case 4 — pruned-sidetick race
 
 The empirically-validated sidetick `/private/tmp/zeta-otto-cli-0027z-sidetick`
