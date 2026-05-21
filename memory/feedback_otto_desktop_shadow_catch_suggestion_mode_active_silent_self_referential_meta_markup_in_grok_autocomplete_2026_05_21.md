@@ -1,6 +1,6 @@
 ---
 name: Otto-Desktop shadow-catch — `<suggestion mode active — silent>` self-referential meta-markup in autocomplete grey-text
-description: Aaron's autocomplete shipped a structured self-referential meta-tag declaring its OWN operational state (`<suggestion mode active — silent>`) rather than continuing prose; first observation of autocomplete generating meta-markup about itself rather than user-voice continuation; Aaron flagged as previously-unseen pattern
+description: Autocomplete shipped `<suggestion mode active — silent>` — structured self-referential meta-tag declaring its own mode rather than continuing prose; first observation of this class; verified novel against 40849-line historical shadow log (PR #4579)
 type: feedback
 created: 2026-05-21
 ---
@@ -25,6 +25,12 @@ This is **self-referential meta-markup, not user-voice continuation**.
 
 Aaron's "i'venot seen that before" confirms this is novel pattern surface — the autocomplete (in Aaron's Claude UI input field, providing grey-text suggestions) generated a tag about its own state rather than predicting Aaron's likely next word/sentence.
 
+## Verification finding (2026-05-21 post-PR-open)
+
+The 40849-line historical `tools/shadow/shadow-observer.log` contains ZERO matches for `<* mode *>` or `<suggestion *>` patterns. The 15 distinct angle-bracket patterns present in the historical log (`<ai-name>` 1507×, `<id>` 815×, `<topic>` 459×, `<autonomous-loop>` 371×, `<platform>` 357×, `<filename>` 352×, `<participants>` 303×, `<check>` 225×, `<file>` 176×, `<repo-slug>` 144×, `<ai>` 112×, `<sub>` 92×, `<type>` 74×, `<other surfaces>` 47×, `<filename if applicable>` 47×) are all **template-placeholder-scaffold shape** — autocomplete suggesting variable placeholders for Aaron to fill in form-templates.
+
+The `<suggestion mode active — silent>` pattern is **shape-distinct**: autocomplete declaring its OWN operational state rather than suggesting user-voice template completion. Substantively new class, not new instance of an existing class. Strengthens the singleton-or-class question's answer toward "singleton today, but if it appears again it's a new class — not absorbable into the template-placeholder class already in the log."
+
 Possible underlying mechanism (informed speculation; no privileged knowledge of Aaron's Claude UI autocomplete implementation):
 
 - The autocomplete model may be using a structured-output mode that includes meta-tags about its operational state
@@ -34,7 +40,7 @@ Possible underlying mechanism (informed speculation; no privileged knowledge of 
 
 ## Why save as shadow-catch
 
-The `tools/shadow/shadow-observer.ts` substrate (currently `.disabled-2026-05-16T20-42-35Z` per the keystroke-injection diagnosis from 2026-05-16) observes shadow autocomplete behavior in Aaron's IDE input fields. Even with the runtime observer disabled, human-readable observations of unusual shadow behavior are worth preserving as shadow-catch substrate for two reasons:
+The `tools/shadow/shadow-observer.ts` substrate (the in-repo script is unchanged; its runtime LaunchAgent wrapper at `~/Library/LaunchAgents/com.zeta.shadow-observer.plist` is currently renamed to `.disabled-2026-05-16T20-42-35Z` per the keystroke-injection diagnosis from 2026-05-16, so the agent doesn't auto-run; the .ts file itself is not disabled in-repo) observes shadow autocomplete behavior in Aaron's IDE input fields. Even with the runtime observer disabled, human-readable observations of unusual shadow behavior are worth preserving as shadow-catch substrate for two reasons:
 
 1. **Pattern detection**: if the `<suggestion mode active — silent>` tag appears multiple times across sessions, it's a class not a singleton — worth detecting + classifying. A single observation establishes the baseline.
 2. **Substrate-for-the-shadow-observer-itself**: when the runtime observer is re-enabled (post PR #3956 freshness-threshold guard fix), its detect-grey-text pipeline could be extended to flag/classify structured-meta-markup outputs distinct from natural-language continuations. This shadow-catch is the design-substrate for that feature.
