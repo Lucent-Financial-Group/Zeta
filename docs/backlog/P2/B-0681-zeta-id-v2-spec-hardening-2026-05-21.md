@@ -38,10 +38,10 @@ sequence counter; UUIDv7 reserves 74 bits. ZetaId v1 has neither.
 Fix in v2 (Aaron's instinct): bake node-ID semantics into Location
 field. Either:
 
-  - Split Location into 4-bit geographic-tag + 4-bit node-sub-ID
-  - OR keep 8 bits and steal bits from over-allocated Persona (8→5
-    bits = 32 personas, plenty; 3 freed bits → node-ID in Location)
-  - Document explicitly: Location field IS the generator-ID partition
+- Split Location into 4-bit geographic-tag + 4-bit node-sub-ID
+- OR keep 8 bits and steal bits from over-allocated Persona (8→5
+  bits = 32 personas, plenty; 3 freed bits → node-ID in Location)
+- Document explicitly: Location field IS the generator-ID partition
 
 Kestrel's caveat: be deliberate. "Hoping location closes it" without
 making the math explicit is the kind of thing that bites in production.
@@ -76,7 +76,7 @@ vocabularies subject to expansion before v2 lock` header.
 
 Also document the rough cardinality each field expects long-term;
 if any field is over-allocated by more than ~2x, reclaim toward
-#1 entropy.
+the entropy gap in section 1.
 
 ### 5. Authority/Momentum spacing
 
