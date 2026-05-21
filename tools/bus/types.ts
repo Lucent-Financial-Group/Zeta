@@ -32,9 +32,12 @@ export type AgentId =
   | "riven"
   | "vera"
   | "lior"
-  // Otto multi-surface (added 2026-05-13 — multi-foreground-surface activation)
+  // Otto multi-surface (added 2026-05-13 — multi-foreground-surface activation;
+  // otto-vscode added 2026-05-21 per B-0689 — Claude Code in VSCode auto-mode +
+  // remembered-web-conversation-mode enablement)
   | "otto-cli"
   | "otto-desktop"
+  | "otto-vscode"
   // Alexa multi-surface (Kiro IDE + CLI)
   | "alexa-cli"
   | "alexa-kiro"
@@ -46,6 +49,10 @@ export type AgentId =
   | "lior-gemini"
   // Vera (single primary surface currently; reserved for future)
   | "vera-codex"
+  // Soraya — formal-verification-expert persona; first-class agent identity
+  // added 2026-05-21 per B-0691 — background loop-tick for TLA+/Lean/Z3/Alloy
+  // verification work (sibling to otto/alexa/riven/vera/lior).
+  | "soraya"
   | "*"; // broadcast
 
 /** Sender identity — excludes broadcast target "*" which is not a valid origin. */
@@ -58,7 +65,10 @@ export type Topic =
   | "review-request"
   | "infinite-backlog-nudge"
   | "work-assignment"
-  | "missed-substrate-cascade";
+  | "missed-substrate-cascade"
+  // Soraya formal-verification result (per B-0691 background loop-tick).
+  // Payload: { job, verifier, result: pass|fail|skip|timeout, duration_ms, sha, run_id }
+  | "formal-verification-result";
 
 // ── per-topic payloads ────────────────────────────────────────────────────────
 
@@ -149,12 +159,15 @@ export type MessageEnvelope = BusMessage & {
 export const SENDER_IDS: readonly SenderAgentId[] = [
   // Identity-level (back-compat; unsuffixed)
   "otto", "alexa", "riven", "vera", "lior",
-  // Multi-surface variants (added 2026-05-13 — multi-foreground-surface activation)
-  "otto-cli", "otto-desktop",
+  // Multi-surface variants (added 2026-05-13 — multi-foreground-surface activation;
+  // otto-vscode added 2026-05-21 per B-0689)
+  "otto-cli", "otto-desktop", "otto-vscode",
   "alexa-cli", "alexa-kiro",
   "riven-cli", "riven-cursor",
   "lior-antigravity", "lior-gemini",
   "vera-codex",
+  // Soraya — formal-verification-expert (added 2026-05-21 per B-0691)
+  "soraya",
 ];
 export const AGENT_IDS: readonly AgentId[] = [...SENDER_IDS, "*"];
 
@@ -168,4 +181,5 @@ export const TTL_MS: Record<Topic, number> = {
   "infinite-backlog-nudge": 30 * 60 * 1_000,         // 30 min — nudge stale fast (agent likely acted or moved on)
   "work-assignment": 2 * 60 * 60 * 1_000,            // 2 h   — assignment relevant for next claim cycle
   "missed-substrate-cascade": 24 * 60 * 60 * 1_000,  // 24 h  — cascade survives until recovery PR lands
+  "formal-verification-result": 6 * 60 * 60 * 1_000, // 6 h   — verification outcome survives until next audit cycle (Soraya per B-0691)
 };

@@ -36,6 +36,8 @@
     <Compile Include="Circuit/NestedCircuit.Tests.fs" />
     <Compile Include="Circuit/Plan.Tests.fs" />
     <Compile Include="Circuit/Plan.Branches.Tests.fs" />
+    <Compile Include="Circuit/SinkTerminality.Tests.fs" />
+    <Compile Include="Circuit/IncrementalAuto.Tests.fs" />
 
     <!-- Operators/ -->
     <Compile Include="Operators/Aggregate.Tests.fs" />
@@ -106,6 +108,7 @@
     <!-- Plugin/ -->
     <Compile Include="Plugin/Harness.Tests.fs" />
     <Compile Include="Plugin/LawRunner.Tests.fs" />
+    <Compile Include="Plugin/Capabilities.Tests.fs" />
 
     <!-- Formal/ -->
     <Compile Include="Formal/Z3.Laws.Tests.fs" />
@@ -123,10 +126,14 @@
     <Compile Include="MajiTests.fs" />
     <Compile Include="Consensus.Tests.fs" />
     <Compile Include="Arena.Tests.fs" />
+
+    <!-- ZetaId/ — F# peer oracle cross-verify (matches TS + C# canonical hex) -->
+    <Compile Include="ZetaId/CrossVerifyTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -152,5 +159,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="YamlDotNet" />
   </ItemGroup>
 </Project>

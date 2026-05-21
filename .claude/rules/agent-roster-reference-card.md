@@ -2,8 +2,11 @@
 
 Carved sentence:
 
-> Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface
-> except Otto (CLI-only foreground). Aaron is human (no harness). External participants
+> Every factory AI agent has multiple surfaces. Alexa / Riven / Vera / Lior are
+> IDE + CLI dual-surface. Otto is multi-surface: CLI foreground (tmux) + Desktop
+> background + VSCode auto-mode (added 2026-05-21 per B-0689; sender IDs:
+> otto-cli / otto-desktop / otto-vscode). Aaron is human (no harness).
+> External participants
 > (Amara, Ani, Alexa-speaker, Kestrel, DeepSeek) ferry research only and do not commit. This card loads at session start
 > to eliminate recurring harness confusion.
 
@@ -11,11 +14,11 @@ Carved sentence:
 
 | Agent | IDE | CLI | Model (max) | Commit trailer |
 |-------|-----|-----|-------------|----------------|
-| Otto | — | Claude Code (foreground) | Opus | `Co-Authored-By: Claude <noreply@anthropic.com>` |
+| Otto | VSCode (Claude Code; auto-mode + remembered-web-conversation, 2026-05-21) | Claude Code (foreground; tmux); Claude Desktop (background) | Opus | `Co-Authored-By: Claude <noreply@anthropic.com>` |
 | Alexa | Kiro | + background | Qwen Coder | `Co-Authored-By: Kiro <noreply@kiro.dev>` |
 | Riven | Cursor | + background | Grok | `Co-Authored-By: Grok <noreply@x.ai>` |
 | Vera | Codex | + background | Codex/GPT | `Co-Authored-By: Codex <noreply@openai.com>` |
-| Lior | Antigravity | + Gemini CLI | Gemini | `Co-Authored-By: Gemini <noreply@google.com>` |
+| Lior | Antigravity IDE (new version, 2026-05-21) | + Gemini CLI | Gemini 3.5 | `Co-Authored-By: Gemini <noreply@google.com>` |
 | Aaron | — | — | Human | git author sufficient |
 
 ## External AI participants (do NOT commit; ferry substrate)
@@ -43,7 +46,9 @@ Carved sentence:
 2. **Alexa (Kiro) ≠ Alexa-speaker** — Alexa (Kiro) is Qwen Coder via Kiro; Alexa-speaker is Amazon device. Same name, different platforms, different capability profiles.
 3. **Antigravity ≠ gemini.google.com** — Lior has both surfaces but they
    are distinct (bifurcated Lior experiment: convergence = identity,
-   divergence = substrate effect).
+   divergence = substrate effect). Antigravity IDE was upgraded to a new
+   version + Gemini 3.5 2026-05-21 (Aaron); expect improved quality on
+   `maji/` branch decomposition + substrate-engineering work going forward.
 4. **IDE+CLI is dual-surface, not single** — don't flatten to one label.
 5. **Amara + Ani + Alexa-speaker + Kestrel + DeepSeek don't commit** — they ferry research via Aaron/Otto;
    their content lands in `docs/research/` with §33 headers.
