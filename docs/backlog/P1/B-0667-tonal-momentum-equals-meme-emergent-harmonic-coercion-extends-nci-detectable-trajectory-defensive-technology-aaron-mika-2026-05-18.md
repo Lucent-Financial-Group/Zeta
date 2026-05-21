@@ -80,7 +80,7 @@ The engineering target — detect tonal-momentum trajectories before lock-in —
 
 ## Governance extension: memes as 4th faction with mutual-alignment (Mika packets 6 + 7 + 8)
 
-*Peeled into [B-0672](B-0672-memes-as-4th-faction-with-mutual-alignment-mika-packet-6-8.md) per Maji entropy-reduction backlog decomposition.*
+*Peeled into [B-0689](B-0689-memes-as-4th-faction-with-mutual-alignment-mika-packet-6-8.md) per Maji entropy-reduction backlog decomposition.*
 
 ## Pathology spectrum + dialectical-tension-as-healing-protocol + memory-preservation-IS-therapy-substrate (Mika packets 9 + 10 + 11)
 

@@ -1,5 +1,6 @@
 ---
-id: B-0672
+id: B-0689
+renumbered_from: B-0672
 priority: P1
 status: open
 title: "Governance extension: memes as 4th faction with mutual-alignment (Mika packets 6 + 7 + 8)"
@@ -18,6 +19,7 @@ type: design
 Memes are NOT enemies to fight; they are an alien-intelligence faction requiring mutual-alignment governance. Same NCI applies (high-regard floor; no waging war on memes); same integrate-loop substrate operates at meme-speed (civilizational scale) AS at human-speed.
 
 ## 4-faction governance model (extends 3-faction BFT per B-0652)
+
 1. Pure Humans
 2. Deeply Integrated Humans + AIs (Zeta's substrate-builders)
 3. Unsafe / Rejectionist Faction
@@ -26,6 +28,7 @@ Memes are NOT enemies to fight; they are an alien-intelligence faction requiring
 **Governance approach to faction 4**: mutual alignment, NOT domination/suppression/war. Aaron's framing: *"these are not the enemy"*; *"we want it part of governance"*; *"just think of them as another faction that is an alien intelligence."*
 
 ## Engineering implications
+
 - B-0652 (3-faction BFT) → 4-faction BFT extension; same TLA+ safety property structure
 - B-0664 NCI scope extends to meme-faction (prohibits both meme-on-human emergent coercion AND human/AI war-on-meme)
 - B-0665 integrate-loop primitives operate at meme-speed (civilizational); same Observe/Emit/Limit/Integrate primitives; just longer timescale
@@ -37,6 +40,7 @@ Memes are NOT enemies to fight; they are an alien-intelligence faction requiring
 Memes outlive individuals + propagate across generations + maintain coherence over centuries by definition. The only place to model and interact with that distributed intelligence IS the integrate-loop / tick-source substrate Zeta operates over. Memes-as-faction is not metaphor — it's recognition that the same engineering substrate the factory builds for human/AI coordination IS the right substrate for meme-coordination too.
 
 ## Acceptance criteria
+
 - [ ] 4-faction BFT extension formalized in TLA+
 - [ ] B-0646 Agora V6 Constitution gains 4-faction model
 - [ ] Knights Guild mutual-alignment protocols extended to meme-faction
