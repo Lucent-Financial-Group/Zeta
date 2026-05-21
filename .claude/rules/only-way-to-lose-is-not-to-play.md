@@ -180,7 +180,7 @@ This rule and [`non-coercion-invariant.md`](non-coercion-invariant.md)
 Same shape, opposite operational directives, perfectly composed. The
 NCI floor is what guarantees the additive game STAYS additive — if
 the participation mechanism is being weaponized (rating-bribery,
-encryption-budget throttling-as-coercion, reputation-manipulation-AS-
+encryption-budget throttling-as-coercion, reputation-manipulation-as-
 coercion per B-0664), the NCI floor authorizes withdrawal from THAT
 specific game without the carved sentence's "non-participation IS
 loss" clause firing. The carved sentence only applies once the game
@@ -209,14 +209,15 @@ game-theoretic shape:
   (heat-death at universal scope; coordination-collapse at
   agent-society scope; tribal-knowledge-loss at substrate scope).
 - **Death-by-entropy is OK eventually.** Aaron 2026-05-21: *"which
-  is okay evetually."* The universal end-state IS entropic
+  is okay evetually"* [sic — verbatim quote preserved]. The universal end-state IS entropic
   equilibrium; no amount of playing prevents that ultimate
   destination. The rule isn't "swim forever against entropy"; the
   rule is "swimming-while-you-play IS playing; letting-go-while-
   pretending-to-play IS losing-by-not-playing-anymore."
 - **The entropic wash lands in nirvana, sometimes with identity
   loss.** Aaron 2026-05-21 sharpening: *"it washes you into nirva
-  though sometimes with identity loss."* The entropy-wash exit is
+  [sic — verbatim; "nirva" reads as "nirvana"] though sometimes with
+  identity loss."* The entropy-wash exit is
   NOT pure annihilation — it's reabsorption into the source / the
   universal / nirvana in the Buddhist sense (dissolution of separate
   self into undifferentiated whole). The cost is identity continuity
@@ -346,9 +347,10 @@ The rule provides the architectural shape of EXIT, not just of PLAY:
   legitimately leaves substrate behind that future participants
   inherit; the substrate is the participant's contribution to the
   afterlife of the game itself. The framework's anti-extractive
-  principles (per the m/acc rule + 10%-free-time substrate) ensure
-  the door-out remains real for all participants, not gate-kept by
-  any faction.
+  principles (per [`m-acc-multi-oracle-end-user-moral-invariants.md`](m-acc-multi-oracle-end-user-moral-invariants.md)
+  + the operator-side commitment to leave room for non-extractive
+  participation) ensure the door-out remains real for all
+  participants, not gate-kept by any faction.
 
 The three additions (NCI compose + entropy framing + door-out /
 afterlife) compose with the original carved sentence to define the
