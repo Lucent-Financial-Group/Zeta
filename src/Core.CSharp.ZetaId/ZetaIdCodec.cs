@@ -14,6 +14,15 @@ public static class ZetaIdCodec
                 nameof(obs), obs.Timestamp,
                 $"ZetaObservation.Timestamp must be 0..{MaxTimestamp} (48-bit field). Values outside this range would silently truncate and collide.");
 
+        // Validate enum-typed narrow fields. C# allows e.g. (Category)999 to
+        // compile; without bounds checks the high bits silently truncate and
+        // collide. Persona/Location are byte-backed (8-bit) so they max at
+        // 255 = their field width; no check needed.
+        ValidateEnumField((byte)obs.Version,    5, nameof(obs.Version));
+        ValidateEnumField((byte)obs.Chromosome, 5, nameof(obs.Chromosome));
+        ValidateEnumField((byte)obs.Category,   4, nameof(obs.Category));
+        ValidateEnumField((byte)obs.Firefly,    1, nameof(obs.Firefly));
+
         UInt128 id = 0;
 
         id = SetBits(id, Layout.Version,    (ulong)(byte)obs.Version);
@@ -45,6 +54,15 @@ public static class ZetaIdCodec
             Momentum:   Momentum.FromByte((byte)GetBits(id, Layout.Momentum)),
             Location:   (Location)GetBits(id, Layout.Location)
         );
+    }
+
+    private static void ValidateEnumField(byte value, int widthBits, string fieldName)
+    {
+        int maxValid = (1 << widthBits) - 1;
+        if (value > maxValid)
+            throw new ArgumentOutOfRangeException(
+                fieldName, value,
+                $"ZetaObservation.{fieldName} must be 0..{maxValid} ({widthBits}-bit field). Out-of-range enum values would silently truncate and collide.");
     }
 
     private static UInt128 SetBits(UInt128 value, (int Offset, int Width) field, ulong fieldValue)
