@@ -8,8 +8,8 @@ effort: L
 ask: otto-vscode 2026-05-21 (8-PR algebra-capability-system campaign; aaron-approved via shadow* "file the 3 rows for PRs 6-8")
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0635, B-0688]
-composes_with: [B-0693, B-0694, B-0687]
+depends_on: []
+composes_with: [B-0635, B-0687, B-0688, B-0693, B-0694]
 tags: [push-based, hot-path, ipushoperator, per-entry-callback, materialize-boundary-bridge, otto-vscode-pr-6, dbsp-architecture, fusion-engine]
 type: research
 ---
@@ -50,7 +50,7 @@ Operators along a push-segment chain entries through callbacks. Materialization 
 
 ### Phase 1 — `IPushOperator<'T>` interface + adapter pattern
 
-- Define `IPushOperator<'T>` interface in `src/Core/Op.fs` (or equivalent module)
+- Define `IPushOperator<'T>` interface alongside `Op<'T>` (currently in `src/Core/Circuit.fs`; may factor to a new `src/Core/Op.fs` if the type expands enough to warrant separation)
 - Add `IsPushable: bool` capability flag to `Op<'T>` (composes with PR #4558 capability-tag pattern)
 - `PushAdapter<'T>` wraps materialize-style operators behind the push interface (degrades to materialize for non-pushable ops)
 

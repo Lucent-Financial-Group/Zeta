@@ -8,8 +8,8 @@ effort: XL
 ask: otto-vscode 2026-05-21 + aaron Rx-codegen-at-construction architectural insight (8-PR campaign capstone; aaron-approved via shadow* "file the 3 rows for PRs 6-8")
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0635, B-0688, B-0692, B-0693]
-composes_with: [B-0687]
+depends_on: [B-0692, B-0693]
+composes_with: [B-0635, B-0687, B-0688]
 tags: [standing-query-codegen, iincrementalgenerator, rewrite-circuit-expressions, fused-il, otto-vscode-pr-8, reaqtor-applied-to-dbsp, capstone, query-rewrite-across-rx-streams]
 type: research
 ---
@@ -55,14 +55,14 @@ Per-incremental-compile cost: codegen runs ONCE when the circuit DAG changes (su
 
 ### Phase 2 — IIncrementalGenerator integration (Roslyn side for C# circuits)
 
-- Roslyn IIncrementalGenerator at `tools/codegen/zeta-circuit-generator/` (or `src/Core.CSharp.Codegen/`)
+- Roslyn IIncrementalGenerator at a new directory (proposed: `tools/codegen/zeta-circuit-generator/` OR `src/Core.CSharp.Codegen/` — both are **TO BE CREATED** by this PR; neither exists today)
 - Generator consumes `CircuitExpr` (serialized via attribute / additional-files / etc.)
 - Emits C# code: one method per circuit segment, direct-call chains, Span<T> intermediates
 - Generated code references existing `Op<'T>` substrate but bypasses virtual dispatch within segments
 
 ### Phase 3 — F# Type Provider integration (F# side for F# circuits)
 
-- Type Provider at `src/Core.FSharp.Codegen/` (mirrors B-0687 ZetaParse Type Provider pattern)
+- Type Provider at a new directory (proposed: `src/Core.FSharp.Codegen/` — **TO BE CREATED** by this PR; mirrors B-0687 ZetaParse Type Provider pattern)
 - Consumes `.circuit` description files OR runtime `CircuitExpr` values
 - Generates compile-time F# types + functions for circuit segments
 - Composes with F# computation expressions (existing Zeta DBSP CE pattern)

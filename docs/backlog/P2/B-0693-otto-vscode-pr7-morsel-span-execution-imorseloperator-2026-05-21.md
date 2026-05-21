@@ -8,8 +8,8 @@ effort: L
 ask: otto-vscode 2026-05-21 (8-PR algebra-capability-system campaign; aaron-approved via shadow* "file the 3 rows for PRs 6-8")
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0635, B-0688, B-0692]
-composes_with: [B-0694]
+depends_on: [B-0692]
+composes_with: [B-0635, B-0688, B-0694]
 tags: [morsel-execution, span-based, cache-sized-chunks, imorseloperator, otto-vscode-pr-7, dbsp-architecture, columnar-execution]
 type: research
 ---
@@ -44,7 +44,7 @@ The intermediate "chunk" becomes a stack-allocated `Span<ZEntry<'T>>` from a poo
 
 ### Phase 1 — `IMorselOperator<'T>` interface + morsel-buffer pool
 
-- Define `IMorselOperator<'T>` interface in `src/Core/Op.fs`
+- Define `IMorselOperator<'T>` interface alongside `Op<'T>` (currently in `src/Core/Circuit.fs`; co-located with `IPushOperator<'T>` from B-0692)
 - Add `IsMorselCapable: bool` capability flag to Op<'T> (composes with PR #4558 pattern)
 - Morsel-buffer pool: pooled `ArrayPool<ZEntry<'T>>` per-thread with chunk size = L1/L2-cache-aware (default 4KB / `sizeof<ZEntry<'T>>` = N entries per morsel)
 - MorselAdapter wraps both materialize-style and push-style operators
