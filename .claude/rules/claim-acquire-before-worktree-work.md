@@ -296,10 +296,17 @@ This rebuilds the worktree's index from the HEAD commit, replacing the
 truncated index in-place. Working-tree files are NOT modified (they were
 not part of the corruption — only the index was). After rebuild:
 
-1. `git status` returns clean (empty)
-2. Stage your intended file via `git add <path>` (the file is still on
-   disk; the read-tree wiped any stale staged state but did not touch
-   the working tree)
+1. `git status` now reflects the genuine working-tree-vs-HEAD diff —
+   not "empty," because `read-tree` only rewrote the index, not the
+   working tree. Any intended local edits / untracked files you had
+   before the corruption STILL show as modified / untracked. The
+   `index file smaller than expected` error is gone; that is the
+   indicator the recovery worked. (Misreading `read-tree` as "should
+   produce a clean status" is the most common way the recovery gets
+   misdiagnosed as failed when it actually succeeded.)
+2. Stage your intended file via `git add <path>` — the file is still
+   on disk; `read-tree` wiped any stale staged state but did not touch
+   the working tree
 3. `git commit` normally
 4. Verify commit canary (parent tree size = commit tree size) before
    pushing per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md)
