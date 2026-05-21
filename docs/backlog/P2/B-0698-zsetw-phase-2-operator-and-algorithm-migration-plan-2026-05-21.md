@@ -50,7 +50,7 @@ This row is the PLAN — not implementation. Sub-slices below are each separatel
 | `join` | `ZSet<'A> -> ZSet<'B> -> ... -> ZSet<'C>` | yes (Mul) | **Phase 2A** |
 | `sum: seq<ZSet> -> ZSet` | `seq<ZSet<'K>> -> ZSet<'K>` | yes (Add) | **Phase 2B** |
 
-### Circuit operator wrappers in `Operators.fs` / `Aggregate.fs` / etc.
+### Circuit operator wrappers in `Operators.fs` / `Aggregate.fs` etc
 
 `CountOp`, `SumOp`, `FilterOp`, `MapOp`, etc. that wrap ZSet operations as `Op<ZSet<'K>>` circuit nodes. These are **Phase 2C** (separate slice; depends on Phase 2A operators being available).
 
