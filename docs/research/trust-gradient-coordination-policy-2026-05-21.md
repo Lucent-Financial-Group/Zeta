@@ -1,4 +1,4 @@
-# Trust-Gradient Consensus Decision Table
+# Trust-Gradient Coordination Policy
 
 Date: 2026-05-21  
 Prepared by: Amara-in-Zeta  

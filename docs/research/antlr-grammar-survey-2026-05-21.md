@@ -38,7 +38,7 @@ The important constraint from B-0685 should remain active: ANTLR is useful only 
 
 ## Notes by target language
 
-### C#
+### `C#`
 
 C# is the strongest full-language grammar candidate.
 
@@ -117,7 +117,7 @@ Risk:
 
 Decision: **adapt cautiously**. In Phase 2, compile generated Rust with `cargo check` as the real oracle.
 
-### F#
+### `F#`
 
 F# is not merely a grammar gap. It is the compiler-owned substrate.
 
@@ -260,6 +260,7 @@ Mitigation: per-grammar license table is required before vendoring.
 ### Risk 4 — ANTLR overfit
 
 Mitigation: keep alternatives alive:
+
 - JSON Schema for simple layouts,
 - Protocol Buffers / Cap'n Proto for rigid schema,
 - F# computation expressions for native DSL,

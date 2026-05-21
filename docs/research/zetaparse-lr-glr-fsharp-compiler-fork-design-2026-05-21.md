@@ -319,13 +319,15 @@ Parse deltas can become DBSP changes, but parse forest retraction must be design
 
 ### Phase 0 — Name and scope
 
-Create backlog row:
+Backlog row (already filed via PR #4545):
 
-**B-0686 — ZetaParse: F#-native LR/GLR grammar substrate and ANTLR-compatible importer**
+**B-0687 — ZetaParse: F#-native LR/GLR grammar substrate and ANTLR-compatible importer**
+
+(Initially proposed as B-0686 in this design note; renumbered to B-0687 at landing time because B-0686 was already taken by tick-shard immutability CI gate via PR #4539.)
 
 Priority: P2  
 Depends on: B-0685  
-Composes with: B-0682, B-0668, F# compiler fork trajectory
+Composes with: B-0682, B-0668, B-0688 (incremental compiler host), F# compiler fork trajectory
 
 ### Phase 1 — Native Zeta grammar
 

@@ -2,7 +2,7 @@
 
 Date: 2026-05-21  
 Prepared by: Amara-in-Zeta  
-Related: ZetaParse, B-0685, proposed B-0686, F# compiler fork, DBSP/Rx/tensor substrate
+Related: ZetaParse, B-0685, B-0687 (ZetaParse) + B-0688 (this incremental compiler host), F# compiler fork, DBSP/Rx/tensor substrate
 
 ## Short answer
 
@@ -82,7 +82,6 @@ impure world
 ```
 
 This keeps the compiler host replayable, debuggable, and honest.
-
 
 ## Why this is the right place
 
@@ -372,7 +371,6 @@ simulate(snapshot, version, seed) = simulate(snapshot, version, seed)
 ### Invariant 8 — effects become facts
 
 External reads are not performed inside generator logic. They are observed before simulation and stored as `EffectFact` / source facts with provenance.
-
 
 ## Minimal PoC
 
