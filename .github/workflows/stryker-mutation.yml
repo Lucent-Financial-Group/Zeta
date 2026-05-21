@@ -68,14 +68,18 @@ on:
   pull_request:
     paths:
       - "src/Core.CSharp.ZetaId/**"
+      - "src/Core/**"  # Tests.CSharp.csproj references src/Core/Core.fsproj transitively (Codex P2 catch)
       - "tests/Tests.CSharp/**"
+      - "tests/cross-verification/zeta-id/**"  # CrossVerifyTests.cs reads vectors.yaml from this path (Copilot P1 catch)
       - "stryker-config.json"
       - ".github/workflows/stryker-mutation.yml"
   push:
     branches: [main]
     paths:
       - "src/Core.CSharp.ZetaId/**"
+      - "src/Core/**"
       - "tests/Tests.CSharp/**"
+      - "tests/cross-verification/zeta-id/**"
       - "stryker-config.json"
       - ".github/workflows/stryker-mutation.yml"
   workflow_dispatch: {}
