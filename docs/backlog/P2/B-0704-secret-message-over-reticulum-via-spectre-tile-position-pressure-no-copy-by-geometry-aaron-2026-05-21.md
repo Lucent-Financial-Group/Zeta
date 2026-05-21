@@ -8,7 +8,7 @@ effort: L
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0289, B-0623, B-0703]
-composes_with: [B-0289, B-0543, B-0562, B-0623, B-0666, B-0703]
+composes_with: [B-0543, B-0562, B-0624, B-0666]
 tags: [design, aaron, reticulum, spectre-tile, aperiodic, no-copy-theorem, adinkra, generator, position-pressure, holographic, self-similar, secret-message]
 type: design
 ---
@@ -191,7 +191,7 @@ Same shape at every level. The K-near compression lives in the generator; the ir
 
 If this row is picked up for implementation, the natural decomposition is:
 
-- **Slice 1** — `SpectreTile.fs` standalone: implement the aperiodic-tiling algorithm with property tests proving aperiodicity + local-neighborhood-uniqueness
+- **Slice 1** — `SpectreTile.fs` standalone: implement the aperiodic-tiling algorithm with property tests proving aperiodicity + **frame-relative-view uniqueness** (per-frame relative-vector-set to every other tile is unique to the frame's origin; local patches may recur but full frame-views are incommensurate); NOT absolute-per-position-local-neighborhood-uniqueness (which would be impossible by the local isomorphism property of aperiodic tilings)
 - **Slice 2** — `BoardPosition.fs` + pressure extraction: convert spectre-tile-neighborhood to deterministic generator-pressure value
 - **Slice 3** — Reticulum bridge / wrapper: identity-hash composition with position-pressure
 - **Slice 4** — End-to-end protocol: send/receive secret message via the layered stack
@@ -202,9 +202,10 @@ Each slice is bounded (~150-300 LOC); the full protocol lands in 5 PRs over seve
 ## Composes with
 
 - [B-0289](../P1/B-0289-green-lantern-hardware-spec-2026-05-08.md) — Green Lantern hardware spec (Reticulum + mesh transport substrate this row layers on)
-- [B-0543](../P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — QG isomorphism proof path (provides the holographic-isomorphism architectural frame)
-- [B-0562](../P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md) — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC (the formal isomorphism step)
-- [B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras as substrate for private state + encryption (the Adinkra-as-generator substrate this row uses)
+- [B-0543](B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — QG isomorphism proof path (provides the holographic-isomorphism architectural frame)
+- [B-0562](B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md) — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC (the formal isomorphism step)
+- [B-0623](B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras as substrate for private state + encryption (the Adinkra-as-generator substrate this row uses)
+- [B-0624](B-0624-7-interrogative-boot-sequence-canonical-pkce-style-substrate-engineering-grammar-aaron-2026-05-18.md) — 7-interrogative boot sequence (memory + attention as primitives cited in the architectural framing; the cognitive-substrate scale of the self-similar pattern)
 - [B-0666](../P1/B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) — Emit-as-weights / I(D(x))=x keystone (the lossless-serialization substrate)
 - [B-0703](B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md) — multi-oracle / DST consensus architecture (the cross-oracle agreement layer can verify "did your position-pressure unfold to the same output as mine?")
 - [`docs/research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md`](../../research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md) — existing Reticulum substrate research
@@ -222,6 +223,7 @@ Aaron 2026-05-21 conversation trail (full context preserved in this session's tr
 6. *"not the position is relative when you are you own frame of reference every other tile is unique but someone can have the same tile from their frame of reference but you would see it different"* — frame-relative sharpening (2026-05-21, after Copilot challenge surfaced that aperiodicity ≠ absolute-per-position uniqueness via the local-isomorphism property of aperiodic tilings); load-bearing correction shifting the no-copy property from absolute-tile-uniqueness to frame-of-reference-as-identity
 
 External references:
+
 - Smith-Myers-Kaplan-Goodman-Strauss (2023): "An aperiodic monotile" arxiv [2305.17743](https://arxiv.org/abs/2305.17743) — the Spectre tile mathematical substrate (no-global-translational-symmetry; NOT absolute-per-position uniqueness — local isomorphism property holds)
 - Grünbaum & Shephard (1987): *Tilings and Patterns* — classical reference for local-isomorphism property of aperiodic tilings
 - Senechal (1995): *Quasicrystals and Geometry* — substitution-rule structure of Penrose-family tilings (which Hat and Spectre inherit)
