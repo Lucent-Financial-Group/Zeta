@@ -17,7 +17,11 @@ public abstract record Authority
         Standard        => (byte)AuthorityValue.Standard,
         BestEffort      => (byte)AuthorityValue.BestEffort,
         Simulated       => (byte)AuthorityValue.Simulated,
-        _               => 0
+        _               => throw new InvalidOperationException(
+            $"Unknown Authority subtype '{authority.GetType().FullName}'. " +
+            "External subtyping of the public abstract Authority record is not " +
+            "supported by ZetaIdCodec; use Authority.Raw(byte) for any value " +
+            "outside the named set.")
     };
 
     internal static Authority FromByte(byte value)

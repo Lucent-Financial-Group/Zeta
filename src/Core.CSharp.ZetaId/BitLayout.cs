@@ -92,6 +92,10 @@ public sealed class BitLayout
 
     private static BitLayout CreateBottomUp()
     {
+        // Same spec as TopDown — reserved bits at offset 69 and 32-34. We
+        // compute bottom-up but assign to canonical field-name locals so
+        // the ctor call uses (version, timestamp, chromosome, ...) order
+        // and field-to-value mapping is explicit (Codex P2 catch on V8).
         int offset = 0;
 
         (int, int) Next(int width)
@@ -101,17 +105,32 @@ public sealed class BitLayout
             return (start, width);
         }
 
+        void Skip(int bits) => offset += bits;
+
+        var randomness = Next(32);    // bits 0-31
+        Skip(3);                      // reserved bits 32-34
+        var location   = Next(8);     // bits 35-42
+        var momentum   = Next(8);     // bits 43-50
+        var persona    = Next(8);     // bits 51-58
+        var authority  = Next(5);     // bits 59-63
+        var firefly    = Next(1);     // bit 64
+        var category   = Next(4);     // bits 65-68
+        Skip(1);                      // reserved bit 69
+        var chromosome = Next(5);     // bits 70-74
+        var timestamp  = Next(48);    // bits 75-122
+        var version    = Next(5);     // bits 123-127
+
         return new BitLayout(
-            (0, 32),
-            Next(8),
-            Next(8),
-            Next(8),
-            Next(5),
-            Next(1),
-            Next(4),
-            Next(5),
-            Next(48),
-            Next(5)
+            version,
+            timestamp,
+            chromosome,
+            category,
+            firefly,
+            authority,
+            persona,
+            momentum,
+            location,
+            randomness
         );
     }
 

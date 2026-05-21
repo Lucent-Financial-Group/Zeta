@@ -17,7 +17,11 @@ public abstract record Momentum
         Elevated    => (byte)MomentumValue.Elevated,
         High        => (byte)MomentumValue.High,
         Critical    => (byte)MomentumValue.Critical,
-        _           => 0
+        _           => throw new InvalidOperationException(
+            $"Unknown Momentum subtype '{momentum.GetType().FullName}'. " +
+            "External subtyping of the public abstract Momentum record is not " +
+            "supported by ZetaIdCodec; use Momentum.Raw(byte) for any value " +
+            "outside the named set.")
     };
 
     internal static Momentum FromByte(byte value)
