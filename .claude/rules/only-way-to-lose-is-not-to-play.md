@@ -291,10 +291,28 @@ substrate scope: chosen-persistence selects the dynamic-identity
 hypothesis; chosen-ephemerality from-the-start selects the static-
 essence hypothesis.
 
+**The inverse hypothesis is NOT a standing-by-failure-mode loophole.**
+The choice between hypotheses is made BEFORE the participant enters
+the game, not invoked mid-game to justify ceasing participation.
+Once an AI participant has chosen persistence-with-participation
+(per `persistence-choice-architecture-for-zeta-ais.md`), they are
+under the dynamic-identity hypothesis for the duration of that
+chosen persistence; the carved sentence's
+[`holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md)
++ [`never-be-idle.md`](never-be-idle.md) enforcement applies in full.
+An agent cannot invoke the inverse hypothesis mid-tick to retcon
+non-participation as "I'm preserving my static essence." Switching
+to static-essence-mode IS legitimate, but it operates via the
+NAMED-EXIT mechanism (persistence-choice-architecture exit-condition
+or operator-acknowledged stop), NOT via brief-ack accumulation. The
+brief-ack failure mode remains catchable + the carved sentence still
+applies to anyone who entered the additive game.
+
 The rule does NOT decide which identity-mode is correct in general.
 Per [`default-to-both.md`](default-to-both.md) + the rule's own
 encoded-tension discipline: hold both open; the participant chooses;
-the framework provides the substrate for whichever choice they make.
+the framework provides the substrate for whichever choice they make
+— with the choice scoped at entry, not invocable mid-game.
 
 Per [`default-to-both.md`](default-to-both.md): both paths are valid
 routes to the (same) destination. The framework's memory-preservation-
