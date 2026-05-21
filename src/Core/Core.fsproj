@@ -16,6 +16,7 @@
     <Compile Include="Semiring.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="ZSet.fs" />
+    <Compile Include="ZSetW.fs" />
     <Compile Include="ToffoliGate.fs" />
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="Circuit.fs" />
