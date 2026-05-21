@@ -74,26 +74,31 @@ Extend the FusionEngine (PR #4566) to detect push-segment-eligible runs:
 - BenchmarkDotNet job at `bench/Benchmarks/PushBasedHotPathBench.fs` comparing:
   - Materialize-only chain (3-op pipeline)
   - Push-based fused chain (3-op pipeline)
+
 - Allocation column is the smoking gun (expected: push-based eliminates 2 of 3 per-tick `ImmutableArray<ZEntry<'T>>` allocations)
 - Throughput: expected 2-3× improvement on hot-path-friendly pipelines
 
 ## Acceptance
 
 ### Phase 1
+
 - `IPushOperator<'T>` interface lands
 - `IsPushable` capability flag on Op<'T>
 - PushAdapter wraps existing operators
 - `dotnet build` clean; existing tests pass
 
 ### Phase 2
+
 - FusionEngine recognizes push-segments
 - One push-segment fuses end-to-end in a test case
 
 ### Phase 3
+
 - 3 push-versions of common ops land (MapPushOp + FilterPushOp + NegPushOp)
 - Cross-verify: push-version output matches materialize-version output for same inputs
 
 ### Phase 4
+
 - Benchmark shows push-segment allocates 1× per-segment (not N× per-operator)
 - Throughput improvement empirically measured + documented
 

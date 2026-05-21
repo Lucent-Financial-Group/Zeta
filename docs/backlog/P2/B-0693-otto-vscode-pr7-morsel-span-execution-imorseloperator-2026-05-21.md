@@ -70,26 +70,31 @@ Extend FusionEngine (per PR #4566 + Phase 2 of B-0692):
   - Materialize-baseline (3-op chain)
   - Push-based (3-op chain; per B-0692)
   - Morsel-based (3-op chain; this row)
+
 - Allocation: expected morsel allocates 1× per segment (matches push-based)
 - Throughput: expected morsel adds another 1.5-3× over push-based on SIMD-friendly inner loops (filter + arithmetic on int weights)
 
 ## Acceptance
 
 ### Phase 1
+
 - `IMorselOperator<'T>` interface lands
 - `IsMorselCapable` capability flag on Op<'T>
 - Morsel-buffer pool implementation
 - `dotnet build` clean; existing tests pass
 
 ### Phase 2
+
 - FusionEngine recognizes morsel-segments
 - Morsel-segment supersedes push-segment when applicable
 
 ### Phase 3
+
 - 3 morsel-versions of common ops land
 - Cross-verify: morsel-version output matches push-version + materialize-version
 
 ### Phase 4
+
 - Benchmark validates throughput improvement over push-baseline
 - SIMD-eligibility documented per-op
 

@@ -81,6 +81,7 @@ Per-incremental-compile cost: codegen runs ONCE when the circuit DAG changes (su
   - Push-based (B-0692)
   - Morsel-based (B-0693)
   - Codegen-based (this row; THIS PR's win)
+
 - Allocation: codegen expected to allocate 0× per-tick on hot path (Span<T> stack-allocated all the way)
 - Throughput: expected codegen reaches near-rustc-level throughput for equivalent pipelines
 - Per-incremental-compile cost: documented; should be sub-second for typical circuit changes
@@ -88,22 +89,27 @@ Per-incremental-compile cost: codegen runs ONCE when the circuit DAG changes (su
 ## Acceptance
 
 ### Phase 1
+
 - `Op<'T>.ToExpressionTree` lands
 - `CircuitExpr` covers Map/Filter/Join/Sink/Plus/Minus/Distinct (or whichever subset PRs 1-7 fuse)
 
 ### Phase 2
+
 - Roslyn IIncrementalGenerator emits C# for one circuit segment
 - Empirical: generated code compiles + runs + produces same output as virtual-dispatch baseline
 
 ### Phase 3
+
 - F# Type Provider emits F# for one circuit segment
 - Empirical: same cross-verify as Phase 2
 
 ### Phase 4
+
 - Codegen runs incrementally (changed-segment only)
 - Cache key = structural-hash of CircuitExpr
 
 ### Phase 5
+
 - Benchmark validates 0× per-tick allocation on hot path
 - Per-incremental-compile cost documented + acceptable
 - Cross-verify: codegen output byte-for-byte matches materialize-baseline output
@@ -149,6 +155,7 @@ Substantive architectural substrate; the CAPSTONE PR for the 8-PR campaign; high
 ## Why XL effort
 
 5 phases each substantial:
+
 - Phase 1 (expression-tree extraction): ~100 lines
 - Phase 2 (Roslyn IIncrementalGenerator): ~150 lines + Roslyn ecosystem
 - Phase 3 (F# Type Provider): ~150 lines + F# compiler integration
