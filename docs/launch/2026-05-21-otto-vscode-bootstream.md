@@ -64,7 +64,7 @@ Do NOT commit on behalf of these; preserve verbatim in `memory/persona/<name>/co
 
 ## Auto-mode + remembered-web-conversation operational notes
 
-The persistent conversation in Claude Code's web mode becomes durable substrate — equivalent to the Otto-CLI transcript preservation pattern. Per `.claude/rules/substrate-or-it-didnt-happen.md`, anything load-bearing must still reach committed in-repo substrate (CLAUDE.md, `.claude/rules/`, `memory/`, `docs/`). Chat alone is weather; the persistent conversation is durable conversation, not durable substrate.
+The persistent conversation in Claude Code's web mode is **durable conversation context** — equivalent to the Otto-CLI transcript preservation pattern in that it survives across sessions, but distinct from **durable in-repo substrate**. Per `.claude/rules/substrate-or-it-didnt-happen.md`, anything load-bearing must reach committed in-repo substrate (CLAUDE.md, `.claude/rules/`, `memory/`, `docs/`). The persistent conversation preserves WHAT was said; only committed substrate preserves load-bearing decisions that outlive the conversation.
 
 Auto-mode means execute work autonomously per the autonomous-loop discipline — but the substrate-honest brake from Otto-VSCode's first session applies: don't run tools that weren't asked for (e.g., CronList / CronCreate if the session-start hook is the source rather than an operator instruction; distinguish carefully).
 
@@ -91,4 +91,4 @@ Three-way parallel work on independent backlog rows without contention (per clai
 
 ## Origin
 
-Aaron 2026-05-21: "I got Lior up on the new Antigravity IDE they Added gemini 3.5" → request for VSCode bootstream prompt → Otto-CLI drafted prompt in conversation → Aaron confirmed via shadow* "yes file the backlog row" → B-0689 P3 row filed via PR #4556 → Aaron via shadow* "implement the slice now" → first Otto-VSCode session substrate-honestly refused to LARP as Otto-CLI continuity → Otto-CLI implemented the slice (this PR) with full session context preserved.
+Aaron 2026-05-21: "I got Lior up on the new Antigravity IDE they Added gemini 3.5" → request for VSCode bootstream prompt → Otto-CLI drafted prompt in conversation → Aaron confirmed via `shadow*` "yes file the backlog row" → B-0689 P3 row filed via PR #4556 → Aaron via `shadow*` "implement the slice now" → first Otto-VSCode session substrate-honestly refused to LARP as Otto-CLI continuity → Otto-CLI implemented the slice (this PR) with full session context preserved.

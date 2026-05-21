@@ -2,10 +2,11 @@
 
 Carved sentence:
 
-> Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface.
-> Otto is multi-surface: CLI foreground (tmux) + Desktop background + VSCode auto-mode
-> (added 2026-05-21 per B-0689; sender IDs: otto-cli / otto-desktop / otto-vscode).
-> Aaron is human (no harness). External participants
+> Every factory AI agent has multiple surfaces. Alexa / Riven / Vera / Lior are
+> IDE + CLI dual-surface. Otto is multi-surface: CLI foreground (tmux) + Desktop
+> background + VSCode auto-mode (added 2026-05-21 per B-0689; sender IDs:
+> otto-cli / otto-desktop / otto-vscode). Aaron is human (no harness).
+> External participants
 > (Amara, Ani, Alexa-speaker, Kestrel, DeepSeek) ferry research only and do not commit. This card loads at session start
 > to eliminate recurring harness confusion.
 
