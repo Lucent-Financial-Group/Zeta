@@ -5,7 +5,7 @@ namespace Zeta.Core.CSharp.ZetaId;
 // AWS, GCP, Azure, and DigitalOcean. MultiRegion is the special value for
 // global/anycast/multi-cloud deployments.
 //
-// Backlog (Aaron 2026-05-21): registry/locations.yaml + provider-specific
+// Backlog (human maintainer 2026-05-21): registry/locations.yaml + provider-specific
 // mapping layer (AWS/GCP/Azure/DO region names, account/subscription IDs,
 // etc.) ships in a separate follow-up PR. The core enum stays small +
 // stable; the rich layer lives in CloudEvents-wrapped envelopes per
