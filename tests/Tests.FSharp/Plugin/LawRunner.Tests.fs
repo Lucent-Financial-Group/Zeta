@@ -211,11 +211,16 @@ let ``checkRetractionCompleteness reproduces bit-exact on the same seed`` () =
 //   L2 — op(a, b₁+b₂) ≡ op(a, b₁) + op(a, b₂)   (right-linearity)
 //   L3 — op(-a, b) ≡ -op(a, b)                   (sign-distribution)
 //
-// The interesting failure case is L3: a plugin can satisfy L1 + L2
-// while smuggling an additive offset (op(a, b) = a*b + c), and the
-// three-term incremental-join rewrite would silently produce wrong
-// results under retraction. We test all three sub-properties with
-// dedicated fixtures.
+// **Math note for these fixtures.** Over the abelian-group output
+// types used here (`int` with standard `(+)`), L1 + L2 *imply* L3 —
+// any algebraic failure that violates L3 also violates L1 first
+// (the affine-offset case below illustrates this). So the L1 and L2
+// fixtures below cover both linearity failure modes and most
+// classical bilinearity failures; L3 is the cleanup law that
+// becomes load-bearing only when the caller supplies a non-abelian-
+// group `(addOut, negOut)` pair — outside the scope of these
+// fixtures. See `LawRunner.checkBilinear` docstring for the full
+// math note.
 // ────────────────────────────────────────────────────────────────
 
 /// Genuine bilinear: integer multiplication. Satisfies L1, L2,
@@ -245,14 +250,15 @@ type private LinearOffsetLiar(a: Stream<int>, b: Stream<int>) =
             ValueTask.CompletedTask
 
 
-/// **L3 liar** — the load-bearing failure case. Satisfies L1 + L2
-/// (because the constant offset is independent of inputs), but
-/// fails L3:
-///   op(-a, b) = -a*b + 7
-///   -op(a, b) = -(a*b + 7) = -a*b - 7
-/// Difference is `14` whenever the constant fires — never equal
-/// (except in the trivial 0 case). This is the *additive offset*
-/// failure mode I called load-bearing in the LawRunner docstring.
+/// **Affine offset liar** — `op(a, b) = a*b + 7`. The constant
+/// offset breaks bilinearity in *multiple* ways; over the integer
+/// abelian group L1 fails first (the constant lands once on LHS:
+/// `(a₁+a₂)*b + 7`, twice on RHS: `(a₁*b + 7) + (a₂*b + 7)`, so
+/// the difference is `7`, never equal). L3 would also fail
+/// independently (`op(-a, b) = -a*b + 7` vs `-op(a, b) = -a*b - 7`)
+/// but in the check ordering L1 trips first. The fixture catches
+/// the additive-offset failure mode regardless of which sub-law
+/// fires first; the test below documents which one fires for `int`.
 type private AffineBilinearLiar(a: Stream<int>, b: Stream<int>) =
     let deps = [| a.AsDependency(); b.AsDependency() |]
     interface IBilinearOperator<int, int, int> with

@@ -73,6 +73,13 @@ module PluginHarness =
                         "PluginHarness: tick %d expected exactly one Publish; saw %d."
                         tick delta)
             outputs.Add adapter.Value
+            // Strict-op post-step hook — see runTwoInputs for the
+            // rationale; same fix applies symmetrically to single-
+            // input strict plugins (e.g. IStrictOperator-tagged
+            // ops exercised via LawRunner.checkLinear).
+            let postVt = (adapter :> Op).AfterStepAsync ct
+            if not postVt.IsCompletedSuccessfully then
+                postVt.AsTask().GetAwaiter().GetResult()
             // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
             tick <- tick + 1
         List.ofSeq outputs
@@ -127,6 +134,17 @@ module PluginHarness =
                         "PluginHarness: tick %d expected exactly one Publish; saw %d."
                         tick delta)
             outputs.Add adapter.Value
+            // Mirror Circuit.Step/StepAsync's strict-op post-step
+            // hook: after StepAsync completes, invoke AfterStepAsync
+            // so strict bilinear/stateful ops commit per-tick state
+            // before the next tick begins. Without this, plugins
+            // implementing IStrictOperator would see different
+            // semantics in `runTwoInputs` than in real circuit
+            // execution, and `LawRunner.checkBilinear` would
+            // validate against incorrect strict-op state.
+            let postVt = (adapter :> Op).AfterStepAsync ct
+            if not postVt.IsCompletedSuccessfully then
+                postVt.AsTask().GetAwaiter().GetResult()
             // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
             tick <- tick + 1
         List.ofSeq outputs

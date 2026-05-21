@@ -148,14 +148,19 @@ module LawRunner =
     /// (the constant survives negation), so L1 usually trips first
     /// by check-order; L3 is the cleanup law.
     ///
-    /// L3 becomes load-bearing — not redundant — when the user
-    /// supplies a non-abelian-group `(addOut, negOut)` pair (e.g.
-    /// a monoid where `negOut` isn't truly inverse, or a typeful
-    /// output without true subtraction). In those cases L1 + L2
-    /// can pass while L3 catches the broken algebra. Checking all
-    /// three sub-properties keeps `checkBilinear` correct across
-    /// the full range of `'TOut` algebras a plugin author might
-    /// supply, not just `int` / `ZSet<_>`.
+    /// L3 becomes load-bearing — not redundant — when the caller-
+    /// supplied `(addOut, negOut)` pair doesn't actually form an
+    /// abelian group: `negOut` might not be a true inverse of
+    /// `addOut`, the operations might not be associative or
+    /// commutative on `'TOut`, or there might be hidden state in
+    /// the supplied functions. In such cases L1 + L2 can pass while
+    /// L3 catches the broken algebra — and a failure here may
+    /// reflect the *supplied algebra operations* rather than the
+    /// operator under test. Checking all three sub-properties keeps
+    /// `checkBilinear` correct across the full range of `'TOut`
+    /// algebras a plugin author might supply, not just `int` /
+    /// `ZSet<_>` where the abelian-group assumption holds by
+    /// construction.
     ///
     /// - `samples` — number of (A₁, A₂, B₁, B₂) quadruples.
     /// - `scheduleLength` — ticks per trace. Each per-argument trace
