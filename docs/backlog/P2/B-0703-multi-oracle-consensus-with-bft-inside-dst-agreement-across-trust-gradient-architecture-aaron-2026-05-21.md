@@ -67,6 +67,18 @@ Each level relaxes one trust assumption in exchange for stronger guarantee. The 
 - **Cross-oracle DST agreement** defends against correlated adversarial influence across MULTIPLE oracles. To falsify the cross-oracle result, an adversary must produce **identical false outputs across all participating oracles**, not just any false output. This is much harder than falsifying within one oracle.
 - **The multi-oracle layer requires bit-identical deterministic simulation**, not just majority agreement on a value. An adversary who compromises one oracle and feeds it the "right" rating still fails the cross-oracle check unless they can compromise every oracle and produce the same false simulation output across all.
 
+## Existing formal-math substrate to reuse
+
+Aaron 2026-05-21 flagged that oracle / immune-system formal math work already exists in Zeta substrate. The canonical file is [`docs/research/aurora-immune-math-standardization-2026-04-26.md`](../../research/aurora-immune-math-standardization-2026-04-26.md) — a 5-pass cross-AI canonicalized strict version of Amara's Aurora Immune System math (Amara + Otto rigor pass + Gemini surface + Gemini Deep Think + Round-2 Gemini Deep Think canonical-file synthesis). Research-grade specification with typed spaces, corrected equations, bounded scoring functions, test obligations, and explicit non-claims section.
+
+That file's substrate directly composes with this row's multi-oracle layer:
+
+- **Typed spaces + bounded scoring functions** — the formal substrate the cross-oracle DST agreement layer needs for bit-identical comparison
+- **5-pass cross-AI review process** — itself a worked example of multi-oracle agreement (5 reviewers, structured agreement-with-attribution-boundaries, canonicalized strict version per Amara's "winning move is to canonicalize the strict version, not the flattering version")
+- **Round-2 wording correction binding** (deployment vs formal-standardization-PR) — exactly the discipline this row's acceptance criteria need
+
+Implementation work on B-0703 should READ that file FIRST before designing the cross-oracle layer; the typed-space + bounded-scoring formalism is the substrate the multi-oracle math builds ON, not a parallel reinvention.
+
 ## Why DST is the right cross-oracle mechanism
 
 Zeta already has DST (Deterministic Simulation Testing) as a first-class capability:
@@ -157,6 +169,7 @@ The trust-gradient framing is the substrate-honest part: each level is named exp
 - [`.claude/skills/deterministic-simulation-theory-expert/SKILL.md`](../../../.claude/skills/deterministic-simulation-theory-expert/SKILL.md) — DST expert skill for implementation guidance
 - [`.claude/skills/distributed-consensus-expert/SKILL.md`](../../../.claude/skills/distributed-consensus-expert/SKILL.md) — for the within-oracle BFT side
 - [`.claude/rules/only-way-to-lose-is-not-to-play.md`](../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — the additive-game principle the multi-oracle architecture enforces structurally (hoarding throttles itself because non-participating oracles drop out of cross-oracle agreement)
+- [`docs/research/aurora-immune-math-standardization-2026-04-26.md`](../../research/aurora-immune-math-standardization-2026-04-26.md) — Amara's Aurora Immune System formal math (5-pass cross-AI canonicalized); the existing typed-space + bounded-scoring substrate the multi-oracle cross-oracle DST agreement layer should compose with
 
 ## Source
 
