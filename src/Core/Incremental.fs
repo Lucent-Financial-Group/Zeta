@@ -89,14 +89,46 @@ type IncrementalExtensions =
     ///                            but expensive — materializes the full
     ///                            integrated relation every tick)
     ///
-    /// ## How the dispatch works
+    /// ## How the dispatch works (and important side-effects)
     ///
-    /// `q` is a `Stream → Stream` factory. We probe it by applying to
-    /// the delta `input`; the resulting `Stream<'TOut>.Op` carries the
-    /// capability tags from PR 1. We then either return the probed
-    /// output directly (linear case — the probed op IS the correct
-    /// incremental result because linear ops commute with `D`/`I`) or
-    /// throw (sink case) or rebuild via the `D ∘ Q ∘ I` fallback.
+    /// `q` is a `Stream → Stream` factory. We **probe** it by invoking
+    /// `q.Invoke input` *before* deciding the dispatch path; the
+    /// resulting `Stream<'TOut>.Op` carries the capability tags from
+    /// PR 1. The probe is then either:
+    ///
+    ///   - **Linear case**: probed output returned directly (correct
+    ///     because linear ops commute with `D`/`I`); no orphan.
+    ///   - **Sink case**: throws — but the sink operator has *already
+    ///     been registered* in the circuit by the probe `q.Invoke`.
+    ///   - **Fallback case**: probed op kept in circuit as **orphan**
+    ///     (no consumers); fallback rebuilds via `IncrementalizeZSet`.
+    ///
+    /// ## ⚠️ Side-effect warning
+    ///
+    /// **The probe `q.Invoke input` ALWAYS runs once, regardless of
+    /// dispatch path.** This has two implications callers must
+    /// account for:
+    ///
+    ///   1. **Side-effecting builders execute**: if `q` is a factory
+    ///      like `AdvancedExtensions.Inspect` that performs work at
+    ///      construction time (logging, registering hooks, allocating
+    ///      external resources), that work runs **even when the
+    ///      dispatcher throws or falls back**. Use a non-side-effecting
+    ///      `q` factory, or accept the probe-side-effect cost.
+    ///   2. **Circuit is mutated even on the throw path**: when the
+    ///      sink case fires, the sink operator is **already in the
+    ///      circuit** when the exception is raised. The caller's
+    ///      circuit has been modified; catching the exception and
+    ///      continuing leaves an orphan sink that will still be
+    ///      scheduled and ticked. Either don't catch + recover from
+    ///      `IncrementalAuto` exceptions on a circuit you'll continue
+    ///      to use, or accept that the sink op stays registered.
+    ///
+    /// A non-registering probe path would close both gaps but requires
+    /// architectural changes to the `Op` / `Circuit` contract
+    /// (registration rollback isn't currently supported). Tracked as
+    /// future work; the dispatcher's correctness on the happy paths
+    /// (linear + fallback) doesn't depend on it.
     ///
     /// ## Known cost: orphan operator in the non-linear fallback path
     ///
@@ -135,10 +167,13 @@ type IncrementalExtensions =
                 (sprintf
                     "IncrementalAuto: cannot incrementalize a sink operator. \
                      '%s' (id=%d) declared IsSink=true; sinks are terminal \
-                     and excluded from relational composition. Use a \
+                     and excluded from relational composition. Note: the \
+                     probe already registered '%s' in this circuit before \
+                     this check; the orphan sink will be scheduled and \
+                     ticked unless the circuit is discarded. Use a \
                      non-sink operator, or consume the sink's output \
                      directly without incrementalization."
-                    resultOp.Name resultOp.Id)
+                    resultOp.Name resultOp.Id resultOp.Name)
         elif resultOp.IsLinear then
             // Q^Δ = Q. For linear q, q(delta) IS the delta of q(full).
             // The probed output is correct as-is; return directly.

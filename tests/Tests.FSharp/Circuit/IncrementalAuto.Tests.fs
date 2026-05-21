@@ -26,18 +26,6 @@ open Zeta.Core
 //  Helpers — run a circuit a few ticks and capture the output
 // ─────────────────────────────────────────────────────────────────
 
-let private feedAndStep
-    (c: Circuit)
-    (input: ZSetInputHandle<int>)
-    (handle: OutputHandle<ZSet<int>>)
-    (deltas: ZSet<int> list)
-    : ZSet<int> list =
-    [ for delta in deltas ->
-        input.Send delta
-        c.Step()
-        handle.Current ]
-
-
 // ─────────────────────────────────────────────────────────────────
 //  Linear case — Map. IncrementalAuto should return Q directly.
 // ─────────────────────────────────────────────────────────────────
@@ -133,13 +121,16 @@ let ``IncrementalAuto throws when the operator is a sink`` () =
 
 
 // ─────────────────────────────────────────────────────────────────
-//  Multi-tick determinism: linear case should produce zero-allocation
-//  passthrough behavior — output stream is literally the probed op
-//  (same reference), so the Op count after IncrementalAuto matches
-//  the Op count after a direct Q.Invoke.
+//  Structural fast-path verification — the linear case should take
+//  the passthrough dispatch (no Integrate, no Differentiate), so the
+//  number of operators registered after `IncrementalAuto` matches
+//  the count from a direct `q.Invoke` (one operator: just the Map).
 //
-//  This is the "structural" test that verifies the dispatcher took
-//  the fast path rather than the fallback.
+//  This test verifies the dispatch path via operator-count delta —
+//  the indirect-but-deterministic signal that the fast path was
+//  taken. A stronger reference-equality assertion (the returned
+//  Stream's underlying Op IS the probed Op) would require exposing
+//  the internal `Stream.Op` accessor, which is internal-only today.
 // ─────────────────────────────────────────────────────────────────
 
 [<Fact>]
@@ -158,7 +149,7 @@ let ``IncrementalAuto with linear op adds exactly one operator (passthrough, no 
 
 
 [<Fact>]
-let ``IncrementalAuto with non-linear op adds three operators (Integrate + Q-orphan + new Q + Differentiate)`` () =
+let ``IncrementalAuto with non-linear op adds four operators (probe-orphan + Integrate + new Q + Differentiate)`` () =
     let c = Circuit()
     let input = c.ZSetInput<int>()
     let countBefore = c.OperatorCount
