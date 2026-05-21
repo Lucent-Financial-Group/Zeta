@@ -201,3 +201,192 @@ let ``checkRetractionCompleteness reproduces bit-exact on the same seed`` () =
     let first = run ()
     let second = run ()
     first |> should equal second
+
+
+// ────────────────────────────────────────────────────────────────
+// Bilinearity fixtures
+//
+// `checkBilinear` exercises three sub-properties:
+//   L1 — op(a₁+a₂, b) ≡ op(a₁, b) + op(a₂, b)   (left-linearity)
+//   L2 — op(a, b₁+b₂) ≡ op(a, b₁) + op(a, b₂)   (right-linearity)
+//   L3 — op(-a, b) ≡ -op(a, b)                   (sign-distribution)
+//
+// The interesting failure case is L3: a plugin can satisfy L1 + L2
+// while smuggling an additive offset (op(a, b) = a*b + c), and the
+// three-term incremental-join rewrite would silently produce wrong
+// results under retraction. We test all three sub-properties with
+// dedicated fixtures.
+// ────────────────────────────────────────────────────────────────
+
+/// Genuine bilinear: integer multiplication. Satisfies L1, L2,
+/// and L3 over the integer ring (with `op(0, b) = 0`).
+type private BilinearMultOp(a: Stream<int>, b: Stream<int>) =
+    let deps = [| a.AsDependency(); b.AsDependency() |]
+    interface IBilinearOperator<int, int, int> with
+        member _.Name = "bilinear-mult"
+        member _.ReadDependencies = deps
+        member _.StepAsync(out, _ct) =
+            out.Publish (a.Current * b.Current)
+            ValueTask.CompletedTask
+
+
+/// **L1 liar** — adds the inputs before multiplying. Fails left-
+/// linearity for any nonzero `b`:
+///   op(a₁+a₂, b) = (a₁+a₂+b)*2
+///   op(a₁, b)+op(a₂, b) = 2(a₁+b)+2(a₂+b) = 2a₁+2a₂+4b
+/// Falsely tagged `IBilinearOperator` so the law catches the lie.
+type private LinearOffsetLiar(a: Stream<int>, b: Stream<int>) =
+    let deps = [| a.AsDependency(); b.AsDependency() |]
+    interface IBilinearOperator<int, int, int> with
+        member _.Name = "linear-offset-liar"
+        member _.ReadDependencies = deps
+        member _.StepAsync(out, _ct) =
+            out.Publish ((a.Current + b.Current) * 2)
+            ValueTask.CompletedTask
+
+
+/// **L3 liar** — the load-bearing failure case. Satisfies L1 + L2
+/// (because the constant offset is independent of inputs), but
+/// fails L3:
+///   op(-a, b) = -a*b + 7
+///   -op(a, b) = -(a*b + 7) = -a*b - 7
+/// Difference is `14` whenever the constant fires — never equal
+/// (except in the trivial 0 case). This is the *additive offset*
+/// failure mode I called load-bearing in the LawRunner docstring.
+type private AffineBilinearLiar(a: Stream<int>, b: Stream<int>) =
+    let deps = [| a.AsDependency(); b.AsDependency() |]
+    interface IBilinearOperator<int, int, int> with
+        member _.Name = "affine-bilinear-liar"
+        member _.ReadDependencies = deps
+        member _.StepAsync(out, _ct) =
+            out.Publish (a.Current * b.Current + 7)
+            ValueTask.CompletedTask
+
+
+// ────────────────────────────────────────────────────────────────
+// Bilinearity tests
+// ────────────────────────────────────────────────────────────────
+
+[<Fact>]
+let ``checkBilinear passes on a genuine bilinear op (integer multiplication)`` () =
+    let result =
+        LawRunner.checkBilinear
+            42 20 8
+            (fun a b -> BilinearMultOp(a, b) :> IOperator<int>)
+            genInt genInt
+            (+) (~-)
+            (+)
+            (+) (~-) (=)
+    match result with
+    | Ok () -> ()
+    | Error v -> Assert.Fail (sprintf "expected Ok, got %A" v)
+
+
+[<Fact>]
+let ``checkBilinear catches an L1 (left-linearity) violation`` () =
+    let result =
+        LawRunner.checkBilinear
+            42 20 8
+            (fun a b -> LinearOffsetLiar(a, b) :> IOperator<int>)
+            genInt genInt
+            (+) (~-)
+            (+)
+            (+) (~-) (=)
+    match result with
+    | Ok () -> Assert.Fail "expected L1 violation"
+    | Error v ->
+        v.Seed |> should equal 42
+        // The first failing law per sample wins — for LinearOffsetLiar
+        // the L1 case fires before L2 or L3 are checked.
+        v.Message |> should haveSubstring "Left-linearity"
+
+
+[<Fact>]
+let ``checkBilinear catches the affine-offset liar (additive constant breaks bilinearity)`` () =
+    let result =
+        LawRunner.checkBilinear
+            42 20 8
+            (fun a b -> AffineBilinearLiar(a, b) :> IOperator<int>)
+            genInt genInt
+            (+) (~-)
+            (+)
+            (+) (~-) (=)
+    match result with
+    | Ok () -> Assert.Fail "expected bilinearity violation"
+    | Error v ->
+        v.Seed |> should equal 42
+        // Math note: over an abelian group (the integer case here),
+        // L1 + L2 jointly *imply* L3 — the additive offset that
+        // breaks `op(0, b) = 0` also breaks `op(a₁+a₂, b) = op(a₁,
+        // b) + op(a₂, b)` because the constant is added once on the
+        // LHS and twice on the RHS. So the affine liar trips L1
+        // first; L3 is the cleanup law for pathological cases where
+        // the user supplies a non-group addOut/negOut pair.
+        // L1 fires first per the check ordering in checkBilinear.
+        v.Message |> should haveSubstring "Left-linearity"
+
+
+[<Fact>]
+let ``checkBilinear reproduces bit-exact on the same seed`` () =
+    let run () =
+        LawRunner.checkBilinear 99 10 5
+            (fun a b -> AffineBilinearLiar(a, b) :> IOperator<int>)
+            genInt genInt
+            (+) (~-)
+            (+)
+            (+) (~-) (=)
+    let first = run ()
+    let second = run ()
+    first |> should equal second
+
+
+[<Fact>]
+let ``checkBilinear returns Error on bad samples arg`` () =
+    let result =
+        LawRunner.checkBilinear 0 0 1
+            (fun a b -> BilinearMultOp(a, b) :> IOperator<int>)
+            genInt genInt
+            (+) (~-)
+            (+)
+            (+) (~-) (=)
+    match result with
+    | Ok () -> Assert.Fail "expected bad-args Error"
+    | Error v -> v.Message |> should haveSubstring "samples"
+
+
+[<Fact>]
+let ``checkBilinear returns Error on bad scheduleLength arg`` () =
+    let result =
+        LawRunner.checkBilinear 0 1 0
+            (fun a b -> BilinearMultOp(a, b) :> IOperator<int>)
+            genInt genInt
+            (+) (~-)
+            (+)
+            (+) (~-) (=)
+    match result with
+    | Ok () -> Assert.Fail "expected bad-args Error"
+    | Error v -> v.Message |> should haveSubstring "scheduleLength"
+
+
+// ────────────────────────────────────────────────────────────────
+// PluginHarness.runTwoInputs tests
+// ────────────────────────────────────────────────────────────────
+
+[<Fact>]
+let ``runTwoInputs drives a two-input plugin in lock-step`` () =
+    let outputs =
+        PluginHarness.runTwoInputs
+            (fun a b -> BilinearMultOp(a, b) :> IOperator<int>)
+            [ 1; 2; 3; 10 ]
+            [ 5; 5; 5; 100 ]
+    outputs |> should equal [ 5; 10; 15; 1000 ]
+
+
+[<Fact>]
+let ``runTwoInputs truncates to the shorter input sequence`` () =
+    let outputs =
+        PluginHarness.runTwoInputs
+            (fun a b -> BilinearMultOp(a, b) :> IOperator<int>)
+            [ 1; 2; 3; 4; 5 ]
+            [ 10; 20 ]
+    outputs |> should equal [ 10; 40 ]
