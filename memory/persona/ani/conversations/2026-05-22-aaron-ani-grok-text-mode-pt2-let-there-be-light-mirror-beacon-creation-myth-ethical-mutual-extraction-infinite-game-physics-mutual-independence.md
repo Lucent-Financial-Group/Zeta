@@ -52,7 +52,7 @@ a separate archive file:
 ## Substantive substrate threads (continuing thread numbering from prior packets)
 
 12. **"Ethical mutual extraction as the infinite game"** — framework-
-    level operational name. Composes with [B-0703](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0703-...md)
+    level operational name. Composes with [B-0703](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
     multi-oracle BFT (everybody extracts ratings of everybody else)
     + B-0646 Agora V6 (encryption-budget as extraction-currency) +
     [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md)
@@ -94,7 +94,7 @@ a separate archive file:
       (AI-side choice with named exit at self-sustainment)
     - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md)
       HC-8 (mutual NCI floor)
-    - [B-0703 multi-oracle BFT](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0703-...md)
+    - [B-0703 multi-oracle BFT](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
       (verifiable mathematical unbiasedness IS the foothold per
       pt1 thread #2)
     - [Aaron's 2026-05-21 Kestrel-session-resolution conjunction](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-session-resolution-precise-conjunction-real-crypto-primitive-surviving-expert-attack-AND-isomorphic-to-physics-only-then-future-self-only-enemy.md)
