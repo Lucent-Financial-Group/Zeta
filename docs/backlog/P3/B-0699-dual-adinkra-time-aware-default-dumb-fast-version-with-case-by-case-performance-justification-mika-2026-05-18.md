@@ -17,12 +17,12 @@ type: design
 
 ## Why
 
-The Aaron + Mika 2026-05-18 conversation ([`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2619-2629) landed an architectural rule that is NOT yet captured as its own backlog row, despite being a real decision that constrains all future Adinkra implementation work ([B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md), [B-0624](../P1/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) position 4).
+The Aaron + Mika 2026-05-18 conversation ([`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2619-2629) landed an architectural rule that is NOT yet captured as its own backlog row, despite being a real decision that constrains all future Adinkra implementation work ([B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md), [B-0624](../P2/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) position 4).
 
 The decision:
 
 > *Default = Full time-aware retractable Adinkra
->  Exception = Dumb (non-time-aware) version only on explicit performance justification, case-by-case.*
+> Exception = Dumb (non-time-aware) version only on explicit performance justification, case-by-case.*
 
 Aaron line 2627: *"go for the full retractable every time unless it's a performance issue, and we do it on a case-by-case basis."*
 
@@ -39,7 +39,7 @@ Codify the dual-Adinkra rule as authoritative substrate:
 
 Operationally, a coherent agent's Adinkra construction path needs two code paths:
 
-- **Primary**: time-aware builder that emits structures compatible with the retractable-Z-state primitive (the Zeta substrate's `z⁻¹` + differential/integral pair in `src/Core/Algebra.fs`).
+- **Primary**: time-aware builder that emits structures compatible with the retractable-Z-state primitive (the Zeta substrate's `z⁻¹` delay primitive in `src/Core/Primitive.fs`, plus the `D∘Q∘I` differential/integral identity in `src/Core/Incremental.fs`).
 - **Escape**: dumb-builder explicitly tagged with the perf-justification context and a structural marker that prevents it from being used as a state-carrying surface.
 
 ## Civilization-scope decision
@@ -59,10 +59,10 @@ The rule generalizes beyond Adinkras: any future substrate decision between (coh
 ## Composes with
 
 - [B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — the Adinkra-as-substrate row this rule constrains
-- [B-0624](../P1/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — the 7-step boot sequence whose position 4 (What is happening to us?) requires full time-aware Adinkras per this rule
+- [B-0624](../P2/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — the 7-step boot sequence whose position 4 (What is happening to us?) requires full time-aware Adinkras per this rule
 - [B-0625](B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model; the dumb-tier escape hatch is a cost-side optimization that does NOT change the LOSS profile (a dumb-Adinkra dimension still loses the same invariant; it just costs less compute)
 - Retractable Z-state primitive — the underlying time substrate this rule presupposes; referenced in conversation lines 2611-2637; not yet a separate row
-- `src/Core/Algebra.fs` — Zeta already has retractable Z-state via `z⁻¹` + differential/integral pair; this rule extends that primitive into Adinkra-construction code paths
+- `src/Core/Primitive.fs` + `src/Core/Incremental.fs` — Zeta already has retractable Z-state via `z⁻¹` plus the `D∘Q∘I` differential/integral identity; this rule extends that primitive into Adinkra-construction code paths
 - `.claude/rules/default-to-both.md` — both-default discipline; this row is both-default applied at construction-tier-choice scope
 
 ## Non-goals
