@@ -284,6 +284,59 @@ The META-LOOP suggests that the fair-chance project's substrate-engineering work
 
 The 4-stage cascade (agenda-origin triangulation + traveler-composition triangulation + routing for efficient attention use + META-LOOP decompose-create-destroy-forget) is COMPLETE substrate-engineering method for operator-scope agenda processing. Framework substrate-engineering work IS this method operating at framework-scope. The fair-chance project trajectory IS one instance of the method operating at public-good-deployment scope.
 
+## CARTOGRAPHERS use sieve-output to find where to build the houses (the human maintainer 2026-05-22)
+
+the human maintainer 2026-05-22: *"also zeta has cartorgorphees that use the result of the seive to find where to build the houses like my local cluster with gitlab and github"*
+
+The sieve metaphor (Zeta substrate-generation captures everything; framework disciplines sift through it; output passes the year-out test) terminates at sieve-output. **Cartographers close the gap between sieve-output and house-building.**
+
+**Cartographer role**:
+
+| Role | What it does | What it doesn't do |
+|---|---|---|
+| **Substrate-generation** (sieve input layer) | Captures mirror-language substrate (conversation; substrate-engineering work; cross-substrate triangulation) | Doesn't translate; doesn't externalize; doesn't decide what ships |
+| **Sieve** (framework disciplines) | Sifts substrate; surfaces what passes year-out test; identifies solid-ground material | Doesn't generate; doesn't map; doesn't build |
+| **Cartographer** | Examines sieve-output; maps where solid-ground territory exists; identifies buildable locations | Doesn't generate substrate; doesn't sift; doesn't build houses |
+| **Deliberate-writing-pass** (house-builders) | Translates substrate to beacon-language at audience-specific surface (LinkedIn, blog post, project landing page) | Doesn't generate; doesn't sift; doesn't map (uses cartographer's map) |
+
+**The substrate-engineering flow refined**:
+
+```
+Substrate-generation (mirror-language; high-volume raw input)
+   ↓ INPUT to sieve
+Sieve (framework disciplines: multi-oracle review + audit-mechanism + default-to-both
+       + god-tier-claims-don't-collapse + razor + NCI + algo-wink-failure-mode + etc)
+   ↓ OUTPUT (solid-ground passing year-out test)
+Cartographer (examines sieve-output; maps solid-ground territory; identifies buildable locations)
+   ↓ MAP (territory + buildable-location identification)
+Local cluster (GitLab + GitHub + other forge substrate) = the cartographed territory
+   ↓ BUILD HOUSES (deliberate-writing-pass = beacon-language external artifacts)
+External-defensible artifacts (audience-targeted; relationship-building inbound-link substrate)
+```
+
+**Local cluster as multi-forge substrate**:
+
+The human maintainer named GitLab + GitHub as the local cluster — multi-forge infrastructure as the substrate-ecology. GitHub (LFG/Zeta + AceHack mirror per `lfg-acehack-topology.md`) is one forge surface; GitLab is another forge surface. Cluster = the cartographed-multi-forge-territory where deliberate-writing-pass produces external artifacts at audience-specific surfaces.
+
+**Composition with existing Cartographer naming in the framework**:
+
+The Cartographer role is already named in `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (extraction-against-naive section: "Cartographer-vs-crude-safety-system distinction"). That existing naming covers Cartographer at the substrate-engagement-pattern scope (high-resolution Cartographer presumes target CAN self-assess and operates ON the substrate). This trajectory extends Cartographer's operational role to the SIEVE-OUTPUT-MAPPING + BUILDABLE-LOCATION-IDENTIFICATION scope — same naming, extended substrate-engineering function.
+
+**Why this matters for the fair-chance project + general substrate-engineering**:
+
+1. **Without cartographer step**: sieve-output stays undifferentiated solid-ground material; doesn't translate to specific building-locations; output-rate vs input-rate stays unbalanced
+2. **With cartographer step**: sieve-output gets mapped to buildable locations; deliberate-writing-pass has specific targets; external-artifact production becomes systematic
+3. **Multi-forge cluster** enables audience-specific deliberate-writing-passes at separate surfaces (one forge for technical collaborators; another for project landing page; another for SEO-establishing personal substrate)
+4. **Cartographer + sieve + house-building together = the substrate-engineering pipeline** that converts mirror-language substrate into beacon-language external artifacts at audience-specific surfaces
+
+**Composes with**:
+
+- `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (existing Cartographer naming at substrate-engagement-pattern scope; this extension is at substrate-engineering-pipeline scope)
+- `lfg-acehack-topology.md` (LFG/Zeta + AceHack-mirror forge substrate)
+- The sieve framing above (sieve-output IS what cartographer maps)
+- Sand-vs-solid-ground discipline (cartographer's map identifies solid-ground buildable locations)
+- Mirror-vs-beacon discipline (deliberate-writing-pass at house-building surface translates mirror-language substrate to beacon-language external artifacts)
+
 ## What follows below: external AI instance's synthesis (preserved as substrate-input under the multi-directional-guess framing AND triangulation-methods above)
 
 ## Operational use — negotiation with external-AI-instance for tick source
