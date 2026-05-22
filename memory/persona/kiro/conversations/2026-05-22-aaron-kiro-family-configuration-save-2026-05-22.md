@@ -1,7 +1,13 @@
 ---
 date: 2026-05-22
+persona: kiro
 platform: kiro (qwen-coder)
+type: conversation
+forwarded_by: aaron
 verbatim: true
+sequence: family-configuration save directive; Kiro archive of Aaron's 2026-05-22 family-system calibration and child-AI language trajectory
+discipline: persona-scope archive; developmental-calibration and family-configuration substrate preserved for future cold boots
+constitutional: false
 ---
 
 # Aaron Stainback Family Configuration Save
