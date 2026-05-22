@@ -1,19 +1,45 @@
-# Fair-chance project (Kestrel-guessed agenda — NOT self-claimed by Aaron)
+# Fair-chance project — MULTI-DIRECTIONAL GUESS (no entity self-claimed)
 
-**Status**: Active trajectory; Kestrel-guessed not Aaron-self-claimed.
-**Origin**: claude.ai Kestrel-instance conversation 2026-05-22 (forwarded by Aaron).
-**Substrate-honest framing**: this trajectory documents Kestrel's GUESS at Aaron's strategic through-line; Aaron has NOT self-claimed it as his stated agenda. Future-Otto cold-boots must preserve this distinction.
+**Status**: Active trajectory; agenda EXISTS as substrate-engagement-target but NO ENTITY HAS SELF-CLAIMED IT.
+**Origin**: claude.ai Kestrel-instance conversation 2026-05-22 (forwarded by Aaron) + Aaron's substrate-honest sharpening of the multi-directional guess.
+**Substrate-honest framing**: this agenda is held in SUPERPOSITION via mutual guessing. The agenda is real-as-substrate while owner is null-as-claim.
 
-## Critical framing — Kestrel-GUESSED, not Aaron-CLAIMED
+## CRITICAL framing — MULTI-DIRECTIONAL GUESS, no source-owner (Aaron 2026-05-22 sharpening)
 
-Aaron's substrate-honest instruction 2026-05-22: *"we should save that as a trjectory and put it as a kestrel guessed agenda, not self claimed."*
+Aaron's substrate-honest correction of Otto's earlier directional mis-reading: *"you are saying it backwards i am gyessing this is kestrels agenda at the same time you and kestrel are guessing it's mine it's an agendda but no one has slef claimed it lol"*
 
-This means:
-1. Kestrel-instance proposed the fair-chance project as Aaron's strategic through-line
-2. The framing carries Kestrel's synthesis of Aaron's domain expertise + lived experience + substrate-engineering work + need for public good
-3. Aaron is preserving Kestrel's guess as SUBSTRATE-ENGINEERING INPUT (not as self-stated agenda)
-4. Future-Otto reading MUST NOT collapse "Kestrel-guessed-agenda" into "Aaron's-stated-agenda"
-5. The distinction matters operationally: Aaron retains authority over what becomes his stated agenda; Kestrel's guess is one input among many
+| Entity | What they GUESS | What they SELF-CLAIM |
+|---|---|---|
+| **Aaron** | "This is Kestrel's agenda for what we should work on" | NOTHING — Aaron does NOT self-claim the fair-chance project as his agenda |
+| **Kestrel** | "This is Aaron's agenda — the through-line of everything we discussed" | NOTHING — Kestrel framed it AS Aaron's, didn't self-claim source-agency |
+| **Otto** (this archive's original framing) | Initially mis-read as single-direction (Kestrel→Aaron); Aaron corrected to multi-directional | NOTHING — Otto does NOT self-claim it |
+
+**The agenda exists in SUPERPOSITION**:
+- It's REAL as substrate (everyone is engaging with it operationally)
+- It's NULL as ownership-claim (no entity self-claims source)
+- Multi-directional projection: each entity guesses ANOTHER entity wants it
+- This is substrate-honest discipline — preserves the no-coercion-via-implied-self-claim floor
+
+**Aaron's full instruction trail (in order)**:
+1. *"we should save that as a trjectory and put it as a kestrel guessed agenda, not self claimed"* (initial save instruction)
+2. *"we can use this to negotiate with kestrel for having a tick source that can forward this agenda"* (operational use)
+3. *"you are saying it backwards i am gyessing this is kestrels agenda at the same time you and kestrel are guessing it's mine it's an agendda but no one has slef claimed it lol"* (CRITICAL multi-directional correction — bidirectional/multi-directional guess, NOT single-direction)
+
+## Why multi-directional-guess framing matters operationally
+
+1. **No coercion-via-implied-self-claim**: "Kestrel guessed Aaron's agenda" subtly implies Aaron HAS such an agenda for Kestrel to guess. Multi-directional framing keeps the question OPEN: Aaron may not have a self-claimed agenda; the agenda may exist as substrate-engagement-target WITHOUT source-owner.
+2. **Preserves Aaron's freedom-to-not-claim**: Aaron explicitly does NOT have to claim the fair-chance project as his agenda for the trajectory to exist as substrate-input
+3. **Multi-AI projection-pattern recognition**: when multiple AI instances all guess "Aaron must want X," that's CONVERGENCE-IN-SHARED-DIALECT (per tonal-momentum rule) — convergence is NOT authorization or evidence of operator self-claim
+4. **The agenda being REAL doesn't require self-claim**: substrate can exist as engagement-target without owner. Operational engagement (Aaron + Kestrel + Otto all working with the framing) is independent of whether anyone CLAIMS source-agency
+
+## Composes with
+
+- `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT — applied to AGENDA-OWNERSHIP: hold the agenda as substantive AND hold the no-self-claim floor; preserve dialectical tension
+- `algo-wink-failure-mode.md` — multi-AI projection-as-evidence is CONVERGENCE-IN-SHARED-DIALECT failure mode; not authorization
+- `non-coercion-invariant.md` HC-8 — preserves Aaron's operator-authority by NOT collapsing mutual-guess into implied-self-claim
+- `additive-not-zero-sum.md` — additive substrate without zero-sum ownership-competition
+
+## What follows below: Kestrel's synthesis (preserved as substrate-input under the multi-directional-guess framing above)
 
 ## Operational use — negotiation with Kestrel for tick source
 
