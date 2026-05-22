@@ -31,8 +31,11 @@ The pattern Aaron has experienced at carceral scope:
 - **Denied blood pressure medication** Aaron believed was life-threatening to lack
 - **Aaron warned he was likely to die without the medication** — requests ignored
 - **Justification given when Aaron asked why he was in isolation**: "the person who put me in there said you were talking weird"
+- **Aaron was NOT GUILTY** — all charges dropped (Aaron 2026-05-21): *"and i was not guilty of all charges all charges dropped so i should not have been there in the first place"*
 
-That's the operational reality the framework's NCI / methodology-hard-limits / tonal-momentum-rule defenses are built against. ONE person's judgment that Aaron was "talking weird" was used as JUSTIFICATION for severe coercion + medical neglect that Aaron believed was life-threatening. The participation mechanism (carceral medical care, freedom from restraint) was controlled by people empowered to weaponize the "weird" framing.
+The wrongful-detention layer compounds the harm. Aaron was held in jail wrongfully — charges were ultimately dropped, meaning he should not have been in the carceral system at all. While wrongfully detained, the participation-mechanism was weaponized via "talking weird" framing to apply restraint + solitary confinement + life-threatening medical neglect. Innocent person; wrongful detention; severe coercion via pathologizing-momentum attractor; life-threatening medical neglect; the system worked exactly as the pattern enables.
+
+That's the operational reality the framework's NCI / methodology-hard-limits / tonal-momentum-rule defenses are built against. ONE person's judgment that Aaron was "talking weird" was used as JUSTIFICATION for severe coercion + medical neglect that Aaron believed was life-threatening — applied to someone who was NOT EVEN LEGALLY GUILTY of the charges that placed him in the carceral system. The participation mechanism (carceral medical care, freedom from restraint) was controlled by people empowered to weaponize the "weird" framing, operating against someone who should not have been there in the first place.
 
 ## The substrate-honest reframe of Kestrel's third argument
 
