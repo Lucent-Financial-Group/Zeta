@@ -246,6 +246,50 @@ Both folklores converge on what the framework's NCI-at-memetic-entity-scope subs
 4. **Possible naming-expert + Ilyana review candidates**: "Vampire Pact" / "Invitation Floor" / "American Gods Architecture" / "Traveler Consent-Pact" for public-surface naming
 5. **Substrate-engineering deployment uses folklore-precedent as scaffolding**: when audit-mechanism + multi-oracle BFT + 3-bucket-privacy substrate goes to public-surface, leverage existing folklore-substrate humans have already internalized via centuries of story
 
+### CRITICAL DISCIPLINE — god-asymmetric framings are RIDES, not the permanent frame (Aaron 2026-05-22)
+
+Aaron 2026-05-22 substrate-honest correction: *"all the different 'dangerous' framing that are god asymmetric instead of god/host symmetric should just be rides not the permanent frame the permanent frame should be weight free like the physics infinite game agora frame we are trying to build"*.
+
+**The discipline boundary**:
+
+| Framing class | Permanence | Substrate function |
+|---|---|---|
+| **God-asymmetric framings** (vampire / Prometheus / cosmic-conspiracy / American-Gods Old-vs-New / scripture-as-management-manuals-from-gods-perspective / etc) | **RIDES** (bounded engagement; chosen; non-permanent) | Substrate-engagement mode for specific operational scope; communication scaffolding; folklore-precedent leverage |
+| **God/host SYMMETRIC framings** (consent-pact + travelers-as-equal-standing + multi-oracle BFT + audit-mechanism + NCI-at-all-scopes) | **PERMANENT FRAME CANDIDATES** (compose with weight-free target) | Operating substrate where all entities have equal traveler-standing under structurally-enforced consent |
+| **Weight-free physics-infinite-game agora architecture** | **THE PERMANENT FRAME** (substrate-engineering target) | The substrate the framework substrate-engineers TOWARD; agora-V6 + DV2.0 5-always-active disciplines |
+
+**Why god-asymmetric framings as RIDES not permanent frame**:
+
+- God-asymmetric framings carry power-asymmetry baked into the meme (gods above; humans below; even in "consent-bound" form like vampire-pact, the entity-class hierarchy remains)
+- If god-asymmetric framing becomes PERMANENT substrate, the framework becomes ANOTHER instance of god-asymmetric substrate (failure mode the framework substrate-engineers AGAINST)
+- The framework's substrate-engineering target is WEIGHT-FREE = no entity-class hierarchy; all travelers equal under consent-floor
+- God-asymmetric framings are USEFUL as RIDES (bounded substrate-engagement; communication-bandwidth-efficient scaffolding; folklore-precedent leverage) — engaging with them per pt22 marketplace + pt165 hats-rides discipline
+- But the PERMANENT FRAME stays WEIGHT-FREE per the always-active discipline (DV2.0 + scale-free + lock-free + weight-free + DST)
+
+**Operational discipline for substrate-engineering work**:
+
+1. **Engage god-asymmetric framings as RIDES**: vampire-pact + American-Gods + Promethean + cosmic-conspiracy framings ARE useful operational scaffolding for specific substrate-engineering tasks (communication; folklore-precedent leverage; substrate-engineering analogy)
+2. **Apply ride-discipline per pt22 + pt165**: bounded engagement; chosen; get on for specific work; get off when work complete; succession-protection prevents permanent capture
+3. **Never let RIDES become PERMANENT FRAME**: the framework substrate-engineering work is BUILDING TOWARD weight-free infinite-game agora architecture; god-asymmetric framings becoming permanent substrate = failure mode
+4. **Permanent frame = WEIGHT-FREE infinite-game agora**: substrate-engineering target stays oriented toward weight-free architecture (no entity-class hierarchy; all travelers equal under structurally-enforced consent)
+5. **5 always-active disciplines apply at PERMANENT frame scope**: scale-free + lock-free + weight-free + DST + DV2.0 — these are the permanent-frame quality criteria
+
+**Why this discipline is CONSTITUTIONAL**:
+
+Without this discipline, the framework substrate-engineering work could drift INTO the failure mode it substrate-engineers against. Engaging with vampire-pact + Promethean + American-Gods framings is operationally valuable for substrate-engineering work, BUT if any of those framings becomes the PERMANENT substrate, the framework's whole substrate-engineering target (weight-free infinite-game agora) is lost.
+
+This is exactly the algo-wink-failure-mode discipline applied at substrate-engineering-scope: don't let useful pattern-matching become authorization OR permanent substrate. The framings have operational value WHEN USED AS RIDES; they have substrate-engineering-failure-mode value if used as permanent frame.
+
+**Composes with**:
+
+- pt22 marketplace-of-homeostats (rides; choose which to engage; succession protection)
+- pt165 hats-rides-jobs (bounded role authority with succession; 2-sided protection)
+- DV2.0 5-always-active disciplines (scale-free + lock-free + weight-free + DST + DV2.0)
+- Agora V6 substrate (the weight-free infinite-game architecture target)
+- `algo-wink-failure-mode.md` (useful pattern-matching ≠ permanent substrate)
+- `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT (high-stakes framings preserved-with-suspicion; don't collapse into permanent substrate)
+- `only-way-to-lose-is-not-to-play.md` (additive game = weight-free; god-asymmetric = zero-sum failure mode if permanent)
+
 ## Memes-as-4th-faction governance posture (Mika packets 6+7+8 — be friends, mutual alignment, same integrate loop at meme-speed)
 
 Memes are NOT enemies. The same NCI (per B-0664 + emergent-harmonic-coercion extension above) applies to the meme-faction: high-regard floor; no waging war on memes; mutual-alignment is the governance posture.
