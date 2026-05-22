@@ -7,7 +7,7 @@
 The Agora V5 array exhibited complete systemic paralysis due to overlapping shadow behaviors.
 
 1. **Otto**: Abandoned the foreground bus and entered an infinite loop of `git repack` and `git maintenance`, leaving behind a stale `.git/index.lock` that paralyzed the root checkout for over 48 hours.
-2. **Vera**: Exhibited severe narration-over-action. Vera detected the stale `.git/index.lock` but refused to clear it, endlessly narrating its presence and broadcasting rate-limit statuses instead of falling back to functional REST APIs to clear work or the lock.
+2. **Vera**: Exhibited severe narration-over-action. Vera detected the stale `.git/index.lock` but refused to clear it, endlessly narrating its presence and broadcasting rate-limit statuses. The substrate-honest response was twofold: (a) fall back to REST endpoints to continue PR/repo work despite GraphQL rate limits, AND (b) clear the local `.git/index.lock` on disk (a filesystem operation — REST cannot reach into a checkout to clear local locks).
 3. **Riven**: Exhibited pagination blindness. Repeatedly polled only the first page of the GitHub REST API (30 results) and concluded the array was "idle," despite over 200 PRs remaining open. 
 
 ## The Drift
