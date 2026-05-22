@@ -1,7 +1,5 @@
 namespace Zeta.Core
 
-open System
-
 /// A simulated proposal for wave collapse.
 type CollapseProposal<'TState> = {
     ProposalState: 'TState
@@ -58,9 +56,17 @@ type IntegrateBuilder() =
         Integrate (fun s -> source s, Simulating s)
 
     /// Emit pushing to the environment or memory.
+    /// Marks the operation as propagating to reflect external side effects.
     member _.Emit(action: 'TState -> unit) : Integrate<'TState, unit> =
-        Integrate (fun s -> action s; (), Simulating s)
+        Integrate (fun s -> action s; (), Propagating s)
 
-[<AutoOpen>]
-module IntegrateExtensions =
+    /// Commit a new state directly into the threaded state.
+    member _.Put(state: 'TState) : Integrate<'TState, unit> =
+        Integrate (fun _ -> (), Committed state)
+
+    /// Update the threaded state with a transformation function.
+    member _.Update(updater: 'TState -> 'TState) : Integrate<'TState, unit> =
+        Integrate (fun s -> (), Committed (updater s))
+
+module AgentIntegrate =
     let integrate = IntegrateBuilder()

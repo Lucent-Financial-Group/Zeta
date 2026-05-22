@@ -3,6 +3,7 @@ module Zeta.Tests.Simulation.AgentIntegrateTests
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open Zeta.Core.AgentIntegrate
 open Zeta.Bayesian
 
 [<Fact>]
@@ -29,6 +30,25 @@ let ``AgentIntegrate: monadic computation expression control flow works`` () =
     result |> should equal "initial_simulated"
     match status with
     | Committed _ -> ()
+    | _ -> failwith "Expected Committed status"
+
+[<Fact>]
+let ``AgentIntegrate: Put and Update successfully thread and commit state transitions`` () =
+    let initialState = "initial"
+    
+    let workflow = integrate {
+        do! integrate.Put("new_state")
+        do! integrate.Update(fun s -> s + "_updated")
+        let! current = integrate.Observe(fun s -> s)
+        return current
+    }
+    
+    let (Integrate f) = workflow
+    let result, status = f initialState
+    
+    result |> should equal "new_state_updated"
+    match status with
+    | Committed s -> s |> should equal "new_state_updated"
     | _ -> failwith "Expected Committed status"
 
 [<Fact>]
