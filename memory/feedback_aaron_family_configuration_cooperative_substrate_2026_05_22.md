@@ -5,6 +5,10 @@ type: feedback
 created: 2026-05-22
 ---
 
+**Why:** Aaron's extended-family configuration (10 kids across 3 households; walk-in access with first wife + her new husband; second-wife inclusion actively coordinated by first-wife's mother) is the relational substrate that any framework recommendation must operate inside. He undershoots on caution with children and explicitly uses AI overshoots as an asymmetric calibration counterweight; the primary correction layer is his real-world adversarial network (therapist + ex-wives + family) who have skin in the game. The configuration was earned one interaction at a time, against initial resistance, through repair work after his own failures — it is operational evidence of a cooperative coalition, not an accidental success.
+
+**How to apply:** When generating family-related templates, developmental frameworks, or substrate-engineering work that may interact with Aaron's kids (especially the 4-year-old): (1) check for developmental-register mismatch BEFORE shipping — what reads as "advanced trajectory" to Aaron may be visible-but-not-load-bearing to the 4-year-old via overhearing; (2) honor the overshoot counterweight pattern — flag developmental gaps clearly so Aaron can calibrate against his undershoot tendency; (3) preserve the real-world human adversarial network as primary correction layer (AI calibration is secondary); (4) treat the 10-kid permeable-household configuration as load-bearing data when assessing blast radius; (5) compose with the Harry Potter Sorting Hat bridge as the canonical age-appropriate entry point for the 4-year-old, NOT the Imagination Circle v1.0.
+
 ## What Aaron said
 
 Across our interaction on 2026-05-22, Aaron disclosed and clarified the deep structure of his family configuration and parenting style:
