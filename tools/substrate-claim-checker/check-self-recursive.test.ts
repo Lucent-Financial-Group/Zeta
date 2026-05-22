@@ -42,6 +42,10 @@ describe("parseDirective", () => {
     expect(parseDirective("count")).toEqual(["count"]);
   });
 
+  test("parses bare existence topic (v0.9.1)", () => {
+    expect(parseDirective("existence")).toEqual(["existence"]);
+  });
+
   test("parses single-element array", () => {
     expect(parseDirective("[count]")).toEqual(["count"]);
   });
@@ -50,8 +54,26 @@ describe("parseDirective", () => {
     expect(parseDirective("[count, count]")).toEqual(["count", "count"]);
   });
 
+  test("parses mixed [count, existence] preserving order (v0.9.1)", () => {
+    expect(parseDirective("[count, existence]")).toEqual([
+      "count",
+      "existence",
+    ]);
+    expect(parseDirective("[existence, count]")).toEqual([
+      "existence",
+      "count",
+    ]);
+  });
+
   test("drops unknown topics", () => {
     expect(parseDirective("[count, future-topic]")).toEqual(["count"]);
+  });
+
+  test("drops unknown topics from mixed-known list (v0.9.1)", () => {
+    expect(parseDirective("[existence, future-topic, count]")).toEqual([
+      "existence",
+      "count",
+    ]);
   });
 
   test("handles empty / whitespace directive", () => {
@@ -265,6 +287,85 @@ self-check: [count, count]
       // fire twice and emit each drift finding twice.
       expect(result.findings.length).toBe(1);
       expect(result.findings[0]!.topic).toBe("count");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("detects self-recursive existence drift (v0.9.1)", () => {
+    const dir = tmp();
+    try {
+      const content = `---
+self-check: existence
+---
+
+# Existence-drift memo
+
+The canonical reference is \`tools/this-path-does-not-exist-anywhere-9f7a.md\`
+which documents the failure mode.
+`;
+      const f = write(dir, "self-recursive-existence.md", content);
+      const result = checkFile(f);
+      expect(result.ok).toBe(true);
+      expect(result.findings.length).toBeGreaterThan(0);
+      expect(result.findings[0]!.topic).toBe("existence");
+      expect(result.findings[0]!.reason).toContain(
+        "tools/this-path-does-not-exist-anywhere-9f7a.md",
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("existence self-check no-op without path claims (v0.9.1)", () => {
+    // A self-check:existence memo with only prose (no backtick paths,
+    // no markdown links) has nothing for check-existence to evaluate;
+    // it should pass clean regardless of the temp-dir-vs-repo-root
+    // candidate-root semantics inside check-existence.
+    const dir = tmp();
+    try {
+      const content = `---
+self-check: existence
+---
+
+# Bare prose memo
+
+This memo references no paths and no markdown links — it is just
+narrative text describing the existence-drift discipline.
+`;
+      const f = write(dir, "bare-prose.md", content);
+      const result = checkFile(f);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("mixed [count, existence] dispatches both checkers (v0.9.1)", () => {
+    const dir = tmp();
+    try {
+      const content = `---
+self-check: [count, existence]
+---
+
+# Mixed memo
+
+The catalogue below covers 7 sub-classes (claim).
+
+| name | what |
+|---|---|
+| one | a |
+| two | b |
+
+See \`tools/this-also-does-not-exist-be8a.md\` for the canonical entry.
+`;
+      const f = write(dir, "mixed.md", content);
+      const result = checkFile(f);
+      expect(result.ok).toBe(true);
+      const topics = new Set(result.findings.map((x) => x.topic));
+      expect(topics.has("count")).toBe(true);
+      expect(topics.has("existence")).toBe(true);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

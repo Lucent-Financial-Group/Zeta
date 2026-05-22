@@ -23,9 +23,10 @@ Catches 6 B-0170 check-types:
   an earlier ADR when the earlier ADR lacks the reciprocal top-of-file
   `Superseded by` marker naming the superseding ADR. Implemented in
   `check-convention.ts`.
-- **Self-recursive drift** (v0.9.0) — a memo declaring itself ABOUT a
+- **Self-recursive drift** (v0.9.1) — a memo declaring itself ABOUT a
   drift sub-class violates that same discipline within its own body.
-  Opt-in via a `self-check:` frontmatter directive. Implemented in
+  Opt-in via a `self-check:` frontmatter directive. v0.9.1 adds the
+  `existence` topic alongside `count`. Implemented in
   `check-self-recursive.ts`.
 
 The remaining deferred check-types are semantic-equivalence and
@@ -76,7 +77,7 @@ input error).
 - **Existence drift** (file/dir/tool claimed to exist; doesn't) — shipped v0.5
 - **Path-form drift** (fully-qualified vs bare paths inconsistent) — shipped v0.7
 - **Convention drift** (recommended pattern doesn't match canonical) — shipped v0.9
-- **Self-recursive drift** (the memo about drift contains its own drift) — shipped v0.9.0 (count-topic only; others deferred per B-0170.3 slice)
+- **Self-recursive drift** (the memo about drift contains its own drift) — shipped v0.9.1 (count + existence topics; path-forms / cross-surface / convention deferred per B-0170.3 follow-up slices)
 - **Semantic-equivalence drift** (command substitution claims) — v1
 - **Empirical-output drift** (run-the-command-and-compare) — v1
 
@@ -307,7 +308,7 @@ OR list form:
 
 ```yaml
 ---
-self-check: [count]
+self-check: [count, existence]
 ---
 ```
 
@@ -315,14 +316,19 @@ The directive is operationally honest — no heuristic topic
 detection. A file only participates in self-recursive checks if
 it opts in.
 
-### Supported topics (v0.9.0)
+### Supported topics
 
-- `count` — composes `check-counts.ts`; a memo about count drift
-  should not contain its own count drift.
+- `count` (v0.9.0) — composes `check-counts.ts`; a memo about count
+  drift should not contain its own count drift.
+- `existence` (v0.9.1) — composes `check-existence.ts`; a memo about
+  existence drift should not contain its own existence drift. Only
+  `severity: "drift"` findings (path doesn't resolve anywhere) surface
+  here; gitignored-but-extant warnings are excluded so the self-
+  recursive check is strictly the "claim doesn't exist" case.
 
-Adding additional topics (existence, path-forms, cross-surface,
-convention) is a 1-line dispatch each; deferred to follow-up
-slices per the B-0170 done-criteria.
+Adding additional topics (path-forms, cross-surface, convention) is a
+1-line dispatch each; deferred to follow-up slices per the B-0170
+done-criteria.
 
 ### Usage
 
