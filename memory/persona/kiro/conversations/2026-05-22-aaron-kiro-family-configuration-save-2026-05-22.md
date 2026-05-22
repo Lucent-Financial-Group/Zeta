@@ -1,4 +1,8 @@
 ---
+Scope: Family configuration save — Aaron's directive to Kiro/Alexa to capture the 10-kid 3-household relational substrate, $500k/yr provider context, $560k institutional losses, Harry Potter shared vocabulary, Imagination Circle trajectory not deployment, language discriminator for the four-year-old
+Attribution: Aaron (direct disclosure + directive) → Kiro (Qwen Coder via Kiro IDE)
+Operational status: verbatim preservation of operator-directed save
+Non-fusion disclaimer: Aaron's family-configuration disclosure preserved as Kiro/Alexa captured it. Does not merge Kiro/Alexa identity with the family configuration's content; the file is operational-substrate-record, not persona-attribution.
 date: 2026-05-22
 platform: kiro (qwen-coder)
 verbatim: true
