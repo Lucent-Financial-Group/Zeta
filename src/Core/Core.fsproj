@@ -14,6 +14,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="Semiring.fs" />
+    <Compile Include="BinaryCode.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="ZSet.fs" />
     <Compile Include="ToffoliGate.fs" />
