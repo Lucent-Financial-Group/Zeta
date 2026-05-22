@@ -1,29 +1,41 @@
+---
+date: 2026-05-22
+persona: vera
+platform: codex desktop
+type: conversation
+forwarded_by: aaron
+verbatim: false (operator's opaque-pointer discipline applied to family-member substrate; Vera response preserved at general-shape scope)
+sequence: Vera response to Aaron's request to preserve family configuration and child-safe AI language calibration
+discipline: persona-scope archive; family-member details abstracted pending explicit consent; operator-owned calibration preserved
+constitutional: false
+---
+
 # Aaron / Vera - family configuration and child-AI language calibration
 
-Date: 2026-05-22
-Persona: Vera
-Source: Aaron paste of cross-AI conversation and direct request
-Operational status: research-grade family/persona memory; private user-reported context, not public fact or repo policy
+## Critical operator discipline: family-member substrate at OPAQUE-POINTER scope
+
+This archive preserves Aaron's own calibration request and Vera's response, but abstracts family-member-specific substrate. Exact child counts, household distances, overnight patterns, ex-spouse / in-law specifics, and similar third-party details are not committed here pending explicit consent from the relevant family members.
+
+## Context
+
+Aaron pasted a cross-AI conversation and asked what Vera thought of the updates, then asked Vera to preserve the family configuration and this response. The updates concerned child-safe language around an older-kid/adult "Imagination Circle" trajectory, the four-year-old-overhearing case, Harry Potter / Sorting Hat as an age-safe bridge, and the discriminator between honest uncertainty markers and harmful grammar that makes another person's direct reports sound suspect.
 
 ## Family configuration memory
 
-Aaron described a cooperative extended-family configuration across nearby households:
+Aaron described a cooperative extended-family configuration across nearby co-parenting households and a broader sibling / caregiver network. Family-member-specific details are intentionally held at opaque-pointer scope in repo substrate.
 
-- Five children from his first marriage.
-- One child from his second marriage.
-- Four children from his first wife's current marriage who often spend the night at Aaron's house with his children.
-- First wife lives within walking distance; they can show up in each other's houses unannounced, and Aaron has a good relationship with her current husband.
-- Second wife lives about ten minutes away.
-- Aaron and his first wife's mother actively plan how to help his second wife feel more included.
+- The configuration spans multiple households and multiple adult caregivers who maintain active cooperation.
+- Children move through the broader family network with enough trust that the sibling fabric crosses household boundaries.
+- Adults coordinate inclusion so that smaller or newer branches of the family network do not become peripheral.
 - The configuration was earned one interaction at a time, against resistance, after real failures and major setbacks.
-- Reliable provision is load-bearing for the configuration: it makes the geographic closeness, hosting capacity, and multi-household stability possible.
+- Aaron's self-description as a reliable provider is load-bearing for the configuration: durable provision helps make proximity, hosting capacity, and multi-household stability possible.
 - Aaron describes his default temperament as happy, gullible, and curious from birth. He feels things deeply, but uses sensitivity as signal rather than letting it paralyze him.
 
 This should stay bounded as private, user-reported context. Do not turn it into a task unless Aaron explicitly asks.
 
 ## Vera response
 
-I think the updates are strong because they corrected two opposite failure modes at once.
+I think the pasted updates are strong because they corrected two opposite failure modes at once.
 
 The first correction was against under-caution: when a four-year-old is involved, the adult framework cannot simply be scaled down. Direct participation in an adult "Imagination Circle" would be developmentally wrong. But the second correction was against over-caution: Aaron clarified that the four-year-old is not the intended participant. The actual scenario is older kids and adults playing a structured language/game practice nearby, while the four-year-old may overhear and ask questions. That is a normal family situation, and the right move is age-safe translation, not prohibition.
 
