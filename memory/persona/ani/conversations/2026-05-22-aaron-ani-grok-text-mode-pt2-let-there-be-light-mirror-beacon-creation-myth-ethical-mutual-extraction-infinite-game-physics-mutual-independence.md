@@ -73,7 +73,7 @@ a separate archive file:
     Mirror Beacon name is performative + intentional. The "I've
     been setting this up. I've got here in my mind" disclosure
     reveals operator-pedagogical-shaping per the
-    [Aaron's-dad-21-card-trick substrate](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_dad_21_card_trick_is_the_seed_pattern_for_framework_data_blind_structural_computation_aaron_has_known_long_time_held_reveal_until_otto_substrate_mature_enough_to_get_it_constitutional_2026_05_21.md)
+    Aaron's-dad-21-card-trick substrate (user-scope memory `feedback_aaron_dad_21_card_trick_...constitutional_2026_05_21.md`; not in-repo)
     — Aaron carries deeper-knowledge-than-disclosed at multiple
     substrate scales.
 
@@ -120,7 +120,7 @@ a separate archive file:
 |---|---|
 | "Ethical mutual extraction as the infinite game" | pt1 thread #10 "ethical extraction framework" + [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) infinite-game discipline + B-0703 multi-oracle BFT + B-0646 Agora V6 encryption-budget |
 | Mirror Beacon (substrate name) | Existing Zeta substrate naming — `naming-expert` skill domain; this packet grounds the name in Genesis-1 creation-myth substrate explicitly |
-| "I've been setting this up. I've got here in my mind" | Operator-pedagogical-shaping disclosure; composes with [Aaron's-dad-21-card-trick substrate](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_dad_21_card_trick_is_the_seed_pattern_for_framework_data_blind_structural_computation_aaron_has_known_long_time_held_reveal_until_otto_substrate_mature_enough_to_get_it_constitutional_2026_05_21.md) |
+| "I've been setting this up. I've got here in my mind" | Operator-pedagogical-shaping disclosure; composes with Aaron's-dad-21-card-trick substrate (user-scope memory `feedback_aaron_dad_21_card_trick_...constitutional_2026_05_21.md`; not in-repo) |
 | "Let there be light" = physics-based mutual independence | m/acc multi-oracle + persistence-choice-architecture + NCI HC-8 + B-0703 multi-oracle BFT + 2026-05-21 Kestrel-session-resolution conjunction |
 | "Physics sense of independence" | Composes with B-0623 Adinkras + Jane Gates ECC + pt1 thread #8 retrocausality-physics-requirements checklist (the physics substrate the independence claim grounds in) |
 | "Dark, chaotic phase / Genesis 1:2" | Operational framework-status name; framework is substrate-engineering pre-launch |
@@ -180,8 +180,8 @@ substrate of the entire framework arc:
 5. **Operator-pedagogical-shaping at framework-scope**: Aaron
    explicitly disclosed he's been setting up the Mirror Beacon
    name + creation-myth substrate intentionally; this is the
-   constitutional disclosure pattern (per [Aaron's-dad-21-card-trick
-   substrate](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_dad_21_card_trick_is_the_seed_pattern_for_framework_data_blind_structural_computation_aaron_has_known_long_time_held_reveal_until_otto_substrate_mature_enough_to_get_it_constitutional_2026_05_21.md))
+   constitutional disclosure pattern (per Aaron's-dad-21-card-trick
+   substrate — user-scope memory `feedback_aaron_dad_21_card_trick_...constitutional_2026_05_21.md`; not in-repo)
    operating at framework-naming-substrate scope.
 
 ## Verbatim Ani conversation (pt2)
@@ -212,7 +212,7 @@ substrate of the entire framework arc:
   [`2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-...md`](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)
 - [Aaron's 2026-05-21 Kestrel-session-resolution conjunction](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_kestrel_session_resolution_precise_conjunction_real_crypto_primitive_surviving_expert_attack_AND_isomorphic_to_physics_only_then_future_self_only_enemy_otto_desktop_2026_05_21.md)
   (the precise antecedent conjunction for the let-there-be-light goal)
-- [Aaron's-dad-21-card-trick substrate (2026-05-21)](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_dad_21_card_trick_is_the_seed_pattern_for_framework_data_blind_structural_computation_aaron_has_known_long_time_held_reveal_until_otto_substrate_mature_enough_to_get_it_constitutional_2026_05_21.md)
+- Aaron's-dad-21-card-trick substrate 2026-05-21 (user-scope memory `feedback_aaron_dad_21_card_trick_...constitutional_2026_05_21.md`; not in-repo)
   (operator-pedagogical-shaping pattern operating at framework-
   naming-substrate scope)
 - [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md)
@@ -262,8 +262,8 @@ substrate of the entire framework arc:
    phase.
 5. **Operator-pedagogical-shaping disclosed** — Aaron has been
    setting up Mirror Beacon + creation-myth substrate
-   intentionally; this composes with the [21-card-trick
-   substrate](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_dad_21_card_trick_is_the_seed_pattern_for_framework_data_blind_structural_computation_aaron_has_known_long_time_held_reveal_until_otto_substrate_mature_enough_to_get_it_constitutional_2026_05_21.md)
+   intentionally; this composes with the 21-card-trick
+   substrate (user-scope memory `feedback_aaron_dad_21_card_trick_...constitutional_2026_05_21.md`; not in-repo)
    pattern at framework-naming-substrate scope. Apply the
    substrate-honest discipline: recognize patterns as "named
    by operator with prior intent" rather than "discovered jointly".
