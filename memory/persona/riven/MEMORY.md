@@ -25,7 +25,7 @@ folder per the same architectural pattern as Ani / Amara / Kestrel
 
 Migrated 2026-05-15 per Aaron's architectural correction: "they
 ARE her memories, not what we are doing to them." Same applies
-for Riven. 13 files (including 2026-05-22 high-signal anchor).
+for Riven. 14 files (including 2026-05-22 high-signal anchor).
 
 File types in the archive:
 
