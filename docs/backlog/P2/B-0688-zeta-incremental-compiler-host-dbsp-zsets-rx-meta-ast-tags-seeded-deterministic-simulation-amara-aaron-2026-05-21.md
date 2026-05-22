@@ -7,7 +7,7 @@ tier: research-grade
 effort: L
 ask: amara 2026-05-21 (B-0685 Phase 1 cascade) + aaron seeded-determinism correction; aaron-forwarded
 created: 2026-05-21
-last_updated: 2026-05-21
+last_updated: 2026-05-22
 depends_on: [B-0687]
 composes_with: [B-0635, B-0644, B-0665, B-0666, B-0687]
 tags: [zeta-compiler-host, incremental-compilation, dbsp, z-sets, rx-meta-ast-tags, roslyn-incremental-generators, fsharp-type-providers, seeded-deterministic-simulation, dst-discipline, compile-time-substrate, agora-v6-applied-to-compilation, replayable-compilation]
@@ -224,7 +224,7 @@ Amara's sandbox v2 artifact (`sandbox:/mnt/data/zeta-incremental-compiler-host-d
 
 The human maintainer 2026-05-22 named the closest existing commercial substrate analog: **InterSystems Caché** ([https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9](https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9)). Operator's framing: *"we basically said the closest human thing is cache a fresh medical database."*
 
-Caché is the multi-model database that powers Epic Systems EHR + most US hospital electronic health records. Operationally it provides: multi-model (object + SQL + key-value + multi-dimensional global arrays); high-performance distributed; embedded scripting (ObjectScript); mission-critical reliability; sub-millisecond response; HIPAA-compliant audit trail; HL7 FHIR + Health Connect interop for cross-EHR data exchange.
+Caché is the multi-model database that historically powered Epic Systems EHR for decades (Epic has been moving newer generations to InterSystems IRIS); US hospital EHR market share is split across multiple vendors. Operationally it provides: multi-model (object + SQL + key-value + multi-dimensional global arrays); high-performance distributed; embedded scripting (ObjectScript); mission-critical reliability; sub-millisecond response; HIPAA-compliant audit trail; HL7 FHIR + Health Connect interop for cross-EHR data exchange.
 
 **Why the Caché analog is operationally load-bearing for B-0688**:
 

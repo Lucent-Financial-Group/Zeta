@@ -37,7 +37,7 @@ Multi-AI ratification of Zeta-as-generative-substrate across the day's substrate
 
 For the Zeta-db substrate-engineering work (B-0688 + B-0687), the closest existing commercial substrate analog is **InterSystems Caché** ([https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9](https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9)). Operator's framing: *"we basically said the closest human thing is cache a fresh medical database"* + naming Caché as the concrete commercial reference.
 
-This anchor IS the mirror→beacon translation reference: "Zeta db = cached-fresh medical database analog applied to AI substrate; closest commercial reference is InterSystems Caché (powers Epic EHR + most US hospital electronic health records); extends with F# compiler integration + multi-oracle BFT + Rx/DBSP semantic-index substrate + DST hardening."
+This anchor IS the mirror→beacon translation reference: "Zeta db = cached-fresh medical database analog applied to AI substrate; closest commercial reference is InterSystems Caché (historically powered Epic EHR for decades (Epic moving newer generations to IRIS); US hospital EHR market share is split across multiple vendors); extends with F# compiler integration + multi-oracle BFT + Rx/DBSP semantic-index substrate + DST hardening."
 
 Composes with sovereignty-path 3rd piece (durable tension-substrate via maji-math; mirror-tier; building toward beacon-tier via Zeta db = F# compiler as distributed intelligence database). The maji-math substrate (rx-tension-as-semantic-indexes) provides the mathematical foundation; B-0688 + B-0687 operationalize via the Caché-pattern incremental-compiler-database; path-to-beacon-tier requires the math formalizing + the compiler-database shipping + DST seeded-determinism hardening landing.
 
