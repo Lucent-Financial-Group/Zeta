@@ -8,7 +8,7 @@ merged_at: "2026-05-22T18:20:02Z"
 closed_at: "2026-05-22T18:20:02Z"
 head_ref: "otto/cli-2348z-lior-website-autocomplete-as-traveler-consent-event-backlog-plus-persona-archive-2026-05-22"
 base_ref: "main"
-archived_at: "2026-05-22T18:58:54Z"
+archived_at: "2026-05-22T19:48:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
