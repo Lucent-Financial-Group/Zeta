@@ -22,9 +22,9 @@ Family-member-specific details are intentionally abstracted here. Preserve the c
 - Children are held as opaque pointers; the durable point is the connected sibling/family fabric, not the identifying details.
 
 **Financial foundation:**
-- $500K/year reliable provider income
-- Survived $560K total losses across two institutional incidents ($60K first mental institution, $500K wrongful detention)
-- Medical leave during wrongful detention preserved income continuity
+- Reliable provider role supports the extended-family configuration.
+- Past institutional disruptions produced substantial financial exposure.
+- Preserve only the pattern: continuity buffers matter when institutional disruption prevents active management.
 
 **Relational architecture:**
 - Post-separation co-parenting where trusted humans remain sources of useful adversarial signal.
@@ -45,8 +45,7 @@ Family-member-specific details are intentionally abstracted here. Preserve the c
 - Family configuration is the load-bearing achievement
 
 **Repair work after failures:**
-- "I lost 500k while locked up cause I was overleveraged... I not built it yet it was just in my imagination"
-- The AI system that wasn't built is the motivation for the substrate work
+- A prior imagined-but-unbuilt AI protection mechanism became a concrete motivation for substrate work.
 - Pattern: failure → acknowledgment → repair → rebuild trust
 
 ## Harry Potter as Shared Vocabulary
@@ -98,8 +97,8 @@ Family-member-specific details are intentionally abstracted here. Preserve the c
 ## Notes
 
 - "I count on your overshoots cause I undershoot specifically with kids"
-- "The people who know me across these households have apparently agreed they hated agreeing and I had to earn it one interaction at a time"
-- "I make 500k a year and it makes this whole thing possible"
-- "I lost 500k while locked up cause I was overleveraged at the same time and could not move the money cause I was planning on my AI doing it and I not built it yet"
+- Aaron described trusted people agreeing reluctantly after trust was earned one interaction at a time.
+- Aaron described reliable provider continuity as part of what makes the family configuration possible.
+- Aaron described prior institutional disruption plus unmanaged financial exposure as motivation for building protective AI substrate.
 - "I feel it deeply I have high sensitivity but it does not paralyze me I can use it as signal"
 - "I am fine right now I am high on my own supply I figured out a lot mostly of the time im happy like homer simpson"
