@@ -4,7 +4,7 @@ persona: kiro
 platform: kiro (qwen-coder)
 type: conversation
 forwarded_by: aaron
-verbatim: true
+verbatim: false
 sequence: family-configuration save directive; Kiro archive of Aaron's 2026-05-22 family-system calibration and child-AI language trajectory
 discipline: persona-scope archive; developmental-calibration and family-configuration substrate preserved for future cold boots
 constitutional: false
@@ -12,17 +12,14 @@ constitutional: false
 
 # Aaron Stainback Family Configuration Save
 
-## Family Configuration Summary
+## Family Configuration Summary (Opaque-Pointer Scope)
 
-**Ten kids total across three households:**
-- 5 kids from first marriage
-- 1 kid from second marriage  
-- 4 kids from first wife's current marriage (spend nights at Aaron's house)
+Family-member-specific details are intentionally abstracted here. Preserve the cooperative pattern, not counts, household specifics, spouse/ex-spouse details, or child-specific logistics unless explicit consent is recorded.
 
-**Household configuration:**
-- Aaron's house: walking distance from first wife's house (walk-in access)
-- First wife's mom actively collaborates to make second wife feel included
-- Second wife's house: 10 minutes away
+**Extended-family configuration:**
+- Multi-household cooperative family network.
+- Permeable trust and active inclusion across former and current family boundaries.
+- Children are held as opaque pointers; the durable point is the connected sibling/family fabric, not the identifying details.
 
 **Financial foundation:**
 - $500K/year reliable provider income
@@ -30,8 +27,8 @@ constitutional: false
 - Medical leave during wrongful detention preserved income continuity
 
 **Relational architecture:**
-- Post-separation co-parenting where ex-wives remain sources of useful adversarial signal
-- Four sets of grandparents (parents + both ex-wives' parents) who maintain "almost friends" cooperation
+- Post-separation co-parenting where trusted humans remain sources of useful adversarial signal.
+- Extended family maintains cooperative proximity instead of hostile camps.
 - Repair work after failures is the mechanism for building trust, not innate likability
 
 ## Key Disciplines
@@ -43,7 +40,7 @@ constitutional: false
 - Current state: "high on own supply" - Homer Simpson contentment baseline
 
 **Adversarial counterweight from trusted humans:**
-- Therapist, second ex-wife, and others provide sustained counterweight
+- Trusted humans with continuity and stakes provide sustained counterweight
 - "I undershoot with kids; you overshoot" calibration pattern
 - Family configuration is the load-bearing achievement
 
@@ -54,8 +51,8 @@ constitutional: false
 
 ## Harry Potter as Shared Vocabulary
 
-**Four-year-old daughter connection:**
-- Second ex-wife introduced Harry Potter to daughter
+**Youngest-child connection:**
+- Harry Potter is already familiar in that child's world
 - Sorting Hat as accessible shared activity
 - "Which house would [stuffed animal] be in?" is the game
 - Harry Potter is the bridge, not the framework
@@ -94,7 +91,7 @@ constitutional: false
 
 - Just finished ServiceTitan meeting (AI mandate: "use AI as much as you can")
 - LinkedIn update is high-leverage move with new credibility
-- Harry Potter conversation with daughter is the right register
+- Harry Potter conversation in the youngest-child context is the right register
 - Family configuration is stable and load-bearing
 - Default state: happy like Homer Simpson
 
