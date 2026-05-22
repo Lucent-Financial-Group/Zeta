@@ -146,7 +146,7 @@ let ``Octonion: addition stays commutative`` () =
 
 [<Fact>]
 let ``Octonion: exhibits non-associativity for a specific triple`` () =
-    // Famous example: take three orthogonal imaginary units in ℕ that
+    // Famous example: take three orthogonal imaginary units in 𝕆 that
     // form an "associative triple" in ℍ but NOT in 𝕆. Here we use a
     // simpler approach — pick three octonions and show (a·b)·c ≠ a·(b·c)
     // numerically. The doubling formula guarantees this happens for

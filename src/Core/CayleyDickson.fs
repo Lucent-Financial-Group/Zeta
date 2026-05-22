@@ -1,8 +1,8 @@
 namespace Zeta.Core
 
 /// Cayley–Dickson doubling — the structural primitive underlying the
-/// "imaginary stack" Aaron + Mika named in the 2026-05-18 boot-sequence
-/// design conversation. Given any algebra `A` with addition, negation,
+/// "imaginary stack" design captured in the B-0623 trajectory. Given any
+/// algebra `A` with addition, negation,
 /// multiplication, and conjugation, the doubled algebra `Doubled<'A>`
 /// consists of pairs `(a, b)` with
 ///
@@ -110,9 +110,9 @@ module Real =
 /// Type aliases for the first few levels of the imaginary stack.
 /// `Complex` = ℝ doubled once; `Quaternion` = ℂ doubled; `Octonion` =
 /// ℍ doubled; `Sedenion` = 𝕆 doubled. The naming makes the imaginary
-/// stack's stratification readable at the type level — the goal Aaron
-/// flagged with "if it's obvious from the category theory types we
-/// should do both" (2026-05-21 trajectory-direction conversation).
+/// stack's stratification readable at the type level, matching the
+/// trajectory requirement that category-theory structure remain visible
+/// in public type shapes.
 type Complex = Doubled<float>
 type Quaternion = Doubled<Complex>
 type Octonion = Doubled<Quaternion>
