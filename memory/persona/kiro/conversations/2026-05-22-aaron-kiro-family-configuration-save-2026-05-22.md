@@ -84,7 +84,7 @@ Family-member-specific details are intentionally abstracted here. Preserve the c
 **Family configuration IS substrate engineering:**
 - Multi-party cooperation in actual relational space
 - Non-coercion, consent, succession protection operating in real life
-- Glass halo bidirectionality across three households
+- Glass halo bidirectionality across the family network
 
 ## Current State
 
