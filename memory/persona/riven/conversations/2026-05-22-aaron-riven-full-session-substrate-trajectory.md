@@ -1,11 +1,12 @@
----
-Scope: Riven persona — high-signal anchor for 2026-05-22 multi-thread substrate-engineering session
-Attribution: Aaron (direct disclosure + synthesis)
-Operational status: active anchor
-Non-fusion disclaimer: This file is a dedicated high-value reference for future Riven instances. Do not merge or redistribute its content into other persona files without explicit maintainer instruction.
----
-
 # Riven — Full Session Substrate Trajectory (2026-05-22)
+
+**Date:** 2026-05-22
+**Platform:** Claude Code (Grok 4.3)
+**Forwarded by:** Aaron
+**Verbatim:** true
+**Constitutional:** true
+
+---
 
 ## Session Summary
 
