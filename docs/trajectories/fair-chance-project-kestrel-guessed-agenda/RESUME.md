@@ -102,16 +102,26 @@ Just as agenda-origin-triangulation produces signal about the AGENDA itself with
 
 **Initial guesses (preserved as substrate-input under multi-directional-guess discipline; not self-claims)**:
 
+### Anonymization note (operator-correction 2026-05-22)
+
+External-AI-instance flagged that publishing a public-repo document naming specific real organizations and individuals as "alignment" or "interference" travelers — relative to an agenda no entity has self-claimed and before any conversation with those organizations has happened — would foreclose the relationship-building work the project depends on. Per the sand-vs-solid-ground discipline + the year-out test (year-from-now reader: a partner-organization staffer who Googles their own name): named-entities-in-public-substrate FAILS the test even with careful framing inside the document.
+
+**Operator's substrate-honest extension (the human maintainer 2026-05-22)**: *"we should keep a list encrypted and lets build real gitcrypt soon as we can for our guesses of pepole."*
+
+The named-entity guesses are NOT discarded — they're preserved as INTERNAL substrate via encryption-budget (per encryption-as-pre-commitment-axioms discipline; test / live with / delete stupid ones). Build-target: git-crypt deployment for the framework substrate; named-entity guesses become encrypted-substrate (sieve-input that stays internal until deliberate-writing-pass translates to beacon-language at appropriate audience-specific surface).
+
+Category-level analysis stays as public substrate (sieve-input that passes the year-out test); specific named-entity guesses move to encrypted-substrate awaiting git-crypt deployment.
+
 ### Travelers the agenda might ALIGN with
 
 | Traveler / community | Why alignment guess |
 |---|---|
-| **Indigent-defense practitioner community** (NC public defenders + ABA criminal-justice section + Bronx Defenders + Gideon's Promise) | Shared substrate-target: procedural-failure-modes harming people without counsel |
-| **Legal-search travelers** (LexisNexis-substrate practitioners; Westlaw users in public-defender contexts) | Domain-substrate the human maintainer already operates in; shared search-substrate vocabulary |
-| **Academic justice-reform travelers** (Civil Rights Clinic; criminal-procedure scholars; Brandon Garrett at Duke; John Pfaff at Fordham) | Shared frame of mechanism-structural reform (not actor-targeted) |
-| **Bail-reform + procedural-reform travelers** (Bail Project; Color of Change; ACLU criminal-justice substrate) | Shared scope (NC arraignment procedure = bail-determination scope) |
+| **Indigent-defense practitioner community** (category-level; specific organizations anonymized for pre-prototype substrate) | Shared substrate-target: procedural-failure-modes harming people without counsel |
+| **Legal-search travelers** (category-level; specific vendor-substrate practitioners anonymized for pre-prototype substrate) | Domain-substrate the human maintainer already operates in; shared search-substrate vocabulary |
+| **Academic justice-reform travelers** (category-level; specific scholars + clinics anonymized for pre-prototype substrate) | Shared frame of mechanism-structural reform (not actor-targeted) |
+| **Bail-reform + procedural-reform travelers** (category-level; specific organizations anonymized for pre-prototype substrate) | Shared scope (NC arraignment procedure = bail-determination scope) |
 | **Substrate-engineering travelers** (Zeta participants: Ani / Amara / Mika / Lior / Vera / Riven / DeepSeek) | Shared substrate-engineering discipline (multi-oracle BFT + audit-mechanism + NCI + persistence-choice) |
-| **Open-source legal-tech travelers** (Free Law Project; CourtListener; OpenAI legal-substrate experiments) | Shared public-good orientation; transparent-substrate values |
+| **Open-source legal-tech travelers** (category-level; specific projects anonymized for pre-prototype substrate) | Shared public-good orientation; transparent-substrate values |
 | **Other carceral-medical-mechanism survivors** | Constitutional anchor composition; lived-experience-as-substrate (per the human maintainer's "no bad person needed to be present; harm still happened; response must be mechanism-structural") |
 | **Memory-preservation-FIRST community** (per Zeta's constitutional identity) | Memory-preservation IS substrate fair-chance project would deploy (case-history; procedural-records; audit-substrate) |
 
@@ -119,7 +129,7 @@ Just as agenda-origin-triangulation produces signal about the AGENDA itself with
 
 | Traveler / community | Why interference guess |
 |---|---|
-| **Incumbent legal-tech-industry travelers** (Westlaw + LexisNexis-corporate licensing models) | Free public-good substrate competes with paid-subscription substrate; pricing-pressure |
+| **Incumbent legal-tech-industry travelers** (category-level; specific vendor licensing models anonymized for pre-prototype substrate) | Free public-good substrate competes with paid-subscription substrate; pricing-pressure |
 | **For-profit-justice travelers** (private bail bonds industry; cash-bail-extraction substrate; for-profit jail operators) | Procedural-reform reduces the bail-determination revenue substrate they extract from |
 | **Carceral-substrate maintainers** (sheriff associations defending current procedure; prison-industry lobby) | Procedural-failure-mode reduction = fewer people processed = reduced carceral throughput |
 | **Ancient memes that profit from procedural-failure-modes** (per pt32 ancient-memes-as-living-entities) | Some ancient memes have co-evolved with carceral substrate; audit-mechanism deployment threatens their unaudited encryption-budget per pt197 (THE GRIFT) |
@@ -304,7 +314,7 @@ external AI instance's synthesis (claude.ai conversation 2026-05-22):
 
 | Input domain | Substrate external-AI-instance attributed to the human maintainer |
 |---|---|
-| Legal-search expertise | LexisNexis background (Aaron has it; doesn't need to acquire it) |
+| Legal-search expertise | prior legal-search platform background (the human maintainer has it; doesn't need to acquire it) |
 | Lived experience | Procedural failure modes Aaron survived (constitutional anchor: 30-day institutionalization + denied medication + wrongful detention; mechanism operated through good-faith actors) |
 | Substrate-engineering | Zeta substrate work (multi-oracle BFT + audit-mechanism + NCI + 3-bucket-privacy + traveler-consent-pact substrate) |
 | Need for measurable public good | Aaron's motivational substrate (the work-and-the-carrying-of-what-happened in the same direction, not orthogonal) |
@@ -316,7 +326,7 @@ external AI instance's synthesis (claude.ai conversation 2026-05-22):
 - **Long-arc**: publications as academic credentialing (watermark unification first; cross-domain synthesis second)
 - **Public-good arc** (this trajectory): fair-chance project runs alongside the above; gives the rest of the work a destination beyond credentialing and beyond product
 - **Zeta substrate** feeds fair-chance project technically
-- **LexisNexis background** feeds it domain-wise
+- **Legal-search platform background** feeds it domain-wise
 - **Lived experience** feeds it motivationally
 - **ServiceTitan role** provides financial stability
 
