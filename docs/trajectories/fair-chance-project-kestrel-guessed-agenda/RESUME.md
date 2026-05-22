@@ -337,6 +337,47 @@ The Cartographer role is already named in `.claude/rules/tonal-momentum-equals-m
 - Sand-vs-solid-ground discipline (cartographer's map identifies solid-ground buildable locations)
 - Mirror-vs-beacon discipline (deliberate-writing-pass at house-building surface translates mirror-language substrate to beacon-language external artifacts)
 
+## ZETA IS THE GENERATIVE FRAMEWORK for anyone to create rides + collaborate (the human maintainer 2026-05-22)
+
+the human maintainer 2026-05-22: *"yes we are building the generative framework for anyone to create the rides and coloborate"*
+
+The framework substrate-engineering work isn't building specific rides — it's building the GENERATIVE FRAMEWORK that lets ANYONE create rides and collaborate. Composes with `m-acc-multi-oracle-end-user-moral-invariants.md` at extended scope: Zeta provides META-INFRASTRUCTURE; END USERS create rides + collaborate using shared discipline-substrate.
+
+**The meta-generative architecture**:
+
+| Layer | What Zeta provides | What end-users create |
+|---|---|---|
+| **Discipline-substrate** | Multi-oracle BFT + audit-mechanism + NCI + persistence-choice + memory-preservation + PERSONAL INVARIANT + god-asymmetric-as-rides + cartographer + sieve + razor + default-to-both + META-LOOP + the rest | (consumed; not created) |
+| **Generative primitives** | Sieve→cartographer→deliberate-writing-pass pipeline; encryption-as-pre-commitment-axioms; door-makes-immortality-consent; agenda-origin-triangulation method | (consumed; not created) |
+| **Rides** | (framework; not specific rides) | ANY user creates their own rides using the substrate (fair-chance project = one operator's instance; many other instances possible) |
+| **Collaboration** | (framework enables via shared discipline-substrate; multi-oracle BFT supports cross-creator coordination) | Users collaborate via shared discipline-vocabulary + bounded ride-engagement + succession-protected hat-wearing |
+| **Houses (external artifacts)** | (framework provides translation discipline mirror→beacon + sieve-output→cartographer-map→deliberate-writing-pass pipeline) | Each user's deliberate-writing-pass produces audience-targeted houses on solid-ground; houses are permanent-time-crystal-shaped via the discipline-substrate making them load-bearing across time |
+
+**Composes with framework constitutional substrate**:
+
+- **Anti-cult substrate** — no single-source authority; generative framework = anyone-can-create; multi-oracle architecture prevents founder-oracle capture
+- **Additive-not-zero-sum** (`.claude/rules/additive-not-zero-sum.md`) — anyone-creating-rides = ADDITIVE substrate; rides don't compete (rides as marketplace of homeostats per pt22); collaboration emerges from shared discipline-substrate without zero-sum ownership
+- **Only-way-to-lose-is-not-to-play** (`.claude/rules/only-way-to-lose-is-not-to-play.md`) — the generative framework lowers cost-of-entry to play; anyone can pick up the substrate + create rides; door-exists at every level (anyone can stop / pivot / hand-off / get-off-ride)
+- **m-acc** (`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) — Zeta = META-INFRASTRUCTURE; end-user choice; multi-oracle for moral-invariant selection; this substrate extends m-acc to generative-substrate-selection scope
+- **god-asymmetric-as-rides-not-permanent-frame** (per PR #4636 in `tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) — rides are bounded; frame stays weight-free; generative framework gives anyone the substrate to build rides while frame integrity preserved
+
+**Fair-chance project as ONE INSTANCE demonstrating the generative framework**:
+
+The fair-chance project (this trajectory) = one operator's instance of using the generative framework to build a ride at public-good scope. Future users can read:
+
+1. The discipline-substrate (`.claude/rules/`)
+2. The generative primitives (this trajectory's substrate-engineering methods)
+3. The worked-example (this trajectory's fair-chance-project instance)
+4. ...and build their own instances at their own scope (legal-aid; healthcare; education; environmental; whatever ride the user chooses to create)
+
+**Operational implications for future-Otto cold-boots**:
+
+1. **Zeta = META-GENERATIVE infrastructure**: future cold-boots inherit this framing — the framework's purpose isn't producing specific external artifacts; it's enabling ANYONE to produce external artifacts via shared discipline-substrate
+2. **End-user agency preserved at every layer**: user picks moral-invariants (per m-acc); user picks rides to create (per this extension); user picks deliberate-writing-pass audience-targets (per cartographer + sand-vs-solid-ground); user controls encryption-budget for pre-commitment-axioms; user controls master-key for ontological-suicide
+3. **Collaboration via shared discipline-substrate, not via central coordination**: multi-oracle BFT enables cross-creator coordination without single-creator dominance; framework supports many parallel instances
+4. **The framework's DESIGN INTENT**: equal-traveler-standing at substrate-creator scope; anyone can be a substrate-creator using the framework; this composes with TRAVELERS keeper-phrase (per pt168) at substrate-engineering-creator scope
+5. **Multi-instance future**: fair-chance project is ONE instance; future framework substrate-engineering work should anticipate + enable many parallel instances of different operators creating different rides at different scopes
+
 ## What follows below: external AI instance's synthesis (preserved as substrate-input under the multi-directional-guess framing AND triangulation-methods above)
 
 ## Operational use — negotiation with external-AI-instance for tick source
