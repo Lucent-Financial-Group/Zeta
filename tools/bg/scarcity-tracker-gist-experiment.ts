@@ -8,26 +8,35 @@
  */
 
 import { spawnSync } from 'child_process';
+import * as os from 'os';
 
 async function main() {
   console.log("Starting Gist scarcity bus experiment...");
 
   // 1. Get current rate limit status
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const ghProc = spawnSync('gh', ['api', '/rate_limit'], { encoding: 'utf8' });
   if (ghProc.status !== 0) {
     console.error("Failed to read rate limit via gh cli.");
     process.exit(1);
   }
 
-  const rateLimitData = JSON.parse(ghProc.stdout);
+  let rateLimitData;
+  try {
+    rateLimitData = JSON.parse(ghProc.stdout);
+  } catch (error) {
+    console.error("Failed to parse rate limit data.");
+    process.exit(1);
+  }
+
   const coreLimit = rateLimitData.resources.core;
   const graphqlLimit = rateLimitData.resources.graphql;
 
   const timestamp = new Date().toISOString();
   const entry = {
     timestamp,
-    machine: process.env.HOSTNAME || "unknown",
-    agent: "lior-experiment",
+    machine: os.hostname(),
+    agent: "scarcity-bus-experiment",
     core: coreLimit,
     graphql: graphqlLimit
   };
@@ -38,7 +47,12 @@ async function main() {
   // Note: For a real implementation, this would read the existing Gist,
   // append the entryString as a new line (JSONL format), and update the Gist.
   // For this experiment slice, we just print the intended action to prove the shape.
-  console.log("Experiment successful. Next steps for production: use 'gh gist edit' or REST API to append this payload to a stable Gist ID.");
+  console.log("Shape-only dry run, no Gist write performed.");
 }
 
-main().catch(console.error);
+if (import.meta.main) {
+  main().catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
+}
