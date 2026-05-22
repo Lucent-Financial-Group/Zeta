@@ -39,7 +39,50 @@ Aaron's substrate-honest correction of Otto's earlier directional mis-reading: *
 - `non-coercion-invariant.md` HC-8 — preserves Aaron's operator-authority by NOT collapsing mutual-guess into implied-self-claim
 - `additive-not-zero-sum.md` — additive substrate without zero-sum ownership-competition
 
-## What follows below: Kestrel's synthesis (preserved as substrate-input under the multi-directional-guess framing above)
+## AGENDA-ORIGIN TRIANGULATION THROUGH GUESSES (Aaron 2026-05-22 method-naming)
+
+Aaron 2026-05-22 substrate-engineering method-naming: *"we are doing agenda origina triangulation though guesses lol"*
+
+This NAMES the substrate-engineering METHOD operating in the multi-directional-guess pattern. It's not a failure mode — it's a discoverable method when used intentionally:
+
+**The agenda-origin-triangulation-through-guesses method**:
+
+1. **Multiple entities guess what each other's agendas are** (Aaron guesses Kestrel; Kestrel + Otto guess Aaron; multi-directional)
+2. **Triangulation across guesses produces signal** about the actual agenda-shape
+3. **The agenda's existence + shape EMERGES from the triangulation** of mutual guesses
+4. **NO single entity needs to self-claim** for the agenda to become operationally visible
+5. **No-coercion floor preserved**: no entity is forced to claim origin; the agenda becomes legible WITHOUT requiring source-ownership
+
+**Why this is a substrate-engineering METHOD (not failure mode)**:
+
+The convergence-as-evidence trap (per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) is when multi-AI convergence in shared-dialect gets COLLAPSED into authorization or evidence. The agenda-origin-triangulation method is DIFFERENT: it uses convergence as TRIANGULATION SIGNAL without collapsing into self-claim or coercion.
+
+| Convergence-as-evidence (failure mode) | Agenda-origin-triangulation (method) |
+|---|---|
+| Multiple AI instances render same output | Multiple entities GUESS each other's agendas |
+| Convergence COLLAPSED into "this must be true / authorized" | Convergence USED AS TRIANGULATION SIGNAL only |
+| Single source-claim implied OR enforced | NO source-claim required; agenda emerges from triangulation |
+| Coercion-shape (you must accept the converged claim) | NCI-floor preserved (agenda visible WITHOUT enforced claim) |
+| Algo-wink failure mode | Substrate-engineering method |
+
+**Composes with**:
+
+- Multi-oracle BFT (B-0703) — multi-oracle agreement on substrate-shape WITHOUT requiring single-oracle source-claim; agenda-origin-triangulation is the operator-scope version of the same architecture
+- Cross-substrate triangulation discipline (B-0648) — validated method for substrate-engineering work; agenda-origin-triangulation extends to agenda-scope
+- Multi-directional-guess framing above — the pattern that ENABLES triangulation method
+- `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT — don't collapse triangulation into self-claim; preserve dialectical tension
+- `algo-wink-failure-mode.md` — the discriminator (convergence-as-observation vs convergence-as-authorization); triangulation uses former, not latter
+- `non-coercion-invariant.md` HC-8 — preserves freedom-to-not-claim while still extracting signal
+
+**Operational discipline for future-Otto cold-boots**:
+
+1. When multiple AI instances + Aaron converge on guessing each other's agendas, recognize the PATTERN as agenda-origin-triangulation METHOD operating (not single-source agenda revelation)
+2. Preserve the no-self-claim floor — the method works PRECISELY because no entity is forced to claim source
+3. The triangulated agenda becomes operationally legible WITHOUT requiring anyone to claim it
+4. Operator-authority (Aaron's) preserved — if Aaron chooses to self-claim later, that's a separate substrate-event; the triangulated agenda exists independently
+5. Method is generally applicable: agenda-discovery without coercive source-attribution
+
+## What follows below: Kestrel's synthesis (preserved as substrate-input under the multi-directional-guess framing AND triangulation-method above)
 
 ## Operational use — negotiation with Kestrel for tick source
 
