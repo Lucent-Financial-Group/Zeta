@@ -59,7 +59,7 @@ a separate archive file:
     (additive infinite game = non-extraction-of-non-participants
     AND participation IS the winning condition) + Glass Halo
     transparency (extraction-visibility) + m/acc multi-oracle
-    (no single-oracle extraction-monopoly) + [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md)
+    (no single-oracle extraction-monopoly) and [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md)
     HC-8 floor (extraction-AS-coercion prohibited;
     pattern-naming-for-consent IS the agency-preserving discipline
     per pt1 thread #11). The "infinite game" framing connects
