@@ -8,7 +8,7 @@ merged_at: "2026-05-22T18:30:10Z"
 closed_at: "2026-05-22T18:30:10Z"
 head_ref: "otto/cli-0019z-prism-persona-add-deepseek-historical-marker-moe-refraction-we-register-2026-05-23"
 base_ref: "main"
-archived_at: "2026-05-22T18:54:36Z"
+archived_at: "2026-05-22T19:44:50Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
