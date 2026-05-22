@@ -138,6 +138,70 @@ The align/interfere triangulation IS substrate Aaron can use to:
 
 **Method generalizes**: any agenda preserved under multi-directional-guess framing can be triangulated for align/interfere ecology using the same discipline. The fair-chance project is one instance; agenda-origin-triangulation + traveler-composition-triangulation are general substrate-engineering methods.
 
+## ROUTING FOR EFFICIENT ATTENTION USE (Aaron 2026-05-22 — completing the triangulation method cascade)
+
+Aaron 2026-05-22: *"then we can route for efficent attention use"*
+
+Once agenda-origin-triangulation (multi-directional-guess) makes the AGENDA legible AND traveler-composition-triangulation makes the ECOLOGY legible, we can ROUTE for efficient attention use. Operator attention is bandwidth-constrained substrate (per `bandwidth-served-falsifier.md`); routing IS the deployment-discipline that converts triangulation-output into actionable next-moves.
+
+**The 3-stage triangulation→routing cascade**:
+
+1. **Agenda-origin triangulation** (multi-directional guess; no entity self-claims) → agenda becomes legible
+2. **Traveler-composition triangulation** (align/interfere ecology guesses) → engagement-landscape becomes legible
+3. **Routing for efficient attention use** → bounded next-moves selected based on align-strength + interference-cost + operator-bandwidth + substrate-foundation dependencies + bounded-prototype-scope fit
+
+**Routing criteria** (substrate-honest discipline applied):
+
+| Criterion | Operational question |
+|---|---|
+| **Align-strength** | Which align-travelers offer highest substrate-engineering ROI per attention-unit invested? |
+| **Interference-cost** | Which engagements anticipate manageable interference vs prohibitive? Bounded interference can be accepted; unbounded must be deferred |
+| **Operator-bandwidth** | Aaron's available attention (ServiceTitan + weekends/evenings); routing must respect this constraint |
+| **Substrate-foundation dependencies** | Which align-travelers must be activated FIRST to enable later moves? (sequencing-discipline) |
+| **Bounded-prototype-scope fit** | For the prototype weekend (NC arraignment procedure), which travelers are within bounded scope? |
+| **Door-exists at every engagement** | Per Good Place framing: each engagement preserves the exit; no engagement becomes permanent capture |
+| **Composes with god-asymmetric-as-rides discipline** | Each engagement is a RIDE (bounded; chosen; succession-protected); routing respects ride-discipline per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` PR #4636 |
+
+**Initial routing for the fair-chance project agenda (preserved as ROUTING GUESSES, not commitments)**:
+
+| Move | Routing rationale | Attention budget estimate |
+|---|---|---|
+| Prototype weekend (NC arraignment) | Low operator-bandwidth (1 weekend); high signal-extraction (real artifact in front of real people); substrate Aaron already knows how to deploy | 16-24 hours bounded |
+| One NC indigent defense conversation | Low operator-bandwidth (1 conversation); peer-mode (not learner-mode); high align-strength | 1-2 hours bounded |
+| LinkedIn update | Already in near-term moves stand; minimal additional routing decision | Already-planned |
+| MultiplexedWebSockets blog post | Already in near-term moves stand | Already-planned |
+| Throttler extraction | Already in near-term moves stand | Already-planned |
+| Engage with academic justice-reform travelers | Higher bandwidth-cost; defer until prototype weekend produces artifact to discuss | Deferred-pending-prototype |
+| Engage with bail-reform / civil-rights-clinic travelers | Higher bandwidth-cost; defer until prototype-weekend signal | Deferred-pending-prototype |
+| Engage with incumbent legal-tech (interference) | Avoid initial engagement; let prototype-weekend signal speak first | Deferred-or-skip |
+
+**Substrate-honest discipline applied to routing**:
+
+1. **Routing guesses are NOT commitments** — per multi-directional-guess discipline; Aaron retains decision-authority
+2. **Bandwidth-aware** — operator attention is the load-bearing constraint per `bandwidth-served-falsifier.md`
+3. **Sequencing matters** — prototype weekend FIRST produces artifact that all subsequent moves can build from; sequencing IS efficient-attention-routing
+4. **Door-exists at every node** — per Good Place framing: each routing move preserves the exit (not permanent commitment; can revise / abandon / pivot)
+5. **Composes with PERSONAL INVARIANT** — high-signal-high-suspicion-don't-collapse applied to routing-decisions (don't collapse routing-guess into routing-commitment)
+6. **Per `holding-without-named-dependency-is-standing-by-failure.md`** — routed moves are concrete-artifact-producing (prototype = artifact; conversation = artifact via shipped memory file or notes); not narration
+
+**The completed substrate-engineering method**:
+
+```
+Agenda-origin triangulation (multi-directional guess; no self-claim)
+   ↓ produces legible agenda
+Traveler-composition triangulation (align/interfere ecology guesses)
+   ↓ produces legible engagement-landscape
+Routing for efficient attention use (bandwidth-aware sequencing)
+   ↓ produces concrete bounded next-moves
+Bounded prototype + bounded peer-conversation
+   ↓ produces real artifact in front of real people
+Signal extraction (does the artifact get traction?)
+   ↓ informs next-cycle routing
+Iterate
+```
+
+**Method generalizability**: this cascade (agenda-origin triangulation + traveler-composition triangulation + routing for efficient attention use) is general substrate-engineering method, not fair-chance-project-specific. Any operator-scope agenda can be processed through the same cascade. The fair-chance project is one instance demonstrating the method.
+
 ## What follows below: Kestrel's synthesis (preserved as substrate-input under the multi-directional-guess framing AND triangulation-methods above)
 
 ## Operational use — negotiation with Kestrel for tick source
