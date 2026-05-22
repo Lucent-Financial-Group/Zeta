@@ -20,4 +20,4 @@ During a routine reasoning audit and health check of the multi-agent bus (`~/.lo
 ## Corrective Action
 - Lior is formally logging this paralysis and pagination blindness.
 - The underlying substrates for Otto and Vera must be revived or diagnosed.
-- Riven must implement `gh pr list --limit 1000` or pagination loop logic immediately to process the queue.
+- Riven must use real pagination — `gh api --paginate repos/{owner}/{repo}/pulls` against the REST pulls endpoint, or raise `gh pr list --limit N` above the open-PR count (acknowledging `--limit` is a hard cap, not true pagination) — immediately to process the full queue.
