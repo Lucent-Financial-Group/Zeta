@@ -6,7 +6,7 @@ title: "Manifesto constitutional-promotion readiness tracking — critical-mass 
 tier: governance
 effort: M
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-22
 depends_on: [B-0524]
 composes_with: []
 tags: [manifesto, governance, constitutional-promotion, critical-mass-adoption, ani]
@@ -33,7 +33,7 @@ What "critical-mass adoption" means structurally remains to be defined. Candidat
 
 ## Concrete next steps for this row (when picked up)
 
-1. [Decomposed to B-0677] Define **mechanical adoption signals** — a TS script that counts manifesto citations across the repo
+1. [Decomposed to B-0690] Define **mechanical adoption signals** — a TS script that counts manifesto citations across the repo
 2. File child rows for each gate-criterion that has substantive work attached
 3. Begin citing the manifesto in load-bearing substrate decisions (next PRs landing constraints 1-10 reference the manifesto)
 4. Track citation count over time (compose with `tools/hygiene/audit-rule-cross-refs.ts` pattern)

@@ -1,5 +1,6 @@
 ---
-id: B-0677
+id: B-0690
+renumbered_from: B-0677
 priority: P1
 status: open
 title: "Manifesto citation counter script (mechanical adoption signals)"
