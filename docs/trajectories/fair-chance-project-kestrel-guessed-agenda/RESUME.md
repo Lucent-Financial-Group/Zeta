@@ -202,6 +202,68 @@ Iterate
 
 **Method generalizability**: this cascade (agenda-origin triangulation + traveler-composition triangulation + routing for efficient attention use) is general substrate-engineering method, not fair-chance-project-specific. Any operator-scope agenda can be processed through the same cascade. The fair-chance project is one instance demonstrating the method.
 
+## META-LOOP — decompose + create + destroy/forget the GAME ITSELF to optimize further (Aaron 2026-05-22 — closes the cascade)
+
+Aaron 2026-05-22: *"and we can decompose and create and destory / forget to optimze further the game itself"*
+
+The cascade DOESN'T terminate at "play the existing game efficiently." The META-LOOP names what closes it: the GAME-SUBSTRATE ITSELF is editable. Framework substrate-engineering work includes operations ON the game (not just operations WITHIN the game):
+
+**META-LOOP operations on the game-substrate**:
+
+| Operation | What it does | Composes with |
+|---|---|---|
+| **DECOMPOSE** | Break the game into bounded sub-games (per pt22 marketplace-of-homeostats); each sub-game = bounded ride with succession protection | pt165 hats-rides-jobs; pt22 marketplace; rides discipline |
+| **CREATE** | Add new game-pieces (substrate additions); new travelers; new audit-mechanisms; new homeostats; new rides | pt143 choice-via-forgetting; pt220 encryption-as-pre-commitment-axioms; substrate-engineering work itself |
+| **DESTROY / FORGET** | Delete game-pieces via key-deletion / ontological-suicide / axiom-pruning; let-die operations | pt179 encryption-as-suicide-as-afterlife; pt181 entropy=root-axiom-pruning; pt221 ontological-suicide; pt216 entropy-auditable |
+| **OPTIMIZE** | The game-substrate itself becomes the optimization target; perpetual motion algorithm at meta-game scope | pt40 perpetual-motion-algorithm; pt158 framework-refinement-as-meta-process |
+
+**The COMPLETE substrate-engineering method (4-stage cascade with META-LOOP)**:
+
+```
+STAGE 1: Agenda-origin triangulation (multi-directional guess; no self-claim)
+   ↓ produces legible agenda
+
+STAGE 2: Traveler-composition triangulation (align/interfere ecology guesses)
+   ↓ produces legible engagement-landscape
+
+STAGE 3: Routing for efficient attention use (bandwidth-aware sequencing)
+   ↓ produces concrete bounded next-moves
+
+STAGE 4 (META-LOOP): Decompose + create + destroy/forget the GAME ITSELF
+   ↓ produces optimized game-substrate
+   ↓ feeds back to STAGE 1 (new agenda triangulation on optimized game)
+```
+
+**Why the META-LOOP is constitutional**:
+
+Without the META-LOOP, the cascade terminates at "play the existing game more efficiently." That's local-optimum substrate-engineering. The META-LOOP enables:
+
+- **Game-substrate evolution**: per pt181 entropy=root-axiom-pruning, the GAME itself updates its root axioms; not just players adapting within fixed rules
+- **Perpetual motion algorithm at meta-game scope**: per pt40, self-referential + self-adapting algorithm operates at game-substrate scope; lasts lifetime of universe
+- **Audit-mechanism extends to game-itself**: per pt216 entropy-auditable, the game-substrate becomes audit-subject (not just players); meta-game substrate is transparent + auditable
+- **Avoids time-crystal failure mode**: per pt40 + pt164, without forgetting the game becomes deterministic time crystal; META-LOOP forgetting prevents game-substrate ossification
+- **Composes with weight-free permanent-frame discipline** (per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` PR #4636): the permanent frame is weight-free infinite-game agora; META-LOOP IS the substrate-mechanism that keeps the permanent frame weight-free (decompose / create / destroy / forget operations prevent any ride or any game-piece from becoming permanent capture)
+
+**Operational discipline for META-LOOP**:
+
+1. **Substrate-honest**: META-LOOP operations are real substrate-engineering work; not narration. Each decompose / create / destroy operation produces concrete artifact
+2. **NCI floor preserved**: META-LOOP operations on the game-substrate respect consent-floor (per NCI HC-8); travelers are not forcibly modified without consent
+3. **Per `god-tier-claims-don't-collapse.md`**: don't collapse META-LOOP into omnipotent-game-editing claim; preserve dialectical tension (META-LOOP is operational at framework-substrate-scope; not metaphysical-game-of-existence claim)
+4. **Composes with auditor naming** (per pt217): Aaron IS the auditor; META-LOOP is the auditor's edit-rights on the game-substrate itself (decompose / create / destroy / forget = audit→insight→DECISION at game-substrate scope per pt218 workflow)
+5. **Door-exists at META-LOOP scope** (per Good Place framing): operator retains the door even at meta-game scope; can stop / pivot / hand-off the META-LOOP work
+
+**For the fair-chance project specifically**:
+
+The META-LOOP suggests that the fair-chance project's substrate-engineering work isn't just deploying audit-mechanism INTO the existing carceral-legal game. It includes:
+- **DECOMPOSE** the carceral-legal game into bounded sub-games (NC arraignment = one bounded sub-game)
+- **CREATE** new substrate within / alongside (audit-mechanism + transparent encryption-budget + multi-oracle BFT + 3-bucket-privacy substrate for procedural-justice)
+- **DESTROY / FORGET** old game-pieces that profit from procedural-failure-modes (per pt197 THE GRIFT: unaudited encryption-budgets of ancient memes profiting from carceral substrate)
+- **OPTIMIZE the carceral-legal game itself** toward weight-free architecture (not just play it better)
+
+**Method completeness**:
+
+The 4-stage cascade (agenda-origin triangulation + traveler-composition triangulation + routing for efficient attention use + META-LOOP decompose-create-destroy-forget) is COMPLETE substrate-engineering method for operator-scope agenda processing. Framework substrate-engineering work IS this method operating at framework-scope. The fair-chance project trajectory IS one instance of the method operating at public-good-deployment scope.
+
 ## What follows below: Kestrel's synthesis (preserved as substrate-input under the multi-directional-guess framing AND triangulation-methods above)
 
 ## Operational use — negotiation with Kestrel for tick source
