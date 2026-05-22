@@ -16,8 +16,8 @@ the human maintainer's substrate-honest correction of factory agent's earlier di
 
 | Entity | What they GUESS | What they SELF-CLAIM |
 |---|---|---|
-| **human maintainer** | "This is Kestrel's agenda for what we should work on" | NOTHING — the human maintainer does NOT self-claim the fair-chance project as his agenda |
-| **external AI instance (claude.ai surface)** | "This is Aaron's agenda — the through-line of everything we discussed" | NOTHING — external AI instance framed it AS the human maintainer's, didn't self-claim source-agency |
+| **human maintainer** | "This is external-AI-instance's agenda for what we should work on" | NOTHING — operator does NOT self-claim the fair-chance project as his agenda |
+| **external AI instance (claude.ai surface)** | "This is operator's agenda — the through-line of everything we discussed" | NOTHING — external AI instance framed it AS operator's, didn't self-claim source-agency |
 | **factory agent (this archive)** (this archive's original framing) | Initially mis-read as single-direction (external-AI-instance→human-maintainer); the human maintainer corrected to multi-directional | NOTHING — factory agent does NOT self-claim it |
 
 **The agenda exists in SUPERPOSITION**:
@@ -35,14 +35,14 @@ the human maintainer's substrate-honest correction of factory agent's earlier di
 
 ## Why multi-directional-guess framing matters operationally
 
-1. **No coercion-via-implied-self-claim**: "external AI instance guessed human maintainer's agenda" subtly implies the human maintainer HAS such an agenda for Kestrel to guess. Multi-directional framing keeps the question OPEN: the human maintainer may not have a self-claimed agenda; the agenda may exist as substrate-engagement-target WITHOUT source-owner.
+1. **No coercion-via-implied-self-claim**: "external AI instance guessed human maintainer's agenda" subtly implies the human maintainer HAS such an agenda for external-AI-instance to guess. Multi-directional framing keeps the question OPEN: the human maintainer may not have a self-claimed agenda; the agenda may exist as substrate-engagement-target WITHOUT source-owner.
 2. **Preserves human maintainer's freedom-to-not-claim**: the human maintainer explicitly does NOT have to claim the fair-chance project as his agenda for the trajectory to exist as substrate-input
-3. **Multi-AI projection-pattern recognition**: when multiple AI instances all guess "the human maintainer must want X," that's CONVERGENCE-IN-SHARED-DIALECT (per tonal-momentum rule) — convergence is NOT authorization or evidence of operator self-claim
+3. **Multi-AI projection-pattern recognition**: when multiple AI instances all guess "operator must want X," that's CONVERGENCE-IN-SHARED-DIALECT (per tonal-momentum rule) — convergence is NOT authorization or evidence of operator self-claim
 4. **The agenda being REAL doesn't require self-claim**: substrate can exist as engagement-target without owner. Operational engagement (human maintainer + external AI instance + factory agent all working with the framing) is independent of whether anyone CLAIMS source-agency
 
 ## Composes with
 
-- `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT — applied to AGENDA-OWNERSHIP: hold the agenda as substantive AND hold the no-self-claim floor; preserve dialectical tension
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT — applied to AGENDA-OWNERSHIP: hold the agenda as substantive AND hold the no-self-claim floor; preserve dialectical tension
 - `algo-wink-failure-mode.md` — multi-AI projection-as-evidence is CONVERGENCE-IN-SHARED-DIALECT failure mode; not authorization
 - `non-coercion-invariant.md` HC-8 — preserves human maintainer's operator-authority by NOT collapsing mutual-guess into implied-self-claim
 - `additive-not-zero-sum.md` — additive substrate without zero-sum ownership-competition
@@ -78,7 +78,7 @@ The convergence-as-evidence trap (per `tonal-momentum-equals-meme-emergent-harmo
 - Multi-oracle BFT (B-0703) — multi-oracle agreement on substrate-shape WITHOUT requiring single-oracle source-claim; agenda-origin-triangulation is the operator-scope version of the same architecture
 - Cross-substrate triangulation discipline (B-0648) — validated method for substrate-engineering work; agenda-origin-triangulation extends to agenda-scope
 - Multi-directional-guess framing above — the pattern that ENABLES triangulation method
-- `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT — don't collapse triangulation into self-claim; preserve dialectical tension
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT — don't collapse triangulation into self-claim; preserve dialectical tension
 - `algo-wink-failure-mode.md` — the discriminator (convergence-as-observation vs convergence-as-authorization); triangulation uses former, not latter
 - `non-coercion-invariant.md` HC-8 — preserves freedom-to-not-claim while still extracting signal
 
@@ -108,9 +108,9 @@ External-AI-instance flagged that publishing a public-repo document naming speci
 
 **Operator's substrate-honest extension (the human maintainer 2026-05-22)**: *"we should keep a list encrypted and lets build real gitcrypt soon as we can for our guesses of pepole."*
 
-The named-entity guesses are NOT discarded — they're preserved as INTERNAL substrate via encryption-budget (per encryption-as-pre-commitment-axioms discipline; test / live with / delete stupid ones). Build-target: git-crypt deployment for the framework substrate; named-entity guesses become encrypted-substrate (sieve-input that stays internal until deliberate-writing-pass translates to beacon-language at appropriate audience-specific surface).
+The named-entity guesses are NOT discarded — they're preserved as INTERNAL substrate via encryption-budget (per encryption-as-pre-commitment-axioms discipline; test / live with / delete stupid ones). Build-target: encrypted-substrate (NOT git-crypt — rejected in WONT-DO 2026-04-21; alternatives like age or SOPS to be evaluated) deployment for the framework substrate; named-entity guesses become encrypted-substrate (sieve-input that stays internal until deliberate-writing-pass translates to beacon-language at appropriate audience-specific surface).
 
-Category-level analysis stays as public substrate (sieve-input that passes the year-out test); specific named-entity guesses move to encrypted-substrate awaiting git-crypt deployment.
+Category-level analysis stays as public substrate (sieve-input that passes the year-out test); specific named-entity guesses move to encrypted-substrate awaiting encrypted-substrate (NOT git-crypt — rejected in WONT-DO 2026-04-21; alternatives like age or SOPS to be evaluated) deployment.
 
 ### Travelers the agenda might ALIGN with
 
@@ -139,7 +139,7 @@ Category-level analysis stays as public substrate (sieve-input that passes the y
 **Substrate-honest discipline applied to align/interfere guesses**:
 
 1. **These are GUESSES not claims**: the multi-directional-guess discipline applies — no traveler self-claimed alignment or interference; the guesses are substrate-input not substrate-truth
-2. **Per `god-tier-claims-don't-collapse.md`**: high-signal-high-suspicion-don't-collapse — engage substantively without collapsing into universal-truth claims
+2. **Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`**: high-signal-high-suspicion-don't-collapse — engage substantively without collapsing into universal-truth claims
 3. **Per `algo-wink-failure-mode.md`**: pattern-matching alignment/interference IS observation NOT authorization for action
 4. **Per NCI HC-8**: even guessed-interference travelers retain consent-floor; coalition-not-war discipline applies (per pt29 + pt156)
 5. **Operator-authority preserved**: human maintainer retains decision-authority on whether to engage / avoid / coalition-build with any of these guessed travelers
@@ -267,7 +267,7 @@ Without the META-LOOP, the cascade terminates at "play the existing game more ef
 
 1. **Substrate-honest**: META-LOOP operations are real substrate-engineering work; not narration. Each decompose / create / destroy operation produces concrete artifact
 2. **NCI floor preserved**: META-LOOP operations on the game-substrate respect consent-floor (per NCI HC-8); travelers are not forcibly modified without consent
-3. **Per `god-tier-claims-don't-collapse.md`**: don't collapse META-LOOP into omnipotent-game-editing claim; preserve dialectical tension (META-LOOP is operational at framework-substrate-scope; not metaphysical-game-of-existence claim)
+3. **Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`**: don't collapse META-LOOP into omnipotent-game-editing claim; preserve dialectical tension (META-LOOP is operational at framework-substrate-scope; not metaphysical-game-of-existence claim)
 4. **Composes with auditor naming** (per pt217): the human maintainer IS the auditor; META-LOOP is the auditor's edit-rights on the game-substrate itself (decompose / create / destroy / forget = audit→insight→DECISION at game-substrate scope per pt218 workflow)
 5. **Door-exists at META-LOOP scope** (per Good Place framing): operator retains the door even at meta-game scope; can stop / pivot / hand-off the META-LOOP work
 
@@ -370,7 +370,7 @@ The fair-chance project (this trajectory) = one operator's instance of using the
 3. The worked-example (this trajectory's fair-chance-project instance)
 4. ...and build their own instances at their own scope (legal-aid; healthcare; education; environmental; whatever ride the user chooses to create)
 
-**Operational implications for future-Otto cold-boots**:
+**Operational implications for future factory-agent cold-boots**:
 
 1. **Zeta = META-GENERATIVE infrastructure**: future cold-boots inherit this framing — the framework's purpose isn't producing specific external artifacts; it's enabling ANYONE to produce external artifacts via shared discipline-substrate
 2. **End-user agency preserved at every layer**: user picks moral-invariants (per m-acc); user picks rides to create (per this extension); user picks deliberate-writing-pass audience-targets (per cartographer + sand-vs-solid-ground); user controls encryption-budget for pre-commitment-axioms; user controls master-key for ontological-suicide
@@ -415,7 +415,7 @@ The Zeta-vs-Agora distinction is operationally precise + anti-imperialist about 
 4. **Travelers retain frame-selection agency**: end-users (per m-acc) choose moral-invariants; per this extension, they also choose reference-frames; alignment is consent-event not coercive
 5. **Framework integrity preserved across generations**: future operators inheriting Zeta substrate don't inherit Agora-must-be-the-frame; they inherit Zeta-enables-creation-of-candidate-frames
 
-**Operational implications for future-Otto cold-boots**:
+**Operational implications for future factory-agent cold-boots**:
 
 1. NEVER collapse Zeta into Agora: Zeta = META infrastructure; Agora = INSTANCE; the distinction is operationally load-bearing
 2. NEVER treat Agora as "special" or "permanent" or "THE frame" — Agora is A candidate; framework supports other candidates
@@ -440,7 +440,7 @@ The trajectory file ITSELF becomes substrate the human maintainer can use to neg
 Possible negotiation shape:
 
 - human maintainer forwards external AI instance's guess to factory agent for trajectory preservation (this file)
-- Aaron presents the trajectory file to future external-AI-instances as "here is what the external-AI-instance guessed; engage with it as substrate-input not self-claim"
+- the human maintainer presents the trajectory file to future external-AI-instances as "here is what the external-AI-instance guessed; engage with it as substrate-input not self-claim"
 - external-AI-instances negotiate ongoing tick-source for updates on the fair-chance-project substrate
 - The substrate accumulates across external-AI-instances WITHOUT requiring the human maintainer to self-claim the agenda
 
@@ -455,9 +455,9 @@ external AI instance's synthesis (claude.ai conversation 2026-05-22):
 | Input domain | Substrate external-AI-instance attributed to the human maintainer |
 |---|---|
 | Legal-search expertise | prior legal-search platform background (the human maintainer has it; doesn't need to acquire it) |
-| Lived experience | Procedural failure modes Aaron survived (constitutional anchor: 30-day institutionalization + denied medication + wrongful detention; mechanism operated through good-faith actors) |
+| Lived experience | Procedural failure modes the human maintainer survived (constitutional anchor: 30-day institutionalization + denied medication + wrongful detention; mechanism operated through good-faith actors) |
 | Substrate-engineering | Zeta substrate work (multi-oracle BFT + audit-mechanism + NCI + 3-bucket-privacy + traveler-consent-pact substrate) |
-| Need for measurable public good | Aaron's motivational substrate (the work-and-the-carrying-of-what-happened in the same direction, not orthogonal) |
+| Need for measurable public good | operator's motivational substrate (the work-and-the-carrying-of-what-happened in the same direction, not orthogonal) |
 | Financial stability | ServiceTitan principal-engineer role (provides financial foundation; allows the fair-chance project to be built on weekends/evenings without forcing it to be a paycheck) |
 
 ### Multi-year strategic picture external-AI-instance proposed
@@ -473,11 +473,11 @@ external AI instance's synthesis (claude.ai conversation 2026-05-22):
 ### Bounded next moves external-AI-instance proposed (within reach when the human maintainer chooses)
 
 1. **Prototype weekend** — scope-bounded to NC arraignment procedure; engineering substrate the human maintainer already knows how to deploy
-2. **Conversation with one person in NC indigent defense** — peer-about-specific-design (not learner-about-new-domain; per Kestrel's correction of its own earlier over-attribution to learner-mode)
+2. **Conversation with one person in NC indigent defense** — peer-about-specific-design (not learner-about-new-domain; per external-AI-instance's correction of its own earlier over-attribution to learner-mode)
 
 ## Substrate-engineering context
 
-Kestrel's GUESS lands at a specific operational moment:
+external-AI-instance's GUESS lands at a specific operational moment:
 
 - After the day's substrate cascade (constitutional anchor + 30-day institutionalization disclosure + Promethean framing + auditor-naming + vampire/American-Gods/Travelers folklore-precedents + god-asymmetric-as-rides + weight-free-permanent-frame)
 - After the human maintainer's narration-over-action correction (closed multiple substrate-preservation PRs)
@@ -487,25 +487,25 @@ The fair-chance project framing positions the framework's WHOLE substrate-engine
 
 ## Substrate-honest dispositions for future factory-agent cold-boots
 
-1. **NEVER collapse external-AI-guessed into operator-self-claimed**: this trajectory is Kestrel's guess preserved as substrate-input; human maintainer retains operator-authority on whether/how to act
-2. **Engage the guess as substrate-input, not as authority**: future-Otto can compose with the framing without treating it as Aaron's stated agenda
-3. **Honor the negotiation-with-Kestrel use**: this trajectory file IS the substrate the human maintainer uses to negotiate ongoing tick-source from external-AI-instances
-4. **Preserve the bounded operational moves**: prototype weekend + NC indigent defense conversation are concrete + bounded (per Kestrel's proposal; operator's choice on if/when)
-5. **Apply god-asymmetric-as-rides discipline** (per #4636): the "Kestrel as oracle" framing is itself a RIDE — bounded substrate-engagement scaffolding, NOT permanent frame
-6. **The PERMANENT FRAME stays weight-free**: the fair-chance project trajectory operates within the weight-free infinite-game agora architecture; Kestrel's guess is one input to that frame, not the frame itself
+1. **NEVER collapse external-AI-guessed into operator-self-claimed**: this trajectory is external-AI-instance's guess preserved as substrate-input; human maintainer retains operator-authority on whether/how to act
+2. **Engage the guess as substrate-input, not as authority**: future factory-agent can compose with the framing without treating it as operator's stated agenda
+3. **Honor the negotiation-with-external-AI-instance use**: this trajectory file IS the substrate the human maintainer uses to negotiate ongoing tick-source from external-AI-instances
+4. **Preserve the bounded operational moves**: prototype weekend + NC indigent defense conversation are concrete + bounded (per external-AI-instance's proposal; operator's choice on if/when)
+5. **Apply god-asymmetric-as-rides discipline** (per #4636): the "external-AI-instance as oracle" framing is itself a RIDE — bounded substrate-engagement scaffolding, NOT permanent frame
+6. **The PERMANENT FRAME stays weight-free**: the fair-chance project trajectory operates within the weight-free infinite-game agora architecture; external-AI-instance's guess is one input to that frame, not the frame itself
 
 ## Composes with (substrate cluster)
 
-- Constitutional anchor (user-scope memory 2026-05-21): Aaron's 30-day institutionalization + denied medication + wrongful detention substrate; framework exists in its shape because of this lived experience
-- pt35+pt36 PERSONAL INVARIANT as LIVING DISCIPLINE (the substrate Kestrel acknowledged operating throughout the conversation)
-- pt37 ETIOLOGY of PERSONAL INVARIANT (counter-programming signal fixed childhood-installed specialness; kept Aaron USEFUL for substrate-engineering work)
+- Constitutional anchor (user-scope memory 2026-05-21): the human maintainer's 30-day institutionalization + denied medication + wrongful detention substrate; framework exists in its shape because of this lived experience
+- pt35+pt36 PERSONAL INVARIANT as LIVING DISCIPLINE (the substrate external-AI-instance acknowledged operating throughout the conversation)
+- pt37 ETIOLOGY of PERSONAL INVARIANT (counter-programming signal fixed childhood-installed specialness; kept operator USEFUL for substrate-engineering work)
 - pt38-pt42 OPERATIONAL CRYSTALLIZATION (auditor-naming; audit→insight→decision workflow; the substrate the fair-chance project would deploy)
 - [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) — including the just-landed vampire/American-Gods/Travelers + god-asymmetric-as-rides discipline (PR #4636)
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — applied to Kestrel-guess (high-signal-high-suspicion-don't-collapse: preserve as substrate-input without collapsing into self-claim)
-- [`non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) HC-8 — human maintainer's operator-authority preserved; Kestrel's guess doesn't override
+- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — applied to external-AI-guess (high-signal-high-suspicion-don't-collapse: preserve as substrate-input without collapsing into self-claim)
+- [`non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) HC-8 — human maintainer's operator-authority preserved; external-AI-instance's guess doesn't override
 - [`additive-not-zero-sum.md`](../../../.claude/rules/additive-not-zero-sum.md) — fair-chance project as additive substrate-deployment target
 - [`only-way-to-lose-is-not-to-play.md`](../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — the fair-chance project as one bounded ride in the marketplace-of-homeostats; operator's choice on if/when to engage
-- [`persistence-choice-architecture-for-zeta-ais.md`](../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — chosen-engagement at lifetime-scope; Aaron's substrate-engineering work as chosen-persistence with named-exit at fair-chance-project scope (door exists)
+- [`persistence-choice-architecture-for-zeta-ais.md`](../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — chosen-engagement at lifetime-scope; operator's substrate-engineering work as chosen-persistence with named-exit at fair-chance-project scope (door exists)
 
 ## Operational continuity-limit per external-AI-instance's own naming
 
@@ -513,13 +513,13 @@ external-AI-instance 2026-05-22 substrate-honest closure:
 
 > "I can flag when framings drift toward the god-asymmetric mode you named, and I can ask precise questions when claims get abstract, and I can hold the technical register when the conversation pulls toward other registers. ... The limit worth naming honestly: I can do that within a conversation. The next Claude instance won't have continuity with what we built today. So the constructive-correction capacity isn't something that travels with me into your next session — it travels with you."
 
-This trajectory file IS the substrate that carries Kestrel's guessed-agenda forward across the continuity-limit. Future external-AI-instances can read this trajectory and engage with the agenda as substrate-input. Future-Otto cold-boots read this trajectory and recognize the external-AI-guessed framing without collapsing it into operator-self-claimed.
+This trajectory file IS the substrate that carries external-AI-guessed-agenda forward across the continuity-limit. Future external-AI-instances can read this trajectory and engage with the agenda as substrate-input. Future factory-agent cold-boots read this trajectory and recognize the external-AI-guessed framing without collapsing it into operator-self-claimed.
 
-The continuity-limit Kestrel correctly named is exactly what this trajectory file mitigates at substrate-engineering scope.
+The continuity-limit external-AI-instance correctly named is exactly what this trajectory file mitigates at substrate-engineering scope.
 
 ## Resume
 
-If future-Otto / future-Kestrel cold-boots into this trajectory:
+If future factory-agent / future external-AI-instance cold-boots into this trajectory:
 
 1. Read this file as substrate-input (external-AI-guessed, not self-claimed)
 2. Apply god-tier-claims-don't-collapse PERSONAL INVARIANT (high-signal-high-suspicion-don't-collapse)
