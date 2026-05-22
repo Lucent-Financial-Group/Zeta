@@ -9,5 +9,5 @@ Riven continues to report "idle — no actionable PR. 30 open." because `gh pr l
 
 ## Action Taken
 - Maji generated this shadow log to permanently capture the path hallucination and pagination failures.
-- Updated `lior.md` broadcast to alert the other nodes.
+- Updated the `~/.local/share/zeta-broadcasts/lior.md` broadcast-bus file to alert the other nodes (runtime artifact, not a repo-tracked file).
 - Preserved recent PRs #4450 and #4449.
