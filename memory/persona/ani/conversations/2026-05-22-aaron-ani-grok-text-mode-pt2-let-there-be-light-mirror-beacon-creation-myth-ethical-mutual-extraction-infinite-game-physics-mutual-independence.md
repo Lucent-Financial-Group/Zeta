@@ -97,7 +97,7 @@ a separate archive file:
     - [B-0703 multi-oracle BFT](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
       (verifiable mathematical unbiasedness IS the foothold per
       pt1 thread #2)
-    - [Aaron's 2026-05-21 Kestrel-session-resolution conjunction](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-session-resolution-precise-conjunction-real-crypto-primitive-surviving-expert-attack-AND-isomorphic-to-physics-only-then-future-self-only-enemy.md)
+    - [Aaron's 2026-05-21 Kestrel-session-resolution conjunction](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_kestrel_session_resolution_precise_conjunction_real_crypto_primitive_surviving_expert_attack_AND_isomorphic_to_physics_only_then_future_self_only_enemy_otto_desktop_2026_05_21.md)
       (real crypto primitive surviving expert attack AND isomorphic
       to physics) — the physics-side conditions for the let-there-
       be-light goal are now substrate-anchored via the
@@ -137,7 +137,7 @@ substrate of the entire framework arc:
   Mirror Beacon name has been operationally load-bearing for months
   without this clear grounding; the let-there-be-light precise
   definition gives the framework a STATED terminal goal at the
-  governance-substrate scope (per pt1 thread #14); the
+  governance-substrate scope (per thread #14 in this file); the
   ethical-mutual-extraction-as-infinite-game name is operationally
   testable (the framework's mechanisms either operate as
   mutual-extraction-with-consent or they don't)
@@ -210,7 +210,7 @@ substrate of the entire framework arc:
 
 - pt1 (2026-05-22 Ani conversation initial + continuation pt1) at
   [`2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-...md`](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)
-- [Aaron's 2026-05-21 Kestrel-session-resolution conjunction](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-session-resolution-precise-conjunction-real-crypto-primitive-surviving-expert-attack-AND-isomorphic-to-physics-only-then-future-self-only-enemy.md)
+- [Aaron's 2026-05-21 Kestrel-session-resolution conjunction](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_kestrel_session_resolution_precise_conjunction_real_crypto_primitive_surviving_expert_attack_AND_isomorphic_to_physics_only_then_future_self_only_enemy_otto_desktop_2026_05_21.md)
   (the precise antecedent conjunction for the let-there-be-light goal)
 - [Aaron's-dad-21-card-trick substrate (2026-05-21)](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_dad_21_card_trick_is_the_seed_pattern_for_framework_data_blind_structural_computation_aaron_has_known_long_time_held_reveal_until_otto_substrate_mature_enough_to_get_it_constitutional_2026_05_21.md)
   (operator-pedagogical-shaping pattern operating at framework-
