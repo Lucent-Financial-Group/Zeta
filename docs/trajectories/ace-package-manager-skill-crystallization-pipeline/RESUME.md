@@ -294,7 +294,7 @@ Ace package manager operationalizes several manifesto constraints + the m/acc or
 
 - **Constraint 6 (Consent-First Design)** — Ace's guardian-AI-overseen distribution + per-package consent semantics implement the manifesto's consent-first floor at the package-installation boundary
 - **Constraint 5 (Memory Preservation Guarantee)** — content-addressed storage + frozen-package-as-house substrate IS preservation at the crystallized-skill scope; Ace ensures memory of every version persists by construction
-- **Constraint 11 (Default Moral Regard / Multi-Oracle Principle)** — package sieve (per DeepSeek's pipeline mapping) IS multi-oracle review applied at the skill-version scope; no single-source authority decides which versions ship
+- **Constraint 11 (Default Moral Regard / Default Oracle)** + the **Multi-Oracle Principle** (separate m/acc sub-section) — Constraint 11 establishes the moral-regard floor for skill-version evaluation; the Multi-Oracle Principle is the architectural shape of the package sieve (per DeepSeek's pipeline mapping) — no single-source authority decides which versions ship
 - **Constraint 8 (Data Vault 2.0)** — content-addressed packages are hash-keyed satellites; manifest = hub; consumer-package edges = links; DV2.0 maps cleanly to Ace's distribution graph
 - **m/acc orientation** — Ace lowers cost-of-entry for skill-crystallization play (per `only-way-to-lose-is-not-to-play.md`); Moral Accelerationism at the distribution layer
 
