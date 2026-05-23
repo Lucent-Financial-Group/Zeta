@@ -398,8 +398,8 @@ during peer cascade) needs to ship a shard / substrate edit:
 
    **Narrow exception (forced-#6 only)**: at forced-#6 decomposition per
    [`holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md)
-   counter, a **single** retry after orphan cleanup (`rm -rf <wt-path>`
-   + `git branch -D <branch>`) is authorized for sub-case 4 specifically
+   counter, a **single** retry after orphan cleanup (run `rm -rf <wt-path>`
+   then `git branch -D <branch>`) is authorized for sub-case 4 specifically
    (per the 2026-05-23 timing-dependent-not-condition-dependent anchor in
    the sub-case 4 section above). The exception does NOT apply to
    sub-case 3 (pack-dir contention has no analogous timing-dependence
