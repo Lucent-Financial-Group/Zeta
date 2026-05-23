@@ -4,9 +4,12 @@
 
 Machine-checked formalizations of Zeta's load-bearing mathematical claims using
 [Lean 4](https://leanprover.github.io/) +
-[Mathlib](https://leanprover-community.github.io/). Every theorem here has a
-machine-checked proof body — no `sorry`, no `admit`. CI-gated against the pinned
-toolchain on every PR that touches `tools/lean4/**`.
+[Mathlib](https://leanprover-community.github.io/). The artifact-grade module
+`Lean4/DbspChainRule.lean` is fully machine-checked — no `sorry`, no `admit` —
+and CI-type-checked against the pinned toolchain on every PR that touches
+`tools/lean4/**`. Other modules under `tools/lean4/` (e.g.,
+`ImaginaryStack/ToyModel.lean`) are exploratory and may carry `sorry`
+placeholders pending future formalization rounds.
 
 ## Repository layout
 
@@ -21,12 +24,17 @@ toolchain on every PR that touches `tools/lean4/**`.
 ## Build
 
 ```bash
-# Install elan + Lean toolchain (one-time setup; takes care of the
-# leanprover/lean4:v4.30.0-rc1 pin in lean-toolchain)
-curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+# Install elan + the pinned Lean toolchain (one-time setup) via the
+# canonical three-way-parity install script — it installs elan with a
+# pinned commit + SHA256 verification and respects
+# tools/lean4/lean-toolchain (leanprover/lean4:v4.30.0-rc1).
+./tools/setup/install.sh
 
 cd tools/lean4
-lake build  # builds all imports of Lean4.lean against pinned Mathlib
+lake exe cache get               # fetch Mathlib's pre-built oleans (multi-GB; first run only)
+lake env lean Lean4/DbspChainRule.lean  # type-check the artifact (~30s after cache warm)
+# Or, to build everything `Lean4.lean` imports:
+lake build
 ```
 
 First build fetches Mathlib (multi-GB) and warms the `.lake/packages/mathlib`
@@ -40,8 +48,8 @@ Maintenance for Rich Query Languages"*, VLDB 2023](https://arxiv.org/abs/2203.16
 
 ### Paper-to-Lean mapping
 
-| Paper reference | Lean theorem | Lean file:line |
-|-----------------|--------------|----------------|
+| Paper reference | Lean theorem | Location |
+|-----------------|--------------|----------|
 | Definition 3.1 (`Q^Δ := D ∘ Q ∘ I`) | `Qdelta` | `DbspChainRule.lean` Section 6 |
 | Proposition 3.2 chain clause (`Qdelta(Q1 ∘ Q2) = Qdelta Q1 ∘ Qdelta Q2`, no preconditions) | `chain_rule_proposition_3_2` | `DbspChainRule.lean` Section 6 |
 | Theorem 3.3 corollary (`Dop (f ∘ g) s = f (Dop g s)` for LTI `f, g`) | `Dop_LTI_commute` | `DbspChainRule.lean` Section 6 |
@@ -97,11 +105,13 @@ with provenance, audit cadence, and cross-check status.
 ## CI
 
 [`.github/workflows/lean-proof.yml`](../../.github/workflows/lean-proof.yml)
-runs `lake build` on every PR touching `tools/lean4/**` against the pinned
-toolchain. Path-filtered to run out-of-band from the main `gate.yml` matrix
-(Mathlib cache is multi-GB and toolchain setup is heavier than the dotnet/bun
-gates). See workflow source for SHA-pinning + concurrency-group + minimum-
-permissions details.
+runs `./tools/setup/install.sh` (to install elan + the pinned toolchain), then
+`lake exe cache get` (to fetch Mathlib's pre-built oleans), then
+`lake env lean Lean4/DbspChainRule.lean` (to type-check the artifact) on every
+PR touching `tools/lean4/**`. Path-filtered to run out-of-band from the main
+`gate.yml` matrix (Mathlib cache is multi-GB and toolchain setup is heavier
+than the dotnet/bun gates). See workflow source for SHA-pinning +
+concurrency-group + minimum-permissions details.
 
 ## Citation
 
@@ -136,4 +146,4 @@ For the paper this artifact formalizes:
 - [`docs/research/verification-registry.md`](../../docs/research/verification-registry.md) — Class-0-drift-prevention registry for every formal-verification artifact
 - [`docs/research/proof-tool-coverage.md`](../../docs/research/proof-tool-coverage.md) — portfolio-wide tool routing
 - [`.claude/skills/verification-drift-auditor/SKILL.md`](../../.claude/skills/verification-drift-auditor/SKILL.md) — drift-detection procedure
-- [`.claude/agents/formal-verification-expert.md`](../../.claude/agents/formal-verification-expert.md) — Soraya, the routing authority for every formal-verification job
+- [`.claude/agents/formal-verification-expert.md`](../../.claude/agents/formal-verification-expert.md) — the formal-verification-expert agent (routing authority for every formal-verification job)
