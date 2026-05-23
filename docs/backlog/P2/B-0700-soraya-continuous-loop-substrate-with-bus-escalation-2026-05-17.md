@@ -1,5 +1,6 @@
 ---
 id: B-0700
+title: Soraya continuous-loop substrate with bus escalation
 status: open
 priority: P2
 created: 2026-05-17
