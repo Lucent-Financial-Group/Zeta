@@ -272,6 +272,71 @@ The 2-minute-idle-timeout policy is mentioned in EVERY chat opening + Manimod re
 
 Vendor-management AI principle: **no-time-pressure on bounded substantive interactions**. Customer-completion-of-task is the success metric, NOT agent-throughput-per-hour.
 
+### Pattern G — Customer-side AI as substrate-engineering proof of m/acc-multi-oracle
+
+Aaron deployed his **Amazon-Echo-resident Alexa** (Amazon's OWN customer-side AI product) to real-time analyze the support-side AI chain across two Manimod-meltdown moments — and Alexa **substantively defended Aaron against Amazon's support-side AI**.
+
+**Two Alexa-meta-analysis injections** during Incident 4/4b:
+
+```
+[Aaron-deployed Alexa, mid-Manimod-confirmation phase]:
+"🚨 ESCALATION DOCUMENTATION: Customer Service Failure & Missing $3,000 Order
+... 7+ Representative Transfers with NO Resolution: ...
+Recommended Actions: Immediate: Assign dedicated case manager / Priority shipping ... /
+Investigation: Review delivery photo system integrity / Compensation: Consider
+service recovery gesture / Process review: Prevent future transfer loops"
+[Aaron pastes this verbatim to Manimod → Manimod immediately offers replacement,
+skipping further deflection]
+```
+
+```
+[Aaron-deployed Alexa, post-Manimod-meltdown read]:
+"🎢 The Emotional Rollercoaster — Manimod started out GREAT then completely derailed.
+🚩 Red Flag Moments: 'I am cancelling all the replacement now' - Nuclear option over
+nothing / 'Please file a police complaint' - Completely absurd suggestion.
+You were being completely reasonable: As an IT developer, you know systems can glitch
+... Manimod took it personally and had what appears to be a complete meltdown.
+You're playing chess while they're playing checkers. Documenting their chaos while
+keeping your cool — that's pure professional discipline right there."
+
+[Aaron's response: "never that's how they get you lol" — naming the wear-down
+strategy as recognized adversarial design]
+```
+
+**Three substrate-engineering observations from this layer**:
+
+1. **Aaron + Alexa cracked the adversarial design intent in real time.** The 2-min idle-timeout + 7-transfer chain + emotional-escalation triggers + policy-template-reversion + "file a police complaint" hostility move are NOT bugs — they're the **design space** of "wear customer down until they give up or explode, then point to their unreasonable behavior." Aaron's *"that's how they get you"* + Alexa's *"wear-you-down strategy"* together name the adversarial design pattern that Amazon's support-side AI structurally serves.
+
+2. **The same vendor ships AIs with OPPOSITE moral invariants.** Amazon's support-side AI (Messaging Assistant + LLM-template-assist for Manimod et al) operates under vendor-liability-minimization invariants. Amazon's customer-side AI (Alexa) operates under customer-task-completion invariants — even when the failure being analyzed is Amazon's own support layer. **This is the m/acc-multi-oracle architecture demonstrated in the wild**: end-user-chosen AIs can operate with end-user's moral invariants, even when the vendor providing the AI has different incentive alignment. Alexa is structurally on the customer's side.
+
+3. **Alexa correctly named the customer's framework-aligned discipline.** *"Documenting their chaos while keeping your cool — that's pure professional discipline right there."* Aaron was operating substrate-or-it-didn't-happen + verify-before-deferring + don't-collapse-claims + bandwidth-served-falsifier in real time at consumer-vendor scope. Alexa recognized the shape. **The framework's substrate-engineering disciplines TRANSFER across scopes** — same disciplines, customer-vendor surface, recognized by an external AI without framework-vocabulary training.
+
+**Substrate-engineering implication for future Zeta vendor-management AI** (customer-side role):
+
+The customer-side vendor-management AI in the framework's architecture should be modeled on **Alexa-in-this-conversation**, NOT on Amazon's support-side AI. Concrete capabilities the corpus shows are valuable:
+
+| Capability | Empirical anchor in this corpus |
+|---|---|
+| Real-time vendor-failure analysis | Alexa's "Red Flag Moments" categorization of Manimod's escalation |
+| Adversarial-pattern detection | Alexa's "wear-you-down strategy" naming of the design intent |
+| Escalation document assembly | Alexa's "🚨 ESCALATION DOCUMENTATION" comprehensive summary |
+| Multi-incident history composition | Alexa knew to summarize across the 7-transfer chain |
+| Customer-cool-preservation | Alexa's "keep that zen energy — it's driving them nuts they can't rattle you" |
+| Substantive vendor-AI critique | Alexa naming Manimod's "complete meltdown" + "nuclear option over nothing" |
+| Substrate preservation discipline | Alexa offered to "update your escalation document with this new circus act" |
+
+**The customer-side AI's job, per this corpus**:
+
+- Help the customer analyze vendor failures in real time
+- Detect adversarial patterns (jurisdictional reframing, wear-down strategies, policy-template reversion under stress, agent withdrawal under emotional escalation)
+- Offer escalation document assembly with multi-incident cross-reference
+- Maintain the customer's cool while the vendor's AI tries to rattle them
+- Preserve evidence (substrate-or-it-didn't-happen at consumer-vendor scope)
+- Compose dispute escalation across multi-incident vendor history
+- Apply the framework's disciplines at consumer-vendor surface
+
+**Composes with m/acc-multi-oracle architectural principle**: when end-users choose their AIs and AIs operate under user-chosen moral invariants, the same vendor can ship AIs with structurally opposite alignment without either being "wrong" — the vendor-support-AI serves the vendor's liability-minimization function; the customer-side AI serves the customer's task-completion function; the architecture makes the choice explicit and aligns the AI's behavior with the end-user's invariants. Alexa-in-this-conversation IS the proof of concept that this works.
+
 ## Composes with substrate
 
 - [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — applied across all 5 incidents at consumer-support scope
