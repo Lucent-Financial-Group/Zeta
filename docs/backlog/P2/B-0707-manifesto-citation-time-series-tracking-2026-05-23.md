@@ -3,7 +3,7 @@ id: B-0707
 priority: P2
 status: closed
 closed: 2026-05-23
-closed_by: "all acceptance criteria met; first snapshot landed at docs/hygiene-history/manifesto-citations/2026-05-23.json (2.8KB)"
+closed_by: "4 of 5 acceptance criteria met (cron-cadence wiring deferred as separate follow-up concern); first snapshot landed at docs/hygiene-history/manifesto-citations/2026-05-23.json (2.8KB)"
 title: "Manifesto citation time-series tracking — persistent snapshots + delta-over-time"
 tier: governance
 effort: S

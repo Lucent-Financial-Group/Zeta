@@ -143,6 +143,14 @@ function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "erro
             return { kind: "error", message: `Unknown argument: ${a}` };
         }
     }
+    // Mode mutual-exclusion: --snapshot and --delta are mutually exclusive;
+    // --report applies only to the default-report mode (not snapshot/delta).
+    if (snapshot && delta) {
+        return { kind: "error", message: "--snapshot and --delta are mutually exclusive" };
+    }
+    if (report !== null && (snapshot || delta)) {
+        return { kind: "error", message: "--report is not compatible with --snapshot or --delta" };
+    }
     return { kind: "args", args: { report, json, snapshot, delta, date } };
 }
 
@@ -357,19 +365,32 @@ interface DeltaResult {
 
 function computeDelta(prior: Snapshot, current: Snapshot): DeltaResult {
     const priorBySurface = new Map(prior.surfaces.map((s) => [s.surface, s]));
+    const currentBySurface = new Map(current.surfaces.map((s) => [s.surface, s]));
+    // Union of surface keys — preserves order of current first, then any
+    // removed-in-current surfaces from prior (so removals show as negative
+    // deltas instead of being silently dropped).
+    const surfaceOrder: string[] = [];
+    for (const cur of current.surfaces) surfaceOrder.push(cur.surface);
+    for (const prv of prior.surfaces) {
+        if (!currentBySurface.has(prv.surface)) surfaceOrder.push(prv.surface);
+    }
+
     const surfaceDeltas: SurfaceDelta[] = [];
-    for (const cur of current.surfaces) {
-        const prv = priorBySurface.get(cur.surface);
+    for (const surface of surfaceOrder) {
+        const cur = currentBySurface.get(surface);
+        const prv = priorBySurface.get(surface);
+        const curByForm = cur?.byForm ?? { path: 0, name: 0, "version-tag": 0, "constraint-N": 0 };
+        const prvByForm = prv?.byForm ?? { path: 0, name: 0, "version-tag": 0, "constraint-N": 0 };
         const byFormDelta: Record<CitationForm, number> = {
-            path: cur.byForm.path - (prv?.byForm.path ?? 0),
-            name: cur.byForm.name - (prv?.byForm.name ?? 0),
-            "version-tag": cur.byForm["version-tag"] - (prv?.byForm["version-tag"] ?? 0),
-            "constraint-N": cur.byForm["constraint-N"] - (prv?.byForm["constraint-N"] ?? 0),
+            path: curByForm.path - prvByForm.path,
+            name: curByForm.name - prvByForm.name,
+            "version-tag": curByForm["version-tag"] - prvByForm["version-tag"],
+            "constraint-N": curByForm["constraint-N"] - prvByForm["constraint-N"],
         };
         surfaceDeltas.push({
-            surface: cur.surface,
-            filesWithCitationDelta: cur.filesWithCitation - (prv?.filesWithCitation ?? 0),
-            citationCountDelta: cur.citationCount - (prv?.citationCount ?? 0),
+            surface,
+            filesWithCitationDelta: (cur?.filesWithCitation ?? 0) - (prv?.filesWithCitation ?? 0),
+            citationCountDelta: (cur?.citationCount ?? 0) - (prv?.citationCount ?? 0),
             byFormDelta,
         });
     }
@@ -431,10 +452,25 @@ function main(argv: string[]): AuditExitCode {
     if (parsed.args.delta) {
         const prior = mostRecentPriorSnapshot(date);
         if (prior === null) {
-            console.log("# No prior snapshot found");
-            console.log("");
-            console.log(`Snapshot directory: ${SNAPSHOT_DIR}`);
-            console.log("Run with --snapshot first to create the first baseline.");
+            if (parsed.args.json) {
+                console.log(
+                    JSON.stringify(
+                        {
+                            kind: "no-prior-snapshot",
+                            snapshotDir: SNAPSHOT_DIR,
+                            currentDate: date,
+                            message: "no prior snapshot found; run with --snapshot first to create the first baseline",
+                        },
+                        null,
+                        2,
+                    ),
+                );
+            } else {
+                console.log("# No prior snapshot found");
+                console.log("");
+                console.log(`Snapshot directory: ${SNAPSHOT_DIR}`);
+                console.log("Run with --snapshot first to create the first baseline.");
+            }
             return 0;
         }
         const current = toSnapshot(result, date);

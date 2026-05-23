@@ -56,6 +56,23 @@ describe("parseArgs", () => {
         expect(r.kind).toBe("error");
     });
 
+    test("--snapshot + --delta are mutually exclusive (Copilot P1 PR #4750)", () => {
+        const r = parseArgs(["--snapshot", "--delta"]);
+        expect(r.kind).toBe("error");
+        if (r.kind === "error") expect(r.message).toContain("mutually exclusive");
+    });
+
+    test("--report incompatible with --snapshot (Copilot P1 PR #4750)", () => {
+        const r = parseArgs(["--snapshot", "--report", "out.md"]);
+        expect(r.kind).toBe("error");
+        if (r.kind === "error") expect(r.message).toContain("not compatible");
+    });
+
+    test("--report incompatible with --delta (Copilot P1 PR #4750)", () => {
+        const r = parseArgs(["--delta", "--report", "out.md"]);
+        expect(r.kind).toBe("error");
+    });
+
     test("--report PATH", () => {
         const r = parseArgs(["--report", "out.md"]);
         if (r.kind !== "args") throw new Error("expected args");
@@ -270,6 +287,33 @@ describe("computeDelta", () => {
         expect(d.surfaceDeltas[0]!.citationCountDelta).toBe(7);
         expect(d.surfaceDeltas[0]!.byFormDelta.path).toBe(3);
         expect(d.surfaceDeltas[0]!.byFormDelta.name).toBe(4);
+    });
+
+    test("missing-in-CURRENT surface shows as negative delta (Copilot P1 PR #4750)", () => {
+        const prior: Snapshot = {
+            date: "2026-05-22",
+            totalCitations: 10,
+            totalFilesWithCitation: 2,
+            totalFilesScanned: 50,
+            surfaces: [
+                baseSurface({ files: 1, cites: 5, path: 3 }),
+                { ...baseSurface({ files: 1, cites: 5, path: 5 }), surface: "old-removed-surface" },
+            ],
+        };
+        const current: Snapshot = {
+            date: "2026-05-23",
+            totalCitations: 5,
+            totalFilesWithCitation: 1,
+            totalFilesScanned: 50,
+            surfaces: [baseSurface({ files: 1, cites: 5, path: 3 })],
+        };
+        const d = computeDelta(prior, current);
+        // Removed surface must appear as negative delta, not be silently dropped
+        const removed = d.surfaceDeltas.find((s) => s.surface === "old-removed-surface");
+        expect(removed).toBeDefined();
+        expect(removed!.filesWithCitationDelta).toBe(-1);
+        expect(removed!.citationCountDelta).toBe(-5);
+        expect(removed!.byFormDelta.path).toBe(-5);
     });
 
     test("missing-in-prior surface treats as zero", () => {
