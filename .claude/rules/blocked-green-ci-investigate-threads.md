@@ -85,6 +85,40 @@ Resolve these no-op (the prose was correct at write-time;
 substrate edits would be retroactive rewriting). Stale ≠
 false; it just means the action window closed.
 
+#### Worked example — 2-finding pre-fixed cascade with immediate auto-merge fire
+
+Empirical anchor [PR #4097](https://github.com/Lucent-Financial-Group/Zeta/pull/4097)
+(merged 2026-05-17T21:29Z at `e1704a26`):
+
+- `poll-pr-gate.ts 4097` returned `gate: "BLOCKED"`, `requiredChecks.failed: 0`,
+  `autoMerge: "armed"`, `unresolvedThreads: 2`
+- Both threads (Codex P2 `PRRT_kwDOSF9kNM6Cppvx` + Copilot
+  `PRRT_kwDOSF9kNM6Cppwe`) on the same file + same line
+  (`docs/backlog/P3/B-0613-...md` line 75), same finding
+  ("Option A is `compgen -G`, a bash builtin, not zsh-valid")
+- **Both threads had `isOutdated: false`** even though peer Otto's
+  commit `6f91e9c` ("fix(B-0613): drop Option A from zsh fallback
+  recommendation") had already addressed both findings before the
+  current session's tick-open. `isOutdated=false` is NOT a
+  reliable signal that the finding is still actionable; GitHub
+  does not auto-outdate threads when a fix touches the same line
+  unless the comment's diff-hunk anchor itself drifts.
+- Verification via direct `awk -v N=75 'NR==N { print NR": ["$0"]" }'`
+  on the file content confirmed line 75 already read "use **Option C
+  (find — fully portable)** since Option A (`compgen -G`) is also
+  bash-only" — the precise correction both reviewers had asked for.
+- `resolveReviewThread` GraphQL mutation × 2 → both `resolved=true`.
+  Within 5 seconds the armed auto-merge fired and the PR landed
+  on main.
+
+**Operational lesson**: `isOutdated=true` is a strong signal that
+a thread is safely no-op-resolvable, but `isOutdated=false` is NOT
+a counter-signal — the thread may still be substantively stale.
+The verify-via-direct-inspection step (with `-v N=<line>`) is the
+load-bearing discriminator between "fix needed" and "fix already
+landed, just resolve." Resolving threads on the latter case is
+correct discipline, not retroactive rewriting.
+
 ### Stale-armed-PR resolution patterns
 
 Empirical anchor 2026-05-16T13:10Z-16:33Z (one session, 5 stale-armed PR investigations):
@@ -104,6 +138,30 @@ A stale-armed PR is one with auto-merge armed for hours/days where checks fail o
 3. Otherwise → **Forward-signal comment** (the PR sits until someone else has the budget)
 
 Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md) rate-limit tiers — re-land requires normal-tier GraphQL budget; forward-signal works at any tier.
+
+### Auto-merge-race-with-follow-up-commit anti-pattern
+
+Empirical anchor 2026-05-19T08:03Z-08:16Z ([PR #4357](https://github.com/Lucent-Financial-Group/Zeta/pull/4357)):
+
+Arming auto-merge while a **non-required check is failing** + pushing a **follow-up commit** to fix that check is a race window. The CLEAN-gate transition fires on required-checks-only state; if all required checks complete before the follow-up commit's CI run starts, auto-merge fires on the **first commit's content** and the follow-up lands on main never.
+
+Empirical sequence on PR #4357:
+
+1. First commit `45128146` pushed; auto-merge armed; lint (tick-shard relative-paths, non-required) failed on this commit
+2. Follow-up commit `9c9c8e69` pushed ~5 min later fixing the lint
+3. CI on first commit completed before lint job on second commit started
+4. Required-checks state went green → auto-merge fired on `45128146` → merge commit `cfba8a64` contained the un-fixed lint state
+5. Substrate-honest correction required a second PR ([#4358](https://github.com/Lucent-Financial-Group/Zeta/pull/4358)) to land the fix
+
+**Operational discipline** (one of three resolutions in order):
+
+1. **Don't arm auto-merge until all desired commits are pushed** — preferred; arming is cheap and reversible (`gh pr merge --disable-auto`)
+2. **If arming early, treat non-required failures as if required during the arm window** — fix in-place before arming; check `bun tools/github/poll-pr-gate.ts <PR>` for `warnings` field listing non-required failures
+3. **Accept that the first-commit content is what ships** — substrate-honest if the follow-up is cosmetic; otherwise ship the follow-up as a separate PR like #4358
+
+**Detection**: `bun tools/github/poll-pr-gate.ts <PR>` surfaces non-required failures in the `warnings` array even when `gate: "CLEAN"` is reachable. Treat any `warnings` entry as a race-window indicator when auto-merge is armed and a follow-up commit is staged.
+
+Composes with the stale-armed-PR resolution patterns above — race-merged content stays on main as substrate, even if the follow-up fix lands separately; the substrate-honest correction never deletes the race-merged commit, only adds the fix.
 
 ## Full reasoning
 

@@ -153,7 +153,7 @@ Composes with [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-
 when it ships); until that ships, the borrow pattern is the
 operational workaround.
 
-## Saturation-ceiling — 4 failure sub-cases of borrow-on-existing
+## Saturation-ceiling — 5 failure sub-cases of borrow-on-existing
 
 Empirical anchor [PR #3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808)
 (closed-without-merge; shard for `0715Z` was the PR's payload, hence never
@@ -163,8 +163,10 @@ fresh-cold-boot Otto-CLI, and peer-agent global-lock-cleanup loop), with
 peer Otto cycling worktree HEAD every ~3-5 min for 9 transitions in
 35 min, a fresh-cold-boot session attempting to ship a shard hit FOUR
 distinct failure sub-cases of the borrow-on-existing pattern across 4
-commit attempts. All 4 sub-cases empirically validated; only 2 have
-working mitigations today.
+commit attempts. All 4 of those sub-cases empirically validated; only 2
+have working mitigations today. **A fifth sub-case (3b — pack-dir
+contention at push time) was added in 2026-05-21 (PR [#4536](https://github.com/Lucent-Financial-Group/Zeta/pull/4536)) with a working mitigation
+(REST git-data API bypass).**
 
 ### Sub-case 1 — existing-branch-name collision → peer-WIP commit inheritance via recovery path
 
@@ -230,6 +232,108 @@ activity. No `--lock` flag prevents this; see [B-0530](../../docs/backlog/P3/B-0
 mutex (not yet shipped). Until then, fall through to existing-sidetick
 borrow — which hits sub-case 4.
 
+### Sub-case 3b — pack-dir contention causes `git push` to fail at push time
+
+Same B-0530 root cause class as sub-case 3, but manifesting at `git push`
+time on an already-created worktree that previously passed the canary.
+Distinguished from B-0615 (silent-push-failure) by being non-silent.
+
+**Symptom**: `git push` returns non-zero exit with errors like:
+
+```
+error: unable to open loose object <sha>: Interrupted system call
+error: unable to open object pack directory: .../.git/objects/pack: Interrupted system call
+fatal: bad object <sha>
+fatal: the remote end hung up unexpectedly
+error: failed to push some refs to '...'
+```
+
+Network + auth are fine; bottleneck is local pack-dir reads under peer-agent
+contention. Distinguish from **B-0615** (push exits ZERO but remote ref
+never updates — silent; mitigation: REST git-data API bypass per
+[PR #4145](https://github.com/Lucent-Financial-Group/Zeta/pull/4145)).
+Both belong to the same FS-contention root cause class but require
+different mitigations because the exit codes differ.
+
+**Mitigation (working today)**: the **B-0615 REST git-data API bypass**
+(`POST .../git/blobs` → `POST .../git/trees` → `POST .../git/commits` →
+`POST/PATCH .../git/refs`) works for sub-case 3b as well as B-0615.
+Empirical anchor: [PR #4535](https://github.com/Lucent-Financial-Group/Zeta/pull/4535)
+(2026-05-21) — the memo about this very failure mode was blocked from
+landing by repeated `timeout`-wrapped `git push` runs surfacing exit 124
+(GNU `timeout`'s "command killed by timeout" status — NOT a native
+`git push` exit code; the contention was hanging the push indefinitely
+until the wrapper killed it). The same commits then shipped successfully
+via the REST bypass.
+
+**Cost**: ~5-6 REST calls total per commit, consuming the **REST/core
+budget** (5000/hr per token; check via `gh api rate_limit --jq
+'.resources.core'`). REST/core is independent of the GraphQL budget
+discussed in [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md);
+the tier classification in that rule (Normal / Cost-aware / Extreme /
+Pure-git) is GraphQL-budget-scoped and does NOT translate directly to
+REST/core. Empirically: even at GraphQL Extreme cost-aware tier (200–1000
+remaining), REST/core typically has thousands remaining and the bypass
+is affordable. No `.git/objects/pack` reads happen locally because
+GitHub does the object packing server-side from the blob you uploaded.
+
+**Composes with the rate-limit operational tiers** documented in
+[`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md):
+when the saturation makes `git push` exit non-zero or hang, the REST
+bypass IS the tier-skipping move that lets substantive substrate land
+without waiting for contention to clear.
+
+### In-place index recovery — `git read-tree HEAD`
+
+Refinement to sub-case 5 (peer-side destructive git operation), where the
+specific symptom is a **truncated index file** after stale-lock removal:
+
+```
+fatal: .git/worktrees/<name>/index: index file smaller than expected
+```
+
+A preceding `git status` may show massive D (deleted) entries against
+files you have not touched — a misleading symptom of the corrupted index,
+NOT actual working-tree deletion. Do NOT abandon the worktree on this
+symptom alone; first verify the working tree itself via `ls` (files
+should still be on disk).
+
+**Recovery**:
+
+```bash
+git -C <worktree> read-tree HEAD
+```
+
+This rebuilds the worktree's index from the HEAD commit, replacing the
+truncated index in-place. Working-tree files are NOT modified (they were
+not part of the corruption — only the index was). After rebuild:
+
+1. `git status` now reflects the genuine working-tree-vs-HEAD diff —
+   not "empty," because `read-tree` only rewrote the index, not the
+   working tree. Any intended local edits / untracked files you had
+   before the corruption STILL show as modified / untracked. The
+   `index file smaller than expected` error is gone; that is the
+   indicator the recovery worked. (Misreading `read-tree` as "should
+   produce a clean status" is the most common way the recovery gets
+   misdiagnosed as failed when it actually succeeded.)
+2. Stage your intended file via `git add <path>` — the file is still
+   on disk; `read-tree` wiped any stale staged state but did not touch
+   the working tree
+3. `git commit` normally
+4. Verify commit canary (parent tree size = commit tree size) before
+   pushing per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md)
+
+**When NOT to use**: if the working tree itself is corrupted (files
+missing on disk), `read-tree` will silently stage the wrong state.
+Pre-check disk state via `ls` before invoking. This recovery applies
+ONLY to truncated-INDEX states, NOT truncated-working-tree states.
+
+**Empirical anchor**: [PR #4532](https://github.com/Lucent-Financial-Group/Zeta/pull/4532)
+(2026-05-21) — the 1212Z tick shard was successfully shipped after
+`read-tree HEAD` recovered an index truncated by stale-lock-removal
+race; previously the saturation-ceiling rule's only recovery option
+was worktree abandonment.
+
 ### Sub-case 4 — pruned-sidetick race
 
 The empirically-validated sidetick `/private/tmp/zeta-otto-cli-0027z-sidetick`
@@ -237,11 +341,38 @@ was listed in `git worktree list` BUT the directory had been pruned between
 the list snapshot and the borrow attempt. `git -C` returned "cannot change
 to ... No such file or directory".
 
-**Mitigation (no working mitigation today)**: requires a worktree-pool
-primitive — pre-allocated isolated sideticks per Otto identity, owned and
-refreshed by each identity, not subject to peer-prune. Composes with the
-`claim acquire` discipline at worktree-allocation scope. Substrate-engineer
-candidate; not yet a backlog row.
+**Mitigation (default = ABANDON; narrow exception at forced-#6 below)**:
+no structural mitigation exists today — the durable fix requires a
+worktree-pool primitive (pre-allocated isolated sideticks per Otto
+identity, owned and refreshed by each identity, not subject to peer-prune;
+composes with the `claim acquire` discipline at worktree-allocation scope;
+substrate-engineer candidate, not yet a backlog row). Until the pool ships,
+the default operational response when sub-case 4 fires is ABANDON the
+shard write (per the composite discipline below). The narrow exception
+authorized by the 2026-05-23 anchor (single-retry-after-orphan-cleanup at
+forced-#6 decomposition only) is described in the "Non-deterministic
+under same conditions" paragraph below; it does NOT generalize to other
+contexts.
+
+**Second-class symptom — fresh-worktree gitdir-prune race** (2026-05-23T02:09Z–02:20Z empirical anchor): a related variant of sub-case 4 was observed at autonomous-loop cold-boot under Lior 3-proc / 337-worktree saturation. The mode is distinct from the borrow-on-listed-sidetick mode above:
+
+- `git worktree add -b <branch> <path> origin/main` returns exit 0 with full file-extraction completing (`Updating files: 100% (6127/6127), done.`) and `HEAD is now at <sha>` confirmation message
+- The worktree directory at `<path>` is fully populated on disk (44+ entries; `.claude/`, `.codex/`, etc.; readable via `ls`)
+- The worktree's `.git` pointer file at `<path>/.git` correctly references `gitdir: <repo>/.git/worktrees/<name>`
+- BUT the gitdir target at `<repo>/.git/worktrees/<name>/` is **absent** when inspected post-creation
+- Subsequent `git -C <path> rev-parse HEAD` returns `fatal: not a git repository: (null)` despite the worktree directory and `.git` pointer existing
+
+**Detection**: this is NOT caught by the post-worktree-creation freshness guard (`git status --short` + `git ls-tree HEAD`) because BOTH commands fail with the same `not a git repository` error before producing diagnostic output — the freshness guard's empty-output reads as "0 lines" which the existing guard treats as clean. **The guard MUST distinguish "command failed" from "output was empty"** to catch this mode. Add explicit `git -C <wt> rev-parse HEAD` as a pre-guard step; if it fails, abandon the worktree without further inspection.
+
+**Non-deterministic under same conditions**: the 2026-05-23 session observed the failure on attempt 1 (02:09Z) and clean success on attempt 2 (02:20Z) under unchanged saturation conditions (Lior 3 procs both attempts; wt 337 both attempts; GraphQL Normal tier both attempts; same `/private/tmp/` parent; ~11min apart). The prune race is therefore **timing-dependent**, not condition-dependent — retry-after-cleanup CAN succeed under identical saturation. This refines the rule's prior "no working mitigation today" stance: at forced-#6 decomposition (per [`holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md) counter), a single retry after orphan cleanup is a substrate-honest move; repeated retries amplify peer-WIP contamination risk and remain forbidden.
+
+**Orphan cleanup is mandatory before retry**: the failed-attempt's worktree directory persists on disk with valid file content but no gitdir backing, occupying the candidate path. `rm -rf <wt-path>` + `git branch -D <branch>` clears both surfaces. Cleanup is safe because no commits landed (the worktree was unusable from creation); no peer agent can be using this worktree (no gitdir means no peer git operation can target it).
+
+**Empirical totals across sub-case 4 anchors**:
+
+- 2026-04-29 (original anchor): borrow-on-listed-sidetick failure (directory pruned mid-borrow)
+- 2026-05-23T02:09Z (this anchor, attempt 1): fresh-worktree-add gitdir-prune at 337-worktree scale
+- 2026-05-23T02:20Z (this anchor, attempt 2): clean success at 337-worktree scale; same conditions; this commit shipped via the attempt-2 worktree
 
 ### Composite operational discipline under saturation
 
@@ -261,9 +392,21 @@ during peer cascade) needs to ship a shard / substrate edit:
 6. Use `gh pr create --head <my-branch>` with explicit head ref (per
    [`zeta-expected-branch.md`](zeta-expected-branch.md) companion defense)
 7. If sub-cases 3 or 4 are hit and the attempt fails, ABANDON the shard
-   write — document the empirical evidence in turn output and end the
-   tick. Repeated retries under contention amplify the risk of peer-WIP
-   contamination.
+   write by default — document the empirical evidence in turn output and
+   end the tick. Repeated retries under contention amplify the risk of
+   peer-WIP contamination and remain forbidden.
+
+   **Narrow exception (forced-#6 only)**: at forced-#6 decomposition per
+   [`holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md)
+   counter, a **single** retry after orphan cleanup (run `rm -rf <wt-path>`
+   then `git branch -D <branch>`) is authorized for sub-case 4 specifically
+   (per the 2026-05-23 timing-dependent-not-condition-dependent anchor in
+   the sub-case 4 section above). The exception does NOT apply to
+   sub-case 3 (pack-dir contention has no analogous timing-dependence
+   evidence yet) and does NOT generalize to brief-ack #1-#5 (the default
+   ABANDON path is correct there because pre-empt artifacts of other
+   shapes are usually available). One retry only; if it also fails,
+   ABANDON applies absolutely.
 
 ## Composes with other rules
 

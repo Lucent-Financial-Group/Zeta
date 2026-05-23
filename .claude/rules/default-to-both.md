@@ -128,6 +128,10 @@ drift signals:
 - `.claude/rules/honor-those-that-came-before.md` —
   unretire AND create both apply contextually; not
   either-or
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
+  — don't-collapse IS both-default at metaphysical-claim
+  scope; high-signal AND high-suspicion held
+  simultaneously per Aaron's PERSONAL INVARIANT
 
 ## Composes with substrate
 

@@ -277,9 +277,11 @@ Third class of empirical evidence: forced escalation at brief-ack #6 (and pre-em
 
 **Composes with [`blocked-green-ci-investigate-threads.md`](blocked-green-ci-investigate-threads.md)**: the investigation discipline IS what produces the hidden-work surface. The counter forces invocation of that discipline on a regular cadence.
 
-### Sustained-Lior-with-pre-empt-success — empirical anchor 2026-05-17T06:02Z-08:29Z (full session arc, 0 forced-#6, 2 PRs through)
+### Sustained-named-dep-with-pre-empt-success — empirical anchor 2026-05-17T06:02Z-08:29Z (full session arc, 0 forced-#6, 2 PRs through)
 
-Fourth class of empirical evidence: the counter discipline operating SUCCESSFULLY across a sustained ~2h 27min session where named-dep (Lior in `ps -A`) persisted at 3 procs throughout AND pre-empt-at-#5 produced concrete substrate every cycle, preventing ANY forced #6 escalation. Two PRs landed (#4046 + #4048) carrying 12 substrate artifacts total.
+Fourth class of empirical evidence: the counter discipline operating SUCCESSFULLY across a sustained ~2h 27min autonomous-loop session where the primary named-dep (antigravity peer-agent loop visible in `ps -A` via the local process-match pattern documented in the canary rule referenced below) persisted at 3 procs throughout AND pre-empt-at-#5 produced concrete substrate every cycle, preventing ANY forced #6 escalation. The local process-match pattern lives in [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md) and is not duplicated here to keep this rule's surface generic.
+
+Two PRs landed (#4046 + #4048) carrying **12 PR-content changes total** (in PR #4046: 10 new substrate files + 1 BACKLOG.md regeneration; in PR #4048: 1 new worked-example memo). Of the 10 new files in PR #4046, 7 were authored during the 10 pre-empt-at-#5 cycles (cycles 1, 2, 3, 5, 6, 7, 8 — the cycle-4 row-update merged into the cycle-2 file's diff so does not surface as a separate file); the other 3 (the 0418Z carry-over shard from a prior session + the 0602Z substantive-tick shard + the alexa-website substantive-tick memo) were authored outside the pre-empt cadence. Cycle 9 produced a bus envelope (broadcast substrate, not in-repo); cycle 10 produced a PR body file (preparation artifact, not committed). The PR #4048 worked-example memo was authored after the pre-empt cadence closed.
 
 Session timeline:
 
@@ -288,24 +290,24 @@ Session timeline:
 | 06:02Z | 1 substantive | 0602Z shard + PR #4015 3-thread verification + A/B/C commit plan |
 | 06:07Z | 1 substantive | Bus envelope `da3cd5d2` (work-assignment for B-0510) |
 | 06:11Z-06:15Z | 4 brief-acks | Refresh observations only |
-| 06:16Z | pre-empt #5 | canary-rule-binding memory file |
+| 06:16Z | pre-empt #5 (cycle 1) | canary-rule-binding memory file |
 | 06:18Z-06:21Z | 4 brief-acks | Refresh observations only |
-| 06:23Z | pre-empt #5 | B-0611 backlog row filed (35 dangling refs cleanup) |
+| 06:23Z | pre-empt #5 (cycle 2) | B-0611 backlog row filed (35 dangling refs cleanup) |
 | 06:30Z-06:34Z | 4 brief-acks | Refresh observations only |
-| 06:37Z | pre-empt #5 | Slice 1 recipe memo |
+| 06:37Z | pre-empt #5 (cycle 3) | Slice 1 recipe memo |
 | 06:39Z-06:43Z | 4 brief-acks | Refresh observations only |
-| 06:44Z | pre-empt #5 | B-0611 row update — audit-tool semi-automation bullet |
+| 06:44Z | pre-empt #5 (cycle 4) | B-0611 row update — audit-tool semi-automation bullet |
 | 06:45Z-06:48Z | 4 brief-acks | Refresh observations only |
-| 06:49Z | pre-empt #5 | Slice 2 recipe memo (Option E pattern discovered) |
+| 06:49Z | pre-empt #5 (cycle 5) | Slice 2 recipe memo (Option E pattern discovered) |
 | 06:51Z-06:58Z | 4 brief-acks + tier shift | GraphQL exhausted → Pure-git tier briefly |
-| 06:59Z | pre-empt #5 | Slice 3 recipe memo (mixed-types observation) |
-| 07:23Z | pre-empt #5 | Slice 4 recipe memo (audit-prep complete) |
-| 07:28Z | pre-empt #5 | 0728Z session-summary shard |
-| 07:32Z | substantive | **PR #4015 merged** (bus envelope `da3cd5d2` validated end-to-end via peer-Otto execution chain — 78min handoff latency) |
-| 07:37Z | pre-empt #5 | Bus envelope `ac6d2aec` (B-0611 cleanup advertisement) |
-| 07:39Z | maintainer-speaks | Aaron: *"commit the deferred substrate"* |
+| 06:59Z | pre-empt #5 (cycle 6) | Slice 3 recipe memo (mixed-types observation) |
+| 07:23Z | pre-empt #5 (cycle 7) | Slice 4 recipe memo (audit-prep complete) |
+| 07:28Z | pre-empt #5 (cycle 8) | 0728Z session-summary shard |
+| 07:32Z | substantive | **PR #4015 merged** (bus envelope `da3cd5d2` validated end-to-end via peer autonomous-loop execution chain — 78min handoff latency) |
+| 07:37Z | pre-empt #5 (cycle 9) | Bus envelope `ac6d2aec` (B-0611 cleanup advertisement) |
+| 07:39Z | maintainer-speaks | Human maintainer authorized commit of deferred substrate |
 | 07:40Z | substantive | Isolated-worktree workflow → commit `432d49b` (11 files; new race-window-caveat rule followed) |
-| 07:55Z | pre-empt #5 | PR body file prepared |
+| 07:55Z | pre-empt #5 (cycle 10) | PR body file prepared |
 | 08:00Z | substantive | **PR #4046 opened + auto-armed** |
 | 08:02Z | substantive | 4 lint-fix commit pushed |
 | 08:11Z | substantive | **PR #4046 merged** → `de9693b` on main |
@@ -313,15 +315,77 @@ Session timeline:
 | 08:25Z | substantive | 3-thread fix commit + threads resolved |
 | 08:29Z | substantive | **PR #4048 merged** → `a1d0ec3` on main |
 
-**Pattern observed**: ~35 brief-ack ticks distributed across 8 pre-empt-at-#5 cycles (each cycle: #1-#4 brief-acks → #5 concrete substrate → counter resets). Never reached forced #6. Each pre-empt artifact was load-bearing AND bounded AND not duplicative — 4 slice recipes (one per surface), 1 canary-binding memo, 1 backlog row, 2 bus envelopes, 1 session-summary shard, 1 worked-example memo.
+**Pattern observed**: ~35 brief-ack ticks distributed across **10 pre-empt-at-#5 cycles** (each cycle: #1-#4 brief-acks → #5 concrete substrate → counter resets). Never reached forced #6. Each pre-empt artifact was load-bearing AND bounded AND not duplicative; the 10 cycles produced 10 unique substantive artifacts (counting the cycle-4 row update as a distinct edit to the cycle-2 backlog row).
 
-**Substrate-coordination empirical anchor**: bus envelope `da3cd5d2` (work-assignment for B-0510) was operationally validated when peer-Otto landed commit `bcee230d` at 07:28Z with title literally matching the published A/B/C plan; auto-merge then fired at 07:32Z. The bus-envelope-as-cross-Otto-coordination path empirically works for bounded substrate work with verified-truthy findings on a live PR. (Second bus envelope `ac6d2aec` for B-0611 cleanup was still alive at session-close, not yet picked up — suggests bus envelopes work better for "execute this specific plan against this specific PR" than for "author new substrate from a 4-slice menu.")
+**Substrate-coordination empirical anchor**: bus envelope `da3cd5d2` (work-assignment for B-0510) was operationally validated when a peer autonomous-loop instance landed commit `bcee230d` at 07:28Z with title literally matching the published A/B/C plan; auto-merge then fired at 07:32Z. The bus-envelope-as-cross-instance-coordination path empirically works for bounded substrate work with verified-truthy findings on a live PR. (Second bus envelope `ac6d2aec` for B-0611 cleanup was still alive at session-close, not yet picked up — suggests bus envelopes work better for "execute this specific plan against this specific PR" than for "author new substrate from a 4-slice menu.")
 
 **Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)**: the session traversed Normal → Cost-aware → Pure-git → back to Normal tiers; brief-ack cadence operated correctly across all tiers (bus envelope publish + filesystem substrate writes worked under pure-git).
 
 **Composes with [`zeta-expected-branch.md`](zeta-expected-branch.md)**: the new race-window-caveat section (landed mid-session) was followed for both commits via isolated worktree at `/private/tmp/zeta-b0611-substrate-0740z` and `/private/tmp/zeta-worked-example-0817z`. ls-tree count 53 post-commit on both PRs confirmed no canary corruption per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md).
 
-**Operational lesson**: when named-dep is process-persistence (Lior, peer-Otto saturation) AND deferral spans 2+ hours, the pre-empt-at-#5 cadence is the substrate-honest alternative to forced-#6. The discipline does NOT require forced-#6 in every cycle to be operating correctly; pre-empts that produce genuinely-new load-bearing substrate ARE the discipline's success path. Forced-#6 is the FAILSAFE for when pre-empt-at-#5 is skipped, not the only valid termination.
+**Operational lesson**: when the named-dep is process-persistence (peer-agent loops, multi-instance saturation) AND deferral spans 2+ hours, the pre-empt-at-#5 cadence is the substrate-honest alternative to forced-#6. The discipline does NOT require forced-#6 in every cycle to be operating correctly; pre-empts that produce genuinely-new load-bearing substrate ARE the discipline's success path. Forced-#6 is the FAILSAFE for when pre-empt-at-#5 is skipped, not the only valid termination.
+
+### Post-arc-completion + operator-offline-extended cadence-saturation — empirical anchor 2026-05-18T21:20Z-23:39Z (full session arc, 3 cycles, meta-decomposition at cycle-3 forced-#6)
+
+Fifth class of empirical evidence: the discipline operating at saturation AFTER substrate-engineering arc completes AND operator is offline for an extended window. Different shape from the 2026-05-17 sustained-named-dep cycle (which had peer-agent process-persistence as the named-dep + active substrate work each cycle); different shape from the 2026-05-16 cascade-saturation cycle (which was rate-limit-driven tier transitions).
+
+This anchor: post-substrate-engineering-arc completion + operator offline + peer activity 0 + thread-investigation consistently 0-findings + named-dep is just my-own-CI-completion. The cadence saturates because there's no genuine external signal driving substrate emergence; per-tick PR cycle becomes substrate-engineering noise.
+
+Session trajectory:
+
+| Cycle | Window | Pre-empt action | Outcome |
+|---|---|---|---|
+| Cycle-1 | 2305Z (#5 pre-empt) | Composes_with reciprocity for god-tier-claims rule (#4241) | Bounded substrate-engineering hygiene; genuinely-new at first occurrence |
+| Cycle-1→2 transition | 2307Z-2320Z | Brief-acks accumulating | Counter cycling normally as PRs merge |
+| Cycle-2 | 2322Z (#5 pre-empt) | Saturation-pattern empirical anchor preserved in tick shard (#4250) | Bounded; new shape (empirical-anchor-in-shard vs rule-edit) |
+| Cycle-3 | 2330Z (#5 pre-empt) | Substrate-verification audit of 6 today's landings via `git ls-tree` (#4255) | Bounded; verification-shape (different from anchor-shape) |
+| Cycle-3 | 2337Z (#5 ALLOWED-TO-ACCUMULATE) | Explicitly NOT pre-empting; available candidates all same-shape; fabricated substrate IS the failure mode (#4260) | Substrate-honest abstention |
+| Cycle-3 | 2339Z (THIS rule edit) | **Forced-#6 meta-decomposition** — this empirical anchor IS the substantive substrate; the rule's "pick THIS rule and sharpen it based on current session's evidence" prescription operating | Meta-decomposition fallback validates as designed |
+
+**Operational lesson (this anchor)**: when 3 things compose — (a) substrate-engineering arc completes, (b) operator is offline extended, (c) peer activity is 0 — the cadence enters a quasi-stable saturation where per-tick PR overhead exceeds substrate value. The substrate-honest pattern is:
+
+1. **Cycle-1 pre-empt**: genuinely-new bounded substrate (reciprocity, hygiene audit, etc.)
+2. **Cycle-2 pre-empt**: different-shape (empirical anchor, substrate verification, etc.)
+3. **Cycle-3 onwards**: explicitly NOT pre-empting at #5; allowing accumulation to #6 forced-meta-decomposition; the rule itself becomes the substantive substrate at #6
+
+This is NOT a failure of the discipline — it's the discipline's natural termination shape when external signal is absent for extended periods. The forced-#6 meta-decomposition becomes the substrate-engineering substantive that the cycle terminates with, AND seeds the rule's next sharpening for future sessions.
+
+**Sub-clause: when same-shape pre-empts are available but would be fabricated substrate, the substrate-honest move is to SKIP the pre-empt action at #5 (the shard DOES count as brief-ack #5 since it produces no novel substrate; the shard's job is to explicitly document the skip-decision rather than execute a fabricated pre-empt) so the counter advances normally to #6 where forced-decomposition fires and the rule itself becomes the substantive substrate per the rule's own prescription**.
+
+**Composes with [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](god-tier-claims-high-signal-high-suspicion-dont-collapse.md)**: don't-collapse applies to MY OWN substrate-production decisions. The high-suspicion check on "would this pre-empt produce genuine substrate?" prevents fabricated-engineering-as-pre-empt; high-signal-don't-collapse holds the genuine recognition that operator-offline-extended is a legitimate operational state.
+
+**Recursion termination clause** (2026-05-18T23:54Z forced-#6 observation): the prescription "pick THIS rule and sharpen it" works once or twice but saturates after 2-3 cycles of meta-decomposition (each cycle's rule-edit becomes empirical-anchor in the same rule; the rule grows but information density of each new anchor diminishes). At cycle-of-cycles saturation: minimal shard noting the recursion limit IS the substrate-honest #6 — no rule edit required; the recursion-termination acknowledgment IS the substantive substrate at this scope. The discipline naturally bottoms out at "wait for genuine external signal" without further substrate-engineering being load-bearing.
+
+### Rapid-substrate-closure + tier-transition empirical anchor — 2026-05-20T14:08Z-14:33Z (single session, 2 PRs landed, cycle-1 forced #6, all four rate-limit tiers traversed)
+
+Sixth class of empirical evidence: the discipline operating CORRECTLY through a compact session that produced 2 merged PRs in ~20 minutes then naturally entered brief-ack cycle as rate-limit drained AND peer-Lior cycled. Distinct shape from the 2026-05-17 sustained-named-dep cycle (which had peer-process-persistence as the named-dep across 2h27m + 10 pre-empts) and the 2026-05-18 post-arc cadence (which had operator-offline + 3-cycle saturation): today's cycle was SHORT, the substrate-engineering arc had a CLEAR END (Maji audit response + canary rule refinement landed), and the brief-ack cadence was BOUNDED by a measurable named-dep (rate-limit reset ~10 min).
+
+Session timeline:
+
+| Window | Ticks | Outcome |
+|---|---|---|
+| 14:08Z | cold-boot | sentinel re-arm; refresh; Lior 3-proc + 2355 GraphQL + 0 prior 2026-05-20 in-repo ticks observed |
+| 14:13Z | substantive | isolated worktree-add verified clean (per Maji audit action-over-narration) → tick shard authored → PR #4410 opened + auto-armed |
+| 14:16Z-14:19Z | substantive | 2 lint fixes + 3 thread resolutions on PR #4410 |
+| 14:22Z | substantive | **PR #4410 merged** → `1d8303d8` (first 2026-05-20 in-repo tick shard) |
+| 14:23Z-14:25Z | substantive | PR #4411 (canary rule sharpening) authored + opened + auto-armed (closes loop on PR #4410's documented refinement candidate) |
+| 14:28Z | substantive | **PR #4411 merged** → `443345d8` |
+| 14:29Z | brief-ack #1 | tier transition observed (rate 508→258→0); Lior 0→3 (cycled) |
+| 14:30Z | brief-ack #2 | pure-git tier entered; rate 0/5000 |
+| 14:31Z | brief-ack #3 | pure-git tier holds |
+| 14:32Z | brief-ack #4 | pure-git tier holds |
+| 14:33Z | **brief-ack #5 explicit-no-pre-empt** | substrate-engineering-noise rejected; further per-tick substrate would be duplicative of merged work |
+| 14:34Z | **forced #6** | THIS empirical-anchor edit produced via verify-before-defer worktree pattern (Lior at 3 procs; isolated worktree verified clean = 53 / status 0); branch-pushed-no-PR (deferred PR creation until ~5min rate-limit reset) |
+
+**Pattern observed**: cycle-1 forced #6 successfully produced load-bearing substrate (this empirical anchor itself) under pure-git tier constraints. The explicit-no-pre-empt-at-#5 decision validated by forced #6 producing the right work — pre-empting at #5 would have been fabricated-engineering since the natural cycle-1 forcing function was 1 tick away.
+
+**Rate-limit tier traversal in single session**: Normal (2355) → cost-aware (1771) → extreme cost-aware (508) → **pure-git (0)** within ~20 minutes of substantive PR work. Multi-agent shared-token consumption (Otto-CLI + 3 Lior procs) drives the burn rate; recovery is bounded at ~60 min from initial Normal-tier read.
+
+**Composes with [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md)** verify-before-defer composition (PR #4411 landed today): forced #6 worktree-creation during 3-proc Lior activity succeeded clean using the composite (attempt + verify post-creation guard) rather than the blanket pre-worktree defer. The discipline-application here IS the second empirical use of the composite (1st was PR #4410 at 14:13Z; this edit is the 2nd at ~14:34Z).
+
+**Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md) rate-limit operational tiers**: pure-git tier supports branch-pushed-no-PR for substrate landings; deferred PR creation costs ~5-10 GraphQL post-reset. This edit branch-pushes without PR creation; opens PR after rate-limit reset.
+
+**Pattern generalizes**: rapid-substrate-closure (clear engineering arc with measurable substrate landings) → natural brief-ack cycle as rate-limit drains → forced #6 produces compounding rule sharpenings → next cycle naturally awaits post-reset. This is the discipline's "happy path" shape; longer sessions (2026-05-17 sustained-named-dep) and quiet-saturation sessions (2026-05-18 post-arc) are the two failure modes the discipline catches OFF this path.
 
 ## Composes with
 
