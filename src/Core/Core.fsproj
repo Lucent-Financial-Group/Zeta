@@ -21,6 +21,7 @@
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="DbspFrame.fs" />
+    <Compile Include="V8System.fs" />
     <Compile Include="PluginApi.fs" />
     <Compile Include="PluginHarness.fs" />
     <Compile Include="LawRunner.fs" />
