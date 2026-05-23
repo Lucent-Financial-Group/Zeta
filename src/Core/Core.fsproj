@@ -24,6 +24,7 @@
     <Compile Include="PluginHarness.fs" />
     <Compile Include="LawRunner.fs" />
     <Compile Include="Primitive.fs" />
+    <Compile Include="AgentIntegrate.fs" />
     <Compile Include="Operators.fs" />
     <Compile Include="Handles.fs" />
     <Compile Include="Environment.fs" />

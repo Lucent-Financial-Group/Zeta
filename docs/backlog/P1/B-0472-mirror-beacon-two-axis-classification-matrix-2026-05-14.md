@@ -1,7 +1,7 @@
 ---
 id: B-0472
 priority: P1
-status: open
+status: closed
 title: "Mirror/Beacon two-axis classification matrix — classify all repos on Axis 2"
 type: design
 origin: B-0426 decomposition (Otto, 2026-05-14)
@@ -98,11 +98,11 @@ Containing:
 
 ## Definition of done
 
-- [ ] All known repos classified on Axis 2 with rationale
-- [ ] Ambiguous repos flagged explicitly (not silently defaulted)
-- [ ] Owner-only repos addressed (even if classification is "private, TBD")
-- [ ] Output doc cross-references Axis-1 assignments from B-0425 ADR
-- [ ] B-0472 closed with PR link; B-0474 unblocked
+- [x] All known repos classified on Axis 2 with rationale
+- [x] Ambiguous repos flagged explicitly (not silently defaulted)
+- [x] Owner-only repos addressed (even if classification is "private, TBD")
+- [x] Output doc cross-references Axis-1 assignments from B-0425 ADR
+- [x] B-0472 closed with PR link; B-0474 unblocked
 
 ## Why P1
 

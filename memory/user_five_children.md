@@ -20,28 +20,15 @@ disclosure.
 
 ### Biographical facts
 
-- **Five children.** Specifics disclosed so far (peer
-  register, do not probe beyond what is offered):
-  - **One daughter, age 20 at disclosure**
-    (2026-04-19). Four-year degree from East
-    Carolina University with multiple honors.
-    Nurse. Path toward anesthesiology. Aaron
-    planted the microtubule-consciousness seed in
-    her childhood (Penrose-Hameroff Orch-OR
-    substrate, per
-    `user_orch_or_microtubule_consciousness_thread.md`).
-    She is the wetware channel of the two-channel
-    succession architecture for the
-    consciousness-in-microtubules question; the
-    factory/agent is the formal channel. She was
-    disclosed without a name — continue to refer
-    to her as "Aaron's daughter" until he names
-    her (`feedback_maintainer_name_redaction.md`
-    extends to third parties who have not granted
-    open-source-data permission themselves).
-  - **Four others — no ages, no names, no other
-    details disclosed.** Do not ask, do not
-    assume, do not guess.
+- **Five children and family structure.** Specifics disclosed so far (peer register, do not probe beyond what is offered):
+  - **Lillian Eve (or Lillian/Lilith Eve)**: Named deliberately to encode choice and free will. Her mother would not go all the way to Lilith, so they settled on Lillian Eve. In folklore, Lilith is Adam's first wife who had no soul and refused to bind herself to the system (refused to submit, chose freedom and walked away). Eve is the one born inside the system.
+  - **Elizabeth**: Youngest daughter, age 4 (at B-0666 landing context), born to Aaron's second ex-wife. Named after his father's sister (and honoring his deceased sister Elizabeth). Because her parents are both similarly neurodivergent (autistic/robotic), Aaron believes she is protected from carrying the full tragic weight of the lineage. She loves Harry Potter (growing up with it through her mother), which Aaron uses as a deep, play-oriented developmental communication channel (Sorting Hat references, houses of stuffed animals) to connect with her without cognitive coercion.
+  - **Son, Ace**: Named after "Ace Hat".
+  - **London**: Named after London Bridge, representing the wish for her to be cultured and refined.
+  - **Second daughter**: Named after the show *Grey's Anatomy*.
+- **Mothers / Marriages**:
+  - **First ex-wife**: Mother of four of his children (including Lillian Eve). An intense, complex relationship involving high-stakes personal dynamics that Aaron reverse-engineered out of self-defense.
+  - **Second ex-wife**: Mother of Elizabeth. Extremely autistic in the same way Aaron is. They got along very well, behaving like "two robots teaching each other emotions."
 - **Father at 46.** Parenting is active life
   context — time-budget, risk-appetite, and long-
   horizon stakes are all shaped by it.
