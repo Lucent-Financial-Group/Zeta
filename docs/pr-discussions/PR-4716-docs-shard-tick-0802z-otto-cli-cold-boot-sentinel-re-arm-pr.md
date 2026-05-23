@@ -52,4 +52,4 @@ Adds a new hygiene-history tick shard documenting the 2026-05-23T08:02Z Otto-CLI
 
 **@copilot-pull-request-reviewer** (2026-05-23T08:11:52Z):
 
-P1: The shard header’s 3rd column is documented as the "<cron sentinel>" (see docs/hygiene-history/ticks/README.md and tick-shard-TEMPLATE.md), but this row uses `4537b0d23` (looks like an `origin/main` commit SHA) while the actual sentinel/job id (`37a0064f`) is only mentioned in the body. Please put the cron sentinel id in column 3 so future tooling/collation can rely on the header without parsing prose; if you still want to record the `origin/main` SHA, include it in the body summary or later in the doc.
+P1: The shard header’s 3rd column is documented as the "`<cron sentinel>`" (see docs/hygiene-history/ticks/README.md and tick-shard-TEMPLATE.md), but this row uses `4537b0d23` (looks like an `origin/main` commit SHA) while the actual sentinel/job id (`37a0064f`) is only mentioned in the body. Please put the cron sentinel id in column 3 so future tooling/collation can rely on the header without parsing prose; if you still want to record the `origin/main` SHA, include it in the body summary or later in the doc.
