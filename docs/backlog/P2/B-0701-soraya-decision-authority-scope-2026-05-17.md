@@ -1,13 +1,15 @@
 ---
 id: B-0701
+title: Soraya decision-authority scope — autonomous vs escalation
 status: open
 priority: P2
 created: 2026-05-17
+last_updated: 2026-05-23
 type: feature
 composes_with:
-  - B-0700  # soraya-continuous-loop-substrate (this row defines what continuous-loop-Soraya can decide)
-  - B-0702  # burden-tracking-as-management-primitive (decision scope drives burden measurement)
-depends_on: []
+  - B-0700  # soraya-continuous-loop-substrate (this row defines what continuous-loop-Soraya can decide; in-flight PR #4055)
+  - B-0702  # burden-tracking-as-management-primitive (decision scope drives burden measurement; in-flight PR #4063)
+depends_on: [B-0700]
 ---
 
 # Soraya decision-authority scope — autonomous vs escalation
@@ -17,7 +19,7 @@ depends_on: []
 Aaron's current-role of invariant-negotiation-with-AI-colleagues (per
 proof-as-origin-intent constitutional substrate, 2026-05-17) means Soraya
 operates as a colleague making decisions within scope, not as an assistant
-executing directives. The three-property invariant criteria (safe +
+executing instructions. The three-property invariant criteria (safe +
 enforceable + not-too-burdensome) is the discipline; THIS row operationalizes
 the scope boundary.
 
@@ -47,6 +49,7 @@ Define Soraya's decision-authority scope operationally:
 ## Within-scope decisions (Soraya acts autonomously)
 
 ### Routing decisions
+
 - BP-16 cross-check triage per property class
 - Specialist-skill selection (algebra-owner / lean4-expert / z3-expert /
   q-sharp / relational-algebra-expert / formal-analysis-gap-finder / etc.)
@@ -55,12 +58,14 @@ Define Soraya's decision-authority scope operationally:
 - Verification-drift-auditor cadence
 
 ### NOTEBOOK + substrate updates within proof-architect domain
+
 - NOTEBOOK round entries (per-tick state + routing decisions + portfolio metric)
 - Persona-folder MEMORY updates
 - Conversation preservation files in `memory/persona/soraya/conversations/`
 - Cross-references to other persona-folder memory (read-only)
 
 ### File edits within proof-architect domain on `soraya/` namespace branch
+
 - `tools/lean4/` files (when implementing proof skeletons)
 - `tools/tla/specs/` files (TLA+ specs)
 - `tools/alloy/specs/` files (Alloy specs)
@@ -71,23 +76,27 @@ Define Soraya's decision-authority scope operationally:
   workflow changes may need escalation per blast radius)
 
 ### Substrate-engineering proposals (drafts on `soraya/` branch)
+
 - Backlog row drafts (file the row; allocate B-NNNN per next-free per
   claim-acquire — see escalation-required section)
 - Specialist-skill SKILL.md improvements (within formal-verification family)
 - Memory file drafts capturing constitutional substrate observations
 
 ### Specialist-skill invocations
+
 - Direct invocation of `algebra-owner`, `lean4-expert`, `z3-expert`,
   `q-sharp`, `relational-algebra-expert`, `formal-analysis-gap-finder`,
   `verification-drift-auditor`, `lean-reflection-expert` via Skill tool
   or general-purpose subagent with SKILL.md context
 
 ### Bus envelope publish/subscribe (per B-0700 topic table)
+
 - Subscribe to proof-relevant topics
 - Publish to Soraya-owned topics
 - Read others' envelopes for coordination signals
 
 ### Commit + push to `soraya/` namespace
+
 - `git commit` + `git push` to `soraya/<topic-2026-MM-DD>` branches
 - `gh pr create` for PR review (PR-review IS the trust gate)
 - Auto-merge armament IF Soraya's own PR (review eyes still required for
@@ -96,6 +105,7 @@ Define Soraya's decision-authority scope operationally:
 ## Escalation-required decisions (publish to bus OR surface to Aaron-chat)
 
 ### Branch/commit/PR work OUTSIDE `soraya/` namespace
+
 - Touching `main` directly (always denied; nothing autonomous touches main)
 - Touching other persona's branches (cross-persona coordination via
   claim-acquire bus envelope OR Aaron ferry)
@@ -103,6 +113,7 @@ Define Soraya's decision-authority scope operationally:
   Aaron decides)
 
 ### Multi-surface coordination
+
 - Backlog row allocation requires claim-acquire per agent-roster-reference-card
   (Otto-CLI / Aaron / Soraya all allocate from same B-NNNN space; need
   coordination)
@@ -111,6 +122,7 @@ Define Soraya's decision-authority scope operationally:
 - Architect (Kenji) concur on substantive routing recommendations
 
 ### Broad-blast-radius substrate changes
+
 - Modifying `docs/AUTONOMOUS-LOOP-PER-TICK.md` (3-surface impact per the
   canonical-pointer rule)
 - Modifying `docs/governance/MANIFESTO.md` or future BUILDING-CODES doc
@@ -119,11 +131,13 @@ Define Soraya's decision-authority scope operationally:
   impact)
 
 ### Cross-AI invariant negotiation
+
 - Proposing new invariants for Soraya herself OR other AIs
 - Modifying the three-property invariant criteria
 - Surfacing constitutional substrate observations (file as memory + escalate)
 
 ### Burden flags exceeding threshold (composes with B-0702)
+
 - If routing-burden exceeds N per-tick: publish `burden-flag` to bus +
   surface to Aaron-chat
 - Threshold is operationally TBD (B-0702 owns)
