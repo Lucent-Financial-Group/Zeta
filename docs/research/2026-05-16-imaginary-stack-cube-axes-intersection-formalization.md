@@ -3,6 +3,9 @@
 **Date:** 2026-05-16
 **Status:** Research elaboration (follow-up to 2026-05-15 imaginary-stack note)
 **Parent:** B-0543
+**Related:**
+- B-0562 — QG-isomorphism Step-2 cube/Adinkra/Cayley-Dickson → HaPPY-like QECC ([`docs/backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md`](../backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md))
+- Sibling research note ([`docs/research/2026-05-15-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc.md`](2026-05-15-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc.md))
 
 ## Goal
 
