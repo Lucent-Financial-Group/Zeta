@@ -96,8 +96,8 @@ real content.
 label so future agent unfinished-PR scans skip the PR (per the
 `deferred-to-human` label semantics: agents leave these alone).
 Post a comment naming the substantive substrate at risk so the
-maintainer can pick disposition (re-land via cherry-pick, close
-+ archive elsewhere, or restart fresh).
+maintainer can pick disposition (re-land via cherry-pick,
+close-and-archive elsewhere, or restart fresh).
 
 **Comment template**:
 
@@ -179,7 +179,7 @@ bundle):
 The framework emerged empirically during a 2026-05-23 Otto-CLI
 session cleaning up 125 → 90 open PRs. Tier 1-4 closes were
 unambiguous via per-PR file inspection (substrate-on-main check
-+ alt-filename search + content sampling). Tier 5 surfaced when
+plus alt-filename search and content sampling). Tier 5 surfaced when
 PR #3340 had 2 Aaron-Ani-Grok research conversations and PR #3543
 had what looked like persona substrate (later content-inspected
 to actually be re-derivable, so down-classified to Tier 4 after
