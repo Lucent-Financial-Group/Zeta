@@ -9,6 +9,7 @@ created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
 composes_with: [B-0570]
+decomposes_to: [B-0572]
 tags: [github, github-app, authentication, rate-limit, scarcity-mitigation, factory-infrastructure]
 type: feature
 ---
