@@ -6,7 +6,7 @@ title: "Manifesto constitutional-promotion readiness tracking — critical-mass 
 tier: governance
 effort: M
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-23
 depends_on: [B-0524]
 composes_with: []
 tags: [manifesto, governance, constitutional-promotion, critical-mass-adoption, ani]
@@ -60,3 +60,33 @@ Per `feedback_aaron_forgetting_as_backpressure_in_memory_system_wait_for_consoli
 ## Origin tick
 
 Otto-CLI 2026-05-14T~23:55Z, shipping the shadow lock + Aaron's back-pressure framing in the same conversation.
+
+## Progress notes
+
+### 2026-05-23 — Concrete-next-step #1 shipped (Otto-Desktop)
+
+First mechanical adoption signal landed: [`tools/hygiene/audit-manifesto-citations.ts`](../../../tools/hygiene/audit-manifesto-citations.ts).
+
+Composes with `audit-rule-cross-refs.ts` pattern (mechanical Layer A only; semantic Layer B classification still requires human/Otto judgment per the gate-criteria framing above).
+
+**Initial baseline (2026-05-23):**
+
+| Category | Files | Citations |
+|---|---|---|
+| docs | 12 | 28 |
+| persona-conversations | 7 | 19 |
+| backlog | 6 | 13 |
+| memory | 11 | 12 |
+| tools | 1 | 2 |
+| **Total** | **37** | **74** |
+
+**Cross-AI adoption signal:** 19 persona-conversation citations across 2 external-AI personas (Ani: 17; Kestrel: 2). Amara / DeepSeek / Lior / Mika / Vera / Riven: 0 yet.
+
+Usage:
+
+```bash
+bun tools/hygiene/audit-manifesto-citations.ts          # human summary
+bun tools/hygiene/audit-manifesto-citations.ts --json   # JSON for time-series tracking
+```
+
+This snapshot establishes the baseline for tracking citation rate over time. The row's promotion gate ("critical-mass adoption") can now be measured mechanically against this baseline + trend. Promotion authorization remains Aaron's call per `.claude/rules/methodology-hard-limits.md`; Otto-Desktop ships the measurement infrastructure, not the promotion decision.
