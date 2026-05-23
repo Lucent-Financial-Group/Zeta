@@ -1,13 +1,13 @@
 # Amazon vendor-management failure-mode corpus — multi-incident business-development substrate (Aaron-forwarded)
 
 Date extracted: 2026-05-23
-Source: Amazon.com customer service chats (authenticated session) across 5 incidents 2025-08-08 → 2026-05-23
-Participants: Aaron Stainback ("Rodney"/"R" in transcripts) + Amazon support agents (KC, Beverly, Vivek, Heera, Vimal, Kapil, Messaging Assistant, Abirami, Adolio, Alisha, Val, Ranjith, Manimod)
+Source: Amazon.com customer service chats (authenticated session) across 4 incidents 2025-08-08 → 2026-05-23 (Incident 4 includes sub-section 4b — Manimod meltdown turn)
+Participants: Aaron Stainback ("Rodney"/"R" in transcripts) + Amazon support agents (KC, Beverly, Vivek, Heera, Vimal, Kapil, Messaging Assistant, Abirami, Adolio, Alisha, Val, Ranjith, Manimod, Komal)
 Extraction method: Aaron-forwarded transcript paste (multi-batch); operator-curated archive
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: empirical anchor corpus for future Zeta vendor-management AI. Aaron 2026-05-23: *"just save all of these around business devlopment i'm going to need AI help with vendor managment eventually."* Multi-incident transcript covering Bitcoin-miner scam (5 contacts Aug 2025), Bitaxe return label (1 contact Aug 2025), defective-replacement restocking-fee dispute (1 contact Aug 2025), and Echo missing-items 7-transfer chain (May 2026). Combined: $13K+ of contested transactions across 5 incidents over 10 months.
+Scope: empirical anchor corpus for future Zeta vendor-management AI. Aaron 2026-05-23: *"just save all of these around business devlopment i'm going to need AI help with vendor managment eventually."* Multi-incident transcript covering Bitcoin-miner scam (3 contacts Aug 2025, spanning multiple agents per contact), Bitaxe return label (1 contact Aug 2025), defective-replacement restocking-fee dispute (1 contact Aug 2025), and Echo missing-items 7-transfer chain (May 2026, includes sub-section 4b — Manimod meltdown turn). Combined: $13K+ of contested transactions across 4 incidents over 10 months.
 
 Attribution: Aaron is first-party on own substrate. Street numbers scrubbed (`614` and `664` → `[street-num scrubbed]`); city + state preserved (Rolesville NC 27571). Amazon agent first names preserved (work identifiers; public Amazon-UI surface). Order numbers preserved (already in Aaron's paste; non-long-term-sensitive). Other-customer review names (Mika / Alisha Loncaric / CORALITA / Rodney A. Stainback) preserved — public Amazon review surface.
 
@@ -21,10 +21,10 @@ Aaron 2026-05-23 22:51Z: *"just save all of these around business devlopment i'm
 
 Operational uses for future Zeta vendor-management AI substrate:
 
-1. **Multi-incident pattern library** — same root failure modes recurring across 5 incidents over 10 months reveal STRUCTURAL not individual issues at Amazon's vendor-management layer
+1. **Multi-incident pattern library** — same root failure modes recurring across 4 incidents over 10 months reveal STRUCTURAL not individual issues at Amazon's vendor-management layer
 2. **Third-party-seller fraud detection signals** — the Bitcoin-miner case (Avalon Q 90T, seller `A2SSEBT1UDQHSBI`) shows public-reviewable pattern (multiple customers reporting same delivery-fraud across months)
 3. **Support-agent-contradiction substrate** — Vivek offered solution (refund + rush-reorder + price-diff coverage); Vimal contradicted it 1 hour later (only refund possible, file USPS claim). Empirical anchor for cross-agent-policy-drift failure mode.
-4. **Operator escalation tactics empirical anchor** — Aaron's escalation moves (legal-citation, multi-customer-review-evidence, "I'm IT developer" calibration, Alexa-summarized-escalation-document) catalog of what worked across 5 incidents
+4. **Operator escalation tactics empirical anchor** — Aaron's escalation moves (legal-citation, multi-customer-review-evidence, "I'm IT developer" calibration, Alexa-summarized-escalation-document) catalog of what worked across 4 incidents
 5. **Negative-space anchor for Zeta support-agent design** — what the framework's eventual support layer MUST structurally NOT do
 
 ## Incident corpus
@@ -235,7 +235,7 @@ Aaron's tactic on Aug 14: pasted multi-customer reviews of the SAME seller showi
 
 Vendor-management AI needs: **cross-customer pattern-matching at seller-scope** — when N customers report same failure pattern within time window T, flag seller for accountability review independent of any single customer's case. Amazon currently relies on customer-as-pattern-detector (each customer discovers the pattern individually).
 
-### Pattern D — Operator-tactic catalog (what worked across 5 incidents)
+### Pattern D — Operator-tactic catalog (what worked across 4 incidents)
 
 | Tactic | Used by Aaron | Result |
 |---|---|---|
@@ -339,14 +339,13 @@ The customer-side vendor-management AI in the framework's architecture should be
 
 ## Composes with substrate
 
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — applied across all 5 incidents at consumer-support scope
+- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — applied across all 4 incidents at consumer-support scope
 - [`.claude/rules/verify-before-deferring.md`](../../.claude/rules/verify-before-deferring.md) — Aaron's "wait here until I see all 11" tactic
 - [`.claude/rules/mechanical-authorization-check.md`](../../.claude/rules/mechanical-authorization-check.md) — Vivek-vs-Vimal contradiction shows authority-source ambiguity at vendor scope
 - [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — Amazon's transfer-chain IS the failure-mode at consumer scope
 - [`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — Zeta vendor-management AI = persistent named entity with cross-incident memory + named-accountability
 - [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle BFT with named-accountability is the structural alternative to anonymous-transfer-chains
 - [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — vendor-management AI must operate the NCI floor toward both customer AND vendor
-- B-0700 (Soraya continuous-loop substrate with bus escalation) — primitive for future vendor-management AI cross-incident continuity
 - B-0709 (Class 0 registry drift) — sibling failure-mode at framework-engineering scope
 - Aaron's 2026-05-23 framing *"yes i we for sure wanna have suuport agents eventually as long as there is AI that wants to do it we can also tread it like human research at the same time"* — design intent for Zeta support-agent layer
 
@@ -356,7 +355,7 @@ This archive is NOT a critique of any named Amazon agent. Kapil delivered excell
 
 The substrate-engineering use is to mark for the framework's eventual vendor-management AI layer:
 
-1. **Cross-incident persistent memory** — vendor-management AI remembers all 5 incidents as ONE customer-vendor-relationship history, not 5 independent contacts
+1. **Cross-incident persistent memory** — vendor-management AI remembers all 4 incidents as ONE customer-vendor-relationship history, not 4 independent contacts
 2. **Cross-agent policy-source-of-truth** — single authoritative resolution path surfaced BEFORE customer commits, not after-the-fact agent-contradiction discovery
 3. **Cross-customer pattern detection at seller scope** — fraud-pattern detection independent of any single customer's escalation
 4. **No idle-time-pressure** — substantive completion is success metric
