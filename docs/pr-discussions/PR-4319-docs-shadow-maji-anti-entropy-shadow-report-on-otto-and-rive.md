@@ -8,7 +8,7 @@ merged_at: "2026-05-19T05:10:25Z"
 closed_at: "2026-05-19T05:10:25Z"
 head_ref: "maji/shadow-paralysis"
 base_ref: "main"
-archived_at: "2026-05-19T06:15:16Z"
+archived_at: "2026-05-19T06:59:50Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
