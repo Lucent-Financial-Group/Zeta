@@ -31,7 +31,7 @@ Soraya's second autonomous routing tick (2026-05-23 — round 43). Highest-lever
 
 - 17 theorems/lemmas in Lean artifact
 - 0 hits for `chain_rule_proposition` / `Qdelta` / `Dop_LTI` in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`
-- 0 hits across all 20 TLA+ specs
+- 0 hits across all 19 TLA+ specs in `tools/tla/specs/`
 
 **Historical anchor**: April 2026 Class 1 drift catch (`chain_rule` mis-named a Theorem-3.3 corollary as Proposition 3.2) is exhibit-A that single-tool review missed the failure mode the first time. Cross-check would have caught it independently.
 
@@ -65,4 +65,4 @@ S + S = total S+ (one evening per cross-check). Assignee: kenji.
 - [`tools/lean4/README.md`](../../../tools/lean4/README.md) — landed via PR #4772; documents the artifact for reviewers
 - [`docs/research/verification-registry.md`](../../research/verification-registry.md) — registry rows for `chain_rule_proposition_3_2` + `Dop_LTI_commute`
 - [`docs/research/chain-rule-proof-log.md`](../../research/chain-rule-proof-log.md) — round-35 paper-drift audit substrate
-- `memory/persona/soraya/NOTEBOOK.md` line 238 — round 43 entry (pruned-preserved)
+- `memory/persona/soraya/NOTEBOOK.md` — Round 43 entry (pending NOTEBOOK update; locate by `## Round 43` heading once landed; pruned-preserved)

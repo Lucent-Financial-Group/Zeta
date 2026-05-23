@@ -53,7 +53,7 @@ TLA+ was tempting (file carries internal state `SortedSet<'K>`). **REJECTED**: s
 
 1. New file `tests/Tests.FSharp/Algebra/Residuated.Tests.fs` mirroring `PNCounter.Tests.fs` shape
 2. Three FsCheck properties covering Galois + residual + retraction equivalence
-3. Tests wired into existing dotnet test gate (`dotnet test Zeta.sln -c Release` should pick them up automatically)
+3. Tests wired into existing dotnet test gate — `tests/Tests.FSharp/Tests.FSharp.fsproj` uses explicit `<Compile Include="..." />` registration (96 entries; not glob-based), so the new file MUST be added to the `.fsproj` in the correct compile order alongside the other Crdt/Algebra entries; `dotnet test Zeta.sln -c Release` picks it up once registered
 4. `proof-tool-coverage.md` §5 updated to mark Residuated FsCheck-covered
 
 ## Publication-readiness alignment
@@ -69,4 +69,4 @@ S (one evening). Assignee: kenji.
 - [`src/Core/Residuated.fs`](../../../src/Core/Residuated.fs) — target needing FsCheck
 - [`tests/Tests.FSharp/Crdt/PNCounter.Tests.fs`](../../../tests/Tests.FSharp/Crdt/PNCounter.Tests.fs) — template
 - [`docs/research/proof-tool-coverage.md`](../../research/proof-tool-coverage.md) §5 — gap named since 2026-04-17
-- `memory/persona/soraya/NOTEBOOK.md` lines 308-404 (round 44; pruned-preserved)
+- `memory/persona/soraya/NOTEBOOK.md` — Round 44 entry (pending NOTEBOOK update; locate by `## Round 44` heading once landed; pruned-preserved)
