@@ -42,6 +42,7 @@ None of the 3 appear in `docs/research/verification-registry.md`; none appear in
 B-0709 claimed coverage ratio of **0.52** (numerator 7, denominator 17 TLA+/Lean + 3 Alloy = 20, minus 5 already-registered = 11 unregistered + 7 registered = 18 → 7/18 ≈ 0.39 actual; B-0709's 0.52 was computed against a different denominator).
 
 Round-53 on-disk truth:
+
 - 16 TLA+ specs + 3 Alloy specs + 2 Lean theorems = **21 artifacts total**
 - 7 already registered
 - **14 unregistered** (not 11 — B-0709 missed the 3 Spine specs)
