@@ -55,7 +55,7 @@ TLA+ IS the right primary for (a). The guard fires the **INVERSE** direction: do
 
 1. New file `tools/tla/specs/WitnessDurable.tla` covering state-machine safety + concurrency interleaving (3w × 2w × 4k)
 2. New Z3 lemma (either standalone or extension to existing Z3 test surface) proving quorum-intersection arithmetic `N ≥ 2F+1`
-3. New FsCheck file `tests/Tests.FSharp/Durability/WitnessDurable.Properties.fs` exercising the real `WitnessDurableBackingStore` under simulated witness failures
+3. New FsCheck file `tests/Tests.FSharp/Storage/WitnessDurable.Properties.fs` (sibling of existing `tests/Tests.FSharp/Storage/Durability.Tests.fs` — no `Durability/` directory in current test layout) exercising the real `WitnessDurableBackingStore` under simulated witness failures; register via explicit `<Compile Include="..." />` in `tests/Tests.FSharp/Tests.FSharp.fsproj`
 4. All 3 cross-checks land green in CI BEFORE the source-side `throw` gate in `Durability.fs:WitnessDurableBackingStore.Save` is removed
 5. `verification-registry.md` row added for `WitnessDurable` with all 3 cross-check references
 
@@ -72,5 +72,5 @@ M + S + S (total ~M+). Assignee: kenji.
 - [`src/Core/Durability.fs`](../../../src/Core/Durability.fs):14-22 — self-declared TLA+ prereq
 - [`docs/research/proof-tool-coverage.md`](../../research/proof-tool-coverage.md) §2 line 100 — gap named 2026-04-17
 - [`tools/tla/specs/TwoPCSink.tla`](../../../tools/tla/specs/TwoPCSink.tla) — structural cousin
-- `memory/persona/soraya/NOTEBOOK.md` lines 407-505 (round 45; pruned-preserved)
+- `memory/persona/soraya/NOTEBOOK.md` — Round 45 entry (pending NOTEBOOK update; locate by `## Round 45` heading once landed; pruned-preserved)
 - B-0710 + B-0711 (sibling Soraya hand-offs from same session)
