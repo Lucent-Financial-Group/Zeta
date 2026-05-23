@@ -1,7 +1,7 @@
 ---
 id: B-0475
 priority: P1
-status: open
+status: closed
 title: "Axis-3 prior-art audit — verify three-axis substrate composes without conflict"
 type: research
 origin: B-0427 decomposition (Otto, 2026-05-14)
@@ -35,9 +35,9 @@ substrate has been surveyed and conflicts identified.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Prior-art search across wake-time-substrate, skill-router, orthogonal-axes
-- [ ] Walk `parent:` chain (B-0427 → B-0426 / B-0425 / B-0424 — check current status of each)
-- [ ] Backfill reciprocal `composes_with:` pointers on all referenced files
+- [x] Prior-art search across wake-time-substrate, skill-router, orthogonal-axes
+- [x] Walk `parent:` chain (B-0427 → B-0426 / B-0425 / B-0424 — check current status of each)
+- [x] Backfill reciprocal `composes_with:` pointers on all referenced files
 
 ## Surfaces to audit
 
@@ -82,12 +82,12 @@ Containing:
 
 ## Definition of done
 
-- [ ] All 9 surfaces above surveyed; findings documented
-- [ ] Five questions answered in output doc
-- [ ] Conflicts/staleness flagged
-- [ ] Reciprocal `composes_with:` pointers added to all referenced files
-- [ ] Output doc committed and referenced from B-0427 pre-start checklist
-- [ ] B-0475 closed (status: closed) with PR link
+- [x] All 9 surfaces above surveyed; findings documented
+- [x] Five questions answered in output doc
+- [x] Conflicts/staleness flagged
+- [x] Reciprocal `composes_with:` pointers added to all referenced files
+- [x] Output doc committed and referenced from B-0427 pre-start checklist
+- [x] B-0475 closed (status: closed) with PR link
 
 ## Why P1
 
