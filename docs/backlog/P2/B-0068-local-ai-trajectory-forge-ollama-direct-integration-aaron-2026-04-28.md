@@ -186,6 +186,10 @@ Per Otto-275 (log-but-don't-implement-yet) + Aaron's
 implementation work this tick. The umbrella is the
 deliverable for now.
 
+## Sub-rows
+
+- [ ] **[B-0329](B-0329-local-ai-forge-cli-harness-integration.md)** Local AI Path 1 - Forge CLI/harness integration
+
 ## Cadence
 
 When other 0/0/0 work clears OR when a hosted-substrate
