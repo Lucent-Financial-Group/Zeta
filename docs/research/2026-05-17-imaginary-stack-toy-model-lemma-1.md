@@ -53,7 +53,7 @@ Perform a second Cayley-Dickson doubling on the entire 8-dimensional space, intr
 
 The resulting 16-dimensional real algebra is our toy "imaginary stack".
 
-For computational simplicity we work over a finite field (e.g., ℤ/7ℤ or ℤ/17ℤ) so that all arithmetic is exact and we can enumerate small cases.
+For computational simplicity we work over a finite field (e.g., ℤ/7ℤ or ℤ/17ℤ) so that all arithmetic is exact and we can enumerate small cases. The lemma below admits two readings consistent with this scope: in the **finite-field reading** the symbol ‖·‖ is interpreted as Hamming distance over the chosen basis and the bound is exact (ε = 0); in the **ℝ-analytic reading** (treating the construction over ℝ rather than ℤ/pℤ) ‖·‖ is the Euclidean norm induced by the orthonormal basis above and ε is a small real constant. The toy model targets the finite-field reading; the ℝ-analytic form is included for compatibility with the boundary-bulk reconstruction picture that motivates Lemma 1 in the parent research.
 
 ## Reconstruction Property (Toy Version)
 
