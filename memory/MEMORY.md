@@ -2,7 +2,7 @@
 
 **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.**
 
-> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `tools/memory/reindex-memory-md.ts` (B-0423), callable from the autonomous-loop tick. Last reindex: 2026-05-22.
+> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `tools/memory/reindex-memory-md.ts` (B-0423), callable from the autonomous-loop tick. Last reindex: 2026-05-23.
 
 <!-- BEGIN AUTO-INDEX (B-0423 reindex-memory-md.ts) -->
 - [**Aaron's extended-family cooperative substrate — 10-kid sibling network, permeable households, and asymmetric calibration counterweight**](feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md) — 2026-05-22 — Aaron synthesizes the reality of his extended-family system (10 kids, permeable households, walk-in access with first wife and new husband, active second-wife inclusion by first-wife's mother) and how it was earned one interac…
