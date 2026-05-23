@@ -28,6 +28,7 @@ Soraya's second autonomous routing tick (2026-05-23 — round 43). Highest-lever
 `tools/lean4/Lean4/DbspChainRule.lean` has **ZERO BP-16 cross-checks**. Currently A-with-CI-green-since-2026-05-17 but single-tool (Lean only). Per BP-16, P0 invariants require ≥2 cross-checks.
 
 **Empirical**:
+
 - 17 theorems/lemmas in Lean artifact
 - 0 hits for `chain_rule_proposition` / `Qdelta` / `Dop_LTI` in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`
 - 0 hits across all 20 TLA+ specs
