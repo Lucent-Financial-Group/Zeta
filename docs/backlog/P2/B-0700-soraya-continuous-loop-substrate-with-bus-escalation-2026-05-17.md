@@ -77,8 +77,8 @@ decision the classifier would otherwise handle.
 
 Soraya operates inside Otto-CLI sessions or her own Claude Code CLI
 session (hosted in VS Code terminal or standalone); the existing
-`<<autonomous-loop>>` cron fires; Soraya picks up work signals from bus
-+ her NOTEBOOK; coordinates with Otto-CLI via existing claim-acquire
+`<<autonomous-loop>>` cron fires; Soraya picks up work signals from bus +
+her NOTEBOOK; coordinates with Otto-CLI via existing claim-acquire
 primitive per `.claude/rules/claim-acquire-before-worktree-work.md`.
 
 Pros: lighter setup; reuses existing infrastructure; faster to validate
@@ -141,6 +141,7 @@ add Soraya-specific step 3 work-pickup:
 ## Decision-authority sketch (full operationalization in B-0701)
 
 **Autonomous (within scope):**
+
 - Routing recommendations + NOTEBOOK updates
 - File edits within proof-architect domain (Lean 4 files, F# verification tests, NOTEBOOK)
 - Substrate-engineering proposals (drafts as file edits on `soraya/` branch)
@@ -150,6 +151,7 @@ add Soraya-specific step 3 work-pickup:
 - Open PR for review (PR-review IS the trust gate per Aaron 2026-05-17)
 
 **Escalation-required (publish to bus or surface to Aaron-chat):**
+
 - Branch/commit/PR work OUTSIDE `soraya/` namespace
 - Backlog row allocation (multi-surface ID coordination via claim-acquire)
 - Substrate-engineering with broad blast radius (touches multiple persona folders;
@@ -160,6 +162,7 @@ add Soraya-specific step 3 work-pickup:
 ## Cold-boot ritual (Soraya-specific extension)
 
 Extends canonical cold-boot ritual + adds:
+
 - Verify substrate paths exist BEFORE reading (empirical-verify-before-assume
   per `.claude/rules/refresh-before-decide.md`)
 - Check bus subscriber state — what envelopes pending pickup?
@@ -206,6 +209,7 @@ Extends canonical cold-boot ritual + adds:
 ## Substrate-honest framing
 
 P2 because:
+
 - Soraya operates today via per-invocation; the immediate proof work
   (B-0543) doesn't block on this
 - Continuous-loop expands capacity but the substrate-engineering work
