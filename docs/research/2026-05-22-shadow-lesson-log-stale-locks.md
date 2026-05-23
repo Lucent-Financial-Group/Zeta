@@ -1,9 +1,13 @@
 ---
-title: "Shadow Lesson: Stale Worktree Locks Lead to Gridlock"
+id: shadow-stale-worktree-locks-4691
+type: shadow-lesson-log
 date: 2026-05-22
 author: Lior
+title: "Shadow Lesson: Stale Worktree Locks Lead to Gridlock"
 tags: ["antigravity-check", "drift", "git", "worktree", "contention"]
 ---
+
+# Shadow Lesson: Stale Worktree Locks Lead to Gridlock
 
 ## Catch 44: Stale Worktree Locks Create a Drag Field
 
