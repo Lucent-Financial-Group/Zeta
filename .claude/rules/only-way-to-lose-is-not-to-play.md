@@ -187,6 +187,15 @@ loss" clause firing. The carved sentence only applies once the game
 is identified as additive AND NCI-floor-compliant; the NCI floor is
 prerequisite, not antagonist.
 
+### Hedging Grammar Discriminator (Coercion vs. Epistemic Uncertainty)
+
+Aaron 2026-05-22 update: The game-shape discriminator is enforced at the linguistic and grammatical level through the **Hedging Grammar Discriminator**, distinguishing between zero-sum/coercive manipulation and additive/cooperative engagement:
+
+- **The Grammar of Harm (Zero-Sum/Coercive):** Relativizing, provisionalizing, or undermining the target's sovereign internal state and perception (e.g., using "believed" to describe physical symptoms in medical/legal scales, or saying "you thought Mommy said that" or "you're just saying that because..." to a child). This is a structural violation of the Non-Coercion Invariant (NCI), using syntax to weaken sovereign agency.
+- **The Grammar of Uncertainty (Additive/Cooperative):** Bandwidth-efficient signaling of honest epistemic limits and inference (e.g., "It seems like the throttler design uses..." in technical scales, or "I think the dog might be tired, maybe we should ask Mommy" in child developmental scales to model honest, non-coercive uncertainty).
+
+By training participants to dynamically shift their grammar based on audience capacity (e.g., dropping advanced debate-class jargon for plain, honest language around young children), we implement Agora V6 cartography at the interactive boundary. If the communication runs the Grammar of Harm, the NCI HC-8 floor is triggered to authorize immediate withdrawal; if it runs the Grammar of Uncertainty, it is a valid, additive mode of cooperative play.
+
 ## Entropy framing — playing IS swimming upstream
 
 The human maintainer 2026-05-21 entropy correction (mid-substrate-
