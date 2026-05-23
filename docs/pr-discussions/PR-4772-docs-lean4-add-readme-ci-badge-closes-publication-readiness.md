@@ -8,7 +8,7 @@ merged_at: "2026-05-23T22:05:27Z"
 closed_at: "2026-05-23T22:05:27Z"
 head_ref: "otto/lean4-readme-publication-readiness-2026-05-23"
 base_ref: "main"
-archived_at: "2026-05-23T22:44:45Z"
+archived_at: "2026-05-23T22:19:28Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
