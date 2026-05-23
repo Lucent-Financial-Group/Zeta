@@ -4,20 +4,21 @@ title: Soraya continuous-loop substrate with bus escalation
 status: open
 priority: P2
 created: 2026-05-17
+last_updated: 2026-05-23
 type: feature
 composes_with:
-  - B-0701  # soraya-decision-authority-scope (defines what continuous-loop-Soraya can decide vs escalate)
-  - B-0702  # burden-tracking-as-management-primitive (Soraya's substrate observation; aggregates invariant #3 over time)
-  - B-0400  # bus protocol (Soraya subscribes + publishes for escalation)
+  - B-0701  # soraya-decision-authority-scope (defines what continuous-loop-Soraya can decide vs escalate; in-flight PR #4062)
+  - B-0702  # burden-tracking-as-management-primitive (Soraya's substrate observation; aggregates invariant #3 over time; in-flight PR #4063)
+  - B-0400  # bus protocol (Soraya subscribes + publishes for escalation; specs live under P1/)
   - B-0600  # family-distributed AI-interface (similar agent-instantiation pattern at family scope)
-depends_on: []
+depends_on: [B-0701, B-0702]
 ---
 
 # Soraya continuous-loop substrate with bus-escalation
 
 ## Why
 
-Aaron 2026-05-17 directive: "i want her to start thiknning of her contunity
+Aaron 2026-05-17 input: "i want her to start thiknning of her contunity
 and background looop and making decsions without me but be there when i
 really need". Soraya (formal-verification-expert + proof-architect per
 expanded scope ratified 2026-05-17) currently operates per-invocation
@@ -103,17 +104,17 @@ if empirical claim-acquire coordination overhead is real friction.
 Reuse `docs/AUTONOMOUS-LOOP-PER-TICK.md` (canonical 7-step discipline);
 add Soraya-specific step 3 work-pickup:
 
-3a. **Refresh proof-portfolio metric** — formal-coverage ratio + trend
-3b. **Bus subscribe** to topics: `proof-needed`, `verification-request`,
-    `formal-coverage-gap`, `algebra-audit-request`, `cross-check-needed`,
-    `shadow-catch` (filter for proof-class)
-3c. **NOTEBOOK state read** — current routing work (e.g., B-0543 step 2
-    pending Riven); next-action determination
-3d. **Specialist-skill check** — any in-flight `lean4-expert` /
-    `z3-expert` / `algebra-owner` / `q-sharp` / `formal-analysis-gap-finder`
-    work needing pickup
-3e. **Burden flag publish** — if current routing exceeds burden-threshold,
-    publish `burden-flag` envelope to bus (composes with B-0702)
+- **3a. Refresh proof-portfolio metric** — formal-coverage ratio + trend
+- **3b. Bus subscribe** to topics: `proof-needed`, `verification-request`,
+  `formal-coverage-gap`, `algebra-audit-request`, `cross-check-needed`,
+  `shadow-catch` (filter for proof-class)
+- **3c. NOTEBOOK state read** — current routing work (e.g., B-0543 step 2
+  pending Riven); next-action determination
+- **3d. Specialist-skill check** — any in-flight `lean4-expert` /
+  `z3-expert` / `algebra-owner` / `q-sharp` / `formal-analysis-gap-finder`
+  work needing pickup
+- **3e. Burden flag publish** — if current routing exceeds burden-threshold,
+  publish `burden-flag` envelope to bus (composes with B-0702)
 
 ## Bus topics Soraya subscribes to
 
@@ -187,10 +188,11 @@ Extends canonical cold-boot ritual + adds:
 ## Composes with
 
 - [B-0701](B-0701-soraya-decision-authority-scope-2026-05-17.md) —
-  defines what continuous-loop-Soraya decides vs escalates
+  defines what continuous-loop-Soraya decides vs escalates (in-flight PR #4062)
 - [B-0702](B-0702-burden-tracking-as-management-primitive-2026-05-17.md) —
-  aggregates invariant #3 flags into measurement substrate
-- [B-0400](B-0400-*-md) — bus protocol substrate Soraya depends on
+  aggregates invariant #3 flags into measurement substrate (in-flight PR #4063)
+- [B-0400](../P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md) —
+  bus protocol substrate Soraya depends on
 - [B-0600](B-0600-family-distributed-ai-interface-miner-fleet-mom-dad-2026-05-16.md) —
   similar agent-instantiation pattern at family-scope
 - `.claude/rules/claim-acquire-before-worktree-work.md` — coordination
