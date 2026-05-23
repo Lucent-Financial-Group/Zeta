@@ -172,7 +172,7 @@ function formatEntry(e: MemoryEntry): string {
 
 const MAX_STACK_ENTRIES = 100;
 
-function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string): string {
+function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string, check = false): string {
   const now = new Date().toISOString().slice(0, 10);
   const lines: string[] = [];
   lines.push(autoDreamMarker ?? "[AutoDream last run: 2026-04-23]");
@@ -183,17 +183,20 @@ function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string): string {
       "and `CURRENT-otto.md` first.**",
   );
   lines.push("");
-  lines.push(
+  let reindexLine =
     "> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the " +
-      "**STACK** — indexed, ordered, traversable canonical view. Recent " +
-      "memory files in `memory/` with timestamps newer than the most-" +
-      "current entries here may be **HEAP** — floating cache, not yet " +
-      "indexed, accessible by direct path. Both are easily accessible: " +
-      "stack via traversal, heap via timestamp/filename. Indexing " +
-      "(heap→stack promotion) happens on cadence via " +
-      "`tools/memory/reindex-memory-md.ts` (B-0423), callable from the " +
-      "autonomous-loop tick. Last reindex: " + now + ".",
-  );
+    "**STACK** — indexed, ordered, traversable canonical view. Recent " +
+    "memory files in `memory/` with timestamps newer than the most-" +
+    "current entries here may be **HEAP** — floating cache, not yet " +
+    "indexed, accessible by direct path. Both are easily accessible: " +
+    "stack via traversal, heap via timestamp/filename. Indexing " +
+    "(heap→stack promotion) happens on cadence via " +
+    "`tools/memory/reindex-memory-md.ts` (B-0423), callable from the " +
+    "autonomous-loop tick.";
+  if (!check) {
+    reindexLine += " Last reindex: " + now + ".";
+  }
+  lines.push(reindexLine);
   lines.push("");
   lines.push(PREAMBLE_MARKER);
   const stackEntries = entries.slice(0, MAX_STACK_ENTRIES);
@@ -222,7 +225,7 @@ async function main() {
   // reindexer from resetting a date that AutoDream wrote more recently.
   const existing = await readFile(INDEX_FILE, "utf8").catch(() => "");
   const markerLine = existing.match(/^\[AutoDream last run: [^\]]+\]/m)?.[0];
-  const rendered = renderIndex(entries, markerLine);
+  const rendered = renderIndex(entries, markerLine, check);
 
   if (check) {
     const same = existing.trim() === rendered.trim();
