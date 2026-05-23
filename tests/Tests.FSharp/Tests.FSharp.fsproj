@@ -33,6 +33,7 @@
 
     <!-- Circuit/ -->
     <Compile Include="Circuit/Circuit.Tests.fs" />
+    <Compile Include="Circuit/DbspFrame.Tests.fs" />
     <Compile Include="Circuit/Incremental.Tests.fs" />
     <Compile Include="Circuit/NestedCircuit.Tests.fs" />
     <Compile Include="Circuit/Plan.Tests.fs" />
