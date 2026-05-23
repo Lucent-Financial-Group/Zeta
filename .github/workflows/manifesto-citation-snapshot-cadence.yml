@@ -90,7 +90,14 @@ jobs:
         id: diff
         run: |
           set -euo pipefail
-          if git diff --quiet docs/hygiene-history/manifesto-citations/; then
+          # Detect BOTH tracked changes AND new untracked files. The
+          # daily snapshot is a NEW file (docs/hygiene-history/
+          # manifesto-citations/YYYY-MM-DD.json) so `git diff --quiet`
+          # alone would miss it on the first run for a date (per
+          # Copilot P0 + Codex P1 catch on PR #4758). git status
+          # --porcelain reports both modified-tracked and new-untracked.
+          status_lines="$(git status --porcelain -- docs/hygiene-history/manifesto-citations/)"
+          if [ -z "$status_lines" ]; then
             echo "changed=false" >>"$GITHUB_OUTPUT"
             echo "no diff (today's snapshot already committed)"
             exit 0
@@ -102,6 +109,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUN_ID: ${{ github.run_id }}
+          NOTE_INPUT: ${{ github.event.inputs.note || '' }}
         run: |
           set -euo pipefail
           today="$(date -u +%Y-%m-%d)"
@@ -139,6 +147,14 @@ jobs:
             echo "  framing."
             echo "- Snapshot strips citations[] array; ~2-3KB/day;"
             echo "  ~1MB/year tractable."
+            if [ -n "${NOTE_INPUT:-}" ]; then
+              echo
+              echo "Note (from workflow_dispatch input):"
+              # NOTE_INPUT is untrusted; embed as data-only via stdin/
+              # printf. Double-quoted "$NOTE_INPUT" preserves content
+              # without shell interpretation.
+              printf '%s\n' "$NOTE_INPUT"
+            fi
             echo
             echo "Agency-Signature-Version: 1"
             echo "Agent: manifesto-citation-snapshot-cadence-workflow"
@@ -182,6 +198,16 @@ jobs:
             echo "GITHUB_TOKEN-created PRs don't trigger downstream"
             echo "workflows. PR left open for next maintainer/agent pass"
             echo "to merge — per budget-snapshot-cadence.yml convention."
+            if [ -n "${NOTE_INPUT:-}" ]; then
+              echo
+              echo "## Note (from workflow_dispatch input)"
+              echo
+              # NOTE_INPUT untrusted; embed as markdown body data-only
+              # via printf. Body is then written to /tmp/...pr-body.md
+              # and gh pr create reads it from the file; no shell
+              # interpretation of NOTE_INPUT content.
+              printf '%s\n' "$NOTE_INPUT"
+            fi
             echo
             echo "Agency-Signature-Version: 1"
             echo "Agent: manifesto-citation-snapshot-cadence-workflow"
