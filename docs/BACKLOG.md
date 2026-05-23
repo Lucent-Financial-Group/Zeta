@@ -792,5 +792,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0689](backlog/P3/B-0689-otto-vscode-surface-sender-ids-extension-bootstream-2026-05-21.md)** Otto-VSCode third foreground surface — add otto-vscode to SENDER_IDS + canonical cold-boot bootstream at docs/launch/
 - [ ] **[B-0696](backlog/P3/B-0696-substrate-surface-change-bus-envelope-cross-ai-coordination-mechanization-2026-05-21.md)** substrate-surface-change bus envelope — cross-AI coordination of load-bearing-substrate changes via tools/bus (mechanizes the human-as-coordination-substrate pattern)
 - [ ] **[B-0699](backlog/P3/B-0699-dual-adinkra-time-aware-default-dumb-fast-version-with-case-by-case-performance-justification-mika-2026-05-18.md)** Dual-Adinkra architecture — full time-aware retractable default + dumb fast version with case-by-case performance justification (Aaron + Mika 2026-05-18)
+- [ ] **[B-0716](backlog/P3/B-0716-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md)** Soraya round-53 scope-correction — B-0709 enumeration under-counted by 3 LSM-tree Spine specs (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla)
 
 <!-- END AUTO-GENERATED -->
