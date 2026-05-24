@@ -7,7 +7,6 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOM
 
 # Load the local Zeta shell environment if available to get the correct node/bun paths
 if [ -f "$HOME/.config/zeta/shellenv.sh" ]; then
-    # shellcheck disable=SC1090
     source "$HOME/.config/zeta/shellenv.sh"
 fi
 
