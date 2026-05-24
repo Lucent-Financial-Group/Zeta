@@ -10,6 +10,7 @@ created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
 composes_with: []
+children: [B-0002.1, B-0002.2, B-0002.3, B-0002.4]
 tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
 type: feature
 ---
