@@ -2,7 +2,8 @@
 id: B-0720
 priority: P0
 title: Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
-date: 2026-05-24
+created: 2026-05-24
+last_updated: 2026-05-24
 origin: Aaron 2026-05-24 (post empirical discovery PR #4816 — classifier-talk-via-settings.json works for ip-questionable content)
 status: open
 classification: P0-safety
