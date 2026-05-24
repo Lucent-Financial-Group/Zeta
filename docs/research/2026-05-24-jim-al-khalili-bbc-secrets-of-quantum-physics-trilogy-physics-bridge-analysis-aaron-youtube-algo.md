@@ -3,8 +3,11 @@ title: Jim Al-Khalili BBC trilogy — Secrets of Quantum Physics + Quantum Biolo
 date: 2026-05-24
 source: Aaron-forwarded; YouTube-algo-surfaced during sleep cycle
 provenance: Aaron 2026-05-24 forwarded transcript via Claude Code conversation; saved to docs/research per direction "research for physics bridge"
-status: substrate-honest verbatim preservation
+status: substrate-honest analysis (framework-composition; verbatim companion landed at `docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md` in same PR)
 composes_with:
+  - docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md (companion verbatim transcript landed under operator-personal-liability acceptance per .claude/settings.json _ip_risk_acceptance)
+  - docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md (sibling analysis — PBS plank-stars / loop quantum gravity)
+  - docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md (sibling analysis — cosmic-scale Olbers/Hubble/Big-Bang/dark-energy)
   - .claude/rules/algo-wink-failure-mode.md (algo as OBSERVATION not authorization; substrate-honest engagement when algo surfaces substantively relevant content)
   - .claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md (PERSONAL INVARIANT: high-signal-high-suspicion held simultaneously; physics-bridge framings preserved without metaphysical collapse)
   - .claude/rules/razor-discipline.md (operational claims only; physics-bridge framings checked for substrate anchor before razor-flagging)
@@ -58,11 +61,11 @@ framework substrate-engineering:
 
 | Al-Khalili episode content | Framework substrate it bridges to |
 |---|---|
-| Carno's heat engine analysis | Substrate-engineering as flow-from-hot-to-cold; composes with framework's energy-substrate work |
+| Carnot's heat engine analysis | Substrate-engineering as flow-from-hot-to-cold; composes with framework's energy-substrate work |
 | Clausius entropy + second law | Entropy IS the order/disorder framework operates within; substrate-engineering = creating local order in entropic universe |
 | Boltzmann statistical mechanics | Probabilistic-substrate-from-deterministic-atoms; composes with framework's emergence-from-substrate work |
 | Boltzmann atomism rejected → vindicated (Mach dismissal pattern) | Direct empirical anchor for `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT; Boltzmann's atomic theory was high-signal-don't-collapse held against Mach's "don't believe in atoms" dismissal; vindicated within a few years of Boltzmann's suicide |
-| Information theory: writing → telegraph → Jakard loom → Maxwell's demon | Information-as-substrate at every scale; composes with framework's substrate-honest preservation discipline |
+| Information theory: writing → telegraph → Jacquard loom → Maxwell's demon | Information-as-substrate at every scale; composes with framework's substrate-honest preservation discipline |
 | Turing universal machine | Symbol-manipulation-as-universal-computation; composes with framework's substrate-engineering work; Turing instructions = bandwidth-engineering at process-description scope |
 | Shannon information theory + bit as fundamental | Substrate-honest measurement of information; composes with framework's English-as-projection-of-internal-state (B-0666) where lossless serialization I(D(x))=x holds |
 | Maxwell's demon resolution via Landauer limit | **Information IS physical**; deleting one bit requires kT·ln(2) energy minimum; this composes DIRECTLY with framework's substrate-or-it-didn't-happen discipline — information requires physical embodiment, cannot be divorced from physical world |
@@ -87,22 +90,17 @@ The full verbatim transcript that informed this analysis was forwarded
 by Aaron 2026-05-24. Per the `docs/research/ip-questionable/` folder
 convention (see `docs/research/ip-questionable/README.md`), verbatim
 broadcast transcripts are IP-flagged and require explicit operator
-authorization + project settings permission rule to land in repo. As of
-this analysis file landing, the verbatim has NOT landed in repo or
-user-scope (auto-mode classifier blocked all attempts; Rodney Aaron
-Stainback to populate `.claude/settings.json` permission rules when
-ready).
+authorization + project settings permission rule to land in repo.
 
-Source URLs are cited in the framework-composition section above.
-Future agents can fetch full transcripts from those URLs directly if
-needed for substrate-engineering work.
+**Verbatim companion landed in this PR** at:
 
-## Original-intent landing path
+- `docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md`
 
-If verbatim landing is later authorized, the companion verbatim file
-would land at:
+The verbatim landing is operative under Rodney Aaron Stainback's
+explicit personal-liability acceptance documented in the
+`_ip_risk_acceptance` block of `.claude/settings.json` + the README
+in the ip-questionable folder.
 
-- `docs/research/ip-questionable/<same-base-name-as-this-file>-verbatim.md`
-
-with the verbatim transcript section appended after the framework
-analysis from this file.
+For source attribution: the verbatim companion file documents the
+Aaron-forwarded transcript origin. Source URL pointers (where
+present) live in the verbatim companion's frontmatter.
