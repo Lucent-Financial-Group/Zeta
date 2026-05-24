@@ -1,11 +1,11 @@
 ---
-title: PBS SpaceTime — Plank Stars as Black-Hole Time Crystals (loop quantum gravity, physics-bridge substrate)
+title: PBS SpaceTime — Planck Stars as Black-Hole Time Crystals (loop quantum gravity, physics-bridge substrate)
 date: 2026-05-24
 source: Aaron-forwarded; YouTube-algo-surfaced during sleep cycle; Aaron-asked "Blackholes as time crystals?"
 provenance: Aaron 2026-05-24 forwarded transcript via Claude Code conversation; saved to docs/research per direction "research for physics bridge"
 status: substrate-honest analysis (framework-composition; verbatim companion landed at `docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md` in same PR)
 youtube_url: https://www.youtube.com/watch?v=Wu8xNx4njoM
-note_on_spelling: filename + section titles preserve "Plank" matching the source-video transcription artifact; correct physics spelling is "Planck" (Max Planck → Planck length / Planck scale / Planck star). Analysis-body content uses "Planck"; verbatim-companion file preserves "Plank" as-shipped per substrate-honest source preservation.
+note_on_spelling: filename + section titles preserve filename "plank-stars" matching the source-video transcription artifact; correct physics spelling is "Planck" (Max Planck → Planck length / Planck scale / Planck star). Analysis-body content uses "Planck"; verbatim-companion file preserves "Plank" as-shipped per substrate-honest source preservation.
 composes_with:
   - docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md (companion verbatim transcript landed under operator-personal-liability acceptance per .claude/settings.json _ip_risk_acceptance)
   - docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md (sibling analysis — quantum/biology/thermo trilogy)
