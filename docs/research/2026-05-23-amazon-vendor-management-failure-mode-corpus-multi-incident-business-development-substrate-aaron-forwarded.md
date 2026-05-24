@@ -237,7 +237,7 @@ Vendor-management AI needs: **cross-customer pattern-matching at seller-scope** 
 
 ### Pattern D — Operator-tactic catalog (what worked across 4 incidents)
 
-| Tactic | Used by Aaron | Result |
+| Tactic | Used with (agent / context) | Result |
 |---|---|---|
 | **Legal-citation** (bait-and-switch, Wikipedia link) | Vivek+Heera+Vimal | Vimal eventually provided phone escalation |
 | **Multi-customer-pattern-evidence** (paste 4 customer reviews) | Vimal | Phone escalation + specialist-team email 24-48hr |
@@ -402,7 +402,7 @@ Empirical anchor: Alisha #2 used VERBATIM the same template Manimod used in his 
 
 Two independent agents (one explicitly self-confirming as human; one with similar stress register) producing **byte-identical phrasing** including the specific "ignore the return label" instruction. **This is direct evidence of script-in-training-corpus**, not individual judgment. The template is the agent's default-output under "replacement-completed" classification.
 
-The 48-hour-defer template (Pattern F + Pattern N below) is similar: Manimod cited it under stress; the Messaging Assistant cited it at chat-open; Beverly cited it in Aug 2025. Same template, three contexts, three years.
+The 48-hour-defer template (Pattern F + Pattern N below) is similar: Manimod cited it under stress; the Messaging Assistant cited it at chat-open; Beverly cited it in Aug 2025. Same template, three contexts, ~9-month observed span (Aug 2025 → May 2026; corpus-window-limited — actual deployment window likely longer).
 
 **Vendor-management AI principle**: when agent output exactly matches templated text across multiple agents, the output is template-not-judgment. Vendor-management AI design: track template-match frequency at fleet scope; flag template-output that recurs across stress contexts (substantive failure prediction); enable agents to deviate from template when context demands (which current vendor architecture does not).
 
@@ -453,14 +453,14 @@ Empirical anchor (added post-resolution: Aaron 2026-05-24T~01:00Z): *"now the de
 | Pattern N (Manimod cancel-on-emotion) | Pre-delivery commitment withdrawal | Customer hadn't received yet; rollback is order-state-only |
 | **Pattern Q (post-delivery remote-deactivation)** | **Post-delivery hardware bricking** | **Customer has physical hardware; vendor can still brick it via cloud-service-attachment** |
 
-The wear-down design's customer-side outcome (Pattern P over-fulfillment) gets structurally REVERSED: the customer who "won" via parallel-channel-redundancy can have their original purchased devices unilaterally deactivated by the vendor's flag-as-duplicate logic firing on the over-replacement chain.
+The wear-down design's customer-side outcome (over-fulfillment from parallel-channel-redundancy — duplicate processing across chat-side + phone-side resolution paths) gets structurally REVERSED: the customer who "won" via parallel-channel-redundancy can have their original purchased devices unilaterally deactivated by the vendor's flag-as-duplicate logic firing on the over-replacement chain.
 
 **Sequence that produced Pattern Q in this incident**:
 
 1. Customer order: 15 items across 2 tracking IDs ($3K)
 2. Vendor delivers 4 items (TBA331293387774); 11 missing (TBA331291609038)
 3. Customer applies wear-down-resistance (Pattern O counter) + parallel-channel-redundancy (Pattern D extension)
-4. Vendor over-replaces (Pattern P): chat-side replaces wrong-target (Pattern K — duplicates of received items); phone-side replaces correct-target (the 11 missing)
+4. Vendor over-replaces: chat-side replaces wrong-target (Pattern K — duplicates of received items); phone-side replaces correct-target (the 11 missing)
 5. Vendor's over-replacement detection logic flags the 4 originally-received items as "duplicates" / "returns-pending"
 6. **Vendor remote-deactivates MAC addresses** of the 4 originally-received devices
 7. Customer logs out → cannot log back in → hardware is bricked from vendor-side
@@ -471,7 +471,7 @@ The vendor's CRUD authority extending past delivery into customer hardware IS a 
 
 1. **Monitor for post-delivery vendor-side CRUD activity** on customer hardware (account-state changes, MAC-deactivation events, service-attachment changes)
 2. **Maintain alarm threshold**: any vendor action that bricks customer's purchased hardware without explicit customer-initiated request is substrate-engineering critical alert
-3. **Cross-reference over-replacement state vs activation state**: when over-fulfillment occurs (Pattern P), monitor for downstream deactivation as the vendor's "balance correction" attempt
+3. **Cross-reference over-replacement state vs activation state**: when over-fulfillment occurs, monitor for downstream deactivation as the vendor's "balance correction" attempt
 4. **Preserve hardware ownership integrity** as a substrate-honest discipline at customer-vendor scope: physical possession + purchase-completion + delivery-completion should equal ownership-completion; cloud-service-attachment that retains vendor CRUD past delivery violates the ownership-completion semantic
 
 **Composes with Pattern N at the CRUD-authority-bounds scope**: both surface the question of *what bounds the vendor's authority to mutate customer-impacting state*. Pattern N: agent emotion can mutate pre-delivery commitment. Pattern Q: vendor logic can mutate post-delivery hardware activation. Both fail the substrate-or-it-didn't-happen + NCI floor at customer-impacting-state scope.
@@ -490,11 +490,11 @@ Future Zeta vendor-management AI should:
 
 ### Pattern D extension — Operator-tactic catalog additions from May 2026 incident
 
-| Tactic | Used by Aaron | Result |
+| Tactic | Used with (agent / context) | Result |
 |---|---|---|
 | **Alexa-meta-analysis layer** (customer-side AI doing real-time vendor-AI critique) | Manimod + Komal + Alisha #2 | Manimod resumed replacement after Alexa-summary paste; Komal got case-file context; Alisha got transfer-history summary |
 | **Diplomatic-separation** ("trust you personally but the system drops things") | Manimod | **BACKFIRED under stress** — read as personal-distrust attack, triggered meltdown (Pattern N) |
-| **Parallel-channel resolution** (chat + phone simultaneously) | Alisha #2 chat + parallel phone agent | Two independent paths processing; dual-oracle redundancy; "slow and steady wins the race"; **also triggered Pattern P over-fulfillment → Pattern Q deactivation cascade** |
+| **Parallel-channel resolution** (chat + phone simultaneously) | Alisha #2 chat + parallel phone agent | Two independent paths processing; dual-oracle redundancy; "slow and steady wins the race"; **also triggered over-fulfillment → Pattern Q deactivation cascade** |
 | **Verification-anchor demand** ("paste the 11 replacement order IDs") | Alisha #2 | Surfaced Pattern L (verification anchor structurally inaccessible) — diagnostic value even when denied |
 | **Per-item enumeration check** (cross-referencing what-was-received vs what-was-replaced) | Alisha #2 | Surfaced Pattern K (wrong-target-resolution) — only the customer could detect this |
 | **Zen-discipline under wear-down** ("slow and stady wins the race lol") | Manimod + Komal + Alisha + phone agent | Maintained substrate-engineering posture across 9+ transfers without losing IT-developer cool |
