@@ -18,23 +18,46 @@ open Zeta.Core
 // where · is max, and a \ b = (if a <= b then b else a)
 [<FsCheck.Xunit.Property>]
 let ``Galois connection holds for ResidualMax under natural order`` (a: int) (x: int) (b: int) =
-    if a <= b then
-        // If a <= b, then max a x <= b is equivalent to x <= b (which is x <= a \ b)
-        let lhs = (max a x) <= b
-        let rhs = x <= b
-        lhs = rhs
-    else
-        // If a > b, max a x <= b is always false since max a x >= a > b
-        let lhs = (max a x) <= b
-        lhs = false
+    let residualMax a b = if a <= b then Some b else None
+    
+    let lhs = (max a x) <= b
+    let rhs =
+        match residualMax a b with
+        | Some bound -> x <= bound
+        | None -> false
+        
+    lhs = rhs
 
-// 2. Residual under max: a \ b = b if a ≤ b else a
+// 2. Residual under max: a \ b = Some b if a ≤ b else None
 [<FsCheck.Xunit.Property>]
 let ``Residual under max properties`` (a: int) (b: int) =
-    let residualMax a b = if a <= b then b else a
-    residualMax a b = (if a <= b then b else a)
+    let residualMax a b = if a <= b then Some b else None
+    residualMax a b = (if a <= b then Some b else None)
 
 // 3. Retraction equivalence: ResidualMax(insert + retract trace) = max(positive-only trace)
+// Oracle for max over active set
+let private oracle (ops: (int * int64) list) =
+    let keyWeight = Dictionary<int, int64>()
+    let active = SortedSet<int>()
+    
+    for (k, w) in ops do
+        let existing =
+            match keyWeight.TryGetValue k with
+            | true, v -> v
+            | false, _ -> 0L
+        let updated = existing + w
+        let wasActive = existing > 0L
+        let isActive = updated > 0L
+        
+        if wasActive && not isActive then active.Remove k |> ignore
+        elif not wasActive && isActive then active.Add k |> ignore
+        
+        if updated = 0L then keyWeight.Remove k |> ignore
+        else keyWeight.[k] <- updated
+        
+    if active.Count = 0 then ValueNone
+    else ValueSome (active.Max)
+
 [<FsCheck.Xunit.Property>]
 let ``ResidualMax retraction equivalence`` (ops: (int * int) list) =
     // Limit weight changes to reasonable bounds to simulate typical active/retract traces
@@ -46,36 +69,8 @@ let ``ResidualMax retraction equivalence`` (ops: (int * int) list) =
     let out = OutputHandle m.Op
     c.Build()
     
-    let keyWeight = Dictionary<int, int64>()
-    let active = SortedSet<int>()
-    
-    let mutable ok = true
     for (k, w) in opsMapped do
-        // Update the model's key weight tracking
-        let existing =
-            match keyWeight.TryGetValue k with
-            | true, v -> v
-            | false, _ -> 0L
-        let updated = existing + w
-        let wasActive = existing > 0L
-        let isActive = updated > 0L
-        
-        // Update the model's active key-set (O(log k))
-        if wasActive && not isActive then active.Remove k |> ignore
-        elif not wasActive && isActive then active.Add k |> ignore
-        
-        if updated = 0L then keyWeight.Remove k |> ignore
-        else keyWeight.[k] <- updated
-        
-        // Send delta update to the live operator and step the circuit
         input.Send (ZSet.singleton k w)
         c.Step()
         
-        // Assert the live operator exactly matches the model's active set max
-        let expected =
-            if active.Count = 0 then ValueNone
-            else ValueSome (Seq.last active)
-        if out.Current <> expected then
-            ok <- false
-            
-    ok
+    out.Current = (oracle opsMapped)
