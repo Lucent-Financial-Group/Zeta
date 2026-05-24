@@ -1,7 +1,7 @@
 ---
 id: B-0320
 priority: P1
-status: closed
+status: open
 title: "Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate"
 tier: agent-capability-expansion
 effort: S
@@ -59,11 +59,11 @@ the mutation helpers (B-0321).
 
 ## Done-criteria
 
-- [x] `tools/playwright/github-ui/authorized-surfaces.json`
+- [ ] `tools/playwright/github-ui/authorized-surfaces.json`
       exists with at least 3 entries.
-- [x] JSON schema file validates the data file.
-- [x] Schema `addedBy` enum restricted to `"maintainer"` — expansion
-      requires maintainer to add entry + commit (enforced by schema).
+- [ ] JSON schema file validates the data file.
+- [ ] README or inline comments explain the expansion
+      protocol (maintainer adds entry + commits).
 
 ## What this row does NOT do
 

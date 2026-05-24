@@ -15,7 +15,6 @@
 
     <!-- Algebra/ -->
     <Compile Include="Algebra/Weight.Tests.fs" />
-    <Compile Include="Algebra/CayleyDickson.Tests.fs" />
     <Compile Include="Algebra/Units.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/ZSet.Overflow.Tests.fs" />
@@ -25,10 +24,8 @@
     <Compile Include="Algebra/Veridicality.Tests.fs" />
     <Compile Include="Algebra/Graph.Tests.fs" />
     <Compile Include="Algebra/StructureFingerprint.Tests.fs" />
-    <Compile Include="Algebra/StructureCatalog.Tests.fs" />
     <Compile Include="Algebra/PhaseExtraction.Tests.fs" />
     <Compile Include="Algebra/SignalQuality.Tests.fs" />
-    <Compile Include="Algebra/Semiring.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
@@ -37,8 +34,6 @@
     <Compile Include="Circuit/NestedCircuit.Tests.fs" />
     <Compile Include="Circuit/Plan.Tests.fs" />
     <Compile Include="Circuit/Plan.Branches.Tests.fs" />
-    <Compile Include="Circuit/SinkTerminality.Tests.fs" />
-    <Compile Include="Circuit/IncrementalAuto.Tests.fs" />
 
     <!-- Operators/ -->
     <Compile Include="Operators/Aggregate.Tests.fs" />
@@ -97,44 +92,35 @@
     <Compile Include="Infra/Dsl.Tests.fs" />
     <Compile Include="Infra/Environment.Tests.fs" />
     <Compile Include="Infra/Rx.Tests.fs" />
-    <Compile Include="Infra/FeatureFlags.Tests.fs" />
 
     <!-- Crdt/ -->
     <Compile Include="Crdt/GCounter.Tests.fs" />
     <Compile Include="Crdt/PNCounter.Tests.fs" />
     <Compile Include="Crdt/OrSet.Tests.fs" />
     <Compile Include="Crdt/Lww.Tests.fs" />
-    <Compile Include="Crdt/DeltaCrdt.Tests.fs" />
 
     <!-- Plugin/ -->
     <Compile Include="Plugin/Harness.Tests.fs" />
     <Compile Include="Plugin/LawRunner.Tests.fs" />
-    <Compile Include="Plugin/Capabilities.Tests.fs" />
 
     <!-- Formal/ -->
     <Compile Include="Formal/Z3.Laws.Tests.fs" />
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />
     <Compile Include="Formal/Alloy.Runner.Tests.fs" />
     <Compile Include="Formal/Sharder.InfoTheoretic.Tests.fs" />
-    <Compile Include="Formal/ToffoliGate.Laws.Tests.fs" />
 
     <!-- Properties/ last (they cross modules by design). -->
     <Compile Include="Properties/Math.Invariants.Tests.fs" />
     <Compile Include="Properties/Fuzz.Tests.fs" />
     <Compile Include="Properties/Determinism.Tests.fs" />
     <Compile Include="Properties/Fusion.Equation.Tests.fs" />
-    <Compile Include="Properties/PolicyRelocation.Tests.fs" />
     <Compile Include="MajiTests.fs" />
     <Compile Include="Consensus.Tests.fs" />
     <Compile Include="Arena.Tests.fs" />
-
-    <!-- ZetaId/ — F# peer oracle cross-verify (matches TS + C# canonical hex) -->
-    <Compile Include="ZetaId/CrossVerifyTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
-    <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -160,6 +146,5 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="YamlDotNet" />
   </ItemGroup>
 </Project>

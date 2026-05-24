@@ -1,6 +1,6 @@
 ---
 name: mirror-sync
-description: Sync AceHack backup mirror from LFG main — fast-forward mirror refresh, bypass-actor protocol, periodic or on-demand.
+description: Sync AceHack/Zeta backup mirror from LFG/Zeta main. Force-push-with-lease. Run periodically or on demand. Aaron is bypass actor on AceHack ruleset.
 trigger: "sync mirror", "update acehack", "backup mirror", "mirror refresh"
 ---
 

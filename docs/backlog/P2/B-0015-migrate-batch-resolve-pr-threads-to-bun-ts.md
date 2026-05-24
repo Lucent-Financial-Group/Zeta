@@ -1,7 +1,7 @@
 ---
 id: B-0015
 priority: P2
-status: closed
+status: open
 title: Migrate tools/git/batch-resolve-pr-threads.sh to bun+TS once a sibling post-setup tool migrates first
 tier: ops
 effort: S

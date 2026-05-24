@@ -1,6 +1,6 @@
 ---
 name: security-researcher
-description: Proactive security research — novel attack classes, crypto primitives, supply-chain risks, CVE scouting.
+description: Capability skill — proactive security research. Scouts novel attack classes, crypto primitives, supply-chain patterns, CVEs in the dep graph, and research-preview attack surfaces. Distinct from the `threat-model-critic` (reviews the *shipped* model) and the `prompt-protector` (owns the agent layer).
 ---
 
 # Security Researcher — Procedure

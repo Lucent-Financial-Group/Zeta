@@ -4,9 +4,8 @@ priority: P1
 status: open
 title: "Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool"
 created: 2026-05-07
-last_updated: 2026-05-23
+last_updated: 2026-05-07
 depends_on: [B-0110, B-0240, B-0246, B-0247]
-children: [B-0248.1, B-0248.2]
 decomposition: sliceable
 owners: [architect, infrastructure-operator, security-auditor]
 type: feature
@@ -57,8 +56,8 @@ This is BFT applied below the agent layer:
 Implement the runbooks, checks, and coordination surfaces needed
 for:
 
-1. Maintainer fork onboarding for Addison and Max. (Extracted to B-0248.1)
-2. Mirror-sync setup per `.claude/skills/mirror-sync/SKILL.md`. (Extracted to B-0248.1)
+1. Maintainer fork onboarding for Addison and Max.
+2. Mirror-sync setup per `.claude/skills/mirror-sync/SKILL.md`.
 3. Host-loop setup for Max's 24/7 site, using a main-backed
    control clone instead of a contested root checkout.
 4. Hardware inventory capture for Rodney: machine count, GPU

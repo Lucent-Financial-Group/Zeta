@@ -13,10 +13,6 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>(input: 
     let inputs = [| input :> Op |]
     override _.Name = "map"
     override _.Inputs = inputs
-    /// Linear: ZSet.map f distributes over Z-set addition because
-    /// `f` rewrites keys without touching weights, and equal keys sum
-    /// their weights linearly.
-    override _.IsLinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <- ZSet.map f.Invoke input.Value
         ValueTask.CompletedTask
@@ -28,8 +24,6 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
     let inputs = [| input :> Op |]
     override _.Name = "filter"
     override _.Inputs = inputs
-    /// Linear: predicate is weight-independent, so filter(a+b) = filter(a)+filter(b).
-    override _.IsLinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <- ZSet.filter predicate.Invoke input.Value
         ValueTask.CompletedTask
@@ -42,9 +36,6 @@ type internal FlatMapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
     let inputs = [| input :> Op |]
     override _.Name = "flatMap"
     override _.Inputs = inputs
-    /// Linear: ZSet.flatMap scales `f k` by the input entry's weight
-    /// before accumulating — distributes over Z-set addition.
-    override _.IsLinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <- ZSet.flatMap f.Invoke input.Value
         ValueTask.CompletedTask
@@ -78,8 +69,6 @@ type internal NegZSetOp<'K when 'K : comparison>(a: Op<ZSet<'K>>) =
     let inputs = [| a :> Op |]
     override _.Name = "neg"
     override _.Inputs = inputs
-    /// Linear: -(a + b) = -a + -b and -0 = 0.
-    override _.IsLinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <- ZSet.neg a.Value
         ValueTask.CompletedTask
@@ -119,10 +108,6 @@ type internal JoinZSetOp<'A, 'B, 'K, 'C
     let inputs = [| a :> Op; b :> Op |]
     override _.Name = "join"
     override _.Inputs = inputs
-    /// Bilinear: (a₁+a₂) ⋈ b = (a₁ ⋈ b) + (a₂ ⋈ b), symmetric in b,
-    /// and 0 ⋈ b = a ⋈ 0 = 0. IncrementalAuto rewrites this to the
-    /// three-term form `Δa ⋈ Δb + z⁻¹(I(a)) ⋈ Δb + Δa ⋈ z⁻¹(I(b))`.
-    override _.IsBilinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <-
             ZSet.join
@@ -140,9 +125,6 @@ type internal CartesianZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
     let inputs = [| a :> Op; b :> Op |]
     override _.Name = "cartesian"
     override _.Inputs = inputs
-    /// Bilinear: weights multiply (Checked.* in ZSet.cartesian); the
-    /// product distributes over Z-set addition in each argument.
-    override _.IsBilinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <- ZSet.cartesian a.Value b.Value
         ValueTask.CompletedTask
@@ -197,10 +179,6 @@ type internal IndexWithOp<'A, 'K, 'V
     let inputs = [| input :> Op |]
     override _.Name = "indexWith"
     override _.Inputs = inputs
-    /// Linear: indexing distributes over Z-set addition because the
-    /// (key, value) extraction is weight-independent and the
-    /// per-key value groups sum via ZSet.add.
-    override _.IsLinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <- IndexedZSet.indexWith key.Invoke value.Invoke input.Value
         ValueTask.CompletedTask
@@ -216,9 +194,6 @@ type internal IndexedJoinOp<'K, 'VA, 'VB, 'C
     let inputs = [| a :> Op; b :> Op |]
     override _.Name = "indexedJoin"
     override _.Inputs = inputs
-    /// Bilinear: per-key value-group cartesian; weights multiply
-    /// (Checked.* in IndexedZSet.join); distributes per-arg.
-    override _.IsBilinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <-
             IndexedZSet.join

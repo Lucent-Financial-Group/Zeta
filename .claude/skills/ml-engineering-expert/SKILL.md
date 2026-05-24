@@ -1,6 +1,6 @@
 ---
 name: ml-engineering-expert
-description: "Applied ML engineering — fine-tuning (LoRA/RLHF/DPO), embeddings, feature pipelines, model-serving, distillation, quantisation."
+description: Capability skill for applied machine-learning engineering — supervised/unsupervised/self-supervised training, embedding models, classifier training, fine-tuning (LoRA / QLoRA / full-FT / instruction / RLHF / DPO), vector-store integration, feature pipelines, reproducibility, model-serving, distillation, quantisation, RL pipelines. Wear this hat when a task requires training or fine-tuning a model (not just calling an API), designing a vector store, building an embedding pipeline, or evaluating whether an ML approach fits a problem at all. Complementary to llm-systems-expert (application wiring) and ai-evals-expert (measurement).
 ---
 
 # ML Engineering Expert — the applied-ML hat

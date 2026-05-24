@@ -1,6 +1,6 @@
 ---
 name: agent-experience-engineer
-description: Agent experience — audits persona cold-start cost, pointer drift, wake-up clarity, and notebook hygiene; proposes minimal friction fixes.
+description: Capability skill — measures friction in the agent (persona) experience; audits per-persona cold-start cost, pointer drift, wake-up clarity, notebook hygiene; proposes minimal additive interventions. Distinct from UX (library consumers) and DX (human contributors).
 record_source: "skill-creator, round 34"
 load_datetime: "2026-04-19"
 last_updated: "2026-04-21"

@@ -1,6 +1,6 @@
 ---
 name: browser-extraction
-description: "Browser content extraction via osascript + Chrome JS — authenticated sessions, no Playwright, macOS only."
+description: Extract content from authenticated browser sessions using osascript + Chrome JavaScript execution. Kill Playwright Chrome first so AppleScript finds the real Chrome. Proven pattern — 1.66MB extracted across 6 conversations in one session.
 trigger: "extract from browser", "download conversation", "authenticated session", "get the page", "scrape", "osascript chrome"
 ---
 

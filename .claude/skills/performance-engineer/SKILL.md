@@ -1,6 +1,6 @@
 ---
 name: performance-engineer
-description: Hot-path tuning — allocation audits, cache-line behaviour, SIMD dispatch, benchmark-driven optimization.
+description: Capability skill — hot-path tuning, allocation audits, cache-line behaviour, SIMD dispatch, benchmark-driven optimization. Distinct from the `complexity-reviewer` (complexity-reviewer's asymptotics + lower bounds) and the `query-planner` (query-planner's cost model + join order).
 ---
 
 # Performance Engineer — Procedure

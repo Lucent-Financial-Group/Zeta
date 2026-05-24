@@ -1,21 +1,17 @@
 ---
 id: B-0090
 priority: P2
-status: decomposed
+status: open
 title: Cadenced lost-substrate recovery audit (worktrees + orphan branches + closed-not-merged PRs + draft PRs aged > N days)
 tier: factory-hygiene
-effort: M (now 4x S children)
+effort: M
 ask: maintainer Aaron 2026-04-28T23ish *"probably a trajectory this is recovery work we should do forever on a cadence these kind of lost things could always build up"*
 created: 2026-04-28
-last_updated: 2026-05-11
+last_updated: 2026-05-02
 depends_on: []
 composes_with:
   - B-0060
-  - B-0090.1
-  - B-0090.2
-  - B-0090.3
-  - B-0090.4
-tags: [aaron-2026-04-28, factory-hygiene, lost-substrate, cadenced-audit, content-loss-surface, metric-ladder, decomposed]
+tags: [aaron-2026-04-28, factory-hygiene, lost-substrate, cadenced-audit, content-loss-surface, metric-ladder]
 type: friction-reducer
 ---
 
@@ -29,21 +25,6 @@ worktrees + the in-flight 19 LOST GitHub branches task (#264):
 > *"probably a trajectory this is recovery work we should do
 > forever on a cadence these kind of lost things could always
 > build up."*
-
-## 2026-05-11 Re-decomposition (Riven, one bounded step)
-
-B-0090 was too broad (M effort, trajectory-shaped, 4 surfaces + cadence + metric ladder). Per "always re-decompose during build — assume mistakes" rule, split into 4 smallest dependency-ordered atomic S-effort child rows:
-
-**Dependency order (buildable now):**
-
-1. **B-0090.1** — 3-bucket taxonomy (root, no deps) — defines ALREADY-COVERED / NEEDS-RECOVERY / OBSOLETE with decision tree.
-2. **B-0090.2** — worktree delta audit (depends 0090.1) — TS scanner for locked worktrees only.
-3. **B-0090.3** — closed-not-merged / orphan / aged-draft PR scan (depends 0090.1) — GitHub surface.
-4. **B-0090.4** — cadence hook + hygiene-history append (depends 0090.1+2+3) — wiring only.
-
-Re-decomp assumption checked: taxonomy split first avoids label drift; scanners are pure classification (no recovery logic); cadence is hook, not full scheduler. All children are now claimable as single bounded slices. Parent effort reduced to "orchestration of children".
-
-Focused checks run in worktree (see PR body).
 
 ## Why P2
 

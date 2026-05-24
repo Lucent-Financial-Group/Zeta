@@ -95,54 +95,21 @@ type INestedFixpointParticipant =
     abstract Fixedpoint : scope: int -> bool
 
 
-// ─────────────────────────────────────────────────────────────────────
-//  Algebra capability tags — non-generic markers + typed interfaces.
-//
-//  F# (and the CLR) cannot test `:? IBilinearOperator<obj, obj, 'TOut>`
-//  against a concrete `IBilinearOperator<'A, 'B, 'C>` instance because
-//  generic-interface type tests require exact type-parameter match.
-//  The fix is the BCL pattern used by `IEnumerable` vs `IEnumerable<T>`:
-//  a non-generic marker interface for runtime type tests, and a
-//  generic interface (inheriting the marker) for typed access.
-//
-//  Plugin authors only need to implement the typed interface; the
-//  marker is satisfied automatically via interface inheritance. The
-//  scheduler / fusion engine / IncrementalAuto dispatcher tests
-//  against the marker, not the generic.
-// ─────────────────────────────────────────────────────────────────────
-
-/// Non-generic marker for `ILinearOperator<_, _>`. Used by
-/// `PluginOperatorAdapter` and the scheduler for `:?` runtime tests
-/// that don't need exact generic-parameter match.
-type ILinearMarker = interface end
-
-/// Non-generic marker for `IBilinearOperator<_, _, _>`.
-type IBilinearMarker = interface end
-
-/// Non-generic marker for `ISinkOperator<_, _>`.
-type ISinkMarker = interface end
-
-/// Non-generic marker for `IStatefulStrictOperator<_, _, _>`.
-type IStatefulStrictMarker = interface end
-
-
 /// Algebra capability: the operator is *linear* — `op(a + b) =
 /// op(a) + op(b)` and `op(0) = 0`. Retraction-native: a
 /// negative weight un-accumulates correctly. Declared at the
 /// type level so the scheduler can run `LinearLaw` at
-/// `Circuit.Build()` (test-time, via `LawRunner.checkLinear`).
+/// `Circuit.Build()`.
 type ILinearOperator<'TIn, 'TOut> =
     inherit IOperator<'TOut>
-    inherit ILinearMarker
 
 
 /// Algebra capability: the operator is *bilinear* in two
 /// inputs (e.g. a join). Incrementalisation generates the
 /// standard `Δa ⋈ Δb + z^-1(I(a)) ⋈ Δb + Δa ⋈ z^-1(I(b))`
-/// form. Verified by `LawRunner.checkBilinear` (when available).
+/// form.
 type IBilinearOperator<'TIn1, 'TIn2, 'TOut> =
     inherit IOperator<'TOut>
-    inherit IBilinearMarker
 
 
 /// Algebra capability: the operator is a *sink* — terminal,
@@ -150,22 +117,19 @@ type IBilinearOperator<'TIn1, 'TIn2, 'TOut> =
 /// operators are consciously exempt from relational
 /// composition laws and the scheduler enforces terminal
 /// placement (a sink may not feed another operator inside a
-/// relational path) via the `Circuit.Build()` validation pass.
-/// Bayesian aggregates are the canonical example.
+/// relational path). Bayesian aggregates are the canonical
+/// example.
 type ISinkOperator<'TIn, 'TOut> =
     inherit IOperator<'TOut>
-    inherit ISinkMarker
 
 
 /// Algebra capability: the operator carries explicit stateful
 /// strict semantics — init / step / retract triple. Distinct
 /// from `IStrictOperator` (feedback-cut): stateful-strict ops
 /// hold per-key or per-instance state that must retract
-/// cleanly when a negative weight arrives. Verified by
-/// `LawRunner.checkRetractionCompleteness`.
+/// cleanly when a negative weight arrives.
 type IStatefulStrictOperator<'TIn, 'TState, 'TOut> =
     inherit IOperator<'TOut>
-    inherit IStatefulStrictMarker
 
 
 /// Internal adapter: wraps an `IOperator<'T>` inside an
@@ -200,17 +164,6 @@ type internal PluginOperatorAdapter<'TOut>(plugin: IOperator<'TOut>, inputOps: O
         | :? INestedFixpointParticipant as f -> Some f
         | _ -> None
 
-    // Algebra capability detection via non-generic markers. The typed
-    // interfaces (`ILinearOperator<_,_>` etc.) inherit from these
-    // markers, so a plugin implementing `ILinearOperator<int, string>`
-    // satisfies `ILinearMarker` automatically. Cached once at
-    // construction; the adapter pays zero per-tick cost for capability
-    // surfacing.
-    let isLinearCap         = (box plugin) :? ILinearMarker
-    let isBilinearCap       = (box plugin) :? IBilinearMarker
-    let isSinkCap           = (box plugin) :? ISinkMarker
-    let isStatefulStrictCap = (box plugin) :? IStatefulStrictMarker
-
     member internal _.PublishCount = publishCount
 
     override _.Name = plugin.Name
@@ -223,11 +176,6 @@ type internal PluginOperatorAdapter<'TOut>(plugin: IOperator<'TOut>, inputOps: O
         match asAsync with
         | Some a -> a.IsAsync
         | None -> false
-
-    override _.IsLinear         = isLinearCap
-    override _.IsBilinear       = isBilinearCap
-    override _.IsSink           = isSinkCap
-    override _.IsStatefulStrict = isStatefulStrictCap
 
     override this.StepAsync(ct: CancellationToken) : ValueTask =
         let buffer = OutputBuffer<'TOut>(this, publishCount)
