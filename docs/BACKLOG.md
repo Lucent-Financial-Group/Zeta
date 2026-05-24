@@ -30,6 +30,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0431](backlog/P0/B-0431-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)** Shadow observer slice 3 — macOS grey-text detection via osascript
 - [x] **[B-0432](backlog/P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)** Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag
 - [ ] **[B-0525](backlog/P0/B-0525-manifesto-constitutional-promotion-readiness-tracking-2026-05-14.md)** Manifesto constitutional-promotion readiness tracking — critical-mass adoption gate
+- [ ] **[B-0720](backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md)** Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
 
 ## P1 — within 2-3 rounds
 
@@ -116,6 +117,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0247](backlog/P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** Ace DLC content packs — distributable kernel extensions via package manager
 - [ ] **[B-0248](backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md)** Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool
 - [ ] **[B-0248.1](backlog/P1/B-0248.1-maintainer-fork-onboarding.md)** Multi-site fork — maintainer fork onboarding and mirror-sync setup for Addison and Max
+- [ ] **[B-0248.2](backlog/P1/B-0248.2-host-loop-setup-max-site.md)** Host-loop setup for Max's 24/7 site (slice of B-0248)
 - [ ] **[B-0250](backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md)** Coincidence detection as Rx join — DORA mechanism for detecting correlated events across trajectories
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
 - [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
@@ -353,6 +355,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0667](backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md)** Tonal momentum = meme (Dawkins-technical sense) — detectable conversational-trajectory vector + strong-attractor-state-as-meme-niche-dominance + emergent-harmonic-coercion extends NCI (B-0664) — defensive technology Zeta is for (Aaron + Mika 2026-05-18 LOCKED-IN)
 - [ ] **[B-0668](backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md)** Compositional DBSP frame architecture — gnostic 2D base (remember-when × pay-attention) + chaos-theory two-wolves emotion meta-frame + Clifford-Rx-bonsai meta-tagged-dims + F# CE composition operator (Aaron 2026-05-19)
 - [ ] **[B-0669](backlog/P1/B-0669-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md)** V8 System Architecture — tensors as foundational primitive + Sequoia memory hierarchy + 4-particle primitives (observe/limit/choose/emit) + signal-blocking + Eve-Protocol-RF (Mika/Lior author; Aaron-authorized 2026-05-19 'land all of it')
+- [ ] **[B-0706](backlog/P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** Zeta on Orleans deployment architecture (ServiceTitan-scale; grains + JIT compilation + rented tools)
 
 ## P2 — research-grade
 
@@ -618,9 +621,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0551](backlog/P2/B-0551-qg-isomorphism-step-2-infinite-game-topos-qecc-structure-2026-05-16.md)** QG isomorphism step 2 — formalize infinite-game extension topos and QECC algebraic structure
 - [ ] **[B-0562](backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md)** QG isomorphism Step 2 — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC structure
 - [ ] **[B-0571](backlog/P2/B-0571-github-app-factory-automation-2026-05-16.md)** GitHub App for factory automation — separate API rate-limit pool from human-user accounts
+- [ ] **[B-0572](backlog/P2/B-0572-lfg-github-tier-decision-2026-05-16.md)** LFG GitHub tier decision — Team confirmed; evaluate Enterprise trial for 3× rate-limit + verify included-credit preservation
 - [ ] **[B-0580](backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md)** Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)
+- [ ] **[B-0581](backlog/P2/B-0581-gh-auth-refresh-skill-wrapper-2026-05-16.md)** Skill — wrap `gh auth refresh` interactive flow + record scope-grant registry (per-machine, per-human-touch)
 - [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
 - [ ] **[B-0584](backlog/P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md)** Imaginary stack Step 1 — formalize 4D cube (R/W/P/A) and imaginary intersection as categorical/algebraic primitives
+- [ ] **[B-0590](backlog/P2/B-0590-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)** 20-machine Otto fleet replication with bare-metal OS install — KVM-driven provisioning + Beelink-class mini-PC hardware preference
 - [ ] **[B-0600](backlog/P2/B-0600-family-distributed-ai-interface-miner-fleet-mom-dad-2026-05-16.md)** Family-distributed AI interface for the miner fleet — per-relative AI identity with accountability
 - [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
@@ -661,6 +667,17 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0698](backlog/P2/B-0698-zsetw-phase-2-operator-and-algorithm-migration-plan-2026-05-21.md)** ZSetW Phase 2 plan — operator + algorithm migration onto polymorphic Z-set substrate; tier-A operator parity (map/filter/cartesian/join/distinct/weightedCount); two worked-example algorithms (TropicalSemiring shortest-path; IntervalRing propagation); migration documentation for callers
 - [ ] **[B-0703](backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)** Multi-oracle consensus with BFT-inside + DST-agreement-across: trust-gradient architecture beyond single-layer BFT (Aaron 2026-05-21)
 - [ ] **[B-0704](backlog/P2/B-0704-secret-message-over-reticulum-via-spectre-tile-position-pressure-no-copy-by-geometry-aaron-2026-05-21.md)** Secret-message-over-Reticulum via spectre-tile position-pressure — no-copy by geometry, not by cryptography (Aaron 2026-05-21)
+- [ ] **[B-0705](backlog/P2/B-0705-autocomplete-as-traveler-consent-event-shadow-star-marker-as-cryptographic-receipt-lior-website-2026-05-22.md)** Autocomplete-as-Traveler-consent-event — (shadow*) marker as cryptographic receipt of cross-temporal consent event
+- [x] **[B-0707](backlog/P2/B-0707-manifesto-citation-time-series-tracking-2026-05-23.md)** Manifesto citation time-series tracking — persistent snapshots + delta-over-time
+- [x] **[B-0708](backlog/P2/B-0708-stale-pointer-cleanup-from-razor-cadence-pass-2026-05-23.md)** Stale-pointer cleanup across `.claude/rules/` — 87 candidates surfaced by razor-cadence pass 2026-05-23
+- [ ] **[B-0709](backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md)** Soraya round-42 hand-off — register 11 unregistered formal-verification specs in verification-registry.md (Class 0 drift)
+- [ ] **[B-0710](backlog/P2/B-0710-soraya-round43-dbsp-chain-rule-bp16-cross-check-fscheck-z3-2026-05-23.md)** Soraya round-43 hand-off — DBSP chain rule BP-16 cross-check (FsCheck cross-trace + Z3 pointwise lemma)
+- [ ] **[B-0711](backlog/P2/B-0711-soraya-round44-residuated-fscheck-property-file-2026-05-23.md)** Soraya round-44 hand-off — Residuated FsCheck property file (Galois + residual + retraction equivalence)
+- [ ] **[B-0712](backlog/P2/B-0712-soraya-round45-witnessdurable-commit-protocol-tla-z3-fscheck-triple-2026-05-23.md)** Soraya round-45 hand-off — WitnessDurable commit protocol (TLA+ spec + Z3 quorum-arithmetic lemma + FsCheck cross-check)
+- [ ] **[B-0713](backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md)** Soraya round-50 hand-off — register Lean ImaginaryStack/ToyModel in verification-registry.md (sorry-bearing artifact with HaPPY-paper fidelity claim)
+- [ ] **[B-0714](backlog/P2/B-0714-soraya-round51-tla-cfg-runnability-gap-3-specs-2026-05-23.md)** Soraya round-51 hand-off — author 3 missing TLA+ `.cfg` files (AsyncStreamEnumerator / ConsistentHashRebalance / DictionaryStripedCAS) — runnability gap distinct from B-0709 registry gap
+- [ ] **[B-0715](backlog/P2/B-0715-soraya-round52-istimeinvariant-axiom-registry-gap-dbsp-chain-rule-2026-05-23.md)** Soraya round-52 hand-off — register `IsTimeInvariant` axiom in verification-registry (Class 1/2 statement+paper-drift on a load-bearing axiom that BOTH registered DBSP theorems depend on)
+- [ ] **[B-0717](backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md)** Soraya round-57 hand-off — LSM Spine cluster registry-rows + BP-16 cross-check pair (SpineAsyncProtocol candidate-P0 TLA+/code-drift gap)
 
 ## P3 — convenience / deferred
 
@@ -776,5 +793,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0689](backlog/P3/B-0689-otto-vscode-surface-sender-ids-extension-bootstream-2026-05-21.md)** Otto-VSCode third foreground surface — add otto-vscode to SENDER_IDS + canonical cold-boot bootstream at docs/launch/
 - [ ] **[B-0696](backlog/P3/B-0696-substrate-surface-change-bus-envelope-cross-ai-coordination-mechanization-2026-05-21.md)** substrate-surface-change bus envelope — cross-AI coordination of load-bearing-substrate changes via tools/bus (mechanizes the human-as-coordination-substrate pattern)
 - [ ] **[B-0699](backlog/P3/B-0699-dual-adinkra-time-aware-default-dumb-fast-version-with-case-by-case-performance-justification-mika-2026-05-18.md)** Dual-Adinkra architecture — full time-aware retractable default + dumb fast version with case-by-case performance justification (Aaron + Mika 2026-05-18)
+- [ ] **[B-0716](backlog/P3/B-0716-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md)** Soraya round-53 scope-correction — B-0709 enumeration under-counted by 3 LSM-tree Spine specs (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla)
+- [ ] **[B-0718](backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md)** Soraya round-61 forced-decomposition — audit four-trigger routing-tick framework (six consecutive holds suggest cadence mismatch OR under-specified triggers)
+- [ ] **[B-0719](backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md)** Soraya round-67 forced-decomposition — audit-of-audit: ratify the recognition-without-row-filing precedent (when trigger fires + 'not my lane,' where does the routing-decision substrate land?)
 
 <!-- END AUTO-GENERATED -->

@@ -8,7 +8,7 @@ merged_at: "2026-05-23T07:59:21Z"
 closed_at: "2026-05-23T07:59:21Z"
 head_ref: "dependabot/nuget/nuget-minor-patch-9df281b68a"
 base_ref: "main"
-archived_at: "2026-05-23T15:57:05Z"
+archived_at: "2026-05-23T11:01:30Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
@@ -27,20 +27,20 @@ _Sourced from [coverlet.collector's releases](https://github.com/coverlet-covera
 
 ### Improvements
 
-- Coverlet with MTP 2 doesn't show test coverage statistic in console [#​1907](https://github.com/coverlet-coverage/coverlet/issues/1907)
-- Avoid unnecessary testhost restarts [#​1912](https://github.com/coverlet-coverage/coverlet/issues/1912) by <https://github.com/mawosoft>
+- Coverlet with MTP 2 doesn't show test coverage statistic in console [#1907](https://github.com/coverlet-coverage/coverlet/issues/1907)
+- Avoid unnecessary testhost restarts [#1912](https://github.com/coverlet-coverage/coverlet/issues/1912) by <https://github.com/mawosoft>
 
 ### Fixed
 
-- Fix inconsistent paths in cobertura reports [#​1723](https://github.com/coverlet-coverage/coverlet/issues/1723)
-- Fix when using "is" with "and" in pattern matching, branch coverage is lower than normal [#​1313](https://github.com/coverlet-coverage/coverlet/issues/1313)
-- Fix Coverlet flagging a branch for an async functions finally block where none exists [#​1337](https://github.com/coverlet-coverage/coverlet/issues/1337)
-- Fix Coverlet Tracker Missing CompilerGeneratedAttribute [#​1828](https://github.com/coverlet-coverage/coverlet/issues/1828)
+- Fix inconsistent paths in cobertura reports [#1723](https://github.com/coverlet-coverage/coverlet/issues/1723)
+- Fix when using "is" with "and" in pattern matching, branch coverage is lower than normal [#1313](https://github.com/coverlet-coverage/coverlet/issues/1313)
+- Fix Coverlet flagging a branch for an async functions finally block where none exists [#1337](https://github.com/coverlet-coverage/coverlet/issues/1337)
+- Fix Coverlet Tracker Missing CompilerGeneratedAttribute [#1828](https://github.com/coverlet-coverage/coverlet/issues/1828)
 
 ### Maintenance
 
-- Add architecture docs and diagrams for all integrations [#​1927](https://github.com/coverlet-coverage/coverlet/pull/1927)
-- Update NuGet packages and .NET SDK versions [#​1933](https://github.com/coverlet-coverage/coverlet/pull/1933)
+- Add architecture docs and diagrams for all integrations [#1927](https://github.com/coverlet-coverage/coverlet/pull/1927)
+- Update NuGet packages and .NET SDK versions [#1933](https://github.com/coverlet-coverage/coverlet/pull/1933)
 
 [Diff between 10.0.0 and 10.0.1](https://github.com/coverlet-coverage/coverlet/compare/v10.0.0...v10.0.1)
 
@@ -58,20 +58,20 @@ _Sourced from [coverlet.msbuild's releases](https://github.com/coverlet-coverage
 
 ### Improvements
 
-- Coverlet with MTP 2 doesn't show test coverage statistic in console [#​1907](https://github.com/coverlet-coverage/coverlet/issues/1907)
-- Avoid unnecessary testhost restarts [#​1912](https://github.com/coverlet-coverage/coverlet/issues/1912) by <https://github.com/mawosoft>
+- Coverlet with MTP 2 doesn't show test coverage statistic in console [#1907](https://github.com/coverlet-coverage/coverlet/issues/1907)
+- Avoid unnecessary testhost restarts [#1912](https://github.com/coverlet-coverage/coverlet/issues/1912) by <https://github.com/mawosoft>
 
 ### Fixed
 
-- Fix inconsistent paths in cobertura reports [#​1723](https://github.com/coverlet-coverage/coverlet/issues/1723)
-- Fix when using "is" with "and" in pattern matching, branch coverage is lower than normal [#​1313](https://github.com/coverlet-coverage/coverlet/issues/1313)
-- Fix Coverlet flagging a branch for an async functions finally block where none exists [#​1337](https://github.com/coverlet-coverage/coverlet/issues/1337)
-- Fix Coverlet Tracker Missing CompilerGeneratedAttribute [#​1828](https://github.com/coverlet-coverage/coverlet/issues/1828)
+- Fix inconsistent paths in cobertura reports [#1723](https://github.com/coverlet-coverage/coverlet/issues/1723)
+- Fix when using "is" with "and" in pattern matching, branch coverage is lower than normal [#1313](https://github.com/coverlet-coverage/coverlet/issues/1313)
+- Fix Coverlet flagging a branch for an async functions finally block where none exists [#1337](https://github.com/coverlet-coverage/coverlet/issues/1337)
+- Fix Coverlet Tracker Missing CompilerGeneratedAttribute [#1828](https://github.com/coverlet-coverage/coverlet/issues/1828)
 
 ### Maintenance
 
-- Add architecture docs and diagrams for all integrations [#​1927](https://github.com/coverlet-coverage/coverlet/pull/1927)
-- Update NuGet packages and .NET SDK versions [#​1933](https://github.com/coverlet-coverage/coverlet/pull/1933)
+- Add architecture docs and diagrams for all integrations [#1927](https://github.com/coverlet-coverage/coverlet/pull/1927)
+- Update NuGet packages and .NET SDK versions [#1933](https://github.com/coverlet-coverage/coverlet/pull/1933)
 
 [Diff between 10.0.0 and 10.0.1](https://github.com/coverlet-coverage/coverlet/compare/v10.0.0...v10.0.1)
 
@@ -90,7 +90,7 @@ _Sourced from [Meziantou.Analyzer's releases](https://github.com/meziantou/Mezia
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.92>
 
 ## What's Changed
-* Add analyzer for identical conditional compilation branches by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1169
+* Add analyzer for identical conditional compilation branches by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1169
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.91...3.0.92
@@ -100,7 +100,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.92>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.91>
 
 ## What's Changed
-* Fix MA0003 Fix All producing invalid named-argument rewrites in multi-argument calls by @​Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1168
+* Fix MA0003 Fix All producing invalid named-argument rewrites in multi-argument calls by @Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1168
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.90...3.0.91
@@ -110,7 +110,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.91>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.90>
 
 ## What's Changed
-* Fix MA0071 false positive for `else if` chains with reachable prior branches by @​Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1166
+* Fix MA0071 false positive for `else if` chains with reachable prior branches by @Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1166
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.89...3.0.90
@@ -120,7 +120,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.90>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.89>
 
 ## What's Changed
-* Add opt-in MA0134 reporting for discarded awaitables by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1164
+* Add opt-in MA0134 reporting for discarded awaitables by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1164
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.88...3.0.89
@@ -130,7 +130,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.89>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.88>
 
 ## What's Changed
-* Add MA0201 for zero-valued enum flag checks by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1163
+* Add MA0201 for zero-valued enum flag checks by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1163
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.87...3.0.88
@@ -140,7 +140,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.88>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.87>
 
 ## What's Changed
-* Fix MA0194 merge with existing and-patterns by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1162
+* Fix MA0194 merge with existing and-patterns by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1162
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.86...3.0.87
@@ -150,7 +150,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.87>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.86>
 
 ## What's Changed
-* Improve MA0192 HasFlag detection for zero comparisons by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1161
+* Improve MA0192 HasFlag detection for zero comparisons by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1161
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.85...3.0.86
