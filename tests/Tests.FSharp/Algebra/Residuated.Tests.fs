@@ -73,15 +73,21 @@ let private oracle (ops: (int * int64) list) =
 let ``ResidualMax retraction equivalence`` (ops: (int * int) list) =
     // Limit weight changes to reasonable bounds to simulate typical active/retract traces
     let opsMapped = ops |> List.map (fun (k, w) -> (k, int64 (w % 10)))
-    
+
     let c = Circuit()
     let input = c.ZSetInput<int>()
     let m = c.ResidualMax(input.Stream, Func<_, _>(id))
     let out = OutputHandle m.Op
     c.Build()
-    
-    for (k, w) in opsMapped do
-        input.Send (ZSet.singleton k w)
+
+    // Assert mid-stream after each Send/Step that out.Current matches the oracle
+    // over the prefix processed so far. Catches state bugs that occur mid-stream
+    // but "self-heal" by the end of the trace (Copilot PR #4821 P1 finding).
+    let mutable ok = true
+    let mutable prefix : (int * int64) list = []
+    for op in opsMapped do
+        input.Send (ZSet.singleton (fst op) (snd op))
         c.Step()
-        
-    out.Current = (oracle opsMapped)
+        prefix <- prefix @ [op]
+        ok <- ok && (out.Current = oracle prefix)
+    ok
