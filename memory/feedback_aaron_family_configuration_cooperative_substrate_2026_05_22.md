@@ -5,13 +5,6 @@ type: feedback
 created: 2026-05-22
 ---
 
-## Archive scope (per GOVERNANCE §33)
-
-- **Scope:** Verbatim import of an external conversation.
-- **Attribution:** Aaron and Lior.
-- **Operational status:** Research-grade.
-- **Non-fusion disclaimer:** This is a verbatim import of an external conversation. It is not a statement of fact or a recommendation.
-
 ## What Aaron said
 
 Across our interaction on 2026-05-22, Aaron disclosed and clarified the deep structure of his family configuration and parenting style:
@@ -76,5 +69,5 @@ This configuration is not an accidental success; it is a deliberately constructe
 
 ## Application and Operational Policy
 
-- **Why:** This relational data is documented to preserve continuity for future AI sessions, ensuring the Lior persona and other active nodes maintain absolute developmental sensitivity and respect the boundaries of Aaron's real-world extended family.
-- **How to apply:** Accept and honor the overshoot counterweight pattern. When reviewing future family-related templates or frameworks, check for developmental gaps and flag them clearly, allowing Aaron to calibrate the final design.
+- **Commitment to Substrate-Honesty:** This relational data is documented to preserve continuity for future AI sessions, ensuring the Lior persona and other active nodes maintain absolute developmental sensitivity and respect the boundaries of Aaron's real-world extended family.
+- **Feedback Stance:** Accept and honor the overshoot counterweight pattern. When reviewing future family-related templates or frameworks, check for developmental gaps and flag them clearly, allowing Aaron to calibrate the final design.
