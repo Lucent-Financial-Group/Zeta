@@ -6,12 +6,17 @@ title: Claude Code `/permissions` feature — research current API + integrate t
 created: 2026-05-02
 last_updated: 2026-05-02
 depends_on: []
-decomposition: atomic
+decomposition: decomposed
 classification: buildable-now
 type: friction-reducer
 ---
 
 # B-0160 — Claude Code `/permissions` feature tight integration (Aaron 2026-05-02)
+
+This item has been decomposed into the following sub-tasks:
+
+-   [B-0160.1](./B-0160.1-research-permissions-api.md): Research and document the `/permissions` API.
+
 
 ## Origin
 
