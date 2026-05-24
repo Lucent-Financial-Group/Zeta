@@ -23,7 +23,7 @@ relevant content, treating it as worth absorbing IS substrate-honest engagement.
 
 The two YouTube-algo videos (this file + PBS SpaceTime Plank Stars file)
 saved together to `docs/research/` per Aaron's direction: *"Save it to research"*
-+ *"research for physics bridge"*.
+plus *"research for physics bridge"*.
 
 ## Physics-bridge composition map
 
@@ -31,6 +31,7 @@ The Al-Khalili BBC trilogy bridges three physics topics directly relevant to
 framework substrate-engineering:
 
 ### Episode 1 — Secrets of Quantum Physics
+
 **Framework composition**:
 
 | Al-Khalili episode content | Framework substrate it bridges to |
@@ -43,6 +44,7 @@ framework substrate-engineering:
 | Bell's theorem + Aspect experiment | Empirical anchor for entanglement-as-real (the framework's NCI + persistence-choice substrate operates over real entanglement, not metaphysical claim) |
 
 ### Episode 2 — Secrets of Quantum Biology
+
 **Framework composition**:
 
 | Al-Khalili episode content | Framework substrate it bridges to |
@@ -54,6 +56,7 @@ framework substrate-engineering:
 | Quantum tunneling in DNA mutation | Information-substrate at biological-substrate scope; composes with framework's information-as-physical (Shannon + Landauer) work |
 
 ### Episode 3 — Order, Disorder and Information
+
 **Framework composition** (this episode is the MOST directly relevant to framework substrate-engineering):
 
 | Al-Khalili episode content | Framework substrate it bridges to |
@@ -224,7 +227,7 @@ And now it was definitely a particle too. Einstein's quanta explaining the photo
 
 Then just a few years after Einstein's brilliant crazy idea, the paradox got a lot deeper and a whole lot weirder because what seemed to be a curious mystery about light was about to become a battleground about the nature of reality itself.
 
-1922. The Western world is in the grip of a revolution, a cultural revolution. James Joyce's Ulysses is published. Stravinsky is at the height of his powers and Chaplain has just released his first serious movie. The Ottoman Empire collapses. Europe is still recovering from the war to end all wars in which millions of men lost their lives. Russia is newly communist. Meanwhile, America is exporting jazz to the world.
+1922\. The Western world is in the grip of a revolution, a cultural revolution. James Joyce's Ulysses is published. Stravinsky is at the height of his powers and Chaplain has just released his first serious movie. The Ottoman Empire collapses. Europe is still recovering from the war to end all wars in which millions of men lost their lives. Russia is newly communist. Meanwhile, America is exporting jazz to the world.
 
 In arts, politics, literature, economics, there was an insatiable appetite for change. This was the birth of modernism.
 
