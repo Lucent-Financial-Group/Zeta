@@ -1,7 +1,7 @@
 # Dev-PC substrate architecture — Nix + Home Manager + kind/k3d + Headscale + lend-resources pattern (Aaron + Otto, 2026-05-24)
 
-Date decided: 2026-05-24 (~03:30Z)
-Participants: Aaron Stainback (operator + primary authority) + Addison (observed as future participant; consent per `addison-consent-pattern-observation-not-fact-discipline-aaron-otto.md`) + Otto (recommendation + decision-capture role)
+Date decided: 2026-05-24 (~02:03Z)
+Participants: Aaron Stainback (operator + primary authority) + Addison (observed as future participant; consent per `2026-05-24-addison-consent-pattern-observation-not-fact-discipline-aaron-otto.md`) + Otto (recommendation + decision-capture role)
 Hardware context: dev-PC tier alongside basement cluster (per sibling archive `2026-05-24-cluster-bare-metal-substrate-architecture-nixos-no-hypervisor-argo-cd-aaron-otto.md`)
 
 ## Archive scope (per GOVERNANCE §33)
