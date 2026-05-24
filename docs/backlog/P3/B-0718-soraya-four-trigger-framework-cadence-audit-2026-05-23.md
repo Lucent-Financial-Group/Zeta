@@ -59,6 +59,7 @@ The four named triggers DON'T cover all real routing signals. Candidate addition
 The realized formal-verification work-arrival rate is genuinely slower than tick cadence (~10-15 min/tick). The discipline should batch (e.g., wakeup-every-N-ticks) rather than poll-and-hold.
 
 Empirical data this session:
+
 - 9 substantive findings filed across rounds 42-57 (~3 hours, ~20 min/finding when active)
 - 5 substrate-honest holds in rounds 54-60 (~1 hour of no-substantive-finding)
 - Forced decomposition fired at hold #6
