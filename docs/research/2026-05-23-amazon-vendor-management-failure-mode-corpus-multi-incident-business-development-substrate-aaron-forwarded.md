@@ -502,7 +502,7 @@ Empirical anchor (added post-resolution, Aaron 2026-05-24T~02:30Z):
 | Initial delivery | 4 received / 11 missing | -11 items |
 | Pattern P over-supply | Chat-side + phone-side over-replaced → 11 correct + 4 duplicates of received | +4 over |
 | Pattern Q deactivation | Vendor remote-deactivated 4 originals (flagged as duplicates) | net 0 functional |
-| **Pattern R resolution** | Amazon reactivated 4 MACs + customer cancelled 4 duplicate replacements | **net 0, full functional** |
+| **Pattern R resolution** | Amazon reactivated 4 MAC addresses + customer cancelled 4 duplicate replacements | **net 0, full functional** |
 
 **Vendor-neutral**: no profit, no loss, no overhead-debt for either side.
 
