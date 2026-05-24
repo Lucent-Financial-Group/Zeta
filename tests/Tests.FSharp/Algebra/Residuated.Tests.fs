@@ -15,22 +15,28 @@ open Zeta.Core
 // ═══════════════════════════════════════════════════════════════════
 
 // 1. Galois connection: a · x ≤ b ⇔ x ≤ a \ b
-// where · is max, and a \ b = (if a <= b then b else a)
+// where · = max and the residual is partial over a totally-ordered key
+// set with no bottom element: a \ b = Some b when a ≤ b, otherwise None.
+// The None branch represents the empty/bottom residual — no x satisfies
+// max(a, x) ≤ b when a > b, so x ≤ (a \ b) must be false everywhere.
+//
+// NOTE (B-NNNN follow-up): this property encodes the residual definition
+// locally; a stronger test would exercise the production ResidualMaxOp's
+// residual semantics directly. Tracked as a known limitation; see the
+// PR thread P2 finding.
 [<FsCheck.Xunit.Property>]
 let ``Galois connection holds for ResidualMax under natural order`` (a: int) (x: int) (b: int) =
     let residualMax a b = if a <= b then Some b else None
-    
+
     let lhs = (max a x) <= b
     let rhs =
         match residualMax a b with
         | Some bound -> x <= bound
-        // If residual is None, it means a > b. For LHS to be true, max(a,x) <= b must hold.
-        // But since a > b, max(a,x) is definitely > b (unless x is smaller, but max will be at least a).
-        // So if residual is None, LHS is always false.
-        // The only way for the equivalence to hold is if RHS is also false.
-        // `x <= bound` would be the condition. If there is no bound, any `x` fails the condition, so RHS is false.
-        | None -> not lhs
-        
+        // None ⇒ a > b ⇒ max(a, x) ≥ a > b, so lhs is always false. The
+        // residual is "bottom" / empty: no x satisfies the inequality,
+        // so rhs must also be false for the equivalence to hold.
+        | None -> false
+
     lhs = rhs
 
 // 2. Residual under max: a \ b = Some b if a ≤ b else None
