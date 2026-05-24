@@ -1,7 +1,7 @@
 ---
 id: B-0471
 priority: P1
-status: open
+status: closed
 title: "Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate"
 type: research
 origin: B-0426 decomposition (Otto, 2026-05-14)
@@ -69,11 +69,11 @@ Containing:
 
 ## Definition of done
 
-- [ ] All 9 surfaces above surveyed, findings documented
-- [ ] Conflicts/staleness flagged (none expected; verify anyway)
-- [ ] Reciprocal `composes_with:` pointers added to all referenced files
-- [ ] Output doc committed and referenced from B-0426 pre-start checklist
-- [ ] B-0471 closed (status: closed) with PR link
+- [x] All 9 surfaces above surveyed, findings documented
+- [x] Conflicts/staleness flagged (none expected; verify anyway)
+- [x] Reciprocal `composes_with:` pointers added to all referenced files
+- [x] Output doc committed and referenced from B-0426 pre-start checklist
+- [x] B-0471 closed (status: closed) with PR link
 
 ## Why P1
 

@@ -59,6 +59,82 @@ The 2026-05-18T03:56Z breakthrough finding (zero-orphans, still-hangs) is an ope
 - The auto-loaded rule body is updated to reflect the resolved state
 - All cross-references to B-0615 across the repo resolve to this file (substrate-honest landing)
 
+## Refinement (2026-05-18T03:33Z empirical anchor) — harness-wrapper-layer is the dominant orphan source
+
+Across the 2026-05-18T02:08Z–03:33Z session (26 push attempts, 0
+successes), orphan-count oscillated between 1 and 5 with no
+agent-instructed `git fetch` calls in flight during many oscillations.
+Process inspection at PID 19261 (and similar) showed the orphan
+source: **harness-internal shell-snapshot wrappers** at
+`/Users/acehack/.claude/shell-snapshots/...` firing `eval 'date -u
+... && git fetch origin main 2>&1 | tail -2 && git log --oneline
+origin/main | head -3'` patterns — likely as part of session-start
+or background-task setup, NOT from agent-instructed Bash tool calls.
+
+**Implication**: agent-side `--kill-after` discipline is necessary
+but **insufficient**. The orphan source is harness-internal, not
+agent-controlled. The full B-0615 fix requires either:
+
+1. Claude Code harness-side change: ensure shell-snapshot wrappers
+   inherit `timeout --kill-after` semantics OR call cleanup on
+   parent-tool-call expiry
+2. Workaround at agent layer: periodic `pkill -f 'git fetch.*origin'`
+   sweep at session-start (destructive; may break legitimate
+   in-flight fetches — NOT recommended without further safety
+   analysis)
+
+Workaround option 2 is itself risky per the canary rule's
+"DO NOT delete plugin directories to avoid crashing active agents"
+spirit (applies at process scope too).
+
+The substrate-honest acknowledgement: agent-level mitigation
+ceiling is at `--kill-after`. The remaining substrate work
+requires either (a) Claude Code upstream coordination via the
+acceptance-criteria investigation step, or (b) accepting orphan
+accumulation as session-baseline under multi-agent saturation.
+
+## Breakthrough finding (2026-05-18T03:56Z) — orphan-count is CORRELATED, not CAUSAL
+
+Push attempt #37 of the session was made at the cleanest local
+state observed across 116+ minutes of continuous attempts:
+
+- **0 stuck `git fetch` orphans** (down from session peak of 7)
+- Lior CPU very quiet (steady ~27:23 over recent ticks)
+- All other local metrics at session-best
+
+**Result**: silent timeout at 90s, 0 bytes output, REAL_EXIT=124,
+remote ref unchanged.
+
+**Implication**: The orphan-count hypothesis (B-0615's original
+load-bearing assumption — that subprocess orphans cause pack-dir
+contention that hangs push) is **insufficient**. Orphan
+accumulation is correlated with push-block patterns but is **not
+the causal mechanism**. Even at zero orphans, push blocks
+identically.
+
+**B-0615 status under this finding**: the row remains valid as
+**hygiene work** — orphans still represent wasted resources and
+the `--kill-after` mitigation is correct discipline regardless.
+But the row's acceptance criteria item describing the orphan-
+cleanup as a push-unblocker SHOULD be reframed: cleanup is
+hygiene, not push-restoration.
+
+**Open question** (out of scope for this row; potential
+separate B-NNNN): what is the actual causal mechanism of the
+push-block? Diagnostic narrowing from this session:
+
+- ✗ NOT network (curl https://github.com/ + https://api.github.com/ both HTTP 200)
+- ✗ NOT auth (gh auth status valid, all scopes; gh api works throughout)
+- ✗ NOT GraphQL rate-limit (verified across rate-reset boundary)
+- ✗ NOT HTTP/2 (downgrade to HTTP/1.1 via `-c http.version=HTTP/1.1` does NOT unblock)
+- ✗ NOT orphan-count (this finding)
+- ✓ IS specific to `git push` receive-pack upload protocol
+- ✓ IS system-wide (Lior also affected — zero new PRs in 30+ min observation window)
+
+Remaining causal candidates: credential-helper challenge race
+(osxkeychain), GitHub edge-node receive-pack throttling,
+local network state requiring stack restart.
+
 ## Composes with
 
 - [B-0650](B-0650-rest-push-delete-rename-extension-mechanizes-id-renumber-pattern-otto-cli-2026-05-18.md) — rest-push delete/rename extension; same multi-agent contention class
