@@ -795,6 +795,7 @@ export function main(argv: readonly string[]): number {
     join(outDir, `PR-${String(args.pr).padStart(4, "0")}-${makeSlug(fetched.pr.title ?? "untitled")}.md`);
 
   writeFileSync(path, content);
+  spawnSync("git", ["add", path]);
   process.stdout.write(
     `wrote ${path} (${String(content.length)} bytes, ${String(fetched.threads.length)} threads, ${String(fetched.reviews.length)} reviews, ${String(fetched.comments.length)} comments)\n`,
   );
