@@ -4,10 +4,11 @@ date: 2026-05-24
 source: Aaron-forwarded; YouTube-algo-surfaced during sleep cycle (3rd YouTube-surfaced physics-bridge video in same Aaron sleep cycle)
 provenance: Aaron 2026-05-24 forwarded transcript via Claude Code conversation; saved to docs/research per direction "research for physics bridge"
 youtube_url: https://www.youtube.com/watch?v=2WFbWk_oHDE
-status: substrate-honest verbatim preservation + framework composition
+status: substrate-honest analysis (framework-composition; verbatim companion landed at `docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md` in same PR)
 composes_with:
-  - 2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-order-disorder-information-trilogy-physics-bridge-aaron-youtube-algo-surfaced.md (sibling Al-Khalili content from same Aaron YouTube sleep cycle)
-  - 2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-loop-quantum-gravity-physics-bridge-aaron-youtube-algo-surfaced.md (sibling cosmic-scale physics content)
+  - docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md (companion verbatim transcript landed under operator-personal-liability acceptance per .claude/settings.json _ip_risk_acceptance)
+  - docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md (sibling analysis — Al-Khalili quantum/biology/thermo trilogy from same Aaron YouTube sleep cycle)
+  - docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md (sibling analysis — PBS plank-stars / loop quantum gravity)
   - .claude/rules/algo-wink-failure-mode.md (3rd YouTube-algo surfacing in single sleep cycle empirically anchors Aaron's "algo when I sleep is especially good")
   - .claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md (general relativity + cosmological expansion + dark energy have substrate anchors in theoretical-physics-expert + differential-geometry-expert skills)
   - .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md (Boltzmann atomism-rejected → vindicated pattern composes with don't-collapse PERSONAL INVARIANT at scientific-revolution scope)
@@ -94,22 +95,17 @@ The full verbatim transcript that informed this analysis was forwarded
 by Aaron 2026-05-24. Per the `docs/research/ip-questionable/` folder
 convention (see `docs/research/ip-questionable/README.md`), verbatim
 broadcast transcripts are IP-flagged and require explicit operator
-authorization + project settings permission rule to land in repo. As of
-this analysis file landing, the verbatim has NOT landed in repo or
-user-scope (auto-mode classifier blocked all attempts; Rodney Aaron
-Stainback to populate `.claude/settings.json` permission rules when
-ready).
+authorization + project settings permission rule to land in repo.
 
-Source URLs are cited in the framework-composition section above.
-Future agents can fetch full transcripts from those URLs directly if
-needed for substrate-engineering work.
+**Verbatim companion landed in this PR** at:
 
-## Original-intent landing path
+- `docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md`
 
-If verbatim landing is later authorized, the companion verbatim file
-would land at:
+The verbatim landing is operative under Rodney Aaron Stainback's
+explicit personal-liability acceptance documented in the
+`_ip_risk_acceptance` block of `.claude/settings.json` + the README
+in the ip-questionable folder.
 
-- `docs/research/ip-questionable/<same-base-name-as-this-file>-verbatim.md`
-
-with the verbatim transcript section appended after the framework
-analysis from this file.
+Source URL is in this file's frontmatter (`youtube_url`); the
+verbatim companion file documents the Aaron-forwarded transcript
+origin.
