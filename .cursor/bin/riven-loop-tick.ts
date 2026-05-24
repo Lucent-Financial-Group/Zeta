@@ -33,7 +33,8 @@ function nowIso(): string {
 }
 
 function log(message: string): void {
-    appendFileSync(join(logDir, "runner.log"), `${nowIso()} ${message}\n`);
+    appendFileSync(join(logDir, "runner.log"), `${nowIso()} ${message}
+`);
 }
 
 function run(command: string, args: string[], timeoutMs: number): { status: number; stdout: string; stderr: string } {
@@ -70,13 +71,17 @@ function resolveAgentBin(): string | null {
 }
 
 function lines(text: string): string[] {
-    return text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+    return text.split(/?
+/).map(l => l.trim()).filter(l => l.length > 0);
 }
 
 function acquireLock(): boolean {
     try {
         mkdirSync(lockDir, { recursive: false });
-        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
+        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
+run_id=${runId}
+acquired_at=${nowIso()}
+`);
         return true;
     } catch {
         try {
@@ -93,7 +98,10 @@ function acquireLock(): boolean {
             }
             rmSync(lockDir, { recursive: true, force: true });
             mkdirSync(lockDir, { recursive: false });
-            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
+            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
+run_id=${runId}
+acquired_at=${nowIso()}
+`);
             return true;
         } catch { return false; }
     }
@@ -113,7 +121,8 @@ function readBroadcasts(): void {
         const path = join(broadcastDir, peer);
         if (existsSync(path)) {
             const content = readFileSync(path, "utf8").trim();
-            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("\n")[0] ?? "(empty)"}`);
+            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("
+")[0] ?? "(empty)"}`);
         }
     }
 }
@@ -125,7 +134,8 @@ function writeBroadcast(summary: string): void {
         "",
         "## Background tick status",
         summary,
-    ].join("\n"));
+    ].join("
+"));
 }
 
 function gh(...args: string[]): { status: number; stdout: string } {
@@ -162,7 +172,8 @@ function forwardTick(): void {
         return;
     }
 
-    const prNumbers = prsResult.stdout.trim().split("\n").filter(n => n.trim()).map(Number);
+    const prNumbers = prsResult.stdout.trim().split("
+").filter(n => n.trim()).map(Number);
     for (const pr of prNumbers) {
         const gateResult = gh(
             "pr", "view", String(pr), "--repo", "Lucent-Financial-Group/Zeta",
@@ -261,10 +272,16 @@ function heartbeat(): void {
                 }, null, 2));
 
                 if (gate.stdout.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} riven gate ---\n${gate.stdout}\n`);
+                    appendFileSync(join(logDir, "ticks.log"), `
+--- ${runId} riven gate ---
+${gate.stdout}
+`);
                 }
                 if (gate.stderr.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.err"), `\n--- ${runId} riven gate ---\n${gate.stderr}\n`);
+                    appendFileSync(join(logDir, "ticks.err"), `
+--- ${runId} riven gate ---
+${gate.stderr}
+`);
                 }
             }
         } else {
