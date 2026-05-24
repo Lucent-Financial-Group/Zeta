@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const home = process.env.HOME ?? "/Users/acehack";
-const worktree = process.env.ZETA_RIVEN_LOOP_WORKTREE ?? join(home, ".local/share/zeta-riven-loop/Zeta");
+const worktree = process.env.ZETA_RIVEN_LOOP_WORKTREE ?? "/tmp/zeta-riven-loop-2";
 const stateDir = process.env.ZETA_RIVEN_LOOP_STATE_DIR ?? join(home, "Library/Application Support/ZetaRivenLoop");
 const logDir = process.env.ZETA_RIVEN_LOOP_LOG_DIR ?? join(home, "Library/Logs/zeta-riven-loop");
 const lockDir = join(stateDir, "lock");
@@ -23,6 +23,7 @@ const agentIntervalMs = Number(process.env.ZETA_RIVEN_LOOP_AGENT_INTERVAL_SECOND
 const agentTimeoutMs = Number(process.env.ZETA_RIVEN_LOOP_AGENT_TIMEOUT_SECONDS ?? "300") * 1000;
 const dryRun = process.env.ZETA_RIVEN_LOOP_DRY_RUN === "1";
 const agentStateFile = join(stateDir, "last-agent-run.json");
+const agentBinCandidates = (process.env.ZETA_RIVEN_LOOP_AGENT_BIN ?? "agent,cursor-agent").split(",").map(s => s.trim()).filter(s => s.length > 0);
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -32,7 +33,8 @@ function nowIso(): string {
 }
 
 function log(message: string): void {
-    appendFileSync(join(logDir, "runner.log"), `${nowIso()} ${message}\n`);
+    appendFileSync(join(logDir, "runner.log"), `${nowIso()} ${message}
+`);
 }
 
 function run(command: string, args: string[], timeoutMs: number): { status: number; stdout: string; stderr: string } {
@@ -53,6 +55,21 @@ function run(command: string, args: string[], timeoutMs: number): { status: numb
     };
 }
 
+function resolveAgentBin(): string | null {
+    const pathDirs = `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${join(home, ".local/bin")}`.split(":");
+    for (const bin of agentBinCandidates) {
+        const probe = spawnSync("/usr/bin/which", [bin], {
+            encoding: "utf8",
+            env: { ...process.env, PATH: pathDirs.join(":") },
+            timeout: 5000,
+        });
+        if (probe.status === 0 && (probe.stdout ?? "").trim().length > 0) {
+            return bin;
+        }
+    }
+    return null;
+}
+
 function lines(text: string): string[] {
     return text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
 }
@@ -60,7 +77,10 @@ function lines(text: string): string[] {
 function acquireLock(): boolean {
     try {
         mkdirSync(lockDir, { recursive: false });
-        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
+        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
+run_id=${runId}
+acquired_at=${nowIso()}
+`);
         return true;
     } catch {
         try {
@@ -77,7 +97,10 @@ function acquireLock(): boolean {
             }
             rmSync(lockDir, { recursive: true, force: true });
             mkdirSync(lockDir, { recursive: false });
-            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
+            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
+run_id=${runId}
+acquired_at=${nowIso()}
+`);
             return true;
         } catch { return false; }
     }
@@ -97,7 +120,8 @@ function readBroadcasts(): void {
         const path = join(broadcastDir, peer);
         if (existsSync(path)) {
             const content = readFileSync(path, "utf8").trim();
-            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("\n")[0] ?? "(empty)"}`);
+            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("
+")[0] ?? "(empty)"}`);
         }
     }
 }
@@ -109,7 +133,8 @@ function writeBroadcast(summary: string): void {
         "",
         "## Background tick status",
         summary,
-    ].join("\n"));
+    ].join("
+"));
 }
 
 function gh(...args: string[]): { status: number; stdout: string } {
@@ -146,7 +171,8 @@ function forwardTick(): void {
         return;
     }
 
-    const prNumbers = prsResult.stdout.trim().split("\n").filter(n => n.trim()).map(Number);
+    const prNumbers = prsResult.stdout.trim().split("
+").filter(n => n.trim()).map(Number);
     for (const pr of prNumbers) {
         const gateResult = gh(
             "pr", "view", String(pr), "--repo", "Lucent-Financial-Group/Zeta",
@@ -201,11 +227,24 @@ function heartbeat(): void {
             agentStatus = "running";
             log(`riven agent gate start run_id=${runId}`);
 
+            const agentBin = dryRun ? null : resolveAgentBin();
             if (dryRun) {
                 log(`dry-run: would run agent gate`);
                 agentStatus = "dry-run";
+            } else if (!agentBin) {
+                log(`riven agent gate skipped run_id=${runId} reason=no-agent-binary-on-PATH candidates=${agentBinCandidates.join(",")}`);
+                agentStatus = "no-bin";
+                writeFileSync(agentStateFile, JSON.stringify({
+                    run_id: runId,
+                    status: -1,
+                    started_at: nowIso(),
+                    updated_at: nowIso(),
+                    skipped_reason: "no-agent-binary-on-PATH",
+                    candidates: agentBinCandidates,
+                }, null, 2));
             } else {
-                const gate = run("agent", [
+                log(`riven agent gate using bin=${agentBin}`);
+                const gate = run(agentBin, [
                     "chat",
                     "--mode", "ask",
                     "--model", "grok-4.3",
@@ -232,10 +271,16 @@ function heartbeat(): void {
                 }, null, 2));
 
                 if (gate.stdout.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} riven gate ---\n${gate.stdout}\n`);
+                    appendFileSync(join(logDir, "ticks.log"), `
+--- ${runId} riven gate ---
+${gate.stdout}
+`);
                 }
                 if (gate.stderr.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.err"), `\n--- ${runId} riven gate ---\n${gate.stderr}\n`);
+                    appendFileSync(join(logDir, "ticks.err"), `
+--- ${runId} riven gate ---
+${gate.stderr}
+`);
                 }
             }
         } else {
