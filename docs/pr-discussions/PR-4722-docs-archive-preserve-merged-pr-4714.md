@@ -37,49 +37,49 @@ This PR adds a preserved discussion archive for merged PR #4714 under `docs/pr-d
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:04:18Z):
 
-P0: These bullets contain an invisible Unicode codepoint (the U+200B zero-width space between `#` and the issue number, e.g. `[#​1907]`). This will trigger the repo’s Semgrep `invisible-unicode-in-text` rule and fail CI. Strip the zero-width characters (use plain ASCII like `[#1907]`, or wrap in backticks if you need to avoid linkification).
+P0: These bullets contain an invisible Unicode codepoint (the U+200B zero-width space between `#` and the issue number, e.g. `[#1907]`). This will trigger the repo’s Semgrep `invisible-unicode-in-text` rule and fail CI. Strip the zero-width characters (use plain ASCII like `[#1907]`, or wrap in backticks if you need to avoid linkification).
 
 ### Thread 2: docs/pr-discussions/PR-4714-deps-bump-the-nuget-minor-patch-group-with-3-updates.md:69 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:04:19Z):
 
-P0: This section also includes U+200B zero-width spaces in the `[#​....]` references. The Semgrep `invisible-unicode-in-text` rule applies to `**/*.md`, so these characters will break the build. Remove the invisible codepoints and keep the text purely ASCII.
+P0: This section also includes U+200B zero-width spaces in the `[#....]` references. The Semgrep `invisible-unicode-in-text` rule applies to `**/*.md`, so these characters will break the build. Remove the invisible codepoints and keep the text purely ASCII.
 
 ### Thread 3: docs/pr-discussions/PR-4714-deps-bump-the-nuget-minor-patch-group-with-3-updates.md:104 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:04:19Z):
 
-P0: Lines here contain an invisible Unicode character (U+200B) inside `@​meziantou` / `@​Copilot`. This triggers the Semgrep `invisible-unicode-in-text` rule and will fail CI. Replace the mentions with plain ASCII (e.g. `@meziantou`, `@Copilot`) or another visible escape (like backticks) instead of zero-width characters.
+P0: Lines here contain an invisible Unicode character (U+200B) inside `@meziantou` / `@Copilot`. This triggers the Semgrep `invisible-unicode-in-text` rule and will fail CI. Replace the mentions with plain ASCII (e.g. `@meziantou`, `@Copilot`) or another visible escape (like backticks) instead of zero-width characters.
 
 ### Thread 4: docs/pr-discussions/PR-4714-deps-bump-the-nuget-minor-patch-group-with-3-updates.md:114 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:04:19Z):
 
-P0: This bullet uses a U+200B zero-width space inside `@​Copilot`. Semgrep `invisible-unicode-in-text` will flag this in `*.md`. Remove the zero-width character (use ASCII `@Copilot` / backticks).
+P0: This bullet uses a U+200B zero-width space inside `@Copilot`. Semgrep `invisible-unicode-in-text` will flag this in `*.md`. Remove the zero-width character (use ASCII `@Copilot` / backticks).
 
 ### Thread 5: docs/pr-discussions/PR-4714-deps-bump-the-nuget-minor-patch-group-with-3-updates.md:124 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:04:19Z):
 
-P0: This bullet contains U+200B zero-width space inside `@​meziantou`, which will be rejected by Semgrep `invisible-unicode-in-text`. Strip the invisible codepoint and keep the mention purely ASCII.
+P0: This bullet contains U+200B zero-width space inside `@meziantou`, which will be rejected by Semgrep `invisible-unicode-in-text`. Strip the invisible codepoint and keep the mention purely ASCII.
 
 ### Thread 6: docs/pr-discussions/PR-4714-deps-bump-the-nuget-minor-patch-group-with-3-updates.md:134 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:04:19Z):
 
-P0: U+200B zero-width space appears in `@​meziantou` on this line. This will fail the Semgrep invisible-Unicode check. Replace with ASCII `@meziantou` (or use backticks) and ensure no hidden Unicode remains.
+P0: U+200B zero-width space appears in `@meziantou` on this line. This will fail the Semgrep invisible-Unicode check. Replace with ASCII `@meziantou` (or use backticks) and ensure no hidden Unicode remains.
 
 ### Thread 7: docs/pr-discussions/PR-4714-deps-bump-the-nuget-minor-patch-group-with-3-updates.md:144 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:04:20Z):
 
-P0: U+200B zero-width space appears in `@​meziantou` on this line, which will be flagged by Semgrep `invisible-unicode-in-text`. Strip the invisible character so the archive remains ASCII-clean.
+P0: U+200B zero-width space appears in `@meziantou` on this line, which will be flagged by Semgrep `invisible-unicode-in-text`. Strip the invisible character so the archive remains ASCII-clean.
 
 ### Thread 8: docs/pr-discussions/PR-4714-deps-bump-the-nuget-minor-patch-group-with-3-updates.md:154 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:04:20Z):
 
-P0: This bullet includes a U+200B zero-width space inside `@​meziantou`. The repo’s invisible-Unicode Semgrep rule applies to all Markdown files, so this will break CI. Remove the zero-width character and keep the text ASCII.
+P0: This bullet includes a U+200B zero-width space inside `@meziantou`. The repo’s invisible-Unicode Semgrep rule applies to all Markdown files, so this will break CI. Remove the zero-width character and keep the text ASCII.
 
 ## General comments
 
