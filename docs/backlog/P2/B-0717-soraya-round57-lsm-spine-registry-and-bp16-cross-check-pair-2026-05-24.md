@@ -79,6 +79,7 @@ For subitem (b): the guard fires the **INVERSE** direction (consistent with B-07
 ## Coverage impact
 
 After both subitems land:
+
 - 3 new registered specs (Spine cluster); portfolio numerator +3
 - 1 new FsCheck cross-check on candidate-P0 spec; BP-16 coverage at +1 paired-tool
 - TLA+/code-drift class closed on async compaction (silent data corruption shape prevented)
