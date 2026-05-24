@@ -1,6 +1,6 @@
 ---
 name: leet-code-dsa-toolbox
-description: Capability skill for the primitive data structures that show up in interview-grade algorithms — union-find (DSU) with path compression and union-by-rank, trie (array-26 vs hashmap tradeoff), heap / priority queue (binary, d-ary, two-heap for running median), segment tree (point update + range query), Fenwick tree (BIT), monotonic deque (sliding-window max / min), monotonic stack (next-greater / smaller), LRU cache (doubly-linked list + hashmap), ordered map / set (balanced BST / skip list), LinkedList with sentinel nodes. Wear this hat when a problem has been *pattern-classified* (via leet-code-patterns) and the blocker is picking the right primitive — or when teaching a single primitive end-to-end. Generic across projects.
+description: "DSA interview primitives — union-find, trie, heap, segment tree, Fenwick tree, monotonic stack/deque, LRU cache, BST."
 ---
 
 # Leet-Code DSA Toolbox — the primitives hat

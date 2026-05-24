@@ -1,6 +1,6 @@
 ---
 name: spec-zealot
-description: Capability skill — produces a zero-empathy spec-to-code alignment review. Outputs drift, spec bugs, spec gaps, best-practice lint, and overlay discipline findings. Pure procedure; no persona (the persona lives on the invoking expert — see .claude/agents/spec-zealot.md).
+description: Spec-to-code alignment review — zero-empathy; finds drift, spec bugs, gaps, overlay violations, best-practice lint.
 ---
 
 # Spec Zealot — Disaster-Recovery Review Procedure

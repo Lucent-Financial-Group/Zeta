@@ -1,6 +1,6 @@
 ---
 name: semgrep-expert
-description: Capability skill ("hat") — tool-level expert on Semgrep as Zeta's lightweight pattern-matching static-analysis layer. Covers when to reach for Semgrep versus CodeQL (heavier, dataflow) versus Roslyn analyzers (language-native) versus a Lean proof; CI integration with `gate.yml`; rule-pack selection (p/ci, p/secrets, p/owasp-top-ten); false-positive triage; SARIF export; SHA-pinned action versions. Distinct from `semgrep-rule-authoring` (the *how* of writing a custom rule) — this hat owns the *whether*, *where*, and *how-much* of Semgrep in the verification portfolio. Wear when adding a new rule-pack, tuning CI noise, or deciding Semgrep vs. another static-analysis tool.
+description: Semgrep tool decisions — vs CodeQL/Roslyn, CI integration, p/ci p/secrets p/owasp-top-ten rule-packs, false-positive triage, SARIF export.
 ---
 
 # Semgrep Expert — Tool-Level Skill

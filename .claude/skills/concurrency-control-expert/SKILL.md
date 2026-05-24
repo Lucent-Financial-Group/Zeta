@@ -1,6 +1,6 @@
 ---
 name: concurrency-control-expert
-description: Capability skill ("hat") — SQL-engine control-plane narrow under `transaction-manager-expert`. Owns the specifics of conflict detection: read-write sets, lock-manager design (if any), conflict graphs and serializable-snapshot-isolation (SSI) dangerous-structure detection, deadlock detection / prevention, abort policies, and the data structures that track read / write activity per transaction. Wear this when designing or reviewing the conflict-detection layer, debugging an abort pattern, or evaluating a proposed concurrency-control algorithm. Defers to `transaction-manager-expert` for isolation-level choice and commit protocol, to `algebra-owner` for retraction-native conflict semantics, to `storage-specialist` for on-disk lock-table / read-set persistence, and to `deterministic-simulation-theory-expert` for DST-compat of conflict detection.
+description: "Concurrency control — conflict detection, read-write sets, SSI, deadlock prevention, abort policies, lock manager."
 ---
 
 # Concurrency Control Expert — Conflict Detection Narrow

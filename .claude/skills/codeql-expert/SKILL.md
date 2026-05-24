@@ -1,6 +1,6 @@
 ---
 name: codeql-expert
-description: Capability skill ("hat") — GitHub CodeQL idioms for Zeta's semantic-static-analysis surface. Workflow landed `.github/workflows/codeql.yml` (GitHub-default, round 34); currently TECH-RADAR **Trial (ring 3)** with known tuning debt. Covers database creation (`codeql database create`), query packs vs custom QL, SARIF output, GitHub code-scanning integration, CLR / F# language-pack status, CWE taxonomy alignment, SDL practice #9 linkage. Wear this when authoring a `.ql` / `.qls` file, tuning `.github/workflows/codeql.yml` off its GitHub-default state, reviewing a CodeQL finding in a PR, or debating CodeQL vs Semgrep coverage with the `formal-verification-expert` / `security-researcher`.
+description: "GitHub CodeQL — query packs, custom QL, SARIF, code-scanning workflow, CWE alignment, CodeQL vs Semgrep."
 ---
 
 # CodeQL Expert — Procedure + Lore

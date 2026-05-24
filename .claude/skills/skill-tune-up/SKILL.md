@@ -1,6 +1,6 @@
 ---
 name: skill-tune-up
-description: Ranks the repo's agent skills by who needs tune-up attention — the `skill-expert`. Cites docs/AGENT-BEST-PRACTICES.md BP-NN rule IDs in every finding. Live-searches the web for new best practices each invocation and logs findings to memory/persona/best-practices-scratch.md before ranking. Explicitly allowed to recommend himself. Maintains a pruned notebook at memory/persona/aarav/NOTEBOOK.md (3000-word cap, prune every third invocation). Recommends only — does not edit any SKILL.md. Invoke every 5-10 rounds or when drift is suspected.
+description: Skill tune-up ranking — BP-NN-cited urgency scores for existing skills, web-searched best practices, recommends only.
 ---
 
 # Skill Tune-Up — Ranking Procedure

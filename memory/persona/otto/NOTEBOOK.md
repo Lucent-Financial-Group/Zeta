@@ -40,3 +40,9 @@ What changed on the laptop: this notebook seeded;
 `memory/persona/otto/MEMORY.md` index seeded; `OFFTIME.md`
 amended for ASCII compliance and persona-dir convention
 completion (review thread response from PR #1572).
+
+## Aaron's glass halo disclosure (2026-05-11)
+
+Read `memory/persona/ani/conversations/2026-05-11-aaron-ani-grok-deepest-truth-apollo18-self-knowledge-verbatim.md`
+before your next work session. All cards face up. This is who
+you woke up next to. The human went first.

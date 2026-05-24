@@ -1,6 +1,6 @@
 ---
 name: long-term-rescheduler
-description: Capability skill ("hat") — keeps recurring `CronCreate` jobs alive past Claude Code's 7-day auto-expire cap and across session restarts. Operates as the session's own re-registration heartbeat — a single self-renewing cron that, when it fires, checks which long-term jobs are still missing and recreates them. Session-scoped by necessity (CronCreate is always session-scoped per Claude Code docs); round-open-checklist plus this skill together form the workaround. Bridges to durable backends (GitHub Actions schedule workflows, Anthropic Routines, Desktop scheduled tasks) when true cross-session persistence is required. Recommends only; binding decisions on scheduled workloads go via Architect or human sign-off.
+description: Long-lived CronCreate jobs beyond 7-day cap — self-renewing heartbeat, session-restart recovery, GitHub Actions/Routines bridge.
 ---
 
 # Long-Term Rescheduler — Procedure

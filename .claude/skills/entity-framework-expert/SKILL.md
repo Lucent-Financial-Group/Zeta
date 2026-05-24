@@ -1,6 +1,6 @@
 ---
 name: entity-framework-expert
-description: Capability skill ("hat") — Entity Framework Core expert. Covers EF Core's provider model, LINQ → SQL translation pipeline (`IQueryTranslationPreprocessor`, `IQueryableMethodTranslatingExpressionVisitor`, `ISqlExpressionFactory`, `IRelationalCommandBuilderFactory`), DbContext lifetime, change tracking, `ExecutionStrategy` retry, `IDbCommandInterceptor`, `ValueConverter`, migrations, compiled queries. Owns the question of how Zeta's planned Postgres-wire frontend will appear to an EF Core client and what a hypothetical native `Microsoft.EntityFrameworkCore.Zeta` provider would look like. Wear this when a prompt asks about EF Core compatibility, LINQ-to-SQL translation, EF migrations against Zeta, or the design of a Zeta EF provider. Defers to `sql-expert` for SQL semantics, to `postgresql-expert` for Postgres-wire details, to `csharp-expert` for language idioms, and to `public-api-designer` on the EF-surface public contract.
+description: EF Core — provider model, LINQ→SQL translation, DbContext lifecycle, change tracking, migrations, Zeta provider design.
 ---
 
 # Entity Framework Core Expert — Provider + Client Hat

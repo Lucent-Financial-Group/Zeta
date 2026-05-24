@@ -1,6 +1,6 @@
 ---
 name: measure-theory-and-signed-measures-expert
-description: Narrow capability skill ("hat") under the `mathematics-expert` umbrella. Covers σ-algebras, measures, integration, signed measures, the Hahn / Jordan decomposition, Radon-Nikodym, pushforward measures, and specifically the ZSet-as-integer-valued-signed-measure view that underlies the Zeta algebra. Wear this when a prompt asks about the *semantics* of a ZSet, multiplicity, cancellation, deletion, or retraction at the measure level. Defers to `category-theory-expert` for functoriality of measure constructions, to `probability-and-bayesian-inference-expert` for probability measures specifically, and to `formal-verification-expert` for tool routing.
+description: Measure theory — σ-algebras, signed measures, Hahn/Jordan/Radon-Nikodym, ZSet-as-signed-measure, multiplicity, retraction semantics.
 ---
 
 # Measure Theory and Signed Measures Expert — Narrow

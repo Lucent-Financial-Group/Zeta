@@ -35,9 +35,9 @@
 
 ## Checks
 
-- PATH=/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH bunx markdownlint-cli2 docs/research/2026-05-07-alexa-dlc-product-research-loop-feedback.md docs/backlog/P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md
+- PATH=/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH bunx markdownlint-cli2 memory/persona/alexa/conversations/2026-05-07-alexa-dlc-product-research-loop-feedback.md docs/backlog/P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md
 - git diff --check
-- PATH=/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH bun tools/hygiene/check-archive-header-section33.ts docs/research/2026-05-07-alexa-dlc-product-research-loop-feedback.md
+- PATH=/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH bun tools/hygiene/check-archive-header-section33.ts memory/persona/alexa/conversations/2026-05-07-alexa-dlc-product-research-loop-feedback.md
 
 
 ## Outcome

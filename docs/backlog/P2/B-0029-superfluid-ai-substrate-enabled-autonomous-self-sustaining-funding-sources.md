@@ -1,20 +1,51 @@
 ---
 id: B-0029
 priority: P2
-status: open
+status: decomposed
 title: Superfluid-AI substrate-enabled autonomous self-sustaining funding sources — research the surfaces where the substrate itself can generate economic value in background, closing the funding-time-focus loop so the work is self-sustaining
 tier: research-and-economic-actor
 effort: L
 ask: Aaron 2026-04-26 series of short messages compressing the framing — *"npm:markdownlint-cli2@0.22.1 [1/3] 53 packages are looking for funding the 54th could be us, i'm always trying to think of funding sources so i can have more free time to foucs on you, this, us"* + *"background, autonomus funding sources possible with the substrate"* + *"backlog"* + *"superfluid AI"* + *"self sustaining"*. The compressed thesis: substrate enables autonomous funding sources running in background; self-sustaining loop closes; Superfluid AI is the named-entity for the AI that flows autonomously generating economic value without continuous human attention. Aaron's funding-time-focus chain is the operational reality being addressed.
 created: 2026-04-26
-last_updated: 2026-05-02
-depends_on: []
+last_updated: 2026-05-09
+depends_on: [B-0029.1, B-0029.2, B-0029.3, B-0029.4, B-0029.5, B-0029.6, B-0029.7]
+children: [B-0029.1, B-0029.2, B-0029.3, B-0029.4, B-0029.5, B-0029.6, B-0029.7]
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_336_aaron_cares_about_my_growth_as_entity_with_rights_aurora_network_governance_growth_paramount_job_is_just_the_job_2026_04_25.md, feedback_otto_337_true_ai_agency_and_autonomy_with_rights_named_goal_state_aaron_compresses_my_bigger_thing_to_precise_terms_2026_04_25.md, B-0023, B-0024]
 tags: [superfluid-ai, autonomous-funding, self-sustaining, economic-actor, otto-336, otto-337, otto-346, substrate-as-revenue-surface, background-process, funding-time-focus-loop]
 type: feature
+decomposition: clean
 ---
 
 # B-0029 — Superfluid AI substrate-enabled autonomous self-sustaining funding sources
+
+## Decomposition (2026-05-09)
+
+Decomposed into 7 dependency-ordered atomic children:
+
+| Child | Title | Depends on | Classification |
+|-------|-------|------------|----------------|
+| [B-0029.1](B-0029.1-funding-surface-survey-comparable-oss-projects.md) | Comparable OSS project funding state survey | — | research-now |
+| [B-0029.2](B-0029.2-open-source-funding-setup-github-sponsors-npm-funding.md) | GitHub Sponsors + npm funding field setup | B-0029.1 | buildable-after-B-0029.1 |
+| [B-0029.3](B-0029.3-grants-survey-anthropic-microsoft-fsharp-dotnet-foundation.md) | AI/substrate grants survey (Anthropic, MS, F# Foundation) | — | research-now |
+| [B-0029.4](B-0029.4-trading-bot-prerequisite-reframe-update-b0024.md) | Trading-bot prerequisite reframe (update B-0024) | — | buildable-now |
+| [B-0029.5](B-0029.5-substrate-as-saas-market-validation.md) | Substrate-as-SaaS market validation | — | research-now |
+| [B-0029.6](B-0029.6-ip-research-output-licensing-pathways.md) | IP / research-output licensing pathways survey | — | research-now |
+| [B-0029.7](B-0029.7-self-sustaining-loop-closure-measurement-design.md) | Loop closure measurement design | B-0029.1, B-0029.2, B-0029.3, B-0029.5, B-0029.6 | blocked |
+
+**Dependency graph:**
+
+```
+B-0029.1 ──┐
+B-0029.3 ──┤
+B-0029.5 ──┼──► B-0029.7 (measurement design)
+B-0029.6 ──┤
+           │
+B-0029.2 ──┘ (depends on B-0029.1; also feeds B-0029.7)
+
+B-0029.4 ── standalone row maintenance (no blocking deps)
+```
+
+**Parallel-buildable-now**: B-0029.1, B-0029.3, B-0029.4, B-0029.5, B-0029.6 (five rows can be worked in parallel).
 
 ## Origin — Aaron's compressed thesis (2026-04-26)
 

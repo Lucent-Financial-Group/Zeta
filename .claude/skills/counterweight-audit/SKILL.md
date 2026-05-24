@@ -1,6 +1,6 @@
 ---
 name: counterweight-audit
-description: Cadenced re-read discipline for counterweight memories (Otto-278). Memory-only counterweights are write-once-read-never without a forced re-read cadence; Otto-276 drifted within 30 min, Otto-277 re-tightened. This skill is Phase 2 of the cadenced-inspect stack — wraps tools/hygiene/counterweight-audit.ts and prompts the agent through the audit. Invoke when opening a session, opening a round, every N ticks in autonomous-loop, or on-demand when drift is suspected. Agent self-scores; no automatic drift detection — the point is forcing the re-read.
+description: Counterweight audit — forced re-read of Otto counterweight memories to catch alignment drift before it compounds.
 project: zeta
 ---
 

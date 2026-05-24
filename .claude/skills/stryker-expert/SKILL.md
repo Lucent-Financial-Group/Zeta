@@ -1,6 +1,6 @@
 ---
 name: stryker-expert
-description: Capability skill ("hat") — tool-level expert on Stryker.NET, the mutation-testing harness for .NET. Covers when mutation testing is the right complement to FsCheck / unit tests / Lean / Z3 / Semgrep; mutation-score interpretation; threshold policy (`high`, `low`, `break`); mutation-operator selection; false-survivor triage; `stryker-config.json` hygiene; CI integration cost. Distinct from `fscheck-expert` (property-based testing: generate *inputs*) in that mutation testing generates *variant programs* and asks whether the existing tests notice. Wear when adding Stryker coverage to a module, raising the break threshold, or triaging a mutation-score regression.
+description: "Stryker.NET mutation testing — score interpretation, threshold policy, operator selection, survivor triage, CI cost."
 ---
 
 # Stryker Expert — Tool-Level Skill

@@ -1,6 +1,6 @@
 ---
 name: glossary-anchor-keeper
-description: Per-round audit of `docs/GLOSSARY.md` (and any adjacent glossary surfaces) for anchor discipline — whether each term is anchored to a widely-accepted external definition, partially anchored, or factory-native; whether anchor citations are present; whether anchored terms have drifted silently from their anchor source; whether the round's drift budget has been respected. Flags silent drift, missing anchor tags, uncited anchors, and anchor-breaking changes that lack an ADR. Enforces the rule from `memory/feedback_language_drift_anchor_discipline.md` that external anchors break one at a time with external-consensus evidence, not silently round-over-round. Protects the factory from Tower-of-Babel / Heritage-Language-Loss failure modes where agents moving at 100x human pace produce vocabulary that external readers cannot follow. Advisory only; binding decisions go via Architect or human maintainer sign-off. Distinct from `glossary-police` (factory-wide term-discipline), `cross-domain-translation` (translating between expert ontologies), `translator-expert` (applied-translation skill), `verification-drift-auditor` (drift between papers and Lean/TLA+/Z3 proofs), and `public-api-designer` (public-surface term contracts).
+description: Glossary anchor audit — external-definition drift, missing citations, anchor-breaking changes, Tower-of-Babel prevention.
 ---
 
 # Glossary Anchor Keeper

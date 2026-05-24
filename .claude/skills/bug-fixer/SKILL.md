@@ -1,6 +1,6 @@
 ---
 name: bug-fixer
-description: Capability skill — procedure for turning a known-open finding in docs/BUGS.md into a landed fix. No persona. Any agent may invoke this skill; the procedure itself enforces greenfield discipline — falsifying test first, blast-radius walk, minimal correct fix (not quick-hack), reviewer floor, spec updates. Previously architect-only to guard against quick hacks; the safeguards baked into this procedure plus GOVERNANCE §20 reviewer floor plus the skill-creator workflow make the restriction redundant as of round 29.
+description: "Bug-fix procedure — falsifying test, blast-radius walk, minimal correct fix, reviewer floor, spec update."
 ---
 
 # Bug Fixer — Procedure

@@ -201,7 +201,7 @@ async function axisCadenceWorkflows(ghAvailable: boolean): Promise<void> {
       "--json",
       "conclusion,createdAt,status",
     ]);
-    // Per Codex 2026-05-06 review on PR #1702: surface gh failures
+    // Per PR #1702 review 2026-05-06: surface gh failures
     // explicitly so auth/network breakage doesn't masquerade as
     // "no recent runs" cleanliness.
     if (r.exitCode !== 0) {
@@ -268,7 +268,7 @@ async function axisLintWorkflows(ghAvailable: boolean): Promise<void> {
       "--json",
       "conclusion",
     ]);
-    // Per Codex 2026-05-06 review on PR #1702: surface gh failures
+    // Per PR #1702 review 2026-05-06: surface gh failures
     // so a non-zero exit isn't reported as "0 failures" cleanliness.
     if (r.exitCode !== 0) {
       console.log(
@@ -360,13 +360,13 @@ async function axisRazorCadence(ghAvailable: boolean): Promise<void> {
     "open",
     // Default page size is 30; explicit --limit prevents truncation
     // when the razor-cadence backlog grows past the default. Per
-    // Codex 2026-05-06 review on PR #1702.
+    // PR #1702 review 2026-05-06.
     "--limit",
     "200",
     "--json",
     "number,title,createdAt",
   ]);
-  // Per Codex 2026-05-06 review on PR #1702: never silently swallow
+  // Per PR #1702 review 2026-05-06: never silently swallow
   // a non-zero exit. A failed gh call would otherwise print "Count: 0"
   // -- identical to genuine cleanliness -- masking real cadence skips.
   if (r.exitCode !== 0) {

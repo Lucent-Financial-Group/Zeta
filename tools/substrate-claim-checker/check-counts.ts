@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * substrate-claim-checker / check-counts.ts (v0.4.4)
+ * substrate-claim-checker / check-counts.ts (v1.0)
  *
  * Per the verify-then-claim discipline memo
  * (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
@@ -28,12 +28,14 @@
  *   v0.4.4 — fence-close requires whitespace-only after delimiter
  *            (closes "```bash" classified as opening info-string
  *            rather than closer)
+ *   v1.0 — B-0170 smallest-slice claim: v1 sub-classes (existence,
+ *          path-form, cross-surface, convention) now shipped in sibling
+ *          modules; this file remains the count-drift anchor.
  *
- * v0.4.4 NOT in scope (deferred to v1):
- *   - Existence drift (file/dir/tool claimed to exist; doesn't)
- *   - Semantic-equivalence drift (command substitution claims)
- *   - Empirical-output drift (run-the-command-and-compare)
- *   - Convention drift / path-form drift / self-recursive drift
+ * Remaining (deferred per B-0170 re-decomp assumption):
+ *   - Semantic-equivalence drift
+ *   - Empirical-output drift
+ *   - Self-recursive drift
  *
  * Usage:
  *   bun tools/substrate-claim-checker/check-counts.ts <file>
@@ -165,6 +167,7 @@ function findClaims(lines: string[]): Claim[] {
     "named-persona experts",
     "tools",
     "sub-classes",
+    "check-types",
   ];
   // Match "20 rows" / "20+ rows" (whitespace-separated) or
   // "20-row" / "20+-row" (hyphenated), capturing integer + optional '+'.

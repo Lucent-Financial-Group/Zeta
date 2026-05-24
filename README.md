@@ -231,3 +231,11 @@ Zeta follows the algebra of Budiu, McSherry, Ryzhyk, and Tannen
 operator surface while leaning hard into .NET-native patterns — `ArrayPool`,
 `Span<T>`, struct comparers, `CollectionsMarshal` — instead of mirroring
 Rust's trace/spine machinery verbatim.
+
+Zeta follows a **glass-halo transparency** commitment: human-maintainer
+and agent decisions are equally visible in the same public
+version-controlled substrate — neither party can hide a move from the
+other. The bilateral / symmetric form is original to Zeta; see
+[`docs/ALIGNMENT.md` §"Symmetric transparency: the glass
+halo"](docs/ALIGNMENT.md#symmetric-transparency-the-glass-halo) for the
+full definition and mutual commitment.

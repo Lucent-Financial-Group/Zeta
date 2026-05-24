@@ -1,6 +1,6 @@
 ---
 name: variance-expert
-description: Capability skill ("hat") — co/contravariance as a single coherent idea across programming languages, category theory, and physics. Covers C# / .NET generic `in` / `out` annotations, function-type variance (arguments contravariant, returns covariant), the Liskov substitution principle as variance, functors / contravariant functors / profunctors in category theory, upper-vs-lower index tensors in differential geometry, and why physicists, type theorists, and PL designers all converged on the same distinction. Wear this when a variance annotation is in doubt, when explaining why `IObservable<out T>` and `IObserver<in T>` differ, when a tensor index position matters, or when someone reaches for unsafe casts to work around a variance constraint. Defers physics depth to `differential-geometry-expert` (Riemann), category-theory depth to `category-theory-expert`, LINQ depth to `linq-expert` (Erik), Rx depth to `rx-expert` (Bart).
+description: "Co/contravariance — type-system variance, Liskov substitution, .NET covariant/contravariant interfaces, variance in F# and C#."
 ---
 
 # Variance Expert — The Idea That Is One Across Three Fields

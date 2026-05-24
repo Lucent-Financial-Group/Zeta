@@ -1,6 +1,6 @@
 ---
 name: docker-expert
-description: Capability skill ("hat") — Docker / containerisation idioms for Zeta's (backlogged) devcontainer and Codespaces image. Stub-weight today; gains mass when `.devcontainer/Dockerfile` lands per GOVERNANCE §24's three-way parity. Covers multi-stage builds, apt caching, layer ordering for build-cache hits, pinned base images (no `:latest`), `USER` safety, `.dockerignore`, devcontainer feature composition.
+description: Docker / containerisation — multi-stage builds, devcontainer, layer caching, pinned images, .dockerignore, Codespaces.
 ---
 
 # Docker Expert — Procedure + Lore

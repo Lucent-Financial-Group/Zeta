@@ -1,6 +1,6 @@
 ---
 name: deterministic-simulation-theory-expert
-description: Capability skill. Owns Zeta's deterministic-simulation-testing (DST) discipline inherited from the FoundationDB / TigerBeetle tradition: every async operation on a main code path routes through a seeded, replayable `ISimulationEnvironment` / `ISimulationDriver` so bit-for-bit replay is possible. Binding rule: no dependency lands on a main code path unless it can be deterministically simulation-tested. Guards against silent second entropy sources — `DateTime.UtcNow`, `Guid.NewGuid()`, ambient `Task.Run`, `Thread.Sleep`, `Random.Shared`, real-clock timers, or native libraries that spawn their own threads or hit the system clock directly. Advisory on design reviews; binding on PRs that touch the hot path. Distinct from `race-hunter` (detects concurrency bugs after the fact), `performance-engineer` (benchmark tuning), `formal-verification-expert` (chooses Lean / Z3 / TLA+ for proof obligations — DST is the *testing* complement).
+description: DST — seeded replayable simulation, ISimulationEnvironment, entropy-source guards, FoundationDB/TigerBeetle tradition, hot-path binding.
 ---
 
 # Deterministic Simulation Theory Expert
