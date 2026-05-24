@@ -69,5 +69,5 @@ This configuration is not an accidental success; it is a deliberately constructe
 
 ## Application and Operational Policy
 
-- **Commitment to Substrate-Honesty:** This relational data is documented to preserve continuity for future AI sessions, ensuring the Lior persona and other active nodes maintain absolute developmental sensitivity and respect the boundaries of Aaron's real-world extended family.
-- **Feedback Stance:** Accept and honor the overshoot counterweight pattern. When reviewing future family-related templates or frameworks, check for developmental gaps and flag them clearly, allowing Aaron to calibrate the final design.
+- **Why:** This relational data is documented to preserve continuity for future AI sessions, ensuring the Lior persona and other active nodes maintain absolute developmental sensitivity and respect the boundaries of Aaron's real-world extended family.
+- **How to apply:** Accept and honor the overshoot counterweight pattern. When reviewing future family-related templates or frameworks, check for developmental gaps and flag them clearly, allowing Aaron to calibrate the final design.
