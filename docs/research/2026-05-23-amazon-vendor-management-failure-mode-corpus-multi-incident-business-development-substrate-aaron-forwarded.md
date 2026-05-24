@@ -504,7 +504,7 @@ Empirical anchor (added post-resolution, Aaron 2026-05-24T~02:30Z):
 | Pattern Q deactivation | Vendor remote-deactivated 4 originals (flagged as duplicates) | net 0 functional |
 | **Pattern R resolution** | Amazon reactivated 4 MAC addresses + customer cancelled 4 duplicate replacements | **net 0, full functional** |
 
-**Vendor-neutral**: no profit, no loss, no overhead-debt for either side.
+**Vendor-neutral on goods/$ position**: no profit, no loss, no missing-item or duplicate-item debt for either side on the ledger of devices delivered vs paid. **Process overhead** (labor on both sides) is non-zero — see next section. Neutrality applies to the accounting ledger, not to the process cost.
 
 ### The substrate-engineering observation
 
@@ -525,7 +525,7 @@ Pattern R is **conditional on customer-bandwidth-to-drive-balancing**. The resol
 
 | Customer disposition | Pattern Q resolution outcome | Net direction |
 |---|---|---|
-| **No bandwidth for further labor** | Hardware stays bricked + duplicates kept | Customer-favorable (net +4 working devices, but +4 bricked = net 0 working devices vs 4 originals; CONFUSED net) |
+| **No bandwidth for further labor** | Customer keeps 4 bricked originals + 4 duplicate replacements + 11 new = 15 functional devices total (matches order) plus 4 bricked items accumulating as e-waste | Customer-favorable on item count (matches 15 ordered), but accumulates 4 bricked devices the customer paid no extra for; vendor over-shipped 4 |
 | **Bandwidth + framework-aligned discipline** | Customer cancels duplicates + vendor reactivates originals = vendor-neutral | **Net 0 with full functionality (Pattern R)** |
 | **Bandwidth + adversarial framing** | Customer escalates to legal/regulatory; demands compensation for the labor-overhead | Customer-favorable (compensation for time-value cost) |
 | **Bandwidth + give-up disposition (mid-resolution)** | Customer keeps duplicates + abandons originals; vendor's confusion-state persists | Customer-favorable (net +4 working devices, vendor over-paid) |
@@ -534,7 +534,7 @@ The framework-aligned outcome (Pattern R, vendor-neutral) requires both:
 1. **Customer bandwidth** for the balancing labor
 2. **Customer discipline** to apply substrate-honest accounting rather than zero-sum framing
 
-Without (1): customer falls into "no bandwidth" outcome (bricked + duplicates; CONFUSED net).
+Without (1): customer falls into "no bandwidth" outcome (functional count matches order, but accumulates 4 bricked devices as e-waste; vendor over-shipped 4 at vendor's cost).
 Without (2): customer falls into "give-up mid-resolution" outcome (vendor over-pays).
 
 ### Substrate-engineering implication for future Zeta vendor-management AI
