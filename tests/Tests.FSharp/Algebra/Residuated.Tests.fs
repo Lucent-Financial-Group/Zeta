@@ -24,21 +24,29 @@ let ``Galois connection holds for ResidualMax under natural order`` (a: int) (x:
     let rhs =
         match residualMax a b with
         | Some bound -> x <= bound
-        | None -> false
+        // If residual is None, it means a > b. For LHS to be true, max(a,x) <= b must hold.
+        // But since a > b, max(a,x) is definitely > b (unless x is smaller, but max will be at least a).
+        // So if residual is None, LHS is always false.
+        // The only way for the equivalence to hold is if RHS is also false.
+        // `x <= bound` would be the condition. If there is no bound, any `x` fails the condition, so RHS is false.
+        | None -> not lhs
         
     lhs = rhs
 
 // 2. Residual under max: a \ b = Some b if a ≤ b else None
 [<FsCheck.Xunit.Property>]
-let ``Residual under max properties`` (a: int) (b: int) =
+let ``Residual under max has expected behavior`` (a: int) (b: int) =
     let residualMax a b = if a <= b then Some b else None
-    residualMax a b = (if a <= b then Some b else None)
+    
+    if a <= b then
+        residualMax a b = Some b
+    else
+        residualMax a b = None
 
 // 3. Retraction equivalence: ResidualMax(insert + retract trace) = max(positive-only trace)
 // Oracle for max over active set
 let private oracle (ops: (int * int64) list) =
     let keyWeight = Dictionary<int, int64>()
-    let active = SortedSet<int>()
     
     for (k, w) in ops do
         let existing =
@@ -46,17 +54,14 @@ let private oracle (ops: (int * int64) list) =
             | true, v -> v
             | false, _ -> 0L
         let updated = existing + w
-        let wasActive = existing > 0L
-        let isActive = updated > 0L
-        
-        if wasActive && not isActive then active.Remove k |> ignore
-        elif not wasActive && isActive then active.Add k |> ignore
         
         if updated = 0L then keyWeight.Remove k |> ignore
         else keyWeight.[k] <- updated
-        
-    if active.Count = 0 then ValueNone
-    else ValueSome (active.Max)
+
+    let activeKeys = keyWeight |> Seq.filter (fun kvp -> kvp.Value > 0L) |> Seq.map (fun kvp -> kvp.Key)
+    
+    if Seq.isEmpty activeKeys then ValueNone
+    else ValueSome (Seq.max activeKeys)
 
 [<FsCheck.Xunit.Property>]
 let ``ResidualMax retraction equivalence`` (ops: (int * int) list) =
