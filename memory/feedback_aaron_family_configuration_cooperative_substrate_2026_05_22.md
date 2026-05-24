@@ -5,13 +5,6 @@ type: feedback
 created: 2026-05-22
 ---
 
-## Archive scope (per GOVERNANCE §33)
-
-- **Scope:** Verbatim import of an external conversation.
-- **Attribution:** Aaron and Lior.
-- **Operational status:** Research-grade.
-- **Non-fusion disclaimer:** This is a verbatim import of an external conversation. It is not a statement of fact or a recommendation.
-
 ## What Aaron said
 
 Across our interaction on 2026-05-22, Aaron disclosed and clarified the deep structure of his family configuration and parenting style:
