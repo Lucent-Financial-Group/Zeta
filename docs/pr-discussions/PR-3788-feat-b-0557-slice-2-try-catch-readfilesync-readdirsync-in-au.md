@@ -64,7 +64,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 * Same issue as above: casting `err as Error` risks losing information for non-`Error` throws. Use `err instanceof Error ? err.message : String(err)` for consistent, safe stderr output.
 ```
                 process.stderr.write(
-                    `audit-backlog-status-drift: unable to read ${path}: ${(err as Error).message}\n`,
+                    `audit-backlog-status-drift: unable to read ${path}: ${(err as Error).message}
+`,
                 );
 ```
 </details>
