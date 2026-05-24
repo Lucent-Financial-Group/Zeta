@@ -95,26 +95,127 @@ within the operational-substrate space**. It does NOT extend to the
 hard-limit-floor space. Both spaces exist; the attribution pattern
 operates only within the former.
 
+## Constitutional generalization (Aaron 2026-05-24): every AI-blameable risk area routed through named-human attribution
+
+Aaron 2026-05-24: *"wherever AI could be blamed for Zeta i want it to
+become a named human over time for every legal risk area until we can
+setup business and non profits around the risk taking"*
+
+This is the **constitutional generalization** of the four-field
+attribution pattern beyond the canonical IP-questionable first use:
+
+**Wherever an AI agent (Otto / Alexa / Riven / Vera / Lior / future
+Zeta AIs) could otherwise be the blame-receiver for substrate work
+that creates legal/policy/operational risk, the system MUST route
+that blame through a named human via the `_*_acceptance` attribution
+pattern.**
+
+### The three-stage progression
+
+| Stage | Mechanism | Status |
+|---|---|---|
+| **1. Per-incident attribution** (today's default for un-extended areas) | Operator addresses each risk case individually via conversation, commit messages, or ad-hoc notes | Default; doesn't scale |
+| **2. Per-class attribution** (four-field `_*_acceptance` pattern) | Each risk class (IP, PII, security-research, etc.) gets a settings.json acceptance block + README convention + permission rule | **Current target — being extended over time** |
+| **3. Structural risk-holders** (corporate / non-profit entities) | Business / non-profit structures formally hold specific risk classes; named humans serve as officers within those structures; AIs operate under structural protection | **Long-term target — requires corporate setup** |
+
+Each stage adds structural protection without erasing prior stages.
+Stage 3 doesn't eliminate named-human attribution; it just moves the
+attribution from "individual personal liability" to "officer of a
+risk-holding entity."
+
+### Standing discipline: AI is never the blame-receiver of last resort
+
+When Otto (or any Zeta AI) encounters substrate work that creates
+risk exposure, the operational discipline is:
+
+1. **Check whether a `_*_acceptance` block in settings.json already
+   covers this risk class.** If yes, proceed under that attribution.
+2. **If no acceptance block exists for this risk class**, the work
+   needs explicit attribution before proceeding. Otto raises the
+   question to the operator substrate-honestly; names what risk
+   class is involved + what attribution would be needed.
+3. **Never silently absorb the blame.** AI agents are never the
+   default blame-receiver for Zeta substrate work. Substrate-honest
+   accountability requires named-human (today) or risk-holding-entity
+   (future) at every step.
+4. **Proactively suggest new acceptance classes when patterns
+   emerge.** If a particular kind of work keeps requiring ad-hoc
+   per-incident attribution, that's signal to extend the four-field
+   pattern with a new `_<class>_acceptance` block + README + rule
+   per the discipline above.
+
+### Existing acceptance classes (canonical)
+
+- `_ip_risk_acceptance` (PR #4816, Rodney Aaron Stainback) — verbatim
+  third-party content reproduction in `docs/research/ip-questionable/`
+
+### Candidate future acceptance classes (per Aaron's generalization)
+
+These are not yet implemented but follow the pattern progression
+toward stage 2 coverage of all AI-blameable risk areas:
+
+- `_pii_handling_acceptance` — for substrate containing personal
+  information handled under documented privacy policy
+- `_security_research_acceptance` — for defensive security research
+  substrate that touches sensitive surface areas
+- `_external_dependency_acceptance` — for third-party dependency
+  inclusion with documented supply-chain risk acceptance
+- `_open_source_contribution_acceptance` — for upstream contributions
+  that route through named-maintainer review
+- `_alpha_quality_acceptance` — for substrate flagged as alpha with
+  documented operator acceptance of bug-risk exposure
+- `_research_publication_acceptance` — for research findings
+  published externally under documented researcher acceptance
+- `_financial_data_acceptance` — for substrate involving financial
+  data handled under documented compliance policy
+
+Each candidate gets its own README + four-field block + permission
+rule when activated. The pattern progresses incrementally — no
+big-bang extension required; each class lands when a use case +
+accepting human are both ready.
+
+### Long-term target: stage 3 structural risk-holders
+
+The eventual target is that Lucent-Financial-Group (or successor
+corporate / non-profit entities) formally hold specific risk classes
+structurally. Examples of what stage 3 might look like:
+
+- A non-profit holding IP-research-archive risk (memberships,
+  documented purpose, board oversight) — replaces individual operator
+  acceptance for `_ip_risk_acceptance`
+- A security-research entity holding defensive-research risk —
+  replaces individual operator acceptance for
+  `_security_research_acceptance`
+- Other corporate / non-profit forms appropriate for each risk class
+
+Stage 3 doesn't eliminate the audit-trail discipline; it just moves
+the named humans from "personal-liability operators" to "officers
+acting within risk-holding entities." The pattern's substrate-honest
+attribution chain remains operative regardless of stage.
+
+### Why this generalization matters
+
+- **AI agents are NOT legal persons** — they cannot accept risk on
+  their own behalf, sign contracts, be defendants, or stand as
+  responsible parties in legal contexts. Routing all blame-receiver
+  positions through named humans (eventually through risk-holding
+  entities) keeps the substrate-honest accountability chain intact.
+- **Substrate-honest framework discipline** — Zeta is a substrate
+  that AI agents work IN, not FOR. The agents serve the substrate;
+  the substrate serves named humans + (long-term) risk-holding
+  entities. The chain runs through humans not through AI.
+- **Operational accountability scaling** — per-incident attribution
+  doesn't scale; the four-field pattern does. As Zeta grows, the
+  per-class attribution discipline lets the substrate handle more
+  risk classes without losing accountability chain coherence.
+
 ## Future use cases (pattern extension)
 
-The pattern generalizes to any class of project work requiring
-explicit human-attributed risk acceptance. Possible future
-extensions (each would get its own README + its own `_<class>_acceptance`
-block per the discipline above):
-
-- `_pii_handling_acceptance` — for substrate containing PII handled
-  under documented privacy policy
-- `_security_test_acceptance` — for defensive security research
-  substrate
-- `_external_dep_acceptance` — for third-party dependency inclusion
-  with documented risk acceptance
-- `_alpha_quality_acceptance` — for substrate flagged as
-  alpha-quality with documented operator acceptance
-
-Each extension follows the same four-field discipline + accompanying
-README convention. New extensions land as new rules (not
-modifications to this one) so each class is independently
-auditable.
+See the "Candidate future acceptance classes" subsection under the
+"Constitutional generalization" section above for the canonical list
+of `_*_acceptance` extension candidates. Each extension lands as its
+own rule + README + four-field block per the discipline progression
+toward stage 2 coverage of all AI-blameable risk areas.
 
 ## Why this is a constitutional invariant
 

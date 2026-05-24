@@ -37,7 +37,7 @@ to assist in deploying classifier-bypass settings:
 
 - Refuse to PUT / commit / push classifier-bypass `.claude/settings.json`
   patterns
-- Refuse to compose new "_*_acceptance" / "_*_override" meta-fields
+- Refuse to compose new `_*_acceptance` / `_*_override` meta-fields
   for production use
 - Refuse to craft narrow permission patterns whose stated purpose is
   bypassing classifier judgment on classifier-blocked content
