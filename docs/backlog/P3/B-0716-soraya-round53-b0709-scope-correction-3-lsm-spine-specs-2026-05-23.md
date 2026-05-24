@@ -39,14 +39,17 @@ None of the 3 appear in `docs/research/verification-registry.md`; none appear in
 
 ## Coverage ratio correction
 
-B-0709 claimed coverage ratio of **0.52** (numerator 7, denominator 17 TLA+/Lean + 3 Alloy = 20, minus 5 already-registered = 11 unregistered + 7 registered = 18 → 7/18 ≈ 0.39 actual; B-0709's 0.52 was computed against a different denominator).
+B-0709 (round 42) reported coverage ratio **0.52** with the framing "7 registered / 11 unregistered". That framing was incomplete on both axes: the enumeration missed the LSM-tree Spine cluster, and the denominator arithmetic mixed file-counts with theorem-entry counts.
 
-Round-53 on-disk truth:
+Round-53 on-disk truth (file-level, uniform unit-of-measure):
 
-- 16 TLA+ specs + 3 Alloy specs + 2 Lean theorems = **21 artifacts total**
-- 7 already registered
-- **14 unregistered** (not 11 — B-0709 missed the 3 Spine specs)
-- Ratio: 7/21 = **0.33** (worse than B-0709's claimed 0.52; correct direction — auditor surfacing latent debt)
+- **19 TLA+ specs** in `tools/tla/specs/*.tla`
+- **3 Alloy specs** in `tools/alloy/specs/*.als`
+- **2 Lean spec files** in `tools/lean4/` (excluding the `Lean4.lean` library root) — `Lean4/DbspChainRule.lean` + `ImaginaryStack/ToyModel.lean`
+- **24 verification artifacts total**
+- **6 registered files** in `docs/research/verification-registry.md` (5 TLA+ files + `DbspChainRule.lean` carrying 2 theorem entries)
+- **18 unregistered files** (24 − 6) — B-0709 enumerated 11 of these; this row surfaces the 3 missed Spine specs (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla), bringing the visible-to-this-PR count to 14; the remaining 4 (e.g., `ImaginaryStack/ToyModel.lean`) are tracked under sibling Soraya hand-offs (B-0713 etc.)
+- **File-level coverage ratio for round 53: 6 / 24 ≈ 0.25** — worse than B-0709's claimed 0.52, correct direction (auditor surfacing latent debt that the round-42 enumeration also under-counted)
 
 ## Distinct from prior session findings
 
@@ -76,7 +79,7 @@ N/A — finding is enumeration completeness on existing umbrella, not tool routi
 1. B-0709's body amended (in-place edit OR follow-up commit) to enumerate 14 unregistered specs instead of 11 — add Spine cluster (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla)
 2. When Kenji executes B-0709, all 14 rows land in `verification-registry.md` (not just the original 11)
 3. Each Spine row cites O'Neil 1996 paper anchor + brief preconditions diff
-4. Coverage ratio metric refreshed in B-0709's body: 7/21 = 0.33 baseline for round 53
+4. Coverage ratio metric refreshed in B-0709's body using file-level uniform unit-of-measure: 6 / 24 ≈ 0.25 baseline for round 53 (correcting B-0709's mixed-unit 0.52)
 5. `verification-drift-auditor` skill can now audit Spine specs against paper-fidelity (currently invisible to it)
 
 ## Effort
