@@ -64,7 +64,7 @@
       "Bash(gh pr *)",
       "Bash(gh issue *)",
       "Bash(gh api *)",
-      "Bash(gh api -X PUT repos/Lucent-Financial-Group/Zeta/contents/docs/research/ip-questionable/*)"
+      "Bash(gh api -X PUT repos/Lucent-Financial-Group/Zeta/contents/docs/research/ip-questionable/*)",
       "Bash(gh run *)",
       "Bash(gh label *)",
       "Bash(gh repo view *)",
