@@ -1,6 +1,6 @@
 ---
 name: etymology-expert
-description: Capability skill for word origin and semantic-history analysis. Covers PIE and Proto-Germanic roots, Latin / Greek substrates, compound-word decomposition, semantic drift (how a word's meaning changes through time), borrowings and calques, and the folk-etymology trap (where a wrong-origin story has become part of a term's social meaning). Specializes in computing-term etymology — the surprisingly rich history behind "bug", "daemon", "kernel", "cache", "cookie", "spam", "grep", "fork", "zombie", "orphan", "mutex", "semaphore", "scram", "hack" — and in using etymology to avoid semantic collisions when naming new terms (a new name that inherits the wrong prior meaning is a trap). Distinct from naming-expert (which is the *act* of assignment); etymology is the *history* of a word's form and meaning. Use this skill when researching the origin of a term before adopting it, when deciding whether a candidate name is loaded with unwanted prior semantics, when writing glossary entries, or when teaching the "why" behind a term.
+description: Etymology — word origins, semantic drift, computing-term history, folk-etymology traps, naming-collision prevention.
 ---
 
 # Etymology Expert — The History of Words

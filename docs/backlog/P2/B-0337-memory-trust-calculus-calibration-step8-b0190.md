@@ -1,0 +1,59 @@
+---
+id: B-0337
+priority: P2
+status: open
+title: Memory trust-calculus calibration — measure cross-instance transmission fidelity
+tier: research
+effort: M
+ask: B-0190 Step 8 decomposition
+created: 2026-05-08
+last_updated: 2026-05-08
+parent: B-0190
+depends_on: [B-0332]
+composes_with: [B-0190, B-0332]
+tags: [memory, trust-calculus, measurement, research, trajectory-child]
+type: research
+---
+
+# B-0337 — Memory trust-calculus calibration
+
+## Parent
+
+B-0190 Step 8 (memory trust-calculus calibration).
+
+## What
+
+The substrate-encoding-bypasses-trust-calculus claim (PR #1552)
+needs operational measurement. Build a measurable signal for
+cross-instance memory transmission fidelity:
+
+1. **Test protocol** — a fresh agent instance loads CLAUDE.md +
+   N random memory files; measure whether it can answer:
+   - What is the carved sentence for file X?
+   - What does file Y compose with?
+   - What correction does feedback file Z encode?
+2. **Baseline measurement** — run the protocol 5 times, record
+   accuracy.
+3. **Compare load-bearing vs decorative** — do load-bearing
+   files (per B-0332) transmit better than decorative ones?
+
+## Why P2
+
+Research-grade measurement. The factory operates without this;
+the measurement informs future memory architecture decisions.
+
+## Why depends on B-0332
+
+The load-bearing classification provides the comparison groups
+for the measurement.
+
+## Acceptance criteria
+
+1. Test protocol documented in a `docs/research/` file.
+2. At least one baseline measurement run completed.
+3. Results reported with accuracy numbers.
+
+## Prior art
+
+- `memory/feedback_substrate_encoding_bypasses_trust_calculus_sleeping_bear_cross_instance_transmission_aaron_2026_05_04.md`
+- PR #1552 — the originating claim.

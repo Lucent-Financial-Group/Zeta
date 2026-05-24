@@ -1,6 +1,6 @@
 ---
 name: skill-gap-finder
-description: Meta-capability skill — scans the repo for recurring patterns, scattered tribal knowledge, and repeated discussions that should be centralised in a skill but aren't yet. Proposes new skills for the `skill-creator` workflow to execute on. Distinct from `skill-expert`'s `skill-tune-up`, which ranks EXISTING skills by tune-up urgency; this skill looks for ABSENT skills. Recommends only — does not edit any SKILL.md itself. Invoke every 5-10 rounds or when a round feels like it rediscovered discipline already repeated three times.
+description: Skill gap finder — scans for recurring patterns and tribal knowledge that should be centralised in a skill but are not yet.
 ---
 
 # Skill Gap Finder — Procedure

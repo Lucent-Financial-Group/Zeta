@@ -207,6 +207,11 @@ let ``Alloy spec InfoTheoreticSharder rules out double commits`` () =
 
 
 [<Fact>]
+let ``Alloy spec ThreeColoring 3-coloring probe and K4 no-3-coloring check`` () =
+    assertSpecValid "ThreeColoring"
+
+
+[<Fact>]
 let ``Alloy jar is installed where tools/setup/install.sh drops it`` () =
     // Informational gate: fails when someone forgets to re-run
     // `tools/setup/install.sh`. Keeps the "why is the runner

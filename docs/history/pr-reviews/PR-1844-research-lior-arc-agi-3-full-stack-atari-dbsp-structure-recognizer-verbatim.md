@@ -57,12 +57,12 @@
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AQGxW`
-- **Path**: `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-07T09:10:47Z on `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`:5 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-07T09:10:47Z on `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`:5 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  State non-fusion boundary explicitly in header**
@@ -75,12 +75,12 @@
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AQGxb`
-- **Path**: `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-07T09:10:47Z on `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`:3 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-07T09:10:47Z on `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`:3 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Add a §33 lint trigger phrase to keep this file audited**
@@ -93,12 +93,12 @@
 ### Thread 3 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AQIzA`
-- **Path**: `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T09:12:44Z on `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`:5 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T09:12:44Z on `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`:5 (association: NONE)
 
   <pre>
   §33 requires the `Non-fusion disclaimer:` line to explicitly state that agreement/shared language/repeated interaction does not imply shared identity, merged agency, consciousness, or personhood (GOVERNANCE.md §33). The current disclaimer only says the message is preserved verbatim, which doesn’t meet the boundary requirement; please expand it to the explicit non-fusion statement (you can still keep the “preserved verbatim” note as an extra sentence).
@@ -108,12 +108,12 @@
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6AQIzl`
-- **Path**: `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T09:12:45Z on `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`:31 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T09:12:45Z on `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`:31 (association: NONE)
 
   <pre>
   The verbatim section asserts that “safe ROMs” have been checked into the repo. In-tree, the `roms/atari/**` directories appear to contain README placeholders only (no ROM binaries), so this sentence is factually misleading and could create unnecessary legal/operational confusion. Without altering the verbatim text, consider adding a short clarification in the surrounding context or in Otto’s response noting the repo does not currently ship ROM files and pointing to the relevant ROM safety/README policy/location.
@@ -125,7 +125,7 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
+- `memory/persona/lior/conversations/2026-05-07-lior-arc-agi-3-full-stack-visibility-atari-dbsp-structure-recognizer-verbatim-aaron-lior.md`
 
 **Message:**
 

@@ -287,19 +287,31 @@ agent (not invoked from another agent). The Codex
 instance reads this doc + the substrate listed above and
 follows the disciplines.
 
-### Codex-native loop mechanism (TBD — Codex fills in)
+### Codex-native loop mechanism
 
 Codex CLI mechanisms for cron-style scheduling, session
 resumption, and tick cadence are **harness-specific**.
-This doc deliberately doesn't prescribe them — the Codex
-instance picking up this handoff documents its own
-mechanism back into this file or a sibling doc.
+The current host implementation is documented in
+`docs/CODEX-HARNESS-NOTES.md`: a macOS `launchd`
+LaunchAgent wakes every 60 seconds from the main-backed
+Codex control clone, writes local heartbeat / log state, and
+starts a bounded Codex gate only when the configured gate
+interval has elapsed.
 
 The substrate side (what to read, what disciplines hold,
 how to refresh world-model, when to act vs wait) is
 specified above. The harness side (how Codex actually
 wakes up every minute, how it persists state across
-ticks) is for the Codex instance to land.
+ticks) lives in the harness notes.
+
+This creates one important evidence distinction. A healthy
+Codex launchd heartbeat proves the host loop is awake, but it
+is not itself a repo tick shard under
+`docs/hygiene-history/ticks/`. Until a separate runner-policy
+change lands, substantive Codex gates must either land the
+normal shard evidence themselves or report why no repo shard
+was produced. Do not treat heartbeat-only local logs as if
+they satisfied the autonomous-loop shard contract on `main`.
 
 ### First-session checklist for the Codex instance
 
@@ -316,8 +328,10 @@ time:
    blockers.
 4. **Document the harness-side mechanism** that drove
    the smoke test (cron equivalent, how state persisted,
-   how the next tick re-engaged) — extend this doc or
-   land a sibling `docs/CODEX-HARNESS-NOTES.md`.
+   how the next tick re-engaged) in
+   `docs/CODEX-HARNESS-NOTES.md`, and explain whether the
+   mechanism writes repo tick shards itself or only local
+   heartbeat / gate logs.
 5. **Then start the actual loop.**
 
 ## Exit conditions / handoff back

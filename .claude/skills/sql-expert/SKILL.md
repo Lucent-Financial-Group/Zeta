@@ -1,6 +1,6 @@
 ---
 name: sql-expert
-description: Capability skill ("hat") — SQL-the-language umbrella. Covers the SQL standard (SQL:2016 / SQL:2023 core), three-valued logic (TRUE / FALSE / UNKNOWN), set vs multiset semantics, grouping / window / CTE / recursive-CTE rules, transaction isolation levels, MERGE / UPSERT semantics, and dialect-drift between ANSI SQL and the major engines (PostgreSQL, SQL Server, MySQL, SQLite, DuckDB). Wear this when a prompt asks "is that SQL right?" or "does that optimisation preserve semantics?" on a forward-looking Zeta Postgres-wire frontend. Defers to `postgresql-expert` for Postgres-specific dialect / wire-protocol / catalog matters, to `query-planner` (Imani) and `query-optimizer-expert` for plan-level reasoning, to `relational-algebra-expert` for the mathematical foundation, and to `entity-framework-expert` for EF Core LINQ → SQL translation.
+description: SQL standard — SQL:2016/2023, three-valued logic, grouping/window/CTE, isolation levels, dialect drift across engines.
 ---
 
 # SQL Expert — Language Umbrella

@@ -1,10 +1,12 @@
 ---
 id: B-0249
 priority: P0
-status: open
+status: closed
+closed: 2026-05-09
+closed_by: "all 4 children closed; 72+ autonomous PRs produced in first session"
 title: "Autonomous backlog pickup — loops must start new work, not just maintain"
 created: 2026-05-07
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: []
 decomposition: decomposed
 children: [B-0278, B-0279, B-0280, B-0281]

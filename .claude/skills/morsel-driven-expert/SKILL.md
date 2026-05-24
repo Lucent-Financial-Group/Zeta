@@ -1,6 +1,6 @@
 ---
 name: morsel-driven-expert
-description: Capability skill ("hat") — engine-type specialization under `execution-model-expert`. Covers morsel-driven parallelism (Leis / Neumann / Kemper 2014, Hyper / Umbra): small cache-sized work units (morsels), NUMA-aware scheduling, work-stealing, pipeline-breakers with partitioned state, and the interaction with vectorised execution. Zeta's call: **aspirational, not landed**. Morsel is the planned parallel-execution model but requires the scheduler to route through `ISimulationEnvironment` (Rashida's binding rule) — this hat co-owns the DST-compatibility question with `deterministic-simulation-theory-expert`. Defers to `execution-model-expert` for cross-model framing, to `query-planner` for plan shape, to `vectorised-execution-expert` for the vector-level details, and to `hardware-intrinsics-expert` for NUMA-aware kernel data placement.
+description: Morsel-driven parallelism — cache-sized work units, NUMA-aware scheduling, work-stealing, pipeline-breakers, DST-compatibility (Hyper/Umbra).
 ---
 
 # Morsel-Driven Expert — Parallel Scheduling Narrow

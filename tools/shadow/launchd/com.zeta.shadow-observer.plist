@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  com.zeta.shadow-observer.plist — launchd LaunchAgent template for the Zeta
+  shadow observer (B-0402 Slice 6 — durable tick-source via macOS launchd).
+
+  This file is a TEMPLATE. Mustache-style placeholders in the body get
+  replaced with the local bun path and the local Zeta repo root.
+
+  DO NOT manually substitute. Run the installer:
+
+      bun tools/shadow/launchd/install-launchagent.ts
+
+  The installer substitutes the placeholders safely (no shell-metacharacter
+  risk with paths containing &, |, \), runs plutil -lint on the result,
+  writes to ~/Library/LaunchAgents/, and optionally bootstraps via
+  launchctl. See tools/shadow/launchd/README.md for the full install
+  procedure (incl. accessibility permission) and the uninstall recipe.
+
+  Composes-with:
+    - tools/shadow/shadow-observer.ts (the process this launches)
+    - tools/shadow/restore-arrow.applescript (the --restore-arrow keypress)
+    - docs/backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md
+    - .claude/rules/shadow-star-shorthand-autocomplete-marker.md (the marker
+      this observer-loop produces when accepted suggestions get shipped)
+
+  Default ProgramArguments combine:
+    - --dry-run: suppresses the destructive Enter-to-accept (observer-only
+      for the autocomplete detection path).
+    - --restore-arrow: defensively presses → (right arrow) at the start of
+      every cycle in the frontmost terminal, to restore grey-text that
+      was erased by an autonomous-loop cron tick. Non-destructive: no-op
+      when no autocomplete + cursor at end of input. NOT suppressed by
+      --dry-run (the two flags are orthogonal).
+    - --freshness-threshold-ms 5000: skip AX-heavy detection + restore-arrow
+      keypresses while the frontmost window has been frontmost for less than
+      5 seconds. Prevents interference with shell init (e.g. zsh .zshrc
+      loading in a freshly-opened terminal). Fix #3 from the 2026-05-16
+      observation that the prior --restore-arrow + AX-poll combination on
+      a still-initializing new terminal could abort zsh interactive init,
+      requiring a reboot to recover.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.zeta.shadow-observer</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>{{BUN_PATH}}</string>
+        <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.ts</string>
+        <string>--loop</string>
+        <string>5000</string>
+        <string>--loop-interval</string>
+        <string>2000</string>
+        <string>--delay</string>
+        <string>3000</string>
+        <string>--dry-run</string>
+        <string>--restore-arrow</string>
+        <string>--freshness-threshold-ms</string>
+        <string>5000</string>
+        <string>--log-file</string>
+        <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.log</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>{{REPO_ROOT}}</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <dict>
+        <!-- Restart on crashes AND non-zero exits. KeepAlive dict keys
+             are OR-combined; this combination relaunches on:
+               - signal termination (Crashed=true)
+               - any non-zero exit code (SuccessfulExit=false)
+             The shadow observer is a long-running event loop where Bun
+             runtime errors (unhandled exception, OOM, AppleScript bridge
+             failure) exit non-zero rather than signal-terminate. Without
+             SuccessfulExit=false, those failure modes would leave the
+             agent dead until next login.
+
+             Reviewer-conflict resolution: an earlier reviewer pointed
+             out that SuccessfulExit=false also restarts on config
+             errors (missing accessibility permission, bad
+             ProgramArguments). ThrottleInterval=60s (below) caps the
+             retry rate so config-error loops produce one launch per
+             minute — visible in `launchctl print` and in
+             shadow-observer.stderr.log — rather than wedging the
+             system. The --dry-run default on first install means a
+             config error surfaces in the log rather than as live
+             keystroke injection. Net trade-off: prefer covering Bun
+             crashes (likely + recoverable) over avoiding observable
+             config-error loops (unlikely + visible). -->
+        <key>SuccessfulExit</key>
+        <false/>
+        <key>Crashed</key>
+        <true/>
+    </dict>
+
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
+
+    <key>StandardOutPath</key>
+    <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.stderr.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+    </dict>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>

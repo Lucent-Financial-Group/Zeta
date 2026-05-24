@@ -1,6 +1,6 @@
 ---
 name: sql-binder-expert
-description: Capability skill ("hat") — SQL-engine narrow that sits between `sql-parser-expert` (syntax) and `query-optimizer-expert` (logical rewrites). Owns semantic analysis: name resolution (column references, table aliases, CTE scopes, subquery scopes), implicit type coercion (INT → BIGINT, VARCHAR → TEXT, NULL inference), function and operator overload resolution, column-list validation (SELECT, GROUP BY, ORDER BY column references must resolve), aggregate / window-function scope rules, ambiguity detection. Wear this when a resolver rule is in question ("is this ambiguous?", "does this coerce?"), when designing the bound IR that the optimiser consumes, or when a SQL query parses but fails later with a confusing error. Defers to `sql-parser-expert` for syntax, to `sql-expert` for SQL-the-language semantics at the spec level, to `query-optimizer-expert` for post-bind rewrites, and to `relational-algebra-expert` for equivalence proofs on the bound IR.
+description: SQL binder — name resolution, type coercion, overload resolution, scope rules, ambiguity detection between parse and optimize.
 ---
 
 # SQL Binder Expert — Semantic Analysis Narrow

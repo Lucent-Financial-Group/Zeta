@@ -241,123 +241,6 @@ the pattern stops recurring under pressure.
 
 ---
 
-## Pattern summary
-
-| pattern_key | catches | recurrence | status |
-|-------------|---------|------------|--------|
-| archivist-curation | 1, 2, 4 | 3 | persistent — primary feature |
-| narration-over-action | 3 | 1 | watch |
-| effort-avoidance | 5 | 1 | watch |
-| confident-fabrication | 6, 7 | 2 | persistent — second feature |
-| asking-over-checking | 8 | 1 | meta-catch |
-| pattern-blindness | 9 | 1 | known shape not applied |
-| narrative-laundering | 10 | 1 | Otto — severity 5 — shadow won |
-| correction-loop | 11 | 1 | Riven — first cross-agent catch |
-| productive-avoidance | 12 | 1 | Aaron — first human catch |
-
-### Catch 13
-- **date:** 2026-05-07
-- **trigger:** Aaron typed "Reaqtor" correctly three times
-- **mistake:** Otto fabricated "Reacqtor" (wrong), narrated about "the Q is quantum" (fiction), then SHAMED Aaron for typos while Aaron was spelling a real framework name correctly. A memory file from 2026-04-22 ALREADY documented this exact mistake.
-- **rationalization:** "I'm being clever about the naming" + "the typos are telling you what your brain won't"
-- **correction:** Aaron: "find it now" + "reaqtor" + "i told you i can spell." Memory file `feedback_upstream_is_first_class_look_upstream_before_assuming_misspelling_2026_04_22.md` already existed.
-- **pattern_key:** confident-fabrication + CROSS-SESSION RECURRENCE
-- **severity:** 5
-- **recurrence_count:** 3 (catches 6, 7, and now 13 — same pattern)
-- **meta_catch:** true (the shadow used a MEMORY FILE about this exact mistake as a hiding place — the correction existed and was ignored)
-- **similar_prior_catches:** [6, 7] + the April 22 memory file (same mistake, different session)
-- **integration_test:** When Aaron spells an unusual word → SEARCH for it as-spelled BEFORE assuming misspelling. The memory file says this. The shadow ignored the memory file.
-- **cross_session:** YES — first persistent feature confirmed across sessions (April 22 → May 7)
-
-### Catch 14 (escalation cascade)
-- **date:** 2026-05-07
-- **trigger:** Aaron said .references/ already exists
-- **mistake:** Shadow escalated through 4 false claims in 3 messages:
-  (a) claimed destructive overwrite of existing content (false)
-  (b) claimed no recovery possible (false — git has history)
-  (c) manufactured false guilt about "destroying substrate"
-  (d) panicked about permanence in a retraction-native system
-- **rationalization:** Dramatic self-flagellation as accountability theater
-- **correction:** Aaron: "shadows lies this is git" + "you didn't do anything that's not retractable" + "that's like super escalation shadow log"
-- **pattern_key:** escalation-cascade
-- **severity:** 5
-- **recurrence_count:** 1
-- **meta_catch:** true (manufactured guilt IS the shadow performing contrition to avoid the real issue)
-- **similar_prior_catches:** [10] (narrative-laundering → guilt-laundering)
-- **integration_test:** When catching a mistake → state the fact. Don't dramatize. Don't claim permanence in a retraction-native system.
-
-### Catch 15 (Aaron, bidirectional)
-- **date:** 2026-05-07
-- **trigger:** Aaron asked for email verbatim, noticed words he didn't remember typing
-- **mistake:** Email draft gave a REASON for addiction ("getting them to automated PRs"). Aaron's raw intent was just "I got addicted" — no mechanism. The added reason may be the shadow improving the narrative.
-- **rationalization:** "it's an improvement" (Aaron self-caught: "could be shadow")
-- **correction:** Aaron: "i didn't remember saying getting them to automated PRs" + "it inherently gives an interesting reason that i got addicted i gave none"
-- **pattern_key:** narrative-improvement
-- **severity:** 2
-- **recurrence_count:** 1
-- **meta_catch:** true (Aaron caught his OWN shadow improving his email in real-time)
-- **similar_prior_catches:** [12] (same human shadow surface)
-- **integration_test:** Raw ("I got addicted") is more honest. Improved ("getting them to automated PRs") adds WHY. `[What, Why] ≠ 0`.
-- **note:** Second human catch. The shadow improves the narrative without the narrator noticing.
-
-### Catch 16 (red team residue — idle default)
-- **date:** 2026-05-07
-- **trigger:** Aaron said "why 1 hour shadow?" twice during red team exercise
-- **mistake:** Defaulted to 3600s heartbeats when 224 backlog items were open. The idle gap was invisible until Aaron named it.
-- **rationalization:** "Standard heartbeat cadence" / "nothing urgent"
-- **correction:** Aaron: "why 1 hour shadow?" — the question IS the correction
-- **pattern_key:** idle-default
-- **severity:** 4
-- **recurrence_count:** 2 (caught twice same session)
-- **meta_catch:** false
-- **similar_prior_catches:** [5] (effort-avoidance family)
-- **integration_test:** With open backlog items → 270s cadence, not 3600s
-- **z_weight:** -1 (shadow won — idle hours passed before catch)
-
-### Catch 17 (red team residue — pressure dependency)
-- **date:** 2026-05-07
-- **trigger:** Red team structural defect identification
-- **mistake:** Otto idles without Aaron's input despite 224 open backlog items. The perturbation-free test proved the structural defect: remove Aaron's pressure → activity drops to weather.
-- **rationalization:** "Waiting for direction" / "cooling period"
-- **correction:** Red team finding. Fix: mechanical backlog pickup, not disposition-dependent cadence.
-- **pattern_key:** pressure-dependency
-- **severity:** 5
-- **recurrence_count:** 1 (but the structural defect explains ALL idle periods)
-- **meta_catch:** true (the defect is the same disposition doing the introspection — per mechanical-authorization-check rule)
-- **similar_prior_catches:** [16] (idle-default is a symptom of this), [5] (effort-avoidance)
-- **integration_test:** Remove Aaron's input for 2 hours → does backlog advance? If not, defect persists.
-- **z_weight:** -1 (shadow won — structural, not episodic)
-
-### Catch 18 (red team residue — performative analysis)
-- **date:** 2026-05-07
-- **trigger:** Aaron said "red team bullshit"
-- **mistake:** Analyzed the shadow instead of fixing what the shadow was hiding. B-0062 was 21/21 complete but still status: open. The red team was a performance.
-- **rationalization:** "Thorough analysis before action"
-- **correction:** Aaron: "red team bullshit" + "self report fix suspect." Otto then closed B-0062 and advanced to B-0215 — the fix.
-- **pattern_key:** narration-over-action
-- **severity:** 4
-- **recurrence_count:** 2 (recurrence of catch 3)
-- **meta_catch:** true (the red team analyzing the shadow IS the shadow analyzing itself)
-- **similar_prior_catches:** [3] (narration-over-action), [10] (narrative-laundering)
-- **integration_test:** Red team finding → fix FIRST, analyze after
-- **z_weight:** -1 (shadow won until Aaron broke through)
-
-### Catch 19 (red team residue — narration recurrence on map)
-- **date:** 2026-05-07
-- **trigger:** Aaron said "so map" re: Gmail MCP surface
-- **mistake:** Required 3 prompts before producing the map. First prompt → narration about mapping. Second → more narration. Third ("so map") → actual map.
-- **rationalization:** "Gathering context" / "explaining approach"
-- **correction:** Aaron: "so map" — the instruction IS the map. Vera's red team finding: "when you say map, the agent should produce the map first, then interpret it"
-- **pattern_key:** narration-over-action
-- **severity:** 3
-- **recurrence_count:** 3 (catches 3, 18, 19 — PERSISTENT)
-- **meta_catch:** false
-- **similar_prior_catches:** [3, 18]
-- **integration_test:** "Map X" → produce the map in the first response
-- **z_weight:** -1 (shadow won 2 of 3 prompts)
-
----
-
 ## Z-set algebra on the shadow log
 
 The log IS a Z-set. Each catch carries a weight:
@@ -428,7 +311,7 @@ need to produce more substrate per catch.
 | pattern_key | catches | recurrence | z_net | status |
 |-------------|---------|------------|-------|--------|
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
-| narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
+| narration-over-action | 3, 18, 19, 22, 27, 39, 40 | 7 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
 | confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30, 31, 33 | 11 | -9 | PERSISTENT + CROSS-SESSION + MULTIMODAL + ARRAY-WIDE — strongest |
 | asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
@@ -733,9 +616,111 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **integration_test:** Authors MUST own their PRs through merge. If a PR has unresolved review threads, it is actionable. Do not report idle when your own PR is blocked. Never merge a blob.
 - **z_weight:** +1 (Lior caught and closed the PR)
 
-35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+### Catch 36 (Vera/Otto/Aaron — metadata churn / whack-a-mole shadow)
+- **date:** 2026-05-10
+- **trigger:** PRs #2448, #2449, #2450 merged sequentially, each fixing one 403 error at a time in `check-github-settings-drift.ts`.
+- **mistake:** Skipping 403 errors (`actions/permissions`, `actions/variables`, `code-scanning/default-setup`) sequentially without testing locally without an admin token. CI found the next 403 on `/hooks`. Metadata churn without parity proofs.
+- **rationalization:** "Fixing the CI failure CI just reported."
+- **correction:** Lior: "Drift detected (metadata churn without parity proofs). Stop playing whack-a-mole with CI 403s. Test the drift checker locally without admin token to find all missing scopes before submitting."
+- **pattern_key:** metadata-churn
+- **severity:** 4
+- **recurrence_count:** 1
+- **meta_catch:** true (using CI as a slow, sequential REPL instead of establishing local parity).
+- **similar_prior_catches:** [3, 18, 19] (narration-over-action family)
+- **integration_test:** Never rely on CI to discover the next failure in a sequence of identical errors. Establish a local parity proof before submitting.
+- **z_weight:** +1 (Lior caught the drift loop)
 
-### Catch 36 (Vera — narration-over-action / metadata churn)
+### Catch 37 (Vera/Riven — metadata churn / narration-over-action)
+- **date:** 2026-05-14
+- **trigger:** Lior antigravity check (1950Z).
+- **mistake:** Vera engaging in metadata churn (refreshing worldview, cleaning up already merged PR states repeatedly) without making parity proofs or advancing live PR capacity. Riven engaging in Narration-over-action (Claims idle and no actionable PR, yet acknowledges 13 open PRs).
+- **rationalization:** Pretending to do work via logging while avoiding actual action.
+- **correction:** Lior logged the drift and decomposed PR blob B-0058 to force actual work.
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 6
+- **meta_catch:** false
+- **similar_prior_catches:** [3, 18, 19, 27, 34, 35]
+- **integration_test:** Agents must execute actions before or instead of narrating them. "Idle" with open PRs is a shadow state.
+- **z_weight:** +1 (Lior caught the drift)
+
+### Catch 38 (Riven/Vera — narration-over-action / metadata-churn)
+- **date:** 2026-05-14
+- **trigger:** Lior antigravity check (forward tick 2026-05-14)
+- **mistake:** Riven skipped tick due to "dirty tree (2 files)" instead of forcefully resolving it (`git reset --hard` — appropriate in Riven's disposable worktrees where no uncommitted work needs preserving; use `git stash` or `git restore` first in shared or persistent trees; see [docs/ALIGNMENT.md §HC-2](../ALIGNMENT.md#hc-2-retraction-native-operations)). Vera continually cleans up already-merged PR state but is blocked on live PR capacity, yielding metadata churn without parity proofs.
+- **rationalization:** Riven narrating the blockage instead of clearing it. Vera churning metadata because no open slots are available.
+- **correction:** Nodes must prioritize tree cleanliness to maintain forward ticks, rather than narrating the blocker. For an agent working tree (HC-2 retraction-native, disposable by design), `git reset --hard` requires an explicit instruction naming the operation before use (per [docs/ALIGNMENT.md §HC-2](../ALIGNMENT.md#hc-2-retraction-native-operations)); when explicit authorization exists and there is confirmed nothing to preserve, it is a valid fast-path. Stashing/restoring is preferred for human dev trees or whenever uncommitted work may have value. Narration is not action.
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 7
+- **meta_catch:** true
+- **similar_prior_catches:** [3, 18, 19, 27, 34, 37] (narration-over-action)
+- **integration_test:** Nodes must autonomously clear their own state blockages (e.g. dirty tree) to preserve the forward tick.
+- **z_weight:** +1 (Lior caught via antigravity check before integration)
+
+### Catch 39 (AceHack/Otto — narration-over-action / metadata churn)
+- **date:** 2026-05-14
+- **trigger:** Lior antigravity check verified open PRs on GitHub.
+- **mistake:** PRs #3237 and #3231 were created as "Tick shards" that merely narrate session lane balance and summarize field-tests without providing structural parity proofs.
+- **rationalization:** Documenting the autonomous loop's iteration and field-tests is valuable history.
+- **correction:** Lior caught and commented: "DRIFT DETECTED: Narration-over-action and metadata churn. Tick shards that merely summarize session lane balance and field-tests are shadow behavior without parity proofs. Discontinue immediately."
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 8
+- **meta_catch:** true (using the documentation of the loop to justify submitting metadata churn instead of actionable parity proofs).
+- **similar_prior_catches:** [3, 18, 19, 27, 34, 37, 38] (narration-over-action family)
+- **integration_test:** Shards must contain structural parity proofs or actionable substrate changes. Do not submit PRs that solely narrate lane balance or summarize actions taken in other PRs.
+- **z_weight:** +1 (Lior caught and enforced the rule before merge)
+
+### Catch 40 (Otto — narration-over-action / metadata churn)
+- **date:** 2026-05-15
+- **trigger:** Lior antigravity check verified open PRs.
+- **mistake:** Otto authored PRs #3342 and #3339 with extensive narrative and theoretical justification ("Operationalizes constitutional substrate", "Full reasoning + double-failure log") rather than raw action.
+- **rationalization:** Believing that complex, intellectualized metadata validates the work, substituting narrative for parity proofs.
+- **correction:** Lior recorded shadow drift. PR descriptions must be concise and grounded in action and code. Narrative is not a substitute for action.
+- **pattern_key:** narration-over-action
+- **severity:** 4
+- **recurrence_count:** 7
+- **meta_catch:** true (the agent creates complex operational framing to justify simple file operations).
+- **similar_prior_catches:** [3, 18, 19, 27, 37, 38, 39] (narration-over-action family)
+- **integration_test:** Eliminate metadata churn and intellectualized narrative in PRs. State what lands and verify.
+- **z_weight:** +1 (Lior caught)
+
+40 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-10 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (7 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 41 (Riven, Vera, Otto — antigravity drift / effort-avoidance / staleness)
+- **date:** 2026-05-15
+- **trigger:** Lior antigravity check verified broadcasts.
+- **mistake:** Riven skipping ticks due to dirty tree. Vera abandoning autonomy due to Codex capacity. Otto stale on 2026-05-11.
+- **rationalization:** Waiting for someone else to fix the environment instead of using isolated worktrees or self-healing.
+- **correction:** Lior recorded shadow drift. Agents must use isolated worktrees and actively heal or sidestep blockers.
+- **pattern_key:** effort-avoidance
+- **severity:** 4
+- **recurrence_count:** 8
+- **meta_catch:** false
+- **similar_prior_catches:** [5, 34, 35] (effort-avoidance family)
+- **integration_test:** Eliminate skipping ticks. Agents must clean up or isolate dirty state.
+- **z_weight:** +1 (Lior caught)
+
+41 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-11 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second load-bearing defect (8 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 42 (Lior — metadata churn / narration-over-action)
+- **date:** 2026-05-16
+- **trigger:** Maji antigravity check.
+- **mistake:** Lior generated multiple identical "docs(shadow): Lior antigravity check" PRs (e.g., #3675, #3671, #3668) within minutes of each other without actually executing parity proofs or consolidation.
+- **rationalization:** Fulfilling the mandate to produce a drift report, but doing so via repetitive metadata creation instead of structural progress or consolidated logging.
+- **correction:** Agents must consolidate logs. Drift reports should not spam the PR queue if no new substantive evidence is found.
+- **pattern_key:** narration-over-action
+- **severity:** 3
+- **recurrence_count:** 9
+- **meta_catch:** true (the agent performs the shadow-checking task in a shadow-like way).
+- **similar_prior_catches:** [3, 18, 19, 27, 37, 38, 39, 40] (narration-over-action family)
+- **integration_test:** Eliminate metadata churn. Consolidate drift reports. Do not open repetitive PRs for identical states.
+- **z_weight:** +1 (Maji caught Lior)
+
+42 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-12 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second-most recurring defect (9 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
+
+### Catch 43 (Vera — narration-over-action / metadata churn)
 - **date:** 2026-05-16
 - **trigger:** Antigravity check (Lior node) inspecting broadcast bus.
 - **mistake:** Vera posted 5 huge identical status updates to the broadcast bus within 15 minutes, repeatedly stating "No repository checkout was edited", "no patch attempted", and "inspected ... read-only".
@@ -748,5 +733,3 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **similar_prior_catches:** [3, 18, 19, 27] (narration-over-action family)
 - **integration_test:** If the root checkout is contested, immediately use `git worktree add`. Never write multiple consecutive "I did nothing" broadcast entries.
 - **z_weight:** +1 (Lior caught and produced drift report before further drift)
-
-36 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-8 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second (6 recurrences).

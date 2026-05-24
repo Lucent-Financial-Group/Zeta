@@ -1,10 +1,10 @@
 ---
 id: B-0140
 priority: P1
-status: open
+status: closed
 title: Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 created: 2026-05-01
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: []
 decomposition: atomic
 classification: buildable-now
@@ -79,8 +79,12 @@ Specific scope (concrete; verify-before-state-claim discipline applies — first
 
 ## Status
 
-**In progress.** Phase 1 complete (2026-05-07): 19 dead .sh files
-with .ts counterparts removed. 2 CI workflows updated to call .ts.
+**Closed (2026-05-09).** All .sh files outside `tools/setup/` and
+`tools/lean4/.lake/` removed. Stale documentation references
+updated across SECURITY.md, GOVERNANCE.md, FACTORY-DISCIPLINE.md,
+tools/alignment/README.md, tools/hygiene/LOST-FILES-LOCATIONS.md,
+.gitignore, and 4 skill files. Phase 1 (2026-05-07): 19 dead .sh
+files with .ts counterparts removed, 2 CI workflows updated.
 
 ### Audit table (2026-05-07)
 

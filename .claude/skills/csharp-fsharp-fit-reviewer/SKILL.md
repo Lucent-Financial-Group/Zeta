@@ -1,6 +1,6 @@
 ---
 name: csharp-fsharp-fit-reviewer
-description: Capability skill ("hat") — scans F# and C# diffs for places a code shape would be cleaner, faster, or more idiomatic in the other language. Zeta is F#-first by design; this skill exists to detect the specific local cases where C# wins (hot-path struct layout, ref-struct Span ergonomics, BCL attribute-driven metadata, unsafe SIMD kernels). Output is a ranked suggestion list routed to the diff author; never a rewrite. Pairs with `fsharp-expert` and `csharp-expert` on every PR that touches `src/**/*.fs` or `src/**/*.cs`.
+description: C#/F# fit review — detects where cross-language rewrite wins on idioms, hot-path struct layout, Span ergonomics, or SIMD.
 ---
 
 # C#/F# Fit Reviewer — Procedure

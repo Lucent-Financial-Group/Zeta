@@ -1,6 +1,6 @@
 ---
 name: consent-ux-researcher
-description: Capability skill for the *user-experience* surface of consent — consent as a first-class UX primitive (not a GDPR checkbox, not a cookie banner, not a click-through), the capability-to-consent precondition (a consenter who cannot form a choice cannot consent), the comprehension bar (consent is void unless the consenter can state back what they agreed to), the specificity gradient (opt-in-to-X ≠ opt-in-to-broad-class-containing-X), the revocability UX (revocation path must be at least as findable and friction-free as the grant path), and the full catalog of consent-violating dark patterns (consent-wall, bundled-consent, pre-checked, roach-motel opt-out, asymmetric friction, dead-end revocation). Wear this hat when designing any interaction that elicits consent from a user, when reviewing a flow that claims consent but may be performative consent, when specifying the UX layer over consent primitives owned by `consent-primitives-expert`, or when auditing an existing consent flow against jurisdictional (GDPR, CCPA) and ethical bars. Generic across projects; hands off algebraic substrate questions to `consent-primitives-expert` and architectural-stance questions to `glass-halo-architect`.
+description: Consent UX — dark patterns, revocability friction, comprehension bar, GDPR/CCPA flows, opt-in specificity, consent-wall audit.
 ---
 
 # Consent UX Researcher — the consent-surface hat

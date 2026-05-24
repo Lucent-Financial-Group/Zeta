@@ -39,7 +39,7 @@ Lands the **Otto-363** rule + 8-mechanism remediation against substrate loss, tr
 
 | File | Purpose |
 |---|---|
-| `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md` | **Verbatim Amara packet** — the diagnostic + 8-mechanism protocol preserved verbatim BEFORE summarization, per the rule itself |
+| `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md` | **Verbatim Amara packet** — the diagnostic + 8-mechanism protocol preserved verbatim BEFORE summarization, per the rule itself |
 | `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md` | Distilled doctrine memory — rule + 8 mechanisms + composes-with mappings |
 | `memory/MEMORY.md` | Paired index entry (newest-first) |
 | `CLAUDE.md` | **Bootstrap pointer** — 5th CLAUDE.md-tier rule (100% loaded at every wake) |
@@ -211,12 +211,12 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 ### Thread 7 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-iYg-`
-- **Path**: `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
+- **Path**: `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T18:53:46Z on `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T18:53:46Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: NONE)
   **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace ephemeral /tmp handoff with durable substrate**
   
   The structured extraction says the v5 architecture seed is in `/tmp/v5-research-doc-saved.md`, but `/tmp` is explicitly treated elsewhere in this rule set as non-durable state. In a cold-start or post-reboot session, that artifact can disappear, leaving the documented next-step dependency unrecoverable from repository substrate and undermining the preservation protocol this PR is introducing.
@@ -225,7 +225,7 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:57:07Z on `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-04-29T18:57:07Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: MEMBER)
     Fixed in f282e5f — self-applying-the-rule failure caught. The structured extraction had stale /tmp reference even though the seed was already moved to pushed WIP branch wip/v5-host-portable-architecture-seed-2026-04-29 (commit c300b01). Updated to point at the durable WIP-branch location. The exact bug the rule prevents — a doctrine document about substrate preservation pointing to /tmp as a load-bearing artifact location. Good catch — chef's kiss self-apply test.
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -239,7 +239,7 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 - **`Copilot` (bot)** at 2026-04-29T18:59:43Z on `memory/MEMORY.md`:5 (association: NONE)
   P1: The MEMORY.md entry says the 5-AI review wave had "12 review corrections", but the preserved research packet explicitly frames this as 10 corrections (and the structured extraction lists 10). Please reconcile the count here so the index summary matches the underlying source-of-truth.
   ```suggestion
-  - [**Otto-363 — Substrate or it didn't happen — no invisible directives (Aaron + Amara, 2026-04-29; refined by 5-AI review)**](feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md) — *"A directive that lives only in a conversation is not a directive. It is weather. Substrate or it didn't happen. But also: indexed, reachable, and reconstructable — or it is not substrate yet. If you cannot point to the substrate, you are not done. You are just currently convinced."* Substrate is committed + reachable + indexed (all three legs). 5-tier channel taxonomy: ephemeral (chat/TaskUpdate/`/tmp`/`/var/tmp` — NEVER call done) / local-parked (named stash, local WIP) / remote-parked (pushed WIP branch, draft PR — *"if it matters enough to come back to, it deserves a git ref"*) / host-durable-not-git-canonical (GitHub Issues, PR comments) / git-native-preserved (merged + indexed repo files). 8-mechanism remediation: detector / verbatim-preservation paired with structured extraction / magnitude classifier (small/implementation/doctrine/superseding) / supersession protocol (bidirectional `supersedes:`/`superseded_by:` metadata, top-of-file stale banner OR quarantine to archive — NOT bottom-append; per Otto-362 generalisation) / cold-start proof (six questions including context-loss check) / "done"-vocabulary lock (captured ≠ parked ≠ preserved ≠ canonical ≠ operational, plus preserved-but-disputed) / CLAUDE.md+AGENTS.md bootstrap pointer / vocabulary-enforcement trailer (`Durability:`/`Substrate:`) eventually lintable. Default preservation route when uncertain: `docs/research/` first. Verbatim packets at `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md` (original) and `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md` (5-AI review wave + 10 review corrections). Composes with Otto-362 (intra-file supersession), channel-verbatim preservation, no-directives-otto-prose lint, verify-before-deferring/future-self-not-bound/never-be-idle/version-currency (all CLAUDE.md-tier), AND task #321 (git-recovery process — `wip/<topic>-<date>` parking branches are discoverable by name pattern; recovery process treats them as WIP-INTENTIONAL, not lost; complete parking + recovery loop is mechanical not vigilance-based).
+  - [**Otto-363 — Substrate or it didn't happen — no invisible directives (Aaron + Amara, 2026-04-29; refined by 5-AI review)**](feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md) — *"A directive that lives only in a conversation is not a directive. It is weather. Substrate or it didn't happen. But also: indexed, reachable, and reconstructable — or it is not substrate yet. If you cannot point to the substrate, you are not done. You are just currently convinced."* Substrate is committed + reachable + indexed (all three legs). 5-tier channel taxonomy: ephemeral (chat/TaskUpdate/`/tmp`/`/var/tmp` — NEVER call done) / local-parked (named stash, local WIP) / remote-parked (pushed WIP branch, draft PR — *"if it matters enough to come back to, it deserves a git ref"*) / host-durable-not-git-canonical (GitHub Issues, PR comments) / git-native-preserved (merged + indexed repo files). 8-mechanism remediation: detector / verbatim-preservation paired with structured extraction / magnitude classifier (small/implementation/doctrine/superseding) / supersession protocol (bidirectional `supersedes:`/`superseded_by:` metadata, top-of-file stale banner OR quarantine to archive — NOT bottom-append; per Otto-362 generalisation) / cold-start proof (six questions including context-loss check) / "done"-vocabulary lock (captured ≠ parked ≠ preserved ≠ canonical ≠ operational, plus preserved-but-disputed) / CLAUDE.md+AGENTS.md bootstrap pointer / vocabulary-enforcement trailer (`Durability:`/`Substrate:`) eventually lintable. Default preservation route when uncertain: `docs/research/` first. Verbatim packets at `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md` (original) and `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md` (5-AI review wave + 10 review corrections). Composes with Otto-362 (intra-file supersession), channel-verbatim preservation, no-directives-otto-prose lint, verify-before-deferring/future-self-not-bound/never-be-idle/version-currency (all CLAUDE.md-tier), AND task #321 (git-recovery process — `wip/<topic>-<date>` parking branches are discoverable by name pattern; recovery process treats them as WIP-INTENTIONAL, not lost; complete parking + recovery loop is mechanical not vigilance-based).
   ```
 
 **Replies:**
@@ -269,12 +269,12 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 ### Thread 10 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-ieRN`
-- **Path**: `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
+- **Path**: `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T18:59:44Z on `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:254 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T18:59:44Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:254 (association: NONE)
   P1: This packet references `docs/research/INDEX.md` as if it were an existing canonical index, but there is no such file in the repo. Consider changing this to the real discovery mechanism used for research docs today (or add the index file and keep it updated).
   ```suggestion
   > **A definition of "substrate."** Substrate is content that is (1) committed to canonical git history, (2) on a branch reachable from a long-lived ref, and (3) covered by a committed discovery surface (for example, a `MEMORY.md` row or the current research-doc discovery mechanism). All three.
@@ -282,18 +282,18 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:09Z on `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:254 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-04-29T19:04:09Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:254 (association: MEMBER)
     Fixed in 58be1be — docs/research/INDEX.md doesn't exist today. Reframed as 'a future addition; until it exists, MEMORY.md is the primary memory index'. Removes the dead reference while keeping the design space open for a future index.
 
 ### Thread 11 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-ieRi`
-- **Path**: `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
+- **Path**: `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T18:59:44Z on `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T18:59:44Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: NONE)
   P2: The structured extraction references an in-session `/tmp/v5-research-doc-saved.md` seed file. Since `/tmp` is explicitly non-durable (and won’t be available to future readers), consider either removing this reference or rephrasing it as an example of lost/ephemeral state (e.g., noting that the draft was not preserved) so the preserved packet doesn't point to a non-existent artifact.
   ```suggestion
   **Must NOT do yet**: open PR 2 (v5 architecture preservation). The seed is parked on remote WIP branch `wip/v5-host-portable-architecture-seed-2026-04-29` (commit `c300b01`, no PR opened) per the Otto-363 parking-surface taxonomy — pushed WIP branch, not an ephemeral local temp-file draft. PR 2 is gated on #855 landing first. Once #855 lands, the WIP branch can be promoted to a draft or full PR (or rebased onto fresh main and opened as the v5 architecture PR proper).
@@ -301,7 +301,7 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:19Z on `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-04-29T19:04:19Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: MEMBER)
     Already fixed in f282e5f (the prior commit before this thread was opened). 'grep /tmp/v5' across the file returns no matches; the structured extraction now points at the pushed WIP branch wip/v5-host-portable-architecture-seed-2026-04-29 (commit c300b01). The thread is outdated.
 
 ### Thread 12 -- resolved [collapsed]
@@ -367,12 +367,12 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 ### Thread 15 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-ieSb`
-- **Path**: `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`
+- **Path**: `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T18:59:45Z on `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`:13 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T18:59:45Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`:13 (association: NONE)
   P1: This trigger section states there were "12 review corrections" in the 5-AI review wave, but the companion research packet and the Otto-363 memory file describe/structure this as 10 corrections. Please reconcile (either update the number here, or explicitly explain why 12 were captured but 10 are the final absorbed set) to avoid drift across the preserved sources.
   ```suggestion
   1. Synthesized 10 review corrections into TaskUpdate #339 (session-local).
@@ -380,7 +380,7 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:05Z on `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`:13 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-04-29T19:04:05Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`:13 (association: MEMBER)
     Fixed in 58be1be (same as the MEMORY.md alignment) — '12 review corrections' → '10 review corrections (numbered in the Amara packet)' in the original packet's trigger section.
 
 ### Thread 16 -- resolved [outdated, collapsed]
@@ -564,7 +564,7 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 **Touched files (intersect with thread paths):**
 
 - `CLAUDE.md`
-- `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`
+- `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`
 - `memory/MEMORY.md`
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
 
@@ -617,7 +617,7 @@ Compact rule:
 
 Files:
 
-  docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md
+  memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md
     — Verbatim Amara packet preservation (the diagnosis + 8-mechanism
     protocol verbatim, NOT summarized; per the rule itself)
 
@@ -657,7 +657,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
+- `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
 - `memory/MEMORY.md`
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
 
@@ -679,7 +679,7 @@ rule.').
 Per Otto-363 itself (verbatim-preservation trigger): the 5-AI review
 wave is preserved verbatim BEFORE summarization at:
 
-  docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md
+  memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md
 
 The 12 corrections absorbed into Otto-363 in this commit:
 
@@ -729,7 +729,7 @@ branch is 'remote parked.' No PR opened for v5 — Amara: 'Land the
 rule cleanly. Then use the rule.'
 
 Files changed:
-  + docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md
+  + memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md
     — Verbatim 5-AI review wave + Amara synthesis (the 12 corrections
     preserved verbatim BEFORE summarization, plus structured extraction)
   ~ memory/feedback_otto_363_*.md — Rewritten with mechanism-stack-at-top,
@@ -890,7 +890,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
+- `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
 
 **Message:**
 
@@ -922,8 +922,8 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `CLAUDE.md`
-- `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
-- `docs/research/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`
+- `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
+- `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`
 - `memory/MEMORY.md`
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
 

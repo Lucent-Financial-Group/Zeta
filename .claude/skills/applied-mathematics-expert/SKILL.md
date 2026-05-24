@@ -1,6 +1,6 @@
 ---
 name: applied-mathematics-expert
-description: Capability skill ("hat") — applied-mathematics split under the `mathematics-expert` umbrella. Covers numerical linear algebra, optimization, statistical inference on real data, signal processing, and graph/matrix spectral methods as they show up in Zeta. Wear this when a prompt is about **computing** a mathematical object on concrete data (rather than proving a property about it). Defers to `numerical-analysis-and-floating-point-expert` for conditioning / overflow / IEEE 754 concerns, to `probability-and-bayesian-inference-expert` for conjugacy / credible intervals, and to `theoretical-mathematics-expert` for proof obligations.
+description: Applied mathematics — numerical linear algebra, optimization, statistical inference, signal processing, spectral methods on concrete data.
 ---
 
 # Applied Mathematics Expert — Split

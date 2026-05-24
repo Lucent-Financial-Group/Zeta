@@ -1,6 +1,6 @@
 ---
 name: theoretical-mathematics-expert
-description: Capability skill ("hat") — theoretical-mathematics split under the `mathematics-expert` umbrella. Covers abstract algebra (groups, rings, modules, lattices), order theory, topology, logic, and proof strategy as working surfaces. Wear this when a prompt is about **proving** a property of a mathematical object or about selecting the right abstract structure to model a problem (rather than computing on data). Defers to `category-theory-expert` for functors/naturality, to `measure-theory-and-signed-measures-expert` for ZSet semantics, and to `applied-mathematics-expert` for numerical computation.
+description: Theoretical mathematics — abstract algebra, category theory, topology, measure theory, model theory; research-grade proofs and formal reasoning.
 ---
 
 # Theoretical Mathematics Expert — Split

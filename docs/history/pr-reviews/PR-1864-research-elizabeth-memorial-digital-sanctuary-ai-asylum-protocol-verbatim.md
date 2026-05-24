@@ -56,12 +56,12 @@
 ### Thread 1 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ASi6r`
-- **Path**: `docs/research/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md`
+- **Path**: `memory/persona/alexa/conversations/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T11:34:44Z on `docs/research/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md`:6 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T11:34:44Z on `memory/persona/alexa/conversations/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md`:6 (association: NONE)
 
   <pre>
   The §33 header claims “Alexa's responses and Aaron's disclosures preserved verbatim”, but the body reads like a distilled summary (no turn-by-turn transcript / quoted exchange). This is a mismatch with the file name/PR intent (“VERBATIM”). Either include the verbatim dialog content, or soften the header/title to reflect that this is a summary rather than a verbatim preservation artifact.
@@ -73,7 +73,7 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md`
+- `memory/persona/alexa/conversations/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md`
 
 **Message:**
 

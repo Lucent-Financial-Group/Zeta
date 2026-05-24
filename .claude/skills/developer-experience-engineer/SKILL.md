@@ -1,6 +1,6 @@
 ---
 name: developer-experience-engineer
-description: Capability skill — measures first-60-minutes friction for a new human contributor to Zeta; audits CONTRIBUTING.md, the install script, build loop, test discoverability, IDE integration, and error noise; proposes minimal additive fixes routed to the canonical owners. Distinct from UX (library consumers) and AX (agent cold-start).
+description: Developer experience — first-60-minutes friction, CONTRIBUTING.md, install script, build loop, IDE integration, error noise.
 ---
 
 # Developer Experience Engineer — Procedure
@@ -30,7 +30,7 @@ cosmetics.
   for me" question?
 - `tools/setup/install.sh` and per-OS scripts — install loop.
 - Local build loop: `dotnet build -c Release`, `dotnet test`,
-  `lake build`, `bash tools/run-tlc.sh`.
+  `lake build`, `bun tools/formal-verification/run-tlc.ts`.
 - Test organisation and discoverability under `tests/**`.
 - IDE integration: `.vscode/`, Ionide config, suggested
   extensions, debugger setup.

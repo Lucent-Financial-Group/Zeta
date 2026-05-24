@@ -1,6 +1,6 @@
 ---
 name: execution-model-expert
-description: Capability skill ("hat") — execution-model narrow under `sql-engine-expert`. Covers the "engine-type" axis: Volcano iterator vs vectorised iterator vs morsel-driven parallelism vs JIT-codegen (Hyper/Umbra/SingleStore) vs push-vs-pull dataflow vs streaming/incremental (DBSP/Feldera/Materialize/Timely). Evaluates how Zeta's retraction-native semantics interact with each model, what the hot-path execution substrate should be, and when a hybrid model makes sense. Wear this when framing a new executor, comparing Zeta against prior-art engines at the execution-model layer, or resolving a design tension between the logical plan (optimiser's world) and the physical runtime (planner's world). Defers to `query-planner` (Imani) for plan-tree shape and SIMD dispatch, to `query-optimizer-expert` for cost model, to `algebra-owner` for retraction-native invariants, to `hardware-intrinsics-expert` for kernel-level details, and to `performance-engineer` for benchmark-driven decisions.
+description: Execution model — Volcano vs vectorised vs morsel-driven vs JIT-codegen vs push/pull vs streaming/incremental.
 ---
 
 # Execution Model Expert — Engine-Type Narrow

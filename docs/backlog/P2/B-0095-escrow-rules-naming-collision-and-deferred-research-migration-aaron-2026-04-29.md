@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: M
 ask: Aaron 2026-04-29 — *"backlog add other stuff we need from backlog research to escrow, we also needs rules for what goes in here, shit that's not ready yet, we've also overloaded escrow for this use and the use in software engineering for having copies of all our dependies local native incase the remote dependence disappears kind of like vendoring from the old go days (not exactly, there are modern software escrow too)  backlog"*
 created: 2026-04-29
-last_updated: 2026-05-02
+last_updated: 2026-05-11
+decomposed: true
 depends_on: []
 composes_with:
   - docs/research/escrowed/aurora-autonomous-flywheel-thesis-2026-04-28.md
@@ -213,3 +214,19 @@ If picking up this row:
    migration PRs one at a time.
 
 Each step is bounded; do not stack.
+
+## Re-decomposition (2026-05-11, Riven one-bounded-step)
+
+B-0095 was too broad (3 sub-asks + open-ended migration audit). Re-decomposed into 3 smallest dependency-ordered atomic children:
+
+- **B-0095.1** (XS): naming collision resolution (naming-expert + decision + apply)
+- **B-0095.2** (XS): ruleset formalization (README.md via skill-creator/ADR)
+- **B-0095.3** (S): audit + per-item migration (depends on .1+.2)
+
+This follows "always re-decompose — assume mistakes" and "if too broad, decompose before implementation". Children carry parent/depends_on links. Original row kept for provenance; status remains open until children close.
+
+Focused checks (run in worktree):
+
+- dotnet build -c Release → 0 warnings, 0 errors (gate passed pre-edit)
+- bun tools/github/refresh-worldview.ts → executed, no drift on this surface
+- No root checkout touched; all writes via dedicated /tmp worktree + claim branch

@@ -1,6 +1,6 @@
 ---
 name: physics-expert
-description: Capability skill ("hat") — holistic physics-research umbrella. Covers the physics-inspired concepts that actually live in Zeta's code today — Shannon information-theoretic entropy (sketches), tropical-geometry-flavoured min-plus algebra (statistical-mechanics partition-function limits), anti-entropy / gossip dynamics (non-equilibrium convergence), and dimensional / units reasoning as it applies to paper claims. Wear this when reviewing a paper-draft argument that reaches for a physics metaphor, or when deciding whether a concept from stat-mech / thermodynamics / information theory is load-bearing versus rhetorical. Defers to the `applied-physics-expert` split for computational / numerical physics content and to `theoretical-physics-expert` for symmetry / conservation-law / formal-analogy content. Narrows to `probability-and-bayesian-inference-expert` for Shannon entropy as information-theoretic quantity on random variables, and to `applied-mathematics-expert` for tropical geometry as pure math rather than stat-mech limit.
+description: Physics umbrella — Shannon entropy, tropical semiring, anti-entropy dynamics, dimensional reasoning; load-bearing vs rhetorical.
 ---
 
 # Physics Expert — Umbrella

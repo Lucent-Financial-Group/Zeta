@@ -1,6 +1,6 @@
 ---
 name: openspec-expert
-description: Capability skill ("hat") — OpenSpec discipline for Zeta's behavioural specs under `openspec/specs/`. Covers Zeta's modified OpenSpec workflow (no archive, no change-history), spec structure (WHEN/THEN/REQUIRES/CAPABILITY), overlays, the relationship between behavioural specs under `openspec/specs/` and formal specs under `tools/tla/specs/` / `tools/alloy/specs/` / Lean. Wear this when writing or reviewing an `openspec/specs/**/spec.md` file, or when running the openspec propose / apply / archive commands.
+description: OpenSpec — behavioural spec discipline, WHEN/THEN/REQUIRES structure, overlays, formal-spec relationship.
 ---
 
 # OpenSpec Expert — Procedure + Lore

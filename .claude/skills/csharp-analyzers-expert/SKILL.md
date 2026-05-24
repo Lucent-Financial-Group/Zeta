@@ -1,6 +1,6 @@
 ---
 name: csharp-analyzers-expert
-description: Capability skill ("hat") — static-analysis narrow under `static-analysis-expert`, C# counterpart to `fsharp-analyzers-expert`. Owns the *consumer* side of the Roslyn-analyzer ecosystem for C#: which analyzer packs Zeta adopts (`Microsoft.CodeAnalysis.NetAnalyzers` / CA rules, `StyleCop.Analyzers` / SA rules, `SonarAnalyzer.CSharp`, `Roslynator.Analyzers`, `Meziantou.Analyzer`, `Microsoft.VisualStudio.Threading.Analyzers`, `Microsoft.CodeAnalysis.PublicApiAnalyzers`, `Microsoft.CodeAnalysis.BannedApiAnalyzers`, `ErrorProne.NET`), how to compose them without rule-ID overlap, default-severity baselines per pack, suppression discipline, IDE0xxx vs CAxxxx vs SAxxxx vs S-rule-ID conventions, warn-as-error composition. Wear this when choosing or tuning C# analyzer packs, triaging rule overlap between packs, reviewing a `.editorconfig` severity sweep for C# rules, or debating which pack to adopt for a new concern. Defers to `static-analysis-expert` for cross-tool (non-Roslyn) policy, to `roslyn-analyzers-expert` for authoring custom analyzers, to `roslyn-generators-expert` for source generators, to `editorconfig-expert` for `.editorconfig` mechanics, to `sonar-issue-fixer` for SonarQube-specific issue triage, and to `public-api-designer` for PublicApiAnalyzer decisions.
+description: C# Roslyn analyzer packs — CA/SA/Sonar/Roslynator/Meziantou, severity baselines, rule-ID overlap, warn-as-error composition.
 ---
 
 # C# Analyzers Expert — Consumer-Side Ecosystem Narrow

@@ -1,6 +1,6 @@
 ---
 name: leet-code-patterns
-description: Capability skill for the ~15 classical interview algorithm patterns that generate the majority of LeetCode-style problems — two pointers, sliding window, BFS / DFS on graphs and grids, backtracking, dynamic programming (1-D / 2-D / knapsack / interval / LIS / DP-on-trees), binary search on answer, greedy with exchange argument, topological sort, union-find, trie, heap / top-K, monotonic stack / queue, bit manipulation, prefix sum / difference array. Wear this hat when asked to solve an interview-style problem, teach a pattern, classify a problem, draft a problem set, or choose the right pattern for an unfamiliar problem statement. Generic across projects; pedagogy-and-selection lane, complementary to complexity-theory-expert (which owns the theoretical side).
+description: "LeetCode interview patterns — two-pointers, sliding window, BFS/DFS, DP, binary search, greedy, topological sort, heap/top-K, bit manipulation."
 ---
 
 # Leet-Code Patterns — the pattern-selection hat

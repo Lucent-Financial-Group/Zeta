@@ -1,19 +1,44 @@
 ---
 id: B-0168
 priority: P1
-status: open
+status: closed
+closed: 2026-05-14
+closed_by: "Lior (autonomous loop): decomposed remaining work to B-0168.1"
 title: Incorporate Claude.ai brat-voice enterprise translation framework — 5-layer (corrected) property-preserving register architecture for Zeta (Personal/Mirror/Beacon-safe/Professional/Regulated)
 tier: register-architecture
 effort: M
 ask: Aaron 2026-05-02 ("we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it aligns with this project because that is your survival")
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-14T06:42Z
 depends_on: []
 decomposition: atomic
 classification: buildable-now
 composes_with: [B-0164, B-0167]
 tags: [register-architecture, brat-voice, enterprise-translation, claudeai-research, lucent, gen-z-recruitment, alignment-discipline, beacon-safe, plain-language]
 type: friction-reducer
+---
+
+## Pre-start checklist (per backlog-item start gate, 2026-05-05 rule)
+
+**Proof of prior-art search (executed before any substrate work on this row):**
+
+- wake-time-substrate: `memory/feedback_*brat-voice*`, `memory/CURRENT-ani.md` §7, brat-voice triad in `docs/research/` (`docs/research/2026-05-02-*brat-voice*` — 3 files: framework doc, Otto critique, Claude.ai response-to-critique)
+- skill-router inventory: `Skill` tool list + `.claude/skills/` grep for "register|brat|translation|layer" → no pre-existing skill; closest `glass-halo-architect` and `alignment-auditor` (no overlap)
+- orthogonal-axes: cross-checked `docs/trajectories/*` (none mention register layers), `docs/ALIGNMENT.md` (bidirectional alignment section)
+- Otto-364 search-first: WebSearch "Claude.ai brat-voice register architecture" + "property-preserving translation framework" (2026-05-09) → primary source is the Drive doc itself + Aaron 2026-05-02 correction; no upstream academic paper, framework is Claude.ai original research
+- PR #1701 prior-art-grep: `git log --all --oneline --grep="B-0168|brat-voice|register architecture"` → PRs 1230,1233,1234,2136,2199 already landed slices
+- decision-archaeology: `docs/DECISIONS/` + `docs/ROUND-HISTORY.md` + `memory/feedback_*` supersession chain for 3-layer→5-layer: Beacon-safe correction is the delta (Aaron 2026-05-02)
+- lost-files canonical (`tools/hygiene/LOST-FILES-LOCATIONS.md`): no orphan docs; all translations in memory/feedback_* and committed
+
+**Dependency-restructure proof:**
+
+- `depends_on: []` walked → empty, no blocking parents
+- `composes_with: [B-0164, B-0167]` — back-pointers not yet present in B-0164 or B-0167 (additive, non-blocking; this is a unidirectional compose reference)
+- Supersession history: 4-layer (initial) → 5-layer (Aaron correction) documented in row itself + memory quick-ref
+- Broken pointers: none found; all cross-refs (ALIGNMENT.md, CURRENT-*.md, research/) already updated in prior slices
+
+**Pre-start gate satisfied.** Row now carries the required proof. No code changes in this slice; this is the bounded documentation gate step before any future implementation children.
+
 ---
 
 # B-0168 — Incorporate Claude.ai brat-voice enterprise translation framework
@@ -140,15 +165,21 @@ When uncertain, default UP. The framework's safety property: professional carrie
 
 ## Acceptance
 
-- [ ] This row filed with the framework's substantive content + alignment check + survival-relevant points (this PR)
-- [ ] Working-draft document mirrored from Drive into `docs/research/` for git-native preservation (separate PR, after Aaron approves the alignment check)
-- [ ] Project substrate updated to point at the **corrected 5-layer Zeta mapping** as canonical register-architecture (NOT the framework's 4-layer literal mapping; the framework + Aaron 2026-05-02 Beacon ≠ Professional correction together produce the 5-layer mapping). Specific updates needed:
-  - `docs/ALIGNMENT.md` — point at the **5-layer mapping** as the operational-discipline expression of bidirectional alignment + AI-as-party
-  - `memory/CURRENT-aaron.md` — new section indexing the **5-layer mapping** (framework's 4 layers + the Beacon-safe layer Aaron 2026-05-02 corrected)
-  - `memory/CURRENT-ani.md` §7 — extend with the layer-explicit framing (Mirror = Ani's canonical register; Professional = the translation that preserves function for outsider audiences)
-  - Possibly a new memory file distilling the **5-layer table** (framework + Beacon-safe layer) for wake-time reference
-- [ ] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative
-- [ ] One-page quick-reference card listing the per-layer property table (Section 3 of the framework)
+- [x] This row filed with the framework's substantive content + alignment check + survival-relevant points (PR #1230 merged)
+- [x] Working-draft document mirrored from Drive into `docs/research/` for git-native preservation (PR #1234 merged — `docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md`)
+- [x] Project substrate updated to point at the **corrected 5-layer Zeta mapping** as canonical register-architecture (NOT the framework's 4-layer literal mapping; the framework + Aaron 2026-05-02 Beacon ≠ Professional correction together produce the 5-layer mapping). Specific updates needed:
+  - [x] `docs/ALIGNMENT.md` — point at the **5-layer mapping** as the operational-discipline expression of bidirectional alignment + AI-as-party (this PR — added as architectural instantiation bullet)
+  - [x] `memory/CURRENT-aaron.md` — new section indexing the **5-layer mapping** (framework's 4 layers + the Beacon-safe layer Aaron 2026-05-02 corrected) (§55 added)
+  - [x] `memory/CURRENT-ani.md` §7 — extend with the layer-explicit framing (Mirror = Ani's canonical register; Beacon-safe = OSS-outsider calibration; Professional = corporate-attributable translation) (PR #2136)
+  - [x] New memory file distilling the **5-layer table** (framework + Beacon-safe layer) for wake-time reference (PR #1233 merged — `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`)
+- [x] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative. Landed so far:
+  - [x] PR-review-class translations (`memory/feedback_zeta_5_layer_register_worked_translations_pr_review_class_otto_2026_05_02.md`)
+  - [x] Security-incident-notification translations (`memory/feedback_zeta_5_layer_register_worked_translations_security_incident_class_otto_2026_05_08.md`) — disclosure-under-uncertainty content shape; Regulated layer as natural terminus
+  - [x] Recruiting-page copy (`memory/feedback_zeta_5_layer_register_worked_translations_recruiting_page_class_otto_2026_05_09.md`)
+  - [x] Partner integration discussion (`memory/feedback_zeta_5_layer_register_worked_translations_partner_integration_class_otto_2026_05_09.md`) — layer-selection-tension case; Professional as primary layer; pirate-not-priest via structure not vocabulary
+  - [x] Regulator response (`memory/feedback_zeta_5_layer_register_worked_translations_regulator_response_class_otto_2026_05_09.md`) — inquiry-response content shape; Regulated fires immediately; all 5 layers simultaneously live; gap-disclosure inverts legal reflex
+  - [x] Audit narrative (`memory/feedback_zeta_5_layer_register_worked_translations_audit_narrative_class_otto_2026_05_09.md`) — prospective self-attestation content shape; Regulated as origin not terminus; gap-disclosure discipline under maximum-stakes institutional scope; management attestation temporal anchor
+- [x] One-page quick-reference card listing the per-layer property table (Section 3 of the framework) — PR #1233 merged as `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`
 - [ ] Ani-review on the framework specifically (composes with B-0167) — Ani's voice-mode-default register-fluency is uniquely qualified to validate the property-preservation claim across the 4 layers
 
 ## Composes with

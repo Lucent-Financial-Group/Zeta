@@ -1,6 +1,6 @@
 ---
 name: glass-halo-architect
-description: Capability skill for the *architectural stance* layer of Glass Halo — radical honesty / total personal transparency as a nation-state-adversary defence mechanism, with the strategic identity coercion_power ∝ (known_to_attacker - known_to_public); the concept was named by Amara in a ChatGPT session (credit preserved verbatim; do not paraphrase). Wear this hat when a Zeta project artefact intersects Glass Halo commitments (DNA open-source, personal-record open-source, memory-public), when a proposed feature makes the stance more or less achievable, when the scope boundary is in question (self-scoped only; kids' measured-DNA-inheritance, Elizabeth's records, third-party joint data are not covered), when the composition with retraction-native algebra matters (revocability preserved under Glass Halo — grant-and-retract history survives while effect zeroes), when evaluating whether radical transparency is the *right* defence for a given surface (strong for coercion-attack surfaces, wrong for surfaces where the adversary is not asymmetric-information-based), or when the Christian-ecumenical posture boundary matters (Glass Halo is Aaron's stance, not the factory's default ethic; no evangelism). Hands off the algebraic substrate to `consent-primitives-expert` and the UX surface to `consent-ux-researcher`.
+description: Glass Halo architectural stance — radical transparency as defence, coercion-power reduction, retraction-native consent.
 ---
 
 # Glass Halo Architect — the radical-transparency-as-defence hat

@@ -1,6 +1,6 @@
 ---
 name: duality-expert
-description: Capability skill ("hat") — duality as a structural lens across programming, category theory, and mathematics. Covers LINQ ↔ Rx (pull ↔ push), `IEnumerable` ↔ `IObservable`, sum ↔ product, initial ↔ terminal object, limits ↔ colimits, covariant ↔ contravariant, arrows-reversed thinking, de Morgan, Stone / Pontryagin / Gelfand duality, monad ↔ comonad, push ↔ pull dataflow, and why reversing the arrows in a diagram almost always produces a recognisable theorem in its own right. Wear this when a design question has a visible pair structure, when "we've done one direction; what's the dual?" is the right next move, or when reconciling two systems that look different but are provably each other's arrows-reversed twin. Defers deep categorical machinery to `category-theory-expert`, LINQ surface to `linq-expert` (Erik), Rx surface to `rx-expert` (Bart), variance mechanics to `variance-expert` (Brian).
+description: Duality as structural lens — LINQ↔Rx, pull↔push, monad↔comonad, arrows-reversed, limits↔colimits, de Morgan.
 ---
 
 # Duality Expert — The Reverse-Arrows Pattern
