@@ -64,7 +64,7 @@ Future Soraya cold-boots will rediscover the four triggers, fire on one, recogni
 
 This is the **recursive-recursion** of the discipline — round 61 forced-decomposition produced B-0718 (audit of the four-trigger framework). Round 67 forced-decomposition produces B-0719 (audit of the recognition-without-row-filing precedent that B-0718's existence makes possible). The pattern is fractal: every time the discipline operates correctly, it surfaces the next-finer substrate-gap.
 
-This is NOT a sign the discipline is failing. It's a sign the discipline is operating as designed — each forced-decomposition produces concrete substrate at the next level of granularity. The danger is only if the recursion DOESN'T terminate (infinite audits of audits of audits). 
+This is NOT a sign the discipline is failing. It's a sign the discipline is operating as designed — each forced-decomposition produces concrete substrate at the next level of granularity. The danger is only if the recursion DOESN'T terminate (infinite audits of audits of audits).
 
 **Termination condition for this recursion**: B-0719 picks one of the three options; subsequent recognition events have a place to land; no further audit-of-audit-of-audit needed unless the chosen landing surface itself fails to capture some future routing-decision class.
 
