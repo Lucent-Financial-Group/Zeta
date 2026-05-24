@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Compile Include="BayesianAggregate.fs" />
+    <Compile Include="InferNetTopology.fs" />
   </ItemGroup>
 
   <ItemGroup>
