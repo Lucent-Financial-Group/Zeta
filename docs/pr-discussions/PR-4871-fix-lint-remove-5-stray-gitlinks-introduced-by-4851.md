@@ -8,7 +8,7 @@ merged_at: "2026-05-24T21:09:45Z"
 closed_at: "2026-05-24T21:09:45Z"
 head_ref: "otto-vscode/fix-stray-gitlinks-from-4851-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T21:15:12Z"
+archived_at: "2026-05-24T21:25:24Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
