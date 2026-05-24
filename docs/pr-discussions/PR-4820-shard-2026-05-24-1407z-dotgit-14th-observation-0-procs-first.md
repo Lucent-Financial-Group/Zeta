@@ -8,7 +8,7 @@ merged_at: "2026-05-24T14:12:51Z"
 closed_at: "2026-05-24T14:12:51Z"
 head_ref: "otto-cli/tick-1407z-dotgit-cycle-14th-observation-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T18:34:24Z"
+archived_at: "2026-05-24T20:01:31Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

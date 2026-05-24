@@ -8,7 +8,7 @@ merged_at: "2026-05-24T13:05:13Z"
 closed_at: "2026-05-24T13:05:14Z"
 head_ref: "otto-cli/0441z-pr-triage-audit-cross-lane-classify"
 base_ref: "main"
-archived_at: "2026-05-24T18:35:05Z"
+archived_at: "2026-05-24T20:01:32Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

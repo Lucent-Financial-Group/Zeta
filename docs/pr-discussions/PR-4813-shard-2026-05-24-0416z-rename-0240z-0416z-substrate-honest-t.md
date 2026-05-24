@@ -8,7 +8,7 @@ merged_at: "2026-05-24T04:21:20Z"
 closed_at: "2026-05-24T04:21:20Z"
 head_ref: "otto-cli/dotgit-9th-anchor-descent-0240z"
 base_ref: "main"
-archived_at: "2026-05-24T18:35:09Z"
+archived_at: "2026-05-24T20:01:31Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

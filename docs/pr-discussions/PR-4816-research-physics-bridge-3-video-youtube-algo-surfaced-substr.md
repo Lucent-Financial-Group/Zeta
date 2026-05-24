@@ -8,7 +8,7 @@ merged_at: "2026-05-24T13:42:25Z"
 closed_at: "2026-05-24T13:42:25Z"
 head_ref: "otto-cli/aaron-youtube-algo-physics-bridge-al-khalili-pbs-plank-star-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T18:35:00Z"
+archived_at: "2026-05-24T20:01:32Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
