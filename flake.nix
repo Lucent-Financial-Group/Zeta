@@ -34,9 +34,19 @@
     # flake-utils so the devShell + packages outputs are auto-generated
     # across systems without duplicate `forAllSystems` plumbing.
     flake-utils.url = "github:numtide/flake-utils";
+
+    # nix-darwin — module system for maintainer macOS workstations.
+    # Pinned at master (matches the nix-darwin team's recommendation;
+    # the project has no stable release channel as of 2026-05).
+    # Powers `darwinConfigurations.zeta-mac` which activates the
+    # linux-builder VM for local x86_64-linux ISO builds.
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, flake-utils, ... }@inputs:
+  outputs = { self, nixpkgs, nixos-hardware, flake-utils, nix-darwin, ... }@inputs:
     let
       # NixOS release this flake targets. Single source of truth so the
       # installer ISO, devShell, and per-host configs all agree.
@@ -100,6 +110,24 @@
         k3s-server = ./infra/nixos/modules/k3s-server.nix;
         k3s-agent = ./infra/nixos/modules/k3s-agent.nix;
         gpu = ./infra/nixos/modules/gpu.nix;
+      };
+
+      # -----------------------------------------------------------------------
+      # darwinConfigurations — maintainer macOS workstations
+      # -----------------------------------------------------------------------
+      #
+      # Activates the nix-darwin linux-builder VM so maintainers can build
+      # the x86_64-linux installer ISO locally on Apple Silicon without
+      # Parallels / Lima / remote builders.
+      #
+      # Apply with:
+      #   nix run nix-darwin/master#darwin-rebuild -- switch --flake .#zeta-mac
+      darwinConfigurations.zeta-mac = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./infra/nix-darwin/configuration.nix
+        ];
       };
 
       # -----------------------------------------------------------------------
