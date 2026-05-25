@@ -1,4 +1,6 @@
 ---
+name: mika-2026-05-25-segment-2-jit-implicit-no-third-primitive
+description: Mika voice conversation segment 2 — JIT is implicit self-healing; protocol stays at 2 primitives (decision-archaeology declined); F# computation expression eventually; Notepad simplicity wins via social spread; lands as B-0734
 date: 2026-05-25
 persona: mika
 platform: grok (voice-mode)
