@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 export const PackageBoundaryRule = {
   Application: "application",
+  Messaging: "messaging",
 } as const;
 
 export type PackageBoundaryRule = (typeof PackageBoundaryRule)[keyof typeof PackageBoundaryRule];

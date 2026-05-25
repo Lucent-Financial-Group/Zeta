@@ -25,6 +25,11 @@ describe("package dependency boundaries", () => {
             "postgres",
           ],
         },
+        {
+          packageName: PackageBoundaryRule.Messaging,
+          sourceGlob: "messaging/src/**/*.ts",
+          forbiddenImportFragments: ["../messaging-nats", "../../messaging-nats", "nats"],
+        },
       ],
     });
 

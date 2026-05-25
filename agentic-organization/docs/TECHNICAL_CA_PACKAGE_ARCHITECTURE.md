@@ -164,8 +164,9 @@ calling them.
 | Package                                  | Owns                                                                                            |
 | ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | `@agentic-org/state`                     | Drizzle schema, migrations, repositories, transactions, outbox, inbox, idempotency, leases      |
-| `@agentic-org/state-cockroach`           | CockroachDB implementation of state-store ports, SQL statement catalog, and migration contracts |
+| `@agentic-org/state-cockroach`           | CockroachDB implementation of state-store and outbox-source ports, SQL catalogs, migrations     |
 | `@agentic-org/messaging`                 | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts    |
+| `@agentic-org/messaging-nats`            | NATS JetStream implementation of the event publisher port, canonical JSON, headers, message IDs |
 | `@agentic-org/workflows-temporal`        | Temporal workflow and activity contracts, task queues, workflow clients                         |
 | `@agentic-org/actors-dapr`               | Dapr actor interfaces, actor implementations, reminders, actor state projection                 |
 | `@agentic-org/mcp`                       | MCP schemas, tool registry, preflight checks, policy-checked tool handlers                      |
@@ -343,6 +344,15 @@ type AgenticEventEnvelope<TPayload> = {
 
 No app should publish raw NATS payloads directly. Publishing should go
 through `@agentic-org/messaging`.
+
+The generic outbox publisher should claim unpublished outbox events from
+an `OutboxEventSource`, resolve the typed Organization messaging
+domain, publish through an `EventPublisher` port, and mark the outbox
+row published only after the publish succeeds. The NATS adapter is an
+implementation of that port; it owns transport-specific concerns such as
+headers, message IDs, and JSON serialization. This keeps the
+Organization event loop extensible and testable without coupling the
+publisher to the NATS client.
 
 ### Event-to-Automation Contract
 
@@ -761,6 +771,7 @@ other work.
    - `@agentic-org/state-cockroach`;
    - `@agentic-org/policy`;
    - `@agentic-org/messaging`;
+   - `@agentic-org/messaging-nats`;
    - `@agentic-org/observability`;
    - `@agentic-org/work-os`;
    - `@agentic-org/hats`;
@@ -786,13 +797,15 @@ other work.
 5. Use fake adapters for Hermes, Hindsight, Dapr, Temporal, and
    hat-system.
 6. Add NATS outbox publisher and one consumer after command tests pass.
-7. Add the first rule catalog and reaction executor for ready work,
+7. Add inbox/consumer dedupe before any NATS-driven automation performs
+   side effects.
+8. Add the first rule catalog and reaction executor for ready work,
    review staffing, QA staffing, blocker escalation, and late run
    incidents.
-8. Add the NestJS API and worker hosts.
-9. Add UI projections for work board, review center, and evidence
-   timeline.
-10. Add real cluster adapters one at a time.
+9. Add the NestJS API and worker hosts.
+10. Add UI projections for work board, review center, and evidence
+    timeline.
+11. Add real cluster adapters one at a time.
 
 ## Extraction Path
 

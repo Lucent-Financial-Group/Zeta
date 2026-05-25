@@ -9,10 +9,10 @@ Implemented as a small NodeNext TypeScript package slice.
 This slice turns the first Agentic Organization runtime contract from
 architecture prose into executable TypeScript.
 
-It does not introduce NestJS, CockroachDB, NATS clients, Temporal,
-Dapr, Hermes, Hindsight, or Kubernetes deployment manifests yet. Those
-remain adapter layers. The goal is to prove the Organization command
-shape before adding distributed infrastructure.
+It does not introduce NestJS, live NATS connections, Temporal, Dapr,
+Hermes, Hindsight, or Kubernetes deployment manifests yet. Those remain
+adapter layers. The goal is to prove the Organization command and event
+publication shape before adding distributed infrastructure.
 
 The slice is intentionally generic. `send_supervisor_signal` is the
 coordination primitive; specific downstream outcomes are lifecycle
@@ -29,6 +29,8 @@ send_supervisor_signal
   -> chain-of-command signal
   -> audit event
   -> outbox event with canonical event envelope
+  -> outbox publisher
+  -> NATS JetStream event publisher adapter
   -> NATS subject contract
   -> LGTM span attributes
   -> supervisor triage reaction plan
@@ -41,8 +43,9 @@ send_supervisor_signal
 | `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
 | `@agentic-org/application`     | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
 | `@agentic-org/state`           | in-memory Organization state-store factory fake                                                                                                                       |
-| `@agentic-org/state-cockroach` | CockroachDB state-store factory contract, SQL statement catalog, and first core-state migration skeleton                                                              |
-| `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder                                                                                                     |
+| `@agentic-org/state-cockroach` | CockroachDB state-store/outbox-source contracts, SQL statement catalogs, and first core-state migration skeleton                                                      |
+| `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder, outbox publisher, event publisher port, and typed domain resolver                                  |
+| `@agentic-org/messaging-nats`  | NATS JetStream event publisher adapter contract with canonical JSON payloads, headers, and message IDs                                                                |
 | `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection                                                                                                                          |
 | `@agentic-org/runtime`         | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
 | `@agentic-org/governance`      | package dependency-boundary checks that prevent application code from importing concrete state/runtime adapters                                                       |
@@ -102,6 +105,11 @@ Hermes runs, MCP calls, and UI evidence.
 - A governance test enforces that application code does not import the
   state adapter, Cockroach adapter, NestJS, NATS, Dapr, Temporal,
   Drizzle, or Postgres clients.
+- The outbox publisher claims unpublished events, publishes each event
+  through an `EventPublisher` port, and marks rows published only after
+  the publish succeeds.
+- The NATS adapter publishes canonical JSON envelopes with typed headers
+  and event IDs as message IDs for idempotent JetStream publication.
 - Duplicate commands with the same idempotency key and request hash
   replay the stored result.
 - Duplicate commands with the same idempotency key and a different
@@ -113,11 +121,10 @@ Hermes runs, MCP calls, and UI evidence.
 
 ## Next Slice
 
-The next slice should turn the CockroachDB adapter contract into a
-transactional integration test once a local/dev Cockroach connection is
-available, then add the NATS outbox publisher worker. The worker can
-publish persisted outbox rows to JetStream and attach the same telemetry
-attributes.
+The next slice should add inbox/consumer dedupe before automation starts
+performing side effects from NATS events. After that, wire the outbox
+publisher into a worker host and add a transactional Cockroach
+integration test once a local/dev Cockroach connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized
