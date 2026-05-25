@@ -11,8 +11,10 @@ type: cluster-architecture
 discovered_by: aaron
 owners: [aaron, maintainer]
 composes_with:
-  - full-ai-cluster/dev-cluster/
-  - docs/backlog/P2/B-0722-ci-ephemeral-cluster-smoke-via-k3d-on-runner-evolve-to-vcluster-2026-05-25.md
+  - full-ai-cluster/
+related_prs:
+  - PR-4953  # k3d dev cluster + ArgoCD sync-wave design lane (closed unmerged 2026-05-25; substrate informs this row's failure-domain framing)
+  - PR-4954  # B-0722 CI ephemeral cluster smoke (in flight; row will land via #4954 and can be added to composes_with then)
 ---
 
 # B-0723 — Multi-kubelet-per-machine failure-domain pattern
