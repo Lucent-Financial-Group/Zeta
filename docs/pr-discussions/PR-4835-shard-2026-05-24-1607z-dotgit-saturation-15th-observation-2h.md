@@ -8,7 +8,11 @@ merged_at: "2026-05-24T16:21:09Z"
 closed_at: "2026-05-24T16:21:09Z"
 head_ref: "otto/shard-1607z-sustained-recovery-2026-05-24"
 base_ref: "main"
+<<<<<<< HEAD
 archived_at: "2026-05-24T21:25:39Z"
+=======
+archived_at: "2026-05-24T20:21:28Z"
+>>>>>>> origin/main
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
