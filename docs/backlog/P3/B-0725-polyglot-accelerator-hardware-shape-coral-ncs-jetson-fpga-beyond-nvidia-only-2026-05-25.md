@@ -37,10 +37,10 @@ Today's shipped substrate (no work needed; just leveraged):
 
 | Substrate | Path | What it gives us for polyglot |
 |-----------|------|-------------------------------|
-| GPU device plugin module | `nixos/modules/gpu-device-plugin.nix` | Takes `zeta.gpu-device-plugin.vendors = ["nvidia"]` today; extending to `["nvidia","amd","intel","google-coral","intel-myriad","xilinx-fpga","intel-fpga"]` is appending to the list + adding a per-vendor DaemonSet block |
-| NFD per-device PCI labels | `k8s/applications/node-feature-discovery/Application.yaml` | Auto-labels `feature.node.kubernetes.io/pci-<vendor>.present=true` for every PCI device class enabled in the chart values — Coral (1ac1), NCS PCIe (8086:ad03 newer Intel AI), Jetson PCIe-edge, Xilinx FPGAs (10ee), all caught automatically |
-| disko-shape template | `nixos/modules/disko-shapes/2nvme.nix` | Per-hardware-class shapes follow the same options pattern; future siblings `2nvme-with-coral-usb.nix`, `fpga-accel-node.nix`, etc. just add module options + partitions for their devices |
-| cluster-inventory capture | `tools/cluster-inventory/capture.sh` | Already pulls NFD labels + lstopo XML per node; will surface the per-accelerator devices in the inventory once present |
+| GPU device plugin module | `full-ai-cluster/nixos/modules/gpu-device-plugin.nix` | Takes `zeta.gpu-device-plugin.vendors = ["nvidia"]` today; extending to `["nvidia","amd","intel","google-coral","intel-myriad","xilinx-fpga","intel-fpga"]` is appending to the list + adding a per-vendor DaemonSet block |
+| NFD per-device PCI labels | `full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml` | Auto-labels `feature.node.kubernetes.io/pci-<vendor>.present=true` for every PCI device class enabled in the chart values — Coral PCIe (1ac1), Jetson PCIe-edge, Xilinx FPGAs (10ee), all caught automatically. USB-attached accelerators (Coral USB, NCS USB) need NFD's `usb` source-plugin labels instead (different scheduling path; see notes below) |
+| disko-shape template | `full-ai-cluster/nixos/modules/disko-shapes/2nvme.nix` | Per-hardware-class shapes follow the same options pattern; future siblings `2nvme-with-coral-usb.nix`, `fpga-accel-node.nix`, etc. just add module options + partitions for their devices |
+| cluster-inventory capture | `full-ai-cluster/tools/cluster-inventory/capture.sh` | Already pulls NFD labels + lstopo XML per node; will surface the per-accelerator devices in the inventory once present |
 
 The scheduling story is also in place — `nodeAffinity: feature.node.kubernetes.io/pci-1ac1.present=true` targets Coral nodes once NFD labels them; same pattern for every other vendor.
 
@@ -67,7 +67,7 @@ The scheduling story is also in place — `nodeAffinity: feature.node.kubernetes
 - **NOT a USB accelerator** — Jetsons are full ARM64 SoCs that join the cluster as nodes themselves (or as edge nodes via wireguard back to control plane)
 - **K8s integration**: NVIDIA GPU Operator handles Jetson CUDA / TensorRT same as desktop GPUs (with Jetson-specific values)
 - **NixOS angle**: needs an aarch64-linux installer ISO variant — extends `usb-nixos-installer/` flake to aarch64; `disko-shape-jetson.nix` for the eMMC + SD-card + NVMe topology Jetsons typically have
-- **Cookie-cutter pattern**: `worker-template/default.nix` already supports per-host overrides; an `aarch64-template/` sibling lands when first Jetson joins
+- **Cookie-cutter pattern**: `full-ai-cluster/nixos/hosts/worker-template/default.nix` already supports per-host overrides; an `aarch64-template/` sibling lands when first Jetson joins
 - **Workload class**: edge-deployed multimodal models; CUDA + TensorRT runtime; not really USB-class workloads
 
 ### Xilinx (AMD) FPGAs
@@ -104,7 +104,7 @@ First-wave cluster build (the boxes Aaron is installing tonight + this week) use
 - **`gpu-device-plugin.nix`** — vendor list extension; one DaemonSet block per vendor; existing pattern
 - **NFD** — auto-labels per-vendor; scheduling targets via nodeAffinity; existing
 - **Disko shapes** — per-hardware-class shape file; existing template
-- **NFD PCI source-plugin config** — Application.yaml has `pci.deviceClassWhitelist`; may need to add accelerator-relevant classes (`120000` = processing accelerators, `0b80` = vision processing) when adding non-NVIDIA gear
+- **NFD source-plugin config** — `full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml` already includes class `12` (processing accelerators — covers FPGAs registered as accelerators, Coral PCIe, etc.) and `03` (display controllers — GPUs); may need `11` (signal-processing controllers — some FPGA cards register here) when those vendors arrive. ALSO — USB-attached accelerators (Coral USB, NCS USB) are NOT caught by the PCI source-plugin; enable the NFD `usb` source-plugin (with its own `deviceClassWhitelist`) and reference USB vendor IDs in nodeAffinity instead. The scheduling-path-per-bus distinction is real
 - **Watt-hour intelligence-cost** (per the Alexa-conversation insight) — FPGAs in particular can be 5-10× more efficient than GPUs for fixed-graph workloads; the W·hr-per-cognition measurement substrate when built will catch this naturally
 - **hat-system** (PR #4930) — eventually a `hat-fpga-programmer` hat with elevated authority to flash FPGA bitstreams (high-blast-radius operation); same quorum-gated pattern as `policy-admin` and `hat-designer`
 - **B-0724** (polyglot K8s operator pattern) — composes; FPGA-aware operators may want to live in Rust (kube-rs) for the perf characteristics of bitstream-orchestration
@@ -117,7 +117,7 @@ Per accelerator-class added:
 - [ ] NFD PCI source-plugin config extended with the vendor's device class if missing
 - [ ] Optional: new disko-shape sibling for the hardware-class if disk-topology differs
 - [ ] Test workload that schedules to the accelerator via `nodeAffinity` on the NFD label
-- [ ] Documented in `tools/cluster-inventory/README.md` accelerator section
+- [ ] Documented in `full-ai-cluster/tools/cluster-inventory/README.md` accelerator section
 
 ## Not in scope (yet)
 
