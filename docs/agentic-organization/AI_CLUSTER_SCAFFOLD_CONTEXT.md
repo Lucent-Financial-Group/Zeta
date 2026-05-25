@@ -115,7 +115,7 @@ The concrete bootstrap directory currently represents this order with:
 | CockroachDB | Distributed SQL source of truth for Organization-owned critical state |
 | Temporal TS | Durable workflow/process rail |
 | Dapr Actors | Entity-local actor/concurrency rail |
-| Orleans | Present as a custom silo application; not the preferred TypeScript-first Organization primitive unless a .NET grain use case is explicit |
+| Orleans | Cluster-resident .NET virtual actor/silo capability; NestJS composes with it through adapters when .NET grain semantics are needed |
 | Argo Workflows / Rollouts | DAG jobs and progressive delivery |
 | Hindsight | Hermes persistent memory |
 | OpenZiti / Ziti | Secure transport/connectivity layer |

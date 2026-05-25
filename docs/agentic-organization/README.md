@@ -1,13 +1,17 @@
-# Hermes Organization Docs
+# Agentic Organization Docs
 
-This folder is the working design set for the Hermes-native Organization platform.
+This folder is the working design set for the Agentic Organization platform.
+
+Canonical name: **Agentic Organization**.
+
+Use **Hermes** only for the agent runtime/component. Use **Organization Work OS** for the work-management subsystem inside Agentic Organization.
 
 Current documents:
 
 - [Foundational Context and Language](./FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md) - working vocabulary, values, Zeta project context, declarative cluster mental model, and active clarifications.
 - [Implementation Concepts](./IMPLEMENTATION_CONCEPTS.md) - how to build the architecture as services, data models, MCP tools, workflows, and runtime infrastructure.
 - [Always-On Orchestration Runtime](./ALWAYS_ON_ORCHESTRATION_RUNTIME.md) - the workers, triggers, rules, leases, schedulers, watchers, reconcilers, SLOs, incidents, runbooks, and self-healing loops that keep the Organization continuously operating.
-- [Runtime Technology and Package Strategy](./RUNTIME_TECH_AND_PACKAGE_STRATEGY.md) - how Temporal TS, Dapr Actors, NATS, Oz/Warp run orchestration, OpenZiti transport, Hermes, Hindsight, and reusable `agentic-services` primitives fit into a new Hermes-native platform.
+- [Runtime Technology and Package Strategy](./RUNTIME_TECH_AND_PACKAGE_STRATEGY.md) - how Temporal TS, Dapr Actors, Orleans, NATS, Oz/Warp run orchestration, OpenZiti transport, Hermes, Hindsight, and reusable `agentic-services` primitives fit into a new Agentic Organization platform.
 - [UI and Observability Concepts](./UI_AND_OBSERVABILITY_CONCEPTS.md) - how humans visualize and operate the Organization across work, agents, hats, runs, pods, clusters, meetings, reports, and evidence.
 - [Department, Hat, and Tool Inventory](./DEPARTMENT_HAT_TOOL_INVENTORY.md) - the starter department map, hat catalog, tool bundles, approval gates, lifecycle ownership, and high-risk guardrails for the Organization.
 - [Organization Layer Build Plan](./ORGANIZATION_LAYER_BUILD_PLAN.md) - the service layer, role workspaces, automation loops, state model, UI surfaces, and MVP sequence needed to make each department and hat operational.
@@ -21,3 +25,11 @@ Current documents:
 - [Architecture Source](./ORGANIZATION_RUNTIME_ARCHITECTURE.md) - the current conceptual architecture and operating model.
 
 The intent is to keep the architecture document focused on what the Organization is, while implementation documents describe how to build it incrementally.
+
+## Scope Discipline
+
+These documents are reference substrate, not a mandate to implement every concept at once. The first implementation should choose the smallest end-to-end slice from [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md), ship it, and prune or revise the reference docs as the concrete system teaches us.
+
+## Placement
+
+These docs live at `docs/agentic-organization/` as repo-level design substrate. Before runtime code lands, decide whether the implementation is a subsystem of `full-ai-cluster/` or a parallel top-level product tree.

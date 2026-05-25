@@ -1,4 +1,4 @@
-# Hermes Organization Runtime - Current Design
+# Agentic Organization Runtime - Current Design
 
 ## Purpose
 

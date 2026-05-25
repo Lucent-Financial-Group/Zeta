@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document decides how Dapr Actors, Temporal TypeScript, Dapr Workflow, NATS, Oz/Warp run orchestration, OpenZiti transport, Hermes, and existing `agentic-services` primitives should fit into the new Hermes-native Organization platform.
+This document decides how Dapr Actors, Temporal TypeScript, Dapr Workflow, Orleans, NATS, Oz/Warp run orchestration, OpenZiti transport, Hermes, and existing `agentic-services` primitives should fit into the new Agentic Organization platform.
 
 The Organization is new. It should not be a dev-portal rewrite and it should not be TPM with a different name.
 
@@ -23,7 +23,7 @@ Dapr Actors
   entity-local concurrency, live mailbox/stateful actor identity, reminders
 
 Orleans
-  optional cluster-resident .NET virtual actor/silo capability; do not use as the default Organization primitive unless a specific grain-based use case wins
+  cluster-resident .NET virtual actor/silo capability; NestJS composes with it through adapters when .NET grain semantics are needed
 
 NATS / JetStream
   event transport, inbox/outbox, live updates, fanout, integration streams
@@ -45,6 +45,8 @@ Hindsight
 ```
 
 Do not make Temporal, Dapr, Oz/Warp, or OpenZiti the product model. They are infrastructure adapters behind Organization-owned concepts.
+
+NestJS composes the runtime adapters; it does not replace Orleans. Orleans remains available for .NET grain/silo workloads and should be integrated through an explicit adapter when a use case needs its virtual actor model.
 
 The cluster execution and memory assumptions are detailed in [Cluster Execution and Memory Substrate](./CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md). The scaffold-level component direction is captured in [AI Cluster Scaffold Context](./AI_CLUSTER_SCAFFOLD_CONTEXT.md). In particular, Hindsight should be treated as real Hermes memory infrastructure: the current cluster direction uses the `vectorize-io/hindsight` OCI Helm chart, Hermes points at the in-cluster Hindsight service, and Organization policy still needs to enforce hat-scoped recall/write attribution.
 
@@ -282,7 +284,7 @@ Temporal is the durable process rail. Hermes and Organization MCP tools are the 
 
 ## Package Strategy
 
-Create new Hermes Organization packages. Do not extend dev-portal or TPM directly.
+Create new Agentic Organization packages. Do not extend dev-portal or TPM directly.
 
 The concrete TypeScript app stack and app/package layout are defined in [Organization Layer Build Plan](./ORGANIZATION_LAYER_BUILD_PLAN.md#typescript-application-stack). This runtime strategy owns why each infrastructure rail exists; the build plan owns how the app should be scaffolded.
 
@@ -690,6 +692,7 @@ NestJS Organization API
   -> NATS JetStream
   -> Temporal client
   -> Dapr client
+  -> Orleans adapter when .NET grains are needed
   -> Oz adapter
   -> MCP gateway
 
@@ -704,6 +707,9 @@ Dapr actor service
   -> AgentMailboxActor
   -> TeamRoomActor
 
+Orleans silo
+  -> .NET grain workloads selected by architecture decision
+
 Hermes session containers
   -> Organization MCP gateway
   -> Credential proxy
@@ -717,7 +723,8 @@ Start with Temporal for durable process and Dapr Actors for one narrow hot-state
 
 - Should Temporal be mandatory from M1, or introduced after native state/rules are proven?
 - Is Dapr already acceptable in the local k3s baseline, or should actors wait until after Oz/Hermes are running?
+- Which first workflow, if any, should prove the NestJS-to-Orleans adapter?
 - Do we want one actor service for all actor types or separate services by domain?
 - Should NATS remain the only external event stream even when Dapr pub/sub is available?
 - Which existing `agentic-services` primitives should be copied versus wrapped as a dependency during early development?
-- Do we rename all `DevAgent` concepts immediately, or maintain a compatibility adapter until Hermes-native interfaces settle?
+- Do we rename all `DevAgent` concepts immediately, or maintain a compatibility adapter until Hermes runtime interfaces settle?

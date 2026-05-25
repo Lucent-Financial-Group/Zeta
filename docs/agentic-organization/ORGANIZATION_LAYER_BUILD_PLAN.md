@@ -68,7 +68,9 @@ packages/
 
 Start as one repository and one deployable product made of multiple processes. Do not split into many microservices until the domain boundaries have proven themselves through real Organization workflows.
 
-Initial implementation should not start with GraphQL, Orleans, Dapr Workflow, or a broad service mesh abstraction inside the app. Use REST/OpenAPI, Temporal for durable workflows, Dapr Actors for narrow hot-state actors, NATS for events, and OpenZiti/Cilium at the cluster layer.
+Initial implementation should not start with GraphQL, Dapr Workflow, or a broad service mesh abstraction inside the app. Use REST/OpenAPI, Temporal for durable workflows, Dapr Actors for narrow hot-state actors, Orleans for .NET grain/silo workloads where those semantics are required, NATS for events, and OpenZiti/Cilium at the cluster layer.
+
+NestJS does not replace Orleans. NestJS is the TypeScript composition shell for APIs, workers, policy checks, and adapters. Orleans remains a cluster-resident distributed-cron/virtual-actor primitive that the TypeScript app can call through an explicit adapter when a workflow needs Orleans grain semantics.
 
 ### Nest Orchestrator Composition
 
@@ -94,6 +96,34 @@ NestJS apps compose those packages into runnable orchestrators:
 - `apps/mcp-gateway` exposes MCP tools and resolves actor/session/hat context before delegating to package handlers.
 
 The rule: packages should contain the reusable business and infrastructure capability; Nest orchestrators should wire lifecycle, dependency injection, transport adapters, health checks, and process concerns. Do not bury Organization rules directly inside controllers or worker entrypoints.
+
+### Orleans Composition
+
+Orleans should be treated as an existing cluster primitive, not an accidental duplicate of NestJS.
+
+Use Orleans when:
+
+- a .NET grain model is already the best fit;
+- the work benefits from Orleans silo locality or grain identity;
+- the cluster-level distributed-cron design explicitly routes through Orleans.
+
+Use NestJS when:
+
+- the Organization needs HTTP/OpenAPI, MCP, worker, or UI-facing process orchestration;
+- the logic belongs in shared TypeScript packages;
+- the flow coordinates CockroachDB, NATS, Temporal, Dapr, Hermes, Hindsight, and Credential Proxy adapters.
+
+Integration shape:
+
+```text
+NestJS orchestrator
+  -> shared npm package contract
+  -> Orleans adapter
+  -> Orleans grain/silo
+  -> Organization signal/audit projection
+```
+
+No implementation should silently move long-running state from Orleans to NestJS or from NestJS to Orleans. That boundary needs an explicit design note or ADR.
 
 ## Organization Layer Services
 

@@ -1,6 +1,6 @@
 # Department, Hat, and Tool Inventory
 
-This document is the first inventory for the Hermes-native Organization. It expands the architecture into concrete departments, hats, MCP tool bundles, approval powers, and ownership boundaries.
+This document is the first inventory for the Agentic Organization. It expands the architecture into concrete departments, hats, MCP tool bundles, approval powers, and ownership boundaries.
 
 The goal is not to freeze the company shape forever. The Organization should be able to evolve itself. This inventory defines the starter graph that lets it operate safely while it learns which hats, tools, memories, workflows, and departments need to be added.
 

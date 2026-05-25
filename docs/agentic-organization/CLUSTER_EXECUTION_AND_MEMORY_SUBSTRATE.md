@@ -1,6 +1,6 @@
 # Cluster Execution and Memory Substrate
 
-This document captures the theoretical cluster substrate for the Hermes Organization. It focuses on how Hermes agents run in k3s as isolated session containers, how hats and policies bind to workloads, how credential proxies and Cilium service mesh boundaries protect access, how SPIRE supplies workload identity, and how Hindsight provides persistent memory.
+This document captures the theoretical cluster substrate for the Agentic Organization. It focuses on how Hermes agents run in k3s as isolated session containers, how hats and policies bind to workloads, how credential proxies and Cilium service mesh boundaries protect access, how SPIRE supplies workload identity, and how Hindsight provides persistent memory.
 
 It intentionally avoids deployment YAML details.
 

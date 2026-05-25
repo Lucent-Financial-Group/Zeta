@@ -1,8 +1,32 @@
 # Cluster-Native Hat System
 
-This document captures the theoretical design for a Kubernetes-native hat system. It focuses on CRDs, OPA policies, graph enforcement, time-bounded hat bindings, succession, reputation, events, and observability. It intentionally avoids deployment YAML details.
+This document captures the theoretical design for a Kubernetes-native hat system. It focuses on CRDs, OPA policies, graph enforcement, time-bounded hat bindings, succession, reputation, events, and observability.
+
+The deployment substrate already exists at [`../../full-ai-cluster/k8s/applications/hat-system/`](../../full-ai-cluster/k8s/applications/hat-system/). That operator is the concrete cluster implementation direction for the CRD/OPA/runtime projection layer. This document should extend and explain that implementation, not parallel-design a second hat system.
 
 The goal is not to replace the Organization Work OS. The goal is to give hats a cluster-native control-plane representation so runtime workloads, policies, and observability can reason about roles consistently across distributed Hermes sessions.
+
+## Existing Operator Composition
+
+The shipped hat-system operator provides:
+
+- four CRDs: `Hat`, `HatBinding`, `HatSwap`, and `HatPolicy`;
+- OPA Gatekeeper constraints, including supervisor-cycle prevention;
+- seed hats and default policy resources;
+- a Go operator scaffold;
+- structured tick fan-out through HatSwap records, Kubernetes Events, structured logs, and NATS;
+- graph rendering and Loki/Hubble query support.
+
+The Agentic Organization layer adds the missing business and product surface above that operator:
+
+- CockroachDB-backed source of truth for projects, initiatives, tasks, gates, assignments, and outcomes;
+- projection from Organization hat definitions and assignments into the CRDs;
+- reconciliation from CRD status and HatSwap ticks back into Organization signals;
+- MCP Gateway and Credential Proxy checks against active hat assignments;
+- Hindsight memory attribution by agent, hat, project, team, task, and meeting;
+- UI projections for hat supply, succession, reputation, and policy decisions.
+
+If future implementation finds a mismatch, prefer extending the shipped operator or documenting a replacement decision through an ADR before creating another hat runtime.
 
 ## Core Idea
 

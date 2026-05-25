@@ -37,6 +37,16 @@ ambiguous internal capability request
   -> outcome review
 ```
 
+For v0, reduce this to the smallest useful three-step vertical:
+
+```text
+capability request
+  -> one readiness/gate decision
+  -> one hat-assigned Hermes run with evidence
+```
+
+After that works, add BRD/CA, QA, release, outcome review, and self-improvement loops incrementally. The full lifecycle is reference material until a slice proves it.
+
 Need to decide:
 
 - exact example feature;
@@ -56,13 +66,15 @@ Need to decide:
 - whether this is a new app under `agentic-team/packages` or a separate top-level workspace;
 - whether frontend and backend live together at first;
 - whether initial deployment target is local Docker Compose, k3s, or both.
+- whether runtime code belongs under `full-ai-cluster/` as a cluster subsystem or as a parallel top-level product tree.
 
 Recommendation:
 
-- start as a new Hermes Organization app, separate from dev-portal;
+- start as a new Agentic Organization app, separate from dev-portal;
 - use dev-portal/TPM only as reference and selective extraction source;
 - build modular monolith first, with clear boundaries for later service extraction.
 - use a TypeScript monorepo with `apps/api`, `apps/web`, `apps/workers`, `apps/temporal-worker`, `apps/dapr-actors`, and shared `packages/*` as defined in the build plan.
+- decide placement before code lands. Docs can live at `docs/agentic-organization/`; runtime implementation should not create a second parallel substrate by accident.
 
 ## 3. Source of Truth
 
