@@ -9,7 +9,6 @@ closed_at: "2026-05-24T17:10:37Z"
 head_ref: "fix-4780-tests"
 base_ref: "main"
 archived_at: "2026-05-24T21:25:42Z"
-archived_at: "2026-05-24T20:22:19Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

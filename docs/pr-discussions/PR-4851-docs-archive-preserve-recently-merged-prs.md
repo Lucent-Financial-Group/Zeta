@@ -9,7 +9,6 @@ closed_at: "2026-05-24T20:10:43Z"
 head_ref: "lior-decompose-4828-preservation"
 base_ref: "main"
 archived_at: "2026-05-24T21:25:31Z"
-archived_at: "2026-05-24T20:19:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
