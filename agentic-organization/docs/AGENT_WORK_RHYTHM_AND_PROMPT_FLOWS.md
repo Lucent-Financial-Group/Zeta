@@ -274,12 +274,12 @@ Suggested records:
 - `prompt_flow_versions`;
 - `prompt_flow_phases`;
 - `prompt_flow_phase_versions`;
-- `prompt_flow_hat_bindings`;
+- `hat_prompt_flow_bindings`;
 - `prompt_flow_gate_policies`;
 - `prompt_flow_runs`;
-- `prompt_flow_run_phases`;
+- `prompt_flow_phase_runs`;
 - `prompt_flow_artifacts`;
-- `prompt_flow_review_decisions`;
+- `prompt_flow_gate_decisions`;
 - `prompt_flow_effectiveness_reviews`.
 
 Flows should be ingested into the graph so agents can retrieve:

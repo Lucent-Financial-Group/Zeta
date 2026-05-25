@@ -169,6 +169,7 @@ setCurrentTeam()
 setCurrentMeeting()
 setCurrentScheduleBlock()
 setCurrentPromptFlowRun()
+setCurrentPromptFlowPhase()
 setMode()
 markRoleless()
 ```
