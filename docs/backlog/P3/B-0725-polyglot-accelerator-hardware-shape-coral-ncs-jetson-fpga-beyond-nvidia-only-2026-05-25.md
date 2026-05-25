@@ -42,7 +42,7 @@ Today's shipped substrate (no work needed; just leveraged):
 | disko-shape template | `full-ai-cluster/nixos/modules/disko-shapes/2nvme.nix` | Per-hardware-class shapes follow the same options pattern; future siblings `2nvme-with-coral-usb.nix`, `fpga-accel-node.nix`, etc. just add module options + partitions for their devices |
 | cluster-inventory capture | `full-ai-cluster/tools/cluster-inventory/capture.sh` | Already pulls NFD labels + lstopo XML per node; will surface the per-accelerator devices in the inventory once present |
 
-The scheduling story is also in place — `nodeAffinity: feature.node.kubernetes.io/pci-1ac1.present=true` targets Coral nodes once NFD labels them; same pattern for every other vendor.
+The scheduling story is also in place **for PCIe-attached accelerators** — `nodeAffinity: feature.node.kubernetes.io/pci-10ee.present=true` targets nodes with Xilinx FPGAs; `pci-1ac1.present=true` targets nodes with Coral PCIe cards; same pattern for every PCIe vendor. **USB-attached accelerators** (Coral USB, Intel NCS / Movidius USB) need the NFD `usb` source-plugin labels instead (`feature.node.kubernetes.io/usb-<vendor>.present=true`); copying the PCI pattern for USB devices produces unschedulable pods. See the per-class extension paths below for which devices use which bus.
 
 ## Per-accelerator-class extension paths
 
