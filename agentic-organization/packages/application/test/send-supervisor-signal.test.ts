@@ -8,10 +8,10 @@ import {
   SupervisorChainLevel,
   SupervisorSignalStatus,
   SupervisorSignalToolType,
-} from "../../../domain/src/index.ts";
-import { createInMemoryOrganizationStoreFactory } from "../../../state/src/index.ts";
-import { CommandResultStatus, type CommandResult } from "../command-result.ts";
-import { sendSupervisorSignal, type SendSupervisorSignalCommand } from "./send-supervisor-signal.ts";
+} from "../../domain/src/index.ts";
+import { createInMemoryOrganizationStoreFactory } from "../../state/src/index.ts";
+import { CommandResultStatus, type CommandResult } from "../src/command-result.ts";
+import { sendSupervisorSignal, type SendSupervisorSignalCommand } from "../src/handlers/send-supervisor-signal.ts";
 
 const command: SendSupervisorSignalCommand = {
   commandId: "cmd-supervisor-signal-001",

@@ -59,6 +59,16 @@ Organization state only by calling Organization commands.
 - **AND** state adapter source files are checked for forbidden imports
   of messaging, NATS, JetStream, or other event transport clients
 
+#### Scenario: Tests are kept out of production source trees
+
+- **WHEN** package source-layout governance tests run
+- **THEN** production source directories are scanned for `*.test.ts`
+  files
+- **AND** every package keeps implementation code under
+  `packages/<name>/src`
+- **AND** every package keeps tests under `packages/<name>/test`
+- **AND** a test file inside a production source tree fails the suite
+
 ### Requirement: Commands are idempotent
 
 Organization commands MUST use deterministic idempotency keys at the

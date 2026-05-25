@@ -3,10 +3,10 @@ import { describe, test } from "node:test";
 
 import { CommandType, SupervisorChainLevel, SupervisorSignalToolType } from "../../domain/src/index.ts";
 import { createInMemoryOrganizationStoreFactory } from "../../state/src/index.ts";
-import { createCommandHandlerRegistry } from "./command-handler-registry.ts";
-import { CommandErrorCode, CommandResultStatus, type CommandResult } from "./command-result.ts";
-import { createCommandPipeline, type PipelineCommand } from "./command-pipeline.ts";
-import { createSendSupervisorSignalHandler } from "./handlers/send-supervisor-signal.ts";
+import { createCommandHandlerRegistry } from "../src/command-handler-registry.ts";
+import { CommandErrorCode, CommandResultStatus, type CommandResult } from "../src/command-result.ts";
+import { createCommandPipeline, type PipelineCommand } from "../src/command-pipeline.ts";
+import { createSendSupervisorSignalHandler } from "../src/handlers/send-supervisor-signal.ts";
 
 const command: PipelineCommand = {
   commandId: "cmd-supervisor-signal-001",

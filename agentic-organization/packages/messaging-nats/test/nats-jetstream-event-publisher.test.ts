@@ -11,7 +11,7 @@ import {
   createNatsJetStreamEventPublisher,
   NatsHeaderName,
   type NatsJetStreamClient,
-} from "./nats-jetstream-event-publisher.ts";
+} from "../src/nats-jetstream-event-publisher.ts";
 
 describe("NATS JetStream event publisher", () => {
   test("publishes canonical JSON with idempotent headers and message ID", async () => {

@@ -116,6 +116,10 @@ Rules:
 - Cross-package imports use public exports only.
 - No controller, worker entrypoint, Temporal workflow, Dapr actor, or MCP
   route contains business rules.
+- Production source and test source are separated. Package
+  implementation code lives in `packages/<name>/src`; package tests live
+  in `packages/<name>/test`. Governance checks should reject `*.test.ts`
+  files inside production source trees.
 
 ## Package Layers
 

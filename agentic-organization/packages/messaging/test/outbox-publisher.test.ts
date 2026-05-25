@@ -15,7 +15,7 @@ import {
   resolveAgenticMessagingDomain,
   type EventPublication,
   type EventPublisher,
-} from "./outbox-publisher.ts";
+} from "../src/outbox-publisher.ts";
 
 describe("outbox publisher", () => {
   test("resolves event domains through typed mappings", () => {

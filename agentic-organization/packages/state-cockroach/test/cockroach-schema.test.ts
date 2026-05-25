@@ -5,7 +5,7 @@ import {
   CockroachCoreStateMigrationName,
   CockroachTableName,
   createCockroachCoreStateMigration,
-} from "./cockroach-schema.ts";
+} from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
   test("declares the first authoritative state, audit, outbox, and idempotency tables", () => {

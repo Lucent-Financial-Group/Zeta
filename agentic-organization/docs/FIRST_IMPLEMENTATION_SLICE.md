@@ -108,6 +108,10 @@ Hermes runs, MCP calls, and UI evidence.
 - A governance test enforces that the Cockroach state adapter does not
   import messaging, NATS, or JetStream. Durable state can be swapped
   without dragging transport concerns into the repository layer.
+- A governance test enforces package source layout: production code
+  lives under `packages/<name>/src`, tests live under
+  `packages/<name>/test`, and `*.test.ts` files are rejected from
+  production source trees.
 - The outbox publisher claims unpublished events, publishes each event
   through an `EventPublisher` port, and marks rows published only after
   the publish succeeds.

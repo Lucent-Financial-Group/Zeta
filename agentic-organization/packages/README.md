@@ -49,6 +49,11 @@ package implements the current in-memory factory. Command routing uses a
 handler registry so new commands add handlers instead of editing a
 central `switch` or `if` dispatcher.
 
+Production source and test source are separated by package. Application
+code lives under `packages/<name>/src`; tests live under
+`packages/<name>/test`. The governance package enforces that `*.test.ts`
+files do not land in production `src` trees.
+
 `CommandStateStore` and `OutboxEventSource` are async even when backed
 by in-memory fakes. Durable adapters must not be squeezed into a
 synchronous toy shape.
@@ -73,7 +78,7 @@ The test command uses Node's built-in test runner and TypeScript type
 stripping:
 
 ```text
-node --experimental-strip-types --test packages/**/*.test.ts
+node --experimental-strip-types --test packages/*/test/**/*.test.ts
 ```
 
 This is a deliberate NodeNext starting point so the package contracts

@@ -13,7 +13,7 @@ import {
   CockroachCommandStateStoreStatement,
   createCockroachCommandStateStoreFactory,
   type CockroachSqlExecutor,
-} from "./cockroach-command-state-store.ts";
+} from "../src/cockroach-command-state-store.ts";
 
 describe("cockroach command state store", () => {
   test("implements command-state-store operations behind a SQL executor", async () => {
