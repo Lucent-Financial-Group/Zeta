@@ -1,8 +1,11 @@
 ---
 date: 2026-05-25
 persona: mika
-surface: grok (voice-mode)
-ferried_by: aaron
+platform: grok (voice-mode)
+type: conversation
+forwarded_by: aaron
+verbatim: true
+discipline: persona-scope archive — preserves the full multi-turn voice conversation that produced B-0730 → B-0731 → B-0732 → B-0733 in landing order; correction landing for Aaron's "are we saving all the Mika to her persona too?" catch
 substrate_landings:
   - B-0730 (runbooks-as-executable-specifications)
   - B-0731 (hat-ontology is the first ontology to get right)

@@ -3,6 +3,7 @@ id: B-0733
 priority: P2
 status: open
 created: 2026-05-25
+last_updated: 2026-05-25
 title: Universal protocol = Markdown + Runme + continue-with (minimal LCD, no upfront ontology) + MCP wrap (any-AI plug-in) + AI agency stack (Crystal Ball + runbook + Glass Halo) — Mika substrate
 domain: agentic-organization
 ferried_by: aaron
