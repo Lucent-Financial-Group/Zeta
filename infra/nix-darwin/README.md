@@ -46,9 +46,9 @@ nix build .#installer-iso
 # ↓ writes result/iso/zeta-installer-24.11.iso (~1.5-2 GB)
 ```
 
-First build takes ~10-15 min (downloads + boots the linux-builder VM
-+ compiles the Linux closure). Subsequent builds reuse the warm VM
-and the /nix/store cache — typically 1-3 min.
+First build takes ~10-15 min (downloads dependencies, boots the
+linux-builder VM, compiles the Linux closure). Subsequent builds
+reuse the warm VM and the /nix/store cache — typically 1-3 min.
 
 ## When to update the linux-builder VM
 
