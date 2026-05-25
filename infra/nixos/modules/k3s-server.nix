@@ -28,10 +28,24 @@
     # Embedded etcd so a single control-plane node has a real datastore
     # rather than the default sqlite. Allows future multi-server HA
     # without a datastore migration.
-    clusterInit = true;
+    #
+    # IMPORTANT: only the FIRST control-plane node should set
+    # clusterInit = true. Additional servers joining for HA must
+    # set this to false and provide serverAddr pointing at the
+    # cluster-init node. Per-host override pattern:
+    #
+    #   # On the 2nd/3rd control-plane:
+    #   services.k3s.clusterInit = lib.mkForce false;
+    #   services.k3s.serverAddr = "https://control-plane-1.zeta.local:6443";
+    clusterInit = lib.mkDefault true;
 
     extraFlags = [
-      "--write-kubeconfig-mode=0644"
+      # Admin kubeconfig — group-readable so the `wheel` group can
+      # use kubectl without sudo. NOT world-readable (0644 would
+      # leak cluster-admin creds to any unprivileged user on the
+      # control-plane node).
+      "--write-kubeconfig-mode=0640"
+      "--write-kubeconfig-group=wheel"
 
       # Disable bundled servicelb + traefik — ArgoCD will install
       # MetalLB + ingress-nginx as Applications, keeping the install
@@ -49,9 +63,9 @@
     # Argo Workflows, Argo Rollouts) comes from ArgoCD itself reading
     # this same Git repo.
     manifests = {
-      argocd-namespace.source = ../../../k8s/bootstrap/argocd-namespace.yaml;
-      argocd-install.source = ../../../k8s/bootstrap/argocd-install.yaml;
-      root-application.source = ../../../k8s/applications/root-application.yaml;
+      argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;
+      argocd-install.source = ../../k8s/bootstrap/argocd-install.yaml;
+      root-application.source = ../../k8s/applications/root-application.yaml;
     };
   };
 

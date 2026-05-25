@@ -110,7 +110,12 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
-        packages = {
+        # The installer ISO is built from an x86_64-linux NixOS config
+        # (see nixosConfigurations.installer above), so the `installer-iso`
+        # package is only published on x86_64-linux. Other systems get an
+        # empty packages set rather than a cross-build attempt that would
+        # fail at evaluation time.
+        packages = nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
           # Convenience alias for the installer ISO.
           # Build with:  nix build .#installer-iso
           # Result at:   ./result/iso/zeta-installer-*.iso
