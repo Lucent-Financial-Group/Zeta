@@ -67,11 +67,13 @@ jobs:
         # locally. Enables flakes + nix-command by default.
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
 
-      - name: Set up Nix store cache
-        # Reduces cold-build time from ~15min to ~3min by reusing the
-        # /nix/store across runs. Pull-only on PRs from forks to avoid
-        # cache-poisoning vectors.
-        uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
+      # NOTE: previously had `DeterminateSystems/magic-nix-cache-action`
+      # here but it now requires FlakeHub auth (FlakeHub.com account /
+      # organization registration), which the project doesn't have set
+      # up. Removed to unblock builds. First-build cost is ~10-15 min
+      # instead of ~3 min cached. Follow-up to add `actions/cache` on
+      # /nix/store or `nix-community/cache-nix-action` (no FlakeHub
+      # auth required) is tracked separately.
 
       - name: Show flake metadata
         run: nix flake metadata --json | jq '{description, lastModified, revision}'
@@ -93,10 +95,12 @@ jobs:
           iso_name=$(basename "$iso_path")
           iso_size=$(stat -c%s "$iso_path" | numfmt --to=iec --suffix=B)
           iso_sha256=$(sha256sum "$iso_path" | awk '{print $1}')
-          echo "path=$iso_path"     >> "$GITHUB_OUTPUT"
-          echo "name=$iso_name"     >> "$GITHUB_OUTPUT"
-          echo "size=$iso_size"     >> "$GITHUB_OUTPUT"
-          echo "sha256=$iso_sha256" >> "$GITHUB_OUTPUT"
+          {
+            echo "path=$iso_path"
+            echo "name=$iso_name"
+            echo "size=$iso_size"
+            echo "sha256=$iso_sha256"
+          } >> "$GITHUB_OUTPUT"
           {
             echo "## Installer ISO built"
             echo ""
@@ -134,8 +138,8 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
 
-      - name: Set up Nix store cache
-        uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
+      # magic-nix-cache-action removed — requires FlakeHub auth not yet
+      # set up. See note in the build job above.
 
       - name: Rebuild ISO for the tagged release
         # Re-builds at the tag so the ISO ships exactly the source the
