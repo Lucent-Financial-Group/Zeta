@@ -4,7 +4,7 @@ This folder is the working design set for the Hermes-native Organization platfor
 
 Current documents:
 
-- [Foundational Context and Language](./FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md) - Addison's working vocabulary, values, Zeta project context, declarative cluster mental model, and active clarifications.
+- [Foundational Context and Language](./FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md) - working vocabulary, values, Zeta project context, declarative cluster mental model, and active clarifications.
 - [Implementation Concepts](./IMPLEMENTATION_CONCEPTS.md) - how to build the architecture as services, data models, MCP tools, workflows, and runtime infrastructure.
 - [Always-On Orchestration Runtime](./ALWAYS_ON_ORCHESTRATION_RUNTIME.md) - the workers, triggers, rules, leases, schedulers, watchers, reconcilers, SLOs, incidents, runbooks, and self-healing loops that keep the Organization continuously operating.
 - [Runtime Technology and Package Strategy](./RUNTIME_TECH_AND_PACKAGE_STRATEGY.md) - how Temporal TS, Dapr Actors, NATS, Oz/Warp run orchestration, OpenZiti transport, Hermes, Hindsight, and reusable `agentic-services` primitives fit into a new Hermes-native platform.

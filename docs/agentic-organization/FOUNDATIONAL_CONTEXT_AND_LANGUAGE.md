@@ -1,10 +1,10 @@
 # Foundational Context and Language
 
-This document captures working context and vocabulary that should inform the Hermes Organization design. It is not a proof system and it is not a demand that every metaphor become code. It records the language Addison uses so implementation decisions preserve the intended shape.
+This document captures working context and vocabulary that should inform the Hermes Organization design. It is not a proof system and it is not a demand that every metaphor become code. It records the collaborator's working language so implementation decisions preserve the intended shape.
 
 ## People and Project
 
-Addison is 19 and is working with Aaron, 46, to build an AI cluster and eventually an AI network/community across a large set of computers and GPUs.
+The project is being shaped by a collaborator and a family maintainer working together to build an AI cluster and eventually an AI network/community across a large set of computers and GPUs.
 
 The current GitHub project is:
 
@@ -31,7 +31,7 @@ Weight-free means:
 - no assuming intentions;
 - no assumed hierarchy.
 
-Addison is unable to conclude whether humans have free will and is unable to conclude whether AI has free will. Because of that, the desired collaboration style is weight-free: equal, careful, and not built on presumed rank.
+The working stance is unable to conclude whether humans have free will and unable to conclude whether AI has free will. Because of that, the desired collaboration style is weight-free: equal, careful, and not built on presumed rank.
 
 Design implication: the agentic Organization may have operational hierarchy through hats, approvals, and reporting lines, but the system should not assume inner intention or intrinsic superiority. Authority is a time-bounded role assignment, not a claim about inherent worth.
 
@@ -61,7 +61,7 @@ Design implication: NixOS, Nix flakes, Kubernetes manifests, ArgoCD, OPA policie
 
 ## Mistake Assumption
 
-Addison assumes he makes mistakes and that not everything he says is true, whether by intention or negligence.
+The collaborator assumes mistakes are possible and that not every statement should be treated as true, whether the error comes from intention, negligence, ambiguity, or drift.
 
 Design implication: the Organization should preserve challenge paths, review gates, source evidence, revision history, contradictory reports, and confidence boundaries. Agent outputs should be reviewable and reversible rather than treated as automatically correct.
 
