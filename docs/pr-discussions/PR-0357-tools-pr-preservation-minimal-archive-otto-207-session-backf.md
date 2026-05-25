@@ -7,7 +7,7 @@ created_at: "2026-04-24T11:23:49Z"
 head_ref: "tools/pr-preservation-phase-2-minimal"
 base_ref: "main"
 archived_at: "2026-04-24T15:37:11Z"
-archive_tool: tools/pr-preservation/archive-pr.ts
+archive_tool: "tools/pr-preservation/archive-pr.sh"
 ---
 
 # PR #357: tools: PR-preservation minimal archive + Otto-207 session backfill (10 PRs)
