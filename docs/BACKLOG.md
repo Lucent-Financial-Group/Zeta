@@ -696,6 +696,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0748](backlog/P2/B-0748-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-evaluation-for-zeta-reference-stack-machine-state-fork-state-aaron-2026-05-25.md)** kro + Crossplane + Koreo + KubeVela + Carvel + ACK/KCC/ASO spectrum evaluation for Zeta — adopt where it composes (Aaron 2026-05-25 'kro yes' endorsement + 'we need lots of research in this area and backlog' direction); evaluate adoption against B-0742 reference stack + B-0747 machine-state reconciler + B-0741 cross-cluster federation + downstream-fork story
 - [ ] **[B-0752](backlog/P2/B-0752-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md)** Fighting past-self vs peer-agent — distinguisher rule landing + identity-tagging mechanization scope (Aaron 2026-05-25 'you don't do like vera and just leave it unfixed cause you assume it's someone elses issues')
 - [ ] **[B-0755](backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md)** Cluster role taxonomy expansion — control-plane-gpu, worker-cpu, worker-storage, all-in-one fused host configs
+- [ ] **[B-0759](backlog/P2/B-0759-cluster-install-ux-audit-against-first-time-cli-user-persona-easier-than-proxmox-3-node-production-ready-aaron-2026-05-25.md)** Cluster-install UX audit against first-time-CLI-user persona — "easier than Proxmox" bar + 3-node production-ready inflection
 
 ## P3 — convenience / deferred
 
