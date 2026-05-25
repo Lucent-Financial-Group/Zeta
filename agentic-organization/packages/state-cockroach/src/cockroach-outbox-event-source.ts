@@ -45,11 +45,15 @@ export function createCockroachOutboxEventSource(input: CreateCockroachOutboxEve
       }));
     },
     markOutboxEventPublished: async (markInput) => {
-      await input.executor.execute({
+      const result = await input.executor.execute<PublishedOutboxEventRow>({
         name: CockroachOutboxEventSourceStatement.MarkOutboxEventPublished,
         sql: CockroachOutboxEventSourceSql.MarkOutboxEventPublished,
         parameters: [markInput.outboxEventId, markInput.publishedAt],
       });
+
+      if (result.rows.length !== 1) {
+        throw new Error(`outbox event was already published or missing: ${markInput.outboxEventId}`);
+      }
     },
   };
 }
@@ -59,17 +63,34 @@ type OutboxEventRow = {
   envelope_json: AgenticEventEnvelope;
 };
 
+type PublishedOutboxEventRow = {
+  outbox_event_id: string;
+};
+
 const CockroachOutboxEventSourceSql = {
   ClaimUnpublishedOutboxEvents: `
-    SELECT outbox_event_id, envelope_json
-    FROM ${CockroachTableName.OutboxEvents}
-    WHERE published_at IS NULL
-    ORDER BY outbox_event_id
-    LIMIT $1
+    UPDATE ${CockroachTableName.OutboxEvents}
+    SET
+      claimed_at = transaction_timestamp(),
+      claim_expires_at = transaction_timestamp() + INTERVAL '5 minutes'
+    WHERE outbox_event_id IN (
+      SELECT outbox_event_id
+      FROM ${CockroachTableName.OutboxEvents}
+      WHERE published_at IS NULL
+        AND (claim_expires_at IS NULL OR claim_expires_at < transaction_timestamp())
+      ORDER BY outbox_event_id
+      LIMIT $1
+      FOR UPDATE SKIP LOCKED
+    )
+    RETURNING outbox_event_id, envelope_json
   `,
   MarkOutboxEventPublished: `
     UPDATE ${CockroachTableName.OutboxEvents}
-    SET published_at = $2
+    SET
+      published_at = $2,
+      claim_expires_at = NULL
     WHERE outbox_event_id = $1
+      AND published_at IS NULL
+    RETURNING outbox_event_id
   `,
 } as const;

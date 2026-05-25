@@ -28,7 +28,14 @@ describe("package dependency boundaries", () => {
         {
           packageName: PackageBoundaryRule.Messaging,
           sourceGlob: "messaging/src/**/*.ts",
-          forbiddenImportFragments: ["../messaging-nats", "../../messaging-nats", "nats"],
+          forbiddenImportFragments: [
+            "../messaging-nats",
+            "../../messaging-nats",
+            "nats",
+            "drizzle",
+            "pg",
+            "postgres",
+          ],
         },
         {
           packageName: PackageBoundaryRule.StateAdapter,

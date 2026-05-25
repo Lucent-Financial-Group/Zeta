@@ -3,8 +3,7 @@ import type { ClaimUnpublishedOutboxEventsInput, OutboxEventSource } from "../..
 import { buildAgenticEventSubject } from "./subject-builder.ts";
 
 export const AgenticMessagingDomain = {
-  SupervisorSignal: "supervisor_signal",
-  WorkItem: "work_item",
+  Work: "work",
 } as const;
 
 export type AgenticMessagingDomain = (typeof AgenticMessagingDomain)[keyof typeof AgenticMessagingDomain];
@@ -90,11 +89,11 @@ export function createOutboxPublisher(input: CreateOutboxPublisherInput): Outbox
 
 export function resolveAgenticMessagingDomain(eventType: AgenticEventType): AgenticMessagingDomain {
   if (eventType === AgenticEventType.SupervisorSignalSent) {
-    return AgenticMessagingDomain.SupervisorSignal;
+    return AgenticMessagingDomain.Work;
   }
 
   if (eventType === AgenticEventType.WorkItemChanged || eventType === AgenticEventType.WorkItemStateChanged) {
-    return AgenticMessagingDomain.WorkItem;
+    return AgenticMessagingDomain.Work;
   }
 
   throw new Error(`unsupported event type for messaging domain: ${eventType}`);

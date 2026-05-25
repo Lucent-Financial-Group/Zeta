@@ -1,4 +1,4 @@
-import { deepEqual } from "node:assert/strict";
+import { deepEqual, equal, ok } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { AgenticAggregateType, AgenticEventType, type AgenticEventEnvelope } from "../../domain/src/index.ts";
@@ -37,15 +37,41 @@ describe("cockroach outbox event source", () => {
         CockroachOutboxEventSourceStatement.MarkOutboxEventPublished,
       ],
     );
+    ok(/UPDATE agentic_org_outbox_events/.test(executor.statements[0]?.sql ?? ""));
+    ok(/FOR UPDATE SKIP LOCKED/.test(executor.statements[0]?.sql ?? ""));
+    ok(/AND published_at IS NULL/.test(executor.statements[1]?.sql ?? ""));
+  });
+
+  test("rejects stale or duplicate publish marks", async () => {
+    const executor = createRecordingExecutor({
+      markRows: [],
+    });
+    const outboxSource = createCockroachOutboxEventSource({
+      executor,
+    });
+
+    try {
+      await outboxSource.markOutboxEventPublished({
+        outboxEventId: "outbox-001",
+        publishedAt: "2026-05-25T21:00:00.000Z",
+      });
+      throw new Error("expected duplicate publish mark to reject");
+    } catch (error) {
+      equal((error as Error).message, "outbox event was already published or missing: outbox-001");
+    }
   });
 });
 
 type RecordingCockroachOutboxSqlExecutor = CockroachOutboxSqlExecutor & {
-  statements: { name: CockroachOutboxEventSourceStatement; parameters: readonly unknown[] }[];
+  statements: { name: CockroachOutboxEventSourceStatement; sql: string; parameters: readonly unknown[] }[];
 };
 
-function createRecordingExecutor(): RecordingCockroachOutboxSqlExecutor {
-  const statements: { name: CockroachOutboxEventSourceStatement; parameters: readonly unknown[] }[] = [];
+type CreateRecordingExecutorInput = {
+  markRows?: { outbox_event_id: string }[];
+};
+
+function createRecordingExecutor(input: CreateRecordingExecutorInput = {}): RecordingCockroachOutboxSqlExecutor {
+  const statements: { name: CockroachOutboxEventSourceStatement; sql: string; parameters: readonly unknown[] }[] = [];
 
   return {
     statements,
@@ -64,7 +90,7 @@ function createRecordingExecutor(): RecordingCockroachOutboxSqlExecutor {
       }
 
       return {
-        rows: [],
+        rows: (input.markRows ?? [{ outbox_event_id: "outbox-001" }]) as Row[],
       };
     },
   };
