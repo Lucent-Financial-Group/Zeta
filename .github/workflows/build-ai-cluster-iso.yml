@@ -13,9 +13,14 @@
 # canonical path is a separate follow-up; this workflow makes the
 # AI-cluster ISO downloadable from CI in the meantime.
 #
-# Triggers on PRs touching `full-ai-cluster/usb-nixos-installer/**`,
-# `full-ai-cluster/flake.nix`, or this workflow file. Also on push to
-# main + workflow_dispatch.
+# Triggers on PRs touching any of:
+#   - `full-ai-cluster/flake.nix`
+#   - `full-ai-cluster/flake.lock`
+#   - `full-ai-cluster/usb-nixos-installer/**`
+#   - `full-ai-cluster/nixos/modules/disko-shapes/**`
+#     (because the installer references the disko shape at build time)
+#   - this workflow file
+# Also on push to main + workflow_dispatch.
 #
 # Discipline mirrors build-installer-iso.yml:
 #   - Runner pinned to ubuntu-24.04 (not -latest)
