@@ -60,6 +60,7 @@ This structure should be flexible enough for internal platform work and product/
 | Automation Package | CI, test, deployment, preview environment, rollback, observability, and operational automation created or updated with the feature |
 | Work Schedule | Hat-bound schedule of prioritized work, prompt-flow execution, review, reflection, memory maintenance, free time, and reporting blocks |
 | Prompt Flow | Reusable deterministic MCP-driven pipeline composed of phases, gates, reviewers, artifacts, and memory behavior |
+| Universal Action | Typed action atom inside a prompt-flow phase, with actor, target, preconditions, observation contract, reversibility, and evidence |
 | Signal | Durable event that informs boards, rules, agents, meetings, triggers, and UI read models |
 | Requirement Maturity | Discovery-specific state that tracks whether an ambiguous request has enough customer, business, workflow, and acceptance context to move toward implementation |
 
@@ -185,6 +186,7 @@ Signals are durable, typed events. They are not chat messages. They drive boards
 | Assignment | `HatRequested`, `HatSupplyReserved`, `HatTokenIssued`, `HatRefreshFailed`, `HatReleased`, `HatRevoked` | Assignment service, managers, agents |
 | Schedule | `ScheduleBlockPlanned`, `ScheduleBlockStarted`, `ScheduleBlockCompleted`, `ReflectionDue`, `FreeTimeStarted`, `MemoryMaintenanceDue` | Agents, managers, Memory, UI |
 | Prompt flow | `PromptFlowRequested`, `PromptFlowActivated`, `PromptFlowRunStarted`, `PromptFlowPhaseCompleted`, `PromptFlowGateRejected`, `PromptFlowRunCompleted` | Agents, reviewers, managers, Capability teams |
+| Universal action | `UniversalActionStarted`, `ActionObservationRecorded`, `ActionCorrectionRequested`, `ActionReverted`, `ActionCompleted` | Prompt-flow runners, reviewers, graph ingestion, audit |
 | Runtime | `OzRunStarted`, `OzRunSilent`, `PodHeartbeatMissing`, `RunCompleted`, `RunFailed` | Operations, TPMs, Engineering Managers |
 | Release | `ReleaseScopeSelected`, `ReleaseEvidenceMissing`, `ReleaseApproved`, `ReleaseCompleted`, `RollbackRequested` | Delivery, QA, Security, executives |
 | Capacity | `HatSupplyExhausted`, `BudgetThresholdExceeded`, `QueueLagHigh`, `ReviewQueueSaturated` | Directors, Cost Controller, executives |
@@ -468,6 +470,7 @@ This slice proves:
 - No release should happen without an evidence chain.
 - No workflow should bypass the Work OS. Schedulers and agents create work or signals, then the Work OS drives state.
 - No prompt flow should bypass gates. Each phase must persist evidence and route required reviewer decisions before protected completion.
+- No action should be opaque. Universal actions must record preconditions, observations, reversibility, evidence, and action mode.
 - No schedule should be invisible. Active hat assignments need schedule blocks for work, review, reflection, memory maintenance, and free time.
 - No role should rely on polling chat. Each role needs a queue, board, and signal-driven inbox.
 - No stale authority. Expired or revoked hats lose MCP tools, credential scopes, memory scopes, approval powers, and active assignment.

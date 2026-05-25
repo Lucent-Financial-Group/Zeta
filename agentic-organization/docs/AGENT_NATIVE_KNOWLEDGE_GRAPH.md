@@ -66,6 +66,8 @@ type NodeKind =
   | "PromptFlow"
   | "PromptFlowPhase"
   | "PromptFlowRun"
+  | "UniversalAction"
+  | "ActionObservation"
   | "PolicyDecision"
   | "Signal"
   | "ContextPack";
@@ -166,6 +168,8 @@ type EdgeKind =
   | "writes_memory"
   | "uses_skill"
   | "executes_prompt_flow"
+  | "executes_action"
+  | "observed_as"
   | "scheduled_for"
   | "reviewed_by"
   | "derived_from"
@@ -182,6 +186,8 @@ type EdgeKind =
 | `decided_in` | decision -> source | Decision | Meeting/Vote/Thread | meeting/vote ID | supersede decision |
 | `evidence_for` | evidence -> claim/work | Artifact/Trace | Task/Gate | artifact and trace ID | reversible edge |
 | `executes_prompt_flow` | run -> flow | PromptFlowRun | PromptFlow | flow version | supersede flow version |
+| `executes_action` | phase/run -> action | PromptFlowPhase/Run | UniversalAction | action record ID | append correction |
+| `observed_as` | action -> observation | UniversalAction | ActionObservation | tool output/trace | preserve observation |
 | `scheduled_for` | block -> assignment/work | ScheduleBlock | HatAssignment/Task | schedule service | reschedule with audit |
 | `reviewed_by` | output -> reviewer | Phase/Task/Gate | HatAssignment | gate decision | new review supersedes |
 | `contradicts` / `conflicts_with` | node -> node | Decision/Doc | Decision/Doc | detector/tool ID | resolved by decision |
@@ -574,6 +580,8 @@ Suggested tables:
 - `prompt_flow_runs`;
 - `prompt_flow_phase_runs`;
 - `prompt_flow_gate_decisions`;
+- `universal_action_records`;
+- `action_observations`;
 - `attention_items`;
 - `lifecycle_compliance_snapshots`;
 

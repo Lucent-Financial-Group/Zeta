@@ -121,7 +121,7 @@ Primary services:
 
 ### Work Rhythm and Prompt Flows
 
-Owns hat-bound schedule templates, concrete schedule blocks, deterministic prompt flows, reusable phases, phase gates, flow runs, reflection blocks, and memory-maintenance work.
+Owns hat-bound schedule templates, concrete schedule blocks, deterministic prompt flows, reusable phases, phase gates, flow runs, universal action records, reflection blocks, and memory-maintenance work.
 
 Core entities:
 
@@ -134,6 +134,9 @@ Core entities:
 - `PromptFlowRun`
 - `PromptFlowPhaseRun`
 - `PromptFlowGateDecision`
+- `UniversalActionDefinition`
+- `UniversalActionRecord`
+- `UniversalActionObservation`
 - `ReflectionBlock`
 - `MemoryMaintenanceAction`
 
@@ -144,6 +147,8 @@ Primary services:
 - `PromptFlowRegistryService`
 - `PromptFlowExecutionService`
 - `PromptFlowGateService`
+- `UniversalActionGrammarService`
+- `ActionObservationService`
 - `ReflectionService`
 - `MemoryMaintenanceService`
 

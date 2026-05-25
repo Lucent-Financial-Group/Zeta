@@ -68,6 +68,7 @@ Hat records should store concrete tool IDs, but the design is easier to reason a
 | Team Runtime | `create_team`, `spawn_agent`, `spawn_team`, `assign_task`, `stop_agent`, `stop_team` |
 | Work Rhythm | `read_schedule`, `propose_schedule_adjustment`, `approve_schedule_adjustment`, `start_schedule_block`, `complete_schedule_block`, `request_reflection_block`, `record_free_time_output` |
 | Prompt Flow | `list_available_prompt_flows`, `start_prompt_flow`, `submit_prompt_flow_phase`, `request_prompt_flow_gate`, `approve_prompt_flow_gate`, `reject_prompt_flow_gate`, `propose_prompt_flow`, `deprecate_prompt_flow` |
+| Universal Action Grammar | `list_universal_actions`, `validate_universal_action`, `record_action_observation`, `request_action_correction`, `record_action_reversal`, `promote_action_to_phase` |
 | Task | `create_task`, `claim_task`, `update_task`, `block_task`, `groom_task`, `mark_ready`, `submit_red_tests`, `submit_green_tests`, `complete_task` |
 | Backlog and Defect | `create_backlog_item`, `prioritize_backlog_item`, `link_backlog_item`, `convert_backlog_item`, `create_backlog_item_from_review`, `create_defect_from_report` |
 | Messaging | `send_message`, `read_inbox`, `send_report`, `open_thread`, `reply_thread`, `request_one_on_one_chat`, `open_team_chat`, `send_team_broadcast`, `validate_discussion_anchor`, `escalate` |

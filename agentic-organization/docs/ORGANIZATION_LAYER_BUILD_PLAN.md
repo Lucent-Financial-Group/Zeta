@@ -254,6 +254,9 @@ The Organization DB must capture the full operating reality. The first schema ne
 - `prompt_flow_phases`: reusable phases with input/output, MCP tools, evidence, and memory behavior.
 - `prompt_flow_runs`: concrete executions bound to work, hat assignment, schedule block, artifacts, gates, and traces.
 - `prompt_flow_gate_decisions`: reviewer decisions between phases.
+- `universal_action_definitions`: typed action grammar entries available to prompt-flow phases.
+- `universal_action_records`: concrete action attempts with actor, hat, mode, preconditions, reversibility, observations, evidence, and policy.
+- `universal_action_observations`: execution feedback, tool outputs, errors, corrections, and follow-up actions.
 - `durable_triggers`: event, state, timeout, schedule, threshold, and external triggers.
 - `reaction_plans`: deterministic rule output before side effects execute.
 - `runtime_leases`: lease owner, fencing token, heartbeat, expiration, release reason.

@@ -122,6 +122,9 @@ Must include:
 - prompt-flow phases;
 - prompt-flow runs;
 - prompt-flow gate decisions;
+- universal action definitions;
+- universal action records;
+- action observations;
 - releases;
 - discussion anchors;
 - artifacts;
@@ -253,6 +256,7 @@ Knowledge Graph/Retrieval V0 decisions:
 - discussion anchor contract;
 - schedule block contract;
 - prompt-flow registry contract;
+- universal action grammar contract;
 - handoff brief requirements;
 - attention queue contract.
 
@@ -263,6 +267,8 @@ Minimum preflight tools:
 - `validate_schedule_block`;
 - `validate_prompt_flow_start`;
 - `validate_prompt_flow_phase_gate`;
+- `validate_universal_action`;
+- `validate_action_reversibility`;
 - `validate_context_pack_current`;
 - `validate_handoff_complete`;
 - `validate_decision_memory_current`;

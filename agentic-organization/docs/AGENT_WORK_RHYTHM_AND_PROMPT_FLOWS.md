@@ -102,6 +102,56 @@ review finding
 
 Prompt flows are reusable deterministic pipelines that hats can execute. They are similar in spirit to existing prompt flows, but Organization-native.
 
+They should also be the first practical host for the repo's universal-action-space work. The repo does not yet contain one canonical Universal Action Grammar specification, but it has adjacent prior art:
+
+- `docs/backlog/P3/B-0200-fsharp-codeact-bridge-engineering-aaron-2026-05-05.md` frames CodeAct as executable Python in a unified action space, while preserving Zeta's stronger F# DSL for DST-safe, retraction-native, scale-free, DBSP-native work.
+- `docs/backlog/P3/B-0201-coconut-universal-action-space-research-lane-aaron-2026-05-05.md` keeps the broader universal-action-space research lane alive across CodeAct, Coconut, GibberLink, and LAPA.
+- `docs/SAFE-AUTONOMOUS-ACTIONS.md` defines a bounded, reversible action set with explicit preconditions, undo paths, logging, and one-action-per-tick discipline.
+- `docs/research/2026-04-26-action-mode-classification-correction-and-self-provenance-accountability-framing.md` defines action-mode classification and provenance/accountability framing.
+
+The Organization should reuse those ideas instead of inventing another unrelated action language. Prompt flows become the hat-scoped, review-gated operational layer; the Universal Action Grammar becomes the shared action representation inside phases.
+
+## Universal Action Grammar Fit
+
+For Agentic Organization, a Universal Action Grammar should describe an action as a typed, reversible, observable unit:
+
+```ts
+type UniversalAction = {
+  verb: string;
+  target: {
+    kind: "work_item" | "document" | "repo" | "tool" | "memory" | "meeting" | "run" | "credential" | "policy";
+    id: string;
+  };
+  actor: {
+    agentId: string;
+    hatAssignmentId: string;
+    actionMode: "supervised" | "autonomous_fail_open" | "human_directed";
+  };
+  preconditions: string[];
+  inputs: Record<string, unknown>;
+  expectedOutputs: string[];
+  observationContract: string[];
+  reversibility: "read_only" | "reversible" | "compensating_action" | "irreversible_requires_approval";
+  undoPath?: string;
+  evidenceRequired: string[];
+  policyRefs: string[];
+};
+```
+
+This is not a replacement for MCP tools, Temporal workflows, F# DSLs, or CodeAct-style Python. It is the grammar that lets the Organization describe what an agent is doing across all of them.
+
+Mapping:
+
+| Existing prior art | Organization use |
+|---|---|
+| CodeAct executable actions | A prompt-flow phase may emit executable code actions when ecosystem reach is useful |
+| F# DSL / Zeta operator algebra | Hodl-required actions stay in typed, DST/retraction-safe substrate surfaces |
+| Safe autonomous actions | Every action needs tier, precondition, reversibility, undo path, and audit |
+| Action-mode classification | Every action records whether it was supervised, autonomous fail-open, or human-directed |
+| Prompt-flow phases | Each phase is a bounded action bundle with gates and reviewer hats |
+
+Universal actions should be small enough to review and replay. Prompt flows compose them into useful work.
+
 A prompt flow should define:
 
 - name and version;
@@ -109,6 +159,7 @@ A prompt flow should define:
 - allowed hats;
 - required scope and discussion/work anchor;
 - phases;
+- universal actions allowed per phase;
 - MCP tools available per phase;
 - required inputs and outputs;
 - gates between phases;
@@ -122,6 +173,7 @@ Prompt flows should be composed of reusable phases:
 
 ```text
 Reusable phase
+  -> universal action grammar contract
   -> input contract
   -> MCP tool contract
   -> output artifact
@@ -163,6 +215,8 @@ agent wearing hat
 ```
 
 Agents can still reason creatively inside a phase, but the phase boundary, tools, required outputs, and gates are deterministic.
+
+Prompt-flow execution should record each universal action, observation, correction, and reviewer decision. That gives the Organization a reusable action corpus: over time, Engineering Managers and prompt-flow designers can discover which action patterns work, which fail, and which should become new reusable phases.
 
 ## Flow Gates and Reviewers
 
