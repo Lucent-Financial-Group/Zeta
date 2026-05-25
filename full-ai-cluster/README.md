@@ -24,7 +24,9 @@ full-ai-cluster/
 │       ├── control-plane/      ← configuration.nix + hardware + README
 │       └── worker-gpu/         ← configuration.nix + hardware + README
 └── k8s/
-    ├── bootstrap/              ← K3S auto-applies on first boot
+    ├── bootstrap/              ← K3S auto-applies on first boot (in this order)
+    │   ├── cilium-namespace.yaml
+    │   ├── cilium-install.yaml ← CNI must exist before any pods (incl. ArgoCD)
     │   ├── argocd-namespace.yaml
     │   ├── argocd-install.yaml
     │   └── root-application.yaml ← App-of-Apps root
@@ -66,10 +68,11 @@ full-ai-cluster/
   `./nixos/` lands on a target machine via `nixos-install --flake`
   (initial install) or `nixos-rebuild switch --flake` (updates).
 - **Cluster layer** is reconciled by **ArgoCD**. K3S auto-applies
-  the three bootstrap manifests at `./k8s/bootstrap/` on first boot;
-  ArgoCD then reads `./k8s/applications/root-application.yaml`
-  (App-of-Apps) and reconciles every workload from the same Git
-  repo every ~3 minutes.
+  the bootstrap manifests at `./k8s/bootstrap/` on first boot
+  (Cilium → ArgoCD → root Application); ArgoCD then reads
+  `./k8s/bootstrap/root-application.yaml` (App-of-Apps) and
+  reconciles every workload under `./k8s/applications/` from the
+  same Git repo every ~3 minutes.
 
 This split is intentional: anything that must run BEFORE the
 cluster API exists (kernel modules, CNI host setup, container

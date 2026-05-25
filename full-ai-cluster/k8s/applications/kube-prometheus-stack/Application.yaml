@@ -25,7 +25,17 @@ spec:
                   accessModes: [ ReadWriteOnce ]
                   resources: { requests: { storage: 100Gi } }
         grafana:
-          adminPassword: changeme   # override via Sealed Secret or Vault
+          # Admin password sourced from a Secret rather than
+          # hardcoded. Create the secret BEFORE this app syncs:
+          #   kubectl -n monitoring create secret generic grafana-admin-credentials \
+          #     --from-literal=admin-user=admin \
+          #     --from-literal=admin-password="$(openssl rand -hex 16)"
+          # Or use a Sealed Secret committed to Git so the credential
+          # is reproducible from the cluster definition.
+          admin:
+            existingSecret: grafana-admin-credentials
+            userKey: admin-user
+            passwordKey: admin-password
           persistence:
             enabled: true
             storageClassName: longhorn

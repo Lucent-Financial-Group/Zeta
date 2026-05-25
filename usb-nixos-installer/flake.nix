@@ -1,8 +1,9 @@
 # usb-nixos-installer/flake.nix
 #
 # USB-only flake. Produces a bootable NixOS installer ISO.
-# Builds on Linux x86_64 natively; on Apple Silicon Macs use
-# the linux-builder pattern from ../full-ai-cluster/.
+# Builds on Linux x86_64 natively; on Apple Silicon Macs use the
+# nix-darwin linux-builder pattern (see the cluster flake at
+# https://github.com/Lucent-Financial-Group/Zeta/tree/main/full-ai-cluster).
 
 {
   description = "Zeta USB installer — NixOS bootable image for AI-cluster bootstrap";

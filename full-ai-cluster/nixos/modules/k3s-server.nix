@@ -39,9 +39,16 @@
     # required to get Cilium + ArgoCD running. ArgoCD takes over and
     # reconciles every other workload from k8s/applications/.
     manifests = {
+      # CNI MUST come first — without it no pods can schedule,
+      # including ArgoCD's own pods. Cilium installs here; ArgoCD's
+      # cilium Application (k8s/applications/cilium/) takes over
+      # reconciliation once it's healthy.
       cilium-namespace.source = ../../k8s/bootstrap/cilium-namespace.yaml;
+      cilium-install.source = ../../k8s/bootstrap/cilium-install.yaml;
+      # Then ArgoCD itself.
       argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;
       argocd-install.source = ../../k8s/bootstrap/argocd-install.yaml;
+      # Finally the App-of-Apps that hands off to ArgoCD.
       root-application.source = ../../k8s/bootstrap/root-application.yaml;
     };
   };

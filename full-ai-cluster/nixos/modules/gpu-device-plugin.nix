@@ -53,9 +53,13 @@ in
 
   config = lib.mkIf cfg.enable {
     # Drop K3S manifests for each enabled vendor. K3S applies them on
-    # first boot. ArgoCD then takes ownership via the
-    # k8s/applications/gpu-device-plugin/Application.yaml so updates
-    # become git-driven (see that file).
+    # first boot so GPU resources are advertised to the scheduler
+    # before ArgoCD comes up. These manifests are static (no upgrade
+    # via ArgoCD today) — bumping the device-plugin version means
+    # editing the `*Version` options below and re-applying the host's
+    # nixos-rebuild. A future `k8s/applications/gpu-device-plugin/`
+    # Application could take over reconciliation, but it doesn't
+    # exist yet — the K3S-manifest path is the only one.
     services.k3s.manifests = lib.mkMerge [
       (lib.mkIf (lib.elem "nvidia" cfg.vendors) {
         nvidia-device-plugin.source = pkgs.writeText "nvidia-device-plugin.yaml" ''

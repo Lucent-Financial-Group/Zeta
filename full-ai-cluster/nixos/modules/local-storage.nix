@@ -55,12 +55,18 @@
           }
         setup: |-
           #!/bin/sh
-          path=$VOL_DIR
-          mkdir -m 0777 -p $path
+          set -eu
+          path="$VOL_DIR"
+          [ -n "$path" ] || { echo "VOL_DIR empty; refusing to mkdir"; exit 1; }
+          case "$path" in /var/lib/zeta-local-storage/*) ;; *) echo "VOL_DIR outside allowed root: $path"; exit 1 ;; esac
+          mkdir -m 0777 -p "$path"
         teardown: |-
           #!/bin/sh
-          path=$VOL_DIR
-          rm -rf $path
+          set -eu
+          path="$VOL_DIR"
+          [ -n "$path" ] || { echo "VOL_DIR empty; refusing to rm"; exit 1; }
+          case "$path" in /var/lib/zeta-local-storage/*) ;; *) echo "VOL_DIR outside allowed root: $path"; exit 1 ;; esac
+          rm -rf "$path"
       ---
       apiVersion: apps/v1
       kind: Deployment

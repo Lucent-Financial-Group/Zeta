@@ -15,11 +15,13 @@
     extraFlags = [
       "--node-label=zeta.io/role=worker"
 
-      # Same CNI takeover settings as the server. The agent must
-      # NOT bring up flannel or kube-proxy — Cilium handles both.
-      "--flannel-backend=none"
-      "--disable-network-policy"
-      "--disable-kube-proxy"
+      # NOTE: server-only flags like `--flannel-backend=none`,
+      # `--disable-kube-proxy`, and `--disable-network-policy`
+      # are NOT set here — they're server-side and the agent
+      # inherits the network configuration from the server. K3S
+      # rejects them on agents with a `flag not supported` error.
+      # Cilium owns CNI on both sides; the server-side flags are
+      # what disables flannel cluster-wide.
     ];
   };
 

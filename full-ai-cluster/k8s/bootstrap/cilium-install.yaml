@@ -1,0 +1,47 @@
+# full-ai-cluster/k8s/bootstrap/cilium-install.yaml
+#
+# Cilium CNI install applied by K3S on first boot, BEFORE the
+# ArgoCD Cilium Application takes over reconciliation.
+#
+# Why bootstrap-install instead of leaving everything to ArgoCD:
+# k3s-server.nix passes `--flannel-backend=none --disable-kube-proxy`
+# so K3S brings up no CNI at all. Without a CNI, no pods (including
+# ArgoCD's own pods) can be scheduled. ArgoCD has to be reachable to
+# install anything else — so something must install the CNI first.
+#
+# K3S applies this manifest before ArgoCD comes up. Cilium installs,
+# pods can schedule, ArgoCD comes up, and then ArgoCD's own Cilium
+# Application (`k8s/applications/cilium/Application.yaml`) takes over
+# the ongoing reconciliation.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: kube-system
+
+resources:
+  # Cilium v1.16.5 install manifest. Generated via:
+  #   helm template cilium cilium/cilium --version 1.16.5 \
+  #     --namespace kube-system \
+  #     --set kubeProxyReplacement=true \
+  #     --set k8sServiceHost=control-plane.zeta.local \
+  #     --set k8sServicePort=6443 \
+  #     --set ipam.mode=cluster-pool \
+  #     --set ipam.operator.clusterPoolIPv4PodCIDRList[0]="10.42.0.0/16" \
+  #     --set bpf.masquerade=true \
+  #     --set routingMode=native \
+  #     --set ipv4NativeRoutingCIDR="10.42.0.0/16" \
+  #     --set autoDirectNodeRoutes=true \
+  #     --set hubble.enabled=true \
+  #     --set hubble.relay.enabled=true \
+  #     --set hubble.ui.enabled=true
+  #
+  # Re-generate + commit when bumping the version. ArgoCD's
+  # Application.yaml (in k8s/applications/cilium/) keeps the
+  # same chart pinned, so after the bootstrap install ArgoCD
+  # treats this as already-installed and reconciles in place.
+  - https://raw.githubusercontent.com/cilium/cilium/v1.16.5/install/kubernetes/cilium/templates.yaml
+
+# Site-specific patches: none yet. Add cmd-params for
+# load-balancer IP pools, BGP config, etc. as they come up.
+patches: []

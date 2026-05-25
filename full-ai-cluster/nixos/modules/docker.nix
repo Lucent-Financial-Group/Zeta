@@ -35,5 +35,10 @@
     docker-buildx
   ];
 
-  users.users.zeta.extraGroups = [ "docker" ];
+  # Intentionally NOT adding `zeta` to the `docker` group.
+  # Membership in `docker` is effectively root-on-host because the
+  # docker socket can mount any path. With rootless Docker enabled
+  # above, the `zeta` user gets its OWN rootless daemon socket at
+  # $XDG_RUNTIME_DIR/docker.sock — that's the only docker they need.
+  # For maintainer tasks requiring the system daemon, use `sudo docker`.
 }

@@ -9,7 +9,12 @@ system on a new machine over USB or Ethernet:
 1. **NixOS declarative configuration** — `nixos/installer/configuration.nix`
 2. **NixFlakes for packages** — `flake.nix` at the directory root
 3. **Git for version text storage** — every file here lives in git;
-   the flake.nix references inputs by pinned revision
+   `flake.nix` references inputs by Git branch. **Run
+   `nix flake update` and commit the resulting `flake.lock`** to
+   pin to specific revisions for fully-reproducible builds. The
+   lock file isn't committed yet (no maintainer with Nix has run
+   `nix flake update` on this branch yet); first maintainer to
+   build the ISO should commit it.
 4. **The OS Flake on a USB stick** — `nix build .#installer-iso`
    produces a bootable ISO image you `dd` to a USB stick. The same
    ISO supports Ethernet install (boot the target on the stick,
@@ -17,10 +22,12 @@ system on a new machine over USB or Ethernet:
 
 **This directory is intentionally minimal.** It does NOT contain
 K3S, ArgoCD, Orleans, GitLab, observability, GPU runtime, or any
-cluster workload. Those live in `../full-ai-cluster/`.
+cluster workload. Those live in the `full-ai-cluster/` directory
+at the repo root.
 
 For the full end-to-end AI cluster (including this USB bootstrap
-as its starting snippet), see `../full-ai-cluster/`.
+as its starting snippet), see
+<https://github.com/Lucent-Financial-Group/Zeta/tree/main/full-ai-cluster>.
 
 ## Build the USB stick
 
