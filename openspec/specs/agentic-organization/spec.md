@@ -56,20 +56,31 @@ Organization state only by calling Organization commands.
   concrete state adapters, Cockroach adapters, NestJS, NATS, Dapr,
   Temporal, Drizzle, Postgres, or other runtime clients
 - **AND** a violation fails the test suite before the boundary can drift
+- **AND** state adapter source files are checked for forbidden imports
+  of messaging, NATS, JetStream, or other event transport clients
 
 ### Requirement: Commands are idempotent
 
 Organization commands MUST use deterministic idempotency keys at the
 command boundary.
 
-#### Scenario: Cockroach core state schema exists
+#### Scenario: Durable core state schema exists
 
-- **WHEN** the first CockroachDB migration contract is loaded
+- **WHEN** the first durable state migration contract is loaded
 - **THEN** it declares work item, supervisor signal, audit event,
   outbox event, and idempotency record tables
 - **AND** outbox rows include trace ID, correlation ID, and canonical
   envelope JSON fields for later NATS publication and workflow
   visibility
+
+#### Scenario: Durable state adapter is replaceable
+
+- **WHEN** application or messaging package source is inspected
+- **THEN** it does not import CockroachDB, Drizzle, Postgres, or
+  database-client packages
+- **AND** it depends on generic state and outbox-source ports instead
+- **AND** CockroachDB is treated as the first replaceable durable adapter
+  for the cluster, not as the application model
 
 #### Scenario: Matching replay
 

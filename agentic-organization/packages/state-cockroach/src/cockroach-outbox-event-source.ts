@@ -1,5 +1,5 @@
 import type { AgenticEventEnvelope } from "../../domain/src/index.ts";
-import type { OutboxEventSource } from "../../messaging/src/index.ts";
+import type { OutboxEventSource } from "../../state/src/index.ts";
 import { CockroachTableName } from "./cockroach-schema.ts";
 
 export const CockroachOutboxEventSourceStatement = {

@@ -7,6 +7,7 @@ import {
   createAgenticEventEnvelope,
   type OutboxEvent,
 } from "../../domain/src/index.ts";
+import type { OutboxEventSource } from "../../state/src/index.ts";
 import {
   AgenticMessagingDomain,
   OutboxPublishOutcomeStatus,
@@ -14,7 +15,6 @@ import {
   resolveAgenticMessagingDomain,
   type EventPublication,
   type EventPublisher,
-  type OutboxEventSource,
 } from "./outbox-publisher.ts";
 
 describe("outbox publisher", () => {

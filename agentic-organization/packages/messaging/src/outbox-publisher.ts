@@ -1,4 +1,5 @@
 import { AgenticEventType, type OutboxEvent } from "../../domain/src/index.ts";
+import type { ClaimUnpublishedOutboxEventsInput, OutboxEventSource } from "../../state/src/index.ts";
 import { buildAgenticEventSubject } from "./subject-builder.ts";
 
 export const AgenticMessagingDomain = {
@@ -14,20 +15,6 @@ export const OutboxPublishOutcomeStatus = {
 } as const;
 
 export type OutboxPublishOutcomeStatus = (typeof OutboxPublishOutcomeStatus)[keyof typeof OutboxPublishOutcomeStatus];
-
-export type ClaimUnpublishedOutboxEventsInput = {
-  batchSize: number;
-};
-
-export type MarkOutboxEventPublishedInput = {
-  outboxEventId: string;
-  publishedAt: string;
-};
-
-export type OutboxEventSource = {
-  claimUnpublishedOutboxEvents: (input: ClaimUnpublishedOutboxEventsInput) => Promise<readonly OutboxEvent[]>;
-  markOutboxEventPublished: (input: MarkOutboxEventPublishedInput) => Promise<void>;
-};
 
 export type EventPublication = {
   subject: string;
