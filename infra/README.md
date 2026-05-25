@@ -123,8 +123,9 @@ follow-up PR). Until then:
 
 - **K3S cluster token** must be present at the correct per-role path
   on every node before K3S starts:
-    - Server nodes: `/var/lib/rancher/k3s/server/token`
-    - Agent nodes:  `/var/lib/rancher/k3s/agent/token`
+  - Server nodes: `/var/lib/rancher/k3s/server/token`
+  - Agent nodes:  `/var/lib/rancher/k3s/agent/token`
+
   Generate once on the first server (`openssl rand -hex 32`) and
   distribute the SAME value to all server + agent nodes. K3S refuses
   to start if the token is missing.
