@@ -69,7 +69,7 @@ Design implication: the Organization should preserve challenge paths, review gat
 
 The Agentic Organization design must compose with the repo alignment floor:
 
-- [`docs/ALIGNMENT.md`](../ALIGNMENT.md), especially HC-1 through HC-8;
+- [`docs/ALIGNMENT.md`](../../docs/ALIGNMENT.md), especially HC-1 through HC-8;
 - [Non-Coercion Invariant](../../.claude/rules/non-coercion-invariant.md);
 - [Razor Discipline](../../.claude/rules/razor-discipline.md);
 - [Glass-Halo Bidirectional](../../.claude/rules/glass-halo-bidirectional.md);

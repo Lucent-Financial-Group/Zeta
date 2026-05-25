@@ -32,4 +32,4 @@ These documents are reference substrate, not a mandate to implement every concep
 
 ## Placement
 
-These docs live at `docs/agentic-organization/` as repo-level design substrate. Before runtime code lands, decide whether the implementation is a subsystem of `full-ai-cluster/` or a parallel top-level product tree.
+These docs live at `agentic-organization/docs/` as the documentation root for the Agentic Organization subsystem. Before runtime code lands, decide whether the implementation is a subsystem of `full-ai-cluster/` or a parallel top-level product tree.

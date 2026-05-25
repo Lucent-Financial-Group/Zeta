@@ -74,7 +74,7 @@ Recommendation:
 - use dev-portal/TPM only as reference and selective extraction source;
 - build modular monolith first, with clear boundaries for later service extraction.
 - use a TypeScript monorepo with `apps/api`, `apps/web`, `apps/workers`, `apps/temporal-worker`, `apps/dapr-actors`, and shared `packages/*` as defined in the build plan.
-- decide placement before code lands. Docs can live at `docs/agentic-organization/`; runtime implementation should not create a second parallel substrate by accident.
+- decide placement before code lands. Docs can live at `agentic-organization/docs/`; runtime implementation should not create a second parallel substrate by accident.
 
 ## 3. Source of Truth
 
