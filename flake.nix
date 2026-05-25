@@ -73,10 +73,23 @@
           ];
         };
 
-        # Future hosts land in PR 2 (per-host configs):
-        #   control-plane = mkSystem { modules = [ ./infra/nixos/hosts/control-plane/configuration.nix ]; };
-        #   worker-gpu-01 = mkSystem { modules = [ ./infra/nixos/hosts/worker-gpu-01/configuration.nix ]; };
-        #   worker-gpu-02 = mkSystem { modules = [ ./infra/nixos/hosts/worker-gpu-02/configuration.nix ]; };
+        control-plane = mkSystem {
+          modules = [
+            ./infra/nixos/hosts/control-plane/configuration.nix
+          ];
+        };
+
+        worker-gpu-01 = mkSystem {
+          modules = [
+            ./infra/nixos/hosts/worker-gpu-01/configuration.nix
+          ];
+        };
+
+        worker-gpu-02 = mkSystem {
+          modules = [
+            ./infra/nixos/hosts/worker-gpu-02/configuration.nix
+          ];
+        };
       };
 
       # Shared modules exposed as flake outputs so per-host configs can
