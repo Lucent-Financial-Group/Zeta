@@ -484,23 +484,167 @@ full-ai-cluster/k8s/applications/agentic-organization/
   ServiceAccount/RBAC
 ```
 
+### Native `full-ai-cluster` Binding
+
+The application should treat `full-ai-cluster` as its native runtime
+environment. Local fakes are useful for tests, but the real adapter
+contracts should point at the services that already exist in the cluster
+tree.
+
+| Adapter package | Cluster dependency | Expected in-cluster target |
+|---|---|---|
+| `@agentic-org/state` | CockroachDB ArgoCD app | `cockroachdb-public.cockroachdb.svc.cluster.local:26257` |
+| `@agentic-org/messaging` | NATS ArgoCD app with JetStream enabled | `nats.nats.svc.cluster.local:4222` |
+| `@agentic-org/workflows-temporal` | Temporal ArgoCD app | `temporal-frontend.temporal.svc.cluster.local:7233` |
+| `@agentic-org/actors-dapr` | Dapr control plane | Dapr sidecar plus `dapr-system` placement service |
+| `@agentic-org/memory` | Hindsight OCI Helm chart | `http://hindsight.hindsight.svc.cluster.local` |
+| `@agentic-org/hermes` | Hermes deployment/service | `http://hermes.hermes.svc.cluster.local` once replicas are enabled |
+| `@agentic-org/openziti` | OZ/OpenZiti controller app | `https://ziti-controller.openziti.svc.cluster.local:443` |
+| `@agentic-org/k8s-hats` | hat-system CRDs and operator | Kubernetes API watches plus `zeta.society.hats.>` bridge input |
+| `@agentic-org/observability` | Alloy, Tempo, Loki, Mimir, kube-prometheus-stack | OTLP traces to Alloy/Tempo, logs to Loki, metrics to Prometheus/Mimir |
+| `@agentic-org/policy` | OPA Gatekeeper and Organization policy package | in-process policy first, OPA bundle/constraint adapters later |
+
+Adapter configuration should use environment variables and Kubernetes
+Secrets/ExternalSecrets, but the domain package should never see those
+values. The Nest composition layer binds configuration into adapter
+ports.
+
+Minimum runtime environment contract:
+
+```text
+AGENTIC_ORG_ENV
+AGENTIC_ORG_ID
+COCKROACH_URL
+NATS_URL
+TEMPORAL_ADDRESS
+HINDSIGHT_URL
+HERMES_URL
+OZ_CONTROLLER_URL
+OTEL_EXPORTER_OTLP_ENDPOINT
+HAT_SYSTEM_NAMESPACE
+```
+
+Secrets such as database credentials, NATS credentials, OpenZiti
+credentials, LLM provider keys, and credential-proxy tokens must come
+from Vault through External Secrets or another approved cluster secret
+path. They should not live in plain Kubernetes manifests and should not
+be baked into the Agentic Organization image.
+
+### ArgoCD Sync Wave
+
+Agentic Organization should not land before its substrates. The current
+cluster ordering puts hat-system CRDs before data consumers, data planes
+at wave `0`, Hindsight and Temporal at wave `10`, and Hermes at wave
+`20`.
+
+Recommended deployment split:
+
+| Application | Wave | Purpose |
+|---|---:|---|
+| `agentic-organization-contracts` | `-5` or `0` | optional future CRDs, NATS stream definitions, schema/config resources that other apps may consume |
+| `agentic-organization` | `30` | API, web, workers, Temporal worker, Dapr actor host, MCP gateway |
+
+If V0 ships no CRDs and only consumes existing services, one
+`agentic-organization` app at wave `30` is enough. If it later adds CRDs
+or cluster-wide policies, split those resources into the earlier
+contracts app rather than forcing the main runtime app to reconcile
+early.
+
+### Kubernetes Workload Shape
+
+The first ArgoCD app should deploy one namespace and several workloads
+from the same image or image family:
+
+| Workload | Kubernetes shape | Notes |
+|---|---|---|
+| API | Deployment + ClusterIP Service | REST/OpenAPI, internal command API, read API |
+| Web | Deployment + ClusterIP Service/Gateway route | operations console |
+| Workers | Deployment | outbox publisher, reconcilers, schedulers, NATS consumers |
+| Temporal worker | Deployment | workflow and activity workers only |
+| Dapr actor host | Deployment with Dapr annotations | actor endpoints and reminders |
+| MCP gateway | Deployment + ClusterIP Service | Hermes-facing governed tool surface |
+
+All workloads need:
+
+- service account scoped to only required Kubernetes reads/writes;
+- CiliumNetworkPolicy egress only to required namespaces/services;
+- OpenTelemetry instrumentation enabled by default;
+- readiness checks that include dependency health for the adapter set
+  the process actually uses;
+- structured logs with the canonical trace envelope fields;
+- pod labels for app, package host, version, and Organization
+  environment.
+
+The MCP gateway and worker processes are the highest-risk egress points.
+They should get the narrowest network policy and credential scope first.
+
+### Runtime Readiness Mapping
+
 Current cluster readiness:
 
 - CockroachDB exists as the distributed SQL substrate.
-- NATS exists with JetStream enabled.
+- NATS exists with JetStream enabled and Longhorn-backed file storage.
 - Temporal and Dapr are present, but their Organization-specific
   persistence/components still need wiring.
-- Hindsight is wired as the Hermes memory system.
-- Hermes exists as a placeholder deployment until the real image is
-  available.
-- hat-system CRDs and policies exist; the operator image/runtime still
-  needs completion.
+- Hindsight is wired as the Hermes memory system and currently uses
+  bundled PostgreSQL until an external CockroachDB-backed deployment is
+  proven.
+- Hermes exists as a placeholder deployment with `replicas: 0` until the
+  real image is available.
+- hat-system CRDs and policies exist; the operator deployment is still a
+  scaffold until the image is built and replicas are enabled.
 - Cilium, SPIRE, Vault, Trust Manager, and External Secrets provide the
   security substrate.
 
 The CA should not block V0 on every runtime being production-ready. It
 should define ports and fakes first, then swap in cluster adapters as
 each substrate becomes live.
+
+### Bootstrap and Dev Parity
+
+The same package architecture should run in three modes:
+
+| Mode | Purpose | Runtime adapters |
+|---|---|---|
+| unit/test | package and command tests | in-memory/fake adapters |
+| local dev cluster | k3d/K3S parity with `full-ai-cluster` apps | real NATS/Cockroach when available, fake Hermes/hat-system if needed |
+| full cluster | production-like AI cluster | real CockroachDB, NATS, Hindsight, Hermes, OpenZiti, hat-system, Temporal, Dapr |
+
+Do not create a Docker Compose architecture that diverges from
+`full-ai-cluster`. Local development can use fakes or a dev cluster, but
+the real deployment contract is ArgoCD on the cluster.
+
+### Hat-System Integration Path
+
+The TypeScript side should integrate with the existing hat-system in
+three steps:
+
+1. Read CRDs and consume `zeta.society.hats.>` ticks through
+   `@agentic-org/k8s-hats`.
+2. Bridge HatSwap ticks into canonical `agentic-org.*` events with
+   trace fields, dedupe keys, and Organization scope when a matching
+   assignment exists.
+3. After the Organization assignment state machine is stable, allow
+   approved Organization assignments to create HatBinding proposals.
+
+The Organization DB remains the business source of truth. Hat-system
+proves runtime enforcement and cluster-observed state.
+
+### Observability Integration Path
+
+`@agentic-org/observability` should produce OTLP traces and structured
+logs that the current Alloy/Tempo/Loki/Mimir stack can ingest. The
+package should standardize:
+
+- trace propagation across HTTP, NATS, Temporal activities, Dapr actor
+  calls, MCP tools, Hermes callbacks, Hindsight calls, and Kubernetes
+  watches;
+- JSON log fields matching the canonical event envelope;
+- Prometheus metrics for outbox lag, NATS consumer lag, DLQ count,
+  command latency, policy denial count, adapter health, and projection
+  staleness;
+- links from UI evidence records to trace IDs, log queries, run IDs,
+  event IDs, and artifacts.
 
 ## V0 Build Sequence
 
