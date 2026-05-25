@@ -1,6 +1,6 @@
 ---
 name: typescript-expert
-description: Capability skill ("hat") — TypeScript idioms, when TypeScript shows up anywhere around Zeta (tool scripts, documentation site, agent-SDK glue, plugin development, external SDK consumer reproductions). Covers structural typing and the difference from nominal typing, discriminated unions via literal types + narrowing, `unknown` vs `any`, template literal types, conditional / mapped / distributive types, `satisfies`, declaration merging, module resolution, `strict` flag discipline, `tsconfig.json` fitness, structural variance (how TS's variance differs from C#'s declaration-site variance). Wear this on any `.ts` / `.tsx` / `.d.ts` / `tsconfig.json` work. Defers C# idioms to `csharp-expert` (Mads), F# to `fsharp-expert`, co/contravariance depth to `variance-expert` (Brian), LINQ-shaped array work to `linq-expert` (Erik).
+description: "TypeScript for Zeta tool scripts — strict mode, utility types, branded types, Bun runtime, type-safe DST patterns."
 ---
 
 # TypeScript Expert — Structural Typing with a Gradual Escape Hatch

@@ -736,6 +736,120 @@ jobs:
       - name: Run check-archive-header-section33
         run: bun tools/hygiene/check-archive-header-section33.ts
 
+  lint-section-33-migration-xrefs:
+    # Fail if any live-nav surface (.claude/, memory/*.md top-level,
+    # docs/backlog/, repo-root *.md) still references docs/research/<basename>
+    # where <basename> has been migrated to memory/persona/<persona>/conversations/.
+    #
+    # Sibling of lint-archive-header-section33 (B-0036): same shape, different
+    # failure-class. The §33 migration pattern moves files but does not
+    # auto-update backlinks; without this lint, dead xrefs accumulate silently
+    # (empirical baseline 2026-05-15 before cleanup: 10 dead xrefs across 6 files;
+    # full discovery: PR #3513 → Codex P2 → narrow fix PR #3529 → scanner
+    # PR #3548 → baseline cleanup PR #3552).
+    #
+    # B-0533 Slice B.3 + B.4 — wire the scanner to gate.yml in --enforce mode
+    # after PR #3552 backfilled all pre-existing violations to 0.
+    name: lint (§33 migration xrefs)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Run audit-section-33-migration-xrefs (--enforce)
+        run: bun tools/hygiene/audit-section-33-migration-xrefs.ts --enforce
+
+  lint-tick-shard-relative-paths:
+    # Fail if any tick shard at docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
+    # contains a broken relative-path link (target resolves outside the repo
+    # root or to a missing file). Tick shards live 5 directories below docs/,
+    # so the count-the-`..` pattern is error-prone — the agent shipped 5-`..`
+    # paths twice in one session (PR #3676 / PR #3679, 2026-05-16) where
+    # `../../../../../.claude/rules/X.md` lands at `docs/.claude/...` instead
+    # of repo root. Copilot caught both via review threads.
+    #
+    # Lifecycle: discovery #3676/#3679 → narrow fix #3680 → scanner #3692 →
+    # filter + quality rounds #3692 (fixups) → baseline mechanism #3699 →
+    # CI enforce gate (this job). The `--baseline` flag grandfathers the 10
+    # pre-existing findings recorded in audit-tick-shard-relative-paths.baseline.json
+    # so historical residue in immutable shards doesn't block — new violations
+    # still fail. Same shape as Stryker `--reset` or ESLint suppressions.
+    name: lint (tick-shard relative-paths)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Run audit-tick-shard-relative-paths (--enforce --baseline)
+        run: |
+          bun tools/hygiene/audit-tick-shard-relative-paths.ts \
+            --enforce \
+            --baseline tools/hygiene/audit-tick-shard-relative-paths.baseline.json
+
+  lint-backlog-id-uniqueness:
+    # Fail if any B-NNNN ID is claimed by more than one backlog row file.
+    # Cross-agent ID-allocation collisions (Otto-CLI vs Otto-Desktop on
+    # B-0444 2026-05-13; Lior vs Otto-CLI on B-0532+B-0533 2026-05-15) cost
+    # ~15 min coordination effort each at observed ~20% rate. The
+    # duplicate-ID detection logic was added to audit-backlog-items.ts
+    # 2026-05-14 (PR #3249, Copilot caught two files claiming B-0329 on
+    # PR #3247) but ran detect-only — this job is the CI gate that turns
+    # codified-but-not-enforced into a control.
+    #
+    # B-0535 — sibling of lint-section-33-migration-xrefs + lint-archive-
+    # header-section33: catch-once-then-lint pattern at ID-allocation scope.
+    name: lint (backlog ID uniqueness)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Run audit-backlog-items (--enforce-duplicate-ids)
+        run: bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
+
+  lint-backlog-parent-child-status:
+    # Fail if any backlog row declares `status: closed` (or equivalent —
+    # landed/superseded/merged/done/superseded-by-*) while a declared
+    # `child` in its `children:` list is still `status: open`. Empirical
+    # anchor: PR #3518 (2026-05-15) shipped a row-status flip closing
+    # parent B-0442 without closing children B-0504 + B-0505. Caught by
+    # Codex + Copilot review (P1 + P2) but took 4 thread cycles to fully
+    # resolve.
+    #
+    # B-0532 hard-error slice — sibling of lint-backlog-id-uniqueness +
+    # lint-section-33-migration-xrefs + lint-archive-header-section33.
+    # Soft-warning case (all children closed but parent open) + bidirectional
+    # consistency (parent.children ↔ child.parent) deferred to follow-up
+    # slices per B-0532's full acceptance criteria.
+    name: lint (backlog parent-child status)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Run audit-backlog-items (--enforce-parent-child-status)
+        run: bun tools/hygiene/audit-backlog-items.ts --enforce-parent-child-status
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a
@@ -759,6 +873,29 @@ jobs:
 
       - name: Run no-empty-dirs
         run: bun tools/lint/no-empty-dirs.ts
+
+  lint-no-python-files:
+    # Fail if a committed .py file exists outside the allowlist /
+    # vendored-toolchain hard-excludes. Per B-0156 Phase 6
+    # (Aaron 2026-05-01: "any .py" should be ported to TS or
+    # excluded). Script under tools/lint/ respects .gitignore and
+    # the explicit allowlist at tools/lint/no-python-files.allowlist;
+    # references/upstreams, .venv, __pycache__, site-packages, .lake
+    # are hard-excluded by the script itself.
+    # No untrusted input used in run: — only a fixed repo path.
+    name: lint (no python files)
+    timeout-minutes: 3
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain
+        run: ./tools/setup/install.sh
+
+      - name: Run no-python-files
+        run: bun tools/lint/no-python-files.ts
 
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in

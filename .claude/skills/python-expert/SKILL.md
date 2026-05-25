@@ -1,6 +1,6 @@
 ---
 name: python-expert
-description: Capability skill ("hat") — Python idioms for Zeta's narrow Python surface. Today Python appears as a runtime dependency for Semgrep (the F# lint gate); tomorrow it may grow as CI helper scripts land. Covers the mise-pinned interpreter, `uv`-managed tools, `ruff` formatting discipline, type hints, entry-point scripts, subprocess hygiene. Wear this when writing or reviewing `.py` files, or when configuring a Python tool (Semgrep, future coverage tooling, future data-science helpers).
+description: Python idioms — mise-pinned interpreter, uv tools, ruff formatting, type hints, subprocess hygiene; Zeta narrow surface.
 ---
 
 # Python Expert — Procedure + Lore

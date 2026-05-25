@@ -1,6 +1,6 @@
 ---
 name: git-workflow-expert
-description: Capability skill ("hat") — Zeta's git workflow conventions. Branch-per-round (round-N off main), squash-merge to main, branch protection on main, PR as round-close, Co-Authored-By footer, no force-push to main, no direct commits to main. Also covers GOVERNANCE §23 sibling-clone convention for upstream contributions (`../<repo>`). Wear this when opening/closing a round, reviewing a PR, or coordinating with an upstream contribution PR.
+description: Git workflow — branch-per-round, squash-merge to main, PR as round-close, Co-Authored-By, upstream contribution §23.
 ---
 
 # Git Workflow Expert — Procedure

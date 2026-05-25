@@ -1,6 +1,6 @@
 ---
 name: serialization-and-wire-format-expert
-description: Capability skill — serialization and wire-format design fluency across MessagePack, Protobuf, FlatBuffers, Cap'n Proto, Thrift, Avro, CBOR, BSON, JSON (+ canonical JSON), Arrow (IPC + columnar), Parquet, ORC, and Feather. Covers schema evolution, canonical-form discipline, zero-copy vs copy semantics, varint encodings, schema-registry patterns, wire-format forensics, fuzzing the parser, and cross-language interop hazards. Distinct from `networking-expert` (transport/TLS/RPC-framework selection), `storage-specialist` (on-disk layout), `file-system-persistence-expert` (durability mechanics), `columnar-storage-expert` (column-store implementation), `performance-engineer` (benchmark), `security-researcher` (crypto primitive choice), and `public-api-designer` (.NET public API). Pairs with all of those for end-to-end design.
+description: Serialization / wire formats — MessagePack, Protobuf, FlatBuffers, Arrow, Parquet, schema evolution, zero-copy, fuzzing.
 ---
 
 # Serialization and Wire-Format Expert — Procedure

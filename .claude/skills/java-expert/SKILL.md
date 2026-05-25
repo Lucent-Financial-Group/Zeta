@@ -1,6 +1,6 @@
 ---
 name: java-expert
-description: Capability skill ("hat") — Java idioms specifically scoped to Zeta's narrow Java surface (the 65-line `tools/alloy/AlloyRunner.java` driver that lets F# tests drive Alloy 6). Covers JDK 21 target, single-file compilation patterns, the Alloy API surface, SAT4J (pure Java, no JNI), exit-code discipline. Wear this when writing or reviewing `.java` files.
+description: "Java for Zeta's narrow surface — AlloyRunner.java driver, JDK 21, SAT4J, single-file compilation, exit-code discipline for .java files."
 ---
 
 # Java Expert — Procedure + Lore

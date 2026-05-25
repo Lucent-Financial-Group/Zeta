@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { buildCodexPrompt, codexExecArgs } from "../.codex/bin/codex-loop-tick";
+import { buildCodexPrompt, codexExecArgs, codexLoopEnv } from "../.codex/bin/codex-loop-tick";
 
 describe("codex-loop-tick service contract", () => {
   test("launches Codex with the current noninteractive bypass flag", () => {
@@ -29,6 +29,42 @@ describe("codex-loop-tick service contract", () => {
   test("imports runner helpers without executing the loop", () => {
     expect(typeof buildCodexPrompt).toBe("function");
     expect(typeof codexExecArgs).toBe("function");
+    expect(typeof codexLoopEnv).toBe("function");
+  });
+
+  test("marks headless loop runs distinctly from foreground Codex chat", () => {
+    expect(
+      codexLoopEnv({
+        runId: "20260513T224509Z",
+        origin: "codex-launchd-loop",
+        surface: "codex-background-service",
+        session: "codex/launchd-loop",
+      }),
+    ).toEqual({
+      ZETA_AGENT_ORIGIN: "codex-launchd-loop",
+      ZETA_AGENT_SURFACE: "codex-background-service",
+      ZETA_CODEX_LOOP_RUN_ID: "20260513T224509Z",
+      ZETA_CODEX_LOOP_SESSION: "codex/launchd-loop",
+    });
+
+    const prompt = buildCodexPrompt({
+      home: "/tmp/zeta-home",
+      runId: "20260513T224509Z",
+      origin: "codex-launchd-loop",
+      surface: "codex-background-service",
+      session: "codex/launchd-loop",
+    });
+
+    expect(prompt).toContain("headless/background Codex, not foreground Codex chat");
+    expect(prompt).toContain("surface as codex-background-service");
+    expect(prompt).toContain("origin as codex-launchd-loop");
+    expect(prompt).toContain("run id as 20260513T224509Z");
+    expect(prompt).toContain("`Headless-Origin: codex-launchd-loop`");
+    expect(prompt).toContain("`Headless-Surface: codex-background-service`");
+    expect(prompt).toContain("`Codex-Origin: codex-launchd-loop`");
+    expect(prompt).toContain("`Codex-Surface: codex-background-service`");
+    expect(prompt).toContain("`Codex-Loop-Run-Id: 20260513T224509Z`");
+    expect(prompt).toContain("branches beginning with `codex-loop-`");
   });
 
   test("foreground reliability prompt owns Codex PRs through merge before new work", () => {

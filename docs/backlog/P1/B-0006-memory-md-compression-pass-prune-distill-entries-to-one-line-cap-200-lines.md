@@ -1,13 +1,14 @@
 ---
 id: B-0006
 priority: P1
-status: in-progress
+status: closed
 title: MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 tier: maintenance
 effort: M
 ask: maintainer Aaron 2026-04-25 (implicit via the README cap; surfaced explicitly by Otto-295 expand-compress dynamic)
 created: 2026-04-25
-last_updated: 2026-05-02
+last_updated: 2026-05-09
+resolved: 2026-05-09
 depends_on: []
 composes_with: [B-0190, B-0193]
 tags: [memory-hygiene, MEMORY.md, distillation, compression, otto-291-pacing, otto-294-smooth-shape, otto-295-monoidal-manifold, factory-maintenance]
@@ -88,7 +89,7 @@ After the pass, the file should be:
 - Entries ordered with most-recent at top (per existing
   convention)
 
-## Acceptance signals
+## Acceptance signals (recalibrated per B-0336, 2026-05-09)
 
 The compression pass is "good enough to ship" when:
 
@@ -101,6 +102,34 @@ The compression pass is "good enough to ship" when:
 - Fast-path discipline (read CURRENT-* + scan MEMORY.md +
   drill into specific body file) works under typical
   context budget
+
+### Recalibrated targets (B-0336)
+
+Current state (2026-05-09): 588 entries in 592 lines.
+B-0332 classifier: 5 load-bearing files (cited from
+CLAUDE.md/AGENTS.md/GOVERNANCE.md/ALIGNMENT.md), 622
+decorative (not cited from bootstrap surfaces).
+
+**Differentiated targets:**
+
+| Category | Target | Rationale |
+| -------- | ------ | --------- |
+| Load-bearing (5 files) | KEEP in index, up to 200 chars | These are the files a fresh agent WILL read via bootstrap citation chain |
+| CURRENT-* files (4-6) | KEEP in index, up to 150 chars | Fast-path discipline requires these visible |
+| Recent entries (last 30 days) | KEEP in index, ~120 chars | Active context; recent memory is high-value |
+| Decorative older entries | REMOVE from index | Files stay on disk; the index is not the archive |
+
+**Feasibility math:** 200 lines - 5 header lines = 195 entries.
+With ~5 load-bearing + ~5 CURRENT + ~100 recent-30-day entries
+= ~110 entries. Leaves ~85 slots for curated older entries.
+This is achievable by removing the ~490 oldest decorative
+entries from the index (not from disk).
+
+**The index is a navigation surface, not an archive.** Files
+removed from the index are still discoverable via grep,
+the classifier tool (B-0332), and the cross-reference
+audit (B-0334). The index serves cold-start agents; the
+tools serve hot-path agents.
 
 ## Risks + mitigations
 

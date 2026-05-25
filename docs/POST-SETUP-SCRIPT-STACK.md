@@ -84,9 +84,9 @@ Default: **bun + TypeScript**. Reasons:
   enforcement hygiene rule demands *a recorded decision*, not
   *migration*. If the reason "bun + TypeScript would buy nothing
   here" holds up on inspection AND the Windows-twin cost is
-  acceptable, that is a valid answer. Per Aaron 2026-04-22:
-  *"The intentionality-enforcement reframe doesn't demand
-  migration; it demands a recorded decision. A 'this should
+  acceptable, that is a valid answer. Per the human maintainer
+  2026-04-22: *"The intentionality-enforcement reframe doesn't
+  demand migration; it demands a recorded decision. A 'this should
   stay bash forever' is a valid answer if the reason holds up."*
   See `memory/feedback_intentionality_doesnt_demand_migration_bash_forever_valid.md`.
 

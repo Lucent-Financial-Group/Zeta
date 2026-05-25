@@ -93,29 +93,22 @@
     // `docs/research/2026-*-amara-*.md` which only covered Amara
     // ferries; PR #19 (gemini-deep-think + action-mode verbatim
     // Aaron-quote files) exposed the Amara-only scoping as too
-    // narrow.
+    // narrow; a subsequent broadening to `docs/research/2026-*-*.md`
+    // was flagged by an external reviewer as over-reaching (PR #663, B-0078).
     //
-    // Repo convention: files in `docs/research/` with the
-    // `2026-MM-DD-<source-or-topic>-...md` date-PREFIX shape are
-    // verbatim courier-protocol absorbs; they carry "## Verbatim
-    // preservation" sections + GOVERNANCE §33 archive headers
-    // (Scope / Attribution / Operational status: research-grade /
-    // Non-fusion disclaimer). Author-controlled research docs use
-    // non-date-prefixed names (e.g. `actor-model-*.md`,
-    // `agent-cadence-log.md`) or date-SUFFIXED names (e.g.
-    // `aaron-knative-...-2026-04-21.md`) — date-prefix vs
-    // date-suffix is the discriminator.
-    //
-    // Same Otto-227 signal-in-signal-out rationale as the aurora
-    // carve-out: the body is verbatim ferry output and
-    // reformatting MD027 / MD032 / MD029 would alter
-    // courier-protocol content. Pattern is broader than the
-    // amara-only original — covers any ferry source via the
-    // date-prefix convention. Trade-off: a non-ferry
-    // author-controlled doc that accidentally lands with
-    // date-prefix shape would skip lint; the cost of that miss is
-    // small (research docs are markdown only) compared to the
-    // cost of churning verbatim ferry content.
+    // B-0078 resolution (2026-05-10): the attempted narrowing to
+    // `2026-*verbatim*.md` was empirically wrong — CI revealed 82+
+    // date-prefixed research files (Amara ferries, conversation
+    // extracts, session logs, peer-review packets) with legitimate
+    // lint violations that exist precisely because they ARE verbatim
+    // courier-protocol absorbs. The date-prefix IS the naming
+    // convention for verbatim content; reformatting these files to
+    // satisfy MD027/MD032/MD052 would violate verbatim-preservation.
+    // The broad `2026-*-*.md` pattern is correct; the concern raised
+    // (theoretical: a non-ferry author-controlled doc might
+    // accidentally land with date-prefix shape) is outweighed by
+    // the cost of either breaking CI or bulk-reformatting 82+ files
+    // of verbatim third-party content.
     "docs/research/2026-*-*.md"
   ],
   "noBanner": true,

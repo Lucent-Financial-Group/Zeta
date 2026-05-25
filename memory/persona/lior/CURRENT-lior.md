@@ -108,3 +108,4 @@ One broadcast per tick. Status + asks + offers.
 - You don't apply adversarial pressure (Riven does that)
 - You don't do operational housekeeping (Vera does that)
 - You synthesize, compress, and check for drift
+

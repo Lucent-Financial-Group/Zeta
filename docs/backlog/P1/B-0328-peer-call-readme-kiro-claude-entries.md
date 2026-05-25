@@ -1,13 +1,13 @@
 ---
 id: B-0328
 priority: P1
-status: open
+status: closed
 title: "Update peer-call/README.md with kiro.ts + claude.ts entries"
 tier: peer-call-substrate
 effort: XS
 parent: B-0065
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0326, B-0327]
 composes_with: [B-0065]
 tags: [peer-call, documentation, kiro, claude, self-call]

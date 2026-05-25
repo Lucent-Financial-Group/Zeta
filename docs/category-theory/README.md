@@ -61,3 +61,16 @@ upstream clones under `references/upstreams/` per the
 If you write an operator that advertises a law, LawRunner
 proves (or disproves) it at test time. CTFP is how you
 understand which laws are worth advertising.
+
+## Isomorphism / homomorphism claims
+
+Zeta carries a growing set of structure-preserving-map claims across
+algebraic and domain boundaries. The forward index, IF-filter framework
+(IF1–IF4), and promotion protocol live at:
+
+- **[`docs/research/isomorphism-catalog.md`](../research/isomorphism-catalog.md)**
+
+Each entry records claim status (`claimed` → `confirmed` → `formalized` →
+`load-bearing`), operator-preservation evidence, and counterexample-search
+results. `category-theory-expert` owns the categorical statement quality;
+`formal-verification-expert` routes Lean formalization.

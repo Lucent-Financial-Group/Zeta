@@ -149,8 +149,8 @@ This list is the doc-form. The executable form is `tools/hygiene/audit-lost-file
 Composes with:
 
 - `tools/hygiene/audit-memory-references.ts` — covers location-class #15
-- `tools/hygiene/audit-git-hotspots.sh` — surfaces high-churn files (proxy for "high deletion risk")
-- `tools/hygiene/audit-tick-history-bounded-growth.sh` — finds tick-history pattern violations
+- `tools/hygiene/audit-git-hotspots.ts` — surfaces high-churn files (proxy for "high deletion risk")
+- `tools/hygiene/audit-tick-history-bounded-growth.ts` — finds tick-history pattern violations
 - Otto-262 trunk-based-development branch policy
 - Otto-257 clean-default smell triggers audit
 - Otto-238 retractability + glass-halo (deletions should leave visible trails)

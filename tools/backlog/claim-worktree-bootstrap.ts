@@ -198,7 +198,7 @@ function validateRepoPath(path: string): void {
 
 function validateRequest(request: BootstrapRequest): void {
   validateSlug(request.slug);
-  if (!/^B-[0-9]+$/.test(request.backlogId)) {
+  if (!/^B-[0-9]+(\.[0-9]+)*$/.test(request.backlogId)) {
     throw new Error(`invalid backlog id: ${request.backlogId}`);
   }
   if (request.scope.trim().length === 0) {

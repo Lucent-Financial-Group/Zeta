@@ -1,6 +1,6 @@
 ---
 name: tech-radar-owner
-description: Maintains docs/TECH-RADAR.md — the ThoughtWorks-style Adopt/Trial/Assess/Hold ring discipline. They promote techniques / tools / upstreams between rings when the evidence warrants, retire Hold entries when they stop being relevant, and audit whether the radar still matches reality. Invoke after any research-agent dispatch or when a new technique is under consideration.
+description: docs/TECH-RADAR.md stewardship — Adopt/Trial/Assess/Hold ring discipline, promotion/demotion, new-entry gate, quarterly review cadence.
 ---
 
 # TECH-RADAR Owner

@@ -1,6 +1,6 @@
 ---
 name: ontology-landing-expert
-description: Theory and reference skill for landing new ontologies (unifying taxonomies, classification frameworks, cross-domain schemas) into an existing knowledge base without triggering destructive recompilation. Covers recompilation-cost theory, incremental-compilation amortisation, retraction-safe ontology replacement, let-it-emerge vs big-reveal dynamics, and when an ontology has earned the right to land. Use when an agent has identified what appears to be a unifying pattern across multiple skills, documents, or decisions; when a proposed ADR introduces a new vocabulary frame; when considering a refactor motivated by "I see a pattern here." Pairs with paced-ontology-landing (applied workflow). Invoke proactively before any documentation refactor that would rename across more than three files.
+description: Ontology landing — recompilation amortisation, retraction-safe replacement, let-it-emerge vs big-reveal dynamics.
 facet: expert × theory × advisor
 ---
 

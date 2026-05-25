@@ -7,14 +7,57 @@ tier: operational-resonance-research
 effort: L
 ask: Aaron 2026-04-21 — *"hemdal"* (Heimdallr, single-word candidate) then *"mythology backlog"*
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on: []
+children: [B-0056.1-mythology-resonance-catalog-v0]
 composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, B-0057, B-0058, B-0059, docs/ALIGNMENT.md]
 tags: [mythology, heimdallr, hermes, mercury, janus, iris, ratatoskr, thoth, garuda, quetzalcoatl, loki, bridge-figures, messenger, paired-dual, three-filter, F1-F2-F3]
 type: feature
 ---
 
 # B-0056 — Mythology research track
+
+## Pre-start checklist (completed 2026-05-10, B-0056.1 slice)
+
+**Prior-art search:**
+
+- Skill router: no existing `mythology-resonance` or `myth-catalog` skill. The phenomenon
+  is documented in memory files (`feedback_operational_resonance_*`,
+  `project_operational_resonance_instances_collection_index_2026_04_22.md`).
+- On-disk: `tools/resonance/` contains only `media-catalog-schema.ts` (B-0054). No
+  prior `mythology-catalog*` file exists.
+- PR history: no prior PR touching mythology resonance catalog. The collection-index
+  memory already has instance #12 (Heimdallr) as a documented candidate — that record
+  lives in the index revision, not in a dedicated memory file.
+- Lost-files check: `tools/hygiene/LOST-FILES-LOCATIONS.md` — no mythology-catalog items.
+- Otto-364 search-first: no upstream art for typed mythology-resonance catalog schemas in
+  the Zeta ecosystem.
+
+**Dependency-restructure:**
+
+- `depends_on: []` — no blocking dependencies.
+- `composes_with: [B-0057, B-0058, B-0059]` confirmed non-blocking; all are independently
+  open research tracks.
+- B-0058 (P1, AI-ethics+safety) gates every *adoption*; it does not block *research-tier
+  logging* — candidates tracked here do not require B-0058 clearance until promotion to
+  confirmed and public-release citation.
+- Reciprocal `composes_with` backfill: B-0057 and B-0059 will receive pointers to B-0056
+  in their own pre-start passes.
+
+**Decomposition (L → S slices):**
+
+B-0056 is Effort:L (long-running research track). Decomposed into dependency-ordered slices:
+
+| Sub-row | Title | Effort | Status |
+|---------|-------|--------|--------|
+| **B-0056.1** | Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance) | S | **closed by this PR** |
+| **B-0056.2** | Norse+Greek tier expansion — Janus, Iris, Ratatoskr | S | open |
+| **B-0056.3** | Non-Indo-European tier — Thoth (Egyptian) + Garuda (Vedic) | S | open |
+| **B-0056.4** | Mesoamerican tier — Quetzalcoatl + Tecciztecatl | S | open |
+| **B-0056.5** | Hermes Trismegistus triple-tradition-fusion — Greek+Egyptian+Renaissance occult overlap | S | open |
+
+The parent row B-0056 stays `open` until the catalog reaches a stable sweep across all
+tradition-categories. Individual sub-rows close as PRs land.
 
 ## Origin
 
@@ -29,6 +72,16 @@ Three-filter honest pass recorded in the operational-resonance index:
 - **F3 passes** within Norse tradition but Norse-canonicity is thinner than Abrahamic (Christianization-filtered Eddas)
 
 **Status:** candidate, pending second textual anchor or Aaron confirmation to promote to confirmed. Second bridge-figure member would LOCK the bridge-figure sub-structure's definition (currently defined by Melchizedek alone).
+
+## Smallest safe slice (B-0056.1) — re-decomposition
+
+Re-decomposed from broad L-effort track (assumes initial doc-only decomp had mistake lacking executable check surface).
+
+**Bounded step:** pure-TS mythology candidate schema + three-filter types + Heimdallr seed + validator stub (modeled on B-0055.2 edge-claims pattern).
+
+- File: `tools/mythology-resonance/candidate-schema.ts`
+- Focused checks: type check + manual review of retractibility note + build gate (0w 0e)
+- One PR only; wider candidates (Hermes etc.) become later .2+ children after this lands.
 
 ## Wider-track candidates (to be triaged individually)
 

@@ -1,6 +1,6 @@
 ---
 name: editorconfig-expert
-description: Capability skill ("hat") — static-analysis narrow under `static-analysis-expert`. Owns `.editorconfig` discipline end-to-end in a .NET repo: canonical keys (`indent_style`, `charset`, `end_of_line`), .NET analyzer severity overrides (`dotnet_diagnostic.XXXX.severity`), C#-specific style keys (`csharp_*`, `dotnet_*`), F#-specific keys (`fsharp_*`), analyzer `build_property.*` plumbing to source generators, pattern precedence (root-first, deepest-wins), glob semantics, and the interaction between `.editorconfig` and MSBuild / Roslyn / `fsautocomplete` / Stryker. Wear this when designing or reviewing a repo's `.editorconfig` strategy, promoting / demoting an analyzer severity, adding a generator option via `build_property`, or reconciling drift between IDE formatting and CI gates. Defers to `static-analysis-expert` for cross-tool severity policy, to `roslyn-analyzers-expert` / `roslyn-generators-expert` / `fsharp-analyzers-expert` for rule-authoring specifics, and to `msbuild-expert` for MSBuild-property wiring.
+description: EditorConfig — indent/charset/EOL keys, .NET analyzer severity overrides, pattern precedence, MSBuild interaction.
 ---
 
 # EditorConfig Expert — `.editorconfig` in a .NET Repo

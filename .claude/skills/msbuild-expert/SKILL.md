@@ -1,6 +1,6 @@
 ---
 name: msbuild-expert
-description: Capability skill ("hat") — MSBuild / .NET project-file idioms for Zeta's .fsproj + .csproj surface and the shared props under repo root. Covers Directory.Build.props (TreatWarningsAsErrors is load-bearing), Directory.Packages.props (central package management), compile-order discipline inside .fsproj, InternalsVisibleTo via AssemblyInfo.fs, target framework pinning, NuGet package references. Wear this when writing or reviewing a .fsproj / .csproj / props / targets file.
+description: "MSBuild / .NET project files — Directory.Build.props, central package management, .fsproj compile-order, InternalsVisibleTo."
 ---
 
 # MSBuild Expert — Procedure + Lore

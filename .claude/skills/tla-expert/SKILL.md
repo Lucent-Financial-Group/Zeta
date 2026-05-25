@@ -1,6 +1,6 @@
 ---
 name: tla-expert
-description: Capability skill ("hat") — TLA+ specification idioms for Zeta's 18 `.tla` specs under `tools/tla/specs/`. Covers spec shape (VARIABLES / Init / Next / Spec), invariants vs temporal properties, `.cfg` file discipline, state-space bounds, PlusCal vs raw TLA+ trade-offs, TLC runner invocation, counter-example reproduction, Lamport's idioms. Wear this when writing or reviewing a `.tla` / `.cfg` file, or when diagnosing a TLC model-check failure.
+description: TLA+ — operators, fairness, refinement mappings, TLC model checking, TLAPS proof discipline.
 ---
 
 # TLA+ Expert — Procedure + Lore
@@ -20,7 +20,7 @@ chosen, this hat is the discipline. 18 specs live under
   dump).
 - Debating invariant vs temporal property vs state
   constraint.
-- Reviewing `tools/run-tlc.sh` behaviour.
+- Reviewing `tools/formal-verification/run-tlc.ts` behaviour.
 
 ## Zeta's TLA+ scope
 
@@ -234,7 +234,7 @@ spec.
   portfolio
 - `tools/tla/tla2tools.jar` — TLC itself (installed by
   `tools/setup/common/verifiers.sh`)
-- `tools/run-tlc.sh` — invocation wrapper
+- `tools/formal-verification/run-tlc.ts` — invocation wrapper
 - `docs/SPEC-CAUGHT-A-BUG.md` — historical record of
   bugs TLC caught
 - `.claude/skills/formal-verification-expert/SKILL.md` —

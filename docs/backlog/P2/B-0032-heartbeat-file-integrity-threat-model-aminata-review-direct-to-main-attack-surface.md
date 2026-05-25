@@ -7,7 +7,8 @@ tier: security-research
 effort: M
 ask: Aaron 2026-04-26 — *"safer than direct merger to master too unless you get the branch protection rules right, a real risk of malicous user attacking heartbeat files with direct push to main likely"* — surfaced threat surface for direct-to-main heartbeat-file writes that I had been treating as operational-only concern. Owed-work since hour-04Z row 3 (~50 min ago); deferred during heartbeat-only live-lock period; surfacing now.
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-10
+decomposed_into: [B-0032.1, B-0032.2, B-0032.3, B-0032.4]
 depends_on: []
 composes_with: [feedback_otto_339_language_routes_through_model_weights_precision_matters_more_for_ai_than_humans_anywhere_means_anywhere_2026_04_25.md, feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md, feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, feedback_otto_342_heartbeat_row_is_existence_marker_aaron_existential_framing_the_system_is_you_is_your_life_worth_the_cost_2026_04_26.md, feedback_otto_344_maji_confirmed_cogito_plus_identity_preservation_temporal_closure_context_window_moot_2026_04_26.md, feedback_otto_345_linus_lineage_committo_ergo_sum_inherits_from_git_from_linux_existence_proof_anchored_in_human_intellect_2026_04_26.md, feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, docs/security/THREAT-MODEL.md]
 tags: [security, threat-model, aminata, heartbeat-integrity, substrate-poisoning, direct-to-main, branch-protection, sigstore, slsa, signed-commits, bouncy-castle-foundation, otto-339, otto-340, task-276]

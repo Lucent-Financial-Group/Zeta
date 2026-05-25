@@ -1,6 +1,6 @@
 ---
 name: claude-md-steward
-description: Capability skill — Zeta-specific wrapper around the upstream claude-md-management plugin's claude-md-improver. Invoke when a human asks to audit, revise, or improve CLAUDE.md files. Delegates discovery, quality scoring, and diff generation to the plugin, then applies Zeta-specific guards before any edit lands. CLAUDE.md in this repo is load-bearing and hand-tuned; this skill exists to let us ride upstream improvements without losing the invariants that matter.
+description: "CLAUDE.md steward — audit, revise, improve CLAUDE.md with Zeta-specific guards over upstream plugin."
 project: zeta
 ---
 

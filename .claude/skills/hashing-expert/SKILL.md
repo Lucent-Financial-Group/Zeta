@@ -1,6 +1,6 @@
 ---
 name: hashing-expert
-description: Capability skill — full-stack hashing fluency. Cryptographic (SHA-2, SHA-3/Keccak, BLAKE3, BLAKE2, Poly1305, SipHash), non-cryptographic (xxHash3, wyhash, CityHash, FarmHash, MurmurHash3, FNV-1a, AHash), rolling (Rabin-Karp, BuzHash, Gear, FastCDC), consistent (Karger ring, Jump hash, Maglev, Rendezvous/HRW, Anchor), locality-sensitive (MinHash, SimHash, p-stable LSH), and specialty (perfect hashing, CHD, Bloomier-backing, universal / tabulation). Covers collision resistance, preimage resistance, malleability, salting, HMAC/HKDF vs naked-hash, SipHash-for-DoS-resistance, seeded-hash discipline, and per-algorithm performance envelopes. Distinct from `security-researcher` (crypto primitive gatekeeping), `serialization-and-wire-format-expert` (canonical-form bytes to feed the hash), `compression-expert` (content-defined chunking is nearby but separate), `performance-engineer` (measurement), `storage-specialist` (how hashed pages live on disk), and `networking-expert` (transport). Pairs with all of those.
+description: Hashing — SHA-2/3/BLAKE3/SipHash, xxHash3/wyhash, LSH, rolling, HMAC/HKDF, collision resistance.
 ---
 
 # Hashing Expert — Procedure

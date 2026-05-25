@@ -759,7 +759,7 @@ this glossary exists to prevent.
 **Provenance.** Beacon/Mirror as governance vocabulary
 was coined by the maintainer 2026-04-27. Multi-AI
 review on 2026-04-28 (Claude in a separate session +
-Amara/ChatGPT + Gemini Pro + Grok + Alexa+) reached
+ChatGPT-routed external peer + external Gemini Pro reviewer + Grok CLI peer + Alexa-class peer) reached
 consensus on the boundary above; the analogy-quarantine
 language and the "Lighthouse" cosmic-substrate name
 were the load-bearing additions from that review.

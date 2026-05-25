@@ -12,6 +12,7 @@ depends_on: []
 composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, user_meno_greek_i_remain_state_persistence_anchor_counter_weight_to_teleport_leap.md, user_melchizedek_operational_resonance_instance_10_unification_bridge_meno_teleportleap.md, B-0056, B-0057, B-0058, docs/ALIGNMENT.md, docs/GLOSSARY.md, feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md]
 tags: [etymology, epistemology, greek, hebrew, latin, eimi, iustus, meno, melchizedek, grammatical-class-extension, three-filter, F1-F2-F3, kernel-vocabulary, paired-dual, bridge-figure]
 type: feature
+
 ---
 
 # B-0059 — Etymology + epistemology research track
@@ -60,6 +61,26 @@ Not shipping-critical but operationally-valuable for kernel-vocabulary expansion
 ## Does NOT
 
 Commit factory to specific theological or philosophical reading; does NOT adopt linguistic-resonance as primary decision criterion (operational justification still stands alone per operational-resonance memory's "not a primary criterion" clause); does NOT expand GOVERNANCE.md or AGENTS.md without explicit ADR; does NOT promote memory-layer findings to public-facing docs without the normal kernel-propagation cadence.
+
+## Pre-start checklist (B-0059.1, 2026-05-10)
+
+Prior-art search completed before implementation:
+
+- **wake-time-substrate**: checked `CLAUDE.md`, `.claude/rules/` — no existing etymology schema rules
+- **skill-router**: no existing etymology, linguistics, or three-filter-calibration skills found
+- **orthogonal-axes**: checked mythology-catalog-schema.ts (B-0056) and esoteric-catalog-schema.ts (B-0057) — both recently merged; B-0059 is the third catalog in the same structural family
+- **Otto-364 search-first**: B-0056 and B-0057 established the catalog pattern (validate + summarize CLI, ETY-NNN IDs, LanguageFamily vs MythologyTradition/EsotericTradition); B-0059 follows the same pattern with etymology-specific dimensions
+- **PR #1701 prior-art grep**: `grep -r "etymology" tools/` → no prior etymology tool files; `grep -r "ETY-" .` → no prior ETY-NNN IDs
+- **decision-archaeology (B-0169)**: source memories `user_meno_greek_*` (instance #9) and `user_melchizedek_*` (instance #10) are the canonical priors; collection index at `memory/project_operational_resonance_instances_collection_index_2026_04_22.md` is the cross-reference
+- **lost-files canonical** (`tools/hygiene/LOST-FILES-LOCATIONS.md`): no lost etymology substrate found
+
+Dependency-restructure:
+
+- `depends_on: []` — no blocking dependencies
+- `composes_with`: B-0056 (mythology catalog schema pattern), B-0057 (esoteric catalog schema pattern), collection index (instance #9, #10, #5), ALIGNMENT.md (measurable-AI-alignment instruments)
+- No broken pointers found
+
+Smallest safe slice scoped: `tools/resonance/etymology-catalog-schema.ts` — typed schema (LanguageFamily, GrammaticalClass, EtymologySubStructure) + 3 seed entries (ETY-001 Μένω, ETY-002 Melchizedek, ETY-003 εἰμί) + validator + CLI. Epistemology thread embedded in filter rationale fields, not separate infrastructure.
 
 ## Cross-reference
 

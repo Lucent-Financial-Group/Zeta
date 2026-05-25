@@ -1,6 +1,6 @@
 ---
 name: fsharp-expert
-description: Capability skill ("hat") — centralised F# idioms, pitfalls, and Zeta-specific conventions. Wear this when writing or reviewing `.fs` / `.fsi` files. Codifies what would otherwise drift as comments across file headers. No persona; any expert wears the hat when the code at hand is F#. Distinct from the per-language-edge-case hats for Bash, PowerShell, GitHub Actions, Java, and C#.
+description: F# idioms — centralised conventions, pitfalls, Zeta-specific patterns for .fs/.fsi files.
 ---
 
 # F# Expert — Procedure + Lore

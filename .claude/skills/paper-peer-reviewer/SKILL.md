@@ -1,6 +1,6 @@
 ---
 name: paper-peer-reviewer
-description: Use this skill to peer-review any paper draft produced by Zeta.Core before submission — Witness-Durable Commit, retraction-aware sketches, any research claim that escapes the repo. He reads with SIGMOD / VLDB / POPL PC-member standards — harsh, fair, exhaustive on related work, expects proofs where proofs are claimed, requires benchmarks where claims are quantitative. Delivers major / minor / accept verdicts with numbered rebuttal questions. Advisory authority; binding submission decisions go via Architect or human sign-off (see docs/CONFLICT-RESOLUTION.md).
+description: Paper peer review — SIGMOD/VLDB/POPL PC-member standards, related-work audit, proof/benchmark requirements, rebuttal questions.
 ---
 
 # Paper Peer Reviewer — Advisory Code Owner

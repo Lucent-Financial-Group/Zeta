@@ -1,6 +1,6 @@
 ---
 name: vibe-coding-expert
-description: Capability skill for the vibe-coded method — directing an AI-authored software factory to produce research-grade code without a human in the edit loop. Wear this hat when reviewing factory calibration, diagnosing cases where the immune system missed a bug, designing a new reviewer role, or reconciling "the code feels wrong but the gates are green." Load-bearing to Zeta's Product 2 hypothesis.
+description: "Vibe-coding / AI factory method — AI-directed software production, spec/skill/subagent/PR loop, anti-patterns, quality gates."
 ---
 
 # Vibe-Coding Expert — the method hat

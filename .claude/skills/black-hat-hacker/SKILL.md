@@ -1,6 +1,6 @@
 ---
 name: black-hat-hacker
-description: Dormant adversarial-roleplay capability — the "think like the attacker who doesn't care about ethics" hat. Currently gated OFF. This skill is NOT invocable in the current Zeta environment; it exists as a placeholder so the offensive-red-team discipline has a named home and activation criteria are written down. Do not perform unauthorized testing, do not simulate attacker behaviour against any real system or agent, and do not produce weaponised payloads until the activation gate is explicitly opened per §Activation gate below. Mirrors the ai-jailbreaker gating shape.
+description: Offensive attacker-mindset red-team — gated OFF; adversarial roleplay, unauthorized-testing simulation; activation criteria written here.
 ---
 
 # Black-Hat Hacker — the dormant adversarial-roleplay hat

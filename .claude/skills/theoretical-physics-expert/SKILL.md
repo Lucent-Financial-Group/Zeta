@@ -1,6 +1,6 @@
 ---
 name: theoretical-physics-expert
-description: Capability skill ("hat") — theoretical-physics split under the `physics-expert` umbrella. Covers symmetry and conservation-law arguments, dimensional analysis, formal analogies (stat-mech limits, renormalisation-group-style flow, effective-theory language), and the Noether-style mapping from a symmetry of a system to a conservation law of its algebra. Wear this when a paper draft reaches for a *formal* physics analogy (not a numerical simulation) and needs rigor. Defers to `applied-physics-expert` for computational / numerical realisation, to `category-theory-expert` for symmetry as functor action, and to `algebra-owner` for Zeta's operator-algebra laws.
+description: "Theoretical physics — symmetry/group theory, QFT, general relativity, statistical mechanics, formal reasoning."
 ---
 
 # Theoretical Physics Expert — Split

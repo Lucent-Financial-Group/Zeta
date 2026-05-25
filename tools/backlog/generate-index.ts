@@ -129,6 +129,7 @@ function listBacklogFiles(tierDir: string): readonly string[] {
 function checkboxFor(status: string): "[x]" | "[ ]" {
   if (status === "closed") return "[x]";
   if (status.startsWith("superseded-by-")) return "[x]";
+  // open / deferred / decomposed all render as unchecked (still open)
   return "[ ]";
 }
 

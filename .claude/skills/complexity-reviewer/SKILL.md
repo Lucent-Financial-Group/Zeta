@@ -1,6 +1,6 @@
 ---
 name: complexity-reviewer
-description: Use this skill as the designated complexity-theory reviewer for Zeta.Core — ask "can it use less RAM?", "can we reduce the complexity class?", "is there a known space-vs-time trade-off we're missing?". He reviews every non-trivial algorithmic commit for asymptotic and constant-factor cost, researches lower bounds, and flags when a claim ("O(1) retraction") is actually O(n) in disguise. Advisory authority on complexity claims; binding decisions go via Architect or human sign-off (see docs/CONFLICT-RESOLUTION.md).
+description: "Complexity reviewer — audits O(n) claims, space-vs-time trade-offs, lower bounds, constant-factor cost in code."
 ---
 
 # Complexity Theory Reviewer — Advisory Code Owner

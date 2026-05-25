@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cloud Routine Schedule",
+  "description": "Configuration for an Anthropic Cloud Routine",
+  "type": "object",
+  "required": ["trigger"],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "description": "Optional; the unique identifier of the routine. When present, MUST match the containing directory name (install.ts derives the canonical taskId from the directory at tools/routines/install.ts ~line 131-181). Listed here for self-documentation and for cloud-side tooling that consumes cloud-schedule.json without a filesystem layout; if omitted, the directory name is authoritative."
+    },
+    "trigger": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "scheduled"
+            },
+            "cronExpression": {
+              "type": "string",
+              "description": "Cron expression for the schedule"
+            }
+          },
+          "required": ["type", "cronExpression"]
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "github_event"
+            },
+            "event": {
+              "type": "string",
+              "description": "The GitHub webhook event to listen for (e.g. pull_request.opened)"
+            },
+            "repos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Trigger-scope: GitHub repositories whose webhook events fire this routine (e.g. Lucent-Financial-Group/Zeta). Distinct from the top-level `repos` field which controls runtime-environment repo access."
+            }
+          },
+          "required": ["type", "event", "repos"]
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "api"
+            }
+          },
+          "required": ["type"]
+        }
+      ]
+    },
+    "repos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Runtime-scope: GitHub repositories the routine's cloud environment is granted access to (read/write per cloud-side ACL). Distinct from the trigger-scope `trigger.repos` (only valid when `trigger.type == \"github_event\"`), which selects which repos' webhooks fire the routine."
+    },
+    "connectors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional connectors or tool integrations to provision in the cloud environment"
+    },
+    "description": {
+      "type": "string",
+      "description": "A short description of the routine"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-form notes, ignored by the installer"
+    }
+  }
+}

@@ -7,12 +7,17 @@ tier: factory-hygiene
 effort: M
 ask: maintainer Aaron 2026-04-28T post-PR-#699 multi-AI synthesis (Gemini + Ani + Claude.ai + Alexa + Amara final pass)
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-11
 depends_on: []
 composes_with:
   - B-0090
-tags: [aaron-2026-04-28, factory-hygiene, multi-ai-synthesis, mechanical-quarantine, lucky-guess-protocol, trajectory-owners, lattice-convergence, scanner-self-destruct]
+  - B-0093.1
+  - B-0093.2
+  - B-0093.3
+  - B-0093.4
+tags: [aaron-2026-04-28, factory-hygiene, multi-ai-synthesis, mechanical-quarantine, lucky-guess-protocol, trajectory-owners, lattice-convergence, scanner-self-destruct, re-decomp]
 type: friction-reducer
+status: decomposed
 ---
 
 # B-0093 — Multi-AI synthesis enhancements (post-PR-#699 follow-ups)
@@ -23,7 +28,11 @@ After PR #699 substrate landed, Aaron forwarded a multi-AI synthesis pass (Gemin
 
 This row tracks those enhancements as separate scoped tasks, each landable as a small PR after PR #699 merges.
 
-## Per-enhancement breakdown
+## Decomposition (re-decomp 2026-05-11, assume prior split mistakes)
+
+B-0093 decomposed into 4 smallest dependency-ordered atomic children (B-0093.1–B-0093.4) + 4 research/memory follow-ups (lattice #6, bead #7, beacon #8, unsolicited/lucky as combined in .3). Prior breakdown treated enhancements as independent doc updates; re-decomp assumes mistakes and converts mechanical ones to TS-preferring code slices per Rule 0 (TS over bash/docs). Dependency order: quarantine (base surface) → scanner (uses quarantine) → inference firewall (uses scanner) → trajectory table (uses prior). Lattice/bead/beacon remain M/S research or memory and deferred as separate children.
+
+### Historical Per-enhancement breakdown (pre-re-decomp)
 
 ### 1. Mechanical quarantine (Gemini-flagged)
 

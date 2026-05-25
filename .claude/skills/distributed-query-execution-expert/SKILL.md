@@ -1,6 +1,6 @@
 ---
 name: distributed-query-execution-expert
-description: Capability skill ("hat") — SQL-engine narrow for cross-shard / cross-node execution. Covers partitioning schemes (hash, range, list, reference / broadcast), exchange operators (shuffle, broadcast, gather), partition-aware plan shapes, collocated joins, partition-wise aggregation, network-cost modelling, shard-aware routing, and the interaction between distributed execution and Zeta's retraction-native streaming substrate. Wear this when framing a distributed execution design, evaluating a shuffle-vs-broadcast trade-off, or reconciling a distributed-plan claim with retraction-native semantics. Zeta's call: **out of scope today**, but the narrow exists to anchor the vocabulary when distributed support lands. Defers to `sql-engine-expert` for cross-layer calls, to `query-planner` for plan shape, to `execution-model-expert` for engine-type implications, to `algebra-owner` for retraction-native invariants across the shuffle, and to `transaction-manager-expert` for distributed commit.
+description: Distributed SQL execution — partitioning, shuffle/broadcast/gather, collocated joins, partition-wise aggregation, shard routing.
 ---
 
 # Distributed Query Execution Expert — Shuffle + Broadcast

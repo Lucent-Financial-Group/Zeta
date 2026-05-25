@@ -7,8 +7,8 @@ tier: discipline-cleanup
 effort: S
 ask: deepseek-flag-via-aaron-forward
 created: 2026-04-30
-last_updated: 2026-05-02
-depends_on: []
+last_updated: 2026-05-11
+depends_on: [B-0112.1, B-0112.2, B-0112.3]
 trigger: any tick that touches memory/project_laptop_only_source_integration_*.md OR any tick that scopes work into ../scratch / ../SQLSharp / ../no-copy-only-learning-agents-insight integration
 composes_with:
   - feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md
@@ -119,6 +119,17 @@ expert baseline cites it), promote to P1 at that point.
   enhancement-opportunity note)
 - Deepseek 4th review (`docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md` § Deepseek — fourth review)
   — the explicit ask that triggered this row
+
+## Decomposition (re-decomp 2026-05-11 second pass — assume prior split mistake)
+
+B-0112 too broad; prior 3-child split had non-atomic audit. Re-decomposed into 4 smallest dependency-ordered atomic children (TS-preferring where possible per Rule 0):
+
+- B-0112.1: read-only enumeration of bleed sections (in-memory list only)
+- B-0112.1.1: commit audit report to docs/research/ as durable substrate
+- B-0112.2: per-section classification decisions + rationale (no file edits)
+- B-0112.3: execute rewrites + land closing PR
+
+depends_on updated to reflect finer grain; children carry atomic work. Original trigger/acceptance preserved for umbrella.
 
 ## Acceptance
 

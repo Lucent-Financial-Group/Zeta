@@ -50,17 +50,94 @@ conflicts).
 
 ## Shard file schema
 
-Each shard is a single-row Markdown file. Required first line:
+Copy-paste-ready scaffold: see [`../tick-shard-TEMPLATE.md`](../tick-shard-TEMPLATE.md)
+(lives outside this walked directory so it doesn't trip the schema
+validator; carries the path-depth + schema + filename-regex reference
+inline as a comment block).
+
+Each shard's first non-empty line MUST be a 6-column pipe-row
+matching the validator at
+[`tools/hygiene/check-tick-history-shard-schema.ts`](../../../tools/hygiene/check-tick-history-shard-schema.ts):
 
 ```
 | <ISO 8601 UTC timestamp> | <model id> | <cron sentinel> | <body> | <PR ref> | <observation> |
 ```
 
-Same column structure as the legacy single-table format. A
-generator script (follow-up work) collates shards into the
+Same column structure as the legacy single-table format. The ISO
+timestamp's date + hour + minute MUST match the shard's path
+(`YYYY/MM/DD`) and filename. Three filename forms are accepted by
+the validator:
+
+- `HHMMZ` (e.g., `0215Z.md`) — bare per-minute name
+- `HHMMZ-<hex>` (e.g., `0215Z-01.md`) — same-minute disambiguation
+  suffix (see "Naming" below)
+- `HHMMSSZ-<hex>` (e.g., `021501Z-abc.md`) — content-hash form
+  for high-concurrency multi-agent writes
+
+The validator does not enforce seconds equality, so both `HH:MMZ`
+and `HH:MM:SSZ` forms are accepted in the timestamp column.
+
+### Hybrid format (preferred for rich shards)
+
+Per the B-0529 Recommendation (Option 3 "hybrid"), the canonical
+shard shape is **the pipe-row first line followed by an H1-rich
+Markdown body**. The pipe-row gives machine-parseable metadata
+(satisfies the validator + future shard-collation projector); the
+body below carries the substantive content (headline H1,
+sub-sections, prose, links).
+
+```markdown
+| 2026-05-17T00:12Z | opus-4-7 / autonomous-loop | <cron-id> | <body summary> | #3990 | <observation> |
+
+# Tick 2026-05-17 0012Z — <headline>
+
+## Surface
+
+<rich body content here>
+```
+
+The validator only inspects the first non-empty line; the body's
+content is unconstrained markdown. For retrofit of older
+H1-first-only shards, the
+[`tools/hygiene/add-pipe-row-header.ts`](../../../tools/hygiene/add-pipe-row-header.ts)
+tool prepends a placeholder pipe-row above the existing body,
+preserving substantive content while satisfying the validator.
+
+A generator script (follow-up work) collates shards into the
 legacy table on cadence; until that lands, the legacy table is
 the authoritative read surface and shards are the authoritative
 write surface — both are canonical.
+
+### Optional body metadata (B-0308 and related)
+
+The pipe-row remains canonical and MUST be the first non-empty
+line; the validator inspects only that line. Optional structured
+metadata MAY appear inside the H1 body — NOT as file-head YAML
+frontmatter (file-head frontmatter would push `---` to the first
+non-empty line and fail the validator). A common shape is a YAML
+block placed below the pipe-row and H1:
+
+````markdown
+| <ISO 8601 UTC timestamp> | <model id> | <cron sentinel> | <body summary> | <PR ref> | <observation> |
+
+# Tick <YYYY-MM-DD> <HHMMZ> — <headline>
+
+```yaml
+tick: "<ISO 8601 UTC timestamp>"
+agent: otto        # or vera, kenji, etc.
+mode: autonomous   # or interactive
+operative-authorization: "<source> <date>: \"<raw>\""  # B-0308
+```
+
+<rich body content here>
+````
+
+The `operative-authorization` field (B-0308) is populated by
+`bun tools/authorization/check-authorization.ts` at tick start.
+Format: `formatShardField()` output from that tool. If the
+check is not available, use `"none — never-idle default"`.
+These fields are informational; the validator does not inspect
+them and they do not gate any work.
 
 ## Naming
 
@@ -207,6 +284,19 @@ the multi-AI synthesis arc + Aaron's explicit delegation
   — those still apply at the shard-file level.
 - Does NOT introduce a new tick-history schema — same column
   structure as the legacy table, one row per shard.
+
+## Composition with divergence shards
+
+When two concurrent agent loops disagree on a substrate-class commitment,
+a **divergence shard** is written to `docs/hygiene-history/divergences/`
+in addition to (not instead of) the normal tick shard here.
+
+- **Tick shard** (this directory): records what a loop DID.
+- **Divergence shard** (divergences/): records a CONFLICT between two loops.
+
+Both surfaces are canonical write surfaces; neither replaces the other.
+See: `docs/hygiene-history/divergences/README.md` for the divergence shard
+schema and reconciliation protocol (B-0164 AC #4, 2026-05-10).
 
 ## Migration of historical content
 

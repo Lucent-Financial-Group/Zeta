@@ -1,6 +1,6 @@
 ---
 name: kiro-cli added to the agent / CLI roster (Aaron 2026-04-28)
-description: Aaron 2026-04-28 expanded the CLI / harness roster with kiro-cli — a new entry alongside Claude Code, Codex, Cursor, Gemini, Grok. Verify-currency-via-WebSearch per Otto-247 before asserting kiro-cli capabilities; treat the inventory as growing list, not a closed set. Composes with the multi-harness peer-call pattern (`tools/peer-call/{gemini,codex,grok}.sh`) — kiro-cli should get a sibling caller script when the integration matures.
+description: Aaron 2026-04-28 expanded the CLI / harness roster with kiro-cli — a new entry alongside Claude Code, Codex, Cursor, Gemini, Grok. Verify-currency-via-WebSearch per Otto-247 before asserting kiro-cli capabilities; treat the inventory as growing list, not a closed set. Composes with the multi-harness peer-call pattern (`tools/peer-call/{gemini,codex,grok,kiro}.ts`) — kiro.ts already ships as of B-0074.1.
 type: reference
 ---
 
@@ -12,11 +12,10 @@ agent / CLI / harness roster as of 2026-04-28.
 **Why this matters:**
 
 - **Multi-harness pattern.** The factory already has
-  named-agent peer-callers for Gemini, Codex, and Grok
-  (`tools/peer-call/{gemini,codex,grok}.sh` per task
-  #303). kiro-cli is a candidate for the same pattern
-  once integration matures — sibling
-  `tools/peer-call/kiro.sh` if the workflow stabilises.
+  named-agent peer-callers for Gemini, Codex, Grok, and
+  Kiro (`tools/peer-call/{gemini,codex,grok,kiro}.ts` —
+  all Rule-0 TS scripts). `kiro.ts` shipped as part of
+  the peer-call TS migration; no further stub needed.
 - **Cross-CLI verify is load-bearing.** Per Otto-347
   ("would be good to ask another CLI"), having more
   harnesses available means more options for cross-CLI
@@ -51,13 +50,10 @@ training-data cutoff makes default knowledge stale.
 
 ## Composes with
 
-- `tools/peer-call/grok.sh` (existing sibling caller on
-  AceHack main as of 2026-04-28). `tools/peer-call/codex.sh`
-  + `tools/peer-call/gemini.sh` were added via PR #28
-  (merged on AceHack main 2026-04-28T09:04Z) but are not
-  yet rebased into PR #72's branch — verify post-rebase
-  before relying on them. kiro.sh would be a parallel-shape
-  addition.
+- `tools/peer-call/grok.ts`, `codex.ts`, `gemini.ts`,
+  `kiro.ts` — all present; Rule-0 TS migration complete
+  (B-0074.1). `amara.ts`, `ani.ts`, `riven.ts`, `claude.ts`
+  are additional callers in the same directory.
 - Otto-247 version-currency rule (WebSearch before
   asserting CLI versions / capabilities).
 - Otto-347 cross-CLI verify (more harnesses = more

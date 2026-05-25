@@ -33,7 +33,7 @@ Amara caught a real anti-pattern in Otto's autonomous-loop wait-behavior 2026-04
 
 Lands two artifacts:
 - Memory file `feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md` — operational rule for future-Otto
-- Research doc `docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md` — Amara's verbatim catch + Otto's acknowledgment
+- Research doc `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md` — Amara's verbatim catch + Otto's acknowledgment
 
 Plus MEMORY.md index pointer.
 
@@ -209,12 +209,12 @@ Plus MEMORY.md index pointer.
 ### Thread 12 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-t_2M`
-- **Path**: `docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`
+- **Path**: `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-30T11:32:28Z on `docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`:250 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-30T11:32:28Z on `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`:250 (association: NONE)
   This references `B-0108` as an existing backlog row, but `B-0108` doesn’t appear anywhere else in the repo (no matches in `docs/BACKLOG.md` or `docs/backlog/**`). If this is meant to be a durable pointer, consider linking to the actual backlog artifact (or correcting the ID) so the reference is resolvable later.
   
 
@@ -290,7 +290,7 @@ Plus MEMORY.md index pointer.
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`
+- `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`
 - `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
 
 **Message:**
@@ -324,7 +324,7 @@ Tiered cadence:
 When auto-merge is armed: only wake on failure / review change.
 
 Verbatim Amara catch preserved at
-docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md
+memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md
 per Otto-363 channel-verbatim-preservation.
 
 B-0108 (immune system upgrades) remains research-absorb backlog
@@ -332,7 +332,7 @@ only — not analyzed during active lanes.
 
 Files:
 - memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md (new — operational rule)
-- docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md (new — verbatim preservation + Otto's response)
+- memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md (new — verbatim preservation + Otto's response)
 - memory/MEMORY.md (index pointer)
 
 Doc-only.
@@ -344,7 +344,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`
+- `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`
 - `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
 
 **Message:**

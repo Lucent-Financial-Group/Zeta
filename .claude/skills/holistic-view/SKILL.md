@@ -1,6 +1,6 @@
 ---
 name: holistic-view
-description: Capability skill ("hat") — the "think like an architect but without the authority" lens. Any expert wears this when filing a finding to sanity-check whole-system implications before escalating. Codifies the second hat every specialist implicitly wears. No persona; the `architect` synthesises at round-close per GOVERNANCE.md §11 (debt-intentionality invariant); specialist reviewers remain advisory.
+description: "Whole-system sanity lens — cross-cutting implication check before escalation; the second hat every specialist wears without architect authority."
 ---
 
 # Holistic View — Procedure

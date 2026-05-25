@@ -1,6 +1,6 @@
 ---
 name: volcano-iterator-expert
-description: Capability skill ("hat") — engine-type specialization under `execution-model-expert`. Covers the classical Volcano pull-based row-at-a-time execution model (Graefe 1994): the Open / Next / Close operator interface, per-row virtual dispatch, pipeline breaking, blocking vs non-blocking operators, and when Volcano is the right choice despite its well-known per-row overhead. Wear this when framing a DDL path, an admin-query path, or any execution surface where simplicity and dialect-flexibility matter more than raw throughput. Zeta's call: Volcano is the **non-hot-path baseline**, not the main engine. Defers to `vectorised-execution-expert` for batch-at-a-time hot paths, to `execution-model-expert` for cross-model framing, to `query-planner` for plan shape, and to `algebra-owner` for retraction-native semantics.
+description: Volcano/iterator model — open/next/close, pull-based pipeline, blocking operators, bushy/left-deep trees.
 ---
 
 # Volcano Iterator Expert — Classical Pull-Based Model
