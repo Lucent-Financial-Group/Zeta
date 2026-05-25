@@ -42,8 +42,8 @@ send_supervisor_signal
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
 | `@agentic-org/application`     | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
-| `@agentic-org/state`           | in-memory Organization state-store factory fake                                                                                                                       |
-| `@agentic-org/state-cockroach` | CockroachDB state-store/outbox-source contracts, SQL statement catalogs, and first core-state migration skeleton                                                      |
+| `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
+| `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of the state-store/outbox-source ports, backed by CockroachDB                                                            |
 | `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder, outbox publisher, event publisher port, and typed domain resolver                                  |
 | `@agentic-org/messaging-nats`  | NATS JetStream event publisher adapter contract with canonical JSON payloads, headers, and message IDs                                                                |
 | `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection                                                                                                                          |
@@ -99,12 +99,15 @@ Hermes runs, MCP calls, and UI evidence.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
-- State-store ports are async from the beginning so CockroachDB,
-  NATS-backed workers, and other real adapters do not inherit a fake
-  synchronous shape.
+- State-store and outbox-source ports are async from the beginning so
+  durable SQL, NATS-backed workers, and other real adapters do not
+  inherit a fake synchronous shape.
 - A governance test enforces that application code does not import the
   state adapter, Cockroach adapter, NestJS, NATS, Dapr, Temporal,
   Drizzle, or Postgres clients.
+- A governance test enforces that the Cockroach state adapter does not
+  import messaging, NATS, or JetStream. Durable state can be swapped
+  without dragging transport concerns into the repository layer.
 - The outbox publisher claims unpublished events, publishes each event
   through an `EventPublisher` port, and marks rows published only after
   the publish succeeds.
@@ -123,8 +126,9 @@ Hermes runs, MCP calls, and UI evidence.
 
 The next slice should add inbox/consumer dedupe before automation starts
 performing side effects from NATS events. After that, wire the outbox
-publisher into a worker host and add a transactional Cockroach
-integration test once a local/dev Cockroach connection is available.
+publisher into a worker host and add a transactional durable-state
+adapter integration test using CockroachDB as the first cluster-backed
+implementation once a local/dev connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized
