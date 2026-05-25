@@ -20,9 +20,15 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  # ArgoCD v2.13.2 stable manifest. Bump in lockstep with the
-  # `targetRevision` in infra/k8s/applications/root-application.yaml
-  # so ArgoCD's understanding of itself stays consistent.
+  # ArgoCD v2.13.2 stable manifest. To upgrade ArgoCD itself:
+  #   1. Bump the version in this URL.
+  #   2. Verify the manifest still applies cleanly (k8s apply --dry-run).
+  #   3. Commit + push; K3S re-applies on next boot.
+  #
+  # The `targetRevision: main` in
+  # infra/k8s/applications/root-application.yaml controls which Git ref
+  # ArgoCD tracks for cluster reconciliation, NOT which ArgoCD version
+  # is installed. Those two are independent — keep both pinned.
   - https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.2/manifests/install.yaml
 
 # Site-specific patches go here once we know more about the cluster:

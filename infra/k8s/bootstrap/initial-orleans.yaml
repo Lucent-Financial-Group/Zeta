@@ -1,9 +1,7 @@
 # infra/k8s/bootstrap/initial-orleans.yaml
 #
-# Minimal Orleans Silo deployment applied at K3S first-boot so the
-# distributed-chron substrate (per Addison's spec — "Orleans is a
-# distributed chron. I believe Orleans has attention and memory.")
-# is running before ArgoCD takes over.
+# Minimal Orleans Silo skeleton applied at K3S first-boot, before
+# ArgoCD takes over reconciliation.
 #
 # This is the BOOTSTRAP version — sized for a single-control-plane
 # zero-worker initial install. The ArgoCD-managed version lives at

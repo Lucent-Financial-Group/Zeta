@@ -74,7 +74,8 @@
   # ---------------------------------------------------------------------------
   networking.firewall = {
     allowedTCPPorts = [
-      6443   # K3S API server
+      6443   # K3S API server (kubectl + agent kubeconfig)
+      9345   # K3S supervisor/registration (server <-> server + agent join)
       10250  # kubelet
       2379   # etcd client
       2380   # etcd peer

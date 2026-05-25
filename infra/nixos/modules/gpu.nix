@@ -48,7 +48,10 @@
     powerManagement.finegrained = false;
 
     # Open-source kernel modules — works on RTX 20-series and newer.
-    # Set to false for older cards.
+    # Default is false (proprietary modules) for broadest hardware
+    # compatibility, including any cards in the cluster older than
+    # Turing. Per-host override for newer-only nodes:
+    #   hardware.nvidia.open = lib.mkForce true;
     open = lib.mkDefault false;
   };
 

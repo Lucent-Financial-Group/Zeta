@@ -89,7 +89,7 @@ or any future host declared in [`/flake.nix`](../flake.nix) `nixosConfigurations
 5. K3S applies `infra/k8s/applications/root-application.yaml` → App-of-Apps root
 6. ArgoCD reads root Application → discovers child Apps via include glob
 7. ArgoCD reconciles `orleans/`, `gitlab/`, `argoworkflows/`, `argorollouts/` in parallel
-8. **Workers boot** → K3S agents join via `serverAddr = control-plane.zeta.local:6443`
+8. **Workers boot** → K3S agents join via `serverAddr = https://control-plane.zeta.local:6443` (scheme is required; NixOS `services.k3s.serverAddr` accepts only `https://`)
 9. Pods schedule onto workers based on `zeta.io/gpu=nvidia` node labels
 
 After step 9 the cluster is self-managing. Every subsequent change
@@ -121,8 +121,13 @@ commit. ArgoCD reconciles automatically.
 Tokens, passwords, and certs use `sops-nix` or `agenix` (TBD —
 follow-up PR). Until then:
 
-- K3S cluster token: place at `/var/lib/rancher/k3s/server/token`
-  manually post-install
+- **K3S cluster token** must be present at the correct per-role path
+  on every node before K3S starts:
+    - Server nodes: `/var/lib/rancher/k3s/server/token`
+    - Agent nodes:  `/var/lib/rancher/k3s/agent/token`
+  Generate once on the first server (`openssl rand -hex 32`) and
+  distribute the SAME value to all server + agent nodes. K3S refuses
+  to start if the token is missing.
 - GitLab initial root password: create the `gitlab-initial-root-password`
   Secret in the `gitlab` namespace before its Application syncs
 - SSH keys: add to `users.users.zeta.openssh.authorizedKeys.keys`
