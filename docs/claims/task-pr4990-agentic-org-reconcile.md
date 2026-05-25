@@ -20,3 +20,8 @@ The next worker should rebuild the useful agentic-organization delta from
 current `origin/main` in a clean worktree, keep current main artifacts intact,
 and release this claim in the PR that lands the reconcile or with an explicit
 abandon reason.
+
+2026-05-25T23:44Z progress: wholesale replay of the stale branch is not safe.
+Cherry-picking the first post-merge commit (`fa366b2a2`) conflicts with current
+main's newer outbox-claim locking and package test layout. Salvage should land
+as narrow patches on current main instead of merging the stale branch.

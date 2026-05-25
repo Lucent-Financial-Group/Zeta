@@ -21,7 +21,15 @@ describe("outbox publisher", () => {
   test("resolves event domains through typed mappings", () => {
     deepEqual(
       resolveAgenticMessagingDomain(AgenticEventType.SupervisorSignalSent),
-      AgenticMessagingDomain.Work,
+      AgenticMessagingDomain.SupervisorSignal,
+    );
+    deepEqual(
+      resolveAgenticMessagingDomain(AgenticEventType.WorkItemChanged),
+      AgenticMessagingDomain.WorkItem,
+    );
+    deepEqual(
+      resolveAgenticMessagingDomain(AgenticEventType.WorkItemStateChanged),
+      AgenticMessagingDomain.WorkItem,
     );
   });
 
@@ -54,7 +62,7 @@ describe("outbox publisher", () => {
     ]);
     deepEqual(eventPublisher.publications, [
       {
-        subject: "agentic-org.local.org-lfg.work.supervisor_signal.sent",
+        subject: "agentic-org.local.org-lfg.supervisor_signal.supervisor_signal.sent",
         outboxEvent,
       },
     ]);
