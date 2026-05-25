@@ -149,7 +149,7 @@
       # Parallels / Lima / remote builders.
       #
       # Apply with:
-      #   nix run nix-darwin/master#darwin-rebuild -- switch --flake .#zeta-mac
+      #   nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch --flake .#zeta-mac
       darwinConfigurations.zeta-mac = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = { inherit inputs; };
