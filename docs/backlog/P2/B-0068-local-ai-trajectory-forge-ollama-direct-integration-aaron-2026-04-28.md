@@ -188,7 +188,7 @@ deliverable for now.
 
 ## Sub-rows
 
-- [ ] **[B-0329](B-0329-local-ai-forge-cli-harness-integration.md)** Local AI Path 1 - Forge CLI/harness integration
+- [ ] **[B-0742](B-0742-local-ai-forge-cli-harness-integration.md)** Local AI Path 1 - Forge CLI/harness integration
 
 ## Cadence
 
