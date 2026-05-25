@@ -213,26 +213,31 @@ The substrate composes with B-0729 (knowledge graph) + extends it into execution
 ## Acceptance (per stage)
 
 ### Stage 1 acceptance
+
 - [ ] Runme installed on team workstations (Aaron + Max + Addison)
 - [ ] `docs/RUNME-USAGE.md` documents the right-now execution flow with example runbooks
 - [ ] Existing operational scripts inventoried under `tools/bcl/` (Base Command Library)
 
 ### Stage 2 acceptance
+
 - [ ] `docs/CONVENTIONS-DEFERRED-TASKS.md` documents the `:::` syntax vocabulary (`continue-with`, `decompose`, `query`, `jit`, others as needed) + parameters per type
 - [ ] At least one worked-example doc uses the deferred-task syntax
 - [ ] Agents can parse the `:::` blocks + extract structured task data
 
 ### Stage 3 acceptance
+
 - [ ] Verbosity-level renderer exists (Markdown-It plugin OR Obsidian plugin OR build-time TS script)
 - [ ] Same underlying source renders as Level 1 / Level 2 / Level 3 cleanly
 - [ ] Reader's verbosity preference is per-session OR per-document (operator's call)
 
 ### Stage 4 acceptance
+
 - [ ] JIT AI script compiler exists (TS service that takes `intent:` + context, produces shell/TS script)
 - [ ] Compiled scripts run via Runme + integrate with the destructive-tool authoring contract (B-0728) when destructive
 - [ ] Compiled scripts can be promoted to the BCL on operator approval
 
 ### Stage 5 acceptance
+
 - [ ] `::: query` blocks render inline against B-0729 L5 JSON-LD knowledge graph
 - [ ] Live-query results refresh on document-render (or scheduled via Runme)
 - [ ] Closed-loop demo: a doc with `::: continue-with` + `::: query` + `::: runme exec=...` all working together
