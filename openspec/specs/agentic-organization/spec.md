@@ -142,6 +142,29 @@ Organization NATS subjects MUST use a stable organization-scoped shape.
 - **THEN** the subject shape is
   `agentic-org.<environment>.<organization>.<domain>.<event-type>`
 
+### Requirement: Outbox publisher is idempotent and adapter-backed
+
+Organization outbox publication MUST be driven by a generic publisher
+and a concrete event-publisher adapter.
+
+#### Scenario: Outbox event is published
+
+- **WHEN** unpublished outbox events are claimed
+- **THEN** the publisher resolves the typed Organization messaging
+  domain and builds the stable NATS subject
+- **AND** the publisher sends the event through an `EventPublisher` port
+- **AND** the outbox row is marked published only after the publish
+  succeeds
+
+#### Scenario: NATS adapter publishes event
+
+- **WHEN** the NATS JetStream adapter publishes an event publication
+- **THEN** it sends the canonical event envelope as JSON
+- **AND** it uses the event ID as the message ID
+- **AND** it includes typed headers for event ID, event type,
+  correlation ID, causation ID, trace ID, idempotency key, and outbox
+  event ID
+
 ### Requirement: Telemetry is complete at the event boundary
 
 Organization packages MUST expose OpenTelemetry-compatible attributes
