@@ -177,10 +177,12 @@
     man-pages-posix
     tldr
 
-    # Guided install script — wipes both NVMes, partitions per the
-    # 2-NVMe shape, formats, mounts, clones Zeta, and runs
-    # nixos-install. Lives in the installer's PATH as `zeta-install`.
-    # Source lives at full-ai-cluster/usb-nixos-installer/bin/zeta-install
+    # Guided install script — greedy N-disk: enumerates ALL internal
+    # disks (NVMe / SATA SSD / HDD / SAS), sorts by speed class, OS on
+    # the fastest as ESP + root + longhorn1, every other disk becomes
+    # one whole-disk longhorn{2..N}. Single-disk through arbitrary-N
+    # supported. Lives in the installer's PATH as `zeta-install`.
+    # Source lives at full-ai-cluster/usb-nixos-installer/zeta-install.sh
     # in the repo and is baked into the ISO via the writeShellScriptBin
     # below.
     (writeShellScriptBin "zeta-install"
@@ -265,12 +267,13 @@
         - Reboots when install completes
       Total typing: 0 commands (ethernet-DHCP) or 1 nmtui form (wifi).
 
-    MANUAL OVERRIDE (recovery / non-standard shapes):
+    MANUAL OVERRIDE (recovery / debug):
       Switch to tty2 (Ctrl-Alt-F2) to bypass the first-boot service
       and get a normal login. Then:
         nmtui                                 # network if needed
-        zeta-install <host>                   # 2-NVMe guided install
-      Or fully manual (other shapes):
+        zeta-install <host>                   # greedy N-disk guided install
+                                              # (any combo of NVMe/SSD/HDD)
+      Or fully manual (zero-disk machines, advanced layouts):
         lsblk                                 # pick disks
         # partition + mkfs + mount /mnt manually
         nixos-generate-config --root /mnt

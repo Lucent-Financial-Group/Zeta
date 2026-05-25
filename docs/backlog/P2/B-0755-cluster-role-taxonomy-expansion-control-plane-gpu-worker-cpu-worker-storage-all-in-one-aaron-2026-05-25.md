@@ -1,14 +1,16 @@
 ---
 id: B-0755
-title: Cluster role taxonomy expansion — control-plane-gpu, worker-cpu, worker-storage, all-in-one fused host configs
-status: open
 priority: P2
-size: M
+status: open
+title: Cluster role taxonomy expansion — control-plane-gpu, worker-cpu, worker-storage, all-in-one fused host configs
+effort: M
+ask: aaron 2026-05-25
 created: 2026-05-25
-authors: [aaron, otto-cli]
-composes_with: [B-0754]
+last_updated: 2026-05-25
 depends_on: []
-labels: [cluster, nixos, hosts]
+composes_with:
+  - B-0754
+tags: [cluster, nixos, hosts]
 ---
 
 ## Problem

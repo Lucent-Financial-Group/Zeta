@@ -123,13 +123,24 @@ fi
 echo
 echo "[3/3] Running zeta-install $HOST (non-interactive) ..."
 echo
+# Non-interactive env-var trio: bypass every interactive prompt
+# zeta-install would otherwise hit.
+#   BOOT_DISK=auto      → resolves to fastest internal disk (NVMe>SSD>HDD)
+#   ZETA_AUTO_CONFIRM=WIPE → skip the typed-WIPE confirmation
+#   HOST passed as positional arg → skip the host prompt
+# Operator's destructive-install consent is the 10-second role
+# keystroke window above + the device-list display zeta-install
+# prints before wiping (Ctrl-C window). NOT delegated from
+# flash-time; the consent is at boot-time, on-screen, with
+# device-list visible.
 export ZETA_AUTO_CONFIRM=WIPE
+export BOOT_DISK=auto
 export HOST
 export REPO_URL
-# zeta-install handles the rest: NVMe detect → wipe → partition → format
-# → mount → clone → nixos-install. Exits with the OS still booted in the
-# USB live environment; the operator (or this script's continuation) can
-# then reboot to land on the freshly installed node.
+# zeta-install handles the rest: disk enum → wipe → partition →
+# format → mount → clone → nixos-install. Exits with the OS still
+# booted in the USB live environment; this script then reboots so
+# the freshly installed node comes up on its own disk.
 if /run/current-system/sw/bin/zeta-install "$HOST"; then
   echo
   echo "[zeta-first-boot] Install complete. Rebooting in 10s (Ctrl-C to cancel) ..."
