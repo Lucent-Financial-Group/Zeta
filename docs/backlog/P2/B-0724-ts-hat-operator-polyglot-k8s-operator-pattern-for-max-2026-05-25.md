@@ -15,7 +15,7 @@ composes_with:
   - full-ai-cluster/k8s/applications/hat-system/crds/
   - full-ai-cluster/k8s/applications/hat-system/operator/
   - docs/agentic-organization/CLUSTER_NATIVE_HAT_SYSTEM.md
-  - docs/backlog/P2/B-0722-ci-ephemeral-cluster-smoke-via-k3d-on-runner-evolve-to-vcluster-2026-05-25.md
+  # B-0722 ref pending PR #4954 merge
 ---
 
 # B-0724 — TS hat-system operator (second polyglot implementation; proves the polyglot-operator pattern)
@@ -51,7 +51,7 @@ Multiple language implementations of the same operator, all watching the same CR
 ## Why polyglot matters at cluster scope
 
 - **CRD-as-canonical-contract enforcement** — if two operators agree on what `Hat.spec.skills` means, the spec is honest; if only one operator works, the schema has hidden Go-isms
-- **Failure-domain isolation** — Go-runtime bug doesn't take down TS operator and vice versa (per `B-0723` multi-kubelet pattern composition)
+- **Failure-domain isolation** — Go-runtime bug doesn't take down TS operator and vice versa (composes with the multi-kubelet pattern in B-0723 once that row lands; PR #4955)
 - **Talent / contribution flexibility** — Max contributes TS; Aaron contributes Go; future contributors pick their language
 - **Ecosystem coverage** — Rust for perf-critical hot loops; Python for fast iteration; Go for production solidity; TS for full-stack-team alignment
 - **Service mesh + observability validation** — Cilium + NFD + Loki + Hubble must speak to operators regardless of impl language
@@ -77,14 +77,14 @@ Multiple language implementations of the same operator, all watching the same CR
 - [ ] Validating webhook enforces the 7 OPA throttle constraints at admission time (alternative to or composing with Gatekeeper)
 - [ ] Container image builds + deploys via the existing Application.yaml pattern (separate Deployment from the Go operator; leader election ensures only one is active)
 - [ ] Tests written in `vitest` or `jest`; the same envtest-style harness pattern Go uses
-- [ ] Both operators verifiable side-by-side in the dev cluster (per PR #4953 / `dev-cluster/`)
+- [ ] Both operators verifiable side-by-side in a local k3d / kind dev cluster (PR #4953 was the dev-cluster substrate attempt; closed pending redesign — once the redesign lands, verify there)
 
 ## Composition with shipped substrate
 
 - **PR #4930** (hat-system Go operator) — TS operator runs ALONGSIDE; both use the same CRDs at `full-ai-cluster/k8s/applications/hat-system/crds/`. The Go scaffold becomes the reference / reliability baseline; the TS operator is Max's primary surface
 - **PR #4958** (agentic-organization docs) — `CLUSTER_NATIVE_HAT_SYSTEM.md` describes the CRD shape Max envisions; this row makes it concrete
-- **B-0722** (CI ephemeral cluster smoke) — smoke test will eventually assert BOTH operators reconcile the same CRDs identically (polyglot validation gate)
-- **B-0723** (multi-kubelet per machine) — polyglot operators × multi-cluster-per-machine = high redundancy; a bug in Go-operator on cluster-A is isolated from TS-operator on cluster-B
+- **B-0722** (CI ephemeral cluster smoke; PR #4954 pending merge) — smoke test will eventually assert BOTH operators reconcile the same CRDs identically (polyglot validation gate)
+- **B-0723** (multi-kubelet per machine; PR #4955 pending merge) — polyglot operators × multi-cluster-per-machine = high redundancy; a bug in Go-operator on cluster-A is isolated from TS-operator on cluster-B
 
 ## Why P2 not P1
 
@@ -118,7 +118,7 @@ The resistance is usually about ceremony cost; the worth lands when the ceremony
 This row's PRIMARY VALUE for Max is the learning, not the deliverable. The Go scaffold (PR #4930) becomes a TEACHING TOOL:
 
 1. **Read the Go operator first** at `full-ai-cluster/k8s/applications/hat-system/operator/` — every concept (CRD, reconciler, informer, workqueue, leader election, status subresource, finalizer, admission webhook) is named explicitly. The Go file structure mirrors the standard kubebuilder layout the K8s community uses everywhere.
-2. **Run the dev cluster** (per PR #4953 / `dev-cluster/`) and watch the Go operator reconcile — `kubectl get hats`, `kubectl describe hatbinding`, `kubectl get hatswaps`, `kubectl logs -n hat-system deploy/hat-system-operator -f`. See the events stream as state transitions fire. The CRD + operator IS the structured tick source Addison's framework describes.
+2. **Run a local k3d / kind cluster** (the dev-cluster substrate attempt was PR #4953 — closed; redesign pending. Use raw `k3d cluster create` until that lands) and watch the Go operator reconcile — `kubectl get hats`, `kubectl describe hatbinding`, `kubectl get hatswaps`, `kubectl logs -n hat-system deploy/hat-system-operator -f`. See the events stream as state transitions fire. The CRD + operator IS the structured tick source Addison's framework describes.
 3. **THEN mirror the structure in TS**, one piece at a time. Suggested order:
    - (a) Hand-author TS interfaces for the 4 CRDs (mirror `operator/api/v1alpha1/types.go`); compile-only first, no behavior
    - (b) Connect to the K8s API via `@kubernetes/client-node`; just `kubectl get hats`-equivalent listing
@@ -147,7 +147,7 @@ Each step lands as a separate PR. The Go scaffold answers "what does this code D
 For each step (a)-(g) above:
 
 1. Max writes the TS draft
-2. Run it against the dev cluster (`./dev-cluster/up.sh`)
+2. Run it against a local k3d / kind cluster (the dev-cluster `./up.sh` wrapper from PR #4953 was closed; spin up raw `k3d cluster create zeta-dev-test` until the redesign lands)
 3. Compare behavior to the Go operator running the same workload (both can run side-by-side; leader election means only one reconciles at a time, but watch logs from both)
 4. If divergence shows up, the GO behavior is the reference truth (it shipped first + has the framework's review)
 5. Iterate until parity
