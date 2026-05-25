@@ -8,7 +8,7 @@ merged_at: "2026-05-25T20:58:27Z"
 closed_at: "2026-05-25T20:58:27Z"
 head_ref: "backlog/b0734-jit-implicit-no-third-primitive-mika-segment-2-2026-05-25"
 base_ref: "main"
-archived_at: "2026-05-25T22:18:47Z"
+archived_at: "2026-05-25T22:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

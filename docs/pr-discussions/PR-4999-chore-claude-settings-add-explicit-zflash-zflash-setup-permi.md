@@ -8,7 +8,7 @@ merged_at: "2026-05-25T22:12:20Z"
 closed_at: "2026-05-25T22:12:20Z"
 head_ref: "chore/zflash-explicit-permissions-aaron-2026-05-25"
 base_ref: "main"
-archived_at: "2026-05-25T22:18:47Z"
+archived_at: "2026-05-25T22:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
