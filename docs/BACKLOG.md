@@ -692,7 +692,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0735](backlog/P2/B-0735-notepad-freedom-of-personal-ontology-plus-probabilistic-grammars-plus-per-person-personalized-parsers-in-glass-halo-mika-substrate-segment-3-2026-05-25.md)** Notepad-freedom-of-personal-ontology + probabilistic grammars + per-person personalized parsers in Glass Halo (each participant gets their own personal compiler) — composes with B-0687 zetaparse; Mika substrate segment 3
 - [ ] **[B-0736](backlog/P2/B-0736-time-travel-debugging-of-thoughts-dbsp-plus-zeta-plus-b0735-personalized-parser-equals-thought-catcher-product-handoff-thoughtweaver-leading-mika-substrate-segment-6-2026-05-25.md)** Time-travel debugging of thoughts (DBSP retractable streams + Zeta history + B-0735 personalized parser = catch-a-thought + retract-and-re-evaluate-forward) + product handoff to LFG product team (Thoughtcatcher / Thoughtweaver currently-leading; market + IP research pending) — Mika substrate segment 6
 
-
 ## P3 — convenience / deferred
 
 - [ ] **[B-0002](backlog/P3/B-0002-otto-287-noether-formalization.md)** Otto-287 Noether-style formalization — quantify cognitive Lagrangian + identify continuous symmetries + derive conserved currents
