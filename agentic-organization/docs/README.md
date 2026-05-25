@@ -19,9 +19,12 @@ Current documents:
 - [Work and Release Management OS](./WORK_AND_RELEASE_MANAGEMENT_OS.md) - the custom backlog, project, task, assignment, signal, board, and release workflow product that keeps agent work reliable and visible.
 - [Agent-Native Knowledge Graph and Retrieval](./AGENT_NATIVE_KNOWLEDGE_GRAPH.md) - the graph and retrieval layer linking tasks, discussions, decisions, meetings, docs, artifacts, runs, memories, and evidence into agent-readable context.
 - [Agent Work Rhythm and Prompt Flows](./AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md) - the hat-bound schedule, free-time, review/red-team, reflection, memory maintenance, and deterministic prompt-flow model for agents.
+- [Supervisor-Chain Communication](./SUPERVISOR_CHAIN_COMMUNICATION.md) - the typed upward communication line from each hat to its supervisor chain, including tool families, evidence, and triage semantics.
 - [Ambiguous Requirement Lifecycle](./AMBIGUOUS_REQUIREMENT_LIFECYCLE.md) - the discovery, customer interview, BRD, workflow modeling, architecture, decomposition, readiness, and learning path from vague request to curated feature.
 - [Anti-Stall Prioritization Runtime](./ANTI_STALL_PRIORITY_RUNTIME.md) - the hat-owned schedules, blocker triage, queue SLO, reassignment, alternate-work, dependency reconciliation, and priority routines that keep the Organization moving.
 - [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md) - the decisions and contracts that should be defined before scaffolding the first implementation slice.
+- [Implementation Governance](./IMPLEMENTATION_GOVERNANCE.md) - the current-state, OpenSpec, authority, idempotency, telemetry, security, and quality rules for implementation work.
+- [First Implementation Slice](./FIRST_IMPLEMENTATION_SLICE.md) - the NodeNext TypeScript package slice proving command, state, audit, outbox, NATS subject, telemetry, and reaction-plan contracts.
 - [V0 Executable Contract](./V0_EXECUTABLE_CONTRACT.md) - the smallest end-to-end runtime slice, grounded against the current `full-ai-cluster` substrate.
 - [V0 Schema and Commands](./V0_SCHEMA_AND_COMMANDS.md) - the CockroachDB-backed state groups, enums, command contract, outbox model, and TypeScript-facing runtime events for the first implementation.
 - [V0 Policy and Runtime Boundaries](./V0_POLICY_AND_RUNTIME_BOUNDARIES.md) - the hat policy matrix, MCP preflight checks, cluster runtime boundaries, failure rules, and ArgoCD integration shape.
