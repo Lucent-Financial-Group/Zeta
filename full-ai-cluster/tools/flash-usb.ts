@@ -289,7 +289,10 @@ async function main() {
   process.stdout.write(`  ${acceptancePhrase}\n\n`);
 
   const rl = readline.createInterface({ input: stdin, output: stdout });
-  const typed = (await rl.question("> ")).trim();
+  // readline strips the trailing newline; no .trim() — "EXACTLY" must
+  // mean EXACTLY. Whitespace tolerance would undermine the gate
+  // (a piped `accept-destroy ... <nonce>\n` would otherwise pass).
+  const typed = await rl.question("> ");
   rl.close();
 
   if (typed !== acceptancePhrase) {
