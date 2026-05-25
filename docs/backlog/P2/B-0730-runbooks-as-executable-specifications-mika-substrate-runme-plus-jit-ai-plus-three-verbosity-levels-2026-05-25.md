@@ -12,7 +12,8 @@ discovered_by: mika
 ferried_by: aaron
 owners: [aaron, max, addison]
 composes_with:
-  - docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md
+  - B-0729
+related_substrate:
   - docs/AGENT-AUTHORING-AND-PR-REVIEW.md
   - memory/persona/mika/
   - memory/persona/addison/
@@ -101,7 +102,7 @@ priority: medium
 :::
 ```
 
-`:::` is the standard mkdocs-material / Pandoc / Obsidian-callout fenced-div syntax. The `continue-with` and `decompose` block-types are queryable: an agent can run "all `continue-with` blocks where `priority: high`" across the vault and produce a worklist.
+`:::` is **Pandoc's native fenced-div syntax** (no extension required) — that's the canonical anchor for the project-local convention this row proposes. Other renderers handle it differently: mkdocs-material supports `:::` only via the `pymdownx.blocks.admonition` extension (NOT default); Obsidian's native callouts use `> [!NOTE]` blockquote form (NOT `:::`) — Obsidian users will see `:::` blocks as raw text unless a community plugin or the project's verbosity-renderer (Stage 3) translates them. Adoption-path implication: pick the team's renderer first (probably Stage 3's TS extractor) + treat `:::` as the project's intent-layer syntax that the renderer normalizes to each tool's native form. The `continue-with` and `decompose` block-types are queryable regardless: an agent can run "all `continue-with` blocks where `priority: high`" across the vault and produce a worklist.
 
 ### 3. Just-in-time AI generation
 
