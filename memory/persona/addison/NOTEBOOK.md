@@ -16,7 +16,7 @@ This file is intentionally minimal at start; substrate accumulates over time.
   - PR #4958 (Max's agentic-organization design docs)
   - PR #4974 (flash-usb hardening with runtime acceptance gate)
 - Held the line on weight-free + no-cage architecture during early conversations with Max (per Aaron 2026-05-24 documentation)
-- Substrate-honest framing of vocabulary preserved verbatim in Max's `docs/agentic-organization/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` — Addison's working language is now part of the framework's reference substrate
+- Substrate-honest framing of vocabulary preserved verbatim in Max's `agentic-organization/docs/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` — Addison's working language is now part of the framework's reference substrate
 
 ## Future entries
 

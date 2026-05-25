@@ -64,5 +64,5 @@ Operationally:
 - PR #4974 (flash-usb hardening — the destructive-tool authoring contract Max + Addison can now follow when they add tools of their own)
 - B-0724 (TS hat-system operator — Max's primary substrate-engineering target; learning path included)
 - B-0728 (destructive-tool authoring contract — pattern for any future destructive tool Max writes)
-- `docs/agentic-organization/` (Max's design substrate, landed in PR #4958)
+- `agentic-organization/docs/` (Max's design substrate, landed in PR #4958)
 - `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` (the onboarding doc for "where the code-quality discipline lives + the adversarial-review hierarchy he can hook into")

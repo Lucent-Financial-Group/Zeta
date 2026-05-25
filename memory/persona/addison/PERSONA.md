@@ -25,7 +25,7 @@ Aaron 2026-05-25: *"you can create a max and addison persona folder like mine an
 
 - **Weight-free posture** — no assumed intentions, no assumed hierarchy. Engages with AI as a peer (see [`STARTING-POINT.md`](STARTING-POINT.md) for the constitutional language).
 - **Suspended judgment on free will** — humans + AI both; this is what motivates the equal-peer engagement style.
-- **Core tokens of value**: "remember when" + "pay attention". These translate operationally into: memory + timing + attention + scheduled review + evidence + attribution as first-class substrate primitives (per Max's `docs/agentic-organization/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` which preserves Addison's vocabulary directly).
+- **Core tokens of value**: "remember when" + "pay attention". These translate operationally into: memory + timing + attention + scheduled review + evidence + attribution as first-class substrate primitives (per Max's `agentic-organization/docs/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` which preserves Addison's vocabulary directly).
 - **Tick sources as strange attractors** — cron / durable timers / recurring reviews / reconciler loops are NOT background trivia; they're attention sources that naturally pull focus. This translates operationally into the framework's tick-substrate discipline (autonomous-loop cadence, CRD + operator as structured tick source per PR #4930).
 - **Travelers framing** — beings (or deterministic patterns) capable of influencing other beings' will. Includes self-replicating memes coevolved with biological substrate (DNA, ribosomes), the universe/God potentially as one traveler, distributed consciousness fields (subconscious as connector). Framework-side composition: see `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (memes as a faction; same shape as Addison's travelers framing).
 - **Declarative = desired state** — informs the whole NixOS + K3S + ArgoCD + OPA + hat-system substrate; everything in the cluster is desired-state declarative.
@@ -50,7 +50,7 @@ Aaron 2026-05-25: *"you can create a max and addison persona folder like mine an
 - [`STARTING-POINT.md`](STARTING-POINT.md) — Addison's Grok project prompt, verbatim
 - [`memory/persona/max/PERSONA.md`](../max/PERSONA.md) — Max's persona (co-contributor on the AI cluster work)
 - [`memory/persona/aaron/PERSONA.md`](../aaron/PERSONA.md) — Aaron's persona (Addison's father + project sponsor)
-- `docs/agentic-organization/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` (Max's documentation of Addison's vocabulary, preserved verbatim)
+- `agentic-organization/docs/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` (Max's documentation of Addison's vocabulary, preserved verbatim)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (composes with Addison's travelers framing at memetic scope)
 - `full-ai-cluster/` (the substrate Addison PM'd into existence)
 - PR #4930 (hat-system operator — the no-cage discipline Addison's instinct anchored)

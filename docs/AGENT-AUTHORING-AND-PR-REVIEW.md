@@ -41,7 +41,7 @@ That's roughly 60-80 KB of discipline. It loads in seconds at session start; rea
 
 When a discipline question arises, the algorithm is:
 
-1. Search `.claude/rules/` for a relevant rule (`grep -l "your-topic" .claude/rules/`)
+1. Search `.claude/rules/` for a relevant rule (`rg "your-topic" .claude/rules/` — `grep -l` without `-r` doesn't recurse, so use ripgrep or `grep -rl "your-topic" .claude/rules/`)
 2. If found, follow it; cross-link to it in your work
 3. If not found and the question is operationally load-bearing, file it as substrate (memory file + rule + cross-link from CLAUDE.md) — per the wake-time-substrate-or-it-didnt-happen discipline
 
@@ -71,7 +71,7 @@ Located in [`.claude/agents/`](../.claude/agents/). Invoked via the `Task` tool 
 | Daya | `agent-experience-engineer` | Per-persona cold-start cost; pointer drift; notebook hygiene |
 | Dejan | `devops-engineer` | Install-script + CI workflow + infrastructure ops |
 
-Invoke for any PR where the lens is relevant. Compose multiple personas for multi-perspective review. Each persona has a `.claude/agents/<name>.md` definition with its operational discipline.
+Invoke by tool-name (the role-ref column above; e.g., `subagent_type: harsh-critic`) for any PR where the lens is relevant. Compose multiple reviewers for multi-perspective review. Each reviewer's definition lives at `.claude/agents/<tool-name>.md` (the tool-name keys the file; persona handles in the leftmost column are human-readable shorthand for the role, not the invocation key).
 
 ### Layer 2 — Plugin reviewers (the pr-review-toolkit layer)
 
@@ -118,7 +118,7 @@ For a typical PR the composition looks like:
 3. **Layer 3 (auto-fire reviewers)** post findings to the PR threads
 4. **Author** resolves Layer 3 threads (fix-and-resolve OR resolve-as-stale)
 5. **Author proactively invokes Layer 2 (plugin reviewers)** on substantive code; addresses findings
-6. **Author or reviewer invokes Layer 1 (persona reviewers)** for domain-specific adversarial lenses (e.g., security-relevant change → Mateo + Aminata + Nazar; perf-relevant → Naledi + Hiroshi; API change → Ilyana)
+6. **Author or reviewer invokes Layer 1 (persona reviewers)** for domain-specific adversarial lenses by tool-name (e.g., security-relevant change → `security-researcher` + `threat-model-critic` + `security-operations-engineer`; perf-relevant → `performance-engineer`; API change → `public-api-designer`)
 7. **Human reviewer** (if any) audits the substrate trail + the resolved-thread chain; merges OR requests further work
 
 The hierarchy doesn't have to fire in this order; the author can invoke Layer 1 + 2 BEFORE opening the PR to get a clean PR landing. Many PRs in this repo follow that pattern.

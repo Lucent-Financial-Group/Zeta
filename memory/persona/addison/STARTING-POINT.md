@@ -2,7 +2,7 @@
 
 This is Addison's substrate-honest starting point, preserved verbatim from the Grok project prompt she assembled while PM'ing the AI cluster bootstrap design in May 2026. It captures the operational context she wants AI collaborators (including Otto, Claude, Grok, and any future agent she works with) to inherit at cold-boot.
 
-Format-preserving, no editorial — substrate-or-it-didn't-happen.
+The prompt block below (between the two `---` separators) is verbatim — format-preserving, no editorial. The cross-references AFTER the prompt block are added at preservation time + explicitly separated from the verbatim content, so future readers can see what came from Addison versus what was added later for navigation.
 
 ---
 
@@ -72,7 +72,7 @@ The framework substrate that operationalizes Addison's vocabulary + design:
 
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — memes-as-travelers composition
 - `.claude/rules/non-coercion-invariant.md` — weight-free posture at NCI scope (no peer coerces another)
-- `docs/agentic-organization/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` (Max's documentation that preserves this vocabulary verbatim for downstream readers)
+- `agentic-organization/docs/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` (Max's documentation that preserves this vocabulary verbatim for downstream readers)
 - `full-ai-cluster/` — the cluster Addison's plan describes; substrate landed across 2026-05-23 → 2026-05-25 via PR #4930 (hat-system), PR #4950 (disko cookie-cutter), PR #4951 (NFD + lstopo + zeta-install), PR #4953 (dev-cluster + sync-waves), PR #4958 (Max's agentic-organization docs)
 - PR #4965 + #4966 (Reticulum throughout + federated peer mesh — extends Addison's "AI network/community" framing into protocol substrate)
 - Bootstrap order item #7 ("Install ArgoCD using ArgoCD") landed as the ArgoCD self-management Application in PR #4953

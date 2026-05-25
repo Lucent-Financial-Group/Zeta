@@ -36,19 +36,19 @@ These are Max's own framings; the framework adopts them where they're sharper th
 
 Max's primary contribution is the agentic-organization design landed in PR #4958 + the associated docs:
 
-- `docs/agentic-organization/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` — Addison's vocabulary preserved verbatim (the substrate-honest reference for how Addison thinks)
-- `docs/agentic-organization/IMPLEMENTATION_CONCEPTS.md` — how to build the architecture as services, data models, MCP tools, workflows, runtime infra
-- `docs/agentic-organization/ALWAYS_ON_ORCHESTRATION_RUNTIME.md` — workers, triggers, rules, leases, schedulers, watchers, reconcilers, SLOs, incidents, runbooks, self-healing loops
-- `docs/agentic-organization/RUNTIME_TECH_AND_PACKAGE_STRATEGY.md` — Temporal TS, Dapr Actors, NATS, Oz/Warp, OpenZiti, Hermes, Hindsight, reusable `agentic-services` primitives
-- `docs/agentic-organization/UI_AND_OBSERVABILITY_CONCEPTS.md` — human-facing visualization
-- `docs/agentic-organization/DEPARTMENT_HAT_TOOL_INVENTORY.md` — starter departments + hat catalog + tool bundles + approval gates + high-risk guardrails
-- `docs/agentic-organization/ORGANIZATION_LAYER_BUILD_PLAN.md` — service layer, role workspaces, automation loops, state model, UI surfaces, MVP sequence
-- `docs/agentic-organization/WORK_AND_RELEASE_MANAGEMENT_OS.md` — custom backlog, project, task, signal, board, release workflow
-- `docs/agentic-organization/AMBIGUOUS_REQUIREMENT_LIFECYCLE.md` — discovery → BRD → workflow modeling → architecture → decomposition → readiness → learning
-- `docs/agentic-organization/ANTI_STALL_PRIORITY_RUNTIME.md` — hat-owned schedules + blocker triage + queue SLO + reassignment + alternate-work + dependency reconciliation
-- `docs/agentic-organization/CLUSTER_NATIVE_HAT_SYSTEM.md` — theoretical CRD + OPA + hat-binding + succession + reputation + graph rendering substrate (composes with the shipped operator from PR #4930)
-- `docs/agentic-organization/CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md` — k3s + sandboxed Hermes container + Cilium Service Mesh + SPIRE + Vault + Credential Proxy + NATS + Hindsight + runtime observability
-- `docs/agentic-organization/AI_CLUSTER_SCAFFOLD_CONTEXT.md` — two-directory NixOS/k3s/ArgoCD scaffold assumptions
+- `agentic-organization/docs/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` — Addison's vocabulary preserved verbatim (the substrate-honest reference for how Addison thinks)
+- `agentic-organization/docs/IMPLEMENTATION_CONCEPTS.md` — how to build the architecture as services, data models, MCP tools, workflows, runtime infra
+- `agentic-organization/docs/ALWAYS_ON_ORCHESTRATION_RUNTIME.md` — workers, triggers, rules, leases, schedulers, watchers, reconcilers, SLOs, incidents, runbooks, self-healing loops
+- `agentic-organization/docs/RUNTIME_TECH_AND_PACKAGE_STRATEGY.md` — Temporal TS, Dapr Actors, NATS, Oz/Warp, OpenZiti, Hermes, Hindsight, reusable `agentic-services` primitives
+- `agentic-organization/docs/UI_AND_OBSERVABILITY_CONCEPTS.md` — human-facing visualization
+- `agentic-organization/docs/DEPARTMENT_HAT_TOOL_INVENTORY.md` — starter departments + hat catalog + tool bundles + approval gates + high-risk guardrails
+- `agentic-organization/docs/ORGANIZATION_LAYER_BUILD_PLAN.md` — service layer, role workspaces, automation loops, state model, UI surfaces, MVP sequence
+- `agentic-organization/docs/WORK_AND_RELEASE_MANAGEMENT_OS.md` — custom backlog, project, task, signal, board, release workflow
+- `agentic-organization/docs/AMBIGUOUS_REQUIREMENT_LIFECYCLE.md` — discovery → BRD → workflow modeling → architecture → decomposition → readiness → learning
+- `agentic-organization/docs/ANTI_STALL_PRIORITY_RUNTIME.md` — hat-owned schedules + blocker triage + queue SLO + reassignment + alternate-work + dependency reconciliation
+- `agentic-organization/docs/CLUSTER_NATIVE_HAT_SYSTEM.md` — theoretical CRD + OPA + hat-binding + succession + reputation + graph rendering substrate (composes with the shipped operator from PR #4930)
+- `agentic-organization/docs/CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md` — k3s + sandboxed Hermes container + Cilium Service Mesh + SPIRE + Vault + Credential Proxy + NATS + Hindsight + runtime observability
+- `agentic-organization/docs/AI_CLUSTER_SCAFFOLD_CONTEXT.md` — two-directory NixOS/k3s/ArgoCD scaffold assumptions
 
 The whole substrate is on main; Max is heads-down implementing as of 2026-05-25.
 
