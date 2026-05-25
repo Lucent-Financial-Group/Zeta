@@ -96,8 +96,7 @@ zflash auto-discovers the newest `~/Downloads/zeta-installer-*.iso`
 rails, prints a per-run nonce, waits for `yes <4-hex>` consent token,
 then unmounts + `sudo dd` triggers Touch ID PAM prompt + flashes.
 
-**Operator effort**: ~5 chars (`zflash`) + ~8 chars (`yes <4-hex>`)
-+ 1 fingerprint on the trackpad.
+**Operator effort**: ~5 chars (`zflash`) plus ~8 chars (`yes <4-hex>`) plus 1 fingerprint on the trackpad.
 
 ### Step 5 — Verify + boot
 
