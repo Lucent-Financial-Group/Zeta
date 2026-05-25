@@ -30,7 +30,7 @@ What it does:
 - Installs the `nix-darwin` module system on this Mac
 - Applies [`configuration.nix`](configuration.nix) which:
   - Enables `nix-command` + flakes globally
-  - Trusts the wheel/admin group for Nix operations
+  - Trusts the `admin` group (macOS) for Nix operations via `trusted-users = @admin`
   - Configures the public Nix caches (cache.nixos.org, nix-community)
   - Enables `nix.linux-builder` with the aarch64-linux VM
   - Registers `x86_64-linux` as an `extra-platforms` (Rosetta-backed)

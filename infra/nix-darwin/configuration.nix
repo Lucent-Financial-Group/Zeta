@@ -14,8 +14,8 @@
 #     --flake /path/to/Zeta#zeta-mac
 #
 # After the first switch, `nix build .#installer-iso` from the Zeta
-# repo root builds the x86_64-linux ISO via the Apple Virtualization
-# .framework + Rosetta 2 — no Parallels, no Lima, no remote builder.
+# repo root builds the x86_64-linux ISO via Apple Virtualization.framework
+# + Rosetta 2 — no Parallels, no Lima, no remote builder.
 
 { config, pkgs, lib, ... }:
 
@@ -25,8 +25,10 @@
   # ---------------------------------------------------------------------------
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
-    # The wheel group (admin users on macOS) can use trusted nix
-    # operations without sudo. Linux-builder dispatches need this.
+    # The `admin` group on macOS (every Mac admin user is a member by
+    # default) can use trusted nix operations without sudo. The
+    # `@admin` syntax is nix.settings.trusted-users group-member
+    # reference. Linux-builder dispatches need this.
     trusted-users = [ "@admin" ];
     substituters = [
       "https://cache.nixos.org"

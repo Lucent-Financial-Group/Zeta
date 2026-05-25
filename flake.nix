@@ -55,24 +55,28 @@
       # System architectures the flake supports.
       #   x86_64-linux  — primary cluster target (control-plane, workers)
       #   aarch64-linux — ARM cluster hosts (future); devShell only
-      #   aarch64-darwin / x86_64-darwin — maintainer Macs; build the
-      #     installer ISO via nix-darwin's linux-builder (Apple
-      #     Virtualization.framework + Rosetta 2)
+      #   aarch64-darwin — Apple Silicon maintainer Macs; build the
+      #     installer ISO via nix-darwin's linux-builder
+      #     (Apple Virtualization.framework + Rosetta 2 for Linux
+      #     x86_64 emulation inside the VM).
+      #
+      # x86_64-darwin (Intel Macs) intentionally excluded: Rosetta 2 is
+      # Apple-Silicon-only, and we don't ship a darwinConfiguration for
+      # Intel Macs. Maintainers on Intel Macs use the CI workflow
+      # (.github/workflows/build-installer-iso.yml) to build the ISO.
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
         "aarch64-darwin"
-        "x86_64-darwin"
       ];
 
-      # Systems that can produce the installer-iso package. Linux
-      # systems build it natively; Darwin systems dispatch through
-      # the nix-darwin linux-builder VM (configured at
-      # infra/nix-darwin/configuration.nix).
+      # Systems that can produce the installer-iso package.
+      #   x86_64-linux   — native build (CI runners, Linux maintainers)
+      #   aarch64-darwin — dispatched via nix-darwin linux-builder VM
+      #                    (configured at infra/nix-darwin/configuration.nix)
       isoBuildSystems = [
         "x86_64-linux"
         "aarch64-darwin"
-        "x86_64-darwin"
       ];
 
       # Helper that wires up a NixOS system with shared specialArgs so
