@@ -58,6 +58,7 @@ When the bare-metal cluster comes up and is reachable from CI:
 - Same `cluster-smoke.sh` runs against vcluster's kubeconfig — no other code changes
 
 References for the Phase 2 design:
+
 - **vcluster (Loft)** — https://www.vcluster.com/ — virtual K8s clusters as pods
 - **Cluster API (CAPI)** — https://cluster-api.sigs.k8s.io/ — declarative cluster management via CRDs
 - **Kamaji** / **k0smotron** — managed control planes inside a host cluster (lighter alternatives to CAPI)
@@ -67,6 +68,7 @@ References for the Phase 2 design:
 The dev-cluster substrate (PR #4953) already lets a maintainer manually run `./up.sh feat/my-branch` to test a PR locally. Automating that in CI is a clear win but not blocking — substrate exists for manual dev-test today, and the prod cluster doesn't exist yet so there's no urgent "block bad changes from reaching prod" pressure.
 
 Becomes P1 when:
+
 - Prod cluster bootstrap completes (bare-metal install finished)
 - Multiple maintainers / agents are landing AI-cluster PRs in parallel (manual dev-test stops scaling)
 
