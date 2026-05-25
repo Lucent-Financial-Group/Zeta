@@ -25,8 +25,12 @@
       "nvidia-docker"
       "nvidia-container-toolkit"
     ]
-    # CUDA toolchain — `cuda_*` covers cuda_cudart, cuda_nvcc, cuda_cuobjdump,
-    # cuda_nvprune, cuda_cccl, cuda_nvtx, cuda_profiler_api, etc.
+    # CUDA toolchain — `cuda`-prefixed packages: covers cuda_cudart,
+    # cuda_nvcc, cuda_cuobjdump, cuda_nvprune, cuda_cccl, cuda_nvtx,
+    # cuda_profiler_api, AND the underscore-less variants like
+    # cudatoolkit + cudaPackages.* aliases. The predicate is
+    # intentionally broader than the underscore-only set because
+    # nixpkgs uses both spellings depending on the package generation.
     || lib.hasPrefix "cuda" name
     # CUDA support libraries — libcublas, libcurand, libcusolver, libcusparse,
     # libcufft, libcudnn, libnpp, libnvjpeg, libnvjitlink, ...

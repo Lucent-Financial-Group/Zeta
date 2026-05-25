@@ -97,14 +97,21 @@ jobs:
         id: iso
         run: |
           set -euo pipefail
-          # Deterministic single-match: -print -quit returns at most one path
-          # and exits immediately. find ... | head -1 races on multi-match
-          # and silently picks whichever line printed first.
-          iso_path=$(find result/iso -name 'zeta-installer-*.iso' -print -quit)
-          if [[ -z "${iso_path}" || ! -e "${iso_path}" ]]; then
+          # Enforce single match. Multiple matches would be a substrate
+          # surprise (build layout changed?) and silently picking one
+          # is worse than failing loudly.
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            ls -la result/iso/ >&2 || true
             exit 1
           fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_path="${iso_candidates[0]}"
           iso_name=$(basename "$iso_path")
           iso_size=$(stat -c%s "$iso_path" | numfmt --to=iec --suffix=B)
           iso_sha256=$(sha256sum "$iso_path" | awk '{print $1}')
@@ -185,12 +192,21 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           set -euo pipefail
-          # Deterministic single-match (same pattern as build job).
-          iso_path=$(find result/iso -name 'zeta-installer-*.iso' -print -quit)
-          if [[ -z "${iso_path}" || ! -e "${iso_path}" ]]; then
+          # Enforce single match — release assets are publicly downloaded
+          # and silently picking one when multiple exist would be worse
+          # than failing loudly.
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            ls -la result/iso/ >&2 || true
             exit 1
           fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Multiple installer ISOs under result/iso/; refusing to upload an arbitrary one to release ${RELEASE_TAG}:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_path="${iso_candidates[0]}"
           # iso_path resolves into /nix/store/... via the result/ symlink,
           # which is read-only. Write the .sha256 sidecar to RUNNER_TEMP
           # (writable) so the upload step doesn't EROFS.
