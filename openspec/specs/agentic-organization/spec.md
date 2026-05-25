@@ -37,6 +37,16 @@ Organization state only by calling Organization commands.
   and idempotency records together
 - **AND** the adapter does not mutate authoritative state directly
 
+#### Scenario: Command pipeline is composed from ports
+
+- **WHEN** a runtime host creates a command pipeline
+- **THEN** it supplies a command-state-store factory and command-handler
+  registry through ports
+- **AND** the pipeline does not construct a concrete in-memory store
+  directly
+- **AND** the pipeline does not use a central command-type switch for
+  extensible command dispatch
+
 ### Requirement: Commands are idempotent
 
 Organization commands MUST use deterministic idempotency keys at the

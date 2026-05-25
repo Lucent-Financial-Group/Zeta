@@ -1,1 +1,5 @@
-export { createInMemoryOrganizationStore, type InMemoryOrganizationStore } from "./in-memory-organization-store.ts";
+export {
+  createInMemoryOrganizationStoreFactory,
+  type InMemoryOrganizationStoreFactory,
+  type InMemoryOrganizationStoreSnapshot,
+} from "./in-memory-organization-store.ts";

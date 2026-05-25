@@ -74,6 +74,7 @@ None of those cluster runtimes should become a parallel business model.
 Runtime host
   API controller / worker / MCP handler / Temporal activity / Dapr actor
     -> application command service
+      -> command handler registry
       -> policy check
       -> domain state transition
       -> CockroachDB transaction
@@ -129,11 +130,11 @@ legal transitions. It does not execute side effects.
 
 ### Layer 1: Application and Policy
 
-| Package                      | Owns                                                                                     |
-| ---------------------------- | ---------------------------------------------------------------------------------------- |
-| `@agentic-org/application`   | command handlers, use cases, transaction orchestration, ports, command result contracts  |
-| `@agentic-org/policy`        | RBAC, hat authority checks, OPA/Rego adapter boundary, policy decisions, denial reasons  |
-| `@agentic-org/observability` | correlation envelope, OpenTelemetry helpers, required span attributes, trace propagation |
+| Package                      | Owns                                                                                                      |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `@agentic-org/application`   | command handlers, handler registry, use cases, transaction orchestration, ports, command result contracts |
+| `@agentic-org/policy`        | RBAC, hat authority checks, OPA/Rego adapter boundary, policy decisions, denial reasons                   |
+| `@agentic-org/observability` | correlation envelope, OpenTelemetry helpers, required span attributes, trace propagation                  |
 
 The application layer is the Organization OS command layer. It is where
 the runtime asks the Organization to do something.
@@ -230,6 +231,12 @@ HatSystemPort -> KubernetesHatSystemAdapter or ReadOnlyFakeHatSystemAdapter
 ```
 
 Business services should depend on ports, not concrete adapters.
+
+The command pipeline must also depend on a handler registry and a
+state-store factory supplied by the composition layer. It must not
+instantiate the in-memory store or branch on every command type. New
+commands should register a handler; new persistence backends should
+implement the same store-factory port.
 
 ## SOLID Rules
 

@@ -2,8 +2,11 @@ import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { CommandType, SupervisorChainLevel, SupervisorSignalToolType } from "../../domain/src/index.ts";
-import { CommandErrorCode, CommandResultStatus } from "./command-result.ts";
+import { createInMemoryOrganizationStoreFactory } from "../../state/src/index.ts";
+import { createCommandHandlerRegistry } from "./command-handler-registry.ts";
+import { CommandErrorCode, CommandResultStatus, type CommandResult } from "./command-result.ts";
 import { createCommandPipeline, type PipelineCommand } from "./command-pipeline.ts";
+import { createSendSupervisorSignalHandler } from "./handlers/send-supervisor-signal.ts";
 
 const command: PipelineCommand = {
   commandId: "cmd-supervisor-signal-001",
@@ -31,7 +34,10 @@ const command: PipelineCommand = {
 
 describe("command pipeline idempotency", () => {
   test("replaying the same idempotency key returns the stored result", () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
     const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
     });
@@ -47,14 +53,17 @@ describe("command pipeline idempotency", () => {
     equal(firstResult.supervisorSignal !== undefined, true);
     equal(replayResult.supervisorSignal !== undefined, true);
     equal(replayResult.supervisorSignal?.supervisorSignalId, firstResult.supervisorSignal?.supervisorSignalId);
-    equal(pipeline.store.supervisorSignals.length, 1);
-    equal(pipeline.store.workItems.length, 0);
-    equal(pipeline.store.auditEvents.length, 1);
-    equal(pipeline.store.outboxEvents.length, 1);
+    equal(stateStoreFactory.snapshot.supervisorSignals.length, 1);
+    equal(stateStoreFactory.snapshot.workItems.length, 0);
+    equal(stateStoreFactory.snapshot.auditEvents.length, 1);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
   });
 
   test("rejects conflicting reuse of the same idempotency key", () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
     const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
     });
@@ -69,7 +78,7 @@ describe("command pipeline idempotency", () => {
     equal(firstResult.status, CommandResultStatus.Accepted);
     equal(conflictResult.status, CommandResultStatus.Rejected);
     equal(conflictResult.error?.code, CommandErrorCode.IdempotencyConflict);
-    equal(pipeline.store.supervisorSignals.length, 1);
-    equal(pipeline.store.outboxEvents.length, 1);
+    equal(stateStoreFactory.snapshot.supervisorSignals.length, 1);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
   });
 });

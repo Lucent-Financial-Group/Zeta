@@ -7,14 +7,14 @@ worker, Dapr actor host, or Kubernetes deployment is introduced.
 
 ## Package Boundary
 
-| Package         | Current responsibility                                                                                     |
-| --------------- | ---------------------------------------------------------------------------------------------------------- |
-| `domain`        | typed command names, event names, aggregate names, work item state machine, event envelope, shared records |
-| `application`   | command pipeline, idempotency handling, first supervisor-chain signal command handler                      |
-| `state`         | in-memory Organization store used as the first repository port fake                                        |
-| `messaging`     | NATS subject contract without a live NATS dependency                                                       |
-| `observability` | LGTM/OpenTelemetry attribute projection from Agentic event envelopes                                       |
-| `runtime`       | first event-to-automation reaction rule                                                                    |
+| Package         | Current responsibility                                                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `domain`        | typed command names, event names, aggregate names, work item state machine, event envelope, shared records                 |
+| `application`   | command pipeline, handler registry, idempotency handling, state-store ports, first supervisor-chain signal command handler |
+| `state`         | in-memory Organization state-store factory used as the first repository port fake                                          |
+| `messaging`     | NATS subject contract without a live NATS dependency                                                                       |
+| `observability` | LGTM/OpenTelemetry attribute projection from Agentic event envelopes                                                       |
+| `runtime`       | first event-to-automation reaction rule                                                                                    |
 
 ## Slice Rule
 
@@ -34,6 +34,12 @@ CockroachDB, JetStream publishing, Temporal, Dapr, Hermes, Hindsight,
 and the hat-system CRDs come next as adapters behind these contracts.
 They should not redefine command names, event names, state names,
 correlation fields, or policy authority.
+
+The application package must not construct concrete state adapters.
+Runtime hosts and tests provide a `CommandStateStoreFactory`; the state
+package implements the current in-memory factory. Command routing uses a
+handler registry so new commands add handlers instead of editing a
+central `switch` or `if` dispatcher.
 
 ## Validation
 

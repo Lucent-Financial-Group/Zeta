@@ -9,7 +9,7 @@ import {
   SupervisorSignalStatus,
   SupervisorSignalToolType,
 } from "../../../domain/src/index.ts";
-import { createInMemoryOrganizationStore } from "../../../state/src/index.ts";
+import { createInMemoryOrganizationStoreFactory } from "../../../state/src/index.ts";
 import { CommandResultStatus, type CommandResult } from "../command-result.ts";
 import { sendSupervisorSignal, type SendSupervisorSignalCommand } from "./send-supervisor-signal.ts";
 
@@ -39,7 +39,8 @@ const command: SendSupervisorSignalCommand = {
 
 describe("send supervisor signal handler", () => {
   test("persists chain communication, audit event, and outbox event atomically", () => {
-    const store = createInMemoryOrganizationStore<CommandResult>();
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const store = stateStoreFactory.createCommandStateStore();
 
     const result = sendSupervisorSignal(command, {
       store,
@@ -50,11 +51,11 @@ describe("send supervisor signal handler", () => {
     equal(result.status, CommandResultStatus.Accepted);
     ok(result.supervisorSignal);
     equal(result.supervisorSignal.status, SupervisorSignalStatus.Sent);
-    equal(store.supervisorSignals.length, 1);
-    equal(store.workItems.length, 0);
-    equal(store.auditEvents.length, 1);
-    equal(store.outboxEvents.length, 1);
-    deepEqual(store.outboxEvents[0]?.envelope, {
+    equal(stateStoreFactory.snapshot.supervisorSignals.length, 1);
+    equal(stateStoreFactory.snapshot.workItems.length, 0);
+    equal(stateStoreFactory.snapshot.auditEvents.length, 1);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
+    deepEqual(stateStoreFactory.snapshot.outboxEvents[0]?.envelope, {
       eventId: "evt-001",
       eventType: AgenticEventType.SupervisorSignalSent,
       schemaVersion: "agentic.org.event.v1",

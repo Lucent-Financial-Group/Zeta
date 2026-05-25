@@ -39,8 +39,8 @@ send_supervisor_signal
 | Package                      | Implemented first                                                                                                                                                     |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@agentic-org/domain`        | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
-| `@agentic-org/application`   | command pipeline, idempotency conflict handling, supervisor signal handler                                                                                            |
-| `@agentic-org/state`         | in-memory Organization store fake                                                                                                                                     |
+| `@agentic-org/application`   | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
+| `@agentic-org/state`         | in-memory Organization state-store factory fake                                                                                                                       |
 | `@agentic-org/messaging`     | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder                                                                                                     |
 | `@agentic-org/observability` | OpenTelemetry/LGTM span attribute projection                                                                                                                          |
 | `@agentic-org/runtime`       | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
@@ -91,6 +91,9 @@ Hermes runs, MCP calls, and UI evidence.
 
 - Hats can expose a communication brief that tells the wearer their duty,
   supervisor line, and efficient upward tools.
+- The command pipeline receives state-store factories and command
+  handlers through ports instead of constructing in-memory adapters or
+  branching on command types.
 - Duplicate commands with the same idempotency key and request hash
   replay the stored result.
 - Duplicate commands with the same idempotency key and a different

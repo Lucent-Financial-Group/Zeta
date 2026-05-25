@@ -11,9 +11,9 @@ import {
   type SupervisorSignalToolType,
 } from "../../../domain/src/index.ts";
 import { createAgenticEventEnvelope } from "../../../domain/src/index.ts";
-import type { InMemoryOrganizationStore } from "../../../state/src/index.ts";
+import type { CommandHandler } from "../command-handler-registry.ts";
 import { CommandResultStatus, type CommandResult } from "../command-result.ts";
-import type { Clock, IdGenerator } from "../ports.ts";
+import type { Clock, CommandStateStore, IdGenerator } from "../ports.ts";
 
 export const IdPrefix = {
   SupervisorSignal: "supervisor-signal",
@@ -47,8 +47,15 @@ export type SendSupervisorSignalCommand = {
 
 export type SendSupervisorSignalDependencies = Clock &
   IdGenerator & {
-    store: InMemoryOrganizationStore<CommandResult>;
+    store: CommandStateStore<CommandResult>;
   };
+
+export function createSendSupervisorSignalHandler(): CommandHandler<SendSupervisorSignalCommand, CommandResult> {
+  return {
+    commandType: CommandType.SendSupervisorSignal,
+    execute: sendSupervisorSignal,
+  };
+}
 
 export function sendSupervisorSignal(
   command: SendSupervisorSignalCommand,
@@ -116,9 +123,9 @@ export function sendSupervisorSignal(
     }),
   };
 
-  dependencies.store.supervisorSignals.push(supervisorSignal);
-  dependencies.store.auditEvents.push(auditEvent);
-  dependencies.store.outboxEvents.push(outboxEvent);
+  dependencies.store.appendSupervisorSignal(supervisorSignal);
+  dependencies.store.appendAuditEvent(auditEvent);
+  dependencies.store.appendOutboxEvent(outboxEvent);
 
   return {
     status: CommandResultStatus.Accepted,
