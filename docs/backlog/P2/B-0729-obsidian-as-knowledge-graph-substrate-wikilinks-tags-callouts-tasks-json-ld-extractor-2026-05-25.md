@@ -184,11 +184,11 @@ Each layer ships standalone; team picks adoption pace.
 
 ### L1 acceptance
 
-- [ ] `tools/wikilink-converter/convert.ts` exists + tested
-- [ ] All `[text](path.md)` internal-vault links converted to `[[shortname|text]]`
-- [ ] Frontmatter `aliases: [...]` preserves backward compat
-- [ ] GitHub still renders all links correctly
-- [ ] Obsidian graph view shows the full semantic structure
+- [ ] `tools/knowledge-graph-aliases/add-aliases.ts` exists + tested
+- [ ] Frontmatter `aliases: [...]` added to high-value files (backlog rows, rules, personas, docs) via TS script with human-in-the-loop review for the alias-name choices
+- [ ] **NO markdown link conversion** — `[text](path)` syntax preserved across the vault to maintain GitHub rendering (Codex 2026-05-25 caught this design flaw on the original draft; reframed L1 uses aliases-only so Obsidian graph + GitHub navigability both work)
+- [ ] GitHub renders all links correctly (no regression vs current state)
+- [ ] Obsidian graph view + quick-switcher surface meaningful short names from the aliases
 
 ### L2 acceptance
 
@@ -235,12 +235,14 @@ Each layer ships standalone; team picks adoption pace.
 ## Standards survey (for substrate-honest context)
 
 Semantic-web tier (HEAVY; not adopted for git-native substrate):
+
 - RDF (W3C; triples) + OWL (ontology) + SPARQL (query)
 - JSON-LD (RDF in JSON; lighter syntax; used in L5)
 - SKOS (taxonomies)
 - Schema.org (vocabulary)
 
 Git-native light tier (THIS ROW'S FLOOR):
+
 - Markdown + YAML frontmatter (universal)
 - Obsidian vault format (de-facto standard for personal/team knowledge bases)
 - Foam (VSCode-native Obsidian-compatible)
