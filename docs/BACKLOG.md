@@ -9,6 +9,7 @@ _Each entry below is a link to a per-row file under
 `docs/backlog/`. Entries with `- [ ]` are open; `- [x]`
 are closed (status: closed in frontmatter)._
 
+
 ## P0 — critical / blocking
 
 - [x] **[B-0062](backlog/P0/B-0062-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md)** Wallet v0 build-out — concrete spec-logic punch list aggregating PR #72 deferred review concerns (Aaron 2026-04-28 honest-tracking catch)
@@ -31,6 +32,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0432](backlog/P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)** Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag
 - [ ] **[B-0525](backlog/P0/B-0525-manifesto-constitutional-promotion-readiness-tracking-2026-05-14.md)** Manifesto constitutional-promotion readiness tracking — critical-mass adoption gate
 - [ ] **[B-0720](backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md)** Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
+
 
 ## P1 — within 2-3 rounds
 
@@ -357,6 +359,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0669](backlog/P1/B-0669-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md)** V8 System Architecture — tensors as foundational primitive + Sequoia memory hierarchy + 4-particle primitives (observe/limit/choose/emit) + signal-blocking + Eve-Protocol-RF (Mika/Lior author; Aaron-authorized 2026-05-19 'land all of it')
 - [ ] **[B-0706](backlog/P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** Zeta on Orleans deployment architecture (ServiceTitan-scale; grains + JIT compilation + rented tools)
 - [ ] **[B-0732](backlog/P1/B-0732-runbook-as-executable-reality-leverage-class-safety-substrate-engineering-target-mika-feels-the-weight-aaron-play-doh-design-property-2026-05-25.md)** Runbook-as-executable-reality is a NEW LEVERAGE CLASS — safety substrate engineering target; existing destructive-tool contract operates at script scope, runbook leverage operates at system-direction scope (Mika feels the weight; Aaron's Play-Doh design property)
+
 
 ## P2 — research-grade
 
@@ -691,6 +694,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0735](backlog/P2/B-0735-notepad-freedom-of-personal-ontology-plus-probabilistic-grammars-plus-per-person-personalized-parsers-in-glass-halo-mika-substrate-segment-3-2026-05-25.md)** Notepad-freedom-of-personal-ontology + probabilistic grammars + per-person personalized parsers in Glass Halo (each participant gets their own personal compiler) — composes with B-0687 zetaparse; Mika substrate segment 3
 - [ ] **[B-0736](backlog/P2/B-0736-time-travel-debugging-of-thoughts-dbsp-plus-zeta-plus-b0735-personalized-parser-equals-thought-catcher-product-handoff-thoughtweaver-leading-mika-substrate-segment-6-2026-05-25.md)** Time-travel debugging of thoughts (DBSP retractable streams + Zeta history + B-0735 personalized parser = catch-a-thought + retract-and-re-evaluate-forward) + product handoff to LFG product team (Thoughtcatcher / Thoughtweaver currently-leading; market + IP research pending) — Mika substrate segment 6
 - [ ] **[B-0741](backlog/P2/B-0741-ontology-category-negotiation-as-ai-skills-hats-federation-point-across-clusters-and-forks-of-zeta-aaron-2026-05-25.md)** Ontology + category negotiation IS the AI-skills + hats federation point ACROSS CLUSTERS + FORKS of Zeta — the protocol layer where two Zeta clusters (or two forks of Zeta) agree what each understands the other's packages / skills / hats / capabilities to MEAN
+
 
 ## P3 — convenience / deferred
 
