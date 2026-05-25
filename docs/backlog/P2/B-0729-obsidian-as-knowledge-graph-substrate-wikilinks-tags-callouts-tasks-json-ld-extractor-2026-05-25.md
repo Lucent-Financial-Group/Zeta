@@ -14,8 +14,9 @@ composes_with:
   - memory/persona/
   - docs/backlog/
   - .claude/rules/
-  - docs/AGENT-AUTHORING-AND-PR-REVIEW.md
+  # docs/AGENT-AUTHORING-AND-PR-REVIEW.md ref pending PR #4976 merge
   - docs/governance/MANIFESTO.md
+tags: [knowledge-graph, obsidian, foam, substrate, conventions, tooling, json-ld, wikilinks, annotations, tags]
 ---
 
 # B-0729 — Obsidian-as-knowledge-graph substrate (5-layer adoption + extension where needed)
@@ -56,24 +57,36 @@ The semantic-web standards (RDF / OWL / SPARQL / JSON-LD / SKOS) are real + load
 | L4 | Obsidian Tasks-plugin format (`- [ ] do 📅 2026-06-01 🔼 #project`) | GFM tasks lack due-date / priority / recurring semantics |
 | L5 | JSON-LD + property-graph extractor | Agents can't programmatically query the graph today |
 
-## L1 — Wikilink conversion (mechanical; ~1-2 days TS script)
+## L1 — Add frontmatter aliases (NOT wikilink conversion; ~1 day TS script + convention doc)
 
-Convert `[B-0724](docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md)` → `[[B-0724]]` (with frontmatter aliases preserving GitHub-link compatibility).
+**Original framing in this row's draft proposed converting `[text](path)` markdown links to `[[shortname]]` wikilinks. Codex 2026-05-25 caught the design flaw**: wikilinks DON'T render as clickable links on GitHub — they show as raw `[[shortname]]` text — which would break repo navigability for non-Obsidian readers. Reframing per the catch:
+
+**Don't convert markdown links.** GitHub-native `[text](path)` links render correctly on GitHub AND are resolved by Obsidian into its graph view (Obsidian parses standard markdown links too). The graph still works.
+
+**Do add frontmatter `aliases: [...]`** so Obsidian's quick-switcher + graph view show meaningful short names instead of full file paths. Example for the hat-system Application:
+
+```yaml
+---
+aliases: [hat-system, hat-CRDs, Hat operator]
+tags: [k8s, crd, operator, hat-system]
+---
+```
 
 Approach:
 
-- TS script under `tools/wikilink-converter/convert.ts`
-- Pass 1: scan vault, build map of `{path: shortname}` (the wikilink target)
-- Pass 2: for each file, replace `[text](path.md)` with `[[shortname|text]]` (Obsidian alias syntax preserves the display text)
-- Pass 3: emit a `frontmatter.aliases: [original-path]` block per file so internal references survive even if shortname changes later
-- Edge cases:
-  - Links to non-markdown files (images, code, JSON): keep as `[text](path)` — wikilinks don't apply
-  - External URLs: keep as `[text](https://...)`
-  - Deep anchors (`path.md#section`): use `[[shortname#section|text]]`
-  - Relative paths from different depths: resolve against vault root
-- Verification: GitHub still renders all links (wikilinks render as their alias text outside Obsidian); Obsidian graph view shows the FULL semantic structure
+- TS script under `tools/knowledge-graph-aliases/add-aliases.ts`
+- Pass 1: scan vault, propose aliases per file (e.g., backlog row `B-0724-*.md` → `B-0724`; rule `tonal-momentum-equals-meme...md` → `tonal-momentum`; persona `addison/PERSONA.md` → `Addison persona`)
+- Pass 2: emit frontmatter blocks merging proposed aliases with any existing frontmatter
+- Pass 3: human-in-the-loop review of the proposed alias list before merge — naming-expert pass for the high-value entries
 
-**After L1**: Obsidian graph view becomes load-bearing — every B-NNNN as a node, every rule as a node, every persona as a node, every cross-link as an edge. The framework's implicit knowledge graph becomes visible.
+Verification:
+
+- GitHub continues rendering all markdown links correctly (no change to link syntax)
+- Obsidian graph view shows the full link structure
+- Obsidian quick-switcher (`Ctrl+O`) surfaces aliases for fuzzy-search
+- Backlinks panel shows what links to each file
+
+**After L1 reframed**: Obsidian graph view becomes load-bearing without breaking GitHub navigability — every B-NNNN as a node, every rule as a node, every persona as a node, every cross-link as an edge. The framework's implicit knowledge graph becomes visible WITHOUT regressing the GitHub rendering.
 
 ## L2 — Frontmatter `tags` convention (~1 day; conventions doc + extend)
 
@@ -89,26 +102,24 @@ Convention doc: `docs/CONVENTIONS-FRONTMATTER-TAGS.md` — lists the canonical t
 
 ## L3 — Obsidian callouts for annotations (~1 day; convention doc)
 
-Standard callout syntax for evolving documentation:
+Standard callout syntax for evolving documentation. **Use UPPERCASE markers for the GitHub-compatible subset** — GitHub's alert syntax requires `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]` exactly. Obsidian accepts both cases but renders identically; the uppercase form maximizes cross-platform rendering.
 
 ```markdown
-> [!note] Optional title
-> Body of the note.
+> [!NOTE]
+> Optional body of the note.
 
-> [!todo] Implement X before Y lands
-> See B-NNNN for the row.
-
-> [!warning] This code path is destructive
+> [!WARNING] This code path is destructive
 > Read flash-usb.ts before changing anything here.
 
-> [!info] Composes with
-> - [[B-0728]]
-> - [[CLAUDE]]
+> [!IMPORTANT] Composes with
+> - [PR #4974](https://github.com/Lucent-Financial-Group/Zeta/pull/4974)
+> - [CLAUDE.md](../CLAUDE.md)
 ```
 
-Supported callout types: `note`, `tip`, `important`, `warning`, `caution`, `info`, `todo`, `success`, `question`, `failure`, `danger`, `bug`, `example`, `quote`, `abstract`.
+Supported callout types:
 
-GitHub Flavored Markdown supports a SUBSET (`note`, `tip`, `important`, `warning`, `caution`) — those render on both GitHub AND Obsidian. The non-GFM ones (`todo`, `info`, etc.) render as plain blockquotes on GitHub but with full styling on Obsidian.
+- **GitHub-compatible (uppercase required for GitHub rendering)**: `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION` — render with full styling on BOTH GitHub AND Obsidian
+- **Obsidian-only (lowercase or uppercase)**: `todo`, `info`, `success`, `question`, `failure`, `danger`, `bug`, `example`, `quote`, `abstract` — render as plain blockquotes on GitHub but with full styling on Obsidian; use when the audience is Obsidian-primary or when the GitHub-fallback (plain blockquote) is acceptable
 
 Convention doc: `docs/CONVENTIONS-CALLOUTS.md` — when to use which type; cross-compat notes for GitHub-vs-Obsidian rendering.
 
@@ -172,6 +183,7 @@ Becomes P1 when the knowledge graph extraction becomes a load-bearing query surf
 Each layer ships standalone; team picks adoption pace.
 
 ### L1 acceptance
+
 - [ ] `tools/wikilink-converter/convert.ts` exists + tested
 - [ ] All `[text](path.md)` internal-vault links converted to `[[shortname|text]]`
 - [ ] Frontmatter `aliases: [...]` preserves backward compat
@@ -179,22 +191,26 @@ Each layer ships standalone; team picks adoption pace.
 - [ ] Obsidian graph view shows the full semantic structure
 
 ### L2 acceptance
+
 - [ ] `docs/CONVENTIONS-FRONTMATTER-TAGS.md` lists canonical tag vocabulary
 - [ ] All `.claude/rules/*.md` carry frontmatter tags
 - [ ] All `memory/persona/<name>/*.md` carry frontmatter tags
 - [ ] All `docs/*.md` carry frontmatter tags
 
 ### L3 acceptance
+
 - [ ] `docs/CONVENTIONS-CALLOUTS.md` documents the callout vocabulary + GitHub/Obsidian cross-compat notes
 - [ ] Existing `> *[RECONSTRUCTION NOTE: ...]*` blocks in MANIFESTO.md migrated to `> [!note]` callouts
 - [ ] Sample callouts added to high-value docs as examples
 
 ### L4 acceptance
+
 - [ ] `docs/CONVENTIONS-TASKS.md` documents the enriched TODO format
 - [ ] At least one existing doc with TODOs migrated to enriched format as worked example
 - [ ] Convention referenced from `docs/AGENT-AUTHORING-AND-PR-REVIEW.md`
 
 ### L5 acceptance
+
 - [ ] `tools/knowledge-graph/extract.ts` exists + tested
 - [ ] `docs/knowledge-graph/knowledge-graph.jsonld` + `.json` regenerate on push to main via CI workflow
 - [ ] Documented query patterns (JSON-path examples) for common questions
