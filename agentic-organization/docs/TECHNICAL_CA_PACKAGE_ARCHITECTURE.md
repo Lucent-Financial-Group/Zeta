@@ -324,6 +324,72 @@ type AgenticEventEnvelope<TPayload> = {
 No app should publish raw NATS payloads directly. Publishing should go
 through `@agentic-org/messaging`.
 
+### Event-to-Automation Contract
+
+Agentic Organization should behave like an event-driven operating system.
+State changes do not merely update boards. They wake up the Organization.
+
+The required runtime path is:
+
+```text
+command accepted
+  -> state transition persisted
+  -> domain event written to outbox
+  -> outbox publishes canonical NATS event
+  -> rule evaluation consumes event
+  -> reaction plan is created
+  -> reaction executor validates policy, leases, budget, and hat supply
+  -> follow-up commands create reviews, QA work, assignments, runs, reports,
+     meetings, escalations, release tasks, or no-op decisions
+```
+
+Rules never mutate state directly. They propose a `ReactionPlan`. The
+reaction executor turns that plan into normal Organization commands, so
+automation follows the same policy, audit, idempotency, and trace path as
+human or agent actions.
+
+Minimum event automations:
+
+| Event | Rule result | Follow-up command examples |
+|---|---|---|
+| `work_item.ready` | work needs execution or review assignment | `reserve_hat`, `assign_work`, `start_schedule_block` |
+| `work_item.review_requested` | reviewer hat must be staffed | `reserve_hat`, `request_gate_review`, `send_inbox_signal` |
+| `gate.code.approved` | work can move to QA if QA is required | `create_qa_work_item`, `reserve_hat`, `request_gate_review` |
+| `gate.qa.approved` | work can move toward delivery/release | `create_release_task`, `request_delivery_review` |
+| `gate.changes_requested` | implementer needs a bounded rework loop | `assign_rework`, `start_prompt_flow`, `send_inbox_signal` |
+| `work_item.blocked` | blocker owner and escalation path required | `create_blocker`, `notify_manager`, `schedule_blocker_review` |
+| `hermes_run.heartbeat_late` | runtime health needs reconciliation | `create_platform_incident`, `reconcile_run`, `notify_platform_operator` |
+| `memory.gap_detected` | memory/process improvement enters backlog | `submit_capability_request`, `request_memory_review` |
+| `credential_request.submitted` | security review is mandatory | `request_security_gate`, `send_inbox_signal` |
+| `release.ready` | delivery gate and evidence check required | `request_delivery_review`, `verify_release_evidence` |
+
+The first V0 rule catalog should include:
+
+- ready work assignment;
+- review staffing;
+- QA staffing after code approval;
+- delivery review after QA signoff;
+- blocked work escalation;
+- stale review escalation;
+- late Hermes heartbeat incident creation;
+- memory gap follow-up;
+- credential expansion security review.
+
+Every automation must record:
+
+- triggering event ID;
+- matched rule IDs and versions;
+- reaction plan ID;
+- policy decision ID;
+- commands executed;
+- commands skipped and why;
+- idempotency keys;
+- resulting event IDs;
+- trace ID and correlation ID.
+
+This makes automation inspectable from the affected project, initiative,
+work item, gate, agent, hat assignment, run, and UI timeline.
+
 ### Subject Convention
 
 Use one Organization subject family:
@@ -678,10 +744,13 @@ package should standardize:
 5. Use fake adapters for Hermes, Hindsight, Dapr, Temporal, and
    hat-system.
 6. Add NATS outbox publisher and one consumer after command tests pass.
-7. Add the NestJS API and worker hosts.
-8. Add UI projections for work board, review center, and evidence
+7. Add the first rule catalog and reaction executor for ready work,
+   review staffing, QA staffing, blocker escalation, and late run
+   incidents.
+8. Add the NestJS API and worker hosts.
+9. Add UI projections for work board, review center, and evidence
    timeline.
-9. Add real cluster adapters one at a time.
+10. Add real cluster adapters one at a time.
 
 ## Extraction Path
 
@@ -720,6 +789,10 @@ Before a package can be consumed by the OS, it needs:
 - policy allow/deny tests where relevant;
 - event envelope tests;
 - idempotency tests for side-effecting commands;
+- rule evaluation tests that prove a state event creates the expected
+  reaction plan without mutating state directly;
+- reaction executor tests that prove automation uses normal commands,
+  emits audit/outbox events, and dedupes retries;
 - OpenTelemetry field coverage tests;
 - outbox/inbox tests for event-producing commands;
 - contract tests for every adapter port;
