@@ -56,25 +56,41 @@
   # ---------------------------------------------------------------------------
   networking.networkmanager.enable = true;
   networking.wireless.enable = lib.mkForce false; # NM handles wifi instead
-  networking.firewall.enable = false;             # installer-only; live system
+  # Firewall ON by default. The installer ISO is a live system that often
+  # boots on networks we don't control (hotel wifi, conference LAN, home
+  # router with port-forwarding); leaving it firewalled keeps the install
+  # session from being trivially probed.
+  networking.firewall.enable = true;
 
-  # SSH so we can install headlessly from another laptop over Ethernet
+  # SSH is OFF by default — installer is intended for console use. Enable
+  # manually on the live system for headless installs:
+  #
+  #   sudo passwd nixos                # set a password first
+  #   sudo systemctl start sshd        # start the service
+  #
+  # Key-only is enforced when enabled — never password auth, never root
+  # password login. For pre-seeded headless installs, drop the maintainer
+  # SSH key into `users.users.nixos.openssh.authorizedKeys.keys` here
+  # before building the ISO.
   services.openssh = {
-    enable = true;
+    enable = false;
     settings = {
-      PermitRootLogin = "yes";
-      PasswordAuthentication = true;
+      PermitRootLogin = lib.mkForce "prohibit-password";
+      PasswordAuthentication = lib.mkForce false;
+      KbdInteractiveAuthentication = lib.mkForce false;
     };
   };
 
-  # Default credentials for the live installer session (change before shipping)
-  users.users.root.initialPassword = "zeta";
+  # No hard-coded credentials. The upstream installation-cd-minimal.nix
+  # imported above ships with a passwordless root account usable ONLY from
+  # the local console — the secure default for an ephemeral live system.
+  # If you need a non-root user, set its password manually on the live
+  # system with `passwd`. Sudo requires a password (default policy).
   users.users.nixos = {
     isNormalUser = true;
-    initialPassword = "zeta";
     extraGroups = [ "wheel" "networkmanager" ];
+    # initialPassword intentionally unset — see comment above.
   };
-  security.sudo.wheelNeedsPassword = false;
 
   # ---------------------------------------------------------------------------
   # THE PACKAGE LIST — everything that must be on the USB stick
@@ -223,22 +239,41 @@
     makeUsbBootable = true;
   };
 
-  # Pre-stage this flake onto the stick at /etc/zeta so the installer can
-  # immediately `nixos-install --flake /etc/zeta#<host>` without network.
-  # (The flake.nix at repo root references this file via
-  #  nixosConfigurations.installer.)
-  environment.etc."zeta/README.md".text = ''
+  # Install-runbook baked onto the stick at /etc/zeta-install.md so it's
+  # reachable from the live system even when offline.
+  #
+  # NOTE: this writes documentation only. The Zeta flake itself is NOT
+  # auto-staged on the ISO — clone it from network during install
+  # (`git clone https://github.com/Lucent-Financial-Group/Zeta /mnt/etc/zeta`).
+  # An always-on flake-bundling pass would require build-time access to
+  # the flake source from this module's evaluation, which a future
+  # `flake.nix` at the repo root will wire via `imports = [ ./infra/... ]`
+  # plus `environment.etc."zeta".source = inputs.self;` — track in a
+  # follow-up PR.
+  environment.etc."zeta-install.md".text = ''
     Zeta cluster installer
     ======================
 
     1. Boot this USB on the target machine.
-    2. Log in:  user `nixos` / password `zeta`  (or root / zeta)
-    3. Identify the disk:        lsblk
-    4. Partition + mount:        see ZFS or ext4 recipes in
-                                  /etc/zeta/infra/nixos/hosts/<host>/README.md
-    5. Generate hardware config: nixos-generate-config --root /mnt
-    6. Install:                  nixos-install --flake /etc/zeta#<host>
-    7. Reboot.  K3S, ArgoCD, Orleans land automatically from the flake.
+    2. Log in at the console as `root` (no password — upstream installer
+       default; only usable from the local TTY).
+    3. Bring up the network (NetworkManager is enabled):
+         nmtui                 # interactive, or
+         nmcli device wifi connect <SSID> password <PSK>
+    4. Identify the target disk:
+         lsblk
+    5. Clone Zeta onto /mnt/etc/zeta after partitioning:
+         git clone https://github.com/Lucent-Financial-Group/Zeta /mnt/etc/zeta
+    6. Generate hardware config for this machine:
+         nixos-generate-config --root /mnt
+       (commit the resulting hardware-configuration.nix as a per-host
+        artifact under infra/nixos/hosts/<host>/ when those land.)
+    7. Install:
+         nixos-install --flake /mnt/etc/zeta#<host>
+       — where <host> is one of the names declared in the repo-root
+         `flake.nix` `nixosConfigurations`. (Today: `installer` only;
+         per-host configs land in follow-up PRs.)
+    8. Reboot. K3S, ArgoCD, Orleans land automatically from the flake.
 
     The flake itself is the tick source. Everything downstream reconciles
     toward the desired state declared in Git.
