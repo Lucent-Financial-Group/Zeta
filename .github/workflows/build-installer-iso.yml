@@ -2,7 +2,8 @@
 #
 # Builds the Zeta cluster installer ISO from infra/nixos/hosts/installer/
 # via the repo-root flake. Runs on every PR that touches the flake/infra,
-# every push to main, and on tag push (to attach the ISO to a Release).
+# every push to main, and on release publish (to attach the ISO to the
+# Release as a downloadable asset).
 #
 # Why on a Linux runner and not the existing macOS gate matrix:
 #   The ISO target is `x86_64-linux`. Building it on macOS requires the
@@ -52,6 +53,10 @@ concurrency:
 jobs:
   build:
     name: build-iso
+    # Skip on release events — attach-to-release rebuilds at the tag so the
+    # asset matches the release exactly. Running both would build the ISO
+    # twice per release publish for no added verification.
+    if: github.event_name != 'release'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -91,7 +96,14 @@ jobs:
         id: iso
         run: |
           set -euo pipefail
-          iso_path=$(find result/iso -name 'zeta-installer-*.iso' | head -1)
+          # Deterministic single-match: -print -quit returns at most one path
+          # and exits immediately. find ... | head -1 races on multi-match
+          # and silently picks whichever line printed first.
+          iso_path=$(find result/iso -name 'zeta-installer-*.iso' -print -quit)
+          if [[ -z "${iso_path}" || ! -e "${iso_path}" ]]; then
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            exit 1
+          fi
           iso_name=$(basename "$iso_path")
           iso_size=$(stat -c%s "$iso_path" | numfmt --to=iec --suffix=B)
           iso_sha256=$(sha256sum "$iso_path" | awk '{print $1}')
@@ -134,6 +146,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Match the build job: full history + tags so `git describe`
+          # style versioning and flake.lock pinning are reproducible at
+          # the tag. Default fetch-depth: 1 omits tags/history and risks
+          # silent drift on release builds.
+          fetch-depth: 0
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
@@ -156,9 +174,19 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           set -euo pipefail
-          iso_path=$(find result/iso -name 'zeta-installer-*.iso' | head -1)
-          sha256sum "$iso_path" | awk '{print $1}' > "${iso_path}.sha256"
+          # Deterministic single-match (same pattern as build job).
+          iso_path=$(find result/iso -name 'zeta-installer-*.iso' -print -quit)
+          if [[ -z "${iso_path}" || ! -e "${iso_path}" ]]; then
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            exit 1
+          fi
+          # iso_path resolves into /nix/store/... via the result/ symlink,
+          # which is read-only. Write the .sha256 sidecar to the workspace
+          # (RUNNER_TEMP is writable) so the upload step doesn't EROFS.
+          iso_name=$(basename "$iso_path")
+          sha256_path="${RUNNER_TEMP:-/tmp}/${iso_name}.sha256"
+          sha256sum "$iso_path" | awk '{print $1}' > "$sha256_path"
           gh release upload "$RELEASE_TAG" \
             "$iso_path" \
-            "${iso_path}.sha256" \
+            "$sha256_path" \
             --clobber
