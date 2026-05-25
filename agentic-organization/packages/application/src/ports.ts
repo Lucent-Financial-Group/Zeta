@@ -9,20 +9,20 @@ export type IdGenerator = {
 };
 
 export type IdempotencyRecordStore<Result = unknown> = {
-  findIdempotencyRecord: (idempotencyKey: string) => IdempotencyRecord<Result> | undefined;
-  saveIdempotencyRecord: (record: IdempotencyRecord<Result>) => void;
+  findIdempotencyRecord: (idempotencyKey: string) => Promise<IdempotencyRecord<Result> | undefined>;
+  saveIdempotencyRecord: (record: IdempotencyRecord<Result>) => Promise<void>;
 };
 
 export type SupervisorSignalStore = {
-  appendSupervisorSignal: (supervisorSignal: SupervisorSignal) => void;
+  appendSupervisorSignal: (supervisorSignal: SupervisorSignal) => Promise<void>;
 };
 
 export type AuditEventStore = {
-  appendAuditEvent: (auditEvent: AuditEvent) => void;
+  appendAuditEvent: (auditEvent: AuditEvent) => Promise<void>;
 };
 
 export type OutboxEventStore = {
-  appendOutboxEvent: (outboxEvent: OutboxEvent) => void;
+  appendOutboxEvent: (outboxEvent: OutboxEvent) => Promise<void>;
 };
 
 export type CommandStateStore<Result = unknown> = IdempotencyRecordStore<Result> &

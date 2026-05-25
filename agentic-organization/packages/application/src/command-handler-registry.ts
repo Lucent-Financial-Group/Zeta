@@ -11,7 +11,7 @@ export type CommandExecutionContext<Result = unknown> = Clock &
 
 export type CommandHandler<Command extends TypedCommand = TypedCommand, Result = unknown> = {
   commandType: Command["type"];
-  execute: (command: Command, context: CommandExecutionContext<Result>) => Result;
+  execute: (command: Command, context: CommandExecutionContext<Result>) => Promise<Result>;
 };
 
 export type CommandHandlerRegistry<Command extends TypedCommand = TypedCommand, Result = unknown> = {

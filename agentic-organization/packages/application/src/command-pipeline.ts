@@ -6,7 +6,7 @@ import type { Clock, CommandStateStore, CommandStateStoreFactory, IdGenerator } 
 export type PipelineCommand = SendSupervisorSignalCommand;
 
 export type CommandPipeline = {
-  execute: (command: PipelineCommand) => CommandResult;
+  execute: (command: PipelineCommand) => Promise<CommandResult>;
 };
 
 export type CommandPipelineDependencies = Clock &
@@ -23,12 +23,12 @@ export function createCommandPipeline(dependencies: CommandPipelineDependencies)
   };
 }
 
-function executeCommand(
+async function executeCommand(
   command: PipelineCommand,
   store: CommandStateStore<CommandResult>,
   dependencies: CommandPipelineDependencies,
-): CommandResult {
-  const existingRecord = store.findIdempotencyRecord(command.idempotencyKey);
+): Promise<CommandResult> {
+  const existingRecord = await store.findIdempotencyRecord(command.idempotencyKey);
 
   if (existingRecord?.requestHash === command.requestHash) {
     return {
@@ -52,8 +52,8 @@ function executeCommand(
     };
   }
 
-  const result = dispatchCommand(command, store, dependencies);
-  store.saveIdempotencyRecord({
+  const result = await dispatchCommand(command, store, dependencies);
+  await store.saveIdempotencyRecord({
     idempotencyKey: command.idempotencyKey,
     requestHash: command.requestHash,
     result,
@@ -62,15 +62,15 @@ function executeCommand(
   return result;
 }
 
-function dispatchCommand(
+async function dispatchCommand(
   command: PipelineCommand,
   store: CommandStateStore<CommandResult>,
   dependencies: CommandPipelineDependencies,
-): CommandResult {
+): Promise<CommandResult> {
   const handler = dependencies.handlerRegistry.resolveHandler(command.type);
 
   if (handler !== undefined) {
-    return handler.execute(command, {
+    return await handler.execute(command, {
       ...dependencies,
       store,
     });

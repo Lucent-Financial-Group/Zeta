@@ -38,11 +38,11 @@ const command: SendSupervisorSignalCommand = {
 };
 
 describe("send supervisor signal handler", () => {
-  test("persists chain communication, audit event, and outbox event atomically", () => {
+  test("persists chain communication, audit event, and outbox event atomically", async () => {
     const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
     const store = stateStoreFactory.createCommandStateStore();
 
-    const result = sendSupervisorSignal(command, {
+    const result = await sendSupervisorSignal(command, {
       store,
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,

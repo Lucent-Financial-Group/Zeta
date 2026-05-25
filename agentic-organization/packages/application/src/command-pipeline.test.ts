@@ -33,7 +33,7 @@ const command: PipelineCommand = {
 };
 
 describe("command pipeline idempotency", () => {
-  test("replaying the same idempotency key returns the stored result", () => {
+  test("replaying the same idempotency key returns the stored result", async () => {
     const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
     const pipeline = createCommandPipeline({
       stateStoreFactory,
@@ -42,8 +42,8 @@ describe("command pipeline idempotency", () => {
       createId: (prefix) => `${prefix}-001`,
     });
 
-    const firstResult = pipeline.execute(command);
-    const replayResult = pipeline.execute(command);
+    const firstResult = await pipeline.execute(command);
+    const replayResult = await pipeline.execute(command);
 
     equal(firstResult.status, CommandResultStatus.Accepted);
     equal(replayResult.status, CommandResultStatus.Accepted);
@@ -59,7 +59,7 @@ describe("command pipeline idempotency", () => {
     equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
   });
 
-  test("rejects conflicting reuse of the same idempotency key", () => {
+  test("rejects conflicting reuse of the same idempotency key", async () => {
     const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
     const pipeline = createCommandPipeline({
       stateStoreFactory,
@@ -68,8 +68,8 @@ describe("command pipeline idempotency", () => {
       createId: (prefix) => `${prefix}-001`,
     });
 
-    const firstResult = pipeline.execute(command);
-    const conflictResult = pipeline.execute({
+    const firstResult = await pipeline.execute(command);
+    const conflictResult = await pipeline.execute({
       ...command,
       requestHash: "hash-supervisor-signal-conflict",
       title: "Different supervisor signal",

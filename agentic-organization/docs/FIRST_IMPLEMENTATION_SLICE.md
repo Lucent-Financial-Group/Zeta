@@ -36,14 +36,16 @@ send_supervisor_signal
 
 ## Packages
 
-| Package                      | Implemented first                                                                                                                                                     |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@agentic-org/domain`        | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
-| `@agentic-org/application`   | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
-| `@agentic-org/state`         | in-memory Organization state-store factory fake                                                                                                                       |
-| `@agentic-org/messaging`     | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder                                                                                                     |
-| `@agentic-org/observability` | OpenTelemetry/LGTM span attribute projection                                                                                                                          |
-| `@agentic-org/runtime`       | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
+| Package                        | Implemented first                                                                                                                                                     |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
+| `@agentic-org/application`     | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
+| `@agentic-org/state`           | in-memory Organization state-store factory fake                                                                                                                       |
+| `@agentic-org/state-cockroach` | CockroachDB state-store factory contract, SQL statement catalog, and first core-state migration skeleton                                                              |
+| `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder                                                                                                     |
+| `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection                                                                                                                          |
+| `@agentic-org/runtime`         | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
+| `@agentic-org/governance`      | package dependency-boundary checks that prevent application code from importing concrete state/runtime adapters                                                       |
 
 ## NodeNext Runtime Decision
 
@@ -94,6 +96,12 @@ Hermes runs, MCP calls, and UI evidence.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
+- State-store ports are async from the beginning so CockroachDB,
+  NATS-backed workers, and other real adapters do not inherit a fake
+  synchronous shape.
+- A governance test enforces that application code does not import the
+  state adapter, Cockroach adapter, NestJS, NATS, Dapr, Temporal,
+  Drizzle, or Postgres clients.
 - Duplicate commands with the same idempotency key and request hash
   replay the stored result.
 - Duplicate commands with the same idempotency key and a different
@@ -105,10 +113,11 @@ Hermes runs, MCP calls, and UI evidence.
 
 ## Next Slice
 
-The next slice should add a CockroachDB-backed state adapter and
-transactional outbox while preserving this public package contract.
-After that, the NATS publisher worker can publish persisted outbox rows
-to JetStream and attach the same telemetry attributes.
+The next slice should turn the CockroachDB adapter contract into a
+transactional integration test once a local/dev Cockroach connection is
+available, then add the NATS outbox publisher worker. The worker can
+publish persisted outbox rows to JetStream and attach the same telemetry
+attributes.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

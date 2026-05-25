@@ -59,17 +59,17 @@ function createCommandStateStore<Result>(
   snapshot: MutableInMemoryOrganizationStoreSnapshot<Result>,
 ): CommandStateStore<Result> {
   return {
-    findIdempotencyRecord: (idempotencyKey) => snapshot.idempotencyRecords.get(idempotencyKey),
-    saveIdempotencyRecord: (record) => {
+    findIdempotencyRecord: async (idempotencyKey) => snapshot.idempotencyRecords.get(idempotencyKey),
+    saveIdempotencyRecord: async (record) => {
       snapshot.idempotencyRecords.set(record.idempotencyKey, record);
     },
-    appendSupervisorSignal: (supervisorSignal) => {
+    appendSupervisorSignal: async (supervisorSignal) => {
       snapshot.supervisorSignals.push(supervisorSignal);
     },
-    appendAuditEvent: (auditEvent) => {
+    appendAuditEvent: async (auditEvent) => {
       snapshot.auditEvents.push(auditEvent);
     },
-    appendOutboxEvent: (outboxEvent) => {
+    appendOutboxEvent: async (outboxEvent) => {
       snapshot.outboxEvents.push(outboxEvent);
     },
   };

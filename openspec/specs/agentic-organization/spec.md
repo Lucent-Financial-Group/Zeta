@@ -46,11 +46,30 @@ Organization state only by calling Organization commands.
   directly
 - **AND** the pipeline does not use a central command-type switch for
   extensible command dispatch
+- **AND** command-state-store operations are async so real persistence
+  adapters can perform I/O without changing command contracts
+
+#### Scenario: Package boundaries are checked
+
+- **WHEN** package dependency-boundary tests run
+- **THEN** application source files are checked for forbidden imports of
+  concrete state adapters, Cockroach adapters, NestJS, NATS, Dapr,
+  Temporal, Drizzle, Postgres, or other runtime clients
+- **AND** a violation fails the test suite before the boundary can drift
 
 ### Requirement: Commands are idempotent
 
 Organization commands MUST use deterministic idempotency keys at the
 command boundary.
+
+#### Scenario: Cockroach core state schema exists
+
+- **WHEN** the first CockroachDB migration contract is loaded
+- **THEN** it declares work item, supervisor signal, audit event,
+  outbox event, and idempotency record tables
+- **AND** outbox rows include trace ID, correlation ID, and canonical
+  envelope JSON fields for later NATS publication and workflow
+  visibility
 
 #### Scenario: Matching replay
 

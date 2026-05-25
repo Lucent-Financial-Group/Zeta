@@ -7,14 +7,16 @@ worker, Dapr actor host, or Kubernetes deployment is introduced.
 
 ## Package Boundary
 
-| Package         | Current responsibility                                                                                                     |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `domain`        | typed command names, event names, aggregate names, work item state machine, event envelope, shared records                 |
-| `application`   | command pipeline, handler registry, idempotency handling, state-store ports, first supervisor-chain signal command handler |
-| `state`         | in-memory Organization state-store factory used as the first repository port fake                                          |
-| `messaging`     | NATS subject contract without a live NATS dependency                                                                       |
-| `observability` | LGTM/OpenTelemetry attribute projection from Agentic event envelopes                                                       |
-| `runtime`       | first event-to-automation reaction rule                                                                                    |
+| Package           | Current responsibility                                                                                                     |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `domain`          | typed command names, event names, aggregate names, work item state machine, event envelope, shared records                 |
+| `application`     | command pipeline, handler registry, idempotency handling, state-store ports, first supervisor-chain signal command handler |
+| `state`           | in-memory Organization state-store factory used as the first repository port fake                                          |
+| `state-cockroach` | CockroachDB state-store factory contract, SQL statement catalog, and first core-state migration skeleton                   |
+| `messaging`       | NATS subject contract without a live NATS dependency                                                                       |
+| `observability`   | LGTM/OpenTelemetry attribute projection from Agentic event envelopes                                                       |
+| `runtime`         | first event-to-automation reaction rule                                                                                    |
+| `governance`      | package dependency-boundary checks that keep core packages SOLID and adapter-free                                          |
 
 ## Slice Rule
 
@@ -40,6 +42,10 @@ Runtime hosts and tests provide a `CommandStateStoreFactory`; the state
 package implements the current in-memory factory. Command routing uses a
 handler registry so new commands add handlers instead of editing a
 central `switch` or `if` dispatcher.
+
+`CommandStateStore` is async even when backed by the in-memory fake. The
+real CockroachDB adapter must not be squeezed into a synchronous toy
+shape.
 
 ## Validation
 

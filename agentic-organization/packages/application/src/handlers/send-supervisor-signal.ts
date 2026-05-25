@@ -57,10 +57,10 @@ export function createSendSupervisorSignalHandler(): CommandHandler<SendSupervis
   };
 }
 
-export function sendSupervisorSignal(
+export async function sendSupervisorSignal(
   command: SendSupervisorSignalCommand,
   dependencies: SendSupervisorSignalDependencies,
-): CommandResult {
+): Promise<CommandResult> {
   const occurredAt = dependencies.now();
   const supervisorSignal: SupervisorSignal = {
     supervisorSignalId: dependencies.createId(IdPrefix.SupervisorSignal),
@@ -123,9 +123,9 @@ export function sendSupervisorSignal(
     }),
   };
 
-  dependencies.store.appendSupervisorSignal(supervisorSignal);
-  dependencies.store.appendAuditEvent(auditEvent);
-  dependencies.store.appendOutboxEvent(outboxEvent);
+  await dependencies.store.appendSupervisorSignal(supervisorSignal);
+  await dependencies.store.appendAuditEvent(auditEvent);
+  await dependencies.store.appendOutboxEvent(outboxEvent);
 
   return {
     status: CommandResultStatus.Accepted,
