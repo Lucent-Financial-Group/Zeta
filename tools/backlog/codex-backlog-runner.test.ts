@@ -4,6 +4,7 @@ import {
   activeClaimsFromOpenPrs,
   activeClaimsFromRemoteClaimDiffs,
   capacityGate,
+  capacityPrCount,
 } from "../../.codex/bin/codex-backlog-runner";
 
 describe("capacityGate", () => {
@@ -16,6 +17,23 @@ describe("capacityGate", () => {
   test("waits only when the bounded parallel PR capacity is full", () => {
     expect(capacityGate(3, 3)).toEqual({ status: "wait-pr-capacity", availablePrSlots: 0 });
     expect(capacityGate(4, 3)).toEqual({ status: "wait-pr-capacity", availablePrSlots: 0 });
+  });
+});
+
+describe("capacityPrCount", () => {
+  const openPrs = [
+    { headRefName: "codex/lane-aware-pr-capacity" },
+    { headRefName: "lior/pr-preservation" },
+    { headRefName: "backlog/b0751-per-agent-isolated-clones" },
+    { headRefName: "codex/agent-work-rhythm" },
+  ];
+
+  test("counts only PRs in the configured capacity lane", () => {
+    expect(capacityPrCount(openPrs, ["codex/"])).toBe(2);
+  });
+
+  test("supports global counting when no head prefixes are configured", () => {
+    expect(capacityPrCount(openPrs, [])).toBe(4);
   });
 });
 
