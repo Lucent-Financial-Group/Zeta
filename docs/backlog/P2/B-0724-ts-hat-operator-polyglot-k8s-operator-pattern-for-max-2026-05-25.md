@@ -115,10 +115,6 @@ The framing for Max:
 
 The resistance is usually about ceremony cost; the worth lands when the ceremony pays back tenfold in things-that-just-keep-working.
 
-
-
-Aaron 2026-05-25: *"max needs to learn the operator pattern in k8s he does not know k8s really at all he is backend/frontend over paas so he has no much devops"*.
-
 This row's PRIMARY VALUE for Max is the learning, not the deliverable. The Go scaffold (PR #4930) becomes a TEACHING TOOL:
 
 1. **Read the Go operator first** at `full-ai-cluster/k8s/applications/hat-system/operator/` — every concept (CRD, reconciler, informer, workqueue, leader election, status subresource, finalizer, admission webhook) is named explicitly. The Go file structure mirrors the standard kubebuilder layout the K8s community uses everywhere.
@@ -149,6 +145,7 @@ Each step lands as a separate PR. The Go scaffold answers "what does this code D
 ### Pair-programming pattern (recommended)
 
 For each step (a)-(g) above:
+
 1. Max writes the TS draft
 2. Run it against the dev cluster (`./dev-cluster/up.sh`)
 3. Compare behavior to the Go operator running the same workload (both can run side-by-side; leader election means only one reconciles at a time, but watch logs from both)
