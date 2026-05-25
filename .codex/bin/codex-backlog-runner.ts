@@ -89,7 +89,7 @@ function parseCapacityHeadPrefixes(value: string | undefined): string[] {
   return uniqueSorted(
     value
       .split(",")
-      .map((prefix) => prefix.trim())
+      .map((prefix) => normalizeHeadPrefix(prefix))
       .filter(Boolean),
   );
 }
@@ -155,21 +155,64 @@ function run(repoRoot: string, command: string, args: string[]): { status: numbe
   };
 }
 
-function openPrList(repoRoot: string): OpenPrListItem[] {
-  const result = run(repoRoot, "gh", ["pr", "list", "--state", "open", "--limit", "200", "--json", "number,headRefName,title"]);
-  if (result.status !== 0) {
-    throw new Error(`gh pr list failed while reading capacity signals: ${result.stderr || result.stdout}`);
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+export function parseOpenPrListOutput(stdout: string): OpenPrListItem[] {
+  const prs: OpenPrListItem[] = [];
+  for (const line of stdout.split(/\r?\n/)) {
+    const encoded = line.trim();
+    if (encoded.length === 0) {
+      continue;
+    }
+    const decoded = Buffer.from(encoded, "base64").toString("utf8");
+    const parsed = JSON.parse(decoded) as unknown;
+    if (!isRecord(parsed)) {
+      throw new Error(`gh api returned a non-object open PR row: ${decoded}`);
+    }
+
+    const pr: OpenPrListItem = {};
+    if (typeof parsed.number === "number") {
+      pr.number = parsed.number;
+    }
+    if (typeof parsed.headRefName === "string") {
+      pr.headRefName = parsed.headRefName;
+    }
+    if (typeof parsed.title === "string") {
+      pr.title = parsed.title;
+    }
+    prs.push(pr);
   }
-  return JSON.parse(result.stdout) as OpenPrListItem[];
+  return prs;
+}
+
+function openPrList(repoRoot: string): OpenPrListItem[] {
+  const result = run(repoRoot, "gh", [
+    "api",
+    "--paginate",
+    "repos/{owner}/{repo}/pulls?state=open&per_page=100",
+    "--jq",
+    ".[] | {number: .number, headRefName: .head.ref, title: .title} | @base64",
+  ]);
+  if (result.status !== 0) {
+    throw new Error(`gh api --paginate failed while reading capacity signals: ${result.stderr || result.stdout}`);
+  }
+  return parseOpenPrListOutput(result.stdout);
+}
+
+function normalizeHeadPrefix(prefix: string): string {
+  return prefix.trim().toLowerCase();
 }
 
 export function capacityPrCount(openPrs: readonly OpenPrListItem[], headPrefixes: readonly string[]): number {
   if (headPrefixes.length === 0) {
     return openPrs.length;
   }
+  const normalizedPrefixes = headPrefixes.map(normalizeHeadPrefix).filter(Boolean);
   return openPrs.filter((pr) => {
-    const headRefName = pr.headRefName ?? "";
-    return headPrefixes.some((prefix) => headRefName.startsWith(prefix));
+    const headRefName = (pr.headRefName ?? "").toLowerCase();
+    return normalizedPrefixes.some((prefix) => headRefName.startsWith(prefix));
   }).length;
 }
 

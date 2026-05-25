@@ -5,6 +5,7 @@ import {
   activeClaimsFromRemoteClaimDiffs,
   capacityGate,
   capacityPrCount,
+  parseOpenPrListOutput,
 } from "../../.codex/bin/codex-backlog-runner";
 
 describe("capacityGate", () => {
@@ -34,6 +35,24 @@ describe("capacityPrCount", () => {
 
   test("supports global counting when no head prefixes are configured", () => {
     expect(capacityPrCount(openPrs, [])).toBe(4);
+  });
+
+  test("matches capacity prefixes case-insensitively", () => {
+    expect(capacityPrCount([{ headRefName: "Codex/Lane-Aware-Pr-Capacity" }], ["CODEX/"])).toBe(1);
+  });
+});
+
+describe("parseOpenPrListOutput", () => {
+  test("parses paginated gh api base64 rows without a fixed item cap", () => {
+    const rows = [
+      { number: 5026, headRefName: "codex/lane-aware-pr-capacity", title: "fix(codex): scope backlog PR capacity by lane" },
+      { number: 5027, headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25", title: "feat(zflash): show USB detail" },
+    ].map((row) => Buffer.from(JSON.stringify(row), "utf8").toString("base64"));
+
+    expect(parseOpenPrListOutput(`${rows.join("\n")}\n`)).toEqual([
+      { number: 5026, headRefName: "codex/lane-aware-pr-capacity", title: "fix(codex): scope backlog PR capacity by lane" },
+      { number: 5027, headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25", title: "feat(zflash): show USB detail" },
+    ]);
   });
 });
 
