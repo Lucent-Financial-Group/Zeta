@@ -89,6 +89,14 @@ The first slice defines the required `agentic.*` attributes in
 `@agentic-org/observability`. Later packages should consume that
 contract instead of inventing new names.
 
+Every meaningful workflow movement must also be projectable into a
+workflow visibility record. The record is the agent- and UI-readable
+surface that links command state, events, traces, logs, metrics,
+work-item scope, active hat, aggregate version, and typed weak-point
+indicators. This makes harness failures, blocker patterns, slow triage,
+missing evidence, and telemetry gaps visible enough for agents to route
+self-healing work through normal Organization commands.
+
 ## Security
 
 Credential access must remain indirect and scoped through approved

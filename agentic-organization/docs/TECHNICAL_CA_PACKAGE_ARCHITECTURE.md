@@ -717,6 +717,26 @@ package should standardize:
   staleness;
 - links from UI evidence records to trace IDs, log queries, run IDs,
   event IDs, and artifacts.
+- workflow visibility records that project command/event context into
+  UI- and agent-readable health, stage, trace, scope, aggregate, and
+  weak-point indicator fields.
+
+Every runtime host should be inspectable from either direction:
+
+```text
+work item or initiative
+  -> event timeline
+  -> visibility record
+  -> trace/log/metric links
+  -> weak-point indicators
+  -> supervisor-chain signal or follow-up work item
+```
+
+This is the foundation for agent self-monitoring. Agents should be able
+to discover slow triage, repeated failures, missing evidence, missing
+tools, policy denials, harness failures, and telemetry gaps, then route
+fixes through the same command, review, and security lifecycle as any
+other work.
 
 ## V0 Build Sequence
 

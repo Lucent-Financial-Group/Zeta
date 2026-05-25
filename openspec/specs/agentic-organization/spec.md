@@ -125,6 +125,24 @@ for the full trace chain before live LGTM ingestion is wired.
   causation, trace, idempotency, actor, hat assignment, organization,
   project, work item, aggregate, and NATS destination fields
 
+### Requirement: Workflow visibility records expose weak points
+
+Organization packages MUST project meaningful workflow movement into a
+UI- and agent-readable visibility record.
+
+#### Scenario: Event is projected to workflow visibility
+
+- **WHEN** an event envelope is projected into workflow visibility
+- **THEN** the record includes observation kind, health state, workflow
+  stage, occurred-at timestamp, event, command, correlation, causation,
+  trace, idempotency, actor, hat assignment, organization, project,
+  work item, aggregate, and evidence-link fields
+- **AND** the record can include typed weak-point indicators such as
+  blocked work, slow triage, repeated failure, missing evidence, missing
+  tool, policy denial, harness failure, and telemetry gap
+- **AND** the weak-point indicators route follow-up work through normal
+  Organization commands and supervisor-chain communication
+
 ### Requirement: Automation rules create plans before side effects
 
 V0 automation rules MUST produce explicit reaction plans instead of
