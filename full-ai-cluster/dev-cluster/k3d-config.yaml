@@ -15,11 +15,11 @@
 #
 # Why this matches prod: ArgoCD reconciles the SAME
 # `k8s/applications/` directory into both clusters. The only
-# environment-specific deltas live under `dev-cluster/overlays/`
-# (e.g., Longhorn replaced by local-path-provisioner; GPU
-# device plugin disabled). Everything else — Cilium, ArgoCD,
-# NFD, hat-system, OPA, Vault, SPIRE, cert-manager — runs the
-# same code on both substrates.
+# environment-specific deltas live in up.sh's root App-of-Apps
+# `exclude:` glob (cilium installed directly via Helm with dev
+# values; Longhorn → local-path-provisioner; no GPU stack).
+# Everything else — ArgoCD, NFD, hat-system, OPA, Vault, SPIRE,
+# cert-manager — runs the same code on both substrates.
 #
 # Usage: `./up.sh` (it reads this file).
 # Docs: https://k3d.io/v5/usage/configfile/
@@ -52,8 +52,9 @@ ports:
     nodeFilters: [loadbalancer]
 
 # K3S server args — mirror prod's CNI-takeover stance so Cilium can
-# install cleanly. `--write-kubeconfig-mode=644` so non-root users
-# on the host can `kubectl` without sudo.
+# install cleanly. Host kubeconfig perms are handled by k3d itself
+# (writes to ~/.kube/config when `kubeconfig.updateDefaultKubeconfig`
+# is true below); no extra --write-kubeconfig-mode flag needed.
 options:
   k3s:
     extraArgs:

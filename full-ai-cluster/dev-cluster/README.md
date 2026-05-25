@@ -52,7 +52,10 @@ cd full-ai-cluster/dev-cluster
 kubectl -n argocd get applications -w
 
 # Open the UI
-kubectl -n argocd port-forward svc/argocd-server 8443:443 &
+# k3d-config.yaml already publishes the cluster's load-balancer on
+# host port 8443 → 443. The LoadBalancer Service ArgoCD's chart
+# requests gets picked up by k3d's bundled klipper-LB and surfaces
+# through that mapping — no kubectl port-forward needed.
 kubectl -n argocd get secret argocd-initial-admin-secret \
   -o jsonpath='{.data.password}' | base64 -d ; echo
 open https://localhost:8443
