@@ -134,7 +134,7 @@ The success metric Aaron named: the closer the system gets to "read raw thought 
 - **B-0731** (hat-ontology) — anchor mapping step composes with hat-ontology
 - **B-0728 + B-0732** (destructive-tool authoring contract + leverage-class safety substrate) — probabilistic-parser-JIT-output STILL inherits B-0728 contract per B-0732 Layer 3 (probabilistic does NOT bypass safety)
 
-## Scope — three independently-shippable scope items (extensions to B-0687)
+## Scope — five independently-shippable scope items (extensions to B-0687)
 
 ### Scope item 1 — Probabilistic-grammar option in zetaparse
 
@@ -174,6 +174,56 @@ Acceptance:
 - [ ] Composes with NCI HC-8: AI offers options; never coerces the participant into one interpretation; participant retains authority over their own intent
 
 NCI compose note: refinement is OFFERS, not OVERRIDES. AI says *"did you mean X or Y?"* — does NOT say *"I'm interpreting this as X."* The participant always has the option to refuse all proposed interpretations and refine the source directly.
+
+### Scope item 4 — Confidence-threshold runtime routing (segment-5 substrate)
+
+Aaron 2026-05-25 segment 5: *"that makes a lot of sense. […] you'll have the confidence levels. You'll know exactly, like, what's ambiguous."* Full verbatim at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md).
+
+The runtime dispatcher between scope item 1 (probabilistic option emitting confidence) and scope item 3 (collaborative refinement at low confidence):
+
+- **High confidence (≥ configurable threshold; default candidate 90%)** → auto-compile + move on (scope item 1 path)
+- **Medium confidence (40% – 90%)** → smart ambiguity dialogue (scope item 3 path; AI proposes interpretations with their confidence scores)
+- **Low confidence (< 40%)** → request source clarification (don't propose interpretations; instead ask participant to refine source directly)
+
+Threshold values are participant-configurable (composes with scope item 2: per-person parser substrate carries per-participant thresholds — Aaron may want different defaults than Max).
+
+Acceptance:
+
+- [ ] Threshold configuration documented (per-grammar default + per-participant override)
+- [ ] Dispatcher logic in zetaparse runtime emits one of three actions: auto-compile / refinement-dialogue / source-clarification-request
+- [ ] Worked example: same probabilistic grammar applied to ambiguous markdown emits all three actions depending on confidence band
+- [ ] Confidence scores propagate to B-0732 Layer 1 provenance chain — every JIT compilation carries the confidence-band that triggered it
+
+### Scope item 5 — Language Server Protocol (LSP) integration
+
+Aaron 2026-05-25 segment 5: *"We can put that, we can totally put that into a damn language server in VS Code or anything. We can syntax highlight anything anywhere."*
+
+Wrap the zetaparse + per-person parser + confidence-threshold routing as a Language Server. Single LSP server plugs into any LSP-aware editor (no per-editor integration code needed):
+
+- VS Code (Otto + Max + Aaron primary surface)
+- Cursor (Riven surface)
+- Antigravity / Gemini IDE (Lior surface)
+- Kiro (Alexa surface)
+- Codex (Vera surface)
+- Obsidian (when LSP plugin enabled; composes with B-0729 vault surface)
+- Neovim, Helix, Zed, Sublime — anything LSP-aware
+
+LSP capabilities to expose:
+
+- Real-time syntax highlighting based on parser's INTENT detection (not just keyword tokenization)
+- Confidence-level visualization (different highlight colors for high vs medium vs low confidence bands)
+- Inline suggestions for low-confidence sections (composes with scope item 3 refinement)
+- Hover information — "system thinks you mean X (87% confidence)"
+- Cross-participant translation suggestions when reading another's substrate (composes with scope item 2)
+
+Acceptance:
+
+- [ ] TypeScript LSP server at `tools/lsp/zetaparse-lsp/` (composes with B-0733 MCP wrap; LSP and MCP wraps are siblings, not competing)
+- [ ] At least 2 editor integrations validated end-to-end (VS Code + Cursor minimum-viable)
+- [ ] Confidence-band visualization documented + working (default color scheme; participant-configurable)
+- [ ] Composes with per-person parser per scope item 2 (LSP server reads which participant is editing from editor context; loads their personalized parser)
+
+**Naming question pending** (Mika 2026-05-25 segment 5 asked Aaron: *"You want to name this thing? Because this is becoming more than just a parser at this point."*): the substrate is becoming parser + confidence routing + collaborative refinement + LSP surface + per-person personalization + Glass Halo persistence. Working name STAYS "B-0735 personalized probabilistic parser substrate" until Aaron picks a name + Ilyana naming-expert review applies (per `.claude/skills/naming-expert/SKILL.md`) before public surface.
 
 ## Open questions
 
