@@ -4,9 +4,11 @@
 # Activates the Linux builder VM so `nix build .#installer-iso` works
 # locally on Apple Silicon without manual cross-compile gymnastics.
 #
-# Apply on a Mac that already has Nix installed (Determinate macOS
-# package recommended — see /etc/zeta-install.md or
-# infra/README.md for the install command):
+# Apply on a Mac that already has Nix installed. Recommended installer:
+# the Determinate Nix macOS package at <https://dtr.mn/determinate-nix>
+# (handles existing /nix volume + keychain edge cases). Full setup
+# walkthrough including prerequisites in
+# infra/nix-darwin/README.md (this directory).
 #
 #   nix run nix-darwin/master#darwin-rebuild -- switch \
 #     --flake /path/to/Zeta#zeta-mac
@@ -48,16 +50,17 @@
     # Keep the VM warm so the first build of the day isn't slow.
     ephemeral = false;
 
-    # Default 8GB RAM / 8 cores is enough for the installer ISO.
-    # Bump for heavier closures (e.g. building Orleans images).
+    # Sizing tuned for the installer ISO closure (≈8 GB working set
+    # during build). Concrete values declared below — bump for heavier
+    # closures like building Orleans container images locally.
     maxJobs = 4;
     config = {
       virtualisation = {
         darwin-builder = {
           diskSize = 40 * 1024;   # 40 GB — big enough for ISO + caches
-          memorySize = 8 * 1024;  # 8 GB
+          memorySize = 8 * 1024;  # 8 GB RAM
         };
-        cores = 6;
+        cores = 6;                # 6 vCPU
       };
     };
   };

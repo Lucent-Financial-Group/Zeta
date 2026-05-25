@@ -52,8 +52,28 @@
       # installer ISO, devShell, and per-host configs all agree.
       stateVersion = "24.11";
 
-      # System architectures the cluster will run on.
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      # System architectures the flake supports.
+      #   x86_64-linux  — primary cluster target (control-plane, workers)
+      #   aarch64-linux — ARM cluster hosts (future); devShell only
+      #   aarch64-darwin / x86_64-darwin — maintainer Macs; build the
+      #     installer ISO via nix-darwin's linux-builder (Apple
+      #     Virtualization.framework + Rosetta 2)
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
+
+      # Systems that can produce the installer-iso package. Linux
+      # systems build it natively; Darwin systems dispatch through
+      # the nix-darwin linux-builder VM (configured at
+      # infra/nix-darwin/configuration.nix).
+      isoBuildSystems = [
+        "x86_64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
 
       # Helper that wires up a NixOS system with shared specialArgs so
       # every host module can reference `inputs`, `stateVersion`, and
@@ -138,12 +158,15 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
-        # The installer ISO is built from an x86_64-linux NixOS config
-        # (see nixosConfigurations.installer above), so the `installer-iso`
-        # package is only published on x86_64-linux. Other systems get an
-        # empty packages set rather than a cross-build attempt that would
-        # fail at evaluation time.
-        packages = nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
+        # The installer ISO is built from an x86_64-linux NixOS config.
+        # Published on:
+        #   - x86_64-linux        — native build (CI runners)
+        #   - aarch64-darwin      — Apple Silicon maintainers; dispatches
+        #                            via nix-darwin's linux-builder VM
+        #   - x86_64-darwin       — Intel Mac maintainers (same path)
+        # NOT published on aarch64-linux (would attempt a cross-build
+        # that fails at evaluation; no use case yet).
+        packages = nixpkgs.lib.optionalAttrs (builtins.elem system isoBuildSystems) {
           # Convenience alias for the installer ISO.
           # Build with:  nix build .#installer-iso
           # Result at:   ./result/iso/zeta-installer-*.iso

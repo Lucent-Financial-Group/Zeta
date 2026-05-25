@@ -67,7 +67,7 @@ That picks up newer linux-builder VM images + any nixpkgs bumps.
 |---|---|
 | `error: builder for ... failed` on linux-builder dispatch | `sudo launchctl kickstart -k system/org.nixos.linux-builder` |
 | Rosetta x86_64 binaries seg-fault inside the VM | Update macOS — older Rosetta builds had VM bugs |
-| `permission denied` on /nix/store | You're not in the `wheel` group, or `trusted-users = ["@admin"]` didn't apply. Re-run `darwin-rebuild switch` |
+| `permission denied` on /nix/store | You're not in the `admin` group (macOS), or `trusted-users = ["@admin"]` didn't apply. Re-run `darwin-rebuild switch` |
 | VM uses all your RAM | Lower `memorySize` in [`configuration.nix`](configuration.nix) and re-apply |
 
 ## What this is NOT
