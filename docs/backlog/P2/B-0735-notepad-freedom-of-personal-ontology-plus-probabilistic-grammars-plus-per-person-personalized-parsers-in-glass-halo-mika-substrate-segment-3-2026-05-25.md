@@ -134,7 +134,7 @@ The success metric Aaron named: the closer the system gets to "read raw thought 
 - **B-0731** (hat-ontology) — anchor mapping step composes with hat-ontology
 - **B-0728 + B-0732** (destructive-tool authoring contract + leverage-class safety substrate) — probabilistic-parser-JIT-output STILL inherits B-0728 contract per B-0732 Layer 3 (probabilistic does NOT bypass safety)
 
-## Scope — two independently-shippable scope items (extensions to B-0687)
+## Scope — three independently-shippable scope items (extensions to B-0687)
 
 ### Scope item 1 — Probabilistic-grammar option in zetaparse
 
@@ -151,6 +151,29 @@ The success metric Aaron named: the closer the system gets to "read raw thought 
 - Training pipeline: as participant authors substrate, parser updates from their corpus
 - Cross-participant translation: sender's parser → canonical intermediate → receiver's parser
 - Worked example: Aaron's parser + Max's parser + Addison's parser + at least one AI's parser all coexist; demonstrate translation of one participant's messy substrate into another's preferred form
+
+### Scope item 3 — AI-assisted-syntax-errors-as-collaborative-thought-refinement (segment-4 substrate)
+
+Aaron 2026-05-25 segment 4: *"those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like AI errors that were like helping you more well-form your thoughts."* Full verbatim at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md).
+
+Flip the social contract of parser errors:
+
+- **Conventional**: `Error: Unexpected token on line 47` (gatekeeper rejection; kills the Notepad-freedom-of-personal-ontology Aaron values)
+- **B-0735 segment-4**: *"I think you're trying to express that this traveler should have higher priority when resources are constrained, but I'm not sure. Did you mean X or Y?"* (collaborative thought-refinement)
+
+The system actively HELPS the participant think more clearly instead of just rejecting their input. Composes naturally with Scope items 1 + 2:
+
+- Low-confidence parses (the boundary between probabilistic accept/reject) become the surface area where collaborative refinement happens
+- Per-person parser learns each participant's correction patterns — gets better at proposing the RIGHT alternative interpretations over time
+- AI doing the refinement IS the participant's peer AI (per B-0733 agency stack) — same Crystal Ball + Glass Halo + runbook substrate
+
+Acceptance:
+
+- [ ] Refinement-error output format documented (alternatives proposed; confidence per alternative; participant chooses or refines further)
+- [ ] At least one worked example: probabilistic parse below threshold → AI proposes 2-3 refinement options → participant picks one → parser learns from the choice
+- [ ] Composes with NCI HC-8: AI offers options; never coerces the participant into one interpretation; participant retains authority over their own intent
+
+NCI compose note: refinement is OFFERS, not OVERRIDES. AI says *"did you mean X or Y?"* — does NOT say *"I'm interpreting this as X."* The participant always has the option to refuse all proposed interpretations and refine the source directly.
 
 ## Open questions
 
