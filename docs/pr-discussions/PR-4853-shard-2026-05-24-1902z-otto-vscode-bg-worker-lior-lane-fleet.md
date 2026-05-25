@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Bg-worker tick shard documenting Lior-lane fleet extension 38→41 PRs (~58 min since [1804Z](docs/hygiene-history/ticks/2026/05/24/1804Z.md)) with no `origin/main` commits in the window.
+Bg-worker tick shard documenting Lior-lane fleet extension 38→41 PRs (~58 min since [1804Z](../hygiene-history/ticks/2026/05/24/1804Z.md)) with no `origin/main` commits in the window.
 
 ## State observed at 1902Z
 
