@@ -39,14 +39,13 @@ full-ai-cluster/
         ├── argo-rollouts/      ← progressive delivery
         ├── longhorn/           ← distributed block storage
         ├── cockroachdb/        ← distributed SQL
-        ├── hindsight/          ← TODO: ambiguous component (see PR)
-        ├── oz/                 ← TODO: ambiguous component (see PR)
-        ├── hermes/             ← TODO: ambiguous component + OZ integration
-        ├── warp/               ← TODO: ambiguous component (see PR)
-        ├── ollama/             ← LLM serving (option A — local)
-        ├── vllm/               ← LLM serving (option B — high-throughput)
-        ├── deepseek-coder/     ← model deploy → Ollama or vLLM
-        ├── qwen-coder/         ← model deploy → Ollama or vLLM
+        ├── hindsight/          ← agent persistent memory for Hermes (chart URL TBD)
+        ├── oz/                 ← OpenZiti zero-trust overlay
+        ├── hermes/             ← custom AI agent (cloud LLMs via SOPS-baked keys, OZ transport, Hindsight memory)
+        ├── ollama/             ← LLM serving (option A — local — DEFERRED)
+        ├── vllm/               ← LLM serving (option B — high-throughput — DEFERRED)
+        ├── deepseek-coder/     ← model deploy → Ollama or vLLM (DEFERRED with local)
+        ├── qwen-coder/         ← model deploy → Ollama or vLLM (DEFERRED with local)
         ├── kube-prometheus-stack/ ← Prometheus + Grafana + Alertmanager
         ├── nats/               ← messaging
         ├── redis/              ← cache
@@ -177,23 +176,22 @@ Add new `nixosConfigurations.<host>` entries to `flake.nix` as needed.
 - ✅ Well-defined upstream charts (Cilium, ArgoCD, Temporal, GitLab,
   Forgejo, Argo Workflows / Rollouts, Longhorn, CockroachDB, NATS,
   Redis, Weaviate, Loki / Tempo / Alloy / Mimir, kube-prometheus-stack,
-  Istio, OPA, Sealed Secrets, Vault, Ollama, vLLM)
-- 🟡 Custom workloads needing your input on image + Helm chart
-  choice (Orleans Silo, Dapr Actors config, Hermes Docker image
-  with SOPS, Deepseek/Qwen Coder model deploys)
-- ⚠️ Ambiguous components that need you to confirm which upstream:
-  - **OZ** — multiple possibilities (OpenZiti? Auth0 OZ? specific
-    Aaron-built component?). Application.yaml has a TODO.
-  - **Hermes** — multiple possibilities (Cosmos IBC relayer? a
-    message broker? an Aaron-built agent?). Application.yaml has
-    a TODO with SOPS-baking-into-the-image structure already wired.
-  - **Warp** — multiple possibilities (Cloudflare Warp? Warp
-    terminal? Dagger Warp engine? an Aaron-built component?).
-  - **Hindsight** — multiple possibilities (Lockheed Martin's
-    OpenTelemetry processor? Microsoft's Hindsight? AWS?).
-
-Sharpen each ambiguous one by editing its `Application.yaml`
-to point at the right repoURL/chart/version.
+  Istio, OPA, Sealed Secrets, Vault, OpenZiti)
+- 🟡 Custom workloads needing maintainer input:
+  - **Hermes** — Aaron-built AI agent oriented at cloud LLM APIs
+    (Anthropic, OpenAI, etc.) with SOPS-baked keys + OZ transport
+    + Hindsight memory backend. Image build + push are maintainer
+    responsibility; the manifest scaffold + env vars are wired.
+  - **Orleans Silo** — custom Silo image embedding your grain code.
+- ⏳ Deferred (local-models phase — wait for now per "we only care about cloud right now"):
+  - Ollama, vLLM, Deepseek Coder, Qwen Coder Applications stay
+    in the tree at `replicas: 0` so the topology is preserved.
+    Bump replicas + rebuild Hermes against local endpoints when
+    the local-models phase comes back online.
+- ❓ Awaiting maintainer input:
+  - **Hindsight** — confirmed as standalone helm chart for agent
+    persistent memory for Hermes. `Application.yaml` has TODO
+    awaiting `repoURL` + chart name + version.
 
 ## Secrets
 

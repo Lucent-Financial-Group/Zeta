@@ -1,15 +1,15 @@
-# Hindsight — TODO: AMBIGUOUS COMPONENT.
+# Hindsight — agent persistent memory system for Hermes.
+# Standalone Helm chart deployed via ArgoCD (per Aaron 2026-05-25).
 #
-# Multiple possibilities in 2026:
-#   - Hindsight (Lockheed Martin) — OpenTelemetry trace processor
-#     for tail-sampling: https://github.com/lockheed-martin/hindsight
-#   - Hindsight (Microsoft) — observability tool
-#   - Some other "Hindsight" specific to Aaron's stack
+# TODO(aaron): provide the Helm chart URL + chart name + version.
+# Several projects use the name "Hindsight" — confirm which one:
+#   - Is it a public OSS chart? (helm repo URL?)
+#   - A private chart hosted somewhere? (repoURL + auth?)
+#   - An Aaron-built chart in a sibling repo?
 #
-# This placeholder Application points at the Lockheed Martin
-# Hindsight (most likely match given OpenTelemetry context with
-# Loki/Tempo/Alloy/Mimir all on this cluster). UPDATE the
-# repoURL + chart fields below to whichever Hindsight you mean.
+# Once you provide repoURL + chart name + version, this Application
+# wires up directly. Until then, this placeholder declares the namespace
+# + intent so the structure is in place.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -20,16 +20,27 @@ metadata:
 spec:
   project: default
   source:
-    # TODO(aaron): confirm Hindsight identity. Placeholder points at
-    # the Lockheed Martin OTel trace processor manifests:
+    # TODO(aaron): replace with the real Helm repo + chart name.
+    # Example shape:
+    #   repoURL: https://your-org.github.io/hindsight-chart/
+    #   chart: hindsight
+    #   targetRevision: 1.0.0
+    #   helm:
+    #     releaseName: hindsight
+    #     valuesObject:
+    #       persistence:
+    #         storageClass: longhorn
+    #         size: 20Gi
+    #       hermesIntegration:
+    #         enabled: true
     repoURL: https://github.com/Lucent-Financial-Group/Zeta
     targetRevision: main
     path: full-ai-cluster/k8s/applications/hindsight
     directory:
-      include: '{namespace,deployment,service}.yaml'
+      include: 'namespace.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: hindsight
   syncPolicy:
-    automated: { prune: true, selfHeal: true }
+    automated: { prune: false, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

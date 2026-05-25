@@ -1,34 +1,45 @@
-# OZ — TODO: AMBIGUOUS COMPONENT.
+# OZ → OpenZiti. Zero-trust overlay network with per-connection
+# authentication + L4 mTLS.
 #
-# "OZ" maps to several possibilities in 2026:
-#   - OpenZiti (zero-trust networking): https://openziti.io/
-#   - An Aaron-specific AI agent named OZ
-#   - Auth0's OZ component
-#
-# This placeholder uses the local k8s/applications/oz/ path so you
-# can drop in real manifests by editing the files in this directory.
-# UPDATE repoURL + chart once the identity is confirmed.
+# OpenZiti splits into multiple components; this Application installs
+# the controller. Add ziti-router/Application.yaml in a sibling dir
+# when the first edge router lands.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: oz
+  name: openziti-controller
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
 spec:
   project: default
   source:
-    # TODO(aaron): confirm OZ identity. If OpenZiti, switch to:
-    #   repoURL: https://docs.openziti.io/helm-charts/
-    #   chart: ziti-controller
-    repoURL: https://github.com/Lucent-Financial-Group/Zeta
-    targetRevision: main
-    path: full-ai-cluster/k8s/applications/oz
-    directory:
-      include: '{namespace,deployment,service}.yaml'
+    repoURL: https://docs.openziti.io/helm-charts/
+    chart: ziti-controller
+    targetRevision: 1.4.5
+    helm:
+      releaseName: ziti-controller
+      valuesObject:
+        ctrlPlane:
+          service:
+            type: ClusterIP
+        clientApi:
+          service:
+            type: ClusterIP
+        persistence:
+          enabled: true
+          storageClass: longhorn
+          size: 5Gi
+        # Bootstrap admin password — change before going to production.
+        # In production source from Vault or a Sealed Secret.
+        adminPassword: "changeme"
   destination:
     server: https://kubernetes.default.svc
-    namespace: oz
+    namespace: openziti
   syncPolicy:
-    automated: { prune: true, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    automated:
+      prune: false   # never prune — would break the trust fabric
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
