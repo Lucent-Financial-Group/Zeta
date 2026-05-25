@@ -158,13 +158,13 @@ Relevant pieces:
 - **OpenYurt** (https://openyurt.io/) — similar; Alibaba's edge-K8s
 - **Reticulum** (already in framework substrate; B-0289-class) — physical-mesh for the past-the-gateway tier
 
-**Open decision** worth its own conversation when first FPGA-at-edge deployment is planned:
+**Aaron's sharpening 2026-05-25**: *"i'm thinking it will require reticiulum at the edge and in cluster"* — not the hybrid I sketched (K8s in cluster + Reticulum past gateway). The actual direction is **Reticulum throughout** — cluster nodes ALSO speak Reticulum natively, alongside K8s. K8s and Reticulum compose as layers rather than partitioning by network-tier:
 
-1. Is the FPGA hosted on a Linux-capable device (Pi-class+) → K8s-via-Akri path
-2. Is the FPGA + MCU a firmware-class device → Reticulum/Matter past a K8s gateway
-3. Hybrid — most likely; the gateway runs K8s, the leaf runs firmware-and-mesh
+- **K8s + Cilium** owns intra-cluster networking, pod-to-pod, Service mesh, NetworkPolicy
+- **Reticulum** owns identity-routing + cross-substrate addressability — every cluster node has a Reticulum identity in addition to its SPIRE SVID; every edge device speaks the same mesh; routing is identity-based not address-based; physical layer is fungible (TCP / LoRa / packet-radio / serial)
+- **Workloads** addressable via BOTH paths: a pod's Service is reachable inside the cluster via Cilium; that same pod's Reticulum destination is reachable from any edge device anywhere on the mesh
 
-Not blocking THIS row; this row covers the data-center + Pi-class-edge case (K8s native). The micro-edge architectural decision lives separately — likely as a follow-up backlog row when there's a specific deployment in mind. Filing here as a deferred question so future-Aaron sees it surfaced.
+Architectural decision lives in a separate row (filing as B-0726 — Reticulum throughout cluster + edge as composing substrate alongside K8s). This row stays focused on accelerator-class device-plugin extensions — the Reticulum-throughout decision is a bigger substrate change that affects EVERY workload, not just accelerators.
 
 ## Substrate-honest framing
 
