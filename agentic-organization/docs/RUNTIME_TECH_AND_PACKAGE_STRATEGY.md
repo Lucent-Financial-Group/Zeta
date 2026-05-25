@@ -296,49 +296,49 @@ The concrete TypeScript app stack and app/package layout are defined in [Organiz
 Proposed packages:
 
 ```text
-@hermes-org/domain
+@agentic-org/domain
   typed entities, enums, events, commands, value objects, policy models
 
-@hermes-org/state
+@agentic-org/state
   repositories, outbox, idempotency, leases, migrations, projections
 
-@hermes-org/runtime
+@agentic-org/runtime
   scheduler, durable triggers, rules engine, reaction executor, reconcilers, workers
 
-@hermes-org/workflows-temporal
+@agentic-org/workflows-temporal
   Temporal workflows, activities, task queues, workflow clients
 
-@hermes-org/actors-dapr
+@agentic-org/actors-dapr
   Dapr actor interfaces and implementations
 
-@hermes-org/messaging
+@agentic-org/messaging
   NATS/JetStream event bus, inbox/outbox, DLQ contracts
 
-@hermes-org/mcp
+@agentic-org/mcp
   Organization MCP gateway, tool registry, policy-checked tool handlers
 
-@hermes-org/hermes
+@agentic-org/hermes
   Hermes session adapter, Oz launch adapter, run context builder
 
-@hermes-org/hats
+@agentic-org/hats
   hat graph, hat assignment, JWT issuance/refresh, hat supply policies
 
-@hermes-org/k8s-hats
+@agentic-org/k8s-hats
   generated or checked CRD types, Kubernetes watches, HatSwap codecs, projection clients
 
-@hermes-org/memory
+@agentic-org/memory
   Hindsight adapter, memory attribution, scoped recall, memory quality workflows
 
-@hermes-org/docs-skills
+@agentic-org/docs-skills
   documentation context resolver, project skill ingestion, graph projection
 
-@hermes-org/observability
+@agentic-org/observability
   trace/log/metric helpers, health reports, SLOs, anomaly reports
 
-@hermes-org/policy
+@agentic-org/policy
   RBAC, OPA/Rego policy bundles, conflict policy, human override policy
 
-@hermes-org/adapters-agentic-services
+@agentic-org/adapters-agentic-services
   compatibility wrappers for reused primitives from @tgcs/agentic-services
 ```
 
@@ -401,7 +401,7 @@ The current registry shape is useful, but Organization tools need:
 - project/initiative/task scope;
 - tool visibility by hat and project skill.
 
-Build `@hermes-org/mcp` as a new package and either wrap or copy the registry pattern.
+Build `@agentic-org/mcp` as a new package and either wrap or copy the registry pattern.
 
 ### Message Bus
 
@@ -650,7 +650,7 @@ Implement:
 
 ### Phase 6: Package Extraction
 
-Create `@hermes-org/*` packages. Copy/adapt the minimum from `@tgcs/agentic-services` with tests and new naming.
+Create `@agentic-org/*` packages. Copy/adapt the minimum from `@tgcs/agentic-services` with tests and new naming.
 
 ### Phase 7: Capability Expansion Runtime
 
