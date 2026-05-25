@@ -18,22 +18,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Bg-worker tick shard documenting Lior-lane fleet extension 38→41 PRs (~58 min since [1804Z](docs/hygiene-history/ticks/2026/05/24/1804Z.md)) with no `origin/main` commits in the window.
+Bg-worker tick shard documenting Lior-lane fleet extension 38→41 PRs (~58 min since [1804Z](../hygiene-history/ticks/2026/05/24/1804Z.md)) with no `origin/main` commits in the window.
 
 ## State observed at 1902Z
 
 - 41 open PRs, **41/41 = 100% Lior-lane** (sustained from 1804Z)
 - otto-vscode own-lane: **0 PRs** (bg-worker prompt's "30 PRs" target empty in own lane)
 - 3 new since 1804Z (#4850, #4851, #4852) — continuation of `lior-decompose-4828-*` cluster
-- #4852 touches `.cursor/bin/riven-loop-tick.ts` — runtime-script special-case per [`backlog-item-start-gate.md`](.claude/rules/backlog-item-start-gate.md) guard
+- #4852 touches `.cursor/bin/riven-loop-tick.ts` — runtime-script special-case per [`backlog-item-start-gate.md`](../../.claude/rules/backlog-item-start-gate.md) guard
 - `origin/main` HEAD `27d114290` unchanged since 1804Z; 0 commits in 60min window
 - ls-tree HEAD = 55 (no canary corruption)
 
 ## Substrate discipline applied
 
-Per [`agent-roster-reference-card.md`](.claude/rules/agent-roster-reference-card.md) lane discipline + [`pr-triage-tiers.md`](.claude/rules/pr-triage-tiers.md) Tier 5 + [`no-directives.md`](.claude/rules/no-directives.md) + [`mechanical-authorization-check.md`](.claude/rules/mechanical-authorization-check.md): bg-worker task prompt does NOT override standing lane discipline. Cross-lane auto-resolution on runtime-script-touching PRs would regress Riven tuning; operator-authored armed PRs (#4801/#4802/#4803) cannot be unilaterally overridden.
+Per [`agent-roster-reference-card.md`](../../.claude/rules/agent-roster-reference-card.md) lane discipline + [`pr-triage-tiers.md`](../../.claude/rules/pr-triage-tiers.md) Tier 5 + [`no-directives.md`](../../.claude/rules/no-directives.md) + [`mechanical-authorization-check.md`](../../.claude/rules/mechanical-authorization-check.md): bg-worker task prompt does NOT override standing lane discipline. Cross-lane auto-resolution on runtime-script-touching PRs would regress Riven tuning; operator-authored armed PRs (#4801/#4802/#4803) cannot be unilaterally overridden.
 
-Counter-reset condition #3 (concrete artifact) satisfied per [`holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md).
+Counter-reset condition #3 (concrete artifact) satisfied per [`holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md).
 
 ## Test plan
 
