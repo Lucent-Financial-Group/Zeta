@@ -1,6 +1,6 @@
 ---
 name: flash-cluster-iso
-description: Flash a Zeta AI-cluster installer ISO to a USB stick from macOS. Covers one-time Touch ID PAM setup, the operator-only path (`zflash` + `yes <4-hex>` + fingerprint), and the agent-driven path (agent auto-types the nonce via `expect`; operator's Touch ID still gates the sudo dd). Empirical anchor: B-0737 zflash + B-0743 "I execute, you fingerprint" design pattern.
+description: Flash a Zeta cluster installer ISO to USB from macOS via zflash + Touch ID; covers operator-only and agent-driven (expect) paths.
 record_source: "operator-agent zflash flow, 2026-05-25 session"
 load_datetime: "2026-05-25"
 last_updated: "2026-05-25"
@@ -111,15 +111,15 @@ If any rail trips, the tool exits non-zero with a specific message. Do NOT add `
 
 ### "I have multiple USBs plugged in"
 
-zflash refuses (`refusing to pick one. Unplug all but the target USB and re-run`). Unplug the others or use the long-form `bun full-ai-cluster/tools/flash-usb.ts <iso-path>` which forces explicit device choice via the long-form `accept-destroy <device> <8-hex>` challenge.
+Both zflash and the long-form `bun full-ai-cluster/tools/flash-usb.ts <iso-path>` refuse (`refusing to pick one. Unplug all but the target USB and re-run`). The long-form's `accept-destroy <device> <8-hex>` challenge ties consent to a specific device path, but device-set ambiguity is rejected upstream of that prompt regardless of challenge format. Unplug everything except the target USB before running either form. Manual `sudo dd if=<iso> of=/dev/rdiskN bs=4m` is the documented escape hatch when single-USB-isolation isn't physically possible.
 
 ### "Touch ID didn't fire — I got a password prompt"
 
 `zflash-setup --install-alias` wasn't run, OR the PAM line was reverted by a macOS update. Re-run setup; verify with `grep pam_tid /etc/pam.d/sudo`.
 
-### "Aaron isn't at the Mac — flash anyway?"
+### "The operator isn't at the Mac — flash anyway?"
 
-No. The Touch ID gate is by design — physical-presence is what the destructive-tool consent floor requires. If Aaron is genuinely remote and the flash needs to happen, ask him to (a) come to the Mac for 5 seconds, OR (b) authorize a different flow explicitly (e.g., he runs zflash himself).
+No. The Touch ID gate is by design — physical-presence is what the destructive-tool consent floor requires. If the operator is genuinely remote and the flash needs to happen, ask them to (a) come to the Mac for 5 seconds, OR (b) authorize a different flow explicitly (e.g., they run zflash themselves).
 
 ### "Linux / Windows version?"
 
@@ -127,8 +127,8 @@ Not in this skill. B-0738 (Linux: `pam_fprintd` / fingerprint readers) + B-0739 
 
 ## Composes with
 
-- `.claude/rules/desktop-admin-consent-via-biometric-plus-small-challenge-i-execute-you-fingerprint.md` (B-0743) — the design pattern this skill instantiates
-- `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — operator pushes `.claude/settings.json` edits themselves; the `Bash(bun full-ai-cluster/tools/flash-usb.ts *)` permission must be in settings already (it is, per Aaron 2026-05-25)
+- B-0743 — "I execute, you fingerprint" design pattern (rule + backlog row landing via PR #5006; cross-reference will resolve once it merges)
+- `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — the operator pushes `.claude/settings.json` edits themselves; the `Bash(bun full-ai-cluster/tools/flash-usb.ts *)` permission must be in settings already (operator-authorized for this skill's scope)
 - B-0737 — zflash + Touch ID PAM + short challenge empirical anchor
 - B-0728 — destructive-tool authoring contract
 - B-0738 — Linux extension (planned)

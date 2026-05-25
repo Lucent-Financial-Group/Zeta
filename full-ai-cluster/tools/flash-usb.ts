@@ -350,6 +350,15 @@ async function main() {
   } else {
     for (const p of partitions) {
       const partDev = `/dev/${p.DeviceIdentifier}`;
+      // Defense-in-depth: partition-device identifier comes from diskutil's
+      // own plist (trusted) but we still validate the path shape before
+      // feeding it to another diskutil invocation, matching the same
+      // discipline `assertSafeDevicePath` enforces on the whole-disk
+      // candidate. Partition paths have an additional 's<N>' suffix
+      // (e.g. /dev/disk6s1), so we use a partition-aware regex here.
+      if (!/^\/dev\/disk\d+s\d+$/.test(partDev)) {
+        bail(2, `unsafe partition path from diskutil: ${partDev}`);
+      }
       const pInfo = diskutilInfo(partDev);
       const pSize = Number(p.Size ?? pInfo.TotalSize ?? 0);
       const pContent = String(p.Content ?? pInfo.Content ?? "?");
