@@ -8,7 +8,7 @@ merged_at: "2026-05-25T06:21:44Z"
 closed_at: "2026-05-25T06:21:44Z"
 head_ref: "shard/tick-0443z-otto-bg-worker-20th-dotgit-anchor-7th-clean-reading-2026-05-25"
 base_ref: "main"
-archived_at: "2026-05-25T12:09:56Z"
+archived_at: "2026-05-25T12:48:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-25T03:58:16Z"
 closed_at: "2026-05-25T03:58:16Z"
 head_ref: "fix/nix-darwin-pin-to-2411-release-branch"
 base_ref: "main"
-archived_at: "2026-05-25T12:10:26Z"
+archived_at: "2026-05-25T12:48:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

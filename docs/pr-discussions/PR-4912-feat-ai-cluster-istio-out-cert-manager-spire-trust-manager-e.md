@@ -8,7 +8,7 @@ merged_at: "2026-05-25T06:47:30Z"
 closed_at: "2026-05-25T06:47:30Z"
 head_ref: "ai-cluster-tweaks-istio-out-spire-in"
 base_ref: "main"
-archived_at: "2026-05-25T12:09:31Z"
+archived_at: "2026-05-25T12:48:01Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

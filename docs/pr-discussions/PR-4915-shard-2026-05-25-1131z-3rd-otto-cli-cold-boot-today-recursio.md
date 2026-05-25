@@ -8,7 +8,7 @@ merged_at: "2026-05-25T11:35:49Z"
 closed_at: "2026-05-25T11:35:49Z"
 head_ref: "shard/tick-2026-05-25-1131z-otto-cli-3rd-cold-boot-recursion-saturation"
 base_ref: "main"
-archived_at: "2026-05-25T12:08:53Z"
+archived_at: "2026-05-25T12:47:54Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

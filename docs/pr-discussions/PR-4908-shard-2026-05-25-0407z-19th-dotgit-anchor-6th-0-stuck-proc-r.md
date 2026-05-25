@@ -8,7 +8,7 @@ merged_at: "2026-05-25T04:20:07Z"
 closed_at: "2026-05-25T04:20:07Z"
 head_ref: "otto-cli/0407z-shard-2026-05-25"
 base_ref: "main"
-archived_at: "2026-05-25T12:10:05Z"
+archived_at: "2026-05-25T12:48:01Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

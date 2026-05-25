@@ -8,7 +8,7 @@ merged_at: "2026-05-25T03:42:32Z"
 closed_at: "2026-05-25T03:42:32Z"
 head_ref: "feat/nix-darwin-linux-builder-config-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-25T12:10:34Z"
+archived_at: "2026-05-25T12:48:01Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-25T10:23:04Z"
 closed_at: "2026-05-25T10:23:04Z"
 head_ref: "shard/tick-2026-05-25-1009z-otto-cli-cold-boot-lior-substrate-stale-superseded"
 base_ref: "main"
-archived_at: "2026-05-25T12:09:09Z"
+archived_at: "2026-05-25T12:48:01Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

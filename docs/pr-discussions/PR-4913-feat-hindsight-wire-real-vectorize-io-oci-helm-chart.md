@@ -8,7 +8,7 @@ merged_at: "2026-05-25T06:54:11Z"
 closed_at: "2026-05-25T06:54:11Z"
 head_ref: "fix/hindsight-real-helm-chart"
 base_ref: "main"
-archived_at: "2026-05-25T12:09:24Z"
+archived_at: "2026-05-25T12:48:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

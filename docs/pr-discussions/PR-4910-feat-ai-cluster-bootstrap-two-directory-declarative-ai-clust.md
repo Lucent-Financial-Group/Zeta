@@ -8,7 +8,7 @@ merged_at: "2026-05-25T06:40:16Z"
 closed_at: "2026-05-25T06:40:16Z"
 head_ref: "ai-cluster-bootstrap"
 base_ref: "main"
-archived_at: "2026-05-25T12:09:48Z"
+archived_at: "2026-05-25T12:48:01Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
