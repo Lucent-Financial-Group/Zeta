@@ -3,26 +3,24 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.google.zeta.kiro-loop</string>
+    <string>com.lucent.zeta.kiro-loop</string>
 
     <key>ProgramArguments</key>
     <array>
-        <string>__USER_HOME__/.local/share/mise/installs/bun/1.3/bin/bun</string>
-        <string>__USER_HOME__/Documents/src/repos/Zeta/tools/kiro/kiro-loop-tick.ts</string>
+        <string>/bin/bash</string>
+        <string>__REPO_ROOT__/tools/kiro/kiro-loop-wrapper.sh</string>
     </array>
 
     <key>StartInterval</key>
     <integer>60</integer>
 
     <key>WorkingDirectory</key>
-    <string>__USER_HOME__/Documents/src/repos/Zeta</string>
+    <string>__REPO_ROOT__</string>
 
     <key>EnvironmentVariables</key>
     <dict>
         <key>HOME</key>
         <string>__USER_HOME__</string>
-        <key>PATH</key>
-        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:__USER_HOME__/.local/bin:__USER_HOME__/.local/share/mise/installs/bun/1.3/bin</string>
     </dict>
 
     <key>StandardOutPath</key>
