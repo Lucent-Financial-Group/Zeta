@@ -1,14 +1,19 @@
 ---
 id: B-0758
-title: USB-persistent OS — unRAID-style zero-internal-disk support + OS-on-USB-with-internal-disks-as-data-only
-status: open
 priority: P3
-size: L
+status: open
+title: USB-persistent OS — unRAID-style zero-internal-disk support + OS-on-USB-with-internal-disks-as-data-only
+effort: L
+ask: aaron 2026-05-25
 created: 2026-05-25
-authors: [aaron, otto-cli]
-composes_with: [B-0754, B-0755, B-0756, B-0757]
-depends_on: [B-0754]
-labels: [cluster, installer, nixos, usb, unraid, storage]
+last_updated: 2026-05-25
+depends_on:
+  - B-0754
+composes_with:
+  - B-0755
+  - B-0756
+  - B-0757
+tags: [cluster, installer, nixos, usb, unraid, storage]
 ---
 
 ## Problem
@@ -92,9 +97,9 @@ For Zeta:
 - Internal disks = Longhorn (or future Ceph/Rook) data paths
 - Difference: NixOS rebuilds vs unRAID's image-update model
 
-NixOS specifically supports this via `boot.loader.systemd-boot`
-+ `fileSystems."/persist".device = "/dev/disk/by-label/persist"`
-+ `environment.persistence."/persist" = { ... }` (impermanence
+NixOS specifically supports this via `boot.loader.systemd-boot`,
+`fileSystems."/persist".device = "/dev/disk/by-label/persist"`,
+and `environment.persistence."/persist" = { ... }` (impermanence
 module).
 
 ## Composes with
