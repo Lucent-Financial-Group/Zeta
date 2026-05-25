@@ -8,7 +8,7 @@ merged_at: "2026-05-25T19:26:45Z"
 closed_at: "2026-05-25T19:26:45Z"
 head_ref: "backlog/b0728-destructive-tool-authoring-contract-2026-05-25-c2"
 base_ref: "main"
-archived_at: "2026-05-25T20:41:09Z"
+archived_at: "2026-05-25T20:59:25Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
