@@ -137,16 +137,26 @@ jobs:
 
   attach-to-release:
     name: attach-iso-to-release
-    needs: build
+    # No `needs: build`. The build job is skipped on release events
+    # (see its own `if: github.event_name != 'release'`); declaring
+    # `needs: build` here would short-circuit attach-to-release to
+    # "skipped" too because skipped-by-`if` propagates through
+    # `needs:` by default. The two jobs are independent: attach-to-
+    # release builds the ISO itself at the release tag, with its
+    # own ref pinning.
     if: github.event_name == 'release'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: write   # needed to upload the ISO as a release asset
     steps:
-      - name: Checkout
+      - name: Checkout at the release tag
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          # Explicit ref pin: on release events GITHUB_REF defaults
+          # to the tag, but pinning explicitly is defense in depth
+          # against payload variation (and reads more clearly).
+          ref: ${{ github.event.release.tag_name }}
           # Match the build job: full history + tags so `git describe`
           # style versioning and flake.lock pinning are reproducible at
           # the tag. Default fetch-depth: 1 omits tags/history and risks
