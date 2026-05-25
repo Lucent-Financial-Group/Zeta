@@ -43,10 +43,15 @@ Multiple language implementations of the same operator, all watching the same CR
 | Component | Language | Owner | Purpose |
 |-----------|----------|-------|---------|
 | Hat / HatBinding / HatSwap / HatPolicy CRDs | YAML (canonical contract) | shared | Single source of truth for schema; both operators consume this |
-| Go operator scaffold | Go | Aaron / existing | Reference implementation; reliability baseline; ships first |
-| TS operator (this row) | TypeScript (via kubernetes-client + controller-runtime-equivalent) | Max | Second implementation; runs in same cluster; proves CRD is polyglot-correct |
-| Future Rust operator | Rust (kube-rs) | TBD | If we want lock-free high-throughput reconcile loops |
-| Future Python operator | Python (kopf) | TBD | If we want quick prototyping for new CRDs |
+| Go operator scaffold | Go | starter; minimize over time | Reference implementation; reliability baseline; shipped first because the K8s ecosystem is Go-native |
+| TS operator (this row) | TypeScript (`@kubernetes/client-node` + NestJS optional) | Max | Max's strength; second implementation that runs same CRDs; proves polyglot |
+| C# / F# operator (future) | C# / F# via [KubeOps.NET](https://buehler.github.io/dotnet-operator-sdk/) | Aaron + Max common ground | C# is the team's overlap (Max loves TS+C#; Aaron loves F#+C#); KubeOps.NET provides a kubebuilder-class operator framework on .NET — removes Go from the operator-authoring path entirely for this class of work |
+| Future Rust operator | Rust ([kube-rs](https://kube.rs/)) | both like Rust for the right job | Lock-free high-throughput reconcile loops; perf-critical paths |
+| Future Python operator | Python ([kopf](https://kopf.readthedocs.io/)) | both like Python for the right job | Fast prototyping; ML-adjacent CRDs where Python ecosystem is already there |
+
+**Team language-affinity context** (Aaron 2026-05-25): *"max love ts and cs i love fs and cs we both like rust and python for where they make sense"* + *"we understand go is necessary in some places for k8s but we would like to limit its necessity"*.
+
+So: Go stays where the ecosystem truly forces it (some CRD tooling, kubebuilder itself, controller-tools), but operator authoring should move to TS / C# / F# / Rust / Python over time. The hat-system Go scaffold is the bootstrap; the TS rewrite (this row) is move #1; a KubeOps.NET implementation is the obvious move #2 because it lands BOTH Aaron and Max in their strong-language zone simultaneously.
 
 ## Why polyglot matters at cluster scope
 
