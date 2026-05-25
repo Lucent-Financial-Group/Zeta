@@ -10,7 +10,6 @@ created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
 composes_with: []
-children: [B-0002.1, B-0002.2, B-0002.3, B-0002.4]
 tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
 type: feature
 ---
@@ -29,7 +28,7 @@ analogously."*
 ## What's owed
 
 Per the research direction in
-`memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md`,
+`docs/research/otto-287-noether-formalization-2026-04-25.md`,
 four steps:
 
 1. **Define the cognitive action $S = \int (W - F) \, dt$.**
@@ -81,7 +80,7 @@ beyond is upside.
 
 - `memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`
   — the substrate captured this observation
-- `memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md`
+- `docs/research/otto-287-noether-formalization-2026-04-25.md`
   — the research direction
 - `memory/feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md`
   — Otto-286 precision discipline enables Step 1

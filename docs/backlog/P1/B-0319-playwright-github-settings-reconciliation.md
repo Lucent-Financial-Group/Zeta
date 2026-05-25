@@ -1,13 +1,13 @@
 ---
 id: B-0319
 priority: P1
-status: closed
+status: open
 title: "GitHub settings reconciliation — UI snapshot vs expected.json drift detection"
 tier: agent-capability-expansion
 effort: S
 parent: B-0064
 created: 2026-05-08
-last_updated: 2026-05-09
+last_updated: 2026-05-08
 depends_on: [B-0318]
 composes_with: [B-0064, B-0317]
 tags: [agent-capability, github-ui, playwright, settings, drift-detection, hygiene]
@@ -48,14 +48,12 @@ reading the UI directly and comparing.
 
 ## Done-criteria
 
-- [x] `tools/playwright/github-ui/reconcile-settings.ts`
+- [ ] `tools/playwright/github-ui/reconcile-settings.ts`
       exists.
-- [x] Running it produces a drift report against the live
-      Zeta repo settings (exit 0 clean, exit 2 drift).
-- [x] At least 3 settings are mapped (branch protection:
-      allow-merge-commit/squash/rebase; secret scanning:
-      secret-scanning + push-protection + ai-detection;
-      dependabot: dependabot-security-updates).
+- [ ] Running it produces a drift report against the live
+      Zeta repo settings.
+- [ ] At least 3 settings are mapped (branch protection,
+      secret scanning, dependabot).
 
 ## What this row does NOT do
 

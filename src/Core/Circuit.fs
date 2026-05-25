@@ -42,52 +42,6 @@ type Op() =
     abstract IsAsync: bool
     default _.IsAsync = false
 
-    // ─────────────────────────────────────────────────────────────────
-    //  Algebra capability tags. Promoted from plugin-only marker
-    //  interfaces (PluginApi.fs) to first-class fields on the Op base
-    //  class so internal operators and plugin operators declare
-    //  capabilities through the same surface. The scheduler, fusion
-    //  engine, and incremental-rewriter dispatcher all consult these
-    //  fields — they're load-bearing for capability-aware optimization,
-    //  not decorative.
-    //
-    //  Default false; each concrete operator overrides only the
-    //  capabilities it actually has. Lying about a tag is an algebraic
-    //  contract violation — LawRunner can verify each in test mode.
-    // ─────────────────────────────────────────────────────────────────
-
-    /// Algebra capability: operator is *linear* — `op(a + b) = op(a) +
-    /// op(b)` and `op(0) = 0`. Retraction-native: a negative-weight
-    /// input un-accumulates correctly. `IncrementalAuto` uses this to
-    /// emit `Q^Δ = Q` (linear operators incrementalize trivially).
-    abstract IsLinear: bool
-    default _.IsLinear = false
-
-    /// Algebra capability: operator is *bilinear* in its two inputs.
-    /// `op(a₁+a₂, b) = op(a₁, b) + op(a₂, b)` and symmetrically for the
-    /// second argument; additionally `op(0, b) = op(a, 0) = 0`.
-    /// `IncrementalAuto` uses this to emit the three-term incremental
-    /// form `Δa ⋈ Δb + z⁻¹(I(a)) ⋈ Δb + Δa ⋈ z⁻¹(I(b))`.
-    abstract IsBilinear: bool
-    default _.IsBilinear = false
-
-    /// Algebra capability: operator is a *sink* — terminal,
-    /// retraction-lossy, may emit a non-Z-set output. Sinks are
-    /// excluded from relational composition: `Circuit.Build()` rejects
-    /// any operator that reads from a sink's output stream (terminal-
-    /// placement enforcement). Bayesian aggregates and external-system
-    /// sinks are canonical examples.
-    abstract IsSink: bool
-    default _.IsSink = false
-
-    /// Algebra capability: operator carries explicit stateful-strict
-    /// semantics — init/step/retract triple — distinct from `IsStrict`
-    /// (feedback-cut). Stateful-strict operators hold per-key state
-    /// that must retract cleanly when a negative-weight input arrives.
-    /// `LawRunner.checkRetractionCompleteness` verifies the claim.
-    abstract IsStatefulStrict: bool
-    default _.IsStatefulStrict = false
-
 
 /// An operator with a typed output slot.
 ///
@@ -230,33 +184,6 @@ type Circuit() =
                     if inDeg.[c] = 0 then q.Enqueue c
             if k <> n then
                 invalidOp "Circuit has a cycle that does not pass through a strict operator"
-            // Sink-terminality enforcement. The `ISinkOperator` docstring
-            // (PluginApi.fs) promises *"the scheduler enforces terminal
-            // placement (a sink may not feed another operator inside a
-            // relational path)"*. PR 2 makes that promise load-bearing:
-            // any operator whose `Inputs` contains a sink is rejected
-            // with a diagnostic naming both endpoints, the sink's
-            // position in the DAG, and a pointer to the algebra-tag
-            // contract. Sinks are retraction-lossy by design (e.g.
-            // BayesianRateOp aggregates state that doesn't un-accumulate);
-            // letting a downstream operator read from a sink would
-            // violate the relational composition laws Z-set algebra
-            // depends on.
-            //
-            // Defensive ordering: this runs AFTER the topo-sort succeeds
-            // so the error message can reference op IDs that are stable.
-            // O(N + E) — each edge checked exactly once.
-            for op in ops do
-                for dep in op.Inputs do
-                    if dep.IsSink then
-                        invalidOp
-                            (sprintf
-                                "Sink-terminality violation: operator '%s' (id=%d) reads from \
-                                 sink operator '%s' (id=%d). Sinks are terminal — they may not \
-                                 feed other operators in a relational path because sink state is \
-                                 retraction-lossy and breaks Z-set composition laws. See \
-                                 PluginApi.fs:ISinkOperator for the contract."
-                                op.Name op.Id dep.Name dep.Id)
             schedule <- order
             let sn = ResizeArray<Op>()
             for op in ops do if op.IsStrict then sn.Add op

@@ -17,16 +17,9 @@
 //   - Windows home paths: `C:\Users\<name>` (both backslash and
 //     forward-slash forms)
 //
-// Excluded from the scan:
-//   - History surfaces (ROUND-HISTORY.md, hygiene-history/, DECISIONS/)
-//   - This audit script itself (its patterns ARE examples).
-//   - launchd / service plist files under .gemini/launchd/ and
-//     .gemini/service/ — those are the CANONICAL home for machine-
-//     specific paths by design (maintainer-only artifacts with a
-//     maintainer-note comment explaining the paths are machine-
-//     specific and must be regenerated per-machine before
-//     `launchctl load`). Flagging them as gaps is a false-positive
-//     that creates ongoing audit noise.
+// Excluded from the scan: history surfaces (ROUND-HISTORY.md,
+// hygiene-history/, DECISIONS/) and this audit script itself
+// (its patterns ARE examples).
 //
 // Usage:
 //   bun tools/hygiene/audit-machine-specific-content.ts            # summary
@@ -72,7 +65,7 @@ const PATTERN_NAMES: readonly string[] = [
 ];
 
 const EXCLUDE_RE =
-  /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-machine-specific-content\.(sh|ts)|\.gemini\/(launchd|service)\/[^/]+\.plist$)/;
+  /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-machine-specific-content\.(sh|ts))/;
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
 

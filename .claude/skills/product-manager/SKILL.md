@@ -1,6 +1,6 @@
 ---
 name: product-manager
-description: PM-2 product discovery — feature-gap prediction, roadmap option shaping, acceptance-criteria sharpening, vague-signal-to-testable-bet.
+description: Product Manager PM-2 skill. Use when Zeta needs proactive product discovery, feature-gap prediction before user friction, roadmap option shaping, acceptance-criteria sharpening, or conversion of vague maintainer/user signals into testable product bets. Distinct from project-management or delivery tracking; this skill asks what should exist next and why.
 ---
 
 # Product Manager PM-2

@@ -56,8 +56,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { allActiveClaims } from "../bus/claim.ts";
-import type { ClaimRecord } from "../bus/claim.ts";
 
 export interface CheckCounts {
   ok: number;
@@ -107,8 +105,6 @@ export interface BatchReport {
   summary: BatchSummary;
   reports: GateReport[];
   errors: PollError[];
-  /** Active bus claims across all backlog items — present only when --with-bus-claims */
-  busClaims?: ClaimRecord[];
 }
 
 interface ParsedArgs {
@@ -118,7 +114,6 @@ interface ParsedArgs {
   prs: number[];
   allOpen: boolean;
   summaryOnly: boolean;
-  withBusClaims: boolean;
 }
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -132,7 +127,6 @@ function parseArgs(argv: string[]): ParsedArgs {
     prs: [],
     allOpen: false,
     summaryOnly: false,
-    withBusClaims: false,
   };
   const requireValue = (flag: string, v: string | undefined): string => {
     // Reject any value starting with `-` (not just `--`), so that
@@ -164,15 +158,12 @@ function parseArgs(argv: string[]): ParsedArgs {
       out.allOpen = true;
     } else if (arg === "--summary-only") {
       out.summaryOnly = true;
-    } else if (arg === "--with-bus-claims") {
-      out.withBusClaims = true;
     } else if (arg === "--help" || arg === "-h") {
       process.stdout.write(
         "Usage: poll-pr-gate-batch.ts <PR1> <PR2> ...\n" +
           "       poll-pr-gate-batch.ts --all-open [--owner X] [--repo Y]\n" +
           "       poll-pr-gate-batch.ts --concurrency N <PRs...>\n" +
-          "       poll-pr-gate-batch.ts --summary-only --all-open\n" +
-          "       poll-pr-gate-batch.ts --with-bus-claims 1234 5678\n",
+          "       poll-pr-gate-batch.ts --summary-only --all-open\n",
       );
       process.exit(0);
     } else if (/^\d+$/.test(arg)) {
@@ -323,9 +314,6 @@ type PollFn = (
   repo: string,
 ) => Promise<PollOutcome>;
 
-/** Injectable bus-claims provider — default reads from /tmp/zeta-bus; override in tests. */
-export type BusClaimsFn = () => ClaimRecord[];
-
 export async function pollAllBounded(
   prs: number[],
   owner: string,
@@ -398,11 +386,7 @@ export function summarize(reports: GateReport[]): BatchSummary {
   return { byGate, byNextAction, byState, actionable, warnings };
 }
 
-export async function main(
-  argv: string[],
-  busClaimsFn: BusClaimsFn = allActiveClaims,
-  pollFn: PollFn = pollOne,
-): Promise<number> {
+export async function main(argv: string[]): Promise<number> {
   const args = parseArgs(argv);
   const prs = args.allOpen ? listOpenPRs(args.owner, args.repo) : args.prs;
   if (prs.length === 0) {
@@ -421,12 +405,11 @@ export async function main(
       },
       reports: [],
       errors: [],
-      ...(args.withBusClaims && { busClaims: busClaimsFn() }),
     };
     process.stdout.write(`${JSON.stringify(empty, null, 2)}\n`);
     return 0;
   }
-  const outcomes = await pollAllBounded(prs, args.owner, args.repo, args.concurrency, pollFn);
+  const outcomes = await pollAllBounded(prs, args.owner, args.repo, args.concurrency);
   const reports: GateReport[] = [];
   const errors: PollError[] = [];
   for (const o of outcomes) {
@@ -441,7 +424,6 @@ export async function main(
     summary: summarize(reports),
     reports: args.summaryOnly ? [] : reports,
     errors,
-    ...(args.withBusClaims && { busClaims: busClaimsFn() }),
   };
   process.stdout.write(`${JSON.stringify(batch, null, 2)}\n`);
   return errors.length > 0 ? 2 : 0;

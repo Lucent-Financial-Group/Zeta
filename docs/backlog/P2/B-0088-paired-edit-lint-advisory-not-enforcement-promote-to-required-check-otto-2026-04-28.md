@@ -1,16 +1,13 @@
 ---
 id: B-0088
 priority: P2
-status: closed
-superseded_by: B-0423.4
-resolved: 2026-05-13
+status: open
 title: memory/MEMORY.md paired-edit lint is advisory only (not in required-status-checks); promote or remove the discoverability claim
 tier: factory-tooling
 effort: S
 ask: autonomous-loop tick discovery 2026-04-28T20:23Z (paired-edit failures observed on PR #688/#689; both auto-merged anyway)
 created: 2026-04-28
-last_updated: 2026-05-13
-decomposed: true
+last_updated: 2026-05-02
 depends_on: []
 composes_with:
   - B-0087

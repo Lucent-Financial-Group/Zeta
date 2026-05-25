@@ -13,11 +13,8 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Algebra.fs" />
-    <Compile Include="CayleyDickson.fs" />
-    <Compile Include="Semiring.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="ZSet.fs" />
-    <Compile Include="ToffoliGate.fs" />
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
@@ -48,7 +45,6 @@
     <Compile Include="Veridicality.fs" />
     <Compile Include="Graph.fs" />
     <Compile Include="StructureFingerprint.fs" />
-    <Compile Include="StructureCatalog.fs" />
     <Compile Include="PhaseExtraction.fs" />
     <Compile Include="Window.fs" />
     <Compile Include="Units.fs" />
@@ -94,7 +90,6 @@
     <Compile Include="DeltaCrdt.fs" />
     <Compile Include="SignalQuality.fs" />
     <Compile Include="Maji.fs" />
-    <Compile Include="Consent/KskAuthorization.fs" />
   </ItemGroup>
 
   <ItemGroup>

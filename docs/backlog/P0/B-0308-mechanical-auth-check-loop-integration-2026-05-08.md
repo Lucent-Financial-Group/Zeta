@@ -1,14 +1,14 @@
 ---
 id: B-0308
 priority: P0
-status: closed
+status: in-progress
 title: "Mechanical authorization check — autonomous-loop tick-start integration"
 effort: S
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: B-0160
 depends_on: [B-0305, B-0307]
-classification: closed
+classification: in-progress
 decomposition: atomic
 owners: [architect]
 type: friction-reducer

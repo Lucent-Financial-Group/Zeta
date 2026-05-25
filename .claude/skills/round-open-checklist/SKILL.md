@@ -1,6 +1,6 @@
 ---
 name: round-open-checklist
-description: Round-open procedure — reset CURRENT-ROUND.md, carry DEBT/P1 forward, name anchor, dispatch reviewer floor, confirm branch strategy.
+description: Capability skill ("hat") — procedure the `architect` walks through at the start of every round. Resets `docs/CURRENT-ROUND.md`, carries DEBT / P1 items forward, names the anchor, dispatches the reviewer floor schedule, confirms branch strategy (round-N branch off main). Pairs with `round-management` which covers the full round cadence; this skill is just the open-of-round slice.
 ---
 
 # Round-Open Checklist — Procedure

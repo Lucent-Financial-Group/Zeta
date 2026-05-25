@@ -86,20 +86,21 @@ module Veridicality =
           Weight: int64
           Prov: Provenance }
 
-    /// **Validate provenance** — returns `1.0` when the
+    /// **Validate provenance** — returns `true` when the
     /// provenance has the minimum fields populated + a valid
-    /// signature. Returns `0.0` on empty-string `SourceId`,
+    /// signature. Returns `false` on empty-string `SourceId`,
     /// `RootAuthority`, or `ArtifactHash`, or when `SignatureOk
     /// = false`.
     ///
-    /// The return type is `float` in `[0.0, 1.0]` rather than
-    /// `bool` because certainty is a special case of confidence,
-    /// not the primitive (B-0358). Current binary implementations
-    /// return {0.0, 1.0}; future implementations can score
-    /// intermediate trust levels (e.g. 0.7 for a weakly-trusted
-    /// root) without changing this API. Callers that need a
-    /// binary decision apply their own threshold:
-    /// `if score >= 0.5 then ...`
+    /// Matches Amara's 10th-ferry snippet:
+    ///
+    /// ```
+    /// let validateProvenance c =
+    ///     c.Prov.SourceId <> ""
+    ///     && c.Prov.RootAuthority <> ""
+    ///     && c.Prov.ArtifactHash <> ""
+    ///     && c.Prov.SignatureOk
+    /// ```
     ///
     /// `BuilderId = None`, `TimestampUtc`, and `EvidenceClass`
     /// are NOT checked by this predicate — they are evidence
@@ -107,18 +108,16 @@ module Veridicality =
     /// hard validity gates. An unsigned artifact with known
     /// source/root/hash is still rejected, because cryptographic
     /// attestation is the minimum trust bar.
-    let validateProvenance (p: Provenance) : float =
-        if p.SourceId <> ""
-           && p.RootAuthority <> ""
-           && p.ArtifactHash <> ""
-           && p.SignatureOk
-        then 1.0
-        else 0.0
+    let validateProvenance (p: Provenance) : bool =
+        p.SourceId <> ""
+        && p.RootAuthority <> ""
+        && p.ArtifactHash <> ""
+        && p.SignatureOk
 
     /// Convenience alias for `validateProvenance` on a full
-    /// `Claim<'T>`, matching the 10th-ferry snippet which
+    /// `Claim<'T>`, matching Amara's 10th-ferry snippet which
     /// takes a claim rather than bare provenance.
-    let validateClaim (c: Claim<'T>) : float =
+    let validateClaim (c: Claim<'T>) : bool =
         validateProvenance c.Prov
 
     /// **CanonicalClaimKey** — the "aboutness" fingerprint
@@ -128,7 +127,7 @@ module Veridicality =
     /// claims with different keys assert different
     /// propositions.
     ///
-    /// Derived from the 8th / 10th ferry spec
+    /// Derived from Amara's 8th / 10th ferry spec
     /// `K(c) = hash(subject, predicate, object, time-scope,
     /// modality, provenance-root, evidence-class)`, with
     /// a deliberate divergence: this key EXCLUDES

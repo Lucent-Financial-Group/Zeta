@@ -1,15 +1,14 @@
 ---
 id: B-0277
 priority: P1
-status: closed
+status: open
 title: "Structure recognizer — shape-indexed catalog without labels"
 created: 2026-05-08
-last_updated: 2026-05-09
+last_updated: 2026-05-08
 parent: B-0240
 depends_on: [B-0276]
-classification: closed
+classification: blocked-on-B-0276
 decomposition: atomic
-closed_by: "StructureCatalog.fs — shape-indexed catalog with add, queryByShape, queryBySimilarity, count; 9 tests"
 owners: [architect, performance-engineer]
 type: feature
 ---

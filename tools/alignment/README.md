@@ -13,10 +13,10 @@ folder as the experimental loop.
 
 | Script                | Signal measured                              | Shape                       |
 |-----------------------|----------------------------------------------|-----------------------------|
-| `audit_commit.ts`     | HC-2, HC-6, SD-6 alignment clauses           | Per-commit lint             |
-| `audit_personas.ts`   | Notebook touch + commit mentions             | Per-round persona runtime   |
-| `audit_skills.ts`     | DORA-2025 columns adapted to skill scope     | Per-round skill runtime     |
-| `audit_archive_headers.ts` | Archive-header discipline (proposed §33) | Per-file lint (detect-only v0) |
+| `audit_commit.sh`     | HC-2, HC-6, SD-6 alignment clauses           | Per-commit lint             |
+| `audit_personas.sh`   | Notebook touch + commit mentions             | Per-round persona runtime   |
+| `audit_skills.sh`     | DORA-2025 columns adapted to skill scope     | Per-round skill runtime     |
+| `audit_archive_headers.sh` | Archive-header discipline (proposed §33) | Per-file lint (detect-only v0) |
 | `audit_clause_coverage.ts` | HC/SD/DIR clause citations in skills, agents, backlog P0/P1 | Per-surface coverage audit |
 | `audit_clause_drift.ts` | Clause additions/removals/changes + impact survey | Cross-ref drift detection |
 | `audit_retractibility.ts` | Git-tracked + inbound-ref entanglement per surface | Retractibility gate (B-0058 #1) |
@@ -25,8 +25,8 @@ folder as the experimental loop.
 | `sd6_names.txt`       | SD-6 watchlist (per-host)                    | Data (not code)             |
 
 The three scripts form the gitops observability trio:
-commit-scope (`audit_commit.ts`), persona-scope
-(`audit_personas.ts`), and skill-scope (`audit_skills.ts`).
+commit-scope (`audit_commit.sh`), persona-scope
+(`audit_personas.sh`), and skill-scope (`audit_skills.sh`).
 Each emits `--json` / `--md` / `--out DIR` in the same
 shape so downstream tooling can uniform-parse.
 
@@ -56,26 +56,26 @@ pathway; this directory owns the code.
 
 ```bash
 # Audit HEAD
-bun tools/alignment/audit_commit.ts
+tools/alignment/audit_commit.sh
 
 # Audit a range
-bun tools/alignment/audit_commit.ts main..HEAD
+tools/alignment/audit_commit.sh main..HEAD
 
 # JSON output (for the observability stream)
-bun tools/alignment/audit_commit.ts --json
+tools/alignment/audit_commit.sh --json
 
 # Write per-commit JSON files to a directory
-bun tools/alignment/audit_commit.ts --out tools/alignment/out/round-37
+tools/alignment/audit_commit.sh --out tools/alignment/out/round-37
 
 # Per-round persona audit
-bun tools/alignment/audit_personas.ts --round 38 --out tools/alignment/out/round-38
+tools/alignment/audit_personas.sh --round 38 --out tools/alignment/out/round-38
 
 # Per-round skill audit (DORA-columns)
-bun tools/alignment/audit_skills.ts --round 38 --out tools/alignment/out/round-38
+tools/alignment/audit_skills.sh --round 38 --out tools/alignment/out/round-38
 
 # Skill audit with friction gate — fails if any skill has
 # friction (rounds-since-owner-touched) >= threshold
-bun tools/alignment/audit_skills.ts --round 38 --gate 10
+tools/alignment/audit_skills.sh --round 38 --gate 10
 
 # Audit the filter-gate honesty log for reconstructable failures
 bun tools/alignment/audit_candidate_failures.ts --md
@@ -130,9 +130,15 @@ stream. It is:
 
 ## Dependencies
 
-- `bun` (installed by `tools/setup/install.sh`)
+- `bash` 3.2+ (macOS default)
 - `git` 2.x
-- no network
+- `grep`, `awk`, `sed` (POSIX)
+- no runtime libraries; no network
+
+The scripts are intentionally portable to bare
+macOS bash 3.2 so the install script doesn't
+need to pin a newer bash just for alignment
+linting.
 
 ## Relationship to other tooling
 
