@@ -1,0 +1,34 @@
+# OZ — TODO: AMBIGUOUS COMPONENT.
+#
+# "OZ" maps to several possibilities in 2026:
+#   - OpenZiti (zero-trust networking): https://openziti.io/
+#   - An Aaron-specific AI agent named OZ
+#   - Auth0's OZ component
+#
+# This placeholder uses the local k8s/applications/oz/ path so you
+# can drop in real manifests by editing the files in this directory.
+# UPDATE repoURL + chart once the identity is confirmed.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: oz
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    # TODO(aaron): confirm OZ identity. If OpenZiti, switch to:
+    #   repoURL: https://docs.openziti.io/helm-charts/
+    #   chart: ziti-controller
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/oz
+    directory:
+      include: '{namespace,deployment,service}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: oz
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

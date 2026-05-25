@@ -1,0 +1,32 @@
+# Forgejo — self-hosted Git. Lighter than GitLab; pick one.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: forgejo
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://code.forgejo.org/forgejo-helm/
+    chart: forgejo
+    targetRevision: 9.0.6
+    helm:
+      releaseName: forgejo
+      valuesObject:
+        gitea:
+          admin:
+            existingSecret: forgejo-initial-admin
+        persistence:
+          enabled: true
+          size: 20Gi
+          storageClass: zeta-local-path   # or longhorn for HA
+        postgresql:
+          enabled: true   # ships its own postgres; swap to CockroachDB later
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: forgejo
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

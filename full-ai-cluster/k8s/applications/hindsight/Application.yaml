@@ -1,0 +1,35 @@
+# Hindsight — TODO: AMBIGUOUS COMPONENT.
+#
+# Multiple possibilities in 2026:
+#   - Hindsight (Lockheed Martin) — OpenTelemetry trace processor
+#     for tail-sampling: https://github.com/lockheed-martin/hindsight
+#   - Hindsight (Microsoft) — observability tool
+#   - Some other "Hindsight" specific to Aaron's stack
+#
+# This placeholder Application points at the Lockheed Martin
+# Hindsight (most likely match given OpenTelemetry context with
+# Loki/Tempo/Alloy/Mimir all on this cluster). UPDATE the
+# repoURL + chart fields below to whichever Hindsight you mean.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hindsight
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    # TODO(aaron): confirm Hindsight identity. Placeholder points at
+    # the Lockheed Martin OTel trace processor manifests:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/hindsight
+    directory:
+      include: '{namespace,deployment,service}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hindsight
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

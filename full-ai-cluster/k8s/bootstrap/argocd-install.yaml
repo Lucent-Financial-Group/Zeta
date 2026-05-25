@@ -1,0 +1,19 @@
+# full-ai-cluster/k8s/bootstrap/argocd-install.yaml
+#
+# ArgoCD install via kustomize remote reference. K3S auto-applies
+# on first boot. Pinned to ArgoCD v2.13.2 — bump in lockstep with
+# any ArgoCD-Application charts that target a different API.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.2/manifests/install.yaml
+
+# Site-specific patches go here:
+#   - cmd-params for ingress / TLS termination
+#   - resource limits for argocd-server on small control-planes
+#   - SSO config (Dex, GitHub OAuth, etc.)
+patches: []

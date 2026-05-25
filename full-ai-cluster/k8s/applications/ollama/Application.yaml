@@ -1,0 +1,48 @@
+# Ollama — LLM serving (option A).
+# Schedules onto worker-gpu nodes via nvidia.com/gpu request.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ollama
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://otwld.github.io/ollama-helm/
+    chart: ollama
+    targetRevision: 1.6.0
+    helm:
+      releaseName: ollama
+      valuesObject:
+        ollama:
+          gpu:
+            enabled: true
+            type: nvidia
+            number: 1
+          models:
+            pull:
+              - deepseek-coder:33b
+              - qwen2.5-coder:32b
+            run:
+              - deepseek-coder:33b
+              - qwen2.5-coder:32b
+        persistentVolume:
+          enabled: true
+          size: 200Gi
+          storageClass: longhorn
+        nodeSelector:
+          zeta.io/gpu: nvidia
+        resources:
+          requests: { cpu: "2", memory: "8Gi", "nvidia.com/gpu": 1 }
+          limits:   { cpu: "8", memory: "32Gi", "nvidia.com/gpu": 1 }
+        service:
+          type: ClusterIP
+          port: 11434
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ollama
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
