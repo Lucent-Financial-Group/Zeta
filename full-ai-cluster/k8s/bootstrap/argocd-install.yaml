@@ -1,19 +1,40 @@
 # full-ai-cluster/k8s/bootstrap/argocd-install.yaml
 #
-# ArgoCD install via kustomize remote reference. K3S auto-applies
-# on first boot. Pinned to ArgoCD v2.13.2 — bump in lockstep with
-# any ArgoCD-Application charts that target a different API.
+# K3S HelmChart CR (`helm.cattle.io/v1`) — K3S's Helm Controller
+# resolves the chart at install time and applies the rendered
+# manifests. This is the native K3S pattern for "install Helm
+# chart at boot." Plain-resources format that
+# `services.k3s.manifests` actually understands.
 
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-namespace: argocd
-
-resources:
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.2/manifests/install.yaml
-
-# Site-specific patches go here:
-#   - cmd-params for ingress / TLS termination
-#   - resource limits for argocd-server on small control-planes
-#   - SSO config (Dex, GitHub OAuth, etc.)
-patches: []
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: argocd
+  namespace: kube-system
+spec:
+  chart: argo-cd
+  repo: https://argoproj.github.io/argo-helm
+  version: 7.7.10
+  targetNamespace: argocd
+  createNamespace: false   # argocd-namespace.yaml creates it explicitly
+  valuesContent: |-
+    global:
+      domain: argocd.zeta.local
+    server:
+      service:
+        type: ClusterIP   # ingress lands separately
+    configs:
+      params:
+        server.insecure: true   # TLS terminated upstream once ingress lands
+    notifications:
+      enabled: false
+    dex:
+      enabled: false   # SSO wires in via a Sealed Secret + values patch
+    redis-ha:
+      enabled: false   # single-control-plane bootstrap
+    controller:
+      replicas: 1
+    repoServer:
+      replicas: 1
+    applicationSet:
+      enabled: true
