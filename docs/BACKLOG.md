@@ -678,6 +678,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0714](backlog/P2/B-0714-soraya-round51-tla-cfg-runnability-gap-3-specs-2026-05-23.md)** Soraya round-51 hand-off — author 3 missing TLA+ `.cfg` files (AsyncStreamEnumerator / ConsistentHashRebalance / DictionaryStripedCAS) — runnability gap distinct from B-0709 registry gap
 - [ ] **[B-0715](backlog/P2/B-0715-soraya-round52-istimeinvariant-axiom-registry-gap-dbsp-chain-rule-2026-05-23.md)** Soraya round-52 hand-off — register `IsTimeInvariant` axiom in verification-registry (Class 1/2 statement+paper-drift on a load-bearing axiom that BOTH registered DBSP theorems depend on)
 - [ ] **[B-0717](backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md)** Soraya round-57 hand-off — LSM Spine cluster registry-rows + BP-16 cross-check pair (SpineAsyncProtocol candidate-P0 TLA+/code-drift gap)
+- [ ] **[B-0721](backlog/P2/B-0721-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md)** Move docs/BACKLOG.md generated-index drift check off per-PR gate onto scheduled cadence
 
 ## P3 — convenience / deferred
 
@@ -796,5 +797,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0716](backlog/P3/B-0716-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md)** Soraya round-53 scope-correction — B-0709 enumeration under-counted by 3 LSM-tree Spine specs (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla)
 - [ ] **[B-0718](backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md)** Soraya round-61 forced-decomposition — audit four-trigger routing-tick framework (six consecutive holds suggest cadence mismatch OR under-specified triggers)
 - [ ] **[B-0719](backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md)** Soraya round-67 forced-decomposition — audit-of-audit: ratify the recognition-without-row-filing precedent (when trigger fires + 'not my lane,' where does the routing-decision substrate land?)
+- [ ] **[B-0723](backlog/P3/B-0723-multi-kubelet-per-machine-failure-domain-pattern-2-3-clusters-per-physical-box-2026-05-25.md)** Multi-kubelet per machine — 2-3 K3S agents per physical box, each in a different cluster, so botched upgrades fail over instead of taking down the whole physical cluster
 
 <!-- END AUTO-GENERATED -->

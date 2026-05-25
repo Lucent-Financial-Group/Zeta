@@ -87,6 +87,7 @@ Per the existing 2-NVMe disko shape (`disko-shapes/2nvme.nix`):
 - nvme1 has Longhorn data path 2
 
 Multi-kubelet per machine needs each K3S agent to have its own `--data-dir`. Options:
+
 - Three subdirs under root: `/var/lib/rancher/k3s-{a,b,c}` (simple; share the 256 GB OS partition)
 - Carve a new partition off nvme0 for K3S state isolation
 - Per-agent ZFS dataset for finer-grained ops (snapshots per cluster)
