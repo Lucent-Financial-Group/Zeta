@@ -27,7 +27,7 @@ composes_with:
 
 Aaron 2026-05-25, during the dev-cluster scaffolding session (PR #4953): *"also tests should be able to use kind/k3d to do ephemeral clusters on prs"*. Then: *"we will do k8s in k8s later k8s in docker if fine for ci now"*.
 
-The dev-cluster substrate landed in PR #4953 is CI-ready by design — `up.sh` accepts a `--config <profile>` flag (after the local refactor in this row's PR) and a git-ref argument. CI just needs to call it with a single-node profile and run sync-wave assertions.
+The dev-cluster substrate landed in PR #4953 is CI-ready by design — `up.sh` accepts a git-ref argument today; the `--config <profile>` flag is part of Phase 1's small refactor (planned in this row, not yet implemented). CI just needs to call it with a single-node profile and run sync-wave assertions.
 
 ## What lands (when this row is picked up)
 
@@ -35,15 +35,15 @@ The dev-cluster substrate landed in PR #4953 is CI-ready by design — `up.sh` a
 
 1. **`full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml`** — minimal single-node k3d profile sized for GitHub-hosted runners (2 CPU / 7 GB). No agents, no local registry, same Cilium-takeover K3S flags.
 
-2. **`full-ai-cluster/tools/ci/cluster-smoke.sh`** — wraps `dev-cluster/up.sh --config profiles/ci.k3d-config.yaml`, then:
+2. **`full-ai-cluster/tools/ci/cluster-smoke.sh`** — wraps `full-ai-cluster/dev-cluster/up.sh --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml`, then:
    - Builds the sync-wave plan by parsing every `Application.yaml`'s `argocd.argoproj.io/sync-wave` annotation
    - Polls each app per wave, asserting Healthy/Synced OR Healthy/OutOfSync (acceptable for placeholder Deployments at `replicas: 0`)
    - Captures `argocd-applications.json`, `nodes.txt`, `pods.txt`, `recent-events.txt` to `ARTIFACT_DIR`
    - Tears down on EXIT trap (skip with `SKIP_TEARDOWN=1`)
    - Exit codes: 0 = pass; 1 = converge timeout; 2 = pre-flight fail
 
-3. **`.github/workflows/ai-cluster-smoke.yml`** — triggers on `pull_request` with path filter (`full-ai-cluster/k8s/applications/**`, `dev-cluster/**`, `tools/ci/**`, this workflow file). Concurrency group cancels in-flight runs on new commits. Installs k3d + kubectl + helm + jq, runs `cluster-smoke.sh`, uploads artifacts, posts PR comment on failure with sync-wave plan + recent events.
-   - **Security**: every github-context value (head SHA, etc.) reaches `run:` via `env:` block — never inlined — per the security-reminder hook. Use `${{ github.event.pull_request.head.sha }}` only inside `env:`, then reference as `$GIT_REF` in `run:`.
+3. **`.github/workflows/ai-cluster-smoke.yml`** — triggers on `pull_request` with path filter (`full-ai-cluster/k8s/applications/**`, `full-ai-cluster/dev-cluster/**`, `full-ai-cluster/tools/ci/**`, this workflow file). Concurrency group cancels in-flight runs on new commits. Installs k3d + kubectl + helm + jq, runs `cluster-smoke.sh`, uploads artifacts, posts PR comment on failure with sync-wave plan + recent events.
+   - **Security**: every github-context value (head SHA, etc.) reaches `run:` via `env:` block — never inlined — per [`docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md`](../../security/GITHUB-ACTIONS-SAFE-PATTERNS.md). Use `${{ github.event.pull_request.head.sha }}` only inside `env:`, then reference as `$GIT_REF` in `run:`.
 
 4. **Small `up.sh` refactor** — add `--config <path>` flag; read `metadata.name` from the chosen config so `down.sh` + smoke script stay in sync regardless of cluster name. (Default behavior preserved: no flag = current `k3d-config.yaml`.)
 
@@ -74,12 +74,12 @@ Becomes P1 when:
 
 ## Acceptance
 
-- [ ] `up.sh --config profiles/ci.k3d-config.yaml` works locally and brings up a single-node cluster
-- [ ] `tools/ci/cluster-smoke.sh` runs end-to-end against a fresh checkout and exits 0 on a clean main
+- [ ] `full-ai-cluster/dev-cluster/up.sh --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml` works locally and brings up a single-node cluster
+- [ ] `full-ai-cluster/tools/ci/cluster-smoke.sh` runs end-to-end against a fresh checkout and exits 0 on a clean main
 - [ ] `.github/workflows/ai-cluster-smoke.yml` triggers on a PR touching `full-ai-cluster/k8s/applications/**`, completes within 45 min, posts artifacts
 - [ ] A deliberately broken PR (e.g., sync-wave annotation missing on a new app, or chart-values typo) is caught by the workflow before merge
 - [ ] Workflow concurrency cancels in-flight runs on new commits to the same PR
-- [ ] Every github-context value reaches `run:` via `env:` (no inline interpolation — per the security-reminder hook's workflow-injection guidance)
+- [ ] Every github-context value reaches `run:` via `env:` (no inline interpolation — per [`docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md`](../../security/GITHUB-ACTIONS-SAFE-PATTERNS.md) workflow-injection guidance)
 
 ## Estimated scope
 
