@@ -123,18 +123,17 @@ function assertSafeDevicePath(device: string): void {
 async function main() {
   const argv = process.argv.slice(2);
   const firstArg = argv[0];
-  if (firstArg === "-h" || firstArg === "--help") {
+  const isHelp = firstArg === "-h" || firstArg === "--help";
+  // Preserve original unified-check semantics: any of {wrong arg count,
+  // help-flag in any position} prints usage and exits — exit 0 ONLY
+  // when there's exactly one arg and it's a help flag.
+  if (argv.length !== 1 || isHelp) {
     process.stdout.write(
       "Usage: bun full-ai-cluster/tools/flash-usb.ts <path-to-iso>\n",
     );
-    process.exit(0);
+    process.exit(argv.length === 1 && isHelp ? 0 : 2);
   }
-  if (argv.length !== 1 || firstArg === undefined) {
-    process.stdout.write(
-      "Usage: bun full-ai-cluster/tools/flash-usb.ts <path-to-iso>\n",
-    );
-    process.exit(2);
-  }
+  if (firstArg === undefined) bail(2, "internal: argv length check passed but argv[0] is undefined");
   const isoPath: string = firstArg;
 
   // ── 1. Platform gate ───────────────────────────────────────
