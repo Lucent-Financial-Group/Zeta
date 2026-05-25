@@ -1,0 +1,87 @@
+# infra/nixos/modules/k3s-server.nix
+#
+# K3S control-plane node. Imported by the host(s) that should serve the
+# cluster API and run the embedded etcd. Bootstraps ArgoCD via auto-
+# deploy manifests so the cluster becomes self-managing immediately
+# after first boot.
+
+{ config, pkgs, lib, ... }:
+
+{
+  # ---------------------------------------------------------------------------
+  # K3S control-plane
+  # ---------------------------------------------------------------------------
+  services.k3s = {
+    enable = true;
+    role = "server";
+
+    # Cluster init token. In production, source this from sops-nix or
+    # agenix; the placeholder below is intentionally invalid so a
+    # plaintext token never lands in Git by accident.
+    #
+    #   tokenFile = config.sops.secrets.k3s-token.path;
+    #
+    # For initial bootstrap, generate a token once and pin it in a
+    # local-only file referenced by tokenFile.
+    tokenFile = lib.mkDefault "/var/lib/rancher/k3s/server/token";
+
+    # Embedded etcd so a single control-plane node has a real datastore
+    # rather than the default sqlite. Allows future multi-server HA
+    # without a datastore migration.
+    clusterInit = true;
+
+    extraFlags = [
+      "--write-kubeconfig-mode=0644"
+
+      # Disable bundled servicelb + traefik — ArgoCD will install
+      # MetalLB + ingress-nginx as Applications, keeping the install
+      # method consistent (everything declared in Git).
+      "--disable=servicelb"
+      "--disable=traefik"
+
+      # Disable the default network policy controller; let Cilium or
+      # equivalent land as an ArgoCD Application later.
+      # "--flannel-backend=none"  # uncomment when Cilium ships
+    ];
+
+    # Manifests auto-applied by K3S on first boot. We seed only what's
+    # required to get ArgoCD running; everything else (Orleans, GitLab,
+    # Argo Workflows, Argo Rollouts) comes from ArgoCD itself reading
+    # this same Git repo.
+    manifests = {
+      argocd-namespace.source = ../../../k8s/bootstrap/argocd-namespace.yaml;
+      argocd-install.source = ../../../k8s/bootstrap/argocd-install.yaml;
+      root-application.source = ../../../k8s/applications/root-application.yaml;
+    };
+  };
+
+  # ---------------------------------------------------------------------------
+  # Firewall — K3S API server + kubelet + flannel
+  # ---------------------------------------------------------------------------
+  networking.firewall = {
+    allowedTCPPorts = [
+      6443   # K3S API server
+      10250  # kubelet
+      2379   # etcd client
+      2380   # etcd peer
+    ];
+    allowedUDPPorts = [
+      8472   # flannel VXLAN
+    ];
+    # Trust the cluster-internal CNI network.
+    trustedInterfaces = [ "flannel.1" "cni0" ];
+  };
+
+  # ---------------------------------------------------------------------------
+  # Make kubectl Just Work for the admin user on the control-plane node.
+  # ---------------------------------------------------------------------------
+  environment.variables = {
+    KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
+  };
+
+  # Persistent storage for K3S data + manifests. Per-host config should
+  # mount this on a non-root disk for any serious deployment.
+  systemd.tmpfiles.rules = [
+    "d /var/lib/rancher/k3s 0755 root root - -"
+  ];
+}
