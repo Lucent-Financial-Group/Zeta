@@ -22,4 +22,4 @@
 - **Observation:** The `backlog-index-integrity` check is failing on PR #5026. This is because the `docs/BACKLOG.md` file is not being updated correctly. The `generate-index.ts` script, which is responsible for generating the backlog index, does not account for backlog items in open pull requests.
 - **Impact:** This drift in the backlog tooling leads to failing CI checks, which blocks PRs from being merged. It also creates a confusing and inconsistent state for the backlog.
 - **Hypothesis:** The `generate-index.ts` script was not designed to handle backlog items in open PRs.
-- **Corrective Action:** The `generate-index.ts` script should be updated to be aware of open pull requests and include backlog items from them in the generated index. Alternatively, a different mechanism for managing the backlog should be considered.
+- **Corrective Action:** The `generate-index.ts` script should be updated to be aware of open pull requests and include backlog items from them in the generated index. Alternatively, a different mechanism for managing the backlog should be considered. This is a high-priority issue that needs to be addressed to unblock PRs.
