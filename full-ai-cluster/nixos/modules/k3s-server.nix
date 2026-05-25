@@ -25,8 +25,12 @@
       "--disable-network-policy"
       "--disable-kube-proxy"
 
-      # Disable bundled servicelb + traefik — ArgoCD installs MetalLB
-      # + ingress-nginx (or Istio gateway) declaratively.
+      # Disable bundled servicelb + traefik. No replacement L4
+      # load-balancer or ingress is declared in this PR — Services
+      # of type LoadBalancer will stay Pending until a maintainer
+      # commits a MetalLB + ingress-nginx Application under
+      # k8s/applications/. Bootstrap-period workloads needing
+      # external traffic should use NodePort or `kubectl port-forward`.
       "--disable=servicelb"
       "--disable=traefik"
 
@@ -58,11 +62,16 @@
       6443    # K3S API
       9345    # K3S supervisor/join
       10250   # kubelet
-      2379    # etcd client
-      2380    # etcd peer
       4244    # Hubble server
       4245    # Hubble Relay
       8472    # legacy flannel/VXLAN (kept for safety)
+      # etcd ports 2379/2380 intentionally NOT in this list.
+      # K3S embedded etcd binds 127.0.0.1 by default. Opening
+      # those ports at the host firewall would risk exposing etcd
+      # to the LAN if the bind address ever drifts. For multi-
+      # server HA, add 2379/2380 to a host-specific override that
+      # ALSO scopes them with `interfacesIn`/source-IP filtering to
+      # the other control-plane nodes only.
     ];
     allowedUDPPorts = [
       8472    # VXLAN (Cilium can also run native-routing)

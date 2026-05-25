@@ -30,9 +30,15 @@ spec:
           enabled: true
           storageClass: longhorn
           size: 5Gi
-        # Bootstrap admin password — change before going to production.
-        # In production source from Vault or a Sealed Secret.
-        adminPassword: "changeme"
+        # Admin password sourced from a Secret rather than hardcoded.
+        # Create the secret BEFORE this app syncs:
+        #   kubectl -n openziti create secret generic ziti-admin-credentials \
+        #     --from-literal=password="$(openssl rand -hex 24)"
+        # Or use a Sealed Secret committed to Git so the credential is
+        # reproducible from the cluster definition.
+        adminSecret:
+          name: ziti-admin-credentials
+          key: password
   destination:
     server: https://kubernetes.default.svc
     namespace: openziti

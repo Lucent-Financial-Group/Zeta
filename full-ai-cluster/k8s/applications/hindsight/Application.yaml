@@ -1,15 +1,15 @@
 # Hindsight — agent persistent memory system for Hermes.
-# Standalone Helm chart deployed via ArgoCD (per Aaron 2026-05-25).
+# Standalone Helm chart deployed via ArgoCD.
 #
-# TODO(aaron): provide the Helm chart URL + chart name + version.
-# Several projects use the name "Hindsight" — confirm which one:
-#   - Is it a public OSS chart? (helm repo URL?)
-#   - A private chart hosted somewhere? (repoURL + auth?)
-#   - An Aaron-built chart in a sibling repo?
+# TODO(maintainer): provide the Helm chart URL + chart name + version.
+# Confirm which Hindsight chart this refers to:
+#   - public OSS chart (helm repo URL)
+#   - private chart (repoURL + auth)
+#   - in-repo chart (sibling repo URL + path)
 #
-# Once you provide repoURL + chart name + version, this Application
-# wires up directly. Until then, this placeholder declares the namespace
-# + intent so the structure is in place.
+# Once repoURL + chart name + version are provided, this Application
+# wires up directly. Until then, this placeholder declares the
+# namespace + intent so the structure is in place.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -20,7 +20,7 @@ metadata:
 spec:
   project: default
   source:
-    # TODO(aaron): replace with the real Helm repo + chart name.
+    # TODO(maintainer): replace with the real Helm repo + chart name.
     # Example shape:
     #   repoURL: https://your-org.github.io/hindsight-chart/
     #   chart: hindsight

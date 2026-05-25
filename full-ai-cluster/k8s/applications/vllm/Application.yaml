@@ -24,6 +24,9 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: vllm
+  # DEFERRED: local-models phase on hold. The deployment.yaml ships
+  # replicas: 0 (already) AND syncPolicy is manual-only so ArgoCD
+  # doesn't reconcile until a maintainer explicitly triggers
+  # `argocd app sync vllm`. Mirrors the ollama Application's gating.
   syncPolicy:
-    automated: { prune: true, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

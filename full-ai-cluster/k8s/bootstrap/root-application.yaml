@@ -9,6 +9,13 @@
 #   2. Author Application.yaml + any supporting manifests
 #   3. git commit + push to main
 #   4. ArgoCD picks it up on the next sync (~3 min)
+#
+# Either/or gating: some directories ship multiple alternatives
+# (e.g. gitlab/ vs forgejo/, ollama/ vs vllm/). The root App-of-Apps
+# picks them ALL up — gating happens at the per-Application
+# `syncPolicy` level. Default-on apps keep an `automated:` block;
+# alternatives omit it (manual sync only via `argocd app sync`).
+# Each alternative's Application.yaml header names the swap procedure.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
