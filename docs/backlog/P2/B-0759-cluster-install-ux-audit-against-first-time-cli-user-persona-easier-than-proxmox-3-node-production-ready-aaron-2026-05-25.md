@@ -3,12 +3,13 @@ id: B-0759
 title: Cluster-install UX audit against first-time-CLI-user persona — "easier than Proxmox" bar + 3-node production-ready inflection
 status: open
 priority: P2
-size: M
+effort: M
 created: 2026-05-25
+last_updated: 2026-05-25
 authors: [aaron, otto-cli]
 composes_with: [B-0737, B-0738, B-0739, B-0743, B-0754, B-0755, B-0756, B-0757, B-0758]
 depends_on: [B-0754]
-labels: [cluster, ux, persona, docs, marketing]
+tags: [cluster, ux, persona, docs, marketing]
 ---
 
 ## Problem
@@ -51,7 +52,7 @@ not maintainer / agent internals) passes the two filters:
       framing (Proxmox / unRAID / Talos / k3sup); first-time-user
       "start here" path; explicit persona statement at the top
 - [ ] Audit pass on `full-ai-cluster/usb-nixos-installer/zeta-install.sh`
-      + `zeta-first-boot.sh` — error messages name next safe
+      and `zeta-first-boot.sh` — error messages name next safe
       action; bail messages point at recovery / alternative
       paths (e.g., "no internal disks → see USB-persistent OS at
       B-0758")
