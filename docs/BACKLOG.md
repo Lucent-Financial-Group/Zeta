@@ -697,6 +697,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0752](backlog/P2/B-0752-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md)** Fighting past-self vs peer-agent — distinguisher rule landing + identity-tagging mechanization scope (Aaron 2026-05-25 'you don't do like vera and just leave it unfixed cause you assume it's someone elses issues')
 - [ ] **[B-0755](backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md)** Cluster role taxonomy expansion — control-plane-gpu, worker-cpu, worker-storage, all-in-one fused host configs
 - [ ] **[B-0759](backlog/P2/B-0759-cluster-install-ux-audit-against-first-time-cli-user-persona-easier-than-proxmox-3-node-production-ready-aaron-2026-05-25.md)** Cluster-install UX audit against first-time-CLI-user persona — "easier than Proxmox" bar + 3-node production-ready inflection
+- [ ] **[B-0760](backlog/P2/B-0760-usb-as-repair-tool-for-any-node-identity-preservation-across-rebuilds-no-disruption-at-3-plus-nodes-aaron-2026-05-25.md)** USB as repair tool for any node — identity preservation across rebuilds + no-disruption-at-3+-nodes invariant
 
 ## P3 — convenience / deferred
 
