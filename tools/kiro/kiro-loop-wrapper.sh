@@ -15,5 +15,11 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/../.."
 
+# Export the resolved worktree so kiro-loop-tick.ts uses this checkout
+# instead of falling back to the user-specific default ($HOME/Documents/src/repos/Zeta).
+# tick.ts uses ZETA_KIRO_LOOP_WORKTREE as `cwd` for every git/gh subprocess; the bash
+# `cd` above does not propagate to Bun.spawn calls.
+export ZETA_KIRO_LOOP_WORKTREE="${ZETA_KIRO_LOOP_WORKTREE:-$(pwd)}"
+
 # Run the Kiro loop tick script with bun
 exec bun tools/kiro/kiro-loop-tick.ts
