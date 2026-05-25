@@ -679,6 +679,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0715](backlog/P2/B-0715-soraya-round52-istimeinvariant-axiom-registry-gap-dbsp-chain-rule-2026-05-23.md)** Soraya round-52 hand-off — register `IsTimeInvariant` axiom in verification-registry (Class 1/2 statement+paper-drift on a load-bearing axiom that BOTH registered DBSP theorems depend on)
 - [ ] **[B-0717](backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md)** Soraya round-57 hand-off — LSM Spine cluster registry-rows + BP-16 cross-check pair (SpineAsyncProtocol candidate-P0 TLA+/code-drift gap)
 - [ ] **[B-0721](backlog/P2/B-0721-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md)** Move docs/BACKLOG.md generated-index drift check off per-PR gate onto scheduled cadence
+- [ ] **[B-0724](backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md)** TS hat-system operator — second polyglot implementation alongside the Go scaffold; proves the polyglot-operator pattern for the cluster
+- [ ] **[B-0726](backlog/P2/B-0726-reticulum-throughout-cluster-and-edge-composing-substrate-alongside-k8s-2026-05-25.md)** Reticulum throughout — cluster nodes AND edge devices on the same mesh; K8s and Reticulum compose as layers rather than partition by network tier
+- [ ] **[B-0728](backlog/P2/B-0728-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md)** Destructive-tool authoring contract — safety rails + permission-grants-INVOCATION-not-absolution + runtime-acceptance gate with nonce; canonical pattern landed in flash-usb.ts
+- [ ] **[B-0729](backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md)** Obsidian as knowledge-graph substrate — wikilinks + frontmatter tags + callouts + Tasks-plugin format + JSON-LD extractor (5-layer adoption; team already uses Obsidian; extend where needed)
+- [ ] **[B-0730](backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md)** Runbooks-as-executable-specifications — Runme base for right-now execution + `:::` deferred-task tags + AI just-in-time script compilation + 3 verbosity levels (5yo / Addison / Aaron+Max-debugging); Mika substrate via Aaron 2026-05-25
 
 ## P3 — convenience / deferred
 
@@ -797,5 +802,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0716](backlog/P3/B-0716-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md)** Soraya round-53 scope-correction — B-0709 enumeration under-counted by 3 LSM-tree Spine specs (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla)
 - [ ] **[B-0718](backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md)** Soraya round-61 forced-decomposition — audit four-trigger routing-tick framework (six consecutive holds suggest cadence mismatch OR under-specified triggers)
 - [ ] **[B-0719](backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md)** Soraya round-67 forced-decomposition — audit-of-audit: ratify the recognition-without-row-filing precedent (when trigger fires + 'not my lane,' where does the routing-decision substrate land?)
+- [ ] **[B-0725](backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md)** Polyglot-accelerator hardware-shape extension — Coral / NCS / Jetson / FPGA beyond NVIDIA-only; activates as gadgets come out of drawer
+- [ ] **[B-0727](backlog/P3/B-0727-federated-4-tier-cluster-topology-cloud-community-home-business-edge-with-routing-for-weaker-leaves-2026-05-25.md)** Federated peer mesh — 5 resource profiles (cloud/hub, community, home/business, edge, leaf), weight-free routing, NO hierarchy; cloud/hub doesn't hog net neutrality
 
 <!-- END AUTO-GENERATED -->
