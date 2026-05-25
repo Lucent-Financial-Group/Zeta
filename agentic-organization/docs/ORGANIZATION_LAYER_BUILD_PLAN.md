@@ -33,6 +33,7 @@ Recommended stack:
 | Messaging | NATS JetStream | Organization signals, inbox/outbox, live projection updates, DLQ/replay |
 | Durable workflows | Temporal TypeScript | Initiative, approval, release, incident, scheduled review, and long-running process lifecycles |
 | Hot entity state | Dapr Actors | Hat supply, agent session context, team rooms, mailboxes, meeting state, run heartbeat coordination |
+| Kubernetes hat contracts | `@kubernetes/client-node`, generated or hand-checked CRD types | TypeScript-first access to `Hat`, `HatBinding`, `HatSwap`, and `HatPolicy` without redefining the hat API |
 | Testing | Vitest, Playwright, Testcontainers | Domain/unit tests, browser QA automation, real CockroachDB/NATS integration tests |
 | Observability | OpenTelemetry JS, Pino, Prometheus metrics | End-to-end traces across API, workflows, actors, MCP tools, NATS, pods, and UI evidence |
 | Delivery | Docker images, Helm or Kustomize, ArgoCD, GitLab CI | Initiative branch builds, preview/QA deployments, GitOps promotion into the cluster |
@@ -56,6 +57,7 @@ packages/
   hats/                hat graph, assignment, JWT issuance/refresh, supply policies
   workflows/           Temporal workflow and activity definitions
   actors/              Dapr actor interfaces and shared actor contracts
+  k8s-hats/            CRD types, watch helpers, HatSwap codecs, projection clients
   mcp/                 tool registry, tool schemas, policy-checked handlers
   memory/              Hindsight adapter, attribution, scoped recall/write contracts
   hermes/              Hermes session adapter, run adapter, context builder
@@ -84,6 +86,7 @@ Shared packages own reusable capability logic:
 - NATS event contracts and consumers;
 - Temporal workflow/activity definitions;
 - Dapr actor contracts;
+- Kubernetes hat CRD clients, informers, and event codecs;
 - MCP tool schemas and handlers;
 - Hindsight, Hermes, OpenZiti, Credential Proxy, and observability adapters.
 
@@ -94,6 +97,8 @@ NestJS apps compose those packages into runnable orchestrators:
 - `apps/temporal-worker` hosts workflow workers and wires activities to package services;
 - `apps/dapr-actors` hosts actor implementations and binds actor state to package contracts;
 - `apps/mcp-gateway` exposes MCP tools and resolves actor/session/hat context before delegating to package handlers.
+
+Cluster-owned operator code may live under `full-ai-cluster/k8s/applications/hat-system/operator-ts/` rather than inside the app monorepo. It should still consume the same TypeScript contracts from the Organization package layer when that dependency boundary is available, or mirror generated CRD types with a parity test until package sharing is stable.
 
 The rule: packages should contain the reusable business and infrastructure capability; Nest orchestrators should wire lifecycle, dependency injection, transport adapters, health checks, and process concerns. Do not bury Organization rules directly inside controllers or worker entrypoints.
 

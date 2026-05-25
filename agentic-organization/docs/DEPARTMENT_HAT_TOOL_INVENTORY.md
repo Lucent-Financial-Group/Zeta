@@ -339,6 +339,7 @@ The starter hat graph should include the hats below. Each hat should be represen
 | Risk area | Required review |
 |---|---|
 | New credential proxy endpoint, credential scope, external API, data exposure, security policy change | Security Reviewer or Security Director; Architecture co-review for integration/runtime impact |
+| New or changed Kubernetes CRD, operator, controller ownership rule, leader-election behavior, or HatSwap event contract | Runtime Architecture Reviewer or Chief Architect; Security co-review if credentials, protected state, or workload identity are affected |
 | New Temporal workflow, Dapr actor, durable trigger, scheduled job, runtime worker, or Oz/Hermes execution pattern | Runtime Architecture Reviewer or Chief Architect; Security if tools/credentials/protected state are involved |
 | New high-power hat, new department, new major hat class, dangerous override, broad self-healing authority | Executive Board approval; two-person approval for high-risk operational override |
 | Product behavior change, customer-facing feature, acceptance criteria change | Product Owner and Business Approver |

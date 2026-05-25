@@ -22,6 +22,9 @@ Temporal TS
 Dapr Actors
   entity-local concurrency, live mailbox/stateful actor identity, reminders
 
+Hat-system CRDs
+  Kubernetes enforcement contract for hats; TypeScript consumes the same Hat, HatBinding, HatSwap, and HatPolicy schema through typed clients
+
 Orleans
   cluster-resident .NET virtual actor/silo capability; NestJS composes with it through adapters when .NET grain semantics are needed
 
@@ -47,6 +50,8 @@ Hindsight
 Do not make Temporal, Dapr, Oz/Warp, or OpenZiti the product model. They are infrastructure adapters behind Organization-owned concepts.
 
 NestJS composes the runtime adapters; it does not replace Orleans. Orleans remains available for .NET grain/silo workloads and should be integrated through an explicit adapter when a use case needs its virtual actor model.
+
+TypeScript should be a first-class CRD consumer. The Organization API and workers should use a shared `k8s-hats` package for typed Kubernetes reads/writes, informer watches, HatSwap decoding, and projection reconciliation. A future TypeScript hat operator is an implementation of that same contract, not a new business runtime.
 
 The cluster execution and memory assumptions are detailed in [Cluster Execution and Memory Substrate](./CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md). The scaffold-level component direction is captured in [AI Cluster Scaffold Context](./AI_CLUSTER_SCAFFOLD_CONTEXT.md). In particular, Hindsight should be treated as real Hermes memory infrastructure: the current cluster direction uses the `vectorize-io/hindsight` OCI Helm chart, Hermes points at the in-cluster Hindsight service, and Organization policy still needs to enforce hat-scoped recall/write attribution.
 
@@ -317,6 +322,9 @@ Proposed packages:
 
 @hermes-org/hats
   hat graph, hat assignment, JWT issuance/refresh, hat supply policies
+
+@hermes-org/k8s-hats
+  generated or checked CRD types, Kubernetes watches, HatSwap codecs, projection clients
 
 @hermes-org/memory
   Hindsight adapter, memory attribution, scoped recall, memory quality workflows

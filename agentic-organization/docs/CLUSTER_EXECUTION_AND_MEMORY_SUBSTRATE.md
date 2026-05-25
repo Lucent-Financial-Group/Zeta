@@ -21,6 +21,7 @@ Organization Work OS
   -> Credential Proxy mediates protected access
   -> Hindsight provides persistent Hermes memory
   -> NATS carries events, inboxes, reports, and status
+  -> TypeScript workers consume Hat CRDs and HatSwap ticks as typed runtime signals
   -> Organization records state, signals, audit, and evidence
 ```
 
@@ -309,6 +310,10 @@ NATS should carry:
 - UI live update events.
 
 NATS is not the source of truth. It is the event transport and live update layer. Organization DB and audit events remain authoritative.
+
+TypeScript consumers should treat hat CRDs as a typed external control-plane API. Organization workers can watch `HatBinding` status and `HatSwap` records with `@kubernetes/client-node`, correlate them with NATS events, and update CockroachDB projections. They should not infer business approval from Kubernetes state alone; Kubernetes proves runtime enforcement, while Organization state proves why the assignment exists.
+
+`HatSwap` as a CRD is the replayable transition record. `HatSwap` over NATS is the wake-up path. Both projections need a stable durable identity and correlation fields so the Organization can dedupe and avoid counting one lifecycle transition twice.
 
 ## Failure Modes
 

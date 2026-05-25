@@ -19,7 +19,7 @@ Current documents:
 - [Ambiguous Requirement Lifecycle](./AMBIGUOUS_REQUIREMENT_LIFECYCLE.md) - the discovery, customer interview, BRD, workflow modeling, architecture, decomposition, readiness, and learning path from vague request to curated feature.
 - [Anti-Stall Prioritization Runtime](./ANTI_STALL_PRIORITY_RUNTIME.md) - the hat-owned schedules, blocker triage, queue SLO, reassignment, alternate-work, dependency reconciliation, and priority routines that keep the Organization moving.
 - [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md) - the decisions and contracts that should be defined before scaffolding the first implementation slice.
-- [Cluster-Native Hat System](./CLUSTER_NATIVE_HAT_SYSTEM.md) - the theoretical CRD, OPA, hat binding, succession, reputation, graph rendering, and event model for enforcing hats on Kubernetes.
+- [Cluster-Native Hat System](./CLUSTER_NATIVE_HAT_SYSTEM.md) - the CRD, OPA, hat binding, succession, reputation, graph rendering, polyglot operator, and event model for enforcing hats on Kubernetes.
 - [Cluster Execution and Memory Substrate](./CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md) - the k3s, sandboxed Hermes container, Cilium Service Mesh, SPIRE identity, Vault-backed secrets, Credential Proxy, NATS, Hindsight, and runtime observability contract.
 - [AI Cluster Scaffold Context](./AI_CLUSTER_SCAFFOLD_CONTEXT.md) - the two-directory NixOS/k3s/ArgoCD scaffold assumptions, component clarifications, bootstrap constraints, and deferred/local-model gating.
 - [Architecture Source](./ORGANIZATION_RUNTIME_ARCHITECTURE.md) - the current conceptual architecture and operating model.
