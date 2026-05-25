@@ -15,8 +15,9 @@
 # Discipline (per .github/workflows/gate.yml):
 #   - Runner pinned to ubuntu-24.04 (not -latest)
 #   - Third-party actions SHA-pinned with trailing # vX.Y.Z comments
-#   - permissions: contents: read at workflow level (tag-push job
-#     elevates to contents: write only for the release-attach step)
+#   - permissions: contents: read at workflow level. The
+#     `attach-to-release` job elevates to `contents: write` only
+#     for itself (release-asset upload).
 #   - Concurrency: workflow-scoped, cancel-in-progress only for PRs
 #   - github.event.* values that may be attacker-controlled (release
 #     tag names, etc.) are passed via env: not interpolated into
@@ -191,12 +192,23 @@ jobs:
             exit 1
           fi
           # iso_path resolves into /nix/store/... via the result/ symlink,
-          # which is read-only. Write the .sha256 sidecar to the workspace
-          # (RUNNER_TEMP is writable) so the upload step doesn't EROFS.
+          # which is read-only. Write the .sha256 sidecar to RUNNER_TEMP
+          # (writable) so the upload step doesn't EROFS.
           iso_name=$(basename "$iso_path")
           sha256_path="${RUNNER_TEMP:-/tmp}/${iso_name}.sha256"
-          sha256sum "$iso_path" | awk '{print $1}' > "$sha256_path"
-          gh release upload "$RELEASE_TAG" \
+          # Use the standard `sha256sum` format (`<hash>  <filename>`)
+          # so consumers can verify with `sha256sum --check`.
+          ( cd "$(dirname "$iso_path")" && sha256sum "$iso_name" ) > "$sha256_path"
+          # Refuse to upload if RELEASE_TAG looks like a flag-injection
+          # vector. Tag names can legally start with `-`, which would
+          # make `gh release upload "$RELEASE_TAG" ...` parse the tag as
+          # a flag. Hard-fail if so — release operators should rename.
+          case "$RELEASE_TAG" in
+            -*) echo "::error::RELEASE_TAG starts with '-' which is a flag-injection risk: $RELEASE_TAG" >&2; exit 1 ;;
+          esac
+          # `--` separator: belt + suspenders defense against any future
+          # argv-injection vector even if the tag-name check above is
+          # bypassed somehow.
+          gh release upload --clobber -- "$RELEASE_TAG" \
             "$iso_path" \
-            "$sha256_path" \
-            --clobber
+            "$sha256_path"
