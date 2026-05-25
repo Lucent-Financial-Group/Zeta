@@ -167,6 +167,8 @@ recordToolCallCompleted()
 setCurrentTask()
 setCurrentTeam()
 setCurrentMeeting()
+setCurrentScheduleBlock()
+setCurrentPromptFlowRun()
 setMode()
 markRoleless()
 ```
@@ -179,6 +181,9 @@ Runtime context should include:
 - current task ID;
 - current team ID;
 - current discussion anchor;
+- current schedule block ID;
+- current prompt-flow run ID;
+- current prompt-flow phase ID;
 - current meeting ID;
 - current Oz run ID;
 - current project ID;

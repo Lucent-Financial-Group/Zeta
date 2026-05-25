@@ -115,6 +115,13 @@ Must include:
 - gates;
 - gate decisions;
 - assignments;
+- hat schedule templates;
+- work schedules;
+- work schedule blocks;
+- prompt-flow definitions;
+- prompt-flow phases;
+- prompt-flow runs;
+- prompt-flow gate decisions;
 - releases;
 - discussion anchors;
 - artifacts;
@@ -129,6 +136,7 @@ Can defer:
 - complex voting;
 - full workflow registry;
 - full actor registry;
+- advanced prompt-flow effectiveness analytics;
 - advanced memory analytics.
 
 ## 5. State Machines
@@ -177,6 +185,9 @@ Need to define for each:
 - allowed MCP tools;
 - approval scopes;
 - memory scopes;
+- default schedule template;
+- available prompt flows;
+- review/reflection requirements;
 - credential scopes;
 - assignable-by rules;
 - token TTL;
@@ -213,6 +224,8 @@ Minimum tool families:
 - architecture tools;
 - task/work tools;
 - hat assignment tools;
+- work schedule tools;
+- prompt-flow tools;
 - review/gate tools;
 - artifact/evidence tools;
 - messaging/inbox tools;
@@ -238,6 +251,8 @@ Knowledge Graph/Retrieval V0 decisions:
 - deterministic traversal versus semantic retrieval behavior;
 - contradiction lifecycle;
 - discussion anchor contract;
+- schedule block contract;
+- prompt-flow registry contract;
 - handoff brief requirements;
 - attention queue contract.
 
@@ -245,6 +260,9 @@ Minimum preflight tools:
 
 - `validate_start_work`;
 - `validate_discussion_anchor`;
+- `validate_schedule_block`;
+- `validate_prompt_flow_start`;
+- `validate_prompt_flow_phase_gate`;
 - `validate_context_pack_current`;
 - `validate_handoff_complete`;
 - `validate_decision_memory_current`;
