@@ -156,7 +156,7 @@ function run(repoRoot: string, command: string, args: string[]): { status: numbe
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 export function parseOpenPrListOutput(stdout: string): OpenPrListItem[] {

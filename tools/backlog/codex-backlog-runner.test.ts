@@ -24,7 +24,7 @@ describe("capacityGate", () => {
 describe("capacityPrCount", () => {
   const openPrs = [
     { headRefName: "codex/lane-aware-pr-capacity" },
-    { headRefName: "lior/pr-preservation" },
+    { headRefName: "archive/pr-preservation" },
     { headRefName: "backlog/b0751-per-agent-isolated-clones" },
     { headRefName: "codex/agent-work-rhythm" },
   ];
@@ -53,6 +53,12 @@ describe("parseOpenPrListOutput", () => {
       { number: 5026, headRefName: "codex/lane-aware-pr-capacity", title: "fix(codex): scope backlog PR capacity by lane" },
       { number: 5027, headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25", title: "feat(zflash): show USB detail" },
     ]);
+  });
+
+  test("rejects decoded rows with non-object shapes", () => {
+    const row = Buffer.from(JSON.stringify(["not", "a", "pr"]), "utf8").toString("base64");
+
+    expect(() => parseOpenPrListOutput(`${row}\n`)).toThrow("non-object open PR row");
   });
 });
 
