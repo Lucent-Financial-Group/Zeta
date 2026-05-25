@@ -53,6 +53,18 @@ add additional control-plane nodes for HA:
 
 ## Hardware config
 
-The `hardware-configuration.nix` in this directory is generated
-per-machine by `nixos-generate-config` during install. See
-`hardware-configuration.nix.example` for the placeholder shape.
+The `hardware-configuration.nix` in this directory ships as a
+minimal placeholder (DHCP + ext4 by-label root + EFI boot) so
+the flake evaluates in CI before the host is provisioned.
+
+On real install, replace it with generator output from the
+target machine:
+
+```bash
+nixos-generate-config --root /mnt
+cp /mnt/etc/nixos/hardware-configuration.nix \
+   /mnt/etc/zeta/infra/nixos/hosts/control-plane/hardware-configuration.nix
+```
+
+Then commit the real hardware-configuration.nix so future rebuilds
+of this host reproduce the same boot environment.

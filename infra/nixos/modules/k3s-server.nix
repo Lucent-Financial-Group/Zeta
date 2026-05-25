@@ -47,9 +47,13 @@
       "--write-kubeconfig-mode=0640"
       "--write-kubeconfig-group=wheel"
 
-      # Disable bundled servicelb + traefik — ArgoCD will install
-      # MetalLB + ingress-nginx as Applications, keeping the install
-      # method consistent (everything declared in Git).
+      # Disable bundled servicelb + traefik. Replacement load-balancer
+      # + ingress are not yet declared as ArgoCD Applications under
+      # infra/k8s/applications/; until those land (MetalLB +
+      # ingress-nginx are the planned candidates), the cluster has no
+      # in-cluster L4/L7 ingress and Services of type LoadBalancer
+      # stay in Pending. Workloads needing external traffic should
+      # use NodePort or a host-network pod for the bootstrap period.
       "--disable=servicelb"
       "--disable=traefik"
 
@@ -58,13 +62,20 @@
       # "--flannel-backend=none"  # uncomment when Cilium ships
     ];
 
-    # Manifests auto-applied by K3S on first boot. We seed only what's
-    # required to get ArgoCD running; everything else (Orleans, GitLab,
-    # Argo Workflows, Argo Rollouts) comes from ArgoCD itself reading
-    # this same Git repo.
+    # Manifests auto-applied by K3S on first boot. We seed:
+    #   - ArgoCD namespace + install (so ArgoCD comes up immediately)
+    #   - Orleans skeleton (so the distributed-chron substrate has a
+    #     namespace + RBAC ready before ArgoCD takes over)
+    #   - root Application (so ArgoCD self-bootstraps the rest of
+    #     the workloads from this Git repo)
+    #
+    # Everything else (GitLab, Argo Workflows, Argo Rollouts, future
+    # MetalLB + ingress-nginx) is reconciled by ArgoCD itself reading
+    # infra/k8s/applications/.
     manifests = {
       argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;
       argocd-install.source = ../../k8s/bootstrap/argocd-install.yaml;
+      initial-orleans.source = ../../k8s/bootstrap/initial-orleans.yaml;
       root-application.source = ../../k8s/applications/root-application.yaml;
     };
   };

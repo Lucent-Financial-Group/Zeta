@@ -143,12 +143,14 @@ nix develop
 # Brings up a shell with kubectl, helm, k9s, argocd, jq, yq, sops, age, etc.
 ```
 
-## The framing
+## Design
 
-Per Addison's spec: every text file in this directory is the desired
-state. The flake is the strange attractor that draws the cluster
-toward it. Drift gets reconciled. Nothing about the cluster lives
-outside this repo (after GitLab installs, post-GitLab workloads move
-to the self-hosted GitLab — but the bootstrap path stays here).
+Every text file in this directory is the desired state. The flake
+is the source of truth: the cluster reconciles toward what's
+declared here, and drift gets corrected on the next sync cycle.
+Nothing about the cluster's bootstrap lives outside this repo.
 
-The cluster is the body. The Git repo is the soul.
+Post-bootstrap workloads (anything that lands after GitLab is
+running) migrate to the self-hosted GitLab — but the bootstrap
+path itself stays here, so a full cluster rebuild is always
+reproducible from this one repo.
