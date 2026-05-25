@@ -185,7 +185,64 @@
     # below.
     (writeShellScriptBin "zeta-install"
       (builtins.readFile ../../zeta-install.sh))
+
+    # First-boot auto-install wrapper (B-0754 zero-typing scope):
+    # waits for ethernet DHCP, auto-launches nmtui if no ethernet
+    # internet, then execs zeta-install non-interactively. Invoked by
+    # the zeta-first-boot.service systemd unit on tty1 right after
+    # boot when /etc/zeta-firstboot-enabled is present.
+    (writeShellScriptBin "zeta-first-boot"
+      (builtins.readFile ../../zeta-first-boot.sh))
   ];
+
+  # ── B-0754 zero-typing first-boot auto-install ──────────────────────
+  #
+  # Default config baked into the ISO: HOST defaults to control-plane
+  # (first node of a fresh cluster). Override per-ISO at build time by
+  # patching this file, or per-flash later via the zflash `--role` flag
+  # (B-0754 v2 scope).
+  environment.etc."zeta-firstboot.conf".text = ''
+    # zeta-first-boot config — read by /run/current-system/sw/bin/zeta-first-boot
+    # at first boot of the installer ISO. Lines are sourced as bash.
+    HOST=control-plane
+    REPO_URL=https://github.com/Lucent-Financial-Group/Zeta
+    ETHERNET_WAIT_SECS=30
+  '';
+
+  # Marker file: presence enables the first-boot service. Absent on the
+  # *installed* host (this config only ships on the live ISO), so the
+  # service can't accidentally re-fire on the freshly installed system.
+  environment.etc."zeta-firstboot-enabled".text = "1";
+
+  # Replace the standard getty@tty1 with the first-boot installer so
+  # the operator sees the install banner immediately on boot — no
+  # need to log in first. Other ttys (tty2-tty6) retain normal getty
+  # for manual recovery / parallel work.
+  systemd.services."getty@tty1".enable = lib.mkForce false;
+  systemd.services.zeta-first-boot = {
+    description = "Zeta installer first-boot auto-install (B-0754)";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "systemd-user-sessions.service" "NetworkManager.service" ];
+    conflicts = [ "getty@tty1.service" ];
+    serviceConfig = {
+      Type = "idle";
+      ExecStart = "/run/current-system/sw/bin/zeta-first-boot";
+      StandardInput = "tty";
+      StandardOutput = "tty";
+      StandardError = "tty";
+      TTYPath = "/dev/tty1";
+      TTYReset = true;
+      TTYVHangup = true;
+      Restart = "no";
+      # Run as root so the script can invoke disko, sudo-class
+      # operations, etc. The ISO already grants root via wheel/sudo.
+      User = "root";
+    };
+    # Only fire when the marker file is present (always on live ISO).
+    unitConfig = {
+      ConditionPathExists = "/etc/zeta-firstboot-enabled";
+    };
+  };
 
   isoImage = {
     isoName = lib.mkForce "zeta-installer-${config.system.nixos.release}.iso";
@@ -198,28 +255,27 @@
     Zeta USB installer
     ==================
 
-    1. Boot this USB on the target machine.
-    2. Log in at the console as `root` (no password — upstream
-       installer default; only usable from the local TTY).
-    3. Bring up the network:
-         nmtui                       # interactive, or
-         nmcli device wifi connect <SSID> password <PSK>
-    4. (Optional) See the hardware topology:
-         lstopo                      # NUMA / PCI / GPU layout
-         lsblk -d -o NAME,SIZE,TRAN,MODEL,SERIAL
+    DEFAULT (zero-typing on ethernet-DHCP, single TUI on wifi):
+      Boot the USB. The first-boot service auto-launches on tty1:
+        - 10-sec keystroke prompt: 'c' control-plane / 'w' worker-gpu
+          (timeout accepts default from /etc/zeta-firstboot.conf)
+        - Waits up to 30s for ethernet DHCP + internet
+        - If no ethernet internet, auto-launches nmtui for wifi
+        - Once online, runs zeta-install non-interactively
+        - Reboots when install completes
+      Total typing: 0 commands (ethernet-DHCP) or 1 nmtui form (wifi).
 
-    GUIDED INSTALL (2-NVMe machines):
-         zeta-install <host>         # e.g. zeta-install control-plane
-       Prompts for which disk is the boot disk, requires typed WIPE
-       confirmation, then partitions + formats + mounts + clones +
-       installs end-to-end. Use this for the standard 2-NVMe shape.
-
-    MANUAL INSTALL (other shapes, or recovery):
-         lsblk                                # pick disks
-         # partition + mkfs + mount /mnt manually
-         nixos-generate-config --root /mnt
-         git clone <git-url> /mnt/etc/zeta
-         nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>
+    MANUAL OVERRIDE (recovery / non-standard shapes):
+      Switch to tty2 (Ctrl-Alt-F2) to bypass the first-boot service
+      and get a normal login. Then:
+        nmtui                                 # network if needed
+        zeta-install <host>                   # 2-NVMe guided install
+      Or fully manual (other shapes):
+        lsblk                                 # pick disks
+        # partition + mkfs + mount /mnt manually
+        nixos-generate-config --root /mnt
+        git clone <git-url> /mnt/etc/zeta
+        nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>
 
     Reboot when done.
   '';

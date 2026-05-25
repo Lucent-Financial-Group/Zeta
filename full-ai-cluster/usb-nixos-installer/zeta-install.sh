@@ -50,8 +50,17 @@ echo "About to FULL-WIPE both disks:"
 echo "  Boot: $BOOT_DISK"
 echo "  Data: $DATA_DISK"
 echo
-read -rp "Type WIPE to confirm: " confirm
-[[ "$confirm" == "WIPE" ]] || bail "aborted"
+# Non-interactive mode: ZETA_AUTO_CONFIRM=WIPE bypasses the typed-confirmation
+# prompt. Used by the first-boot systemd service in the installer ISO when the
+# operator already chose role + accepted destructive install at flash time
+# (per B-0754 zero-typing-USB-install design). Direct interactive use still
+# requires the typed WIPE.
+if [[ "${ZETA_AUTO_CONFIRM:-}" == "WIPE" ]]; then
+  echo "[ZETA_AUTO_CONFIRM=WIPE] non-interactive mode; proceeding without prompt"
+else
+  read -rp "Type WIPE to confirm: " confirm
+  [[ "$confirm" == "WIPE" ]] || bail "aborted"
+fi
 
 # ── Step 3: wipe ─────────────────────────────────────────────────
 for d in "$BOOT_DISK" "$DATA_DISK"; do
