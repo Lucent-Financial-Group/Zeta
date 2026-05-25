@@ -96,7 +96,7 @@ Operational content:
 ## Composes with .claude/rules/
 
 - `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md` (the rule this row ships)
-- `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` (B-0750 rule; sibling at cleanup discipline)
+- **B-0750** sibling rule (to land separately; not yet present in `.claude/rules/`) — sibling at cleanup discipline
 - `.claude/rules/claim-acquire-before-worktree-work.md` (force-remove guard; this rule clarifies the AUTHORIZATION model)
 - `.claude/rules/agent-roster-reference-card.md` (canonical identity prefixes)
 - `.claude/rules/peer-call-infrastructure.md` (bus envelope coordination)

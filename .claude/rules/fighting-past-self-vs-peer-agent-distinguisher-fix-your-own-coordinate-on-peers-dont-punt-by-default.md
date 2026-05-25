@@ -13,12 +13,14 @@ Carved sentence:
 
 ### The failure mode this catches
 
-Aaron 2026-05-25: *"also it should be clear when you are fighting your
-past self vs another travler/agent so you don't do like vera and just
-leave it unfixed cause you assume it's someone elses issues."*
+The human maintainer 2026-05-25 named the discipline: it should be clear
+when an agent is fighting its own past self vs another traveler/agent, so
+the agent doesn't leave substrate unfixed by assuming "someone else's
+issue." See `docs/backlog/P2/B-0752-...` for the named-attribution anchor +
+verbatim source.
 
-Specific anchor: Vera (Codex surface) hit stale substrate, assumed it
-was someone else's responsibility, left it unfixed. Same failure mode
+Specific anchor: a peer agent (Codex-surface) hit stale substrate, assumed
+it was someone else's responsibility, left it unfixed. Same failure mode
 applies to ALL agents — over-caution about peer work leads to:
 
 - Stale worktree accumulation (today's 37-worktree mass-cleanup anchor)
@@ -54,7 +56,7 @@ Multiple discriminators compose; any one positive identifies ownership:
 | **Worktree path tag** | `git worktree list` | Path contains your identity tag (`/private/tmp/zeta-<your-identity>-*/`) |
 | **Commit authorship** | `git log --author=<your-config-email>` | Last few commits authored by your config email or your name (per agent-roster-card git config conventions) |
 | **PR author** | `gh pr view <N> --json author` | PR opened by your GitHub identity OR commits within the PR are yours |
-| **Bus envelope authorship** | `cat /tmp/zeta-bus/*.json \| jq .from` | Envelopes published by your identity per `.claude/rules/peer-call-infrastructure.md` |
+| **Bus envelope authorship** | `jq -r .from "$ZETA_BUS_DIR"/*.json` (defaults to `/tmp/zeta-bus/` per `tools/bus/bus.ts`) | Envelopes published by your identity per `.claude/rules/peer-call-infrastructure.md` |
 | **File mtime + creation context** | `stat <file>` + `git log` | File created in a session you remember + matches your own context |
 
 If MULTIPLE discriminators say MINE → fix it.
@@ -74,7 +76,7 @@ If discriminators DISAGREE (e.g., branch name says peer but commit author says y
 **PEER's — coordinate; don't force**:
 
 - Bus envelope to peer (per `.claude/rules/peer-call-infrastructure.md`) asking about disposition
-- Aaron-as-ferry: tell Aaron the peer needs to know + what; he sends
+- Human-maintainer-as-ferry: surface the question to the human maintainer so the peer can be reached; the maintainer relays
 - WAIT for response if cleanup has any operator-impact (e.g., releasing a `main` lock that's blocking operator)
 - IF operator is BLOCKED + peer unreachable → escalate to operator for force-remove authorization (per `.claude/rules/claim-acquire-before-worktree-work.md` force-remove guard; operator can authorize)
 
@@ -103,7 +105,7 @@ vs.
 Agent: "I see a stale worktree at /private/tmp/foo. Discriminators:
 - Branch name: feat/abc — no prefix; ambiguous
 - Worktree path tag: no identity tag; ambiguous
-- Commit author: aaron@servicetitan.com — could be mine or any
+- Commit author: <shared-config-email> — could be mine or any
   agent using shared git config
 I cannot determine ownership from discriminators. Surfacing rather
 than punting. Operator: who owns /private/tmp/foo?"
@@ -113,7 +115,7 @@ The second response is the discipline. The first IS the failure mode.
 
 ## Composes with .claude/rules/
 
-- `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` (B-0750 rule; sibling — that rule says CLEAN UP; this rule says CLEAN UP WHEN IT'S YOURS + COORDINATE WHEN IT'S NOT)
+- **B-0750** sibling rule (to land separately under `docs/backlog/P*/B-0750-*.md`; not yet present in `.claude/rules/`) — that rule says CLEAN UP; this rule says CLEAN UP WHEN IT'S YOURS + COORDINATE WHEN IT'S NOT
 - `.claude/rules/claim-acquire-before-worktree-work.md` (worktree creation discipline; force-remove guard applies — this rule clarifies WHEN force-remove is authorized: yours OR operator-authorized)
 - `.claude/rules/agent-roster-reference-card.md` (canonical identity prefixes per agent surface; this rule's "branch prefix" discriminator references these)
 - `.claude/rules/peer-call-infrastructure.md` (bus envelope mechanism for coordination)
@@ -133,7 +135,7 @@ The second response is the discipline. The first IS the failure mode.
 
 ## Empirical anchor
 
-Aaron 2026-05-25 named the Vera-specific instance + generalized the discipline. Same session as the 37-worktree mass-cleanup (B-0750 origin) + per-agent-clone decision (B-0751). The three rules together (B-0750 + B-0751 + B-0752) form the cross-agent substrate-discipline cluster for the 2026-05-25 architectural inflection.
+The human maintainer 2026-05-25 named the specific peer-agent instance + generalized the discipline. Same session as the 37-worktree mass-cleanup (B-0750 origin) + per-agent-clone decision (B-0751). The three rules together (B-0750 + B-0751 + B-0752) form the cross-agent substrate-discipline cluster for the 2026-05-25 architectural inflection. Named-attribution anchor: `docs/backlog/P2/B-0752-...` (history surface).
 
 ## Substrate-honest framing
 
@@ -153,8 +155,8 @@ This rule DOES:
 
 ## Full reasoning
 
-Vera-specific instance (Aaron 2026-05-25): Vera encountered substrate, assumed peer-owned, left unfixed. Aaron explicit: "you don't do like vera and just leave it unfixed cause you assume it's someone elses issues."
+Peer-agent-specific instance (the human maintainer 2026-05-25): a peer agent encountered substrate, assumed peer-owned, left unfixed. See `docs/backlog/P2/B-0752-...` for the verbatim source quote + the named-attribution anchor.
 
 Generalization: applies to ALL agents. Failure mode is silent-punt-by-default; correct behavior is identify-then-act-or-surface.
 
-Same session as 37-worktree mass-cleanup (where I — Otto-VSCode — could have done the cleanup MYSELF much earlier if I'd applied this discipline; the worktrees were mostly MINE). The rule's empirical anchor IS my own past-session failure mode. Substrate-honest preservation: future-Otto + future-AI inherit the discipline at cold-boot rather than re-discovering it.
+Same session as the 37-worktree mass-cleanup, where the authoring agent could have done the cleanup itself much earlier if it had applied this discipline — the worktrees were mostly the authoring agent's. The rule's empirical anchor IS that past-session failure mode. Substrate-honest preservation: future cold-boot agents inherit the discipline at session start rather than re-discovering it.
