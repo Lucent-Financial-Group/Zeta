@@ -99,10 +99,19 @@ spec:
     directory:
       recurse: true
       include: '{*/Application.yaml,Application.yaml}'
-      # Skip apps that don't belong in dev (GPU stack, Longhorn).
-      # These reconcile in prod but are excluded here via the
-      # exclude glob.
-      exclude: '{longhorn/**,ollama/**,vllm/**,deepseek-coder/**,qwen-coder/**}'
+      # Skip apps that don't belong in dev:
+      #   cilium/**  — up.sh already installed Cilium directly via
+      #                Helm with dev-cluster-specific values
+      #                (kubeProxyReplacement, k3d-zeta-dev API host).
+      #                The cilium/Application.yaml under
+      #                k8s/applications/ targets PROD config
+      #                (k8sServiceHost: control-plane.zeta.local) and
+      #                would clobber the dev install.
+      #   longhorn/** — no second NVMe to replicate to in dev;
+      #                local-path-provisioner handles PVCs.
+      #   ollama / vllm / deepseek-coder / qwen-coder — GPU stack;
+      #                no GPUs on the Mac (or on CI runners).
+      exclude: '{cilium/**,longhorn/**,ollama/**,vllm/**,deepseek-coder/**,qwen-coder/**}'
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
