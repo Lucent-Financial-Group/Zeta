@@ -1,3 +1,5 @@
+export { WorkerProcessEnvName, parseWorkerRuntimeConfigFromEnv, type WorkerProcessEnvironment } from "./config.ts";
+export { composeWorkerRuntime, type ComposeWorkerRuntimeInput, type WorkerRuntimePorts } from "./composition.ts";
 export {
   WorkerRuntimeConfigError,
   WorkerRuntimeConfigErrorCode,

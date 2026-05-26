@@ -311,6 +311,26 @@ live infrastructure adapters are bound by a runtime host.
 - **AND** it reports healthy only when both loops complete without
   degraded worker status, NATS failures, or dead letters
 
+#### Scenario: Workers app parses process environment
+
+- **WHEN** the `apps/workers` runtime host parses process environment
+  values
+- **THEN** it reads `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
+  `NATS_DURABLE`, and `NATS_INBOUND_BATCH_SIZE` through typed env names
+- **AND** it returns typed runtime configuration for the composition root
+- **AND** packages do not read process environment values directly
+- **AND** URLs, credentials, and connection pools remain process adapter
+  concerns supplied through Kubernetes Secret or ExternalSecret backed
+  configuration later
+
+#### Scenario: Workers app composes adapter ports
+
+- **WHEN** the `apps/workers` composition root is created
+- **THEN** it receives typed runtime config plus already-constructed
+  worker, NATS consumer, and telemetry ports
+- **AND** the composition root returns a runnable worker runtime without
+  leaking concrete adapter construction into package code
+
 #### Scenario: Workers app rejects invalid process config
 
 - **WHEN** the `apps/workers` runtime host is created with missing

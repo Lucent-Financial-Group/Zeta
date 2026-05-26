@@ -264,12 +264,20 @@ metrics, structured logs, readiness, and graceful shutdown.
 
 `apps/workers` now exists as the first NodeNext runtime-host shell. It
 does not introduce NestJS yet. It composes the package-level worker host
-and the NATS consumer adapter, applies runtime config such as
-environment, Organization ID, NATS stream, durable consumer, and batch
-size, records telemetry through a sink port, and reports
-healthy/degraded status. Concrete NATS clients, CockroachDB pools,
+and the NATS consumer adapter, parses typed process environment values
+into runtime config, records telemetry through a sink port, and reports
+healthy/degraded status. Its current required environment contract is
+`AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`, `NATS_DURABLE`, and
+`NATS_INBOUND_BATCH_SIZE`. Concrete NATS clients, CockroachDB pools,
 readiness endpoints, structured logging, and shutdown hooks still belong
 to later process-adapter wiring.
+
+The `apps/workers` composition root receives typed config plus
+already-constructed ports. This is the only place the worker process
+should know which concrete adapter implementation is being used. Domain,
+application, runtime, worker, and observability packages must stay free
+of process environment, Kubernetes Secret, ExternalSecret, connection
+pool, and client-construction details.
 
 ## SOLID Rules
 
@@ -660,6 +668,11 @@ Secrets/ExternalSecrets, but the domain package should never see those
 values. The Nest composition layer binds configuration into adapter
 ports.
 
+The current `apps/workers` NodeNext host applies this rule before NestJS
+is introduced: non-secret operational values are parsed from typed env
+names, while URLs, credentials, and client construction remain reserved
+for process adapter factories supplied by the composition root.
+
 Minimum runtime environment contract:
 
 ```text
@@ -827,7 +840,10 @@ counts and NATS consumer batch counts through telemetry sink ports. The
 runtime treats package degraded status, thrown loop failures,
 dead-lettered NATS messages, and failed NATS messages as degraded state
 so weak points can surface before the process is connected to real
-cluster telemetry.
+cluster telemetry. The composition root is therefore the future bridge
+from these records into the full-ai-cluster LGTM stack: structured logs
+to Loki, traces to Tempo through Alloy, metrics to Prometheus/Mimir, and
+dashboard projections in Grafana.
 
 ## V0 Build Sequence
 
@@ -872,9 +888,10 @@ cluster telemetry.
 8. Add the first rule catalog and reaction executor for ready work,
    review staffing, QA staffing, blocker escalation, and late run
    incidents.
-9. Add runtime hosts. The first NodeNext `apps/workers` host now
-   composes the worker and NATS consumer loops through ports; NestJS API
-   and richer worker process wiring are still pending.
+9. Add runtime hosts. The first NodeNext `apps/workers` host now parses
+   typed process config and composes the worker and NATS consumer loops
+   through ports; NestJS API and richer worker process wiring are still
+   pending.
 10. Add UI projections for work board, review center, and evidence
     timeline.
 11. Add real cluster adapters one at a time.

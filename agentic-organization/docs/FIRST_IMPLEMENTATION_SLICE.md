@@ -59,9 +59,9 @@ send_supervisor_signal
 
 ## Apps
 
-| App            | Implemented first                                                                                                                                         |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/workers` | NodeNext runtime-host shell that runs the package worker cycle, runs the NATS consumer cycle, emits telemetry records, and reports healthy/degraded state |
+| App            | Implemented first                                                                                                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/workers` | NodeNext runtime-host shell that parses process config, composes worker ports, runs the package worker cycle, runs the NATS consumer cycle, emits telemetry records, and reports healthy/degraded state |
 
 ## NodeNext Runtime Decision
 
@@ -172,16 +172,25 @@ Hermes runs, MCP calls, and UI evidence.
 - `apps/workers` validates required process config before any loop can
   start: environment, Organization ID, NATS stream, durable consumer,
   and positive NATS inbound batch size.
+- `apps/workers` parses required runtime values from typed environment
+  names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
+  `NATS_DURABLE`, and `NATS_INBOUND_BATCH_SIZE`.
+- `apps/workers` exposes an app-level composition factory that receives
+  typed config plus already-constructed ports. Future real CockroachDB,
+  NATS, and telemetry adapters bind at this app seam instead of leaking
+  process or secret concerns into reusable packages.
 
 ## Next Slice
 
-The next slice should bind the first real process adapters into
-`apps/workers`: concrete NATS pull/publish clients, the durable
-CockroachDB outbox/inbox adapters, and a telemetry sink that can later
-send structured logs and metrics into the full-ai-cluster LGTM stack.
-After that, add a transactional durable-state adapter integration test
-using CockroachDB as the first cluster-backed implementation once a
-local/dev connection is available.
+The next slice should add the first real process adapter factories below
+`apps/workers`: concrete NATS pull/publish client construction, durable
+CockroachDB outbox/inbox adapter construction, and a telemetry sink that
+can later send structured logs and metrics into the full-ai-cluster LGTM
+stack. Keep URLs, credentials, and connection pools in app adapter config
+fed by Kubernetes Secret or ExternalSecret values, never in domain
+packages. After that, add a transactional durable-state adapter
+integration test using CockroachDB as the first cluster-backed
+implementation once a local/dev connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized
