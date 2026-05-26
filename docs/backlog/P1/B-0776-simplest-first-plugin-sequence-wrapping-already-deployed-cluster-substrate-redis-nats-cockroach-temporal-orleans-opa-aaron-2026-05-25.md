@@ -69,7 +69,7 @@ availability + operator-visible value**:
 | 5 | `Zeta.Workflow` | **Temporal** OR **Argo Workflows** | Workflow surface (start/signal/query/cancel/history) | Long-running orchestration; saga patterns | Composes with B-0772 fabric (workflow steps as Observable events) |
 | 6 | `Zeta.Actors` | **Orleans** | Grain pattern (call/observe/snapshot) | Stateful distributed compute; F# + .NET native; perfect Zeta substrate fit | Composes with B-0428 F# substrate + B-0772 fabric |
 | 7 | `Zeta.Policy.Engine` | **OPA** Rego | Policy eval (eval/decide); admission control | Cluster-wide policy enforcement | Composes with B-0772 fabric (policy decisions as Observable events) |
-| 8 | `Zeta.Identity.Workload` | **SPIRE** | SPIFFE ID issuance + verification | Workload identity (zero-trust foundation) | Composes with B-0743 "I execute, you fingerprint" extended to workload-identity scope |
+| 8 | `Zeta.Identity.Workload` | **SPIRE** | SPIFFE ID issuance + verification | Workload identity (zero-trust foundation) | Composes with B-0737 "I execute, you fingerprint" extended to workload-identity scope |
 | 9 | `Zeta.Distributed.AppRuntime` | **DAPR** | State / pubsub / service-invocation / bindings / actors / secrets | Multi-building-block app runtime | Already abstracts vendors per DAPR pattern; Zeta wrapper is thin |
 | 10 | `Zeta.Inference` | **vLLM** (+ ONNX Runtime per B-0771) | Inference surface (generate / embed / chat) | AI workload primitive | Composes with B-0771 ONNX contract |
 
