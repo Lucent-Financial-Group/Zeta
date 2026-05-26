@@ -249,8 +249,8 @@ Every side-effecting command must include:
 
 - `commandId`;
 - `idempotencyKey`;
-- `actorAgentId`;
-- `actorHatAssignmentId`, when the actor is wearing a hat;
+- `actor.agentId`;
+- `actor.hatAssignmentId`, when the actor is wearing a hat;
 - `organizationId`;
 - `projectId` or explicit reason none is available;
 - `correlationId`;
@@ -258,8 +258,8 @@ Every side-effecting command must include:
 - `traceId`;
 - `expectedVersion`, when mutating an existing aggregate;
 - enough authorization context to derive a policy request, currently
-  actor, hat assignment, scope, tool type, supervisor-chain target, and
-  trace fields.
+  `actor: { agentId, hatAssignmentId }`, scope, tool type,
+  supervisor-chain target, and trace fields.
 
 Every command handler must:
 

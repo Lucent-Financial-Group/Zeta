@@ -203,6 +203,8 @@ describe("command pipeline idempotency", () => {
     equal(result.status, CommandResultStatus.Rejected);
     equal(result.error?.code, CommandErrorCode.PolicyDenied);
     equal(result.error?.policyDecisionId, "policy-decision-denied-001");
+    equal(result.error?.policyVersion, "policy-v1");
+    equal(result.error?.reason, HatAuthorityDecisionStatus.Expired);
     equal(commandAuthorizationPort.requests.length, 1);
     deepEqual(commandAuthorizationPort.requests[0], {
       commandId: command.commandId,
