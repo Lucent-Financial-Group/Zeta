@@ -900,6 +900,38 @@ async function main() {
 
   // Pre-flight: determine if iter-4.2 inject will run + which key
   const pubkeyPath = sshKeyOverride ?? DEFAULT_SSH_KEY;
+
+  // iter-5.2.1 (B-0792): if operator didn't pass --host, auto-generate
+  // a random unique hostname `node-<6hex>` (24-bit entropy = ~16M
+  // possible names, negligible collision risk for any homelab cluster
+  // size; node-by-node mDNS uniqueness preserved). Operator can rename
+  // later via the digital-twin substrate per B-0794 self-registration:
+  // edit the node-config YAML in maintainers/<name>/cluster-nodes/<node>/
+  // → ArgoCD reconciles → hostname updates.
+  //
+  // The maintainer 2026-05-26: "can we have it auto generate the host
+  // name we can change later via digital twin after it self registers."
+  //
+  // Auto-gen happens only when --host was NOT passed (preserves
+  // operator intent when they did pick a name). The generated name is
+  // logged CLEARLY pre-flash so the operator knows what to ssh to
+  // post-install. Skipped entirely when --no-inject is set (no ESP
+  // write to carry the name anyway).
+  if (hostOverride === null && !noInject) {
+    // Web Crypto: 3 random bytes → 6 hex chars; node-XXXXXX. Prefix
+    // `node-` keeps the namespace clean (operator-named hosts can
+    // avoid the `node-` prefix to distinguish from auto-named).
+    const rand = new Uint8Array(3);
+    crypto.getRandomValues(rand);
+    const hex = Array.from(rand, (b) => b.toString(16).padStart(2, "0")).join("");
+    hostOverride = `node-${hex}`;
+    process.stdout.write(
+      `\niter-5.2.1: --host not specified; auto-generated hostname: ${hostOverride}\n` +
+        `             (rename later via digital-twin substrate per B-0794)\n` +
+        `             cluster will be reachable as: ssh zeta@${hostOverride}.local\n\n`,
+    );
+  }
+
   let willInject = !noInject;
   if (willInject && !existsSync(pubkeyPath)) {
     process.stderr.write(
