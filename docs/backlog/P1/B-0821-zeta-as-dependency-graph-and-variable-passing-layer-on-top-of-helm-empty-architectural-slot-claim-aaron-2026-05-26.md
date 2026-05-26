@@ -150,6 +150,32 @@ Per [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit
 - **[B-0794](B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — cluster-bring-up substrate (the dependency-graph governs which charts deploy when)
 - **[B-0813](B-0813-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — ArgoCD reconciler (consumes graph-derived sync-wave annotations)
 
+## Empirical verification — empty-slot claim confirmed (2026-05-26 search-pass)
+
+Aaron 2026-05-26 follow-up: *"can you do a quick search that seems like such an easy slot to fill i'm supprised it's not, maybe just vendors do this for their flavor like redhats version of k8s and it's blessed packages"*. Two WebSearch passes 2026-05-26 confirm the slot is empty in the specific shape this row claims:
+
+**Helm's own variable-passing is unsolved at platform level**:
+
+- [Helm GH Issue #12323](https://github.com/helm/helm/issues/12323) — "Discussion on passing templated values to sub-chart dependencies with backwards compatibility" — OPEN; community-discussed without resolution
+- [Helm GH Issue #9461](https://github.com/helm/helm/issues/9461) — "Working with unpackaged charts as dependency" — OPEN; cross-chart variable flow gaps
+
+**Closest tools fall short of the slot in specific ways**:
+
+| Tool | Empirical limit |
+|---|---|
+| [Helm umbrella charts](https://oneuptime.com/blog/post/2026-02-26-argocd-helm-umbrella-charts/view) | Per-chart-bundle scope; not a portable layer; sub-chart values still operator-wired |
+| [Helmfile](https://github.com/helmfile/helmfile) | Multi-release orchestration; no typed-dependency-graph; no auto-variable-passing |
+| ArgoCD ApplicationSet | Template-based Application generation; not a dependency-graph |
+| Helm `Chart.yaml` `dependencies:` | Sub-chart inclusion only; no cross-chart-graph |
+
+**Vendor platforms** (OpenShift / Rancher / Tanzu / etc.) fill the slot for THEIR OWN blessed-package configs but with explicit lock-in tradeoffs:
+
+- [Rancher's Helm config](https://github.com/rancher/rancher/wiki/Understanding-How-Rancher-Configures-Helm-Charts) uses platform-specific `answers` + `valuesYaml` injection; not a portable cross-platform dependency-graph
+- [OpenShift Helm](https://docs.openshift.com/en/container-platform/4.10/applications/working_with_helm_charts/understanding-helm.html) provides chart-management UI but no cross-chart variable-flow layer
+- Industry observation: [proprietary K8s lock-in](https://www.spectrocloud.com/blog/closed-source-open-minds) — vendors fork K8s for their own platforms; portable OSS layer for this specific slot is open
+
+**Confirmed**: the dependency-graph + auto-variable-passing slot above Helm + below sync-engine, OSS-portable + GitOps-native, is empty in the substantive sense Aaron framed. Strategic positioning claim stands.
+
 ## Out of scope (this row)
 
 - Helmfile / Terraform / Pulumi feature parity at the IaC layer — Zeta's slot is GitOps-native + above Helm + below sync engine; not full IaC
