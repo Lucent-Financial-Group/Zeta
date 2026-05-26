@@ -8,7 +8,7 @@ merged_at: "2026-05-24T00:03:59Z"
 closed_at: "2026-05-24T00:03:59Z"
 head_ref: "otto/research-addison-consent-pattern-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T14:25:33Z"
+archived_at: "2026-05-24T01:24:15Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

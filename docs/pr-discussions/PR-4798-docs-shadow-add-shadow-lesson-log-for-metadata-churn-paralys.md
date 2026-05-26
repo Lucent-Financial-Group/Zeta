@@ -8,7 +8,7 @@ merged_at: "2026-05-24T01:18:54Z"
 closed_at: "2026-05-24T01:18:54Z"
 head_ref: "lior-decompose-4767-shadow-log"
 base_ref: "main"
-archived_at: "2026-05-24T14:25:08Z"
+archived_at: "2026-05-24T01:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

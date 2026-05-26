@@ -8,7 +8,7 @@ merged_at: "2026-05-23T23:56:30Z"
 closed_at: "2026-05-23T23:56:31Z"
 head_ref: "otto/research-pattern-p-wear-down-unbounded-outcomes-2026-05-23"
 base_ref: "main"
-archived_at: "2026-05-24T14:25:38Z"
+archived_at: "2026-05-24T01:24:15Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

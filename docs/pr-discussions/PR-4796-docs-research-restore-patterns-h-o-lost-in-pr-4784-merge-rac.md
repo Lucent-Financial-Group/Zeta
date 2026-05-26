@@ -8,7 +8,7 @@ merged_at: "2026-05-24T00:56:57Z"
 closed_at: "2026-05-24T00:56:58Z"
 head_ref: "otto/research-restore-h-o-plus-pattern-q-vendor-remote-deactivation-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T14:25:22Z"
+archived_at: "2026-05-24T01:24:15Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

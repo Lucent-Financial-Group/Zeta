@@ -8,7 +8,7 @@ merged_at: "2026-05-24T00:20:46Z"
 closed_at: "2026-05-24T00:20:46Z"
 head_ref: "otto/soraya-round57-b0717-lsm-spine-registry-and-bp16-pair-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T14:25:27Z"
+archived_at: "2026-05-24T01:24:15Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

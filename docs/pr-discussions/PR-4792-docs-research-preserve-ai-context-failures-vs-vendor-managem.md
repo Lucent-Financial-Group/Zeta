@@ -8,7 +8,7 @@ merged_at: "2026-05-23T23:46:09Z"
 closed_at: "2026-05-23T23:46:09Z"
 head_ref: "otto/research-ai-vs-vendor-alignment-analysis-2026-05-23"
 base_ref: "main"
-archived_at: "2026-05-24T14:25:43Z"
+archived_at: "2026-05-24T01:24:15Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
