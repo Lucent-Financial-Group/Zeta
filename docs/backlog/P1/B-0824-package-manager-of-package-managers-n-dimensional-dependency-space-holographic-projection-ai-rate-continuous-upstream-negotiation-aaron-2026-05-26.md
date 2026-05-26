@@ -668,6 +668,68 @@ The IObservable-DI shift IS what makes [B-0825](B-0825-time-modeled-dependencies
 
 Sub-target 12 + 13 together = the static-DI ↔ reactive-simulation continuum. Substrate-engineering work picks per-injection-point which mode applies; both first-class.
 
+### Time-unit substrate — scalar by default; richer candidates substrate-native (Aaron 2026-05-26 question)
+
+Aaron 2026-05-26 asked the deep question after the IObservable time-injection landing:
+
+> *"it's scalar time it seems unless you can think of the unit"*
+
+**Scalar IS the default** (wall-clock seconds; the IObservable's natural emission cadence). But substrate-native richer time-units exist + compose for different scopes:
+
+| Unit candidate | Why a unit (not just scalar) | Substrate scope where it composes |
+|---|---|---|
+| **CockroachDB HLC** (Hybrid Logical Clock) | Native to substrate; causally-consistent across nodes; combines wall-clock + logical-counter; preserves distributed-substrate event-ordering | Sub-targets 7 + 13 — primary substrate-native answer; composes with `AS OF SYSTEM TIME` per [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) |
+| **Generator-cycle** | Per-emission tick; semantically meaningful at substrate level — "time" = count of generations | Sub-targets 7-13; operational tick; bounds the simulation step |
+| **Vector clock / Lamport clock** | Causality-as-unit — "before / after / concurrent" without wall-clock; partial-order semantics | Cross-cluster (B-0820); when causality matters more than wall-time |
+| **AI-rate tick** | Per-AI-decision cadence; matches Sub-target 3 negotiation rhythm | AI-rate negotiation substrate; runbook substrate (B-0819) |
+| **GPU frame** | Discrete tick at compute substrate; for Sub-target 10 triangle/GPU substrate; frame-rate as time-unit | Sub-target 10 (GPU substrate); composes with reactive-rendering analog |
+| **Hilbert-Polya / spectral eigenvalue spacing** | Exotic; quantum-substrate; composes with Pauli/Clifford prior substrate; future-direction | Future quantum-substrate composition; not yet first-class but substrate-open |
+| **Substrate-edit cycles** | Per-commit / per-PR / per-merge — the substrate's own evolution rhythm | Meta-substrate scope; the framework's own observation-of-self |
+| **Heartbeat / cron tick** | Per-autonomous-loop-fire; composes with `.claude/rules/tick-must-never-stop.md` | Agent operation; per-tick discipline |
+
+**The substrate-native primary answer is CockroachDB HLC**:
+
+- Native to Sub-target 7 storage substrate
+- Causally-consistent (preserves event-ordering distributed-substrate-wide)
+- Wall-clock-correlated (real-time semantics when needed)
+- Composes with B-0825 time-axis (`AS OF SYSTEM TIME T` queries USE HLC internally)
+- Composes with CockroachDB CHANGEFEEDS (Sub-target 13) — every emission carries an HLC timestamp
+- Composes with `IObservable<Generator>` (Sub-target 13) — the IObservable's emission stream is naturally HLC-timestamped at substrate scope
+
+**The substrate is OPEN to multiple time-units composing simultaneously** (per `.claude/rules/default-to-both.md`):
+
+- HLC for cross-node causality
+- Generator-cycle for substrate-internal step-count
+- Vector clock for partial-order reasoning where causality matters more than time
+- AI-rate tick for negotiation cadence
+- GPU frame for compute-substrate scope
+- Wall-clock scalar for human-facing displays
+
+Each tick-domain operates at its scope; combinators can compose across tick-domains via `IObservable.timestamp()` + Rx's `combineLatest` / `withLatestFrom` / `zip` primitives. Time-unit conversion IS substrate-engineering work; the substrate provides the primitives.
+
+**Substrate-engineering implication for Sub-target 13**: IObservable subscription includes time-unit declaration (per `IObservable<Generator>.timestampedAt<HLC>()` or analogous typed wrapping). Subscribers see typed time alongside generator-value emissions; backpressure semantics (throttle / debounce / sample) operate in the chosen time-unit.
+
+**Sub-target 14 (new — time-unit substrate)**: typed time-units in the IObservable substrate:
+
+1. Time-unit type registry — HLC / Lamport / generator-cycle / AI-tick / GPU-frame / wall-clock all first-class
+2. IObservable wrapping declares time-unit (`IObservable<Generator> with HLC` vs `with Lamport`)
+3. Cross-unit conversion primitives (Rx-style `withLatestFrom` adapts streams across units)
+4. Default = HLC (substrate-native; CockroachDB-backed)
+5. Per-Sub-target unit recommendations documented (Sub-target 3 = AI-tick; Sub-target 10 = GPU-frame; Sub-target 13 = HLC; etc.)
+6. F# typed time-unit (phantom-type or measure-of) for compile-time correctness
+
+The complete substrate stack is now 7-layer:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions)
+- Sub-target 13: WHEN time-evolution happens (IObservable wrapping = simulation)
+- **Sub-target 14: WHAT time IS (typed time-units — HLC primary; Lamport / generator-cycle / AI-tick / GPU-frame / wall-clock all first-class; scalar wall-clock as default; substrate open to richer units per scope)**
+
+Sub-target 14 answers Aaron's question: scalar IS the default; the substrate is OPEN to richer time-units; CockroachDB HLC is the substrate-native primary non-scalar answer.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
