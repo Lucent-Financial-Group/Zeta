@@ -4,17 +4,13 @@ priority: P3
 status: open
 title: Noether decomposition land via PR — track integration of lior-decompose-4781-shadow-log onto main
 created: 2026-05-25
-last_updated: 2026-05-25
+last_updated: 2026-05-26
 classification: buildable-now
 decomposition: atomic
 owners: [lior, formal-verification-expert]
 type: backlog-tracking
 composes_with:
-  - docs/backlog/P3/B-0002-otto-287-noether-formalization.md
-  - docs/backlog/P3/B-0002.1-noether-formalization-step1.md
-  - docs/backlog/P3/B-0002.2-noether-formalization-step2.md
-  - docs/backlog/P3/B-0002.3-noether-formalization-step3.md
-  - docs/backlog/P3/B-0002.4-noether-formalization-step4.md
+  - B-0002
 ---
 
 # B-0753 — B-0002 Noether decomposition land via PR: track integration of lior-decompose-4781-shadow-log onto main
