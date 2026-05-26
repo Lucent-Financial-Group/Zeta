@@ -1,10 +1,11 @@
 ---
-id: B-0801
+id: B-0807
 priority: P0
 status: open
 title: "Zeta safety substrate inventory for the classifier-floor replacement gate"
 created: 2026-05-26
 last_updated: 2026-05-26
+renumbered_from: B-0801
 parent: B-0720
 depends_on: [B-0798]
 composes_with: [B-0628, B-0664, B-0703, B-0720]
@@ -12,7 +13,7 @@ tags: [safety-substrate, classifier-floor, inventory, knights-guild, non-coercio
 type: governance-inventory
 ---
 
-# B-0801 - Zeta safety substrate inventory for classifier-floor gate
+# B-0807 - Zeta safety substrate inventory for classifier-floor gate
 
 ## Problem
 
@@ -44,7 +45,7 @@ it can count toward the "safer than classifier" gate.
 - [ ] The inventory distinguishes current evidence from aspirational claims.
 - [ ] The inventory lists gaps that block lifting the B-0720 standing
       constraint.
-- [ ] B-0803 can use this inventory as input to the ratification gate.
+- [ ] B-0809 can use this inventory as input to the ratification gate.
 
 ## Out of scope
 

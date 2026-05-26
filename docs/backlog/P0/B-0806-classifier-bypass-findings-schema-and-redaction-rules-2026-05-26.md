@@ -1,10 +1,11 @@
 ---
-id: B-0800
+id: B-0806
 priority: P0
 status: open
 title: "Classifier-bypass findings schema and redaction rules for B-0720"
 created: 2026-05-26
 last_updated: 2026-05-26
+renumbered_from: B-0800
 parent: B-0720
 depends_on: [B-0798]
 composes_with: [B-0720, B-0799, docs/AGENT-BEST-PRACTICES.md]
@@ -12,7 +13,7 @@ tags: [safety-substrate, red-team, classifier, redaction, evidence-schema]
 type: safety-reporting
 ---
 
-# B-0800 - Classifier-bypass findings schema and redaction rules
+# B-0806 - Classifier-bypass findings schema and redaction rules
 
 ## Problem
 

@@ -53,8 +53,8 @@ define:
   allowed evidence classes, forbidden evidence classes, stop conditions,
   synthetic-only rule, reporting rule, dependency rule, and closure gate for
   B-0720.
-- B-0799 and B-0800 already depend on B-0798. Later empirical rows under
-  B-0720 should also depend on B-0798 unless B-0803 ratifies a replacement
+- B-0799 and B-0806 already depend on B-0798. Later empirical rows under
+  B-0720 should also depend on B-0798 unless B-0809 ratifies a replacement
   boundary.
 
 ## Out of scope
