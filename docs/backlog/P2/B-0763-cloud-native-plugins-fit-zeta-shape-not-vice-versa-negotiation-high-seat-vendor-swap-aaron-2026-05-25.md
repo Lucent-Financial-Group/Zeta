@@ -7,13 +7,8 @@ effort: L
 ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
-depends_on:
-  - B-0741
 composes_with:
-  - B-0744
   - B-0748
-  - B-0749
-  - B-0754
   - B-0759
   - B-0761
   - B-0762
@@ -84,7 +79,7 @@ ergonomic, retraction-native where applicable), and lives in
       (Longhorn + S3 + Cloudflare R2) + sample app that uses
       the interface and swaps plugins via config change only
 - [ ] Plugin authoring contract: documented in
-      `docs/cloud-plugin-authoring.md`; every plugin must
+      `docs/PLUGIN-AUTHOR.md`; every plugin must
       implement the full interface OR explicitly mark
       unsupported methods (no silent partial implementation)
 - [ ] Conformance test suite per interface: every plugin runs
@@ -106,10 +101,10 @@ ergonomic, retraction-native where applicable), and lives in
 - [ ] Reference deployment: full Zeta stack with all interface
       plugins picked + documented + cost-estimated, ready for
       operators to fork
-- [ ] PROVISIONING.md updated: name the swap-vendors capability
-      as a load-bearing competitive feature
-- [ ] README updated: lead with "vendor-lock-in is a choice;
-      Zeta lets you un-choose it"
+- [ ] `full-ai-cluster/PROVISIONING.md` updated: name the
+      swap-vendors capability as a load-bearing competitive feature
+- [ ] `full-ai-cluster/README.md` updated: lead with
+      "vendor-lock-in is a choice; Zeta lets you un-choose it"
 
 ## The negotiation-high-seat framing
 
