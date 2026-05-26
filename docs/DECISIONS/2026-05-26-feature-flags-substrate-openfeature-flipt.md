@@ -1,6 +1,6 @@
 # ADR: Feature flags substrate uses OpenFeature as contract and Flipt first
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-26
 **Backlog:** B-0786
 **Scope:** Decision substrate only; no implementation in this slice.
