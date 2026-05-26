@@ -109,12 +109,71 @@ Properties:
   per-PR
 - Risk: regressions can sit longer before discovery
 
+### Approach E — AI agent drives real GitHub OAuth via Playwright (dedicated AI GH accounts)
+
+Operator's contribution 2026-05-26: *"to have it fully tested by ai
+likely going to have to preform the step and use paywrite to login
+into github likely going to need its own accounts and such"*.
+
+AI agent uses Playwright (browser automation) to drive the real GH
+device-code flow end-to-end:
+
+1. Installer in CI starts `gh auth login` → emits device-code +
+   verification-URI
+2. Playwright instance in CI opens the verification URL in a real
+   headless browser
+3. Playwright agent logs into a **dedicated AI-owned GH account**
+   (separate from operator's account)
+4. Playwright agent enters the device-code
+5. Playwright agent authorizes the OAuth request
+6. `gh auth login` polling completes; receives real-GH-API-issued PAT
+7. Installer continues with the obtained PAT
+
+Properties:
+
+- Tests the FULL real-GH OAuth flow end-to-end (no mocks)
+- Requires dedicated AI-owned GH accounts (separate identities; not
+  operator's account)
+- AI accounts have their own 2FA + security setup (need scoped
+  approach: probably TOTP secrets in CI secret-store + scoped repo
+  permissions on the AI account)
+- Playwright substrate is reusable for other browser-automation tests
+  (web UI testing, dashboard verification, etc.)
+- Most realistic end-to-end coverage; matches what an operator-physical-
+  test would do, automated
+
+Composes with `mcp__plugin_playwright_playwright__*` tooling (the
+existing Playwright surface in the agent harness; reuse for installer
+flow testing).
+
+Sub-properties to scope:
+
+- **AI account creation discipline**: how are the dedicated AI GH
+  accounts created? Per-AI? Per-test? Per-environment? Sub-accounts
+  under an org?
+- **Scoped permissions**: AI account should have minimal repo access
+  (read-only on this repo; no organization-admin; no marketplace
+  install permissions)
+- **2FA handling**: TOTP secret stored in CI secret-store; agent
+  generates TOTP code via library at auth-time
+- **Account hygiene**: regular rotation of AI account credentials;
+  audit log of which AI session used which account when
+- **Audit trail**: every test run logs which AI account was used +
+  what scope tokens were issued + that they were ephemeral
+
+This DOES use real-GH infrastructure (unlike Approach A's mock-only
+substrate) but the AI accounts are owned + scoped + auditable
+(distinct from baked-in operator credentials).
+
 ## Substrate-honest scope assessment
 
 Approach A is the most thorough but highest implementation cost.
 Approach C is the fastest but leaves coverage gap. Approach B requires
-GH-side infrastructure but is most realistic. Approach D is the
-substrate-honest acknowledgment that some testing is operator-physical.
+GH-side infrastructure but is most realistic of A/B/C. Approach D is
+the substrate-honest acknowledgment that some testing is operator-
+physical. Approach E (Aaron 2026-05-26) is the highest-fidelity
+automated path but requires the most operational substrate
+(AI accounts + Playwright + 2FA handling + account hygiene).
 
 Likely landing: **C first** (immediate testability gain for B-0831
 cascade #6 phase 1) + **A or B as follow-up** (cover the auth flow
@@ -134,6 +193,11 @@ Phased acceptance:
 - Approach D acceptance: operator-physical-test cadence documented
   per B-0831 reframing; auth-flow regressions get human-physical-test
   coverage at chosen periodicity
+- Approach E acceptance: dedicated AI GH account(s) provisioned with
+  scoped permissions + 2FA TOTP-in-secret-store; Playwright CI step
+  drives real GH OAuth end-to-end; per-run audit log captures which
+  AI account was used + which scope tokens were issued + verification
+  that tokens were ephemeral (revoked post-test)
 
 ## Security properties to preserve (non-negotiable)
 
