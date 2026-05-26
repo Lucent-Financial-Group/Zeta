@@ -230,8 +230,8 @@ flywheel) compose into Zeta's competitive moat against:
   abstract the runtime interfaces operators write code
   against
 
-The combination — owned interfaces + open reference architecture
-+ self-improving telemetry — is what makes Zeta a genuinely new
+The combination — owned interfaces + open reference architecture +
+self-improving telemetry — is what makes Zeta a genuinely new
 shape in the cluster-infrastructure market, not just "another
 cluster product."
 
