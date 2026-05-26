@@ -3,7 +3,7 @@ id: B-0811
 priority: P2
 status: open
 created: 2026-05-25
-last_updated: 2026-05-25
+last_updated: 2026-05-26
 title: Ontology + category negotiation IS the AI-skills + hats federation point ACROSS CLUSTERS + FORKS of Zeta — the protocol layer where two Zeta clusters (or two forks of Zeta) agree what each understands the other's packages / skills / hats / capabilities to MEAN
 domain: agentic-organization
 ferried_by: aaron
