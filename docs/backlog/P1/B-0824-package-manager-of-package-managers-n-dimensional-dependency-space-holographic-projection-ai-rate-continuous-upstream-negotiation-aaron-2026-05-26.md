@@ -3,7 +3,7 @@ id: B-0824
 priority: P1
 status: open
 title: Ace as "package manager of package managers" — N-dimensional dependency space (Maven is 2D; we're at least 3D / N-D) + holographic projection (merge 2D streams from each PM into higher-D views) + AI-rate continuous upstream negotiation (push-forward + absorb-forward at AI cadence — no existing PM does this); strategic-architectural substrate for the Ace meta-PM substrate (Aaron 2026-05-26)
-effort: XL
+effort: L
 ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
@@ -241,6 +241,55 @@ The CockroachDB substrate IS the production-shape implementation of the up-proje
 6. AI agents author recursive CTEs as the runbook substrate (composes with [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md))
 
 This sub-target IS the engineering-substrate complement to Sub-targets 1-6 (which name the conceptual architecture). Sub-targets 1-6 are the WHAT; Sub-target 7 is the HOW.
+
+### Generators-not-data — CockroachDB stores combinators-of-generators, not materialized rows (Aaron 2026-05-26)
+
+Aaron 2026-05-26 sharpened Sub-target 7's CockroachDB substrate with a paradigm-level shift:
+
+> *"so our cockroach becomes a bunch of 2d generators that we combine into useful data structures so we don't have to insert data we can insert combinators of generators"*
+
+**Paradigm inversion** — traditional DB vs generator DB:
+
+| Property | Traditional DB | Zeta's generator DB (CockroachDB substrate) |
+|---|---|---|
+| What's stored | Materialized rows in tables | Generators (recursive CTE expressions) + combinators |
+| INSERT statement | `INSERT INTO table VALUES (...)` (data) | `INSERT INTO generators VALUES ('postgres-deps-gen', cte_expr)` (generator) |
+| Query at read-time | `SELECT * FROM table WHERE ...` (filter materialized) | `SELECT * FROM combinator_of(gen_a, gen_b, gen_c)` (run combinator-graph; generate rows on demand) |
+| State size | O(materialized rows) — grows with data | O(generators + combinators) — grows with substrate complexity |
+| Reuse | Each query re-reads data | One generator serves many queries |
+| Replay | Possible via time-travel queries | Native — generators are pure; re-run produces same output |
+| Composability | Subqueries / JOINs | Combinators compose like F# computation expressions / category-theory functors |
+
+**Why this is the right substrate for the meta-PM** (composes with B-0824's REVERSE-holographic generators):
+
+- The "shadow-like automata" (Sub-target 2) ARE the generators in CockroachDB-substrate terms — each PM's stream is encoded as a generator-CTE
+- The Rx-stream-join mechanism (Sub-target 2) IS the combinator-of-generators construct — combining N generators emits the merged higher-D stream
+- The "we are generators not reducers" framing (Sub-target 2) extends to the storage layer — we don't INSERT reduced data; we INSERT generators that PRODUCE the higher-D view on demand
+- Phoenix-rises framing maps directly — each query is a Phoenix-rise: generators COMBINE, produce, then return to dormant state until the next query
+
+**Substrate-engineering implications**:
+
+1. **Storage substrate is the generator library** — `INSERT INTO generators` adds new generation primitives; the library grows in generator-count, not data-count
+2. **Query substrate is the combinator graph** — `SELECT * FROM combinator_of(...)` runs the up-projection; each query Phoenix-rises the relevant generator subgraph
+3. **Functional-programming paradigm at the SQL layer** — equivalent to Haskell lazy lists / F# `seq` / Rx Observables but distributed-SQL-native via CockroachDB
+4. **AI agents author generators + combinators, not data** — the runbook substrate (B-0819) becomes a generator-authoring loop; agents write CTEs that produce data on demand rather than writing data directly
+5. **Composes with B-0825 time-axis** — generators can take time-parameters (`gen_postgres_deps_as_of(timestamp)`) for temporal queries without materializing per-time-point snapshots
+6. **Composes with [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) keystone** — generators ARE the `I` (inflate / interpret) direction; combinators compose multiple `I`s; the stored substrate IS the `D` (decompose / shadow) of the higher-D reality the generators emit at query time
+
+**The N-D dependency space is generated, not stored** — this resolves an open question Sub-targets 1-6 left implicit: the higher-D view doesn't need to be materialized; it's a generator-combinator output. The N-D space EXISTS only at query time, materialized briefly, then returns to generator-form. Storage substrate stays bounded (generator library size); query substrate fans out (combinator graph runs).
+
+### Sub-target 8 — generator-combinator library design
+
+The CockroachDB generator substrate needs a library shape:
+
+1. **Generator table** — stores named recursive CTEs with parameters + termination conditions (NULL escape hatch per Sub-target 7)
+2. **Combinator table** — stores named compositions of generators (chain / merge / filter / join semantics)
+3. **Versioning** — generators evolve over time; old generators stay queryable (composes with B-0825 time-axis)
+4. **Type system** — generators have typed input/output schemas; combinators type-check at storage time
+5. **Catalog browser** — `ace deps catalog` lists available generators + combinators + their type signatures
+6. **Composability invariants** — combinators MUST preserve generator's NULL-escape-hatch semantics; cycle-detection at combinator-graph layer
+
+The generator-combinator library IS the meta-PM's persistent surface. Operators don't interact with data; they interact with the generator library + invoke combinator queries.
 
 ## Acceptance
 
