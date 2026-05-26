@@ -31,7 +31,7 @@ describe("buildInventoryReport", () => {
     expect(report.drift.missingRetained).toEqual([]);
   });
 
-  test("flags missing retained setup scripts", () => {
+  test("flags missing retained setup/bootstrap/launchd-bootstrap scripts", () => {
     const [missing, rest] = splitExpectedRetained();
     const report = buildInventoryReport(rest);
 
@@ -57,7 +57,7 @@ describe("renderReport", () => {
 
     expect(rendered).toContain("## Unexpected non-Lean bash files");
     expect(rendered).toContain("tools/hygiene/new-post-install-wrapper.sh");
-    expect(rendered).toContain("## Missing retained setup/bootstrap files");
+    expect(rendered).toContain("## Missing retained setup/bootstrap/launchd-bootstrap files");
     expect(rendered).toContain(missing);
   });
 });

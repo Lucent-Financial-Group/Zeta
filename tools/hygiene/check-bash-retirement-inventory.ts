@@ -142,7 +142,7 @@ export function renderReport(report: InventoryReport): string {
     lines.push("");
   }
   if (report.drift.missingRetained.length > 0) {
-    lines.push("## Missing retained setup/bootstrap files");
+    lines.push("## Missing retained setup/bootstrap/launchd-bootstrap files");
     lines.push("");
     for (const file of report.drift.missingRetained) lines.push(`- ${file}`);
     lines.push("");
