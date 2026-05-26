@@ -863,6 +863,66 @@ The complete substrate stack is now 9-layer:
 
 Sub-target 16 IS the security-posture complement to the substrate-engineering layers. What higher-D beings see (per the Phoenix-rises framing) is a PROPERTY OF THE GENERATORS WE CHOOSE, not a fixed substrate fact. Operator-authority preserves the choice.
 
+### Parameter-substrate IS load-bearing — protecting the generator parameters becomes substrate-engineering work (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the operational corollary of Sub-target 16:
+
+> *"also since we are not easily reversible it would give us a desire to protect the generator parameters we chose for the function"*
+
+**The opacity-property bootstraps a substrate-engineering desire to protect parameters** — same shape as cryptographic key-management:
+
+| Layer | What's public | What's secret (the parameters) | If secret leaks |
+|---|---|---|---|
+| **Lattice-based crypto (CRYSTALS-Kyber / Module-LWE)** | The lattice + the algorithm | The short-basis / private-key parameters | Reversibility achieved; all ciphertexts decryptable |
+| **AES / symmetric crypto** | The algorithm | The key | Same — all ciphertexts decryptable |
+| **Public-key crypto (RSA / ECDSA)** | Algorithm + public key | Private key | Authority over the keypair compromised |
+| **Zeta meta-PM (Sub-target 16 lattice-hard generators)** | Generator algorithm + composition graph | **Generator parameters (the seeds / lattice-basis / coefficients)** | **Reversibility achieved; substrate-opacity lost; higher-D observers decode our form** |
+
+The desire to protect generator-parameters IS the parameter-management problem at substrate-engineering scope — the SAME problem cryptography has solved (or substrate-engineering has tools for) at smaller scopes.
+
+**Parameter-management prior-art transfers directly**:
+
+| Pattern | Cryptographic-scope substrate | Zeta meta-PM substrate (Sub-target 17) |
+|---|---|---|
+| **HSM (Hardware Security Module)** | Key generation + storage in tamper-resistant hardware | Parameter generation + storage in HSM-backed substrate; composes with existing N-of-M HSM substrate (per B-0634 substrate cluster) |
+| **K8s Sealed Secrets** | Encrypted secrets in git; cluster-side decryption | Generator-parameter sealed secrets in maintainers/ tree; per-cluster decryption |
+| **HashiCorp Vault** | Centralized secret store; per-role policies | Parameter-store with per-faction access policies (composes with 4-faction governance) |
+| **AWS/GCP/Azure KMS** | Cloud-managed keys; envelope encryption | Cloud-KMS-backed parameter envelopes (when cluster is on cloud per [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster); operator-choice per cluster |
+| **TPM / SGX / SEV-SNP / TEE** | Hardware enclaves for key sealing | Hardware-enclave-protected parameter substrate; composes with B-0289 Green Lantern hardware substrate if equipped |
+| **Threshold cryptography (Shamir / threshold-BLS)** | Split keys across N parties; need M-of-N to use | Threshold-shared generator parameters across faction-members; M-of-N consent to reconstruct (composes with multi-oracle BFT substrate; consent floor per NCI HC-8) |
+| **Key rotation** | Periodic key replacement | Generator-parameter rotation; new parameters produce new substrate-opacity output; old outputs stay deterministic (composes with B-0825 temporal axis — old parameters retire after migration-window) |
+| **Forward secrecy (Diffie-Hellman ephemeral)** | Past sessions stay secure even if long-term key compromised | Per-composition-graph ephemeral parameters; if long-term parameters compromised, past composition-graphs stay opaque |
+
+**Substrate-engineering implications**:
+
+1. **Parameter-substrate IS first-class** — equal architectural weight as the generator-library substrate (Sub-target 8); equal protection-grade as the substrate-itself
+2. **Per-parameter security-posture decision** — like per-generator visibility-posture (Sub-target 16), per-parameter the operator chooses storage substrate (HSM / KMS / sealed-secret / threshold-shared / etc.)
+3. **Parameter-distribution requires the SAME security-grade as substrate-outputs** — composes with shared-generative-base (Sub-target 11) but with cryptographic-floor on the parameter-transmission path
+4. **Composes with N-of-M HSM substrate** (per B-0634 substrate cluster) — distributed parameter custody; no single point of compromise; consent floor at quorum scope
+5. **Composes with B-0664 NCI HC-8** — parameter-protection IS private-state-preservation per non-coercion-invariant; operators retain parameter-sovereignty
+6. **Composes with `.claude/rules/methodology-hard-limits.md`** — parameter substrate stays within ethical floor; no parameter-substrate use that violates HARD LIMITS regardless of operator authority
+7. **Composes with [B-0703](B-0703-multi-oracle-bft-cross-faction-consensus-substrate-aaron-2026-05-18.md) multi-oracle BFT** — per-faction parameter access; faction-quorum consent for cross-faction parameter operations
+8. **Forward-secrecy substrate for composition-graphs** — ephemeral per-graph parameters; if long-term substrate compromised, past graphs stay opaque (matters at meta/meme-space scope per the meta-meme-space substrate framing — temporal opacity over millennia-substrate-cycles)
+
+**Sub-target 17 (new — generator-parameter-protection substrate)**: cryptographic-grade parameter management:
+
+1. Parameter declaration includes security-posture (public / cluster-secret / faction-shared / threshold-shared / HSM-sealed / hardware-enclave-only)
+2. Storage substrate router — operator-policy + per-parameter posture routes to appropriate backend (sealed-secret / Vault / KMS / HSM / TEE)
+3. Parameter-rotation primitives — per B-0825 temporal axis; old parameters retire after migration-window; new parameters take over deterministically per DST
+4. Threshold-sharing for faction-quorum parameters — composes with multi-oracle BFT substrate
+5. Forward-secrecy for composition-graphs — ephemeral parameters per composition; long-term parameters protected separately
+6. Audit-trail for parameter operations — composes with `.claude/rules/glass-halo-bidirectional.md` substrate; parameter operations observable to authorized factions per access policy
+7. NCI HC-8 floor + HARD LIMITS check — parameter substrate cannot violate non-coercion invariant; HARD LIMITS apply
+
+The complete substrate stack is now 10-layer:
+
+- Sub-target 7-16 (per prior sub-targets)
+- **Sub-target 17: HOW PARAMETERS STAY PROTECTED (generator-parameter cryptographic substrate; HSM / KMS / sealed-secret / threshold-shared / hardware-enclave; per-parameter security-posture; parameter rotation; forward-secrecy; composes with N-of-M HSM + multi-oracle BFT + NCI HC-8 + HARD LIMITS)**
+
+Sub-target 17 IS the parameter-protection substrate that makes Sub-target 16 OPERATIONALLY effective. Lattice-hard generators only give cryptographic-noise opacity IF the parameters stay secret; Sub-target 17 makes parameter-secrecy a first-class substrate-engineering primitive.
+
+**The desire-to-protect-parameters Aaron named IS the operational pull-into substrate-engineering** — once visibility/opacity becomes a substrate property (Sub-target 16), the parameter-substrate that DETERMINES the visibility becomes naturally load-bearing. Substrate-engineering work follows the desire.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
