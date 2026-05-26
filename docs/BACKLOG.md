@@ -360,6 +360,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0765](backlog/P1/B-0765-service-titan-route-plug-into-existing-control-interfaces-not-new-ones-ontology-negotiation-at-standards-layer-aaron-2026-05-25.md)** ServiceTitan route — plug into existing control interfaces/structures (not new ones); ontology negotiation at the standards layer
 - [ ] **[B-0767](backlog/P1/B-0767-zeta-native-scheduler-first-deterministic-simulation-and-ai-aware-cluster-management-aaron-2026-05-25.md)** Zeta-native scheduler first (Wave 1 of B-0766) — deterministic simulation + AI-aware cluster management
 - [ ] **[B-0769](backlog/P1/B-0769-vc-meta-playbook-control-structure-injection-around-capital-in-verticals-substrate-honest-variant-aaron-2026-05-25.md)** VC meta-playbook (control-structure injection around capital flow in verticals) — substrate-honest variant for Zeta
+- [ ] **[B-0773](backlog/P1/B-0773-cluster-as-digital-twin-git-native-event-store-native-ai-native-aaron-2026-05-25.md)** Cluster as digital twin — git-native + event-store-native + AI-native; unifying frame for B-0772 observable+controllable fabric
 
 ## P2 — research-grade
 
