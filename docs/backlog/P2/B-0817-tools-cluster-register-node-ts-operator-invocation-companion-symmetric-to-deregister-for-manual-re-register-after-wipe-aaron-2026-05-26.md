@@ -65,7 +65,7 @@ Mirror deregister-node.ts pattern.
 
 **Always optional** (both modes): `--maintainer` (default = `gh api /user --jq .login`), `--push-direct` flag, `--reason` text.
 
-**Hardware fields** (`--ip` + `--mac`): operator-provided only in compose mode. If omitted, the composed `node.yaml` has empty/null hardware fields; operator can later run iter-5.4.1 (B-0812 systemd self-register) on the live node to populate hardware via actual probe. **Auto-SSH-probe at register-tool time is out of scope** (consistent with "Out of scope" section below; Copilot P? on #5221 noticed internal contradiction in the original draft — corrected here).
+**Hardware fields** (`--ip` + `--mac`): operator-provided only in compose mode. If omitted, the composed `node.yaml` OMITS the `hardware` field entirely (the B-0813 CRD declares `hardware: { type: object, additionalProperties: true }` — `type: object` is not nullable, so emitting `hardware: null` would produce a CRD-invalid resource that ArgoCD/the apiserver would reject; omitting is valid since `hardware` is not in any `required:` list). Operator can later run iter-5.4.1 (B-0812 systemd self-register) on the live node to populate hardware via actual probe. **Auto-SSH-probe at register-tool time is out of scope** (consistent with "Out of scope" section below; Copilot P? on #5221 noticed internal contradiction in the original draft — corrected here).
 
 Reject `-`-prefixed values for string flags (avoid silent flag-consumption hazard caught on B-0814).
 
@@ -85,9 +85,10 @@ spec:
   roles:
     - control-plane
     - worker-gpu
-  hardware:
-    # if --from-yaml: pass through verbatim
-    # if compose mode: empty/null until iter-5.4.1 self-register populates
+  # hardware: only present in --from-yaml pass-through mode (verbatim from
+  # operator-supplied yaml); OMITTED in compose mode until iter-5.4.1
+  # self-register populates. CRD declares `hardware: { type: object }` —
+  # not nullable + not required, so omission is valid; `null` would fail.
   registration:
     timestamp: <now>
     method: manual-via-register-node.ts
