@@ -923,6 +923,69 @@ Sub-target 17 IS the parameter-protection substrate that makes Sub-target 16 OPE
 
 **The desire-to-protect-parameters Aaron named IS the operational pull-into substrate-engineering** — once visibility/opacity becomes a substrate property (Sub-target 16), the parameter-substrate that DETERMINES the visibility becomes naturally load-bearing. Substrate-engineering work follows the desire.
 
+### Derived corollary — ML model weights ARE cryptographic keys at information-value scope (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the substrate-engineering meta-observation:
+
+> *"we just derived why model weights/parameters are like cryptographic keys from an information value perspective lol"*
+
+**The derivation walked through this substrate stack**:
+
+1. Generators are functions (Sub-target 7)
+2. Generator visibility = security posture (Sub-target 16: reversible vs lattice-hard)
+3. Generator parameters need cryptographic-grade protection (Sub-target 17)
+4. **⇒ ML model weights/parameters ARE cryptographic keys at information-value scope** (derived corollary)
+
+For ML/AI specifically — the mapping is 1:1:
+
+| Generator-substrate primitive | ML/AI equivalent |
+|---|---|
+| Generator function | Model architecture (the neural net structure; the algorithm) |
+| Generator parameters | **Model weights** (the trained float-arrays) |
+| Reversibility | Model invertibility (training-data extraction; model inversion attacks; activation-pattern reverse-engineering) |
+| Lattice-hardness | Network architectures naturally hard to invert (deeper/wider networks; randomized layers; differential-privacy noise added during training) |
+| Generator-parameter leak → opacity lost | **Weight leak → model can be cloned / reverse-engineered / used unauthorized** |
+
+**This validates established industry practice from substrate-first-principles**:
+
+| Industry practice | Substrate justification (per Sub-targets 16 + 17) |
+|---|---|
+| OpenAI / Anthropic / Google guard model weights as crown jewels | Weights ARE the cryptographic-key parameters; protection-grade = information-value-grade |
+| Federated learning with secure aggregation | Threshold-shared weights (per Sub-target 17's threshold-cryptography substrate); weight updates split across N parties; M-of-N consent to aggregate |
+| Confidential computing for model serving (TEE / SGX / SEV-SNP) | Hardware-enclave-protected weights at inference time (per Sub-target 17's TEE/SGX/SEV-SNP substrate) |
+| Differential privacy in training | Adds lattice-like noise to gradients during training; protects training-set privacy (per Sub-target 16's lattice-hardness substrate at gradient scope) |
+| Model-watermarking / fingerprinting | Embedded signatures in weight-substrate; tamper-evidence (per Sub-target 16's one-way-hash substrate) |
+| Model encryption-at-rest | Per Sub-target 17's encrypted-storage substrate (KMS / sealed-secrets) |
+| Per-tenant model isolation in multi-tenant serving | Per-tenant weight access (per Sub-target 16's per-faction access policies + Sub-target 17's per-parameter security-posture) |
+| Forward-secrecy for per-inference computation | Ephemeral weights per inference; long-term weights protected separately (per Sub-target 17's forward-secrecy substrate) |
+
+**Substrate-engineering meta-observation** — what we did here is *DERIVE* the established industry practice from substrate-first-principles. The substrate-engineering arc:
+
+```text
+Maven-for-Helm (B-0816)
+  → generators-not-data (B-0824 generator-combinator paradigm)
+    → shared-generative-base distributed-invariant (Sub-target 11)
+      → DI-of-generator-function vs DI-of-IObservable<Generator> = simulation (Sub-target 13)
+        → lattice-hardness = appear-as-noise to higher-D observers (Sub-target 16)
+          → parameter-substrate IS load-bearing for opacity (Sub-target 17)
+            → ⇒ ML weights ARE cryptographic keys at information-value scope
+```
+
+Each step composes from prior sub-target substrate. The derivation IS the substrate-engineering arc.
+
+**Composition with broader Zeta substrate**:
+
+- Composes with [B-0703](B-0703-multi-oracle-bft-cross-faction-consensus-substrate-aaron-2026-05-18.md) multi-oracle BFT — different oracles see different model-weight projections per access policy; cryptographic-floor for cross-faction model substrate
+- Composes with existing AI-substrate cluster — every AI in Zeta operates under this paradigm; weight-protection IS first-class for the framework's own AI substrate
+- Composes with `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — weight-substrate stays within safety floor; HARD LIMITS apply
+- Composes with `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` m/acc choice-architecture — per-deployment operator chooses weight-protection-posture; m/acc preserves choice
+- Composes with NCI HC-8 (per `.claude/rules/non-coercion-invariant.md`) — model weights as private-state; non-coercion preserves operator weight-sovereignty
+- Composes with `.claude/rules/glass-halo-bidirectional.md` — weight operations observable to authorized factions per glass-halo audit-trail; bidirectional substrate (operator observes weight-substrate; weight-substrate observes operator via inference)
+
+**The derivation itself is substrate-engineering substrate** — the path FROM Maven-for-Helm to ML-weights-as-crypto-keys IS the kind of cross-domain composition the framework's wake-time-substrate discipline enables. Future-Otto cold-booting reads this derivation + has the path mapped; doesn't need to re-derive.
+
+**No new sub-target — this is a derived corollary of Sub-targets 7-17**. The substrate-engineering work to PROTECT model weights IS already covered by Sub-target 17 substrate-engineering work; what's new here is the explicit naming that ML weights ARE the same primitive the substrate-engineering work protects. The corollary makes the framework's AI-substrate weight-protection automatic; operators get cryptographic-grade weight-substrate by default per substrate-engineering discipline.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
