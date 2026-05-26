@@ -124,7 +124,7 @@ Self-hosted runner composes with B-0794 homelab gh-auth substrate.
 - [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — alt-shape; pick ONE of (autoUpgrade, deploy-rs)
 - [B-0802](B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md) — kured handles reboots either way (deploy-rs handles rebuild orchestration; kured handles reboot orchestration)
 - [B-0804](B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md) — distro-upgrade runbook uses deploy-rs's canary-then-fleet shape naturally
-- [B-0794](../P2/B-0794-iter-5-4-homelab-gh-auth-login-device-flow-zeta-cluster-node-registration-into-github-no-shipped-keys-aaron-mika-2026-05-26.md) — self-hosted-runner-inside-homelab substrate
+- [B-0794](../P1/B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md) — self-hosted-runner-inside-homelab substrate (node-self-registers-in-git GitOps shape)
 
 ## Sources
 

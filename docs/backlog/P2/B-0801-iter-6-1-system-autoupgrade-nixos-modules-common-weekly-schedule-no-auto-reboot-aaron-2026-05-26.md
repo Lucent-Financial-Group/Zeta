@@ -36,8 +36,7 @@ system.autoUpgrade = {
   flake = "github:Lucent-Financial-Group/Zeta?dir=full-ai-cluster#${config.networking.hostName}";
   flags = [
     "--update-input" "nixpkgs"
-    "--commit-lock-file"
-    "--no-write-lock-file"  # don't commit on the cluster; we push from CI
+    "--no-write-lock-file"  # transient in-memory lock; don't persist
   ];
   dates = "Sun 03:00";  # weekly off-peak
   randomizedDelaySec = "45min";
@@ -49,7 +48,15 @@ system.autoUpgrade = {
 };
 ```
 
-Note: `--no-write-lock-file` keeps the cluster node from trying to push lock changes back to git (which it has no auth for); CI/deploy-rs (B-0803) is the canonical place lock updates ship from.
+Note: dropped `--commit-lock-file` (Copilot finding on #5123 — it would
+contradict `--no-write-lock-file`: the latter tells `nix flake update`
+not to write `flake.lock` at all, so committing it is incoherent). The
+autoUpgrade unit doesn't have repo write credentials anyway; lock
+updates ship from CI/deploy-rs (B-0803), and the cluster only needs an
+in-memory lock-update for the current rebuild. If we want the cluster
+to also pin its rebuild against a specific lock for replayability, the
+clean path is to drop `--no-write-lock-file` AND pin via `--override-input`
+flags here; out of scope for the initial enablement.
 
 ## Sub-targets
 

@@ -60,14 +60,19 @@ spec:
     targetRevision: <latest-stable-VERIFIED-via-WebSearch>  # per B-0805 discipline
     helm:
       values: |
+        # All kured chart values land under one `configuration:` mapping;
+        # multiple top-level `configuration:` keys in the same YAML doc
+        # silently keep only the last one (Copilot finding on #5123).
+        # rebootSentinel path is the NixOS-actual `/run/reboot-required`
+        # (sub-target 2 below verifies); NOT `/var/run/reboot-required`
+        # which is a Debian-ism — same Copilot finding.
         configuration:
           rebootDays: "su"
           startTime: "03:00"
           endTime: "05:00"
           timeZone: "UTC"
-          rebootSentinel: "/var/run/reboot-required"
-        # respect PodDisruptionBudgets; one node at a time
-        configuration:
+          rebootSentinel: "/run/reboot-required"
+          # respect PodDisruptionBudgets; one node at a time
           drainGracePeriod: "5m"
           drainTimeout: "10m"
   destination:
