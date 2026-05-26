@@ -98,7 +98,7 @@
       # Installer ISO retired from root flake 2026-05-26 (USB cleanup PR 2):
       # canonical AI-cluster installer now lives at
       # full-ai-cluster/usb-nixos-installer/ and is built via the dedicated
-      # build-ai-cluster-iso.yml workflow. Per Aaron's
+      # build-ai-cluster-iso.yml workflow. Per the human maintainer's
       # "get rid of the old" cleanup direction.
       nixosConfigurations = {
         control-plane = mkSystem {

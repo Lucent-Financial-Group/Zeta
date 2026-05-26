@@ -48,12 +48,55 @@ Pattern:
 
 ## Acceptance
 
+Core trigger + job structure:
+
 - [ ] `release: types: [published]` trigger added to `build-ai-cluster-iso.yml`
 - [ ] `attach-to-release` job added with `permissions: contents: write` (elevated only for that job)
 - [ ] Job checks out at release tag SHA, builds canonical ISO, uploads as release asset
 - [ ] Skip existing build-iso job on release events (no duplicate builds)
-- [ ] Discipline preserved (runner pinned to ubuntu-24.04; SHA-pinned third-party actions; concurrency groups; no `github.event.*` interpolation into `run:` lines per the actions injection guide)
-- [ ] Test: tag a small release (e.g., `v0.0.1-test`) + verify ISO attached + then untag
+
+Security + reliability safeguards (must preserve from deleted legacy workflow):
+
+- [ ] **Reject release tags starting with `-`** — prevents tag-name injection into `gh release upload` argument list (a tag like `-flag` could be interpreted as a flag rather than a positional):
+
+  ```bash
+  if [[ "${RELEASE_TAG}" == -* ]]; then
+    echo "::error::Release tag starts with '-' which would be ambiguous as gh CLI argument; aborting"
+    exit 1
+  fi
+  ```
+
+- [ ] **Use `--` separator for `gh release upload`** — disambiguates tag-name + filename from flag arguments even when tag passes the leading-dash check:
+
+  ```bash
+  gh release upload -- "${RELEASE_TAG}" "${ISO_PATH}" "${SHA256_SIDECAR_PATH}"
+  ```
+
+- [ ] **Write SHA256 sidecar OUTSIDE the read-only Nix store** — the ISO at `result/iso/zeta-installer-*.iso` is a symlink into `/nix/store/...` which is read-only. The SHA256 sidecar (`<iso-name>.sha256`) must be written to a workflow-controlled writable directory (e.g., `$GITHUB_WORKSPACE` or `$RUNNER_TEMP`):
+
+  ```bash
+  ISO_RESOLVED=$(readlink -f result/iso/zeta-installer-*.iso)
+  ISO_NAME=$(basename "${ISO_RESOLVED}")
+  SHA256_DIR="${RUNNER_TEMP}/iso-release"
+  mkdir -p "${SHA256_DIR}"
+  cp "${ISO_RESOLVED}" "${SHA256_DIR}/${ISO_NAME}"
+  ( cd "${SHA256_DIR}" && sha256sum "${ISO_NAME}" > "${ISO_NAME}.sha256" )
+  ```
+
+  Then upload from `${SHA256_DIR}` not from `result/iso/`.
+
+Discipline + injection-safety (per existing `build-ai-cluster-iso.yml` patterns):
+
+- [ ] Runner pinned to `ubuntu-24.04` (not `-latest`)
+- [ ] Third-party actions SHA-pinned with trailing `# vX.Y.Z` comments
+- [ ] Concurrency groups (cancel-in-progress only for PRs, NOT for releases)
+- [ ] No `github.event.*` values interpolated into `run:` lines — pass via `env:` per the GitHub Actions script-injection guide
+- [ ] `permissions: contents: read` at workflow level; elevate to `contents: write` only on the `attach-to-release` job
+
+Test:
+
+- [ ] Tag a small release (e.g., `v0.0.1-test`) + verify ISO + sidecar attached + then untag
+- [ ] Negative-test: tag a `-malicious` name + verify it aborts cleanly
 
 ## Out of scope
 
