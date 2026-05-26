@@ -2,7 +2,7 @@
 id: B-0793
 priority: P1
 status: open
-title: Role-as-capability-composition (NOT baked host) — a single node can be control-plane AND gpu-worker AND storage simultaneously; refactor nixos/hosts/<role>/configuration.nix → composable nixos/modules/role-*.nix capability modules; iter-5.2 hostname injection (B-0792) is partial fix at hostname scope but role-stack-as-baked-host-config remains the architectural blocker
+title: Role-as-capability-composition (NOT baked host) — a single node can be control-plane AND gpu-worker AND storage simultaneously; refactor nixos/hosts/{role}/configuration.nix → composable nixos/modules/role-*.nix capability modules; iter-5.2 hostname injection (B-0792) is partial fix at hostname scope but role-stack-as-baked-host-config remains the architectural blocker
 effort: L
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -35,7 +35,7 @@ nixosConfigurations = {
 };
 ```
 
-Each `hosts/<role>/configuration.nix` is a UNIT bundling:
+Each `hosts/{role}/configuration.nix` is a UNIT bundling:
 
 - K3S role config (server vs agent vs both)
 - Hardware capability config (GPU presence, NVME count, etc.)
@@ -116,7 +116,7 @@ So K8s workload scheduling can use the same role taxonomy as the install-time co
 
 ## Acceptance
 
-- [ ] **Sub-target 1**: existing `nixos/hosts/<role>/configuration.nix` decomposed into `nixos/modules/role-*.nix` capability modules with no hostname/hardware assumptions
+- [ ] **Sub-target 1**: existing `nixos/hosts/{role}/configuration.nix` decomposed into `nixos/modules/role-*.nix` capability modules with no hostname/hardware assumptions
 - [ ] **Sub-target 2**: single `node` flake config composes role-modules at install time via injected file
 - [ ] **Sub-target 3**: `zflash --role <name>[,<name>...]` flag works; `zeta-install.sh` reads + writes
 - [ ] **Empirical multi-role**: install one node with `--role control-plane,worker-gpu,storage` → kubectl shows node with all three role-labels; node serves as control-plane AND runs GPU workloads AND participates in Longhorn storage
