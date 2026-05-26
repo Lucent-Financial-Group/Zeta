@@ -67,9 +67,9 @@ V0 must enforce:
 - every denial returns a structured reason agents can learn from;
 - every denied command is observed through a policy decision observation
   port without creating successful business state;
-- durable policy decision observation storage and UI projection are added
-  before real API, MCP, Hermes, Temporal, or Dapr entrypoints are
-  exposed.
+- durable policy decision observation storage and UI/agent projection are
+  available before real API, MCP, Hermes, Temporal, or Dapr entrypoints
+  are exposed.
 
 ## MCP Preflight
 

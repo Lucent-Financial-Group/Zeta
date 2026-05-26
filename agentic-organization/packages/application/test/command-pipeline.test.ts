@@ -243,6 +243,7 @@ describe("command pipeline idempotency", () => {
           correlationId: command.correlationId,
           causationId: command.causationId,
           traceId: command.traceId,
+          idempotencyKey: command.idempotencyKey,
         },
         decision: {
           status: PolicyDecisionStatus.Denied,
@@ -273,6 +274,7 @@ describe("command pipeline idempotency", () => {
         correlationId: command.correlationId,
         causationId: command.causationId,
         traceId: command.traceId,
+        idempotencyKey: command.idempotencyKey,
       },
     });
     equal(deniedHandler.executeCallCount, 0);

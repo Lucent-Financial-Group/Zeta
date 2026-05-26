@@ -91,6 +91,25 @@ Organization state only by calling Organization commands.
 - **AND** the command handler is not executed
 - **AND** idempotency lookup and command outcome persistence are not run
 
+#### Scenario: Denied policy observations are durable and queryable
+
+- **WHEN** a denied policy decision is observed
+- **THEN** a generic policy observation store can persist the command,
+  actor, hat assignment, scope, tool type, supervisor-chain context,
+  trace IDs, idempotency key, decision ID, policy version, denial reason,
+  canonical observation hash, and canonical observation payload
+- **AND** duplicate observations with the same policy decision ID are
+  treated as already durable only when the canonical observation hash
+  matches
+- **AND** duplicate observations with the same policy decision ID and
+  different evidence are rejected as conflicts rather than hidden as safe
+  replays
+- **AND** readers can query observations by organization, project, team,
+  work item, actor, hat assignment, and decision status without exposing
+  CockroachDB-specific types to application code
+- **AND** CockroachDB is only the first replaceable adapter behind those
+  generic policy contracts
+
 #### Scenario: Package boundaries are checked
 
 - **WHEN** package dependency-boundary tests run
@@ -537,6 +556,18 @@ UI- and agent-readable visibility record.
   tool, policy denial, harness failure, and telemetry gap
 - **AND** the weak-point indicators route follow-up work through normal
   Organization commands and supervisor-chain communication
+
+#### Scenario: Policy denial is projected to workflow visibility
+
+- **WHEN** a denied policy decision observation is projected into
+  workflow visibility
+- **THEN** the record includes command, actor, hat assignment, scope,
+  tool type, supervisor-chain source and target levels, trace IDs,
+  idempotency key, policy decision ID, policy version, denial reason, and
+  evidence-link fields
+- **AND** the record contains a typed policy-denied weak-point indicator
+  so agents can review authority, scope, and tool-grant gaps through the
+  normal Organization improvement lifecycle
 
 ### Requirement: Automation rules create plans before side effects
 

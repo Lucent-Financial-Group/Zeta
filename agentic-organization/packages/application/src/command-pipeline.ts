@@ -152,6 +152,7 @@ function createCommandAuthorizationRequest(command: PipelineCommand): CommandAut
       correlationId: command.correlationId,
       causationId: command.causationId,
       traceId: command.traceId,
+      idempotencyKey: command.idempotencyKey,
     },
   };
 }
@@ -180,6 +181,7 @@ function createPolicyDecisionObservation(
       correlationId: command.correlationId,
       causationId: command.causationId,
       traceId: command.traceId,
+      idempotencyKey: command.idempotencyKey,
     },
     decision,
     observedAt,

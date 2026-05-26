@@ -41,6 +41,7 @@ export type CommandAuthorizationTrace = {
   correlationId: string;
   causationId: string;
   traceId: string;
+  idempotencyKey: string;
 };
 
 export type CommandAuthorizationSupervisorChain = {
@@ -100,6 +101,55 @@ export type PolicyDecisionObservation = {
   observedAt: string;
 };
 
+export const PolicyDecisionObservationPersistenceStatus = {
+  Recorded: "recorded",
+  Duplicate: "duplicate",
+  Conflict: "conflict",
+} as const;
+
+export type PolicyDecisionObservationPersistenceStatus =
+  (typeof PolicyDecisionObservationPersistenceStatus)[keyof typeof PolicyDecisionObservationPersistenceStatus];
+
+export type RecordPolicyDecisionObservationResult =
+  | {
+      status: typeof PolicyDecisionObservationPersistenceStatus.Recorded;
+    }
+  | {
+      status: typeof PolicyDecisionObservationPersistenceStatus.Duplicate;
+    }
+  | {
+      status: typeof PolicyDecisionObservationPersistenceStatus.Conflict;
+    };
+
+export const PolicyDecisionObservationErrorCode = {
+  Conflict: "policy_decision_observation_conflict",
+} as const;
+
+export type PolicyDecisionObservationErrorCode =
+  (typeof PolicyDecisionObservationErrorCode)[keyof typeof PolicyDecisionObservationErrorCode];
+
+export class PolicyDecisionObservationConflictError extends Error {
+  readonly code = PolicyDecisionObservationErrorCode.Conflict;
+  readonly policyDecisionId: string;
+
+  constructor(policyDecisionId: string) {
+    super("policy decision observation conflicts with existing governance evidence");
+    this.name = "PolicyDecisionObservationConflictError";
+    this.policyDecisionId = policyDecisionId;
+  }
+}
+
+export type PolicyDecisionObservationQuery = {
+  organizationId: string;
+  projectId?: string;
+  teamId?: string;
+  workItemId?: string;
+  agentId?: string;
+  hatAssignmentId?: string;
+  decisionStatus?: PolicyDecisionStatus;
+  limit: number;
+};
+
 export type HatAuthorityPort = {
   evaluateHatAuthority: (request: HatAuthorityRequest) => Promise<HatAuthorityDecision>;
 };
@@ -112,8 +162,24 @@ export type PolicyDecisionObservationPort = {
   observePolicyDecision: (observation: PolicyDecisionObservation) => Promise<void>;
 };
 
+export type PolicyDecisionObservationStore = {
+  recordPolicyDecisionObservation: (
+    observation: PolicyDecisionObservation,
+  ) => Promise<RecordPolicyDecisionObservationResult>;
+};
+
+export type PolicyDecisionObservationReader = {
+  findPolicyDecisionObservations: (
+    query: PolicyDecisionObservationQuery,
+  ) => Promise<readonly PolicyDecisionObservation[]>;
+};
+
 export type CreateCommandAuthorizationPortInput = {
   hatAuthorityPort: HatAuthorityPort;
+};
+
+export type CreatePolicyDecisionObservationPortInput = {
+  store: PolicyDecisionObservationStore;
 };
 
 export function createCommandAuthorizationPort(input: CreateCommandAuthorizationPortInput): CommandAuthorizationPort {
@@ -139,6 +205,20 @@ export function createCommandAuthorizationPort(input: CreateCommandAuthorization
         policyVersion: hatAuthorityDecision.policyVersion,
         reason: hatAuthorityDecision.status,
       };
+    },
+  };
+}
+
+export function createPolicyDecisionObservationPort(
+  input: CreatePolicyDecisionObservationPortInput,
+): PolicyDecisionObservationPort {
+  return {
+    observePolicyDecision: async (observation) => {
+      const result = await input.store.recordPolicyDecisionObservation(observation);
+
+      if (result.status === PolicyDecisionObservationPersistenceStatus.Conflict) {
+        throw new PolicyDecisionObservationConflictError(observation.decision.decisionId);
+      }
     },
   };
 }

@@ -168,13 +168,18 @@ tool-denied authority returns a typed `policy_denied` result.
 The pipeline now records denied decisions through a generic policy
 decision observation port, rejects cleanly if that observation fails, and
 projects allowed policy decisions onto audit and outbox effects before
-command persistence.
+command persistence. Denied observations now have a generic durable
+store/reader contract, a first Cockroach implementation, and a
+canonical-hash conflict guard so contradictory duplicate evidence is not
+hidden as replay. The UI/agent-readable visibility projection marks
+policy denials as weak points without pretending denied commands changed
+business state.
 
-The remaining gaps are richer authority semantics and durable
-visibility adapters: tests still need unauthorized source hats, invalid
+The remaining gaps are richer authority semantics and cluster-backed
+integration proof: tests still need unauthorized source hats, invalid
 target supervisors, and missing assignments, and the system still needs a
-durable policy-decision observation adapter plus UI/agent projections for
-policy decision observations.
+real Cockroach-backed integration run plus process-level adapter wiring
+below `apps/workers`.
 
 ### Command Surface Closure
 

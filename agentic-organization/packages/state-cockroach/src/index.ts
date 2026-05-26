@@ -23,6 +23,15 @@ export {
   type CreateCockroachEventIngestionStoreInput,
 } from "./cockroach-event-ingestion-store.ts";
 export {
+  CockroachPolicyDecisionObservationStoreStatement,
+  createCockroachPolicyDecisionObservationStore,
+  type CockroachPolicyDecisionObservationSqlExecutor,
+  type CockroachPolicyDecisionObservationSqlResult,
+  type CockroachPolicyDecisionObservationSqlStatement,
+  type CockroachPolicyDecisionObservationStore,
+  type CreateCockroachPolicyDecisionObservationStoreInput,
+} from "./cockroach-policy-decision-observation-store.ts";
+export {
   CockroachCoreStateMigrationName,
   CockroachTableName,
   createCockroachCoreStateMigration,

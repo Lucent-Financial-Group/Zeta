@@ -50,8 +50,8 @@ send_supervisor_signal
 ## Checkpoint Boundary
 
 The implemented slice does not yet create discussion anchors, graph
-nodes, hat assignments, hat tokens, policy decisions, prompt-flow runs,
-Hermes runs, or reviewer gates. Those remain V0 follow-on commands.
+nodes, hat assignments, hat tokens, prompt-flow runs, Hermes runs, or
+reviewer gates. Those remain V0 follow-on commands.
 
 Capability-request-shaped inputs should continue to enter through
 `send_supervisor_signal`. The target supervisor triage step decides
@@ -65,12 +65,12 @@ escalate.
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
 | `@agentic-org/application`     | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
-| `@agentic-org/policy`          | command authorization port, hat-authority port, policy-decision observation port, active/expired/revoked/scope/tool denial decisions, typed policy denial reasons     |
+| `@agentic-org/policy`          | command authorization port, hat-authority port, policy-decision observation/store/reader ports, active/expired/revoked/scope/tool denial decisions, typed reasons     |
 | `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
-| `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of the state-store/outbox-source ports, backed by CockroachDB                                                            |
+| `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of state-store, outbox-source, event-ingestion, and policy-observation ports, backed by CockroachDB                      |
 | `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder, outbox publisher, event publisher port, and typed domain resolver                                  |
 | `@agentic-org/messaging-nats`  | NATS JetStream publisher and consumer adapter contracts with canonical JSON payloads, headers, message IDs, ack/nack, termination, and DLQ policy                     |
-| `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection for event envelopes and NATS consumer batch summaries                                                                    |
+| `@agentic-org/observability`   | OpenTelemetry/LGTM and workflow-visibility projections for event envelopes, NATS batches, worker cycles, and policy observations                                      |
 | `@agentic-org/runtime`         | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
 | `@agentic-org/workers`         | process-boundary run-once worker host that composes outbox publishing and inbound event ingestion through ports                                                       |
 | `@agentic-org/governance`      | package dependency-boundary checks that prevent application code from importing concrete state/runtime adapters                                                       |
@@ -138,6 +138,12 @@ Hermes runs, MCP calls, and UI evidence.
   outbox, or idempotency state. It records a policy decision observation
   through a dedicated generic port so denied attempts are visible without
   pretending a business state transition succeeded.
+- Policy decision observations now have a generic durable store/reader
+  contract. The first Cockroach adapter records observations
+  idempotently by policy decision ID plus canonical observation hash,
+  rejects conflicting evidence for the same policy decision ID, and
+  supports scoped queries by organization, project, team, work item,
+  actor, hat assignment, and decision status.
 - If policy decision observation fails for a denied command, the command
   still rejects before handler dispatch, idempotency lookup, or business
   persistence with a typed `policy_observation_failed` error.
@@ -269,20 +275,22 @@ Hermes runs, MCP calls, and UI evidence.
 - Observability projections now include policy decision ID and policy
   version in event span attributes and workflow visibility records when
   an accepted command emits a policy-backed event envelope.
+- Policy-denial observations now project into UI- and agent-readable
+  workflow visibility with `policy_denied` weak-point indicators,
+  trace/log/metrics links, supervisor-chain context, and the denied
+  command/tool/scope.
 
 ## Next Slice
 
 The next slice should add the first real process adapter factories below
 `apps/workers`: concrete NATS pull/publish client construction, durable
-CockroachDB outbox/inbox adapter construction, and a telemetry sink that
-can later send structured logs and metrics into the full-ai-cluster LGTM
-stack. Keep URLs, credentials, and connection pools in app adapter config
-fed by Kubernetes Secret or ExternalSecret values, never in domain
-packages. Add a durable-state integration test using CockroachDB as the
-first cluster-backed implementation once a local/dev connection is
-available. After that, add a durable policy-decision observation adapter
-behind `PolicyDecisionObservationPort` and project policy decision
-observations into UI/agent-readable workflow visibility.
+CockroachDB outbox/inbox/policy-observation adapter construction, and a
+telemetry sink that can later send structured logs and metrics into the
+full-ai-cluster LGTM stack. Keep URLs, credentials, and connection pools
+in app adapter config fed by Kubernetes Secret or ExternalSecret values,
+never in domain packages. Add a durable-state integration test using
+CockroachDB as the first cluster-backed implementation once a local/dev
+connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized
