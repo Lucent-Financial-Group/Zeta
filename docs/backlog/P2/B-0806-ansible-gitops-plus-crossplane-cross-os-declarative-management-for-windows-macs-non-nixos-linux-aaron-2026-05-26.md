@@ -9,6 +9,7 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
+  - B-0288
   - B-0794
   - B-0800
   - B-0801
@@ -66,7 +67,7 @@ spec:
 
 ArgoCD watches a Git folder of these CRs; an Ansible Operator (Red Hat AAP or community) spins up pods to execute the playbook against the named external host.
 
-**Fit for Zeta**: medium — requires a K8s cluster as the orchestration substrate (which we have, via `full-ai-cluster/`), AND requires SSH/WinRM access from cluster pods to the operator's machines (network reachability concern; iter-5.4 `B-0794` homelab gh-auth + tailscale-equivalent would help here).
+**Fit for Zeta**: HIGH (the maintainer 2026-05-26 clarification: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*). K8s is always present in Zeta's substrate (the `full-ai-cluster/` is the cluster substrate; not optional). Operator-pattern coupling is therefore not a rejection criterion. Remaining concern is SSH/WinRM access from cluster pods to the operator's heterogeneous machines — iter-5.4 [B-0794](B-0794-iter-5-4-homelab-gh-auth-login-device-flow-zeta-cluster-node-registration-into-github-no-shipped-keys-aaron-mika-2026-05-26.md) homelab gh-auth + tailscale-equivalent unlock this. Pattern 1 + Pattern 3 can BOTH ship; pick per use case (Operator for cluster-orchestrated workstation config; ansible-pull for fully-disconnected/edge hosts).
 
 ### Pattern 2 — Webhook Model (Agentless Push from Ansible Automation Platform)
 
@@ -94,7 +95,34 @@ Each target host runs `ansible-pull` from cron / systemd timer / launchd / Windo
 - Works on macOS, Windows (via WSL or native), and any Linux distro out of the box
 - Composes with our agent-discipline rules per [B-0805](B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) (idempotent playbooks; declarative state; same git-as-source-of-truth)
 
-**Recommendation: Pattern 3 (`ansible-pull`) is the primary direction for Zeta's heterogeneous OS substrate.**
+**Recommendation: support BOTH Pattern 1 (Operator) AND Pattern 3 (`ansible-pull`)** per the maintainer 2026-05-26: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*. Operator-pattern for cluster-orchestrated workstation reconciliation (the maintainer's workstations reachable from cluster); ansible-pull for fully-disconnected / edge hosts where the cluster can't reach in. Pattern 2 (commercial AAP) stays rejected on cost.
+
+## Composition with Ace package manager (B-0288)
+
+The maintainer 2026-05-26 additional clarification: *"it would be ansible combined with ace package manager ../scratch install.sh like setup for those oses and our declarative package management"*.
+
+Ansible+GitOps is the **orchestration / reconciliation layer**; it doesn't replace the **package layer** Zeta is building separately:
+
+- **[B-0288](../P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** (in-progress) — Ace DLC package manager CLI (`tools/ace/`) with install/verify/list, content-addressed signed packages, guardian AI oversight. The cross-OS package layer Zeta uses INSTEAD of (or composing with) Homebrew/apt/Chocolatey/Scoop per-platform package managers.
+- **[`tools/setup/install.sh` + manifests](../../tools/setup/manifests/)** — the existing install.sh-style declarative manifest pattern (brew + apt today; extends to ace + nix + win-equivalent).
+
+The combined layering:
+
+```
+git (single source of truth)
+└── ansible/playbooks/*.yml                  [orchestration / reconciliation]
+    invokes →
+    Ace package manager (B-0288)             [cross-OS package layer]
+    reads →
+    install.sh-style manifests               [declarative source]
+    (tools/setup/manifests/{brew,apt,ace,…})
+```
+
+ansible-pull (or AnsibleJob-via-Operator) on each host runs `ace install <package>` per the manifest declaration. install.sh stays as the bootstrap-the-bootstrap layer (it installs ansible + ace itself); ansible+ace handle the ongoing-state layer.
+
+This composition means: **the cross-OS substrate isn't ansible-only — it's ansible+ace+manifests**. Ansible reconciles; Ace installs; manifests declare. Each layer has one job.
+
+The Ace DLC packaging substrate composes onward into the Windows + macOS sub-targets (sub-targets 1 + 2 below): each platform's ansible playbook delegates `package: { name: X, state: present }` to Ace rather than to platform-specific package managers, unifying the package-layer story.
 
 ## Crossplane composition (the maintainer's "it's like cross plane too kinda" catch)
 
@@ -128,13 +156,15 @@ ArgoCD reconciles this CR; Crossplane provisions the bucket; state in git = stat
 
 ```
 git (single source of truth)
-├── k8s/applications/     → ArgoCD pulls → applies to K8s
-├── nixos/flake.nix       → system.autoUpgrade pulls → nixos-rebuild switch
-├── ansible/playbooks/    → ansible-pull cron pulls → applies to OS (macOS, Windows, non-NixOS Linux)
-└── crossplane/           → Crossplane controller pulls (via ArgoCD) → applies to external APIs
+├── k8s/applications/                   → ArgoCD                  → K8s workloads
+├── nixos/flake.nix                     → system.autoUpgrade      → nixos-rebuild switch
+├── ansible/playbooks/                  → ansible-pull (or Operator)
+│   └── invokes Ace package manager (B-0288) [cross-OS package layer]
+│       └── reads tools/setup/manifests/*    [install.sh-style declarative source]
+└── crossplane/                         → Crossplane (via ArgoCD) → external APIs
 ```
 
-Four reconcilers, each idempotent + agentless from-git's-perspective, all sharing the same source-of-truth. No central orchestrator. Composes with [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) multi-oracle pattern at the substrate-class scope.
+Four reconcilers, each idempotent + agentless from-git's-perspective, all sharing the same source-of-truth. The ansible-pull branch has an internal three-layer composition (orchestration → package-layer → manifest-source) per the maintainer 2026-05-26: "ansible combined with ace package manager + install.sh-like setup + declarative package management". Composes with [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) multi-oracle pattern at the substrate-class scope.
 
 ## Target
 
@@ -196,6 +226,7 @@ These are sub-target-blocking design decisions; the iter-7 implementation arc st
 
 ## Composes with
 
+- **[B-0288](../P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** (in-progress) — Ace DLC package manager; the cross-OS package layer that ansible-pull/Operator invokes per the maintainer 2026-05-26 architectural clarification. Ansible orchestrates, Ace installs.
 - [B-0794](B-0794-iter-5-4-homelab-gh-auth-login-device-flow-zeta-cluster-node-registration-into-github-no-shipped-keys-aaron-mika-2026-05-26.md) — homelab gh-auth device-flow enables hosts to authenticate to git for the pull side
 - [B-0800](B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — nixpkgs bump precedes any ansible-on-NixOS work (rare; cluster nodes stay NixOS-native)
 - [B-0801](../P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — `system.autoUpgrade` is the analog pattern at NixOS-cluster scope; ansible-pull is the analog at heterogeneous-OS scope
