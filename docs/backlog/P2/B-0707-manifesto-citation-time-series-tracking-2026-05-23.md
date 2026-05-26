@@ -8,7 +8,7 @@ title: "Manifesto citation time-series tracking — persistent snapshots + delta
 tier: governance
 effort: S
 created: 2026-05-23
-last_updated: 2026-05-23
+last_updated: 2026-05-26
 depends_on: [B-0525]
 composes_with: []
 tags: [manifesto, governance, time-series, hygiene-history]
