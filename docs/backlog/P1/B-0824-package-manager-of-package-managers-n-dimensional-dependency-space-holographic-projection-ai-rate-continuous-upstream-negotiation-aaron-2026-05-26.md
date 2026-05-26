@@ -27,7 +27,7 @@ Aaron 2026-05-26 dropped THE compression of this entire substrate-engineering ar
 
 > *"google=map+reduce zeta=generate+join"*
 
-8 characters that compress 17 sub-targets + the ML-weights-as-keys derived corollary into a 4-word taxonomy:
+Two short equations that compress 17 sub-targets + the ML-weights-as-keys derived corollary into a 4-word taxonomy (fix-fwd Copilot #5275 — earlier draft inflated to "8 characters"; actual string is ~36 chars; the compression IS the headline, not the byte-count):
 
 | Paradigm | Operates ON | What's moved between nodes | Era / lineage |
 |---|---|---|---|
