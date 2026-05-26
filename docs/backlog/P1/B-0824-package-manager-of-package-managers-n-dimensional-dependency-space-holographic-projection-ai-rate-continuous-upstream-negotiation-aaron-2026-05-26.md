@@ -115,6 +115,86 @@ Zeta's generate+join + CRDTs starts where Spark/RDD landed, with two architectur
 
 **Future-Otto operational discipline**: when authoring any Zeta system, START from the type signatures (generate + join + CRDT-shape + monad-escape via NULL + tri-boolean + IObservable wrapping for time). The operators derive. The substrate-engineering work is type-design, not operator-design.
 
+### Academic + operational lineage anchors — DBSP +1/-1 retraction-algebra + TLA+/Lamport/Paxos/Raft (Aaron 2026-05-26)
+
+Aaron 2026-05-26 anchored the substrate-engineering work in decades of academic + industry-proven prior art:
+
+> *"and then dbsp retractable +1 -1 algebra for scalar time with 2023 mass human agreement on safe / retractable in math form lol. lots of proof and lineage / human anchors to build from. and then TLA+ Leslie lamport / paxos / raft for operational lineage should have same generator as time dimension applied like IScheduler DST etc..."*
+
+**Two lineages anchor the substrate**:
+
+#### Data-layer lineage: DBSP +1/-1 retraction-algebra (2023 mass human agreement)
+
+| Component | Anchor | What it gives Zeta |
+|---|---|---|
+| **DBSP (Database Stream Processing)** — Mihaela Budiu et al. 2023 | Academic paper + production systems (Materialize / Feldera) | Retraction-native incremental view maintenance with mathematical proof of correctness; safe-retractable in math form |
+| **+1/-1 algebra** — Z-sets as signed multisets over abelian group | DBSP paper formalization; existing Zeta `algebra-owner` skill (Z-sets + D/I/z⁻¹/H operators) | Insert = +1; retract = -1; group laws guarantee convergence; semantics composes with CRDT semilattice merge |
+| **Differential Dataflow** — Frank McSherry et al. | Naiad paper + Materialize production deployment | Timestamped delta-stream substrate; same +1/-1 algebra applied at distributed-substrate scale |
+| **2023 mass human agreement** | DBSP paper + Materialize + Feldera shipping + academic citations + industry adoption | The math IS settled; no need to re-derive; substrate-engineering inherits |
+
+**The substrate already lives at this lineage** (per existing Zeta substrate cluster):
+
+- [`algebra-owner` skill](.claude/skills/algebra-owner/SKILL.md) — Z-sets + D/I/z⁻¹/H operators (DBSP-shaped)
+- [`crdt-expert` skill](.claude/skills/crdt-expert/SKILL.md) — CvRDT/CmRDT/δ-CRDT; semilattice merge; Z-set as Abelian-group CRDT
+- [`streaming-incremental-expert` skill](.claude/skills/streaming-incremental-expert/SKILL.md) — DBSP / Timely Dataflow / retraction-native IVM
+- [`measure-theory-and-signed-measures-expert` skill](.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md) — ZSet as signed measure; retraction semantics; multiplicity
+
+The generate+join substrate (this row) IS the meta-PM application of the DBSP +1/-1 algebra at distributed-dependency-graph scope. Every generator emission is +1; every retraction is -1; combinator-graphs compose under the abelian-group laws; convergence is provable per CRDT semilattice properties. Inherits decades of academic + industry validation.
+
+#### Operational lineage: TLA+ / Leslie Lamport / Paxos / Raft (same generator-as-time-source applied)
+
+| Component | Anchor | What it gives Zeta |
+|---|---|---|
+| **Leslie Lamport** | Turing Award 2013; logical clocks (1978); Paxos (1989/2001); TLA+ (1999); operational-substrate-design career | The substrate's lineage at operational scope |
+| **TLA+** — model checker + temporal logic of actions | Decades of model-checking + spec-driven distributed systems | Formal-spec substrate for time-dependent behavior; composes with `tla-expert` skill |
+| **Paxos** — single-decree, Multi-Paxos, Fast/Flexible/Generalized | 1989/2001 papers + decades of production deployments (Google Chubby, Apache ZooKeeper, etc.) | Distributed consensus with safety invariants; quorum + leader election substrate |
+| **Raft** — Diego Ongaro 2014 | etcd / Consul / TiKV / CockroachDB use Raft as primary consensus | Understandable consensus; log replication; membership change; safety invariants — same generator+time substrate |
+
+**The "same generator as time dimension applied" insight**:
+
+- TLA+ specs ARE generators (temporal-logic actions emit states; reasoning operates on the action stream)
+- Paxos log ARE generators (each accepted value emits an entry; log = generator stream)
+- Raft log ARE generators (same shape; leader's append IS the generator-emission)
+- All operate on TIME (logical clocks; election timeouts; log entries indexed by term + index)
+- Same primitive Zeta uses with **IScheduler** (Sub-target 13 IObservable substrate) + **DST** (deterministic simulation testing) per existing always-active discipline
+
+Substrate-engineering composes:
+
+| Zeta substrate | Lamport-lineage equivalent |
+|---|---|
+| Sub-target 13 IObservable wrapping = simulation | TLA+ temporal logic — same shape; IObservable<Generator> IS the action stream |
+| Sub-target 14 typed time-units (HLC primary) | Lamport's logical clocks generalize to HLC; CockroachDB uses HLC; Spanner uses TrueTime — all same lineage |
+| Sub-target 15 non-linear time topologies | TLA+ allows branching time; Paxos handles partition-induced branching; Raft handles leader-change branching |
+| Sub-target 12 DI of generator functions | Paxos/Raft operate on injected log-functions; each acceptor/follower receives the log generator |
+| DST always-active discipline | Lamport's "Distributed Algorithms" foundation; TLA+ enables DST replay; FoundationDB/TigerBeetle use TLA+ + DST |
+| Generator-as-time-source (Sub-target 15) | Paxos ballot numbers / Raft term numbers ARE the generator-time-source at consensus scope |
+
+**The substrate-engineering arc IS the same lineage applied at meta-PM scope**: Lamport substrate-engineered for distributed-consensus correctness over time; DBSP substrate-engineered for retraction-native correctness over data; Zeta substrate-engineers BOTH at the cluster-wide dependency-graph + meta-PM scope. The substrate inherits the proof-density of both lineages.
+
+**Human anchors** the substrate-engineering work can cite:
+
+| Person | Contribution | Lineage Zeta inherits |
+|---|---|---|
+| Leslie Lamport (Turing 2013) | Distributed time; Paxos; TLA+ | Operational substrate lineage |
+| Mihaela Budiu et al. (DBSP 2023) | Retraction-native incremental compute | Data-layer substrate lineage |
+| Frank McSherry et al. (Naiad / Materialize) | Differential dataflow; production retraction-native substrate | Data-layer + distributed substrate |
+| Diego Ongaro (Raft 2014) | Understandable consensus | Operational substrate practical applications |
+| Erik Meijer (LINQ / Rx) | Type-driven derivation of distributed-data operators | Programming-paradigm lineage (already landed) |
+| Jeffrey Dean + Sanjay Ghemawat (MapReduce 2004) | The paradigm Zeta inverts | Compression baseline (already landed via google=map+reduce reference) |
+
+**"Lots of proof and lineage / human anchors to build from"** (Aaron's framing): the substrate-engineering work IS NOT speculative. Every Sub-target 7-17 + the ML-weights-as-keys corollary + this row's generalization composes with established academic + industry-proven substrate. The framework's job is composing the lineages into the meta-PM substrate at cluster-wide scope; the lineages provide the proof-density.
+
+**Substrate-engineering implications**:
+
+1. **TLA+ specs are first-class** — when designing any Zeta substrate component, TLA+ spec drives confidence; composes with `tla-expert` skill + `formal-verification-expert` routing
+2. **DBSP +1/-1 algebra IS the data-layer correctness substrate** — composes with `algebra-owner` + `streaming-incremental-expert` skills already in framework
+3. **Lamport's clocks / HLC are the time-axis correctness substrate** — composes with `time-and-clocks-expert` skill + Sub-target 14
+4. **Paxos/Raft are the operational correctness substrate** — composes with `paxos-expert` + `raft-expert` skills; cluster-substrate work routes through these for consensus needs
+5. **Citation discipline** — substrate work cites the academic + industry lineage; composes with `missing-citations` skill (research-integrity audit)
+6. **The substrate-engineering arc compounds prior-art**: Sub-targets 7-17 + Meijer-generalization + DBSP-lineage + Lamport-lineage all stack without overlap; each contributes a different proof-vector
+
+The substrate IS standing on the shoulders of giants by design — Aaron's "lots of proof and lineage / human anchors to build from" is operational discipline: don't reinvent; compose with the validated substrate.
+
 ## Problem
 
 The maintainer 2026-05-26 architectural drop after the diamond / namespace+cardinality+multi-tenant+multi-use substrate (B-0822) landed:
