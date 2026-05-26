@@ -2,7 +2,7 @@
 id: B-0781
 priority: P1
 status: open
-title: F# type system as universe boundary — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth (Cachet analog)
+title: F# type system as universe boundary — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth (Caché analog)
 effort: XL
 ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
@@ -77,7 +77,7 @@ doesn't change the architectural point.
 
 Caché's distinctive property: **the database and the application
 runtime + language (ObjectScript) are deeply integrated** — schema
-+ code share one substrate; no ORM impedance mismatch; no
+and code share one substrate; no ORM impedance mismatch; no
 DDL-vs-application-code translation.
 
 Aaron's bet: **F# + Zeta substrate does for the CLUSTER what
@@ -181,9 +181,11 @@ Per-row composition:
       target format (YAML / Nix / Rego / JSON / SQL DDL /
       etc.); operator runs `dotnet build` to validate +
       `dotnet run` to emit
-- [ ] Backward-compat: existing YAML / Nix / etc. config still
-      consumable; F# substrate is additive; operator can
-      migrate piece by piece
+- [ ] Per-class migration tooling: F# substrate emits target-
+      format equivalents (YAML / Nix / etc.); operator migrates
+      piece by piece via emit-and-verify (per
+      `docs/CONFLICT-RESOLUTION.md` cutting-edge-over-legacy-
+      compat — F# replaces YAML rather than dual-consuming it)
 - [ ] AI-trainable substrate (per B-0761): F# code is more
       structured than YAML for AI training; type-aware models
       learn the substrate more efficiently; training data
@@ -221,7 +223,8 @@ engineering payoff. Per `.claude/rules/razor-discipline.md` +
 serve a load-bearing bandwidth + survive razor-discipline.
 
 This position survives both:
-- Bandwidth served: operator + AI substrate read ONE type
+
+- Bandwidth served: operator and AI substrate read ONE type
   system; one mental model; one error-detection time (compile)
 - Razor: type-system-as-universe is operational; testable; not
   metaphysical

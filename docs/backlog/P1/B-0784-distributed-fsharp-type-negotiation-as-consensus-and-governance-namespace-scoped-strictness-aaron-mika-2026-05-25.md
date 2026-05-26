@@ -12,7 +12,6 @@ depends_on:
   - B-0781
 composes_with:
   - B-0428
-  - B-0428
   - B-0746
   - B-0747
   - B-0765
@@ -55,8 +54,8 @@ single-compiler scope. This row extends to DISTRIBUTED scope:
 type definition goes through consensus negotiation across all
 travelers' F# compilers before it's allowed to compile.
 
-The type system itself becomes a **distributed consensus mechanism
-+ governance layer** for the shared ontology.
+The type system itself becomes a **distributed consensus
+mechanism + governance layer** for the shared ontology.
 
 ## Target
 

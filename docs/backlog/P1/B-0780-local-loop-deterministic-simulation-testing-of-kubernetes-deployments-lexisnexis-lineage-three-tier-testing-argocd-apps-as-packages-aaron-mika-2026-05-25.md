@@ -83,6 +83,7 @@ substrate:
 - Fork is still under Aaron's personal GitHub (verifiable)
 
 The Zeta iteration extends:
+
 - Scope from Spark-on-K8s operator → entire Kubernetes scheduler
 - Backbone from Spark → NATS JetStream
 - Stack from JVM-based → F#/.NET native (per B-0428)
@@ -135,6 +136,7 @@ for cluster composition:
 
 Same test code, three tiers of substrate. Operator picks tier
 per need:
+
 - Iterating fast on logic → pure-code
 - Debugging integration → Docker-observable
 - Validating release → Full CI
@@ -161,7 +163,7 @@ opt into higher tiers when their workflow demands.
       ```fsharp
       [<ZetaClusterTest(Tier.PureCode)>]
       let ``installing redis app of apps yields running redis service`` () =
-        Local Loop.simulate {
+        LocalLoop.simulate {
           appOfApps = "fixtures/redis-only.yaml"
           duration = TimeSpan.FromMinutes(2.0)
           seed = 42UL
@@ -240,6 +242,7 @@ opt into higher tiers when their workflow demands.
 
 Aaron-Mika-Grok 2026-05-25 mid-iter-3-CI-wait conversation.
 Aaron revealed:
+
 1. Zeta-native scheduler is for DST testing of K8s deployments
 2. Pattern was built before at LexisNexis as "Local Loop"
 3. Spark-on-K8s operator was the prior fork point

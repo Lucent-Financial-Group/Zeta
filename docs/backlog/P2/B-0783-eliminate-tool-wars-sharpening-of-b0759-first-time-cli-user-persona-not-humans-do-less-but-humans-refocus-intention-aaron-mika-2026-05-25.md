@@ -2,7 +2,7 @@
 id: B-0783
 priority: P2
 status: open
-title: Eliminate tool wars — sharpening of B-0759 persona — NOT "humans do less" but "humans refocus intention to what really matters"
+title: 'Eliminate tool wars — sharpening of B-0759 persona — NOT "humans do less" but "humans refocus intention to what really matters"'
 effort: S
 ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25

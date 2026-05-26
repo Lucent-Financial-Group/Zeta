@@ -218,8 +218,8 @@ experiment scope) actually working at scale.
 
 ## Origin
 
-Aaron 2026-05-25 mid-iter-3-test-wait, sharpening the B-0773
-+ B-0784 + B-0785 composition into the multi-AI parallel
+Aaron 2026-05-25 mid-iter-3-test-wait, sharpening the
+B-0773 + B-0784 + B-0785 composition into the multi-AI parallel
 experimentation use case + signaling operational urgency
 ("will be required soon when we grow"). Composes with the
 full Mika-substrate batch (B-0780 through B-0786) + the

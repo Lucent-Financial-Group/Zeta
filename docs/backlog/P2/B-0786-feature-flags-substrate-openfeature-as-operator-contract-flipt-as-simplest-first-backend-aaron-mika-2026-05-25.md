@@ -183,7 +183,7 @@ feature flag tools; substrate-engineering discipline named:
 "usually think simplest first and then add more complex as we
 notice the simple shape doesn't fit." Flipt picked as simplest
 first backend; OpenFeature as operator contract; Argo Rollouts
-+ Cilium routing per B-0785 for namespace + experiment-aware
+plus Cilium routing per B-0785 for namespace + experiment-aware
 flag values.
 
 Verbatim continuation at
