@@ -187,8 +187,7 @@ miss the established academic + industry grounding.
 well-known categories at well-known positions in established
 taxonomies; the value-add is COMPOSITION (substrate-honest
 coherent multi-plugin substrate per B-0772 / B-0773 / B-0776) +
-COMPETITIVE-FREE SWAP (per B-0763) + AI-TRAINABLE (per B-0761)
-+ DBSP-GROUNDED (per B-0428) — not naming-novelty.
+COMPETITIVE-FREE SWAP (per B-0763) + AI-TRAINABLE (per B-0761) + DBSP-GROUNDED (per B-0428) — not naming-novelty.
 
 The naming discipline IS the substrate that makes Zeta
 defensible in industry conversations + makes AI systems
