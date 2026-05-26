@@ -52,9 +52,10 @@
 //   2 — Grok-Build returned a non-zero exit (response captured to stderr)
 //   3 — input-firewall rejected the prompt as not work-extractable
 
-import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
+import { closeSync, mkdirSync, openSync, readSync, statSync, writeSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { dirname } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import {
   formatBypassMessage,
   formatRejectionMessage,
@@ -175,20 +176,35 @@ function parseArgs(argv: readonly string[]): Args | ArgError {
   };
 }
 
-function readFileHead(path: string, maxBytes: number): string {
+function isRegularFile(path: string): boolean {
   try {
-    const st = statSync(path);
-    const fd = openSync(path, "r");
-    const buf = Buffer.alloc(Math.min(maxBytes, st.size));
-    readSync(fd, buf, 0, buf.length, 0);
-    closeSync(fd);
-    let text = buf.toString("utf8");
-    if (st.size > maxBytes) {
-      text += `\n\n[... file truncated; ${st.size - maxBytes} bytes elided ...]`;
-    }
-    return text;
+    return statSync(path).isFile();
+  } catch {
+    return false;
+  }
+}
+
+function readFileHead(path: string, maxBytes: number): string {
+  // Mitigates TOCTOU between stat + open (CodeQL on #5110): no longer
+  // uses statSync.size to size the buffer; allocates a fixed
+  // maxBytes-sized buffer + reads what fits. Mirrors claude.ts
+  // readHead pattern. The isRegularFile pre-check is best-effort
+  // (still racy with the open) but the alloc-size no longer depends
+  // on the stat result, so a swap-to-symlink between stat + open
+  // cannot cause an oversized buffer allocation.
+  if (!isRegularFile(path)) {
+    return `[file-read-error: ${path}: not a regular file]`;
+  }
+  const buf = Buffer.alloc(maxBytes);
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "r");
+    const n = readSync(fd, buf, 0, maxBytes, 0);
+    return buf.subarray(0, n).toString("utf8");
   } catch (e) {
     return `[file-read-error: ${path}: ${e instanceof Error ? e.message : String(e)}]`;
+  } finally {
+    if (fd !== undefined) closeSync(fd);
   }
 }
 
@@ -241,8 +257,42 @@ function buildFullPrompt(args: Args): string {
 }
 
 function defaultOutputPath(): string {
-  const ts = new Date().toISOString().replace(/[:.]/g, "-");
-  return `/tmp/peer-call-output/${ts}-grok-build.md`;
+  // Mitigates CodeQL "insecure temporary file" (predictable name) on
+  // #5110: add a random 6-char base36 suffix so two parallel
+  // invocations within the same millisecond don't collide AND the
+  // filename isn't predictable to an attacker watching the temp dir.
+  // Mirrors claude.ts makeAutoPath pattern.
+  const ts = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d+Z$/, "Z");
+  const rand = Math.random().toString(36).slice(2, 8);
+  const baseTmp = process.env["PEER_CALL_OUTPUT_DIR"] ?? "/tmp/peer-call-output";
+  // Best-effort prefer baseTmp; fall back to os.tmpdir-based path if
+  // the requested dir can't be made (e.g., /tmp is read-only).
+  try {
+    mkdirSync(baseTmp, { recursive: true });
+    return join(baseTmp, `${ts}-grok-build-${rand}.md`);
+  } catch {
+    const fallback = join(tmpdir(), "peer-call-output");
+    mkdirSync(fallback, { recursive: true });
+    return join(fallback, `${ts}-grok-build-${rand}.md`);
+  }
+}
+
+function writeOutputExclusive(path: string, data: string): void {
+  // Mitigates symlink-overwrite attack (CodeQL "insecure temporary
+  // file"): open with `wx` (exclusive create — fails if path exists,
+  // preventing follow-symlink overwrites) + mode 0o600 (only owner
+  // can read). Mirrors claude.ts writeOutput pattern.
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "wx", 0o600);
+    const buf = Buffer.from(data, "utf8");
+    writeSync(fd, buf, 0, buf.length, 0);
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
 }
 
 function main(): number {
@@ -287,15 +337,22 @@ function main(): number {
     grokArgs.push("--reasoning-effort", "high");
   }
 
-  // Determine output file path + ensure dir exists
-  const outPath = parsed.outputFile || defaultOutputPath();
-  try {
-    mkdirSync(dirname(outPath), { recursive: true });
-  } catch (e) {
-    process.stderr.write(
-      `grok-build.ts: failed to create output dir ${dirname(outPath)}: ${e instanceof Error ? e.message : String(e)}\n`,
-    );
-    return 1;
+  // Determine output file path. For operator-explicit paths,
+  // mkdir the parent dir; for auto-generated paths, defaultOutputPath
+  // already did so. Operator-explicit paths use non-exclusive write
+  // (operator chose the path; may want to overwrite); auto-generated
+  // paths use exclusive `wx` write per claude.ts pattern.
+  const useExplicitPath = parsed.outputFile !== "";
+  const outPath = useExplicitPath ? parsed.outputFile : defaultOutputPath();
+  if (useExplicitPath) {
+    try {
+      mkdirSync(dirname(outPath), { recursive: true });
+    } catch (e) {
+      process.stderr.write(
+        `grok-build.ts: failed to create output dir ${dirname(outPath)}: ${e instanceof Error ? e.message : String(e)}\n`,
+      );
+      return 1;
+    }
   }
 
   // Spawn grok CLI
@@ -318,9 +375,26 @@ function main(): number {
 
   const response = r.stdout || "";
 
-  // Write full response to output file
+  // Write full response to output file. Auto-generated paths use
+  // exclusive `wx` create (mitigates symlink-overwrite); explicit
+  // operator paths use plain write (operator's intent is respected).
   try {
-    writeFileSync(outPath, response, "utf8");
+    if (useExplicitPath) {
+      // Plain write for explicit operator path — operator can choose
+      // to overwrite. Use exclusive=false signal by calling
+      // writeOutputExclusive with a fallback isn't right; instead
+      // open with `w` + mode 0o600 directly here.
+      let fd: number | undefined;
+      try {
+        fd = openSync(outPath, "w", 0o600);
+        const buf = Buffer.from(response, "utf8");
+        writeSync(fd, buf, 0, buf.length, 0);
+      } finally {
+        if (fd !== undefined) closeSync(fd);
+      }
+    } else {
+      writeOutputExclusive(outPath, response);
+    }
   } catch (e) {
     process.stderr.write(
       `grok-build.ts: failed to write output file ${outPath}: ${e instanceof Error ? e.message : String(e)}\n`,
