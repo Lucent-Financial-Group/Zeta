@@ -42,6 +42,18 @@ send_supervisor_signal
   -> supervisor triage reaction plan
 ```
 
+## Checkpoint Boundary
+
+The implemented slice does not yet create discussion anchors, graph
+nodes, hat assignments, hat tokens, policy decisions, prompt-flow runs,
+Hermes runs, or reviewer gates. Those remain V0 follow-on commands.
+
+Capability-request-shaped inputs should continue to enter through
+`send_supervisor_signal`. The target supervisor triage step decides
+whether to create a `CapabilityRequest` work item, route to security,
+open a discussion, assign implementation work, answer directly, or
+escalate.
+
 ## Packages
 
 | Package                        | Implemented first                                                                                                                                                     |
