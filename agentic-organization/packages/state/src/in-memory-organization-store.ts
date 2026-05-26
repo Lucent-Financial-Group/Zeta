@@ -60,17 +60,11 @@ function createCommandStateStore<Result>(
 ): CommandStateStore<Result> {
   return {
     findIdempotencyRecord: async (idempotencyKey) => snapshot.idempotencyRecords.get(idempotencyKey),
-    saveIdempotencyRecord: async (record) => {
-      snapshot.idempotencyRecords.set(record.idempotencyKey, record);
-    },
-    appendSupervisorSignal: async (supervisorSignal) => {
-      snapshot.supervisorSignals.push(supervisorSignal);
-    },
-    appendAuditEvent: async (auditEvent) => {
-      snapshot.auditEvents.push(auditEvent);
-    },
-    appendOutboxEvent: async (outboxEvent) => {
-      snapshot.outboxEvents.push(outboxEvent);
+    recordCommandOutcome: async (input) => {
+      snapshot.idempotencyRecords.set(input.idempotencyRecord.idempotencyKey, input.idempotencyRecord);
+      snapshot.supervisorSignals.push(...input.effects.supervisorSignals);
+      snapshot.auditEvents.push(...input.effects.auditEvents);
+      snapshot.outboxEvents.push(...input.effects.outboxEvents);
     },
   };
 }

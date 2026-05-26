@@ -29,12 +29,14 @@ send_supervisor_signal
   -> chain-of-command signal
   -> audit event
   -> outbox event with canonical event envelope
+  -> command outcome persisted through one state-store operation
   -> outbox publisher
   -> NATS JetStream event publisher adapter
   -> NATS JetStream event consumer adapter
   -> NATS subject contract
   -> event ingestion processor
   -> inbox receipt / consumer dedupe
+  -> event-processing outcome persisted through one store operation
   -> persisted reaction plans
   -> worker host cycle summary
   -> apps/workers runtime summary
@@ -124,6 +126,10 @@ Hermes runs, MCP calls, and UI evidence.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
+- Command handlers return typed effects; the command pipeline persists
+  the supervisor signal, audit events, outbox events, and idempotency
+  record through one `recordCommandOutcome` port. Handlers do not write
+  piecemeal state.
 - State-store and outbox-source ports are async from the beginning so
   durable SQL, NATS-backed workers, and other real adapters do not
   inherit a fake synchronous shape.
@@ -152,10 +158,30 @@ Hermes runs, MCP calls, and UI evidence.
   rules once, rejects same-event payload hash conflicts, and persists
   reaction plans through a store boundary that durable adapters can make
   transactional.
+- Event ingestion treats only completed receipts as duplicates. If a
+  same-payload receipt exists without `processedAt` and `result`, the
+  processor re-evaluates the event and records the full outcome so old
+  orphan receipts do not suppress automation.
 - The Cockroach adapter now declares inbox receipt and reaction plan
   tables plus a SQL-backed event-ingestion store. This is still behind a
   generic state port; live NATS consumers are not hardcoded into the
   adapter.
+- The Cockroach command and event-ingestion adapters expose
+  adapter-local transaction batch seams. Application and runtime code
+  still see generic outcome ports; Cockroach-specific transaction
+  mechanics stay in `@agentic-org/state-cockroach`.
+- The Cockroach command adapter records the idempotency row before
+  effect rows inside the command transaction batch, so a duplicate key
+  aborts before supervisor signal, audit, or outbox rows are submitted.
+- The Cockroach event-ingestion adapter normalizes SQL `NULL`
+  completion fields to pending receipts and claims the pending receipt
+  before inserting reaction plans. If the claim reports duplicate or
+  payload conflict, the adapter returns that generic outcome without
+  inserting reaction plans.
+- Governance now checks that runtime code, like application code, cannot
+  import vendor adapters or vendor clients directly. Vendor packages must
+  implement generic Organization ports consumed by application/runtime
+  packages.
 - The worker host now runs one bounded outbox cycle plus one bounded
   inbound-ingestion cycle through explicit ports, then returns an
   idle/worked/degraded summary suitable for future logs, metrics, and UI
@@ -203,15 +229,17 @@ Hermes runs, MCP calls, and UI evidence.
 
 ## Next Slice
 
-The next slice should add the first real process adapter factories below
+The next slice should add policy and hat-authority checks before real
+API, MCP, Hermes, or worker command entrypoints can call the command
+pipeline. After that, add the first real process adapter factories below
 `apps/workers`: concrete NATS pull/publish client construction, durable
 CockroachDB outbox/inbox adapter construction, and a telemetry sink that
 can later send structured logs and metrics into the full-ai-cluster LGTM
 stack. Keep URLs, credentials, and connection pools in app adapter config
 fed by Kubernetes Secret or ExternalSecret values, never in domain
-packages. After that, add a transactional durable-state adapter
-integration test using CockroachDB as the first cluster-backed
-implementation once a local/dev connection is available.
+packages. Add a durable-state integration test using CockroachDB as the
+first cluster-backed implementation once a local/dev connection is
+available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

@@ -1,7 +1,7 @@
 import type { CommandHandlerRegistry } from "./command-handler-registry.ts";
 import { CommandErrorCode, CommandResultStatus, type CommandResult } from "./command-result.ts";
 import type { SendSupervisorSignalCommand } from "./handlers/send-supervisor-signal.ts";
-import type { Clock, CommandStateStore, CommandStateStoreFactory, IdGenerator } from "./ports.ts";
+import type { Clock, CommandEffects, CommandStateStore, CommandStateStoreFactory, IdGenerator } from "./ports.ts";
 
 export type PipelineCommand = SendSupervisorSignalCommand;
 
@@ -52,38 +52,49 @@ async function executeCommand(
     };
   }
 
-  const result = await dispatchCommand(command, store, dependencies);
-  await store.saveIdempotencyRecord({
-    idempotencyKey: command.idempotencyKey,
-    requestHash: command.requestHash,
-    result,
+  const outcome = await dispatchCommand(command, dependencies);
+
+  await store.recordCommandOutcome({
+    idempotencyRecord: {
+      idempotencyKey: command.idempotencyKey,
+      requestHash: command.requestHash,
+      result: outcome.result,
+    },
+    effects: outcome.result.status === CommandResultStatus.Accepted ? outcome.effects : createEmptyCommandEffects(),
   });
 
-  return result;
+  return outcome.result;
 }
 
 async function dispatchCommand(
   command: PipelineCommand,
-  store: CommandStateStore<CommandResult>,
   dependencies: CommandPipelineDependencies,
-): Promise<CommandResult> {
+): Promise<{ result: CommandResult; effects: CommandEffects }> {
   const handler = dependencies.handlerRegistry.resolveHandler(command.type);
 
   if (handler !== undefined) {
-    return await handler.execute(command, {
-      ...dependencies,
-      store,
-    });
+    return await handler.execute(command, dependencies);
   }
 
   return {
-    status: CommandResultStatus.Rejected,
-    idempotency: {
-      replayed: false,
+    result: {
+      status: CommandResultStatus.Rejected,
+      idempotency: {
+        replayed: false,
+      },
+      error: {
+        code: CommandErrorCode.UnsupportedCommand,
+        message: "unsupported command type",
+      },
     },
-    error: {
-      code: CommandErrorCode.UnsupportedCommand,
-      message: "unsupported command type",
-    },
+    effects: createEmptyCommandEffects(),
+  };
+}
+
+function createEmptyCommandEffects(): CommandEffects {
+  return {
+    supervisorSignals: [],
+    auditEvents: [],
+    outboxEvents: [],
   };
 }

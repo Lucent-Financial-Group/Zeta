@@ -8,27 +8,21 @@ export type IdGenerator = {
   createId: (prefix: string) => string;
 };
 
-export type IdempotencyRecordStore<Result = unknown> = {
+export type CommandEffects = {
+  supervisorSignals: readonly SupervisorSignal[];
+  auditEvents: readonly AuditEvent[];
+  outboxEvents: readonly OutboxEvent[];
+};
+
+export type RecordCommandOutcomeInput<Result = unknown> = {
+  idempotencyRecord: IdempotencyRecord<Result>;
+  effects: CommandEffects;
+};
+
+export type CommandStateStore<Result = unknown> = {
   findIdempotencyRecord: (idempotencyKey: string) => Promise<IdempotencyRecord<Result> | undefined>;
-  saveIdempotencyRecord: (record: IdempotencyRecord<Result>) => Promise<void>;
+  recordCommandOutcome: (input: RecordCommandOutcomeInput<Result>) => Promise<void>;
 };
-
-export type SupervisorSignalStore = {
-  appendSupervisorSignal: (supervisorSignal: SupervisorSignal) => Promise<void>;
-};
-
-export type AuditEventStore = {
-  appendAuditEvent: (auditEvent: AuditEvent) => Promise<void>;
-};
-
-export type OutboxEventStore = {
-  appendOutboxEvent: (outboxEvent: OutboxEvent) => Promise<void>;
-};
-
-export type CommandStateStore<Result = unknown> = IdempotencyRecordStore<Result> &
-  SupervisorSignalStore &
-  AuditEventStore &
-  OutboxEventStore;
 
 export type CommandStateStoreFactory<Result = unknown> = {
   createCommandStateStore: () => CommandStateStore<Result>;

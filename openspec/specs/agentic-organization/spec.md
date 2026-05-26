@@ -37,6 +37,14 @@ Organization state only by calling Organization commands.
   and idempotency records together
 - **AND** the adapter does not mutate authoritative state directly
 
+#### Scenario: Command handler returns effects instead of writing state
+
+- **WHEN** a command handler accepts a valid command
+- **THEN** it returns the command result plus typed command effects
+- **AND** the handler does not call state append operations directly
+- **AND** the command pipeline records the result and effects through a
+  single command outcome port
+
 #### Scenario: Command pipeline is composed from ports
 
 - **WHEN** a runtime host creates a command pipeline
@@ -93,6 +101,17 @@ command boundary.
 - **AND** CockroachDB is treated as the first replaceable durable adapter
   for the cluster, not as the application model
 
+#### Scenario: Vendor-specific adapters stay behind generic ports
+
+- **WHEN** application, runtime, worker, or messaging package source is
+  inspected
+- **THEN** it does not import vendor-specific adapter packages or vendor
+  clients directly
+- **AND** vendor packages implement generic Organization ports exposed by
+  non-vendor packages
+- **AND** vendor-specific executor or transaction seams are not used as
+  application contracts
+
 #### Scenario: Matching replay
 
 - **WHEN** a command is submitted twice with the same idempotency key
@@ -107,6 +126,16 @@ command boundary.
   exists for a different request hash
 - **THEN** the command is rejected with a typed idempotency conflict
 - **AND** no new authoritative state is created
+
+#### Scenario: Command outcome persistence fails
+
+- **WHEN** a new command produces supervisor-signal, audit, and outbox
+  effects
+- **AND** the command outcome store cannot persist the full outcome
+- **THEN** no piecemeal command writes are performed by the application
+  layer
+- **AND** durable adapters are responsible for committing or rolling
+  back the full command outcome atomically
 
 ### Requirement: Events carry traceable envelopes
 
@@ -237,10 +266,20 @@ executing privileged work directly.
 
 #### Scenario: Duplicate event is ingested by an automation consumer
 
-- **WHEN** the same event ID reaches the same consumer again
+- **WHEN** the same event ID reaches the same consumer again after the
+  original receipt has a completed result
 - **THEN** the processor returns a duplicate outcome
 - **AND** no automation rules are re-evaluated
 - **AND** no duplicate reaction plans are created
+
+#### Scenario: Unprocessed receipt is retried by an automation consumer
+
+- **WHEN** the same event ID and payload hash reaches the same consumer
+  but the existing receipt has no completed result
+- **THEN** the processor treats the receipt as recoverable pending work
+- **AND** automation rules are re-evaluated
+- **AND** the receipt and generated reaction plans are recorded through
+  the normal event-processing outcome port
 
 #### Scenario: Conflicting event payload is ingested by an automation consumer
 
@@ -258,6 +297,34 @@ executing privileged work directly.
 - **AND** it declares reaction plan storage for generated automation
   plans
 - **AND** reaction plans include a persisted status
+
+#### Scenario: Durable event-ingestion adapter uses one transaction boundary
+
+- **WHEN** a durable event-ingestion adapter records an event-processing
+  outcome
+- **THEN** the inbox receipt, generated reaction plans, and processed
+  marker are submitted as one transaction batch
+- **AND** runtime rule processors do not receive database transaction
+  objects
+
+#### Scenario: Durable event-ingestion adapter loses receipt claim race
+
+- **WHEN** a durable event-ingestion adapter attempts to record reaction
+  plans after another consumer has already completed the same receipt
+- **THEN** the adapter returns a duplicate event-processing outcome
+  through the generic event-ingestion port
+- **AND** it does not insert reaction plans
+- **AND** it does not mark the completed receipt again
+
+#### Scenario: Durable command adapter uses one transaction boundary
+
+- **WHEN** a durable command adapter records a command outcome
+- **THEN** the idempotency record, command state, audit events, and
+  outbox events are submitted as one transaction batch
+- **AND** the idempotency record is reserved before effect rows are
+  submitted inside that batch
+- **AND** application handlers do not receive database transaction
+  objects
 
 ### Requirement: Worker process boundary composes event loops through ports
 

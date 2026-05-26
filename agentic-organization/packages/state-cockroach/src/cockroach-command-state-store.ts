@@ -3,7 +3,7 @@ import { CockroachTableName } from "./cockroach-schema.ts";
 
 export const CockroachCommandStateStoreStatement = {
   FindIdempotencyRecord: "find_idempotency_record",
-  UpsertIdempotencyRecord: "upsert_idempotency_record",
+  InsertIdempotencyRecord: "insert_idempotency_record",
   InsertSupervisorSignal: "insert_supervisor_signal",
   InsertAuditEvent: "insert_audit_event",
   InsertOutboxEvent: "insert_outbox_event",
@@ -24,6 +24,11 @@ export type CockroachSqlResult<Row = Record<string, unknown>> = {
 
 export type CockroachSqlExecutor = {
   execute: <Row = Record<string, unknown>>(statement: CockroachSqlStatement) => Promise<CockroachSqlResult<Row>>;
+  executeTransaction: (transaction: CockroachSqlTransaction) => Promise<void>;
+};
+
+export type CockroachSqlTransaction = {
+  statements: readonly CockroachSqlStatement[];
 };
 
 export type CreateCockroachCommandStateStoreFactoryInput = {
@@ -58,67 +63,91 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
         result: row.result_json as Result,
       };
     },
-    saveIdempotencyRecord: async (record) => {
-      await executor.execute({
-        name: CockroachCommandStateStoreStatement.UpsertIdempotencyRecord,
-        sql: CockroachCommandStateStoreSql.UpsertIdempotencyRecord,
-        parameters: [record.idempotencyKey, record.requestHash, record.result],
-      });
-    },
-    appendSupervisorSignal: async (supervisorSignal) => {
-      await executor.execute({
-        name: CockroachCommandStateStoreStatement.InsertSupervisorSignal,
-        sql: CockroachCommandStateStoreSql.InsertSupervisorSignal,
-        parameters: [
-          supervisorSignal.supervisorSignalId,
-          supervisorSignal.organizationId,
-          supervisorSignal.projectId,
-          supervisorSignal.teamId,
-          supervisorSignal.sourceLevel,
-          supervisorSignal.targetLevel,
-          supervisorSignal.targetHatAssignmentId,
-          supervisorSignal.sender.agentId,
-          supervisorSignal.sender.hatAssignmentId,
-          supervisorSignal.toolType,
-          supervisorSignal.status,
-          supervisorSignal.title,
-          supervisorSignal.message,
-          supervisorSignal.relatedWorkItemId,
-          supervisorSignal.createdAt,
+    recordCommandOutcome: async (outcome) => {
+      await executor.executeTransaction({
+        statements: [
+          createInsertIdempotencyRecordStatement(outcome.idempotencyRecord),
+          ...outcome.effects.supervisorSignals.map(createInsertSupervisorSignalStatement),
+          ...outcome.effects.auditEvents.map(createInsertAuditEventStatement),
+          ...outcome.effects.outboxEvents.map(createInsertOutboxEventStatement),
         ],
       });
     },
-    appendAuditEvent: async (auditEvent) => {
-      await executor.execute({
-        name: CockroachCommandStateStoreStatement.InsertAuditEvent,
-        sql: CockroachCommandStateStoreSql.InsertAuditEvent,
-        parameters: [
-          auditEvent.auditEventId,
-          auditEvent.eventName,
-          auditEvent.aggregateId,
-          auditEvent.actor.agentId,
-          auditEvent.actor.hatAssignmentId,
-          auditEvent.occurredAt,
-        ],
-      });
-    },
-    appendOutboxEvent: async (outboxEvent) => {
-      await executor.execute({
-        name: CockroachCommandStateStoreStatement.InsertOutboxEvent,
-        sql: CockroachCommandStateStoreSql.InsertOutboxEvent,
-        parameters: [
-          outboxEvent.outboxEventId,
-          outboxEvent.envelope.eventId,
-          outboxEvent.envelope.eventType,
-          outboxEvent.envelope.scope.organizationId,
-          outboxEvent.envelope.scope.projectId,
-          outboxEvent.envelope.scope.workItemId,
-          outboxEvent.envelope.trace.traceId,
-          outboxEvent.envelope.trace.correlationId,
-          outboxEvent.envelope,
-        ],
-      });
-    },
+  };
+}
+
+type CommandStateStoreResult<Result> = Parameters<CommandStateStore<Result>["recordCommandOutcome"]>[0];
+
+function createInsertIdempotencyRecordStatement<Result>(
+  record: CommandStateStoreResult<Result>["idempotencyRecord"],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertIdempotencyRecord,
+    sql: CockroachCommandStateStoreSql.InsertIdempotencyRecord,
+    parameters: [record.idempotencyKey, record.requestHash, record.result],
+  };
+}
+
+function createInsertSupervisorSignalStatement(
+  supervisorSignal: CommandStateStoreResult<unknown>["effects"]["supervisorSignals"][number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+    sql: CockroachCommandStateStoreSql.InsertSupervisorSignal,
+    parameters: [
+      supervisorSignal.supervisorSignalId,
+      supervisorSignal.organizationId,
+      supervisorSignal.projectId,
+      supervisorSignal.teamId,
+      supervisorSignal.sourceLevel,
+      supervisorSignal.targetLevel,
+      supervisorSignal.targetHatAssignmentId,
+      supervisorSignal.sender.agentId,
+      supervisorSignal.sender.hatAssignmentId,
+      supervisorSignal.toolType,
+      supervisorSignal.status,
+      supervisorSignal.title,
+      supervisorSignal.message,
+      supervisorSignal.relatedWorkItemId,
+      supervisorSignal.createdAt,
+    ],
+  };
+}
+
+function createInsertAuditEventStatement(
+  auditEvent: CommandStateStoreResult<unknown>["effects"]["auditEvents"][number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertAuditEvent,
+    sql: CockroachCommandStateStoreSql.InsertAuditEvent,
+    parameters: [
+      auditEvent.auditEventId,
+      auditEvent.eventName,
+      auditEvent.aggregateId,
+      auditEvent.actor.agentId,
+      auditEvent.actor.hatAssignmentId,
+      auditEvent.occurredAt,
+    ],
+  };
+}
+
+function createInsertOutboxEventStatement(
+  outboxEvent: CommandStateStoreResult<unknown>["effects"]["outboxEvents"][number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertOutboxEvent,
+    sql: CockroachCommandStateStoreSql.InsertOutboxEvent,
+    parameters: [
+      outboxEvent.outboxEventId,
+      outboxEvent.envelope.eventId,
+      outboxEvent.envelope.eventType,
+      outboxEvent.envelope.scope.organizationId,
+      outboxEvent.envelope.scope.projectId,
+      outboxEvent.envelope.scope.workItemId,
+      outboxEvent.envelope.trace.traceId,
+      outboxEvent.envelope.trace.correlationId,
+      outboxEvent.envelope,
+    ],
   };
 }
 
@@ -134,8 +163,8 @@ const CockroachCommandStateStoreSql = {
     FROM ${CockroachTableName.IdempotencyRecords}
     WHERE idempotency_key = $1
   `,
-  UpsertIdempotencyRecord: `
-    UPSERT INTO ${CockroachTableName.IdempotencyRecords} (
+  InsertIdempotencyRecord: `
+    INSERT INTO ${CockroachTableName.IdempotencyRecords} (
       idempotency_key,
       request_hash,
       result_json

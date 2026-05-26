@@ -42,9 +42,16 @@ export type RecordEventProcessingOutcomeInput = {
   result: EventIngestionOutcomeStatus;
 };
 
+export type RecordEventProcessingOutcomeResult = {
+  status: EventIngestionOutcomeStatus;
+  reactionPlans: readonly ReactionPlanRecord[];
+};
+
 export type EventIngestionStore = {
   findInboxReceipt: (lookup: InboxReceiptLookup) => Promise<InboxReceiptRecord | undefined>;
-  recordEventProcessingOutcome: (input: RecordEventProcessingOutcomeInput) => Promise<void>;
+  recordEventProcessingOutcome: (
+    input: RecordEventProcessingOutcomeInput,
+  ) => Promise<RecordEventProcessingOutcomeResult>;
 };
 
 export type InMemoryEventIngestionStoreSnapshot = {
@@ -75,6 +82,11 @@ export function createInMemoryEventIngestionStore(): InMemoryEventIngestionStore
         result: input.result,
       });
       reactionPlans.push(...input.reactionPlans);
+
+      return {
+        status: input.result,
+        reactionPlans: input.reactionPlans,
+      };
     },
   };
 }

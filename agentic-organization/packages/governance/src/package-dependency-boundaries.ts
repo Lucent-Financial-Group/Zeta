@@ -8,6 +8,7 @@ export const PackageBoundaryRule = {
   Messaging: "messaging",
   Packages: "packages",
   ProductionSource: "production_source",
+  Runtime: "runtime",
   StateAdapter: "state_adapter",
   Workers: "workers",
 } as const;

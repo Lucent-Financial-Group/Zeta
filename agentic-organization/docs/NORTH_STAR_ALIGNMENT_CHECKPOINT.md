@@ -86,11 +86,11 @@ on `full-ai-cluster`, not a parallel substrate.
 The current packages prove the right spine:
 
 - command handler registry;
-- idempotency check;
+- idempotency check and atomic command-outcome persistence port;
 - supervisor signal handler;
 - audit/outbox envelope;
 - NATS subject and publisher/consumer adapters;
-- inbox dedupe and reaction plans;
+- inbox dedupe, orphan-receipt recovery, and reaction plans;
 - worker host and app composition shell;
 - telemetry attributes and workflow visibility records;
 - package-boundary governance.
@@ -137,14 +137,24 @@ plans. The next V0 command slice must either implement discussion-anchor
 creation or explicitly stage it as the next command after
 `send_supervisor_signal`.
 
-### Transaction Boundary Gap
+### Transaction Boundary Progress
 
-The current Cockroach adapters execute multiple statements through a
-generic SQL executor. The architecture requires state, audit, outbox,
-idempotency, inbox receipt, and reaction-plan writes to be atomic at the
-right boundaries. The next durable-state slice should introduce a
-transactional unit-of-work or single operation port for command outcomes
-and event-ingestion outcomes.
+The command pipeline now persists supervisor signal state, audit events,
+outbox events, and idempotency records through one
+`recordCommandOutcome` port. Command handlers return typed effects
+instead of writing piecemeal state.
+
+The event ingestion path already used a single
+`recordEventProcessingOutcome` port and now treats unfinished receipts
+as recoverable rather than duplicate. Cockroach command and
+event-ingestion adapters now expose transaction-batch executor seams so
+the app/runtime layers remain database-generic while durable adapters
+can commit outcome batches atomically.
+
+The remaining gap is integration-level proof against a real CockroachDB
+transaction. The current tests prove the batch boundary and runtime
+recovery behavior; a future local/dev-cluster integration test should
+prove actual rollback behavior with the real adapter binding.
 
 ### Policy And Hat Authority Gap
 
@@ -219,13 +229,14 @@ labels, dashboard ownership, and alertable degraded-worker signals.
    supervisor-chain communication is the only first primitive.
 2. Add a V0 state reconciliation table before expanding command enums or
    UI boards.
-3. Implement transactional command/event-ingestion outcome ports for
-   CockroachDB.
-4. Add policy/hat-authority checks before exposing command handlers to
+3. Add policy/hat-authority checks before exposing command handlers to
    API, MCP, Hermes, or workers.
-5. Add `triage_supervisor_signal` as the next real command slice.
-6. Add discussion-anchor enforcement and graph retrieval OpenSpec
+4. Add `triage_supervisor_signal` as the next real command slice.
+5. Add discussion-anchor enforcement and graph retrieval OpenSpec
    scenarios, then implement the minimal anchor command.
+6. Add real CockroachDB transaction integration coverage for command
+   outcomes and event-ingestion outcomes once a dev connection is
+   available.
 7. Define UAG v0 as a typed package contract before adding prompt-flow
    execution.
 8. Build one substrate integration at a time, starting with hat-system

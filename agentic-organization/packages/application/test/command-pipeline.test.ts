@@ -7,6 +7,7 @@ import { createCommandHandlerRegistry } from "../src/command-handler-registry.ts
 import { CommandErrorCode, CommandResultStatus, type CommandResult } from "../src/command-result.ts";
 import { createCommandPipeline, type PipelineCommand } from "../src/command-pipeline.ts";
 import { createSendSupervisorSignalHandler } from "../src/handlers/send-supervisor-signal.ts";
+import type { CommandStateStore, CommandStateStoreFactory, RecordCommandOutcomeInput } from "../src/ports.ts";
 
 const command: PipelineCommand = {
   commandId: "cmd-supervisor-signal-001",
@@ -81,4 +82,100 @@ describe("command pipeline idempotency", () => {
     equal(stateStoreFactory.snapshot.supervisorSignals.length, 1);
     equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
   });
+
+  test("records command effects and idempotency through one outcome port", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    equal(stateStoreFactory.recordedOutcomes.length, 1);
+    equal(stateStoreFactory.recordedOutcomes[0]?.idempotencyRecord.idempotencyKey, command.idempotencyKey);
+    equal(stateStoreFactory.recordedOutcomes[0]?.effects.supervisorSignals.length, 1);
+    equal(stateStoreFactory.recordedOutcomes[0]?.effects.auditEvents.length, 1);
+    equal(stateStoreFactory.recordedOutcomes[0]?.effects.outboxEvents.length, 1);
+  });
+
+  test("does not perform piecemeal command writes when outcome recording fails", async () => {
+    const stateStoreFactory = createFailingOutcomeCommandStateStoreFactory<CommandResult>("transaction unavailable");
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    try {
+      await pipeline.execute(command);
+      throw new Error("expected command outcome recording to fail");
+    } catch (error) {
+      equal(error instanceof Error, true);
+      equal((error as Error).message, "transaction unavailable");
+    }
+
+    equal(stateStoreFactory.appendCallCount, 0);
+    equal(stateStoreFactory.recordCallCount, 1);
+  });
 });
+
+type RecordingCommandStateStoreFactory<Result> = CommandStateStoreFactory<Result> & {
+  recordedOutcomes: RecordCommandOutcomeInput<Result>[];
+};
+
+function createRecordingCommandStateStoreFactory<Result>(): RecordingCommandStateStoreFactory<Result> {
+  const recordedOutcomes: RecordCommandOutcomeInput<Result>[] = [];
+
+  return {
+    recordedOutcomes,
+    createCommandStateStore: () => ({
+      findIdempotencyRecord: async () => undefined,
+      recordCommandOutcome: async (input) => {
+        recordedOutcomes.push(input);
+      },
+    }),
+  };
+}
+
+type FailingOutcomeCommandStateStoreFactory<Result> = CommandStateStoreFactory<Result> & {
+  readonly appendCallCount: number;
+  readonly recordCallCount: number;
+};
+
+function createFailingOutcomeCommandStateStoreFactory<Result>(
+  message: string,
+): FailingOutcomeCommandStateStoreFactory<Result> {
+  let appendCallCount = 0;
+  let recordCallCount = 0;
+
+  return {
+    get appendCallCount() {
+      return appendCallCount;
+    },
+    get recordCallCount() {
+      return recordCallCount;
+    },
+    createCommandStateStore: () =>
+      ({
+        findIdempotencyRecord: async () => undefined,
+        recordCommandOutcome: async () => {
+          recordCallCount += 1;
+          throw new Error(message);
+        },
+        appendSupervisorSignal: async () => {
+          appendCallCount += 1;
+        },
+        appendAuditEvent: async () => {
+          appendCallCount += 1;
+        },
+        appendOutboxEvent: async () => {
+          appendCallCount += 1;
+        },
+      }) as CommandStateStore<Result>,
+  };
+}

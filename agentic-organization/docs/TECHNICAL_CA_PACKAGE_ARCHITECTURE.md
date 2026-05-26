@@ -239,6 +239,14 @@ HatSystemPort -> KubernetesHatSystemAdapter or ReadOnlyFakeHatSystemAdapter
 ```
 
 Business services should depend on ports, not concrete adapters.
+Every vendor-specific implementation must sit behind a generic
+Organization interface exported by a non-vendor package. For example,
+application code sees `CommandStateStore`, runtime code sees
+`EventIngestionStore`, and messaging code sees `EventPublisher`; it
+must not see CockroachDB, NATS, OpenZiti, Hindsight, Hermes, Temporal,
+Dapr, Kubernetes, or provider-specific clients directly. Vendor
+packages may define private executor seams for their own composition,
+but those seams are not application contracts.
 
 The command pipeline must also depend on a handler registry and a
 state-store factory supplied by the composition layer. It must not
@@ -251,6 +259,16 @@ adapters may resolve immediately, but durable SQL, transactional outbox,
 inbox, and lease adapters must be able to perform real I/O without
 changing command-handler contracts. CockroachDB is the first durable SQL
 adapter in the cluster, not an application-layer dependency.
+
+Command handlers must return typed effects, not write state directly.
+The command pipeline owns idempotency lookup and calls one command
+outcome port that records the business state, audit events, outbox
+events, and idempotency record together. This keeps the application
+layer closed to concrete database transactions while still giving
+durable adapters one atomic commit boundary for a command result.
+Durable command adapters should reserve the idempotency record before
+effect rows inside that transaction so an idempotency race aborts before
+supervisor signal, audit, or outbox state becomes visible.
 
 The first worker boundary follows the same rule. `@agentic-org/workers`
 does not create NATS clients, Cockroach clients, Nest modules, Temporal
@@ -512,6 +530,28 @@ implement that operation transactionally so a saved receipt cannot
 silently suppress a reaction plan that failed to persist. The processor
 also compares payload hashes for repeated `eventId + consumerName`
 pairs; conflicting payloads are not treated as normal duplicates.
+
+The processor treats only completed inbox receipts as duplicates. A
+receipt with a matching payload hash but without completion fields is a
+recoverable pending/orphan state: the rule processor may re-evaluate the
+event and call the same outcome store operation to complete the receipt
+and persist reaction plans. Durable adapters should still make this rare
+by committing receipt, reaction plans, and processed marker in one
+transaction.
+
+Cockroach-specific transaction mechanics stay inside
+`@agentic-org/state-cockroach`. Application and runtime packages see
+outcome ports. The Cockroach adapter receives transaction-batch SQL
+executor seams for command outcomes and event-ingestion outcomes, and a
+real process adapter must bind those seams to an actual CockroachDB
+transaction before production traffic uses the adapter.
+The event-ingestion Cockroach adapter must normalize SQL `NULL`
+completion fields to omitted receipt fields and claim the pending
+receipt at the start of the transaction. Reaction-plan inserts and the
+processed marker must be conditional on that claim. If another consumer
+already completed the receipt, the adapter returns a duplicate outcome
+through the generic `EventIngestionStore` result without inserting
+reaction plans.
 
 A worker host composes that ingestion processor with the outbox
 publisher but stays below the NestJS process layer. This creates a

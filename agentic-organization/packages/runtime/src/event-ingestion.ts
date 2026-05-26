@@ -54,16 +54,18 @@ export function createEventIngestionProcessor(input: CreateEventIngestionProcess
           };
         }
 
-        return {
-          status: EventIngestionOutcomeStatus.Duplicate,
-          reactionPlans: [],
-        };
+        if (isCompletedReceipt(existingReceipt)) {
+          return {
+            status: EventIngestionOutcomeStatus.Duplicate,
+            reactionPlans: [],
+          };
+        }
       }
 
       const observedAt = input.now();
       const receipt: InboxReceiptRecord = {
         ...lookup,
-        firstSeenAt: observedAt,
+        firstSeenAt: existingReceipt?.firstSeenAt ?? observedAt,
         payloadHash,
       };
 
@@ -75,7 +77,7 @@ export function createEventIngestionProcessor(input: CreateEventIngestionProcess
         action,
       }));
 
-      await input.store.recordEventProcessingOutcome({
+      const persistenceResult = await input.store.recordEventProcessingOutcome({
         receipt,
         reactionPlans,
         processedAt: observedAt,
@@ -83,9 +85,13 @@ export function createEventIngestionProcessor(input: CreateEventIngestionProcess
       });
 
       return {
-        status: EventIngestionOutcomeStatus.Processed,
-        reactionPlans,
+        status: persistenceResult.status,
+        reactionPlans: persistenceResult.reactionPlans,
       };
     },
   };
+}
+
+function isCompletedReceipt(receipt: InboxReceiptRecord): boolean {
+  return receipt.processedAt !== undefined && receipt.result !== undefined;
 }

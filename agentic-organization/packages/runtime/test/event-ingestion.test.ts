@@ -12,7 +12,9 @@ import {
 } from "../../domain/src/index.ts";
 import {
   EventIngestionOutcomeStatus,
+  type EventIngestionStore,
   InboundEventConsumerName,
+  type RecordEventProcessingOutcomeInput,
   createInMemoryEventIngestionStore,
 } from "../../state/src/index.ts";
 import {
@@ -130,6 +132,48 @@ describe("event ingestion processor", () => {
     equal(evaluationCount, 1);
     equal(store.snapshot.inboxReceipts.length, 1);
     equal(store.snapshot.reactionPlans.length, 1);
+  });
+
+  test("retries an unprocessed inbox receipt instead of treating it as duplicate", async () => {
+    let evaluationCount = 0;
+    let recordedOutcome: RecordEventProcessingOutcomeInput | undefined;
+    const store: EventIngestionStore = {
+      findInboxReceipt: async () => ({
+        eventId: "evt-supervisor-signal-001",
+        consumerName: InboundEventConsumerName.V0AutomationPlanner,
+        firstSeenAt: "2026-05-25T21:59:00.000Z",
+        payloadHash: "hash-evt-supervisor-signal-001",
+      }),
+      recordEventProcessingOutcome: async (input) => {
+        recordedOutcome = input;
+
+        return {
+          status: input.result,
+          reactionPlans: input.reactionPlans,
+        };
+      },
+    };
+    const processor = createEventIngestionProcessor({
+      store,
+      evaluateRules: (envelope) => {
+        evaluationCount += 1;
+        return evaluateV0AutomationRules(envelope);
+      },
+      consumerName: InboundEventConsumerName.V0AutomationPlanner,
+      calculatePayloadHash: (eventEnvelope) => `hash-${eventEnvelope.eventId}`,
+      now: () => "2026-05-25T22:00:00.000Z",
+      createId: (prefix) => `${prefix}-${evaluationCount}`,
+    });
+
+    const result = await processor.ingest({
+      envelope: createSupervisorSignalEnvelope(),
+    });
+
+    equal(result.status, EventIngestionOutcomeStatus.Processed);
+    equal(evaluationCount, 1);
+    equal(recordedOutcome?.result, EventIngestionOutcomeStatus.Processed);
+    equal(recordedOutcome?.receipt.firstSeenAt, "2026-05-25T21:59:00.000Z");
+    equal(recordedOutcome?.reactionPlans.length, 1);
   });
 });
 
