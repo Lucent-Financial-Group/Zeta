@@ -1,10 +1,3 @@
----
-date: 2026-05-22
-persona: lior
-platform: gemini
-type: conversation
----
-
 # 2026-05-22 — Family Grammar Discriminator and Developmental Calibration
 
 ## Context
