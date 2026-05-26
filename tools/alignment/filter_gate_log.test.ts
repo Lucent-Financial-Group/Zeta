@@ -304,6 +304,7 @@ describe("main() CLI", () => {
   test("returns 0 for valid --record (writes to tempdir, not production log)", () => {
     const tmpDir = mkdtempSync(join(tmpdir(), "filter-gate-test-"));
     const tmpLog = join(tmpDir, "filter-gate-log.jsonl");
+    const priorOverride = process.env.FILTER_GATE_LOG_PATH;
     process.env.FILTER_GATE_LOG_PATH = tmpLog;
     try {
       const code = main([
@@ -319,7 +320,11 @@ describe("main() CLI", () => {
       expect(entries.length).toBe(1);
       expect(entries[0]?.candidate).toBe("skill:test-entry");
     } finally {
-      delete process.env.FILTER_GATE_LOG_PATH;
+      if (priorOverride === undefined) {
+        delete process.env.FILTER_GATE_LOG_PATH;
+      } else {
+        process.env.FILTER_GATE_LOG_PATH = priorOverride;
+      }
       rmSync(tmpDir, { recursive: true, force: true });
     }
   });
