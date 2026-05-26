@@ -65,8 +65,11 @@ V0 must enforce:
 - every credential expansion request goes through security review;
 - every runtime callback is idempotent;
 - every denial returns a structured reason agents can learn from;
-- durable denial observation/audit is added before real API, MCP,
-  Hermes, Temporal, or Dapr entrypoints are exposed.
+- every denied command is observed through a policy decision observation
+  port without creating successful business state;
+- durable policy decision observation storage and UI/agent projection are
+  available before real API, MCP, Hermes, Temporal, or Dapr entrypoints
+  are exposed.
 
 ## MCP Preflight
 
@@ -147,6 +150,24 @@ full-ai-cluster/k8s/applications/agentic-organization/
   CiliumNetworkPolicy
   ServiceAccount/RBAC
 ```
+
+The TypeScript worker host now has the first durable composition seam
+that maps this cluster contract into package ports:
+
+```text
+ExternalSecret / Secret
+  -> COCKROACH_DATABASE_URL + worker/NATS batch env
+  -> apps/workers config parser
+  -> process-provided Cockroach client
+  -> state-cockroach generic SQL executor
+  -> Cockroach durable adapter factory
+  -> worker outbox + event-ingestion ports
+  -> Organization worker host
+```
+
+The concrete Cockroach client and pool are still process concerns. The
+application, runtime, policy, messaging, and worker packages see only
+generic Organization ports.
 
 The first docs-only and app-code PRs do not need deployment YAML. When
 deployment is added, it should follow the existing App-of-Apps model:

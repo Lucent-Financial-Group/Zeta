@@ -38,7 +38,16 @@ on:
       - 'full-ai-cluster/flake.nix'
       - 'full-ai-cluster/flake.lock'
       - 'full-ai-cluster/usb-nixos-installer/**'
-      - 'full-ai-cluster/nixos/modules/disko-shapes/**'
+      # Broadened 2026-05-26: was nixos/modules/disko-shapes/** only;
+      # empirically missed rebuilds when iter-5.2 (#5103) + iter-5.2.2
+      # (#5113) added new NixOS modules (injected-hostname.nix +
+      # login-banner.nix). The maintainer 2026-05-26 downloaded an
+      # older CI ISO that didn't have iter-5.2 substrate because the
+      # filter missed the module changes. Broaden to all nixos/** +
+      # tools/** under full-ai-cluster + the source-substrate audit tool.
+      - 'full-ai-cluster/nixos/**'
+      - 'full-ai-cluster/tools/**'
+      - 'tools/ci/audit-installer-substrate.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   push:
     branches: [main]
@@ -46,7 +55,9 @@ on:
       - 'full-ai-cluster/flake.nix'
       - 'full-ai-cluster/flake.lock'
       - 'full-ai-cluster/usb-nixos-installer/**'
-      - 'full-ai-cluster/nixos/modules/disko-shapes/**'
+      - 'full-ai-cluster/nixos/**'
+      - 'full-ai-cluster/tools/**'
+      - 'tools/ci/audit-installer-substrate.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   workflow_dispatch:
 
@@ -68,6 +79,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Preflight: source-substrate audit BEFORE the ~15-min Nix build.
+      # Catches the class of bug the maintainer 2026-05-26 surfaced
+      # (dropped iter-N modules silently producing stale ISO). Runs
+      # in ~1s; fails fast if the substrate is incomplete.
+      - name: Install Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Audit installer substrate (source-level)
+        run: bun tools/ci/audit-installer-substrate.ts
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
 
@@ -85,6 +106,53 @@ jobs:
       - name: Build installer ISO
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs
+
+      - name: Audit installer ISO content (cascade #4 — post-build floor)
+        # Inspects the BUILT ISO via 7z list + asserts expected top-
+        # level files (nix-store.squashfs, kernel, initrd, grub.cfg).
+        # Complements the source-substrate audit preflight (cascade #1
+        # at the start of this workflow) by catching the bug class
+        # where the ISO build silently drops a file present in source.
+        # 7z is available by default on ubuntu-24.04 runners.
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          # Mirror the explicit 0/1+ candidate count check from the
+          # later "Locate ISO + capture metadata" step (fix-fwd
+          # Copilot finding on #5119). Under `set -u`, unbound
+          # iso_candidates[0] would give an opaque "unbound variable"
+          # error; explicit count check gives a clear workflow error.
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Audit step: Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_abs="$(pwd)/${iso_candidates[0]}"
+          cd ..
+          # 7z source-of-truth:
+          # (a) tools/setup/manifests/{brew,apt} declare p7zip /
+          #     p7zip-full as the canonical dependency for ALL
+          #     install.sh consumers per GOVERNANCE.md §24 (dev
+          #     laptops, CI runners, devcontainer images).
+          # (b) This SPECIFIC workflow does NOT invoke install.sh
+          #     today; it relies on ubuntu-24.04 runner-image's
+          #     default 7z pre-install (verified present on the
+          #     standard image) as a shortcut so we skip the
+          #     install.sh cost per workflow run.
+          # If we drop the ubuntu-24.04 pin OR the runner-image
+          # pre-install, the apt manifest already declares the dep
+          # — either invoke install.sh here OR add an explicit
+          # `sudo apt-get update && sudo apt-get install -y
+          # p7zip-full` step before this line (the `-y` matters in
+          # CI: without it apt-get prompts interactively and the
+          # workflow run hangs).
+          bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
 
       - name: Locate ISO + capture metadata
         id: iso

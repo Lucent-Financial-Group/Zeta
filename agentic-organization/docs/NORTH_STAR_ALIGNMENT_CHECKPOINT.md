@@ -165,11 +165,22 @@ authorization request to a generic `HatAuthorityPort`; active authority
 allows the command, while expired, missing, revoked, scope-denied, or
 tool-denied authority returns a typed `policy_denied` result.
 
-The remaining gaps are richer authority semantics and durable
-visibility: tests still need unauthorized source hats, invalid target
-supervisors, missing assignments, and all denial reasons, and the system
-still needs a denial-observation/audit path plus allowed policy-decision
-projection into command effects and event envelopes.
+The pipeline now records denied decisions through a generic policy
+decision observation port, rejects cleanly if that observation fails, and
+projects allowed policy decisions onto audit and outbox effects before
+command persistence. Denied observations now have a generic durable
+store/reader contract, a first Cockroach implementation, and a
+canonical-hash conflict guard so contradictory duplicate evidence is not
+hidden as replay. The UI/agent-readable visibility projection marks
+policy denials as weak points without pretending denied commands changed
+business state.
+
+The remaining gaps are richer authority semantics and cluster-backed
+integration proof: tests still need unauthorized source hats, invalid
+target supervisors, and missing assignments. The system now has a
+durable worker composition seam below `apps/workers`, but it still needs
+a real Cockroach-backed integration run and concrete process client
+construction for Cockroach, NATS, and telemetry.
 
 ### Command Surface Closure
 
