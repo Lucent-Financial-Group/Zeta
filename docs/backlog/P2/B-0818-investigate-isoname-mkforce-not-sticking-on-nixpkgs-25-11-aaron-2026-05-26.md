@@ -16,7 +16,7 @@ tags: [nixos, iso-image, 25-11-regression, substrate-engineering, fix-fwd-of-fix
 
 ## Problem
 
-`full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix` line 284 sets:
+`full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix` line 290 (within the `isoImage` block at line 289) sets:
 
 ```nix
 isoImage = {
@@ -86,7 +86,7 @@ Re-establish `zeta-installer-<release>.iso` as the produced ISO name on 25.11. O
 
 Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
-- `grep -rn "isoName\|image.baseName" full-ai-cluster/` → only the line-284 reference; no other override site
+- `grep -rnE 'isoName|image\.baseName' full-ai-cluster/` (or equivalent `rg "isoName|image\\.baseName" full-ai-cluster/`; `-E` matters for BSD/macOS grep portability — bare `\|` alternation is GNU-only) → only the line-290 reference; no other override site
 - `gh pr list --state all --search "B-0818"` → no in-flight collision
 - `gh pr list --state all --search "isoName"` → no prior investigation row
 - ID B-0818 next-free per `git ls-tree origin/main` (highest = B-0817 from #5221)
