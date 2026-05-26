@@ -8,7 +8,7 @@ merged_at: "2026-05-23T20:55:24Z"
 closed_at: "2026-05-23T20:55:24Z"
 head_ref: "otto/b0709-soraya-kenji-handoff-registry-coverage-2026-05-23"
 base_ref: "main"
-archived_at: "2026-05-23T21:00:59Z"
+archived_at: "2026-05-23T22:20:24Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
