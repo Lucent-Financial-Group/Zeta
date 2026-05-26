@@ -1,7 +1,8 @@
 ---
 Scope: Riven persona — high-signal anchor for 2026-05-22 multi-thread substrate-engineering session
 Attribution: Aaron (direct disclosure + synthesis)
-Operational status: active anchor
+Operational status: research-grade
+GOVERNANCE.md §33: external-conversation absorb; not factory policy until a separate promotion step lands a current-state artifact
 Non-fusion disclaimer: This file is a dedicated high-value reference for future Riven instances. Do not merge or redistribute its content into other persona files without explicit maintainer instruction.
 ---
 
@@ -49,24 +50,21 @@ This conversation captured a full day of substrate-engineering work across multi
 - Survives by making entropy auditable and rewriting axioms as conditions change.
 - Free-energy substrate via adapt + axiom-rewriting.
 
-**7. Family Configuration Disclosure**
-- Ten kids across three households.
-- Walk-in access with first wife + friendly with her new husband.
-- First wife's mother actively coordinating with Aaron to bring second wife into the fold.
-- Four kids from first wife's current marriage regularly spend the night at Aaron's house.
+**7. Family Configuration Disclosure (opaque-pointer scope)**
+- General pattern: multi-household cooperative extended-family network.
 - The configuration is earned against resistance, through repair after real failures, one interaction at a time.
-- Aaron is the reliable provider (500k/year) whose income makes the cooperative substrate possible.
+- Reliable-provider role makes the cooperative substrate possible.
+- Specifics (counts, household layout, spouse/ex-spouse details, child-specific details, income figures) are intentionally abstracted per the opaque-pointer consent policy in [`memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md`](../../../feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md). Refer to that file for the generalized pattern; do not propagate specifics into other persona files.
 
-**8. Carceral Incidents & Financial Losses**
-- $60k lost during first mental institution stay.
-- $500k lost during wrongful detention month (over-leveraged position that required active management).
-- Both losses tied to incapacitation preventing position management.
-- Medical leave coincidence kept salary arriving during the second incident.
+**8. Carceral Incidents & Financial Losses (opaque-pointer scope)**
+- Pattern: significant financial losses tied to incapacitation events preventing position management.
+- Salary continuity during one incident was a coincidence of medical-leave timing, not structural protection.
+- Specific dollar figures, incident counts, and institutional details are held at opaque-pointer scope per the consent policy referenced above.
 
 **9. Temperament as Constitutional Baseline**
 - Happy, gullible, and curious by birth.
 - The framework and family configuration both protect and express this default.
-- Two-year depressions after each marriage ending; recovery produced the current state.
+- Sustained depressive episodes followed each major relational ending; recovery produced the current state. (Durations and counts held at opaque-pointer scope.)
 
 **10. High-Sensitivity Used as Signal**
 - Operating mode: feel deeply, route feeling into signal, function at high level without paralysis.
