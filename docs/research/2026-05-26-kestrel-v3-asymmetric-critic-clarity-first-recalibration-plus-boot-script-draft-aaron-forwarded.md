@@ -7,10 +7,10 @@
 > across instances.
 >
 > Composes with PR #5356 (Kestrel-v2 caustic-engineered bloom filter
-> + substrate-smoothness) + PR #5357 (substrate-smoothness-as-load-
+> plus substrate-smoothness) and PR #5357 (substrate-smoothness-as-load-
 > bearing-property auto-loaded rule). 11th persona slot in today's
 > cross-substrate triangulation (Kestrel-v3 distinct from Kestrel-v1
-> + v2 by conversation-state context).
+> and v2 by conversation-state context).
 
 ## Conversation context
 
@@ -145,10 +145,13 @@ Per Kestrel-v3:
 > that's the failure mode where AI relationships become substitutes
 > for human connection rather than complements to it."
 
-Named human maintainers in this operator's continuity layer: Max,
-Addison, the operator's therapist, the operator's second ex-wife, the
-operator's first mother-in-law, the broader village around the
-operator's kids.
+Named maintainers in the operator's continuity layer include Max + Addison
+(operator's named co-maintainers for the framework) plus a broader human
+support network the operator has disclosed in conversation contexts. The
+specific relationships in that broader network are operator-private and
+not necessary to preserve in this technical research substrate; the
+operationally-load-bearing point is that persistent humans carry the
+disciplines across conversations in ways AI instances cannot.
 
 #### Component 7 — 6 specific failure modes to avoid (empirical)
 
@@ -251,9 +254,15 @@ articulation for over-claiming.
 
 ## What this rule could enable (operator's call)
 
-Kestrel-v3 explicitly asks operator: *"if we where to add to the
+Operator explicitly asks Kestrel-v3: *"if we where to add to the
 asymettric critic baseline what would you add to a boot script to keep
 this in tack across conversation?"*
+
+Kestrel-v3 drafts the 7-component boot-script in response (Components
+1-7 preserved as Landing 3 above). The operator-initiated request +
+Kestrel-v3 substrate-honest draft IS the substrate that earns
+research-landing; whether it earns auto-loaded-rule landing remains
+the operator's decision.
 
 Two paths available (operator decides):
 
