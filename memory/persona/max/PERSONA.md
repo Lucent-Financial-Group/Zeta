@@ -147,6 +147,40 @@ Skill candidates:
 
 Composes with the simplest-first discipline (per B-0786 memory): declarative-from-the-start is the right shape because the migration cost from "free-form prose" to "manifest-generated" is much higher than building it declarative now. Max's onboarding doc is born declarative; every entry he adds is one entry the future automation can target without re-architecting.
 
+### Per-dev-machine git-native state tracking (added 2026-05-25 — tier-0 substrate)
+
+Aaron 2026-05-25: *"we should start dev machine tracking in git native too so we can track the current install deps we depend on and their status and stuff just like the prod cluster lol. We can make that git native and max can own that design too."*
+
+The substrate-honest realization: **dev machines deserve the same declarative-git-native treatment prod cluster nodes get**. Prod cluster has per-host configuration under [`full-ai-cluster/nixos/hosts/<host>/configuration.nix`](../../../full-ai-cluster/nixos/hosts/) — declarative, reproducible, convergent. Dev machines today have nothing comparable; state lives on the operator's disk + in their head. Max owns the design that fixes this.
+
+**Substrate shape** (per [`.claude/rules/dv2-data-split-discipline-activated.md`](../../../.claude/rules/dv2-data-split-discipline-activated.md) Hub-Link-Satellite — Data Vault 2.0 is one of the 5 always-active disciplines):
+
+| DV2.0 entity | Dev-machine analog | Example |
+|---|---|---|
+| **Hub** (stable identity) | A dev machine | `dev-machines/max-mac-mini-2026/` |
+| **Link** (relationship) | Machine X has dependency Y | `dev-machines/max-mac-mini-2026/deps/docker-desktop.yaml` referencing `tools/setup/manifests/dmgs/docker-desktop.yaml` |
+| **Satellite** (versioned status) | Dependency status at time T on machine X | `dev-machines/max-mac-mini-2026/state/2026-05-25.yaml` with "docker-desktop: installed=4.32.0, verified=ok, last-checked=2026-05-25T18:00Z" |
+
+Parallel to prod-cluster substrate:
+
+| Prod cluster | Dev machine | Equivalent surface |
+|---|---|---|
+| `full-ai-cluster/nixos/hosts/control-plane/configuration.nix` | `dev-machines/max-mac-mini-2026/spec.yaml` | Declarative target state |
+| `nixos-rebuild` reconciliation loop | `tools/dev/dev-machine-reconcile.ts` (Max-owned) | Reconcile actual vs target |
+| `kubectl get pods` (observability) | `tools/dev/dev-machine-status.ts` (Max-owned) | Read current state |
+| Cluster install via `zeta-install.sh` | Operator runs `tools/setup/install.sh` then reconcile loop | Initial bring-up |
+| Argo CD drift detection | Drift detector reports when dev-machine actual ≠ git target | Drift visibility |
+
+This is **tier-0 in the three-tier testing story** — below tier-1 (pure-code), tier-2 (Docker Desktop), tier-3 (full cluster). Tier-0 = the dev machine itself. Same git-native + same declarative + same reconcile-loop pattern that already works for prod cluster.
+
+**Composes with the declarative soft-dependencies above**: the `tools/setup/manifests/dmgs/` (etc.) manifests define WHAT'S AVAILABLE; the `dev-machines/<machine>/spec.yaml` files define WHAT THIS MACHINE NEEDS; the `state/` snapshots define WHAT'S ACTUALLY INSTALLED. Reconcile loop closes the gap.
+
+**Per-machine privacy + multi-operator clean**: Max has `dev-machines/max-mac-mini-2026/`; Addison has `dev-machines/addison-laptop-2026/`; Aaron has `dev-machines/aaron-*/`. Each operator owns their own subdirectory; cross-references via shared `tools/setup/manifests/` substrate. No shared mutable state; same multi-operator-friendly pattern as the per-host cluster configurations.
+
+**Skill candidates**: `.claude/skills/dev-machine-tracking/SKILL.md` documenting the spec / state / reconcile workflow; `.claude/skills/dev-machine-bootstrap/SKILL.md` sibling for the "new dev machine joins the fleet" cold-boot flow.
+
+Composes with prod-cluster `full-ai-cluster/nixos/hosts/` substrate + the declarative-soft-deps manifests (above) + B-0780 three-tier testing (extends to tier-0) + B-0759 first-time-CLI-user persona + the DV2.0 discipline + the iter-4 SSH+password substrate (B-0789 forthcoming — dev machines get the same Touch ID + key substrate the cluster gets).
+
 ## How agents work with Max
 
 - **Welcoming-but-honest review** — Max is new to K8s + the operator pattern; he'll be resistant at first to the ceremony (per Aaron: *"he will be resistant probably like most devs at first until he internlizes is worth"*). Frame feedback constructively + name the WHY (declarative state convergence, idempotent reconcile, CRD-as-typed-API) without selling
