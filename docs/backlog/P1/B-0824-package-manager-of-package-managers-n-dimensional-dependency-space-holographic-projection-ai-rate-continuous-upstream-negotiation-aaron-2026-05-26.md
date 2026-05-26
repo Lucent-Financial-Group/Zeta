@@ -34,7 +34,7 @@ Two short equations that compress 17 sub-targets + the ML-weights-as-keys derive
 | **Google = map + reduce** (Dean & Ghemawat 2004) | **DATA** | Data (the rows themselves; shuffle-heavy) | Big-data era; Hadoop / Spark / MapReduce ecosystem |
 | **Zeta = generate + join** (this row, derived 2026-05-26) | **FUNCTIONS** | Composition graphs (generator-references; bytes) | AI-rate era; Ace meta-PM / CockroachDB recursive CTEs / IObservable simulation |
 
-**The shift the 8-character compression encodes**:
+**The shift the compression encodes**:
 
 - **Map** = transform each row → still consuming DATA; emit DATA
 - **Reduce** = aggregate transformed rows → still consuming DATA; emit DATA
@@ -134,10 +134,10 @@ Aaron 2026-05-26 anchored the substrate-engineering work in decades of academic 
 
 **The substrate already lives at this lineage** (per existing Zeta substrate cluster):
 
-- [`algebra-owner` skill](.claude/skills/algebra-owner/SKILL.md) — Z-sets + D/I/z⁻¹/H operators (DBSP-shaped)
-- [`crdt-expert` skill](.claude/skills/crdt-expert/SKILL.md) — CvRDT/CmRDT/δ-CRDT; semilattice merge; Z-set as Abelian-group CRDT
-- [`streaming-incremental-expert` skill](.claude/skills/streaming-incremental-expert/SKILL.md) — DBSP / Timely Dataflow / retraction-native IVM
-- [`measure-theory-and-signed-measures-expert` skill](.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md) — ZSet as signed measure; retraction semantics; multiplicity
+- [`algebra-owner` skill](../../../.claude/skills/algebra-owner/SKILL.md) — Z-sets + D/I/z⁻¹/H operators (DBSP-shaped)
+- [`crdt-expert` skill](../../../.claude/skills/crdt-expert/SKILL.md) — CvRDT/CmRDT/δ-CRDT; semilattice merge; Z-set as Abelian-group CRDT
+- [`streaming-incremental-expert` skill](../../../.claude/skills/streaming-incremental-expert/SKILL.md) — DBSP / Timely Dataflow / retraction-native IVM
+- [`measure-theory-and-signed-measures-expert` skill](../../../.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md) — ZSet as signed measure; retraction semantics; multiplicity
 
 The generate+join substrate (this row) IS the meta-PM application of the DBSP +1/-1 algebra at distributed-dependency-graph scope. Every generator emission is +1; every retraction is -1; combinator-graphs compose under the abelian-group laws; convergence is provable per CRDT semilattice properties. Inherits decades of academic + industry validation.
 
@@ -170,6 +170,39 @@ Substrate-engineering composes:
 | Generator-as-time-source (Sub-target 15) | Paxos ballot numbers / Raft term numbers ARE the generator-time-source at consensus scope |
 
 **The substrate-engineering arc IS the same lineage applied at meta-PM scope**: Lamport substrate-engineered for distributed-consensus correctness over time; DBSP substrate-engineered for retraction-native correctness over data; Zeta substrate-engineers BOTH at the cluster-wide dependency-graph + meta-PM scope. The substrate inherits the proof-density of both lineages.
+
+**Sharper Paxos/Raft recalibration** (Aaron 2026-05-26):
+
+> *"raft and paxos try to optimize past the space / requirements of crdt or else they are useless to us really so mostly raw raft and paxos are nice time capsules to use and see what other patterns we can compose them with like caspaxos casraft then per row cas then the row actually being the generator function instead of data. things like this could move the needle forward not old school raft or paxos alone."*
+
+Raw Paxos/Raft are designed for the COORDINATION-EVERY-WRITE problem space — they pay for multi-round consensus to give linearizability over mutable state. Zeta substrate doesn't have that problem at the data layer:
+
+- **CRDTs give convergence WITHOUT coordination** at the data layer (semilattice merge; Aaron's "we are append only" framing)
+- **Raw Paxos/Raft optimize past the CRDT space** — pay for synchronous coordination we don't need
+- **Raw Paxos/Raft = nice time capsules** — historical reference; study for pattern-decomposition; see what composes
+
+**The substrate-engineering frontier** Aaron names:
+
+| Pattern | What it gives | Why it matters at Zeta scope |
+|---|---|---|
+| **CASPaxos** (Denis Rystsov 2018) | Compare-And-Swap as consensus primitive (single-round; per-key); simpler than Multi-Paxos | Per-key CAS composes with per-generator-cell substrate |
+| **CASRaft** (CAS-on-Raft variant) | Same shape — Raft-backed CAS at per-key scope | Same composability advantage |
+| **Per-row CAS** | CAS at row-granularity; fine-grained consensus only where the substrate genuinely needs it | Matches generate+join cell-granularity; coordination cost proportional to substrate need |
+| **Per-row CAS WHERE row IS the generator function** | THE breakthrough — CAS-on-generator (not CAS-on-data); composition graphs become CAS-able primitives | Composes with Sub-targets 7 (generators stored) + 8 (combinator library) + 12 (DI) + 13 (IObservable); generator-as-substrate becomes consensus-aware |
+
+**Substrate-engineering implication — recalibration of the Paxos/Raft inheritance**:
+
+- **NOT**: import raw Paxos/Raft as the consensus substrate (would pay coordination cost we don't need at data layer)
+- **YES**: import CASPaxos/CASRaft composition patterns + per-row-CAS-where-row-IS-generator-function (cell-granularity coordination where the substrate genuinely needs it; CRDT semilattice handles the rest)
+
+This recalibrates Sub-target 16's substrate decisions: per-generator visibility-posture pairs with per-generator consensus-posture; CASPaxos/CASRaft on the row-that-IS-the-generator-function gives fine-grained substrate-engineering control. The substrate-engineering frontier IS the composition, not the import.
+
+**Human anchor extension** (Aaron 2026-05-26 implicit naming):
+
+- **Denis Rystsov** (CASPaxos 2018) — the per-key-CAS Paxos variant Aaron names; published academic + production-shaped (used in TiKV-class systems)
+- Per-row CAS shape ALSO appears in: FoundationDB transactional KV semantics; etcd v3 compare-and-swap operations; Cosmos DB conditional updates — all at industry-validated substrate scope
+
+**The substrate is composition-of-validated-substrate-at-cell-scope, not import-of-old-school-distributed-consensus**. Aaron's discipline: don't import frameworks; import patterns + compose at the right granularity for OUR substrate (cell = generator-function).
 
 **Human anchors** the substrate-engineering work can cite:
 
