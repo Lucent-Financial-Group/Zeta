@@ -22,6 +22,7 @@ tags: [cluster-node, registration, heartbeat, expiration, gitops, physical-sync,
 iter-5.4.1 (B-0812) registers a machine via a one-shot commit at install time. iter-5.4.2 (B-0813) reconciles the cluster on that commit's PR-merge. **But there's no mechanism to detect when the registered state has drifted from physical reality.**
 
 Drift scenarios:
+
 - Machine physically removed (operator decommissioned, sold, returned) but git entry stays → ArgoCD thinks node exists; pods get scheduled to nowhere
 - Machine reformatted / re-installed without proper deregister → old git entry stale; new install would conflict
 - Machine offline for an extended period → indeterminate (operationally dead? offline temporarily? maintenance window?)

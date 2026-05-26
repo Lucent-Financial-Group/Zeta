@@ -21,11 +21,13 @@ tags: [cluster-tooling, deregister, gitops, gh-auth, ts-rule-0-compliant, iter-5
 iter-5.4.1 (B-0812) registers a machine into git at `maintainers/<operator>/cluster-nodes/<hostname>/`. There is no companion tool to REMOVE a machine from that tree. The maintainer 2026-05-26: *"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"*.
 
 Without a deregister tool, removing a machine requires:
+
 - Manual `git rm -r maintainers/<op>/cluster-nodes/<host>/`
 - Manual commit + push (operator's gh auth)
 - Manual PR open + merge
 
 Each manual step is a friction point + footgun (wrong path = wrong node deleted). Bundling into a TS tool gives:
+
 - Operator-name auto-resolved via `gh api /user --jq .login` (matches registration flow)
 - Existence verification against `origin/main` (no false-positive "deleted nothing" + no oops-wrong-host)
 - Safe-default: opens PR (default) so ArgoCD doesn't reconcile half-baked state; `--push-direct` flag for fast-path
