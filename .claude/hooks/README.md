@@ -32,6 +32,7 @@ These hooks convert recurring failure-mode disciplines from language-layer subst
 | `pre-action-bulk-resolve.ts` | `mcp__*` | planned | B-0033.7 |
 | `pre-commit-heartbeat-repeat.ts` | `Bash` | planned | B-0033.8 |
 | `pre-commit-table-cellcount.ts` | `Bash` | planned | B-0033.9 |
+| `session-start-cron-verify.ts` | `SessionStart` | **wired** | catch 43 mitigation |
 
 Settings wiring pattern for a discipline hook (PreToolUse, Edit matcher):
 

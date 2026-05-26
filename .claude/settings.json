@@ -8,6 +8,10 @@
           {
             "type": "command",
             "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/verify-branch-pretooluse.ts"
+          },
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-md032-pretooluse.ts"
           }
         ]
       },
@@ -31,11 +35,24 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start-cron-verify.ts"
+          }
+        ]
+      }
     ]
   },
   "permissions": {
     "allow": [
       "Bash(bun *)",
+      "Bash(bun full-ai-cluster/tools/flash-usb.ts *)",
+      "Bash(bun full-ai-cluster/tools/zflash.ts *)",
+      "Bash(bun full-ai-cluster/tools/zflash-setup.ts *)",
       "Bash(dotnet build *)",
       "Bash(dotnet test *)",
       "Bash(dotnet restore *)",
@@ -65,6 +82,22 @@
       "Bash(z3 *)",
       "Bash(node *)",
       "Bash(mkdir *)",
+      "Bash(osascript *)",
+      "Bash(kill *)",
+      "Bash(pkill *)",
+      "Bash(open -a *)",
+      "Bash(brew install *)",
+      "Bash(brew install --cask *)",
+      "Bash(brew upgrade *)",
+      "Bash(brew list *)",
+      "Bash(brew --version)",
+      "Bash(nix *)",
+      "Bash(nix-env *)",
+      "Bash(nix-shell *)",
+      "Bash(nix-build *)",
+      "Bash(nix-store *)",
+      "Bash(nix-channel *)",
+      "Bash(darwin-rebuild *)",
       "Edit",
       "Write",
       "WebFetch",

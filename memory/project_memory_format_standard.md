@@ -215,6 +215,14 @@ Each entry in `MEMORY.md` follows the pattern:
 - The hook should be distinct enough to decide relevance
   without reading the file.
 
+**Heap-state-acceptable (B-0423):** a new memory file does **not**
+require a same-PR MEMORY.md paired-edit. Files without an index
+entry are in **heap** state — valid and accessible by direct path.
+`tools/memory/reindex-memory-md.ts` promotes heap files to the
+stack view on cadence (called from the autonomous-loop tick).
+Agents may run it manually:
+`bun tools/memory/reindex-memory-md.ts`
+
 ## 6 Validation smoke check
 
 Three existing files validated against this standard:
@@ -257,6 +265,29 @@ Three existing files validated against this standard:
   and descriptive. **PASS.**
 - Composes-with: References `reference_autodream_feature.md`
   in description. File exists. **PASS.**
+
+### 6.4 Heap-state validation (B-0423)
+
+Under the heap-state-acceptable model, a memory file does not
+require a MEMORY.md paired-edit. The reindexer
+(`tools/memory/reindex-memory-md.ts`) only skips files with **no
+frontmatter block at all**. Files with frontmatter but missing
+individual fields fall back to safe defaults rather than being
+skipped:
+
+| Field | Behavior when missing | B-0335 enforcement |
+|---|---|---|
+| `name:` | Falls back to filename (without `.md`) | Error — enforced |
+| `description:` | Falls back to `"(no description)"` | Error — enforced |
+| `type:` | Not used by reindexer; B-0335 `--fix` auto-infers from filename prefix | Error — enforced |
+| `created:` | Falls back to date extracted from filename, or `"0000-00-00"` | Not enforced by B-0335 |
+
+Best practice: include all four fields so the index entry is
+useful. Files with missing `name`, `description`, or `type`
+will be flagged as errors by B-0335 validation
+(`tools/hygiene/validate-memory-schema.ts --enforce`). The
+`created` field is not yet mechanically enforced but strongly
+recommended for correct newest-first sort order.
 
 ## 7 Scope and boundaries
 

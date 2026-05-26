@@ -87,6 +87,43 @@ trajectories drift.
 | #10 Mirror sync | Aaron + Addison + Max | skill file | — |
 | #11 Well-definitions | Aaron + Addison (keeper) | docs/WELL-DEFINITIONS.md | Reaqtor (reaqtive.net) |
 
+### #12: Background-loop productivity uplift (2026-05-12)
+
+**Aaron 2026-05-12:** "this should be a ongoing trajectory i believe"
+
+Origin: Catch 43 surfaced that when Otto's foreground cron is
+unarmed, background launchd services produce ~10-15% of orchestrated
+cadence and frequently go silent for multi-hour stretches.
+Architecture survived but didn't sustain. The redundancy is a
+survival floor, not a continuity guarantee.
+
+Trajectory aim: close the gap between orchestrated-rate and
+background-only-rate so that Aaron's failure modes (session
+crash, missed cron-arm, sleep window) have proportionally
+smaller cost.
+
+Sub-vectors to enhance over time:
+
+- **Tighter background tick loops** — Vera/Riven currently exit
+  cleanly and rely on launchd interval restarts; investigate
+  shorter restart cadence or in-process tick loops
+- **Cross-loop work-stealing** — when one loop is idle, others
+  can claim its queued work (BFT-style failover)
+- **Bus-driven coordination** — background loops post asks on
+  broadcast bus; other loops pick up; no orchestrator needed
+- **Kiro/Alexa exit-78 fix** — Alexa loop currently failing
+  (separate backlog) is reducing array size by one
+- **Cron-arm verification at session start** — the orchestrator
+  failure mode itself; rule exists but mechanical enforcement
+  weak (see catch 43)
+
+**Anchor:** B-0421 (Grok peer-call failure), catch 43 substrate
+landing, AGENTS.md trailer table for harness assignments
+
+**Status:** Ongoing. Not a single-shot fix. Every session adds
+incremental uplift. Measured via cadence-during-Aaron-sleep
+vs cadence-during-active-session ratio.
+
 ## The rule
 
 Each trajectory enhances as we go. Retractions are data.

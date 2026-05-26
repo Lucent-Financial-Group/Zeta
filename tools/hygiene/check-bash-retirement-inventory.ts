@@ -35,6 +35,8 @@ export interface InventoryReport {
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
 export const EXPECTED_RETAINED_BASH: readonly string[] = [
+  "tools/kiro/kiro-loop-wrapper.sh",
+  "tools/kiro/launchd/install.sh",
   "tools/setup/common/curl-fetch.sh",
   "tools/setup/common/dotnet-tools.sh",
   "tools/setup/common/elan.sh",

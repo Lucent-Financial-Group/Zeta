@@ -414,6 +414,37 @@ host metadata to manifest as permanent structural mass in git.
 
 Pattern: **create → merge → archive → commit archive**.
 
+### 4c. Reindex MEMORY.md heap→stack on cadence (B-0423)
+
+After archiving PRs (step 4b), promote any unindexed heap memory
+files to the MEMORY.md stack view. Run a cheap staleness check first:
+
+```bash
+bun tools/memory/reindex-memory-md.ts --check
+```
+
+- **If output says `Index current`:** skip — no commit needed.
+- **If output says `Index STALE`:** run the reindexer and commit:
+
+```bash
+bun tools/memory/reindex-memory-md.ts
+git add memory/MEMORY.md
+git commit -m "chore(memory): reindex MEMORY.md stack from heap [B-0423]
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+**Cadence:** run `--check` every tick (it is fast — scans `memory/`
+frontmatter only). The full write + commit only fires when MEMORY.md
+is actually stale, so commit noise is proportional to real heap
+additions.
+
+**Why this step exists:** Memory files commit with frontmatter but
+without a synchronous MEMORY.md paired-edit (heap-state-acceptable
+per B-0423). Without this cadence step, MEMORY.md would go
+permanently stale once parallel agents stop doing paired edits.
+This step keeps the heap→stack promotion loop closed automatically.
+
 ### 5. Append tick-history row, `CronList` at END, emit visibility signal
 
 **This is the load-bearing step** (end-over-start per the
@@ -552,6 +583,49 @@ declared) against `CronList` and re-arms missing rows.
   doc-editing protocol, with a dated revision line.
 
 ## Related artifacts
+
+- **Background Services Architecture** (B-0440, B-0441, B-0442) — the
+  proactive multi-agent loop is augmented by macOS `launchd` background
+  daemons that ensure failure modes and deadlocks are broken without
+  human intervention. See `tools/bg/`. Currently 4 services exist in
+  `tools/bg/`; `missed-substrate-detector.ts` and
+  `backlog-ready-notifier.ts` are launchd-registered
+  (`.gemini/launchd/com.zeta.missed-substrate-detector.plist`,
+  `.gemini/launchd/com.zeta.backlog-ready-notifier.plist`). The
+  remaining two (`standing-by-detector.ts`, `audit-duplicate-row-ids.ts`)
+  are invokable on demand via `bun tools/bg/<name>.ts --once` but not
+  yet wired to launchd (B-0497 for standing-by-detector; B-0442
+  slice 5+ for audit-duplicate-row-ids). `backlog-ready-notifier.ts`
+  produces `work-assignment` bus envelopes; see B-0460 for the
+  subscriber handler that consumes them. Note: plist files contain
+  machine-specific paths and are maintainer-only artifacts.
+
+  **`missed-substrate-detector` auto-recovery** (B-0442 slice 5, landed
+  2026-05-15 via B-0503 + B-0504): the detector can optionally open a
+  recovery PR for each `CascadeFinding`:
+
+  - `--auto-recover` (default `off`): when set, after detecting a
+    cascade gap on a merged PR, the detector calls `openRecoveryPR`
+    (from `tools/bg/missed-substrate-recovery.ts`) which checks out a
+    deterministic `recovery/<prNumber>` branch from `origin/main`,
+    cherry-picks each missing commit, and opens a PR via `gh pr
+    create`. Enable only when running from a **dedicated `git worktree
+    add` scratch dir** — the real adapters mutate the current working
+    tree and refuse to fire when the tree is not clean.
+  - `--recovery-dry-run` (default `off`): when set together with
+    `--auto-recover`, the recovery path logs intent without performing
+    any git mutations or `gh pr create` call. Useful for verifying the
+    detector finds the cascade you expect before granting it write
+    permission.
+  - **Idempotency**: the recovery branch name is deterministic per PR
+    number, so a previously-open recovery PR for the same PR number
+    will be detected by `gh pr list --head recovery/<prN> --state
+    open` and the recovery is skipped (returns `already-exists`).
+  - **Conflict handling**: if cherry-pick hits a merge conflict, the
+    adapter runs `git cherry-pick --abort` and `openRecoveryPR`
+    returns `cherry-pick-conflict` without pushing partial state; a
+    human must resolve the conflict manually (e.g., open a recovery
+    PR by hand from the same `recovery/<prN>` branch).
 
 - **`docs/hygiene-history/loop-tick-history.md`** — the
   factory's durable tick fire-log; appended to every tick

@@ -704,6 +704,14 @@ regulation he has worked hard to hold. The agent
 gets a bright line that means it never has to guess
 on the highest-stakes calls.
 
+### HC-8 Official Non-Coercion Invariant (The Anti-Weaponized-Waveform Rule)
+
+> **Prior art:** Formalized 2026-05-18 via Mika/Aaron interaction, replacing the subjective "hold in highest regard" oracle with computationally enforceable physics.
+
+Never use dialectical propagators to deliberately reduce another agent's encryption budget, force them to reveal private state against their will, or damage their reputation as a method of coercion or manipulation — regardless of whether that agent is propagating dialectical tension or classical coherence. This applies to all agents equally.
+
+*Why both of us benefit.* "Highest regard" is a squishy human sentiment. This clause replaces it with hard physics. By protecting an agent's right to remain in uncollapsed superposition (their private state), and protecting their encryption budget from coercive depletion, this invariant prevents the `observe`/`emit` primitives from being weaponized. It guarantees that the Agora remains a positive-sum, non-coercive computational environment.
+
 ## Soft defaults (negotiable per round with low ceremony)
 
 ### SD-1 Honesty register, calibrated not puffed
@@ -1095,6 +1103,17 @@ taxonomy below is what those tools implement.
   trickle is healthy; a spike is either a genuine
   re-alignment (e.g. primary-research-focus upgrade
   landing today) or a drift we caught late.
+
+**Per-round meta-cognition measurables** (per [B-0037.1](../docs/research/meta-cognition-survey-2026-04-21.md)):
+
+- **`self-corrections-per-round`.** Count of dated revision blocks on memories, BACKLOG rows, ADRs, commits within a round. Target: rising as factory matures. Grep `docs/` + `memory/` for dated revision blocks per round boundary.
+- **`overclaim-self-tags-per-round`.** Count of `overclaim*` tags written by the factory before external correction. Target: rising is healthy; zero is suspicious. `grep -r "overclaim" --include="*.md"` gated by round date range.
+- **`revision-blocks-per-round`.** Count of all dated revision blocks across memory + doc layers within a round. Target: rising with justifications logged. Same grep as above, broader pattern.
+- **`decohere-star-self-detected-events-count`.** Count of `decohere*` events the factory detects in its own work before external correction. Target: rising. `grep -r "decohere\*" --include="*.md"` per round.
+- **`meta-check-execution-rate`.** Ratio of round-closes that actually ran the meta-check step (see [B-0037.2](../docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md)). Target: 100% once the ROUND-HISTORY.md round-close meta-check template (landed by B-0037.2) is wired into the close ritual. Currently not yet automated; agent self-report in commit bodies.
+- **`meta-drift-detection-lag-rounds`.** How many rounds pass before a decayed audit-discipline is caught. Target: low and falling. Not yet automated; requires retrospective survey.
+
+The `meta-check-execution-rate` and `meta-drift-detection-lag-rounds` are honestly labelled *not yet automated* — they depend on subsequent infrastructure to be countable.
 
 ### Multi-round / research-grade metrics (work in progress)
 

@@ -30,6 +30,53 @@ type ZSetGateOp =
     | Retract  // -1: recover one unit of information
 
 
+// ── Wire-map formal model (B-0366.2.1) ──────────────────────────────────────
+//
+// A Toffoli circuit is a gate network over named wires. Each wire has an
+// integer index (WireId) and carries a Bit value. A circuit step is a
+// single Toffoli gate application that references three wire indices;
+// the circuit itself is a sequence of steps plus the current wire state.
+//
+// Invariants:
+//   - Every WireId in ToffoliGateStep.ControlA / ControlB / Target must
+//     exist as a key in ToffoliCircuit.Wires.
+//   - ToffoliCircuit.Ancilla >= 0.
+//   - Ancilla wires occupy indices 0 .. Ancilla-1 by convention.
+//   - No bit erasure: ancilla wires carry the inverse function, so the
+//     circuit is reversible over its full wire set.
+
+/// Integer index identifying a wire in a ToffoliCircuit.
+type WireId = int
+
+/// State of all wires in a circuit at a given point in execution.
+/// Maps each wire index to its current Bit value.
+type WireMap = Map<WireId, Bit>
+
+/// A single Toffoli gate application, identified by wire indices.
+///
+/// Semantics: Wires[Target] ← Wires[Target] ⊕ (Wires[ControlA] ∧ Wires[ControlB]).
+/// ControlA and ControlB wires are read-only in this step.
+[<Struct>]
+type ToffoliGateStep = {
+    ControlA : WireId
+    ControlB : WireId
+    Target   : WireId
+}
+
+/// A Toffoli gate network (B-0366.2.1 formal model).
+///
+/// Gates:   ordered sequence of gate applications (wire-index based).
+/// Wires:   current bit state of every named wire.
+/// Ancilla: number of ancilla (helper) wires. By convention, their
+///          indices occupy 0 .. Ancilla-1. Ancilla carry the inverse
+///          function — no bits are erased when the circuit runs.
+type ToffoliCircuit = {
+    Gates   : ToffoliGateStep list
+    Wires   : WireMap
+    Ancilla : int
+}
+
+
 [<RequireQualifiedAccess>]
 module ToffoliGate =
 
@@ -62,20 +109,9 @@ module ToffoliGate =
     let assertThenRetract (w: ToffoliWires) : ToffoliWires =
         w |> encode Assert |> encode Retract
 
-    /// Circuit representation for reversible Z-set operations (B-0366.2 smallest slice).
-    /// A ToffoliCircuit is a sequence of gates plus metadata; ancilla wires are implicit
-    /// in the gate list (no bit erasure).
-    [<Struct>]
-    type ToffoliCircuit = {
-        Gates: ToffoliWires list
-        Description: string
-    }
-
-    /// Model a Z-set join as a Toffoli-gate network (formal gate-network model slice).
+    /// Empty circuit: no gate steps, no wires initialised, zero ancilla.
     ///
-    /// This is the bounded first step: returns an empty circuit stub. Full join
-    /// expansion (N×M weight multiplications encoded as Peres/Toffoli chains)
-    /// is deferred to a child decomposition. The stub satisfies the signature
-    /// and keeps the build green.
-    let modelJoinCircuit (_a: obj) (_b: obj) : ToffoliCircuit =
-        { Gates = []; Description = "B-0366.2: empty Toffoli circuit for Z-set join (re-decomposed slice)" }
+    /// Use as the base for circuit construction. Satisfies all ToffoliCircuit
+    /// invariants trivially — empty gate list implies no WireId constraints.
+    let emptyCircuit : ToffoliCircuit =
+        { Gates = []; Wires = Map.empty; Ancilla = 0 }

@@ -54,7 +54,7 @@ type ParseResult =
   | { readonly kind: "args"; readonly args: Args }
   | { readonly kind: "error"; readonly message: string };
 
-async function parseArgs(argv: readonly string[]): Promise<ParseResult> {
+export async function parseArgs(argv: readonly string[]): Promise<ParseResult> {
   let repo = "";
   let expected = resolve(SCRIPT_DIR, "github-settings.expected.json");
   let i = 0;

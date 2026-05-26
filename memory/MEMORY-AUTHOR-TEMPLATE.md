@@ -1,3 +1,16 @@
+---
+name: Memory author template — absorb-time lint hygiene
+description: >-
+  Quick reference for writing memory files: five markdownlint classes that
+  repeatedly fire during Overlay A migration (MD003 atx-vs-setext / MD018
+  no-space-after-hash / MD022 blanks-around-headings / MD026 no-trailing-
+  punctuation / MD032 blanks-around-lists). Living doc; updates when a sixth
+  class is observed. Content-level discipline (frontmatter, signal-preservation,
+  newest-first) cross-references canonical sources.
+type: reference
+created: 2026-04-23
+---
+
 # Memory author template — absorb-time lint hygiene
 
 Quick reference for authors (humans or agents) writing

@@ -5,6 +5,12 @@
     <IsTestProject>true</IsTestProject>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>latest</LangVersion>
+    <GenerateProgramFile>false</GenerateProgramFile>
+    <RootNamespace>Zeta.Core.CSharp.Tests</RootNamespace>
+    <!-- xUnit1051: tests intentionally call StepAsync without a CancellationToken
+         (matches the pattern in Tests.CSharp/Tests.CSharp.csproj). -->
+    <NoWarn>$(NoWarn);xUnit1051</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

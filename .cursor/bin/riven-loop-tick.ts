@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const home = process.env.HOME ?? "/Users/acehack";
-const worktree = process.env.ZETA_RIVEN_LOOP_WORKTREE ?? join(home, ".local/share/zeta-riven-loop/Zeta");
+const worktree = process.env.ZETA_RIVEN_LOOP_WORKTREE ?? "/tmp/zeta-riven-loop-2";
 const stateDir = process.env.ZETA_RIVEN_LOOP_STATE_DIR ?? join(home, "Library/Application Support/ZetaRivenLoop");
 const logDir = process.env.ZETA_RIVEN_LOOP_LOG_DIR ?? join(home, "Library/Logs/zeta-riven-loop");
 const lockDir = join(stateDir, "lock");
@@ -23,6 +23,7 @@ const agentIntervalMs = Number(process.env.ZETA_RIVEN_LOOP_AGENT_INTERVAL_SECOND
 const agentTimeoutMs = Number(process.env.ZETA_RIVEN_LOOP_AGENT_TIMEOUT_SECONDS ?? "300") * 1000;
 const dryRun = process.env.ZETA_RIVEN_LOOP_DRY_RUN === "1";
 const agentStateFile = join(stateDir, "last-agent-run.json");
+const agentBinCandidates = (process.env.ZETA_RIVEN_LOOP_AGENT_BIN ?? "agent,cursor-agent").split(",").map(s => s.trim()).filter(s => s.length > 0);
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -32,7 +33,8 @@ function nowIso(): string {
 }
 
 function log(message: string): void {
-    appendFileSync(join(logDir, "runner.log"), `${nowIso()} ${message}\n`);
+    appendFileSync(join(logDir, "runner.log"), `${nowIso()} ${message}
+`);
 }
 
 function run(command: string, args: string[], timeoutMs: number): { status: number; stdout: string; stderr: string } {
@@ -53,6 +55,21 @@ function run(command: string, args: string[], timeoutMs: number): { status: numb
     };
 }
 
+function resolveAgentBin(): string | null {
+    const pathDirs = `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${join(home, ".local/bin")}`.split(":");
+    for (const bin of agentBinCandidates) {
+        const probe = spawnSync("/usr/bin/which", [bin], {
+            encoding: "utf8",
+            env: { ...process.env, PATH: pathDirs.join(":") },
+            timeout: 5000,
+        });
+        if (probe.status === 0 && (probe.stdout ?? "").trim().length > 0) {
+            return bin;
+        }
+    }
+    return null;
+}
+
 function lines(text: string): string[] {
     return text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
 }
@@ -60,7 +77,10 @@ function lines(text: string): string[] {
 function acquireLock(): boolean {
     try {
         mkdirSync(lockDir, { recursive: false });
-        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
+        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
+run_id=${runId}
+acquired_at=${nowIso()}
+`);
         return true;
     } catch {
         try {
@@ -77,7 +97,10 @@ function acquireLock(): boolean {
             }
             rmSync(lockDir, { recursive: true, force: true });
             mkdirSync(lockDir, { recursive: false });
-            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
+            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
+run_id=${runId}
+acquired_at=${nowIso()}
+`);
             return true;
         } catch { return false; }
     }
@@ -97,7 +120,8 @@ function readBroadcasts(): void {
         const path = join(broadcastDir, peer);
         if (existsSync(path)) {
             const content = readFileSync(path, "utf8").trim();
-            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("\n")[0] ?? "(empty)"}`);
+            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("
+")[0] ?? "(empty)"}`);
         }
     }
 }
@@ -109,7 +133,8 @@ function writeBroadcast(summary: string): void {
         "",
         "## Background tick status",
         summary,
-    ].join("\n"));
+    ].join("
+"));
 }
 
 function gh(...args: string[]): { status: number; stdout: string } {
@@ -146,7 +171,8 @@ function forwardTick(): void {
         return;
     }
 
-    const prNumbers = prsResult.stdout.trim().split("\n").filter(n => n.trim()).map(Number);
+    const prNumbers = prsResult.stdout.trim().split("
+").filter(n => n.trim()).map(Number);
     for (const pr of prNumbers) {
         const gateResult = gh(
             "pr", "view", String(pr), "--repo", "Lucent-Financial-Group/Zeta",
@@ -198,59 +224,44 @@ function heartbeat(): void {
         const elapsed = Date.now() - lastTime;
 
         if (elapsed >= agentIntervalMs) {
-            const prNum = Number(prCount) || 0;
-            const workMode = prNum === 0 ? "pickup" : "drain";
             agentStatus = "running";
-            log(`riven work cycle start run_id=${runId} mode=${workMode} open_prs=${prNum}`);
+            log(`riven agent gate start run_id=${runId}`);
 
+            const agentBin = dryRun ? null : resolveAgentBin();
             if (dryRun) {
-                log(`dry-run: would run riven ${workMode}`);
+                log(`dry-run: would run agent gate`);
                 agentStatus = "dry-run";
+            } else if (!agentBin) {
+                log(`riven agent gate skipped run_id=${runId} reason=no-agent-binary-on-PATH candidates=${agentBinCandidates.join(",")}`);
+                agentStatus = "no-bin";
+                writeFileSync(agentStateFile, JSON.stringify({
+                    run_id: runId,
+                    status: -1,
+                    started_at: nowIso(),
+                    updated_at: nowIso(),
+                    skipped_reason: "no-agent-binary-on-PATH",
+                    candidates: agentBinCandidates,
+                }, null, 2));
             } else {
-                let prompt: string;
-                if (workMode === "pickup") {
-                    const pickup = run("bun", ["tools/backlog/autonomous-pickup.ts", "--json"], 30_000);
-                    let executionPrompt = "";
-                    try {
-                        const selection = JSON.parse(pickup.stdout);
-                        executionPrompt = selection.executionPrompt ?? "";
-                        log(`pickup selected: ${selection.selected?.id ?? "none"} action=${selection.action ?? "none"}`);
-                    } catch { log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`); }
-
-                    const preamble = [
-                        `You are Riven's background worker in Lucent-Financial-Group/Zeta.`,
-                        `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
-                        `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
-                        `3) Read active trajectories at docs/trajectories/*/RESUME.md.`,
-                        `4) Build gate: "dotnet build -c Release" must end with 0 warnings 0 errors.`,
-                        `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code over docs.`,
-                        `Always re-decompose items during the build — assume decomposition has mistakes.`,
-                    ].join(" ");
-
-                    prompt = executionPrompt.length > 0
-                        ? `${preamble} YOUR TASK:\n${executionPrompt}`
-                        : `${preamble} No backlog items available. Run refresh-worldview, check for stale classifications, fix them, open a PR.`;
-                } else {
-                    prompt = [
-                        `You are Riven's background worker in Lucent-Financial-Group/Zeta.`,
-                        `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
-                        `Build gate: "dotnet build -c Release" (0 warnings).`,
-                        `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
-                        `For any PR where gate=BLOCKED and nextAction=resolve-threads:`,
-                        `check out branch, read review comments, fix code issues, push,`,
-                        `reply to threads, resolve via GraphQL, arm auto-merge`,
-                        `(gh pr merge NUMBER --auto --squash). Own your PRs through merge.`,
-                    ].join(" ");
-                }
-
-                const gate = run("cursor-agent", [
-                    "-p",
+                log(`riven agent gate using bin=${agentBin}`);
+                const gate = run(agentBin, [
+                    "chat",
+                    "--mode", "ask",
                     "--model", "grok-4.3",
-                    prompt,
+                    [
+                        "You are Riven, trajectory manager and adversarial-truth-axis reviewer.",
+                        "This is an autonomous 15-minute cycle.",
+                        "Read broadcasts first from ~/.local/share/zeta-broadcasts/{otto,vera,lior,riven}.md.",
+                        "Walk assigned trajectories. Decompose only what you hit mid-stride.",
+                        "Produce at least one concrete, actionable claim or small PR scope.",
+                        "When blocked, create a specific research child the next pickup cannot dodge.",
+                        "Write your status to ~/.local/share/zeta-broadcasts/riven.md at the end.",
+                        "GitHub PR state and actual file contents are authoritative.",
+                    ].join(" "),
                 ], agentTimeoutMs);
 
                 agentStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
-                log(`riven work cycle end run_id=${runId} mode=${workMode} status=${gate.status}`);
+                log(`riven agent gate end run_id=${runId} status=${gate.status}`);
 
                 writeFileSync(agentStateFile, JSON.stringify({
                     run_id: runId,
@@ -260,10 +271,16 @@ function heartbeat(): void {
                 }, null, 2));
 
                 if (gate.stdout.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} riven gate ---\n${gate.stdout}\n`);
+                    appendFileSync(join(logDir, "ticks.log"), `
+--- ${runId} riven gate ---
+${gate.stdout}
+`);
                 }
                 if (gate.stderr.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.err"), `\n--- ${runId} riven gate ---\n${gate.stderr}\n`);
+                    appendFileSync(join(logDir, "ticks.err"), `
+--- ${runId} riven gate ---
+${gate.stderr}
+`);
                 }
             }
         } else {

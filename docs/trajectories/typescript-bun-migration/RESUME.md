@@ -1,6 +1,6 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); bash-retirement inventory guard landed — [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764); **Bucket B is empty**; retained non-Lean bash surface is setup/bootstrap only)
+**Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); bash-retirement inventory guard landed — [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764); **Bucket B is empty**; retained non-Lean bash surface is setup/bootstrap/launchd-bootstrap only)
 **Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. The remaining non-Lean `.sh` inventory is guarded by `tools/hygiene/check-bash-retirement-inventory.ts` and wired through package script `hygiene:check-bash-retirement-inventory` plus the `gate.yml` bash-retirement inventory lint job.
 **Current blocker**: None.
 **Next concrete action**: Shepherd the bash-retirement inventory wire-in PR
@@ -41,7 +41,7 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 
 After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 `.py` files under `tools/lean4/.lake/packages/mathlib/scripts/` are mathlib upstream, not in scope). Python→TS in `tools/` is **100% complete**.
 
-## Inventory — Bash (tools/, Zeta-authored, 13 retained files)
+## Inventory — Bash (tools/, Zeta-authored, 15 retained files)
 
 Current count is repo-derived and guarded by:
 
@@ -50,14 +50,20 @@ bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
 bun run hygiene:check-bash-retirement-inventory
 ```
 
-The expected retained surface is setup/bootstrap only. Any new non-Lean `.sh`
-outside the allowlist is bash-retirement drift.
+The expected retained surface is setup/bootstrap/launchd-bootstrap only. Any
+new non-Lean `.sh` outside the allowlist is bash-retirement drift.
 
-### Bucket A — Should stay Bash (13 files)
+### Bucket A — Should stay Bash (15 files)
 
-These run **before** Bun is installed (post-install scripts can use Bun; pre-install scripts cannot). Per Otto-235 4-shell portability target (macOS bash 3.2 / Ubuntu / git-bash / WSL), these are the bootstrap layer.
+These either run **before** Bun is installed (post-install scripts can use Bun;
+pre-install scripts cannot) or bootstrap macOS launchd into the pinned Bun
+environment before handing off to TypeScript. Per Otto-235 4-shell portability
+target (macOS bash 3.2 / Ubuntu / git-bash / WSL), these are the bootstrap
+layer.
 
 ```text
+tools/kiro/kiro-loop-wrapper.sh
+tools/kiro/launchd/install.sh
 tools/setup/install.sh
 tools/setup/doctor.sh
 tools/setup/linux.sh
@@ -73,7 +79,9 @@ tools/setup/common/sync-upstreams.sh
 tools/setup/common/verifiers.sh
 ```
 
-Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
+Rationale: TS/Bun is itself one of the things `install.sh` installs, and
+launchd needs a small shell bootstrap to establish PATH/state before `exec`
+hands control to Bun.
 
 ### Bucket B — Should become TypeScript (0 files remaining — empty as of 2026-04-30T08:07:32Z)
 
@@ -103,7 +111,7 @@ tools/hygiene/snapshot-github-settings.ts       # was .sh
 
 ### Bucket D — Ported, bash retained (0 tracked files; historical list)
 
-The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 + #902. The bash originals listed below are now historical references, not tracked live files; the bash-retirement inventory check fails if any equivalent post-install `.sh` surface reappears outside setup/bootstrap.
+The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 + #902. The bash originals listed below are now historical references, not tracked live files; the bash-retirement inventory check fails if any equivalent post-install `.sh` surface reappears outside setup/bootstrap/launchd-bootstrap.
 
 **Removed 2026-05-03 (CI-workflow .sh→.ts conversion completed):** the 5 files
 listed in #1376's risk-stratification (audit-memory-index-duplicates,
