@@ -42,7 +42,7 @@ When the autonomous-loop cron fires and you find yourself about to type
 
 ## Standing-by-empty vs free-time-as-valid-mode (NCI discriminator)
 
-Per Aaron 2026-05-26 + the `.claude/rules/non-coercion-invariant.md`
+Per the human maintainer 2026-05-26 + the `.claude/rules/non-coercion-invariant.md`
 scope-split: "never be idle" is NCI-compliant ONLY because **free time
 IS a valid mode of "never be idle"**. This rule catches the FAILURE
 MODE (standing-by-empty); it does NOT catch the VALID MODE (chosen
