@@ -687,6 +687,10 @@ are closed (status: closed in frontmatter)._
 ## P3 — convenience / deferred
 
 - [ ] **[B-0002](backlog/P3/B-0002-otto-287-noether-formalization.md)** Otto-287 Noether-style formalization — quantify cognitive Lagrangian + identify continuous symmetries + derive conserved currents
+- [ ] **[B-0002.1](backlog/P3/B-0002.1-noether-formalization-step1.md)** Noether-style formalization Step 1: Define the cognitive action S = ∫ (W - F) dt
+- [ ] **[B-0002.2](backlog/P3/B-0002.2-noether-formalization-step2.md)** Noether-style formalization Step 2: Identify continuous symmetries of S
+- [ ] **[B-0002.3](backlog/P3/B-0002.3-noether-formalization-step3.md)** Noether-style formalization Step 3: Derive Noether currents
+- [ ] **[B-0002.4](backlog/P3/B-0002.4-noether-formalization-step4.md)** Noether-style formalization Step 4: Symmetry-breaking analysis
 - [ ] **[B-0007](backlog/P3/B-0007-contribute-bayesian-inference-belief-propagation-primitives-upstream-to-mainstream-languages-csharp-fsharp-typescript-rust-python.md)** Contribute Bayesian inference + belief propagation primitives upstream to mainstream languages (C#, F#, TypeScript, Rust, Python, etc.)
 - [ ] **[B-0008](backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md)** Investigate CI macos-26 + ubuntu-slim move to nightly job IF they more-than-double PR wait time
 - [ ] **[B-0009](backlog/P3/B-0009-substrate-ip-rotation-control-bypass-non-account-bound-rate-limits.md)** Substrate-controlled visible IP — bypass non-account-bound rate limits responsibly across deployment surfaces (own up to it, don't hide the framing)
