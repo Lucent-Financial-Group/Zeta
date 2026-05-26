@@ -224,7 +224,6 @@ sub-rows when those operators show up.
 
 ## Why not just use kube-scheduler's default device-plugin support?
 
-
 Default kube-scheduler treats device plugins as opaque
 countable resources. For NPU specifically, you want:
 
