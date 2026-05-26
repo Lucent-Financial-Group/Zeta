@@ -96,7 +96,9 @@ Zero human support. Aaron: *"imagine they call a phone number and they're talkin
 - Per-cluster phone numbers (skip cluster-name disambiguation)
 - Operator-side cost tradeoff (Twilio numbers cost ~$1/month each)
 
-### Sub-target 7 — interruption-correct voice flow (LOAD-BEARING; prior-art-rich)
+### Sub-target 7 — interruption-correct voice flow / "conversation steering" (LOAD-BEARING; prior-art-rich)
+
+Per the maintainer 2026-05-26 terminology pointer: the AI community calls this pattern **"conversation steering"** — the ability to interrupt the AI mid-talking + steer the conversation in a different direction without breaking conversation state. Use this term for cross-team / cross-AI substrate-engineering communication; aligns Zeta substrate with industry vocabulary.
 
 Customers MUST be able to interrupt the AI mid-talking without breaking conversation state. Without this, the AI-IS-the-support-layer model fails — customers can't correct the AI when it's going off-path on a wrong fix, leading to frustration + bad support outcomes.
 

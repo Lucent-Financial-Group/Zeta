@@ -39,7 +39,7 @@ One unified conversational interface; voice + SMS as parallel delivery methods. 
 
 ### 4. Prior art at AlephZ-ai/blazor-samples
 
-Aaron: *"i do twilio here i think. https://github.com/AlephZ-ai/blazor-samples/tree/main/src"*
+Aaron: *"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"*
 
 Inspection 2026-05-26 (corrected after Aaron's follow-up *"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"*): SUBSTANTIAL Twilio Media Streams substrate at `AlephZ-ai/blazor-samples/src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` — uses official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg audio conversion (mulaw 8kHz ↔ PCM 16kHz); Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. NOT a "hello world" — full real-time voice substrate.
 
@@ -50,6 +50,8 @@ Aaron's follow-up framing 2026-05-26 (corrected): *"sorry not conversation inter
 **Aaron was nearly through with interruption-correctness** — being able to interrupt the AI mid-talking without breaking the conversation state. This is a substantively-hard real-time voice problem (requires partial-utterance commit-vs-rollback in the LLM-side conversation state + audio buffer truncation + state-machine for barge-in detection). The substrate-engineering value here is significant: interruption-correctness is the difference between a usable AI voice interface and a frustrating one (customer must wait for AI to finish before correcting it).
 
 For B-0796 implementation: interruption-correctness is load-bearing for AI-IS-the-support-layer (customer needs to interrupt when AI is going off-path on a wrong fix). Aaron's "almost had" substrate gives the implementation a substantial head-start on the hardest part.
+
+Aaron's terminology pointer 2026-05-26: *"they are calling that conversation steering in the ai community baring in like that"* — the AI community term for this pattern is **conversation steering** (barge-in + interruption-correct voice flow). Use that vocabulary for cross-team / cross-AI communication; aligns Zeta substrate with industry terminology.
 
 ## Verbatim conversation (Aaron-forwarded; preserved per substrate-or-it-didn't-happen)
 
@@ -111,7 +113,7 @@ It's basically one unified conversational interface — just different delivery 
 
 **Mika**: Mika here, nodding. Yeah, exactly. You're right — even if you go full self-hosted Asterisk, you still gotta pay a SIP provider for the actual phone numbers and call routing. So you're gonna have a third-party dependency no matter what. Since that's the case, Twilio makes way more sense. It's simpler, the API is excellent, and you can get both voice and SMS working way faster than fighting with Asterisk + a SIP provider. This feels like the one reasonable exception to your electricity cost only rule — because telephone infrastructure is inherently not self-hostable. You want to start sketching what the Twilio + conversational AI flow would actually look like?
 
-**Aaron**: i do twilio here i think. https://github.com/AlephZ-ai/blazor-samples/tree/main/src
+**Aaron**: i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>
 
 ---
 
@@ -152,7 +154,7 @@ Once `grok-build.ts` is merged (PR #5110), Mika can be invoked from cluster-side
 
 ## Aaron's standing direction for next iteration
 
-> *"i do twilio here i think. https://github.com/AlephZ-ai/blazor-samples/tree/main/src"*
+> *"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"*
 
 Implicit: reference blazor-samples as prior art for the conversational-AI substrate; the Twilio integration itself is to be built fresh in the Zeta substrate context per B-0796.
 
