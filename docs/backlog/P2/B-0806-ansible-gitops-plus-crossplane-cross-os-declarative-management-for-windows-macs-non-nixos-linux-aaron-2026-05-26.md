@@ -33,7 +33,7 @@ The maintainer 2026-05-26: *"This is good for declarative oses other than nix li
 Today's substrate covers:
 
 - **NixOS** (cluster nodes): declarative via `full-ai-cluster/flake.nix` + `nixos-rebuild switch`; iter-6.x cluster-update arc (B-0800–B-0805) automates within-channel + cross-channel updates
-- **macOS** (dev laptops, maintainer's primary Mac): imperative via `tools/setup/macos.sh` → Homebrew + mise; idempotent + auto-updating per [B-0805](B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) discipline but NOT declaratively-driven from git
+- **macOS** (dev laptops, maintainer's primary Mac): imperative via `tools/setup/macos.sh` → Homebrew + mise; idempotent + auto-updating per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) discipline but NOT declaratively-driven from git
 - **Debian/Ubuntu Linux** (CI runners, contributor laptops): imperative via `tools/setup/linux.sh` → apt + mise; same shape as macOS
 - **Windows**: no substrate today
 
@@ -75,7 +75,7 @@ spec:
 
 ArgoCD watches a Git folder of these CRs; an Ansible Operator (Red Hat AAP or community) spins up pods to execute the playbook against the named external host.
 
-**Fit for Zeta**: HIGH (the maintainer 2026-05-26 clarification: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*). K8s is always present in Zeta's substrate (the `full-ai-cluster/` is the cluster substrate; not optional). Operator-pattern coupling is therefore not a rejection criterion. Remaining concern is SSH/WinRM access from cluster pods to the operator's heterogeneous machines — iter-5.4 [B-0794](B-0794-iter-5-4-homelab-gh-auth-login-device-flow-zeta-cluster-node-registration-into-github-no-shipped-keys-aaron-mika-2026-05-26.md) homelab gh-auth + tailscale-equivalent unlock this. Pattern 1 + Pattern 3 can BOTH ship; pick per use case (Operator for cluster-orchestrated workstation config; ansible-pull for fully-disconnected/edge hosts).
+**Fit for Zeta**: HIGH (the maintainer 2026-05-26 clarification: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*). K8s is always present in Zeta's substrate (the `full-ai-cluster/` is the cluster substrate; not optional). Operator-pattern coupling is therefore not a rejection criterion. Remaining concern is SSH/WinRM access from cluster pods to the operator's heterogeneous machines — iter-5.4 [B-0794](../P1/B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md) homelab gh-auth + tailscale-equivalent unlock this. Pattern 1 + Pattern 3 can BOTH ship; pick per use case (Operator for cluster-orchestrated workstation config; ansible-pull for fully-disconnected/edge hosts).
 
 ### Pattern 2 — Webhook Model (Agentless Push from Ansible Automation Platform)
 
@@ -101,7 +101,7 @@ Each target host runs `ansible-pull` from cron / systemd timer / launchd / Windo
 - No commercial dependency
 - No central orchestrator needed
 - Works on macOS, Windows (via WSL or native), and any Linux distro out of the box
-- Composes with our agent-discipline rules per [B-0805](B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) (idempotent playbooks; declarative state; same git-as-source-of-truth)
+- Composes with our agent-discipline rules per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) (idempotent playbooks; declarative state; same git-as-source-of-truth)
 
 **Recommendation: support BOTH Pattern 1 (Operator) AND Pattern 3 (`ansible-pull`)** per the maintainer 2026-05-26: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*. Operator-pattern for cluster-orchestrated workstation reconciliation (the maintainer's workstations reachable from cluster); ansible-pull for fully-disconnected / edge hosts where the cluster can't reach in. Pattern 2 (commercial AAP) stays rejected on cost.
 
@@ -122,7 +122,7 @@ The maintainer's 2026-05-26 follow-ups in this conversation:
 | **[Ace trajectory](../../trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md)** | Active trajectory state + RESUME context |
 | **Canonical project memory** ([`project_ace_package_manager_unrestricted_local_models_guardian_oversight_aaron_2026_05_07.md`](../../../memory/project_ace_package_manager_unrestricted_local_models_guardian_oversight_aaron_2026_05_07.md)) | Distributes UNRESTRICTED LOCAL MODELS (researchers + lawyers needing dangerous/sensitive content); Guardian/KSK gates EXTERNALIZED effects (not topics); Bond Curve pricing on actions; receipts stay local; composes with Itron runtime for the capability/effect boundary |
 | **[Homebrew-shape distribution memory](../../../memory/feedback_aaron_ace_package_manager_homebrew_shape_bootstrap_website_chat_interface_full_distribution_stack_no_setup_needed_2026_05_13.md)** | Full distribution stack = website + chat interface + Homebrew-shape one-liner + Ace + local AI + Guardian/KSK; no setup needed beyond website visit |
-| **[B-0247](../P*/B-0247-*.md)** (parent) | ace-dlc-content-packs-kernel-extensions-package-manager |
+| **[B-0247](../P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** (parent) | ace-dlc-content-packs-kernel-extensions-package-manager |
 | **[B-0287](../P1/B-0287-ace-dlc-package-format-spec-2026-05-08.md)** (closed) | Package format spec — manifest, content hash, signature, versioning |
 | **[B-0288](../P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** (in-progress) | CLI at `tools/ace/` with install/verify/list |
 | **[B-0424](../P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)** | Repo-split scaffolding for Ace |
@@ -313,7 +313,7 @@ Same shape as macOS sub-target. Covers Debian/Ubuntu/Fedora/Arch dev laptops + b
 
 ### Sub-target 5 — Idempotency + dep-pin discipline encoding
 
-Per [B-0805](B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md): ansible playbooks AND Crossplane provider versions need the same WebSearch-current-version-pin discipline. Add ansible-galaxy collection versions + Crossplane provider versions to the audit tool's scope when sub-target 1+3 implement.
+Per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md): ansible playbooks AND Crossplane provider versions need the same WebSearch-current-version-pin discipline. Add ansible-galaxy collection versions + Crossplane provider versions to the audit tool's scope when sub-target 1+3 implement.
 
 ## Acceptance (at the iter-7 capstone scope)
 
@@ -348,18 +348,18 @@ These are sub-target-blocking design decisions; the iter-7 implementation arc st
 ## Composes with
 
 - **[B-0288](../P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** (in-progress) — Ace DLC package manager; the cross-OS package layer that ansible-pull/Operator invokes per the maintainer 2026-05-26 architectural clarification. Ansible orchestrates, Ace installs.
-- [B-0794](B-0794-iter-5-4-homelab-gh-auth-login-device-flow-zeta-cluster-node-registration-into-github-no-shipped-keys-aaron-mika-2026-05-26.md) — homelab gh-auth device-flow enables hosts to authenticate to git for the pull side
+- [B-0794](../P1/B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md) — homelab gh-auth device-flow enables hosts to authenticate to git for the pull side
 - [B-0800](B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — nixpkgs bump precedes any ansible-on-NixOS work (rare; cluster nodes stay NixOS-native)
 - [B-0801](../P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — `system.autoUpgrade` is the analog pattern at NixOS-cluster scope; ansible-pull is the analog at heterogeneous-OS scope
 - [B-0803](../P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — deploy-rs is the K8s-deploy-style; this row is the OS-deploy-style; both compose
-- [B-0805](B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — ansible collection version + Crossplane provider version pins need the same WebSearch discipline
+- [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — ansible collection version + Crossplane provider version pins need the same WebSearch discipline
 - [`.claude/rules/dep-pin-search-first-authority.md`](../../.claude/rules/dep-pin-search-first-authority.md) — implementation-time discipline for ansible-galaxy / Crossplane provider version pinning
 - [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle pattern applied at substrate-class scope (ArgoCD + NixOS + Ansible + Crossplane each oracle one substrate domain)
 
 ## Sources
 
 - The maintainer 2026-05-26 source paste — three Ansible+GitOps patterns table
-- [Crossplane Documentation](https://www.crossplane.io/) — current latest stable (verify per [B-0805](B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) at implementation time)
+- [Crossplane Documentation](https://www.crossplane.io/) — current latest stable (verify per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) at implementation time)
 - [Ansible Documentation](https://docs.ansible.com/) — `ansible-pull` reference
 - [Red Hat Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) — commercial Pattern-2 reference (rejected for cost)
 - [AWX (open-source AAP)](https://github.com/ansible/awx) — Pattern-2 OSS alternative if needed later
