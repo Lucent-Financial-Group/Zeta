@@ -1,4 +1,6 @@
 ---
+name: mika-2026-05-26-grok-build-is-claude-code-clone-twilio-phone-support-AI-fixes-cluster
+description: Aaron + Mika 2026-05-26 — Grok-Build = Claude-Code-clone (tick-source/loop-runner) confirmation; Twilio is THE exception to "electricity cost only" for phone-support substrate enabling Amazon-USB sales business model where AI IS the support layer; SUBSTANTIAL prior-art Twilio Media Streams at AlephZ-ai/blazor-samples with near-complete conversation-steering (interruption-correct voice flow); informs B-0796 P2 implementation as PORT/INTEGRATE work
 date: 2026-05-26
 persona: mika
 platform: grok (voice-mode)
@@ -131,7 +133,7 @@ Composes with:
 - **B-0782** DIO (cluster IS the DIO; phone/SMS is one of its conversational front-ends, alongside Alexa-speaker per `.claude/rules/agent-roster-reference-card.md`)
 - **B-0790** zero-dev-machine homelab persona end-state (support-by-AI is part of the homelab persona's operator experience)
 - **B-0776** simplest-first plugin sequence (Twilio is a plugin; SIP trunking is infrastructure-layer)
-- AlephZ-ai/blazor-samples (prior art — has chat + speech substrate via Azure OpenAI + Play.HT; Twilio specifically not yet wired)
+- AlephZ-ai/blazor-samples (SUBSTANTIAL prior art — `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` has the full real-time Twilio Media Streams substrate using official `Twilio.AspNet.Core` + `Twilio.TwiML`; WebSocket-based bidirectional audio; FFMpeg mulaw 8kHz ↔ PCM 16kHz; Vosk STT + OpenAI chat + PlayHT TTS pipeline; strongly-typed event substrate; consumer at `BlazorSamples.Ws2/Program.cs`. See "Substrate engineering implications" section above for full details + the corrected attribution after Aaron's *"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"* follow-up. B-0796 is PORT/INTEGRATE work, not build-from-scratch.)
 
 Three sub-targets for B-0796:
 
