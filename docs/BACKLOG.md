@@ -703,6 +703,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0761](backlog/P2/B-0761-zeta-cluster-as-open-source-reference-architecture-for-ai-to-train-on-and-compete-on-arc-agi-style-benchmark-aaron-2026-05-25.md)** Zeta cluster as open-source reference architecture for AI to train on and compete on — ARC-AGI-style benchmark substrate
 - [ ] **[B-0762](backlog/P2/B-0762-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md)** AI auto-submit-back telemetry + fixes from in-the-wild installs — adoption-cost-to-zero flywheel
 - [ ] **[B-0764](backlog/P2/B-0764-cncf-ecosystem-as-force-multipliers-behind-zeta-interfaces-keda-dapr-opa-oam-kubevela-plus-ace-and-ontology-negotiation-aaron-2026-05-25.md)** CNCF ecosystem as force multipliers behind Zeta interfaces — KEDA, DAPR, OPA, OAM/KubeVela + Ace + ontology negotiation
+- [ ] **[B-0770](backlog/P2/B-0770-gl-inet-comet-pro-ip-kvm-integration-remote-bios-to-cluster-member-zero-physical-access-aaron-2026-05-25.md)** GL.iNet Comet Pro IP-KVM integration — remote BIOS-to-cluster-member; zero-physical-access cluster bring-up + repair
 
 ## P3 — convenience / deferred
 
