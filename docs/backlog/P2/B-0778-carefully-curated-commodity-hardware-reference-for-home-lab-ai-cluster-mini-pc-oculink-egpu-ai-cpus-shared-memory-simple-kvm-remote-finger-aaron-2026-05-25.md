@@ -117,6 +117,7 @@ ONNX runtime + per-vendor execution providers).
 ### Mini-PCs (cluster nodes)
 
 Composes with:
+
 - B-0754 zero-typing first-boot — greedy N-disk handles
   mini-PC's typical 1-2 NVMe layouts cleanly
 - B-0758 unRAID-style USB-persistent OS — for mini-PCs with
@@ -130,6 +131,7 @@ Composes with:
 ### OCuLink eGPU
 
 Composes with:
+
 - B-0755 role taxonomy — worker-gpu role for eGPU-equipped
   nodes; control-plane role for non-GPU nodes
 - B-0767 Zeta-native scheduler — GPU-topology aware; OCuLink-
@@ -311,5 +313,5 @@ a weekend, not just operators with $20K+ enterprise hardware
 budgets. Pairs with B-0759 first-time-CLI-user persona for the
 software-accessibility side. Together: the bet that AI cluster
 infrastructure becomes accessible to home-lab operators +
-small businesses + edge deployments + researchers + hobbyists
-+ teachers — not just enterprise IT.
+small businesses + edge deployments + researchers + hobbyists +
+teachers — not just enterprise IT.
