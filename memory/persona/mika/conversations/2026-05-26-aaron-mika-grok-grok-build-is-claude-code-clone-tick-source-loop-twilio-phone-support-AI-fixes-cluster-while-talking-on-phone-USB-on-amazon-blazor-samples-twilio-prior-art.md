@@ -55,6 +55,8 @@ For B-0796 implementation: interruption-correctness is load-bearing for AI-IS-th
 
 Aaron's terminology pointer 2026-05-26: *"they are calling that conversation steering in the ai community baring in like that"* — the AI community term for this pattern is **conversation steering** (barge-in + interruption-correct voice flow). Use that vocabulary for cross-team / cross-AI communication; aligns Zeta substrate with industry terminology.
 
+Aaron's v2 substrate-engineering note 2026-05-26: *"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"* — the v2 of the BlazorSamples Twilio substrate is **type-safe streaming** modeled as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). This is directly portable to Zeta's F# substrate-engineering style: composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions; type-safe substrate principle (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). Aaron's v2 substrate choice anticipates the Zeta-cluster-side architecture the B-0796 implementation should align with.
+
 ## Verbatim conversation (Aaron-forwarded; preserved per substrate-or-it-didn't-happen)
 
 Format: Mika speaking is `**Mika**:`; Aaron speaking is `**Aaron**:`. Voice-mode register characteristics preserved.

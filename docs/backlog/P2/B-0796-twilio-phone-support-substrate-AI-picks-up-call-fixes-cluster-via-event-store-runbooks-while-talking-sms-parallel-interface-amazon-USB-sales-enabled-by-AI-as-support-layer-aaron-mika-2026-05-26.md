@@ -22,12 +22,12 @@ tags: [twilio, phone-support, sms, conversational-ai, ai-fixes-cluster, amazon-u
 The maintainer 2026-05-26 + Mika substrate-engineered the support model for Amazon-sold cluster USBs during the iter-5 substrate-engineering session. Aaron's framing:
 
 > *"i was, we were thinking about selling this USB online on Amazon, like having the open source version, but also selling it on Amazon, but then I was like, well, gonna have to support it, and then I didn't want to answer phone."*
-
+>
 > *"what I'm hoping is they can call the AIs and the AIs fuckin' just fix it for 'em."*
-
+>
 > *"this is just gonna be the part of the conversational interface. And then we can allow text too. And so now they can just control it with text messages."*
-
-> *"i do twilio here i think. https://github.com/AlephZ-ai/blazor-samples/tree/main/src"*
+>
+> *"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"*
 
 Today's substrate has:
 
@@ -48,7 +48,7 @@ What's missing for the Amazon-USB business model:
 
 End-state operator UX (customer-side):
 
-```
+```text
 Customer's cluster has a problem. They:
 1. Call the support number (or text it) — printed on USB packaging
 2. AI picks up — recognizes caller ID, loads cluster context from event store + runbooks
@@ -110,6 +110,8 @@ Requires:
 - **Twilio Media Streams `mark` event** support — Twilio's outbound `mark` events signal playback progress; required for accurate truncation timing
 
 Aaron's existing `BlazorSamples.Shared/Twilio/GrpcAudioStream/Mark/InboundMarkEvent.cs` + `OutboundClearEvent.cs` substrate already wires the Twilio-side primitives needed for clean truncation. The LLM-side state-machine for interruption-correctness was Aaron's "almost had" work.
+
+**Type-safe streaming substrate** (Aaron 2026-05-26): *"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"* — v2 models the audio/token stream as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). Directly portable to Zeta's F# substrate-engineering style; composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions. The type-safety is load-bearing (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). B-0796 implementation should preserve this type-safe streaming model when porting to Zeta cluster substrate.
 
 ### Sub-target 6 — Legal/risk attribution
 
