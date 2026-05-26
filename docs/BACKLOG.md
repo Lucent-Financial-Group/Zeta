@@ -360,6 +360,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0765](backlog/P1/B-0765-service-titan-route-plug-into-existing-control-interfaces-not-new-ones-ontology-negotiation-at-standards-layer-aaron-2026-05-25.md)** ServiceTitan route — plug into existing control interfaces/structures (not new ones); ontology negotiation at the standards layer
 - [ ] **[B-0767](backlog/P1/B-0767-zeta-native-scheduler-first-deterministic-simulation-and-ai-aware-cluster-management-aaron-2026-05-25.md)** Zeta-native scheduler first (Wave 1 of B-0766) — deterministic simulation + AI-aware cluster management
 - [ ] **[B-0769](backlog/P1/B-0769-vc-meta-playbook-control-structure-injection-around-capital-in-verticals-substrate-honest-variant-aaron-2026-05-25.md)** VC meta-playbook (control-structure injection around capital flow in verticals) — substrate-honest variant for Zeta
+- [ ] **[B-0780](backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md)** Local Loop — deterministic simulation testing of Kubernetes deployments (LexisNexis Spark-on-K8s fork lineage); three-tier testing (pure-code / Docker-observable / CI); Argo CD App-of-Apps as packages.json
+- [ ] **[B-0781](backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md)** F# type system as universe boundary — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth (Cachet analog)
 
 ## P2 — research-grade
 
@@ -708,6 +710,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0774](backlog/P2/B-0774-etcdless-options-kine-adapter-dqlite-postgres-nats-zeta-native-dbsp-aaron-2026-05-25.md)** Etcd-less k8s options — kine adapter family (SQLite/Postgres/MySQL/NATS/Dqlite) + Zeta-native DBSP+Raft endgame
 - [ ] **[B-0775](backlog/P2/B-0775-ha-kubernetes-that-scales-beyond-etcd-cockroach-nats-supercluster-karmada-cluster-api-cell-based-aaron-2026-05-25.md)** HA Kubernetes that scales beyond etcd — CockroachDB / NATS super-cluster / Karmada / KubeStellar / Cluster API / cell-based architecture
 - [ ] **[B-0779](backlog/P2/B-0779-ai-nas-convergence-tight-integration-of-shared-memory-ai-cpu-and-nas-storage-on-one-device-aaron-2026-05-25.md)** AI NAS convergence — tight integration of shared-memory AI CPU + NAS storage on one device (NAS-as-cluster-node)
+- [ ] **[B-0782](backlog/P2/B-0782-distributed-intelligent-organization-dio-per-company-on-distributed-intelligence-database-ceo-of-30-companies-scales-by-speaking-ontology-aaron-mika-2026-05-25.md)** Distributed Intelligent Organization (DIO) per company — each Zeta cluster is a DIO on distributed intelligence database; CEO scales by speaking ontology, not implementation
+- [ ] **[B-0783](backlog/P2/B-0783-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md)** Eliminate tool wars — sharpening of B-0759 persona — NOT "humans do less" but "humans refocus intention to what really matters
 
 ## P3 — convenience / deferred
 
