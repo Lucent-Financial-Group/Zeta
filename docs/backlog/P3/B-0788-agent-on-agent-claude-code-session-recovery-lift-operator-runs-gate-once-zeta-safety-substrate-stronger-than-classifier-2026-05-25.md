@@ -5,6 +5,7 @@ status: open
 priority: P3
 size: M
 created: 2026-05-25
+last_updated: 2026-05-25
 authors: [aaron, otto-cli]
 composes_with: [B-0628, B-0664]
 depends_on: []
@@ -43,8 +44,11 @@ criteria. **All three must hold** before this row can be actioned:
 3. **Maintainer-collective re-authorization after substrate is in
    place**
 
-Until 1+2+3, this row stays in P3 deferred state. The operator-runs
-split shipped in PR #5069 is the substrate-honest interim.
+Until 1+2+3, this row remains `status: open` in P3 with action
+deferred against the lift criteria — the row is filed and tracked
+in BACKLOG.md, but no implementation work happens until the
+criteria firm up. The operator-runs split shipped in PR #5069 is
+the substrate-honest interim.
 
 ## Eventual shape (design composed with Aaron 2026-05-26)
 
