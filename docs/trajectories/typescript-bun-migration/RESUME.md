@@ -1,6 +1,6 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); bash-retirement inventory guard landed — [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764); **Bucket B is empty**; retained non-Lean bash surface is setup/bootstrap/launchd-bootstrap only)
+**Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); bash-retirement inventory guard landed — [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764); **Bucket B is empty**; retained non-Lean bash surface is setup/bootstrap, launchd-bootstrap, and the Kiro loop wrapper only)
 **Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. The remaining non-Lean `.sh` inventory is guarded by `tools/hygiene/check-bash-retirement-inventory.ts` and wired through package script `hygiene:check-bash-retirement-inventory` plus the `gate.yml` bash-retirement inventory lint job.
 **Current blocker**: None.
 **Next concrete action**: Shepherd the bash-retirement inventory wire-in PR
@@ -50,7 +50,8 @@ bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
 bun run hygiene:check-bash-retirement-inventory
 ```
 
-The expected retained surface is setup/bootstrap/launchd-bootstrap only. Any
+The expected retained surface is setup/bootstrap, launchd-bootstrap, and the
+Kiro loop wrapper only. Any
 new non-Lean `.sh` outside the allowlist is bash-retirement drift.
 
 ### Bucket A — Should stay Bash (15 files)
@@ -111,7 +112,7 @@ tools/hygiene/snapshot-github-settings.ts       # was .sh
 
 ### Bucket D — Ported, bash retained (0 tracked files; historical list)
 
-The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 + #902. The bash originals listed below are now historical references, not tracked live files; the bash-retirement inventory check fails if any equivalent post-install `.sh` surface reappears outside setup/bootstrap/launchd-bootstrap.
+The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 + #902. The bash originals listed below are now historical references, not tracked live files; the bash-retirement inventory check fails if any equivalent post-install `.sh` surface reappears outside setup/bootstrap, launchd-bootstrap, and the Kiro loop wrapper.
 
 **Removed 2026-05-03 (CI-workflow .sh→.ts conversion completed):** the 5 files
 listed in #1376's risk-stratification (audit-memory-index-duplicates,

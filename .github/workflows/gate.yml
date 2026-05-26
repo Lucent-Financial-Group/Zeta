@@ -573,7 +573,7 @@ jobs:
     # Bash-retirement guard for the TypeScript/Bun migration trajectory:
     # Zeta-owned post-install repo scripts should not grow new `.sh`
     # entrypoints after Bucket B reached zero. The retained shell surface is
-    # setup/bootstrap plus launchd-bootstrap only.
+    # setup/bootstrap, launchd-bootstrap, and the Kiro loop wrapper only.
     name: lint (bash retirement inventory)
     timeout-minutes: 5
     runs-on: ubuntu-24.04
