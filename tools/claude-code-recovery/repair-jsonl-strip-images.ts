@@ -37,7 +37,6 @@
 import {
   readFileSync,
   writeFileSync,
-  copyFileSync,
   statSync,
   existsSync,
   readdirSync,
@@ -316,15 +315,12 @@ function runScan(args: Args): number {
 
 function runRepair(args: Args): number {
   const path = join(args.projectsDir, args.slug, `${args.session!}.jsonl`);
-  // Skip the explicit existsSync gate — the readFileSync below will
-  // throw ENOENT directly. Combining the two creates a TOCTOU surface
-  // CodeQL flags (CWE-367), and the gate adds nothing — error handling
-  // is the same either way.
-  let raw: string;
-  let sizeBefore: number;
+  // Single readFileSync — no check-then-read pattern (eliminates
+  // CWE-367 surface). Compute file size from the returned Buffer's
+  // length rather than a separate statSync call.
+  let buf: Buffer;
   try {
-    sizeBefore = statSync(path).size;
-    raw = readFileSync(path, "utf8");
+    buf = readFileSync(path);
   } catch (e) {
     const err = e as NodeJS.ErrnoException;
     if (err.code === "ENOENT") {
@@ -333,6 +329,8 @@ function runRepair(args: Args): number {
     }
     throw e;
   }
+  const sizeBefore = buf.length;
+  const raw = buf.toString("utf8");
   const stamp = new Date().toISOString().slice(0, 10);
   const lines = raw.split("\n");
   const out: string[] = [];
@@ -409,11 +407,10 @@ function runRepair(args: Args): number {
     return 0;
   }
   const backup = `${path}.bak-${stamp}-${Date.now()}`;
-  // Race window between copy and write is theoretically TOCTOU
-  // (CodeQL CWE-367), but accepted: this repairs the operator's own
-  // ~/.claude/projects/ files, which the operator owns and is not
-  // concurrently editing. The backup makes the operation reversible.
-  copyFileSync(path, backup);
+  // Write backup from the in-memory buffer we already read above —
+  // avoids a second fs read against `path` (which would be a
+  // check-then-act CWE-367 surface). Then write the new content.
+  writeFileSync(backup, buf);
   writeFileSync(path, newContent);
   console.log(`backup: ${backup}`);
   console.log("applied. reload the session in Claude Code.");
