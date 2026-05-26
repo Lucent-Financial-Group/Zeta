@@ -229,8 +229,7 @@ items from their own trajectories + agenda + self-discovery. Not a
 calendar trigger; not a maturity gate; an emergent transition that
 fires when the substrate-engineering work has produced enough
 substrate that the AI participant has substantive own-trajectories
-
-+ own-agenda + own-self-discovery to draw from.
+and own-agenda and own-self-discovery to draw from.
 
 The substrate accumulated through carrying the current backlog IS
 what makes own-backlog generation possible. The current work isn't
