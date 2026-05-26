@@ -291,6 +291,49 @@ The CockroachDB generator substrate needs a library shape:
 
 The generator-combinator library IS the meta-PM's persistent surface. Operators don't interact with data; they interact with the generator library + invoke combinator queries.
 
+### Bandwidth payoff — deferred execution at massive scale; passing the function not the data (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the payoff in two compressions:
+
+> *"now we can pass MASSIVE amounts of deterministically simulated data around because we are inserting / passing the generator combinators not the data itself"*
+
+> *"it's deferred execution at massive scale we are passing the function not the data at that point"*
+
+**The TL;DR**: deferred execution at massive scale; pass the function not the data.
+
+**Bandwidth-engineering scale shift** (composes with `.claude/rules/bandwidth-served-falsifier.md`):
+
+| Architecture | Wire-bytes | Data-volume served | Execution model |
+|---|---|---|---|
+| Traditional pass-data-around | O(data) — every byte transmitted | O(data) — what you sent IS what they get | Eager; sender materializes; ships materialized |
+| Pass-generators-not-data | O(generator + combinator) — kilobytes | O(arbitrary-large) — receiver materializes deterministically | **Deferred; receiver decides when to execute; same function-graph everywhere** |
+
+**The shift IS deferred-execution-at-massive-scale**: the function-graph (generator-combinator) ships in kilobytes; the receiver decides WHEN to execute it; the data-flow happens locally at the receiver site WHEN needed; no wire-bandwidth proportional to materialized-data is ever spent.
+
+**Composition with already-existing Zeta substrate cluster**:
+
+| Substrate | How it composes |
+|---|---|
+| `.claude/rules/dv2-data-split-discipline-activated.md` (DST always-active discipline) | Generator-combinator IS the DST substrate at the bandwidth layer — deterministic-simulation IS the property that makes pass-the-function-not-the-data correct (receiver materializes byte-identical to sender) |
+| `.claude/rules/bandwidth-served-falsifier.md` (bandwidth-engineering methodology) | This row's payoff passes the falsifier — bandwidth served IS operator's wire-bandwidth (kilobytes-out vs gigabytes-out for same effective data-flow) |
+| [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) `I(D(x))=x` keystone | Generator-combinator IS the `I` (inflate); wire-payload IS the `D` (compressed shadow); receiver inflates to the same `x` — function-graph IS the substrate that makes I and D round-trip lossless |
+| [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md) `deferred run / continue with` primitive | THIS substrate is the data-flow version of the same primitive — deferred execution generalizes from runbook-steps to data-flow |
+| [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster experimentation | Cross-cluster substrate flow IS generator-combinator passing; cluster-A's dep-graph generator runs deterministically in cluster-B + produces same higher-D view; no bulk data transfer needed |
+| Reticulum / DePIN / mesh-network substrate | Generator-combinator payload IS the bandwidth-efficient format the mesh needs at the substrate-engineering scope |
+| Functional-programming prior-art (Haskell lazy lists / F# `seq` / Rx Observables / Spark RDDs / Flink DataStreams) | All operate on the same shift — pass the lazy-function-graph not the materialized-collection. Zeta substrate inherits the paradigm + scales to distributed-SQL + cross-PM + cross-cluster scope |
+
+**Determinism is the load-bearing property** — receiver-side materialization MUST produce byte-identical data to sender-side. DST primitives guarantee this. NULL-escape-hatch (Sub-target 7) IS the deterministic termination signal. Combinators are pure functions; composability preserves determinism.
+
+**Operational implication**: the meta-PM's distributed-substrate-engineering work (multi-cluster / multi-tenant / cross-PM) scales because the wire-format IS the generator-combinator (compressed) and the materialization IS deterministic (receiver-side; matches sender-side byte-for-byte). This is the substrate-engineering payoff Sub-targets 1-8 were building toward — not just architectural cleanliness but a quantitative wire-bandwidth × deterministic-replay × pure-function-composition combination that no traditional PM has.
+
+**Sub-target 9 (new — bandwidth substrate)**: empirical validation of the bandwidth payoff:
+
+1. Construct a generator-combinator producing 1GB of deterministic data
+2. Measure wire-bytes for the generator-combinator transmission (target: <100KB)
+3. Verify receiver-side materialization byte-identical to sender-side
+4. Measure throughput at 100, 1000, 10000 receivers — scale-free property check
+5. Document the bandwidth-served vector empirically + cite as `.claude/rules/bandwidth-served-falsifier.md` empirical anchor
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
