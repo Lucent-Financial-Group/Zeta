@@ -97,6 +97,67 @@ Adjacent tools that touch parts of this slot but don't fill it:
 
 The slot is EMPTY because the constraints are awkward: Helm's templating language can't easily express graph topology; sync-engines (ArgoCD, Flux) treat dependencies at their own granularity (Application / HelmRelease); no GitOps-native tool sits above Helm + below the sync engine to provide typed dependency-graph + auto-variable-passing.
 
+### Diagnostic — the C++ diamond / multiple-inheritance problem applied to umbrella charts (Aaron 2026-05-26 sharpening)
+
+> *"yeah it comes down to when one project depends on another there is no one to own the umbrella chart in a way where it can be reused by other dependencies and umbrella charts by other teams dependencies. It's almost like the c++ diamond/multiple inheritance issue."*
+
+The structural reason umbrella charts don't compose across teams IS the C++ diamond:
+
+```text
+           shared-subchart X (e.g., postgres)
+              ▲              ▲
+              │              │
+   Team A's   │              │   Team B's
+   umbrella   │              │   umbrella
+   U_A (uses X)              U_B (uses X)
+              ▲              ▲
+              │              │
+              └──────┬───────┘
+                     │
+              Team C wants both U_A AND U_B
+              → DIAMOND: which X? whose config? whose schema migrations?
+              → no ownership protocol; no diamond-resolution mechanism;
+                no "virtual base" equivalent
+```
+
+Real-world Helm manifestations of the diamond:
+
+- Shared **postgres** subchart pulled by multiple app umbrellas at different versions
+- Shared **cert-manager** / **ingress-nginx** / **prometheus** owned at cluster-level but app charts bring their own anyway
+- Shared **secret stores** / **service meshes** — multiple consumers; no ownership designation
+- Shared **CRD operators** (Argo, Strimzi, etc.) — only ONE can install the CRDs; consumer charts must skip them
+
+Today the resolution is operator-manual:
+
+- Operator manually picks the version (or hopes for compatibility)
+- Operator manually configures each consumer chart to "skip" the shared dep + reference the cluster-owned instance
+- Operator manually wires connection strings / endpoints / secrets between the shared subchart and the consumer charts
+- No tooling assists; no validation catches mismatches; every operator solves the same problem ad-hoc
+
+### How Maven + Linux package managers solved the diamond (prior art Zeta inherits)
+
+Maven and Linux package managers solved this problem decades ago. The substrate-engineering work for Zeta-as-Ace-feature is reading off proven prior art:
+
+| Mechanism | Maven equivalent | Linux package-manager equivalent | Zeta-for-Helm equivalent |
+|---|---|---|---|
+| **Designated owner / version override** | `<dependencyManagement>` in parent POM | `apt-pin` / `yum priority` | Cluster-level chart-ownership designation; app charts MUST consume the designated instance |
+| **Explicit conflict resolution** | `<exclusions>` | `Conflicts:` / `Replaces:` | Per-graph-node exclusion of transitive deps |
+| **Nearest-wins for transitive conflicts** | Maven's resolution algorithm | (varies by package manager) | Topo-sort tiebreaker rule |
+| **Provides / virtual packages** | (limited; Java import-level) | `Provides:` field in deb/rpm | Chart declares `provides: cert-manager` so consumers don't pull their own |
+| **Version intersection** | Version ranges; `<requires>` semantics | apt's version-resolution + `--ignore-depends` overrides | Topo-resolve against version-range intersection |
+| **Effective POM computation** | `mvn help:effective-pom` | `apt-cache showpkg` | `ace deps effective-chart <app>` — show post-resolution merged chart |
+| **Bill of Materials (BOM)** | Maven BOM POMs | n/a (closest is meta-package) | Cluster-scope dependency-graph manifest |
+
+**The substrate-engineering target** for Zeta-as-Ace-feature (the sub-targets below) include the diamond-resolution primitives:
+
+1. **Chart ownership designation** — a cluster-level `AppDependencyGraph` declares which chart OWNS each shared subchart (cert-manager owned by platform team; consumers reference rather than re-install)
+2. **`provides:` analog at chart-graph level** — chart declares it provides postgres; downstream consumers see it satisfied
+3. **Version intersection + nearest-wins** — when umbrellas A and B both want X at different versions, the resolver computes the intersection; if none, surfaces the conflict explicitly rather than silently picking
+4. **Effective-chart computation** — `ace deps effective-chart <app>` shows the post-resolution merged chart spec for inspection / validation / debugging
+5. **Cross-team umbrella composition** — Team C's umbrella can declare consumption of U_A + U_B with explicit diamond-resolution policy
+
+The C++ diamond is exactly the right framing: the structural problem IS multiple-inheritance-without-virtual-base. Maven's `<dependencyManagement>` IS the K8s/Helm `virtual base class` equivalent — a single designated owner for the shared subchart's version + config that all umbrellas defer to. Zeta-as-Ace-feature implements this primitive at the chart-graph level.
+
 ## Why Zeta is positioned to claim it
 
 Three substrates already in flight that compose into the dependency-graph-on-Helm layer:
