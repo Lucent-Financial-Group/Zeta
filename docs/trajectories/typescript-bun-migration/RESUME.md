@@ -7,7 +7,7 @@
 through review and CI; after merge, decide whether the bash-retirement phase can
 move from soak to closed-maintained. Do not revive the old Cluster G/H/I or
 budget-cluster port queues.
-**Last updated**: 2026-05-12
+**Last updated**: 2026-05-26
 
 ## Why this trajectory exists
 
