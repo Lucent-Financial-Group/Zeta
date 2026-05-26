@@ -28,6 +28,7 @@ Current B-0754 v1 greedy installer (post commit
 internal disks found; cannot install`.
 
 For:
+
 - Diskless / minimal cluster nodes (edge devices, Raspberry-Pi-
   class hardware, lab boxes between disk transitions)
 - unRAID-style preference where the OS *should* persist on USB
@@ -56,8 +57,8 @@ remains raw + dedicated to data.
 - [ ] `BOOT_TARGET` env var in zeta-install.sh: `disk` (default;
       current behavior) or `usb` (paint OS onto USB stick;
       internal disks become pure data)
-- [ ] zeta-first-boot.sh: when no internal disks detected, auto-
-      fall-back to `BOOT_TARGET=usb` mode rather than bail
+- [ ] zeta-first-boot.sh: when no internal disks detected,
+      auto-fallback to `BOOT_TARGET=usb` mode rather than bail
 - [ ] USB persistence design: NixOS supports `installation-cd-
       base.nix` + an overlay for persistent /etc and /home; OR
       install full NixOS to a second partition on the USB stick
@@ -82,6 +83,7 @@ remains raw + dedicated to data.
 ## unRAID design notes
 
 unRAID's actual model:
+
 - OS = stateless RAM-resident image (loaded from USB at boot)
 - USB = config persistence (configs, plugins, license; NOT
   workload data)
@@ -91,6 +93,7 @@ unRAID's actual model:
   internal disks dedicated to user data
 
 For Zeta:
+
 - OS = NixOS (declarative, immutable — natural fit)
 - USB = NixOS installation + persistent state via tmpfs +
   overlay
