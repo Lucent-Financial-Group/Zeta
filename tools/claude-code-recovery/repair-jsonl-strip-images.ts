@@ -37,6 +37,7 @@
 import {
   readFileSync,
   writeFileSync,
+  renameSync,
   statSync,
   existsSync,
   readdirSync,
@@ -219,6 +220,7 @@ function processLine(
   let bytes = 0;
   let keptImages = 0;
   const droppedSizes: number[] = [];
+  let firstModified: Block[] | undefined; // track which container actually lost images
   const apply = (container: Block[] | undefined): void => {
     if (!container) return;
     const r = scrub(container, maxImageBytes);
@@ -230,6 +232,7 @@ function processLine(
     drops += r.droppedCount;
     bytes += r.freedBytes;
     droppedSizes.push(...r.droppedSizes);
+    if (!firstModified) firstModified = container;
   };
   // Pattern 1: attachment.prompt[] (queued_command shape)
   const att = obj.attachment as { prompt?: Block[] } | undefined;
@@ -248,13 +251,13 @@ function processLine(
   if (drops === 0) {
     return { line: raw, drops: 0, bytes: 0, keptImages, droppedSizes: [] };
   }
-  // Annotate exactly once, on the first container that lost images
-  if (att?.prompt && Array.isArray(att.prompt)) {
-    annotate(att.prompt, stamp, drops, bytes);
-  } else if (msg?.content && Array.isArray(msg.content)) {
-    annotate(msg.content, stamp, drops, bytes);
-  } else if (Array.isArray(obj.content)) {
-    annotate(obj.content as Block[], stamp, drops, bytes);
+  // Annotate the container that actually lost images (not just the
+  // first container that exists). Prior code annotated att.prompt
+  // whenever it existed even if drops happened in msg.content or
+  // top-level content — added a synthetic text block to the wrong
+  // surface and left the modified container untraceable.
+  if (firstModified) {
+    annotate(firstModified, stamp, drops, bytes);
   }
   return { line: JSON.stringify(obj), drops, bytes, keptImages, droppedSizes };
 }
@@ -264,11 +267,14 @@ function scanFile(
   maxLineBytes: number,
 ): { lineNo: number; length: number }[] {
   const flagged: { lineNo: number; length: number }[] = [];
-  const buf = readFileSync(path, "utf8");
+  // Read as Buffer (no encoding) so byte counts are accurate for
+  // non-ASCII content — the thresholds are documented in bytes,
+  // and string `.length` would give UTF-16 code units.
+  const buf = readFileSync(path);
   let start = 0;
   let lineNo = 0;
   for (let i = 0; i <= buf.length; i++) {
-    if (i === buf.length || buf.charCodeAt(i) === 10) {
+    if (i === buf.length || buf[i] === 0x0a) {
       lineNo++;
       const len = i - start;
       if (len > maxLineBytes) flagged.push({ lineNo, length: len });
@@ -345,9 +351,11 @@ function runRepair(args: Args): number {
   let linesInspected = 0;
   for (let i = 0; i < lines.length; i++) {
     const ln = lines[i] ?? "";
-    // Threshold is consistent with --scan: lines length > maxLineBytes
-    // are inspected; lines at-or-below the threshold are left alone.
-    if (ln.length <= args.maxLineBytes) {
+    // Threshold is consistent with --scan: lines whose UTF-8 byte
+    // length > maxLineBytes are inspected; at-or-below is left alone.
+    // Buffer.byteLength gives true UTF-8 bytes (string `.length` is
+    // UTF-16 code units, which under-counts multi-byte content).
+    if (Buffer.byteLength(ln, "utf8") <= args.maxLineBytes) {
       out.push(ln);
       continue;
     }
@@ -399,19 +407,25 @@ function runRepair(args: Args): number {
     return 70;
   }
   const newContent = out.join("\n");
+  const newSize = Buffer.byteLength(newContent, "utf8");
   console.log(
-    `size: ${sizeBefore.toLocaleString()} → ${newContent.length.toLocaleString()} bytes (saves ${(sizeBefore - newContent.length).toLocaleString()})`,
+    `size: ${sizeBefore.toLocaleString()} → ${newSize.toLocaleString()} bytes (saves ${(sizeBefore - newSize).toLocaleString()})`,
   );
   if (!args.apply) {
     console.log("dry-run (pass --apply to write)");
     return 0;
   }
   const backup = `${path}.bak-${stamp}-${Date.now()}`;
-  // Write backup from the in-memory buffer we already read above —
-  // avoids a second fs read against `path` (which would be a
-  // check-then-act CWE-367 surface). Then write the new content.
+  // Backup: write from the in-memory buffer we already read above.
+  // Avoids a second fs read against `path` (CWE-367).
   writeFileSync(backup, buf);
-  writeFileSync(path, newContent);
+  // Atomic in-place replace: write to a temp file in the same
+  // directory, then renameSync. POSIX rename is atomic — a crash
+  // mid-write leaves either the original file or the new file
+  // intact, never a truncated half-write.
+  const tmpPath = `${path}.tmp-${Date.now()}`;
+  writeFileSync(tmpPath, newContent);
+  renameSync(tmpPath, path);
   console.log(`backup: ${backup}`);
   console.log("applied. reload the session in Claude Code.");
   return 0;

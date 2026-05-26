@@ -1,6 +1,6 @@
 ---
 name: claude-session-recovery
-description: Recover Claude Code sessions corrupted by an oversize image. Triggers on "session won't open", "image too large", "edit out the image", "recover claude session".
+description: Recover a Claude Code session that won't reopen because a pasted image overflowed the JSONL line-load limit.
 ---
 
 # Claude session recovery — repair JSONL corrupted by oversize image attachments
