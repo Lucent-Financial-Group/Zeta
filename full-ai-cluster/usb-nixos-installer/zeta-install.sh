@@ -162,7 +162,18 @@ for d in "${DATA_DISKS[@]}"; do
   i=$((i + 1))
 done
 
-sudo partprobe
+# Per-device partprobe: bare `partprobe` (no args) probes EVERY
+# block device the kernel knows about, including the USB stick we
+# booted from (kernel exposes USB mass-storage as /dev/sda). The
+# booted ISO has mounted partitions on /dev/sda; partprobe rightfully
+# refuses to refresh those + returns non-zero; `set -euo pipefail`
+# then bails the whole install. Fix per B-0754 iter-3 empirical
+# anchor: pass only the disks WE just partitioned.
+echo "Refreshing kernel partition table for installed disks ..."
+sudo partprobe "$BOOT_DISK"
+for d in "${DATA_DISKS[@]}"; do
+  sudo partprobe "$d"
+done
 sleep 2
 
 # ── Step 5: format + mount ────────────────────────────────────────
