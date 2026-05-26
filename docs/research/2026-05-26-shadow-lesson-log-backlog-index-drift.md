@@ -1,9 +1,9 @@
 # Shadow Lesson Log: Backlog Agent Fails Index Integrity
 
-**- Date:** 2026-05-26
-**- Subject:** Agent `backlog` submitted a PR that failed the `backlog-index-integrity` check.
-**- PR:** [#5025](https://github.com/Lucent-Financial-Group/Zeta/pull/5025)
-**- Drift Type:** Process Drift - Incomplete Metadata Update.
+- **Date:** 2026-05-26
+- **Subject:** Agent `backlog` submitted a PR that failed the `backlog-index-integrity` check.
+- **PR:** [#5025](https://github.com/Lucent-Financial-Group/Zeta/pull/5025)
+- **Drift Type:** Process Drift - Incomplete Metadata Update.
 
 ## 1. Observation
 
