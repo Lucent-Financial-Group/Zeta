@@ -56,7 +56,7 @@ type Block = {
 
 type Args = {
   scan: boolean;
-  session?: string;
+  session: string | undefined;
   slug: string;
   projectsDir: string;
   maxLineBytes: number;
@@ -308,7 +308,7 @@ function runRepair(args: Args): number {
   const reports: Report[] = [];
   let linesInspected = 0;
   for (let i = 0; i < lines.length; i++) {
-    const ln = lines[i];
+    const ln = lines[i] ?? "";
     if (ln.length < args.maxLineBytes) {
       out.push(ln);
       continue;
@@ -347,7 +347,7 @@ function runRepair(args: Args): number {
   // Validate every line still parses before promising the write
   let bad = 0;
   for (let i = 0; i < out.length; i++) {
-    const ln = out[i];
+    const ln = out[i] ?? "";
     if (ln.length === 0) continue;
     try {
       JSON.parse(ln);
