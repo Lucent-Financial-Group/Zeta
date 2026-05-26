@@ -6,9 +6,13 @@ title: Cloud-native plugins fit Zeta's interface shape (not vice versa) — vend
 effort: L
 ask: aaron 2026-05-25
 created: 2026-05-25
-last_updated: 2026-05-25
+last_updated: 2026-05-26
 composes_with:
+  - B-0741
+  - B-0744
   - B-0748
+  - B-0749
+  - B-0754
   - B-0759
   - B-0761
   - B-0762
@@ -56,7 +60,7 @@ Operator swaps plugin → vendor changes; operator's code doesn't.
 |---|---|
 | `Zeta.Storage.BlobStore` | S3 / GCS / Azure Blob / Cloudflare R2 / Backblaze B2 / Longhorn / Ceph / local-disk |
 | `Zeta.Storage.KeyValue` | DynamoDB / Cosmos DB / Cloudflare D1 / Cloudflare KV / Redis / Valkey / DragonflyDB / FoundationDB |
-| `Zeta.Storage.Document` | MongoDB / CosmosDB / Firestore / CouchDB / Postgres-JSONB |
+| `Zeta.Storage.Document` | MongoDB / Cosmos DB / Firestore / CouchDB / Postgres-JSONB |
 | `Zeta.Storage.Vector` | Pinecone / Weaviate / Qdrant / Milvus / pgvector / OpenSearch-kNN |
 | `Zeta.Compute.Function` | AWS Lambda / GCP Cloud Functions / Cloudflare Workers / Knative / K8s Jobs |
 | `Zeta.Compute.GPU` | AWS EC2-GPU / GCP A100 / Lambda Labs / RunPod / local NVIDIA / local AMD ROCm |
@@ -70,7 +74,14 @@ Operator swaps plugin → vendor changes; operator's code doesn't.
 
 Each interface is small (5-20 methods), Zeta-shaped (operator-
 ergonomic, retraction-native where applicable), and lives in
-`Zeta.Cloud.<Primitive>` namespaces.
+`Zeta.<Primitive>` namespaces (e.g., `Zeta.Storage`, `Zeta.Compute`,
+`Zeta.Identity`, `Zeta.Messaging`, `Zeta.Network`,
+`Zeta.Observability`, `Zeta.Secrets`) — matching the table above.
+Plugin adapter implementations live under
+`Zeta.Cloud.Plugins.<vendor>` namespaces (per the registry
+acceptance bullet below); the `Zeta.Cloud.Plugins.*` tree is the
+adapter-implementation surface, NOT the operator-facing interface
+surface.
 
 ## Acceptance
 
