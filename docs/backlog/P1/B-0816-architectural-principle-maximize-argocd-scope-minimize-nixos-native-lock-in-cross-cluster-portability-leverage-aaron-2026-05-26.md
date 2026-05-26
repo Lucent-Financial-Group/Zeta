@@ -158,6 +158,28 @@ Three load-bearing properties carried across all three contexts:
 
 Composes directly with B-0288 (Ace) and B-0742 (Ace's distributable POC). Zeta inherits all 3 properties: Ace bootstraps the substrate without vendor lock-in; ArgoCD converges it across any K8s distro; the entire stack is open-source.
 
+### Why ArgoCD specifically (not Flux) — historical decision lineage (Aaron 2026-05-26)
+
+The ArgoCD-vs-Flux decision was made empirically at LexisNexis (and carried to GitHub) based on the maintainer's load-bearing-feature evaluation at the time:
+
+> *"We tried to use Flux too i just didn't have the featues we need at the time it had no sync waves, i think they have something now and it had poor self healing and not equal to rollouts"*
+
+Three feature gaps in Flux at decision time that ArgoCD covered:
+
+1. **Sync waves** — ArgoCD supports phased deployment ordering via `argocd.argoproj.io/sync-wave` annotations (e.g., CRDs in wave 0, controllers in wave 1, workloads in wave 2). Flux at the time had no equivalent; deployments arrived without ordering guarantees. Load-bearing for cluster bring-up substrate where ordering matters (CRDs MUST exist before CR consumers).
+
+2. **Self-healing quality** — ArgoCD's `selfHeal: true` (per `syncPolicy.automated`) is mature + battle-tested at LN + GH scale. Flux's self-healing was weaker at decision time.
+
+3. **Rollouts (blue-green / canary)** — Argo Rollouts (the sibling project) provides progressive-delivery patterns (blue-green deployments, canary analysis, automated rollback on health-check failure). Flux had no equivalent at decision time.
+
+The maintainer's note: *"i think they have something now"* — Flux MAY have caught up on some/all of these since the decision was made. But the substrate decision is rooted in proven LN+GH operational evidence; switching engines is itself a substantive substrate-engineering cost. Re-evaluation possible if Flux now demonstrably exceeds ArgoCD on Zeta's specific needs; default remains ArgoCD per the empirical lineage.
+
+**2026-state Flux gap is narrower** (clarifying nuance Aaron 2026-05-26 surfaced via the ServiceTitan-uses-Flux observation): Flux + Argo Rollouts compose cleanly. Argo Rollouts is a Kubernetes controller (CRDs: `Rollout`, `AnalysisTemplate`, `Experiment`, `AnalysisRun`) under the Argoproj umbrella but with **zero hard dependency on ArgoCD**. Flux can install the rollouts controller via `HelmRelease` against `https://argoproj.github.io/argo-helm` and reconcile `Rollout` CRs from git via `Kustomization`, with `dependsOn:` handling install-before-consume ordering. Flux's own native progressive-delivery answer is **Flagger** (sibling CNCF project; integrates with Linkerd / Istio / Contour / Gloo / NGINX). So a Flux shop in 2026 has two viable paths: Flux + Flagger (all-Flux-native) OR Flux + Argo Rollouts (best-of-breed PD with GitOps). Both ship in production. ServiceTitan-on-Flux specifically could pull in Argo Rollouts tomorrow via one `HelmRelease` if they don't already.
+
+Zeta's ArgoCD choice still holds per the empirical LN+GH lineage + ArgoCD's tighter sync-wave + selfHeal integration with the same engine; the maintainer's "i think they have something now" caveat is partially correct (Flux + Flagger + dependsOn-graph + improved self-healing all exist now), but the substrate-switching cost dominates re-evaluation absent specific Flux-superior need.
+
+Implication for Zeta substrate: when adopting any iter-N CR / app / chart, use ArgoCD's sync-wave + selfHeal + (where progressive-delivery matters) Argo Rollouts. Don't redesign for engine-independence — the decision is locked in per the lineage. **Cross-cluster portability principle still holds even when other teams use Flux**: the K8s manifests (CRDs + Deployments + Services + Rollout CRs) are engine-agnostic; only the sync-engine-specific glue (`Application` for ArgoCD; `Kustomization`/`HelmRelease` for Flux) differs. A Flux-shop adopting Zeta substrate would wrap the same K8s manifests in Flux primitives — substantively the same portability win.
+
 This anchor changes the P1 classification's basis: not "architectural reasoning that might apply"; rather "pattern validated at LexisNexis-scale + GitHub-scale + now Zeta-scale; the same constraints (cloud-agnostic + 0-vendor-lock-in + ArgoCD-convergence) hold across all three". Future-Otto cold-booting reads: this principle has 3 scale-evidenced anchors; treat it as load-bearing for every cluster-substrate decision.
 
 Filed as P1 because architectural principles inform every subsequent substrate-engineering decision; landing the principle BEFORE iter-7 implementation work begins ensures the cross-distro portability framing is baked into the foundation rather than retrofitted. Empirical anchor strengthens the P1 classification (not speculative; validated at scale across 3 contexts).
