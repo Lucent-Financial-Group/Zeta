@@ -54,7 +54,7 @@ Operator swaps plugin → vendor changes; operator's code doesn't.
 
 | Zeta interface (operator-facing) | Plugin adapters (vendor-implementing) |
 |---|---|
-| `Zeta.Storage.BlobStore` | S3 / GCS / Azure Blob / R2 / Backblaze B2 / Cloudflare R2 / Longhorn / Ceph / local-disk |
+| `Zeta.Storage.BlobStore` | S3 / GCS / Azure Blob / Cloudflare R2 / Backblaze B2 / Longhorn / Ceph / local-disk |
 | `Zeta.Storage.KeyValue` | DynamoDB / Cosmos DB / Cloudflare D1 / Cloudflare KV / Redis / Valkey / DragonflyDB / FoundationDB |
 | `Zeta.Storage.Document` | MongoDB / CosmosDB / Firestore / CouchDB / Postgres-JSONB |
 | `Zeta.Storage.Vector` | Pinecone / Weaviate / Qdrant / Milvus / pgvector / OpenSearch-kNN |
