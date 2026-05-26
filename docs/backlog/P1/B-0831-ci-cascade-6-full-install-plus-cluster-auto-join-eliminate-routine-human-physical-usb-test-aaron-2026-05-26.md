@@ -151,14 +151,33 @@ cluster) that itself is substrate-engineering scope.
 
 The substrate-engineering work composes with the broader
 "eliminate-human-physical-USB-test-as-routine-gate" direction the
-operator named 2026-05-26. Physical test remains valuable for:
+operator named 2026-05-26.
 
-- Real-hardware quirks (BIOS/UEFI variants; specific motherboard NICs;
-  SAS controller compatibility) that QEMU doesn't emulate
-- Periodic sanity-checks the maintainer chooses to do
-- First-time-on-new-hardware validation
+### Physical test BECOMES the hardware-support test (operator 2026-05-26 reframing)
 
-But it is no longer the routine gate for substrate-landing.
+Operator's sharpening: *"yes physcal test become actually hardware
+support test"*. Physical USB-test is REFRAMED — not eliminated, not
+demoted, but assigned a different scope:
+
+| Test scope | Surface | Validates |
+|---|---|---|
+| Routine substrate validation | CI cascade #6 (this row) | Install flow + cluster-join shape (QEMU-emulatable) |
+| **Hardware-support test** | Physical USB on real hardware | BIOS/UEFI variant compatibility, motherboard NIC drivers, SAS controller support, GPU detection on actual silicon, real-hardware quirks QEMU cannot emulate |
+
+The physical test is no longer the gate-of-last-resort for every
+substrate landing; it becomes the **first-class hardware-compatibility-
+matrix gate** — fired when (a) onboarding new hardware, (b) iterating on
+hardware-specific code paths, (c) periodic compatibility sanity-checks
+across the fleet's hardware diversity.
+
+This composes with the broader cluster-bringup substrate-engineering
+work: hardware-support-test results inform the hardware-compatibility-
+matrix that drives provisioning decisions (which boards/NICs/GPUs
+are supported; which need driver substrate; which need to be excluded).
+
+The reframing turns physical-test from "annoying routine gate that
+blocks substrate landings" INTO "valuable hardware-compatibility-matrix
+substrate that informs cluster-provisioning decisions."
 
 ## Operational implication for CI rate-limit + run-time
 
