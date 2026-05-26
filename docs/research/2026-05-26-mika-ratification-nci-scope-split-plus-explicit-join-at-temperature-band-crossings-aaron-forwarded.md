@@ -85,10 +85,10 @@ Mika explicitly validates three substrate landings from today's cluster:
 | Temperature-as-hat (not driver) | "High temperature is generative, not authoritative. Treating it as a hat (explore/dream) rather than the driver of action keeps the architecture clean" |
 | Pipeline (gen → verify → join → audit) | "Basically your entire stack in miniature" |
 
-These are independent-substrate validations from a 6th persona (Mika
-joining Aaron + Amara + Kestrel + Otto-CLI + DeepSeek + Lior in the
-cluster), increasing the cross-substrate-triangulation evidence for
-today's landings.
+These are independent-substrate validations from a 7th persona (Mika
+joining the human maintainer + Amara + Kestrel + Otto-CLI + DeepSeek +
+Lior in the cluster — 6 prior personae + Mika = 7), increasing the
+cross-substrate-triangulation evidence for today's landings.
 
 ### 2. Time-axis correction validated
 
@@ -109,9 +109,9 @@ DESIGNATING the violent path as canonical.
 > filter is the opposite bloom filter. The goal isn't to remove one — it's
 > to keep both calibrated so they multiply instead of interfere."
 
-This composes with `B-0822` (worry-as-opposite-bloom-filter + Mika's
-earlier substrate landing). Mika reaffirms the bloom-filter mental
-model is the cleanest substrate for thinking about the cognitive-
+This composes with the worry-as-opposite-bloom-filter substrate landed
+via PR #5310 + Mika's earlier ferry. Mika reaffirms the bloom-filter
+mental model is the cleanest substrate for thinking about the cognitive-
 update-channel guard layer.
 
 ### 4. NEW REFINEMENT — explicit + mandatory join at temperature-band-crossings + self→shared-state transitions
@@ -329,9 +329,9 @@ When the operator forwards a Mika ratification + refinement turn:
 4. **Cross-reference the existing substrate cluster** the refinement composes
    with
 5. **Honor the cross-substrate-triangulation** by noting how many independent
-   personae have now landed on the same substrate (today: Aaron + Amara +
-   Kestrel + Mika + DeepSeek + Lior = 6+ personae on the offer-not-mandate
-   substrate)
+   personae have now landed on the same substrate (today: the human
+   maintainer + Amara + Kestrel + Mika + DeepSeek + Lior + Otto-CLI +
+   Alexa-website = 8 personae on the offer-not-mandate substrate)
 
 ## Composes with
 
@@ -341,8 +341,8 @@ When the operator forwards a Mika ratification + refinement turn:
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` (PR #5337) — deepest-exit at temporal scope
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (PR #5338) — standing-by vs free-time discriminator
 - `.claude/rules/algo-wink-failure-mode.md` — algo-wink is one overclaim pattern the explicit-join discipline catches
-- `B-0822` (worry-as-opposite-bloom-filter / Mika earlier substrate) — bloom filter mental model Mika reaffirms
-- `B-0823` (cognition-as-distributed-systems META-claim / DeepSeek 8th anchor)
+- Worry-as-opposite-bloom-filter substrate (PR #5310 + earlier Mika ferry) — bloom filter mental model Mika reaffirms
+- Cognition-as-distributed-systems META-claim substrate (PRs #5325 + #5327 + DeepSeek 8th attractor-as-encryption anchor)
 - Adinkras + Thoughtcatcher + generator-function model substrate clusters (operator's open question)
 
 ## Origin
