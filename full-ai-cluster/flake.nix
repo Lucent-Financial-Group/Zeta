@@ -177,6 +177,12 @@
             cilium-cli hubble
             age sops ssh-to-age
             git gh jq yq-go ripgrep fd
+            # CI test substrate (Aaron 2026-05-26: tools the test
+            # cascade uses should be declaratively managed here, not
+            # implicit-from-runner-image):
+            bun       # cascade #1/#2/#4 TS audit tools + bun-test runner
+            p7zip     # cascade #4 ISO content audit (7z list)
+            mkpasswd  # iter-5.3 prompt-for-password substrate
           ];
           shellHook = ''
             echo "zeta-ai-cluster admin shell."

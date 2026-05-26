@@ -135,7 +135,12 @@ jobs:
           fi
           iso_abs="$(pwd)/${iso_candidates[0]}"
           cd ..
-          bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
+          # Nix-pinned 7z (per Aaron 2026-05-26: declaratively manage
+          # tool deps rather than rely on implicit ubuntu-runner-image
+          # PATH). `nix shell nixpkgs#p7zip --command` brings in 7z
+          # at exact Nix-pinned version; ubuntu-24.04 runner already
+          # has Nix installed by the earlier 'Install Nix' step.
+          nix shell nixpkgs#p7zip --command bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
 
       - name: Locate ISO + capture metadata
         id: iso
