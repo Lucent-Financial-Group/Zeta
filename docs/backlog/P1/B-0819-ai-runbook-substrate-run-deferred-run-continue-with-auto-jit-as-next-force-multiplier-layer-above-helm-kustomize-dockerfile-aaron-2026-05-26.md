@@ -155,7 +155,7 @@ The `auto JIT` primitive needs a compilation surface — a way to take a naive r
 
 ## Substrate-inventory pass
 
-Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../.claude/rules/verify-existing-substrate-before-authoring.md):
+Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
 - `grep -rn "runbook\|run-book\|run book" docs/ memory/ .claude/` → existing references in skill-authoring discussion + bootstream context; no formal "AI runbook substrate" backlog row
 - `grep -rn "deferred run\|continue with\|auto JIT" docs/ memory/ .claude/` → no prior substrate by these names
