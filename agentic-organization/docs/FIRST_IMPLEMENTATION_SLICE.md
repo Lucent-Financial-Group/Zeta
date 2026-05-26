@@ -130,6 +130,10 @@ Hermes runs, MCP calls, and UI evidence.
   the supervisor signal, audit events, outbox events, and idempotency
   record through one `recordCommandOutcome` port. Handlers do not write
   piecemeal state.
+- Command outcome persistence returns generic committed, replayed, or
+  idempotency-conflict results. Durable adapters own idempotency race
+  handling and return those generic outcomes without exposing duplicate
+  key or vendor errors to application code.
 - State-store and outbox-source ports are async from the beginning so
   durable SQL, NATS-backed workers, and other real adapters do not
   inherit a fake synchronous shape.
@@ -173,6 +177,10 @@ Hermes runs, MCP calls, and UI evidence.
 - The Cockroach command adapter records the idempotency row before
   effect rows inside the command transaction batch, so a duplicate key
   aborts before supervisor signal, audit, or outbox rows are submitted.
+- The Cockroach command adapter claims the idempotency key before
+  inserting effects. If it loses the race, it returns replay or
+  idempotency conflict through the generic `CommandStateStore` result
+  and does not insert command effects.
 - The Cockroach event-ingestion adapter normalizes SQL `NULL`
   completion fields to pending receipts and claims the pending receipt
   before inserting reaction plans. If the claim reports duplicate or

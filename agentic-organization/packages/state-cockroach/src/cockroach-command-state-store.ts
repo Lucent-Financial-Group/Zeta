@@ -1,9 +1,13 @@
-import type { CommandStateStore, CommandStateStoreFactory } from "../../application/src/ports.ts";
+import {
+  CommandOutcomePersistenceStatus,
+  type CommandStateStore,
+  type CommandStateStoreFactory,
+} from "../../application/src/ports.ts";
 import { CockroachTableName } from "./cockroach-schema.ts";
 
 export const CockroachCommandStateStoreStatement = {
   FindIdempotencyRecord: "find_idempotency_record",
-  InsertIdempotencyRecord: "insert_idempotency_record",
+  ClaimIdempotencyRecord: "claim_idempotency_record",
   InsertSupervisorSignal: "insert_supervisor_signal",
   InsertAuditEvent: "insert_audit_event",
   InsertOutboxEvent: "insert_outbox_event",
@@ -22,13 +26,15 @@ export type CockroachSqlResult<Row = Record<string, unknown>> = {
   rows: readonly Row[];
 };
 
-export type CockroachSqlExecutor = {
+export type CockroachSqlTransactionExecutor = {
   execute: <Row = Record<string, unknown>>(statement: CockroachSqlStatement) => Promise<CockroachSqlResult<Row>>;
-  executeTransaction: (transaction: CockroachSqlTransaction) => Promise<void>;
 };
 
-export type CockroachSqlTransaction = {
-  statements: readonly CockroachSqlStatement[];
+export type CockroachSqlExecutor = {
+  execute: <Row = Record<string, unknown>>(statement: CockroachSqlStatement) => Promise<CockroachSqlResult<Row>>;
+  executeTransaction: <Result>(
+    operation: (executor: CockroachSqlTransactionExecutor) => Promise<Result>,
+  ) => Promise<Result>;
 };
 
 export type CreateCockroachCommandStateStoreFactoryInput = {
@@ -64,29 +70,61 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
       };
     },
     recordCommandOutcome: async (outcome) => {
-      await executor.executeTransaction({
-        statements: [
-          createInsertIdempotencyRecordStatement(outcome.idempotencyRecord),
-          ...outcome.effects.supervisorSignals.map(createInsertSupervisorSignalStatement),
-          ...outcome.effects.auditEvents.map(createInsertAuditEventStatement),
-          ...outcome.effects.outboxEvents.map(createInsertOutboxEventStatement),
-        ],
+      return await executor.executeTransaction(async (transaction) => {
+        const claimResult = await transaction.execute<CockroachIdempotencyClaimRow<Result>>({
+          name: CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+          sql: CockroachCommandStateStoreSql.ClaimIdempotencyRecord,
+          parameters: [
+            outcome.idempotencyRecord.idempotencyKey,
+            outcome.idempotencyRecord.requestHash,
+            outcome.idempotencyRecord.result,
+          ],
+        });
+        const claim = claimResult.rows[0];
+        const claimStatus = claim?.persistence_status ?? CommandOutcomePersistenceStatus.IdempotencyConflict;
+
+        if (claimStatus === CommandOutcomePersistenceStatus.Replayed) {
+          return {
+            status: CommandOutcomePersistenceStatus.Replayed,
+            result: claim?.result_json as Result,
+          };
+        }
+
+        if (claimStatus === CommandOutcomePersistenceStatus.IdempotencyConflict) {
+          if (claim?.request_hash === undefined || claim.request_hash === null) {
+            return {
+              status: CommandOutcomePersistenceStatus.IdempotencyConflict,
+            };
+          }
+
+          return {
+            status: CommandOutcomePersistenceStatus.IdempotencyConflict,
+            existingRequestHash: claim.request_hash,
+          };
+        }
+
+        for (const supervisorSignal of outcome.effects.supervisorSignals) {
+          await transaction.execute(createInsertSupervisorSignalStatement(supervisorSignal));
+        }
+
+        for (const auditEvent of outcome.effects.auditEvents) {
+          await transaction.execute(createInsertAuditEventStatement(auditEvent));
+        }
+
+        for (const outboxEvent of outcome.effects.outboxEvents) {
+          await transaction.execute(createInsertOutboxEventStatement(outboxEvent));
+        }
+
+        return {
+          status: CommandOutcomePersistenceStatus.Committed,
+          result: outcome.idempotencyRecord.result,
+        };
       });
     },
   };
 }
 
 type CommandStateStoreResult<Result> = Parameters<CommandStateStore<Result>["recordCommandOutcome"]>[0];
-
-function createInsertIdempotencyRecordStatement<Result>(
-  record: CommandStateStoreResult<Result>["idempotencyRecord"],
-): CockroachSqlStatement {
-  return {
-    name: CockroachCommandStateStoreStatement.InsertIdempotencyRecord,
-    sql: CockroachCommandStateStoreSql.InsertIdempotencyRecord,
-    parameters: [record.idempotencyKey, record.requestHash, record.result],
-  };
-}
 
 function createInsertSupervisorSignalStatement(
   supervisorSignal: CommandStateStoreResult<unknown>["effects"]["supervisorSignals"][number],
@@ -157,18 +195,41 @@ type IdempotencyRecordRow = {
   result_json: unknown;
 };
 
+type CockroachIdempotencyClaimRow<Result> = {
+  persistence_status: CommandOutcomePersistenceStatus;
+  request_hash?: string | null;
+  result_json?: Result | null;
+};
+
 const CockroachCommandStateStoreSql = {
   FindIdempotencyRecord: `
     SELECT idempotency_key, request_hash, result_json
     FROM ${CockroachTableName.IdempotencyRecords}
     WHERE idempotency_key = $1
   `,
-  InsertIdempotencyRecord: `
-    INSERT INTO ${CockroachTableName.IdempotencyRecords} (
-      idempotency_key,
-      request_hash,
-      result_json
-    ) VALUES ($1, $2, $3)
+  ClaimIdempotencyRecord: `
+    WITH claimed_record AS (
+      INSERT INTO ${CockroachTableName.IdempotencyRecords} (
+        idempotency_key,
+        request_hash,
+        result_json
+      ) VALUES ($1, $2, $3)
+      ON CONFLICT (idempotency_key) DO NOTHING
+      RETURNING request_hash, result_json
+    ),
+    existing_record AS (
+      SELECT request_hash, result_json
+      FROM ${CockroachTableName.IdempotencyRecords}
+      WHERE idempotency_key = $1
+    )
+    SELECT
+      CASE
+        WHEN EXISTS (SELECT 1 FROM claimed_record) THEN '${CommandOutcomePersistenceStatus.Committed}'
+        WHEN EXISTS (SELECT 1 FROM existing_record WHERE request_hash = $2) THEN '${CommandOutcomePersistenceStatus.Replayed}'
+        ELSE '${CommandOutcomePersistenceStatus.IdempotencyConflict}'
+      END AS persistence_status,
+      (SELECT request_hash FROM existing_record) AS request_hash,
+      (SELECT result_json FROM existing_record) AS result_json
   `,
   InsertSupervisorSignal: `
     INSERT INTO ${CockroachTableName.SupervisorSignals} (

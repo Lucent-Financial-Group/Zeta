@@ -20,6 +20,7 @@ export {
   type SendSupervisorSignalCommand,
   type SendSupervisorSignalDependencies,
 } from "./handlers/send-supervisor-signal.ts";
+export { CommandOutcomePersistenceStatus } from "./ports.ts";
 export type {
   Clock,
   CommandEffects,
@@ -27,4 +28,5 @@ export type {
   CommandStateStoreFactory,
   IdGenerator,
   RecordCommandOutcomeInput,
+  RecordCommandOutcomeResult,
 } from "./ports.ts";

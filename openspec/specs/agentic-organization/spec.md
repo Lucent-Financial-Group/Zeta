@@ -320,11 +320,23 @@ executing privileged work directly.
 
 - **WHEN** a durable command adapter records a command outcome
 - **THEN** the idempotency record, command state, audit events, and
-  outbox events are submitted as one transaction batch
+  outbox events are submitted inside one transaction boundary
 - **AND** the idempotency record is reserved before effect rows are
-  submitted inside that batch
+  submitted inside that boundary
 - **AND** application handlers do not receive database transaction
   objects
+
+#### Scenario: Durable command adapter loses idempotency claim race
+
+- **WHEN** a durable command adapter attempts to record a command
+  outcome after another transaction has already claimed the same
+  idempotency key
+- **THEN** it returns a generic replay or idempotency-conflict result
+  through the command outcome port
+- **AND** it does not insert duplicate supervisor signal, audit event, or
+  outbox rows
+- **AND** application code does not receive vendor-specific duplicate
+  key errors or transaction objects
 
 ### Requirement: Worker process boundary composes event loops through ports
 

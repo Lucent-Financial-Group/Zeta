@@ -269,6 +269,10 @@ durable adapters one atomic commit boundary for a command result.
 Durable command adapters should reserve the idempotency record before
 effect rows inside that transaction so an idempotency race aborts before
 supervisor signal, audit, or outbox state becomes visible.
+The command outcome port returns generic committed, replayed, or
+idempotency-conflict results. A vendor adapter may use SQL constraints,
+transaction callbacks, CTEs, or other local mechanics to detect races,
+but application code only receives the generic outcome.
 
 The first worker boundary follows the same rule. `@agentic-org/workers`
 does not create NATS clients, Cockroach clients, Nest modules, Temporal

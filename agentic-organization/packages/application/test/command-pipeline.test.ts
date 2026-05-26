@@ -7,7 +7,13 @@ import { createCommandHandlerRegistry } from "../src/command-handler-registry.ts
 import { CommandErrorCode, CommandResultStatus, type CommandResult } from "../src/command-result.ts";
 import { createCommandPipeline, type PipelineCommand } from "../src/command-pipeline.ts";
 import { createSendSupervisorSignalHandler } from "../src/handlers/send-supervisor-signal.ts";
-import type { CommandStateStore, CommandStateStoreFactory, RecordCommandOutcomeInput } from "../src/ports.ts";
+import {
+  CommandOutcomePersistenceStatus,
+  type CommandStateStore,
+  type CommandStateStoreFactory,
+  type RecordCommandOutcomeInput,
+  type RecordCommandOutcomeResult,
+} from "../src/ports.ts";
 
 const command: PipelineCommand = {
   commandId: "cmd-supervisor-signal-001",
@@ -102,6 +108,51 @@ describe("command pipeline idempotency", () => {
     equal(stateStoreFactory.recordedOutcomes[0]?.effects.outboxEvents.length, 1);
   });
 
+  test("returns replay when outcome persistence loses a same-request idempotency race", async () => {
+    const stateStoreFactory = createOutcomeResultCommandStateStoreFactory<CommandResult>({
+      status: CommandOutcomePersistenceStatus.Replayed,
+      result: {
+        status: CommandResultStatus.Accepted,
+        idempotency: {
+          replayed: false,
+        },
+      },
+    });
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    deepEqual(result.idempotency, {
+      replayed: true,
+    });
+    equal(stateStoreFactory.recordedOutcomes.length, 1);
+  });
+
+  test("returns idempotency conflict when outcome persistence loses a different-request race", async () => {
+    const stateStoreFactory = createOutcomeResultCommandStateStoreFactory<CommandResult>({
+      status: CommandOutcomePersistenceStatus.IdempotencyConflict,
+      existingRequestHash: "hash-other-request",
+    });
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.IdempotencyConflict);
+    equal(stateStoreFactory.recordedOutcomes.length, 1);
+  });
+
   test("does not perform piecemeal command writes when outcome recording fails", async () => {
     const stateStoreFactory = createFailingOutcomeCommandStateStoreFactory<CommandResult>("transaction unavailable");
     const pipeline = createCommandPipeline({
@@ -137,6 +188,28 @@ function createRecordingCommandStateStoreFactory<Result>(): RecordingCommandStat
       findIdempotencyRecord: async () => undefined,
       recordCommandOutcome: async (input) => {
         recordedOutcomes.push(input);
+
+        return {
+          status: CommandOutcomePersistenceStatus.Committed,
+          result: input.idempotencyRecord.result,
+        };
+      },
+    }),
+  };
+}
+
+function createOutcomeResultCommandStateStoreFactory<Result>(
+  outcomeResult: RecordCommandOutcomeResult<Result>,
+): RecordingCommandStateStoreFactory<Result> {
+  const recordedOutcomes: RecordCommandOutcomeInput<Result>[] = [];
+
+  return {
+    recordedOutcomes,
+    createCommandStateStore: () => ({
+      findIdempotencyRecord: async () => undefined,
+      recordCommandOutcome: async (input) => {
+        recordedOutcomes.push(input);
+        return outcomeResult;
       },
     }),
   };
