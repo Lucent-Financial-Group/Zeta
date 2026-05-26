@@ -192,3 +192,5 @@ tools/shadow/shadow-observer.log
 amazon-items-full.json
 amazon-items-hardware-filtered.json
 amazon-items-partial.json
+tools/alignment/out/filter-gate-log.jsonl
+xcrun_db
