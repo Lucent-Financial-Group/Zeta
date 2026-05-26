@@ -707,6 +707,50 @@ This is why NULL works as the escape hatch — it's not arbitrary substrate-engi
 
 **Composes with `.claude/rules/default-to-both.md`**: tri-boolean logic IS the both-default at semantics scope — neither true-only nor false-only; both AND the third (NULL / unknown / escape) are first-class. The substrate doesn't force collapse to binary; the third state stays operational.
 
+### Recognize — don't construct — the Maybe monad: SQL recursive CTEs + NULL ALREADY are it (DeepSeek/Prism ferried via Aaron 2026-05-26)
+
+> DeepSeek/Prism (Refraction-register; via Aaron):
+>
+> *"NULL as the Maybe monad in recursive CTEs is the operational key. SQL already has Maybe-monad semantics — NULL propagates through LEFT JOINs exactly like bind propagates Nothing. Recursive CTEs wrap this in a fixed-point combinator, which means the existing database substrate already implements the monadic pattern without naming it. The database IS the monad runtime. We're not building a monad on top of the database — we're recognizing that the database already is one."*
+
+**The substrate-engineering shift this names**: recognition, not construction. The prior section (NULL-as-monad / tri-boolean / triple-substrate convergence) established that NULL composes across FP + SQL-native + operational semantics simultaneously. This addition sharpens the operational-deployment implication: **we do not need to build a Maybe-monad runtime on top of CockroachDB/Postgres; the database is one already**.
+
+| Maybe monad construct | SQL recursive-CTE primitive |
+|---|---|
+| `Just a` | a row with the relevant column = some non-NULL value |
+| `Nothing` | a row with the relevant column = NULL |
+| `bind` / `>>=` | LEFT JOIN propagation — NULL on the left side propagates NULL through the join chain without short-circuiting the recursion |
+| Identity `return` | `SELECT <value>` projecting a non-NULL row |
+| Fixed-point combinator (`fix`) | `WITH RECURSIVE cte AS (anchor UNION ALL recursive-step) SELECT * FROM cte` |
+| Termination via `Nothing` | NULL propagation in the recursive-step's join chain terminates the recursion at substrate scope |
+
+**Why "recognize, don't construct" matters operationally**:
+
+1. **Zero custom-runtime surface to maintain** — the FP-paradigm correctness comes for free from PostgreSQL/CockroachDB's tested SQL-engine implementation. No custom monad library to patch + version + audit + retraction-bake-in.
+2. **Substrate ships on day one** — Sub-target 7 (CockroachDB storage) + Sub-target 8 (generator-combinator library) deploy on stock production-grade databases. The combinator-library wraps recursive-CTE templates; the database executes the monad without knowing it's executing a monad.
+3. **Composes with TLA+ / DBSP / CASPaxos lineage anchors** — recursive-CTE-as-fixed-point is well-studied in database theory (Datalog evaluation; bottom-up vs top-down; magic-set transformation). Recognition inherits decades of operational + formal-verification work; construction would re-derive it.
+4. **Inverts the trust direction** — instead of "trust our custom monad runtime is correct," operators trust "PostgreSQL/CockroachDB's NULL semantics are correct" (a property the database industry has validated continuously since SQL-92's standardization of three-valued logic in 1992). Trust-THEN-verify (per the meta-architectural principle at this row's start) operates here: trust the recognized substrate; verify combinator-shape composability via type signatures.
+5. **Generalizes beyond CockroachDB** — any RDBMS with recursive CTEs + three-valued NULL logic + LEFT JOIN inherits the substrate. SQL Server PDW (Sub-target 9's empirical-prior-art anchor) had this. Postgres has this. MySQL 8+ has this. The substrate is portable because the recognition-target is the SQL-92 standard, not a vendor-specific feature.
+
+**The substrate-engineering type-signature derivation** (per Erik Meijer's "implementation derives from type signatures" framing in this row's compression-headline subsection):
+
+```fsharp
+// The type-signature alone (no runtime needed beyond standard SQL):
+type Generator<'a> = WithRecursive of anchor: 'a option * step: ('a option -> 'a option)
+//                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//                                    The 'a option IS Maybe<'a>.
+//                                    SQL's NULL handling IS the bind operator.
+//                                    The WITH RECURSIVE construct IS fix.
+```
+
+The implementation is already deployed on every CockroachDB / Postgres / SQL-Server instance in the world. We're just naming the type that derives the operations the database already executes.
+
+**Composes with `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`**: this is recognition substrate, not metaphysical wrap. The grep-substrate-anchors check passes because the substrate-anchor (PostgreSQL's documented NULL-semantics + recursive-CTE evaluation; SQL-92 standard text; Datalog literature on fixed-point evaluation) exists in well-established form.
+
+**Composes with `.claude/rules/honor-those-that-came-before.md`** at substrate-attribution scope — the recognition pattern honors the database-theory + SQL-standards-committee + RDBMS-vendor lineage that built the Maybe-monad-as-recursive-CTE-with-NULL substrate decades before we named it that. We inherit the work without trying to redo it.
+
+**Attribution**: DeepSeek/Prism Refraction-register per `.claude/rules/agent-roster-reference-card.md`; ferried-through-Aaron per the discipline that external AI participants who don't commit ferry insights via the human maintainer. The substrate-engineering insight composes with Sub-target 7 (CockroachDB storage) + the existing NULL-as-monad + tri-boolean substrate at this section's parent scope.
+
 ### Triangle-as-base → universal tessellation just like GPUs (Aaron 2026-05-26)
 
 > *"it means we can tesselate everyting casue or base is a traingle just like GPUs"*
