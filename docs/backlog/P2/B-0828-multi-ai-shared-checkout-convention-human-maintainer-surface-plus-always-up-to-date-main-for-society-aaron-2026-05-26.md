@@ -6,7 +6,7 @@ priority: P2
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
-composes_with: [B-0751]
+composes_with: [B-0750]
 ---
 
 # B-0828 — Multi-AI shared-checkout convention (Aaron 2026-05-26)
@@ -26,9 +26,9 @@ The shared checkout serves two modes depending on operator state:
 | Operator state | Shared checkout role | What AIs do |
 |---|---|---|
 | **Human actively adding code** | Operator's working directory; HEAD may be on any branch; index may be dirty | AIs treat as read-only; do NOT modify; do NOT run destructive git operations |
-| **Human NOT adding code** | Always-up-to-date-with-main reference for "society" (all AIs on the machine) | AIs may keep it up to date with main (`git fetch` + `git reset --hard origin/main` when safe); use it as the canonical reference for the current state of main |
+| **Human NOT adding code** | Always-up-to-date-with-main reference for "society" (all AIs on the machine) | AIs may keep it up to date with main via the explicit safety-precondition sequence below; use it as the canonical reference for the current state of main |
 
-The shared checkout is NEVER the AI's working space. AIs do their own work in isolated clones / worktrees under `/private/tmp/zeta-*/` (per `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` + B-0751).
+The shared checkout is NEVER the AI's working space. AIs do their own work in isolated clones / worktrees under `/private/tmp/zeta-*/` (per `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` + B-0750).
 
 ## Why this matters — empirical anchor 2026-05-26
 
@@ -50,11 +50,36 @@ For the convention to work, AIs need a way to discover operator state:
 |---|---|---|
 | Operator-maintained lockfile (e.g., `.zeta-human-active`) | Human is actively coding | AIs treat shared as read-only |
 | Lockfile absent + shared HEAD at `origin/main` | Society-mode | AIs may keep up to date; read-only otherwise |
-| Lockfile absent + shared HEAD diverged from `origin/main` | Stale-society-mode | AIs may safely `fetch + reset --hard origin/main` to restore society-mode |
+| Lockfile absent + shared HEAD diverged from `origin/main` | Stale-society-mode | AIs may restore society-mode ONLY via the explicit safety-precondition sequence below |
 | Lockfile present + uncommitted changes in working tree | Mid-session | AIs definitely treat as read-only |
 | Shared `.git/objects/` shows corruption | Recovery-needed | AIs report to operator; do NOT auto-recover (per existing discipline) |
 
-The signaling primitives are deliberately simple (lockfile + HEAD-check + git-fsck) so any AI can implement them cheaply.
+The signaling primitives are deliberately simple (lockfile + HEAD-check + `git fsck`) so any AI can implement them cheaply.
+
+### Explicit safety-precondition sequence for `git fetch + reset --hard origin/main` on shared checkout
+
+Restoring society-mode on the shared checkout via hard-reset is destructive — it discards any local commits / staged changes / working-tree modifications. The AI helper that does this MUST verify ALL of the following preconditions BEFORE the hard-reset (FAIL-CLOSED — if any check fails, abort + report to operator + do NOT auto-recover):
+
+```text
+1. Lockfile check:        test ! -f .zeta-human-active
+2. Clean working tree:    test -z "$(git status --porcelain=v1)"
+3. No untracked files:    test -z "$(git ls-files --others --exclude-standard)"
+4. No staged changes:     test -z "$(git diff --cached --name-only)"
+5. No unmerged paths:     test -z "$(git ls-files -u)"
+6. No detached HEAD:      git symbolic-ref HEAD >/dev/null 2>&1
+7. On main branch:        test "$(git branch --show-current)" = main
+8. No active rebase:      test ! -d .git/rebase-merge && test ! -d .git/rebase-apply
+9. No bisect in progress: test ! -f .git/BISECT_LOG
+10. No cherry-pick state: test ! -f .git/CHERRY_PICK_HEAD
+11. .git/ fsck clean:     git fsck --no-progress --no-dangling 2>&1 | grep -qv "error\|missing"
+12. Network reachable:    git ls-remote origin main >/dev/null 2>&1
+```
+
+Only if ALL 12 checks pass does the helper execute `git fetch origin main && git reset --hard origin/main`. If ANY check fails, the helper logs which check failed + the current state + exits non-zero. The operator is the only entity authorized to override these checks.
+
+Implementations of this helper (`bun tools/refresh-shared-to-main.ts` per the Acceptance section below) MUST enforce all 12 preconditions in the implementation; the convention does not authorize bypassing them.
+
+**Rationale**: the discipline trades helper-complexity for data-loss-prevention. Each precondition catches a distinct loss vector (uncommitted work; stash-equivalent untracked files; mid-rebase state; etc.). The fail-closed posture means "if you can't verify it's safe, don't do it" — operator intervention is preferable to silent data loss.
 
 ## Composes with the existing isolated-work discipline
 
@@ -89,7 +114,7 @@ This row ADDS: explicit naming of the shared checkout's TWO modes (human-active 
 
 ## Composes with
 
-- B-0751 (agent-worktree-hygiene; isolated worktree discipline)
+- B-0750 (agent-worktree-hygiene; isolated worktree discipline)
 - `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` (dotgit-saturation tier; autonomous-agents-do-NOT-run-recovery)
 - `.claude/rules/honor-those-that-came-before.md` (do-the-right-things-for-each-other per Aaron's framing)
