@@ -121,9 +121,8 @@ tools/hygiene/snapshot-github-settings.ts       # was .sh
 
 ### Bucket D — Ported, bash retained (0 tracked files; historical list)
 
-The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 +
-#880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 +
-#902. The bash originals listed below are now historical references, not
+The TS ports landed across PRs #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884, #885, #892, #894, #896, #898, #900, #901, and #902.
+The bash originals listed below are now historical references, not
 tracked live files; the bash-retirement inventory check fails if any
 equivalent post-install `.sh` surface reappears outside the repo-wide retained
 shell allowlist.
