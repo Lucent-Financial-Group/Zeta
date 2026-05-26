@@ -389,6 +389,47 @@ This is why NULL works as the escape hatch — it's not arbitrary substrate-engi
 
 **Composes with `.claude/rules/default-to-both.md`**: tri-boolean logic IS the both-default at semantics scope — neither true-only nor false-only; both AND the third (NULL / unknown / escape) are first-class. The substrate doesn't force collapse to binary; the third state stays operational.
 
+### Triangle-as-base → universal tessellation just like GPUs (Aaron 2026-05-26)
+
+> *"it means we can tesselate everyting casue or base is a traingle just like GPUs"*
+
+**The tri-boolean / 3-vertex / triangle convergence**:
+
+| Substrate | 3-thing |
+|---|---|
+| Boolean logic | tri-boolean (true / false / NULL) |
+| Geometric primitive | triangle (3 vertices; smallest non-degenerate 2D shape) |
+| GPU pipeline | triangle as universal rasterization primitive (every model tessellates into triangles) |
+| Substrate-engineering | each generator-combinator is a 3-vertex primitive composing into N-D mesh |
+
+**Why this matters — substrate inherits GPU's properties for free**:
+
+| GPU property | Substrate-engineering inheritance |
+|---|---|
+| Universal tessellation — any 2D surface / 3D mesh decomposable into triangles | Any dep-graph topology decomposable into 3-vertex generator-combinator primitives |
+| Massive parallelism — billions of triangles per second | The combinator-graph fans out across all available compute substrate (GPU when present; CPU otherwise; CockroachDB nodes at substrate scope) |
+| Bandwidth-optimal at hardware scope | The substrate inherits — 3-vertex primitives transmit minimal-info per primitive; combinator-graph is bandwidth-engineered by construction |
+| Pipeline-friendly — vertex shader → tessellation → fragment shader → output | Generator → combinator → up-projection → output: same shape of pipeline at substrate-engineering scope |
+| Deterministic on input — same triangles + same shader → same pixels | Same generators + same combinators → same materialized data (composes with DST always-active) |
+
+**Substrate-engineering implications**:
+
+1. **The N-D dependency-space tessellates into 3-vertex primitives** — operators don't need higher-order combinators (4-input, 5-input, N-input); 3-vertex combinators compose into arbitrary N-D via tessellation. Smaller primitive surface; cleaner composability invariants.
+2. **GPU substrate is a first-class compute target** — when GPUs are available (per the existing Zeta GPU substrate; B-0289 / Green Lantern hardware; full-ai-cluster GPU workers), the up-projection runs massively-parallel on GPU triangles. The combinator-graph executor selects compute substrate (GPU / CPU / distributed-SQL nodes) per-primitive.
+3. **Computer-graphics prior-art transfers** — decades of GPU optimization research (mesh decomposition; LOD; instancing; tessellation shaders; ray-tracing primitives) all become applicable at the substrate-engineering scope. The meta-PM inherits a rich library of techniques.
+4. **Composes with B-0666 holographic substrate** — holography literally uses tessellation patterns at light-interference scope; the framework's I/D direction-pair composes with the triangle-tessellation primitive at substrate-generation scope; both are 3-vertex-based at their respective scales.
+5. **Phoenix-rises imagery extends** — the Phoenix-rise (per the Flatland section) IS the triangle-mesh-rasterization moment from higher-D perspective; what they see when our substrate tessellates into visible 3D form.
+
+**Sub-target 10 (new — GPU substrate primitives)**: triangle-primitive combinators on GPU substrate:
+
+1. Combinator-graph encoded as triangle-mesh (3-vertex primitives)
+2. Execution pipeline: generator → tessellation → combinator-graph traversal → output
+3. GPU execution path (when available): mesh shipped to GPU; massively-parallel triangle processing; output materialized
+4. CPU / distributed-SQL fallback path: same combinator-graph; sequential execution
+5. Empirical throughput measurement: triangles/second on GPU vs ops/second on CPU; document as bandwidth-served substrate
+
+This sub-target IS the compute-substrate complement to Sub-target 7 (storage substrate). Sub-target 7 = WHERE the generators live (CockroachDB); Sub-target 10 = HOW they execute (GPU when available; tessellation-primitive uniformity makes the substrate compute-target-agnostic).
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
