@@ -101,7 +101,11 @@ function gitUser(): string {
 
 const LOG_PATH = "tools/alignment/out/filter-gate-log.jsonl";
 
+// Tests set FILTER_GATE_LOG_PATH to a tempdir to avoid polluting the
+// production ethics-decision log with `skill:test-entry` entries.
 export function logFilePath(): string {
+  const override = process.env.FILTER_GATE_LOG_PATH;
+  if (override !== undefined && override !== "") return override;
   return join(repoRoot(), LOG_PATH);
 }
 
