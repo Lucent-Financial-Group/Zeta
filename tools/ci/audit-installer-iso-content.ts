@@ -34,11 +34,11 @@
 //
 // Exit codes:
 //   0 — all assertions pass
-//   1 — ISO file not found / invocation error
+//   1 — ISO file not found / not-a-regular-file / invocation error
 //   2 — 7z listing failed (corrupt ISO / not an ISO)
-//   3 — expected file missing from ISO content listing
+//   3 — required-path assertion(s) failed (missing path OR present-but-empty)
 
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 interface Args {
@@ -187,6 +187,10 @@ interface AuditError {
   readonly detail: string;
 }
 
+function isAuditError(r: readonly AuditFailure[] | AuditError): r is AuditError {
+  return !Array.isArray(r);
+}
+
 function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError {
   if (!existsSync(isoPath)) {
     // Distinct error class so main() can map to a distinct exit code
@@ -195,6 +199,26 @@ function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError 
     // exit 1 "ISO file not found / invocation error" per the contract
     // in the header comment).
     return { kind: "missing-file", detail: `ISO file does not exist: ${isoPath}` };
+  }
+  // Path exists but may be a directory, symlink-to-nothing-readable, or
+  // device file. Treat any non-regular-file under the same exit-1
+  // "invocation error" class as the missing-file case (Copilot P1 on
+  // #5120 — without this, a directory or unreadable path falls through
+  // to the 7z spawn path and produces exit 2 "list-failed" which the
+  // header contract reserves for corrupt-ISO / not-an-ISO cases).
+  try {
+    const st = statSync(isoPath);
+    if (!st.isFile()) {
+      return {
+        kind: "missing-file",
+        detail: `ISO path exists but is not a regular file: ${isoPath} (mode=${st.mode.toString(8)})`,
+      };
+    }
+  } catch (e) {
+    return {
+      kind: "missing-file",
+      detail: `cannot stat ISO path ${isoPath}: ${(e as Error).message}`,
+    };
   }
   const ls = lsIso(isoPath);
   if (!ls.ok) {
@@ -235,16 +259,17 @@ function main(): number {
   }
   const result = auditIsoContent(parsed.isoPath);
   // Distinct error kinds map to distinct exit codes per the header
-  // contract (fix-fwd P? on #5119 reconciled the contract drift).
-  // TS narrowing: Array.isArray on a readonly tuple union isn't
-  // recognized by the compiler as discriminating; check via the
-  // "kind" property on AuditError directly via in-operator narrow.
-  if (!Array.isArray(result) && "kind" in result) {
-    const err = result as AuditError;
-    process.stderr.write(`audit-installer-iso-content: ${err.detail}\n`);
-    return err.kind === "missing-file" ? 1 : 2;
+  // contract. The `isAuditError` typeguard narrows the union without
+  // requiring `as` casts (Copilot P2 on #5120 — earlier draft used
+  // a redundant `"kind" in result` check + cast; the typeguard
+  // pattern is the canonical TS form for this shape, and works
+  // around TS's `Array.isArray` not narrowing `readonly T[]` unions
+  // directly via the lib.es5 signature).
+  if (isAuditError(result)) {
+    process.stderr.write(`audit-installer-iso-content: ${result.detail}\n`);
+    return result.kind === "missing-file" ? 1 : 2;
   }
-  const failures = result as readonly AuditFailure[];
+  const failures = result;
   if (failures.length === 0) {
     process.stdout.write(
       `audit-installer-iso-content: PASS — ${parsed.isoPath} contains all ${REQUIRED_ISO_PATHS.length} expected top-level files\n`,
