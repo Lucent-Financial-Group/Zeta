@@ -707,6 +707,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0772](backlog/P2/B-0772-observable-cluster-fabric-universal-device-plugins-plus-reticulum-mesh-plus-polyglot-rx-streams-aaron-2026-05-25.md)** Observable cluster fabric — universal device plugins (NPU/GPU/audio/etc.) + Reticulum mesh (AllJoyn-successor) + polyglot Rx streams in every language
 - [ ] **[B-0774](backlog/P2/B-0774-etcdless-options-kine-adapter-dqlite-postgres-nats-zeta-native-dbsp-aaron-2026-05-25.md)** Etcd-less k8s options — kine adapter family (SQLite/Postgres/MySQL/NATS/Dqlite) + Zeta-native DBSP+Raft endgame
 - [ ] **[B-0775](backlog/P2/B-0775-ha-kubernetes-that-scales-beyond-etcd-cockroach-nats-supercluster-karmada-cluster-api-cell-based-aaron-2026-05-25.md)** HA Kubernetes that scales beyond etcd — CockroachDB / NATS super-cluster / Karmada / KubeStellar / Cluster API / cell-based architecture
+- [ ] **[B-0778](backlog/P2/B-0778-carefully-curated-commodity-hardware-reference-for-home-lab-ai-cluster-mini-pc-oculink-egpu-ai-cpus-shared-memory-simple-kvm-remote-finger-aaron-2026-05-25.md)** Carefully-curated commodity hardware reference for home-lab AI cluster — mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger
 
 ## P3 — convenience / deferred
 
