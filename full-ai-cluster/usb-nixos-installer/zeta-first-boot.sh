@@ -114,10 +114,12 @@ else
   echo
   echo
   # nmtui returns 0 on quit regardless of whether connection succeeded.
-  # Absolute path: systemd unit PATH minimal; the env-var below + this
-  # absolute path are both defenses. Fixes B-0754 iteration-1 'nmtui:
-  # command not found' (nmtui IS installed in the ISO via networkmanager
-  # in systemPackages; the issue was PATH inheritance into the unit).
+  # Absolute path: defense-in-depth alongside the systemd unit's
+  # environment.PATH override (set in configuration.nix on
+  # systemd.services.zeta-first-boot.environment.PATH via lib.mkForce).
+  # Both defenses together fix B-0754 iteration-1 'nmtui: command not
+  # found' (nmtui IS installed in the ISO via networkmanager in
+  # systemPackages; the issue was PATH inheritance into the unit).
   if ! /run/current-system/sw/bin/nmtui; then
     echo "[zeta-first-boot] nmtui failed."
     drop_to_shell
