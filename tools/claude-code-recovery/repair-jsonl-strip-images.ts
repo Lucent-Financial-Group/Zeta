@@ -45,8 +45,17 @@ import {
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-const DEFAULT_SLUG = "-Users-acehack-Documents-src-repos-Zeta";
 const DEFAULT_MAX_LINE_BYTES = 10_000_000;
+
+/**
+ * Claude Code identifies each project by `~/.claude/projects/<slug>/`
+ * where `<slug>` is the project's absolute path with `/` replaced by
+ * `-`. Derive the slug from the current working directory so the
+ * default works for any operator without machine-specific hardcoding.
+ */
+function deriveDefaultSlug(): string {
+  return process.cwd().replace(/\//g, "-");
+}
 
 type Block = {
   type?: string;
@@ -72,7 +81,20 @@ function parseArgs(): Args {
   const get = (flag: string, fallback?: string): string | undefined => {
     const i = argv.indexOf(flag);
     if (i === -1) return fallback;
-    return argv[i + 1];
+    const v = argv[i + 1];
+    if (v === undefined || v.startsWith("--")) {
+      console.error(`flag ${flag} requires a value`);
+      printUsageAndExit(64);
+    }
+    return v;
+  };
+  const parseNonNegativeNumber = (flag: string, raw: string): number => {
+    const n = Number(raw);
+    if (!Number.isFinite(n) || n < 0) {
+      console.error(`${flag} must be a non-negative number; got '${raw}'`);
+      printUsageAndExit(64);
+    }
+    return n;
   };
   const scan = argv.includes("--scan");
   const session = get("--session");
@@ -84,14 +106,18 @@ function parseArgs(): Args {
     console.error("--scan and --session are mutually exclusive");
     printUsageAndExit(64);
   }
-  const maxLineBytes = Number(
-    get("--max-line-bytes", String(DEFAULT_MAX_LINE_BYTES)),
+  const maxLineBytes = parseNonNegativeNumber(
+    "--max-line-bytes",
+    get("--max-line-bytes", String(DEFAULT_MAX_LINE_BYTES))!,
   );
-  const maxImageBytes = Number(get("--max-image-bytes", String(maxLineBytes)));
+  const maxImageBytes = parseNonNegativeNumber(
+    "--max-image-bytes",
+    get("--max-image-bytes", String(maxLineBytes))!,
+  );
   return {
     scan,
     session,
-    slug: get("--slug", DEFAULT_SLUG)!,
+    slug: get("--slug", deriveDefaultSlug())!,
     projectsDir: get("--projects-dir", join(homedir(), ".claude", "projects"))!,
     maxLineBytes,
     maxImageBytes,
@@ -109,7 +135,8 @@ function printUsageAndExit(code: number): never {
 Flags:
   --scan                   Scan all sessions in the project dir
   --session <uuid>         Target one session (without --apply, dry-run only)
-  --slug <project-slug>    Override project slug (default ${DEFAULT_SLUG})
+  --slug <project-slug>    Override project slug (default: derived from cwd —
+                           absolute path with '/' replaced by '-')
   --projects-dir <path>    Override projects dir (default ~/.claude/projects)
   --max-line-bytes <N>     Inspect-line threshold in bytes (default ${DEFAULT_MAX_LINE_BYTES.toLocaleString()})
   --max-image-bytes <N>    Strip-image threshold in bytes (default = --max-line-bytes)
@@ -289,13 +316,24 @@ function runScan(args: Args): number {
 
 function runRepair(args: Args): number {
   const path = join(args.projectsDir, args.slug, `${args.session!}.jsonl`);
-  if (!existsSync(path)) {
-    console.error(`not found: ${path}`);
-    return 66;
+  // Skip the explicit existsSync gate — the readFileSync below will
+  // throw ENOENT directly. Combining the two creates a TOCTOU surface
+  // CodeQL flags (CWE-367), and the gate adds nothing — error handling
+  // is the same either way.
+  let raw: string;
+  let sizeBefore: number;
+  try {
+    sizeBefore = statSync(path).size;
+    raw = readFileSync(path, "utf8");
+  } catch (e) {
+    const err = e as NodeJS.ErrnoException;
+    if (err.code === "ENOENT") {
+      console.error(`not found: ${path}`);
+      return 66;
+    }
+    throw e;
   }
-  const sizeBefore = statSync(path).size;
   const stamp = new Date().toISOString().slice(0, 10);
-  const raw = readFileSync(path, "utf8");
   const lines = raw.split("\n");
   const out: string[] = [];
   type Report = {
@@ -309,7 +347,9 @@ function runRepair(args: Args): number {
   let linesInspected = 0;
   for (let i = 0; i < lines.length; i++) {
     const ln = lines[i] ?? "";
-    if (ln.length < args.maxLineBytes) {
+    // Threshold is consistent with --scan: lines length > maxLineBytes
+    // are inspected; lines at-or-below the threshold are left alone.
+    if (ln.length <= args.maxLineBytes) {
       out.push(ln);
       continue;
     }
@@ -369,6 +409,10 @@ function runRepair(args: Args): number {
     return 0;
   }
   const backup = `${path}.bak-${stamp}-${Date.now()}`;
+  // Race window between copy and write is theoretically TOCTOU
+  // (CodeQL CWE-367), but accepted: this repairs the operator's own
+  // ~/.claude/projects/ files, which the operator owns and is not
+  // concurrently editing. The backup makes the operation reversible.
   copyFileSync(path, backup);
   writeFileSync(path, newContent);
   console.log(`backup: ${backup}`);
@@ -382,4 +426,6 @@ function main(): void {
   process.exit(code);
 }
 
-main();
+// Per repo convention (tools/ scripts): only auto-run when invoked as
+// entrypoint, not when imported for testing/reuse.
+if (import.meta.main) main();

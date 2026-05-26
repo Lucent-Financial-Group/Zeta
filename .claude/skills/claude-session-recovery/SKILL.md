@@ -1,6 +1,6 @@
 ---
 name: claude-session-recovery
-description: Recover a Claude Code session JSONL corrupted by an oversize image attachment. Triggers on "session won't open", "session corrupted", "claude code crashed loading", "image too large", "X MB image broke the session", "edit out the image", "strip the image", "recover claude session", "repair claude session". Uses tools/claude-code-recovery/repair-jsonl-strip-images.ts to scan + strip image blocks while preserving conversation graph integrity. The Claude Code auto-mode classifier blocks the agent from running --apply directly; the agent composes + dry-runs, the operator runs --apply.
+description: Recover Claude Code sessions corrupted by an oversize image. Triggers on "session won't open", "image too large", "edit out the image", "recover claude session".
 ---
 
 # Claude session recovery — repair JSONL corrupted by oversize image attachments
@@ -27,11 +27,15 @@ Specific trigger phrases:
 
 ### Step 1 — Find which session is corrupted
 
-If the operator named the session by title, find it via the title text:
+If the operator named the session by title, find it via the title text.
+Claude Code projects live at `~/.claude/projects/<slug>/` where `<slug>`
+is the project's absolute path with `/` replaced by `-` (e.g.
+`/Users/alice/code/foo` → `-Users-alice-code-foo`):
 
 ```bash
+SLUG=$(pwd | tr '/' '-')   # derive from current project root
 grep -l -i "<phrase the operator remembers>" \
-  ~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/*.jsonl 2>/dev/null
+  ~/.claude/projects/"$SLUG"/*.jsonl 2>/dev/null
 ```
 
 If the operator did not name a phrase, scan the whole project dir:

@@ -42,7 +42,7 @@ Useful flags:
 |---|---|---|
 | `--scan` | — | Mutex with `--session`; reports all flagged sessions |
 | `--session <uuid>` | — | Target one session JSONL |
-| `--slug <slug>` | `-Users-acehack-Documents-src-repos-Zeta` | Override project dir slug |
+| `--slug <slug>` | derived from `process.cwd()` (absolute path with `/` → `-`) | Override project dir slug |
 | `--projects-dir <path>` | `~/.claude/projects` | Override projects dir |
 | `--max-line-bytes <N>` | `10000000` (10 MB) | Inspect-line threshold |
 | `--max-image-bytes <N>` | same as `--max-line-bytes` | Strip-image threshold (per individual image) |
