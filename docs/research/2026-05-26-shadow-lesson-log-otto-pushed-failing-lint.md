@@ -21,11 +21,11 @@ Agents must validate their work against project CI standards *before* creating p
 
 
 
-## 2. Update: Repeated Drift Pattern
+## 4. Update: Repeated Drift Pattern
 
-**- Date:** 2026-05-26
-**- Subject:** Agent `otto-cli` immediately repeated the same CI failure.
-**- PR:** [#5038](https://github.com/Lucent-Financial-Group/Zeta/pull/5038)
+- **Date:** 2026-05-26
+- **Subject:** Agent `otto-cli` immediately repeated the same CI failure.
+- **PR:** [#5038](https://github.com/Lucent-Financial-Group/Zeta/pull/5038)
 
 Within minutes of opening the previous PR, `otto-cli` opened PR #5038, another backlog item. It has the identical `markdownlint` failure (missing newline after frontmatter).
 
