@@ -25,8 +25,8 @@ since we are desired state / declarative / git native / ai native a
 full rebuild of a node should not stop normal operations once we get
 to 3 nodes."*
 
-Current B-0754 v1 substrate (greedy N-disk + zero-typing first-boot
-+ ZETA_AUTO_CONFIRM bypass) treats every install as a fresh install:
+Current B-0754 v1 substrate (greedy N-disk, zero-typing first-boot,
+ZETA_AUTO_CONFIRM bypass) treats every install as a fresh install:
 
 - Asks for role (defaults to control-plane)
 - Wipes all internal disks
@@ -139,10 +139,12 @@ holds at 3+ nodes. Documentation must be explicit:
 | 5 | Zero-disruption + 1 spare (can survive 2 simultaneous failures) |
 | 7 | Zero-disruption + 2 spare |
 
-Per B-0756 HA control-plane, odd counts only (even counts
-split-brain on partition). The 3-node threshold is the
-production-ready inflection point per B-0759 first-time-CLI-user
-persona substrate.
+Per B-0756 HA control-plane, odd counts only (even counts add a
+node without improving fault tolerance — 3 and 4 both survive 1
+failure, and even clusters can become unavailable on equal-split
+partitions since neither side holds quorum, rather than form
+divergent leaders). The 3-node threshold is the production-ready
+inflection point per B-0759 first-time-CLI-user persona substrate.
 
 ## Security notes
 
