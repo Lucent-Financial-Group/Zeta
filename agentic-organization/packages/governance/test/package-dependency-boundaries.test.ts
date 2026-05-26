@@ -9,6 +9,7 @@ import {
 } from "../src/package-dependency-boundaries.ts";
 
 const packagesRootDirectory = new URL("../..", import.meta.url);
+const agenticOrganizationRootDirectory = new URL("../../..", import.meta.url);
 
 describe("package dependency boundaries", () => {
   test("keeps application independent from state and runtime adapters", async () => {
@@ -135,6 +136,77 @@ describe("package dependency boundaries", () => {
         {
           packageName: PackageBoundaryRule.ProductionSource,
           sourceGlob: "workers/src/**/*.ts",
+          forbiddenFileSuffix: ".test.ts",
+          reason: PackageSourceLayoutViolationReason.TestFileInProductionSource,
+        },
+      ],
+    });
+
+    equal(violations.length, 0, violations.map((violation) => violation.message).join("\n"));
+  });
+
+  test("keeps package code independent from app hosts", async () => {
+    const violations = await validatePackageDependencyBoundaries({
+      rootDirectory: packagesRootDirectory,
+      rules: [
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "application/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "domain/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "messaging/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "messaging-nats/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "observability/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "runtime/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "state/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "state-cockroach/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+        {
+          packageName: PackageBoundaryRule.Packages,
+          sourceGlob: "workers/src/**/*.ts",
+          forbiddenImportFragments: ["apps/"],
+        },
+      ],
+    });
+
+    equal(violations.length, 0, violations.map((violation) => violation.message).join("\n"));
+  });
+
+  test("keeps app tests out of production source directories", async () => {
+    const violations = await validatePackageSourceLayout({
+      rootDirectory: agenticOrganizationRootDirectory,
+      rules: [
+        {
+          packageName: PackageBoundaryRule.ApplicationHost,
+          sourceGlob: "apps/workers/src/**/*.ts",
           forbiddenFileSuffix: ".test.ts",
           reason: PackageSourceLayoutViolationReason.TestFileInProductionSource,
         },

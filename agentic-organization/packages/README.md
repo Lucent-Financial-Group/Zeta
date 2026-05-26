@@ -117,7 +117,7 @@ The test command uses Node's built-in test runner and TypeScript type
 stripping:
 
 ```text
-node --experimental-strip-types --test packages/*/test/**/*.test.ts
+node --experimental-strip-types --test packages/*/test/**/*.test.ts apps/*/test/**/*.test.ts
 ```
 
 This is a deliberate NodeNext starting point so the package contracts

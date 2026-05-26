@@ -262,6 +262,15 @@ a chance to run. `apps/workers` will later bind those ports to real
 cluster adapters and attach process concerns such as health checks,
 metrics, structured logs, readiness, and graceful shutdown.
 
+`apps/workers` now exists as the first NodeNext runtime-host shell. It
+does not introduce NestJS yet. It composes the package-level worker host
+and the NATS consumer adapter, applies runtime config such as
+environment, Organization ID, NATS stream, durable consumer, and batch
+size, records telemetry through a sink port, and reports
+healthy/degraded status. Concrete NATS clients, CockroachDB pools,
+readiness endpoints, structured logging, and shutdown hooks still belong
+to later process-adapter wiring.
+
 ## SOLID Rules
 
 ### Single Responsibility
@@ -813,6 +822,13 @@ tools, policy denials, harness failures, and telemetry gaps, then route
 fixes through the same command, review, and security lifecycle as any
 other work.
 
+The first `apps/workers` runtime projects both package worker-cycle
+counts and NATS consumer batch counts through telemetry sink ports. The
+runtime treats package degraded status, thrown loop failures,
+dead-lettered NATS messages, and failed NATS messages as degraded state
+so weak points can surface before the process is connected to real
+cluster telemetry.
+
 ## V0 Build Sequence
 
 1. Create package skeletons for:
@@ -856,7 +872,9 @@ other work.
 8. Add the first rule catalog and reaction executor for ready work,
    review staffing, QA staffing, blocker escalation, and late run
    incidents.
-9. Add the NestJS API and worker hosts.
+9. Add runtime hosts. The first NodeNext `apps/workers` host now
+   composes the worker and NATS consumer loops through ports; NestJS API
+   and richer worker process wiring are still pending.
 10. Add UI projections for work board, review center, and evidence
     timeline.
 11. Add real cluster adapters one at a time.

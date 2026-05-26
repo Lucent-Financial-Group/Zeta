@@ -300,6 +300,37 @@ live infrastructure adapters are bound by a runtime host.
 - **AND** concrete process concerns are left for `apps/workers` or
   adapter packages
 
+#### Scenario: Workers app composes process loops
+
+- **WHEN** the `apps/workers` runtime host is asked to run once
+- **THEN** it runs the package-level Organization worker cycle
+- **AND** it runs the NATS consumer adapter cycle with the configured
+  inbound batch size
+- **AND** it records worker-cycle telemetry and NATS-consumer batch
+  telemetry through a telemetry sink port
+- **AND** it reports healthy only when both loops complete without
+  degraded worker status, NATS failures, or dead letters
+
+#### Scenario: Workers app rejects invalid process config
+
+- **WHEN** the `apps/workers` runtime host is created with missing
+  environment, missing Organization ID, missing NATS stream, missing
+  durable consumer, or non-positive NATS inbound batch size
+- **THEN** runtime creation fails with a typed configuration error before
+  any worker loop can start
+
+#### Scenario: Workers app keeps loops visible when one loop fails
+
+- **WHEN** the package-level worker cycle throws
+- **THEN** the `apps/workers` runtime host still attempts the NATS
+  consumer cycle
+- **AND** the runtime result reports degraded status with a typed
+  organization-worker failure stage
+- **WHEN** the NATS consumer cycle reports failed or dead-lettered
+  messages
+- **THEN** the runtime result reports degraded status without hiding the
+  batch counts
+
 ### Requirement: Telemetry is complete at the event boundary
 
 Organization packages MUST expose OpenTelemetry-compatible attributes

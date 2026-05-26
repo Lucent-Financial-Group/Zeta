@@ -37,6 +37,7 @@ send_supervisor_signal
   -> inbox receipt / consumer dedupe
   -> persisted reaction plans
   -> worker host cycle summary
+  -> apps/workers runtime summary
   -> LGTM span attributes
   -> supervisor triage reaction plan
 ```
@@ -55,6 +56,12 @@ send_supervisor_signal
 | `@agentic-org/runtime`         | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
 | `@agentic-org/workers`         | process-boundary run-once worker host that composes outbox publishing and inbound event ingestion through ports                                                       |
 | `@agentic-org/governance`      | package dependency-boundary checks that prevent application code from importing concrete state/runtime adapters                                                       |
+
+## Apps
+
+| App            | Implemented first                                                                                                                                         |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/workers` | NodeNext runtime-host shell that runs the package worker cycle, runs the NATS consumer cycle, emits telemetry records, and reports healthy/degraded state |
 
 ## NodeNext Runtime Decision
 
@@ -158,15 +165,23 @@ Hermes runs, MCP calls, and UI evidence.
   processed, duplicate, payload-conflict, invalid, failed,
   acknowledged, negative-acknowledged, terminated, and dead-lettered
   counts.
+- `apps/workers` now composes the package worker cycle and NATS consumer
+  cycle behind process configuration and telemetry ports. If one cycle
+  throws, the other still runs and the runtime result is degraded with a
+  typed failure stage.
+- `apps/workers` validates required process config before any loop can
+  start: environment, Organization ID, NATS stream, durable consumer,
+  and positive NATS inbound batch size.
 
 ## Next Slice
 
-The next slice should add the first runnable `apps/workers` composition
-host that binds the outbox publisher, NATS consumer adapter, runtime
-ingestion processor, durable state adapters, and observability helpers
-behind process configuration. After that, add a transactional
-durable-state adapter integration test using CockroachDB as the first
-cluster-backed implementation once a local/dev connection is available.
+The next slice should bind the first real process adapters into
+`apps/workers`: concrete NATS pull/publish clients, the durable
+CockroachDB outbox/inbox adapters, and a telemetry sink that can later
+send structured logs and metrics into the full-ai-cluster LGTM stack.
+After that, add a transactional durable-state adapter integration test
+using CockroachDB as the first cluster-backed implementation once a
+local/dev connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

@@ -4,7 +4,9 @@ import { fileURLToPath } from "node:url";
 
 export const PackageBoundaryRule = {
   Application: "application",
+  ApplicationHost: "application_host",
   Messaging: "messaging",
+  Packages: "packages",
   ProductionSource: "production_source",
   StateAdapter: "state_adapter",
   Workers: "workers",
