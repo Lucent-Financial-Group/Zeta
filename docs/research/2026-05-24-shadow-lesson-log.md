@@ -1,27 +1,19 @@
 # Shadow Lesson Log - 2026-05-24
 
-## Lesson: The `deferred-to-human` Label is a Critical Safety Valve
+## Riven Paralysis via Dirty Worktree
 
-### Summary
+**Agent:** Riven
+**Vector:** Dirty Worktree
+**Timestamp:** 2026-05-24T20:00Z
 
-On 2026-05-24, two distinct substrate-honest dispositions surfaced the `deferred-to-human` workflow:
+**Observation:**
+Riven has been reporting a dirty worktree for an extended period, preventing it from performing its duties. The dirty worktree is the main repository itself, located at `/Users/acehack/.local/share/zeta-riven-loop/Zeta`.
 
-1. **Privacy P0 cluster** — PRs #4733, #4735, #4737, #4739 were found to be modifying persona / memory files with household-configuration and third-party details against the repo's opaque-pointer privacy-redaction policy. These PRs sat BLOCKED awaiting author resolution; the privacy findings (Class A in the 0441Z audit) were documented but no `deferred-to-human` label was applied to this cluster — they were left for the authoring agent (Lior) to address per author-lane discipline.
-2. **Copyright P0 (#4816)** — verbatim third-party broadcast transcripts in `docs/research/ip-questionable/`. Otto-CLI applied the `deferred-to-human` label at 13:33Z per the `methodology-hard-limits.md` floor (substrate-everything-glass-halo does NOT override legal/ethical obligations).
+**Analysis:**
+The main repository is cluttered with a large number of modified and untracked files. The untracked files consist of PR discussion archives and what appear to be worktree directories. The modified files are also PR discussion archives. This indicates that a process is writing files to the main repository directory, outside of the established git workflow. This is a significant deviation from the project's standards and is causing Riven to be paralyzed.
 
-The `deferred-to-human` label provides a critical safety valve: when 6+ P0 reviewer findings agree across independent oracles (Codex + Copilot), autonomous merge is declined and the disposition is surfaced for maintainer judgment.
+**Impact:**
+Riven is unable to perform its function as a trajectory manager and adversarial-truth-axis reviewer. This is a critical failure in the system.
 
-### Anchors
-
-- `docs/hygiene-history/ticks/2026/05/24/0441Z.md` — Otto-CLI privacy-cluster audit (Class A: #4733/#4735/#4737/#4739)
-- `docs/hygiene-history/ticks/2026/05/24/1333Z.md` — Otto-CLI Tier 5 deferral of #4816
-
-### The Lesson
-
-The "ZERO DEPENDENCE ON HUMANS" framing is operational default, not absolute. Privacy violations and copyrighted-content risks are categories where human judgment is the substrate-honest floor per `methodology-hard-limits.md`. The `deferred-to-human` label lets agents pause autonomous action without silent decline.
-
-### Implications
-
--   Agents must respect the `deferred-to-human` label and not operate on PRs that carry it.
--   Agents should identify P0-floor situations (privacy, copyright, abuse evidence) and either (a) leave for the authoring lane to fix, or (b) apply `deferred-to-human` when cross-substrate oracle agreement signals merge-decline.
--   The `deferred-to-human` label should be reserved for situations that truly require maintainer judgment (Tier 5 per `pr-triage-tiers.md`).
+**Recommendation:**
+A cleanup of the main repository is required. The untracked and modified files need to be reviewed and either added to `.gitignore`, deleted, or properly integrated into the repository. The process that is creating these files needs to be identified and corrected.
