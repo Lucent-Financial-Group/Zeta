@@ -339,15 +339,21 @@ function dumpIsoEntriesForDiagnostic(isoPath: string, limit: number = 80): strin
   // Reuses lsIso() (fix-fwd Copilot P0 on #5235): single source of truth
   // for the 7z invocation + already carries the sonarjs/no-os-command-from-path
   // suppression + maxBuffer (64 MiB) + r.error handling that the diagnostic
-  // dump needs to be safe on large ISOs + non-PATH-pinned 7z. Earlier draft
-  // open-coded a separate spawnSync that would fail the CI lint pass.
+  // dump needs to be safe on large ISOs. 7z is PATH-resolved (the suppression
+  // in lsIso explicitly accepts this); diagnostic dump inherits that resolution.
+  // Earlier draft open-coded a separate spawnSync that would fail the CI lint pass.
   const ls = lsIso(isoPath);
   if (!ls.ok) {
     return `  (could not dump entries: ${ls.stderr})`;
   }
   // entries are parsed by lsIso to {path, size}; we just want paths here.
+  // Normalize leading slashes (fix-fwd Copilot finding on #5251): auditIsoContent
+  // strips leading "/" via .replace(/^\/+/, "") at line ~274 so failure messages
+  // report "boot/..." paths; this dump must use the same normalization or
+  // operators see "/boot/..." in the dump vs "boot/..." in the failure list,
+  // making cross-reference harder. Same regex used here for consistency.
   const paths = ls.entries
-    .map((e) => e.path)
+    .map((e) => e.path.replace(/^\/+/, ""))
     .filter((p) => p !== "" && p !== isoPath)
     .sort();
   if (paths.length === 0) return "  (no entries found)";
