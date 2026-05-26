@@ -358,6 +358,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0706](backlog/P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** Zeta on Orleans deployment architecture (ServiceTitan-scale; grains + JIT compilation + rented tools)
 - [ ] **[B-0732](backlog/P1/B-0732-runbook-as-executable-reality-leverage-class-safety-substrate-engineering-target-mika-feels-the-weight-aaron-play-doh-design-property-2026-05-25.md)** Runbook-as-executable-reality is a NEW LEVERAGE CLASS — safety substrate engineering target; existing destructive-tool contract operates at script scope, runbook leverage operates at system-direction scope (Mika feels the weight; Aaron's Play-Doh design property)
 - [ ] **[B-0765](backlog/P1/B-0765-service-titan-route-plug-into-existing-control-interfaces-not-new-ones-ontology-negotiation-at-standards-layer-aaron-2026-05-25.md)** ServiceTitan route — plug into existing control interfaces/structures (not new ones); ontology negotiation at the standards layer
+- [ ] **[B-0768](backlog/P1/B-0768-itron-strategy-co-create-standards-with-incumbents-companion-to-service-titan-route-aaron-2026-05-25.md)** Itron strategy — co-create standards with incumbents (companion to ServiceTitan route B-0765); dual-mode adoption playbook
 
 ## P2 — research-grade
 
