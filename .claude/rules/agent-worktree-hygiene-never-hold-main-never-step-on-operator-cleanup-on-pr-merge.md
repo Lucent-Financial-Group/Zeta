@@ -116,7 +116,13 @@ have prevented the accumulation.
 
 - **B-0750** (this row's backlog companion) — substrate-engineering target for periodic worktree cleanup tooling + agent-worktree-pool primitive (composes with B-0530 cron-sentinel-mutex)
 - **B-0530** (cron-sentinel mutex; existing) — multi-Otto-CLI contention resolution; same problem class
-- **[PR #4530](https://github.com/Lucent-Financial-Group/Zeta/pull/4530)** + saturation-ceiling sub-cases documented in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) — empirical anchors for the multi-agent worktree contention failure modes
+- **[PR #4530](https://github.com/Lucent-Financial-Group/Zeta/pull/4530)**
+  plus saturation-ceiling sub-cases documented in
+  [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md)
+  — empirical anchors for multi-agent worktree contention failures. See
+  also archived sibling discussion patterns under `docs/pr-discussions/`,
+  including PR #3812 and PR #3894 for the saturation-ceiling /
+  worktree-pool lineage.
 
 ## Specific cleanup commands
 
@@ -162,6 +168,12 @@ git worktree list | awk '/\[main\]/ { path=$1 } END { exit 0 }' \
   && git worktree list | grep -E "\[main\]" \
   | grep -E "/private/tmp/zeta-|/tmp/zeta-" || echo "OK: no agent holds [main]"
 ```
+
+Expected result: no agent worktree holds `[main]`. No output is OK when the
+operator's primary checkout is not currently on `main`; a single operator
+primary line is also OK when the operator intentionally has `main` checked out.
+Any `/private/tmp/zeta-*`, `/tmp/zeta-*`, or per-agent worktree line holding
+`[main]` is a violation to fix.
 
 ## Substrate-honest framing
 

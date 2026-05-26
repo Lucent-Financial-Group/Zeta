@@ -3,24 +3,26 @@ id: B-0750
 priority: P2
 status: open
 created: 2026-05-25
-last_updated: 2026-05-25
-title: Agent worktree hygiene — rule-landing + substrate-engineering mechanization target — periodic cleanup tooling + worktree-pool primitive (composes with B-0530); operator's 'we need to fix this mess yall always stepping on each other and me constantly' anchor 2026-05-25 (37 worktrees mass-cleaned + rule landed simultaneously)
+last_updated: 2026-05-26
+title: Agent worktree hygiene — rule-landing + substrate-engineering mechanization target — periodic cleanup tooling + worktree-pool handoff to B-0558/B-0751; operator's 'we need to fix this mess yall always stepping on each other and me constantly' anchor 2026-05-25 (37 worktrees mass-cleaned + rule landed simultaneously)
 domain: ops-tooling
 ferried_by: aaron
 owners: [aaron]
 composes_with:
   - B-0530
+  - B-0558
+  - B-0751
 related_substrate:
   - .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md
   - .claude/rules/claim-acquire-before-worktree-work.md
-tags: [agent-worktree-hygiene, multi-agent-worktree-contention, operator-unblocking, cleanup-tooling, worktree-pool-primitive, b0530-compose, never-hold-main, substrate-engineering-mechanization-target]
+tags: [agent-worktree-hygiene, multi-agent-worktree-contention, operator-unblocking, cleanup-tooling, worktree-pool-handoff, b0530-compose, never-hold-main, substrate-engineering-mechanization-target]
 ---
 
 # B-0750 — Agent worktree hygiene mechanization target
 
 ## Carved blade
 
-> Operator 2026-05-25: *"i'm stuck (max) ➜ Zeta git:(lior-archive-prs-2026-05-26) ✗ git checkout main → fatal: 'main' is already used by worktree at '/private/tmp/zeta-riven-loop-2'... nope we need to fix this mess yall always stepping on each other and me constantly."* The proximate cause was 37 agent worktrees from one substrate-cascade day, including one peer-agent worktree holding `[main]` at stale SHA. Mass-cleanup unblocked + the agent-worktree-hygiene rule landed simultaneously, but the substrate-engineering target is mechanization: periodic cleanup tooling (auto-prune post-PR-merge) + worktree-pool primitive (pre-allocated per-identity sideticks; no contention on `main` or operator paths). Until mechanization lands, agent-side compliance with the rule operates the discipline.
+> Operator 2026-05-25: *"i'm stuck (max) ➜ Zeta git:(lior-archive-prs-2026-05-26) ✗ git checkout main → fatal: 'main' is already used by worktree at '/private/tmp/zeta-riven-loop-2'... nope we need to fix this mess yall always stepping on each other and me constantly."* The proximate cause was 37 agent worktrees from one substrate-cascade day, including one peer-agent worktree holding `[main]` at stale SHA. Mass-cleanup unblocked + the agent-worktree-hygiene rule landed simultaneously, but the substrate-engineering target is mechanization: periodic cleanup tooling (auto-prune post-PR-merge) plus an ownership architecture handoff. The older worktree-pool primitive remains in B-0558; B-0751 (PR #5019, per-agent isolated clones) supersedes the pool as the preferred architecture for future agent isolation. Until mechanization lands, agent-side compliance with the rule operates the discipline.
 
 ## Origin
 
@@ -56,16 +58,20 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 - Composes with B-0530 cron-sentinel mutex semantics
 - Acceptance: tool exists; runs successfully; at least one cycle of auto-cleanup demonstrated
 
-### Scope item 2 — Worktree-pool primitive (composes with B-0530; overlaps with B-0558; potentially superseded by B-0751)
+### Scope item 2 — Worktree-pool primitive handoff (B-0558 + B-0751)
 
-- Pre-allocated per-identity isolated sideticks per agent (Otto-CLI / Otto-VSCode / Alexa / Riven / Vera / Lior / etc.)
-- Each agent acquires + releases sideticks from its own pool; no contention with peers
-- Pool refresh on schedule (post-PR-merge OR daily); pre-creates clean worktrees for next agent invocation
-- Sideticks never hold `main` (always `--detach origin/main`)
-- Composes with B-0530 cron-sentinel mutex (the existing partial substrate for this)
-- **Composes with / may supersede [B-0558](../P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** — that row already proposes the worktree-pool primitive at Otto-identity scope; this row's delta is the multi-agent generalization (Otto + Alexa + Riven + Vera + Lior + future) and integration with B-0530 contention class. If B-0558 lands first under Otto-only scope, this scope item narrows to the multi-agent generalization
-- **May be superseded by sibling B-0751 (per-agent-clones architecture)** — if each agent gets an isolated clone (separate `.git/` directory), the worktree-pool primitive becomes unnecessary because contention disappears at the source. If B-0751 ships, this scope item retires; until then, the pool primitive remains the in-scope mitigation
-- Acceptance: pool exists; at least one agent operates via pool sidetick end-to-end; pool refresh works
+- B-0558 already owns the original worktree-pool primitive
+  (pre-allocated sideticks per Otto identity; PR #3894 archive:
+  `docs/pr-discussions/PR-3894-backlog-b-0558-worktree-pool-primitive-re-land-of-3817-backl.md`)
+- B-0751 (PR #5019, per-agent isolated clones) supersedes a shared
+  worktree pool as the preferred architecture for Vera / Otto / Riven /
+  Lior / Alexa isolation
+- This B-0750 row therefore tracks only the hygiene delta: agents must
+  not hold `main`, must not use operator paths, and must clean up owned
+  worktrees after merge/abandon
+- Any future pool work should compose through B-0558 or be explicitly
+  deferred under B-0751 clone architecture; B-0750 should not grow a
+  second pool implementation track
 
 ### Scope item 3 — Post-PR-merge auto-cleanup hook
 
@@ -91,6 +97,9 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 ## What's NOT in scope (deferred)
 
 - **Cross-machine agent worktree coordination** — if agents run on different machines + share git via push/pull, the worktrees are per-machine; cross-machine cleanup is future scope
+- **New worktree-pool implementation** — B-0558 owns the historical
+  pool primitive; B-0751 per-agent clones supersede the shared-pool
+  approach for new architecture work
 - **Operator's own worktree creation** — operator can always create worktrees anywhere; rule applies to agents only
 - **Automated branch deletion** — separate scope; depends on PR-mergedness + downstream dependencies (per B-0741 fork interop)
 - **Repo-level git config for worktree-pool defaults** — future scope; would require operator-side config buy-in
@@ -105,9 +114,11 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 
 ## Composes with backlog substrate
 
-- **B-0530** (cron-sentinel mutex; existing partial substrate) — same problem class at runtime scope; this row's worktree-pool primitive composes
-- **B-0558** (worktree-pool primitive per Otto identity) — existing row at narrower Otto-only scope; Scope item 2 composes-with-or-supersedes per the inline note
-- **B-0751** (per-agent-clones architecture; sibling row in this session if filed; may not yet exist on main) — potentially supersedes Scope item 2 by removing the contention class at its source. If B-0751 ships separately, Scope item 2 retires; until then this row's pool primitive remains in scope
+- **B-0530** (cron-sentinel mutex; existing partial substrate) — same problem class at runtime scope; this row's cleanup discipline composes
+- **B-0558** (worktree-pool primitive per Otto identity) — owns the
+  historical pool design; B-0750 narrows to hygiene + cleanup delta
+- **B-0751** (per-agent isolated clones; PR #5019) — supersedes shared
+  pool direction as the preferred isolation architecture
 - **B-0732** (leverage-class safety substrate) — Layer 1 provenance chain captures cleanup events
 - **B-0737** (zflash empirical anchor) — operator was trying to use zflash when the worktree mess blocked them; concrete pain
 - **B-0746** (GitHub force-push lesson) — related sibling failure mode at GitHub-state scope
