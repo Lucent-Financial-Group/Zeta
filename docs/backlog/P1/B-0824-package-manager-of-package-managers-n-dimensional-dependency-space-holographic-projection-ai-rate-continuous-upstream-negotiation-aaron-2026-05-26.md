@@ -473,6 +473,63 @@ This row's substrate is NOT speculative architecture. Aaron 2026-05-26 substrate
 
 **High-signal-high-suspicion-don't-collapse check** (per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`): preserve the dialectical tension — the prior-art IS load-bearing AND the vocabulary work is the substrate-translation work; both real; neither fully reduces the other. The empirical anchor doesn't make the vocabulary work redundant (Sub-targets 1-10 stay as substrate); the vocabulary work doesn't make the empirical anchor decorative (it's the validation that the architecture WORKS at scale).
 
+### Shared generative base — the architectural invariant that makes pass-composition-graph cheap (Aaron 2026-05-26)
+
+Aaron 2026-05-26 sharpened the Itron / PDW architecture's load-bearing operational property:
+
+> *"the key was every node shared the same generative base so they could just pass the composition graph around the generators are code every node can count on every other node having."*
+
+**The invariant — generators are CODE pre-deployed to all nodes; only the composition graph transmits**:
+
+| Layer | Transmitted between nodes? | Size | Cadence |
+|---|---|---|---|
+| **Generators (code)** | NO — pre-deployed to all nodes; "every node can count on every other node having" | LARGE (full executable substrate) | One-time + amortized over substrate-cycle |
+| **Composition graph (combinator-of-generator-references)** | YES | SMALL (bytes — just references + structure) | High-frequency; AI-rate per Sub-target 3 |
+
+**This is the constraint that makes Sub-target 9 (bandwidth payoff) actually work**. The kilobyte-wire-payload claim depends on the receiver ALREADY having the generators. If the receiver had to also receive the generators per query, the bandwidth payoff vanishes. The shared-generative-base invariant is what makes pass-the-function-not-the-data cheap.
+
+**Architectural prior-art at this exact shape** (Aaron's invariant is the same pattern industry has converged on across multiple substrates):
+
+| System | Shared base on all nodes | Transmitted in operation |
+|---|---|---|
+| **Aaron's Itron PDW substrate** | Recursive CTE generator library | Composition graph |
+| Docker | Base image layers | Diff layers + run commands |
+| Kubernetes | Container images (pulled once per node) | Pod spec + scheduling decisions |
+| Distributed actor systems (Erlang OTP / Akka / Orleans) | Actor type definitions | Messages between actors |
+| gRPC services | Service definitions (`.proto` schemas) | Request/response payloads |
+| Apache Spark | Worker JVMs + user-defined functions | Stage plans + serialized partitions |
+| FaaS (Lambda / Cloud Functions) | Function deployments | Invocation payloads |
+| Helm operators | Operator deployment (1 per cluster) | CR specs |
+
+The shared-generative-base IS the universal pattern for distributed substrate that maintains pass-cheap composition. Zeta meta-PM inherits the well-trodden path.
+
+**Substrate-engineering implications for Ace deployment**:
+
+1. **Ace deploys generators across all participating nodes as the FIRST-TIME setup**. Generator library deployment is a separate concern from generator invocation — analogous to deploying JARs across a Spark cluster.
+2. **Composition graphs flow at AI-rate between nodes** because generators are pre-positioned. No bandwidth wasted re-shipping the substrate-engineering primitives.
+3. **Generator-library synchronization across nodes is the LOAD-BEARING DISTRIBUTED INVARIANT** (extends Sub-target 8 — generator-combinator library design). Without it, the bandwidth payoff doesn't hold; with it, the substrate scales to planet-scale per the Itron empirical anchor.
+4. **Generator versioning + node-level deployment cadence is a substrate-engineering concern**. New generators need rollout across nodes BEFORE composition graphs referencing them can be passed. Composes with B-0825 time-axis substrate (deployment as a temporally-bounded migration phase).
+5. **Composes with B-0816 Helm-as-convergence-point principle** — generator library deployment IS a Helm chart deployment problem (the generators are the chart payload; the node-distribution is the cluster substrate; the lifecycle is managed by ArgoCD per the existing substrate).
+6. **Composes with B-0820 multi-engine / multi-cluster substrate** — different clusters can have different generator-library versions; composition graphs are cluster-scoped + cluster-version-aware; per-cluster substrate evolution is a first-class concern.
+
+**Sub-target 11 (new — distributed-generator-library substrate)**: shared-generative-base deployment + synchronization:
+
+1. Generator-library Helm chart (per B-0816) — deploys generator code to all participating nodes
+2. Generator-library version manifest — every node publishes which generators + which versions it has available
+3. Composition-graph validation — before passing a composition graph, validate every referenced generator IS available on receiver
+4. Cluster-wide rollout coordination — when adding new generators, ensure rollout reaches all nodes before composition graphs reference them
+5. Backward-compatibility window — old generators stay deployed during transition period (per B-0825 time-axis substrate)
+6. Failure-mode handling — receiver-without-generator surfaces explicit error (composes with NULL-as-escape-monad semantics)
+
+This sub-target IS the deployment-substrate complement to Sub-target 7 (storage) + Sub-target 8 (library design) + Sub-target 10 (compute substrate). The complete substrate stack:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- **Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)**
+
+All four compose into the full Ace meta-PM substrate.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
