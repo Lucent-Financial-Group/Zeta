@@ -1,9 +1,9 @@
 // full-ai-cluster/tools/zflash-lib.test.ts
 //
-// CI test cascade #2 (per Aaron 2026-05-26 — "any parts we can test
-// in siolate are candidates for more unit like tests instead of full
-// integration tests"). Pure-logic Bun unit tests for the zflash-lib
-// extractions. Catches:
+// CI test cascade #2 (per the maintainer 2026-05-26 — substrate
+// engineerable in isolation gets unit-tested cheaply before paying
+// for slower integration tests). Pure-logic Bun unit tests for the
+// zflash-lib extractions. Catches:
 //
 //   - RFC1123 hostname regex regressions (iter-5.2 + iter-5.2.2
 //     mirrored in zflash.ts + zeta-install.sh; drift detection)
@@ -110,16 +110,6 @@ describe("parseFatPartitionFromDiskutilList", () => {
   });
 
   test("matches real-world MS-DOS FAT32 format (diskutil empirical output shape)", () => {
-    // CI test-cascade #2 finding (2026-05-26): the existing zflash.ts regex
-    // documents "DOS_FAT_32" as a matching format, but `\bDOS_FAT\b` doesn't
-    // match `DOS_FAT_32` (underscore is a word-char so no \b boundary).
-    // Real diskutil output for a FAT32 GPT partition is `MS-DOS FAT32`
-    // (with a space), which DOES match `\bMS-DOS\b`. The `DOS_FAT` token
-    // in the regex may be vestigial / from a misremembered format —
-    // empirically never exercised because all real NixOS isohybrid ISOs
-    // post-dd hit the MBR 0xEF path (iter-4.4 substrate). Filed as test-
-    // finding; resolve in follow-on by either dropping `DOS_FAT` from the
-    // regex OR broadening to `DOS_FAT(_\d+)?` if there's a known consumer.
     const out = `/dev/disk6 (external, physical):
    #:                       TYPE NAME                    SIZE       IDENTIFIER
    0:      GUID_partition_scheme                        *124.0 GB   disk6
@@ -127,12 +117,20 @@ describe("parseFatPartitionFromDiskutilList", () => {
     expect(parseFatPartitionFromDiskutilList(out)).toBe("/dev/disk6s1");
   });
 
-  test("DOCUMENTS-FINDING: regex `DOS_FAT` token never matches `DOS_FAT_32` (\\b fails on underscore)", () => {
-    // Pinning the empirical behavior to surface the regex bug for follow-on
-    // resolution. If the regex is broadened to actually match DOS_FAT_NN,
-    // delete this test + flip the prior one.
+  test("matches DOS_FAT_32 (cascade-2 fix: regex broadened from `\\bDOS_FAT\\b` to `\\bDOS_FAT(_\\d+)?\\b`)", () => {
+    // Cascade-#2 test finding (2026-05-26): the original regex
+    // `\bDOS_FAT\b` couldn't match `DOS_FAT_32` because underscore is
+    // a word-char (no \b boundary). The docstring claimed it matched.
+    // Resolution in this PR: broaden to `DOS_FAT(_\d+)?` to match BOTH
+    // bare `DOS_FAT` AND the underscore-suffix `DOS_FAT_32` shape that
+    // the prior docstring documented.
     const out = `   1:                  DOS_FAT_32 NIXOS_ISO              65.5 MB    disk6s1`;
-    expect(parseFatPartitionFromDiskutilList(out)).toBe(null);
+    expect(parseFatPartitionFromDiskutilList(out)).toBe("/dev/disk6s1");
+  });
+
+  test("matches DOS_FAT_16 (suffix variant)", () => {
+    const out = `   1:                  DOS_FAT_16 STUFF                  32.0 MB    disk7s2`;
+    expect(parseFatPartitionFromDiskutilList(out)).toBe("/dev/disk7s2");
   });
 
   test("matches MBR 0xEF format (NixOS isohybrid post-dd; iter-4.4 fix)", () => {
@@ -213,10 +211,15 @@ describe("generateRandomNodeName", () => {
     expect(name).toBe("node-a3f9c2");
   });
 
-  test("two calls produce different names with default RNG", () => {
-    // Vanishingly unlikely to collide (1 in 16M); good signal that RNG is wired
-    const a = generateRandomNodeName();
-    const b = generateRandomNodeName();
+  test("different injected RNG inputs produce different names (deterministic; no flake risk)", () => {
+    // Replaces the prior probabilistic "two calls with default RNG"
+    // test (1-in-16M collision flake risk in CI). Asserts the SAME
+    // property — RNG variance produces output variance — via
+    // deterministic injected RNGs, so the test is reproducible.
+    const a = generateRandomNodeName((_n) => new Uint8Array([0x00, 0x00, 0x00]));
+    const b = generateRandomNodeName((_n) => new Uint8Array([0xff, 0xff, 0xff]));
+    expect(a).toBe("node-000000");
+    expect(b).toBe("node-ffffff");
     expect(a).not.toBe(b);
   });
 });

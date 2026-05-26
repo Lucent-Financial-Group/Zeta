@@ -1,9 +1,9 @@
 // full-ai-cluster/tools/zflash-lib.ts
 //
 // Pure-logic library extracted from zflash.ts for unit-testability
-// (CI test cascade #2 per the maintainer 2026-05-26 "any parts we can
-// test in siolate are candidates for more unit like tests instead of
-// full integration tests").
+// (CI test cascade #2 per the maintainer 2026-05-26 — substrate
+// engineerable in isolation gets unit-tested cheaply before paying
+// for slower integration tests).
 //
 // All exports here are pure functions / pure constants — NO I/O
 // (no fs, no execFileSync, no process.exit). zflash.ts imports + uses
@@ -35,7 +35,7 @@ export function isValidHostname(s: string): boolean {
  *
  * Recognizes BOTH:
  *   GPT format: `2: EFI EFI                  209.7 MB   disk6s1`
- *               `2: DOS_FAT_32 NIXOS_ISO     65.5 MB    disk6s2`
+ *               `2: MS-DOS FAT32 NIXOS_ISO   65.5 MB    disk6s2`
  *   MBR format: `1:           0xEF           3.1 MB     disk6s2`
  *               (FDisk numeric type codes: 0xEF = ESP; 0x0C/0x0E = FAT32-LBA/FAT16-LBA;
  *                0x06 = FAT16; 0x0B = FAT32; 0x0F = Extended-LBA)
@@ -52,7 +52,11 @@ export function isValidHostname(s: string): boolean {
 export function parseFatPartitionFromDiskutilList(diskutilOutput: string): string | null {
   const lines = diskutilOutput.split("\n");
   for (const line of lines) {
-    const matchesGpt = /\b(DOS_FAT|EFI|MS-DOS|FAT16|FAT32|Windows_FAT)\b/i.test(line);
+    // GPT-style FAT/EFI markers. `DOS_FAT(_\d+)?` matches both bare
+    // `DOS_FAT` AND suffixed `DOS_FAT_32` / `DOS_FAT_16` (cascade-2
+    // finding: bare `\bDOS_FAT\b` failed on the underscore-suffix
+    // shape; broadened to catch the documented variant too).
+    const matchesGpt = /\b(DOS_FAT(_\d+)?|EFI|MS-DOS|FAT16|FAT32|Windows_FAT)\b/i.test(line);
     // MBR partition type codes that indicate FAT or ESP. \b on both
     // sides prevents accidental match inside longer hex strings.
     const matchesMbr = /\b0x(EF|0C|0E|06|0B|0F)\b/i.test(line);
@@ -83,8 +87,17 @@ export function generateRandomNodeName(getRandomBytes: (n: number) => Uint8Array
 }
 
 function defaultGetRandomBytes(n: number): Uint8Array {
+  // Repo convention (per Copilot review on #5117): route through
+  // globalThis.crypto rather than the DOM-typed bare `crypto`,
+  // since this repo's TS config uses `lib: ["esnext"]` (no DOM).
+  const cryptoApi = (globalThis as { crypto?: { getRandomValues?(b: Uint8Array): Uint8Array } }).crypto;
+  if (!cryptoApi?.getRandomValues) {
+    throw new Error(
+      "globalThis.crypto.getRandomValues unavailable — running in a non-Web-Crypto environment?",
+    );
+  }
   const buf = new Uint8Array(n);
-  crypto.getRandomValues(buf);
+  cryptoApi.getRandomValues(buf);
   return buf;
 }
 
