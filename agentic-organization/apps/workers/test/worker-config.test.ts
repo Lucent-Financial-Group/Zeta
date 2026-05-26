@@ -12,10 +12,10 @@ describe("worker runtime config parsing", () => {
   test("parses typed runtime config from process env", () => {
     deepEqual(
       parseWorkerRuntimeConfigFromEnv({
-        [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
-        [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
-        [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
-        [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
+        [WorkerProcessEnvName.AgenticOrgEnv]: " dev ",
+        [WorkerProcessEnvName.AgenticOrgId]: " org-lfg ",
+        [WorkerProcessEnvName.NatsStream]: " agentic-org-events ",
+        [WorkerProcessEnvName.NatsDurable]: " agentic-org-v0-automation-planner ",
         [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
       }),
       {
@@ -56,6 +56,24 @@ describe("worker runtime config parsing", () => {
     } catch (error) {
       equal(error instanceof WorkerRuntimeConfigError, true);
       equal((error as WorkerRuntimeConfigError).code, WorkerRuntimeConfigErrorCode.InvalidNatsInboundBatchSize);
+    }
+  });
+
+  test("rejects non-decimal or unsafe batch sizes with typed errors", () => {
+    for (const batchSize of ["1.5", "1e3", "9007199254740992"]) {
+      try {
+        parseWorkerRuntimeConfigFromEnv({
+          [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
+          [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
+          [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
+          [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
+          [WorkerProcessEnvName.NatsInboundBatchSize]: batchSize,
+        });
+        throw new Error("expected config parsing to fail");
+      } catch (error) {
+        equal(error instanceof WorkerRuntimeConfigError, true);
+        equal((error as WorkerRuntimeConfigError).code, WorkerRuntimeConfigErrorCode.InvalidNatsInboundBatchSize);
+      }
     }
   });
 });

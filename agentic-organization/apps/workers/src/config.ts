@@ -1,5 +1,7 @@
 import { WorkerRuntimeConfigError, WorkerRuntimeConfigErrorCode, type WorkerRuntimeConfig } from "./worker-runtime.ts";
 
+const decimalIntegerPattern = /^[0-9]+$/;
+
 export const WorkerProcessEnvName = {
   AgenticOrgEnv: "AGENTIC_ORG_ENV",
   AgenticOrgId: "AGENTIC_ORG_ID",
@@ -49,17 +51,19 @@ function readRequiredEnvValue(
     throw new WorkerRuntimeConfigError(errorCode);
   }
 
-  return value;
+  return value.trim();
 }
 
 function parseNatsInboundBatchSize(value: string | undefined): number {
-  if (value === undefined || value.trim().length === 0) {
+  const trimmedValue = value?.trim();
+
+  if (trimmedValue === undefined || trimmedValue.length === 0 || !decimalIntegerPattern.test(trimmedValue)) {
     throw new WorkerRuntimeConfigError(WorkerRuntimeConfigErrorCode.InvalidNatsInboundBatchSize);
   }
 
-  const parsedValue = Number(value);
+  const parsedValue = Number(trimmedValue);
 
-  if (!Number.isInteger(parsedValue) || parsedValue < 1) {
+  if (!Number.isSafeInteger(parsedValue) || parsedValue < 1) {
     throw new WorkerRuntimeConfigError(WorkerRuntimeConfigErrorCode.InvalidNatsInboundBatchSize);
   }
 

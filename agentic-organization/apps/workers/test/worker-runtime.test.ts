@@ -105,6 +105,47 @@ describe("worker runtime composition host", () => {
     equal(result.status, WorkerRuntimeStatus.Degraded);
   });
 
+  test("keeps successful loop results visible when telemetry fails", async () => {
+    const runtime = createWorkerRuntime({
+      config: createRuntimeConfig(),
+      organizationWorkerHost: createRecordingOrganizationWorkerHost(createWorkedWorkerCycle()),
+      natsEventConsumer: createRecordingNatsEventConsumer(createProcessedNatsBatch()),
+      telemetrySink: createFailingTelemetrySink("telemetry sink unavailable"),
+    });
+
+    const result = await runtime.runOnce();
+
+    equal(result.status, WorkerRuntimeStatus.Degraded);
+    equal(result.workerCycle?.status, WorkerCycleStatus.Worked);
+    equal(result.natsConsumerBatch?.processedCount, 2);
+    deepEqual(result.failures, [
+      {
+        stage: WorkerRuntimeFailureStage.Telemetry,
+        message: "telemetry sink unavailable",
+      },
+      {
+        stage: WorkerRuntimeFailureStage.Telemetry,
+        message: "telemetry sink unavailable",
+      },
+    ]);
+  });
+
+  test("marks the runtime degraded when NATS consumer reports non-happy counters", async () => {
+    const runtime = createWorkerRuntime({
+      config: createRuntimeConfig(),
+      organizationWorkerHost: createRecordingOrganizationWorkerHost(createWorkedWorkerCycle()),
+      natsEventConsumer: createRecordingNatsEventConsumer({
+        ...createProcessedNatsBatch(),
+        invalidCount: 1,
+      }),
+      telemetrySink: createRecordingTelemetrySink(),
+    });
+
+    const result = await runtime.runOnce();
+
+    equal(result.status, WorkerRuntimeStatus.Degraded);
+  });
+
   test("rejects invalid process config before loops can start", () => {
     try {
       createWorkerRuntime({
@@ -228,6 +269,14 @@ function createRecordingTelemetrySink(): WorkerRuntimeTelemetrySink & {
     records,
     record: async (record) => {
       records.push(record);
+    },
+  };
+}
+
+function createFailingTelemetrySink(message: string): WorkerRuntimeTelemetrySink {
+  return {
+    record: async () => {
+      throw new Error(message);
     },
   };
 }

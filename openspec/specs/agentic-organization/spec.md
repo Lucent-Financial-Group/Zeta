@@ -346,10 +346,18 @@ live infrastructure adapters are bound by a runtime host.
   consumer cycle
 - **AND** the runtime result reports degraded status with a typed
   organization-worker failure stage
+- **WHEN** telemetry recording throws after a worker or NATS consumer
+  cycle succeeds
+- **THEN** the successful cycle result remains visible in the runtime
+  result
+- **AND** the runtime result reports degraded status with a typed
+  telemetry failure stage
 - **WHEN** the NATS consumer cycle reports failed or dead-lettered
   messages
 - **THEN** the runtime result reports degraded status without hiding the
   batch counts
+- **AND** invalid, payload-conflict, negative-acknowledged, or
+  terminated NATS messages also make the runtime result degraded
 
 ### Requirement: Telemetry is complete at the event boundary
 

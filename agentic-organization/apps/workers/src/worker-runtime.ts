@@ -25,6 +25,7 @@ export type WorkerRuntimeStatus = (typeof WorkerRuntimeStatus)[keyof typeof Work
 export const WorkerRuntimeFailureStage = {
   NatsConsumer: "nats_consumer",
   OrganizationWorker: "organization_worker",
+  Telemetry: "telemetry",
 } as const;
 
 export type WorkerRuntimeFailureStage = (typeof WorkerRuntimeFailureStage)[keyof typeof WorkerRuntimeFailureStage];
@@ -157,19 +158,23 @@ type RunOrganizationWorkerInput = {
 async function runOrganizationWorker(input: RunOrganizationWorkerInput): Promise<WorkerCycleResult | undefined> {
   try {
     const workerCycle = await input.organizationWorkerHost.runOnce();
-    await input.telemetrySink.record({
-      eventName: WorkerRuntimeTelemetryEventName.WorkerCycleCompleted,
-      attributes: buildWorkerCycleAttributes({
-        status: workerCycle.status,
-        outboxStatus: workerCycle.outbox?.status ?? OutboxPublishOutcomeStatus.Empty,
-        inboundPulledCount: workerCycle.inbound.pulledCount,
-        inboundProcessedCount: workerCycle.inbound.processedCount,
-        inboundDuplicateCount: workerCycle.inbound.duplicateCount,
-        inboundPayloadConflictCount: workerCycle.inbound.payloadConflictCount,
-        inboundFailedCount: workerCycle.inbound.failedCount,
-        inboundReactionPlanCount: workerCycle.inbound.reactionPlanCount,
-        failureCount: workerCycle.failures.length,
-      }),
+    await recordTelemetry({
+      telemetrySink: input.telemetrySink,
+      failures: input.failures,
+      record: {
+        eventName: WorkerRuntimeTelemetryEventName.WorkerCycleCompleted,
+        attributes: buildWorkerCycleAttributes({
+          status: workerCycle.status,
+          outboxStatus: workerCycle.outbox?.status ?? OutboxPublishOutcomeStatus.Empty,
+          inboundPulledCount: workerCycle.inbound.pulledCount,
+          inboundProcessedCount: workerCycle.inbound.processedCount,
+          inboundDuplicateCount: workerCycle.inbound.duplicateCount,
+          inboundPayloadConflictCount: workerCycle.inbound.payloadConflictCount,
+          inboundFailedCount: workerCycle.inbound.failedCount,
+          inboundReactionPlanCount: workerCycle.inbound.reactionPlanCount,
+          failureCount: workerCycle.failures.length,
+        }),
+      },
     });
     return workerCycle;
   } catch (error) {
@@ -193,13 +198,17 @@ async function runNatsConsumer(input: RunNatsConsumerInput): Promise<NatsJetStre
     const natsConsumerBatch = await input.natsEventConsumer.processNextBatch({
       batchSize: input.config.natsInboundBatchSize,
     });
-    await input.telemetrySink.record({
-      eventName: WorkerRuntimeTelemetryEventName.NatsConsumerBatchProcessed,
-      attributes: buildNatsConsumerBatchAttributes({
-        streamName: input.config.natsStreamName,
-        durableName: input.config.natsDurableName,
-        ...natsConsumerBatch,
-      }),
+    await recordTelemetry({
+      telemetrySink: input.telemetrySink,
+      failures: input.failures,
+      record: {
+        eventName: WorkerRuntimeTelemetryEventName.NatsConsumerBatchProcessed,
+        attributes: buildNatsConsumerBatchAttributes({
+          streamName: input.config.natsStreamName,
+          durableName: input.config.natsDurableName,
+          ...natsConsumerBatch,
+        }),
+      },
     });
     return natsConsumerBatch;
   } catch (error) {
@@ -208,6 +217,23 @@ async function runNatsConsumer(input: RunNatsConsumerInput): Promise<NatsJetStre
       message: extractErrorMessage(error),
     });
     return undefined;
+  }
+}
+
+type RecordTelemetryInput = {
+  telemetrySink: WorkerRuntimeTelemetrySink;
+  failures: WorkerRuntimeFailure[];
+  record: WorkerRuntimeTelemetryRecord;
+};
+
+async function recordTelemetry(input: RecordTelemetryInput): Promise<void> {
+  try {
+    await input.telemetrySink.record(input.record);
+  } catch (error) {
+    input.failures.push({
+      stage: WorkerRuntimeFailureStage.Telemetry,
+      message: extractErrorMessage(error),
+    });
   }
 }
 
@@ -221,13 +247,27 @@ function resolveWorkerRuntimeStatus(input: ResolveWorkerRuntimeStatusInput): Wor
   if (
     input.failures.length > 0 ||
     input.workerCycle?.status === WorkerCycleStatus.Degraded ||
-    input.natsConsumerBatch?.failedCount !== 0 ||
-    input.natsConsumerBatch?.deadLetteredCount !== 0
+    isNatsConsumerBatchDegraded(input.natsConsumerBatch)
   ) {
     return WorkerRuntimeStatus.Degraded;
   }
 
   return WorkerRuntimeStatus.Healthy;
+}
+
+function isNatsConsumerBatchDegraded(batch: NatsJetStreamConsumeBatchResult | undefined): boolean {
+  if (batch === undefined) {
+    return true;
+  }
+
+  return (
+    batch.failedCount !== 0 ||
+    batch.deadLetteredCount !== 0 ||
+    batch.invalidCount !== 0 ||
+    batch.payloadConflictCount !== 0 ||
+    batch.negativeAcknowledgedCount !== 0 ||
+    batch.terminatedCount !== 0
+  );
 }
 
 function extractErrorMessage(error: unknown): string {

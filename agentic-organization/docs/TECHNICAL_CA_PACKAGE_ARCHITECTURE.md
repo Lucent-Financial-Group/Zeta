@@ -678,8 +678,9 @@ Minimum runtime environment contract:
 ```text
 AGENTIC_ORG_ENV
 AGENTIC_ORG_ID
-COCKROACH_URL
-NATS_URL
+NATS_STREAM
+NATS_DURABLE
+NATS_INBOUND_BATCH_SIZE
 TEMPORAL_ADDRESS
 HINDSIGHT_URL
 HERMES_URL
@@ -688,11 +689,12 @@ OTEL_EXPORTER_OTLP_ENDPOINT
 HAT_SYSTEM_NAMESPACE
 ```
 
-Secrets such as database credentials, NATS credentials, OpenZiti
-credentials, LLM provider keys, and credential-proxy tokens must come
-from Vault through External Secrets or another approved cluster secret
-path. They should not live in plain Kubernetes manifests and should not
-be baked into the Agentic Organization image.
+Adapter-specific URLs and secrets such as CockroachDB URLs, NATS URLs,
+database credentials, NATS credentials, OpenZiti credentials, LLM
+provider keys, and credential-proxy tokens must come from Vault through
+External Secrets or another approved cluster secret path. They should
+not live in plain Kubernetes manifests and should not be baked into the
+Agentic Organization image.
 
 ### ArgoCD Sync Wave
 
@@ -837,13 +839,17 @@ other work.
 
 The first `apps/workers` runtime projects both package worker-cycle
 counts and NATS consumer batch counts through telemetry sink ports. The
-runtime treats package degraded status, thrown loop failures,
-dead-lettered NATS messages, and failed NATS messages as degraded state
-so weak points can surface before the process is connected to real
-cluster telemetry. The composition root is therefore the future bridge
-from these records into the full-ai-cluster LGTM stack: structured logs
-to Loki, traces to Tempo through Alloy, metrics to Prometheus/Mimir, and
-dashboard projections in Grafana.
+runtime treats package degraded status, thrown loop failures, telemetry
+sink failures, dead-lettered NATS messages, invalid NATS messages,
+payload-conflict NATS messages, negative acknowledgements, terminated
+messages, and failed NATS messages as degraded state so weak points can
+surface before the process is connected to real cluster telemetry.
+Telemetry failures must not erase successful worker or NATS cycle
+results; they are captured as their own typed failure stage. The
+composition root is therefore the future bridge from these records into
+the full-ai-cluster LGTM stack: structured logs to Loki, traces to Tempo
+through Alloy, metrics to Prometheus/Mimir, and dashboard projections in
+Grafana.
 
 ## V0 Build Sequence
 

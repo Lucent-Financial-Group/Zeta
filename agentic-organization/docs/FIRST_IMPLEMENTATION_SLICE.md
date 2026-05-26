@@ -169,12 +169,21 @@ Hermes runs, MCP calls, and UI evidence.
   cycle behind process configuration and telemetry ports. If one cycle
   throws, the other still runs and the runtime result is degraded with a
   typed failure stage.
+- `apps/workers` keeps successful worker/NATS cycle results visible even
+  when telemetry recording fails. Telemetry sink failures degrade the
+  runtime through a dedicated failure stage instead of erasing completed
+  work.
 - `apps/workers` validates required process config before any loop can
   start: environment, Organization ID, NATS stream, durable consumer,
   and positive NATS inbound batch size.
 - `apps/workers` parses required runtime values from typed environment
   names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
-  `NATS_DURABLE`, and `NATS_INBOUND_BATCH_SIZE`.
+  `NATS_DURABLE`, and `NATS_INBOUND_BATCH_SIZE`. String values are
+  trimmed, and NATS inbound batch size must be a safe positive decimal
+  integer.
+- `apps/workers` treats any non-happy NATS consumer counter as degraded:
+  failed, dead-lettered, invalid, payload-conflict,
+  negative-acknowledged, or terminated messages.
 - `apps/workers` exposes an app-level composition factory that receives
   typed config plus already-constructed ports. Future real CockroachDB,
   NATS, and telemetry adapters bind at this app seam instead of leaking
