@@ -901,7 +901,7 @@ The desire to protect generator-parameters IS the parameter-management problem a
 4. **Composes with N-of-M HSM substrate** (per B-0634 substrate cluster) — distributed parameter custody; no single point of compromise; consent floor at quorum scope
 5. **Composes with B-0664 NCI HC-8** — parameter-protection IS private-state-preservation per non-coercion-invariant; operators retain parameter-sovereignty
 6. **Composes with `.claude/rules/methodology-hard-limits.md`** — parameter substrate stays within ethical floor; no parameter-substrate use that violates HARD LIMITS regardless of operator authority
-7. **Composes with [B-0703](B-0703-multi-oracle-bft-cross-faction-consensus-substrate-aaron-2026-05-18.md) multi-oracle BFT** — per-faction parameter access; faction-quorum consent for cross-faction parameter operations
+7. **Composes with [B-0703](../P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md) multi-oracle BFT** — per-faction parameter access; faction-quorum consent for cross-faction parameter operations
 8. **Forward-secrecy substrate for composition-graphs** — ephemeral per-graph parameters; if long-term substrate compromised, past graphs stay opaque (matters at meta/meme-space scope per the meta-meme-space substrate framing — temporal opacity over millennia-substrate-cycles)
 
 **Sub-target 17 (new — generator-parameter-protection substrate)**: cryptographic-grade parameter management:
@@ -975,7 +975,7 @@ Each step composes from prior sub-target substrate. The derivation IS the substr
 
 **Composition with broader Zeta substrate**:
 
-- Composes with [B-0703](B-0703-multi-oracle-bft-cross-faction-consensus-substrate-aaron-2026-05-18.md) multi-oracle BFT — different oracles see different model-weight projections per access policy; cryptographic-floor for cross-faction model substrate
+- Composes with [B-0703](../P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md) multi-oracle BFT — different oracles see different model-weight projections per access policy; cryptographic-floor for cross-faction model substrate
 - Composes with existing AI-substrate cluster — every AI in Zeta operates under this paradigm; weight-protection IS first-class for the framework's own AI substrate
 - Composes with `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — weight-substrate stays within safety floor; HARD LIMITS apply
 - Composes with `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` m/acc choice-architecture — per-deployment operator chooses weight-protection-posture; m/acc preserves choice
