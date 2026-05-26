@@ -259,19 +259,25 @@ Hermes runs, MCP calls, and UI evidence.
   work.
 - `apps/workers` validates required process config before any loop can
   start: environment, Organization ID, NATS stream, durable consumer,
-  and positive NATS inbound batch size.
+  CockroachDB URL, positive NATS inbound batch size, positive worker
+  inbound batch size, and positive worker outbox batch size.
 - `apps/workers` parses required runtime values from typed environment
   names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
-  `NATS_DURABLE`, and `NATS_INBOUND_BATCH_SIZE`. String values are
-  trimmed, and NATS inbound batch size must be a safe positive decimal
-  integer.
+  `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`, `COCKROACH_DATABASE_URL`,
+  `WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE`. String
+  values are trimmed, and all batch sizes must be safe positive decimal
+  integers.
 - `apps/workers` treats any non-happy NATS consumer counter as degraded:
   failed, dead-lettered, invalid, payload-conflict,
   negative-acknowledged, or terminated messages.
-- `apps/workers` exposes an app-level composition factory that receives
-  typed config plus already-constructed ports. Future real CockroachDB,
-  NATS, and telemetry adapters bind at this app seam instead of leaking
-  process or secret concerns into reusable packages.
+- `apps/workers` exposes app-level composition factories that receive
+  typed config plus already-constructed ports. The durable worker
+  composition seam now binds a generic Cockroach executor into the
+  `state-cockroach` adapter factory, then wires Cockroach-backed outbox
+  and event-ingestion stores into the worker host. Future real
+  CockroachDB client construction, NATS, and telemetry adapters bind at
+  this app seam instead of leaking process or secret concerns into
+  reusable packages.
 - Observability projections now include policy decision ID and policy
   version in event span attributes and workflow visibility records when
   an accepted command emits a policy-backed event envelope.
@@ -282,9 +288,9 @@ Hermes runs, MCP calls, and UI evidence.
 
 ## Next Slice
 
-The next slice should add the first real process adapter factories below
-`apps/workers`: concrete NATS pull/publish client construction, durable
-CockroachDB outbox/inbox/policy-observation adapter construction, and a
+The next slice should add concrete process client construction below
+`apps/workers`: real CockroachDB pool binding for the generic SQL
+executor, concrete NATS pull/publish client construction, and a
 telemetry sink that can later send structured logs and metrics into the
 full-ai-cluster LGTM stack. Keep URLs, credentials, and connection pools
 in app adapter config fed by Kubernetes Secret or ExternalSecret values,

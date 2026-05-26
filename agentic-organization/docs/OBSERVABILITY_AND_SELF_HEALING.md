@@ -162,12 +162,19 @@ The operations UI should make weak points visible at every hierarchy:
 - work item timelines;
 - agent schedules and runs;
 - review, QA, security, architecture, delivery, and outcome gates;
+- Cockroach durable adapter health;
 - NATS, Temporal, Dapr, Hermes, Hindsight, MCP, and k8s adapter health.
 
 Every view should support drilling from summary to evidence. A red or
 degraded status without a trace, log query, metric panel, event ID or
 policy decision/command ID, work item, and suggested action is not good
 enough for this platform.
+
+Startup and composition failures count as observable runtime failures.
+If the worker process cannot construct or validate its Cockroach, NATS,
+or telemetry adapters, the failure should produce explicit startup
+evidence and a degraded/readiness signal rather than disappearing before
+agents and operators can inspect it.
 
 ## Implementation Rule
 

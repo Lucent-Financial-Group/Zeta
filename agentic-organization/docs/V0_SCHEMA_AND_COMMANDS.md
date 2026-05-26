@@ -349,6 +349,14 @@ together. The first durable adapter uses CockroachDB, but the command
 model only depends on generic state ports. A worker publishes outbox
 rows to NATS JetStream and marks them published.
 
+The first Cockroach adapter set is composed through a generic SQL
+executor and durable adapter factory. The same executor shape backs
+command state, outbox publishing, event ingestion, policy observations,
+and the core migration runner. App hosts may bind that executor to a
+real Cockroach client, but domain, application, runtime, policy,
+messaging, and worker packages must not depend on the concrete client or
+connection pool.
+
 Subject shape:
 
 ```text

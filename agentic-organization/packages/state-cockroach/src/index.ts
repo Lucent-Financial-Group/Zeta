@@ -7,6 +7,18 @@ export {
   type CreateCockroachCommandStateStoreFactoryInput,
 } from "./cockroach-command-state-store.ts";
 export {
+  createCockroachDurableStateAdapters,
+  type CockroachDurableStateAdapters,
+  type CockroachOrganizationSqlExecutor,
+  type CreateCockroachDurableStateAdaptersInput,
+} from "./cockroach-durable-state-adapters.ts";
+export {
+  CockroachMigrationStatement,
+  createCockroachMigrationRunner,
+  type CockroachMigrationRunner,
+  type CreateCockroachMigrationRunnerInput,
+} from "./cockroach-migration-runner.ts";
+export {
   CockroachOutboxEventSourceStatement,
   createCockroachOutboxEventSource,
   type CockroachOutboxSqlExecutor,
@@ -37,3 +49,12 @@ export {
   createCockroachCoreStateMigration,
   type CockroachSchemaMigration,
 } from "./cockroach-schema.ts";
+export {
+  createCockroachSqlExecutor,
+  type CockroachAnySqlResult,
+  type CockroachAnySqlStatement,
+  type CockroachGenericSqlExecutor,
+  type CockroachGenericSqlTransactionExecutor,
+  type CockroachSqlClient,
+  type CreateCockroachSqlExecutorInput,
+} from "./cockroach-sql-executor.ts";

@@ -473,7 +473,9 @@ live infrastructure adapters are bound by a runtime host.
 - **WHEN** the `apps/workers` runtime host parses process environment
   values
 - **THEN** it reads `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
-  `NATS_DURABLE`, and `NATS_INBOUND_BATCH_SIZE` through typed env names
+  `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`, `COCKROACH_DATABASE_URL`,
+  `WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE` through
+  typed env names
 - **AND** it returns typed runtime configuration for the composition root
 - **AND** packages do not read process environment values directly
 - **AND** URLs, credentials, and connection pools remain process adapter
@@ -488,11 +490,28 @@ live infrastructure adapters are bound by a runtime host.
 - **AND** the composition root returns a runnable worker runtime without
   leaking concrete adapter construction into package code
 
+#### Scenario: Workers app composes durable Cockroach worker ports
+
+- **WHEN** the `apps/workers` durable composition root is created
+- **THEN** it receives typed runtime config, a generic Cockroach SQL
+  executor, an event publisher port, an inbound event source port, a NATS
+  consumer port, telemetry sink, and runtime utilities
+- **AND** it builds Cockroach-backed command state, outbox,
+  event-ingestion, and policy-observation adapters through the
+  `state-cockroach` factory
+- **AND** it wires Cockroach-backed outbox and event-ingestion ports into
+  the package-level worker host
+- **AND** runtime, application, worker, policy, messaging, and
+  observability packages do not receive Cockroach connection pools or
+  vendor client objects
+
 #### Scenario: Workers app rejects invalid process config
 
 - **WHEN** the `apps/workers` runtime host is created with missing
-  environment, missing Organization ID, missing NATS stream, missing
-  durable consumer, or non-positive NATS inbound batch size
+  environment, missing Organization ID, missing Cockroach database URL,
+  missing NATS stream, missing durable consumer, non-positive NATS
+  inbound batch size, non-positive worker inbound batch size, or
+  non-positive worker outbox batch size
 - **THEN** runtime creation fails with a typed configuration error before
   any worker loop can start
 
@@ -515,6 +534,15 @@ live infrastructure adapters are bound by a runtime host.
   batch counts
 - **AND** invalid, payload-conflict, negative-acknowledged, or
   terminated NATS messages also make the runtime result degraded
+
+#### Scenario: Worker adapter startup failures are visible
+
+- **WHEN** Cockroach, NATS, or telemetry adapter construction or
+  readiness validation fails at the worker process boundary
+- **THEN** the worker startup path records explicit failure evidence with
+  stage, message, and configuration source
+- **AND** the process reports degraded or not-ready status instead of
+  hiding the failure before the Organization UI and agents can inspect it
 
 ### Requirement: Telemetry is complete at the event boundary
 

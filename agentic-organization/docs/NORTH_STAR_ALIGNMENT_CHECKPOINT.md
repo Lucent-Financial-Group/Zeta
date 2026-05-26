@@ -177,9 +177,10 @@ business state.
 
 The remaining gaps are richer authority semantics and cluster-backed
 integration proof: tests still need unauthorized source hats, invalid
-target supervisors, and missing assignments, and the system still needs a
-real Cockroach-backed integration run plus process-level adapter wiring
-below `apps/workers`.
+target supervisors, and missing assignments. The system now has a
+durable worker composition seam below `apps/workers`, but it still needs
+a real Cockroach-backed integration run and concrete process client
+construction for Cockroach, NATS, and telemetry.
 
 ### Command Surface Closure
 

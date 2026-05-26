@@ -306,9 +306,14 @@ metrics, structured logs, readiness, and graceful shutdown.
 does not introduce NestJS yet. It composes the package-level worker host
 and the NATS consumer adapter, parses typed process environment values
 into runtime config, records telemetry through a sink port, and reports
-healthy/degraded status. Its current required environment contract is
-`AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`, `NATS_DURABLE`, and
-`NATS_INBOUND_BATCH_SIZE`. Concrete NATS clients, CockroachDB pools,
+healthy/degraded status. Its durable composition seam receives a generic
+Cockroach SQL executor, creates the Cockroach-backed command state,
+outbox, event-ingestion, and policy-observation adapter set, and wires
+the outbox/event-ingestion ports into the worker host. Its current
+required environment contract is `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`,
+`COCKROACH_DATABASE_URL`, `NATS_STREAM`, `NATS_DURABLE`,
+`NATS_INBOUND_BATCH_SIZE`, `WORKER_INBOUND_BATCH_SIZE`, and
+`WORKER_OUTBOX_BATCH_SIZE`. Concrete NATS clients, CockroachDB pools,
 readiness endpoints, structured logging, and shutdown hooks still belong
 to later process-adapter wiring.
 
@@ -318,6 +323,13 @@ should know which concrete adapter implementation is being used. Domain,
 application, runtime, worker, and observability packages must stay free
 of process environment, Kubernetes Secret, ExternalSecret, connection
 pool, and client-construction details.
+
+The `state-cockroach` package now owns a generic SQL executor adapter and
+migration runner. The executor adapts a process-provided Cockroach client
+interface to the narrower statement executor contracts used by command
+state, outbox, event ingestion, and policy observations. This keeps the
+real database client and connection pool outside package code while
+still giving `apps/workers` one durable factory to compose.
 
 ## SOLID Rules
 
@@ -754,14 +766,28 @@ is introduced: non-secret operational values are parsed from typed env
 names, while URLs, credentials, and client construction remain reserved
 for process adapter factories supplied by the composition root.
 
-Minimum runtime environment contract:
+Current `apps/workers` process environment contract:
 
 ```text
 AGENTIC_ORG_ENV
 AGENTIC_ORG_ID
+COCKROACH_DATABASE_URL
 NATS_STREAM
 NATS_DURABLE
 NATS_INBOUND_BATCH_SIZE
+WORKER_INBOUND_BATCH_SIZE
+WORKER_OUTBOX_BATCH_SIZE
+```
+
+`COCKROACH_DATABASE_URL` is a secret-backed process adapter input. In
+the cluster it must be sourced from a Kubernetes Secret populated by
+External Secrets from Vault, not from a plain manifest or reusable
+package default.
+
+Future full deployment adapter environment will add service-specific
+values as their process adapters become real:
+
+```text
 TEMPORAL_ADDRESS
 HINDSIGHT_URL
 HERMES_URL
@@ -987,9 +1013,10 @@ Grafana.
    review staffing, QA staffing, blocker escalation, and late run
    incidents.
 10. Add runtime hosts. The first NodeNext `apps/workers` host now parses
-    typed process config and composes the worker and NATS consumer loops
-    through ports; NestJS API and richer worker process wiring are still
-    pending.
+    typed process config, composes the worker and NATS consumer loops
+    through ports, and has a durable Cockroach composition seam for
+    outbox/event-ingestion-backed worker execution; NestJS API and real
+    process client wiring are still pending.
 11. Add UI projections for work board, review center, and evidence
     timeline.
 12. Add real cluster adapters one at a time.
