@@ -8,13 +8,16 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
+  - B-0247
+  - B-0288
   - B-0816
   - B-0819
   - B-0820
 composes_with:
+  - B-0742
   - B-0794
   - B-0813
-tags: [strategic-positioning, dependency-graph, helm, variable-passing, ontology-substrate, empty-architectural-slot, force-multiplier, terraform-pulumi-helmfile-comparison]
+tags: [strategic-positioning, dependency-graph, helm, variable-passing, ontology-substrate, empty-architectural-slot, force-multiplier, terraform-pulumi-helmfile-comparison, ace-feature, maven-for-helm]
 ---
 
 ## TL;DR — "Maven for Helm" (Aaron 2026-05-26 sharp framing)
@@ -176,6 +179,25 @@ Cross-cluster variable flow (cluster-A produces something cluster-B consumes) is
 ### Sub-target 6 — UX + DX (ontology-shaped operator surface)
 
 Per [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md): operators describe the ontology of what they want; the graph + tool materialize the engine-specific configs. The substrate IS ontology-shaped, not tool-shaped. AI agents (via Skill router + the three primitives `run` / `deferred run / continue with` / `auto JIT`) author runbooks that emit dependency-graph specs from natural-language operator intent.
+
+## Implementation home — Ace package manager (Aaron 2026-05-26 directive)
+
+Aaron 2026-05-26: *"that's another feature for ace package manager"*
+
+This row's substrate IS NOT a standalone tool — it's a FEATURE that lands in [Ace](B-0288-ace-dlc-package-manager-cli-2026-05-08.md), Zeta's package manager. Architectural reasoning:
+
+- **Ace is already positioned as Zeta's package-manager substrate** (per B-0247 / B-0288 / B-0742). Adding Maven-for-Helm dep-graph as another package-manager feature reuses Ace's existing operator-facing CLI + substrate-engineering primitives rather than minting a parallel tool.
+- **One package manager handling multiple substrate types is the unified-substrate framing** — Ace already manages native packages + content packs + kernel extensions per B-0247; extending to Helm chart dependency-graph + transitive variable-passing keeps the operator's mental model unified (one CLI; one ontology; one dependency-graph layer).
+- **The Maven analogy reinforces the home**: Maven is BOTH a package manager AND a build/dependency-graph tool. Ace already plays Maven's package-manager role for Zeta; absorbing Maven's dependency-graph role for Helm charts keeps the architectural symmetry.
+
+Practical implications for substrate-engineering:
+
+- **Sub-targets 1-6 below** (named-dep-graph spec + `tools/cluster/deps-to-engine-config.ts` + typed output resolution + cycle detection + multi-cluster scope + ontology-shaped DX) all land as Ace features rather than standalone tools
+- **CLI surface** uses Ace's existing command structure: e.g., `ace deps resolve` / `ace deps graph` / `ace helm install --resolve-deps`
+- **Storage**: dependency-graph specs live in Ace's existing content-pack / chart-repo substrate (B-0247 surface) rather than a parallel storage location
+- **Composes with B-0742** (Ace's distributable POC): Maven-for-Helm becomes part of what makes Ace distributable + load-bearing as the Zeta package manager
+
+The strategic-positioning claim from "Why Zeta is positioned to claim it" stays: Zeta claims the dependency-graph-on-Helm slot. The IMPLEMENTATION HOME for that claim IS Ace. These compose; both true.
 
 ## Acceptance
 
