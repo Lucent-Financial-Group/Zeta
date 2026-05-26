@@ -3,7 +3,8 @@
 //
 // The TypeScript/Bun migration is in bash-retirement mode: repo tools should
 // not grow new post-install `.sh` entrypoints. The only non-Lean shell scripts
-// still allowed are setup/bootstrap scripts that run before Bun is available.
+// still allowed are setup/bootstrap scripts that run before Bun is available
+// and launchd bootstrap scripts that establish the pinned Bun environment.
 //
 // Usage:
 //   bun tools/hygiene/check-bash-retirement-inventory.ts
@@ -131,7 +132,7 @@ export function renderReport(report: InventoryReport): string {
   lines.push(`missing_retained: ${String(report.drift.missingRetained.length)}`);
   lines.push("");
   if (!hasDrift(report)) {
-    lines.push("OK: retained non-Lean bash surface matches setup/bootstrap allowlist.");
+    lines.push("OK: retained non-Lean bash surface matches setup/bootstrap/launchd-bootstrap allowlist.");
     return `${lines.join("\n")}\n`;
   }
   if (report.drift.unexpected.length > 0) {
@@ -156,7 +157,7 @@ function usage(): string {
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --enforce",
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --json",
     "",
-    "Checks that non-Lean tracked .sh files are limited to setup/bootstrap scripts.",
+    "Checks that non-Lean tracked .sh files are limited to setup/bootstrap/launchd-bootstrap scripts.",
   ].join("\n");
 }
 

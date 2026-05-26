@@ -14,7 +14,7 @@ function splitExpectedRetained(): readonly [string, readonly string[]] {
 }
 
 describe("buildInventoryReport", () => {
-  test("accepts the retained setup/bootstrap allowlist", () => {
+  test("accepts the retained setup/bootstrap/launchd-bootstrap allowlist", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_BASH);
 
     expect(hasDrift(report)).toBe(false);
@@ -45,7 +45,9 @@ describe("renderReport", () => {
   test("renders an OK summary for a matching inventory", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_BASH);
 
-    expect(renderReport(report)).toContain("OK: retained non-Lean bash surface matches setup/bootstrap allowlist.");
+    expect(renderReport(report)).toContain(
+      "OK: retained non-Lean bash surface matches setup/bootstrap/launchd-bootstrap allowlist.",
+    );
   });
 
   test("renders drift sections", () => {
