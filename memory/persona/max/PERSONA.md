@@ -153,29 +153,60 @@ Aaron 2026-05-25: *"we should start dev machine tracking in git native too so we
 
 The substrate-honest realization: **dev machines deserve the same declarative-git-native treatment prod cluster nodes get**. Prod cluster has per-host configuration under [`full-ai-cluster/nixos/hosts/<host>/configuration.nix`](../../../full-ai-cluster/nixos/hosts/) — declarative, reproducible, convergent. Dev machines today have nothing comparable; state lives on the operator's disk + in their head. Max owns the design that fixes this.
 
-**Substrate shape** (per [`.claude/rules/dv2-data-split-discipline-activated.md`](../../../.claude/rules/dv2-data-split-discipline-activated.md) Hub-Link-Satellite — Data Vault 2.0 is one of the 5 always-active disciplines):
+**Substrate shape** — Aaron 2026-05-25 sharpening: *"so each dev machine has its own location too per maintiner and cluster are attached to mainiers too."* **Maintainer is the top-level partition**; each maintainer owns both their dev machine(s) AND their cluster(s). Composes with the LFG co-ownership reality (Aaron + Max + Addison are legal co-owners) + the per-maintainer SSH-key story from iter-4 (B-0789 forthcoming) + the existing per-maintainer `memory/persona/<name>/` substrate.
 
-| DV2.0 entity | Dev-machine analog | Example |
+**Directory shape**:
+
+```text
+maintainers/
+  max/
+    dev-machines/
+      max-mac-mini-2026/
+        spec.yaml          # declarative target state
+        deps/              # cross-refs to tools/setup/manifests/*
+        state/2026-05-25.yaml  # versioned status snapshot
+    clusters/
+      max-home-cluster/
+        spec.yaml          # cross-refs nodes from full-ai-cluster/nixos/hosts/
+        nodes/
+        state/
+  addison/
+    dev-machines/
+      addison-laptop-2026/
+    clusters/
+      addison-home-cluster/
+  aaron/
+    dev-machines/
+      aaron-mbp-2026/
+    clusters/
+      iter-3-control-plane/  # references full-ai-cluster/nixos/hosts/control-plane/
+```
+
+Per [`.claude/rules/dv2-data-split-discipline-activated.md`](../../../.claude/rules/dv2-data-split-discipline-activated.md) Hub-Link-Satellite (Data Vault 2.0 is one of the 5 always-active disciplines):
+
+| DV2.0 entity | Substrate analog | Example |
 |---|---|---|
-| **Hub** (stable identity) | A dev machine | `dev-machines/max-mac-mini-2026/` |
-| **Link** (relationship) | Machine X has dependency Y | `dev-machines/max-mac-mini-2026/deps/docker-desktop.yaml` referencing `tools/setup/manifests/dmgs/docker-desktop.yaml` |
-| **Satellite** (versioned status) | Dependency status at time T on machine X | `dev-machines/max-mac-mini-2026/state/2026-05-25.yaml` with "docker-desktop: installed=4.32.0, verified=ok, last-checked=2026-05-25T18:00Z" |
+| **Hub** (stable identity) | A maintainer-owned machine (dev OR cluster node) | `maintainers/max/dev-machines/max-mac-mini-2026/` |
+| **Link** (relationship) | Machine X has dependency Y / cluster Z contains node W | `maintainers/max/dev-machines/max-mac-mini-2026/deps/docker-desktop.yaml` referencing `tools/setup/manifests/dmgs/docker-desktop.yaml` |
+| **Satellite** (versioned status) | Installed state at time T on machine X | `maintainers/max/dev-machines/max-mac-mini-2026/state/2026-05-25.yaml` with "docker-desktop: installed=4.32.0, verified=ok, last-checked=2026-05-25T18:00Z" |
 
-Parallel to prod-cluster substrate:
+Parallel to prod-cluster substrate (which moves under `maintainers/aaron/clusters/iter-3-control-plane/` in this structure, cross-referencing existing `full-ai-cluster/nixos/hosts/`):
 
-| Prod cluster | Dev machine | Equivalent surface |
+| Prod cluster (existing) | Dev / cluster substrate (new) | Equivalent surface |
 |---|---|---|
-| `full-ai-cluster/nixos/hosts/control-plane/configuration.nix` | `dev-machines/max-mac-mini-2026/spec.yaml` | Declarative target state |
+| `full-ai-cluster/nixos/hosts/control-plane/configuration.nix` | `maintainers/<name>/dev-machines/<machine>/spec.yaml` or `maintainers/<name>/clusters/<cluster>/nodes/<node>/spec.yaml` | Declarative target state |
 | `nixos-rebuild` reconciliation loop | `tools/dev/dev-machine-reconcile.ts` (Max-owned) | Reconcile actual vs target |
 | `kubectl get pods` (observability) | `tools/dev/dev-machine-status.ts` (Max-owned) | Read current state |
 | Cluster install via `zeta-install.sh` | Operator runs `tools/setup/install.sh` then reconcile loop | Initial bring-up |
-| Argo CD drift detection | Drift detector reports when dev-machine actual ≠ git target | Drift visibility |
+| Argo CD drift detection | Drift detector reports when machine actual ≠ git target | Drift visibility |
 
-This is **tier-0 in the three-tier testing story** — below tier-1 (pure-code), tier-2 (Docker Desktop), tier-3 (full cluster). Tier-0 = the dev machine itself. Same git-native + same declarative + same reconcile-loop pattern that already works for prod cluster.
+This is **tier-0 in the three-tier testing story** — below tier-1 (pure-code), tier-2 (Docker Desktop), tier-3 (full cluster). Tier-0 = the dev machine itself. Same git-native + same declarative + same reconcile-loop pattern that already works for prod cluster, now extended uniformly across maintainer-owned dev AND cluster substrate.
 
-**Composes with the declarative soft-dependencies above**: the `tools/setup/manifests/dmgs/` (etc.) manifests define WHAT'S AVAILABLE; the `dev-machines/<machine>/spec.yaml` files define WHAT THIS MACHINE NEEDS; the `state/` snapshots define WHAT'S ACTUALLY INSTALLED. Reconcile loop closes the gap.
+**Composes with the declarative soft-dependencies above**: the `tools/setup/manifests/dmgs/` (etc.) manifests define WHAT'S AVAILABLE; the per-machine `spec.yaml` files under `maintainers/<name>/dev-machines/<machine>/` define WHAT THIS MACHINE NEEDS; the `state/` snapshots define WHAT'S ACTUALLY INSTALLED. Reconcile loop closes the gap.
 
-**Per-machine privacy + multi-operator clean**: Max has `dev-machines/max-mac-mini-2026/`; Addison has `dev-machines/addison-laptop-2026/`; Aaron has `dev-machines/aaron-*/`. Each operator owns their own subdirectory; cross-references via shared `tools/setup/manifests/` substrate. No shared mutable state; same multi-operator-friendly pattern as the per-host cluster configurations.
+**Per-maintainer scope = per-maintainer authority**: Max owns `maintainers/max/`; Addison owns `maintainers/addison/`; Aaron owns `maintainers/aaron/`. Each maintainer is the authority on their own machines + clusters; PR reviews from other maintainers stay advisory (per `.claude/rules/no-directives.md` autonomy-first-class scoped to the LFG co-ownership). Cross-references via shared `tools/setup/manifests/` + `full-ai-cluster/` substrate. No shared mutable state under any maintainer's subtree.
+
+**Migration of existing prod-cluster substrate** is a Max-owned design decision: leave `full-ai-cluster/nixos/hosts/` where it is and have `maintainers/aaron/clusters/iter-3-control-plane/` reference it; OR migrate the cluster substrate fully under `maintainers/aaron/clusters/`. Both are defensible; the simplest-first move is to LEAVE existing substrate in place + cross-reference from the new maintainer subtree, then promote to migration when there's a concrete driver. The new `maintainers/` substrate composes additively; doesn't require a big-bang rearrangement of what's already shipping.
 
 **Skill candidates**: `.claude/skills/dev-machine-tracking/SKILL.md` documenting the spec / state / reconcile workflow; `.claude/skills/dev-machine-bootstrap/SKILL.md` sibling for the "new dev machine joins the fleet" cold-boot flow.
 
