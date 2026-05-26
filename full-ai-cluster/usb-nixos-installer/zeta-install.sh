@@ -348,6 +348,61 @@ else
   echo "=============================="
 fi
 
+# ── Step 6.5: iter-5.1 wifi persistence (B-0792) ────────────────
+#
+# By the time this step runs, the live installer is already on the
+# network — either via ethernet auto-DHCP (no profile to copy; this
+# is a no-op) or via nmtui setup at first boot (`zeta-first-boot.sh`
+# Step 2 launches nmtui when ethernet is absent; operator entered
+# wifi creds once via TUI; NetworkManager wrote a .nmconnection
+# profile to /etc/NetworkManager/system-connections/).
+#
+# Without this step, the freshly-installed system inherits the
+# NixOS NetworkManager service but NOT the operator's connection
+# profile. Result: wifi-only mini-PCs boot installed system,
+# NetworkManager comes up with empty profile dir, no wifi, no SSH.
+# Aaron 2026-05-26: "we won't have ethernet for most machines it
+# needs to remember the wifi on setup."
+#
+# Fix: copy *.nmconnection files from the live installer to /mnt.
+# NetworkManager requires chmod 0600 + chown root:root on these
+# files. sudo handles both during the cp.
+echo
+echo "[iter-5.1] ── checking for NetworkManager connection profiles to persist ──"
+NM_SRC="/etc/NetworkManager/system-connections"
+NM_DST="/mnt/etc/NetworkManager/system-connections"
+NM_PROFILE_COUNT=0
+if [ -d "$NM_SRC" ]; then
+  # Count .nmconnection files; nullglob in case dir is empty
+  NM_PROFILES=$(sudo find "$NM_SRC" -maxdepth 1 -name "*.nmconnection" -type f 2>/dev/null || true)
+  if [ -n "$NM_PROFILES" ]; then
+    NM_PROFILE_COUNT=$(echo "$NM_PROFILES" | wc -l | tr -d ' ')
+    sudo mkdir -p "$NM_DST"
+    sudo chmod 0700 "$NM_DST"
+    # Copy preserving permissions; NM requires 0600 root:root on each
+    # .nmconnection file (else it ignores them at startup with a
+    # "permissions not strict enough" warning in journalctl)
+    echo "$NM_PROFILES" | while read -r src; do
+      [ -n "$src" ] || continue
+      name=$(basename "$src")
+      dst="$NM_DST/$name"
+      sudo cp -p "$src" "$dst"
+      sudo chown root:root "$dst"
+      sudo chmod 0600 "$dst"
+      # Print SSID (parsed from [wifi] ssid=...) without printing the psk
+      ssid=$(sudo awk -F= '/^ssid=/{print $2; exit}' "$dst" 2>/dev/null || echo "(unknown)")
+      echo "[iter-5.1]   persisted: $name (ssid=$ssid)"
+    done
+    echo "[iter-5.1]   $NM_PROFILE_COUNT NetworkManager profile(s) persisted to installed system"
+    echo "[iter-5.1]   installed system will reconnect to wifi automatically on reboot"
+  else
+    echo "[iter-5.1]   no .nmconnection profiles in $NM_SRC (ethernet-DHCP path; nothing to persist)"
+  fi
+else
+  echo "[iter-5.1]   $NM_SRC does not exist; skipping wifi persistence (no harm; ethernet-DHCP works)"
+fi
+echo
+
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 sudo nixos-install --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
 
