@@ -826,8 +826,66 @@ else
 fi
 echo
 
+# ── B-0835 Bug 1 fix: pre-stage /etc/zeta/ symlink so flake eval can ──
+# read /etc/zeta/cluster-node-id at build time. The injected-hostname.nix
+# module reads /etc/zeta/cluster-node-id via builtins.pathExists +
+# builtins.readFile at NixOS evaluation time (flake build-time). During
+# nixos-install from live ISO, that path refers to the LIVE ISO (file
+# absent) NOT the install target /mnt/etc/zeta/ (file present from Step
+# 6.6 iter-5.2.2). Without this symlink, injected-hostname.nix falls
+# through to the flake's hardcoded `networking.hostName` and the operator
+# gets the flake-default hostname (e.g., "control-plane") instead of the
+# unique node-<6hex> that iter-5.2.2 generated.
+#
+# Symlinking /mnt/etc/zeta → /etc/zeta makes the file visible at the
+# path injected-hostname.nix expects, during the flake-eval phase of
+# nixos-install. After nixos-install completes + pivots into the
+# installed system on next boot, /etc/zeta/cluster-node-id IS at the
+# correct path (it's on the installed root filesystem already), so
+# subsequent rebuilds work without the symlink.
+#
+# Cleanup: remove the symlink after nixos-install so the live ISO is
+# clean (no dangling reference if /mnt is unmounted before reboot).
+#
+# Empirical anchor: operator 2026-05-26 physical hardware-support test:
+# login banner showed "control-plane login:" instead of unique
+# node-<6hex>. Composes with the same path-mismatch class as B-0835
+# Bug 3b (password) which was fixed via activation-script (different
+# fix because password CAN apply at activation; hostname CANNOT cleanly
+# change at activation because many services bake hostname at build).
+if [ -f "$HOSTNAME_DST" ]; then
+  echo "[B-0835 Bug 1 fix] symlinking $HOSTNAME_DST → /etc/zeta/cluster-node-id for flake eval"
+  sudo mkdir -p /etc/zeta
+  # Only symlink if /etc/zeta/cluster-node-id doesn't already exist
+  # (rebuild-on-installed-system case where it's a real file)
+  if [ ! -e /etc/zeta/cluster-node-id ]; then
+    sudo ln -sf "$HOSTNAME_DST" /etc/zeta/cluster-node-id
+    SYMLINKED_HOSTNAME_FILE=1
+  else
+    echo "[B-0835 Bug 1 fix]   /etc/zeta/cluster-node-id already exists; not symlinking"
+    SYMLINKED_HOSTNAME_FILE=0
+  fi
+else
+  SYMLINKED_HOSTNAME_FILE=0
+fi
+
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
-sudo nixos-install --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
+# --impure: required so builtins.pathExists + builtins.readFile in
+# injected-hostname.nix can read the symlinked /etc/zeta/cluster-node-id.
+# Without --impure, flake pure-mode refuses non-store absolute paths
+# even with the symlink in place. Safe here because:
+#   - Only impure read is /etc/zeta/cluster-node-id (operator-chosen
+#     hostname from iter-5.2.2; not a secret)
+#   - Other modules (initial-password.nix) do NOT use builtins.readFile;
+#     they use activation-scripts (per B-0835 Bug 3b fix)
+sudo nixos-install --impure --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
+
+# Cleanup the symlink we created (no dangling reference if /mnt is
+# unmounted before reboot).
+if [ "$SYMLINKED_HOSTNAME_FILE" = "1" ]; then
+  sudo rm -f /etc/zeta/cluster-node-id
+  echo "[B-0835 Bug 1 fix] removed symlink (installed system has its own /etc/zeta/cluster-node-id)"
+fi
 
 # ── Step 7: print initial credentials (iter-4 — per B-0789) ──────
 echo
