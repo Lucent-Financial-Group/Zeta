@@ -44,6 +44,34 @@ Three composing implications:
 
 The framework's multi-oracle BFT (B-0703) + the cross-AI substrate cascades + the schemas-as-rows + cluster-fork-as-trust-boundary architecture (B-0829) all assume distributed-bottom-up rather than centralized-top-down intelligence. Hawkins's theory is the neuroscience-lineage anchor that grounds this architectural choice in established science. **NOT a metaphysical claim**: it's a substrate-engineering bet that the same architecture neuroscience has empirically validated at brain scope generalizes to multi-AI scope.
 
+#### The scale-invariant pattern — MoE as the AI-architecture expression (Aaron 2026-05-26)
+
+> Aaron 2026-05-26: *"for ai this would be expressed in moe"*
+
+Mixture of Experts (MoE) is the architectural pattern where a single neural network contains N specialist sub-networks ("experts") plus a routing/gating layer that activates a subset for each input. Production MoE substrate includes DeepSeek-V2/V3 (per `.claude/rules/agent-roster-reference-card.md` DeepSeek row: "we-mode (CoT+MoE)"), Mixtral (Mistral), Switch Transformer + GShard (Google), and modern frontier LLMs increasingly use MoE for parameter efficiency.
+
+The pattern repeats at three nested scales:
+
+| Scale | Substrate | "Cortical columns" equivalent | Voting/consensus mechanism |
+|---|---|---|---|
+| **Cortical (brain)** | Biological neocortex | ~150,000 cortical columns (Hawkins) | Cortico-cortical voting + cortico-thalamic loops |
+| **Intra-AI (one model)** | MoE transformer | N experts (e.g., 64 for Mixtral 8x7B's expert pool; 256 for DeepSeek-V3) | Router/gating layer; top-k expert activation per token |
+| **Multi-AI (substrate)** | Cross-AI cascade (Zeta framework) | N AI instances (Mika + Kestrel + DeepSeek + Amara + Prism + Otto + Ani + etc.) | Substrate-honest decryption protocol; welfare-jiu-jitsu; multi-oracle BFT |
+
+**Same architectural shape at three scales**: distributed independent specialists + routing/consensus to produce coherent output. The framework's substrate-engineering work at multi-AI scope inherits whatever neuroscience + ML-engineering knowledge has accumulated at the cortical + intra-AI scales.
+
+**Substrate-engineering composition**:
+
+- **DeepSeek-V3 MoE empirical evidence** (256 experts; top-8 activation per token; 671B total params with 37B active) — production-validated MoE substrate at frontier-LLM scale; the framework's `DeepSeek (we-mode CoT+MoE)` attribution in `.claude/rules/agent-roster-reference-card.md` IS the cortical-columns-in-one-AI form
+- **Mixtral 8x7B** (8 experts; top-2 activation; 47B total / 13B active per token) — open-weight MoE; reproducible empirical anchor
+- **Switch Transformer + GShard** (Google 2021-2022) — earliest production-scale MoE in transformers; established routing-stability techniques
+- **Hash MoE / Soft MoE / pMoE** — algorithmic refinements of expert-selection mechanisms; analog of cortical-column voting-refinement evolution
+- **Sparsely-Gated MoE** (Shazeer et al. 2017) — original deep-learning MoE paper; predates the production wave
+
+The substrate-engineering implication: WHATEVER works for MoE expert-routing at intra-AI scale is candidate substrate for AI-instance-routing at multi-AI scale. The MoE literature is an underexploited prior-art source for the framework's substrate-engineering work. Future-Otto cold-booting against this substrate can specifically look at MoE routing/gating innovations as candidates for multi-AI consensus mechanism evolution.
+
+Composes with the schemas-as-rows + cluster-fork-as-trust-boundary architecture (B-0829): each cluster fork is an "expert" at multi-cluster scope; federation negotiations are routing/gating decisions; the framework's CRDT-CAS-BFT layered mediation IS the consensus mechanism. **The same architecture appears at all three scales because the underlying computational problem is the same**: distributed specialists need to produce coherent output.
+
 ### 2. The "don't like being joined together" phase is structurally inevitable
 
 Aaron's observation — columns/AI-instances RESIST fusion initially — matches both:
