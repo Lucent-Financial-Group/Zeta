@@ -66,6 +66,35 @@ describe("cockroach policy decision observation store", () => {
     equal(result.status, PolicyDecisionObservationPersistenceStatus.Duplicate);
   });
 
+  test("treats observation timestamp drift as a duplicate replay", async () => {
+    const executor = createRecordingExecutor({
+      recordInserted: false,
+      existingObservationHash: createDeniedPolicyDecisionObservationHash(),
+    });
+    const store = createCockroachPolicyDecisionObservationStore({ executor });
+
+    const result = await store.recordPolicyDecisionObservation({
+      ...createDeniedPolicyDecisionObservation(),
+      observedAt: "2026-05-25T20:05:00.000Z",
+    });
+
+    equal(result.status, PolicyDecisionObservationPersistenceStatus.Duplicate);
+  });
+
+  test("hashes omitted and undefined optional evidence the same way as JSON persistence", async () => {
+    const omittedExecutor = createRecordingExecutor();
+    const undefinedExecutor = createRecordingExecutor();
+    const omittedStore = createCockroachPolicyDecisionObservationStore({ executor: omittedExecutor });
+    const undefinedStore = createCockroachPolicyDecisionObservationStore({ executor: undefinedExecutor });
+
+    await omittedStore.recordPolicyDecisionObservation(createMinimalDeniedPolicyDecisionObservation());
+    await undefinedStore.recordPolicyDecisionObservation(
+      createMinimalDeniedPolicyDecisionObservationWithUndefinedOptionals(),
+    );
+
+    equal(getRecordedObservationHash(omittedExecutor), getRecordedObservationHash(undefinedExecutor));
+  });
+
   test("returns conflict when the decision row exists with different observation evidence", async () => {
     const executor = createRecordingExecutor({
       recordInserted: false,
@@ -172,7 +201,11 @@ function createRecordingExecutor(
 }
 
 function createDeniedPolicyDecisionObservationHash(): string {
-  return "sha256:fdfd0685215f28c0e416fa01fade4abb95e5d8a179862c698acc54d12ae30d24";
+  return "sha256:ed890dae6f9a6afb4330ae282e70b23da4c14e1efc3831de68711d3604f29743";
+}
+
+function getRecordedObservationHash(executor: RecordingPolicyDecisionObservationExecutor): unknown {
+  return executor.statements[0]?.parameters[19];
 }
 
 function createDeniedPolicyDecisionObservation(): PolicyDecisionObservation {
@@ -208,4 +241,45 @@ function createDeniedPolicyDecisionObservation(): PolicyDecisionObservation {
     },
     observedAt: "2026-05-25T20:00:00.000Z",
   };
+}
+
+function createMinimalDeniedPolicyDecisionObservation(): PolicyDecisionObservation {
+  return {
+    commandId: "cmd-supervisor-signal-001",
+    commandType: CommandType.SendSupervisorSignal,
+    actor: {
+      agentId: "agent-developer-001",
+      hatAssignmentId: "hat-assignment-dev-001",
+    },
+    scope: {
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+    },
+    trace: {
+      correlationId: "corr-supervisor-signal-001",
+      causationId: "cause-team-work-001",
+      traceId: "trace-supervisor-signal-001",
+      idempotencyKey: "idem-supervisor-signal-001",
+    },
+    decision: {
+      status: PolicyDecisionStatus.Denied,
+      decisionId: "policy-decision-denied-001",
+      policyVersion: "policy-v1",
+      reason: HatAuthorityDecisionStatus.ToolDenied,
+    },
+    observedAt: "2026-05-25T20:00:00.000Z",
+  };
+}
+
+function createMinimalDeniedPolicyDecisionObservationWithUndefinedOptionals(): PolicyDecisionObservation {
+  return {
+    ...createMinimalDeniedPolicyDecisionObservation(),
+    toolType: undefined,
+    supervisorChain: undefined,
+    scope: {
+      ...createMinimalDeniedPolicyDecisionObservation().scope,
+      teamId: undefined,
+      workItemId: undefined,
+    },
+  } as unknown as PolicyDecisionObservation;
 }

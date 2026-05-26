@@ -143,10 +143,35 @@ function createRecordPolicyDecisionObservationStatement(
 }
 
 function createPolicyDecisionObservationHash(observation: PolicyDecisionObservation): string {
-  return `sha256:${createHash("sha256").update(stringifyCanonicalJson(observation)).digest("hex")}`;
+  return `sha256:${createHash("sha256").update(stringifyCanonicalJson(createHashableObservation(observation))).digest("hex")}`;
+}
+
+function createHashableObservation(observation: PolicyDecisionObservation): Omit<PolicyDecisionObservation, "observedAt"> {
+  const hashableObservation: Omit<PolicyDecisionObservation, "observedAt"> = {
+    commandId: observation.commandId,
+    commandType: observation.commandType,
+    actor: observation.actor,
+    scope: observation.scope,
+    trace: observation.trace,
+    decision: observation.decision,
+  };
+
+  if (observation.toolType !== undefined) {
+    hashableObservation.toolType = observation.toolType;
+  }
+
+  if (observation.supervisorChain !== undefined) {
+    hashableObservation.supervisorChain = observation.supervisorChain;
+  }
+
+  return hashableObservation;
 }
 
 function stringifyCanonicalJson(value: unknown): string {
+  if (value === undefined) {
+    return "null";
+  }
+
   if (value === null || typeof value !== "object") {
     return JSON.stringify(value);
   }
@@ -157,6 +182,7 @@ function stringifyCanonicalJson(value: unknown): string {
 
   const record = value as Record<string, unknown>;
   const properties = Object.keys(record)
+    .filter((key) => record[key] !== undefined)
     .sort()
     .map((key) => `${JSON.stringify(key)}:${stringifyCanonicalJson(record[key])}`);
 
