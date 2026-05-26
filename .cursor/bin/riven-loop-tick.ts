@@ -55,33 +55,14 @@ function run(command: string, args: string[], timeoutMs: number): { status: numb
     };
 }
 
-function resolveAgentBin(): string | null {
-    const pathDirs = `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${join(home, ".local/bin")}`.split(":");
-    for (const bin of agentBinCandidates) {
-        const probe = spawnSync("/usr/bin/which", [bin], {
-            encoding: "utf8",
-            env: { ...process.env, PATH: pathDirs.join(":") },
-            timeout: 5000,
-        });
-        if (probe.status === 0 && (probe.stdout ?? "").trim().length > 0) {
-            return bin;
-        }
-    }
-    return null;
-}
-
 function lines(text: string): string[] {
-    return text.split(/?
-/).map(l => l.trim()).filter(l => l.length > 0);
+    return text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
 }
 
 function acquireLock(): boolean {
     try {
         mkdirSync(lockDir, { recursive: false });
-        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
-run_id=${runId}
-acquired_at=${nowIso()}
-`);
+        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
         return true;
     } catch {
         try {
@@ -98,10 +79,7 @@ acquired_at=${nowIso()}
             }
             rmSync(lockDir, { recursive: true, force: true });
             mkdirSync(lockDir, { recursive: false });
-            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
-run_id=${runId}
-acquired_at=${nowIso()}
-`);
+            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
             return true;
         } catch { return false; }
     }
