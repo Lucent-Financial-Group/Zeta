@@ -1,10 +1,9 @@
-import { equal, rejects } from "node:assert/strict";
+import { equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { CommandType, SupervisorChainLevel, SupervisorSignalToolType } from "../../domain/src/index.ts";
 import {
   HatAuthorityDecisionStatus,
-  PolicyDecisionObservationConflictError,
   PolicyDecisionObservationPersistenceStatus,
   PolicyDecisionStatus,
   createPolicyDecisionObservationPort,
@@ -18,8 +17,9 @@ describe("policy decision observation port", () => {
     const port = createPolicyDecisionObservationPort({ store });
     const observation = createDeniedPolicyDecisionObservation();
 
-    await port.observePolicyDecision(observation);
+    const result = await port.observePolicyDecision(observation);
 
+    equal(result.status, PolicyDecisionObservationPersistenceStatus.Recorded);
     equal(store.recordedObservations.length, 1);
     equal(store.recordedObservations[0], observation);
   });
@@ -30,23 +30,21 @@ describe("policy decision observation port", () => {
     });
     const port = createPolicyDecisionObservationPort({ store });
 
-    await port.observePolicyDecision(createDeniedPolicyDecisionObservation());
+    const result = await port.observePolicyDecision(createDeniedPolicyDecisionObservation());
 
+    equal(result.status, PolicyDecisionObservationPersistenceStatus.Duplicate);
     equal(store.recordedObservations.length, 1);
   });
 
-  test("rejects conflicting observations instead of hiding contradictory governance evidence", async () => {
+  test("returns conflicting observations instead of hiding contradictory governance evidence", async () => {
     const store = createRecordingPolicyDecisionObservationStore({
       status: PolicyDecisionObservationPersistenceStatus.Conflict,
     });
     const port = createPolicyDecisionObservationPort({ store });
 
-    await rejects(
-      async () => await port.observePolicyDecision(createDeniedPolicyDecisionObservation()),
-      (error) =>
-        error instanceof PolicyDecisionObservationConflictError &&
-        error.policyDecisionId === "policy-decision-denied-001",
-    );
+    const result = await port.observePolicyDecision(createDeniedPolicyDecisionObservation());
+
+    equal(result.status, PolicyDecisionObservationPersistenceStatus.Conflict);
   });
 });
 

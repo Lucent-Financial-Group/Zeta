@@ -121,24 +121,6 @@ export type RecordPolicyDecisionObservationResult =
       status: typeof PolicyDecisionObservationPersistenceStatus.Conflict;
     };
 
-export const PolicyDecisionObservationErrorCode = {
-  Conflict: "policy_decision_observation_conflict",
-} as const;
-
-export type PolicyDecisionObservationErrorCode =
-  (typeof PolicyDecisionObservationErrorCode)[keyof typeof PolicyDecisionObservationErrorCode];
-
-export class PolicyDecisionObservationConflictError extends Error {
-  readonly code = PolicyDecisionObservationErrorCode.Conflict;
-  readonly policyDecisionId: string;
-
-  constructor(policyDecisionId: string) {
-    super("policy decision observation conflicts with existing governance evidence");
-    this.name = "PolicyDecisionObservationConflictError";
-    this.policyDecisionId = policyDecisionId;
-  }
-}
-
 export type PolicyDecisionObservationQuery = {
   organizationId: string;
   projectId?: string;
@@ -159,7 +141,7 @@ export type CommandAuthorizationPort = {
 };
 
 export type PolicyDecisionObservationPort = {
-  observePolicyDecision: (observation: PolicyDecisionObservation) => Promise<void>;
+  observePolicyDecision: (observation: PolicyDecisionObservation) => Promise<RecordPolicyDecisionObservationResult>;
 };
 
 export type PolicyDecisionObservationStore = {
@@ -213,12 +195,6 @@ export function createPolicyDecisionObservationPort(
   input: CreatePolicyDecisionObservationPortInput,
 ): PolicyDecisionObservationPort {
   return {
-    observePolicyDecision: async (observation) => {
-      const result = await input.store.recordPolicyDecisionObservation(observation);
-
-      if (result.status === PolicyDecisionObservationPersistenceStatus.Conflict) {
-        throw new PolicyDecisionObservationConflictError(observation.decision.decisionId);
-      }
-    },
+    observePolicyDecision: async (observation) => await input.store.recordPolicyDecisionObservation(observation),
   };
 }

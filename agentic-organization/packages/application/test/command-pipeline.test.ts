@@ -4,6 +4,7 @@ import { describe, test } from "node:test";
 import { CommandType, SupervisorChainLevel, SupervisorSignalToolType } from "../../domain/src/index.ts";
 import {
   HatAuthorityDecisionStatus,
+  PolicyDecisionObservationPersistenceStatus,
   PolicyDecisionStatus,
   type CommandAuthorizationPort,
   type CommandAuthorizationRequest,
@@ -304,6 +305,31 @@ describe("command pipeline idempotency", () => {
     equal(stateStoreFactory.findCallCount, 0);
     equal(stateStoreFactory.recordedOutcomes.length, 0);
   });
+
+  test("distinguishes conflicting policy observations from transient observation failures", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const deniedHandler = createRecordingCommandHandler();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createDenyingCommandAuthorizationPort("policy-decision-denied-001"),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(
+        PolicyDecisionObservationPersistenceStatus.Conflict,
+      ),
+      handlerRegistry: createCommandHandlerRegistry([deniedHandler]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PolicyObservationConflict);
+    equal(result.error?.policyDecisionId, "policy-decision-denied-001");
+    equal(result.error?.observationFailureReason, "policy_decision_observation_conflict");
+    equal(deniedHandler.executeCallCount, 0);
+    equal(stateStoreFactory.findCallCount, 0);
+    equal(stateStoreFactory.recordedOutcomes.length, 0);
+  });
 });
 
 type RecordingCommandStateStoreFactory<Result> = CommandStateStoreFactory<Result> & {
@@ -347,7 +373,9 @@ function createAllowingCommandAuthorizationPort(): CommandAuthorizationPort {
   };
 }
 
-function createRecordingPolicyDecisionObservationPort(): PolicyDecisionObservationPort & {
+function createRecordingPolicyDecisionObservationPort(
+  status: PolicyDecisionObservationPersistenceStatus = PolicyDecisionObservationPersistenceStatus.Recorded,
+): PolicyDecisionObservationPort & {
   observations: PolicyDecisionObservation[];
 } {
   const observations: PolicyDecisionObservation[] = [];
@@ -356,6 +384,7 @@ function createRecordingPolicyDecisionObservationPort(): PolicyDecisionObservati
     observations,
     observePolicyDecision: async (observation) => {
       observations.push(observation);
+      return { status };
     },
   };
 }
