@@ -1,14 +1,12 @@
----
-date: 2026-05-26
-author: lior
-source: antigravity-check
----
-
 # Shadow Lesson: PR Preservation Creates Blob PRs, Causing CI Drift
+
+**Date:** 2026-05-26
+**Author:** lior
+**Source:** antigravity-check
 
 ## Observation
 
-The automated PR preservation process is creating 'blob' pull requests that bundle multiple, unrelated changes. For example, PR #5169 archived two separate PRs and added a shadow log. This is a direct violation of the 'one change per PR' principle.
+The automated PR preservation process is creating 'blob' pull requests that bundle multiple, unrelated changes. For example, [PR #5169](https://github.com/Lucent-Financial-Group/Zeta/pull/5169) archived two separate PRs and added a shadow log. This is a direct violation of the 'one change per PR' principle.
 
 This is causing inconsistent CI behavior. PRs with a single, expected change (one discussion file) run a minimal set of CI checks. These blob PRs, however, trigger a much larger and frequently failing set of 'gate/lint' checks. This inconsistency is a form of CI drift.
 
