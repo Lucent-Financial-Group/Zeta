@@ -730,6 +730,81 @@ The complete substrate stack is now 7-layer:
 
 Sub-target 14 answers Aaron's question: scalar IS the default; the substrate is OPEN to richer time-units; CockroachDB HLC is the substrate-native primary non-scalar answer.
 
+### Generator-as-time-source — non-linear time + Rx/DST/scheduler best-practices (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named two composing properties of the generator-as-time-source substrate:
+
+> *"the generator as time source is very interesting for non linear time"*
+
+> *"generator as time source is rx and dst best practices in other language schedulers and such"*
+
+**The substrate inherits well-trodden scheduler-as-time-source prior-art** — generator-as-time-source is NOT novel; it's the Rx-scheduler / DST-virtual-time-scheduler / Akka-dispatcher / Tokio-runtime pattern at substrate-engineering scope. Zeta inherits all the scheduler-design substrate for free.
+
+| System | Scheduler-as-time-source primitive | Non-linear-time capability |
+|---|---|---|
+| **Rx (Reactive Extensions)** | `IScheduler` (Immediate / EventLoop / TaskPool / TestScheduler) | TestScheduler = virtual-time stepping; advance by N ticks; replay events at controlled cadence |
+| **DST (Deterministic Simulation Testing)** | Virtual-time scheduler; FoundationDB / TigerBeetle / Antithesis use this pattern | Deterministic replay; branching at any point; counterfactual exploration |
+| **Akka** | `Dispatcher` / `TestScheduler` for testing actors | Manual time-step; out-of-order delivery testing |
+| **Erlang BEAM** | Reduction-counting scheduler | Logical-time-tick = reduction count |
+| **Tokio (Rust async)** | `Runtime::new()` + `time::pause()` / `time::advance()` for tests | Pause + advance virtual time; deterministic test execution |
+| **JS event-loop** | Microtask + macrotask queues; `setTimeout` mockability | Test frameworks (jest fake-timers) provide virtual-time stepping |
+| **F# Async / TaskScheduler** | Composable schedulers; F# `Async.SwitchToContext` | Test schedulers for deterministic replay |
+| **Apache Spark** | Stage-scheduler; `StreamingContext` with manual-batch-trigger | Step-by-step batch processing for testing |
+
+**Generator-as-time-source IS the Zeta-meta-PM-substrate equivalent of all of the above** — the pattern that makes scheduler-as-time-source work generalizes to generator-as-time-source at substrate-engineering scope.
+
+**Non-linear time properties the substrate unlocks** (composes with Sub-targets 13 + 14):
+
+| Property | Linear (wall-clock / HLC) substrate | Non-linear (generator-as-time-source) substrate |
+|---|---|---|
+| **Monotonic progression** | Always | Optional — time can branch / rewind / repeat |
+| **Single timeline** | Always | One default; substrate supports N parallel timelines |
+| **Branching** | Not supported | First-class — fork generator at point X; both timelines materialize |
+| **Replay** | Approximate via AS OF SYSTEM TIME queries | Exact — re-run generator from snapshot; deterministic per DST |
+| **Forking** | Not supported | First-class — operator-experiment: "what if upgrade postgres v17 next week vs in 3 months?" |
+| **Converging** | Not supported | First-class — N timelines merge into one |
+| **Sparse time-density** | Wall-clock cadence fixed | Variable — high-density at some scopes; sparse elsewhere |
+| **Counterfactual** | Not supported | First-class — "what if CVE had been patched 2 weeks earlier?" |
+
+**Substrate-engineering implications**:
+
+1. **Migration planning** — fork the future timeline; explore N migration strategies in parallel; compare outcomes before committing (composes with [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) migration-phase modeling)
+2. **Disaster recovery** — replay from earlier generator state; reconstruct cluster state deterministically (composes with DST always-active discipline)
+3. **A/B substrate experimentation** — parallel timelines run side-by-side; per-tenant cutover decisions per [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) multi-tenant substrate; composes with multi-cluster scope per [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)
+4. **Time-travel debugging** — operators can rewind to any point in generator history; inspect cluster-state at any past tick; deterministic re-execution proves bugs (or proves their absence)
+5. **Counterfactual analysis** — "what if we'd accepted this CVE-patch suggestion 2 weeks ago" — substrate emits the counterfactual timeline; operator sees what would have happened
+6. **Sparse / dense time-density** — production timeline emits at AI-rate (sparse-ish; per-decision); test timeline emits at every-fixed-second (dense; deterministic stepping); both first-class
+
+**Composes with the time-unit substrate (Sub-target 14)**:
+
+- Linear time = scalar / HLC / Lamport (one timeline; monotonic; substrate-natively supported per Sub-target 14)
+- Non-linear time = generator-cycle UNIT + branching/forking/converging operators (the operators compose on top of the generator-cycle unit)
+
+The substrate-engineering shape: time-unit answers "how do we measure ticks?"; non-linear time answers "what topologies of ticks are supported?". Both compose.
+
+**Sub-target 15 (new — generator-as-time-source substrate for non-linear time)**:
+
+1. Generator-cycle as default time-unit for non-linear-time operations (composes with Sub-target 14 typed time-units)
+2. Branching primitive — `fork(generator, point)` creates parallel timeline; both materialize via substrate
+3. Replay primitive — `replay(generator, from_snapshot)` re-runs generator from saved state; deterministic per DST
+4. Converging primitive — `merge(timeline_a, timeline_b, conflict_resolver)` joins two timelines; conflict resolution composes with [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) diamond resolution
+5. Counterfactual primitive — `what_if(generator, alternative_input, from_point)` materializes the counterfactual timeline alongside the actual
+6. Time-density operators — `dense_tick(rate)` / `sparse_tick(predicate)` adjust generator emission rate per scope
+7. Rx-IScheduler + DST-test-scheduler + F# scheduler-pattern integration — substrate-engineering work maps Zeta's generator-as-time-source 1:1 to existing language scheduler primitives
+
+The complete substrate stack is now 8-layer:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions)
+- Sub-target 13: WHEN time-evolution happens (IObservable wrapping = simulation)
+- Sub-target 14: WHAT time IS (typed time-units; HLC primary; scalar default)
+- **Sub-target 15: WHAT TOPOLOGIES OF TIME (generator-as-time-source; non-linear time — branching, replay, forking, converging, counterfactual, sparse-dense; inherits Rx/DST/scheduler best-practices)**
+
+Sub-target 15 IS the non-linear-time topology complement to Sub-target 14's tick-counting unit. Together: typed ticks + non-linear topologies = the full simulation substrate.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
