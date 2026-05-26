@@ -475,6 +475,16 @@ deterministic `idempotencyKey`. External side effects must either be
 natively idempotent or wrapped by a command that stores the external
 request/result.
 
+The first executable runtime slice implements this as an event ingestion
+processor before a live NATS consumer exists. A transport adapter decodes
+the canonical envelope, calls the processor, and the processor checks
+the inbox receipt, evaluates rules, and persists the receipt plus
+reaction plans through one store operation. Durable adapters should
+implement that operation transactionally so a saved receipt cannot
+silently suppress a reaction plan that failed to persist. The processor
+also compares payload hashes for repeated `eventId + consumerName`
+pairs; conflicting payloads are not treated as normal duplicates.
+
 ### Stream and Consumer Manifests
 
 Every stream and durable consumer should declare:
@@ -806,7 +816,8 @@ other work.
    hat-system.
 6. Add NATS outbox publisher and one consumer after command tests pass.
 7. Add inbox/consumer dedupe before any NATS-driven automation performs
-   side effects.
+   side effects. The first package-level processor and Cockroach adapter
+   now exist; the live NATS consumer host is still pending.
 8. Add the first rule catalog and reaction executor for ready work,
    review staffing, QA staffing, blocker escalation, and late run
    incidents.

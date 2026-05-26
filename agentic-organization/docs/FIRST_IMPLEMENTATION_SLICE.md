@@ -32,6 +32,9 @@ send_supervisor_signal
   -> outbox publisher
   -> NATS JetStream event publisher adapter
   -> NATS subject contract
+  -> event ingestion processor
+  -> inbox receipt / consumer dedupe
+  -> persisted reaction plans
   -> LGTM span attributes
   -> supervisor triage reaction plan
 ```
@@ -117,6 +120,15 @@ Hermes runs, MCP calls, and UI evidence.
   the publish succeeds.
 - The NATS adapter publishes canonical JSON envelopes with typed headers
   and event IDs as message IDs for idempotent JetStream publication.
+- The event ingestion processor accepts decoded canonical envelopes,
+  dedupes them by event ID plus consumer name, evaluates automation
+  rules once, rejects same-event payload hash conflicts, and persists
+  reaction plans through a store boundary that durable adapters can make
+  transactional.
+- The Cockroach adapter now declares inbox receipt and reaction plan
+  tables plus a SQL-backed event-ingestion store. This is still behind a
+  generic state port; live NATS consumers are not hardcoded into the
+  adapter.
 - Duplicate commands with the same idempotency key and request hash
   replay the stored result.
 - Duplicate commands with the same idempotency key and a different
@@ -128,11 +140,11 @@ Hermes runs, MCP calls, and UI evidence.
 
 ## Next Slice
 
-The next slice should add inbox/consumer dedupe before automation starts
-performing side effects from NATS events. After that, wire the outbox
-publisher into a worker host and add a transactional durable-state
-adapter integration test using CockroachDB as the first cluster-backed
-implementation once a local/dev connection is available.
+The next slice should wire an in-process worker host that composes the
+outbox publisher and event ingestion processor behind explicit ports.
+After that, add a transactional durable-state adapter integration test
+using CockroachDB as the first cluster-backed implementation once a
+local/dev connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

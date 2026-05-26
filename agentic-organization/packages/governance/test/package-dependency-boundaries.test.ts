@@ -40,7 +40,14 @@ describe("package dependency boundaries", () => {
         {
           packageName: PackageBoundaryRule.StateAdapter,
           sourceGlob: "state-cockroach/src/**/*.ts",
-          forbiddenImportFragments: ["../../messaging", "../messaging", "nats", "jetstream"],
+          forbiddenImportFragments: [
+            "../../messaging",
+            "../messaging",
+            "../../runtime",
+            "../runtime",
+            "nats",
+            "jetstream",
+          ],
         },
       ],
     });

@@ -57,7 +57,8 @@ Organization state only by calling Organization commands.
   Temporal, Drizzle, Postgres, or other runtime clients
 - **AND** a violation fails the test suite before the boundary can drift
 - **AND** state adapter source files are checked for forbidden imports
-  of messaging, NATS, JetStream, or other event transport clients
+  of runtime implementation packages, messaging, NATS, JetStream, or
+  other event transport clients
 
 #### Scenario: Tests are kept out of production source trees
 
@@ -185,6 +186,48 @@ and a concrete event-publisher adapter.
 - **AND** it includes typed headers for event ID, event type,
   correlation ID, causation ID, trace ID, idempotency key, and outbox
   event ID
+
+### Requirement: Inbound events are deduped before automation
+
+Organization event consumers MUST record inbox receipts before
+automation side effects and MUST persist reaction plans instead of
+executing privileged work directly.
+
+#### Scenario: New event is ingested by an automation consumer
+
+- **WHEN** a decoded canonical event envelope reaches the runtime event
+  ingestion processor
+- **THEN** the processor checks for an inbox receipt by event ID and
+  consumer name
+- **AND** a missing receipt allows rule evaluation
+- **AND** the processor records the inbox receipt and generated reaction
+  plans through one store operation
+- **AND** the reaction plans preserve the triggering event ID, target
+  scope, required hat, action type, and reason
+
+#### Scenario: Duplicate event is ingested by an automation consumer
+
+- **WHEN** the same event ID reaches the same consumer again
+- **THEN** the processor returns a duplicate outcome
+- **AND** no automation rules are re-evaluated
+- **AND** no duplicate reaction plans are created
+
+#### Scenario: Conflicting event payload is ingested by an automation consumer
+
+- **WHEN** the same event ID reaches the same consumer with a different
+  payload hash
+- **THEN** the processor returns a payload-conflict outcome
+- **AND** no automation rules are re-evaluated
+- **AND** no duplicate reaction plans are created
+
+#### Scenario: Durable state schema supports inbound event dedupe
+
+- **WHEN** the durable state migration contract is loaded
+- **THEN** it declares inbox receipt storage keyed by event ID and
+  consumer name
+- **AND** it declares reaction plan storage for generated automation
+  plans
+- **AND** reaction plans include a persisted status
 
 ### Requirement: Telemetry is complete at the event boundary
 

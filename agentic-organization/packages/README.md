@@ -32,6 +32,9 @@ supervisor-chain signal command
   -> outbox publisher
   -> NATS JetStream event publisher adapter
   -> NATS subject / telemetry contract
+  -> event ingestion processor
+  -> inbox receipt / consumer dedupe
+  -> persisted reaction plans
   -> automation reaction plan
 ```
 
@@ -65,6 +68,16 @@ row published only after the publish returns successfully. The NATS
 package implements that publisher port and is the only package in this
 slice that knows about NATS headers, message IDs, and JSON transport
 payloads. State adapters must not import messaging adapters.
+
+The event ingestion processor owns the generic consume loop after a
+transport adapter has decoded a canonical event envelope. It checks an
+inbox receipt before evaluating rules, records the receipt and generated
+reaction plans through one store operation, and returns duplicate
+without re-running rules when the same event reaches the same consumer
+again. If the same event ID reaches the same consumer with a different
+payload hash, the processor returns a payload-conflict outcome instead
+of hiding the drift. Live NATS consumers will bind to this processor
+later.
 
 ## Validation
 
