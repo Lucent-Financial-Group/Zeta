@@ -18,6 +18,14 @@ composes_with:
 tags: [ansible, gitops, crossplane, cross-os, windows, macos, declarative-management, full-stack-orchestration, ansible-pull, agentless, idempotent, multi-host, single-source-of-truth, iter-7]
 ---
 
+## North star
+
+The maintainer 2026-05-26: *"nixos is our north star for declarative gitops ease"*
+
+NixOS sets the gold-standard target for ALL declarative GitOps substrate in Zeta. Everything in this row exists to get non-Nix OSes (Windows, macOS, non-NixOS Linux) AS CLOSE AS POSSIBLE to the NixOS-native experience (one git commit → reconciler picks up → host state converges declaratively; idempotent; replayable; auto-rollback on failure). Ansible+Crossplane+Ace are the substrate that approximates the NixOS shape on platforms that don't have it natively. They're never going to be as clean as `nixos-rebuild switch --flake .#<host>` — they're how we get within shouting distance on the rest of the OS substrate.
+
+This framing affects every sub-target design decision: "does this make the non-Nix experience MORE like NixOS, or does it add a parallel imperative-shape layer?" The former is the north-star direction; the latter is the failure mode.
+
 ## Problem
 
 The maintainer 2026-05-26: *"This is good for declarative oses other than nix like id love to have it setup my windows machines and macs. ansible gitops"* + *"it's like cross plane too kinda"*
