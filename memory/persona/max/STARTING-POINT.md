@@ -93,11 +93,12 @@ Beyond the agentic-organization design + hat-system substrate, Max's near-term w
 
 ### Concrete first deliverables for the tier-2 workstream (in order of value-per-effort)
 
-1. **Read the cold-boot list above** + write a short observation note to Max on what's already-substrate vs gap
-2. **Author `.claude/skills/docker-desktop-tier-2/SKILL.md`** — initial skill covering: install Docker Desktop, enable Kubernetes via the native kind provisioner, set node count via DD settings API, verify `kubectl` works
-3. **Author `tools/dev/docker-desktop-k8s-enable.ts`** — TS script that programmatically configures DD's native kind provisioner (settings API; edits `~/Library/Group Containers/group.com.docker/settings.json` where API doesn't cover). Documents any GUI-only steps as sibling `.md` with screenshots
-4. **Author `tools/dev/zfingerprint.ts`** — thin wrapper around the zflash Touch ID + expect pattern, generalized for any Max-side privileged operation (not just USB flashing)
-5. **File backlog row B-NNNN** — Docker Desktop tier-2 dev-experience substrate (composes with B-0780). Use the agent-roster ID allocation discipline (`git ls-tree origin/main -- docs/backlog/` to find current top + `gh pr list --search "B-NNNN"` to check in-flight). Row's acceptance criteria are the skills + scripts to ship over the coming ticks
+1. **Run [`tools/setup/install.sh`](../../../tools/setup/install.sh) on Max's Mac** — this is BOTH onboarding AND substrate-engineering work. Aaron 2026-05-25 framing: a fresh Mac surfaces gaps in the install graph that Aaron's machine doesn't reveal because Aaron installed those deps over time. Every gap Max hits → file a small PR to the right manifest under `tools/setup/manifests/` or the right `tools/setup/common/*.sh`. Composes with B-0759 first-time-CLI-user persona validation. (See PERSONA.md's "Bonus scope — install.sh validation on a fresh-ish Mac" for the gap-disposition decision tree.)
+2. **Read the cold-boot list above** + write a short observation note to Max on what's already-substrate vs gap
+3. **Author `.claude/skills/docker-desktop-tier-2/SKILL.md`** — initial skill covering: install Docker Desktop, enable Kubernetes via the native kind provisioner, set node count via DD settings API, verify `kubectl` works
+4. **Author `tools/dev/docker-desktop-k8s-enable.ts`** — TS script that programmatically configures DD's native kind provisioner (settings API; edits `~/Library/Group Containers/group.com.docker/settings.json` where API doesn't cover). Documents any GUI-only steps as sibling `.md` with screenshots
+5. **Author `tools/dev/zfingerprint.ts`** — thin wrapper around the zflash Touch ID + expect pattern, generalized for any Max-side privileged operation (not just USB flashing)
+6. **File backlog row B-NNNN** — Docker Desktop tier-2 dev-experience substrate (composes with B-0780). Use the agent-roster ID allocation discipline (`git ls-tree origin/main -- docs/backlog/` to find current top + `gh pr list --search "B-NNNN"` to check in-flight). Row's acceptance criteria are the skills + scripts to ship over the coming ticks
 
 ### Updated success metrics (first 30 days of the tier-2 workstream)
 

@@ -89,6 +89,23 @@ Every Docker Desktop / Kubernetes / dev-experience interaction Max performs ends
 - [B-0786](../../../docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md) — "simplest first; add complexity only when simple shape demonstrably doesn't fit" discipline Max applies at every backend / topology / profile decision
 - B-0789 (forthcoming) — iter-4 forge-integrated cluster bring-up; provides the password + SSH substrate Max uses to bring up his own dev cluster nodes
 
+### Bonus scope — install.sh validation on a fresh-ish Mac (added 2026-05-25)
+
+Max running [`tools/setup/install.sh`](../../../tools/setup/install.sh) on his Mac IS substrate-engineering work, not just onboarding. Aaron 2026-05-25: *"he will also have to go through install.sh and good thing he will be on a mac should be a breese and lets us find any gaps for hidden depedencies or package managers or packages we are missing."*
+
+The install graph today on macOS covers: Xcode CLT → Homebrew → brew manifests → mise → dotnet/python/java/bun/uv via mise → uv-managed Python tools → Lean (elan) → dotnet global tools (semgrep, stryker) → TLA+/Alloy jars → managed shellenv PATH file. Aaron's machine has these because Aaron installed them over time; a fresh Mac surfaces what's IMPLICIT-in-machine-state vs what install.sh actually covers.
+
+**Max's deliverable for each gap surfaced**:
+
+- **Real missing dep** → add it to the appropriate manifest under [`tools/setup/manifests/`](../../../tools/setup/manifests/) (brew / mise / uv-tools / dotnet-tools / verifiers) or extend the relevant `tools/setup/common/*.sh` script. Composes with GOVERNANCE.md §24 (one install script, three consumers: dev laptops + CI runners + devcontainer images)
+- **Implicit-system-state assumption** → add a pre-flight detection + warn-or-install in [`tools/setup/doctor.sh`](../../../tools/setup/doctor.sh)
+- **Can't be automated** → document the manual step + WHY at the top of the relevant script + cross-link from CONTRIBUTING.md
+- **Slow / costly** → make it opt-in via env var (e.g., `ZETA_INSTALL_OPTIONAL=true`) with documented trade-off
+
+This is the [B-0759 first-time-CLI-user persona](../../../docs/backlog/P1/) substrate validated against a second human (Max) — every gap Max hits is a gap a future first-time user would have hit, and fixing it before they do is the value. Max files each gap-fix as a PR; the install graph compounds in completeness.
+
+Skill candidate: `.claude/skills/install-sh-gap-finder/SKILL.md` documenting the "fresh-Mac-surfaces-implicit-state" methodology so future contributors can do the same audit when they onboard.
+
 ## How agents work with Max
 
 - **Welcoming-but-honest review** — Max is new to K8s + the operator pattern; he'll be resistant at first to the ceremony (per Aaron: *"he will be resistant probably like most devs at first until he internlizes is worth"*). Frame feedback constructively + name the WHY (declarative state convergence, idempotent reconcile, CRD-as-typed-API) without selling
