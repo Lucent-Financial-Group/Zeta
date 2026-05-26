@@ -115,6 +115,20 @@ Beyond the agentic-organization design + hat-system substrate, Max's near-term w
 - Zero passwords typed by Max for admin operations on his Mac (everything via Touch ID)
 - Every Docker Desktop GUI click Max made at least twice has been encoded as either a script or a documented "GUI-only — here's why" comment
 
+## Persona-surface standard (added 2026-05-25)
+
+This persona directory follows the **human persona shape** documented in [`memory/persona/README.md`](../README.md) "Structure — two shapes" section. Max's directory carries:
+
+- [`PERSONA.md`](PERSONA.md) — substrate-honest description of Max + current workstream focus
+- [`STARTING-POINT.md`](STARTING-POINT.md) (this file) — operational cold-boot onboarding for AI collaborators
+- [`NOTEBOOK.md`](NOTEBOOK.md) — Max's running notes
+
+Optionally Max can add `conversations/` for verbatim §33 conversation archives + topic-scoped subdirectories as needed.
+
+The **internal-AI persona shape** (factory reviewers / specialists like `kenji/`, `kira/`, etc.) is different — uses `NOTEBOOK.md` + `MEMORY.md` + `OFFTIME.md` instead — because those personas have different operational obligations (GOVERNANCE §14 off-time logging applies to factory-internal personas; cold-boot index via `MEMORY.md` for autonomous-loop participation). Human personas don't have those obligations; STARTING-POINT.md serves the cold-boot-onboarding function for the human-collaboration case.
+
+Aaron 2026-05-25: *"also we should explain the persona-surface standard we have for multi tick source perona like otto and such."* Documented in `memory/persona/README.md`; cross-referenced here.
+
 ## Otto + the foreground autonomous-loop tick (added 2026-05-25)
 
 Aaron 2026-05-25 framing for Max's onboarding: *"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."* Recommended primary AI tool for Max is **Otto** (Claude Code) so he can hook into the framework's existing autonomous-loop substrate; other AIs (Cursor / Kiro / Antigravity) work too but the cron-loop pattern is Claude-Code-native today.
