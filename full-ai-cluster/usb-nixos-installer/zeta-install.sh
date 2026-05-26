@@ -348,13 +348,13 @@ else
   echo "=============================="
 fi
 
-# ── Step 6.4: iter-5.2 hostname injection (B-0792) ──────────────
+# ── Step 6.6: iter-5.2 hostname injection (B-0792) ──────────────
 #
-# Per Aaron 2026-05-26: "since our different roles are multi
-# install you can be control plane AND gpu node AND cpu node
-# these distinctions are not very elegant and host names tied to
-# them are not great either" — hostname should be just a unique
-# identity, decoupled from role-stack selection.
+# Per the maintainer 2026-05-26: "since our different roles are
+# multi install you can be control plane AND gpu node AND cpu
+# node these distinctions are not very elegant and host names
+# tied to them are not great either" — hostname should be just
+# a unique identity, decoupled from role-stack selection.
 #
 # zflash on macOS writes the operator's chosen hostname to
 # `zeta-hostname.txt` on the USB ESP if --host <name> was passed
@@ -407,7 +407,7 @@ else
 fi
 echo
 
-# ── Step 6.5: iter-5.1 wifi persistence (B-0792) ────────────────
+# ── Step 6.7: iter-5.1 wifi persistence (B-0792) ────────────────
 #
 # By the time this step runs, the live installer is already on the
 # network — either via ethernet auto-DHCP (no profile to copy; this
@@ -420,8 +420,8 @@ echo
 # NixOS NetworkManager service but NOT the operator's connection
 # profile. Result: wifi-only mini-PCs boot installed system,
 # NetworkManager comes up with empty profile dir, no wifi, no SSH.
-# Aaron 2026-05-26: "we won't have ethernet for most machines it
-# needs to remember the wifi on setup."
+# The maintainer 2026-05-26: "we won't have ethernet for most
+# machines it needs to remember the wifi on setup."
 #
 # Fix: copy *.nmconnection files from the live installer to /mnt.
 # NetworkManager requires chmod 0600 + chown root:root on these
@@ -432,7 +432,9 @@ NM_SRC="/etc/NetworkManager/system-connections"
 NM_DST="/mnt/etc/NetworkManager/system-connections"
 NM_PROFILE_COUNT=0
 if [ -d "$NM_SRC" ]; then
-  # Count .nmconnection files; nullglob in case dir is empty
+  # Enumerate .nmconnection files via find (NOT glob; bash globs
+  # would need nullglob to handle the empty-dir case, but find +
+  # filtered-output handles it naturally with no shell-option deps)
   NM_PROFILES=$(sudo find "$NM_SRC" -maxdepth 1 -name "*.nmconnection" -type f 2>/dev/null || true)
   if [ -n "$NM_PROFILES" ]; then
     NM_PROFILE_COUNT=$(echo "$NM_PROFILES" | wc -l | tr -d ' ')
@@ -448,8 +450,12 @@ if [ -d "$NM_SRC" ]; then
       sudo cp -p "$src" "$dst"
       sudo chown root:root "$dst"
       sudo chmod 0600 "$dst"
-      # Print SSID (parsed from [wifi] ssid=...) without printing the psk
-      ssid=$(sudo awk -F= '/^ssid=/{print $2; exit}' "$dst" 2>/dev/null || echo "(unknown)")
+      # Print SSID (parsed from [wifi] ssid=...) without printing the psk.
+      # Per 802.11 spec, SSIDs MAY contain '=' (and arbitrary bytes
+      # including spaces). awk -F= '...; print $2' would truncate after
+      # the first '='. sed-after-first-'ssid=' preserves the full SSID.
+      ssid=$(sudo sed -n 's/^ssid=//p' "$dst" 2>/dev/null | head -1)
+      [ -z "$ssid" ] && ssid="(unknown)"
       echo "[iter-5.1]   persisted: $name (ssid=$ssid)"
     done
     echo "[iter-5.1]   $NM_PROFILE_COUNT NetworkManager profile(s) persisted to installed system"
