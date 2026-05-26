@@ -585,6 +585,89 @@ The complete substrate stack is now 5-layer:
 
 The DI framing IS the operational paradigm under which the other 4 layers compose. Sub-target 12 IS the architectural-paradigm complement to Sub-targets 7-11.
 
+### DI vs Simulation — what you inject determines whether you have static-state or time-evolution (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the architectural distinction that emerges at Sub-target 12:
+
+> *"concretly the difference between DI and Simulation is if you DI the generator function or the IObservable of the function."*
+
+> *"IObservable is now you go from static / no time to injecting time"*
+
+**The distinction is a SINGLE BIT — what you wrap the injected function in**:
+
+| You inject | What receiver experiences | Substrate-engineering layer |
+|---|---|---|
+| `Generator<T>` (the bare function) | Static / NOW — call it; get a value; no temporal evolution | DI (Sub-target 12) |
+| `IObservable<Generator<T>>` (function wrapped in observable) | Time-injection — subscribe; receive function-values OVER TIME; the function itself evolves; receiver experiences simulation | Simulation (this section) |
+
+**The architectural transformation** — take any function-shape + wrap in `IObservable`:
+
+- Static dependency → time-flowing dependency
+- DI container → simulation environment
+- Compose-now → compose-over-time
+- Single-call execution → continuous subscription
+- No history → temporal history materializes per subscriber
+
+**`IObservable` is THE time-injection primitive**. The substrate-engineering payoff:
+
+| Substrate without IObservable wrap | Substrate WITH IObservable wrap |
+|---|---|
+| Generator emits rows on demand | Generator-stream emits new generators over time; receiver subscribes to the evolution |
+| Composition graph computed once per query | Composition graph re-evaluates as upstream generators change |
+| Cluster-state is snapshot-at-query-time | Cluster-state IS a continuous simulation; subscribers see live state |
+| Manual rebuild on upstream change | Automatic propagation through the IObservable graph (Rx semantics) |
+
+**Composition with substrate stack**:
+
+| Layer | Without IObservable | WITH IObservable |
+|---|---|---|
+| Sub-target 7 (storage) | CockroachDB tables store generators | CockroachDB CHANGEFEEDS emit generator-updates as IObservable streams |
+| Sub-target 8 (composition) | Combinators run point-in-time | Combinators are reactive — re-evaluate on upstream changes |
+| Sub-target 10 (execution) | GPU/CPU runs the combinator once per query | GPU/CPU runs the combinator continuously; emits IObservable output |
+| Sub-target 11 (distribution) | Generators deployed once per version | Generator-streams deployed continuously; nodes subscribe |
+| Sub-target 12 (DI) | Static DI container | Reactive DI container; injections evolve over time |
+| **[B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) time-axis** | Time as query-parameter (`AS OF SYSTEM TIME`) | **Time as injected dimension — IObservable IS the time-axis substrate** |
+
+The IObservable-DI shift IS what makes [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) (time-modeled deps) FIRST-CLASS at substrate-engineering scope. Time isn't a parameter you pass; it's an axis the substrate INJECTS via IObservable wrapping.
+
+**Prior-art at this exact shape**:
+
+| System | Static-DI form | IObservable-time-injection form |
+|---|---|---|
+| **Angular** | `@Injectable()` service | `Observable<Service>` via service-locator pattern |
+| **React** | `useContext<T>()` static value | `useContext<Observable<T>>()` reactive value via `Subject` |
+| **Spring Reactive** | Bean wired at startup | `Mono<T>` / `Flux<T>` reactive beans |
+| **F# composition root** | function-injection | `IObservable<'T>` injection via reactive composition |
+| **Rx (Reactive Extensions)** | n/a (Rx is itself the IObservable primitive) | The whole substrate at language-level |
+| **CockroachDB CHANGEFEED** | `SELECT * FROM table` snapshot | `CREATE CHANGEFEED FOR table` emits row-changes as IObservable stream |
+
+**Substrate-engineering implication — this is the SIMULATION substrate**:
+
+- DI of generator-function = "give me one" (static)
+- DI of `IObservable<generator-function>` = "give me the stream of generators as they evolve" (simulation)
+- Simulation IS DI-with-time-axis-injected via IObservable wrapping
+- Composes with DST always-active discipline (`.claude/rules/dv2-data-split-discipline-activated.md`) — the simulation IS the DST substrate at substrate-engineering scope
+
+**Sub-target 13 (new — IObservable time-injection substrate)**: reactive DI of generator-streams:
+
+1. CockroachDB CHANGEFEEDS as the substrate primitive for generator-streams (Sub-target 7 substrate emits IObservable<Generator>)
+2. Reactive composition graph — combinators that re-evaluate on upstream change (Rx semantics at substrate scope)
+3. Subscribers — nodes / agents / charts subscribe to specific IObservable<Generator> streams from the shared-generative-base (Sub-target 11)
+4. Backpressure semantics — Rx primitives apply (throttle / debounce / sample / buffer) to manage AI-rate streams
+5. Time-bounded subscription — composes with B-0825 time-axis (subscribe to `IObservable<Generator>` AS OF SYSTEM TIME T1..T2)
+6. F# IObservable + reactive-composition + reader-monad patterns for the operator-facing reactive DSL
+
+**The complete substrate stack is now 6-layer**:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions; static at Ace AND Helm layers)
+- **Sub-target 13: WHEN time-evolution happens (IObservable wrapping — DI of `IObservable<Generator>` = simulation; the time-axis becomes injected substrate dimension; composes with B-0825)**
+
+Sub-target 12 + 13 together = the static-DI ↔ reactive-simulation continuum. Substrate-engineering work picks per-injection-point which mode applies; both first-class.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
