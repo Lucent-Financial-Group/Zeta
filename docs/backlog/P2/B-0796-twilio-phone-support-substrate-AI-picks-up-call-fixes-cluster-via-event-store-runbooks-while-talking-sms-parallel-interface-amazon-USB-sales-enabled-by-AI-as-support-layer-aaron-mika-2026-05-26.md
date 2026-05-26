@@ -96,6 +96,19 @@ Zero human support. Aaron: *"imagine they call a phone number and they're talkin
 - Per-cluster phone numbers (skip cluster-name disambiguation)
 - Operator-side cost tradeoff (Twilio numbers cost ~$1/month each)
 
+### Sub-target 7 — interruption-correct voice flow (LOAD-BEARING; prior-art-rich)
+
+Customers MUST be able to interrupt the AI mid-talking without breaking conversation state. Without this, the AI-IS-the-support-layer model fails — customers can't correct the AI when it's going off-path on a wrong fix, leading to frustration + bad support outcomes.
+
+Requires:
+
+- **Barge-in detection state-machine**: detect customer speech onset during AI output → switch state from AI-talking to AI-listening + truncate AI audio playback
+- **Audio buffer truncation**: cut off TTS output cleanly at sentence/word boundary (not mid-word) — composes with existing AlephZ-ai/blazor-samples sentence-boundary detection (`Please refrain from using . ? ! anywhere else in your output ... I'm using that to detect when you've started a new sentence in streaming mode`)
+- **Partial-utterance commit-vs-rollback in LLM state**: when interrupted mid-output, decide whether to commit the partial output to conversation history OR roll back to pre-interruption state. Aaron's prior work was nearly through this.
+- **Twilio Media Streams `mark` event** support — Twilio's outbound `mark` events signal playback progress; required for accurate truncation timing
+
+Aaron's existing `BlazorSamples.Shared/Twilio/GrpcAudioStream/Mark/InboundMarkEvent.cs` + `OutboundClearEvent.cs` substrate already wires the Twilio-side primitives needed for clean truncation. The LLM-side state-machine for interruption-correctness was Aaron's "almost had" work.
+
 ### Sub-target 6 — Legal/risk attribution
 
 - AI acting on customer's cluster has liability implications
@@ -118,7 +131,7 @@ Zero human support. Aaron: *"imagine they call a phone number and they're talkin
 - **B-0776** (composes; Twilio is one of the plugins in the simplest-first plugin sequence)
 - **B-0782** (composes; cluster IS the DIO; Twilio voice + SMS is one of its conversational front-ends, alongside Alexa-speaker at operator scope)
 - **B-0790** (composes; zero-dev-machine homelab persona end-state requires support model; Amazon-USB business model requires AI-IS-the-support-layer)
-- **`AlephZ-ai/blazor-samples` (Aaron's SUBSTANTIAL pre-LLM-conversation-era Twilio Media Streams substrate)** — at `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/`: official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg mulaw 8kHz ↔ PCM 16kHz conversion; Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. Aaron 2026-05-26: *"yeah i wrote this before any chat llm had a converation interface i was way ahead"* — pre-LLM-conversation-era prior art; the real-time voice substrate Aaron built before LLM conversational interfaces existed. **B-0796 implementation is PORT/INTEGRATE work into Zeta cluster substrate, NOT build-from-scratch**. Effort estimate stays L because Zeta-cluster integration substrate is the load-bearing new work; voice-pipeline itself is largely ready
+- **`AlephZ-ai/blazor-samples` (Aaron's SUBSTANTIAL pre-LLM-voice-era Twilio Media Streams substrate WITH near-complete interruption-correctness)** — at `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/`: official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg mulaw 8kHz ↔ PCM 16kHz conversion; Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. Aaron 2026-05-26 (corrected): *"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"* — Aaron was adding voice interface to LLM chat substrate BEFORE any major LLM provider had voice as a first-class surface (predates ChatGPT Voice / Gemini Live / Claude Voice). **Critically: Aaron was nearly through with interruption-correctness** — barge-in mid-AI-utterance without breaking conversation state (requires partial-utterance commit-vs-rollback in LLM state + audio buffer truncation + barge-in detection state-machine). **B-0796 implementation is PORT/INTEGRATE work into Zeta cluster substrate, NOT build-from-scratch**. Effort estimate stays L because Zeta-cluster integration substrate is the load-bearing new work; voice-pipeline + interruption-correctness substrate is largely ready
 - `.claude/rules/agent-roster-reference-card.md` (composes; Alexa-speaker is existing voice surface scoped to operate-the-cluster; Twilio adds new voice surface scoped to support-the-cluster — distinct concerns, can coexist)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (composes; `_twilio_phone_support_acceptance` block candidate for legal-risk attribution per maintainer)
 - `memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md` — Mika substrate that informed this row

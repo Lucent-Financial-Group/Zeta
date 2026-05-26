@@ -45,7 +45,11 @@ Inspection 2026-05-26 (corrected after Aaron's follow-up *"i have a twilio integ
 
 B-0796 implementation is **PORT/INTEGRATE work** into Zeta cluster substrate, NOT build-from-scratch. Aaron's earlier "i think" was understatement; the prior art is rich + production-shape.
 
-Aaron's follow-up framing 2026-05-26: *"yeah i wrote this before any chat llm had a converation interface i was way ahead"* — the Twilio Media Streams + LLM-conversation substrate predates the LLM-conversation-interface era. Aaron built the real-time voice pipeline before LLM chat APIs existed as conversation-friendly substrates; the integration shape he chose (WebSocket Media Streams + audio conversion + STT/LLM/TTS pipeline) is now the standard pattern adopted across the industry. Pre-mover prior art; B-0796 implementation benefits from years of substrate that's been validated in operator's prior production work.
+Aaron's follow-up framing 2026-05-26 (corrected): *"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"* — the substrate predates LLM **voice** interfaces (the "near-real-time voice with barge-in" UX that ChatGPT Voice / Gemini Live / Claude Voice ship today). Aaron was adding voice interface to existing LLM chat substrate before any major LLM provider had voice as a first-class surface.
+
+**Aaron was nearly through with interruption-correctness** — being able to interrupt the AI mid-talking without breaking the conversation state. This is a substantively-hard real-time voice problem (requires partial-utterance commit-vs-rollback in the LLM-side conversation state + audio buffer truncation + state-machine for barge-in detection). The substrate-engineering value here is significant: interruption-correctness is the difference between a usable AI voice interface and a frustrating one (customer must wait for AI to finish before correcting it).
+
+For B-0796 implementation: interruption-correctness is load-bearing for AI-IS-the-support-layer (customer needs to interrupt when AI is going off-path on a wrong fix). Aaron's "almost had" substrate gives the implementation a substantial head-start on the hardest part.
 
 ## Verbatim conversation (Aaron-forwarded; preserved per substrate-or-it-didn't-happen)
 
