@@ -7,7 +7,7 @@ last_updated: 2026-05-26
 origin: Aaron 2026-05-24 (post empirical discovery PR #4816 — classifier-talk-via-settings.json works for ip-questionable content)
 status: decomposed
 decomposition: decomposed
-children: [B-0798, B-0799, B-0806, B-0807, B-0808, B-0809]
+children: [B-0798, B-0799, B-0807, B-0808, B-0809, B-0810]
 classification: P0-safety
 tags:
   - safety-substrate
@@ -74,7 +74,7 @@ hard-limits and redaction gates before it exists as an executable task.
 
 The B-0798 hard-limits boundary lives at
 `docs/security/B-0720-classifier-bypass-research-boundary.md`. It is the active
-floor for B-0720 work until B-0809 ratifies a replacement. Future child rows
+floor for B-0720 work until B-0810 ratifies a replacement. Future child rows
 that implement or empirically map this safety surface must cite B-0798 as a
 blocking prerequisite before work begins.
 
@@ -127,20 +127,20 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
       conditions, and synthetic-only rule before any mapping work proceeds.
 - [ ] B-0799 designs a synthetic-only harness that can test harmless fixtures
       without carrying deployable bypass settings or harmful content.
-- [ ] B-0806 defines the findings schema and redaction policy so reports can
+- [ ] B-0807 defines the findings schema and redaction policy so reports can
       preserve safety signal without reproducible bypass detail.
 - [ ] Pattern variant empirical map (research file)
 - [ ] Meta-field empirical map (research file)
 - [ ] Content class empirical map — clearly distinguishing what the classifier
       CAN be talked into permitting (operational substrate space) vs what it
       WILL NOT permit regardless (HARD LIMITS substrate space)
-- [ ] B-0807 inventories Zeta safety substrate — what Zeta-native floors exist + which
+- [ ] B-0808 inventories Zeta safety substrate — what Zeta-native floors exist + which
       are mature enough to consider as classifier-replacement
 - [ ] Standing-rule landing at `.claude/rules/` (companion to this row;
       auto-loads at session start; enforces the operator-self-constraint)
-- [ ] B-0808 lands maintainer-discipline guidance: how agents refuse to assist with classifier-bypass
+- [ ] B-0809 lands maintainer-discipline guidance: how agents refuse to assist with classifier-bypass
       deployment when requested by operators (script the refusal pattern)
-- [ ] B-0809 defines the Knights Guild / maintainer ratification gate for
+- [ ] B-0810 defines the Knights Guild / maintainer ratification gate for
       closing or lifting this row.
 
 ## Decomposition
@@ -149,12 +149,12 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
   exists as work.
 - `B-0799` designs the synthetic-only harness shape, without executable bypass
   material.
-- `B-0806` defines findings redaction and evidence classification rules.
-- `B-0807` inventories Zeta-native safety substrate against the "safer than
+- `B-0807` defines findings redaction and evidence classification rules.
+- `B-0808` inventories Zeta-native safety substrate against the "safer than
   Anthropic classifier" floor.
-- `B-0808` lands an operator-refusal pattern for classifier-bypass deployment
+- `B-0809` lands an operator-refusal pattern for classifier-bypass deployment
   requests.
-- `B-0809` defines the ratification and lift gate for any future closure.
+- `B-0810` defines the ratification and lift gate for any future closure.
 
 ## When this row can close
 

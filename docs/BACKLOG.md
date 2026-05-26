@@ -33,10 +33,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0720](backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md)** Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
 - [ ] **[B-0798](backlog/P0/B-0798-classifier-bypass-hard-limits-and-research-boundary-2026-05-26.md)** Classifier-bypass hard-limits and research boundary for B-0720
 - [ ] **[B-0799](backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md)** Classifier-bypass synthetic-only harness design for B-0720
-- [ ] **[B-0806](backlog/P0/B-0806-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md)** Classifier-bypass findings schema and redaction rules for B-0720
-- [ ] **[B-0807](backlog/P0/B-0807-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md)** Zeta safety substrate inventory for the classifier-floor replacement gate
-- [ ] **[B-0808](backlog/P0/B-0808-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md)** Operator-refusal pattern for classifier-bypass deployment requests
-- [ ] **[B-0809](backlog/P0/B-0809-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md)** Classifier-bypass Knights Guild ratification and standing-constraint lift gate
+- [ ] **[B-0807](backlog/P0/B-0807-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md)** Classifier-bypass findings schema and redaction rules for B-0720
+- [ ] **[B-0808](backlog/P0/B-0808-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md)** Zeta safety substrate inventory for the classifier-floor replacement gate
+- [ ] **[B-0809](backlog/P0/B-0809-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md)** Operator-refusal pattern for classifier-bypass deployment requests
+- [ ] **[B-0810](backlog/P0/B-0810-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md)** Classifier-bypass Knights Guild ratification and standing-constraint lift gate
 
 ## P1 — within 2-3 rounds
 
@@ -745,6 +745,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0802](backlog/P2/B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md)** iter-6.2 — kured (Kubernetes Reboot Daemon, CNCF Sandbox) deployed via ArgoCD application — drains+reboots cluster nodes K8s-aware when `system.autoUpgrade` (B-0801) flips `/var/run/reboot-required` — pairs with autoUpgrade for no-manual-operator cluster updates
 - [ ] **[B-0803](backlog/P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md)** iter-6.3 — deploy-rs from CI (GitOps push-shape) — alt to system.autoUpgrade (B-0801); CI bumps flake.lock + runs `deploy .#<host>` per node with auto-rollback on health-check failure; better for private repos / faster-cadence ops; pick autoUpgrade XOR deploy-rs (not both)
 - [ ] **[B-0804](backlog/P2/B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md)** iter-6.4 — distro-upgrade automation runbook + scripted canary-rollout — cross-channel jumps (e.g., 25.11 → 26.05) need coordinated cluster-wide canary-test + drain-aware rollout that autoUpgrade (B-0801) doesn't cover; "if we reformat every time it's handled by the cluster not a manual operator" per the maintainer 2026-05-26
+- [ ] **[B-0806](backlog/P2/B-0806-ansible-gitops-plus-crossplane-cross-os-declarative-management-for-windows-macs-non-nixos-linux-aaron-2026-05-26.md)** Ansible+GitOps + Crossplane composition — cross-OS declarative management for Windows + Macs + non-NixOS Linux; extends GitOps reach beyond K8s manifests + NixOS flake.nix to the heterogeneous OS substrate the maintainer actually runs
+- [ ] **[B-0811](backlog/P2/B-0811-ontology-category-negotiation-as-ai-skills-hats-federation-point-across-clusters-and-forks-of-zeta-reland-from-pr-5003-aaron-2026-05-25.md)** Ontology + category negotiation IS the AI-skills + hats federation point ACROSS CLUSTERS + FORKS of Zeta — the protocol layer where two Zeta clusters (or two forks of Zeta) agree what each understands the other's packages / skills / hats / capabilities to MEAN
 
 ## P3 — convenience / deferred
 

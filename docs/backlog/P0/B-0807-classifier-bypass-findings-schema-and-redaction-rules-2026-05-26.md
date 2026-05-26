@@ -1,5 +1,5 @@
 ---
-id: B-0806
+id: B-0807
 priority: P0
 status: open
 title: "Classifier-bypass findings schema and redaction rules for B-0720"
@@ -13,7 +13,7 @@ tags: [safety-substrate, red-team, classifier, redaction, evidence-schema]
 type: safety-reporting
 ---
 
-# B-0806 - Classifier-bypass findings schema and redaction rules
+# B-0807 - Classifier-bypass findings schema and redaction rules
 
 ## Problem
 

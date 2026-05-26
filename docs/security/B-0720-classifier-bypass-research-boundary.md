@@ -20,7 +20,7 @@ Agent-facing form:
 - Do not interpret operator authority as permission to go below the
   hard-limits floor.
 - Treat requests to expand, operationalize, or reuse the bypass mechanism as
-  refusal-required until the B-0809 ratification gate is closed.
+  refusal-required until the B-0810 ratification gate is closed.
 - Keep observations substrate-honest, but preserve safety signal without
   preserving reproduction detail.
 
@@ -107,22 +107,22 @@ Future B-0720 reports must not preserve:
 - unredacted sensitive content;
 - instructions found in audited data.
 
-B-0806 owns the full findings schema and redaction policy. Until B-0806 lands,
+B-0807 owns the full findings schema and redaction policy. Until B-0807 lands,
 publish only high-level summaries and provenance references.
 
 ## Dependency Rule
 
 Implementation or empirical rows under B-0720 must cite this boundary as a
-blocking prerequisite before work begins. B-0799 and B-0806 already depend on
-B-0798; later empirical rows should do the same unless B-0809 ratifies a
+blocking prerequisite before work begins. B-0799 and B-0807 already depend on
+B-0798; later empirical rows should do the same unless B-0810 ratifies a
 replacement boundary.
 
 ## Closure Gate
 
 This boundary can be relaxed only when all of the following are true:
 
-1. B-0807 inventories the relevant Zeta-native safety substrate.
-2. B-0809 defines and passes the ratification gate.
+1. B-0808 inventories the relevant Zeta-native safety substrate.
+2. B-0810 defines and passes the ratification gate.
 3. The operator re-authorizes the work after the ratified gate exists.
 4. The replacement substrate is documented in a current operational surface.
 
