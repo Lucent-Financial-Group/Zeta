@@ -156,7 +156,7 @@ Three load-bearing properties carried across all three contexts:
 2. **0 external vendor dependencies** — no commercial control planes, no proprietary orchestrators, no closed-source schedulers. Anything required is open-source + can be replaced with another open-source equivalent
 3. **ArgoCD as the convergence engine** — same shape; same git-as-source-of-truth pattern; same CR reconciliation model
 
-Composes directly with B-0288 (Ace) and B-0742 (Ace's distributable POC). Zeta inherits all 3 properties: Ace bootstraps the substrate without vendor lock-in; ArgoCD converges it across any K8s distro; the entire stack is open-source.
+Composes directly with [B-0288](B-0288-ace-dlc-package-manager-cli-2026-05-08.md) (Ace) and [B-0742](../P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md) (Ace's distributable POC). Zeta inherits all 3 properties: Ace bootstraps the substrate without vendor lock-in; ArgoCD converges it across any K8s distro; the entire stack is open-source.
 
 ### Why ArgoCD specifically (not Flux) — historical decision lineage (Aaron 2026-05-26)
 
@@ -178,7 +178,7 @@ The maintainer's note: *"i think they have something now"* — Flux MAY have cau
 
 Zeta's ArgoCD choice still holds per the empirical LN+GH lineage + ArgoCD's tighter sync-wave + selfHeal integration with the same engine; the maintainer's "i think they have something now" caveat is partially correct (Flux + Flagger + dependsOn-graph + improved self-healing all exist now), but the substrate-switching cost dominates re-evaluation absent specific Flux-superior need.
 
-Implication for Zeta substrate: when adopting any iter-N CR / app / chart, use ArgoCD's sync-wave + selfHeal + (where progressive-delivery matters) Argo Rollouts. Don't redesign for engine-independence — the decision is locked in per the lineage. **Cross-cluster portability principle still holds even when other teams use Flux**: the K8s manifests (CRDs + Deployments + Services + Rollout CRs) are engine-agnostic; only the sync-engine-specific glue (`Application` for ArgoCD; `Kustomization`/`HelmRelease` for Flux) differs. A Flux-shop adopting Zeta substrate would wrap the same K8s manifests in Flux primitives — substantively the same portability win.
+Observation for Zeta substrate: when adopting any iter-N CR / app / chart, ArgoCD's sync-wave + selfHeal + (where progressive-delivery matters) Argo Rollouts are the empirically-validated default. Designing for engine-independence-as-primary-concern adds substrate cost; per the LN+GH+Zeta lineage the engine choice is settled enough that operator-default is "use the validated stack" rather than "abstract over the engine"; per `.claude/rules/no-directives.md` operators remain free to deviate when specific evidence supports doing so. **Cross-cluster portability principle still holds even when other teams use Flux**: the K8s manifests (CRDs + Deployments + Services + Rollout CRs) are engine-agnostic; only the sync-engine-specific glue (`Application` for ArgoCD; `Kustomization`/`HelmRelease` for Flux) differs. A Flux-shop adopting Zeta substrate would wrap the same K8s manifests in Flux primitives — substantively the same portability win.
 
 ### Helm-as-convergence-point + multi-engine-experimentation substrate (Aaron 2026-05-26)
 
