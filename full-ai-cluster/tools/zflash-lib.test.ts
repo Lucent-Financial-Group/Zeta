@@ -17,14 +17,23 @@
 
 import { describe, expect, test } from "bun:test";
 import {
-  VALID_HOSTNAME_REGEX,
   generateRandomNodeName,
   isValidHostname,
   parseFatPartitionFromDiskutilList,
   parseOutputFileMarker,
+  VALID_HOSTNAME_REGEX,
 } from "./zflash-lib";
 
 describe("VALID_HOSTNAME_REGEX / isValidHostname", () => {
+  test("exports the regex directly for cross-substrate sync verification", () => {
+    // The bash equivalent in zeta-install.sh greps with the regex pattern
+    // `^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$`. Pin the JS source
+    // shape so cross-substrate drift surfaces here.
+    expect(VALID_HOSTNAME_REGEX.source).toBe(
+      "^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$",
+    );
+  });
+
   test("accepts simple lowercase name", () => {
     expect(isValidHostname("pikachu")).toBe(true);
   });
