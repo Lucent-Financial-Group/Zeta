@@ -28,15 +28,28 @@ pin authoring time; this rule catches it at substrate-authoring time.
 
 1. **Grep for the topic across substrate surfaces**:
    ```bash
-   # Pattern: search agenda + trajectory + backlog + rules + memory + research
+   # Pattern: search agenda + trajectory + backlog + rules + skills + memory + research.
+   # Use grep -F (fixed-string) so $topic is treated as a literal, not a
+   # regex — safe even when topic contains characters like B-NNNN, +, .,
+   # 7z, c++, etc. (Copilot finding on #5131 — earlier draft used grep -E
+   # which treats topic as a regex pattern.)
    topic="<topic-keyword>"
-   find docs/agendas -type d | grep -i "$topic" | head -5
-   find docs/trajectories -type d | grep -i "$topic" | head -5
-   find docs/backlog -name "*.md" | xargs grep -l -E "$topic" 2>/dev/null | head -10
-   find .claude/rules -name "*.md" | xargs grep -l -E "$topic" 2>/dev/null | head -5
-   ls memory/*${topic}* 2>/dev/null | head -10
-   ls docs/research/*${topic}* 2>/dev/null | head -10
+   # Content search (the load-bearing one — directory-name filtering alone misses substrate):
+   grep -rlF "$topic" docs/agendas/      2>/dev/null | head -10
+   grep -rlF "$topic" docs/trajectories/ 2>/dev/null | head -10
+   grep -rlF "$topic" docs/backlog/      2>/dev/null | head -10
+   grep -rlF "$topic" .claude/rules/     2>/dev/null | head -10
+   grep -rlF "$topic" .claude/skills/    2>/dev/null | head -10
+   grep -rlF "$topic" memory/            2>/dev/null | head -10
+   grep -rlF "$topic" docs/research/     2>/dev/null | head -10
    ```
+
+   Earlier draft used `find ... -type d | grep` (filename/directory-name
+   filtering only) plus `ls memory/*${topic}*` (shell glob expansion which
+   breaks on topics with spaces / metacharacters); both fail to surface
+   substrate that mentions the topic in *content* without the keyword in
+   the filename. Three Copilot findings on #5131 named this exact gap;
+   the content-search via `grep -rlF` is the robust form across topics.
 
 2. **READ THE TOP HITS** — not just list them. The agenda doc + canonical
    project memory + parent backlog row are the load-bearing substrate;
