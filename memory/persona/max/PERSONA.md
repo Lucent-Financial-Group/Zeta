@@ -106,6 +106,47 @@ This is the [B-0759 first-time-CLI-user persona](../../../docs/backlog/P1/) subs
 
 Skill candidate: `.claude/skills/install-sh-gap-finder/SKILL.md` documenting the "fresh-Mac-surfaces-implicit-state" methodology so future contributors can do the same audit when they onboard.
 
+### Bonus-bonus scope — new-dev onboarding documentation (added 2026-05-25)
+
+Aaron 2026-05-25: *"anything not in install.sh shold be called out for new devs like him so he own onboarding documentaiton too for new devs so it says things like setting up docker desktop."*
+
+The other side of the install.sh validation work: install.sh handles the automatable surface; new-dev onboarding documentation handles **everything install.sh demonstrably can't automate**. Per the install-sh gap-disposition decision tree above, the "can't-be-automated" bucket is the natural home for the onboarding doc — every item Max marks "can't-be-automated" gets a section in the new-dev onboarding doc explaining the manual step + WHY.
+
+**Max owns `docs/ONBOARDING.md`** (or whatever filename the team agrees on — `CONTRIBUTING.md` extension, `docs/getting-started.md`, etc.; Max picks; no existing canonical surface today as of 2026-05-25). Contract:
+
+- **Section per non-install.sh requirement**: Docker Desktop install (GUI download + DD account login if needed), Touch ID setup for sudo, GitHub auth (`gh auth login`), GitLab auth (`glab auth login`) if applicable, IDE picks (VSCode / Cursor / Kiro / etc. with `.claude/agents/` integration), browser plugins / extensions / OAuth flows, etc.
+- **Per section: WHAT + WHY + verification step**. The verification step matters because it tells the new dev when they've successfully completed that section (e.g., "verify Touch ID for sudo works by running `sudo -k && sudo whoami` — you should see a Touch ID prompt").
+- **Cross-link from install.sh** when the script can't do something it tells the user to read the relevant onboarding doc section, not just fail silently
+- **Cross-link the other direction too**: onboarding doc names which steps are "no longer needed; install.sh handles this since YYYY-MM-DD" as install.sh absorbs more substrate, so the doc shrinks over time as automation catches up
+
+The doc co-evolves with install.sh. Every gap Max moves from "doc step" to "install.sh covers it" is a friction-reduction win; the substrate compounds in favor of the next new dev.
+
+Composes with B-0759 (first-time-CLI-user persona) + B-0780 (tier-2 dev-experience UX) + the GOVERNANCE.md §24 install-script-three-consumers framing. The doc is the operator-facing surface that wraps install.sh + Max's tier-2 substrate into a single coherent onboarding flow for the next contributor.
+
+### Declarative soft-dependencies (added 2026-05-25 — Mac-side parallel to Nix declarative substrate)
+
+Aaron 2026-05-25: *"we should still have declarative soft dependencies for dmgs just like we talked about with declarative nix for anytihng humans have to do on mac."*
+
+The substrate-honest extension: the new-dev onboarding doc is NOT free-form prose. It's **generated from declarative manifests** the same way `install.sh` consumes declarative manifests under [`tools/setup/manifests/`](../../../tools/setup/manifests/) for brew / mise / uv-tools / dotnet-tools / verifiers. Mac-side manual steps get the same declarative-substrate treatment Nix gives the Linux cluster side.
+
+**New manifest classes Max owns**:
+
+| Manifest | Covers | Example entries |
+|---|---|---|
+| `tools/setup/manifests/dmgs/` (or similar path) | DMG / PKG installers not covered by brew casks | Docker Desktop (with version pin + download URL + sha256 + install-verification command) |
+| `tools/setup/manifests/oauth-flows/` | OAuth / web-based auth steps | `gh auth login`, `glab auth login`, Docker Hub login, OAuth-app provisions Max may need |
+| `tools/setup/manifests/manual-steps/` | Fully-manual setup that can't be partially automated | Touch ID enrollment in Mac System Settings, screen recording permissions, accessibility permissions, etc. |
+
+Each manifest entry has structured fields (name, version, download-URL-or-path, verification-command, why-needed, escape-hatch-when-can't-do-it). The onboarding doc is **regenerated from manifests** via a TS tool (per Rule 0), so the doc and the substrate-of-truth stay in sync. When automation absorbs an entry (e.g., Docker Desktop becomes `brew install --cask docker`), the entry moves from `dmgs/` manifest to `brew` manifest; the onboarding doc shrinks; nothing diverges.
+
+This is the same pattern as Nix's declarative-everything but for the Mac-side reality where some installs are GUI-only or OAuth-flow-only. Substrate-engineering equivalence: **operators can READ the spec to know what they need to do; automation can READ the spec to do as much as it can; the gap between human-touch and machine-touch is just "which automation surface owns this entry"**.
+
+Skill candidates:
+- `.claude/skills/dmg-manifest-authoring/SKILL.md` — how to add a new DMG entry (verification command shape, sha256 update workflow, escape-hatch documentation)
+- `.claude/skills/onboarding-doc-generator/SKILL.md` — how the doc regenerates from manifests
+
+Composes with the simplest-first discipline (per B-0786 memory): declarative-from-the-start is the right shape because the migration cost from "free-form prose" to "manifest-generated" is much higher than building it declarative now. Max's onboarding doc is born declarative; every entry he adds is one entry the future automation can target without re-architecting.
+
 ## How agents work with Max
 
 - **Welcoming-but-honest review** — Max is new to K8s + the operator pattern; he'll be resistant at first to the ceremony (per Aaron: *"he will be resistant probably like most devs at first until he internlizes is worth"*). Frame feedback constructively + name the WHY (declarative state convergence, idempotent reconcile, CRD-as-typed-API) without selling
