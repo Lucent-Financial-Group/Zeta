@@ -364,6 +364,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0781](backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md)** F# type system as universe boundary — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth (Cachet analog)
 - [ ] **[B-0784](backlog/P1/B-0784-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md)** Distributed F# type negotiation as consensus + governance — every traveler's compiler agrees before compile; namespace-scoped strictness (personal mirror = free; common = strict consensus)
 - [ ] **[B-0785](backlog/P1/B-0785-unified-namespace-across-fsharp-kubernetes-ontology-plus-experiment-id-routing-via-argo-rollouts-cilium-service-mesh-aaron-mika-2026-05-25.md)** Unified namespace across F# / Kubernetes / Ontology + experiment-ID routing via Argo Rollouts + Cilium service mesh (existing standards)
+- [ ] **[B-0787](backlog/P1/B-0787-multi-ai-experiment-parallelism-without-stepping-on-each-others-feet-namespace-plus-experiment-id-plus-event-store-as-projections-not-separate-dbs-aaron-2026-05-25.md)** Multi-AI experiment parallelism without stepping on each other's feet — per-AI namespace + experiment-ID routing + event-store-native twin (experiments are projections, not separate DBs)
 
 ## P2 — research-grade
 
