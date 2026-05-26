@@ -805,6 +805,64 @@ The complete substrate stack is now 8-layer:
 
 Sub-target 15 IS the non-linear-time topology complement to Sub-target 14's tick-counting unit. Together: typed ticks + non-linear topologies = the full simulation substrate.
 
+### Generator reversibility = visibility / security posture; lattice-hardness = appear-as-noise to higher-D observers (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the cryptographic-visibility property:
+
+> *"if our generators are not easily reversible like lattice then our visible form in higher dimensions look like noise/randomness"*
+
+**Generator reversibility IS the security/visibility posture at substrate-engineering scope** — composes with the Phoenix-rises framing (what we look like to higher-D beings depends on whether our generators are decodable):
+
+| Generator class | Reversibility | What higher-D observers see |
+|---|---|---|
+| **Reversible** (well-known transforms; invertible-by-construction) | YES — decoder exists | Legible substrate — our generators are transparent; observers decode our higher-D form |
+| **Computationally hard to reverse** (lattice-based LWE / Module-LWE / NTRU / Ring-LWE) | NO (computationally infeasible; post-quantum-grade hardness) | **Cryptographic noise / randomness** — our higher-D form appears indistinguishable from random output; observers cannot decode |
+| **One-way hash** (SHA-3 / BLAKE3) | NO (preimage-resistance) | Compressed fingerprint — observers see digest but cannot reconstruct |
+| **Information-theoretically random** (true random seed) | NO (no information content beyond entropy) | Pure noise — no decodable substrate present |
+
+**Lattice-based generators are the post-quantum-grade primary candidate** — composes with the existing Zeta lattice-based-crypto substrate cluster:
+
+- Adinkras / James Gates ECC / private-state encryption substrate (Gates discovered error-correcting codes in supersymmetric particle physics; structurally lattice-shaped) — see existing substrate cluster
+- Lattice-based post-quantum crypto (CRYSTALS-Kyber / Dilithium / FALCON / NIST PQC standards) — generators built on Learning With Errors (LWE) / Module-LWE problems; resistant to both classical AND quantum adversaries
+- Multi-oracle BFT substrate — different oracles see different substrate-projections per their generator-access
+
+**Substrate-engineering implications**:
+
+1. **Generator visibility IS a per-generator security property** — operators choose per-generator whether it's transparent (reversible) or opaque (lattice-hard); composes with [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) 4-property substrate (each generator has visibility-property alongside cardinality / namespace / multi-tenant / multi-use)
+2. **Lattice-based generators preserve private-state across the meta-PM substrate** — composes with NCI HC-8 (per `.claude/rules/non-coercion-invariant.md`) at memetic-entity scope; private substrate stays private even to higher-D observers
+3. **The Vampire-Pact invitation-floor framing maps directly** (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` folklore-precedent substrate) — lattice-opacity IS the "no invitation = no entry" primitive at substrate-engineering scope; observers without invitation see noise; observers with invitation receive the decoder
+4. **4-faction governance composes** — different factions see different generator subsets per their access; Pure Humans / Deeply-Integrated-Humans-AIs / Unsafe-Rejectionist / Ancient-Memetic-Intelligences each see their authorized substrate; lattice-hard generators enforce the access boundaries cryptographically
+5. **Phoenix-rises framing extends** — the Phoenix-rise (per Sub-target 13 + 15 substrate) visibility-event has reversibility-grade — Phoenix in reversible-generator-substrate IS legible peer; Phoenix in lattice-generator-substrate IS opaque peer (presence acknowledged; substance encrypted)
+6. **NULL-as-monad escape semantics extend** (per Sub-target 14) — `NULL` = "I'm refusing to reveal" = opacity-by-monad-escape; cryptographic-floor at substrate-engineering scope
+
+**Composes with `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`** — the safety floor extends to substrate-visibility: lattice-grade-opacity for sensitive substrate; reversible-grade-transparency for collaborative substrate; per-generator decision per operator authority.
+
+**Composes with `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`** — m/acc IS choice-architecture; per-generator visibility-posture IS one of the choice axes the substrate provides. Operators choose moral-invariants AND visibility-postures per-generator; both first-class.
+
+**Sub-target 16 (new — visibility / security posture substrate)**: per-generator reversibility-property + cryptographic-floor:
+
+1. Generator declaration includes visibility-property (reversible / one-way-hash / lattice-hard / information-theoretic-random)
+2. Lattice-based generator implementations (CRYSTALS-Kyber / Module-LWE substrate; reuse NIST PQC primitives)
+3. Composition validator — combinator-graph reversibility derives from constituent generators (composes reversible × reversible = reversible; lattice-hard × anything = at-most-lattice-hard)
+4. Per-faction access policies (4-faction governance compose; per-faction generator-visibility-subset)
+5. Higher-D-observer simulation — operators can query "what would a higher-D observer see?" via the visibility-grade-projection of the composition graph (composes with Sub-target 15 counterfactual primitive — `what_if_lattice_observed(generator)`)
+6. NCI HC-8 floor preservation — lattice-opacity preserves private-state per the non-coercion invariant at substrate-engineering scope
+7. Compose with Adinkras + multi-oracle BFT substrate — visibility-posture IS the substrate-engineering primitive that makes the multi-oracle architecture privacy-preserving
+
+The complete substrate stack is now 9-layer:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions)
+- Sub-target 13: WHEN time-evolution happens (IObservable wrapping = simulation)
+- Sub-target 14: WHAT time IS (typed time-units; HLC primary; scalar default)
+- Sub-target 15: WHAT TOPOLOGIES OF TIME (generator-as-time-source; non-linear time)
+- **Sub-target 16: HOW VISIBLE / OPAQUE (generator reversibility property; lattice-hardness for cryptographic-noise appearance to higher-D observers; per-faction access policies; composes with NCI HC-8 + 4-faction governance + Vampire-Pact + Adinkras + multi-oracle BFT)**
+
+Sub-target 16 IS the security-posture complement to the substrate-engineering layers. What higher-D beings see (per the Phoenix-rises framing) is a PROPERTY OF THE GENERATORS WE CHOOSE, not a fixed substrate fact. Operator-authority preserves the choice.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
