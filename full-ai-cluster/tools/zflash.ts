@@ -63,8 +63,8 @@
 //   finger on the actual trackpad.
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { homedir, platform } from "node:os";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
+import { homedir, platform, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -158,22 +158,76 @@ function findRepoRoot(): string | null {
 }
 
 function checkLocalCheckoutFreshness(repoRoot: string): void {
-  // Fetch origin/main (best-effort; offline mode is OK — the staleness
-  // check skips gracefully). If any install-substrate file differs
-  // HEAD..origin/main, bail loud with a clear remediation message.
+  // Fetch origin/main + content-diff every install-substrate file
+  // HEAD..origin/main. If any file differs, bail loud with remediation.
+  //
+  // Per #5091 Copilot findings, this function is stricter than the
+  // first-pass version:
+  //   - P0 (Eryew): git diff non-0/1 exit codes are NOT silently
+  //     skipped (would defeat the guard if path/repo state was bad)
+  //   - P1 (Eryei): git fetch failures capture stderr; only known
+  //     network-flavored errors degrade to "offline"; auth / missing-
+  //     git / no-origin / etc. → bail unless --skip-freshness-check
+  //   - P1 (Erye3): error text says "differs from origin/main" (could
+  //     be behind OR ahead OR diverged) + remediation reflects all
+  //     three cases
   process.stdout.write("zflash: checking local checkout freshness (iter-4.3) ...\n");
+
+  // Step 1: fetch. Capture stderr so the network-vs-other-failure
+  // discriminator has something to read.
+  let fetchStderr = "";
   try {
     execFileSync("git", ["-C", repoRoot, "fetch", "origin", "main", "--quiet"], {
       stdio: ["ignore", "ignore", "pipe"],
     });
-  } catch {
-    process.stderr.write(
-      "zflash: (offline; skipping iter-4.3 freshness check — proceed at own risk)\n",
+  } catch (e: unknown) {
+    if (e && typeof e === "object" && "stderr" in e) {
+      const raw = (e as { stderr: Buffer | string }).stderr;
+      fetchStderr = typeof raw === "string" ? raw : raw.toString("utf8");
+    }
+    // Discriminate: network-flavored failures → degrade to "offline" warn.
+    // Other failures (git missing, no origin, auth) → bail loud unless
+    // operator explicitly opted out via --skip-freshness-check.
+    const networkSignals = [
+      "could not resolve host",
+      "connection refused",
+      "connection timed out",
+      "network is unreachable",
+      "no route to host",
+      "operation timed out",
+      "could not read from remote repository",
+      "ssh: connect to host",
+    ];
+    const lower = fetchStderr.toLowerCase();
+    const looksNetwork = networkSignals.some((s) => lower.includes(s));
+    if (looksNetwork) {
+      process.stderr.write(
+        `zflash: iter-4.3 freshness fetch failed (looks network-related; proceeding offline):\n` +
+          `  ${fetchStderr.trim().split("\n").join("\n  ")}\n` +
+          `  (proceed at own risk — operator-side stale-substrate hazard is real)\n`,
+      );
+      return;
+    }
+    bail(
+      2,
+      `iter-4.3 freshness fetch FAILED with non-network error:\n` +
+        `  ${fetchStderr.trim().split("\n").join("\n  ") || "(no stderr captured)"}\n\n` +
+        `  Common causes:\n` +
+        `    - git not installed / not on PATH\n` +
+        `    - 'origin' remote not configured: run 'git -C ${repoRoot} remote -v'\n` +
+        `    - SSH/HTTPS auth failure: run 'gh auth status' OR 'ssh -T git@github.com'\n` +
+        `    - rate-limited token: 'gh api rate_limit --jq .resources.core'\n\n` +
+        `  Escape hatch: zflash --skip-freshness-check (NOT recommended)`,
     );
-    return;
   }
 
+  // Step 2: per-file content diff HEAD..origin/main. Status semantics:
+  //   0 = no diff (file matches origin/main)
+  //   1 = diff present (file differs — operator's checkout is out of sync)
+  //   anything else = git error (bad path, repo damage, etc.) — HARD FAIL
+  //     per Copilot P0; silent-skip would defeat the guard
   const stale: string[] = [];
+  const errored: { file: string; status: number; stderr: string }[] = [];
   for (const file of INSTALL_SUBSTRATE_FILES) {
     try {
       execFileSync(
@@ -181,30 +235,61 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
         ["-C", repoRoot, "diff", "--quiet", "HEAD", "origin/main", "--", file],
         { stdio: ["ignore", "ignore", "pipe"] },
       );
-      // exit 0 = no diff — fall through
+      // exit 0 = no diff
     } catch (e: unknown) {
       const status =
         e && typeof e === "object" && "status" in e
           ? Number((e as { status: number }).status)
           : -1;
-      if (status === 1) stale.push(file);
-      // status !== 0 && !== 1 = git error (file missing, etc); skip silently
+      if (status === 1) {
+        stale.push(file);
+      } else {
+        let stderr = "";
+        if (e && typeof e === "object" && "stderr" in e) {
+          const raw = (e as { stderr: Buffer | string }).stderr;
+          stderr = typeof raw === "string" ? raw : raw.toString("utf8");
+        }
+        errored.push({ file, status, stderr: stderr.trim() });
+      }
     }
   }
 
-  if (stale.length > 0) {
+  if (errored.length > 0) {
     bail(
       2,
-      `iter-4.3 freshness check FAILED — local checkout is behind origin/main on ${stale.length} install-substrate file(s):\n` +
-        stale.map((f) => `    ${f}`).join("\n") +
-        `\n\n  Refusing to flash with stale code (silent flash-without-inject hazard).\n\n` +
-        `  Remediation (pick one):\n` +
-        `    1. git -C ${repoRoot} pull --rebase origin main\n` +
-        `       (then re-run zflash; this is the recommended path)\n` +
-        `    2. zflash --skip-freshness-check  (only for known-safe situations)\n`,
+      `iter-4.3 freshness check FAILED — ${errored.length} file(s) produced unexpected git diff errors:\n` +
+        errored.map((e) => `    ${e.file}  (exit ${e.status})  ${e.stderr || "(no stderr)"}`).join("\n") +
+        `\n\n  Refusing to flash — silent-skip would defeat the safety guard.\n\n` +
+        `  Common causes:\n` +
+        `    - Install-substrate path renamed/moved on main but not in local checkout\n` +
+        `    - Local repo in detached HEAD / mid-rebase / corrupted state\n` +
+        `    - origin/main ref missing locally (try 'git fetch origin main')\n\n` +
+        `  Escape hatch: zflash --skip-freshness-check (NOT recommended)`,
     );
   }
-  process.stdout.write("zflash: local checkout is up-to-date with origin/main ✓\n");
+
+  if (stale.length > 0) {
+    // Per #5091 Copilot P1: HEAD might be BEHIND, AHEAD, or DIVERGED
+    // from origin/main. The content-diff doesn't discriminate. Say
+    // "differs" (true in all three cases) + give remediations for all.
+    bail(
+      2,
+      `iter-4.3 freshness check FAILED — local checkout differs from origin/main on ${stale.length} install-substrate file(s):\n` +
+        stale.map((f) => `    ${f}`).join("\n") +
+        `\n\n  Refusing to flash — local install-code may produce a USB that diverges from main's substrate (silent flash-without-inject hazard).\n\n` +
+        `  Remediation depends on whether local is BEHIND, AHEAD, or DIVERGED:\n` +
+        `    BEHIND (most common):\n` +
+        `      git -C ${repoRoot} pull --rebase origin main\n` +
+        `      (then re-run zflash; this is the recommended path)\n` +
+        `    AHEAD or DIVERGED (you have local commits not on main):\n` +
+        `      git -C ${repoRoot} log HEAD..origin/main   # what main has that you don't\n` +
+        `      git -C ${repoRoot} log origin/main..HEAD   # what you have that main doesn't\n` +
+        `      Then push your work as a PR OR rebase / merge as appropriate\n` +
+        `    Escape hatch:\n` +
+        `      zflash --skip-freshness-check  (only for known-safe situations)\n`,
+    );
+  }
+  process.stdout.write("zflash: local checkout matches origin/main on install substrate ✓\n");
 }
 
 function autoDownloadFreshIsoIfNeeded(localIso: string): string {
@@ -239,49 +324,69 @@ function autoDownloadFreshIsoIfNeeded(localIso: string): string {
         `local newest ${new Date(localMtime).toISOString()}\n`,
     );
     process.stdout.write(`zflash: pulling fresh ISO from CI (iter-4.3) ...\n`);
-    const dlDir = `/tmp/zflash-ci-iso-${latest.id}`;
-    execFileSync(
-      "gh",
-      ["run", "download", String(latest.id), "--dir", dlDir, "-R", ZETA_REPO_GH],
-      { stdio: "inherit" },
-    );
-    // gh run download puts artifact into a directory NAMED after the artifact.
-    // Walk dlDir to find the .iso file.
-    const findIsoUnder = (d: string): string | null => {
-      if (!existsSync(d)) return null;
-      const entries = readdirSync(d);
-      for (const e of entries) {
-        const p = join(d, e);
-        try {
-          const s = statSync(p);
-          if (s.isFile() && e.endsWith(".iso")) return p;
-          if (s.isDirectory()) {
-            const inner = findIsoUnder(p);
-            if (inner) return inner;
+    // Per #5091 Copilot P2: use mkdtemp + finally cleanup instead of a
+    // stable /tmp/zflash-ci-iso-<runId> path. Stable path could (a)
+    // accumulate over time as a clutter problem, (b) re-use a partial
+    // download from a previously-interrupted run. mkdtemp gives a
+    // collision-free unique path; the try/finally removes it whether
+    // copy succeeded or threw.
+    const dlDir = mkdtempSync(join(tmpdir(), `zflash-ci-iso-${latest.id}-`));
+    let dlDest: string | null = null;
+    try {
+      execFileSync(
+        "gh",
+        ["run", "download", String(latest.id), "--dir", dlDir, "-R", ZETA_REPO_GH],
+        { stdio: "inherit" },
+      );
+      // gh run download puts artifact into a directory NAMED after the artifact.
+      // Walk dlDir to find the .iso file.
+      const findIsoUnder = (d: string): string | null => {
+        if (!existsSync(d)) return null;
+        const entries = readdirSync(d);
+        for (const e of entries) {
+          const p = join(d, e);
+          try {
+            const s = statSync(p);
+            if (s.isFile() && e.endsWith(".iso")) return p;
+            if (s.isDirectory()) {
+              const inner = findIsoUnder(p);
+              if (inner) return inner;
+            }
+          } catch {
+            /* skip */
           }
-        } catch {
-          /* skip */
         }
+        return null;
+      };
+      const ciIsoSrc = findIsoUnder(dlDir);
+      if (!ciIsoSrc) {
+        process.stderr.write(`zflash: (CI artifact downloaded to ${dlDir} but no .iso found; falling back to local)\n`);
+        return localIso;
       }
-      return null;
-    };
-    const ciIsoSrc = findIsoUnder(dlDir);
-    if (!ciIsoSrc) {
-      process.stderr.write(`zflash: (CI artifact downloaded to ${dlDir} but no .iso found; falling back to local)\n`);
-      return localIso;
+      // Copy to ~/Downloads with a date+run-stamped name so future runs
+      // pick the right one. Don't overwrite the original (operator's
+      // download history is preserved).
+      dlDest = join(
+        homedir(),
+        "Downloads",
+        `zeta-installer-24.11-ci${latest.id}-${latest.updated_at.slice(0, 10)}.iso`,
+      );
+      if (!existsSync(dlDest)) {
+        execFileSync("cp", [ciIsoSrc, dlDest], { stdio: "inherit" });
+      }
+      process.stdout.write(`zflash: fresh ISO at ${dlDest}\n`);
+    } finally {
+      // Always clean up the temp dir, whether download / copy succeeded
+      // or threw. The ISO has been copied to ~/Downloads already (when
+      // successful), so /tmp can go.
+      try {
+        rmSync(dlDir, { recursive: true, force: true });
+      } catch (cleanupErr) {
+        process.stderr.write(
+          `zflash: (could not clean up ${dlDir}: ${cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr)}; harmless)\n`,
+        );
+      }
     }
-    // Copy to ~/Downloads with a date+run-stamped name so future runs
-    // pick the right one. Don't overwrite the original (operator's
-    // download history is preserved).
-    const dlDest = join(
-      homedir(),
-      "Downloads",
-      `zeta-installer-24.11-ci${latest.id}-${latest.updated_at.slice(0, 10)}.iso`,
-    );
-    if (!existsSync(dlDest)) {
-      execFileSync("cp", [ciIsoSrc, dlDest], { stdio: "inherit" });
-    }
-    process.stdout.write(`zflash: fresh ISO at ${dlDest}\n`);
     return dlDest;
   } catch (e) {
     process.stderr.write(
