@@ -185,9 +185,38 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
       const raw = (e as { stderr: Buffer | string }).stderr;
       fetchStderr = typeof raw === "string" ? raw : raw.toString("utf8");
     }
+    // Capture exec-level details too — `e.message` + `e.code` are critical
+    // when stderr is empty (e.g., ENOENT when git binary is missing).
+    // Per #5093 Copilot P1: "(no stderr captured)" hides the actual cause.
+    const execMsg = e instanceof Error ? e.message : String(e);
+    const execCode =
+      e && typeof e === "object" && "code" in e
+        ? String((e as { code: unknown }).code)
+        : "";
+
     // Discriminate: network-flavored failures → degrade to "offline" warn.
     // Other failures (git missing, no origin, auth) → bail loud unless
     // operator explicitly opted out via --skip-freshness-check.
+    //
+    // Per #5093 Copilot P0: "could not read from remote repository" was
+    // misclassified as network — that string ALSO appears on auth /
+    // permission failures (private repo, expired credential, etc.). Now
+    // (a) auth-signals matched FIRST + (if matched) treated as bail-loud,
+    // (b) network-signals require an actual host/connectivity word
+    // ("host", "connection", "network", "route", "timed out", "unreachable"),
+    // (c) "could not read from remote repository" alone no longer enough
+    // to call it network — needs a separate host/connectivity signal too.
+    const authSignals = [
+      "permission denied",
+      "authentication failed",
+      "fatal: authentication",
+      "invalid credentials",
+      "bad credentials",
+      "could not read username",
+      "support for password authentication was removed",
+      "403 forbidden",
+      "401 unauthorized",
+    ];
     const networkSignals = [
       "could not resolve host",
       "connection refused",
@@ -195,11 +224,11 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
       "network is unreachable",
       "no route to host",
       "operation timed out",
-      "could not read from remote repository",
       "ssh: connect to host",
     ];
     const lower = fetchStderr.toLowerCase();
-    const looksNetwork = networkSignals.some((s) => lower.includes(s));
+    const looksAuth = authSignals.some((s) => lower.includes(s));
+    const looksNetwork = !looksAuth && networkSignals.some((s) => lower.includes(s));
     if (looksNetwork) {
       process.stderr.write(
         `zflash: iter-4.3 freshness fetch failed (looks network-related; proceeding offline):\n` +
@@ -208,15 +237,22 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
       );
       return;
     }
+    // Either auth-flavored OR ambiguous-non-network — bail loud with
+    // diagnostic. Include exec message + code so ENOENT etc. surface
+    // even when stderr is empty.
+    const causeDetail = fetchStderr.trim()
+      ? fetchStderr.trim().split("\n").join("\n  ")
+      : `(no stderr; exec error: ${execMsg}${execCode ? ` [code: ${execCode}]` : ""})`;
     bail(
       2,
-      `iter-4.3 freshness fetch FAILED with non-network error:\n` +
-        `  ${fetchStderr.trim().split("\n").join("\n  ") || "(no stderr captured)"}\n\n` +
+      `iter-4.3 freshness fetch FAILED${looksAuth ? " (AUTH-flavored)" : " with non-network error"}:\n` +
+        `  ${causeDetail}\n\n` +
         `  Common causes:\n` +
-        `    - git not installed / not on PATH\n` +
+        `    - git not installed / not on PATH (e.code === 'ENOENT')\n` +
         `    - 'origin' remote not configured: run 'git -C ${repoRoot} remote -v'\n` +
         `    - SSH/HTTPS auth failure: run 'gh auth status' OR 'ssh -T git@github.com'\n` +
-        `    - rate-limited token: 'gh api rate_limit --jq .resources.core'\n\n` +
+        `    - Private repo + expired credential: re-auth via 'gh auth login'\n` +
+        `    - Rate-limited token: 'gh api rate_limit --jq .resources.core'\n\n` +
         `  Escape hatch: zflash --skip-freshness-check (NOT recommended)`,
     );
   }
@@ -331,7 +367,10 @@ function autoDownloadFreshIsoIfNeeded(localIso: string): string {
     // collision-free unique path; the try/finally removes it whether
     // copy succeeded or threw.
     const dlDir = mkdtempSync(join(tmpdir(), `zflash-ci-iso-${latest.id}-`));
-    let dlDest: string | null = null;
+    // Per #5093 Copilot P0: TS strict mode rejects `return dlDest` when
+    // dlDest is `string | null` but return type is `string`. Initialize
+    // to localIso so it's always string; overwrite on copy success.
+    let dlDest: string = localIso;
     try {
       execFileSync(
         "gh",
