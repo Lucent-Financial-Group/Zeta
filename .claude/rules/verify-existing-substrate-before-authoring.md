@@ -97,8 +97,8 @@ the empirical evidence at cold-boot.
 `tools/ci/audit-installer-iso-content.ts` (shipped in PR #5119) authored
 `REQUIRED_ISO_PATHS = [..., "boot/grub/grub.cfg", ...]` from training-data
 assumptions about legacy GRUB layouts. NixOS installer ISOs use isolinux
-+ refind, NOT legacy GRUB at the asserted path. Blocked 4 consecutive ISO
-builds before fix landed via PR #5125.
+plus refind, NOT legacy GRUB at the asserted path. Blocked 4 consecutive
+ISO builds before fix landed via PR #5125.
 
 The empirical anchor lives in
 [`dep-pin-search-first-authority.md`](dep-pin-search-first-authority.md)
