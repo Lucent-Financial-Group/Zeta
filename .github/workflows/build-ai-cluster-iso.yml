@@ -147,8 +147,11 @@ jobs:
           #     install.sh cost per workflow run.
           # If we drop the ubuntu-24.04 pin OR the runner-image
           # pre-install, the apt manifest already declares the dep
-          # — either invoke install.sh here or add an explicit
-          # apt-get install p7zip-full step before this line.
+          # — either invoke install.sh here OR add an explicit
+          # `sudo apt-get update && sudo apt-get install -y
+          # p7zip-full` step before this line (the `-y` matters in
+          # CI: without it apt-get prompts interactively and the
+          # workflow run hangs).
           bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
 
       - name: Locate ISO + capture metadata
