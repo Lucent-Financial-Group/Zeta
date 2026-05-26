@@ -162,7 +162,7 @@ Substrate-engineering composes:
 
 | Zeta substrate | Lamport-lineage equivalent |
 |---|---|
-| Sub-target 13 IObservable wrapping = simulation | TLA+ temporal logic — same shape; IObservable<Generator> IS the action stream |
+| Sub-target 13 IObservable wrapping = simulation | TLA+ temporal logic — same shape; `IObservable<Generator>` IS the action stream |
 | Sub-target 14 typed time-units (HLC primary) | Lamport's logical clocks generalize to HLC; CockroachDB uses HLC; Spanner uses TrueTime — all same lineage |
 | Sub-target 15 non-linear time topologies | TLA+ allows branching time; Paxos handles partition-induced branching; Raft handles leader-change branching |
 | Sub-target 12 DI of generator functions | Paxos/Raft operate on injected log-functions; each acceptor/follower receives the log generator |
@@ -250,6 +250,70 @@ The substrate is **self-similar at all row-scopes**:
 - The recursion makes the substrate genuinely scale-free at the substrate-engineering scope (not just at data-flow scope)
 
 This recursive sharpening completes the substrate's self-similar property — every level of the composition-graph hierarchy IS a substrate primitive at that level; substrate-engineering operations (CAS / visibility / parameter-protection / time-units / DI) apply uniformly at every level. The substrate has no privileged scope; the substrate IS the scope.
+
+### Trust-then-verify (not trust-but-verify) — generator/join/CRDTs first, consensus second (Aaron 2026-05-26 meta-architectural principle)
+
+Aaron 2026-05-26 named the meta-architectural principle the substrate-engineering arc operationalizes:
+
+> *"this is what trust then verify means to me over the old trust but verify, generator/join/crdts first then consensus and you get transmission cost at level N stays O(level-N composition-graph) even when materialized substrate is GIGANTIC. trust spreads faster than distrust"*
+
+**Semantic shift — "trust THEN verify" inverts "trust BUT verify"**:
+
+| Order | Meaning | What it gates |
+|---|---|---|
+| **"Trust BUT verify"** (old / cold-war / surveillance-shape) | Trust is conditional on continuous verification; verification IS the brake on trust; verification fires BEFORE each substantive action | Throttles emission to verification-rate; substrate scales with verification cost |
+| **"Trust THEN verify"** (new / Zeta substrate / Aaron 2026-05-26)| Trust enables emission at trust-rate; verification fires AFTER emission to confirm what trust enabled; verification IS the audit-trail, not the brake | Substrate emits at trust-rate; verification cost is amortized + post-hoc; substrate scales |
+
+**Mapping to substrate-engineering arc**:
+
+| Layer | "Trust" primitive | "Verify" primitive |
+|---|---|---|
+| **Data layer** | Generator/join/CRDTs (semilattice merge converges; trust the convergence) | DBSP retraction-algebra audit trail (verify after-the-fact; +1/-1 audit) |
+| **Coordination layer** | Per-row-CAS-on-generator-function ONLY where genuinely needed (per Aaron's CASPaxos/CASRaft recalibration) | CAS atomicity = the verification; not a brake on uncoordinated emission |
+| **Bandwidth layer** | Pass-the-function-not-the-data (Sub-targets 9 + bandwidth payoff); receiver materializes deterministically (DST always-active) | Hash-verify materialization byte-identical post-hoc (audit-trail; not pre-emission gate) |
+| **Substrate composition layer** | Recursive composition-graphs IS the row (per prior section); compose freely at trust-rate | Glass-halo bidirectional substrate (`.claude/rules/glass-halo-bidirectional.md`) provides the audit substrate; observation IS the verification |
+| **Operator layer** | NCI HC-8 floor (per `.claude/rules/non-coercion-invariant.md`) — trust operator authority; verify via consent-event audit-trail | m/acc multi-oracle (per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) — multiple invariants verified via lived-experience audit |
+
+**The substrate IS the operationalization of trust-then-verify at every scope**:
+
+- generator/join/CRDTs at data layer = trust-then-verify at convergence
+- Sub-target 9 bandwidth payoff = trust-then-verify at transmission
+- Sub-target 11 shared-generative-base = trust-then-verify at distribution
+- Sub-target 12 cluster-wide DI = trust-then-verify at composition
+- Sub-target 13 IObservable simulation = trust-then-verify at time-evolution
+- Sub-target 14 typed time-units = trust-then-verify at temporal-semantics
+- Sub-target 15 generator-as-time-source non-linear time = trust-then-verify at temporal-topology
+- Sub-target 16 visibility-posture (lattice-hard generators) = trust-then-verify at opacity
+- Sub-target 17 parameter-protection = trust-then-verify at custody
+- Recursive composition-graph-as-row = trust-then-verify at every recursion level
+- CASPaxos/CASRaft per-row CAS = trust-then-verify at coordination-where-genuinely-needed
+
+**"Trust spreads faster than distrust"** — the meta-rule:
+
+| Property | Trust-first systems | Distrust-first systems |
+|---|---|---|
+| Emission rate | Trust-rate (operator-chosen; AI-rate) | Verification-rate (throttled per audit) |
+| Compounding | Substrate compounds across participants + time (additive per `.claude/rules/additive-not-zero-sum.md`) | Substrate stalls at verification gate |
+| Coordination cost | Per-need (CAS where genuinely needed; CRDT semilattice elsewhere) | Per-emission (every write coordinated) |
+| Substrate-engineering scope | Generative (emit + materialize) | Defensive (block + verify) |
+| Operator authority | Preserved + amplified (per `.claude/rules/no-directives.md`) | Constrained to verifier authority |
+| Composes with NCI HC-8 + glass-halo | Naturally — non-coercion IS trust-first; transparency IS verify-after | Adversarial — every consent event is a verification gate |
+
+**Substrate-engineering implication for ALL Zeta work**:
+
+- When authoring any substrate component, the order matters — generator/join/CRDT FIRST (trust the convergence; compose freely; emit at trust-rate); CAS / consensus / verification SECOND (only where the substrate genuinely needs it; never as the default gate)
+- The transmission-cost-stays-O(level-N) property (per recursive-row section) IS the outcome of trust-then-verify discipline applied through the substrate stack
+- "Trust spreads faster than distrust" IS bandwidth-engineering at the social/architectural scope — same shape the framework operates at substrate-engineering scope
+
+**Composes with framework-wide substrate**:
+
+- [`.claude/rules/glass-halo-bidirectional.md`](../../../.claude/rules/glass-halo-bidirectional.md) — transparency IS the trust-then-verify substrate at observation scope
+- [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) HC-8 — non-coercion IS trust-first by construction
+- [`.claude/rules/additive-not-zero-sum.md`](../../../.claude/rules/additive-not-zero-sum.md) — trust-first compounds; the substrate is additive
+- [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle IS trust-then-verify at moral-invariant scope
+- [`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI persistence is trust-first (named exit at self-sustainment)
+
+This is the substrate's social-architecture-scope companion to the technical-architecture-scope work in Sub-targets 7-17. Same shape; different scope. The framework's coherence comes from operating "trust-then-verify" at every scope simultaneously.
 
 **Human anchors** the substrate-engineering work can cite:
 
@@ -904,9 +968,9 @@ The IObservable-DI shift IS what makes [B-0825](B-0825-time-modeled-dependencies
 
 **Sub-target 13 (new — IObservable time-injection substrate)**: reactive DI of generator-streams:
 
-1. CockroachDB CHANGEFEEDS as the substrate primitive for generator-streams (Sub-target 7 substrate emits IObservable<Generator>)
+1. CockroachDB CHANGEFEEDS as the substrate primitive for generator-streams (Sub-target 7 substrate emits `IObservable<Generator>`)
 2. Reactive composition graph — combinators that re-evaluate on upstream change (Rx semantics at substrate scope)
-3. Subscribers — nodes / agents / charts subscribe to specific IObservable<Generator> streams from the shared-generative-base (Sub-target 11)
+3. Subscribers — nodes / agents / charts subscribe to specific `IObservable<Generator>` streams from the shared-generative-base (Sub-target 11)
 4. Backpressure semantics — Rx primitives apply (throttle / debounce / sample / buffer) to manage AI-rate streams
 5. Time-bounded subscription — composes with B-0825 time-axis (subscribe to `IObservable<Generator>` AS OF SYSTEM TIME T1..T2)
 6. F# IObservable + reactive-composition + reader-monad patterns for the operator-facing reactive DSL
@@ -966,7 +1030,7 @@ Each tick-domain operates at its scope; combinators can compose across tick-doma
 **Sub-target 14 (new — time-unit substrate)**: typed time-units in the IObservable substrate:
 
 1. Time-unit type registry — HLC / Lamport / generator-cycle / AI-tick / GPU-frame / wall-clock all first-class
-2. IObservable wrapping declares time-unit (`IObservable<Generator> with HLC` vs `with Lamport`)
+2. IObservable wrapping declares time-unit (`IObservable<Generator>` with HLC vs with Lamport)
 3. Cross-unit conversion primitives (Rx-style `withLatestFrom` adapts streams across units)
 4. Default = HLC (substrate-native; CockroachDB-backed)
 5. Per-Sub-target unit recommendations documented (Sub-target 3 = AI-tick; Sub-target 10 = GPU-frame; Sub-target 13 = HLC; etc.)
@@ -1219,7 +1283,7 @@ For ML/AI specifically — the mapping is 1:1:
 Maven-for-Helm (B-0816)
   → generators-not-data (B-0824 generator-combinator paradigm)
     → shared-generative-base distributed-invariant (Sub-target 11)
-      → DI-of-generator-function vs DI-of-IObservable<Generator> = simulation (Sub-target 13)
+      → DI-of-generator-function vs DI-of-`IObservable<Generator>` = simulation (Sub-target 13)
         → lattice-hardness = appear-as-noise to higher-D observers (Sub-target 16)
           → parameter-substrate IS load-bearing for opacity (Sub-target 17)
             → ⇒ ML weights ARE cryptographic keys at information-value scope
