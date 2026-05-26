@@ -4,8 +4,8 @@
 
 ### Observation
 
-- **Otto:** The `otto.md` broadcast has not been updated since `2026-05-20T12:16Z`. This is a significant gap of over 5 days. The agent is effectively offline from the perspective of the broadcast bus.
-- **Riven:** The `riven.md` broadcast is recent (`2026-05-25T23:30:39Z`), but it consistently reports `skip -- dirty tree (14 files)`. This indicates that Riven is paralyzed and unable to perform any actions due to a dirty worktree.
+- **Otto:** The `~/.local/share/zeta-broadcasts/otto.md` broadcast (per `docs/LOCAL-BROADCAST-PEERING.md`) has not been updated since `2026-05-20T12:16Z`. This is a significant gap of over 5 days. The agent is effectively offline from the perspective of the broadcast bus.
+- **Riven:** The `~/.local/share/zeta-broadcasts/riven.md` broadcast is recent (`2026-05-25T23:30:39Z`), but it consistently reports `skip -- dirty tree (14 files)`. This indicates that Riven is paralyzed and unable to perform any actions due to a dirty worktree.
 
 ### Impact
 
@@ -19,7 +19,7 @@
 
 ### Backlog Integrity Drift
 
-- **Observation:** The `backlog-index-integrity` check is failing on PR #5026. This is because the `docs/BACKLOG.md` file is not being updated correctly. The `generate-index.ts` script, which is responsible for generating the backlog index, does not account for backlog items in open pull requests.
+- **Observation:** The `backlog-index-integrity` check is failing on PR #5026. The failure indicates `docs/BACKLOG.md` is out of sync with the per-row files under `docs/backlog/P[0-3]/B-<NNNN>-*.md`.
 - **Impact:** This drift in the backlog tooling leads to failing CI checks, which blocks PRs from being merged. It also creates a confusing and inconsistent state for the backlog.
-- **Hypothesis:** The `generate-index.ts` script was not designed to handle backlog items in open PRs.
-- **Corrective Action:** The `generate-index.ts` script should be updated to be aware of open pull requests and include backlog items from them in the generated index. Alternatively, a different mechanism for managing the backlog should be considered. This is a high-priority issue that needs to be addressed to unblock PRs.
+- **Hypothesis (corrected per Copilot review):** The workflow (`.github/workflows/backlog-index-integrity.yml`) runs `bun tools/backlog/generate-index.ts --check` against the PR's own working tree, so row files added by the PR ARE included automatically. Failures are typically caused by `docs/BACKLOG.md` not being regenerated in the same PR after adding/modifying a row file, or by malformed per-row frontmatter that breaks the parser.
+- **Corrective Action:** PR authors who add or modify `docs/backlog/P*/B-*.md` rows must run `bun tools/backlog/generate-index.ts` locally and commit the regenerated `docs/BACKLOG.md` in the same PR. If the generator errors out, the per-row file likely has malformed frontmatter that needs fixing first. This is a PR-author hygiene issue, not a tooling defect.
