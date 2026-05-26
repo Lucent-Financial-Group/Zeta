@@ -67,8 +67,9 @@ self-registration per B-0812 iter-5.4.1. Slice 2 adds:
   reachable from runner)
 - Capture the join attempt's payload shape
 - Verify the registration request matches schema
-- Verify the new node would be added to `maintainers/cluster-nodes/`
-  tree shape
+- Verify the new node would be added to
+  `maintainers/<operator>/cluster-nodes/<hostname>/...` tree shape per
+  B-0794 + B-0812 per-maintainer convention
 
 This requires either:
 
@@ -97,9 +98,9 @@ surface.
 Phased acceptance (each slice ships independently):
 
 - **Slice 1 acceptance**: CI cascade #6 phase 1 step passes on PR
-  touching `full-ai-cluster/**`. Step runs in <10 min total (boot + install
-  + reboot + login-verify). Captures full serial console as
-  workflow-artifact for debug.
+  touching `full-ai-cluster/**`. Step runs in under 10 min total
+  (boot, install, reboot, login-verify). Captures full serial console
+  as workflow-artifact for debug.
 - **Slice 2 acceptance**: CI cascade #6 phase 2 captures + verifies
   cluster-join attempt payload. Mock-cluster substrate is reusable for
   other CI tests (composes with cluster-bringup substrate).
@@ -123,7 +124,7 @@ Phased acceptance (each slice ships independently):
   (login banner + auto-hostname per iter-5.2.2)
 - B-0812 iter-5.4.1 (node self-registration commit+push to maintainers/
   cluster-nodes; the substrate this CI cascade verifies end-to-end)
-- B-0813 iter-5.4.2 (ArgoCD app watches maintainers/cluster-nodes tree)
+- B-0813 iter-5.4.2 (ArgoCD app watches `maintainers/*/cluster-nodes/**` tree per per-maintainer glob)
 - B-0814 (tools/cluster-deregister-node.ts sibling)
 - B-0816 (architectural principle: maximize ArgoCD scope + minimize
   NixOS-native lock-in)
@@ -189,4 +190,4 @@ elimination of human physical-test as routine gate.
 
 Slice 3 may be deferred to push-to-main (not PR-build) for latency
 reasons. Slice 2 should be PR-build-eligible since cluster-join shape
-verification is fast (<1 min after Slice 1 completes).
+verification is fast (under 1 min after Slice 1 completes).
