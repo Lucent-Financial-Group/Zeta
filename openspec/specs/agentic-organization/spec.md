@@ -187,6 +187,36 @@ and a concrete event-publisher adapter.
   correlation ID, causation ID, trace ID, idempotency key, and outbox
   event ID
 
+#### Scenario: NATS adapter consumes a valid event
+
+- **WHEN** the NATS JetStream consumer adapter fetches a message with a
+  canonical event envelope
+- **THEN** it decodes the envelope and sends it to the event ingestion
+  processor
+- **AND** a processed event is acknowledged
+- **AND** a duplicate event is acknowledged without treating it as a
+  transport failure
+
+#### Scenario: NATS adapter handles invalid or conflicting events
+
+- **WHEN** the NATS JetStream consumer adapter receives an invalid
+  envelope
+- **THEN** runtime ingestion is not called
+- **AND** the message is terminated and published to the dead-letter
+  port with an invalid-envelope reason
+- **WHEN** runtime ingestion reports a payload conflict
+- **THEN** the message is terminated and published to the dead-letter
+  port with a payload-conflict reason
+
+#### Scenario: NATS adapter retries transient ingestion failures
+
+- **WHEN** the event ingestion processor throws while handling a valid
+  envelope
+- **THEN** the NATS JetStream consumer adapter negative-acknowledges the
+  message for retry
+- **AND** the runtime rule processor does not know about NATS ack, nack,
+  termination, backoff, or DLQ mechanics
+
 ### Requirement: Inbound events are deduped before automation
 
 Organization event consumers MUST record inbox receipts before
@@ -281,6 +311,15 @@ for the full trace chain before live LGTM ingestion is wired.
 - **THEN** the attributes include event, command, correlation,
   causation, trace, idempotency, actor, hat assignment, organization,
   project, work item, aggregate, and NATS destination fields
+
+#### Scenario: NATS consumer batch is projected to telemetry
+
+- **WHEN** a NATS consumer batch result is projected to telemetry
+- **THEN** the attributes include messaging system, stream, durable
+  consumer, received count, processed count, duplicate count,
+  payload-conflict count, invalid count, failed count, acknowledged
+  count, negative-acknowledged count, terminated count, and
+  dead-lettered count
 
 ### Requirement: Workflow visibility records expose weak points
 

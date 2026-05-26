@@ -31,6 +31,7 @@ send_supervisor_signal
   -> outbox event with canonical event envelope
   -> outbox publisher
   -> NATS JetStream event publisher adapter
+  -> NATS JetStream event consumer adapter
   -> NATS subject contract
   -> event ingestion processor
   -> inbox receipt / consumer dedupe
@@ -49,8 +50,8 @@ send_supervisor_signal
 | `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
 | `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of the state-store/outbox-source ports, backed by CockroachDB                                                            |
 | `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder, outbox publisher, event publisher port, and typed domain resolver                                  |
-| `@agentic-org/messaging-nats`  | NATS JetStream event publisher adapter contract with canonical JSON payloads, headers, and message IDs                                                                |
-| `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection                                                                                                                          |
+| `@agentic-org/messaging-nats`  | NATS JetStream publisher and consumer adapter contracts with canonical JSON payloads, headers, message IDs, ack/nack, termination, and DLQ policy                     |
+| `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection for event envelopes and NATS consumer batch summaries                                                                    |
 | `@agentic-org/runtime`         | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
 | `@agentic-org/workers`         | process-boundary run-once worker host that composes outbox publishing and inbound event ingestion through ports                                                       |
 | `@agentic-org/governance`      | package dependency-boundary checks that prevent application code from importing concrete state/runtime adapters                                                       |
@@ -122,6 +123,11 @@ Hermes runs, MCP calls, and UI evidence.
   the publish succeeds.
 - The NATS adapter publishes canonical JSON envelopes with typed headers
   and event IDs as message IDs for idempotent JetStream publication.
+- The NATS consumer adapter decodes canonical JSON envelopes, preserves
+  the traceable event boundary into the runtime ingestion processor,
+  acknowledges processed and duplicate messages, terminates and
+  dead-letters invalid envelopes or payload conflicts, and
+  negative-acknowledges transient ingestion failures.
 - The event ingestion processor accepts decoded canonical envelopes,
   dedupes them by event ID plus consumer name, evaluates automation
   rules once, rejects same-event payload hash conflicts, and persists
@@ -148,15 +154,19 @@ Hermes runs, MCP calls, and UI evidence.
 - Event envelopes reject missing command trace fields.
 - The first automation rule produces a supervisor triage plan, not an
   unreviewed side effect.
+- Observability now exposes NATS consumer batch attributes for received,
+  processed, duplicate, payload-conflict, invalid, failed,
+  acknowledged, negative-acknowledged, terminated, and dead-lettered
+  counts.
 
 ## Next Slice
 
-The next slice should add the live NATS inbound consumer adapter behind
-the existing worker-host `InboundEventSource` port, keeping canonical
-envelope decoding, ack decisions, and DLQ behavior outside the runtime
-rule processor. After that, add a transactional durable-state adapter
-integration test using CockroachDB as the first cluster-backed
-implementation once a local/dev connection is available.
+The next slice should add the first runnable `apps/workers` composition
+host that binds the outbox publisher, NATS consumer adapter, runtime
+ingestion processor, durable state adapters, and observability helpers
+behind process configuration. After that, add a transactional
+durable-state adapter integration test using CockroachDB as the first
+cluster-backed implementation once a local/dev connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

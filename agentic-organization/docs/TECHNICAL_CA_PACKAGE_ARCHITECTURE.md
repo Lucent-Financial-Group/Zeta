@@ -171,7 +171,7 @@ calling them.
 | `@agentic-org/state`                     | generic state-store, outbox-source, inbox, idempotency, transaction, and lease ports                           |
 | `@agentic-org/state-cockroach`           | first replaceable durable SQL implementation of state-store and outbox-source ports                            |
 | `@agentic-org/messaging`                 | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts                   |
-| `@agentic-org/messaging-nats`            | NATS JetStream implementation of the event publisher port, canonical JSON, headers, message IDs                |
+| `@agentic-org/messaging-nats`            | NATS JetStream implementation of publisher and consumer ports, canonical JSON, headers, ack/nack, and DLQ      |
 | `@agentic-org/workers`                   | small worker process boundary that composes outbox publishing, inbound ingestion, and schedulers through ports |
 | `@agentic-org/workflows-temporal`        | Temporal workflow and activity contracts, task queues, workflow clients                                        |
 | `@agentic-org/actors-dapr`               | Dapr actor interfaces, actor implementations, reminders, actor state projection                                |
@@ -498,11 +498,21 @@ pairs; conflicting payloads are not treated as normal duplicates.
 
 A worker host composes that ingestion processor with the outbox
 publisher but stays below the NestJS process layer. This creates a
-testable boundary where later live NATS consumers can be added as
-`InboundEventSource` implementations without changing rule evaluation or
-reaction-plan persistence. The current source port is replayable pull
-only; live NATS ack, nack, checkpoint, backoff, and DLQ behavior remains
-owned by the transport adapter and `apps/workers` process host.
+testable boundary where replayable inbound sources and live transport
+consumers can both feed the same rule processor without changing rule
+evaluation or reaction-plan persistence. The worker-host source port is
+replayable pull only; live NATS ack, nack, checkpoint, backoff, and DLQ
+behavior remains owned by the transport adapter and `apps/workers`
+process host.
+
+The first NATS consumer adapter is now the transport-policy boundary. It
+decodes canonical JSON envelopes and calls the runtime ingestion
+processor, but it owns JetStream-style decisions: ack processed and
+duplicate messages, terminate plus dead-letter invalid envelopes and
+payload conflicts, and negative-acknowledge transient ingestion
+failures. This keeps runtime rules deterministic and transport-neutral
+while still making live NATS behavior testable before a Nest worker
+process exists.
 
 ### Stream and Consumer Manifests
 
@@ -781,6 +791,10 @@ package should standardize:
 - workflow visibility records that project command/event context into
   UI- and agent-readable health, stage, trace, scope, aggregate, and
   weak-point indicator fields.
+- NATS consumer batch attributes for stream, durable consumer, received,
+  processed, duplicate, payload-conflict, invalid, failed,
+  acknowledged, negative-acknowledged, terminated, and dead-lettered
+  counts.
 
 Every runtime host should be inspectable from either direction:
 
@@ -837,8 +851,8 @@ other work.
 7. Add inbox/consumer dedupe before any NATS-driven automation performs
    side effects. The first package-level processor and Cockroach adapter
    now exist; the first package-level worker host composes the outbox and
-   inbound-ingestion loops through ports, while the live NATS consumer
-   adapter is still pending.
+   inbound-ingestion loops through ports, and the NATS consumer adapter
+   owns live ack/nack/DLQ policy.
 8. Add the first rule catalog and reaction executor for ready work,
    review staffing, QA staffing, blocker escalation, and late run
    incidents.

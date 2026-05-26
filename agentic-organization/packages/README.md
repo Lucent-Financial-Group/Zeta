@@ -14,8 +14,8 @@ host, or Kubernetes deployment is introduced.
 | `state`           | generic state-store and outbox-source ports plus the in-memory Organization state-store factory fake                       |
 | `state-cockroach` | first replaceable durable SQL adapter for the state-store/outbox-source ports, backed by CockroachDB                       |
 | `messaging`       | NATS subject contract, outbox publisher port, event publisher port, and domain resolver without a live NATS dependency     |
-| `messaging-nats`  | NATS JetStream event publisher adapter contract with canonical JSON payloads, headers, and message IDs                     |
-| `observability`   | LGTM/OpenTelemetry attribute projection from Agentic event envelopes                                                       |
+| `messaging-nats`  | NATS JetStream publisher and consumer adapter contracts with canonical JSON, headers, ack/nack, and DLQ policy             |
+| `observability`   | LGTM/OpenTelemetry attribute projection from Agentic event envelopes and NATS consumer batch summaries                     |
 | `runtime`         | first event-to-automation reaction rule                                                                                    |
 | `workers`         | process-boundary worker host that composes outbox publishing and inbound ingestion through ports only                      |
 | `governance`      | package dependency-boundary checks that keep core packages SOLID and adapter-free                                          |
@@ -32,6 +32,7 @@ supervisor-chain signal command
   -> outbox event
   -> outbox publisher
   -> NATS JetStream event publisher adapter
+  -> NATS JetStream event consumer adapter
   -> NATS subject / telemetry contract
   -> event ingestion processor
   -> inbox receipt / consumer dedupe
@@ -71,6 +72,15 @@ package implements that publisher port and is the only package in this
 slice that knows about NATS headers, message IDs, and JSON transport
 payloads. State adapters must not import messaging adapters.
 
+The NATS consumer adapter owns live transport policy. It fetches a
+bounded batch from a pull-consumer port, decodes canonical event
+envelopes, calls the runtime event-ingestion processor, and then chooses
+the transport action. Processed and duplicate messages are acknowledged.
+Invalid envelopes and same-event payload conflicts are terminated and
+published to a dead-letter port. Transient ingestion failures are
+negative-acknowledged for retry. Runtime rule evaluation does not know
+about ack, nack, termination, backoff, or DLQ mechanics.
+
 The event ingestion processor owns the generic consume loop after a
 transport adapter has decoded a canonical event envelope. It checks an
 inbox receipt before evaluating rules, records the receipt and generated
@@ -92,8 +102,8 @@ instead of hiding the failure or starving the other lane.
 
 `InboundEventSource` is intentionally only a replayable pull port in
 this package. Live NATS ack, nack, checkpoint, backoff, and DLQ behavior
-belongs in the future NATS consumer adapter so transport policy does not
-leak into runtime rule evaluation.
+belongs in the NATS consumer adapter so transport policy does not leak
+into runtime rule evaluation.
 
 ## Validation
 

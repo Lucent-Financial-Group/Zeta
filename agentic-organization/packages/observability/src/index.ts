@@ -6,6 +6,13 @@ export {
   type BuildAgenticSpanAttributesInput,
 } from "./span-attributes.ts";
 export {
+  NatsConsumerAttributeKey,
+  buildNatsConsumerBatchAttributes,
+  type BuildNatsConsumerBatchAttributesInput,
+  type NatsConsumerBatchAttributes,
+  type NatsConsumerBatchCounts,
+} from "./nats-consumer-attributes.ts";
+export {
   VisibilityHealth,
   WeakPointIndicatorType,
   WorkflowObservationKind,
