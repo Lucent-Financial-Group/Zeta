@@ -30,6 +30,6 @@ export type CommandResult = {
     policyDecisionId?: string;
     policyVersion?: string;
     reason?: PolicyDenialReason;
-    observationErrorMessage?: string;
+    observationFailureReason?: string;
   };
 };

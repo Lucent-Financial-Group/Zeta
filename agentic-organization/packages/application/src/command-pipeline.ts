@@ -54,7 +54,7 @@ async function executeCommand(
       await dependencies.policyDecisionObservationPort.observePolicyDecision(
         createPolicyDecisionObservation(command, authorizationDecision, dependencies.now()),
       );
-    } catch (error) {
+    } catch {
       return {
         status: CommandResultStatus.Rejected,
         idempotency: {
@@ -66,7 +66,7 @@ async function executeCommand(
           policyDecisionId: authorizationDecision.decisionId,
           policyVersion: authorizationDecision.policyVersion,
           reason: authorizationDecision.reason,
-          observationErrorMessage: error instanceof Error ? error.message : "unknown policy observation failure",
+          observationFailureReason: "policy_decision_observation_unavailable",
         },
       };
     }

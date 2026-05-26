@@ -297,7 +297,7 @@ describe("command pipeline idempotency", () => {
     equal(result.status, CommandResultStatus.Rejected);
     equal(result.error?.code, CommandErrorCode.PolicyObservationFailed);
     equal(result.error?.policyDecisionId, "policy-decision-denied-001");
-    equal(result.error?.observationErrorMessage, "policy sink unavailable");
+    equal(result.error?.observationFailureReason, "policy_decision_observation_unavailable");
     equal(deniedHandler.executeCallCount, 0);
     equal(stateStoreFactory.findCallCount, 0);
     equal(stateStoreFactory.recordedOutcomes.length, 0);
