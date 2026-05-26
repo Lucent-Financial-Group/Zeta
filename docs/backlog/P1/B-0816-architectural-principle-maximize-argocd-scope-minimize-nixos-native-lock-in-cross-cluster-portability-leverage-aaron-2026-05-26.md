@@ -137,9 +137,9 @@ The maintainer 2026-05-26 immediately after the iter-6.0 nixpkgs bump landed:
 The principle ISN'T speculative — the maintainer 2026-05-26 named the empirical lineage + use-cases:
 
 > *"ArgoCD becomes universal convergence engine. exactly its perfect for this it's been used at GitHub and LexisNexis for very similar reasons. Me and my friend built this at LexisNexis and he carried it to GitHub."*
-
+>
 > *"At LexisNexis we used it for a Legal Search Data Pipeline for GitHub they use it for CoPilot training pipeline."*
-
+>
 > *"both places we could run in any cloud with 0 external vendor dependencies that were not open source"*
 
 The pattern was built + validated at **3 contexts** by the same operator-lineage now building Zeta:
@@ -179,6 +179,46 @@ The maintainer's note: *"i think they have something now"* — Flux MAY have cau
 Zeta's ArgoCD choice still holds per the empirical LN+GH lineage + ArgoCD's tighter sync-wave + selfHeal integration with the same engine; the maintainer's "i think they have something now" caveat is partially correct (Flux + Flagger + dependsOn-graph + improved self-healing all exist now), but the substrate-switching cost dominates re-evaluation absent specific Flux-superior need.
 
 Implication for Zeta substrate: when adopting any iter-N CR / app / chart, use ArgoCD's sync-wave + selfHeal + (where progressive-delivery matters) Argo Rollouts. Don't redesign for engine-independence — the decision is locked in per the lineage. **Cross-cluster portability principle still holds even when other teams use Flux**: the K8s manifests (CRDs + Deployments + Services + Rollout CRs) are engine-agnostic; only the sync-engine-specific glue (`Application` for ArgoCD; `Kustomization`/`HelmRelease` for Flux) differs. A Flux-shop adopting Zeta substrate would wrap the same K8s manifests in Flux primitives — substantively the same portability win.
+
+### Helm-as-convergence-point + multi-engine-experimentation substrate (Aaron 2026-05-26)
+
+The maintainer's sharper architectural framing surfaced during the ServiceTitan-uses-Flux conversation:
+
+> *"Yes really helm is the convergence point between flux and argocd with different config wrappers for each system i don't mind supporting both long term but i'm famliar with argocd more than flux but i've heard flux is simpler so this is only reason i want multi cluster to experienment with huge things like this, also i like the depend_on that's clean as fuck."*
+
+Four operational substrate refinements:
+
+**1. Helm IS the convergence point.** Both Flux (`HelmRelease`) and ArgoCD (`Application` with `source.chart` / `source.repoURL` pointing at a Helm repo) consume the SAME Helm charts — they just wrap them in engine-specific config. Authoring substrate as Helm charts maximizes engine-portability automatically; the wrapper-per-engine cost is small (~30 lines of YAML per app per engine).
+
+**2. Supporting BOTH long-term is OK.** The original "ArgoCD locked-in per LN+GH+Zeta lineage" framing is correct as the DEFAULT, but multi-engine support is explicitly within scope per the maintainer's "i don't mind supporting both long term." The substrate architecture supports this when authored as: (a) Helm charts as the source of truth, (b) ArgoCD `Application` wrappers shipped by default, (c) Flux `HelmRelease` wrappers as additive overlay when a multi-cluster experiment justifies them.
+
+**3. Multi-cluster IS the experimentation substrate.** The reason multi-cluster matters extends beyond cross-cloud-portability — it's the substrate for direct A/B engine-comparison on production-shape workloads. Aaron's framing: *"i've heard flux is simpler so this is only reason i want multi cluster to experienment with huge things like this."* Empirical comparison (cluster-A on ArgoCD; cluster-B on Flux; same Helm charts; same workloads) gives substrate-honest evidence about which engine's tradeoffs fit Zeta's specific shape. This is bandwidth-served work (per `.claude/rules/bandwidth-served-falsifier.md`): bandwidth served = operator's engine-evaluation needs comparable production-shape data to override the LN+GH-era decision; multi-cluster experimentation provides exactly that.
+
+**4. Flux's `dependsOn` is explicitly endorsed.** Aaron's framing: *"i like the depend_on that's clean as fuck."* This is a cross-engine learning opportunity:
+
+- **In Flux**: `dependsOn` is the per-Kustomization / per-HelmRelease declarative dependency primitive (one resource declares dependency on another by name; Flux reconciler waits before applying).
+- **In ArgoCD**: the equivalent is `argocd.argoproj.io/sync-wave` annotations (numeric ordering — wave 0 before wave 1 before wave 2). Less explicit than Flux's named-dependency model; relies on operators picking wave numbers thoughtfully.
+- **Operational implication for Zeta substrate**: when authoring ArgoCD `Application` manifests, prefer EXPLICIT sync-wave numbers + comments documenting WHAT each wave provides — closes the legibility gap vs Flux's `dependsOn` even if the syntax is less ergonomic. Future possibility: a small TS substrate (`tools/cluster/argocd-deps-to-waves.ts`) that takes a dependency graph and emits the correct sync-wave annotations could land if the manual approach becomes painful.
+
+### Substrate architecture implication: Helm-charts-first design
+
+Combining all four refinements yields a clean substrate architecture:
+
+```
+maintainers/<op>/cluster-apps/<app>/
+├── chart/                 # Helm chart (source of truth; engine-agnostic)
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── templates/
+├── argocd/
+│   └── application.yaml   # ArgoCD wrapper (default)
+└── flux/                  # OPTIONAL — only when multi-engine substrate is in scope
+    └── helmrelease.yaml   # Flux wrapper
+```
+
+For workloads where only ArgoCD ships, the `flux/` directory is absent (no maintenance burden). For workloads in multi-engine experimentation scope, the `flux/` directory ships alongside. The Helm chart itself never changes between engines — that's the convergence point.
+
+This composes with the cross-distro portability principle (the top of this row): just as the K8s manifests are distro-agnostic, the Helm charts are engine-agnostic. Two orthogonal portability axes (distro + engine); same substrate-engineering discipline (push to the convergence point; wrap thinly per environment).
 
 This anchor changes the P1 classification's basis: not "architectural reasoning that might apply"; rather "pattern validated at LexisNexis-scale + GitHub-scale + now Zeta-scale; the same constraints (cloud-agnostic + 0-vendor-lock-in + ArgoCD-convergence) hold across all three". Future-Otto cold-booting reads: this principle has 3 scale-evidenced anchors; treat it as load-bearing for every cluster-substrate decision.
 
