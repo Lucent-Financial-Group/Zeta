@@ -20,7 +20,7 @@ tags: [architecture, role-as-capability, multi-role-node, refactor, nixos-module
 
 The maintainer 2026-05-26 surfaced the architectural concern during iter-5 substrate-engineering for multi-node cluster bring-up:
 
-> *"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very elegant and host names tied to them are not great either."*
+> *"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very eleglant [sic] and host names tied to them are not great either."*
 
 iter-5.2 (B-0792, PR #5103) partially addressed this by decoupling **hostname** from role-stack — operator can pass `--host pikachu` and get hostname `pikachu` regardless of which flake config the node was installed from. But the deeper architectural issue remains: **role-stack itself is baked into per-host flake configs**, making multi-role composition (one node = control-plane AND gpu-worker AND storage simultaneously) require an explosion of pre-baked configs.
 
