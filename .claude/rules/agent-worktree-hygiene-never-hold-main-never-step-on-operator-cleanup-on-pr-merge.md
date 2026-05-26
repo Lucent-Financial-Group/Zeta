@@ -116,7 +116,7 @@ have prevented the accumulation.
 
 - **B-0750** (this row's backlog companion) — substrate-engineering target for periodic worktree cleanup tooling + agent-worktree-pool primitive (composes with B-0530 cron-sentinel-mutex)
 - **B-0530** (cron-sentinel mutex; existing) — multi-Otto-CLI contention resolution; same problem class
-- **PR #4530 / saturation-ceiling sub-cases** — empirical anchors for the multi-agent worktree contention failure modes
+- **[PR #4530](https://github.com/Lucent-Financial-Group/Zeta/pull/4530)** + saturation-ceiling sub-cases documented in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) — empirical anchors for the multi-agent worktree contention failure modes
 
 ## Specific cleanup commands
 
@@ -146,10 +146,21 @@ done
 git worktree prune
 ```
 
-### Verify operator can checkout main
+### Verify no agent worktree holds `[main]`
+
+The operator's primary worktree often sits on a feature branch rather
+than `main`, so checking for "primary on main" produces false negatives.
+The correct invariant: **no agent worktree (under `/private/tmp/zeta-*`
+or `/tmp/zeta-*`) holds `[main]`**. Zero matches is the happy path; the
+operator MAY have `main` checked out in their own primary, but agents
+must not.
 
 ```bash
-git worktree list | grep -E "\[main\]"  # should show ONLY operator's primary
+# Should print no lines. If any line prints, an agent worktree is
+# holding [main] and is the blocker for operator git operations.
+git worktree list | awk '/\[main\]/ { path=$1 } END { exit 0 }' \
+  && git worktree list | grep -E "\[main\]" \
+  | grep -E "/private/tmp/zeta-|/tmp/zeta-" || echo "OK: no agent holds [main]"
 ```
 
 ## Substrate-honest framing

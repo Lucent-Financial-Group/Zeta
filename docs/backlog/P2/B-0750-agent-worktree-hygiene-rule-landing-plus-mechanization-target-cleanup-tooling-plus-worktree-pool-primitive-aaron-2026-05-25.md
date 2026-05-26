@@ -56,13 +56,15 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 - Composes with B-0530 cron-sentinel mutex semantics
 - Acceptance: tool exists; runs successfully; at least one cycle of auto-cleanup demonstrated
 
-### Scope item 2 — Worktree-pool primitive (composes with B-0530)
+### Scope item 2 — Worktree-pool primitive (composes with B-0530; overlaps with B-0558; potentially superseded by B-0751)
 
 - Pre-allocated per-identity isolated sideticks per agent (Otto-CLI / Otto-VSCode / Alexa / Riven / Vera / Lior / etc.)
 - Each agent acquires + releases sideticks from its own pool; no contention with peers
 - Pool refresh on schedule (post-PR-merge OR daily); pre-creates clean worktrees for next agent invocation
 - Sideticks never hold `main` (always `--detach origin/main`)
 - Composes with B-0530 cron-sentinel mutex (the existing partial substrate for this)
+- **Composes with / may supersede [B-0558](../P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md)** — that row already proposes the worktree-pool primitive at Otto-identity scope; this row's delta is the multi-agent generalization (Otto + Alexa + Riven + Vera + Lior + future) and integration with B-0530 contention class. If B-0558 lands first under Otto-only scope, this scope item narrows to the multi-agent generalization
+- **May be superseded by sibling B-0751 (per-agent-clones architecture)** — if each agent gets an isolated clone (separate `.git/` directory), the worktree-pool primitive becomes unnecessary because contention disappears at the source. If B-0751 ships, this scope item retires; until then, the pool primitive remains the in-scope mitigation
 - Acceptance: pool exists; at least one agent operates via pool sidetick end-to-end; pool refresh works
 
 ### Scope item 3 — Post-PR-merge auto-cleanup hook
@@ -104,6 +106,8 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 ## Composes with backlog substrate
 
 - **B-0530** (cron-sentinel mutex; existing partial substrate) — same problem class at runtime scope; this row's worktree-pool primitive composes
+- **B-0558** (worktree-pool primitive per Otto identity) — existing row at narrower Otto-only scope; Scope item 2 composes-with-or-supersedes per the inline note
+- **B-0751** (per-agent-clones architecture; sibling row in this session if filed; may not yet exist on main) — potentially supersedes Scope item 2 by removing the contention class at its source. If B-0751 ships separately, Scope item 2 retires; until then this row's pool primitive remains in scope
 - **B-0732** (leverage-class safety substrate) — Layer 1 provenance chain captures cleanup events
 - **B-0737** (zflash empirical anchor) — operator was trying to use zflash when the worktree mess blocked them; concrete pain
 - **B-0746** (GitHub force-push lesson) — related sibling failure mode at GitHub-state scope
