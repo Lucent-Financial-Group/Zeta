@@ -229,6 +229,47 @@ executing privileged work directly.
   plans
 - **AND** reaction plans include a persisted status
 
+### Requirement: Worker process boundary composes event loops through ports
+
+Organization worker code MUST remain a small composition boundary until
+live infrastructure adapters are bound by a runtime host.
+
+#### Scenario: Worker runs one bounded cycle
+
+- **WHEN** the worker host is asked to run once
+- **THEN** it publishes at most one bounded outbox batch through an
+  outbox publisher port
+- **AND** it pulls at most one bounded inbound batch through an inbound
+  event source port
+- **AND** it sends each decoded event envelope through the event
+  ingestion processor
+- **AND** it returns a cycle summary with outbox status, inbound pulled
+  count, processed count, duplicate count, payload-conflict count,
+  failed count, reaction-plan count, and failure details
+- **AND** it reports idle only when no outbox events are published and
+  no inbound events are pulled
+
+#### Scenario: Worker reports degraded lanes without starving other lanes
+
+- **WHEN** the outbox lane fails during a worker cycle
+- **THEN** the worker still attempts the inbound ingestion lane
+- **AND** the cycle result reports a degraded status with the outbox
+  failure message
+- **AND** inbound processing counts remain visible
+- **WHEN** one inbound event fails during ingestion
+- **THEN** later inbound events in the same batch are still attempted
+- **AND** the cycle result reports failed inbound count and failure
+  details
+
+#### Scenario: Worker source remains adapter-free
+
+- **WHEN** package dependency-boundary tests inspect worker source
+- **THEN** worker source is checked for forbidden imports of the
+  Cockroach adapter, NATS adapter, NestJS, NATS, Dapr, Temporal,
+  Drizzle, Postgres, or other concrete runtime clients
+- **AND** concrete process concerns are left for `apps/workers` or
+  adapter packages
+
 ### Requirement: Telemetry is complete at the event boundary
 
 Organization packages MUST expose OpenTelemetry-compatible attributes

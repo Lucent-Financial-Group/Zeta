@@ -7,6 +7,7 @@ export const PackageBoundaryRule = {
   Messaging: "messaging",
   ProductionSource: "production_source",
   StateAdapter: "state_adapter",
+  Workers: "workers",
 } as const;
 
 export type PackageBoundaryRule = (typeof PackageBoundaryRule)[keyof typeof PackageBoundaryRule];

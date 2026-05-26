@@ -49,6 +49,25 @@ describe("package dependency boundaries", () => {
             "jetstream",
           ],
         },
+        {
+          packageName: PackageBoundaryRule.Workers,
+          sourceGlob: "workers/src/**/*.ts",
+          forbiddenImportFragments: [
+            "../../state-cockroach",
+            "../state-cockroach",
+            "../../messaging-nats",
+            "../messaging-nats",
+            "nestjs",
+            "@nestjs",
+            "nats",
+            "jetstream",
+            "dapr",
+            "temporal",
+            "drizzle",
+            "pg",
+            "postgres",
+          ],
+        },
       ],
     });
 
@@ -110,6 +129,12 @@ describe("package dependency boundaries", () => {
         {
           packageName: PackageBoundaryRule.ProductionSource,
           sourceGlob: "state-cockroach/src/**/*.ts",
+          forbiddenFileSuffix: ".test.ts",
+          reason: PackageSourceLayoutViolationReason.TestFileInProductionSource,
+        },
+        {
+          packageName: PackageBoundaryRule.ProductionSource,
+          sourceGlob: "workers/src/**/*.ts",
           forbiddenFileSuffix: ".test.ts",
           reason: PackageSourceLayoutViolationReason.TestFileInProductionSource,
         },

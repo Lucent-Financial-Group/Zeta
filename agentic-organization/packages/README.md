@@ -17,6 +17,7 @@ host, or Kubernetes deployment is introduced.
 | `messaging-nats`  | NATS JetStream event publisher adapter contract with canonical JSON payloads, headers, and message IDs                     |
 | `observability`   | LGTM/OpenTelemetry attribute projection from Agentic event envelopes                                                       |
 | `runtime`         | first event-to-automation reaction rule                                                                                    |
+| `workers`         | process-boundary worker host that composes outbox publishing and inbound ingestion through ports only                      |
 | `governance`      | package dependency-boundary checks that keep core packages SOLID and adapter-free                                          |
 
 ## Slice Rule
@@ -35,6 +36,7 @@ supervisor-chain signal command
   -> event ingestion processor
   -> inbox receipt / consumer dedupe
   -> persisted reaction plans
+  -> worker host run-once cycle
   -> automation reaction plan
 ```
 
@@ -78,6 +80,20 @@ again. If the same event ID reaches the same consumer with a different
 payload hash, the processor returns a payload-conflict outcome instead
 of hiding the drift. Live NATS consumers will bind to this processor
 later.
+
+The worker host composes the outbox publisher and inbound event
+ingestion processor behind a small run-once boundary. It does not know
+about live NATS clients, CockroachDB clients, NestJS modules, Temporal,
+or Dapr. Future runtime processes should provide concrete ports from the
+composition layer and use the returned idle/worked/degraded cycle
+summary for logs, metrics, health checks, and UI-visible workflow
+telemetry. A failed outbox or inbound lane is reported as degraded
+instead of hiding the failure or starving the other lane.
+
+`InboundEventSource` is intentionally only a replayable pull port in
+this package. Live NATS ack, nack, checkpoint, backoff, and DLQ behavior
+belongs in the future NATS consumer adapter so transport policy does not
+leak into runtime rule evaluation.
 
 ## Validation
 

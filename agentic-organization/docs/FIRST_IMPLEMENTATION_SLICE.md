@@ -35,6 +35,7 @@ send_supervisor_signal
   -> event ingestion processor
   -> inbox receipt / consumer dedupe
   -> persisted reaction plans
+  -> worker host cycle summary
   -> LGTM span attributes
   -> supervisor triage reaction plan
 ```
@@ -51,6 +52,7 @@ send_supervisor_signal
 | `@agentic-org/messaging-nats`  | NATS JetStream event publisher adapter contract with canonical JSON payloads, headers, and message IDs                                                                |
 | `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection                                                                                                                          |
 | `@agentic-org/runtime`         | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
+| `@agentic-org/workers`         | process-boundary run-once worker host that composes outbox publishing and inbound event ingestion through ports                                                       |
 | `@agentic-org/governance`      | package dependency-boundary checks that prevent application code from importing concrete state/runtime adapters                                                       |
 
 ## NodeNext Runtime Decision
@@ -129,6 +131,15 @@ Hermes runs, MCP calls, and UI evidence.
   tables plus a SQL-backed event-ingestion store. This is still behind a
   generic state port; live NATS consumers are not hardcoded into the
   adapter.
+- The worker host now runs one bounded outbox cycle plus one bounded
+  inbound-ingestion cycle through explicit ports, then returns an
+  idle/worked/degraded summary suitable for future logs, metrics, and UI
+  workflow visibility. If one lane fails, the other lane still runs and
+  the failure is returned as typed cycle data.
+- A governance test enforces that worker source does not import the
+  Cockroach adapter, NATS adapter, NestJS, NATS, Dapr, Temporal,
+  Drizzle, or Postgres clients. Worker code remains a process boundary,
+  not a concrete infrastructure host.
 - Duplicate commands with the same idempotency key and request hash
   replay the stored result.
 - Duplicate commands with the same idempotency key and a different
@@ -140,11 +151,12 @@ Hermes runs, MCP calls, and UI evidence.
 
 ## Next Slice
 
-The next slice should wire an in-process worker host that composes the
-outbox publisher and event ingestion processor behind explicit ports.
-After that, add a transactional durable-state adapter integration test
-using CockroachDB as the first cluster-backed implementation once a
-local/dev connection is available.
+The next slice should add the live NATS inbound consumer adapter behind
+the existing worker-host `InboundEventSource` port, keeping canonical
+envelope decoding, ack decisions, and DLQ behavior outside the runtime
+rule processor. After that, add a transactional durable-state adapter
+integration test using CockroachDB as the first cluster-backed
+implementation once a local/dev connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized
