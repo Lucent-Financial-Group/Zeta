@@ -114,18 +114,23 @@ const REQUIRED_ISO_PATHS: readonly { path: string; rationale: string }[] = [
 // layouts uniformly. Each entry's suffix-match against ANY entry in the
 // ISO satisfies the assertion.
 const REQUIRED_KERNEL_ANY: readonly { prefix: string; suffix: string; rationale: string }[] = [
+  // boot/...path.../bzImage covers BOTH legacy 24.11 (boot/bzImage — startsWith("boot/")
+  // + endsWith("/bzImage") since the path's last 8 chars are "/bzImage") AND
+  // 25.11 store-hashed (boot/nix/store/<hash>-linux-<ver>/bzImage). No separate
+  // legacy entry needed (fix-fwd Copilot finding on #5263 — earlier draft had
+  // {prefix:"", suffix:"boot/bzImage"} which wasn't actually exact-match + was
+  // redundant with the entry above).
   { prefix: "boot/", suffix: "/bzImage", rationale: "Linux kernel — any boot/...path.../bzImage (covers 24.11 boot/bzImage + 25.11 boot/nix/store/<hash>-linux-<ver>/bzImage + per-arch paths)" },
   { prefix: "boot/", suffix: "/kernel", rationale: "Linux kernel (generic-named convention)" },
   { prefix: "boot/", suffix: "/vmlinuz", rationale: "Linux kernel (vmlinuz convention)" },
   { prefix: "boot/", suffix: "/vmlinuz-linux", rationale: "Linux kernel (alt vmlinuz convention)" },
-  // Legacy exact-path checks kept for cases where the kernel IS at boot/<name> directly (no subdirectory).
-  { prefix: "", suffix: "boot/bzImage", rationale: "Linux kernel (24.11 legacy exact top-level)" },
 ];
 
 const REQUIRED_INITRD_ANY: readonly { prefix: string; suffix: string; rationale: string }[] = [
+  // Same legacy-via-prefix-suffix coverage as kernel above; no separate legacy
+  // entry needed (fix-fwd Copilot finding on #5263).
   { prefix: "boot/", suffix: "/initrd", rationale: "initramfs — any boot/...path.../initrd (covers 24.11 boot/initrd + 25.11 boot/nix/store/<hash>-initrd-linux-<ver>/initrd + per-arch paths)" },
   { prefix: "boot/", suffix: "/initrd.img", rationale: "initramfs (.img convention)" },
-  { prefix: "", suffix: "boot/initrd", rationale: "initramfs (24.11 legacy exact top-level)" },
 ];
 
 // At least ONE of these bootloader-config paths must exist for the ISO
