@@ -71,7 +71,8 @@ function resolveAgentBin(): string | null {
 }
 
 function lines(text: string): string[] {
-    return text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+    return text.split(/?
+/).map(l => l.trim()).filter(l => l.length > 0);
 }
 
 function acquireLock(): boolean {
