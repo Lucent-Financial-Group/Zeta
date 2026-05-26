@@ -101,7 +101,7 @@ The slot is EMPTY because the constraints are awkward: Helm's templating languag
 
 Three substrates already in flight that compose into the dependency-graph-on-Helm layer:
 
-1. **[B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md) Helm-as-convergence-point** — Zeta authors substrate as Helm charts; both engines (ArgoCD + Flux) consume the same charts. This positions Zeta TO sit above Helm, regardless of which engine ships.
+1. **[B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md) Helm-as-convergence-point** — Zeta authors substrate as Helm charts; both engines (ArgoCD + Flux) consume the same charts. This positions Zeta to sit above Helm, regardless of which engine ships.
 2. **[B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) Derivability asymmetry** — `dependsOn` → sync-waves is computable; sync-waves → `dependsOn` is not. The named-dependency graph IS the source-of-truth shape; engine-specific outputs are derived projections. Zeta's `tools/cluster/deps-to-engine-config.ts` (B-0820 sub-target 4) is the first concrete substrate at this layer.
 3. **[B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md) Ontology-based-not-tool-based** — AI runbooks describe ontology shapes; tools surface BECAUSE they fit the shape. A dependency-graph IS an ontology primitive; this layer IS Zeta's ontology layer applied to K8s substrate.
 
