@@ -33,7 +33,6 @@ case "$GIT_REF" in
     echo "ERROR: git-ref must match [a-zA-Z0-9._/-]+ (got: '${GIT_REF}')" >&2
     exit 1 ;;
 esac
-
 # ── Pre-flight ────────────────────────────────────────────────
 for cmd in docker k3d kubectl helm; do
   command -v "$cmd" >/dev/null || {
@@ -60,14 +59,22 @@ kubectl config use-context k3d-zeta-dev
 
 # ── Step 2: Cilium CNI (chicken-and-egg — without this, no pods
 # schedule because flannel/kube-proxy are disabled) ───────────
+<<<<<<< HEAD
+if ! kubectl -n kube-system get ds cilium >/dev/null 2>&1; then
+=======
 # Version kept aligned with full-ai-cluster/k8s/bootstrap/cilium-install.yaml
 # so dev exercises the same chart that lands in prod.
 if ! helm -n kube-system status cilium >/dev/null 2>&1; then
+>>>>>>> origin/main
   echo "Installing Cilium ..."
   helm repo add cilium https://helm.cilium.io >/dev/null 2>&1 || true
   helm repo update cilium >/dev/null
   helm install cilium cilium/cilium \
+<<<<<<< HEAD
+    --version 1.16.4 \
+=======
     --version 1.16.5 \
+>>>>>>> origin/main
     --namespace kube-system \
     --set kubeProxyReplacement=true \
     --set k8sServiceHost=k3d-zeta-dev-server-0 \
@@ -99,6 +106,8 @@ if ! helm -n argocd status argocd >/dev/null 2>&1; then
     --wait
 fi
 
+<<<<<<< HEAD
+=======
 # Wait for the Application CRD to be Established before applying
 # the root App-of-Apps. On a fresh install the CRDs land via the
 # Helm hooks; kubectl apply against an un-Established CRD fails
@@ -108,6 +117,7 @@ kubectl wait --for=condition=Established \
   crd/applications.argoproj.io \
   >/dev/null 2>&1 || true
 
+>>>>>>> origin/main
 # ── Step 4: root App-of-Apps pointing at this repo ────────────
 # Uses GIT_REF so dev can pin to a feature branch.
 echo "Applying root App-of-Apps (git ref: ${GIT_REF}) ..."
@@ -161,6 +171,14 @@ Dev cluster up. Same substrate as prod, minus Longhorn + GPU stack.
   kubectl get nodes                       # 1 server + 2 agents, env=dev label
   kubectl -n argocd get applications      # ArgoCD reconciling app-of-apps
   kubectl -n argocd port-forward svc/argocd-server 8443:443
+  open https://localhost:8443             # ArgoCD UI (initial password below)
+
+  kubectl -n argocd get secret argocd-initial-admin-secret \\
+    -o jsonpath='{.data.password}' | base64 -d ; echo
+
+Tear down: ./down.sh
+EOF
+443:443
   open https://localhost:8443             # ArgoCD UI (initial password below)
 
   kubectl -n argocd get secret argocd-initial-admin-secret \\
