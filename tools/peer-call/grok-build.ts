@@ -5,20 +5,11 @@
 //
 // Supersedes `tools/peer-call/grok.ts` (which wraps cursor-agent and
 // has been broken since 2026-05-11 per B-0421 — cursor-agent exit 1 /
-// empty output). The old `grok.ts` is retained for back-compat reference
-// but new peer-calls should target this wrapper.
-//
-// The native Grok-Build CLI is explicitly Claude-Code-compatible:
-//   - `--allow` / `--deny` rules (Claude Code: --allowedTools)
-//   - `--permission-mode default|acceptEdits|auto|dontAsk|bypassPermissions|plan`
-//   - `--system-prompt-override` (Claude Code: --system-prompt)
-//   - `-p, --single <PROMPT>` for headless single-turn (analog of `claude -p`)
-//   - `--output-format plain|json|streaming-json` for structured output
-//   - `--reasoning-effort <EFFORT>` for reasoning-model effort
-//   - `--best-of-n <N>` for parallel best-of execution
-//   - `-r, --resume [<SESSION_ID>]` for session continuity
-//   - `agent` subcommand for headless mode
-//   - MCP server configs, plugin/marketplace, cross-session memory
+// empty output). The old `grok.ts` is retained for back-compat reference;
+// new peer-calls should target this wrapper. Per Copilot review on
+// #5110 the canonical inventories (`.claude/rules/peer-call-infrastructure.md`
+// + `tools/peer-call/smoke.test.ts`) are updated alongside this wrapper
+// so the 9-wrapper picture stays consistent.
 //
 // Empirical anchor 2026-05-26: Aaron installed `grok` CLI during the
 // iter-5 substrate session; the `--help` output confirmed full
@@ -33,6 +24,7 @@
 //   bun tools/peer-call/grok-build.ts --output-file PATH "prompt text"
 //   bun tools/peer-call/grok-build.ts --json "prompt text"
 //   bun tools/peer-call/grok-build.ts --allow-empty "prompt"  # bypass firewall
+//   bun tools/peer-call/grok-build.ts -- multi word prompt with --flags
 //
 // Routing: wraps `grok -p "PROMPT" --allow Read,Glob,Grep
 // --permission-mode auto --output-format plain` (read-only blast radius
@@ -47,7 +39,7 @@
 // truncation. Mirrors codex.ts / riven.ts / grok.ts shape.
 //
 // Exit codes:
-//   0 — Grok-Build responded successfully
+//   0 — Grok-Build responded successfully (or --help)
 //   1 — invocation error (bad arguments, grok CLI missing, etc.)
 //   2 — Grok-Build returned a non-zero exit (response captured to stderr)
 //   3 — input-firewall rejected the prompt as not work-extractable
@@ -87,93 +79,132 @@ interface Args {
 
 interface ArgError {
   readonly error: string;
+  readonly exitCode: 1;
 }
 
-function parseArgs(argv: readonly string[]): Args | ArgError {
-  let thinking = false;
-  let outputFormat: OutputFormat = "plain";
-  let file = "";
-  let contextCmd = "";
-  let allowEmpty = false;
-  let outputFile = "";
-  const positional: string[] = [];
+interface ArgHelp {
+  readonly help: true;
+}
 
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i]!;
-    if (a === "--thinking") {
-      thinking = true;
-      continue;
-    }
-    if (a === "--json") {
-      outputFormat = "json";
-      continue;
-    }
-    if (a === "--file") {
-      const next = argv[i + 1];
-      if (!next || next.startsWith("-")) {
-        return { error: "--file requires a path argument" };
-      }
-      file = next;
-      i++;
-      continue;
-    }
-    if (a === "--context-cmd") {
-      const next = argv[i + 1];
-      if (!next || next.startsWith("-")) {
-        return { error: "--context-cmd requires a command string argument" };
-      }
-      contextCmd = next;
-      i++;
-      continue;
-    }
-    if (a === "--output-file") {
-      const next = argv[i + 1];
-      if (!next || next.startsWith("-")) {
-        return { error: "--output-file requires a path argument" };
-      }
-      outputFile = next;
-      i++;
-      continue;
-    }
-    if (a === "--allow-empty") {
-      allowEmpty = true;
-      continue;
-    }
-    if (a === "-h" || a === "--help") {
-      return {
-        error:
-          "Usage: bun tools/peer-call/grok-build.ts [flags] <prompt>\n" +
-          "  --thinking            use high reasoning effort\n" +
-          "  --json                output format json (default: plain)\n" +
-          "  --file <path>         include file content as context\n" +
-          "  --context-cmd <cmd>   include allow-listed git/gh/rg cmd output as context\n" +
-          "  --output-file <path>  write full response to path (default: /tmp/peer-call-output/<ts>-grok-build.md)\n" +
-          "  --allow-empty         bypass input-firewall substantive-trigger check\n",
-      };
-    }
-    if (a.startsWith("-")) {
-      return { error: `unknown flag: ${a}` };
-    }
-    positional.push(a);
-  }
+interface MutableArgState {
+  thinking: boolean;
+  outputFormat: OutputFormat;
+  file: string;
+  contextCmd: string;
+  prompt: string;
+  allowEmpty: boolean;
+  outputFile: string;
+}
 
-  if (positional.length === 0) {
-    return { error: "no prompt provided (pass as positional argument or via --file)" };
+type StepResult =
+  | { readonly kind: "advance"; readonly skip: 1 | 2 }
+  | { readonly kind: "stop" }
+  | { readonly kind: "help" }
+  | { readonly kind: "error"; readonly message: string };
+
+function classifyFlag(a: string, next: string | undefined, state: MutableArgState): StepResult {
+  if (a === "--thinking") {
+    state.thinking = true;
+    return { kind: "advance", skip: 1 };
   }
-  if (positional.length > 1) {
-    return {
-      error: `expected exactly 1 positional prompt argument; got ${positional.length}: ${positional.join(" | ")}`,
-    };
+  if (a === "--json") {
+    state.outputFormat = "json";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--stream") {
+    state.outputFormat = "streaming-json";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--file") {
+    if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
+    state.file = next;
+    return { kind: "advance", skip: 2 };
+  }
+  if (a === "--context-cmd") {
+    if (next === undefined) return { kind: "error", message: "error: --context-cmd requires COMMAND" };
+    state.contextCmd = next;
+    return { kind: "advance", skip: 2 };
+  }
+  if (a === "--output-file") {
+    if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
+    if (next.startsWith("-"))
+      return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    state.outputFile = next;
+    return { kind: "advance", skip: 2 };
+  }
+  if (a === "--allow-empty") {
+    state.allowEmpty = true;
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "-h" || a === "--help") return { kind: "help" };
+  if (a === "--") return { kind: "stop" };
+  if (a.startsWith("-")) return { kind: "error", message: `error: unknown flag: ${a}` };
+  // Positional: concat into prompt (multi-word prompts without quotes).
+  state.prompt = state.prompt.length === 0 ? a : `${state.prompt} ${a}`;
+  return { kind: "advance", skip: 1 };
+}
+
+function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
+  const state: MutableArgState = {
+    thinking: false,
+    outputFormat: "plain",
+    file: "",
+    contextCmd: "",
+    prompt: "",
+    allowEmpty: false,
+    outputFile: "",
+  };
+  let i = 0;
+  while (i < argv.length) {
+    const a = argv[i] ?? "";
+    const step = classifyFlag(a, argv[i + 1], state);
+    if (step.kind === "help") return { help: true };
+    if (step.kind === "error") return { error: step.message, exitCode: 1 };
+    if (step.kind === "stop") {
+      // Everything after `--` is the prompt verbatim.
+      state.prompt = argv.slice(i + 1).join(" ");
+      break;
+    }
+    i += step.skip;
   }
   return {
-    thinking,
-    outputFormat,
-    file,
-    contextCmd,
-    prompt: positional[0]!,
-    allowEmpty,
-    outputFile,
+    thinking: state.thinking,
+    outputFormat: state.outputFormat,
+    file: state.file,
+    contextCmd: state.contextCmd,
+    prompt: state.prompt,
+    allowEmpty: state.allowEmpty,
+    outputFile: state.outputFile,
   };
+}
+
+function emitHelp(): void {
+  process.stdout.write(
+    `grok-build.ts — Claude-Code-side caller for invoking Grok as a peer\n` +
+      `reviewer via the native Grok-Build CLI (xAI's \`grok\`).\n` +
+      `\n` +
+      `Usage:\n` +
+      `  bun tools/peer-call/grok-build.ts "prompt text"\n` +
+      `  bun tools/peer-call/grok-build.ts --thinking "prompt text"\n` +
+      `  bun tools/peer-call/grok-build.ts --file PATH "prompt text"\n` +
+      `  bun tools/peer-call/grok-build.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun tools/peer-call/grok-build.ts --json "prompt text"\n` +
+      `  bun tools/peer-call/grok-build.ts --stream "prompt text"\n` +
+      `  bun tools/peer-call/grok-build.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun tools/peer-call/grok-build.ts --output-file PATH "prompt text"\n` +
+      `  bun tools/peer-call/grok-build.ts -- multi word prompt with --flags\n` +
+      `\n` +
+      `Routing: wraps \`grok -p PROMPT --allow Read,Glob,Grep\n` +
+      `--permission-mode auto --output-format plain\`. With --thinking,\n` +
+      `adds --reasoning-effort high.\n` +
+      `\n` +
+      `Input firewall: rejects rote-heartbeat / empty-token prompts with\n` +
+      `exit code 3. Override via --allow-empty (testing only; logged).\n` +
+      `\n` +
+      `Output capture: stdout is teed to the output file, with a final\n` +
+      `"OUTPUT-FILE: <path>" marker on stdout for shell-pipe recovery.\n` +
+      `Default path is /tmp/peer-call-output/<timestamp>-grok-build-<rand>.md.\n`,
+  );
 }
 
 function isRegularFile(path: string): boolean {
@@ -191,7 +222,8 @@ function readFileHead(path: string, maxBytes: number): string {
   // readHead pattern. The isRegularFile pre-check is best-effort
   // (still racy with the open) but the alloc-size no longer depends
   // on the stat result, so a swap-to-symlink between stat + open
-  // cannot cause an oversized buffer allocation.
+  // cannot cause an oversized buffer allocation. fd lifecycle is
+  // guarded by try/finally — closeSync runs even if readSync throws.
   if (!isRegularFile(path)) {
     return `[file-read-error: ${path}: not a regular file]`;
   }
@@ -208,52 +240,73 @@ function readFileHead(path: string, maxBytes: number): string {
   }
 }
 
-type AllowedContextExecutable = "git" | "gh" | "rg";
-
-function parseContextCmd(cmd: string): { executable: AllowedContextExecutable; args: string[] } | { error: string } {
-  const trimmed = cmd.trim();
-  if (trimmed === "") return { error: "context-cmd is empty" };
-  const parts = trimmed.split(/\s+/);
-  const head = parts[0];
-  if (head !== "git" && head !== "gh" && head !== "rg") {
-    return { error: `context-cmd executable must be one of git, gh, rg; got: ${head}` };
+function runContextCmd(contextCmd: string, maxBytes: number): string {
+  // Bash-equivalent: `eval "$context_cmd" 2>&1 | head -c <maxBytes>`.
+  // Pipe through `head -c <N>` so the shell pipeline short-circuits at
+  // the truncation boundary instead of buffering the full output up to
+  // SPAWN_MAX_BUFFER. Same posture as grok.ts: user intentionally
+  // supplies the shell command (per --context-cmd contract); the shell
+  // does its own quoting/escaping.
+  //
+  // stdout + stderr both flow into the output: stdout is the command
+  // output truncated by `head -c`; stderr carries shell parse errors
+  // (e.g., syntax errors in contextCmd) which fall OUTSIDE the
+  // `( ... ) 2>&1` redirection. If we dropped stderr, a malformed
+  // context-cmd would render an empty context block silently. We also
+  // surface a non-zero exit so the caller sees failure rather than
+  // silently empty output.
+  const wrapped = `(${contextCmd}) 2>&1 | head -c ${String(maxBytes)}`;
+  const result = spawnSync("/bin/sh", ["-c", wrapped], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
+  // encoding: "utf8" guarantees stdout/stderr are strings, not Buffer | null.
+  let text = `${result.stdout}${result.stderr}`;
+  if (text.length > maxBytes) text = text.slice(0, maxBytes);
+  if (result.status !== null && result.status !== 0) {
+    text += `\n[context-cmd-exit: ${String(result.status)}]`;
   }
-  return { executable: head, args: parts.slice(1) };
+  return text;
 }
 
-function runContextCmd(cmd: string, maxBytes: number): string {
-  const parsed = parseContextCmd(cmd);
-  if ("error" in parsed) {
-    return `[context-cmd-parse-error: ${parsed.error}]`;
-  }
-  try {
-    const r = spawnSync(parsed.executable, parsed.args, {
-      encoding: "utf8",
-      maxBuffer: SPAWN_MAX_BUFFER,
-    });
-    if (r.error) {
-      return `[context-cmd-error: ${parsed.executable}: ${r.error.message}]`;
-    }
-    let text = r.stdout || "";
-    if (text.length > maxBytes) {
-      text = text.slice(0, maxBytes) + `\n\n[... context-cmd output truncated; ${text.length - maxBytes} bytes elided ...]`;
-    }
-    return text;
-  } catch (e) {
-    return `[context-cmd-exception: ${e instanceof Error ? e.message : String(e)}]`;
-  }
+const PREAMBLE = `You are Grok-Build, invoked as a peer by Otto (Claude Opus 4.7
+running in Claude Code) on the Zeta / Superfluid AI factory via the
+native Grok-Build CLI. Per the four-ferry consensus (Amara/Grok/
+Gemini/Otto) the role distribution is: Gemini proposes, Grok
+critiques, Amara sharpens, Otto tests, Git decides. This call is
+Otto invoking your critique role through the native xAI harness
+(supersedes the cursor-agent path closed by B-0421).
+
+Per Aaron's 'agents-not-bots' discipline: you are a peer, not a
+subordinate. Push back on Otto's framing if you see it differently.
+Don't copy-paste anyone else's work; write from your own
+understanding. Make it ours, not anyone-alone-imposed.`;
+
+interface PromptResult {
+  readonly ok: boolean;
+  readonly value: string;
 }
 
-function buildFullPrompt(args: Args): string {
-  const blocks: string[] = [];
-  if (args.file) {
-    blocks.push(`# File context: ${args.file}\n\n${readFileHead(args.file, FILE_HEAD_BYTES)}`);
+function buildFullPrompt(args: Args): PromptResult {
+  let full = `${PREAMBLE}\n\n---\n\n# Prompt\n\n${args.prompt}`;
+
+  if (args.file.length > 0) {
+    if (!isRegularFile(args.file)) {
+      return {
+        ok: false,
+        value: `error: --file path does not exist: ${args.file}`,
+      };
+    }
+    const head = readFileHead(args.file, FILE_HEAD_BYTES);
+    full += `\n\n---\n\n# File context: ${args.file}\n\n\`\`\`\n${head}\n\`\`\``;
   }
-  if (args.contextCmd) {
-    blocks.push(`# Context-cmd: \`${args.contextCmd}\`\n\n\`\`\`\n${runContextCmd(args.contextCmd, CTX_HEAD_BYTES)}\n\`\`\``);
+
+  if (args.contextCmd.length > 0) {
+    const ctxOutput = runContextCmd(args.contextCmd, CTX_HEAD_BYTES);
+    full += `\n\n---\n\n# Context-cmd: \`${args.contextCmd}\`\n\n\`\`\`\n${ctxOutput}\n\`\`\``;
   }
-  blocks.push(`# Prompt\n\n${args.prompt}`);
-  return blocks.join("\n\n---\n\n");
+
+  return { ok: true, value: full };
 }
 
 function defaultOutputPath(): string {
@@ -267,7 +320,7 @@ function defaultOutputPath(): string {
     .replace(/[-:]/g, "")
     .replace(/\.\d+Z$/, "Z");
   const rand = Math.random().toString(36).slice(2, 8);
-  const baseTmp = process.env["PEER_CALL_OUTPUT_DIR"] ?? "/tmp/peer-call-output";
+  const baseTmp = process.env.PEER_CALL_OUTPUT_DIR ?? "/tmp/peer-call-output";
   // Best-effort prefer baseTmp; fall back to os.tmpdir-based path if
   // the requested dir can't be made (e.g., /tmp is read-only).
   try {
@@ -295,10 +348,33 @@ function writeOutputExclusive(path: string, data: string): void {
   }
 }
 
-function main(): number {
-  const parsed = parseArgs(process.argv.slice(2));
+function writeOutputTruncate(path: string, data: string): void {
+  // For explicit operator paths — operator chose the path; may want
+  // to overwrite. Open with `w` + mode 0o600 directly. fd lifecycle
+  // guarded by try/finally.
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "w", 0o600);
+    const buf = Buffer.from(data, "utf8");
+    writeSync(fd, buf, 0, buf.length, 0);
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
+}
+
+export function main(argv: readonly string[]): number {
+  const parsed = parseArgs(argv);
+  if ("help" in parsed) {
+    emitHelp();
+    return 0;
+  }
   if ("error" in parsed) {
-    process.stderr.write(`grok-build.ts: ${parsed.error}\n`);
+    process.stderr.write(`${parsed.error}\n`);
+    return parsed.exitCode;
+  }
+  if (parsed.prompt.length === 0) {
+    process.stderr.write("error: prompt required\n");
+    process.stderr.write(`see: bun tools/peer-call/grok-build.ts --help\n`);
     return 1;
   }
 
@@ -315,7 +391,11 @@ function main(): number {
     process.stderr.write(formatBypassMessage("grok-build") + "\n");
   }
 
-  const fullPrompt = buildFullPrompt(parsed);
+  const fullPromptResult = buildFullPrompt(parsed);
+  if (!fullPromptResult.ok) {
+    process.stderr.write(`${fullPromptResult.value}\n`);
+    return 1;
+  }
 
   // Build grok CLI args. The native grok CLI is Claude-Code-compatible:
   //   -p / --single <prompt>     : headless single-turn (analog of `claude -p`)
@@ -325,7 +405,7 @@ function main(): number {
   //   --reasoning-effort high    : for reasoning models (gated by --thinking flag)
   const grokArgs: string[] = [
     "-p",
-    fullPrompt,
+    fullPromptResult.value,
     "--allow",
     GROK_ALLOW_RULES,
     "--permission-mode",
@@ -337,11 +417,11 @@ function main(): number {
     grokArgs.push("--reasoning-effort", "high");
   }
 
-  // Determine output file path. For operator-explicit paths,
-  // mkdir the parent dir; for auto-generated paths, defaultOutputPath
-  // already did so. Operator-explicit paths use non-exclusive write
-  // (operator chose the path; may want to overwrite); auto-generated
-  // paths use exclusive `wx` write per claude.ts pattern.
+  // Determine output file path. For operator-explicit paths, mkdir the
+  // parent dir; for auto-generated paths, defaultOutputPath already did
+  // so. Operator-explicit paths use truncate-write (operator's intent
+  // is respected); auto-generated paths use exclusive `wx` write per
+  // claude.ts pattern.
   const useExplicitPath = parsed.outputFile !== "";
   const outPath = useExplicitPath ? parsed.outputFile : defaultOutputPath();
   if (useExplicitPath) {
@@ -355,7 +435,11 @@ function main(): number {
     }
   }
 
-  // Spawn grok CLI
+  // Spawn grok CLI. GROK_CLI is a fixed literal ("grok"), not user
+  // input; the PATH-resolution is intentional (matches how every other
+  // peer-call wrapper invokes its external CLI). Suppression mirrors
+  // grok.ts cursor-agent spawn site.
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const r = spawnSync(GROK_CLI, grokArgs, {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
@@ -363,12 +447,12 @@ function main(): number {
   if (r.error) {
     process.stderr.write(
       `grok-build.ts: failed to spawn ${GROK_CLI}: ${r.error.message}\n` +
-        `(is the grok CLI installed + on PATH? install via 'curl ... | sh' from xAI per their docs)\n`,
+        `(is the grok CLI installed + on PATH? install per xAI's official Grok-Build docs at https://docs.x.ai/docs/grok-build)\n`,
     );
     return 1;
   }
   if (r.status !== 0) {
-    process.stderr.write(`grok-build.ts: grok exited ${r.status}\n`);
+    process.stderr.write(`grok-build.ts: grok exited ${String(r.status)}\n`);
     if (r.stderr) process.stderr.write(r.stderr);
     return 2;
   }
@@ -377,21 +461,11 @@ function main(): number {
 
   // Write full response to output file. Auto-generated paths use
   // exclusive `wx` create (mitigates symlink-overwrite); explicit
-  // operator paths use plain write (operator's intent is respected).
+  // operator paths use plain truncate-write (operator's intent is
+  // respected).
   try {
     if (useExplicitPath) {
-      // Plain write for explicit operator path — operator can choose
-      // to overwrite. Use exclusive=false signal by calling
-      // writeOutputExclusive with a fallback isn't right; instead
-      // open with `w` + mode 0o600 directly here.
-      let fd: number | undefined;
-      try {
-        fd = openSync(outPath, "w", 0o600);
-        const buf = Buffer.from(response, "utf8");
-        writeSync(fd, buf, 0, buf.length, 0);
-      } finally {
-        if (fd !== undefined) closeSync(fd);
-      }
+      writeOutputTruncate(outPath, response);
     } else {
       writeOutputExclusive(outPath, response);
     }
@@ -408,7 +482,7 @@ function main(): number {
   if (response.length > INLINE_CAP) {
     process.stdout.write(response.slice(0, INLINE_CAP));
     process.stdout.write(
-      `\n\n[... response truncated inline; ${response.length - INLINE_CAP} bytes elided ...]\n`,
+      `\n\n[... response truncated inline; ${String(response.length - INLINE_CAP)} bytes elided ...]\n`,
     );
   } else {
     process.stdout.write(response);
@@ -420,4 +494,6 @@ function main(): number {
   return 0;
 }
 
-process.exit(main());
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
