@@ -32,6 +32,7 @@ tags: [iter-6, deploy-rs, gitops, ci-driven, auto-rollback, nixos, cluster-self-
 | Private-repo support | Hard (cluster needs auth) | Easy (CI has the auth) |
 
 deploy-rs is the right choice IF:
+
 - Repo becomes private (which is on the roadmap per the homelab-first decision)
 - Want auto-rollback on workload-health failure (not just rebuild-failure)
 - Want centralized control over per-node ordering (canary → fleet rollout)
@@ -96,6 +97,7 @@ Per-host activation health-check. Default: SSH heartbeat (deploy-rs's magic roll
 ### Sub-target 4 — SSH access from CI
 
 CI runner needs SSH access to cluster nodes. Two options:
+
 - WireGuard tunnel from runner into cluster network
 - Self-hosted runner inside the cluster network (preferred for private/airgapped clusters)
 

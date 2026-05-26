@@ -83,6 +83,7 @@ TS + Bun per Rule 0. Idempotent + dry-run-default + clear progress output. Compo
 #### Sub-target 3 — Cluster-state precondition checks
 
 Before kicking off:
+
 - All nodes report Ready
 - No PodDisruptionBudget violations expected
 - Backup of cluster state taken (etcd snapshot for control-plane; PV snapshots for stateful workloads)
@@ -93,6 +94,7 @@ If any precondition fails, abort with a clear operator-actionable message.
 #### Sub-target 4 — Post-upgrade verification
 
 After cluster-wide rollout:
+
 - All nodes back to Ready
 - All ArgoCD apps reach Healthy/Synced
 - Smoke-test workload (e.g., a known endpoint returns 200)

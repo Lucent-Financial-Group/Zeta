@@ -68,6 +68,7 @@ Add a section explaining that nodes self-update weekly + how to disable for one-
 ### Sub-target 4 — Test on canary node first
 
 PC1 is the canary. After landing this module change + rebuilding PC1, verify:
+
 - `systemctl status nixos-upgrade.timer` shows the timer is active
 - `journalctl -u nixos-upgrade.service` after first scheduled run shows clean execution
 
