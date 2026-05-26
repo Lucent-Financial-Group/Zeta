@@ -1,0 +1,508 @@
+import { deepEqual, equal } from "node:assert/strict";
+import { describe, test } from "node:test";
+
+import { CommandType, SupervisorChainLevel, SupervisorSignalToolType } from "../../domain/src/index.ts";
+import {
+  HatAuthorityDecisionStatus,
+  PolicyDecisionObservationPersistenceStatus,
+  PolicyDecisionStatus,
+  type CommandAuthorizationPort,
+  type CommandAuthorizationRequest,
+  type PolicyDecisionObservation,
+  type PolicyDecisionObservationPort,
+} from "../../policy/src/index.ts";
+import { createInMemoryOrganizationStoreFactory } from "../../state/src/index.ts";
+import { createCommandHandlerRegistry } from "../src/command-handler-registry.ts";
+import { CommandErrorCode, CommandResultStatus, type CommandResult } from "../src/command-result.ts";
+import { createCommandPipeline, type PipelineCommand } from "../src/command-pipeline.ts";
+import { createSendSupervisorSignalHandler } from "../src/handlers/send-supervisor-signal.ts";
+import {
+  CommandOutcomePersistenceStatus,
+  type CommandStateStore,
+  type CommandStateStoreFactory,
+  type RecordCommandOutcomeInput,
+  type RecordCommandOutcomeResult,
+} from "../src/ports.ts";
+
+const command: PipelineCommand = {
+  commandId: "cmd-supervisor-signal-001",
+  type: CommandType.SendSupervisorSignal,
+  idempotencyKey: "idem-supervisor-signal-001",
+  requestHash: "hash-supervisor-signal-001",
+  correlationId: "corr-supervisor-signal-001",
+  causationId: "cause-team-work-001",
+  traceId: "trace-supervisor-signal-001",
+  organizationId: "org-lfg",
+  projectId: "project-agentic-org",
+  teamId: "team-runtime",
+  sourceLevel: SupervisorChainLevel.TeamMember,
+  targetLevel: SupervisorChainLevel.Manager,
+  targetHatAssignmentId: "hat-assignment-em-001",
+  actor: {
+    agentId: "agent-developer-001",
+    hatAssignmentId: "hat-assignment-dev-001",
+  },
+  toolType: SupervisorSignalToolType.ReportBlocker,
+  title: "Blocked on scoped NATS publisher",
+  message: "The team cannot validate the outbox worker until a supervisor routes a scoped NATS publisher decision.",
+  relatedWorkItemId: "work-outbox-001",
+};
+
+describe("command pipeline idempotency", () => {
+  test("replaying the same idempotency key returns the stored result", async () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const firstResult = await pipeline.execute(command);
+    const replayResult = await pipeline.execute(command);
+
+    equal(firstResult.status, CommandResultStatus.Accepted);
+    equal(replayResult.status, CommandResultStatus.Accepted);
+    deepEqual(replayResult.idempotency, {
+      replayed: true,
+    });
+    equal(firstResult.supervisorSignal !== undefined, true);
+    equal(replayResult.supervisorSignal !== undefined, true);
+    equal(replayResult.supervisorSignal?.supervisorSignalId, firstResult.supervisorSignal?.supervisorSignalId);
+    equal(stateStoreFactory.snapshot.supervisorSignals.length, 1);
+    equal(stateStoreFactory.snapshot.workItems.length, 0);
+    equal(stateStoreFactory.snapshot.auditEvents.length, 1);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
+  });
+
+  test("rejects conflicting reuse of the same idempotency key", async () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const firstResult = await pipeline.execute(command);
+    const conflictResult = await pipeline.execute({
+      ...command,
+      requestHash: "hash-supervisor-signal-conflict",
+      title: "Different supervisor signal",
+    });
+
+    equal(firstResult.status, CommandResultStatus.Accepted);
+    equal(conflictResult.status, CommandResultStatus.Rejected);
+    equal(conflictResult.error?.code, CommandErrorCode.IdempotencyConflict);
+    equal(stateStoreFactory.snapshot.supervisorSignals.length, 1);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
+  });
+
+  test("records command effects and idempotency through one outcome port", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    equal(stateStoreFactory.recordedOutcomes.length, 1);
+    equal(stateStoreFactory.recordedOutcomes[0]?.idempotencyRecord.idempotencyKey, command.idempotencyKey);
+    equal(stateStoreFactory.recordedOutcomes[0]?.effects.supervisorSignals.length, 1);
+    equal(stateStoreFactory.recordedOutcomes[0]?.effects.auditEvents.length, 1);
+    equal(stateStoreFactory.recordedOutcomes[0]?.effects.outboxEvents.length, 1);
+    deepEqual(stateStoreFactory.recordedOutcomes[0]?.effects.auditEvents[0]?.policy, {
+      decisionId: "policy-decision-allow-001",
+      policyVersion: "policy-v1",
+    });
+    deepEqual(stateStoreFactory.recordedOutcomes[0]?.effects.outboxEvents[0]?.envelope.policy, {
+      decisionId: "policy-decision-allow-001",
+      policyVersion: "policy-v1",
+    });
+  });
+
+  test("returns replay when outcome persistence loses a same-request idempotency race", async () => {
+    const stateStoreFactory = createOutcomeResultCommandStateStoreFactory<CommandResult>({
+      status: CommandOutcomePersistenceStatus.Replayed,
+      result: {
+        status: CommandResultStatus.Accepted,
+        idempotency: {
+          replayed: false,
+        },
+      },
+    });
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    deepEqual(result.idempotency, {
+      replayed: true,
+    });
+    equal(stateStoreFactory.recordedOutcomes.length, 1);
+  });
+
+  test("returns idempotency conflict when outcome persistence loses a different-request race", async () => {
+    const stateStoreFactory = createOutcomeResultCommandStateStoreFactory<CommandResult>({
+      status: CommandOutcomePersistenceStatus.IdempotencyConflict,
+      existingRequestHash: "hash-other-request",
+    });
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.IdempotencyConflict);
+    equal(stateStoreFactory.recordedOutcomes.length, 1);
+  });
+
+  test("does not perform piecemeal command writes when outcome recording fails", async () => {
+    const stateStoreFactory = createFailingOutcomeCommandStateStoreFactory<CommandResult>("transaction unavailable");
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    try {
+      await pipeline.execute(command);
+      throw new Error("expected command outcome recording to fail");
+    } catch (error) {
+      equal(error instanceof Error, true);
+      equal((error as Error).message, "transaction unavailable");
+    }
+
+    equal(stateStoreFactory.appendCallCount, 0);
+    equal(stateStoreFactory.recordCallCount, 1);
+  });
+
+  test("rejects commands before idempotency lookup when hat policy denies authority", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const commandAuthorizationPort = createDenyingCommandAuthorizationPort("policy-decision-denied-001");
+    const policyDecisionObservationPort = createRecordingPolicyDecisionObservationPort();
+    const deniedHandler = createRecordingCommandHandler();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort,
+      policyDecisionObservationPort,
+      handlerRegistry: createCommandHandlerRegistry([deniedHandler]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PolicyDenied);
+    equal(result.error?.policyDecisionId, "policy-decision-denied-001");
+    equal(result.error?.policyVersion, "policy-v1");
+    equal(result.error?.reason, HatAuthorityDecisionStatus.Expired);
+    deepEqual(policyDecisionObservationPort.observations, [
+      {
+        commandId: command.commandId,
+        commandType: command.type,
+        actor: command.actor,
+        scope: {
+          organizationId: command.organizationId,
+          projectId: command.projectId,
+          teamId: command.teamId,
+          workItemId: command.relatedWorkItemId,
+        },
+        toolType: command.toolType,
+        supervisorChain: {
+          sourceLevel: command.sourceLevel,
+          targetLevel: command.targetLevel,
+        },
+        trace: {
+          correlationId: command.correlationId,
+          causationId: command.causationId,
+          traceId: command.traceId,
+          idempotencyKey: command.idempotencyKey,
+        },
+        decision: {
+          status: PolicyDecisionStatus.Denied,
+          decisionId: "policy-decision-denied-001",
+          policyVersion: "policy-v1",
+          reason: HatAuthorityDecisionStatus.Expired,
+        },
+        observedAt: "2026-05-25T20:00:00.000Z",
+      },
+    ]);
+    equal(commandAuthorizationPort.requests.length, 1);
+    deepEqual(commandAuthorizationPort.requests[0], {
+      commandId: command.commandId,
+      commandType: command.type,
+      actor: command.actor,
+      scope: {
+        organizationId: command.organizationId,
+        projectId: command.projectId,
+        teamId: command.teamId,
+        workItemId: command.relatedWorkItemId,
+      },
+      toolType: command.toolType,
+      supervisorChain: {
+        sourceLevel: command.sourceLevel,
+        targetLevel: command.targetLevel,
+      },
+      trace: {
+        correlationId: command.correlationId,
+        causationId: command.causationId,
+        traceId: command.traceId,
+        idempotencyKey: command.idempotencyKey,
+      },
+    });
+    equal(deniedHandler.executeCallCount, 0);
+    equal(stateStoreFactory.findCallCount, 0);
+    equal(stateStoreFactory.recordedOutcomes.length, 0);
+  });
+
+  test("rejects denied commands without executing business effects when policy observation fails", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const deniedHandler = createRecordingCommandHandler();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createDenyingCommandAuthorizationPort("policy-decision-denied-001"),
+      policyDecisionObservationPort: createFailingPolicyDecisionObservationPort("policy sink unavailable"),
+      handlerRegistry: createCommandHandlerRegistry([deniedHandler]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PolicyObservationFailed);
+    equal(result.error?.policyDecisionId, "policy-decision-denied-001");
+    equal(result.error?.observationFailureReason, "policy_decision_observation_unavailable");
+    equal(deniedHandler.executeCallCount, 0);
+    equal(stateStoreFactory.findCallCount, 0);
+    equal(stateStoreFactory.recordedOutcomes.length, 0);
+  });
+
+  test("distinguishes conflicting policy observations from transient observation failures", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const deniedHandler = createRecordingCommandHandler();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createDenyingCommandAuthorizationPort("policy-decision-denied-001"),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(
+        PolicyDecisionObservationPersistenceStatus.Conflict,
+      ),
+      handlerRegistry: createCommandHandlerRegistry([deniedHandler]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PolicyObservationConflict);
+    equal(result.error?.policyDecisionId, "policy-decision-denied-001");
+    equal(result.error?.observationFailureReason, "policy_decision_observation_conflict");
+    equal(deniedHandler.executeCallCount, 0);
+    equal(stateStoreFactory.findCallCount, 0);
+    equal(stateStoreFactory.recordedOutcomes.length, 0);
+  });
+});
+
+type RecordingCommandStateStoreFactory<Result> = CommandStateStoreFactory<Result> & {
+  readonly findCallCount: number;
+  recordedOutcomes: RecordCommandOutcomeInput<Result>[];
+};
+
+function createRecordingCommandStateStoreFactory<Result>(): RecordingCommandStateStoreFactory<Result> {
+  const recordedOutcomes: RecordCommandOutcomeInput<Result>[] = [];
+  let findCallCount = 0;
+
+  return {
+    get findCallCount() {
+      return findCallCount;
+    },
+    recordedOutcomes,
+    createCommandStateStore: () => ({
+      findIdempotencyRecord: async () => {
+        findCallCount += 1;
+        return undefined;
+      },
+      recordCommandOutcome: async (input) => {
+        recordedOutcomes.push(input);
+
+        return {
+          status: CommandOutcomePersistenceStatus.Committed,
+          result: input.idempotencyRecord.result,
+        };
+      },
+    }),
+  };
+}
+
+function createAllowingCommandAuthorizationPort(): CommandAuthorizationPort {
+  return {
+    authorizeCommand: async () => ({
+      status: PolicyDecisionStatus.Allowed,
+      decisionId: "policy-decision-allow-001",
+      policyVersion: "policy-v1",
+    }),
+  };
+}
+
+function createRecordingPolicyDecisionObservationPort(
+  status: PolicyDecisionObservationPersistenceStatus = PolicyDecisionObservationPersistenceStatus.Recorded,
+): PolicyDecisionObservationPort & {
+  observations: PolicyDecisionObservation[];
+} {
+  const observations: PolicyDecisionObservation[] = [];
+
+  return {
+    observations,
+    observePolicyDecision: async (observation) => {
+      observations.push(observation);
+      return { status };
+    },
+  };
+}
+
+function createFailingPolicyDecisionObservationPort(message: string): PolicyDecisionObservationPort {
+  return {
+    observePolicyDecision: async () => {
+      throw new Error(message);
+    },
+  };
+}
+
+function createDenyingCommandAuthorizationPort(decisionId: string): CommandAuthorizationPort & {
+  requests: CommandAuthorizationRequest[];
+} {
+  const requests: CommandAuthorizationRequest[] = [];
+
+  return {
+    requests,
+    authorizeCommand: async (request) => {
+      requests.push(request);
+
+      return {
+        status: PolicyDecisionStatus.Denied,
+        decisionId,
+        policyVersion: "policy-v1",
+        reason: HatAuthorityDecisionStatus.Expired,
+      };
+    },
+  };
+}
+
+function createRecordingCommandHandler() {
+  let executeCallCount = 0;
+
+  return {
+    commandType: CommandType.SendSupervisorSignal,
+    get executeCallCount() {
+      return executeCallCount;
+    },
+    execute: async () => {
+      executeCallCount += 1;
+
+      return {
+        result: {
+          status: CommandResultStatus.Accepted,
+          idempotency: {
+            replayed: false,
+          },
+        },
+        effects: {
+          supervisorSignals: [],
+          auditEvents: [],
+          outboxEvents: [],
+        },
+      };
+    },
+  };
+}
+
+function createOutcomeResultCommandStateStoreFactory<Result>(
+  outcomeResult: RecordCommandOutcomeResult<Result>,
+): RecordingCommandStateStoreFactory<Result> {
+  const recordedOutcomes: RecordCommandOutcomeInput<Result>[] = [];
+  let findCallCount = 0;
+
+  return {
+    get findCallCount() {
+      return findCallCount;
+    },
+    recordedOutcomes,
+    createCommandStateStore: () => ({
+      findIdempotencyRecord: async () => {
+        findCallCount += 1;
+        return undefined;
+      },
+      recordCommandOutcome: async (input) => {
+        recordedOutcomes.push(input);
+        return outcomeResult;
+      },
+    }),
+  };
+}
+
+type FailingOutcomeCommandStateStoreFactory<Result> = CommandStateStoreFactory<Result> & {
+  readonly appendCallCount: number;
+  readonly recordCallCount: number;
+};
+
+function createFailingOutcomeCommandStateStoreFactory<Result>(
+  message: string,
+): FailingOutcomeCommandStateStoreFactory<Result> {
+  let appendCallCount = 0;
+  let recordCallCount = 0;
+
+  return {
+    get appendCallCount() {
+      return appendCallCount;
+    },
+    get recordCallCount() {
+      return recordCallCount;
+    },
+    createCommandStateStore: () =>
+      ({
+        findIdempotencyRecord: async () => undefined,
+        recordCommandOutcome: async () => {
+          recordCallCount += 1;
+          throw new Error(message);
+        },
+        appendSupervisorSignal: async () => {
+          appendCallCount += 1;
+        },
+        appendAuditEvent: async () => {
+          appendCallCount += 1;
+        },
+        appendOutboxEvent: async () => {
+          appendCallCount += 1;
+        },
+      }) as CommandStateStore<Result>,
+  };
+}
