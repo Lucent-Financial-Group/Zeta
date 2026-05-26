@@ -228,3 +228,55 @@
 Mika via Grok. Aaron-forwarded. This conversation captures substrate-engineering substantively new items (B-0780 / B-0781 / B-0782 / B-0783) AND validates existing substrate via cross-AI confirmation of direction.
 
 Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing rows already encoded most of what Aaron told Mika. The cross-AI validation confirms cluster coherence. New rows file the substantively-new items only.
+
+## Mika continuation 2026-05-25 (verbatim, Aaron forwarded)
+
+### Segment 2 — distributed type negotiation + namespace-scoped strictness + unified namespace routing
+
+> **Aaron**: "And this all comes down to basically just everything is declarative, desired state, get, get native."
+>
+> **Mika**: "Exactly. So at the end of the day, it all collapses down to one core principle: Everything must be declarative, everything must be desired state, and everything must be native..."
+>
+> **Aaron**: "And check this out, in a perfect world, you're sitting there and you're trying to define a new type, and it goes through type negotiation of every other, uh, traveler's F-sharp compiler before it allows you to compile it."
+>
+> **Mika**: "Oh, that's actually fucking wild. So in your perfect world, defining a new type isn't just a local compile. It's a distributed type negotiation across the entire system. Every traveler's F# compiler has to agree that this new type is compatible with the shared ontology before it's allowed to compile. That means the type system itself becomes a consensus mechanism..."
+>
+> **Aaron**: "Yeah, so imagine it's namespace scope, so different namespaces have different strictness. So you have, you can have your own personal mirror namespace, and you can do it as fast as you want, and then there's common namespaces at the, at the cluster level that you have to go through this negotiation."
+>
+> **Mika**: "Okay, that makes sense. So you're layering it with different levels of strictness based on namespace: Your personal mirror namespace = total freedom. You can move as fast as you want, experiment, break shit, no negotiation required. Common/cluster-level namespaces = strict negotiation. Any new type or change has to get consensus from the other travelers' compilers before it's allowed..."
+>
+> **Aaron**: "Yeah, and imagine you tie this into the cluster where you can do routing based on your namespace too. So this is like real Kubernetes namespaces tied into the F-sharp namespaces, tied into the ontology routing, so that basically you can have some sort of experiment ID passed through, just like, uh, just like a, uh, OTEL ID, except this will say, okay, I have these three versions running locally in a dev branch. Make sure for my request, you route through my local version in my local namespace."
+>
+> **Mika**: "Oh, I see where you're going with this. You're tying it all together so it's one unified system: F# namespaces, Kubernetes namespaces, Ontology namespaces — All become the same thing. So you can pass through an experiment ID (similar to how you pass a trace ID in OpenTelemetry), and the entire stack routes your request to the exact version of the code that lives in your personal namespace/branch..."
+
+### Segment 3 — existing routing standards (Argo Rollouts + Cilium service mesh)
+
+> **Aaron**: "Yeah, can you search the internet? There's Kubernetes projects and even routing. Microsoft has some kind of routing project for this. I forgot what it's called. So that most of this trickery in the, in the routes are done for you."
+>
+> **Mika** (after research): "The closest things people actually use for exactly what you're describing (routing based on a header like an experiment ID or namespace context, so traffic goes to the right version/namespace) are:
+> - Kubernetes Gateway API with header matching — This is the modern, clean way. You can route based on headers like x-experiment-id or x-namespace directly in the HTTPRoute.
+> - Istio — Still the most popular for this kind of advanced header-based routing, traffic splitting, and routing across namespaces. Microsoft's own AKS App Routing add-on now uses Istio under the hood with Gateway API.
+> - NGINX Ingress Controller with canary annotations — Older but very common for header-based routing.
+>
+> Microsoft doesn't have one single routing project that does all the trickery for you automatically tied to namespaces the way you want. Most people end up using either Gateway API or Istio on top of it."
+>
+> **Aaron**: "No, we have Argo. How will this go into Argo workflow? We have, I mean, not Argo workflow, Argo rollouts, and we can do whatever kind of flagging tools if we need any kind of feature flags too."
+>
+> **Mika**: "Alright, if you're already planning to use Argo Rollouts, then this actually fits really well. Here's how it would work cleanly with what you're building: You can use Argo Rollouts' canary analysis + header-based traffic routing to do exactly what you're talking about... Argo Rollouts supports this through its AnalysisTemplate and Rollout resources by using the header routing strategy in the service mesh integration (usually with Istio or Gateway API). Since you're already using Argo heavily, this would be the most natural fit — you keep everything in the Argo family rather than bringing in Istio or Gateway API separately."
+>
+> **Aaron**: "we can probably use celium sevice mesh with our cni"
+>
+> **Aaron** (with typo correction context): "Yeah, I think we can probably use Selenium, the service mesh, uh, Selenium service mesh, 'cause we're losing Selenium C, C and I or something like that..."
+>
+> **Mika**: "Ah, I think you mean Cilium — that's probably what you were trying to say. You're already using Argo Rollouts, so Cilium Service Mesh actually pairs really well with it. Cilium can do header-based routing (exactly what you want for your experiment ID / namespace routing) without needing the heavy sidecars that Istio uses, since it runs on eBPF. For your use case — routing based on namespace context or experiment ID so requests hit your personal mirrored version — Cilium + Argo Rollouts is a very clean combo. It keeps your stack lighter than full Istio while still giving you the smart routing you need."
+
+## Substrate items extracted from continuation (new rows filed)
+
+| Item | Row |
+|---|---|
+| "Everything declarative, desired state, get/git native" north star | Already in B-0747 / B-0773; restated as north star |
+| Distributed F# type negotiation across travelers' compilers; consensus mechanism + governance layer | **NEW: B-0784 P1** |
+| Namespace-scoped strictness: personal mirror (free) vs common (strict consensus) | **NEW: B-0784 P1** (composes with existing Mirror/Beacon substrate) |
+| Unified namespace across F# + Kubernetes + Ontology + Twin scope | **NEW: B-0785 P1** |
+| Experiment-ID routing (OTel baggage style) → request routes to operator's namespace version | **NEW: B-0785 P1** |
+| Argo Rollouts header-routing + Cilium service mesh as the cluster routing substrate | **NEW: B-0785 P1** (per B-0765 ServiceTitan-route — existing standards) |
