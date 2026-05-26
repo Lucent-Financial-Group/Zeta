@@ -204,6 +204,53 @@ This recalibrates Sub-target 16's substrate decisions: per-generator visibility-
 
 **The substrate is composition-of-validated-substrate-at-cell-scope, not import-of-old-school-distributed-consensus**. Aaron's discipline: don't import frameworks; import patterns + compose at the right granularity for OUR substrate (cell = generator-function).
 
+**Recursive sharpening — the composition graph IS the row at the next level** (Aaron 2026-05-26):
+
+> *"or even better the generators join / composition graph is the row once you have enough previous raw generator rows"*
+
+The substrate is **self-similar at all row-scopes**:
+
+| Level | What's at this level | Composition-graph-as-row |
+|---|---|---|
+| 0 | Raw generator-functions (atomic cells) | n/a — leaf |
+| 1 | Composition-graphs joining raw generators | The composition-graph IS the level-1 row |
+| 2 | Composition-graphs joining level-1 rows (which ARE composition-graphs at level-1 scope) | The level-2 composition-graph IS the level-2 row |
+| N | Composition-graphs joining level-(N-1) rows | The level-N composition-graph IS the level-N row |
+
+**The recursion is fractal — same shape at every scope**:
+
+- Per-row CAS at level 0 = CAS on a single generator-function cell
+- Per-row CAS at level 1 = CAS on the entire composition-graph (which IS a row at level 1)
+- Per-row CAS at level N = CAS on the level-N composition-graph (which IS a row at level N)
+- Same CAS primitive at every level; same CASPaxos/CASRaft mechanism; just operates on different recursion levels
+
+**Composes with already-landed substrate**:
+
+| Substrate | How the recursive-row shape composes |
+|---|---|
+| Sub-target 14 base-dimension agnostic (0D/1D/2D/ND → project up) | EXACTLY the same recursive shape — each composition produces a row at the next dimension; each row IS available as input to the next level's composition |
+| B-0666 keystone (holographic substrate) | `I(D(x)) = x` operates at every level — composition-graph-as-row at level N IS the I(D(...)) projection from level N+1 |
+| Self-similar substrate cluster (existing Zeta substrate) | The recursion IS self-similar substrate at row-scope; same architectural pattern at every scale |
+| DV2.0 always-active scale-free discipline (per `.claude/rules/dv2-data-split-discipline-activated.md`) | Scale-free property holds — same shape at level 0, 1, 2, ..., N; no privileged level |
+| Sub-target 16 + 17 visibility/parameter posture | Each level can have its own posture; per-level cryptographic-noise; per-level parameter protection |
+
+**Operational consequence — massive compression at higher levels**:
+
+- A level-N composition-graph is a SMALL reference to lower-level rows
+- Lower-level rows are composition-graphs of even-lower-level rows (recursion)
+- All the way down to leaf raw-generator-functions
+- Transmission cost at level N = O(level-N composition-graph) = SMALL even when materialized substrate is GIGANTIC
+- Composes with Sub-target 9 bandwidth payoff (deferred execution at massive scale) — the recursion IS the deferred-execution shape at every scope
+
+**Substrate-engineering implication**:
+
+- Per-row-CAS is not "leaf-cell CAS" — it's "level-N composition-graph CAS"
+- CASPaxos/CASRaft compose at every level of the recursion
+- Operators choose per-level CAS-posture (some levels CAS-managed; some semilattice-managed; some hybrid)
+- The recursion makes the substrate genuinely scale-free at the substrate-engineering scope (not just at data-flow scope)
+
+This recursive sharpening completes the substrate's self-similar property — every level of the composition-graph hierarchy IS a substrate primitive at that level; substrate-engineering operations (CAS / visibility / parameter-protection / time-units / DI) apply uniformly at every level. The substrate has no privileged scope; the substrate IS the scope.
+
 **Human anchors** the substrate-engineering work can cite:
 
 | Person | Contribution | Lineage Zeta inherits |
