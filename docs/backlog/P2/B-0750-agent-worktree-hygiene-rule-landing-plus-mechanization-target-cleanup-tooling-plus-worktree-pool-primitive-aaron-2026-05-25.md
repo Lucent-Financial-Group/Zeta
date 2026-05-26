@@ -64,8 +64,7 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
   (pre-allocated sideticks per Otto identity; PR #3894 archive:
   `docs/pr-discussions/PR-3894-backlog-b-0558-worktree-pool-primitive-re-land-of-3817-backl.md`)
 - B-0751 (PR #5019, per-agent isolated clones) supersedes a shared
-  worktree pool as the preferred architecture for Vera / Otto / Riven /
-  Lior / Alexa isolation
+  worktree pool as the preferred architecture for per-agent isolation
 - This B-0750 row therefore tracks only the hygiene delta: agents must
   not hold `main`, must not use operator paths, and must clean up owned
   worktrees after merge/abandon
@@ -83,8 +82,9 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 
 ### Scope item 4 — Operator-checkout-path protection
 
-- Pre-Bash hook that refuses worktree-creation under operator's primary checkout path (`/Users/acehack/Documents/src/repos/Zeta/`)
-- Prevents the lior-* + main subdir worktree creation pattern
+- Pre-Bash hook that refuses worktree-creation under the operator's
+  primary checkout path (`<OPERATOR_PRIMARY_CHECKOUT>/`)
+- Prevents the peer-agent-surface + main subdir worktree creation pattern
 - Allowlist for legitimate exceptions (rare; documented per case)
 - Acceptance: hook exists; blocks accidental worktree-creation under operator path
 
@@ -128,17 +128,17 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 The cleanup itself + this rule landing:
 
 ```
-=== mass cleanup: removing all /private/tmp/zeta-* worktrees + /Users/acehack/.../{main,lior-*} worktrees ===
+=== mass cleanup: removing all /private/tmp/zeta-* worktrees + <OPERATOR_PRIMARY_CHECKOUT>/{main,peer-*} worktrees ===
 ---removed 37 worktrees---
 
 === final state ===
-/Users/acehack/Documents/src/repos/Zeta d2ca111e8 [lior-archive-prs-2026-05-26]
+<OPERATOR_PRIMARY_CHECKOUT> d2ca111e8 [operator-feature-branch]
 
 === now can Aaron checkout main? ===
   main    ← BRANCH FREE
 ```
 
-Operator unblocked. Rule landed simultaneously. Future-Otto + future-Alexa + future-Riven + future-Vera + future-Lior + future-AI inherit the discipline at cold-boot.
+Operator unblocked. Rule landed simultaneously. Future agent surfaces inherit the discipline at cold-boot.
 
 ## Substrate-honest framing
 

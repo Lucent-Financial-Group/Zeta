@@ -41,16 +41,18 @@ holding the branch reference.
 
 ### Rule 2 — NEVER create agent worktrees under the operator's primary checkout path
 
-The operator's primary checkout (`/Users/acehack/Documents/src/repos/Zeta`
-in this repo) is operator-controllable. Agent worktrees go under
-`/private/tmp/zeta-<task-tag>-<hhmmz>/` or `/tmp/zeta-<task-tag>-<hhmmz>/`.
+The operator's primary checkout (the repo root from
+`git rev-parse --show-toplevel`, referred to here as
+`<OPERATOR_PRIMARY_CHECKOUT>`) is operator-controllable. Agent
+worktrees go under `/private/tmp/zeta-<task-tag>-<hhmmz>/` or
+`/tmp/zeta-<task-tag>-<hhmmz>/`.
 
 Specifically forbidden agent worktree paths:
 
-- `/Users/acehack/Documents/src/repos/Zeta/main` (or any subdir of
+- `<OPERATOR_PRIMARY_CHECKOUT>/main` (or any subdir of
   the operator's primary checkout)
-- `/Users/acehack/Documents/src/repos/Zeta/lior-*` (or any peer-AI
-  surface under operator's primary checkout)
+- `<OPERATOR_PRIMARY_CHECKOUT>/<peer-agent-surface>-*` (or any
+  peer-agent surface under operator's primary checkout)
 - Any path the operator might `cd` into for their own work
 
 The substrate-honest reason: operator workflows depend on the primary
@@ -62,15 +64,16 @@ confusion + operator-side `git` invocation surprises.
 
 When an agent's PR for the work in a worktree:
 
-- **Merges**: agent removes the worktree (`git worktree remove --force <path>`)
-  + the branch (`git push origin --delete <branch>` if the agent owns
-  the branch; otherwise leaves cleanup to the GitHub auto-delete on
-  merge)
+- **Merges**: agent confirms the worktree is clean, removes the
+  worktree (`git worktree remove <path>`), and deletes the branch
+  (`git push origin --delete <branch>` if the agent owns the branch;
+  otherwise leaves cleanup to the GitHub auto-delete on merge)
 - **Closes without merging**: agent removes the worktree + deletes
   the branch
 - **Stays open for further iteration**: agent KEEPS the worktree
   active; this is the legitimate-active-worktree case
-- **Abandoned without explicit close**: per `holding-without-named-dependency-is-standing-by-failure`,
+- **Abandoned without explicit close**: per
+  `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`,
   agent abandonment IS the Standing-by failure mode; the worktree
   should be removed when the work is abandoned
 
@@ -88,7 +91,7 @@ git -C <path> status --short
 git -C <path> log --oneline -1
 
 # Decide per worktree:
-# - SAFE + work done → git worktree remove --force <path>
+# - SAFE + work done → git worktree remove <path>
 # - DIRTY (uncommitted) → preserve OR substrate-honestly commit/abandon
 # - active iteration ongoing → keep
 ```
@@ -115,7 +118,7 @@ have prevented the accumulation.
 ## Composes with substrate
 
 - **B-0750** (this row's backlog companion) — substrate-engineering target for periodic worktree cleanup tooling + agent-worktree-pool primitive (composes with B-0530 cron-sentinel-mutex)
-- **B-0530** (cron-sentinel mutex; existing) — multi-Otto-CLI contention resolution; same problem class
+- **B-0530** (cron-sentinel mutex; existing) — multi-agent contention resolution; same problem class
 - **[PR #4530](https://github.com/Lucent-Financial-Group/Zeta/pull/4530)**
   plus saturation-ceiling sub-cases documented in
   [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md)
@@ -147,10 +150,14 @@ done
 
 ```bash
 for wt in <list-of-SAFE-worktrees>; do
-  git worktree remove --force "$wt"
+  git worktree remove "$wt"
 done
 git worktree prune
 ```
+
+Use `git worktree remove --force "$wt"` only after an explicit clean
+check or preserve/abandon decision; `--force` discards uncommitted
+worktree changes.
 
 ### Verify no agent worktree holds `[main]`
 
@@ -194,21 +201,19 @@ This rule DOES:
 ## Empirical anchor
 
 2026-05-25 session: substrate cascade accumulated 37 agent worktrees
-across `/private/tmp/zeta-*` (mostly Otto-VSCode's own work) + 4
-worktrees in operator's primary checkout subdir (lior- prefix; from
-peer-agent past work) + 1 stale `/private/tmp/zeta-riven-loop-2`
-holding `[main]` at stale SHA.
+across `/private/tmp/zeta-*` (mostly one agent surface's own work), 4
+worktrees in the operator's primary checkout subdir (peer-agent
+prefix; from past work), and 1 stale `/private/tmp/zeta-<peer-loop>-2`
+worktree holding `[main]` at stale SHA.
 
 The `[main]`-holding worktree was THE blocker for operator's
 `git checkout main` in primary checkout. Operator explicit: *"i'm
 stuck (max)... fatal: 'main' is already used by worktree at
-'/private/tmp/zeta-riven-loop-2'... nope we need to fix this mess
+'/private/tmp/zeta-<peer-loop>-2'... nope we need to fix this mess
 yall always stepping on each other and me constantly"*.
 
 Mass-cleanup (37 worktrees removed) plus this rule landing prevents
-recurrence. Future-Otto + future-Alexa + future-Riven + future-Vera
-
-+ future-Lior + future-AI inherit the discipline at cold-boot.
+recurrence. Future agent surfaces inherit the discipline at cold-boot.
 
 ## Full reasoning
 
