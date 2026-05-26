@@ -73,36 +73,57 @@ export function createCockroachEventIngestionStore(
     recordEventProcessingOutcome: async (outcome) => {
       const receipt = outcome.receipt;
 
-      return await input.executor.executeTransaction(async (transaction) => {
-        const claimResult = await transaction.execute<CockroachReceiptClaimRow>({
-          name: CockroachEventIngestionStoreStatement.ClaimPendingInboxReceipt,
-          sql: CockroachEventIngestionStoreSql.ClaimPendingInboxReceipt,
-          parameters: [receipt.eventId, receipt.consumerName, receipt.firstSeenAt, receipt.payloadHash],
-        });
-        const claimStatus = claimResult.rows[0]?.claim_status ?? EventIngestionOutcomeStatus.PayloadConflict;
+      try {
+        return await input.executor.executeTransaction(async (transaction) => {
+          const claimResult = await transaction.execute<CockroachReceiptClaimRow>({
+            name: CockroachEventIngestionStoreStatement.ClaimPendingInboxReceipt,
+            sql: CockroachEventIngestionStoreSql.ClaimPendingInboxReceipt,
+            parameters: [receipt.eventId, receipt.consumerName, receipt.firstSeenAt, receipt.payloadHash],
+          });
+          const claimStatus = claimResult.rows[0]?.claim_status ?? EventIngestionOutcomeStatus.PayloadConflict;
 
-        if (claimStatus !== EventIngestionOutcomeStatus.Processed) {
+          if (claimStatus !== EventIngestionOutcomeStatus.Processed) {
+            return {
+              status: claimStatus,
+              reactionPlans: [],
+            };
+          }
+
+          for (const reactionPlan of outcome.reactionPlans) {
+            await transaction.execute(createInsertReactionPlanStatement(reactionPlan));
+          }
+
+          const markResult = await transaction.execute<CockroachMarkedInboxReceiptRow>({
+            name: CockroachEventIngestionStoreStatement.MarkInboxReceiptProcessed,
+            sql: CockroachEventIngestionStoreSql.MarkInboxReceiptProcessed,
+            parameters: [
+              receipt.eventId,
+              receipt.consumerName,
+              outcome.processedAt,
+              outcome.result,
+              receipt.payloadHash,
+            ],
+          });
+
+          if (markResult.rows.length !== 1) {
+            throw new CockroachInboxReceiptCompletionLostError();
+          }
+
           return {
-            status: claimStatus,
+            status: outcome.result,
+            reactionPlans: outcome.reactionPlans,
+          };
+        });
+      } catch (error) {
+        if (error instanceof CockroachInboxReceiptCompletionLostError) {
+          return {
+            status: EventIngestionOutcomeStatus.Duplicate,
             reactionPlans: [],
           };
         }
 
-        for (const reactionPlan of outcome.reactionPlans) {
-          await transaction.execute(createInsertReactionPlanStatement(reactionPlan));
-        }
-
-        await transaction.execute({
-          name: CockroachEventIngestionStoreStatement.MarkInboxReceiptProcessed,
-          sql: CockroachEventIngestionStoreSql.MarkInboxReceiptProcessed,
-          parameters: [receipt.eventId, receipt.consumerName, outcome.processedAt, outcome.result, receipt.payloadHash],
-        });
-
-        return {
-          status: outcome.result,
-          reactionPlans: outcome.reactionPlans,
-        };
-      });
+        throw error;
+      }
     },
   };
 }
@@ -137,6 +158,16 @@ type InboxReceiptRow = {
 type CockroachReceiptClaimRow = {
   claim_status: EventIngestionOutcomeStatus;
 };
+
+type CockroachMarkedInboxReceiptRow = {
+  event_id: string;
+};
+
+class CockroachInboxReceiptCompletionLostError extends Error {
+  constructor() {
+    super("inbox receipt completion lost its claim");
+  }
+}
 
 const CockroachEventIngestionStoreSql = {
   FindInboxReceipt: `
@@ -198,6 +229,7 @@ const CockroachEventIngestionStoreSql = {
       AND payload_hash = $5
       AND processed_at IS NULL
       AND result IS NULL
+    RETURNING event_id
   `,
 } as const;
 

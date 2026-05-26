@@ -156,7 +156,10 @@ Hermes runs, MCP calls, and UI evidence.
   the traceable event boundary into the runtime ingestion processor,
   acknowledges processed and duplicate messages, terminates and
   dead-letters invalid envelopes or payload conflicts, and
-  negative-acknowledges transient ingestion failures.
+  negative-acknowledges transient ingestion failures. If dead-letter
+  publication or source-message termination fails, it records the
+  failure, negative-acknowledges the source message, and continues the
+  batch.
 - The event ingestion processor accepts decoded canonical envelopes,
   dedupes them by event ID plus consumer name, evaluates automation
   rules once, rejects same-event payload hash conflicts, and persists
@@ -186,6 +189,11 @@ Hermes runs, MCP calls, and UI evidence.
   before inserting reaction plans. If the claim reports duplicate or
   payload conflict, the adapter returns that generic outcome without
   inserting reaction plans.
+- The Cockroach event-ingestion adapter also requires the final
+  processed-receipt update to return the claimed receipt. If that
+  completion check fails after reaction plans were prepared, the
+  transaction rolls back and the adapter returns a generic duplicate
+  outcome.
 - Governance now checks that runtime code, like application code, cannot
   import vendor adapters or vendor clients directly. Vendor packages must
   implement generic Organization ports consumed by application/runtime

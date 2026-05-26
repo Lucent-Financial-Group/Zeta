@@ -557,6 +557,13 @@ already completed the receipt, the adapter returns a duplicate outcome
 through the generic `EventIngestionStore` result without inserting
 reaction plans.
 
+The processed marker must also prove the claim was still held by
+returning the marked receipt. If the final mark no longer matches a
+pending receipt after reaction plans were prepared, the adapter must
+abort the transaction so those reaction plans roll back, then return a
+generic duplicate outcome. Runtime code must not receive Cockroach
+update-count details or transaction objects.
+
 A worker host composes that ingestion processor with the outbox
 publisher but stays below the NestJS process layer. This creates a
 testable boundary where replayable inbound sources and live transport
@@ -571,9 +578,12 @@ decodes canonical JSON envelopes and calls the runtime ingestion
 processor, but it owns JetStream-style decisions: ack processed and
 duplicate messages, terminate plus dead-letter invalid envelopes and
 payload conflicts, and negative-acknowledge transient ingestion
-failures. This keeps runtime rules deterministic and transport-neutral
-while still making live NATS behavior testable before a Nest worker
-process exists.
+failures. If dead-letter publishing or source-message termination
+fails, it records the failure, negative-acknowledges the source message
+for retry, and continues the fetched batch so one broken DLQ path cannot
+starve unrelated messages. This keeps runtime rules deterministic and
+transport-neutral while still making live NATS behavior testable before
+a Nest worker process exists.
 
 ### Stream and Consumer Manifests
 

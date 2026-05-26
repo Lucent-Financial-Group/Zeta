@@ -125,6 +125,66 @@ describe("NATS JetStream event consumer", () => {
     ]);
   });
 
+  test("negative-acknowledges invalid payloads when dead-letter publishing fails", async () => {
+    const invalidMessage = createRecordingInboundMessage({
+      payload: "{not-json",
+    });
+    const validMessage = createRecordingInboundMessage({
+      payload: JSON.stringify(createEnvelope()),
+    });
+    const eventIngestionProcessor = createRecordingEventIngestionProcessor(EventIngestionOutcomeStatus.Processed);
+    const consumer = createNatsJetStreamEventConsumer({
+      pullConsumer: createRecordingPullConsumer([invalidMessage, validMessage]),
+      eventIngestionProcessor,
+      deadLetterPublisher: createFailingDeadLetterPublisher("dlq unavailable"),
+    });
+
+    const result = await consumer.processNextBatch({
+      batchSize: 10,
+    });
+
+    deepEqual(invalidMessage.ackActions, [NatsInboundMessageAckAction.NegativeAcknowledge]);
+    deepEqual(validMessage.ackActions, [NatsInboundMessageAckAction.Acknowledge]);
+    deepEqual(eventIngestionProcessor.eventIds, ["evt-nats-001"]);
+    equal(result.receivedCount, 2);
+    equal(result.invalidCount, 1);
+    equal(result.processedCount, 1);
+    equal(result.failedCount, 1);
+    equal(result.deadLetteredCount, 0);
+    equal(result.terminatedCount, 0);
+    equal(result.negativeAcknowledgedCount, 1);
+    equal(result.acknowledgedCount, 1);
+  });
+
+  test("negative-acknowledges payload conflicts when message termination fails", async () => {
+    const envelope = createEnvelope();
+    const message = createRecordingInboundMessage({
+      payload: JSON.stringify(envelope),
+      failTerminate: true,
+    });
+    const deadLetterPublisher = createRecordingDeadLetterPublisher();
+    const consumer = createNatsJetStreamEventConsumer({
+      pullConsumer: createRecordingPullConsumer([message]),
+      eventIngestionProcessor: createRecordingEventIngestionProcessor(EventIngestionOutcomeStatus.PayloadConflict),
+      deadLetterPublisher,
+    });
+
+    const result = await consumer.processNextBatch({
+      batchSize: 10,
+    });
+
+    deepEqual(message.ackActions, [
+      NatsInboundMessageAckAction.Terminate,
+      NatsInboundMessageAckAction.NegativeAcknowledge,
+    ]);
+    equal(result.payloadConflictCount, 1);
+    equal(result.failedCount, 1);
+    equal(result.deadLetteredCount, 1);
+    equal(result.terminatedCount, 0);
+    equal(result.negativeAcknowledgedCount, 1);
+    equal(deadLetterPublisher.messages.length, 1);
+  });
+
   test("negative-acknowledges transient ingestion failures", async () => {
     const message = createRecordingInboundMessage({
       payload: JSON.stringify(createEnvelope()),
@@ -177,7 +237,10 @@ function createEnvelope(): AgenticEventEnvelope {
   });
 }
 
-function createRecordingInboundMessage(input: { payload: string }): NatsJetStreamInboundMessage & {
+function createRecordingInboundMessage(input: {
+  payload: string;
+  failTerminate?: boolean;
+}): NatsJetStreamInboundMessage & {
   ackActions: NatsInboundMessageAckAction[];
 } {
   const ackActions: NatsInboundMessageAckAction[] = [];
@@ -197,6 +260,10 @@ function createRecordingInboundMessage(input: { payload: string }): NatsJetStrea
     },
     terminate: async () => {
       ackActions.push(NatsInboundMessageAckAction.Terminate);
+
+      if (input.failTerminate === true) {
+        throw new Error("terminate unavailable");
+      }
     },
   };
 }
@@ -285,6 +352,16 @@ function createRecordingDeadLetterPublisher(): {
     messages,
     publish: async (input) => {
       messages.push(input);
+    },
+  };
+}
+
+function createFailingDeadLetterPublisher(message: string): {
+  publish: () => Promise<void>;
+} {
+  return {
+    publish: async () => {
+      throw new Error(message);
     },
   };
 }

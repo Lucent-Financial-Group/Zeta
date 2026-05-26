@@ -246,6 +246,16 @@ and a concrete event-publisher adapter.
 - **AND** the runtime rule processor does not know about NATS ack, nack,
   termination, backoff, or DLQ mechanics
 
+#### Scenario: NATS adapter falls back when dead-letter handling fails
+
+- **WHEN** the NATS JetStream consumer adapter receives an invalid
+  envelope or payload-conflict result
+- **AND** publishing to the dead-letter port or terminating the source
+  message fails
+- **THEN** the adapter records the failure and negative-acknowledges the
+  source message for retry
+- **AND** later messages in the fetched batch can still be processed
+
 ### Requirement: Inbound events are deduped before automation
 
 Organization event consumers MUST record inbox receipts before
@@ -303,7 +313,9 @@ executing privileged work directly.
 - **WHEN** a durable event-ingestion adapter records an event-processing
   outcome
 - **THEN** the inbox receipt, generated reaction plans, and processed
-  marker are submitted as one transaction batch
+  marker are submitted inside one transaction boundary
+- **AND** the processed marker must return the claimed receipt before the
+  adapter reports the outcome as processed
 - **AND** runtime rule processors do not receive database transaction
   objects
 
@@ -315,6 +327,16 @@ executing privileged work directly.
   through the generic event-ingestion port
 - **AND** it does not insert reaction plans
 - **AND** it does not mark the completed receipt again
+
+#### Scenario: Durable event-ingestion adapter loses completion race
+
+- **WHEN** a durable event-ingestion adapter claims a pending receipt but
+  the final processed marker no longer matches a pending receipt
+- **THEN** the adapter rolls back generated reaction plans
+- **AND** it returns a duplicate event-processing outcome through the
+  generic event-ingestion port
+- **AND** runtime code does not receive database transaction objects or
+  vendor-specific update-count errors
 
 #### Scenario: Durable command adapter uses one transaction boundary
 

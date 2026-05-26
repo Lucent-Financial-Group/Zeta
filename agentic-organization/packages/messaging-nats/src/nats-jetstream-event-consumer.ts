@@ -152,8 +152,10 @@ async function processMessage(input: ProcessMessageInput): Promise<void> {
     input.result.acknowledgedCount += 1;
   } catch {
     input.result.failedCount += 1;
-    await input.message.negativeAcknowledge();
-    input.result.negativeAcknowledgedCount += 1;
+    await negativeAcknowledgeFailedMessage({
+      message: input.message,
+      result: input.result,
+    });
   }
 }
 
@@ -165,15 +167,37 @@ type TerminateWithDeadLetterInput = {
 };
 
 async function terminateWithDeadLetter(input: TerminateWithDeadLetterInput): Promise<void> {
-  await input.deadLetterPublisher.publish({
-    sourceSubject: input.message.subject,
-    payload: input.message.payload,
-    headers: input.message.headers,
-    reason: input.reason,
-  });
-  input.result.deadLetteredCount += 1;
-  await input.message.terminate();
-  input.result.terminatedCount += 1;
+  try {
+    await input.deadLetterPublisher.publish({
+      sourceSubject: input.message.subject,
+      payload: input.message.payload,
+      headers: input.message.headers,
+      reason: input.reason,
+    });
+    input.result.deadLetteredCount += 1;
+    await input.message.terminate();
+    input.result.terminatedCount += 1;
+  } catch {
+    input.result.failedCount += 1;
+    await negativeAcknowledgeFailedMessage({
+      message: input.message,
+      result: input.result,
+    });
+  }
+}
+
+type NegativeAcknowledgeFailedMessageInput = {
+  message: NatsJetStreamInboundMessage;
+  result: NatsJetStreamConsumeBatchResult;
+};
+
+async function negativeAcknowledgeFailedMessage(input: NegativeAcknowledgeFailedMessageInput): Promise<void> {
+  try {
+    await input.message.negativeAcknowledge();
+    input.result.negativeAcknowledgedCount += 1;
+  } catch {
+    input.result.failedCount += 1;
+  }
 }
 
 function decodeCanonicalEventEnvelope(payload: string): AgenticEventEnvelope | undefined {
