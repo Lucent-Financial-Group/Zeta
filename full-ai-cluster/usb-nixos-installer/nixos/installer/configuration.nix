@@ -226,6 +226,17 @@
     wantedBy = [ "multi-user.target" ];
     after = [ "systemd-user-sessions.service" "NetworkManager.service" ];
     conflicts = [ "getty@tty1.service" ];
+    # B-0754 iteration-2 PATH fix: systemd services on NixOS get a
+    # minimal PATH by default; bare commands (clear, nmtui, ping,
+    # systemctl, etc.) failed with 'command not found' on first real-
+    # hardware run. Explicit PATH covers every tool the first-boot
+    # script + zeta-install reach for. TERM=linux so any tput-based
+    # tools (curses TUIs like nmtui) get a sane terminal capability
+    # database without the script having to set it per-invocation.
+    environment = {
+      PATH = "/run/current-system/sw/bin:/run/current-system/sw/sbin:/run/wrappers/bin";
+      TERM = "linux";
+    };
     serviceConfig = {
       Type = "idle";
       ExecStart = "/run/current-system/sw/bin/zeta-first-boot";
