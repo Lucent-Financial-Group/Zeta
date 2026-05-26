@@ -282,11 +282,11 @@ function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError 
   // Bootloader any-of check: at least one of the known bootloader paths
   // must exist. NixOS installer ISOs vary in which bootloader they ship
   // by channel (isolinux/refind today; could change in future channels);
-  // any-of keeps the audit forward-compatible.
-  const bootloaderHit = REQUIRED_BOOTLOADER_ANY.find(
-    (b) => entryByPath.has(b.path),
-  );
-  if (bootloaderHit === undefined) {
+  // any-of keeps the audit forward-compatible. Use `.some()` (boolean)
+  // rather than `.find()` (Copilot P0 on #5125: under noUnusedLocals
+  // the unused `bootloaderHit` const would fail tsc; .some avoids the
+  // unused-variable shape entirely).
+  if (!REQUIRED_BOOTLOADER_ANY.some((b) => entryByPath.has(b.path))) {
     failures.push({
       kind: "missing-path",
       path: REQUIRED_BOOTLOADER_ANY.map((b) => b.path).join(" | "),
