@@ -18,20 +18,20 @@ not a parallel substrate.
 
 The current `origin/main` cluster shape gives V0 these host primitives:
 
-| Cluster component                                           | V0 use                                                                                                       |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| K3S + ArgoCD App-of-Apps                                    | deploy Agentic Organization as a future `full-ai-cluster/k8s/applications/agentic-organization/` application |
-| Cilium + Hubble                                             | pod networking, L7 policy, flow observability, and service-mesh behavior without Istio                       |
-| cert-manager, Vault, SPIRE, Trust Manager, External Secrets | workload identity, TLS trust, and secret delivery                                                            |
-| CockroachDB                                                 | first durable SQL adapter for the authoritative Organization database boundary                               |
-| NATS JetStream                                              | event transport, outbox fanout, live UI updates, and replayable integration streams                          |
-| Temporal TS                                                 | durable workflows after the native command model is proven                                                   |
-| Dapr Actors                                                 | hot entity coordination after the DB-backed service contract is proven                                       |
-| Hindsight                                                   | Hermes memory backend, wrapped with Organization attribution and scope                                       |
-| Hermes                                                      | agent runtime that performs the work                                                                         |
-| OZ/OpenZiti                                                 | zero-trust transport, not the Organization business orchestrator                                             |
-| hat-system                                                  | Kubernetes hat enforcement/projection surface using Hat, HatBinding, HatSwap, and HatPolicy CRDs             |
-| Loki, Tempo, Alloy, Mimir, kube-prometheus-stack            | logs, traces, metrics, dashboards, and audit correlation                                                     |
+| Cluster component | V0 use |
+|---|---|
+| K3S + ArgoCD App-of-Apps | deploy Agentic Organization as a future `full-ai-cluster/k8s/applications/agentic-organization/` application |
+| Cilium + Hubble | pod networking, L7 policy, flow observability, and service-mesh behavior without Istio |
+| cert-manager, Vault, SPIRE, Trust Manager, External Secrets | workload identity, TLS trust, and secret delivery |
+| CockroachDB | authoritative Organization database |
+| NATS JetStream | event transport, outbox fanout, live UI updates, and replayable integration streams |
+| Temporal TS | durable workflows after the native command model is proven |
+| Dapr Actors | hot entity coordination after the DB-backed service contract is proven |
+| Hindsight | Hermes memory backend, wrapped with Organization attribution and scope |
+| Hermes | agent runtime that performs the work |
+| OZ/OpenZiti | zero-trust transport, not the Organization business orchestrator |
+| hat-system | Kubernetes hat enforcement/projection surface using Hat, HatBinding, HatSwap, and HatPolicy CRDs |
+| Loki, Tempo, Alloy, Mimir, kube-prometheus-stack | logs, traces, metrics, dashboards, and audit correlation |
 
 Sync-wave implication: Agentic Organization is a consumer app. It should
 land after the foundation, data planes, hat-system CRDs, Hindsight,
@@ -54,17 +54,16 @@ V0 does not need:
 - autonomous creation of new tools, workflows, or credential proxy
   endpoints.
 
-V0 should still model those future paths as supervisor-chain signals.
-Capability request inputs enter through that signal path and become
-specialized work only after supervisor triage.
+V0 should still model those future paths as capability requests, so the
+Organization can later build them through its own lifecycle.
 
 ## First Vertical Slice
 
 The first executable slice is:
 
 ```text
-supervisor-chain signal
-  -> anchored work item, discussion anchor, and context pack
+capability request
+  -> discussion anchor and context pack
   -> one readiness or review gate
   -> hat assignment
   -> scheduled prompt-flow run
@@ -89,15 +88,15 @@ This is the smallest useful loop because it proves:
 
 Keep the first hat set small:
 
-| Hat                 | V0 reason                                                                                         |
-| ------------------- | ------------------------------------------------------------------------------------------------- |
-| Director            | accepts or rejects escalated supervisor signals, including capability-request inputs for V0 scope |
-| Engineering Manager | grooms the work item, selects schedule, assigns implementer and reviewer hats                     |
-| Implementer         | executes the prompt flow and submits evidence                                                     |
-| Code Reviewer       | reviews the evidence and blocks self-approval                                                     |
-| Memory Curator      | reviews memory writes or flags memory gaps when the run ends                                      |
-| Platform Operator   | handles runtime failure, pod/session issues, and integration health                               |
-| Security Reviewer   | required only when the request needs a new credential or external tool scope                      |
+| Hat | V0 reason |
+|---|---|
+| Director | accepts or rejects the capability request for V0 scope |
+| Engineering Manager | grooms the work item, selects schedule, assigns implementer and reviewer hats |
+| Implementer | executes the prompt flow and submits evidence |
+| Code Reviewer | reviews the evidence and blocks self-approval |
+| Memory Curator | reviews memory writes or flags memory gaps when the run ends |
+| Platform Operator | handles runtime failure, pod/session issues, and integration health |
+| Security Reviewer | required only when the request needs a new credential or external tool scope |
 
 The Executive Board, TPM, Product Owner, Architect, QA Reviewer, Hat
 Designer, and department directors remain first-class in the reference
@@ -137,12 +136,10 @@ without it.
 
 ## Required V0 Flow
 
-1. `send_supervisor_signal` creates the chain communication record and
-   first audit/outbox events against an anchored work item and
-   discussion anchor. Capability request inputs enter through the same
-   V0 command path.
-2. `triage_supervisor_signal` selects the responsible project,
-   initiative, owner hat, lifecycle, and required gate.
+1. `submit_capability_request` creates the work item, discussion anchor,
+   and first audit/outbox events.
+2. `triage_capability_request` selects the responsible project,
+   initiative, owner hat, and required gate.
 3. `create_context_pack` links relevant docs, prior decisions, task
    graph nodes, memory references, and acceptance criteria.
 4. `decide_gate` moves the request into ready state or asks for more
@@ -196,7 +193,7 @@ the native service layer:
 ```text
 Temporal workflow or Dapr actor
   -> Organization command service
-  -> durable state transaction through the state adapter
+  -> CockroachDB transaction
   -> outbox event
   -> NATS publish
   -> trace, log, metric
@@ -234,8 +231,7 @@ request -> ready gate -> hat assignment -> prompt-flow run
 
 The demo must show:
 
-- durable state for the work item and assignment, backed by CockroachDB
-  in the first cluster adapter;
+- CockroachDB state for the work item and assignment;
 - NATS/outbox events for every transition;
 - a discussion anchor tied to the work item;
 - a hat token with expiry;

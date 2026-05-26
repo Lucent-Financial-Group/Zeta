@@ -2,28 +2,26 @@
 
 Carved sentence:
 
-> Nine TS wrapper entrypoints live in `tools/peer-call/`
+> Eight TS wrapper entrypoints live in `tools/peer-call/`
 > (plus three utility files). When asked about cross-harness
-> reviews / Claude / Grok / Grok-Build / Gemini / Codex / Kiro /
-> Amara / Ani / Riven — the cold-boot answer is YES + the
-> wrapper inventory listed in this rule. Do NOT reason from
+> reviews / Claude / Grok / Gemini / Codex / Kiro / Amara /
+> Ani / Riven — the cold-boot answer is YES + the wrapper
+> inventory listed in this rule. Do NOT reason from
 > training-data assumptions about what exists; do not infer
 > the wrapper count from a raw `ls`.
 
 ## Operational content
 
-Nine sibling TypeScript wrappers wired (invoke via
+Eight sibling TypeScript wrappers wired (invoke via
 `bun tools/peer-call/<name>.ts`):
 
 - `claude.ts` — Claude Code cold-boot self-test peer (B-0327;
   read-only `--tools "Read,Glob,Grep" --no-session-persistence`;
   `--model` selectable)
 - `grok.ts` — Grok-via-cursor-agent, critique role
-  (**B-0421 still references this wrapper as legacy** — cursor-agent
-  exit 1 / empty output; retained for back-compat; see PR #2941, #2945)
-- `grok-build.ts` — native Grok-Build CLI (`grok -p`), critique role
-  (B-0421 close path landed via PR #5110; supersedes cursor-agent
-  invocation while keeping `grok.ts` as the legacy reference)
+  (**B-0421 currently OPEN** — cursor-agent exit 1 / empty output;
+  Grok website-text-mode git connector is the working orientation
+  path until B-0421 resolves; see PR #2941, #2945)
 - `gemini.ts` — Gemini, propose role
 - `codex.ts` — Vera named-entity / OpenAI Codex, implementation
   peer with input-firewall + capture-pagination fix

@@ -171,18 +171,6 @@
 
         devShells.default = pkgs.mkShell {
           name = "zeta-ai-cluster-admin";
-          # Nix-managed admin tooling (k8s + age/sops + nix observability).
-          # Host-level dev-laptop tooling (bun, p7zip, etc.) is managed
-          # SEPARATELY via tools/setup/install.sh manifests at
-          # tools/setup/manifests/{brew,apt} — that's the canonical
-          # consumer-of-record per GOVERNANCE.md §24 (dev laptops, CI
-          # runners, devcontainer images). The nix devShell does NOT
-          # auto-run install.sh on entry: Copilot P0 on post-merge of
-          # #5120 flagged that auto-run has large host-side side effects
-          # (apt/brew installs, network fetches, possible sudo prompts)
-          # and breaks devShell expectations + reliably fails on NixOS
-          # hosts which don't have apt at all. Operators run install.sh
-          # manually when needed (rare; usually after pulling main).
           packages = with pkgs; [
             nix-output-monitor nvd nh
             kubectl kubernetes-helm k9s argocd
@@ -192,17 +180,6 @@
           ];
           shellHook = ''
             echo "zeta-ai-cluster admin shell."
-            # install.sh hint: only show on hosts where it actually works
-            # (macOS = brew path, Debian/Ubuntu = apt path). On NixOS it
-            # would error on apt-get, so we say nothing rather than point
-            # the operator at a broken path (Copilot post-merge on #5121).
-            if [ "$(uname -s)" = "Darwin" ]; then
-              echo "  Host setup (rare):    bash tools/setup/install.sh"
-            elif [ -r /etc/os-release ] && grep -qE '^ID(_LIKE)?=.*(debian|ubuntu)' /etc/os-release; then
-              echo "  Host setup (rare):    bash tools/setup/install.sh"
-            fi
-            # NixOS users: tooling comes via this devShell's nix-managed
-            # packages above; no install.sh equivalent needed.
             echo "  Build USB ISO:        nix build .#installer-iso"
             echo "  Build host system:    nixos-rebuild build --flake .#<host>"
             echo "  Talk to cluster:      kubectl / k9s / argocd / cilium / hubble"

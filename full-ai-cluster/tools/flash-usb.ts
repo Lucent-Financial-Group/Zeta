@@ -146,44 +146,18 @@ function assertSafeDevicePath(device: string): void {
 
 async function main() {
   const argv = process.argv.slice(2);
-  // Parse flags + positional ISO path. Supported flags allowlist:
-  //   --short   shorter `yes <4-hex>` challenge format (default: full
-  //             `accept-destroy <device> <8-hex>`). Used by the
-  //             `zflash` wrapper; safe to type by hand too.
-  //   -h/--help usage
-  //
-  // Allowlist (Copilot P0 catch): for a destructive tool, silently
-  // accepting unknown flags like `--dry-run` or a misspelled `--short`
-  // would proceed to sudo dd despite operator intent. Bail explicitly
-  // on any unrecognized flag.
-  const ALLOWED_FLAGS = new Set(["--short", "--no-eject", "-h", "--help"]);
-  const rawFlags = argv.filter((a) => a.startsWith("-"));
-  const positional = argv.filter((a) => !a.startsWith("-"));
-  const unknownFlags = rawFlags.filter((f) => !ALLOWED_FLAGS.has(f));
-  if (unknownFlags.length > 0) {
-    bail(
-      2,
-      `unknown flag(s): ${unknownFlags.join(", ")}\n` +
-        `Allowed flags: ${[...ALLOWED_FLAGS].join(", ")}\n` +
-        `Refusing to proceed — destructive tool requires exact flag match.`,
-    );
-  }
-  const flags = new Set(rawFlags);
-  const useShortChallenge = flags.has("--short");
-  const noEject = flags.has("--no-eject");
-  const isHelp = flags.has("-h") || flags.has("--help");
-  if (isHelp || positional.length !== 1) {
+  const firstArg = argv[0];
+  const isHelp = firstArg === "-h" || firstArg === "--help";
+  // Preserve original unified-check semantics: any of {wrong arg count,
+  // help-flag in any position} prints usage and exits — exit 0 ONLY
+  // when there's exactly one arg and it's a help flag.
+  if (argv.length !== 1 || isHelp) {
     process.stdout.write(
-      "Usage: bun full-ai-cluster/tools/flash-usb.ts [--short] [--no-eject] <path-to-iso>\n" +
-        "  --short      use shorter `yes <4-hex>` challenge format\n" +
-        "  --no-eject   leave the USB attached after dd (for downstream tooling\n" +
-        "               like zflash's iter-4.2 ESP-mount + pubkey-inject step;\n" +
-        "               downstream MUST eject itself when done)\n",
+      "Usage: bun full-ai-cluster/tools/flash-usb.ts <path-to-iso>\n",
     );
-    process.exit(isHelp && positional.length === 0 ? 0 : 2);
+    process.exit(argv.length === 1 && isHelp ? 0 : 2);
   }
-  const firstArg = positional[0];
-  if (firstArg === undefined) bail(2, "internal: positional length check passed but positional[0] is undefined");
+  if (firstArg === undefined) bail(2, "internal: argv length check passed but argv[0] is undefined");
   const isoPath: string = firstArg;
 
   // ── 1. Platform gate ───────────────────────────────────────
@@ -211,16 +185,7 @@ async function main() {
 
   // ── 3. Enumerate USB devices ───────────────────────────────
   const list = diskutilListPlist() as {
-    AllDisksAndPartitions: {
-      DeviceIdentifier: string;
-      Partitions?: {
-        DeviceIdentifier: string;
-        Content?: string;
-        Size?: number;
-        VolumeName?: string;
-      }[];
-      Content?: string;
-    }[];
+    AllDisksAndPartitions: { DeviceIdentifier: string }[];
   };
   const externalDevices = list.AllDisksAndPartitions.map(
     (d) => `/dev/${d.DeviceIdentifier}`,
@@ -300,86 +265,18 @@ async function main() {
   // rail (platform, ISO size, USB-protocol, internal check,
   // boot-disk check, size range) AND this explicit acceptance
   // gate to refuse on.
-  // Long form: 8-hex nonce + explicit accept-destroy + device path. Default;
-  //   strongest consent signature; ties consent to a specific device.
-  // Short form (--short): 4-hex nonce + `yes` prefix. ~14 keystrokes total
-  //   from `zflash` wrapper invocation. Same safety contract — nonce still
-  //   random per run (can't be pre-baked); `yes` still requires explicit
-  //   typed consent (not a stray Enter). Device path is implicit (the
-  //   sanity-rail block above already enforces single-USB; only one device
-  //   can be the target).
-  const nonceBytes = useShortChallenge ? 2 : 4;
-  const nonce = randomBytes(nonceBytes).toString("hex");
-  const acceptancePhrase = useShortChallenge
-    ? `yes ${nonce}`
-    : `accept-destroy ${device} ${nonce}`;
-
-  // Extra-detail fields (best-effort — diskutil may omit any of these
-  // depending on the USB controller; show "?" rather than fail).
-  const vendor = String(info.DeviceVendor ?? info.IORegistryEntryName ?? "?");
-  const serial = String(info.DeviceSerial ?? info.DeviceSerialNumber ?? "?");
-  const ioRegName = String(info.IORegistryEntryName ?? "?");
-  const partitionTable = String(info.Content ?? "?");
-  const writable =
-    info.WritableMedia === true || info.Writable === true ? "yes" : "no";
+  const nonce = randomBytes(4).toString("hex");
+  const acceptancePhrase = `accept-destroy ${device} ${nonce}`;
 
   process.stdout.write("\n");
   process.stdout.write("USB device identified:\n");
-  process.stdout.write(`  Device:      ${device}\n`);
-  process.stdout.write(`  Model:       ${model}\n`);
-  process.stdout.write(`  Vendor:      ${vendor}\n`);
-  process.stdout.write(`  IORegName:   ${ioRegName}\n`);
-  process.stdout.write(`  Serial:      ${serial}\n`);
-  process.stdout.write(`  Size:        ${human(size)}\n`);
-  process.stdout.write(`  Protocol:    ${info.BusProtocol}\n`);
-  process.stdout.write(`  Removable:   ${removable}\n`);
-  process.stdout.write(`  Writable:    ${writable}\n`);
-  process.stdout.write(`  Part. table: ${partitionTable}\n`);
-  process.stdout.write(`  Boot disk:   ${bootDisk}  (target is not boot disk)\n`);
+  process.stdout.write(`  Device:    ${device}\n`);
+  process.stdout.write(`  Model:     ${model}\n`);
+  process.stdout.write(`  Size:      ${human(size)}\n`);
+  process.stdout.write(`  Protocol:  ${info.BusProtocol}\n`);
+  process.stdout.write(`  Removable: ${removable}\n`);
+  process.stdout.write(`  Boot disk: ${bootDisk}  (target is not boot disk)\n`);
   process.stdout.write("\n");
-
-  // Show what's currently on the USB so the runner sees exactly what
-  // they're about to destroy BEFORE the consent prompt. Per-partition
-  // filesystem + volume name + used-space, pulled from diskutil info
-  // for each partition listed under the candidate device.
-  const candidateEntry = list.AllDisksAndPartitions.find(
-    (d) => `/dev/${d.DeviceIdentifier}` === device,
-  );
-  const partitions = candidateEntry?.Partitions ?? [];
-  process.stdout.write(`Currently on ${device} (will be DESTROYED):\n`);
-  if (partitions.length === 0) {
-    process.stdout.write(
-      `  (no partitions detected — raw / freshly-erased device)\n`,
-    );
-  } else {
-    for (const p of partitions) {
-      const partDev = `/dev/${p.DeviceIdentifier}`;
-      // Defense-in-depth: partition-device identifier comes from diskutil's
-      // own plist (trusted) but we still validate the path shape before
-      // feeding it to another diskutil invocation, matching the same
-      // discipline `assertSafeDevicePath` enforces on the whole-disk
-      // candidate. Partition paths have an additional 's<N>' suffix
-      // (e.g. /dev/disk6s1), so we use a partition-aware regex here.
-      if (!/^\/dev\/disk\d+s\d+$/.test(partDev)) {
-        bail(2, `unsafe partition path from diskutil: ${partDev}`);
-      }
-      const pInfo = diskutilInfo(partDev);
-      const pSize = Number(p.Size ?? pInfo.TotalSize ?? 0);
-      const pContent = String(p.Content ?? pInfo.Content ?? "?");
-      const pFs = String(pInfo.FilesystemName ?? pInfo.FilesystemUserVisibleName ?? "(none)");
-      const pVol = p.VolumeName ?? pInfo.VolumeName;
-      const pMount = String(pInfo.MountPoint ?? "");
-      const pUsedRaw = pInfo.VolumeUsedSpaceInBytes;
-      const pUsed = typeof pUsedRaw === "number" && pUsedRaw > 0 ? ` — ${human(pUsedRaw)} used` : "";
-      const label = pVol ? ` "${pVol}"` : "";
-      const mountStr = pMount ? ` mounted at ${pMount}` : "";
-      process.stdout.write(
-        `  ${partDev.padEnd(14)} ${pContent.padEnd(18)} ${human(pSize).padStart(10)}   ${pFs}${label}${mountStr}${pUsed}\n`,
-      );
-    }
-  }
-  process.stdout.write("\n");
-
   process.stdout.write(`*** ALL DATA ON ${device} WILL BE DESTROYED ***\n\n`);
   process.stdout.write(
     "By completing the confirmation prompt below, the runner\n" +
@@ -441,20 +338,14 @@ async function main() {
     bail(code, `dd exited ${code}; partial flash may be on device.`);
   }
 
-  if (noEject) {
+  process.stdout.write(`\nEjecting ${device} ...\n`);
+  try {
+    execFileSync("diskutil", ["eject", device], { stdio: "inherit" });
+  } catch {
     process.stdout.write(
-      `\n(--no-eject passed; ${device} remains attached for downstream tooling)\n`,
+      "(eject failed; that is fine — the flash succeeded. " +
+        "Unplug + replug to verify.)\n",
     );
-  } else {
-    process.stdout.write(`\nEjecting ${device} ...\n`);
-    try {
-      execFileSync("diskutil", ["eject", device], { stdio: "inherit" });
-    } catch {
-      process.stdout.write(
-        "(eject failed; that is fine — the flash succeeded. " +
-          "Unplug + replug to verify.)\n",
-      );
-    }
   }
 
   process.stdout.write("\nFlash complete.\n");
