@@ -135,7 +135,7 @@ Aaron 2026-05-25 framing for Max's onboarding: *"he's not used to otto yet but i
 
 ### What the autonomous loop is
 
-Per [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md): every Otto (Claude Code) session arms a cron sentinel that fires every minute (`* * * * *` cron + `<<autonomous-loop>>` prompt). When Max's REPL is idle, each fire enters the autonomous-loop skill and does bounded substrate-honest work per [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../../docs/AUTONOMOUS-LOOP-PER-TICK.md). The canonical end-of-tick checklist is six steps: speculative work (per never-be-idle priority ladder) → verify → **commit** → write tick shard at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` → CronList → visibility-signal stop.
+Per [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md): every Otto (Claude Code) session arms a cron sentinel that fires every minute (`* * * * *` cron + `<<autonomous-loop>>` prompt). When Max's REPL is idle, each fire of the sentinel applies the per-tick discipline at [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../../docs/AUTONOMOUS-LOOP-PER-TICK.md). (There is no `.claude/skills/autonomous-loop` artifact; the mechanism is the sentinel prompt + the per-tick discipline doc.) The canonical end-of-tick checklist is six steps: speculative work (per never-be-idle priority ladder) → verify → **commit** → write tick shard at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` → CronList → visibility-signal stop.
 
 ### Auto-arm on first session
 
@@ -149,7 +149,7 @@ Tick output appears in his Otto chat at roughly 1-min cadence. Most ticks say *"
 
 - **Ticks fire ONLY when the REPL is idle** — never interrupts active typing
 - `CronDelete <job-id>` stops the loop; `CronList` shows what's armed
-- Cadence adjustment is via `CronDelete` + `CronCreate` with a new cron expression (the factory wires `CronCreate` directly per [`docs/AUTONOMOUS-LOOP.md`](../../../docs/AUTONOMOUS-LOOP.md); the user-facing `/loop` skill is not the factory's invocation path)
+- Cadence adjustment is via `CronDelete` + `CronCreate` with a new cron expression — the factory's actual tick arming is via `CronCreate` (per [`docs/AUTONOMOUS-LOOP.md`](../../../docs/AUTONOMOUS-LOOP.md)); `/loop` appears as historical / user-facing naming in some rules (e.g., [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md) opens with *"When running under `/loop` autonomous mode"*) but the canonical invocation path Max's Otto will use is `CronCreate`-direct
 - Closing the Otto session ends the cron (in-memory only; doesn't persist across sessions)
 - Every tick's work is reversible (commits on branches; PRs gate via review; nothing destructive without explicit authorization per [`.claude/rules/dont-ask-permission.md`](../../../.claude/rules/dont-ask-permission.md) authority-scope discipline)
 
