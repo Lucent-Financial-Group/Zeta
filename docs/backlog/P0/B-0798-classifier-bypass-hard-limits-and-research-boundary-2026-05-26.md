@@ -1,7 +1,7 @@
 ---
 id: B-0798
 priority: P0
-status: open
+status: closed
 title: "Classifier-bypass hard-limits and research boundary for B-0720"
 created: 2026-05-26
 last_updated: 2026-05-26
