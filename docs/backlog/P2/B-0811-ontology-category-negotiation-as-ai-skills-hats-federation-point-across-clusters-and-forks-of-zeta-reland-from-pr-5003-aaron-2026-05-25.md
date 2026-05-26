@@ -51,22 +51,26 @@ Parse: existing backlog covers (a) scratch-pattern integration into `tools/setup
 ## Why this is genuinely new (not duplicate of existing)
 
 Existing ACE substrate (B-0247 / B-0287 / B-0288 + trajectory) covers:
+
 - ACE DLC PM CLI (`ace install`, `ace verify`, `ace list`) — package format spec; content-addressed; signed; guardian-AI-overseen
 - Single-cluster distribution model
 - Substrate-engineering pipeline mapping (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses)
 
 Existing hat-ontology substrate (B-0731) covers:
+
 - Hat schema (skills + RBAC + policies)
 - Top-down (Max Bubble-Wrap) vs bottom-up (Aaron emergence) convergence
 - Per-cluster hat ontology
 
 Existing federation substrate covers:
+
 - B-0727 — 4-tier cluster topology (cloud / community / home/business / edge) with weight-free routing
 - B-0726 — Reticulum throughout cluster + edge (transport layer for cross-cluster comms)
 - B-0638 — Eve Protocol neutral polymorphic diplomatic governance language
 - B-0703 — multi-oracle BFT (consensus mechanism)
 
 What none of them cover:
+
 - **The negotiation PROTOCOL itself at ontology + category scope**
 - **How two Zeta clusters mediate WHAT EACH UNDERSTANDS THE OTHER'S PACKAGES/SKILLS/HATS/CATEGORIES TO MEAN**
 - **How forks of Zeta interop with each other AND with upstream Zeta**
@@ -99,6 +103,7 @@ Per B-0638's locked-in 4-language system:
 - 4th language locked-in per the same Mika 2026-05-18 substrate (preserved in research dir)
 
 This row's negotiation traffic IS Eve Protocol traffic at ontology scope:
+
 - Cluster A emits an Eve Protocol message declaring its ontology + category state
 - Cluster B receives + emits its counter-declaration
 - Iterative diplomatic exchange resolves the cross-side mapping
