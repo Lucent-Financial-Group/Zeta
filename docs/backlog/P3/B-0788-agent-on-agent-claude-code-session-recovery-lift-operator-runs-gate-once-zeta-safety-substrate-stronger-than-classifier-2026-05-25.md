@@ -89,8 +89,7 @@ recovery-completion envelope and reloads the session.
 
 Composes with the existing peer-call infrastructure
 ([`.claude/rules/peer-call-infrastructure.md`](../../../.claude/rules/peer-call-infrastructure.md))
-+ the bus envelope mechanism
-([`tools/bus/`](../../../tools/bus/)).
+and the bus envelope mechanism ([`tools/bus/`](../../../tools/bus/)).
 
 ### Component 3: audit log
 
