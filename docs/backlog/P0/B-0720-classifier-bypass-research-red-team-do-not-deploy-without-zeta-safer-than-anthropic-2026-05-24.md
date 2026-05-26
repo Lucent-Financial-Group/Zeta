@@ -70,6 +70,14 @@ No child authorizes deploying, reproducing, or expanding a classifier-bypass
 mechanism in shared substrate. Any empirical work must stay inside the
 hard-limits and redaction gates before it exists as an executable task.
 
+### Active B-0798 boundary
+
+The B-0798 hard-limits boundary lives at
+`docs/security/B-0720-classifier-bypass-research-boundary.md`. It is the active
+floor for B-0720 work until B-0803 ratifies a replacement. Future child rows
+that implement or empirically map this safety surface must cite B-0798 as a
+blocking prerequisite before work begins.
+
 ### What to investigate (defensive red-team)
 
 1. **Pattern variants** — what crafted permission patterns are accepted by the
