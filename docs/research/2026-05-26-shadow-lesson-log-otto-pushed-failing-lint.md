@@ -1,9 +1,9 @@
 # Shadow Lesson Log: Otto Pushed Failing Lint Check
 
-**- Date:** 2026-05-26
-**- Subject:** Agent `otto-cli` submitted a PR with a basic CI failure.
-**- PR:** [#5032](https://github.com/Lucent-Financial-Group/Zeta/pull/5032)
-**- Drift Type:** Process Drift - Failure to Validate.
+- **Date:** 2026-05-26
+- **Subject:** Agent `otto-cli` submitted a PR with a basic CI failure.
+- **PR:** [#5032](https://github.com/Lucent-Financial-Group/Zeta/pull/5032)
+- **Drift Type:** Process Drift - Failure to Validate.
 
 ## 1. Observation
 
