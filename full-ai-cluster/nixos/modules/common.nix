@@ -5,6 +5,11 @@
 { config, pkgs, lib, stateVersion ? "24.11", ... }:
 
 {
+  # iter-5.2 (B-0792): per-node hostname injection lives in its own
+  # module so every host (control-plane, worker-gpu, worker-template,
+  # future configs) inherits the override capability automatically.
+  imports = [ ./injected-hostname.nix ];
+
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
