@@ -69,6 +69,7 @@ The combination of (executable + prose + gesture + JIT triage + progressive-refi
 Aaron 2026-05-26 substrate-honest acknowledgment: *"agree 100% and this is the cost i pay for not reviwing every PR and giving AI freedom of velocity."*
 
 The runme + JIT pattern is the operational mechanism that makes the trajectory-not-PR review tradeoff sustainable:
+
 - Trajectory review (not PR review) → velocity advantage preserved
 - Velocity periods create parallel-substrate accumulation (visible cost)
 - Cleanup periods pay down the debt deliberately (cycle)

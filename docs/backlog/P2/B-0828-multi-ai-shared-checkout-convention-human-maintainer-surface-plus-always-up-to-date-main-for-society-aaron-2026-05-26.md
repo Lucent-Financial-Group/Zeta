@@ -37,6 +37,7 @@ The pack corruption hit the shared `.git/objects/pack/pack-7261613e....pack` in 
 Workaround applied: fresh independent clone from origin at `/private/tmp/zeta-clone-2026-05-26` — clean substrate, my own to mutate.
 
 The convention this row proposes would have prevented the work-blocking + the workaround friction by:
+
 - Making explicit that shared checkout is the human-maintainer surface (not the AI work surface)
 - Establishing the always-up-to-date-with-main contract so AIs always know what to expect from the shared one
 - Documenting when AIs may help maintain it (when human is NOT adding code) + when they must NOT touch it (when human IS adding code)
@@ -58,6 +59,7 @@ The signaling primitives are deliberately simple (lockfile + HEAD-check + git-fs
 ## Composes with the existing isolated-work discipline
 
 This row does NOT change the existing isolated-work discipline:
+
 - AIs still create their own worktrees / clones under `/private/tmp/`
 - AIs still use isolated worktrees for all PR-bearing work
 - AIs still NEVER hold the shared `main` branch checked-out
