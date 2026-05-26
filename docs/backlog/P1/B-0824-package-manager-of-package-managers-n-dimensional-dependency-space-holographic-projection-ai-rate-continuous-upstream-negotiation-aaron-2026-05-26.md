@@ -18,7 +18,7 @@ composes_with:
   - B-0819
   - B-0820
   - B-0823
-tags: [ace-feature, meta-package-manager, n-dimensional-dependency-space, holographic-projection, self-similar-substrate, ai-rate-upstream-negotiation, continuous-negotiation, strategic-architecture, b0666-keystone-compose]
+tags: [ace-feature, meta-package-manager, n-dimensional-dependency-space, reverse-holographic-generators-not-reducers, rx-stream-joins, shadow-like-automata, self-similar-substrate, ai-rate-upstream-negotiation, continuous-negotiation, strategic-architecture, b0666-keystone-compose]
 ---
 
 ## Problem
@@ -30,7 +30,7 @@ The maintainer 2026-05-26 architectural drop after the diamond / namespace+cardi
 Three distinct architectural claims that compose into the Ace meta-PM substrate:
 
 1. **N-dimensional dependency space** — Maven is 2D (deps × versions); B-0822 named 4 properties (cardinality + namespace + multi-tenant + multi-use); the true substrate Ace operates over is N-dimensional. Each existing PM (Maven / npm / apt / brew / Helm / Cargo / etc.) is a 2D-PROJECTION of the higher-D reality. Ace operates on the full N-D space.
-2. **Holographic projection via self-similar substrate** — composes with [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) (English-as-projection / `I(D(x))=x` keystone). Each tool's 2D-projection is a "shadow" of the higher-dim dependency-space reality. Merging the shadows holographically reconstructs the higher-D view. Self-similarity (per the existing Zeta substrate cluster) provides the architectural mechanism for the projection-merge.
+2. **REVERSE-holographic generation via 2D-stream merges (Aaron 2026-05-26 sharpening — GENERATORS not REDUCERS)** — Aaron's correction: *"we are using holographic in reverse the shadow like automata that we build into larger dimensions we are projecting up via 2d stream merges over rx stream joins not projecting down. We are generators not reducers."* Composes with [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) (English-as-projection / `I(D(x))=x` keystone) but INVERTS the direction. Standard holography projects DOWN (3D reality → 2D shadow; reducer). Zeta's meta-PM substrate projects UP (2D streams from each PM → MERGE via Rx stream joins → higher-D view; generator). Each PM's 2D-shadow is a **shadow-like automaton**; merging shadow-automata BUILDS the higher-D automaton; the higher-D view didn't exist before the merge — the merge CREATES it. Self-similarity (per existing Zeta substrate cluster) holds at every scale: same generation pattern Ace-inside-Helm as Ace-across-PMs.
 3. **AI-rate continuous upstream negotiation** — no existing PM does this. Today's PMs are pull-based on operator cadence (operator runs `apt upgrade` / `helm upgrade` / etc. on their own schedule). Zeta's PM (Ace) does push-based + negotiate-fwd + absorb-fwd at AI cadence — agents actively negotiate with upstream sources AND downstream operators continuously.
 
 The strategic-positioning claim: Ace is the **"package manager of package managers"** — meta-PM operating across the full multi-PM dependency space, with holographic-shadow-projection architecture inherited from B-0666 keystone, with AI-rate active-negotiation as the behavioral layer.
@@ -70,24 +70,34 @@ Today's PMs each operate in their own 2D-projection. Ace meta-PM operates on the
 
 Ace meta-PM operates on the cross-product of these axes (and more as the substrate matures). The diamond-resolution policies from B-0822 are a 4-axis slice (cardinality × namespace × multi-tenant × multi-use). The substrate is N-D.
 
-### Sub-target 2 — Holographic projection model + per-PM shadow consumption
+### Sub-target 2 — REVERSE-holographic generation via Rx-stream-join shadow-automata merging (GENERATORS not REDUCERS)
 
-Each existing PM produces a 2D-shadow of its own slice of the N-D dependency-space:
+**Direction-of-projection is INVERTED from standard holography** (Aaron 2026-05-26 sharp correction):
 
-- npm's `package.json` shadow: deps × versions
-- Maven's POM shadow: deps × versions × `<scope>`
-- apt's `Packages` shadow: deps × versions × `Provides:` × `Conflicts:`
-- Helm's `Chart.yaml` shadow: deps × versions × subchart-inclusion
-- ArgoCD's `Application` shadow: source × destination × sync-policy
-- Flux's `Kustomization` shadow: source × `dependsOn` × `valuesFrom`
+| Direction | Mechanism | Role | Where this applies |
+|---|---|---|---|
+| **Standard (DOWN-projection)** | 3D reality → 2D shadow | REDUCER | Susskind / CFT / `D(x)` direction in B-0666 |
+| **REVERSE (UP-projection) — Ace meta-PM** | 2D shadows (PM streams) → MERGE via Rx-stream-joins → higher-D view | GENERATOR | THIS row's substrate |
 
-The holographic projection mechanism (per B-0666 keystone): Ace meta-PM consumes each shadow as a partial projection of the higher-dim reality. Merging the shadows reconstructs the N-D view. The mathematical machinery is the same as the holographic-shadow-factory substrate (B-0666 + Susskind unpacking research at `docs/research/2026-05-07-claudeai-holographic-shadow-factory-susskind-full-unpacking-aaron-forwarded.md`).
+Each existing PM produces a 2D-**shadow-like automaton** of its own slice of the N-D dependency-space:
+
+- npm's `package.json` shadow-automaton: deps × versions
+- Maven's POM shadow-automaton: deps × versions × `<scope>`
+- apt's `Packages` shadow-automaton: deps × versions × `Provides:` × `Conflicts:`
+- Helm's `Chart.yaml` shadow-automaton: deps × versions × subchart-inclusion
+- ArgoCD's `Application` shadow-automaton: source × destination × sync-policy
+- Flux's `Kustomization` shadow-automaton: source × `dependsOn` × `valuesFrom`
+
+**The generation mechanism (NOT projection-down; rather UP-projection)**: Ace meta-PM takes each PM's 2D-shadow-automaton stream + MERGES them via Rx-stream-join semantics + EMITS a higher-D automaton that didn't exist before the merge. The higher-D view IS THE OUTPUT of the merge, not a pre-existing reality being shadowed. Composes with [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) by INVERTING the `I(D(x))=x` direction at this row's scope — Ace operates the `I` (interpret / inflate) direction; existing PMs operate the `D` (decompose / shadow) direction; together they form a generator-reducer pair across the substrate.
+
+**Rx-stream-join concretely**: each PM's shadow stream emits dep-graph deltas over time (new chart version published; new CVE; new tenant onboarded; new microservice spawned). Ace subscribes to all per-PM streams + joins them on shared dimensions (chart-name, image-tag, cluster, tenant-id, etc.) + emits the merged higher-D stream as its output. Per-PM observers continue working in their 2D world; Ace builds the higher-D layer on top.
 
 Substrate-engineering implications:
 
-- Ace doesn't replace any existing PM; it CONSUMES each PM's shadow as input
-- The meta-PM's job is shadow-merge + cross-shadow validation + cross-shadow variable-passing (B-0821) + cross-shadow diamond-resolution (B-0822) at the N-D scope
-- Self-similar substrate (per existing Zeta cluster): the same architectural pattern at every scale — Ace inside one PM (e.g., Helm chart deps) IS the same shape as Ace across multiple PMs (Helm + npm + apt deps)
+- Ace doesn't replace any existing PM; it SUBSCRIBES to each PM's shadow-automaton stream as input
+- The meta-PM's job is **upward-generation**: merge shadow-automata via Rx-stream-joins + emit the higher-D dep-graph automaton; cross-shadow validation + cross-shadow variable-passing (B-0821) + cross-shadow diamond-resolution (B-0822) all operate on the GENERATED higher-D view, not on a pre-existing reality
+- Self-similar substrate (per existing Zeta cluster): the same UP-projection pattern at every scale — Ace inside one PM (Helm chart deps merged from per-chart shadow-automata) IS the same shape as Ace across multiple PMs (Helm + npm + apt + Maven shadow-automata merged into a single cluster-substrate view)
+- GENERATOR not REDUCER framing has downstream consequence: Ace is constructive (emits new substrate) not deconstructive (extracts from existing); the AI-rate negotiation (Sub-target 3) operates on the GENERATED higher-D view, pushing changes back DOWN into individual PMs as the negotiation resolves
 
 ### Sub-target 3 — AI-rate continuous upstream negotiation
 
