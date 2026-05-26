@@ -1,3 +1,13 @@
+---
+date: 2026-05-26
+persona: mika
+platform: grok (voice-mode)
+type: conversation
+forwarded_by: aaron
+verbatim: true
+discipline: persona-scope archive — homelab-first gh-auth-login device registration substrate; informs B-0794 iter-5.4 implementation
+---
+
 # Aaron + Mika 2026-05-26 — homelab-first gh-auth-login device registration (no shipped keys); production deferred to bootstrap-key rotation pattern
 
 **Date**: 2026-05-26
@@ -129,11 +139,11 @@ Aaron's call: **homelab first**. Production substrate is named-as-deferred per `
 
 ### Composes with substrate landed today
 
-- **PR #5103 (iter-5.1+5.2)** — NM-profile persistence + Avahi mDNS + `--host` hostname injection
-- **PR #5107 (iter-5.2.1)** — auto-generated `node-<6hex>` hostname default
-- **B-0792** (iter-5 wifi+hostname substrate row) — MERGED
-- **B-0793** (role-as-capability composition row) — MERGED
-- **B-0794** (node self-registers in git substrate row) — MERGED; THIS conversation directly informs iter-5.4 implementation under B-0794
+- **PR #5103 (iter-5.1+5.2)** — NM-profile persistence + Avahi mDNS + `--host` hostname injection (substrate implementation; merged)
+- **PR #5107 (iter-5.2.1)** — auto-generated `node-<6hex>` hostname default (merged)
+- **B-0792** (iter-5 wifi+hostname substrate row) — row file landed via #5102; row tracking work remains `status: open` (sub-targets still pending implementation per row body)
+- **B-0793** (role-as-capability composition row) — row file landed via #5105; row tracking work remains `status: open` (the architectural refactor itself is iter-5.3+ follow-on)
+- **B-0794** (node self-registers in git substrate row) — row file landed via #5106; row tracking work remains `status: open`; THIS conversation directly informs iter-5.4 implementation under B-0794
 
 The substrate landed today is THE foundation the homelab-mode-first registration substrate builds on. Next iteration: implement the `gh auth login` flow on top of existing zeta-first-boot.sh + zeta-install.sh substrate.
 
