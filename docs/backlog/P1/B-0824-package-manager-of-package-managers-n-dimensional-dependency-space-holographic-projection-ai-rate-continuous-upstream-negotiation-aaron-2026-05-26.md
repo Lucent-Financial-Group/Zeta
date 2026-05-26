@@ -102,7 +102,7 @@ Zeta's generate+join + CRDTs starts where Spark/RDD landed, with two architectur
 **Substrate-engineering implications for ALL Zeta software (not just meta-PM)**:
 
 1. **Every Zeta module ships its types FIRST** — operations derive per Meijer; rewriting effort is the type design, not the implementation
-2. **CRDT substrate is the default for any distributed component** — composes with `.claude/rules/crdt-expert` substrate; append-only is the framework's natural shape
+2. **CRDT substrate is the default for any distributed component** — composes with `.claude/skills/crdt-expert/SKILL.md` substrate (skill not rule per Copilot finding #5277); append-only is the framework's natural shape
 3. **Common operations vocabulary becomes a framework-level primitive set** — generate / join / fork / replay / merge are first-class across every Zeta system; engineers learn the vocabulary once
 4. **Composes with B-0666 keystone** — `I(D(x)) = x` IS the type signature; substrate operations are the implementation that falls out
 5. **Composes with B-0822 + 3-valued logic** — tri-boolean + monadic-escape ARE the type-system primitives that derive consistent operator behavior across the substrate
