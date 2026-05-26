@@ -530,6 +530,61 @@ This sub-target IS the deployment-substrate complement to Sub-target 7 (storage)
 
 All four compose into the full Ace meta-PM substrate.
 
+### Cluster-wide dependency injection of generator functions — applies at Ace AND Helm chart layers (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the architectural-paradigm composition:
+
+> *"This turn into cluster wide dependency injection of generator function and you can apply it to tools/helm too"*
+
+**The whole substrate IS distributed-DI** — generators are the injectable dependencies; composition graphs are the wiring; the shared-generative-base (Sub-target 11) IS the DI container distributed across cluster nodes; AI-rate negotiation manages the dependency-graph evolution.
+
+**DI prior-art that maps directly**:
+
+| DI framework | Mapping to Zeta meta-PM substrate |
+|---|---|
+| **Spring Framework** (Java IoC container; annotation-based) | Generator library = `@Bean` registry; composition graph = `@Autowired` wiring; Ace = ApplicationContext at cluster scope |
+| **Angular** (hierarchical injector tree) | Cluster-scope = root injector; per-tenant = child injector; per-microservice = leaf injector; generator scopes match injector hierarchy |
+| **.NET DI** (`IServiceCollection`; scoped/transient/singleton lifecycles) | Cardinality property (per [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md)) IS the lifecycle scope; cluster-singleton = Singleton; multi-tenant = Scoped; per-use = Transient |
+| **Dagger / Guice** (Java; compile-time DI) | Generator-graph type-check at composition time; cycle detection at compile-time per Sub-target 8 |
+| **F# composition root + reader monad** | Generator-combinator composition IS reader-monad pattern at SQL substrate; pure-function composition + injection-of-environment |
+| **Algebraic effects** (ZIO / Effect-TS / Polysemy) | NULL-as-monad (per prior section) IS the effect-escape primitive; tri-boolean logic IS the algebraic-effect propagation semantics |
+| **Apache Spark broadcast variables** | Generators = broadcast (read-only; shared across nodes); composition graph = task-specific data; same shape at compute-substrate scope |
+
+**Two-layer applicability — Ace AND Helm**:
+
+| Layer | DI pattern at this scope |
+|---|---|
+| **Ace meta-PM layer** | Cluster-wide DI of generators across distributed nodes; composition graphs flow at AI-rate per Sub-target 3 |
+| **Helm chart layer (tools/helm)** | Per-chart DI of generator-function inputs from upstream chart outputs (composes with [B-0821](B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md) variable-passing). Charts declare what generators they need; the meta-PM injects them via combinator-resolution. Cross-chart variable-passing (B-0821 Sub-target 2) IS DI-in-action at the K8s scope |
+
+**Substrate-engineering implications**:
+
+1. **Helm chart authoring becomes DI-first** — instead of operator manually populating `values.yaml` from upstream chart outputs (the current operational pain B-0821 addresses), charts declare `requires:` block of generator-functions; Ace resolves + injects at install-time
+2. **Per-environment / per-cluster scope is first-class** (composes with .NET DI Scoped lifecycle) — generators registered at cluster-scope serve all charts in the cluster; generators registered at namespace-scope serve only that namespace's charts; per-app generators serve only the consuming app
+3. **Diamond resolution (B-0822) becomes DI-container resolution** — when multiple charts request the same generator, the DI container resolves per the 4-property rules (cardinality / namespace / multi-tenant / multi-use)
+4. **AI-rate negotiation IS continuous DI graph evolution** — new generators register; old generators deprecate; the DI container's resolution graph adapts at AI-cadence
+5. **Composes with B-0819 AI-runbook substrate** — runbooks are DI compositions executed deferred; `deferred run / continue with` IS the lazy-DI-evaluation primitive
+6. **F# crystallization-friendly** (per `.claude/rules/zeta-ships-with-skills-immediate-value.md`) — F# has natural composition-root + reader-monad patterns; the DI paradigm at substrate scope maps cleanly to F# type-system primitives when the substrate matures
+
+**Sub-target 12 (new — cluster-wide DI substrate)**: distributed-DI implementation:
+
+1. Generator declaration syntax — Helm charts declare `requires:` block listing needed generator-functions (composes with B-0821 named-dependency-graph spec)
+2. Ace as cluster-wide DI container — resolves generator requests from the shared-generative-base (Sub-target 11); injects via composition graphs (Sub-target 8)
+3. Scope semantics — cluster / namespace / app / tenant / use scopes (composes with B-0822 4-property substrate)
+4. Diamond-resolution = DI container resolution rules
+5. AI-rate DI graph evolution — Ace's `negotiate` subcommand (per Sub-target 3) operates on the live DI graph
+6. F# reader-monad / composition-root patterns for the operator-facing authoring DSL (when F# crystallization arrives)
+
+The complete substrate stack is now 5-layer:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- **Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions; applies to both Ace meta-PM layer AND Helm chart layer)**
+
+The DI framing IS the operational paradigm under which the other 4 layers compose. Sub-target 12 IS the architectural-paradigm complement to Sub-targets 7-11.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
