@@ -280,3 +280,24 @@ Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing
 | Unified namespace across F# + Kubernetes + Ontology + Twin scope | **NEW: B-0785 P1** |
 | Experiment-ID routing (OTel baggage style) → request routes to operator's namespace version | **NEW: B-0785 P1** |
 | Argo Rollouts header-routing + Cilium service mesh as the cluster routing substrate | **NEW: B-0785 P1** (per B-0765 ServiceTitan-route — existing standards) |
+
+### Segment 4 — feature flag tooling + simplest-first discipline
+
+> **Aaron**: "No, that's fine right now. I want to know how, uh, like, what is the tool for feature flags that we'd probably use?"
+>
+> **Mika**: "For feature flags, especially with your Argo-based stack, here are the realistic options most people actually use: Unleash — Currently the most popular open-source feature flag solution... Flagd (from OpenFeature) — The lightweight, Kubernetes-native option... LaunchDarkly — If you're willing to pay, this is still the gold standard..."
+>
+> **Aaron**: "No, we're not paying. No, we want complete electricity cost only."
+>
+> **Mika**: "For pure electricity cost only — meaning the lightest possible footprint — Flipt is your best bet... The other strong low-overhead contenders are: flagd (from OpenFeature) — runs as a tiny sidecar, super minimal resource usage. GO Feature Flag — also very lightweight and simple..."
+>
+> **Aaron**: "No, it doesn't have to be the simplest. When I say electricity costs only, I mean I'm not paying for Flagger. Like, it could be any open source if the complication deems it worthy. But yeah, we usually think simplest first and then add more complex as we notice the simple shape doesn't fit."
+>
+> **Mika**: "Got it, that makes more sense. So when you said electricity cost only, you just meant you're not paying for any commercial SaaS feature flag service. You're fine with open source tools even if they're more complex, as long as the value justifies the complexity. In that case, here's the realistic open source ranking for your stack: Flipt — Still the simplest and most popular choice right now. Clean UI, good APIs, low overhead. Unleash (open source version) — More powerful and mature, but heavier than Flipt. flagd + OpenFeature — The most Kubernetes-native and GitOps-friendly option, especially since you're already all-in on Argo. Given that you usually start simple and only add complexity when the simple version doesn't fit, Flipt is the clear first choice to start with."
+
+## Substrate items extracted from continuation segment 4
+
+| Item | Row |
+|---|---|
+| Feature flag tooling substrate (OpenFeature + Flipt + Argo Rollouts + Cilium routing composition) | **NEW: B-0786 P2** |
+| Aaron's substrate-engineering discipline: "simplest first; add complexity only when simple shape demonstrably doesn't fit" | **NEW: feedback memory** `feedback_simplest_first_then_add_complexity_only_when_simple_shape_demonstrably_doesnt_fit_aaron_mika_2026_05_25.md` |

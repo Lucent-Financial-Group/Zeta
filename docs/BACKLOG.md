@@ -714,6 +714,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0779](backlog/P2/B-0779-ai-nas-convergence-tight-integration-of-shared-memory-ai-cpu-and-nas-storage-on-one-device-aaron-2026-05-25.md)** AI NAS convergence — tight integration of shared-memory AI CPU + NAS storage on one device (NAS-as-cluster-node)
 - [ ] **[B-0782](backlog/P2/B-0782-distributed-intelligent-organization-dio-per-company-on-distributed-intelligence-database-ceo-of-30-companies-scales-by-speaking-ontology-aaron-mika-2026-05-25.md)** Distributed Intelligent Organization (DIO) per company — each Zeta cluster is a DIO on distributed intelligence database; CEO scales by speaking ontology, not implementation
 - [ ] **[B-0783](backlog/P2/B-0783-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md)** Eliminate tool wars — sharpening of B-0759 persona — NOT "humans do less" but "humans refocus intention to what really matters
+- [ ] **[B-0786](backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md)** Feature flags substrate — OpenFeature as operator contract; Flipt as simplest first backend; composes with Argo Rollouts experiment-routing (B-0785)
 
 ## P3 — convenience / deferred
 
