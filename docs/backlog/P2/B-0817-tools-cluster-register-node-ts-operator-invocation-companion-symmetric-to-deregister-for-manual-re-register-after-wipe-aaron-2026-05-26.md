@@ -20,7 +20,7 @@ tags: [cluster-tooling, register, operator-invocation, gh-auth, ts-rule-0-compli
 
 ## Problem
 
-Today's iter-5.4 substrate has the AUTO path (node self-registers via systemd service at install-time per B-0812 iter-5.4.1) and the MANUAL DEREGISTER path ([B-0814](B-0814-tools-cluster-deregister-node-ts-removes-registered-machine-from-git-sibling-to-iter-5-4-1-self-registration-aaron-2026-05-26.md) `tools/cluster/deregister-node.ts`). Missing: the MANUAL REGISTER path.
+Today's iter-5.4 substrate has the AUTO path (node self-registers via systemd service at install-time per B-0812 iter-5.4.1) and the MANUAL DEREGISTER path ([B-0814](../P1/B-0814-tools-cluster-deregister-node-ts-removes-registered-machine-from-git-sibling-to-iter-5-4-1-self-registration-aaron-2026-05-26.md) `tools/cluster/deregister-node.ts`). Missing: the MANUAL REGISTER path.
 
 Operator-invocation manual register is useful for:
 
@@ -56,31 +56,42 @@ Two operational modes:
 
 ### Sub-target 1 — argument parsing + operator resolution
 
-Mirror deregister-node.ts pattern: `--host` (required + DNS-label-validated), `--roles` (required; comma-separated), `--maintainer` (default = `gh api /user --jq .login`), `--ip` + `--mac` (optional; if absent + node is reachable, probe via ssh; else require), `--from-yaml` (path to pre-composed yaml; alternative to other flags), `--push-direct` flag, `--reason` text.
+Mirror deregister-node.ts pattern.
+
+**Required by mode** (Copilot finding on #5221: original draft had `--host` + `--roles` marked required absolutely while `--from-yaml` was "alternative"; these are mutually exclusive — clarified here):
+
+- **Compose mode** (default; when `--from-yaml` ABSENT): `--host` required + DNS-label-validated; `--roles` required + comma-separated
+- **Pass-through mode** (when `--from-yaml <path>` PRESENT): `--host` + `--roles` IGNORED (yaml is source of truth); only `--maintainer` + `--push-direct` + `--reason` flags apply
+
+**Always optional** (both modes): `--maintainer` (default = `gh api /user --jq .login`), `--push-direct` flag, `--reason` text.
+
+**Hardware fields** (`--ip` + `--mac`): operator-provided only in compose mode. If omitted, the composed `node.yaml` has empty/null hardware fields; operator can later run iter-5.4.1 (B-0812 systemd self-register) on the live node to populate hardware via actual probe. **Auto-SSH-probe at register-tool time is out of scope** (consistent with "Out of scope" section below; Copilot P? on #5221 noticed internal contradiction in the original draft — corrected here).
 
 Reject `-`-prefixed values for string flags (avoid silent flag-consumption hazard caught on B-0814).
 
 ### Sub-target 2 — yaml composition
 
-Build `ClusterNode` CR per the B-0813 schema:
+Build `ClusterNode` CR per the B-0813 schema. **`maintainer` lives under `spec.registration`, NOT under `metadata`** (Copilot finding on #5221: K8s ObjectMeta has a fixed schema + does not allow arbitrary fields; placing the operator name there would be silently dropped by the API server). Use `spec.registration.maintainer` instead; if grouping by maintainer is needed at K8s level, add a standard label like `zeta.lucent-financial-group.com/maintainer: <op>`:
 
 ```yaml
 apiVersion: zeta.lucent-financial-group.com/v1
 kind: ClusterNode
 metadata:
   name: pikachu
-  maintainer: aaron
+  labels:
+    zeta.lucent-financial-group.com/maintainer: aaron
 spec:
   hostname: pikachu
   roles:
     - control-plane
     - worker-gpu
   hardware:
-    # if --from-yaml: pass through
-    # if compose mode: minimal stub OR probe-via-ssh OR operator-provided
+    # if --from-yaml: pass through verbatim
+    # if compose mode: empty/null until iter-5.4.1 self-register populates
   registration:
     timestamp: <now>
     method: manual-via-register-node.ts
+    maintainer: aaron
     reason: <--reason value if provided>
 ```
 
