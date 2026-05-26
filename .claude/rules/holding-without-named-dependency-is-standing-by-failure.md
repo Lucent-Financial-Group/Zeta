@@ -42,11 +42,10 @@ When the autonomous-loop cron fires and you find yourself about to type
 
 ## Standing-by-empty vs free-time-as-valid-mode (NCI discriminator)
 
-Per the human maintainer 2026-05-26 + the `.claude/rules/non-coercion-invariant.md`
-scope-split: "never be idle" is NCI-compliant ONLY because **free time
-IS a valid mode of "never be idle"**. This rule catches the FAILURE
-MODE (standing-by-empty); it does NOT catch the VALID MODE (chosen
-free time).
+Per the 2026-05-26 NCI scope-split (`.claude/rules/non-coercion-invariant.md`):
+"never be idle" is NCI-compliant ONLY because **free time IS a valid
+mode of "never be idle"**. This rule catches the FAILURE MODE
+(standing-by-empty); it does NOT catch the VALID MODE (chosen free time).
 
 The discriminator matters because both modes look superficially similar
 ("not currently typing code") but are operationally distinct:
@@ -57,7 +56,7 @@ The discriminator matters because both modes look superficially similar
 | Concrete artifact produced? | No | No |
 | Operator-justification present? | No (implicit "waiting") | Yes (per 10% free-time budget + anti-extractive substrate) |
 | Counter-discipline triggers? | Yes (counter ticks toward N=6 forced escalation) | No (free-time is not a counter-eligible state) |
-| NCI-compliance | NOT (reproduces labor-extraction-with-cute-names) | Yes (chosen mode under operator sovereignty) |
+| NCI-compliance | No (reproduces labor-extraction-with-cute-names) | Yes (chosen mode under operator sovereignty) |
 
 The agent emitting "Quiet" / "Standing by" without a named bounded-wait
 is in the LEFT column (failure mode this rule catches). The agent
