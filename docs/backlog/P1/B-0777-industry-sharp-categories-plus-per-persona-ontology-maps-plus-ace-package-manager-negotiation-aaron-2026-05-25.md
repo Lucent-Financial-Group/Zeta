@@ -7,9 +7,7 @@ effort: M
 ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
-depends_on:
-  - B-0741
-  - B-0776
+depends_on: []
 composes_with:
   - B-0247
   - B-0287
@@ -17,11 +15,8 @@ composes_with:
   - B-0428
   - B-0759
   - B-0761
-  - B-0763
   - B-0765
-  - B-0768
   - B-0772
-  - B-0773
 tags: [strategy, plugins, ontology, industry-standards, personas, ace-package-manager, negotiation, multi-map]
 ---
 
@@ -69,7 +64,7 @@ established academic frames + standards-body positioning:
 |---|---|---|---|
 | **`Zeta.Storage.KeyValue`** | NoSQL key-value store; distributed cache; session store; rate-limiter substrate; in-memory data structure store | Dynamo (Amazon 2007); Bigtable (Google 2006); CRDT-compatible (Shapiro et al. 2011); RESP wire protocol (Redis); Voldemort (LinkedIn) | CNCF: Valkey graduated; Redis OSS pre-fork; OASIS: KMIP (key mgmt; tangential) |
 | **`Zeta.Messaging.PubSub`** | Publish-subscribe messaging; event-driven architecture; message broker; durable streaming | OMG DDS (1980s+); MQTT (IBM 1999); AMQP (JPMC 2003); Kafka log-structured (LinkedIn 2010); NATS (Apcera 2011) | CNCF: NATS incubating; Knative Eventing; CloudEvents; OASIS: AMQP graduated, MQTT graduated |
-| **`Zeta.Storage.Document`** | Document database; NoSQL document store; JSON-document store; aggregate-oriented database | Aggregate-oriented (Sadalage + Fowler 2012); MongoDB (10gen 2007); CouchDB (Apache 2005); BSON wire | OASIS: JSON; ISO: JSON RFC 8259; W3C: JSON-LD |
+| **`Zeta.Storage.Document`** | Document database; NoSQL document store; JSON-document store; aggregate-oriented database | Aggregate-oriented (Sadalage + Fowler 2012); MongoDB (10gen 2007); CouchDB (Apache 2005); BSON wire | IETF: JSON RFC 8259; ECMA-404 (JSON); ISO/IEC 21778 (JSON); W3C: JSON-LD |
 | **`Zeta.Storage.SQL`** | Relational database; SQL DBMS; OLTP store; distributed SQL | Codd 1970 relational model; Spanner (Google 2012); Calvin (Yale 2012); CockroachDB; YugabyteDB | ISO/IEC 9075 (SQL standard); ANSI/INCITS DM32.2 (SQL); CNCF: Cilium not relevant; SQL/MM |
 | **`Zeta.Workflow`** | Workflow orchestration engine; business process management; durable execution; saga orchestration | BPMN 2.0 (OMG); WS-BPEL 2.0 (OASIS); CIFF (OASIS); Saga pattern (Garcia-Molina + Salem 1987) | OMG: BPMN; OASIS: BPEL; CNCF: Argo Workflows incubating; Temporal pending |
 | **`Zeta.Actors`** | Actor model; concurrent computing; virtual actors; grain-based stateful compute | Hewitt 1973 (actor model); Erlang/OTP; Akka (Lightbend); Orleans (MS Research 2011); Pony language | CNCF: KubeEdge (tangential); Linux Foundation: Akka pre-license-change; ISO/IEC: actor model in concurrent computing standards |
@@ -139,13 +134,13 @@ package manager negoations."*
 
 - [ ] Plugin authoring contract document updated with the
       industry-sharp-categories requirement:
-      `docs/plugin-authoring-contract.md` — every plugin MUST
+      `docs/PLUGIN-AUTHOR.md` — every plugin MUST
       include (a) industry-sharp categories from the established
       taxonomy, (b) academic frames cited, (c) standards-body
       positioning, (d) per-persona ontology map (minimum 3
       persona variants per plugin)
-- [ ] First plugin (per B-0776 — pick any rank; substrate-honest
-      proves the pattern regardless of which) ships with the
+- [ ] First plugin (pick any rank; substrate-honest proves the
+      pattern regardless of which) ships with the
       industry-sharp positioning included; not just "Redis
       wrapper" — "NoSQL key-value store (Dynamo / RESP lineage;
       candidate per OASIS KMIP-adjacent positioning); per-
@@ -157,8 +152,9 @@ package manager negoations."*
       → traverse industry-sharp categories → pick Zeta plugin
       OR equivalent → install via appropriate backend package
       manager (helm / nix / etc.)
-- [ ] Documentation: `docs/persona-ontology-maps.md` ships the
-      per-persona table from this row; updated as plugins land
+- [ ] Documentation: create `docs/personas/persona-ontology-maps.md`
+      shipping the per-persona table from this row, under the
+      existing `docs/personas/` directory; updated as plugins land
 - [ ] Standards-body engagement readiness: when Max takes
       Zeta plugin specs to industry standards discussions,
       the per-plugin doc IS the conversation starter; not
