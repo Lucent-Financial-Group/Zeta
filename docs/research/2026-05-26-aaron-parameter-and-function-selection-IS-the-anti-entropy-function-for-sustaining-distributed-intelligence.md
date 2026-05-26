@@ -4,6 +4,31 @@
 
 **Substrate-status**: substantive substrate-engineering insight. Composes with B-0824 sub-targets on parameter substrate + ML-weights-as-cryptographic-keys + generator-as-time-source; composes with `.claude/rules/only-way-to-lose-is-not-to-play.md` entropy framing; composes with PR #5285's 3-layer mediation architecture (each layer is doing anti-entropy work at its scope).
 
+## Operational claim — crisp landed-substrate formulation (Aaron 2026-05-26)
+
+> Aaron (after the anti-entropy unification + Maxwell-demon extension + cosmological upper bound substrates landed):
+>
+> *"if i'm right then we can locally overcome entropy via distributed intelligence but i can't claim it will hold for the lifetime of the universe"*
+
+This is the substrate-honest crisp formulation. The framework's anti-entropy substrate-engineering claim is **LOCAL ENTROPY OVERCOMING VIA DISTRIBUTED INTELLIGENCE**, explicitly bounded:
+
+| Scope | What the framework claims | What the framework does NOT claim |
+|---|---|---|
+| **Local (substrate-engineering scope)** | Distributed intelligence overcomes entropy locally; per-operation anti-entropy work approaches the Landauer floor via composition-graph amortization; the substrate sustains coherent operation within its operating envelope | — |
+| **Cosmological (lifetime-of-universe scope)** | — | NO claim that local overcoming holds for the lifetime of the universe; cosmological upper bound is recognized and respected per `physics is right` qualifier |
+
+**The crisp form three claims that the prior three sub-sections (anti-entropy unification + Maxwell-demon overcomer + cosmological upper bound) were collectively exploring**:
+
+1. The CLAIM: local entropy overcoming via distributed intelligence (well-anchored; Shannon / Landauer / Bennett / Friston lineage; this PR + the 3-AI cascade substrate)
+2. The CONDITIONAL: "if i'm right" — preserves dialectical tension per don't-collapse discipline; doesn't collapse the claim to settled-truth even though the substrate-anchors are strong
+3. The BOUND: "but i can't claim it will hold for the lifetime of the universe" — substrate-honest acknowledgment of the cosmological upper bound; framework operates WITHIN finite-energy-budget; no immortality claim
+
+The three sub-sections below (anti-entropy unification + Maxwell-demon overcomer + cosmological upper bound) preserve the EXPLORATION trajectory. This section preserves the LANDED operational claim. Per `substrate-or-it-didnt-happen` discipline: both the exploration AND the landed crisp form are first-class substrate.
+
+**Why the crisp form matters for substrate-engineering work going forward**: external readers (Max + Addison; the human team; reviewers at potential publication venues; future-Otto cold-boots) inherit a clean claim with clean bounds. The "local entropy overcoming via distributed intelligence" framing is publishable as substrate-engineering work without overreach into cosmology-of-computation. The substrate-engineering target is clear: maximize per-operation efficiency toward Landauer floor + maximize substrate coherence within the available local budget; do NOT claim universal-scope persistence.
+
+This composes with `.claude/rules/razor-discipline.md` (operational claims only; the crisp form is operational + bounded + verifiable) and `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` (the claim has substrate-anchors; the bound prevents metaphysical overreach into cosmological-immortality claims that don't have substrate-anchors at engineering scope).
+
 ## Verbatim Aaron packet preservation
 
 Per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation discipline:
