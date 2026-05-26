@@ -2,7 +2,7 @@
 id: B-0815
 priority: P2
 status: open
-title: Cluster-node registration heartbeat / expiration pattern — keep git registration physically in sync with machine; re-register on cadence or expire stale entries; the maintainer 2026-05-26 "how do keep registration status physically in sync with machine, like maybe you have to reregister once a day or week or something or it expires"
+title: Cluster-node registration heartbeat / expiration pattern — keep git registration physically in sync with machine; re-register on cadence or expire stale entries (B-0815 design row)
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -116,7 +116,7 @@ Past-expiry entries get a 3-day grace (operator can manually refresh or rollback
 
 ## Substrate-inventory pass
 
-Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../.claude/rules/verify-existing-substrate-before-authoring.md):
+Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
 - `grep -rlF "heartbeat"` → existing references (B-0726 Reticulum, B-0703 multi-oracle BFT) are at different scopes; no overlap
 - `grep -rlF "expires_at"` → no existing usage; safe

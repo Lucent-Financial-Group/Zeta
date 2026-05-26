@@ -1,8 +1,8 @@
 ---
 id: B-0814
 priority: P1
-status: in-progress
-title: tools/cluster/deregister-node.ts — TS tool that removes a registered machine from git via PR (sibling inverse to iter-5.4.1 self-registration); the maintainer 2026-05-26 "i'm going to delete clusters a lot lol"
+status: open
+title: tools/cluster/deregister-node.ts — TS tool that removes a registered machine from git via PR (sibling inverse to iter-5.4.1 self-registration; cluster operators iterate fast in homelab; B-0814)
 effort: S
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -91,7 +91,7 @@ Per Aaron 2026-05-25 "B-0751 primary checkout is SHARED VIEW + FOR HUMAN; agents
 
 ## Substrate-inventory pass
 
-Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../.claude/rules/verify-existing-substrate-before-authoring.md):
+Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
 - `grep -rlF "deregister-node"` → none on main; safe
 - `tools/cluster/` directory does NOT yet exist; PR creates it

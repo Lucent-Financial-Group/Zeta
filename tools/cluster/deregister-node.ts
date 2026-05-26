@@ -23,7 +23,7 @@
 //   1. Resolve operator (gh api /user .login) unless --maintainer overrides
 //   2. Verify maintainers/<op>/cluster-nodes/<host>/ exists on origin/main
 //      (use `git ls-tree origin/main` to avoid relying on local checkout state)
-//   3. Create a branch `otto-cli/deregister-<host>-<YYYY-MM-DD-HHMM>`
+//   3. Create a branch `deregister/<host>-<YYYY-MM-DD-HHMM>`
 //   4. git rm -r the cluster-nodes/<host>/ directory
 //   5. Commit with reason (if provided) + auto-generated message
 //   6. Push branch
@@ -75,7 +75,12 @@ function parseArgs(argv: readonly string[]): Args | ArgError {
       i++;
     } else if (a === "--reason") {
       const v = argv[i + 1];
-      if (!v) return { error: "--reason requires a value" };
+      // Reject values starting with "-" so `--reason --push-direct`
+      // doesn't silently consume the flag as the reason string
+      // (Copilot P1 finding on #5216).
+      if (!v || v.startsWith("-")) {
+        return { error: "--reason requires a value (non-flag string)" };
+      }
       reason = v;
       i++;
     } else if (a === "--push-direct") {
@@ -91,6 +96,19 @@ function parseArgs(argv: readonly string[]): Args | ArgError {
     }
   }
   if (host === "") return { error: "--host <hostname> is required" };
+  // Validate hostname against DNS-label rules: alphanumeric + hyphens,
+  // max 63 chars, no leading/trailing hyphen, no path separators or
+  // shell metachars. Without this, values like `../foo` or
+  // `;rm -rf /` could target unexpected paths since --host is
+  // interpolated into a filesystem path (`maintainers/<op>/cluster-
+  // nodes/${host}`) AND into a branch name (Copilot P1 on #5216).
+  if (!/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/.test(host)) {
+    return {
+      error:
+        `--host '${host}' is not a valid DNS label hostname. ` +
+        `Must be alphanumeric + hyphens, 1-63 chars, no leading/trailing hyphen.`,
+    };
+  }
   return { host, maintainer, reason, pushDirect };
 }
 
@@ -186,6 +204,10 @@ function main(): number {
   const wtAdd = run("git", ["worktree", "add", wt, "origin/main"]);
   if (!wtAdd.ok) {
     process.stderr.write(`deregister-node: git worktree add failed:\n${wtAdd.stderr}\n`);
+    // Cleanup the mkdtempSync dir even though worktree-add failed
+    // (Copilot P1 on #5216 — without this, temp dirs leak when the
+    // repo is in a bad git state).
+    rmSync(wt, { recursive: true, force: true });
     return 3;
   }
 
@@ -193,7 +215,7 @@ function main(): number {
   const ts = isoUtcTimestamp();
   const branch = pushDirect
     ? "main"
-    : `otto-cli/deregister-${host}-${ts}`;
+    : `deregister/${host}-${ts}`;
   if (!pushDirect) {
     const sw = run("git", ["switch", "-c", branch, "origin/main"], wt);
     if (!sw.ok) {
@@ -280,4 +302,9 @@ function main(): number {
   return 0;
 }
 
-process.exit(main());
+// Standard Bun-tool pattern: only invoke main() when run directly,
+// not when imported (Copilot P2 on #5216; matches the pattern in
+// tools/backlog/generate-index.ts + sibling scripts).
+if (import.meta.main) {
+  process.exit(main());
+}
