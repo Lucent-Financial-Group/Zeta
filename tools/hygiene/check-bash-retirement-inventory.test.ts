@@ -5,6 +5,7 @@ import {
   EXPECTED_RETAINED_BASH,
   hasDrift,
   renderReport,
+  RETAINED_BASH_SCOPE,
 } from "./check-bash-retirement-inventory";
 
 function splitExpectedRetained(): readonly [string, readonly string[]] {
@@ -14,7 +15,7 @@ function splitExpectedRetained(): readonly [string, readonly string[]] {
 }
 
 describe("buildInventoryReport", () => {
-  test("accepts the retained setup/bootstrap/launchd-bootstrap/Kiro-wrapper allowlist", () => {
+  test("accepts the retained bash allowlist", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_BASH);
 
     expect(hasDrift(report)).toBe(false);
@@ -31,7 +32,7 @@ describe("buildInventoryReport", () => {
     expect(report.drift.missingRetained).toEqual([]);
   });
 
-  test("flags missing retained setup/bootstrap/launchd-bootstrap/Kiro-wrapper scripts", () => {
+  test("flags missing retained bash scripts", () => {
     const [missing, rest] = splitExpectedRetained();
     const report = buildInventoryReport(rest);
 
@@ -46,7 +47,7 @@ describe("renderReport", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_BASH);
 
     expect(renderReport(report)).toContain(
-      "OK: retained non-Lean bash surface matches setup/bootstrap/launchd-bootstrap/Kiro-wrapper allowlist.",
+      `OK: retained non-Lean bash surface matches ${RETAINED_BASH_SCOPE} allowlist.`,
     );
   });
 
@@ -57,7 +58,7 @@ describe("renderReport", () => {
 
     expect(rendered).toContain("## Unexpected non-Lean bash files");
     expect(rendered).toContain("tools/hygiene/new-post-install-wrapper.sh");
-    expect(rendered).toContain("## Missing retained setup/bootstrap/launchd-bootstrap/Kiro-wrapper files");
+    expect(rendered).toContain(`## Missing retained ${RETAINED_BASH_SCOPE} files`);
     expect(rendered).toContain(missing);
   });
 });
