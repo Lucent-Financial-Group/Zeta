@@ -1,9 +1,29 @@
+---
+title: Artem Kirsanov — Boltzmann Machines from first principles (verbatim transcript)
+date: 2026-05-26
+source: Aaron-forwarded; channel-rediscovery via YouTube algo (per .claude/rules/algo-wink-failure-mode.md observation-not-authorization discipline)
+provenance: Aaron 2026-05-26 forwarded transcript via Claude Code conversation; saved to docs/research/ip-questionable per "the youtube transcripts need to go in questionable ip" operator instruction
+youtube_url: https://www.youtube.com/watch?v=_bqa_I5hNAo
+status: substrate-honest verbatim preservation + framework composition
+composes_with:
+  - 2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md (B-0839.2 sibling — RNN/LSTM/GRU)
+  - 2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md (B-0839.3 sibling — Reservoir Computing)
+  - docs/research/ip-questionable/README.md (folder authority; operator's verbatim-third-party-content acceptance)
+  - .claude/rules/substrate-or-it-didnt-happen.md (mirror-tier preservation discipline)
+  - .claude/rules/wake-time-substrate.md (operator-forwarded substrate gets row + research-doc landing)
+  - .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md (Hawkins 1000 Brains cortical-columns section)
+  - .claude/rules/substrate-smoothness-as-load-bearing-property.md (Boltzmann distribution as smooth-substrate-producing-sharp-outputs)
+  - .claude/rules/algo-wink-failure-mode.md (channel-rediscovery is algo-wink-as-observation operating cleanly per operator discipline)
+  - docs/backlog/P1/B-0839 (parent row)
+  - docs/backlog/P2/B-0838 (caustic-engineered bloom filter discriminators — same architectural archetype)
+---
+
 # Artem Kirsanov — Boltzmann Machines from first principles — verbatim transcript (Aaron-forwarded 2026-05-26)
 
 ## Source
 
 - **Channel**: <https://www.youtube.com/@ArtemKirsanov>
-- **Video URL**: <http://youtube.com/watch?v=_bqa_I5hNAo>
+- **Video URL**: <https://www.youtube.com/watch?v=_bqa_I5hNAo>
 - **Subject area**: computational neuroscience; energy-based models;
   generative AI lineage from Hopfield → Boltzmann → RBM
 

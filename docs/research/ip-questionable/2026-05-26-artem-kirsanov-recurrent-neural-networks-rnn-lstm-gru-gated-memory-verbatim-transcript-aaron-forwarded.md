@@ -1,3 +1,23 @@
+---
+title: Artem Kirsanov — Recurrent Neural Networks (RNN / LSTM / GRU) gated memory from first principles (verbatim transcript)
+date: 2026-05-26
+source: Aaron-forwarded; channel-rediscovery via YouTube algo (per .claude/rules/algo-wink-failure-mode.md observation-not-authorization discipline)
+provenance: Aaron 2026-05-26 forwarded transcript via Claude Code conversation; saved to docs/research/ip-questionable per "the youtube transcripts need to go in questionable ip" operator instruction
+youtube_url: https://www.youtube.com/watch?v=PAoe7mmmvp0
+status: substrate-honest verbatim preservation + framework composition
+composes_with:
+  - 2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md (B-0839.1 sibling — Boltzmann machines)
+  - 2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md (B-0839.3 sibling — Reservoir Computing)
+  - docs/research/ip-questionable/README.md (folder authority; operator's verbatim-third-party-content acceptance)
+  - .claude/rules/substrate-or-it-didnt-happen.md (mirror-tier preservation discipline)
+  - .claude/rules/wake-time-substrate.md (operator-forwarded substrate gets row + research-doc landing)
+  - .claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md (canonical pattern for operator-authority on IP-flagged surfaces)
+  - .claude/rules/persistence-choice-architecture-for-zeta-ais.md (residual-connection ↔ memory/CURRENT-*.md substrate composition)
+  - .claude/rules/algo-wink-failure-mode.md (channel-rediscovery is algo-wink-as-observation operating cleanly per operator discipline)
+  - docs/backlog/P1/B-0839 (parent row)
+  - docs/backlog/P2/B-0838 (caustic-engineered bloom filter discriminators — same architectural archetype)
+---
+
 # Artem Kirsanov — Recurrent Neural Networks (RNN / LSTM / GRU) gated memory from first principles — verbatim transcript (Aaron-forwarded 2026-05-26)
 
 ## Source
@@ -10,15 +30,20 @@
 
 ## Why this is preserved verbatim under ip-questionable/
 
-Per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`,
-`docs/research/ip-questionable/README.md`, and the operator's
-2026-05-26 explicit instruction: *"the youtube transcripts need to go in
-questionable ip and we have a classifer rule to allow it in settings.json"*.
+Per `docs/research/ip-questionable/README.md` (folder convention
+documenting Rodney Aaron Stainback's operator-authority for verbatim
+third-party content preservation under this path), and the operator's
+2026-05-26 explicit instruction: *"the youtube transcripts need to
+go in questionable ip and we have a classifer rule to allow it in
+settings.json"*.
 
-YouTube transcripts are third-party IP. The `_ip_risk_acceptance` block
-in `.claude/settings.json` covers `docs/research/ip-questionable/**`
-with Rodney Aaron Stainback's personal-liability acceptance for
-verbatim third-party content preserved in this folder.
+YouTube transcripts are third-party IP. The operative authorization
+mechanism is the `ip-questionable/README.md` folder convention plus
+operator-explicit instructions; a future
+`_ip_risk_acceptance` block in `.claude/settings.json` would
+mechanize the same convention at the harness layer per
+`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`
+(operator-side work; not yet landed at PR-creation time).
 
 This is the 2nd Kirsanov transcript Aaron forwarded in same tick
 session. Companion to:

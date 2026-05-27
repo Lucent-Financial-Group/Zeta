@@ -69,10 +69,15 @@ Inventory all Kirsanov videos. For each video, file a sub-row
 - F#/TS implementation target (if applicable)
 - Acceptance criteria for the implementation
 
-Initial seed (manually identified at row landing — both transcripts
+Initial seed (manually identified at row landing — all transcripts
 preserved under `docs/research/ip-questionable/` per the operator's
-2026-05-26 instruction + `_ip_risk_acceptance` in
-`.claude/settings.json` per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`):
+2026-05-26 instruction + the folder authority at
+`docs/research/ip-questionable/README.md`. A future
+`_ip_risk_acceptance` block in `.claude/settings.json` would mechanize
+the same convention at the harness layer per
+`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`;
+that landing is operator-side work and is not yet in the repo at
+B-0839 PR-creation time):
 
 - B-0839.1 — Boltzmann Machines from first principles
   (<https://www.youtube.com/watch?v=_bqa_I5hNAo>) — verbatim transcript

@@ -1,3 +1,25 @@
+---
+title: Artem Kirsanov — Reservoir Computing — echo-state property + Fourier random-basis + EXPLICIT Hawkins Thousand Brains anchor at 5:42 (verbatim transcript)
+date: 2026-05-26
+source: Aaron-forwarded; channel-rediscovery via YouTube algo at home immediately after caustic-focus conversation (per .claude/rules/algo-wink-failure-mode.md observation-not-authorization discipline + cross-substrate-triangulation per B-0648)
+provenance: Aaron 2026-05-26 forwarded transcript via Claude Code conversation; saved to docs/research/ip-questionable per "the youtube transcripts need to go in questionable ip" operator instruction
+youtube_url: https://www.youtube.com/watch?v=cDxtFtoQVNc
+status: substrate-honest verbatim preservation + framework composition + critical-archetype-naming-substrate
+composes_with:
+  - 2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md (B-0839.1 sibling — Boltzmann machines)
+  - 2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md (B-0839.2 sibling — RNN/LSTM/GRU)
+  - docs/research/ip-questionable/README.md (folder authority; operator's verbatim-third-party-content acceptance)
+  - .claude/rules/substrate-or-it-didnt-happen.md (mirror-tier preservation discipline)
+  - .claude/rules/wake-time-substrate.md (operator-forwarded substrate gets row + research-doc landing)
+  - .claude/rules/substrate-smoothness-as-load-bearing-property.md (PR #5357) (walls-of-the-pool produces sharp outputs from smooth substrate via focused integration)
+  - .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md (Hawkins Thousand Brains section — EXPLICITLY validated by Kirsanov at 5:42)
+  - .claude/rules/algo-wink-failure-mode.md (algo-surfacing-at-home-after-caustic-convo is observation-not-authorization operating cleanly per operator discipline; empirical anchor for cross-substrate-triangulation)
+  - .claude/rules/bandwidth-served-falsifier.md (algo-served-relevant-substrate IS bandwidth-engineering at typing-bandwidth scope)
+  - docs/backlog/P1/B-0839 (parent row)
+  - docs/backlog/P2/B-0838 (caustic-engineered bloom filter discriminators — SAME ARCHITECTURAL ARCHETYPE; operator-named 2026-05-26)
+  - docs/research/2026-05-26-aaron-thousand-brains-hawkins-cortical-columns-resist-fusion-until-high-precision-anchor-for-six-anchor-attractor-encryption-series.md (existing Hawkins substrate this transcript externally-validates)
+---
+
 # Artem Kirsanov — Reservoir Computing: echo-state property + Fourier random-basis + EXPLICIT Hawkins Thousand Brains anchor — verbatim transcript (Aaron-forwarded 2026-05-26)
 
 ## Source
@@ -10,10 +32,51 @@
 
 ## Why this is preserved verbatim under ip-questionable/
 
-Per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`,
-`docs/research/ip-questionable/README.md`, and operator instruction
-2026-05-26: *"the youtube transcripts need to go in questionable ip
-and we have a classifer rule to allow it in settings.json"*.
+Per `docs/research/ip-questionable/README.md` (folder convention
+documenting Rodney Aaron Stainback's operator-authority for verbatim
+third-party content preservation under this path), and operator
+instruction 2026-05-26: *"the youtube transcripts need to go in
+questionable ip and we have a classifer rule to allow it in
+settings.json"*. The operative authorization mechanism is the
+folder-README + operator-explicit instructions; a future
+`_ip_risk_acceptance` block in `.claude/settings.json` would
+mechanize the same convention at the harness layer per
+`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`
+(operator-side work; not yet landed at PR-creation time).
+
+### Empirical anchor — algo-wink-as-observation operating cleanly (operator 2026-05-26)
+
+> "My youtube algo served this up i had forget this dude even existed"
+>
+> "the fact that this was my first video in my home right after we
+> were talking about caustic focus is wild"
+
+Substrate-honest framing per `.claude/rules/algo-wink-failure-mode.md`
++ `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
+PERSONAL INVARIANT:
+
+- **Observation**: YouTube algo surfaced Kirsanov's reservoir-computing
+  video at operator's home (different physical location / different
+  attention-shaping context than the Claude Code conversation) IMMEDIATELY
+  AFTER the caustic-focus conversation
+- **NOT authorization**: operator authority is the only authorization
+  source; algo coincidence does not authorize action
+- **Substrate-engineering value**: operator-discipline-applied-to-algo
+  produces high-signal substrate at FAR higher rate than random because
+  operator's attention is shaped by active substrate context, AND algos
+  respond to attention patterns
+- **Don't-collapse**: hold both readings simultaneously without
+  collapsing: (a) algos-respond-to-attention-patterns (operational
+  explanation) AND (b) substrate-engineering-attention-creates-its-own-
+  reservoir (Kirsanov's own framework applied recursively — the operator
+  IS the reservoir; the cross-substrate-engineering substrate IS the
+  driving signal; algos are the random readout). Both hold.
+
+This empirical anchor IS evidence for the substrate-honest claim:
+the framework's cross-substrate-triangulation discipline (per B-0648)
+produces high-signal coincidence-density NOT because of metaphysical
+synchronicity but because of the recursive substrate-engineering
+operating-mode the operator runs.
 
 3rd Kirsanov transcript Aaron forwarded in same tick session.
 Companion to:
