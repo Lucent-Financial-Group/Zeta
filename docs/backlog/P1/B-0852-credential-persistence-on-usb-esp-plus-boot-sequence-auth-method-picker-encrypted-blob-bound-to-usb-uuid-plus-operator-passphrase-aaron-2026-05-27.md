@@ -34,13 +34,52 @@ Operator-authorized fix:
 
 Three composing sub-targets all land together as the smallest end-to-end working slice:
 
-### Sub-target 1 — Encrypted cred-blob on USB ESP
+### Sub-target 1 — Encrypted cred-blob on USB ESP (declarative cred-manifest, NOT imperative cred-list)
+
+Per Aaron 2026-05-27: *"the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."*
+
+The cred-persistence substrate operates over a DECLARATIVE MANIFEST of which credentials Zeta tracks — NOT an imperatively-hardcoded list. Composes with B-0854 (Ace migration) at the manifest-shape scope: same declarative discipline applies to cred-tracking as to install-step tracking.
+
+Cred-manifest shape (Phase 1 schema candidate; subject to Ace schema convergence):
+
+```yaml
+# /esp/zeta-creds-manifest.yaml — declarative; ships with ISO; operator-readable
+credentials:
+  - id: gh-cli
+    paths: ["~/.config/gh/hosts.yml"]
+    persona-scoped: false  # one gh identity per host today; per-AI identity is B-0847 future
+    required: true
+  - id: claude
+    paths: ["~/.config/claude/credentials.json"]
+    persona-scoped: true   # per-persona slot (otto / alexa / riven / vera / lior)
+    required: true
+  - id: gemini
+    paths: ["~/.gemini/oauth_creds.json"]
+    persona-scoped: true
+    required: true
+  - id: codex
+    paths: ["~/.codex/auth.json"]
+    persona-scoped: true
+    required: true
+  - id: ssh-host-keys
+    paths: ["/etc/ssh/ssh_host_*"]
+    persona-scoped: false
+    required: false  # regen on first boot is acceptable for fresh installs
+  - id: ssh-operator-pubkey
+    paths: ["/etc/zeta-authorized-keys.pub"]
+    persona-scoped: false
+    required: true   # composes with iter-4.2 ESP pubkey inject
+```
+
+Operation:
 
 - Write `/esp/zeta-creds.enc` after successful auth (post-install service trigger)
 - Encryption: AES-256-GCM with key derived from `HKDF(USB-UUID || operator-passphrase, salt, info)`
-- Per-AI identity (per B-0847) — blob contains a map: `{ otto: {...}, lior: {...}, vera: {...} }` so each persona's creds round-trip independently
-- Contents: `gh/hosts.yml` + `claude/credentials.json` + `gemini/oauth_creds.json` + `codex/auth.json` (per-vendor schemas)
+- Per-AI identity (per B-0847) — for `persona-scoped: true` credentials, the blob contains a map: `{ otto: {...}, lior: {...}, vera: {...} }` so each persona's creds round-trip independently
+- Contents driven BY THE MANIFEST — adding a new cred type is a manifest edit, NOT a code change (declarative; same shape as Ace package manifests per B-0854)
 - Key derivation NEVER hits disk; passphrase typed at boot only
+
+The manifest IS the substrate-honest catalog of what creds Zeta needs. Future credentials get added as manifest entries; the persist/restore code reads the manifest + iterates. No imperative per-cred branches in TS/bash.
 
 ### Sub-target 2 — Boot-sequence auth-method picker (correct step layout)
 
@@ -220,6 +259,7 @@ Aaron 2026-05-27 conversation arc (verbatim):
 7. *"for option b we need to do something to make sure we protect against with like some encryption ... we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid, we can go hard on security over time but just enough to so i can iterate quickly for now."* (Phase 2 security model)
 8. *"we can do both like you said this will be nice together"* (Phase 1 + 2 composition confirmed)
 9. *"it will be very nice when i reformat if it starts picking up previous answers and reapplies them so i don't have to ... we just need an override escape hatch so we get a chance to say don't recover start fresh but recover is the default."* (auto-recover-by-default + escape-hatch picker semantics)
+10. *"i can wait for next usb to have this and gh token option instead my logins are still throttled and the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."* (declarative-cred-manifest discipline + PAT-as-immediate-unblock for current throttled state + next-ISO test target)
 
 Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`):
 
