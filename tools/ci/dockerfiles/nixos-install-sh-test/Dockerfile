@@ -31,7 +31,7 @@
 # for content-addressed reproducibility. Pin selected 2026-05-27;
 # the implementer at next bump documents the new pin's selection
 # date in this comment.
-FROM nixos/nix:2.31.2
+FROM nixos/nix:2.31.2@sha256:29fc5fe207f159ceb0143c25c19c774062fee02ce5eda118f3067547b3054894
 
 # /etc/NIXOS marker file — what linux.sh's NixOS detection branch uses
 # to skip the apt step (per iter-5.5.1 PR #5389). Without this marker

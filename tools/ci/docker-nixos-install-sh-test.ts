@@ -33,7 +33,9 @@
  * Env:
  *   DOCKER_BUILD_TIMEOUT_SEC   Override timeout (default 600)
  *   DOCKER_LOG_OUT_PATH        Override log path (default
- *                              workspace-relative .docker-test-log)
+ *                              .tools/docker-nixos-install-sh-test.log
+ *                              — .tools/ is gitignored so the log
+ *                              won't show as untracked)
  *
  * Exit codes:
  *   0 — Docker build succeeded (install.sh + mise + bun + claude-code
