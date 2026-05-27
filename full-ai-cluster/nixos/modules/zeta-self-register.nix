@@ -11,6 +11,7 @@
 
 let
   cfg = config.zeta.selfRegister;
+  bunShimPath = "${cfg.home}/.local/share/mise/shims/bun";
 in
 {
   options.zeta.selfRegister = {
@@ -70,7 +71,11 @@ in
       ];
 
       unitConfig = {
-        ConditionPathExists = "!${cfg.markerPath}";
+        ConditionPathExists = [
+          "!${cfg.markerPath}"
+          cfg.scriptPath
+          bunShimPath
+        ];
       };
 
       serviceConfig = {
@@ -86,7 +91,7 @@ in
           "ZETA_SELF_REGISTER_INTENT_DIR=${cfg.intentDir}"
           "ZETA_SELF_REGISTER_REPO=${cfg.repoRoot}"
         ];
-        ExecStart = "${cfg.home}/.local/share/mise/shims/bun ${cfg.scriptPath}";
+        ExecStart = "${bunShimPath} ${cfg.scriptPath}";
         Restart = "on-failure";
         RestartSec = "30s";
       };

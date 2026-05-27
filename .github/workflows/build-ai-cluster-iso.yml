@@ -384,7 +384,15 @@ jobs:
             echo "|---|---|"
             echo "| Bundle | \`${ISO_NAME}.bundle\` |"
             echo ""
-            echo "Verification: see this workflow run's step summary for the canonical \`cosign verify-blob\` command."
+            echo "Verification command after downloading the ISO artifact and cosign bundle artifact:"
+            echo ""
+            echo "\`\`\`bash"
+            echo "cosign verify-blob \\"
+            echo "  --bundle '${ISO_NAME}.bundle' \\"
+            echo "  --certificate-identity 'https://github.com/${GITHUB_WORKFLOW_REF}' \\"
+            echo "  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \\"
+            echo "  '${ISO_NAME}'"
+            echo "\`\`\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload ISO as workflow artifact
