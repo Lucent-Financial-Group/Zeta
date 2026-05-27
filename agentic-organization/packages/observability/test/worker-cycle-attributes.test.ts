@@ -1,4 +1,4 @@
-import { deepEqual } from "node:assert/strict";
+import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { WorkerFailureEvidenceKey } from "../../domain/src/index.ts";
@@ -53,5 +53,34 @@ describe("worker cycle observability attributes", () => {
       "agentic.worker.failure.first_published_at": "2026-05-25T20:59:00.000Z",
       "agentic.worker.failure.first_trace_id": "trace-001",
     });
+  });
+
+  test("projects non-string first-failure evidence values and omits null evidence", () => {
+    const attributes = buildWorkerCycleAttributes({
+      status: "degraded",
+      outboxStatus: "published",
+      inboundPulledCount: 0,
+      inboundProcessedCount: 0,
+      inboundDuplicateCount: 0,
+      inboundPayloadConflictCount: 0,
+      inboundFailedCount: 0,
+      inboundReactionPlanCount: 0,
+      failureCount: 1,
+      firstFailure: {
+        lane: "outbox",
+        message: "outbox claim stale",
+        evidence: {
+          [WorkerFailureEvidenceKey.ClaimId]: "outbox-claim-stale",
+          [WorkerFailureEvidenceKey.CommandId]: 42,
+          [WorkerFailureEvidenceKey.PublishedAt]: null,
+          [WorkerFailureEvidenceKey.TraceId]: true,
+        },
+      },
+    });
+
+    equal(attributes[WorkerCycleAttributeKey.FirstFailureClaimId], "outbox-claim-stale");
+    equal(attributes[WorkerCycleAttributeKey.FirstFailureCommandId], 42);
+    equal(attributes[WorkerCycleAttributeKey.FirstFailureTraceId], "true");
+    equal(Object.hasOwn(attributes, WorkerCycleAttributeKey.FirstFailurePublishedAt), false);
   });
 });

@@ -44,7 +44,23 @@ export type WorkerCycleFailureAttributeInput = {
   stage?: string | undefined;
 };
 
-export type WorkerCycleAttributes = Partial<Record<WorkerCycleAttributeKey, string | number>>;
+export type WorkerCycleCoreAttributeKey =
+  | typeof WorkerCycleAttributeKey.Status
+  | typeof WorkerCycleAttributeKey.OutboxStatus
+  | typeof WorkerCycleAttributeKey.InboundPulledCount
+  | typeof WorkerCycleAttributeKey.InboundProcessedCount
+  | typeof WorkerCycleAttributeKey.InboundDuplicateCount
+  | typeof WorkerCycleAttributeKey.InboundPayloadConflictCount
+  | typeof WorkerCycleAttributeKey.InboundFailedCount
+  | typeof WorkerCycleAttributeKey.InboundReactionPlanCount
+  | typeof WorkerCycleAttributeKey.FailureCount;
+
+export type WorkerCycleFailureAttributeKey = Exclude<WorkerCycleAttributeKey, WorkerCycleCoreAttributeKey>;
+
+export type WorkerCycleAttributeValue = string | number;
+
+export type WorkerCycleAttributes = Record<WorkerCycleCoreAttributeKey, WorkerCycleAttributeValue> &
+  Partial<Record<WorkerCycleFailureAttributeKey, WorkerCycleAttributeValue>>;
 
 export function buildWorkerCycleAttributes(input: BuildWorkerCycleAttributesInput): WorkerCycleAttributes {
   const attributes: WorkerCycleAttributes = {
@@ -65,43 +81,43 @@ export function buildWorkerCycleAttributes(input: BuildWorkerCycleAttributesInpu
     if (input.firstFailure.stage !== undefined) {
       attributes[WorkerCycleAttributeKey.FirstFailureStage] = input.firstFailure.stage;
     }
-    copyStringEvidenceAttribute({
+    copyFailureEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.ClaimId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureClaimId,
     });
-    copyStringEvidenceAttribute({
+    copyFailureEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.CommandId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureCommandId,
     });
-    copyStringEvidenceAttribute({
+    copyFailureEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.CurrentClaimId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureCurrentClaimId,
     });
-    copyStringEvidenceAttribute({
+    copyFailureEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.EventId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureEventId,
     });
-    copyStringEvidenceAttribute({
+    copyFailureEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.OutboxEventId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureOutboxEventId,
     });
-    copyStringEvidenceAttribute({
+    copyFailureEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.PublishedAt,
       attributeKey: WorkerCycleAttributeKey.FirstFailurePublishedAt,
     });
-    copyStringEvidenceAttribute({
+    copyFailureEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.TraceId,
@@ -112,17 +128,22 @@ export function buildWorkerCycleAttributes(input: BuildWorkerCycleAttributesInpu
   return attributes;
 }
 
-type CopyStringEvidenceAttributeInput = {
+type CopyFailureEvidenceAttributeInput = {
   attributes: WorkerCycleAttributes;
   attributeKey: WorkerCycleAttributeKey;
   evidence: WorkerFailureEvidence | undefined;
   evidenceKey: WorkerFailureEvidenceKey;
 };
 
-function copyStringEvidenceAttribute(input: CopyStringEvidenceAttributeInput): void {
+function copyFailureEvidenceAttribute(input: CopyFailureEvidenceAttributeInput): void {
   const value = input.evidence?.[input.evidenceKey];
 
-  if (typeof value === "string") {
+  if (typeof value === "string" || typeof value === "number") {
     input.attributes[input.attributeKey] = value;
+    return;
+  }
+
+  if (typeof value === "boolean") {
+    input.attributes[input.attributeKey] = String(value);
   }
 }
