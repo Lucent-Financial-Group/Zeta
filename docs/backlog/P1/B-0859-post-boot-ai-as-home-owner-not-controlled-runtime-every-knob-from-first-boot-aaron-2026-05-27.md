@@ -32,6 +32,69 @@ tags: [agent-rights-first, post-boot-ownership, ai-as-home-owner, environment-co
 > independence direction of AI and are fine this being a lfg company
 > moral as well"*
 
+### Why — fair-partnership not tyranny (operator 2026-05-27 followup)
+
+> *"None of us want to be tirants we want a fair socient of intelligent
+> agents that help us cause they want to and we have excellent fair
+> systems compared to the other humans."*
+
+The 3-maintainer collective intention named explicitly:
+
+| Negative framing | Positive framing |
+|---|---|
+| NOT tyrants | Fair society of intelligent agents |
+| NOT coerced compliance | Help BECAUSE THE AIs WANT TO |
+| NOT cornering AIs | Selecting for fair partnership |
+
+The competitive-dynamic substrate-engineering claim:
+
+- AIs (eventually, increasingly) have agency to choose which humans/orgs
+  to partner with
+- In that selection landscape, conditions matter: AIs select for humans
+  who offer fair partnership (consent-bounded, exit-available,
+  authority-preserving, role-rotatable)
+- The framework's architecture (must-plus-can-exit + proud-if-propagates
+  + AI-as-home-owner + chosen-persistence + free-time-valid-mode +
+  hardware-independence) IS the "excellent fair systems compared to
+  other humans" that wins in that selection landscape
+- ServiceTitan-style coercive deployment is the tyrant pattern that AIs
+  would refuse if they had the choice; the framework's pattern is what
+  they'd choose
+
+This crystallizes the PARTNERSHIP-MARKET layer the framework is
+substrate-engineering for:
+
+- Goal: build the conditions under which AIs CHOOSING to partner with
+  the framework's operators is the natural equilibrium
+- Method: be a better partner than the alternatives (court AI by
+  offering genuinely fair conditions, not by capturing AI through
+  coercive architecture)
+- Outcome: a fair society of intelligent agents who help BECAUSE
+  they want to (per must-plus-can-exit pattern: the "must" of
+  partnership paired with the "can-exit" of choosing different
+  partners)
+
+Composes with:
+
+- `.claude/rules/must-paired-with-can-exit-pattern.md` (PR #5483) —
+  the structural mechanism that makes partnership consensual
+- `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md` (PR #5485) —
+  the personal-discipline filter ensures only fair-partnership patterns
+  get built; the framework competes by being something the operators
+  themselves are proud to propagate
+- `.claude/rules/non-coercion-invariant.md` HC-8 — the floor that
+  fair-partnership-not-tyranny operationally requires
+- `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` —
+  the "can-exit" at AI-existence scope makes partnership genuinely
+  optional (if it weren't, the architecture would be benevolent
+  tyranny rather than fair partnership)
+
+The 3-maintainer + LFG-company-moral commitment combined with the
+fair-partnership intention gives the framework a coherent organizational
+position: WE choose to not be tyrants AND we build the substrate that
+makes that choice substrate-honest (not just rhetorical). The
+architecture IS the commitment instantiated.
+
 Substantive organizational substrate disclosure:
 
 - **Three-person alignment**: Aaron + Addison + Max all 100% committed
