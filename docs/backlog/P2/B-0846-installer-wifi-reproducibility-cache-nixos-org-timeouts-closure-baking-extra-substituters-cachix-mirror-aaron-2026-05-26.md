@@ -2,7 +2,7 @@
 id: B-0846
 priority: P2
 status: open
-title: installer WiFi-reproducibility — cache.nixos.org timeouts hang nixos-install on same N derivations; closure-baking into ISO + extra-substituters + Cachix mirror for "reproducable over wifi" target (Aaron 2026-05-26)
+title: installer WiFi-reproducibility — cache.nixos.org timeouts hang nixos-install on same N derivations; closure-baking into ISO + extra-substituters + Cachix mirror for reproducible-over-WiFi target (Aaron 2026-05-26)
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -59,24 +59,24 @@ Reference: NixOS minimal installer ISO already does this for the minimal closure
 
 ### Phase 2 — Alternate substituters in `nix.conf`
 
-In the installer NixOS config:
+In the installer NixOS config (illustrative shape; substituter URLs + pubkeys are PLACEHOLDERS that MUST be verified at implementation time per `.claude/rules/dep-pin-search-first-authority.md` — URLs can drift, pubkeys can rotate, mirrors can deprecate; copy/paste from this row at implementation time is the failure mode the dep-pin rule catches):
 
 ```nix
 nix.settings = {
   substituters = [
-    "https://cache.nixos.org/"
-    "https://nix-community.cachix.org"
+    "<VERIFY-AT-IMPL: https://cache.nixos.org/ — canonical primary>"
+    "<VERIFY-AT-IMPL: https://nix-community.cachix.org or current community mirror>"
     # Future: self-hosted Cachix or attic mirror in home lab
-    # "https://zeta-cache.lucent.dev"
+    # "<VERIFY-AT-IMPL: https://zeta-cache.lucent.dev>"
   ];
   trusted-public-keys = [
-    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    "<VERIFY-AT-IMPL: pubkey for cache.nixos.org via current nix.conf docs>"
+    "<VERIFY-AT-IMPL: pubkey for nix-community.cachix.org via current cachix.org/use/nix-community page>"
   ];
 };
 ```
 
-Result: nix tries multiple substituters in parallel; if cache.nixos.org is slow, alternatives may serve faster.
+Result: nix tries multiple substituters in parallel; if cache.nixos.org is slow, alternatives may serve faster. The implementer WebSearches current values + cites the source per dep-pin discipline.
 
 ### Phase 3 — Self-hosted mirror in home lab
 

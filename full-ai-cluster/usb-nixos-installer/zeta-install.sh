@@ -992,7 +992,7 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 # Slower for the few stalled derivations (local build vs cache download)
 # but UNBLOCKS the install instead of looping on the same 5 files.
 # Full reproducibility work (closure-baking, Cachix mirror, extra-substituters)
-# tracked at B-0846+ (per backlog row to be filed in this PR).
+# tracked at B-0846.
 sudo nixos-install \
   --impure \
   --fallback \
