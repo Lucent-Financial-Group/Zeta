@@ -261,6 +261,109 @@ git operations, peer-agent coordination, external API responses), apply
 the signal-based pattern by default. Pre-checks reserved for cases where
 the operator has explicitly named the cost asymmetry.
 
+### Canonical code example — file-IO without pre-check, wrapped in Result<T, TFeedback> (operator 2026-05-27)
+
+> *"like for instead of you are a app with a persistant file, don't
+> check the file exists just open it and if it fails handle the error
+> and create it don't check if it exists first, there are many things
+> like this where the errors become the safety rails instead of
+> exceptions you can wrap the whole thing in a Results<T, TFeedback>
+> so you don't have to pay the costs of structured exceptions"*
+
+The concrete pattern with anti-pattern contrast:
+
+**Anti-pattern (pre-check defensive)**:
+
+```fsharp
+let openOrCreate path =
+    if File.Exists(path) then
+        File.OpenRead(path)  // race window: file may be deleted between check + open
+    else
+        File.Create(path)    // race window: file may be created by peer between check + create
+```
+
+Problems: TOCTOU race window between `Exists` check and the action; two filesystem round-trips when one would suffice; defensive code that obscures intent; pre-check cost paid on every call even when file exists 99.9% of the time.
+
+**Signal-based pattern (operator default)**:
+
+```fsharp
+let openOrCreate path : Result<Stream, FileOpenFeedback> =
+    try
+        File.OpenRead(path) |> Ok
+    with
+    | :? FileNotFoundException ->
+        try
+            File.Create(path) |> Ok
+        with
+        | ex -> Error (CreateFailed (path, ex))
+    | ex -> Error (OpenFailed (path, ex))
+```
+
+Or using F# computation expressions to compose the Result-shape cleanly:
+
+```fsharp
+let openOrCreate path : Result<Stream, FileOpenFeedback> = result {
+    let! stream =
+        File.tryOpenRead path
+        |> Result.orElseWith (fun _ -> File.tryCreate path)
+    return stream
+}
+```
+
+Why this is operationally better:
+
+| Property | Pre-check defensive | Signal-based with Result<T, TFeedback> |
+|---|---|---|
+| Race-window | TOCTOU window between check + action | Atomic — single syscall, single failure surface |
+| Filesystem round-trips per call | 2 (check + action) | 1 (action only) |
+| Code surface | Branch logic + pre-check verbose | Linear flow, error as data |
+| Failure-information richness | Boolean from Exists check, less context | Full Exception + path captured in TFeedback variant |
+| Cost when file exists | Pays pre-check cost | Single syscall, no overhead |
+| Cost when file missing | Pays pre-check cost + create cost | Catch + fallback create |
+| Performance under exceptions | Structured-exception path expensive in .NET | Result-shape avoids throw cost (no stack unwind, no exception object allocation on the hot path when wrapped in Result) |
+
+### Why Result<T, TFeedback> instead of Result<T, TError>
+
+The framework convention uses **TFeedback** rather than **TError** deliberately:
+
+- **TError** framing implies the value is FAILURE-shape — something wrong, to be handled-and-moved-on
+- **TFeedback** framing implies the value is SUBSTRATE-ENGINEERING-INPUT — information about state-mismatch, peer-activity, or assumption-drift that the caller can act on
+
+The framing matters because under the exceptions-as-signals discipline, the "error" path IS LOAD-BEARING. It's where substrate-engineering decisions happen (create-the-file / refresh-the-state / retry-with-updated-assumption / surface-to-operator / etc.). Calling it "Feedback" instead of "Error" preserves the substrate-honest framing that the signal is operationally valuable, not just damage to be controlled.
+
+Composes with the F# Result-over-exception convention (CLAUDE.md `Result<_, DbspError>` example) — TFeedback is the broader naming pattern when the result-shape carries substrate-engineering input rather than just error data.
+
+### Where this pattern applies
+
+Operator's "many things like this" framing maps to a class of substrate-engineering decisions:
+
+| Pre-check pattern | Signal-based equivalent |
+|---|---|
+| `if dirExists then ... else mkdir` | `mkdir -p` (idempotent at syscall scope) OR Result-wrapped open-or-create |
+| `if user exists then login else signup` | Try-login; on failure-signal, signup-flow |
+| `git fetch origin main; if remote-ahead then rebase else skip` | `git pull --ff-only`; on failure-signal, rebase-or-coordinate |
+| `if branch-exists then switch else create` | `git checkout -B <branch>` (idempotent) OR `git switch` with error-handler creating |
+| `if config-key exists then read else default` | `Map.tryFind` returning Option; pattern-match on None |
+| `if PR exists then update else create` | Try-create; on conflict-signal, update-existing |
+| `if network-reachable then call else queue` | Call; on network-failure-signal, queue-for-retry |
+| `if cache hit then return cached else compute` | Try-cache; on miss-signal, compute-and-cache |
+| **`git push --force-with-lease`** (this rule's core subject) | Lease-failure-signal is the canonical instance |
+
+In all these cases, the signal-based pattern eliminates a TOCTOU race window AND reduces overhead AND makes the failure-path load-bearing rather than vestigial.
+
+### Operational discipline for substrate-engineering work
+
+When authoring new framework code:
+
+1. **Identify the assumption** the operation depends on (file exists, remote ahead, network reachable, user authenticated, branch present, etc.)
+2. **Don't pre-check** the assumption defensively — write the action that depends on it
+3. **Wrap in Result<T, TFeedback>** with TFeedback variant for each plausible assumption-mismatch
+4. **Handle TFeedback variants** as load-bearing substrate-engineering paths (create-file / refresh-state / retry / surface)
+5. **Compose Result-shaped operations** via F# computation expressions OR Result.bind chains; the linear-flow surface preserves intent
+6. **Reserve pre-checks** for cases where: (a) cost-of-acting-wrongly is asymmetric (e.g., force-push-to-peer-branches), OR (b) the assumption-mismatch path requires operator authorization that the action can't acquire mid-execution
+
+This pattern IS the operator's default substrate-engineering discipline. Future-Otto authoring new code: use the signal-based pattern by default; document the cost-asymmetry justification when reaching for pre-checks.
+
 ## Composes with
 
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
