@@ -17,23 +17,29 @@ composes_with:
 tags: [install-sh, universal-entry, environment-routing, zeta-install-sh-retirement-short-path, rule-0-carve-out, dev-env-vs-node-install-unification, b-0854-precursor]
 ---
 
-## Operator framing (Aaron 2026-05-27)
+## Operator framing (Aaron 2026-05-27, two-turn)
+
+### Turn 1
 
 > *"when are we moving to install.sh over zeta-install.sh? the universall install surface for unix like oses?"*
 
-The operator-explicit framing: `install.sh` is THE universal Unix-like-OS install surface; `zeta-install.sh` (NixOS-USB-specific) is the operational predecessor. The migration is a substrate-engineering target with a shorter timeline than B-0854 Ace migration.
+### Turn 2 (sharpening; correction of Otto's initial "dev env" framing)
+
+> *"tools/setup/install.sh has never been universal dev entry it's also unversal build machine and the zeta cluster IS a build machine cluster."*
+
+**The substrate-honest reading**: `install.sh` is the universal **build-machine** entry — not "dev env" + "node install" as two separate things. The Zeta cluster IS a build-machine cluster (per the operator's substrate-engineering framing: cluster nodes aren't deployment targets, they're build machines participating in the same build infrastructure as dev laptops). install.sh therefore ALREADY applies operationally to both surfaces; the migration is recognizing that + factoring zeta-install.sh as the bootstrap-from-USB phase that prepares the build machine for install.sh to take over.
 
 ## Current state (verified 2026-05-27 origin/main `18e6a095b`)
 
 | Script | Location | Scope | Lines |
 |---|---|---|---|
-| `install.sh` | `tools/setup/install.sh` | Dev-env setup (laptop / CI / devcontainer per GOVERNANCE §24); routes to `macos.sh` or `linux.sh` for OS-specific runtime install (mise / bun / etc.) | 42 |
-| `zeta-install.sh` | `full-ai-cluster/usb-nixos-installer/zeta-install.sh` | NixOS-USB-install (live-USB → disk-format → nixos-install onto target) | 1,352 |
+| `install.sh` | `tools/setup/install.sh` | Universal build-machine setup (laptop / CI / devcontainer / cluster node — all are build machines per GOVERNANCE §24 + operator sharpening); routes to `macos.sh` or `linux.sh` for OS-specific runtime install (mise / bun / etc.) | 42 |
+| `zeta-install.sh` | `full-ai-cluster/usb-nixos-installer/zeta-install.sh` | NixOS-USB-bootstrap (live-USB → disk-format → nixos-install onto target) — **prepares the build machine** so install.sh can take over post-boot | 1,352 |
 
-**Today they solve different problems**:
+**Both serve the build-machine surface — they're not solving different problems; they're solving DIFFERENT PHASES of the same build-machine lifecycle**:
 
-- `install.sh` = "set up your dev env to BUILD Zeta"
-- `zeta-install.sh` = "install NixOS onto a node from live USB"
+- `zeta-install.sh` = "turn this hardware into a NixOS-booting build machine"
+- `install.sh` = "configure runtime on this build machine" (works the same whether the build machine is a dev laptop or a cluster node)
 
 PR #5389 commit message (a9fca1e52f, 2026-05-27) said zeta-install.sh Step 6.95a invokes tools/setup/install.sh as "THE default entry," but grep of current zeta-install.sh finds NO actual invocation. Either drifted out or the integration is at a higher abstraction layer. **Audit task** (sub-row B-0857.1): verify integration state + repair if drifted.
 
@@ -41,12 +47,12 @@ PR #5389 commit message (a9fca1e52f, 2026-05-27) said zeta-install.sh Step 6.95a
 
 **`tools/setup/install.sh` becomes the universal Unix-like-OS entry that ROUTES by environment**:
 
-| Environment detection | Routes to | Outcome |
+| Environment detection | Routes to | Outcome (build-machine surface) |
 |---|---|---|
-| macOS (`uname -s = Darwin`) | `setup/macos.sh` | Dev env (mise + bun + claude + etc.) |
-| Linux non-NixOS (`/etc/NIXOS` absent) | `setup/linux.sh` | Dev env |
-| Linux NixOS live-USB (`/etc/NIXOS` + live-mode detection) | NixOS-disk-install routine (the current zeta-install.sh logic, factored to a callable) | NixOS install onto target disk |
-| Linux NixOS installed (`/etc/NIXOS` + installed-mode) | runtime verify / mise-managed update | Cluster-node runtime upgrade |
+| macOS (`uname -s = Darwin`) | `setup/macos.sh` | Build machine (mise + bun + claude + etc.) on laptop |
+| Linux non-NixOS (`/etc/NIXOS` absent) | `setup/linux.sh` | Build machine on Linux-non-NixOS host |
+| Linux NixOS live-USB (`/etc/NIXOS` + live-mode detection) | NixOS-disk-install routine (the current zeta-install.sh logic, factored to a callable) | Bootstrap build machine FROM USB → install.sh takes over post-boot |
+| Linux NixOS installed (`/etc/NIXOS` + installed-mode) | runtime verify / mise-managed update | Build machine on cluster node |
 
 Environment-routing dispatch is in `install.sh` itself; OS-specific work lives in sibling files (already true for macos.sh / linux.sh; adds a `nixos-install-from-usb.sh` callable that subsumes the existing zeta-install.sh body).
 
