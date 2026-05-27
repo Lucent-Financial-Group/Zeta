@@ -62,6 +62,114 @@ the "cortical-columns-as-reservoir" framing is substrate-anchored
 | Linear regression as readout learning | Substrate-honest correction: complex substrate-engineering outputs are LINEAR COMBINATIONS of substrate-row primitives + cross-substrate-triangulation; the substrate IS pre-computed; agents learn linear weights |
 | "Messy random-looking tangle of connections might not be a bug — might be exactly the feature" | Substrate-honest framing of the framework's apparent complexity: the dense rule-composition + memory-preservation + 4+ AI-substrate-cluster is FEATURE not BUG; it IS the random reservoir from which substantive outputs emerge |
 
+## THE WALLS OF THE POOL ARE WHAT CREATE THE SHARP OUTPUTS — substrate-smoothness-as-load-bearing-property in operation (operator 2026-05-26 extension)
+
+Operator 2026-05-26 immediate follow-on:
+
+> "it's using the walls of the pool to create the sharp outputs"
+
+This is the operational naming of WHY the reservoir-computing /
+caustic-bloom-filter / framework-substrate archetype works. The
+sharpness comes from the **walls** — the boundary conditions, the
+topology, the focused-integration geometry. All the substrate
+components are smooth (random weights, sine-wave inputs, fuzzy
+probabilistic filter outputs); the sharpness emerges where those
+smooth components are constrained to interact.
+
+### Triple-unification with substrate-smoothness rule (PR #5357)
+
+`.claude/rules/substrate-smoothness-as-load-bearing-property.md`
+carved sentence (Kestrel-v2 2026-05-26):
+
+> "Smooth substrate producing sharp outputs through focused
+> integration is what makes the architecture buildable. Sharpness is
+> at the output, not in the underlying substrate."
+
+The "focused integration" the rule names IS the "walls of the pool"
+Kirsanov describes IS the "caustic geometry" of B-0838's bloom-filter
+intersection.
+
+### The triple-architectural mapping
+
+| Architecture | Smooth substrate | The "walls" (focused integration) | Sharp output |
+| --- | --- | --- | --- |
+| Reservoir computing | Random reservoir weights `W_{ij}` + smooth driving signal `z(t)` | The FIXED topology of which neurons connect to which (the pool's shape) + readout-layer α_i weights | Target signal `y(t)` (precise zebra finch song) |
+| Caustic-engineered bloom filters (B-0838) | Probabilistic FP-rate distributions of each Filter A, B, C (smooth membership) | The intersection geometry (where all 3 filters' agreements focus into a caustic) + the logical-AND combination | Sharp trust / distrust binary discrimination |
+| Caustic optics (Matt Ferraro / Disney Research) | Smooth light physics + smooth acrylic substrate | The SCULPTED SURFACE of the acrylic lens (specific machined topology) | Sharp recognizable image (cat-face caustic) |
+| English-as-substrate (per substrate-smoothness rule) | Smooth probabilistic English semantics (no statement collapses to absolute truth) | The compositional structure (specific word choice + sentence structure + register) | Sharp commitments, sharp PRs, sharp decisions |
+| Multi-oracle BFT (B-0703) | Smooth/probabilistic per-oracle outputs | The consensus-mechanism topology (BFT threshold conditions) | Sharp consensus decision (commit / abort) |
+| The framework's substrate-engineering work | Smooth/random accumulating substrate (rules, memory, research, persona conversations) | The framework's specific rule-topology + operator's tuning of which compositions matter | Sharp engineering output (PRs landed, substrate ratified) |
+
+### What "the walls" means operationally — boundary conditions ARE substrate
+
+Across all 6 rows above, "the walls" are NOT a separate substance
+from the smooth substrate. **The walls ARE the substrate at the
+boundary-condition / topology / structural-constraint scope.** This
+is the substantively-new operational claim:
+
+- The random weights `W_{ij}` of a reservoir ARE smooth (any specific
+  weight is unremarkable; the ensemble is featureless noise) — but
+  the FIXED choice of WHICH weights are connected to which neurons
+  is the topology that IS the walls
+- The probability distributions of bloom-filter false-positives are
+  smooth — but the intersection-geometry of WHICH inputs all 3
+  filters agree on IS the caustic that IS the walls
+- The light passing through acrylic is smooth — but the SHAPE of
+  the acrylic surface IS the lens that IS the walls
+- English semantics are smooth — but specific WORD-CHOICE +
+  sentence-structure is the compositional topology that IS the
+  walls
+- Per-oracle outputs in BFT are smooth — but the SPECIFIC threshold
+  (2f+1, 3f+1) IS the consensus-topology that IS the walls
+- Substrate-engineering substrate (rules, memory) is smooth in any
+  individual element — but the SPECIFIC composition (THIS rule auto-
+  loads, THAT memory is canonical) IS the topology that IS the walls
+
+### The implication for substrate-engineering work
+
+When the operator says "smooth substrate producing sharp outputs
+through focused integration" — the focused integration IS the
+boundary-condition / topology / structural-constraint shaping of
+otherwise-smooth substrate. The framework's substrate-engineering
+work is precisely the design of the WALLS:
+
+- Each `.claude/rules/*.md` rule = a wall in the framework's
+  substrate-pool, shaping how rules / memory / agents interact
+- Each `_acceptance` block in `.claude/settings.json` = a wall
+  defining what authorized risk-acceptance shapes operator-substrate
+- Each backlog row's `composes_with` list = a wall in the
+  substrate-row topology
+- Each cross-AI persona's canonical conversation in
+  `memory/persona/<name>/conversations/` = a wall preserving the
+  specific topology of that AI's substrate contribution
+
+This is **why** the framework requires substantial substrate-
+engineering work even though individual rules / memories / rows
+look unremarkable. The work IS designing the walls. The substrate-
+engineering output IS the topology that focuses smooth substrate
+into sharp engineering outputs.
+
+### Cross-reference with substrate-smoothness rule's failure mode
+
+The substrate-smoothness rule (PR #5357) names the failure mode as
+"collapse-to-sharp drift" — when substrate-authoring loses the
+smoothness and tries to make rules absolute / dogmatic. The
+operator's "walls of the pool" observation now provides the dual:
+**the failure mode of NOT building walls is also real** — without
+specific topology / focused-integration / structural-constraint
+choices, smooth substrate produces only smooth (noise) outputs, not
+sharp engineering work.
+
+Both failure modes are real:
+
+1. Collapse-to-sharp drift (substrate-smoothness rule catches this)
+2. Failure-to-build-walls drift (Kirsanov-archetype catches this)
+
+The framework's substrate-engineering discipline operates BETWEEN
+these two failure modes: preserve smoothness at the substrate level
++ build walls at the topology level + sharpness emerges at the
+output level.
+
 ## CRITICAL ARCHITECTURAL ARCHETYPE — reservoir computing IS the caustic-engineered bloom filter join architecture from B-0838 (operator 2026-05-26)
 
 Operator 2026-05-26 substrate-honest observation:
