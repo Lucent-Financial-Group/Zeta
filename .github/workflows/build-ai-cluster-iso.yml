@@ -321,15 +321,20 @@ jobs:
             echo "to flash the stick. (ISO is ~1.5–2 GiB.)"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # B-0853.1: keyless sigstore signing for the ISO artifact.
+      # B-0853.1 — sigstore/cosign keyless OIDC signing of the ISO blob.
+      # Composes with B-0853 (sigstore artifact signing free-stuff substrate).
       #
-      # The GitHub OIDC token is exchanged with Fulcio for a short-lived
-      # signing certificate; Rekor inclusion is captured in the cosign
-      # bundle. No long-lived private key material is present in this
-      # workflow.
+      # Keyless model: GitHub OIDC token (from job-level id-token: write
+      # permission above) is exchanged with Fulcio CA for a short-lived cert
+      # bound to this workflow's identity. cosign then signs the ISO blob
+      # with that cert + records the signature in the Rekor transparency log.
+      # No long-lived private key material in this workflow.
       #
       # Verification (any consumer) — pin identity to THIS specific workflow
-      # file + ref:
+      # file + ref (tightened per Copilot P1 review on PR #5417; the broader
+      # `^https://github.com/Lucent-Financial-Group/Zeta` prefix-regex would
+      # accept signatures from any workflow in the repo, defeating the
+      # workflow-identity binding):
       #
       #   cosign verify-blob \
       #     --bundle <iso>.bundle \
@@ -350,6 +355,7 @@ jobs:
         # Pin verified via gh API 2026-05-27:
         #   gh api repos/sigstore/cosign-installer/releases/latest
         #   tag: v4.1.2; published: 2026-05-07T01:27:27Z
+        # Per .claude/rules/dep-pin-search-first-authority.md
 
       - name: Sign ISO with cosign (keyless OIDC + Fulcio + Rekor)
         env:
