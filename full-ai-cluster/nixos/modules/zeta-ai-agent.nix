@@ -223,15 +223,10 @@ in
           ExecStart (binary grok doesn't exist at ~/.bun/bin/grok).
         '';
       }
-      {
-        assertion = !cfg.enable.vera;
-        message = ''
-          zeta.aiAgents.enable.vera = true requires B-0850.3c
-          (Vera/Codex install + login substrate) which has not shipped.
-          Enabling now would create a zeta-vera.service that fails
-          ExecStart (binary codex doesn't exist at ~/.bun/bin/codex).
-        '';
-      }
+      # B-0850.3c (Vera/Codex) shipped this PR — assertion removed.
+      # zeta-install.sh Step 6.95a-codex installs @openai/codex via
+      # bun + Step 6.95b-codex runs `codex login --device-auth`.
+      # Binary lands at ~/.bun/bin/codex; creds at ~/.codex/auth.json.
       # B-0850.3d (Lior/Gemini) shipped this PR — assertion removed.
       # zeta-install.sh Step 6.95a-gemini installs @google/gemini-cli
       # via bun + Step 6.95b-gemini runs interactive gemini auth login.
