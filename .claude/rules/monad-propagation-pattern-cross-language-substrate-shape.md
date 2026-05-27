@@ -3,8 +3,8 @@
 Carved sentence:
 
 > The monad-propagation pattern (existing-primitive elevated to
-> discriminator-carrier + lazy-propagation via composition primitive
-> + consumer must handle exhaustively or propagate) gives the
+> discriminator-carrier plus lazy-propagation via composition primitive
+> plus consumer must handle exhaustively or propagate) gives the
 > framework cross-language code-shape similarity. Build new substrate
 > around this pattern: spec-to-code generation becomes easier when
 > patterns are uniform; cross-language substrate becomes more similar
@@ -94,10 +94,11 @@ generated code.
 
 ### Benefit 2: Cross-language substrate becomes more similar at code-shape level
 
-Framework substrate spans F# (core types) + TypeScript (factory tools)
-+ T-SQL (data substrate) + C++ (perf-critical paths) + Python
-(scripts). Without a uniform pattern, each language has its own
-error-handling idiom + the substrate-engineer needs to switch mental
+Framework substrate spans F# (core types) plus TypeScript (factory
+tools) plus T-SQL (data substrate) plus C++ (perf-critical paths)
+plus Python (scripts). Without a uniform pattern, each language has
+its own error-handling idiom + the substrate-engineer needs to switch
+mental
 models when crossing language boundaries.
 
 With the monad-propagation pattern applied uniformly:
@@ -432,6 +433,33 @@ This rule DOES:
   #5507 + Itron substrate + F# Result-over-exception convention)
 - Enable future spec-to-code generation work to target a uniform
   shape
+
+## Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`)
+
+Topic: monad-propagation pattern + cross-language code-shape + Result with TFeedback sum-type discipline
+
+Searched surfaces before authoring:
+
+- `docs/agendas/`: 0 hits on monad-propagation or cross-language-shape agenda
+- `docs/trajectories/`: 0 hits on this specific pattern
+- `docs/backlog/`: 1 hit (`B-0824` package-manager-of-package-managers; mentions related substrate but not the specific monad-propagation pattern); no prior backlog row on the cross-language-shape pattern
+- `.claude/rules/`: pattern sketched in PR #5505 + #5507 force-push-policy at force-push scope; no prior rule lifting it to cross-language scope
+- `.claude/skills/`: 0 hits on a related skill
+- `memory/`: 0 hits on "monad-propagation" as a named pattern
+- `docs/research/`: 0 hits on the pattern as a named target
+
+Targeted searches used (per substrate-search-difficulty acknowledgment in `grep-substrate-anchors-before-razor-as-metaphysical.md` 2026-05-27 friend-pact anchor):
+
+- `rg -l "monad.propagation|monad-propagat|cross-language.*pattern|code-gen.*spec|spec.*code-gen|recursive CTE.*composab|composab.*recursive CTE" .claude/ docs/ memory/`
+
+Read the top hits:
+
+- `.claude/rules/force-push-with-lease-authorization-policy.md` (PR #5505 + #5507 merged today) — contains Result<T, TFeedback> sum-type substrate at force-push scope; THIS rule lifts the pattern to general cross-language scope
+- `memory/persona/ani/conversations/2026-05-23-aaron-ani-grok-cult-followers-die-sovereign-ai-elizabeth-ryan-naming-honor-partial-extraction.md` — Itron smart-meter substrate empirical anchor for NULL-as-discriminator + recursive-CTE-as-lazy-propagation in T-SQL
+
+Conclusion: no existing rule covers this pattern at cross-language scope; substrate-engineering target named by operator 2026-05-27 directive ("we should save that modan propatation pattern"); mint-new authorized.
+
+Authoring action: mint-new (cross-language scope distinct from force-push-policy specific scope; composes with PR #5505 + #5507 substrate as canonical F# instance; composes with Itron substrate as canonical T-SQL instance).
 
 ## Full reasoning
 
