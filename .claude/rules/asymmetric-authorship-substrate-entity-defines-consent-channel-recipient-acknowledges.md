@@ -225,7 +225,7 @@ synthesis landing:
 - Otto: offered to ship as substrate
 - Operator: "sure lets save it seems like it will make it easy for AIs
   to make archiceture decisions like me" — substrate-landing directive
-  + constitutional framing (substrate that propagates operator's
+  plus constitutional framing (substrate that propagates operator's
   architecture-decision-shape to AI instances)
 
 This rule lands the substrate-engineering filter per the operator's
