@@ -313,9 +313,20 @@ the outbox/event-ingestion ports into the worker host. Its current
 required environment contract is `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`,
 `COCKROACH_DATABASE_URL`, `NATS_STREAM`, `NATS_DURABLE`,
 `NATS_INBOUND_BATCH_SIZE`, `WORKER_INBOUND_BATCH_SIZE`, and
-`WORKER_OUTBOX_BATCH_SIZE`. Concrete NATS clients, CockroachDB pools,
-readiness endpoints, structured logging, and shutdown hooks still belong
-to later process-adapter wiring.
+`WORKER_OUTBOX_BATCH_SIZE`. The first app-local process adapters now
+cover the Cockroach worker client and JSON telemetry sink:
+
+- `apps/workers/src/adapters/cockroach-worker-client.ts` adapts a
+  process-provided pool/client to `CockroachSqlClient`, including
+  explicit `BEGIN`, `COMMIT`, `ROLLBACK`, connection release,
+  SQLSTATE-based retry, and ambiguous-commit preservation semantics;
+- `apps/workers/src/adapters/json-worker-telemetry-sink.ts` implements
+  `WorkerRuntimeTelemetrySink` with stable structured JSON records that
+  preserve the worker/NATS attribute contract.
+
+Concrete NATS client construction, readiness endpoints, migration
+bootstrap, and shutdown hooks still belong to later process-adapter
+wiring.
 
 The `apps/workers` composition root receives typed config plus
 already-constructed ports. This is the only place the worker process
@@ -330,6 +341,15 @@ interface to the narrower statement executor contracts used by command
 state, outbox, event ingestion, and policy observations. This keeps the
 real database client and connection pool outside package code while
 still giving `apps/workers` one durable factory to compose.
+
+The app-local Cockroach worker client is intentionally not a new durable
+state abstraction. It is the outer process adapter that can later be
+backed by `pg`, another PostgreSQL-compatible client, or a test pool
+without changing `@agentic-org/state-cockroach` or application code.
+Ambiguous transaction outcomes must stay visible to the worker host and
+operators; the process adapter may attempt rollback cleanup after an
+ambiguous commit, but it must preserve the original ambiguity instead of
+masking it as a rollback failure.
 
 ## SOLID Rules
 
@@ -449,6 +469,23 @@ implementation of that port; it owns transport-specific concerns such as
 headers, message IDs, and JSON serialization. This keeps the
 Organization event loop extensible and testable without coupling the
 publisher to the NATS client.
+
+Outbox claims must be fenced. The publisher creates a claim ID for each
+batch; the source returns claimed events carrying that same claim ID; the
+publish mark must include the claim ID and durable adapters must reject
+stale, missing, already-published, or differently claimed rows. This is
+the minimum protection before multiple worker replicas publish from the
+same outbox table.
+The first Cockroach implementation ships both the updated core table
+shape and an additive `0002_agentic_org_outbox_claim_fence` migration so
+existing dev or cluster databases that already created the outbox table
+receive the `claim_id` column. Stale publish-mark failures are typed
+errors with claim/outbox/event/trace evidence, which the worker host can
+carry into telemetry without importing the Cockroach adapter.
+The cross-package failure evidence keys are defined in the domain kernel
+as a neutral contract. Adapter packages may populate those keys, worker
+packages may carry them, and observability packages may project them,
+but no package should invent parallel string keys for the same evidence.
 
 ### Event-to-Automation Contract
 

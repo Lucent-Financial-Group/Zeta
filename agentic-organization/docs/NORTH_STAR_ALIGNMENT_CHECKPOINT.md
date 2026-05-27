@@ -130,6 +130,10 @@ The current packages prove the right spine:
 - NATS subject and publisher/consumer adapters;
 - inbox dedupe, orphan-receipt recovery, and reaction plans;
 - worker host and app composition shell;
+- app-local Cockroach pooled-client adapter, SQLSTATE retry handling,
+  ambiguous-commit preservation, and JSON worker telemetry sink;
+- outbox claim fencing with claim IDs, stale-claim evidence, and an
+  additive Cockroach migration for existing databases;
 - telemetry attributes and workflow visibility records;
 - package-boundary governance.
 
@@ -223,9 +227,11 @@ business state.
 The remaining gaps are richer authority semantics and cluster-backed
 integration proof: tests still need unauthorized source hats, invalid
 target supervisors, and missing assignments. The system now has a
-durable worker composition seam below `apps/workers`, but it still needs
-a real Cockroach-backed integration run and concrete process client
-construction for Cockroach, NATS, and telemetry.
+durable worker composition seam below `apps/workers`, an app-local
+Cockroach pooled-client adapter, and a JSON telemetry sink, but it still
+needs a real Cockroach-backed integration run, real NATS process-client
+construction, migration bootstrap/readiness behavior, and cluster OTEL
+export wiring.
 
 ### Command Surface Closure
 

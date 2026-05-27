@@ -2,6 +2,7 @@ import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { OutboxPublishOutcomeStatus } from "../../../packages/messaging/src/index.ts";
+import { createOutboxPublishFailureEvidence } from "../../../packages/domain/src/index.ts";
 import type { NatsJetStreamConsumeBatchResult } from "../../../packages/messaging-nats/src/index.ts";
 import { WorkerCycleStatus, type WorkerCycleResult } from "../../../packages/workers/src/index.ts";
 import {
@@ -86,6 +87,59 @@ describe("worker runtime composition host", () => {
         message: "outbox loop failed",
       },
     ]);
+  });
+
+  test("projects first worker-cycle failure evidence into telemetry attributes", async () => {
+    const telemetrySink = createRecordingTelemetrySink();
+    const runtime = createWorkerRuntime({
+      config: createRuntimeConfig(),
+      organizationWorkerHost: createRecordingOrganizationWorkerHost({
+        ...createWorkedWorkerCycle(),
+        status: WorkerCycleStatus.Degraded,
+        failures: [
+          {
+            lane: "outbox",
+            message: "outbox claim stale",
+            evidence: createOutboxPublishFailureEvidence({
+              claimId: "outbox-claim-stale",
+              commandId: "cmd-001",
+              currentClaimId: "outbox-claim-001",
+              eventId: "evt-001",
+              outboxEventId: "outbox-001",
+              publishedAt: "2026-05-25T20:59:00.000Z",
+              traceId: "trace-001",
+            }),
+          },
+        ],
+      }),
+      natsEventConsumer: createRecordingNatsEventConsumer(createProcessedNatsBatch()),
+      telemetrySink,
+    });
+
+    const result = await runtime.runOnce();
+
+    equal(result.status, WorkerRuntimeStatus.Degraded);
+    deepEqual(telemetrySink.records[0]?.attributes, {
+      "agentic.worker.cycle.status": WorkerCycleStatus.Degraded,
+      "agentic.worker.outbox.status": OutboxPublishOutcomeStatus.Published,
+      "agentic.worker.inbound.pulled_count": 0,
+      "agentic.worker.inbound.processed_count": 0,
+      "agentic.worker.inbound.duplicate_count": 0,
+      "agentic.worker.inbound.payload_conflict_count": 0,
+      "agentic.worker.inbound.failed_count": 0,
+      "agentic.worker.inbound.reaction_plan_count": 0,
+      "agentic.worker.failure_count": 1,
+      "agentic.worker.failure.first_lane": "outbox",
+      "agentic.worker.failure.first_message": "outbox claim stale",
+      "agentic.worker.failure.stage": WorkerRuntimeFailureStage.OrganizationWorker,
+      "agentic.worker.failure.claim_id": "outbox-claim-stale",
+      "agentic.worker.failure.command_id": "cmd-001",
+      "agentic.worker.failure.current_claim_id": "outbox-claim-001",
+      "agentic.worker.failure.event_id": "evt-001",
+      "agentic.worker.failure.outbox_event_id": "outbox-001",
+      "agentic.worker.failure.published_at": "2026-05-25T20:59:00.000Z",
+      "agentic.worker.failure.trace_id": "trace-001",
+    });
   });
 
   test("marks the runtime degraded when NATS consumer reports dead letters", async () => {

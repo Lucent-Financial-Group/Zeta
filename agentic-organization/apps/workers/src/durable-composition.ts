@@ -67,6 +67,7 @@ export function composeDurableWorkerRuntimePorts(
     eventPublisher: input.durableAdapters.eventPublisher,
     environment: input.config.environment,
     resolveDomain: resolveAgenticMessagingDomain,
+    createId: input.runtimeUtilities.createId,
     now: input.runtimeUtilities.now,
   });
 

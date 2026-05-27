@@ -2,6 +2,7 @@ import {
   buildNatsConsumerBatchAttributes,
   buildWorkerCycleAttributes,
   type NatsConsumerBatchAttributes,
+  type WorkerCycleFailureAttributeInput,
   type WorkerCycleAttributes,
 } from "../../../packages/observability/src/index.ts";
 import { OutboxPublishOutcomeStatus } from "../../../packages/messaging/src/index.ts";
@@ -176,6 +177,7 @@ async function runOrganizationWorker(input: RunOrganizationWorkerInput): Promise
           inboundFailedCount: workerCycle.inbound.failedCount,
           inboundReactionPlanCount: workerCycle.inbound.reactionPlanCount,
           failureCount: workerCycle.failures.length,
+          firstFailure: buildFirstWorkerCycleFailureTelemetryInput(workerCycle),
         }),
       },
     });
@@ -187,6 +189,21 @@ async function runOrganizationWorker(input: RunOrganizationWorkerInput): Promise
     });
     return undefined;
   }
+}
+
+function buildFirstWorkerCycleFailureTelemetryInput(
+  workerCycle: WorkerCycleResult,
+): WorkerCycleFailureAttributeInput | undefined {
+  const firstFailure = workerCycle.failures[0];
+
+  if (firstFailure === undefined) {
+    return undefined;
+  }
+
+  return {
+    ...firstFailure,
+    stage: WorkerRuntimeFailureStage.OrganizationWorker,
+  };
 }
 
 type RunNatsConsumerInput = {

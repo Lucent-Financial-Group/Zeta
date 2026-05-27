@@ -1,4 +1,8 @@
-import type { AgenticEventEnvelope } from "../../domain/src/index.ts";
+import type {
+  AgenticEventEnvelope,
+  WorkerFailureEvidence,
+  WorkerFailureEvidenceValue,
+} from "../../domain/src/index.ts";
 import {
   OutboxPublishOutcomeStatus,
   type OutboxPublishBatchResult,
@@ -40,9 +44,12 @@ export type WorkerInboundCycleSummary = {
 };
 
 export type WorkerPortFailure = {
+  evidence?: WorkerPortFailureEvidence;
   lane: WorkerLane;
   message: string;
 };
+
+export type WorkerPortFailureEvidence = WorkerFailureEvidence;
 
 export type WorkerCycleResult = {
   status: WorkerCycleStatus;
@@ -105,10 +112,7 @@ async function publishOutboxBatch(input: PublishOutboxBatchInput): Promise<Outbo
       batchSize: input.batchSize,
     });
   } catch (error) {
-    input.failures.push({
-      lane: WorkerLane.Outbox,
-      message: extractErrorMessage(error),
-    });
+    input.failures.push(createWorkerPortFailure(WorkerLane.Outbox, error));
     return undefined;
   }
 }
@@ -132,10 +136,7 @@ async function processInboundBatch(input: ProcessInboundBatchInput): Promise<Wor
       failures: input.failures,
     });
   } catch (error) {
-    input.failures.push({
-      lane: WorkerLane.Inbound,
-      message: extractErrorMessage(error),
-    });
+    input.failures.push(createWorkerPortFailure(WorkerLane.Inbound, error));
     return createEmptyInboundCycleSummary(0);
   }
 }
@@ -170,10 +171,7 @@ async function ingestInboundBatch(input: IngestInboundBatchInput): Promise<Worke
       summary.reactionPlanCount += result.reactionPlans.length;
     } catch (error) {
       summary.failedCount += 1;
-      input.failures.push({
-        lane: WorkerLane.Inbound,
-        message: extractErrorMessage(error),
-      });
+      input.failures.push(createWorkerPortFailure(WorkerLane.Inbound, error));
     }
   }
 
@@ -215,4 +213,45 @@ function extractErrorMessage(error: unknown): string {
   }
 
   return String(error);
+}
+
+function createWorkerPortFailure(lane: WorkerLane, error: unknown): WorkerPortFailure {
+  const evidence = extractErrorEvidence(error);
+
+  if (evidence !== undefined) {
+    return {
+      evidence,
+      lane,
+      message: extractErrorMessage(error),
+    };
+  }
+
+  return {
+    lane,
+    message: extractErrorMessage(error),
+  };
+}
+
+function extractErrorEvidence(error: unknown): WorkerPortFailureEvidence | undefined {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "evidence" in error &&
+    isWorkerPortFailureEvidence(error.evidence)
+  ) {
+    return error.evidence;
+  }
+
+  return undefined;
+}
+
+function isWorkerPortFailureEvidence(value: unknown): value is WorkerPortFailureEvidence {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  return Object.values(value).every(
+    (entry): entry is WorkerFailureEvidenceValue =>
+      typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean" || entry === null,
+  );
 }

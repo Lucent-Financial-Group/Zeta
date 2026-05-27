@@ -2558,11 +2558,17 @@ review finding changes the dependency graph.
 
 ### PR 1: Worker Process Adapter Interfaces
 
+Status: partially implemented. The app-local Cockroach pooled-client
+adapter, JSON telemetry sink, outbox claim fencing, and additive
+Cockroach claim-fence migration now exist. The remaining PR 1 scope is
+the real NATS connection factory plus readiness/config hardening around
+all process adapters.
+
 Build:
 
-- app-local Cockroach client interface implementation;
-- app-local NATS connection factory interface;
-- telemetry sink interface and JSON sink fake;
+- app-local Cockroach client interface implementation; done;
+- app-local NATS connection factory interface; remaining;
+- telemetry sink interface and JSON sink fake; done;
 - config validation for adapter-specific connection settings;
 - early full-ai-cluster contract checkpoint for env, secrets, egress,
   readiness, and OTEL destinations.
@@ -2807,8 +2813,9 @@ Use this checklist before marking any phase complete.
 
 Use these questions when we talk through the plan:
 
-1. Should PR 1 bind only Cockroach first, or Cockroach plus NATS plus
-   telemetry in one process-adapter PR?
+1. Should PR 1 finish with only the real NATS process adapter next, or
+   should readiness endpoints and migration bootstrap be pulled into the
+   same PR?
 2. Do we want integration tests to use a local Cockroach service, a k3d
    profile, or only env-gated tests against the real cluster?
 3. Should `apps/workers` get the first executable entrypoint before

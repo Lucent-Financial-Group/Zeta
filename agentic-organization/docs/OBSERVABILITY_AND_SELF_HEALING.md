@@ -176,6 +176,20 @@ or telemetry adapters, the failure should produce explicit startup
 evidence and a degraded/readiness signal rather than disappearing before
 agents and operators can inspect it.
 
+Durable transaction and publication ambiguity also counts as observable
+runtime evidence. A Cockroach ambiguous commit, stale outbox claim,
+missing outbox claim, or duplicate publish mark should surface as a
+weak-point trail with the command ID, event ID, claim ID when present,
+trace ID, and worker runtime stage so agents can distinguish harmless
+replay pressure from a real harness or consistency problem.
+
+The first worker telemetry adapter is deliberately simple: an app-local
+JSON sink that records timestamp, event name, and stable worker/NATS
+attributes. This gives local runs and cluster logs the same field shape
+before an OTLP exporter is introduced. Later Alloy/Loki/Tempo/Mimir
+binding should ingest or translate this shape rather than inventing a
+parallel telemetry vocabulary.
+
 ## Implementation Rule
 
 When adding a package, command, adapter, workflow, gate, or runtime host,

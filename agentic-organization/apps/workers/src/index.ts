@@ -5,6 +5,23 @@ export {
   type WorkerProcessConfig,
   type WorkerProcessEnvironment,
 } from "./config.ts";
+export {
+  CockroachWorkerTransactionError,
+  CockroachWorkerTransactionErrorClassification,
+  CockroachWorkerTransactionErrorCode,
+  CockroachWorkerTransactionStatement,
+  createCockroachWorkerSqlClient,
+  type CockroachWorkerTransactionRetryDelayInput,
+  type CockroachWorkerPool,
+  type CockroachWorkerPoolClient,
+  type CreateCockroachWorkerSqlClientInput,
+} from "./adapters/cockroach-worker-client.ts";
+export {
+  createJsonWorkerTelemetrySink,
+  type CreateJsonWorkerTelemetrySinkInput,
+  type JsonLineWriter,
+  type JsonWorkerTelemetryRecord,
+} from "./adapters/json-worker-telemetry-sink.ts";
 export { composeWorkerRuntime, type ComposeWorkerRuntimeInput, type WorkerRuntimePorts } from "./composition.ts";
 export {
   composeDurableWorkerRuntimePorts,

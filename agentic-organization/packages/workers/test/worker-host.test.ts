@@ -5,9 +5,11 @@ import {
   AgenticAggregateType,
   AgenticEventType,
   SupervisorChainLevel,
+  createOutboxPublishFailureEvidence,
   createAgenticEventEnvelope,
   type AgenticEventEnvelope,
   type OutboxEvent,
+  type WorkerFailureEvidence,
 } from "../../domain/src/index.ts";
 import {
   OutboxPublishOutcomeStatus,
@@ -82,6 +84,7 @@ describe("organization worker host", () => {
         },
         environment: "test",
         resolveDomain: resolveAgenticMessagingDomain,
+        createId: () => "outbox-claim-001",
         now: () => "2026-05-25T20:05:00.000Z",
       }),
       inboundEventSource: {
@@ -239,6 +242,45 @@ describe("organization worker host", () => {
       },
     ]);
   });
+
+  test("preserves structured outbox failure evidence for runtime telemetry and diagnosis", async () => {
+    const workerHost = createOrganizationWorkerHost({
+      outboxPublisher: createFailingOutboxPublisher("outbox claim stale", {
+        ...createOutboxPublishFailureEvidence({
+          claimId: "outbox-claim-stale",
+          commandId: "cmd-001",
+          currentClaimId: "outbox-claim-001",
+          eventId: "evt-001",
+          outboxEventId: "outbox-001",
+          publishedAt: "2026-05-25T20:59:00.000Z",
+          traceId: "trace-001",
+        }),
+      }),
+      inboundEventSource: createRecordingInboundEventSource([]),
+      eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      outboxBatchSize: 25,
+      inboundBatchSize: 10,
+    });
+
+    const result = await workerHost.runOnce();
+
+    equal(result.status, WorkerCycleStatus.Degraded);
+    deepEqual(result.failures, [
+      {
+        lane: WorkerLane.Outbox,
+        message: "outbox claim stale",
+        evidence: {
+          claimId: "outbox-claim-stale",
+          commandId: "cmd-001",
+          currentClaimId: "outbox-claim-001",
+          eventId: "evt-001",
+          outboxEventId: "outbox-001",
+          publishedAt: "2026-05-25T20:59:00.000Z",
+          traceId: "trace-001",
+        },
+      },
+    ]);
+  });
 });
 
 type RecordingOutboxPublisher = OutboxPublisher & {
@@ -257,10 +299,19 @@ function createRecordingOutboxPublisher(result: OutboxPublishBatchResult): Recor
   };
 }
 
-function createFailingOutboxPublisher(message: string): OutboxPublisher {
+function createFailingOutboxPublisher(
+  message: string,
+  evidence?: WorkerFailureEvidence,
+): OutboxPublisher {
   return {
     publishNextBatch: async () => {
-      throw new Error(message);
+      const error = new Error(message) as Error & {
+        evidence?: WorkerFailureEvidence | undefined;
+      };
+      if (evidence !== undefined) {
+        error.evidence = evidence;
+      }
+      throw error;
     },
   };
 }
@@ -317,19 +368,24 @@ function createRecordingEventIngestionProcessor(
 }
 
 function createSingleEventOutboxSource(outboxEvent: OutboxEvent): {
-  claimUnpublishedOutboxEvents: () => Promise<readonly OutboxEvent[]>;
+  claimUnpublishedOutboxEvents: (input: { claimId: string }) => Promise<readonly (OutboxEvent & { claimId: string })[]>;
   markOutboxEventPublished: () => Promise<void>;
 } {
   let claimed = false;
 
   return {
-    claimUnpublishedOutboxEvents: async () => {
+    claimUnpublishedOutboxEvents: async (input) => {
       if (claimed) {
         return [];
       }
 
       claimed = true;
-      return [outboxEvent];
+      return [
+        {
+          ...outboxEvent,
+          claimId: input.claimId,
+        },
+      ];
     },
     markOutboxEventPublished: async () => {
       outboxEvent.publishedAt = "2026-05-25T20:05:00.000Z";
