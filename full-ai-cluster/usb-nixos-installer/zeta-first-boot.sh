@@ -31,6 +31,11 @@ HOST="${HOST:-control-plane}"
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 ETHERNET_WAIT_SECS="${ETHERNET_WAIT_SECS:-30}"
 ROLE_PROMPT_SECS="${ROLE_PROMPT_SECS:-10}"
+# B-0832 nmtui retry-prompt timeout — operator window to press 's' for
+# shell-drop OR any other key (or wait) for nmtui re-launch. Mirrors
+# the ROLE_PROMPT_SECS env-override pattern so the timeout is tunable
+# without source edits.
+NMTUI_RETRY_PROMPT_SECS="${NMTUI_RETRY_PROMPT_SECS:-10}"
 
 # ── Role pick: 10-sec single-keystroke prompt ─────────────────────────
 # Defaults to whatever the ISO's /etc/zeta-firstboot.conf shipped with
@@ -151,12 +156,12 @@ else
     # No internet yet — give operator the choice to retry or escape
     echo
     echo "[zeta-first-boot] No internet after nmtui session ${NMTUI_ATTEMPTS}."
-    echo "                  Press 's' within 10s to drop to shell, OR"
+    echo "                  Press 's' within ${NMTUI_RETRY_PROMPT_SECS}s to drop to shell, OR"
     echo "                  press any other key (or wait) to re-launch nmtui"
     echo "                  to refresh the wifi scan."
     echo
     CHOICE=""
-    read -n 1 -s -t 10 -p "  > " CHOICE || true
+    read -r -n 1 -s -t "${NMTUI_RETRY_PROMPT_SECS}" -p "  > " CHOICE || true
     echo
     case "$CHOICE" in
       s|S)
