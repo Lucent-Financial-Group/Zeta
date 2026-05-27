@@ -22,7 +22,15 @@
 # linux.sh script handles root-vs-sudo via `id -u` check, so this
 # matches CI runner contexts.
 
-FROM nixos/nix:latest
+# Base image pinned per Copilot review on PR #5393 — non-pinned :latest
+# makes test non-deterministic (base image bumps break CI without repo
+# changes). Operator bumps via WebSearch per
+# .claude/rules/dep-pin-search-first-authority.md (the implementer
+# at bump time verifies the current latest stable tag on Docker Hub
+# nixos/nix repository + the digest for content-addressed pinning).
+# Current pin: 2.31.2 (latest stable per dockerhub nixos/nix tags
+# as of training data; verify on bump per dep-pin rule).
+FROM nixos/nix:2.31.2
 
 # /etc/NIXOS marker file — what linux.sh's NixOS detection branch uses
 # to skip the apt step (per iter-5.5.1 PR #5389). Without this marker
@@ -60,9 +68,12 @@ COPY package.json bun.lock* /workspace/
 # which CI surfaces as a build failure.
 RUN tools/setup/install.sh
 
-# Validation step 1: bun installed via mise + matches .mise.toml pin
-# (currently bun = "1.3" per .mise.toml line 33).
-RUN bash -lc 'eval "$(mise activate bash)" && bun --version | grep -q "^1\." || (echo "ERROR: bun not installed or wrong version" && exit 1)'
+# Validation step 1: bun installed via mise AND matches .mise.toml pin
+# `bun = "1.3"` exactly (per Copilot review on PR #5393 — earlier check
+# was `^1\.` which would let `bun = "1.5"` drift past unnoticed).
+# Future bumps of .mise.toml bun pin require updating this regex too;
+# composes with .claude/rules/dep-pin-search-first-authority.md.
+RUN bash -lc 'eval "$(mise activate bash)" && bun --version | grep -q "^1\.3\." || (echo "ERROR: bun version mismatch (expected 1.3.x per .mise.toml)" && bun --version && exit 1)'
 
 # Validation step 2: claude-code installable via bun (validates the
 # iter-5.5.0 substrate's bun install --global pattern works on NixOS

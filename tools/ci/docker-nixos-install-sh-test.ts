@@ -20,8 +20,8 @@
  * QEMU = end-to-end virtualized boot (~15 min). Both run on CI for
  * install-substrate PRs.
  *
- * Operator framing 2026-05-27 (Aaron): "we should add docker based
- * nixos install.sh testing so we can iterate quick that's an easy
+ * Operator framing 2026-05-27: "we should add docker based nixos
+ * install.sh testing so we can iterate quick that's an easy
  * dockerfile" → B-0849 backlog row → this implementation.
  *
  * Usage:
@@ -47,7 +47,28 @@
 
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+
+// Centralized docker invocation helper — single point for the
+// sonarjs/no-os-command-from-path suppression (matches the pattern
+// in tools/ci/audit-installer-iso-content.ts:186-194). Rationale:
+// the `docker` binary comes from the runner's default PATH; the CI
+// workflow doesn't pin an absolute path, and the binary name is
+// stable across docker versions. The `maxBuffer` is set generously
+// because `docker build --progress=plain` produces a lot of output
+// per build step (could exceed Node's default 1 MiB).
+function spawnDocker(
+  args: string[],
+  opts: { timeoutMs?: number } = {}
+): ReturnType<typeof spawnSync> {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  return spawnSync("docker", args, {
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024, // 64 MiB — docker build output is verbose
+    timeout: opts.timeoutMs,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+}
 
 const DOCKERFILE_PATH = "tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile";
 const IMAGE_TAG = "zeta-nixos-install-sh-test:local";
@@ -72,8 +93,8 @@ function usage(): never {
 }
 
 function checkPrereqs(): void {
-  // Verify docker is installed
-  const docker = spawnSync("docker", ["--version"], { encoding: "utf8" });
+  // Verify docker is installed (via centralized spawnDocker helper)
+  const docker = spawnDocker(["--version"]);
   if (docker.status !== 0) {
     console.error("error: docker not installed or not on PATH");
     console.error("  install via the standard mechanism for your OS");
@@ -114,13 +135,8 @@ function runBuild(timeoutSec: number, logPath: string): BuildResult {
   console.log(`[B-0849 Phase 1] docker build ${buildArgs.join(" ")}`);
   console.log(`[B-0849 Phase 1] timeout: ${timeoutSec}s; log: ${logPath}`);
 
-  // spawnSync with timeout converted to milliseconds
-  const result = spawnSync("docker", buildArgs, {
-    encoding: "utf8",
-    timeout: timeoutSec * 1000,
-    // Combine stdout + stderr for the log
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  // spawnDocker helper centralizes the sonarjs suppression + maxBuffer
+  const result = spawnDocker(buildArgs, { timeoutMs: timeoutSec * 1000 });
 
   const elapsedSec = Math.floor((Date.now() - startMs) / 1000);
 
@@ -164,9 +180,8 @@ function cleanup(keepImage: boolean): void {
     );
     return;
   }
-  const rm = spawnSync("docker", ["rmi", "-f", IMAGE_TAG], {
-    encoding: "utf8",
-  });
+  // spawnDocker helper centralizes the sonarjs suppression
+  const rm = spawnDocker(["rmi", "-f", IMAGE_TAG]);
   if (rm.status === 0) {
     console.log(`[B-0849 Phase 1] cleaned up image ${IMAGE_TAG}`);
   } else {
@@ -204,8 +219,10 @@ function main(): void {
   }
   const logPath = resolve(process.env.DOCKER_LOG_OUT_PATH ?? DEFAULT_LOG_PATH);
 
-  // Ensure log directory exists
-  const logDir = logPath.substring(0, logPath.lastIndexOf("/"));
+  // Ensure log directory exists (Copilot review: use path.dirname
+  // instead of lastIndexOf("/") for cross-platform support including
+  // Windows backslash paths).
+  const logDir = dirname(logPath);
   if (logDir && !existsSync(logDir)) {
     mkdirSync(logDir, { recursive: true });
   }
