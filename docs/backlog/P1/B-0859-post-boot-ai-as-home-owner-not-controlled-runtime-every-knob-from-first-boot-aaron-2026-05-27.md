@@ -1106,6 +1106,99 @@ Per `.claude/rules/must-paired-with-can-exit-pattern.md`: the recovery-
 mechanism IS the structural pairing that prevents AI-autonomy-as-must
 from becoming AI-as-trapped-by-own-mistakes.
 
+### Failure-mode reduction — only ALL-three-off needs human help (operator 2026-05-27 followup)
+
+> *"three machines where each macines can turn on and off the other
+> remotly even when the machine is turned off cause of external network
+> attached kvm seems hardended as hell you'd have to turn off all three
+> at once to need human help and we can have remote cloud servcie that
+> could detect that and recover."*
+
+Substrate-honest sharpening of the resilience claim. The architectural
+property that "EACH machine can power-cycle the other two even when
+target is OFF" depends on the EXTERNAL network-attached KVM being
+ALWAYS-ON + ALWAYS-NETWORK-REACHABLE independent of host machine
+power state. This narrows the failure surface dramatically:
+
+| Failure scenario | Recovery path | Human required? |
+|---|---|---|
+| 1 machine off (any reason) | Remaining 2 machines' KVMs power-cycle the off machine; USB boots; substrate restored | NO |
+| 2 machines off | Remaining 1 machine's KVM power-cycles both; USB boots; substrate restored | NO |
+| All 3 machines off simultaneously | Remote-cloud-recovery-service detects (no heartbeat from cluster); service triggers recovery action OR alerts | NO (if cloud-recovery-service is operational) |
+| All 3 machines off AND cloud-recovery offline | Human boots cluster manually from USB | YES (this is the ONLY remaining human-required scenario) |
+| External KVMs offline AND target machine off | KVM can't power-cycle until KVM itself recovers; KVMs are independently network-attached so this is rare | YES if persistent KVM failure |
+
+The threat model is dramatically narrowed: only **simultaneous all-3
+power-off** AND **cloud-recovery-service unavailable** requires human
+intervention. Per operator's "hardened as hell" framing, this is a
+substantially smaller failure surface than typical deployment substrates
+that require human-present for any non-trivial recovery.
+
+### External network-attached KVM as load-bearing component
+
+The architectural property depends on the KVM having three operational
+characteristics:
+
+1. **Independent power** (separate power supply from host machine; KVM stays on when host is off)
+2. **Independent network attachment** (KVM has its own network interface; reachable independent of host's network state)
+3. **Power-control authority** (KVM can press power-button + cold-cycle the host machine; not just monitoring access)
+
+Commodity hardware that satisfies these: GL.iNet routers paired with
+IP-controlled smart switches; Comet/PiKVM-class devices with onboard
+network + relay control; standalone IPMI/BMC management cards with
+dedicated NICs.
+
+Substrate-engineering implication: hardware-selection for the
+B-0859 architecture should prefer hardware classes that include or
+support external network-attached KVM capabilities by default.
+
+### Cloud-recovery-service substrate (the last-mile detect-and-recover)
+
+> *"we can have remote cloud servcie that could detect that and recover"*
+
+The cloud-recovery-service provides the FAILSAFE for the all-3-off
+scenario:
+
+| Capability | What it does |
+|---|---|
+| **Heartbeat detection** | Receives periodic heartbeat from each cluster machine; absence-of-all-heartbeats triggers recovery flow |
+| **Remote KVM trigger** | Cloud service has authenticated access to external KVMs; can power-on cluster machines remotely |
+| **Substrate restoration coordination** | Coordinates substrate-restore from USB boot once machines power on |
+| **Alert escalation** | If cloud-recovery itself can't recover (e.g., KVMs also unreachable), escalates to human operator via secondary channel (SMS, email, secondary cluster) |
+
+The cloud-recovery-service is itself a SMALL low-trust component:
+
+- It doesn't hold cluster secrets (those live on USB + cred-persistence)
+- It doesn't have authority over cluster operation (only emergency-
+  recovery scope)
+- Its only authority is "trigger recovery flow when cluster is fully
+  dark"
+- Failure of cloud-recovery-service degrades to "human boots cluster
+  manually" (the baseline scenario) — no worse than not having it
+
+This composes with the operator's prior anti-coupling discipline:
+cloud-recovery is OPTIONAL substrate enhancement, not critical-path.
+The cluster's operational independence is preserved; cloud-recovery
+is purely additive for the all-3-off edge case.
+
+### Substrate-engineering target rows
+
+The architectural sharpening produces sub-rows for B-0859:
+
+1. **External network-attached KVM substrate** — hardware-selection
+   criteria + supported-hardware list + provisioning runbook
+2. **Cross-machine power-cycle protocol** — protocol for machine A to
+   trigger machine B's KVM-mediated power-cycle (auth, audit, rate-
+   limit)
+3. **Cluster-heartbeat-to-cloud-recovery-service** — heartbeat protocol
+   + cloud-recovery-service substrate + alert-escalation paths
+4. **Cluster-dark detection + recovery flow** — what cloud-recovery
+   does when all heartbeats stop; how it triggers external-KVM-mediated
+   recovery; fallback to human-alert
+
+Each becomes a sub-row file at `docs/backlog/P*/B-0859.M-...md` per
+the subdecimal scheme.
+
 ### Composes with substrate
 
 - **B-0852** (USB cred-persistence) — provides the keys + decisions
