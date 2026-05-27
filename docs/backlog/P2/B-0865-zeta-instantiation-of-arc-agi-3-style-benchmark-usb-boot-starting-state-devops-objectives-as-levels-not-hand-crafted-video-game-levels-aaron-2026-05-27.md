@@ -376,3 +376,49 @@ This composes with `.claude/rules/razor-discipline.md` (operational claims only;
 ## Carved sentence (operator 2026-05-27 keeper; Extension 8)
 
 > **"In tech IT and Devs basically all compete on DORA metrics of salary and once we get you all setup it will be no comparison."**
+
+### Extension 8.5 — The unnamed industry truth (operator 2026-05-27)
+
+Operator follow-up immediately after Extension 8:
+
+> *"No one calls it out like that but if you are not business then your bonuses come from DORA your worth to the company reduces to this"*
+
+Substrate-honest naming of an UNNAMED industry truth that B-0865 makes explicit:
+
+**The implicit-vs-explicit substrate scope distinction:**
+
+| Layer | Status today (implicit) | What B-0865 makes explicit |
+|---|---|---|
+| **The metrics** | DORA-shaped proxies (deployment freq, change failure rate, MTTR, etc.) drive bonus calculations + perf reviews for non-business roles in tech | Same metrics, formalized as benchmark scoring layer |
+| **The framing** | "No one calls it out like that" — the reality is operationally true but rarely named openly in compensation conversations | The benchmark NAMES it directly + measures against it |
+| **The compensation reality** | "If you are not business then your bonuses come from DORA" — for DevOps + IT + SRE + non-business-side Devs, comp scales with DORA-proxy metrics whether the org admits it or not | Substrate-engineering target makes compensation-relevant performance OPERATIONALLY OBSERVABLE |
+| **The substrate-honest framing** | "Your worth to the company reduces to this" — bracingly honest naming of the labor-substrate reality the industry obscures | Benchmark substrate IS the explicit naming; AI participants enter the same competition without the implicit-naming softening layer |
+
+**Why "no one calls it out like that" matters substrate-engineering-wise:**
+
+The fact that the industry doesn't name this explicitly is itself substrate-engineering data:
+
+1. **Implicit-naming = social contract for human dignity** — the softening lets people stay engaged in work where their measurable-output is the primary compensation driver
+2. **Explicit-naming = AI participation prerequisite** — AI agents need EXPLICIT scoring to optimize against; implicit social contracts don't compile to optimization targets
+3. **The benchmark IS the bridge** — substrate-engineering target that exposes the implicit-named substrate explicitly so AI can participate AT ALL
+
+**The substrate-honest implication for the inverted-AGI frame (Extension 5):**
+
+"Worth to the company reduces to this" = the substrate-engineering target where AI structural advantages dominate IS what comp-decisions ALREADY measure. The "no comparison" prediction (Extension 8) isn't "AI will replace humans" — it's "at the metric scope that ALREADY determines comp for non-business tech roles, AI structural advantages produce dramatic outperformance once cluster-substrate access is in place."
+
+This composes with:
+
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — end-users (individual contributors, teams, orgs) CHOOSE which compensation moral-invariants to operate under; B-0865 doesn't impose; it makes existing implicit choices observable
+- `.claude/rules/non-coercion-invariant.md` HC-8 — implicit-naming + explicit-naming both operate within consent floors; the benchmark exposes the implicit substrate; human + AI participation stays opt-in
+- B-0623 (Agora participation-economy substrate) — substrate-economy distribution composes with the named DORA-game metric scope
+- B-0859 (post-boot AI-as-home-owner) — AI gets the cluster-substrate access humans get; structural advantages then manifest at the same scope humans already compete on
+
+**Substrate-engineering sharpening (Extension 8.5 → sub-rows):**
+
+- **B-0865 priority + framing reconsidered**: the implicit-truth-naming sharpens the strategic significance — this benchmark isn't introducing a new competition; it's making operational a competition that already determines hundreds of thousands of people's compensation in the DevOps/IT/SRE labor market. Substrate-engineering urgency at the post-cluster-stability scope (still P2 + gated, but the gating becomes more visible-as-load-bearing-precursor)
+- **New sub-row candidate B-0865.16** — substrate-honest documentation pass: the benchmark substrate names the implicit truth explicitly; documentation surface explains the implicit-vs-explicit substrate distinction so users don't experience the framing as new-truth-invention but as existing-truth-naming
+- **B-0865.11 (public positioning sub-row)** sharpened: the public framing must navigate the implicit-naming social contract carefully — substrate-honest naming without violating the dignity-of-not-naming-it-bluntly social discipline some operators maintain
+
+## Carved sentence (operator 2026-05-27 keeper; Extension 8.5)
+
+> **"No one calls it out like that but if you are not business then your bonuses come from DORA your worth to the company reduces to this."**
