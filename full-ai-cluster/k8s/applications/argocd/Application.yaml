@@ -25,27 +25,20 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-cd
-    # Keep aligned with full-ai-cluster/k8s/bootstrap/argocd-install.yaml
-    # `spec.version`. A drift between the bootstrap version and this
-    # self-management version would cause ArgoCD to immediately try to
-    # downgrade/upgrade itself on first reconcile — wedge risk in the
-    # earliest sync wave.
-    targetRevision: 7.7.10
+    targetRevision: 7.7.5
     helm:
       releaseName: argocd
       valuesObject:
-        # Mirror the bootstrap values so adopting this Application is
-        # a no-op transition. Subsequent value changes happen here.
-        global:
-          domain: argocd.zeta.local
         server:
           service:
-            type: ClusterIP   # ingress lands separately
+            type: LoadBalancer
         configs:
           params:
-            server.insecure: true   # TLS terminated upstream once ingress lands
+            # Allow server-side apply for ServerSideApply syncOption
+            # to do the right thing on CRD upgrades.
+            server.repo.server.timeout.seconds: "300"
         notifications:
-          enabled: false
+          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

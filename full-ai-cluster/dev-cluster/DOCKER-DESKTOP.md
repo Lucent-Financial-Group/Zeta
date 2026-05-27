@@ -16,8 +16,8 @@ cluster will OOM or thrash if you don't bump it.
 | Virtual disk limit | 64 GB | **128 GB** (containers + images + volumes) |
 
 If you have an M1/M2/M3/M4 Pro or Max, push CPU + memory higher.
-The Cilium agent alone wants ~512 MB per node × 3 nodes; add
-ArgoCD, its controllers, and the rest of the workloads on top.
+The Cilium agent alone wants ~512 MB per node × 3 nodes; ArgoCD
++ controllers + workloads adds up fast.
 
 ## Kubernetes toggle: OFF
 
