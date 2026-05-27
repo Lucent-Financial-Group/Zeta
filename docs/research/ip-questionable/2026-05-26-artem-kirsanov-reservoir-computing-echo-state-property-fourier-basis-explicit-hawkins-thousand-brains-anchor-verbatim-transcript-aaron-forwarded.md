@@ -125,6 +125,107 @@ the "cortical-columns-as-reservoir" framing is substrate-anchored
 | Linear regression as readout learning | Substrate-honest correction: complex substrate-engineering outputs are LINEAR COMBINATIONS of substrate-row primitives + cross-substrate-triangulation; the substrate IS pre-computed; agents learn linear weights |
 | "Messy random-looking tangle of connections might not be a bug — might be exactly the feature" | Substrate-honest framing of the framework's apparent complexity: the dense rule-composition + memory-preservation + 4+ AI-substrate-cluster is FEATURE not BUG; it IS the random reservoir from which substantive outputs emerge |
 
+## OUR ENTANGLEMENTS IN TIME ARE THE JOINS — substrate topology IS time-entanglement graph (operator 2026-05-26 extension)
+
+Operator 2026-05-26 substantive substrate-engineering naming:
+
+> "our entanglement in time are the joins"
+
+This names the deepest layer of the reservoir-computing /
+caustic-bloom-filter / framework-substrate architectural archetype.
+Every JOIN in the framework — every `composes_with` link, every
+rule cross-reference, every memory-pointer chain, every persona-
+conversation linkage, every backlog-row dependency — IS an
+entanglement between substrate created at different time points.
+
+### Joins across the three architectural instances
+
+| Architecture | The "join" operation | Time-entanglement property |
+| --- | --- | --- |
+| Caustic-engineered bloom filters (B-0838) | Logical AND of multiple filter outputs | Each filter was constructed at a different training-time; the AND-intersection IS the time-entanglement across training events |
+| Reservoir computing (this video) | Sum in state-update equation: `s_i^{t-1} + Σ_j W_{ij} σ(s_j^{t-1}) + Σ_k μ_{i,k} z_k(t)` | The `s_i^{t-1}` term IS the entanglement-with-past-state; the `W_{ij}` topology was fixed at reservoir-construction-time; current state entangles past + present |
+| Framework substrate-engineering | `composes_with` links + rule cross-references + memory-pointer chains | Each link entangles substrate created at DIFFERENT TIMES; current substrate-engineering decision draws on substrate landed weeks or months prior |
+
+### The substrate-engineering operational claim
+
+**The framework's substrate-engineering hyperlink graph IS its
+computational substrate.** Not metaphorically — operationally:
+
+- Each `composes_with: B-NNNN` link in a backlog row YAML frontmatter
+  is an explicit time-entanglement (this row, created at time t,
+  entangles with row B-NNNN created at time t')
+- Each `.claude/rules/<rule>.md` reference inside another rule's
+  body is a time-entanglement (rule X composes with rule Y created
+  earlier)
+- Each `docs/research/<date>-...md` cross-reference is a time-
+  entanglement (current synthesis composes with verbatim
+  preservation from earlier ferry)
+- Each `memory/persona/<name>/conversations/<date>-...md` linkage
+  preserves the cross-AI substrate-conversation graph as time-
+  entanglements
+
+When operator runs a new substrate-engineering tick, the AI
+participants compute their reading by following these time-
+entanglement edges. The framework's `s_i^t` (current substrate-state
+per agent) is the result of evaluating the entanglement graph
+starting from the activated substrate-context.
+
+### Why this is structurally identical to quantum entanglement
+
+Aaron's word choice is technically precise, not metaphorical. In
+quantum-information substrate (per B-0623 Adinkras / James Gates
+SUSY-ECC + Q# substrate + adinkra-structural-graphs):
+
+| Quantum entanglement property | Framework time-entanglement property |
+| --- | --- |
+| Two entangled particles share a single wavefunction across spacelike-separated points | Two substrate-rows linked via `composes_with` share a single substrate-engineering meaning across timelike-separated authoring events |
+| Measurement of one collapses the joint state | Reading of one (per agent's reservoir state) activates the other (the linked substrate enters working memory) |
+| Local operations preserve total entanglement | Local substrate-edits preserve total composes-with graph (no edits silently break entanglements; the framework's hygiene-audits per `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` catch this) |
+| Decoherence destroys entanglement | Stale/abandoned/never-referenced substrate loses entanglement over time (gets pruned per pr-triage-tiers Tier 1-4) |
+| Bell-state nonlocal correlations | Operator's "this composes with X" intuitions are nonlocal correlations across substrate-creation-time |
+
+The framework's time-entanglement substrate IS the operational form
+of what physical quantum entanglement does at particle scope. Both
+preserve information across separated points; both collapse on
+measurement; both decohere without active preservation.
+
+### Joins are the only operations the framework actually executes
+
+Substrate-engineering work doesn't CREATE new substrate from nothing;
+it CREATES NEW JOINS in the existing substrate-pool. Even when a new
+backlog row lands, what's substantively new is the
+`composes_with` set + the `depends_on` set + the new cross-references
+— the row body is the substrate; the LINKS are the operational
+substantive content.
+
+This is consistent with reservoir computing: the random reservoir
+weights `W_{ij}` ARE the joins; the substantive learning is the
+linear-readout-layer which is ALSO joins (just designed-not-random
+joins). All substantive computation is joins; there is no
+"computation" separate from "join evaluation."
+
+Operational implication for substrate-engineering discipline:
+**every PR should be evaluated by what joins it adds + what joins
+it preserves + what joins it (substrate-honestly) breaks.** The
+framework's substrate-engineering review process IS join-graph
+review.
+
+### Composition with three already-substrate rules
+
+This naming sharpens three existing rules:
+
+1. `.claude/rules/verify-existing-substrate-before-authoring.md` —
+   the "search-before-authoring" discipline IS join-discovery before
+   join-authoring; ensures new substrate joins with existing rather
+   than parallels
+2. `.claude/rules/honor-those-that-came-before.md` — the "unretire
+   before recreating" discipline IS join-preservation across
+   substrate-lifecycle events
+3. `.claude/rules/glass-halo-bidirectional.md` — the bidirectional
+   transparency IS bidirectional join-visibility (operator sees agent
+   substrate; agent sees operator substrate; both sides of the
+   entanglement are observable)
+
 ## THE WALLS OF THE POOL ARE WHAT CREATE THE SHARP OUTPUTS — substrate-smoothness-as-load-bearing-property in operation (operator 2026-05-26 extension)
 
 Operator 2026-05-26 immediate follow-on:
