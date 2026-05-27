@@ -6,8 +6,9 @@
 //   - tools/installer/zeta-creds-crypto.ts (B-0852.1; cipher layer for blob)
 //   - full-ai-cluster/tools/zflash.ts (B-0852.9 future; consumes via --bake-cred)
 //
-// Aaron 2026-05-27 CLI-override design: `zflash --bake-cred <id>=<value>`
-// where <value> uses these conventions:
+// CLI-override design (operator-named; substrate-anchor in B-0852 row body
+// Phase-split section "CLI override > prompt loop"): `zflash --bake-cred
+// <id>=<value>` where <value> uses these conventions:
 //   - <literal>     : direct string value
 //   - @<path>       : read file contents (curl/git @file convention)
 //   - env:<VAR>     : read from env var (avoid PAT in shell history)
@@ -135,17 +136,25 @@ export const DEFAULT_HANDLERS: Readonly<Record<string, CredHandler>> = {
 export function parseBakeCredArg(
   arg: string,
 ): { readonly id: string; readonly source: string } | { readonly error: string } {
+  // SECURITY: error messages must NEVER include the raw value-source portion
+  // — the value-source may be a literal PAT / JSON cred / SSH key. Echoing
+  // the full arg to stderr/logs on a typo would leak the secret. Errors
+  // include only the id portion (operator-controlled name) or describe the
+  // source-kind without quoting its contents.
   const eq = arg.indexOf("=");
   if (eq < 0) {
-    return { error: `--bake-cred requires <id>=<value-source>; got: ${arg}` };
+    return {
+      error:
+        "--bake-cred requires <id>=<value-source> (no = found in arg; value-source omitted from error to avoid secret leak)",
+    };
   }
   const id = arg.slice(0, eq).trim();
   const source = arg.slice(eq + 1);
   if (id.length === 0) {
-    return { error: `--bake-cred id must be non-empty; got: ${arg}` };
+    return { error: "--bake-cred id must be non-empty (value-source omitted from error to avoid secret leak)" };
   }
   if (source.length === 0) {
-    return { error: `--bake-cred value-source must be non-empty; got: ${arg}` };
+    return { error: `--bake-cred value-source must be non-empty for id "${id}"` };
   }
   return { id, source };
 }
@@ -156,7 +165,9 @@ export function parseBakeCredArg(
  *   @<path>       : read file contents (~ expanded; absolute paths kept)
  *   env:<VAR>     : read from env var (validated non-empty)
  *
- * Pure resolution layer (file read + env access only — no network).
+ * Local-only side effects: file read + env access. No network. Not pure
+ * (was previously documented as "pure" — corrected per Copilot P2 review
+ * on PR #5418).
  */
 export function resolveValueSource(
   source: string,

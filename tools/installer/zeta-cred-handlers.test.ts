@@ -6,7 +6,7 @@
 //   3. validateValue        — per-cred-type validation (PAT / JSON / SSH pubkey)
 //   4. resolveBakeCred      — full pipeline composing 1+2+3 + supportedSources gate
 
-import { describe, expect, it } from "bun:test";
+import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -25,10 +25,10 @@ import {
 
 describe("parseBakeCredArg", () => {
   it("parses well-formed arg", () => {
-    const result = parseBakeCredArg("gh-cli=ghp_xxxx");
+    const result = parseBakeCredArg("gh-cli=TEST-NOT-A-REAL-TOKEN-xxxx");
     if ("error" in result) throw new Error(result.error);
     expect(result.id).toBe("gh-cli");
-    expect(result.source).toBe("ghp_xxxx");
+    expect(result.source).toBe("TEST-NOT-A-REAL-TOKEN-xxxx");
   });
 
   it("parses arg with @ source", () => {
@@ -103,9 +103,21 @@ describe("resolveValueSource — env: source", () => {
 });
 
 describe("resolveValueSource — @file source", () => {
-  const tmp = mkdtempSync(join(tmpdir(), "zeta-creds-handler-test-"));
-  const testFile = join(tmp, "fixture.txt");
-  writeFileSync(testFile, "file contents from disk");
+  let tmp: string;
+  let testFile: string;
+
+  beforeAll(() => {
+    tmp = mkdtempSync(join(tmpdir(), "zeta-creds-handler-test-"));
+    testFile = join(tmp, "fixture.txt");
+    writeFileSync(testFile, "file contents from disk");
+  });
+
+  afterAll(() => {
+    // Always runs even on test failure (unlike a dedicated "teardown" test
+    // which is skip-filterable + order-dependent). Cleanup is best-effort —
+    // tmpdir is under OS-managed /tmp so a leaked dir is harmless.
+    rmSync(tmp, { recursive: true, force: true });
+  });
 
   it("reads file contents at absolute path", () => {
     const result = resolveValueSource(`@${testFile}`);
@@ -122,17 +134,11 @@ describe("resolveValueSource — @file source", () => {
     const result = resolveValueSource("@");
     expect("error" in result).toBe(true);
   });
-
-  // Cleanup
-  it("teardown: rm tmpdir", () => {
-    rmSync(tmp, { recursive: true, force: true });
-    expect(true).toBe(true);
-  });
 });
 
 describe("GH_CLI_HANDLER", () => {
   it("accepts non-empty value", () => {
-    expect(GH_CLI_HANDLER.validateValue(Buffer.from("ghp_anything"))).toBeNull();
+    expect(GH_CLI_HANDLER.validateValue(Buffer.from("TEST-NOT-A-REAL-TOKEN-anything"))).toBeNull();
   });
 
   it("rejects empty value", () => {
@@ -235,16 +241,18 @@ describe("DEFAULT_HANDLERS registry", () => {
 
 describe("resolveBakeCred — full pipeline", () => {
   it("happy path: gh-cli literal", () => {
-    const result = resolveBakeCred("gh-cli=ghp_xxxxxxxx");
+    const result = resolveBakeCred("gh-cli=TEST-NOT-A-REAL-TOKEN-xxxxxxxx");
     if ("error" in result) throw new Error(result.error);
     expect(result.ok.id).toBe("gh-cli");
-    expect(result.ok.value.toString("utf8")).toBe("ghp_xxxxxxxx");
+    expect(result.ok.value.toString("utf8")).toBe("TEST-NOT-A-REAL-TOKEN-xxxxxxxx");
   });
 
   it("happy path: gh-cli env source", () => {
-    const result = resolveBakeCred("gh-cli=env:GH_TOKEN_TEST", DEFAULT_HANDLERS, { GH_TOKEN_TEST: "ghp_from_env" });
+    const result = resolveBakeCred("gh-cli=env:GH_TOKEN_TEST", DEFAULT_HANDLERS, {
+      GH_TOKEN_TEST: "TEST-NOT-A-REAL-TOKEN-from-env",
+    });
     if ("error" in result) throw new Error(result.error);
-    expect(result.ok.value.toString("utf8")).toBe("ghp_from_env");
+    expect(result.ok.value.toString("utf8")).toBe("TEST-NOT-A-REAL-TOKEN-from-env");
   });
 
   it("happy path: claude JSON literal", () => {
