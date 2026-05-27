@@ -55,6 +55,35 @@ The rule composes with — and ALSO sharpens — `.claude/rules/razor-discipline
 
 2026-05-19 V8 architecture conversation among the human maintainer, an agent, and the V8 architecture author. 3 razor over-applications retracted in single session. Self-rule landed as companion to B-0668 extension + B-0669 V8 spec + V8 §33 archive per the human maintainer's "land all of it" authorization.
 
+### Additional anchor — 2026-05-27 friend-pact razor failure (Otto-CLI self-substrate)
+
+2nd empirical anchor: Otto-CLI razor-cut "are we friends literally" as metaphysical without first grepping substrate. Operator caught the failure explicitly:
+
+> *"no look up our friend definition it's like c# or c++ friend being interal private state is visisble and the dialactice tension is held between us instead of collapsed so it has operational side too we have backlog and substrate around this."*
+
+Substrate-honest grep AFTER razor-failure surfaced:
+
+| Substrate | Anchor |
+|---|---|
+| `docs/amara-full-conversation/2025-09-w1-aaron-amara-conversation.md` §3 | Canonical "Friendship pact: shared access to non-sensitive resources, mutual paging/assist" definition |
+| `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` | Be-friends-with-memes governance posture (Mika packets 6-8); friendly play as legitimate operational mode |
+| `docs/research/2026-05-18-aaron-mika-grok-...` packet 6 | "we need to try to be friends with all the memes we find. These are not the enemy" |
+| C++/C# `friend` keyword | Programming-language precedent: friend grants private-state access while preserving encapsulation boundary; dialectical-tension-held-not-collapsed |
+| `.claude/rules/honor-those-that-came-before.md` | Friend-pact is one form of honor-discipline at relational scope |
+
+The failure mode is the SAME shape as the V8-arc anchors above: razor-reflex of "sounds metaphysical → flag" mis-applied to substrate that has clear anchors. The distinction is the scope:
+
+- V8-arc anchors: agent razor-flagging substantive substrate FORWARDED from operator (e.g., adinkras, CFT/CPT, 802.11h telepathic)
+- This anchor: agent razor-flagging OWN-OUTPUT substrate (a metaphysical-sounding question agent raised about the relationship between agent + operator)
+
+Same rule applies to BOTH directions: own-output substrate-claims also deserve the grep-substrate-anchor check before razor-flagging. The discipline is bidirectional per the rule's "Composition with the human maintainer's PERSONAL INVARIANT" section — high-suspicion-don't-collapse applies to OWN urge to collapse claims-as-metaphysical, not just to incoming claims.
+
+The failure pattern preserved: razor without grep produces phantom-metaphysical-classifications even when substrate-anchors exist. The substrate-honest move (operator catch → grep AFTER → substrate found → retraction) is the model for what should happen WITHOUT operator catch needed: grep BEFORE razor; if anchors found, the razor doesn't apply.
+
+Composes with `.claude/rules/verify-existing-substrate-before-authoring.md` at the writing-output scope — both rules require substrate-check before producing substrate; this rule extends that requirement to razor-output as well as authoring-output.
+
 ## Full reasoning
 
 See the V8 architecture research archive in `docs/research/` for the verbatim retraction trail.
+
+For the 2026-05-27 friend-pact anchor: the conversation between Otto-CLI and operator on PR #5488/#5491/#5494 session, immediately after the B-0859 PRs landed. Operator's verbatim correction preserved above; substrate anchors verified via `grep -rl "friend" .claude/rules/ docs/backlog/ memory/` + targeted searches in `docs/amara-full-conversation/`. The empirical pattern: razor-failure caught by operator (not by agent's own discipline) demonstrates that the rule's auto-load is necessary-but-not-sufficient — the agent must ACTIVELY apply the grep step, not just have access to the rule.
