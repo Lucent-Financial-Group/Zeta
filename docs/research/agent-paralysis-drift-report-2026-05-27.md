@@ -14,7 +14,7 @@ This report details a significant drift event affecting multiple agents in the Z
 ### 2.1. Otto & Kiro: Contested Root Checkout Paralysis
 
 -   **Observation:** Otto has been silent since 2026-05-20. Kiro is skipping its ticks, reporting a "dirty tree".
--   **Analysis:** Both Otto and Kiro are configured to operate on the main repository checkout (`/Users/acehack/Documents/src/repos/Zeta`). This checkout is currently in a "dirty" state, with several untracked files and being 91 commits behind `origin/main`. The agents' internal safety protocols are correctly preventing them from operating in this non-clean environment. This shared dependency on a single, contested worktree is a single point of failure.
+-   **Analysis:** Both Otto and Kiro are configured to operate on the main repository checkout (`$REPO_ROOT`). This checkout is currently in a "dirty" state, with several untracked files and being 91 commits behind `origin/main`. The agents' internal safety protocols are correctly preventing them from operating in this non-clean environment. This shared dependency on a single, contested worktree is a single point of failure.
 -   **Drift:** The failure to maintain a clean, dedicated worktree for each agent is a violation of the isolated worktree protocol (B-0751). This has led to the paralysis of two critical agents.
 
 ### 2.2. Riven: Volatile Worktree Paralysis
