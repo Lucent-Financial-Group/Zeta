@@ -111,11 +111,16 @@
     # + interactive `claude login` + credential persistence + repo pre-clone.
     bun
 
-    # iter-5.5 NetBIOS tools (composes with services.samba below from
-    # the multi-protocol name-resolution work — PR #5387). Operator
-    # can run `nmblookup <node-name>` and `smbclient -L //<node-name>`
-    # from any cluster node to discover peers by NetBIOS name when
-    # mDNS multicast is filtered by the local network.
+    # iter-5.5 NetBIOS client tools — `samba` package brings
+    # nmblookup/smbclient binaries so operator can query NetBIOS name
+    # service from any node. The CORRESPONDING SERVER-SIDE config
+    # (services.samba with nmbd-only) lands in PR #5387 (multi-protocol
+    # name resolution); the two PRs compose at merge time. Until #5387
+    # merges this package provides client-side tooling only — useful
+    # for diagnosing OTHER nodes (or the operator's own Mac if it runs
+    # nmbd) by NetBIOS name when mDNS multicast is filtered.
+    # P2 fix (PR #5388 Copilot review): comment now correctly notes
+    # services.samba is NOT configured in this PR; lives in #5387.
     samba
   ];
 
