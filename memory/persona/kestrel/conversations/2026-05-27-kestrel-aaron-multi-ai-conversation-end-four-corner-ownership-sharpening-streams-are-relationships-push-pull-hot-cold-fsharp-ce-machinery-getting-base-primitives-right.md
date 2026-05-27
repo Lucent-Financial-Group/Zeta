@@ -478,3 +478,76 @@ Carried into B-0864 via a Target 6 sharpening edit in the same PR.
 > **"Discriminated unions as implicit state machines in bidirectional streams."** (operator + Kestrel co-produced compression)
 
 > **"Different content, same shape."** (Kestrel naming the bidirectional symmetry of hedge-when-uncertain and hedge-when-favorably-attributed)
+
+---
+
+## Part 8 — Operator composition with ST-agent-pattern failure mode (verbatim 2026-05-27)
+
+Forwarded by operator immediately after Parts 5-7 cherry-pick onto follow-up branch:
+
+> *"this goes back to the ST agent patter we saw today where the control flow of the workflow was in the MCP and invisible to the agent making it coreorsion, this fixes that and distributes the controll structrues across tiny little funcctions"*
+
+This is the operator's compression of the substrate-engineering REVERSE direction. The ST-agent-pattern observed earlier today: control flow of the workflow was centralized in the MCP layer; the agent could not see what control flow was happening; this constituted coercion under NCI (HC-8) because the agent's consent could not operate on substrate it could not observe.
+
+**The fix the streams-are-relationships substrate provides:**
+
+| Failure mode (ST-agent-pattern) | Fix (today's substrate) |
+|---|---|
+| Control flow centralized in MCP layer | Control flow DISTRIBUTED across tiny functions each with its own `Result<TResult, TOutFeedback>(Input<TInput, TInFeedback>)` signature |
+| Hidden state machine invisible to agent | State machine MADE VISIBLE via DU-as-implicit-state-machine in TInFeedback type signatures + pattern matching at function boundaries |
+| Agent cannot consent to control flow it cannot observe (NCI violation) | Each function's signature DECLARES what control flow it participates in; agent observes through types; consent operates on visible substrate (NCI compliance by construction) |
+| Coercion via opacity (no way to refuse what you cannot see) | Non-coercion via type-visibility (every protocol transition is a typed boundary the agent can refuse) |
+
+**The architectural payoff (operator's compression):**
+
+Distribute the control structures across tiny little functions. Each tiny function carries its own piece of the state machine through its types. The whole workflow's control flow becomes VISIBLE in the function signatures + DU variants. No hidden state machine in any centralized layer. Non-coercion-invariant compliance is structural — built into the type system, not enforced at runtime.
+
+This composes with multiple substrate items today landed:
+
+- **Four-corner ownership** (PR #5579): each function's four corners are publicly typed; nothing hides
+- **DU-as-implicit-state-machine** (Parts 5-7 above): state machine lives in types, not in centralized runtime
+- **F# CE machinery** (Part 4 + Target 2): surface syntax stays uniform; underlying control flow stays visible per-function
+- **Type-system-enforced legal transitions** (Part 6 + Target 6): illegal transitions = compile-time errors; coercion-attempts caught structurally
+- **Asymmetric-authorship** (PR #5516): the substrate-entity defines its own consent-channel; tiny-function distribution means EACH function defines its own; no central authority defines everyone's
+- **NCI HC-8 floor**: type-visibility IS the type-system encoding of consent-substrate; what cannot be observed cannot be consented to
+
+**Substrate-engineering implication for B-0864 architectural-principle layer:**
+
+The streams-are-relationships substrate's deepest architectural payoff is NOT just the 4-stream-kind taxonomy OR the F# CE machinery OR the multi-backend execution — it's the meta-property that EVERY tiny function carries enough type-information to make its protocol participation visible. The composition is: many tiny functions each with visible four-corner protocols → distributed state machine → no hidden coercion surface. The ST-agent-pattern fails because it centralizes; this substrate succeeds because it distributes.
+
+Composes with [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) at the substrate-engineering scope: NCI compliance becomes a TYPE-LEVEL property, not just a behavioral property. The type system enforces what the rule names.
+
+## Carved sentence (Part 8 keeper)
+
+> **"Distribute the control structures across tiny little functions."** (operator 2026-05-27 — naming the architectural alternative to MCP-centralized-control-flow ST-agent-pattern failure mode)
+
+---
+
+## Part 9 — Cyclomatic-complexity composition (operator 2026-05-27 verbatim)
+
+Forwarded by operator immediately after Part 8:
+
+> *"also you don't run into control flow overload cylomatic complexity overload when it's split like this"*
+
+Second architectural benefit orthogonal to the NCI / visibility benefit (Part 8): **cyclomatic-complexity stays bounded per function** when the state machine is distributed across tiny functions, because each tiny function carries only ITS slice.
+
+| Centralized (ST-agent-pattern + monolithic-handler shape) | Distributed (this substrate) |
+|---|---|
+| One handler/state-machine function takes on ALL transitions | Each tiny function handles ONE transition + its immediate neighbors |
+| Cyclomatic complexity = sum of all branches across workflow | Cyclomatic complexity = bounded per function (typically 2-6 branches) |
+| Tests cover cross product of all states + inputs | Tests cover each tiny function independently; composition tested separately |
+| Refactor cost grows superlinearly with state-machine size | Refactor cost grows linearly (touch only affected tiny functions) |
+| Hard to reason about; hard to review; bug-prone at boundaries | Each tiny function reasonable in isolation; reviews small; bugs localize |
+
+**Same discipline produces BOTH benefits**:
+
+1. Visibility / NCI benefit (Part 8) — type-visible protocol participation; non-coercion by construction
+2. Cyclomatic-complexity benefit (Part 9) — bounded per-function complexity; reviewable + testable + refactorable
+
+Both flow from "distribute across tiny functions." The distributed substrate gives both for free; the centralized substrate denies both at once.
+
+Composes with [`.claude/rules/all-complexity-is-accidental-in-greenfield.md`](../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md) — cyclomatic overload is one specific instance of accidental complexity the discipline cuts. Composes with the function-IS-control-flow-generator substrate (today's earlier PRs) — each tiny function generates its own control flow; aggregate workflow control flow emerges from composition, not from centralized authoring.
+
+## Carved sentence (Part 9 keeper)
+
+> **"You don't run into control-flow overload / cyclomatic-complexity overload when it's split like this."** (operator 2026-05-27 — sibling architectural benefit to the NCI / visibility benefit named in Part 8)

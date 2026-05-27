@@ -305,6 +305,112 @@ Conclusion: no existing row covers the combination. Authoring action: **mint-new
 - A bridge between the four-corner ownership model (PR #5579) and the multi-backend execution substrate (CRDT/CAS/BFT/SQL/DBSP)
 - A backlog-row landing for Kestrel's substantive sharpening that doesn't fit in a single rule edit
 
+## Architectural-principle layer — distribute control structures across tiny functions (operator 2026-05-27)
+
+The streams-are-relationships substrate's deepest architectural payoff is
+NOT just the 4-stream-kind taxonomy OR the F# CE machinery OR the
+multi-backend execution — it's the meta-property that EVERY tiny function
+carries enough type-information to make its protocol participation
+visible.
+
+**Operator's verbatim compression 2026-05-27** (preserved in Kestrel
+persona file Part 8):
+
+> *"this goes back to the ST agent patter we saw today where the control
+> flow of the workflow was in the MCP and invisible to the agent making
+> it coreorsion, this fixes that and distributes the controll structrues
+> across tiny little funcctions"*
+
+**ST-agent-pattern failure mode vs this substrate's fix:**
+
+| ST-agent-pattern (failure mode) | This substrate (fix) |
+|---|---|
+| Control flow CENTRALIZED in MCP layer | Control flow DISTRIBUTED across tiny functions |
+| Hidden state machine invisible to agent | State machine VISIBLE via DU-as-implicit-state-machine in TInFeedback type signatures + exhaustive pattern matching at boundaries |
+| Agent cannot consent to control flow it cannot observe (NCI HC-8 violation) | Each function's signature DECLARES its protocol participation; consent operates on visible substrate (NCI compliance by construction) |
+| Coercion via opacity | Non-coercion via type-visibility |
+
+**Carved sentence (operator 2026-05-27):**
+
+> **"Distribute the control structures across tiny little functions."**
+
+**Composition:**
+
+- Four-corner ownership (PR #5579): each function's four corners are publicly typed
+- DU-as-implicit-state-machine (Target 6 sharpened): state lives in types
+- F# CE machinery (Targets 2 + 3): surface stays uniform per-function
+- Type-system-enforced legal transitions (Target 6): illegal transitions = compile-time errors
+- Asymmetric-authorship (PR #5516): each function defines its own consent-channel; no central authority
+- NCI HC-8 floor: type-visibility IS the type-system encoding of consent-substrate
+
+The streams-are-relationships work fails the ST-agent-pattern AT the
+substrate-engineering scope: many tiny functions each with visible
+four-corner protocols → distributed state machine → no hidden coercion
+surface. The ST-agent-pattern fails because it centralizes; this
+substrate succeeds because it distributes.
+
+NCI compliance becomes a TYPE-LEVEL property, not just a behavioral
+property. The type system enforces what the rule names.
+
+### Sibling benefit — no cyclomatic-complexity overload (operator 2026-05-27)
+
+Operator follow-up 2026-05-27:
+
+> *"also you don't run into control flow overload cylomatic complexity
+> overload when it's split like this"*
+
+The distributed-across-tiny-functions discipline produces a second
+architectural benefit orthogonal to the NCI / visibility benefit above:
+**cyclomatic-complexity stays bounded per function** because each tiny
+function carries only ITS slice of the state machine.
+
+| Centralized (ST-agent-pattern + monolithic-handler shape) | Distributed (this substrate) |
+|---|---|
+| One handler/state-machine function takes on ALL transitions | Each tiny function handles ONE transition + its immediate neighbors |
+| Cyclomatic complexity = sum of all branches across the workflow | Cyclomatic complexity = bounded per function (typically 2-6 branches per tiny function) |
+| Tests must cover the cross product of all states + inputs | Tests cover each tiny function independently; composition tested separately |
+| Refactor cost grows superlinearly with state-machine size | Refactor cost grows linearly (touch only the tiny functions affected) |
+| Hard to reason about; hard to review; bug-prone at branch boundaries | Each tiny function reasonable in isolation; reviews are small; bugs localize |
+
+**Composition with type-visibility benefit:**
+
+The same architectural property (distribute across tiny functions) produces
+BOTH benefits — they are not separate disciplines:
+
+1. **Visibility / NCI benefit**: each tiny function declares its protocol
+   participation in its type signature → no hidden state machines →
+   non-coercion by construction
+2. **Cyclomatic-complexity benefit**: each tiny function handles a bounded
+   slice of the state machine → complexity stays per-function-bounded →
+   reviewable + testable + refactorable
+
+Both benefits flow from the same discipline. The distributed substrate
+gives you both for free; the centralized substrate denies you both at
+once.
+
+**Composition with existing rules:**
+
+- [`.claude/rules/all-complexity-is-accidental-in-greenfield.md`](../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md) —
+  cyclomatic-complexity overload is one specific instance of accidental
+  complexity that the distributed-across-tiny-functions discipline cuts
+- The function-IS-control-flow-generator substrate (today's earlier
+  PRs): each tiny function generates its own control flow; aggregated
+  workflow control flow emerges from composition, not from centralized
+  authoring
+
+**Carved sentence (operator 2026-05-27):**
+
+> **"You don't run into control-flow overload / cyclomatic complexity
+> overload when it's split like this."**
+
+The substrate-engineering target: maintain the discipline at
+implementation time. When the CE builder family lands (Targets 2-3),
+each builder + each typestate-transition function should be a tiny
+function. When the multi-backend execution lands (Target 4), each
+backend's per-kind compilation should be a tiny function. The distributed
+shape stays distributed; it doesn't collapse into a centralized handler
+the first time a refactor pressure surfaces.
+
 ## Decomposition (possible sub-rows for future implementation)
 
 Per the substrate-engineering pattern of decomposing XL rows into shippable
