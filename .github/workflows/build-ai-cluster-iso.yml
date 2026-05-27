@@ -367,7 +367,7 @@ jobs:
         run: |
           set -euo pipefail
           # --yes: skip interactive Fulcio confirmation (CI is non-interactive)
-          # Output emitted alongside the ISO:
+          # Output emitted to runner temp and uploaded alongside the ISO artifact:
           #   <runner-temp>/<iso>.bundle - cosign bundle containing signature,
           #                                certificate, and transparency-log material.
           COSIGN_BUNDLE="${RUNNER_TEMP}/${ISO_NAME}.bundle"
@@ -384,7 +384,7 @@ jobs:
             echo "|---|---|"
             echo "| Bundle | \`${ISO_NAME}.bundle\` |"
             echo ""
-            echo "Verification: see workflow comments for the canonical \`cosign verify-blob\` command."
+            echo "Verification: see this workflow run's step summary for the canonical \`cosign verify-blob\` command."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload ISO as workflow artifact
