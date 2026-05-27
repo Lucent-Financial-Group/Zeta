@@ -72,14 +72,32 @@ Shortform's browser extension generates deep guides for any article / YouTube vi
 
 ### Phase 4 — Monetization / external-publishing substrate
 
-Per Aurora (B-0825) + DePIN (B-0826) + additive-cash-register (PR #2822) — once Phase 1-3 substrate lands, the question becomes whether to externalize:
+**TWO scopes per operator 2026-05-26 follow-on** (*"we can sell that too to others eventually"*):
+
+#### Phase 4a — Sell the OUTPUT (consumer-scope; Shortform-equivalent)
+
+Hosted deep-guide service for consumers. Per Aurora (B-0825) + DePIN (B-0826) + additive-cash-register (PR #2822) once Phase 1-3 substrate lands:
 
 - Free tier: substrate-engineering discipline + tooling open-sourced
 - Paid tier: hosted deep-guide service with curated external content + composition graph
 - Community-contribution tier: external authors contribute deep-guides composing with their own substrate-engineering work
-- Possible composition with `_ip_risk_acceptance` pattern (per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`) for verbatim third-party content handling at scale
+- Composition with `_ip_risk_acceptance` pattern at scale for verbatim third-party content handling
 
-Substrate-honest framing per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`: monetization layer remains end-user-invariant-set; Zeta substrate provides the discipline + tooling; consumers pick their own monetization model.
+#### Phase 4b — Sell the SUBSTRATE-ENGINEERING DISCIPLINE itself (B2B-scope)
+
+The discipline that PRODUCES these deep-guides is itself sellable to other companies / projects / individuals who want to do substrate-engineering on THEIR OWN substrate (internal docs, research corpora, codebase + decisions substrate, organizational memory).
+
+Customer-facing offering shape:
+
+- Zeta runtime + skill catalog (per `.claude/rules/zeta-ships-with-skills-immediate-value.md`)
+- Substrate-engineering discipline training (rules + memory + research + cross-substrate-triangulation methodology)
+- Customer-owned `_*_acceptance` blocks + customer-owned ip-questionable-equivalent folders + customer-owned composes_with graph
+- Periodic Zeta substrate-engineering audits (similar shape to security audits but for substrate-engineering hygiene)
+- Multi-AI substrate-engineering cluster (operator-customer + customer's chosen AI participants + Zeta substrate as discipline-substrate-provider)
+
+Phases 4a and 4b are NOT mutually exclusive. 4a is consumer-scope productization of OUTPUTS; 4b is B2B productization of the DISCIPLINE itself. The framework's substrate-engineering work IS the moat; the OUTPUTS are downstream. Both ship in parallel as substrate-engineering bandwidth allows.
+
+Substrate-honest framing per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`: monetization layer remains end-user-invariant-set; Zeta substrate provides the discipline + tooling; consumers pick their own monetization model AND their own substrate-engineering invariants.
 
 ## Acceptance
 
