@@ -162,6 +162,56 @@ Rule-0-prohibited means: NO authorization path makes this acceptable
 in the framework. Even operator confirm doesn't make `--force` (without
 lease) safe under multi-agent operation. Always use `--force-with-lease`.
 
+## Why `--with-lease` is structurally better than naked `--force` — assumption-validation discipline (operator 2026-05-27 framing)
+
+> *"force push lease is nice casue it validate assumption rather than
+> blind acting"*
+
+The `--with-lease` flag operationalizes the framework's broader
+verify-before-deferring + refresh-before-decide + razor discipline at
+git-operation scope:
+
+| Operation | Assumption shape | Validation? |
+|---|---|---|
+| `git push --force` | "I know what's on the remote OR I don't care" | NONE — blind overwrite |
+| `git push --force-with-lease=<ref>:<expected-SHA>` | "I expect the remote to be at exactly `<expected-SHA>`; if not, refuse" | git validates the remote-SHA before write; refuses if drift detected |
+| `git push --force-with-lease` (no explicit SHA) | "I expect the remote to be at the SHA I most-recently-fetched" | git validates against the last-fetched remote-tracking ref; refuses if drift detected |
+
+The substrate-engineering value: lease forces the agent to STATE THE
+ASSUMPTION in machine-checkable form. The operation then either:
+
+- **Succeeds**: assumption was correct; safe rewrite happened
+- **Fails cleanly**: assumption was wrong (peer pushed in between);
+  operation refused; no destructive write occurred; agent must
+  re-fetch + re-evaluate before retry
+
+This composes with:
+
+- `.claude/rules/refresh-before-decide.md` — lease IS the refresh-
+  before-decide pattern enforced by git itself; the agent's stated
+  assumption must match current remote-tracking-ref state
+- `.claude/rules/verify-before-deferring.md` — lease verifies the
+  remote-state assumption before the destructive action commits;
+  same shape applied at git-write scope
+- `.claude/rules/razor-discipline.md` — operational claims only;
+  lease forces the assumption to be operational (a specific SHA)
+  rather than implicit ("the remote is where I think it is")
+- `.claude/rules/glass-halo-bidirectional.md` — lease makes the
+  assumption observable in the command itself; future readers of
+  git history can see what the agent expected at write-time
+
+Naked `--force` is the assumption-free version of force-push: the
+agent simply writes over whatever's there, regardless of peer activity.
+Under multi-agent contention this silently destroys peer work. Lease
+converts the silent-destroy failure mode into a clean-refuse failure
+mode that surfaces the contention.
+
+The operator's "validates assumption rather than blind acting" framing
+makes this explicit: the lease IS the assumption-validation discipline
+applied at git-write scope. Use lease ALWAYS; treat the lease-failure
+as substrate-engineering signal (peer activity surfaced; refresh needed
+before retry); never use naked force.
+
 ## Composes with
 
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
