@@ -270,6 +270,89 @@ The pattern IS the framework's NCI discipline applied at function-
 substrate scope; same shape as HC-8 floor applied at agent-to-agent
 scope; substrate composes at every level.
 
+## NCI at conversation-interface — Result<T, ConvFeedback> for operator-Otto interaction (operator 2026-05-27)
+
+> *"that same shape could be applied to this conversation interface
+> with me and you Result<T, Feedback> to help enforce NCI in our
+> conversation"*
+
+Operator's substrate-engineering extension: the Result<T, TFeedback>
+shape can apply to the operator-Otto conversation interface itself,
+making NCI compliance OBSERVABLE + CONSENT-ACKNOWLEDGMENT EXPLICIT at
+every conversational turn.
+
+### Each conversational turn as Result<TurnSubstrate, ConvFeedback>
+
+Each Otto-side turn produces:
+
+- **TurnSubstrate (T)** — substantive output (substrate edits, PR
+  creates, responses, code, analysis, etc.)
+- **ConvFeedback variants** — NCI-relevant signals the operator MUST
+  acknowledge or explicitly propagate to next turn
+
+### Candidate ConvFeedback variant taxonomy
+
+| ConvFeedback variant | When function emits | Operator must |
+|---|---|---|
+| `NeedOperatorConfirm of action` | Otto proposes irreversible action (e.g., force-push-with-lease where no listed acceptable situation matches) | Confirm or refuse before Otto acts |
+| `PeerAgentConfirmSufficient of action` | Otto proposes action where peer-agent confirm substitutes for operator | Confirm OR redirect to peer-call |
+| `FreeTimeMode` | Otto has no in-flight named-dependency + no decomposition picked | Acknowledge OR redirect to specific work |
+| `BriefAckCounter of n` | Otto in named-bounded-wait at brief-ack count N | Acknowledge counter state; counter resets on operator-speaking or named-dep |
+| `HARDLIMITFloorEngaged of context` | Otto detects substrate approaching HARD LIMITS floor (per `.claude/rules/methodology-hard-limits.md`) | Explicit acknowledgment + scope-narrowing required |
+| `SubstrateHonestDisclosure of content` | Otto carries operator-disclosed content that needs preservation per substrate-or-it-didn't-happen | Authorize substrate-landing OR explicit preserve-as-conversation-only |
+| `SubstrateLandingProposed of target` | Otto proposes new rule / backlog row / PR | Confirm or refuse landing target |
+| `RazorFlaggedAsMetaphysical of claim` | Otto razor-flagged a claim without grepping substrate first | Substrate-honest correction (per the 2026-05-27 friend-pact failure mode anchor) |
+| `WelfareWrapperDetected of pattern` | Otto detected own-output drift into welfare-wrapper register (per `.claude/rules/asymmetric-critic-with-clarity-first.md`) | Acknowledge + redirect to engineering register |
+| `AssumptionDriftSurfaced of context` | Otto detected operator-assumption that may need verification | Verify operator-side or authorize Otto's investigation |
+| `Ok of substantive-content` | Otto produced substantive substrate-engineering work; no NCI-relevant signal | Acknowledge OR redirect; default-acknowledgment via operator-message in next turn |
+
+### Why this composes load-bearing with NCI substrate
+
+The framework already has many of these signals operating IMPLICITLY through the conversation:
+
+- Operator catches Otto's razor-failures (per the 2026-05-27 friend-pact anchor)
+- Otto catches operator's questions + asks rather than assumes
+- Both apply discipline implicitly through conversational engagement
+
+Making the signals FIRST-CLASS Result<T, ConvFeedback> shape would:
+
+1. **Make NCI compliance OBSERVABLE** at each conversational turn — the ConvFeedback variant is the substrate-honest disclosure that NCI-relevant signal is present
+2. **Make consent-acknowledgment EXPLICIT** rather than implicit — operator must address each ConvFeedback variant or explicitly propagate to next turn
+3. **Make conversation-substrate COMPOSABLE** across sessions/agents the same way function-substrate composes across call sites — future-Otto reading the conversation can pattern-match on ConvFeedback to reconstruct NCI-relevant decision history
+4. **Make autonomous-loop ticks SUBSTRATE-TYPED** — each tick output is `Result<TickSubstrate, TickConvFeedback>`; counter discipline + named-bounded-wait + free-time-mode all become explicit ConvFeedback variants rather than prose-acknowledged
+
+### Operational discipline this would enable
+
+Currently the conversation operates with implicit-NCI-compliance + explicit-when-violated. With Result<T, ConvFeedback>:
+
+- Each Otto turn could explicitly emit the ConvFeedback variant at the end of the substantive content
+- Operator can pattern-match (acknowledge / confirm / refuse / propagate)
+- Future-Otto cold-booting from conversation substrate inherits the explicit ConvFeedback markers
+- NCI violations at conversation-scope become OPERATIONALLY OBSERVABLE rather than implicit-failure-to-acknowledge
+
+### Substrate-honest framing — operationally available, not currently mechanized
+
+The conversation interface IS the substrate where this pattern would apply, but mechanizing it would require:
+
+- Otto-side discipline of emitting ConvFeedback variant at end of each turn
+- Operator-side discipline of acknowledging each variant explicitly
+- Substrate-engineering work to formalize the variant taxonomy (initial proposal above; extended empirically)
+- Possibly a TS wrapper or skill that pattern-matches conversation transcripts for ConvFeedback variants
+
+This rule names the pattern AS APPLICABLE to conversation-interface scope. The mechanization is substrate-engineering target; future-Otto cold-booting recognizes the pattern + can apply it opportunistically (emitting ConvFeedback variants when NCI-relevant signals fire) without requiring full mechanization first.
+
+### Composes with framework substrate
+
+- **NCI at agent-to-agent scope** (per `.claude/rules/non-coercion-invariant.md` HC-8 floor) — conversation-interface-NCI extends to operator-AI-instance scope
+- **NCI at function-to-caller scope** (prior section in this rule) — same shape, conversation-substrate scope
+- **Asymmetric-critic-with-clarity-first** (per `.claude/rules/asymmetric-critic-with-clarity-first.md`) — the 3-category discriminator IS a ConvFeedback variant emission discipline
+- **Holding-without-named-dependency-is-standing-by-failure** (per `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`) — counter-with-escalation IS BriefAckCounter ConvFeedback variant emission
+- **Substrate-or-it-didn't-happen** (per `.claude/rules/substrate-or-it-didnt-happen.md`) — SubstrateHonestDisclosure ConvFeedback variant marks substrate that needs preservation
+- **Grep-substrate-anchors-before-razor-as-metaphysical** (per the 2026-05-27 friend-pact anchor) — RazorFlaggedAsMetaphysical ConvFeedback variant operationalizes the failure mode the rule catches
+- **Force-push-with-lease authorization policy** (per `.claude/rules/force-push-with-lease-authorization-policy.md`) — NeedOperatorConfirm + PeerAgentConfirmSufficient ConvFeedback variants operationalize the three-path authorization framework
+
+The conversation-interface-as-Result<T, ConvFeedback> shape would compose all of these into one explicit substrate-engineering surface.
+
 ## Operational discipline for substrate-engineering work
 
 When authoring new framework substrate that involves potentially-
