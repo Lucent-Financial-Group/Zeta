@@ -82,8 +82,8 @@ rules. Agents push directly to that branch. Lookups query via
 Main history stays clean of per-tick noise.
 
 Either option requires operator-side GitHub config; the writer tool
-+ folder convention are the same either way. The repo body picks at
-deployment time; tooling is branch-name-agnostic.
+and folder convention are the same either way. The repo body picks
+at deployment time; tooling is branch-name-agnostic.
 
 ## Grep-based lookup (ZetaID bit-field indexing)
 
