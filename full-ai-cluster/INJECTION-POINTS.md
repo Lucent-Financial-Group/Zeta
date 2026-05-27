@@ -40,7 +40,7 @@ NixOS module (declarative reader) + iter/backlog tag.
 | **ESP filename** | `zeta-authorized-keys.pub` |
 | **NixOS reader module** | `full-ai-cluster/nixos/modules/operator-ssh-keys.nix` (+ `operator-authorized-keys.nix` variant) |
 | **Backed by file** | `full-ai-cluster/nixos/modules/operator-ssh-keys.txt` |
-| **Iter / backlog** | iter-4.2 / [B-0789](../docs/backlog/) |
+| **Iter / backlog** | iter-4.2 / [B-0789](../docs/backlog/P1/B-0789-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md) |
 | **Reader entry point** | `builtins.readFile keysFile` → `users.users.zeta.openssh.authorizedKeys` |
 | **Mechanism on Mac** | `diskutil mount` ESP + `sudo tee` write (read-only on `~/.ssh/`) |
 | **Mechanism on installer** | `zeta-install.sh` probes mounted USB FAT/ESP partitions; writes file into `/mnt/etc/zeta/` (or equivalent) |
@@ -55,7 +55,7 @@ NixOS module (declarative reader) + iter/backlog tag.
 | **ESP filename** | `zeta-hostname.txt` |
 | **NixOS reader module** | `full-ai-cluster/nixos/modules/injected-hostname.nix` |
 | **Backed by file** | `/mnt/etc/zeta/cluster-node-id` (written by installer from ESP) |
-| **Iter / backlog** | iter-5.2 / [B-0792](../docs/backlog/) |
+| **Iter / backlog** | iter-5.2 / [B-0792](../docs/backlog/P1/B-0792-iter5-wifi-credentials-injection-via-usb-esp-for-zero-typing-cluster-bringup-without-ethernet-load-bearing-for-homelab-persona-aaron-2026-05-26.md) |
 | **Reader entry point** | `builtins.readFile idFile` → `networking.hostName` (via `lib.mkOverride 50`) |
 | **Validation** | `VALID_HOSTNAME_REGEX` in `zflash-lib.ts`; mirror grep `[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$` in `zeta-install.sh` |
 
@@ -113,7 +113,7 @@ Allowlist from `zflash.ts`:
 | **Stage** | Cluster console at install time → encrypted blob persisted to USB ESP after successful auth (post-install service trigger) |
 | **Content class** | **Secret material** (encrypted-at-rest; key never hits disk) |
 | **Operator-driven via** | Boot-sequence auth-method picker (4 options: restore-from-blob / fresh-device-flow / operator-PAT / skip) + operator passphrase |
-| **Encryption** | AES-256-GCM with key derived from `HKDF(USB-UUID \|\| operator-passphrase, salt, info)` |
+| **Encryption** | AES-256-GCM with key derived via a two-layer chain: (1) `scrypt(passphrase, salt) → stretched 32 bytes` (memory-hard work-factor KDF; OWASP 2026 defaults N=2^17 r=8 p=1; stretches low-entropy passphrase into high-entropy intermediate); (2) `HKDF-SHA256(usbUuid \|\| "\|" \|\| stretched, salt, info="zeta-b0852-cred-persistence-v1") → 32-byte AES-256 key` (binds key to USB UUID). See `tools/installer/zeta-creds-crypto.ts:80-125` for the authoritative implementation; the scrypt layer was added per the 2026-05-27 security-review HIGH finding (HKDF alone assumes high-entropy IKM which passphrases violate) |
 | **ESP filenames** | `/esp/zeta-creds.enc` (encrypted) + `/esp/zeta-creds-manifest.yaml` (declarative + operator-readable) |
 | **Backlog** | [B-0852](../docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) (P1, open, M-effort) |
 | **Covers credentials** | per declarative manifest: `gh-cli` (`~/.config/gh/hosts.yml`), `claude` (per-persona), `gemini` (per-persona), `codex` (per-persona), `ssh-host-keys`, `ssh-operator-pubkey` |
@@ -176,7 +176,7 @@ material → console or post-install secrets management only**.
 
 When B-0852 ships, secret-class additions become MANIFEST EDITS
 (declarative; new entry in `/esp/zeta-creds-manifest.yaml`) rather than
-new code. Per Aaron 2026-05-27 in B-0852: *"the keep credentials options
+new code. Per the operator 2026-05-27 in B-0852: *"the keep credentials options
 we should declare each credential we need and save and restore so it's
 not so imparative too."* Adding a new cred type post-B-0852 = one YAML
 entry; the persist/restore code reads the manifest + iterates.
