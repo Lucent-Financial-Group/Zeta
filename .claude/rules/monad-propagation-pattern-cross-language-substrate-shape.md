@@ -82,8 +82,7 @@ The spec-to-code generator can emit the SAME SHAPE in any target
 language by mapping the discriminator-carrier + lazy-propagation +
 exhaustive-handling triple to that language's instantiation:
 
-- F# emit: `type ProcessFeedback = NotFound | PermissionDenied | DiskFull`
-  + `let process input : Result<T', ProcessFeedback> = ...`
+- F# emit: `type ProcessFeedback = NotFound | PermissionDenied | DiskFull` plus `let process input : Result<T', ProcessFeedback> = ...`
 - T-SQL emit: recursive CTE with `feedback_type` column + variant
   values + CHECK constraint
 - Rust emit: `enum ProcessFeedback { NotFound, PermissionDenied,
