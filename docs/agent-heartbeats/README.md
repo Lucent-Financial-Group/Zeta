@@ -12,11 +12,20 @@ externalized idle counter" (PR #5451).
 docs/agent-heartbeats/<persona>/<YYYY>/<MM>/<DD>/<zetaid-hex>.md
 ```
 
-- `<persona>` = canonical agent name per `.claude/rules/agent-roster-reference-card.md`
+- `<persona>` = roster-name per `.claude/rules/agent-roster-reference-card.md`
+  (folder-name only; the ZetaID `persona` bit-field is a separate
+  numeric slot per `registry/personas.yaml` role-refs; the writer
+  packs the operator-supplied `--persona-slot` int into the ID and
+  uses the operator-supplied `--persona-name` for the folder name —
+  they are deliberately decoupled because the registry uses neutral
+  role-refs and the folder uses operator-friendly roster names)
 - `<zetaid-hex>` = 32-char zero-padded hex of the 128-bit ZetaID with
   `category = 3` (Heartbeat per `registry/categories.yaml`)
-- Collision-free by construction (32-bit randomness + 48-bit timestamp
-  + 8-bit persona slot in the ZetaID)
+- Practically collision-free for autonomous-loop scale: 32-bit
+  randomness + 48-bit ms timestamp + 8-bit persona slot in the ZetaID
+  gives ~10⁻¹⁰ collision probability for two concurrent agents writing
+  within the same millisecond — sufficient for tick cadence, not a
+  cryptographic guarantee
 
 ## Writing
 
@@ -49,26 +58,39 @@ log. Lookups via `git log agent-heartbeats -- docs/agent-heartbeats/<persona>/..
 ./tools/agent-heartbeats/write-heartbeat.ts \
   [--persona-slot <int 0..255>] \
   [--persona-name <kebab>] \
-  [--authority TrustedAgent|Standard|BestEffort|...] \
-  [--momentum Normal|Elevated|High|...] \
+  [--authority HumanVerified|TrustedAgent|Standard|BestEffort|Simulated|Raw] \
+  [--momentum Background|Normal|Elevated|High|Critical|Raw] \
   [--named-dep "PR #NNNN <reason>"] \
   [--disposition bounded-wait|decomposing|committed-substrate|chose-free-time] \
   [--parent-pr NNNN] \
-  [--push|--no-push] [--branch <main-or-agent-heartbeats>] [--repo owner/name]
+  [--push|--no-push] [--write-local|--no-write-local] \
+  [--branch <agent-heartbeats|main|...>] [--repo owner/name]
 ```
 
-Writes one heartbeat record + prints its path to stdout. ZetaID
-generated via `pack(obs, DEFAULT_ENV)` from
-`src/Core.TypeScript/zeta-id/zeta-id.ts`.
+**Default behavior summary** (push semantics + write-local semantics):
 
-With `--push`, also pushes to the remote via GitHub REST git-data API
-(blob → tree → commit → ref). Target is `--branch` (default `main`;
-pass `agent-heartbeats` for the dedicated-branch variant). REST path
-bypasses local git index + working tree entirely — no staged/unstaged
-files disturbed, no current-branch state read. Retries up to 5x on
-non-fast-forward (peer-agent push race window). ZetaID-unique
-filenames guarantee no concurrent-agent collision on either branch
-target.
+| Flags | push | writeLocal | Effect | Use case |
+|---|---|---|---|---|
+| (none) | true | false | REST push only; no local file | Autonomous tick; safe on dirty branches |
+| `--write-local` | true | true | Both | Operator wants local copy too |
+| `--no-push` | false | true | Local file only | Testing / diagnostic |
+| `--no-push --no-write-local` | false | false | Nothing (exits 2) | Pointless; rejected |
+
+Push details: REST git-data API (blob → tree → commit → ref). The
+REST step touches NO local git state — no index read/write, no
+working-tree mutation, no current-branch dependency. Safe on dirty
+branches with staged/unstaged work because the REST path doesn't
+look at local git at all. The OPTIONAL `--write-local` step is the
+only thing that touches the local worktree (writes one new untracked
+`.md` file at the heartbeat path); default is `--no-write-local`
+when pushing to keep dirty branches untouched.
+
+Target is `--branch` (default `agent-heartbeats`; pass `main` only if
+operator has configured per-folder branch-protection exclusion).
+Retries up to 5x on non-fast-forward (peer-agent push race window).
+ZetaID-unique filenames give practical no-collision across concurrent
+agents at autonomous-loop scale (see Layout note above for the
+probability bound).
 
 ## Push direct-to-main convention
 

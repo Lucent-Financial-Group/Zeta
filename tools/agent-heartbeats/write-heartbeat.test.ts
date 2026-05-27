@@ -1,7 +1,7 @@
 // tools/agent-heartbeats/write-heartbeat.test.ts — B-0858.3 heartbeat-writer tests.
 
 import { describe, expect, it } from "bun:test";
-import { parseArgs, buildHeartbeatObservation, zetaIdToHex, heartbeatPath, renderHeartbeat } from "./write-heartbeat";
+import { parseArgs, buildHeartbeatObservation, zetaIdToHex, heartbeatPath, heartbeatRepoRelPath, renderHeartbeat } from "./write-heartbeat";
 import { pack, DEFAULT_ENV } from "../../src/Core.TypeScript/zeta-id/zeta-id";
 
 // Empty env for tests — exclude any harness-set ZETA_AGENT_* + disable
@@ -89,6 +89,64 @@ describe("parseArgs", () => {
 
   it("rejects unknown flag", () => {
     expect("error" in parseArgs(["--bogus"], TEST_ENV)).toBe(true);
+  });
+
+  it("rejects non-integer numeric flags (NaN guard)", () => {
+    expect("error" in parseArgs(["--chromosome", "foo"], TEST_ENV)).toBe(true);
+    expect("error" in parseArgs(["--persona-slot", "abc"], TEST_ENV)).toBe(true);
+    expect("error" in parseArgs(["--location", "1.5"], TEST_ENV)).toBe(true);
+    expect("error" in parseArgs(["--parent-pr", "x"], TEST_ENV)).toBe(true);
+  });
+
+  it("rejects unknown authority/momentum tags", () => {
+    expect("error" in parseArgs(["--authority", "Bogus"], TEST_ENV)).toBe(true);
+    expect("error" in parseArgs(["--momentum", "Hyper"], TEST_ENV)).toBe(true);
+  });
+
+  it("accepts known authority + momentum enum values", () => {
+    for (const auth of ["HumanVerified", "TrustedAgent", "Standard", "BestEffort", "Simulated", "Raw"]) {
+      const r = parseArgs(["--authority", auth], TEST_ENV);
+      expect("error" in r).toBe(false);
+    }
+    for (const mom of ["Background", "Normal", "Elevated", "High", "Critical", "Raw"]) {
+      const r = parseArgs(["--momentum", mom], TEST_ENV);
+      expect("error" in r).toBe(false);
+    }
+  });
+
+  it("writeLocal default: push=true → false; push=false → true", () => {
+    const pushArgs = parseArgs(["--push"], TEST_ENV);
+    if ("error" in pushArgs) throw new Error(pushArgs.error);
+    expect(pushArgs.push).toBe(true);
+    expect(pushArgs.writeLocal).toBe(false);  // safe on dirty branches
+
+    const noPushArgs = parseArgs([], TEST_ENV);  // TEST_ENV sets NO_PUSH=1
+    if ("error" in noPushArgs) throw new Error(noPushArgs.error);
+    expect(noPushArgs.push).toBe(false);
+    expect(noPushArgs.writeLocal).toBe(true);  // else nothing happens
+  });
+
+  it("--write-local explicit override", () => {
+    const r = parseArgs(["--push", "--write-local"], TEST_ENV);
+    if ("error" in r) throw new Error(r.error);
+    expect(r.push).toBe(true);
+    expect(r.writeLocal).toBe(true);
+  });
+
+  it("--no-write-local explicit override", () => {
+    const r = parseArgs(["--no-push", "--no-write-local"], TEST_ENV);
+    if ("error" in r) throw new Error(r.error);
+    expect(r.push).toBe(false);
+    expect(r.writeLocal).toBe(false);
+  });
+});
+
+describe("heartbeatRepoRelPath", () => {
+  it("uses POSIX separators regardless of host OS", () => {
+    const ts = Date.UTC(2026, 4, 27, 13, 30, 0);
+    const p = heartbeatRepoRelPath("otto", ts, "abc123");
+    expect(p).toBe("docs/agent-heartbeats/otto/2026/05/27/abc123.md");
+    expect(p.includes("\\")).toBe(false);
   });
 });
 

@@ -270,24 +270,26 @@ These apply to any AI harness.
   `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md`
   §10 (auditable via
   `bun tools/hygiene/audit-agencysignature-main-tip.ts`),
-  OR (b) a lightweight heartbeat record at
-  `docs/agent-heartbeats/<persona>/<YYYY>/<MM>/<DD>/<zetaid-hex>.md`
-  via `bun tools/agent-heartbeats/write-heartbeat.ts` (composes
-  with `src/Core.TypeScript/zeta-id/zeta-id.ts` 128-bit ZetaID
-  + `registry/categories.yaml` Heartbeat = category 3). Neither
-  + no named-dependency = the Standing-by failure mode per
+  OR (b) a lightweight heartbeat record on the
+  `agent-heartbeats` branch via
+  `./tools/agent-heartbeats/write-heartbeat.ts` with no args
+  (composes with `src/Core.TypeScript/zeta-id/zeta-id.ts` 128-bit
+  ZetaID + `registry/categories.yaml` Heartbeat = category 3).
+  Heartbeat default branch bypasses the 4 main-targeting rulesets
+  (Branch Safety / CI Gate / Default / Review Policy) so per-tick
+  push succeeds without PR overhead and without showing up as
+  accidental velocity in the PR queue. ZetaID filename uniqueness
+  guarantees no collision across concurrent agents. Neither (a)
+  nor (b) + no named-dependency present = the Standing-by failure
+  mode per
   `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`
-  (N=6 brief-ack forced escalation). The narrative
-  self-model counter is unreliable per the 2026-05-27
-  Kira review (Otto-CLI emitted 100+ "Quiet." without the
-  counter firing because the agent cannot count itself);
-  the externalized counter is git log over
-  `docs/agent-heartbeats/<persona>/` + per-commit AgencySignature
-  trailer presence on origin/main. Heartbeat files target a
-  branch-protection-excluded folder (or alternative
-  `agent-heartbeats` branch with no protection) so per-tick
-  push is direct-to-main without PR overhead; ZetaID
-  uniqueness guarantees no collision across concurrent agents.
+  (N=6 brief-ack forced escalation). The narrative self-model
+  counter is unreliable (2026-05-27 empirical anchor: an
+  autonomous-loop instance emitted 100+ single-word "Quiet."
+  responses without the counter firing because the agent cannot
+  count itself; the externalized counter must read git log over
+  the agent-heartbeats branch + per-commit AgencySignature trailer
+  presence on origin/main to fire reliably).
 - When an agent finds a drift between spec and code,
   the **spec might be wrong, not the code**. Check
   both. Spec bugs surface as formal-verification

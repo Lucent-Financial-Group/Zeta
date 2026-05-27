@@ -30,9 +30,11 @@
 // Exit codes:
 //   0 success (heartbeat written; path printed to stdout)
 //   2 arg-parse error
-//   3 write failure
+//   3 local write failure
+//   4 REST push failure (--push only)
 
 import { writeFileSync, mkdirSync } from "node:fs";
+import { posix } from "node:path";
 import { join, dirname } from "node:path";
 import { spawnSync } from "node:child_process";
 import { pack, DEFAULT_ENV } from "../../src/Core.TypeScript/zeta-id/zeta-id";
@@ -51,8 +53,9 @@ interface Args {
   readonly repoRoot: string;
   readonly dryRun: boolean;
   readonly push: boolean;
+  readonly writeLocal: boolean;  // when push=true, default false to keep dirty branches clean
   readonly repo: string;     // "owner/name" for REST push (default Lucent-Financial-Group/Zeta)
-  readonly branch: string;   // target branch (default "main")
+  readonly branch: string;   // target branch (HARDCODED default "agent-heartbeats")
 }
 
 /**
@@ -63,29 +66,50 @@ interface Args {
  *
  * Env-var precedence: CLI flag > env var > built-in default.
  */
+/** Strict int parse — returns null for NaN / non-integer / out-of-range. */
+function parseIntStrict(s: string): number | null {
+  const n = Number(s);
+  return Number.isInteger(n) ? n : null;
+}
+
+const KNOWN_AUTHORITIES: ReadonlyArray<Authority["type"]> = [
+  "HumanVerified", "TrustedAgent", "Standard", "BestEffort", "Simulated", "Raw",
+];
+const KNOWN_MOMENTUM: ReadonlyArray<Momentum["type"]> = [
+  "Background", "Normal", "Elevated", "High", "Critical", "Raw",
+];
+
 export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = process.env): Args | { readonly error: string } {
-  // Defaults derived from env vars (set once per agent session by harness)
-  let personaSlot = env.ZETA_AGENT_PERSONA_SLOT ? parseInt(env.ZETA_AGENT_PERSONA_SLOT, 10) : 2;
+  // Defaults derived from env vars (set once per agent session by harness).
+  // parseIntStrict catches NaN from non-numeric env values; falls through to default.
+  let personaSlot = env.ZETA_AGENT_PERSONA_SLOT ? (parseIntStrict(env.ZETA_AGENT_PERSONA_SLOT) ?? 2) : 2;
   let personaName = env.ZETA_AGENT_PERSONA_NAME ?? "otto";
   let authority: Authority["type"] = (env.ZETA_AGENT_AUTHORITY as Authority["type"]) ?? "TrustedAgent";
   let momentum: Momentum["type"] = (env.ZETA_AGENT_MOMENTUM as Momentum["type"]) ?? "Normal";
-  let chromosome = env.ZETA_AGENT_CHROMOSOME ? parseInt(env.ZETA_AGENT_CHROMOSOME, 10) : 0;
-  let location = env.ZETA_AGENT_LOCATION ? parseInt(env.ZETA_AGENT_LOCATION, 10) : 1;
+  let chromosome = env.ZETA_AGENT_CHROMOSOME ? (parseIntStrict(env.ZETA_AGENT_CHROMOSOME) ?? 0) : 0;
+  let location = env.ZETA_AGENT_LOCATION ? (parseIntStrict(env.ZETA_AGENT_LOCATION) ?? 1) : 1;
   let namedDep: string | null = env.ZETA_AGENT_NAMED_DEP ?? null;
   let disposition = env.ZETA_AGENT_DISPOSITION ?? "bounded-wait";
-  let parentPr: number | null = env.ZETA_AGENT_PARENT_PR ? parseInt(env.ZETA_AGENT_PARENT_PR, 10) : null;
+  let parentPr: number | null = env.ZETA_AGENT_PARENT_PR ? parseIntStrict(env.ZETA_AGENT_PARENT_PR) : null;
   let repoRoot = env.ZETA_AGENT_REPO_ROOT ?? process.cwd();
   let dryRun = false;
   // Default --push=TRUE per operator 2026-05-27 "stupid simple" direction:
   // perfect-world heartbeat is local-write + remote-push together. Tests +
   // diagnostic runs opt-OUT via --no-push.
   let push = env.ZETA_AGENT_HEARTBEAT_NO_PUSH !== "1";
+  // Default writeLocal=FALSE when pushing (operator 2026-05-27): safe on
+  // dirty branches because no local file is created in the current
+  // worktree. REST push is the source of truth; --write-local opts in
+  // when operator wants the local copy too (for in-worktree grep).
+  // With --no-push, writeLocal flips to TRUE (else nothing happens).
+  let writeLocalExplicit: boolean | null = null;  // null=auto (push→false, no-push→true)
   let repo = env.ZETA_AGENT_REPO ?? "Lucent-Financial-Group/Zeta";
-  // Default branch is "agent-heartbeats" (operator 2026-05-27): keeps
-  // per-tick heartbeat noise off main + bypasses the 4 main-only rulesets
-  // (Branch Safety / CI Gate / Default / Review Policy) without needing
-  // per-folder exclusions. Heartbeats on this branch don't show up as
-  // accidental velocity in PR queue or main commit log.
+  // HARDCODED default branch is "agent-heartbeats" (operator 2026-05-27
+  // "hard code the correct branch name for heartbeats into the script for
+  // it's defualt"): bypasses the 4 main-only rulesets (Branch Safety /
+  // CI Gate / Default / Review Policy) — direct-push succeeds without any
+  // ruleset modification; non-PR (no accidental velocity); main commit log
+  // stays clean. Override via ZETA_AGENT_BRANCH env var or --branch CLI.
   let branch = env.ZETA_AGENT_BRANCH ?? "agent-heartbeats";
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -94,19 +118,21 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = proc
       return argv[++i]!;
     };
     try {
-      if (arg === "--persona-slot") personaSlot = parseInt(next(), 10);
+      if (arg === "--persona-slot") { const v = parseIntStrict(next()); if (v === null) return { error: "--persona-slot must be integer" }; personaSlot = v; }
       else if (arg === "--persona-name") personaName = next();
       else if (arg === "--authority") authority = next() as Authority["type"];
       else if (arg === "--momentum") momentum = next() as Momentum["type"];
-      else if (arg === "--chromosome") chromosome = parseInt(next(), 10);
-      else if (arg === "--location") location = parseInt(next(), 10);
+      else if (arg === "--chromosome") { const v = parseIntStrict(next()); if (v === null) return { error: "--chromosome must be integer" }; chromosome = v; }
+      else if (arg === "--location") { const v = parseIntStrict(next()); if (v === null) return { error: "--location must be integer" }; location = v; }
       else if (arg === "--named-dep") namedDep = next();
       else if (arg === "--disposition") disposition = next();
-      else if (arg === "--parent-pr") parentPr = parseInt(next(), 10);
+      else if (arg === "--parent-pr") { const v = parseIntStrict(next()); if (v === null) return { error: "--parent-pr must be integer" }; parentPr = v; }
       else if (arg === "--repo-root") repoRoot = next();
       else if (arg === "--dry-run") dryRun = true;
       else if (arg === "--push") push = true;
       else if (arg === "--no-push") push = false;
+      else if (arg === "--write-local") writeLocalExplicit = true;
+      else if (arg === "--no-write-local") writeLocalExplicit = false;
       else if (arg === "--repo") repo = next();
       else if (arg === "--branch") branch = next();
       else return { error: `unknown flag: ${arg}` };
@@ -119,7 +145,11 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = proc
   if (chromosome < 0 || chromosome > 31) return { error: "--chromosome must be 0..31" };
   if (location < 0 || location > 255) return { error: "--location must be 0..255" };
   if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repo)) return { error: "--repo must match owner/name" };
-  return { personaSlot, personaName, authority, momentum, chromosome, location, namedDep, disposition, parentPr, repoRoot, dryRun, push, repo, branch };
+  if (!KNOWN_AUTHORITIES.includes(authority)) return { error: `--authority must be one of ${KNOWN_AUTHORITIES.join(",")}` };
+  if (!KNOWN_MOMENTUM.includes(momentum)) return { error: `--momentum must be one of ${KNOWN_MOMENTUM.join(",")}` };
+  // Default writeLocal: push=true → false (dirty-branch-safe); push=false → true (else nothing happens)
+  const writeLocal = writeLocalExplicit ?? !push;
+  return { personaSlot, personaName, authority, momentum, chromosome, location, namedDep, disposition, parentPr, repoRoot, dryRun, push, writeLocal, repo, branch };
 }
 
 /**
@@ -293,6 +323,16 @@ export function renderHeartbeat(args: Args, idHex: string, timestampMs: number):
   return lines.join("\n") + "\n";
 }
 
+/** Build the repo-relative path for REST (always POSIX separators regardless of host OS). */
+export function heartbeatRepoRelPath(personaName: string, timestampMs: number, idHex: string): string {
+  const d = new Date(timestampMs);
+  const yyyy = d.getUTCFullYear().toString();
+  const mm = (d.getUTCMonth() + 1).toString().padStart(2, "0");
+  const dd = d.getUTCDate().toString().padStart(2, "0");
+  // posix.join guarantees forward-slashes even on Windows hosts
+  return posix.join("docs", "agent-heartbeats", personaName, yyyy, mm, dd, `${idHex}.md`);
+}
+
 async function main(): Promise<number> {
   const argv = process.argv.slice(2);
   const parsed = parseArgs(argv);
@@ -304,28 +344,35 @@ async function main(): Promise<number> {
   const obs = buildHeartbeatObservation(parsed, timestampMs);
   const id = pack(obs, DEFAULT_ENV);
   const idHex = zetaIdToHex(id);
-  const path = heartbeatPath(parsed.repoRoot, parsed.personaName, timestampMs, idHex);
+  const localPath = heartbeatPath(parsed.repoRoot, parsed.personaName, timestampMs, idHex);
+  const repoRelPath = heartbeatRepoRelPath(parsed.personaName, timestampMs, idHex);
   const body = renderHeartbeat(parsed, idHex, timestampMs);
   if (parsed.dryRun) {
-    console.log(`DRY RUN — would write:\n  ${path}\n${"-".repeat(40)}\n${body}`);
-    if (parsed.push) console.log(`DRY RUN — would push to ${parsed.repo} branch ${parsed.branch}`);
+    console.log(`DRY RUN — id ${idHex}`);
+    if (parsed.writeLocal) console.log(`DRY RUN — would write local: ${localPath}`);
+    if (parsed.push) console.log(`DRY RUN — would push: ${parsed.repo} branch=${parsed.branch} path=${repoRelPath}`);
+    if (!parsed.writeLocal && !parsed.push) console.log(`DRY RUN — both --no-write-local + --no-push = no-op`);
     return 0;
   }
-  try {
-    mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, body);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error(`write-heartbeat: local write failed: ${msg}`);
-    return 3;
+  if (parsed.writeLocal) {
+    try {
+      mkdirSync(dirname(localPath), { recursive: true });
+      writeFileSync(localPath, body);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(`write-heartbeat: local write failed: ${msg}`);
+      return 3;
+    }
+    console.log(localPath);
   }
-  console.log(path);
   if (parsed.push) {
-    // Direct-to-main push via REST git-data API: bypasses local git index +
-    // working tree entirely (no staged/unstaged files disturbed). ZetaID
-    // filename uniqueness prevents concurrent-agent collision; non-FF retry
-    // handles race window between parent-ref read + ref update.
-    const repoRelPath = `docs/agent-heartbeats/${parsed.personaName}/${path.split("/").slice(-4).join("/")}`;
+    // REST git-data API push (blob → tree → commit → ref). The REST step
+    // touches NO local git state — no index read/write, no working-tree
+    // mutation, no current-branch dependency. Safe on dirty branches with
+    // staged/unstaged work because nothing local is touched by this step.
+    // ZetaID filename uniqueness prevents concurrent-agent collision; 5x
+    // retry on non-fast-forward handles race window between parent-ref
+    // read + ref update.
     const commitMsg = `heartbeat(${parsed.personaName}): ${idHex} (${parsed.disposition}${parsed.parentPr !== null ? `; PR #${parsed.parentPr}` : ""})`;
     const result = pushHeartbeatViaRest(parsed.repo, parsed.branch, repoRelPath, body, commitMsg);
     if ("error" in result) {
@@ -333,6 +380,10 @@ async function main(): Promise<number> {
       return 4;
     }
     console.log(`pushed: ${result.ok.url}`);
+  }
+  if (!parsed.writeLocal && !parsed.push) {
+    console.error(`write-heartbeat: both --no-write-local + --no-push = no-op (this is probably not what you wanted)`);
+    return 2;
   }
   return 0;
 }
