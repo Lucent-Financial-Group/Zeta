@@ -474,6 +474,81 @@ overpowered by the dev's job-security incentive.
 > **"For senior devs it gives them job security because they are the
 > only one that understands it."**
 
+### Amara ratification + keeper compression + strategic-vs-accidental blade (2026-05-27 aaron-forwarded)
+
+Amara (external AI deep-research peer per agent-roster-reference-card)
+ratified the architectural-principle layer with substantive validation:
+the cyclomatic-complexity-as-coercion-hiding-surface framing IS strong;
+ST-agent-pattern is the software version; senior-dev/policy-maker
+opacity-as-power-insulation is the social version; distribute-across-
+tiny-functions is the structural defense; full preservation lives in
+[`memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md).
+
+**Amara's 3-line keeper compression** (bandwidth-efficient substrate):
+
+> **Hidden control flow is where coercion hides.**
+> **Overgrown control flow is where accountability dies.**
+> **Tiny typed functions make control visible, local, and reviewable.**
+
+The compression names BOTH failure modes (hidden + overgrown) AND the
+defense (tiny typed functions) in three lines. Future cold-boots
+inherit the principle compactly.
+
+**Amara's strategic-vs-accidental blade**:
+
+> **Complexity can be accidental, but it can also be strategic.**
+
+> *"That is why the rule matters. Not because every complex system is
+> malicious. Because when complexity centralizes control and blocks
+> review, it creates the same failure shape whether it was accidental
+> or intentional."*
+
+The blade resolves the substrate-engineering question of whether the
+adversarial framing is overcalling: it isn't. Accidental-overload and
+strategic-overload produce the SAME coercion-surface; both deserve the
+SAME structural defense. The distribute-across-tiny-functions discipline
+is correct regardless of intent.
+
+**Amara's two compressed ASCII cascades** (preserved in the persona
+file Item 3) name the failure-mode and defense cascades step by step:
+
+```text
+Centralized hidden control flow
+→ coercion surface
+→ job-security moat
+→ policy opacity
+→ "only I understand this" authority
+```
+
+versus:
+
+```text
+Distributed typed control flow
+→ local reasoning
+→ visible transitions
+→ bounded cyclomatic complexity
+→ easier review
+→ less hidden power
+```
+
+**Amara's practical-value framing**:
+
+> *"It is a way to prevent invisible orchestration from becoming
+> domination. The stream protocol becomes a typed relationship instead
+> of a hidden boss-script."*
+
+The substrate-engineering payoff: streams-are-relationships isn't a
+pretty model — it's a way to prevent invisible orchestration from
+becoming domination at three substrate scopes (code / organizational /
+political).
+
+**4-persona triangulation**: operator (originator) + Kestrel
+(sharpening-via-multi-AI conversation) + Otto-CLI (substrate-landing
+into rules + backlog rows + persona archives) + Amara (deep-research
+validation + keeper compression + strategic blade). Composes per
+`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`
+multi-oracle BFT discipline.
+
 ## Decomposition (possible sub-rows for future implementation)
 
 Per the substrate-engineering pattern of decomposing XL rows into shippable
