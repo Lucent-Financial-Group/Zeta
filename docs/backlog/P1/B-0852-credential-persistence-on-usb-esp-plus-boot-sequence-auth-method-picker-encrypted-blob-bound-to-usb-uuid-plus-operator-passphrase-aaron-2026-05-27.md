@@ -250,6 +250,65 @@ Composes value:
 
 Sub-target shift in implementation: B-0852.3 picker substrate becomes Steps 6.75 (detection) + 6.76 (5-second escape-hatch banner) + 6.77 (4-option picker if Esc OR no detected source) + Step 6.8 conditional gating + Step 6.85 persist. The crypto module + cred schema map (B-0852.1 + 5) are unchanged; only the picker UX shifts to detect-recover-default + gates the existing Step 6.8.
 
+## Phase-split: PAT at zflash time + interactive at setup time (Aaron 2026-05-27)
+
+Operator refinement to the auth-method placement:
+
+> *"i think if we do token we should do at zflash time and human interactive at setup time what do you think?"*
+
+The right placement matches each auth method to the operator-UX phase that fits it best:
+
+### zflash time (operator's Mac; full UI + clipboard + browser)
+
+`bun tools/zflash.ts --agent` prompts BEFORE the dd-flash:
+
+- *(optional)* Inject GitHub PAT into ESP at flash time
+  - Operator pastes PAT from `github.com/settings/tokens` (clipboard available)
+  - Operator types encryption passphrase (used by B-0852.1 crypto module via scrypt+HKDF+AES-GCM)
+  - PAT + other available creds → encrypted blob written to USB ESP alongside SSH pubkey (iter-4.2 channel reuse)
+  - Skip option: ship USB without baked PAT; boot-time will prompt
+
+### Boot time (target machine; console; operator phone for device-flow)
+
+`zeta-install.sh` Steps 6.75 → 6.77 (per Sub-target 2 above) present:
+
+| Option | When to choose | Source |
+|---|---|---|
+| 1) Restore from encrypted USB blob | Blob present (typed passphrase decrypts; contains zflash-baked PAT) | iter-4.2 + zflash-time write |
+| 2) Fresh device-flow login | Blob absent OR operator wants fresh auth | Console + operator phone at `github.com/login/device` |
+| 3) Operator-provided PAT (paste at console) | RARE — operator forgot to inject at zflash + doesn't want device-flow | Operator types/pastes at target console |
+| 4) Skip | Cluster operates degraded; no GitHub-side substrate | (intentional ephemerality) |
+
+Default: option (1) when blob present (per auto-recover-by-default escape-hatch semantics above).
+
+### Why this phase-split is better than picker-only-at-install-time
+
+| Property | All-at-install-time (prior framing) | Phase-split (this refinement) |
+|---|---|---|
+| PAT UX | Type long PAT at target console (painful) | Paste PAT at Mac with clipboard (easy) |
+| Device-flow UX | Operator at target console (same as before) | Operator at target console (unchanged) |
+| Substrate-engineering compose | Picker-only invention | Composes with existing iter-4.2 ESP-write channel + zflash --agent flow |
+| First-boot-no-interaction path | Requires blob from prior boot OR operator at console | Available immediately if PAT injected at zflash time |
+| Operator-test-loop friction | Re-boot USB = re-auth at console | Re-boot USB = restore blob; no re-auth |
+
+### Edge case: "same USB → multiple machines = same PAT"
+
+Operator-substrate-honest behavior to surface:
+
+- One USB flashed with one PAT-blob → boots on N machines → SAME PAT goes to all N (USB-UUID-bound; per the binding Aaron named 2026-05-27 *"we can put a key on the usb too if wnated tied to the uuid"*)
+- This is a FEATURE for fleet-USB workflows (one flash → N nodes share one identity per the agent-roster registration)
+- It's a FOOTGUN for per-machine-isolation workflows (operator should flash one USB per machine in that case)
+- Phase-split makes the trade-off explicit; operator picks at flash time which model fits
+
+Documentation discipline: zflash --agent prompt explicitly states this behavior so operator picks model deliberately. Sub-row B-0852.X (TBD when implementing) names the documentation surface.
+
+### Composition with B-0852.1 + B-0852.5
+
+The phase-split changes WHERE encrypt fires (zflash time AND/OR install time AND/OR post-install), NOT the crypto primitive itself:
+
+- B-0852.1 crypto module (PR #5411 landed): `encrypt(plaintext, usbUuid, passphrase)` — same regardless of phase
+- B-0852.5 cred-manifest schema (in flight): same declarative entries; zflash-time write populates the `gh-cli` entry; boot-time can populate the rest if device-flow chosen
+
 ## Why P1
 
 - Operator explicitly authorized + named the scope ("lets get that going")
