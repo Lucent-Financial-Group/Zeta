@@ -47,7 +47,7 @@ the "cortical-columns-as-reservoir" framing is substrate-anchored
 ## Composition map (to existing Zeta substrate)
 
 | Kirsanov Reservoir Computing concept | Zeta substrate it composes with |
-|---|---|
+| --- | --- |
 | Swimming-pool dynamical-system metaphor (input → ripples → memory) | The framework's whole substrate-engineering architecture; substrate-as-dynamical-system is exactly the operator's 2026-05-26 framing of how rules + memory + agents compose |
 | Echo-state property (every input leaves trace that fades) | Operator's 10% free-time budget IS the framework-scale α controlling echo-state at AI-participant scope |
 | Random reservoir + learned readout (DON'T train the reservoir) | Substrate-as-rows + fork-negotiated ontology — the substrate IS the random-ish reservoir; agents are the readout-layer that learns to extract signal |
@@ -87,15 +87,28 @@ substantive engineering outputs.
 The framework's substrate-engineering work is reservoir computing
 operating at the human-AI-collaboration scope.
 
-## Key mathematical formulation (Aaron-forwarded screenshot 2026-05-26)
+## Key mathematical formulation (Aaron-forwarded 2 screenshots 2026-05-26)
 
-Aaron forwarded a screenshot of the equation Kirsanov shows at the
-start of the "Recurrent Neural Networks" section (~2:36), captioned
-in the video as the equation "from last video" — i.e., the canonical
-recurrent-state-update form derived in B-0839.2 (RNN/LSTM/GRU):
+Aaron forwarded screenshots showing TWO forms of the reservoir
+state-update equation across the video.
+
+### Form 1 — undriven recurrence (the "from last video" reference, ~2:36)
+
+The bare RNN form (without driving input), referenced as the equation
+derived in the previous video (B-0839.2 RNN/LSTM/GRU):
 
 ```math
 s_i^t = s_i^{t-1} + \sum_j W_{ij} \sigma(s_j^{t-1})
+```
+
+### Form 2 — driven reservoir (the FULL reservoir-computing form, ~4:20)
+
+The extended form with the rhythmic driving signal `z(t)` added as a
+"pacemaker" (theta / gamma waves in the brain analog). This is the
+full operational equation of reservoir computing:
+
+```math
+s_i^t = s_i^{t-1} + \sum_j W_{ij} \sigma(s_j^{t-1}) + \mu_i z(t)
 ```
 
 Where:
@@ -111,16 +124,64 @@ Where:
   threshold")
 - `Σ_j W_{ij} σ(s_j^{t-1})` — weighted sum of activated incoming
   ripples from all other reservoir neurons
+- `z(t)` — **rhythmic driving signal** (sine wave; "background clock";
+  brain analog = theta / gamma neural pacemaker oscillations)
+- `μ_i` — **per-neuron driving-signal coupling coefficient**
+  (each neuron receives the driver scaled differently — random
+  per-neuron weight that determines how much of the driver enters
+  each reservoir node)
 
-This is the dynamical-system form of recurrence. The reservoir-
-computing twist is: leave `W_{ij}` random and FIXED; only train the
-linear readout layer that observes `s_i^t` and produces target
-output `y(t)`. The substantive cross-substrate framework composition:
-the random `W_{ij}` IS the "library of babel of temporal shapes"
-Kirsanov names at 11:43; the readout-layer linear-regression learning
-IS the operator/agents tuning weights to extract substantive
-engineering output from the framework's substrate-row + memory-
-preservation reservoir.
+### Diagram (from screenshot)
+
+The screenshot diagram shows the full computational pipeline:
+
+```text
+       z(t)  [sine wave pacemaker]
+        |
+        | (scaled by μ_i, per-neuron)
+        v
+   ┌─────────────────┐
+   │   Reservoir     │       ?
+   │  (random fixed  │  ====>  y(t)  [Target Signal]
+   │   W_ij weights) │           [e.g., zebra finch song waveform]
+   └─────────────────┘
+```
+
+The `?` arrow is the central mystery the video resolves: how do we
+get from the messy random reservoir state to the precise target
+signal? Answer: train a simple linear readout `x(t) = Σ_i α_i s_i(t)`
+that listens to all reservoir neurons; the α_i are the only weights
+ever trained.
+
+### The pedagogical move from Form 1 to Form 2
+
+Form 1 alone produces the echo-state-property problem: ripples fade,
+network goes silent. Form 2 adds the driver `μ_i z(t)` so the
+reservoir is continuously stimulated, keeping the energy levels up
+across arbitrarily long time horizons. The driver is BORING (just
+a sine wave); the substantive output emerges from how the random
+reservoir transforms the boring input into a rich basis of temporal
+shapes that the readout layer combines into the target signal.
+
+### The substantive cross-substrate framework composition
+
+- The random `W_{ij}` IS the "library of babel of temporal shapes"
+  Kirsanov names at 11:43
+- The driver `z(t)` corresponds to the framework's cron-sentinel
+  autonomous-loop (per `.claude/rules/tick-must-never-stop.md`) —
+  the per-minute tick that keeps energy levels up at AI-participant
+  scope; without it, the framework's reservoir would settle and
+  "ripples die out"
+- The per-neuron `μ_i` corresponds to per-agent customized
+  engagement: each AI participant (Otto-CLI, Otto-Desktop, Alexa,
+  Lior, Vera, etc.) has its own μ-scaling that determines how it
+  engages with the operator's driving cadence
+- The readout-layer linear-regression learning IS the operator/agents
+  tuning weights to extract substantive engineering output from the
+  framework's substrate-row + memory-preservation reservoir
+- The target signal `y(t)` corresponds to the substantive engineering
+  outputs (PRs landed, substrate rules ratified, F#/TS implementation
+  delivered) that the framework's substrate-engineering work produces
 
 ## Verbatim transcript
 

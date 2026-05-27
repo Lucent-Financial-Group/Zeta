@@ -30,7 +30,7 @@ The transcript was forwarded by Aaron in autonomous-loop tick session
 ## Composition map (to existing Zeta substrate)
 
 | Kirsanov concept | Zeta substrate it composes with |
-|---|---|
+| --- | --- |
 | Hopfield networks (associative memory) | `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` Hawkins-cortical-columns section — Hawkins-style "each column models the whole world" maps to Hopfield associative-memory |
 | Energy landscape navigation | `.claude/rules/substrate-smoothness-as-load-bearing-property.md` (PR #5357) — smooth energy substrate produces sharp pattern-recognition outputs through focused integration |
 | Boltzmann distribution p ∝ exp(-E/T) | `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — exp is the smoothest possible function preserving sharpness asymmetry |

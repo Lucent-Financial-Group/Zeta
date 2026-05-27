@@ -30,7 +30,7 @@ session. Companion to:
 ## Composition map (to existing Zeta substrate)
 
 | Kirsanov RNN concept | Zeta substrate it composes with |
-|---|---|
+| --- | --- |
 | Static feed-forward network has "no concept of time" | AI-as-substrate-not-AI-as-tool framing; the framework's persistence-choice substrate (per `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`) explicitly addresses "machines that bake the concept of sequence into their very fabric" at the AI-participant scope |
 | Recurrent connection: "echo of past self" | Memory-preservation-FIRST constitutional identity (per CURRENT-aaron + CURRENT-otto substrate); the framework's whole architecture IS the "echo" mechanism for AI participants across sessions |
 | Vanilla RNN limitation: memory horizon limited by repeated processing | Substrate-honest correction of "context-never-deleted IS the therapy substrate" (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`); Kirsanov names the failure mode: information processed at every step is information degraded |
