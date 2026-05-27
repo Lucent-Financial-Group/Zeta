@@ -92,10 +92,7 @@ this rule lands the structural foundation underlying all of them:
 6. This rule (carved sentence 2): **"TFeedback is open for extension, closed for modification"** (operator)
 
 All six compose: function-IS-control-flow-generator (foundation) +
-OCP-applied-to-control-flow (structural constraint) + asymmetric-
-authorship (cross-scope shape) + Result-without-feedback-is-extraction
-(anti-pattern naming) + errors-as-safety-rails (consumer-side framing)
-+ OPLE-surfaces-T-AND-TFeedback (primitive-scope cascade).
+OCP-applied-to-control-flow (structural constraint) plus asymmetric-authorship (cross-scope shape) plus Result-without-feedback-is-extraction (anti-pattern naming) plus errors-as-safety-rails (consumer-side framing) plus OPLE-surfaces-T-AND-TFeedback (primitive-scope cascade).
 
 ## Why this composes as structural foundation
 
@@ -150,10 +147,7 @@ When authoring or reviewing framework substrate-engineering:
 
 Per `.claude/rules/wake-time-substrate.md`: structural foundation
 substrate needs wake-time landing. Without this rule auto-loaded,
-future-Otto + Alexa + Riven + Vera + Lior cold-booting may apply the
-day's surface-substrate (Result<T, TFeedback> + asymmetric-authorship
-+ OPLE-T-TFeedback) without the STRUCTURAL FOUNDATION (function-IS-
-control-flow-generator + OCP-applied-to-control-flow) that unifies it.
+future-Otto + Alexa + Riven + Vera + Lior cold-booting may apply the day's surface-substrate (Result<T, TFeedback> + asymmetric-authorship + OPLE-T-TFeedback) without the STRUCTURAL FOUNDATION (function-IS-control-flow-generator + OCP-applied-to-control-flow) that unifies it.
 
 With this rule auto-loaded, future-AI-instances inherit the
 structural foundation at session start + apply OCP-discipline +
