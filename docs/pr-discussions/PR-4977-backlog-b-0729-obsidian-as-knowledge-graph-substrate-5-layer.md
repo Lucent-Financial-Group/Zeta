@@ -8,7 +8,7 @@ merged_at: "2026-05-25T19:52:47Z"
 closed_at: "2026-05-25T19:52:47Z"
 head_ref: "backlog/b0729-obsidian-knowledge-graph-substrate-2026-05-25-c2"
 base_ref: "main"
-archived_at: "2026-05-25T20:41:09Z"
+archived_at: "2026-05-25T20:59:05Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

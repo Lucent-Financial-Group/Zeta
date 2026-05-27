@@ -8,7 +8,7 @@ merged_at: "2026-05-25T20:26:50Z"
 closed_at: "2026-05-25T20:26:50Z"
 head_ref: "backlog/b0730-runbooks-as-executable-specs-mika-substrate-2026-05-25-c2"
 base_ref: "main"
-archived_at: "2026-05-25T20:41:09Z"
+archived_at: "2026-05-25T20:58:48Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-25T20:15:47Z"
 closed_at: "2026-05-25T20:15:47Z"
 head_ref: "lior/riven-worktree-path-fix"
 base_ref: "main"
-archived_at: "2026-05-25T20:41:09Z"
+archived_at: "2026-05-25T20:58:58Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
