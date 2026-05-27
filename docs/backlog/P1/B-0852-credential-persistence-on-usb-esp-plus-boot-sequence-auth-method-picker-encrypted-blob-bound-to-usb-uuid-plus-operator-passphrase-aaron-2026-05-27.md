@@ -309,6 +309,61 @@ The phase-split changes WHERE encrypt fires (zflash time AND/OR install time AND
 - B-0852.1 crypto module (PR #5411 landed): `encrypt(plaintext, usbUuid, passphrase)` — same regardless of phase
 - B-0852.5 cred-manifest schema (in flight): same declarative entries; zflash-time write populates the `gh-cli` entry; boot-time can populate the rest if device-flow chosen
 
+### Per-cred operator choice at zflash time (Aaron 2026-05-27 extension)
+
+Aaron 2026-05-27 named the next composition: *"then zflash script and/or skill can make sure it asks what declared creds you want to bake in vs go through device flow."*
+
+`zflash --agent` (OR a paired skill like `/zflash-creds`) iterates over the cred-manifest at flash time + prompts PER CREDENTIAL:
+
+```text
+Cred-manifest contains 6 declared credentials.
+Pick source for each (bake-in at flash time | device-flow at boot | skip):
+
+[1/6] gh-cli (personaScoped:false; required:true)
+       ~/.config/gh/hosts.yml
+       (a) Bake in PAT now (paste from github.com/settings/tokens)
+       (b) Device-flow at boot (operator at github.com/login/device on phone)
+       (c) Skip (gh ops degrade until manual auth)
+   → choose: a
+
+[2/6] claude (personaScoped:true; required:true)
+       ~/.config/claude/credentials.json + ~/.claude/.credentials.json
+       (a) Bake in (paste credentials.json contents from existing setup)
+       (b) Device-flow at boot (claude login interactive)
+       (c) Skip
+   → choose: b
+
+[3/6] gemini ... → (b)
+[4/6] codex  ... → (b)
+[5/6] ssh-host-keys ... → (b) [optional credential]
+[6/6] ssh-operator-pubkey ... → (a) [already in iter-4.2 pubkey-inject channel]
+
+Encryption passphrase: ********
+Writing /esp/zeta-creds.enc with bake-in selections: gh-cli + ssh-operator-pubkey
+Boot-time will device-flow: claude + gemini + codex + ssh-host-keys
+```
+
+Per-cred discipline:
+
+- Manifest is the source-of-truth for what creds exist (declared, NOT hard-coded in zflash)
+- zflash iterates over manifest entries → per-cred prompt
+- Each prompt offers 3 options: bake-in / device-flow / skip
+- Bake-in choices encrypted in single ESP blob (one passphrase typed once at flash time)
+- Boot-time sees the blob + knows which creds are bake-in vs which need device-flow
+
+Operationally this means the zflash-time flow is BOUNDED by the manifest size (6 creds today; grows to N when manifest extends — no zflash code change required to support new cred type).
+
+### Composition with B-0844 (zflash --agent) + skill surface
+
+- `zflash --agent` flag (B-0844 landed) gets extended with `--bake-creds` (or similar) that triggers the per-cred prompt loop
+- Alternative: `/zflash-creds` skill (in `.claude/skills/zflash-creds/SKILL.md`) wraps zflash with the manifest-iteration prompt UX
+- Either surface reads B-0852.5 manifest + writes blob via B-0852.1 crypto module
+- Skill version composes with Claude-Code agent-substrate (operator invokes via `/zflash-creds` slash)
+
+### Sub-row addition for this composition
+
+B-0852.9 (new): zflash-time per-cred bake-in prompt loop reading B-0852.5 manifest + writing encrypted blob via B-0852.1. Owner: zflash side (extends `full-ai-cluster/tools/zflash.ts`). Composes with B-0844 (zflash --agent flag).
+
 ## Why P1
 
 - Operator explicitly authorized + named the scope ("lets get that going")
