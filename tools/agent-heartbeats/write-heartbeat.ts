@@ -81,7 +81,12 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = proc
   // diagnostic runs opt-OUT via --no-push.
   let push = env.ZETA_AGENT_HEARTBEAT_NO_PUSH !== "1";
   let repo = env.ZETA_AGENT_REPO ?? "Lucent-Financial-Group/Zeta";
-  let branch = env.ZETA_AGENT_BRANCH ?? "main";
+  // Default branch is "agent-heartbeats" (operator 2026-05-27): keeps
+  // per-tick heartbeat noise off main + bypasses the 4 main-only rulesets
+  // (Branch Safety / CI Gate / Default / Review Policy) without needing
+  // per-folder exclusions. Heartbeats on this branch don't show up as
+  // accidental velocity in PR queue or main commit log.
+  let branch = env.ZETA_AGENT_BRANCH ?? "agent-heartbeats";
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     const next = (): string => {

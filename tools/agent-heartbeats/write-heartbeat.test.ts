@@ -20,7 +20,7 @@ describe("parseArgs", () => {
     expect(r.disposition).toBe("bounded-wait");
     expect(r.push).toBe(false);  // disabled via TEST_ENV
     expect(r.repo).toBe("Lucent-Financial-Group/Zeta");
-    expect(r.branch).toBe("main");
+    expect(r.branch).toBe("agent-heartbeats");  // default per operator 2026-05-27
   });
 
   it("env vars override built-in defaults", () => {

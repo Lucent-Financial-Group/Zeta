@@ -26,13 +26,22 @@ docs/agent-heartbeats/<persona>/<YYYY>/<MM>/<DD>/<zetaid-hex>.md
 ./tools/agent-heartbeats/write-heartbeat.ts
 ```
 
-Zero params. Writes locally + pushes to main via REST. Defaults:
-persona-slot=2, persona-name=otto, authority=TrustedAgent,
-momentum=Normal, disposition=bounded-wait, push=true. Each can be
-overridden via env var (`ZETA_AGENT_PERSONA_NAME=alexa ...`) or CLI
-flag. The TS file is `chmod +x` with `#!/usr/bin/env bun` shebang so
-direct invocation works; `bun tools/agent-heartbeats/write-heartbeat.ts`
-also works for explicit-runtime invocation.
+Zero params. Writes locally + pushes to the `agent-heartbeats`
+branch via REST. Defaults: persona-slot=2, persona-name=otto,
+authority=TrustedAgent, momentum=Normal, disposition=bounded-wait,
+push=true, branch=agent-heartbeats. Each can be overridden via env
+var (`ZETA_AGENT_PERSONA_NAME=alexa ...`) or CLI flag. The TS file
+is `chmod +x` with `#!/usr/bin/env bun` shebang so direct invocation
+works; `bun tools/agent-heartbeats/write-heartbeat.ts` also works
+for explicit-runtime invocation.
+
+**Why `agent-heartbeats` branch by default**: the 4 active rulesets
+on the repo (Branch Safety / CI Gate / Default / Review Policy) all
+target `~DEFAULT_BRANCH` only — non-default branches are unprotected,
+so direct-push to `agent-heartbeats` succeeds without per-folder
+carve-outs. Heartbeats on this branch don't show up as PRs (no
+accidental velocity in the PR queue) and don't pollute main commit
+log. Lookups via `git log agent-heartbeats -- docs/agent-heartbeats/<persona>/...`.
 
 **Full flag form**:
 
