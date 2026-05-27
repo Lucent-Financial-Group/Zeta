@@ -48,8 +48,8 @@
 
   # iter-5.1 (B-0792): Avahi mDNS publishing — `<hostname>.local`
   # resolution via Bonjour (macOS) + nss-mdns (Linux peers).
-  # Empirical 2026-05-27 (Aaron node-e5a176 control-plane test): mDNS
-  # alone proved unreliable — operator's Mac (en0 ethernet, also on
+  # Empirical 2026-05-27 (control-plane physical-hardware-support test):
+  # mDNS alone proved unreliable — operator's Mac (en0 ethernet, also on
   # WiFi) could ping by IP + SSH but Bonjour resolution timed out;
   # unicast mDNS query to port 5353/udp also timed out from the Mac
   # even though the install completed. Multi-protocol additive
@@ -75,7 +75,7 @@
     };
   };
 
-  # iter-5.5 (B-0835 Bug 7 — Aaron 2026-05-27 reliability ask):
+  # iter-5.5 (B-0835 Bug 7 — operator 2026-05-27 reliability ask):
   # NetBIOS name resolution via Samba's nmbd as additive belt-and-
   # suspenders alongside Avahi mDNS. NetBIOS uses UDP broadcast on
   # 137 (vs mDNS multicast on 5353) — different failure modes; if
@@ -88,28 +88,41 @@
   #   nmblookup node-e5a176          # Linux/macOS NetBIOS lookup
   #   smbutil lookup node-e5a176     # macOS native NetBIOS
   #   ping node-e5a176               # may work if nsswitch has wins
+  #
+  # SECURITY DISCIPLINE (P0+P1 fixes from PR #5387 Copilot review):
+  # We run ONLY nmbd (NetBIOS name daemon on 137/udp + 138/udp), NOT
+  # smbd (SMB file-sharing daemon on 139/tcp + 445/tcp). This is
+  # genuinely "NetBIOS-only" — zero SMB attack surface:
+  #   - services.samba.smbd.enable = false  (no smbd process)
+  #   - services.samba.nmbd.enable = true   (nmbd ONLY)
+  #   - services.samba.openFirewall = false (we control firewall manually)
+  #   - networking.firewall.allowedUDPPorts = [ 137 138 ] (NetBIOS only)
+  # Reviewer caught the prior `openFirewall = true` + `smb ports = "445"`
+  # config that opened 139/tcp + 445/tcp despite the "name resolution
+  # only" claim. Now genuinely true.
   services.samba = {
     enable = true;
-    openFirewall = true;   # 137/udp (NetBIOS-NS), 138/udp (NetBIOS-DGM),
-                           # 139/tcp (NetBIOS-SSN), 445/tcp (SMB).
-                           # We only need 137/udp for name resolution;
-                           # the rest are firewalled at the file-share
-                           # layer (no shares declared = no SMB exposure).
+    openFirewall = false;  # we open ONLY 137/138 UDP below; no SMB ports
+    smbd.enable = false;   # NO SMB file-sharing daemon
+    nmbd.enable = true;    # NetBIOS name daemon ONLY
     settings = {
       global = {
         "workgroup" = "ZETA";
         "server string" = "Zeta cluster node %h";
         "netbios name" = config.networking.hostName;
-        # Disable SMB file-sharing entirely — this Samba instance
-        # exists ONLY for NetBIOS name advertisement, NOT file shares.
-        # No shares declared below the global section.
-        "server min protocol" = "SMB3";
-        "smb ports" = "445";  # don't bind 139
         "disable netbios" = "no";
         "name resolve order" = "bcast host";
       };
     };
   };
+
+  # Explicit NetBIOS-only firewall holes (P0 fix per PR #5387 review):
+  # 137/udp = NetBIOS-NS (name service queries)
+  # 138/udp = NetBIOS-DGM (datagram service for browse-list announcements)
+  # We do NOT open 139/tcp (NetBIOS-SSN) or 445/tcp (SMB) since smbd is
+  # disabled. This is genuinely "NetBIOS name resolution only" — no SMB
+  # file-share surface exposed even if smbd accidentally got re-enabled.
+  networking.firewall.allowedUDPPorts = [ 137 138 ];
 
   # DHCP-hostname registration: NetworkManager already advertises the
   # hostname via DHCP option 12 by default. Many home routers register
