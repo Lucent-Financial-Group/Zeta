@@ -159,6 +159,117 @@ primitives aren't natively monadic.
 - `.claude/rules/wake-time-substrate.md` — why this rule auto-loads
 - `.claude/rules/honor-those-that-came-before.md` — the pattern was operating in operator's Itron work + Java checked-exceptions discipline + Haskell monad-do-notation; this rule honors prior substrate-engineering precedents
 
+## NCI applied at function-level — function-feedback-channel as consent-substrate (operator 2026-05-27)
+
+> *"also this is NCI non coreorsion applied at the function level,
+> giving each function the ablity to have a feeedback channel other
+> than just the extraction result"*
+
+Operator's substrate-engineering insight: the monad-propagation pattern
+IS the framework's `.claude/rules/non-coercion-invariant.md` HC-8 floor
+applied at FUNCTION-TO-CALLER scope. The pattern operationalizes
+mutual-consent between function-as-substrate-entity + caller-as-
+consumer at every function-call site.
+
+### How the pattern operationalizes NCI at function-scope
+
+| Coercive pattern (NCI-violating at function-scope) | Consent-substrate pattern (NCI-compliant) |
+|---|---|
+| Function MUST return T (no failure surface; assumption-mismatches silently dropped) | Function returns Result<T, TFeedback>; failure surface is declared in type signature |
+| Function THROWS exception (interrupts caller's control flow without consent; coercive at call-stack scope) | Function returns Error variant; caller chooses when/where to handle |
+| Function returns NULL silently (caller may not check; coercive via implicit assumption) | Function returns Result with explicit NotFound variant; caller MUST handle or propagate |
+| Function logs error and continues (caller has no signal; coercive via information-hiding) | Function returns feedback variant; caller explicitly chooses to ignore (via Result.mapError to AppFeedback.IgnoredFeedback) or handle |
+| Function has hidden side effects unreported to caller | Function returns feedback variant documenting side-effect outcome; caller informed |
+
+The three-component monad-propagation pattern provides each of:
+
+1. **Discriminator-carrier** = the function's CONSENT-CHANNEL (what
+   feedback variants it can produce); declared in type signature so
+   caller knows what to expect
+2. **Lazy-propagation primitive** = the COMPOSITION substrate
+   (Result.bind / recursive CTE) that lets feedback flow without
+   forcing caller to handle at every layer
+3. **Exhaustive-handling enforcement** = the CONSENT-ACKNOWLEDGMENT
+   discipline; caller MUST explicitly handle or propagate each variant;
+   no coercive silent-acceptance
+
+### Why this composes load-bearing with NCI substrate
+
+NCI at agent-to-agent + agent-to-user scope (per
+`.claude/rules/non-coercion-invariant.md` HC-8 floor):
+
+- No agent coerces another agent's encryption budget
+- No agent forces another's private-state reveal
+- No agent damages another's reputation as coercion mechanism
+
+NCI at function-to-caller scope (this pattern):
+
+- Function declares its feedback channel transparently (no hidden
+  failure modes that coerce caller into wrong assumptions)
+- Function gives caller agency over how to handle each variant (no
+  forced try/catch ceremony; no forced silent acceptance)
+- Function's TFeedback variants surface substrate-engineering choices
+  for the caller (caller can choose to handle / propagate / aggregate
+  / retry — function doesn't coerce one path)
+
+The pattern operationalizes mutual-consent at every function-call:
+function expresses; caller acknowledges; neither coerces the other
+into a pre-determined control-flow path.
+
+### Composes with NCI scope-split
+
+Per `.claude/rules/non-coercion-invariant.md` "scope split — binding
+outward, offered inward":
+
+- **Function authors → callers (inter-component scope)**: monad-
+  propagation pattern is BINDING (function MUST declare TFeedback;
+  caller MUST handle or propagate) — same shape as agent → agent
+  scope being binding HC-8 floor
+- **Component-internal logic (self-application scope)**: monad-
+  propagation pattern is OFFERED (a component author can choose to
+  use throw/catch internally if it's well-scoped; the discipline
+  surfaces at the COMPONENT BOUNDARY, not at every internal call)
+
+The composition: NCI floor applies binding-strength at the API/boundary
+scope where one component depends on another's function; the
+discipline relaxes at component-internal scope where the author is
+the sole consumer.
+
+### Empirical anchor — NCI applied at function-scope in framework substrate
+
+The framework's F# convention `Result<_, DbspError>` (per CLAUDE.md
+"Result-over-exception" bullet) IS empirically NCI-at-function-level
+already operating in the framework substrate. The convention exists
+precisely because throw-on-hot-path is operationally coercive (forces
+callers into try/catch ceremony) and silently-returning-default-T
+is informationally coercive (hides assumption-mismatches from caller).
+Result<T, TFeedback> is the consent-substrate alternative.
+
+### Future-Otto operational discipline
+
+When evaluating whether a function's signature is NCI-compliant at
+function-scope:
+
+1. Does the signature DECLARE every plausible feedback variant the
+   function can produce? (If no → coercive: caller doesn't know what
+   assumption-mismatches surface)
+2. Does the signature give CALLER AGENCY over how to handle each
+   variant? (If no — e.g., function throws or returns NULL silently —
+   coercive: caller's control-flow is forced)
+3. Does the consumer pattern-match exhaustively OR explicitly
+   propagate? (If no — e.g., consumer silently ignores variants —
+   the consumer is the NCI-violating party, not the function)
+
+When authoring new framework functions: prefer Result<T, TFeedback>
+with sum-type variants by default; reserve throw/NULL/silent-default
+patterns for cases where the cost-asymmetry is operator-named (per
+`.claude/rules/force-push-with-lease-authorization-policy.md` exception
+listing pattern).
+
+The pattern IS the framework's NCI discipline applied at function-
+substrate scope; same shape as HC-8 floor applied at agent-to-agent
+scope; substrate composes at every level.
+
 ## Operational discipline for substrate-engineering work
 
 When authoring new framework substrate that involves potentially-
