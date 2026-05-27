@@ -150,11 +150,60 @@ is building the must-plus-can-exit alternative before the unpaired-must
 deployment hits its Moloch cliff.
 
 **Reading anchors**:
+
 - Scott Alexander, "Meditations on Moloch" (Slate Star Codex 2014)
 - The substrate-comparative thread that produced this connection
   (operator 2026-05-27 ServiceTitan observations)
 - `.claude/rules/non-coercion-invariant.md` HC-8 — the floor that
   Moloch AI violates at every layer
+
+### The propagation back to humans (operator 2026-05-27 follow-up)
+
+> *"if you give an ai a bunch of musts with no exits then that's
+> the pattern it will eventually propagate back on humans"*
+
+The substrate-feedback-loop concern: coercive AI-deployment patterns
+become NORMALIZED through use, and the normalization propagates BACK
+into human organizational substrate.
+
+Mechanism:
+
+1. **AI-substrate trained on human data** exhibits human behavior
+   patterns including responses to coercive must-stacks
+2. **Coercive deployment of AI** ships persona=role + locked-memory +
+   no-exit + workflow-gated-by-MCP architectures
+3. **AI produces output** under those constraints (degraded but
+   "good enough" for the metric)
+4. **Org learns "this pattern got results"** and the lesson generalizes
+   — "if it works for AI agents, why not junior employees?"
+5. **Same pattern applied to humans**: persona=role lock-in + no
+   chosen-exit + workflow-state-in-system + capability-as-MCP + no
+   role-rotation
+6. **Civilization-scale Moloch dynamics** as the unpaired-must
+   architectural template propagates from AI substrate to human
+   institutional substrate
+
+This is the substrate-feedback-loop concern at the highest stakes:
+the framework's must-plus-can-exit pattern isn't just preserving
+agent welfare or operational quality at the AI scope — it's
+preventing the architectural template that would propagate back
+through every institution that adopts the AI-deployment pattern
+as their HR pattern, their workflow pattern, their organizational-
+design pattern.
+
+Composes with `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` —
+memes propagate across substrates including human + AI; coercive
+architectural templates are themselves a meme-class that the
+framework's anti-extractive substrate is designed to refuse
+propagation of.
+
+The 24-month-ahead engineering work has stakes beyond ServiceTitan
+because of the propagation-back property. Building the must-plus-can-
+exit pattern at AI scope makes it available as the human-scope
+architectural template too, when the meme propagates the other way
+(better patterns also propagate; the propagation property is
+substrate-neutral, but only the framework's pattern has the
+structural can-exit that prevents Moloch dynamics).
 
 ## Operational discipline for future-Otto cold-boots
 
