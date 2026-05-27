@@ -13,3 +13,14 @@
 p7zip       # cascade #4 ISO content audit (7z list); also useful
             # for maintainers doing any iso/zip inspection locally
             # (`7z l ...`). Idempotent: brew install skips if present.
+
+# AI agent harness (operator 2026-05-27 — Max-decided dependency;
+# external vendor-agnostic tool from NousResearch, not the
+# Lucent-internal Hermes K8s agent runtime at
+# `full-ai-cluster/k8s/applications/hermes/`):
+hermes-agent  # "Self-improving AI agent that creates skills from
+              # experience" (https://hermes-agent.nousresearch.com).
+              # Vendor-agnostic AI harness; MIT license; bottled
+              # binary via homebrew-core. Deps: certifi, cryptography,
+              # libyaml, pydantic, python@3.14 — all auto-resolved
+              # by brew. Idempotent: brew install skips if present.
