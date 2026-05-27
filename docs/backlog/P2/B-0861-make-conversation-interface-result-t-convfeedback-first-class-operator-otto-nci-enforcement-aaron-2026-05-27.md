@@ -137,8 +137,9 @@ instantiation of the pattern:
   cross-language table)
 - NCI at conversation-interface (this row's substrate-engineering target)
 
-Same monad-propagation shape (discriminator-carrier + lazy-propagation
-+ exhaustive-handling) operating at conversation-substrate scope.
+Same monad-propagation shape (discriminator-carrier plus
+lazy-propagation plus exhaustive-handling) operating at
+conversation-substrate scope.
 
 ## What this row is NOT
 
