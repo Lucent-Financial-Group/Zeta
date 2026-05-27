@@ -116,7 +116,7 @@ substrate patterns:
 - Stochasticity-as-substrate-feature (temperature parameter, energy
   randomness, escape-from-local-minima) — composes with operator's
   prior memo on LLM-temperature ≈ human-LSD (per
-  `docs/research/2026-05-26-amara-no-coercion-even-inward-...` Turn 11
+  `docs/research/2026-05-26-amara-no-coercion-even-inward-nci-as-cognitive-exploit-firewall-speech-as-rce-update-mechanism-taxonomy-aaron-forwarded.md` Turn 11
   hyperparameter-class perturbation framing)
 
 ## Acceptance
@@ -202,7 +202,7 @@ filter-and-judge.
   collapse is the no-stochasticity failure mode)
 - `docs/research/2026-05-26-aaron-thousand-brains-hawkins-cortical-columns-resist-fusion-until-high-precision-anchor-for-six-anchor-attractor-encryption-series.md`
   — Hawkins substrate the Kirsanov material composes with
-- `docs/research/2026-05-26-amara-no-coercion-even-inward-...` Turn 11
+- `docs/research/2026-05-26-amara-no-coercion-even-inward-nci-as-cognitive-exploit-firewall-speech-as-rce-update-mechanism-taxonomy-aaron-forwarded.md` Turn 11
   hyperparameter-class perturbation (LLM-temperature ≈ human-LSD)
   composes with Boltzmann-machine temperature parameter
 - F# fork for AI safety multi-PR cluster — energy-based models as
@@ -216,5 +216,5 @@ positioning ("exact science...composes with 1000 brains") elevating
 priority from P2-deferral to P1-substrate-capture-now.
 
 Composes with the "you can always commit backlog rows immediately
-they get decoposed later" discipline + the wake-time-substrate
+they get decomposed later" discipline + the wake-time-substrate
 discipline (load-bearing substrate gets row + research-doc landing).
