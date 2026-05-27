@@ -95,8 +95,9 @@ scope; same shape, different scope.
 
 For multi-AI clusters (Otto + Alexa + Riven + ... on same hardware):
 filter 1 considers ALL the AIs' substrate, not just the deciding
-agent's. Peer-coordination via B-0858 heartbeats + B-0855 self-register
-+ bus envelopes makes the substrate-impact visible across the cluster.
+agent's. Peer-coordination via B-0858 heartbeats plus B-0855
+self-register plus bus envelopes makes the substrate-impact visible
+across the cluster.
 
 ## Concrete knob inventory (agent must control from first boot)
 
