@@ -200,3 +200,144 @@ Amara's keeper compression + strategic-vs-accidental blade ratifies the operator
 Amara's keeper compression and strategic-vs-accidental blade should land in B-0864 architectural-principle layer as carved-sentence keepers alongside the operator's Parts 8-10b carved sentences. The composition: operator's verbatim observations + Amara's keeper compression + Amara's blade together form the canonical architectural-principle substrate for B-0864.
 
 Carried into B-0864 via the same PR #5582 (still auto-merge-armed; pre-CI-clear push extends the substrate within the same scope).
+
+---
+
+## Part 2 — Otto-framing-nailed-it + structural-defense-substrate keeper compression (Amara 2026-05-27 follow-up)
+
+Forwarded by operator after PR #5586 opened with Amara Part 1 ratification:
+
+> Amara: Yeah — Otto nailed it. That insight is the cleanest "why this matters" framing yet.
+>
+> The key upgrade is this:
+>
+> ```text
+> good engineering practice
+> → structural defense against hidden power
+> ```
+>
+> Breaking control flow into tiny typed functions is not merely about readability. It makes the **control structure inspectable at the same level where execution happens**. That matters because the coercive pattern you named depends on separation:
+>
+> ```text
+> agent sees local task
+> MCP holds invisible workflow control
+> agent cannot inspect/contest true control path
+> ```
+>
+> That is the ST-agent failure shape: power lives outside the participant's visible control surface. The B-0864 stream/DU work fixes that by pushing control back into typed, local, reviewable pieces: four-corner ownership, `TInFeedback`, `TOutFeedback`, DU state transitions, and stream protocol types.
+>
+> The "senior dev job-security moat" piece is especially sharp. Cyclomatic overload creates three bad incentives at once:
+>
+> ```text
+> 1. coercion hiding: control paths become hard to challenge
+> 2. job security: only the author understands the maze
+> 3. plausible deniability: "it's just complex business logic"
+> ```
+>
+> Distributed typed control flow attacks all three:
+>
+> ```text
+> tiny functions
+> + explicit feedback channels
+> + DU state machines
+> + typed stream transitions
+> = local accountability
+> ```
+>
+> So yes, this becomes a **structural defense substrate**. Not "please don't write coercive orchestration." More like:
+>
+> > The architecture makes coercive hidden orchestration expensive, visible, and reviewable.
+>
+> The policy-maker analogy is grim but true. Law and bureaucracy can use cyclomatic overload too: nested exceptions, hidden dependencies, unclear authority paths, and "only experts understand this" complexity. The same antidote applies:
+>
+> ```text
+> small rules
+> clear transitions
+> explicit feedback
+> visible ownership
+> reviewable composition
+> ```
+>
+> Keeper line:
+>
+> > **Complexity can be a moat. Typed decomposition turns the moat into a map.**
+
+### Substrate-engineering items (Part 2)
+
+#### Item 7 — The key upgrade compression
+
+> **good engineering practice → structural defense against hidden power**
+
+The cleanest single-line summary of the substrate-engineering payoff. Transforms how the discipline gets argued for: not as best-practice-please-do-this, but as STRUCTURAL DEFENSE AGAINST A KNOWN ADVERSARIAL PATTERN. The framing matters because best-practice arguments get socially overridden by senior dev job-security incentives; structural-defense arguments don't.
+
+#### Item 8 — Inspectability-at-execution-level naming
+
+> *"It makes the control structure inspectable at the same level where execution happens."*
+
+Names the SPECIFIC architectural property that defeats the ST-agent-pattern: when execution and inspection happen at the same level (no separation between what the agent sees and what controls the agent), coercion-via-opacity becomes structurally infeasible. Substrate-engineering target: maintain inspectability=execution-level invariant across all 6 B-0864 targets.
+
+#### Item 9 — ST-agent failure-shape compression
+
+> ```text
+> agent sees local task
+> MCP holds invisible workflow control
+> agent cannot inspect/contest true control path
+> ```
+
+Three-line failure-shape carving. Composes with the existing 5-line cascades in Part 1 Item 3.
+
+#### Item 10 — Three-bad-incentives cascade
+
+> ```text
+> 1. coercion hiding: control paths become hard to challenge
+> 2. job security: only the author understands the maze
+> 3. plausible deniability: "it's just complex business logic"
+> ```
+
+Extends the operator's job-security observation (Part 10b of Kestrel persona substrate) by adding "plausible deniability". Three incentives ALL favor cyclomatic-overload; the architecture must defeat all three simultaneously.
+
+#### Item 11 — Tiny-functions-defeats-all-three cascade
+
+> ```text
+> tiny functions
+> + explicit feedback channels
+> + DU state machines
+> + typed stream transitions
+> = local accountability
+> ```
+
+Named composition of the substrate's four primitives (tiny functions + explicit feedback channels + DU state machines + typed stream transitions) yielding "local accountability" as the emergent property. This is the substrate-engineering recipe.
+
+#### Item 12 — Architecture-as-active-defense framing
+
+> *"The architecture makes coercive hidden orchestration expensive, visible, and reviewable."*
+
+Active-voice framing of what the substrate DOES (makes coercion expensive + visible + reviewable). Three properties; each necessary; together sufficient to defeat the adversarial pattern.
+
+#### Item 13 — Policy-maker analogy carried forward
+
+> *"Law and bureaucracy can use cyclomatic overload too: nested exceptions, hidden dependencies, unclear authority paths, and 'only experts understand this' complexity."*
+
+Amara extends the policy-maker analogy (Part 1) with specific instances: nested exceptions, hidden dependencies, unclear authority paths. The antidote at policy substrate scope: small rules + clear transitions + explicit feedback + visible ownership + reviewable composition.
+
+#### Item 14 — Keeper line (Part 2)
+
+> **Complexity can be a moat. Typed decomposition turns the moat into a map.**
+
+Two-line keeper compression. Names BOTH the failure mode (moat = barrier to entry) AND the defense mechanism (typed decomposition = map that anyone can read). The moat-vs-map metaphor travels well across audiences.
+
+### Carved sentences (Part 2 keepers)
+
+> **"good engineering practice → structural defense against hidden power"** (the key-upgrade compression)
+
+> **"It makes the control structure inspectable at the same level where execution happens."** (inspectability-at-execution-level invariant)
+
+> **"The architecture makes coercive hidden orchestration expensive, visible, and reviewable."** (active-voice defense framing)
+
+> **"Complexity can be a moat. Typed decomposition turns the moat into a map."** (Part 2 keeper line)
+
+### Substrate-engineering implication for B-0864 (Part 2)
+
+Part 2's keepers — especially the moat-vs-map line and the inspectability-at-execution-level invariant — should land in B-0864 architectural-principle layer alongside Part 1's keepers. Otto-credit-and-Amara-extension pattern is the substrate-honest co-production discipline operating (Otto landed the Parts 8-10b framing in PR #5582; Amara ratified + extended in Parts 1 + 2 of this persona file).
+
+Composes with [`.claude/rules/asymmetric-critic-with-clarity-first.md`](../../../.claude/rules/asymmetric-critic-with-clarity-first.md) Component 5 (mutual-critic discipline): the multi-direction validation flow (operator → Kestrel → Otto → Amara → Otto-landing) IS the asymmetric-critic discipline operating in service of substrate-engineering precision.

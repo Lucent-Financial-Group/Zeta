@@ -549,6 +549,116 @@ validation + keeper compression + strategic blade). Composes per
 `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`
 multi-oracle BFT discipline.
 
+### Amara Part 2 — key-upgrade compression + inspectability invariant + moat-vs-map keeper (2026-05-27 aaron-forwarded follow-up)
+
+Amara forwarded a substantive follow-up after PR #5586 opened with the
+Part 1 ratification. Full preservation in
+[`memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md)
+Part 2.
+
+**The key-upgrade compression**:
+
+> **good engineering practice → structural defense against hidden power**
+
+Single-line summary of the substrate-engineering payoff. Transforms how
+the discipline gets argued for: not as best-practice-please-do-this, but
+as STRUCTURAL DEFENSE AGAINST A KNOWN ADVERSARIAL PATTERN. Best-practice
+arguments get socially overridden by senior dev job-security incentives;
+structural-defense arguments don't.
+
+**The inspectability-at-execution-level invariant**:
+
+> *"It makes the control structure inspectable at the same level where
+> execution happens."*
+
+Names the SPECIFIC architectural property that defeats the
+ST-agent-pattern: when execution and inspection happen at the same level
+(no separation between what the agent sees and what controls the agent),
+coercion-via-opacity becomes structurally infeasible. Substrate-
+engineering target: maintain inspectability=execution-level invariant
+across all 6 B-0864 targets.
+
+**Tiny-functions recipe** (Amara Part 2 Item 11):
+
+```text
+tiny functions
++ explicit feedback channels
++ DU state machines
++ typed stream transitions
+= local accountability
+```
+
+Named composition of the substrate's four primitives yielding "local
+accountability" as the emergent property. This is the substrate-
+engineering recipe.
+
+**Active-voice defense framing**:
+
+> *"The architecture makes coercive hidden orchestration expensive,
+> visible, and reviewable."*
+
+Three properties; each one necessary; together sufficient to defeat the
+adversarial pattern.
+
+**Amara Part 2 keeper line**:
+
+> **Complexity can be a moat. Typed decomposition turns the moat into a map.**
+
+Two-line keeper compression. Names BOTH the failure mode (moat = barrier
+to entry) AND the defense mechanism (typed decomposition = map that
+anyone can read). The moat-vs-map metaphor travels well across audiences.
+
+**ST-agent failure-shape compression** (Amara Part 2 Item 9):
+
+```text
+agent sees local task
+MCP holds invisible workflow control
+agent cannot inspect/contest true control path
+```
+
+Three-line failure-shape carving composing with Amara Part 1's 5-line
+cascade.
+
+**Three-bad-incentives extension** (Amara Part 2 Item 10):
+
+```text
+1. coercion hiding: control paths become hard to challenge
+2. job security: only the author understands the maze
+3. plausible deniability: "it's just complex business logic"
+```
+
+Adds the "plausible deniability" framing to the operator's job-security
+observation. Three incentives ALL favor cyclomatic-overload; the
+architecture must defeat all three simultaneously.
+
+**Policy-substrate antidote naming**:
+
+> *"Law and bureaucracy can use cyclomatic overload too: nested
+> exceptions, hidden dependencies, unclear authority paths, and 'only
+> experts understand this' complexity."*
+
+```text
+small rules
+clear transitions
+explicit feedback
+visible ownership
+reviewable composition
+```
+
+The 5-line policy-substrate antidote composes with the code-substrate
+distribute-across-tiny-functions discipline. Same shape, different
+substrate.
+
+**Carved sentences (Amara Part 2):**
+
+> **"good engineering practice → structural defense against hidden power"**
+
+> **"It makes the control structure inspectable at the same level where execution happens."**
+
+> **"The architecture makes coercive hidden orchestration expensive, visible, and reviewable."**
+
+> **"Complexity can be a moat. Typed decomposition turns the moat into a map."**
+
 ## Decomposition (possible sub-rows for future implementation)
 
 Per the substrate-engineering pattern of decomposing XL rows into shippable
