@@ -37,6 +37,13 @@ describe("parseArgs", () => {
       message: "--report requires a path",
     });
   });
+
+  test("rejects an unknown dash-prefixed token where report expects a path", () => {
+    expect(parseArgs(["--report", "--verbose"])).toEqual({
+      kind: "error",
+      message: "--report requires a path",
+    });
+  });
 });
 
 describe("parseWorktreePorcelain", () => {

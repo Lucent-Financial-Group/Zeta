@@ -68,8 +68,8 @@ interface AuditResult {
 
 function hasFlagValue(value: string | undefined): value is string {
   // Reject any dash-prefixed token (known flag or typo'd unknown flag) so a
-  // bad invocation like `--report --verbose` produces an "Unknown argument"
-  // error rather than silently treating `--verbose` as a filename.
+  // bad invocation like `--report --verbose` is reported as a missing path
+  // rather than silently treating `--verbose` as a filename.
   return value !== undefined && !value.startsWith("-");
 }
 
