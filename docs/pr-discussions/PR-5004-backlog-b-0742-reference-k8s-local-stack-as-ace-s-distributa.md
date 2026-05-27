@@ -8,7 +8,7 @@ merged_at: "2026-05-25T21:58:03Z"
 closed_at: "2026-05-25T21:58:03Z"
 head_ref: "backlog/b0742-reference-k8s-stack-as-ace-poc-hats-fork-structure-aaron-2026-05-25"
 base_ref: "main"
-archived_at: "2026-05-25T22:01:40Z"
+archived_at: "2026-05-25T22:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-25T20:33:24Z"
 closed_at: "2026-05-25T20:33:24Z"
 head_ref: "backlog/b0731-hat-ontology-first-mika-substrate-2026-05-25"
 base_ref: "main"
-archived_at: "2026-05-25T22:02:13Z"
+archived_at: "2026-05-25T22:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

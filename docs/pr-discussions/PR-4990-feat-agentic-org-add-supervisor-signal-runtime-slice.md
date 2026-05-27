@@ -8,7 +8,7 @@ merged_at: "2026-05-25T21:54:49Z"
 closed_at: "2026-05-25T21:54:50Z"
 head_ref: "codex/agentic-org-package-ca-clean"
 base_ref: "main"
-archived_at: "2026-05-25T22:02:05Z"
+archived_at: "2026-05-25T22:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

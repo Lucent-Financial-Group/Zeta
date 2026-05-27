@@ -8,7 +8,7 @@ merged_at: "2026-05-25T21:14:29Z"
 closed_at: "2026-05-25T21:14:29Z"
 head_ref: "backlog/b0736-time-travel-debugging-of-thoughts-thoughtweaver-product-handoff-patternweaver-mika-segment-6-2026-05-25"
 base_ref: "main"
-archived_at: "2026-05-25T22:01:46Z"
+archived_at: "2026-05-25T22:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

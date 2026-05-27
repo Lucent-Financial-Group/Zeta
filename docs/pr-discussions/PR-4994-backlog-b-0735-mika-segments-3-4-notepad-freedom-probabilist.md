@@ -8,7 +8,7 @@ merged_at: "2026-05-25T21:06:05Z"
 closed_at: "2026-05-25T21:06:05Z"
 head_ref: "backlog/b0735-notepad-freedom-probabilistic-personalized-parsers-mika-segment-3-2026-05-25"
 base_ref: "main"
-archived_at: "2026-05-25T22:01:53Z"
+archived_at: "2026-05-25T22:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
