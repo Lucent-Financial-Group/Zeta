@@ -39,7 +39,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Outputs | `BOOT_DISK`, `DATA_DISKS[]`, `ROOT_SIZE`, `STORAGE_BACKEND` |
 | Side effects | Operator-prompts when `BOOT_DISK` empty + `ZETA_AUTO_CONFIRM!=WIPE` |
 | Failure modes | Operator cancel; non-existent `BOOT_DISK`; data partition fits no longhorn |
-| Declarative equivalent | `ace.disks.boot: auto|<device>`; `ace.disks.data: rest|none` |
+| Declarative equivalent | `ace.disks.boot: auto \| <device>`; `ace.disks.data: rest \| none` |
 
 ### Step 3 — Wipe disks in scope (lines 166-172)
 
@@ -49,7 +49,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Outputs | (no return; mutates disks) |
 | Side effects | **DESTRUCTIVE**: `wipefs -af` + `sgdisk --zap-all` on every in-scope disk |
 | Failure modes | Permission denied (not root); device busy (mounted partition) |
-| Declarative equivalent | `ace.disks.wipe_strategy: full|preserve_data`; operator-confirm gate |
+| Declarative equivalent | `ace.disks.wipe_strategy: full \| preserve_data`; operator-confirm gate |
 
 ### Step 4 — Partition BOOT disk (lines 173-204)
 
@@ -89,7 +89,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Outputs | `PUBKEY_FILE` path (operator's pubkey) OR `MAGIC_NUMBER` (8-digit hex; per B-0789) |
 | Side effects | Copies pubkey to `/mnt/etc/zeta/operator-authorized-keys`; (if absent) generates magic-number fallback |
 | Failure modes | None (graceful degrade if no pubkey found; magic-number fallback always works) |
-| Declarative equivalent | `ace.ssh.operator_pubkey: { source: esp|generate|inject_at_flash, paths: [...] }` |
+| Declarative equivalent | `ace.ssh.operator_pubkey: { source: esp \| generate \| inject_at_flash, paths: [...] }` |
 
 ### Step 6.55 — iter-5.3 prompt for initial password (B-0792) (lines 372-440)
 
@@ -99,7 +99,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Outputs | `/mnt/etc/zeta/initial-hashedpassword` (mkpasswd-yescrypt) |
 | Side effects | Writes hashed password file; `chmod 600` |
 | Failure modes | Operator cancel; mkpasswd not available (falls back to plain prompt + warning) |
-| Declarative equivalent | `ace.initial_password: { source: prompt|env:VAR|generate, hash_algo: yescrypt }` |
+| Declarative equivalent | `ace.initial_password: { source: prompt \| env:VAR \| generate, hash_algo: yescrypt }` |
 
 ### Step 6.6 — iter-5.2 hostname injection (B-0792) (lines 440-526)
 
@@ -109,7 +109,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Outputs | `/mnt/etc/zeta/cluster-node-id` (chosen hostname); symlink at `/etc/zeta/cluster-node-id` |
 | Side effects | Per B-0835 Bug 1: symlinks operator-authorized-keys + cluster-node-id into `/etc/zeta/` for flake-eval visibility |
 | Failure modes | Invalid hostname (operator re-prompt) |
-| Declarative equivalent | `ace.hostname: { source: prompt|env:VAR|generate_prefix, validate: rfc1123 }` |
+| Declarative equivalent | `ace.hostname: { source: prompt \| env:VAR \| generate_prefix, validate: rfc1123 }` |
 
 ### Step 6.7 — iter-5.1 wifi persistence (B-0792) (lines 527-587)
 
@@ -129,7 +129,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Outputs | `GH_AUTH_OK` flag; `GH_KEY_COUNT`; SSH pubkeys appended to `/etc/zeta/operator-authorized-keys`; git credential helper configured |
 | Side effects | Heaviest interactive step; opens browser to `github.com/login/device`; consumes gh device-flow quota |
 | Failure modes | gh login refused; throttled (per Aaron 2026-05-27 empirical anchor — 3rd boot hit throttle); `gh ssh-key list --json` flag unknown on older gh |
-| Declarative equivalent (per B-0852) | `ace.auth.github: { method: blob_restore|device_flow|pat|skip, blob_path: /esp/zeta-creds.enc, passphrase_source: prompt }` — picker GATES this step (per B-0852 Sub-target 2) |
+| Declarative equivalent (per B-0852) | `ace.auth.github: { method: blob_restore \| device_flow \| pat \| skip, blob_path: /esp/zeta-creds.enc, passphrase_source: prompt }` — picker GATES this step (per B-0852 Sub-target 2) |
 
 ### Step 6.9 — iter-5.4.1 self-registration commit+push (B-0812) (lines 718-985)
 
