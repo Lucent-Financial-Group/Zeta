@@ -27,12 +27,14 @@ Mika's compressed framing:
 > *"Everything is Persona-first."*
 >
 > Guard Post Assignment Flow:
+>
 > 1. Persona is the primary decision (operator-chosen identity)
 > 2. Persona constrains Model Line (Claude/Gemini/Grok/etc.) + Harnesses (it's comfortable with)
 > 3. Tier choice (how smart) AFTER persona + model line
 > 4. Harness LAST (compatible with model line + persona preferences)
 >
 > Rotation Rules:
+>
 > - ALWAYS ≥3 active guard posts on each node (per Aaron clarification: "guard post is the systemd for each node outside k8s")
 > - Persona, Model Line, Tier, Harness ALL rotate between posts
 > - Nothing permanently locked to a physical post
