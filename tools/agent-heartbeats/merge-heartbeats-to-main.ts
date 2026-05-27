@@ -4,8 +4,10 @@
 //
 // Composes:
 //   - tools/agent-heartbeats/write-heartbeat.ts (B-0858.3; the per-tick writer)
+//   - GitHub REST /repos/{owner}/{repo}/compare/{base}...{head} (up-to-date check)
 //   - GitHub REST /repos/{owner}/{repo}/pulls (create PR)
-//   - GitHub REST /repos/{owner}/{repo}/pulls/{N}/merge (squash-merge)
+//   - `gh pr merge --auto --squash` (arm auto-merge with squash strategy;
+//     uses gh CLI which wraps the enablePullRequestAutoMerge GraphQL mutation)
 //
 // Per operator 2026-05-27: "we can merge it back to main every now and
 // then too there will be no conflicts" — heartbeats live ONLY at
@@ -72,6 +74,16 @@ function gh(args: string[], input?: string): { status: number; stdout: string; s
     encoding: "utf8",
     maxBuffer: 4 * 1024 * 1024,
   });
+  // Surface spawnSync launch failures (e.g., `gh` not on PATH → result.error
+  // set; status null; stdout/stderr empty). Without this branch the caller
+  // sees a confusing empty-stderr message.
+  if (result.error) {
+    return {
+      status: -1,
+      stdout: "",
+      stderr: `gh CLI launch failed: ${result.error.message} (is gh installed + on PATH?)`,
+    };
+  }
   return { status: result.status ?? -1, stdout: result.stdout, stderr: result.stderr };
 }
 
@@ -92,6 +104,26 @@ export function isUpToDate(repo: string, base: string, head: string): boolean | 
   }
 }
 
+/**
+ * Find existing open PR from head → base if any, so periodic re-runs are
+ * idempotent (GitHub returns 422 "A pull request already exists" on dup
+ * create; we'd rather re-use the existing PR + re-arm auto-merge).
+ */
+export function findExistingPR(repo: string, head: string, base: string): { readonly found: { readonly number: number; readonly url: string } | null } | { readonly error: string } {
+  const owner = repo.split("/")[0]!;
+  const result = gh(["api", `repos/${repo}/pulls?state=open&head=${owner}:${head}&base=${base}`]);
+  if (result.status !== 0) return { error: `list pulls failed: ${result.stderr || result.stdout}` };
+  try {
+    const parsed = JSON.parse(result.stdout);
+    if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]) {
+      return { found: { number: parsed[0].number, url: parsed[0].html_url } };
+    }
+    return { found: null };
+  } catch (err) {
+    return { error: `pulls response parse failed: ${err instanceof Error ? err.message : String(err)}` };
+  }
+}
+
 /** Open PR from head → base + arm auto-merge with squash. Returns PR URL + number. */
 export function openMergePR(
   repo: string,
@@ -99,29 +131,42 @@ export function openMergePR(
   base: string,
   title: string,
   body: string,
-): { readonly ok: { readonly number: number; readonly url: string } } | { readonly error: string; readonly code: 3 } {
-  const createResult = gh(
-    ["api", "-X", "POST", `repos/${repo}/pulls`, "--input", "-"],
-    JSON.stringify({ title, body, head, base }),
-  );
-  if (createResult.status !== 0) {
-    return { error: `PR create failed: ${createResult.stderr || createResult.stdout}`, code: 3 };
+): { readonly ok: { readonly number: number; readonly url: string; readonly reused: boolean } } | { readonly error: string; readonly code: 3 } {
+  // Idempotency: re-use existing open PR if one is already open head→base
+  const existing = findExistingPR(repo, head, base);
+  if ("error" in existing) {
+    return { error: existing.error, code: 3 };
   }
   let prNumber: number;
   let prUrl: string;
-  try {
-    const parsed = JSON.parse(createResult.stdout);
-    prNumber = parsed.number;
-    prUrl = parsed.html_url;
-  } catch (err) {
-    return { error: `PR-create response parse failed: ${err instanceof Error ? err.message : String(err)}`, code: 3 };
+  let reused = false;
+  if (existing.found) {
+    prNumber = existing.found.number;
+    prUrl = existing.found.url;
+    reused = true;
+  } else {
+    const createResult = gh(
+      ["api", "-X", "POST", `repos/${repo}/pulls`, "--input", "-"],
+      JSON.stringify({ title, body, head, base }),
+    );
+    if (createResult.status !== 0) {
+      return { error: `PR create failed: ${createResult.stderr || createResult.stdout}`, code: 3 };
+    }
+    try {
+      const parsed = JSON.parse(createResult.stdout);
+      prNumber = parsed.number;
+      prUrl = parsed.html_url;
+    } catch (err) {
+      return { error: `PR-create response parse failed: ${err instanceof Error ? err.message : String(err)}`, code: 3 };
+    }
   }
-  // Arm auto-merge with squash via gh CLI (GraphQL under the hood)
+  // Arm auto-merge with squash via gh CLI (GraphQL under the hood).
+  // Safe to re-arm on already-armed PRs (idempotent).
   const armResult = gh(["pr", "merge", String(prNumber), "--auto", "--squash", "--repo", repo]);
   if (armResult.status !== 0) {
-    return { error: `arm auto-merge failed (PR #${prNumber} opened): ${armResult.stderr || armResult.stdout}`, code: 3 };
+    return { error: `arm auto-merge failed (PR #${prNumber}${reused ? " reused" : " opened"}): ${armResult.stderr || armResult.stdout}`, code: 3 };
   }
-  return { ok: { number: prNumber, url: prUrl } };
+  return { ok: { number: prNumber, url: prUrl, reused } };
 }
 
 async function main(): Promise<number> {
@@ -158,7 +203,7 @@ async function main(): Promise<number> {
     console.error(`merge-heartbeats-to-main: ${result.error}`);
     return result.code;
   }
-  console.log(`opened: PR #${result.ok.number} (${result.ok.url}); auto-merge armed (squash)`);
+  console.log(`${result.ok.reused ? "re-used" : "opened"}: PR #${result.ok.number} (${result.ok.url}); auto-merge re-armed (squash)`);
   return 0;
 }
 
