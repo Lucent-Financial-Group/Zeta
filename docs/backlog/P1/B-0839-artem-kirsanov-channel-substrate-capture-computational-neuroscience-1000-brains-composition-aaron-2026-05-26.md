@@ -69,11 +69,17 @@ Inventory all Kirsanov videos. For each video, file a sub-row
 - F#/TS implementation target (if applicable)
 - Acceptance criteria for the implementation
 
-Initial seed (manually identified at row landing):
+Initial seed (manually identified at row landing — both transcripts
+preserved under `docs/research/ip-questionable/` per the operator's
+2026-05-26 instruction + `_ip_risk_acceptance` in
+`.claude/settings.json` per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`):
 
 - B-0839.1 — Boltzmann Machines from first principles
   (<https://www.youtube.com/watch?v=_bqa_I5hNAo>) — verbatim transcript
-  preserved at `docs/research/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md`
+  preserved at `docs/research/ip-questionable/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md`
+- B-0839.2 — Recurrent Neural Networks (RNN / LSTM / GRU) gated memory
+  from first principles (<https://www.youtube.com/watch?v=PAoe7mmmvp0>) —
+  verbatim transcript preserved at `docs/research/ip-questionable/2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md`
 
 Future Phase 1 work: list all Kirsanov videos via channel scrape;
 file remaining B-0839.N sub-rows; estimate effort per sub-row.
