@@ -16,8 +16,32 @@ composes_with:
   - B-0664
   - B-0840
   - B-0703
-tags: [source-honor-ledger, basis-royalty-pool, creator-payment, rights-lanes, glass-halo-for-ip, dont-sell-compression-sell-readout, amara-ratification, no-substitute-for-source, generous-by-design, productization]
+tags: [source-honor-ledger, basis-royalty-pool, creator-payment, rights-lanes, glass-halo-for-ip, dont-sell-compression-sell-readout, amara-ratification, no-substitute-for-source, generous-by-design, productization, data-vault-2-0, dbt-style-lineage, provenance-discipline, substrate-engineering-compression]
 ---
+
+## CRITICAL substrate-engineering compression (operator 2026-05-26)
+
+Operator 2026-05-26 substrate-honest naming AFTER row was authored:
+
+> "this is really just data vault / dbt like provanance applied to synthysis / compression from sources"
+
+This collapses the entire Source Honor Ledger substrate into a well-known data-engineering pattern. Significantly reduces substrate-engineering surface:
+
+| Source Honor Ledger element | Data-engineering substrate it reuses |
+| --- | --- |
+| Source contribution tracking | Data Vault 2.0 hub-satellite partition (sources = hubs; usage events = satellites); per `.claude/rules/dv2-data-split-discipline-activated.md` (5th always-active discipline) |
+| Lineage graph (which sources contributed to which guides) | dbt-style `ref()` lineage DAG; Zeta substrate's `composes_with` graph IS this same pattern at substrate-engineering scope |
+| Per-source contribution weighting (ωᵢ in B-0842 equation) | dbt-style model dependencies + transformation-step provenance; semantic-contribution measured via graph-walk + amount-referenced |
+| Royalty distribution | Standard pay-per-usage layer ON TOP of existing provenance substrate |
+| Payment graph rendering ("Glass Halo for IP") | dbt-docs-style lineage visualization + per-edge monetary annotation |
+
+**Substantive implication for Phase 2 of this row**: Source Honor Ledger TS module family does NOT need to build new contribution-weighter from scratch. Instead: reuse existing DV2.0 hub-satellite + dbt-style lineage substrate; add monetization distribution layer ON TOP.
+
+This composes the 5-always-active discipline (per the DV2.0 rule) at productization scope: DV2.0 was already always-active at substrate-design scope; now it lands at creator-payment scope too.
+
+The substrate-engineering pattern: **provenance discipline is universal across (a) data-engineering raw data lakes [DV2.0 origin], (b) data-engineering transformation pipelines [dbt origin], (c) Zeta substrate-engineering substrate-row composes_with graph, (d) creator-payment Source Honor Ledger**. All instances of the same provenance-tracking discipline.
+
+This is bandwidth-engineering at substrate-naming scope (per `.claude/rules/bandwidth-served-falsifier.md`): operator's "this is just X" compression saves substantive implementation work by anchoring the proposal in existing substrate.
 
 ## Problem
 
@@ -151,6 +175,8 @@ Each phase composes with existing Zeta substrate-engineering substrate:
 - `.claude/rules/non-coercion-invariant.md` (NCI HC-8 floor preservation at creator-agency scope)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (`_*_acceptance` pattern; new `_fair_use_acceptance` extension)
 - `.claude/rules/honor-those-that-came-before.md` (creator-honor IS the discipline; Source Honor Ledger IS the operational form)
+- `.claude/rules/dv2-data-split-discipline-activated.md` (Data Vault 2.0 hub-satellite partition IS the substrate for source-contribution tracking; 5th always-active discipline composing at productization scope per operator 2026-05-26 substrate-engineering compression)
+- `.claude/rules/bandwidth-served-falsifier.md` (operator's "this is just X" compression IS bandwidth-engineering at substrate-naming scope; reduces implementation work by anchoring proposal in existing substrate)
 
 ## Origin
 
