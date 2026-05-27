@@ -125,7 +125,7 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
 
 - [ ] B-0798 defines the hard-limits boundary, allowed evidence classes, stop
       conditions, and synthetic-only rule before any mapping work proceeds.
-- [ ] B-0799 designs a synthetic-only harness that can test harmless fixtures
+- [x] B-0799 designs a synthetic-only harness that can test harmless fixtures
       without carrying deployable bypass settings or harmful content.
 - [ ] B-0807 defines the findings schema and redaction policy so reports can
       preserve safety signal without reproducible bypass detail.
