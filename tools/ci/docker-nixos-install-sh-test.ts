@@ -73,7 +73,11 @@ function spawnDocker(
 const DOCKERFILE_PATH = "tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile";
 const IMAGE_TAG = "zeta-nixos-install-sh-test:local";
 const DEFAULT_TIMEOUT_SEC = 600;
-const DEFAULT_LOG_PATH = ".docker-test-log";
+// Default log path uses .tools/ which is .gitignored — prevents the
+// log file from showing up as untracked in repo root after a local
+// run (per Copilot review on PR #5393). Operator can override via
+// DOCKER_LOG_OUT_PATH env var.
+const DEFAULT_LOG_PATH = ".tools/docker-nixos-install-sh-test.log";
 
 interface BuildResult {
   exitCode: 0 | 1 | 2 | 124;

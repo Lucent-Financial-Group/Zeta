@@ -24,12 +24,13 @@
 
 # Base image pinned per Copilot review on PR #5393 — non-pinned :latest
 # makes test non-deterministic (base image bumps break CI without repo
-# changes). Operator bumps via WebSearch per
-# .claude/rules/dep-pin-search-first-authority.md (the implementer
-# at bump time verifies the current latest stable tag on Docker Hub
-# nixos/nix repository + the digest for content-addressed pinning).
-# Current pin: 2.31.2 (latest stable per dockerhub nixos/nix tags
-# as of training data; verify on bump per dep-pin rule).
+# changes). Bump procedure (per
+# .claude/rules/dep-pin-search-first-authority.md): visit Docker Hub
+# nixos/nix tags page (https://hub.docker.com/r/nixos/nix/tags),
+# select current latest stable, ideally pin by digest (sha256:...)
+# for content-addressed reproducibility. Pin selected 2026-05-27;
+# the implementer at next bump documents the new pin's selection
+# date in this comment.
 FROM nixos/nix:2.31.2
 
 # /etc/NIXOS marker file — what linux.sh's NixOS detection branch uses
@@ -37,6 +38,15 @@ FROM nixos/nix:2.31.2
 # the test would not exercise the NixOS-specific path; install.sh
 # would bail with "this script currently supports Debian/Ubuntu only".
 RUN touch /etc/NIXOS
+
+# Pre-stage mise + bun PATH for ALL subsequent RUN layers (per Copilot
+# review on PR #5393: P0 — tools/setup/install.sh exports PATH only in
+# its own process; Docker doesn't persist exports across RUN layers;
+# without this ENV, the validation RUNs below would fail because
+# mise/bun aren't on PATH in the fresh layer's shell). install.sh
+# installs mise to ~/.local/bin/mise and shims to ~/.local/share/mise/
+# shims/; bun --global lands at ~/.bun/bin/.
+ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/usr/local/bin:/usr/bin:/bin
 
 # Enable nix flakes (needed for tools/setup/common/mise.sh and other
 # substrate that uses flake-style invocation).
