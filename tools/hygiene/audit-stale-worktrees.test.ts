@@ -38,6 +38,20 @@ describe("parseArgs", () => {
     });
   });
 
+  test("rejects an empty root path", () => {
+    expect(parseArgs(["--root", ""])).toEqual({
+      kind: "error",
+      message: "--root requires a path",
+    });
+  });
+
+  test("rejects an empty report path", () => {
+    expect(parseArgs(["--report", ""])).toEqual({
+      kind: "error",
+      message: "--report requires a path",
+    });
+  });
+
   test("rejects an unknown dash-prefixed token where report expects a path", () => {
     expect(parseArgs(["--report", "--verbose"])).toEqual({
       kind: "error",

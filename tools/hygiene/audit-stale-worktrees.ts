@@ -70,7 +70,7 @@ function hasFlagValue(value: string | undefined): value is string {
   // Reject any dash-prefixed token (known flag or typo'd unknown flag) so a
   // bad invocation like `--report --verbose` is reported as a missing path
   // rather than silently treating `--verbose` as a filename.
-  return value !== undefined && !value.startsWith("-");
+  return value !== undefined && value.length > 0 && !value.startsWith("-");
 }
 
 function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "error"; message: string } {
