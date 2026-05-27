@@ -55,6 +55,7 @@ GitHub authentication method:
 ```
 
 Selection logic:
+
 - If `/esp/zeta-creds.enc` exists → default = (1); operator can override
 - If first boot of fresh USB → default = (3) since operator just created PAT per their stated workflow
 - Multi-vendor scope: the picker fires ONCE then applies the chosen method to ALL 3 vendors (claude/gemini/codex) in sequence
@@ -126,12 +127,41 @@ Boot menu (after Phase 1 + 2 both land):
 ```
 
 Composition value:
+
 - **Multi-boot same USB same PC**: option 3 (Phase 1 replay) — no re-login, no gh-quota burn
 - **Fresh USB, PC has existing creds**: option 4 (Phase 2 harvest) — re-uses operator's existing setup work
 - **Fresh USB, fresh PC, operator has PAT**: option 2 (Phase 1 PAT) — bootstrap path
 - **All paths**: encrypted at-rest on USB ESP via Phase 1 substrate; Phase 2 reuses Phase 1's crypto module for the harvested-cred-blob
 
 The same UUID-bound-key + operator-passphrase derivation protects both Path A (write-back after login) and Path B (write-after-harvest from existing install). Single crypto module + single key-derivation pattern + two-source ingest = bandwidth-efficient substrate that doesn't fragment into per-path encryption schemes.
+
+## Auto-recover-by-default + escape-hatch (Aaron 2026-05-27)
+
+Operator-confirmed extension to the picker semantics — the boot-menu picker shouldn't ASK every boot; it should DETECT + RECOVER as default behavior, with explicit Esc-to-cancel window:
+
+> *"it will be very nice when i reformat if it starts picking up previous answers and reapplies them so i don't have to for passwords and secrets and such we can make it seucre over time but this will help with testing and self healing, we just need an override escape hatch so we get a chance to say don't recover start fresh but recover is the default."*
+
+Refined boot flow (replaces the always-prompt menu shape above for the default path):
+
+```
+On boot, zeta-install.sh runs cred-detection BEFORE Step 6.9 picker:
+  1. Probe /esp/zeta-creds.enc — present + valid magic?
+  2. Probe PC root partition for harvestable creds — mountable + recoverable?
+  3. If EITHER source detected → show 5-second countdown banner:
+     "RECOVER MODE active in 5s: USB blob → cred restore + persona substrate.
+      Press Esc to override and pick auth method manually."
+  4. No Esc → proceed with detected-source recovery (passphrase prompt if needed)
+  5. Esc pressed → fall through to Step 6.9 explicit menu (the 5-option picker)
+```
+
+Composes value:
+
+- **Self-healing**: same answers don't re-prompt every iteration; operator's prior setup work compounds across reformats
+- **Iteration speed**: re-flash + re-boot cycle goes from "answer 5 questions each time" → "wait 5 seconds, recover automatically, validate"
+- **Override safety**: the Esc escape hatch preserves operator agency per NCI HC-8; the default is recover but the choice is always preserved
+- **Cred persistence answers all**: passwords + secrets + hostname + cluster-name + ssh keys + gh tokens + claude/gemini/codex auths all in the encrypted blob
+
+Sub-target shift in implementation: B-0852.3 (`zeta-install.sh` Step 6.9) becomes Step 6.8 (detection) + Step 6.9 (5-second escape-hatch banner) + Step 6.10 (explicit menu if Esc OR no detected source). The crypto module + cred schema map (B-0852.1 + 5) are unchanged; only the picker UX shifts to detect-recover-default.
 
 ## Why P1
 
@@ -165,14 +195,19 @@ Per `.claude/rules/non-coercion-invariant.md` HC-8 floor — operator authority 
 ## Full reasoning
 
 Aaron 2026-05-27 conversation arc (verbatim):
+
 1. *"gh has throttled me for loggin in"*
 2. *"we dident even git to those just gh login failed cause this is the 3rd time i booted"*
 3. *"unless we have it testing in ci or something"* (CI ruled out; clean)
 4. *"if i leave usb in computer can it save a copy there after login and/or look at pc before formatting and try to recover credentials that already exist?"*
 5. *"key bound to uuid and operator passphrase seems best for an easy phase one lets get that going and also change the boot sequence and i can create github token and the bootup can ask which method github is required for now."*
 6. *"i have a new usb in there we can try too next time you need to format"* (Phase 1 test target queued)
+7. *"for option b we need to do something to make sure we protect against with like some encryption ... we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid, we can go hard on security over time but just enough to so i can iterate quickly for now."* (Phase 2 security model)
+8. *"we can do both like you said this will be nice together"* (Phase 1 + 2 composition confirmed)
+9. *"it will be very nice when i reformat if it starts picking up previous answers and reapplies them so i don't have to ... we just need an override escape hatch so we get a chance to say don't recover start fresh but recover is the default."* (auto-recover-by-default + escape-hatch picker semantics)
 
 Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`):
+
 - Topic: credential persistence / gh auth caching / encrypted blob / boot-sequence picker
 - Searched: docs/backlog/ (no prior B-NNNN for cred-persistence-on-USB-ESP); .claude/rules/ (no prior rule); memory/ (no prior memory)
 - Found: B-0833 (closest sibling — interactive-login-vs-baked-in-keys), B-0835 (gh-auth-not-respected), iter-4.2 ESP write channel (existing pattern)
