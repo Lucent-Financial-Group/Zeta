@@ -34,10 +34,12 @@ export type WorkerRuntimeFailureStage = (typeof WorkerRuntimeFailureStage)[keyof
 export const WorkerRuntimeConfigErrorCode = {
   InvalidWorkerInboundBatchSize: "invalid_worker_inbound_batch_size",
   InvalidWorkerOutboxBatchSize: "invalid_worker_outbox_batch_size",
+  InvalidNatsServers: "invalid_nats_servers",
   MissingCockroachDatabaseUrl: "missing_cockroach_database_url",
   InvalidNatsInboundBatchSize: "invalid_nats_inbound_batch_size",
   MissingEnvironment: "missing_environment",
   MissingNatsDurableName: "missing_nats_durable_name",
+  MissingNatsServers: "missing_nats_servers",
   MissingNatsStreamName: "missing_nats_stream_name",
   MissingOrganizationId: "missing_organization_id",
 } as const;

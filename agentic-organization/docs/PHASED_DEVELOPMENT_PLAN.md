@@ -55,12 +55,12 @@ The current executable spine includes:
 - `apps/workers` process shell that parses typed process config,
   composes worker/NATS cycles through ports, records telemetry through a
   sink, reports healthy/degraded runtime state, and has a durable
-  Cockroach composition seam.
+  Cockroach composition seam plus an app-local NATS connection seam.
 
 The next implementation slice is real process adapter binding below
-`apps/workers`: Cockroach client pool, concrete NATS pull/publish
-client construction, and a telemetry sink that can feed the
-full-ai-cluster LGTM stack.
+`apps/workers`: concrete NATS client-library construction behind the
+existing transport factory, migration bootstrap/readiness handling, and
+an executable entrypoint that can feed the full-ai-cluster LGTM stack.
 
 ## Work Rules For Every Phase
 
@@ -2559,19 +2559,21 @@ review finding changes the dependency graph.
 ### PR 1: Worker Process Adapter Interfaces
 
 Status: partially implemented. The app-local Cockroach pooled-client
-adapter, JSON telemetry sink, outbox claim fencing, and additive
-Cockroach claim-fence migration now exist. The remaining PR 1 scope is
-the real NATS connection factory plus readiness/config hardening around
-all process adapters.
+adapter, app-local NATS connection seam, JSON telemetry sink, outbox
+claim fencing, additive Cockroach claim-fence migration, and basic
+readiness aggregate now exist. The remaining PR 1 scope is the concrete
+NATS client-library factory behind that seam plus migration
+bootstrap/readiness hardening around all process adapters.
 
 Build:
 
 - app-local Cockroach client interface implementation; done;
-- app-local NATS connection factory interface; remaining;
+- app-local NATS connection factory interface; done;
 - telemetry sink interface and JSON sink fake; done;
-- config validation for adapter-specific connection settings;
+- config validation for adapter-specific connection settings; partially
+  done for `NATS_SERVERS`, batch sizes, and Cockroach URL presence;
 - early full-ai-cluster contract checkpoint for env, secrets, egress,
-  readiness, and OTEL destinations.
+  readiness, and OTEL destinations; partially done in docs.
 
 Do not:
 

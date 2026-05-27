@@ -3,7 +3,12 @@ import {
   resolveAgenticMessagingDomain,
   type EventPublisher,
 } from "../../../packages/messaging/src/index.ts";
-import type { NatsJetStreamEventConsumer } from "../../../packages/messaging-nats/src/index.ts";
+import {
+  createNatsJetStreamEventConsumer,
+  type NatsDeadLetterPublisher,
+  type NatsJetStreamEventConsumer,
+  type NatsJetStreamPullConsumer,
+} from "../../../packages/messaging-nats/src/index.ts";
 import {
   evaluateV0AutomationRules,
   createEventIngestionProcessor,
@@ -26,7 +31,8 @@ export type DurableWorkerRuntimeAdapters = {
   cockroachExecutor: CockroachOrganizationSqlExecutor;
   eventPublisher: EventPublisher;
   inboundEventSource: InboundEventSource;
-  natsEventConsumer: NatsJetStreamEventConsumer;
+  natsDeadLetterPublisher: NatsDeadLetterPublisher;
+  natsPullConsumer: NatsJetStreamPullConsumer;
   telemetrySink: WorkerRuntimeTelemetrySink;
 };
 
@@ -70,6 +76,11 @@ export function composeDurableWorkerRuntimePorts(
     createId: input.runtimeUtilities.createId,
     now: input.runtimeUtilities.now,
   });
+  const natsEventConsumer = createNatsJetStreamEventConsumer({
+    pullConsumer: input.durableAdapters.natsPullConsumer,
+    eventIngestionProcessor,
+    deadLetterPublisher: input.durableAdapters.natsDeadLetterPublisher,
+  });
 
   return {
     organizationWorkerHost: createOrganizationWorkerHost({
@@ -79,7 +90,7 @@ export function composeDurableWorkerRuntimePorts(
       outboxBatchSize: input.config.workerOutboxBatchSize,
       inboundBatchSize: input.config.workerInboundBatchSize,
     }),
-    natsEventConsumer: input.durableAdapters.natsEventConsumer,
+    natsEventConsumer,
     telemetrySink: input.durableAdapters.telemetrySink,
   };
 }

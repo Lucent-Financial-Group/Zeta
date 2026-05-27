@@ -176,6 +176,16 @@ or telemetry adapters, the failure should produce explicit startup
 evidence and a degraded/readiness signal rather than disappearing before
 agents and operators can inspect it.
 
+The worker process now has the first executable readiness boundary:
+dependency probes return typed ready/not-ready checks and the aggregate
+readiness result degrades when any dependency is not ready or when a
+probe throws. The first NATS process adapter contributes a NATS
+readiness probe alongside its publisher, pull-consumer, dead-letter, and
+shutdown ports. Later entrypoints should expose this result through
+Kubernetes readiness probes and structured startup telemetry, then link
+failures to the same trace and weak-point vocabulary used by
+worker-cycle telemetry.
+
 Durable transaction and publication ambiguity also counts as observable
 runtime evidence. A Cockroach ambiguous commit, stale outbox claim,
 missing outbox claim, or duplicate publish mark should surface as a

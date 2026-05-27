@@ -311,22 +311,36 @@ Cockroach SQL executor, creates the Cockroach-backed command state,
 outbox, event-ingestion, and policy-observation adapter set, and wires
 the outbox/event-ingestion ports into the worker host. Its current
 required environment contract is `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`,
-`COCKROACH_DATABASE_URL`, `NATS_STREAM`, `NATS_DURABLE`,
+`COCKROACH_DATABASE_URL`, `NATS_SERVERS`, `NATS_STREAM`, `NATS_DURABLE`,
 `NATS_INBOUND_BATCH_SIZE`, `WORKER_INBOUND_BATCH_SIZE`, and
 `WORKER_OUTBOX_BATCH_SIZE`. The first app-local process adapters now
-cover the Cockroach worker client and JSON telemetry sink:
+cover the Cockroach worker client, NATS worker connection seam, and JSON
+telemetry sink:
 
 - `apps/workers/src/adapters/cockroach-worker-client.ts` adapts a
   process-provided pool/client to `CockroachSqlClient`, including
   explicit `BEGIN`, `COMMIT`, `ROLLBACK`, connection release,
   SQLSTATE-based retry, and ambiguous-commit preservation semantics;
+- `apps/workers/src/adapters/nats-worker-connection.ts` adapts a
+  process-provided NATS transport connection factory to generic
+  `EventPublisher`, `NatsJetStreamPullConsumer`,
+  `NatsDeadLetterPublisher`, readiness, and shutdown ports. The
+  transport factory receives the validated server list, stream, durable
+  consumer, environment, and organization scope so it does not need
+  out-of-band process config. Dead-letter subjects use the shared
+  Organization subject builder and remain environment/organization
+  scoped. Distinct dead-letter message IDs are supplied by an injected
+  factory so poison messages do not collapse behind one transport dedupe
+  key. The reusable messaging packages still see only the generic
+  JetStream contracts, not a concrete NATS client library;
 - `apps/workers/src/adapters/json-worker-telemetry-sink.ts` implements
   `WorkerRuntimeTelemetrySink` with stable structured JSON records that
   preserve the worker/NATS attribute contract.
 
-Concrete NATS client construction, readiness endpoints, migration
-bootstrap, and shutdown hooks still belong to later process-adapter
-wiring.
+Concrete NATS client-library construction, readiness endpoints, and
+migration bootstrap still belong to later process-adapter wiring. The
+shutdown and readiness ports now exist so those future hosts can expose
+dependency state without changing package contracts.
 
 The `apps/workers` composition root receives typed config plus
 already-constructed ports. This is the only place the worker process
@@ -809,6 +823,7 @@ Current `apps/workers` process environment contract:
 AGENTIC_ORG_ENV
 AGENTIC_ORG_ID
 COCKROACH_DATABASE_URL
+NATS_SERVERS
 NATS_STREAM
 NATS_DURABLE
 NATS_INBOUND_BATCH_SIZE
@@ -819,7 +834,13 @@ WORKER_OUTBOX_BATCH_SIZE
 `COCKROACH_DATABASE_URL` is a secret-backed process adapter input. In
 the cluster it must be sourced from a Kubernetes Secret populated by
 External Secrets from Vault, not from a plain manifest or reusable
-package default.
+package default. `NATS_SERVERS` is the service-discovery input for the
+NATS adapter and can be non-secret when it contains only cluster service
+addresses such as `nats.nats.svc.cluster.local:4222`; NATS credentials,
+tokens, or certificates remain secret-backed process inputs.
+`NATS_STREAM` and `NATS_DURABLE` are non-secret operational bindings
+that the process factory must pass into the real pull-consumer
+construction path.
 
 Future full deployment adapter environment will add service-specific
 values as their process adapters become real:

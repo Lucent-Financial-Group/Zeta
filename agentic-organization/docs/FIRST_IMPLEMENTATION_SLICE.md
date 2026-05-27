@@ -270,11 +270,12 @@ Hermes runs, MCP calls, and UI evidence.
   CockroachDB URL, positive NATS inbound batch size, positive worker
   inbound batch size, and positive worker outbox batch size.
 - `apps/workers` parses required runtime values from typed environment
-  names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
+  names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_SERVERS`, `NATS_STREAM`,
   `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`, `COCKROACH_DATABASE_URL`,
   `WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE`. String
-  values are trimmed, and all batch sizes must be safe positive decimal
-  integers.
+  values are trimmed, `NATS_SERVERS` is parsed as a comma-separated
+  server list with no empty entries, and all batch sizes must be safe
+  positive decimal integers.
 - `apps/workers` treats any non-happy NATS consumer counter as degraded:
   failed, dead-lettered, invalid, payload-conflict,
   negative-acknowledged, or terminated messages.
@@ -293,6 +294,21 @@ Hermes runs, MCP calls, and UI evidence.
   canonical worker/NATS attributes that the LGTM stack can later ingest
   through Alloy/Loki/Tempo/Mimir. The sink is app-local and still
   injected through the existing `WorkerRuntimeTelemetrySink` port.
+- `apps/workers` has a first NATS process-connection seam. A
+  process-provided NATS transport factory is adapted to generic
+  publisher, pull-consumer, dead-letter publisher, readiness, and
+  shutdown ports. The factory receives validated servers, stream,
+  durable consumer, environment, and organization scope. Dead-letter
+  subjects use the shared Organization subject builder, and dead-letter
+  message IDs come from an injected factory so separate poison messages
+  are not merged by transport dedupe. The durable composition root now
+  builds the package-level NATS consumer from pull and dead-letter ports,
+  so callers do not need to construct a consumer outside the app
+  boundary.
+- `apps/workers` has a first process readiness aggregate. Dependency
+  probes return typed ready/not-ready checks, and the process readiness
+  result becomes degraded when any dependency check is not ready or
+  throws during readiness evaluation.
 - Worker-cycle failures can carry structured evidence. Stale outbox
   claim failures now preserve claim ID, current claim ID, outbox event
   ID, event ID, trace ID, and published-at evidence when the durable row
@@ -315,13 +331,13 @@ Hermes runs, MCP calls, and UI evidence.
 The next slice is tracked in the canonical
 [Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). It should add
 the next concrete process binding below `apps/workers`: real NATS
-pull/publish client construction, migration bootstrap/readiness handling,
-and graceful shutdown around the app-local Cockroach/NATS/telemetry
-adapters. Keep URLs, credentials, and connection pools in app adapter
-config fed by Kubernetes Secret or ExternalSecret values, never in
-domain packages. Add a durable-state integration test using CockroachDB
-as the first cluster-backed implementation once a local/dev connection
-is available.
+client-library construction behind the existing transport factory,
+migration bootstrap/readiness handling, and entrypoint-level graceful
+shutdown around the app-local Cockroach/NATS/telemetry adapters. Keep
+URLs, credentials, and connection pools in app adapter config fed by
+Kubernetes Secret or ExternalSecret values, never in domain packages.
+Add durable-state and NATS integration tests once local/dev connections
+are available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

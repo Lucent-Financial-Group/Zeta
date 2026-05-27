@@ -22,6 +22,20 @@ export {
   type JsonLineWriter,
   type JsonWorkerTelemetryRecord,
 } from "./adapters/json-worker-telemetry-sink.ts";
+export {
+  NatsWorkerConnectionState,
+  NatsWorkerDeadLetterHeaderName,
+  NatsWorkerMessageIdPrefix,
+  connectNatsWorkerAdapters,
+  type ConnectNatsWorkerAdaptersInput,
+  type NatsWorkerAdapters,
+  type NatsWorkerConnectionConfig,
+  type NatsWorkerDeadLetterMessageIdFactory,
+  type NatsWorkerShutdownPort,
+  type NatsWorkerTransportConnectInput,
+  type NatsWorkerTransportConnection,
+  type NatsWorkerTransportConnectionFactory,
+} from "./adapters/nats-worker-connection.ts";
 export { composeWorkerRuntime, type ComposeWorkerRuntimeInput, type WorkerRuntimePorts } from "./composition.ts";
 export {
   composeDurableWorkerRuntimePorts,
@@ -46,3 +60,13 @@ export {
   type WorkerRuntimeTelemetryRecord,
   type WorkerRuntimeTelemetrySink,
 } from "./worker-runtime.ts";
+export {
+  WorkerDependencyName,
+  WorkerDependencyReadinessStatus,
+  WorkerReadinessStatus,
+  checkWorkerProcessReadiness,
+  type CheckWorkerProcessReadinessInput,
+  type WorkerDependencyReadinessCheck,
+  type WorkerDependencyReadinessProbe,
+  type WorkerProcessReadiness,
+} from "./worker-readiness.ts";
