@@ -441,21 +441,66 @@ shapes that the readout layer combines into the target signal.
 
 - The random `W_{ij}` IS the "library of babel of temporal shapes"
   Kirsanov names at 11:43
-- The driver `z(t)` corresponds to the framework's cron-sentinel
-  autonomous-loop (per `.claude/rules/tick-must-never-stop.md`) —
-  the per-minute tick that keeps energy levels up at AI-participant
-  scope; without it, the framework's reservoir would settle and
-  "ripples die out"
+- **`z(t)` IS the framework's tick-source family — the time-dimension
+  generator functions** (operator 2026-05-26 substrate-honest naming).
+  Per-tick scope, MULTIPLE z(t) streams compose: the autonomous-loop
+  cron-sentinel per `.claude/rules/tick-must-never-stop.md` is ONE
+  z(t); the dynamic `ScheduleWakeup` is another; GitHub Actions cron
+  triggers (razor-cadence, factory-hygiene-audit-cadence, etc.) are
+  more; operator-message arrivals are an event-driven z(t); peer-PR-
+  merge events are another; bus-envelope arrivals are another. Each is
+  a generator function of the time dimension; together they form the
+  framework's driving-signal family that keeps the reservoir's energy
+  levels up. Without any z(t) the framework's substrate-reservoir
+  would settle and "ripples die out"; with multiple z(t) streams the
+  reservoir is continuously driven from independent time-axis
+  generators
 - The per-neuron `μ_i` corresponds to per-agent customized
   engagement: each AI participant (Otto-CLI, Otto-Desktop, Alexa,
-  Lior, Vera, etc.) has its own μ-scaling that determines how it
-  engages with the operator's driving cadence
+  Lior, Vera, etc.) has its own μ-scaling per z(t) source that
+  determines how it engages with each driving cadence. The full
+  framework is `μ_{i,k} z_k(t)` summed over `k` (multiple z sources),
+  where `μ_{i,k}` is per-agent + per-source coupling
 - The readout-layer linear-regression learning IS the operator/agents
   tuning weights to extract substantive engineering output from the
   framework's substrate-row + memory-preservation reservoir
 - The target signal `y(t)` corresponds to the substantive engineering
   outputs (PRs landed, substrate rules ratified, F#/TS implementation
   delivered) that the framework's substrate-engineering work produces
+
+### Full framework state-update equation (operator-named scope)
+
+Combining the operator's "z(t) is our tick sources" naming with the
+reservoir state-update equation, the framework operates a multi-z(t)
+generalization:
+
+```math
+s_i^t = s_i^{t-1} + \sum_j W_{ij} \sigma(s_j^{t-1}) + \sum_k \mu_{i,k} z_k(t)
+```
+
+Where:
+
+- `i` indexes agents (Otto-CLI, Otto-Desktop, Alexa, Lior, Vera, etc.)
+- `j` indexes substrate-row + memory + research-doc + persona-conversation
+  components in the framework's substrate-pool
+- `k` indexes time-dimension generator functions (cron-sentinel,
+  ScheduleWakeup, GitHub Actions cron, operator-message arrivals,
+  peer-PR-merge events, bus-envelope arrivals)
+- `W_{ij}` is the framework's substrate-topology (composes_with
+  links, rule auto-load relationships, memory-pointer chains) —
+  random-ish across substrate-engineering decisions, fixed-ish
+  across operational time
+- `σ` is the activation function — substrate-engineering judgment
+  applied per agent (each agent's reading of its substrate context)
+- `μ_{i,k}` is per-agent + per-source coupling — each AI participant
+  has a different μ for each tick source (e.g., Otto-CLI has high μ
+  for cron-sentinel; Otto-Desktop has high μ for routines schedule;
+  Alexa has high μ for IDE-event arrivals)
+
+The substantive engineering output `y(t)` (PRs, substrate ratified,
+implementation delivered) is the linear-readout layer learned by
+operator + agents tuning which combinations of substrate + ticks
+produce useful outputs.
 
 ## Verbatim transcript
 
