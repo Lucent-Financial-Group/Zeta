@@ -20,6 +20,8 @@ export interface TrajectoryPacket {
   nextAction: string | null;
   childCandidates: string[];
   backlogRefs: string[];
+  actionBacklogRefs: string[];
+  closedActionBacklogRefs: string[];
   bodyLineCount: number;
 }
 
@@ -262,6 +264,62 @@ function backlogRefs(content: string): string[] {
   return uniqueSorted(refs);
 }
 
+function backlogRowPath(repoRoot: string, ref: string): string | null {
+  const backlogDir = join(repoRoot, "docs", "backlog");
+  if (!isDirectory(backlogDir)) {
+    return null;
+  }
+
+  for (const priority of readdirSync(backlogDir, { withFileTypes: true })) {
+    if (!priority.isDirectory()) {
+      continue;
+    }
+    const priorityDir = join(backlogDir, priority.name);
+    for (const entry of readdirSync(priorityDir, { withFileTypes: true })) {
+      const isBacklogRow =
+        entry.isFile() &&
+        entry.name.endsWith(".md") &&
+        (entry.name === `${ref}.md` || entry.name.startsWith(`${ref}-`));
+      if (isBacklogRow) {
+        return join(priorityDir, entry.name);
+      }
+    }
+  }
+  return null;
+}
+
+function frontmatterStatus(content: string): string | null {
+  const lines = content.split(/\r?\n/);
+  if ((lines[0] ?? "").trim() !== "---") {
+    return null;
+  }
+
+  for (let index = 1; index < lines.length; index++) {
+    const line = lines[index]?.trim() ?? "";
+    if (line === "---") {
+      return null;
+    }
+    const match = /^status:\s*["']?([^"']+)["']?\s*$/i.exec(line);
+    if (match !== null) {
+      return stripMarkdown(match[1] ?? "");
+    }
+  }
+  return null;
+}
+
+function isClosedBacklogRef(repoRoot: string, ref: string): boolean {
+  const rowPath = backlogRowPath(repoRoot, ref);
+  if (rowPath === null) {
+    return false;
+  }
+  try {
+    const status = frontmatterStatus(readFileSync(rowPath, "utf8"));
+    return status?.toLowerCase() === "closed";
+  } catch {
+    return false;
+  }
+}
+
 function trajectoryNumber(slug: string): number {
   if (slug === "factory-trajectory-surface") {
     return 0;
@@ -282,6 +340,7 @@ function readPacket(repoRoot: string, slug: string): TrajectoryPacket | null {
       actionableText(firstField(lines, ["Next concrete action", "Recommended next action"])) ??
       actionableText(paragraphFromSection(lines, "Recommended next action")) ??
       (childCandidates.length > 0 ? (childCandidates[0] ?? null) : null);
+    const actionBacklogRefs = backlogRefs([nextAction ?? "", ...childCandidates].join("\n"));
 
     return {
       slug,
@@ -292,6 +351,8 @@ function readPacket(repoRoot: string, slug: string): TrajectoryPacket | null {
       nextAction,
       childCandidates,
       backlogRefs: backlogRefs(content),
+      actionBacklogRefs,
+      closedActionBacklogRefs: actionBacklogRefs.filter((ref) => isClosedBacklogRef(repoRoot, ref)),
       bodyLineCount: lines.length,
     };
   } catch {
@@ -340,6 +401,15 @@ function claimMatchesPacket(claim: string, packet: TrajectoryPacket): boolean {
 function claimBlocker(packet: TrajectoryPacket, activeClaims: readonly string[]): string | null {
   const claim = activeClaims.find((candidate) => claimMatchesPacket(candidate, packet));
   return claim ? `active claim ${claim}` : null;
+}
+
+function closedActionBacklogBlocker(packet: TrajectoryPacket): string | null {
+  if (packet.actionBacklogRefs.length === 0) {
+    return null;
+  }
+  const closedRefs = new Set(packet.closedActionBacklogRefs);
+  const allActionRefsClosed = packet.actionBacklogRefs.every((ref) => closedRefs.has(ref));
+  return allActionRefsClosed ? `action backlog refs already closed: ${packet.actionBacklogRefs.join(", ")}` : null;
 }
 
 function actionFor(packet: TrajectoryPacket): TrajectoryAction {
@@ -401,6 +471,12 @@ export function selectNextTrajectory(
     const blockedByClaim = claimBlocker(packet, activeClaims);
     if (blockedByClaim !== null) {
       blocked.push({ packet, reason: blockedByClaim });
+      continue;
+    }
+
+    const blockedByClosedBacklog = closedActionBacklogBlocker(packet);
+    if (blockedByClosedBacklog !== null) {
+      blocked.push({ packet, reason: blockedByClosedBacklog });
       continue;
     }
 
