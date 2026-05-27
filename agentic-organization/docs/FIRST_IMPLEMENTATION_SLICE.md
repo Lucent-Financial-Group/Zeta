@@ -324,7 +324,11 @@ Hermes runs, MCP calls, and UI evidence.
 - The structured worker failure evidence keys live in the domain package
   as a neutral contract, so Cockroach adapters, worker hosts,
   observability projection, and tests share the same typed field names
-  instead of re-declaring string keys package by package.
+  instead of re-declaring string keys package by package. Worker hosts
+  only accept evidence bags whose keys are inside that domain contract,
+  and worker-cycle telemetry uses a consistent
+  `agentic.worker.failure.first_*` namespace for the first-failure
+  projection.
 - Observability projections now include policy decision ID and policy
   version in event span attributes and workflow visibility records when
   an accepted command emits a policy-backed event envelope.

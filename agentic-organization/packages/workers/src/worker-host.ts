@@ -2,6 +2,7 @@ import {
   WorkerFailureEvidenceKey,
   type AgenticEventEnvelope,
   type WorkerFailureEvidence,
+  type WorkerFailureEvidenceValue,
 } from "../../domain/src/index.ts";
 import {
   OutboxPublishOutcomeStatus,
@@ -235,26 +236,33 @@ function createWorkerPortFailure(lane: WorkerLane, error: unknown): WorkerPortFa
 }
 
 function extractErrorEvidence(error: unknown): WorkerPortFailureEvidence | undefined {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "evidence" in error &&
-    isWorkerPortFailureEvidence(error.evidence)
-  ) {
-    return error.evidence;
+  if (typeof error === "object" && error !== null && "evidence" in error) {
+    return sanitizeWorkerPortFailureEvidence(error.evidence);
   }
 
   return undefined;
 }
 
-function isWorkerPortFailureEvidence(value: unknown): value is WorkerPortFailureEvidence {
+function sanitizeWorkerPortFailureEvidence(value: unknown): WorkerPortFailureEvidence | undefined {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return false;
+    return undefined;
   }
 
-  return Object.entries(value).every(
-    ([key, entry]) =>
-      WorkerPortFailureEvidenceKeys.has(key) &&
-      (typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean" || entry === null),
-  );
+  const evidence: WorkerPortFailureEvidence = {};
+
+  for (const [key, entry] of Object.entries(value)) {
+    if (WorkerPortFailureEvidenceKeys.has(key) && isWorkerFailureEvidenceValue(entry)) {
+      evidence[key as WorkerFailureEvidenceKey] = entry;
+    }
+  }
+
+  if (Object.keys(evidence).length === 0) {
+    return undefined;
+  }
+
+  return evidence;
+}
+
+function isWorkerFailureEvidenceValue(value: unknown): value is WorkerFailureEvidenceValue {
+  return typeof value === "string" || typeof value === "number" || typeof value === "boolean" || value === null;
 }

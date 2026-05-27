@@ -200,6 +200,14 @@ before an OTLP exporter is introduced. Later Alloy/Loki/Tempo/Mimir
 binding should ingest or translate this shape rather than inventing a
 parallel telemetry vocabulary.
 
+Worker failure evidence is intentionally contract-bound. Runtime hosts
+may attach only domain-defined evidence keys to worker-cycle failures;
+unknown keys are dropped at the worker boundary instead of entering
+telemetry as ad hoc fields. The first recorded worker failure is
+projected under the stable `agentic.worker.failure.first_*` attribute
+namespace so later multiple-failure reporting can add additional
+families without changing the meaning of existing dashboards.
+
 ## Implementation Rule
 
 When adding a package, command, adapter, workflow, gate, or runtime host,

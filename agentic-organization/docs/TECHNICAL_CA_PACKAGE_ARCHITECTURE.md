@@ -1026,7 +1026,10 @@ payload-conflict NATS messages, negative acknowledgements, terminated
 messages, and failed NATS messages as degraded state so weak points can
 surface before the process is connected to real cluster telemetry.
 Telemetry failures must not erase successful worker or NATS cycle
-results; they are captured as their own typed failure stage. The
+results; they are captured as their own typed failure stage. Worker
+failure evidence is validated against the domain-owned evidence-key set
+before it reaches observability, and the first failure projection uses
+the consistent `agentic.worker.failure.first_*` key family. The
 composition root is therefore the future bridge from these records into
 the full-ai-cluster LGTM stack: structured logs to Loki, traces to Tempo
 through Alloy, metrics to Prometheus/Mimir, and dashboard projections in
