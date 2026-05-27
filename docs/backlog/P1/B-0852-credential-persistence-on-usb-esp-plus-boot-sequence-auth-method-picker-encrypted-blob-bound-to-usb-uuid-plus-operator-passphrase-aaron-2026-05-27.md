@@ -7,9 +7,9 @@ effort: M
 ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
-depends_on:
-  - B-0850
+depends_on: []
 composes_with:
+  - B-0850
   - B-0833
   - B-0835
   - B-0831
@@ -81,7 +81,7 @@ Operation:
 
 The manifest IS the substrate-honest catalog of what creds Zeta needs. Future credentials get added as manifest entries; the persist/restore code reads the manifest + iterates. No imperative per-cred branches in TS/bash.
 
-### Sub-target 2 — Boot-sequence auth-method picker (correct step layout)
+### Sub-target 2 — Boot-sequence auth-method picker (picker GATES gh-auth; correct ordering)
 
 Current `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step layout (verified on origin/main `1740eead6`):
 
@@ -92,13 +92,25 @@ Current `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step layout (verif
 | 6.6 | iter-5.2 (B-0792) | hostname injection |
 | 6.7 | iter-5.1 (B-0792) | wifi persistence |
 | 6.8 | iter-5.4.0 | homelab gh-auth + operator pubkey copy |
-| **6.81-6.83** | **B-0852 (NEW)** | **detection + escape-hatch banner + branch** |
 | 6.9 | iter-5.4.1 (B-0812) | self-registration commit+push |
 | 7 | iter-4 (B-0789) | print initial credentials |
 
-The auth-method picker integrates AS A NEW SUB-RANGE 6.81-6.83 between the existing Step 6.8 (gh-auth) and Step 6.9 (self-registration), preserving every existing step's number + meaning. Picker runs AFTER Step 6.8's gh-auth flow completes so it has access to both the just-acquired creds (for the persist path) AND the existing creds (for the detect/restore path).
+**Critical architecture (per Copilot P0 review on PR #5403)**: the picker MUST run BEFORE Step 6.8 so that Step 6.8's `gh auth login` device-flow is CONDITIONAL on the picker's auth-method choice. If the picker runs after Step 6.8, the gh-quota burns BEFORE restore is offered — defeats the zero-device-flow-on-reboot acceptance criterion.
 
-Picker menu shape (Step 6.82):
+Correct layout (new sub-range BEFORE Step 6.8):
+
+| Step | Owner | What it does |
+|---|---|---|
+| 6.7 | iter-5.1 | wifi persistence (unchanged) |
+| **6.75** | **B-0852 (NEW)** | **cred-detection probe (USB blob? operator-passphrase derivable?)** |
+| **6.76** | **B-0852 (NEW)** | **5-second escape-hatch banner with countdown** |
+| **6.77** | **B-0852 (NEW)** | **auth-method picker — 4 options; captures choice** |
+| 6.8 | iter-5.4.0 | gh-auth + pubkey copy — **NOW CONDITIONAL** on picker choice (runs only if option 2 fresh-login chosen OR no detected source AND operator picked fresh) |
+| **6.85** | **B-0852 (NEW)** | **persist cred-blob to ESP after successful auth (if option 1/2/3 chose persist-on)** |
+| 6.9 | iter-5.4.1 (B-0812) | self-registration (unchanged; runs after whichever auth path completed) |
+| 7 | iter-4 (B-0789) | print initial credentials (unchanged) |
+
+Picker menu shape (Step 6.77):
 
 ```text
 GitHub authentication method:
@@ -108,11 +120,30 @@ GitHub authentication method:
   4) Skip (cluster operates degraded; no GitHub-side substrate)
 ```
 
-Selection logic:
+Selection logic (executes at Step 6.77; gates Step 6.8 conditional execution):
 
 - If `/esp/zeta-creds.enc` exists → default = (1); operator can override
 - If first boot of fresh USB → default = (3) since operator just created PAT per their stated workflow
-- Multi-vendor scope: the picker fires ONCE then applies the chosen method to ALL 3 vendors (claude/gemini/codex) in sequence — vendor-CLI installs happen later in the install sequence (post-`nixos-install` first-boot scope); the picker captures the operator intent in `/esp/zeta-creds.enc` so first-boot vendor-CLI install can read the blob without re-prompting
+- Picker fires ONCE then applies to ALL 3 vendors (claude/gemini/codex) in sequence — vendor-CLI installs happen later in first-boot scope; picker captures intent so first-boot vendor-CLI install reads the blob without re-prompting
+
+Step 6.8 conditional logic (existing step modified, NOT replaced):
+
+```text
+case "$picker_choice" in
+  1) restore_cred_blob "$ZETA_CREDS_PATH"  # skip device-flow entirely
+     ;;
+  2) gh auth login --hostname github.com --git-protocol https --web  # current behavior
+     ;;
+  3) gh auth login --hostname github.com --git-protocol https --with-token < /tmp/operator-pat.txt  # PAT path
+     ;;
+  4) skip_auth_degraded_mode
+     ;;
+esac
+# Operator pubkey copy (Step 6.8 latter half) runs in all paths
+copy_operator_pubkey
+```
+
+This satisfies the acceptance criterion of ZERO device-flow calls on reboot when blob is present — Step 6.8 device-flow branch only fires when option 2 is chosen.
 
 ### Sub-target 3 — Passphrase prompt + key derivation
 
@@ -126,7 +157,7 @@ Selection logic:
 - `tools/installer/zeta-creds-persist.ts` — write encrypted blob to ESP after successful auth
 - `tools/installer/zeta-creds-restore.ts` — read encrypted blob, decrypt with passphrase, restore to per-vendor cred locations
 - `tools/installer/zeta-creds-crypto.ts` — pure crypto module (key derivation + AES-GCM); unit-tested
-- `full-ai-cluster/usb-nixos-installer/zeta-install.sh` — new Step 6.9 (auth-method picker) + Step 6.95c (persist after successful auth)
+- `full-ai-cluster/usb-nixos-installer/zeta-install.sh` — new Steps 6.75 + 6.76 + 6.77 (detection + banner + picker BEFORE Step 6.8) + Step 6.85 (persist after successful auth)
 - `full-ai-cluster/nixos/modules/zeta-cred-persistence.nix` — NixOS module wrapping the persist + restore services
 - Tests: round-trip (encrypt → decrypt with right passphrase = original); wrong-passphrase rejection; tamper detection (GCM auth tag)
 
@@ -197,15 +228,17 @@ Operator-confirmed extension to the picker semantics — the boot-menu picker sh
 
 Refined boot flow (replaces the always-prompt menu shape above for the default path):
 
-```
-On boot, zeta-install.sh runs cred-detection BEFORE Step 6.9 picker:
-  1. Probe /esp/zeta-creds.enc — present + valid magic?
-  2. Probe PC root partition for harvestable creds — mountable + recoverable?
-  3. If EITHER source detected → show 5-second countdown banner:
-     "RECOVER MODE active in 5s: USB blob → cred restore + persona substrate.
-      Press Esc to override and pick auth method manually."
-  4. No Esc → proceed with detected-source recovery (passphrase prompt if needed)
-  5. Esc pressed → fall through to Step 6.9 explicit menu (the 5-option picker)
+```text
+On boot, zeta-install.sh runs cred-detection BEFORE Step 6.8 gh-auth:
+  Step 6.75: Probe /esp/zeta-creds.enc — present + valid magic?
+             Probe PC root partition for harvestable creds — mountable + recoverable?
+  Step 6.76: If EITHER source detected → show 5-second countdown banner:
+             "RECOVER MODE active in 5s: USB blob → cred restore + persona substrate.
+              Press Esc to override and pick auth method manually."
+  Step 6.77: No Esc → proceed with detected-source recovery (passphrase prompt if needed)
+             Esc pressed → fall through to explicit 4-option picker menu
+  Step 6.8:  Run chosen auth method (CONDITIONAL — only device-flow if option 2)
+  Step 6.85: Persist cred-blob to ESP after successful auth (if persist-on)
 ```
 
 Composes value:
@@ -215,7 +248,7 @@ Composes value:
 - **Override safety**: the Esc escape hatch preserves operator agency per NCI HC-8; the default is recover but the choice is always preserved
 - **Cred persistence answers all**: passwords + secrets + hostname + cluster-name + ssh keys + gh tokens + claude/gemini/codex auths all in the encrypted blob
 
-Sub-target shift in implementation: B-0852.3 (`zeta-install.sh` Step 6.9) becomes Step 6.8 (detection) + Step 6.9 (5-second escape-hatch banner) + Step 6.10 (explicit menu if Esc OR no detected source). The crypto module + cred schema map (B-0852.1 + 5) are unchanged; only the picker UX shifts to detect-recover-default.
+Sub-target shift in implementation: B-0852.3 picker substrate becomes Steps 6.75 (detection) + 6.76 (5-second escape-hatch banner) + 6.77 (4-option picker if Esc OR no detected source) + Step 6.8 conditional gating + Step 6.85 persist. The crypto module + cred schema map (B-0852.1 + 5) are unchanged; only the picker UX shifts to detect-recover-default + gates the existing Step 6.8.
 
 ## Why P1
 
@@ -229,7 +262,7 @@ Sub-target shift in implementation: B-0852.3 (`zeta-install.sh` Step 6.9) become
 
 - B-0852.1 — TS crypto module (key derivation + AES-GCM); pure functions; unit-tested first
 - B-0852.2 — TS persist/restore CLIs; round-trip test
-- B-0852.3 — zeta-install.sh Step 6.9 auth-method picker; integration test
+- B-0852.3 — zeta-install.sh Steps 6.75 + 6.76 + 6.77 (detection + banner + picker BEFORE Step 6.8) + Step 6.8 conditional gating; integration test
 - B-0852.4 — NixOS module wrapping persist service; post-install systemd unit
 - B-0852.5 — multi-vendor cred-schema map (per-vendor blob format)
 - B-0852.6 — wrong-passphrase + tamper fallthrough logic
