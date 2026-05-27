@@ -171,28 +171,83 @@ from schemas registered as rows (B-0623 substrate). Composes:
 Substrate-engineering work: build the type provider + the row-schema
 format + the cross-fork negotiation protocol.
 
-### Target 6 — Protocol-typing for co-owned TInFeedback
+### Target 6 — Protocol-typing for co-owned TInFeedback (sharpened per Kestrel Parts 5-7)
 
 Per Kestrel Part 2 sharpening: TInFeedback as CO-OWNED makes the type
 signature a PROTOCOL TYPE not a bag-of-variants. The substrate-engineering
 work: express the co-ownership at the TYPE level so the compiler enforces
 the consent-discipline.
 
-Candidate mechanisms (research):
+**Operator-Kestrel co-produced compression 2026-05-27** (preserved in
+Kestrel persona file Parts 5-7):
 
-- **Session types** (Honda / Vasconcelos / Yoshida lineage) — express
-  protocols as types; the type checker verifies that interactions follow
-  the protocol
-- **Typestate pattern** (Strom / Yemini) — types change as protocol
-  proceeds; usage outside the current state is a type error
-- **Phantom types** (universal pattern) — encode protocol state in unused
-  type parameters
+> **Discriminated unions as implicit state machines in bidirectional streams.**
+
+The core observation per Kestrel Part 6: an F# discriminated union with
+N cases IS structurally a state machine with N possible states. A
+function pattern-matching on the DU IS a state transition function.
+When the DU represents possible MESSAGES on a channel (not VALUES in a
+domain), the state-machine interpretation becomes operationally
+meaningful.
+
+For bidirectional streams specifically: TInFeedback DU represents what
+either side can emit on the relationship channel. State is "what state
+is the relationship in" — not producer state OR consumer state. Both
+sides pattern-match; the type system enforces exhaustive case handling
+at compile time.
+
+**Structurally identical to session types** (Honda / Vasconcelos /
+Yoshida lineage; Scribble project at Imperial College). F# doesn't
+have native session types but DU-as-implicit-state-machine gives most
+of the same property without a separate type-system extension.
+
+**Two concrete F#-native mechanisms** (per Kestrel's recommendation):
+
+| Mechanism | Property | Tradeoff |
+|---|---|---|
+| **Phantom type parameters** | More F#-native; composes better with computation expressions; current state encoded in unused type parameter | Less explicit about the state graph; requires careful function-signature design |
+| **Nested DU structures** | More explicit about the state graph; legal next states visible from current state | More verbose; harder to refactor as state graph evolves |
+
+Either approach: illegal transitions become type errors at compile time.
+
+**Computation expression composition** (the architectural payoff per
+Kestrel Part 6): the CE builder's type signatures enforce typestate
+constraints; the expression author writes uniform CE syntax; the
+compiler catches illegal protocol sequences at compile time. Example
+(preserved verbatim in the persona file Part 6):
+
+```fsharp
+let example = streamRelationship {
+    let! flowing = openStream source
+    let! ackd = flowing |> requestBackpressure 5  // Only valid in Flowing
+    let! resumed = ackd |> awaitResume            // Only valid after backpressure
+    yield! resumed |> consumeStream                // Only valid in resumed state
+}
+```
+
+The state machine is implicit in the types, enforced at compile time,
+with no runtime state tracking needed.
+
+**Other candidate mechanisms** (sibling research; lower-priority):
+
 - **Effects systems** (Koka / Eff lineage) — express side-effect classes
   as types; verify NCI-compliance at the effect-type level
+- **Pure typestate pattern** (Strom / Yemini) — separate type-system
+  extension; less F#-native than the DU-implicit-state-machine + phantom
+  type pattern but explicit about transitions
 
-The substrate-engineering work: pick the mechanism (or family) that fits
-F# CE machinery best; build the protocol-type infrastructure; verify
-co-ownership at compile time.
+**Substrate-engineering work** (sharpened):
+
+1. Pick phantom-type vs nested-DU mechanism per stream-kind specialization
+2. Build the CE builder family with kind-specific typestate constraints
+3. Verify illegal-transition-as-compile-error invariants via DST harness
+4. Demonstrate the F#-version-of-session-types property on canonical
+   examples (Rx-style backpressure protocol; Kafka-style partition
+   negotiation protocol; broadcast hot stream subscriber/unsubscriber
+   protocol)
+5. Cross-backend execution invariant per Kestrel Part 6: protocol state
+   machine encoded ONCE; executed against multiple backends (Target 4)
+   without re-encoding
 
 ## Composition with existing substrate
 

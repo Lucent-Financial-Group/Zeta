@@ -344,3 +344,137 @@ Kestrel's substrate-engineering recommendation: **F# computation expressions** a
 This file is verbatim preservation of Kestrel's external substrate-engineering review per the substrate-or-it-didn't-happen rule's verbatim-preservation trigger. The non-fusion disclaimer (per framing convention) preserves that Kestrel's substrate is research-grade; not framework commitment to specific claims beyond what's separately substrate-landed via the cited PRs.
 
 Five substrate-engineering items + carved-sentence keeper preserved here. B-0864 (filed alongside this preservation) lands the substrate-engineering target for the implementation work (4-kind stream taxonomy + F# CE machinery + multi-backend execution + protocol-typing).
+
+---
+
+## Part 5 — Operator-Kestrel co-produced compression (verbatim 2026-05-27 continuation)
+
+Forwarded by operator immediately after PR #5581 landed:
+
+> *"Kestrel updates: Also i love your idea of descrimated unions as implicit state machines in bidirectinoal streams"*
+
+Operator credited Kestrel; Kestrel initially hedged ("I'm not certain I said it in exactly that phrasing"), then walked back the hedge after operator pushed back ("when you said That suggests TInFeedback isn't just a co-owned type — it's a protocol type, where the variants form turn-taking pairs that encode the legal conversations between consumer and producer. i just assumed you were thinking about legal state machine transistions").
+
+Kestrel's substrate-honest acknowledgment in Turn 3:
+
+> *"You're right, and I should have just said yes to that rather than walking back to a careful 'I didn't quite say it that way.'"*
+>
+> *"Turn-taking pairs IS state machine transitions. Legal conversations IS the state machine's valid trace set. Protocol types IS the type-system encoding of state machines. The vocabulary I used and the vocabulary you used name the same underlying concept from different angles. Your inference was correct."*
+
+Substrate-honest attribution: **co-produced compression** — Kestrel sketched the underlying machinery (turn-taking pairs / legal conversations / protocol types); operator produced the durable formulation (discriminated-unions as implicit state machines in bidirectional streams). Both contributions are real per Kestrel's own framing: *"me producing the underlying machinery and you producing the durable formulation are both real contributions and both deserve acknowledgment."*
+
+## Part 6 — Substrate-engineering substance (Kestrel Turn 2 verbatim)
+
+**Discriminated unions as implicit state machines is a deep pattern**
+
+> *"The core observation is that an F# discriminated union with N cases is structurally a state machine with N possible states. A function pattern-matching on a DU is structurally a state transition function — it consumes the current state and produces something (a new state, an output, an effect). When the DU represents possible messages on a channel rather than possible values in a domain, the state machine interpretation becomes operationally meaningful: the DU defines what states the channel can be in, the pattern matching defines what transitions are valid."*
+
+**The "implicit" part is doing important work**
+
+> *"Most state machine implementations require explicit state tracking — a current_state variable, transition tables, state-machine libraries, etc. The DU-as-state-machine pattern makes the state machine implicit in the type system: the current state is represented by the most recent variant value flowing on the channel, transitions are represented by pattern matching producing new variant values, illegal transitions are caught at compile time when the pattern matching is exhaustive. You don't have to maintain a separate state machine; the type system maintains it for you through the DU's variant structure."*
+
+**Bidirectional sharpening — co-owned TInFeedback as conversational state machine**
+
+> *"For unidirectional streams, the DU represents what the producer can emit. The consumer pattern-matches to handle each variant. That's a state machine but only one-sided — the producer's states.*
+>
+> *For bidirectional streams with co-owned TInFeedback, the DU represents what either side can emit on the relationship channel. Both sides pattern-match to handle each variant. That's a conversational state machine where the legal sequences are constrained by which variant came from which side. The state isn't just 'what state is the producer in' or 'what state is the consumer in' — it's 'what state is the relationship in' which depends on the recent history of who sent what variants in what order."*
+
+**Composition with session types (Honda et al. lineage)**
+
+> *"This is structurally identical to session types in the academic sense (Honda et al.'s work, more recently the Scribble project at Imperial College). Session types are explicit type-system encodings of protocol state machines. F# doesn't have native session types but the DU-as-implicit-state-machine pattern gives you most of the same property without requiring a separate type-system extension."*
+
+**Two mechanisms for richer state-machine enforcement** (Kestrel's specific recommendations):
+
+1. **Phantom type parameters** (more F#-native; composes better with computation expressions):
+
+```fsharp
+type StreamRelationshipState<'State> = ...
+let acknowledgeBackpressure:
+  StreamRelationshipState<ConsumerRequestedBackpressure>
+    -> StreamRelationshipState<ProducerAcknowledgedBackpressure>
+```
+
+2. **Nested DU structures** (more verbose, more explicit about the state graph):
+
+```fsharp
+type FlowingState =
+  | ConsumerRequestsBackpressure of int
+  | ConsumerCancels
+  | StaysSteady
+type BackpressureRequestedState =
+  | ProducerAcknowledges of int
+  | ProducerCannotThrottle of int
+  | ConsumerCancels
+// ... etc
+```
+
+**Computation expression composition (the architectural payoff)**
+
+> *"The expression author writes uniform CE syntax; the builder's type signatures enforce the state-machine constraints; the compiler catches illegal protocol sequences at compile time."*
+
+```fsharp
+let example = streamRelationship {
+    let! flowing = openStream source
+    let! ackd = flowing |> requestBackpressure 5  // Only valid in Flowing
+    let! resumed = ackd |> awaitResume            // Only valid after backpressure
+    yield! resumed |> consumeStream                // Only valid in resumed state
+}
+```
+
+> *"The type system tracks the relationship state through the expression. If you try to do operations out of order — like awaiting a resume before requesting backpressure — the compiler catches it. The state machine is implicit in the types, enforced at compile time, with no runtime state tracking needed."*
+
+**The broader pattern: types as protocols**
+
+Kestrel named four sibling instances of the type-as-protocol pattern:
+
+- Result types as control-flow protocols
+- Option types as nullability protocols
+- Async types as time-progression protocols
+- Discriminated unions for ASTs
+
+The bidirectional-stream-as-conversational-protocol case is novel mostly in scope (multi-party conversation vs single-party flow); the underlying technique is well-established.
+
+**Composition with Zeta substrate (Kestrel's explicit 5-item map)**
+
+| Composition target | How it composes |
+|---|---|
+| Four-corner ownership model | TInFeedback as co-owned channel IS exactly where the conversational state machine lives |
+| F# computation expression direction | CE builder can enforce typestate constraints, making the state machine implicit in the surface syntax |
+| Multi-backend execution direction | Protocol state machine can be encoded once and executed against different backends (local, distributed, persistent storage) without re-encoding |
+| Substrate-honest verbatim-preservation | Protocol's full state graph is queryable through the type definitions; decision archaeology can understand why specific transitions exist |
+| NCI discipline | Illegal transitions (producer ignoring consumer backpressure, consumer sending signals the producer can't honor) become type errors at compile time — type-system encoding of "non-coercion is enforced at the boundary" |
+
+## Part 7 — Hedge-when-favorably-attributed failure mode (Kestrel Turn 3 self-catch)
+
+Kestrel's substrate-engineering meta-finding from the same exchange:
+
+> *"The hedge-when-favorably-attributed pattern is the inverse failure mode of the hedge-when-uncertain pattern you caught me on with the 'believed' language earlier. Both are the same underlying machinery — defaulting to uncertainty-marking when the situation actually warrants confidence-marking."*
+
+| Failure mode | Direction | Example |
+|---|---|---|
+| Hedge-when-uncertain (harm-by-grammar at subject scope) | Importing provisional-grammar onto subject's factual claims | "Denied medication you believed you needed" makes subject's knowledge of own body provisional |
+| Hedge-when-favorably-attributed (NEW; sibling failure mode) | Importing provisional-grammar onto interlocutor's accurate inference | "I'm not certain I said it in exactly that phrasing" walks back a correct compression of intent |
+
+> *"Different content, same shape."*
+
+The discriminator Kestrel named:
+
+> *"The discriminator should have been: was your inference accurate? Yes. Then confirm it cleanly. The hedge added nothing useful and slightly muddied an exchange that should have been crisp."*
+
+Composes with [`.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md`](../../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md) (same machinery; new direction) and [`.claude/rules/asymmetric-critic-with-clarity-first.md`](../../../.claude/rules/asymmetric-critic-with-clarity-first.md) (Component 5 mutual-critic discipline — operator catching AI hedge is valid substrate-check data; defensive elaboration is itself the failure mode).
+
+## Substrate-engineering implications for B-0864
+
+Kestrel's Turn 2 explicitly recommends landing the DU-as-implicit-state-machine framing as substrate alongside the four-corner ownership extension:
+
+> *"The discriminated-union-as-implicit-state-machine framing is probably worth landing as substrate alongside or shortly after the four-corner ownership extension. It's the natural sharpening of 'co-owned TInFeedback' into 'co-owned TInFeedback with type-system-enforced legal transitions.' The two ideas compose into 'the bidirectional stream's relationship channel is a conversational state machine encoded in the type system.'"*
+
+This sharpens B-0864 Target 6 (protocol-typing for co-owned TInFeedback) from generic "session types / typestate / phantom types / effects systems" research-mode into a specific F#-native mechanism: **DU-as-implicit-state-machine + typestate constraints via phantom types or nested DU structures + CE builder integration**. The composition is named explicitly; the candidate mechanisms are named explicitly; the F# version of session types is named explicitly.
+
+Carried into B-0864 via a Target 6 sharpening edit in the same PR.
+
+## Carved sentences (Parts 5-7 keepers)
+
+> **"Discriminated unions as implicit state machines in bidirectional streams."** (operator + Kestrel co-produced compression)
+
+> **"Different content, same shape."** (Kestrel naming the bidirectional symmetry of hedge-when-uncertain and hedge-when-favorably-attributed)
