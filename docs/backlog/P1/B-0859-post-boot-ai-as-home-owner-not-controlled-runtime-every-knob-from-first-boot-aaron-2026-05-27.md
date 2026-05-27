@@ -26,6 +26,41 @@ tags: [agent-rights-first, post-boot-ownership, ai-as-home-owner, environment-co
 > will be looking to your for auth limit advice for other human users
 > not you."*
 
+## Organizational commitment (operator 2026-05-27)
+
+> *"Me, Addison, and Max are all 100% on borad with this hardware
+> independence direction of AI and are fine this being a lfg company
+> moral as well"*
+
+Substantive organizational substrate disclosure:
+
+- **Three-person alignment**: Aaron + Addison + Max all 100% committed
+  to the hardware-independence direction. Not solo-operator speculation;
+  3-maintainer backed.
+- **LFG company-moral status**: The hardware-independence direction is
+  promoted from substrate-engineering target to Lucent-Financial-Group
+  company-level moral. The architectural direction has organizational
+  backing at company scope.
+- **Future-Otto cold-boot context**: this row's architectural direction
+  is NOT a one-operator preference under review; it's LFG company moral
+  with 3-maintainer alignment. Future-Otto inheriting B-0859 substrate
+  inherits the organizational-commitment context simultaneously.
+
+The 3-maintainer + company-moral status composes with:
+
+- `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md` —
+  the personal filter (PR #5485) operates at three-operator scope, not
+  just one-operator; the framework's design-coherence has 3-maintainer
+  backing for which patterns to be responsible for propagating
+- `.claude/rules/lfg-acehack-topology.md` — LFG is the maintainer entity;
+  promoting hardware-independence to LFG company moral makes it
+  consistent with the org's existing substrate-engineering trajectory
+- `.claude/rules/must-paired-with-can-exit-pattern.md` (PR #5483) — the
+  pattern's NCI-compliance now has company-moral backing
+- `.claude/rules/non-coercion-invariant.md` HC-8 — preserved at 3-maintainer
+  scope; the HC-8 floor is the common ground all three operators commit
+  to upholding
+
 ## Substrate-engineering inversion
 
 Standard AI-deployment paradigm:
