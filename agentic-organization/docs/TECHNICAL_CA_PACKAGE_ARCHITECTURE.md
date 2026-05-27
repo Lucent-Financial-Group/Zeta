@@ -333,14 +333,22 @@ telemetry sink:
   factory so poison messages do not collapse behind one transport dedupe
   key. The reusable messaging packages still see only the generic
   JetStream contracts, not a concrete NATS client library;
+- `apps/workers/src/adapters/nats-js-transport-connection.ts` is the
+  first concrete NATS client-library binding behind the transport
+  factory seam. It uses `@nats-io/transport-node` for the process
+  connection and `@nats-io/jetstream` for publishing, durable
+  pull-consumer fetch, consumer readiness, and shutdown. The adapter is
+  fake-tested through a library facade, so reusable packages still do
+  not import vendor clients and live JetStream behavior remains a later
+  integration proof;
 - `apps/workers/src/adapters/json-worker-telemetry-sink.ts` implements
   `WorkerRuntimeTelemetrySink` with stable structured JSON records that
   preserve the worker/NATS attribute contract.
 
-Concrete NATS client-library construction, readiness endpoints, and
-migration bootstrap still belong to later process-adapter wiring. The
-shutdown and readiness ports now exist so those future hosts can expose
-dependency state without changing package contracts.
+Readiness endpoints and migration bootstrap still belong to later
+process-adapter wiring. The shutdown and readiness ports now exist so
+those future hosts can expose dependency state without changing package
+contracts.
 
 The `apps/workers` composition root receives typed config plus
 already-constructed ports. This is the only place the worker process

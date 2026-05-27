@@ -305,6 +305,13 @@ Hermes runs, MCP calls, and UI evidence.
   builds the package-level NATS consumer from pull and dead-letter ports,
   so callers do not need to construct a consumer outside the app
   boundary.
+- `apps/workers` has a first concrete NATS client-library factory behind
+  that seam. `createNatsJsTransportConnectionFactory` uses
+  `@nats-io/transport-node` and `@nats-io/jetstream` to connect, bind the
+  configured stream and durable consumer, publish with message IDs and
+  headers, fetch batches, adapt ack/nack/term operations, check durable
+  consumer readiness, and close the process connection. The tests are
+  fake-driven; live JetStream behavior remains a later integration proof.
 - `apps/workers` has a first process readiness aggregate. Dependency
   probes return typed ready/not-ready checks, and the process readiness
   result becomes degraded when any dependency check is not ready or
@@ -330,11 +337,10 @@ Hermes runs, MCP calls, and UI evidence.
 
 The next slice is tracked in the canonical
 [Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). It should add
-the next concrete process binding below `apps/workers`: real NATS
-client-library construction behind the existing transport factory,
-migration bootstrap/readiness handling, and entrypoint-level graceful
-shutdown around the app-local Cockroach/NATS/telemetry adapters. Keep
-URLs, credentials, and connection pools in app adapter config fed by
+the next concrete process binding below `apps/workers`: migration
+bootstrap/readiness handling and entrypoint-level graceful shutdown
+around the app-local Cockroach/NATS/telemetry adapters. Keep URLs,
+credentials, and connection pools in app adapter config fed by
 Kubernetes Secret or ExternalSecret values, never in domain packages.
 Add durable-state and NATS integration tests once local/dev connections
 are available.

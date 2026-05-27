@@ -87,7 +87,10 @@ dead-letter publisher, readiness probe, and shutdown port. Dead-letter
 subjects use the shared Organization subject builder, scoped by
 environment and organization, and dead-letter message IDs come from an
 injected factory so distinct poison messages do not collapse behind one
-transport dedupe key. Today tests provide fake clients and ports. The
-next production slice should bind these factories to actual CockroachDB,
-NATS, and telemetry client libraries while preserving the same package
-contracts.
+transport dedupe key. `createNatsJsTransportConnectionFactory` is the
+first concrete NATS client-library binding behind that seam. It uses
+`@nats-io/transport-node` for the Node connection and
+`@nats-io/jetstream` for publish, durable pull-consumer fetch,
+readiness, and shutdown. Today tests still use fake clients; the later
+NATS integration proof must exercise a real server, stream, durable
+consumer, credentials/TLS if enabled, and ack timing.

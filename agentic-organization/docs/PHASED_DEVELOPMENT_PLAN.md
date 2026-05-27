@@ -2559,16 +2559,19 @@ review finding changes the dependency graph.
 ### PR 1: Worker Process Adapter Interfaces
 
 Status: partially implemented. The app-local Cockroach pooled-client
-adapter, app-local NATS connection seam, JSON telemetry sink, outbox
-claim fencing, additive Cockroach claim-fence migration, and basic
-readiness aggregate now exist. The remaining PR 1 scope is the concrete
-NATS client-library factory behind that seam plus migration
-bootstrap/readiness hardening around all process adapters.
+adapter, app-local NATS connection seam, concrete `@nats-io` transport
+factory, JSON telemetry sink, outbox claim fencing, additive Cockroach
+claim-fence migration, and basic readiness aggregate now exist. The
+remaining PR 1 scope is migration bootstrap/readiness hardening around
+all process adapters and the first executable worker entrypoint.
 
 Build:
 
 - app-local Cockroach client interface implementation; done;
 - app-local NATS connection factory interface; done;
+- concrete `@nats-io/transport-node` and `@nats-io/jetstream` factory
+  behind the NATS connection seam; done with fake-driven tests, no live
+  server required;
 - telemetry sink interface and JSON sink fake; done;
 - config validation for adapter-specific connection settings; partially
   done for `NATS_SERVERS`, batch sizes, and Cockroach URL presence;

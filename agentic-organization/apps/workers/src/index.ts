@@ -36,6 +36,22 @@ export {
   type NatsWorkerTransportConnection,
   type NatsWorkerTransportConnectionFactory,
 } from "./adapters/nats-worker-connection.ts";
+export {
+  NatsJsDefaultFetchExpiresMs,
+  createNatsJsTransportConnectionFactory,
+  type CreateNatsJsTransportConnectionFactoryInput,
+  type NatsJsConnection,
+  type NatsJsConnectionInput,
+  type NatsJsConsumer,
+  type NatsJsConsumerFetchInput,
+  type NatsJsConsumerMessages,
+  type NatsJsHeaderBag,
+  type NatsJsJetStreamClient,
+  type NatsJsJetStreamManager,
+  type NatsJsLibraryFacade,
+  type NatsJsMessage,
+  type NatsJsPublishOptions,
+} from "./adapters/nats-js-transport-connection.ts";
 export { composeWorkerRuntime, type ComposeWorkerRuntimeInput, type WorkerRuntimePorts } from "./composition.ts";
 export {
   composeDurableWorkerRuntimePorts,
