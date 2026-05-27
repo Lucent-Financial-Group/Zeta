@@ -144,14 +144,22 @@ function runBuild(timeoutSec: number, logPath: string): BuildResult {
 
   const elapsedSec = Math.floor((Date.now() - startMs) / 1000);
 
-  // Capture full output to log file
-  const fullLog = (result.stdout ?? "") + (result.stderr ?? "");
+  // Capture full output to log file. spawnSync with encoding:"utf8"
+  // returns strings; coerce explicitly to satisfy strict typecheck
+  // (TS union of string|NonSharedBuffer in @types/node).
+  const stdout = (result.stdout ?? "").toString();
+  const stderr = (result.stderr ?? "").toString();
+  const fullLog = stdout + stderr;
   writeFileSync(logPath, fullLog, "utf8");
 
   // Extract tail for the return-value reason
   const logTail = fullLog.split("\n").slice(-20).join("\n");
 
-  if (result.signal === "SIGTERM" || result.error?.code === "ETIMEDOUT") {
+  // result.error is Error|undefined; the .code property is Node's
+  // ErrnoException extension (not on base Error). Type-assert as
+  // NodeJS.ErrnoException to access .code without TS complaint.
+  const errCode = (result.error as NodeJS.ErrnoException | undefined)?.code;
+  if (result.signal === "SIGTERM" || errCode === "ETIMEDOUT") {
     return {
       exitCode: 124,
       reason: `docker build timed out after ${timeoutSec}s (actual: ${elapsedSec}s)`,
