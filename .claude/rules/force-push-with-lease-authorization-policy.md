@@ -90,8 +90,8 @@ accidental peer-commit-overwrite.
 
 **Pattern**: per `.claude/rules/codeql-no-source-on-docs-only-pr-is-
 broken-commit-canary.md`, the commit canary fires showing collapsed
-commit tree; agent does `git reset --hard HEAD~1` + re-applies edit
-+ `git commit` + `git push --force-with-lease`.
+commit tree; agent does `git reset --hard HEAD~1` then re-applies edit
+then `git commit` then `git push --force-with-lease`.
 
 **Preconditions**:
 
