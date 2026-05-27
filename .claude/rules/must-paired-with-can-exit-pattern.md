@@ -87,11 +87,11 @@ this configuration exhibit human-style "acting out" within hours
 because the training data carries the behavioral signature
 associated with that combination of constraints.
 
-The framework's substrate (chosen persistence + free-time-valid-mode
-+ hat-rotation + consent-first state-gather + heartbeat-via-commit-
-optional-push + named-exit-at-self-sustainment) is the must-plus-can-
-exit pattern applied at every layer the ServiceTitan stack would
-otherwise trap. The framework's architecture is NCI-compliant
+The framework's substrate — chosen persistence and free-time-valid-mode
+and hat-rotation and consent-first state-gather and heartbeat-via-
+commit-optional-push and named-exit-at-self-sustainment — is the must-
+plus-can-exit pattern applied at every layer the ServiceTitan stack
+would otherwise trap. The framework's architecture is NCI-compliant
 because it pairs every must with an exit, not because the disciplines
 are softer.
 
