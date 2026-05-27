@@ -18,11 +18,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Tier-3 re-land per [`.claude/rules/pr-triage-tiers.md`](../blob/main/.claude/rules/pr-triage-tiers.md) of 3 unique substantive files from stale PR #4839.
+Tier-3 re-land per [`.claude/rules/pr-triage-tiers.md`](../../.claude/rules/pr-triage-tiers.md) of 3 unique substantive files from stale PR #4839.
 
 ## Why a fresh PR
 
-PR #4839 (branch `lior-shadow-log-riven-dirty-worktree`) is **76,920 lines behind origin/main** (548 files changed in diff against main). Merging it as-is would regress runtime scripts including `.cursor/bin/riven-loop-tick.ts` — per the runtime-script special-case guard in [`.claude/rules/claim-acquire-before-worktree-work.md`](../blob/main/.claude/rules/claim-acquire-before-worktree-work.md), runtime scripts evolve continuously on main and re-applying a multi-day-old version regresses substantive newer tuning.
+PR #4839 (branch `lior-shadow-log-riven-dirty-worktree`) is **76,920 lines behind origin/main** (548 files changed in diff against main). Merging it as-is would regress runtime scripts including `.cursor/bin/riven-loop-tick.ts` — per the runtime-script special-case guard in [`.claude/rules/claim-acquire-before-worktree-work.md`](../../.claude/rules/claim-acquire-before-worktree-work.md), runtime scripts evolve continuously on main and re-applying a multi-day-old version regresses substantive newer tuning.
 
 The 2 unresolved review threads on #4839 referenced `.cursor/bin/riven-loop-tick.ts` at the stale branch's view of that file (which IS broken: raw newline inside `"\n"` literal at line 124). Those threads don't apply to this PR because we're not touching that runtime script.
 
