@@ -101,6 +101,27 @@ describe("NATS JS transport connection adapter", () => {
     deepEqual(library.messages[0]?.actions, ["ack", "nak", "term"]);
   });
 
+  test("rejects fetch when consumer message cleanup reports an error", async () => {
+    const library = createRecordingNatsJsLibrary({
+      consumerCloseResult: new Error("consumer message cleanup failed"),
+      messages: [
+        createRecordingNatsJsMessage({
+          subject: "agentic-org.dev.org-lfg.supervisor_signal.sent",
+          payload: "{\"eventId\":\"evt-001\"}",
+        }),
+      ],
+    });
+    const connection = await createNatsJsTransportConnectionFactory({ library }).connect(createTransportInput());
+
+    try {
+      await connection.fetchNextBatch({ batchSize: 3 });
+      throw new Error("expected NATS adapter fetch to fail");
+    } catch (error) {
+      equal(error instanceof Error, true);
+      equal((error as Error).message, "consumer message cleanup failed");
+    }
+  });
+
   test("checks durable consumer readiness and closes the NATS connection", async () => {
     const library = createRecordingNatsJsLibrary();
     const connection = await createNatsJsTransportConnectionFactory({ library }).connect(createTransportInput());
@@ -123,6 +144,23 @@ describe("NATS JS transport connection adapter", () => {
 
   test("fails startup when the configured durable consumer cannot be bound", async () => {
     const library = createRecordingNatsJsLibrary({
+      consumerGetError: new Error("durable consumer not found"),
+    });
+    const factory = createNatsJsTransportConnectionFactory({ library });
+
+    try {
+      await factory.connect(createTransportInput());
+      throw new Error("expected NATS adapter connection to fail");
+    } catch (error) {
+      equal(error instanceof Error, true);
+      equal((error as Error).message, "durable consumer not found");
+    }
+    equal(library.natsConnection.closeCount, 1);
+  });
+
+  test("preserves the startup failure when cleanup close rejects", async () => {
+    const library = createRecordingNatsJsLibrary({
+      connectionCloseError: new Error("connection close failed"),
       consumerGetError: new Error("durable consumer not found"),
     });
     const factory = createNatsJsTransportConnectionFactory({ library });
@@ -165,6 +203,8 @@ function createTransportInput() {
 }
 
 function createRecordingNatsJsLibrary(options?: {
+  connectionCloseError?: Error;
+  consumerCloseResult?: Error;
   consumerGetError?: Error;
   jetStreamManagerError?: Error;
   messages?: RecordingNatsJsMessage[];
@@ -186,12 +226,15 @@ function createRecordingNatsJsLibrary(options?: {
     closeCount: 0,
     close: async () => {
       natsConnection.closeCount += 1;
+      if (options?.connectionCloseError !== undefined) {
+        throw options.connectionCloseError;
+      }
     },
   };
   const consumer = {
     fetch: async (input: { max_messages: number; expires: number }) => {
       consumerFetchInputs.push(input);
-      return createNatsJsConsumerMessages(messages);
+      return createNatsJsConsumerMessages(messages, options?.consumerCloseResult);
     },
   };
   const jetStreamClient: RecordingNatsJsJetStreamClient = {
@@ -304,14 +347,17 @@ function createRecordingNatsJsMessage(input: {
   };
 }
 
-function createNatsJsConsumerMessages(messages: RecordingNatsJsMessage[]): NatsJsConsumerMessages {
+function createNatsJsConsumerMessages(
+  messages: RecordingNatsJsMessage[],
+  closeResult?: Error,
+): NatsJsConsumerMessages {
   return {
     async *[Symbol.asyncIterator]() {
       for (const message of messages) {
         yield message;
       }
     },
-    close: async () => undefined,
+    close: async () => closeResult,
   };
 }
 

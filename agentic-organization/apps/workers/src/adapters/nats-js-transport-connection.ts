@@ -17,6 +17,8 @@ import type {
 
 export const NatsJsDefaultFetchExpiresMs = 30_000;
 
+const NatsJsMessageTextDecoder = new TextDecoder();
+
 export type NatsJsConnectionInput = {
   servers: readonly string[];
 };
@@ -110,7 +112,7 @@ export function createNatsJsTransportConnectionFactory(
           library,
         });
       } catch (error) {
-        await connection.close();
+        await closeNatsJsConnectionAfterStartupFailure(connection);
         throw error;
       }
     },
@@ -141,10 +143,25 @@ function createNatsJsTransportConnection(input: CreateNatsJsTransportConnectionI
         expires: input.fetchExpiresMs,
       });
 
+      let collectError: unknown;
+
       try {
         return await collectInboundMessages(batch);
+      } catch (error) {
+        collectError = error;
+        throw error;
       } finally {
-        await batch.close();
+        try {
+          const closeResult = await batch.close();
+
+          if (collectError === undefined && closeResult instanceof Error) {
+            throw closeResult;
+          }
+        } catch (closeError) {
+          if (collectError === undefined) {
+            throw closeError;
+          }
+        }
       }
     },
     checkReadiness: async (): Promise<WorkerDependencyReadinessCheck> => {
@@ -184,7 +201,7 @@ async function collectInboundMessages(batch: NatsJsConsumerMessages): Promise<re
 function adaptNatsJsMessage(message: NatsJsMessage): NatsJetStreamInboundMessage {
   return {
     subject: message.subject,
-    payload: new TextDecoder().decode(message.data),
+    payload: NatsJsMessageTextDecoder.decode(message.data),
     headers: natsJsHeadersToRecord(message.headers),
     acknowledge: async () => {
       message.ack();
@@ -196,6 +213,14 @@ function adaptNatsJsMessage(message: NatsJsMessage): NatsJetStreamInboundMessage
       message.term();
     },
   };
+}
+
+async function closeNatsJsConnectionAfterStartupFailure(connection: NatsJsConnection): Promise<void> {
+  try {
+    await connection.close();
+  } catch {
+    // Preserve the startup failure; cleanup close errors are secondary here.
+  }
 }
 
 function natsJsHeadersToRecord(headersInput: NatsJsHeaderBag | undefined): Record<string, string> {
