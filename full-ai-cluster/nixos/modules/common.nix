@@ -46,23 +46,78 @@
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
 
-  # iter-5.1 (B-0792): Avahi mDNS publishing so cluster nodes resolve
-  # via `<hostname>.local` from operator Mac (Bonjour) + Linux peers
-  # (nss-mdns) on the LAN without IP-discovery step. Without this,
-  # `ssh zeta@control-plane.local` fails to resolve even though the
-  # node is up. Empirical anchor: 2026-05-26 iter-4.2 PC1 test
-  # surfaced the gap.
+  # iter-5.1 (B-0792): Avahi mDNS publishing — `<hostname>.local`
+  # resolution via Bonjour (macOS) + nss-mdns (Linux peers).
+  # Empirical 2026-05-27 (Aaron node-e5a176 control-plane test): mDNS
+  # alone proved unreliable — operator's Mac (en0 ethernet, also on
+  # WiFi) could ping by IP + SSH but Bonjour resolution timed out;
+  # unicast mDNS query to port 5353/udp also timed out from the Mac
+  # even though the install completed. Multi-protocol additive
+  # belt-and-suspenders below addresses the reliability gap without
+  # removing the operator's preferred Bonjour-style mechanism.
   services.avahi = {
     enable = true;
     nssmdns4 = true;
-    openFirewall = true;  # firewall hole for mDNS (5353/udp)
+    nssmdns6 = true;       # IPv6 nss-mdns alongside IPv4 (some operator
+                           # macOS configs prefer AAAA queries first)
+    openFirewall = true;   # firewall hole for mDNS (5353/udp)
+    ipv4 = true;
+    ipv6 = true;
+    reflector = true;      # forward mDNS across multiple subnets (operator
+                           # mac on one segment + node on another via router)
     publish = {
       enable = true;
       addresses = true;
       workstation = true;
       domain = true;
+      hinfo = true;        # host info record — additional discoverability
+      userServices = true; # advertise user services so dns-sd browses see node
     };
   };
+
+  # iter-5.5 (B-0835 Bug 7 — Aaron 2026-05-27 reliability ask):
+  # NetBIOS name resolution via Samba's nmbd as additive belt-and-
+  # suspenders alongside Avahi mDNS. NetBIOS uses UDP broadcast on
+  # 137 (vs mDNS multicast on 5353) — different failure modes; if
+  # the network drops IGMP/multicast but allows broadcast,
+  # `node-e5a176` resolves via NetBIOS where `node-e5a176.local`
+  # fails via mDNS. Windows + macOS + Linux all speak NetBIOS via
+  # nmblookup / smbutil / nss-winbind.
+  #
+  # Operator usage (from any host on the LAN):
+  #   nmblookup node-e5a176          # Linux/macOS NetBIOS lookup
+  #   smbutil lookup node-e5a176     # macOS native NetBIOS
+  #   ping node-e5a176               # may work if nsswitch has wins
+  services.samba = {
+    enable = true;
+    openFirewall = true;   # 137/udp (NetBIOS-NS), 138/udp (NetBIOS-DGM),
+                           # 139/tcp (NetBIOS-SSN), 445/tcp (SMB).
+                           # We only need 137/udp for name resolution;
+                           # the rest are firewalled at the file-share
+                           # layer (no shares declared = no SMB exposure).
+    settings = {
+      global = {
+        "workgroup" = "ZETA";
+        "server string" = "Zeta cluster node %h";
+        "netbios name" = config.networking.hostName;
+        # Disable SMB file-sharing entirely — this Samba instance
+        # exists ONLY for NetBIOS name advertisement, NOT file shares.
+        # No shares declared below the global section.
+        "server min protocol" = "SMB3";
+        "smb ports" = "445";  # don't bind 139
+        "disable netbios" = "no";
+        "name resolve order" = "bcast host";
+      };
+    };
+  };
+
+  # DHCP-hostname registration: NetworkManager already advertises the
+  # hostname via DHCP option 12 by default. Many home routers register
+  # DHCP client hostnames as DNS names (e.g., `node-e5a176.lan` from
+  # Asus/Netgear/Eero). This is the 3rd reliability layer — operator's
+  # router becomes a fallback name resolver for `<hostname>` and
+  # `<hostname>.lan` (or `.home`/`.localdomain` depending on router).
+  # No additional NixOS config needed beyond NetworkManager being on.
 
   services.openssh = {
     enable = true;
