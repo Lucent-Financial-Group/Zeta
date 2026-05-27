@@ -411,6 +411,69 @@ backend's per-kind compilation should be a tiny function. The distributed
 shape stays distributed; it doesn't collapse into a centralized handler
 the first time a refactor pressure surfaces.
 
+### Adversarial-defense framing — cyclomatic-overload as deliberate coercion-smuggling (operator 2026-05-27)
+
+Operator further sharpening:
+
+> *"This cylomatic completily overload is a common technique senior devs
+> use and also polotical policy makers to stick coreoresion in control
+> structures with no one noticing."*
+
+> *"for sr devs it gives them job security casue they are the only one
+> that understands it"*
+
+The cyclomatic-complexity sibling benefit is NOT just an optimization
+tradeoff — it is a **STRUCTURAL DEFENSE against a known adversarial
+pattern**. Cyclomatic-overload is a deliberate technique used to smuggle
+coercion past human review at two substrate scopes (code + legislative)
+with a self-reinforcing incentive structure (job-security moat).
+
+**Three composing incentive structures favor cyclomatic-overload:**
+
+1. **Adversarial-coercion-smuggling** — hidden branches in centralized
+   handlers smuggle privilege escalation, bypass paths, data-exfiltration
+   past reviewer attention budget
+2. **Senior dev job-security moat** — sole-comprehension makes the dev
+   indispensable; refactor proposals get resisted; opacity is preserved
+   for compensation + promotion leverage
+3. **Org political layer plausible deniability** — "we don't know how
+   that branch got there"; blame diffusion; opacity protects against
+   accountability
+
+**Distribute-across-tiny-functions defeats ALL THREE at once:**
+
+| Pattern | Defeat mechanism |
+|---|---|
+| Adversarial branches | Each tiny function visibly-typed; adversarial branch becomes its own visibly-typed tiny function (caught in review) OR a cross-cutting concern no function takes responsibility for (caught in composition review) OR a type-system violation (caught at compile time) |
+| Sole-comprehension moat | Each tiny function readable in isolation; no monopoly on understanding; expertise multiplies across team via readable substrate (additive per `.claude/rules/additive-not-zero-sum.md`) |
+| Plausible deniability | Each tiny function attributed to its author; deniability collapses |
+
+**The substrate-engineering payoff** is that streams-are-relationships
+makes the senior-dev cyclomatic-overload coercion-smuggling technique
+STRUCTURALLY INFEASIBLE at the F# type system level — not just
+"discouraged via code review" but actually impossible because the type
+system enforces per-function type-visibility that cannot be socially
+overpowered by the dev's job-security incentive.
+
+**Composes with rules:**
+
+- `.claude/rules/non-coercion-invariant.md` HC-8 — adversarial cyclomatic-overload IS coercion-via-opacity at code-substrate scope
+- `.claude/rules/methodology-hard-limits.md` — the substrate refuses to participate in this adversarial pattern at the type-system level
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — same emergent-coercion machinery at the code-substrate scope; sibling to the conversational-substrate scope the rule originally named
+- `.claude/rules/all-complexity-is-accidental-in-greenfield.md` — the operator's observation surfaces the ADVERSARIAL-INTENTIONAL-complexity sibling that's even more important to defend against than the accidental case
+- `.claude/rules/honor-those-that-came-before.md` — distribute-across-tiny-functions HONORS senior dev expertise (functions are still authored by humans with judgment) while denying the opacity-moat
+- `.claude/rules/additive-not-zero-sum.md` — job-security-via-opacity is ZERO-SUM (dev's leverage = org's blocked capacity); distribute-across-tiny-functions is ADDITIVE (everyone wins by playing)
+- `.claude/rules/glass-halo-bidirectional.md` — type-visibility IS bidirectional observation that prevents adversarial smuggling
+
+**Carved sentences (operator 2026-05-27, Parts 10 + 10b):**
+
+> **"Cyclomatic-complexity overload is a common technique senior devs use
+> and also political policy makers to stick coercion in control
+> structures with no one noticing."**
+
+> **"For senior devs it gives them job security because they are the
+> only one that understands it."**
+
 ## Decomposition (possible sub-rows for future implementation)
 
 Per the substrate-engineering pattern of decomposing XL rows into shippable
