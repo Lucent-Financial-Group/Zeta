@@ -44,7 +44,7 @@
     nvtopPackages.nvidia
     cudaPackages.cuda_cudart
     cudaPackages.cuda_nvcc
-    mesa-demos
+    glxinfo
     vulkan-tools
     clinfo
   ];

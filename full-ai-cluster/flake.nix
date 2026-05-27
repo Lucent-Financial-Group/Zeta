@@ -19,22 +19,15 @@
   description = "Zeta full AI cluster — declarative from USB to running workloads";
 
   inputs = {
-    # iter-6.0 (B-0800; the maintainer 2026-05-26 "24.11 is a 2 year old
-    # version you found a 25.11 when you searched latest we need to make
-    # sure we are on latest too"): bumped from nixos-24.11 (EOL'd
-    # 2025-06-30) to nixos-25.11 "Xantusia" (current stable; EOL
-    # 2026-06-30). Per WebSearch
-    # https://nixos.org/blog/announcements/2025/nixos-2511/
-    # validated per `.claude/rules/dep-pin-search-first-authority.md`.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-utils.url = "github:numtide/flake-utils";
 
     # nix-darwin pinned to matching release branch so Apple Silicon
     # maintainers can build the x86_64-linux ISO via the linux-builder
-    # VM (Virtualization.framework + Rosetta 2). Same bump as nixpkgs.
+    # VM (Virtualization.framework + Rosetta 2).
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -51,13 +44,7 @@
 
   outputs = { self, nixpkgs, nixos-hardware, flake-utils, nix-darwin, disko, ... }@inputs:
     let
-      # iter-6.0 stateVersion bump (B-0800; PC1 + future cluster nodes
-      # are fresh-install scope per the maintainer 2026-05-26; no
-      # persistent K8s workloads yet → safe to bump for new hosts.
-      # Already-installed hosts should NOT bump stateVersion in their
-      # per-host nixos/hosts/<name>/configuration.nix without explicit
-      # migration handling per the NixOS upgrade guidance).
-      stateVersion = "25.11";
+      stateVersion = "24.11";
 
       supportedSystems = [
         "x86_64-linux"
@@ -184,18 +171,6 @@
 
         devShells.default = pkgs.mkShell {
           name = "zeta-ai-cluster-admin";
-          # Nix-managed admin tooling (k8s + age/sops + nix observability).
-          # Host-level dev-laptop tooling (bun, p7zip, etc.) is managed
-          # SEPARATELY via tools/setup/install.sh manifests at
-          # tools/setup/manifests/{brew,apt} — that's the canonical
-          # consumer-of-record per GOVERNANCE.md §24 (dev laptops, CI
-          # runners, devcontainer images). The nix devShell does NOT
-          # auto-run install.sh on entry: Copilot P0 on post-merge of
-          # #5120 flagged that auto-run has large host-side side effects
-          # (apt/brew installs, network fetches, possible sudo prompts)
-          # and breaks devShell expectations + reliably fails on NixOS
-          # hosts which don't have apt at all. Operators run install.sh
-          # manually when needed (rare; usually after pulling main).
           packages = with pkgs; [
             nix-output-monitor nvd nh
             kubectl kubernetes-helm k9s argocd
@@ -205,17 +180,6 @@
           ];
           shellHook = ''
             echo "zeta-ai-cluster admin shell."
-            # install.sh hint: only show on hosts where it actually works
-            # (macOS = brew path, Debian/Ubuntu = apt path). On NixOS it
-            # would error on apt-get, so we say nothing rather than point
-            # the operator at a broken path (Copilot post-merge on #5121).
-            if [ "$(uname -s)" = "Darwin" ]; then
-              echo "  Host setup (rare):    bash tools/setup/install.sh"
-            elif [ -r /etc/os-release ] && grep -qE '^ID(_LIKE)?=.*(debian|ubuntu)' /etc/os-release; then
-              echo "  Host setup (rare):    bash tools/setup/install.sh"
-            fi
-            # NixOS users: tooling comes via this devShell's nix-managed
-            # packages above; no install.sh equivalent needed.
             echo "  Build USB ISO:        nix build .#installer-iso"
             echo "  Build host system:    nixos-rebuild build --flake .#<host>"
             echo "  Talk to cluster:      kubectl / k9s / argocd / cilium / hubble"
