@@ -131,6 +131,7 @@ Do NOT block v1 on any of these. v1 is the load-bearing primitive.
 | E (5yo) | Voice → website transform | Pure declarative surface; on-ramp; no lock-in concern at her scope |
 
 Composes with `.claude/rules/non-coercion-invariant.md` HC-8 scope-split:
+
 - Binding outward (agent → user, agent → agent): grammar enforces; no escape
 - Offered inward (user → self, AI → self): escape-hatch + grammar-extension + scope-bounded ban-if + contributable menu = preserved sovereignty
 
