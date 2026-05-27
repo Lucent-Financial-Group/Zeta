@@ -133,7 +133,23 @@ in
         ExecStart = pkgs.writeShellScript "zeta-creds-restore-start" ''
           set -euo pipefail
 
-          USB_UUID="$(cat ${cfg.usbUuidPath})"
+          # Cleanup in EXIT trap (not ExecStopPost): Type=oneshot +
+          # RemainAfterExit=true keeps the unit in active state after
+          # ExecStart returns, so ExecStopPost doesn't fire on normal
+          # successful boot (Copilot P0 finding on PR #5476). Trap
+          # fires on ANY exit path — success or failure.
+          cleanup() {
+            rm -f /run/zeta-creds-passphrase-temp
+            ${lib.optionalString (cfg.passphraseMode == "file") ''
+              # File-mode: also delete the operator-staged passphrase
+              rm -f ${cfg.passphraseFile}
+            ''}
+          }
+          trap cleanup EXIT
+
+          # Strip whitespace from UUID (Copilot P1 finding): `cat`
+          # includes trailing newline if file ends with one.
+          USB_UUID="$(tr -d '[:space:]' < ${cfg.usbUuidPath})"
           if [ -z "$USB_UUID" ]; then
             echo "zeta-creds-restore: empty USB UUID at ${cfg.usbUuidPath}; aborting"
             exit 1
@@ -148,7 +164,7 @@ in
               fi
             '' else ''
               # interactive mode: prompt operator via systemd-ask-password
-              # Write to temp file (zeta-readable) so restore CLI can consume
+              # Write to temp file (root-readable) so restore CLI can consume
               PASSPHRASE_PATH="/run/zeta-creds-passphrase-temp"
               PASSPHRASE="$(${pkgs.systemd}/bin/systemd-ask-password \
                 --timeout=300 \
@@ -160,7 +176,6 @@ in
               umask 0177
               echo -n "$PASSPHRASE" > "$PASSPHRASE_PATH"
               chmod 0400 "$PASSPHRASE_PATH"
-              chown ${cfg.user}:${cfg.group} "$PASSPHRASE_PATH"
               unset PASSPHRASE
             ''
           }
@@ -170,22 +185,26 @@ in
             PERSONA_ARGS="--persona ${cfg.persona}"
           ''}
 
-          sudo -u ${cfg.user} \
-            HOME="${cfg.home}" \
-            ${bunShimPath} ${cfg.scriptPath} \
-              --usb-uuid "$USB_UUID" \
-              --input ${cfg.blobPath} \
-              --passphrase-file "$PASSPHRASE_PATH" \
-              --target-root / \
-              $PERSONA_ARGS
-        '';
-        ExecStopPost = pkgs.writeShellScript "zeta-creds-restore-cleanup" ''
-          # Always clean up passphrase files on stop (success OR failure)
-          rm -f /run/zeta-creds-passphrase-temp
-          ${lib.optionalString (cfg.passphraseMode == "file") ''
-            # File-mode: also delete the operator-staged passphrase
-            rm -f ${cfg.passphraseFile}
-          ''}
+          # Run as ROOT (Copilot P0 finding): the default cred manifest
+          # includes /etc/* paths (operator-authorized-keys, ssh_host_*)
+          # that only root can write. Post-restore chown step fixes
+          # ownership for ${cfg.home} paths so user-facing creds end
+          # up zeta-owned not root-owned.
+          ${bunShimPath} ${cfg.scriptPath} \
+            --usb-uuid "$USB_UUID" \
+            --input ${cfg.blobPath} \
+            --passphrase-file "$PASSPHRASE_PATH" \
+            --target-root / \
+            $PERSONA_ARGS
+
+          # Post-restore ownership fix: chown ${cfg.home} entries that
+          # the manifest writes into (~/.config/gh, ~/.config/claude,
+          # ~/.gemini, ~/.codex, etc.) so the zeta user can read them.
+          # Only chown files OWNED BY ROOT (operator's pre-existing
+          # configs stay untouched).
+          if [ -d "${cfg.home}" ]; then
+            find "${cfg.home}" -maxdepth 4 -user root -exec chown ${cfg.user}:${cfg.group} {} + 2>/dev/null || true
+          fi
         '';
         Restart = "on-failure";
         RestartSec = "30s";
