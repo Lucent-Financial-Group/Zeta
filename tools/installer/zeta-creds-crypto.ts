@@ -161,12 +161,17 @@ export function encrypt(plaintext: Uint8Array, usbUuid: string, passphrase: stri
  * @returns plaintext on success OR { error: string } on any failure
  */
 export function decrypt(envelope: Envelope, usbUuid: string, passphrase: string): Buffer | { readonly error: string } {
+  if (envelope.salt.length !== SALT_LEN) {
+    return { error: `salt must be ${SALT_LEN} bytes; got ${envelope.salt.length}` };
+  }
   if (envelope.iv.length !== IV_LEN) {
     return { error: `iv must be ${IV_LEN} bytes; got ${envelope.iv.length}` };
   }
   if (envelope.tag.length !== TAG_LEN) {
     return { error: `tag must be ${TAG_LEN} bytes; got ${envelope.tag.length}` };
   }
+  // deriveKey would throw on wrong-length salt; we validated above so this
+  // can't fail at the deriveKey call site for that reason.
   const key = deriveKey(usbUuid, passphrase, envelope.salt);
   const decipher = createDecipheriv("aes-256-gcm", key, envelope.iv);
   decipher.setAuthTag(envelope.tag);

@@ -18,10 +18,12 @@ const UUID = "9e8d7c6b-5a49-3827-1605-fedcba987654";
 const ALT_UUID = "00000000-0000-0000-0000-000000000000";
 const PASS = "correct horse battery staple";
 const WRONG_PASS = "Tr0ub4dor&3";
+// Test fixture uses non-token-prefix strings so secret-scanners don't fire
+// false-positive alerts (no "ghp_" / "gho_" / "ghu_" / "sk-" etc. prefixes).
 const PT = Buffer.from(
   JSON.stringify({
-    gh: { token: "ghp_fake_for_test_only" },
-    claude: { credentials: "fake" },
+    gh: { token: "TEST-FIXTURE-NOT-A-REAL-TOKEN-deadbeef-cafebabe" },
+    claude: { credentials: "TEST-FIXTURE-NOT-REAL" },
     persona: "otto",
   }),
 );
@@ -179,6 +181,19 @@ describe("decrypt — security rejections", () => {
       ciphertext: env.ciphertext,
     };
     const result = decrypt(malformed, UUID, PASS);
+    expect("error" in result).toBe(true);
+  });
+
+  it("rejects wrong salt length (returns error; not throws)", () => {
+    const env = encrypt(PT, UUID, PASS);
+    const malformed: Envelope = {
+      salt: randomBytes(16), // wrong size — deriveKey would throw if called
+      iv: env.iv,
+      tag: env.tag,
+      ciphertext: env.ciphertext,
+    };
+    const result = decrypt(malformed, UUID, PASS);
+    // Must return structured error (locks in the no-throw contract for callers).
     expect("error" in result).toBe(true);
   });
 });
