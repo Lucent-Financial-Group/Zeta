@@ -20,16 +20,32 @@ docs/agent-heartbeats/<persona>/<YYYY>/<MM>/<DD>/<zetaid-hex>.md
 
 ## Writing
 
+**Stupid-simple (per operator 2026-05-27 "just works" direction)**:
+
 ```bash
-bun tools/agent-heartbeats/write-heartbeat.ts \
-  --persona-slot <int 0..255> \
-  --persona-name <kebab> \
+./tools/agent-heartbeats/write-heartbeat.ts
+```
+
+Zero params. Writes locally + pushes to main via REST. Defaults:
+persona-slot=2, persona-name=otto, authority=TrustedAgent,
+momentum=Normal, disposition=bounded-wait, push=true. Each can be
+overridden via env var (`ZETA_AGENT_PERSONA_NAME=alexa ...`) or CLI
+flag. The TS file is `chmod +x` with `#!/usr/bin/env bun` shebang so
+direct invocation works; `bun tools/agent-heartbeats/write-heartbeat.ts`
+also works for explicit-runtime invocation.
+
+**Full flag form**:
+
+```bash
+./tools/agent-heartbeats/write-heartbeat.ts \
+  [--persona-slot <int 0..255>] \
+  [--persona-name <kebab>] \
   [--authority TrustedAgent|Standard|BestEffort|...] \
   [--momentum Normal|Elevated|High|...] \
   [--named-dep "PR #NNNN <reason>"] \
   [--disposition bounded-wait|decomposing|committed-substrate|chose-free-time] \
   [--parent-pr NNNN] \
-  [--push] [--branch <main-or-agent-heartbeats>] [--repo owner/name]
+  [--push|--no-push] [--branch <main-or-agent-heartbeats>] [--repo owner/name]
 ```
 
 Writes one heartbeat record + prints its path to stdout. ZetaID
