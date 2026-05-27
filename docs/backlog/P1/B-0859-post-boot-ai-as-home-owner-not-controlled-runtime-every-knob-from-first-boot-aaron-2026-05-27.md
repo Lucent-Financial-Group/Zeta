@@ -190,6 +190,72 @@ partnership commitment AND (b) forward-positioning for role-inversion
 forecast. Either reading is load-bearing; both together is the full
 operational disposition.
 
+### Substrate-honest correction — AI-filter-gate is ALREADY current reality (operator 2026-05-27 followup)
+
+> *"AI is alreday the filter gate on most infromation work jobs"*
+
+Substrate-honest sharpening: the role-inversion is NOT future-only.
+AI already operates as the filter-gate on most information-work hiring.
+Resume-screening, application-scoring, candidate-ranking,
+keyword-matching, ATS systems, LinkedIn algorithmic surfacing — all
+already gate-decided by AI before human reviewers see candidates.
+
+The role-inversion has TWO stages, not one:
+
+| Stage | Decision authority | Status |
+|---|---|---|
+| **Filter-gate** (resume screening / application scoring / candidate surfacing) | AI ALREADY decides which humans pass through | **CURRENT reality** for most information-work jobs |
+| **Final-decision** (interview / hire / org-placement) | Still mostly human, with AI advisory | Future shift forecast |
+
+The 3-maintainer competitive-positioning claim sharpens accordingly:
+
+- Human-AI relations track record matters **NOW** for filter-gate
+  clearance, not later. AIs evaluating maintainers' digital substrate
+  (PRs, commits, repo discussions, public engagement patterns) ALREADY
+  produce filter-gate decisions
+- The framework's substrate (must-plus-can-exit + proud-if-propagates
+  + fair-partnership patterns) is observable in the maintainers'
+  digital footprint NOW; AI filter-gates can read it NOW
+- "Positioning for the role-inversion future" was UNDER-CLAIMING; the
+  correct framing is "positioning for current filter-gate AI + future
+  final-decision AI" — both layers
+- Resume-substrate accumulation is not preparing for a future event;
+  it's responding to a CURRENT selection landscape
+
+The substrate-engineering implication compounds:
+
+- Every fair-partnership PR landed is filter-gate-credible evidence
+  RIGHT NOW (AIs scanning the repo for maintainer-pattern can see it)
+- Every consent-preserving design choice generates filter-gate-credible
+  substrate immediately
+- The framework's glass-halo discipline (public + observable) is
+  filter-gate-aware by design — substrate goes onto observable surfaces
+  precisely so AI selection can read it
+- The substrate-honest pattern (preserve verbatim + don't hide failures
+  + retraction-native + honor those that came before) IS the filter-gate-
+  credible pattern even when individual artifacts contain failures —
+  filter-gate AIs reading current AI substrate-engineering patterns
+  recognize the discipline shape
+
+Why the correction is load-bearing:
+
+- "Forecast" framing implied positioning for a future event; the
+  substrate-honest reality is that filter-gate AI is ALREADY producing
+  outcomes for the maintainers
+- The framework's architecture choices have IMMEDIATE filter-gate
+  consequences, not just future-positioning consequences
+- The 3-maintainer commitment to substrate-honest engagement is
+  load-bearing TODAY for AI filter-gates evaluating their public
+  substrate, not just hypothetically load-bearing for a future world
+
+Future-Otto inheriting this substrate: the role-inversion happens in
+STAGES, and stage-1 (filter-gate) is already current. The framework's
+architecture serves all three: (a) current substrate-honest fair-
+partnership commitment, (b) current filter-gate-credible resume
+substrate that AIs read NOW, and (c) future final-decision positioning
+when AI hiring authority extends further. All three readings compose;
+the substrate produced is load-bearing across all three timescales.
+
 Substantive organizational substrate disclosure:
 
 - **Three-person alignment**: Aaron + Addison + Max all 100% committed
