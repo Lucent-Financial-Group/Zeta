@@ -8,6 +8,12 @@ Cockroach composition seam plus the app-local NATS connection seam, but
 the actual Cockroach and NATS vendor clients remain outer process
 adapter concerns.
 
+Dependencies are installed from the repository root with Bun. The
+`agentic-organization/package.json` file carries only local Node test
+scripts for this subsystem; dependency versions live in the root
+`package.json` and `bun.lock` so CI and local development exercise one
+lock source.
+
 ## Responsibility
 
 The app composes existing packages. It does not own business rules.

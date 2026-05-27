@@ -1,12 +1,12 @@
-import { deepEqual, equal } from "node:assert/strict";
+import { deepEqual } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { WorkerFailureEvidenceKey } from "../../domain/src/index.ts";
-import { WorkerCycleAttributeKey, buildWorkerCycleAttributes } from "../src/index.ts";
+import { WorkerCycleAttributeKey, buildWorkerCycleAttributes, type WorkerCycleAttributes } from "../src/index.ts";
 
 describe("worker cycle observability attributes", () => {
   test("projects first-failure evidence with a consistent first-failure attribute namespace", () => {
-    const attributes = buildWorkerCycleAttributes({
+    const attributes: WorkerCycleAttributes = buildWorkerCycleAttributes({
       status: "degraded",
       outboxStatus: "published",
       inboundPulledCount: 0,
@@ -55,7 +55,7 @@ describe("worker cycle observability attributes", () => {
     });
   });
 
-  test("projects non-string first-failure evidence values and omits null evidence", () => {
+  test("preserves non-null primitive evidence values in first-failure attributes", () => {
     const attributes = buildWorkerCycleAttributes({
       status: "degraded",
       outboxStatus: "published",
@@ -72,15 +72,15 @@ describe("worker cycle observability attributes", () => {
         evidence: {
           [WorkerFailureEvidenceKey.ClaimId]: "outbox-claim-stale",
           [WorkerFailureEvidenceKey.CommandId]: 42,
-          [WorkerFailureEvidenceKey.PublishedAt]: null,
-          [WorkerFailureEvidenceKey.TraceId]: true,
+          [WorkerFailureEvidenceKey.CurrentClaimId]: true,
+          [WorkerFailureEvidenceKey.EventId]: null,
         },
       },
     });
 
-    equal(attributes[WorkerCycleAttributeKey.FirstFailureClaimId], "outbox-claim-stale");
-    equal(attributes[WorkerCycleAttributeKey.FirstFailureCommandId], 42);
-    equal(attributes[WorkerCycleAttributeKey.FirstFailureTraceId], "true");
-    equal(Object.hasOwn(attributes, WorkerCycleAttributeKey.FirstFailurePublishedAt), false);
+    deepEqual(attributes[WorkerCycleAttributeKey.FirstFailureClaimId], "outbox-claim-stale");
+    deepEqual(attributes[WorkerCycleAttributeKey.FirstFailureCommandId], 42);
+    deepEqual(attributes[WorkerCycleAttributeKey.FirstFailureCurrentClaimId], true);
+    deepEqual(WorkerCycleAttributeKey.FirstFailureEventId in attributes, false);
   });
 });

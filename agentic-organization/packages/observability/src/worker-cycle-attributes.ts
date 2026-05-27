@@ -23,6 +23,18 @@ export const WorkerCycleAttributeKey = {
 } as const;
 
 export type WorkerCycleAttributeKey = (typeof WorkerCycleAttributeKey)[keyof typeof WorkerCycleAttributeKey];
+export type WorkerCycleAttributeValue = string | number | boolean;
+export type WorkerCycleCoreAttributeKey =
+  | typeof WorkerCycleAttributeKey.Status
+  | typeof WorkerCycleAttributeKey.OutboxStatus
+  | typeof WorkerCycleAttributeKey.InboundPulledCount
+  | typeof WorkerCycleAttributeKey.InboundProcessedCount
+  | typeof WorkerCycleAttributeKey.InboundDuplicateCount
+  | typeof WorkerCycleAttributeKey.InboundPayloadConflictCount
+  | typeof WorkerCycleAttributeKey.InboundFailedCount
+  | typeof WorkerCycleAttributeKey.InboundReactionPlanCount
+  | typeof WorkerCycleAttributeKey.FailureCount;
+export type WorkerCycleFailureAttributeKey = Exclude<WorkerCycleAttributeKey, WorkerCycleCoreAttributeKey>;
 
 export type BuildWorkerCycleAttributesInput = {
   status: string;
@@ -43,21 +55,6 @@ export type WorkerCycleFailureAttributeInput = {
   message: string;
   stage?: string | undefined;
 };
-
-export type WorkerCycleCoreAttributeKey =
-  | typeof WorkerCycleAttributeKey.Status
-  | typeof WorkerCycleAttributeKey.OutboxStatus
-  | typeof WorkerCycleAttributeKey.InboundPulledCount
-  | typeof WorkerCycleAttributeKey.InboundProcessedCount
-  | typeof WorkerCycleAttributeKey.InboundDuplicateCount
-  | typeof WorkerCycleAttributeKey.InboundPayloadConflictCount
-  | typeof WorkerCycleAttributeKey.InboundFailedCount
-  | typeof WorkerCycleAttributeKey.InboundReactionPlanCount
-  | typeof WorkerCycleAttributeKey.FailureCount;
-
-export type WorkerCycleFailureAttributeKey = Exclude<WorkerCycleAttributeKey, WorkerCycleCoreAttributeKey>;
-
-export type WorkerCycleAttributeValue = string | number;
 
 export type WorkerCycleAttributes = Record<WorkerCycleCoreAttributeKey, WorkerCycleAttributeValue> &
   Partial<Record<WorkerCycleFailureAttributeKey, WorkerCycleAttributeValue>>;
@@ -81,43 +78,43 @@ export function buildWorkerCycleAttributes(input: BuildWorkerCycleAttributesInpu
     if (input.firstFailure.stage !== undefined) {
       attributes[WorkerCycleAttributeKey.FirstFailureStage] = input.firstFailure.stage;
     }
-    copyFailureEvidenceAttribute({
+    copyPrimitiveEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.ClaimId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureClaimId,
     });
-    copyFailureEvidenceAttribute({
+    copyPrimitiveEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.CommandId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureCommandId,
     });
-    copyFailureEvidenceAttribute({
+    copyPrimitiveEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.CurrentClaimId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureCurrentClaimId,
     });
-    copyFailureEvidenceAttribute({
+    copyPrimitiveEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.EventId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureEventId,
     });
-    copyFailureEvidenceAttribute({
+    copyPrimitiveEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.OutboxEventId,
       attributeKey: WorkerCycleAttributeKey.FirstFailureOutboxEventId,
     });
-    copyFailureEvidenceAttribute({
+    copyPrimitiveEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.PublishedAt,
       attributeKey: WorkerCycleAttributeKey.FirstFailurePublishedAt,
     });
-    copyFailureEvidenceAttribute({
+    copyPrimitiveEvidenceAttribute({
       attributes,
       evidence: input.firstFailure.evidence,
       evidenceKey: WorkerFailureEvidenceKey.TraceId,
@@ -128,22 +125,17 @@ export function buildWorkerCycleAttributes(input: BuildWorkerCycleAttributesInpu
   return attributes;
 }
 
-type CopyFailureEvidenceAttributeInput = {
+type CopyPrimitiveEvidenceAttributeInput = {
   attributes: WorkerCycleAttributes;
-  attributeKey: WorkerCycleAttributeKey;
+  attributeKey: WorkerCycleFailureAttributeKey;
   evidence: WorkerFailureEvidence | undefined;
   evidenceKey: WorkerFailureEvidenceKey;
 };
 
-function copyFailureEvidenceAttribute(input: CopyFailureEvidenceAttributeInput): void {
+function copyPrimitiveEvidenceAttribute(input: CopyPrimitiveEvidenceAttributeInput): void {
   const value = input.evidence?.[input.evidenceKey];
 
-  if (typeof value === "string" || typeof value === "number") {
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
     input.attributes[input.attributeKey] = value;
-    return;
-  }
-
-  if (typeof value === "boolean") {
-    input.attributes[input.attributeKey] = String(value);
   }
 }

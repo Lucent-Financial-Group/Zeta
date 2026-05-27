@@ -311,12 +311,12 @@ function createRecordingNatsEventConsumer(result: NatsJetStreamConsumeBatchResul
 function createRecordingTelemetrySink(): WorkerRuntimeTelemetrySink & {
   records: {
     eventName: WorkerRuntimeTelemetryEventName;
-    attributes: Record<string, string | number>;
+    attributes: Record<string, string | number | boolean>;
   }[];
 } {
   const records: {
     eventName: WorkerRuntimeTelemetryEventName;
-    attributes: Record<string, string | number>;
+    attributes: Record<string, string | number | boolean>;
   }[] = [];
 
   return {
