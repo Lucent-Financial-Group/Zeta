@@ -33,7 +33,8 @@
 //
 //   0   detect-only mode, or prune ran successfully
 //   64  argument error
-//   128 not inside a git worktree
+//   128 git worktree list failed (not inside a worktree, --root points at a
+//       non-repo or missing directory, git not on PATH, or other launch error)
 //
 // DST-friendliness:
 //
@@ -65,10 +66,11 @@ interface AuditResult {
   readonly healthy: number;
 }
 
-const KNOWN_FLAGS = new Set(["--root", "--report", "--prune"]);
-
 function hasFlagValue(value: string | undefined): value is string {
-  return value !== undefined && !KNOWN_FLAGS.has(value);
+  // Reject any dash-prefixed token (known flag or typo'd unknown flag) so a
+  // bad invocation like `--report --verbose` produces an "Unknown argument"
+  // error rather than silently treating `--verbose` as a filename.
+  return value !== undefined && !value.startsWith("-");
 }
 
 function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "error"; message: string } {
@@ -126,8 +128,12 @@ function parseWorktreePorcelain(stdout: string): WorktreeEntry[] {
 function audit(root: string | null): AuditResult | { error: string; code: AuditExitCode } {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
   const list = spawnSync("git", gitArgs(root, ["worktree", "list", "--porcelain"]), { encoding: "utf8" });
+  if (list.error) {
+    return { error: `git worktree list failed to launch: ${list.error.message}`, code: 128 };
+  }
   if (list.status !== 0) {
-    return { error: `git worktree list failed: ${list.stderr}`, code: 128 };
+    const stderr = (list.stderr || "").trim() || `(no stderr; exit ${list.status ?? "null"})`;
+    return { error: `git worktree list failed: ${stderr}`, code: 128 };
   }
 
   const entries = parseWorktreePorcelain(list.stdout);
@@ -156,6 +162,9 @@ function audit(root: string | null): AuditResult | { error: string; code: AuditE
 function runPrune(root: string | null): { ok: boolean; output: string } {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
   const r = spawnSync("git", gitArgs(root, ["worktree", "prune", "--expire=now", "-v"]), { encoding: "utf8" });
+  if (r.error) {
+    return { ok: false, output: `git worktree prune failed to launch: ${r.error.message}` };
+  }
   return { ok: r.status === 0 || r.status === 1, output: (r.stdout || "") + (r.stderr || "") };
 }
 
