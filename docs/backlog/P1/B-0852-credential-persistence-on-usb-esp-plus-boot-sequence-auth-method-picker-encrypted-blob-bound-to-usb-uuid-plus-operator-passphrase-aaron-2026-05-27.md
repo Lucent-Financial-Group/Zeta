@@ -260,7 +260,7 @@ The right placement matches each auth method to the operator-UX phase that fits 
 
 ### zflash time (operator's Mac; full UI + clipboard + browser)
 
-`bun tools/zflash.ts --agent` prompts BEFORE the dd-flash:
+`bun full-ai-cluster/tools/zflash.ts --agent` prompts BEFORE the dd-flash:
 
 - *(optional)* Inject GitHub PAT into ESP at flash time
   - Operator pastes PAT from `github.com/settings/tokens` (clipboard available)
@@ -321,13 +321,13 @@ CLI shape (canonical):
 
 ```bash
 # Bake gh-cli token + ssh pubkey at flash time; other creds defer to boot device-flow
-bun tools/zflash.ts --agent /dev/disk6 \
+bun full-ai-cluster/tools/zflash.ts --agent /dev/disk6 \
   --bake-cred gh-cli=ghp_xxxxxxxx \
   --bake-cred ssh-operator-pubkey=@~/.ssh/operator.pub \
   --bake-passphrase-file ~/.config/zeta/zflash-passphrase
 
 # Bake all 4 vendor CLIs from operator's existing setup
-bun tools/zflash.ts --agent /dev/disk6 \
+bun full-ai-cluster/tools/zflash.ts --agent /dev/disk6 \
   --bake-cred gh-cli=env:GH_TOKEN \
   --bake-cred claude=@~/.config/claude/credentials.json \
   --bake-cred gemini=@~/.gemini/oauth_creds.json \
