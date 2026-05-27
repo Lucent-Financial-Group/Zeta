@@ -1015,6 +1015,43 @@ sudo nixos-install \
 cleanup_symlinks
 trap - EXIT
 
+# ── Step 6.94: iter-6.x — B-0852.3a cred-picker (interactive bake-vs-defer at setup time) ──
+# Operator 2026-05-27 framing: "human interactive at setup time" + "ask
+# what declared creds you want to bake in vs go through device flow".
+#
+# Conditional on ZETA_CREDS_PICKER=1 + /etc/zeta/usb-uuid + a passphrase
+# source (env or file). Skipping is the default for backward compat with
+# automated/CI installs; opt-in for operator-driven USB flows.
+#
+# When invoked: reads tools/installer/zeta-creds-manifest.ts DEFAULT_MANIFEST
+# from the pre-cloned Zeta repo (cloned in 6.95a-bootstrap below — so this
+# step runs AFTER repo clone in the operator-invocation order; in practice
+# operator runs picker post-install via interactive shell rather than during
+# automated zeta-install.sh flow).
+#
+# This block documents the integration point + is conditional; default skip.
+if [ -n "${ZETA_CREDS_PICKER:-}" ] && [ "$ZETA_CREDS_PICKER" = "1" ]; then
+  echo "[iter-6.x] ── B-0852.3a cred-picker (operator interactive) ──"
+  if [ -d "$ZETA_HOME/Zeta" ] && [ -f /etc/zeta/usb-uuid ]; then
+    USB_UUID="$(cat /etc/zeta/usb-uuid)"
+    if [ -n "${ZETA_CREDS_PASSPHRASE:-}" ]; then
+      sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" \
+        bash -c "cd $ZETA_HOME/Zeta && ZETA_CREDS_PASSPHRASE='$ZETA_CREDS_PASSPHRASE' \
+          bun tools/installer/zeta-creds-picker.ts \
+            --usb-uuid '$USB_UUID' \
+            --output /esp/zeta-creds.enc \
+            --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+        echo "[iter-6.x]   WARN: picker exited non-zero; cred-blob may be partial"
+    else
+      echo "[iter-6.x]   SKIP picker: ZETA_CREDS_PASSPHRASE not set"
+    fi
+  else
+    echo "[iter-6.x]   SKIP picker: prereq missing ($ZETA_HOME/Zeta exists? /etc/zeta/usb-uuid exists?)"
+  fi
+else
+  echo "[iter-6.x]   SKIP B-0852.3a cred-picker (set ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE + /etc/zeta/usb-uuid to enable)"
+fi
+
 # ── Step 6.95: iter-5.5.0 — claude-code install + credential persistence (B-0848 Phase 2) ──
 # Aaron 2026-05-27 ask: "wanna make this automatic on boot before i even
 # login and have it save my claude code device login like gh, also make
