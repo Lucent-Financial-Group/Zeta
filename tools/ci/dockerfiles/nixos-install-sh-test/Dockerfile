@@ -46,7 +46,19 @@ RUN touch /etc/NIXOS
 # mise/bun aren't on PATH in the fresh layer's shell). install.sh
 # installs mise to ~/.local/bin/mise and shims to ~/.local/share/mise/
 # shims/; bun --global lands at ~/.bun/bin/.
-ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/usr/local/bin:/usr/bin:/bin
+ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin
+
+# The pinned mise release is dynamically linked and asks the kernel for
+# the conventional FHS loader path. nixos/nix keeps glibc in /nix/store,
+# so expose the loader path this test needs without changing install.sh.
+RUN set -eu; \
+    glibc_loader="$(find /nix/store -path '*/lib/ld-linux-*.so.*' | head -n 1)"; \
+    test -n "$glibc_loader"; \
+    case "$(uname -m)" in \
+      x86_64) mkdir -p /lib64 && ln -sf "$glibc_loader" /lib64/ld-linux-x86-64.so.2 ;; \
+      aarch64|arm64) mkdir -p /lib && ln -sf "$glibc_loader" /lib/ld-linux-aarch64.so.1 ;; \
+      *) echo "unsupported Docker test architecture: $(uname -m)" >&2; exit 1 ;; \
+    esac
 
 # Enable nix flakes (needed for tools/setup/common/mise.sh and other
 # substrate that uses flake-style invocation).
