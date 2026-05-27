@@ -188,81 +188,117 @@ kubectl -n longhorn-system get nodes.longhorn.io worker-gpu-03 -o yaml | grep -A
 
 ## Cred-restore smoke test (B-0852 end-to-end verification)
 
-The B-0852 cred-persistence substrate (PRs #5635 + #5637 + #5638 +
-#5639 + #5640 + #5643 + #5644 + #5646) closes the operator pain
-point: enter your passphrase ONCE at install time; on every
-subsequent boot, your `gh` / `claude` / `gemini` / `codex` credentials
-auto-restore — no more re-entering them per reboot.
+The B-0852 cred-persistence substrate replaces N per-tool login
+flows per boot (`gh auth login`, `claude login`, `gemini login`,
+`codex login`, etc.) with ONE cred-blob passphrase per boot. The
+operator still types the cred-blob passphrase at every boot in the
+default `passphraseMode = "interactive"` configuration; what changes
+is that the passphrase unlocks all wrapped credentials atomically
+instead of re-running each tool's individual login flow.
 
-To verify the full path works after a fresh USB install:
+Default credential manifest (per `tools/installer/zeta-creds-manifest.ts`):
+
+| Cred id | Captured paths |
+|---|---|
+| `gh-cli` | `~/.config/gh/hosts.yml` |
+| `claude` | `~/.config/claude/credentials.json`, `~/.claude/.credentials.json` |
+| `gemini` | `~/.gemini/oauth_creds.json` |
+| `codex` | `~/.codex/auth.json` |
+| `ssh-host-keys` | `/etc/ssh/ssh_host_ed25519_key{,.pub}`, `/etc/ssh/ssh_host_rsa_key{,.pub}` |
+| `ssh-operator-pubkey` | `/etc/zeta/operator-authorized-keys`, `/etc/ssh/authorized_keys.d/zeta-operator` |
+
+To verify the cascade works end-to-end after a fresh USB install:
 
 ### First-boot verification (during install)
 
-Look for these install log lines on tty1:
+Look for these install log lines on tty1 (exact strings; if you
+see something different, check the current `zeta-install.sh` Step
+6.56 + Step 6.95-picker output):
 
-```
+```text
+[B-0852.3b] ── cred-blob passphrase prompt (B-0852 Phase 1) ──
 [B-0852.3b]   passphrase captured + held in non-exported shell variable
-[B-0852.3b]   (NOT in /proc/self/environ; inline-set for sudo only at 6.95;
-               shell var unset in ALL branches after Step 6.95 picker block)
 [iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (DEFAULT-ON per B-0852.3c) ──
+[iter-5.5.0]   passphrase from Step 6.56; usb-uuid from B-0852.3a-prep
 [iter-5.5.0]   ZETA_CREDS_PASSPHRASE_VAL unset from installer shell (post-picker block; fires in both branches)
 ```
 
-If you see `SKIP 6.95-picker: <reason>` instead, the picker
-opted out — check the reason (env var / marker file / missing
-UUID / empty passphrase). Cred-restore won't activate.
+If you see `SKIP 6.95-picker: <reason>` instead, the picker opted
+out — check the reason (env var / marker file / missing UUID /
+empty passphrase). Cred-restore won't activate.
 
 ### Post-reboot verification (after install reboots into installed system)
 
-SSH into the node and run:
+The restore service runs at every boot in
+`passphraseMode = "interactive"` (the common.nix default). On tty1
+during boot, expect a `systemd-ask-password` prompt:
+`Zeta cred-blob passphrase:`. Type the same passphrase entered at
+Step 6.56 during install. After it unlocks, SSH in and verify:
 
 ```bash
 # 1. Restore service ran AND its ConditionPathExists passed
 #    (i.e., /boot/zeta-creds.enc exists)
 systemctl status zeta-creds-restore.service
 
-# Expected: "Active: active (exited)" with "main process exited, code=exited, status=0/SUCCESS"
-# If you see "ConditionPathExists=/boot/zeta-creds.enc was not met", the
-# blob never landed on the target ESP — check install log for picker WARN.
+# Expected: "Active: active (exited)" with status=0/SUCCESS
+# Wrong passphrase = service fails with non-zero exit; restart
+# from the systemd-ask-password prompt on next boot.
 
 # 2. The encrypted blob is on the ESP (post-reboot mount = /boot)
 ls -la /boot/zeta-creds.enc
 
-# Expected: ~few-KB binary file (size depends on how many creds were captured)
+# Expected: ~few-KB binary file (size depends on captured creds)
 
 # 3. The cred files are restored to their expected paths
 ls -la /home/zeta/.config/{gh,claude}/ 2>/dev/null
-ls -la /home/zeta/.local/share/ 2>/dev/null
+ls -la /home/zeta/.gemini/ /home/zeta/.codex/ 2>/dev/null
+ls -la /home/zeta/.claude/ 2>/dev/null
 
-# Expected: populated config files; ownership zeta:users
+# Expected: populated cred files; ownership zeta:users for $HOME
+# paths and root:root for /etc/ssh paths
 ```
 
-### Second-reboot verification (no re-entry needed)
+### Second-reboot verification (what changes vs first-time install)
 
-After the installed system has rebooted once successfully:
+On the second reboot (and every subsequent reboot in interactive
+mode): the cred-blob passphrase prompt fires again on tty1 — this
+is by design, not a regression. The pain-point improvement is that
+ONE passphrase unlocks ALL the captured creds atomically; the
+operator does NOT need to re-run `gh auth login`, `claude login`,
+`gemini login`, `codex login` individually.
+
+To swap to no-prompt-at-boot behavior, set `passphraseMode = "file"`
+in the host config; the restore service then reads
+`/run/zeta-creds-passphrase` (operator pre-stages this file before
+the unit runs). This trades the per-boot prompt for an
+operator-staged plaintext file at `/run/...` — less secure;
+appropriate for fully-automated boot environments only.
+
+After the cred-blob is decrypted, verify the individual creds work:
 
 ```bash
-# 1. systemd-ask-password should NOT prompt for cred-blob passphrase
-#    UNLESS passphraseMode=interactive AND the cred files are stale.
-#    Per common.nix default-on (PR #5640), interactive mode is the
-#    default; the prompt fires on tty1 once at boot then unblocks.
+sudo -u zeta gh auth status       # gh CLI: expect token loaded
+sudo -u zeta claude --version     # Claude Code: expect no login flow
+sudo -u zeta gemini --version     # Gemini CLI: expect no login flow
+sudo -u zeta codex --version      # Codex CLI: expect no login flow
 
-# 2. Verify gh + claude still work (use any cred that was captured)
-sudo -u zeta gh auth status
-sudo -u zeta claude --version  # no login flow should fire
-
-# Expected: both return without prompting for credentials. If either
-# prompts, cred-restore did not populate that specific cred path.
+# Expected: each tool reports its identity without prompting for
+# login. Any tool that prompts → its cred id either wasn't in the
+# manifest, wasn't present at install time (so nothing to capture),
+# or the cred path lookup is wrong for that tool's current version.
 ```
 
 ### Troubleshooting
 
+Common symptoms and likely causes:
+
 | Symptom | Likely cause |
 |---|---|
-| `systemctl status zeta-creds-restore` shows "condition failed" | `/boot/zeta-creds.enc` doesn't exist; check picker ran during install (look for `[iter-5.5.0] ── 6.95-picker:` line in install log) |
-| `/boot/zeta-creds.enc` exists but restore-service fails with "scrypt decryption failed" | Passphrase entered at restore prompt ≠ passphrase entered at install time |
-| Creds appear after reboot but `gh` still prompts for login | Cred manifest didn't include `.config/gh`; check `tools/installer/zeta-creds-cli.ts` default-paths list |
-| Install warns `picker exited non-zero` | USB UUID changed (e.g., reflashed onto different USB); cred-blob is bound to USB UUID via scrypt → HKDF; reflash + re-enter passphrase to rebuild blob bound to new UUID |
+| `systemctl status zeta-creds-restore` reports "condition failed" | `/boot/zeta-creds.enc` doesn't exist on the installed system; check the install log for `[iter-5.5.0] ── 6.95-picker:` line + any `WARN: picker exited non-zero` output |
+| `/boot/zeta-creds.enc` exists but restore-service fails on next boot | Wrong passphrase entered at the systemd-ask-password prompt; the scrypt → HKDF chain fails AEAD verification; retry next boot |
+| Cred restored but `gh` (or another tool) still prompts for login | Either (a) the cred wasn't present at install time so the picker had nothing to capture, OR (b) the tool's cred-storage path changed between versions; cross-check against `tools/installer/zeta-creds-manifest.ts` defaultManifest |
+| Install warns `picker exited non-zero` | USB UUID changed (e.g., reflashed onto a different USB stick); cred-blob is bound to USB UUID via scrypt → HKDF; reflash + re-enter passphrase to rebuild blob bound to new UUID |
+| `systemd-ask-password` prompt doesn't fire on boot | Either `passphraseMode = "file"` is set, OR the restore service's `ConditionPathExists` is unmet (so the unit skipped); check `systemctl status zeta-creds-restore` |
 
 ## Disk failure recovery
 
