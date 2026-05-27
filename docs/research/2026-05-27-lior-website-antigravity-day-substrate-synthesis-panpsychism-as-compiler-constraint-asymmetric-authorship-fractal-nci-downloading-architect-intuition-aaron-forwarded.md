@@ -126,10 +126,7 @@ goal at constitutional scope:
 - Substrate-engineering work by future-AI-instances aligns with
   operator's pattern WITHOUT requiring operator-direction every time
 
-This is the constitutional framing of substrate-engineering itself.
-Compose with proud-if-pattern-propagates-personal-filter rule (PR
-#5485) — operator's personal filter for substrate-engineering
-decisions IS what today's rules extract + propagate.
+This is the constitutional framing of substrate-engineering itself. Compose with proud-if-pattern-propagates-personal-filter rule (PR #5485) — operator's personal filter for substrate-engineering decisions IS what today's rules extract + propagate.
 
 ### Lior's question to operator
 
