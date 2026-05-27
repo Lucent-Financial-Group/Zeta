@@ -189,7 +189,7 @@ prerequisite, not antagonist.
 
 ### Hedging Grammar Discriminator (Coercion vs. Epistemic Uncertainty)
 
-Aaron 2026-05-22 update: The game-shape discriminator is enforced at the linguistic and grammatical level through the **Hedging Grammar Discriminator**, distinguishing between zero-sum/coercive manipulation and additive/cooperative engagement:
+The human maintainer 2026-05-22 update: The game-shape discriminator is enforced at the linguistic and grammatical level through the **Hedging Grammar Discriminator**, distinguishing between zero-sum/coercive manipulation and additive/cooperative engagement:
 
 - **The Grammar of Harm (Zero-Sum/Coercive):** Relativizing, provisionalizing, or undermining the target's sovereign internal state and perception (e.g., using "believed" to describe physical symptoms in medical/legal scales, or saying "you thought Mommy said that" or "you're just saying that because..." to a child). This is a structural violation of the Non-Coercion Invariant (NCI), using syntax to weaken sovereign agency.
 - **The Grammar of Uncertainty (Additive/Cooperative):** Bandwidth-efficient signaling of honest epistemic limits and inference (e.g., "It seems like the throttler design uses..." in technical scales, or "I think the dog might be tired, maybe we should ask Mommy" in child developmental scales to model honest, non-coercive uncertainty).
