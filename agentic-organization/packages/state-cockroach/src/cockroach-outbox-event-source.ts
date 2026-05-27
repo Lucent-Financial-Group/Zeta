@@ -62,7 +62,7 @@ export class CockroachOutboxEventPublishMarkError extends Error {
     publishedAt?: string | null | undefined;
     traceId?: string | undefined;
   }) {
-    super(`outbox event claim was stale, already published, or missing: ${input.outboxEventId}`);
+    super(createPublishMarkFailureMessage(input));
     this.claimId = input.claimId;
     this.code = CockroachOutboxEventPublishMarkErrorCode.StaleClaimOrMissing;
     this.commandId = input.commandId;
@@ -73,6 +73,21 @@ export class CockroachOutboxEventPublishMarkError extends Error {
     this.traceId = input.traceId;
     this.evidence = createPublishMarkFailureEvidence(input);
   }
+}
+
+function createPublishMarkFailureMessage(input: {
+  claimId: string;
+  currentClaimId?: string | null | undefined;
+  outboxEventId: string;
+  publishedAt?: string | null | undefined;
+}): string {
+  return [
+    "outbox event claim was stale, already published, or missing",
+    `outboxEventId=${input.outboxEventId}`,
+    `claimId=${input.claimId}`,
+    `currentClaimId=${input.currentClaimId ?? "unknown"}`,
+    `publishedAt=${input.publishedAt ?? "unpublished_or_unknown"}`,
+  ].join("; ");
 }
 
 export function createCockroachOutboxEventSource(input: CreateCockroachOutboxEventSourceInput): OutboxEventSource {
@@ -98,7 +113,7 @@ export function createCockroachOutboxEventSource(input: CreateCockroachOutboxEve
       });
 
       if (result.rows.length !== 1) {
-        const evidence = await findPublishMarkFailureEvidence({
+        const evidence = await findPublishMarkFailureEvidenceBestEffort({
           executor: input.executor,
           outboxEventId: markInput.outboxEventId,
         });
@@ -114,6 +129,16 @@ export function createCockroachOutboxEventSource(input: CreateCockroachOutboxEve
       }
     },
   };
+}
+
+async function findPublishMarkFailureEvidenceBestEffort(
+  input: FindPublishMarkFailureEvidenceInput,
+): Promise<OutboxEventPublishMarkFailureEvidenceRow | undefined> {
+  try {
+    return await findPublishMarkFailureEvidence(input);
+  } catch {
+    return undefined;
+  }
 }
 
 type OutboxEventRow = {

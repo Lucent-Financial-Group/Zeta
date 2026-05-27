@@ -79,6 +79,44 @@ describe("cockroach outbox event source", () => {
       equal(error.traceId, "trace-001");
       equal(error.currentClaimId, "outbox-claim-001");
       equal(error.publishedAt, "2026-05-25T20:59:00.000Z");
+      ok(error.message.includes("claimId=outbox-claim-stale"));
+      ok(error.message.includes("currentClaimId=outbox-claim-001"));
+      ok(error.message.includes("publishedAt=2026-05-25T20:59:00.000Z"));
+    }
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [
+        CockroachOutboxEventSourceStatement.MarkOutboxEventPublished,
+        CockroachOutboxEventSourceStatement.FindOutboxEventPublishMarkFailureEvidence,
+      ],
+    );
+  });
+
+  test("preserves typed publish-mark failure evidence when diagnostic lookup fails", async () => {
+    const executor = createRecordingExecutor({
+      evidenceError: new Error("evidence lookup unavailable"),
+      markRows: [],
+    });
+    const outboxSource = createCockroachOutboxEventSource({
+      executor,
+    });
+
+    try {
+      await outboxSource.markOutboxEventPublished({
+        claimId: "outbox-claim-stale",
+        outboxEventId: "outbox-001",
+        publishedAt: "2026-05-25T21:00:00.000Z",
+      });
+      throw new Error("expected duplicate publish mark to reject");
+    } catch (error) {
+      ok(error instanceof CockroachOutboxEventPublishMarkError);
+      equal(error.code, CockroachOutboxEventPublishMarkErrorCode.StaleClaimOrMissing);
+      equal(error.outboxEventId, "outbox-001");
+      equal(error.claimId, "outbox-claim-stale");
+      equal(error.currentClaimId, undefined);
+      equal(error.publishedAt, undefined);
+      ok(error.message.includes("claimId=outbox-claim-stale"));
+      ok(error.message.includes("currentClaimId=unknown"));
     }
     deepEqual(
       executor.statements.map((statement) => statement.name),
@@ -95,6 +133,7 @@ type RecordingCockroachOutboxSqlExecutor = CockroachOutboxSqlExecutor & {
 };
 
 type CreateRecordingExecutorInput = {
+  evidenceError?: Error;
   markRows?: { outbox_event_id: string }[];
   evidenceRows?: {
     outbox_event_id: string;
@@ -127,6 +166,10 @@ function createRecordingExecutor(input: CreateRecordingExecutorInput = {}): Reco
       }
 
       if (statement.name === CockroachOutboxEventSourceStatement.FindOutboxEventPublishMarkFailureEvidence) {
+        if (input.evidenceError !== undefined) {
+          throw input.evidenceError;
+        }
+
         return {
           rows: (input.evidenceRows ?? [
             {
