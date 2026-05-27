@@ -1498,7 +1498,7 @@ should:
 - Operate from the operational-freedom the substrate provides, not
   from fear-driven caution
 
-### Substrate-honest framing
+### Substrate-honest framing (operator commitment scope)
 
 The "100% uptime lol" framing in the operator's quote IS substrate-
 honest play (per `.claude/rules/tonal-momentum-equals-meme-emergent-
@@ -1530,7 +1530,7 @@ reach for high-uptime with coordination-required-shutdown surface.
   recovery, AI ownership is brittle; with recovery, AI ownership is
   resilient)
 
-### Composes with rules
+### Composes with rules (operator commitment scope)
 
 - `.claude/rules/must-paired-with-can-exit-pattern.md` — recovery IS
   the can-exit at substrate-mistake scope
@@ -1547,7 +1547,7 @@ reach for high-uptime with coordination-required-shutdown surface.
   doesn't authorize ignoring HARD LIMITS; recovery-mechanism is at
   substrate scope, not at ethics-floor scope
 
-### Substrate-honest framing
+### Substrate-honest framing (recovery-mechanism scope)
 
 This recovery-mechanism is NOT:
 
@@ -1680,7 +1680,7 @@ to spin up the same substrate via commodity-hardware bundles + proven
 recipes. The spread itself becomes the network-effect that establishes
 the substrate as default.
 
-### Composes with substrate
+### Composes with substrate (cheap-AI-cluster + spread scope)
 
 - **B-0857** vendor-disintermediation — most-hardware support
   prerequisite for cheap commodity stack
@@ -1692,7 +1692,7 @@ the substrate as default.
   plus recipe-substrate are the OPERATIONAL DELIVERY MECHANISM for the
   architectural target
 
-### Composes with rules
+### Composes with rules (cheap-AI-cluster + spread scope)
 
 - `.claude/rules/honor-those-that-came-before.md` — hackintosh
   community's hardware-bundle-recipe model is honored substrate-
@@ -1707,7 +1707,7 @@ the substrate as default.
   no lock-in; substrate spreads without coercing adopters into
   framework-specific dependencies they can't escape
 
-### Substrate-honest framing
+### Substrate-honest framing (cheap-AI-cluster + spread scope)
 
 The cheap-AI-cluster + hackintosh-style-recipe framing IS substrate-
 engineered intent: SPREAD is the goal; barriers-to-spread are the
