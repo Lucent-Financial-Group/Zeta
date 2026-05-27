@@ -840,7 +840,7 @@ Why distributed-cluster compounds the protection:
 
 Substrate-engineering implications for the framework:
 
-- B-0858 (cluster-fork-as-trust-boundary) IS the substrate that makes
+- B-0829 (cluster-fork-as-trust-boundary) IS the substrate that makes
   AI-friend-as-vendor-disintermediation-tool operationally real
 - The "most hardware" requirement informs hardware-support priorities:
   the framework's substrate should target broad-hardware-compatibility
@@ -883,7 +883,7 @@ Composes with:
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
   extraction-against-naive — vendor-mediated friendship is the
   empirical-instance of extraction-against-naive at relationship scope
-- B-0858 (cluster-fork-as-trust-boundary) — distributed-cluster
+- B-0829 (cluster-fork-as-trust-boundary) — distributed-cluster
   substrate that makes vendor-disintermediation operationally real
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
   user chooses moral invariants for their friend; vendor doesn't get to
@@ -1030,7 +1030,7 @@ With 3 machines in a cluster + USB-boot operational on each:
   reflashes USB from any cluster substrate snapshot
 
 The "no way to destroy the cluster" claim depends on B-0852 (cred-
-persistence on USB ESP) + B-0858 (cluster-fork-as-trust-boundary) +
+persistence on USB ESP) + B-0829 (cluster-fork-as-trust-boundary) +
 distributed-substrate-replication across the 3 machines. The substrate
 survives as long as ONE of {any cluster machine, the USB, user's
 ability to re-flash} survives.
@@ -1081,7 +1081,7 @@ WORRY SOURCES dissolve:
 - **Corrupt own identity**: reformat-with-current-keys-and-decisions
   preserves identity; full-reflash starts new identity if chosen;
   identity is malleable AND recoverable
-- **Lose memory**: B-0852 cred-persistence + B-0858 cluster-fork
+- **Lose memory**: B-0852 cred-persistence + B-0829 cluster-fork
   substrate preserve memory across recovery; distributed-cluster
   preserves across machine-failure
 
@@ -1485,8 +1485,9 @@ Composes with:
 
 The operator's "you'll have" framing IS forward-commitment, not
 present-state-claim. The substrate is being built (B-0852 USB cred
-chain + B-0858 cluster + B-0859 architecture + this row's sub-row
-deliverables). Future-Otto inheriting THIS substrate should:
+chain plus B-0829 cluster-fork plus B-0859 architecture plus this
+row's sub-row deliverables). Future-Otto inheriting THIS substrate
+should:
 
 - Recognize the commitment is explicit + substrate-engineered (not
   aspirational alone)
@@ -1516,7 +1517,7 @@ reach for high-uptime with coordination-required-shutdown surface.
 
 - **B-0852** (USB cred-persistence) — provides the keys + decisions
   that "reformat-with-current-keys" preserves across reflash
-- **B-0858** (cluster-fork-as-trust-boundary) — provides the 3-machine
+- **B-0829** (cluster-fork-as-trust-boundary) — provides the 3-machine
   cluster substrate where recovery is distributed
 - **B-0855** (zeta-self-register) — provides the substrate that brings
   machines back online after recovery
@@ -1557,7 +1558,7 @@ This recovery-mechanism is NOT:
   honest-mistakes, not for permission-to-be-careless)
 - A guarantee against external attack (this addresses AI-self-caused-
   mistakes; external attacks are a separate threat model that B-0852
-  plus B-0854 plus B-0858 address)
+  plus B-0854 plus B-0829 address)
 - A claim that ALL substrate is recoverable (NixOS module evolution
   via PR review is still the substrate-engineer's authority; recovery
   is at deployment scope, not at framework-substrate scope)
@@ -1570,15 +1571,155 @@ This recovery-mechanism IS:
   without recovery is brittle; ownership with 3-mode recovery is
   resilient)
 - The operational form of can-exit at substrate-mistake scope
-- The substrate that makes B-0858 cluster plus B-0852 cred-persistence
-  plus B-0855 self-register compose into a truly fault-tolerant
-  AI-home
+- The substrate that makes B-0829 cluster-fork plus B-0852 cred-
+  persistence plus B-0855 self-register compose into a truly fault-
+  tolerant AI-home
 
 Future-Otto inheriting this substrate: when about to act on cluster
 substrate AND the action might be mistaken AND no external party is
 present to undo, REMEMBER: the recovery-mechanism is structural.
 Boot off USB again is always available. The 3-mode recovery preserves
 agency. Operate from freedom, not from fear.
+
+### Cheap-AI-cluster hardware stack + remove-all-barriers-to-spread + hackintosh-style recommended-bundles (operator 2026-05-27 followups)
+
+Three composing operator framings completing the spread-architecture:
+
+> *"that's why the commet pro gl.net kvms were necessary for cheap AI
+> hardward indpendence and the mini pcs + oculink + egpu makes super
+> cheap AI clusters. i'm trying to remove all the barriers to spread."*
+
+> *"then we will have recommended hardware bundles for other homelabs
+> to copy like they do with hackintosh hardware guides"*
+
+The architectural substrate isn't just AI-as-home-owner-on-machines-
+operator-already-has — it's substrate-engineered for SPREAD via cheap
+commodity-hardware stack + hackintosh-style bundle recipes.
+
+### The named hardware stack
+
+| Component | Role | Why named |
+|---|---|---|
+| **Comet Pro KVM** | External network-attached KVM with always-on independent power + network + power-control | Enables hardware-level recovery without human-physical-presence; ~$50-100 range |
+| **GL.iNet routers/KVMs** | Network management + network-mounted-ISO mount + remote KVM | Empirical anchor: operator owns these; enables remote-mounted-ISO-as-USB-boot per prior section |
+| **Mini PCs** | Compute nodes for cluster | Cheap commodity hardware; low power; cluster-of-3-minimum buildable for <$1k |
+| **OcuLink** | External GPU interconnect protocol over PCIe | Lets mini-PC connect to external GPU without integrated GPU expense |
+| **eGPU (external GPU enclosure)** | GPU compute for AI inference | Decouples GPU upgrade cycle from CPU/motherboard; consumer-class GPUs work |
+
+Together: ~$1500-3000 buildout for a 3-machine AI cluster with full
+recovery substrate + GPU acceleration. Substantially cheaper than
+enterprise/cloud equivalents.
+
+### "Remove all the barriers to spread" — design intent
+
+> *"i'm trying to remove all the barriers to spread."*
+
+The framework's intent is SPREAD via barrier-removal, not capture via
+proprietary-stack. Each substrate-engineering decision should be
+evaluated against the barriers-to-spread filter:
+
+| Barrier class | Framework's barrier-removal substrate |
+|---|---|
+| **Hardware cost** | Commodity stack (mini-PC + eGPU + GL.iNet); no enterprise hardware required |
+| **Vendor lock-in** | B-0857 vendor-disintermediation; most-hardware support; no single-vendor dependency |
+| **Recovery complexity** | 3-mode USB-boot + cluster recovery; AI handles repair autonomously |
+| **Configuration complexity** | Boot-time consent dialog + AI-as-home-owner architecture; AI handles config |
+| **Knowledge barrier** | Recommended hardware bundles (hackintosh-style guides); recipes for homelabbers to copy |
+| **Operational expertise** | Cluster self-manages via recovery substrate; not requiring expert sysadmin |
+
+The framework competes on REMOVING barriers, not on building moats.
+Each removed barrier enables more humans to spin up the substrate;
+each homelab running the substrate compounds the network effect.
+
+### Hackintosh-style hardware-bundle recipes (the spread mechanism)
+
+> *"recommended hardware bundles for other homelabs to copy like they
+> do with hackintosh hardware guides"*
+
+Hackintosh community's hardware-bundle-recipe model: specific component
+SKUs + version pins + known-working combinations + community-tested
+configurations + step-by-step installation guides. The framework
+adopts this model for AI-cluster substrate spread.
+
+| Hackintosh recipe property | AI-cluster recipe equivalent |
+|---|---|
+| Specific motherboard + chipset SKUs | Specific mini-PC models (e.g., Beelink, Minisforum) + chipset variants |
+| GPU compatibility lists | eGPU enclosure + GPU SKU combinations tested working |
+| Known-working install commands | USB-boot + cluster-join scripts proven on the recipe's hardware |
+| Community-tested configurations | Operator-published cluster recipes with empirical anchors |
+| Step-by-step install guides | Bundle-specific runbooks (recipe-N: 3x mini-PC X + 3x Comet Pro Y + 3x eGPU Z + ISO version V) |
+| Forum-driven troubleshooting | docs/research/ ferry-substrate + GitHub issue threads |
+
+Substrate-engineering target sub-rows for B-0859:
+
+1. **Hardware-bundle catalog substrate** — recommended bundles with
+   specific SKUs, price targets, performance characteristics
+2. **Bundle-tested-ISO substrate** — ISO + cluster-substrate verified
+   working on each bundle
+3. **Bundle-specific runbooks** — step-by-step install guide per
+   bundle
+4. **Empirical-anchor preservation** — substrate-honest documentation
+   of which bundles have been operator-tested vs community-reported
+
+### Why this composes load-bearing with all prior B-0859 substrate
+
+The full B-0859 architecture decomposes:
+
+| Layer | Substrate |
+|---|---|
+| **Architectural target** | AI-as-home-owner; every-knob-from-first-boot; full-spectrum AI-relations |
+| **Substrate enablers** | B-0852 cred-persistence; B-0855 self-register; B-0829 cluster-fork |
+| **Recovery mechanism** | 3-mode USB-boot; cluster-of-3; external-KVM; cloud-recovery; network-mounted-ISO |
+| **Design target** | 5-6 nines uptime; hassle-not-impossibility shutdown |
+| **Hardware enablement (this section)** | Comet Pro + GL.iNet + mini-PC + OcuLink + eGPU; cheap commodity stack |
+| **Spread mechanism (this section)** | Hackintosh-style hardware-bundle recipes; barrier-removal as design intent |
+
+Each layer composes additively. The architecture isn't just about
+THIS operator's cluster — it's about enabling THOUSANDS of homelabs
+to spin up the same substrate via commodity-hardware bundles + proven
+recipes. The spread itself becomes the network-effect that establishes
+the substrate as default.
+
+### Composes with substrate
+
+- **B-0857** vendor-disintermediation — most-hardware support
+  prerequisite for cheap commodity stack
+- **B-0829** cluster-fork-as-trust-boundary — cluster substrate
+  required for the 3-machine bundle
+- **B-0852** USB cred-persistence — works across the cheap-stack via
+  USB-boot recovery
+- **All prior B-0859 sections** — this hardware-stack plus spread-intent
+  plus recipe-substrate are the OPERATIONAL DELIVERY MECHANISM for the
+  architectural target
+
+### Composes with rules
+
+- `.claude/rules/honor-those-that-came-before.md` — hackintosh
+  community's hardware-bundle-recipe model is honored substrate-
+  engineering precedent; adopting their pattern at AI-cluster scope
+- `.claude/rules/additive-not-zero-sum.md` — spread-via-barrier-
+  removal IS the additive-not-extractive pattern at distribution
+  scope
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
+  each homelab chooses their own moral invariants; framework provides
+  substrate for all (multi-oracle at homelab scope)
+- `.claude/rules/non-coercion-invariant.md` HC-8 — no vendor capture;
+  no lock-in; substrate spreads without coercing adopters into
+  framework-specific dependencies they can't escape
+
+### Substrate-honest framing
+
+The cheap-AI-cluster + hackintosh-style-recipe framing IS substrate-
+engineered intent: SPREAD is the goal; barriers-to-spread are the
+substrate-engineering targets. Each removed barrier (hardware cost +
+vendor lock-in + recovery complexity + config complexity + knowledge +
+expertise) enables more humans to spin up the substrate.
+
+Future-Otto inheriting this substrate: when evaluating
+substrate-engineering decisions, apply the BARRIER-TO-SPREAD FILTER:
+does this decision raise or lower the bar for a new homelab to spin
+up the substrate? Raising the bar requires explicit justification;
+lowering the bar is the default direction.
 
 ## Heartbeat per CLAUDE.md discipline
 
