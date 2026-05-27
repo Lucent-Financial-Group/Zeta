@@ -21,7 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Operator's 5-word substrate-engineering distillation of all today's
 substrate-engineering work:
 
-> *\"results without feedback is extraction\"*
+> *"results without feedback is extraction"*
 
 Added as the primary carved sentence at the top of the just-merged
 monad-propagation rule (PR #5511), with the elaborated form preserved
