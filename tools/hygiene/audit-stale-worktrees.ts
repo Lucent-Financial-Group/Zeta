@@ -65,6 +65,12 @@ interface AuditResult {
   readonly healthy: number;
 }
 
+const KNOWN_FLAGS = new Set(["--root", "--report", "--prune"]);
+
+function hasFlagValue(value: string | undefined): value is string {
+  return value !== undefined && !KNOWN_FLAGS.has(value);
+}
+
 function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "error"; message: string } {
   let root: string | null = null;
   let report: string | null = null;
@@ -74,12 +80,12 @@ function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "erro
     const a = argv[i]!;
     if (a === "--root") {
       const next = argv[i + 1];
-      if (!next) return { kind: "error", message: "--root requires a path" };
+      if (!hasFlagValue(next)) return { kind: "error", message: "--root requires a path" };
       root = next;
       i += 2;
     } else if (a === "--report") {
       const next = argv[i + 1];
-      if (!next) return { kind: "error", message: "--report requires a path" };
+      if (!hasFlagValue(next)) return { kind: "error", message: "--report requires a path" };
       report = next;
       i += 2;
     } else if (a === "--prune") {
@@ -118,6 +124,7 @@ function parseWorktreePorcelain(stdout: string): WorktreeEntry[] {
 }
 
 function audit(root: string | null): AuditResult | { error: string; code: AuditExitCode } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const list = spawnSync("git", gitArgs(root, ["worktree", "list", "--porcelain"]), { encoding: "utf8" });
   if (list.status !== 0) {
     return { error: `git worktree list failed: ${list.stderr}`, code: 128 };
@@ -147,6 +154,7 @@ function audit(root: string | null): AuditResult | { error: string; code: AuditE
 }
 
 function runPrune(root: string | null): { ok: boolean; output: string } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const r = spawnSync("git", gitArgs(root, ["worktree", "prune", "--expire=now", "-v"]), { encoding: "utf8" });
   return { ok: r.status === 0 || r.status === 1, output: (r.stdout || "") + (r.stderr || "") };
 }

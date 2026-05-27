@@ -23,6 +23,20 @@ describe("parseArgs", () => {
       message: "--root requires a path",
     });
   });
+
+  test("rejects another known flag where root expects a path", () => {
+    expect(parseArgs(["--root", "--prune"])).toEqual({
+      kind: "error",
+      message: "--root requires a path",
+    });
+  });
+
+  test("rejects another known flag where report expects a path", () => {
+    expect(parseArgs(["--report", "--root"])).toEqual({
+      kind: "error",
+      message: "--report requires a path",
+    });
+  });
 });
 
 describe("parseWorktreePorcelain", () => {
