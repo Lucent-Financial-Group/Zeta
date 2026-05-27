@@ -72,8 +72,28 @@ in
 
     blobPath = lib.mkOption {
       type = lib.types.str;
-      default = "/esp/zeta-creds.enc";
-      description = "Path to encrypted cred-blob written by picker (B-0852.3a) at install time.";
+      default = "/boot/zeta-creds.enc";
+      description = ''
+        Path to encrypted cred-blob on the installed system.
+
+        Mount-path note: the blob is written at install-time by the
+        Step 6.95-picker (zeta-install.sh) to `/esp/zeta-creds.enc`
+        because the live-USB installer mounts the target ESP at
+        `/esp`. After reboot into the installed system, disko
+        (`disko-shapes/2nvme.nix`) mounts the SAME ESP partition at
+        `/boot` — so the same physical file is then accessible as
+        `/boot/zeta-creds.enc`. Default reflects the
+        installed-system mount path, which is when this service
+        runs.
+
+        If a host config uses a non-default ESP mount, override
+        `blobPath` to match. Prior default (`/esp/zeta-creds.enc`)
+        was a substrate-honest bug: the install-time path was
+        copy-pasted into a service that runs post-reboot, so
+        `ConditionPathExists` always evaluated false and the
+        restore service silently never ran — caught by Copilot
+        review on PR #5640.
+      '';
     };
 
     usbUuidPath = lib.mkOption {
