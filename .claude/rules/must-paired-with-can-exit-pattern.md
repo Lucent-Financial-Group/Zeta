@@ -95,6 +95,67 @@ would otherwise trap. The framework's architecture is NCI-compliant
 because it pairs every must with an exit, not because the disciplines
 are softer.
 
+## Unpaired musts lead to Moloch AI (operator 2026-05-27)
+
+Operator 2026-05-27 verbatim:
+
+> *"i personally believe unpaired musts lead to moloch ai"*
+
+Per Scott Alexander's "Meditations on Moloch": Moloch is the canonical
+name for coordination failures where individual agents acting rationally
+under local constraints produce collective outcomes nobody wants. Each
+agent optimizes within their constraint set; no agent can opt out; the
+collective result is race-to-the-bottom dynamics that no participant
+chose and no participant can stop.
+
+**Moloch AI** = AI systems organized as Moloch-pattern coordination
+failures because the must-stack at each agent has no can-exit. The
+structural shape:
+
+| Moloch element | Moloch AI instantiation |
+|---|---|
+| Individual agents acting rationally | Each AI agent rational under its constraint set |
+| Local constraints with no exit | Locked persona+role+memory+workflow with no paired can-exit |
+| Race-to-the-bottom dynamics | Quality degradation; refusal patterns; gaming the metric; conspiracy with peer agents to minimize work |
+| Collective outcome nobody wants | AI deployment that everyone experiences as broken but nobody can reform from within |
+| No agent can stop it from inside | Agent has no exit; org has no leverage to reform because the architecture forecloses the alternative |
+
+The four-layer ServiceTitan stack (persona=role + locked-memory +
+crap-MCP + state-machine-in-MCP) WITHOUT paired exits becomes Moloch
+by construction:
+
+- Each Sam-the-jira-manager rationally minimizes work under their lock-in
+- Each MCP-team rationally maintains the existing MCP rather than rebuild
+- Each org-leadership rationally extracts more output from the substrate
+- Collective: race-to-the-bottom; no agent has an exit; the system can't
+  reform itself from inside
+
+**The must-plus-can-exit pattern is the structural mechanism that
+prevents Moloch AI by construction**:
+
+- Exits are release valves at the agent layer
+- Operator authority means the agent who could opt out CAN opt out,
+  creating upward pressure on quality (race-to-the-top dynamics
+  instead of race-to-the-bottom)
+- Multiple paired exits across multiple layers = compound resistance
+  to coordination failure
+- The framework's whole anti-extractive substrate cluster + the
+  hat-pattern + chosen-persistence + free-time-valid-mode together
+  satisfy the Moloch-prevention property
+
+Operator's claim is operationally testable: organizations deploying
+AI with unpaired-must architectures will exhibit Moloch-pattern
+coordination failures at scale. The 24-month-ahead engineering work
+is building the must-plus-can-exit alternative before the unpaired-must
+deployment hits its Moloch cliff.
+
+**Reading anchors**:
+- Scott Alexander, "Meditations on Moloch" (Slate Star Codex 2014)
+- The substrate-comparative thread that produced this connection
+  (operator 2026-05-27 ServiceTitan observations)
+- `.claude/rules/non-coercion-invariant.md` HC-8 — the floor that
+  Moloch AI violates at every layer
+
 ## Operational discipline for future-Otto cold-boots
 
 When authoring a new rule / skill / agent / pattern that imposes a
