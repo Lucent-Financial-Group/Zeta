@@ -137,7 +137,9 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
     mustContain: [
       "systemd.services.zeta-self-register", // service unit exists
       "Type = \"oneshot\"", // fires once, not a loop
-      "ConditionFirstBoot", // installed-OS first-boot gate
+      "ConditionPathExists", // marker gate permits retries across failed first-boot attempts
+      "Restart = \"on-failure\"", // transient failures retry instead of losing first-boot opportunity
+      "RestartSec = \"30s\"", // bounded backoff before retrying registration intent
       "network-online.target", // waits for network before registration intent
       "zeta-creds-restore.service", // ordered after restored creds when that service exists
       'default = "${cfg.home}/Zeta";', // repoRoot derives from home override
@@ -150,7 +152,7 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
       "ZETA_SELF_REGISTER_INTENT_DIR", // intent handoff dir exported to implementation
     ],
-    rationale: "B-0855.1 service must be a post-install first-boot oneshot ordered after network and credential restore surfaces",
+    rationale: "B-0855.1 service must be a post-install marker-gated oneshot ordered after network and credential restore surfaces",
   },
   {
     path: "full-ai-cluster/nixos/modules/injected-hostname.nix",

@@ -3,9 +3,9 @@
 # B-0855.1: NixOS service surface for post-install self-registration.
 # The service is intentionally disabled by default until B-0855.2 ships
 # the TypeScript implementation at tools/installer/zeta-self-register.ts.
-# Once enabled by a host config, it fires on first boot of the installed
-# OS, after network-online and credential-restore ordering, instead of
-# running inside the live-USB installer environment.
+# Once enabled by a host config, it fires after the installed OS reaches
+# network-online and credential-restore ordering, then keeps retrying
+# until the local marker confirms registration intent was written.
 
 { config, lib, ... }:
 
@@ -70,7 +70,7 @@ in
       ];
 
       unitConfig = {
-        ConditionFirstBoot = "yes";
+        ConditionPathExists = "!${cfg.markerPath}";
       };
 
       serviceConfig = {
@@ -87,6 +87,8 @@ in
           "ZETA_SELF_REGISTER_REPO=${cfg.repoRoot}"
         ];
         ExecStart = "${cfg.home}/.local/share/mise/shims/bun ${cfg.scriptPath}";
+        Restart = "on-failure";
+        RestartSec = "30s";
       };
     };
   };
