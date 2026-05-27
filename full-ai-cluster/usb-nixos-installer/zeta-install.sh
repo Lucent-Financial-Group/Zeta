@@ -1159,9 +1159,13 @@ if [ -d "$ZETA_HOME" ]; then
      [ -f /etc/zeta/usb-uuid ] && [ -n "${ZETA_CREDS_PASSPHRASE:-}" ]; then
     USB_UUID="$(cat /etc/zeta/usb-uuid)"
     echo "[iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (operator interactive) ──"
+    # mise activate inside bash -c matches sibling 6.95a-claude/gemini/codex
+    # patterns at lines 1119-1141; without it, bun is not on the PATH the
+    # subshell sees (mise installs bun via shims; activate sets PATH).
+    # BUN_INSTALL pin matches sibling pattern too.
     sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
-      HOME="$ZETA_HOME" \
-      bash -c "cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /esp/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+      HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+      bash -c "set -o pipefail; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /esp/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker (set ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE + /etc/zeta/usb-uuid to enable)"
