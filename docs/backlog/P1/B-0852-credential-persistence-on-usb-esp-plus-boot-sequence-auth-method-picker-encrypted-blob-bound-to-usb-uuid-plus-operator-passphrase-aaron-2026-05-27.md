@@ -309,60 +309,91 @@ The phase-split changes WHERE encrypt fires (zflash time AND/OR install time AND
 - B-0852.1 crypto module (PR #5411 landed): `encrypt(plaintext, usbUuid, passphrase)` — same regardless of phase
 - B-0852.5 cred-manifest schema (in flight): same declarative entries; zflash-time write populates the `gh-cli` entry; boot-time can populate the rest if device-flow chosen
 
-### Per-cred operator choice at zflash time (Aaron 2026-05-27 extension)
+### Per-cred operator choice at zflash time — CLI override (Aaron 2026-05-27 sharpening)
 
-Aaron 2026-05-27 named the next composition: *"then zflash script and/or skill can make sure it asks what declared creds you want to bake in vs go through device flow."*
+Aaron 2026-05-27 named the design space first as a prompt loop, then sharpened to CLI override (better for AI-callable + scriptable):
 
-`zflash --agent` (OR a paired skill like `/zflash-creds`) iterates over the cred-manifest at flash time + prompts PER CREDENTIAL:
+> *"then zflash script and/or skill can make sure it asks what declared creds you want to bake in vs go through device flow."*
 
-```text
-Cred-manifest contains 6 declared credentials.
-Pick source for each (bake-in at flash time | device-flow at boot | skip):
+> *"maybe instead of loop in zflash you just allow command line override of any declared cred as token well at least the ones we support that way, might need custom code per cred type for this idk. the would probably be easier for the ai to call."*
 
-[1/6] gh-cli (personaScoped:false; required:true)
-       ~/.config/gh/hosts.yml
-       (a) Bake in PAT now (paste from github.com/settings/tokens)
-       (b) Device-flow at boot (operator at github.com/login/device on phone)
-       (c) Skip (gh ops degrade until manual auth)
-   → choose: a
+CLI shape (canonical):
 
-[2/6] claude (personaScoped:true; required:true)
-       ~/.config/claude/credentials.json + ~/.claude/.credentials.json
-       (a) Bake in (paste credentials.json contents from existing setup)
-       (b) Device-flow at boot (claude login interactive)
-       (c) Skip
-   → choose: b
+```bash
+# Bake gh-cli token + ssh pubkey at flash time; other creds defer to boot device-flow
+bun tools/zflash.ts --agent /dev/disk6 \
+  --bake-cred gh-cli=ghp_xxxxxxxx \
+  --bake-cred ssh-operator-pubkey=@~/.ssh/operator.pub \
+  --bake-passphrase-file ~/.config/zeta/zflash-passphrase
 
-[3/6] gemini ... → (b)
-[4/6] codex  ... → (b)
-[5/6] ssh-host-keys ... → (b) [optional credential]
-[6/6] ssh-operator-pubkey ... → (a) [already in iter-4.2 pubkey-inject channel]
-
-Encryption passphrase: ********
-Writing /esp/zeta-creds.enc with bake-in selections: gh-cli + ssh-operator-pubkey
-Boot-time will device-flow: claude + gemini + codex + ssh-host-keys
+# Bake all 4 vendor CLIs from operator's existing setup
+bun tools/zflash.ts --agent /dev/disk6 \
+  --bake-cred gh-cli=env:GH_TOKEN \
+  --bake-cred claude=@~/.config/claude/credentials.json \
+  --bake-cred gemini=@~/.gemini/oauth_creds.json \
+  --bake-cred codex=@~/.codex/auth.json \
+  --bake-cred ssh-operator-pubkey=@~/.ssh/operator.pub
 ```
 
-Per-cred discipline:
+Value-source syntax (per-cred type handler):
 
-- Manifest is the source-of-truth for what creds exist (declared, NOT hard-coded in zflash)
-- zflash iterates over manifest entries → per-cred prompt
-- Each prompt offers 3 options: bake-in / device-flow / skip
-- Bake-in choices encrypted in single ESP blob (one passphrase typed once at flash time)
-- Boot-time sees the blob + knows which creds are bake-in vs which need device-flow
+| Syntax | Semantics | Use case |
+|---|---|---|
+| `--bake-cred <id>=<literal>` | Literal string value | PATs / tokens / short strings |
+| `--bake-cred <id>=@<path>` | Read file contents | JSON cred files / SSH pubkeys (curl/git `@file` convention) |
+| `--bake-cred <id>=env:<VAR>` | Read from env var | Avoid PAT in shell history; CI-friendly |
 
-Operationally this means the zflash-time flow is BOUNDED by the manifest size (6 creds today; grows to N when manifest extends — no zflash code change required to support new cred type).
+### Per-cred type handler discipline
+
+Each declared cred-type in B-0852.5 manifest has a per-type handler that knows:
+
+- What VALUE SHAPE this cred expects (literal token / JSON blob / pubkey text / etc.)
+- What VALIDATION to apply at parse time (e.g., gh PAT format check; JSON parse for vendor creds)
+- Whether `@file` / `env:` sources are supported for this type
+
+| Cred id | Expected value shape | Validation | Sources |
+|---|---|---|---|
+| `gh-cli` | PAT string | non-empty; optional `ghp_/gho_/ghu_` prefix check | literal / env: (recommended) / `@file` |
+| `claude` | credentials.json contents | JSON parse + required fields | `@file` (canonical) / literal JSON |
+| `gemini` | oauth_creds.json contents | JSON parse + required fields | `@file` (canonical) |
+| `codex` | auth.json contents | JSON parse + required fields | `@file` (canonical) |
+| `ssh-operator-pubkey` | OpenSSH pubkey text | starts with `ssh-rsa` / `ssh-ed25519` / etc. | `@file` (canonical) / literal |
+| `ssh-host-keys` | (deferred; multi-file) | TBD | TBD |
+
+If `--bake-cred` arg references an `<id>` not in manifest → hard error at parse time. If value-source syntax unsupported for that cred type → hard error with usage hint.
+
+### Encryption passphrase sourcing
+
+Passphrase never echoed to shell history:
+
+- `--bake-passphrase-file <path>` — read from file (file should be `chmod 600`; operator-managed)
+- `--bake-passphrase-env <VAR>` — read from env var
+- (default) interactive prompt via `systemd-ask-password` equivalent on macOS (no echo)
+
+### Why CLI override > prompt loop
+
+| Property | Prompt loop (prior framing) | CLI override (refined) |
+|---|---|---|
+| AI-callable | hard (stdin interactive) | yes (pure args) |
+| Scriptable | hard (expect/spawn dance) | yes (composable in CI / shell scripts) |
+| Composable | one big interactive session | one flag per cred; combine as needed |
+| Per-cred customization | uniform loop UX | per-cred handler validates shape + parses source |
+| Operator UX | slower (per-cred prompt round-trip) | faster (one command, multiple flags) |
+| Documentation | UI screen layout | `--help` text + manifest-driven |
+
+The prompt loop framing was Otto's earlier intermediate. CLI override per Aaron's sharpening is the operationally-better fit; prompt loop deferred unless operator-UX-test reveals need.
 
 ### Composition with B-0844 (zflash --agent) + skill surface
 
-- `zflash --agent` flag (B-0844 landed) gets extended with `--bake-creds` (or similar) that triggers the per-cred prompt loop
-- Alternative: `/zflash-creds` skill (in `.claude/skills/zflash-creds/SKILL.md`) wraps zflash with the manifest-iteration prompt UX
-- Either surface reads B-0852.5 manifest + writes blob via B-0852.1 crypto module
-- Skill version composes with Claude-Code agent-substrate (operator invokes via `/zflash-creds` slash)
+- `zflash --agent` flag (B-0844 landed) gets extended with repeatable `--bake-cred <id>=<value>` + `--bake-passphrase-file <path>` / `--bake-passphrase-env <VAR>`
+- Optional skill `/zflash-creds` (in `.claude/skills/zflash-creds/SKILL.md`) generates the canonical `zflash --bake-cred ...` command for the operator's current declared creds; operator runs the generated command; skill IS Claude-Code-side coordination, NOT a wrapper around the runtime
+- Per-cred handler validates value-source syntax + matches manifest declarations
 
 ### Sub-row addition for this composition
 
-B-0852.9 (new): zflash-time per-cred bake-in prompt loop reading B-0852.5 manifest + writing encrypted blob via B-0852.1. Owner: zflash side (extends `full-ai-cluster/tools/zflash.ts`). Composes with B-0844 (zflash --agent flag).
+B-0852.9 (new): zflash-time `--bake-cred` CLI override reading B-0852.5 manifest + per-cred handlers + writing encrypted blob via B-0852.1. Owner: zflash side (extends `full-ai-cluster/tools/zflash.ts`). Composes with B-0844 (zflash --agent flag).
+
+B-0852.10 (new): per-cred type handlers module (`tools/installer/zeta-cred-handlers.ts`) — one handler per cred type in manifest; each defines value-shape + validation + supported value-sources. Pure functions; unit-tested independently of zflash.
 
 ## Why P1
 
