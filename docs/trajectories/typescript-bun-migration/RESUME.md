@@ -4,8 +4,8 @@
 **Milestone**: 43 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21), cluster-inventory capture. Bucket B is empty as of 2026-04-30T08:07:32Z. The remaining non-Lean `.sh` inventory is guarded repo-wide by `tools/hygiene/check-bash-retirement-inventory.ts` and wired through package script `hygiene:check-bash-retirement-inventory` plus the `gate.yml` bash-retirement inventory lint job.
 **Current blocker**: None.
 **Next concrete action**: Maintain the bash-retirement inventory guard and treat
-any newly tracked non-Lean `.sh` outside the allowlist as drift. Do not revive
-the old Cluster G/H/I or budget-cluster port queues.
+any newly tracked non-Lean shell-family file outside the allowlist as drift. Do
+not revive the old Cluster G/H/I or budget-cluster port queues.
 **Last updated**: 2026-05-26
 
 ## Why this trajectory exists
@@ -52,7 +52,8 @@ bun run hygiene:check-bash-retirement-inventory
 The expected retained surface is the explicit repo-wide allowlist: setup and
 bootstrap scripts, host-service wrappers, NixOS installer scripts,
 dev-cluster wrappers, launchd-bootstrap, and the Kiro loop wrapper. Any new
-non-Lean `.sh` outside the allowlist is bash-retirement drift.
+non-Lean shell-family file (`.sh`, `.bash`, `.zsh`, `.ksh`, or `.command`)
+outside the allowlist is bash-retirement drift.
 
 ### Bucket A — Should stay Shell (21 files)
 
