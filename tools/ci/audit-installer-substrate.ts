@@ -95,9 +95,10 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "admin:public_key", // B-0835 Bug 2b fix — scope-error recovery guidance
       "gh repo clone Lucent-Financial-Group/Zeta", // iter-5.4.1 cluster repo clone
       "register-${NODE_HOSTNAME}-", // iter-5.4.1 registration branch shape
-      // iter-5.4.1 YAML schema sentinels (catches the Copilot findings from #5352
-      // where spec.role was scalar instead of array, spec.maintainer was at wrong
-      // path, spec.storage was a sibling instead of under hardware block).
+      // iter-5.4.1 YAML schema sentinels. Each catches a specific Copilot
+      // finding on PR #5352: spec.role was scalar (should be array),
+      // spec.maintainer was at flat path (should nest under spec.registration),
+      // spec.storage was a sibling of hardware (should nest under spec.hardware).
       "apiVersion: zeta.lucent-financial-group.com/v1", // ClusterNode CRD apiVersion
       "kind: ClusterNode", // CRD kind
       "  roles:", // spec.roles is ARRAY (NOT scalar spec.role) per B-0813 schema
