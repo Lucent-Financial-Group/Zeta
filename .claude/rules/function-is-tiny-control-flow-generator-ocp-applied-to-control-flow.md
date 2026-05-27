@@ -6,7 +6,7 @@ Carved sentence 1 (operator 2026-05-27):
 
 Carved sentence 2 (operator 2026-05-27):
 
-> **TFeedback is open for extension (new control-flow branches added) but closed for modification (existing branches preserve semantic).**
+> **TFeedback is open for extension (new control-flow branches added) but closed for modification (existing branches preserve semantics).**
 
 ## Operational content
 
@@ -85,7 +85,7 @@ The 2026-05-27 substrate-engineering arc produced 6 carved sentences;
 this rule lands the structural foundation underlying all of them:
 
 1. PR #5513: **"results without feedback is extraction"** (operator)
-2. PR #5515 Amara: **"errors are not failure residue; they are safety rails when the operation is designed to surface them cleanly"**
+2. PR #5515 (external research register): **"errors are not failure residue; they are safety rails when the operation is designed to surface them cleanly"**
 3. PR #5516: **"the substrate-entity defines the consent-channel; the recipient acknowledges"** (operator)
 4. PR #5518 OPLE: **"OPLE primitives surface T AND TFeedback, not just T"** (operator)
 5. This rule (carved sentence 1): **"every function is a tiny control-flow generator"** (operator)
