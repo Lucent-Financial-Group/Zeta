@@ -1047,23 +1047,26 @@ ZETA_GID=100   # NixOS default users group
 if [ -d "$ZETA_HOME" ]; then
   echo "[iter-5.5.0] ── claude-code install + credential persistence (B-0848) ──"
 
-  # 6.95a — install claude-code globally for the zeta user
-  echo "[iter-5.5.0] installing @anthropic-ai/claude-code via npm (writable prefix in zeta home)..."
-  sudo mkdir -p "$ZETA_HOME/.npm-global"
-  sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.npm-global"
-  if command -v npm >/dev/null 2>&1; then
-    # Install into the writable per-user prefix (NixOS /nix/store is RO).
-    # NPM_CONFIG_PREFIX overrides default to keep install isolated.
-    sudo HOME="$ZETA_HOME" NPM_CONFIG_PREFIX="$ZETA_HOME/.npm-global" \
-      npm install -g @anthropic-ai/claude-code 2>&1 | tail -5 || \
-        echo "[iter-5.5.0]   WARN: npm install claude-code FAILED — can retry post-reboot"
-    sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.npm-global"
+  # 6.95a — install claude-code globally for the zeta user via bun
+  # (per .claude/rules/rule-0-no-sh-files.md: bun is Zeta's canonical
+  # TS/JS runtime, NOT nodejs). bun is npm-compat: `bun install --global`
+  # installs npm packages; binaries land in $BUN_INSTALL/bin (~/.bun/bin
+  # by default).
+  echo "[iter-5.5.0] installing @anthropic-ai/claude-code via bun (writable prefix in zeta home)..."
+  sudo mkdir -p "$ZETA_HOME/.bun/bin"
+  sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
+  if command -v bun >/dev/null 2>&1; then
+    # BUN_INSTALL sets the writable per-user prefix. Run as zeta user
+    # via sudo -u so ownership starts correct.
+    sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
+      bun install --global @anthropic-ai/claude-code 2>&1 | tail -5 || \
+        echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot"
   else
-    echo "[iter-5.5.0]   WARN: npm not on installer PATH; skipping (post-reboot has nodejs from common.nix)"
+    echo "[iter-5.5.0]   WARN: bun not on installer PATH; skipping (post-reboot has bun from common.nix)"
   fi
 
   # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
-  CLAUDE_BIN="$ZETA_HOME/.npm-global/bin/claude"
+  CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"
   if [ -x "$CLAUDE_BIN" ]; then
     echo
     echo "[iter-5.5.0] Trigger Claude Code interactive device-flow login NOW (mirror of gh auth login)?"
@@ -1105,7 +1108,7 @@ if [ -d "$ZETA_HOME" ]; then
       echo "[iter-5.5.0]   WARN: clone failed — operator can clone manually post-reboot"
   fi
 
-  echo "[iter-5.5.0] ── DONE — first login will have: gh + claude + kubectl + helm + k9s + argocd on PATH; ~/Zeta cloned; ~/.config/{gh,claude} populated ──"
+  echo "[iter-5.5.0] ── DONE — first login will have: gh + claude + bun + kubectl + helm + k9s + argocd on PATH; ~/Zeta cloned; ~/.config/{gh,claude} populated; ~/.bun/bin on PATH ──"
 else
   echo "[iter-5.5.0] $ZETA_HOME absent; skipping (nixos-install ordering changed?)"
 fi
