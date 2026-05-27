@@ -22,9 +22,9 @@ Per operator 2026-05-26 (Aaron-forwarded Kestrel-v2 ferry, preserved via PR #535
 > filters for the remote code discriminators?"
 
 The framework needs a trust-layer discriminator for remote code (per
-the NCI-as-cyberattack-prevention substrate from Lior-website / PR
-#5342, which named "speech is literally remote code execution on
-another node's memory substrate"). Current substrate has the bloom-filter mental
+the NCI-as-cyberattack-prevention substrate from Lior-website / PR-5342,
+which named "speech is literally remote code execution on another node's
+memory substrate"). Current substrate has the bloom-filter mental
 model (`B-0822`-class worry-as-opposite-bloom-filter) + the
 trust-then-verify discipline but doesn't yet have a designed multi-
 filter discriminator for the trust layer.
