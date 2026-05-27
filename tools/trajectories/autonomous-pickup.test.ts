@@ -149,6 +149,30 @@ describe("selectNextTrajectory", () => {
     expect(selection.selected?.slug).toBe("typescript-bun-migration");
     expect(selection.blocked[0]?.reason).toBe("action backlog refs already closed: B-0280");
   });
+
+  test("skips closed child candidates before selecting the prompt target", () => {
+    const selection = selectNextTrajectory(
+      [
+        packet({
+          slug: "autonomous-backlog-pickup",
+          title: "mixed child candidates",
+          nextAction: "Create the next viable child packet",
+          childCandidates: [
+            "PR-publication executor completion, grounded in B-0280",
+            "Queue-health continuation, grounded in B-0281",
+          ],
+          actionBacklogRefs: ["B-0280", "B-0281"],
+          closedActionBacklogRefs: ["B-0280"],
+        }),
+      ],
+      [],
+    );
+
+    expect(selection.status).toBe("selected");
+    expect(selection.action).toBe("create-child-packet");
+    expect(selection.executionPrompt).toContain("First child candidate: Queue-health continuation, grounded in B-0281");
+    expect(selection.executionPrompt).not.toContain("First child candidate: PR-publication executor completion");
+  });
 });
 
 describe("readTrajectoryPackets", () => {
@@ -216,6 +240,38 @@ describe("readTrajectoryPackets", () => {
       expect(packets).toHaveLength(1);
       expect(packets[0]?.actionBacklogRefs).toEqual(["B-0280"]);
       expect(packets[0]?.closedActionBacklogRefs).toEqual(["B-0280"]);
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("treats superseded backlog rows as resolved", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-trajectory-pickup-"));
+    try {
+      const packetDir = join(repoRoot, "docs", "trajectories", "autonomous-backlog-pickup");
+      const backlogDir = join(repoRoot, "docs", "backlog", "P0");
+      mkdirSync(packetDir, { recursive: true });
+      mkdirSync(backlogDir, { recursive: true });
+      writeFileSync(
+        join(packetDir, "RESUME.md"),
+        [
+          "# Autonomous backlog pickup",
+          "",
+          "Status: active child packet",
+          "Current blocker: none",
+          "Next concrete action: continue the superseded lane for B-0282.",
+        ].join("\n"),
+      );
+      writeFileSync(
+        join(backlogDir, "B-0282-superseded-row.md"),
+        ["---", "id: B-0282", "status: superseded-by-B-0283", "---", "", "# B-0282"].join("\n"),
+      );
+
+      const packets = readTrajectoryPackets(repoRoot);
+
+      expect(packets).toHaveLength(1);
+      expect(packets[0]?.actionBacklogRefs).toEqual(["B-0282"]);
+      expect(packets[0]?.closedActionBacklogRefs).toEqual(["B-0282"]);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
