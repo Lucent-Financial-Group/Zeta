@@ -47,7 +47,7 @@
 
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { resolve } from "node:path";
 
 const DOCKERFILE_PATH = "tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile";
 const IMAGE_TAG = "zeta-nixos-install-sh-test:local";
