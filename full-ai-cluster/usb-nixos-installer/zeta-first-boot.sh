@@ -109,10 +109,25 @@ else
   echo
   echo "[2/3] No ethernet internet detected. Launching wifi setup (nmtui)."
   echo "      After connecting, quit nmtui to continue install."
+  echo "      Esc out without connecting → nmtui re-launches to refresh scan."
   echo
   read -n 1 -s -t 5 -p "  Press any key to launch nmtui (or wait 5s) ..." || true
   echo
   echo
+  # B-0832 nmtui auto-relaunch-on-no-internet loop (operator 2026-05-26):
+  #
+  # Old behavior: launch nmtui once; if no internet on exit → drop_to_shell.
+  # That broke the install flow when operator hit Esc to refresh the wifi
+  # scan (empirical 2026-05-26 1st USB physical-test session — see B-0832).
+  #
+  # New behavior: loop nmtui until either (a) has_internet succeeds OR
+  # (b) operator explicitly requests shell-drop via 's' keystroke. Esc
+  # out of nmtui without connecting just re-launches nmtui (refresh-
+  # friendly UX — operator can Esc + re-scan as needed).
+  #
+  # Per operator 2026-05-26: "i want to be able to refresh the network
+  # withing breaking the script". This loop is the substrate-honest fix.
+  #
   # nmtui returns 0 on quit regardless of whether connection succeeded.
   # Absolute path: defense-in-depth alongside the systemd unit's
   # environment.PATH override (set in configuration.nix on
@@ -120,18 +135,40 @@ else
   # Both defenses together fix B-0754 iteration-1 'nmtui: command not
   # found' (nmtui IS installed in the ISO via networkmanager in
   # systemPackages; the issue was PATH inheritance into the unit).
-  if ! /run/current-system/sw/bin/nmtui; then
-    echo "[zeta-first-boot] nmtui failed."
-    drop_to_shell
-  fi
-  # Give NetworkManager a moment to actually establish + DHCP
-  sleep 3
-  if ! has_internet; then
-    echo "[zeta-first-boot] No internet after nmtui. Check connection and"
-    echo "                  re-run zeta-install $HOST when network is up."
-    drop_to_shell
-  fi
-  echo "  wifi ok"
+  NMTUI_ATTEMPTS=0
+  while true; do
+    NMTUI_ATTEMPTS=$((NMTUI_ATTEMPTS + 1))
+    if ! /run/current-system/sw/bin/nmtui; then
+      echo "[zeta-first-boot] nmtui failed to launch (attempt ${NMTUI_ATTEMPTS})."
+      drop_to_shell
+    fi
+    # Give NetworkManager a moment to actually establish + DHCP
+    sleep 3
+    if has_internet; then
+      echo "  wifi ok (after ${NMTUI_ATTEMPTS} nmtui session(s))"
+      break
+    fi
+    # No internet yet — give operator the choice to retry or escape
+    echo
+    echo "[zeta-first-boot] No internet after nmtui session ${NMTUI_ATTEMPTS}."
+    echo "                  Press 's' within 10s to drop to shell, OR"
+    echo "                  press any other key (or wait) to re-launch nmtui"
+    echo "                  to refresh the wifi scan."
+    echo
+    CHOICE=""
+    read -n 1 -s -t 10 -p "  > " CHOICE || true
+    echo
+    case "$CHOICE" in
+      s|S)
+        echo "[zeta-first-boot] Dropping to shell at operator request."
+        drop_to_shell
+        ;;
+      *)
+        echo "[zeta-first-boot] Re-launching nmtui for refresh ..."
+        echo
+        ;;
+    esac
+  done
 fi
 
 echo
