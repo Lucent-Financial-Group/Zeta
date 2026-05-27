@@ -307,7 +307,9 @@ export function renderReport(report: InventoryReport): string {
   if (hasAllowlistIntegrityDrift(report.allowlistIntegrity)) {
     lines.push("## Retained shell allowlist integrity errors");
     lines.push("");
-    lines.push("The retained shell allowlist must be unique and sorted before repo shell drift is classified.");
+    lines.push(
+      "The retained shell allowlist must be unique, sorted, fully categorized, and free of stale category metadata before repo shell drift is classified.",
+    );
     lines.push("");
     if (report.allowlistIntegrity.duplicateEntries.length > 0) {
       lines.push("### Duplicate entries");

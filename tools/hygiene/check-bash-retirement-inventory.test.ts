@@ -183,6 +183,7 @@ describe("renderReport", () => {
     const rendered = renderReport(buildInventoryReport(rest, rest));
 
     expect(rendered).toContain("## Retained shell allowlist integrity errors");
+    expect(rendered).toContain("free of stale category metadata");
     expect(rendered).toContain("### Stale category entries");
     expect(rendered).toContain(stale);
     expect(rendered).not.toContain("## Unexpected non-Lean shell files");
