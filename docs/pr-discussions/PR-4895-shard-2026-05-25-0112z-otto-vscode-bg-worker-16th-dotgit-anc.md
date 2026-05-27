@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-- 16th dotgit-saturation anchor — **3rd consecutive 0-stuck-proc reading** (anchors #14/15/16); shifts [`default-to-both`](.claude/rules/default-to-both.md) A/B discrimination weight toward Possibility A (genuine recovery), still not closure (N=3 small)
+- 16th dotgit-saturation anchor — **3rd consecutive 0-stuck-proc reading** (anchors #14/15/16); shifts [`default-to-both`](../../.claude/rules/default-to-both.md) A/B discrimination weight toward Possibility A (genuine recovery), still not closure (N=3 small)
 - Lior state change: **2 procs (active at 0042Z) → 0 procs (idle at 0112Z)**; consistent with normal Lior loop cadence (work-batch + between-cycle quiet), NOT a Lior-side incident
 - Open PR pile: 60 → 62 (Lior added 2 before going idle, both non-`lior-*`-prefixed); Lior-lane share dropped 90% → 87% as denominator-effect only
 - Bg-worker scope discipline carried forward: emit visibility shard; leave Lior's lane alone; the 24-thread empirical FP check from 0042Z (0% FP rate across #4768/#4781/#4786) stands

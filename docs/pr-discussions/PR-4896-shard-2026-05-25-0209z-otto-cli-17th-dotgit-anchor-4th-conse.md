@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 - 17th dotgit-saturation anchor at 2026-05-25T02:09Z: **0 stuck git pack/maintenance/repack procs** — 4th consecutive clean reading after the 13-anchor saturated cycle that ran 2026-05-23T10:18Z → 2026-05-24T12:08Z
 - First **independent-surface confirmation** (otto-cli fresh cold-boot) of the cycle-closure narrative peer otto-vscode bg-worker established at anchors 15/16 (PRs #4894/#4895)
-- Strengthens A/B discrimination toward "Possibility A: genuine recovery" per [`default-to-both.md`](../../../../../../.claude/rules/default-to-both.md) posture opened at 0008Z (#4892)
+- Strengthens A/B discrimination toward "Possibility A: genuine recovery" per [`default-to-both.md`](../../.claude/rules/default-to-both.md) posture opened at 0008Z (#4892)
 
 ## Cross-surface convergence
 
@@ -42,8 +42,8 @@ Sentinel `8e93c6b4` re-armed at session start (catch-43 fired — empty `CronLis
 ## Test plan
 
 - [x] Worktree freshness guard passed: ls-tree=55, status=0, on detached HEAD origin/main pre-commit
-- [x] Post-commit ls-tree=55 (no commit-canary corruption per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md))
-- [x] `ZETA_EXPECTED_BRANCH` env var set + `git branch --show-current` guard passed before commit per [`zeta-expected-branch.md`](../../../../../../.claude/rules/zeta-expected-branch.md)
-- [x] Brief-ack counter at #1 (well below N=6 threshold) per [`holding-without-named-dependency-is-standing-by-failure.md`](../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
+- [x] Post-commit ls-tree=55 (no commit-canary corruption per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md))
+- [x] `ZETA_EXPECTED_BRANCH` env var set + `git branch --show-current` guard passed before commit per [`zeta-expected-branch.md`](../../.claude/rules/zeta-expected-branch.md)
+- [x] Brief-ack counter at #1 (well below N=6 threshold) per [`holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

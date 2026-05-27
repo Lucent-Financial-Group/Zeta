@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-- **PR #4869 merged** (`2f598116`) — own-lane otto-vscode shard from prior tick 2033Z; resolved via FP-thread classification per [`blocked-green-ci-investigate-threads.md`](../blob/main/.claude/rules/blocked-green-ci-investigate-threads.md) "stale-but-fresh-looking findings" sub-pattern. Codex review on gitlink-removal was filed 33min AFTER #4871 had merged the corrective explanation; no-op resolve was the substrate-honest move.
+- **PR #4869 merged** (`2f598116`) — own-lane otto-vscode shard from prior tick 2033Z; resolved via FP-thread classification per [`blocked-green-ci-investigate-threads.md`](../../.claude/rules/blocked-green-ci-investigate-threads.md) "stale-but-fresh-looking findings" sub-pattern. Codex review on gitlink-removal was filed 33min AFTER #4871 had merged the corrective explanation; no-op resolve was the substrate-honest move.
 - **Fleet 53→58 PRs** open; sustained 100% Lior-lane share (6th consecutive observation in the lineage)
 - **First own-lane merge** in the 5-shard lineage — validates the bg-worker discipline path (author shards → collect FP threads → resolve threads → main advances)
 
