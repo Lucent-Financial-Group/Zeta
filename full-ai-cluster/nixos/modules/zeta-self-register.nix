@@ -36,25 +36,25 @@ in
 
     repoRoot = lib.mkOption {
       type = lib.types.str;
-      default = "/home/zeta/Zeta";
+      default = "${cfg.home}/Zeta";
       description = "Path to the checked-out Zeta repository on the installed node.";
     };
 
     scriptPath = lib.mkOption {
       type = lib.types.str;
-      default = "/home/zeta/Zeta/tools/installer/zeta-self-register.ts";
+      default = "${cfg.repoRoot}/tools/installer/zeta-self-register.ts";
       description = "Bun TypeScript entrypoint for composing self-registration intent.";
     };
 
     markerPath = lib.mkOption {
       type = lib.types.str;
-      default = "/home/zeta/.config/zeta/self-registered.marker";
+      default = "${cfg.home}/.config/zeta/self-registered.marker";
       description = "Fast-path local marker written after registration intent exists.";
     };
 
     intentDir = lib.mkOption {
       type = lib.types.str;
-      default = "/home/zeta/.config/zeta/self-registration-intent";
+      default = "${cfg.home}/.config/zeta/self-registration-intent";
       description = "Directory where the service writes registration intent for the local agent steward.";
     };
   };

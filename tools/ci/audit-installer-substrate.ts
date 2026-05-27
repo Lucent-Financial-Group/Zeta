@@ -140,6 +140,10 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "ConditionFirstBoot", // installed-OS first-boot gate
       "network-online.target", // waits for network before registration intent
       "zeta-creds-restore.service", // ordered after restored creds when that service exists
+      'default = "${cfg.home}/Zeta";', // repoRoot derives from home override
+      'default = "${cfg.repoRoot}/tools/installer/zeta-self-register.ts";', // scriptPath derives from repoRoot override
+      'default = "${cfg.home}/.config/zeta/self-registered.marker";', // markerPath derives from home override
+      'default = "${cfg.home}/.config/zeta/self-registration-intent";', // intentDir derives from home override
       "tools/installer/zeta-self-register.ts", // delegates implementation to B-0855.2
       "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
       "ZETA_SELF_REGISTER_INTENT_DIR", // intent handoff dir exported to implementation
