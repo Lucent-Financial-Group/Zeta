@@ -80,12 +80,13 @@ in
         WorkingDirectory = cfg.repoRoot;
         Environment = [
           "HOME=${cfg.home}"
-          "PATH=${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+          "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+          "BUN_INSTALL=${cfg.home}/.bun"
           "ZETA_SELF_REGISTER_MARKER=${cfg.markerPath}"
           "ZETA_SELF_REGISTER_INTENT_DIR=${cfg.intentDir}"
           "ZETA_SELF_REGISTER_REPO=${cfg.repoRoot}"
         ];
-        ExecStart = "${cfg.home}/.bun/bin/bun ${cfg.scriptPath}";
+        ExecStart = "${cfg.home}/.local/share/mise/shims/bun ${cfg.scriptPath}";
       };
     };
   };

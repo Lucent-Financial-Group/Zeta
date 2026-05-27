@@ -145,6 +145,8 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       'default = "${cfg.home}/.config/zeta/self-registered.marker";', // markerPath derives from home override
       'default = "${cfg.home}/.config/zeta/self-registration-intent";', // intentDir derives from home override
       "tools/installer/zeta-self-register.ts", // delegates implementation to B-0855.2
+      ".local/share/mise/shims/bun", // runtime follows the repo-wide mise-managed Bun substrate
+      "BUN_INSTALL", // keeps Bun global CLI state anchored under cfg.home
       "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
       "ZETA_SELF_REGISTER_INTENT_DIR", // intent handoff dir exported to implementation
     ],
