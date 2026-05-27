@@ -1,7 +1,7 @@
-import type {
-  AgenticEventEnvelope,
-  WorkerFailureEvidence,
-  WorkerFailureEvidenceValue,
+import {
+  WorkerFailureEvidenceKey,
+  type AgenticEventEnvelope,
+  type WorkerFailureEvidence,
 } from "../../domain/src/index.ts";
 import {
   OutboxPublishOutcomeStatus,
@@ -50,6 +50,8 @@ export type WorkerPortFailure = {
 };
 
 export type WorkerPortFailureEvidence = WorkerFailureEvidence;
+
+const WorkerPortFailureEvidenceKeys: ReadonlySet<string> = new Set(Object.values(WorkerFailureEvidenceKey));
 
 export type WorkerCycleResult = {
   status: WorkerCycleStatus;
@@ -250,8 +252,9 @@ function isWorkerPortFailureEvidence(value: unknown): value is WorkerPortFailure
     return false;
   }
 
-  return Object.values(value).every(
-    (entry): entry is WorkerFailureEvidenceValue =>
-      typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean" || entry === null,
+  return Object.entries(value).every(
+    ([key, entry]) =>
+      WorkerPortFailureEvidenceKeys.has(key) &&
+      (typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean" || entry === null),
   );
 }

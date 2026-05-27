@@ -281,6 +281,32 @@ describe("organization worker host", () => {
       },
     ]);
   });
+
+  test("drops structured failure evidence when it contains non-domain keys", async () => {
+    const workerHost = createOrganizationWorkerHost({
+      outboxPublisher: createFailingOutboxPublisher("outbox claim stale", {
+        ...createOutboxPublishFailureEvidence({
+          claimId: "outbox-claim-stale",
+          outboxEventId: "outbox-001",
+        }),
+        unexpected: "not a worker evidence key",
+      } as WorkerFailureEvidence),
+      inboundEventSource: createRecordingInboundEventSource([]),
+      eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      outboxBatchSize: 25,
+      inboundBatchSize: 10,
+    });
+
+    const result = await workerHost.runOnce();
+
+    equal(result.status, WorkerCycleStatus.Degraded);
+    deepEqual(result.failures, [
+      {
+        lane: WorkerLane.Outbox,
+        message: "outbox claim stale",
+      },
+    ]);
+  });
 });
 
 type RecordingOutboxPublisher = OutboxPublisher & {

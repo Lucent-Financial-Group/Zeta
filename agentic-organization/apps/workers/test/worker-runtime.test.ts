@@ -131,14 +131,14 @@ describe("worker runtime composition host", () => {
       "agentic.worker.failure_count": 1,
       "agentic.worker.failure.first_lane": "outbox",
       "agentic.worker.failure.first_message": "outbox claim stale",
-      "agentic.worker.failure.stage": WorkerRuntimeFailureStage.OrganizationWorker,
-      "agentic.worker.failure.claim_id": "outbox-claim-stale",
-      "agentic.worker.failure.command_id": "cmd-001",
-      "agentic.worker.failure.current_claim_id": "outbox-claim-001",
-      "agentic.worker.failure.event_id": "evt-001",
-      "agentic.worker.failure.outbox_event_id": "outbox-001",
-      "agentic.worker.failure.published_at": "2026-05-25T20:59:00.000Z",
-      "agentic.worker.failure.trace_id": "trace-001",
+      "agentic.worker.failure.first_stage": WorkerRuntimeFailureStage.OrganizationWorker,
+      "agentic.worker.failure.first_claim_id": "outbox-claim-stale",
+      "agentic.worker.failure.first_command_id": "cmd-001",
+      "agentic.worker.failure.first_current_claim_id": "outbox-claim-001",
+      "agentic.worker.failure.first_event_id": "evt-001",
+      "agentic.worker.failure.first_outbox_event_id": "outbox-001",
+      "agentic.worker.failure.first_published_at": "2026-05-25T20:59:00.000Z",
+      "agentic.worker.failure.first_trace_id": "trace-001",
     });
   });
 
