@@ -600,7 +600,7 @@ The transcript was forwarded by Aaron in autonomous-loop tick session
 > 32:29
 > Stay tuned for more computational neuroscience and machine learning topics coming up.
 > 32:43
-> (Subtitles by Crimson Ghoul). <http://youtube.com/watch?v=_bqa_I5hNAo&t=180s>
+> (Subtitles by Crimson Ghoul). <https://www.youtube.com/watch?v=_bqa_I5hNAo&t=180s>
 
 ## Substrate-honest framing
 
