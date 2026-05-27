@@ -199,15 +199,23 @@ async function main(): Promise<number> {
   if (parsed.persona) persistArgs.push("--persona", parsed.persona);
   for (const a of bakeArgs) persistArgs.push("--bake-cred", a);
   if (parsed.dryRun) {
-    // SECURITY: build a redacted display variant that omits the env-var
-    // name (CodeQL clear-text-logging finding — passphraseEnv is tainted
-    // via env-access flow; do NOT echo its literal contents). Sibling
-    // discipline to zeta-creds-persist.ts + zeta-creds-restore.ts P0 fix.
+    // SECURITY: build display string from KNOWN-SAFE pieces only.
+    // Earlier map-based redaction kept persistArgs (tainted) in the
+    // dataflow; CodeQL doesn't recognize runtime ternary as breaking
+    // taint, so it kept flagging. Construct from primitives instead;
+    // NEVER reference parsed.passphraseEnv or parsed.passphraseFile in
+    // the logged string. Sibling discipline to zeta-creds-persist.ts
+    // + zeta-creds-restore.ts P0 fix on PR #5422.
     console.log(`\n=== DRY RUN — would invoke: ===`);
-    const displayArgs = persistArgs.map((v, i) =>
-      i > 0 && persistArgs[i - 1] === "--passphrase-env" ? "<REDACTED>" : v
-    );
-    console.log(`  bun ${displayArgs.join(" ")}`);
+    let displayCmd = `  bun tools/installer/zeta-creds-persist.ts --usb-uuid <set> --output <set>`;
+    if (parsed.passphraseFile) displayCmd += ` --passphrase-file <REDACTED>`;
+    if (parsed.passphraseEnv) displayCmd += ` --passphrase-env <REDACTED>`;
+    if (parsed.persona) displayCmd += ` --persona <set>`;
+    for (const a of bakeArgs) {
+      const id = a.split("=", 1)[0];
+      displayCmd += ` --bake-cred ${id}=<REDACTED>`;
+    }
+    console.log(displayCmd);
     return 0;
   }
   console.log(`\n=== Invoking zeta-creds-persist... ===`);
