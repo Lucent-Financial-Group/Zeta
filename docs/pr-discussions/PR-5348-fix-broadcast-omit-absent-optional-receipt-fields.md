@@ -16,7 +16,17 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-## Summary\n- restores the post-merge B-0213 TypeScript fix that was stranded on the original claim branch after PR #5344 merged at stale head 802bd5935\n- omits optional receipt properties instead of setting them to undefined under exactOptionalPropertyTypes\n- releases the temporary claim in-branch before review\n\n## Checks\n- bun test tools/broadcast-local/schema.test.ts\n- bun --bun tsc --noEmit -p tsconfig.json\n- git diff --check origin/main...HEAD
+## Summary
+
+- restores the post-merge B-0213 TypeScript fix that was stranded on the original claim branch after PR #5344 merged at stale head 802bd5935
+- omits optional receipt properties instead of setting them to undefined under exactOptionalPropertyTypes
+- releases the temporary claim in-branch before review
+
+## Checks
+
+- bun test tools/broadcast-local/schema.test.ts
+- bun --bun tsc --noEmit -p tsconfig.json
+- git diff --check origin/main...HEAD
 
 ## Reviews
 
