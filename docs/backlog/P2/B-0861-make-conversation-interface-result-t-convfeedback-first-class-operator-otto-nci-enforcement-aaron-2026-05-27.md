@@ -194,8 +194,8 @@ mechanization surface needs the substrate.
 Operator 2026-05-27 conversation thread:
 
 - PR #5505 landed force-push-with-lease authorization policy with
-  Layer 1-3 substrate (assumption-validation + exceptions-as-signals
-  + Result<T, TFeedback> wrapping)
+  Layer 1-3 substrate (assumption-validation plus exceptions-as-signals
+  plus Result<T, TFeedback> wrapping)
 - PR #5507 landed Layer 4 (TFeedback-as-sum-type with exhaustive-match
   enforcement)
 - PR #5511 (in-flight) lands monad-propagation-pattern-cross-language-
