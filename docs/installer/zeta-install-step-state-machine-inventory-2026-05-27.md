@@ -7,7 +7,7 @@ Composes with: B-0852 + B-0853 + B-0855 + B-0856 (sibling install-flow substrate
 
 ## Purpose
 
-This inventory documents the EXISTING imperative bash state-machine in `zeta-install.sh` to enable the B-0854 trajectory toward `ace install zeta` declarative manifest form. Per Aaron 2026-05-27: *"not zeta-install rename i mean using ace package manager that is the start like ../scratch and ../SQLSharp"* — the migration target is declarative; this Phase 0 doc names what each step DOES so the declarative manifest can express the same surface.
+This inventory documents the EXISTING imperative bash state-machine in `zeta-install.sh` to enable the B-0854 trajectory toward `ace install zeta` declarative manifest form. Per the human maintainer 2026-05-27 framing in B-0854 row body — the migration target is declarative; this Phase 0 doc names what each step DOES so the declarative manifest can express the same surface.
 
 ## Top-level entry
 
@@ -25,7 +25,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 
 | Field | Value |
 |---|---|
-| Inputs | None (probes `lsblk -d -n -o NAME,SIZE,MODEL,TRAN,ROTA`) |
+| Inputs | None (probes `lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN` then `awk`-filters to internal/non-removable; per-device size/model/serial gathered separately via `lsblk -d -n -o SIZE`/`MODEL`/`SERIAL`) |
 | Outputs | `ALL_DISKS[]` array of internal block devices (USB excluded) |
 | Side effects | None (read-only probe) |
 | Failure modes | Empty `ALL_DISKS[]` → hard exit (no installable disks) |
@@ -47,7 +47,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 |---|---|
 | Inputs | `BOOT_DISK`, `DATA_DISKS[]`, `ZETA_AUTO_CONFIRM` |
 | Outputs | (no return; mutates disks) |
-| Side effects | **DESTRUCTIVE**: `wipefs -af` + `sgdisk --zap-all` on every in-scope disk |
+| Side effects | **DESTRUCTIVE**: `sgdisk --zap-all` on every in-scope disk |
 | Failure modes | Permission denied (not root); device busy (mounted partition) |
 | Declarative equivalent | `ace.disks.wipe_strategy: full \| preserve_data`; operator-confirm gate |
 
@@ -55,11 +55,11 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 
 | Field | Value |
 |---|---|
-| Inputs | `BOOT_DISK`, `ROOT_SIZE` |
-| Outputs | `ESP_PART`, `ROOT_PART`, `LH1_PART` (partition device paths) |
-| Side effects | `parted` GPT layout: 1GiB ESP + `$ROOT_SIZE` ext4 root + rest longhorn1 |
-| Failure modes | Insufficient disk size; parted error |
-| Declarative equivalent | `ace.partitions: { esp: 1G, root: $ROOT_SIZE, longhorn1: rest }` |
+| Inputs | `BOOT_DISK`, `ROOT_SIZE`, `DATA_DISKS[]` |
+| Outputs | `ESP_PART`, `ROOT_PART`, `LH1_PART` (partition device paths); plus whole-disk longhorn partitions on each `DATA_DISKS[i]` |
+| Side effects | **`sgdisk`** GPT layout on BOOT_DISK: 1GiB ESP (type ef00) + `$ROOT_SIZE` ext4 root (type 8300) + rest longhorn1 (type 8300). On each DATA disk: single whole-disk partition `longhorn<i+2>` (type 8300). `partprobe` after to refresh kernel partition table. |
+| Failure modes | Insufficient disk size; sgdisk error; partprobe failure (with manual-recovery suggestion in bail message) |
+| Declarative equivalent | `ace.partitions.boot: { esp: 1G, root: $ROOT_SIZE, longhorn1: rest }; ace.partitions.data: longhornN` |
 
 ### Step 5 — Format + mount (lines 205-237)
 
@@ -77,7 +77,7 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 |---|---|
 | Inputs | `HOST` (must be non-empty by this step), `REPO_URL` |
 | Outputs | Zeta repo at `/mnt/etc/zeta`; hardware-configuration.nix generated |
-| Side effects | `git clone $REPO_URL /mnt/etc/zeta`; `nixos-generate-config --root /mnt --no-filesystems` |
+| Side effects | `git clone $REPO_URL /mnt/etc/zeta`; `nixos-generate-config --root /mnt --force` (NixOS HW probe; `--force` overwrites existing config if present) |
 | Failure modes | Network (clone fails); empty `HOST` (hard exit with usage message) |
 | Declarative equivalent | `ace.source: github:Lucent-Financial-Group/Zeta@main`; auto-clone via Ace |
 
@@ -86,10 +86,10 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Field | Value |
 |---|---|
 | Inputs | Mounted USB ESP (scanned for `*.pub` matching SSH pubkey format) |
-| Outputs | `PUBKEY_FILE` path (operator's pubkey) OR `MAGIC_NUMBER` (8-digit hex; per B-0789) |
-| Side effects | Copies pubkey to `/mnt/etc/zeta/operator-authorized-keys`; (if absent) generates magic-number fallback |
-| Failure modes | None (graceful degrade if no pubkey found; magic-number fallback always works) |
-| Declarative equivalent | `ace.ssh.operator_pubkey: { source: esp \| generate \| inject_at_flash, paths: [...] }` |
+| Outputs | `PUBKEY_FILE` path (operator's pubkey); `INJECT_OK=1` flag if injection succeeded |
+| Side effects | Copies pubkey to `/mnt/etc/zeta/operator-authorized-keys` if found; on failure logs `lsblk` topology for diagnostic |
+| Failure modes | None (graceful degrade if no pubkey found — `INJECT_OK=0`; iter-4 v1 manual config-edit fallback path documented in Step 7 banner) |
+| Declarative equivalent | `ace.ssh.operator_pubkey: { source: esp \| inject_at_flash \| manual_post_install, paths: [...] }` |
 
 ### Step 6.55 — iter-5.3 prompt for initial password (B-0792) (lines 372-440)
 
@@ -136,9 +136,9 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Field | Value |
 |---|---|
 | Inputs | `GH_AUTH_OK`, `HOST` (chosen hostname); composed YAML for `maintainers/<op>/cluster-nodes/<host>/node.yaml` |
-| Outputs | new git branch `register-node-<host>-<timestamp>`; commit; push; PR opened via `gh pr create` |
+| Outputs | new git branch `register-node-<host>-<timestamp>`; commit; push; PR opened via `gh pr create`; `SELF_REG_OK=1` flag on success |
 | Side effects | **Composes registration BEFORE reboot** (per B-0855 architectural critique — should fire LAST after install completes; currently fires here) |
-| Failure modes | No gh auth (graceful skip); PR creation refused; (per B-0855 catch) — registration orphaned if downstream install fails |
+| Failure modes | `GH_AUTH_OK != 1` triggers documented graceful-skip path (lines 731+); PR creation refused; (per B-0855 catch) — registration orphaned if downstream install fails |
 | Declarative equivalent (per B-0855) | `ace.cluster.self_register: { trigger: post_install_first_boot, idempotent: true, dedup: existing_pr_check }` — MOVED to systemd oneshot service per B-0855 |
 
 ### Step 6.95 — iter-5.5.0 claude-code install + credential persistence (B-0848 Phase 2) (lines 986-1095)
@@ -151,25 +151,25 @@ This inventory documents the EXISTING imperative bash state-machine in `zeta-ins
 | Failure modes | mise install network failure; claude login refused; tools/setup/install.sh invocation failure |
 | Declarative equivalent | `ace.runtimes: mise@.mise.toml`; `ace.cli_install: [claude, gemini, codex]`; `ace.user_repos: [Zeta]` |
 
-### Step 6.95+ (currently) Sign / cleanup / etc. (lines 1096-1340)
+### nixos-install (the actual build; ~line 1004)
 
 | Field | Value |
 |---|---|
-| Inputs | Various per substep |
-| Outputs | nixos-install invocation with `--option fallback true` (per PR #5410 P0 fix) |
-| Side effects | The actual NixOS build — `sudo nixos-install --impure --option fallback true --option connect-timeout 10 --option stalled-download-timeout 60 --option download-attempts 3 --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password` |
-| Failure modes | nixos-install failure (per Aaron 2026-05-27 USB boot test — the P0 anchor); cache.nixos.org timeouts (fallback handles) |
+| Inputs | `HOST`, `/mnt/etc/zeta/full-ai-cluster#<host>` flake target |
+| Outputs | NixOS installed to `/mnt`; bootloader configured |
+| Side effects | `sudo nixos-install --impure --option fallback true --option connect-timeout 10 --option stalled-download-timeout 60 --option download-attempts 3 --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password` |
+| Failure modes | nixos-install failure (per 2026-05-27 USB boot test empirical anchor; previously `--fallback` flag was wrong — fixed via `--option fallback true` in PR #5410); cache.nixos.org timeouts (fallback handles) |
 | Declarative equivalent | `ace.nixos_install: { flake: ".#$HOST", flags: { fallback: true, connect-timeout: 10, ... } }` |
 
-### Step 7 — Print initial credentials (iter-4 per B-0789) (lines 1341-1352)
+### Step 7 — Print initial credentials (iter-4 per B-0789) (~lines 1261-1336)
 
 | Field | Value |
 |---|---|
-| Inputs | All prior step outputs (`HOST`, `GH_AUTH_OK`, `MAGIC_NUMBER` if applicable, etc.) |
-| Outputs | Operator-facing console banner listing: user/password/SSH-from-Mac instructions/magic-number-fallback |
-| Side effects | None (just `echo`) |
+| Inputs | `GH_AUTH_OK`, `GH_KEY_COUNT`, `INJECT_OK`, `SELF_REG_OK`, presence of `/mnt/etc/zeta/initial-hashedpassword` |
+| Outputs | Operator-facing console banner listing: user/password/SSH-from-Mac instructions; iter-4 v1 manual-config-edit fallback path (when `INJECT_OK=0`); registration PR URL (when `SELF_REG_OK=1`) |
+| Side effects | None (just `echo` + log preservation via `tee` per B-0834) |
 | Failure modes | None |
-| Declarative equivalent | `ace.post_install.banner: { template: zeta_login_banner }` |
+| Declarative equivalent | `ace.post_install.banner: { template: zeta_login_banner, conditional_sections: [gh_auth, ssh_inject, self_register] }` |
 
 ## Cross-cutting concerns
 
