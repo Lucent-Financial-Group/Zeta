@@ -145,7 +145,9 @@ describe("persist → restore round-trip via tmpdir", () => {
     // Restore
     const restoreRoot = join(tmp, "restore-target");
     const blobRead = readFileSync(persistArgs.output);
-    const written = applyPlan(blobRead, UUID, PASS, null, restoreRoot);
+    const plan = planRestore(blobRead, UUID, PASS, null, restoreRoot);
+    if ("error" in plan) throw new Error(plan.error);
+    const written = applyPlan(plan);
     expect(written).toBe(1);
     // gh-cli writes to <root>/<homedir>/.config/gh/hosts.yml
     const ghPath = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!, restoreRoot)[0]!;
@@ -167,7 +169,9 @@ describe("persist → restore round-trip via tmpdir", () => {
     writeFileSync(persistArgs.output, blob);
 
     const restoreRoot = join(tmp, "restore-target-2");
-    const written = applyPlan(readFileSync(persistArgs.output), UUID, PASS, "otto", restoreRoot);
+    const plan = planRestore(readFileSync(persistArgs.output), UUID, PASS, "otto", restoreRoot);
+    if ("error" in plan) throw new Error(plan.error);
+    const written = applyPlan(plan);
     expect(written).toBe(1);
     const claudePath = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "claude")!, restoreRoot)[0]!;
     const restored = readFileSync(claudePath, "utf8");
