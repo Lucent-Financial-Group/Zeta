@@ -121,7 +121,7 @@ Allowlist from `zflash.ts`:
 
 #### KDF chain detail (mechanism + parameters)
 
-The 32-byte AES-256-GCM key is derived in two layers; full implementation at `tools/installer/zeta-creds-crypto.ts:80-125`.
+The 32-byte AES-256-GCM key is derived in two layers; full implementation in `tools/installer/zeta-creds-crypto.ts` (the `deriveKey` function + the `SCRYPT_*` + `KEY_LEN` + `SALT_LEN` + `HKDF_INFO` constants declared near the top of the file).
 
 **Layer 1 — scrypt** (memory-hard work-factor KDF):
 
@@ -129,9 +129,9 @@ The 32-byte AES-256-GCM key is derived in two layers; full implementation at `to
 stretched = scrypt(passphrase, salt, length=32, N=2^17, r=8, p=1, maxmem=256MB)
 ```
 
-scrypt does NOT increase the underlying entropy of the operator passphrase (a weak passphrase remains weak in information-theoretic terms). What scrypt provides is a tunable **work-factor cost** per guess: each candidate passphrase requires ~128MB of memory and ~1-2 seconds of CPU per derivation. This makes brute-force attacks memory-prohibitively expensive on GPU/ASIC (per the 2026-05-27 security-review HIGH finding: HKDF alone assumes high-entropy IKM, which user-typed passphrases violate; scrypt is the layer that makes the IKM cryptographically suitable for HKDF input).
+scrypt does NOT increase the underlying entropy of the operator passphrase (a weak passphrase remains weak in information-theoretic terms). What scrypt provides is a tunable **work-factor cost** per guess: with the parameters below, each candidate passphrase requires ~128MB of memory and (empirically per `zeta-creds-crypto.ts` Layer 1 source comments, on the maintainer's modern CPU at parameter-selection time) ~1-2 seconds of CPU per derivation. This makes brute-force attacks memory-prohibitively expensive on GPU/ASIC (per the 2026-05-27 security-review HIGH finding documented in the source: HKDF alone assumes high-entropy IKM, which user-typed passphrases violate; scrypt is the layer that makes the IKM cryptographically suitable for HKDF input).
 
-OWASP 2026 recommended parameters: `N=2^17`, `r=8`, `p=1`.
+Parameter selection: `N=2^17`, `r=8`, `p=1` — per [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#scrypt) recommended scrypt parameters (current at parameter-selection time 2026-05-27; bump procedure: visit the cheat sheet at next security-review cadence, update both the cheat-sheet-citation date here AND the `SCRYPT_N`/`SCRYPT_R`/`SCRYPT_P` constants in `zeta-creds-crypto.ts`). Per-machine operational cost will vary with CPU + memory bandwidth; the ~1-2s figure is anchored to the source-code comment's empirical timing context.
 
 **Layer 2 — HKDF-SHA256** (binds key to USB UUID):
 
