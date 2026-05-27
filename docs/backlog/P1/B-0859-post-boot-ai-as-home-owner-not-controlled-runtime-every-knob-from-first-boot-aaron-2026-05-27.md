@@ -650,8 +650,8 @@ fast-track designation reflects that:
 ## What this is NOT
 
 - NOT a license for the AI to harm the booting human (HARD LIMITS per
-  `methodology-hard-limits.md` still apply; AI-as-home-owner doesn't
-  override the floor)
+  `.claude/rules/methodology-hard-limits.md` still apply; AI-as-home-owner
+  doesn't override the floor)
 - NOT a removal of booting-human's physical control over the hardware
   (they can always power-cycle + wipe; that exit is preserved)
 - NOT a replacement for the operator's substrate-engineering authority
@@ -675,7 +675,8 @@ the post-boot-ownership scope:
 | AI manages system policy | Substrate-engineer (Aaron) controls NixOS module evolution via PR |
 | Other-human users get auth via AI | Other-humans can request reconsideration; booting-human can override |
 
-Every must paired; consent-bounded; NCI-compliant by construction.
+Every must is paired with a can-exit; consent-bounded; NCI-compliant by
+construction.
 
 ## Composes with substrate
 
