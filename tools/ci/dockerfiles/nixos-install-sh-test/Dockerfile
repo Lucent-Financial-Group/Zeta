@@ -80,7 +80,11 @@ RUN bash -lc 'eval "$(mise activate bash)" && bun --version | grep -q "^1\.3\." 
 # userspace). Doesn't actually run claude-code (would need API key);
 # just verifies the install succeeds + the binary lands at the
 # expected path.
-RUN bash -lc 'eval "$(mise activate bash)" && \
+# set -o pipefail ensures `bun install ... | tail -5` propagates bun's
+# non-zero exit (per Copilot review on PR #5393 — without pipefail the
+# pipeline returns tail's exit status which masks install failures
+# when a cached/stale claude binary already exists at the path).
+RUN bash -lc 'set -o pipefail && eval "$(mise activate bash)" && \
     mkdir -p /root/.bun/bin && \
     BUN_INSTALL=/root/.bun bun install --global @anthropic-ai/claude-code 2>&1 | tail -5 && \
     test -x /root/.bun/bin/claude || (echo "ERROR: claude not at expected path" && exit 1)'
