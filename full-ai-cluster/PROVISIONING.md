@@ -186,6 +186,84 @@ kubectl get nodes -o wide
 kubectl -n longhorn-system get nodes.longhorn.io worker-gpu-03 -o yaml | grep -A20 disks:
 ```
 
+## Cred-restore smoke test (B-0852 end-to-end verification)
+
+The B-0852 cred-persistence substrate (PRs #5635 + #5637 + #5638 +
+#5639 + #5640 + #5643 + #5644 + #5646) closes the operator pain
+point: enter your passphrase ONCE at install time; on every
+subsequent boot, your `gh` / `claude` / `gemini` / `codex` credentials
+auto-restore — no more re-entering them per reboot.
+
+To verify the full path works after a fresh USB install:
+
+### First-boot verification (during install)
+
+Look for these install log lines on tty1:
+
+```
+[B-0852.3b]   passphrase captured + held in non-exported shell variable
+[B-0852.3b]   (NOT in /proc/self/environ; inline-set for sudo only at 6.95;
+               shell var unset in ALL branches after Step 6.95 picker block)
+[iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (DEFAULT-ON per B-0852.3c) ──
+[iter-5.5.0]   ZETA_CREDS_PASSPHRASE_VAL unset from installer shell (post-picker block; fires in both branches)
+```
+
+If you see `SKIP 6.95-picker: <reason>` instead, the picker
+opted out — check the reason (env var / marker file / missing
+UUID / empty passphrase). Cred-restore won't activate.
+
+### Post-reboot verification (after install reboots into installed system)
+
+SSH into the node and run:
+
+```bash
+# 1. Restore service ran AND its ConditionPathExists passed
+#    (i.e., /boot/zeta-creds.enc exists)
+systemctl status zeta-creds-restore.service
+
+# Expected: "Active: active (exited)" with "main process exited, code=exited, status=0/SUCCESS"
+# If you see "ConditionPathExists=/boot/zeta-creds.enc was not met", the
+# blob never landed on the target ESP — check install log for picker WARN.
+
+# 2. The encrypted blob is on the ESP (post-reboot mount = /boot)
+ls -la /boot/zeta-creds.enc
+
+# Expected: ~few-KB binary file (size depends on how many creds were captured)
+
+# 3. The cred files are restored to their expected paths
+ls -la /home/zeta/.config/{gh,claude}/ 2>/dev/null
+ls -la /home/zeta/.local/share/ 2>/dev/null
+
+# Expected: populated config files; ownership zeta:users
+```
+
+### Second-reboot verification (no re-entry needed)
+
+After the installed system has rebooted once successfully:
+
+```bash
+# 1. systemd-ask-password should NOT prompt for cred-blob passphrase
+#    UNLESS passphraseMode=interactive AND the cred files are stale.
+#    Per common.nix default-on (PR #5640), interactive mode is the
+#    default; the prompt fires on tty1 once at boot then unblocks.
+
+# 2. Verify gh + claude still work (use any cred that was captured)
+sudo -u zeta gh auth status
+sudo -u zeta claude --version  # no login flow should fire
+
+# Expected: both return without prompting for credentials. If either
+# prompts, cred-restore did not populate that specific cred path.
+```
+
+### Troubleshooting
+
+| Symptom | Likely cause |
+|---|---|
+| `systemctl status zeta-creds-restore` shows "condition failed" | `/boot/zeta-creds.enc` doesn't exist; check picker ran during install (look for `[iter-5.5.0] ── 6.95-picker:` line in install log) |
+| `/boot/zeta-creds.enc` exists but restore-service fails with "scrypt decryption failed" | Passphrase entered at restore prompt ≠ passphrase entered at install time |
+| Creds appear after reboot but `gh` still prompts for login | Cred manifest didn't include `.config/gh`; check `tools/installer/zeta-creds-cli.ts` default-paths list |
+| Install warns `picker exited non-zero` | USB UUID changed (e.g., reflashed onto different USB); cred-blob is bound to USB UUID via scrypt → HKDF; reflash + re-enter passphrase to rebuild blob bound to new UUID |
+
 ## Disk failure recovery
 
 NVMe dies → Longhorn marks the data path Unavailable → the cluster's
