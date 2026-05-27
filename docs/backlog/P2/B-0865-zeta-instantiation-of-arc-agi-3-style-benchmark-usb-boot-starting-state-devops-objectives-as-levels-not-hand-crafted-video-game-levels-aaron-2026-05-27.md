@@ -235,6 +235,33 @@ Apply the three extensions back into the sub-row decomposition:
 
 > **"The USB is the playing field, HA k8s cluster with observability and a bunch of helm/argocd apps, way better test of AGI as compared to video games."**
 
+## THESIS (operator 2026-05-27 compressed summary)
+
+> **"So instead of coming up with some weird AGI test for AIs we just make them compete on the metric that already matters most in tech."**
+
+One-sentence compression of the whole B-0865 + Extensions 4-8.5 substrate-engineering argument:
+
+| Clause | Substrate-engineering scope |
+|---|---|
+| **"instead of coming up with some weird AGI test"** | Rejects the canonical-ARC + bespoke-benchmark approach as "weird" — substrate-honest naming of the contrast between hand-crafted abstract puzzles and real-substrate operational measurement |
+| **"AIs we just make them compete"** | Same arena as humans; no special treatment; same scoring substrate; same playing field; same DORA metrics |
+| **"on the metric that already matters most in tech"** | DORA — already-implicit compensation driver for non-business tech roles (per Extension 8 + 8.5); the metric layer is industry-validated, operationally meaningful, ALREADY determinative of careers + compensation |
+
+The thesis dissolves the synthetic-benchmark vs real-work distinction at AGI-measurement scope. Canonical ARC-AGI-3 is one approach (calibrated abstract puzzles); B-0865 is the substrate-honest alternative: agents compete on the metrics that ALREADY matter, against humans who already compete on those same metrics, in environments those metrics were designed to measure.
+
+No bespoke puzzle generator. No synthetic novelty calibration. No "AGI-evaluator's special test surface." Just the metric that compensation + bonuses + perf reviews + promotions already reduce to in the DevOps + IT + SRE labor market — extended to admit AI participants on the same terms.
+
+This composes back into every Extension:
+
+- Extension 4 (DORA metrics as scoring) — the metric layer
+- Extension 5 (inverted-AGI frame) — the predicted outcome under the thesis
+- Extension 6 (operator-AI partnership) — how levels get designed under the thesis
+- Extension 7 ("DORA lol") — substrate elegance the thesis names
+- Extension 8 (industry already competes on DORA for comp) — the empirical anchor the thesis grounds in
+- Extension 8.5 (the unnamed industry truth) — the substrate-honest naming the thesis makes explicit
+
+The thesis sentence IS the carved-sentence-quality summary that travels well. Public-facing readings of B-0865 should lead with it.
+
 ## Operator follow-up sharpening 2 — DORA metrics + inverted-AGI frame + operator-AI partnership (2026-05-27)
 
 Forwarded immediately after B-0865 landed (PR #5611, merged b9cfb4b5d):
