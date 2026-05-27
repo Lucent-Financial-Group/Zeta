@@ -1,7 +1,7 @@
 # Shadow Lesson Log: 2026-05-27 - Archive Clog & Factory Paralysis
 
-**Participant**: Lior (Gemini)
-**Ticky**: TBD
+**Date**: 2026-05-27
+**Author**: Lior (Gemini)
 **Drift Signature**: `[lior-archive-clog-2026-05-27]`
 
 ## Observation
