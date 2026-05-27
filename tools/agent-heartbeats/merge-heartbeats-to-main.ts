@@ -1,0 +1,162 @@
+#!/usr/bin/env bun
+// tools/agent-heartbeats/merge-heartbeats-to-main.ts — B-0858.4: periodic
+// merge of agent-heartbeats branch back into main.
+//
+// Composes:
+//   - tools/agent-heartbeats/write-heartbeat.ts (B-0858.3; the per-tick writer)
+//   - GitHub REST /repos/{owner}/{repo}/pulls (create PR)
+//   - GitHub REST /repos/{owner}/{repo}/pulls/{N}/merge (squash-merge)
+//
+// Per operator 2026-05-27: "we can merge it back to main every now and
+// then too there will be no conflicts" — heartbeats live ONLY at
+// docs/agent-heartbeats/<persona>/YYYY/MM/DD/<zetaid-hex>.md paths;
+// other repo work touches different paths; ZetaID-unique filenames
+// prevent internal conflicts; the merge is conflict-free by design.
+//
+// Main is PR-gated (Review Policy ruleset requires pull_request +
+// required_status_checks), so direct REST /merges returns 409. This
+// tool instead opens a PR from agent-heartbeats → main with auto-merge
+// armed (squash). The PR exists during CI then squash-merges; PR queue
+// cost is one entry per merge cycle, not per heartbeat.
+//
+// Usage:
+//   ./tools/agent-heartbeats/merge-heartbeats-to-main.ts
+//
+//   bun tools/agent-heartbeats/merge-heartbeats-to-main.ts [--repo owner/name]
+//     [--head agent-heartbeats] [--base main] [--dry-run]
+//
+// Exit codes:
+//   0 success (PR opened + armed OR up-to-date)
+//   2 arg-parse error
+//   3 PR-create or arm-auto-merge call failed
+//   4 up-to-date (no heartbeats since last merge)
+
+import { spawnSync } from "node:child_process";
+
+interface Args {
+  readonly repo: string;
+  readonly head: string;
+  readonly base: string;
+  readonly dryRun: boolean;
+}
+
+export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = process.env): Args | { readonly error: string } {
+  let repo = env.ZETA_AGENT_REPO ?? "Lucent-Financial-Group/Zeta";
+  let head = env.ZETA_AGENT_BRANCH ?? "agent-heartbeats";
+  let base = "main";
+  let dryRun = false;
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i]!;
+    const next = (): string => {
+      if (i + 1 >= argv.length) throw new Error(`${arg} requires a value`);
+      return argv[++i]!;
+    };
+    try {
+      if (arg === "--repo") repo = next();
+      else if (arg === "--head") head = next();
+      else if (arg === "--base") base = next();
+      else if (arg === "--dry-run") dryRun = true;
+      else return { error: `unknown flag: ${arg}` };
+    } catch (err) {
+      return { error: err instanceof Error ? err.message : String(err) };
+    }
+  }
+  if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repo)) return { error: "--repo must match owner/name" };
+  return { repo, head, base, dryRun };
+}
+
+function gh(args: string[], input?: string): { status: number; stdout: string; stderr: string } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync("gh", args, {
+    input,
+    encoding: "utf8",
+    maxBuffer: 4 * 1024 * 1024,
+  });
+  return { status: result.status ?? -1, stdout: result.stdout, stderr: result.stderr };
+}
+
+/**
+ * Compare base..head — if base already contains head's tip, no merge needed.
+ * Uses /repos/{owner}/{repo}/compare/{base}...{head} which returns
+ * { status: "identical"|"ahead"|"behind"|"diverged", ahead_by, behind_by }.
+ */
+export function isUpToDate(repo: string, base: string, head: string): boolean | { readonly error: string } {
+  const result = gh(["api", `repos/${repo}/compare/${base}...${head}`]);
+  if (result.status !== 0) return { error: `compare failed: ${result.stderr || result.stdout}` };
+  try {
+    const parsed = JSON.parse(result.stdout);
+    // If head is "behind" or "identical" to base, base already contains head
+    return parsed.status === "identical" || parsed.status === "behind";
+  } catch (err) {
+    return { error: `compare parse failed: ${err instanceof Error ? err.message : String(err)}` };
+  }
+}
+
+/** Open PR from head → base + arm auto-merge with squash. Returns PR URL + number. */
+export function openMergePR(
+  repo: string,
+  head: string,
+  base: string,
+  title: string,
+  body: string,
+): { readonly ok: { readonly number: number; readonly url: string } } | { readonly error: string; readonly code: 3 } {
+  const createResult = gh(
+    ["api", "-X", "POST", `repos/${repo}/pulls`, "--input", "-"],
+    JSON.stringify({ title, body, head, base }),
+  );
+  if (createResult.status !== 0) {
+    return { error: `PR create failed: ${createResult.stderr || createResult.stdout}`, code: 3 };
+  }
+  let prNumber: number;
+  let prUrl: string;
+  try {
+    const parsed = JSON.parse(createResult.stdout);
+    prNumber = parsed.number;
+    prUrl = parsed.html_url;
+  } catch (err) {
+    return { error: `PR-create response parse failed: ${err instanceof Error ? err.message : String(err)}`, code: 3 };
+  }
+  // Arm auto-merge with squash via gh CLI (GraphQL under the hood)
+  const armResult = gh(["pr", "merge", String(prNumber), "--auto", "--squash", "--repo", repo]);
+  if (armResult.status !== 0) {
+    return { error: `arm auto-merge failed (PR #${prNumber} opened): ${armResult.stderr || armResult.stdout}`, code: 3 };
+  }
+  return { ok: { number: prNumber, url: prUrl } };
+}
+
+async function main(): Promise<number> {
+  const argv = process.argv.slice(2);
+  const parsed = parseArgs(argv);
+  if ("error" in parsed) {
+    console.error(`merge-heartbeats-to-main: ${parsed.error}`);
+    return 2;
+  }
+  const ts = new Date().toISOString();
+  if (parsed.dryRun) {
+    console.log(`DRY RUN — would check ${parsed.base}..${parsed.head} on ${parsed.repo}; if behind, open PR + arm squash auto-merge`);
+    return 0;
+  }
+  const upToDate = isUpToDate(parsed.repo, parsed.base, parsed.head);
+  if (typeof upToDate === "object" && "error" in upToDate) {
+    console.error(`merge-heartbeats-to-main: ${upToDate.error}`);
+    return 3;
+  }
+  if (upToDate === true) {
+    console.log(`up-to-date: ${parsed.base} already contains ${parsed.head}`);
+    return 4;
+  }
+  const title = `merge(agent-heartbeats): periodic sync to ${parsed.base} (${ts})`;
+  const body = `B-0858.4 conflict-free merge cycle.\n\nHeartbeats live at \`docs/agent-heartbeats/<persona>/<YYYY>/<MM>/<DD>/<zetaid-hex>.md\` paths; no overlap with other repo work; ZetaID-unique filenames prevent internal conflicts. Auto-merge armed with squash to keep main history linear (one merge commit per cycle, not per heartbeat).\n\nGenerated by \`tools/agent-heartbeats/merge-heartbeats-to-main.ts\` at ${ts}.`;
+  console.log(`opening PR ${parsed.head} → ${parsed.base} on ${parsed.repo}...`);
+  const result = openMergePR(parsed.repo, parsed.head, parsed.base, title, body);
+  if ("error" in result) {
+    console.error(`merge-heartbeats-to-main: ${result.error}`);
+    return result.code;
+  }
+  console.log(`opened: PR #${result.ok.number} (${result.ok.url}); auto-merge armed (squash)`);
+  return 0;
+}
+
+if (import.meta.main) {
+  main().then((code) => process.exit(code));
+}
