@@ -72,7 +72,7 @@ RUN set -eu; \
     nixpkgs.zlib \
     nixpkgs.glibc; \
     mkdir -p /usr/local/bin; \
-    cc_path="$(find /nix/var/nix/profiles/default/bin -name '*gcc' | head -n 1)"; \
+    cc_path="$(command -v gcc)"; \
     test -n "$cc_path"; \
     ln -sf "$cc_path" /usr/local/bin/cc; \
     mkdir -p /usr/local/nix-compat-lib; \
@@ -89,7 +89,7 @@ RUN set -eu; \
 # the conventional FHS loader path. nixos/nix keeps glibc in /nix/store,
 # so expose the loader path this test needs without changing install.sh.
 RUN set -eu; \
-    glibc_loader="$(find /nix/store -path '*-glibc-*/lib/ld-linux-*.so.*' | head -n 1)"; \
+    glibc_loader="$(find /nix/store -maxdepth 3 -path '*-glibc-*/lib/ld-linux-*.so.*' | head -n 1)"; \
     test -n "$glibc_loader"; \
     case "$(uname -m)" in \
       x86_64) mkdir -p /lib64 && ln -sf "$glibc_loader" /lib64/ld-linux-x86-64.so.2 ;; \
