@@ -113,11 +113,36 @@ Allowlist from `zflash.ts`:
 | **Stage** | Cluster console at install time → encrypted blob persisted to USB ESP after successful auth (post-install service trigger) |
 | **Content class** | **Secret material** (encrypted-at-rest; key never hits disk) |
 | **Operator-driven via** | Boot-sequence auth-method picker (4 options: restore-from-blob / fresh-device-flow / operator-PAT / skip) + operator passphrase |
-| **Encryption** | AES-256-GCM with key derived from `HKDF(USB-UUID \|\| operator-passphrase, salt, info)` |
+| **Encryption** | AES-256-GCM; key derived via 2-layer scrypt → HKDF chain (full mechanism + parameters below) |
 | **ESP filenames** | `/esp/zeta-creds.enc` (encrypted) + `/esp/zeta-creds-manifest.yaml` (declarative + operator-readable) |
 | **Backlog** | [B-0852](../docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) (P1, open, M-effort) |
 | **Covers credentials** | per declarative manifest: `gh-cli` (`~/.config/gh/hosts.yml`), `claude` (per-persona), `gemini` (per-persona), `codex` (per-persona), `ssh-host-keys`, `ssh-operator-pubkey` |
 | **Constitutional-rail compliance** | Secret material; encrypted-at-rest on ESP IS allowed because the operator-passphrase + USB-UUID binding means the ESP-stored blob is useless without operator presence — the consent floor stays at operator-typed passphrase, not at USB-physical possession alone |
+
+#### KDF chain detail (mechanism + parameters)
+
+The 32-byte AES-256-GCM key is derived in two layers; full implementation at `tools/installer/zeta-creds-crypto.ts:80-125`.
+
+**Layer 1 — scrypt** (memory-hard work-factor KDF):
+
+```text
+stretched = scrypt(passphrase, salt, length=32, N=2^17, r=8, p=1, maxmem=256MB)
+```
+
+scrypt does NOT increase the underlying entropy of the operator passphrase (a weak passphrase remains weak in information-theoretic terms). What scrypt provides is a tunable **work-factor cost** per guess: each candidate passphrase requires ~128MB of memory and ~1-2 seconds of CPU per derivation. This makes brute-force attacks memory-prohibitively expensive on GPU/ASIC (per the 2026-05-27 security-review HIGH finding: HKDF alone assumes high-entropy IKM, which user-typed passphrases violate; scrypt is the layer that makes the IKM cryptographically suitable for HKDF input).
+
+OWASP 2026 recommended parameters: `N=2^17`, `r=8`, `p=1`.
+
+**Layer 2 — HKDF-SHA256** (binds key to USB UUID):
+
+```text
+ikm  = concat(usbUuid_utf8, "|", stretched)
+key  = HKDF-SHA256(ikm, salt, info="zeta-b0852-cred-persistence-v1", length=32)
+```
+
+HKDF binds the stretched secret to the USB UUID via IKM concatenation. Wrong USB → different IKM → different HKDF output → AES-GCM auth tag verification fails → structured error returned (not garbled plaintext). Defends against copy-blob-to-different-USB attack (operator-named threat 2026-05-27: *"we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid"*).
+
+Both layers must reproduce identically at decrypt time for the AES-GCM auth tag to verify; salt is per-blob (generated at encrypt time; stored in envelope; required at decrypt).
 
 ### 6. GitHub-creds-at-flash-time variants (B-0852 picker options 1 + 3)
 
