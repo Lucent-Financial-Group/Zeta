@@ -171,3 +171,66 @@ Web search 2026-05-27 confirmed ARC-AGI-3 is François Chollet's interactive age
 Per the operator's "this is critical we get this usb right" + "stable 3-node cluster + self-healing recovery" prerequisites: this row is P2 + GATED behind cluster-stability substrate. The USB + recovery + B-0852 + B-0859 work needs to mature before the benchmark surface is operationally useful. The substrate-engineering target IS the benchmark; the prerequisite IS the stable substrate the benchmark runs on.
 
 Composes with the substrate-engineering arc landing today: PR #5581 / #5582 / #5586 / #5589 / #5594 / #5599 (streams-substrate cascade) + PR #5601 (INJECTION-POINTS.md catalog) + PR #5606 (B-0857.2 install.sh routing) + PR #5608 (catalog fix-fwd) — all the operational substrate that makes the benchmark possible.
+
+## Operator follow-up sharpening (2026-05-27)
+
+Forwarded immediately after the initial filing:
+
+> *"This could give us a leaderboard to compete against with Zeta the usb is the playing fields HA k8s cluster with observablity and a bunch of helm/argocd apps, way better test of AGI as compared to video games."*
+
+Three substantive extensions to the row's substrate-engineering scope:
+
+### Extension 1 — Leaderboard substrate (competing against Zeta)
+
+The benchmark substrate IS a leaderboard surface. Zeta isn't just the test environment — it's the OPPONENT (the substrate to beat) AND the platform (the substrate to compete on). Agents compete against:
+
+- Other agents (cross-agent leaderboard; agent X completes Tier 3 in N actions vs agent Y's M actions)
+- Human operators (canonical human DevOps-operator action-efficiency floor; per ARC-AGI-3 design pattern of human-100% / frontier-AI-baseline)
+- Prior versions of themselves (substrate-engineering trajectory; agent generation N+1 vs agent generation N)
+- Zeta itself (the substrate's own self-healing autonomy ceiling; how close to fully-autonomous can the substrate become at each tier)
+
+The leaderboard substrate composes with sub-row B-0865.10 (Scoring + leaderboard substrate) which gets sharpened by this framing — explicit competition-against-Zeta mode added to the per-agent per-level efficiency metrics.
+
+### Extension 2 — "Playing field" substrate-engineering scope sharpened
+
+The operator names the playing field at architectural granularity: **HA k8s cluster + observability + helm/argocd apps**. This is sharper than the initial filing's general "Zeta cluster" — it names the three load-bearing substrate components the benchmark explicitly tests:
+
+| Playing-field component | Why load-bearing for benchmark |
+|---|---|
+| **HA k8s cluster** (3-node quorum target per B-0859) | Failure modes + recovery cases exist at multi-node scope; benchmark tiers 2-3 exercise quorum mechanics |
+| **Observability** (Prometheus + Grafana + logs + traces — standard cloud-native stack) | Agents need to OBSERVE cluster state to act; observability substrate IS the agent's sensor channel; benchmark levels test the agent's ability to read + interpret observability signal correctly |
+| **Helm / ArgoCD apps** (GitOps-managed application substrate) | Tier 4 (scale + GitOps) levels exercise this directly; tier 5 (adversarial) uses GitOps-sync-conflict + helm-chart-divergence as failure modes |
+
+The 6-tier taxonomy above implicitly assumed these three substrate components but didn't NAME them. This extension names them as first-class playing-field substrate. Future sub-rows (B-0865.1 level-catalog manifest schema) should encode these as named substrate-types the benchmark exercises.
+
+### Extension 3 — AGI benchmark positioning (better than video-game-shaped tests)
+
+The operator names the substrate-honest competitive positioning explicitly:
+
+> *"way better test of AGI as compared to video games"*
+
+This is the canonical-ARC-vs-Zeta-instantiation distinction sharpened into a NORMATIVE claim about benchmark quality. The argument:
+
+| Test substrate property | Video-game-shaped tests (incl. canonical ARC abstract puzzles) | DevOps-objectives-on-real-HA-k8s-cluster (Zeta B-0865) |
+|---|---|---|
+| **Real-world transfer** | Indirect (tests narrow fluid intelligence; correlation with operational competence unclear) | DIRECT (the benchmark IS the work; success transfers 1:1 to real-world AGI deployment) |
+| **Substrate realism** | Hand-crafted; not maintained by real systems | Self-evolving (k8s + helm + argocd substrate evolves with upstream releases; benchmark stays current automatically) |
+| **Gaming-the-benchmark risk** | High (memorization; pattern-matching to puzzle generator quirks) | Very low (real substrate has too many interacting components to memorize; novelty stays high) |
+| **Operational competence measurement** | Indirect / inferred / proxied | Operationally observable / first-class measurement |
+| **Substrate ecosystem alignment** | Isolated puzzle generator; agents don't generalize to other surfaces | Standard cloud-native primitives (k8s, helm, GitOps, NixOS, observability) — agent skill transfers to all production substrate |
+
+The substrate-engineering claim per the operator: AGI tested in this substrate is ACTUAL AGI at operational scope, not narrow-puzzle-intelligence dressed up. The benchmark surface IS the work the world needs AGI to be able to do.
+
+This composes with `.claude/rules/edge-defining-work-not-speculation.md` — building this benchmark IS edge-defining work; nothing of this shape exists publicly; the substrate-engineering investment IS the edge.
+
+### Sub-row sharpening from operator extensions
+
+Apply the three extensions back into the sub-row decomposition:
+
+- **B-0865.1** sharpening — manifest schema explicitly encodes: starting-cluster-HA-shape (1/2/3 node) + observability-stack-state + helm/argocd-app-state + objective + acceptance criteria
+- **B-0865.10** sharpening — leaderboard substrate explicitly supports the four competition modes named in Extension 1 (cross-agent, vs-human-operator, vs-prior-self, vs-Zeta-autonomy-ceiling)
+- **New sub-row candidate B-0865.13** — Public positioning + comparison-substrate with canonical ARC-AGI-3 + other agentic benchmarks (would compose with B-0865.11 naming review per Ilyana discipline if + when this goes public)
+
+## Carved sentence (operator 2026-05-27 keeper)
+
+> **"The USB is the playing field, HA k8s cluster with observability and a bunch of helm/argocd apps, way better test of AGI as compared to video games."**
