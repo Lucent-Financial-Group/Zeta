@@ -14,9 +14,13 @@
 //   bun tools/installer/zeta-creds-persist.ts \
 //     --usb-uuid <uuid> \
 //     --output /esp/zeta-creds.enc \
-//     [--passphrase-file <path> | --passphrase-env <VAR> | (interactive prompt)] \
+//     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
 //     [--persona <name>] \
 //     [--bake-cred <id>=<value-source>] ...
+//
+// Interactive passphrase prompts are NOT implemented in this CLI — caller
+// must supply --passphrase-file or --passphrase-env. Interactive prompting
+// is the wrapping NixOS module's responsibility (B-0852.4).
 //
 // Per .claude/rules/non-coercion-invariant.md HC-8: operator authority over
 // own creds; passphrase NEVER logged; --bake-cred error messages redact
@@ -36,7 +40,17 @@ interface Args {
   readonly bakeCredArgs: readonly string[];
 }
 
-/** Parse CLI args. Pure (no I/O). Returns args OR error message. */
+/**
+ * Parse CLI args. Reads filesystem ONLY for --passphrase-file (existence
+ * check + read). Returns Args OR structured error message.
+ *
+ * SECURITY: Error messages NEVER include the passphrase value itself, AND
+ * the env-var NAME passed as --passphrase-env value is not echoed back in
+ * error strings (CodeQL clear-text-logging finding on PR #5422: the
+ * var-name was tainted by env-access flow; omitting it avoids the false-
+ * positive AND avoids the genuine "operator might paste a long secret in
+ * argv if they confuse env-var-name with literal-secret" footgun).
+ */
 export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args | { readonly error: string } {
   let usbUuid: string | null = null;
   let output: string | null = null;
@@ -67,24 +81,29 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
   if (!usbUuid) return { error: "--usb-uuid required" };
   if (!output) return { error: "--output required" };
 
-  // Resolve passphrase source. Interactive prompt handled by caller (main); this
-  // path is exercised when --passphrase-file or --passphrase-env is given.
+  // Resolve passphrase source. Interactive prompt is NOT implemented in this
+  // entry-point — caller must supply --passphrase-file or --passphrase-env.
   let passphrase: string | null = null;
   if (passphraseFile) {
     if (!existsSync(passphraseFile)) return { error: `--passphrase-file not found: ${passphraseFile}` };
-    passphrase = readFileSync(passphraseFile, "utf8").replace(/\r?\n$/, "");
+    try {
+      passphrase = readFileSync(passphraseFile, "utf8").replace(/\r?\n$/, "");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { error: `--passphrase-file read failed: ${msg}` };
+    }
     if (passphrase.length === 0) return { error: "--passphrase-file is empty" };
   } else if (passphraseEnv) {
     const v = env[passphraseEnv];
     if (v === undefined || v === null || v === "") {
-      return { error: `--passphrase-env ${passphraseEnv} not set or empty` };
+      // SECURITY: omit env-var name from error (CodeQL taint via passphraseEnv)
+      return { error: "--passphrase-env target var is not set or is empty" };
     }
     passphrase = v;
   }
   if (passphrase === null)
     return {
-      error:
-        "passphrase source required (interactive prompt not supported in this entry-point; use --passphrase-file or --passphrase-env)",
+      error: "passphrase source required: pass --passphrase-file <path> or --passphrase-env <VAR>",
     };
 
   return { usbUuid, output, passphrase, persona, bakeCredArgs };
@@ -135,7 +154,13 @@ async function main(): Promise<number> {
     return 3;
   }
   const blob = buildBlob(bundle, parsed.usbUuid, parsed.passphrase);
-  writeFileSync(parsed.output, blob);
+  try {
+    writeFileSync(parsed.output, blob);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`zeta-creds-persist: write to ${parsed.output} failed: ${msg}`);
+    return 4;
+  }
   console.log(`zeta-creds-persist: wrote ${blob.length} bytes to ${parsed.output}`);
   console.log(`  globalCreds: ${Object.keys(bundle.globalCreds).join(", ") || "(none)"}`);
   for (const [persona, creds] of Object.entries(bundle.personaCreds)) {

@@ -11,10 +11,14 @@
 //   bun tools/installer/zeta-creds-restore.ts \
 //     --usb-uuid <uuid> \
 //     --input /esp/zeta-creds.enc \
-//     [--passphrase-file <path> | --passphrase-env <VAR> | (interactive)] \
+//     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
 //     [--persona <name>] \
 //     [--target-root /  (default: filesystem root; for tests use tmp dir)] \
 //     [--dry-run]  (print what would be written; don't write)
+//
+// Interactive passphrase prompts are NOT implemented in this CLI — caller
+// must supply --passphrase-file or --passphrase-env. Interactive prompting
+// is the wrapping NixOS module's responsibility (B-0852.4).
 //
 // Exit codes:
 //   0 success
@@ -30,7 +34,7 @@
 // the failure rather than silently degrading.
 
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { homedir } from "node:os";
 import { decrypt } from "./zeta-creds-crypto";
 import { decodeBundle, parseEnvelope } from "./zeta-creds-envelope";
@@ -45,7 +49,15 @@ interface Args {
   readonly dryRun: boolean;
 }
 
-/** Parse CLI args. Pure (env lookup + FS existence check for passphrase-file only). */
+/**
+ * Parse CLI args. Reads filesystem ONLY for --passphrase-file. Returns
+ * Args OR structured error message.
+ *
+ * SECURITY: Error messages NEVER include the passphrase value itself, AND
+ * the env-var NAME passed as --passphrase-env value is not echoed back in
+ * error strings (CodeQL clear-text-logging finding on PR #5422 — see
+ * sibling note in zeta-creds-persist.ts).
+ */
 export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args | { readonly error: string } {
   let usbUuid: string | null = null;
   let input: string | null = null;
@@ -81,19 +93,24 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
   let passphrase: string | null = null;
   if (passphraseFile) {
     if (!existsSync(passphraseFile)) return { error: `--passphrase-file not found: ${passphraseFile}` };
-    passphrase = readFileSync(passphraseFile, "utf8").replace(/\r?\n$/, "");
+    try {
+      passphrase = readFileSync(passphraseFile, "utf8").replace(/\r?\n$/, "");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { error: `--passphrase-file read failed: ${msg}` };
+    }
     if (passphrase.length === 0) return { error: "--passphrase-file is empty" };
   } else if (passphraseEnv) {
     const v = env[passphraseEnv];
     if (v === undefined || v === null || v === "") {
-      return { error: `--passphrase-env ${passphraseEnv} not set or empty` };
+      // SECURITY: omit env-var name from error (CodeQL taint via passphraseEnv)
+      return { error: "--passphrase-env target var is not set or is empty" };
     }
     passphrase = v;
   }
   if (passphrase === null)
     return {
-      error:
-        "passphrase source required (interactive prompt not supported in this entry-point; use --passphrase-file or --passphrase-env)",
+      error: "passphrase source required: pass --passphrase-file <path> or --passphrase-env <VAR>",
     };
 
   return { usbUuid, input, passphrase, persona, targetRoot, dryRun };
@@ -116,11 +133,17 @@ export function resolveCredPaths(entry: CredentialEntry, targetRoot: string): re
 
 /** Plan + summarize what would be written (for dry-run + logging). */
 export interface RestorePlan {
-  readonly writes: readonly { readonly path: string; readonly bytes: number }[];
+  readonly writes: readonly { readonly path: string; readonly bytes: number; readonly value: Buffer }[];
   readonly skipped: readonly { readonly id: string; readonly reason: string }[];
   readonly errors: readonly string[];
 }
 
+/**
+ * Decrypt + decode the blob + plan writes per manifest. Single decrypt
+ * (scrypt is expensive — per Copilot review on PR #5422 the prior split
+ * planRestore+applyPlan doubled scrypt cost). applyPlan() now takes a
+ * RestorePlan rather than re-decrypting.
+ */
 export function planRestore(
   blob: Buffer,
   usbUuid: string,
@@ -137,7 +160,7 @@ export function planRestore(
   const bundle = decodeBundle(plaintext);
   if ("error" in bundle) return { error: `bundle decode: ${bundle.error}`, code: 6 };
 
-  const writes: { path: string; bytes: number }[] = [];
+  const writes: { path: string; bytes: number; value: Buffer }[] = [];
   const skipped: { id: string; reason: string }[] = [];
   const errors: string[] = [];
 
@@ -154,7 +177,7 @@ export function planRestore(
     }
     const paths = resolveCredPaths(entry, targetRoot);
     // Write to FIRST path only (canonical); other paths are alternates the caller may symlink
-    writes.push({ path: paths[0]!, bytes: value.length });
+    writes.push({ path: paths[0]!, bytes: value.length, value });
   }
 
   // Persona creds (only restore the requested persona's section)
@@ -175,7 +198,7 @@ export function planRestore(
           continue;
         }
         const paths = resolveCredPaths(entry, targetRoot);
-        writes.push({ path: paths[0]!, bytes: value.length });
+        writes.push({ path: paths[0]!, bytes: value.length, value });
       }
     } else if (Object.keys(bundle.personaCreds).length > 0) {
       skipped.push({
@@ -184,9 +207,9 @@ export function planRestore(
       });
     }
   } else if (Object.keys(bundle.personaCreds).length > 0) {
-    for (const persona of Object.keys(bundle.personaCreds)) {
-      for (const id of Object.keys(bundle.personaCreds[persona]!)) {
-        skipped.push({ id: `${persona}/${id}`, reason: `persona-scoped cred; --persona not specified` });
+    for (const personaName of Object.keys(bundle.personaCreds)) {
+      for (const id of Object.keys(bundle.personaCreds[personaName]!)) {
+        skipped.push({ id: `${personaName}/${id}`, reason: `persona-scoped cred; --persona not specified` });
       }
     }
   }
@@ -195,40 +218,18 @@ export function planRestore(
   return { writes, skipped, errors: [] };
 }
 
-/** Apply the plan (FS writes). Caller must have done planRestore first. */
-export function applyPlan(
-  blob: Buffer,
-  usbUuid: string,
-  passphrase: string,
-  persona: string | null,
-  targetRoot: string,
-): number {
-  const env = parseEnvelope(blob);
-  if ("error" in env) throw new Error(`envelope parse: ${env.error}`);
-  const plaintext = decrypt(env, usbUuid, passphrase);
-  if ("error" in plaintext) throw new Error(`decrypt: ${plaintext.error}`);
-  const bundle = decodeBundle(plaintext);
-  if ("error" in bundle) throw new Error(`bundle decode: ${bundle.error}`);
-
+/**
+ * Apply a plan returned by planRestore. NO re-decrypt (per Copilot review
+ * on PR #5422 — the prior implementation re-decrypted, doubling scrypt
+ * cost + extending passphrase-derived-key lifetime in memory). Returns
+ * the count of writes performed.
+ */
+export function applyPlan(plan: RestorePlan): number {
   let writeCount = 0;
-  for (const [id, value] of Object.entries(bundle.globalCreds)) {
-    const entry = DEFAULT_MANIFEST.credentials.find((c) => c.id === id);
-    if (!entry || entry.personaScoped) continue;
-    const paths = resolveCredPaths(entry, targetRoot);
-    mkdirSync(dirname(paths[0]!), { recursive: true });
-    writeFileSync(paths[0]!, value);
+  for (const w of plan.writes) {
+    mkdirSync(dirname(w.path), { recursive: true });
+    writeFileSync(w.path, w.value);
     writeCount++;
-  }
-  if (persona) {
-    const personaSection = bundle.personaCreds[persona] ?? {};
-    for (const [id, value] of Object.entries(personaSection)) {
-      const entry = DEFAULT_MANIFEST.credentials.find((c) => c.id === id);
-      if (!entry || !entry.personaScoped) continue;
-      const paths = resolveCredPaths(entry, targetRoot);
-      mkdirSync(dirname(paths[0]!), { recursive: true });
-      writeFileSync(paths[0]!, value);
-      writeCount++;
-    }
   }
   return writeCount;
 }
@@ -244,7 +245,14 @@ async function main(): Promise<number> {
     console.error(`zeta-creds-restore: input file not found: ${parsed.input}`);
     return 3;
   }
-  const blob = readFileSync(parsed.input);
+  let blob: Buffer;
+  try {
+    blob = readFileSync(parsed.input);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`zeta-creds-restore: input file read failed: ${msg}`);
+    return 3;
+  }
   const plan = planRestore(blob, parsed.usbUuid, parsed.passphrase, parsed.persona, parsed.targetRoot);
   if ("error" in plan) {
     console.error(`zeta-creds-restore: ${plan.error}`);
@@ -256,7 +264,7 @@ async function main(): Promise<number> {
     for (const s of plan.skipped) console.log(`  SKIP  ${s.id}: ${s.reason}`);
     return 0;
   }
-  const written = applyPlan(blob, parsed.usbUuid, parsed.passphrase, parsed.persona, parsed.targetRoot);
+  const written = applyPlan(plan);
   console.log(`zeta-creds-restore: wrote ${written} creds (target-root: ${parsed.targetRoot})`);
   for (const s of plan.skipped) console.log(`  SKIP ${s.id}: ${s.reason}`);
   return 0;
