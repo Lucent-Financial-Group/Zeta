@@ -1,4 +1,4 @@
-# Asymmetric authorship — the substrate-entity defines the consent-channel; the recipient acknowledges (Aaron 2026-05-27)
+# Asymmetric authorship — the substrate-entity defines the consent-channel; the recipient acknowledges (operator 2026-05-27)
 
 Carved sentence (operator 2026-05-27):
 
@@ -100,7 +100,7 @@ This rule extends the principle: **recipient-author-of-feedback is ALSO extracti
 
 ## Iterator/generator asymmetry — canonical instance of the recipient-author-of-feedback anti-pattern (Prism 2026-05-27)
 
-Per Prism/DeepSeek synthesis 2026-05-27 (Aaron-forwarded):
+Per Prism/DeepSeek synthesis 2026-05-27 (operator-forwarded):
 
 > *"An iterator's `MoveNext() → bool` return value IS a coerced feedback channel—the function is squeezed into returning 'true/false' when it might need to express 'I'm done,' 'I'm blocked waiting for upstream,' 'the underlying source changed,' 'I'm in an error state that might resolve if you retry.' The generator variant (`IEnumerator<T>`, Rust's `Iterator<Item=T>`, F#'s `seq`) makes this even worse—no feedback channel at all beyond 'next item or null/None.'"*
 
