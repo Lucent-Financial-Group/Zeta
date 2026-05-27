@@ -568,6 +568,74 @@ else
 fi
 echo
 
+# ── Step 6.56: B-0852.3b cred-blob passphrase prompt ────────────
+#
+# Supersedes PR #5638 with both Copilot P1 findings addressed from
+# the start:
+#   - line 574 / passphrase exposure window: passphrase held in
+#     NON-EXPORTED shell variable so it never appears in
+#     /proc/<pid>/environ; inline-set for the single sudo invocation
+#     at Step 6.95-picker only
+#   - line 1321 / unset only in picker-ran branch: shell var
+#     unconditionally unset after Step 6.95 picker block regardless
+#     of which branch ran
+#
+# Operator pain point 2026-05-27: "i'm witing on the tool to be
+# resable so i don't have to enter credentals over and over
+# everytime."
+#
+# Closes precondition #2 of 3 for the cred-persistence picker at
+# Step 6.95-picker (precondition #1 = ZETA_CREDS_PICKER default-on
+# via PR #5639; precondition #3 = /etc/zeta/usb-uuid auto-captured
+# at iter-4.2 via PR #5637; this step closes #2).
+#
+# Same operator-typed-once-on-console pattern as iter-5.3 password
+# (constitutional rail per zeta-install.sh line 452 verbatim:
+# "secrets shouldn't transit non-operator surfaces; operator-typed
+# at install time is the safest path").
+echo
+echo "[B-0852.3b] ── cred-blob passphrase prompt (B-0852 Phase 1) ──"
+echo "[B-0852.3b] Set a passphrase to encrypt your credentials onto"
+echo "[B-0852.3b] this USB. Future boots can RESTORE creds via the"
+echo "[B-0852.3b] same passphrase (no more re-entering gh login etc."
+echo "[B-0852.3b] on every reboot). Encryption: AES-256-GCM with key"
+echo "[B-0852.3b] derived via scrypt -> HKDF chain bound to this USB's"
+echo "[B-0852.3b] UUID (per tools/installer/zeta-creds-crypto.ts)."
+echo "[B-0852.3b]"
+echo "[B-0852.3b] Press Enter to SKIP (no cred-blob persistence;"
+echo "[B-0852.3b] keeps current per-reboot re-entry behavior)."
+echo
+ZETA_CREDS_PASSPHRASE_INPUT=""
+ZETA_CREDS_PASSPHRASE_CONFIRM=""
+# -s = silent (hidden); -p = inline prompt
+read -r -s -p "[B-0852.3b] Passphrase (or Enter to skip): " ZETA_CREDS_PASSPHRASE_INPUT
+echo
+if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
+  read -r -s -p "[B-0852.3b] Confirm:                          " ZETA_CREDS_PASSPHRASE_CONFIRM
+  echo
+  if [ "$ZETA_CREDS_PASSPHRASE_INPUT" != "$ZETA_CREDS_PASSPHRASE_CONFIRM" ]; then
+    echo "[B-0852.3b]   WARN: passphrases don't match; skipping (no cred-blob persistence)"
+    ZETA_CREDS_PASSPHRASE_INPUT=""
+  fi
+fi
+unset ZETA_CREDS_PASSPHRASE_CONFIRM
+# Initialize ZETA_CREDS_PASSPHRASE_VAL to empty unconditionally so the
+# Step 6.95-picker gate check works whether or not operator entered a
+# passphrase. Per Copilot P1 finding on PR #5638: do NOT export — keep
+# in a non-exported shell variable to avoid /proc/<pid>/environ exposure.
+ZETA_CREDS_PASSPHRASE_VAL=""
+if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
+  ZETA_CREDS_PASSPHRASE_VAL="$ZETA_CREDS_PASSPHRASE_INPUT"
+  unset ZETA_CREDS_PASSPHRASE_INPUT
+  echo "[B-0852.3b]   passphrase captured + held in non-exported shell variable"
+  echo "[B-0852.3b]   (NOT in /proc/self/environ; inline-set for sudo only at 6.95;"
+  echo "[B-0852.3b]    shell var unset in ALL branches after Step 6.95 picker block)"
+else
+  unset ZETA_CREDS_PASSPHRASE_INPUT
+  echo "[B-0852.3b]   skipped — no cred-blob persistence this install"
+fi
+echo
+
 # ── Step 6.6: iter-5.2 hostname injection (B-0792) ──────────────
 #
 # Per the maintainer 2026-05-26: "since our different roles are
@@ -1311,9 +1379,9 @@ if [ -d "$ZETA_HOME" ]; then
   elif [ ! -f /etc/zeta/usb-uuid ]; then
     PICKER_OPT_OUT=1
     PICKER_SKIP_REASON="/etc/zeta/usb-uuid missing (B-0852.3a-prep did not capture UUID)"
-  elif [ -z "${ZETA_CREDS_PASSPHRASE:-}" ]; then
+  elif [ -z "${ZETA_CREDS_PASSPHRASE_VAL:-}" ]; then
     PICKER_OPT_OUT=1
-    PICKER_SKIP_REASON="ZETA_CREDS_PASSPHRASE empty (operator skipped passphrase at Step 6.56)"
+    PICKER_SKIP_REASON="ZETA_CREDS_PASSPHRASE_VAL empty (operator skipped passphrase at Step 6.56)"
   fi
   if [ "$PICKER_OPT_OUT" = "0" ]; then
     USB_UUID="$(cat /etc/zeta/usb-uuid)"
@@ -1324,17 +1392,34 @@ if [ -d "$ZETA_HOME" ]; then
     # patterns at lines 1119-1141; without it, bun is not on the PATH the
     # subshell sees (mise installs bun via shims; activate sets PATH).
     # BUN_INSTALL pin matches sibling pattern too.
-    sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
+    #
+    # B-0852.3b-supersede (fix Copilot PR #5638 finding 1): inline-env-set
+    # `ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL"` exports the var
+    # into the sudo invocation's process env ONLY (not the parent installer
+    # shell). Combined with `--preserve-env=ZETA_CREDS_PASSPHRASE` this lets
+    # the picker bash -c subshell read it via --passphrase-env. The parent
+    # installer shell never has ZETA_CREDS_PASSPHRASE exported, so it never
+    # appears in /proc/<installer-pid>/environ.
+    ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
       bash -c "set -o pipefail; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /esp/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
-    # B-0852.3b discipline: unset passphrase from installer-script env
-    # IMMEDIATELY after picker completes to minimize env-exposure window.
-    unset ZETA_CREDS_PASSPHRASE
-    echo "[iter-5.5.0]   ZETA_CREDS_PASSPHRASE unset from installer env (post-picker)"
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"
   fi
+  # B-0852.3b-supersede (fix Copilot PR #5638 finding 2): unset
+  # ZETA_CREDS_PASSPHRASE_VAL UNCONDITIONALLY after the picker block —
+  # fires in BOTH the picker-ran branch AND the picker-skipped branch.
+  # Prior code only unset inside the picker-ran branch, leaving the
+  # passphrase live in the installer shell for the rest of execution
+  # whenever ZETA_CREDS_PICKER=0 / /etc/zeta/no-picker / usb-uuid-missing
+  # path was taken. Note: this is a non-exported shell var (no `export`
+  # in Step 6.56), so even before this unset it was NOT visible via
+  # /proc/<installer-pid>/environ — but `unset` still scrubs it from the
+  # shell's own variable table, which matters for any later `set` /
+  # `declare -p` invocation that might log shell state.
+  unset ZETA_CREDS_PASSPHRASE_VAL
+  echo "[iter-5.5.0]   ZETA_CREDS_PASSPHRASE_VAL unset from installer shell (post-picker block; fires in both branches)"
 
   # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
   CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"
