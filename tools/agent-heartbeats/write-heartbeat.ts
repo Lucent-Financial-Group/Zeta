@@ -55,21 +55,33 @@ interface Args {
   readonly branch: string;   // target branch (default "main")
 }
 
-export function parseArgs(argv: readonly string[]): Args | { readonly error: string } {
-  let personaSlot: number | null = null;
-  let personaName: string | null = null;
-  let authority: Authority["type"] = "TrustedAgent";
-  let momentum: Momentum["type"] = "Normal";
-  let chromosome = 0;
-  let location = 1;
-  let namedDep: string | null = null;
-  let disposition = "bounded-wait";
-  let parentPr: number | null = null;
-  let repoRoot = process.cwd();
+/**
+ * Stupid-simple defaults per operator 2026-05-27: "in a perfect world you
+ * don't even need to pass parametrs it just works". Env-var fallback for
+ * every field; sensible defaults for autonomous-loop common case. Each
+ * field can be overridden by CLI flag for non-default scenarios.
+ *
+ * Env-var precedence: CLI flag > env var > built-in default.
+ */
+export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = process.env): Args | { readonly error: string } {
+  // Defaults derived from env vars (set once per agent session by harness)
+  let personaSlot = env.ZETA_AGENT_PERSONA_SLOT ? parseInt(env.ZETA_AGENT_PERSONA_SLOT, 10) : 2;
+  let personaName = env.ZETA_AGENT_PERSONA_NAME ?? "otto";
+  let authority: Authority["type"] = (env.ZETA_AGENT_AUTHORITY as Authority["type"]) ?? "TrustedAgent";
+  let momentum: Momentum["type"] = (env.ZETA_AGENT_MOMENTUM as Momentum["type"]) ?? "Normal";
+  let chromosome = env.ZETA_AGENT_CHROMOSOME ? parseInt(env.ZETA_AGENT_CHROMOSOME, 10) : 0;
+  let location = env.ZETA_AGENT_LOCATION ? parseInt(env.ZETA_AGENT_LOCATION, 10) : 1;
+  let namedDep: string | null = env.ZETA_AGENT_NAMED_DEP ?? null;
+  let disposition = env.ZETA_AGENT_DISPOSITION ?? "bounded-wait";
+  let parentPr: number | null = env.ZETA_AGENT_PARENT_PR ? parseInt(env.ZETA_AGENT_PARENT_PR, 10) : null;
+  let repoRoot = env.ZETA_AGENT_REPO_ROOT ?? process.cwd();
   let dryRun = false;
-  let push = false;
-  let repo = "Lucent-Financial-Group/Zeta";
-  let branch = "main";
+  // Default --push=TRUE per operator 2026-05-27 "stupid simple" direction:
+  // perfect-world heartbeat is local-write + remote-push together. Tests +
+  // diagnostic runs opt-OUT via --no-push.
+  let push = env.ZETA_AGENT_HEARTBEAT_NO_PUSH !== "1";
+  let repo = env.ZETA_AGENT_REPO ?? "Lucent-Financial-Group/Zeta";
+  let branch = env.ZETA_AGENT_BRANCH ?? "main";
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     const next = (): string => {
@@ -89,6 +101,7 @@ export function parseArgs(argv: readonly string[]): Args | { readonly error: str
       else if (arg === "--repo-root") repoRoot = next();
       else if (arg === "--dry-run") dryRun = true;
       else if (arg === "--push") push = true;
+      else if (arg === "--no-push") push = false;
       else if (arg === "--repo") repo = next();
       else if (arg === "--branch") branch = next();
       else return { error: `unknown flag: ${arg}` };
@@ -96,10 +109,8 @@ export function parseArgs(argv: readonly string[]): Args | { readonly error: str
       return { error: err instanceof Error ? err.message : String(err) };
     }
   }
-  if (personaSlot === null) return { error: "--persona-slot required" };
-  if (personaName === null) return { error: "--persona-name required" };
-  if (personaSlot < 0 || personaSlot > 255) return { error: "--persona-slot must be 0..255" };
-  if (!/^[a-z][a-z0-9-]*$/.test(personaName)) return { error: "--persona-name must match /^[a-z][a-z0-9-]*$/" };
+  if (personaSlot < 0 || personaSlot > 255) return { error: "persona-slot must be 0..255 (set ZETA_AGENT_PERSONA_SLOT or --persona-slot)" };
+  if (!/^[a-z][a-z0-9-]*$/.test(personaName)) return { error: "persona-name must match /^[a-z][a-z0-9-]*$/ (set ZETA_AGENT_PERSONA_NAME or --persona-name)" };
   if (chromosome < 0 || chromosome > 31) return { error: "--chromosome must be 0..31" };
   if (location < 0 || location > 255) return { error: "--location must be 0..255" };
   if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repo)) return { error: "--repo must match owner/name" };
