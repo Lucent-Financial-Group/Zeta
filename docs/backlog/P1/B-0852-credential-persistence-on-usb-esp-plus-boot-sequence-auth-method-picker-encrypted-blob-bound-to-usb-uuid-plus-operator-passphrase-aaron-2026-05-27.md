@@ -102,11 +102,36 @@ Selection logic:
 
 ## Future phases (NOT this row's scope)
 
-- **Phase 2**: Path B (look at PC before formatting + try to recover creds from existing install; operator-supervised boot menu option)
-- **Phase 3**: Hardware-bound key (TPM / YubiKey / Touch-ID-derived) replacing operator-passphrase; survives operator-passphrase forgetting
+- **Phase 2**: Path B (look at PC before formatting + try to recover creds from existing install; operator-supervised boot menu option). Composes with Phase 1 — operator confirmed: *"we can do both like you said this will be nice together"*. Phase 2 security model per Aaron 2026-05-27: *"for option b we need to do something to make sure we protect against with like some encryption or someting like you say so randos with physicall access cant get acess we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid, we can go hard on security over time but just enough to so i can iterate quickly for now."* Design constraints:
+  - Recovered creds encrypted at-rest on USB (NOT plaintext on FAT32 ESP)
+  - Optional UUID-bound key on USB so blob can't be defeated by copying to a different-UUID USB (attacker copying ESP contents to another stick doesn't unlock; the unlock derivation requires the original USB UUID)
+  - **Iterate-quickly-not-paranoia floor** — Phase 2 ships with enough security to prevent casual physical-access leaks; full hardware-bound + tamper-resistant work defers to Phase 3+ when load-bearing
+  - Operator-supervised at boot menu (operator physically present + explicit confirm before any cred scrape happens)
+- **Phase 3**: Hardware-bound key (TPM / YubiKey / Touch-ID-derived) replacing operator-passphrase; survives operator-passphrase forgetting; defeats the "USB stolen with both blob AND known UUID" attack
 - **Phase 4**: Per-AI distinct passphrases (each persona's creds encrypted with persona-specific key, so persona compromise doesn't leak peers)
 - **Phase 5**: Cross-cluster blob join via BFT (multi-cluster credential federation; composes with multi-tic-per-persona substrate)
 - **In-cluster GitLab migration** (future B-NNNN candidate) — removes external GitHub dep entirely; this row's substrate carries forward unchanged at GitLab scope
+
+## Phase 1 + Phase 2 composition (operator-confirmed)
+
+Aaron 2026-05-27: *"we can do both like you said this will be nice together"*. The two phases compose into a full credential-lifecycle substrate:
+
+```
+Boot menu (after Phase 1 + 2 both land):
+  1. Fresh install + fresh device-flow login                 (current default; uses gh quota)
+  2. Fresh install + operator-provided PAT                   (Phase 1 sub-target 2; bypasses device-flow)
+  3. Fresh install + restore from this USB's encrypted blob  (Phase 1 replay)
+  4. Fresh install + import from THIS PC's existing install  (Phase 2; operator-supervised)
+  5. Live mode (no install)                                  (current default)
+```
+
+Composition value:
+- **Multi-boot same USB same PC**: option 3 (Phase 1 replay) — no re-login, no gh-quota burn
+- **Fresh USB, PC has existing creds**: option 4 (Phase 2 harvest) — re-uses operator's existing setup work
+- **Fresh USB, fresh PC, operator has PAT**: option 2 (Phase 1 PAT) — bootstrap path
+- **All paths**: encrypted at-rest on USB ESP via Phase 1 substrate; Phase 2 reuses Phase 1's crypto module for the harvested-cred-blob
+
+The same UUID-bound-key + operator-passphrase derivation protects both Path A (write-back after login) and Path B (write-after-harvest from existing install). Single crypto module + single key-derivation pattern + two-source ingest = bandwidth-efficient substrate that doesn't fragment into per-path encryption schemes.
 
 ## Why P1
 
