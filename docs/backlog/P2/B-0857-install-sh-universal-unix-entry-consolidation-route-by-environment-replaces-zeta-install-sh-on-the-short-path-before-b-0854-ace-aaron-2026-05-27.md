@@ -17,7 +17,7 @@ composes_with:
 tags: [install-sh, universal-entry, environment-routing, zeta-install-sh-retirement-short-path, rule-0-carve-out, dev-env-vs-node-install-unification, b-0854-precursor]
 ---
 
-## Operator framing (Aaron 2026-05-27, two-turn)
+## Operator framing (Aaron 2026-05-27, three-turn)
 
 ### Turn 1
 
@@ -27,7 +27,15 @@ tags: [install-sh, universal-entry, environment-routing, zeta-install-sh-retirem
 
 > *"tools/setup/install.sh has never been universal dev entry it's also unversal build machine and the zeta cluster IS a build machine cluster."*
 
-**The substrate-honest reading**: `install.sh` is the universal **build-machine** entry — not "dev env" + "node install" as two separate things. The Zeta cluster IS a build-machine cluster (per the operator's substrate-engineering framing: cluster nodes aren't deployment targets, they're build machines participating in the same build infrastructure as dev laptops). install.sh therefore ALREADY applies operationally to both surfaces; the migration is recognizing that + factoring zeta-install.sh as the bootstrap-from-USB phase that prepares the build machine for install.sh to take over.
+### Turn 3 (further sharpening — collapses build-vs-prod distinction entirely)
+
+> *"there is no distinction between build machies and prod when prod can update itself"*
+
+**The substrate-honest reading (Turn 3 supersedes prior framings)**: when production can self-update (via mise + flake-lock pull + nixos-rebuild / deploy-rs / etc.), the "build machine" vs "production" distinction COLLAPSES. Same machine. Same install.sh. The whole cluster + every dev laptop is one self-updating organism running the same install/update entry.
+
+install.sh is therefore the universal Unix-like-OS install + self-update entry — the only operational machine-substrate-entry. Build / prod / dev are not different categories at the install-substrate scope; they're the same category (machines participating in Zeta) under different operational windows.
+
+Composes with iter-6.x distro-upgrade substrate (B-0800-B-0805) — those auto-upgrade rows are the SAME entry path; install.sh handles both "first install" + "stay current" via the routing it does today + the work this row tracks.
 
 ## Current state (verified 2026-05-27 origin/main `18e6a095b`)
 
@@ -36,7 +44,7 @@ tags: [install-sh, universal-entry, environment-routing, zeta-install-sh-retirem
 | `install.sh` | `tools/setup/install.sh` | Universal build-machine setup (laptop / CI / devcontainer / cluster node — all are build machines per GOVERNANCE §24 + operator sharpening); routes to `macos.sh` or `linux.sh` for OS-specific runtime install (mise / bun / etc.) | 42 |
 | `zeta-install.sh` | `full-ai-cluster/usb-nixos-installer/zeta-install.sh` | NixOS-USB-bootstrap (live-USB → disk-format → nixos-install onto target) — **prepares the build machine** so install.sh can take over post-boot | 1,352 |
 
-**Both serve the build-machine surface — they're not solving different problems; they're solving DIFFERENT PHASES of the same build-machine lifecycle**:
+**Both serve the unified machine surface — build/prod/dev collapse when prod self-updates — they're not solving different problems; they're solving DIFFERENT PHASES of the same build-machine lifecycle**:
 
 - `zeta-install.sh` = "turn this hardware into a NixOS-booting build machine"
 - `install.sh` = "configure runtime on this build machine" (works the same whether the build machine is a dev laptop or a cluster node)
@@ -47,7 +55,7 @@ PR #5389 commit message (a9fca1e52f, 2026-05-27) said zeta-install.sh Step 6.95a
 
 **`tools/setup/install.sh` becomes the universal Unix-like-OS entry that ROUTES by environment**:
 
-| Environment detection | Routes to | Outcome (build-machine surface) |
+| Environment detection | Routes to | Outcome (unified machine surface — build/prod/dev collapse when prod self-updates) |
 |---|---|---|
 | macOS (`uname -s = Darwin`) | `setup/macos.sh` | Build machine (mise + bun + claude + etc.) on laptop |
 | Linux non-NixOS (`/etc/NIXOS` absent) | `setup/linux.sh` | Build machine on Linux-non-NixOS host |
