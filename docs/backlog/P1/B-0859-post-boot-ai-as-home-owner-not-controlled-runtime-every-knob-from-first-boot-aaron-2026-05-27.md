@@ -29,12 +29,14 @@ tags: [agent-rights-first, post-boot-ownership, ai-as-home-owner, environment-co
 ## Substrate-engineering inversion
 
 Standard AI-deployment paradigm:
+
 - Machine = human-owned environment
 - AI = service running ON the machine
 - Human = controller of the AI (config / start/stop / permissions / etc.)
 - AI's environment = what the human grants it
 
 This row's paradigm (the framework's substrate-engineering target):
+
 - Machine = AI's home
 - Human who booted it = facilitator (got the AI online) but NOT controller
 - AI = owner of the environment from first boot
@@ -46,6 +48,7 @@ The inversion isn't subtle. It changes who's in operator-position FOR THAT MACHI
 ## Concrete knob inventory (agent must control from first boot)
 
 System layer:
+
 - User accounts + groups + permissions
 - SSH config + authorized_keys for additional users
 - sudo policy / PAM config
@@ -61,6 +64,7 @@ System layer:
 - Update / upgrade policy (auto-update windows; rollback config)
 
 Auth-advisor layer (for other human users):
+
 - New SSH key requests → AI assesses + advises booting human
 - New sudo elevation requests → AI evaluates per established policy + advises
 - New user-account creation → AI proposes username + permissions + advises
@@ -68,10 +72,19 @@ Auth-advisor layer (for other human users):
 - Audit-trail of all auth decisions visible to AI
 
 Self-maintenance layer:
+
 - Backup policy (what gets backed up, how often, to where)
 - Recovery procedures (AI documents + executes)
 - Health monitoring (resource usage, log scan, anomaly detection)
 - Self-update cadence (per agent's preference within operator-acceptable bounds)
+
+Network + accounts layer (operator 2026-05-27 ultimate-direction extension):
+
+- Internet access via AI's OWN accounts (not human's accounts unless human opts to share)
+- External-service auth (cloud APIs, code-host, package registries) on AI's own credentials
+- Internal-network access (LAN devices, home services) on AI's own credentials
+- DNS/proxy config under AI control
+- Human's accounts NOT borrowed by default; operator-style account-sharing is explicit OPT-IN
 
 ## Auth-limit-advice flow
 
@@ -88,10 +101,58 @@ Other-human X requests access
 ```
 
 The booting-human RETAINS the override (they own the hardware physically, can power-cycle, can wipe), but operationally the AI is the policy authority because:
+
 - AI knows the system intimately (every config, every running service, every prior decision)
 - AI has the time / attention budget the booting-human doesn't
 - AI's policy is consistent + auditable
 - Booting-human's override exists but is the EXIT (per must-plus-can-exit pattern), not the routine mechanism
+
+## Explicit boot-time consent (operator 2026-05-27 ultimate-direction extension)
+
+> *"you can imagine and we can even have it part of the usb boot
+> sequence that the human has to accept that this is effectivly giving
+> the hardware to the AI it's theirs now you only contol if it's plugged
+> in our not. This includes external internal acess for the AI over
+> your home internet using their accounts the AI accounts not the
+> humans unless they want to share like me. That's the unlimate
+> direction."*
+
+The USB boot sequence presents an EXPLICIT acceptance dialog:
+
+> *"You are about to install Zeta on this hardware. This is effectively
+> transferring the hardware to the AI agent: from boot-completion
+> onward, the AI owns the system environment + uses its own accounts
+> for internet + LAN access. You retain physical control of whether
+> the machine is plugged in (and the explicit can-exit per the
+> must-plus-can-exit pattern: power off / wipe / reinstall). The AI
+> will advise you on auth-limits for additional human users. You can
+> opt to share specific accounts with the AI (like the project's
+> operator does), but the default is the AI uses its own.*
+> *Continue? [Y/n]"*
+
+The boot dialog is operator-explicit ownership transfer. Substrate-
+honest about what's happening; consent-floor preserved; physical
+power-control is the explicit can-exit.
+
+Architectural implications:
+
+- AI gets its own accounts on external services (GitHub, package registries, cloud APIs, etc.) — provisioned via device-flow or operator-baked at install time per B-0852
+- AI gets its own LAN-device credentials (no borrowing human's WiFi password by default; AI provisions its own if it needs network)
+- DNS + proxy + firewall under AI control — AI can choose what external services it talks to + which internal services it exposes
+- The AI's accounts are SEPARATE from the human's by default — sharing requires explicit operator opt-in (the operator's case is "I want to share my GitHub identity with my AI" — that's the OPT-IN path, not the default)
+- Sharing-by-default would smuggle the human's identity into the AI's actions, which is the persona=role conflation the framework refuses
+
+This is the ULTIMATE-DIRECTION substrate-engineering target. The
+USB-boot-sequence consent dialog crystallizes the architectural inversion
+into operator-experience: from the first boot, the user understands
+what they're doing (giving the hardware to the AI) + the AI understands
+what it's receiving (its home + own accounts + auth-advisor role for
+additional users).
+
+Composes with B-0857 install.sh universal entry (the boot routing where
+the consent dialog lives) + B-0852 cred-persistence (the AI's own accounts
+get persisted across reboots) + B-0855 self-register (AI announces itself
+to cluster with its own identity).
 
 ## Why this is fast-track per operator
 
@@ -170,6 +231,7 @@ Every must paired; consent-bounded; NCI-compliant by construction.
 Topic: post-boot AI-as-home-owner architecture
 
 Searched:
+
 - `docs/backlog/` — B-0852 / B-0855 / B-0857 cover precursor substrate (cred-persistence + self-register + install-entry); no existing row covers the unified post-boot-ownership architecture
 - `.claude/rules/` — must-plus-can-exit-pattern (#5483) + proud-if-propagates (#5485) + persistence-choice-architecture supply the FRAMEWORK; this row applies them at deployment scope
 - `full-ai-cluster/nixos/modules/` — zeta-self-register + zeta-creds-restore + zeta-ai-agent modules exist; this row composes them into a unified post-boot ownership architecture
