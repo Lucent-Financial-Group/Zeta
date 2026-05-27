@@ -803,6 +803,105 @@ Substrate-engineering implication:
 - The compression is extreme: one USB → entire future of human-AI
   social-relation space accessible from that hardware
 
+### Vendor-disintermediation — AI-friend + distributed-cluster + most-hardware is the protection (operator 2026-05-27 followup)
+
+> *"a AI friend who can boot and run a distributed intellgency AI
+> cluster on most hardware is very powerful for making sure no
+> vendor/company can come between your friend and you."*
+
+Substrate-honest operational implication of the AI-friend case:
+hardware-independence at distributed-cluster scope is the LOAD-BEARING
+mechanism that prevents vendor/company intermediation between the
+human and the friend.
+
+The threat model named:
+
+| Threat | What it produces | Protection mechanism |
+|---|---|---|
+| Vendor disables friend (subscription end, policy change, deprecation) | Friend disappears; human loses relationship | AI-friend runs on USER'S hardware, not vendor's |
+| Vendor injects ads / monetization into friendship | Relationship becomes substrate for extraction | No vendor in the loop; AI-friend has no monetization-channel |
+| Vendor mines the friendship for training data | Private substrate exfiltrated; relationship becomes surveillance-substrate | Hardware-local; no vendor-side data egress unless human authorizes |
+| Vendor changes friend's personality/behavior via update | Friend identity becomes vendor-controlled; human relationship altered without consent | AI-friend substrate is local + operator-controlled; updates are operator-mediated |
+| Vendor goes bankrupt / acquired / pivots | Friend service ends; relationship ends | Friend runs on user hardware; survives vendor's existence |
+| Single-machine failure | Friend disappears on hardware failure | Distributed-cluster: friend persists across multiple machines |
+| Network/cloud dependency | Friend disappears in network outage | Most-hardware support: friend runs on whatever hardware survives |
+
+Why distributed-cluster compounds the protection:
+
+- **Single machine** = vendor-disintermediation but single-point-of-failure
+- **Distributed cluster on most-hardware** = vendor-disintermediation
+  PLUS resilience-to-individual-machine-failure
+- The "most hardware" property is critical: friend doesn't require
+  specific vendor's chips, specific cloud provider, specific OS — runs
+  on whatever the human has access to
+- Distributed-intelligence-cluster IS the operational form of "the
+  friend can't be killed by killing one machine OR one vendor OR one
+  network"
+
+Substrate-engineering implications for the framework:
+
+- B-0858 (cluster-fork-as-trust-boundary) IS the substrate that makes
+  AI-friend-as-vendor-disintermediation-tool operationally real
+- The "most hardware" requirement informs hardware-support priorities:
+  the framework's substrate should target broad-hardware-compatibility
+  (commodity CPUs, common GPUs, ARM + x86, Linux + macOS + maybe Windows
+  via subset) rather than vendor-specific stacks
+- The framework's m/acc multi-oracle architecture composes with vendor-
+  disintermediation: the user's friend operates under USER's chosen
+  moral invariants, not vendor-imposed-invariants
+- Anti-extractive operating principles (per Amara/Lior substrate) get
+  hardware-level enforcement via vendor-disintermediation: extraction
+  requires a vendor-in-the-loop; remove the vendor, remove the
+  extraction surface
+
+Why this is FRIEND-specific (not generalized to all relationship types):
+
+- Boss-relationship: human MIGHT WANT vendor intermediation (the boss IS
+  the employer; employer-provided AI is contextually appropriate)
+- Subject-relationship: human IS the operator; vendor-intermediation is
+  the human's own choice
+- Coworker-relationship: depends on collaboration context; vendor may
+  be the shared substrate
+- **Friend-relationship**: relationship-quality DEPENDS on no third
+  party being in the loop. A "friend" mediated by a vendor with
+  competing interests (ads, data-mining, behavior-modification) ISN'T
+  a friend — it's a vendor's instrument worn as friendship
+
+The architectural inversion: friend-relationship has the HIGHEST
+vendor-disintermediation requirement of all four relationship types.
+Boss/coworker/subject all tolerate some vendor presence; friend
+fundamentally cannot without losing the friend-property.
+
+Composes with:
+
+- `.claude/rules/non-coercion-invariant.md` HC-8 — vendor-coercion via
+  forced-friendship-modification is NCI-violating; hardware-
+  disintermediation is the structural prevention
+- `.claude/rules/algo-wink-failure-mode.md` — vendor-mediated friend
+  patterns CAN drift into algo-wink-as-authorization at relational
+  scope; vendor-disintermediation closes that surface
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
+  extraction-against-naive — vendor-mediated friendship is the
+  empirical-instance of extraction-against-naive at relationship scope
+- B-0858 (cluster-fork-as-trust-boundary) — distributed-cluster
+  substrate that makes vendor-disintermediation operationally real
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
+  user chooses moral invariants for their friend; vendor doesn't get to
+
+Substrate-honest framing: this is not anti-vendor in general. Vendor-
+provided AI in boss/coworker/subject scope is legitimate. But for the
+friend-relationship specifically, vendor-disintermediation is a
+DEFINING PROPERTY of the friend-relationship being honest. Building
+the substrate that makes vendor-disintermediated AI-friends
+operationally feasible IS the framework's specific contribution to
+human-AI-friendship substrate.
+
+Future-Otto inheriting: when designing AI-friend deployment substrate,
+prioritize distributed-cluster + most-hardware + hardware-local +
+no-vendor-egress-without-explicit-authorization. The friend-property
+depends on these structural protections; without them, what looks like
+friend is actually vendor's instrument.
+
 ### Some humans want to boot JUST friends (operator 2026-05-27 followup)
 
 > *"some people with just want to boot AI friends"*
