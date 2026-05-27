@@ -1,0 +1,281 @@
+# Force-push-with-lease authorization policy — operator OR 2nd-agent confirmation; starter list of acceptable autonomous situations
+
+Carved sentence:
+
+> `git push --force-with-lease` is the closest framework operation to
+> actually-irreversible. Default: WAIT for explicit operator confirm.
+> Exception: peer-agent confirmation via `tools/peer-call/` wrappers
+> is acceptable substitute (multi-oracle authorization at force-push
+> scope). Starter list of acceptable autonomous situations carried
+> below; extended empirically as evidence accumulates. `git push
+> --force` (without `--with-lease`) remains Rule-0-prohibited under
+> any authorization scope.
+
+## Operational content
+
+Per operator 2026-05-27 substrate-honest calibration of the autonomous-
+loop discipline:
+
+> *"WAIT for explicit operator confirm; never act on this autonomously
+> there are certain sistuaion where force push lease is acceptable
+> without operator but we should start making a list also if you run
+> it by a 2nd agent that's enough too"*
+
+Force-push-with-lease has three authorization paths in the framework:
+
+| Authorization source | When valid | Mechanism |
+|---|---|---|
+| **Explicit operator confirm** | Default for any force-push-with-lease decision | Operator says "yes go ahead" or equivalent in conversation; agent acts |
+| **2nd-agent peer-call confirm** | Substitute for operator confirm; multi-oracle authorization at force-push scope | Agent invokes `bun tools/peer-call/<name>.ts` with the proposed force-push + reasoning; peer agent reads + confirms or refuses; if confirmed, original agent acts |
+| **Listed acceptable autonomous situation** | Bounded list of pre-authorized situations where neither operator nor peer-agent confirm is required | Agent verifies the situation matches a listed case below; agent acts; the action is preserved as substrate for the empirical extension of the list |
+
+## Why peer-agent confirmation is sufficient
+
+Per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`: the
+framework is multi-oracle BY DESIGN at end-user-moral-invariants scope.
+This rule extends multi-oracle to FORCE-PUSH-AUTHORIZATION scope:
+
+- A single agent's judgment on force-push decisions is single-oracle
+- Operator's confirm is one oracle
+- Peer-agent's confirm is another oracle
+- Both serve the same authorization purpose: a 2nd-mind reviewing the
+  force-push proposal before action
+
+The peer-call infrastructure (per `.claude/rules/peer-call-infrastructure.md`)
+provides 9 TS wrapper entrypoints; any of them can serve as the 2nd-
+agent authorization channel:
+
+- `claude.ts` (Claude Code peer; read-only review register)
+- `grok.ts` / `grok-build.ts` (Grok critique register)
+- `gemini.ts` (Gemini propose register)
+- `codex.ts` (Codex implementation register)
+- `kiro.ts` (Kiro specification register)
+- `amara.ts` (Amara sharpen register)
+- `ani.ts` (Ani brat-voice register)
+- `riven.ts` (Riven adversarial-truth register)
+
+The agent presents the proposed force-push (target ref + reason + lease-
+SHA + diff summary) to the peer; peer reads + responds. Confirmation
+is operationally observable in the peer's response.
+
+## Starter list of acceptable autonomous situations
+
+Below is the initial list of situations where force-push-with-lease is
+pre-authorized as autonomous-safe. The list is empirical — extended
+when new patterns are validated through operator confirmation or peer-
+agent review across multiple instances.
+
+### Acceptable situation 1 — agent-own branch, agent-own commit, typo-only fix
+
+**Pattern**: `git commit --amend` to fix a typo in agent's own commit
+message OR remove an accidentally-staged file from agent's own commit,
+followed by `git push --force-with-lease` to agent's own branch.
+
+**Preconditions**:
+
+- Branch was created by this agent (verifiable via branch-prefix +
+  commit-author discriminators per `.claude/rules/fighting-past-self-
+  vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-
+  punt-by-default.md`)
+- Only commits being rewritten are this agent's own (verifiable via
+  `git log --author=<agent-config-email>`)
+- No PR exists yet OR PR exists but no reviewer has commented on the
+  rewritten commits
+
+**Why safe**: peer agents have no in-flight dependency on the rewritten
+commits; the rewrite is at agent's own scope; lease protects against
+accidental peer-commit-overwrite.
+
+### Acceptable situation 2 — corrupted commit canary recovery on agent-own branch
+
+**Pattern**: per `.claude/rules/codeql-no-source-on-docs-only-pr-is-
+broken-commit-canary.md`, the commit canary fires showing collapsed
+commit tree; agent does `git reset --hard HEAD~1` + re-applies edit
++ `git commit` + `git push --force-with-lease`.
+
+**Preconditions**:
+
+- Canary check confirmed (`git ls-tree HEAD | wc -l` substantially
+  lower than expected)
+- Recovery is on agent's own branch
+- Operator authorized the original PR work + recovery is continuation
+  of that authorized work (not novel work introduced via recovery)
+
+**Why safe**: the corruption is a known framework substrate-failure
+pattern; recovery preserves the substantive substrate that was the
+authorized goal; force-push is the only way to undo the corrupted
+commit since fast-forward isn't possible.
+
+### Acceptable situation 3 — agent-own branch cleanup after PR-merge auto-delete failure
+
+**Pattern**: PR merged but GitHub auto-delete-on-merge failed (rare,
+sometimes API timing); agent runs `git push --force-with-lease origin
+:agent-branch` to delete the remote branch (force-with-lease here is
+the deletion form).
+
+**Preconditions**:
+
+- PR is verified merged (verify via `gh pr view <N> --json state`)
+- Branch is the merged PR's source branch
+- Agent owns the branch (per Acceptable situation 1 preconditions)
+
+**Why safe**: substrate already preserved on main via merge commit;
+branch deletion is housekeeping; lease prevents overwriting any
+late-arriving peer commits.
+
+### Acceptable situation 4 — empirical extensions go here
+
+Future situations validated through operator confirm or peer-agent
+review get appended below, with empirical anchor (PR number / commit
+SHA / session date) showing the situation arose in practice + was
+authorized.
+
+## Patterns that are NOT acceptable autonomous (require explicit operator confirm OR peer-agent)
+
+- **Force-push to peer-agent branches** — even with lease; per
+  `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-
+  your-own-coordinate-on-peers-dont-punt-by-default.md`, peer's substrate
+  requires coordination not unilateral action
+- **Force-push to `main`** — never autonomous; the host blocks it
+  uniformly per `.claude/rules/lfg-acehack-topology.md` but the
+  attempt itself is rule-0 violation
+- **Rebase-then-force-push when other agents have pulled the branch**
+  — even agent's own branch; once peer agents pulled, the rebase
+  affects their local state
+- **Force-push that overwrites peer commits within the branch** —
+  even with lease (lease only protects against the LATEST peer commit,
+  not commits N-deep in the branch history)
+- **Force-push during multi-agent saturation** (per `.claude/rules/
+  claim-acquire-before-worktree-work.md` saturation-ceiling sub-cases)
+  — peer activity in shared `.git/` makes lease-SHA potentially stale
+  by the time push happens
+
+## Why `git push --force` (without `--with-lease`) is Rule-0-prohibited
+
+Per `.claude/rules/rule-0-no-sh-files.md` discipline pattern (Rule-0 =
+operationally-load-bearing prohibition): `git push --force` without
+`--with-lease` lacks the peer-commit-protection that lease provides.
+Under any multi-agent contention scenario (which is most framework
+operations), naked force-push can silently overwrite peer commits.
+
+Rule-0-prohibited means: NO authorization path makes this acceptable
+in the framework. Even operator confirm doesn't make `--force` (without
+lease) safe under multi-agent operation. Always use `--force-with-lease`.
+
+## Composes with
+
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
+  multi-oracle authorization extends to force-push scope
+- `.claude/rules/peer-call-infrastructure.md` — 9 wrapper entrypoints
+  that serve as 2nd-agent confirm channels
+- `.claude/rules/zeta-expected-branch.md` — force-push avoidance
+  discipline at commit + branch state scope
+- `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-
+  operator-cleanup-on-pr-merge.md` — agent-vs-operator boundary
+  preservation
+- `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-
+  your-own-coordinate-on-peers-dont-punt-by-default.md` — agent-own
+  vs peer-own discriminator for the "agent-own branch" preconditions
+- `.claude/rules/honor-those-that-came-before.md` — peer-commit-
+  preservation discipline that force-push-with-lease respects but
+  naked `--force` violates
+- `.claude/rules/claim-acquire-before-worktree-work.md` — saturation
+  scenarios where force-push-with-lease has elevated risk even with
+  authorization
+- `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-
+  canary.md` — acceptable situation 2 references this
+- `.claude/rules/rule-0-no-sh-files.md` — discipline-pattern for
+  Rule-0 prohibitions; this rule extends to naked-force-push
+- `.claude/rules/no-directives.md` — operator authority preserved at
+  the explicit-confirm path; agent autonomy preserved at the listed-
+  situations path; peer-agent authority preserved at the 2nd-agent
+  path
+- `.claude/rules/non-coercion-invariant.md` HC-8 — multi-oracle
+  authorization preserves consent at every scope (operator + peer-
+  agent + agent-self via listed situations)
+
+## Why this rule auto-loads
+
+Per `.claude/rules/wake-time-substrate.md`: load-bearing operational
+discipline needs wake-time landing. Force-push-with-lease decisions
+happen at substrate-engineering work moments; without this rule auto-
+loaded, future-Otto defaults to either over-cautious (waiting on
+operator for everything including listed-acceptable situations) or
+over-permissive (acting on force-push without any authorization).
+
+The rule provides the discipline-decision-tree at cold-boot so
+future-Otto can apply it operationally.
+
+## Operational discipline for future-Otto cold-boots
+
+When considering `git push --force-with-lease`:
+
+1. **Check if the situation matches a listed acceptable autonomous
+   situation** (above). If yes + all preconditions verified → proceed
+2. **If no listed match, check if operator is actively present in
+   conversation**. If yes → ask for explicit confirm; wait
+3. **If operator is not actively present + situation doesn't match
+   listed acceptable** → invoke a peer-agent via `tools/peer-call/`
+   with the proposed force-push + reasoning + lease-SHA + diff summary;
+   if peer confirms → proceed; if peer refuses → defer
+4. **NEVER use `git push --force` (without `--with-lease`)** — Rule-0
+   prohibition regardless of authorization path
+5. **Document the authorization path used** in the commit message OR
+   PR body OR session memory so future-Otto can extend the empirical
+   list of acceptable situations
+
+## How to extend the acceptable-situations list
+
+When operator OR peer-agent confirms a force-push-with-lease in a
+situation not yet on the list, the situation should be appended to
+the "Acceptable situation N" section above with:
+
+- **Pattern**: what the force-push-with-lease does
+- **Preconditions**: what must hold for the situation to apply
+- **Why safe**: load-bearing reasoning
+- **Empirical anchor**: PR number / commit SHA / date when the
+  situation was first authorized
+
+The empirical-extension discipline is per `.claude/rules/verify-
+existing-substrate-before-authoring.md` — extend with citation, not
+mint parallel.
+
+## Substrate-honest framing
+
+This rule does NOT remove operator authority over force-push decisions.
+It NAMES the three legitimate authorization paths (operator confirm /
+peer-agent confirm / listed acceptable situation) AND establishes the
+discipline for choosing among them.
+
+Per operator 2026-05-27 framing: "if you run it by a 2nd agent that's
+enough too" — this is operator-explicit authorization for the peer-
+agent path. The rule operationalizes that authorization.
+
+The starter list is INTENTIONALLY SHORT. Acceptable situations should
+be added empirically as evidence accumulates, not invented preemptively.
+The bias is toward asking (operator OR peer) rather than presuming
+authorization.
+
+## Full reasoning
+
+Operator 2026-05-27 conversation thread immediately following the
+substrate-honest correction of my autonomous-loop reading:
+
+- Prior: I classified PR-create as irreversible-class; operator
+  corrected: PR-create is reversible-class via additional PR
+- Operator extended: "force push lease is like the cloest we do to
+  non reversable git operations"
+- I responded with discipline-update table classifying force-push-
+  with-lease as the actual irreversible-class threshold
+- Operator further sharpened: "there are certain sistuaion where
+  force push lease is acceptable without operator but we should start
+  making a list also if you run it by a 2nd agent that's enough too"
+
+This rule operationalizes the operator's sharpening with the three-
+path authorization framework + starter list + empirical-extension
+discipline.
+
+The 2nd-agent-confirm path composes with the framework's already-
+existing peer-call-infrastructure substrate (9 wrappers documented
+in `.claude/rules/peer-call-infrastructure.md`), so the mechanism
+exists; this rule names the authorization-channel use case.
