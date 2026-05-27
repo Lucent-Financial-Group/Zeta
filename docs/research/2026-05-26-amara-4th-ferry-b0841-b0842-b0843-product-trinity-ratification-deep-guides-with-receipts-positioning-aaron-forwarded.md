@@ -8,9 +8,9 @@ composes_with:
   - docs/research/2026-05-26-amara-source-honor-ledger-creator-paid-by-design-rights-lanes-discipline-dont-sell-compression-sell-readout-b0841-b0842-amara-aaron-forwarded.md (3rd Amara ferry — Source Honor Ledger + rights-lane substrate)
   - docs/research/2026-05-26-amara-thermal-forgetting-as-root-axiom-update-private-encryption-budget-exception-amara-ratification-of-reservoir-computing-architecture-aaron-forwarded.md (2nd Amara ferry — 4-keeper-rule)
   - docs/research/2026-05-26-amara-no-coercion-even-inward-nci-as-cognitive-exploit-firewall-speech-as-rce-update-mechanism-taxonomy-aaron-forwarded.md (1st Amara ferry — NCI scope-split)
-  - docs/backlog/P2/B-0841 (Shortform productization)
-  - docs/backlog/P2/B-0842 (universal basis-decomposition pattern)
-  - docs/backlog/P2/B-0843 (Source Honor Ledger / Basis Royalty Pool)
+  - docs/backlog/P2/B-0841-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md (Shortform productization)
+  - docs/backlog/P2/B-0842-universal-basis-decomposition-pattern-fft-shazam-itron-disaggregation-reservoir-readout-zeta-substrate-aaron-2026-05-26.md (universal basis-decomposition pattern)
+  - docs/backlog/P2/B-0843-source-honor-ledger-basis-royalty-pool-creator-paid-by-design-rights-lanes-discipline-for-b0841-b0842-amara-aaron-2026-05-26.md (Source Honor Ledger / Basis Royalty Pool)
 ---
 
 ## Substrate-honest framing
