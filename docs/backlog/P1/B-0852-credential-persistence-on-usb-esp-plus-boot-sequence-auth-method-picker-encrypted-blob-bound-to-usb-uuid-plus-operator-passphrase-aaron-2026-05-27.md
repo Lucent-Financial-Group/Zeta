@@ -42,11 +42,26 @@ Three composing sub-targets all land together as the smallest end-to-end working
 - Contents: `gh/hosts.yml` + `claude/credentials.json` + `gemini/oauth_creds.json` + `codex/auth.json` (per-vendor schemas)
 - Key derivation NEVER hits disk; passphrase typed at boot only
 
-### Sub-target 2 — Boot-sequence auth-method picker
+### Sub-target 2 — Boot-sequence auth-method picker (correct step layout)
 
-`zeta-install.sh` Step 6.9 (new) presents a menu BEFORE Step 6.95b (interactive auth):
+Current `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step layout (verified on origin/main `1740eead6`):
 
-```
+| Step | Owner | What it does |
+|---|---|---|
+| 6.5 | iter-4.2 | probe boot USB for operator SSH pubkey |
+| 6.55 | iter-5.3 (B-0792) | prompt-for-initial-password |
+| 6.6 | iter-5.2 (B-0792) | hostname injection |
+| 6.7 | iter-5.1 (B-0792) | wifi persistence |
+| 6.8 | iter-5.4.0 | homelab gh-auth + operator pubkey copy |
+| **6.81-6.83** | **B-0852 (NEW)** | **detection + escape-hatch banner + branch** |
+| 6.9 | iter-5.4.1 (B-0812) | self-registration commit+push |
+| 7 | iter-4 (B-0789) | print initial credentials |
+
+The auth-method picker integrates AS A NEW SUB-RANGE 6.81-6.83 between the existing Step 6.8 (gh-auth) and Step 6.9 (self-registration), preserving every existing step's number + meaning. Picker runs AFTER Step 6.8's gh-auth flow completes so it has access to both the just-acquired creds (for the persist path) AND the existing creds (for the detect/restore path).
+
+Picker menu shape (Step 6.82):
+
+```text
 GitHub authentication method:
   1) Restore from encrypted USB blob (requires passphrase) — DEFAULT if blob present
   2) Fresh device-flow login (current behavior; uses gh CLI quota)
@@ -58,7 +73,7 @@ Selection logic:
 
 - If `/esp/zeta-creds.enc` exists → default = (1); operator can override
 - If first boot of fresh USB → default = (3) since operator just created PAT per their stated workflow
-- Multi-vendor scope: the picker fires ONCE then applies the chosen method to ALL 3 vendors (claude/gemini/codex) in sequence
+- Multi-vendor scope: the picker fires ONCE then applies the chosen method to ALL 3 vendors (claude/gemini/codex) in sequence — vendor-CLI installs happen later in the install sequence (post-`nixos-install` first-boot scope); the picker captures the operator intent in `/esp/zeta-creds.enc` so first-boot vendor-CLI install can read the blob without re-prompting
 
 ### Sub-target 3 — Passphrase prompt + key derivation
 
