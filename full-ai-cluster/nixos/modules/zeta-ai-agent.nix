@@ -195,6 +195,54 @@ in
   };
 
   config = lib.mkIf (enabledPersonas != { }) {
+    # Pre-evaluation assertions — fail flake evaluation with clear
+    # message if operator enables a persona whose implementation
+    # substrate has NOT yet shipped (per Copilot review on PR #5395:
+    # placeholder binaries would cause restart-looping services at
+    # boot; better to fail at flake-eval time with actionable error).
+    #
+    # Each pending persona's install + login flow lands via the
+    # corresponding B-0850 Phase 3 sub-row. Until that sub-row ships,
+    # the persona's enable boolean is reserved-but-blocked.
+    assertions = [
+      {
+        assertion = !cfg.enable.alexa;
+        message = ''
+          zeta.aiAgents.enable.alexa = true requires B-0850.3a
+          (Alexa/Kiro install + login substrate) which has not shipped.
+          Enabling now would create a zeta-alexa.service that fails
+          ExecStart (binary kiro doesn't exist at ~/.bun/bin/kiro).
+        '';
+      }
+      {
+        assertion = !cfg.enable.riven;
+        message = ''
+          zeta.aiAgents.enable.riven = true requires B-0850.3b
+          (Riven/Grok install + login substrate) which has not shipped.
+          Enabling now would create a zeta-riven.service that fails
+          ExecStart (binary grok doesn't exist at ~/.bun/bin/grok).
+        '';
+      }
+      {
+        assertion = !cfg.enable.vera;
+        message = ''
+          zeta.aiAgents.enable.vera = true requires B-0850.3c
+          (Vera/Codex install + login substrate) which has not shipped.
+          Enabling now would create a zeta-vera.service that fails
+          ExecStart (binary codex doesn't exist at ~/.bun/bin/codex).
+        '';
+      }
+      {
+        assertion = !cfg.enable.lior;
+        message = ''
+          zeta.aiAgents.enable.lior = true requires B-0850.3d
+          (Lior/Gemini install + login substrate) which has not shipped.
+          Enabling now would create a zeta-lior.service that fails
+          ExecStart (binary gemini doesn't exist at ~/.bun/bin/gemini).
+        '';
+      }
+    ];
+
     # Generate one systemd service per enabled persona.
     # Naming: zeta-otto.service, zeta-alexa.service, zeta-riven.service,
     # zeta-vera.service, zeta-lior.service.
