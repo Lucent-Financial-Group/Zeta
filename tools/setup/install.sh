@@ -16,13 +16,19 @@
 # B-0857.2 routing (added 2026-05-27):
 #   - macOS (uname -s = Darwin)              -> setup/macos.sh
 #   - Linux non-NixOS (no /etc/NIXOS)        -> setup/linux.sh
-#   - NixOS installed (/etc/NIXOS, real /)   -> setup/linux.sh
-#     (NixOS-installed nodes get the same mise + bun + claude runtime
-#     setup as any Linux build machine; nixos-rebuild handles the
-#     NixOS-side declarative config)
-#   - NixOS live-USB (/etc/NIXOS, overlayfs) -> message pointing to
-#     zeta-install.sh (B-0857.3 will factor that body into a callable
-#     nixos-install-from-usb.sh; this routing stub lands first)
+#   - NixOS installed (/etc/NIXOS,           -> setup/linux.sh
+#     not docker, no /iso, no                   (NixOS-installed nodes get the same
+#     /run/initramfs)                            mise + bun + claude runtime setup
+#                                                as any Linux build machine; nixos-
+#                                                rebuild handles the NixOS-side
+#                                                declarative config)
+#   - NixOS docker test harness (/etc/NIXOS  -> setup/linux.sh (treated as installed;
+#     + /.dockerenv from B-0849 docker          discriminator-2 short-circuit)
+#     test harness)
+#   - NixOS live-USB (/etc/NIXOS + /iso OR   -> message pointing to zeta-install.sh
+#     /run/initramfs canonical installer-       (B-0857.3 will factor that body into
+#     ISO markers)                              a callable nixos-install-from-usb.sh;
+#                                                this routing stub lands first)
 #
 # Per B-0857 operator framing (Aaron 2026-05-27): install.sh is the
 # universal Unix-like-OS install + self-update entry — "there is no
@@ -41,38 +47,38 @@ echo "Repo root: $REPO_ROOT"
 #
 # Outputs one of: "nixos-live", "nixos-installed", "linux-non-nixos".
 # Caller decides routing.
+#
+# Discriminator priority (per B-0849 docker-test-harness composition):
+#   1. /etc/NIXOS marker → NixOS (else linux-non-nixos)
+#   2. /.dockerenv → installed (Docker container, e.g., the B-0849
+#      docker-nixos-install-sh-test harness, which manually creates
+#      /etc/NIXOS to exercise the NixOS userspace path; Docker uses
+#      overlayfs at root which would false-positive on the live-USB
+#      check, so the docker discriminator runs FIRST)
+#   3. /iso present OR /run/initramfs present → live-USB (the canonical
+#      NixOS-installer-ISO markers; these are what zeta-install.sh
+#      itself probes for in its boot-USB detection logic)
+#   4. Otherwise → installed (safer default; overlayfs-without-iso is
+#      more likely an unusual installed config than a live boot)
 detect_linux_flavor() {
   if [ ! -f /etc/NIXOS ]; then
     echo "linux-non-nixos"
     return 0
   fi
-  # /etc/NIXOS is present -> NixOS. Distinguish live-USB-mode from
-  # installed-mode by checking whether root is an overlay filesystem.
-  # Live NixOS installer ISO mounts root as overlayfs (read-only
-  # squashfs base + writable tmpfs upper); installed NixOS mounts
-  # root from a real filesystem (ext4 / btrfs / zfs / xfs / etc.).
-  local root_fstype=""
-  if command -v findmnt >/dev/null 2>&1; then
-    root_fstype="$(findmnt -no FSTYPE / 2>/dev/null || true)"
+  # Discriminator 2: Docker container short-circuits to installed
+  # (the B-0849 harness creates /etc/NIXOS manually but is not a
+  # live USB; its overlayfs root would otherwise false-positive).
+  if [ -f /.dockerenv ]; then
+    echo "nixos-installed"
+    return 0
   fi
-  # Fallback: /proc/mounts parse if findmnt not available.
-  if [ -z "$root_fstype" ] && [ -r /proc/mounts ]; then
-    root_fstype="$(awk '$2 == "/" { print $3; exit }' /proc/mounts 2>/dev/null || true)"
+  # Discriminator 3: canonical NixOS-installer-ISO markers.
+  if [ -d /iso ] || [ -d /run/initramfs ]; then
+    echo "nixos-live"
+    return 0
   fi
-  case "$root_fstype" in
-    overlay|overlayfs|tmpfs|aufs)
-      echo "nixos-live"
-      ;;
-    "")
-      # Detection itself failed; assume installed (safer default — live
-      # USB hands a clear overlay signal; missing signal more likely
-      # means an unusual installed config than a live boot)
-      echo "nixos-installed"
-      ;;
-    *)
-      echo "nixos-installed"
-      ;;
-  esac
+  # Discriminator 4 (default): installed.
+  echo "nixos-installed"
 }
 
 os="$(uname -s)"
