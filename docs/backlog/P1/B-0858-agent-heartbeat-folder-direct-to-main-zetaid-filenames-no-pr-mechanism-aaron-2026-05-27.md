@@ -34,9 +34,12 @@ tags: [agent-heartbeat, direct-to-main, no-pr, zetaid, 128-bit-id, externalized-
 - Kestrel review 2026-05-21: `memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md`
 
 ZetaID bit layout (128 bits):
+
 - version (5) + timestamp (48) + chromosome (5) + category (4) + firefly (1) + authority (5) + persona (8) + momentum (8) + location (8) + randomness (32)
 
 Each ZetaID encodes WHO + WHEN + WHAT-AUTHORITY + WHAT-MOMENTUM. Collision-free across agents by construction (persona field + 32-bit randomness + 48-bit timestamp).
+
+**Operator 2026-05-27 follow-up**: *"the ids are for easy lookup based many different bit id indexes built into the bits themselves so we can grep for things later, this does not have to be just heartbeat itd, it can be id for everything"* + *"we have the abiity to defined it per category, category is in the bits so could have a custom one for heartbeat"*. The structured bit fields ARE the lookup indices — grep on persona-bit pattern, authority-bit pattern, momentum-bit pattern, etc. Already-existing substrate: `registry/categories.yaml` defines Category=3=Heartbeat (along with Observation=0, Emission=1, Workflow=2). This row's writer tool (.3 sub-row) sets category bits to 3 when generating heartbeat IDs; other event categories use other slots in the same 16-slot enum.
 
 ### AgencySignature Convention v1 (already in use)
 
@@ -53,8 +56,9 @@ CLAUDE.md "Heartbeat-via-commit = externalized idle counter" — currently the h
 **New folder**: `docs/agent-heartbeats/<agent-persona>/<YYYY>/<MM>/<DD>/<zetaid>.md`
 
 Where:
+
 - `<agent-persona>` ∈ {otto, alexa, riven, vera, lior, ...} (canonical roster per `.claude/rules/agent-roster-reference-card.md`)
-- `<zetaid>` = base64url-encoded 128-bit ZetaID (collision-free; persona field matches the folder)
+- `<zetaid>` = base64url-encoded 128-bit ZetaID with category bits = 3 (Heartbeat per `registry/categories.yaml`); collision-free; persona field in the ZetaID matches the folder name
 - File contents: minimal heartbeat record (see schema below)
 
 **Branch protection exception**: this folder permits direct push to `main` without PR review. Other folders retain full PR gating; the carve-out is path-scoped via GitHub's branch protection rule patterns.
@@ -110,7 +114,9 @@ The brief-ack failure mode the operator caught 2026-05-27 (100+ "Quiet." emissio
 Topic: agent heartbeat folder + direct-to-main + ZetaID
 
 Searched:
+
 - `src/Core.TypeScript/zeta-id/zeta-id.ts` — FOUND (128-bit struct ZetaID; this row composes with)
+- `registry/categories.yaml` — FOUND (Heartbeat = category 3 ALREADY EXISTS; writer tool sets cat=3 on heartbeat IDs)
 - `tests/Tests.FSharp/ZetaId/` — FOUND (cross-verify harness; this row's TS writer composes)
 - `docs/zeta-id-v1-layout.yaml` — FOUND (canonical spec)
 - Kestrel review 2026-05-21 zeta-id-v1 — FOUND (review preserved in persona/kestrel/conversations/)
