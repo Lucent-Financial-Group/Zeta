@@ -100,7 +100,48 @@
     # for ongoing operator workflows (re-auth, ssh-key sync, future
     # node-register tooling).
     gh
+
+    # iter-5.5.0 (B-0848 Phase 2, Aaron 2026-05-27): nodejs for the
+    # node-local Claude Code agent. claude-code installs via npm to
+    # /home/zeta/.npm-global/ (per-user writable prefix; NixOS /nix/store
+    # is read-only so we can't `npm install -g` to the default location).
+    # zeta-install.sh Step 6.95 does the npm install + interactive
+    # `claude login` + credential persistence + repo pre-clone. nodejs
+    # in systemPackages means the installed system can re-install or
+    # update claude post-install without bootstrapping node first.
+    nodejs_22
+
+    # iter-5.5 NetBIOS tools (composes with services.samba below from
+    # the multi-protocol name-resolution work — PR #5387). Operator
+    # can run `nmblookup <node-name>` and `smbclient -L //<node-name>`
+    # from any cluster node to discover peers by NetBIOS name when
+    # mDNS multicast is filtered by the local network.
+    samba
   ];
+
+  # iter-5.5.0 (B-0848 Phase 2, Aaron 2026-05-27): user-local npm prefix
+  # on PATH for all login shells so `claude` (installed via
+  # `npm install -g` to /home/zeta/.npm-global/bin in zeta-install.sh
+  # Step 6.95) is reachable without manual PATH munging on first login.
+  #
+  # NPM_CONFIG_PREFIX tells npm where to install global packages for the
+  # current user; we use ~/.npm-global which is per-user-writable (vs
+  # the default npm prefix which points into /nix/store and is RO).
+  environment.sessionVariables = {
+    NPM_CONFIG_PREFIX = "$HOME/.npm-global";
+  };
+
+  # /etc/profile.d/ snippet so $HOME-relative PATH extension happens
+  # at shell-init time (NixOS sessionVariables stores literal `$HOME`
+  # which wouldn't expand correctly without per-shell init).
+  environment.etc."profile.d/zeta-user-paths.sh".text = ''
+    # iter-5.5.0 (B-0848): include user's npm-global bin on PATH so
+    # claude-code (and any other `npm install -g` user-scope binaries)
+    # are reachable without manual setup.
+    if [ -d "$HOME/.npm-global/bin" ]; then
+      export PATH="$HOME/.npm-global/bin:$PATH"
+    fi
+  '';
 
   boot.loader = {
     systemd-boot.enable = lib.mkDefault true;
