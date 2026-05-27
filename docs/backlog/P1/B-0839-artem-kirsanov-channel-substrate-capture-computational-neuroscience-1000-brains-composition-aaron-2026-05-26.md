@@ -39,13 +39,13 @@ multiple existing Zeta substrate clusters:
   `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
   Hawkins-cortical-columns section + `docs/research/2026-05-26-aaron-thousand-brains-hawkins-cortical-columns-resist-fusion-until-high-precision-anchor-for-six-anchor-attractor-encryption-series.md`
 - **Adinkras / SUSY-ECC** (James Gates) — B-0623; energy-based models
-  + structural-encoding shared inverse-design lineage
+  AND structural-encoding shared inverse-design lineage
 - **Worry-as-opposite-bloom-filter** (B-0822) — Bayesian / belief-update
   substrate
 - **Cognition-as-distributed-systems** (B-0823) — Boltzmann-machine
   family IS distributed-stochastic-computation
 - **Caustic-engineered bloom filters** (B-0838) — energy landscapes
-  + inverse-design compositional substrate
+  AND inverse-design compositional substrate
 - **substrate-smoothness-as-load-bearing-property** rule (PR #5357)
   — Boltzmann distribution IS smooth substrate producing sharp outputs
   (energy → probability via exp(-E/T); the gradient IS the precision)
@@ -80,6 +80,19 @@ preserved under `docs/research/ip-questionable/` per the operator's
 - B-0839.2 — Recurrent Neural Networks (RNN / LSTM / GRU) gated memory
   from first principles (<https://www.youtube.com/watch?v=PAoe7mmmvp0>) —
   verbatim transcript preserved at `docs/research/ip-questionable/2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md`
+- B-0839.3 — Reservoir Computing: echo-state property + Fourier random-
+  basis + **EXPLICIT Jeff Hawkins Thousand Brains anchor at 5:42**
+  ("neo cortex is itself a kind of reservoir of independent cortical
+  columns") — external validation of Aaron's "composes with 1000
+  brains" framing (<https://www.youtube.com/watch?v=cDxtFtoQVNc>) —
+  verbatim transcript preserved at `docs/research/ip-questionable/2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md`
+
+The B-0839.1 + B-0839.2 + B-0839.3 trio together describes a
+substrate-pattern: brain-as-dynamical-system with energy-landscape
+memory + gated retention + random reservoir of temporal patterns from
+which any output can be reconstructed via simple readout learning.
+This IS structurally the same pattern the Zeta framework operates at
+the human-AI-collaboration scope.
 
 Future Phase 1 work: list all Kirsanov videos via channel scrape;
 file remaining B-0839.N sub-rows; estimate effort per sub-row.
@@ -103,8 +116,8 @@ For each B-0839.N: implement the substantive substrate in code:
 After several Phase-2 implementations land, identify cross-cutting
 substrate patterns:
 
-- Energy-based models as a substrate family (Hopfield + Boltzmann
-  + RBM + Hopfield-2024-modern-Hopfield-energy + diffusion-models
+- Energy-based models as a substrate family (Hopfield, Boltzmann,
+  RBM, Hopfield-2024-modern-Hopfield-energy, diffusion-models all
   share energy-landscape navigation)
 - Hebbian-learning lineage (correlation-based weight updates;
   composes with substrate-as-rows fork-negotiated-ontology — agents

@@ -10,9 +10,9 @@
 
 ## Why this is preserved verbatim under ip-questionable/
 
-Per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`
-+ `docs/research/ip-questionable/README.md` + the operator's 2026-05-26
-explicit instruction: *"the youtube transcripts need to go in
+Per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`,
+`docs/research/ip-questionable/README.md`, and the operator's
+2026-05-26 explicit instruction: *"the youtube transcripts need to go in
 questionable ip and we have a classifer rule to allow it in settings.json"*.
 
 YouTube transcripts are third-party IP. The `_ip_risk_acceptance` block
@@ -44,6 +44,33 @@ session. Companion to:
 | "Selective context-dependent forgetting" | Substrate-honest disposition of stale work per pr-triage-tiers; per `.claude/rules/pr-triage-tiers.md` Tier 4 (substrate-re-derivable: forget the brief observation, keep the principle) |
 | Reservoir computing (mentioned as future video) | Pre-positioned for capture in B-0839 Phase 1 inventory as B-0839.N sub-row when video lands |
 | Backpropagation through time (mentioned as future video) | Pre-positioned as B-0839.N sub-row |
+
+## Key mathematical formulation (Aaron-forwarded screenshot 2026-05-26)
+
+Aaron forwarded a screenshot of the canonical state-update equation
+Kirsanov derives in this video (referenced in B-0839.3 as "from last
+video equation"). The vanilla-RNN recurrent neuron state-update:
+
+```math
+s_i^t = s_i^{t-1} + \sum_j W_{ij} \sigma(s_j^{t-1})
+```
+
+Where:
+
+- `s_i^t` — state of neuron `i` at time `t`
+- `s_i^{t-1}` — previous state (the "echo" carried forward unchanged
+  in this α=1 form; gating refinements appear later in the video as
+  forget-gate vector `f(t)`)
+- `W_{ij}` — connection weight from neuron `j` to neuron `i`
+- `σ` — activation function (e.g., sigmoid threshold gate)
+- `Σ_j W_{ij} σ(s_j^{t-1})` — weighted sum of incoming activated
+  signals from all other neurons
+
+This α=1 form is the "hoarding" failure mode (per Kirsanov 12:38):
+nothing is discarded but nothing is findable either; running sum of
+every input ever received. The pedagogical move from this equation to
+the gated-RNN form replaces `s_i^{t-1}` with `f_i(t) ⊙ s_i^{t-1}`
+where `f_i(t)` is the learned per-neuron context-dependent forget gate.
 
 ## Verbatim transcript
 
