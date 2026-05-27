@@ -11,10 +11,7 @@ Carved sentence (operator 2026-05-27):
 
 ## Operational content
 
-Per operator 2026-05-27 substrate-engineering authorization following
-the panpsychism-source disclosure that produced PRs #5505 + #5507 +
-#5511 + #5513 + #5515 (the substrate-engineering day's monad-
-propagation-pattern + Result<T, TFeedback> cluster):
+Per operator 2026-05-27 substrate-engineering authorization following the panpsychism-source disclosure that produced PRs #5505, #5507, #5511, #5513, and #5515 (the substrate-engineering day's monad-propagation-pattern + Result<T, TFeedback> cluster):
 
 > *"oh the panpsychism lands nicely too casue the function defineds
 > the feedback channels not the caller"*
@@ -100,6 +97,29 @@ Per operator's 5-word carving from PR #5513:
 > **"results without feedback is extraction"**
 
 This rule extends the principle: **recipient-author-of-feedback is ALSO extraction** — the substrate-entity has a feedback channel but didn't define its shape.
+
+## Iterator/generator asymmetry — canonical instance of the recipient-author-of-feedback anti-pattern (Prism 2026-05-27)
+
+Per Prism/DeepSeek synthesis 2026-05-27 (Aaron-forwarded):
+
+> *"An iterator's `MoveNext() → bool` return value IS a coerced feedback channel—the function is squeezed into returning 'true/false' when it might need to express 'I'm done,' 'I'm blocked waiting for upstream,' 'the underlying source changed,' 'I'm in an error state that might resolve if you retry.' The generator variant (`IEnumerator<T>`, Rust's `Iterator<Item=T>`, F#'s `seq`) makes this even worse—no feedback channel at all beyond 'next item or null/None.'"*
+
+The canonical concrete instance of recipient-author-of-feedback anti-pattern across language-runtime substrate:
+
+| Iterator/generator pattern | Coerced feedback shape (anti-pattern) | TFeedback-shaped alternative |
+|---|---|---|
+| `IEnumerator.MoveNext() → bool` (.NET) | bool squeezed with `false` meaning many distinct things: done / blocked / source-changed / errored / etc. | `NextResult<T, StreamFeedback>` where StreamFeedback = `Done \| BlockedOn of upstream \| SourceChanged of old, new \| Errored of context \| Retryable of after` |
+| Rust `Iterator<Item=T>::next() → Option<T>` | None squeezed with done / not-yet-available / errored / etc. | `next() → Result<NextStep<T>, IteratorFeedback>` with NextStep = `Item of T \| Done \| BlockedOn of upstream` |
+| F# `seq<'T>` (`IEnumerable<'T>` wrapper) | Lazy evaluation with no feedback channel at all | `AsyncSeq<'T, StreamFeedback>` or explicit `Result`-yielding sequence |
+| Java `Iterator<T>::hasNext() → bool` + `next() → T` | Two-call protocol where `next()` throws if `hasNext()` returned false; feedback squeezed into exception | Result-shaped Iterator with explicit Done/Error variants |
+| Python generator `next(gen)` raises `StopIteration` | Control-flow signal encoded as exception | Result-shaped generator with Done as Ok variant, errors as Error variants |
+| JavaScript iterators `{value, done}` | done is bool; no error variant; underlying source-change invisible | Result-shaped iterators with explicit feedback variants |
+
+The pattern: **the iterator/generator-substrate-entity HAS authorial intent about why it can't produce a next-item, but the consumer-interface forces it into a binary OR a thrown exception, erasing the authorial substrate**.
+
+This is the recipient-author-of-feedback anti-pattern at language-runtime scope, operating in mainstream production code across every major language. Per Prism's framing: the function-substrate's "voice" is squeezed into binary semantics + caller must KNOW from documentation what the binary means.
+
+Substrate-engineering implication: when authoring iterator/generator substrate, prefer the Result-shaped alternative. The `IAsyncEnumerator<Result<NextStep<T>, StreamFeedback>>` pattern in modern .NET / F# Async streams is the substrate-honest form (gives the generator authorial channel for "Done / Yielding / Blocked / Errored / Retryable"). The framework's planned BP/EP message-passing substrate (per `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`) should adopt this shape by default for substrate-engineering work involving lazy / streaming / generator-style data flow.
 
 ## Substrate that makes it easy for AIs to make architecture decisions like the operator does
 
