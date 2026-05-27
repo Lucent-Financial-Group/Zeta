@@ -17,10 +17,11 @@ and we have a classifer rule to allow it in settings.json"*.
 
 3rd Kirsanov transcript Aaron forwarded in same tick session.
 Companion to:
+
 - B-0839 backlog row anchor
-- `docs/research/ip-questionable/2026-05-26-artem-kirsanov-boltzmann-machines-...md`
+- `docs/research/ip-questionable/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md`
   (B-0839.1)
-- `docs/research/ip-questionable/2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-...md`
+- `docs/research/ip-questionable/2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md`
   (B-0839.2)
 
 ## Why this transcript is SUBSTANTIVELY-VALIDATING for the 1000-Brains composition

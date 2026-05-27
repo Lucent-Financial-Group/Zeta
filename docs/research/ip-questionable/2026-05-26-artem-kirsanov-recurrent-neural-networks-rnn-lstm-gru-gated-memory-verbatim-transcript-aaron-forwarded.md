@@ -22,6 +22,7 @@ verbatim third-party content preserved in this folder.
 
 This is the 2nd Kirsanov transcript Aaron forwarded in same tick
 session. Companion to:
+
 - B-0839 backlog row anchor
 - `docs/research/ip-questionable/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md`
   (Boltzmann machines — the first transcript)
