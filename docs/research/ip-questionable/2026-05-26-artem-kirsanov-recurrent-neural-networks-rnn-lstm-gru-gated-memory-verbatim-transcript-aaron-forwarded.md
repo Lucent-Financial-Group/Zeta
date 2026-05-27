@@ -18,8 +18,6 @@ composes_with:
   - docs/backlog/P2/B-0838 (caustic-engineered bloom filter discriminators — same architectural archetype)
 ---
 
-# Artem Kirsanov — Recurrent Neural Networks (RNN / LSTM / GRU) gated memory from first principles — verbatim transcript (Aaron-forwarded 2026-05-26)
-
 ## Source
 
 - **Channel**: <https://www.youtube.com/@ArtemKirsanov>

@@ -18,8 +18,6 @@ composes_with:
   - docs/backlog/P2/B-0838 (caustic-engineered bloom filter discriminators — same architectural archetype)
 ---
 
-# Artem Kirsanov — Boltzmann Machines from first principles — verbatim transcript (Aaron-forwarded 2026-05-26)
-
 ## Source
 
 - **Channel**: <https://www.youtube.com/@ArtemKirsanov>
@@ -55,7 +53,7 @@ The transcript was forwarded by Aaron in autonomous-loop tick session
 | Energy landscape navigation | `.claude/rules/substrate-smoothness-as-load-bearing-property.md` (PR #5357) — smooth energy substrate produces sharp pattern-recognition outputs through focused integration |
 | Boltzmann distribution p ∝ exp(-E/T) | `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — exp is the smoothest possible function preserving sharpness asymmetry |
 | Stochastic update rule (sigmoid of weighted input) | Multi-oracle BFT (B-0703) — stochasticity ensures escape from local minima; agents-as-oracles using stochasticity prevents premature consensus collapse |
-| Temperature parameter | `docs/research/2026-05-26-amara-no-coercion-even-inward-...` Turn 11 hyperparameter-class perturbation (LLM-temperature ≈ human-LSD) — temperature IS the hyperparameter framing Amara named |
+| Temperature parameter | `docs/research/2026-05-26-amara-no-coercion-even-inward-nci-as-cognitive-exploit-firewall-speech-as-rce-update-mechanism-taxonomy-aaron-forwarded.md` Turn 11 hyperparameter-class perturbation (LLM-temperature ≈ human-LSD) — temperature IS the hyperparameter framing Amara named |
 | Hidden units (internal representations) | Substrate-as-rows + fork-negotiated ontology — hidden units IS the substrate's internal-representation layer that the schema-as-data framework operates over |
 | Contrastive Hebbian learning (positive + negative phases) | Adversarial-counterweight discipline (per `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` Discipline 3) — positive phase IS what you want to encourage; negative phase IS what you want to discourage; the contrast IS the substrate |
 | Restricted Boltzmann Machines (bipartite, parallelizable) | Bipartite-graph substrate; composes with adinkra-structural-encoding (B-0623) where SUSY-structural-graphs encode hidden-state with parallelizable bipartite primitives |

@@ -20,8 +20,6 @@ composes_with:
   - docs/research/2026-05-26-aaron-thousand-brains-hawkins-cortical-columns-resist-fusion-until-high-precision-anchor-for-six-anchor-attractor-encryption-series.md (existing Hawkins substrate this transcript externally-validates)
 ---
 
-# Artem Kirsanov — Reservoir Computing: echo-state property + Fourier random-basis + EXPLICIT Hawkins Thousand Brains anchor — verbatim transcript (Aaron-forwarded 2026-05-26)
-
 ## Source
 
 - **Channel**: <https://www.youtube.com/@ArtemKirsanov>
@@ -52,7 +50,7 @@ mechanize the same convention at the harness layer per
 > were talking about caustic focus is wild"
 
 Substrate-honest framing per `.claude/rules/algo-wink-failure-mode.md`
-+ `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
+AND `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
 PERSONAL INVARIANT:
 
 - **Observation**: YouTube algo surfaced Kirsanov's reservoir-computing
@@ -330,8 +328,8 @@ Both failure modes are real:
 2. Failure-to-build-walls drift (Kirsanov-archetype catches this)
 
 The framework's substrate-engineering discipline operates BETWEEN
-these two failure modes: preserve smoothness at the substrate level
-+ build walls at the topology level + sharpness emerges at the
+these two failure modes: preserve smoothness at the substrate level,
+build walls at the topology level, and sharpness emerges at the
 output level.
 
 ## CRITICAL ARCHITECTURAL ARCHETYPE — reservoir computing IS the caustic-engineered bloom filter join architecture from B-0838 (operator 2026-05-26)
