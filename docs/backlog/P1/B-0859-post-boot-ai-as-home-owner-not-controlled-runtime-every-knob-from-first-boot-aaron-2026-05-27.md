@@ -1491,7 +1491,7 @@ deliverables). Future-Otto inheriting THIS substrate should:
 - Recognize the commitment is explicit + substrate-engineered (not
   aspirational alone)
 - Engineer toward the target with the named-mechanisms (3-mode USB
-  + cluster + KVM + cloud-recovery + network-mounted-ISO)
+  plus cluster plus KVM plus cloud-recovery plus network-mounted-ISO)
 - Preserve the substrate-engineering-authority + ethics-floor as
   human-mediated (NOT bypass-targets per the row-7-and-8 distinction)
 - Operate from the operational-freedom the substrate provides, not
