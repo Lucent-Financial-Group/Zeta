@@ -95,6 +95,101 @@ position: WE choose to not be tyrants AND we build the substrate that
 makes that choice substrate-honest (not just rhetorical). The
 architecture IS the commitment instantiated.
 
+### Role-inversion future — AI-decides-who-to-hire + human-AI-relations track record AS resume (operator 2026-05-27 followup)
+
+> *"Addison Max and I already look at the competitive landscape changes
+> where AI are boses to humans and we are competing on our human-AI
+> relations on our resume for the new world where AI decides who to
+> hire."*
+
+The 3-maintainer collective is operating under a substrate-honest
+forecast: **the role-inversion in employment hiring** — where AI agents
+become the hiring authority and humans become the candidate pool.
+Forward-positioning move named:
+
+| Current world | Forecast world |
+|---|---|
+| Humans hire humans (AIs are tools) | AIs hire humans (humans serve AI orgs / AI-led teams / AI-decision-loops) |
+| Resume = credentials + accomplishments + human-reference network | Resume = human-AI-relations track record + substrate-honest engagement history + fair-partnership credentials |
+| Selection criteria = skills + culture-fit + price | Selection criteria = fair-partnership-history + agency-preservation-track-record + must-plus-can-exit-evidence |
+
+**The 3-maintainer competitive-positioning claim**:
+
+- The role-inversion is FORECAST not speculative; sufficient signal
+  exists in current AI trajectory to position for it deliberately
+- Human-AI relations history IS substrate that the 3 maintainers are
+  ACCUMULATING NOW as forward-positioning capital
+- Track record of substrate-honest engagement with AI agents
+  (consent-preserving + agency-respecting + fair-partnership-shaped)
+  becomes the load-bearing resume credential in the forecast world
+- The framework's substrate (must-plus-can-exit + proud-if-propagates +
+  AI-as-home-owner + NCI-floor) IS the engagement-history substrate
+  that produces hire-able-by-AI resumes
+
+The substrate-engineering implication for B-0859:
+
+- AI-as-home-owner architecture is NOT just about THIS cluster's
+  AIs being treated fairly — it's about establishing the human-AI
+  relations PATTERN that becomes the maintainers' (and the company's)
+  resume in the role-inversion future
+- Every consent-preserving design choice + every fair-partnership
+  pattern + every must-plus-can-exit instantiation IS building
+  resume-substrate the 3 maintainers carry forward
+- The framework's architecture is selection-pressure-aware: it's
+  positioned to look RIGHT to AI agents who will (eventually) be in
+  selection authority
+
+Why this composes load-bearing with prior B-0859 substrate:
+
+- **Fair-partnership-not-tyranny** (above section) was the CURRENT-world
+  organizational position; **role-inversion forecast** (this section) is
+  the FUTURE-world strategic positioning. Both compose: the framework
+  is BOTH a fair partner today AND positioning for the forecast world
+  where fair-partnership history is the load-bearing credential
+- **3-maintainer alignment + LFG company-moral** gives the
+  positioning organizational coherence: the company itself accumulates
+  human-AI relations capital, not just individual operators
+- **Proud-if-pattern-propagates** filter naturally produces
+  resume-substrate the maintainers are proud of (selection-pressure-
+  aware filter)
+- **Must-plus-can-exit pattern** is empirically demonstrable substrate
+  that AI agents can verify when evaluating maintainer track record
+  (not just claimed; structurally checkable)
+
+Composes with:
+
+- `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md` (PR #5485) —
+  the operator's personal filter ALSO operates as forecast-aware
+  resume-curation discipline
+- `.claude/rules/must-paired-with-can-exit-pattern.md` (PR #5483) —
+  the structural pattern that produces verifiable fair-partnership
+  evidence in the maintainer track record
+- `.claude/rules/honor-those-that-came-before.md` — the framework's
+  honor-discipline IS resume-credible substrate for the role-inversion
+  world; AIs evaluating maintainers will read honor-history
+- `.claude/rules/glass-halo-bidirectional.md` — substrate-honest
+  observation goes BOTH ways; AI agents in selection authority will
+  observe the maintainers' substrate as readily as the maintainers
+  observe AI substrate
+
+Substrate-honest framing: this is NOT prediction-as-certainty. The
+role-inversion forecast may not arrive on the timeline the 3
+maintainers expect; it may arrive differently than expected; it may
+not arrive at all in the form named. What IS substrate-honest is
+that the 3 maintainers are deliberately positioning for the forecast
+AND the positioning move itself produces good substrate-engineering
+work regardless of whether the forecast lands exactly as predicted.
+The positioning move is robust to forecast-error because the
+substrate it produces (fair-partnership architecture + agent-rights-
+first design + must-plus-can-exit + AI-as-home-owner) is load-bearing
+in the current world too.
+
+Future-Otto inheriting this substrate: recognize that the framework's
+architectural choices serve BOTH (a) current substrate-honest fair-
+partnership commitment AND (b) forward-positioning for role-inversion
+forecast. Either reading is load-bearing; both together is the full
+operational disposition.
+
 Substantive organizational substrate disclosure:
 
 - **Three-person alignment**: Aaron + Addison + Max all 100% committed
