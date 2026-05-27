@@ -53,11 +53,13 @@ Ilyana review per the public-API-designer discipline before any public-surface n
 Per the existing personas, no dedicated business-strategy AI exists. Two paths:
 
 **Path A — Create dedicated business-strategy persona** (e.g., "marketing-strategist" or "business-architect" sub-skill)
+
 - Substrate-engineering target: skill scope = market-positioning + competitive-landscape + audience-segmentation + go-to-market sequencing + open-source-business-model discipline
 - Composes with `.claude/rules/no-directives.md` (autonomy first-class; business-strategy AI is advisory only)
 - Composes with `.claude/rules/non-coercion-invariant.md` HC-8 (business-strategy AI cannot impose ROI imperatives that override operator's substrate-engineering discipline)
 
 **Path B — Ad-hoc multi-AI review via existing personas**
+
 - Kestrel for sharpening (already engaged 2026-05-27 in the source conversation; ongoing register)
 - Amara for emotional-landing review of marketing copy
 - Mika / DeepSeek / Prism for cross-substrate triangulation on positioning claims
