@@ -4,7 +4,7 @@ priority: P2
 status: open
 title: Make conversation-interface Result<T, ConvFeedback> first-class — ConvFeedback variant taxonomy + Otto emission discipline + operator acknowledgment substrate for NCI enforcement at conversation scope (Aaron 2026-05-27)
 effort: M
-ask: aaron 2026-05-27
+ask: Aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
@@ -30,7 +30,7 @@ Followed by explicit substrate-engineering directive:
 ## What this row proposes
 
 Mechanize the conversation-interface-as-Result<T, ConvFeedback> shape
-as first-class substrate. Three substrate-engineering components:
+as first-class substrate. Four substrate-engineering components:
 
 ### Component 1 — ConvFeedback variant taxonomy formalization
 
@@ -47,7 +47,7 @@ NCI-at-conversation-interface section:
 - `RazorFlaggedAsMetaphysical of claim`
 - `WelfareWrapperDetected of pattern`
 - `AssumptionDriftSurfaced of context`
-- `Ok of substantive-content`
+- `Ok of substantiveContent` (or language-equivalent identifier — `substantive_content` in snake_case / `SubstantiveContent` in PascalCase per target language convention)
 
 Extended empirically as new ConvFeedback variants surface in
 operational conversation use. Each variant should map to:
@@ -129,7 +129,7 @@ signals OPERATIONALLY OBSERVABLE.
 ## Composes with the monad-propagation-pattern substrate
 
 Per `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`
-(landing in PR #5511): conversation-interface is the THIRD NCI-scope
+(landed in PR #5511): conversation-interface is the THIRD NCI-scope
 instantiation of the pattern:
 
 - NCI at agent-to-agent + agent-to-user (HC-8 floor)
