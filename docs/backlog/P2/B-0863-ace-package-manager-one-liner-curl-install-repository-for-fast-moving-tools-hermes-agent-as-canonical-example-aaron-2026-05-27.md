@@ -127,6 +127,60 @@ Each becomes sub-row at `docs/backlog/P*/B-0863.M-...md` per the subdecimal sche
 - NOT immediate implementation priority (P2 — substrate-engineering target; lands incrementally per sub-row decomposition)
 - NOT a substitute for tracking actual brew formula updates (the fallback discipline still uses brew when current)
 
+## Declarative-mapping discipline (operator 2026-05-27 refinement)
+
+Per operator 2026-05-27 refinement:
+
+> *"they can still be declarative mappings to the oneliners like the rest of our ace package manger backlog"*
+
+The one-liner registry entries are NOT opaque shell-out commands. They are DECLARATIVE MAPPINGS that fit into Ace's broader declarative-mapping discipline (per B-0288 Ace package manager substrate + B-0824 package-manager-of-package-managers).
+
+### Declarative-mapping schema (sketched)
+
+```yaml
+- name: hermes-agent
+  vendor: NousResearch
+  category: ai-agent-harness
+  vendor_agnostic: true
+
+  # Declarative install mapping (Ace dispatches to right install
+  # method based on availability + freshness):
+  install_methods:
+    - method: brew
+      formula: hermes-agent
+      max_lag_days: 7              # if brew formula > 7 days behind upstream, fall through
+    - method: one_liner
+      url: https://hermes-agent.nousresearch.com/install.sh
+      shell: bash
+      trust_assumption: vendor_https + vendor_attribution
+      verify_pattern: "hermes-agent --version"
+    - method: github_release
+      repo: nousresearch/hermes-agent
+      asset_pattern: "hermes-agent-{version}-{os}-{arch}.tar.gz"
+      verify_pattern: "hermes-agent --version"
+```
+
+Same DECLARATIVE shape as Ace's broader package manager substrate — NOT opaque shell-out; structured mapping that Ace can dispatch on, verify, version-track, fallback between, audit, etc.
+
+### Why declarative-mapping composes load-bearing
+
+The framework's substrate-engineering discipline is consistent across substrate scopes:
+
+| Substrate scope | Declarative-mapping form |
+|---|---|
+| F# Result<T, TFeedback> | Discriminated-union TFeedback variants (declared in type signature) |
+| OPLE primitives | T-and-TFeedback at primitive scope (PR #5518) |
+| ConvFeedback variants | Discriminated-union conversation-substrate signals (B-0861) |
+| Brew manifest | Plain text (declared package names) |
+| `.mise.toml` runtime pins | TOML declarative-mapping (tool + version) |
+| Ace one-liner registry (THIS row) | YAML/JSON declarative-mapping (name + vendor + install_methods) |
+| ArgoCD Applications | YAML declarative-mapping (chart + version + values) |
+| K8s manifests | YAML declarative-mapping (kind + spec) |
+
+The pattern: **substrate-engineering work prefers DECLARATIVE MAPPINGS over imperative shell-out wherever possible** because declarative substrate is auditable + composable + version-trackable + supports retraction-native discipline.
+
+The Ace one-liner registry is declarative-mapping; the one-liner URL is a value within the mapping, not the entire substrate. Composes with `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` (landed PR #5516): the VENDOR (substrate-entity) defines the install script's content; the OPERATOR + Ace (recipient) declare how Ace should dispatch to it + acknowledge the trust-assumption.
+
 ## What this row IS
 
 - Substrate-engineering target for handling fast-moving tools that update faster than Homebrew can keep up
