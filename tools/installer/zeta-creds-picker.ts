@@ -15,7 +15,7 @@
 //   - tools/installer/zeta-cred-handlers.ts (B-0852.10; per-cred source validation)
 //   - tools/installer/zeta-creds-persist.ts (B-0852.2b; downstream consumer)
 //
-// Usage (called from zeta-install.sh Step 6.77 or operator terminal):
+// Usage (called from zeta-install.sh Step 6.95-picker or operator terminal):
 //   bun tools/installer/zeta-creds-picker.ts \
 //     --usb-uuid <uuid> \
 //     --output /esp/zeta-creds.enc \
@@ -156,7 +156,12 @@ export async function runPicker(
       continue;
     }
     bakeArgs.push(`${cred.id}=${valueSpec}`);
-    console.log(`   → baked (source: ${valueSpec.startsWith("@") ? "@file" : valueSpec.startsWith("env:") ? "env" : "literal"})`);
+    // SECURITY: source label computed from operator's choice letter, NOT
+    // from valueSpec (which contains the actual value/path/var-name).
+    // Avoids any chance of the value/path/var-name reaching console output
+    // through ternary-on-valueSpec inspection.
+    const sourceLabel = sourceChoice.startsWith("l") ? "literal" : sourceChoice.startsWith("f") ? "@file" : "env";
+    console.log(`   → baked (source: ${sourceLabel})`);
   }
   return bakeArgs;
 }
@@ -194,11 +199,19 @@ async function main(): Promise<number> {
   if (parsed.persona) persistArgs.push("--persona", parsed.persona);
   for (const a of bakeArgs) persistArgs.push("--bake-cred", a);
   if (parsed.dryRun) {
+    // SECURITY: build a redacted display variant that omits the env-var
+    // name (CodeQL clear-text-logging finding — passphraseEnv is tainted
+    // via env-access flow; do NOT echo its literal contents). Sibling
+    // discipline to zeta-creds-persist.ts + zeta-creds-restore.ts P0 fix.
     console.log(`\n=== DRY RUN — would invoke: ===`);
-    console.log(`  bun ${persistArgs.join(" ")}`);
+    const displayArgs = persistArgs.map((v, i) =>
+      i > 0 && persistArgs[i - 1] === "--passphrase-env" ? "<REDACTED>" : v
+    );
+    console.log(`  bun ${displayArgs.join(" ")}`);
     return 0;
   }
   console.log(`\n=== Invoking zeta-creds-persist... ===`);
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const result = spawnSync("bun", persistArgs, { stdio: "inherit" });
   if (result.status !== 0) {
     console.error(`zeta-creds-picker: persist failed (exit ${result.status})`);

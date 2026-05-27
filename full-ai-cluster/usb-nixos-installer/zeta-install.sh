@@ -1015,42 +1015,10 @@ sudo nixos-install \
 cleanup_symlinks
 trap - EXIT
 
-# ── Step 6.94: iter-6.x — B-0852.3a cred-picker (interactive bake-vs-defer at setup time) ──
-# Operator 2026-05-27 framing: "human interactive at setup time" + "ask
-# what declared creds you want to bake in vs go through device flow".
-#
-# Conditional on ZETA_CREDS_PICKER=1 + /etc/zeta/usb-uuid + a passphrase
-# source (env or file). Skipping is the default for backward compat with
-# automated/CI installs; opt-in for operator-driven USB flows.
-#
-# When invoked: reads tools/installer/zeta-creds-manifest.ts DEFAULT_MANIFEST
-# from the pre-cloned Zeta repo (cloned in 6.95a-bootstrap below — so this
-# step runs AFTER repo clone in the operator-invocation order; in practice
-# operator runs picker post-install via interactive shell rather than during
-# automated zeta-install.sh flow).
-#
-# This block documents the integration point + is conditional; default skip.
-if [ -n "${ZETA_CREDS_PICKER:-}" ] && [ "$ZETA_CREDS_PICKER" = "1" ]; then
-  echo "[iter-6.x] ── B-0852.3a cred-picker (operator interactive) ──"
-  if [ -d "$ZETA_HOME/Zeta" ] && [ -f /etc/zeta/usb-uuid ]; then
-    USB_UUID="$(cat /etc/zeta/usb-uuid)"
-    if [ -n "${ZETA_CREDS_PASSPHRASE:-}" ]; then
-      sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" \
-        bash -c "cd $ZETA_HOME/Zeta && ZETA_CREDS_PASSPHRASE='$ZETA_CREDS_PASSPHRASE' \
-          bun tools/installer/zeta-creds-picker.ts \
-            --usb-uuid '$USB_UUID' \
-            --output /esp/zeta-creds.enc \
-            --passphrase-env ZETA_CREDS_PASSPHRASE" || \
-        echo "[iter-6.x]   WARN: picker exited non-zero; cred-blob may be partial"
-    else
-      echo "[iter-6.x]   SKIP picker: ZETA_CREDS_PASSPHRASE not set"
-    fi
-  else
-    echo "[iter-6.x]   SKIP picker: prereq missing ($ZETA_HOME/Zeta exists? /etc/zeta/usb-uuid exists?)"
-  fi
-else
-  echo "[iter-6.x]   SKIP B-0852.3a cred-picker (set ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE + /etc/zeta/usb-uuid to enable)"
-fi
+# ── Step 6.94: B-0852.3a cred-picker stub ───────────────────────────
+# The actual picker invocation lives at Step 6.95-picker (below) which
+# fires AFTER 6.95a-bootstrap clones the repo + installs bun. This
+# header reserves the step number for forward references; no work here.
 
 # ── Step 6.95: iter-5.5.0 — claude-code install + credential persistence (B-0848 Phase 2) ──
 # Aaron 2026-05-27 ask: "wanna make this automatic on boot before i even
@@ -1171,6 +1139,33 @@ if [ -d "$ZETA_HOME" ]; then
   sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
     bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @openai/codex 2>&1 | tail -5' || \
       echo "[iter-5.5.0]   WARN: bun install codex FAILED — can retry post-reboot via 'bun install --global @openai/codex'"
+
+  # 6.95-picker — B-0852.3a cred-picker (operator interactive at setup time)
+  # Operator 2026-05-27 framing: "human interactive at setup time" + "ask what declared
+  # creds you want to bake in vs go through device flow".
+  #
+  # Runs AFTER 6.95a-bootstrap (repo + bun + mise present) and BEFORE 6.95b-* device-flow
+  # logins so picker decides per-cred bake-vs-defer + the device-flow steps handle the
+  # deferred subset.
+  #
+  # Default: SKIP (backward compat with automated installs). Opt-in via
+  # ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE + /etc/zeta/usb-uuid.
+  #
+  # SECURITY (Copilot review on PR #5450): the passphrase is FORWARDED VIA SUDO
+  # --preserve-env=ZETA_CREDS_PASSPHRASE, NOT inlined in bash -c arg-string (the
+  # latter leaked the literal passphrase into the process arglist visible to ps).
+  # The picker reads it via --passphrase-env which references the env-var-NAME only.
+  if [ -n "${ZETA_CREDS_PICKER:-}" ] && [ "$ZETA_CREDS_PICKER" = "1" ] && \
+     [ -f /etc/zeta/usb-uuid ] && [ -n "${ZETA_CREDS_PASSPHRASE:-}" ]; then
+    USB_UUID="$(cat /etc/zeta/usb-uuid)"
+    echo "[iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (operator interactive) ──"
+    sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
+      HOME="$ZETA_HOME" \
+      bash -c "cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /esp/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+        echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
+  else
+    echo "[iter-5.5.0]   SKIP 6.95-picker (set ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE + /etc/zeta/usb-uuid to enable)"
+  fi
 
   # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
   CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"
