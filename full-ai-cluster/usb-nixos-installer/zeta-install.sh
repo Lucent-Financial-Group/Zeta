@@ -570,15 +570,26 @@ echo
 
 # ── Step 6.56: B-0852.3b cred-blob passphrase prompt ────────────
 #
-# Supersedes PR #5638 with both Copilot P1 findings addressed from
-# the start:
-#   - line 574 / passphrase exposure window: passphrase held in
-#     NON-EXPORTED shell variable so it never appears in
-#     /proc/<pid>/environ; inline-set for the single sudo invocation
-#     at Step 6.95-picker only
-#   - line 1321 / unset only in picker-ran branch: shell var
-#     unconditionally unset after Step 6.95 picker block regardless
-#     of which branch ran
+# Two-step lifecycle for the operator-entered passphrase, designed
+# to minimize /proc/<pid>/environ exposure window:
+#
+#   - Step 6.56 (here): captured into the NON-EXPORTED shell
+#     variable ZETA_CREDS_PASSPHRASE_VAL. Bash shell variables
+#     without `export` live in the shell's own variable table but
+#     are NOT copied into /proc/<pid>/environ for child processes
+#     to read.
+#
+#   - Step 6.95-picker: inline-set
+#     `ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo
+#     --preserve-env=ZETA_CREDS_PASSPHRASE ...` exports the env
+#     var into the sudo subprocess ONLY (where the picker bash -c
+#     reads it via --passphrase-env). Parent installer shell never
+#     has ZETA_CREDS_PASSPHRASE exported.
+#
+#   - Step 6.95 post-picker: ZETA_CREDS_PASSPHRASE_VAL `unset`
+#     unconditionally after the if/else block so it fires whether
+#     the picker actually ran OR was skipped (env opt-out / file
+#     marker / missing UUID).
 #
 # Operator pain point 2026-05-27: "i'm witing on the tool to be
 # resable so i don't have to enter credentals over and over
@@ -1348,9 +1359,10 @@ if [ -d "$ZETA_HOME" ]; then
   # deferred subset.
   #
   # Default behavior (B-0852.3c flip, 2026-05-27): AUTO-ENABLE when
-  # both /etc/zeta/usb-uuid (PR #5637 closes this) and
-  # ZETA_CREDS_PASSPHRASE (PR #5638 closes this via Step 6.56 prompt)
-  # are present. Explicit opt-out via ZETA_CREDS_PICKER=0 (env or
+  # both /etc/zeta/usb-uuid (PR #5637 closes this) and the
+  # ZETA_CREDS_PASSPHRASE_VAL shell variable (populated by Step 6.56
+  # prompt; held non-exported per B-0852.3b-supersede discipline) are
+  # present. Explicit opt-out via ZETA_CREDS_PICKER=0 (env or
   # /etc/zeta/no-picker marker file).
   #
   # Rationale: with all 3 preconditions auto-populated by the install
@@ -1365,10 +1377,14 @@ if [ -d "$ZETA_HOME" ]; then
   #   2. /etc/zeta/no-picker marker file present
   #   3. Operator entered empty passphrase at Step 6.56 (no PASSPHRASE)
   #
-  # SECURITY (Copilot review on PR #5450): the passphrase is FORWARDED VIA SUDO
-  # --preserve-env=ZETA_CREDS_PASSPHRASE, NOT inlined in bash -c arg-string (the
-  # latter leaked the literal passphrase into the process arglist visible to ps).
-  # The picker reads it via --passphrase-env which references the env-var-NAME only.
+  # SECURITY: the passphrase is FORWARDED VIA SUDO --preserve-env=ZETA_CREDS_PASSPHRASE,
+  # NOT inlined in bash -c arg-string (the latter would leak the literal passphrase
+  # into the process arglist visible to ps). The picker reads it via --passphrase-env
+  # which references the env-var-NAME only. The env var name ZETA_CREDS_PASSPHRASE
+  # is set INLINE-IN-SUDO-INVOCATION (`ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL"
+  # sudo --preserve-env=ZETA_CREDS_PASSPHRASE ...`) so it lives in the sudo
+  # subprocess env only; the parent installer shell holds the secret in the
+  # NON-EXPORTED shell var ZETA_CREDS_PASSPHRASE_VAL, never exported anywhere.
   PICKER_OPT_OUT=0
   if [ "${ZETA_CREDS_PICKER:-1}" = "0" ]; then
     PICKER_OPT_OUT=1
