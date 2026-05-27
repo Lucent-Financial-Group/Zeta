@@ -358,6 +358,7 @@ jobs:
         # Per .claude/rules/dep-pin-search-first-authority.md
 
       - name: Sign ISO with cosign (keyless OIDC + Fulcio + Rekor)
+        id: sign
         env:
           # Pass ISO path via env (not direct ${{ }} interpolation in run:)
           # per the workflow's existing security discipline.
@@ -367,13 +368,15 @@ jobs:
           set -euo pipefail
           # --yes: skip interactive Fulcio confirmation (CI is non-interactive)
           # Output emitted alongside the ISO:
-          #   <iso>.bundle - cosign bundle containing signature, certificate,
-          #                  and transparency-log material.
+          #   <runner-temp>/<iso>.bundle - cosign bundle containing signature,
+          #                                certificate, and transparency-log material.
+          COSIGN_BUNDLE="${RUNNER_TEMP}/${ISO_NAME}.bundle"
           cosign sign-blob --yes \
-            --bundle "${ISO_PATH}.bundle" \
+            --bundle "${COSIGN_BUNDLE}" \
             "${ISO_PATH}"
           # Sanity: the verifier artifact must be present and non-empty.
-          test -s "${ISO_PATH}.bundle" || { echo "::error::Empty cosign bundle"; exit 1; }
+          test -s "${COSIGN_BUNDLE}" || { echo "::error::Empty cosign bundle"; exit 1; }
+          echo "bundle-path=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
           {
             echo "## ISO signed via sigstore (cosign keyless OIDC)"
             echo ""
@@ -401,6 +404,6 @@ jobs:
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: ${{ steps.iso.outputs.name }}.cosign
-          path: ${{ steps.iso.outputs.path }}.bundle
+          path: ${{ steps.sign.outputs.bundle-path }}
           if-no-files-found: error
           retention-days: 90
