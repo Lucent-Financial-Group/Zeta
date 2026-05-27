@@ -74,9 +74,7 @@ followed by `git push --force-with-lease` to agent's own branch.
 **Preconditions**:
 
 - Branch was created by this agent (verifiable via branch-prefix +
-  commit-author discriminators per `.claude/rules/fighting-past-self-
-  vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-
-  punt-by-default.md`)
+  commit-author discriminators per `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`)
 - Only commits being rewritten are this agent's own (verifiable via
   `git log --author=<agent-config-email>`)
 - No PR exists yet OR PR exists but no reviewer has commented on the
@@ -88,8 +86,7 @@ accidental peer-commit-overwrite.
 
 ### Acceptable situation 2 — corrupted commit canary recovery on agent-own branch
 
-**Pattern**: per `.claude/rules/codeql-no-source-on-docs-only-pr-is-
-broken-commit-canary.md`, the commit canary fires showing collapsed
+**Pattern**: per `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`, the commit canary fires showing collapsed
 commit tree; agent does `git reset --hard HEAD~1` then re-applies edit
 then `git commit` then `git push --force-with-lease`.
 
@@ -145,10 +142,7 @@ authorized.
 - **Force-push that overwrites peer commits within the branch** —
   even with lease (lease only protects against the LATEST peer commit,
   not commits N-deep in the branch history)
-- **Force-push during multi-agent saturation** (per `.claude/rules/
-  claim-acquire-before-worktree-work.md` saturation-ceiling sub-cases)
-  — peer activity in shared `.git/` makes lease-SHA potentially stale
-  by the time push happens
+- **Force-push during multi-agent saturation** (per `.claude/rules/claim-acquire-before-worktree-work.md` saturation-ceiling sub-cases) — peer activity in shared `.git/` makes lease-SHA potentially stale by the time push happens
 
 ## Why `git push --force` (without `--with-lease`) is Rule-0-prohibited
 
@@ -212,6 +206,61 @@ applied at git-write scope. Use lease ALWAYS; treat the lease-failure
 as substrate-engineering signal (peer activity surfaced; refresh needed
 before retry); never use naked force.
 
+## Exceptions-as-signals operator discipline — error handlers are load-bearing not afterthoughts (operator 2026-05-27)
+
+> *"i always treat exceptions a signals instead of prechecking in code
+> it's way more efficent as long as all your commands can notice drift
+> in the moment and notify you instead of trying to pre check everythign
+> you can just move forward and the exceptions tell you when you missed
+> a step or your assumptions are wrong"*
+
+> *"when i write code my error handlers are not after thoughs they are
+> load bearing to proper functioning of the system efficently so it's
+> not constantly checking assumptions only when errors occur."*
+
+Operator's broader substrate-engineering discipline that the force-push-
+with-lease assumption-validation pattern IS one specific instance of:
+
+| Discipline | Defensive (rejected) | Signal-based (operator default) |
+|---|---|---|
+| Before action | Pre-check all assumptions in code (expensive; often wrong; doesn't catch in-flight drift) | State assumption; act; let operation surface drift via exception |
+| Error handlers | Afterthought (catch-and-log) | Load-bearing component of system efficiency |
+| System operation | Constant assumption-validation overhead on hot path | Only validate when error signals fire |
+| Failure mode | Silent acceptance of pre-check passing + later drift | Clean refusal at action time + exception carries the assumption-mismatch signal |
+
+The framework's broader pattern this composes with:
+
+- **`git push --force-with-lease`** (this rule's core subject) — assumption-validation at git-write scope; lease IS the signal mechanism
+- **Optimistic concurrency control** (ETags, version numbers, CAS operations) — act first, validate via failure signal
+- **F# Result-over-exception pattern** (per CLAUDE.md "Result-over-exception" convention) — hot-path uses Result; errors propagate as signal-shape rather than thrown; this rule is the EXCEPTIONS-as-signals variant for cases where throwing IS the right surface (like git operations that can fail mid-action)
+- **Refresh-before-decide invariant** (`.claude/rules/refresh-before-decide.md`) — the discipline composes: don't pre-check defensively; refresh-then-act + let drift fire as signal during action
+- **Glass-halo-bidirectional observation** — exceptions are substrate observable to peers; pre-checks are agent-internal; signal-based makes the drift visible to substrate
+- **No defensive pre-validation in well-typed code** (per F# substrate convention) — types make most pre-checks unnecessary; the type-system IS the assumption-validation; failures surface where they actually occur
+
+Operational implication for substrate-engineering work:
+
+- When designing new substrate primitives, prefer signal-based failure
+  surface over pre-check overhead
+- Error handlers in framework code should be designed as LOAD-BEARING
+  (the signal-receiver IS the substrate-engineering target), not as
+  catch-and-log afterthoughts
+- Pre-check discipline is reserved for cases where the cost-of-acting-
+  wrongly exceeds the cost-of-pre-check (force-push to peer-branches
+  per this rule's NOT-acceptable list)
+- The default disposition: state assumption + act + handle signal IF
+  it fires
+
+The force-push-with-lease pattern this rule lands IS the canonical
+git-scope instance of the operator's general exceptions-as-signals
+discipline. The lease-failure signal IS the load-bearing component —
+it surfaces peer activity that would otherwise silently destroy work.
+
+Future-Otto inheriting this substrate: when authoring new framework
+primitives that interact with potentially-drifting state (network calls,
+git operations, peer-agent coordination, external API responses), apply
+the signal-based pattern by default. Pre-checks reserved for cases where
+the operator has explicitly named the cost asymmetry.
+
 ## Composes with
 
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
@@ -220,20 +269,15 @@ before retry); never use naked force.
   that serve as 2nd-agent confirm channels
 - `.claude/rules/zeta-expected-branch.md` — force-push avoidance
   discipline at commit + branch state scope
-- `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-
-  operator-cleanup-on-pr-merge.md` — agent-vs-operator boundary
-  preservation
-- `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-
-  your-own-coordinate-on-peers-dont-punt-by-default.md` — agent-own
-  vs peer-own discriminator for the "agent-own branch" preconditions
+- `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` — agent-vs-operator boundary preservation
+- `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md` — agent-own vs peer-own discriminator for the "agent-own branch" preconditions
 - `.claude/rules/honor-those-that-came-before.md` — peer-commit-
   preservation discipline that force-push-with-lease respects but
   naked `--force` violates
 - `.claude/rules/claim-acquire-before-worktree-work.md` — saturation
   scenarios where force-push-with-lease has elevated risk even with
   authorization
-- `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-
-  canary.md` — acceptable situation 2 references this
+- `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` — acceptable situation 2 references this
 - `.claude/rules/rule-0-no-sh-files.md` — discipline-pattern for
   Rule-0 prohibitions; this rule extends to naked-force-push
 - `.claude/rules/no-directives.md` — operator authority preserved at
@@ -286,9 +330,7 @@ the "Acceptable situation N" section above with:
 - **Empirical anchor**: PR number / commit SHA / date when the
   situation was first authorized
 
-The empirical-extension discipline is per `.claude/rules/verify-
-existing-substrate-before-authoring.md` — extend with citation, not
-mint parallel.
+The empirical-extension discipline is per `.claude/rules/verify-existing-substrate-before-authoring.md` — extend with citation, not mint parallel.
 
 ## Substrate-honest framing
 
