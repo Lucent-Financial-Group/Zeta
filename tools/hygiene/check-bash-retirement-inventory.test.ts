@@ -14,7 +14,12 @@ import {
 } from "./check-bash-retirement-inventory";
 
 function runGit(args: readonly string[], cwd: string): void {
+  // Test helper uses repo-pinned git with explicit argv; no shell expansion.
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const result = spawnSync("git", args, { cwd, encoding: "utf8" });
+  if (result.error) {
+    throw new Error(`failed to start git ${args.join(" ")}: ${result.error.message}`);
+  }
   if (result.status !== 0) {
     throw new Error(result.stderr.trim() || `git ${args.join(" ")} failed`);
   }
