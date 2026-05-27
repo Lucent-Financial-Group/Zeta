@@ -45,6 +45,7 @@ A `/tmp/zeta-cluster-state/` coordination directory where every cluster agent on
 ```
 
 Marker files are:
+
 - **Plain text or YAML** (operator-readable; debuggable)
 - **Atomic writes** (write to .tmp → rename; standard atomic-file-write pattern)
 - **TTL-based for locks** (no stale-lock-forever; agent checks mtime + assumes dead if > N min)
