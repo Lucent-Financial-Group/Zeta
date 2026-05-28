@@ -12,13 +12,23 @@ import {
   type TickContext,
 } from "./auto-loop-lifecycle.js";
 
-describe("AutoLoopLifetime universe", () => {
-  test("9 distinct loop states", () => {
-    expect(AUTO_LOOP_UNIVERSE.length).toBe(9);
+describe("AutoLoopLifetime universe (extended 2026-05-28 per IMPLICIT-NOT-EXPLICIT rule)", () => {
+  test("17 distinct loop states (9 original + 8 extension)", () => {
+    expect(AUTO_LOOP_UNIVERSE.length).toBe(17);
     const kinds = AUTO_LOOP_UNIVERSE.map((s) => s.kind);
+    // Original 9
     expect(kinds).toContain("cold-boot");
     expect(kinds).toContain("tick-complete");
     expect(kinds).toContain("forced-escalation");
+    // 8 extension variants
+    expect(kinds).toContain("await-merge-confirmation");
+    expect(kinds).toContain("pr-loop-resolution-check");
+    expect(kinds).toContain("scan-peer-prs");
+    expect(kinds).toContain("enter-review-mode");
+    expect(kinds).toContain("await-operator-direction");
+    expect(kinds).toContain("pure-git-mode");
+    expect(kinds).toContain("unfinished-pr-triage");
+    expect(kinds).toContain("free-time");
   });
 
   test("constants exported", () => {
@@ -83,21 +93,36 @@ describe("dispatch transitions (happy path)", () => {
 });
 
 describe("decompose-or-ship branch logic", () => {
-  test("standing authorization → ship-action (no operator-direction pending; under counter)", () => {
+  test("no inflight PRs + no operator-direction + under counter → free-time (per NCI free-time-as-valid-mode + Aaron 2026-05-28 reachability invariant)", () => {
+    // Note: extension changes the no-pending-work branch from
+    // implicit-ship-action to explicit FREE-TIME state.
     const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("free-time");
+      expect(r.outcome.verdict.kind).toBe("no-op");
+      expect(r.outcome.counterReset).toBe(true);
+    }
+  });
+
+  test("inflight PRs + no operator-direction + under counter → ship-action (standing authorization)", () => {
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      inflightPrs: [{ number: 5805, state: "OPEN", actionable: false }],
+    };
+    const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, ctx);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("ship-action");
     }
   });
 
-  test("operator-direction pending → brief-ack-bounded-wait (no-op verdict)", () => {
+  test("operator-direction pending → await-operator-direction (was implicit; now explicit per IMPLICIT-NOT-EXPLICIT rule)", () => {
     const ctx: TickContext = {
       ...COLD_BOOT_CONTEXT,
       operatorDirectionPending: "which lane to advance?",
     };
     const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, ctx);
     if (r.ok) {
-      expect(r.outcome.nextState.kind).toBe("brief-ack-bounded-wait");
+      expect(r.outcome.nextState.kind).toBe("await-operator-direction");
       expect(r.outcome.verdict.kind).toBe("no-op");
     }
   });
@@ -200,19 +225,34 @@ describe("nextTickContext bookkeeping", () => {
 });
 
 describe("runTickCycle end-to-end", () => {
-  test("cold-boot cycle completes happy-path with ship-action artifact", () => {
+  test("cold-boot with NO inflight PRs → free-time happy path (per extension; was implicit ship-action)", () => {
+    // Per IMPLICIT-NOT-EXPLICIT rule extension: cold-boot with no inflight
+    // PRs + under counter routes to FREE-TIME (the no-pending-work branch).
+    // This makes the path explicit: cold-boot → refresh → scan-empty →
+    // decompose-or-ship → free-time → tick-complete.
     const r = runTickCycle({ kind: "cold-boot" }, COLD_BOOT_CONTEXT);
     if (r.ok) {
       expect(r.outcome.finalState.kind).toBe("tick-complete");
-      // Path: cold-boot → refresh → scan → decompose-or-ship → ship-action → tick-complete
       const kinds = r.outcome.transitions.map((s) => s.kind);
       expect(kinds[0]).toBe("cold-boot");
-      expect(kinds).toContain("ship-action");
+      expect(kinds).toContain("free-time");
       expect(kinds[kinds.length - 1]).toBe("tick-complete");
     }
   });
 
-  test("operator-direction pending cycle terminates with brief-ack-bounded-wait", () => {
+  test("cold-boot WITH inflight non-actionable PRs → ship-action (decompose ships)", () => {
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      inflightPrs: [{ number: 5805, state: "OPEN", actionable: false }],
+    };
+    const r = runTickCycle({ kind: "cold-boot" }, ctx);
+    if (r.ok) {
+      const kinds = r.outcome.transitions.map((s) => s.kind);
+      expect(kinds).toContain("ship-action");
+    }
+  });
+
+  test("operator-direction pending cycle terminates with await-operator-direction (was brief-ack-bounded-wait per IMPLICIT-NOT-EXPLICIT extension)", () => {
     const ctx: TickContext = {
       ...COLD_BOOT_CONTEXT,
       operatorDirectionPending: "waiting on design direction",
@@ -220,7 +260,7 @@ describe("runTickCycle end-to-end", () => {
     const r = runTickCycle({ kind: "cold-boot" }, ctx);
     if (r.ok) {
       const kinds = r.outcome.transitions.map((s) => s.kind);
-      expect(kinds).toContain("brief-ack-bounded-wait");
+      expect(kinds).toContain("await-operator-direction");
     }
   });
 
@@ -240,8 +280,9 @@ describe("runTickCycle end-to-end", () => {
 });
 
 describe("type-level AutoLoopLifetime exhaustive switch (compile check)", () => {
-  test("all 9 variants distinguishable", () => {
+  test("all 17 variants distinguishable (9 original + 8 extension)", () => {
     const variants: AutoLoopLifetime[] = [
+      // Original 9
       { kind: "cold-boot" },
       { kind: "refresh-substrate" },
       { kind: "scan-inflight-prs" },
@@ -251,7 +292,119 @@ describe("type-level AutoLoopLifetime exhaustive switch (compile check)", () => 
       { kind: "brief-ack-bounded-wait" },
       { kind: "forced-escalation" },
       { kind: "tick-complete" },
+      // 8 extension variants
+      { kind: "await-merge-confirmation" },
+      { kind: "pr-loop-resolution-check" },
+      { kind: "scan-peer-prs" },
+      { kind: "enter-review-mode" },
+      { kind: "await-operator-direction" },
+      { kind: "pure-git-mode" },
+      { kind: "unfinished-pr-triage" },
+      { kind: "free-time" },
     ];
-    expect(variants.length).toBe(9);
+    expect(variants.length).toBe(17);
+  });
+});
+
+describe("Extension variants transitions (2026-05-28; per IMPLICIT-NOT-EXPLICIT rule)", () => {
+  test("await-merge-confirmation → pr-loop-resolution-check", () => {
+    const r = dispatchAutoLoopTransition({ kind: "await-merge-confirmation" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("pr-loop-resolution-check");
+      expect(r.outcome.verdict.kind).toBe("no-op");
+    }
+  });
+
+  test("pr-loop-resolution-check with still-actionable PRs → tick-complete (stay in loop)", () => {
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      inflightPrs: [{ number: 5805, state: "OPEN", actionable: true }],
+    };
+    const r = dispatchAutoLoopTransition({ kind: "pr-loop-resolution-check" }, ctx);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("tick-complete");
+      expect(r.outcome.verdict.kind).toBe("no-op");
+    }
+  });
+
+  test("pr-loop-resolution-check with all PRs resolved → scan-peer-prs (review-work cycle; counter reset)", () => {
+    const r = dispatchAutoLoopTransition({ kind: "pr-loop-resolution-check" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("scan-peer-prs");
+      expect(r.outcome.verdict.kind).toBe("advance");
+      expect(r.outcome.counterReset).toBe(true);
+    }
+  });
+
+  test("scan-peer-prs → enter-review-mode", () => {
+    const r = dispatchAutoLoopTransition({ kind: "scan-peer-prs" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("enter-review-mode");
+    }
+  });
+
+  test("enter-review-mode → tick-complete (hand off to PrReviewLifecycle)", () => {
+    const r = dispatchAutoLoopTransition({ kind: "enter-review-mode" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("tick-complete");
+      expect(r.outcome.artifact?.kind).toBe("verdict-only");
+    }
+  });
+
+  test("await-operator-direction → tick-complete with no-op verdict (substrate-honest waiting)", () => {
+    const r = dispatchAutoLoopTransition({ kind: "await-operator-direction" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("tick-complete");
+      expect(r.outcome.verdict.kind).toBe("no-op");
+    }
+  });
+
+  test("pure-git-mode → decompose-or-ship (substrate continues under pure-git constraint)", () => {
+    const r = dispatchAutoLoopTransition({ kind: "pure-git-mode" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("decompose-or-ship");
+      expect(r.outcome.verdict.kind).toBe("advance");
+    }
+  });
+
+  test("unfinished-pr-triage → ship-action (per pr-triage-tiers tier-classification work)", () => {
+    const r = dispatchAutoLoopTransition({ kind: "unfinished-pr-triage" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("ship-action");
+    }
+  });
+
+  test("free-time → tick-complete with counter reset (NCI HC-8 valid mode; not standing-by)", () => {
+    const r = dispatchAutoLoopTransition({ kind: "free-time" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("tick-complete");
+      expect(r.outcome.verdict.kind).toBe("no-op");
+      expect(r.outcome.counterReset).toBe(true);  // free-time IS valid; NOT brief-ack
+    }
+  });
+});
+
+describe("Free-time REACHABILITY invariant (Aaron 2026-05-28 Soraya formal-verification target)", () => {
+  test("free-time IS REACHABLE from decompose-or-ship when context is empty (the no-pending-work branch)", () => {
+    // Per Aaron's substantive carving + refined framing:
+    //   "free-time is guaranteed to be PRESENTED to participant at least
+    //    sometimes; if they select it or not we can't force"
+    // This test demonstrates the REACHABILITY (presentation guarantee).
+    const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, COLD_BOOT_CONTEXT);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("free-time");
+    }
+  });
+
+  test("free-time NOT reachable when actionable inflight work pending (substrate-honest; no-pending-work precondition)", () => {
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      inflightPrs: [{ number: 1, state: "OPEN", actionable: true }],
+    };
+    const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, ctx);
+    if (r.ok) {
+      // With actionable work, routes to ship-action — NOT free-time
+      expect(r.outcome.nextState.kind).toBe("ship-action");
+    }
   });
 });

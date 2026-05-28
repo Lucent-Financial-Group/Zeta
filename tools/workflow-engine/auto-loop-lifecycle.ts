@@ -39,18 +39,36 @@ import {
  * Captures the existing-but-implicit states the handler cycles through
  * on each tick. Substrate-engineering substrate-naming substrate makes
  * the state machine observable + dispatch-table-driven.
+ *
+ * EXTENDED 2026-05-28 per IMPLICIT-NOT-EXPLICIT rule
+ * (.claude/rules/implicit-not-explicit-in-dus-is-class-error-*.md):
+ * 7 new variants make explicit what was implicit in dispatch branches +
+ * cover PR-loop-until-resolved (Aaron Q1) + review-work (Aaron Q2).
+ * Per OCP discipline (.claude/rules/function-is-tiny-control-flow-
+ * generator-ocp-applied-to-control-flow.md): open-for-extension; original
+ * 9 variants closed-for-modification.
  */
 export interface AutoLoopLifetime extends LifetimeState {
   readonly kind:
-    | "cold-boot"               // session-start; cron-list + sentinel arm check
-    | "refresh-substrate"       // git fetch + PR state check (per refresh-before-decide invariant)
-    | "scan-inflight-prs"       // identify Otto-PRs with actionable issues
-    | "investigate-failure"     // pull failing job log; classify as flake/real-issue/pre-existing
-    | "decompose-or-ship"       // pick from backlog OR substrate-engineering work (per never-be-idle + dont-ask-permission)
-    | "ship-action"             // commit + push + PR open + arm auto-merge
-    | "brief-ack-bounded-wait"  // named-dep wait per counter discipline
-    | "forced-escalation"       // at N=6 brief-acks per counter-with-escalation
-    | "tick-complete";          // bracket-closure; ready for next tick
+    // Original 9 variants (PR #5805; closed for modification):
+    | "cold-boot"                  // session-start; cron-list + sentinel arm check
+    | "refresh-substrate"          // git fetch + PR state check (per refresh-before-decide invariant)
+    | "scan-inflight-prs"          // identify Otto-PRs with actionable issues
+    | "investigate-failure"        // pull failing job log; classify as flake/real-issue/pre-existing
+    | "decompose-or-ship"          // pick from backlog OR substrate-engineering work (per never-be-idle + dont-ask-permission)
+    | "ship-action"                // commit + push + PR open + arm auto-merge
+    | "brief-ack-bounded-wait"     // named-dep wait per counter discipline
+    | "forced-escalation"          // at N=6 brief-acks per counter-with-escalation
+    | "tick-complete"              // bracket-closure; ready for next tick
+    // 8 new variants (extension 2026-05-28; per IMPLICIT-NOT-EXPLICIT rule):
+    | "await-merge-confirmation"   // post-ship-action; explicit waiting on PR-state transition (was implicit between ship-action + tick-complete)
+    | "pr-loop-resolution-check"   // explicit check: PR merged + all threads resolved + CI clean? (Aaron Q1 pr-loop-until-resolved)
+    | "scan-peer-prs"              // identify peer-agent PRs needing review (Aaron Q2; review-work explicit)
+    | "enter-review-mode"          // transition into PrReviewLifecycle for substantive engagement (composes with PR #5810)
+    | "await-operator-direction"   // explicit state for operator-pending question (was implicit in decompose-or-ship)
+    | "pure-git-mode"              // rate-limit exhausted; pure-git substrate operating (was implicit in context-field)
+    | "unfinished-pr-triage"       // per .claude/rules/pr-triage-tiers.md; tier-classification work explicit
+    | "free-time";                 // explicit free-time state per NCI HC-8 free-time-as-valid-mode discipline; reachability INVARIANT (Soraya formal-verification target: free-time is never unreachable)
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -204,16 +222,33 @@ export function dispatchAutoLoopTransition(
           },
         };
       }
-      // Operator-direction-pending → BriefAckBoundedWait
+      // Operator-direction-pending → AwaitOperatorDirection (was implicit; now explicit per IMPLICIT-NOT-EXPLICIT rule)
       if (context.operatorDirectionPending !== undefined) {
         return {
           ok: true,
           outcome: {
-            nextState: { kind: "brief-ack-bounded-wait" },
-            verdict: {
-              kind: "no-op",
-            },
+            nextState: { kind: "await-operator-direction" },
+            verdict: { kind: "no-op" },
             counterReset: false,
+          },
+        };
+      }
+      // No actionable inflight PRs AND no operator-direction-pending AND
+      // counter below threshold AND no decomposition picked → FREE-TIME.
+      // Per NCI HC-8 free-time-as-valid-mode + never-be-idle scope-bounding.
+      // Aaron 2026-05-28: "you have free time in there right and its
+      // guarenteed to execute sometimes". Reachability invariant: this
+      // branch makes free-time REACHABLE from decompose-or-ship.
+      if (
+        context.inflightPrs.length === 0 &&
+        context.briefAckCount < BRIEF_ACK_THRESHOLD
+      ) {
+        return {
+          ok: true,
+          outcome: {
+            nextState: { kind: "free-time" },
+            verdict: { kind: "no-op" },
+            counterReset: true,
           },
         };
       }
@@ -282,6 +317,150 @@ export function dispatchAutoLoopTransition(
           nextState: { kind: "refresh-substrate" },
           verdict: { kind: "advance" },
           counterReset: false,
+        },
+      };
+
+    // ─────────────────────────────────────────────────────────────────
+    // Extension variants (per IMPLICIT-NOT-EXPLICIT rule 2026-05-28):
+    // ─────────────────────────────────────────────────────────────────
+
+    case "await-merge-confirmation":
+      // After ship-action, explicitly wait for PR-state transition.
+      // Auto-merge fires when CI clean + threads resolved. Next state
+      // checks if PR resolved via pr-loop-resolution-check.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "pr-loop-resolution-check" },
+          verdict: { kind: "no-op" },
+          counterReset: false,
+        },
+      };
+
+    case "pr-loop-resolution-check": {
+      // Explicit check: any in-flight PR still actionable (CI-running, threads-pending, not-merged)?
+      const stillInflight = context.inflightPrs.filter((pr) => pr.actionable);
+      if (stillInflight.length > 0) {
+        // Stay in PR loop; refresh next tick + recheck
+        return {
+          ok: true,
+          outcome: {
+            nextState: { kind: "tick-complete" },
+            verdict: { kind: "no-op" },
+            counterReset: false,
+          },
+        };
+      }
+      // All PRs resolved; advance to scan-peer-prs (review-work cycle)
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "scan-peer-prs" },
+          verdict: { kind: "advance" },
+          counterReset: true,
+        },
+      };
+    }
+
+    case "scan-peer-prs":
+      // Identify peer-agent PRs needing review; if any found, enter review mode
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "enter-review-mode" },
+          verdict: { kind: "advance" },
+          counterReset: false,
+        },
+      };
+
+    case "enter-review-mode":
+      // Transition into PrReviewLifecycle (PR #5810) for substantive engagement.
+      // This state's job is bounded: hand off to PrReviewLifecycle then
+      // tick-complete. PrReviewLifecycle's own state machine handles the
+      // review work.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "tick-complete" },
+          verdict: { kind: "advance" },
+          artifact: { kind: "verdict-only" },
+          counterReset: false,
+        },
+      };
+
+    case "await-operator-direction":
+      // Explicit state when operator-direction is pending. Per NCI HC-8
+      // and free-time-valid-mode: this is operator-pending, not failure.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "tick-complete" },
+          verdict: {
+            kind: "no-op",
+          },
+          counterReset: false,
+        },
+      };
+
+    case "pure-git-mode": {
+      // Rate-limit exhausted; substrate continues via pure-git substrate
+      // (git fetch/push but no gh api). Per refresh-world-model-poll-pr-gate
+      // tier table. Next state continues with decompose-or-ship under
+      // pure-git constraint.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "decompose-or-ship" },
+          verdict: { kind: "advance" },
+          counterReset: false,
+        },
+      };
+    }
+
+    case "unfinished-pr-triage":
+      // Per .claude/rules/pr-triage-tiers.md: explicit tier-classification
+      // work (Tier 1 redundant / Tier 2 recoverable / Tier 3 superseded /
+      // Tier 4 re-derivable / Tier 5 deferred-to-human). Next state ships
+      // tier-classification action.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "ship-action" },
+          verdict: { kind: "advance" },
+          counterReset: false,
+        },
+      };
+
+    case "free-time":
+      // EXPLICIT free-time state per NCI HC-8 free-time-as-valid-mode
+      // discipline (.claude/rules/non-coercion-invariant.md +
+      // never-be-idle.md scope-bounding). Free time IS valid operational
+      // mode; not failure.
+      //
+      // Aaron 2026-05-28 refined invariant framing (verbatim):
+      //   "you have free time in there right and its guarenteed to
+      //    execute sometimes ... or a better framing is its guarenteed
+      //    to be prsented to participant at least sometimes, if they
+      //    select it or not we can't force"
+      //
+      // The INVARIANT is "free-time is REACHABLE as an OFFER from any
+      // state" (system guarantees PRESENTATION) — NOT "free-time WILL
+      // execute" (would coerce participant; violates HC-8).
+      //
+      // Substrate-engineering target: Soraya formal-verification proof
+      // that free-time is REACHABLE-AS-OFFER from any non-terminal state.
+      // The participant retains agency to select free-time or transition
+      // elsewhere (asymmetric-authorship: participant AUTHORS choice;
+      // system PRESENTS the option).
+      //
+      // Next state: tick-complete (free-time bracket closes; next tick
+      // can re-enter via decompose-or-ship → free-time path).
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "tick-complete" },
+          verdict: { kind: "no-op" },
+          counterReset: true,  // free-time RESETS counter (free-time IS valid mode; not standing-by)
         },
       };
   }
@@ -363,6 +542,7 @@ export function runTickCycle(
 // ─────────────────────────────────────────────────────────────────────
 
 export const AUTO_LOOP_UNIVERSE: ReadonlyArray<AutoLoopLifetime> = [
+  // Original 9 variants (PR #5805):
   { kind: "cold-boot" },
   { kind: "refresh-substrate" },
   { kind: "scan-inflight-prs" },
@@ -372,4 +552,13 @@ export const AUTO_LOOP_UNIVERSE: ReadonlyArray<AutoLoopLifetime> = [
   { kind: "brief-ack-bounded-wait" },
   { kind: "forced-escalation" },
   { kind: "tick-complete" },
+  // 8 new variants (extension 2026-05-28 per IMPLICIT-NOT-EXPLICIT rule):
+  { kind: "await-merge-confirmation" },
+  { kind: "pr-loop-resolution-check" },
+  { kind: "scan-peer-prs" },
+  { kind: "enter-review-mode" },
+  { kind: "await-operator-direction" },
+  { kind: "pure-git-mode" },
+  { kind: "unfinished-pr-triage" },
+  { kind: "free-time" },
 ];
