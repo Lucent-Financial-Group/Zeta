@@ -10,7 +10,18 @@ The following research documents have been selected as candidates for the initia
 |---|---|---|
 | `docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md` | A foundational text discussing the core principle of bidirectional alignment. | Pending Redaction |
 | `docs/research/2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md` | Explains the project's engineering philosophy, moving from intuitive "vibe coding" to a more rigorous, verifiable approach. | Pending Redaction |
-| `docs/research/2026-05-07-twin-flames-operational-pattern-explainer.md` | Details a specific, non-sensitive architectural pattern used within the factory, showcasing the project's design principles. | Pending Redaction |
+| `docs/research/2026-05-06-twin-flames-operational-pattern-explainer.md` | Details a specific, non-sensitive architectural pattern used within the factory, showcasing the project's design principles. | Pending Redaction |
+
+## Internal-Only Research Classes
+
+The majority of the `docs/research/` corpus stays internal. To satisfy B-0304 without exposing sensitive content in this public plan, the internal-only material is listed **by class**, not by file:
+
+- **Live operational substrate** — cross-AI conversation transcripts, persona notebooks, and any research describing the factory's live internal workings.
+- **Security and threat-model material** — red-team findings, attack-class research, classifier-bypass research, and anything that could aid an attacker if public.
+- **Unredacted personal-attribution material** — research carrying direct personal attribution that repo policy disallows on public surfaces.
+- **In-flight / unvalidated hypotheses** — research at the observed/hypothesized confidence tier not yet validated for public claims.
+
+A research document moves from an internal class into the publication queue only after it has both (a) a non-sensitive public framing and (b) a completed redaction-gate sign-off.
 
 ## Redaction Gate
 
@@ -24,3 +35,11 @@ The checks include, but are not limited to:
 4. **No Stale or Misleading Claims:** The document must be reviewed for any claims that are no longer accurate. Stale claims must be updated or removed.
 
 This process is a manual review that must be completed and signed off on before a research document is added to the public site build.
+
+## Sequencing and Non-Blocking Publication
+
+The redaction gate is a per-candidate gate, **not** a site-wide launch blocker:
+
+- **Incremental publication.** Research candidates are published one at a time as each clears the redaction gate. The queue does not need to be fully cleared before the site launches.
+- **No cross-page coupling.** Failing or deferring any single research candidate must **not** block the landing page, the [VISION.md](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/VISION.md), [ALIGNMENT.md](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ALIGNMENT.md), or glossary pages. Those pages publish independently of the research queue.
+- **Composition with metadata and sitemap.** Each published research page composes with the page-metadata decisions (B-0284) and the sitemap decisions (B-0285): once a candidate clears the gate it receives metadata and is added to the sitemap; candidates still pending redaction are omitted from the sitemap rather than published as broken entries.
