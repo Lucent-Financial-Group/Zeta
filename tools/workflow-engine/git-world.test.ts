@@ -201,4 +201,36 @@ describe("git-world + github-world specialization substrate", () => {
     expect(enriched.forgeSpecialization).toBe("github");
     expect(enriched.resourceBudget?.graphqlRemaining).toBe(1500);
   });
+
+  it("registerLifetimePair preserves subclass fields when called with specialized world", () => {
+    // Regression test for the spread-replace pattern: registerLifetimePair
+    // returning `{ registry: newRegistry }` would silently drop all
+    // GitHubWorld-specific fields (forgeName, forgeSpecialization,
+    // branchUniverse, commitUniverse, prUniverse, reviewThreadUniverse,
+    // resourceBudget). Generic-over-W signature + spread preserves them.
+    const githubWorld = buildGitHubWorld(buildGitWorld(), {
+      restCoreRemaining: 4000,
+      restCoreLimit: 5000,
+      restCoreResetAt: 1_700_000_000,
+      graphqlRemaining: 4500,
+      graphqlLimit: 5000,
+      graphqlResetAt: 1_700_000_000,
+    });
+    const matrix = new Map<ComposedKey<PrLifetime, ReviewThreadLifetime>, StandardVerdict>([
+      ["open:resolved", { kind: "advance" }],
+    ]);
+    const after = registerInGitHub(githubWorld, "pr-review", matrix);
+    // Registry updated
+    expect(after.registry.size).toBe(1);
+    expect(after.registry.has("pr-review")).toBe(true);
+    // ALL GitHubWorld-specific fields survive
+    expect(after.forgeName).toBe("git");
+    expect(after.forgeSpecialization).toBe("github");
+    expect(after.branchUniverse.length).toBeGreaterThan(0);
+    expect(after.commitUniverse.length).toBeGreaterThan(0);
+    expect(after.prUniverse.length).toBeGreaterThan(0);
+    expect(after.reviewThreadUniverse.length).toBeGreaterThan(0);
+    expect(after.resourceBudget?.graphqlRemaining).toBe(4500);
+    // Return type is GitHubWorld (compile-time check via field access above)
+  });
 });

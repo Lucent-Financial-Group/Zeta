@@ -3,11 +3,11 @@
  *
  * Git world substrate + forge-specialization hierarchy.
  *
- * Per Aaron 2026-05-28: 'we have a git world and a github specilazation
- * of it for REST/graphql enhancements/optimizations/resource allocations/
- * etc...'
+ * Per the human maintainer (2026-05-28): 'we have a git world and a
+ * github specilazation of it for REST/graphql enhancements/optimizations/
+ * resource allocations/etc...'
  *
- * Substrate-engineering substrate-naming substrate (Aaron-explicit):
+ * Substrate-engineering substrate-naming substrate (operator-explicit):
  * - GitWorld = base substrate where git lifetimes interact (commit,
  *   branch, merge, rebase via git protocol)
  * - GitHubWorld / GitLabWorld / GiteaWorld / etc. = specializations that
@@ -49,9 +49,9 @@ export type { ComposedKey };
 /**
  * Branch lifetime — canonical git lifetime; every GitWorld has it.
  *
- * Edit-able substrate per Aaron's lifetime discipline; variants can be
- * extended as forge-specific substrate emerges (e.g., GitHub adds
- * 'protected' branch state; GitLab adds 'wip' draft state).
+ * Edit-able substrate per the human maintainer's lifetime discipline;
+ * variants can be extended as forge-specific substrate emerges (e.g.,
+ * GitHub adds 'protected' branch state; GitLab adds 'wip' draft state).
  */
 export interface BranchLifetime extends LifetimeState {
   readonly kind: "fresh" | "active" | "merged" | "deleted";
@@ -67,8 +67,9 @@ export interface CommitLifetime extends LifetimeState {
 /**
  * GitWorld — base substrate where git lifetimes interact.
  *
- * Per Aaron 2026-05-28: the WORLD is the shared git-flow substrate;
- * GitWorld is the BASE substrate that forge-specializations inherit.
+ * Per the human maintainer (2026-05-28): the WORLD is the shared
+ * git-flow substrate; GitWorld is the BASE substrate that
+ * forge-specializations inherit.
  *
  * Base substrate operations: commit, branch, merge, rebase, push, pull,
  * cherry-pick, revert. All operate on BranchLifetime + CommitLifetime
@@ -106,8 +107,9 @@ export function buildGitWorld(): GitWorld {
 /**
  * PR lifetime (GitHub specialization).
  *
- * Per Aaron 2026-05-28: GitHub adds PR substrate as forge-specific
- * specialization. Lifetime variants per GitHub PR state machine.
+ * Per the human maintainer (2026-05-28): GitHub adds PR substrate as
+ * forge-specific specialization. Lifetime variants per GitHub PR
+ * state machine.
  */
 export interface PrLifetime extends LifetimeState {
   readonly kind: "draft" | "open" | "review-requested" | "approved" | "merged" | "closed";
@@ -123,10 +125,10 @@ export interface ReviewThreadLifetime extends LifetimeState {
 /**
  * GitHub resource-allocation substrate (forge-specific).
  *
- * Per Aaron 2026-05-28 'REST/graphql enhancements/optimizations/resource
- * allocations'. GitHub has 2 distinct rate-limit budgets per token:
- * REST (resources.core) + GraphQL (resources.graphql). Both 5000/hour
- * for authenticated requests.
+ * Per the human maintainer (2026-05-28) 'REST/graphql enhancements/
+ * optimizations/resource allocations'. GitHub has 2 distinct rate-limit
+ * budgets per token: REST (resources.core) + GraphQL (resources.graphql).
+ * Both 5000/hour for authenticated requests.
  */
 export interface GitHubResourceBudget {
   readonly restCoreRemaining: number;
@@ -271,6 +273,11 @@ export function canAfford(
  * registerLifetimePair from base World).
  *
  * Returns NEW GitHubWorld with the pair registered (immutable substrate).
+ *
+ * Since registerLifetimePair is now generic over the World subtype
+ * (it returns the input world's type with subclass fields preserved),
+ * this helper simply delegates and lets the generic propagate
+ * GitHubWorld through.
  */
 export function registerInGitHub<
   A extends LifetimeState,
@@ -281,11 +288,7 @@ export function registerInGitHub<
   pairName: string,
   matrix: ReadonlyMap<ComposedKey<A, B>, T>,
 ): GitHubWorld {
-  const updatedWorld = registerLifetimePair<A, B, T>(world, pairName, matrix);
-  return {
-    ...world,
-    registry: updatedWorld.registry,
-  };
+  return registerLifetimePair(world, pairName, matrix);
 }
 
 /**
