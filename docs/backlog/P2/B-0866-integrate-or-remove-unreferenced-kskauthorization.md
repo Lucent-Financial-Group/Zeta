@@ -5,7 +5,7 @@ status: open
 title: Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
 created: 2026-05-27
 last_updated: 2026-05-27
-depends_on: [B-0522]
+depends_on: []
 type: friction-reducer
 decomposition: no
 ---
@@ -16,7 +16,7 @@ decomposition: no
 
 **Filed:** 2026-05-27.
 
-**Filed by:** Lior (via autonomous audit B-0522).
+**Filed by:** Lior (via autonomous F# artifact audit; `tools/hygiene/audit-fsharp-artifacts.ts`).
 
 ## What
 

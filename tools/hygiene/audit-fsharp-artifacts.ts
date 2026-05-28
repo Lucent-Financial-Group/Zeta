@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
-// audit-fsharp-artifacts.ts — B-0522 slice: catalog F# artifacts in src/Core
-// and their substrate-status.
+// audit-fsharp-artifacts.ts — catalog F# artifacts in src/Core
+// and their substrate-status. Surfaces follow-up rows for unreferenced files
+// (see B-0865, B-0866 for example output).
 //
 // Adapted from audit-formal-artifacts.ts.
 //
@@ -85,15 +86,17 @@ async function buildReferenceIndex(): Promise<Map<string, string>> {
   return index;
 }
 
+// Match only on the normalized full relative path. Bare-filename matches
+// (e.g. `CayleyDickson.fs` in unrelated prose) produce false positives that
+// hide truly unreferenced artifacts.
 function findRefsInIndex(
   relPath: string,
   index: Map<string, string>,
 ): string[] {
   const refs: string[] = [];
-  const fileName = relPath.split('/').pop();
 
   for (const [mdFile, content] of index) {
-    if (content.includes(relPath) || (fileName && content.includes(fileName))) {
+    if (content.includes(relPath)) {
       refs.push(mdFile);
     }
   }
