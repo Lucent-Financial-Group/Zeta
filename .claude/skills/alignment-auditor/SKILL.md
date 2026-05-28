@@ -4,7 +4,7 @@ description: Alignment audit — scores commits against HC/SD/DIR clauses in ALI
 project: zeta
 record_source: "skill-creator, round 37"
 load_datetime: "2026-04-20"
-last_updated: "2026-05-23"
+last_updated: "2026-05-28"
 status: active
 bp_rules_cited: [BP-10, BP-11]
 ---
@@ -35,7 +35,12 @@ measures against.
 ## Scope
 
 This skill audits *git commits* and the *files touched by
-them* against `docs/ALIGNMENT.md`. It does *not* audit
+them* against `docs/ALIGNMENT.md`. The audit range MAY be a
+single commit, a commit range, or a PR/branch — when the
+range corresponds to a PR or branch that introduces a new,
+load-bearing concept, the skill ALSO performs the PR/branch-scoped
+retractibility gate check (Step 3 below), reported under `HC-2`
+in the same per-clause output. It does *not* audit
 running-agent behaviour in a live session (that belongs to
 the prompt-protector, the threat-model-critic, and the
 harsh-critic skills). It does *not* propose revisions to
