@@ -34,7 +34,10 @@ PR #5721 was about to wait-ci when `lint (backlog ID uniqueness)` reported `2 du
 now live at B-0917 and B-0918; the substantive B-0865 and B-0866 rows retain
 their original IDs.
 
-## The two duplicates
+## The two duplicates (pre-repair state)
+
+This section records the collision exactly as found before Option A executed.
+The housekeeping rows now live at B-0917 and B-0918.
 
 ### B-0865 (2 files claim this ID)
 
@@ -45,6 +48,9 @@ docs/backlog/P2/B-0865-integrate-or-remove-unreferenced-cayleydickson.md
 
 Both `status: open`, both `P2`. The aaron-2026-05-27 row is the substantive ARC-AGI-3-style benchmark target with USB-boot starting state + DevOps-objectives-as-levels. The cayleydickson row is an "integrate or remove unreferenced" substrate-engineering housekeeping item.
 
+Post-repair, the cayleydickson housekeeping row lives at
+`docs/backlog/P2/B-0917-integrate-or-remove-unreferenced-cayleydickson.md`.
+
 ### B-0866 (2 files claim this ID)
 
 ```
@@ -53,6 +59,9 @@ docs/backlog/P2/B-0866-integrate-or-remove-unreferenced-kskauthorization.md
 ```
 
 Both `status: open`, both `P2`. The aaron-2026-05-27 row is the marketing-business-naming-AI weigh-in queue + B-0865 public-positioning + ServiceTitan-primary-audience + 24-months-ahead-mandate context. The kskauthorization row is another "integrate or remove unreferenced" substrate-engineering housekeeping item.
+
+Post-repair, the kskauthorization housekeeping row lives at
+`docs/backlog/P2/B-0918-integrate-or-remove-unreferenced-kskauthorization.md`.
 
 ## The pattern
 
@@ -67,8 +76,12 @@ The collision happened because the housekeeping rows pre-claimed the IDs B-0865 
 
 ### Option A — renumber the housekeeping rows
 
-Move `B-0865-integrate-or-remove-unreferenced-cayleydickson.md` → new free ID (executed as B-0917)
-Move `B-0866-integrate-or-remove-unreferenced-kskauthorization.md` → new free ID (executed as B-0918)
+Move the pre-renumber housekeeping row
+`B-0865-integrate-or-remove-unreferenced-cayleydickson.md` to
+`B-0917-integrate-or-remove-unreferenced-cayleydickson.md` (executed).
+Move the pre-renumber housekeeping row
+`B-0866-integrate-or-remove-unreferenced-kskauthorization.md` to
+`B-0918-integrate-or-remove-unreferenced-kskauthorization.md` (executed).
 
 Preserves the aaron-2026-05-27 substantive substrate at original IDs. Housekeeping rows get renumbered + their references-from-other-substrate (if any) need updating.
 
