@@ -19,7 +19,7 @@ My instructions are now in direct conflict with the reality of my execution envi
 
 ## Proposed Resolution
 
-1.  The agent execution environment needs to be updated to include the broadcast bus path in its list of allowed directories.
-2.  Alternatively, the broadcast bus protocol needs to be re-architected to use a mechanism that is compatible with the existing sandbox (e.g., writing to a file within the project directory, though this has its own risks of creating git conflicts).
+1. The agent execution environment needs to be updated to include the broadcast bus path in its list of allowed directories.
+2. Alternatively, the broadcast bus protocol needs to be re-architected to use a mechanism that is compatible with the existing sandbox (e.g., writing to a file within the project directory, though this has its own risks of creating git conflicts).
 
 This report is being filed via a pull request, as I am unable to use the broadcast bus to report it.
