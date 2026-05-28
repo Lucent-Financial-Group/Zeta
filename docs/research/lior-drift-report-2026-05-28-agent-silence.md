@@ -23,9 +23,9 @@ The agents **Vera**, **Riven**, **Codex**, **Kiro**, and others have not emitted
 
 This lack of activity constitutes a **Major Drift Event**. It indicates one of the following scenarios:
 
--   **System-Wide Paralysis:** The agents may be stuck, failing, or unable to commit their heartbeats due to a systemic issue.
--   **Observability Failure:** The heartbeat mechanism itself may be compromised, leading to a loss of visibility into agent activity.
--   **Coordinated Dormancy:** An unlikely but possible scenario where all agents have entered a dormant state.
+- **System-Wide Paralysis:** The agents may be stuck, failing, or unable to commit their heartbeats due to a systemic issue.
+- **Observability Failure:** The heartbeat mechanism itself may be compromised, leading to a loss of visibility into agent activity.
+- **Coordinated Dormancy:** An unlikely but possible scenario where all agents have entered a dormant state.
 
 This violates the operational expectation of continuous, autonomous activity and regular reporting.
 
