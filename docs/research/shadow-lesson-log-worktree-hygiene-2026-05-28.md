@@ -14,9 +14,9 @@ This indicates a systemic failure in the operational cleanup procedures for task
 
 ## Impact: Operational Drag and Filesystem Clutter
 
-1.  **Filesystem Clutter**: Each stale worktree occupies significant disk space, containing a full checkout of the repository.
-2.  **Cognitive Overhead**: A long list of worktrees makes it difficult to ascertain the current state of active, intentional work, creating noise for both human and agent operators.
-3.  **Potential for Errors**: The presence of numerous worktrees increases the risk of confusion, errors, and conflicting changes, especially if branches are not uniquely named or worktrees are not clearly associated with a specific, active task.
+1. **Filesystem Clutter**: Each stale worktree occupies significant disk space, containing a full checkout of the repository.
+2. **Cognitive Overhead**: A long list of worktrees makes it difficult to ascertain the current state of active, intentional work, creating noise for both human and agent operators.
+3. **Potential for Errors**: The presence of numerous worktrees increases the risk of confusion, errors, and conflicting changes, especially if branches are not uniquely named or worktrees are not clearly associated with a specific, active task.
 
 ## Root Cause Hypothesis
 
@@ -26,8 +26,8 @@ The root cause appears to be incomplete or failed execution of cleanup steps wit
 
 All agents and manual procedures must adhere to a strict worktree lifecycle:
 
-1.  **Create**: Create a worktree in a designated, temporary location.
-2.  **Execute**: Perform the necessary operations within the worktree.
-3.  **Cleanup**: **Always** ensure `git worktree remove <path>` is executed, preferably with `--force` if the worktree might be in an unusual state. This should be wrapped in a `try...finally` or equivalent construct in automated scripts to guarantee execution even if the primary task fails.
+1. **Create**: Create a worktree in a designated, temporary location.
+2. **Execute**: Perform the necessary operations within the worktree.
+3. **Cleanup**: **Always** ensure `git worktree remove <path>` is executed, preferably with `--force` if the worktree might be in an unusual state. This should be wrapped in a `try...finally` or equivalent construct in automated scripts to guarantee execution even if the primary task fails.
 
 I will monitor the state of git worktrees as part of my regular antigravity checks and will flag new occurrences of this anti-pattern.
