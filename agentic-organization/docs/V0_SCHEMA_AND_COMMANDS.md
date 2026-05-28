@@ -397,6 +397,27 @@ Cockroach client, but domain, application, runtime, policy, messaging,
 and worker packages must not depend on the concrete client or connection
 pool.
 
+Work-anchor commands should depend on the generic
+`WorkAnchorStateStore` reader/writer port. The first in-memory
+implementation persists projects, initiatives, work items, work anchor
+targets, and work state transitions for command tests. The port carries
+the same command provenance metadata required by Cockroach
+(`updated_at`, `version`, `correlation_id`, `causation_id`, `trace_id`)
+so vendor adapters do not invent trace values. It also exposes one
+atomic `transitionWorkItem` operation that checks expected version,
+requires the next work item version to advance exactly once, requires
+the transition work item, organization, project, initiative, type, and
+from/to states to match the updated work item, validates the transition
+against the domain state machine, accepts explicit lifecycle evidence
+such as defect triage-field completion, and enforces positive
+per-work-item sequence numbers before mutating state.
+The in-memory test adapter clones records across its read/write boundary
+so command tests cannot mutate persistence state by object reference in a
+way the Cockroach adapter would not permit.
+Cockroach will be added as a vendor-specific implementation of that
+port; application code must not call `state-cockroach` schema helpers
+directly.
+
 Subject shape:
 
 ```text

@@ -21,3 +21,23 @@ export type {
   MarkOutboxEventPublishedInput,
   OutboxEventSource,
 } from "./outbox-event-source.ts";
+export {
+  WorkAnchorConflictReason,
+  WorkAnchorPersistenceStatus,
+  createInMemoryWorkAnchorStateStore,
+  type CreateWorkAnchorInput,
+  type InMemoryWorkAnchorStateSnapshot,
+  type InMemoryWorkAnchorStateStore,
+  type PersistedInitiative,
+  type PersistedProject,
+  type PersistedWorkAnchorTarget,
+  type PersistedWorkItem,
+  type PersistedWorkStateTransition,
+  type TransitionWorkItemInput,
+  type WorkAnchorPersistenceResult,
+  type WorkItemLifecycleEvidence,
+  type WorkAnchorStateReader,
+  type WorkAnchorStateStore,
+  type WorkAnchorRecordMetadata,
+  type WorkAnchorStateWriter,
+} from "./work-anchor-store.ts";

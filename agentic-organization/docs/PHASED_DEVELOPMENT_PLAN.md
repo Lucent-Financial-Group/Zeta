@@ -998,7 +998,16 @@ initiative, work item, or anchor-target persistence yet.
    - `create_initiative`;
    - `create_work_item`;
    - `link_work_anchor`;
-   - `transition_work_item`.
+   - `transition_work_item`. First generic state-port seam done:
+     command handlers can now target `WorkAnchorStateStore` for project,
+     initiative, work item, anchor-target, and transition reads/writes
+     without depending on the Cockroach schema. The port includes
+     provenance metadata, expected-version checks, matching work-item
+     identity and scope, exact next-version advancement, lifecycle
+     evidence for domain state-machine validation, reference isolation,
+     and positive transition sequence enforcement so a future Cockroach
+     adapter can preserve the same contract. Cockroach persistence for
+     this port and command handlers remain pending.
 5. Keep the first state machine narrow:
    - created;
    - intake;

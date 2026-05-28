@@ -94,9 +94,14 @@ constraints derive from domain enum values. Migration backfill defaults
 are dropped after legacy rows are patched so future writes still require
 real command provenance, legacy `updated_at` is preserved from
 `created_at`, and state-history sequence constraints protect replay
-order. The remaining gap is command handlers and generic state ports
-that validate anchor existence before supervisor signals, discussions,
-and meetings can mutate state.
+order. The first generic `WorkAnchorStateStore` port is now in place for
+project, initiative, work item, anchor target, and state-transition
+tests; it preserves provenance metadata, expected-version advancement,
+scope consistency, lifecycle evidence for domain transition validation,
+and reference isolation so command tests do not depend on Cockroach
+directly. The remaining gap is command handlers plus the durable
+Cockroach implementation of that port that validates anchor existence
+before supervisor signals, discussions, and meetings can mutate state.
 
 ### Scheduled Agent Time
 
