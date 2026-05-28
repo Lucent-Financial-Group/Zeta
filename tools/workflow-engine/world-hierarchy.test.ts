@@ -1,4 +1,5 @@
-// Invariant tests for world-hierarchy substrate (Aaron 2026-05-28).
+// Invariant tests for world-hierarchy substrate (per the human maintainer,
+// 2026-05-28).
 
 import { describe, test, expect } from "bun:test";
 import {
@@ -129,12 +130,12 @@ describe("open-question substrate preservation (don't-collapse discipline)", () 
       expect(OPEN_QUESTION_DBSP_CLIFFORD.preservedReadings[1]).toContain("fully isomorphic");
     }
   });
-  test("vote ordering records Aaron's '1 first 2 2nd' substrate", () => {
+  test("vote ordering records the human maintainer's '1 first 2 2nd' substrate", () => {
     if (OPEN_QUESTION_DBSP_CLIFFORD.kind === "open-question") {
       expect(OPEN_QUESTION_DBSP_CLIFFORD.voteOrdering).toEqual([0, 1]);
     }
   });
-  test("primaryWorkingHypothesis returns strict-subset (Aaron-vote (A))", () => {
+  test("primaryWorkingHypothesis returns strict-subset (operator-vote (A))", () => {
     const primary = primaryWorkingHypothesis(OPEN_QUESTION_DBSP_CLIFFORD);
     expect(primary).toContain("strict-subset");
   });
@@ -152,5 +153,27 @@ describe("substrate-engineering composition (end-to-end)", () => {
     expect(inheritsFrom(githubWorld.substrateAlgebra, "clifford")).toBe(true);
     expect(inheritsFrom(githubWorld.substrateAlgebra, "dbsp")).toBe(true);
     expect(inheritsFrom(githubWorld.substrateAlgebra, "git")).toBe(true);
+  });
+
+  test("malformed Clifford root with non-null parent → expectedParent is null (not 'clifford' coalesced)", () => {
+    // Regression test: a root CliffordWorld carrying a non-null
+    // parentAlgebra is malformed. The feedback should say
+    // "expected parent is null" (root has no parent), NOT
+    // "expected parent is clifford" (which would imply the root
+    // parents itself — a different, wrong, claim).
+    const malformedClifford: HierarchicalWorld = {
+      ...EMPTY_WORLD,
+      substrateAlgebra: "clifford",
+      hierarchyDepth: 0,
+      parentAlgebra: "dbsp",  // wrong; root should have null
+    };
+    const verified = verifyHierarchy(malformedClifford);
+    expect(verified.ok).toBe(false);
+    if (verified.ok) throw new Error("expected ok=false");
+    expect(verified.feedback.kind).toBe("MissingIntermediateLayer");
+    if (verified.feedback.kind !== "MissingIntermediateLayer") return;
+    // The root expectation IS null — not a coalesced sentinel.
+    expect(verified.feedback.expectedParent).toBeNull();
+    expect(verified.feedback.actualParent).toBe("dbsp");
   });
 });

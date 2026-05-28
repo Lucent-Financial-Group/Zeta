@@ -1,12 +1,12 @@
-// World hierarchy — substrate-naming substrate (Aaron 2026-05-28).
+// World hierarchy — substrate-naming substrate (the human maintainer (2026-05-28)).
 //
-// Aaron 2026-05-28: "Git inherits from restricted clifford, or maybe it's
+// the human maintainer (2026-05-28): "Git inherits from restricted clifford, or maybe it's
 // fully isomorphic but it's basically DBSP and so we have DBSP and Clifford
 // worlds with one be connonical i'm voting for clifford once we have it"
 //
-// Inheritance hierarchy (Aaron-vote: Clifford canonical once shipped):
+// Inheritance hierarchy (operator-vote: Clifford canonical once shipped):
 //
-//   CliffordWorld (canonical; geometric-algebra substrate; Aaron-voted)
+//   CliffordWorld (canonical; geometric-algebra substrate; operator-voted)
 //      ↓ restricted to incremental-dataflow + retraction substrate
 //   DBSPWorld (Budiu et al VLDB 2023; differential-dataflow + stream substrate)
 //      ↓ restricted to tree-state + commit-graph + ref substrate
@@ -14,7 +14,7 @@
 //      ↓ specialized by forge
 //   GitHubWorld / GitLabWorld / GiteaWorld / BitbucketWorld / ...
 //
-// Substrate-engineering open question Aaron flagged (preserve per default-to-both):
+// Substrate-engineering open question flagged by the human maintainer (preserve per default-to-both):
 //   (A) Git ⊂ DBSP ⊂ Clifford (strict subset chain; each restricts upward substrate)
 //   (B) DBSP ↔ Clifford fully isomorphic (both algebraic substrates supporting
 //       increments + retractions); Git ⊂ both equivalently
@@ -39,10 +39,10 @@ import type { World } from "./world.js";
  * inherits from. Worlds at any level of the hierarchy carry this marker
  * so downstream substrate can verify composition compatibility.
  *
- * The vote per Aaron 2026-05-28: "clifford" canonical once shipped.
+ * The vote per the human maintainer (2026-05-28): "clifford" canonical once shipped.
  */
 export type SubstrateAlgebra =
-  | "clifford"       // Canonical (Aaron-vote; once shipped)
+  | "clifford"       // Canonical (operator-vote; once shipped)
   | "dbsp"           // Restricted-or-isomorphic to Clifford (open question)
   | "git"            // Restricted to tree/commit/ref substrate
   | "git-forge";     // Forge-specialization (GitHub/GitLab/etc.)
@@ -79,7 +79,7 @@ export interface HierarchicalWorld extends World {
 }
 
 /**
- * The open substrate-engineering question Aaron 2026-05-28 flagged:
+ * The open substrate-engineering question the human maintainer (2026-05-28) flagged:
  * is DBSP a strict restriction of Clifford, or are they fully isomorphic?
  *
  * Preserved as substrate (not collapsed) until the algebraic work resolves
@@ -93,7 +93,7 @@ export type DBSPCliffordRelationship =
       kind: "open-question";
       preservedReadings: ReadonlyArray<string>;
       /**
-       * Aaron 2026-05-28 vote ordering ("1 first 2 2nd would be great"):
+       * the human maintainer (2026-05-28) vote ordering ("1 first 2 2nd would be great"):
        * indices into preservedReadings; primary working hypothesis is
        * voteOrdering[0]; secondary fallback is voteOrdering[1].
        *
@@ -110,9 +110,9 @@ export const OPEN_QUESTION_DBSP_CLIFFORD: DBSPCliffordRelationship = {
     "(A) Git ⊂ DBSP ⊂ Clifford strict-subset chain; each restricts upward substrate",
     "(B) DBSP ↔ Clifford fully isomorphic; both algebraic substrates supporting increments + retractions; Git ⊂ both equivalently",
   ],
-  // Aaron 2026-05-28: "1 first 2 2nd would be great" — (A) primary, (B) secondary fallback.
+  // the human maintainer (2026-05-28): "1 first 2 2nd would be great" — (A) primary, (B) secondary fallback.
   //
-  // SUBSTRATE-ENGINEERING UPDATE (Aaron 2026-05-28, same session, post-vote):
+  // SUBSTRATE-ENGINEERING UPDATE (the human maintainer (2026-05-28), same session, post-vote):
   // "What i think we might have found a paper or something about retraction in
   // clifford so the isomorphic might be easy"
   //
@@ -125,9 +125,9 @@ export const OPEN_QUESTION_DBSP_CLIFFORD: DBSPCliffordRelationship = {
 };
 
 /**
- * Helper to extract Aaron's primary working hypothesis from the open
- * question. Returns the highest-vote reading (voteOrdering[0]) or the
- * first preservedReading if no vote ordering present.
+ * Helper to extract the operator's primary working hypothesis from the
+ * open question. Returns the highest-vote reading (voteOrdering[0]) or
+ * the first preservedReading if no vote ordering present.
  */
 export function primaryWorkingHypothesis(rel: DBSPCliffordRelationship): string | null {
   if (rel.kind !== "open-question") return null;
@@ -145,7 +145,15 @@ export function primaryWorkingHypothesis(rel: DBSPCliffordRelationship): string 
  */
 export type HierarchyFeedback =
   | { kind: "IncompatibleSubstrate"; required: SubstrateAlgebra; actual: SubstrateAlgebra }
-  | { kind: "MissingIntermediateLayer"; expectedParent: SubstrateAlgebra; actualParent: SubstrateAlgebra | null }
+  /**
+   * Root-substrate semantics for `expectedParent: null`: this substrate
+   * is at the root of the hierarchy (Clifford) and MUST carry
+   * `parentAlgebra: null`. A malformed root carrying a non-null
+   * parentAlgebra produces this feedback with `expectedParent: null`.
+   * Coalescing `null` to a sentinel like `"clifford"` would mis-represent
+   * the actual expectation (root-has-no-parent) as "root parents itself."
+   */
+  | { kind: "MissingIntermediateLayer"; expectedParent: SubstrateAlgebra | null; actualParent: SubstrateAlgebra | null }
   | { kind: "DepthMismatch"; expected: HierarchyDepth; actual: HierarchyDepth };
 
 export type HierarchyResult<T> =
@@ -203,7 +211,7 @@ export function verifyHierarchy(world: HierarchicalWorld): HierarchyResult<Hiera
   }
   const expectedParent = parentOf(world.substrateAlgebra);
   if (world.parentAlgebra !== expectedParent) {
-    return { ok: false, feedback: { kind: "MissingIntermediateLayer", expectedParent: expectedParent ?? "clifford", actualParent: world.parentAlgebra } };
+    return { ok: false, feedback: { kind: "MissingIntermediateLayer", expectedParent, actualParent: world.parentAlgebra } };
   }
   return { ok: true, value: world };
 }
@@ -226,7 +234,7 @@ export function annotateHierarchy<W extends World>(world: W, algebra: SubstrateA
 // ───────────────────────────────────────────────────────────────────────
 
 /**
- * CliffordWorld — canonical substrate per Aaron 2026-05-28 vote.
+ * CliffordWorld — canonical substrate per the human maintainer (2026-05-28) vote.
  *
  * NOT YET IMPLEMENTED. Substrate-engineering substrate-engineering target.
  * Composes with B-0635 wave-particle duality (Clifford multivector substrate)
@@ -245,9 +253,9 @@ export interface CliffordWorldPlaceholder extends HierarchicalWorld {
 }
 
 /**
- * DBSPWorld — Differential Bigraph Stream Processing substrate (Budiu et al
- * VLDB 2023). Restriction-or-isomorphic-view of CliffordWorld (open question
- * per OPEN_QUESTION_DBSP_CLIFFORD).
+ * DBSPWorld — Database Stream Processing substrate (Budiu et al VLDB 2023;
+ * canonical README expansion). Restriction-or-isomorphic-view of
+ * CliffordWorld (open question per OPEN_QUESTION_DBSP_CLIFFORD).
  *
  * NOT YET IMPLEMENTED. Substrate-engineering substrate-engineering target.
  * Composes with framework's incremental-view-maintenance + retraction-native
