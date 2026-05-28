@@ -39,7 +39,6 @@ import {
   SEED_STATES,
   validateCatalog,
   type Action,
-  type State,
 } from "./types";
 
 type Mode = "list-actions" | "list-states" | "dry-run" | "validate";

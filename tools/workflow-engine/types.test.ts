@@ -12,7 +12,6 @@ import {
   SEED_STATES,
   validateCatalog,
   validateStateOtto5Mods,
-  type Action,
   type State,
 } from "./types";
 
@@ -93,14 +92,23 @@ describe("B-0867.5 workflow-engine scaffold invariants", () => {
     }
   });
 
-  it("tickCyclePattern variants present in scaffold", () => {
-    const patterns: ReadonlyArray<State["tickCyclePattern"]> = [
-      "observe-simulate-choose-emit",
-      "move-next-named-function",
-      "discriminated-union-surface",
-      "ople-primitives",
-    ];
-    expect(patterns.length).toBe(4);
+  it("every seed state uses a known tickCyclePattern variant", () => {
+    // Type-level exhaustive switch — if a NEW variant is added to the union
+    // without updating this switch, TS strict mode raises "not all code paths
+    // return a value" at compile time (caught by lint(tsc tools) CI gate).
+    const acknowledge = (p: State["tickCyclePattern"]): string => {
+      switch (p) {
+        case "observe-simulate-choose-emit":
+        case "move-next-named-function":
+        case "discriminated-union-surface":
+        case "ople-primitives":
+          return p;
+      }
+    };
+    // Exercise real SEED_STATES values rather than a literal array.
+    for (const s of SEED_STATES) {
+      expect(acknowledge(s.tickCyclePattern)).toBe(s.tickCyclePattern);
+    }
   });
 
   it("seed states use Mika's latest direction (discriminated-union-surface)", () => {
