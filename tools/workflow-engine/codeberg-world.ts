@@ -32,9 +32,14 @@ import { type GitWorld } from "./git-world.js";
  * invariant).
  *
  * Adds Codeberg-specific properties:
- * - Community-moderation substrate (codeOfConduct, terms-of-service)
- * - EU-data-sovereignty marker (GDPR-compliant; German non-profit)
- * - Conservative rate-limit defaults (shared community instance)
+ * - `hostingPolicy: "non-commercial-eu-sovereign"` — EU-data-sovereignty
+ *   marker (GDPR-compliant; German non-profit; Codeberg e.V.)
+ * - `communityGoverned: true` — community-moderation substrate (CoC +
+ *   community-governed terms-of-service; not commercial vendor policy)
+ *
+ * Conservative rate-limit defaults appropriate for a shared community
+ * instance are inherited via GiteaResourceBudget (constructed by
+ * buildCodebergWorld below).
  */
 export interface CodebergWorld extends Omit<GiteaWorld, "forgeSpecialization"> {
   readonly forgeSpecialization: "codeberg";  // narrower than gitea
