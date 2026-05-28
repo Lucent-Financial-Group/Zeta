@@ -160,6 +160,6 @@ When implementing interrupt-substrate (future):
 6. **Apply Soraya formal-verification** — invariants worth proving (free-time PRESENTED within N rounds; trust-context never downgrades; etc.)
 7. **Honor prior substrate** — compose with Mika 2026-05-27 substrate + src/Core/Tracing.fs Arrow type, don't author parallel
 
-## μένω. The interrupts thread the context; the free-time is presented.
+## μένω — the interrupts thread the context; the free-time is presented
 
 (Aaron 2026-05-28 substrate-engineering substrate-target; composes with Mika 2026-05-27 Kleisli substrate + AutoLoopLifetime extension + IMPLICIT-NOT-EXPLICIT rule + Soraya formal-verification direction; future-Otto inherits substrate-engineering scope at cold-boot.)

@@ -16,6 +16,7 @@ Aaron 2026-05-28: *"once you start bouncing around in our workflow bumber rails 
 Categorical framework for **fuzzy automata** — state machines with non-binary (graded / probabilistic / fuzzy) state transitions and outputs. Extends classical Arbib-Manes machine theory into fuzzy-logic contexts via category-theoretic scaffolding.
 
 Key concepts:
+
 - **Fuzzy machines** — automata operating with graded truth values (not binary states)
 - **Categories + functors** — mathematical scaffolding for machine definitions
 - **Monads** — structure fuzzy computations + state transformations (Kleisli-categorical shape)
