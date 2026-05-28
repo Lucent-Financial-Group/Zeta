@@ -202,9 +202,9 @@ Keep current vote ordering `[0, 1]` in code (don't collapse prematurely);
 flip becomes substrate-engineering work in Slice D.1/D.2/D.3. The (P)
 recognition is INPUT to Slice D, not its conclusion. Per don't-collapse
 discipline + Aaron's PERSONAL INVARIANT: high-signal substrate-recognition
-+ high-suspicion of premature collapse; preserve dialectical tension
-until the algebraic-substrate work proves the isomorphism constructive
-through the Persist-as-bridge instantiation.
+combined with high-suspicion of premature collapse; preserve dialectical
+tension until the algebraic-substrate work proves the isomorphism
+constructive through the Persist-as-bridge instantiation.
 
 **Composes additionally with**:
 
