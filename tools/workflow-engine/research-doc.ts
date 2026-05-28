@@ -26,9 +26,10 @@
  *     wires LLM into)
  *   - .claude/rules/substrate-or-it-didnt-happen.md (substrate preservation)
  *   - .claude/rules/honor-those-that-came-before.md (citation discipline)
- *   - .claude/rules/asymmetric-authorship (substrate-entity authors
- *     research-doc TFeedback channel)
- *   - .claude/rules/monad-propagation-pattern (Result<T, TFeedback>)
+ *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
+ *     (substrate-entity authors research-doc TFeedback channel)
+ *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
+ *     (Result<T, TFeedback>)
  *
  * PoC scope: template generator + structured sections + Markdown
  * serialization. Real literature-search integration deferred.
@@ -60,11 +61,21 @@ export interface ResearchDoc {
 
 /**
  * Research-doc feedback per asymmetric-authorship + monad-propagation.
+ *
+ * Variants are kept minimal + reachable. `operationalStatus` lives at
+ * the type level as a string-literal union (see `ResearchDocSection`
+ * kind="framing"), so the TS type system rules out invalid values at
+ * construction time without a runtime feedback variant. If a future
+ * caller parses `operationalStatus` from untrusted input (e.g., JSON
+ * import of an external research-doc), add an `InvalidOperationalStatus`
+ * variant here AND a validator at the parse boundary; do not add the
+ * variant alone (unreachable variants are dead substrate per
+ * asymmetric-authorship discipline — every TFeedback variant should
+ * correspond to a real code path that can produce it).
  */
 export type ResearchDocFeedback =
   | { kind: "EmptyProposalId" }
-  | { kind: "NoSectionsRendered" }
-  | { kind: "InvalidOperationalStatus"; value: string };
+  | { kind: "NoSectionsRendered" };
 
 /**
  * Result-shape per monad-propagation rule.
