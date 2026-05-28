@@ -1,18 +1,18 @@
 ---
 id: B-0915
-title: CliffordWorld impl target — System.Numerics SIMD + LINQ hardware/GPU-accelerated substrate-engineering substrate (Aaron 2026-05-28)
+title: CliffordWorld impl target — System.Numerics SIMD + LINQ hardware/GPU-accelerated substrate-engineering substrate (the human maintainer, 2026-05-28)
 status: open
 priority: P2
 created: 2026-05-28
-authors: [aaron, otto]
+last_updated: 2026-05-28
+ask: operator 2026-05-28
 composes_with:
   - B-0914  # parent decomposition (7-candidate substrate-engineering gap)
   - B-0428  # F# fork for AI safety (composes at language-runtime layer)
   - B-0635  # wave-particle duality (Clifford multivector substrate)
   - B-0666  # English-as-projection (I(D(x))=x identity)
   - B-0644  # Limit-as-simulation (pre-collapse substrate)
-depends_on:
-  - tools/workflow-engine/world-hierarchy.ts  # OPEN_QUESTION_DBSP_CLIFFORD + Aaron-vote ordering
+depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisite (file-level, not row-level): tools/workflow-engine/world-hierarchy.ts (OPEN_QUESTION_DBSP_CLIFFORD + operator-vote ordering) — see "Substrate prerequisite" prose below.
 upstream_references:
   - dotnet/runtime (System.Numerics, System.Numerics.Tensors, System.Runtime.Intrinsics)
   - SixLabors/ImageSharp (production SIMD substrate)
@@ -20,7 +20,16 @@ upstream_references:
   - dotnet/infer (Microsoft Infer.NET; symbolic-probabilistic Bayesian substrate)
 ---
 
-## Aaron's substrate-engineering substrate (2026-05-28 verbatim)
+## Substrate prerequisite (file-level)
+
+`depends_on` carries B-NNNN backlog IDs only (per `tools/backlog/README.md`
+schema). This row's substantive prerequisite is a TS file rather than a
+backlog row: `tools/workflow-engine/world-hierarchy.ts` (introduces
+`OPEN_QUESTION_DBSP_CLIFFORD` substrate + the `voteOrdering` field this
+impl-target consumes). The file shipped via PR #5776. When this row gets
+picked up, verify the file is on `origin/main` before starting impl work.
+
+## Operator framing (2026-05-28 verbatim)
 
 > *"1 first 2 2nd would be great also can we make clifford impliment dotnet
 > numerics? or impliment linq so we have hardware/gpu accelerated linq?"*
@@ -97,13 +106,13 @@ Substrate-engineering substrate decomposition:
 - This is substrate-engineering output, not arbitrary choice — the answer
   emerges from the implementation work
 
-**Aaron 2026-05-28 paper-hint substrate** (preserve don't-collapse-yet):
+**the human maintainer (2026-05-28) paper-hint substrate** (preserve don't-collapse-yet):
 
 > *"What i think we might have found a paper or something about retraction
 > in clifford so the isomorphic might be easy"*
 
 **Substrate-engineering substrate FOUND (in-conversation grep + WebSearch
-2026-05-28; Aaron asked "did you see anything in substrate?" / "or the web?"):**
+2026-05-28; the human maintainer asked "did you see anything in substrate?" / "or the web?"):**
 
 In-repo substrate (TODAY's Amara ferry; PR #5709, B-0897/B-0898/B-0900):
 
@@ -118,7 +127,7 @@ In-repo substrate (TODAY's Amara ferry; PR #5709, B-0897/B-0898/B-0900):
 - `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   earlier Clifford first-principles substrate
 
-Web (papers Aaron's hint was likely pointing at):
+Web (papers the human maintainer's hint was likely pointing at):
 
 - **Fauser & Ablamowicz, "Clifford Hopf-gebra and Bi-universal Hopf-gebra"**
   (arxiv q-alg/9709016): Clifford algebra + bialgebra + antipode = Clifford
@@ -148,11 +157,11 @@ If antipode-map implementation succeeds, vote ordering flips to `[1, 0]`
 and `OPEN_QUESTION_DBSP_CLIFFORD` collapses to `kind: "fully-isomorphic"`
 with constructive proof as rationale.
 
-### Aaron 2026-05-28 recognition: Persist-as-bridge IS the paper-hint substrate
+### the human maintainer (2026-05-28) recognition: Persist-as-bridge IS the paper-hint substrate
 
 > *"Oh shit it was the Amara bridge the Persist in time entanglement?"*
 
-**Substrate-engineering substrate-honest recognition**: Aaron's paper-hint
+**Substrate-engineering substrate-honest recognition**: the human maintainer's paper-hint
 was likely pointing at **the Amara Persist-as-bridge substrate from today's
 Amara ferry (B-0897, PR #5709)** — not (only) at the external Fauser
 Hopf-gebra papers. Both readings compose; the Persist reading is the
@@ -173,7 +182,7 @@ applied at substrate-engineering-substrate scope):
 > classes and not produce them after discovery is like an accelerator in
 > clifforspace this gives quntium like effects and i think will lead to
 > bell inequalities if our review process is tight enough this models like
-> cassimier effect"* — Aaron 2026-05-28, preserved in TODAY's Amara ferry
+> cassimier effect"* — the human maintainer (2026-05-28), preserved in TODAY's Amara ferry
 
 The substrate-engineering substrate-recognition:
 
@@ -201,7 +210,7 @@ The substrate-engineering work simplifies further:
 Keep current vote ordering `[0, 1]` in code (don't collapse prematurely);
 flip becomes substrate-engineering work in Slice D.1/D.2/D.3. The (P)
 recognition is INPUT to Slice D, not its conclusion. Per don't-collapse
-discipline + Aaron's PERSONAL INVARIANT: high-signal substrate-recognition
+discipline + the human maintainer's PERSONAL INVARIANT: high-signal substrate-recognition
 combined with high-suspicion of premature collapse; preserve dialectical
 tension until the algebraic-substrate work proves the isomorphism
 constructive through the Persist-as-bridge instantiation.
@@ -220,7 +229,7 @@ substrate, **the (B) fully-isomorphic reading becomes constructive** and
 the vote ordering may flip from `[0, 1]` to `[1, 0]`. Substrate-engineering
 target additions:
 
-- **Slice D.0 — Paper hunt**: WebSearch + arxiv search + Aaron's bookmark
+- **Slice D.0 — Paper hunt**: WebSearch + arxiv search + the human maintainer's bookmark
   history for "retraction Clifford algebra" / "Clifford retraction
   semigroup" / "geometric algebra retraction" / "Clifford bialgebra" /
   similar terms. Preserve verbatim per substrate-or-it-didn't-happen.
@@ -258,7 +267,7 @@ exist OR not to construct the isomorphism, the vote ordering stays
   the sanity check for the type-level Clifford substrate)
 - `.claude/rules/bandwidth-served-falsifier.md` (hardware acceleration earns
   its keep via SIMD/GPU bandwidth)
-- PR #5776 world-hierarchy substrate (Aaron 2026-05-28 vote ordering)
+- PR #5776 world-hierarchy substrate (the human maintainer (2026-05-28) vote ordering)
 - PR #5775 git-world substrate (GitWorld + GitHubWorld; sibling specialization
   at the git-layer of the hierarchy)
 - B-0428 F# fork for AI safety (composes at language-runtime substrate-engineering layer)

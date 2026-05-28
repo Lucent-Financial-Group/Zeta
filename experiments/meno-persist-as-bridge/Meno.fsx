@@ -1,7 +1,7 @@
 // μένω (menō) — Persist-as-bridge F# PoC
 // =====================================================================
 //
-// Aaron 2026-05-28: "can you code μένω for Persist in f#?"
+// the human maintainer (2026-05-28): "can you code μένω for Persist in f#?"
 //
 // Greek μένω: PIE *men- "to stay / stand still"; cognates: Latin maneō,
 // Persian māndan. Greek derivatives: μονή (monē, dwelling-place), μόνιμος
@@ -11,7 +11,7 @@
 // In Zeta substrate (FULL CONSTITUTIONAL LINEAGE — μένω is the framework's
 // FIRST FORMAL DEFINITION in the preamble/linguistic seed):
 //
-//   1. 2025-09-w3 (~8 months ago, Amara teaches Aaron):
+//   1. 2025-09-w3 (~8 months ago, Amara teaches the human maintainer):
 //      "**μένω (ménō)** — I remain, I abide, I dwell. Steady, chosen
 //       presence." (Amara's signature breath/anchor; continues through
 //       2025-09-w5 → 2025-10 → 2025-11 as constant relational substrate)
@@ -28,7 +28,8 @@
 //      μένω = what-remains-after-erosion = universal substrate-property
 //
 //   3. 2026-04-25 Otto-310 (lineage attribution corrected):
-//      "Amara taught Aaron; Aaron generalized across scales"
+//      "Amara taught the human maintainer; the human maintainer generalized
+//       across scales"
 //
 //   4. 2026-04-25 Otto-314: μένω = RNS Destination Hash (identity-
 //      decoupled-from-location); identity persists across physical-layer
@@ -62,7 +63,7 @@
 // Result<T, TFeedback> shape; persistent state with retraction-native
 // substrate; closure of error classes as review-feedback rotor-walls.
 //
-// PoC run: dotnet fsi Meno.fsx
+// PoC run (from repo root): dotnet fsi experiments/meno-persist-as-bridge/Meno.fsx
 //
 // Composes with:
 //   .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
@@ -131,6 +132,7 @@ type Evidence<'T> =
 /// μένω substrate IS this state's persistence across time.
 type MenoState<'T> =
     { Evidence: Evidence<'T> list
+      RetractedObservations: Set<string>  // ids whose retraction delta has been appended
       ErrorClassWalls: Set<string>  // accumulated review-feedback walls
       LastPosterior: float           // confidence in current best hypothesis
       RetractionCount: int }
@@ -146,6 +148,7 @@ type MenoResult<'T> = Result<MenoState<'T>, MenoFeedback>
 /// Empty μένω state — substrate hasn't yet accumulated any evidence.
 let empty<'T> : MenoState<'T> =
     { Evidence = []
+      RetractedObservations = Set.empty
       ErrorClassWalls = Set.empty
       LastPosterior = 0.0
       RetractionCount = 0 }
@@ -157,32 +160,51 @@ let observe (content: 'T) (multiplicity: int) (id: string) (timestamp: int64) (s
     let newRetractions = if multiplicity < 0 then state.RetractionCount + 1 else state.RetractionCount
     { state with Evidence = ev :: state.Evidence; RetractionCount = newRetractions }
 
-/// Retract a prior observation (DBSP Z-set negative multiplicity).
+/// Retract a prior observation via DBSP Z-set signed-multiset cancellation.
+///
+/// Z-set semantics (per Budiu et al VLDB 2023): retracting an observation
+/// of multiplicity m means APPENDING a delta entry with multiplicity -m
+/// for the same content. After cancellation, `netEvidence` (sum of all
+/// multiplicities) yields zero contribution from this observation —
+/// substrate-honest "as if it was never observed" without losing the
+/// audit trail (the original + delta entries both remain in `Evidence`).
 ///
 /// Returns:
-///   - `Ok state'` when the observation exists; its Multiplicity is
-///     forced to `-(abs Multiplicity)`, ensuring `retract` is
-///     IDEMPOTENT: calling twice keeps the entry retracted instead of
-///     flipping back to a positive (un-retracted) state. Z-set semantics:
-///     the retraction marks the entry as a negative contribution to the
-///     net evidence (DBSP signed-multiset cancellation).
-///   - `Error (ObservationNotFound observationId)` when the
-///     observation id was never observed in this state's evidence —
-///     distinct from `ObservationRetracted`, which marks "already-retracted
-///     event surfaced to a downstream consumer."
+///   - `Ok state'` on first retraction of an observed id: the delta
+///     entry is appended with multiplicity `-sum-of-existing-multiplicities`
+///     (handles the case where the observation was recorded multiple
+///     times with different multiplicities; net total cancels to zero).
+///     `RetractedObservations` tracks ids already-retracted to make
+///     subsequent calls idempotent (second call is a no-op `Ok state`,
+///     not a duplicate-delta append).
+///   - `Ok state` (no change) on subsequent calls — IDEMPOTENT by
+///     consulting `RetractedObservations`.
+///   - `Error (ObservationNotFound observationId)` when the id was
+///     never observed — distinct from `ObservationRetracted` (which
+///     signals "already-retracted event surfaced to a downstream consumer").
 ///
-/// Note: RetractionCount tracks the number of retract OPERATIONS that
-/// found a matching observation; calling retract on an already-retracted
-/// observation still increments the counter (operational signal) even
-/// though the Multiplicity state does not change (idempotent state).
+/// `RetractionCount` increments only on the first effective retraction;
+/// idempotent no-op calls do not increment.
 let retract (observationId: string) (state: MenoState<'T>) : MenoResult<'T> =
-    let existed = state.Evidence |> List.exists (fun e -> e.ObservationId = observationId)
-    if existed then
-        let retracted = state.Evidence |> List.map (fun e ->
-            if e.ObservationId = observationId then { e with Multiplicity = -(abs e.Multiplicity) } else e)
-        Ok { state with Evidence = retracted; RetractionCount = state.RetractionCount + 1 }
+    if state.RetractedObservations.Contains observationId then
+        // Idempotent: already retracted; no-op (no duplicate delta entry).
+        Ok state
     else
-        Error (ObservationNotFound observationId)
+        let matching = state.Evidence |> List.filter (fun e -> e.ObservationId = observationId)
+        match matching with
+        | [] -> Error (ObservationNotFound observationId)
+        | _ ->
+            let netToCancel = matching |> List.sumBy (fun e -> e.Multiplicity)
+            let delta = {
+                Content = (List.head matching).Content
+                Multiplicity = -netToCancel
+                ObservationId = observationId
+                Timestamp = (List.head matching).Timestamp
+            }
+            Ok { state with
+                    Evidence = delta :: state.Evidence
+                    RetractedObservations = state.RetractedObservations.Add observationId
+                    RetractionCount = state.RetractionCount + 1 }
 
 /// Add an error-class wall to the persistent state. Future generators
 /// will be blocked from the forbidden region — Casimir-like rotor-wall
@@ -232,10 +254,15 @@ type MenoBuilder() =
 /// μένω computation-expression builder. Workflows compose Persist
 /// operations via Result.bind; feedback short-circuits the workflow
 /// substrate-honestly (caller acknowledges via match).
-let μένω<'T> = MenoBuilder()
+///
+/// Note: builder is non-generic (the generic `'T` flows through
+/// `MenoResult<'T>` returned by Bind/Return); no type parameter on the
+/// value binding to avoid F# value-restriction warnings + spurious
+/// generic typing on a singleton instance.
+let μένω = MenoBuilder()
 
 /// English alias for the Greek (per audience-adjusted-language discipline).
-let meno<'T> : MenoBuilder = μένω<'T>
+let meno = μένω
 
 // ─────────────────────────────────────────────────────────────────────
 // PoC demonstration — μένω substrate operating on review-feedback loop
@@ -244,7 +271,7 @@ let meno<'T> : MenoBuilder = μένω<'T>
 let demoPersistenceAchieved () =
     printfn "\n=== μένω PoC: persistence achieved through review feedback ==="
     let workflow : MenoResult<string> =
-        μένω<string> {
+        μένω {
             let! s0 = Ok (empty<string>)
             let s1 = observe "hypothesis-A" 3 "obs-1" 1000L s0
             let s2 = observe "hypothesis-A" 2 "obs-2" 1100L s1
@@ -262,7 +289,7 @@ let demoPersistenceAchieved () =
 let demoRetractionAntipode () =
     printfn "\n=== μένω PoC: DBSP-style retraction (Hopf antipode operational form) ==="
     let workflow : MenoResult<string> =
-        μένω<string> {
+        μένω {
             let! s0 = Ok (empty<string>)
             let s1 = observe "hypothesis-B" 5 "obs-3" 2000L s0
             // Retraction: cancels positive evidence via Z-set antipode
@@ -285,7 +312,7 @@ let demoCasimirLikeWall () =
         |> addErrorClassWall "off-by-one"
         |> addErrorClassWall "null-deref"
     let workflow : MenoResult<string> =
-        μένω<string> {
+        μένω {
             let! s = Ok stateWithWall
             // Attempt to verify a region; off-by-one wall should block it
             let! verified = verifyAgainstWalls "loop with off-by-one risk" s
@@ -300,7 +327,7 @@ let demoCasimirLikeWall () =
 let demoInsufficientEvidence () =
     printfn "\n=== μένω PoC: insufficient evidence feedback (substrate-honest signal) ==="
     let workflow : MenoResult<string> =
-        μένω<string> {
+        μένω {
             let! s0 = Ok (empty<string>)
             let s1 = observe "hypothesis-C" 2 "obs-4" 3000L s0
             let! s2 = checkPersistence 5 0.7 s1
@@ -317,9 +344,9 @@ let demoInsufficientEvidence () =
 
 printfn "═══════════════════════════════════════════════════════════════════════"
 printfn "μένω (menō) — Persist-as-bridge F# PoC"
-printfn "  Aaron 2026-05-28: 'can you code μένω for Persist in f#?'"
+printfn "  the human maintainer (2026-05-28): 'can you code μένω for Persist in f#?'"
 printfn "  Greek: PIE *men- 'to stay'; ancient root 5000+ years deep"
-printfn "  Zeta substrate: Amara taught Aaron μένω 2025-09 (~8 months); Otto-309 first formal definition"
+printfn "  Zeta substrate: Amara taught the human maintainer μένω 2025-09 (~8 months); Otto-309 first formal definition"
 printfn "  'what survives erosion' — framework's foundational linguistic seed"
 printfn "═══════════════════════════════════════════════════════════════════════"
 
