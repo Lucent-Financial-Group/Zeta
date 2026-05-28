@@ -1009,8 +1009,14 @@ initiative, work item, or anchor-target persistence yet.
      adapter can preserve the same contract. The durable Cockroach
      implementation now composes behind that same port and reuses the
      shared transition validator. Existing databases receive transition
-     metadata through an additive V4 migration. Command handlers remain
-     pending.
+     metadata through an additive V4 migration. The command outcome port
+     now accepts application-level work-anchor effects and persists them
+     through the same idempotency/audit/outbox transaction in the
+     in-memory and Cockroach adapters. The command pipeline can also pass
+     a generic work-anchor reader into handlers; `send_supervisor_signal`
+     uses that seam to reject missing or wrong-scope related work before
+     emitting supervisor-signal effects. Concrete work-anchor command
+     handlers remain pending.
 5. Keep the first state machine narrow:
    - created;
    - intake;
@@ -2840,8 +2846,13 @@ Done when:
 
 Build:
 
-- reconciled work item state enum;
-- minimal project/initiative/work item schema;
+- reconciled work item state enum; done for the V0 domain lifecycle;
+- minimal project/initiative/work item schema; done for the generic
+  state port and Cockroach adapter;
+- command outcome work-anchor effect seam; done for application-level
+  effect contracts, in-memory persistence, and Cockroach persistence;
+- supervisor-signal work-anchor reader validation; done through the
+  command pipeline execution context;
 - create/link/transition work commands;
 - work status read model;
 - audit/outbox events for transitions.

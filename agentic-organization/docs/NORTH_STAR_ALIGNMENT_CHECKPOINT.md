@@ -101,9 +101,16 @@ scope consistency, lifecycle evidence for domain transition validation,
 and reference isolation so command tests do not depend on Cockroach
 directly. The durable Cockroach adapter now implements that same port and
 is exposed through the durable state adapter composition, with an
-additive V4 migration for transition metadata on existing databases. The
-remaining gap is command handlers that validate anchor existence before
-supervisor signals, discussions, and meetings can mutate state.
+additive V4 migration for transition metadata on existing databases.
+The command outcome port now accepts application-level work-anchor
+effects and commits them through the same atomic outcome boundary as
+idempotency, audit, and outbox effects in both the in-memory and
+Cockroach adapters. `send_supervisor_signal` now accepts a generic
+work-anchor reader through the command pipeline execution context, so
+durable runtime paths can reject missing or wrong-scope work anchors
+before emitting supervisor-signal effects. The remaining gap is concrete
+work-anchor command handlers for project, initiative, work-item, anchor,
+and transition creation.
 
 ### Scheduled Agent Time
 
@@ -206,18 +213,21 @@ until an engineer is assigned and scheduled.
 ### Discussion Anchor Gap
 
 The docs say V0 work should include discussion anchors and graph nodes.
-The current implementation only writes the supervisor signal, audit
-event, outbox event, idempotency record, inbox receipts, and reaction
-plans. The next V0 command slice must either implement discussion-anchor
-creation or explicitly stage it as the next command after
-`send_supervisor_signal`.
+The current implementation writes supervisor signal, work-anchor command
+effects, audit event, outbox event, idempotency record, inbox receipts,
+and reaction plans. The next V0 command slice must either implement
+discussion-anchor creation or explicitly stage it as the next command
+after `send_supervisor_signal`.
 
 ### Transaction Boundary Progress
 
-The command pipeline now persists supervisor signal state, audit events,
-outbox events, and idempotency records through one
+The command pipeline now persists supervisor signal state, work-anchor
+effects, audit events, outbox events, and idempotency records through one
 `recordCommandOutcome` port. Command handlers return typed effects
-instead of writing piecemeal state.
+instead of writing piecemeal state. Work-anchor effects are application
+contracts rather than `state` or `state-cockroach` imports, and the
+pipeline can pass a generic work-anchor reader into handlers for
+pre-effect validation.
 
 The event ingestion path already used a single
 `recordEventProcessingOutcome` port and now treats unfinished receipts

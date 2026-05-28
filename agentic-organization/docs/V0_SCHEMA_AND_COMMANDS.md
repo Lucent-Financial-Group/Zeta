@@ -397,14 +397,15 @@ Cockroach client, but domain, application, runtime, policy, messaging,
 and worker packages must not depend on the concrete client or connection
 pool.
 
-Work-anchor commands should depend on the generic
-`WorkAnchorStateStore` reader/writer port. The first in-memory
-implementation persists projects, initiatives, work items, work anchor
-targets, and work state transitions for command tests. The port carries
-the same command provenance metadata required by Cockroach
+Work-anchor commands should return application-level work-anchor command
+effects rather than writing concrete state directly. Those effects cover
+projects, initiatives, work items, work anchor targets, and work-item
+transitions, and the command outcome port persists them atomically with
+idempotency, audit, and outbox effects. The command-facing effect types
+carry the same command provenance metadata required by Cockroach
 (`updated_at`, `version`, `correlation_id`, `causation_id`, `trace_id`)
-so vendor adapters do not invent trace values. It also exposes one
-atomic `transitionWorkItem` operation that checks expected version,
+so vendor adapters do not invent trace values. The state adapters still
+expose one atomic `transitionWorkItem` operation that checks expected version,
 requires the next work item version to advance exactly once, requires
 the transition work item, organization, project, initiative, type, and
 from/to states to match the updated work item, validates the transition
@@ -417,6 +418,15 @@ way the Cockroach adapter would not permit.
 Cockroach is implemented as a vendor-specific implementation of that
 same port and is exposed through durable state adapter composition;
 application code must not call `state-cockroach` schema helpers directly.
+Application package code also must not import the `state` package; it
+uses its own structural command effect and reader contracts so concrete
+state packages remain adapters. The command pipeline can provide that
+reader contract to handlers, allowing commands such as
+`send_supervisor_signal` to reject missing or wrong-scope related work
+before they emit state, audit, or outbox effects. The in-memory command
+outcome adapter must apply the same duplicate-record and transition
+validation semantics as the standalone work-anchor store so tests do not
+accept a command effect that Cockroach would reject.
 State-history metadata is protected by an additive V4 migration so
 databases that already applied the V3 work-anchor kernel still receive
 the transition `updated_at` and `version` columns the port requires.
@@ -465,6 +475,9 @@ Current executable migration contract:
   migration;
 - `0003_agentic_org_work_anchor_kernel` is the additive Work Anchor
   Kernel migration;
+- `0004_agentic_org_work_item_state_history_metadata` is the additive
+  state-history provenance migration for databases that already applied
+  the V3 kernel;
 - generated SQL must match the checked-in migration files exactly;
 - database constraints for work item state, work item type, project
   status, and initiative status must be generated from TypeScript domain

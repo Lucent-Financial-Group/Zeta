@@ -40,4 +40,5 @@ export type {
   IdGenerator,
   RecordCommandOutcomeInput,
   RecordCommandOutcomeResult,
+  WorkAnchorCommandEffects,
 } from "./ports.ts";
