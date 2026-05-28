@@ -67,6 +67,7 @@ Update B-0895's grade-decomposition mapping table to add:
 | **Persist** | grade-2 (bivector spanning agent-axis × time-axis) | `Persist = Emit-now + Observe-later` — derived bridge operation |
 
 Document the `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` signature with explicit grade-decomposition:
+
 - `TInternal`: agent's substrate-engineering vocabulary (rich, type-system-checked, internal)
 - `TSubstrateRecord`: substrate's serialization format (durable, schema-checkable, version-stable)
 - `TPersistFeedback`: bridge-operation's feedback channel (serialization-failure, decoder-mismatch, retention-policy-rejected, provenance-missing, retraction-applied)
