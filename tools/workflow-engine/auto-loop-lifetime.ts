@@ -66,7 +66,7 @@ export interface AutoLoopLifetime extends LifetimeState {
 export interface TickContext {
   readonly tickIndex: number;                   // monotonic per-session
   readonly briefAckCount: number;               // counter discipline tracking
-  readonly lastNamedDependency?: string;        // bounded-wait reason (or undefined)
+  readonly lastNamedDependency?: string | undefined; // bounded-wait reason (or undefined)
   readonly lastRefreshAt?: number;              // unix timestamp of last substrate refresh
   readonly inflightPrs: ReadonlyArray<{
     readonly number: number;
