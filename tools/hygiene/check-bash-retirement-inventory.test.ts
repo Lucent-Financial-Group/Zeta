@@ -207,6 +207,11 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "e-uppercase.COMMAND"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-s-quoted"), '#!/usr/bin/env -S "bash -eu"\n');
+      writeFileSync(
+        join(repo, "scripts", "extensionless-zsh-env-split-string-quoted"),
+        '#!/usr/bin/env --split-string "zsh -eu"\n',
+      );
       writeFileSync(join(repo, "scripts", "extensionless-dash"), "#!/bin/dash\n");
       writeFileSync(join(repo, "scripts", "extensionless-sh"), "#!/bin/sh\n");
       writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
@@ -234,8 +239,10 @@ describe("buildInventoryReport", () => {
         "scripts/e-uppercase.COMMAND",
         "scripts/extensionless-bash",
         "scripts/extensionless-bash-env-s",
+        "scripts/extensionless-bash-env-s-quoted",
         "scripts/extensionless-dash",
         "scripts/extensionless-sh",
+        "scripts/extensionless-zsh-env-split-string-quoted",
       ].sort((a, b) => a.localeCompare(b)));
     } finally {
       rmSync(repo, { recursive: true, force: true });

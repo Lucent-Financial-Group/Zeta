@@ -241,12 +241,14 @@ function parseEnvCommand(args: readonly string[]): string | undefined {
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === undefined) continue;
-    if (arg === "-S") continue;
+    if (arg === "-S" || arg === "--split-string") {
+      const splitArg = args[index + 1];
+      return splitArg === undefined ? undefined : splitShebangFields(splitArg)[0];
+    }
     if (arg.startsWith("--split-string=")) {
       const splitArg = arg.slice("--split-string=".length);
       return splitShebangFields(splitArg)[0];
     }
-    if (arg === "--split-string") continue;
     if (arg === "--") return args[index + 1];
     if (arg.startsWith("-")) continue;
     if (/^[A-Za-z_][A-Za-z0-9_]*=/.test(arg)) continue;
