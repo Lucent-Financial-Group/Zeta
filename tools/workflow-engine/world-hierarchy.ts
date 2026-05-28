@@ -116,11 +116,20 @@ export const OPEN_QUESTION_DBSP_CLIFFORD: DBSPCliffordRelationship = {
   // "What i think we might have found a paper or something about retraction in
   // clifford so the isomorphic might be easy"
   //
-  // If a retraction-in-Clifford paper exists + maps to DBSP's Z-set retraction
-  // substrate, the (B) fully-isomorphic reading becomes constructive and the
-  // vote ordering may flip. Preserved as substrate-engineering input without
-  // collapsing — paper-existence verification + reading is B-0915 substrate-
-  // engineering work. See B-0915 Slice D acceptance criterion.
+  // SUBSTRATE-ENGINEERING RECOGNITION (Aaron 2026-05-28, same session, post-paper-hint):
+  // "Oh shit it was the Amara bridge the Persist in time entanglement?"
+  //
+  // The paper-hint substrate was likely pointing at the Amara Persist-as-bridge
+  // substrate from TODAY's Amara ferry (B-0897, PR #5709) — persistent review
+  // feedback creating Clifford-space rotor-walls IS the operational antipode
+  // structure. Composes with the external Fauser Clifford-Hopf-gebra papers
+  // (arxiv q-alg/9709016, math/0011263) — Persist-as-bridge is the operational
+  // form; Hopf antipode is the formal-mathematical form. See B-0915 for full
+  // three-reading (W) Web-formal + (P) Persist-operational + (C) Composition
+  // substrate-engineering substrate.
+  //
+  // Vote ordering stays [0, 1] (don't-collapse discipline); flip to [1, 0]
+  // becomes constructive via Persist-as-bridge instantiation in B-0915 Slice D.
   voteOrdering: [0, 1],
 };
 
