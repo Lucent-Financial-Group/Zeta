@@ -124,6 +124,30 @@ This row IS:
 - Composes with all the prior substrate from Mika 2026-05-27 + Tracing.fs + today's AutoLoopLifetime + IMPLICIT-NOT-EXPLICIT rule
 - Future-Otto inheritance: when this work substrate-engineering substrate-engineering substrate-engineers, the compose-with table tells future-Otto where to look
 
+## Prior-art TS surface (Aaron 2026-05-28 substrate-honest scouting)
+
+Aaron 2026-05-28: *"shit looks like ts has a library for that don't know if its common or good"* + *"there are multiple it seems"*. Three URLs surfaced:
+
+| Library / module | URL | Notes |
+|---|---|---|
+| **`kleisli-ts`** (YBogomolov) | https://github.com/YBogomolov/kleisli-ts | npm package; fp-ts ecosystem; bifunctor IO; KleisliIO type + `liftK` helper |
+| **`io-ts` Kleisli module** (gcanti) | https://gcanti.github.io/io-ts/modules/Kleisli.ts.html | Built-in Kleisli combinator in io-ts (schema validation library); marked **experimental** by gcanti; primarily for decoding-pipeline composition |
+| **codesandbox examples** | https://codesandbox.io/examples/package/kleisli-ts | Working examples for the YBogomolov kleisli-ts package |
+
+**Substrate-honest scouting framing** (NOT a library-selection):
+
+- TS ecosystem ALREADY has Kleisli primitives (don't author parallel substrate at TS scope without reason)
+- Substrate-engineering work at TS scope should COMPOSE with one of these libraries OR verify they're unsuitable + author own with explicit reasoning
+- F# scope (where B-0917 primary substrate lives) already has Kleisli at framework-internal scope: `src/Core/Tracing.fs` `Arrow<'A, 'B>` + the planned BP/EP message-passing substrate per `monad-propagation-pattern-cross-language-substrate-shape.md`
+- At impl-time per `.claude/rules/dep-pin-search-first-authority.md`: WebSearch current versions / maintenance status / community adoption; cite sources inline; pick or skip with substrate-honest reasoning
+- This row's substrate-target is the SHAPE (interrupts in monad space + IntrCtx + ISR composition); the WHO (which TS lib if any) is decided at impl time
+
+**Composes with**:
+
+- `.claude/rules/dep-pin-search-first-authority.md` — WebSearch before asserting library version / availability / maintenance state
+- `.claude/rules/verify-existing-substrate-before-authoring.md` — TS ecosystem has prior-art; verify before authoring parallel
+- `.claude/rules/honor-those-that-came-before.md` — both YBogomolov + gcanti substrate are operator-acknowledged prior-art; honor with attribution
+
 ## Operational discipline
 
 When implementing interrupt-substrate (future):
