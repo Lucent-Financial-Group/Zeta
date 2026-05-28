@@ -71,6 +71,13 @@ export type TransitionWorkItemInput = {
 
 export type WorkItemLifecycleEvidence = Pick<WorkItemTransitionContext, "hasTriageFields">;
 
+export type ValidateWorkItemTransitionInput = {
+  currentWorkItem: PersistedWorkItem;
+  transitionInput: TransitionWorkItemInput;
+  hasTransitionId: (workStateTransitionId: string) => boolean;
+  hasTransitionSequence: (workItemId: string, sequence: number) => boolean;
+};
+
 export type WorkAnchorStateReader = {
   findProject: (projectId: string) => Promise<PersistedProject | undefined>;
   findInitiative: (initiativeId: string) => Promise<PersistedInitiative | undefined>;
@@ -173,43 +180,15 @@ function transitionWorkItem(
     return Promise.resolve(createConflictResult(WorkAnchorConflictReason.MissingWorkItem));
   }
 
-  if (input.transition.workItemId !== input.nextWorkItem.workItemId) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.WorkItemMismatch));
-  }
+  const validationConflict = validateWorkItemTransitionInput({
+    currentWorkItem,
+    transitionInput: input,
+    hasTransitionId: (workStateTransitionId) => snapshot.workStateTransitions.has(workStateTransitionId),
+    hasTransitionSequence: (workItemId, sequence) => hasTransitionSequence(snapshot, workItemId, sequence),
+  });
 
-  if (!hasConsistentWorkItemScope(currentWorkItem, input.nextWorkItem, input.transition)) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.WorkItemScopeMismatch));
-  }
-
-  if (currentWorkItem.metadata.version !== input.expectedVersion) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.VersionMismatch));
-  }
-
-  if (input.nextWorkItem.metadata.version !== input.expectedVersion + WorkItemVersionIncrement) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.InvalidNextVersion));
-  }
-
-  if (input.transition.sequence < 1) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.InvalidTransitionSequence));
-  }
-
-  if (
-    input.transition.fromState !== currentWorkItem.state ||
-    input.transition.toState !== input.nextWorkItem.state
-  ) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.StateTransitionMismatch));
-  }
-
-  if (!isAllowedWorkItemTransition(currentWorkItem, input.transition, input.transitionContext)) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.IllegalWorkItemTransition));
-  }
-
-  if (snapshot.workStateTransitions.has(input.transition.workStateTransitionId)) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.DuplicateTransitionId));
-  }
-
-  if (hasTransitionSequence(snapshot, input.transition.workItemId, input.transition.sequence)) {
-    return Promise.resolve(createConflictResult(WorkAnchorConflictReason.DuplicateTransitionSequence));
+  if (validationConflict !== undefined) {
+    return Promise.resolve(validationConflict);
   }
 
   snapshot.workItems.set(input.nextWorkItem.workItemId, cloneRecord(input.nextWorkItem));
@@ -250,6 +229,53 @@ function cloneOptionalRecord<Record>(record: Record | undefined): Record | undef
 
 function cloneRecord<Record>(record: Record): Record {
   return structuredClone(record);
+}
+
+export function validateWorkItemTransitionInput(
+  input: ValidateWorkItemTransitionInput,
+): WorkAnchorPersistenceResult | undefined {
+  const { currentWorkItem, transitionInput } = input;
+
+  if (transitionInput.transition.workItemId !== transitionInput.nextWorkItem.workItemId) {
+    return createConflictResult(WorkAnchorConflictReason.WorkItemMismatch);
+  }
+
+  if (!hasConsistentWorkItemScope(currentWorkItem, transitionInput.nextWorkItem, transitionInput.transition)) {
+    return createConflictResult(WorkAnchorConflictReason.WorkItemScopeMismatch);
+  }
+
+  if (currentWorkItem.metadata.version !== transitionInput.expectedVersion) {
+    return createConflictResult(WorkAnchorConflictReason.VersionMismatch);
+  }
+
+  if (transitionInput.nextWorkItem.metadata.version !== transitionInput.expectedVersion + WorkItemVersionIncrement) {
+    return createConflictResult(WorkAnchorConflictReason.InvalidNextVersion);
+  }
+
+  if (transitionInput.transition.sequence < 1) {
+    return createConflictResult(WorkAnchorConflictReason.InvalidTransitionSequence);
+  }
+
+  if (
+    transitionInput.transition.fromState !== currentWorkItem.state ||
+    transitionInput.transition.toState !== transitionInput.nextWorkItem.state
+  ) {
+    return createConflictResult(WorkAnchorConflictReason.StateTransitionMismatch);
+  }
+
+  if (!isAllowedWorkItemTransition(currentWorkItem, transitionInput.transition, transitionInput.transitionContext)) {
+    return createConflictResult(WorkAnchorConflictReason.IllegalWorkItemTransition);
+  }
+
+  if (input.hasTransitionId(transitionInput.transition.workStateTransitionId)) {
+    return createConflictResult(WorkAnchorConflictReason.DuplicateTransitionId);
+  }
+
+  if (input.hasTransitionSequence(transitionInput.transition.workItemId, transitionInput.transition.sequence)) {
+    return createConflictResult(WorkAnchorConflictReason.DuplicateTransitionSequence);
+  }
+
+  return undefined;
 }
 
 function hasConsistentWorkItemScope(

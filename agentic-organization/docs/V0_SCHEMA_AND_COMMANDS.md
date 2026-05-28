@@ -414,9 +414,12 @@ per-work-item sequence numbers before mutating state.
 The in-memory test adapter clones records across its read/write boundary
 so command tests cannot mutate persistence state by object reference in a
 way the Cockroach adapter would not permit.
-Cockroach will be added as a vendor-specific implementation of that
-port; application code must not call `state-cockroach` schema helpers
-directly.
+Cockroach is implemented as a vendor-specific implementation of that
+same port and is exposed through durable state adapter composition;
+application code must not call `state-cockroach` schema helpers directly.
+State-history metadata is protected by an additive V4 migration so
+databases that already applied the V3 work-anchor kernel still receive
+the transition `updated_at` and `version` columns the port requires.
 
 Subject shape:
 

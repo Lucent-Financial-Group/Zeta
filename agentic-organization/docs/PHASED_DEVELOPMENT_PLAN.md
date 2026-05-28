@@ -1006,8 +1006,11 @@ initiative, work item, or anchor-target persistence yet.
      identity and scope, exact next-version advancement, lifecycle
      evidence for domain state-machine validation, reference isolation,
      and positive transition sequence enforcement so a future Cockroach
-     adapter can preserve the same contract. Cockroach persistence for
-     this port and command handlers remain pending.
+     adapter can preserve the same contract. The durable Cockroach
+     implementation now composes behind that same port and reuses the
+     shared transition validator. Existing databases receive transition
+     metadata through an additive V4 migration. Command handlers remain
+     pending.
 5. Keep the first state machine narrow:
    - created;
    - intake;

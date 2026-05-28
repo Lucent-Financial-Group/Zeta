@@ -99,9 +99,11 @@ project, initiative, work item, anchor target, and state-transition
 tests; it preserves provenance metadata, expected-version advancement,
 scope consistency, lifecycle evidence for domain transition validation,
 and reference isolation so command tests do not depend on Cockroach
-directly. The remaining gap is command handlers plus the durable
-Cockroach implementation of that port that validates anchor existence
-before supervisor signals, discussions, and meetings can mutate state.
+directly. The durable Cockroach adapter now implements that same port and
+is exposed through the durable state adapter composition, with an
+additive V4 migration for transition metadata on existing databases. The
+remaining gap is command handlers that validate anchor existence before
+supervisor signals, discussions, and meetings can mutate state.
 
 ### Scheduled Agent Time
 

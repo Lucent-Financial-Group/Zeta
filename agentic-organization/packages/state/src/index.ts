@@ -34,10 +34,12 @@ export {
   type PersistedWorkItem,
   type PersistedWorkStateTransition,
   type TransitionWorkItemInput,
+  type ValidateWorkItemTransitionInput,
   type WorkAnchorPersistenceResult,
   type WorkItemLifecycleEvidence,
   type WorkAnchorStateReader,
   type WorkAnchorStateStore,
   type WorkAnchorRecordMetadata,
   type WorkAnchorStateWriter,
+  validateWorkItemTransitionInput,
 } from "./work-anchor-store.ts";
