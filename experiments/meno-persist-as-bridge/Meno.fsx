@@ -72,8 +72,9 @@
 //   .claude/rules/persistence-choice-architecture-for-zeta-ais.md
 
 // (F# script — top-level definitions; no `module` declaration needed
-//  in .fsx. When ported to .fs in src/Core/, add `namespace Zeta.Workflow`
-//  + `module Meno = ` per repo F# conventions.)
+//  in .fsx. When ported to .fs in src/Core/, add `namespace Zeta.Core`
+//  + `module Meno = ` per repo F# conventions — see `src/Core/*.fs`
+//  for the established `Zeta.Core` namespace convention.)
 
 // ─────────────────────────────────────────────────────────────────────
 // μένω substrate-engineering channels — asymmetric authorship per
@@ -96,7 +97,14 @@ type MenoFeedback =
     /// New evidence contradicts prior; retraction event.
     | ContradictoryEvidence of priorClaim: string * newEvidence: string
     /// Earlier observation explicitly retracted (DBSP Z-set negative multiplicity).
+    /// Emitted when callers re-encounter a previously-retracted observationId
+    /// in downstream processing — substrate-honest disclosure of the
+    /// time-entanglement.
     | ObservationRetracted of observationId: string
+    /// Requested observationId not found in evidence — distinct from
+    /// ObservationRetracted (which marks an existing retraction event).
+    /// Returned by `retract` when called with an id that was never observed.
+    | ObservationNotFound of observationId: string
     /// Posterior shifted significantly since last commit; downstream
     /// substrate should re-verify against new posterior.
     | PosteriorShifted of magnitude: float
@@ -150,16 +158,31 @@ let observe (content: 'T) (multiplicity: int) (id: string) (timestamp: int64) (s
     { state with Evidence = ev :: state.Evidence; RetractionCount = newRetractions }
 
 /// Retract a prior observation (DBSP Z-set negative multiplicity).
-/// Returns Error(ObservationRetracted) feedback to signal the retraction
-/// event to the caller — substrate-honest disclosure of the time-entanglement.
+///
+/// Returns:
+///   - `Ok state'` when the observation exists; its Multiplicity is
+///     forced to `-(abs Multiplicity)`, ensuring `retract` is
+///     IDEMPOTENT: calling twice keeps the entry retracted instead of
+///     flipping back to a positive (un-retracted) state. Z-set semantics:
+///     the retraction marks the entry as a negative contribution to the
+///     net evidence (DBSP signed-multiset cancellation).
+///   - `Error (ObservationNotFound observationId)` when the
+///     observation id was never observed in this state's evidence —
+///     distinct from `ObservationRetracted`, which marks "already-retracted
+///     event surfaced to a downstream consumer."
+///
+/// Note: RetractionCount tracks the number of retract OPERATIONS that
+/// found a matching observation; calling retract on an already-retracted
+/// observation still increments the counter (operational signal) even
+/// though the Multiplicity state does not change (idempotent state).
 let retract (observationId: string) (state: MenoState<'T>) : MenoResult<'T> =
     let existed = state.Evidence |> List.exists (fun e -> e.ObservationId = observationId)
     if existed then
         let retracted = state.Evidence |> List.map (fun e ->
-            if e.ObservationId = observationId then { e with Multiplicity = -e.Multiplicity } else e)
+            if e.ObservationId = observationId then { e with Multiplicity = -(abs e.Multiplicity) } else e)
         Ok { state with Evidence = retracted; RetractionCount = state.RetractionCount + 1 }
     else
-        Error (ObservationRetracted observationId)
+        Error (ObservationNotFound observationId)
 
 /// Add an error-class wall to the persistent state. Future generators
 /// will be blocked from the forbidden region — Casimir-like rotor-wall
