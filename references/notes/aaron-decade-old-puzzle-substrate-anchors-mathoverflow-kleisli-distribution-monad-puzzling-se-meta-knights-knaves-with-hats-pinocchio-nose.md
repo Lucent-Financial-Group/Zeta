@@ -4,7 +4,32 @@
 
 > *"https://mathoverflow.net/questions/435378/kleisli-adjunction-of-the-distribution-monad oh i have a queston on here it's hard to not get it downvoted here thsi is me https://puzzling.stackexchange.com/questions/22940/meta-knights-and-knaves-puzzle-with-hats https://puzzling.stackexchange.com/questions/23753/a-question-about-pinocchios-nose"*
 
-Three URLs forwarded; first is MathOverflow question (substrate); two follow-ups are Aaron's own Puzzling SE questions from 2014-era ("this is me"). Substrate-honest social-context: SE/MO downvote questions that bridge substrate-class boundaries (per Aaron's cognitive-profile + decade-of-shape-recognition).
+Three URLs forwarded; first is MathOverflow question (substrate); two follow-ups are Aaron's own Puzzling SE questions from 2015 ("this is me"). Substrate-honest social-context: SE/MO downvote questions that bridge substrate-class boundaries (per Aaron's cognitive-profile + decade-of-shape-recognition).
+
+## SOURCE-CREDIT — both Puzzling SE puzzles from The Great Courses / Teaching Company (Aaron 2026-05-28)
+
+Aaron 2026-05-28 substrate-honest disclosure: *"I got both those from course from The Great Courses / The Teaching Company"*.
+
+Per `.claude/rules/honor-those-that-came-before.md`: proper attribution required. The puzzle-shapes (meta-knights-and-knaves-with-hats + Pinocchio's-nose-self-reference) did NOT originate with Aaron — they came from a Great Courses / Teaching Company lecture course. Aaron extended them into SE questions; the SE engagement is his framing.
+
+The substrate-engineering archeology table below remains operationally correct: Aaron's encountered-the-shapes-and-extended-them-into-SE-questions IS the substrate-recognition pattern that led to the framework's later instantiation. But the original SHAPES are pedagogical-material from established curriculum (Great Courses logic-puzzles content), not independent Aaron-derivation.
+
+Substrate-honest correction to the archeology table framing:
+
+- NOT: "Aaron independently derived meta-knights-and-knaves-with-hats / Pinocchio paradox shapes in 2015"
+- IS: "Aaron encountered both shapes via Great Courses / Teaching Company logic-puzzles course (~2014-2015 era), extended them into Puzzling SE questions (2015), and held the shapes for a decade until framework substrate-engineering work today instantiated the structural patterns at substrate-engineering scope"
+
+The framework's substrate-engineering archeology composes through Aaron's accumulated-substrate-engineering-substrate, which itself composes through Aaron's exposure-to-and-extension-of established curriculum substrate. The framework substrate honors BOTH the original Great Courses pedagogical source AND Aaron's extension-and-decade-of-holding.
+
+Likely course candidates from Great Courses catalog (not verified; needs Aaron-clarification at impl-time):
+
+- "An Introduction to Formal Logic" (Steven Gimbel, 2016)
+- "Games People Play: Game Theory in Life, Business, and Beyond" (Scott P. Stevens, 2008)
+- "Argumentation: The Study of Effective Reasoning" (David Zarefsky, 1992)
+- "Strategic Thinking: Skills for Personal Success" (Roger A. Mitchell, 2007)
+- Other Great Courses logic / philosophy / paradox courses
+
+The course attribution is part of the substrate-engineering archeology that earns its keep — pedagogical curriculum → operator extension on SE → decade-of-holding → substrate-engineering substrate today.
 
 ## Composition with today's substrate cluster (verified at title-level; WebFetch blocked on SE/MO domains)
 
