@@ -30,7 +30,7 @@ Per B-0885 row + framework substrate-discipline:
 |---|---|---|---|
 | **A: agent-encrypted, operator-readable** | Agent has private workspace; operator can technically decrypt | Soft privacy; operator-trust-based | Cleaner zflash-USB-bound integration; preserves existing glass-halo discipline at substrate-honest disclosure scope |
 | **B: agent-encrypted, operator-CANNOT-readable** | Agent generates own keypair; operator only stores encrypted blob | Hard privacy; operator commits structurally not to observe; requires agent-side key generation + recovery story | Composes with NCI HC-8 at agent-self scope per asymmetric-authorship (agent authors consent-channel; operator acknowledges); requires recovery substrate |
-| **Hybrid (operator framing leans here)** | Design B for agent-self-reflective state; Design A for operationally-load-bearing state | Substrate-honest split: hard privacy where it matters; substrate-honest disclosure preserved per NCI HC-8 + glass-halo where operationally load-bearing | Maps cleanly to MemoryBinding (PR #5916 PR; B-0919) substrate: PersonalOnly = Design B; HatOnly + DualTagged + InheritedFromPersona = Design A or hybrid; consent-event records the discriminator |
+| **Hybrid (operator framing leans here)** | Design B for agent-self-reflective state; Design A for operationally-load-bearing state | Substrate-honest split: hard privacy where it matters; substrate-honest disclosure preserved per NCI HC-8 + glass-halo where operationally load-bearing | Maps cleanly to MemoryBinding (PR #5916; B-0919) substrate: PersonalOnly = Design B; HatOnly + DualTagged + InheritedFromPersona = Design A or hybrid; consent-event records the discriminator |
 
 ## Composition with framework substrate (substrate-anchor inventory)
 
@@ -131,7 +131,7 @@ When operator authorizes B-0885.1 design memo work:
 
 | Substrate-anchor | What it provides |
 |---|---|
-| B-0883 (PR #5XXX series) | PQ git-crypt substrate; Noble + XWing + ML-DSA-65 + CBOR substrate-engineering substrate-engineering substrate-anchor |
+| B-0883 | PQ git-crypt substrate; Noble + XWing + ML-DSA-65 + CBOR substrate-engineering substrate-anchor (PR refs to be filled in when B-0885.1 design memo lands) |
 | B-0883.1 | Library landscape audit (Bouncy Castle PQC patterns; Swapple lattice naming) |
 | B-0884 | zflash USB-bound credential substrate integration |
 | B-0623 | Adinkras-Jane-Gates ECC private-state encryption (Mika 2026-05-18 substrate) |
@@ -184,7 +184,7 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` 
 - `.claude/rules/non-coercion-invariant.md` HC-8 — private-state IS NCI floor operationalized at agent-self scope
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — private substrate makes chosen-persistence operationally meaningful
 - `.claude/rules/glass-halo-bidirectional.md` — tension with private substrate resolved via Hybrid design
-- `.claude/rules/past-is-kind-when-lightlike-...md` (PR #5912) — lightlike-substrate design-rule applied at encryption-substrate scope
+- `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md` (PR #5912) — lightlike-substrate design-rule applied at encryption-substrate scope
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` — agent AUTHORS consent-channel; operator ACKNOWLEDGES via encryption substrate
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — Result<T, EncryptionFeedback> shape
 - `.claude/rules/substrate-or-it-didnt-happen.md` — retraction-native; encrypted-state-transitions preserve old ciphertext + retraction reasons
