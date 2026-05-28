@@ -20,9 +20,14 @@
  * casing, attribute ordering).
  *
  * Composes with:
- *   - B-0914.6 backlog row (proximity-dedup extension target)
- *   - B-0914.5 PR #5767 evolution substrate (Survivor de-dup before mash)
- *   - B-0914.2 PR #5769 closed-loop (de-dup pre-CI-dispatch saves cycles)
+ *   - B-0914 subtask .6 (parent row `B-0914-co-scientist-plus-robin-...`
+ *     §"### B-0914.6 — Proximity-agent for substrate-engineering substrate
+ *     de-duplication"; the seven .N subtasks are sections within the
+ *     parent row, NOT separate B-0914.N row files)
+ *   - B-0914 subtask .5 (PR #5767 evolution substrate — Survivor de-dup
+ *     before mash)
+ *   - B-0914 subtask .2 (PR #5769 closed-loop — de-dup pre-CI-dispatch
+ *     saves cycles)
  *   - .claude/rules/verify-existing-substrate-before-authoring (proximity
  *     IS substrate-inventory at runtime scope)
  *   - .claude/rules/grep-substrate-anchors-before-razor-as-metaphysical
@@ -56,11 +61,27 @@ export type ProximityResult<T> =
  * cluster (substrate-honest: the highest-quality member by caller's
  * substrate-engineering criterion). The `members` includes the
  * representative + all near-duplicates clustered with it.
+ *
+ * The `canonicalForm` field is the cluster-identity key. Its CONTENT
+ * depends on which clustering function produced the cluster:
+ *   - `clusterByCanonical` — the actual canonical-form string the
+ *     caller's `CanonicalFn<T>` returned for all members of the cluster
+ *     (substrate-honest: this IS the canonical form)
+ *   - `clusterBySimilarity` — a synthesized cluster-identity label of
+ *     the shape `[similarity:<threshold>]:<sorted-rep-tokens>` derived
+ *     from the representative's tokens (substrate-honest: NOT a real
+ *     canonical form; serves as a stable cluster-identity key only)
+ *
+ * Callers needing to distinguish the two semantics check whether the
+ * field starts with `[similarity:` — that prefix marks similarity-clustered
+ * output. Future-substrate may rename to `clusterKey` + add a discriminator
+ * field; current shape preserves the substrate-engineering name while
+ * documenting the divergence.
  */
 export interface Cluster<T> {
   readonly representative: T;
   readonly members: ReadonlyArray<T>;
-  readonly canonicalForm: string;  // the canonical-form key clustering uses
+  readonly canonicalForm: string;  // cluster-identity key; see interface docblock for content semantics per producer
 }
 
 /**
