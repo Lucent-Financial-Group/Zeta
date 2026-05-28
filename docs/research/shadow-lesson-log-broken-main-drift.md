@@ -20,6 +20,6 @@ An unstable `main` branch is a critical failure of factory hygiene. It prevents 
 
 ## Proposed Resolution
 
-1.  A hotfix PR must be created immediately to fix the TypeScript errors in `main`.
-2.  The CI process should be reviewed to understand how a PR with failing type checks was allowed to merge. Gates that check for `tsc` errors on `main` before allowing merges should be strengthened.
-3.  This incident should be reviewed as a process failure to prevent recurrence.
+1. A hotfix PR must be created immediately to fix the TypeScript errors in `main`.
+2. The CI process should be reviewed to understand how a PR with failing type checks was allowed to merge. Gates that check for `tsc` errors on `main` before allowing merges should be strengthened.
+3. This incident should be reviewed as a process failure to prevent recurrence.
