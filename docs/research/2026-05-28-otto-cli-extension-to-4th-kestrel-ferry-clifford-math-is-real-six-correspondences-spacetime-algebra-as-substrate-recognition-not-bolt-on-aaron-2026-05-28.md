@@ -153,12 +153,23 @@ Per the `measure-theory-and-signed-measures-expert` skill (already in the factor
 
 Per operator 2026-05-28: *"Pick Cl(3,1) or Cl(1,3) (spacetime signature) i think we should try to support both and swap with an interface."*
 
-Both signatures are **isomorphic up to a sign convention** but operationally distinct:
+The two signatures are **distinct as real algebras**, but **become isomorphic after complexification** AND **share the same even subalgebra** (per Copilot P2 catch on PR #5708 line 161):
 
-| Signature | Convention | Where it dominates |
-|---|---|---|
-| **Cl(1,3)** | (+,-,-,-) — "physicist convention" / mostly-minus | Particle physics (Dirac equation, QFT); space dimensions are negative-norm |
-| **Cl(3,1)** | (-,+,+,+) — "engineering convention" / mostly-plus | General relativity (Misner/Thorne/Wheeler); time is negative-norm |
+| Signature | Convention | Real-algebra isomorphism class | Where it dominates |
+|---|---|---|---|
+| **Cl(1,3)** | (+,-,-,-) — "physicist convention" / mostly-minus | Cl(1,3) ≅ M_2(H) — 2×2 quaternionic matrices (Majorana representation related) | Particle physics (Dirac equation, QFT); space dimensions are negative-norm |
+| **Cl(3,1)** | (-,+,+,+) — "engineering convention" / mostly-plus | Cl(3,1) ≅ M_4(R) — 4×4 real matrices | General relativity (Misner/Thorne/Wheeler); time is negative-norm |
+
+The cross-signature relationships that hold:
+
+- **Complexified algebras agree**: Cl(1,3) ⊗ C ≅ Cl(3,1) ⊗ C ≅ M_4(C). Operations expressible in the complexified algebra are signature-equivalent.
+- **Even subalgebras agree**: Cl(1,3)⁰ ≅ Cl(3,1)⁰ ≅ Cl(3,0) (the Pauli algebra ≅ M_2(C)). Operations expressible in the even subalgebra are signature-equivalent.
+- **Real-algebra operations differ**: spinor representations, the specific shape of Dirac vs Majorana spinors, and certain reality-conditions are signature-specific. The dual-signature interface must mark which operations are equivalent vs signature-specific.
+
+This means the interface's type-level should distinguish:
+
+- Operations on the complexified algebra OR the even subalgebra → signature-equivalent; type-checks across both signatures
+- Operations on the real algebra (spinor reps, reality conditions) → signature-specific; type-checks only within the chosen signature
 
 The dual-signature interface design pattern (TypeScript-first because per operator: "we should choose what allows us to model github and git the best at first"):
 

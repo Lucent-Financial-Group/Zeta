@@ -7,6 +7,7 @@ authors:
   - aaron
   - otto-cli
 created: 2026-05-28
+last_updated: 2026-05-28
 depends_on:
   - B-0895
   - B-0876

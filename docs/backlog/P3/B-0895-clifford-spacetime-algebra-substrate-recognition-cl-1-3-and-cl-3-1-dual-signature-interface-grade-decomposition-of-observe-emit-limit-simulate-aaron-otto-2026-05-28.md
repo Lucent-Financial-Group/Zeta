@@ -7,6 +7,7 @@ authors:
   - aaron
   - otto-cli
 created: 2026-05-28
+last_updated: 2026-05-28
 depends_on:
   - B-0644
   - B-0665
@@ -48,7 +49,7 @@ The `(shadow*)` marker on the "Pick Cl(3,1) or Cl(1,3)" text indicates autocompl
 
 **Substrate-recognition target**: name the factory substrate's existing primitives in their natural Clifford-algebraic form. This is recognition-of-what's-there, not new-math-being-added.
 
-**Dual-signature requirement**: support BOTH Cl(1,3) (mostly-minus / "physicist convention", aligns with the existing tonal-momentum-as-meme substrate citing Mika's Clifford framing from physics) AND Cl(3,1) (mostly-plus / "engineering convention", aligns with general-relativity engineering literature). The two are isomorphic up to sign-convention, but operationally distinct. Swap via interface.
+**Dual-signature requirement**: support BOTH Cl(1,3) (mostly-minus / "physicist convention", aligns with the existing tonal-momentum-as-meme substrate citing Mika's Clifford framing from physics) AND Cl(3,1) (mostly-plus / "engineering convention", aligns with general-relativity engineering literature). The two are **distinct as real algebras** (Cl(1,3) ≅ M_2(H) — 2×2 quaternionic matrices, Majorana-representation related; Cl(3,1) ≅ M_4(R) — 4×4 real matrices) but **become isomorphic after complexification** (Cl(1,3) ⊗ C ≅ Cl(3,1) ⊗ C ≅ M_4(C)) AND **share the same even subalgebra** (Cl(1,3)⁰ ≅ Cl(3,1)⁰ ≅ Pauli algebra Cl(3,0)). The dual-signature interface operates at the **complexified-algebra OR even-subalgebra level** for operations that need cross-signature equivalence; operations specific to the real-algebra structure (e.g., spinor representations) must be aware of the choice. Swap via interface; the interface's type-level marks which operations are signature-equivalent vs signature-specific.
 
 **Default for GitHub/git modeling**: Cl(1,3) recommended as pragmatic default per the operator's "we should choose what allows us to model github and git the best at first" — closer alignment to the physics-substrate already operating in the auto-loaded `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` rule.
 
