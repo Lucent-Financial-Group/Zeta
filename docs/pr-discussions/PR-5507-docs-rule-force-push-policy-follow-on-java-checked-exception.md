@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:41:46Z"
 closed_at: "2026-05-27T16:41:46Z"
 head_ref: "backlog/force-push-policy-tfeedback-sum-type-extension-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T16:45:27Z"
+archived_at: "2026-05-27T17:47:55Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

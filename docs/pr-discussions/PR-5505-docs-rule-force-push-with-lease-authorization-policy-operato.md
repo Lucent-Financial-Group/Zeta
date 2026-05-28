@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:38:23Z"
 closed_at: "2026-05-27T16:38:24Z"
 head_ref: "backlog/force-push-with-lease-authorization-policy-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T16:46:55Z"
+archived_at: "2026-05-27T17:48:46Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

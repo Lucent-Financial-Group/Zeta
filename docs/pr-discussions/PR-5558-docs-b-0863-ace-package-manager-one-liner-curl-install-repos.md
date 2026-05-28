@@ -8,7 +8,7 @@ merged_at: "2026-05-27T18:00:13Z"
 closed_at: "2026-05-27T18:00:13Z"
 head_ref: "backlog/b-0863-ace-package-manager-one-liner-curl-install-repository-fast-moving-tools-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T19:06:08Z"
+archived_at: "2026-05-27T18:51:28Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

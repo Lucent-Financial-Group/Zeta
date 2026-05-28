@@ -13,8 +13,8 @@
 //   bun tools/hygiene/check-bash-retirement-inventory.ts --json
 
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { closeSync, existsSync, openSync, readSync } from "node:fs";
+import { basename, join } from "node:path";
 
 type ExitCode = 0 | 1 | 2;
 type Mode = "report" | "enforce" | "json";
@@ -28,6 +28,11 @@ interface ParseResult {
 interface InventoryDrift {
   readonly unexpected: readonly string[];
   readonly missingRetained: readonly string[];
+}
+
+interface TrackedGitFile {
+  readonly path: string;
+  readonly executable: boolean;
 }
 
 interface AllowlistOrderViolation {
@@ -65,8 +70,11 @@ export interface InventoryReport {
 }
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
+const SHEBANG_READ_BYTES = 512;
+const SHELL_FILE_EXTENSIONS: readonly string[] = [".sh", ".bash", ".zsh", ".ksh", ".command"];
 export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
-export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = ["*.sh", "*.bash", "*.zsh", "*.ksh", "*.command"];
+export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS.map((extension) => `*${extension}`);
+const SHELL_FAMILY_SHEBANG_RE = /^#!.*[/\s](bash|dash|sh|zsh|ksh)(?:\s|$)/;
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -169,16 +177,59 @@ function runGit(args: readonly string[], cwd?: string): string {
 
 export function trackedNonLeanShellFilesFromGit(cwd?: string): readonly string[] {
   const repoRoot = runGit(["rev-parse", "--show-toplevel"], cwd).trim();
-  const raw = runGit(["ls-files", "-z", ...TRACKED_SHELL_FILE_GLOBS], repoRoot);
-  return raw
-    .split("\0")
-    .filter((file): file is string => file.length > 0)
-    .filter((file) => existsSync(join(repoRoot, file)))
-    .filter((file) => !file.startsWith("tools/lean4/"))
+  return trackedGitFiles(repoRoot)
+    .filter(({ path }) => existsSync(join(repoRoot, path)))
+    .filter(({ path }) => !path.startsWith("tools/lean4/"))
+    .filter(({ path, executable }) => isTrackedShellFamilyFile(repoRoot, path, executable))
+    .map(({ path }) => path)
     .sort((a, b) => a.localeCompare(b));
 }
 
 export const trackedNonLeanBashFilesFromGit = trackedNonLeanShellFilesFromGit;
+
+function trackedGitFiles(repoRoot: string): readonly TrackedGitFile[] {
+  const raw = runGit(["ls-files", "-s", "-z"], repoRoot);
+  return raw
+    .split("\0")
+    .filter((entry) => entry.length > 0)
+    .map(parseTrackedGitFile)
+    .filter((entry): entry is TrackedGitFile => entry !== undefined);
+}
+
+function parseTrackedGitFile(entry: string): TrackedGitFile | undefined {
+  const pathStart = entry.indexOf("\t");
+  if (pathStart === -1) return undefined;
+
+  const [mode] = entry.slice(0, pathStart).split(/\s+/, 1);
+  if (mode === undefined) return undefined;
+
+  return {
+    path: entry.slice(pathStart + 1),
+    executable: mode === "100755",
+  };
+}
+
+function isTrackedShellFamilyFile(repoRoot: string, file: string, executable: boolean): boolean {
+  if (SHELL_FILE_EXTENSIONS.some((extension) => file.endsWith(extension))) return true;
+  if (basename(file).includes(".") && !executable) return false;
+
+  const firstLine = readFirstLine(join(repoRoot, file));
+  return SHELL_FAMILY_SHEBANG_RE.test(firstLine);
+}
+
+function readFirstLine(path: string): string {
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "r");
+    const buffer = Buffer.alloc(SHEBANG_READ_BYTES);
+    const bytesRead = readSync(fd, buffer, 0, buffer.length, 0);
+    return buffer.subarray(0, bytesRead).toString("utf8").split(/\r?\n/, 1)[0] ?? "";
+  } catch {
+    return "";
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
+}
 
 function inspectAllowlistIntegrity(expectedRetained: readonly string[]): AllowlistIntegrity {
   const counts = new Map<string, number>();

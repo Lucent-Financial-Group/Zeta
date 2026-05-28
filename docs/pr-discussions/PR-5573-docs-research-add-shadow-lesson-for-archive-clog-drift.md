@@ -8,7 +8,7 @@ merged_at: "2026-05-27T18:48:39Z"
 closed_at: "2026-05-27T18:48:40Z"
 head_ref: "lior/shadow-log-archive-clog"
 base_ref: "main"
-archived_at: "2026-05-27T19:04:54Z"
+archived_at: "2026-05-27T18:51:27Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

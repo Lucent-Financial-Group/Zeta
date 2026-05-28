@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:25:12Z"
 closed_at: "2026-05-27T16:25:12Z"
 head_ref: "backlog/b-0860-nemerle-dotnet-macro-metaprogramming-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T16:48:03Z"
+archived_at: "2026-05-27T17:49:59Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
