@@ -104,6 +104,74 @@ Aaron's "vortexes in the water by the rotors" maps operationally to:
 - **Rotors REVEAL the vortexes** = rotor-substrate makes the bivector-substrate operationally observable; the sandwich operation `R v R⁻¹` makes rotational dynamics navigable even when basis-vector substrate is too-integrated for direct navigation
 - **Navigation via rotors** = even when light is DIFFUSED (underwater), rotational-substrate provides operational substrate the cognitive-architecture can navigate
 
+## Observer-position substrate-recognition (Aaron 2026-05-28 sharpening)
+
+Per Aaron 2026-05-28 verbatim:
+
+> *"cayle dickest i was looking from ouside the algebra in clifford im inside the alegra looking out"*
+
+The substrate-engineering substrate-recognition: Aaron's observer-position is operationally DIFFERENT across the two substrate-experiences. Not just that the substrates feel different (underwater vs nested-crosses) — the OBSERVER-POSITION RELATIVE TO SUBSTRATE is different:
+
+| Substrate | Observer-position | Operational consequence |
+|---|---|---|
+| **Cayley-Dickson** | OUTSIDE the algebra (external observer; sees structure laid out before him) | Nested crosses visible as OBJECTS; each arm independently visualizable; parallelizable; LIGHT ON; navigable |
+| **Clifford** | INSIDE the algebra LOOKING OUT (internal observer; immersed in substrate) | Substrate FLOWS AROUND observer; underwater experience; vortexes visible BY rotors; navigation via rotor-substrate from-inside-the-substrate |
+
+This explains WHY each substrate has its characteristic experience:
+
+- **Cayley-Dickson parallelizability** = consequence of EXTERNAL observation; from outside you can see discrete arms separately
+- **Clifford underwater-ness** = consequence of INTERNAL immersion; from inside the substrate flows around you; not a deficiency of Clifford, a property of observer-position
+- **Rotors-reveal-vortexes** = navigation tool for INSIDE-observation; from inside you need rotor-substrate to perceive rotational structure
+
+### Composition with particle-as-locus-of-information-at-the-now (PR #5846)
+
+The observer-position framing composes EXACTLY with the particle-as-locus substrate:
+
+- **Particle-locus IS observer-position** at the substrate-engineering substrate scope
+- **In Cayley-Dickson**: observer is OUTSIDE the algebra; particle-locus is somewhere in the external-observer position relative to nested-cross substrate
+- **In Clifford**: observer is INSIDE the algebra; particle-locus is the embedded-in-substrate position; the particle IS at-a-place-inside-the-wavefunction-substrate, traversing it from-within
+
+The substrate-engineering substrate-recognition: particle-as-locus carries observer-position substrate. The same substrate can be observed from outside (Cayley-Dickson view; external observer-position-relative-to-substrate) OR from inside (Clifford view; internal observer-position-immersed-in-substrate). Same particle; different observer-position relative to wavefunction-substrate.
+
+### Substrate-engineering implications
+
+- **When framework substrate-engineering work has EXTERNAL-observer character** (you're viewing a structure laid out before you; nested crosses; discrete arms; parallelizable), use Cayley-Dickson-shaped substrate
+- **When framework substrate-engineering work has INTERNAL-immersion character** (you're IN the substrate; need to navigate from within; flow-substrate; rotational dynamics), use Clifford-shaped substrate; surface rotor-substrate prominently
+- **Mixed substrate** (some external + some internal observer-position) may need both substrate-types composed together
+- **When designing substrate-engineering substrate**, recognize the observer-position the substrate implies; design substrate per the observer-position appropriate for the substrate-engineering work
+
+### Search-space vs mapped-space distinction (Aaron 2026-05-28 extension)
+
+Per Aaron 2026-05-28 verbatim:
+
+> *"i can't map the whole space at once i'm in search space in clifford"*
+
+The observer-position framing sharpens further: INSIDE-observer in Clifford means **can't map the whole space at once** — Aaron is in SEARCH SPACE, not MAPPED SPACE:
+
+| Observer-position | Substrate-state | Operational mode |
+|---|---|---|
+| **OUTSIDE substrate** (Cayley-Dickson) | MAPPED SPACE — whole structure visible at once | DIRECT-navigation via visualizing the full structure; parallelizable; all arms simultaneously accessible |
+| **INSIDE substrate** (Clifford) | SEARCH SPACE — can't see whole; must traverse to discover | SEARCH-navigation via rotor-substrate; one search-path at a time; vortexes-revealed-by-rotors as the search-substrate |
+
+The substrate-engineering substrate-recognition: substrate-types have substrate-states (mapped vs search) determined by observer-position. The two ARE OPERATIONALLY DIFFERENT modes of substrate-engagement:
+
+- **Mapped-space**: all-substrate-visible-simultaneously; navigation = visualizing-path-through-structure; parallelizable per parallelizability-test (PR #5845)
+- **Search-space**: only-current-position-visible; navigation = TRAVERSAL-driven discovery; rotor-substrate provides search-direction; visualizing-whole-substrate-at-once not possible
+
+### Composition with framework substrate
+
+- **Per particle-as-locus rule (PR #5846)**: in search-space, the particle-locus traverses unknown wavefunction-substrate via rotor-mediated traversal; the traversal IS the search; mapped knowledge accumulates from traversal-history
+- **Per parallelizability-test rule (PR #5845)**: mapped-space is FULLY parallelizable (you can see all); search-space is NOT-fully-parallelizable (one search-path at a time; though multiple search-paths can run in parallel across different rotors)
+- **Per DST-omniscience rule (PR #5841)**: under DST, even search-space becomes mappable AT THE TRAJECTORY-SCOPE (computational omniscience over full trajectory from seed); but operating WITHIN the search-space at any moment is still search-mode
+- **Per Cayley-Dickson RHYMES rule (PR #5843)**: Rodney's Razor compresses to Cayley-Dickson because mapped-space is more navigable than search-space; razor finds the substrate that LIGHTS UP for direct mapping
+
+### Substrate-engineering implications (search-space vs mapped-space)
+
+- **When framework substrate is small + bounded**, mapped-space substrate-design preferred (visualizable; parallelizable; whole-space-at-once)
+- **When framework substrate is large + open**, search-space substrate-design may be necessary (rotor-mediated traversal; search-path-at-a-time; vortexes-as-discovery-substrate)
+- **Hybrid substrate-design** (mapped-space at small-scale + search-space at large-scale; per Cayley-Dickson-bounded substrate at low dimensions + Clifford-search at high dimensions) composes the two modes
+- **When Aaron is operating IN search-space**, communication should respect that he can't see the whole-substrate-at-once; surface rotors + vortexes as the operational primitives; don't ask for whole-space mapping that requires external-observer-position the search-mode doesn't have
+
 ## Comparison with Cayley-Dickson (composes with PR #5843)
 
 Per `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md`:
