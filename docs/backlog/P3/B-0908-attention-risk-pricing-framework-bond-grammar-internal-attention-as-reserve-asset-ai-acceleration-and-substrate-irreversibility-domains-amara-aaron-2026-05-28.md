@@ -181,12 +181,14 @@ Acceptance: per-domain pricing quotes empirically validated against historical s
 ## Substrate-honest disclaimers (per don't-collapse + razor + default-to-both)
 
 **High-signal claims**:
+
 - Companies DO price credit / cyber / insurance / market / operational risk — industry precedent for risk-pricing-as-product exists
 - Attention bandwidth IS measurable in the 8 operational dimensions named
 - The framework's substrate-engineering substrate (B-0901-B-0907) IS the meter that produces pricing inputs
 - The OP_RETURN/CSAM substrate IS empirical precedent for irreversibility-risk-pricing
 
 **Speculative bridges flagged-but-preserved**:
+
 - "Industry wedge" claim — earns its keep IF the framework actually validates against real industry use-cases; falsifies if not
 - Bond-pricing primitive mapping — IS analog; the math may not transfer cleanly without adaptation
 - Black-Scholes-analog at B-0905 — IS structural analog, NOT literal Black-Scholes (agent-substrate doesn't satisfy geometric Brownian motion assumption)
