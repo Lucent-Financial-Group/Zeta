@@ -23,12 +23,9 @@ import {
   computeImplDesignProgress,
   type ImplDesignStatus,
   type JoinProtocol,
-  type MultiVMOrchestrationSubstrate,
   type NetworkTopology,
   type OrchestratorKind,
   type PathForkComparison,
-  type PathForkSubstrate,
-  type PathForkVariant,
   type PersistedKVSubstrate,
   type VMSpec,
 } from "./extensions";
