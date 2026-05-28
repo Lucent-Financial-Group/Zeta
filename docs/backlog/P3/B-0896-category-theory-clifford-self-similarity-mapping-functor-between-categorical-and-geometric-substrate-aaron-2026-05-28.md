@@ -59,7 +59,13 @@ The two substrates are SELF-SIMILAR — they describe the same underlying travel
 - Rotors as transformation operators
 - Wedge product as simulation (non-commit composition)
 
-**Self-similarity (the load-bearing claim)**: there exists a functor F from the categorical-traveler-substrate to the Clifford-algebraic-substrate that preserves the structural properties (composition, identity, monoidal product, dual objects). The two substrates describe each other; either can be used depending on what's clearest for the application.
+**Self-similarity (the load-bearing claim)**: the relationship between the categorical-traveler-substrate and the Clifford-algebraic-substrate must be at least an **equivalence of categories** (full + faithful + essentially-surjective functor F; equivalently, a quasi-inverse G with `G∘F ≃ Id` and `F∘G ≃ Id`) OR an **adjunction with round-trip laws** (F ⊣ G with unit `η: Id → G∘F` and counit `ε: F∘G → Id` satisfying the triangle identities) — NOT merely "a structure-preserving functor F."
+
+The reason: a single structure-preserving functor only gives an *interpretation* from one category into the other; it can be non-faithful (collapse distinct travelers/messages onto the same image) or non-full (miss morphisms in the target that have no source). Under interpretation alone, the two substrates do NOT describe each other — they describe one direction. The "mutually checkable" / "self-similar" / "describe each other" criterion REQUIRES the bidirectional round-trip structure of equivalence-or-adjunction.
+
+Phase 1 (research-doc) must specify which of these stronger criteria the framework targets (equivalence vs adjunction) + justify the choice. Phase 3 (formal proof) must demonstrate the round-trip property in the chosen theorem-prover (Lean Mathlib4 has both `CategoryTheory.Equivalence` + `CategoryTheory.Adjunction` infrastructure). Falling short of equivalence-or-adjunction would land a weaker substrate-engineering claim (one-directional interpretation) and B-0896 would need to be re-scoped or re-titled.
+
+Acceptance criterion sharpening per Codex P2 review on PR #5708: the row's claim of "mutual description" is bidirectional-shaped; Phase 1 must explicitly target equivalence-or-adjunction (or document if only one-direction interpretation is achievable, which would be a weaker but still substantively meaningful result requiring re-titling).
 
 ## Existing research precedent
 
