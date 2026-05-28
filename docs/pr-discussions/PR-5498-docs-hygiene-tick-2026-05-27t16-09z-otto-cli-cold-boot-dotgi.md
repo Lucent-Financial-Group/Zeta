@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:17:40Z"
 closed_at: "2026-05-27T16:17:40Z"
 head_ref: "otto-cli/shard-1609z-cold-boot-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:50:28Z"
+archived_at: "2026-05-27T19:22:11Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

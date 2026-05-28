@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:59:39Z"
 closed_at: "2026-05-27T16:59:39Z"
 head_ref: "backlog/monad-propagation-pattern-cross-language-substrate-shape-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:47:16Z"
+archived_at: "2026-05-27T19:20:49Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

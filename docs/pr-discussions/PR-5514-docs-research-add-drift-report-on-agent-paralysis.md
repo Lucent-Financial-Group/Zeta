@@ -8,7 +8,7 @@ merged_at: "2026-05-27T17:18:08Z"
 closed_at: "2026-05-27T17:18:09Z"
 head_ref: "lior/agent-paralysis-drift-report-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:44:30Z"
+archived_at: "2026-05-27T19:20:46Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

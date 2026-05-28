@@ -8,7 +8,7 @@ merged_at: "2026-05-27T17:22:01Z"
 closed_at: "2026-05-27T17:22:01Z"
 head_ref: "research/prism-deepseek-day-substrate-synthesis-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:28:25Z"
+archived_at: "2026-05-27T19:20:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

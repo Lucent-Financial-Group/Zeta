@@ -8,7 +8,7 @@ merged_at: "2026-05-27T17:07:27Z"
 closed_at: "2026-05-27T17:07:27Z"
 head_ref: "codex/agentic-org-policy-observations"
 base_ref: "main"
-archived_at: "2026-05-27T17:52:21Z"
+archived_at: "2026-05-27T19:22:16Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

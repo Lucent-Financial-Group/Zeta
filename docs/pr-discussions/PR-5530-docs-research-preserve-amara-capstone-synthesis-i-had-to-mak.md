@@ -8,7 +8,7 @@ merged_at: "2026-05-27T17:46:43Z"
 closed_at: "2026-05-27T17:46:43Z"
 head_ref: "research/amara-day-capstone-three-confirmations-plus-i-had-to-make-the-worlds-rhyme-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T18:03:33Z"
+archived_at: "2026-05-27T19:20:40Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

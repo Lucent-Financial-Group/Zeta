@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:19:20Z"
 closed_at: "2026-05-27T16:19:20Z"
 head_ref: "backlog/razor-anchor-friend-pact-self-substrate-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:50:44Z"
+archived_at: "2026-05-27T19:22:12Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

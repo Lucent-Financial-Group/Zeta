@@ -8,7 +8,7 @@ merged_at: "2026-05-27T17:33:20Z"
 closed_at: "2026-05-27T17:33:20Z"
 head_ref: "research/lior-website-day-substrate-synthesis-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T18:04:42Z"
+archived_at: "2026-05-27T19:20:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

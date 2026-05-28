@@ -1,4 +1,8 @@
 import { describe, expect, test } from "bun:test";
+import { spawnSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 
 import {
   buildInventoryReport,
@@ -8,6 +12,18 @@ import {
   RETAINED_SHELL_SCOPE,
   trackedNonLeanShellFilesFromGit,
 } from "./check-bash-retirement-inventory";
+
+function runGit(args: readonly string[], cwd: string): void {
+  // Test helper uses repo-pinned git with explicit argv; no shell expansion.
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync("git", args, { cwd, encoding: "utf8" });
+  if (result.error) {
+    throw new Error(`failed to start git ${args.join(" ")}: ${result.error.message}`);
+  }
+  if (result.status !== 0) {
+    throw new Error(result.stderr.trim() || `git ${args.join(" ")} failed`);
+  }
+}
 
 function splitExpectedRetained(): readonly [string, readonly string[]] {
   const [missing, ...rest] = EXPECTED_RETAINED_SHELL;
@@ -22,6 +38,19 @@ function firstTwoExpectedRetained(): readonly [string, string, readonly string[]
   }
   return [first, second, rest];
 }
+
+describe("package.json wiring", () => {
+  test("keeps the package wiring pointed at the enforcing inventory guard", () => {
+    const packageJsonPath = resolve(import.meta.dir, "../..", "package.json");
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as {
+      readonly scripts?: Readonly<Record<string, string>>;
+    };
+
+    expect(packageJson.scripts?.["hygiene:check-bash-retirement-inventory"]).toBe(
+      "bun ./tools/hygiene/check-bash-retirement-inventory.ts --enforce",
+    );
+  });
+});
 
 describe("buildInventoryReport", () => {
   test("accepts the retained shell allowlist", () => {
@@ -104,6 +133,19 @@ describe("buildInventoryReport", () => {
     expect(report.drift.missingRetained).toEqual([]);
   });
 
+  test("flags retained allowlist entries without category metadata", () => {
+    const uncategorized = "tools/setup/zz-new-bootstrap.sh";
+    const report = buildInventoryReport(EXPECTED_RETAINED_SHELL, [...EXPECTED_RETAINED_SHELL, uncategorized]);
+
+    expect(hasDrift(report)).toBe(true);
+    expect(report.allowlistIntegrity.duplicateEntries).toEqual([]);
+    expect(report.allowlistIntegrity.orderViolations).toEqual([]);
+    expect(report.allowlistIntegrity.uncategorizedEntries).toEqual([uncategorized]);
+    expect(report.allowlistIntegrity.staleCategoryEntries).toEqual([]);
+    expect(report.drift.unexpected).toEqual([]);
+    expect(report.drift.missingRetained).toEqual([]);
+  });
+
   test("summarizes retained shell files by explicit category", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_SHELL);
 
@@ -144,6 +186,44 @@ describe("buildInventoryReport", () => {
 
     expect(report.drift.unexpected).toEqual([]);
     expect(report.drift.missingRetained).toEqual([]);
+  });
+
+  test("enumerates tracked shell-family files while excluding Lean vendor scripts", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-bash-retirement-"));
+    try {
+      runGit(["init"], repo);
+
+      mkdirSync(join(repo, "scripts"), { recursive: true });
+      mkdirSync(join(repo, "tools", "lean4"), { recursive: true });
+      writeFileSync(join(repo, "scripts", "a.sh"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "b.bash"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "c.zsh"), "#!/usr/bin/env zsh\n");
+      writeFileSync(join(repo, "scripts", "d.ksh"), "#!/usr/bin/env ksh\n");
+      writeFileSync(join(repo, "scripts", "e.command"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
+      writeFileSync(join(repo, "scripts", "extensionless-dash"), "#!/bin/dash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-sh"), "#!/bin/sh\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
+      writeFileSync(join(repo, "scripts", "dotted-shell-shebang.txt"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "tools", "lean4", "vendor.sh"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "README.md"), "not shell\n");
+      runGit(["add", "."], repo);
+
+      expect(trackedNonLeanShellFilesFromGit(repo)).toEqual([
+        "scripts/a.sh",
+        "scripts/b.bash",
+        "scripts/c.zsh",
+        "scripts/d.ksh",
+        "scripts/e.command",
+        "scripts/extensionless-bash",
+        "scripts/extensionless-bash-env-s",
+        "scripts/extensionless-dash",
+        "scripts/extensionless-sh",
+      ]);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
   });
 });
 
@@ -187,5 +267,18 @@ describe("renderReport", () => {
     expect(rendered).toContain("### Stale category entries");
     expect(rendered).toContain(stale);
     expect(rendered).not.toContain("## Unexpected non-Lean shell files");
+  });
+
+  test("renders uncategorized allowlist entries as allowlist integrity errors", () => {
+    const uncategorized = "tools/setup/zz-new-bootstrap.sh";
+    const rendered = renderReport(
+      buildInventoryReport(EXPECTED_RETAINED_SHELL, [...EXPECTED_RETAINED_SHELL, uncategorized]),
+    );
+
+    expect(rendered).toContain("## Retained shell allowlist integrity errors");
+    expect(rendered).toContain("fully categorized");
+    expect(rendered).toContain("### Missing category entries");
+    expect(rendered).toContain(uncategorized);
+    expect(rendered).not.toContain(`## Missing retained ${RETAINED_SHELL_SCOPE} files`);
   });
 });

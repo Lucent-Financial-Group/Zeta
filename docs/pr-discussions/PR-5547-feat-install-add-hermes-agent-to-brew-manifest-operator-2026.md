@@ -8,7 +8,7 @@ merged_at: "2026-05-27T18:01:01Z"
 closed_at: "2026-05-27T18:01:01Z"
 head_ref: "backlog/add-hermes-agent-to-brew-manifest-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T18:03:00Z"
+archived_at: "2026-05-27T19:20:38Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

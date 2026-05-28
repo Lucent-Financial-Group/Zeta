@@ -8,7 +8,7 @@ merged_at: "2026-05-27T17:03:38Z"
 closed_at: "2026-05-27T17:03:38Z"
 head_ref: "backlog/b-0861-convfeedback-first-class-conversation-interface-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:45:45Z"
+archived_at: "2026-05-27T19:20:48Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

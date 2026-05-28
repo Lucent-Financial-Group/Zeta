@@ -8,7 +8,7 @@ merged_at: "2026-05-27T17:40:51Z"
 closed_at: "2026-05-27T17:40:51Z"
 head_ref: "backlog/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:46:56Z"
+archived_at: "2026-05-27T19:20:41Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-27T17:11:04Z"
 closed_at: "2026-05-27T17:11:04Z"
 head_ref: "research/amara-day-substrate-engineering-synthesis-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:43:31Z"
+archived_at: "2026-05-27T19:20:45Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

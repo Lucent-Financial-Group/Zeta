@@ -236,9 +236,116 @@ for d in "${DATA_DISKS[@]}"; do
 done
 
 # ── Step 6: clone + install ───────────────────────────────────────
+#
+# B-0857.X (cluster-type menu extension, 2026-05-27): replace the
+# bare free-text prompt with a numbered menu + hardware-detection
+# suggested default. Existing free-text override preserved as
+# "other" option for advanced cases (custom flake host attribute
+# added to nixos/hosts/<name>/ but not yet in the menu).
+#
+# Hardware-detection heuristic (suggested default):
+#   - lspci shows NVIDIA / AMD / Intel GPU       -> worker-gpu
+#   - default                                    -> control-plane
+#
+# Multi-role-on-single-host support (operator 2026-05-27: "letting
+# you select multiple or detecting based on hardware etc..."):
+# the current flake assigns one host attribute per node; multi-role
+# compose-on-single-host is a future B-0792-extension sub-row
+# (requires flake-shape refactor to support role-tagging). This
+# iteration ships the single-attribute menu; the multi-role
+# composition follows when the flake substrate supports it.
 if [[ -z "$HOST" ]]; then
-  read -rp "Flake host attribute to install [control-plane]: " HOST
-  HOST="${HOST:-control-plane}"
+  # B-0857.2-wire (2026-05-27): hardware-detection now routed through
+  # the TS module at tools/installer/zeta-hardware-detect.ts (PR #5642).
+  # Logic ported there per Rule 0 TS-over-bash discipline + extended
+  # with storage-shape (≥4 disks + ≥64GB → worker-template) and
+  # CPU-heavy (≥16 cores + ≥32GB → worker-template) classification
+  # beyond the original GPU-only inline lspci heuristic.
+  #
+  # The TS module needs (a) bun on PATH AND (b) a reachable repo
+  # checkout. zeta-install.sh runs from a live USB; the source repo
+  # is typically two dirs up from the script location
+  # (full-ai-cluster/usb-nixos-installer/zeta-install.sh → repo root).
+  # If either precondition fails, fall back to the original inline
+  # lspci-only heuristic so the menu still works in degraded environments.
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  HWDETECT_REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+  HWDETECT_TS="$HWDETECT_REPO_ROOT/tools/installer/zeta-hardware-detect.ts"
+  SUGGESTED_HOST=""
+  SUGGESTED_REASON=""
+  if command -v bun >/dev/null 2>&1 && [ -f "$HWDETECT_TS" ]; then
+    # TS module emits one line: the suggested host attribute.
+    # Capture stderr separately so module diagnostics don't leak into HOST var.
+    SUGGESTED_HOST="$(bun "$HWDETECT_TS" --suggested-host 2>/dev/null | tr -d '[:space:]' || true)"
+    if [ -n "$SUGGESTED_HOST" ]; then
+      SUGGESTED_REASON="(via zeta-hardware-detect.ts; GPU+storage+CPU classification)"
+    fi
+  fi
+  if [ -z "$SUGGESTED_HOST" ]; then
+    # Fallback: original inline lspci-only heuristic (degraded — GPU only).
+    SUGGESTED_HOST="control-plane"
+    if command -v lspci >/dev/null 2>&1; then
+      if lspci 2>/dev/null | grep -qiE "(nvidia|vga.*amd|3d.*amd|vga.*intel.*arc|3d.*intel.*arc)"; then
+        SUGGESTED_HOST="worker-gpu"
+      fi
+    fi
+    SUGGESTED_REASON="(fallback inline lspci heuristic — bun or TS module unavailable)"
+  fi
+  echo
+  echo "Cluster node type — select host attribute from the flake:"
+  echo
+  echo "  1) control-plane    K3S server + Cilium + ArgoCD bootstrap"
+  echo "                      (Longhorn storage + cpu workloads also run here)"
+  echo "  2) worker-gpu       GPU worker (NVIDIA passthrough + device-plugin"
+  echo "                      + Longhorn storage)"
+  echo "  3) worker-template  Cookie-cutter worker (multi-disk Longhorn;"
+  echo "                      use after copying to nixos/hosts/worker-NN/"
+  echo "                      per PROVISIONING.md)"
+  echo "  4) other            type a custom flake host attribute (advanced;"
+  echo "                      for hosts added under nixos/hosts/ + wired"
+  echo "                      into flake.nix nixosConfigurations)"
+  echo
+  echo "Hardware detection suggests: $SUGGESTED_HOST  $SUGGESTED_REASON"
+  case "$SUGGESTED_HOST" in
+    worker-gpu)
+      echo "  (GPU detected — likely worker node, not control-plane)"
+      ;;
+    worker-template)
+      echo "  (storage-heavy OR CPU-heavy node — use worker-template + customize"
+      echo "   per PROVISIONING.md cookie-cutter workflow)"
+      ;;
+    *)
+      echo "  (no GPU + not storage/CPU-heavy — defaulting to control-plane;"
+      echo "   override below if this is a dedicated CPU-only worker)"
+      ;;
+  esac
+  echo
+  # Default menu choice maps to suggested host.
+  DEFAULT_CHOICE="1"
+  case "$SUGGESTED_HOST" in
+    control-plane)   DEFAULT_CHOICE="1" ;;
+    worker-gpu)      DEFAULT_CHOICE="2" ;;
+    worker-template) DEFAULT_CHOICE="3" ;;
+  esac
+  read -rp "Choice [1-4, default=$DEFAULT_CHOICE]: " MENU_CHOICE
+  MENU_CHOICE="${MENU_CHOICE:-$DEFAULT_CHOICE}"
+  case "$MENU_CHOICE" in
+    1) HOST="control-plane" ;;
+    2) HOST="worker-gpu" ;;
+    3) HOST="worker-template" ;;
+    4)
+      read -rp "Custom flake host attribute: " HOST
+      if [ -z "$HOST" ]; then
+        echo "[ERROR] custom host attribute cannot be empty; aborting" >&2
+        exit 1
+      fi
+      ;;
+    *)
+      echo "[ERROR] invalid choice '$MENU_CHOICE' (expected 1-4); aborting" >&2
+      exit 1
+      ;;
+  esac
+  echo "Selected: $HOST"
 fi
 
 echo "Cloning $REPO_URL ..."
@@ -338,6 +445,66 @@ if [ -n "$PUBKEY_FILE" ]; then
     sudo cat "$PUBKEY_FILE"
   } | sudo tee "$PUBKEY_DST" > /dev/null
   echo "[iter-4.2]   wrote $PUBKEY_LINE_COUNT pubkey line(s) to operator-ssh-keys.txt"
+
+  # ── B-0852.3a-prep: capture USB UUID for cred-blob binding ────
+  # The B-0852 cred-blob encryption derives its key from
+  # HKDF(USB-UUID || stretched-passphrase, salt, info) per
+  # tools/installer/zeta-creds-crypto.ts deriveKey. The picker at
+  # Step 6.95-picker reads /etc/zeta/usb-uuid to know which UUID to
+  # bind the blob to. Without this file, the picker SKIPS (per its
+  # current gate condition), and the operator has to enter
+  # credentials over and over on every reboot (operator pain point
+  # named 2026-05-27: "i'm witing on the tool to be resable so i
+  # don't have to enter credentals over and over everytime").
+  #
+  # We're already at the ESP we just read the pubkey from. Capture
+  # its UUID via blkid + write to /etc/zeta/usb-uuid (and to
+  # /mnt/etc/zeta/usb-uuid so it survives the install). This closes
+  # one of the three preconditions blocking the picker; the other
+  # two (ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE) follow in
+  # subsequent sub-rows.
+  USB_UUID_DEV=""
+  # Derive the partition device that hosts PUBKEY_FILE.
+  if [ -n "${part:-}" ] && [ -b "${part:-}" ]; then
+    # Try 2 case: we mounted ESP ourselves; $part is the partition.
+    USB_UUID_DEV="$part"
+  else
+    # Try 1 case: PUBKEY_FILE was on an already-mounted FS.
+    # findmnt -no SOURCE <dir> returns the source device.
+    PUBKEY_DIR="$(dirname "$PUBKEY_FILE")"
+    if command -v findmnt >/dev/null 2>&1; then
+      # Walk up the path until findmnt finds a mount point.
+      probe_dir="$PUBKEY_DIR"
+      while [ "$probe_dir" != "/" ]; do
+        src=$(findmnt -no SOURCE "$probe_dir" 2>/dev/null || true)
+        if [ -n "$src" ] && [ -b "$src" ]; then
+          USB_UUID_DEV="$src"
+          break
+        fi
+        probe_dir="$(dirname "$probe_dir")"
+      done
+    fi
+  fi
+
+  if [ -n "$USB_UUID_DEV" ] && command -v blkid >/dev/null 2>&1; then
+    USB_UUID_VAL=$(sudo blkid -o value -s UUID "$USB_UUID_DEV" 2>/dev/null || true)
+    if [ -n "$USB_UUID_VAL" ]; then
+      sudo mkdir -p /etc/zeta /mnt/etc/zeta
+      echo "$USB_UUID_VAL" | sudo tee /etc/zeta/usb-uuid >/dev/null
+      echo "$USB_UUID_VAL" | sudo tee /mnt/etc/zeta/usb-uuid >/dev/null
+      sudo chmod 0644 /etc/zeta/usb-uuid /mnt/etc/zeta/usb-uuid
+      echo "[B-0852.3a-prep]   captured USB UUID: $USB_UUID_VAL (device: $USB_UUID_DEV)"
+      echo "[B-0852.3a-prep]   wrote /etc/zeta/usb-uuid + /mnt/etc/zeta/usb-uuid"
+      echo "[B-0852.3a-prep]   precondition #3 satisfied for Step 6.95-picker"
+    else
+      echo "[B-0852.3a-prep]   WARN: blkid returned empty UUID for $USB_UUID_DEV;"
+      echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+    fi
+  else
+    echo "[B-0852.3a-prep]   WARN: could not derive USB partition device OR blkid unavailable;"
+    echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+  fi
+
   sudo umount "$PROBE_MOUNT" 2>/dev/null || true
   if [ "$PUBKEY_LINE_COUNT" -gt 0 ]; then
     INJECT_OK=1
@@ -434,6 +601,85 @@ if [ -n "$INJECTED_PW" ]; then
 else
   echo "[iter-5.3]   no password entered; iter-4.x default 'zeta-change-me' stays"
   echo "[iter-5.3]   in effect (rotate via 'passwd zeta' after first SSH login)"
+fi
+echo
+
+# ── Step 6.56: B-0852.3b cred-blob passphrase prompt ────────────
+#
+# Two-step lifecycle for the operator-entered passphrase, designed
+# to minimize /proc/<pid>/environ exposure window:
+#
+#   - Step 6.56 (here): captured into the NON-EXPORTED shell
+#     variable ZETA_CREDS_PASSPHRASE_VAL. Bash shell variables
+#     without `export` live in the shell's own variable table but
+#     are NOT copied into /proc/<pid>/environ for child processes
+#     to read.
+#
+#   - Step 6.95-picker: inline-set
+#     `ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo
+#     --preserve-env=ZETA_CREDS_PASSPHRASE ...` exports the env
+#     var into the sudo subprocess ONLY (where the picker bash -c
+#     reads it via --passphrase-env). Parent installer shell never
+#     has ZETA_CREDS_PASSPHRASE exported.
+#
+#   - Step 6.95 post-picker: ZETA_CREDS_PASSPHRASE_VAL `unset`
+#     unconditionally after the if/else block so it fires whether
+#     the picker actually ran OR was skipped (env opt-out / file
+#     marker / missing UUID).
+#
+# Operator pain point 2026-05-27: "i'm witing on the tool to be
+# resable so i don't have to enter credentals over and over
+# everytime."
+#
+# Closes precondition #2 of 3 for the cred-persistence picker at
+# Step 6.95-picker (precondition #1 = ZETA_CREDS_PICKER default-on
+# via PR #5639; precondition #3 = /etc/zeta/usb-uuid auto-captured
+# at iter-4.2 via PR #5637; this step closes #2).
+#
+# Same operator-typed-once-on-console pattern as iter-5.3 password
+# (constitutional rail per zeta-install.sh line 452 verbatim:
+# "secrets shouldn't transit non-operator surfaces; operator-typed
+# at install time is the safest path").
+echo
+echo "[B-0852.3b] ── cred-blob passphrase prompt (B-0852 Phase 1) ──"
+echo "[B-0852.3b] Set a passphrase to encrypt your credentials onto"
+echo "[B-0852.3b] this USB. Future boots can RESTORE creds via the"
+echo "[B-0852.3b] same passphrase (no more re-entering gh login etc."
+echo "[B-0852.3b] on every reboot). Encryption: AES-256-GCM with key"
+echo "[B-0852.3b] derived via scrypt -> HKDF chain bound to this USB's"
+echo "[B-0852.3b] UUID (per tools/installer/zeta-creds-crypto.ts)."
+echo "[B-0852.3b]"
+echo "[B-0852.3b] Press Enter to SKIP (no cred-blob persistence;"
+echo "[B-0852.3b] keeps current per-reboot re-entry behavior)."
+echo
+ZETA_CREDS_PASSPHRASE_INPUT=""
+ZETA_CREDS_PASSPHRASE_CONFIRM=""
+# -s = silent (hidden); -p = inline prompt
+read -r -s -p "[B-0852.3b] Passphrase (or Enter to skip): " ZETA_CREDS_PASSPHRASE_INPUT
+echo
+if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
+  read -r -s -p "[B-0852.3b] Confirm:                          " ZETA_CREDS_PASSPHRASE_CONFIRM
+  echo
+  if [ "$ZETA_CREDS_PASSPHRASE_INPUT" != "$ZETA_CREDS_PASSPHRASE_CONFIRM" ]; then
+    echo "[B-0852.3b]   WARN: passphrases don't match; skipping (no cred-blob persistence)"
+    ZETA_CREDS_PASSPHRASE_INPUT=""
+  fi
+fi
+unset ZETA_CREDS_PASSPHRASE_CONFIRM
+# Initialize ZETA_CREDS_PASSPHRASE_VAL to empty unconditionally so the
+# Step 6.95-picker gate check works whether or not operator entered a
+# passphrase. Per B-0852.3b-supersede discipline: do NOT export — keep
+# in a non-exported shell variable to avoid /proc/<pid>/environ exposure.
+ZETA_CREDS_PASSPHRASE_VAL=""
+if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
+  ZETA_CREDS_PASSPHRASE_VAL="$ZETA_CREDS_PASSPHRASE_INPUT"
+  unset ZETA_CREDS_PASSPHRASE_INPUT
+  echo "[B-0852.3b]   passphrase captured + held in non-exported shell variable"
+  echo "[B-0852.3b]   (NOT in /proc/self/environ; inline-set for sudo only at 6.95;"
+  echo "[B-0852.3b]    shell var unset in ALL branches after Step 6.95 picker block)"
+else
+  unset ZETA_CREDS_PASSPHRASE_INPUT
+  echo "[B-0852.3b]   skipped — no cred-blob persistence this install"
 fi
 echo
 
@@ -1148,28 +1394,86 @@ if [ -d "$ZETA_HOME" ]; then
   # logins so picker decides per-cred bake-vs-defer + the device-flow steps handle the
   # deferred subset.
   #
-  # Default: SKIP (backward compat with automated installs). Opt-in via
-  # ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE + /etc/zeta/usb-uuid.
+  # Default behavior (B-0852.3c flip, 2026-05-27): AUTO-ENABLE when
+  # both /etc/zeta/usb-uuid (PR #5637 closes this) and the
+  # ZETA_CREDS_PASSPHRASE_VAL shell variable (populated by Step 6.56
+  # prompt; held non-exported per B-0852.3b-supersede discipline) are
+  # present. Explicit opt-out via ZETA_CREDS_PICKER=0 (env or
+  # /etc/zeta/no-picker marker file).
   #
-  # SECURITY (Copilot review on PR #5450): the passphrase is FORWARDED VIA SUDO
-  # --preserve-env=ZETA_CREDS_PASSPHRASE, NOT inlined in bash -c arg-string (the
-  # latter leaked the literal passphrase into the process arglist visible to ps).
-  # The picker reads it via --passphrase-env which references the env-var-NAME only.
-  if [ -n "${ZETA_CREDS_PICKER:-}" ] && [ "$ZETA_CREDS_PICKER" = "1" ] && \
-     [ -f /etc/zeta/usb-uuid ] && [ -n "${ZETA_CREDS_PASSPHRASE:-}" ]; then
+  # Rationale: with all 3 preconditions auto-populated by the install
+  # flow, the picker becomes the operator's "don't re-enter credentials
+  # over and over" solution. Backward compat preserved: any automated
+  # install that doesn't want the picker can opt out via
+  # ZETA_CREDS_PICKER=0 OR by NOT entering a passphrase at Step 6.56
+  # (empty passphrase keeps current per-reboot re-entry behavior).
+  #
+  # Three opt-out paths (any one disables the picker):
+  #   1. ZETA_CREDS_PICKER=0 env var
+  #   2. /etc/zeta/no-picker marker file present
+  #   3. Operator entered empty passphrase at Step 6.56 (no PASSPHRASE)
+  #
+  # SECURITY: the passphrase is FORWARDED VIA SUDO --preserve-env=ZETA_CREDS_PASSPHRASE,
+  # NOT inlined in bash -c arg-string (the latter would leak the literal passphrase
+  # into the process arglist visible to ps). The picker reads it via --passphrase-env
+  # which references the env-var-NAME only. The env var name ZETA_CREDS_PASSPHRASE
+  # is set INLINE-IN-SUDO-INVOCATION (`ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL"
+  # sudo --preserve-env=ZETA_CREDS_PASSPHRASE ...`) so it lives in the sudo
+  # subprocess env only; the parent installer shell holds the secret in the
+  # NON-EXPORTED shell var ZETA_CREDS_PASSPHRASE_VAL, never exported anywhere.
+  PICKER_OPT_OUT=0
+  if [ "${ZETA_CREDS_PICKER:-1}" = "0" ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="ZETA_CREDS_PICKER=0 (env opt-out)"
+  elif [ -f /etc/zeta/no-picker ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="/etc/zeta/no-picker marker present (file opt-out)"
+  elif [ ! -f /etc/zeta/usb-uuid ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="/etc/zeta/usb-uuid missing (B-0852.3a-prep did not capture UUID)"
+  elif [ -z "${ZETA_CREDS_PASSPHRASE_VAL:-}" ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="ZETA_CREDS_PASSPHRASE_VAL empty (operator skipped passphrase at Step 6.56)"
+  fi
+  if [ "$PICKER_OPT_OUT" = "0" ]; then
     USB_UUID="$(cat /etc/zeta/usb-uuid)"
-    echo "[iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (operator interactive) ──"
+    echo "[iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (DEFAULT-ON per B-0852.3c) ──"
+    echo "[iter-5.5.0]   passphrase from Step 6.56; usb-uuid from B-0852.3a-prep"
+    echo "[iter-5.5.0]   to opt out: set ZETA_CREDS_PICKER=0 OR touch /etc/zeta/no-picker"
     # mise activate inside bash -c matches sibling 6.95a-claude/gemini/codex
     # patterns at lines 1119-1141; without it, bun is not on the PATH the
     # subshell sees (mise installs bun via shims; activate sets PATH).
     # BUN_INSTALL pin matches sibling pattern too.
-    sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
+    #
+    # Output path: write the cred-blob to the TARGET ESP mount during
+    # install. The target ESP is mounted at /mnt/boot by Step 5
+    # ('sudo mount "$ESP_PART" /mnt/boot'). After reboot into the
+    # installed system, disko re-mounts the SAME ESP partition at
+    # /boot — so the file persists across the install-vs-installed
+    # boundary as the same physical file at two mount paths
+    # (/mnt/boot during install → /boot post-reboot). The restore
+    # service (zeta-creds-restore.nix) reads from /boot/zeta-creds.enc
+    # at boot-time.
+    #
+    # Env-var passing: inline-set ZETA_CREDS_PASSPHRASE only into the
+    # sudo subprocess (not exported in the parent installer shell).
+    # See SECURITY block above for full lifecycle.
+    ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
-      bash -c "set -o pipefail; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /esp/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+      bash -c "set -o pipefail; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
   else
-    echo "[iter-5.5.0]   SKIP 6.95-picker (set ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE + /etc/zeta/usb-uuid to enable)"
+    echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"
   fi
+  # B-0852.3b-supersede discipline: unset ZETA_CREDS_PASSPHRASE_VAL
+  # UNCONDITIONALLY after the picker block — fires in BOTH the
+  # picker-ran branch AND the picker-skipped branch. Prior code only
+  # unset inside the picker-ran branch, leaving the passphrase live
+  # in the installer shell for the rest of execution whenever
+  # ZETA_CREDS_PICKER=0 / /etc/zeta/no-picker / usb-uuid-missing path
+  # was taken.
+  unset ZETA_CREDS_PASSPHRASE_VAL
+  echo "[iter-5.5.0]   ZETA_CREDS_PASSPHRASE_VAL unset from installer shell (post-picker block; fires in both branches)"
 
   # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
   CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"

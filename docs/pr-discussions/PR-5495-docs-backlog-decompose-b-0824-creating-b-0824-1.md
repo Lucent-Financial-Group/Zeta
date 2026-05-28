@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:17:10Z"
 closed_at: "2026-05-27T16:17:10Z"
 head_ref: "lior/decompose-b-0824"
 base_ref: "main"
-archived_at: "2026-05-27T17:50:58Z"
+archived_at: "2026-05-27T19:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

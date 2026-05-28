@@ -8,7 +8,7 @@ merged_at: "2026-05-27T18:00:46Z"
 closed_at: "2026-05-27T18:00:46Z"
 head_ref: "claim/codex-loop-bash-retirement-drift-guard-20260527"
 base_ref: "main"
-archived_at: "2026-05-27T18:04:06Z"
+archived_at: "2026-05-27T19:20:40Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
