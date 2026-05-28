@@ -175,6 +175,7 @@ Aaron 2026-05-28 forwarded YouTube video (preserved verbatim in PR #5762 `docs/r
 Aaron 2026-05-28 follow-up *"they are doing this for their idea ranking with Infra.net basically"* sharpened candidate #1 from "missing ELO tournament" to "we have Infer.NET substrate; we just need to compose existing-Microsoft-Research-TrueSkill-pattern with B-0867 workflow engine." Operator-explicit substrate-engineering refinement.
 
 Aaron 2026-05-28 explicit *"we should add coscientis and add it to our upstram references and refersh update them so we can take a peak lol also lets backlog all the candidates"* — operationalized as:
+
 - This PR: adds SakanaAI/AI-Scientist + AI-Scientist-v2 + jataware/open-coscientist + llnl/open-ai-co-scientist + The-Swarm-Corporation/AI-CoScientist + Microsoft/Infer.NET to `references/reference-sources.json` + `docs/UPSTREAM-LIST.md`
 - This row: backlogs all 7 candidates as decomposition target
 - Operator may run `tools/setup/common/sync-upstreams.sh` to mirror the new repos into `references/upstreams/` per refresh discipline (operator-side; Otto-CLI does not auto-run sync per safety discipline)

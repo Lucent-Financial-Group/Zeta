@@ -147,6 +147,7 @@ citation.
   basically"* — the co-scientist ELO tournament composes with
   Infer.NET TrueSkill substrate. Composes with Zeta.Bayesian
   published library + framework's BP/EP references.
+
 ### Probabilistic programming / Bayesian inference (added 2026-05-28 per Aaron Infer.NET substrate-engineering question)
 
 - **WebPPL** ⭐ (`probmods/webppl`; Goodman + Mansinghka et al,
