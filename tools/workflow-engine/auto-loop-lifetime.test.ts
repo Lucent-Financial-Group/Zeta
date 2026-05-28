@@ -10,7 +10,7 @@ import {
   runTickCycle,
   type AutoLoopLifetime,
   type TickContext,
-} from "./auto-loop-lifecycle.js";
+} from "./auto-loop-lifetime";
 
 describe("AutoLoopLifetime universe", () => {
   test("9 distinct loop states", () => {
@@ -32,6 +32,7 @@ describe("dispatch transitions (happy path)", () => {
   test("cold-boot → refresh-substrate", () => {
     const r = dispatchAutoLoopTransition({ kind: "cold-boot" }, COLD_BOOT_CONTEXT);
     expect(r.ok).toBe(true);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("refresh-substrate");
       expect(r.outcome.verdict.kind).toBe("advance");
@@ -39,10 +40,35 @@ describe("dispatch transitions (happy path)", () => {
     }
   });
 
-  test("refresh-substrate → scan-inflight-prs", () => {
-    const r = dispatchAutoLoopTransition({ kind: "refresh-substrate" }, COLD_BOOT_CONTEXT);
+  test("refresh-substrate with fresh lastRefreshAt → scan-inflight-prs", () => {
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      lastRefreshAt: Date.now() / 1000,  // just refreshed
+    };
+    const r = dispatchAutoLoopTransition({ kind: "refresh-substrate" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("scan-inflight-prs");
+    }
+  });
+
+  test("refresh-substrate with stale lastRefreshAt → RefreshStale feedback", () => {
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      lastRefreshAt: (Date.now() / 1000) - 200,  // 200s ago; > REFRESH_STALENESS_THRESHOLD_S
+    };
+    const r = dispatchAutoLoopTransition({ kind: "refresh-substrate" }, ctx);
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.feedback.kind).toBe("RefreshStale");
+    }
+  });
+
+  test("refresh-substrate with missing lastRefreshAt → RefreshStale feedback", () => {
+    const r = dispatchAutoLoopTransition({ kind: "refresh-substrate" }, COLD_BOOT_CONTEXT);
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.feedback.kind).toBe("RefreshStale");
     }
   });
 
@@ -52,6 +78,7 @@ describe("dispatch transitions (happy path)", () => {
       inflightPrs: [{ number: 5774, state: "OPEN", actionable: true }],
     };
     const r = dispatchAutoLoopTransition({ kind: "scan-inflight-prs" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("investigate-failure");
     }
@@ -59,6 +86,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("scan-inflight-prs without actionable → decompose-or-ship", () => {
     const r = dispatchAutoLoopTransition({ kind: "scan-inflight-prs" }, COLD_BOOT_CONTEXT);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("decompose-or-ship");
     }
@@ -66,6 +94,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("investigate-failure → ship-action", () => {
     const r = dispatchAutoLoopTransition({ kind: "investigate-failure" }, COLD_BOOT_CONTEXT);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("ship-action");
     }
@@ -73,6 +102,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("ship-action → tick-complete with counter reset + artifact", () => {
     const r = dispatchAutoLoopTransition({ kind: "ship-action" }, COLD_BOOT_CONTEXT);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("tick-complete");
       expect(r.outcome.verdict.kind).toBe("complete");
@@ -85,6 +115,7 @@ describe("dispatch transitions (happy path)", () => {
 describe("decompose-or-ship branch logic", () => {
   test("standing authorization → ship-action (no operator-direction pending; under counter)", () => {
     const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, COLD_BOOT_CONTEXT);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("ship-action");
     }
@@ -96,6 +127,7 @@ describe("decompose-or-ship branch logic", () => {
       operatorDirectionPending: "which lane to advance?",
     };
     const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("brief-ack-bounded-wait");
       expect(r.outcome.verdict.kind).toBe("no-op");
@@ -109,6 +141,7 @@ describe("decompose-or-ship branch logic", () => {
       lastNamedDependency: undefined,
     };
     const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("forced-escalation");
       expect(r.outcome.verdict.kind).toBe("escalate-to-operator");
@@ -122,25 +155,28 @@ describe("decompose-or-ship branch logic", () => {
       lastNamedDependency: "PR #5800 dup-ID fix in flight",
     };
     const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("ship-action");
     }
   });
 });
 
-describe("brief-ack-bounded-wait → CounterThresholdReached feedback", () => {
-  test("approaching threshold returns feedback", () => {
+describe("brief-ack-bounded-wait → forced-escalation transition at boundary", () => {
+  test("at threshold boundary transitions through forced-escalation state (not abort)", () => {
     const ctx: TickContext = { ...COLD_BOOT_CONTEXT, briefAckCount: 5 };
     const r = dispatchAutoLoopTransition({ kind: "brief-ack-bounded-wait" }, ctx);
-    expect(r.ok).toBe(false);
-    if (!r.ok) {
-      expect(r.feedback.kind).toBe("CounterThresholdReached");
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.outcome.nextState.kind).toBe("forced-escalation");
+      expect(r.outcome.verdict.kind).toBe("escalate-to-operator");
     }
   });
 
   test("below threshold continues to tick-complete with no-op", () => {
     const ctx: TickContext = { ...COLD_BOOT_CONTEXT, briefAckCount: 3 };
     const r = dispatchAutoLoopTransition({ kind: "brief-ack-bounded-wait" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("tick-complete");
       expect(r.outcome.verdict.kind).toBe("no-op");
@@ -151,6 +187,7 @@ describe("brief-ack-bounded-wait → CounterThresholdReached feedback", () => {
 describe("forced-escalation → tick-complete", () => {
   test("escalates to operator + completes tick", () => {
     const r = dispatchAutoLoopTransition({ kind: "forced-escalation" }, COLD_BOOT_CONTEXT);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("tick-complete");
       expect(r.outcome.verdict.kind).toBe("escalate-to-operator");
@@ -178,17 +215,33 @@ describe("nextTickContext bookkeeping", () => {
     expect(next.briefAckCount).toBe(0);
   });
 
-  test("no-op verdict increments briefAckCount", () => {
+  test("entering brief-ack-bounded-wait state increments briefAckCount", () => {
     const ctx: TickContext = { ...COLD_BOOT_CONTEXT, briefAckCount: 2 };
     const next = nextTickContext(ctx, {
-      nextState: { kind: "tick-complete" },
+      nextState: { kind: "brief-ack-bounded-wait" },
       verdict: { kind: "no-op" },
       counterReset: false,
     });
     expect(next.briefAckCount).toBe(3);
   });
 
-  test("advance verdict does NOT increment briefAckCount (substantive work happened)", () => {
+  test("no-op verdict NOT entering brief-ack-bounded-wait does NOT increment (multi-transition tick)", () => {
+    // Regression test for per-transition double-counting: previously the
+    // no-op verdict from decompose-or-ship→brief-ack-bounded-wait
+    // transition incremented briefAckCount, then the brief-ack-bounded-wait
+    // state's own no-op verdict incremented it AGAIN — double-count per tick.
+    // Now: only entering brief-ack-bounded-wait increments; other no-op
+    // verdicts don't.
+    const ctx: TickContext = { ...COLD_BOOT_CONTEXT, briefAckCount: 2 };
+    const next = nextTickContext(ctx, {
+      nextState: { kind: "tick-complete" },
+      verdict: { kind: "no-op" },
+      counterReset: false,
+    });
+    expect(next.briefAckCount).toBe(2);  // unchanged
+  });
+
+  test("advance verdict does NOT increment briefAckCount", () => {
     const ctx: TickContext = { ...COLD_BOOT_CONTEXT, briefAckCount: 2 };
     const next = nextTickContext(ctx, {
       nextState: { kind: "tick-complete" },
@@ -197,11 +250,27 @@ describe("nextTickContext bookkeeping", () => {
     });
     expect(next.briefAckCount).toBe(2);  // unchanged
   });
+
+  test("tickIndex increments ONLY when transitioning to tick-complete", () => {
+    // Intermediate transitions within a tick don't bump tickIndex
+    const next = nextTickContext(COLD_BOOT_CONTEXT, {
+      nextState: { kind: "scan-inflight-prs" },
+      verdict: { kind: "advance" },
+      counterReset: false,
+    });
+    expect(next.tickIndex).toBe(0);  // unchanged
+  });
 });
 
 describe("runTickCycle end-to-end", () => {
   test("cold-boot cycle completes happy-path with ship-action artifact", () => {
-    const r = runTickCycle({ kind: "cold-boot" }, COLD_BOOT_CONTEXT);
+    // Now requires fresh lastRefreshAt to clear the refresh-substrate guard.
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      lastRefreshAt: Date.now() / 1000,
+    };
+    const r = runTickCycle({ kind: "cold-boot" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.finalState.kind).toBe("tick-complete");
       // Path: cold-boot → refresh → scan → decompose-or-ship → ship-action → tick-complete
@@ -215,9 +284,11 @@ describe("runTickCycle end-to-end", () => {
   test("operator-direction pending cycle terminates with brief-ack-bounded-wait", () => {
     const ctx: TickContext = {
       ...COLD_BOOT_CONTEXT,
+      lastRefreshAt: Date.now() / 1000,
       operatorDirectionPending: "waiting on design direction",
     };
     const r = runTickCycle({ kind: "cold-boot" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       const kinds = r.outcome.transitions.map((s) => s.kind);
       expect(kinds).toContain("brief-ack-bounded-wait");
@@ -232,6 +303,7 @@ describe("runTickCycle end-to-end", () => {
       briefAckCount: 6,
     };
     const r = runTickCycle({ kind: "decompose-or-ship" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       const kinds = r.outcome.transitions.map((s) => s.kind);
       expect(kinds).toContain("forced-escalation");

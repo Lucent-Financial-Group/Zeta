@@ -1,7 +1,7 @@
-// tools/workflow-engine/auto-loop-lifecycle.ts
+// tools/workflow-engine/auto-loop-lifetime.ts
 //
 // AutoLoopLifetime — substrate-naming substrate-engineering substrate
-// for Otto-CLI's foreground autonomous-loop tick-handler. Per Aaron
+// for Otto-CLI's foreground autonomous-loop tick-handler. Per the human maintainer
 // 2026-05-28: "when do you want to update your foreground loop to start
 // running on lifecycles and test out our first ones?"
 //
@@ -26,7 +26,7 @@
 import {
   type LifetimeState,
   type StandardVerdict,
-} from "./world.js";
+} from "./world";
 
 // ─────────────────────────────────────────────────────────────────────
 // AutoLoopLifetime — the loop's state machine
@@ -148,8 +148,27 @@ export function dispatchAutoLoopTransition(
         },
       };
 
-    case "refresh-substrate":
-      // After refresh, scan in-flight PRs
+    case "refresh-substrate": {
+      // Per refresh-before-decide invariant: don't advance with stale
+      // worldview. Caller must have refreshed substrate (gh fetch +
+      // git pull) and updated lastRefreshAt BEFORE entering this
+      // transition. If lastRefreshAt is missing or older than
+      // REFRESH_STALENESS_THRESHOLD_S, surface RefreshStale feedback
+      // so the caller knows to refresh + re-enter the state.
+      const nowSeconds = Date.now() / 1000;
+      const ageSeconds = context.lastRefreshAt !== undefined
+        ? nowSeconds - context.lastRefreshAt
+        : Number.POSITIVE_INFINITY;
+      if (ageSeconds > REFRESH_STALENESS_THRESHOLD_S) {
+        return {
+          ok: false,
+          feedback: {
+            kind: "RefreshStale",
+            ageSeconds: Number.isFinite(ageSeconds) ? ageSeconds : REFRESH_STALENESS_THRESHOLD_S + 1,
+          },
+        };
+      }
+      // Refresh fresh enough → advance to scan in-flight PRs
       return {
         ok: true,
         outcome: {
@@ -158,6 +177,7 @@ export function dispatchAutoLoopTransition(
           counterReset: false,
         },
       };
+    }
 
     case "scan-inflight-prs": {
       // If actionable PRs exist, investigate; else decompose-or-ship
@@ -241,13 +261,25 @@ export function dispatchAutoLoopTransition(
       };
 
     case "brief-ack-bounded-wait":
-      // Increment counter; if not at threshold, stay; else escalate
+      // At threshold boundary: transition through `forced-escalation`
+      // state so the lifecycle surfaces the operator-direction request
+      // as a real verdict (not an abort). Previous code returned
+      // `ok: false; feedback: CounterThresholdReached` which made
+      // `runTickCycle` short-circuit and never emit the forced-escalation
+      // outcome via the brief-ack path. The `CounterThresholdReached`
+      // feedback variant is preserved for callers that explicitly
+      // expect the boundary signal (e.g., direct dispatch sites that
+      // want feedback-shape rather than state-transition shape).
       if (context.briefAckCount + 1 >= BRIEF_ACK_THRESHOLD) {
         return {
-          ok: false,
-          feedback: {
-            kind: "CounterThresholdReached",
-            briefAcks: context.briefAckCount + 1,
+          ok: true,
+          outcome: {
+            nextState: { kind: "forced-escalation" },
+            verdict: {
+              kind: "escalate-to-operator",
+              reason: `Brief-ack counter boundary reached (${context.briefAckCount + 1} ≥ ${BRIEF_ACK_THRESHOLD}); transitioning through forced-escalation per holding-without-named-dependency counter discipline`,
+            },
+            counterReset: false,
           },
         };
       }
@@ -297,19 +329,33 @@ export const COLD_BOOT_CONTEXT: TickContext = {
 };
 
 /**
- * Compose a TickContext from prior context + tick outcome.
+ * Compose a TickContext from a prior context + transition outcome.
  *
- * Increments tick index; resets briefAckCount if counterReset; clears
- * lastNamedDependency if action shipped.
+ * Counter discipline (per holding-without-named-dependency rule):
+ *   - `tickIndex` increments ONLY when the transition reaches
+ *     `tick-complete`; intermediate transitions within a single
+ *     logical tick don't advance the tick counter.
+ *   - `briefAckCount` increments ONLY when the transition enters
+ *     `brief-ack-bounded-wait` (the unique brief-ack state); other
+ *     intermediate no-op verdicts (e.g., the no-op produced when
+ *     decompose-or-ship transitions into brief-ack-bounded-wait on
+ *     operator-direction-pending) don't double-count. `counterReset`
+ *     still wins (resets to 0 regardless of nextState).
+ *   - `lastNamedDependency` clears if an artifact was produced
+ *     (action shipped → previous named-dep is moot).
  */
 export function nextTickContext(
   prior: TickContext,
   outcome: TickOutcome,
 ): TickContext {
+  const tickCompleted = outcome.nextState.kind === "tick-complete";
+  const enteringBriefAck = outcome.nextState.kind === "brief-ack-bounded-wait";
   return {
     ...prior,
-    tickIndex: prior.tickIndex + 1,
-    briefAckCount: outcome.counterReset ? 0 : prior.briefAckCount + (outcome.verdict.kind === "no-op" ? 1 : 0),
+    tickIndex: tickCompleted ? prior.tickIndex + 1 : prior.tickIndex,
+    briefAckCount: outcome.counterReset
+      ? 0
+      : (enteringBriefAck ? prior.briefAckCount + 1 : prior.briefAckCount),
     lastNamedDependency: outcome.artifact !== undefined ? undefined : prior.lastNamedDependency,
   };
 }
