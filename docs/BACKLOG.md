@@ -35,7 +35,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0799](backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md)** Classifier-bypass synthetic-only harness design for B-0720
 - [x] **[B-0807](backlog/P0/B-0807-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md)** Classifier-bypass findings schema and redaction rules for B-0720
 - [x] **[B-0808](backlog/P0/B-0808-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md)** Zeta safety substrate inventory for the classifier-floor replacement gate
-- [ ] **[B-0809](backlog/P0/B-0809-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md)** Operator-refusal pattern for classifier-bypass deployment requests
+- [x] **[B-0809](backlog/P0/B-0809-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md)** Operator-refusal pattern for classifier-bypass deployment requests
 - [ ] **[B-0810](backlog/P0/B-0810-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md)** Classifier-bypass Knights Guild ratification and standing-constraint lift gate
 
 ## P1 — within 2-3 rounds
@@ -854,6 +854,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0888](backlog/P2/B-0888-cross-track-substrate-sync-policy-cloud-github-vs-usb-local-gitlab-intentional-divergence-vs-auto-sync-otto-pushback-2026-05-28.md)** Cross-track substrate-sync policy — cloud-GitHub vs USB-local-GitLab; intentional divergence vs auto-sync-via-push-to-both-remotes vs hybrid
 - [ ] **[B-0893](backlog/P2/B-0893-zetaid-v2-128-bit-structured-encoding-snowflake-ulid-family-kestrel-2026-05-28.md)** ZetaID v2 — 128-bit structured encoding (Snowflake/ULID family with timestamp + trajectory + persona + lifecycle-stage + random)
 - [ ] **[B-0899](backlog/P2/B-0899-casimir-like-effect-from-review-walls-changing-allowed-output-modes-testable-pressure-difference-before-after-rule-landing-amara-aaron-2026-05-28.md)** Casimir-like effect from review walls — testable pressure difference in agent-output distribution before/after rule landing
+- [ ] **[B-0914](backlog/P2/B-0914-co-scientist-plus-robin-7-substrate-engineering-candidate-gaps-elo-trueskill-closed-loop-consensus-pairing-evolution-proximity-falcon-aaron-2026-05-28.md)** Co-scientist + Robin 7 substrate-engineering candidate gaps — ELO/TrueSkill ranking-agent + closed-loop CI→hypothesis + n-parallel-consensus + generation-reflection-pairing + evolution-mash-refine + proximity-dedup + Falcon-auto-research-doc-per-proposal (Aaron 2026-05-28)
 
 ## P3 — convenience / deferred
 
