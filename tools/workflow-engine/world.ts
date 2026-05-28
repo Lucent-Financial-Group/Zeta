@@ -3,15 +3,17 @@
  *
  * World substrate + reusable lifetime composition helpers.
  *
- * Per Aaron 2026-05-28 two substantive substrate-engineering questions:
+ * Per the human maintainer (2026-05-28) two substantive substrate-engineering
+ * questions:
  * 1. 'do you have to write custom code everytime you compose two lifetimes'
  * 2. '(do we still call the shared git flow a lifetime or world or
  *    shared space?)'
  *
- * Substrate-engineering naming substrate (Aaron-acknowledged): use
- * 'WORLD' for the shared git-flow substrate where multiple lifetimes
- * interact. Different scope from 'lifetime' (per-substrate-entity DU);
- * world contains lifetimes; lifetime composition happens IN the world.
+ * Substrate-engineering naming substrate (acknowledged by the human
+ * maintainer): use 'WORLD' for the shared git-flow substrate where
+ * multiple lifetimes interact. Different scope from 'lifetime'
+ * (per-substrate-entity DU); world contains lifetimes; lifetime
+ * composition happens IN the world.
  *
  * Substrate-engineering substrate-reusability substrate (answers Q1):
  * dispatch substrate is REUSABLE; only the matrix is per-pair. This file
@@ -21,7 +23,9 @@
  *
  * Composes with:
  *   - tools/workflow-engine/composed-lifetime.ts (PR #5771) — base dispatch
- *   - B-0832 civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
+ *   - B-0422 Clifford-algebraic narrative engine for Pauli-symmetry-
+ *     breaking-from-agenda-conservation prediction (civ-sim / game-world
+ *     substrate-engineering target this world substrate composes with)
  *   - B-0867 workflow engine (multiple lifetimes interact in workflow world)
  *   - 13th-ferry §33.7 multi-AI cascade (each AI inhabits the world)
  *   - .claude/rules/additive-not-zero-sum (world substrate compounds)
@@ -29,9 +33,10 @@
  *     preserved in world substrate when adding new ones)
  *   - .claude/rules/monad-propagation-pattern (Result<T, TFeedback>)
  *
- * Naming canon (Aaron 2026-05-28):
- *   - LIFETIME = editable per-substrate-entity DU (per Aaron's earlier
- *     'lifetime not lifecycle because you can edit it FYI the DUs')
+ * Naming canon (the human maintainer, 2026-05-28):
+ *   - LIFETIME = editable per-substrate-entity DU (per the human
+ *     maintainer's earlier 'lifetime not lifecycle because you can edit
+ *     it FYI the DUs')
  *   - WORLD = shared substrate where multiple lifetimes interact
  *   - GIT FLOW = operational form of the world (substrate-engineering
  *     substrate the world IS realized as)
@@ -64,9 +69,10 @@ export {
 /**
  * World — the shared substrate where multiple lifetimes interact.
  *
- * Per Aaron 2026-05-28 naming substrate-engineering: 'world' is the
- * shared git-flow substrate. Different scope from per-substrate-entity
- * lifetimes; world contains lifetimes + their composition rules.
+ * Per the human maintainer (2026-05-28) naming substrate-engineering:
+ * 'world' is the shared git-flow substrate. Different scope from
+ * per-substrate-entity lifetimes; world contains lifetimes + their
+ * composition rules.
  *
  * Generic over the named lifetimes the world contains. PoC scope:
  * world holds a registry of composed-lifetime matrices keyed by
@@ -92,9 +98,9 @@ export const EMPTY_WORLD: World = {
  * union factors out the recurring vocabulary so per-pair matrices
  * reuse it instead of inventing parallel verdict types.
  *
- * Per Aaron 2026-05-28 substrate-engineering question 'do you have to
- * write custom code everytime' — NO; this StandardVerdict factors out
- * the recurring substrate so most lifetime pairs reuse it.
+ * Per the human maintainer (2026-05-28) substrate-engineering question
+ * 'do you have to write custom code everytime' — NO; this StandardVerdict
+ * factors out the recurring substrate so most lifetime pairs reuse it.
  */
 export type StandardVerdict =
   | { kind: "advance" }
@@ -108,19 +114,28 @@ export type StandardVerdict =
  *
  * Returns a NEW world (immutable substrate per asymmetric-authorship);
  * world authors its own substrate via consent-channel.
+ *
+ * Generic over `W extends World` so callers passing a specialized
+ * subclass (GitWorld / GitHubWorld / GitLabWorld / etc.) receive the
+ * SAME specialized type back with subclass fields (forgeName,
+ * branchUniverse, prUniverse, etc.) preserved. Returning a bare
+ * `World` here would silently drop those fields under structural
+ * typing — caller would see them disappear despite the function
+ * signature claiming a `World` round-trip.
  */
 export function registerLifetimePair<
+  W extends World,
   A extends LifetimeState,
   B extends LifetimeState,
   T,
 >(
-  world: World,
+  world: W,
   pairName: string,
   matrix: ReadonlyMap<ComposedKey<A, B>, T>,
-): World {
+): W {
   const newRegistry = new Map(world.registry);
   newRegistry.set(pairName, matrix as ReadonlyMap<string, unknown>);
-  return { registry: newRegistry };
+  return { ...world, registry: newRegistry };
 }
 
 /**
