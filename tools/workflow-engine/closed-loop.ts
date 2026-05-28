@@ -9,9 +9,10 @@
  *   - CI-result dispatch (via callbacks; integrates with B-0891 zflash
  *     test-harness substrate when wired by caller)
  *
- * Per Aaron 2026-05-28 'S M L all please in that order lol' — L (large
- * scope) in the substrate-engineering ship-sequence. Wire-up that turns
- * the tournament-loop substrate into a live closed-loop iteration system.
+ * Per human maintainer 2026-05-28 'S M L all please in that order lol' — L
+ * (large scope) in the substrate-engineering ship-sequence. Wire-up that
+ * turns the tournament-loop substrate into a live closed-loop iteration
+ * system.
  *
  * Design: pure loop-orchestration substrate with INJECTABLE callbacks
  * for substrate-specific operations (ranking / evolution / verification).
@@ -34,8 +35,10 @@
  *   - B-0891 zflash test-harness substrate (caller can wire CI dispatch
  *     to actual test runners per determineRunnability discriminator)
  *   - B-0867 workflow engine substrate
- *   - .claude/rules/monad-propagation-pattern (Result<T, TFeedback>)
- *   - .claude/rules/asymmetric-authorship (each callback authors own TFeedback)
+ *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
+ *     (Result<T, TFeedback>)
+ *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
+ *     (each callback authors own TFeedback)
  *
  * PoC scope: pure orchestration logic with injectable callbacks. Real
  * CI integration (via tools/ci/ + B-0891) handled by caller wiring.
@@ -72,6 +75,7 @@ export type LoopFeedback =
   | { kind: "CiDispatchFailure"; hypothesisId: string; reason: string }
   | { kind: "RankingFailure"; reason: string }
   | { kind: "EvolutionFailure"; reason: string }
+  | { kind: "InsufficientPropagatable"; propagatableCount: number; minRequired: number; cycleIndex: number }
   | { kind: "MaxCyclesReached"; cyclesCompleted: number };
 
 /**
@@ -194,8 +198,10 @@ export async function runCycle<T>(
     return {
       ok: false,
       feedback: {
-        kind: "MaxCyclesReached",
-        cyclesCompleted: cycleIndex,
+        kind: "InsufficientPropagatable",
+        propagatableCount: propagatable.length,
+        minRequired: config.minPropagatable,
+        cycleIndex,
       },
     };
   }
@@ -264,7 +270,7 @@ export async function runLoop<T>(
 
     const result = await runCycle(current, callbacks, cycleIndex, config);
     if (!result.ok) {
-      if (result.feedback.kind === "MaxCyclesReached") {
+      if (result.feedback.kind === "InsufficientPropagatable") {
         return {
           terminatedAtCycle: cycleIndex,
           reason: "insufficient-propagatable",

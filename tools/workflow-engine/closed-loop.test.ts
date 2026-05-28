@@ -116,7 +116,7 @@ describe("B-0914.2 closed-loop orchestrator", () => {
     expect(rankedCount).toBe(2);  // good + revise both propagate; bad excluded
   });
 
-  it("runCycle returns MaxCyclesReached when propagatable below minimum", async () => {
+  it("runCycle returns InsufficientPropagatable when propagatable below minimum", async () => {
     const hs = [hypothesis("h1", "alpha")];
     const callbacks: LoopCallbacks<SubstrateT> = {
       dispatchCi: failingCi,  // all fail
@@ -126,7 +126,7 @@ describe("B-0914.2 closed-loop orchestrator", () => {
     const result = await runCycle(hs, callbacks, 0);
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(result.feedback.kind).toBe("MaxCyclesReached");
+    expect(result.feedback.kind).toBe("InsufficientPropagatable");
   });
 
   it("runCycle returns CiDispatchFailure on CI exception", async () => {
@@ -236,21 +236,27 @@ describe("B-0914.2 closed-loop orchestrator", () => {
 
   it("LoopFeedback exhaustive switch (compile-time check)", () => {
     type Feedback = NonNullable<Awaited<ReturnType<typeof runCycle<SubstrateT>>>> extends { ok: false; feedback: infer F } ? F : never;
+    const assertNever = (x: never): never => { throw new Error(`unhandled LoopFeedback: ${JSON.stringify(x)}`); };
     const acknowledge = (f: Feedback): string => {
       switch (f.kind) {
         case "EmptyHypothesisSet":
         case "CiDispatchFailure":
         case "RankingFailure":
         case "EvolutionFailure":
+        case "InsufficientPropagatable":
         case "MaxCyclesReached":
           return f.kind;
+        default:
+          return assertNever(f);
       }
     };
     expect(acknowledge({ kind: "EmptyHypothesisSet" })).toBe("EmptyHypothesisSet");
     expect(acknowledge({ kind: "CiDispatchFailure", hypothesisId: "x", reason: "y" })).toBe("CiDispatchFailure");
+    expect(acknowledge({ kind: "InsufficientPropagatable", propagatableCount: 0, minRequired: 1, cycleIndex: 0 })).toBe("InsufficientPropagatable");
   });
 
   it("CiVerdict exhaustive switch (compile-time check)", () => {
+    const assertNever = (x: never): never => { throw new Error(`unhandled CiVerdict: ${JSON.stringify(x)}`); };
     const acknowledge = (v: CiVerdict): string => {
       switch (v.kind) {
         case "passed":
@@ -258,6 +264,8 @@ describe("B-0914.2 closed-loop orchestrator", () => {
         case "needs-revision":
         case "infrastructure-error":
           return v.kind;
+        default:
+          return assertNever(v);
       }
     };
     expect(acknowledge({ kind: "passed" })).toBe("passed");
@@ -278,12 +286,13 @@ describe("B-0914.2 closed-loop orchestrator", () => {
       evolveSurvivors: mockEvolve,
     };
     const termination = await runLoop(hs, callbacks, { ...DEFAULT_LOOP_CONFIG, maxCycles: 2 });
-    // After cycle 0: h3-bad fails, h1-good + h2-good propagate, evolve to 1 variant
-    // After cycle 1: 1 variant passes (passingCi-effect from "evolved-..." not -good/-bad pattern;
-    //   wait: mockEvolve produces ids like "evolved-cycle-N" which doesn't end in -good/-bad/-revise;
-    //   mixedCi falls through to "failed" by default for non-matching ids;
-    //   so cycle 1 has 1 hypothesis that fails → terminates as insufficient-propagatable)
-    expect(termination.terminatedAtCycle).toBeGreaterThanOrEqual(1);
-    expect(["insufficient-propagatable", "max-cycles"]).toContain(termination.reason);
+    // Cycle 0: h3-bad fails, h1-good + h2-good propagate, evolve to 1 variant
+    //   ("evolved-cycle-1") via mockEvolve.
+    // Cycle 1: mixedCi falls through to "failed" for "evolved-cycle-*" ids
+    //   (no -good/-bad/-revise suffix), so propagatable.length = 0 < minPropagatable=1.
+    //   Terminates deterministically as insufficient-propagatable at cycle 1.
+    expect(termination.terminatedAtCycle).toBe(1);
+    expect(termination.reason).toBe("insufficient-propagatable");
+    expect(termination.feedback?.kind).toBe("InsufficientPropagatable");
   });
 });
