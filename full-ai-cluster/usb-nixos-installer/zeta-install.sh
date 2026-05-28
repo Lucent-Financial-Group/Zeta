@@ -236,9 +236,116 @@ for d in "${DATA_DISKS[@]}"; do
 done
 
 # ── Step 6: clone + install ───────────────────────────────────────
+#
+# B-0857.X (cluster-type menu extension, 2026-05-27): replace the
+# bare free-text prompt with a numbered menu + hardware-detection
+# suggested default. Existing free-text override preserved as
+# "other" option for advanced cases (custom flake host attribute
+# added to nixos/hosts/<name>/ but not yet in the menu).
+#
+# Hardware-detection heuristic (suggested default):
+#   - lspci shows NVIDIA / AMD / Intel GPU       -> worker-gpu
+#   - default                                    -> control-plane
+#
+# Multi-role-on-single-host support (operator 2026-05-27: "letting
+# you select multiple or detecting based on hardware etc..."):
+# the current flake assigns one host attribute per node; multi-role
+# compose-on-single-host is a future B-0792-extension sub-row
+# (requires flake-shape refactor to support role-tagging). This
+# iteration ships the single-attribute menu; the multi-role
+# composition follows when the flake substrate supports it.
 if [[ -z "$HOST" ]]; then
-  read -rp "Flake host attribute to install [control-plane]: " HOST
-  HOST="${HOST:-control-plane}"
+  # B-0857.2-wire (2026-05-27): hardware-detection now routed through
+  # the TS module at tools/installer/zeta-hardware-detect.ts (PR #5642).
+  # Logic ported there per Rule 0 TS-over-bash discipline + extended
+  # with storage-shape (≥4 disks + ≥64GB → worker-template) and
+  # CPU-heavy (≥16 cores + ≥32GB → worker-template) classification
+  # beyond the original GPU-only inline lspci heuristic.
+  #
+  # The TS module needs (a) bun on PATH AND (b) a reachable repo
+  # checkout. zeta-install.sh runs from a live USB; the source repo
+  # is typically two dirs up from the script location
+  # (full-ai-cluster/usb-nixos-installer/zeta-install.sh → repo root).
+  # If either precondition fails, fall back to the original inline
+  # lspci-only heuristic so the menu still works in degraded environments.
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  HWDETECT_REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+  HWDETECT_TS="$HWDETECT_REPO_ROOT/tools/installer/zeta-hardware-detect.ts"
+  SUGGESTED_HOST=""
+  SUGGESTED_REASON=""
+  if command -v bun >/dev/null 2>&1 && [ -f "$HWDETECT_TS" ]; then
+    # TS module emits one line: the suggested host attribute.
+    # Capture stderr separately so module diagnostics don't leak into HOST var.
+    SUGGESTED_HOST="$(bun "$HWDETECT_TS" --suggested-host 2>/dev/null | tr -d '[:space:]' || true)"
+    if [ -n "$SUGGESTED_HOST" ]; then
+      SUGGESTED_REASON="(via zeta-hardware-detect.ts; GPU+storage+CPU classification)"
+    fi
+  fi
+  if [ -z "$SUGGESTED_HOST" ]; then
+    # Fallback: original inline lspci-only heuristic (degraded — GPU only).
+    SUGGESTED_HOST="control-plane"
+    if command -v lspci >/dev/null 2>&1; then
+      if lspci 2>/dev/null | grep -qiE "(nvidia|vga.*amd|3d.*amd|vga.*intel.*arc|3d.*intel.*arc)"; then
+        SUGGESTED_HOST="worker-gpu"
+      fi
+    fi
+    SUGGESTED_REASON="(fallback inline lspci heuristic — bun or TS module unavailable)"
+  fi
+  echo
+  echo "Cluster node type — select host attribute from the flake:"
+  echo
+  echo "  1) control-plane    K3S server + Cilium + ArgoCD bootstrap"
+  echo "                      (Longhorn storage + cpu workloads also run here)"
+  echo "  2) worker-gpu       GPU worker (NVIDIA passthrough + device-plugin"
+  echo "                      + Longhorn storage)"
+  echo "  3) worker-template  Cookie-cutter worker (multi-disk Longhorn;"
+  echo "                      use after copying to nixos/hosts/worker-NN/"
+  echo "                      per PROVISIONING.md)"
+  echo "  4) other            type a custom flake host attribute (advanced;"
+  echo "                      for hosts added under nixos/hosts/ + wired"
+  echo "                      into flake.nix nixosConfigurations)"
+  echo
+  echo "Hardware detection suggests: $SUGGESTED_HOST  $SUGGESTED_REASON"
+  case "$SUGGESTED_HOST" in
+    worker-gpu)
+      echo "  (GPU detected — likely worker node, not control-plane)"
+      ;;
+    worker-template)
+      echo "  (storage-heavy OR CPU-heavy node — use worker-template + customize"
+      echo "   per PROVISIONING.md cookie-cutter workflow)"
+      ;;
+    *)
+      echo "  (no GPU + not storage/CPU-heavy — defaulting to control-plane;"
+      echo "   override below if this is a dedicated CPU-only worker)"
+      ;;
+  esac
+  echo
+  # Default menu choice maps to suggested host.
+  DEFAULT_CHOICE="1"
+  case "$SUGGESTED_HOST" in
+    control-plane)   DEFAULT_CHOICE="1" ;;
+    worker-gpu)      DEFAULT_CHOICE="2" ;;
+    worker-template) DEFAULT_CHOICE="3" ;;
+  esac
+  read -rp "Choice [1-4, default=$DEFAULT_CHOICE]: " MENU_CHOICE
+  MENU_CHOICE="${MENU_CHOICE:-$DEFAULT_CHOICE}"
+  case "$MENU_CHOICE" in
+    1) HOST="control-plane" ;;
+    2) HOST="worker-gpu" ;;
+    3) HOST="worker-template" ;;
+    4)
+      read -rp "Custom flake host attribute: " HOST
+      if [ -z "$HOST" ]; then
+        echo "[ERROR] custom host attribute cannot be empty; aborting" >&2
+        exit 1
+      fi
+      ;;
+    *)
+      echo "[ERROR] invalid choice '$MENU_CHOICE' (expected 1-4); aborting" >&2
+      exit 1
+      ;;
+  esac
+  echo "Selected: $HOST"
 fi
 
 echo "Cloning $REPO_URL ..."
@@ -338,6 +445,66 @@ if [ -n "$PUBKEY_FILE" ]; then
     sudo cat "$PUBKEY_FILE"
   } | sudo tee "$PUBKEY_DST" > /dev/null
   echo "[iter-4.2]   wrote $PUBKEY_LINE_COUNT pubkey line(s) to operator-ssh-keys.txt"
+
+  # ── B-0852.3a-prep: capture USB UUID for cred-blob binding ────
+  # The B-0852 cred-blob encryption derives its key from
+  # HKDF(USB-UUID || stretched-passphrase, salt, info) per
+  # tools/installer/zeta-creds-crypto.ts deriveKey. The picker at
+  # Step 6.95-picker reads /etc/zeta/usb-uuid to know which UUID to
+  # bind the blob to. Without this file, the picker SKIPS (per its
+  # current gate condition), and the operator has to enter
+  # credentials over and over on every reboot (operator pain point
+  # named 2026-05-27: "i'm witing on the tool to be resable so i
+  # don't have to enter credentals over and over everytime").
+  #
+  # We're already at the ESP we just read the pubkey from. Capture
+  # its UUID via blkid + write to /etc/zeta/usb-uuid (and to
+  # /mnt/etc/zeta/usb-uuid so it survives the install). This closes
+  # one of the three preconditions blocking the picker; the other
+  # two (ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE) follow in
+  # subsequent sub-rows.
+  USB_UUID_DEV=""
+  # Derive the partition device that hosts PUBKEY_FILE.
+  if [ -n "${part:-}" ] && [ -b "${part:-}" ]; then
+    # Try 2 case: we mounted ESP ourselves; $part is the partition.
+    USB_UUID_DEV="$part"
+  else
+    # Try 1 case: PUBKEY_FILE was on an already-mounted FS.
+    # findmnt -no SOURCE <dir> returns the source device.
+    PUBKEY_DIR="$(dirname "$PUBKEY_FILE")"
+    if command -v findmnt >/dev/null 2>&1; then
+      # Walk up the path until findmnt finds a mount point.
+      probe_dir="$PUBKEY_DIR"
+      while [ "$probe_dir" != "/" ]; do
+        src=$(findmnt -no SOURCE "$probe_dir" 2>/dev/null || true)
+        if [ -n "$src" ] && [ -b "$src" ]; then
+          USB_UUID_DEV="$src"
+          break
+        fi
+        probe_dir="$(dirname "$probe_dir")"
+      done
+    fi
+  fi
+
+  if [ -n "$USB_UUID_DEV" ] && command -v blkid >/dev/null 2>&1; then
+    USB_UUID_VAL=$(sudo blkid -o value -s UUID "$USB_UUID_DEV" 2>/dev/null || true)
+    if [ -n "$USB_UUID_VAL" ]; then
+      sudo mkdir -p /etc/zeta /mnt/etc/zeta
+      echo "$USB_UUID_VAL" | sudo tee /etc/zeta/usb-uuid >/dev/null
+      echo "$USB_UUID_VAL" | sudo tee /mnt/etc/zeta/usb-uuid >/dev/null
+      sudo chmod 0644 /etc/zeta/usb-uuid /mnt/etc/zeta/usb-uuid
+      echo "[B-0852.3a-prep]   captured USB UUID: $USB_UUID_VAL (device: $USB_UUID_DEV)"
+      echo "[B-0852.3a-prep]   wrote /etc/zeta/usb-uuid + /mnt/etc/zeta/usb-uuid"
+      echo "[B-0852.3a-prep]   precondition #3 satisfied for Step 6.95-picker"
+    else
+      echo "[B-0852.3a-prep]   WARN: blkid returned empty UUID for $USB_UUID_DEV;"
+      echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+    fi
+  else
+    echo "[B-0852.3a-prep]   WARN: could not derive USB partition device OR blkid unavailable;"
+    echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+  fi
+
   sudo umount "$PROBE_MOUNT" 2>/dev/null || true
   if [ "$PUBKEY_LINE_COUNT" -gt 0 ]; then
     INJECT_OK=1
@@ -434,6 +601,85 @@ if [ -n "$INJECTED_PW" ]; then
 else
   echo "[iter-5.3]   no password entered; iter-4.x default 'zeta-change-me' stays"
   echo "[iter-5.3]   in effect (rotate via 'passwd zeta' after first SSH login)"
+fi
+echo
+
+# ── Step 6.56: B-0852.3b cred-blob passphrase prompt ────────────
+#
+# Two-step lifecycle for the operator-entered passphrase, designed
+# to minimize /proc/<pid>/environ exposure window:
+#
+#   - Step 6.56 (here): captured into the NON-EXPORTED shell
+#     variable ZETA_CREDS_PASSPHRASE_VAL. Bash shell variables
+#     without `export` live in the shell's own variable table but
+#     are NOT copied into /proc/<pid>/environ for child processes
+#     to read.
+#
+#   - Step 6.95-picker: inline-set
+#     `ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo
+#     --preserve-env=ZETA_CREDS_PASSPHRASE ...` exports the env
+#     var into the sudo subprocess ONLY (where the picker bash -c
+#     reads it via --passphrase-env). Parent installer shell never
+#     has ZETA_CREDS_PASSPHRASE exported.
+#
+#   - Step 6.95 post-picker: ZETA_CREDS_PASSPHRASE_VAL `unset`
+#     unconditionally after the if/else block so it fires whether
+#     the picker actually ran OR was skipped (env opt-out / file
+#     marker / missing UUID).
+#
+# Operator pain point 2026-05-27: "i'm witing on the tool to be
+# resable so i don't have to enter credentals over and over
+# everytime."
+#
+# Closes precondition #2 of 3 for the cred-persistence picker at
+# Step 6.95-picker (precondition #1 = ZETA_CREDS_PICKER default-on
+# via PR #5639; precondition #3 = /etc/zeta/usb-uuid auto-captured
+# at iter-4.2 via PR #5637; this step closes #2).
+#
+# Same operator-typed-once-on-console pattern as iter-5.3 password
+# (constitutional rail per zeta-install.sh line 452 verbatim:
+# "secrets shouldn't transit non-operator surfaces; operator-typed
+# at install time is the safest path").
+echo
+echo "[B-0852.3b] ── cred-blob passphrase prompt (B-0852 Phase 1) ──"
+echo "[B-0852.3b] Set a passphrase to encrypt your credentials onto"
+echo "[B-0852.3b] this USB. Future boots can RESTORE creds via the"
+echo "[B-0852.3b] same passphrase (no more re-entering gh login etc."
+echo "[B-0852.3b] on every reboot). Encryption: AES-256-GCM with key"
+echo "[B-0852.3b] derived via scrypt -> HKDF chain bound to this USB's"
+echo "[B-0852.3b] UUID (per tools/installer/zeta-creds-crypto.ts)."
+echo "[B-0852.3b]"
+echo "[B-0852.3b] Press Enter to SKIP (no cred-blob persistence;"
+echo "[B-0852.3b] keeps current per-reboot re-entry behavior)."
+echo
+ZETA_CREDS_PASSPHRASE_INPUT=""
+ZETA_CREDS_PASSPHRASE_CONFIRM=""
+# -s = silent (hidden); -p = inline prompt
+read -r -s -p "[B-0852.3b] Passphrase (or Enter to skip): " ZETA_CREDS_PASSPHRASE_INPUT
+echo
+if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
+  read -r -s -p "[B-0852.3b] Confirm:                          " ZETA_CREDS_PASSPHRASE_CONFIRM
+  echo
+  if [ "$ZETA_CREDS_PASSPHRASE_INPUT" != "$ZETA_CREDS_PASSPHRASE_CONFIRM" ]; then
+    echo "[B-0852.3b]   WARN: passphrases don't match; skipping (no cred-blob persistence)"
+    ZETA_CREDS_PASSPHRASE_INPUT=""
+  fi
+fi
+unset ZETA_CREDS_PASSPHRASE_CONFIRM
+# Initialize ZETA_CREDS_PASSPHRASE_VAL to empty unconditionally so the
+# Step 6.95-picker gate check works whether or not operator entered a
+# passphrase. Per B-0852.3b-supersede discipline: do NOT export — keep
+# in a non-exported shell variable to avoid /proc/<pid>/environ exposure.
+ZETA_CREDS_PASSPHRASE_VAL=""
+if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
+  ZETA_CREDS_PASSPHRASE_VAL="$ZETA_CREDS_PASSPHRASE_INPUT"
+  unset ZETA_CREDS_PASSPHRASE_INPUT
+  echo "[B-0852.3b]   passphrase captured + held in non-exported shell variable"
+  echo "[B-0852.3b]   (NOT in /proc/self/environ; inline-set for sudo only at 6.95;"
+  echo "[B-0852.3b]    shell var unset in ALL branches after Step 6.95 picker block)"
+else
+  unset ZETA_CREDS_PASSPHRASE_INPUT
+  echo "[B-0852.3b]   skipped — no cred-blob persistence this install"
 fi
 echo
 
@@ -778,7 +1024,12 @@ if [ "$GH_AUTH_OK" = 1 ]; then
     # Storage lines: indented 6 spaces to nest under spec.hardware.storage
     # (Copilot finding on #5352 — was a sibling of `hardware:` at 4 spaces; the
     # B-0813 schema places storage under hardware block).
-    STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
+    # Filter zero-size devices ($2 != "0B"): empty SD card readers, optical
+    # bays, and other placeholder block devices show up in `lsblk -ndo`
+    # output with SIZE=0B and confuse any reconciler that interprets the
+    # storage list as usable. Copilot finding on PR #5380 (Aaron's
+    # 2026-05-27 control-plane registration surfaced `/dev/sda 0B`).
+    STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk" && $2!="0B"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
     REG_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     FLAKE_COMMIT=$(git -C /mnt/etc/zeta rev-parse HEAD 2>/dev/null | head -c 12 || echo "unknown")
 
@@ -977,12 +1228,375 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 #   - initial-password.nix does NOT use builtins.readFile (per B-0835
 #     Bug 3b fix uses activation-script instead); its hash file (which
 #     IS a secret) doesn't transit the impure-eval path
-sudo nixos-install --impure --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
+#
+# WiFi-reproducibility (empirical 2026-05-26: cache.nixos.org timeouts
+# on same 5 derivations twice in a row over WiFi):
+#   --option fallback true: build from source if substitute download fails
+#               (don't bail — keeps the install moving even when cache is flaky)
+#               (NOTE: this is the Nix-option pass-through form; nixos-install
+#               does NOT accept top-level --fallback flag — empirical 2026-05-27
+#               Aaron USB boot failure: `unknown option '--fallback'`)
+#   --option connect-timeout 10: drop dead substituter connections fast
+#               instead of waiting the default 0 (=no timeout)
+#   --option stalled-download-timeout 60: cut the 300s default by 5×; a
+#               stalled download is detected sooner so retry or fallback
+#               fires faster
+#   --option download-attempts 3: cap retries (default 5) so the loop
+#               bounded-progresses to fallback
+# Slower for the few stalled derivations (local build vs cache download)
+# but UNBLOCKS the install instead of looping on the same 5 files.
+# Full reproducibility work (closure-baking, Cachix mirror, extra-substituters)
+# tracked at B-0846.
+sudo nixos-install \
+  --impure \
+  --option fallback true \
+  --option connect-timeout 10 \
+  --option stalled-download-timeout 60 \
+  --option download-attempts 3 \
+  --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" \
+  --no-root-password
 
 # Explicit cleanup at end (defense-in-depth; trap also handles this on
 # success OR failure exit paths).
 cleanup_symlinks
 trap - EXIT
+
+# ── Step 6.94: B-0852.3a cred-picker stub ───────────────────────────
+# The actual picker invocation lives at Step 6.95-picker (below) which
+# fires AFTER 6.95a-bootstrap clones the repo + installs bun. This
+# header reserves the step number for forward references; no work here.
+
+# ── Step 6.95: iter-5.5.0 — claude-code install + credential persistence (B-0848 Phase 2) ──
+# Aaron 2026-05-27 ask: "wanna make this automatic on boot before i even
+# login and have it save my claude code device login like gh, also make
+# sure they are all on path for me to play with when i log in?"
+#
+# This step mirrors iter-5.4.0's gh-auth pattern at install-time for the
+# node-local Claude Code agent (B-0848). Three parts:
+#
+#   1. INSTALL Claude Code via npm globally into a writable prefix
+#      under /mnt/home/zeta (so it survives reboot AND is in the zeta
+#      user's PATH via .npm-global/bin from /etc/profile.d).
+#
+#   2. PERSIST credentials to /mnt/home/zeta/.config/{gh,claude}/ with
+#      zeta-user ownership. This closes the iter-5.4.0 gap empirically
+#      observed 2026-05-27: gh auth login wrote /root/.config/gh/ in the
+#      INSTALLER environment but the installed system's zeta user had no
+#      credentials post-reboot. iter-5.5.0 fixes both `gh` and `claude`
+#      auth persistence in one step.
+#
+#   3. PRE-CLONE the Zeta repo to /mnt/home/zeta/Zeta so first-login
+#      operator workflow is "cd ~/Zeta && claude" with no extra setup.
+#
+# Skip conditions (P2 fix per PR #5388 Copilot review — comment
+# updated to match ACTUAL control-flow, which doesn't gate on
+# GH_AUTH_OK):
+#   - /mnt/home/zeta doesn't exist (means nixos-install hasn't created
+#     the user yet — possible if Step 6.x ordering changes)
+# iter-5.5.0 runs REGARDLESS of GH_AUTH_OK because: (a) claude install
+# only needs network, not gh auth; (b) claude login is operator-
+# interactive and independent of gh; (c) gh credential persistence
+# step 6.95c is itself conditional on /root/.config/gh existing
+# (which iter-5.4.0 only creates if gh auth succeeded). Net behavior:
+# install + claude login always attempted; gh credentials persisted
+# ONLY when they exist.
+
+ZETA_HOME=/mnt/home/zeta
+
+# P0 fix (PR #5388 Copilot review): resolve zeta UID/GID from the
+# INSTALLED system rather than hardcoding 1000:100 — if another user
+# is created first or NixOS module config changes, hardcoded IDs would
+# chown files to the wrong owner. chroot reads /mnt/etc/passwd via the
+# installed system's id binary which is authoritative.
+ZETA_UID=$(sudo chroot /mnt id -u zeta 2>/dev/null || echo "")
+ZETA_GID=$(sudo chroot /mnt id -g zeta 2>/dev/null || echo "")
+if [ -z "$ZETA_UID" ] || [ -z "$ZETA_GID" ]; then
+  echo "[iter-5.5.0]   WARN: could not resolve zeta UID/GID from /mnt via chroot;"
+  echo "[iter-5.5.0]   falling back to NixOS defaults (1000:100). If the installed"
+  echo "[iter-5.5.0]   system uses different IDs, post-reboot file ownership may"
+  echo "[iter-5.5.0]   need correction via 'sudo chown -R zeta:users ~/.{config,bun,Zeta}'"
+  ZETA_UID=1000
+  ZETA_GID=100
+else
+  echo "[iter-5.5.0]   resolved zeta UID:GID = $ZETA_UID:$ZETA_GID (via chroot id zeta)"
+fi
+
+if [ -d "$ZETA_HOME" ]; then
+  echo "[iter-5.5.0] ── claude-code install + credential persistence (B-0848) ──"
+
+  # 6.95a — bootstrap runtimes via mise (.mise.toml single source of
+  # truth; operator 2026-05-27 ALIGNMENT catch). Then install claude-code
+  # via bun. We pre-clone the Zeta repo at Step 6.95d-equivalent BEFORE
+  # this step so .mise.toml is available; reorder vs the original PR.
+  #
+  # Pre-clone the repo NOW (was Step 6.95d; moved up so 6.95a can read
+  # .mise.toml). Subsequent 6.95d block is a no-op if directory exists.
+  if [ ! -d "$ZETA_HOME/Zeta" ]; then
+    echo "[iter-5.5.0] pre-cloning Zeta repo to $ZETA_HOME/Zeta..."
+    sudo -u "#$ZETA_UID" git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
+      echo "[iter-5.5.0]   WARN: clone failed — claude-code install will also fail; can retry post-reboot"
+  fi
+
+  # 6.95a-bootstrap — invoke the canonical install entry from the
+  # pre-cloned repo. tools/setup/install.sh dispatches to linux.sh which
+  # detects NixOS via /etc/NIXOS, skips apt, and routes to
+  # common/mise.sh — which reads .mise.toml and installs bun =
+  # "1.3" + other pinned runtimes for the zeta user. Same single source
+  # of truth dev laptops + CI runners + devcontainers use (GOVERNANCE
+  # §24 three-way-parity extended to NixOS cluster nodes).
+  if [ -d "$ZETA_HOME/Zeta" ]; then
+    echo "[iter-5.5.0] running tools/setup/install.sh (mise-based runtime bootstrap)..."
+    sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" \
+      bash -c "cd $ZETA_HOME/Zeta && tools/setup/install.sh" 2>&1 | tail -10 || \
+        echo "[iter-5.5.0]   WARN: install.sh FAILED — runtimes may be partial; can retry post-reboot via 'cd ~/Zeta && tools/setup/install.sh'"
+  fi
+
+  # 6.95a-claude — install claude-code via the mise-managed bun.
+  # bun is now on the zeta user's PATH via mise activation; --global
+  # binaries land in ~/.bun/bin/ regardless of bun version.
+  echo "[iter-5.5.0] installing @anthropic-ai/claude-code via mise-managed bun..."
+  sudo mkdir -p "$ZETA_HOME/.bun/bin"
+  sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
+  # Source mise activation so the subshell finds bun via mise shims.
+  # tail -5 INSIDE the bash -c so pipefail covers the WHOLE pipeline
+  # (per Copilot review on PR #5398: outer pipe to tail -5 was masking
+  # bun install exit status; tail outside bash -c isn't covered by
+  # the inner shell's pipefail setting).
+  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
+    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @anthropic-ai/claude-code 2>&1 | tail -5' || \
+      echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot via 'bun install --global @anthropic-ai/claude-code'"
+
+  # 6.95a-gemini — install @google/gemini-cli via bun (B-0850 Phase 3d).
+  # Mirrors the claude install pattern; 2nd vendor for the ≥3 systemd
+  # agents target. Binary lands at ~/.bun/bin/gemini. WebSearch
+  # verified install path per dep-pin-search-first-authority discipline
+  # at implementation time (npm @google/gemini-cli is bun-compat).
+  echo "[iter-5.5.0] installing @google/gemini-cli via mise-managed bun (B-0850 Phase 3d Lior 2nd vendor)..."
+  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
+    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @google/gemini-cli 2>&1 | tail -5' || \
+      echo "[iter-5.5.0]   WARN: bun install gemini-cli FAILED — can retry post-reboot via 'bun install --global @google/gemini-cli'"
+
+  # 6.95a-codex — install @openai/codex via bun (B-0850 Phase 3c).
+  # 3rd vendor — hits the ≥3 BFT floor (Anthropic + Google + OpenAI).
+  # WebSearch verified per dep-pin-search-first-authority at
+  # implementation time: npm @openai/codex is bun-compat; binary
+  # lands at ~/.bun/bin/codex.
+  echo "[iter-5.5.0] installing @openai/codex via mise-managed bun (B-0850 Phase 3c Vera 3rd vendor — hits ≥3 BFT floor)..."
+  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
+    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @openai/codex 2>&1 | tail -5' || \
+      echo "[iter-5.5.0]   WARN: bun install codex FAILED — can retry post-reboot via 'bun install --global @openai/codex'"
+
+  # 6.95-picker — B-0852.3a cred-picker (operator interactive at setup time)
+  # Operator 2026-05-27 framing: "human interactive at setup time" + "ask what declared
+  # creds you want to bake in vs go through device flow".
+  #
+  # Runs AFTER 6.95a-bootstrap (repo + bun + mise present) and BEFORE 6.95b-* device-flow
+  # logins so picker decides per-cred bake-vs-defer + the device-flow steps handle the
+  # deferred subset.
+  #
+  # Default behavior (B-0852.3c flip, 2026-05-27): AUTO-ENABLE when
+  # both /etc/zeta/usb-uuid (PR #5637 closes this) and the
+  # ZETA_CREDS_PASSPHRASE_VAL shell variable (populated by Step 6.56
+  # prompt; held non-exported per B-0852.3b-supersede discipline) are
+  # present. Explicit opt-out via ZETA_CREDS_PICKER=0 (env or
+  # /etc/zeta/no-picker marker file).
+  #
+  # Rationale: with all 3 preconditions auto-populated by the install
+  # flow, the picker becomes the operator's "don't re-enter credentials
+  # over and over" solution. Backward compat preserved: any automated
+  # install that doesn't want the picker can opt out via
+  # ZETA_CREDS_PICKER=0 OR by NOT entering a passphrase at Step 6.56
+  # (empty passphrase keeps current per-reboot re-entry behavior).
+  #
+  # Three opt-out paths (any one disables the picker):
+  #   1. ZETA_CREDS_PICKER=0 env var
+  #   2. /etc/zeta/no-picker marker file present
+  #   3. Operator entered empty passphrase at Step 6.56 (no PASSPHRASE)
+  #
+  # SECURITY: the passphrase is FORWARDED VIA SUDO --preserve-env=ZETA_CREDS_PASSPHRASE,
+  # NOT inlined in bash -c arg-string (the latter would leak the literal passphrase
+  # into the process arglist visible to ps). The picker reads it via --passphrase-env
+  # which references the env-var-NAME only. The env var name ZETA_CREDS_PASSPHRASE
+  # is set INLINE-IN-SUDO-INVOCATION (`ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL"
+  # sudo --preserve-env=ZETA_CREDS_PASSPHRASE ...`) so it lives in the sudo
+  # subprocess env only; the parent installer shell holds the secret in the
+  # NON-EXPORTED shell var ZETA_CREDS_PASSPHRASE_VAL, never exported anywhere.
+  PICKER_OPT_OUT=0
+  if [ "${ZETA_CREDS_PICKER:-1}" = "0" ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="ZETA_CREDS_PICKER=0 (env opt-out)"
+  elif [ -f /etc/zeta/no-picker ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="/etc/zeta/no-picker marker present (file opt-out)"
+  elif [ ! -f /etc/zeta/usb-uuid ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="/etc/zeta/usb-uuid missing (B-0852.3a-prep did not capture UUID)"
+  elif [ -z "${ZETA_CREDS_PASSPHRASE_VAL:-}" ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="ZETA_CREDS_PASSPHRASE_VAL empty (operator skipped passphrase at Step 6.56)"
+  fi
+  if [ "$PICKER_OPT_OUT" = "0" ]; then
+    USB_UUID="$(cat /etc/zeta/usb-uuid)"
+    echo "[iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (DEFAULT-ON per B-0852.3c) ──"
+    echo "[iter-5.5.0]   passphrase from Step 6.56; usb-uuid from B-0852.3a-prep"
+    echo "[iter-5.5.0]   to opt out: set ZETA_CREDS_PICKER=0 OR touch /etc/zeta/no-picker"
+    # mise activate inside bash -c matches sibling 6.95a-claude/gemini/codex
+    # patterns at lines 1119-1141; without it, bun is not on the PATH the
+    # subshell sees (mise installs bun via shims; activate sets PATH).
+    # BUN_INSTALL pin matches sibling pattern too.
+    #
+    # Output path: write the cred-blob to the TARGET ESP mount during
+    # install. The target ESP is mounted at /mnt/boot by Step 5
+    # ('sudo mount "$ESP_PART" /mnt/boot'). After reboot into the
+    # installed system, disko re-mounts the SAME ESP partition at
+    # /boot — so the file persists across the install-vs-installed
+    # boundary as the same physical file at two mount paths
+    # (/mnt/boot during install → /boot post-reboot). The restore
+    # service (zeta-creds-restore.nix) reads from /boot/zeta-creds.enc
+    # at boot-time.
+    #
+    # Env-var passing: inline-set ZETA_CREDS_PASSPHRASE only into the
+    # sudo subprocess (not exported in the parent installer shell).
+    # See SECURITY block above for full lifecycle.
+    ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
+      HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+      bash -c "set -o pipefail; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+        echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
+  else
+    echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"
+  fi
+  # B-0852.3b-supersede discipline: unset ZETA_CREDS_PASSPHRASE_VAL
+  # UNCONDITIONALLY after the picker block — fires in BOTH the
+  # picker-ran branch AND the picker-skipped branch. Prior code only
+  # unset inside the picker-ran branch, leaving the passphrase live
+  # in the installer shell for the rest of execution whenever
+  # ZETA_CREDS_PICKER=0 / /etc/zeta/no-picker / usb-uuid-missing path
+  # was taken.
+  unset ZETA_CREDS_PASSPHRASE_VAL
+  echo "[iter-5.5.0]   ZETA_CREDS_PASSPHRASE_VAL unset from installer shell (post-picker block; fires in both branches)"
+
+  # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
+  CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"
+  if [ -x "$CLAUDE_BIN" ]; then
+    echo
+    echo "[iter-5.5.0] Trigger Claude Code interactive device-flow login NOW (mirror of gh auth login)?"
+    echo "[iter-5.5.0]   - Opens a code prompt; visit URL on this Mac browser; approve."
+    echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.config/claude/ and survive reboot."
+    echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
+    read -r -p "[iter-5.5.0] Run claude login now? [Y/n]: " CLAUDE_AUTH_REPLY
+    case "${CLAUDE_AUTH_REPLY:-y}" in
+      [Yy]*|"")
+        echo "[iter-5.5.0]   running 'claude login' (interactive)..."
+        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$CLAUDE_BIN" login || \
+          echo "[iter-5.5.0]   WARN: claude login failed; can re-run post-reboot"
+        # P0 security fix (PR #5388 Copilot review): restrict perms on
+        # ~/.config/claude AFTER login completes — claude CLI may write
+        # tokens with default umask which could leave them group/world-
+        # readable. Parallel to the gh credential restriction below.
+        if [ -d "$ZETA_HOME/.config/claude" ]; then
+          sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.config/claude"
+          sudo chmod -R go-rwx "$ZETA_HOME/.config/claude"
+        fi
+        ;;
+      *)
+        echo "[iter-5.5.0]   SKIPPED claude login; run 'claude login' on first login"
+        ;;
+    esac
+  else
+    echo "[iter-5.5.0] claude binary not found at $CLAUDE_BIN; skipping interactive login"
+  fi
+
+  # 6.95b-gemini — interactive gemini auth login (mirror claude login).
+  # B-0850 Phase 3d 2nd vendor login flow. gemini-cli supports OAuth
+  # via local HTTP server OR API-key paste. The interactive prompt
+  # lets operator choose. Credentials persist to ~/.config/gemini/.
+  GEMINI_BIN="$ZETA_HOME/.bun/bin/gemini"
+  if [ -x "$GEMINI_BIN" ]; then
+    echo
+    echo "[iter-5.5.0] Trigger Gemini CLI interactive login NOW (B-0850 Phase 3d Lior)?"
+    echo "[iter-5.5.0]   - Mirrors claude login pattern (operator-interactive auth)."
+    echo "[iter-5.5.0]   - Options: OAuth via browser OR Gemini API key from AI Studio."
+    echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.config/gemini/ and survive reboot."
+    echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
+    read -r -p "[iter-5.5.0] Run gemini auth login now? [Y/n]: " GEMINI_AUTH_REPLY
+    case "${GEMINI_AUTH_REPLY:-y}" in
+      [Yy]*|"")
+        echo "[iter-5.5.0]   running 'gemini auth login' (interactive)..."
+        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$GEMINI_BIN" auth login || \
+          echo "[iter-5.5.0]   WARN: gemini auth login failed; can re-run post-reboot"
+        # Parallel security restriction to claude credentials.
+        if [ -d "$ZETA_HOME/.config/gemini" ]; then
+          sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.config/gemini"
+          sudo chmod -R go-rwx "$ZETA_HOME/.config/gemini"
+        fi
+        ;;
+      *)
+        echo "[iter-5.5.0]   SKIPPED gemini auth login; run 'gemini auth login' on first login"
+        ;;
+    esac
+  else
+    echo "[iter-5.5.0] gemini binary not found at $GEMINI_BIN; skipping interactive login"
+  fi
+
+  # 6.95b-codex — interactive codex login (B-0850 Phase 3c Vera).
+  # 3rd vendor login — codex CLI has the most explicit device-flow
+  # via `codex login --device-auth` (Anthropic claude device-flow
+  # analog; works on headless / no-local-browser systems by
+  # printing URL+code for paste into ANY browser). Credentials
+  # cache at ~/.codex/auth.json (NOT ~/.config/codex/ — codex
+  # uses its own dotdir convention per the codex docs).
+  CODEX_BIN="$ZETA_HOME/.bun/bin/codex"
+  if [ -x "$CODEX_BIN" ]; then
+    echo
+    echo "[iter-5.5.0] Trigger Codex CLI interactive device-flow login NOW (B-0850 Phase 3c Vera)?"
+    echo "[iter-5.5.0]   - Uses 'codex login --device-auth' (clean device-flow shape)."
+    echo "[iter-5.5.0]   - Prints URL + one-time code; visit on ANY browser on ANY device; paste code."
+    echo "[iter-5.5.0]   - ChatGPT Plus/Pro/Business/Edu/Enterprise plans include Codex access."
+    echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.codex/auth.json (NOT ~/.config/codex)."
+    echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
+    read -r -p "[iter-5.5.0] Run codex login --device-auth now? [Y/n]: " CODEX_AUTH_REPLY
+    case "${CODEX_AUTH_REPLY:-y}" in
+      [Yy]*|"")
+        echo "[iter-5.5.0]   running 'codex login --device-auth' (interactive)..."
+        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$CODEX_BIN" login --device-auth || \
+          echo "[iter-5.5.0]   WARN: codex login failed; can re-run post-reboot"
+        # Codex stores at ~/.codex/auth.json (not ~/.config/codex);
+        # restrict perms accordingly.
+        if [ -d "$ZETA_HOME/.codex" ]; then
+          sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.codex"
+          sudo chmod -R go-rwx "$ZETA_HOME/.codex"
+        fi
+        ;;
+      *)
+        echo "[iter-5.5.0]   SKIPPED codex login; run 'codex login --device-auth' on first login"
+        ;;
+    esac
+  else
+    echo "[iter-5.5.0] codex binary not found at $CODEX_BIN; skipping interactive login"
+  fi
+
+  # 6.95c — persist gh credentials from installer-root to installed-zeta
+  # Closes the iter-5.4.0 credential-persistence gap (Bug 8).
+  if [ -d /root/.config/gh ]; then
+    echo "[iter-5.5.0] persisting /root/.config/gh → $ZETA_HOME/.config/gh (Bug 8 fix)"
+    sudo mkdir -p "$ZETA_HOME/.config"
+    sudo cp -r /root/.config/gh "$ZETA_HOME/.config/"
+    sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.config/gh"
+    # Restrict perms — gh tokens are secrets
+    sudo chmod -R go-rwx "$ZETA_HOME/.config/gh"
+  else
+    echo "[iter-5.5.0] /root/.config/gh absent; nothing to persist (gh auth login was skipped?)"
+  fi
+
+  # 6.95d — pre-clone now happens up in 6.95a-bootstrap (before mise
+  # install needs .mise.toml). This sub-step is intentionally empty
+  # since the clone moved up.
+
+  echo "[iter-5.5.0] ── DONE — first login will have: mise-managed runtimes (bun/node/python/dotnet/java/uv/etc) + gh + claude + kubectl + helm + k9s + argocd on PATH; ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated; ~/.bun/bin on PATH ──"
+else
+  echo "[iter-5.5.0] $ZETA_HOME absent; skipping (nixos-install ordering changed?)"
+fi
+echo
 
 # ── Step 7: print initial credentials (iter-4 — per B-0789) ──────
 echo

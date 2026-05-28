@@ -18,7 +18,62 @@
     # via `gh ssh-key list` during zeta-install.sh Step 6.8. Composes
     # additively with iter-4.2 static maintainer keys.
     ./operator-authorized-keys.nix
+    # B-0850 Phase 3 refactor: parameterized multi-vendor AI agent
+    # systemd module. Replaces the Phase 1 zeta-otto.nix module with
+    # a generalization that supports ≥3 vendor-diverse AI personas
+    # (otto/alexa/riven/vera/lior) as independent systemd services.
+    # Operator opt-in per-persona via
+    # `zeta.aiAgents.personas.<persona>.enable = true;`. Disabled by
+    # default at module level. Composes with iter-5.5.0 install-time
+    # substrate (PR #5388 + #5389) which persists credentials + pre-
+    # clones repo + installs CLI binaries via mise-managed bun.
+    # Per-vendor implementation lands via B-0850 Phase 3 sub-rows
+    # (3a-3h) that add install + login flows for each vendor's CLI.
+    ./zeta-ai-agent.nix
+    # B-0855.1: post-install first-boot self-registration service.
+    # Disabled by default until host configs opt in after B-0855.2
+    # ships the TS implementation; imported here so every node type
+    # has the same module surface.
+    ./zeta-self-register.nix
+    # B-0852.4a/d: boot-time credential restore from ESP.
+    #
+    # 2026-05-27 (B-0852.4 default-on flip): now enabled by default
+    # across all hosts with passphraseMode = "interactive". The unit's
+    # ConditionPathExists guard (blob + uuid + script + bun shim) means
+    # first boot before any cred-blob exists is a clean no-op; on
+    # subsequent boots the unit fires + systemd-ask-password prompts
+    # the operator ONCE for the passphrase + the restore CLI populates
+    # /home/zeta/.config/{gh,claude,gemini,codex} from the encrypted
+    # blob on the USB ESP. This closes the operator pain point named
+    # 2026-05-27: "i'm witing on the tool to be resable so i don't
+    # have to enter credentals over and over everytime."
+    #
+    # Composes with the install-side substrate cascade (PRs #5637 +
+    # #5638 + #5639) that wires Step 6.56 passphrase prompt +
+    # iter-4.2 USB-UUID capture + default-on picker. Once all those
+    # install-side preconditions are met + first install completes
+    # with cred-blob written to /esp/zeta-creds.enc, every subsequent
+    # boot of the installed system fires the restore service.
+    #
+    # Composes with B-0855.1 zeta-self-register (which already
+    # declares `after = "zeta-creds-restore.service"`) so cred-restore
+    # fires BEFORE self-register on each boot.
+    #
+    # Per-host opt-out: set `zeta.credsRestore.enable = false;` in
+    # that host's configuration.nix. Per-host passphraseMode override:
+    # `zeta.credsRestore.passphraseMode = "file";` for nodes where
+    # tty1 interactive prompt is inappropriate (e.g., headless +
+    # pre-staged `/run/zeta-creds-passphrase`).
+    ./zeta-creds-restore.nix
   ];
+
+  # B-0852.4 default-on flip (operator pain point closure 2026-05-27).
+  # Both options use lib.mkDefault so per-host configs may override
+  # without conflict warnings.
+  zeta.credsRestore = {
+    enable = lib.mkDefault true;
+    passphraseMode = lib.mkDefault "interactive";
+  };
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
@@ -46,23 +101,91 @@
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
 
-  # iter-5.1 (B-0792): Avahi mDNS publishing so cluster nodes resolve
-  # via `<hostname>.local` from operator Mac (Bonjour) + Linux peers
-  # (nss-mdns) on the LAN without IP-discovery step. Without this,
-  # `ssh zeta@control-plane.local` fails to resolve even though the
-  # node is up. Empirical anchor: 2026-05-26 iter-4.2 PC1 test
-  # surfaced the gap.
+  # iter-5.1 (B-0792): Avahi mDNS publishing — `<hostname>.local`
+  # resolution via Bonjour (macOS) + nss-mdns (Linux peers).
+  # Empirical 2026-05-27 (control-plane physical-hardware-support test):
+  # mDNS alone proved unreliable — operator's Mac (en0 ethernet, also on
+  # WiFi) could ping by IP + SSH but Bonjour resolution timed out;
+  # unicast mDNS query to port 5353/udp also timed out from the Mac
+  # even though the install completed. Multi-protocol additive
+  # belt-and-suspenders below addresses the reliability gap without
+  # removing the operator's preferred Bonjour-style mechanism.
   services.avahi = {
     enable = true;
     nssmdns4 = true;
-    openFirewall = true;  # firewall hole for mDNS (5353/udp)
+    nssmdns6 = true;       # IPv6 nss-mdns alongside IPv4 (some operator
+                           # macOS configs prefer AAAA queries first)
+    openFirewall = true;   # firewall hole for mDNS (5353/udp)
+    ipv4 = true;
+    ipv6 = true;
+    reflector = true;      # forward mDNS across multiple subnets (operator
+                           # mac on one segment + node on another via router)
     publish = {
       enable = true;
       addresses = true;
       workstation = true;
       domain = true;
+      hinfo = true;        # host info record — additional discoverability
+      userServices = true; # advertise user services so dns-sd browses see node
     };
   };
+
+  # iter-5.5 (B-0835 Bug 7 — operator 2026-05-27 reliability ask):
+  # NetBIOS name resolution via Samba's nmbd as additive belt-and-
+  # suspenders alongside Avahi mDNS. NetBIOS uses UDP broadcast on
+  # 137 (vs mDNS multicast on 5353) — different failure modes; if
+  # the network drops IGMP/multicast but allows broadcast,
+  # `node-e5a176` resolves via NetBIOS where `node-e5a176.local`
+  # fails via mDNS. Windows + macOS + Linux all speak NetBIOS via
+  # nmblookup / smbutil / nss-winbind.
+  #
+  # Operator usage (from any host on the LAN):
+  #   nmblookup node-e5a176          # Linux/macOS NetBIOS lookup
+  #   smbutil lookup node-e5a176     # macOS native NetBIOS
+  #   ping node-e5a176               # may work if nsswitch has wins
+  #
+  # SECURITY DISCIPLINE (P0+P1 fixes from PR #5387 Copilot review):
+  # We run ONLY nmbd (NetBIOS name daemon on 137/udp + 138/udp), NOT
+  # smbd (SMB file-sharing daemon on 139/tcp + 445/tcp). This is
+  # genuinely "NetBIOS-only" — zero SMB attack surface:
+  #   - services.samba.smbd.enable = false  (no smbd process)
+  #   - services.samba.nmbd.enable = true   (nmbd ONLY)
+  #   - services.samba.openFirewall = false (we control firewall manually)
+  #   - networking.firewall.allowedUDPPorts = [ 137 138 ] (NetBIOS only)
+  # Reviewer caught the prior `openFirewall = true` + `smb ports = "445"`
+  # config that opened 139/tcp + 445/tcp despite the "name resolution
+  # only" claim. Now genuinely true.
+  services.samba = {
+    enable = true;
+    openFirewall = false;  # we open ONLY 137/138 UDP below; no SMB ports
+    smbd.enable = false;   # NO SMB file-sharing daemon
+    nmbd.enable = true;    # NetBIOS name daemon ONLY
+    settings = {
+      global = {
+        "workgroup" = "ZETA";
+        "server string" = "Zeta cluster node %h";
+        "netbios name" = config.networking.hostName;
+        "disable netbios" = "no";
+        "name resolve order" = "bcast host";
+      };
+    };
+  };
+
+  # Explicit NetBIOS-only firewall holes (P0 fix per PR #5387 review):
+  # 137/udp = NetBIOS-NS (name service queries)
+  # 138/udp = NetBIOS-DGM (datagram service for browse-list announcements)
+  # We do NOT open 139/tcp (NetBIOS-SSN) or 445/tcp (SMB) since smbd is
+  # disabled. This is genuinely "NetBIOS name resolution only" — no SMB
+  # file-share surface exposed even if smbd accidentally got re-enabled.
+  networking.firewall.allowedUDPPorts = [ 137 138 ];
+
+  # DHCP-hostname registration: NetworkManager already advertises the
+  # hostname via DHCP option 12 by default. Many home routers register
+  # DHCP client hostnames as DNS names (e.g., `node-e5a176.lan` from
+  # Asus/Netgear/Eero). This is the 3rd reliability layer — operator's
+  # router becomes a fallback name resolver for `<hostname>` and
+  # `<hostname>.lan` (or `.home`/`.localdomain` depending on router).
+  # No additional NixOS config needed beyond NetworkManager being on.
 
   services.openssh = {
     enable = true;
@@ -90,7 +213,80 @@
     skopeo
     kubectl kubernetes-helm k9s argocd
     cilium-cli hubble
+
+    # B-0835 fix (Aaron 2026-05-27 control-plane install): gh CLI was
+    # available in the installer ISO's PATH (iter-5.4.0 used it for
+    # `gh auth login` during install) but NOT in the installed system's
+    # PATH after reboot. Operator empirically hit "gh: command not found"
+    # on first login. The gh-auth tokens stored in ~/.config/gh during
+    # install are useless without the binary. gh stays in systemPackages
+    # for ongoing operator workflows (re-auth, ssh-key sync, future
+    # node-register tooling).
+    gh
+
+    # iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
+    # `mise` is Zeta's canonical runtime version manager — the .mise.toml
+    # at repo root pins bun = "1.3" + dotnet + python = "3.14" + java +
+    # uv + actionlint + shellcheck + node + markdownlint-cli2 for ALL
+    # contexts (dev laptops + CI runners + devcontainers per GOVERNANCE
+    # §24 three-way parity). Cluster nodes inherit the SAME runtime
+    # pins via mise reading the same .mise.toml — single source of truth.
+    #
+    # Earlier draft of this PR added `bun` directly via nixpkgs which
+    # DRIFTED from the .mise.toml-pinned bun = "1.3" (would have run
+    # whatever bun version nixpkgs ships — could mismatch dev). Operator
+    # caught: "we already do this we've drifted for nixos for some
+    # reason for bun".
+    #
+    # zeta-install.sh Step 6.95a now invokes the canonical entry
+    # `tools/setup/install.sh` from the pre-cloned Zeta repo (which
+    # detects Linux, dispatches to linux.sh, which detects NixOS via
+    # /etc/NIXOS marker file and routes directly to common/mise.sh).
+    # Mise then installs bun + all other .mise.toml runtimes for the
+    # zeta user. Subsequent `bun install --global @anthropic-ai/claude-code`
+    # uses the mise-managed bun.
+    mise
+
+    # iter-5.5 NetBIOS client tools — `samba` package brings
+    # nmblookup/smbclient binaries so operator can query NetBIOS name
+    # service from any node. The CORRESPONDING SERVER-SIDE config
+    # (services.samba with nmbd-only) lands in PR #5387 (multi-protocol
+    # name resolution); the two PRs compose at merge time. Until #5387
+    # merges this package provides client-side tooling only — useful
+    # for diagnosing OTHER nodes (or the operator's own Mac if it runs
+    # nmbd) by NetBIOS name when mDNS multicast is filtered.
+    # P2 fix (PR #5388 Copilot review): comment now correctly notes
+    # services.samba is NOT configured in this PR; lives in #5387.
+    samba
   ];
+
+  # iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
+  # PATH setup for both mise-managed runtimes AND bun's --global prefix.
+  # mise puts shims at ~/.local/share/mise/shims/ (which mise activation
+  # auto-prepends), AND bun's `bun install --global` lands binaries at
+  # ~/.bun/bin/ (where claude-code ends up). Both need to be on PATH.
+  environment.sessionVariables = {
+    BUN_INSTALL = "$HOME/.bun";
+  };
+
+  # /etc/profile.d/ snippet: mise activation + bun global bin.
+  # mise activate writes shims to ~/.local/share/mise/shims/ and adds
+  # them to PATH automatically; bun --global writes binaries to
+  # ~/.bun/bin/ which we add explicitly. $HOME expansion happens at
+  # shell-init time when this file sources.
+  environment.etc."profile.d/zeta-user-paths.sh".text = ''
+    # iter-5.5.0 (B-0848): mise + bun PATH setup for the zeta user.
+    # mise activate sets up shims for all .mise.toml runtimes (bun,
+    # node, dotnet, python, java, uv, actionlint, shellcheck, etc.)
+    if command -v mise >/dev/null 2>&1; then
+      eval "$(mise activate bash)"
+    fi
+    # bun's `bun install --global` writes binaries here (claude-code
+    # lands at $HOME/.bun/bin/claude).
+    if [ -d "$HOME/.bun/bin" ]; then
+      export PATH="$HOME/.bun/bin:$PATH"
+    fi
+  '';
 
   boot.loader = {
     systemd-boot.enable = lib.mkDefault true;

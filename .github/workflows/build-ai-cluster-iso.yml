@@ -71,6 +71,10 @@ on:
 
 permissions:
   contents: read
+  # id-token: write moved to jobs.build.permissions per Copilot P1 finding on
+  # PR #5417 — matches the repo pattern (.github/workflows/scorecard.yml
+  # elevates id-token at job scope only, minimising blast radius if future
+  # jobs added to this workflow).
 
 concurrency:
   group: build-ai-cluster-iso-${{ github.workflow }}-${{ github.ref }}
@@ -81,6 +85,23 @@ jobs:
     name: build-iso
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    permissions:
+      contents: read
+      # B-0853.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived
+      # cert from the GitHub-issued OIDC token; Rekor transparency log records
+      # the signature. No private key material is handled in this workflow.
+      #
+      # Real safety properties (tightened per Copilot P1 review on PR #5417):
+      #   - Short-lived cert (Fulcio mints 10-min cert tied to this run)
+      #   - Identity bound to workflow path + ref (verifier pins via
+      #     --certificate-identity matching this file's path + ref)
+      #   - Steps pinned to commit SHAs (cosign-installer at vetted release)
+      # NOT a hard guarantee: any step in THIS job that can request the OIDC
+      # token could in principle transmit it off-runner + use it to mint a
+      # Fulcio cert + sign arbitrary blobs as THIS workflow's identity. The
+      # mitigation is pinned + audited steps + job-scope id-token (not
+      # workflow-wide; this block).
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -300,6 +321,80 @@ jobs:
             echo "to flash the stick. (ISO is ~1.5–2 GiB.)"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # B-0853.1 — sigstore/cosign keyless OIDC signing of the ISO blob.
+      # Composes with B-0853 (sigstore artifact signing free-stuff substrate).
+      #
+      # Keyless model: GitHub OIDC token (from job-level id-token: write
+      # permission above) is exchanged with Fulcio CA for a short-lived cert
+      # bound to this workflow's identity. cosign then signs the ISO blob
+      # with that cert + records the signature in the Rekor transparency log.
+      # No long-lived private key material in this workflow.
+      #
+      # Verification (any consumer) — pin identity to THIS specific workflow
+      # file + ref (tightened per Copilot P1 review on PR #5417; the broader
+      # `^https://github.com/Lucent-Financial-Group/Zeta` prefix-regex would
+      # accept signatures from any workflow in the repo, defeating the
+      # workflow-identity binding):
+      #
+      #   cosign verify-blob \
+      #     --bundle <iso>.bundle \
+      #     --certificate-identity 'https://github.com/Lucent-Financial-Group/Zeta/.github/workflows/build-ai-cluster-iso.yml@refs/heads/main' \
+      #     --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+      #     <iso>
+      #
+      # For verifying signatures from feature branches OR tags, swap the
+      # `@refs/heads/main` suffix accordingly:
+      #   --certificate-identity '.../build-ai-cluster-iso.yml@refs/heads/<branch>'
+      #   --certificate-identity '.../build-ai-cluster-iso.yml@refs/tags/<tag>'
+      #
+      # Security: inputs to cosign are filesystem paths from steps.iso.outputs
+      # of THIS workflow (no github.event.* interpolation). Same discipline
+      # as the QEMU boot-test step above.
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        # Pin verified via gh API 2026-05-27:
+        #   gh api repos/sigstore/cosign-installer/releases/latest
+        #   tag: v4.1.2; published: 2026-05-07T01:27:27Z
+        # Per .claude/rules/dep-pin-search-first-authority.md
+
+      - name: Sign ISO with cosign (keyless OIDC + Fulcio + Rekor)
+        id: sign
+        env:
+          # Pass ISO path via env (not direct ${{ }} interpolation in run:)
+          # per the workflow's existing security discipline.
+          ISO_PATH: ${{ steps.iso.outputs.path }}
+          ISO_NAME: ${{ steps.iso.outputs.name }}
+        run: |
+          set -euo pipefail
+          # --yes: skip interactive Fulcio confirmation (CI is non-interactive)
+          # Output emitted to runner temp and uploaded alongside the ISO artifact:
+          #   <runner-temp>/<iso>.bundle - cosign bundle containing signature,
+          #                                certificate, and transparency-log material.
+          COSIGN_BUNDLE="${RUNNER_TEMP}/${ISO_NAME}.bundle"
+          cosign sign-blob --yes \
+            --bundle "${COSIGN_BUNDLE}" \
+            "${ISO_PATH}"
+          # Sanity: the verifier artifact must be present and non-empty.
+          test -s "${COSIGN_BUNDLE}" || { echo "::error::Empty cosign bundle"; exit 1; }
+          echo "bundle-path=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## ISO signed via sigstore (cosign keyless OIDC)"
+            echo ""
+            echo "| Artifact | Path |"
+            echo "|---|---|"
+            echo "| Bundle | \`${ISO_NAME}.bundle\` |"
+            echo ""
+            echo "Verification command after downloading the ISO artifact and cosign bundle artifact:"
+            echo ""
+            echo "\`\`\`bash"
+            echo "cosign verify-blob \\"
+            echo "  --bundle '${ISO_NAME}.bundle' \\"
+            echo "  --certificate-identity 'https://github.com/${GITHUB_WORKFLOW_REF}' \\"
+            echo "  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \\"
+            echo "  '${ISO_NAME}'"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload ISO as workflow artifact
         # Available for download from the workflow run page for ~90 days.
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
@@ -309,3 +404,14 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           compression-level: 0   # ISO is already compressed; re-zipping wastes time
+
+      - name: Upload cosign bundle as workflow artifact
+        # B-0853.1 sibling upload — bundle alongside the ISO for consumers.
+        # Separate artifact (not bundled with ISO) so consumers downloading
+        # just the ISO do not pay the small extra cost; verifiers can grab it.
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: ${{ steps.iso.outputs.name }}.cosign
+          path: ${{ steps.sign.outputs.bundle-path }}
+          if-no-files-found: error
+          retention-days: 90

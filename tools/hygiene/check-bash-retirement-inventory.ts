@@ -2,7 +2,7 @@
 // check-bash-retirement-inventory.ts — verify the retained shell surface.
 //
 // The TypeScript/Bun migration is in bash-retirement mode: repo-owned scripts
-// should not grow new `.sh` entrypoints outside the explicit repo-wide
+// should not grow new shell-family entrypoints outside the explicit repo-wide
 // retained-shell allowlist. Retained shell exists only where the script runs
 // before Bun is available, bootstraps a host service environment, or belongs
 // to a low-level installer/dev-cluster surface that is still shell-native.
@@ -13,8 +13,8 @@
 //   bun tools/hygiene/check-bash-retirement-inventory.ts --json
 
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { closeSync, existsSync, openSync, readSync } from "node:fs";
+import { basename, join } from "node:path";
 
 type ExitCode = 0 | 1 | 2;
 type Mode = "report" | "enforce" | "json";
@@ -39,17 +39,37 @@ interface AllowlistOrderViolation {
 interface AllowlistIntegrity {
   readonly duplicateEntries: readonly string[];
   readonly orderViolations: readonly AllowlistOrderViolation[];
+  readonly uncategorizedEntries: readonly string[];
+  readonly staleCategoryEntries: readonly string[];
+}
+
+export type RetainedShellCategory =
+  | "dev-cluster wrappers"
+  | "host-service wrappers"
+  | "kiro loop wrapper"
+  | "launchd bootstrap"
+  | "nixos installer"
+  | "setup/bootstrap";
+
+export interface RetainedShellCategorySummary {
+  readonly category: RetainedShellCategory;
+  readonly files: readonly string[];
 }
 
 export interface InventoryReport {
   readonly retained: readonly string[];
   readonly expectedRetained: readonly string[];
+  readonly retainedCategories: readonly RetainedShellCategorySummary[];
   readonly allowlistIntegrity: AllowlistIntegrity;
   readonly drift: InventoryDrift;
 }
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
+const SHEBANG_READ_BYTES = 512;
+const SHELL_FILE_EXTENSIONS: readonly string[] = [".sh", ".bash", ".zsh", ".ksh", ".command"];
 export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
+export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS.map((extension) => `*${extension}`);
+const SHELL_FAMILY_SHEBANG_RE = /^#!.*[/\s](bash|dash|sh|zsh|ksh)(?:\s|$)/;
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -77,6 +97,39 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
 
 export const RETAINED_BASH_SCOPE = RETAINED_SHELL_SCOPE;
 export const EXPECTED_RETAINED_BASH = EXPECTED_RETAINED_SHELL;
+
+const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
+  "setup/bootstrap",
+  "host-service wrappers",
+  "launchd bootstrap",
+  "kiro loop wrapper",
+  "nixos installer",
+  "dev-cluster wrappers",
+];
+
+export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
+  ".gemini/service/install-lior-service.sh": "host-service wrappers",
+  ".gemini/service/lior-loop.sh": "host-service wrappers",
+  "full-ai-cluster/dev-cluster/down.sh": "dev-cluster wrappers",
+  "full-ai-cluster/dev-cluster/up.sh": "dev-cluster wrappers",
+  "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
+  "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
+  "tools/kiro/kiro-loop-wrapper.sh": "kiro loop wrapper",
+  "tools/kiro/launchd/install.sh": "launchd bootstrap",
+  "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
+  "tools/setup/common/dotnet-tools.sh": "setup/bootstrap",
+  "tools/setup/common/elan.sh": "setup/bootstrap",
+  "tools/setup/common/mise.sh": "setup/bootstrap",
+  "tools/setup/common/profile-edit.sh": "setup/bootstrap",
+  "tools/setup/common/python-tools.sh": "setup/bootstrap",
+  "tools/setup/common/shellenv.sh": "setup/bootstrap",
+  "tools/setup/common/sync-upstreams.sh": "setup/bootstrap",
+  "tools/setup/common/verifiers.sh": "setup/bootstrap",
+  "tools/setup/doctor.sh": "setup/bootstrap",
+  "tools/setup/install.sh": "setup/bootstrap",
+  "tools/setup/linux.sh": "setup/bootstrap",
+  "tools/setup/macos.sh": "setup/bootstrap",
+};
 
 function parseArgs(argv: readonly string[]): ParseResult {
   let mode: Mode = "report";
@@ -117,27 +170,53 @@ function runGit(args: readonly string[], cwd?: string): string {
   return result.stdout;
 }
 
-export function trackedNonLeanShellFilesFromGit(): readonly string[] {
-  const repoRoot = runGit(["rev-parse", "--show-toplevel"]).trim();
-  const raw = runGit(["ls-files", "-z", "*.sh"], repoRoot);
+export function trackedNonLeanShellFilesFromGit(cwd?: string): readonly string[] {
+  const repoRoot = runGit(["rev-parse", "--show-toplevel"], cwd).trim();
+  const raw = runGit(["ls-files", "-z"], repoRoot);
   return raw
     .split("\0")
     .filter((file): file is string => file.length > 0)
     .filter((file) => existsSync(join(repoRoot, file)))
     .filter((file) => !file.startsWith("tools/lean4/"))
+    .filter((file) => isTrackedShellFamilyFile(repoRoot, file))
     .sort((a, b) => a.localeCompare(b));
 }
 
 export const trackedNonLeanBashFilesFromGit = trackedNonLeanShellFilesFromGit;
 
+function isTrackedShellFamilyFile(repoRoot: string, file: string): boolean {
+  if (SHELL_FILE_EXTENSIONS.some((extension) => file.endsWith(extension))) return true;
+  if (basename(file).includes(".")) return false;
+
+  const firstLine = readFirstLine(join(repoRoot, file));
+  return SHELL_FAMILY_SHEBANG_RE.test(firstLine);
+}
+
+function readFirstLine(path: string): string {
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "r");
+    const buffer = Buffer.alloc(SHEBANG_READ_BYTES);
+    const bytesRead = readSync(fd, buffer, 0, buffer.length, 0);
+    return buffer.subarray(0, bytesRead).toString("utf8").split(/\r?\n/, 1)[0] ?? "";
+  } catch {
+    return "";
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
+}
+
 function inspectAllowlistIntegrity(expectedRetained: readonly string[]): AllowlistIntegrity {
   const counts = new Map<string, number>();
+  const expectedSet = new Set(expectedRetained);
   const orderViolations: AllowlistOrderViolation[] = [];
+  const uncategorizedEntries = new Set<string>();
 
   for (let index = 0; index < expectedRetained.length; index += 1) {
     const current = expectedRetained[index];
     if (current === undefined) continue;
     counts.set(current, (counts.get(current) ?? 0) + 1);
+    if (RETAINED_SHELL_CATEGORY_BY_FILE[current] === undefined) uncategorizedEntries.add(current);
 
     const previous = expectedRetained[index - 1];
     if (previous !== undefined && previous.localeCompare(current) > 0) {
@@ -150,11 +229,41 @@ function inspectAllowlistIntegrity(expectedRetained: readonly string[]): Allowli
     .map(([file]) => file)
     .sort((a, b) => a.localeCompare(b));
 
-  return { duplicateEntries, orderViolations };
+  const staleCategoryEntries = Object.keys(RETAINED_SHELL_CATEGORY_BY_FILE)
+    .filter((file) => !expectedSet.has(file))
+    .sort((a, b) => a.localeCompare(b));
+
+  return {
+    duplicateEntries,
+    orderViolations,
+    uncategorizedEntries: [...uncategorizedEntries].sort((a, b) => a.localeCompare(b)),
+    staleCategoryEntries,
+  };
 }
 
 function hasAllowlistIntegrityDrift(integrity: AllowlistIntegrity): boolean {
-  return integrity.duplicateEntries.length > 0 || integrity.orderViolations.length > 0;
+  return (
+    integrity.duplicateEntries.length > 0 ||
+    integrity.orderViolations.length > 0 ||
+    integrity.uncategorizedEntries.length > 0 ||
+    integrity.staleCategoryEntries.length > 0
+  );
+}
+
+function buildRetainedCategorySummary(expectedRetained: readonly string[]): readonly RetainedShellCategorySummary[] {
+  const byCategory = new Map<RetainedShellCategory, string[]>();
+  for (const category of RETAINED_SHELL_CATEGORY_ORDER) byCategory.set(category, []);
+
+  for (const file of expectedRetained) {
+    const category = RETAINED_SHELL_CATEGORY_BY_FILE[file];
+    if (category === undefined) continue;
+    byCategory.get(category)?.push(file);
+  }
+
+  return RETAINED_SHELL_CATEGORY_ORDER.map((category) => ({
+    category,
+    files: [...(byCategory.get(category) ?? [])].sort((a, b) => a.localeCompare(b)),
+  })).filter((summary) => summary.files.length > 0);
 }
 
 export function buildInventoryReport(
@@ -162,10 +271,12 @@ export function buildInventoryReport(
   expectedRetained: readonly string[] = EXPECTED_RETAINED_SHELL,
 ): InventoryReport {
   const allowlistIntegrity = inspectAllowlistIntegrity(expectedRetained);
+  const retainedCategories = buildRetainedCategorySummary(expectedRetained);
   if (hasAllowlistIntegrityDrift(allowlistIntegrity)) {
     return {
       retained: [...retained].sort((a, b) => a.localeCompare(b)),
       expectedRetained: [...expectedRetained],
+      retainedCategories,
       allowlistIntegrity,
       drift: {
         unexpected: [],
@@ -179,6 +290,7 @@ export function buildInventoryReport(
   return {
     retained: [...retained].sort((a, b) => a.localeCompare(b)),
     expectedRetained: [...expectedRetained],
+    retainedCategories,
     allowlistIntegrity,
     drift: {
       unexpected: retained.filter((file) => !expectedSet.has(file)).sort((a, b) => a.localeCompare(b)),
@@ -201,10 +313,19 @@ export function renderReport(report: InventoryReport): string {
   lines.push("");
   lines.push(`retained_non_lean_shell: ${String(report.retained.length)}`);
   lines.push(`expected_retained: ${String(report.expectedRetained.length)}`);
+  lines.push(`retained_categories: ${String(report.retainedCategories.length)}`);
   lines.push(`allowlist_duplicates: ${String(report.allowlistIntegrity.duplicateEntries.length)}`);
   lines.push(`allowlist_order_violations: ${String(report.allowlistIntegrity.orderViolations.length)}`);
+  lines.push(`allowlist_uncategorized: ${String(report.allowlistIntegrity.uncategorizedEntries.length)}`);
+  lines.push(`allowlist_stale_category_entries: ${String(report.allowlistIntegrity.staleCategoryEntries.length)}`);
   lines.push(`unexpected: ${String(report.drift.unexpected.length)}`);
   lines.push(`missing_retained: ${String(report.drift.missingRetained.length)}`);
+  lines.push("");
+  lines.push("## Retained shell categories");
+  lines.push("");
+  for (const summary of report.retainedCategories) {
+    lines.push(`- ${summary.category}: ${String(summary.files.length)}`);
+  }
   lines.push("");
   if (!hasDrift(report)) {
     lines.push(`OK: retained non-Lean shell surface matches ${RETAINED_SHELL_SCOPE}.`);
@@ -213,7 +334,9 @@ export function renderReport(report: InventoryReport): string {
   if (hasAllowlistIntegrityDrift(report.allowlistIntegrity)) {
     lines.push("## Retained shell allowlist integrity errors");
     lines.push("");
-    lines.push("The retained shell allowlist must be unique and sorted before repo shell drift is classified.");
+    lines.push(
+      "The retained shell allowlist must be unique, sorted, fully categorized, and free of stale category metadata before repo shell drift is classified.",
+    );
     lines.push("");
     if (report.allowlistIntegrity.duplicateEntries.length > 0) {
       lines.push("### Duplicate entries");
@@ -227,6 +350,18 @@ export function renderReport(report: InventoryReport): string {
       for (const violation of report.allowlistIntegrity.orderViolations) {
         lines.push(`- index ${String(violation.index)}: ${violation.previous} > ${violation.current}`);
       }
+      lines.push("");
+    }
+    if (report.allowlistIntegrity.uncategorizedEntries.length > 0) {
+      lines.push("### Missing category entries");
+      lines.push("");
+      for (const file of report.allowlistIntegrity.uncategorizedEntries) lines.push(`- ${file}`);
+      lines.push("");
+    }
+    if (report.allowlistIntegrity.staleCategoryEntries.length > 0) {
+      lines.push("### Stale category entries");
+      lines.push("");
+      for (const file of report.allowlistIntegrity.staleCategoryEntries) lines.push(`- ${file}`);
       lines.push("");
     }
     return `${lines.join("\n")}\n`;
@@ -253,7 +388,7 @@ function usage(): string {
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --enforce",
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --json",
     "",
-    `Checks that non-Lean tracked .sh files match ${RETAINED_SHELL_SCOPE}.`,
+    `Checks that non-Lean tracked shell-family files match ${RETAINED_SHELL_SCOPE}.`,
   ].join("\n");
 }
 

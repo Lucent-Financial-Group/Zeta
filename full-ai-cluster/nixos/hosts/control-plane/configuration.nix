@@ -19,6 +19,32 @@
 
   networking.hostName = "control-plane";
 
+  # B-0850 Phase 3 refactor: enable AI agent systemd services on
+  # control-plane. Operator framing 2026-05-27:
+  #   "we should have three systemd agents and the cluster running on
+  #   bootup"
+  #   "the mutual repair is critical too because of you can see your
+  #   own future self boot script failures"
+  #
+  # The parameterized zeta-ai-agent.nix module supports ≥3 vendor-
+  # diverse personas (otto/alexa/riven/vera/lior); each opt-in
+  # independently. Currently only otto enabled — alexa/riven/vera/
+  # lior enable as B-0850 Phase 3 sub-rows (3a-3d) ship per-vendor
+  # install + login flows for each. Target state at pc-two is ≥3
+  # personas enabled for mutual-repair + self-modification-safety
+  # BFT margin.
+  #
+  # Services deliberately run OUTSIDE k8s as systemd units (not as
+  # k8s pods) so they can repair cluster issues from outside the
+  # failure domain ("control plane outside the control plane"
+  # architectural pattern). Operator can disable any persona via
+  # `systemctl disable zeta-<persona>` per NCI HC-8 revocable consent.
+  zeta.aiAgents.enable.otto = true;
+  zeta.aiAgents.enable.lior = true;     # B-0850.3d SHIPPED (Gemini CLI 2nd vendor)
+  zeta.aiAgents.enable.vera = true;     # B-0850.3c SHIPPED (Codex 3rd vendor — hits ≥3 BFT floor: Anthropic + Google + OpenAI)
+  # zeta.aiAgents.enable.alexa = true;  # B-0850.3a pending (Kiro/Qwen)
+  # zeta.aiAgents.enable.riven = true;  # B-0850.3b pending (Grok)
+
   # Static IP recommended so worker nodes have a stable serverAddr.
   # Per-site override here:
   #   networking.interfaces.eth0.ipv4.addresses = [{
