@@ -43,6 +43,7 @@ The two substrates are SELF-SIMILAR — they describe the same underlying travel
 ## Scope
 
 **Categorical side**: formalize traveler-as-self-propagating-pattern-with-feedback as a categorical structure. Likely shape:
+
 - Compact closed monoidal category (per Coecke/Abramsky categorical-quantum-mechanics precedent)
 - Objects: travelers (substrate-independent — biology / computation / physics / culture instantiations)
 - Morphisms: message-passing operations between travelers
@@ -51,6 +52,7 @@ The two substrates are SELF-SIMILAR — they describe the same underlying travel
 - Functorial preservation: structure-preserving maps across substrate domains (DNA-category, meme-category, agent-category, physics-category, culture-category)
 
 **Clifford side**: per B-0895 substrate-recognition, the Clifford-algebraic incarnation:
+
 - Multivectors as traveler-state
 - Geometric product as message-passing composition
 - Bivectors as commitments-as-entanglements
