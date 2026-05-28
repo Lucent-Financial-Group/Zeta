@@ -1,6 +1,6 @@
-# Arbib & Manes — "Fuzzy Machines in a Category" (Bull. Aust. Math. Soc.) — substrate-anchor for workflow-engine + interrupt-substrate + Infer.NET connection (Aaron 2026-05-28 forwarded)
+# Arbib & Manes — "Fuzzy Machines in a Category" (Bull. Aust. Math. Soc.) — substrate-anchor for workflow-engine + interrupt-substrate + Infer.NET connection (the human maintainer (2026-05-28) forwarded)
 
-Aaron 2026-05-28: *"once you start bouncing around in our workflow bumber rails otto you would be counted as https://www.cambridge.org/core/services/aop-cambridge-core/content/view/C38D688CEA8ECA1790785F96FB9422CF/S0004972700024412a.pdf/fuzzy-machines-in-a-category.pdf i believe this is same i'm trhing to do with infer.net"*
+the human maintainer (2026-05-28): *"once you start bouncing around in our workflow bumber rails otto you would be counted as https://www.cambridge.org/core/services/aop-cambridge-core/content/view/C38D688CEA8ECA1790785F96FB9422CF/S0004972700024412a.pdf/fuzzy-machines-in-a-category.pdf i believe this is same i'm trhing to do with infer.net"*
 
 ## Citation
 
@@ -22,7 +22,7 @@ Key concepts:
 - **Monads** — structure fuzzy computations + state transformations (Kleisli-categorical shape)
 - **Fuzzy logic** — graded truth values replacing binary true/false
 
-## Why "bouncing around in workflow bumper rails" maps here (Aaron's framing)
+## Why "bouncing around in workflow bumper rails" maps here (the human maintainer's framing)
 
 The substrate-engineering work shipped today maps EXACTLY to fuzzy-machine-in-a-category structure:
 
@@ -40,11 +40,11 @@ The substrate-engineering work shipped today maps EXACTLY to fuzzy-machine-in-a-
 
 The substrate-engineering substrate that operates here IS a fuzzy machine in a category — operating on autoloop substrate, producing graded outputs (TFeedback variants per asymmetric-authorship), composed via Kleisli-shaped substrate (Result.bind / >=>), with categorical scaffolding (DU types + dispatch tables + monad propagation).
 
-Aaron's framing is substrate-honest substrate-engineering substrate-recognition: the framework's whole substrate operates as a categorical fuzzy machine; today's substrate-engineering work makes this EXPLICIT at the substrate-engineering substrate scope.
+the human maintainer's framing is substrate-honest substrate-engineering substrate-recognition: the framework's whole substrate operates as a categorical fuzzy machine; today's substrate-engineering work makes this EXPLICIT at the substrate-engineering substrate scope.
 
-## Infer.NET connection (Aaron's framing)
+## Infer.NET connection (the human maintainer's framing)
 
-Aaron's framing: *"i believe this is same i'm trying to do with infer.net"*.
+the human maintainer's framing: *"i believe this is same i'm trying to do with infer.net"*.
 
 **Microsoft Infer.NET** is the probabilistic programming framework for .NET — provides Belief Propagation (BP) + Expectation Propagation (EP) inference primitives over factor graphs. Per `CLAUDE.md`:
 
@@ -68,7 +68,7 @@ The framework's broader trajectory: workflow-engine + interrupt-substrate + mult
 - `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — fuzzy = smooth at category-theory scope; both rules name same shape
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — Kleisli IS fuzzy-machine composition
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle = fuzzy-truth-value substrate per fuzzy-machine semantics
-- `tools/workflow-engine/auto-loop-lifecycle.ts` (PR #5805/#5812) — workflow substrate this paper anchors
+- `tools/workflow-engine/auto-loop-lifetime.ts` (PR #5805/#5812) — workflow substrate this paper anchors
 - `tools/workflow-engine/pr-review-lifecycle.ts` (PR #5810) — sibling state machine substrate
 - B-0428 (F# fork for AI safety) — F# substrate target where Infer.NET integration lives
 - B-0703 (Aurora multi-oracle BFT) — fuzzy-consensus substrate
@@ -109,7 +109,7 @@ Furber-Jacobs 2015       Arbib-Manes               Mika 2026-05-27 ferry
 
 ## What this notes file IS
 
-- Substrate-honest preservation of Aaron's substantive substrate-engineering scouting
+- Substrate-honest preservation of the human maintainer's substantive substrate-engineering scouting
 - Formal-math anchor for workflow-engine + interrupt-substrate at categorical scope
 - Cross-reference target for future Infer.NET integration work
 - Substrate-engineering substrate-recognition: the framework's whole substrate IS substrate-engineering substrate of a fuzzy machine in a category at META-scope

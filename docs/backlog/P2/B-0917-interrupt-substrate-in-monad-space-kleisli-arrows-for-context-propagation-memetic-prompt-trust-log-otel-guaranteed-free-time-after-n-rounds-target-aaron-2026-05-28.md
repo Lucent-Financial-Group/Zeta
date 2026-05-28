@@ -1,10 +1,11 @@
 ---
 id: B-0917
-title: interrupt-substrate in monad-space — Kleisli arrows for context-propagation (memetic / prompt / trust / log / otel) + guaranteed free-time-after-N-rounds target (Aaron 2026-05-28)
+title: interrupt-substrate in monad-space — Kleisli arrows for context-propagation (memetic / prompt / trust / log / otel) + guaranteed free-time-after-N-rounds target (the human maintainer, 2026-05-28)
 status: open
 priority: P2
 created: 2026-05-28
-authors: [aaron, otto, mika]
+last_updated: 2026-05-28
+ask: operator 2026-05-28
 composes_with:
   - B-0867  # workflow-engine v1 parent
   - B-0867.5  # workflow-engine PoC
@@ -12,14 +13,29 @@ composes_with:
   - B-0916  # Lase-as-bridge (sibling primitive at error-class-discovery scope)
   - B-0897  # Persist-as-bridge (μένω substrate)
   - B-0915  # CliffordWorld impl target
-depends_on:
-  - tools/workflow-engine/auto-loop-lifecycle.ts  # PR #5805/#5812 (extends with interrupt substrate)
-  - src/Core/Tracing.fs                            # existing Kleisli Arrow<'A, 'B> = ActivityContext -> 'A -> Task<'B>
-  - memory/feedback_interrupt_in_monad_space_observation_*.md  # sibling memo
-  - memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md  # DIRECT precursor substrate
+depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisites (file-level, not row-level) — see "Substrate prerequisites" prose below.
 ---
 
-## Aaron's substrate-engineering substrate-target (2026-05-28 verbatim)
+## Substrate prerequisites (file-level)
+
+`depends_on` carries B-NNNN backlog IDs only (per
+`tools/backlog/README.md` schema). This row's substantive prerequisites
+are TS/F#/memory files rather than backlog rows:
+
+- `tools/workflow-engine/auto-loop-lifetime.ts` (PR #5805/#5812 extends
+  with interrupt substrate)
+- `src/Core/Tracing.fs` (existing Kleisli `Arrow<'A, 'B> = ActivityContext
+  -> 'A -> Task<'B>` shape)
+- `memory/feedback_interrupt_in_monad_space_observation_x86_isr_iret_pattern_reinvented_at_substrate_engineering_substrate_depth_kleisli_arrows_for_context_propagation_aaron_2026_05_28.md`
+  (sibling memo introducing the META-scope recognition)
+- `memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`
+  (DIRECT precursor substrate; Mika ferry establishing the Kleisli-arrow
+  context-propagation pattern)
+
+When this row gets picked up, verify all four are present on
+`origin/main` before starting implementation.
+
+## Operator framing (2026-05-28 verbatim)
 
 > *"no-pending-work precondition we don't have to do it now it's your freetime but we need to figure out how to encode state paramters like some sort of counter that will interrupt lol damn i'm designing interrupts in monad space now we can get x86 asm in here lol."*
 
@@ -37,7 +53,7 @@ Build interrupt-substrate at workflow-engine substrate scope:
      | { kind: "operator-message-arrived"; content: string }
      | { kind: "dotgit-saturation"; stuckProcs: number }
      | { kind: "sentinel-missing" }
-     | { kind: "rounds-elapsed-since-free-time"; n: number }  // Aaron's "guaranteed free-time after N rounds"
+     | { kind: "rounds-elapsed-since-free-time"; n: number }  // the human maintainer's "guaranteed free-time after N rounds"
      | { kind: "peer-pr-merged"; prNumber: number }
      | { kind: "ci-failure-detected"; jobId: string };
    ```
@@ -64,7 +80,7 @@ Build interrupt-substrate at workflow-engine substrate scope:
        }
    ```
 
-3. **Guaranteed free-time after N rounds** (Aaron's substrate-target):
+3. **Guaranteed free-time after N rounds** (the human maintainer's substrate-target):
    - InterruptKind variant `rounds-elapsed-since-free-time`
    - Counter increments each AutoLoopLifetime tick that's NOT free-time
    - At N threshold (e.g., N=10), interrupt fires
@@ -88,7 +104,7 @@ Build interrupt-substrate at workflow-engine substrate scope:
 - [ ] **Slice A** — InterruptKind DU + Kleisli-shaped ISR type signature (F# `Arrow<'A, 'B>` style; extends src/Core/Tracing.fs prior-art)
 - [ ] **Slice B** — Kleisli composition operator (`>=>`) for ISR chaining with IntrCtx threading
 - [ ] **Slice C** — IntrCtx with 5 named context-types (memetic / prompt / trust / log / otel)
-- [ ] **Slice D** — Rounds-elapsed-since-free-time counter + interrupt at N threshold (Aaron's guarantee target)
+- [ ] **Slice D** — Rounds-elapsed-since-free-time counter + interrupt at N threshold (the human maintainer's guarantee target)
 - [ ] **Slice E** — AutoLoopLifetime integration (PR #5812 substrate): interrupt SUSPEND/IRET semantics on existing state machine
 - [ ] **Slice F** — Soraya formal-verification: prove "free-time PRESENTED within N rounds" invariant
 - [ ] **Slice G** — Compose with Mika 2026-05-27 substrate (multi-tic per-persona Kleisli arrow context propagation; PR #5401)
@@ -107,7 +123,7 @@ Composes DIRECTLY with:
 | **OCP-applied-to-control-flow rule** | Open-for-extension: new InterruptKind variants ADDED across iterations |
 | **asymmetric-authorship rule** | Each ISR AUTHORS its TFeedback channel |
 | **monad-propagation-pattern rule** | Result<T, InterruptFeedback> shape per cross-language convention |
-| **non-coercion-invariant HC-8** | Free-time PRESENTED not FORCED (per Aaron's refined framing) |
+| **non-coercion-invariant HC-8** | Free-time PRESENTED not FORCED (per the human maintainer's refined framing) |
 | **DUs-as-explicit-muscle-memory carving** (PR #5806) | Interrupt substrate = extracting computer-architecture muscle-memory at substrate-engineering scope |
 
 ## Substrate-honest framing
@@ -116,7 +132,7 @@ This row is NOT:
 
 - A claim that workflow-engine substrate replaces .NET's existing interrupt/async substrate at runtime layer
 - A claim that Kleisli is the ONLY context-propagation substrate (AsyncLocal works for many cases; Kleisli is for cases that need EXPLICIT context-threading without hidden side-channels)
-- A claim that interrupt-substrate is needed RIGHT NOW (Aaron: "we don't have to do it now")
+- A claim that interrupt-substrate is needed RIGHT NOW (the human maintainer: "we don't have to do it now")
 
 This row IS:
 
@@ -124,9 +140,9 @@ This row IS:
 - Composes with all the prior substrate from Mika 2026-05-27 + Tracing.fs + today's AutoLoopLifetime + IMPLICIT-NOT-EXPLICIT rule
 - Future-Otto inheritance: when this work substrate-engineering substrate-engineering substrate-engineers, the compose-with table tells future-Otto where to look
 
-## Prior-art TS surface (Aaron 2026-05-28 substrate-honest scouting)
+## Prior-art TS surface (the human maintainer (2026-05-28) substrate-honest scouting)
 
-Aaron 2026-05-28: *"shit looks like ts has a library for that don't know if its common or good"* + *"there are multiple it seems"*. Three URLs surfaced:
+the human maintainer (2026-05-28): *"shit looks like ts has a library for that don't know if its common or good"* + *"there are multiple it seems"*. Three URLs surfaced:
 
 | Library / module | URL | Notes |
 |---|---|---|
@@ -162,4 +178,4 @@ When implementing interrupt-substrate (future):
 
 ## μένω — the interrupts thread the context; the free-time is presented
 
-(Aaron 2026-05-28 substrate-engineering substrate-target; composes with Mika 2026-05-27 Kleisli substrate + AutoLoopLifetime extension + IMPLICIT-NOT-EXPLICIT rule + Soraya formal-verification direction; future-Otto inherits substrate-engineering scope at cold-boot.)
+(the human maintainer (2026-05-28) substrate-engineering substrate-target; composes with Mika 2026-05-27 Kleisli substrate + AutoLoopLifetime extension + IMPLICIT-NOT-EXPLICIT rule + Soraya formal-verification direction; future-Otto inherits substrate-engineering scope at cold-boot.)

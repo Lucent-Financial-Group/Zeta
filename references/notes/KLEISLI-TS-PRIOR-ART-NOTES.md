@@ -1,8 +1,8 @@
-# Kleisli prior-art in TypeScript — candidate libraries (Aaron 2026-05-28 scouting)
+# Kleisli prior-art in TypeScript — candidate libraries (the human maintainer (2026-05-28) scouting)
 
 Substrate-honest scouting for B-0917 (interrupt-substrate in monad space) when TS-side impl arrives. Not a selection; not an endorsement; not maintenance-state-verified.
 
-## Three candidates Aaron surfaced 2026-05-28
+## Three candidates the human maintainer surfaced 2026-05-28
 
 | Library | URL | Ecosystem | Status (as cited 2026-05-28) |
 |---|---|---|---|
@@ -28,7 +28,7 @@ Before authoring Kleisli substrate in TS scope (e.g., extending `tools/workflow-
 
 ## Mathematical reference (citation, not assertion)
 
-Aaron's snippet from the original message captures the math:
+the human maintainer's snippet from the original message captures the math:
 
 > *"a Kleisli arrow is a function of the form A → M[B], where M represents a Monad (such as Promise, Either, or Task). This construct allows you to seamlessly chain or compose effectful functions together without dealing with nested monads or manually handling underlying context logic."*
 
@@ -56,4 +56,4 @@ Composes with `monad-propagation-pattern-cross-language-substrate-shape.md` cros
 
 ## Substrate-honest framing
 
-Notes file authored 2026-05-28 from Aaron's substantive substrate-honest scouting. Not yet impl-time; not yet WebSearch-verified at current cadence. When impl-time arrives, this file is starting prior-art surface; verify-before-defer the cited URLs + check ecosystem state at that moment.
+Notes file authored 2026-05-28 from the human maintainer's substantive substrate-honest scouting. Not yet impl-time; not yet WebSearch-verified at current cadence. When impl-time arrives, this file is starting prior-art surface; verify-before-defer the cited URLs + check ecosystem state at that moment.

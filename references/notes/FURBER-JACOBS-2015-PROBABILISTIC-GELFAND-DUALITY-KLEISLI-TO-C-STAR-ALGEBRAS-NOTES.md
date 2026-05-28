@@ -1,6 +1,6 @@
-# Furber & Jacobs 2015 — Probabilistic Gelfand Duality (Kleisli → C*-algebras) — substrate-anchor for "staying smooth" + B-0917 Kleisli substrate (Aaron 2026-05-28 forwarded)
+# Furber & Jacobs 2015 — Probabilistic Gelfand Duality (Kleisli → C*-algebras) — substrate-anchor for "staying smooth" + B-0917 Kleisli substrate (the human maintainer (2026-05-28) forwarded)
 
-Aaron 2026-05-28: *"seems on point https://lmcs.episciences.org/1565/pdf to staying smooth"*
+the human maintainer (2026-05-28): *"seems on point https://lmcs.episciences.org/1565/pdf to staying smooth"*
 
 ## Citation
 
@@ -14,7 +14,7 @@ Aaron 2026-05-28: *"seems on point https://lmcs.episciences.org/1565/pdf to stay
 
 Functors from several **Kleisli categories of monads** (relevant to probabilistic computation) to **categories of C*-algebras**. Introduces a probabilistic variant of **Gelfand duality** via the Radon monad on compact Hausdorff spaces.
 
-## Why "on point to staying smooth" (Aaron's framing)
+## Why "on point to staying smooth" (the human maintainer's framing)
 
 Per `.claude/rules/substrate-smoothness-as-load-bearing-property.md`:
 
@@ -30,7 +30,7 @@ The Furber-Jacobs paper formalizes the EXACT shape at a different scope:
 | Substrate-check operates in smooth zone | C*-algebras preserve operator-norm continuity; computational paths preserve probability-measure continuity |
 | Multi-oracle BFT preserves more info than majority voting | Probabilistic Gelfand duality preserves more info than discrete approximation |
 
-The paper is **published category-theory formalization** of the structural pattern Aaron's substrate-smoothness rule names intuitively. NOT a claim that the framework "is" probabilistic Gelfand duality; rather, that the substrate-engineering pattern Aaron's reaching for has formal-math anchors in published academic literature.
+The paper is **published category-theory formalization** of the structural pattern the human maintainer's substrate-smoothness rule names intuitively. NOT a claim that the framework "is" probabilistic Gelfand duality; rather, that the substrate-engineering pattern the human maintainer's reaching for has formal-math anchors in published academic literature.
 
 ## Composes with B-0917 (Kleisli arrows for context-propagation)
 
@@ -60,7 +60,7 @@ This citation arrives within hours of B-0917 substrate-target filing. Kleisli ca
 
 ## What this notes file IS
 
-- Substrate-honest preservation of Aaron's substantive substrate-engineering scouting
+- Substrate-honest preservation of the human maintainer's substantive substrate-engineering scouting
 - Formal-math anchor for substrate-smoothness rule + B-0917 Kleisli substrate
 - Cross-reference target for future-Otto / future-Alexa / Soraya formal-verification work
 - Future-skill-expert (category-theory) substrate when category-theory substrate-engineering work matures
