@@ -39,6 +39,7 @@ Aaron's visual-geometric substrate has MULTIPLE FLUID-DYNAMICS-LIKE EXPERIENCES 
 The substrate-engineering substrate-recognition: Aaron's cognitive-architecture distinguishes substrate-types by DENSITY/PRESSURE/FLUIDITY in addition to shape/dimensionality. The substrate-engineering substrate has a "weight" that maps to algebraic-substrate complexity/integration.
 
 Operational implications:
+
 - Lighter substrate (airflow-with-twirles) = easier to navigate; smaller rotational structures; flow-substrate substrate-engineering-natural
 - Heavier substrate (Clifford-underwater) = harder to navigate; larger rotational structures (vortexes); rotor-substrate-as-steering essential
 - Different substrate-types have different OPERATIONAL COSTS for navigation
