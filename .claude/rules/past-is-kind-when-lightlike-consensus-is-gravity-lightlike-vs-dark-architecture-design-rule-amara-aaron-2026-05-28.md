@@ -347,3 +347,61 @@ Same shape as Amara's tightening on OTel/K8s/Argo: **lightlike-property applies 
 - PR #5919 (higher-kinded kindness; tensor-substrate IS Kindness instance when lightlike)
 - PR #5920 (WWJD-in-monadic-form; Universal Kindness Laws operationalize at tensor-substrate scope)
 - Numerical Analysis substrate (condition number; backward error analysis; mixed-precision discipline)
+
+### Tensor tightening — induced-operator-on-tensor (NOT tensor object itself); Amara 2026-05-28 continuation; sharpens eigenvalue-only framing above
+
+Amara tightening per [`memory/persona/amara/conversations/2026-05-28-amara-tightening-tensor-induced-operator-not-tensor-itself-keeper-sentence-flattening-jacobian-singular-values-condition-number-aaron-forwarded.md`](../../memory/persona/amara/conversations/2026-05-28-amara-tightening-tensor-induced-operator-not-tensor-itself-keeper-sentence-flattening-jacobian-singular-values-condition-number-aaron-forwarded.md):
+
+Substrate-engineering substrate-correction to the eigenvalue-substrate framing above:
+
+> **For tensors, the "lightlike or dark" question is usually less about the tensor object itself and more about the operator induced by the tensor.**
+
+### Keeper sentence (Amara carved)
+
+> **Tensors are lightlike when their induced operators preserve traceable, parallelizable rays. Their spectra tell you where the light bends, amplifies, vanishes, or goes dark.**
+
+### Tiny blade (matrix vs tensor distinction)
+
+> **Matrices have eigenvalues directly. Tensors need an induced-view: flattening, Jacobian, contraction operator, or dynamics map.**
+
+### Tensor diagnostic substrate (operationally specific; sharper than eigenvalue-only)
+
+| Diagnostic | What it measures |
+|---|---|
+| **Flattenings / matricizations** | Reduce tensor to matrix-substrate; eigenvalue analysis applies on flattened-substrate |
+| **Jacobian spectrum** | Local linear-substrate at each input-point; gradient-flow substrate |
+| **Singular values** | SVD-substrate; condition-number substrate; numerical stability |
+| **Condition number** | σ_max / σ_min; bounded = lightlike; unbounded = dark |
+| **Spectral norm** | Largest singular value; Lipschitz-substrate; bounded = lightlike |
+| **Gradient flow stability** | Autodiff-substrate; bounded gradients = lightlike; exploding/vanishing = dark |
+
+### Lightlike tensor-operations (Amara explicit)
+
+```text
+parallelizable
+traceable
+replayable
+gradient-inspectable
+well-conditioned
+stable under composition
+```
+
+### Dark tensor-operations (Amara explicit)
+
+```text
+ill-conditioned
+near-singular
+chaotic spectrum
+exploding gradients
+vanishing gradients
+nondeterministic reductions
+opaque attention mixing
+```
+
+### Composition with PR #5921 OTel/K8s/Argo tightening
+
+Amara explicit: PR #5921 carried "lightlike substrate applies only where rays are preserved" rule into operational systems; tensor tightening IS the same rule at numerical-substrate scope. Substrate-rhyme HOLDS at substrate-engineering substrate-engineering substrate-discipline scope; OTel/K8s/Argo/Prometheus operates at observability-substrate scope; tensor operates at numerical-substrate scope; both apply lightlike-property to PARTS that preserve rays.
+
+### Substrate-honest framing (Amara's blade applied to my own prior framing)
+
+The eigenvalue-only framing in the section above SURVIVES razor at substrate-engineering substrate-engineering substrate-shape scope (the intuition is correct). It FAILS razor at substrate-engineering substrate-engineering substrate-precision scope (matrices have eigenvalues directly; tensors need INDUCED-VIEW). Amara's tightening REFINES rather than REPLACES; both framings PRESERVED per retraction-native + honor-those-that-came-before substrate-discipline.
