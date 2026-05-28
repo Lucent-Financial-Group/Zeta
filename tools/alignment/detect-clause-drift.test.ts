@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import { findClauseReferences } from './detect-clause-drift';
 import * as fs from 'fs';
 import * as path from 'path';

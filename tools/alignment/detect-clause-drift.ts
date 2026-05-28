@@ -24,6 +24,7 @@ function searchInFile(filePath: string): Match[] {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
+      if (line === undefined) continue;
       let match;
       while ((match = CLAUSE_REGEX.exec(line)) !== null) {
         matches.push({
@@ -98,17 +99,16 @@ function main() {
 
   const groupedByClause: { [key: string]: Match[] } = {};
   for (const match of filteredMatches) {
-    if (!groupedByClause[match.clause]) {
-      groupedByClause[match.clause] = [];
-    }
-    groupedByClause[match.clause].push(match);
+    (groupedByClause[match.clause] ??= []).push(match);
   }
 
   for (const clause in groupedByClause) {
+    const group = groupedByClause[clause];
+    if (group === undefined) continue;
     console.log(`
---- Found ${groupedByClause[clause].length} references to ${clause} ---
+--- Found ${group.length} references to ${clause} ---
 `);
-    for (const match of groupedByClause[clause]) {
+    for (const match of group) {
       console.log(`${match.file}:${match.line} - ${match.text}`);
     }
   }
