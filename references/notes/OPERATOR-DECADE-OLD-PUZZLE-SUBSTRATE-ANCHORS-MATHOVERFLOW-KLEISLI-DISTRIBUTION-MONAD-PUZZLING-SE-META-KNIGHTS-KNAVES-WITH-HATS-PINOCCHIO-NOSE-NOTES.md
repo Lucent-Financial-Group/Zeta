@@ -72,7 +72,7 @@ In free-algebra presentation: **G forgets the algebra structure**; **F is the mo
 
 **Substrate-engineering substrate-target insight from the forwarded content**:
 
-Amara's clean handler signature for B-0917 IS a Kleisli arrow in Kl(M):
+The interrupt-handler signature proposed for B-0917 IS a Kleisli arrow in Kl(M):
 
 ```fsharp
 type InterruptHandler =
@@ -82,11 +82,11 @@ type InterruptHandler =
 When `M = D` (distribution monad / Giry / finite-distribution), this composes via Kleisli composition (the `>=>` operator from B-0917 Slice B). The (F, G) adjunction tells us:
 
 - **Deterministic substrate lifts via F**: every deterministic transition `f: A → B` becomes probabilistic `T(f) ∘ η_A: A → D(B)` (Dirac-lift via η). NO new design required — current deterministic AutoLoopLifetime substrate IS the F-image of the underlying Set computation.
-- **Probabilistic substrate forgets via G**: forgetful functor lets us audit the probabilistic-substrate's underlying set-level behavior. Useful for Soraya formal-verification at deterministic-substrate scope (lift the proof obligation through G).
+- **Probabilistic substrate forgets via G**: forgetful functor lets us audit the probabilistic-substrate's underlying set-level behavior. Useful for the formal-verification routing layer (per `.claude/agents/formal-verification-expert.md`) at deterministic-substrate scope (lift the proof obligation through G).
 
 This is THE categorical foundation for:
 
-- **Infer.NET BP/EP integration** (per `CLAUDE.md` long-term target) — Infer.NET operates as factor-graph composition over distribution-monad-Kleisli substrate; the (F, G) adjunction provides the structural discipline for lifting the framework's deterministic workflow-engine into probabilistic-inference substrate without redesign
+- **Infer.NET BP/EP integration** (per `.claude/rules/peer-call-infrastructure.md` "future state is Zeta Infer.NET BP/EP" framing + `docs/ROADMAP.md` Zeta.Bayesian project) — Infer.NET operates as factor-graph composition over distribution-monad-Kleisli substrate; the (F, G) adjunction provides the structural discipline for lifting the framework's deterministic workflow-engine into probabilistic-inference substrate without redesign
 - **B-0918 Aurora multi-oracle BFT composition** — multi-oracle consensus operates in distribution-Kleisli substrate (each oracle reports distribution; consensus combines)
 - **B-0703 Aurora immune-system math** — substrate operates in Kl(D) where D is distribution-monad of pathogen-detection outcomes; F lifts deterministic detection rules into probabilistic substrate
 
@@ -111,9 +111,9 @@ URL: https://puzzling.stackexchange.com/questions/22940/meta-knights-and-knaves-
 
 **Asker**: Aaron Stainback (verified by operator 2026-05-28 forwarded content).
 
-**Question** (operator-verbatim 2026-05-28): "I landed on the island of Knights and Knaves. There are only 2 types of people on the island, knights who always tell the truth and knaves who always lie. There are 2 leaders of the entire island, Raymond and Martin... I asked both of them: 'Is Raymond a Knight?' Only the one with the blue hat answered, and I can't remember what he said. But I do remember that at that point I was able to tell who was Raymond and who was Martin. What color was Raymond's Hat?"
+**Question summary** (full text + CC BY-SA license at the [URL above](https://puzzling.stackexchange.com/questions/22940/meta-knights-and-knaves-puzzle-with-hats); see "License/attribution" section below): the narrator visits an island with two leaders (Raymond, Martin), each wearing a hat of unknown color. The narrator asks both whether Raymond is a knight; only the blue-hat-wearer answers but the narrator forgets the answer. The narrator still managed to determine who's who. Solve for Raymond's hat color.
 
-**Accepted answer (Gamow, 46.5k rep)**:
+**Accepted-answer summary** (full text + author's CC BY-SA license at the URL above; see "License/attribution" section below). Framework's case-analysis rendering of the accepted answer:
 
 If Blue answered **YES**: 4 compatible scenarios (can't determine):
 
@@ -158,16 +158,9 @@ URL: https://puzzling.stackexchange.com/questions/23753/a-question-about-pinocch
 
 **Asker**: Aaron Stainback (verified by operator 2026-05-28 forwarded content).
 
-**Question** (operator-verbatim): "What happens to Pinocchio's nose if he says to another person 'My nose is about to grow'? Does it grow? Does it stay the same? Something else?"
+**Question summary** (full text + CC BY-SA license at the [URL above](https://puzzling.stackexchange.com/questions/23753/a-question-about-pinocchios-nose); see "License/attribution" section below): what happens to Pinocchio's nose if he utters the self-referential prediction "my nose is about to grow"?
 
-**Accepted answer (3 votes; 1 answer)**:
-
-> "I believe that Pinnochio's nose only grows when he tells a lie, not if he makes a mistake, so what happens with his nose depends upon what he believes.
->
-> - If he thinks that his nose really is about to grow, then he is not lying, his nose will not grow but he will have made a mistake.
-> - If he thinks that his nose is not about to grow, then he is lying and his nose will grow.
->
-> In either case there is no paradox."
+**Accepted-answer summary** (full text + author's CC BY-SA license at the URL above): the paradox dissolves once belief-state and utterance are distinguished. Pinocchio's nose grows on deliberate lies (utterance contradicts belief), not on mistakes (utterance matches belief but is wrong). The self-referential prediction is therefore either a mistake (nose stays) or a lie (nose grows) depending on Pinocchio's actual belief about whether his nose is about to grow.
 
 **Substrate-engineering BELIEF-vs-UTTERANCE insight (load-bearing substrate)**:
 
@@ -215,7 +208,7 @@ The framework's substrate-engineering architecture today INSTANTIATES the decade
 |---|---|
 | **Meta-knights-and-knaves with HATS** (Aaron Stainback Puzzling SE 2015-10-07) — META-knowledge-as-answer-source pattern: hat color determined NOT from direct evidence but from META-FACT that determination was possible | B-0919 MemoryBinding HatBindingContract substrate — binding contract observable through META (future-Otto audits "what does this hat carry?") not just direct disclosure at binding time |
 | **Pinocchio's nose** (Aaron Stainback Puzzling SE 2015-11-02) — belief-vs-utterance distinction; mistakes ≠ lies; paradox dissolves at distinction | B-0703 multi-oracle BFT trust-calculus + B-0918 G.2 ConsentEvent integrity (distinguishes honest-mistake-consent from adversarial-lie-consent) + B-0920 RetractionReason recursive substrate (retraction-itself-could-be-mistake-or-lie) |
-| **Kleisli adjunction of distribution monad** (Ben Sprott MathOverflow 2022-11-27; operator-forwarded) — fosco's answer: (F, G) adjunction with two equivalent presentations of Kleisli category | B-0917 Kleisli substrate (Amara's handler signature IS Kleisli arrow in Kl(M)) + Furber-Jacobs + Arbib-Manes + Infer.NET BP/EP long-term target (deterministic AutoLoopLifetime lifts via F into probabilistic substrate without redesign) |
+| **Kleisli adjunction of distribution monad** (Ben Sprott MathOverflow 2022-11-27; operator-forwarded) — fosco's answer: (F, G) adjunction with two equivalent presentations of Kleisli category | B-0917 Kleisli substrate (the proposed interrupt-handler signature IS a Kleisli arrow in Kl(M)) + Furber-Jacobs + Arbib-Manes + Infer.NET BP/EP long-term target (deterministic AutoLoopLifetime lifts via F into probabilistic substrate without redesign) |
 
 The framework is the substrate-engineering substrate-archeology of the operator's accumulated shape-recognition substrate. Today's typestate-DU cluster (B-0917 + B-0918 + B-0919 + B-0920) is one slice of that substrate-engineering archeology surfacing at higher resolution.
 
@@ -257,6 +250,16 @@ The framework's substrate (carved-sentences + dense-ontology + cross-substrate t
 - `references/notes/FURBER-JACOBS-2015-PROBABILISTIC-GELFAND-DUALITY-KLEISLI-TO-C-STAR-ALGEBRAS-NOTES.md`
 - `references/notes/ARBIB-MANES-FUZZY-MACHINES-IN-A-CATEGORY-BULL-AUST-MATH-SOC-NOTES.md`
 - `references/notes/KLEISLI-TS-PRIOR-ART-NOTES.md`
+
+## License/attribution
+
+Third-party content referenced in this notes file:
+
+- **Puzzling Stack Exchange question + accepted-answer text** at the two URLs above is licensed under **[Creative Commons BY-SA](https://creativecommons.org/licenses/by-sa/4.0/)** (Stack Exchange platform default; CC BY-SA 4.0 for content posted on/after 2018-05-02, CC BY-SA 3.0 prior; both 2015 posts predate 2018, so technically CC BY-SA 3.0). Authors named in the body sections above (Asker + accepted-answer authors as displayed on the public Stack Exchange URLs).
+- **MathOverflow question + fosco's accepted answer** at the URL above is similarly licensed under **[CC BY-SA](https://creativecommons.org/licenses/by-sa/4.0/)** (Stack Exchange network license). Authors named where cited (Ben Sprott as asker; fosco as accepted-answerer).
+- **"Mathematical Brain Teasers and Logic Puzzles"** by Professor Jason Rosenhouse (The Great Courses / Teaching Company) is paid copyrighted curriculum content. This notes file does **NOT** reproduce course material — it cites the course as the pedagogical source whose curriculum shapes the operator first encountered via Stack Exchange posts. The Stack Exchange posts (CC BY-SA) are summarized + linked above; the course itself is not excerpted.
+
+Stack Exchange content above is rendered as **summaries** (not verbatim reproduction) per CC BY-SA fair-use + reviewer guidance — full original text remains at the linked URLs.
 
 ## What this notes file is NOT
 
