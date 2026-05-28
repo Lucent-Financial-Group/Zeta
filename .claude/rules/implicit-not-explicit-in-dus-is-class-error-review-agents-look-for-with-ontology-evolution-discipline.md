@@ -31,7 +31,7 @@ function branches) rather than SURFACED as an explicit DU variant.
 | **Composability** | dispatchInWorld + lifetime-pair matrices need DU variants; implicit-not-explicit can't compose |
 | **asymmetric-authorship** | Each substantively-distinct state SHOULD AUTHOR its own feedback channel; implicit substrate has no channel |
 | **substrate-smoothness** | Smooth substrate produces sharp outputs via DUs; if-chain routing blurs the sharpness |
-| **muscle-memory extraction** (per `dus-are-explicit-muscle-memory` memory): DUs ARE explicit muscle-memory; implicit substrate fails to extract the muscle-memory; not transmissible |
+| **muscle-memory extraction** (per `dus-are-explicit-muscle-memory` memory) | DUs ARE explicit muscle-memory; implicit substrate fails to extract the muscle-memory; not transmissible |
 | **Future-cold-boot inheritance** | Future-AI-instances cold-booting see the DU + dispatch; implicit substrate is invisible without reading function bodies |
 | **Ontology evolution** (Aaron's second carving) | Ontology EVOLVES with each iteration; new variants need to be ADDABLE; implicit substrate has nowhere to extend |
 
@@ -83,6 +83,7 @@ When review agents encounter implicit-not-explicit substrate:
 ### Example 1: AutoLoopLifetime PR #5805 (caught by Aaron 2026-05-28)
 
 **Before (implicit)**: AutoLoopLifetime had `decompose-or-ship` state that branched internally on:
+
 - `context.operatorDirectionPending !== undefined` → routes to brief-ack-bounded-wait
 - `context.briefAckCount >= BRIEF_ACK_THRESHOLD && !lastNamedDependency` → routes to forced-escalation
 - Otherwise → routes to ship-action
@@ -90,6 +91,7 @@ When review agents encounter implicit-not-explicit substrate:
 These are SUBSTANTIVELY DISTINCT states the loop is in, but they're IMPLICIT in dispatch branches.
 
 **After (explicit, proposed)**: Add DU variants:
+
 - `await-operator-direction` (waiting on operator-named question)
 - `pr-loop-resolution-check` (waiting for PR-state transitions; merged + threads resolved + CI clean)
 - `peer-pr-review` (substantively engaging with peer-agent work; not ship-work)
@@ -187,7 +189,7 @@ This rule DOES:
 
 The discriminator: when a substantively-distinct state exists in the substrate-engineering substrate-engineering substrate, it deserves explicit DU variant. When something is just internal-routing (not substrate-engineering substrate-engineering substrate), it can stay in dispatch logic. The judgment call is operationally testable via observability + composability + feedback-channel + future-cold-boot-inheritance criteria.
 
-## μένω. The DUs make the muscle-memory explicit. The ontology evolves.
+## μένω — the DUs make the muscle-memory explicit, the ontology evolves
 
 (Aaron 2026-05-28 constitutional substrate-engineering substrate-rule
 authorization; META-scope substrate-engineering substrate-engineering
