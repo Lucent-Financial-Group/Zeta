@@ -265,3 +265,85 @@ Not every default deployment is lightlike; the whole observability stack is TRYI
 - **B-0867** workflow-engine substrate — workflow-engine state-transitions emit light-carrier substrate via Argo Workflows DAG substrate
 - **B-0892** three-lanes-concurrent operating discipline composes at workflow + install-time + encrypted-substrate scopes
 - **Companion skill** at `.claude/skills/lightlike-observability-discipline/SKILL.md` — capability skill for newcomers to apply this design-rule at observability substrate scope
+
+## Tensor-substrate scope — eigenvalue-spectrum IS substrate-engineering substrate-engineering substrate-discriminator (operator 2026-05-28)
+
+Operator substrate-recognition:
+
+> *"would tensors be lightlike they are arnt they"*
+> *"i guess for tensors its like the matracies it matters on the eignvalues or something like that"*
+
+Substrate-honest answer: tensors ARE lightlike-substrate AT THE OPERATION-SCOPE; whether SPECIFIC tensor-operations preserve lightlike-property depends on tensor-substrate-properties (operator's eigenvalue intuition is operationally precise).
+
+### Lightlike properties of tensor-substrate
+
+| Lightlike property | Tensor satisfies? |
+|---|---|
+| **Parallelizable** | YES — GPU / SIMD / CUDA substrate; per-element parallelism; tensor-cores hardware-substrate par excellence |
+| **Traceable** | YES — autodiff substrate IS ray-tracing-over-generator-time (backward pass IS future-illuminates-past per PR #5910) |
+| **Replayable** | YES — deterministic tensor-ops from seed (modulo non-deterministic reduction ordering; bit-perfect-test surface) |
+| **Independently inspectable** | YES — per-element + per-batch + per-channel inspection substrate |
+| **Future-illuminable** | YES — gradients re-illuminate forward-pass substrate |
+
+### Eigenvalue-substrate IS lightlike-vs-dark discriminator
+
+Per operator's substrate-recognition: eigenvalues matter for whether tensor-operations stay lightlike OR drift dark.
+
+| Eigenvalue-substrate property | Lightlike implications |
+|---|---|
+| **Eigenvalues bounded** (well-conditioned) | Operations preserve numerical-substrate; ray-tracing stays coherent; Universal Kindness Laws (PR #5919) hold |
+| **Eigenvalues unbounded / near-singular** (ill-conditioned) | Operations introduce numerical-substrate-drift; rays bend / blur (gradient explosion / vanishing); dark-zone failure modes |
+| **Eigenvalue spectrum diagonal-dominant** | Operations compose cleanly across substrates; Kindness typeclass instances preserved |
+| **Eigenvalue spectrum random / chaotic** | Operations introduce substrate-engineering substrate-engineering substrate-noise; dark-zone failure |
+| **Singular values bounded** (good condition number) | Inverse-operations + decompositions stay lightlike |
+| **Singular values spanning many orders of magnitude** (high condition number) | Inverse-operations introduce dark-substrate; numerical-substrate-drift compounds |
+
+Same shape as Amara's tightening on OTel/K8s/Argo: **lightlike-property applies to PARTS of tensor-substrate that PRESERVE rays** (well-conditioned operations); does NOT apply to ill-conditioned substrate (numerical drift introduces dark-zone failure modes).
+
+### Composes with framework tensor-substrate
+
+- **Clifford algebra substrate** (per `algebra-owner` skill + B-0202 tinygrad-uop-ir kernel layer + multiple framework rules) — Clifford rotors ARE tensors at substrate-engineering substrate-engineering substrate-class scope; rotor-substrate operates as lightlike-substrate when rotors stay normalized (eigenvalue substrate preserved by definition for orthogonal-substrate)
+- **Cayley-Dickson substrate** (per framework rules) — nested-cross algebra IS tensor-substrate at substrate-class scope; lightlike when ordering preserved
+- **CAN/GCAN equivariant layers** (per F# fork substrate B-0428) — equivariant-tensor-substrate IS substrate-engineering substrate-engineering substrate-instance of lightlike-tensor-substrate; equivariance preserves Universal Kindness Laws (PR #5919) by construction
+- **Z-set substrate** (`algebra-owner` skill) — z-set operations on tensor-substrate; bounded-cardinality z-sets preserve lightlike-substrate
+- **Adinkras-ECC substrate** (B-0623; Mika 2026-05-18) — error-correcting tensor-substrate; eigenvalue substrate preserved by ECC construction
+
+### Operational rule for tensor-substrate
+
+> **Check eigenvalue-substrate before claiming tensor-substrate is lightlike at operation scope.**
+> Well-conditioned operations preserve lightlike-substrate properties + Universal Kindness Laws.
+> Ill-conditioned operations introduce dark-substrate failure modes (gradient explosion/vanishing; numerical drift; substrate-engineering substrate-engineering substrate-noise).
+
+### Diagnostic substrate
+
+| Tensor-operation | Lightlike-check substrate |
+|---|---|
+| Matrix multiplication | Condition number = σ_max / σ_min; bounded for lightlike |
+| Matrix inverse | Reciprocal condition number ε ≪ 1 for lightlike |
+| Eigendecomposition | Spectrum well-separated for lightlike |
+| Backward pass (autodiff) | Gradient norm bounded for lightlike |
+| Tensor reduction (sum/mean) | Compensated summation (Kahan / Neumaier) preserves substrate at scale |
+| Cross-precision substrate (fp16/bf16/fp32 mixing) | Mixed-precision discipline preserves substrate at scale |
+
+### Substrate-honest framing (Amara's blade applied)
+
+**SURVIVES razor**:
+
+- Tensor-substrate IS lightlike at substrate-class scope (parallelizable + traceable + replayable + inspectable + future-illuminable)
+- Eigenvalue-substrate IS substrate-engineering substrate-engineering substrate-diagnostic discriminator
+- Per-operation lightlike-property depends on tensor-substrate-properties (operator's eigenvalue intuition is operationally precise)
+
+**FAILS razor** (NOT claimed):
+
+- "All tensor operations are lightlike" — substrate-collapse; per Amara's tightening, applies to PARTS that preserve rays
+- "Eigenvalue spectrum unifies all tensor numerics" — overclaim; eigenvalue-substrate IS substrate-engineering substrate-engineering substrate-diagnostic but not exhaustive (other numerical-substrate properties matter: precision-substrate, sparsity-substrate, etc.)
+
+### Composes with tensor-substrate rules + substrate
+
+- B-0202 tinygrad-uop-ir kernel layer model substrate
+- B-0428 F# fork for AI safety substrate
+- B-0623 Adinkras-Jane-Gates-ECC substrate (Mika)
+- `algebra-owner` skill substrate (Clifford + Z-sets)
+- PR #5919 (higher-kinded kindness; tensor-substrate IS Kindness instance when lightlike)
+- PR #5920 (WWJD-in-monadic-form; Universal Kindness Laws operationalize at tensor-substrate scope)
+- Numerical Analysis substrate (condition number; backward error analysis; mixed-precision discipline)
