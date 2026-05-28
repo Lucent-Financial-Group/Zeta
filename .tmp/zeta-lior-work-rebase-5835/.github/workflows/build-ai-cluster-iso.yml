@@ -1,0 +1,417 @@
+# .github/workflows/build-ai-cluster-iso.yml
+#
+# Builds the AI-cluster installer ISO from full-ai-cluster/flake.nix's
+# `installer-iso` package output. Sibling to build-installer-iso.yml
+# (which targets the root flake's `infra/nixos/hosts/installer/`);
+# this one targets the canonical AI-cluster substrate at
+# `full-ai-cluster/usb-nixos-installer/`.
+#
+# Why two parallel workflows: the repo currently carries two installer
+# substrates — `infra/` (older, root flake) and `full-ai-cluster/`
+# (newer, dedicated AI-cluster bootstrap, with disko + hwloc +
+# zeta-install helper baked in). Consolidating them into a single
+# canonical path is a separate follow-up; this workflow makes the
+# AI-cluster ISO downloadable from CI in the meantime.
+#
+# Triggers on PRs touching any of:
+#   - `full-ai-cluster/flake.nix`
+#   - `full-ai-cluster/flake.lock`
+#   - `full-ai-cluster/usb-nixos-installer/**`
+#   - `full-ai-cluster/nixos/modules/disko-shapes/**`
+#     (because the installer references the disko shape at build time)
+#   - this workflow file
+# Also on push to main + workflow_dispatch.
+#
+# Discipline mirrors build-installer-iso.yml:
+#   - Runner pinned to ubuntu-24.04 (not -latest)
+#   - Third-party actions SHA-pinned with trailing # vX.Y.Z comments
+#   - permissions: contents: read at workflow level
+#   - Concurrency: workflow-scoped, cancel-in-progress only for PRs
+#   - No github.event.* values interpolated into run: lines
+
+name: build-ai-cluster-iso
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - 'full-ai-cluster/flake.nix'
+      - 'full-ai-cluster/flake.lock'
+      - 'full-ai-cluster/usb-nixos-installer/**'
+      # Broadened 2026-05-26: was nixos/modules/disko-shapes/** only;
+      # empirically missed rebuilds when iter-5.2 (#5103) + iter-5.2.2
+      # (#5113) added new NixOS modules (injected-hostname.nix +
+      # login-banner.nix). The maintainer 2026-05-26 downloaded an
+      # older CI ISO that didn't have iter-5.2 substrate because the
+      # filter missed the module changes. Broaden to all nixos/** +
+      # tools/** under full-ai-cluster + the source-substrate audit tool.
+      - 'full-ai-cluster/nixos/**'
+      - 'full-ai-cluster/tools/**'
+      - 'tools/ci/audit-installer-substrate.ts'
+      - 'tools/ci/audit-installer-iso-content.ts'
+      - 'tools/ci/qemu-boot-test.ts'
+      - 'tools/ci/qemu-full-install-test.ts'
+      - 'tools/ci/test-iter-54-install-flow.test.ts'
+      - '.github/workflows/build-ai-cluster-iso.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'full-ai-cluster/flake.nix'
+      - 'full-ai-cluster/flake.lock'
+      - 'full-ai-cluster/usb-nixos-installer/**'
+      - 'full-ai-cluster/nixos/**'
+      - 'full-ai-cluster/tools/**'
+      - 'tools/ci/audit-installer-substrate.ts'
+      - 'tools/ci/audit-installer-iso-content.ts'
+      - 'tools/ci/qemu-boot-test.ts'
+      - 'tools/ci/qemu-full-install-test.ts'
+      - 'tools/ci/test-iter-54-install-flow.test.ts'
+      - '.github/workflows/build-ai-cluster-iso.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # id-token: write moved to jobs.build.permissions per Copilot P1 finding on
+  # PR #5417 — matches the repo pattern (.github/workflows/scorecard.yml
+  # elevates id-token at job scope only, minimising blast radius if future
+  # jobs added to this workflow).
+
+concurrency:
+  group: build-ai-cluster-iso-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: build-iso
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      # B-0853.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived
+      # cert from the GitHub-issued OIDC token; Rekor transparency log records
+      # the signature. No private key material is handled in this workflow.
+      #
+      # Real safety properties (tightened per Copilot P1 review on PR #5417):
+      #   - Short-lived cert (Fulcio mints 10-min cert tied to this run)
+      #   - Identity bound to workflow path + ref (verifier pins via
+      #     --certificate-identity matching this file's path + ref)
+      #   - Steps pinned to commit SHAs (cosign-installer at vetted release)
+      # NOT a hard guarantee: any step in THIS job that can request the OIDC
+      # token could in principle transmit it off-runner + use it to mint a
+      # Fulcio cert + sign arbitrary blobs as THIS workflow's identity. The
+      # mitigation is pinned + audited steps + job-scope id-token (not
+      # workflow-wide; this block).
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      # Preflight: source-substrate audit BEFORE the ~15-min Nix build.
+      # Catches the class of bug the maintainer 2026-05-26 surfaced
+      # (dropped iter-N modules silently producing stale ISO). Runs
+      # in ~1s; fails fast if the substrate is incomplete.
+      - name: Install Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Audit installer substrate (source-level)
+        run: bun tools/ci/audit-installer-substrate.ts
+
+      # Layer 2a (structural-behavioral) — asserts logical relationships
+      # between iter-5.4 substrate elements (gh auth setup-git is INSIDE
+      # the auth-success branch; SSH_KEY_ERR_FILE is wired AS stderr to
+      # gh ssh-key list; iter-5.4.1 is gated on GH_AUTH_OK=1; etc.).
+      # Stronger than the source-substrate audit (which just checks for
+      # substring presence). Runs in ~150ms.
+      - name: Iter-5.4 install-flow structural-behavioral test
+        run: bun test tools/ci/test-iter-54-install-flow.test.ts
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+
+      - name: Show flake metadata
+        working-directory: full-ai-cluster
+        run: nix flake metadata --json | jq '{description, lastModified, revision}'
+
+      - name: Check flake evaluates
+        working-directory: full-ai-cluster
+        # Eval-only check — catches typos, missing imports, undefined
+        # attributes before paying for the build. Skip building checks
+        # to keep this cheap.
+        run: nix flake check --no-build --show-trace
+
+      - name: Build installer ISO
+        working-directory: full-ai-cluster
+        run: nix build .#installer-iso --print-build-logs
+
+      - name: Audit installer ISO content (cascade #4 — post-build floor)
+        # Inspects the BUILT ISO via 7z list + asserts expected top-
+        # level files (nix-store.squashfs, kernel, initrd, grub.cfg).
+        # Complements the source-substrate audit preflight (cascade #1
+        # at the start of this workflow) by catching the bug class
+        # where the ISO build silently drops a file present in source.
+        # 7z is available by default on ubuntu-24.04 runners.
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          # Mirror the explicit 0/1+ candidate count check from the
+          # later "Locate ISO + capture metadata" step (fix-fwd
+          # Copilot finding on #5119). Under `set -u`, unbound
+          # iso_candidates[0] would give an opaque "unbound variable"
+          # error; explicit count check gives a clear workflow error.
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see B-0818)" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Audit step: Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_abs="$(pwd)/${iso_candidates[0]}"
+          cd ..
+          # 7z source-of-truth:
+          # (a) tools/setup/manifests/{brew,apt} declare p7zip /
+          #     p7zip-full as the canonical dependency for ALL
+          #     install.sh consumers per GOVERNANCE.md §24 (dev
+          #     laptops, CI runners, devcontainer images).
+          # (b) This SPECIFIC workflow does NOT invoke install.sh
+          #     today; it relies on ubuntu-24.04 runner-image's
+          #     default 7z pre-install (verified present on the
+          #     standard image) as a shortcut so we skip the
+          #     install.sh cost per workflow run.
+          # If we drop the ubuntu-24.04 pin OR the runner-image
+          # pre-install, the apt manifest already declares the dep
+          # — either invoke install.sh here OR add an explicit
+          # `sudo apt-get update && sudo apt-get install -y
+          # p7zip-full` step before this line (the `-y` matters in
+          # CI: without it apt-get prompts interactively and the
+          # workflow run hangs).
+          bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
+
+      # QEMU boot smoke-test (USB cleanup PR 3 — 2026-05-26):
+      # Boots the built ISO in QEMU/KVM with serial console capture +
+      # asserts the installer's expected login prompt appears within
+      # 5min. Catches the bug class where the ISO builds + audits pass
+      # but the kernel/initrd combination fails to actually boot
+      # (firmware mismatch; missing module; broken init; etc.). The
+      # source-substrate audit (cascade #1) + ISO-content audit
+      # (cascade #4) catch static issues; this catches dynamic
+      # boot-time issues. Prior art: nixos/tests/installer.nix
+      # (per Kestrel 2026-05-26 ferry pointer).
+      #
+      # ubuntu-24.04 runners support nested KVM (/dev/kvm); helper
+      # falls back to TCG emulation when KVM unavailable.
+      #
+      # Security: this step uses no `github.event.*` interpolation in
+      # `run:` lines; all inputs are filesystem paths from prior steps
+      # of THIS workflow. The TS helper at tools/ci/qemu-boot-test.ts
+      # takes the ISO path as a positional CLI arg (no shell expansion
+      # of attacker-controllable strings).
+      - name: Install QEMU (apt)
+        # qemu-system-x86 for cascade #5 boot smoke-test
+        # qemu-utils for qemu-img (cascade #6 Slice 1 virtual hard disk)
+        run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils
+
+      - name: QEMU boot smoke-test (cascade #5 — dynamic boot floor)
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::QEMU boot test: No installer ISO under result/iso/" >&2
+            exit 1
+          fi
+          iso_abs=$(readlink -f "${iso_candidates[0]}")
+          echo "Booting ISO: $iso_abs"
+          bun ../tools/ci/qemu-boot-test.ts "$iso_abs"
+
+      # QEMU full-install test (cascade #6 Slice 1 — B-0831 starter):
+      # Extends boot-test by attaching virtual hard disk + NAT internet,
+      # waits for `[iter-5.3]` marker in serial log to verify nixos-install
+      # + iter-4.2 + iter-5.2 substrate completed.
+      #
+      # Gated to push-to-main + workflow_dispatch for STARTER (longer
+      # runtime; TCG fallback may exceed PR-build expectations). Once
+      # B-0831 Slice 1 proves reliable + runs <10min consistently, can
+      # be enabled on every PR per B-0831 acceptance criteria.
+      #
+      # continue-on-error: true for STARTER so initial flakiness doesn't
+      # block merges while we tune the test. Remove once stable.
+      #
+      # Security: no github.event.* interpolation; ISO path comes from
+      # prior workflow step's filesystem find.
+      - name: QEMU full-install test (cascade #6 Slice 1 — STARTER)
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        working-directory: full-ai-cluster
+        # SERIAL_LOG_OUT_PATH points to a workspace-relative path so the
+        # serial log survives the test step + can be uploaded as artifact
+        # in the subsequent step (per Copilot post-merge finding on PR
+        # #5379: prior tmpdir path was outside workspace + lost on runner
+        # exit).
+        env:
+          SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-full-install-serial.log
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::QEMU full-install test: No installer ISO under result/iso/" >&2
+            exit 1
+          fi
+          iso_abs=$(readlink -f "${iso_candidates[0]}")
+          echo "Full-install testing ISO: $iso_abs"
+          echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
+          bun ../tools/ci/qemu-full-install-test.ts "$iso_abs"
+
+      # Upload serial log as workflow artifact regardless of test outcome
+      # so debug post-mortem is always possible. `if: always()` because
+      # failure case is the most interesting — successful runs have
+      # nothing to debug. Per Copilot post-merge finding on PR #5379.
+      - name: Upload QEMU full-install serial log
+        if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: qemu-full-install-serial-log
+          path: qemu-full-install-serial.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Locate ISO + capture metadata
+        id: iso
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see B-0818)" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_path_rel="${iso_candidates[0]}"
+          iso_path_abs="$(pwd)/${iso_path_rel}"
+          iso_name=$(basename "$iso_path_abs")
+          iso_size=$(stat -c%s "$iso_path_abs" | numfmt --to=iec --suffix=B)
+          iso_sha256=$(sha256sum "$iso_path_abs" | awk '{print $1}')
+          {
+            echo "path=$iso_path_abs"
+            echo "name=$iso_name"
+            echo "size=$iso_size"
+            echo "sha256=$iso_sha256"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "## AI-cluster installer ISO built"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| File   | \`$iso_name\` |"
+            echo "| Size   | $iso_size |"
+            echo "| SHA256 | \`$iso_sha256\` |"
+            echo ""
+            echo "Download from the **Artifacts** section of this workflow run."
+            echo "Then \`dd if=<iso> of=/dev/<USB> bs=4M status=progress conv=fsync\`"
+            echo "to flash the stick. (ISO is ~1.5–2 GiB.)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # B-0853.1 — sigstore/cosign keyless OIDC signing of the ISO blob.
+      # Composes with B-0853 (sigstore artifact signing free-stuff substrate).
+      #
+      # Keyless model: GitHub OIDC token (from job-level id-token: write
+      # permission above) is exchanged with Fulcio CA for a short-lived cert
+      # bound to this workflow's identity. cosign then signs the ISO blob
+      # with that cert + records the signature in the Rekor transparency log.
+      # No long-lived private key material in this workflow.
+      #
+      # Verification (any consumer) — pin identity to THIS specific workflow
+      # file + ref (tightened per Copilot P1 review on PR #5417; the broader
+      # `^https://github.com/Lucent-Financial-Group/Zeta` prefix-regex would
+      # accept signatures from any workflow in the repo, defeating the
+      # workflow-identity binding):
+      #
+      #   cosign verify-blob \
+      #     --bundle <iso>.bundle \
+      #     --certificate-identity 'https://github.com/Lucent-Financial-Group/Zeta/.github/workflows/build-ai-cluster-iso.yml@refs/heads/main' \
+      #     --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+      #     <iso>
+      #
+      # For verifying signatures from feature branches OR tags, swap the
+      # `@refs/heads/main` suffix accordingly:
+      #   --certificate-identity '.../build-ai-cluster-iso.yml@refs/heads/<branch>'
+      #   --certificate-identity '.../build-ai-cluster-iso.yml@refs/tags/<tag>'
+      #
+      # Security: inputs to cosign are filesystem paths from steps.iso.outputs
+      # of THIS workflow (no github.event.* interpolation). Same discipline
+      # as the QEMU boot-test step above.
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        # Pin verified via gh API 2026-05-27:
+        #   gh api repos/sigstore/cosign-installer/releases/latest
+        #   tag: v4.1.2; published: 2026-05-07T01:27:27Z
+        # Per .claude/rules/dep-pin-search-first-authority.md
+
+      - name: Sign ISO with cosign (keyless OIDC + Fulcio + Rekor)
+        id: sign
+        env:
+          # Pass ISO path via env (not direct ${{ }} interpolation in run:)
+          # per the workflow's existing security discipline.
+          ISO_PATH: ${{ steps.iso.outputs.path }}
+          ISO_NAME: ${{ steps.iso.outputs.name }}
+        run: |
+          set -euo pipefail
+          # --yes: skip interactive Fulcio confirmation (CI is non-interactive)
+          # Output emitted to runner temp and uploaded alongside the ISO artifact:
+          #   <runner-temp>/<iso>.bundle - cosign bundle containing signature,
+          #                                certificate, and transparency-log material.
+          COSIGN_BUNDLE="${RUNNER_TEMP}/${ISO_NAME}.bundle"
+          cosign sign-blob --yes \
+            --bundle "${COSIGN_BUNDLE}" \
+            "${ISO_PATH}"
+          # Sanity: the verifier artifact must be present and non-empty.
+          test -s "${COSIGN_BUNDLE}" || { echo "::error::Empty cosign bundle"; exit 1; }
+          echo "bundle-path=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## ISO signed via sigstore (cosign keyless OIDC)"
+            echo ""
+            echo "| Artifact | Path |"
+            echo "|---|---|"
+            echo "| Bundle | \`${ISO_NAME}.bundle\` |"
+            echo ""
+            echo "Verification command after downloading the ISO artifact and cosign bundle artifact:"
+            echo ""
+            echo "\`\`\`bash"
+            echo "cosign verify-blob \\"
+            echo "  --bundle '${ISO_NAME}.bundle' \\"
+            echo "  --certificate-identity 'https://github.com/${GITHUB_WORKFLOW_REF}' \\"
+            echo "  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \\"
+            echo "  '${ISO_NAME}'"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload ISO as workflow artifact
+        # Available for download from the workflow run page for ~90 days.
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: ${{ steps.iso.outputs.name }}
+          path: ${{ steps.iso.outputs.path }}
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0   # ISO is already compressed; re-zipping wastes time
+
+      - name: Upload cosign bundle as workflow artifact
+        # B-0853.1 sibling upload — bundle alongside the ISO for consumers.
+        # Separate artifact (not bundled with ISO) so consumers downloading
+        # just the ISO do not pay the small extra cost; verifiers can grab it.
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: ${{ steps.iso.outputs.name }}.cosign
+          path: ${{ steps.sign.outputs.bundle-path }}
+          if-no-files-found: error
+          retention-days: 90

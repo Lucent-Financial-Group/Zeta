@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "Preserve",
+    "moduleResolution": "bundler",
+    "lib": ["esnext"],
+    "rootDir": ".",
+    "strict": true,
+    "noEmitOnError": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true,
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+    "types": ["bun"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/**",
+    ".git",
+    ".git/**",
+    "references/upstreams",
+    "references/upstreams/**",
+    "**/BenchmarkDotNet.Artifacts/**",
+    "**/TestResults/**",
+    "**/artifacts/**",
+    "**/bin/**",
+    "**/obj/**",
+    "**/.lake/**",
+    "tools/lean4/.lake/**",
+    "tools/alloy/**",
+    "tools/tla/**"
+  ]
+}
