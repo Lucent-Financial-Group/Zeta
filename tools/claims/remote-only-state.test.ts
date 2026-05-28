@@ -20,7 +20,11 @@ class FakeRunner implements CommandRunner {
   run(command: string, args: readonly string[], options: { cwd?: string; timeoutMs?: number }): CommandResult {
     const key = [command, ...args].join("\0");
     this.calls.push(key);
-    this.callOptions.push({ timeoutMs: options.timeoutMs });
+    const callOptions: { timeoutMs?: number } = {};
+    if (options.timeoutMs !== undefined) {
+      callOptions.timeoutMs = options.timeoutMs;
+    }
+    this.callOptions.push(callOptions);
     return this.responses.get(key) ?? { status: 1, stdout: "", stderr: `missing fake response: ${key}` };
   }
 }
