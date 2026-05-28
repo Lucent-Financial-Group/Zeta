@@ -80,21 +80,33 @@ export function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: st
   let author = "any";
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
-    if (a === "--window" && i + 1 < args.length) {
+    if (a === "--window") {
+      // Match flag first, then validate value exists — otherwise `--window`
+      // as the last argument silently falls through to default-24h instead
+      // of reporting a usage error (Copilot PR #5873 P1).
+      if (i + 1 >= args.length) {
+        return { error: "--window requires a value" };
+      }
       const next = args[i + 1];
       if (next === undefined) {
         return { error: "--window requires a value" };
       }
       windowArg = next;
       i++;
-    } else if (a === "--since" && i + 1 < args.length) {
+    } else if (a === "--since") {
+      if (i + 1 >= args.length) {
+        return { error: "--since requires a value" };
+      }
       const next = args[i + 1];
       if (next === undefined) {
         return { error: "--since requires a value" };
       }
       sinceArg = next;
       i++;
-    } else if (a === "--author" && i + 1 < args.length) {
+    } else if (a === "--author") {
+      if (i + 1 >= args.length) {
+        return { error: "--author requires a value" };
+      }
       const next = args[i + 1];
       if (next === undefined) {
         return { error: "--author requires a value" };
@@ -167,6 +179,17 @@ interface GhPR {
 }
 
 export function fetchPRs(window: WindowSpec): MeasurementResult {
+  // Apply the window constraint at the GitHub query level via `--search
+  // created:>=<ISO>` so we don't silently undercount in active repos that
+  // exceed the 200-cap before the window filter is applied (Copilot
+  // PR #5873 P1). The 200-cap stays as a per-page upper bound for cost
+  // control — windows wider than what 200 results can cover (e.g. very
+  // active multi-month windows on busy repos) will still cap, but
+  // narrow-window queries (24h/7d) will be window-accurate.
+  const searchClauses = [`created:>=${window.since.split("T")[0]}`];
+  if (window.author !== "any") {
+    searchClauses.push(`author:${window.author}`);
+  }
   const args = [
     "pr",
     "list",
@@ -176,10 +199,14 @@ export function fetchPRs(window: WindowSpec): MeasurementResult {
     "200",
     "--json",
     "number,state,createdAt,mergedAt,closedAt",
+    "--search",
+    searchClauses.join(" "),
   ];
-  if (window.author !== "any") {
-    args.push("--author", window.author);
-  }
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  // `gh` is resolved via PATH per Zeta convention (per tools/github/*.ts
+  // sibling pattern; gh is a developer-tool dependency, not an
+  // untrusted external command). Suppression rationale matches
+  // tools/github/poll-pr-gate.ts:285-292 convention.
   const result = spawnSync("gh", args, { encoding: "utf-8" });
   if (result.error) {
     return { kind: "gh-cli-not-found" };
