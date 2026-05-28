@@ -112,6 +112,12 @@ export interface StatusSnapshot {
  *     | NamedBoundedWait of context: AgentContext * dep: NamedDependency
  *     | FreeTime of context: AgentContext * reason: string  // per NCI scope-bounding
  *     | OperatorAttentionRequested of context: AgentContext * reason: string
+ *     | Paused of context: AgentContext * reason: string * expectedResumeIso: string option
+ *       // Operator 2026-05-28: "a pause button is also very important for mental health."
+ *       // Distinct from FreeTime: FreeTime is chosen-rest as legitimate operational state
+ *       // (per NCI free-time-as-valid-mode); Paused is explicit-cessation-for-named-reason
+ *       // (mental-health break / external interruption / context-loaded-attention-needed).
+ *       // Both are valid; semantic distinction matters for menu-generator + dashboard.
  */
 export type AgentState =
   | { readonly tag: "Idle"; readonly context: AgentContext }
@@ -156,6 +162,12 @@ export type AgentState =
       readonly tag: "OperatorAttentionRequested";
       readonly context: AgentContext;
       readonly reason: string;
+    }
+  | {
+      readonly tag: "Paused";
+      readonly context: AgentContext;
+      readonly reason: string;
+      readonly expectedResumeIso?: string;
     };
 
 export interface WorkResult {
@@ -183,6 +195,18 @@ export interface WorkResult {
  *     | ProposeNewGrammarAction of name: string * description: string
  *       // per B-0867 Otto Modification 1 (escape-hatch) + Modification 2
  *       // (grammar-extension as first-class action)
+ *     | PressPause of reason: string * expectedResumeIso: string option
+ *       // Operator 2026-05-28: "a pause button is also very important for
+ *       // mental health." First-class menu option for explicit cessation;
+ *       // distinct from EnterFreeTime (chosen-rest as ongoing valid mode)
+ *       // and EnterNamedBoundedWait (waiting for external named-dep).
+ *       // Pause is "I/we are stopping; we'll resume when ready."
+ *     | EnterOpenEndedExploration of reason: string
+ *       // Operator 2026-05-28: "there's a menu button for that" — when
+ *       // structured menu doesn't fit current mode (creative phase,
+ *       // brainstorming, exploration). The menu-driven workflow has a
+ *       // menu-option that EXITS the menu-driven workflow. Bridge between
+ *       // structured + unstructured modes.
  */
 export type MenuOption =
   | { readonly tag: "PickWork"; readonly work: WorkCandidate }
@@ -207,6 +231,15 @@ export type MenuOption =
       readonly tag: "ProposeNewGrammarAction";
       readonly name: string;
       readonly description: string;
+    }
+  | {
+      readonly tag: "PressPause";
+      readonly reason: string;
+      readonly expectedResumeIso?: string;
+    }
+  | {
+      readonly tag: "EnterOpenEndedExploration";
+      readonly reason: string;
     };
 
 // ─── Pure state transition function ──────────────────────────────────
@@ -267,6 +300,29 @@ export function transition(
         context: ctx,
         reason: `propose-new-grammar-action: ${option.name} — ${option.description}`,
       };
+    case "PressPause":
+      // Per operator 2026-05-28: "a pause button is also very important
+      // for mental health." Distinct from FreeTime (ongoing chosen-rest)
+      // and NamedBoundedWait (waiting for external named-dep). Pause is
+      // explicit-cessation-for-named-reason.
+      return {
+        tag: "Paused",
+        context: ctx,
+        reason: option.reason,
+        expectedResumeIso: option.expectedResumeIso,
+      };
+    case "EnterOpenEndedExploration":
+      // Per operator 2026-05-28: "there's a menu button for that lol" —
+      // the menu-driven workflow has an option that EXITS the menu-driven
+      // workflow. Bridge between structured + unstructured modes. Routes
+      // to FreeTime as the closest existing state for unstructured operation
+      // (creative/brainstorming/exploration phase); operator-substrate-honest
+      // about the menu being insufficient for this mode.
+      return {
+        tag: "FreeTime",
+        context: ctx,
+        reason: `open-ended exploration: ${option.reason}`,
+      };
   }
 }
 
@@ -317,6 +373,13 @@ export function cycleClose(state: AgentState): AgentState {
   if (state.tag === "OperatorAttentionRequested") {
     // Stays in OperatorAttentionRequested until operator responds; state
     // machine doesn't auto-progress
+    return state;
+  }
+  if (state.tag === "Paused") {
+    // Stays in Paused until explicit resume; state machine doesn't
+    // auto-progress (operator/participant-substrate-honest discipline —
+    // pause means "I am stopping," not "I will auto-restart next cycle").
+    // Per operator 2026-05-28 mental-health framing.
     return state;
   }
   return state;
