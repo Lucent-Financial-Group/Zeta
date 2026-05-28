@@ -27,6 +27,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("observe with NO findings → conclude (no-engagement)", () => {
     const r = dispatchPrReviewTransition({ kind: "observe" }, baseContext);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("conclude");
       expect(r.outcome.artifact?.kind).toBe("no-engagement-warranted");
@@ -42,6 +43,7 @@ describe("dispatch transitions (happy path)", () => {
     };
     const ctx = { ...baseContext, findings: [finding] };
     const r = dispatchPrReviewTransition({ kind: "observe" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("identify-finding");
     }
@@ -49,6 +51,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("identify-finding → compose", () => {
     const r = dispatchPrReviewTransition({ kind: "identify-finding" }, baseContext);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("compose");
     }
@@ -56,6 +59,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("compose → verify-finding (grep-substrate-anchors discipline)", () => {
     const r = dispatchPrReviewTransition({ kind: "compose" }, baseContext);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("verify-finding");
     }
@@ -70,6 +74,7 @@ describe("dispatch transitions (happy path)", () => {
     };
     const ctx = { ...baseContext, findings: [finding] };
     const r = dispatchPrReviewTransition({ kind: "verify-finding" }, ctx);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("post");
     }
@@ -92,6 +97,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("post → follow-up with review-comment-posted artifact", () => {
     const r = dispatchPrReviewTransition({ kind: "post" }, baseContext);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("follow-up");
       expect(r.outcome.artifact?.kind).toBe("review-comment-posted");
@@ -100,6 +106,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("follow-up → conclude", () => {
     const r = dispatchPrReviewTransition({ kind: "follow-up" }, baseContext);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("conclude");
     }
@@ -107,6 +114,7 @@ describe("dispatch transitions (happy path)", () => {
 
   test("conclude is terminal (stays at conclude)", () => {
     const r = dispatchPrReviewTransition({ kind: "conclude" }, baseContext);
+    expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.nextState.kind).toBe("conclude");
     }
@@ -142,7 +150,7 @@ describe("isPeerAgentTerritory discriminator", () => {
     expect(isPeerAgentTerritory("peer-alexa")).toBe(true);
   });
   test("human-aaron → true (substantive engagement; don't touch substrate)", () => {
-    expect(isPeerAgentTerritory("human-aaron")).toBe(true);
+    expect(isPeerAgentTerritory("human-operator")).toBe(true);
   });
   test("unknown → false (default; treat as substrate-honest mine)", () => {
     expect(isPeerAgentTerritory("unknown")).toBe(false);

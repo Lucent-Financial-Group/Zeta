@@ -4,7 +4,7 @@
 // review work. Companion to B-0867.20 ReviewLifetime (receiving-side;
 // reviewer-feedback gate-state).
 //
-// Per Aaron 2026-05-28: "also does it give you time to look at prs and
+// Per the human maintainer (2026-05-28): "also does it give you time to look at prs and
 // put comments?" — substrate-engineering substrate-engineering substrate
 // gap: AutoLoopLifetime (PR #5805) only models SHIP work, not REVIEW
 // work. This DU makes producing-side review-substrate explicit.
@@ -21,7 +21,7 @@
 // - AutoLoopLifetime (PR #5805) — will compose; producing-side review
 //   work becomes additional state-transition in loop substrate
 
-import { type LifetimeState } from "./world.js";
+import { type LifetimeState } from "./world";
 
 // ─────────────────────────────────────────────────────────────────────
 // PrReviewLifecycle — producing-side state machine
@@ -87,7 +87,7 @@ export interface ReviewFinding {
  */
 export interface ReviewContext {
   readonly prNumber: number;
-  readonly authorLane: "self" | "peer-otto" | "peer-codex" | "peer-lior" | "peer-alexa" | "peer-vera" | "peer-riven" | "peer-amara" | "peer-kestrel" | "peer-prism" | "peer-mika" | "human-aaron" | "unknown";
+  readonly authorLane: "self" | "peer-otto" | "peer-codex" | "peer-lior" | "peer-alexa" | "peer-vera" | "peer-riven" | "peer-amara" | "peer-kestrel" | "peer-prism" | "peer-mika" | "human-operator" | "unknown";
   readonly substrateScope: "workflow-engine" | "encryption" | "zflash" | "ferry-preservation" | "rule-update" | "memory-file" | "infrastructure" | "other";
   readonly findings: ReadonlyArray<ReviewFinding>;
   readonly observationsMade: number;     // count of observe → identify cycles
@@ -110,7 +110,7 @@ export interface ReviewOutcome {
 
 export type PrReviewFeedback =
   | { kind: "PrNotAccessible"; prNumber: number; reason: string }
-  | { kind: "PeerAgentTerritory"; prNumber: number; lane: string }  // don't-touch-commits but review-allowed
+  | { kind: "PeerAgentTerritory"; prNumber: number; lane: ReviewContext["authorLane"] }  // don't-touch-commits but review-allowed
   | { kind: "FindingUnsubstantiated"; finding: ReviewFinding }       // failed verify step
   | { kind: "RateLimitExhausted"; budget: "rest" | "graphql"; resetAt: number }
   | { kind: "NoActionableFinding"; prNumber: number };
@@ -171,12 +171,26 @@ export function dispatchPrReviewTransition(
         },
       };
 
-    case "verify-finding":
-      // After verifying, post (or back to compose if unsubstantiated)
-      if (context.findings.length > 0 && context.findings[0]!.substrateAnchors !== undefined && context.findings[0]!.substrateAnchors.length === 0) {
+    case "verify-finding": {
+      // Per grep-substrate-anchors-before-razor-as-metaphysical: every
+      // finding MUST carry substrate-anchors before advancing to post.
+      // Both missing `substrateAnchors` AND an empty array mean
+      // unsubstantiated. Iterate all findings (not just findings[0]).
+      // Zero findings = NoActionableFinding feedback (can't post review
+      // when there's nothing to say).
+      if (context.findings.length === 0) {
         return {
           ok: false,
-          feedback: { kind: "FindingUnsubstantiated", finding: context.findings[0]! },
+          feedback: { kind: "NoActionableFinding", prNumber: context.prNumber },
+        };
+      }
+      const unsubstantiated = context.findings.find((f) =>
+        f.substrateAnchors === undefined || f.substrateAnchors.length === 0
+      );
+      if (unsubstantiated !== undefined) {
+        return {
+          ok: false,
+          feedback: { kind: "FindingUnsubstantiated", finding: unsubstantiated },
         };
       }
       return {
@@ -185,6 +199,7 @@ export function dispatchPrReviewTransition(
           nextState: { kind: "post" },
         },
       };
+    }
 
     case "post":
       // After posting, await follow-up (or conclude if no follow-up expected)
@@ -235,7 +250,7 @@ export const PR_REVIEW_LIFECYCLE_UNIVERSE: ReadonlyArray<PrReviewLifecycle> = [
  * review-allowed per fighting-past-self-vs-peer-agent-distinguisher rule).
  */
 export function isPeerAgentTerritory(authorLane: ReviewContext["authorLane"]): boolean {
-  return authorLane.startsWith("peer-") || authorLane === "human-aaron";
+  return authorLane.startsWith("peer-") || authorLane === "human-operator";
 }
 
 /**
