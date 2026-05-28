@@ -8,7 +8,7 @@ merged_at: "2026-05-28T17:26:07Z"
 closed_at: "2026-05-28T17:26:07Z"
 head_ref: "otto-cli/b0925-celegans-controller-b0924-2026-05-28"
 base_ref: "main"
-archived_at: "2026-05-28T17:34:41Z"
+archived_at: "2026-05-28T17:40:39Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

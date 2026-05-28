@@ -8,7 +8,7 @@ merged_at: "2026-05-28T17:02:07Z"
 closed_at: "2026-05-28T17:02:07Z"
 head_ref: "claim/codex-loop-bash-retirement-env-option-shebang-20260528"
 base_ref: "main"
-archived_at: "2026-05-28T17:29:19Z"
+archived_at: "2026-05-28T17:40:41Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
