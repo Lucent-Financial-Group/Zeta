@@ -88,6 +88,7 @@ The strongest evangelism case is BOTH ServiceTitan-internal-before-after AND ext
 The operator's framing "AI native from the start" emphasizes that AI-orchestration is architectural, not bolt-on. Substrate-honest: the framework actually serves MULTI-PARTICIPANT use (Otto AI + Addison human-19yo + Max human + operator + E human-5yo). The "AI-native" framing may understate the multi-participant scope.
 
 Possible naming alternatives for substrate-engineering documentation:
+
 - "Multi-participant native from the start" (emphasizes humans + AI together)
 - "Substrate-honest collaboration native" (emphasizes the discipline)
 - "AI-native + human-collaborative" (compound; less crisp)
@@ -106,6 +107,7 @@ Substrate-honest check: standard observability stack (Prometheus + Grafana + Lok
 For ServiceTitan-internal evangelism, hardware is given (ServiceTitan infrastructure). For whole-company-evangelism-via-external-validators, "home on your own equipment" implies consumer-hardware-accessibility. The substrate must ship with a hardware-minimum spec that real external validators can satisfy without enterprise procurement friction.
 
 Candidate baseline (per existing zeta-hardware-detect.ts work):
+
 - ≥1 NUC-class machine OR ≥1 mid-range laptop with USB-boot capability
 - ≥16GB RAM, ≥256GB SSD
 - 1Gbps wired network (for ArgoCD pull cadence)
@@ -118,6 +120,7 @@ Sub-row B-0871.2 lands the formal spec.
 Naming this composition explicitly: the four pieces operate as ONE attribution substrate. They aren't separate concerns that happen to compose; they're substrate-engineering aspects of the same attribution substrate. Worth naming the cluster (sub-row B-0871.6).
 
 Candidate cluster names:
+
 - "Framework-attribution-substrate cluster"
 - "Reproducibility-attribution substrate cluster"
 - "Boot-and-measure substrate" (consumer-friendly)

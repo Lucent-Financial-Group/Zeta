@@ -37,6 +37,7 @@ Operator's evaluation surface has TWO mandates:
 2. **DORA of our live system** — THIS ROW; the operator-direct ServiceTitan live-system DORA-metric-delivery mandate
 
 Without this row, the AI mandate (B-0866) reads as if it were the primary evaluation context. The operator's substrate-honest disclosure that there are TWO mandates means the strategic calculus changes substantially:
+
 - B-0866 marketing strategy needs portfolio-balance discipline (per B-0866.20 new sub-row)
 - Time investment in substrate-engineering work has limits beyond which it stops being good portfolio strategy (Kestrel observation; operator-substrate-honest acknowledgment needed)
 - The benchmark + framework work must serve BOTH mandates where possible OR explicit-tradeoff conversations are required when they compete
@@ -46,6 +47,7 @@ Without this row, the AI mandate (B-0866) reads as if it were the primary evalua
 The OPERATOR-LIVE-SYSTEM DORA metric delivery — the actual ServiceTitan production substrate Aaron is responsible for. Distinct from B-0866's AI-benchmark-DORA (which measures AI agents on simulated work) and B-0865's benchmark-substrate.
 
 DORA metrics scope:
+
 - Deployment frequency (live-system production deploys)
 - Lead time for changes (commit-to-prod cadence)
 - Change failure rate (rollback-rate / hotfix-rate on production)
@@ -76,6 +78,7 @@ If Aaron's DORA-of-live-system mandate is parallel to (not subordinate to) the A
 ### Extension 2 — The workflow engine MVP is operationally aligned with both mandates
 
 B-0867 v1 (workflow engine) substrate-engineering serves:
+
 - AI mandate: workflow engine IS the substrate-engineering proof-of-24-months-ahead-capability
 - DORA mandate: workflow engine MVP deployed in live-system improves cycle-time + reduces change-failure-rate
 
