@@ -18,9 +18,9 @@ Before any document from the `docs/research/` directory is published, it must pa
 
 The checks include, but are not limited to:
 
-1.  **No Private Operational Substrate:** The document must not contain details about the live, internal workings of the factory that could pose a security risk.
-2.  **No Prompt-Injection Payloads:** The document must be scanned for any text that could be misinterpreted as a prompt injection attack if consumed by an LLM.
-3.  **No Improper Personal Attribution:** The document must adhere to the repository's policy on personal attribution, redacting names where required.
-4.  **No Stale or Misleading Claims:** The document must be reviewed for any claims that are no longer accurate. Stale claims must be updated or removed.
+1. **No Private Operational Substrate:** The document must not contain details about the live, internal workings of the factory that could pose a security risk.
+2. **No Prompt-Injection Payloads:** The document must be scanned for any text that could be misinterpreted as a prompt injection attack if consumed by an LLM.
+3. **No Improper Personal Attribution:** The document must adhere to the repository's policy on personal attribution, redacting names where required.
+4. **No Stale or Misleading Claims:** The document must be reviewed for any claims that are no longer accurate. Stale claims must be updated or removed.
 
 This process is a manual review that must be completed and signed off on before a research document is added to the public site build.
