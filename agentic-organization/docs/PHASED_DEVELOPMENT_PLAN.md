@@ -973,13 +973,16 @@ initiative, work item, or anchor-target persistence yet.
 ### Code Steps
 
 1. Reconcile the V0 work item states across docs and implementation,
-   including how `created` maps to the current `intake` concept.
+   including how `created` maps to the current `intake` concept. First
+   domain slice done with `created`, `intake`, `triage`, `ready`,
+   `in_progress`, `blocked`, `review`, and `done`.
 2. Add the minimal domain records for:
    - project;
    - initiative;
    - work item;
    - work anchor target;
-   - work state transition.
+   - work state transition. First domain record types added; durable
+     persistence and commands are still pending.
 3. Add Cockroach schema for minimal projects, initiatives, work items,
    and work anchor targets.
 4. Add commands:
@@ -998,6 +1001,9 @@ initiative, work item, or anchor-target persistence yet.
    - review;
    - done.
 6. Add the first type-specific lifecycle policy records for defects.
+   First domain guards added: defects must start in `created`, require
+   triage fields and evidence before `ready`, and require engineer
+   assignment plus a scheduled work block before `in_progress`.
 7. Emit audit and outbox events for every work state transition.
 8. Add a minimal work-status query/read model for workers, agents, and
    future UI/API hosts.

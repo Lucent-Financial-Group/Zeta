@@ -124,19 +124,39 @@ magic strings in command handlers.
 ### `work_item_state`
 
 ```text
-new
+created
+intake
 triage
-needs_clarification
 ready
-assigned
 in_progress
-review_requested
-changes_requested
-approved
 blocked
+review
 done
-canceled
 ```
+
+The first implemented TypeScript enum is intentionally narrower than the
+full future workflow matrix. `created` is the mechanical creation state;
+`intake` is where the Organization classifies the work before triage;
+`triage` is where required fields and evidence are gathered; `ready`
+means the item can be scheduled/assigned; `in_progress`, `blocked`,
+`review`, and `done` cover the first execution loop. Richer states such
+as business approval, architecture approval, QA signoff, merge, release,
+and outcome review should be layered as gates or type-specific lifecycle
+records before they are promoted into the shared base enum.
+
+Defect work items have V0 lifecycle guards:
+
+- defects must start in `created`;
+- defects cannot move from `triage` to `ready` until triage fields and
+  required evidence exist;
+- defects cannot move from `ready` to `in_progress` until an engineer hat
+  assignment and scheduled work block exist.
+
+`work_item_type` is required on the domain record so type-specific
+lifecycle policy cannot be bypassed by omission. Work state transition
+records must keep the evidence artifact IDs, assigned engineer hat
+assignment, and scheduled work block references that justified the
+transition.
 
 ### `hat_assignment_state`
 

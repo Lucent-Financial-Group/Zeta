@@ -79,6 +79,17 @@ and `UI_AND_OBSERVABILITY_CONCEPTS.md` reject unanchored discussions.
 Meetings, one-on-ones, broadcasts, votes, review comments, reports, and
 team threads must reference work before they can affect state.
 
+First implementation progress: the domain now has a minimal typed work
+item lifecycle (`created`, `intake`, `triage`, `ready`, `in_progress`,
+`blocked`, `review`, `done`) plus V0 defect guards for creation,
+readiness, assignment, and scheduling. Work item type is required on the
+domain record, and transition records carry evidence, assignment, and
+schedule references so later UI/graph/agent review can explain why a
+transition was legal. The remaining gap is durable
+project/initiative/work-anchor persistence and command handlers that
+validate anchor existence before supervisor signals, discussions, and
+meetings can mutate state.
+
 ### Scheduled Agent Time
 
 `AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`,
