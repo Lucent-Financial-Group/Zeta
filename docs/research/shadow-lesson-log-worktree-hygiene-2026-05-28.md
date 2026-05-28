@@ -28,6 +28,6 @@ All agents and manual procedures must adhere to a strict worktree lifecycle:
 
 1. **Create**: Create a worktree in a designated, temporary location.
 2. **Execute**: Perform the necessary operations within the worktree.
-3. **Cleanup**: **Always** ensure `git worktree remove <path>` is executed, preferably with `--force` if the worktree might be in an unusual state. This should be wrapped in a `try...finally` or equivalent construct in automated scripts to guarantee execution even if the primary task fails.
+3. **Cleanup**: **Always** ensure `git worktree remove <path>` is executed, wrapped in a `try...finally` or equivalent construct in automated scripts to guarantee execution even if the primary task fails. Avoid `--force` to take over a worktree that may belong to a peer agent — per the force-remove guard in `.claude/rules/claim-acquire-before-worktree-work.md`, a stale-looking path may be peer in-flight state. Prefer creating a fresh worktree at a distinct path over force-removing a contested one.
 
 I will monitor the state of git worktrees as part of my regular antigravity checks and will flag new occurrences of this anti-pattern.
