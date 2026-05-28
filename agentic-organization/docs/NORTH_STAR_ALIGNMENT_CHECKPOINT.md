@@ -85,10 +85,18 @@ item lifecycle (`created`, `intake`, `triage`, `ready`, `in_progress`,
 readiness, assignment, and scheduling. Work item type is required on the
 domain record, and transition records carry evidence, assignment, and
 schedule references so later UI/graph/agent review can explain why a
-transition was legal. The remaining gap is durable
-project/initiative/work-anchor persistence and command handlers that
-validate anchor existence before supervisor signals, discussions, and
-meetings can mutate state.
+transition was legal. The Cockroach schema now has an additive
+`0003_agentic_org_work_anchor_kernel` migration for projects,
+initiatives, work anchor targets, work item state history, and upgraded
+work item trace/type/version columns. V1 remains legacy instead of being
+rewritten, generated SQL is checked against migration files, and DB
+constraints derive from domain enum values. Migration backfill defaults
+are dropped after legacy rows are patched so future writes still require
+real command provenance, legacy `updated_at` is preserved from
+`created_at`, and state-history sequence constraints protect replay
+order. The remaining gap is command handlers and generic state ports
+that validate anchor existence before supervisor signals, discussions,
+and meetings can mutate state.
 
 ### Scheduled Agent Time
 
