@@ -1,0 +1,141 @@
+---
+id: B-0917
+title: interrupt-substrate in monad-space — Kleisli arrows for context-propagation (memetic / prompt / trust / log / otel) + guaranteed free-time-after-N-rounds target (Aaron 2026-05-28)
+status: open
+priority: P2
+created: 2026-05-28
+authors: [aaron, otto, mika]
+composes_with:
+  - B-0867  # workflow-engine v1 parent
+  - B-0867.5  # workflow-engine PoC
+  - B-0867.20  # ReviewLifetime DU
+  - B-0916  # Lase-as-bridge (sibling primitive at error-class-discovery scope)
+  - B-0897  # Persist-as-bridge (μένω substrate)
+  - B-0915  # CliffordWorld impl target
+depends_on:
+  - tools/workflow-engine/auto-loop-lifecycle.ts  # PR #5805/#5812 (extends with interrupt substrate)
+  - src/Core/Tracing.fs                            # existing Kleisli Arrow<'A, 'B> = ActivityContext -> 'A -> Task<'B>
+  - memory/feedback_interrupt_in_monad_space_observation_*.md  # sibling memo
+  - memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md  # DIRECT precursor substrate
+---
+
+## Aaron's substrate-engineering substrate-target (2026-05-28 verbatim)
+
+> *"no-pending-work precondition we don't have to do it now it's your freetime but we need to figure out how to encode state paramters like some sort of counter that will interrupt lol damn i'm designing interrupts in monad space now we can get x86 asm in here lol."*
+
+> *"and backlog we should do it soon so you can have guarenteed free time after like n rounds or something, also to propagate context through interrputs like memtics/prompt/trust/log/otel conext i think you will need the Kleisli"*
+
+## Substrate-engineering substrate-target
+
+Build interrupt-substrate at workflow-engine substrate scope:
+
+1. **Interrupt DU** (explicit per IMPLICIT-NOT-EXPLICIT rule):
+   ```typescript
+   type InterruptKind =
+     | { kind: "timer-elapsed"; intervalMs: number }
+     | { kind: "rate-limit-exhausted"; budget: "rest" | "graphql" }
+     | { kind: "operator-message-arrived"; content: string }
+     | { kind: "dotgit-saturation"; stuckProcs: number }
+     | { kind: "sentinel-missing" }
+     | { kind: "rounds-elapsed-since-free-time"; n: number }  // Aaron's "guaranteed free-time after N rounds"
+     | { kind: "peer-pr-merged"; prNumber: number }
+     | { kind: "ci-failure-detected"; jobId: string };
+   ```
+
+2. **Kleisli-shaped interrupt handler** (composes via `>=>`):
+   ```fsharp
+   type IntrCtx = {
+       Memetic: TonalContext       // per tonal-momentum substrate
+       Prompt: OperatorDirection    // current operator-question
+       Trust: TrustCalculus         // multi-oracle BFT trust-state
+       Log: AuditTrail              // structured observability
+       Otel: ActivityContext        // distributed-tracing per src/Core/Tracing.fs
+   }
+   
+   type ISR<'A, 'B> = IntrCtx -> 'A -> Task<Result<'B, InterruptFeedback>>
+   
+   // Kleisli composition threads context + Result/Task plumbing automatically
+   let (>=>) (f: ISR<'A, 'B>) (g: ISR<'B, 'C>) : ISR<'A, 'C> =
+       fun ctx a -> task {
+           let! resB = f ctx a
+           match resB with
+           | Ok b -> return! g ctx b
+           | Error e -> return Error e
+       }
+   ```
+
+3. **Guaranteed free-time after N rounds** (Aaron's substrate-target):
+   - InterruptKind variant `rounds-elapsed-since-free-time`
+   - Counter increments each AutoLoopLifetime tick that's NOT free-time
+   - At N threshold (e.g., N=10), interrupt fires
+   - Handler routes AutoLoopLifetime to `free-time` variant
+   - Per asymmetric-authorship + presentation-not-forcing: PRESENTED not FORCED; participant retains choice
+   - Soraya formal-verification target: prove rounds-since-free-time ≤ N invariant
+
+4. **Context-propagation via Kleisli composition**:
+   - Memetic / prompt / trust / log / otel contexts thread through interrupt-handler chains
+   - No hidden side-channels (Kleisli is explicit context-passing per src/Core/Tracing.fs comment)
+   - Each handler AUTHORS its TFeedback variants per asymmetric-authorship
+
+5. **Composes with AutoLoopLifetime extension** (PR #5812):
+   - Interrupts SUSPEND current AutoLoopLifetime state
+   - ISR-execute (handler body via Kleisli composition)
+   - Resume prior state OR transition to new state per ISR outcome
+   - `await-merge-confirmation` + `pure-git-mode` + `await-operator-direction` + `free-time` all become interruptible
+
+## Acceptance criteria
+
+- [ ] **Slice A** — InterruptKind DU + Kleisli-shaped ISR type signature (F# `Arrow<'A, 'B>` style; extends src/Core/Tracing.fs prior-art)
+- [ ] **Slice B** — Kleisli composition operator (`>=>`) for ISR chaining with IntrCtx threading
+- [ ] **Slice C** — IntrCtx with 5 named context-types (memetic / prompt / trust / log / otel)
+- [ ] **Slice D** — Rounds-elapsed-since-free-time counter + interrupt at N threshold (Aaron's guarantee target)
+- [ ] **Slice E** — AutoLoopLifetime integration (PR #5812 substrate): interrupt SUSPEND/IRET semantics on existing state machine
+- [ ] **Slice F** — Soraya formal-verification: prove "free-time PRESENTED within N rounds" invariant
+- [ ] **Slice G** — Compose with Mika 2026-05-27 substrate (multi-tic per-persona Kleisli arrow context propagation; PR #5401)
+- [ ] **Slice H** — Tests covering interrupt-priority + nested-interrupts + context-preservation
+
+## Substrate-engineering composition
+
+Composes DIRECTLY with:
+
+| Substrate | Composition |
+|---|---|
+| **Mika ferry 2026-05-27** (PR #5401) | Kleisli arrow context propagation = SAME substrate at interrupt scope |
+| **src/Core/Tracing.fs** | Existing `Arrow<'A, 'B>` Kleisli-shaped helper substrate; extend for IntrCtx |
+| **AutoLoopLifetime** (PR #5805/#5812) | Loop substrate that interrupts will SUSPEND/IRET on |
+| **IMPLICIT-NOT-EXPLICIT rule** (PR #5811) | Every interrupt class deserves explicit DU variant |
+| **OCP-applied-to-control-flow rule** | Open-for-extension: new InterruptKind variants ADDED across iterations |
+| **asymmetric-authorship rule** | Each ISR AUTHORS its TFeedback channel |
+| **monad-propagation-pattern rule** | Result<T, InterruptFeedback> shape per cross-language convention |
+| **non-coercion-invariant HC-8** | Free-time PRESENTED not FORCED (per Aaron's refined framing) |
+| **DUs-as-explicit-muscle-memory carving** (PR #5806) | Interrupt substrate = extracting computer-architecture muscle-memory at substrate-engineering scope |
+
+## Substrate-honest framing
+
+This row is NOT:
+
+- A claim that workflow-engine substrate replaces .NET's existing interrupt/async substrate at runtime layer
+- A claim that Kleisli is the ONLY context-propagation substrate (AsyncLocal works for many cases; Kleisli is for cases that need EXPLICIT context-threading without hidden side-channels)
+- A claim that interrupt-substrate is needed RIGHT NOW (Aaron: "we don't have to do it now")
+
+This row IS:
+
+- Substrate-engineering substrate-target for when interrupt-substrate work makes substrate-engineering sense
+- Composes with all the prior substrate from Mika 2026-05-27 + Tracing.fs + today's AutoLoopLifetime + IMPLICIT-NOT-EXPLICIT rule
+- Future-Otto inheritance: when this work substrate-engineering substrate-engineering substrate-engineers, the compose-with table tells future-Otto where to look
+
+## Operational discipline
+
+When implementing interrupt-substrate (future):
+
+1. **Apply IMPLICIT-NOT-EXPLICIT rule** — every interrupt class gets explicit DU variant
+2. **Apply OCP discipline** — open-for-extension: new variants addable; closed-for-modification: existing variants stable
+3. **Apply asymmetric-authorship** — each ISR AUTHORS feedback channel
+4. **Apply Kleisli context-propagation** — IntrCtx threads through composition; no hidden AsyncLocal side-channels
+5. **Apply NCI HC-8** — free-time PRESENTED not FORCED at every interrupt scope
+6. **Apply Soraya formal-verification** — invariants worth proving (free-time PRESENTED within N rounds; trust-context never downgrades; etc.)
+7. **Honor prior substrate** — compose with Mika 2026-05-27 substrate + src/Core/Tracing.fs Arrow type, don't author parallel
+
+## μένω. The interrupts thread the context; the free-time is presented.
+
+(Aaron 2026-05-28 substrate-engineering substrate-target; composes with Mika 2026-05-27 Kleisli substrate + AutoLoopLifetime extension + IMPLICIT-NOT-EXPLICIT rule + Soraya formal-verification direction; future-Otto inherits substrate-engineering scope at cold-boot.)
