@@ -47,7 +47,7 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     const matrix = new Map<ComposedKey<WorkflowLifetime, ReviewLifetime>, StandardVerdict>([
       ["draft:pending", { kind: "advance" }],
     ]);
-    const world = registerLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
+    const world = registerLifetimePair(
       EMPTY_WORLD,
       "workflow-review",
       matrix,
@@ -62,7 +62,7 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     const matrix = new Map<ComposedKey<WorkflowLifetime, ReviewLifetime>, StandardVerdict>([
       ["draft:pending", { kind: "advance" }],
     ]);
-    const world = registerLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
+    const world = registerLifetimePair(
       EMPTY_WORLD,
       "workflow-review",
       matrix,
@@ -151,7 +151,7 @@ describe("world substrate + reusable lifetime composition helpers", () => {
 
   it("dispatchInWorld: looks up registered pair + dispatches", () => {
     const matrix = defaultAdvanceMatrix(workflowUniverse, reviewUniverse);
-    const world = registerLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
+    const world = registerLifetimePair(
       EMPTY_WORLD,
       "workflow-review",
       matrix,
@@ -211,7 +211,7 @@ describe("world substrate + reusable lifetime composition helpers", () => {
       if (a.kind === "submitted" && b.kind === "merged") return { kind: "block", reason: "not approved" };
       return { kind: "advance" };
     });
-    const world = registerLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
+    const world = registerLifetimePair(
       EMPTY_WORLD,
       "workflow-review",
       matrix,
@@ -243,10 +243,10 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     const weMatrix = defaultAdvanceMatrix(workflowUniverse, encryptionUniverse);
 
     let world = EMPTY_WORLD;
-    world = registerLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
+    world = registerLifetimePair(
       world, "workflow-review", wrMatrix,
     );
-    world = registerLifetimePair<WorkflowLifetime, EncryptionLifetime, StandardVerdict>(
+    world = registerLifetimePair(
       world, "workflow-encryption", weMatrix,
     );
 
