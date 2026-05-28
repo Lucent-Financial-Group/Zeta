@@ -16,7 +16,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Fresh reland of the #5800 duplicate-ID repair from current origin/main after #5840 merged, avoiding force-push on the polluted local #5800 branch.\n\nWhat changed:\n- Move the CayleyDickson housekeeping row from B-0865 to B-0921.\n- Move the KskAuthorization housekeeping row from B-0866 to B-0922.\n- Update B-0913 triage notes and regenerate docs/BACKLOG.md.\n\nWhy B-0921/B-0922:\n- Current main already uses B-0917, B-0918, B-0919, and B-0920.\n\nValidation:\n- bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids\n- bun tools/backlog/generate-index.ts --check\n- git diff --check\n\nSupersedes #5800 as the no-force-push reland path.
+Fresh reland of the #5800 duplicate-ID repair from current origin/main after #5840 merged, avoiding force-push on the polluted local #5800 branch.
+
+What changed:
+- Move the CayleyDickson housekeeping row from B-0865 to B-0921.
+- Move the KskAuthorization housekeeping row from B-0866 to B-0922.
+- Update B-0913 triage notes and regenerate docs/BACKLOG.md.
+
+Why B-0921/B-0922:
+- Current main already uses B-0917, B-0918, B-0919, and B-0920.
+
+Validation:
+- bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
+- bun tools/backlog/generate-index.ts --check
+- git diff --check
+
+Supersedes #5800 as the no-force-push reland path.
 
 ## Reviews
 
