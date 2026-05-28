@@ -249,12 +249,12 @@ function parseEnvCommand(args: readonly string[]): string | undefined {
     const arg = args[index];
     if (arg === undefined) continue;
     if (arg === "-S" || arg === "--split-string") {
-      const splitArg = args[index + 1];
-      return splitArg === undefined ? undefined : splitShebangFields(splitArg)[0];
+      const splitArgs = args.slice(index + 1);
+      return splitArgs.length === 0 ? undefined : parseEnvCommand(splitShebangFields(splitArgs.join(" ")));
     }
     if (arg.startsWith("--split-string=")) {
       const splitArg = arg.slice("--split-string=".length);
-      return splitShebangFields(splitArg)[0];
+      return parseEnvCommand(splitShebangFields(splitArg));
     }
     if (arg === "--") return args[index + 1];
     if (ENV_OPTIONS_WITH_SEPARATE_OPERAND.has(arg)) {
