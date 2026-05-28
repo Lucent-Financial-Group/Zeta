@@ -1,22 +1,23 @@
 ---
-id: B-0865
+id: B-0921
+renumbered_from: B-0865
 priority: P2
 status: open
 title: Integrate or remove unreferenced file src/Core/CayleyDickson.fs
 created: 2026-05-27
 last_updated: 2026-05-27
-depends_on: []
+depends_on: [B-0522]
 type: friction-reducer
 decomposition: no
 ---
 
-# B-0865 — Integrate or remove unreferenced file src/Core/CayleyDickson.fs
+# B-0921 — Integrate or remove unreferenced file src/Core/CayleyDickson.fs
 
 **Priority:** P2
 
 **Filed:** 2026-05-27.
 
-**Filed by:** Lior (via autonomous F# artifact audit; `tools/hygiene/audit-fsharp-artifacts.ts`).
+**Filed by:** Lior (via autonomous audit B-0522).
 
 ## What
 
