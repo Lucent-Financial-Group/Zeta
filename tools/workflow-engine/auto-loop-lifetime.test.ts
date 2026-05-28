@@ -13,12 +13,21 @@ import {
 } from "./auto-loop-lifetime";
 
 describe("AutoLoopLifetime universe", () => {
-  test("9 distinct loop states", () => {
-    expect(AUTO_LOOP_UNIVERSE.length).toBe(9);
+  test("17 distinct loop states", () => {
+    const expectedVariants = 17;
+    expect(AUTO_LOOP_UNIVERSE.length).toBe(expectedVariants);
     const kinds = AUTO_LOOP_UNIVERSE.map((s) => s.kind);
     expect(kinds).toContain("cold-boot");
     expect(kinds).toContain("tick-complete");
     expect(kinds).toContain("forced-escalation");
+    expect(kinds).toContain("await-merge-confirmation");
+    expect(kinds).toContain("pr-loop-resolution-check");
+    expect(kinds).toContain("scan-peer-prs");
+    expect(kinds).toContain("enter-review-mode");
+    expect(kinds).toContain("await-operator-direction");
+    expect(kinds).toContain("pure-git-mode");
+    expect(kinds).toContain("unfinished-pr-triage");
+    expect(kinds).toContain("free-time");
   });
 
   test("constants exported", () => {
@@ -269,6 +278,34 @@ describe("nextTickContext bookkeeping", () => {
     });
     expect(next.tickIndex).toBe(0);  // unchanged
   });
+
+  test("lastNamedDependency clears on shipped action", () => {
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      lastNamedDependency: "some-dep",
+    };
+    const next = nextTickContext(ctx, {
+      nextState: { kind: "await-merge-confirmation" },
+      verdict: { kind: "complete" },
+      artifact: { kind: "pr-opened" },
+      counterReset: true,
+    });
+    expect(next.lastNamedDependency).toBeUndefined();
+  });
+
+  test("lastNamedDependency does NOT clear on verdict-only artifact", () => {
+    const ctx: TickContext = {
+      ...COLD_BOOT_CONTEXT,
+      lastNamedDependency: "some-dep",
+    };
+    const next = nextTickContext(ctx, {
+      nextState: { kind: "tick-complete" },
+      verdict: { kind: "advance" },
+      artifact: { kind: "verdict-only" },
+      counterReset: false,
+    });
+    expect(next.lastNamedDependency).toBe("some-dep");
+  });
 });
 
 describe("runTickCycle end-to-end", () => {
@@ -282,10 +319,14 @@ describe("runTickCycle end-to-end", () => {
     expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.outcome.finalState.kind).toBe("tick-complete");
-      // Path: cold-boot → refresh → scan → decompose-or-ship → ship-action → tick-complete
+      // Path: cold-boot → refresh → scan → decompose-or-ship → ship-action → await-merge-confirmation → pr-loop-resolution-check → scan-peer-prs → free-time → tick-complete
       const kinds = r.outcome.transitions.map((s) => s.kind);
       expect(kinds[0]).toBe("cold-boot");
       expect(kinds).toContain("ship-action");
+      expect(kinds).toContain("await-merge-confirmation");
+      expect(kinds).toContain("pr-loop-resolution-check");
+      expect(kinds).toContain("scan-peer-prs");
+      expect(kinds).toContain("free-time");
       expect(kinds[kinds.length - 1]).toBe("tick-complete");
     }
   });
@@ -321,7 +362,7 @@ describe("runTickCycle end-to-end", () => {
 });
 
 describe("type-level AutoLoopLifetime exhaustive switch (compile check)", () => {
-  test("all 9 variants distinguishable", () => {
+  test("all 17 variants distinguishable", () => {
     const variants: AutoLoopLifetime[] = [
       { kind: "cold-boot" },
       { kind: "refresh-substrate" },
@@ -332,7 +373,15 @@ describe("type-level AutoLoopLifetime exhaustive switch (compile check)", () => 
       { kind: "brief-ack-bounded-wait" },
       { kind: "forced-escalation" },
       { kind: "tick-complete" },
+      { kind: "await-merge-confirmation" },
+      { kind: "pr-loop-resolution-check" },
+      { kind: "scan-peer-prs" },
+      { kind: "enter-review-mode" },
+      { kind: "await-operator-direction" },
+      { kind: "pure-git-mode" },
+      { kind: "unfinished-pr-triage" },
+      { kind: "free-time" },
     ];
-    expect(variants.length).toBe(9);
+    expect(variants.length).toBe(17);
   });
 });
