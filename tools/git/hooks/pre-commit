@@ -1,0 +1,51 @@
+#!/bin/bash
+# pre-commit hook to run substrate claim checkers on staged files.
+# Part of B-0173.
+
+# By default, run in 'warn' mode. To block commits, set this to 'strict'.
+MODE=${SUBSTRATE_CLAIM_CHECKER_MODE:-warn}
+
+echo "--- Running Substrate Claim Checkers (pre-commit) ---"
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "No staged files to check."
+    exit 0
+fi
+
+CHECKERS=(
+    "tools/substrate-claim-checker/check-counts.ts"
+    "tools/substrate-claim-checker/check-existence.ts"
+    "tools/substrate-claim-checker/check-path-forms.ts"
+    "tools/substrate-claim-checker/check-self-recursive.ts"
+    "tools/substrate-claim-checker/check-cross-surface.ts"
+    "tools/substrate-claim-checker/check-convention.ts"
+)
+
+HAS_VIOLATIONS=0
+
+for CHECKER in "${CHECKERS[@]}"; do
+    if [ -f "$CHECKER" ]; then
+        echo "Running checker: $CHECKER"
+        # The checkers should be updated to accept a list of files.
+        # This is a placeholder for that functionality.
+        if ! bun run "$CHECKER" --files $STAGED_FILES; then
+            HAS_VIOLATIONS=1
+        fi
+    fi
+done
+
+if [ "$HAS_VIOLATIONS" -eq 1 ]; then
+    echo "-----------------------------------------------------"
+    echo "Substrate Claim Checkers found potential violations."
+    if [ "$MODE" = "strict" ]; then
+        echo "Commit REJECTED. Please fix the issues above."
+        exit 1
+    else
+        echo "Warning: Issues found. Please review before pushing."
+    fi
+fi
+
+echo "--- Substrate Claim Checkers complete ---"
+exit 0
