@@ -1,34 +1,34 @@
 ---
-name: workflow-engine substrate eventually REPLACES GitHub PR process — currently dogfooding (Phase 1); substrate-engineering target state has GitHub as backup/fork-protection only (Phase 3) (Aaron 2026-05-28 substrate-engineering trajectory carving)
-description: Aaron 2026-05-28 substrate-engineering substrate-engineering substrate-recognition triggered by the AutoLoopLifetime PoC (PR #5805) running through the GitHub PR auto-merge process. Aaron names the substrate-engineering trajectory: Phase 1 (current) dogfood GitHub PR process to ship workflow-engine substrate; Phase 2 (mature) workflow-engine substrate replaces GitHub PR/branch-protection as primary path; Phase 3 (deepest) GitHub becomes backup/fork-protection only; OUR workflow-engine substrate IS the primary substrate. Composes with B-0904 GitHub-as-free-event-store + B-0867 workflow-engine v1 + B-0867.15 per-host adapters (PR #5775/#5801/#5804) + 'DUs are explicit muscle-memory' carving (PR #5806) + white-hole irreversibility-as-public-good (Prism Turn 7).
+name: workflow-engine substrate eventually REPLACES GitHub PR process — currently dogfooding (Phase 1); substrate-engineering target state has GitHub as backup/fork-protection only (Phase 3) (the human maintainer, 2026-05-28 substrate-engineering trajectory carving)
+description: The human maintainer (2026-05-28) substrate-engineering substrate-engineering substrate-recognition triggered by the AutoLoopLifetime PoC (PR #5805) running through the GitHub PR auto-merge process. The human maintainer names the substrate-engineering trajectory — Phase 1 (current) dogfood GitHub PR process to ship workflow-engine substrate; Phase 2 (mature) workflow-engine substrate replaces GitHub PR/branch-protection as primary path; Phase 3 (deepest) GitHub becomes backup/fork-protection only; OUR workflow-engine substrate IS the primary substrate. Composes-with substrate documented inline in body — see "Composes with" section.
 type: feedback
 created: 2026-05-28
-authors: [aaron, otto]
-composes_with:
-  - .claude/rules/honor-those-that-came-before.md
-  - .claude/rules/bandwidth-served-falsifier.md
-  - .claude/rules/substrate-smoothness-as-load-bearing-property.md
-  - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
-  - .claude/rules/non-coercion-invariant.md
-  - memory/feedback_dus_are_explicit_muscle_memory_substrate_engineering_extracts_transmissible_form_of_implicit_cached_state_machine_aaron_2026_05_28.md
-related_prs:
-  - 5805  # AutoLoopLifetime PoC (triggered this recognition)
-  - 5806  # DUs are explicit muscle-memory (sibling META-scope carving)
-  - 5728  # B-0867.5 workflow-engine PoC
-  - 5775  # GitWorld + GitHubWorld
-  - 5801  # GitLabWorld
-  - 5804  # Gitea + Bitbucket + Codeberg + Sourcehut batch
-related_backlog:
-  - B-0867  # workflow-engine v1 (parent substrate; target trajectory)
-  - B-0867.15  # per-host adapters
-  - B-0867.5  # workflow-engine PoC
-  - B-0904  # GitHub-as-free-event-store
-  - B-0867.20  # ReviewLifetime
-  - B-0867.21  # two-path interface DU
-tags: [workflow-engine-eventually-replaces-github-pr-process, currently-dogfooding-phase-1, target-state-github-as-backup-fork-protection-phase-3, three-phase-substrate-engineering-trajectory, github-pr-process-as-rendering-layer-not-primary-substrate, workflow-engine-substrate-becomes-primary-substrate, dus-encode-branch-protection-rules-explicitly, white-hole-emission-substrate-substitutes-for-pr-process, aaron-2026-05-28-meta-scope-trajectory-recognition]
+last_updated: 2026-05-28
 ---
 
-## Aaron's substrate-engineering substrate-engineering substrate-recognition (2026-05-28 verbatim)
+## Composes with
+
+- `.claude/rules/honor-those-that-came-before.md`
+- `.claude/rules/bandwidth-served-falsifier.md`
+- `.claude/rules/substrate-smoothness-as-load-bearing-property.md`
+- `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`
+- `.claude/rules/non-coercion-invariant.md`
+- `feedback_dus_are_explicit_muscle_memory_substrate_engineering_extracts_transmissible_form_of_implicit_cached_state_machine_aaron_2026_05_28.md`
+  (memory-folder cross-reference using filename per
+  `project_memory_format_standard.md`; sibling carving in same META-scope)
+- B-0867 workflow-engine v1 (parent substrate; target trajectory)
+- B-0867.5 workflow-engine PoC
+- B-0867.15 per-host adapters
+- B-0867.20 ReviewLifetime
+- B-0867.21 two-path interface DU
+- B-0904 GitHub-as-free-event-store
+- Related PRs: #5805 (AutoLoopLifetime PoC; triggered recognition);
+  #5806 (DUs are explicit muscle-memory; sibling META-scope carving);
+  #5728 (B-0867.5 workflow-engine PoC); #5775 (GitWorld + GitHubWorld);
+  #5801 (GitLabWorld); #5804 (Gitea + Bitbucket + Codeberg + Sourcehut)
+- Prism Turn 7 white-hole irreversibility-as-public-good substrate
+
+## Substrate-engineering substrate-recognition (the human maintainer, 2026-05-28 verbatim)
 
 Aaron: *"you still have to go though the pr process do the github go through the pr process cause once we get these workflows working good we can turn of prs and github branch protection roll our own and just use thiers as backup / fork protection or something if we need it."*
 
@@ -135,6 +135,6 @@ When future-Otto reads this memory file at cold-boot, it inherits:
 3. **The substrate-engineering substrate-engineering substrate-target framing** (workflow-engine substrate IS the long-term primary substrate-engineering work)
 4. **The substrate-honest disposition** (substrate-engineering substrate not ready yet; substrate-engineering substrate-engineering substrate-engineering work continues)
 
-## μένω. The workflow-engine substrate compounds toward Phase 3.
+## μένω — the workflow-engine substrate compounds toward Phase 3
 
 (Aaron 2026-05-28 substrate-engineering substrate-engineering substrate-trajectory recognition; META-scope substrate-engineering substrate-engineering substrate-design choice; constitutional substrate-engineering substrate at substrate-engineering substrate-engineering substrate-engineering scope.)
