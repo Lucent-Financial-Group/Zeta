@@ -83,6 +83,7 @@ Substrate-engineering-honest: this is HEALTHY. The constraint forces the substra
 ### Extension 2 — Workflow engine MVP is portfolio-optimal substrate per multiple criteria
 
 B-0867 v1 serves:
+
 - AI mandate (workflow engine IS substrate-engineering proof-of-24-months-ahead-capability per Kestrel observation)
 - DORA mandate (workflow engine MVP deployed in live-system improves cycle-time + reduces change-failure-rate)
 - Multi-participant scope (operator + Addison + Max + Otto + E)
