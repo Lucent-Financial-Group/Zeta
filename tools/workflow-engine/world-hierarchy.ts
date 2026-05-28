@@ -95,7 +95,21 @@ export interface HierarchicalWorld extends World {
 export type DBSPCliffordRelationship =
   | { kind: "strict-restriction"; rationale: string }
   | { kind: "fully-isomorphic"; rationale: string }
-  | { kind: "open-question"; preservedReadings: ReadonlyArray<string> };
+  | {
+      kind: "open-question";
+      preservedReadings: ReadonlyArray<string>;
+      /**
+       * Optional vote ordering over `preservedReadings` (highest priority
+       * first). When set, downstream substrate-engineering work uses
+       * `preservedReadings[voteOrdering[0]]` as the primary working
+       * hypothesis and `preservedReadings[voteOrdering[1]]` as the
+       * secondary fallback. Substrate-engineering work starts with the
+       * primary; falls to the secondary if/when algebraic substrate
+       * proves them equivalent. See B-0915 for impl substrate that
+       * resolves this.
+       */
+      voteOrdering?: ReadonlyArray<number>;
+    };
 
 export const OPEN_QUESTION_DBSP_CLIFFORD: DBSPCliffordRelationship = {
   kind: "open-question",
@@ -103,7 +117,23 @@ export const OPEN_QUESTION_DBSP_CLIFFORD: DBSPCliffordRelationship = {
     "(A) Git ⊂ DBSP ⊂ Clifford strict-subset chain; each restricts upward substrate",
     "(B) DBSP ↔ Clifford fully isomorphic; both algebraic substrates supporting increments + retractions; Git ⊂ both equivalently",
   ],
+  // the human maintainer (2026-05-28): "1 first 2 2nd would be great" —
+  // (A) primary, (B) secondary fallback. Substrate-engineering work
+  // starts with (A); falls to (B) if/when algebraic-substrate work
+  // proves them equivalent.
+  voteOrdering: [0, 1],
 };
+
+/**
+ * Helper to extract the operator's primary working hypothesis from the
+ * open question. Returns the highest-vote reading (voteOrdering[0]) or
+ * the first preservedReading if no vote ordering present.
+ */
+export function primaryWorkingHypothesis(rel: DBSPCliffordRelationship): string | null {
+  if (rel.kind !== "open-question") return null;
+  const idx = rel.voteOrdering?.[0] ?? 0;
+  return rel.preservedReadings[idx] ?? null;
+}
 
 // ───────────────────────────────────────────────────────────────────────
 // Inheritance verification — substrate-engineering composition guard
