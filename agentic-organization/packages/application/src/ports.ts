@@ -72,6 +72,8 @@ export type CommandWorkAnchorTransitionInput = {
 };
 
 export type WorkAnchorStateReaderPort = {
+  findProject: (projectId: string) => Promise<CommandWorkAnchorProject | undefined>;
+  findInitiative: (initiativeId: string) => Promise<CommandWorkAnchorInitiative | undefined>;
   findWorkItem: (workItemId: string) => Promise<CommandWorkAnchorWorkItem | undefined>;
 };
 

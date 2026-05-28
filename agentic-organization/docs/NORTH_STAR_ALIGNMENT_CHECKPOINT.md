@@ -108,9 +108,14 @@ idempotency, audit, and outbox effects in both the in-memory and
 Cockroach adapters. `send_supervisor_signal` now accepts a generic
 work-anchor reader through the command pipeline execution context, so
 durable runtime paths can reject missing or wrong-scope work anchors
-before emitting supervisor-signal effects. The remaining gap is concrete
-work-anchor command handlers for project, initiative, work-item, anchor,
-and transition creation.
+before emitting supervisor-signal effects. The first concrete
+work-anchor command, `create_work_item`, now creates a work item in
+`created` state by returning work-anchor, audit, and outbox effects
+through that same command outcome boundary. When the runtime supplies a
+work-anchor reader, it rejects missing projects or wrong-scope
+initiatives before emitting effects, preserving the graph/retrieval
+principle that consequential work stays anchored. The remaining gap is
+concrete project, initiative, anchor, and transition command handlers.
 
 ### Scheduled Agent Time
 

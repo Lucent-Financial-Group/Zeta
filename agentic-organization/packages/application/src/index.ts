@@ -25,6 +25,12 @@ export {
   type CommandResultEmittedEvent,
 } from "./command-result.ts";
 export {
+  createCreateWorkItemHandler,
+  createWorkItem,
+  type CreateWorkItemCommand,
+  type CreateWorkItemDependencies,
+} from "./handlers/create-work-item.ts";
+export {
   createSendSupervisorSignalHandler,
   sendSupervisorSignal,
   type IdPrefix,

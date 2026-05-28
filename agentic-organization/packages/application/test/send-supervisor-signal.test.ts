@@ -102,6 +102,8 @@ describe("send supervisor signal handler", () => {
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
       workAnchorStateReader: {
+        findProject: async () => undefined,
+        findInitiative: async () => undefined,
         findWorkItem: async () => undefined,
       },
     });
@@ -129,6 +131,8 @@ describe("send supervisor signal handler", () => {
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
       workAnchorStateReader: {
+        findProject: async () => undefined,
+        findInitiative: async () => undefined,
         findWorkItem: async () => ({
           ...createWorkItem(),
           projectId: "project-other",

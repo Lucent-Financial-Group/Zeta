@@ -303,9 +303,12 @@ When a command needs to validate existing work before emitting effects,
 the pipeline passes a generic work-anchor reader through the execution
 context. The first use is `send_supervisor_signal`: with a reader
 configured, it rejects missing or wrong-scope related work items before
-it creates supervisor-signal, audit, or outbox effects. Without a reader,
-pure unit use stays possible for handlers that are not yet bound to the
-durable work-anchor substrate.
+it creates supervisor-signal, audit, or outbox effects. The next use is
+`create_work_item`: with a reader configured, it validates the referenced
+project and optional initiative scope before creating work-item, audit,
+and outbox effects. Without a reader, pure unit/bootstrap use stays
+possible for handlers that are not yet bound to the durable work-anchor
+substrate.
 Durable command adapters should reserve the idempotency record before
 effect rows inside that transaction so an idempotency race aborts before
 supervisor signal, work-anchor, audit, or outbox state becomes visible.

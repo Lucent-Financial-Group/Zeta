@@ -1015,8 +1015,12 @@ initiative, work item, or anchor-target persistence yet.
      in-memory and Cockroach adapters. The command pipeline can also pass
      a generic work-anchor reader into handlers; `send_supervisor_signal`
      uses that seam to reject missing or wrong-scope related work before
-     emitting supervisor-signal effects. Concrete work-anchor command
-     handlers remain pending.
+     emitting supervisor-signal effects. First concrete command handler
+     done: `create_work_item` returns work-anchor, audit, and outbox
+     effects through the generic command outcome boundary, validates
+     blank inputs locally, and uses the work-anchor reader to reject
+     missing project or wrong-scope initiative references when the durable
+     substrate supplies one.
 5. Keep the first state machine narrow:
    - created;
    - intake;
