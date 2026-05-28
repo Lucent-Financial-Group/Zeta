@@ -7,7 +7,6 @@
 import { describe, expect, it } from "bun:test";
 import {
   EMPTY_WORLD,
-  composeKey,
   defaultAdvanceMatrix,
   dispatchInWorld,
   lookupLifetimePair,
