@@ -60,11 +60,27 @@ The current executable spine includes:
   steps once per process, gates runtime execution on readiness, and
   aggregates graceful shutdown results without hiding partial adapter
   failures.
+- `apps/workers` process loop contract that repeatedly invokes the
+  process lifecycle through injected delay, observer, and stop-signal
+  ports, captures loop weak points, and always attempts shutdown.
+- `apps/workers` executable-boundary entrypoint contract that subscribes
+  to typed stop signals through an injected signal source, delegates wait
+  policy to an injected sleeper, returns success/degraded exit intent,
+  and disposes signal listeners after shutdown without using process
+  globals in reusable packages.
+- env-gated live substrate proofs for Cockroach, NATS, and the combined
+  durable worker path that writes a command outcome to Cockroach,
+  publishes the outbox through NATS, consumes it back, records durable
+  inbox/reaction-plan state, emits telemetry, and shuts down generic
+  process adapters.
 
-The next implementation slice is integration proof below
-`apps/workers`: real Cockroach and NATS checks gated by environment so
-the app-local ports can be proven against live substrates without
-turning reusable packages into vendor-specific code.
+The next implementation slice after the entrypoint contract is to
+continue with the next generic command/work-anchor surfaces, then wrap
+the same entrypoint with a concrete Node/NestJS host when process
+globals and Kubernetes deployment concerns are ready. Keep the live
+substrate checks gated by
+environment until the team decides whether CI should provide Cockroach
+and NATS services.
 
 ## Work Rules For Every Phase
 
@@ -810,9 +826,12 @@ infrastructure.
    health; Cockroach and NATS done. Telemetry readiness remains deferred
    until the sink has an external destination.
 10. Add a process lifecycle entrypoint contract only after factories are
-    contract-tested; done as `createWorkerProcess`. A real long-running
-    executable worker host remains a later adapter step.
-11. Add an early full-ai-cluster contract checkpoint without deployment
+    contract-tested; done as `createWorkerProcess`.
+11. Add a loop-bound executable entrypoint contract that binds signal,
+    delay, observer, and exit-intent concerns through ports; done as
+    `createWorkerProcessEntrypoint`. A concrete Node/NestJS process host
+    remains a later adapter step.
+12. Add an early full-ai-cluster contract checkpoint without deployment
     YAML:
     - required env names;
     - Secret/ExternalSecret names;
@@ -880,23 +899,33 @@ pile of bespoke result types.
    - result artifact schema;
    - emitted event types;
    - required authority/tool;
-   - handler.
+   - handler. First code slice started for command type, generic handler
+     registration, explicit `policyContext`, result artifacts, emitted
+     events, and policy/idempotency flow; explicit schema metadata is
+     still pending, and durable business-effect categories remain
+     intentionally narrow until the work-anchor kernel lands.
 2. Refactor the existing `send_supervisor_signal` registration into the
-   generic registry.
+   generic registry. Done for handler registration and generic pipeline
+   execution.
 3. Normalize command outcome into:
    - status;
    - command ID;
    - idempotency status;
    - policy decision;
-   - emitted events;
-   - audit records;
+   - emitted events derived from committed outbox effects;
+   - audit records derived from committed audit effects;
    - domain artifacts;
-   - failure reason.
+   - failure reason. First code slice done with command ID, policy,
+     emitted event summaries, audit event IDs, artifacts, idempotency,
+     and typed error metadata.
 4. Keep command handlers returning effects, not writing concrete state.
-5. Add typed command error codes for validation, policy denial,
+5. Generalize durable command effects beyond supervisor signals once
+   the work-anchor kernel defines the next persistent business effect
+   category.
+6. Add typed command error codes for validation, policy denial,
    idempotency conflict, persistence conflict, and transient adapter
    failure.
-6. Add command metadata that can feed MCP tools, UI forms, and prompt
+7. Add command metadata that can feed MCP tools, UI forms, and prompt
    flow phase definitions later.
 
 ### Tests First
@@ -904,6 +933,7 @@ pile of bespoke result types.
 Write tests for:
 
 - registering multiple commands without changing pipeline code;
+  first executable test done;
 - unknown command rejection;
 - handler validation failure;
 - allowed policy path;
@@ -943,15 +973,26 @@ initiative, work item, or anchor-target persistence yet.
 ### Code Steps
 
 1. Reconcile the V0 work item states across docs and implementation,
-   including how `created` maps to the current `intake` concept.
+   including how `created` maps to the current `intake` concept. First
+   domain slice done with `created`, `intake`, `triage`, `ready`,
+   `in_progress`, `blocked`, `review`, and `done`.
 2. Add the minimal domain records for:
    - project;
    - initiative;
    - work item;
    - work anchor target;
-   - work state transition.
+   - work state transition. First domain record types added; durable
+     persistence and commands are still pending.
 3. Add Cockroach schema for minimal projects, initiatives, work items,
-   and work anchor targets.
+   and work anchor targets. First durable schema slice done with
+   `0003_agentic_org_work_anchor_kernel`: V1 remains the legacy core
+   migration, V3 additively creates project, initiative, work anchor
+   target, and work item state-history tables, upgrades existing
+   `work_items` with work type, trace, version, and update columns,
+   drops migration-only defaults after backfill so future writes require
+   real command provenance, preserves legacy `updated_at` from
+   `created_at`, constrains replay sequence and enum columns from domain
+   constants, and tests generated SQL against checked-in migration files.
 4. Add commands:
    - `create_project`;
    - `create_initiative`;
@@ -968,6 +1009,9 @@ initiative, work item, or anchor-target persistence yet.
    - review;
    - done.
 6. Add the first type-specific lifecycle policy records for defects.
+   First domain guards added: defects must start in `created`, require
+   triage fields and evidence before `ready`, and require engineer
+   assignment plus a scheduled work block before `in_progress`.
 7. Emit audit and outbox events for every work state transition.
 8. Add a minimal work-status query/read model for workers, agents, and
    future UI/API hosts.
@@ -2670,23 +2714,115 @@ Done when:
 - one outbox event publishes to NATS; done when a live JetStream server
   is supplied;
 - one inbound NATS event is consumed, deduped, and acknowledged; the
-  live proof covers consume and acknowledge, while durable
-  event-ingestion dedupe remains proven by fake-driven state tests and
-  will move into a full Cockroach plus NATS integration once both live
-  URLs are supplied together.
+  live proof covers consume and acknowledge. Durable event-ingestion
+  dedupe remains proven by fake-driven state tests and is now exercised
+  in the combined proof when both live URLs are supplied together.
+
+### PR 3.5: Combined Durable Worker Proof
+
+Status: implemented as an env-gated live proof harness. The normal suite
+still skips this proof unless both
+`AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` and
+`AGENTIC_ORG_NATS_INTEGRATION_SERVERS` are present.
+
+Build:
+
+- apply Cockroach migrations through the app-local bootstrapper; done;
+- write a real `send_supervisor_signal` command outcome through the
+  generic command pipeline and Cockroach state-store factory; done;
+- recreate a per-run NATS stream and durable consumer; done;
+- compose the durable worker runtime from Cockroach executor, NATS
+  publisher, NATS pull consumer, DLQ publisher, and telemetry sink ports;
+  done;
+- run the worker process through the process loop for two cycles,
+  including bootstrap, readiness, runtime, loop summary, and shutdown
+  evidence; done;
+- prove outbox publication to NATS and durable `published_at` marking;
+  done when both live substrates are supplied;
+- prove NATS consumption, ack, Cockroach inbox receipt, and
+  supervisor-triage reaction-plan persistence; done when both live
+  substrates are supplied;
+- clean up per-run Cockroach rows and NATS resources through guarded
+  cleanup that still removes NATS resources if Cockroach setup fails;
+  done.
+
+Done when:
+
+- one Organization command can cross the real durable path from command
+  state to outbox, NATS, inbox, reaction plan, telemetry, readiness, and
+  loop evidence without reusable packages importing vendor clients;
+- local runs stay green without live services.
+
+### PR 3.6: Worker Process Loop Wrapper
+
+Status: implemented as a fake-driven app-local contract. It does not
+construct Cockroach, NATS, NestJS, Kubernetes, or telemetry exporters.
+
+Build:
+
+- add `createWorkerProcessLoop` over the existing `WorkerProcess`; done;
+- inject delay, observer, and stop-signal ports instead of using
+  process globals directly; done;
+- continue after thrown iteration failures so one bad cycle does not
+  kill always-on work; done;
+- stop cleanly when the stop signal is raised before the next cycle;
+  done;
+- avoid busy spinning when the delay port fails; done;
+- preserve completed iteration results when observer recording fails;
+  done;
+- always attempt process shutdown and surface degraded shutdown evidence;
+  done.
+
+Done when:
+
+- the future executable worker host can use one small loop contract for
+  continuous operation;
+- tests prove the loop remains observable, stoppable, and safe to
+  shut down even when dependencies fail.
+
+### PR 3.7: Worker Process Entrypoint Contract
+
+Status: implemented as a fake-driven app-local contract. It still does
+not construct Cockroach, NATS, NestJS, Kubernetes, or telemetry
+exporters.
+
+Build:
+
+- add `createWorkerProcessEntrypoint` above `createWorkerProcessLoop`;
+  done;
+- subscribe to typed stop signals through an injected signal source;
+  done for `SIGINT` and `SIGTERM`;
+- delegate wait policy to an injected sleeper instead of using timers
+  directly; done;
+- map completed or stopped loop results to success exit intent and
+  degraded loop results to degraded exit intent; done;
+- always dispose signal subscriptions after loop shutdown; done;
+- preserve received signals and the full loop result for telemetry,
+  supervisor diagnosis, and future Kubernetes/NestJS wrappers; done.
+
+Done when:
+
+- a concrete Node or NestJS host can wrap the entrypoint without
+  changing worker lifecycle, loop, or runtime packages;
+- tests prove signal-driven stop, degraded exit mapping, delay failure
+  evidence, and listener disposal.
 
 ### PR 4: Generic Command Registry
 
 Build:
 
-- command contract registry;
-- generic command outcome;
-- refactor `send_supervisor_signal` into registry;
+- command contract registry; started with generic command base plus
+  handler registration, schema metadata pending;
+- generic command outcome; started with artifacts, emitted event
+  summaries, audit IDs, command ID, policy, idempotency, and errors;
+- refactor `send_supervisor_signal` into registry; done for execution
+  path while preserving compatibility fields;
 - OpenSpec command registry scenarios.
 
 Done when:
 
-- a second command can be added without changing pipeline internals.
+- a second command can be added without changing pipeline internals;
+  satisfied by the first generic pipeline test.
 
 ### PR 5: Work Anchor Kernel V0
 

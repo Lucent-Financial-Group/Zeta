@@ -74,7 +74,14 @@ const SHEBANG_READ_BYTES = 512;
 const SHELL_FILE_EXTENSIONS: readonly string[] = [".sh", ".bash", ".zsh", ".ksh", ".command"];
 export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
 export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS.map((extension) => `*${extension}`);
-const SHELL_FAMILY_SHEBANG_RE = /^#!.*[/\s](bash|dash|sh|zsh|ksh)(?:\s|$)/;
+const SHELL_INTERPRETERS = new Set(["bash", "dash", "sh", "zsh", "ksh"]);
+const ENV_OPTIONS_WITH_SEPARATE_OPERAND = new Set(["-a", "-P", "-u", "--argv0", "--chdir", "--path", "--unset"]);
+const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = [
+  "--argv0=",
+  "--chdir=",
+  "--path=",
+  "--unset=",
+];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -210,11 +217,103 @@ function parseTrackedGitFile(entry: string): TrackedGitFile | undefined {
 }
 
 function isTrackedShellFamilyFile(repoRoot: string, file: string, executable: boolean): boolean {
-  if (SHELL_FILE_EXTENSIONS.some((extension) => file.endsWith(extension))) return true;
+  const lowerFile = file.toLowerCase();
+  if (SHELL_FILE_EXTENSIONS.some((extension) => lowerFile.endsWith(extension))) return true;
   if (basename(file).includes(".") && !executable) return false;
 
   const firstLine = readFirstLine(join(repoRoot, file));
-  return SHELL_FAMILY_SHEBANG_RE.test(firstLine);
+  return isShellFamilyShebang(firstLine);
+}
+
+function isShellFamilyShebang(firstLine: string): boolean {
+  const interpreter = parseShebangInterpreter(firstLine);
+  return interpreter !== undefined && SHELL_INTERPRETERS.has(interpreter);
+}
+
+function parseShebangInterpreter(firstLine: string): string | undefined {
+  if (!firstLine.startsWith("#!")) return undefined;
+
+  const fields = splitShebangFields(firstLine.slice(2).trim());
+  const directInterpreter = fields[0];
+  if (directInterpreter === undefined) return undefined;
+
+  const directBasename = basename(directInterpreter);
+  if (directBasename !== "env") return directBasename;
+
+  const envCommand = parseEnvCommand(fields.slice(1));
+  return envCommand === undefined ? undefined : basename(envCommand);
+}
+
+function parseEnvCommand(args: readonly string[]): string | undefined {
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (arg === undefined) continue;
+    if (arg === "-S" || arg === "--split-string") {
+      return parseEnvSplitString(args.slice(index + 1));
+    }
+    if (arg.startsWith("--split-string=")) {
+      const splitArg = arg.slice("--split-string=".length);
+      return parseEnvCommand(splitShebangFields(splitArg));
+    }
+    if (arg === "--") return args[index + 1];
+    if (ENV_OPTIONS_WITH_SEPARATE_OPERAND.has(arg)) {
+      index += 1;
+      continue;
+    }
+    if (ENV_OPTIONS_WITH_INLINE_OPERAND.some((prefix) => arg.startsWith(prefix))) continue;
+    if (arg.startsWith("-")) continue;
+    if (/^[A-Za-z_][A-Za-z0-9_]*=/.test(arg)) continue;
+    return arg;
+  }
+  return undefined;
+}
+
+function parseEnvSplitString(args: readonly string[]): string | undefined {
+  if (args.length === 0) return undefined;
+  if (args.length === 1) return parseEnvCommand(splitShebangFields(args[0] ?? ""));
+  return parseEnvCommand(args);
+}
+
+function splitShebangFields(input: string): readonly string[] {
+  const fields: string[] = [];
+  let current = "";
+  let quote: '"' | "'" | undefined;
+  let escaped = false;
+
+  for (const char of input) {
+    if (escaped) {
+      current += char;
+      escaped = false;
+      continue;
+    }
+    if (char === "\\") {
+      escaped = true;
+      continue;
+    }
+    if (quote !== undefined) {
+      if (char === quote) {
+        quote = undefined;
+      } else {
+        current += char;
+      }
+      continue;
+    }
+    if (char === "\"" || char === "'") {
+      quote = char;
+      continue;
+    }
+    if (/\s/.test(char)) {
+      if (current.length > 0) {
+        fields.push(current);
+        current = "";
+      }
+      continue;
+    }
+    current += char;
+  }
+  if (escaped) current += "\\";
+  if (current.length > 0) fields.push(current);
+  return fields;
 }
 
 function readFirstLine(path: string): string {
