@@ -27,11 +27,11 @@ The N-D space is defined by a set of orthogonal axes. Each axis represents a dis
 
 ## Composition with B-0822
 
-The four properties for diamond resolution outlined in [B-0822: Diamond resolution namespace cardinality multi-tenant awareness](../backlog/P2/B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) are a 4-axis slice of this N-dimensional space. Specifically:
+The four properties for diamond resolution outlined in [B-0822: Diamond resolution namespace cardinality multi-tenant awareness](../backlog/P1/B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) are a 4-axis slice of this N-dimensional space. Specifically:
 
-*   **Cardinality**
-*   **Namespace Scope**
-*   **Multi-Tenancy**
-*   **Multi-Use**
+* **Cardinality**
+* **Namespace Scope**
+* **Multi-Tenancy**
+* **Multi-Use**
 
 Ace's ability to resolve diamond dependency conflicts stems from its awareness of these additional dimensions, which are typically invisible to traditional 2D package managers. By operating in the full N-D space, Ace can make more informed and robust decisions about dependency resolution.
