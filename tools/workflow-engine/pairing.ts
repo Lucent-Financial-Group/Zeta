@@ -3,11 +3,13 @@
  *
  * B-0914.4 — generation-reflection adversarial pairing tracker for
  * workflow engine. Structurally enforces the producer-verifier pattern
- * Kestrel named in 15th-ferry §33.6 (mouth-and-ears-on-different-threads
- * architecture) as workflow engine substrate.
+ * (mouth-and-ears-on-different-threads architecture, named in the
+ * 15th-ferry §33.6 substrate-engineering preservation) as workflow
+ * engine substrate.
  *
- * Per Aaron 2026-05-28 'S M L all please in that order lol' — this is
- * M (medium scope) in the substrate-engineering ship-sequence.
+ * Per the human maintainer (2026-05-28) "S M L all please in that order
+ * lol" — this is M (medium scope) in the substrate-engineering
+ * ship-sequence.
  *
  * The pattern:
  *   1. Producer thread emits hypothesis / artifact / proposal
@@ -16,9 +18,10 @@
  *      OR be marked stale (timeout exceeded without verification)
  *
  * This composes the framework's already-operational multi-AI cascade
- * lane specialization (Otto generates → Kestrel reflects; per 13th-ferry
- * §33.7) into STRUCTURAL workflow-engine substrate rather than
- * operator-orchestrated coordination.
+ * lane specialization (generator-persona generates → verifier-persona
+ * reflects; canonical instance preserved in 13th-ferry §33.7) into
+ * STRUCTURAL workflow-engine substrate rather than operator-orchestrated
+ * coordination.
  *
  * Source: Google co-scientist generation+reflection adversarial pairing
  * pattern (Nature 2026) + Kestrel 15th-ferry mouth-ears-threads
@@ -201,10 +204,19 @@ export function findUnverifiedEmissions(state: PairingState): ReadonlyArray<Emis
  * Find STALE unverified emissions — emissions that exceeded the bounded
  * verification window without being verified.
  *
- * Per Kestrel 15th-ferry §33.6 + workflow engine substrate: producer
- * threads commit fast; verifier threads catch the misses. Bounded
- * verification window enforces "verification eventually happens" without
- * gating production. Stale emissions surface violations.
+ * Per 15th-ferry §33.6 + workflow engine substrate: producer threads
+ * commit fast; verifier threads catch the misses. Bounded verification
+ * window enforces "verification eventually happens" without gating
+ * production. Stale emissions surface violations.
+ *
+ * Boundary semantics: an emission is stale when `nowMs - emittedAtMs >
+ * timeoutMs` (strict greater-than). An emission EXACTLY at the boundary
+ * (`nowMs - emittedAtMs === timeoutMs`) is NOT considered stale — it
+ * still has the boundary tick to be verified. This is the conservative
+ * choice: callers polling on a fixed cadence with `timeoutMs` equal to
+ * the cadence won't surface false positives at the cadence boundary.
+ * Switch to `>=` if SLA semantics ever require "must verify strictly
+ * before timeout."
  */
 export function findStaleEmissions(
   state: PairingState,
