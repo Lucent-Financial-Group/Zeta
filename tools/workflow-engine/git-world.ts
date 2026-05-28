@@ -42,6 +42,10 @@ import {
   type World,
 } from "./world";
 
+// Re-export ComposedKey so downstream substrate (e.g., git-world.test.ts)
+// can import it from this module without reaching into ./world directly.
+export type { ComposedKey };
+
 /**
  * Branch lifetime — canonical git lifetime; every GitWorld has it.
  *
