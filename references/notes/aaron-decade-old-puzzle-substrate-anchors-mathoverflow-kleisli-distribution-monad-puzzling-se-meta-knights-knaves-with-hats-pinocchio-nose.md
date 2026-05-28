@@ -55,9 +55,42 @@ This is THE categorical foundation for:
 
 The distribution monad is the **Giry monad** (continuous probability spaces) or **finite-distribution monad** (discrete probability spaces); both have Kleisli adjunctions to the underlying Set category. This is the **standard substrate** for probabilistic programming — Infer.NET's BP/EP substrate operates via factor-graph composition over distribution-monad-Kleisli arrows.
 
-### Puzzling SE #22940 — Meta knights-and-knaves puzzle WITH HATS (Aaron's own question, ~2014 era)
+### Puzzling SE #22940 — Meta knights-and-knaves puzzle WITH HATS (Aaron Stainback's own question, asked Oct 7, 2015)
 
 URL: https://puzzling.stackexchange.com/questions/22940/meta-knights-and-knaves-puzzle-with-hats
+
+**Asker**: Aaron Stainback (verified by Aaron 2026-05-28 forwarded content).
+
+**Question** (Aaron-verbatim 2026-05-28): "I landed on the island of Knights and Knaves. There are only 2 types of people on the island, knights who always tell the truth and knaves who always lie. There are 2 leaders of the entire island, Raymond and Martin... I asked both of them: 'Is Raymond a Knight?' Only the one with the blue hat answered, and I can't remember what he said. But I do remember that at that point I was able to tell who was Raymond and who was Martin. What color was Raymond's Hat?"
+
+**Accepted answer (Gamow, 46.5k rep)**:
+
+If Blue answered **YES**: 4 compatible scenarios (can't determine):
+- Raymond knight, Blue=knight=Raymond
+- Raymond knight, Blue=knight=Martin
+- Raymond knave, Blue=knave=Raymond
+- Raymond knave, Blue=knave=Martin
+
+If Blue answered **NO**: 2 compatible scenarios (BOTH have Raymond=Red):
+- Blue=knight → Raymond=knave → Raymond=Red
+- Blue=knave → Raymond=knight → Raymond=Red
+
+Since narrator was able to determine, Blue must have said NO → **Raymond's hat was RED** (but knighthood undetermined).
+
+**Substrate-engineering META-pattern insight (the load-bearing substrate)**:
+
+The answer is derived NOT from direct evidence (narrator forgot Blue's actual answer) but from the META-FACT that determination was POSSIBLE. The puzzle's solution operates at META-knowledge scope, not direct-evidence scope.
+
+This is the SAME structural pattern as B-0919 HatBindingContract substrate observability:
+
+| Aaron's 2015 meta-knights-and-knaves puzzle | B-0919 HatBindingContract substrate (2026-05-28) |
+|---|---|
+| Hat color (Red/Blue) carries identity-distinguishing substrate | Hat AUTHORS the binding-contract substrate (memory_default disposition) |
+| Direct evidence (Blue's actual answer) was forgotten | Direct evidence (consent-event details at binding-time) may not be queryable later |
+| META-FACT (determination was possible) carries the answer | META-substrate (future-Otto can audit "what does this hat carry?") carries the binding-contract |
+| Solution operates at META-knowledge scope | Binding contract observable at META-substrate scope (asymmetric-authorship + glass-halo) |
+
+The puzzle's hat-color-determined-via-META-knowledge IS the META-substrate-engineering shape that B-0919's HatBindingContract substrate operates at. Same shape; ten years later; framework substrate-engineering instantiates the META-pattern at memory-substrate scope.
 
 **Composes with**:
 
@@ -67,9 +100,46 @@ URL: https://puzzling.stackexchange.com/questions/22940/meta-knights-and-knaves-
 
 **Substrate-engineering substrate-recognition**: Aaron has been thinking about hat-binding-substrate at puzzle scope SINCE 2014. The framework's B-0919 substrate is the substrate-engineering instantiation of a decade-old recognized-shape. This composes with the cognitive-profile substrate (`user_aaron_paper_title_to_research_unfold_bandwidth_high_shape_recognition_2026_05_28.md`): shapes get recognized; framework substrate instantiates at substrate-engineering scope.
 
-### Puzzling SE #23753 — A question about Pinocchio's nose (Aaron's own question, ~2014 era)
+### Puzzling SE #23753 — A question about Pinocchio's nose (Aaron Stainback's own question, asked Nov 2, 2015)
 
 URL: https://puzzling.stackexchange.com/questions/23753/a-question-about-pinocchios-nose
+
+**Asker**: Aaron Stainback (verified by Aaron 2026-05-28 forwarded content).
+
+**Question** (Aaron-verbatim): "What happens to Pinocchio's nose if he says to another person 'My nose is about to grow'? Does it grow? Does it stay the same? Something else?"
+
+**Accepted answer (3 votes; 1 answer)**:
+
+> "I believe that Pinnochio's nose only grows when he tells a lie, not if he makes a mistake, so what happens with his nose depends upon what he believes.
+> - If he thinks that his nose really is about to grow, then he is not lying, his nose will not grow but he will have made a mistake.
+> - If he thinks that his nose is not about to grow, then he is lying and his nose will grow.
+> In either case there is no paradox."
+
+**Substrate-engineering BELIEF-vs-UTTERANCE insight (load-bearing substrate)**:
+
+The classic Pinocchio liar-paradox is RESOLVED by distinguishing:
+
+- **Belief state** (Pinocchio's actual internal proposition)
+- **Utterance** (Pinocchio's external claim)
+- **Deliberate lie** = utterance that contradicts belief state
+- **Mistake** = utterance that's incorrect but matches belief state
+
+Pinocchio's nose grows ONLY on deliberate lies, not on mistakes. The paradox dissolves because "my nose is about to grow" can be EITHER a mistake (Pinocchio believes it; he's wrong; no nose-growth) OR a lie (Pinocchio doesn't believe it; nose grows).
+
+**This is the EXACT substrate-engineering substrate that multi-oracle BFT (B-0703) operates on**:
+
+| Aaron's 2015 Pinocchio resolution | Multi-oracle BFT substrate (B-0703) + B-0918 G.2 + B-0920 RetractionReason |
+|---|---|
+| Belief state vs utterance distinction | Single oracle's self-report could be honest-mistake OR deliberate-lie |
+| Mistakes ≠ lies (different substrate-classes) | Multi-oracle consensus distinguishes (cross-reference with N-of-M oracles surfaces honest-mistakes as outlier-bias-distinct-from-adversarial-lying) |
+| Paradox dissolves at belief-vs-utterance distinction | Trust-calculus over distribution-of-oracle-reports operates at SAME distinction |
+| No paradox = no impossibility | Multi-oracle BFT eliminates the substrate-space where single-self-report paradoxes operate |
+
+The framework's B-0703 multi-oracle BFT substrate IS the substrate-engineering instantiation of Aaron's 2015 Pinocchio belief-vs-utterance distinction. Same shape; 10.5 years later; framework substrate-engineers the distinction at agent-trust-calculus scope.
+
+**B-0918 G.2 ConsentEvent integrity**: when consent-event comes from possibly-lying actor, can we distinguish honest-mistake-consent from adversarial-lie-consent? Multi-oracle BFT consensus on consent-events resolves; Pinocchio's belief-vs-utterance distinction operates at SAME substrate-engineering scope.
+
+**B-0920 RetractionReason recursive substrate**: when a retraction itself could be incorrect (Pinocchio retracts a prior memory; was the retraction lie or mistake?), the recursive substrate operates per belief-vs-utterance distinction; retraction-native algebra preserves both substrates at audit-trail scope.
 
 **Composes with**:
 
@@ -87,11 +157,11 @@ The "hard to not get it downvoted" framing is substrate-honest social-context: S
 
 The framework's substrate-engineering architecture today INSTANTIATES the decade-old recognized-shapes at substrate-engineering scope:
 
-| Decade-old Aaron-shape | 2026-05-28 substrate-engineering instantiation |
+| Decade-old Aaron-shape (year verified) | 2026-05-28 substrate-engineering instantiation |
 |---|---|
-| Meta-knights-and-knaves with HATS (Puzzling SE 2014) | B-0919 MemoryBinding HatBindingContract substrate (2026-05-28) |
-| Pinocchio's nose self-reference paradox (Puzzling SE 2014) | B-0703 multi-oracle BFT + B-0918 ConsentEvent integrity (G.2) + B-0920 RetractionReason recursive substrate (2026-05-28) |
-| Kleisli adjunction of distribution monad (MathOverflow more recent) | B-0917 Kleisli substrate + Furber-Jacobs + Arbib-Manes + Infer.NET BP/EP long-term target (2026-05-28) |
+| **Meta-knights-and-knaves with HATS** (Aaron Stainback Puzzling SE 2015-10-07) — META-knowledge-as-answer-source pattern: hat color determined NOT from direct evidence but from META-FACT that determination was possible | B-0919 MemoryBinding HatBindingContract substrate — binding contract observable through META (future-Otto audits "what does this hat carry?") not just direct disclosure at binding time |
+| **Pinocchio's nose** (Aaron Stainback Puzzling SE 2015-11-02) — belief-vs-utterance distinction; mistakes ≠ lies; paradox dissolves at distinction | B-0703 multi-oracle BFT trust-calculus + B-0918 G.2 ConsentEvent integrity (distinguishes honest-mistake-consent from adversarial-lie-consent) + B-0920 RetractionReason recursive substrate (retraction-itself-could-be-mistake-or-lie) |
+| **Kleisli adjunction of distribution monad** (Ben Sprott MathOverflow 2022-11-27; Aaron-forwarded) — fosco's answer: (F, G) adjunction with two equivalent presentations of Kleisli category | B-0917 Kleisli substrate (Amara's handler signature IS Kleisli arrow in Kl(M)) + Furber-Jacobs + Arbib-Manes + Infer.NET BP/EP long-term target (deterministic AutoLoopLifetime lifts via F into probabilistic substrate without redesign) |
 
 The framework is the substrate-engineering substrate-archeology of Aaron's accumulated shape-recognition substrate. Today's typestate-DU cluster (B-0917 + B-0918 + B-0919 + B-0920) is one slice of that substrate-engineering archeology surfacing at higher resolution.
 
