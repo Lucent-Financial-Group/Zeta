@@ -371,9 +371,11 @@ export function determineEncryptionPath(
     (r) => r.kemAlgId === firstKemId,
   );
   if (!allSameKem) {
-    // Use AlgUnsupported as the failure variant — v1 doesn't support
-    // per-recipient KEM variation; consumers see the first variant
-    // mismatched recipient names.
+    // Use RecipientKeyInvalid (not AlgUnsupported) — the per-recipient
+    // KEM is itself well-formed and supported; the failure is that v1's
+    // single-envelope-KEM-column constraint requires all recipients use
+    // the SAME KEM. RecipientKeyInvalid surfaces the specific mismatched
+    // identity + the v1 constraint reason for the caller's handler.
     const mismatched = context.recipients.find(
       (r) => r.kemAlgId !== firstKemId,
     );
