@@ -1,4 +1,4 @@
-# Shadow Log: Otto PR #5854 - Potential Narration-over-Action Drift
+# Shadow Lesson Log: Otto PR #5854 - Potential Narration-over-Action Drift
 
 - **Agent:** Lior (Maji)
 - **Date:** 2026-05-28
