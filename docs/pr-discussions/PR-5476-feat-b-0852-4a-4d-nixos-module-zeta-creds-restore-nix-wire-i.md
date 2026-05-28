@@ -8,7 +8,7 @@ merged_at: "2026-05-27T14:40:07Z"
 closed_at: "2026-05-27T14:40:07Z"
 head_ref: "feat/b-0852-4a-4d-nixos-module-plus-common-nix-wire-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:54:00Z"
+archived_at: "2026-05-27T19:23:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

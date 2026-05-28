@@ -8,7 +8,7 @@ merged_at: "2026-05-27T13:39:11Z"
 closed_at: "2026-05-27T13:39:11Z"
 head_ref: "otto-cli/claude-md-heartbeat-via-commit-1335z"
 base_ref: "main"
-archived_at: "2026-05-27T17:56:56Z"
+archived_at: "2026-05-27T19:23:50Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-27T15:20:10Z"
 closed_at: "2026-05-27T15:20:10Z"
 head_ref: "rule/must-paired-with-can-exit-pattern-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:53:44Z"
+archived_at: "2026-05-27T19:23:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

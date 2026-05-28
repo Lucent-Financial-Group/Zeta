@@ -8,7 +8,7 @@ merged_at: "2026-05-27T13:47:27Z"
 closed_at: "2026-05-27T13:47:28Z"
 head_ref: "claim/codex-docker-cc-path-executable-check-20260527"
 base_ref: "main"
-archived_at: "2026-05-27T17:56:25Z"
+archived_at: "2026-05-27T19:23:48Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-27T13:53:52Z"
 closed_at: "2026-05-27T13:53:52Z"
 head_ref: "backlog/b-0858-agent-heartbeat-folder-zetaid-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:56:09Z"
+archived_at: "2026-05-27T19:23:48Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

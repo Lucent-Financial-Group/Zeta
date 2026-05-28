@@ -8,7 +8,7 @@ merged_at: "2026-05-27T14:35:08Z"
 closed_at: "2026-05-27T14:35:08Z"
 head_ref: "feat/b-0852-3a-cred-picker-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:57:21Z"
+archived_at: "2026-05-27T19:23:51Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

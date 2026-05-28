@@ -8,7 +8,7 @@ merged_at: "2026-05-27T08:09:56Z"
 closed_at: "2026-05-27T08:09:56Z"
 head_ref: "backlog/b-0857-1-audit-pr-5389-step-6-95a-verified-present-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:59:04Z"
+archived_at: "2026-05-27T19:23:55Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-27T13:43:58Z"
 closed_at: "2026-05-27T13:43:58Z"
 head_ref: "backlog/b-0852-4-nixos-module-boot-restore-row-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:56:40Z"
+archived_at: "2026-05-27T19:23:49Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

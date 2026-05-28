@@ -8,7 +8,7 @@ merged_at: "2026-05-27T15:15:32Z"
 closed_at: "2026-05-27T15:15:33Z"
 head_ref: "otto-cli/tick-1303z-bg-worker-discriminator-pass-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:58:13Z"
+archived_at: "2026-05-27T19:23:53Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

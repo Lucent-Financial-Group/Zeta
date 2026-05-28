@@ -8,7 +8,7 @@ merged_at: "2026-05-27T14:14:57Z"
 closed_at: "2026-05-27T14:14:57Z"
 head_ref: "feat/b-0858-3-heartbeat-writer-folder-agents-md-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:55:35Z"
+archived_at: "2026-05-27T19:23:46Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-27T08:40:15Z"
 closed_at: "2026-05-27T08:40:15Z"
 head_ref: "claim/codex-docker-nixos-install-sh-test-path-20260527"
 base_ref: "main"
-archived_at: "2026-05-27T17:58:48Z"
+archived_at: "2026-05-27T19:23:55Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-27T10:14:22Z"
 closed_at: "2026-05-27T10:14:22Z"
 head_ref: "otto-cli/tick-1008z-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:58:28Z"
+archived_at: "2026-05-27T19:23:54Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

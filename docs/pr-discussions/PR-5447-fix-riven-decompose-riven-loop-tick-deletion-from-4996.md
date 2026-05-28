@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:10:33Z"
 closed_at: "2026-05-27T16:10:33Z"
 head_ref: "lior/decompose-4996-riven-tick-deletion-2"
 base_ref: "main"
-archived_at: "2026-05-27T17:57:57Z"
+archived_at: "2026-05-27T19:23:52Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

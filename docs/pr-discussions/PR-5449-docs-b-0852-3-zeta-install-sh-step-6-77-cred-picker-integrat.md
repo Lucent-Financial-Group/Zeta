@@ -8,7 +8,7 @@ merged_at: "2026-05-27T13:34:21Z"
 closed_at: "2026-05-27T13:34:21Z"
 head_ref: "backlog/b-0852-3-cred-picker-integration-row-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:57:41Z"
+archived_at: "2026-05-27T19:23:52Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

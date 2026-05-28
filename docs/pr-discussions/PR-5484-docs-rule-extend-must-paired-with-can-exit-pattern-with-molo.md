@@ -8,7 +8,7 @@ merged_at: "2026-05-27T15:25:31Z"
 closed_at: "2026-05-27T15:25:31Z"
 head_ref: "rule/must-paired-with-can-exit-moloch-ai-extension-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T17:53:22Z"
+archived_at: "2026-05-27T19:23:41Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
