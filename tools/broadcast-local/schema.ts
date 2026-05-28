@@ -59,6 +59,13 @@ export interface LocalBroadcastEnvelope {
   readonly receipts?: readonly LocalBroadcastReceipt[];
 }
 
+export interface LocalBroadcastScopeConflict {
+  readonly scope: LocalBroadcastScope;
+  readonly broadcastIds: readonly [string, string];
+  readonly agents: readonly [LocalBroadcastAgent, LocalBroadcastAgent];
+  readonly summaries: readonly [string, string];
+}
+
 export type LocalBroadcastValidation =
   | { readonly ok: true; readonly value: LocalBroadcastEnvelope }
   | { readonly ok: false; readonly errors: readonly string[] };
@@ -118,6 +125,54 @@ export function makeLocalBroadcastReceipt(config: {
     ...(config.sourcePath === undefined ? {} : { sourcePath: config.sourcePath }),
     ...(config.note === undefined ? {} : { note: config.note }),
   };
+}
+
+function localBroadcastScopeKey(scope: LocalBroadcastScope): string {
+  return `${scope.kind}\0${scope.value}`;
+}
+
+function activeConflictCandidates(
+  envelopes: readonly LocalBroadcastEnvelope[],
+  now: Date,
+): readonly LocalBroadcastEnvelope[] {
+  return envelopes.filter((envelope) => envelope.status !== "idle" && !isLocalBroadcastStale(envelope, now));
+}
+
+export function detectLocalBroadcastScopeConflicts(
+  envelopes: readonly LocalBroadcastEnvelope[],
+  now: Date = new Date(),
+): readonly LocalBroadcastScopeConflict[] {
+  const ownersByScope = new Map<string, LocalBroadcastEnvelope>();
+  const conflicts: LocalBroadcastScopeConflict[] = [];
+
+  for (const envelope of activeConflictCandidates(envelopes, now)) {
+    const seenInEnvelope = new Set<string>();
+    for (const scope of envelope.scope ?? []) {
+      const key = localBroadcastScopeKey(scope);
+      if (seenInEnvelope.has(key)) {
+        continue;
+      }
+      seenInEnvelope.add(key);
+
+      const owner = ownersByScope.get(key);
+      if (owner === undefined) {
+        ownersByScope.set(key, envelope);
+        continue;
+      }
+      if (owner.from === envelope.from || owner.id === envelope.id) {
+        continue;
+      }
+
+      conflicts.push({
+        scope,
+        broadcastIds: [owner.id, envelope.id],
+        agents: [owner.from, envelope.from],
+        summaries: [owner.summary, envelope.summary],
+      });
+    }
+  }
+
+  return conflicts;
 }
 
 export function validateLocalBroadcastEnvelope(value: unknown): LocalBroadcastValidation {

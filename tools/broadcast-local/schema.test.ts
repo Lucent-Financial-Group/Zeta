@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   DEFAULT_LOCAL_BROADCAST_TTL_MS,
+  detectLocalBroadcastScopeConflicts,
   isLocalBroadcastStale,
   localBroadcastExpiresAt,
   makeLocalBroadcastReceipt,
@@ -57,6 +58,51 @@ describe("local broadcast schema", () => {
       observedWrittenAt: writtenAt,
       sourcePath: "/Users/acehack/.local/share/zeta-broadcasts/vera.md",
     });
+  });
+
+  test("detects active overlapping scopes across agents", () => {
+    const vera = {
+      ...validEnvelope(),
+      id: "vera-20260526T225000Z",
+      from: "vera" as const,
+      summary: "Working on B-0213 conflict detection.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/" }],
+    };
+    const otto = {
+      ...validEnvelope(),
+      id: "otto-20260526T225100Z",
+      from: "otto" as const,
+      summary: "Also touching local broadcast tooling.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/" }],
+    };
+    const riven = {
+      ...validEnvelope(),
+      id: "riven-20260526T225200Z",
+      from: "riven" as const,
+      status: "idle" as const,
+      summary: "Idle receipt only.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/" }],
+    };
+
+    expect(detectLocalBroadcastScopeConflicts([vera, otto, riven], new Date("2026-05-26T22:55:00Z"))).toEqual([
+      {
+        scope: { kind: "path", value: "tools/broadcast-local/" },
+        broadcastIds: ["vera-20260526T225000Z", "otto-20260526T225100Z"],
+        agents: ["vera", "otto"],
+        summaries: ["Working on B-0213 conflict detection.", "Also touching local broadcast tooling."],
+      },
+    ]);
+  });
+
+  test("ignores stale overlapping scopes", () => {
+    const vera = validEnvelope();
+    const otto = {
+      ...validEnvelope(),
+      id: "otto-20260526T225100Z",
+      from: "otto" as const,
+    };
+
+    expect(detectLocalBroadcastScopeConflicts([vera, otto], new Date("2026-05-26T23:30:00Z"))).toEqual([]);
   });
 
   test("validates the required envelope fields", () => {
