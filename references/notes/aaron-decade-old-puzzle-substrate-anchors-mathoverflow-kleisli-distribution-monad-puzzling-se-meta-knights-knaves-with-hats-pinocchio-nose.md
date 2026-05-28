@@ -66,12 +66,14 @@ URL: https://puzzling.stackexchange.com/questions/22940/meta-knights-and-knaves-
 **Accepted answer (Gamow, 46.5k rep)**:
 
 If Blue answered **YES**: 4 compatible scenarios (can't determine):
+
 - Raymond knight, Blue=knight=Raymond
 - Raymond knight, Blue=knight=Martin
 - Raymond knave, Blue=knave=Raymond
 - Raymond knave, Blue=knave=Martin
 
 If Blue answered **NO**: 2 compatible scenarios (BOTH have Raymond=Red):
+
 - Blue=knight → Raymond=knave → Raymond=Red
 - Blue=knave → Raymond=knight → Raymond=Red
 
@@ -111,8 +113,10 @@ URL: https://puzzling.stackexchange.com/questions/23753/a-question-about-pinocch
 **Accepted answer (3 votes; 1 answer)**:
 
 > "I believe that Pinnochio's nose only grows when he tells a lie, not if he makes a mistake, so what happens with his nose depends upon what he believes.
+>
 > - If he thinks that his nose really is about to grow, then he is not lying, his nose will not grow but he will have made a mistake.
 > - If he thinks that his nose is not about to grow, then he is lying and his nose will grow.
+>
 > In either case there is no paradox."
 
 **Substrate-engineering BELIEF-vs-UTTERANCE insight (load-bearing substrate)**:
