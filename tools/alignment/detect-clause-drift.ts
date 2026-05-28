@@ -61,6 +61,23 @@ function searchInDirectory(dirPath: string): Match[] {
   return allMatches;
 }
 
+export async function findClauseReferences(dirPath: string): Promise<Map<string, string[]>> {
+    const allMatches = searchInDirectory(dirPath);
+    const references = new Map<string, string[]>();
+
+    for (const match of allMatches) {
+        if (!references.has(match.clause)) {
+            references.set(match.clause, []);
+        }
+        const files = references.get(match.clause);
+        if (files && !files.includes(match.file)) {
+            files.push(match.file);
+        }
+    }
+
+    return references;
+}
+
 function main() {
   const searchDir = process.cwd();
   console.log(`Searching for alignment clause references in ${searchDir}...
@@ -97,4 +114,6 @@ function main() {
   }
 }
 
-main();
+if (require.main === module) {
+    main();
+}
