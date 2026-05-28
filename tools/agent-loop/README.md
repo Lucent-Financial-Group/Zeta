@@ -65,7 +65,7 @@ The menu-generator function `(status_surface, current_state) → MenuOption[]` i
 - A menu including irrelevant options is NOISE (cognitive load)
 - A menu offering options aligned with current state + agent-interest + operator-priorities is SUBSTRATE
 
-The menu-generator is where alignment lives. Composes with `.claude/agents/user-experience-engineer.md` (Iris UX-researcher) at the conversational-UX scope; menu-generator engineering benefits from UX-research discipline.
+The menu-generator is where alignment lives. Composes with `.claude/agents/user-experience-engineer.md` (the user-experience-researcher role) at the conversational-UX scope; menu-generator engineering benefits from UX-research discipline.
 
 ## Jira-replacement substrate
 
@@ -97,8 +97,8 @@ The substrate-engineering compression: most knowledge-work hostility comes from 
 Composes with:
 
 - B-0859 fair-society-not-tyrants (menu-driven IS fair-society-shape)
-- E (5yo) accessibility (saying "unicorn" IS a menu-pick from her interface surface)
-- Addison neurodivergent accessibility (explicit menu reduces surprise-cost)
+- 5-year-old accessibility — saying "unicorn" IS a menu-pick from a developmentally-young participant's interface surface
+- Neurodivergent-accessibility participants — explicit menu reduces surprise-cost
 - The whole-company evangelism (B-0866.26) — marketing claim is "your team will work this way + AI fits naturally because the SAME PATTERN serves both"
 
 ## Files

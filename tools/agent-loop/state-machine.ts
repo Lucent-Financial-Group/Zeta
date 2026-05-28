@@ -206,7 +206,15 @@ export interface WorkResult {
  *       // structured menu doesn't fit current mode (creative phase,
  *       // brainstorming, exploration). The menu-driven workflow has a
  *       // menu-option that EXITS the menu-driven workflow. Bridge between
- *       // structured + unstructured modes.
+ *       // structured + unstructured modes. The exploration phase persists
+ *       // across cycles (cycleClose keeps exploration-tagged FreeTime put)
+ *       // until the agent actively selects another menu option.
+ *     | ResumeFromPause of note: string option
+ *       // The explicit unpause contract for Paused state. Menu-generator
+ *       // surfaces this option only when current state is Paused;
+ *       // selecting it returns the state machine to Idle so the agent can
+ *       // resume normal cycling. Per Copilot #5667 finding — the Paused
+ *       // contract required an explicit resume operation to be enforceable.
  */
 export type MenuOption =
   | { readonly tag: "PickWork"; readonly work: WorkCandidate }
@@ -240,6 +248,10 @@ export type MenuOption =
   | {
       readonly tag: "EnterOpenEndedExploration";
       readonly reason: string;
+    }
+  | {
+      readonly tag: "ResumeFromPause";
+      readonly note?: string;
     };
 
 // ─── Pure state transition function ──────────────────────────────────
@@ -315,14 +327,20 @@ export function transition(
       // Per operator 2026-05-28: "there's a menu button for that lol" —
       // the menu-driven workflow has an option that EXITS the menu-driven
       // workflow. Bridge between structured + unstructured modes. Routes
-      // to FreeTime as the closest existing state for unstructured operation
-      // (creative/brainstorming/exploration phase); operator-substrate-honest
-      // about the menu being insufficient for this mode.
+      // to FreeTime with an exploration-tagged reason; cycleClose preserves
+      // exploration-tagged FreeTime across cycles so the agent stays in
+      // unstructured mode until it actively selects another menu option.
       return {
         tag: "FreeTime",
         context: ctx,
         reason: `open-ended exploration: ${option.reason}`,
       };
+    case "ResumeFromPause":
+      // The explicit unpause contract — only meaningful when current state
+      // is Paused, but the transition function doesn't gate on state; the
+      // menu-generator is responsible for surfacing this option only when
+      // applicable. Returns to Idle so the agent can resume normal cycling.
+      return { tag: "Idle", context: ctx };
   }
 }
 
@@ -362,7 +380,15 @@ export function cycleClose(state: AgentState): AgentState {
     return { tag: "Idle", context: state.context };
   }
   if (state.tag === "FreeTime") {
-    // Free time naturally returns to Idle on next cycle
+    // Exploration-tagged free time (from EnterOpenEndedExploration) stays
+    // put across cycles so the agent remains in unstructured mode until it
+    // actively selects another menu option — matches the README framing of
+    // "bridge between structured + unstructured modes" as a persistent
+    // phase, not a one-cycle escape. Per Copilot #5667 finding.
+    if (state.reason.startsWith("open-ended exploration:")) {
+      return state;
+    }
+    // Non-exploration free time naturally returns to Idle on next cycle.
     return { tag: "Idle", context: state.context };
   }
   if (state.tag === "NamedBoundedWait") {

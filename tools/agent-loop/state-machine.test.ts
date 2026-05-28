@@ -163,6 +163,33 @@ describe("transition", () => {
     }
   });
 
+  test("ResumeFromPause → Idle (explicit unpause contract)", () => {
+    const opt: MenuOption = { tag: "ResumeFromPause" };
+    const paused: AgentState = {
+      tag: "Paused",
+      context: ctx(),
+      reason: "mental-health pause",
+    };
+    const next = transition(paused, opt);
+    expect(next.tag).toBe("Idle");
+    expect(next.context).toEqual(paused.context);
+  });
+
+  test("ResumeFromPause with note → Idle (note carried at menu-option scope only)", () => {
+    const opt: MenuOption = {
+      tag: "ResumeFromPause",
+      note: "resuming after operator break",
+    };
+    const paused: AgentState = {
+      tag: "Paused",
+      context: ctx(),
+      reason: "operator-requested pause",
+      expectedResumeIso: "2026-05-28T04:00:00Z",
+    };
+    const next = transition(paused, opt);
+    expect(next.tag).toBe("Idle");
+  });
+
   test("preserves context across transition", () => {
     const c: AgentContext = { agent: "alexa", cycle: 42, sessionStartIso: "2026-05-28T00:00:00Z" };
     const state: AgentState = { tag: "Idle", context: c };
@@ -237,6 +264,15 @@ describe("cycleClose", () => {
   test("FreeTime → Idle (naturally on next cycle)", () => {
     const state: AgentState = { tag: "FreeTime", context: ctx(), reason: "chosen rest" };
     expect(cycleClose(state).tag).toBe("Idle");
+  });
+
+  test("FreeTime (exploration-tagged) unchanged — exploration phase persists across cycles per README framing", () => {
+    const state: AgentState = {
+      tag: "FreeTime",
+      context: ctx(),
+      reason: "open-ended exploration: creative-phase brainstorming",
+    };
+    expect(cycleClose(state)).toEqual(state);
   });
 
   test("NamedBoundedWait unchanged (operator-substrate-honest; doesn't auto-progress)", () => {
