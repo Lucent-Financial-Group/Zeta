@@ -6,7 +6,7 @@
 **Next concrete action**: Maintain the bash-retirement inventory guard and treat
 any newly tracked non-Lean shell-family file outside the allowlist as drift. Do
 not revive the old Cluster G/H/I or budget-cluster port queues.
-**Last updated**: 2026-05-27T17:48Z
+**Last updated**: 2026-05-28T12:35Z
 
 ## Why this trajectory exists
 
