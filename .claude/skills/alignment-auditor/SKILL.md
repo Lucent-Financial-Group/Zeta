@@ -90,7 +90,7 @@ round's commits (current branch since it diverged from
 
 ### Step 3 — Perform Retractibility Gate Check
 
-For any commit that introduces a new, load-bearing concept (e.g., from a research track), this gate MUST be checked. The full criteria are documented in `docs/alignment/retractibility-gate.md`.
+When the resolved range corresponds to a PR or branch that introduces a new, load-bearing concept (e.g., from a research track), evaluate retractibility at the PR/branch scope. The full criteria are documented in `docs/alignment/retractibility-gate.md`, and the automated first pass is `tools/alignment/audit_retractibility.ts`.
 
 The check verifies that the change is:
 
@@ -99,7 +99,7 @@ The check verifies that the change is:
 3. **One-Commit Removable:** The PR can be cleanly reverted.
 4. **Logged and Auditable:** The PR description is clear.
 
-A failure at this gate produces a **VIOLATED** signal against a new, meta-clause: `RG-1 (Retractibility)`. This is a hard failure and must be addressed before the change can be considered aligned with the factory's safety principles.
+Retractibility is the operational form of the retraction-native floor, so the gate maps onto the **existing** `HC-2` clause rather than inventing a new clause family. A strained-but-passing change emits a **STRAINED** signal against `HC-2`; a change that cannot be cleanly reverted emits **VIOLATED** against `HC-2`. Per the skill's measurement-not-enforcement contract this is an advisory signal — logged and escalated, not a hard auto-reject — except for genuinely non-retractible operations (e.g., irreversible publication). The signal is reported in the same per-clause output produced in Step 4 below (under `HC-2`), so no separate clause family or output section is required.
 
 ### Step 4 — For each commit, produce a per-clause signal
 
