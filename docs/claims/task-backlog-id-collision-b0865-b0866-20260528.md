@@ -18,3 +18,7 @@ duplicate-ID files:
 - docs/backlog/P2/B-0865-zeta-instantiation-of-arc-agi-3-style-benchmark-usb-boot-starting-state-devops-objectives-as-levels-not-hand-crafted-video-game-levels-aaron-2026-05-27.md
 - docs/backlog/P2/B-0866-integrate-or-remove-unreferenced-kskauthorization.md
 - docs/backlog/P2/B-0866-marketing-business-naming-ai-weigh-in-on-b-0865-public-positioning-servicetitan-primary-audience-24-months-ahead-mandate-context-aaron-2026-05-27.md
+
+2026-05-28T12:46Z follow-up: applying Option A from B-0913 by renumbering the
+two housekeeping rows to B-0917 and B-0918, leaving the substantive B-0865 and
+B-0866 rows in place.
