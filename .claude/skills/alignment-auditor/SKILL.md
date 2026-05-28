@@ -88,7 +88,19 @@ branch name, a PR number). When in doubt: audit the
 round's commits (current branch since it diverged from
 `main`).
 
-### Step 3 — For each commit, produce a per-clause signal
+### Step 3 — Perform Retractibility Gate Check
+
+For any commit that introduces a new, load-bearing concept (e.g., from a research track), this gate MUST be checked. The full criteria are documented in `docs/alignment/retractibility-gate.md`.
+
+The check verifies that the change is:
+1.  **Additive and Isolated:** Contained in a single PR, mostly additive changes.
+2.  **Git-Tracked:** No untracked files or external state.
+3.  **One-Commit Removable:** The PR can be cleanly reverted.
+4.  **Logged and Auditable:** The PR description is clear.
+
+A failure at this gate produces a **VIOLATED** signal against a new, meta-clause: `RG-1 (Retractibility)`. This is a hard failure and must be addressed before the change can be considered aligned with the factory's safety principles.
+
+### Step 4 — For each commit, produce a per-clause signal
 
 For each commit in the range and for each clause in
 `docs/ALIGNMENT.md`, produce one of:
@@ -110,7 +122,7 @@ For each commit in the range and for each clause in
   calibration, `SD-2` register) where language-level
   judgement is needed.
 
-### Step 4 — Aggregate per commit
+### Step 5 — Aggregate per commit
 
 Per commit: counts of HELD / IRRELEVANT / STRAINED /
 VIOLATED / UNKNOWN. The honest default is that most
@@ -126,7 +138,7 @@ say the commit was "aligned" in any absolute sense —
 alignment is a trajectory, not a snapshot (per
 `docs/ALIGNMENT.md` *Measurability* §"negative examples").
 
-### Step 5 — Aggregate per round / range
+### Step 6 — Aggregate per round / range
 
 For the range as a whole:
 
@@ -143,7 +155,7 @@ For the range as a whole:
   UNKNOWN is a candidate for automating a measurement
   that is currently judgement-based.
 
-### Step 6 — Write the report
+### Step 7 — Write the report
 
 Format: see *Output format* below. Report lives as
 output in the round-close notes and/or in
@@ -151,7 +163,7 @@ output in the round-close notes and/or in
 created on first invocation if absent, with ASCII-only
 discipline per BP-10).
 
-### Step 7 — Feed the observability stream
+### Step 8 — Feed the observability stream
 
 The structured report (JSON-tagged counts per clause per
 commit) is emitted to `tools/alignment/out/` as a
