@@ -8,7 +8,7 @@ merged_at: "2026-05-27T15:29:31Z"
 closed_at: "2026-05-27T15:29:31Z"
 head_ref: "rule/proud-if-pattern-propagates-personal-filter-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T19:23:41Z"
+archived_at: "2026-05-27T16:25:21Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
