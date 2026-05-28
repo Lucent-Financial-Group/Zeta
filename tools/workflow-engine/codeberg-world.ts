@@ -14,9 +14,6 @@
 // substrate-engineering keeps the inheritance explicit.
 
 import {
-  type LifetimeState,
-} from "./world.js";
-import {
   buildGiteaWorld,
   type GiteaPrLifetime,
   type GiteaReviewLifetime,
@@ -29,13 +26,17 @@ import { type GitWorld } from "./git-world.js";
 /**
  * CodebergWorld — Codeberg-specific specialization of GiteaWorld.
  *
- * Inherits all GiteaWorld substrate + adds Codeberg-specific properties:
+ * Inherits all GiteaWorld substrate fields EXCEPT forgeSpecialization,
+ * which is narrowed from "gitea" to "codeberg" literal. Uses Omit to
+ * avoid TS2430 interface-incompatible-extends error (literal types are
+ * invariant).
+ *
+ * Adds Codeberg-specific properties:
  * - Community-moderation substrate (codeOfConduct, terms-of-service)
  * - EU-data-sovereignty marker (GDPR-compliant; German non-profit)
  * - Conservative rate-limit defaults (shared community instance)
  */
-export interface CodebergWorld extends GiteaWorld {
-  readonly forgeName: "git";
+export interface CodebergWorld extends Omit<GiteaWorld, "forgeSpecialization"> {
   readonly forgeSpecialization: "codeberg";  // narrower than gitea
   readonly hostingPolicy: "non-commercial-eu-sovereign";
   readonly communityGoverned: true;
