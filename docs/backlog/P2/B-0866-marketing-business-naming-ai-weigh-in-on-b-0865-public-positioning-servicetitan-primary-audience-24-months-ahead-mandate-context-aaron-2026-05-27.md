@@ -6,7 +6,7 @@ title: Marketing + business + naming-AI weigh-in on B-0865 public-positioning â€
 effort: M
 ask: operator + Kestrel 2026-05-27
 created: 2026-05-27
-last_updated: 2026-05-27
+last_updated: 2026-05-28
 depends_on:
   - B-0865
 composes_with:
@@ -17,6 +17,8 @@ composes_with:
   - B-0857
   - B-0859
   - B-0864
+  - B-0869
+  - B-0870
 tags: [marketing, business-strategy, naming-review, public-positioning, servicetitan-primary-audience, c-level-secondary, 24-months-ahead-mandate, ilyana-public-api-designer, open-source-positioning, b-0865-public-face, dora-benchmark-marketing]
 ---
 
