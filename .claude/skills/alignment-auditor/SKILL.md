@@ -93,10 +93,11 @@ round's commits (current branch since it diverged from
 For any commit that introduces a new, load-bearing concept (e.g., from a research track), this gate MUST be checked. The full criteria are documented in `docs/alignment/retractibility-gate.md`.
 
 The check verifies that the change is:
-1.  **Additive and Isolated:** Contained in a single PR, mostly additive changes.
-2.  **Git-Tracked:** No untracked files or external state.
-3.  **One-Commit Removable:** The PR can be cleanly reverted.
-4.  **Logged and Auditable:** The PR description is clear.
+
+1. **Additive and Isolated:** Contained in a single PR, mostly additive changes.
+2. **Git-Tracked:** No untracked files or external state.
+3. **One-Commit Removable:** The PR can be cleanly reverted.
+4. **Logged and Auditable:** The PR description is clear.
 
 A failure at this gate produces a **VIOLATED** signal against a new, meta-clause: `RG-1 (Retractibility)`. This is a hard failure and must be addressed before the change can be considered aligned with the factory's safety principles.
 
