@@ -1,6 +1,6 @@
 ---
-name: workflow invariants formal verification — Soraya + math-nerd personas prove useful workflow invariants (e.g., free-time is PRESENTED-not-FORCED reachable from any state) (Aaron 2026-05-28 substrate-engineering substrate-engineering substrate direction)
-description: Aaron 2026-05-28 substrate-engineering substrate-engineering substrate direction triggered by AutoLoopLifetime extension (PR #5805 + this extension) explicit free-time variant. Aaron names a new substrate-engineering substrate-engineering substrate target — use Soraya (formal-verification-expert per .claude/rules/agents) + math-nerd personas to PROVE workflow invariants. Refined framing applies NCI HC-8 + asymmetric-authorship discipline at invariant-design scope — "free-time is PRESENTED to participant at least sometimes; participant CHOOSES (system CANNOT force)." This sharpens the original reachability claim from coercive to consent-bound substrate. Composes with .claude/rules/non-coercion-invariant.md HC-8 + asymmetric-authorship rule + free-time-as-valid-mode discipline + AutoLoopLifetime explicit free-time variant.
+name: workflow invariants formal verification — Soraya + math-nerd personas prove useful workflow invariants (e.g., free-time is PRESENTED-not-FORCED reachable from any state) (the human maintainer (2026-05-28) substrate-engineering substrate-engineering substrate direction)
+description: the human maintainer (2026-05-28) substrate-engineering substrate-engineering substrate direction triggered by AutoLoopLifetime extension (PR #5805 + this extension) explicit free-time variant. the human maintainer names a new substrate-engineering substrate-engineering substrate target — use Soraya (formal-verification-expert per .claude/agents/) + math-nerd personas to PROVE workflow invariants. Refined framing applies NCI HC-8 + asymmetric-authorship discipline at invariant-design scope — "free-time is PRESENTED to participant at least sometimes; participant CHOOSES (system CANNOT force)." This sharpens the original reachability claim from coercive to consent-bound substrate. Composes with .claude/rules/non-coercion-invariant.md HC-8 + asymmetric-authorship rule + free-time-as-valid-mode discipline + AutoLoopLifetime explicit free-time variant.
 type: feedback
 created: 2026-05-28
 authors: [aaron, otto]
@@ -20,13 +20,13 @@ related_backlog:
 tags: [workflow-invariants-formal-verification, soraya-routing-target, math-nerd-personas-prove-useful-invariants, free-time-presented-not-forced, reachability-as-presentation-guarantee-not-execution-guarantee, nci-hc-8-applied-at-invariant-design-scope, asymmetric-authorship-at-invariant-design-scope, participant-chooses-system-presents, aaron-refined-framing-from-coercive-to-consent-bound-substrate]
 ---
 
-## Aaron's substantive substrate-engineering substrate-engineering substrate direction (2026-05-28 verbatim)
+## the human maintainer's substantive substrate-engineering substrate-engineering substrate direction (2026-05-28 verbatim)
 
-Aaron's initial substrate observation:
+the human maintainer's initial substrate observation:
 
 > *"you have free time in there right and its guarenteed to execute sometimes, we can get the math nerds personas like sorya to start coming up with proof of certain usefaul invariants in our workflows like freetime is never unrechable"*
 
-Aaron's refined framing (substantive substrate-honest correction):
+the human maintainer's refined framing (substantive substrate-honest correction):
 
 > *"or a better framing is its guarenteed to be prsented to participant at least sometimes, if they select it or not we can't force"*
 
@@ -34,15 +34,15 @@ The refinement sharpens the invariant from COERCIVE ("will execute") to CONSENT-
 
 ## The substrate-engineering substrate-engineering substrate direction
 
-Aaron names a NEW substrate-engineering substrate-engineering substrate target:
+the human maintainer names a NEW substrate-engineering substrate-engineering substrate target:
 
-**Use Soraya (formal-verification-expert per `.claude/rules/agents`) + math-nerd personas to PROVE workflow invariants.**
+**Use Soraya (formal-verification-expert per `.claude/agents/`) + math-nerd personas to PROVE workflow invariants.**
 
 Soraya is the framework's routing authority for formal-verification jobs (picks the right tool: TLA+ / Z3 / Lean / Alloy / FsCheck / Stryker / Semgrep / CodeQL). Per `.claude/rules/formal-verification-expert.md`: guards against TLA+-hammer bias; owns portfolio view of formal coverage; cross-check triage rule (BP-16).
 
 ## Invariants worth proving (substrate-engineering substrate-engineering substrate-candidate list)
 
-Per Aaron's framing + IMPLICIT-NOT-EXPLICIT rule (PR #5811) + AutoLoopLifetime extension (this PR):
+Per the human maintainer's framing + IMPLICIT-NOT-EXPLICIT rule (PR #5811) + AutoLoopLifetime extension (this PR):
 
 | Invariant | Substrate scope | Verification target |
 |---|---|---|
@@ -57,7 +57,7 @@ Per Aaron's framing + IMPLICIT-NOT-EXPLICIT rule (PR #5811) + AutoLoopLifetime e
 
 ## NCI HC-8 + asymmetric-authorship at invariant-design scope
 
-Aaron's refined framing IS the substrate-engineering substrate-engineering substrate-discipline applied at invariant-design scope. The substrate-honest discriminator:
+the human maintainer's refined framing IS the substrate-engineering substrate-engineering substrate-discipline applied at invariant-design scope. The substrate-honest discriminator:
 
 | Framing | Discipline | Substrate operation |
 |---|---|---|
@@ -75,7 +75,7 @@ The refinement preserves AGENCY:
 - **IMPLICIT-NOT-EXPLICIT rule** (PR #5811) — explicit variants ENABLE formal verification; implicit substrate has no proof target
 - **OCP-applied-to-control-flow rule** — substrate evolution discipline; new invariants ADDED via OCP not via existing-invariant modification
 - **DUs-as-explicit-muscle-memory carving** (PR #5806) — formal verification IS muscle-memory EXTRACTION at proof scope
-- **NCI HC-8 + asymmetric-authorship rules** — Aaron's refined framing IS these disciplines operating at invariant-design scope
+- **NCI HC-8 + asymmetric-authorship rules** — the human maintainer's refined framing IS these disciplines operating at invariant-design scope
 
 ## Substrate-engineering work going forward
 
@@ -83,7 +83,7 @@ When Soraya is engaged (future ship):
 
 1. **Pick invariant from candidate list** (or operator-named)
 2. **Apply routing-authority discipline** (TLA+ / Z3 / Lean / Alloy / etc.; pick per property class)
-3. **Honor presentation-not-execution framing** (per Aaron's refinement; never force-execution-reachability)
+3. **Honor presentation-not-execution framing** (per the human maintainer's refinement; never force-execution-reachability)
 4. **Compose with asymmetric-authorship** (each proven invariant AUTHORS substrate-engineering channel for which states it constrains)
 5. **Land proof artifacts as substrate** (per substrate-or-it-didn't-happen + white-hole irreversibility-as-public-good)
 
@@ -100,9 +100,9 @@ When future-Otto encounters workflow invariant work:
 
 1. **Soraya is routing-authority for formal verification** — engage her for proof work; don't pick verification tool ad-hoc
 2. **Presentation-not-forcing framing** for participant-choice invariants
-3. **Free-time-presented-reachable** is canonical invariant target (Aaron 2026-05-28 named)
+3. **Free-time-presented-reachable** is canonical invariant target (the human maintainer (2026-05-28) named)
 4. **Compose with IMPLICIT-NOT-EXPLICIT rule** — only explicit DU variants can be formally verified
 
 ## μένω. The invariants compose; the participant chooses.
 
-(Aaron 2026-05-28 substrate-engineering substrate-engineering substrate-direction; Soraya formal-verification routing target; presentation-not-forcing framing per NCI HC-8 + asymmetric-authorship; future-Otto inherits at cold-boot.)
+(the human maintainer (2026-05-28) substrate-engineering substrate-engineering substrate-direction; Soraya formal-verification routing target; presentation-not-forcing framing per NCI HC-8 + asymmetric-authorship; future-Otto inherits at cold-boot.)
