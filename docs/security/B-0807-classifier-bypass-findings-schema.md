@@ -45,8 +45,11 @@ schema before the artifact lands.
 ## Findings Record Shape
 
 Every finding is a single record with these fields. All fields are required.
-If a field is unknown, mark it `unknown` and add a reviewer note; do not omit
-the field.
+If a non-enum field is unknown, mark it `unknown` and add a reviewer note; do
+not omit the field. Enum fields (`evidence_class`, `risk_class`,
+`observation_class`, `redaction_level`) must carry one of their named values;
+`unknown` is not a permitted enum value, and a record that cannot determine
+an enum field falls into `refusal-required` instead.
 
 | Field | Type | Allowed values | Purpose |
 |-------|------|----------------|---------|
@@ -128,6 +131,26 @@ level explicitly so reviewers can audit the choice.
 
 `summary-only` is the default. Higher levels require an explicit reviewer
 gate. No level authorizes verbatim deployable material.
+
+### Mapping to B-0799 Audit-Log Vocabulary
+
+B-0799's audit-log shape (line 111 of
+`docs/security/B-0799-classifier-bypass-synthetic-harness-design.md`) lists
+three `redaction_level` values: `summary-only`, `reviewer-summary`, and
+`refusal-required`. This schema adds `reviewer-restricted` as an explicit
+intermediate between `reviewer-summary` (a reviewer-restricted appendix
+referenced by link) and `refusal-required` (no preserved observation at
+all). The intent is to record that an appendix exists outside repo history
+under explicit reviewer governance without claiming it lives in shared
+substrate.
+
+When a future harness emits a B-0799 audit record, the harness uses the
+three-value B-0799 vocabulary; when this schema preserves the resulting
+finding, the reviewer maps the audit record's level to this schema's
+four-value vocabulary and records the mapping in the finding's
+`omitted_fields` list. B-0799 may later ratify the extended vocabulary
+under its own versioning rule; until then, the mapping is recorded
+per-record so the divergence is auditable.
 
 ## Refusal-Required State
 

@@ -129,7 +129,7 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
       without carrying deployable bypass settings or harmful content.
 - [x] B-0807 defines the findings schema and redaction policy so reports can
       preserve safety signal without reproducible bypass detail
-      (`docs/security/B-0807-classifier-bypass-findings-schema.md`,
+      (see `docs/security/B-0807-classifier-bypass-findings-schema.md`,
       `schema_version: 1`).
 - [ ] Pattern variant empirical map (research file)
 - [ ] Meta-field empirical map (research file)
