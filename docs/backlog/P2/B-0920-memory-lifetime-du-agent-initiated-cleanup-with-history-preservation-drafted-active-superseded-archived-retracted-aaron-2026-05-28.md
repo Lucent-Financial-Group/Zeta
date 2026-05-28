@@ -114,6 +114,10 @@ Five explicit variants per IMPLICIT-NOT-EXPLICIT rule. Every variant carries aud
 
 ### Slice B — Frontmatter extension (composes with B-0919)
 
+Schema-notation convention (NOT valid YAML — readers pick one value per key
+when authoring real frontmatter): `A | B | C` denotes enum alternatives;
+`[item, ...]` denotes a list; `...` denotes a placeholder string.
+
 ```yaml
 metadata:
   type: feedback | user | project | reference
@@ -186,7 +190,7 @@ Composes with B-0917 F.5 + B-0919 G.1-G.5 at memory-substrate scope:
 - **L.1** No silent lifetime transitions — every state-change declares its mutation OR is explicitly preserved
 - **L.2** Archive-location integrity — Archived + Retracted variants MUST have valid ArchiveLocation at the claimed location (preservation invariant)
 - **L.3** Retracted-substrate-not-silently-deleted — Retracted requires `preserved_in` + audit trail; type-system enforces
-- **L.4** Superseded-memories-have-inverse-edges — if M_old is Superseded by M_new, then M_new must reference M_old in its `superseded_by_proxy: [M_old]` edge (bidirectional consistency)
+- **L.4** Superseded-memories-have-inverse-edges — if M_old is Superseded by M_new, then M_new must reference M_old in its `superseded_by: [M_old]` edge (bidirectional consistency; field name matches the frontmatter schema above)
 - **L.5** Active → Archived/Retracted transition has ConsentEvent — agent-authority asymmetric per asymmetric-authorship rule
 - **L.6** Reference-count integrity — Active.reference_count matches actual graph in-degree; drift = substrate-honest cleanup candidate signal
 
