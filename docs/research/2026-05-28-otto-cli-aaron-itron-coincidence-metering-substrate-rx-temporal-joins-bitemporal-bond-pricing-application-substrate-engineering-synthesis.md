@@ -122,6 +122,7 @@ Applied to agent-substrate:
 - shadow-* corpus + git commit DAG joined → ontology-update-events-correlated-with-rule-landings
 
 The factory already has:
+
 - `rx-expert` skill (Reactive Extensions Rx.NET; IObservable, schedulers, hot/cold, back-pressure, operators, Reaqtor standing queries, push-based delta streams)
 - `push-pull-dataflow-expert` skill (push vs pull dataflow; operator direction; streaming vs materialise; back-pressure)
 - `streaming-window-expert` skill (windowed streaming; tumbling/hopping/session windows; watermarks; late events; retraction-native deltas)
