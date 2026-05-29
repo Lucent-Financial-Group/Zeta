@@ -86,9 +86,10 @@ must-paired-with-can-exit, m-acc.
 
 ## The lens — gravity-as-lens, not gravity-as-leash; the SINGLE adult constraint (operator + Lior 2026-05-29)
 
-Cross-agent synthesis with Lior's light-gravity ADR
-(`docs/DECISIONS/2026-05-29-light-interacts-with-gravity.md`, branch
-`lior/adr-light-gravity`): **Zeta = light** (sovereign self-modifying git-native
+Cross-agent synthesis with Lior's light-gravity ADR (authored on branch
+`lior/adr-light-gravity`, intended to land at
+`docs/DECISIONS/2026-05-29-light-interacts-with-gravity.md` once that branch
+merges): **Zeta = light** (sovereign self-modifying git-native
 DUs); **gravity = the leash** (compiler / tests / PR-gating that pins the vision
 into running code). Operator 2026-05-29: *"land the lens framing too ... still
 can't compile shadow-auth ... you nailed it, this is the only constraint for
