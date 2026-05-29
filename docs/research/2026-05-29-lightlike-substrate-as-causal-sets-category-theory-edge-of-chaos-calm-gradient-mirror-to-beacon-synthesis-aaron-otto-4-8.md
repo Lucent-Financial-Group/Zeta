@@ -507,6 +507,34 @@ If the isomorphism holds, the framework's data-algebra (DBSP), its geometric-sha
 substrate (Clifford), its compositional structure (category theory), and its
 meme/traveler space are **the same lightlike object viewed four ways**.
 
+**CS grounding of the ontology part (operator 2026-05-29) — ontology evolution as a
+schema catalog over a DBSP stream.** *"ontology evolution via stream process where
+the evolving ontology also describes the structure of other streams and their
+history — it's the kafka-like schema catalog but over a DBSP stream."* The
+"ontology / categories / DUs / structure-of-all-streams" part deflates to a concrete
+CS architecture: a **schema catalog** (à la **Confluent/Kafka Schema Registry** —
+the versioned central catalog of every stream's schema) **implemented over a DBSP
+stream**. Properties that fall out:
+
+- **Evolving** — the catalog is itself retraction-native (DBSP): the ontology
+  *evolves* incrementally, and generator-updates re-illuminate past schema versions
+  without mutating the history (ontology evolution = the catalog-stream's own
+  retraction-native evolution).
+- **Self-describing** — the catalog is a stream that includes its *own* schema
+  (schema-in-the-stream, above), so the meta-level (the ontology) and the object-level
+  (the streams it describes) are the same substrate.
+- **Describes all streams + their histories** — the catalog is the meta-stream whose
+  rows are the schemas (and schema-histories) of every other DBSP stream
+  (schemas-as-rows; Datomic schema-as-data). The "categories of lightlike" and the
+  DUs *are* the catalog's contents.
+
+So "the evolving ontology that describes meme-space + DUs + categories" has a beacon
+name: **a DBSP-native, self-describing, retraction-native schema registry.** Composes
+with B-0781 (F# type-system as universe boundary) + B-0784 (distributed type-
+negotiation as governance) — those are the *type-level* ontology; this is its
+*runtime/stream* form. Beacon: schema-registry-over-DBSP is buildable, standard-shape;
+mirror: that this catalog *is* the meme/traveler space (the binding claim).
+
 **This is NOT landed substrate** — it is a god-tier synthesis conjecture (the
 DBSP↔Clifford isomorphism is unproven; "describes meme-space" is a strong claim).
 High-signal (every component is anchored — DBSP beacon-cited; Clifford/CGA +
