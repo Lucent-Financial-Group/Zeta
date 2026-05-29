@@ -10,9 +10,6 @@ head_ref: "claim/codex-loop-autonomous-coordination-resume-20260529"
 base_ref: "main"
 archived_at: "2026-05-29T05:43:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
-headless_origin: "codex-launchd-loop"
-headless_surface: "codex-background-service"
-codex_loop_run_id: "20260529T054112Z"
 ---
 
 # PR #5944: docs(coordination): refresh remote-only resume next action
