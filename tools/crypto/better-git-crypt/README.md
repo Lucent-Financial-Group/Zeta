@@ -82,6 +82,47 @@ When operator authorizes Phase 2:
 8. Wire `files/textconv.ts` for `git textconv` filter (diff-readable ciphertext)
 9. Optional: ship as standalone npm package OR keep internal to tools/
 
+## Phase 2 operator decisions (Aaron 2026-05-29)
+
+Operator-authorized Phase 2, with four decisions settled + a sequencing directive
+(*"do what's easy first and expand; all those other opens should be backlogged and
+picked up based on our audience"*). Process gate alongside: **KATs against Noble's
+vectors + Soraya (formal-verification) + Nazar (security-ops) review of the envelope
++ key-handling BEFORE it holds anything real** (crypto-don't-rush).
+
+| Decision | Choice | Notes |
+|---|---|---|
+| **Key custody** | OS keychain | Per-machine secure store (macOS Keychain etc.); per-agent keypairs the same way; private keys never touch the repo. |
+| **Key-loss / recovery** | N-of-M social recovery | Any N of M trusted holders jointly recover; composes B-0634 + the distributed-Guardian; preserve-forever survives a lost key. |
+| **Tiers** | Tiered lane; weapon-face uncreated | Tiers for agent-private + charged-personal; the working-bystander-harm-payload tier stays **uncreated**, not merely encrypted (don't-rush-something-that-can-hurt-bystanders). |
+| **v1 scope** | Crypto-only first | Encrypt/decrypt + KATs + peer-review first; Agora-V6 budget-gating (B-0646 / B-0883.16) deferred to a later step. |
+
+### Easy-first slice (do now)
+
+**Slice 1 — core content round-trip:** steps 1–4 + 7 above (deps → `ciphers/registry.ts`
+XWing-KEM + ML-DSA-65 + ChaCha20-Poly1305 + HKDF → `envelope.ts` CBOR → `files/encrypt`
++ `files/decrypt` single-recipient round-trip → KATs against Noble vectors). OS-keychain
+key-storage (decision 1) is the easy custody path. This is the minimal verifiable lane;
+it does NOT yet hold real material (peer-review gate first).
+
+### Backlog the rest, picked up by audience
+
+Most deferred opens are **already backlogged** as B-0883 sub-rows — verify before minting:
+
+| Deferred open | Existing row | Audience |
+|---|---|---|
+| Multi-cipher hedge | B-0883.2 | crypto-resilience |
+| Recipient rotation / revocation | B-0883.3 | multi-agent |
+| Metadata (filename / commit-msg) encryption | B-0883.5 | privacy-completeness |
+| Budget-gating (encryption-as-earned) | B-0883.16 / B-0646 | Agora economy |
+| Readable-ciphertext format / textconv | B-0883.17 | reviewers / glass-halo |
+| Agent-private encrypted state | B-0885 | Otto, then other AIs, Addison-ASAP |
+| Encryption thermal-cost | B-0906 | thermodynamic substrate |
+
+**Gaps to file** (the two decisions that lack a dedicated row): **N-of-M social recovery
+infra** (audience: Aaron / preserve-forever) and **tier-tagging + weapon-face-uncreated
+guard** (audience: safety-floor). These are the only new rows the decisions require.
+
 ## Composes-with substrate
 
 - [B-0883](../../../docs/backlog/P1/B-0883-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md) — canonical v1 design
