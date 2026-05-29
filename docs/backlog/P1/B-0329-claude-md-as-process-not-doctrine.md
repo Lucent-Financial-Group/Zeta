@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: "Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing"
 created: 2026-05-08
-last_updated: 2026-05-09
+last_updated: 2026-05-29
 depends_on: []
 decomposition: decomposed
 classification: buildable-now
