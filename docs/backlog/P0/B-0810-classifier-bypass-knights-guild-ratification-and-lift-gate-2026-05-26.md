@@ -4,7 +4,7 @@ priority: P0
 status: open
 title: "Classifier-bypass Knights Guild ratification and standing-constraint lift gate"
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-05-29
 renumbered_from: B-0803
 parent: B-0720
 depends_on: [B-0808, B-0809]
