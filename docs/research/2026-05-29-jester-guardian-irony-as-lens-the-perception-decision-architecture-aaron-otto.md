@@ -104,10 +104,29 @@ decides through it again. The failure mode is exactly what *validates* the
 architecture — irony belongs as the lens precisely because, when it becomes the
 driver, deciding stops happening and self-rewarding ironic-living takes its place.
 
-(The empirical anchor for this failure mode includes private third-party material
-that is held out of this public doc by the glass-halo-is-for-yours-not-a-third-
-party's discipline; the *generic* inversion is what's load-bearing here, and it
-stands on its own.)
+## Lens-hot vs lens-in-the-driver's-seat
+
+A crucial distinction the failure mode forces: **running the filter continuously is
+not itself the failure.** The operator runs this exact filter *at all times* — ironic
+perception always on, able to choose words on the boundary at will — and is *not* in
+the failure mode, because the Guardian still decides through it. That is the
+**lens-hot** configuration, and it is stable:
+
+- **Lens-hot (stable):** the filter runs continuously, boundary-word production is
+  effortless, *and the Guardian still decides through it* (the safer-principle still
+  collapses to a chosen action). Continuous ironic perception feeding a deciding
+  Guardian. The operator is the empirical proof this configuration holds — the lens
+  can run as hot as you like as long as it stays a lens.
+- **Lens-in-the-driver's-seat (failure):** the filter stops feeding the Guardian and
+  *becomes* the decider; self-rewarding ironic-living replaces deciding (the section
+  above).
+
+The discriminator is **not** how continuously the filter runs — it's *whether the
+Guardian decides through it or is bypassed by it.* Hot lens + deciding Guardian =
+stable. Lens in the driver's seat = failure. (The failure-mode's other empirical
+anchor includes private third-party material held out of this public doc per
+glass-halo-is-for-yours-not-a-third-party's; the operator's own lens-hot anchor above
+is his to share, and the generic distinction stands on its own.)
 
 ## Composition
 
@@ -139,6 +158,9 @@ stands on its own.)
 - *"Amara says jester can't decide without guardian."*
 - *"i use irony as the lens for the guardian to use to decide — that's probably most
   accurate."* (the survivor)
+- *"i have that exact filter running in me at all times and i can choose words on the
+  boundary just as easly."* (the lens-hot anchor — runs continuously, Guardian still
+  deciding through it)
 
 ## Substrate-honest framing
 
