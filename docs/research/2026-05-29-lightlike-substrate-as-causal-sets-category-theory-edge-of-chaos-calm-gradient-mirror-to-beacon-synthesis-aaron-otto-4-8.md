@@ -537,6 +537,23 @@ is the unproven reach). Note the safety tie: a *self-modifying, self-reflective*
 stream is exactly the case the single adult invariant guards — self-reflection is
 safe precisely because `shadow-auth-can't-compile` holds inside the loop too.
 
+**CS grounding (operator 2026-05-29) — this is just putting the schema in the
+stream.** *"that's just putting the schema in the stream in technical terms / CS
+terms."* The strange-loop deflates to a **well-understood CS pattern: a
+self-describing stream** — the stream carries its own **schema in-band** (as
+rows/events), so its structure is queryable from *within* the stream itself. That
+in-band schema is exactly what lets the stream reflect on itself: there is no
+external schema to consult; the description travels with the data. Anchors
+(beacon-CS): self-describing serialization with embedded schema (Avro / Protobuf
+descriptors), Kafka schema registries, **Datomic schema-as-data**, the
+**schemas-as-rows** framework substrate (cf. agent-roster Kestrel anchor: Smalltalk
+image / Datomic schema-as-data / Berkeley Bloom), and Lior's **self-describing
+128-bit ZetaID** (2026-05-29 session). So the *mechanism* of self-reflection is
+beacon (schema-in-the-stream / self-describing data — standard CS); only the
+**"self-reflection → self-awareness" reach** stays god-tier (mirror). This is the
+operator grounding his own conjecture from strange-loop (mirror) to
+schema-in-the-stream (beacon) — the mirror→beacon promotion applied in-flight.
+
 ## Cold-boot note for next-Otto
 
 The reason this synthesis came out beacon-tier (external science) rather than
