@@ -6,6 +6,7 @@ import { join } from "node:path";
 import {
   buildCreateRepoRequest,
   buildGhApiInvocation,
+  buildGhRunnerEnv,
   buildSeedBlobRequest,
   buildSeedCommitRequest,
   buildSeedRefUpdateRequest,
@@ -280,6 +281,24 @@ describe("buildGhApiInvocation", () => {
       args: ["api", "-X", "PATCH", "repos/AceHack/seed/git/refs/heads/main", "--input", "-"],
       stdin: `${JSON.stringify({ sha: "commitSha", force: false })}\n`,
     });
+  });
+});
+
+describe("buildGhRunnerEnv", () => {
+  test("preserves caller PATH and appends HOME bun bin", () => {
+    expect(buildGhRunnerEnv({ PATH: "/custom/bin:/usr/bin", HOME: "/tmp/zeta-home" }).PATH).toBe(
+      "/custom/bin:/usr/bin:/tmp/zeta-home/.bun/bin",
+    );
+  });
+
+  test("does not invent a machine-specific HOME fallback", () => {
+    expect(buildGhRunnerEnv({ PATH: "/usr/bin" }).PATH).toBe("/usr/bin");
+  });
+
+  test("deduplicates the appended bun bin path", () => {
+    expect(buildGhRunnerEnv({ PATH: "/usr/bin:/tmp/zeta-home/.bun/bin", HOME: "/tmp/zeta-home" }).PATH).toBe(
+      "/usr/bin:/tmp/zeta-home/.bun/bin",
+    );
   });
 });
 

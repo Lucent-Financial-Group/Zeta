@@ -307,18 +307,23 @@ export function buildGhApiInvocation(request: GhApiExecutableRequest): GhApiInvo
   };
 }
 
+export function buildGhRunnerEnv(baseEnv: typeof process.env = process.env): typeof process.env {
+  const pathEntries = [baseEnv.PATH, baseEnv.HOME ? `${baseEnv.HOME}/.bun/bin` : undefined]
+    .flatMap((entry) => (entry ? entry.split(":") : []))
+    .filter((entry, index, entries) => entry.length > 0 && entries.indexOf(entry) === index);
+  return pathEntries.length === 0 ? { ...baseEnv } : { ...baseEnv, PATH: pathEntries.join(":") };
+}
+
 function spawnGhApiRunner(): GhApiRunner {
   return {
     run(command: string, args: readonly string[], stdin: string | null): GhApiRunnerResult {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- `gh` is intentionally resolved from the caller PATH; arguments are structured and never shell-expanded.
       const result = spawnSync(command, [...args], {
         input: stdin ?? undefined,
         encoding: "utf8",
         timeout: 60_000,
         maxBuffer: 32 * 1024 * 1024,
-        env: {
-          ...process.env,
-          PATH: `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${process.env.HOME ?? "/Users/acehack"}/.bun/bin`,
-        },
+        env: buildGhRunnerEnv(),
       });
       return {
         status: result.status ?? 1,
