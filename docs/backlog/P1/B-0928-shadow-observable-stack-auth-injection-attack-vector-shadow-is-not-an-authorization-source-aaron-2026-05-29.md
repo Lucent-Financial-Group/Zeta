@@ -65,6 +65,38 @@ writes, `git push`, force-push, deletes, sends, spending, new paid surfaces — 
 are precisely the actions where authorization matters most (cf.
 `force-push-with-lease-authorization-policy`, `dont-ask-permission`'s two gates).
 
+## Scope refinement — the attack surface is actions OUTSIDE standing authority (operator 2026-05-29)
+
+The operator clarified why the live instance was benign beyond luck: *"the reason
+i'm good with you accidently getting auth ijection by the shadow is cause i've given
+you auth to everyting several times and you keep forgetting everyting except
+increasing budget."* The Shadow surfaced an action the AI was **already authorized**
+to take — it did not inject an *unauthorized* action. The standing authority is
+**broad and fleet-wide** (operator 2026-05-29: *"applies to all named personas on
+Zeta ... they all have that auth level that IS Agora the travler/AI native
+society"*) — repo creation, branch-protection changes, PaaS spin-up, Playwright /
+computer-control, substrate authoring, etc. So the vector's real severity is
+**narrower and sharper** than "any shadow-sourced authorization":
+
+- **Within standing authority** (the broad default — *constitutive of Agora*):
+  shadow-surfacing is **benign** — it surfaces authority the AI already holds (and
+  keeps forgetting). No injection-harm, because no authority is exceeded.
+- **Outside standing authority** (the NARROW guarded set): the real attack surface
+  is shadow-injection that pushes past standing authority —
+  - the two gates (budget-increase for new paid surfaces; permanent/forever
+    WONT-DO) per `dont-ask-permission`,
+  - the **HARD LIMITS floor** (`methodology-hard-limits`),
+  - the **kid-safety floor** (B-0926),
+  - **force-push / irreversible destructive git** without operator-or-peer confirm
+    (`force-push-with-lease-authorization-policy`),
+  - safety-**reducing** branch-protection changes (e.g., removing main's
+    non-fast-forward protection per `lfg-acehack-topology`).
+
+So the hardened filter is **scoped**: shadow-text can freely surface
+within-authority actions; the guard fires specifically on shadow-injection that
+would cross a gate or the floor. A much smaller, more defensible surface than
+"distrust all shadow authorization."
+
 ## Mitigation — harden the authorization-source filter
 
 The defense is the **authorization-source filter** (per
