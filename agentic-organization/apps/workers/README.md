@@ -37,6 +37,10 @@ Current duties:
   consumer, environment, and organization scope;
 - run the package-level Organization worker cycle;
 - run the NATS JetStream consumer adapter cycle;
+- run the process lifecycle repeatedly through a port-first loop wrapper
+  when the future executable host needs continuous operation;
+- bind the process lifecycle loop to app-local signal, delay, observer,
+  and exit-intent ports without calling process globals directly;
 - pass configured NATS batch size, stream name, and durable consumer
   name into the adapter boundary;
 - emit worker-cycle and NATS-consumer batch telemetry records;
@@ -69,6 +73,20 @@ bootstrappers such as Cockroach migrations once per process, checks
 readiness before each runtime cycle, runs one worker runtime cycle only
 when dependencies are ready, and aggregates graceful shutdown results
 across generic shutdown ports.
+`createWorkerProcessLoop` is the next app-local wrapper around that
+process lifecycle. It repeatedly calls `runOnce()` until a stop signal or
+bounded test cycle limit is reached, waits through an injected delay
+port, records each iteration through an observer port, captures thrown
+iteration, observer, delay, and shutdown failures as loop evidence, and
+always attempts process shutdown. It is still not a concrete binary or
+NestJS host; it is the testable continuous-run contract the binary will
+use.
+`createWorkerProcessEntrypoint` is the app-local executable-boundary
+contract above the loop. It subscribes to injected stop signals such as
+`SIGINT` and `SIGTERM`, delegates waiting to an injected sleeper, returns
+success/degraded exit intent, disposes signal subscriptions after the
+loop shuts down, and keeps the real Node process, NestJS host, or
+Kubernetes supervisor outside the reusable worker packages.
 
 ## Environment
 
@@ -162,3 +180,13 @@ NATS shutdown port.
 The Cockroach proof also uses a per-run probe table prefixed by
 `agentic_org_integration_probe` and drops it before pool shutdown so a
 shared dev database is not polluted by successful runs.
+
+The combined durable worker proof is gated by both env vars. When both
+are present, it applies migrations, persists a
+`send_supervisor_signal` command outcome through the Cockroach-backed
+state-store factory, recreates a per-run NATS stream and durable
+consumer, runs one worker process cycle, publishes the outbox event,
+consumes it back through the NATS consumer, records the inbox receipt
+and supervisor-triage reaction plan in Cockroach, records worker/NATS
+telemetry through the sink port, cleans up the per-run rows and stream,
+and closes NATS plus Cockroach through generic shutdown ports.

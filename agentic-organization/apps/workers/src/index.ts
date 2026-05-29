@@ -124,7 +124,39 @@ export {
   type WorkerProcessShutdownResult,
 } from "./worker-process.ts";
 export {
+  WorkerProcessLoopEventName,
+  WorkerProcessLoopFailureStage,
+  WorkerProcessLoopStatus,
+  createWorkerProcessLoop,
+  type CreateWorkerProcessLoopInput,
+  type WorkerProcessLoop,
+  type WorkerProcessLoopDelay,
+  type WorkerProcessLoopDelayInput,
+  type WorkerProcessLoopFailure,
+  type WorkerProcessLoopIteration,
+  type WorkerProcessLoopObserver,
+  type WorkerProcessLoopRecord,
+  type WorkerProcessLoopRunResult,
+  type WorkerProcessLoopStopSignal,
+} from "./worker-process-loop.ts";
+export {
+  WorkerEntrypointConfigErrorMessage,
+  WorkerEntrypointExitCode,
+  WorkerEntrypointSignalName,
+  createWorkerProcessEntrypoint,
+  type CreateWorkerProcessEntrypointInput,
+  type WorkerEntrypointSignalListener,
+  type WorkerEntrypointSignalSource,
+  type WorkerEntrypointSignalSubscription,
+  type WorkerEntrypointSleepInput,
+  type WorkerEntrypointSleeper,
+  type WorkerProcessEntrypoint,
+  type WorkerProcessEntrypointResult,
+} from "./worker-process-entrypoint.ts";
+export {
+  CockroachTableName,
   CockroachMigrationStatement,
   createCockroachSqlExecutor,
+  createCockroachWorkAnchorKernelMigration,
   type CockroachAnySqlStatement,
 } from "../../../packages/state-cockroach/src/index.ts";

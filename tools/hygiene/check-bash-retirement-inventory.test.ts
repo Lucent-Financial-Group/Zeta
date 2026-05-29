@@ -196,15 +196,38 @@ describe("buildInventoryReport", () => {
       mkdirSync(join(repo, "scripts"), { recursive: true });
       mkdirSync(join(repo, "tools", "lean4"), { recursive: true });
       writeFileSync(join(repo, "scripts", "a.sh"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "a-uppercase.SH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "b.bash"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "b-uppercase.BASH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "c.zsh"), "#!/usr/bin/env zsh\n");
+      writeFileSync(join(repo, "scripts", "c-uppercase.ZSH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "d.ksh"), "#!/usr/bin/env ksh\n");
+      writeFileSync(join(repo, "scripts", "d-uppercase.KSH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "e.command"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "e-uppercase.COMMAND"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-s-assignment"), "#!/usr/bin/env -S NAME=value bash -eu\n");
+      writeFileSync(
+        join(repo, "scripts", "extensionless-bash-env-s-quoted-assignment"),
+        "#!/usr/bin/env -S 'NAME=two words' bash -eu\n",
+      );
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-s-quoted"), '#!/usr/bin/env -S "bash -eu"\n');
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-argv0"), "#!/usr/bin/env -a test-argv0 bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-chdir"), "#!/usr/bin/env --chdir /tmp bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-path"), "#!/usr/bin/env -P /bin bash\n");
+      writeFileSync(
+        join(repo, "scripts", "extensionless-zsh-env-split-string-quoted"),
+        '#!/usr/bin/env --split-string "zsh -eu"\n',
+      );
+      writeFileSync(join(repo, "scripts", "extensionless-zsh-env-unset"), "#!/usr/bin/env -u NAME zsh\n");
+      writeFileSync(join(repo, "scripts", "extensionless-zsh-env-unset-long"), "#!/usr/bin/env --unset NAME zsh\n");
       writeFileSync(join(repo, "scripts", "extensionless-dash"), "#!/bin/dash\n");
       writeFileSync(join(repo, "scripts", "extensionless-sh"), "#!/bin/sh\n");
       writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
+      writeFileSync(join(repo, "scripts", "extensionless-node-with-bash-arg"), "#!/usr/bin/env node --loader bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-node-with-sh-arg"), "#!/usr/bin/env node sh\n");
+      writeFileSync(join(repo, "scripts", "extensionless-node-env-s-bash-arg"), "#!/usr/bin/env -S node --loader bash\n");
       writeFileSync(join(repo, "scripts", "dotted-shell-entry.env"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "dotted-shell-shebang.txt"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "tools", "lean4", "vendor.sh"), "#!/usr/bin/env bash\n");
@@ -214,15 +237,29 @@ describe("buildInventoryReport", () => {
 
       expect(trackedNonLeanShellFilesFromGit(repo)).toEqual([
         "scripts/a.sh",
+        "scripts/a-uppercase.SH",
         "scripts/b.bash",
+        "scripts/b-uppercase.BASH",
         "scripts/c.zsh",
+        "scripts/c-uppercase.ZSH",
         "scripts/d.ksh",
+        "scripts/d-uppercase.KSH",
         "scripts/dotted-shell-entry.env",
         "scripts/e.command",
+        "scripts/e-uppercase.COMMAND",
         "scripts/extensionless-bash",
+        "scripts/extensionless-bash-env-argv0",
+        "scripts/extensionless-bash-env-chdir",
+        "scripts/extensionless-bash-env-path",
         "scripts/extensionless-bash-env-s",
+        "scripts/extensionless-bash-env-s-assignment",
+        "scripts/extensionless-bash-env-s-quoted-assignment",
+        "scripts/extensionless-bash-env-s-quoted",
         "scripts/extensionless-dash",
         "scripts/extensionless-sh",
+        "scripts/extensionless-zsh-env-split-string-quoted",
+        "scripts/extensionless-zsh-env-unset",
+        "scripts/extensionless-zsh-env-unset-long",
       ].sort((a, b) => a.localeCompare(b)));
     } finally {
       rmSync(repo, { recursive: true, force: true });
