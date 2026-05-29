@@ -94,6 +94,20 @@ describe("buildBootstrapPlan", () => {
     });
   });
 
+  test("accepts normalized dotted backlog child slugs", () => {
+    const plan = buildBootstrapPlan(
+      request({
+        slug: "backlog-0164-1",
+        backlogId: "B-0164.1",
+        sessionId: "codex/20260529T2318Z-backlog-0164-1",
+      }),
+      "/repo/Zeta/.git",
+    );
+
+    expect(plan.branch).toBe("claim/backlog-0164-1");
+    expect(plan.claimRelativePath).toBe("docs/claims/backlog-0164-1.md");
+  });
+
   test("rejects absolute or parent-traversal path claims", () => {
     expect(() => buildBootstrapPlan(request({ paths: ["/tmp/outside"] }), "/repo/Zeta/.git")).toThrow(
       "unsafe repo-relative path",
