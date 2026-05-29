@@ -125,6 +125,15 @@ export async function createWorkItem(
           label: workItem.title,
         },
       ],
+      emittedEvents: [
+        {
+          eventId: envelope.eventId,
+          eventType: envelope.eventType,
+          aggregateId: envelope.aggregate.aggregateId,
+          aggregateType: envelope.aggregate.aggregateType,
+        },
+      ],
+      auditEventIds: [auditEventId],
       workItem,
       idempotency: {
         replayed: false,

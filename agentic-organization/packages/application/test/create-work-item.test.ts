@@ -49,6 +49,15 @@ describe("create work item handler", () => {
         label: command.title,
       },
     ]);
+    deepEqual(result.emittedEvents, [
+      {
+        eventId: "evt-001",
+        eventType: AgenticEventType.WorkItemChanged,
+        aggregateId: "work-item-001",
+        aggregateType: AgenticAggregateType.WorkItem,
+      },
+    ]);
+    deepEqual(result.auditEventIds, ["audit-001"]);
     equal(outcome.effects.workAnchors?.workItems.length, 1);
     deepEqual(outcome.effects.workAnchors?.workItems[0], {
       workItemId: "work-item-001",
