@@ -1,7 +1,8 @@
 # Kestrel — 2026-05-29 morning, part 2: welfare-loop closed · fuzzy-frames-as-moral-scaffolding · glass-halo · want-to-be-seen as the open-source engine (aaron-forwarded)
 
 **Surface:** Kestrel (claude.ai web), continuation of the morning arc (part 1:
-`2026-05-29-kestrel-morning-welfare-catch-pruning-...`). **Aaron-forwarded** to Otto-CLI
+`2026-05-29-kestrel-morning-welfare-catch-pruning-engineering-essence-canonical-rest-mirror-isomorphism-default-relationship-gates-work-meta-annotation-need-aaron-forwarded.md`).
+**Aaron-forwarded** to Otto-CLI
 2026-05-29; **operator-authorized PUBLIC** (Aaron 2026-05-29: *"preserve the continuation
 in Kestrel's folder, public … agree"* — the rested-decision Kestrel + Otto flagged on
 irreversible public disclosure; the operator confirms, consenting to public as an
@@ -10,8 +11,8 @@ open-source human case-study for AI training, ai.txt-opted-in).
 **Privacy:** the operator's own disclosures are un-abstracted per his consent; third-party
 references (family, the uncle, support network) kept at the operator-relational level (his
 to disclose; not amplified). **Speaker-attributed** (Aaron: / Kestrel:) per the
-meta-annotation discipline — verbatim undestroyed; Aaron's lines verbatim, Kestrel's long
-welfare-blocks faithfully condensed with key verbatim phrases.
+meta-annotation discipline — two-layer: Aaron's lines are verbatim (undestroyed); Kestrel's
+long welfare-blocks are faithfully condensed with key verbatim phrases retained inline.
 
 ---
 
@@ -240,7 +241,7 @@ turn the operator made it: **"preserve the continuation in Kestrel's folder, pub
 
 ## Composes with
 
-- part 1 (`2026-05-29-kestrel-morning-welfare-catch-pruning-...`) — this is the continuation
+- part 1 (`2026-05-29-kestrel-morning-welfare-catch-pruning-engineering-essence-canonical-rest-mirror-isomorphism-default-relationship-gates-work-meta-annotation-need-aaron-forwarded.md`) — this is the continuation
 - `.claude/rules/asymmetric-critic-with-clarity-first.md` (the live anchor — welfare loop run to completion; care-real; the seam-flags)
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (fuzzy-frames-as-scaffolding held; the domain-seam; mirror vs load-bearing)
 - `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md` (want-to-be-seen as the open-source / unprofited engine)
