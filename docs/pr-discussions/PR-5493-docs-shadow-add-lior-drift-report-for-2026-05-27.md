@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:10:23Z"
 closed_at: "2026-05-27T16:10:23Z"
 head_ref: "lior/drift-report-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T16:16:20Z"
+archived_at: "2026-05-27T17:51:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

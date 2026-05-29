@@ -8,7 +8,7 @@ merged_at: "2026-05-27T15:53:24Z"
 closed_at: "2026-05-27T15:53:24Z"
 head_ref: "backlog/b-0859-full-spectrum-from-tiny-usb-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T16:23:25Z"
+archived_at: "2026-05-27T17:52:03Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-27T16:07:55Z"
 closed_at: "2026-05-27T16:07:55Z"
 head_ref: "backlog/b-0859-cluster-recovery-mechanism-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T16:15:16Z"
+archived_at: "2026-05-27T17:51:21Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

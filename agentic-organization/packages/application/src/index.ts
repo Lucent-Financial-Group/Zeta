@@ -7,12 +7,29 @@ export {
   type TypedCommand,
 } from "./command-handler-registry.ts";
 export {
+  type PipelineCommand,
+  type PipelineCommandPolicyContext,
+  type PipelineCommandPolicyScope,
+} from "./command-contract.ts";
+export {
   createCommandPipeline,
   type CommandPipeline,
   type CommandPipelineDependencies,
-  type PipelineCommand,
 } from "./command-pipeline.ts";
-export { CommandErrorCode, CommandResultStatus, type CommandResult } from "./command-result.ts";
+export {
+  CommandErrorCode,
+  CommandResultArtifactType,
+  CommandResultStatus,
+  type CommandResult,
+  type CommandResultArtifact,
+  type CommandResultEmittedEvent,
+} from "./command-result.ts";
+export {
+  createCreateWorkItemHandler,
+  createWorkItem,
+  type CreateWorkItemCommand,
+  type CreateWorkItemDependencies,
+} from "./handlers/create-work-item.ts";
 export {
   createSendSupervisorSignalHandler,
   sendSupervisorSignal,
@@ -29,4 +46,5 @@ export type {
   IdGenerator,
   RecordCommandOutcomeInput,
   RecordCommandOutcomeResult,
+  WorkAnchorCommandEffects,
 } from "./ports.ts";

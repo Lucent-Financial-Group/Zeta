@@ -257,6 +257,17 @@ It must not instantiate the in-memory store or branch on every command
 type. New commands should register a handler; new persistence backends
 should implement the same store-factory port.
 
+The command pipeline is now generic over Organization command contracts.
+The shared command base owns only the policy/idempotency/trace fields:
+command ID, command type, request hash, idempotency key, actor,
+organization/project scope, correlation, causation, trace ID, and an
+optional generic `policyContext`. Command-specific payload stays with
+the handler. Supervisor-chain details, work-item scope, and tool scope
+are policy context, not pipeline payload assumptions. A second
+registered command type can execute through the same pipeline without
+adding a pipeline switch, which keeps future work-anchor, discussion,
+schedule, meeting, review, and Hermes-run commands open for extension.
+
 Policy remains a generic Organization package. The first implementation
 maps a `CommandAuthorizationRequest` to a `HatAuthorityPort` decision:
 active hat authority allows the command, while expired, missing,
@@ -281,9 +292,12 @@ adapter in the cluster, not an application-layer dependency.
 Command handlers must return typed effects, not write state directly.
 The command pipeline owns idempotency lookup and calls one command
 outcome port that records the business state, audit events, outbox
-events, and idempotency record together. This keeps the application
-layer closed to concrete database transactions while still giving
-durable adapters one atomic commit boundary for a command result.
+events, and idempotency record together. In V0, the only concrete
+business-effect category is the supervisor signal; the work-anchor
+kernel must add the next category without changing command dispatch or
+policy flow. This keeps the application layer closed to concrete
+database transactions while still giving durable adapters one atomic
+commit boundary for a command result.
 Durable command adapters should reserve the idempotency record before
 effect rows inside that transaction so an idempotency race aborts before
 supervisor signal, audit, or outbox state becomes visible.
@@ -291,6 +305,18 @@ The command outcome port returns generic committed, replayed, or
 idempotency-conflict results. A vendor adapter may use SQL constraints,
 transaction callbacks, CTEs, or other local mechanics to detect races,
 but application code only receives the generic outcome.
+
+Command outcomes are also generic enough for UI, MCP, and agents to
+consume without knowing every command-specific record. The common result
+surface carries status, command ID, idempotency state, policy evidence,
+artifact summaries, committed emitted-event summaries, committed audit
+event IDs, and typed failure information. The pipeline derives committed
+event/audit metadata from the effects it sends to the outcome port, so
+the result cannot describe different effects than the command attempted
+to persist. Compatibility fields such as `supervisorSignal` can remain
+while the first V0 screens and tests migrate, but new commands should
+expose their durable effects through the artifact and event metadata
+first.
 
 The first worker boundary follows the same rule. `@agentic-org/workers`
 does not create NATS clients, Cockroach clients, Nest modules, Temporal
@@ -302,25 +328,35 @@ a chance to run. `apps/workers` will later bind those ports to real
 cluster adapters and attach process concerns such as health checks,
 metrics, structured logs, readiness, and graceful shutdown.
 
-`apps/workers` now exists as the first NodeNext runtime-host shell. It
-does not introduce NestJS yet. It composes the package-level worker host
-and the NATS consumer adapter, parses typed process environment values
-into runtime config, records telemetry through a sink port, and reports
-healthy/degraded status. Its durable composition seam receives a generic
-Cockroach SQL executor, creates the Cockroach-backed command state,
-outbox, event-ingestion, and policy-observation adapter set, and wires
-the outbox/event-ingestion ports into the worker host. Its current
-required environment contract is `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`,
-`COCKROACH_DATABASE_URL`, `NATS_SERVERS`, `NATS_STREAM`, `NATS_DURABLE`,
-`NATS_INBOUND_BATCH_SIZE`, `WORKER_INBOUND_BATCH_SIZE`, and
-`WORKER_OUTBOX_BATCH_SIZE`. The first app-local process adapters now
-cover the Cockroach worker client, NATS worker connection seam, and JSON
-telemetry sink:
+`apps/workers` now exists as the first NodeNext runtime-host contract
+shell. It does not introduce NestJS yet, and it is not the final
+long-running executable worker host. It composes the package-level
+worker host and the NATS consumer adapter, parses typed process
+environment values into runtime config, records telemetry through a sink
+port, and reports healthy/degraded status. Its durable composition seam
+receives a generic Cockroach SQL executor, creates the Cockroach-backed
+command state, outbox, event-ingestion, and policy-observation adapter
+set, and wires the outbox/event-ingestion ports into the worker host.
+Its current required environment contract is `AGENTIC_ORG_ENV`,
+`AGENTIC_ORG_ID`, `COCKROACH_DATABASE_URL`, `NATS_SERVERS`,
+`NATS_STREAM`, `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`,
+`WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE`. The first
+app-local process adapters now cover the Cockroach worker client, NATS
+worker connection seam, and JSON telemetry sink:
 
 - `apps/workers/src/adapters/cockroach-worker-client.ts` adapts a
   process-provided pool/client to `CockroachSqlClient`, including
   explicit `BEGIN`, `COMMIT`, `ROLLBACK`, connection release,
-  SQLSTATE-based retry, and ambiguous-commit preservation semantics;
+  SQLSTATE-based retry, ambiguous-commit preservation semantics, and a
+  generic shutdown adapter for process pools that expose `end()`;
+- `apps/workers/src/adapters/pg-cockroach-worker-pool.ts` is the first
+  optional live-driver binding for the Cockroach worker pool contract.
+  It dynamically loads a `pg`-compatible module at the app boundary,
+  validates that it exports `Pool`, and adapts `Pool.connect()`,
+  `client.query()`, `client.release()`, and `Pool.end()` to
+  `CockroachWorkerPool` plus `CockroachWorkerShutdownPool`. This keeps
+  the driver out of reusable packages while giving the worker app a real
+  Cockroach/Postgres-compatible path for integration proof;
 - `apps/workers/src/adapters/nats-worker-connection.ts` adapts a
   process-provided NATS transport connection factory to generic
   `EventPublisher`, `NatsJetStreamPullConsumer`,
@@ -344,11 +380,44 @@ telemetry sink:
 - `apps/workers/src/adapters/json-worker-telemetry-sink.ts` implements
   `WorkerRuntimeTelemetrySink` with stable structured JSON records that
   preserve the worker/NATS attribute contract.
+- `apps/workers/src/adapters/cockroach-migration-bootstrapper.ts` wraps
+  the generic Cockroach migration runner as a process bootstrapper,
+  applying the ordered core migrations before the worker runtime is
+  allowed to start.
+- `apps/workers/src/adapters/cockroach-readiness.ts` provides a
+  Cockroach readiness probe over the generic SQL client. It keeps the
+  dependency check app-local and driver-free for reusable packages.
 
-Readiness endpoints and migration bootstrap still belong to later
-process-adapter wiring. The shutdown and readiness ports now exist so
-those future hosts can expose dependency state without changing package
-contracts.
+The first process lifecycle entrypoint contract now exists in
+`apps/workers/src/worker-process.ts`. It applies bootstrappers once per
+process, checks typed dependency readiness before runtime execution,
+skips runtime execution when bootstrap or readiness fails, runs one
+runtime cycle when dependencies are ready, and aggregates shutdown
+across adapter ports. It is a lifecycle contract, not a complete
+long-running executable host. Future loops, Kubernetes probes, and
+process supervisors can wrap this contract without changing domain,
+application, runtime, or worker packages.
+
+The first continuous-run wrapper now exists in
+`apps/workers/src/worker-process-loop.ts`. It receives a `WorkerProcess`,
+delay port, observer port, and stop signal, then repeatedly invokes the
+process lifecycle without owning infrastructure clients. The loop
+captures thrown iteration failures, observer failures, delay failures,
+degraded process results, and shutdown failures as typed loop evidence
+while preserving completed iteration results. This gives the future
+worker binary a small, testable always-on control loop without turning
+the app host into business logic.
+
+The first executable-boundary entrypoint contract now exists in
+`apps/workers/src/worker-process-entrypoint.ts`. It sits above the
+continuous loop and owns only executable concerns: subscribing to typed
+stop signals, delegating wait policy to a sleeper port, returning
+success/degraded exit intent, preserving received signal evidence, and
+disposing subscriptions after shutdown. It deliberately does not call
+`process.exit`, construct timers directly, or reach into Node process
+globals; a future Node or NestJS host can adapt real `process.on`,
+`setTimeout`, Kubernetes lifecycle hooks, and pod termination behavior
+behind the same ports.
 
 The `apps/workers` composition root receives typed config plus
 already-constructed ports. This is the only place the worker process
@@ -372,6 +441,45 @@ Ambiguous transaction outcomes must stay visible to the worker host and
 operators; the process adapter may attempt rollback cleanup after an
 ambiguous commit, but it must preserve the original ambiguity instead of
 masking it as a rollback failure.
+
+The live Cockroach proof is env-gated rather than always-on. When
+`AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` is absent, the normal
+test suite skips the live check. When it is present and a
+`pg`-compatible driver is available from the root dependency graph, the
+test applies the Organization migrations, checks readiness through
+`SELECT 1`, creates a per-run probe table, commits a probe row, rolls
+back a failed probe transaction, drops the per-run table, and closes the
+pool through the generic process shutdown port. This gives us real
+substrate evidence without making local development or reusable package
+tests depend on a cluster.
+
+The live NATS proof follows the same rule. When
+`AGENTIC_ORG_NATS_INTEGRATION_SERVERS` is absent, the normal suite skips
+the live check. When it is present, the test creates a small per-run
+JetStream stream plus durable consumer, binds the app-local `@nats-io`
+transport factory through `connectNatsWorkerAdapters`, checks durable
+readiness, publishes one canonical event, consumes it through the
+generic event-ingestion port, acknowledges it, proves the
+invalid-envelope consumer DLQ path, and closes the connection through
+the generic NATS shutdown port. The reusable packages continue to see
+only publisher, pull-consumer, dead-letter, readiness, and shutdown
+interfaces.
+
+The combined durable worker proof is also env-gated and runs only when
+both live substrate variables are present. It applies Cockroach
+migrations through the app bootstrapper, writes a real
+`send_supervisor_signal` command outcome through the generic command
+pipeline and Cockroach state-store factory, connects a per-run NATS
+stream/durable consumer through the app-local NATS seam, runs the worker
+process through the loop for two cycles, publishes the outbox event,
+consumes it back through the NATS consumer, records the inbox receipt
+and supervisor-triage reaction plan in Cockroach, proves the second
+cycle does not duplicate durable side effects, emits worker/NATS
+telemetry records through the sink port, and guards both Cockroach and
+NATS cleanup when setup fails. This is the first live proof that the
+durable command, outbox, NATS, inbox, reaction-plan, readiness,
+telemetry, loop, and cleanup seams compose without letting vendor
+clients leak into reusable packages.
 
 ## SOLID Rules
 
@@ -676,12 +784,14 @@ decodes canonical JSON envelopes and calls the runtime ingestion
 processor, but it owns JetStream-style decisions: ack processed and
 duplicate messages, terminate plus dead-letter invalid envelopes and
 payload conflicts, and negative-acknowledge transient ingestion
-failures. If dead-letter publishing or source-message termination
-fails, it records the failure, negative-acknowledges the source message
-for retry, and continues the fetched batch so one broken DLQ path cannot
-starve unrelated messages. This keeps runtime rules deterministic and
-transport-neutral while still making live NATS behavior testable before
-a Nest worker process exists.
+failures. If dead-letter publishing fails, it records the failure,
+negative-acknowledges the source message for retry, and continues the
+fetched batch. If dead-letter publishing succeeds but source-message
+termination fails, it records the failure and acknowledges the
+already-dead-lettered source message so a poison message is not
+redelivered after the DLQ side effect. This keeps runtime rules
+deterministic and transport-neutral while still making live NATS behavior
+testable before a Nest worker process exists.
 
 ### Stream and Consumer Manifests
 

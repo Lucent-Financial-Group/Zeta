@@ -8,7 +8,7 @@ merged_at: "2026-05-27T18:45:52Z"
 closed_at: "2026-05-27T18:45:52Z"
 head_ref: "lior/b-0058.3-honesty-log"
 base_ref: "main"
-archived_at: "2026-05-27T19:02:54Z"
+archived_at: "2026-05-27T18:51:25Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -79,6 +79,25 @@ and `UI_AND_OBSERVABILITY_CONCEPTS.md` reject unanchored discussions.
 Meetings, one-on-ones, broadcasts, votes, review comments, reports, and
 team threads must reference work before they can affect state.
 
+First implementation progress: the domain now has a minimal typed work
+item lifecycle (`created`, `intake`, `triage`, `ready`, `in_progress`,
+`blocked`, `review`, `done`) plus V0 defect guards for creation,
+readiness, assignment, and scheduling. Work item type is required on the
+domain record, and transition records carry evidence, assignment, and
+schedule references so later UI/graph/agent review can explain why a
+transition was legal. The Cockroach schema now has an additive
+`0003_agentic_org_work_anchor_kernel` migration for projects,
+initiatives, work anchor targets, work item state history, and upgraded
+work item trace/type/version columns. V1 remains legacy instead of being
+rewritten, generated SQL is checked against migration files, and DB
+constraints derive from domain enum values. Migration backfill defaults
+are dropped after legacy rows are patched so future writes still require
+real command provenance, legacy `updated_at` is preserved from
+`created_at`, and state-history sequence constraints protect replay
+order. The remaining gap is command handlers and generic state ports
+that validate anchor existence before supervisor signals, discussions,
+and meetings can mutate state.
+
 ### Scheduled Agent Time
 
 `AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`,
@@ -200,10 +219,15 @@ event-ingestion adapters now expose transaction-batch executor seams so
 the app/runtime layers remain database-generic while durable adapters
 can commit outcome batches atomically.
 
-The remaining gap is integration-level proof against a real CockroachDB
-transaction. The current tests prove the batch boundary and runtime
-recovery behavior; a future local/dev-cluster integration test should
-prove actual rollback behavior with the real adapter binding.
+The remaining gap is making the live substrate proofs routine in CI or a
+dev cluster. The current tests prove the batch boundary and runtime
+recovery behavior. The env-gated Cockroach live test proves migrations,
+readiness, per-run probe table cleanup, commit, rollback, and shutdown when
+`AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` plus a `pg`-compatible
+driver are available. The env-gated NATS live test proves JetStream
+stream/durable setup, readiness, canonical event publish, generic
+ingestion-port consume, ack, invalid-envelope DLQ handling, and
+shutdown when `AGENTIC_ORG_NATS_INTEGRATION_SERVERS` is available.
 
 ### Policy And Hat Authority Checkpoint
 
@@ -228,9 +252,21 @@ The remaining gaps are richer authority semantics and cluster-backed
 integration proof: tests still need unauthorized source hats, invalid
 target supervisors, and missing assignments. The system now has a
 durable worker composition seam below `apps/workers`, an app-local
-Cockroach pooled-client adapter, and a JSON telemetry sink, but it still
-needs a real Cockroach-backed integration run, real NATS process-client
-construction, migration bootstrap/readiness behavior, and cluster OTEL
+Cockroach pooled-client adapter, Cockroach migration bootstrapper,
+Cockroach readiness probe, NATS process-client construction, process
+lifecycle entrypoint contract, generic shutdown ports, and JSON
+telemetry sink. It now has an env-gated Cockroach integration harness
+for real migrations, readiness, transactions, rollback, and shutdown,
+plus an env-gated NATS integration harness for real JetStream publish,
+consume, ack, invalid-envelope DLQ handling, readiness, and shutdown. It
+now also has an env-gated combined Cockroach plus NATS durable worker
+proof: the test writes a real command outcome to Cockroach, runs the
+process through the worker loop for two cycles, publishes the outbox to
+NATS, consumes it back, records inbox and reaction-plan state, verifies
+the second cycle does not duplicate durable side effects, and guards
+NATS cleanup even when Cockroach setup fails. It still needs those live
+proofs wired into CI/dev-cluster execution, a concrete Node/NestJS
+process host around the existing entrypoint contract, and cluster OTEL
 export wiring.
 
 ### Command Surface Closure
@@ -314,9 +350,9 @@ labels, dashboard ownership, and alertable degraded-worker signals.
 4. Add `triage_supervisor_signal` as the next real command slice.
 5. Add discussion-anchor enforcement and graph retrieval OpenSpec
    scenarios, then implement the minimal anchor command.
-6. Add real CockroachDB transaction integration coverage for command
-   outcomes and event-ingestion outcomes once a dev connection is
-   available.
+6. Decide whether the env-gated Cockroach integration proof should run
+   in CI through a local service, a k3d profile, or an operator-triggered
+   real-cluster job.
 7. Define UAG v0 as a typed package contract before adding prompt-flow
    execution.
 8. Build one substrate integration at a time, starting with hat-system

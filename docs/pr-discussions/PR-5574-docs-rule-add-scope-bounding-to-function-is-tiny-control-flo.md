@@ -8,7 +8,7 @@ merged_at: "2026-05-27T18:13:07Z"
 closed_at: "2026-05-27T18:13:07Z"
 head_ref: "backlog/function-control-flow-generator-rule-add-closedness-scope-bounding-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T19:03:53Z"
+archived_at: "2026-05-27T18:51:26Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

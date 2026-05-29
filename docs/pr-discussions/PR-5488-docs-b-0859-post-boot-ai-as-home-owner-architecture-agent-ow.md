@@ -8,7 +8,7 @@ merged_at: "2026-05-27T15:48:44Z"
 closed_at: "2026-05-27T15:48:44Z"
 head_ref: "backlog/b-0859-post-boot-ai-as-home-owner-2026-05-27"
 base_ref: "main"
-archived_at: "2026-05-27T16:24:41Z"
+archived_at: "2026-05-27T17:52:46Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

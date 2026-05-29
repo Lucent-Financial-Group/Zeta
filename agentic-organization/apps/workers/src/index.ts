@@ -10,18 +10,43 @@ export {
   CockroachWorkerTransactionErrorClassification,
   CockroachWorkerTransactionErrorCode,
   CockroachWorkerTransactionStatement,
+  createCockroachWorkerShutdownPort,
   createCockroachWorkerSqlClient,
   type CockroachWorkerTransactionRetryDelayInput,
   type CockroachWorkerPool,
   type CockroachWorkerPoolClient,
+  type CockroachWorkerShutdownPool,
   type CreateCockroachWorkerSqlClientInput,
 } from "./adapters/cockroach-worker-client.ts";
+export {
+  PgCockroachDriverModuleName,
+  PgCockroachWorkerPoolError,
+  PgCockroachWorkerPoolErrorCode,
+  createPgCockroachWorkerPool,
+  type CreatePgCockroachWorkerPoolInput,
+  type PgCockroachDriverLoader,
+  type PgCockroachDriverModule,
+  type PgCockroachPool,
+  type PgCockroachPoolClient,
+  type PgCockroachPoolConstructor,
+  type PgCockroachQueryResult,
+  type PgCockroachWorkerPool,
+} from "./adapters/pg-cockroach-worker-pool.ts";
 export {
   createJsonWorkerTelemetrySink,
   type CreateJsonWorkerTelemetrySinkInput,
   type JsonLineWriter,
   type JsonWorkerTelemetryRecord,
 } from "./adapters/json-worker-telemetry-sink.ts";
+export {
+  WorkerProcessBootstrapperName,
+  createCockroachMigrationBootstrapper,
+  type CreateCockroachMigrationBootstrapperInput,
+} from "./adapters/cockroach-migration-bootstrapper.ts";
+export {
+  createCockroachReadinessProbe,
+  type CreateCockroachReadinessProbeInput,
+} from "./adapters/cockroach-readiness.ts";
 export {
   NatsWorkerConnectionState,
   NatsWorkerDeadLetterHeaderName,
@@ -86,3 +111,52 @@ export {
   type WorkerDependencyReadinessProbe,
   type WorkerProcessReadiness,
 } from "./worker-readiness.ts";
+export {
+  WorkerProcessLifecycleStage,
+  WorkerProcessShutdownStatus,
+  createWorkerProcess,
+  type CreateWorkerProcessInput,
+  type WorkerProcess,
+  type WorkerProcessBootstrapper,
+  type WorkerProcessFailure,
+  type WorkerProcessRunResult,
+  type WorkerProcessShutdownPort,
+  type WorkerProcessShutdownResult,
+} from "./worker-process.ts";
+export {
+  WorkerProcessLoopEventName,
+  WorkerProcessLoopFailureStage,
+  WorkerProcessLoopStatus,
+  createWorkerProcessLoop,
+  type CreateWorkerProcessLoopInput,
+  type WorkerProcessLoop,
+  type WorkerProcessLoopDelay,
+  type WorkerProcessLoopDelayInput,
+  type WorkerProcessLoopFailure,
+  type WorkerProcessLoopIteration,
+  type WorkerProcessLoopObserver,
+  type WorkerProcessLoopRecord,
+  type WorkerProcessLoopRunResult,
+  type WorkerProcessLoopStopSignal,
+} from "./worker-process-loop.ts";
+export {
+  WorkerEntrypointConfigErrorMessage,
+  WorkerEntrypointExitCode,
+  WorkerEntrypointSignalName,
+  createWorkerProcessEntrypoint,
+  type CreateWorkerProcessEntrypointInput,
+  type WorkerEntrypointSignalListener,
+  type WorkerEntrypointSignalSource,
+  type WorkerEntrypointSignalSubscription,
+  type WorkerEntrypointSleepInput,
+  type WorkerEntrypointSleeper,
+  type WorkerProcessEntrypoint,
+  type WorkerProcessEntrypointResult,
+} from "./worker-process-entrypoint.ts";
+export {
+  CockroachTableName,
+  CockroachMigrationStatement,
+  createCockroachSqlExecutor,
+  createCockroachWorkAnchorKernelMigration,
+  type CockroachAnySqlStatement,
+} from "../../../packages/state-cockroach/src/index.ts";

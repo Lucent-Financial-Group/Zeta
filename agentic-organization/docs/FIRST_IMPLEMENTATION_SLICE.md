@@ -64,7 +64,7 @@ escalate.
 | Package                        | Implemented first                                                                                                                                                     |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
-| `@agentic-org/application`     | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
+| `@agentic-org/application`     | generic command pipeline, command-handler registry, state-store ports, idempotency conflict handling, generic command outcome artifacts/events, supervisor signal handler |
 | `@agentic-org/policy`          | command authorization port, hat-authority port, policy-decision observation/store/reader ports, active/expired/revoked/scope/tool denial decisions, typed reasons     |
 | `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
 | `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of state-store, outbox-source, event-ingestion, and policy-observation ports, backed by CockroachDB                      |
@@ -79,7 +79,7 @@ escalate.
 
 | App            | Implemented first                                                                                                                                                                                       |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/workers` | NodeNext runtime-host shell that parses process config, composes worker ports, runs the package worker cycle, runs the NATS consumer cycle, emits telemetry records, and reports healthy/degraded state |
+| `apps/workers` | NodeNext runtime-host contract shell that parses process config, composes worker ports, exposes the bootstrap/readiness/shutdown lifecycle contract, runs worker/NATS cycles, emits telemetry, binds the loop to signal/delay ports, and reports status/shutdown evidence |
 
 ## NodeNext Runtime Decision
 
@@ -153,14 +153,31 @@ Hermes runs, MCP calls, and UI evidence.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
+- The command pipeline is now generic over Organization command
+  contracts. A second registered command type can pass through policy,
+  idempotency, handler dispatch, and outcome persistence without
+  changing pipeline internals. `send_supervisor_signal` remains the
+  first production command, not the command system's type boundary.
+- The generic command base carries a `policyContext` for optional
+  work-item scope, team scope, tool scope, and supervisor-chain context.
+  Domain payload fields such as signal title/message or future meeting
+  details stay with their command handlers.
 - Command handlers return typed effects; the command pipeline persists
-  the supervisor signal, audit events, outbox events, and idempotency
-  record through one `recordCommandOutcome` port. Handlers do not write
-  piecemeal state.
+  supervisor-signal effects, audit events, outbox events, and
+  idempotency record through one `recordCommandOutcome` port. Handlers
+  do not write piecemeal state. The durable effect vocabulary is still
+  deliberately narrow; the work-anchor kernel is the next slice that
+  will add the next business-effect category without changing the
+  command dispatch contract.
 - Command outcome persistence returns generic committed, replayed, or
   idempotency-conflict results. Durable adapters own idempotency race
   handling and return those generic outcomes without exposing duplicate
   key or vendor errors to application code.
+- Command results now expose generic, UI/MCP/agent-readable metadata:
+  command ID, domain artifacts, committed emitted-event summaries,
+  committed audit event IDs, policy decision evidence, idempotency
+  state, and optional typed compatibility records such as the first
+  supervisor signal artifact.
 - State-store and outbox-source ports are async from the beginning so
   durable SQL, NATS-backed workers, and other real adapters do not
   inherit a fake synchronous shape.
@@ -195,9 +212,11 @@ Hermes runs, MCP calls, and UI evidence.
   acknowledges processed and duplicate messages, terminates and
   dead-letters invalid envelopes or payload conflicts, and
   negative-acknowledges transient ingestion failures. If dead-letter
-  publication or source-message termination fails, it records the
-  failure, negative-acknowledges the source message, and continues the
-  batch.
+  publication fails, it records the failure, negative-acknowledges the
+  source message, and continues the batch. If dead-letter publication
+  succeeds but source-message termination fails, it records the failure
+  and acknowledges the already-dead-lettered source message so a poison
+  message is not redelivered after the DLQ side effect.
 - The event ingestion processor accepts decoded canonical envelopes,
   dedupes them by event ID plus consumer name, evaluates automation
   rules once, rejects same-event payload hash conflicts, and persists
@@ -316,6 +335,53 @@ Hermes runs, MCP calls, and UI evidence.
   probes return typed ready/not-ready checks, and the process readiness
   result becomes degraded when any dependency check is not ready or
   throws during readiness evaluation.
+- `apps/workers` has a first process lifecycle entrypoint contract,
+  not a long-running executable host yet. `createWorkerProcess` applies
+  bootstrap steps once per process, checks readiness before runtime
+  execution, skips runtime work on bootstrap/readiness failure, reuses
+  the bootstrapped state across later cycles, and aggregates graceful
+  shutdown results across process adapter ports.
+- `apps/workers` has a first continuous-run loop wrapper for that
+  process lifecycle. `createWorkerProcessLoop` repeatedly invokes the
+  process through an injected delay port, observer port, and stop
+  signal; captures iteration, observer, delay, degraded-result, and
+  shutdown failures as loop evidence; and always attempts process
+  shutdown. It is still a port-first app boundary, not a NestJS host or
+  concrete binary.
+- `apps/workers` has a first executable-boundary entrypoint contract
+  above that loop. `createWorkerProcessEntrypoint` subscribes to typed
+  stop signals through an injected signal source, delegates waiting to an
+  injected sleeper, disposes signal subscriptions after shutdown, returns
+  success or degraded exit intent instead of calling `process.exit`, and
+  preserves the full loop result for telemetry, supervisor diagnosis, and
+  future Kubernetes/NestJS process wrappers.
+- `apps/workers` has an app-local Cockroach migration bootstrapper and
+  Cockroach readiness probe. The bootstrapper reuses the generic
+  Cockroach migration runner and ordered core migrations; the readiness
+  probe checks durable-state availability through the generic SQL client
+  without importing a database driver into reusable packages.
+- `apps/workers` has a first optional `pg`-compatible live Cockroach
+  pool adapter behind the existing generic worker pool contracts. The
+  adapter is app-local, dynamically loaded, and fake-tested by default;
+  the env-gated integration test uses it only when
+  `AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` is present.
+- `apps/workers` has the first env-gated live NATS proof. When
+  `AGENTIC_ORG_NATS_INTEGRATION_SERVERS` is present, the test recreates
+  a small per-run JetStream stream and durable consumer, publishes a
+  canonical event through the worker adapter, consumes it through the
+  generic ingestion port, acknowledges it, smoke-tests DLQ publishing,
+  proves the invalid-envelope consumer DLQ path, checks readiness, and
+  closes the generic NATS shutdown port.
+- `apps/workers` has the first env-gated combined durable worker proof.
+  When both `AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` and
+  `AGENTIC_ORG_NATS_INTEGRATION_SERVERS` are present, the test writes a
+  real `send_supervisor_signal` command outcome to Cockroach, runs the
+  process worker loop for two cycles, publishes the durable outbox event
+  to NATS, consumes it through the NATS consumer, records the inbox
+  receipt and supervisor-triage reaction plan in Cockroach, captures
+  worker/NATS telemetry records, proves the second cycle has no duplicate
+  side effects, and shuts down both adapters through generic process
+  shutdown ports or guarded cleanup.
 - Worker-cycle failures can carry structured evidence. Stale outbox
   claim failures now preserve claim ID, current claim ID, outbox event
   ID, event ID, trace ID, and published-at evidence when the durable row
@@ -340,14 +406,22 @@ Hermes runs, MCP calls, and UI evidence.
 ## Next Slice
 
 The next slice is tracked in the canonical
-[Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). It should add
-the next concrete process binding below `apps/workers`: migration
-bootstrap/readiness handling and entrypoint-level graceful shutdown
-around the app-local Cockroach/NATS/telemetry adapters. Keep URLs,
-credentials, and connection pools in app adapter config fed by
-Kubernetes Secret or ExternalSecret values, never in domain packages.
-Add durable-state and NATS integration tests once local/dev connections
-are available.
+[Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). The fake-driven
+process lifecycle contract now covers migration bootstrap, readiness
+gating, and graceful shutdown at the port boundary. The Cockroach live
+proof is env-gated: when a compatible URL and driver are present, the
+same test command proves migrations, readiness, commit, rollback, and
+shutdown against a real substrate. The NATS live proof is also
+env-gated: when a JetStream server is supplied, the same test command
+proves publish, consume, ack, invalid-envelope DLQ handling, readiness,
+and shutdown through the app-local NATS seam. The combined durable
+worker proof now ties both together when both env vars are present. The
+first long-running worker loop wrapper and executable-boundary
+entrypoint now exist as port-first contracts. Next is the next command
+surface slice, then the concrete Node/NestJS host can wrap the same
+entrypoint with real process globals. Keep URLs, credentials, and
+connection pools in app adapter config fed by Kubernetes Secret or
+ExternalSecret values, never in domain packages.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized
