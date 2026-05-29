@@ -60,6 +60,25 @@ describe("B-0867.3 action grammar parser/composer", () => {
     });
   });
 
+  it("rejects empty CSV items instead of silently normalizing ambiguity", () => {
+    expect(
+      parseActionGrammarLine(
+        "x | transition | append-only | x | x | B-0867.3,,B-0914 | X",
+      ),
+    ).toEqual({
+      ok: false,
+      error: "composesWith contains an empty item",
+    });
+    expect(
+      parseActionGrammarLine(
+        "x | transition | append-only | x | x | B-0867.3 | X,",
+      ),
+    ).toEqual({
+      ok: false,
+      error: "feedbackVariants contains an empty item",
+    });
+  });
+
   it("composer rejects unsupported delimiters before producing an ambiguous line", () => {
     const invalid: Action = {
       ...SEED_ACTION_CATALOG[0]!,
@@ -68,6 +87,26 @@ describe("B-0867.3 action grammar parser/composer", () => {
     expect(composeActionGrammarLine(invalid)).toEqual({
       ok: false,
       error: "action field contains an unsupported delimiter",
+    });
+  });
+
+  it("composer rejects non-canonical whitespace before parse can normalize it", () => {
+    const scalarWhitespace: Action = {
+      ...SEED_ACTION_CATALOG[0]!,
+      label: " advance ",
+    };
+    expect(composeActionGrammarLine(scalarWhitespace)).toEqual({
+      ok: false,
+      error: "action field must be trimmed",
+    });
+
+    const listWhitespace: Action = {
+      ...SEED_ACTION_CATALOG[0]!,
+      composesWith: ["B-0867.3", " B-0914"],
+    };
+    expect(composeActionGrammarLine(listWhitespace)).toEqual({
+      ok: false,
+      error: "composesWith item must be trimmed",
     });
   });
 });

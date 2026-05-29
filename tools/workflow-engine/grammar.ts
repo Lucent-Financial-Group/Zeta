@@ -40,8 +40,7 @@ function splitCsv(field: string): ReadonlyArray<string> {
   if (field.trim() === "") return [];
   return field
     .split(",")
-    .map((part) => part.trim())
-    .filter((part) => part.length > 0);
+    .map((part) => part.trim());
 }
 
 function hasIllegalDelimiter(value: string): boolean {
@@ -49,7 +48,8 @@ function hasIllegalDelimiter(value: string): boolean {
 }
 
 function validateScalar(name: string, value: string): string | undefined {
-  if (value.length === 0) return `${name} is required`;
+  if (value.trim().length === 0) return `${name} is required`;
+  if (value.trim() !== value) return `${name} must be trimmed`;
   if (hasIllegalDelimiter(value)) {
     return `${name} contains an unsupported delimiter`;
   }
@@ -58,7 +58,8 @@ function validateScalar(name: string, value: string): string | undefined {
 
 function validateList(name: string, values: ReadonlyArray<string>): string | undefined {
   for (const value of values) {
-    if (value.length === 0) return `${name} contains an empty item`;
+    if (value.trim().length === 0) return `${name} contains an empty item`;
+    if (value.trim() !== value) return `${name} item must be trimmed`;
     if (hasIllegalDelimiter(value) || value.includes(",")) {
       return `${name} item contains an unsupported delimiter`;
     }
