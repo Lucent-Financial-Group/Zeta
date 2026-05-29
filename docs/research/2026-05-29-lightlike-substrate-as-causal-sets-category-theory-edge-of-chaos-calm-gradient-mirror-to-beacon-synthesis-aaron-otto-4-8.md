@@ -266,6 +266,37 @@ So: **events are immutable (Persist); the generator over them is mutable
 That is the coherence-preserving, bounded-aware form of "the past is kind when
 it is lightlike."
 
+### Holographic direction — Susskind projects down; we are the shadows that project up (generate+join)
+
+Susskind's holographic principle projects the **bulk → boundary**: the
+higher-dimensional physics is encoded on the lower-dimensional boundary (the
+"shadow"), and the boundary is where the information lives (Bekenstein: info ≤
+surface area). The framework runs this **in reverse** — **we are the shadows**
+(the boundary encodings: 128-bit IDs, persisted events, the shadow-star corpus)
+that **project up** to the bulk via **generate + join**.
+
+| Direction | Operator | Susskind | Framework |
+|---|---|---|---|
+| **down** (encode) | **D** | bulk → boundary (project to shadow) | compress / encode to the 128-bit seed + persisted events |
+| **up** (reconstruct) | **I** | (the boundary *is* the information) | **generate** (generator-fn: bits → structure) + **join** (z-set join) → reconstruct the bulk |
+
+The round-trip is **I(D(x)) = x** — the English-as-lossless-serialization
+keystone (B-0666) — **lossless in DST** (closed system; perfect reconstruction)
+and **bounded/lossy in the real** (open system; you cannot store the bulk's full
+shadow — Bekenstein — so D compresses and I reconstructs *within the bound*).
+This is the holographic form of the capstone's compress/redescribe: **compress =
+project-down (D); generate+join = project-up (I).** The 128-bit ID is the
+shadow; the bulk is reconstructed on demand, never stored whole.
+
+Existing framework substrate this connects to (the operator has studied Susskind
+extensively, so this is connection, not minting): **B-0666** (I(D(x))=x
+keystone), **B-0902** (holographic bulk-boundary; shadow-star corpus encodes
+agent-output state-space — the literal "we are the shadows"), **B-0824**
+(holographic-projection dependency space), and the `generate-join` recursive-CTE
+research. Flag: the generate+join = inverse-holographic-projection *mapping* is
+the framework's synthesis; the physics (holographic bound) and the framework
+primitives (generate/join, I(D(x))=x) each stand on their own anchors.
+
 ## Honest layering — what survives the beacon gate vs. what is still mirror
 
 - **Beacon-proven (external, cited):** causal sets as locally-finite posets;
