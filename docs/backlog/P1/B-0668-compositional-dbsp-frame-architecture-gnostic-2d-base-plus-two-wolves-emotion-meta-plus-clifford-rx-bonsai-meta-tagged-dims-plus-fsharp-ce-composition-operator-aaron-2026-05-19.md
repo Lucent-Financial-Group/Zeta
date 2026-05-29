@@ -6,7 +6,7 @@ title: "Compositional DBSP frame architecture — gnostic 2D base (remember-when
 tier: design
 effort: L
 created: 2026-05-19
-last_updated: 2026-05-19
+last_updated: 2026-05-28
 decomposition: decomposed
 children: [B-0668.1, B-0668.2]
 depends_on: [B-0644, B-0665, B-0666, B-0667, B-0640]
