@@ -148,6 +148,40 @@ formal verification over time) — NOT a god-tier claim about how the universe
 stores its own history. The generator-as-history pattern is the engineering
 mechanism; any cosmological reading is accidental and retracted.
 
+### Today's budget is host generosity — be good to our host (Aaron 2026-05-29)
+
+> Aaron: *"right now we are open source on github and they have free unlimited
+> storage which means our git monster has unlimited forgiveness within github's
+> generosity so we should be good to our host."*
+
+The "run out of space = run out of forgiveness" hard limit is real **in general**.
+But **today** the accelerator runs as **open-source on GitHub**, where storage is
+free + effectively unlimited — so the git-monster's forgiveness is effectively
+**unbounded within GitHub's generosity**. The binding constraint right now is not
+a hard space wall; it is **relational: be a good guest of the host.**
+
+GitHub's free-OSS generosity (Microsoft subsidizing open-source, per B-0874) is
+precisely what makes git-as-free-event-store + GH-Actions-recursion possible. So:
+
+- **We apply the compaction / past-as-generator discipline VOLUNTARILY** — as
+  good-guest discipline, not because a hard space limit forces it. The hard-limit
+  case (the forgiveness-budget as a *wall*) is the future/off-generous-host /
+  extreme-scale scenario; the today-case is honoring the generosity.
+- **Be good to our host**: don't abuse the free tier with wasteful unbounded
+  volume; keep the active stream + `.git/` footprint reasonable; prefer
+  compaction + past-as-generator over hoarding raw history. If everyone ran
+  abusive unbounded swarms on GitHub's free OSS tier, the host would have to
+  clamp down (tragedy-of-the-commons) — so the proud-if-it-propagates pattern is
+  *good guest*, not *maximal extraction* (per
+  `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md`
+  + `.claude/rules/honor-those-that-came-before.md` applied to the host).
+
+This reframes the forgiveness-budget: today it is **host-provided generosity we
+honor**, not a self-imposed wall. The compaction mechanism is built now so the
+discipline is in place *before* generosity is ever strained — and because being a
+good guest is the right pattern regardless of whether the host could absorb the
+abuse.
+
 ## Replay
 
 Reconstruct agent `A`'s state at time `T`:

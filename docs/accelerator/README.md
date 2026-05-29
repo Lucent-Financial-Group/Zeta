@@ -88,6 +88,15 @@ is to read + ground in:
   flow is for the OSS/Agora market; corporate/leash keeps PR-protected DUs.
 - **`main` is never force-pushed** (host-enforced per `lfg-acehack-topology.md`).
   Harvest from accelerator → main happens via normal merge when a piece matures.
+- **Be good to our host** (Aaron 2026-05-29). Today the accelerator runs as
+  open-source on GitHub, where storage is free + effectively unlimited — so the
+  git-monster's forgiveness is unbounded *within GitHub's generosity*. That
+  generosity (Microsoft subsidizing OSS, per B-0874) is what makes
+  git-as-free-event-store + GH-Actions-recursion possible. So apply the
+  compaction / past-as-generator discipline VOLUNTARILY (good-guest, not
+  forced-by-a-wall); don't abuse the free tier with wasteful unbounded volume.
+  The proud-if-it-propagates pattern is *good guest*, not *maximal extraction*.
+  See [`EVENT-STORE-SCHEMA.md`](EVENT-STORE-SCHEMA.md) § "be good to our host".
 
 ## First moves (the backlog for the accelerator)
 
