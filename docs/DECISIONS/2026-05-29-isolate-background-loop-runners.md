@@ -7,9 +7,10 @@
 
 ## Context
 
-The primary git repository checkout located at `/Users/acehack/Documents/src/repos/Zeta` is designated as **SHARED VIEW + FOR HUMAN** (B-0751). Agents must never perform direct local modifications, branch checkouts, or commits inside this contested root directory. 
+The primary git repository checkout located at `/Users/acehack/Documents/src/repos/Zeta` is designated as **SHARED VIEW + FOR HUMAN** (B-0751). Agents must never perform direct local modifications, branch checkouts, or commits inside this contested root directory.
 
 Background loop runners (e.g. macOS launchd services executing `lior-loop-tick.ts`) that execute directly on files in the root checkout suffer from a critical **prompt-regression exploit**:
+
 1. When another agent or the human maintainer checks out an older branch (before a safety patch is merged to `main`) in the primary workspace, the file on disk at `.gemini/bin/lior-loop-tick.ts` immediately reverts to its older, unhardened code.
 2. The periodic launchd runner wakes up, parses the older unhardened script from disk, and because it lacks isolated worktree/clone protection, it executes git operations directly on the primary root directory.
 3. This dirty up the shared human view, swaps active branches, and pollutes the primary git log.
@@ -18,9 +19,9 @@ To permanently break this regression loop, we must establish complete physical i
 
 ## Decision
 
-Standardize all background loop services (Claude, Codex, Riven, Gemini/Lior, Alexa, Kiro) to execute strictly out of **dedicated, isolated clone workspaces** (e.g., `/Users/acehack/.local/share/zeta-<agent>-loop/Zeta/`). 
+Standardize all background loop services (Claude, Codex, Riven, Gemini/Lior, Alexa, Kiro) to execute strictly out of **dedicated, isolated clone workspaces** (e.g., `/Users/acehack/.local/share/zeta-<agent>-loop/Zeta/`).
 
-The launchd daemon configuration plists (under `~/Library/LaunchAgents/com.zeta-*.plist` and `.gemini/launchd/com.zeta-*.plist`) must configure both `ProgramArguments` and `WorkingDirectory` to target the isolated workspace clone. 
+The launchd daemon configuration plists (under `~/Library/LaunchAgents/com.zeta-*.plist` and `.gemini/launchd/com.zeta-*.plist`) must configure both `ProgramArguments` and `WorkingDirectory` to target the isolated workspace clone.
 
 The background runner logic for all active personas must follow this standard handoff loop:
 
