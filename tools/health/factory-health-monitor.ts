@@ -46,18 +46,34 @@ export interface LaneRunwaySnapshot {
 }
 
 type ToolCommand = "bun" | "gh" | "git";
+type ToolResult = { ok: boolean; stdout: string };
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 
-function run(cmd: ToolCommand, args: string[]): { ok: boolean; stdout: string } {
+function run(cmd: ToolCommand, args: string[]): ToolResult {
   const r = spawnSync(cmd, args, {
     cwd: ROOT,
     encoding: "utf-8",
     timeout: 30_000,
   });
   return { ok: r.status === 0, stdout: (r.stdout ?? "").trim() };
+}
+
+function fetchOpenPRs(): ToolResult {
+  return run("gh", [
+    "pr",
+    "list",
+    "--repo",
+    REPO,
+    "--state",
+    "open",
+    "--json",
+    "number,title,createdAt,autoMergeRequest,headRefName",
+    "--limit",
+    "200",
+  ]);
 }
 
 export function classifyBranchLane(branchName: string): LaneRunwayLane {
@@ -168,21 +184,8 @@ export function laneRunwaySnapshotFromObservations(
   };
 }
 
-function checkLaneRunway(): HealthSignal[] {
-  const prs = run("gh", [
-    "pr",
-    "list",
-    "--repo",
-    REPO,
-    "--state",
-    "open",
-    "--json",
-    "headRefName",
-    "--limit",
-    "200",
-  ]);
-
-  if (!prs.ok) {
+function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
+  if (!openPRs.ok) {
     return [
       {
         surface: "lane-runway",
@@ -213,7 +216,7 @@ function checkLaneRunway(): HealthSignal[] {
 
   try {
     return classifyLaneRunway(
-      laneRunwaySnapshotFromObservations(prs.stdout, claims.stdout),
+      laneRunwaySnapshotFromObservations(openPRs.stdout, claims.stdout),
     );
   } catch {
     return [
@@ -226,20 +229,9 @@ function checkLaneRunway(): HealthSignal[] {
   }
 }
 
-function checkPRQueue(): HealthSignal[] {
+function checkPRQueue(openPRs: ToolResult): HealthSignal[] {
   const signals: HealthSignal[] = [];
-  const r = run("gh", [
-    "pr",
-    "list",
-    "--repo",
-    REPO,
-    "--state",
-    "open",
-    "--json",
-    "number,title,createdAt,autoMergeRequest",
-    "--limit",
-    "50",
-  ]);
+  const r = openPRs;
 
   if (!r.ok) {
     signals.push({
@@ -766,9 +758,11 @@ export function buildHealthReport(
 }
 
 export function runHealthCheck(): HealthReport {
+  const openPRs = fetchOpenPRs();
+
   return buildHealthReport([
-    ...checkLaneRunway(),
-    ...checkPRQueue(),
+    ...checkLaneRunway(openPRs),
+    ...checkPRQueue(openPRs),
     ...checkBacklogHealth(),
     ...checkClaimFreshness(),
     ...checkWorkingTreeCleanliness(),

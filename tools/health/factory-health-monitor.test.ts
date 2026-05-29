@@ -80,8 +80,20 @@ describe("factory-health-monitor", () => {
   test("laneRunwaySnapshotFromObservations builds classifier input", () => {
     const snapshot = laneRunwaySnapshotFromObservations(
       JSON.stringify([
-        { headRefName: "codex/source-patch" },
-        { headRefName: "otto-cli/bootstrap" },
+        {
+          number: 1,
+          title: "Codex source patch",
+          createdAt: "2026-05-29T21:00:00Z",
+          autoMergeRequest: null,
+          headRefName: "codex/source-patch",
+        },
+        {
+          number: 2,
+          title: "Otto bootstrap",
+          createdAt: "2026-05-29T21:05:00Z",
+          autoMergeRequest: { enabledAt: "2026-05-29T21:06:00Z" },
+          headRefName: "otto-cli/bootstrap",
+        },
         { headRefName: null },
       ]),
       "  origin/claim/codex-loop-20260529\norigin/claim/kiro-background-service\n\n",

@@ -5,8 +5,8 @@ Surface: codex-background-service
 Origin: codex-launchd-loop
 Session: codex/launchd-loop
 Run ID: 20260529T211141Z
-Claim:
-`docs/claims/codex-loop-lane-runway-classifier-20260529.md`
+Claim: `claim/codex-loop-lane-runway-classifier-20260529`
+(claim file released in this PR)
 Grounding backlog:
 `docs/backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
 and
@@ -16,9 +16,10 @@ Parent receipt:
 
 ## Scope
 
-This packet wires the first reusable lane-runway signal as pure TypeScript.
-It does not add new GitHub calls, mutate loop state, or treat local broadcast
-files as authority.
+This packet wires the first reusable lane-runway signal as TypeScript. The
+classifier itself is pure; the health monitor adapter feeds it from the
+existing open-PR queue observation plus the remote claim-branch observation. It
+does not mutate loop state or treat local broadcast files as authority.
 
 The classifier is intentionally small: it maps branch and claim names onto the
 named factory lanes, then emits deterministic health signals for active,
@@ -62,8 +63,6 @@ before the monitor grows new side-effecting adapters.
 
 ## Next Step
 
-Feed the classifier from existing monitor observations: open PR branch names
-from the PR queue query, remote claim branch names from the claim query, and
-service-health booleans from the host-loop health probes. Keep that adapter
-as a separate bounded slice so this receipt remains the pure classifier
-baseline.
+Feed the classifier service-health booleans from the host-loop health probes.
+Keep that adapter as a separate bounded slice so this receipt remains the
+branch/claim runway baseline.
