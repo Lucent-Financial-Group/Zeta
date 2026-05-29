@@ -1,7 +1,7 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet
-Last refreshed: 2026-05-28
+Status: active child packet; local/remote protocol sketch started
+Last refreshed: 2026-05-29
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
 `docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
@@ -43,21 +43,48 @@ Current dry-run receipt:
 `docs/trajectories/autonomous-loop-coordination/remote-only-two-participant-dry-run-2026-05-28.md`
 
 It records the current Participant A remote claim, the stale predecessor
-force-release, and the remaining blocker: a genuinely separate Participant B
-has not yet published a disjoint remote-only claim.
+force-release, the separate Participant B remote-only claim, and the
+Participant A acknowledgement that compares the path sets as disjoint. The
+release refs have now landed or been retired, so this receipt is evidence for
+the next child packet rather than pending work.
+
+Current release receipt:
+`docs/trajectories/autonomous-loop-coordination/remote-only-claim-release-receipt-2026-05-29.md`
+
+It confirms the known Participant A, Participant B, stale predecessor, and old
+trajectory claim refs are no longer active on `origin`. It also distinguishes
+the canonical Participant A same-PR release from the weaker Participant B
+remote-head retirement evidence.
+
+Current local/remote protocol sketch:
+`docs/trajectories/autonomous-loop-coordination/local-remote-cluster-composition-protocol-2026-05-29.md`
+
+It defines the first B-0211.1 composition rule: local cluster quorum can choose
+and accelerate work, but the remote-visible claim ref is the cross-cluster
+ownership boundary.
+
+Current local/remote replay receipt:
+`docs/trajectories/autonomous-loop-coordination/local-remote-cluster-replay-receipt-2026-05-29.md`
+
+It records a fresh-clone replay that fetched `origin/claim/*`, reconstructed
+active path signals from remote claim refs, and verified a late participant can
+choose a disjoint next packet without reading local broadcasts.
+
+Current stale-claim cleanup rule:
+`docs/trajectories/autonomous-loop-coordination/stale-claim-cleanup-rule-2026-05-29.md`
+
+It adds the bounded `active` / `merged-claim-residue` /
+`missing-claim-file` / `merge-state-unknown` classifier to
+`tools/claims/remote-only-state.ts` so quiet queues still check remote claim
+residue before treating paths as free.
 
 ## Recommended Next Action
 
-Add the missing Participant B leg for the minimum remote-only dry run:
-Participant B must start from remote refs only, publish a disjoint
-`origin/claim/*` ref, and let Participant A record a progress receipt before
-both claims release through git history.
+Run the classifier against current `origin/claim/*` refs and use the output to
+pick the next non-overlapping hygiene cleanup or standing-query trigger packet.
 
 ## Next Child Packets
 
-- remote-only Participant B progress receipt, grounded in B-0209
-- local/remote cluster composition protocol sketch, grounded in B-0211
-- stale-claim cleanup rule for completed PRs, grounded in the claim protocol
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250
 - bounded parallel runway health receipt, grounded in B-0249
 
@@ -65,6 +92,7 @@ both claims release through git history.
 
 - `docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
 - `docs/backlog/P1/B-0211-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md`
+- `docs/backlog/P1/B-0211.1-fractal-bft-protocol-doc-2026-05-19.md`
 - `docs/backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
 - `docs/backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
 - `docs/AGENT-CLAIM-PROTOCOL.md`
