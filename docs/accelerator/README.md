@@ -91,12 +91,16 @@ is to read + ground in:
 
 ## First moves (the backlog for the accelerator)
 
-1. **Substrate-grounding synthesis** (action item 1 above) — locate + read the
-   move-next / git-as-free-event-store / github-actions-recursion substrate;
-   one-page synthesis at `docs/accelerator/SUBSTRATE-GROUNDING.md`.
-2. **Define the git-event-store schema** — what shape is a "move-next event" as
-   a commit? (commit-trailer convention? a `events/` dir? structured commit
-   messages?) Compose with the AgencySignature v1 trailer (per CLAUDE.md).
+1. ~~**Substrate-grounding synthesis**~~ ✅ DONE 2026-05-29 →
+   [`SUBSTRATE-GROUNDING.md`](SUBSTRATE-GROUNDING.md) (located via parallel
+   substrate-hunt agents: `memory/persona/ani/...move-next...`, `tools/agent-loop/`,
+   B-0867, B-0874).
+2. ~~**Define the git-event-store schema**~~ ✅ DONE 2026-05-29 →
+   [`EVENT-STORE-SCHEMA.md`](EVENT-STORE-SCHEMA.md) + concrete types
+   [`tools/accelerator/event-store-schema.ts`](../../tools/accelerator/event-store-schema.ts)
+   (per-agent dir + ULID filenames = conflict-free; Z-set weight + compaction =
+   forgiveness-budget; schema-in-the-stream; composes with `state-machine.ts`;
+   6/6 tests pass, typecheck clean).
 3. **Prototype a GH-Actions-recursion harness** — minimal self-triggering Action
    that reads the git-event-store, picks a move, commits the next event. Compose
    with the agentic-org live substrate proof harnesses (`cc6904685`).
@@ -115,9 +119,14 @@ here as git-events.
 
 ## Status
 
-- **2026-05-29**: branch created; charter landed (this doc). Action item 1
-  (substrate-grounding) is the next move. This is a kickoff, not a build — the
-  build follows the substrate-grounding synthesis.
+- **2026-05-29 (kickoff)**: branch created; charter landed.
+- **2026-05-29 (Action Items 1 + 2 done)**: substrate-grounding synthesis
+  ([`SUBSTRATE-GROUNDING.md`](SUBSTRATE-GROUNDING.md)) + git-event-store schema
+  ([`EVENT-STORE-SCHEMA.md`](EVENT-STORE-SCHEMA.md) + concrete types in
+  `tools/accelerator/event-store-schema.ts`, 6/6 tests, typecheck clean). Next
+  up: Action Item 3 (GH-Actions-recursion harness — minimal self-triggering
+  Action that reads the event-store, picks a move via `transition`, appends +
+  pushes the next event).
 
 ## Provenance
 
