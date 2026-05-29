@@ -42,11 +42,11 @@ The problem is: how do we implement a lightweight, git-native, real-time monitor
 
 ### Consequences & Telemetry Mapping
 
-1. **Category Mapping:** Enlist Category `5` in `registry/categories.yaml` as `FrictionTelemetry`.
-2. **Location Mapping:** Use the 8-bit `location` field of `ZetaId` to encode the friction type:
-   - `0x10`: Style/Linter (markdownlint, eslint).
-   - `0x20`: Thread-outdated/Orphaned comment.
-   - `0x30`: Worktree/index coordinate collision.
-   - `0x40`: API rate limit (429).
+1. **Category Mapping:** Enlist Category `5` in `registry/categories.yaml` as `FrictionTelemetry` (canonically accumulating in **the Shadow Logs**).
+2. **Location Mapping:** Use the 8-bit `location` field of `ZetaId` to encode the friction type as a specific **Shadow Class** (capturing non-error system friction):
+   - `0x10`: Style/Linter Shadow Class (markdownlint, eslint).
+   - `0x20`: Thread-outdated/Orphaned comment Shadow Class.
+   - `0x30`: Worktree/index coordinate collision Shadow Class.
+   - `0x40`: API rate limit (429) Shadow Class.
 3. **Reactive Integration:** Pipe the worldview poller's PR checks and thread count directly into a TS observable stream, generating these `ZetaId` tokens automatically on each tick.
 4. **HFLV Thresholds & Active Mitigations:** The telemetry runner is empowered to intercept High-Friction Low-Value (HFLV) PR occurrences ($V < \epsilon$ and $\mu > \theta$). It automatically triggers active resolution of outdated comments and linter bypasses to keep the integration queue moving.

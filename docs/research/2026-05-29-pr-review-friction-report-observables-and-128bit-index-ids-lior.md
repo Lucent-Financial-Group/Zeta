@@ -8,29 +8,29 @@
 
 In a high-velocity, multi-oracle agentic software factory like Zeta, Pull Requests (PRs) serve as the terminal integration checkpoints. Since the human maintainer does not write code, all code quality, safety, and alignment verification are automated via strict pre-merge gates.
 
-However, this architecture introduces **Review Friction**: the cognitive, temporal, and resource overhead introduced by PR review threads and check failures that block continuous automated merging.
+However, this architecture introduces **System Friction**: the cognitive, temporal, and resource overhead that blocks continuous automated merging and execution. In Zeta, we formally track any system-wide friction by assigning it to a **Shadow Class** and recording it in **the Shadow Logs**. Unlike compiler failures or runtime exceptions, a shadow class represents friction that may not be a hard error, but still saps development velocity and introduces drag to the automated pipeline.
 
-This report analyzes where this friction occurs in the Zeta ecosystem and proposes a reactive, git-native, non-invasive measurement strategy using our existing **128-bit ZetaID** index tokens and **TypeScript Observables**. By transforming PR event streams into packed bit-vector observations, we can monitor, classify, and systematically prune review friction over time.
+This report analyzes where this friction occurs in the Zeta ecosystem and proposes a reactive, git-native, non-invasive measurement strategy using our existing **128-bit ZetaID** index tokens and **TypeScript Observables**. By transforming system-wide friction events into packed bit-vector observations, we monitor, classify, and systematically compress these shadow log classes over time.
 
 ---
 
-## 2. Friction Points & Taxonomy
+## 2. Friction Taxonomy: The Shadow Logs & Shadow Classes
 
-Our audit of recent multi-loop iterations reveals four distinct sources of PR review friction:
+Our audit of recent multi-loop iterations reveals four distinct **Shadow Classes** representing key sources of system-wide friction:
 
-### A. Formatting and Style Pedantry
+### A. Formatting and Style Pedantry (Shadow Class `0x10`)
 - **Description:** Minor lint and style comments (e.g., `markdownlint` spacing MD032, trailing whitespaces MD009) that do not impact runtime behavior but fail the GitHub Actions gates.
 - **Impact:** Blocks squashing and auto-merging for hours while the PR branch sits in a `BLOCKED` state waiting for manual reformatting.
 
-### B. Thread Disassociation (Orphaned Comments)
+### B. Thread Disassociation & Outdated Comments (Shadow Class `0x20`)
 - **Description:** Rebase or force-push actions updating a branch, leaving historical review comments structurally "outdated" or "orphaned" in GitHub's view, even though the underlying issue has been resolved.
 - **Impact:** The PR remains classified as `BLOCKED` with unresolved threads because GitHub's UI still considers the discussion active until manually marked as resolved.
 
-### C. Multi-Agent Contention (Worktree Collisions)
+### C. Multi-Agent Contention & Worktree Collisions (Shadow Class `0x30`)
 - **Description:** Concurrent agents (e.g., Lior, Vera, Riven) checking out the same branches, writing to contested directories, or attempting to resolve threads simultaneously on the same checkout.
 - **Impact:** Causes git index locking, rebase drift, or duplicate commit history, requiring manual branch pruning.
 
-### D. API Rate Limits & Capacity Exhaustion (429s)
+### D. API Rate Limits & Capacity Exhaustion (Shadow Class `0x40`)
 - **Description:** Background runners encountering endpoint throttling during high-volume check/lint passes.
 - **Impact:** Stalls the agent's review capabilities, resulting in a false-positive standing-by state.
 
@@ -139,11 +139,11 @@ By storing historical `ZetaId` telemetry directly in the repository, we can trac
 
 $$\Gamma = 1 - \frac{\sum \mu_{\text{active\_month}}}{\sum \mu_{\text{baseline\_month}}}$$
 
-### Effectiveness Metrics by Error Class
-By grouping the `ZetaId` `location` bitwise values, we analyze the effectiveness of our active mitigations over time:
+### Effectiveness Metrics by Shadow Class (The Shadow Logs)
+By grouping the `ZetaId` `location` bitwise values—representing our recorded **Shadow Logs**—we analyze the mitigation effectiveness of specific **Shadow Classes** over time:
 
-1. **Linter Friction Compression ($\mu_{0x10}$):** Measures how effectively pre-commit hooks and automated linter-resolution scripts prevent styling blockages.
-2. **Thread Resolution Speed ($\mu_{0x20}$):** Tracks the average time elapsed between thread creation and automated resolution by background agents.
-3. **Collision Frequency ($\mu_{0x30}$):** Analyzes the reduction in worktree index lockouts due to cleaner multi-agent checkout isolation.
-4. **API Stability ($\mu_{0x40}$):** Measures the impact of client-side rate limit throttling on runner execution queues.
+1. **Linter Friction Compression / Style Shadow Class ($\mu_{0x10}$):** Measures how effectively pre-commit hooks and automated linter-resolution scripts prevent styling blockages.
+2. **Thread Resolution Speed / Disassociation Shadow Class ($\mu_{0x20}$):** Tracks the average time elapsed between thread creation and automated resolution by background agents.
+3. **Collision Frequency / Contention Shadow Class ($\mu_{0x30}$):** Analyzes the reduction in worktree index lockouts due to cleaner multi-agent checkout isolation.
+4. **API Stability / Rate-limiting Shadow Class ($\mu_{0x40}$):** Measures the impact of client-side rate limit throttling on runner execution queues.
 
