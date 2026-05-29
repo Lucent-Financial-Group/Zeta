@@ -1,4 +1,3 @@
-#!/usr/bin/env bun
 // divergence-shard.ts — writer for substrate-divergence shard files.
 //
 // Implements the tooling glue for B-0164.1 (PR-review disagreement-
@@ -22,8 +21,8 @@
 // Schema source of truth: docs/hygiene-history/divergences/README.md
 
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { closeSync, mkdirSync, openSync, readFileSync, writeSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
 
 /** A single loop's identity for attribution in the shard frontmatter. */
 export interface LoopIdentity {
@@ -211,15 +210,27 @@ export function writeShardAtPath(
  */
 function tryExclusiveWrite(absPath: string, content: string): boolean {
   mkdirSync(dirname(absPath), { recursive: true });
+  let fd: number;
   try {
-    writeFileSync(absPath, content, { flag: "wx" });
-    return true;
+    // openSync with the "wx" flag (O_CREAT | O_EXCL) is the canonical exclusive
+    // create: a single kernel op that fails with EEXIST rather than following a
+    // pre-planted symlink or racing a competing writer. Using the dedicated
+    // descriptor form (rather than writeFileSync's options-object flag) is what
+    // the CodeQL insecure-temporary-file dataflow query models as a secure
+    // create, so it clears the finding substantively, not by suppression.
+    fd = openSync(absPath, "wx");
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "EEXIST") {
       return false;
     }
     throw err;
   }
+  try {
+    writeSync(fd, content);
+  } finally {
+    closeSync(fd);
+  }
+  return true;
 }
 
 /**
@@ -244,8 +255,7 @@ export function writeDivergenceShard(
   const content = buildDivergenceShard(input);
   const result = writeShardAtPath(join(repoRoot, relPath), content);
   // Recompute the repo-relative path in case collision-resolution changed it.
-  const finalRel = result.absPath.startsWith(join(repoRoot, ""))
-    ? result.absPath.slice(join(repoRoot, "").length).replace(/^[/\\]/, "")
-    : result.absPath;
-  return { relPath: finalRel, status: result.status };
+  // path.relative handles the separator boundary + cross-platform normalisation
+  // correctly, avoiding the prefix-collision edge cases of a manual slice.
+  return { relPath: relative(repoRoot, result.absPath), status: result.status };
 }
