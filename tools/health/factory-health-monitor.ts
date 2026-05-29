@@ -72,7 +72,9 @@ export function classifyBranchLane(branchName: string): LaneRunwayLane {
     return "otto";
   }
   if (/^(lior\/|lior-|claim\/lior-)/.test(branch)) return "lior";
-  if (/^(alexa\/|kiro\/|claim\/alexa-)/.test(branch)) return "alexa";
+  if (/^(alexa\/|kiro\/|claim\/alexa-|claim\/kiro-)/.test(branch)) {
+    return "alexa";
+  }
   if (/^(riven\/|riven-|claim\/riven-)/.test(branch)) return "riven";
 
   return "other";

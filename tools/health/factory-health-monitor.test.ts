@@ -25,6 +25,7 @@ describe("factory-health-monitor", () => {
     expect(classifyBranchLane("otto-bg-worker/tick-shard")).toBe("otto");
     expect(classifyBranchLane("lior-pr-cleanup")).toBe("lior");
     expect(classifyBranchLane("kiro/bootstrap")).toBe("alexa");
+    expect(classifyBranchLane("claim/kiro-background-service")).toBe("alexa");
     expect(classifyBranchLane("riven-loop-health")).toBe("riven");
     expect(classifyBranchLane("chore/unowned-work")).toBe("other");
   });
