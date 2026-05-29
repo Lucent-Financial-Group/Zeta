@@ -8,6 +8,7 @@ import {
   makeLocalBroadcastReceipt,
   validateLocalBroadcastEnvelope,
   type LocalBroadcastEnvelope,
+  type LocalBroadcastScopeConflict,
 } from "./schema";
 
 const writtenAt = "2026-05-26T22:50:00Z";
@@ -84,7 +85,7 @@ describe("local broadcast schema", () => {
       scope: [{ kind: "path" as const, value: "tools/broadcast-local/" }],
     };
 
-    const expected = [
+    const expected: readonly LocalBroadcastScopeConflict[] = [
       {
         scope: { kind: "path", value: "tools/broadcast-local/" },
         broadcastIds: ["otto-20260526T225100Z", "vera-20260526T225000Z"],
@@ -122,7 +123,7 @@ describe("local broadcast schema", () => {
         { kind: "claim" as const, value: "claim/backlog-0213" },
       ],
     };
-    const expected = [
+    const expected: readonly LocalBroadcastScopeConflict[] = [
       {
         scope: { kind: "claim", value: "claim/backlog-0213" },
         broadcastIds: ["otto-20260526T225100Z", "vera-20260526T225000Z"],
@@ -164,14 +165,18 @@ describe("local broadcast schema", () => {
       scope: [{ kind: "path" as const, value: "tools/broadcast-local/\0a" }],
     };
 
-    expect(detectLocalBroadcastScopeConflicts([vera, riven, otto], new Date("2026-05-26T22:55:00Z"))).toEqual([
+    const expected: readonly LocalBroadcastScopeConflict[] = [
       {
         scope: { kind: "path", value: "tools/broadcast-local/\0a" },
         broadcastIds: ["otto-20260526T225100Z", "riven-20260526T225200Z"],
         agents: ["otto", "riven"],
         summaries: ["Touching NUL path A.", "Also touching NUL path A."],
       },
-    ]);
+    ];
+
+    expect(detectLocalBroadcastScopeConflicts([vera, riven, otto], new Date("2026-05-26T22:55:00Z"))).toEqual(
+      expected,
+    );
   });
 
   test("ignores stale overlapping scopes", () => {
