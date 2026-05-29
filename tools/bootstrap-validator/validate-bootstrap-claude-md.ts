@@ -196,7 +196,7 @@ export function extractReferencedPointers(claudeMd: string): string[] {
 
   // (b) Markdown-link targets that look like repo-relative file paths.
   for (const m of claudeMd.matchAll(/\]\(([^)]+)\)/g)) {
-    let target = m[1].trim();
+    let target = (m[1] ?? "").trim();
     const hash = target.indexOf("#");
     if (hash >= 0) target = target.slice(0, hash); // strip #anchor; keep path
     if (target === "") continue; // pure-anchor link (#section)

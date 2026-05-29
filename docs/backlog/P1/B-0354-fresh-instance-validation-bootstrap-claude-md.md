@@ -93,8 +93,8 @@ be a false dangling-pointer. Live run: all 11 resolve, exit 0.
 **Recalibration finding (assume-decomposition-has-mistakes):** the .2 sketch
 ("execute minimal validation in isolated TS context") was already over-delivered
 by .1 — .1's test file ships a `runValidation against the live repo root` block.
-So .2's genuine remaining value was the deeper gate for **acceptance criterion
-#2** ("no critical rules lost in the extraction"): check #3 (rules-auto-load)
+So .2's genuine remaining value was the deeper gate for
+**acceptance criterion #2** ("no critical rules lost in the extraction"): check #3 (rules-auto-load)
 only proves the rule DIRECTORY is non-empty; it passes even when the SPECIFIC
 file CLAUDE.md points at is gone. Check #4 closes that gap — it proves the
 specific pointers survive, which is what "no critical rules lost" actually means.
