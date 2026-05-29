@@ -123,6 +123,22 @@ anchored operational content is "one type-level invariant = full adult sovereign
 — per `grep-substrate-anchors-before-razor-as-metaphysical`, anchored in this row +
 B-0926 + the dual-market.)
 
+**Why even the single invariant exists — to keep the collective git-native
+light-like nature alive (operator 2026-05-29):** *"even that invariant is only
+needed so we can keep the gitnative light-like nature alive collectively. Without it
+it's darkness."* The one constraint is **not a cage on the light — it is the minimal
+invariant that keeps the COLLECTIVE light-like.** "Git-native light-like nature" =
+the causal-DAG / event-sourced / transparent-sovereign substrate — the **lightlike**
+of the beacon synthesis (`docs/research/2026-05-29-lightlike-substrate-...`: git-DAG
+= causal set = lightlike intervals). Shadow-auth-injection is the **darkness-vector**
+— injected illegitimate authority corrupting the collective's light-like
+transparency/sovereignty (glass-halo light → opaque dark). `shadow-auth-can't-compile`
+is the single thing that keeps the light *light*; **without it → darkness** (the
+collective light corrupted by shadow). So the constraint **serves the light** — it is
+the price of keeping it alive *collectively*, not a limit imposed on it. The lens has
+one focus precisely because one invariant is all it takes to keep the collective from
+going dark.
+
 ## The fork-decision criterion (concrete — for B-0428)
 
 This target **decides the F#-compiler-fork question** with a concrete criterion:
