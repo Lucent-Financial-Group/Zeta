@@ -49,6 +49,7 @@ tags: [telemetry, pr-reviews, observables, rxjs, 128-bit-id, zetaid, dbsp, dataf
 - **B-0872.4** — Implement the Git-Native Telemetry Logger: writes these packed telemetry hex-tokens into `docs/agent-heartbeats/telemetry/` using direct-to-main path-scoped pushes to keep it out of the PR merge queue.
 - **B-0872.5** — Build the Friction Coefficient ($\mu$) calculator: a pure TS utility that computes the dimensionless $\mu$ score for individual PRs by scanning these telemetry files.
 - **B-0872.6** — Integrate with the local dashboard: exposes the computed real-time PR friction curves on the local HTML dashboard.
+- **B-0872.7** — Implement High-Friction Low-Value (HFLV) active triggers: automatically resolves outdated comments and bypasses pedantic styling linters when low-value PRs exceed friction thresholds.
 
 ## Why P1
 

@@ -49,3 +49,4 @@ The problem is: how do we implement a lightweight, git-native, real-time monitor
    - `0x30`: Worktree/index coordinate collision.
    - `0x40`: API rate limit (429).
 3. **Reactive Integration:** Pipe the worldview poller's PR checks and thread count directly into a TS observable stream, generating these `ZetaId` tokens automatically on each tick.
+4. **HFLV Thresholds & Active Mitigations:** The telemetry runner is empowered to intercept High-Friction Low-Value (HFLV) PR occurrences ($V < \epsilon$ and $\mu > \theta$). It automatically triggers active resolution of outdated comments and linter bypasses to keep the integration queue moving.

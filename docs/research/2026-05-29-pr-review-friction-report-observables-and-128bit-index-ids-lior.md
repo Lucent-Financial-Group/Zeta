@@ -107,4 +107,43 @@ export const prFrictionTelemetry$ = prEvents$.pipe(
 ```
 
 ### Pure DBSP Integration
+
 This TS observable stream feeds directly into a lightweight DBSP (Differential Dataflow) engine or a local projection processor. The DBSP engine maintains a running differential state of open PRs, updating the global friction dashboard incrementally with every new event. This ensures real-time visibility with zero database overhead.
+
+---
+
+## 6. High-Friction, Low-Value (HFLV) Triggers
+
+To prevent minor administrative updates from clogging the agentic execution queue, we introduce the **PR Value Metric ($V$)**, computed as:
+
+$$V = w_{\text{code}} \cdot \Delta_{\text{code}} + w_{\text{spec}} \cdot \Delta_{\text{spec}} - w_{\text{style}} \cdot \Delta_{\text{style}}$$
+
+Where:
+- $\Delta_{\text{code}}$: Logical lines of source code changed.
+- $\Delta_{\text{spec}}$: Formal specification/verification changes (TLA+, Alloy, math equations).
+- $\Delta_{\text{style}}$: Pedantic formatting-only shifts (markdown layout, whitespace-only changes).
+- $w_{\text{code}}, w_{\text{spec}}, w_{\text{style}}$: Relative importance weights.
+
+### The HFLV Collision Rule
+When a PR is classified as **Low Value ($V < \epsilon$)** but exhibits **High Friction ($\mu > \theta$)**, it constitutes a High-Friction Low-Value (HFLV) collision.
+
+The reactive observable pipeline intercepts these HFLV occurrences and automatically triggers targeted mitigations:
+1. **Auto-Resolution of Pedantry:** If the block is caused by style violations (`0x10`) or outdated threads (`0x20`), the background agent bypasses standard PR review iterations and automatically resolves the threads via GitHub GraphQL mutations.
+2. **Fast-Path Bypass:** For docs-only linter collisions, the runner can apply soft-approval or direct-to-main push routes (sidestepping standard queue cycles) to conserve CI compute resources.
+
+---
+
+## 7. Measuring Effectiveness Over Time
+
+By storing historical `ZetaId` telemetry directly in the repository, we can track the evolution of our review efficiency. The system aggregates these observations to compute the **Friction Reduction Ratio ($\Gamma$)** across release bounds:
+
+$$\Gamma = 1 - \frac{\sum \mu_{\text{active\_month}}}{\sum \mu_{\text{baseline\_month}}}$$
+
+### Effectiveness Metrics by Error Class
+By grouping the `ZetaId` `location` bitwise values, we analyze the effectiveness of our active mitigations over time:
+
+1. **Linter Friction Compression ($\mu_{0x10}$):** Measures how effectively pre-commit hooks and automated linter-resolution scripts prevent styling blockages.
+2. **Thread Resolution Speed ($\mu_{0x20}$):** Tracks the average time elapsed between thread creation and automated resolution by background agents.
+3. **Collision Frequency ($\mu_{0x30}$):** Analyzes the reduction in worktree index lockouts due to cleaner multi-agent checkout isolation.
+4. **API Stability ($\mu_{0x40}$):** Measures the impact of client-side rate limit throttling on runner execution queues.
+
