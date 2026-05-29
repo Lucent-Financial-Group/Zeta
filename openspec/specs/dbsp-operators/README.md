@@ -1,6 +1,6 @@
 # OpenSpec: DBSP Operators
 
-This document provides context for the TLA+ specification of the DBSP (Differential Bulk Synchronous Parallel) operators.
+This document provides context for the TLA+ specification of the DBSP (Database Stream Processing) operators.
 
 **Parent:** B-0171.4
 
