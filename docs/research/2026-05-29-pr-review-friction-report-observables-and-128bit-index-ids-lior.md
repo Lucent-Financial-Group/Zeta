@@ -8,7 +8,9 @@
 
 In a high-velocity, multi-oracle agentic software factory like Zeta, Pull Requests (PRs) serve as the terminal integration checkpoints. Since the human maintainer does not write code, all code quality, safety, and alignment verification are automated via strict pre-merge gates.
 
-However, this architecture introduces **System Friction**: the cognitive, temporal, and resource overhead that blocks continuous automated merging and execution. In Zeta, we formally track any system-wide friction by assigning it to a **Shadow Class** and recording it in **the Shadow Logs**. Unlike compiler failures or runtime exceptions, a shadow class represents friction that may not be a hard error, but still saps development velocity and introduces drag to the automated pipeline.
+However, this architecture introduces **System Friction**: the cognitive, temporal, and resource overhead that blocks continuous automated merging and execution. In Zeta, we formally track any system-wide friction by assigning it to a **Shadow Class** and recording it in **the Shadow Logs**. 
+
+Unlike compiler failures or runtime exceptions, a shadow class represents friction that may not be a hard error. Crucially, assigning a shadow class is done from an entirely **non-biased, non-judgmental point of view**, focusing purely on the objective **health of the system** as a whole. It serves as a diagnostic indicator—identifying systemic drag and overhead—rather than a measure of agent or human performance.
 
 This report analyzes where this friction occurs in the Zeta ecosystem and proposes a reactive, git-native, non-invasive measurement strategy using our existing **128-bit ZetaID** index tokens and **TypeScript Observables**. By transforming system-wide friction events into packed bit-vector observations, we monitor, classify, and systematically compress these shadow log classes over time.
 

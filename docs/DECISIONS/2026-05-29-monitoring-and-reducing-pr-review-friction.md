@@ -8,7 +8,9 @@
 
 Zeta operates as a substrate-honest, multi-loop agentic software factory. Because all code changes undergo automatic build, linter, and specification gates, Pull Request (PR) review threads and transient check failures are first-class execution signals.
 
-However, resolving review comments represents a significant source of operational friction. Outdated threads, minor formatting violations, or coordinate clashes block auto-merges, leading to rebase delays and stalled queues.
+However, resolving review comments represents a significant source of operational friction. Outdated threads, minor formatting violations, or coordinate clashes block auto-merges, leading to rebase delays and stalled queues. 
+
+To track and address this systemic drag objectively, we classify these friction vectors under a **Shadow Class** within **the Shadow Logs**. Crucially, assigning a shadow class is done from an entirely **non-biased, non-judgmental point of view**, focusing purely on the objective **health of the system** as a whole. A shadow class identifies drag and queue latency without casting judgment on individual agents or human actions, serving as a clean diagnostic metric.
 
 Currently, we have no systematic, structured method to monitor PR review friction over time. Our background scripts only poll the PR queue state to classify current action (e.g., `resolve-threads` in `poll-pr-gate.ts`), but we lack a historical analytical pipeline to measure the duration and cause of these blockages.
 
