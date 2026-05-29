@@ -18,6 +18,7 @@ import {
   parseSeedBlobResponse,
   parseSeedCommitResponse,
   parseSeedManifest,
+  parseSeedRefUpdateResponse,
   parseSeedTreeResponse,
   resolveSeedFiles,
   seedCommitMessage,
@@ -769,5 +770,88 @@ describe("buildSeedRefUpdateRequest", () => {
     const updated = buildSeedRefUpdateRequest("o", "r", "main", sha, true);
     expect(created.body.sha).toBe(sha);
     expect(updated.body.sha).toBe(sha);
+  });
+});
+
+describe("parseSeedRefUpdateResponse", () => {
+  // A trimmed-but-realistic git/refs response — identical schema for POST (201, fresh
+  // branch) and PATCH (200, fast-forward). The one field the seeder reads is the NESTED
+  // object.sha (the commit the ref now points at), plus the top-level ref/node_id/url it
+  // ignores (proves selective reading + that it does NOT read the top-level ref label).
+  const updated = {
+    ref: "refs/heads/main",
+    node_id: "MDM6UmVmMTpyZWZzL2hlYWRzL21haW4=",
+    url: "https://api.github.com/repos/Lucent-Financial-Group/zeta-recreation-experiment/git/refs/heads/main",
+    object: {
+      type: "commit",
+      sha: "aa218f56b14c9653891f9e74264a383fa43fefbd",
+      url: "https://api.github.com/repos/Lucent-Financial-Group/zeta-recreation-experiment/git/commits/aa218f56b14c9653891f9e74264a383fa43fefbd",
+    },
+  };
+
+  test("extracts the nested object.sha, ignoring ref/node_id/url", () => {
+    expect(parseSeedRefUpdateResponse(updated)).toEqual({ sha: "aa218f56b14c9653891f9e74264a383fa43fefbd" });
+  });
+
+  test("reads NESTED object.sha, NOT the top-level ref label", () => {
+    // object.sha is the content confirmation (the commit the ref points at); the
+    // top-level `ref` is just the branch name. Assert the result is the commit SHA,
+    // never the ref string.
+    const info = parseSeedRefUpdateResponse(updated);
+    expect(info).toEqual({ sha: "aa218f56b14c9653891f9e74264a383fa43fefbd" });
+    expect(info).not.toEqual({ sha: "refs/heads/main" });
+  });
+
+  test("the sha confirms the seed landed where buildSeedRefUpdateRequest aimed it", () => {
+    const info = parseSeedRefUpdateResponse(updated);
+    if (typeof info === "string") throw new Error(`expected info, got refusal: ${info}`);
+    // The whole chain's invariant: the SHA the ref reports back equals the commitSha the
+    // request threaded in. Equality here is the seed-landed confirmation.
+    const sha = "aa218f56b14c9653891f9e74264a383fa43fefbd";
+    expect(info.sha).toBe(buildSeedRefUpdateRequest("LFG", "r", "main", sha, false).body.sha);
+  });
+
+  test("one parser handles both POST (201) and PATCH (200) — same schema", () => {
+    // GitHub documents create + update refs as the same response schema; the seeder's
+    // POST(fresh) and PATCH(fast-forward) both yield this shape, so one parser suffices.
+    const fromPatch = { ...updated, ref: "refs/heads/feat/x" };
+    expect(parseSeedRefUpdateResponse(updated)).toEqual({ sha: "aa218f56b14c9653891f9e74264a383fa43fefbd" });
+    expect(parseSeedRefUpdateResponse(fromPatch)).toEqual({ sha: "aa218f56b14c9653891f9e74264a383fa43fefbd" });
+  });
+
+  test("success is a {sha} object, not a bare string (disambiguates the error channel)", () => {
+    expect(typeof parseSeedRefUpdateResponse(updated)).toBe("object");
+  });
+
+  test("non-object responses are refused (null, array, scalar)", () => {
+    expect(typeof parseSeedRefUpdateResponse(null)).toBe("string");
+    expect(typeof parseSeedRefUpdateResponse([updated])).toBe("string");
+    expect(typeof parseSeedRefUpdateResponse("aa218f5")).toBe("string");
+    expect(typeof parseSeedRefUpdateResponse(42)).toBe("string");
+  });
+
+  test("missing or non-object `object` field is refused (no nested SHA to read)", () => {
+    const { object, ...rest } = updated;
+    expect(parseSeedRefUpdateResponse(rest)).toContain("object");
+    expect(typeof parseSeedRefUpdateResponse({ ...updated, object: "commit" })).toBe("string");
+    expect(typeof parseSeedRefUpdateResponse({ ...updated, object: null })).toBe("string");
+    expect(typeof parseSeedRefUpdateResponse({ ...updated, object: [updated.object] })).toBe("string");
+  });
+
+  test("missing string object.sha is refused (seed-landed confirmation cannot be made)", () => {
+    const { sha, ...objRest } = updated.object;
+    expect(parseSeedRefUpdateResponse({ ...updated, object: objRest })).toContain("sha");
+  });
+
+  test("a non-string object.sha of the right name is still refused", () => {
+    expect(typeof parseSeedRefUpdateResponse({ ...updated, object: { ...updated.object, sha: 12345 } })).toBe(
+      "string",
+    );
+  });
+
+  test("type-checks only — any string object.sha is accepted verbatim (no SHA-format validation)", () => {
+    // Same restraint as parseSeedCommitResponse: a malformed SHA surfaces as a 422 at the
+    // ref-update call, never reaching this success path.
+    expect(parseSeedRefUpdateResponse({ object: { sha: "not-a-real-sha" } })).toEqual({ sha: "not-a-real-sha" });
   });
 });

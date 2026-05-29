@@ -773,6 +773,54 @@ export function buildSeedRefUpdateRequest(
 }
 
 /**
+ * Pure parser: the read-side pair of `buildSeedRefUpdateRequest`, closing the
+ * git-data write chain (blobs → tree → commit → ref). Both endpoints
+ * `buildSeedRefUpdateRequest` produces — `POST /repos/{owner}/{repo}/git/refs` (201,
+ * fresh branch) and `PATCH /repos/{owner}/{repo}/git/refs/heads/{branch}` (200,
+ * fast-forward) — return the SAME ref schema: `{ "ref": "refs/heads/...", "node_id":
+ * "...", "url": "...", "object": { "type": "commit", "sha": "...", "url": "..." } }`
+ * (verified against docs.github.com/en/rest/git/refs, API version 2026-03-10). One
+ * parser handles both, mirroring how the single `buildSeedRefUpdateRequest` produces
+ * both request shapes.
+ *
+ * Reads the NESTED `object.sha` — the commit the ref now points at — NOT the top-level
+ * `ref` name. `object.sha` is the seed's confirmation field: the caller asserts it
+ * equals the `commitSha` it threaded in (`parseSeedCommitResponse`'s output), proving
+ * the create/fast-forward landed the seed branch at the intended commit and not some
+ * diverged tip. The top-level `ref` is the branch label, not a content check, so it is
+ * ignored.
+ *
+ * Returns `{ sha }` on success, or an error string (same `T | string` convention as
+ * `parseSeedCommitResponse` / `parseSeedTreeResponse` / `parseSeedBlobResponse` /
+ * `parseCreateRepoResponse`) when the response is unusable. The success type is the
+ * single-field object `{ sha }` rather than a bare string so `typeof result ===
+ * "string"` means "error" unambiguously — a bare-string success would collide with the
+ * error channel. Type-check only, no SHA-format validation (same restraint as
+ * `parseSeedCommitResponse`): a malformed SHA would have surfaced as a 422 at the
+ * ref-update call, never reaching this success path.
+ *
+ * Refusals:
+ *   - not an object (null, array, scalar)        → malformed
+ *   - `object` missing / non-object / null/array → malformed (no nested SHA to read)
+ *   - `object.sha` missing or non-string         → malformed (the confirmation the seed
+ *     landed cannot be made; the run reports failure rather than a false success)
+ *
+ * Pure: no network, no gh, no filesystem; operates only on the already-parsed JSON value.
+ */
+export function parseSeedRefUpdateResponse(response: unknown): { readonly sha: string } | string {
+  if (typeof response !== "object" || response === null || Array.isArray(response)) {
+    return "ref-update response is not an object";
+  }
+  const { object } = response as Record<string, unknown>;
+  if (typeof object !== "object" || object === null || Array.isArray(object)) {
+    return "ref-update response missing object `object`";
+  }
+  const { sha } = object as Record<string, unknown>;
+  if (typeof sha !== "string") return "ref-update response missing string `object.sha`";
+  return { sha };
+}
+
+/**
  * Read-only filesystem scan: collect the concrete files under each rooted
  * include pattern. Scans include patterns directly (never a recursive glob
  * from root) to avoid walking gitignored mirror trees. No mutation, no
