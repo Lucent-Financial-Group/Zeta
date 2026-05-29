@@ -87,8 +87,8 @@ When operator authorizes Phase 2:
 Operator-authorized Phase 2, with four decisions settled + a sequencing directive
 (*"do what's easy first and expand; all those other opens should be backlogged and
 picked up based on our audience"*). Process gate alongside: **KATs against Noble's
-vectors + Soraya (formal-verification) + Nazar (security-ops) review of the envelope
-+ key-handling BEFORE it holds anything real** (crypto-don't-rush).
+vectors, plus Soraya (formal-verification) and Nazar (security-ops) review of the
+envelope and key-handling, BEFORE it holds anything real** (crypto-don't-rush).
 
 | Decision | Choice | Notes |
 |---|---|---|
@@ -99,11 +99,11 @@ vectors + Soraya (formal-verification) + Nazar (security-ops) review of the enve
 
 ### Easy-first slice (do now)
 
-**Slice 1 — core content round-trip:** steps 1–4 + 7 above (deps → `ciphers/registry.ts`
-XWing-KEM + ML-DSA-65 + ChaCha20-Poly1305 + HKDF → `envelope.ts` CBOR → `files/encrypt`
-+ `files/decrypt` single-recipient round-trip → KATs against Noble vectors). OS-keychain
-key-storage (decision 1) is the easy custody path. This is the minimal verifiable lane;
-it does NOT yet hold real material (peer-review gate first).
+**Slice 1 — core content round-trip:** steps 1–4 and 7 above (deps → `ciphers/registry.ts`
+with XWing-KEM, ML-DSA-65, ChaCha20-Poly1305, HKDF → `envelope.ts` CBOR →
+`files/encrypt` and `files/decrypt` single-recipient round-trip → KATs against Noble
+vectors). OS-keychain key-storage (decision 1) is the easy custody path. This is the
+minimal verifiable lane; it does NOT yet hold real material (peer-review gate first).
 
 ### Backlog the rest, picked up by audience
 
