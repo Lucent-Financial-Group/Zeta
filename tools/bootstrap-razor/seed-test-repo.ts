@@ -147,13 +147,18 @@ export function gitBlobSha(content: Uint8Array): string {
  * Read each resolved seed file and pair it with its git blob SHA, sorted by path.
  * Read-only (one `readFileSync` per resolved file); no mutation, no network, no gh.
  * The resulting set is the "desired state" an idempotency slice diffs against the
- * target repo's tree. Input is assumed already resolved+sorted by `resolveSeedFiles`.
+ * target repo's tree. Output is canonically sorted by path REGARDLESS of input
+ * order — this matches git's own path-sorted tree representation and makes the
+ * idempotency comparison basis stable even if a caller passes an unsorted set
+ * (`resolveSeedFiles` already sorts, but the contract does not depend on it).
  */
 export function computeSeedTree(resolved: readonly string[], root: string): readonly SeedTreeEntry[] {
-  return resolved.map((path) => ({
-    path,
-    sha: gitBlobSha(readFileSync(join(root, path))),
-  }));
+  return resolved
+    .map((path) => ({
+      path,
+      sha: gitBlobSha(readFileSync(join(root, path))),
+    }))
+    .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 }
 
 /**

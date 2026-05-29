@@ -98,12 +98,16 @@ describe("gitBlobSha", () => {
 });
 
 describe("computeSeedTree", () => {
-  test("pairs each resolved path with the git blob SHA of its bytes, in input order", () => {
+  test("pairs each resolved path with the git blob SHA of its bytes, canonically sorted by path", () => {
     const root = mkdtempSync(join(tmpdir(), "b0343-seed-tree-"));
     writeFileSync(join(root, "a.txt"), "hello\n");
     writeFileSync(join(root, "b.txt"), "");
 
-    expect(computeSeedTree(["a.txt", "b.txt"], root)).toEqual([
+    // Intentionally UNSORTED input: the documented contract is that output is
+    // canonically sorted by path regardless of caller order. Asserting against
+    // sorted output means this test fails if `computeSeedTree` ever reverts to
+    // preserving input order.
+    expect(computeSeedTree(["b.txt", "a.txt"], root)).toEqual([
       { path: "a.txt", sha: "ce013625030ba8dba906f756967f9e9ca394464a" },
       { path: "b.txt", sha: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391" },
     ]);
