@@ -23,6 +23,7 @@ const VERIFIED_PIN: DatfilePin = {
   // sha256Hex of UTF-8 "abc"
   downloadUrl: "https://example.test/test.dat",
   sha256: "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+  romsDir: "test/2600",
 };
 
 function manifestJson(pins: readonly Partial<DatfilePin>[]): string {
@@ -53,6 +54,11 @@ describe("parseManifest", () => {
     expect(() =>
       parseManifest(manifestJson([{ ...VERIFIED_PIN, platform: "" }])),
     ).toThrow(/platform/);
+  });
+
+  test("throws on a missing romsDir (explicit-path field is required)", () => {
+    const { romsDir, ...partial } = VERIFIED_PIN;
+    expect(() => parseManifest(manifestJson([partial]))).toThrow(/romsDir/);
   });
 
   test("throws on a duplicate platform", () => {

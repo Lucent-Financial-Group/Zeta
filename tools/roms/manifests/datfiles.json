@@ -29,7 +29,8 @@
       "datfileName": "Atari 2600 - Games (TOSEC).dat",
       "sourceUrl": "https://www.tosecdev.org/news/releases/177-tosec-release-2025-03-13",
       "downloadUrl": "<DIRECT-DAT-URL-VERIFY-ON-FETCH>",
-      "sha256": "<SHA256-VERIFY-ON-FETCH>"
+      "sha256": "<SHA256-VERIFY-ON-FETCH>",
+      "romsDir": "atari/2600"
     }
   ]
 }

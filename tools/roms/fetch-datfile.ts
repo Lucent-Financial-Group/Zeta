@@ -30,6 +30,14 @@ export interface DatfilePin {
   readonly sourceUrl: string;
   readonly downloadUrl: string;
   readonly sha256: string;
+  /**
+   * Canonical roms/ subdirectory for this platform (e.g. "atari/2600").
+   * Stated explicitly in the manifest rather than inferred from the slug:
+   * slug→path inference (replacing hyphens) is only correct for two-segment
+   * slugs like "atari-2600" and breaks for slugs like
+   * "nintendo-entertainment-system".
+   */
+  readonly romsDir: string;
 }
 
 interface RawManifest {
@@ -44,6 +52,7 @@ const REQUIRED_FIELDS: readonly (keyof DatfilePin)[] = [
   "sourceUrl",
   "downloadUrl",
   "sha256",
+  "romsDir",
 ];
 
 /**
@@ -274,7 +283,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   process.stdout.write(outPath + "\n");
   process.stderr.write(
     `verified + wrote ${bytes.length} bytes to ${outPath}\n` +
-      `next: bun tools/roms/canonicalize.ts --datfile "${outPath}" --dir roms/${pin.platform.replace("-", "/")}\n`,
+      `next: bun tools/roms/canonicalize.ts --datfile "${outPath}" --dir roms/${pin.romsDir}\n`,
   );
   return 0;
 }
