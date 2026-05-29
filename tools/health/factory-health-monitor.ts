@@ -145,6 +145,87 @@ export function classifyLaneRunway(
   return signals;
 }
 
+export function laneRunwaySnapshotFromObservations(
+  openPrJson: string,
+  remoteClaimBranches: string,
+  healthyServices?: LaneRunwaySnapshot["healthyServices"],
+): LaneRunwaySnapshot {
+  const prs = JSON.parse(openPrJson) as Array<{
+    headRefName?: string | null;
+  }>;
+  const openPrBranches = prs
+    .map((pr) => pr.headRefName?.trim())
+    .filter((branch): branch is string => Boolean(branch));
+  const activeClaimBranches = remoteClaimBranches
+    .split("\n")
+    .map((branch) => branch.trim().replace(/^origin\//, ""))
+    .filter(Boolean);
+
+  return {
+    openPrBranches,
+    activeClaimBranches,
+    ...(healthyServices ? { healthyServices } : {}),
+  };
+}
+
+function checkLaneRunway(): HealthSignal[] {
+  const prs = run("gh", [
+    "pr",
+    "list",
+    "--repo",
+    REPO,
+    "--state",
+    "open",
+    "--json",
+    "headRefName",
+    "--limit",
+    "200",
+  ]);
+
+  if (!prs.ok) {
+    return [
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "Could not query PR branches for lane-runway signals",
+        action: "inspect gh CLI state before trusting lane runway",
+      },
+    ];
+  }
+
+  const claims = run("git", [
+    "branch",
+    "-r",
+    "--list",
+    "origin/claim/*",
+  ]);
+
+  if (!claims.ok) {
+    return [
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "Could not query claim branches for lane-runway signals",
+        action: "inspect git remote state before trusting lane runway",
+      },
+    ];
+  }
+
+  try {
+    return classifyLaneRunway(
+      laneRunwaySnapshotFromObservations(prs.stdout, claims.stdout),
+    );
+  } catch {
+    return [
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "Could not parse lane-runway observations",
+      },
+    ];
+  }
+}
+
 function checkPRQueue(): HealthSignal[] {
   const signals: HealthSignal[] = [];
   const r = run("gh", [
@@ -686,6 +767,7 @@ export function buildHealthReport(
 
 export function runHealthCheck(): HealthReport {
   return buildHealthReport([
+    ...checkLaneRunway(),
     ...checkPRQueue(),
     ...checkBacklogHealth(),
     ...checkClaimFreshness(),

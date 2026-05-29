@@ -3,6 +3,7 @@ import {
   buildHealthReport,
   classifyBranchLane,
   classifyLaneRunway,
+  laneRunwaySnapshotFromObservations,
   runHealthCheck,
   type HealthSignal,
 } from "./factory-health-monitor";
@@ -73,6 +74,27 @@ describe("factory-health-monitor", () => {
       message: "other: 1 open PR(s), 1 active claim(s) outside named lanes",
       action:
         "classify owner or assign an explicit lane before treating as runway",
+    });
+  });
+
+  test("laneRunwaySnapshotFromObservations builds classifier input", () => {
+    const snapshot = laneRunwaySnapshotFromObservations(
+      JSON.stringify([
+        { headRefName: "codex/source-patch" },
+        { headRefName: "otto-cli/bootstrap" },
+        { headRefName: null },
+      ]),
+      "  origin/claim/codex-loop-20260529\norigin/claim/kiro-background-service\n\n",
+      { codex: true, alexa: false },
+    );
+
+    expect(snapshot).toEqual({
+      openPrBranches: ["codex/source-patch", "otto-cli/bootstrap"],
+      activeClaimBranches: [
+        "claim/codex-loop-20260529",
+        "claim/kiro-background-service",
+      ],
+      healthyServices: { codex: true, alexa: false },
     });
   });
 
@@ -152,6 +174,7 @@ describe("factory-health-monitor", () => {
     const report = getReport();
     const surfaces = new Set(report.signals.map((s) => s.surface));
 
+    expect(surfaces.has("lane-runway")).toBe(true);
     expect(surfaces.has("pr-queue") || surfaces.has("backlog")).toBe(true);
     expect(surfaces.has("cadence")).toBe(true);
   }, HEALTH_CHECK_TIMEOUT_MS);
