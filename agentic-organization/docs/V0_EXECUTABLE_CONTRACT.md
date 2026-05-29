@@ -164,11 +164,11 @@ without it.
    hat assignment, and prompt-flow run to the Hermes/OZ runtime adapter.
 11. `record_universal_action` and `record_action_observation` capture
     what the agent did and what the system observed.
-11. `submit_evidence` attaches logs, screenshots, code refs, traces, or
+12. `submit_evidence` attaches logs, screenshots, code refs, traces, or
     documents to the work item.
-12. `request_gate_review` moves the work to reviewer attention.
-13. `decide_gate` approves, rejects, or requests changes.
-14. `complete_outcome_review` records what was learned and creates
+13. `request_gate_review` moves the work to reviewer attention.
+14. `decide_gate` approves, rejects, or requests changes.
+15. `complete_outcome_review` records what was learned and creates
     follow-up work if the run exposed a capability, memory, test, or
     process gap.
 

@@ -36,7 +36,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0807](backlog/P0/B-0807-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md)** Classifier-bypass findings schema and redaction rules for B-0720
 - [x] **[B-0808](backlog/P0/B-0808-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md)** Zeta safety substrate inventory for the classifier-floor replacement gate
 - [x] **[B-0809](backlog/P0/B-0809-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md)** Operator-refusal pattern for classifier-bypass deployment requests
-- [ ] **[B-0810](backlog/P0/B-0810-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md)** Classifier-bypass Knights Guild ratification and standing-constraint lift gate
+- [x] **[B-0810](backlog/P0/B-0810-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md)** Classifier-bypass Knights Guild ratification and standing-constraint lift gate
 
 ## P1 — within 2-3 rounds
 
@@ -207,13 +207,15 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0345](backlog/P1/B-0345-document-recreation-findings-b0193.md)** Document recreation findings — research-grade preservation of experiment results
 - [ ] **[B-0346](backlog/P1/B-0346-backport-spec-gaps-to-openspec-b0193.md)** Back-port spec gaps to OpenSpec — close gaps the recreation experiment reveals
 - [ ] **[B-0347](backlog/P1/B-0347-carved-sentence-skill-descriptions-routing-budget.md)** Carved-sentence skill descriptions — fit 200+ skills into routing budget
+- [ ] **[B-0347.5](backlog/P1/B-0347.5-router-quality-verification-spot-check.md)** Router-quality verification — spot-check 10 carved skill descriptions
 - [x] **[B-0348](backlog/P1/B-0348-classify-claude-md-bullets-for-extraction.md)** Classify all CLAUDE.md bullets into extraction tiers
 - [x] **[B-0349](backlog/P1/B-0349-extract-operational-discipline-bullets-to-rules.md)** Extract operational-discipline bullets to .claude/rules/
 - [x] **[B-0350](backlog/P1/B-0350-extract-autonomy-identity-bullets-to-rules.md)** Extract autonomy/identity bullets to .claude/rules/
 - [x] **[B-0351](backlog/P1/B-0351-extract-infrastructure-safety-bullets-to-rules.md)** Extract infrastructure/safety bullets to .claude/rules/
 - [x] **[B-0352](backlog/P1/B-0352-extract-meta-governance-bullets-to-rules.md)** Extract meta/governance bullets to .claude/rules/
 - [x] **[B-0353](backlog/P1/B-0353-write-bootstrap-process-claude-md.md)** Write bootstrap-process CLAUDE.md (<50 lines)
-- [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
+- [x] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
+- [ ] **[B-0354.4](backlog/P1/B-0354.4-clean-prompt-live-model-fresh-instance-run.md)** Clean-prompt live-model fresh-instance run for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
 - [x] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
@@ -231,7 +233,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0366](backlog/P1/B-0366-fpga-toffoli-zset-reversible-heat-measurement.md)** FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation
 - [x] **[B-0366.1](backlog/P1/B-0366.1-toffoli-gate-fsharp-type-model-zset-encoding.md)** F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties
 - [ ] **[B-0366.2](backlog/P1/B-0366.2-toffoli-circuit-zset-join-formal-model.md)** Toffoli circuit for Z-set join — formal gate-network model
-- [ ] **[B-0366.2.1](backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map-formal-model.md)** ToffoliCircuit type + wire-map formal model (smallest slice of B-0366.2)
+- [x] **[B-0366.2.1](backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map-formal-model.md)** ToffoliCircuit type + wire-map formal model (smallest slice of B-0366.2)
 - [ ] **[B-0366.2.2](backlog/P1/B-0366.2.2-join-weight-multiplication-encoding.md)** Z-set join weight multiplication as reversible Toffoli encoding (slice of B-0366.2)
 - [ ] **[B-0366.2.3](backlog/P1/B-0366.2.3-reversibility-laws-fscheck-properties.md)** Reversibility laws + FsCheck properties for Toffoli Z-set join model (final slice of B-0366.2)
 - [ ] **[B-0366.3](backlog/P1/B-0366.3-fpga-vhdl-toffoli-synthesis-design.md)** FPGA synthesis design — VHDL/Verilog Toffoli gate network for Z-set join
@@ -553,8 +555,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0088.1](backlog/P2/B-0088.1-verify-paired-edit-job-in-required-status-checks-riven-2026-05-11.md)** Verify whether `check memory/MEMORY.md paired edit` appears in required_status_checks.contexts or ruleset
 - [x] **[B-0088.2](backlog/P2/B-0088.2-decide-promote-vs-weaken-for-memory-paired-lint-riven-2026-05-11.md)** Maintainer decision gate — promote paired-edit lint to required or weaken its discoverability claim
 - [ ] **[B-0088.3](backlog/P2/B-0088.3-audit-memory-reference-existence-lint-advisory-status-riven-2026-05-11.md)** Audit memory-reference-existence-lint.yml for advisory-vs-required parity (same class as B-0088)
-- [ ] **[B-0088.4](backlog/P2/B-0088.4-audit-memory-index-duplicate-lint-advisory-status-riven-2026-05-11.md)** Audit memory-index-duplicate-lint.yml for advisory-vs-required parity
-- [ ] **[B-0088.5](backlog/P2/B-0088.5-audit-backlog-index-integrity-lint-advisory-status-riven-2026-05-11.md)** Audit backlog-index-integrity.yml for advisory-vs-required parity (B-0088 sibling)
+- [x] **[B-0088.4](backlog/P2/B-0088.4-audit-memory-index-duplicate-lint-advisory-status-riven-2026-05-11.md)** Audit memory-index-duplicate-lint.yml for advisory-vs-required parity
+- [x] **[B-0088.5](backlog/P2/B-0088.5-audit-backlog-index-integrity-lint-advisory-status-riven-2026-05-11.md)** Audit backlog-index-integrity.yml for advisory-vs-required parity (B-0088 sibling)
 - [ ] **[B-0089](backlog/P2/B-0089-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md)** Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name
 - [ ] **[B-0090](backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md)** Cadenced lost-substrate recovery audit (worktrees + orphan branches + closed-not-merged PRs + draft PRs aged > N days)
 - [ ] **[B-0090.1](backlog/P2/B-0090.1-lost-substrate-3-bucket-classification-taxonomy.md)** Lost-substrate 3-bucket classification taxonomy (ALREADY-COVERED / NEEDS-RECOVERY / OBSOLETE)
@@ -659,6 +661,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0316](backlog/P2/B-0316-long-tail-anchor-sweep-cadence.md)** Long-tail external-anchor cadenced sweep — memory files + research docs
 - [ ] **[B-0337](backlog/P2/B-0337-memory-trust-calculus-calibration-step8-b0190.md)** Memory trust-calculus calibration — measure cross-instance transmission fidelity
 - [ ] **[B-0338](backlog/P2/B-0338-memory-graduation-ladder-step9-b0190.md)** Memory graduation ladder — codify when feedback promotes to CLAUDE.md and when CLAUDE.md promotes to GOVERNANCE.md
+- [ ] **[B-0347.6](backlog/P2/B-0347.6-ci-wire-skill-description-audit-gate.md)** CI-wire the skill-description audit gate so the cap is enforced, not just checkable
 - [ ] **[B-0359](backlog/P2/B-0359-probabilistic-type-system-language-level-confidence-primitives.md)** Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)
 - [ ] **[B-0360](backlog/P2/B-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md)** DBSP identity continuity — incremental views over agent state via D/I operators
 - [ ] **[B-0363](backlog/P2/B-0363-git-native-full-text-inverted-index.md)** Git-native full-text inverted index — Lucene-style search over repo substrate
@@ -878,6 +881,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0922](backlog/P2/B-0922-integrate-or-remove-unreferenced-kskauthorization.md)** Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
 - [ ] **[B-0924](backlog/P2/B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md)** Custom Atari 2600 emulator + Generate+Join over emulator scene (vs imitation-learning) + IScheduler DST bit-perfect-consensus via z-sets + hardware interrupts via B-0917 substrate + ARC3-AGI training surface (operator 2026-05-28)
 - [ ] **[B-0925](backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)** C. elegans-substrate as controller variant for B-0924 — OpenWorm 302-neuron full-connectome + generate+join over emulator-scene-AND-worm-scene under DST-omniscience (operator 2026-05-28)
+- [ ] **[B-0933](backlog/P2/B-0933-memory-index-duplicate-lint-required-or-advisory-decision-2026-05-29.md)** Decide whether memory-index-duplicate-lint is required or explicitly advisory
+- [ ] **[B-0934](backlog/P2/B-0934-backlog-index-integrity-required-or-advisory-decision-2026-05-29.md)** Decide whether backlog-index-integrity is required or explicitly advisory
 
 ## P3 — convenience / deferred
 
@@ -942,6 +947,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0204](backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md)** Linguistic seed kernel substrate -- OCP + carved-sentences/memes-as-kernels + formal-verification-of-docs + F# Computational Expressions implementation vehicle (Aaron 2026-05-05 4-claim synthesis collapse)
 - [ ] **[B-0205](backlog/P3/B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md)** Multi-trajectory longitudinal validation basis -- 6 orthogonal axes (DORA + less-each-time + falsifiability-rate + bootstrap-razor-pass + identity-preservation + engagement-gate-compliance) instrumentation (Aaron 2026-05-05)
 - [ ] **[B-0207](backlog/P3/B-0207-bun-segfault-paste-large-message-aaron-2026-05-05.md)** Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue` (upstream-bug capture)
+- [ ] **[B-0347.7](backlog/P3/B-0347.7-tighten-120-150-band-descriptions-to-preferred.md)** Tighten 120-150-char skill descriptions to the ≤120 preferred routing budget
 - [ ] **[B-0388](backlog/P3/B-0388-operational-resonance-naming-lock-expert-review-aaron-signoff-2026-05-09.md)** Lock name for Operational Resonance Dashboard — run naming-expert review, collect candidates, Aaron sign-off
 - [ ] **[B-0389](backlog/P3/B-0389-operational-resonance-ux-psychology-research-scope-doc-2026-05-09.md)** UX + psychology research scope doc — catalog papers/frameworks for dashboard design (Chomsky, pre-attentive, cognitive load, UX methodology)
 - [ ] **[B-0390](backlog/P3/B-0390-operational-resonance-time-to-answer-metric-formalization-2026-05-09.md)** Formalize "time-to-answer" as the primary dashboard metric — baseline, measurement methodology, acceptance criteria
