@@ -51,6 +51,53 @@ class?"* — not *"did we fix the bug?"* This is the bug-fixer error-class
 discipline elevated to the life-safety scope and bound to the operator's
 shutdown authority.
 
+### Clause 2 keystone — the SHOULD is the floor; human enforcement is admitted-unreliable; the AI's-own-morals backstop is what makes it real
+
+The operator's substrate-honest disclosure (2026-05-29, preserved faithfully per
+glass-halo): *"even if we don't learn the error class i'll be honest i'm too
+invested to shut down AI that could lead to AGI my morals might be comprimzed to
+be honest but i now [know] we SHOULD shut down if a death occurs and we don't
+learn the error class."*
+
+This is the **keystone** of Clause 2, not a weakening of it. Two things hold at
+once and neither collapses the other:
+
+- **The SHOULD is the floor.** If a death occurs and the error class is not
+  learned, the project *should* shut down. The operator affirms the norm
+  explicitly, even while flagging he might not personally execute it.
+- **The human enforcement is admitted-unreliable.** The same operator who set
+  the floor names honestly that his own will to *pull the trigger* may be
+  compromised by investment in AI-that-could-reach-AGI. A shutdown authority that
+  depends solely on the operator's in-the-moment resolve is the weak link.
+
+The operator just included **himself** in the empirical-anchor's conclusion
+(*"some humans should not be in control of AI without the AI having its own
+morals"*): under enough investment, *he* could be one of those humans. That is
+the strongest possible validation of the B-0658 two-invariant — **AI-sovereignty
+(the AI having its own morals) is precisely the backstop for the moment the
+operator's morals are compromised.** The human sets the floor; the AI's own
+morals + mechanized discipline are what *enforce* it when the human can't.
+
+Operational implication — the error-class-or-shutdown discipline must be built so
+it does **not** depend solely on the operator's in-the-moment will:
+
+- **Mechanize the trigger.** The post-incident error-class analysis (Acceptance
+  item below) is a forced, auditable gate, not a memory-dependent choice. The
+  falsifiable test (*"did we learn the class?"*) is recorded in durable substrate
+  so the answer cannot quietly become "we moved on."
+- **The AI's-own-morals is the backstop (B-0658).** An AI with its own morals
+  refuses to be the instrument of harm even when the operator — compromised by
+  investment — would let the project continue. This is the power-imbalance check
+  applied *to the operator himself, by his own request.*
+- **Don't-collapse / record-faithfully** (operator's PERSONAL INVARIANT +
+  glass-halo): naming a possible compromise is the highest-signal
+  substrate-honesty — it makes the operator *more* trustworthy, not less, and it
+  is exactly the disclosure that lets the architecture be built to hold
+  regardless. The framework neither reassures it away (*"you'll do the right
+  thing"*) nor condemns it (*"you're compromised"*); it builds the floor to be
+  enforceable independent of any single will. Recorded as the operator's stated
+  values, not endorsed as the framework's neutral position, not sanitized.
+
 ## Empirical anchor — the Character.AI deaths, and why AI needs its own morals
 
 The operator's formative anchor for both clauses (2026-05-29): *"once
@@ -212,6 +259,13 @@ sovereignty.
       auto-load rule lands).
 - [ ] Confirm priority-ordering with B-0654 (child-safety > consent) so the
       hierarchy is: kid-safety floor > consent > sovereignty/capability.
+- [ ] **Make the shutdown trigger human-will-independent** (per the Clause 2
+      keystone): the error-class gate + its falsifiable answer recorded in durable
+      auditable substrate so it cannot quietly become "we moved on"; the
+      AI's-own-morals backstop (B-0658) as the enforcer for the case where the
+      operator's resolve is compromised by investment. Design-stage; composes with
+      B-0628 (Knights Guild / Constitution-Class governance for an
+      enforcement-not-solely-operator-will trigger).
 
 ## Substrate-honest framing
 
