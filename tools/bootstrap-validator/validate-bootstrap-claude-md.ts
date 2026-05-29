@@ -184,7 +184,13 @@ export function checkReferencedPointers(
  *       the orient/ship doc links (AGENTS.md, GOVERNANCE.md, docs/*.md). A
  *       trailing `#anchor` is stripped; URLs, pure anchors, globs/templates,
  *       and home/absolute paths are skipped.
- * De-duplicated, so a pointer appearing in both forms is checked once.
+ *   (c) bare inline-code repo paths — a backticked token that contains a `/`
+ *       and a file extension (`docs/research/foo.md`, `tools/setup/x.sh`).
+ *       Spans are single-line only (no embedded newline) so a multi-line
+ *       command span never mis-pairs backticks and leaks document-global
+ *       parity drift into the result. Same URL / glob / template /
+ *       home / absolute skips as (b).
+ * De-duplicated, so a pointer appearing in more than one form is checked once.
  */
 export function extractReferencedPointers(claudeMd: string): string[] {
   const refs = new Set<string>();
@@ -203,6 +209,20 @@ export function extractReferencedPointers(claudeMd: string): string[] {
     if (/^[a-z][a-z0-9+.-]*:/i.test(target)) continue; // URL scheme (http:, mailto:)
     if (/[*<>\s]/.test(target)) continue; // glob / template / not a clean token
     if (target.startsWith("~") || target.startsWith("/")) continue; // home/absolute
+    refs.add(target);
+  }
+
+  // (c) Bare inline-code repo paths: single-line backtick spans only.
+  for (const m of claudeMd.matchAll(/`([^`\n]+)`/g)) {
+    let target = (m[1] ?? "").trim();
+    const hash = target.indexOf("#");
+    if (hash >= 0) target = target.slice(0, hash); // strip #anchor; keep path
+    if (target === "") continue;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(target)) continue; // URL scheme
+    if (/[*<>\s]/.test(target)) continue; // glob / template / command (has spaces)
+    if (target.startsWith("~") || target.startsWith("/")) continue; // home/absolute
+    if (!target.includes("/")) continue; // must be a path, not a bare identifier
+    if (!/\.[a-z0-9]+$/i.test(target)) continue; // must end in a file extension
     refs.add(target);
   }
 

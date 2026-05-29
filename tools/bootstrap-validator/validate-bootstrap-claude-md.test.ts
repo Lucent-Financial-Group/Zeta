@@ -141,6 +141,33 @@ describe("extractReferencedPointers", () => {
     const refs = extractReferencedPointers(md);
     expect(refs.filter((r) => r === ".claude/rules/x.md").length).toBe(1);
   });
+
+  test("extracts bare inline-code repo paths not in a link or rules dir", () => {
+    const md = "Spec: `docs/research/foo.md` §10. Refresh: `tools/setup/common/sync.sh`.";
+    const refs = extractReferencedPointers(md);
+    expect(refs).toContain("docs/research/foo.md");
+    expect(refs).toContain("tools/setup/common/sync.sh");
+  });
+
+  test("inline-code skips bare identifiers and extension-less tokens", () => {
+    const md = "`Result<_, DbspError>` and `git log` and `BACKLOG` are not pointers.";
+    const refs = extractReferencedPointers(md);
+    expect(refs).toEqual([]);
+  });
+
+  test("a multi-line backtick command span does not mis-pair into a false path", () => {
+    // The open backtick on line 1 closes on line 2 (a wrapped command). Single-line
+    // span matching must skip it AND must not let backtick-parity drift swallow the
+    // genuine path on line 3.
+    const md = [
+      "Audit via `bun tools/x.ts",
+      "  --since DATE`. Spec: per",
+      "`docs/research/bar.md` §10.",
+    ].join("\n");
+    const refs = extractReferencedPointers(md);
+    expect(refs).toContain("docs/research/bar.md");
+    expect(refs).not.toContain("bun tools/x.ts");
+  });
 });
 
 describe("checkReferencedPointers", () => {
