@@ -10,7 +10,7 @@ last_updated: 2026-05-29
 depends_on:
   - B-0750
   - B-0751
-  composes_with:
+composes_with:
   - B-0440
   - B-0442
   - B-0571
