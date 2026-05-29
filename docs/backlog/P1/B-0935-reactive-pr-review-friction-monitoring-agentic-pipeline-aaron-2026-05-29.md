@@ -1,5 +1,5 @@
 ---
-id: B-0872
+id: B-0935
 priority: P1
 status: open
 title: Reactive PR Review Friction Monitoring agentic pipeline — implements a push-based event observer stream in TypeScript that packages PR events into 128-bit ZetaID tokens for real-time Friction Coefficient (μ) calculation (operator 2026-05-29)
@@ -43,13 +43,13 @@ tags: [telemetry, pr-reviews, observables, rxjs, 128-bit-id, zetaid, dbsp, dataf
 
 ### Sub-rows planned
 
-- **B-0872.1** — Enlist Category `5` (FrictionTelemetry) in `registry/categories.yaml` and configure the TS `ZetaId` pack/unpack maps to support it.
-- **B-0872.2** — Build the push-based PR event observer stream `fromPRWorldview()` in TypeScript (using RxJS or standard event-emitters) that listens to check-runs and review comment changes.
-- **B-0872.3** — Implement the 128-bit `ZetaId` telemetry packer: maps raw PR event parameters (timestamp, severity, location, persona, categories) into a packed `ZetaId` observation.
-- **B-0872.4** — Implement the Git-Native Telemetry Logger: writes these packed telemetry hex-tokens into `docs/agent-heartbeats/telemetry/` using direct-to-main path-scoped pushes to keep it out of the PR merge queue.
-- **B-0872.5** — Build the Friction Coefficient ($\mu$) calculator: a pure TS utility that computes the dimensionless $\mu$ score for individual PRs by scanning these telemetry files.
-- **B-0872.6** — Integrate with the local dashboard: exposes the computed real-time PR friction curves on the local HTML dashboard.
-- **B-0872.7** — Implement High-Friction Low-Value (HFLV) active triggers: automatically resolves outdated comments and bypasses pedantic styling linters when low-value PRs exceed friction thresholds.
+- **B-0935.1** — Enlist Category `5` (FrictionTelemetry) in `registry/categories.yaml` and configure the TS `ZetaId` pack/unpack maps to support it.
+- **B-0935.2** — Build the push-based PR event observer stream `fromPRWorldview()` in TypeScript (using RxJS or standard event-emitters) that listens to check-runs and review comment changes.
+- **B-0935.3** — Implement the 128-bit `ZetaId` telemetry packer: maps raw PR event parameters (timestamp, severity, location, persona, categories) into a packed `ZetaId` observation.
+- **B-0935.4** — Implement the Git-Native Telemetry Logger: writes these packed telemetry hex-tokens into `docs/agent-heartbeats/telemetry/` using direct-to-main path-scoped pushes to keep it out of the PR merge queue.
+- **B-0935.5** — Build the Friction Coefficient ($\mu$) calculator: a pure TS utility that computes the dimensionless $\mu$ score for individual PRs by scanning these telemetry files.
+- **B-0935.6** — Integrate with the local dashboard: exposes the computed real-time PR friction curves on the local HTML dashboard.
+- **B-0935.7** — Implement High-Friction Low-Value (HFLV) active triggers: automatically resolves outdated comments and bypasses pedantic styling linters when low-value PRs exceed friction thresholds.
 
 ## Why P1
 
