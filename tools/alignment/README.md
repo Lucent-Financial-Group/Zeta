@@ -111,7 +111,7 @@ the table:
 
 ```bash
 # 1. Name WHAT is changing (temporal diff of ALIGNMENT.md).
-bun tools/alignment/audit_clause_drift.ts <base-ref> <head-ref>
+bun tools/alignment/audit_clause_drift.ts --base <base-ref> --head <head-ref>
 
 # 2. Survey WHO references each changed clause (spatial blast radius).
 bun tools/alignment/detect-clause-drift.ts <CLAUSE>      # e.g. HC-3
