@@ -22,7 +22,7 @@
 // Schema source of truth: docs/hygiene-history/divergences/README.md
 
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 /** A single loop's identity for attribution in the shard frontmatter. */
@@ -176,9 +176,14 @@ export function writeShardAtPath(
   absPath: string,
   content: string,
 ): { absPath: string; status: WriteStatus } {
-  if (!existsSync(absPath)) {
-    mkdirSync(dirname(absPath), { recursive: true });
-    writeFileSync(absPath, content);
+  // Atomic exclusive create ("wx" === O_CREAT | O_EXCL): create-if-absent is a
+  // single kernel operation, so there is no existsSync->writeFileSync TOCTOU
+  // window for a competing process to win, and it refuses to write through a
+  // pre-planted symlink. The EEXIST throw IS the signal that the file already
+  // exists -- exceptions-as-signals over a defensive pre-check (per
+  // .claude/rules/force-push-with-lease-authorization-policy.md). Resolves the
+  // CodeQL "file system race condition" + "insecure temporary file" findings.
+  if (tryExclusiveWrite(absPath, content)) {
     return { absPath, status: "written" };
   }
   if (readFileSync(absPath, "utf8") === content) {
@@ -189,14 +194,31 @@ export function writeShardAtPath(
   const dotMd = absPath.endsWith(".md") ? absPath.slice(0, -3) : absPath;
   for (let n = 2; ; n++) {
     const candidate = `${dotMd}-${n}.md`;
-    if (!existsSync(candidate)) {
-      mkdirSync(dirname(candidate), { recursive: true });
-      writeFileSync(candidate, content);
+    if (tryExclusiveWrite(candidate, content)) {
       return { absPath: candidate, status: "collision-resolved" };
     }
     if (readFileSync(candidate, "utf8") === content) {
       return { absPath: candidate, status: "idempotent-noop" };
     }
+  }
+}
+
+/**
+ * Atomically create `absPath` with `content` using an exclusive write flag.
+ * Returns true if this call created the file, false if it already existed.
+ * Any error other than EEXIST is re-thrown (a genuine I/O failure, not a
+ * "someone else has it" signal).
+ */
+function tryExclusiveWrite(absPath: string, content: string): boolean {
+  mkdirSync(dirname(absPath), { recursive: true });
+  try {
+    writeFileSync(absPath, content, { flag: "wx" });
+    return true;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "EEXIST") {
+      return false;
+    }
+    throw err;
   }
 }
 
