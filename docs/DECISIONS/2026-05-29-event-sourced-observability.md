@@ -1,8 +1,8 @@
 # ADR: Event-sourced observability and alerting for workflow friction
 
-**Status:** proposed
+**Status:** Accepted
 **Date:** 2026-05-29
-**Backlog:** B-0752
+**Backlog:** (none yet — observability substrate; composes with B-0149 (tools/observability Prometheus stack), B-0570 (scarcity/rate-limit tracker → bus), B-0867 (workflow engine). B-0752 reference was a typo — that ID is the past-self-vs-peer distinguisher row.)
 
 ## Context & Problem Statement
 
