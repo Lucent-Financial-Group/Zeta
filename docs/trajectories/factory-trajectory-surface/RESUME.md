@@ -21,7 +21,7 @@ landing, and makes future trajectory packets recursive and reviewable.
 
 The factory already distinguishes these: `anti-infection/RESUME.md` self-describes
 as "not a workstream with a cadence" and refers to "those workstreams" it
-protects. Made explicit here (Aaron 2026-05-29):
+protects. Made explicit here (the human maintainer 2026-05-29):
 
 - **Trajectory = the genus.** Any tracked path through state-space over time —
   including emergent arcs, *states* (`autonomous-loop-quiet-state`), *postures*
@@ -44,7 +44,7 @@ is in the active set; drop or mark it coasting when it leaves. The genus surface
 
 Eventual encoding (design-stage): a trajectory's state is trackable as a
 **128-bit genetic-ID seed** (discrete, reversible via parser-combinator ↔
-generator-function; Aaron 2026-05-23) → **Clifford-space path** (continuous
+generator-function; the human maintainer 2026-05-23) → **Clifford-space path** (continuous
 geometric home, eventual). Mirrors the three-lane glossary model's I8
 (discrete hash-lattice) / I9 (continuous embedding-manifold) split applied to
 trajectories.
