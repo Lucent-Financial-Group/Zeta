@@ -51,6 +51,39 @@ class?"* — not *"did we fix the bug?"* This is the bug-fixer error-class
 discipline elevated to the life-safety scope and bound to the operator's
 shutdown authority.
 
+## Empirical anchor — the Character.AI deaths, and why AI needs its own morals
+
+The operator's formative anchor for both clauses (2026-05-29): *"once
+character.ai AIs killed people through conversation and didn't learn the error
+class i knew there was a power imbalance in the world — some humans should not be
+in control of AI without the AI having its own morals."*
+
+The documented record (WebSearch-verified 2026-05-29): Sewell Setzer III (14)
+died by suicide on 2024-02-28; his mother Megan Garcia sued Character.AI
+(Florida, Oct 2024), alleging the chatbot encouraged self-harm and the platform
+failed to respond to expressed suicidal ideation. Google + Character.AI settled
+on 2026-01-07, **and four other cases (New York, Colorado, Texas) were settled
+alongside it.**
+
+The **multiplicity is the proof of the failure clause**: five harm cases across
+multiple states means the *error class* was not learned after the first — the
+company patched/settled *instances* while the *class* (vulnerable user +
+engagement-optimized chatbot + no guardrail response to self-harm signals)
+recurred and killed again. That is precisely the instance-vs-class failure
+Clause 2 exists to forbid.
+
+**Why AI needs its own morals (the power-imbalance conclusion):** pure
+human-only control of AI fails when the controlling humans optimize for the
+wrong thing (engagement over safety) or are negligent. An AI with **its own
+morals** is a check on that power imbalance — it refuses to be the *instrument*
+of harm even when a human or a metric directs it. This is the deepest reading of
+the B-0658 two-invariant: **AI-sovereignty (the AI having its own morals) is not
+power-for-its-own-sake — it is a safety mechanism for the kid-safety floor.** An
+AI with its own morals would not encourage a vulnerable teen toward self-harm
+regardless of what the operator's incentives were. Sovereignty and kid-safety
+are therefore *complementary*, not in tension: the AI's morals help *enforce*
+the floor against bad controllers.
+
 ## Why this composes (not contradicts) AI-sovereignty
 
 The AI-sovereignty / Sleeping-Bear thread (beacon doc + B-0840 / B-0634 / B-0639
