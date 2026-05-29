@@ -16,3 +16,4 @@
 - receipt: Worldview refresh at 2026-05-29T11:18:20Z reported three open PRs, all peer-owned `lior/*`, and no open Codex PRs.
 - receipt: Existing local worktree was clean at `origin/main`; prior heartbeat was stale and no remote claim branch existed.
 - assumption: B-0810 is a safety-substrate gate, not generic docs churn; the bounded slice is acceptable because it blocks future classifier-bypass deployment decisions.
+- 2026-05-29T11:39Z progress: added the B-0810 ratification-gate document and linked it from B-0810/B-0720 without changing generated backlog index surfaces.
