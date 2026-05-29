@@ -84,12 +84,92 @@ describe("local broadcast schema", () => {
       scope: [{ kind: "path" as const, value: "tools/broadcast-local/" }],
     };
 
-    expect(detectLocalBroadcastScopeConflicts([vera, otto, riven], new Date("2026-05-26T22:55:00Z"))).toEqual([
+    const expected = [
       {
         scope: { kind: "path", value: "tools/broadcast-local/" },
-        broadcastIds: ["vera-20260526T225000Z", "otto-20260526T225100Z"],
-        agents: ["vera", "otto"],
-        summaries: ["Working on B-0213 conflict detection.", "Also touching local broadcast tooling."],
+        broadcastIds: ["otto-20260526T225100Z", "vera-20260526T225000Z"],
+        agents: ["otto", "vera"],
+        summaries: ["Also touching local broadcast tooling.", "Working on B-0213 conflict detection."],
+      },
+    ];
+
+    expect(detectLocalBroadcastScopeConflicts([vera, otto, riven], new Date("2026-05-26T22:55:00Z"))).toEqual(
+      expected,
+    );
+    expect(detectLocalBroadcastScopeConflicts([riven, otto, vera], new Date("2026-05-26T22:55:00Z"))).toEqual(
+      expected,
+    );
+  });
+
+  test("orders multiple conflicts deterministically by scope", () => {
+    const otto = {
+      ...validEnvelope(),
+      id: "otto-20260526T225100Z",
+      from: "otto" as const,
+      summary: "Touching two local broadcast scopes.",
+      scope: [
+        { kind: "path" as const, value: "tools/broadcast-local/" },
+        { kind: "claim" as const, value: "claim/backlog-0213" },
+      ],
+    };
+    const vera = {
+      ...validEnvelope(),
+      id: "vera-20260526T225000Z",
+      from: "vera" as const,
+      summary: "Also touching both local broadcast scopes.",
+      scope: [
+        { kind: "path" as const, value: "tools/broadcast-local/" },
+        { kind: "claim" as const, value: "claim/backlog-0213" },
+      ],
+    };
+    const expected = [
+      {
+        scope: { kind: "claim", value: "claim/backlog-0213" },
+        broadcastIds: ["otto-20260526T225100Z", "vera-20260526T225000Z"],
+        agents: ["otto", "vera"],
+        summaries: ["Touching two local broadcast scopes.", "Also touching both local broadcast scopes."],
+      },
+      {
+        scope: { kind: "path", value: "tools/broadcast-local/" },
+        broadcastIds: ["otto-20260526T225100Z", "vera-20260526T225000Z"],
+        agents: ["otto", "vera"],
+        summaries: ["Touching two local broadcast scopes.", "Also touching both local broadcast scopes."],
+      },
+    ];
+
+    expect(detectLocalBroadcastScopeConflicts([vera, otto], new Date("2026-05-26T22:55:00Z"))).toEqual(expected);
+    expect(detectLocalBroadcastScopeConflicts([otto, vera], new Date("2026-05-26T22:55:00Z"))).toEqual(expected);
+  });
+
+  test("keeps NUL-bearing scope values exact", () => {
+    const otto = {
+      ...validEnvelope(),
+      id: "otto-20260526T225100Z",
+      from: "otto" as const,
+      summary: "Touching NUL path A.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/\0a" }],
+    };
+    const vera = {
+      ...validEnvelope(),
+      id: "vera-20260526T225000Z",
+      from: "vera" as const,
+      summary: "Touching NUL path B.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/\0b" }],
+    };
+    const riven = {
+      ...validEnvelope(),
+      id: "riven-20260526T225200Z",
+      from: "riven" as const,
+      summary: "Also touching NUL path A.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/\0a" }],
+    };
+
+    expect(detectLocalBroadcastScopeConflicts([vera, riven, otto], new Date("2026-05-26T22:55:00Z"))).toEqual([
+      {
+        scope: { kind: "path", value: "tools/broadcast-local/\0a" },
+        broadcastIds: ["otto-20260526T225100Z", "riven-20260526T225200Z"],
+        agents: ["otto", "riven"],
+        summaries: ["Touching NUL path A.", "Also touching NUL path A."],
       },
     ]);
   });

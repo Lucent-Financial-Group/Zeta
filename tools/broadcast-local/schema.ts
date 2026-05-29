@@ -128,14 +128,22 @@ export function makeLocalBroadcastReceipt(config: {
 }
 
 function localBroadcastScopeKey(scope: LocalBroadcastScope): string {
-  return `${scope.kind}\0${scope.value}`;
+  return JSON.stringify([scope.kind, scope.value]);
 }
 
 function activeConflictCandidates(
   envelopes: readonly LocalBroadcastEnvelope[],
   now: Date,
 ): readonly LocalBroadcastEnvelope[] {
-  return envelopes.filter((envelope) => envelope.status !== "idle" && !isLocalBroadcastStale(envelope, now));
+  return [...envelopes]
+    .filter((envelope) => envelope.status !== "idle" && !isLocalBroadcastStale(envelope, now))
+    .sort((left, right) => {
+      const agentCompare = left.from.localeCompare(right.from);
+      if (agentCompare !== 0) {
+        return agentCompare;
+      }
+      return left.id.localeCompare(right.id);
+    });
 }
 
 export function detectLocalBroadcastScopeConflicts(
@@ -147,7 +155,10 @@ export function detectLocalBroadcastScopeConflicts(
 
   for (const envelope of activeConflictCandidates(envelopes, now)) {
     const seenInEnvelope = new Set<string>();
-    for (const scope of envelope.scope ?? []) {
+    const scopes = [...(envelope.scope ?? [])].sort((left, right) =>
+      localBroadcastScopeKey(left).localeCompare(localBroadcastScopeKey(right)),
+    );
+    for (const scope of scopes) {
       const key = localBroadcastScopeKey(scope);
       if (seenInEnvelope.has(key)) {
         continue;
@@ -172,7 +183,13 @@ export function detectLocalBroadcastScopeConflicts(
     }
   }
 
-  return conflicts;
+  return [...conflicts].sort((left, right) => {
+    const scopeCompare = localBroadcastScopeKey(left.scope).localeCompare(localBroadcastScopeKey(right.scope));
+    if (scopeCompare !== 0) {
+      return scopeCompare;
+    }
+    return JSON.stringify(left.broadcastIds).localeCompare(JSON.stringify(right.broadcastIds));
+  });
 }
 
 export function validateLocalBroadcastEnvelope(value: unknown): LocalBroadcastValidation {
