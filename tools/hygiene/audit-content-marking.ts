@@ -40,11 +40,11 @@ export function parseContentMark(content: string): ContentMark {
   if (!content.startsWith("---")) return result; // frontmatter must be at top
   const lines = content.split(/\r?\n/);
   for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
+    const line = (lines[i] ?? "").trim();
     if (line === "---") break; // end of the leading frontmatter block
     const m = line.match(/^(nsfw|private)\s*:\s*(true|yes|on)\s*$/i);
     if (m) {
-      const key = m[1].toLowerCase();
+      const key = (m[1] ?? "").toLowerCase();
       if (key === "nsfw") result.nsfw = true;
       if (key === "private") result.private = true;
     }
