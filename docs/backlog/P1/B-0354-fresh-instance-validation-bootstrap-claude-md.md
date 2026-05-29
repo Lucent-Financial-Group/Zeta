@@ -63,3 +63,21 @@ Re-decomp assumes prior "atomic" classification was mistaken (test protocol is i
 - B-0354.3: Document findings + file any gap children; update parent B-0329
 
 Each child: one PR, run `bun` checks + build gate, no broad test execution yet.
+
+## Progress
+
+**B-0354.1 landed (2026-05-29, otto-cli bg-worker):** static structural-validation
+harness skeleton at `tools/bootstrap-validator/validate-bootstrap-claude-md.ts`
+(+ `.test.ts`, 15 tests pass). Checks: CLAUDE.md exists; 6-step bootstrap process
+present (`## 1.`..`## 6.`); `.claude/rules/` auto-load surface non-empty; conciseness
+(soft warn). CLI flags `--json` / `--root` / `--max-lines` / `--help`; exit codes
+0 pass / 1 usage / 3 fail. No Claude spawn (that is B-0354.2/.3).
+
+**Recalibration finding (assume-decomposition-has-mistakes):** the child sketch's
+"CLAUDE.md length <50" bound is empirically wrong — the live bootstrap CLAUDE.md is
+~76 lines and that IS the correct bootstrap form. Hard `<50` would fail a correct
+file. Load-bearing invariant is structural (6-step process + rules auto-load surface),
+so conciseness is a SOFT `--max-lines` warn (default 150), not a hard fail.
+
+Remaining: **B-0354.2** (execute minimal validation), **B-0354.3** (document findings
++ file gap children, update parent B-0329).
