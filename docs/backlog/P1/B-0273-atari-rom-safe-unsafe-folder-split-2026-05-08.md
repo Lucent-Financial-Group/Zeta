@@ -54,6 +54,6 @@ Provenance:
 Implementation-PR (#5874) shipped the code but left this row `status: open`
 — the implementation-doesn't-close-the-row drift pattern that the step-0
 discriminator catches. Mirrors sibling B-0272's pure-drift close (closed
-2026-05-16). Verification: existence-check of all 4 artifacts on `origin/main`
-+ `git merge-base --is-ancestor` confirming #5874's merge commit reachable +
-per-acceptance-criterion read of the tracked READMEs and `roms/.gitignore`.
+2026-05-16). Verification: existence-check of all 4 artifacts on `origin/main`,
+a `git merge-base --is-ancestor` check confirming #5874's merge commit reachable,
+and a per-acceptance-criterion read of the tracked READMEs and `roms/.gitignore`.
