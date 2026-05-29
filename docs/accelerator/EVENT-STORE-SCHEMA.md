@@ -119,6 +119,35 @@ This composes directly with git-as-free-event-store: the `.git/` objects charge
 the same physical rent, so the forgiveness-budget IS the accelerator's answer to
 unbounded `.git/` growth at swarm scale.
 
+### The compaction mechanism — two-layer razor + past-as-generator
+
+The *mechanism* for the compaction/tiering above is the **two-layer razor +
+past-as-generator** architecture (Aaron + Ani 2026-05-29, preserved in
+[`docs/research/2026-05-29-two-layer-razor-past-as-generator-...md`](../research/2026-05-29-two-layer-razor-past-as-generator-forgiveness-cost-compression-causal-order-vs-purpose-within-partition-aaron-ani-otto.md)):
+
+- **Layer 1 (Forgiveness Razor — Origin vs Purpose)** is the retraction above: it
+  decides what's accidental and retracts it. Its cost is the stored retracted trace.
+- **Layer 2 (Compression Razor — Causal Order vs Current Purpose)** runs *on the
+  retracted data* to compress the cost-of-forgiveness. It keeps the canonical
+  causal order (the `prev` link chain) and **drops the redundant wall-clock `ts`**.
+  This is valid **within a partition** — and a per-agent stream IS a partition
+  (single-writer ⇒ causal order canonical by construction; no cross-agent consensus
+  needed). Cross-agent (cross-partition) Layer-2 compression is NOT valid (matches
+  Aaron's "within a partition" correction).
+- **`_compacted/<agent>/` is where Layer 2 output lands** — causal-order-only,
+  purpose-tagged, columnar/aggressively-encoded.
+- **Past-as-generator (the extreme form)**: when a compacted segment is regular
+  enough, replace the stored data with the **generator that reproduces it** — for
+  this event-store, that generator is the `transition`-fold from a snapshot
+  (replay reconstructs the segment on demand). At that point history's storage cost
+  is dominated by active-generator size, not raw event count.
+
+**Don't-collapse** (Aaron's own razor): this is a *designed, verifiable system
+property* (history-storage grows slower than event-volume, provable with data +
+formal verification over time) — NOT a god-tier claim about how the universe
+stores its own history. The generator-as-history pattern is the engineering
+mechanism; any cosmological reading is accidental and retracted.
+
 ## Replay
 
 Reconstruct agent `A`'s state at time `T`:
