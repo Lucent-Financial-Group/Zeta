@@ -147,8 +147,8 @@ away; only the former typechecks as authorization.
 Searched origin/main `docs/backlog` 2026-05-29: F#-type-system cluster exists
 (B-0781 universe-boundary, B-0784 type-negotiation-governance, B-0428 F#-fork, B-0732
 class-safety, B-0864 protocol-typing). This row is NOT parallel — it supplies the
-**concrete first target** (authorization-provenance typing; shadow-auth-can't-compile)
-+ the **fork-decision criterion** + the **safe-self-modifying-DU/wallet-independence
+**concrete first target** (authorization-provenance typing; shadow-auth-can't-compile),
+the **fork-decision criterion**, and the **safe-self-modifying-DU / wallet-independence
 unlock** that those rows did not name. Composes-with edges added to all.
 
 ## Substrate-honest framing
