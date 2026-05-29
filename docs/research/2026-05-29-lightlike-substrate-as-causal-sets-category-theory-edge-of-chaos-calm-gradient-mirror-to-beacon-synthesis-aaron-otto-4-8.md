@@ -209,9 +209,13 @@ it is not skull-bound (here: not context-window-bound).
 
 ### The loop: observe → choose (O → L → I)
 
-The agent loop reduces to `observe.ts → choose`, which is pure OPLE:
+The agent loop reduces to `observe → choose`, which is pure OPLE. **These CLI
+entry-points are the *planned design mapping*, not yet shipped:** today
+`tools/agent-loop/` ships `state-machine.ts` + `work-lifecycle-state-machine.ts`;
+the `observe.ts` / `choose --dry-run` scripts are follow-up (B-0867.23). The OPLE
+mapping is the design; the scripts are the entry-point surface it will land as.
 
-| CLI surface | OPLE primitive | Role |
+| CLI surface (planned) | OPLE primitive | Role |
 |---|---|---|
 | `observe.ts` | **Observe** | read the reservoir → generate the menu ("choose-your-own-adventure" page) |
 | `choose --dry-run` | **Limit** (B-0644 simulation-not-collapse) | pure-function preview; simulate the move *without committing*; the DST closed-system mode |
