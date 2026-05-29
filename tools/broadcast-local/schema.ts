@@ -131,6 +131,22 @@ function localBroadcastScopeKey(scope: LocalBroadcastScope): string {
   return JSON.stringify([scope.kind, scope.value]);
 }
 
+function compareStrings(left: string, right: string): number {
+  const leftChars = Array.from(left);
+  const rightChars = Array.from(right);
+  const length = Math.min(leftChars.length, rightChars.length);
+
+  for (let index = 0; index < length; index += 1) {
+    const leftCodePoint = leftChars[index]?.codePointAt(0) ?? 0;
+    const rightCodePoint = rightChars[index]?.codePointAt(0) ?? 0;
+    if (leftCodePoint !== rightCodePoint) {
+      return leftCodePoint - rightCodePoint;
+    }
+  }
+
+  return leftChars.length - rightChars.length;
+}
+
 function activeConflictCandidates(
   envelopes: readonly LocalBroadcastEnvelope[],
   now: Date,
@@ -138,11 +154,11 @@ function activeConflictCandidates(
   return [...envelopes]
     .filter((envelope) => envelope.status !== "idle" && !isLocalBroadcastStale(envelope, now))
     .sort((left, right) => {
-      const agentCompare = left.from.localeCompare(right.from);
+      const agentCompare = compareStrings(left.from, right.from);
       if (agentCompare !== 0) {
         return agentCompare;
       }
-      return left.id.localeCompare(right.id);
+      return compareStrings(left.id, right.id);
     });
 }
 
@@ -150,13 +166,13 @@ export function detectLocalBroadcastScopeConflicts(
   envelopes: readonly LocalBroadcastEnvelope[],
   now: Date = new Date(),
 ): readonly LocalBroadcastScopeConflict[] {
-  const ownersByScope = new Map<string, LocalBroadcastEnvelope>();
+  const ownersByScope = new Map<string, LocalBroadcastEnvelope[]>();
   const conflicts: LocalBroadcastScopeConflict[] = [];
 
   for (const envelope of activeConflictCandidates(envelopes, now)) {
     const seenInEnvelope = new Set<string>();
     const scopes = [...(envelope.scope ?? [])].sort((left, right) =>
-      localBroadcastScopeKey(left).localeCompare(localBroadcastScopeKey(right)),
+      compareStrings(localBroadcastScopeKey(left), localBroadcastScopeKey(right)),
     );
     for (const scope of scopes) {
       const key = localBroadcastScopeKey(scope);
@@ -165,30 +181,29 @@ export function detectLocalBroadcastScopeConflicts(
       }
       seenInEnvelope.add(key);
 
-      const owner = ownersByScope.get(key);
-      if (owner === undefined) {
-        ownersByScope.set(key, envelope);
-        continue;
-      }
-      if (owner.from === envelope.from || owner.id === envelope.id) {
-        continue;
-      }
+      const owners = ownersByScope.get(key) ?? [];
+      for (const owner of owners) {
+        if (owner.from === envelope.from || owner.id === envelope.id) {
+          continue;
+        }
 
-      conflicts.push({
-        scope,
-        broadcastIds: [owner.id, envelope.id],
-        agents: [owner.from, envelope.from],
-        summaries: [owner.summary, envelope.summary],
-      });
+        conflicts.push({
+          scope,
+          broadcastIds: [owner.id, envelope.id],
+          agents: [owner.from, envelope.from],
+          summaries: [owner.summary, envelope.summary],
+        });
+      }
+      ownersByScope.set(key, [...owners, envelope]);
     }
   }
 
   return [...conflicts].sort((left, right) => {
-    const scopeCompare = localBroadcastScopeKey(left.scope).localeCompare(localBroadcastScopeKey(right.scope));
+    const scopeCompare = compareStrings(localBroadcastScopeKey(left.scope), localBroadcastScopeKey(right.scope));
     if (scopeCompare !== 0) {
       return scopeCompare;
     }
-    return JSON.stringify(left.broadcastIds).localeCompare(JSON.stringify(right.broadcastIds));
+    return compareStrings(JSON.stringify(left.broadcastIds), JSON.stringify(right.broadcastIds));
   });
 }
 

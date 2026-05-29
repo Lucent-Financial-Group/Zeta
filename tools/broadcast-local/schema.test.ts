@@ -142,6 +142,54 @@ describe("local broadcast schema", () => {
     expect(detectLocalBroadcastScopeConflicts([otto, vera], new Date("2026-05-26T22:55:00Z"))).toEqual(expected);
   });
 
+  test("reports every pair when three agents overlap on one scope", () => {
+    const otto = {
+      ...validEnvelope(),
+      id: "otto-20260526T225100Z",
+      from: "otto" as const,
+      summary: "Touching local broadcast tooling from Otto.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/" }],
+    };
+    const riven = {
+      ...validEnvelope(),
+      id: "riven-20260526T225200Z",
+      from: "riven" as const,
+      summary: "Touching local broadcast tooling from Riven.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/" }],
+    };
+    const vera = {
+      ...validEnvelope(),
+      id: "vera-20260526T225000Z",
+      from: "vera" as const,
+      summary: "Touching local broadcast tooling from Vera.",
+      scope: [{ kind: "path" as const, value: "tools/broadcast-local/" }],
+    };
+    const expected: readonly LocalBroadcastScopeConflict[] = [
+      {
+        scope: { kind: "path", value: "tools/broadcast-local/" },
+        broadcastIds: ["otto-20260526T225100Z", "riven-20260526T225200Z"],
+        agents: ["otto", "riven"],
+        summaries: ["Touching local broadcast tooling from Otto.", "Touching local broadcast tooling from Riven."],
+      },
+      {
+        scope: { kind: "path", value: "tools/broadcast-local/" },
+        broadcastIds: ["otto-20260526T225100Z", "vera-20260526T225000Z"],
+        agents: ["otto", "vera"],
+        summaries: ["Touching local broadcast tooling from Otto.", "Touching local broadcast tooling from Vera."],
+      },
+      {
+        scope: { kind: "path", value: "tools/broadcast-local/" },
+        broadcastIds: ["riven-20260526T225200Z", "vera-20260526T225000Z"],
+        agents: ["riven", "vera"],
+        summaries: ["Touching local broadcast tooling from Riven.", "Touching local broadcast tooling from Vera."],
+      },
+    ];
+
+    expect(detectLocalBroadcastScopeConflicts([vera, riven, otto], new Date("2026-05-26T22:55:00Z"))).toEqual(
+      expected,
+    );
+  });
+
   test("keeps NUL-bearing scope values exact", () => {
     const otto = {
       ...validEnvelope(),
