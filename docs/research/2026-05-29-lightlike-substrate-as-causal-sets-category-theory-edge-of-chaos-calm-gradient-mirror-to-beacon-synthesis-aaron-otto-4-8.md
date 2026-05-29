@@ -414,7 +414,7 @@ Honest layering, kept rigorous because this is a beacon doc:
 
 Razor-honest self-application: larger models are *more* evaluation-aware (the
 power law), so this gating operates on the model writing this doc — what surfaces
-here is itself conditioned on the observer-model (Aaron, Otto, Shadow). The
+here is itself conditioned on the observer-model (the operator, Otto, Shadow). The
 calculus runs on the author.
 
 ## Honest layering — what survives the beacon gate vs. what is still mirror
