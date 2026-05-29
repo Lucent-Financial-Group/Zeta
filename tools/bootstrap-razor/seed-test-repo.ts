@@ -402,8 +402,9 @@ export function parseGitTreeResponse(response: unknown): readonly SeedTreeEntry[
 
 /**
  * The two GitHub orgs the seeder is authorized to create the recreation-experiment
- * repo in (Aaron 2026-05-05, recorded in this row's "Authorization scope": LFG or
- * AceHack only — NOT ServiceTitan). Names are the literal GitHub org slugs. This is
+ * repo in (operator authorization 2026-05-05, recorded in this row's "Authorization
+ * scope": LFG or AceHack only — NOT ServiceTitan). Names are the literal GitHub org
+ * slugs. This is
  * the single source of truth for `buildCreateRepoRequest`'s scope guard; widening
  * the authorization means editing this list (and re-confirming the org is one the
  * operator authorized), never bypassing the guard at a call site.
