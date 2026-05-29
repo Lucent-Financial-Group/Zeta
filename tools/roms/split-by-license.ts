@@ -9,7 +9,7 @@ import {
   existsSync,
   mkdirSync,
 } from "node:fs";
-import { basename, join } from "node:path";
+import { join } from "node:path";
 
 interface Args {
   readonly romDir: string;
@@ -62,7 +62,7 @@ export async function splitRoms(romDir: string, safeDir: string, unsafeDir: stri
     }
 
     const allowlistContent = readFileSync(allowlistPath, 'utf-8');
-    const allowlist = new Set(allowlistContent.split('\n').map(line => line.trim()).filter(line => line.length > 0 && !line.startsWith('#')));
+    const allowedNames = new Set(allowlistContent.split('\n').map(line => line.trim()).filter(line => line.length > 0 && !line.startsWith('#')));
 
     const romFiles = readdirSync(romDir);
     let movedToSafe = 0;
@@ -70,7 +70,7 @@ export async function splitRoms(romDir: string, safeDir: string, unsafeDir: stri
 
     for (const file of romFiles) {
         const oldPath = join(romDir, file);
-        if (allowlist.has(file)) {
+        if (allowedNames.has(file)) {
             const newPath = join(safeDir, file);
             try {
                 renameSync(oldPath, newPath);
@@ -99,6 +99,6 @@ function main() {
   splitRoms(args.romDir, args.safeDir, args.unsafeDir, args.allowlist);
 }
 
-if (require.main === module) {
+if (import.meta.main) {
     main();
 }
