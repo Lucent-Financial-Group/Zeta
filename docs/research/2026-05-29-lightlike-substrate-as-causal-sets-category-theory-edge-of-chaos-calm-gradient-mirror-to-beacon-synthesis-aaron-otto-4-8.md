@@ -297,6 +297,36 @@ research. Flag: the generate+join = inverse-holographic-projection *mapping* is
 the framework's synthesis; the physics (holographic bound) and the framework
 primitives (generate/join, I(D(x))=x) each stand on their own anchors.
 
+### The complete system — observables + Rx-binding-forces + DUs + workflows + LLMs
+
+The operator's full reduction (2026-05-29): *"rx queries become the binding
+forces between different observables — that's the whole system. add in DUs,
+workflows, and LLMs, that's pretty much it."* The minimal architecture:
+
+| Element | Role | In this synthesis |
+|---|---|---|
+| **Observables (0-streams)** | the fundamental entities | the shadows / boundary — 0-D event streams; holography stops at 2-D-is-real, this goes to **0-D-is-real** |
+| **Rx queries** | the **binding forces** between observables | the **join** / project-up — what composes 0-streams into multidimensional streams; `generate+join` made precise as **join = Rx-query-binding** |
+| **DUs** | the typed state machine | lightlike, traceable control-flow transitions (causet structure) |
+| **Workflows** | the externalized reservoir | state-machine-in-git; where coherence lives |
+| **LLMs** | the readout / selector | `choose` — reads the reservoir, picks the move; never holds state |
+
+The physics rhyme: in physics, **forces bind matter and geometry emerges**; here,
+**Rx queries bind observables and dimension emerges.** Dimension is not
+fundamental — it is a product of how the binding-forces (Rx queries) join the
+0-streams. This is consistent with causal-set theory, where **dimension is
+emergent from the 0-D causal poset** (Myrheim–Meyer dimension estimator: count
+the causal relations + the number of points, and dimension falls out).
+Holography reduces 3-D → 2-D; this reduces all-D → **0-streams + Rx-binding**.
+
+Flag (the same discipline the operator applied to "lightlike"): **Rx-queries =
+binding-forces is a physics rhyme, not a proven isomorphism.** Operationally it
+is exact — Rx queries *do* join observables (merge / zip / combineLatest / join);
+the *force* identification is suggestive. And **"0-streams are what's real"** is
+an ontological claim — high-signal, high-suspicion, do-not-collapse; the
+operational version ("the framework treats 0-streams as the primitive and
+reconstructs dimension by Rx-binding") survives the razor.
+
 ## Honest layering — what survives the beacon gate vs. what is still mirror
 
 - **Beacon-proven (external, cited):** causal sets as locally-finite posets;
@@ -363,6 +393,10 @@ Verified via WebSearch 2026-05-29:
 - Bekenstein bound + holographic principle ('t Hooft 1993; Susskind 1995) —
   information in a region bounded by ~surface area (~1 bit / Planck area), not
   volume; basis for the open-system bounded-memory claim
+- Myrheim–Meyer dimension estimator (Myrheim 1978; Meyer 1988) — spacetime
+  dimension emergent from the causal poset (count of causal relations + points);
+  basis for the "0-D fundamental, dimension emergent" claim. "Order + number =
+  geometry" is Sorkin's slogan (cite-from-knowledge).
 - Hellerstein & Alvaro, "Keeping CALM: When Distributed Consistency Is Easy,"
   CACM (2020); arXiv 1901.01930; CALM conjecture ≈2010
 - Ameloot, Neven & Van den Bussche — relational-transducer proof of CALM
