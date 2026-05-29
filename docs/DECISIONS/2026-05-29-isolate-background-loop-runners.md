@@ -13,7 +13,7 @@ Background loop runners (e.g. macOS launchd services executing `lior-loop-tick.t
 
 1. When another agent or the human maintainer checks out an older branch (before a safety patch is merged to `main`) in the primary workspace, the file on disk at `.gemini/bin/lior-loop-tick.ts` immediately reverts to its older, unhardened code.
 2. The periodic launchd runner wakes up, parses the older unhardened script from disk, and because it lacks isolated worktree/clone protection, it executes git operations directly on the primary root directory.
-3. This dirty up the shared human view, swaps active branches, and pollutes the primary git log.
+3. This dirties the shared human view, swaps active branches, and pollutes the primary git log.
 
 To permanently break this regression loop, we must establish complete physical isolation between the daemon scripts and the primary root checkout.
 
