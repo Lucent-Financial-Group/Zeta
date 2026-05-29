@@ -6,7 +6,10 @@ import fs from 'fs';
 import path from 'path';
 
 const CLAIM_REGEX = /`([^`]+)`\s+(is equivalent to|is an alias for|is the same as)\s+`([^`]+)`/gi;
-const IGNORE_DIRS = ['node_modules', '.git', '.vscode', '.idea', 'dist', 'build'];
+// `upstreams` excludes references/upstreams/ — 85+ full clones of external
+// projects; walking it takes minutes and returns mostly noise (per
+// .claude/rules/references-upstreams-not-our-code-search-excludes.md).
+const IGNORE_DIRS = ['node_modules', '.git', '.vscode', '.idea', 'dist', 'build', 'upstreams'];
 const INCLUDE_EXTS = ['.md', '.mdx'];
 
 interface Match {
@@ -37,7 +40,10 @@ function searchInFile(filePath: string): Match[] {
       }
     }
   } catch (error) {
-    // Ignore errors
+    // Surface read failures to stderr so silently-skipped files are visible
+    // (a swallowed read produces a false negative — "no claims" when the file
+    // was actually unreadable).
+    console.error(`warn: could not read ${filePath}: ${(error as Error).message}`);
   }
 
   return matches;
@@ -65,7 +71,7 @@ function searchInDirectory(dirPath: string): Match[] {
 
 function main() {
   const searchDir = process.argv[2] || process.cwd();
-  console.log(`Searching for semantic equivalence claims in ${searchDir}...\\n`);
+  console.log(`Searching for semantic equivalence claims in ${searchDir}...\n`);
 
   const allMatches = searchInDirectory(searchDir);
 
@@ -74,11 +80,13 @@ function main() {
     return;
   }
 
-  console.log(`Found ${allMatches.length} potential claims:\\n`);
+  console.log(`Found ${allMatches.length} potential claims:\n`);
   for (const match of allMatches) {
     console.log(`- ${match.file}:${match.line}`);
     console.log(`  > ${match.claim}`);
   }
 }
 
-main();
+if (import.meta.main) {
+  main();
+}
