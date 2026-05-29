@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: "Fresh-instance validation test for bootstrap CLAUDE.md"
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-29
 depends_on:
   - B-0353
 decomposition: multi-child (re-decomp pass 1, smallest safe slice)
@@ -80,4 +80,4 @@ file. Load-bearing invariant is structural (6-step process + rules auto-load sur
 so conciseness is a SOFT `--max-lines` warn (default 150), not a hard fail.
 
 Remaining: **B-0354.2** (execute minimal validation), **B-0354.3** (document findings
-+ file gap children, update parent B-0329).
+and file gap children, update parent B-0329).

@@ -132,7 +132,10 @@ export function checkRulesAutoLoad(ruleFileNames: string[]): CheckResult {
  * #1/#2; here we only flag bloat past the soft ceiling.
  */
 export function checkConciseness(claudeMd: string, maxLines: number): CheckResult {
-  const lineCount = claudeMd.split("\n").length;
+  // Normalize CRLF and strip a single trailing newline so the line count
+  // is deterministic — a POSIX trailing newline must not over-count by 1
+  // and trip a false `warn` when CLAUDE.md is exactly `maxLines` lines.
+  const lineCount = claudeMd.replace(/\r\n/g, "\n").replace(/\n$/, "").split("\n").length;
   return lineCount <= maxLines
     ? {
         id: "conciseness",
@@ -207,12 +210,18 @@ function parseArgs(argv: string[]): Args | { error: string } {
     else if (a === "--help" || a === "-h") args.help = true;
     else if (a === "--root") {
       const v = argv[++i];
-      if (!v) return { error: "--root requires a path" };
+      // Reject a missing value AND a dash-prefixed next token (e.g.
+      // `--root --json`) so a usage error stays exit 1 rather than
+      // validating against a bogus `--json` root.
+      if (!v || v.startsWith("-")) return { error: "--root requires a path" };
       args.root = v;
     } else if (a === "--max-lines") {
       const v = argv[++i];
+      // Same dash-prefix guard; require a positive INTEGER (reject floats
+      // like `1.5` which `Number()` would otherwise accept).
+      if (!v || v.startsWith("-")) return { error: "--max-lines requires a positive integer" };
       const n = Number(v);
-      if (!Number.isFinite(n) || n <= 0) return { error: "--max-lines requires a positive integer" };
+      if (!Number.isInteger(n) || n <= 0) return { error: "--max-lines requires a positive integer" };
       args.maxLines = n;
     } else {
       return { error: `unknown argument: ${a}` };
