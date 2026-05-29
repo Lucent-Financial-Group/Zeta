@@ -813,7 +813,7 @@ export function parseSeedRefUpdateResponse(response: unknown): { readonly sha: s
   }
   const { object } = response as Record<string, unknown>;
   if (typeof object !== "object" || object === null || Array.isArray(object)) {
-    return "ref-update response missing object `object`";
+    return "ref-update response missing object field `object`";
   }
   const { sha } = object as Record<string, unknown>;
   if (typeof sha !== "string") return "ref-update response missing string `object.sha`";
