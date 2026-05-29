@@ -31,10 +31,25 @@ export interface HealthReport {
   recommendedAction: string | null;
 }
 
+export type LaneRunwayLane =
+  | "codex"
+  | "otto"
+  | "lior"
+  | "alexa"
+  | "riven"
+  | "other";
+
+export interface LaneRunwaySnapshot {
+  openPrBranches: string[];
+  activeClaimBranches: string[];
+  healthyServices?: Partial<Record<Exclude<LaneRunwayLane, "other">, boolean>>;
+}
+
 type ToolCommand = "bun" | "gh" | "git";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
+const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 
 function run(cmd: ToolCommand, args: string[]): { ok: boolean; stdout: string } {
   const r = spawnSync(cmd, args, {
@@ -43,6 +58,89 @@ function run(cmd: ToolCommand, args: string[]): { ok: boolean; stdout: string } 
     timeout: 30_000,
   });
   return { ok: r.status === 0, stdout: (r.stdout ?? "").trim() };
+}
+
+export function classifyBranchLane(branchName: string): LaneRunwayLane {
+  const branch = branchName.trim().replace(/^origin\//, "");
+
+  if (/^(codex\/|claim\/codex-)/.test(branch)) return "codex";
+  if (
+    /^(otto\/|otto-cli\/|otto-bg-worker\/|otto-desktop\/|otto-vscode\/|claim\/otto-)/.test(
+      branch,
+    )
+  ) {
+    return "otto";
+  }
+  if (/^(lior\/|lior-|claim\/lior-)/.test(branch)) return "lior";
+  if (/^(alexa\/|kiro\/|claim\/alexa-)/.test(branch)) return "alexa";
+  if (/^(riven\/|riven-|claim\/riven-)/.test(branch)) return "riven";
+
+  return "other";
+}
+
+export function classifyLaneRunway(
+  snapshot: LaneRunwaySnapshot,
+): HealthSignal[] {
+  const openPrCounts = new Map<LaneRunwayLane, number>();
+  const claimCounts = new Map<LaneRunwayLane, number>();
+
+  for (const lane of [...PRIMARY_LANES, "other"] as LaneRunwayLane[]) {
+    openPrCounts.set(lane, 0);
+    claimCounts.set(lane, 0);
+  }
+
+  for (const branch of snapshot.openPrBranches) {
+    const lane = classifyBranchLane(branch);
+    openPrCounts.set(lane, (openPrCounts.get(lane) ?? 0) + 1);
+  }
+
+  for (const branch of snapshot.activeClaimBranches) {
+    const lane = classifyBranchLane(branch);
+    claimCounts.set(lane, (claimCounts.get(lane) ?? 0) + 1);
+  }
+
+  const signals = PRIMARY_LANES.map((lane): HealthSignal => {
+    const openPrs = openPrCounts.get(lane) ?? 0;
+    const claims = claimCounts.get(lane) ?? 0;
+    const serviceHealthy = snapshot.healthyServices?.[lane];
+
+    if (openPrs > 0 || claims > 0) {
+      return {
+        surface: "lane-runway",
+        level: "ok",
+        message: `${lane}: active (${openPrs} open PR(s), ${claims} active claim(s))`,
+      };
+    }
+
+    if (serviceHealthy === false) {
+      return {
+        surface: "lane-runway",
+        level: "warning",
+        message: `${lane}: no open PRs or claims and service unhealthy`,
+        action: `inspect ${lane} background service before treating lane as quiet`,
+      };
+    }
+
+    return {
+      surface: "lane-runway",
+      level: "ok",
+      message: `${lane}: quiet runway (0 open PRs, 0 active claims)`,
+    };
+  });
+
+  const otherOpenPrs = openPrCounts.get("other") ?? 0;
+  const otherClaims = claimCounts.get("other") ?? 0;
+  if (otherOpenPrs > 0 || otherClaims > 0) {
+    signals.push({
+      surface: "lane-runway",
+      level: "warning",
+      message: `other: ${otherOpenPrs} open PR(s), ${otherClaims} active claim(s) outside named lanes`,
+      action:
+        "classify owner or assign an explicit lane before treating as runway",
+    });
+  }
+
+  return signals;
 }
 
 function checkPRQueue(): HealthSignal[] {

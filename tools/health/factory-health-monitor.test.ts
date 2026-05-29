@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import {
   buildHealthReport,
+  classifyBranchLane,
+  classifyLaneRunway,
   runHealthCheck,
   type HealthSignal,
 } from "./factory-health-monitor";
@@ -14,6 +16,65 @@ function getReport(): ReturnType<typeof runHealthCheck> {
 }
 
 describe("factory-health-monitor", () => {
+  test("classifyBranchLane maps known branch prefixes to lanes", () => {
+    expect(classifyBranchLane("codex/health-fix")).toBe("codex");
+    expect(classifyBranchLane("origin/claim/codex-loop-20260529")).toBe(
+      "codex",
+    );
+    expect(classifyBranchLane("otto-cli/b0355-bootstrap")).toBe("otto");
+    expect(classifyBranchLane("otto-bg-worker/tick-shard")).toBe("otto");
+    expect(classifyBranchLane("lior-pr-cleanup")).toBe("lior");
+    expect(classifyBranchLane("kiro/bootstrap")).toBe("alexa");
+    expect(classifyBranchLane("riven-loop-health")).toBe("riven");
+    expect(classifyBranchLane("chore/unowned-work")).toBe("other");
+  });
+
+  test("classifyLaneRunway distinguishes active, quiet, and unhealthy lanes", () => {
+    const signals = classifyLaneRunway({
+      openPrBranches: ["codex/source-patch", "otto-cli/bootstrap"],
+      activeClaimBranches: ["claim/codex-loop-20260529"],
+      healthyServices: {
+        codex: true,
+        otto: true,
+        lior: true,
+        alexa: true,
+        riven: false,
+      },
+    });
+
+    expect(signals).toContainEqual({
+      surface: "lane-runway",
+      level: "ok",
+      message: "codex: active (1 open PR(s), 1 active claim(s))",
+    });
+    expect(signals).toContainEqual({
+      surface: "lane-runway",
+      level: "ok",
+      message: "lior: quiet runway (0 open PRs, 0 active claims)",
+    });
+    expect(signals).toContainEqual({
+      surface: "lane-runway",
+      level: "warning",
+      message: "riven: no open PRs or claims and service unhealthy",
+      action: "inspect riven background service before treating lane as quiet",
+    });
+  });
+
+  test("classifyLaneRunway warns about branches outside named lanes", () => {
+    const signals = classifyLaneRunway({
+      openPrBranches: ["chore/no-owner"],
+      activeClaimBranches: ["claim/task-unowned-work"],
+    });
+
+    expect(signals).toContainEqual({
+      surface: "lane-runway",
+      level: "warning",
+      message: "other: 1 open PR(s), 1 active claim(s) outside named lanes",
+      action:
+        "classify owner or assign an explicit lane before treating as runway",
+    });
+  });
+
   test("buildHealthReport summarizes deterministic signals", () => {
     const signals: HealthSignal[] = [
       { surface: "pr-queue", level: "ok", message: "ready" },
