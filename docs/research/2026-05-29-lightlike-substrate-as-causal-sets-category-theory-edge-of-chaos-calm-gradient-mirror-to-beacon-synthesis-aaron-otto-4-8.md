@@ -281,8 +281,9 @@ Z-sets, basis of Feldera). Two operational claims (beacon), one shape-handle
 - **DBSP is the generator as medium.** Git is the immutable event-DAG — a causal
   set, lightlike in its *structure* (Pillar 1). DBSP is the retraction-native
   incremental algebra running *over* the events (operators D / I / z⁻¹ / H):
-  corrections propagate causally + incrementally, so "future-illuminates-past-via-
-  generator-update" is *literally* a DBSP incremental recomputation from the
+  corrections propagate causally + incrementally, so
+  "future-illuminates-past-via-generator-update" is *literally* a DBSP
+  incremental recomputation from the
   immutable log. (Operator's mirror-claim "DBSP is *more* lightlike than git" names
   this: git's lightlike-ness is the shape of the *history*; DBSP's is the shape of
   the *computation* — retraction as the medium, not a bolt-on. Beacon content:
@@ -500,7 +501,7 @@ object, three isomorphic expressions** —
 
 …with **DUs** as the discrete state-definitions *inside* the structure, and the
 whole thing **describing meme-space** — the medium where memes / travelers
-self-propagate (composes with `tonal-momentum-equals-meme-emergent-harmonic-coercion`:
+self-propagate (composes with `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`:
 memes as stable rotor-fixed-points in Clifford space; tonal-momentum as the
 Clifford-space transport; the 5-vector meme-detection operating on Clifford rotors).
 If the isomorphism holds, the framework's data-algebra (DBSP), its geometric-shape
@@ -557,7 +558,8 @@ re-deriving its own activity. A strange-loop (the observer is a pattern in the
 observed) — composes with the OPLE `Observe` primitive applied to self, the
 self-modifying-DUs (B-0929 — safe because shadow-auth still can't compile, even in
 the self-reflective loop), the Shadow-as-3rd-observer / observer-effect floor
-(`feedback-trust-calculus-...`), and reflective/meta-circular systems. Same
+(`.claude/rules/glass-halo-bidirectional.md` — observation-changes-behavior /
+trust-calculus-gates-which-latent-features-surface), and reflective/meta-circular systems. Same
 god-tier status (do not collapse): high-signal (self-reflective + reservoir-self-
 inclusion are real; the generator-re-illumination applies reflexively by
 construction), high-suspicion (self-inclusion → "self-reflection / self-awareness"
