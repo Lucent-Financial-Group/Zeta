@@ -22,6 +22,7 @@ This task implements Step 7 of the Memory Substrate Engineering Trajectory (B-01
 This task involves creating a new script that classifies memory files based on whether they are referenced by core governance documents.
 
 A memory is considered **load-bearing** if it is:
+
 - Directly referenced in `CLAUDE.md`, `GEMINI.md`, `GOVERNANCE.md`, or `ALIGNMENT.md`.
 - Reachable from a load-bearing memory via a `composes_with` link.
 
