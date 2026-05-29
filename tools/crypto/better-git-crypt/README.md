@@ -82,12 +82,12 @@ When operator authorizes Phase 2:
 8. Wire `files/textconv.ts` for `git textconv` filter (diff-readable ciphertext)
 9. Optional: ship as standalone npm package OR keep internal to tools/
 
-## Phase 2 operator decisions (Aaron 2026-05-29)
+## Phase 2 operator decisions (2026-05-29)
 
 Operator-authorized Phase 2, with four decisions settled + a sequencing directive
 (*"do what's easy first and expand; all those other opens should be backlogged and
 picked up based on our audience"*). Process gate alongside: **KATs against Noble's
-vectors, plus Soraya (formal-verification) and Nazar (security-ops) review of the
+vectors, plus formal-verification and security-ops review of the
 envelope and key-handling, BEFORE it holds anything real** (crypto-don't-rush).
 
 | Decision | Choice | Notes |
@@ -116,11 +116,11 @@ Most deferred opens are **already backlogged** as B-0883 sub-rows — verify bef
 | Metadata (filename / commit-msg) encryption | B-0883.5 | privacy-completeness |
 | Budget-gating (encryption-as-earned) | B-0883.16 / B-0646 | Agora economy |
 | Readable-ciphertext format / textconv | B-0883.17 | reviewers / glass-halo |
-| Agent-private encrypted state | B-0885 | Otto, then other AIs, Addison-ASAP |
+| Agent-private encrypted state | B-0885 | factory agents first, then co-maintainer ASAP |
 | Encryption thermal-cost | B-0906 | thermodynamic substrate |
 
 **Gaps to file** (the two decisions that lack a dedicated row): **N-of-M social recovery
-infra** (audience: Aaron / preserve-forever) and **tier-tagging + weapon-face-uncreated
+infra** (audience: operator / preserve-forever) and **tier-tagging + weapon-face-uncreated
 guard** (audience: safety-floor). These are the only new rows the decisions require.
 
 ## Composes-with substrate
@@ -132,7 +132,7 @@ guard** (audience: safety-floor). These are the only new rows the decisions requ
 - [B-0883.5](../../../docs/backlog/P3/B-0883.5-metadata-encryption-filename-and-commit-message-follow-up-content-only-for-v1-per-operator-2026-05-28.md) — metadata encryption follow-up (content-only v1)
 - [B-0883.16](../../../docs/backlog/P1/B-0883.16-glass-halo-open-by-default-encryption-as-earned-via-agora-v6-budget-not-encrypt-everything-aaron-2026-05-28.md) — glass-halo open-by-default
 - [B-0883.17](../../../docs/backlog/P2/B-0883.17-plaintext-readable-ciphertext-format-research-base64-cbor-json-per-line-fpe-encrypted-yaml-aaron-2026-05-28.md) — plaintext-readable ciphertext format research
-- [B-0885](../../../docs/backlog/P1/B-0885-agent-private-encrypted-state-otto-first-then-other-ais-asap-aaron-2026-05-28.md) — agent private encrypted state (Otto + Addison ASAP consumer)
+- [B-0885](../../../docs/backlog/P1/B-0885-agent-private-encrypted-state-otto-first-then-other-ais-asap-aaron-2026-05-28.md) — agent private encrypted state (factory-agent + co-maintainer ASAP consumer)
 - [B-0906](../../../docs/backlog/P3/B-0906-encryption-thermal-cost-layer-above-landauer-floor-two-axis-substrate-classification-aaron-otto-2026-05-28.md) — encryption-thermal-cost two-axis classification
 - [B-0892](../../../docs/backlog/P1/B-0892-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) — three-lanes-concurrent (this advances the encryption lane)
 - [B-0623](../../../docs/backlog/P2/) — Adinkras-ECC seed source future
