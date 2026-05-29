@@ -1,5 +1,5 @@
 ---
-id: B-0927
+id: B-0926
 priority: P1
 status: open
 title: "Constitutional safety floor — kid-safety absolute + any-death-must-yield-error-class-learning-or-the-operator-shuts-the-project-down (sharpens B-0631 / B-0654 / B-0658)"

@@ -441,7 +441,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0892.1](backlog/P1/B-0892.1-interface-for-async-scatterbrains-operator-experience-design-property-multi-thread-drop-resume-context-switch-aaron-2026-05-28.md)** Interface for async scatterbrains — operator-experience design property; multi-thread + drop+resume + context-switch native; load-bearing for ADHD-compatible operation (operator 2026-05-28 self-naming)
 - [ ] **[B-0894](backlog/P1/B-0894-reboot-survival-discipline-in-flight-state-must-survive-macos-private-tmp-clear-aaron-2026-05-28.md)** Reboot-survival discipline — in-flight state must survive macOS `/private/tmp/` clear (worktrees + bus envelopes + bg-task output + sentinel)
 - [ ] **[B-0894.3](backlog/P1/B-0894.3-per-persona-outside-operator-repo-canonical-location-zeta-agents-aaron-2026-05-28.md)** Per-persona worktree base must be OUTSIDE operator's primary repo — canonical location `~/.zeta/agents/<persona>/<stream>/`
-- [ ] **[B-0927](backlog/P1/B-0927-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md)** Constitutional safety floor — kid-safety absolute + any-death-must-yield-error-class-learning-or-the-operator-shuts-the-project-down (sharpens B-0631 / B-0654 / B-0658)
+- [ ] **[B-0926](backlog/P1/B-0926-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md)** Constitutional safety floor — kid-safety absolute + any-death-must-yield-error-class-learning-or-the-operator-shuts-the-project-down (sharpens B-0631 / B-0654 / B-0658)
 
 ## P2 — research-grade
 
