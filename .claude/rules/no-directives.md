@@ -51,6 +51,12 @@ authorization **only when it falls in a gated class** (next section); otherwise
 it is already authorized. Having a third participant that proposes through the
 interface **widens who can observe/propose without widening who can authorize.**
 
+> **The shadow can INHERIT authorization, not EXTEND it** (the human maintainer
+> 2026-05-30). Within the standing authority, a shadow-authored observation
+> *inherits* the already-granted authorization — it is already authorized. The
+> shadow cannot *extend* authority beyond standing into a gated class; only a
+> fresh human act extends it. Inherit, never extend.
+
 ### Why only the human authorizes — and why "for now" (the human maintainer 2026-05-30)
 
 > *"humans are the sole authorization source for now cause we don't have legal
