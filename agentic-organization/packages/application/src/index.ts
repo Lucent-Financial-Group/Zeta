@@ -42,6 +42,14 @@ export {
   type HermesReactionPlanActionExecutorDeps,
 } from "./hermes-reaction-plan-action-executor.ts";
 export {
+  createFirstLegalOptionComposer,
+  decideReactionAction,
+  deterministicRunIdForAction,
+  summarizeReactionDecision,
+  type DecideReactionActionInput,
+  type ReactionDecisionSummary,
+} from "./reaction-decision.ts";
+export {
   createOrganizationReactionPlanActionExecutor,
   type CreateOrganizationReactionPlanActionExecutorInput,
   type EnsureWorkItemPort,

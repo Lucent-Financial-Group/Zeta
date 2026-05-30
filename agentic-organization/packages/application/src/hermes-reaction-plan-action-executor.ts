@@ -24,6 +24,13 @@ import {
   type ReactionPlanActionExecutionResult,
   type ReactionPlanActionExecutorPort,
 } from "../../runtime/src/index.ts";
+import type { EphemeralComposerPort } from "./observe.ts";
+import {
+  createFirstLegalOptionComposer,
+  decideReactionAction,
+  summarizeReactionDecision,
+  type ReactionDecisionSummary,
+} from "./reaction-decision.ts";
 import { runWorkItemThroughHermes, type AgentHeartbeatWriter, type WorkItemRunRequest } from "./orchestrate-run.ts";
 
 export type HermesReactionPlanActionExecutorDeps = {
@@ -34,6 +41,14 @@ export type HermesReactionPlanActionExecutorDeps = {
   agentHeartbeatWriter: AgentHeartbeatWriter;
   agentHeartbeatDeadlineMs: number;
   generateId: (prefix: string) => string;
+  /**
+   * The agent's decision intelligence. Defaults to the deterministic
+   * first-legal-option policy; a real LLM/sandbox backend implements the same
+   * EphemeralComposerPort and swaps in here without touching any other wiring.
+   */
+  composer?: EphemeralComposerPort;
+  /** clock for the decision readout; defaults to wall-clock. */
+  now?: () => string;
 };
 
 export function createHermesReactionPlanActionExecutor(
@@ -44,7 +59,26 @@ export function createHermesReactionPlanActionExecutor(
       action: ReactionPlanAction,
       context: ReactionPlanActionExecutionContext,
     ): Promise<ReactionPlanActionExecutionResult> => {
-      const request = mapActionToRunRequest(action, context, deps.generateId);
+      // The agent makes a REAL decision: the deterministic kernel computes the
+      // legal options; the composer chooses among them. A decision the kernel
+      // can't legalize fails the run honestly (retryable) — no fabricated work.
+      const decision = decideReactionAction({
+        action,
+        composer: deps.composer ?? createFirstLegalOptionComposer(),
+        now: deps.now ?? (() => new Date().toISOString()),
+      });
+      const summary = summarizeReactionDecision(decision);
+      if (summary.kind === "feedback") {
+        return {
+          status: ReactionPlanExecutionStatus.Failed,
+          failure: {
+            message: `agent could not decide a legal move: ${summary.feedback.reason} - ${summary.feedback.message}`,
+            retryable: true,
+          },
+        };
+      }
+
+      const request = mapActionToRunRequest(action, context, deps.generateId, summary);
 
       const result = await runWorkItemThroughHermes(request, {
         hermes: deps.createHermesRuntime(),
@@ -57,7 +91,7 @@ export function createHermesReactionPlanActionExecutor(
         return {
           status: ReactionPlanExecutionStatus.Succeeded,
           result: {
-            message: `agent run ${result.run.runId} handled ${action.actionType} for work item ${action.workItemId}`,
+            message: `agent run ${result.run.runId} ${summary.actionSummary} for work item ${action.workItemId}`,
             createdWorkItemIds: [],
             createdDiscussionAnchorIds: [],
           },
@@ -81,6 +115,7 @@ function mapActionToRunRequest(
   action: ReactionPlanAction,
   context: ReactionPlanActionExecutionContext,
   generateId: (prefix: string) => string,
+  decision: Extract<ReactionDecisionSummary, { kind: "summary" }>,
 ): WorkItemRunRequest {
   return {
     organizationId: action.organizationId,
@@ -91,8 +126,9 @@ function mapActionToRunRequest(
     promptFlowRunId: context.reactionPlanId,
     projectId: action.projectId,
     priorContextNeeded: true,
-    actionSummary: `handled ${action.actionType} (${action.reason})`,
+    // the run records the agent's COMPUTED decision, not a fixed string
+    actionSummary: decision.actionSummary,
     evidenceRefs: [action.triggerEventId],
-    learned: `processed ${action.actionType} for work item ${action.workItemId}`,
+    learned: decision.learned,
   };
 }
