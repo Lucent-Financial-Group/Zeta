@@ -6,6 +6,17 @@ export {
   type TriageActionRequest,
 } from "./triage-action-resolver.ts";
 export {
+  GraphEdgeKind,
+  GraphNodeKind,
+  decisionsForWorkItem,
+  neighborsByEdge,
+  projectOrganizationGraph,
+  type GraphEdge,
+  type GraphNode,
+  type OrganizationGraph,
+  type ProjectGraphInput,
+} from "./graph-projection.ts";
+export {
   createCommandHandlerRegistry,
   type CommandExecutionContext,
   type CommandHandler,
