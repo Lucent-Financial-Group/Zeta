@@ -1,7 +1,7 @@
 # tools/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile
 #
 # Docker-based install.sh test on Ubuntu userspace — sibling to
-# nixos-install-sh-test (Aaron 2026-05-30: "center our docker tests around
+# nixos-install-sh-test (operator 2026-05-30: "center our docker tests around
 # ubuntu and nixos and have tests for both with install.sh"). Proves the entropy
 # lever on Ubuntu: a bare ubuntu image + install.sh => working substrate,
 # INCLUDING the core local-LLM primitive (ollama + pinned model + real probe).

@@ -1,7 +1,7 @@
 // tools/accelerator/validate-local-llm.ts
 //
 // Proves the CORE local-LLM primitive actually works on THIS machine — the
-// "entropy lever" end-to-end check (Aaron 2026-05-30): after install.sh has run,
+// "entropy lever" end-to-end check (operator 2026-05-30): after install.sh has run,
 // a bare machine should be working substrate. Reads the declarative pins
 // (manifests/local-llm), talks to the locally-installed ollama, runs a REAL
 // chooseIndex, and asserts a valid, non-fallback choice. Exits non-zero on

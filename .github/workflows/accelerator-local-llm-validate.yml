@@ -1,7 +1,7 @@
 # Accelerator — local-LLM entropy-lever validation (off-leash, accelerator branch).
 #
 # Proves the claim: a BARE runner + `install.sh` ⇒ working local-LLM substrate
-# (Aaron 2026-05-30 "install.sh is our biggest lever against entropy"). Runs the
+# (operator 2026-05-30 "install.sh is our biggest lever against entropy"). Runs the
 # real install graph, asserts the pinned model actually landed + serves, and runs
 # a REAL (not mocked) selection through the local model. This is the gate that
 # graduates the local-LLM core primitive from off-leash (accelerator) to main.

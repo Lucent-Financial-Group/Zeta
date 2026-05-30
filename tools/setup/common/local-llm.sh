@@ -100,7 +100,7 @@ if ! command -v ollama >/dev/null 2>&1; then
         *) echo "warn: unsupported arch $(uname -m) for ollama; skipping local-llm" >&2; exit 0 ;;
       esac
       tmp="$(mktemp -d)"
-      # FLOATING latest (Aaron 2026-05-30): the ollama *runtime* version does not
+      # FLOATING latest (operator 2026-05-30): the ollama *runtime* version does not
       # affect DST reproducibility — the pinned MODEL + temp0 + seed do — so we
       # track latest (less maintenance). GitHub's /releases/latest/download/<asset>
       # auto-redirects to the newest release's asset (no API call, no pin).

@@ -6,7 +6,7 @@
 // Code / Codex / …). Run a tiny instruct model (e.g. Qwen2.5-0.5B) locally on
 // the runner; this module is the backend-agnostic core that talks to it.
 //
-// Reusable for TWO consumers (Aaron 2026-05-30):
+// Reusable for TWO consumers (operator 2026-05-30):
 //   1. move-next SELECTOR — "choose your own adventure": pick the next move
 //      from the menu (the SelectMove seam in move-next-harness.ts).
 //   2. observe.ts AUTO-CLASSIFIER (future, Max's keystone) — "given an
@@ -19,7 +19,7 @@
 // safety rail).
 
 // ─── Backend interface ───────────────────────────────────────────────
-// DST note (Aaron 2026-05-30): a small local model at temperature 0 (greedy) +
+// DST note (operator 2026-05-30): a small local model at temperature 0 (greedy) +
 // a fixed `seed` + a PINNED model/quantization is DETERMINISTIC — same input ⇒
 // same output, reproducibly — so it can be a real (not mocked) fixture in
 // deterministic-simulation tests (e.g. observe.ts's auto-classifier), not just a
