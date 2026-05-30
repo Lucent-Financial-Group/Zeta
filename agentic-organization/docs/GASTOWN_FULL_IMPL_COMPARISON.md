@@ -32,6 +32,7 @@ that we have not. Those are the point of this doc.
 
 "Maturity" below is **shipped+proven**, not designed. Be honest: gastown has been
 alive much longer and has shipped several subsystems we currently have only as schema
+
 + domain types or design docs.
 
 | Capability | Gastown | Us | Verdict |
@@ -90,6 +91,7 @@ isolation that is **not** naive reject-and-requeue:
 
 A Promptfoo benchmark of Opus vs Sonnet vs Haiku on **94 real patrol decisions**,
 split into two classes:
+
 - **Class B (82 tests)**: directive context + role hints → measures *instruction-following*.
 - **Class A (12 tests)**: neutral context, evidence-only → measures *pure reasoning*.
 
@@ -216,6 +218,7 @@ an expected action. Run our `ChatCompletionPort` against Ollama models (and, gat
 models) in two classes — **Class B** (full hat directive context) and **Class A** (neutral,
 evidence-only) — to find where a cheaper model matches. Directly serves per-hat model
 selection + cost discipline (our autonomy story). Lives as a new `packages/model-eval`
+
 + a deploy proof; results recorded as org_events.
 
 **B3. Build the recovery scanners** our NORTH_STAR already lists as future workers:

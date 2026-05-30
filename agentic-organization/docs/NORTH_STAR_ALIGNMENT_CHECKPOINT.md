@@ -1375,7 +1375,7 @@ memory-maintenance + change-control + doc-maintenance), confirmed in-cluster
 proof ingested a 4-doc set then ran the pipeline for "the billing service is failing during
 release": scope excluded the sales doc (4→3), the query resolved to the `billing` entity node,
 the top hit was entity-anchored, the stage-bound Release Handbook was consulted deterministically,
-the 200-day-old unit was flagged stale, and 7 doc_ org_events were observed.
+the 200-day-old unit was flagged stale, and 7 doc_org_events were observed.
 
 ### Verification
 

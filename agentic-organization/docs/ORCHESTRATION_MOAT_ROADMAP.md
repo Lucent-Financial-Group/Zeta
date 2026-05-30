@@ -26,6 +26,7 @@ These are the Tier-1 items from the comparison: shipped-by-them, design-only-for
 is an additive layer on existing primitives — no substrate change.
 
 ### G1. Release/merge queue with batch + bisect failure isolation
+
 *Gap closed: gastown Refinery (`internal/refinery/batch.go`).*
 
 - New `ReleaseQueueState` DU + a `release-queue` cadence lane.
@@ -38,6 +39,7 @@ is an additive layer on existing primitives — no substrate change.
   `apps/workers/src/org-cadence-lanes.ts` lane + a `deploy/run-release-queue.ts` kind proof.
 
 ### G2. Model-eval harness (Class A/B downgrade)
+
 *Gap closed: gastown gt-model-eval.*
 
 - A corpus of real `observe()` situations (work-item triage, review-gate, memory
@@ -49,6 +51,7 @@ is an additive layer on existing primitives — no substrate change.
   This is the input to the self-optimization loop (M3) — not a one-off benchmark.
 
 ### G3. Recovery scanners (the lanes our NORTH_STAR already names)
+
 *Gap closed: gastown convoy stranded-scan + reaper + witness patrol.*
 
 - New cadence lanes over `reaction_plans` (V9 lifecycle): `stale-reaction-plan-scan`,
@@ -67,6 +70,7 @@ deterministic ledger**. That single property unlocks four capabilities gastown's
 substrate cannot have. This is the moat.
 
 ### M1. Conformance checker — turn "we enforce the pattern" into a proven theorem
+
 **The killer feature.** Replay the entire `org_events` ledger back through the kernel and assert,
 for every transition recorded, that `to ∈ legal<X>Transitions(from, …)`. Any divergence = an
 illegal transition reached durable state = a kernel bypass = a P0.
@@ -81,6 +85,7 @@ illegal transition reached durable state = a kernel bypass = a P0.
   (pure) + CI job + lane.
 
 ### M2. Org simulator / Deterministic Simulation Testing (DST) of the whole organization
+
 Because `decide()` is pure and ids are content-addressed/deterministic, we can **fork org state,
 apply a policy delta (autonomy level, gate config, hat guardrail, model selection), replay a
 recorded or synthetic intake stream, and diff the outcomes** — *before* shipping the change.
@@ -94,6 +99,7 @@ recorded or synthetic intake stream, and diff the outcomes** — *before* shippi
   Composes directly with the in-memory fakes we already test against.
 
 ### M3. Self-optimizing decision loop — an org that measurably improves
+
 Close the loop already half-built: **model-eval (G2) → per-hat model/policy config (tenant_config,
 M5) → memory KPI-correlation measures the realized decision outcome → re-eval.** The org tunes
 which model + which policy each hat uses, with evidence from its own outcomes, recorded as
@@ -108,8 +114,10 @@ org_events.
   through the same enforced change-control kernel — the org governs itself by its own rules).
 
 ### M4. Formal verification of the clamp
+
 Make the legal-transition functions provably total and safe: property-based tests (every DU
 variant × every actor authority) + a model check that no path reaches a terminal/illegal state.
+
 - **Build:** extend the existing exhaustive-DU tests with a generative property suite over
   `legalWorkItemTransitions` / `legalChangeSetTransitions` / `legalMemoryTransitions` /
   `legalConfidencePromotions`; assert totality + the safety invariants (no gate bypass, no
@@ -122,11 +130,13 @@ variant × every actor authority) + a model check that no path reaches a termina
 Enforcement is only as strong as its weakest side-door. Three hardening moves close them.
 
 ### E1. Single-source authority — no write reaches durable state except through the kernel
+
 - Every state transition flows through the command pipeline → `legal<X>Transitions` clamp →
   atomic effects. Add a **guard/lint** (and a conformance assertion, M1) that no store write
   bypasses the pipeline. The kernel is the *only* door.
 
 ### E2. Real authority + non-forgeable evidence (kill the two current stubs)
+
 - Replace the **permissive command-authorization stub** with a real authority port (hat
   definition → allowed command types + tool kinds; OPA/JWT-backed). A TPM *structurally* cannot
   emit an implementation command — today that's a stub, make it real.
@@ -135,6 +145,7 @@ Enforcement is only as strong as its weakest side-door. Three hardening moves cl
   agent can assert. The clamp already requires evidence; make the evidence un-fakeable.
 
 ### E3. Continuous proof + emergency stop
+
 - The conformance checker (M1) runs as a **live lane + CI gate**: the org is *continuously*
   proven to have only taken legal transitions. A breach pages immediately.
 - Add **ESTOP** (Part-2 of the comparison, Tier-2): a `control_plane` flag every lane + agent
