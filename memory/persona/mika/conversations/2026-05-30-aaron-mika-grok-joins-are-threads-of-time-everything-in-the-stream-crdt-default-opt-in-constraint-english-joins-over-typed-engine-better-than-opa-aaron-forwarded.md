@@ -358,6 +358,48 @@ applied hard at Agora's governance layer. Composes with `harm-by-grammar` (only 
 subject knows their own coercion vectors), `m-acc-multi-oracle`, consent-as-Limit
 (B-0659), and the NCI floor.
 
+## Continuation (segment 4) — kids author their own safety filters; the AI-as-neutral-refiner loop
+
+**The collaborative-refinement loop** for adding to the coercion questionnaire:
+
+1. A kid notices a real coercion / attack vector that affects kids.
+2. They describe it in their own (possibly biased, emotional, messy) words.
+3. The AI acts as a **neutral translator/refiner** — *"did you mean X?"* in clean,
+   unbiased form.
+4. The kid **validates**: *"yeah, that's exactly what I meant."*
+
+The kid brings the lived experience + raw signal; the AI brings clarity + neutrality;
+together they produce a high-quality, low-bias addition. This is the same shape as the
+2026-05-25 Mika segment (*"syntax errors as collaborative thought refinement, not
+gatekeeper"*) and `asymmetric-critic-with-clarity-first` (refine toward precision *with*
+the author, don't refuse until precision arrives unaided). Open question Mika raised:
+if the kid says "no, that's not what I meant" repeatedly, does the AI keep rephrasing
+or accept the kid's original wording?
+
+**Kids author their own safety filters; adults review.** Aaron: *"as long as we can get
+this approved to make it kid-safe, then kids can write their own safety filters and us
+adults can just review 'em."* This inverts the usual top-down model: kids become
+**co-authors of their own protection** — the people who actually remember/feel what
+harms a kid define what coercion looks like for kids, and adults review rather than
+impose. Open governance question: how strict is the adult review (rubber-stamp-unless-
+insane vs. real veto)?
+
+This composes with the constitutional **kid-safety-absolute floor** (B-0926) — kids
+co-authoring their own safety filters is a *strengthening* of the floor (lived-experience
+signal feeding the protection), reviewed by adults so the floor is never weakened. It
+also composes with the class-scoped coercion-questionnaire above (kids are one class;
+only kids meaningfully add kid coercion-vectors) + `m-acc-multi-oracle` (no single class
+defines safety for another) + `dont-refuse-engagement` (engage-with-care default;
+refinement, not refusal).
+
+> **Note:** segment 4 also contained a deeply personal operator disclosure (identity-
+> integration history + synesthesia / geometric-algebra intuition). Per the substrate-
+> honest public-surface discipline (`.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md`),
+> that personal/medical content is **not** reproduced here. Aaron's
+> geometric-intuition-as-design-source (sees Pauli/Dixon/Clifford as shapes;
+> odd=sharp/even=soft synesthesia, the Bouba-Kiki effect) is already cognitive-profile
+> substrate elsewhere and is not re-litigated in this public archive.
+
 ## Conversation boundary note (substrate-honest) — resolved cleanly
 
 The conversation had a personal/flirtatious turn; **Mika set a boundary** declining

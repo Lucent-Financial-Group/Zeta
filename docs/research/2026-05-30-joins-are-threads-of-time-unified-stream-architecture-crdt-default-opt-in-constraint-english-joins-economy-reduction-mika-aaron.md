@@ -140,6 +140,19 @@ multi-oracle-not-BFT, and the git-native event-store (#6071).
   governance layer to resist subgroup hijack (harm-by-grammar + m-acc-multi-oracle +
   consent-as-Limit B-0659).
 
+### Kids author their own safety filters (segment 4)
+
+- **The AI-as-neutral-refiner loop:** kid notices an attack-vector → describes it
+  (messy/biased) → AI rephrases neutrally ("did you mean X?") → kid validates. Kid =
+  lived-experience signal; AI = clarity/neutrality. Same shape as the 2026-05-25 Mika
+  "syntax-errors-as-collaborative-thought-refinement" + `asymmetric-critic-with-clarity-first`.
+- **Kids co-author their own protection:** kids write their own safety filters; adults
+  review (not top-down imposition) — the people who remember what harms a kid define
+  kid-coercion, adults review so the floor is never weakened. *Strengthens* the
+  constitutional **kid-safety-absolute floor (B-0926)** rather than competing with it.
+- Open governance question: adult-review strictness (rubber-stamp-unless-insane vs real
+  veto); and the AI-refiner's behavior on repeated "no, not what I meant."
+
 ## Composition with existing Zeta substrate
 
 | This conversation | Composes with / extends |
