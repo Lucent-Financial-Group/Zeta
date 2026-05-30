@@ -38,6 +38,10 @@ export {
   type WorkItemRunResult,
 } from "./orchestrate-run.ts";
 export {
+  createHermesReactionPlanActionExecutor,
+  type HermesReactionPlanActionExecutorDeps,
+} from "./hermes-reaction-plan-action-executor.ts";
+export {
   createCommandHandlerRegistry,
   type CommandExecutionContext,
   type CommandHandler,

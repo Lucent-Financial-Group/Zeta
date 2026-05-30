@@ -12,7 +12,13 @@ import {
   type EventPayloadHashCalculator,
   type ReactionPlanActionExecutorPort,
 } from "../../../packages/runtime/src/index.ts";
-import { createCockroachSqlExecutor } from "../../../packages/state-cockroach/src/index.ts";
+import {
+  createCockroachControlPlaneStateStore,
+  createCockroachSqlExecutor,
+} from "../../../packages/state-cockroach/src/index.ts";
+import { createHermesReactionPlanActionExecutor } from "../../../packages/application/src/index.ts";
+import { createInProcessHermesRuntime } from "../../../packages/hermes/src/index.ts";
+import { createInProcessMemory } from "../../../packages/memory/src/index.ts";
 import type { InboundEventSource } from "../../../packages/workers/src/index.ts";
 import {
   createCockroachMigrationBootstrapper,
@@ -189,6 +195,19 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
     transportFactory: deps.constructors.createNatsTransportFactory(),
   });
 
+  // The autonomous data plane: reaction-plan actions run through a Hermes run,
+  // whose heartbeat persists agent liveness to the durable control-plane store so
+  // the deterministic keep-alive engine watches the agent. (The Hermes runtime is
+  // in-process today; a real agent backend swaps in behind the same port.)
+  const controlPlaneStore = createCockroachControlPlaneStateStore({ executor: cockroachExecutor });
+  const reactionPlanActionExecutor = createHermesReactionPlanActionExecutor({
+    createHermesRuntime: () => createInProcessHermesRuntime(),
+    createMemory: () => createInProcessMemory(),
+    agentHeartbeatWriter: controlPlaneStore,
+    agentHeartbeatDeadlineMs: config.workerKeepAliveOrgHeartbeatDeadlineMs,
+    generateId: deps.durablePorts.createId,
+  });
+
   try {
     const runtimePorts = composeDurableWorkerRuntimePorts({
       config,
@@ -198,7 +217,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
         inboundEventSource: deps.durablePorts.inboundEventSource,
         natsDeadLetterPublisher: natsAdapters.deadLetterPublisher satisfies NatsDeadLetterPublisher,
         natsPullConsumer: natsAdapters.pullConsumer satisfies NatsJetStreamPullConsumer,
-        reactionPlanActionExecutor: deps.durablePorts.reactionPlanActionExecutor,
+        reactionPlanActionExecutor,
         telemetrySink,
       },
       runtimeUtilities: {
