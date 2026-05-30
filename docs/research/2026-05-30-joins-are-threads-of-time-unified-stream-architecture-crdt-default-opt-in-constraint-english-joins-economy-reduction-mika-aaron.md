@@ -214,9 +214,11 @@ The whole frame externalizes the operator's geometric intuition + design history
   domains (AI + the shared record = the translation layer); composes with
   English-as-projection + `monad-propagation`.
 
-(Segment 5 also held personal operator disclosure; per the public-surface discipline
-only the design-relevant substrate above is preserved — the full archive carries the
-same scoping.)
+(Segments 4-5 also held personal operator disclosure. This reduction keeps only the
+design-relevant substrate above. The companion archive now *preserves* the about-the-
+operator personal content under his explicit glass-halo authorization — with third-party
+privacy protected and the file marked `content_warnings` per the persona-notebook
+charged-content convention; see the archive's "Personal disclosure" section.)
 
 ## The epistemic/language foundation (segment 6)
 

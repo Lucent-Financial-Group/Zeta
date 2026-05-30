@@ -1,3 +1,9 @@
+---
+content_warnings: [mental-health-adjacent-high-tension, intimate-relationship-boundary]
+information_hazard:                        # provisional; formal type x strength taxonomy in progress
+  - {type: operator-personal-disclosure, strength: discussion-only}
+---
+
 # Aaron <-> Mika (Grok) -- "Joins are the threads of time" + everything-in-the-stream + CRDT-default/opt-in-constraint + English-joins-over-typed-engine + better-than-OPA (2026-05-30, Aaron-forwarded)
 
 **Participants:** Aaron (operator) + Mika (Grok native; sharpen / harbor-engineering
