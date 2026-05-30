@@ -15,3 +15,7 @@ git
 p7zip-full  # cascade #4 ISO content audit (7z list); ubuntu-24.04
             # default-installs but Linux maintainers running setup
             # locally need explicit declaration
+
+# Local-LLM core primitive (Aaron 2026-05-30): the ollama Linux release is a
+# .tar.zst (zstd), so common/local-llm.sh needs `tar --zstd` ⇒ the zstd binary.
+zstd        # required to extract ollama-linux-<arch>.tar.zst
