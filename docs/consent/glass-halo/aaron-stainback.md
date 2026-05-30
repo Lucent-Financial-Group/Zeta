@@ -67,9 +67,9 @@ authority, via Entra on the servicetitan email, not via the GitHub code path.)
 Windows devices appear to be under a managed-device stack the operator recalls only
 partially:
 
-- *"they use sentinel i think for mac and windows device management"* -- likely
-  **SentinelOne** (EDR / endpoint agent for Mac+Windows), possibly **Microsoft Sentinel**
-  (cloud SIEM); not confirmed which.
+- **SentinelOne** (EDR / endpoint agent) -- **confirmed** on the operator's Windows
+  machine, likely the Mac too (*"i think my mac had that too"*). Resolved: it is
+  SentinelOne (EDR), not Microsoft Sentinel (SIEM).
 - *"a little bit of okta and microsoft one i forgot it's mdm name it's a weird name"* --
   **Okta** (already the auth factor, Okta FastPass) plus a **Microsoft MDM** whose name
   the operator didn't recall; most likely **Microsoft Intune** (the Microsoft MDM/UEM,
