@@ -483,6 +483,8 @@ only chooses inside the lines — and every choice is one `org_event`.
 | **M5** | Outcome correlation from `pipeline_stage_transition` (merged=success) → confidence recompute. |
 | **M6** | `runMemoryMaintenanceCycle` as an org cycle: Stage A automated, Stage B hat-decided; every action an `org_event`. |
 | **M7** | **Deploy + observe in kind**: seed memories at hat/agent/work scope, run a work item to `merged`, run the daily cycle, and observe — via the org snapshot — memories reinforced (good KPI), demoted (bad KPI by a `memory_reviewer` decision), promoted (work→hat), and one archived at zero that no longer surfaces. The same end-to-end proof bar we held for the org system. |
+| **M8** | **Reliability harness (§12):** mandatory pre-turn injection + required `memoryCandidates` output field + deterministic system extraction from `org_events` + content-addressed idempotent writes + the bidirectional gates + the per-hat `MemoryContract`. Retrieval/storage become kernel invariants, not agent tools. |
+| **H1–H4** | **Hindsight seam (§13.6):** stand up Hindsight in kind, the `createHindsightMemory()` adapter behind the port, the §13.3 recall→re-rank composition, and an observed end-to-end run. Can be adopted any time after M2 (the port already exists); the M-track and H-track are independent. |
 
 ---
 
@@ -512,7 +514,287 @@ view as the rest of the org.
 
 ---
 
-## 12. What this is NOT
+## 12. Retrieval & storage reliability — remembering is **structural, not behavioral**
+
+The thing that kills agent-memory systems is never the ranking math. It is that
+agents **forget to call retrieve** and **forget to call store**. The repo already
+names this exact failure class — the **goldfish-ontology principle**
+(`.claude/rules/claude-code-loading-taxonomy.md`): *a discipline with a
+recognition-failure component is forgotten exactly when it is needed.* A tool the
+agent invokes "when it remembers it needs memory" is useless precisely once the
+agent has already lost the thread.
+
+**The fix is one reframe:** retrieval and storage are **not agent actions** — they
+are **invariants of the prompt flow, computed by the `observe → decide` kernel.**
+The agent never decides *whether* they run; it only influences their *content*,
+inside a wrapper the harness guarantees. This is the same move the org system
+makes for gates: the agent cannot pick an illegal gate, and here it cannot skip a
+retrieve or a store — by construction, not by discipline.
+
+### 12.1 Never forget to *retrieve* — retrieval is a mandatory pre-turn step
+
+At `beforePromptConstruction` for the active binding, the kernel **always** runs
+retrieval (Mode 1, passive injection). There is no "agent decides to retrieve."
+The agent *may additionally* run mid-turn active retrieval (Mode 2), but it can
+never *skip* Mode 1. The query text is a **pure function** of
+`(taskMeta, last-K turns, role sentence)` — no model call decides what to search
+for — so it is reproducible and cacheable by hash. Result: *forgetting to
+retrieve is structurally impossible* — the memory is in the prompt before the
+agent reasons.
+
+### 12.2 Never forget to *store* — three independent sources, so no lesson is lost
+
+Storage runs at turn-close (`afterEmit`), **always**, from three sources:
+
+1. **Required output field (agent-driven, schema-enforced).** The prompt flow's
+   output schema carries a mandatory `memoryCandidates: MemoryCandidate[]` field.
+   "Remember to call `memory.write`" becomes "fill a required field," and the gate
+   flags a turn that produced a substantive claim but emitted `[]` with no
+   justification. A forgettable behavior becomes a non-optional schema obligation.
+2. **Deterministic system extraction (no agent — the backstop).** Many lessons are
+   *structurally evident from the turn's own `org_events`* and need no agent
+   judgment: a tool-result contradicting a cited memory, a gate `Rejected`, a HITL
+   correction, a work item reaching `merged`/stalling. The kernel extracts these
+   deterministically and writes them `writtenBy: "system"`. **Even if the agent
+   emits `[]`, the system still captures what is structurally obvious.**
+3. **Reinforcement-by-citation (free).** Citing a memory in a turn that succeeds is
+   a deterministic `$inc` reinforce — not a new write.
+
+### 12.3 The algorithmic key: content-addressed memory makes "store every turn" safe
+
+Running extraction every turn only works if it is idempotent. The enabler is the
+stable key already defined in §3:
+
+```
+memoryId = uuidv5(`${org}:${tier}:${scope}:${key}`)
+```
+
+Writing the same `(tier, scope, key)` is **not a duplicate** — it is the
+deterministic conflict resolution of §5 (`reinforce | overwrite | flag-alternative
+| reject`). So we store **aggressively, every turn**, and the content-addressed key
+collapses repeats into reinforcement in O(1). The agent never has to *decide* "is
+this new?" — the key decides.
+
+> This inverts the usual design. Most systems do *store-selectively + dedup-later*
+> and lose things because "selectively" is a judgment the agent flubs.
+> Content-addressing lets us do *store-everything + idempotent-merge*: cheap,
+> lossless, and the "is it worth keeping?" question is answered **later,
+> deterministically, by the weight/decay engine** (§4) — not in the hot path by a
+> forgetful agent.
+
+### 12.4 Retrieving *well* and cheaply — two-stage, two-modality, dedup-aware
+
+- **Stage 1 — deterministic pre-filter (~5ms, zero model calls):** scope union
+  (`hat ⊕ agent ⊕ work`) `AND phase != Archived AND weight ≥ floor` + a cheap
+  trigram/keyword prefilter. 10k → ~200 candidates. Pure, reproducible.
+- **Stage 2 — score the ~200 only:** the §4 weight, plus an *optional* semantic
+  cosine computed **only over the candidate set**. `O(candidates)`, never
+  `O(all)`.
+- **Two modalities, union'd:** semantic similarity gives *recall*; **deterministic
+  structural triggers** give the *precision* similarity misses — a hat's contract
+  declares IF-THEN rules (*"if a tool-result touches `services/billing/*`, pull
+  that path's risk memories"*). These are rules, not judgment, so they fire
+  reliably.
+- **Cross-turn dedup set:** track the per-session injected `memoryId` set; do not
+  re-inject the same memory every turn unless its weight materially changed —
+  saves budget, kills repetition.
+- **Caches:** query-embedding LRU keyed on query-hash; `weight` cached on the state
+  row (recomputed nightly + lazily on read) to avoid recompute storms.
+
+### 12.5 Make *using* memory correctly deterministic — bidirectional gates
+
+Two gate checks make both failure directions costly, so retrieval quality is
+*enforced*, not hoped:
+
+- **Anti-laundering** — a cited `memoryId` not injected this turn → fabrication →
+  block (already in §4.3).
+- **Must-address** — a *high-weight* memory was surfaced and the output
+  contradicts it with no explanation → negligence → flag. The reviewer/gate sees
+  the full ranked list including `relevant-but-unused`, so *ignoring* memory is as
+  costly as fabricating it.
+
+### 12.6 Crash-safe storage — decouple the write path via NATS
+
+The turn emits its storage candidates to a **durable NATS subject** and returns
+immediately; the `memory_and_knowledge` department's deterministic writer drains
+the queue. Storing never blocks the agent turn and survives a crash mid-write (the
+candidate is already durable in the stream). Hot path (agent) and write path (IT
+dept) are decoupled — the same automated-maintenance lane as §7.
+
+### 12.7 The `MemoryContract` — where the determinism lives, per hat / per flow
+
+Each hat's prompt flow declares a machine-checkable contract; the agent fills
+content *inside* it, never around it:
+
+```ts
+type MemoryContract = {
+  retrieve: {
+    tiers: readonly MemoryTier[];          // which scopes to pull (default: all in §2)
+    budgetTokens: number; maxItems: number; // packing bounds
+    readFloor: number;                      // weight floor for surfacing
+    structuralTriggers: readonly Trigger[]; // deterministic IF-THEN retrieval rules
+  };
+  store: {
+    expectedKeyNamespaces: readonly string[]; // e.g. code_reviewer → ["review:*"]
+    requireCandidatesField: true;              // schema obligation
+  };
+  requiredProvenance: readonly ("memory-fact" | "tool-result")[];
+};
+```
+
+The gate can now check role-appropriate discipline deterministically — e.g. *"a
+`code_reviewer` produced a review decision but never touched its `review:*` store"*
+— turning "did the agent maintain its memory?" into a contract assertion.
+
+### 12.8 Reliability summary — what makes each guarantee deterministic
+
+| Guarantee | Mechanism (why it's deterministic) |
+|-----------|------------------------------------|
+| Never forget to retrieve | a harness step in `observe`, not an agent tool call |
+| Query is reproducible | pure function of `(task, last-K turns, role)` |
+| Candidate set + rank | pure SQL pre-filter + pure weight function |
+| Never forget to store | required output field **+** system extraction over `org_events` |
+| Idempotent storage | content-addressed `uuidv5` key → merge, not duplicate |
+| Precision retrieval | IF-THEN structural triggers in the contract, not judgment |
+| Used correctly | bidirectional gate (injected ↔ cited ↔ contradicted) |
+| Crash-safe | candidates durable on NATS before the turn returns |
+
+The agent's only freedom is **content** — the query phrasing and what is worth
+remembering. **Occurrence, idempotency, ranking, decay, and gating are all the
+kernel's, computed the same way every time.**
+
+---
+
+## 13. Working with Hindsight (`vectorize-io/hindsight`)
+
+Hindsight ([github.com/vectorize-io/hindsight](https://github.com/vectorize-io/hindsight),
+**MIT**) is an external, open-source **agent memory engine**: biomimetic memory
+(world facts, experiences, mental models), LLM-powered extraction, and **parallel
+recall** across vector + keyword (BM25) + graph + temporal strategies, with
+cross-encoder reranking and reciprocal-rank fusion. Its core API is
+**`Retain / Recall / Reflect`**, exposed as an **HTTP REST API + SDKs**
+(Python, Node/TS, CLI). It runs as a **Docker service** over **PostgreSQL** and can
+use **Ollama** as its LLM provider.
+
+We do **not** adopt Hindsight wholesale and we do **not** fork it. We **compose**
+with it. The reasons are structural:
+
+| Fact about Hindsight | Consequence for us |
+|----------------------|--------------------|
+| Core API is `Retain / Recall / Reflect` | **Our `Memory` port already mirrors it exactly** (`packages/memory/src/memory.ts`, with sticky attribution). The seam exists today. |
+| MIT-licensed | Forking, vendoring, and upstream PRs are all legally open — so the choice is purely engineering. |
+| Postgres + Ollama + REST/SDK, **no MCP** | It already speaks our stack; and "no MCP" *reinforces* §12 — agents reach it through our harness, never as an agent-facing tool. |
+| Strong recall, **no decay / weighting / maintenance** | That gap is **exactly** our governance layer (§4–§7). Composition is additive, not duplicative. |
+
+### 13.1 The division of labor (Hindsight is the engine; we are the economy)
+
+```
+            ┌──────────────────────────────────────── our system ───────────────────────────────────┐
+            │  org_event trace · tier-scoping (hat⊕agent⊕work) · weight/decay/KPI · IT-dept daily     │
+            │  maintenance · reliability harness (§12) · the Memory port + MemoryContract             │
+            └───────────────────────────────────┬─────────────────────────────────────────────────────┘
+                                                 │ Retain / Recall / Reflect  (our port)
+                                ┌────────────────▼────────────────┐
+                                │   createHindsightMemory()        │  ← adapter implements the port
+                                │   (REST/Node-SDK → Hindsight)    │
+                                └────────────────┬────────────────┘
+                                                 │ HTTP
+                          ┌──────────────────────▼──────────────────────┐
+                          │  Hindsight service (Docker, MIT)             │
+                          │  extraction · vector+BM25+graph+temporal     │
+                          │  recall · rerank · RRF                       │
+                          │  Postgres (its own) · Ollama (ours)          │
+                          └──────────────────────────────────────────────┘
+```
+
+- **Hindsight owns** content storage, embeddings, and the *recall fusion* (the part
+  that is genuinely hard and that it already does well).
+- **We own** everything Hindsight deliberately omits: tier-scoping via its custom
+  metadata, the **KPI-weighted re-rank + decay + archive floor**, the daily
+  maintenance cycle, protected memories, the `org_event` trace, and the §12
+  reliability harness.
+
+### 13.2 The seam is our existing `Memory` port — write an adapter, not a fork
+
+`packages/memory/src/memory.ts` already defines `Memory { retain; recall; reflect }`
+with sticky `MemoryAttribution`. The note in that file — *"a real Hindsight adapter
+implements the same port"* — is the plan. We add one adapter:
+
+```ts
+export function createHindsightMemory(deps: {
+  client: HindsightClient;        // the Node SDK or a thin REST wrapper
+  organizationId: string;
+}): Memory {
+  // retain → hindsight.retain(content, { metadata: attributionToMetadata(attr) })
+  // recall → hindsight.recall(query, { filter: scopeFilter(attr) })  then OUR re-rank (§13.3)
+  // reflect → hindsight.reflect({ filter: scopeFilter(attr) })
+}
+```
+
+Our attribution (`agentId, hatAssignmentId, projectId, workItemId, promptFlowRunId`)
+maps onto Hindsight's **custom metadata**; scoped recall (never global) maps onto
+its **metadata filter**. The in-process fake and the Cockroach adapter remain for
+tests and degraded mode (Hindsight unavailable → fall back to our own
+weight-only ranking, exactly the §4 degradation posture).
+
+### 13.3 Extending Hindsight *by composition*, not by patching its internals
+
+Our weight/decay/KPI engine lives **outside** Hindsight and **post-processes** its
+recall:
+
+1. Hindsight returns candidates ranked by its semantic/BM25/graph/temporal fusion
+   (Stage 2 recall).
+2. We join each to our `MemoryState` (Cockroach) and **re-rank by the §4 weight**
+   (`freshness × confidence × KPI-outcome × utility`), apply the **archive floor**,
+   and pack into the budget.
+
+We never touch Hindsight's code; we wrap its output. This is precisely the
+two-stage retrieval of §12.4 with **Hindsight as the recall engine and our weight
+as the final re-rank.**
+
+### 13.4 Storage split — Hindsight's Postgres vs. our CockroachDB (honest nuance)
+
+Hindsight manages **its own PostgreSQL** schema (and likely Postgres-specific
+extensions such as `pgvector`). **Do not point Hindsight at CockroachDB** — run
+Hindsight with its own Postgres pod in the cluster (or use Hindsight Cloud). This
+yields the clean hub/satellite split §3 already anticipated:
+
+| Store | Holds | Owner |
+|-------|-------|-------|
+| **Hindsight Postgres** | memory **content** + embeddings + recall indices (vector/BM25/graph/temporal) | Hindsight |
+| **Our CockroachDB** | memory **state**: weight, confidence, freshness, outcome/utility, phase; the injection ledger; **all `org_events`** | us |
+
+Joined by `memoryId` (Hindsight's id ↔ our state row). Our Cockroach stays the
+system-of-record for governance and trace; Hindsight is the content + recall
+engine. (This makes the §8 `agentic_org_memory_records` content table optional — if
+Hindsight holds content, our Cockroach can hold *only* state + ledger + trace.)
+
+### 13.5 The decision: integrate, don't fork — with named escalation paths
+
+| Option | Use when | Cost |
+|--------|----------|------|
+| **Integrate behind the port** *(recommended default)* | We need Hindsight's recall + our governance on top — the present case | One adapter; track upstream for free |
+| **Contribute upstream (MIT PR)** | We want a capability *inside* Hindsight that is generally useful (e.g. a metadata-scoped recall filter it lacks) | A PR + review latency; no fork to maintain |
+| **Thin wrapper service** | We need to shape Hindsight's I/O (auth, our metadata conventions, rate-limits) without changing its logic | A small service we own; Hindsight unchanged |
+| **Hard fork** *(last resort)* | We must change Hindsight's *core ranking internals* in a way upstream will not take | Permanent tax: tracking a Python+Rust+TS codebase ourselves |
+
+A hard fork is reserved for a *proven, specific* need to alter Hindsight's
+internals that upstream rejects — none exists today, because **everything we want
+to add lives cleanly on top of `Retain/Recall/Reflect`.** Start integrated; escalate
+only on evidence.
+
+### 13.6 Build phases for the Hindsight seam
+
+| Phase | Deliverable |
+|-------|-------------|
+| **H1** | Stand up Hindsight in kind (Docker pod + its own Postgres + Ollama provider); smoke-test `retain/recall/reflect` via REST. |
+| **H2** | `createHindsightMemory()` adapter behind the existing `Memory` port; attribution↔metadata mapping; scoped (non-global) recall; degraded fallback to the Cockroach/in-process adapter. |
+| **H3** | Compose §13.3: Hindsight recall → join `MemoryState` → §4 weight re-rank + archive floor + budget pack; the §12 reliability harness drives `retain`/`recall` as kernel invariants. |
+| **H4** | **Observe in kind:** an agent retains via Hindsight, recalls scoped + KPI-re-ranked context, the daily maintenance cycle decays/promotes/archives against our Cockroach state, and the whole flow is traced in `org_events` — same proof bar as the org system. |
+
+---
+
+## 14. What this is NOT
 
 - **Not** a new datastore — it reuses our CockroachDB and in-cluster Ollama.
 - **Not** the TPM architecture — only its memory + maintenance *idea* is taken.
@@ -542,3 +824,7 @@ view as the rest of the org.
 | `observer-promoter` + admin approval | hat decisions (`memory_reviewer`/`director`) via `chooseWithinLegal` |
 | protected facts | protected memories |
 | GitLab-MR promotion path | `org_event`-traced promotion decision |
+| agent calls a `memory.retrieve` tool | mandatory pre-turn injection — a kernel invariant, never an agent tool (§12) |
+| agent calls `memory.write` | required `memoryCandidates` output field + deterministic system extraction (§12) |
+| (their RaaS vector/keyword/graph stack) | **Hindsight** (`vectorize-io/hindsight`) as the recall engine, behind our `Memory` port (§13) |
+| RaaS+Mongo content/state split | Hindsight Postgres (content+recall) / our CockroachDB (state+weight+trace) (§13.4) |
