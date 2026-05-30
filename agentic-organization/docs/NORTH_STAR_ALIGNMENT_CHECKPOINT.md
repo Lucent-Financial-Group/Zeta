@@ -625,3 +625,28 @@ organization and the agents to stay alive — is delivered, tested, and proven i
 kubernetes. The autonomous-agent decision layer is architected and unit-tested;
 making it real end-to-end requires the agent/LLM execution infrastructure named
 above.
+
+## Update 2026-05-30 — Phase 9: the autonomous data plane runs end-to-end in kubernetes
+
+The deployed worker's reaction-plan executor now runs each action THROUGH a Hermes
+run (createHermesReactionPlanActionExecutor), and the agent's heartbeat is
+persisted to the durable control-plane store. The full loop is proven in-cluster:
+
+  task event -> ingest -> reaction plan -> Hermes agent run (acts on the work item)
+    -> agent heartbeat persisted to agentic_org_agent_heartbeat
+    -> the deterministic keep-alive engine watches the agent.
+
+Live in-cluster evidence: publishing a SupervisorSignalSent event for work item
+`work-07426f93...` produced, after the worker ran it through Hermes, an
+agent_heartbeat row: agent `agent-engineering_manager-...`, hat
+`hat-engineering_manager-...`, work_item `work-07426f93...` (the exact work item
+from the event), deadline 90000 ms. The control plane (org keep-alive) and the
+data plane (Hermes agent) now both run in the same deployed worker, with the
+control plane watching the agents the data plane spawns.
+
+This is the architecture the operator asked for: enough determinism to keep the
+organization AND the agents alive, with the agents doing the autonomous work.
+The agent's decision logic is the in-process Hermes runtime today; a real
+agent/LLM backend swaps in behind the same HermesRuntime port without changing
+any of this wiring (the keep-alive watch, the durable liveness, the reaction-plan
+integration all stay identical).
