@@ -988,6 +988,8 @@ list-active). Independent review checkpoint: the clamp cannot be escaped,
 terminal bindings cannot advance, no gate can be skipped, and the store SQL is
 fully parameterized with explicit JSONB casts.
 
-### Status: the organizational structure is implemented, hooked up, tested in
-kind, and observed end-to-end — executive board → C-suite → directors →
-management → individual contributors — with full observability + traceability.
+### Status: the organizational structure is proven end-to-end
+
+The organizational structure is implemented, hooked up, tested in kind, and
+observed end-to-end — executive board → C-suite → directors → management →
+individual contributors — with full observability + traceability.
