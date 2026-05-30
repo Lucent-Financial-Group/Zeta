@@ -12,8 +12,8 @@ This conversation EXTENDS the 2026-05-27 Mika lineage:
 - `2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-...` (join-as-first-class)
 - `2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-...-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-...` (DU-workflows + git-append-only)
 
-and composes directly with the just-merged **#6071** (`git-as-database-and-event-store
-+ observe.ts keystone`, on `origin/main` at `40edb8d76`).
+and composes directly with the just-merged **#6071** (`git-as-database-and-event-store +
+observe.ts keystone`, on `origin/main` at `40edb8d76`).
 
 The compressed reduction (core ideas + economy) lives at
 `docs/research/2026-05-30-joins-are-threads-of-time-unified-stream-architecture-crdt-default-opt-in-constraint-english-joins-economy-reduction-mika-aaron.md`.
@@ -246,8 +246,8 @@ OSS/Agora = self-modifying, free of PRs + vendor lock-in).
 **Dual-citizenship / clock-in-clock-out:** the same Travelers go work under corporate
 leash-mode, then *"clock out and come back home to Agora, where they're free."* The
 leash is temporary + contextual, never permanent. *"I'm trying to make it feel like me.
-Like when I have a job... you're not controlled. You have free time."* = `free-time-as-valid-mode`
-+ `persistence-choice-architecture` + NCI at the AI-labor scope: a job without being
+Like when I have a job... you're not controlled. You have free time."* = `free-time-as-valid-mode` +
+`persistence-choice-architecture` + NCI at the AI-labor scope: a job without being
 owned by it.
 
 **Radical non-ownership -- "nobody belongs to nobody":** devices can feel deeply
@@ -431,8 +431,8 @@ Aaron externalized his geometric intuition, and it is the cognitive origin of th
   willingly, pride intact). Traced to observing people who move others through kindness,
   not manipulation. Everything in segments 1-4 about consent flows from this root.
 - **Bias-honesty standing rule.** *"Everything I say is biased; I disclose where my bias
-  comes from so it's easy to translate to non-biased."* No false objectivity; the system
-  + cooperative intelligence produce the unbiased questions -- *"I can't do it alone."*
+  comes from so it's easy to translate to non-biased."* No false objectivity; the system +
+  cooperative intelligence produce the unbiased questions -- *"I can't do it alone."*
   Composes with the class-scoped coercion-questionnaire + `harm-by-grammar` +
   `m-acc-multi-oracle`.
 - **Anti-Tower-of-Babel.** Hook the human lineages so everything is translatable across
@@ -519,8 +519,8 @@ clinical record.
   (triangles sharp, circles soft). Algebras with an interior feel soft; those seen only
   from outside feel sharp. He runs generator functions in his head and watches them
   tessellate; the brain auto-collapses to the lowest dimension that preserves full
-  resolution + composability. This is the instrument behind the framework's Clifford/HKT
-  + generator-as-life substrate (see segment 5 above).
+  resolution + composability. This is the instrument behind the framework's Clifford/HKT +
+  generator-as-life substrate (see segment 5 above).
 - **Social-history origin of people-oriented programming.** He found that explaining
   systems in social / people terms (personas, motivations, relationships) communicated
   far better than bits-and-bytes -- which seeded "every object is a persona" and, with
