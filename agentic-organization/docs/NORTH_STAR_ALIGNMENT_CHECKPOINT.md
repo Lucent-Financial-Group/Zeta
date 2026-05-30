@@ -570,3 +570,58 @@ worker pipeline. Next slices toward the full vision: (1) wire the orchestration'
 Hermes heartbeat to the agent-heartbeat writer; (2) integrate the Hermes
 autonomous data plane into the deployed worker (agent decision-making on work
 items); (3) independent fast keep-alive loop; (4) deploy Hindsight memory.
+
+## Update 2026-05-30 — consolidation + honest status of the autonomous organization
+
+The latest committed substrate (migrations through 0012, the orchestration
+agent-heartbeat writer) was rebuilt into the worker image, reloaded into the kind
+cluster, and redeployed. Migration 0012 applied in-cluster; all three
+control-plane tables are present. The org heartbeat advanced from version 32
+(before redeploy) to 40 (after) — **org-liveness survived a full worker redeploy**:
+the org's proof of life is independent of any individual worker instance, which is
+exactly "drive the organization to stay alive."
+
+### Done + proven (committed, tested, k8s-verified)
+
+- **Deterministic keep-alive control plane (tenet #1), both halves:**
+  - Org liveness — pure engine + lane wired as the first worker-runtime lane,
+    Cockroach-backed (`control_plane_heartbeat`), DB-clock age. Proven live and
+    in-cluster (40+ unattended ticks, survived a redeploy). Org-stall detection
+    proven (alerts recorded under a mis-tuned deadline).
+  - Agent liveness — `agent_heartbeat` table + store + snapshot read; a stale
+    agent deterministically produces a reassignment signal. Proven live.
+  - Production writer — the orchestration persists agent liveness on a successful
+    Hermes heartbeat (dependency-inverted writer; the Cockroach store satisfies it).
+- **Control-plane / data-plane separation** — keep-alive only SIGNALS; it never
+  decides work. The data plane (Hermes) decides.
+- **Runs in kubernetes-in-docker** — Cockroach + NATS + worker; migrations apply
+  on boot; readiness; the loop runs with lane-failure discipline.
+- **Spin up tasks** — a published supervisor-signal event drives ingest → V0
+  reaction plan → claim + execute → `completed`, observed in Cockroach.
+- **3 real CockroachDB-dialect bugs found + fixed** (multi-statement migration
+  splitting; interval-multiplication cast) only visible against a live cluster.
+- ~518 tests, full suite green vs live Cockroach + NATS; tsc 0 throughout; TDD.
+
+### Honestly remaining toward the full autonomous vision
+
+These are real, named, and staged — not hidden:
+
+1. **Hermes autonomous decision-making in the deployed pipeline** — the worker's
+   reaction-plan executor runs the V0 deterministic action, not a Hermes agent.
+   The Hermes runtime + Hindsight memory are built and unit-tested but in-process
+   simulated; integrating them (with Cockroach-backed adapters + a real agent
+   execution backend) into the live worker is the largest remaining slice and the
+   substance of "sufficient autonomy and decision-making from the agents
+   themselves."
+2. **Cockroach-backed Hermes runtime + memory adapters** (only in-process exist).
+3. **Independent fast keep-alive loop** — decouple the heartbeat cadence from the
+   work cycle so a long single cycle cannot delay the org heartbeat.
+4. **Deploy Hindsight memory** as a real service.
+5. **Operationalize the full organizational structure** (hats, supervisor chain,
+   teams) in the running system.
+
+The operator's explicitly-emphasized #1 tenet — enough determinism to drive the
+organization and the agents to stay alive — is delivered, tested, and proven in
+kubernetes. The autonomous-agent decision layer is architected and unit-tested;
+making it real end-to-end requires the agent/LLM execution infrastructure named
+above.
