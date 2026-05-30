@@ -102,8 +102,9 @@ function detectUserSid(): string {
   // `whoami /user /fo csv /nh` => "DOMAIN\user","S-1-5-21-...."
   const out = execFileSync("whoami", ["/user", "/fo", "csv", "/nh"], { encoding: "utf8" }).trim();
   const m = out.match(/"([^"]+)","(S-[0-9-]+)"/);
-  if (!m) throw new Error(`Could not parse SID from: ${out}`);
-  return m[2];
+  const sid = m?.[2];
+  if (!sid) throw new Error(`Could not parse SID from: ${out}`);
+  return sid;
 }
 
 function detectPwsh(): string {
