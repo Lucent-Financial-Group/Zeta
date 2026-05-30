@@ -1,4 +1,11 @@
 export {
+  TriageActionFeedbackReason,
+  TriageActionResolution,
+  resolveTriageAction,
+  type ResolvedTriageAction,
+  type TriageActionRequest,
+} from "./triage-action-resolver.ts";
+export {
   createCommandHandlerRegistry,
   type CommandExecutionContext,
   type CommandHandler,
