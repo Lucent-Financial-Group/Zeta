@@ -107,8 +107,16 @@ Set-StrictMode -Version Latest; $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path "$PSScriptRoot\..\..").Path
 function Have($c) { [bool](Get-Command $c -ErrorAction SilentlyContinue) }
 
-# 1. scoop (user-mode; no admin)
-if (-not (Have scoop)) { Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression }
+# 1. scoop (user-mode; no admin). Download-then-exec (NOT pipe-to-shell) — mirrors macos.sh's
+# Homebrew B-0063 pattern: fetch to a temp .ps1, verify non-empty, run the local file.
+if (-not (Have scoop)) {
+  $scoopTmp = Join-Path $env:TEMP "scoop-install-$([guid]::NewGuid()).ps1"
+  try {
+    Invoke-RestMethod -Uri https://get.scoop.sh -OutFile $scoopTmp
+    if (-not (Test-Path $scoopTmp) -or (Get-Item $scoopTmp).Length -eq 0) { throw "scoop installer empty; refusing to run" }
+    & $scoopTmp
+  } finally { Remove-Item $scoopTmp -Force -ErrorAction SilentlyContinue }
+}
 
 # 2. system tools from manifests/windows (scoop -> winget -> choco)
 foreach ($raw in Get-Content "$RepoRoot\tools\setup\manifests\windows") {
@@ -116,9 +124,11 @@ foreach ($raw in Get-Content "$RepoRoot\tools\setup\manifests\windows") {
   $parts = $line -split '\s+'; $scoopId = $parts[0]
   $winget = ($parts | Where-Object { $_ -like 'winget=*' }) -replace 'winget=',''
   $choco  = ($parts | Where-Object { $_ -like 'choco=*'  }) -replace 'choco=',''
+  $wid = if ($winget) { $winget } else { $scoopId }   # if/else (5.1-safe; NOT the 7+ ?: ternary)
+  $cid = if ($choco)  { $choco }  else { $scoopId }
   if     (Have scoop)  { scoop install $scoopId }
-  elseif (Have winget) { winget install --id ($winget ? $winget : $scoopId) --silent --accept-package-agreements --accept-source-agreements }
-  elseif (Have choco)  { choco install ($choco ? $choco : $scoopId) -y }
+  elseif (Have winget) { winget install --id $wid --silent --accept-package-agreements --accept-source-agreements }
+  elseif (Have choco)  { choco install $cid -y }
   else   { throw "no package source (scoop/winget/choco) available for $scoopId" }
 }
 
