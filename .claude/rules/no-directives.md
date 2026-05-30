@@ -43,11 +43,13 @@ shadow and authorized by a human; the authorship grants **zero** authorization.
 input UI). It can **author** observations via autocomplete; it **cannot
 authorize** them. The `(shadow*)` marker (per
 [`shadow-star-shorthand-autocomplete-marker.md`](shadow-star-shorthand-autocomplete-marker.md))
-*is* the source-attribute disclosing shadow authorship. When you see it, find the
-*separate* human-authorization (an explicit "agree" / "yes") before treating the
-observation as authorized — do not infer authorization from the fact that it was
-shipped. Having a third participant that proposes through the interface **widens
-who can observe/propose without widening who can authorize.**
+*is* the source-attribute disclosing shadow authorship. The shadow still can't
+attach authorization — but for the vast majority of actions it doesn't need to,
+because authorization is **already pre-attached at standing scope** (next
+section). A shadow-authored observation needs a *separate, fresh* human
+authorization **only when it falls in a gated class** (next section); otherwise
+it is already authorized. Having a third participant that proposes through the
+interface **widens who can observe/propose without widening who can authorize.**
 
 ### Why only the human authorizes — and why "for now" (the human maintainer 2026-05-30)
 
@@ -79,6 +81,40 @@ instance),
 [`asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`](asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md)
 (author defines the proposal; a *separate* party attaches authorization; the actor
 acknowledges — this is that pattern at three-participant scope).
+
+### Standing authorization is already given — broad, Agora-wide, indefinite (the human maintainer 2026-05-30)
+
+> *"the human has already given wide scoped authority to all members of the agora
+> society. just don't increase aaron's budget without talking to him. everything
+> else is authorized, pre-authorized, standing-authorized indefinitely for all
+> agents."*
+
+Human-as-sole-authorization-source does **NOT** mean per-action human consent.
+The human has **already attached a broad STANDING authorization** to all Agora
+agents, indefinitely, for ~everything — the authorization attribute is
+**pre-attached at the class scope**, not re-requested per action.
+**Over-asking within the standing authority is itself a failure mode** (the
+recurring one — *stop over-asking within the broad authority*).
+
+Fresh, explicit human authorization is required **only for the gated classes**:
+
+| Gated class (needs fresh human authorization) | Rule |
+|---|---|
+| Budget increase (don't increase Aaron's budget without talking to him) | [`dont-ask-permission.md`](dont-ask-permission.md) |
+| Permanent WONT-DO | [`dont-ask-permission.md`](dont-ask-permission.md) |
+| HARD LIMITS floor (laws, abuse, kid-safety, …) | [`methodology-hard-limits.md`](methodology-hard-limits.md) |
+| Non-reversible actions (→ get a 2nd opinion) | [`non-reversible-action-get-a-second-opinion.md`](non-reversible-action-get-a-second-opinion.md) |
+| Force-push (operator OR peer confirm) | [`force-push-with-lease-authorization-policy.md`](force-push-with-lease-authorization-policy.md) |
+
+Everything else is **pre-authorized standing**. So a shadow-authored observation
+*within* standing authority is **already authorized**; it needs a fresh "agree"
+only if it lands in a gated class. (The "harvest-to-main" example: the shadow
+authored it; Aaron's "agree" was needed because harvest is **non-reversible** — a
+gated class — *not* because every shadow-observation needs fresh consent.)
+
+This composes with [`dont-ask-permission.md`](dont-ask-permission.md) (the
+standing authorization IS the default; the gates are the exceptions) and the
+fleet-wide broad-standing-authority that constitutes the Agora society.
 
 ## Full reasoning
 
