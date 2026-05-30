@@ -844,3 +844,64 @@ This is operator tenet #1 end-to-end: a deterministic, Cockroach-backed,
 DB-clock-aged keep-alive loop (decoupled from the work cycle) that drives the
 organization to stay alive and drives the agents to stay alive, while the
 autonomous data plane makes its own bounded decisions.
+
+## Update 2026-05-30 — Phase 14: LIVE LLM + sandboxed-tool agent decision backend (PROVEN IN-CLUSTER)
+
+The last remaining seam — a *live* decision backend with real model calls and
+real tool execution — is now implemented and proven in the kind cluster. No
+external credentials: a model runs in-cluster (Ollama, qwen2:0.5b).
+
+How it stays safe: the model is only ever shown the LEGAL options (computed by
+`observe` + `DefaultDeterministicRules`); its reply is parsed to a legal token
+(actionType or target phase) and then re-validated by the decision kernel
+(`resolveSelection`, shared with the sync path). An illegal/unparseable/
+unreachable response falls back to the deterministic policy. The model adds
+judgment WITHIN the guardrails; it can never widen them.
+
+New surface:
+- `AsyncEphemeralComposerPort` + `decideAsync` (async decision path, identical
+  legality enforcement to the sync path).
+- `createModelBackedComposer` (prompt from legal options → ChatCompletionPort →
+  parse legal token → select; deterministic fallback).
+- `createOllamaChatPort` (real in-cluster model calls, AbortController-bounded).
+- `SandboxToolPort` + `createSubprocessSandbox` (real bounded subprocess:
+  isolated cwd, env stripped to PATH, SIGKILL on timeout, output capped;
+  Result-as-DU). The agent runs a sha256 verification tool → durable evidence.
+- `deploy/k8s/25-ollama.yaml` (in-cluster model); worker env `LLM_BASE_URL`,
+  `LLM_MODEL`.
+
+Proven in kind for work item `work-8c4df9ab-c77d-4589-aba4-63e3a2f4b447`:
+
+- **Real model call:** Ollama GIN log
+  `08:01:47 | 200 | 1.788861126s | 10.244.0.20 | POST "/api/chat"` — the worker
+  pod (10.244.0.20) made a 1.79s qwen2:0.5b inference at the exact cycle time.
+- **Model-driven decision:** `agentic_org_hermes_run.outcome_summary` =
+  "decided 'compose' -> composing: model selected 'compose'" (the
+  "model selected" reason is produced ONLY by the model-success branch).
+- **Real sandboxed tool execution:** `outcome_evidence_refs` =
+  `["evt-8c4df9ab…", "sandbox:sha256:f983a883b9fa9ea661df9ac92bfb5c5dcb1ff02811e0faaba2e20fbae9cf7bcd"]`
+  — a real subprocess produced the digest.
+- **Determinism recorded:** Hindsight memory =
+  "selected compose from 2 legal option(s) under rules [gate-precondition, evidence-precondition]; sandbox tool produced sandbox:sha256:f983a883…".
+- **No regression:** org artifacts (work_item + discussion_anchor) and durable
+  liveness still produced.
+
+Unit proofs (in CI, no cluster needed): the sandbox really executes a
+subprocess, really kills on timeout, and really strips the env so a tool cannot
+read worker secrets (`apps/workers/test/subprocess-sandbox.test.ts`); the
+model-backed composer selects the model's legal token, tolerates chatty output,
+accepts a target-phase token, and falls back on illegal/unreachable
+(`packages/application/test/model-backed-composer.test.ts`).
+
+tsc 0, 554 tests (12 new across the phase).
+
+### Status: the entire vision is now implemented and proven end-to-end in kubernetes.
+
+- Deterministic keep-alive control plane drives org + agent liveness (org
+  heartbeat v594; 1693 agent-liveness signals; only signals, never decides).
+- Autonomous data plane: durable Hermes runs + Hindsight memory + agent liveness.
+- Real agent decisions: live in-cluster model calls, bounded by the deterministic
+  legal-option kernel (the determinism+autonomy split).
+- Real tool execution: bounded, isolated, env-stripped sandboxed subprocess.
+- The entire organizational structure: command pipeline producing durable,
+  auditable org artifacts (discussion anchors anchored to work items).

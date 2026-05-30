@@ -55,6 +55,17 @@ test("tolerates chatty model output and still extracts the legal token", async (
   equal(selection.option.actionType, "complete");
 });
 
+test("accepts the model naming the target phase instead of the actionType", async () => {
+  // a small model often replies with the phase ("rework" -> phase "executing")
+  const composer = createModelBackedComposer({ chat: chat("ActionType: Executing"), fallback: createFirstLegalOptionComposer() });
+  const selection = await composer.compose(request);
+
+  equal(selection.decision, ComposerDecision.Select);
+  if (selection.decision !== ComposerDecision.Select) return;
+  // 'executing' is the toPhase of the 'rework' option
+  equal(selection.option.actionType, "rework");
+});
+
 test("falls back to the deterministic composer when the model names an illegal move", async () => {
   const composer = createModelBackedComposer({ chat: chat("delete_everything"), fallback: createFirstLegalOptionComposer() });
   const selection = await composer.compose(request);

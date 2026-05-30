@@ -44,6 +44,11 @@ spec:
             # gives comfortable margin over the ~30s idle cycle. (Future hardening:
             # an independent fast keep-alive loop decoupled from the work cycle.)
             - { name: WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS, value: "90000" }
+            # the agent's live decision backend: real model calls to the
+            # in-cluster Ollama service (no external credentials). If unset, the
+            # agent uses the deterministic first-legal-option policy.
+            - { name: LLM_BASE_URL, value: "http://ollama:11434" }
+            - { name: LLM_MODEL, value: "qwen2:0.5b" }
           resources:
             requests: { cpu: "50m", memory: "128Mi" }
             limits: { cpu: "500m", memory: "512Mi" }

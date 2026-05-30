@@ -89,20 +89,27 @@ function buildUserPrompt(request: ComposerSelectionRequest): string {
 }
 
 /**
- * Parse the model's free text into a legal option. Tolerant: case-insensitive,
- * matches the first listed actionType whose token appears as a whole word in the
- * response (longest token first, so e.g. `request_review` wins over `review`).
+ * Parse the model's free text into a legal option. Tolerant but bounded: a small
+ * model often names either the actionType (`compose`) or the target phase
+ * (`composing`) — both uniquely identify a legal option, so either is accepted
+ * as a whole word. Longest token first (so `request_review` wins over `review`,
+ * and `awaiting_gate` over `gate`). Only legal options are ever considered, and
+ * the decision kernel re-validates the result, so this can never widen the rules.
  */
 function matchOption(
   raw: string,
   options: ComposerSelectionRequest["readout"]["options"],
 ): ComposerSelectionRequest["readout"]["options"][number] | undefined {
   const text = raw.toLowerCase();
-  const byLength = [...options].sort((a, b) => b.actionType.length - a.actionType.length);
-  for (const option of byLength) {
-    const token = option.actionType.toLowerCase();
-    if (new RegExp(`(^|[^a-z0-9_])${escapeRegExp(token)}([^a-z0-9_]|$)`).test(text)) {
-      return option;
+  const candidates = options
+    .flatMap((option) => [
+      { token: option.actionType.toLowerCase(), option },
+      { token: option.toPhase.toLowerCase(), option },
+    ])
+    .sort((a, b) => b.token.length - a.token.length);
+  for (const candidate of candidates) {
+    if (new RegExp(`(^|[^a-z0-9_])${escapeRegExp(candidate.token)}([^a-z0-9_]|$)`).test(text)) {
+      return candidate.option;
     }
   }
   return undefined;
