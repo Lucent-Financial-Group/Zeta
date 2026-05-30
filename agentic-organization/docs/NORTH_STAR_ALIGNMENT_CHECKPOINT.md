@@ -494,3 +494,50 @@ branches are implemented and unit-tested; they activate the moment agent
 heartbeats are persisted. Smallest real next step: a Cockroach agent-heartbeat
 table + Hermes runtime persisting per-run heartbeats + the snapshot source
 reading them. ORG liveness is real now; AGENT liveness is the next slice.
+
+## Update 2026-05-30 — Phase 6: running in kubernetes-in-docker, end to end
+
+The system runs in a kind (kubernetes-in-docker) cluster and both planes are
+proven against live in-cluster infrastructure.
+
+Topology (deploy/k8s/): namespace `agentic-org`, single-node CockroachDB,
+NATS+JetStream, and the worker Deployment. NATS stream + durable consumer are
+provisioned by deploy/provision-nats.ts (the worker fails-fast without the
+durable consumer). Worker image `agentic-org-worker:keepalive` loaded into kind.
+
+Proven in-cluster:
+
+1. **Boot + migrations** — the worker connects to Cockroach + NATS, applies all
+   migrations (incl. 0011 control-plane keep-alive), passes readiness, and loops
+   `runOnce()` with `failure_count: 0`.
+2. **Deterministic keep-alive (tenet #1)** — the org heartbeat row advances every
+   cycle (version observed climbing 2 → 10 → 16), `age_ms < deadline`,
+   `alive = true`, queried directly inside the Cockroach pod. The heartbeat row
+   survived a worker restart — org-liveness persists across worker churn (it is
+   org-level, so any live worker replica keeps the org alive).
+3. **Stall detection** — during a deliberately mis-tuned window (15s deadline vs.
+   the ~30s NATS-idle worker cycle), the keep-alive recorded 7 `org_stall`
+   alerts. After raising the deadline to 90s (> cycle), no new alerts accrue and
+   the org is healthy. Both the alive and the flatlining paths are proven live.
+4. **Spin up a task (data plane)** — publishing a canonical SupervisorSignalSent
+   event (deploy/spin-up-task.ts) drove the worker to ingest it (1 inbox receipt,
+   deduped), the V0 automation planner to create a `create_supervisor_triage`
+   reaction plan, and the reaction-plan executor to claim + execute it to
+   `completed` — all observed in Cockroach with the correct triggerEventId.
+
+Operational note (cadence coupling): keep-alive ticks once per worker cycle, and
+an idle cycle is bounded by the NATS pull long-poll (~30s). The deadline must
+exceed the max cycle time. Org-liveness is death-resilient with >= 2 replicas.
+Future hardening: an independent fast keep-alive loop decoupled from the work
+cycle, so a single long work cycle cannot delay the heartbeat.
+
+### Still staged toward the full vision
+
+- **Agent liveness** (second half of tenet #1) — `agents: []` in the Cockroach
+  snapshot source; Hermes sessions are not yet persisted to Cockroach. ORG
+  liveness is real; AGENT liveness is the next slice (agent-heartbeat table +
+  Hermes persistence + snapshot read).
+- **Hermes autonomous data plane** — the Hermes runtime + Hindsight memory +
+  orchestration are built and unit-tested in-process (Phase 4) but not yet
+  deployed/integrated into the live k8s pipeline. The reaction-plan action
+  executor in the deployed worker is the V0 path, not yet the Hermes agent.
