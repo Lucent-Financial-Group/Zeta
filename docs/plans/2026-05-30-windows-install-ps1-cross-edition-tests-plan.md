@@ -42,7 +42,7 @@ winget/choco fallback). Language/runtime tools stay identical to Unix — mise (
 | background loop | launchd LaunchAgent | schtasks (`install-scheduled-task.ts`) | parity, per-OS mechanism |
 
 **Package-source priority (operator 2026-05-30): cross-platform first.** Prefer **mise** (runtimes
-+ CLI tools via its aqua / ubi / cargo / npm / pipx / go backends) and **npm / `bun --global`**
+and CLI tools via its aqua / ubi / cargo / npm / pipx / go backends) and **npm / `bun --global`**
 (node-ecosystem CLIs) — these install *identically* on every OS, so they maximize symmetry. Drop to
 an OS-specific source (**scoop → winget → choco** on Windows; brew/apt on Unix) *only* for the
 irreducible remainder no cross-platform source provides. So `manifests/windows` should stay
