@@ -822,3 +822,25 @@ unchanged decision kernel. Every durable invariant it would rely on — the
 deterministic legal-option guardrail, the Hermes run lifecycle, Hindsight
 memory, agent liveness, and the org-artifact command pipeline — is implemented
 and proven in-cluster above.
+
+## Update 2026-05-30 — Operator tenet #1 holistic proof (deterministic keep-alive, live cluster)
+
+Live control-plane state after the session's runs, read straight from Cockroach
+in-cluster — the deterministic keep-alive engine is driving liveness on both
+axes, independently of the work cycle:
+
+- **Org liveness:** `agentic_org_control_plane_heartbeat.version = 594` (the
+  org heartbeat has been ticked 594 times; single row, UPSERT version-bumped).
+  Only **7** `org_stall` detections total — transient startup gaps; the org is
+  staying alive.
+- **Agent liveness:** **1693** `stale_work_reassignment` alerts. With only a
+  handful of tasks ever published, agents run once, complete, and then age past
+  their deadline — and the deterministic watch never stops catching them and
+  SIGNALLING reassignment (per the operator tenet: keep-alive only signals
+  liveness, it never decides the work itself). The engine relentlessly watches.
+- **6** agent heartbeats tracked.
+
+This is operator tenet #1 end-to-end: a deterministic, Cockroach-backed,
+DB-clock-aged keep-alive loop (decoupled from the work cycle) that drives the
+organization to stay alive and drives the agents to stay alive, while the
+autonomous data plane makes its own bounded decisions.
