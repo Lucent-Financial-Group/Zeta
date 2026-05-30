@@ -678,3 +678,23 @@ The one remaining infrastructure dependency is the agent's internal decision
 backend (in-process Hermes today vs. a real LLM/sandbox), which lives behind the
 swappable HermesRuntime port — every surrounding piece (control plane, durable
 liveness, watch loop, reaction-plan integration, reassignment) is real and proven.
+
+## Update 2026-05-30 — independent keep-alive loop (cadence-coupling caveat resolved)
+
+The keep-alive now runs on its OWN fixed cadence (default 5s), concurrently with
+and independent of the work loop, instead of ticking once per worker cycle. A
+slow agent run or the ~30s idle NATS long-poll can no longer delay the org
+heartbeat — the org's proof of life is deterministic regardless of work-cycle
+timing.
+
+Proven in-cluster: with the independent loop, the org heartbeat version advances
+roughly every 5 seconds (observed 75 -> 77 -> 78 -> 79 across ~18s) with age_ms
+consistently under the interval — versus the previous ~30s-per-tick coupling that
+forced a deadline above the cycle time. `agentic.worker.keep_alive.tick` events
+confirm the independent loop is the ticker. The work runtime no longer ticks
+keep-alive (no double-tick); on a stop signal the work loop exits, then the
+keep-alive loop is stopped and its current tick awaited.
+
+This resolves the cadence-coupling caveat noted in the Phase 6 update. Full suite
+519 pass, 0 fail (6 live skipped); tsc 0; the boot-path test (main.test.ts) stays
+green — the proven boot path was untouched.
