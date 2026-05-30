@@ -706,6 +706,7 @@ Hermes runs and Hindsight memory are now durable (Cockroach-backed, migrations
 now runs to COMPLETION in-cluster and every layer is durable:
 
 For a single task event (work item work-7f7453d4...), after the worker processed it:
+
 - hermes_run.state = completed; outcome = "handled create_supervisor_triage";
   evidence = ["evt-7f7453d4..."] (JSON evidence round-trips through JSONB)
 - hindsight_memory = "processed create_supervisor_triage for work item ..."
@@ -731,6 +732,7 @@ live Cockroach + NATS; tsc 0.
 ### State of the system
 
 Durable + Cockroach-backed + proven end-to-end in kubernetes:
+
 - Control plane: org liveness + agent liveness; independent fast keep-alive loop.
 - Data plane: durable Hermes runs + durable Hindsight memory; runs complete.
 - Full loop: task event -> reaction plan -> durable Hermes agent run -> durable
