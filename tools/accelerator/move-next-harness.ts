@@ -68,6 +68,34 @@ export const realDeps: BuildDeps = {
   nowIso: () => new Date().toISOString(),
 };
 
+// ─── Structured logging (observability) ──────────────────────────────
+// Surfaces the KEYS the agent uses each cycle so a run is auditable from the
+// Action log alone (PR-less ⇒ review-by-observation, per the charter):
+//   - agent      : the PARTITION key  → events/<agent>/      (single-writer)
+//   - key        : the per-event ULID → events/<agent>/<key>.json (= id = filename)
+//   - keyFormat  : "ulid" today (timestamp+randomness). The canonical merge
+//                  primitive is the 128-bit Zeta-ID (B-0893: +category-trie-bits);
+//                  this field makes the placeholder-vs-Zeta-ID gap visible in logs.
+//   - prev       : the causal-link key (previous ULID in THIS agent's stream).
+// Logs go to STDERR so STDOUT stays the clean, parseable cycle summary.
+export type Logger = (entry: Record<string, unknown>) => void;
+
+/** Default: log nothing (keeps library callers + tests silent). */
+export const noopLog: Logger = () => {};
+
+/** One JSON line per entry on stderr — greppable, CI-friendly, stdout-safe. */
+export const stderrLog: Logger = (entry) => {
+  process.stderr.write(JSON.stringify({ t: new Date().toISOString(), ...entry }) + "\n");
+};
+
+/** Classify the event-key format so the Zeta-ID gap (B-0893) is observable. */
+export function keyFormat(id: string): "ulid" | "zeta-id" | "unknown" {
+  // A plain ULID is 26 Crockford chars (timestamp+randomness, no trie-bits).
+  // A Zeta-ID (when it lands) will carry category-trie-bits and be tagged here.
+  if (/^[0-9A-HJKMNP-TV-Z]{26}$/.test(id)) return "ulid";
+  return "unknown";
+}
+
 // ─── Store I/O (append-only) ─────────────────────────────────────────
 
 /** Read an agent's event stream, sorted (ULID lexical = chronological). */
@@ -156,7 +184,9 @@ export function runCycle(args: {
   readonly deps: BuildDeps;
   readonly select?: SelectMove;
   readonly dryRun?: boolean;
+  readonly log?: Logger;
 }): CycleResult {
+  const log = args.log ?? noopLog;
   const select = args.select ?? firstOption;
   const stream = loadStream(args.root, args.ctx.agent);
   const prev = stream.length > 0 ? (stream[stream.length - 1]!.id as Ulid) : null;
@@ -177,6 +207,22 @@ export function runCycle(args: {
     writeFileSync(abs, JSON.stringify(event, null, 2) + "\n", "utf8");
     wrotePath = rel;
   }
+
+  // Observability: surface the KEYS the agent is using this cycle (stderr).
+  log({
+    ev: "cycle",
+    agent: args.ctx.agent, // PARTITION key → events/<agent>/
+    cycle: args.ctx.cycle,
+    key: event.id, // per-event key → events/<agent>/<key>.json (= id)
+    keyFormat: keyFormat(event.id), // "ulid" today; canonical = "zeta-id" (B-0893)
+    prev, // causal-link key (prev event id, or null = first)
+    kind: event.kind,
+    from: from.tag,
+    option: event.option.tag,
+    to: to.tag,
+    wrote: wrotePath,
+    dryRun: args.dryRun ?? false,
+  });
   return { event, from, to, wrotePath };
 }
 
@@ -195,25 +241,34 @@ export function runLoop(args: {
   readonly select?: SelectMove;
   readonly dryRun?: boolean;
   readonly sessionStartIso?: string;
+  readonly log?: Logger;
 }): LoopResult {
   const deps = args.deps ?? realDeps;
+  const log = args.log ?? noopLog;
   const cap = Math.max(0, Math.min(args.maxIterations, MAX_ITERATIONS)); // HARD clamp
   const sessionStartIso = args.sessionStartIso ?? deps.nowIso();
+  log({ ev: "loop-start", agent: args.agent, cap, dryRun: args.dryRun ?? false, sessionStartIso });
   const cycles: CycleResult[] = [];
   for (let i = 0; i < cap; i++) {
-    if (isHalted(args.root)) return { cycles, stopped: "halted" };
+    if (isHalted(args.root)) {
+      log({ ev: "loop-stop", reason: "halted", cycles: cycles.length });
+      return { cycles, stopped: "halted" };
+    }
     const ctx: AgentContext = { agent: args.agent, cycle: cycles.length, sessionStartIso };
     cycles.push(
       runCycle({
         root: args.root,
         ctx,
         deps,
+        log,
         ...(args.select === undefined ? {} : { select: args.select }),
         ...(args.dryRun === undefined ? {} : { dryRun: args.dryRun }),
       }),
     );
   }
-  return { cycles, stopped: isHalted(args.root) ? "halted" : "max-iterations" };
+  const stopped = isHalted(args.root) ? "halted" : "max-iterations";
+  log({ ev: "loop-stop", reason: stopped, cycles: cycles.length });
+  return { cycles, stopped };
 }
 
 // ─── CLI ─────────────────────────────────────────────────────────────
@@ -223,6 +278,7 @@ function parseArgs(argv: string[]): {
   agent: AgentPersona;
   maxIterations: number;
   dryRun: boolean;
+  quiet: boolean;
 } {
   const get = (k: string, d: string): string => {
     const i = argv.indexOf(k);
@@ -233,6 +289,7 @@ function parseArgs(argv: string[]): {
     agent: get("--agent", "otto") as AgentPersona,
     maxIterations: Number.parseInt(get("--max-iterations", "1"), 10),
     dryRun: argv.includes("--dry-run"),
+    quiet: argv.includes("--quiet"), // suppress structured stderr logging
   };
 }
 
@@ -242,11 +299,14 @@ if (import.meta.main) {
     console.log(`HALTED: events/${HALT_SENTINEL} present — refusing to run (kill-switch).`);
     process.exit(0);
   }
+  // CLI logs structured cycle/key events to STDERR by default (--quiet to mute);
+  // STDOUT stays the clean, parseable human summary below.
   const result = runLoop({
     root: a.root,
     agent: a.agent,
     maxIterations: a.maxIterations,
     dryRun: a.dryRun,
+    log: a.quiet ? noopLog : stderrLog,
   });
   for (const c of result.cycles) {
     console.log(
