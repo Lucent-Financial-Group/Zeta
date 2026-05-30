@@ -83,6 +83,41 @@ FoundationDB deterministic simulation, TigerBeetle VOPR, Antithesis, madsim / tu
 deterministic-sim), Shadow, and current deterministic-cluster-simulation literature. Ask the
 operator for the reference code if the search + on-demand-BFT/CRDT substrate isn't enough.
 
+## Part 3 -- the digital-twin / desired-state / distributed-reconciliation model (operator 2026-05-30)
+
+What makes the millions-of-nodes DST tractable: you do NOT simulate full physical reality -- you
+simulate DIGITAL TWINS. Operator (verbatim):
+
+> *"it's basically digital twins that can be updated fast but they are desired state and local
+> actions are responsible for converging desired state into partition local actions to represent
+> the change in environment"*
+
+> *"the digital twin of the agent/device/environment whatever can update fast and then the actions
+> can be distribution to make the actual thing match the twin"*
+
+The model:
+
+- A **digital twin** of an agent / device / environment (whatever the node is).
+- The twin **updates fast** and holds **DESIRED state** (declarative).
+- **Distributed, partition-local actions** converge the ACTUAL thing to match the twin
+  (reconciliation: the twin is the desired source-of-truth; the environment converges to it via
+  local actions that represent the change in environment).
+
+This is the reconciliation loop (k8s controllers / NixOS declarative desired-state, per B-0945) but
+**partition-local + CRDT-converged + summonable-BFT-on-consensus + DST-simulated**. Why it scales
+to millions on one box:
+
+- the twin is CHEAP (just desired-state, fast-update) -> millions fit on one machine;
+- convergence is LOCAL (partition) -> no global coordination per step;
+- merge is CRDT -> deterministic (simulation-friendly);
+- consensus is on-demand (summonable BFT) -> cheap to simulate.
+
+So Part 2's DST-at-millions IS: simulate millions of fast-updatable desired-state twins + their
+partition-local reconciliation actions; the digital twins ARE the simulated nodes, and the real
+agents/devices/environments converge to their twins via distributed local actions. Composes with
+the declarative microkernel (B-0945, the desired-state substrate), CRDTs, summonable-BFT, and the
+digital-twin pattern.
+
 ## Acceptance
 
 1. `fs { }` computation-expression DSL over the current closure-table backend (F# first).
