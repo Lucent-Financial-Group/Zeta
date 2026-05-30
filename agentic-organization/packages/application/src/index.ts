@@ -25,6 +25,11 @@ export {
   type ObserveWorkItemResult,
 } from "./observe-work-item.ts";
 export {
+  ReviewGateFeedbackReason,
+  evaluateReviewGate,
+  type ReviewGateResult,
+} from "./review-gate.ts";
+export {
   createCommandHandlerRegistry,
   type CommandExecutionContext,
   type CommandHandler,
