@@ -265,3 +265,16 @@ export {
   type AssignmentResult,
   type RankEligibleInput,
 } from "./assignment-engine.ts";
+export {
+  GateOwnerHats,
+  PipelineStage,
+  RecoveryPath,
+  evaluateGate,
+  legalGateOutcomes,
+  nextLegalGate,
+  recoveryPathFor,
+  stageFor,
+  type GateEvaluation,
+  type GateEvaluationResult,
+  type PipelineContext,
+} from "./pipeline.ts";
