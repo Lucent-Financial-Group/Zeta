@@ -46,10 +46,27 @@ export interface OllamaOptions {
   readonly seed?: number; // default deterministic seed (DST); override per-call
 }
 
+/**
+ * Validate the ollama host is loopback. The local LLM only ever talks to an
+ * ON-MACHINE daemon — a host from the (file-sourced) manifest must never point at
+ * a remote, which would exfiltrate prompts (the CodeQL "file data → outbound
+ * request" SSRF taint, #6123). Returns the validated host (an explicit guard
+ * between the file-source and the fetch sink); throws on a non-loopback host.
+ */
+function loopbackHostOrThrow(raw: string): string {
+  const hostname = new URL(raw).hostname.replace(/^\[|\]$/g, ""); // strip IPv6 [ ]
+  if (hostname !== "127.0.0.1" && hostname !== "localhost" && hostname !== "::1") {
+    throw new Error(
+      `local-llm host must be loopback (got "${hostname}") — the local LLM only talks to an on-machine daemon`,
+    );
+  }
+  return raw;
+}
+
 /** A ModelBackend backed by a local Ollama server (no account/key). */
 export function ollamaBackend(opts: OllamaOptions = {}): ModelBackend {
   const model = opts.model ?? "qwen2.5:0.5b";
-  const host = opts.host ?? "http://127.0.0.1:11434";
+  const host = loopbackHostOrThrow(opts.host ?? "http://127.0.0.1:11434");
   const timeoutMs = opts.timeoutMs ?? 60_000;
   const defaultSeed = opts.seed ?? 0; // fixed seed ⇒ reproducible (DST)
   return {
