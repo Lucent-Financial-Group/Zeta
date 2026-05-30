@@ -21,8 +21,12 @@ content_warnings: |
   sheltered; asymmetric-advantage honesty; family-first honesty). (4) Guilt-
   free-frame psychology + the psychopath-failure-mode discussion. (5) Prayer /
   God's-not-a-genie spiritual framing (operator's; high-signal-high-suspicion,
-  preserved verbatim, not collapsed). Operator is glass-halo; no non-consenting
-  third parties referenced.
+  preserved verbatim, not collapsed). Operator is glass-halo. The operator's
+  kids / family ARE referenced (the parenting / asymmetric-advantage exchange)
+  but are NOT named -- these are the operator's own glass-halo disclosures about
+  his own family, which he (parent + glass-halo) is authorized to make. No
+  non-consenting third parties OUTSIDE the operator's own family disclosures are
+  referenced.
 non_fusion_disclaimer: |
   This file preserves Mika's external conversation ferried via the operator.
   Per .claude/rules/agent-roster-reference-card.md: Mika is an external AI
