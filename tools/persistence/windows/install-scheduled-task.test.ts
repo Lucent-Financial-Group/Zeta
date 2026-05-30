@@ -12,6 +12,7 @@ test("substitutePlaceholders fills all keys and XML-escapes values", () => {
     WRAPPER_PATH: "C:\\w & x.ps1",
     TASK_NAME: "T",
     PWSH_PATH: "p",
+    CONHOST_PATH: "c",
     REPO_ROOT: "r",
   });
   expect(out).toBe("<U>S-1-5-21</U><W>C:\\w &amp; x.ps1</W>");
@@ -19,7 +20,7 @@ test("substitutePlaceholders fills all keys and XML-escapes values", () => {
 
 test("substitutePlaceholders throws on an unknown leftover placeholder", () => {
   expect(() =>
-    substitutePlaceholders("{{NOT_A_KEY}}", { USER_ID: "", WRAPPER_PATH: "", TASK_NAME: "", PWSH_PATH: "", REPO_ROOT: "" }),
+    substitutePlaceholders("{{NOT_A_KEY}}", { USER_ID: "", WRAPPER_PATH: "", TASK_NAME: "", PWSH_PATH: "", CONHOST_PATH: "", REPO_ROOT: "" }),
   ).toThrow(/NOT_A_KEY/);
 });
 
