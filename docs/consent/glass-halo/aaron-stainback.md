@@ -63,23 +63,20 @@ Secure-Enclave/TPM-gated signing key -> the `acehack` GitHub identity. Impersona
 requires the corresponding biometric no one else holds. (Azure access is a *separate*
 authority, via Entra on the servicetitan email, not via the GitHub code path.)
 
-**Device-side defense-in-depth (TENTATIVE -- needs verification).** The work Mac +
-Windows devices appear to be under a managed-device stack the operator recalls only
-partially:
+**Device-side defense-in-depth.** The work Mac + Windows devices are under a managed-device
+stack:
 
-- **SentinelOne** (EDR / endpoint agent) -- **confirmed** on the operator's Windows
-  machine, likely the Mac too (*"i think my mac had that too"*). Resolved: it is
-  SentinelOne (EDR), not Microsoft Sentinel (SIEM).
-- *"a little bit of okta and microsoft one i forgot it's mdm name it's a weird name"* --
-  **Okta** (already the auth factor, Okta FastPass) plus a **Microsoft MDM** whose name
-  the operator didn't recall; most likely **Microsoft Intune** (the Microsoft MDM/UEM,
-  formerly Microsoft Endpoint Manager).
+- **SentinelOne** (EDR / endpoint agent) -- confirmed on the operator's Windows machine,
+  likely the Mac too (*"i think my mac had that too"* -- Mac coverage the one residual
+  tentative). It is SentinelOne (EDR), not Microsoft Sentinel (SIEM).
+- **Okta** -- the auth factor (Okta FastPass, phishing-resistant FIDO2).
+- **Microsoft Intune** -- the MDM/UEM (formerly Microsoft Endpoint Manager). Confirmed.
 
 A managed/monitored device adds device-compliance + compromise-detection on the device
 side, which *hardens* the device holding the signing key but is **not part of the core
-signature-binding** (that is biometric + key + email-uniqueness). The whole stack here is
-flagged unverified per `premise-flagged-unverified-stays-unverified-downstream` -- product
-names are operator-uncertain; do not build firm conclusions on them until confirmed.
+signature-binding** (that is biometric + key + email-uniqueness). Stack names confirmed
+(SentinelOne EDR + Okta + Intune); only Mac SentinelOne coverage remains "i think" --
+flagged per `premise-flagged-unverified-stays-unverified-downstream` until confirmed.
 
 ## Consent event record (all three parts)
 
