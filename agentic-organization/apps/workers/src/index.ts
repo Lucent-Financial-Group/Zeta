@@ -161,3 +161,15 @@ export {
   createCockroachWorkItemStateHistoryMetadataMigration,
   type CockroachAnySqlStatement,
 } from "../../../packages/state-cockroach/src/index.ts";
+export {
+  WorkerMainDefault,
+  WorkerMainLogStream,
+  runMain,
+  type RunMainDependencies,
+  type WorkerMainClock,
+  type WorkerMainConstructors,
+  type WorkerMainDurablePorts,
+  type WorkerMainLogRecord,
+  type WorkerMainLogger,
+  type WorkerMainSignalRegistrar,
+} from "./main.ts";

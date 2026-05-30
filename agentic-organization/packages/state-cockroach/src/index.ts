@@ -1,3 +1,4 @@
+export { splitSqlStatements } from "./sql-statement-splitter.ts";
 export {
   CockroachCommandStateStoreStatement,
   createCockroachCommandStateStoreFactory,
