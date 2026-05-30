@@ -278,3 +278,4 @@ export {
   type GateEvaluationResult,
   type PipelineContext,
 } from "./pipeline.ts";
+export { runOrgCycle, type OrgCycleDeps, type OrgCycleReport } from "./org-runtime.ts";
