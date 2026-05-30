@@ -888,6 +888,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0933](backlog/P2/B-0933-memory-index-duplicate-lint-required-or-advisory-decision-2026-05-29.md)** Decide whether memory-index-duplicate-lint is required or explicitly advisory
 - [ ] **[B-0934](backlog/P2/B-0934-backlog-index-integrity-required-or-advisory-decision-2026-05-29.md)** Decide whether backlog-index-integrity is required or explicitly advisory
 - [ ] **[B-0940](backlog/P2/B-0940-evaluate-ubuntu-support-value-nixos-primary-community-reach-aaron-2026-05-30.md)** Evaluate what Ubuntu support brings us — NixOS is primary; Ubuntu's value is community/contributor reach
+- [ ] **[B-0941](backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md)** NixOS-native ollama for the local-LLM primitive — close the hole in the shield (NixOS test passes by SKIPPING, not validating)
 
 ## P3 — convenience / deferred
 
