@@ -191,7 +191,7 @@ jobs:
             echo "Daily manifesto-citation snapshot via the cadence"
             echo "workflow (run $RUN_ID, $ts)."
             echo
-            echo "## What this PR adds"
+            echo "## What this branch adds"
             echo
             echo "- One JSON snapshot at"
             echo "  \`docs/hygiene-history/manifesto-citations/${today}.json\`"

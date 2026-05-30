@@ -6,7 +6,7 @@ title: "Manifesto constitutional-promotion readiness tracking — critical-mass 
 tier: governance
 effort: M
 created: 2026-05-14
-last_updated: 2026-05-23
+last_updated: 2026-05-30
 depends_on: [B-0524]
 composes_with: []
 children: [B-0707]
