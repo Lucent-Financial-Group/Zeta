@@ -88,25 +88,34 @@ declarative cluster substrate (full-ai-cluster/nixos/) until the in-house microk
 - Declarative-system prior art: NixOS (the current substrate; study-not-depend).
 - WebSearch the current state of each before committing a design (Otto-364).
 
-## Staging -- the before-microkernel path (FUSE + justbash) (operator 2026-05-30)
+## Staging -- a REAL microkernel that runs in userspace, under justbash (operator 2026-05-30)
 
 > *"before we go microkernel we could take our fuse and do something like justbash"*
 
-Do NOT jump straight to the microkernel. The incremental, de-risking path:
+> *"so it's an actual real microkernal under justbash but it just runs in userspace too"*
 
-1. **FUSE filesystem** (B-0946 + B-0016) -- own the fs in userspace.
-2. **justbash-style userspace layer** (B-0016 -- "research just-bash / Vercel Labs ... own FUSE FS
-   eventually") -- a minimal userspace OS-ish layer on top of the FUSE fs, like just-bash. Proves
-   the desired-state / digital-twin / flywheel model (B-0946) in USERSPACE first -- cheaper,
-   faster, no kernel work, no capability-OS investment yet.
-3. **Microkernel** (this row, B-0945) -- the full capability-secure substrate LATER, when the
-   userspace layer's limits become the bottleneck.
+This is NOT "userspace layer first, then a separate microkernel later." It is **ONE real
+microkernel** (capabilities, minimal TCB -- the actual architecture) that **runs in USERSPACE
+under justbash**, AND can run bare-metal **too**. The microkernel is real from day one; userspace
+is its DEPLOYMENT MODE, not a precursor.
 
-B-0016 already carries the microkernel lineage (its composes_with cites the no-OS /
-we-are-microkernel long-term anchor), so the justbash + FUSE row IS the natural intermediate.
-Userspace-first is supply-chain-doctrine-aligned (minimal, fewer deps) and lets the
-summonable-BFT + CRDT + DST-at-millions + digital-twin-flywheel model (B-0946) be validated before
-any microkernel investment.
+The path:
+
+1. **FUSE filesystem** (B-0946 + B-0016) -- own the fs.
+2. **justbash on top of the real microkernel**, and that microkernel **runs in userspace** (a
+   library-OS / unikernel-style deployment -- MirageOS / seL4-in-userspace / Genode-on-Linux
+   style). You get the actual capability-secure microkernel WITHOUT bare-metal / kernel-mode /
+   driver work: it is a userspace process.
+3. **Same real microkernel, bare-metal mode** ("too"): the identical microkernel can later run
+   bare-metal when that becomes worth it. Dual deployment (userspace now + bare-metal later),
+   one codebase.
+
+Why this is the de-risked path: you ship the REAL microkernel (not a stand-in), deployed in
+userspace (cheap, no kernel-mode/driver work, supply-chain-doctrine-aligned), proving the
+desired-state / digital-twin / flywheel + summonable-BFT + CRDT + DST-at-millions model (B-0946)
+on the ACTUAL architecture -- then flip the SAME microkernel to bare-metal when warranted. B-0016
+already carries the no-OS / we-are-microkernel lineage anchor, so justbash + FUSE + userspace-
+microkernel is the natural intermediate that is ALSO the real thing.
 
 ## Acceptance (umbrella -- decomposes into slices)
 
