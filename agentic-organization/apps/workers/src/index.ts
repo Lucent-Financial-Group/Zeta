@@ -93,6 +93,8 @@ export {
   WorkerRuntimeTelemetryEventName,
   createWorkerRuntime,
   type CreateWorkerRuntimeInput,
+  type WorkerKeepAliveLane,
+  type WorkerKeepAliveLaneResult,
   type WorkerRuntime,
   type WorkerRuntimeConfig,
   type WorkerRuntimeFailure,

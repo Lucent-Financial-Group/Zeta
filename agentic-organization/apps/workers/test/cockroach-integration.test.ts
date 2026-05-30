@@ -157,6 +157,7 @@ describe("Cockroach worker live integration", () => {
         runtime: {
           runOnce: async () => ({
             failures: [],
+            keepAlive: undefined,
             natsConsumerBatch: undefined,
             status: WorkerRuntimeStatus.Healthy,
             workerCycle: undefined,
