@@ -110,9 +110,20 @@ is to read + ground in:
    (per-agent dir + ULID filenames = conflict-free; Z-set weight + compaction =
    forgiveness-budget; schema-in-the-stream; composes with `state-machine.ts`;
    6/6 tests pass, typecheck clean).
-3. **Prototype a GH-Actions-recursion harness** — minimal self-triggering Action
-   that reads the git-event-store, picks a move, commits the next event. Compose
-   with the agentic-org live substrate proof harnesses (`cc6904685`).
+3. ~~**Prototype a GH-Actions-recursion harness**~~ ✅ DONE 2026-05-30 →
+   the move-next harness [`tools/accelerator/move-next-harness.ts`](../../tools/accelerator/move-next-harness.ts)
+   (+ tests, 8/8 pass) reads the event-store → replays state via `transition`-fold
+   → generates a menu → a selector picks → appends the next event. The
+   self-triggering Action [`.github/workflows/accelerator-move-next.yml`](../../.github/workflows/accelerator-move-next.yml)
+   is **STAGED, NOT LIVE** (lives on this branch only; workflow_dispatch needs
+   the default branch to dispatch, so it cannot auto-run — go-live is a deliberate
+   operator step). Safety rails: bounded recursion (iterations countdown +
+   hard-cap 25 in BOTH harness + workflow), `events/_HALT` kill-switch,
+   concurrency=1, append-only-no-force commits, GITHUB_TOKEN-only (no PAT →
+   no uncontrolled recursion), input-hardened (env-vars + agent allow-list +
+   numeric validation), actionlint-clean. A self-triggering committer is
+   irreversible-flavored, so it is built + tested + staged, NOT autonomously
+   made live.
 4. **Define the harvest protocol** — when/how a matured piece on the accelerator
    branch graduates to main (deliberate merge, not per-commit PR).
 5. **Map the dual-market boundary** — which DUs are leash (PR-protected) vs Agora
@@ -132,10 +143,14 @@ here as git-events.
 - **2026-05-29 (Action Items 1 + 2 done)**: substrate-grounding synthesis
   ([`SUBSTRATE-GROUNDING.md`](SUBSTRATE-GROUNDING.md)) + git-event-store schema
   ([`EVENT-STORE-SCHEMA.md`](EVENT-STORE-SCHEMA.md) + concrete types in
-  `tools/accelerator/event-store-schema.ts`, 6/6 tests, typecheck clean). Next
-  up: Action Item 3 (GH-Actions-recursion harness — minimal self-triggering
-  Action that reads the event-store, picks a move via `transition`, appends +
-  pushes the next event).
+  `tools/accelerator/event-store-schema.ts`, 6/6 tests, typecheck clean).
+- **2026-05-30 (Action Item 3 done)**: the move-next harness
+  (`tools/accelerator/move-next-harness.ts` + tests, 8/8 pass; dry-run + clamp
+  smoke-tested) + the STAGED-NOT-LIVE self-triggering workflow
+  (`.github/workflows/accelerator-move-next.yml`, actionlint-clean, bounded +
+  kill-switched + input-hardened). Next up: Action Item 4 (harvest protocol) +
+  Action Item 5 (dual-market routing) — and going-live on the self-triggering
+  Action is a deliberate operator decision, not autonomous.
 
 ## Provenance
 
