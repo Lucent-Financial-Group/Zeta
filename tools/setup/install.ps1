@@ -25,11 +25,18 @@ function Have($c) { [bool](Get-Command $c -ErrorAction SilentlyContinue) }
 Write-Host "=== Zeta install -- Windows user-mode entry (scoop-primary, declarative) ==="
 Write-Host "Repo root: $RepoRoot"
 
-# Allow running local scripts for THIS user (no admin) -- scoop + mise need it.
-$cur = Get-ExecutionPolicy -Scope CurrentUser
-if ($cur -notin @('RemoteSigned', 'Unrestricted', 'Bypass')) {
-  Write-Host "setting CurrentUser ExecutionPolicy -> RemoteSigned (no admin)"
-  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+# Allow running local scripts for THIS user (no admin) -- scoop + mise need it. Check the
+# EFFECTIVE policy (most-specific scope wins): if the process can already run scripts
+# (RemoteSigned/Unrestricted/Bypass -- e.g. a container launched with -ExecutionPolicy Bypass, or
+# pwsh's default), leave it alone. Only attempt a CurrentUser set when the effective policy is
+# restrictive, and TOLERATE a more-specific override (e.g. a corporate GPO scope on a managed
+# laptop) rather than dying: Set-ExecutionPolicy emits a non-terminating "overridden by a more
+# specific scope" error that this script's $ErrorActionPreference='Stop' would promote to fatal.
+$eff = Get-ExecutionPolicy
+if ($eff -notin @('RemoteSigned', 'Unrestricted', 'Bypass')) {
+  Write-Host "effective ExecutionPolicy is '$eff'; setting CurrentUser -> RemoteSigned (no admin)"
+  try { Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force }
+  catch { Write-Host "could not set CurrentUser policy ($($_.Exception.Message)); effective policy '$eff' may be GPO-pinned -- continuing" }
 }
 
 # 1. scoop (user-mode; no admin). Download-then-exec (NOT pipe-to-shell) -- mirrors macos.sh's
