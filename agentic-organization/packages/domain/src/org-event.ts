@@ -70,6 +70,9 @@ export const OrgEventKind = {
   GraphConfidencePromoted: "graph_confidence_promoted",
   GraphEdgeRetracted: "graph_edge_retracted",
   GraphDerivedIntelligence: "graph_derived_intelligence",
+  // Recovery scanners (G3) — observability over stale/stranded/abandoned runtime rows.
+  RecoveryIncidentDetected: "recovery_incident_detected",
+  RecoveryScanCompleted: "recovery_scan_completed",
 } as const;
 
 export type OrgEventKind = (typeof OrgEventKind)[keyof typeof OrgEventKind];

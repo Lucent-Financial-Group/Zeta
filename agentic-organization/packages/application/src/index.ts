@@ -6,6 +6,23 @@ export {
   type TriageActionRequest,
 } from "./triage-action-resolver.ts";
 export {
+  DeadLetterClassification,
+  RecoveryIncidentKind,
+  RecoveryScannerKind,
+  classifyDeadLetters,
+  recoveryIncidentToOrgEvent,
+  recoveryScanCompletedToOrgEvent,
+  scanAbandonedRunBindings,
+  scanStaleReactionPlans,
+  scanStrandedScheduleBlocks,
+  type DeadLetterRecoveryCandidate,
+  type ReactionPlanRecoveryCandidate,
+  type RecoveryIncident,
+  type RecoveryScanReport,
+  type RunBindingRecoveryCandidate,
+  type ScheduleBlockRecoveryCandidate,
+} from "./recovery-scanners.ts";
+export {
   GraphEdgeKind,
   GraphNodeKind,
   decisionsForWorkItem,

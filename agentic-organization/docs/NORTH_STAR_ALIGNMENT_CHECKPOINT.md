@@ -1671,3 +1671,45 @@ The org integrates through one provider-agnostic surface where the configured pr
 the action; the live flip is a Secret the operator drops (the wire is already verified); and the
 integration suite runs green against real Cockroach+NATS in CI. The whole roadmap — A/L/D/G/C plus
 the generic-provider + live-flip + integration-runner work — is live, proven in kind, and green.
+
+---
+
+## Orchestration Moat G3 — Recovery Scanners
+
+The recovery moat now covers the V9 reaction-plan/runtime lifecycle with four always-on cadence
+lanes: `stale-reaction-plan-scan`, `stranded-schedule-scan`, `abandoned-run-binding-scan`, and
+`dead-letter-classifier`.
+
+### What shipped
+
+- Pure recovery classifiers in `packages/application/src/recovery-scanners.ts`.
+- Bounded Cockroach readers in `packages/state-cockroach/src/cockroach-recovery-scan-reader.ts`.
+- Four worker lanes wired into `composeOrgCadenceLoops`, each event-first and fail-open:
+  transient read/write errors degrade the lane tick instead of stopping the worker.
+- Recovery evidence events: `recovery_incident_detected` and `recovery_scan_completed`.
+- Dead-letter failure text is reduced to a `failure_message_sha256:<hash>` evidence ref before
+  persistence; raw failure messages do not become durable org-event payloads.
+- KIND proof runner: `deploy/run-recovery-scanners.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:g3-recovery-final`
+(`sha256:cdbc1787f764ce7645da8a0013b891402aea9101566849e697d09d5d5de6c0d5`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-7489448c66-bxmnq` with zero restarts. Fresh boot
+logs showed all four scanner lanes present with `failureCount:0`.
+
+`deploy/run-recovery-scanners.ts` seeded one proof candidate per scanner in live Cockroach and ran
+the same lane factories the worker uses:
+
+- stale reaction plan: `stale-reaction-plan-scan:1incidents`
+- stranded schedule block: `stranded-schedule-scan:1incidents`
+- abandoned Hermes run binding: `abandoned-run-binding-scan:1incidents`
+- failed/dead-lettered reaction plan: `dead-letter-classifier:1incidents`
+
+The proof for `org-recovery-02a002d1` observed four `recovery_incident_detected` events and four
+`recovery_scan_completed` events. `PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **871 tests, 0 fail** (7 skipped live-integration
+tests).

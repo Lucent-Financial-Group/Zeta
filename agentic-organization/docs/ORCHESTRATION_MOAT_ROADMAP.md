@@ -51,12 +51,18 @@ is an additive layer on existing primitives — no substrate change.
 ### G3. Recovery scanners (the lanes our NORTH_STAR already names)
 *Gap closed: gastown convoy stranded-scan + reaper + witness patrol.*
 
+**Status: shipped 2026-05-30.**
+
 - New cadence lanes over `reaction_plans` (V9 lifecycle): `stale-reaction-plan-scan`,
   `stranded-schedule-scan`, `abandoned-run-binding-scan`, `dead-letter-classifier`.
 - Two rules adopted from gastown: **event-first, recovery-scan-second**, and **fail-open on
   transient errors** (a single Cockroach hiccup must never stall the org).
-- **Build:** cheapest Tier-1 win — the lane framework + leased reaction-plan lifecycle already
-  exist; these are new `runOnce()` lanes.
+- **Built:** `packages/application/src/recovery-scanners.ts` (pure scanners),
+  `packages/state-cockroach/src/cockroach-recovery-scan-reader.ts` (bounded tenant-scoped
+  lifecycle readers), four worker cadence lanes, and `deploy/run-recovery-scanners.ts`.
+  Dead-letter evidence stores failure-message hashes, not raw terminal payload text.
+  KIND proof: all four lanes found exactly one seeded incident, emitted four incident events
+  and four scan-completed events, `PROOF: PASS`.
 
 ---
 

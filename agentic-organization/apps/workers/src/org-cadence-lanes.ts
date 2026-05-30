@@ -33,8 +33,18 @@ import {
   applyChangeSet,
   ExternalDecision,
   replayLedger,
+  classifyDeadLetters,
+  recoveryIncidentToOrgEvent,
+  recoveryScanCompletedToOrgEvent,
+  scanAbandonedRunBindings,
+  scanStaleReactionPlans,
+  scanStrandedScheduleBlocks,
   type ChangeControlPort,
+  type DeadLetterRecoveryCandidate,
+  type ReactionPlanRecoveryCandidate,
   type ReviewKernelDeps,
+  type RunBindingRecoveryCandidate,
+  type ScheduleBlockRecoveryCandidate,
 } from "../../../packages/application/src/index.ts";
 import type { CadenceLane, CadenceLaneTickResult } from "./cadence-lane.ts";
 
@@ -319,4 +329,200 @@ export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): Cade
       }
     },
   };
+}
+
+// ── G3: recovery scanners ───────────────────────────────────────────────────
+
+const DEFAULT_RECOVERY_SCAN_LIMIT = 100;
+const DEFAULT_STALE_REACTION_PLAN_MS = 10 * 60 * 1000;
+const DEFAULT_STRANDED_SCHEDULE_GRACE_MS = 5 * 60 * 1000;
+const DEFAULT_ABANDONED_RUN_HEARTBEAT_MS = 5 * 60 * 1000;
+
+export type StaleReactionPlanScanReader = {
+  listStaleReactionPlanCandidates: (input: {
+    organizationId: string;
+    nowIso: string;
+    staleBeforeIso: string;
+    limit: number;
+  }) => Promise<readonly ReactionPlanRecoveryCandidate[]>;
+};
+
+export type StrandedScheduleScanReader = {
+  listStrandedScheduleCandidates: (input: {
+    organizationId: string;
+    nowIso: string;
+    endedBeforeIso: string;
+    limit: number;
+  }) => Promise<readonly ScheduleBlockRecoveryCandidate[]>;
+};
+
+export type AbandonedRunBindingScanReader = {
+  listAbandonedRunBindingCandidates: (input: {
+    organizationId: string;
+    nowMs: number;
+    heartbeatBeforeIso: string;
+    limit: number;
+  }) => Promise<readonly RunBindingRecoveryCandidate[]>;
+};
+
+export type DeadLetterClassifierReader = {
+  listDeadLetterCandidates: (input: {
+    organizationId: string;
+    limit: number;
+  }) => Promise<readonly DeadLetterRecoveryCandidate[]>;
+};
+
+export type RecoveryScanCadenceDeps = {
+  organizationId: string;
+  now: () => number;
+  createId: (prefix: string) => string;
+  appendEvent: (event: OrgEvent) => Promise<void>;
+  limit?: number;
+};
+
+export type StaleReactionPlanScanCadenceDeps = RecoveryScanCadenceDeps & {
+  staleAfterMs?: number;
+  reader: StaleReactionPlanScanReader;
+};
+
+export type StrandedScheduleScanCadenceDeps = RecoveryScanCadenceDeps & {
+  graceMs?: number;
+  reader: StrandedScheduleScanReader;
+};
+
+export type AbandonedRunBindingScanCadenceDeps = RecoveryScanCadenceDeps & {
+  heartbeatDeadlineMs?: number;
+  reader: AbandonedRunBindingScanReader;
+};
+
+export type DeadLetterClassifierCadenceDeps = RecoveryScanCadenceDeps & {
+  reader: DeadLetterClassifierReader;
+};
+
+export function createStaleReactionPlanScanCadenceLane(deps: StaleReactionPlanScanCadenceDeps): CadenceLane {
+  return {
+    name: "stale-reaction-plan-scan",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const now = deps.now();
+        const candidates = await deps.reader.listStaleReactionPlanCandidates({
+          organizationId: deps.organizationId,
+          nowIso: new Date(now).toISOString(),
+          staleBeforeIso: new Date(now - (deps.staleAfterMs ?? DEFAULT_STALE_REACTION_PLAN_MS)).toISOString(),
+          limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
+        });
+        const report = scanStaleReactionPlans({
+          nowMs: now,
+          staleAfterMs: deps.staleAfterMs ?? DEFAULT_STALE_REACTION_PLAN_MS,
+          reactionPlans: candidates,
+        });
+        await appendRecoveryScanEvents(deps, report);
+        return { status: `stale-reaction-plan-scan:${report.incidents.length}incidents`, failures: [] };
+      } catch (error) {
+        return degraded(`stale-reaction-plan-scan lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+export function createStrandedScheduleScanCadenceLane(deps: StrandedScheduleScanCadenceDeps): CadenceLane {
+  return {
+    name: "stranded-schedule-scan",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const now = deps.now();
+        const candidates = await deps.reader.listStrandedScheduleCandidates({
+          organizationId: deps.organizationId,
+          nowIso: new Date(now).toISOString(),
+          endedBeforeIso: new Date(now - (deps.graceMs ?? DEFAULT_STRANDED_SCHEDULE_GRACE_MS)).toISOString(),
+          limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
+        });
+        const report = scanStrandedScheduleBlocks({
+          nowMs: now,
+          graceMs: deps.graceMs ?? DEFAULT_STRANDED_SCHEDULE_GRACE_MS,
+          scheduleBlocks: candidates,
+        });
+        await appendRecoveryScanEvents(deps, report);
+        return { status: `stranded-schedule-scan:${report.incidents.length}incidents`, failures: [] };
+      } catch (error) {
+        return degraded(`stranded-schedule-scan lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+export function createAbandonedRunBindingScanCadenceLane(deps: AbandonedRunBindingScanCadenceDeps): CadenceLane {
+  return {
+    name: "abandoned-run-binding-scan",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const now = deps.now();
+        const candidates = await deps.reader.listAbandonedRunBindingCandidates({
+          organizationId: deps.organizationId,
+          nowMs: now,
+          heartbeatBeforeIso: new Date(now - (deps.heartbeatDeadlineMs ?? DEFAULT_ABANDONED_RUN_HEARTBEAT_MS)).toISOString(),
+          limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
+        });
+        const report = scanAbandonedRunBindings({
+          nowMs: now,
+          heartbeatDeadlineMs: deps.heartbeatDeadlineMs ?? DEFAULT_ABANDONED_RUN_HEARTBEAT_MS,
+          runs: candidates,
+        });
+        await appendRecoveryScanEvents(deps, report);
+        return { status: `abandoned-run-binding-scan:${report.incidents.length}incidents`, failures: [] };
+      } catch (error) {
+        return degraded(`abandoned-run-binding-scan lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+export function createDeadLetterClassifierCadenceLane(deps: DeadLetterClassifierCadenceDeps): CadenceLane {
+  return {
+    name: "dead-letter-classifier",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const candidates = await deps.reader.listDeadLetterCandidates({
+          organizationId: deps.organizationId,
+          limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
+        });
+        const report = classifyDeadLetters({ deadLetters: candidates });
+        await appendRecoveryScanEvents(deps, report);
+        return { status: `dead-letter-classifier:${report.incidents.length}incidents`, failures: [] };
+      } catch (error) {
+        return degraded(`dead-letter-classifier lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+async function appendRecoveryScanEvents(
+  deps: RecoveryScanCadenceDeps,
+  report: Parameters<typeof recoveryScanCompletedToOrgEvent>[0]["report"],
+): Promise<void> {
+  const occurredAt = new Date(deps.now()).toISOString();
+  const correlationId = `${deps.organizationId}:${report.scanner}:${occurredAt}`;
+  const traceId = correlationId;
+
+  for (const incident of report.incidents) {
+    const id = deps.createId("recovery-incident");
+    await deps.appendEvent(recoveryIncidentToOrgEvent({
+      incident,
+      id,
+      occurredAt,
+      organizationId: deps.organizationId,
+      correlationId,
+      traceId,
+    }));
+  }
+
+  const id = deps.createId("recovery-scan");
+  await deps.appendEvent(recoveryScanCompletedToOrgEvent({
+    report,
+    id,
+    occurredAt,
+    organizationId: deps.organizationId,
+    correlationId,
+    traceId,
+  }));
 }

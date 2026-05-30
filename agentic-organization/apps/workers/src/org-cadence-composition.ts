@@ -23,6 +23,7 @@ import {
   createCockroachChangeSetStore,
   createCockroachWorkIntakeSource,
   createCockroachDocUnitStore,
+  createCockroachRecoveryScanReader,
 } from "../../../packages/state-cockroach/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "../../../packages/state-cockroach/src/cockroach-sql-executor.ts";
 import { runCadenceLane, type CadenceLane, type CadenceLaneObserver } from "./cadence-lane.ts";
@@ -32,6 +33,10 @@ import {
   createChangeControlCadenceLane,
   createDocMaintenanceCadenceLane,
   createConformanceCadenceLane,
+  createAbandonedRunBindingScanCadenceLane,
+  createDeadLetterClassifierCadenceLane,
+  createStaleReactionPlanScanCadenceLane,
+  createStrandedScheduleScanCadenceLane,
   type WorkIntakeSource,
 } from "./org-cadence-lanes.ts";
 
@@ -41,6 +46,10 @@ export type OrgCadenceIntervals = {
   changeControlMs: number;
   docMaintenanceMs: number;
   conformanceMs: number;
+  staleReactionPlanScanMs: number;
+  strandedScheduleScanMs: number;
+  abandonedRunBindingScanMs: number;
+  deadLetterClassifierMs: number;
 };
 
 export const OrgCadenceIntervalDefault: OrgCadenceIntervals = {
@@ -49,6 +58,10 @@ export const OrgCadenceIntervalDefault: OrgCadenceIntervals = {
   changeControlMs: 30_000,
   docMaintenanceMs: 6 * 60 * 60 * 1000, // 6h (doc lifecycle is slow, like memory)
   conformanceMs: 60_000,
+  staleReactionPlanScanMs: 60_000,
+  strandedScheduleScanMs: 60_000,
+  abandonedRunBindingScanMs: 60_000,
+  deadLetterClassifierMs: 60_000,
 };
 
 export type ComposeOrgCadenceInput = {
@@ -56,7 +69,7 @@ export type ComposeOrgCadenceInput = {
   organizationId: string;
   now: () => number;
   createId: (prefix: string) => string;
-  intervals?: OrgCadenceIntervals;
+  intervals?: Partial<OrgCadenceIntervals>;
   /** sleep that wakes early when the cadence is stopped (the stop check is supplied) */
   sleep: (ms: number, isStopRequested: () => boolean) => Promise<void>;
   observer?: CadenceLaneObserver;
@@ -85,11 +98,12 @@ export type OrgCadenceHandle = {
 };
 
 export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenceHandle {
-  const intervals = input.intervals ?? OrgCadenceIntervalDefault;
+  const intervals = { ...OrgCadenceIntervalDefault, ...input.intervals };
   const orgEvents = createCockroachOrgEventStore({ executor: input.executor });
   const memoryState = createCockroachMemoryStateStore({ executor: input.executor });
   const changeSets = createCockroachChangeSetStore({ executor: input.executor });
   const docUnits = createCockroachDocUnitStore({ executor: input.executor });
+  const recoveryScanReader = createCockroachRecoveryScanReader({ executor: input.executor });
   const policy = buildDefaultChangeControlPolicy(input.organizationId);
   const appendEvent = (e: Parameters<typeof orgEvents.append>[0]) => orgEvents.append(e);
 
@@ -128,6 +142,34 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     reader: orgEvents,
     limit: 1_000,
   });
+  const staleReactionPlans = createStaleReactionPlanScanCadenceLane({
+    organizationId: input.organizationId,
+    now: input.now,
+    createId: input.createId,
+    reader: recoveryScanReader,
+    appendEvent,
+  });
+  const strandedSchedules = createStrandedScheduleScanCadenceLane({
+    organizationId: input.organizationId,
+    now: input.now,
+    createId: input.createId,
+    reader: recoveryScanReader,
+    appendEvent,
+  });
+  const abandonedRunBindings = createAbandonedRunBindingScanCadenceLane({
+    organizationId: input.organizationId,
+    now: input.now,
+    createId: input.createId,
+    reader: recoveryScanReader,
+    appendEvent,
+  });
+  const deadLetters = createDeadLetterClassifierCadenceLane({
+    organizationId: input.organizationId,
+    now: input.now,
+    createId: input.createId,
+    reader: recoveryScanReader,
+    appendEvent,
+  });
 
   const stopped = { value: false };
   const isStopRequested = () => stopped.value;
@@ -145,6 +187,10 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     start(changeControl, intervals.changeControlMs),
     start(docMaintenance, intervals.docMaintenanceMs),
     start(conformance, intervals.conformanceMs),
+    start(staleReactionPlans, intervals.staleReactionPlanScanMs),
+    start(strandedSchedules, intervals.strandedScheduleScanMs),
+    start(abandonedRunBindings, intervals.abandonedRunBindingScanMs),
+    start(deadLetters, intervals.deadLetterClassifierMs),
   ]);
 
   return { stop: () => { stopped.value = true; }, done };
