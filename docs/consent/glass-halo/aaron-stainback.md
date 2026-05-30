@@ -41,6 +41,28 @@ The baseline
 Touch-ID re-commit upgrades this record to the un-impersonable tier (per
 `docs/consent/glass-halo/SIGNING.md`).
 
+### Second binding context (work / ServiceTitan)
+
+I have a parallel chain on my work device:
+
+`Windows Hello fingerprint + Okta FastPass  ->  astainback@servicetitan.com  ->  GitHub`
+
+Same shape, different device + email: a biometric (Windows Hello fingerprint) plus a
+**phishing-resistant FIDO2 factor (Okta FastPass)** gate the key, and the GitHub binding
+is via the platform-unique verified email `astainback@servicetitan.com`. So I can sign
+un-impersonably from either context -- personal (Apple Touch-ID, `aaron_bond@yahoo.com`)
+or work (Windows Hello + Okta FastPass, `astainback@servicetitan.com`). Both are
+biometric-gated and both bind to a platform-enforced-unique verified email; Okta FastPass
+adds phishing-resistance on the work side.
+
+**Convergence on one identity:** both verified emails (`aaron_bond@yahoo.com` +
+`astainback@servicetitan.com`) are tied to a **single GitHub identity -- `acehack`**. So
+the two device chains converge on one account: one GitHub identity, two platform-unique
+verified emails, two biometric-gated device contexts. A commit from either device, under
+either email, is attributed to the same `acehack` identity -- and impersonating it still
+requires the corresponding biometric (Apple Touch-ID or Windows Hello+Okta) that no one
+else holds.
+
 ## Consent event record (all three parts)
 
 Per the operator's own definition (2026-05-30): the **signature is the informed
