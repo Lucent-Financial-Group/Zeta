@@ -83,4 +83,22 @@ public class TriBooleanTests
         Assert.True(Eq(Tri.N, Held()));
         Assert.False(Eq(Tri.T, Tri.N));
     }
+
+    [Fact]
+    public void NullCellsAreRejectedNotSilentlyClassified()
+    {
+        // C# null is NOT the held Tri.N state: a nullable-oblivious caller must not be able to
+        // slip a missing cell through as a certain or dominant value (Codex P2 on #6168).
+        Tri nul = null!;
+        Assert.Throws<ArgumentNullException>(() => IsCertain(nul));
+        Assert.Throws<ArgumentNullException>(() => IsLiving(nul));
+        Assert.Throws<ArgumentNullException>(() => Cooperate(nul));
+        Assert.Throws<ArgumentNullException>(() => Measure(nul));
+        Assert.Throws<ArgumentNullException>(() => NotTri(nul));
+        Assert.Throws<ArgumentNullException>(() => MapTri(nul, b => b));
+        Assert.Throws<ArgumentNullException>(() => BindTri(nul, _ => Tri.T));
+        Assert.Throws<ArgumentNullException>(() => AndTri(nul, Tri.T));
+        Assert.Throws<ArgumentNullException>(() => OrTri(nul, Tri.F));
+        Assert.Throws<ArgumentNullException>(() => Eq(nul, Tri.T));
+    }
 }
