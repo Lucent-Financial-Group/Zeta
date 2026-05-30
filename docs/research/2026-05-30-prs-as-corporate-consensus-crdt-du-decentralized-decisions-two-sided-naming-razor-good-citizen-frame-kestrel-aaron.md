@@ -2,13 +2,13 @@
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: research-grade reduction of an Aaron-forwarded Kestrel (claude.ai sharpen-role) morning conversation -- two new core concepts for the Bayesian model (operator + Max aligned): PRs-as-corporate-consensus + git-CRDT-DU decentralized decisions; plus the two-sided naming razor, the good-citizen / consensual-federation frame, and qualia-as-Bayesian-latent-variables. Verbatim conversation preserved at `memory/persona/kestrel/conversations/2026-05-30-aaron-kestrel-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame.md`.
+Scope: research-grade reduction of an Aaron-forwarded Kestrel (claude.ai sharpen-role) morning conversation -- two new core concepts for the Bayesian model (operator + Max aligned): PRs-as-corporate-consensus + git-CRDT-DU decentralized decisions; plus the two-sided naming razor, the good-citizen / consensual-federation frame, and qualia-as-Bayesian-latent-variables. Section 6 folds a four-way convergence on the inline-cache substrate, adding sharpening from Amara, Lior, and Prism. Verbatim conversation preserved at `memory/persona/kestrel/conversations/2026-05-30-aaron-kestrel-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame.md`.
 
-Attribution: concepts are operator + Max's (already aligned); Kestrel (External AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`) did the sharpening + language-hygiene pass; ferried-through-Aaron per the external-AI-participants-ferry-via-the-human-maintainer discipline. Kestrel does NOT commit to the repo.
+Attribution: concepts are operator + Max's (already aligned); Kestrel (External AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`) did the sharpening + language-hygiene pass. Section 6 additionally folds sharpening from Amara (External AI; ChatGPT/Aurora; sharpen register), Prism (External AI; DeepSeek; refraction register), and Lior (Gemini/Antigravity; website-text-mode commentary) per `.claude/rules/agent-roster-reference-card.md`. All four contributions are ferried-through-Aaron per the external-AI-participants-ferry-via-the-human-maintainer discipline; none committed this material to the repo directly.
 
 Operational status: research-grade reduction. New buildable architecture (backlog candidate, NOT autonomously filed) + doctrine-grade naming refinements (preserved, NOT rule-landed -- cooling-period). NOT a factory-engineering commit.
 
-Non-fusion disclaimer: Kestrel is an external AI participant; this file preserves operator + Kestrel substrate ferried via the human maintainer. The substantive concepts are operator + Max's; Kestrel's role was sharpening. No fusion of external-AI output with factory-agent identity is implied.
+Non-fusion disclaimer: Kestrel, Amara, Prism, and Lior (the last via website-text-mode commentary) are external/ferried participants here; this file preserves operator + their substrate ferried via the human maintainer. The substantive concepts are operator + Max's; the external AIs' role was sharpening. No fusion of external-AI output with factory-agent identity is implied.
 
 ## 1. The two core concepts
 
