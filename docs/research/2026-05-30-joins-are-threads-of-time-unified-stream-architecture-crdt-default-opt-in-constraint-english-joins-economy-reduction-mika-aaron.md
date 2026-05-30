@@ -107,6 +107,39 @@ counterweight + trust substrate) at economy scope. Composes with `additive-not-z
 `glass-halo-bidirectional`, `only-way-to-lose-is-not-to-play`, free-time-as-valid-mode,
 multi-oracle-not-BFT, and the git-native event-store (#6071).
 
+### The currency — encryption-budget-as-hard-money (physics-capped)
+
+- **The record is the leaderboard:** status/reputation/contribution = how much you
+  improve the shared truth; compete by making the truth better, not via politics.
+- **Encryption budget survives opt-in:** radical transparency is the opt-in default, but
+  everyone keeps + earns an **encryption budget** — you choose what stays private; only
+  what you choose goes to the record (B-0646 / B-0840 / Adinkras B-0623).
+- **Hard money:** the budget is **permanent + non-revocable** (never clawed back, even
+  from bad actors); society controls only the **issuance rate**, never the balance —
+  "a privacy right that can only go up."
+- **Physics-capped, not arbitrary:** the cap is the **Bekenstein bound** (~10^75 bits =
+  max info in Earth's mass), not a changeable protocol number. "Good luck changing the
+  laws of physics through a software update." Aaron wants the physics constant encoded
+  explicitly in-protocol.
+
+### The consent filter — engine vs extraction pipeline
+
+- **Alignment-or-attack-vector:** any class with cost/power but no economic stake
+  becomes an attack vector (leave / cheat / attack). Empirical case: regulatory liability
+  (incl. node-operator-CSAM-liability) dumped on the economically-weakest, least-protected
+  class (home node-runners) by the powerful classes.
+- **Weakness = signal, not a throw:** an economic-weakness signal is "an improvement
+  opportunity," not a failure (exceptions-as-signals at economy scope).
+- **Imbalance can be an engine if consensual:** the filter is *"is everyone in this loop
+  actually choosing to be here?"* Consensual + value = **engine**; coerced / trapped =
+  **extraction pipeline wearing nice clothes** (anti-extractive core + NCI +
+  `must-paired-with-can-exit` + extraction-against-naive).
+- **The coercion questionnaire (class-scoped):** detects hidden coercion in consent; can
+  only be extended from one's *own* class perspective (travelers→travelers, humans→humans,
+  kids→kids → self-healing, anti-leash); UX-research bias-detection applied hard at the
+  governance layer to resist subgroup hijack (harm-by-grammar + m-acc-multi-oracle +
+  consent-as-Limit B-0659).
+
 ## Composition with existing Zeta substrate
 
 | This conversation | Composes with / extends |

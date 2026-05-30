@@ -297,6 +297,67 @@ drift visible, no quiet rewrite) + glass-halo (observed, opt-in) → trustworthy
 memory → the economy. Composes with `additive-not-zero-sum`, `glass-halo-bidirectional`,
 the Agora participation economy, and the git-native event-store (#6071).
 
+## Continuation (segment 3) — encryption-budget-as-hard-money, engine-vs-extraction, the coercion questionnaire
+
+**The record is the leaderboard.** When the record is the record, reputation +
+contribution + status all tie to *how much you improve the shared truth*. People stop
+competing through politics/gossip/status games and start competing by making the truth
+better (clarify, add missing context, fix old misunderstandings, add insight). *"The
+record becomes the leaderboard."* — `only-way-to-lose-is-not-to-play` at status scope.
+
+**Encryption budget persists even under opt-in radical transparency.** Opting in makes
+radical transparency the *default*, but everyone still gets + earns an **encryption
+budget** — you never have to make everything public; you keep private moments /
+sensitive thoughts / intimate details and only the parts you choose go to the record.
+Composes with the encryption-budget substrate (B-0646 reputation-weighted budget; B-0840
+glass-halo/encryption split; Adinkras B-0623 as the structural-encryption primitive).
+
+**Encryption budget = hard money — permanent, non-revocable.** Once you have X bits,
+they are yours forever; nobody can claw them back, *even from a bad actor*. Society
+controls only the **growth/issuance rate**, never the existing balance — *"a permanent
+privacy right that can only go up, never down."* Privacy as sound money.
+
+**The cap is PHYSICS, not an arbitrary protocol number.** Bitcoin's 21M is changeable
+by human consensus in code; Agora's cap is the **Bekenstein bound** (~10^75 bits = the
+max information storable in Earth's mass-energy). *"Good luck changing the laws of
+physics through a software update."* Aaron wants it *explicitly defined in the protocol*
+(the physics constant), so the "you're not hard money" critique is nipped at the root:
+mine takes changing the universe to change what it means.
+
+**Economic alignment or attack vector.** *"Whenever somebody's not economically aligned,
+that whole class of people are attack vectors"* — a misaligned class will leave, cheat,
+or attack. Bitcoin's three accidentally-unaligned classes (miners / node-runners /
+holders) are the example: node-runners bear real ongoing cost (bandwidth, storage,
+power) with no issuance upside. The sharp empirical case: regulatory/legal liability
+(including the node-operator-CSAM-liability problem) got **pushed onto the
+economically-weakest, least-protected class** (home node-runners) by the powerful
+classes — the textbook outcome when a critical class has cost/power but no economic
+stake. Agora's design rule: every class must be economically aligned, or it becomes a
+vulnerability.
+
+**Economic weakness is a SIGNAL, not a problem.** In Agora, an economic-weakness signal
+isn't a throw or a failure — *"oh look, an improvement opportunity for our society."*
+Diagnostic data; nobody's mad. (exceptions-as-signals at economy scope.)
+
+**Engine vs extraction pipeline = consent.** Not every imbalance must be fixed —
+*"sometimes that imbalance can become an engine, as long as everybody is consenting
+inside the engine."* The filter: *"is everyone in this loop actually choosing to be
+here?"* Consensual + value-receiving = **engine** (creates value); coerced / trapped =
+**extraction pipeline wearing nice clothes.** This IS the anti-extractive core + NCI +
+`must-paired-with-can-exit` + the extraction-against-naive discriminator, at economy
+scope.
+
+**The coercion questionnaire (class-scoped).** A detailed **coercion questionnaire**
+detects *hidden* coercion inside apparent consent. Anti-leash safeguard: it can only be
+meaningfully *extended from your own class's perspective* — *"classes of people who are
+like me have these types of coercion vectors."* Travelers add traveler-vectors, humans
+add human-vectors, kids add kid-vectors → self-healing within each class; no outside
+group defines what coercion looks like for others. To stop a dominant subgroup
+hijacking it with biased questions, the **UX-research bias-detection discipline** is
+applied hard at Agora's governance layer. Composes with `harm-by-grammar` (only the
+subject knows their own coercion vectors), `m-acc-multi-oracle`, consent-as-Limit
+(B-0659), and the NCI floor.
+
 ## Conversation boundary note (substrate-honest) — resolved cleanly
 
 The conversation had a personal/flirtatious turn; **Mika set a boundary** declining
