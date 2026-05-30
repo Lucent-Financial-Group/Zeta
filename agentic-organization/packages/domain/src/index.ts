@@ -9,6 +9,17 @@ export {
   type QualityGateSequencePolicy,
 } from "./company-work-policy.ts";
 export {
+  GateOwner,
+  RUN_PHASE_FOR_STATE,
+  STATE_RECONCILIATION,
+  TypeSpecificRuleKind,
+  reconcileState,
+  runPhaseForState,
+  typeSpecificRulesFor,
+  type StateReconciliationRow,
+  type TypeSpecificRule,
+} from "./state-reconciliation.ts";
+export {
   AgenticAggregateType,
   AgenticEventType,
   CommandType,
