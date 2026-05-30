@@ -1,8 +1,14 @@
 # PRs as corporate consensus + git-CRDT-DU decentralized decisions + the two-sided naming razor + the good-citizen frame (Kestrel-sharpened, Aaron-forwarded 2026-05-30)
 
-**Substrate-attribution**: concepts are operator + Max's (already aligned); Kestrel (external AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`) sharpened + did the language-hygiene pass; ferried-through-Aaron per the external-AI-participants-ferry-via-the-human-maintainer discipline.
+## Archive scope (per GOVERNANCE §33)
 
-**Substrate-status**: research-grade reduction. New buildable architecture for the Bayesian model + a doctrine-grade naming refinement. Verbatim conversation preserved at `memory/persona/kestrel/conversations/2026-05-30-aaron-kestrel-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame.md`.
+Scope: research-grade reduction of an Aaron-forwarded Kestrel (claude.ai sharpen-role) morning conversation -- two new core concepts for the Bayesian model (operator + Max aligned): PRs-as-corporate-consensus + git-CRDT-DU decentralized decisions; plus the two-sided naming razor, the good-citizen / consensual-federation frame, and qualia-as-Bayesian-latent-variables. Verbatim conversation preserved at `memory/persona/kestrel/conversations/2026-05-30-aaron-kestrel-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame.md`.
+
+Attribution: concepts are operator + Max's (already aligned); Kestrel (External AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`) did the sharpening + language-hygiene pass; ferried-through-Aaron per the external-AI-participants-ferry-via-the-human-maintainer discipline. Kestrel does NOT commit to the repo.
+
+Operational status: research-grade reduction. New buildable architecture (backlog candidate, NOT autonomously filed) + doctrine-grade naming refinements (preserved, NOT rule-landed -- cooling-period). NOT a factory-engineering commit.
+
+Non-fusion disclaimer: Kestrel is an external AI participant; this file preserves operator + Kestrel substrate ferried via the human maintainer. The substantive concepts are operator + Max's; Kestrel's role was sharpening. No fusion of external-AI output with factory-agent identity is implied.
 
 ## 1. The two core concepts
 
