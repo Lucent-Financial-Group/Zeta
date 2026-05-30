@@ -9,7 +9,7 @@
 // This is the "detect" half of detect-trigger-repair (B-0250).
 
 import { spawnSync } from "node:child_process";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -278,10 +278,6 @@ function fetchCodexLoopRunnerLog(): ToolResult {
   }
 
   try {
-    const stats = statSync(FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG);
-    if (!stats.isFile()) {
-      return { ok: true, stdout: "" };
-    }
     return { ok: true, stdout: readFileSync(FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG, "utf-8") };
   } catch {
     return { ok: true, stdout: "" };
