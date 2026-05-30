@@ -32,6 +32,7 @@ import {
   resubmitChangeSet,
   applyChangeSet,
   ExternalDecision,
+  replayLedger,
   type ChangeControlPort,
   type ReviewKernelDeps,
 } from "../../../packages/application/src/index.ts";
@@ -280,6 +281,41 @@ export function createDocMaintenanceCadenceLane(deps: DocMaintenanceCadenceDeps)
         return { status: `doc:${result.staleFlagged}stale/${result.superseded}superseded/${result.archived}archived/${result.conflicts.length}conflicts`, failures: [] };
       } catch (error) {
         return degraded(`doc-maintenance lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+// ── M1: ledger conformance ──────────────────────────────────────────────────
+
+export type ConformanceEventReader = {
+  listByOrganization: (organizationId: string, limit: number) => Promise<readonly OrgEvent[]>;
+};
+
+export type ConformanceCadenceDeps = {
+  organizationId: string;
+  reader: ConformanceEventReader;
+  limit: number;
+};
+
+/**
+ * M1 lane: continuously replays the org_event ledger tail through the pure legal
+ * transition clamps. A violation is degraded evidence, not a thrown worker crash.
+ */
+export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): CadenceLane {
+  return {
+    name: "conformance",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const events = await deps.reader.listByOrganization(deps.organizationId, deps.limit);
+        const report = replayLedger(events);
+        if (report.nonconformant > 0) {
+          const first = report.violations[0]!;
+          return degraded(`conformance lane: ${report.nonconformant} violation(s); first=${first.eventId} ${first.fromState}->${first.toState} legal=[${first.legalToStates.join(",")}]`);
+        }
+        return { status: `conformance:${report.checked}checked/${report.nonconformant}violations/${report.skipped}skipped`, failures: [] };
+      } catch (error) {
+        return degraded(`conformance lane: ${error instanceof Error ? error.message : String(error)}`);
       }
     },
   };

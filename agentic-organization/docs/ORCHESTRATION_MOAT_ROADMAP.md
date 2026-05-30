@@ -115,6 +115,22 @@ variant × every actor authority) + a model check that no path reaches a termina
   `legalConfidencePromotions`; assert totality + the safety invariants (no gate bypass, no
   terminal escape). This is the proof that M1's replay can trust the kernel it replays against.
 
+### M6. Replay-context closure — make every transition event self-describing
+M1 exposed a deeper proof ratchet: `org_events` is universal, but some events carry phase
+strings while others carry stage ids, cycle summaries, or same-state flags. The conformance
+checker can prove the transition kinds that are self-contained today; the next leap is to make
+every durable state transition event explicitly name its kernel scope and transition context.
+
+- Add a typed transition-context envelope to future state-changing events: kernel (`work_item`,
+  `change_set`, `memory`, `doc`, `graph`), scope id, prior state, next state, and any replay
+  parameters the pure clamp needs (for example change-control pipeline cursor / stage count, or
+  doc load-bearing status).
+- Turn skipped-event counts into a coverage ratchet: every new lifecycle must either be
+  replayable by construction or explicitly marked non-transition. CI should fail if a new
+  `OrgEventKind` is ambiguous.
+- **Why gastown cannot:** prose workflow logs cannot be upgraded into proof-grade replay context
+  without replacing the substrate. Here it is an additive tightening of the existing ledger.
+
 ---
 
 ## Part 3 — Enforce the pattern with great success (make it unbypassable)

@@ -11,6 +11,67 @@ status: design
 Current checkpoint after the first executable TypeScript slices and
 subagent review.
 
+## Update 2026-05-30 — M1/M4 conformance checker + clamp properties built and proven in kind
+
+The first orchestration-moat phase is shipped: the org can now replay the
+universal `org_events` trace through the legal-transition kernels and report
+whether durable history stayed inside the clamps.
+
+- **M1 conformance checker.** `packages/application/src/conformance.ts` adds
+  pure `replayLedger(events): ConformanceReport`. It classifies replayable
+  transition events by `OrgEventKind`, checks them against the existing legal
+  kernels, and returns conformant / nonconformant / skipped rows as data. It
+  never throws on historical drift; an illegal event becomes explicit evidence
+  with event id, kind, subject id, from/to state, legal target states, and reason.
+  Context-dependent transitions that lack replay context are skipped rather than
+  counted as conformant (for example change-set final approval without pipeline
+  cursor, or document draft→active without load-bearing status).
+- **Live conformance lane.** `apps/workers/src/org-cadence-lanes.ts` now exposes
+  `createConformanceCadenceLane`, wired by `org-cadence-composition.ts` as a
+  fifth always-on lane. A violation degrades the tick with first-violation
+  evidence instead of crashing the worker.
+- **M4 clamp properties.** Domain tests now ratchet totality, closed target
+  sets, terminal-state no-escape, and unsatisfied-gate no-approval across the
+  work-item, change-control, memory, document, and knowledge-graph clamps.
+- **First drift caught and fixed.** Live replay found three historical
+  `active → archived` memory events that maintenance had emitted through the
+  archive-at-floor rule while `legalMemoryTransitions(Active)` did not admit
+  archive. The memory clamp now includes auto archive-at-floor from every
+  non-terminal phase, matching the shipped maintenance cycle.
+- **KIND proof.** `deploy/run-conformance.ts` appends a legal multi-kernel
+  trace to live in-cluster Cockroach, reads it through the real org-event store,
+  replays it, and prints a JSON proof report.
+
+Verification:
+
+```text
+npm run typecheck
+  PASS (tsc 0)
+
+npm test
+  859 tests / 852 pass / 0 fail / 7 skipped
+
+KIND worker rebuild/redeploy
+  rebuilt source-overlaid worker image sha256:cf9be9720910d3128915944bece577de7c0b87c147b5cf9dbabb00d7dcedabe1
+  note: Docker Hub metadata for node:24-slim hung, so the rebuild layered current
+  source over the prior node/dependency image; package dependencies were unchanged.
+
+Fresh worker pod clean boot
+  lanes: work-os, change-control, memory-maintenance, doc-maintenance, conformance
+  error log matches: 0
+  conformance lane: 121 checked / 0 violations / 333 skipped
+
+deploy/run-conformance.ts against in-cluster Cockroach
+  insertedEvents: 6
+  persistedEvents: 6
+  checked: 5
+  conformant: 5
+  nonconformant: 0
+  skipped: 1
+  live org-lfg: 454 events / 121 checked / 0 violations / 333 skipped
+  PROOF: PASS
+```
+
 ## Update 2026-05-30 — Org-Native Change Control built end-to-end + proven in kind (CC0–CC6)
 
 The internal review fabric (ORG_NATIVE_CHANGE_CONTROL_DESIGN) is built end-to-end and

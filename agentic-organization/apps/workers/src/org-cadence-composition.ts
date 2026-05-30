@@ -31,6 +31,7 @@ import {
   createMemoryMaintenanceCadenceLane,
   createChangeControlCadenceLane,
   createDocMaintenanceCadenceLane,
+  createConformanceCadenceLane,
   type WorkIntakeSource,
 } from "./org-cadence-lanes.ts";
 
@@ -39,6 +40,7 @@ export type OrgCadenceIntervals = {
   memoryMaintenanceMs: number;
   changeControlMs: number;
   docMaintenanceMs: number;
+  conformanceMs: number;
 };
 
 export const OrgCadenceIntervalDefault: OrgCadenceIntervals = {
@@ -46,6 +48,7 @@ export const OrgCadenceIntervalDefault: OrgCadenceIntervals = {
   memoryMaintenanceMs: 6 * 60 * 60 * 1000, // 6h (memory decay is slow)
   changeControlMs: 30_000,
   docMaintenanceMs: 6 * 60 * 60 * 1000, // 6h (doc lifecycle is slow, like memory)
+  conformanceMs: 60_000,
 };
 
 export type ComposeOrgCadenceInput = {
@@ -120,6 +123,11 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     organizationId: input.organizationId, now: input.now, createId: input.createId,
     reader: docUnits, writer: docUnits, appendEvent,
   });
+  const conformance = createConformanceCadenceLane({
+    organizationId: input.organizationId,
+    reader: orgEvents,
+    limit: 1_000,
+  });
 
   const stopped = { value: false };
   const isStopRequested = () => stopped.value;
@@ -136,6 +144,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     start(memory, intervals.memoryMaintenanceMs),
     start(changeControl, intervals.changeControlMs),
     start(docMaintenance, intervals.docMaintenanceMs),
+    start(conformance, intervals.conformanceMs),
   ]);
 
   return { stop: () => { stopped.value = true; }, done };

@@ -524,3 +524,9 @@ export {
   type CreateGitLabHttpClientInput,
   type CreateLinearHttpClientInput,
 } from "./work-provider.ts";
+export {
+  replayLedger,
+  type ConformanceReport,
+  type ConformanceSkip,
+  type ConformanceViolation,
+} from "./conformance.ts";

@@ -170,7 +170,7 @@ export function advanceChangeSet(cs: ChangeSet, pipeline: ReviewPipeline, stage:
     events.push(event(deps, OrgEventKind.ReviewStageAdvanced, cs.changeSetId, stage.id, pipeline.stages[nextIndex]!.id, `advanced ${stage.id} → ${pipeline.stages[nextIndex]!.id}`, actorOf(decidedBy)));
     return { changeSet: { ...base, currentStageIndex: nextIndex }, events };
   }
-  events.push(event(deps, OrgEventKind.ChangeSetApproved, cs.changeSetId, undefined, undefined, `all blocking stages passed — change set approved`));
+  events.push(event(deps, OrgEventKind.ChangeSetApproved, cs.changeSetId, cs.phase, ChangeSetPhase.Approved, `all blocking stages passed — change set approved`));
   return { changeSet: { ...base, phase: ChangeSetPhase.Approved }, events };
 }
 

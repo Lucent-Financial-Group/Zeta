@@ -79,7 +79,10 @@ test("last stage approve → ChangeSetApproved", () => {
   const pl = pipeline([stage({ id: "code-review" }), stage({ id: "final" })]);
   const r = runReviewStage(changeSet({ currentStageIndex: 1 }), pl, deps({ blockingFindings: () => 0 }));
   equal(r.changeSet.phase, ChangeSetPhase.Approved);
-  ok(r.events.some((e) => e.kind === OrgEventKind.ChangeSetApproved));
+  const approved = r.events.find((e) => e.kind === OrgEventKind.ChangeSetApproved);
+  ok(approved);
+  equal(approved!.fromState, ChangeSetPhase.InReview);
+  equal(approved!.toState, ChangeSetPhase.Approved);
 });
 
 test("quorum stage: the board's agreement IS the gate (≥ threshold → approve)", () => {

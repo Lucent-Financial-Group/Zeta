@@ -4,6 +4,8 @@ import { test } from "node:test";
 import {
   ChangeSetPhase,
   ExternalSystem,
+  OrgEventKind,
+  WorkItemState,
   MemoryPhase,
   MemoryTier,
   type ChangeSet,
@@ -16,6 +18,7 @@ import {
   createWorkOsCadenceLane,
   createMemoryMaintenanceCadenceLane,
   createChangeControlCadenceLane,
+  createConformanceCadenceLane,
 } from "../src/org-cadence-lanes.ts";
 
 const NOW = Date.parse("2026-05-30T00:00:00Z");
@@ -164,4 +167,50 @@ test("doc-maintenance lane flags a stale unit + persists it + emits the cycle ev
   ok(result.status.includes("stale"));
   ok(upserts.includes("du-old"));
   ok(events.some((e) => e.kind === "doc_maintenance_cycle"));
+});
+
+function orgEvent(over: Partial<OrgEvent> = {}): OrgEvent {
+  return {
+    id: "evt-1",
+    kind: OrgEventKind.WorkItemTransition,
+    occurredAt: "2026-05-30T00:00:00.000Z",
+    organizationId: "org-lfg",
+    subjectId: "work-1",
+    fromState: WorkItemState.Created,
+    toState: WorkItemState.Intake,
+    decision: "created to intake",
+    supervisorChain: [],
+    evidenceRefs: [],
+    correlationId: "corr-1",
+    causationId: "cause-1",
+    traceId: "trace-1",
+    ...over,
+  };
+}
+
+test("conformance lane replays org_events and reports a clean theorem tick", async () => {
+  const lane = createConformanceCadenceLane({
+    organizationId: "org-lfg",
+    limit: 100,
+    reader: { listByOrganization: async () => [orgEvent()] },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "conformance:1checked/0violations/0skipped");
+});
+
+test("conformance lane degrades when replay finds an illegal durable transition", async () => {
+  const lane = createConformanceCadenceLane({
+    organizationId: "org-lfg",
+    limit: 100,
+    reader: { listByOrganization: async () => [orgEvent({ id: "evt-bypass", fromState: WorkItemState.Created, toState: WorkItemState.Done })] },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "degraded");
+  equal(result.failures.length, 1);
+  ok(result.failures[0]!.message.includes("evt-bypass"));
 });
