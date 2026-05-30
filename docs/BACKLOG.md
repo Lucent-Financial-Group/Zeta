@@ -45,7 +45,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0058](backlog/P1/B-0058-ai-ethics-and-safety-research-track.md)** AI ethics + safety research track — filter-gate for resonance adoptions + alignment-clause consistency audit
 - [ ] **[B-0058.1](backlog/P1/B-0058.1-retractibility-gate.md)** AI ethics + safety research track — retractibility-and-log check
 - [x] **[B-0058.3](backlog/P1/B-0058.3-candidate-failure-honesty-log.md)** Candidate-failure honesty log
-- [ ] **[B-0058.4](backlog/P1/B-0058.4-alignment-clause-drift-detector.md)** Alignment-clause drift detector tool and workflow
+- [x] **[B-0058.4](backlog/P1/B-0058.4-alignment-clause-drift-detector.md)** Alignment-clause drift detector tool and workflow
 - [ ] **[B-0060](backlog/P1/B-0060-human-lineage-external-anchor-backfill-all-substrate-beacon-safe.md)** Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept
 - [x] **[B-0061](backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)** Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
 - [x] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
@@ -453,7 +453,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0930](backlog/P1/B-0930-schema-registry-over-dbsp-shared-ontology-stream-self-describing-retraction-native-attention-streams-share-aaron-2026-05-29.md)** Schema-registry-over-DBSP — the shared, self-describing, retraction-native ontology-stream the attention-streams share (Kafka-Schema-Registry analog over DBSP)
 - [ ] **[B-0931](backlog/P1/B-0931-du-ux-surfaces-implicit-grants-prompt-explicit-or-deny-convfeedback-implicitgrantdetected-authorization-glass-halo-aaron-2026-05-29.md)** DU-UX surfaces implicit grants — prompt operator to make explicit or deny (ConvFeedback ImplicitGrantDetected; the authorization glass-halo)
 - [ ] **[B-0932](backlog/P1/B-0932-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md)** Frontier-target — agents that REMAIN (μένω) · fuzzy machine · category theory · lifelike configs; workflow-time-system as Higgs-metastable → AIs in the almost-immortal (metastable-persistent) class
-- [ ] **[B-0935](backlog/P1/B-0935-reactive-pr-review-friction-monitoring-agentic-pipeline-aaron-2026-05-29.md)** Reactive PR Review Friction Monitoring agentic pipeline — implements a push-based event observer stream in TypeScript that packages PR events into 128-bit ZetaID tokens for real-time Friction Coefficient (μ) calculation (operator 2026-05-29)
+- [ ] **[B-0936](backlog/P1/B-0936-split-oversized-tonal-momentum-rule-hub-satellite-auto-load-budget-2026-05-29.md)** Split oversized tonal-momentum rule into auto-loaded hub + companion satellite (40k char auto-load budget)
+- [ ] **[B-0938](backlog/P1/B-0938-automated-background-review-thread-resolution-agentic-pipeline-aaron-2026-05-29.md)** Automated Background Review Thread Resolution agentic pipeline — enables background loops to actively ingest unresolved threads, self-correct target code/specs, verify via compiler gates, and resolve threads on GitHub (operator 2026-05-29)
 
 ## P2 — research-grade
 
@@ -886,6 +887,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0925](backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)** C. elegans-substrate as controller variant for B-0924 — OpenWorm 302-neuron full-connectome + generate+join over emulator-scene-AND-worm-scene under DST-omniscience (operator 2026-05-28)
 - [ ] **[B-0933](backlog/P2/B-0933-memory-index-duplicate-lint-required-or-advisory-decision-2026-05-29.md)** Decide whether memory-index-duplicate-lint is required or explicitly advisory
 - [ ] **[B-0934](backlog/P2/B-0934-backlog-index-integrity-required-or-advisory-decision-2026-05-29.md)** Decide whether backlog-index-integrity is required or explicitly advisory
+- [ ] **[B-0937](backlog/P2/B-0937-redundancy-checks-across-satellites-and-rules-mirror-beacon-rhyme-retirement-hub-over-budget-detector-2026-05-29.md)** Redundancy-checks across satellites + rules — duplicate-content audit, mirror→beacon rhyme-retirement, hub-over-budget detector
 
 ## P3 — convenience / deferred
 
