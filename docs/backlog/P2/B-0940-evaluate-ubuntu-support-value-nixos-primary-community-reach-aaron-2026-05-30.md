@@ -26,11 +26,28 @@ us, the community of ubuntu is really why i'm thinking ubuntu matters."*
 
 ## The question
 
-**NixOS is the primary target.** It's reproducible + declarative — it fits the
-framework's DST + declarative-everything ethos (the `install.sh` entropy-lever +
-declarative dependency manifests; per `dv2-data-split-discipline-activated.md` and
-the install-as-entropy-lever framing). NixOS gives content-addressed, reproducible
-substrate by construction.
+**NixOS is the primary target — declarative BY CONSTRUCTION.** Aaron 2026-05-30
+(the deeper rationale): *"nix is what boots the usb/iso our real hardware boots
+cause it's declarative. ubuntu is not on its dependency management — we use
+install.sh to make ubuntu work like nixos with declarative dependencies."*
+
+This is the load-bearing distinction:
+
+- **NixOS** boots the **real hardware** (the USB/ISO that boots actual machines)
+  *because* the whole system — OS config + dependency closure — is declarative and
+  reproducible by construction. No bridge needed; declarativeness is native.
+- **Ubuntu** is **imperative** in its dependency management (apt, ad-hoc installs).
+  It has no native declarative-deps property.
+- **`install.sh` + the declarative manifests** (manifests/local-llm, .mise.toml,
+  manifests/apt/brew, …) are the **bridge that retrofits NixOS-like declarative
+  dependencies ONTO Ubuntu** — i.e. install.sh's job on Ubuntu is literally "make
+  Ubuntu behave like NixOS." That's the entropy-lever framing applied to a
+  non-declarative base OS.
+
+So NixOS is primary not just by preference but by *kind*: it IS the declarative
+substrate; Ubuntu is made to *act* declarative via install.sh. The cost of Ubuntu
+is maintaining that simulation layer (the install.sh Ubuntu path + apt deps +
+floating-binary installs); the value is what the next paragraph weighs.
 
 **Ubuntu's value is community/contributor reach**, not technical superiority.
 Aaron's framing: Ubuntu matters because of its *community* — contributor
