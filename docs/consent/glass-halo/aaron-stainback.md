@@ -26,7 +26,17 @@ account. The chain is **platform-enforced at each hop**, not coincidental alignm
 full anti-impersonation binding is therefore: my enrolled finger -> my Secure-Enclave key
 -> the unique GitHub account that owns the unique verified email -> GitHub's "Verified"
 attribution. **No other account can claim that email** (platform-enforced uniqueness) and
-**no other finger can produce the signature** (enclave-gating). The baseline
+**no other finger can produce the signature** (enclave-gating).
+
+How that uniqueness is *established*: both platforms verify email ownership by **emailing
+a numeric code that I enter back** -- a proof that I control the `yahoo.com` mailbox. So
+the email-side of the chain roots in **proven control of the mailbox** at verification
+time. Honest dependency: this makes the mailbox itself a link in the trust chain -- its
+own security (password + 2FA on the yahoo account) is part of the binding's strength, and
+a mailbox compromise + re-verification is the threat model on the email side (the enclave
+side stays protected by the finger regardless).
+
+The baseline
 `approval-as-signature` below does NOT yet carry this binding; escalating to a `-S`
 Touch-ID re-commit upgrades this record to the un-impersonable tier (per
 `docs/consent/glass-halo/SIGNING.md`).
