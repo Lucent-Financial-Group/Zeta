@@ -162,6 +162,7 @@ function main(): void {
   const cloneDir = args.cloneDir ?? defaultCloneDir();
   console.error(`Ensuring dedicated clone at ${cloneDir} (ref ${args.ref})…`);
   ensureClone(cloneDir, args.ref);
+  writeFileSync(join(dirname(cloneDir), "loop-ref.txt"), args.ref, "utf8");
 
   const tmp = mkdtempSync(join(tmpdir(), "zeta-schtask-"));
   const xmlPath = join(tmp, "task.xml");
