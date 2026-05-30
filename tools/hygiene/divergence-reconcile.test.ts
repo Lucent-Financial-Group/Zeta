@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
@@ -17,6 +17,7 @@ import {
   isReconciliationDecision,
   isReconciliationPending,
   parseShardMeta,
+  reconcileDivergenceShard,
   reconciliationBody,
   scanDivergenceDir,
 } from "./divergence-reconcile";
@@ -245,6 +246,103 @@ describe("fillReconciliation", () => {
       const filled = fillReconciliation(buildDivergenceShard(input), "accept-loop-b", "B reproduces locally. (Aaron)");
       writeFileSync(join(root, relPath), filled);
       expect(scanDivergenceDir(root)).toHaveLength(0);
+    });
+  });
+});
+
+describe("reconcileDivergenceShard (read → fillReconciliation → write-back, AC #4 'one action')", () => {
+  test("full AC #4 loop: write pending shard → scan finds it → reconcile → scan is empty", () => {
+    withTempRoot((root) => {
+      const input = inputAt("2026-05-10T11:48:00Z", "resolve A", "do not resolve B");
+      const { relPath } = writeDivergenceShard(root, input);
+      // "one read": the reader surfaces the pending shard.
+      expect(scanDivergenceDir(root).map((p) => p.relPath)).toEqual([relPath]);
+
+      // "one action": land the decision in place.
+      const result = reconcileDivergenceShard(root, relPath, "accept-loop-b", "B reproduces locally. (Aaron)");
+      expect(result).toEqual({ relPath, decision: "accept-loop-b" });
+
+      // The shard is no longer pending, and the on-disk content carries the decision.
+      expect(scanDivergenceDir(root)).toHaveLength(0);
+      const md = readFileSync(join(root, relPath), "utf8");
+      expect(isReconciliationPending(md)).toBe(false);
+      expect(reconciliationBody(md)!.trim()).toBe("accept-loop-b\n\nB reproduces locally. (Aaron)");
+    });
+  });
+
+  test("writes a decision-only section when no note is given", () => {
+    withTempRoot((root) => {
+      const { relPath } = writeDivergenceShard(root, inputAt("2026-05-10T11:48:00Z", "A", "B"));
+      reconcileDivergenceShard(root, relPath, "escalate");
+      expect(reconciliationBody(readFileSync(join(root, relPath), "utf8"))!.trim()).toBe("escalate");
+    });
+  });
+
+  test("preserves divergence evidence: only the Reconciliation section changes", () => {
+    withTempRoot((root) => {
+      const input = inputAt("2026-05-10T11:48:00Z", "resolve A", "do not resolve B");
+      const { relPath } = writeDivergenceShard(root, input);
+      const before = readFileSync(join(root, relPath), "utf8");
+
+      reconcileDivergenceShard(root, relPath, "accept-both");
+      const after = readFileSync(join(root, relPath), "utf8");
+
+      // Everything up to and including the `## Reconciliation` heading is byte-identical:
+      // both loop perspectives + the disagreement summary survive verbatim.
+      const len = before.indexOf("## Reconciliation") + "## Reconciliation".length;
+      expect(after.slice(0, len)).toBe(before.slice(0, len));
+      expect(after).toContain("## Loop A perspective");
+      expect(after).toContain("## Loop B perspective");
+      expect(after).toContain("## Disagreement summary");
+    });
+  });
+
+  test("throws (no write) when no shard exists at the path", () => {
+    withTempRoot((root) => {
+      const relPath = "docs/hygiene-history/divergences/2026/05/10/114800Z-deadbeef.md";
+      expect(() => reconcileDivergenceShard(root, relPath, "accept-loop-a")).toThrow(/no divergence shard at/);
+      expect(existsSync(join(root, relPath))).toBe(false);
+    });
+  });
+
+  test("throws (file unchanged) when the target is not a divergence shard", () => {
+    withTempRoot((root) => {
+      // A markdown file that HAS a `## Reconciliation` heading but is NOT a
+      // divergence shard (no type: divergence frontmatter) — a mistyped relPath.
+      const relPath = "docs/notes/stray.md";
+      const abs = join(root, relPath);
+      mkdirSync(dirname(abs), { recursive: true });
+      const stray = "---\ntitle: not a shard\n---\n\n## Reconciliation\n\n<!-- placeholder -->\n";
+      writeFileSync(abs, stray);
+      expect(() => reconcileDivergenceShard(root, relPath, "accept-loop-a")).toThrow(/not a divergence shard/);
+      // Fail-closed: the non-shard file is left exactly as it was.
+      expect(readFileSync(abs, "utf8")).toBe(stray);
+    });
+  });
+
+  test("re-run on an already-reconciled shard fails closed (prior decision not erased)", () => {
+    withTempRoot((root) => {
+      const { relPath } = writeDivergenceShard(root, inputAt("2026-05-10T11:48:00Z", "A", "B"));
+      reconcileDivergenceShard(root, relPath, "accept-loop-a", "first decision");
+      const afterFirst = readFileSync(join(root, relPath), "utf8");
+      // A second reconcile must throw (via fillReconciliation's already-reconciled guard)...
+      expect(() => reconcileDivergenceShard(root, relPath, "accept-loop-b")).toThrow(/already reconciled/);
+      // ...and leave the first decision intact.
+      expect(readFileSync(join(root, relPath), "utf8")).toBe(afterFirst);
+      expect(afterFirst).toContain("first decision");
+    });
+  });
+
+  test("rejects an invalid decision before any write (runtime callers pass raw strings)", () => {
+    withTempRoot((root) => {
+      const { relPath } = writeDivergenceShard(root, inputAt("2026-05-10T11:48:00Z", "A", "B"));
+      const before = readFileSync(join(root, relPath), "utf8");
+      expect(() =>
+        reconcileDivergenceShard(root, relPath, "accept-loop-c" as ReconciliationDecision),
+      ).toThrow(/invalid reconciliation decision/);
+      // Still pending; file unchanged (validation precedes the write).
+      expect(readFileSync(join(root, relPath), "utf8")).toBe(before);
+      expect(scanDivergenceDir(root)).toHaveLength(1);
     });
   });
 });
