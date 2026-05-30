@@ -37,6 +37,9 @@ Current documents:
 - [Cluster Execution and Memory Substrate](./CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md) - the k3s, sandboxed Hermes container, Cilium Service Mesh, SPIRE identity, Vault-backed secrets, Credential Proxy, NATS, Hindsight, and runtime observability contract.
 - [AI Cluster Scaffold Context](./AI_CLUSTER_SCAFFOLD_CONTEXT.md) - the two-directory NixOS/k3s/ArgoCD scaffold assumptions, component clarifications, bootstrap constraints, and deferred/local-model gating.
 - [Architecture Source](./ORGANIZATION_RUNTIME_ARCHITECTURE.md) - the current conceptual architecture and operating model.
+- [Observe, Compose, and Run-State](./OBSERVE_COMPOSER_AND_RUN_STATE.md) - the keystone `observe.ts` entrypoint: the run-lifecycle discriminated union, the readout of current state + legal options at varying scopes, the ephemeral memoryless composer, deterministic-rule visibility, and the >=3-agent constitution ratification gate.
+- [Git <-> Cockroach Sync and ZetaId Addressing](./GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md) - the persistence/addressing layer: reusing the existing tri-language ZetaId as the decimal index for git-as-db, collision policy, and the generic bidirectional converter between GitHub-as-database and CockroachDB.
+- [Doc Frontmatter Convention](./DOC_FRONTMATTER_CONVENTION.md) - the YAML frontmatter schema (title/canonical_name/status/ideas/extends/composes_with/code_anchors/supersedes) that turns this doc set into a navigable, derivable graph.
 
 The intent is to keep the architecture document focused on what the Organization is, while implementation documents describe how to build it incrementally.
 
