@@ -153,10 +153,6 @@ function coincidenceEventTimeMs(event: CoincidenceEvent): number | null {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
-function coincidenceEventWindowKey(event: CoincidenceEvent, fallbackIndex: number): string {
-  return coincidenceEventWindowKeys(event, fallbackIndex)[0] ?? `${event.id}:${fallbackIndex}`;
-}
-
 function coincidenceEventSignatureKey(event: CoincidenceEvent, fallbackIndex: number): string {
   const keys = coincidenceEventWindowKeys(event, fallbackIndex);
   return event.correlationKeys?.find((key) => key.trim().length > 0)?.trim() ?? keys[0] ?? `${event.id}:${fallbackIndex}`;
