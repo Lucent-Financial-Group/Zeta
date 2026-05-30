@@ -9,6 +9,8 @@ const decimalIntegerPattern = /^[0-9]+$/;
  */
 export const WorkerKeepAliveConfigDefault = {
   OrgHeartbeatDeadlineMs: 30_000,
+  /** cadence of the independent keep-alive loop (decoupled from the work cycle) */
+  LoopIntervalMs: 5_000,
 } as const;
 
 export const WorkerProcessEnvName = {

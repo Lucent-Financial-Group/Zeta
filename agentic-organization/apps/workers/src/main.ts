@@ -53,7 +53,13 @@ import {
   type CreatePgCockroachWorkerPoolInput,
   type PgCockroachWorkerPool,
 } from "./adapters/pg-cockroach-worker-pool.ts";
-import { parseWorkerRuntimeConfigFromEnv, type WorkerProcessConfig, type WorkerProcessEnvironment } from "./config.ts";
+import {
+  WorkerKeepAliveConfigDefault,
+  parseWorkerRuntimeConfigFromEnv,
+  type WorkerProcessConfig,
+  type WorkerProcessEnvironment,
+} from "./config.ts";
+import { runKeepAliveLoop } from "./keep-alive-loop.ts";
 import { composeDurableWorkerRuntimePorts } from "./durable-composition.ts";
 import { composeWorkerRuntime } from "./composition.ts";
 import {
@@ -234,7 +240,13 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
         natsDurableName: config.natsDurableName,
         natsInboundBatchSize: config.natsInboundBatchSize,
       },
-      ports: runtimePorts,
+      // keepAliveLane is intentionally omitted here — it runs on its OWN independent
+      // loop (below) so the org heartbeat cadence is decoupled from the work cycle
+      ports: {
+        organizationWorkerHost: runtimePorts.organizationWorkerHost,
+        natsEventConsumer: runtimePorts.natsEventConsumer,
+        telemetrySink: runtimePorts.telemetrySink,
+      },
     });
     const process = createWorkerProcess({
       bootstrappers: [
@@ -265,7 +277,35 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
       maxCycles: deps.maxCycles,
     });
 
+    // Run the deterministic keep-alive on its own cadence, concurrently with the
+    // work loop. The org heartbeat ticks every LoopIntervalMs regardless of what
+    // the work loop is doing (a slow agent run or a 30s idle NATS poll can no
+    // longer delay the org's proof of life). When the work loop stops (signal),
+    // we stop the keep-alive loop and let its current tick finish.
+    const keepAliveStopped = { value: false };
+    const keepAliveLoop = runKeepAliveLoop({
+      lane: runtimePorts.keepAliveLane,
+      intervalMs: WorkerKeepAliveConfigDefault.LoopIntervalMs,
+      isStopRequested: () => keepAliveStopped.value,
+      sleep: (ms) => sleepUnlessStopped(deps.clock, ms, () => keepAliveStopped.value),
+      observer: {
+        record: (record) =>
+          deps.logger.log({
+            stream: WorkerMainLogStream.Stdout,
+            message: JSON.stringify({
+              eventName: "agentic.worker.keep_alive.tick",
+              tick: record.tick,
+              status: record.status,
+              failureCount: record.failureCount,
+            }),
+          }),
+      },
+    });
+
     const result = await entrypoint.run();
+
+    keepAliveStopped.value = true;
+    await keepAliveLoop;
 
     return result.exitCode;
   } catch (error) {
@@ -327,6 +367,16 @@ async function disposeAfterFailureBestEffort(input: DisposeAfterFailureBestEffor
       message: `cockroach shutdown after failure failed: ${extractMainErrorMessage(error)}`,
     });
   }
+}
+
+function sleepUnlessStopped(clock: WorkerMainClock, durationMs: number, isStopped: () => boolean): Promise<void> {
+  return new Promise<void>((resolve) => {
+    if (isStopped()) {
+      resolve();
+      return;
+    }
+    clock.setTimeout(() => resolve(), durationMs);
+  });
 }
 
 function createProcessSignalSource(registrar: WorkerMainSignalRegistrar): WorkerEntrypointSignalSource {
