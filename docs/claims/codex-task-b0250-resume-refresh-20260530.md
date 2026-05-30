@@ -1,4 +1,4 @@
-# Claim - task-b0250-resume-refresh-20260530
+# Claim - codex-task-b0250-resume-refresh-20260530
 
 - **Session ID:** codex/20260530T0824Z
 - **Harness:** codex
