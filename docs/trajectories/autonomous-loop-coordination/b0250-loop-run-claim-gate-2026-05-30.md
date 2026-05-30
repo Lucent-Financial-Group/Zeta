@@ -2,8 +2,9 @@
 
 ## Status
 
-In progress on claim branch
-`claim/codex-loop-b0250-loop-run-claim-gate-20260530`.
+Under PR review on claim branch
+`claim/codex-loop-b0250-loop-run-claim-gate-20260530`; the live claim file is
+released in this branch before merge.
 
 ## Change
 
