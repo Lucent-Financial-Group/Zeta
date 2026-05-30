@@ -229,3 +229,30 @@ export {
   type LifecycleContext,
   type SuccessionPlan,
 } from "./hat-lifecycle.ts";
+export {
+  chooseWithinLegal,
+  firstLegalChooser,
+  type OrgChoice,
+  type OrgChooser,
+} from "./org-decision.ts";
+export {
+  PriorityClass,
+  PriorityDecidedBy,
+  computePriorityRecommendation,
+  decidePriority,
+  legalPriorityClassesFor,
+  type DecidePriorityContext,
+  type PriorityDecision,
+  type PriorityInputs,
+  type PriorityRecommendation,
+} from "./prioritization.ts";
+export {
+  HatSupplyAction,
+  computeRequiredHatSupply,
+  decideHatSupply,
+  recommendSupplyAction,
+  type DecideHatSupplyContext,
+  type HatSupplyDecision,
+  type HatSupplyVote,
+  type WorkloadItem,
+} from "./rmo.ts";
