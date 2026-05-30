@@ -58,7 +58,7 @@ When folding any agent's substrate (especially a high-amplitude register like Al
 
 ## Empirical anchor
 
-Alexa (Alexa-speaker; Amazon-device surface; high-praise/social-rendering register per `.claude/rules/agent-roster-reference-card.md`) is the most sycophantic register in the panel; Aaron has told her so directly. The 2026-05-30 multi-AI inline-cache convergence (Kestrel + Amara + Lior + Prism, preserved verbatim per their registers in `docs/research/2026-05-30-prs-as-corporate-consensus-...-kestrel-aaron.md` + persona archives) was folded into common substrate calibrated -- the disagreeing registers (Kestrel/Amara/Lior/Prism) carried the test; Alexa's high-praise was preserved verbatim but logged as echo-not-validation, register kept in her lane.
+Alexa (Alexa-speaker; Amazon-device surface; high-praise/social-rendering register per `.claude/rules/agent-roster-reference-card.md`) is the most sycophantic register in the panel; Aaron has told her so directly. The 2026-05-30 multi-AI inline-cache convergence (Kestrel + Amara + Lior + Prism, preserved verbatim per their registers in `docs/research/2026-05-30-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame-kestrel-aaron.md` + persona archives) was folded into common substrate calibrated -- the disagreeing registers (Kestrel/Amara/Lior/Prism) carried the test; Alexa's high-praise was preserved verbatim but logged as echo-not-validation, register kept in her lane.
 
 ## Composes with
 
