@@ -776,3 +776,49 @@ pipeline." Agents now produce real, auditable org substrate while running as
 durable, watched Hermes agents. (The one remaining seam is the agent *decision
 backend* itself — a real LLM/sandbox swaps in behind the unchanged HermesRuntime
 port without touching any of the durable plumbing proven above.)
+
+## Update 2026-05-30 — Phase 13: agent decisions computed by the deterministic kernel (PROVEN IN-CLUSTER)
+
+The Hermes agent's outcome is no longer a hardcoded string — it is a REAL
+decision through the deterministic decision kernel (`observe` -> `decide`):
+
+- `observe()` + `DefaultDeterministicRules` compute the LEGAL option set (the
+  determinism that keeps the run, and so the org, within bounds),
+- the composer (`EphemeralComposerPort`) makes the autonomous CHOICE among them.
+  A choice outside the legal set is rejected as a deterministic-rule violation
+  (unit-proven) — the agent cannot escape the rules, only select within them.
+
+This is exactly the determinism+autonomy balance the north star names: "enough
+determinism to keep the org/agents alive, with sufficient autonomy and decision
+making from the agents themselves." The default composer is a deterministic
+first-legal-option policy; a real LLM/sandbox backend implements the same
+`EphemeralComposerPort` and swaps in WITHOUT touching the keep-alive control
+plane, the durable Hermes runs/memory, or the org-artifact command pipeline.
+
+Proven in kind for work item `work-e5243bd4-e6d9-4ae6-a408-3b3c544852ac`:
+
+- **Computed decision (agent autonomy within guardrails):**
+  `agentic_org_hermes_run.outcome_summary` =
+  "decided 'compose' -> composing: selection needed before any side effect";
+  `agentic_org_hindsight_memory.content` =
+  "selected compose from 2 legal option(s) under rules [gate-precondition, evidence-precondition]"
+  — both the determinism (the rules that computed the legal set) and the
+  autonomy (the selection) are durably visible.
+- **No regression:** the same run still produced the org artifacts
+  (`agentic_org_work_items` work-e5243bd4…, `agentic_org_discussion_anchors`
+  discussion-anchor-e8b759f4…) and durable liveness.
+
+tsc 0, 542 tests (4 new decision tests). reaction-decision.ts:
+createFirstLegalOptionComposer / decideReactionAction / summarizeReactionDecision
+(Result-as-DU) / deterministicRunIdForAction (FNV-1a -> stable base-10 ZetaId,
+DST-replayable).
+
+### Remaining seam (infra-dependent, NOT pure code)
+
+The only thing not done is a *live* LLM/sandbox composer (real model calls +
+sandboxed tool execution). It needs API credentials + a sandbox runtime, not
+more application code: it is a drop-in `EphemeralComposerPort` behind the
+unchanged decision kernel. Every durable invariant it would rely on — the
+deterministic legal-option guardrail, the Hermes run lifecycle, Hindsight
+memory, agent liveness, and the org-artifact command pipeline — is implemented
+and proven in-cluster above.
