@@ -41,27 +41,27 @@ The baseline
 Touch-ID re-commit upgrades this record to the un-impersonable tier (per
 `docs/consent/glass-halo/SIGNING.md`).
 
-### Second binding context (work / ServiceTitan)
+### Second binding context (work / ServiceTitan) -- two grant domains
 
-I have a parallel chain on my work device:
+On the work side ServiceTitan grants me authority in **two distinct domains**, and they
+do not run through the same credential:
 
-`Windows Hello fingerprint + Okta FastPass  ->  astainback@servicetitan.com  ->  GitHub`
+| Domain | Grant path | Gated by |
+|---|---|---|
+| **Code edit (GitHub)** | granted to my GitHub identity **`acehack`** | the GitHub identity itself (commit signature) |
+| **Azure / cloud** | Okta / **Entra ID** -> `astainback@servicetitan.com` | Windows Hello fingerprint + Okta FastPass (phishing-resistant FIDO2) |
 
-Same shape, different device + email: a biometric (Windows Hello fingerprint) plus a
-**phishing-resistant FIDO2 factor (Okta FastPass)** gate the key, and the GitHub binding
-is via the platform-unique verified email `astainback@servicetitan.com`. So I can sign
-un-impersonably from either context -- personal (Apple Touch-ID, `aaron_bond@yahoo.com`)
-or work (Windows Hello + Okta FastPass, `astainback@servicetitan.com`). Both are
-biometric-gated and both bind to a platform-enforced-unique verified email; Okta FastPass
-adds phishing-resistance on the work side.
+So `astainback@servicetitan.com` is primarily my **Entra/Azure** identity (Windows Hello +
+Okta FastPass authenticate it for cloud access); **code-edit authority is the `acehack`
+GitHub identity**, not the email. The two are separate access domains, not one chain.
 
-**Convergence on one identity:** both verified emails (`aaron_bond@yahoo.com` +
-`astainback@servicetitan.com`) are tied to a **single GitHub identity -- `acehack`**. So
-the two device chains converge on one account: one GitHub identity, two platform-unique
-verified emails, two biometric-gated device contexts. A commit from either device, under
-either email, is attributed to the same `acehack` identity -- and impersonating it still
-requires the corresponding biometric (Apple Touch-ID or Windows Hello+Okta) that no one
-else holds.
+**Convergence on one GitHub identity:** both verified emails (`aaron_bond@yahoo.com` +
+`astainback@servicetitan.com`) are verified on the **single GitHub identity -- `acehack`**
+(so a commit under either email attributes to `acehack`). The signing/anti-impersonation
+chain therefore runs: my biometric (Apple Touch-ID *or* Windows Hello+Okta) -> a
+Secure-Enclave/TPM-gated signing key -> the `acehack` GitHub identity. Impersonation still
+requires the corresponding biometric no one else holds. (Azure access is a *separate*
+authority, via Entra on the servicetitan email, not via the GitHub code path.)
 
 ## Consent event record (all three parts)
 
