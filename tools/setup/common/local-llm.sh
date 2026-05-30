@@ -53,20 +53,27 @@ if ! command -v ollama >/dev/null 2>&1; then
       # routes NixOS via /etc/NIXOS; honor the same marker here.
       if [ -f /etc/NIXOS ]; then
         echo "↓ NixOS detected — installing ollama via nix (FHS-safe)..."
-        # Diagnosed from the surfaced stderr (run 26685829032): nix-env -iA chokes
-        # on ollama's 'bad meta.outputsToInstall', and bare `nix profile install`
-        # hits a coreutils-full FILE COLLISION in the profile (existing priority 5).
-        # nix's own message prescribes --priority; use 6 so the existing coreutils
-        # wins the collision and ollama's own binary still installs. Surface stderr
-        # (a suppressed error can't be diagnosed). Graceful: warn + exit 0 so
-        # install.sh never bricks over a best-effort probe.
-        if nix --extra-experimental-features 'nix-command flakes' profile install --priority 6 nixpkgs#ollama 2>&1; then
-          echo "  ✓ ollama via nix profile (flake, --priority 6)"
+        # Diagnosed across runs 26685829032 + 26685902159 (surfaced stderr):
+        #   - nix-env -iA nixpkgs.ollama → 'bad meta.outputsToInstall'
+        #   - nix profile install [--priority N] → coreutils-full FILE COLLISION
+        #     (ollama's closure brings coreutils-full vs the profile's existing one;
+        #     --priority did not resolve it — profile-install is structurally
+        #     collision-prone here).
+        # Robust fix: DON'T mutate the profile. `nix build` the store path and
+        # symlink bin/ollama onto PATH — no profile entry, no collision, FHS-safe
+        # in the container AND on real NixOS. (The declarative real-hardware path is
+        # services.ollama in configuration.nix — complementary.) Surface stderr;
+        # graceful (warn + exit 0 so install.sh never bricks over a best-effort probe).
+        ollama_store="$(nix --extra-experimental-features 'nix-command flakes' build --no-link --print-out-paths nixpkgs#ollama 2>&1 | tail -1)"
+        if [ -n "$ollama_store" ] && [ -x "$ollama_store/bin/ollama" ]; then
+          mkdir -p "$HOME/.local/bin"
+          ln -sf "$ollama_store/bin/ollama" "$HOME/.local/bin/ollama"
+          echo "  ✓ ollama via nix build + symlink ($ollama_store/bin/ollama)"
         else
-          echo "warn: nix ollama install failed; skipping local-llm (tests fall back to mock)" >&2; exit 0
+          echo "warn: nix build ollama failed ($ollama_store); skipping local-llm (tests fall back to mock)" >&2; exit 0
         fi
-        export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH"
-        command -v ollama >/dev/null 2>&1 || { echo "warn: ollama not on PATH after nix install; skipping local-llm" >&2; exit 0; }
+        export PATH="$HOME/.local/bin:$PATH"
+        command -v ollama >/dev/null 2>&1 || { echo "warn: ollama not on PATH after nix build; skipping local-llm" >&2; exit 0; }
       else
       case "$(uname -m)" in
         x86_64 | amd64) oarch=amd64 ;;
