@@ -102,4 +102,3 @@ Remove-Item -Recurse -Force "$env:LOCALAPPDATA\zeta-otto-loop"   # optional: clo
 - **Tests:** `bun test ./tools/persistence/windows/install-scheduled-task.test.ts` and
   `bun test ./tools/persistence/loop-subprocess-path.test.ts` (tests live under `tools/`
   because `bun test` does not discover dot-directories).
-```
