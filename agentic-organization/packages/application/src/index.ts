@@ -30,6 +30,12 @@ export {
   type ReviewGateResult,
 } from "./review-gate.ts";
 export {
+  runWorkItemThroughHermes,
+  type WorkItemRunDeps,
+  type WorkItemRunRequest,
+  type WorkItemRunResult,
+} from "./orchestrate-run.ts";
+export {
   createCommandHandlerRegistry,
   type CommandExecutionContext,
   type CommandHandler,
