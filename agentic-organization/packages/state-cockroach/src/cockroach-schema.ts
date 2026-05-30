@@ -24,6 +24,7 @@ export const CockroachCoreStateMigrationName = {
   QualityGateEvaluationKernelV10: "0010_agentic_org_quality_gate_evaluation_kernel",
   ControlPlaneKeepAliveV11: "0011_agentic_org_control_plane_keep_alive",
   AgentLivenessV12: "0012_agentic_org_agent_liveness",
+  HindsightMemoryV13: "0013_agentic_org_hindsight_memory",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -50,6 +51,7 @@ export const CockroachTableName = {
   ControlPlaneHeartbeat: "agentic_org_control_plane_heartbeat",
   ControlPlaneAlerts: "agentic_org_control_plane_alerts",
   AgentHeartbeat: "agentic_org_agent_heartbeat",
+  HindsightMemory: "agentic_org_hindsight_memory",
 } as const;
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
@@ -131,6 +133,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachQualityGateEvaluationKernelMigration(),
     createCockroachControlPlaneKeepAliveMigration(),
     createCockroachAgentLivenessMigration(),
+    createCockroachHindsightMemoryMigration(),
   ];
 }
 
@@ -213,6 +216,20 @@ export function createCockroachAgentLivenessMigration(): CockroachSchemaMigratio
   };
 }
 
+/**
+ * Hindsight memory — the durable substrate for "set up hermes... the memory".
+ * An agent retains what it learned (attributed by hat assignment); recall is
+ * SCOPED by project (Organization memory policy: scoped recall, never global);
+ * attribution is STICKY (a memory keeps its original author even when recalled
+ * by another hat). The Cockroach Memory adapter persists this across restarts.
+ */
+export function createCockroachHindsightMemoryMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.HindsightMemoryV13,
+    sql: createHindsightMemoryTableSql(),
+  };
+}
+
 function createControlPlaneHeartbeatTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneHeartbeat} (
@@ -244,6 +261,20 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.AgentHeartbeat} (
   deadline_ms INT8 NOT NULL,
   version INT8 NOT NULL,
   PRIMARY KEY (organization_id, agent_id)
+);`.trim();
+}
+
+function createHindsightMemoryTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.HindsightMemory} (
+  memory_id STRING PRIMARY KEY,
+  agent_id STRING NOT NULL,
+  hat_assignment_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  prompt_flow_run_id STRING NOT NULL,
+  content STRING NOT NULL,
+  retained_at TIMESTAMPTZ NOT NULL
 );`.trim();
 }
 

@@ -14,11 +14,11 @@ import {
 } from "../../../packages/runtime/src/index.ts";
 import {
   createCockroachControlPlaneStateStore,
+  createCockroachMemory,
   createCockroachSqlExecutor,
 } from "../../../packages/state-cockroach/src/index.ts";
 import { createHermesReactionPlanActionExecutor } from "../../../packages/application/src/index.ts";
 import { createInProcessHermesRuntime } from "../../../packages/hermes/src/index.ts";
-import { createInProcessMemory } from "../../../packages/memory/src/index.ts";
 import type { InboundEventSource } from "../../../packages/workers/src/index.ts";
 import {
   createCockroachMigrationBootstrapper,
@@ -208,7 +208,8 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
   const controlPlaneStore = createCockroachControlPlaneStateStore({ executor: cockroachExecutor });
   const reactionPlanActionExecutor = createHermesReactionPlanActionExecutor({
     createHermesRuntime: () => createInProcessHermesRuntime(),
-    createMemory: () => createInProcessMemory(),
+    // durable Hindsight memory — what the agent retains/recalls persists across restarts
+    createMemory: () => createCockroachMemory({ executor: cockroachExecutor }),
     agentHeartbeatWriter: controlPlaneStore,
     agentHeartbeatDeadlineMs: config.workerKeepAliveOrgHeartbeatDeadlineMs,
     generateId: deps.durablePorts.createId,

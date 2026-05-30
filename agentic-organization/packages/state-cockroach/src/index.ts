@@ -20,6 +20,11 @@ export {
   type KeepAliveActionSink as CockroachKeepAliveActionSink,
 } from "./cockroach-keep-alive-action-sink.ts";
 export {
+  CockroachMemoryStatement,
+  createCockroachMemory,
+  type CockroachMemoryDeps,
+} from "./cockroach-memory.ts";
+export {
   CockroachCommandStateStoreStatement,
   createCockroachCommandStateStoreFactory,
   type CockroachSqlExecutor,
@@ -124,6 +129,7 @@ export {
   createCockroachCoreStateMigration,
   createCockroachAgentLivenessMigration,
   createCockroachControlPlaneKeepAliveMigration,
+  createCockroachHindsightMemoryMigration,
   createCockroachDecisionRecordKernelMigration,
   createCockroachDiscussionAnchorKernelMigration,
   createCockroachHatAssignmentAuthorityProjectionMigration,

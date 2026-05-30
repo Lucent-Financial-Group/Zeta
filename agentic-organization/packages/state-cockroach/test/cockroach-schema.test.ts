@@ -22,6 +22,7 @@ import {
   createCockroachCoreStateMigration,
   createCockroachAgentLivenessMigration,
   createCockroachControlPlaneKeepAliveMigration,
+  createCockroachHindsightMemoryMigration,
   createCockroachDecisionRecordKernelMigration,
   createCockroachDiscussionAnchorKernelMigration,
   createCockroachHatAssignmentAuthorityProjectionMigration,
@@ -89,6 +90,18 @@ describe("cockroach core state schema", () => {
     equal(migrations[9]?.name, CockroachCoreStateMigrationName.QualityGateEvaluationKernelV10);
     equal(migrations[10]?.name, CockroachCoreStateMigrationName.ControlPlaneKeepAliveV11);
     equal(migrations[11]?.name, CockroachCoreStateMigrationName.AgentLivenessV12);
+    equal(migrations[12]?.name, CockroachCoreStateMigrationName.HindsightMemoryV13);
+  });
+
+  test("declares the hindsight memory table (durable Hindsight)", () => {
+    const migration = createCockroachHindsightMemoryMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.HindsightMemoryV13);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.HindsightMemory}`));
+    ok(migration.sql.includes("memory_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("project_id STRING NOT NULL"));
+    ok(migration.sql.includes("content STRING NOT NULL"));
+    ok(migration.sql.includes("retained_at TIMESTAMPTZ NOT NULL"));
   });
 
   test("declares the control-plane keep-alive tables (org proof-of-life + alert log)", () => {
