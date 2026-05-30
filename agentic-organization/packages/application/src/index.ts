@@ -42,6 +42,11 @@ export {
   type HermesReactionPlanActionExecutorDeps,
 } from "./hermes-reaction-plan-action-executor.ts";
 export {
+  createOrganizationReactionPlanActionExecutor,
+  type CreateOrganizationReactionPlanActionExecutorInput,
+  type EnsureWorkItemPort,
+} from "./organization-reaction-plan-action-executor.ts";
+export {
   createCommandHandlerRegistry,
   type CommandExecutionContext,
   type CommandHandler,
