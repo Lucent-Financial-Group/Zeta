@@ -182,10 +182,23 @@ function perspectiveFromObservation(observation: ReviewThreadObservation): LoopP
  * does not write a shard. Callers can hand the returned divergenceInput to
  * writeDivergenceShard once they have two observations from the same thread
  * whose machine-comparable conclusions differ.
+ *
+ * Validation is EAGER: every required string field (thread id, conclusion,
+ * body) of both observations is checked non-blank up front, before the
+ * no-disagreement branch decision and before any downstream I/O. Lazy
+ * validation (body only on the disagreement path; conclusion only on the
+ * same-thread path) silently accepted malformed observations as clean
+ * no-disagreement outcomes -- e.g. a same-conclusion pair with a blank body,
+ * or a different-thread pair with a blank conclusion (Copilot PR #6068
+ * finding). A malformed observation must be rejected regardless of branch.
  */
 export function detectReviewThreadDisagreement(input: ReviewThreadDisagreementInput): ReviewThreadDisagreementResult {
   const aThreadId = nonBlank(input.loopA.threadId, "loopA.threadId");
   const bThreadId = nonBlank(input.loopB.threadId, "loopB.threadId");
+  nonBlank(input.loopA.conclusion, "loopA.conclusion");
+  nonBlank(input.loopB.conclusion, "loopB.conclusion");
+  nonBlank(input.loopA.body, "loopA.body");
+  nonBlank(input.loopB.body, "loopB.body");
 
   if (input.loopA.prNumber !== input.loopB.prNumber || aThreadId !== bThreadId) {
     return { kind: "no-disagreement", reason: "different-thread" };

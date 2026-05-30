@@ -241,13 +241,63 @@ describe("detectReviewThreadDisagreement", () => {
         ...base,
         loopA: { ...base.loopA, conclusion: " " },
       }),
-    ).toThrow(/review conclusion/);
+    ).toThrow(/loopA\.conclusion/);
     expect(() =>
       detectReviewThreadDisagreement({
         ...base,
         loopA: { ...base.loopA, body: " " },
       }),
-    ).toThrow(/review body/);
+    ).toThrow(/loopA\.body/);
+  });
+
+  test("rejects blank conclusion/body even on no-disagreement paths (Copilot #6068)", () => {
+    // base is same-thread + same-conclusion (the no-disagreement: same-conclusion
+    // branch). Previously a blank body here was silently accepted as clean
+    // because body was only validated on the disagreement path.
+    const sameConclusion = {
+      tick: TICK,
+      operativeAuthorization: INPUT.operativeAuthorization,
+      loopA: {
+        identity: INPUT.loopA.identity,
+        prNumber: 4147,
+        threadId: "thread-a",
+        conclusion: "resolve",
+        body: "False positive.",
+      },
+      loopB: {
+        identity: INPUT.loopB.identity,
+        prNumber: 4147,
+        threadId: "thread-a",
+        conclusion: "resolve",
+        body: "Also false positive.",
+      },
+    };
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...sameConclusion,
+        loopB: { ...sameConclusion.loopB, body: " " },
+      }),
+    ).toThrow(/loopB\.body/);
+
+    // different-thread branch returns before the conclusion comparison, so a
+    // blank conclusion/body must be rejected by the eager validation, not slip
+    // through as a clean different-thread outcome.
+    const differentThread = {
+      ...sameConclusion,
+      loopB: { ...sameConclusion.loopB, prNumber: 9999 },
+    };
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...differentThread,
+        loopA: { ...differentThread.loopA, conclusion: " " },
+      }),
+    ).toThrow(/loopA\.conclusion/);
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...differentThread,
+        loopB: { ...differentThread.loopB, body: " " },
+      }),
+    ).toThrow(/loopB\.body/);
   });
 });
 
@@ -412,7 +462,15 @@ describe("fileReviewThreadDisagreement (detect → file glue, AC #2)", () => {
           ...DETECT_INPUT,
           loopA: { ...DETECT_INPUT.loopA, threadId: " " },
         }),
-      ).toThrow(/loopA.threadId/);
+      ).toThrow(/loopA\.threadId/);
+      // A blank body on a same-conclusion pair must throw before any I/O too,
+      // not be silently treated as a clean no-disagreement outcome (#6068).
+      expect(() =>
+        fileReviewThreadDisagreement(root, {
+          ...DETECT_INPUT,
+          loopB: { ...DETECT_INPUT.loopB, conclusion: DETECT_INPUT.loopA.conclusion, body: " " },
+        }),
+      ).toThrow(/loopB\.body/);
       expect(existsSync(join(root, DIVERGENCE_DIR))).toBe(false);
     });
   });
