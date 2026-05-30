@@ -324,7 +324,7 @@ describe("factory-health-monitor", () => {
     ]);
   });
 
-  test("loopRunReceiptEventsFromRunnerLog gates Codex loop-run events on claim or PR count changes", () => {
+  test("loopRunReceiptEventsFromRunnerLog gates Codex loop-run events on claim count changes", () => {
     const output = [
       "2026-05-30T05:00:00Z heartbeat complete run_id=20260530T050000Z fetch=ok claims=1 open_prs=0 dirty=0 codex=wait due_in=60s",
       "2026-05-30T05:01:00Z codex forward gate start run_id=20260530T050100Z timeout=180s",
@@ -333,6 +333,9 @@ describe("factory-health-monitor", () => {
       "2026-05-30T05:10:00Z heartbeat complete run_id=20260530T051000Z fetch=ok claims=2 open_prs=1 dirty=0 codex=wait due_in=60s",
       "2026-05-30T05:11:00Z codex forward gate end run_id=no-delta status=0",
       "2026-05-30T05:12:00Z heartbeat complete run_id=20260530T051200Z fetch=ok claims=2 open_prs=1 dirty=0 codex=wait due_in=60s",
+      "2026-05-30T05:20:00Z heartbeat complete run_id=20260530T052000Z fetch=ok claims=2 open_prs=1 dirty=0 codex=wait due_in=60s",
+      "2026-05-30T05:21:00Z codex forward gate end run_id=open-pr-only-delta status=0",
+      "2026-05-30T05:22:00Z heartbeat complete run_id=20260530T052200Z fetch=ok claims=2 open_prs=2 dirty=0 codex=wait due_in=60s",
       "2026-05-28T05:04:00Z codex forward gate end run_id=stale status=0",
       "2026-05-30T08:04:00Z codex forward gate end run_id=future status=0",
       "not-a-date codex forward gate end run_id=bad status=0",
