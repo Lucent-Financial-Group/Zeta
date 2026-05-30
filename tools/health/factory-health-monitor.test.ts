@@ -22,6 +22,7 @@ import {
   parseClaimPathSet,
   parseGitWorktreeListPorcelain,
   parseLocalWorktreeDirtScanLimit,
+  resolveCodexLoopRunnerLog,
   runHealthCheck,
   trajectoryReceiptEventsFromGitLog,
   type HealthSignal,
@@ -250,6 +251,33 @@ describe("factory-health-monitor", () => {
         description: "codex forward gate 20260530T050100Z status=0",
       },
     ]);
+  });
+
+  test("resolveCodexLoopRunnerLog honors writer log-dir override and explicit override", () => {
+    // 1. Explicit monitor override wins (even when other vars are set).
+    expect(
+      resolveCodexLoopRunnerLog({
+        FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG: "/custom/runner.log",
+        ZETA_CODEX_LOOP_LOG_DIR: "/elsewhere",
+        HOME: "/Users/acehack",
+      }),
+    ).toBe("/custom/runner.log");
+
+    // 2. Writer log-dir override is mirrored (the bug this test guards).
+    expect(
+      resolveCodexLoopRunnerLog({ ZETA_CODEX_LOOP_LOG_DIR: "/var/log/zeta", HOME: "/Users/acehack" }),
+    ).toBe("/var/log/zeta/runner.log");
+
+    // 3. Default to the writer's HOME-relative location.
+    expect(resolveCodexLoopRunnerLog({ HOME: "/Users/acehack" })).toBe(
+      "/Users/acehack/Library/Logs/zeta-codex-loop/runner.log",
+    );
+
+    // 4. No HOME and no override → source absent ("").
+    expect(resolveCodexLoopRunnerLog({})).toBe("");
+
+    // 5. Explicit empty override stays empty (caller opted the source off).
+    expect(resolveCodexLoopRunnerLog({ FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG: "", HOME: "/Users/acehack" })).toBe("");
   });
 
   test("classifyBranchLane maps known branch prefixes to lanes", () => {

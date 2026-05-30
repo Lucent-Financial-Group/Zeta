@@ -109,9 +109,7 @@ const CODEX_PARALLEL_RUNWAY_MINIMUM_ACTIVE_ITEMS = 1;
 const CODEX_PARALLEL_RUNWAY_TARGET_ACTIVE_ITEMS = 2;
 const FACTORY_EVENT_COINCIDENCE_WINDOW_MS = 5 * 60 * 1000;
 const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
-const FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG =
-  process.env.FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG ??
-  (process.env.HOME ? join(process.env.HOME, "Library/Logs/zeta-codex-loop/runner.log") : "");
+const FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG = resolveCodexLoopRunnerLog(process.env);
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
   ".claude/",
@@ -228,6 +226,28 @@ export function buildCoincidenceWindowTriggerSource(
 export function parseLocalWorktreeDirtScanLimit(value: string | undefined): number {
   const parsed = Number.parseInt(value ?? `${DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT}`, 10);
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT;
+}
+
+/**
+ * Resolve the Codex loop runner-log path the health monitor reads.
+ *
+ * Precedence, highest first:
+ *   1. FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG — explicit full-path override for the monitor.
+ *   2. ZETA_CODEX_LOOP_LOG_DIR + /runner.log — mirrors the writer's log-dir override
+ *      (`.codex/bin/codex-loop-tick.ts`: `logDir = ZETA_CODEX_LOOP_LOG_DIR ?? ~/Library/Logs/zeta-codex-loop`,
+ *      then `join(logDir, "runner.log")`). Without this, relocating the writer's logs made the
+ *      monitor silently treat the optional source as absent.
+ *   3. ~/Library/Logs/zeta-codex-loop/runner.log — the writer's default location.
+ *
+ * Returns "" (source absent) when no path can be derived (no HOME and no override).
+ */
+export function resolveCodexLoopRunnerLog(env: NodeJS.ProcessEnv): string {
+  const explicit = env.FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG;
+  if (explicit !== undefined) {
+    return explicit;
+  }
+  const logDir = env.ZETA_CODEX_LOOP_LOG_DIR ?? (env.HOME ? join(env.HOME, "Library/Logs/zeta-codex-loop") : "");
+  return logDir ? join(logDir, "runner.log") : "";
 }
 
 function fetchOpenPRs(): ToolResult {
