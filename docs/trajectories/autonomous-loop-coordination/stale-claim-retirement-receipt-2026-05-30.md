@@ -1,6 +1,6 @@
 # Stale Claim Retirement Receipt - 2026-05-30
 
-Status: reachability evidence recorded; remote ref retirement pending
+Status: three high-confidence stale remote refs retired
 Surface: codex-background-service
 Origin: desktop heartbeat `vera-desktop-loop`
 Session: codex/20260530T0448Z
@@ -54,9 +54,23 @@ a3be6f2644bc fix(backlog): B-0126 parent -> decomposed (#2127)
 d832d74fd01c feat(B-0267): smallest safe slice - Branch Safety ruleset skeleton + start-gate + re-decomp (#2299)
 ```
 
+## Retirement Output
+
+The remote refs were deleted after the reachability and missing-file checks
+above were repeated in the claim worktree.
+
+```text
+To https://github.com/Lucent-Financial-Group/Zeta.git
+ - [deleted]             claim/b0140-bash-ts-migration-smallest-slice-riven-2026-05-08
+ - [deleted]             claim/b0271-pm2-first-research-pass-2026-05-08
+ - [deleted]             claim/b0325-peer-call-firewall-kiro-claude-smallest-slice-riven-2026-05-09
+```
+
+`git ls-remote --heads origin` for the same three branch names returned no
+refs after deletion. A follow-up `git fetch --prune origin` completed cleanly.
+
 ## Next Safe Action
 
-The next safe action is to retire exactly these three remote refs, then update
-this receipt with the deletion command output before releasing the Codex claim.
-Do not delete any unmerged missing-file refs without a separate branch-history
-receipt.
+Release the Codex claim in the same branch and open a PR carrying the claim,
+receipt, and release. Do not delete any unmerged missing-file refs without a
+separate branch-history receipt.
