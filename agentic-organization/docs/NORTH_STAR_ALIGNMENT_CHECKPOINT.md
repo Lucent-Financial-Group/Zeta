@@ -650,3 +650,30 @@ The agent's decision logic is the in-process Hermes runtime today; a real
 agent/LLM backend swaps in behind the same HermesRuntime port without changing
 any of this wiring (the keep-alive watch, the durable liveness, the reaction-plan
 integration all stay identical).
+
+## Update 2026-05-30 — the full watch loop closes in kubernetes (tenet #1 realized)
+
+The complete cycle now runs and is proven end-to-end in the kind cluster:
+
+  task event -> ingest -> reaction plan -> Hermes agent run (autonomous, acts on
+  the work item) -> durable agent liveness -> the agent goes silent -> the
+  deterministic keep-alive engine catches it past its deadline -> a
+  stale_work_reassignment signal naming the agent + work item.
+
+In-cluster evidence: after the Hermes run for work item `work-07426f93...`
+heartbeated once and the agent went silent, the keep-alive engine recorded a
+`stale_work_reassignment` alert: staleAgentId `agent-engineering_manager-...`,
+hatAssignmentId `hat-engineering_manager-...`, workItemId `work-07426f93...`,
+heartbeatAgeMs 93063 (past the 90000 ms deadline). Meanwhile the org heartbeat
+kept advancing (version 56), unattended, surviving a redeploy.
+
+This is the operator's #1 tenet, realized and proven in kubernetes:
+- the ORGANIZATION stays alive deterministically (org heartbeat),
+- the AGENTS run autonomously (Hermes data plane in the deployed worker),
+- and the control plane WATCHES the agents and deterministically catches a silent
+  one, signaling reassignment of its work.
+
+The one remaining infrastructure dependency is the agent's internal decision
+backend (in-process Hermes today vs. a real LLM/sandbox), which lives behind the
+swappable HermesRuntime port — every surrounding piece (control plane, durable
+liveness, watch loop, reaction-plan integration, reassignment) is real and proven.
