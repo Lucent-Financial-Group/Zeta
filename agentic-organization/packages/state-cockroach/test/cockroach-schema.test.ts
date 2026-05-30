@@ -20,6 +20,7 @@ import {
   CockroachTableName,
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
+  createCockroachAgentLivenessMigration,
   createCockroachControlPlaneKeepAliveMigration,
   createCockroachDecisionRecordKernelMigration,
   createCockroachDiscussionAnchorKernelMigration,
@@ -87,6 +88,7 @@ describe("cockroach core state schema", () => {
     equal(migrations[8]?.name, CockroachCoreStateMigrationName.ReactionPlanExecutionLifecycleV9);
     equal(migrations[9]?.name, CockroachCoreStateMigrationName.QualityGateEvaluationKernelV10);
     equal(migrations[10]?.name, CockroachCoreStateMigrationName.ControlPlaneKeepAliveV11);
+    equal(migrations[11]?.name, CockroachCoreStateMigrationName.AgentLivenessV12);
   });
 
   test("declares the control-plane keep-alive tables (org proof-of-life + alert log)", () => {
@@ -99,6 +101,19 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneAlerts}`));
     ok(migration.sql.includes("control_plane_alert_id STRING PRIMARY KEY"));
     ok(migration.sql.includes("detail_json JSONB NOT NULL"));
+  });
+
+  test("declares the agent-liveness heartbeat table (one row per org+agent)", () => {
+    const migration = createCockroachAgentLivenessMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.AgentLivenessV12);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.AgentHeartbeat}`));
+    ok(migration.sql.includes("agent_id STRING NOT NULL"));
+    ok(migration.sql.includes("hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("work_item_id STRING NOT NULL"));
+    ok(migration.sql.includes("last_heartbeat_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("deadline_ms INT8 NOT NULL"));
+    ok(migration.sql.includes("PRIMARY KEY (organization_id, agent_id)"));
   });
 
   test("declares an additive work-anchor kernel migration for existing databases", () => {

@@ -130,6 +130,8 @@ function createRecordingStore(): {
       appendAlert: async (alert: AppendControlPlaneAlertInput) => {
         alerts.push(alert);
       },
+      recordAgentHeartbeat: async () => {},
+      readAgentHeartbeats: async () => [],
     },
   };
 }

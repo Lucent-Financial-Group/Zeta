@@ -23,6 +23,7 @@ export const CockroachCoreStateMigrationName = {
   ReactionPlanExecutionLifecycleV9: "0009_agentic_org_reaction_plan_execution_lifecycle",
   QualityGateEvaluationKernelV10: "0010_agentic_org_quality_gate_evaluation_kernel",
   ControlPlaneKeepAliveV11: "0011_agentic_org_control_plane_keep_alive",
+  AgentLivenessV12: "0012_agentic_org_agent_liveness",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -48,6 +49,7 @@ export const CockroachTableName = {
   PolicyObservations: "agentic_org_policy_observations",
   ControlPlaneHeartbeat: "agentic_org_control_plane_heartbeat",
   ControlPlaneAlerts: "agentic_org_control_plane_alerts",
+  AgentHeartbeat: "agentic_org_agent_heartbeat",
 } as const;
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
@@ -128,6 +130,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachReactionPlanExecutionLifecycleMigration(),
     createCockroachQualityGateEvaluationKernelMigration(),
     createCockroachControlPlaneKeepAliveMigration(),
+    createCockroachAgentLivenessMigration(),
   ];
 }
 
@@ -196,6 +199,20 @@ export function createCockroachControlPlaneKeepAliveMigration(): CockroachSchema
   };
 }
 
+/**
+ * Agent liveness — the second half of the keep-alive tenet ("drive the agents
+ * to stay alive"). One row per (org, agent): an agent session UPSERTs its
+ * heartbeat as it works. The keep-alive engine reads these, and a heartbeat
+ * older than its deadline_ms marks the agent stale -> its work is flagged for
+ * reassignment (an agent-decidable follow-up; the control plane only signals).
+ */
+export function createCockroachAgentLivenessMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.AgentLivenessV12,
+    sql: createAgentHeartbeatTableSql(),
+  };
+}
+
 function createControlPlaneHeartbeatTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneHeartbeat} (
@@ -213,6 +230,20 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneAlerts} (
   kind STRING NOT NULL,
   detail_json JSONB NOT NULL,
   created_at TIMESTAMPTZ NOT NULL
+);`.trim();
+}
+
+function createAgentHeartbeatTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.AgentHeartbeat} (
+  organization_id STRING NOT NULL,
+  agent_id STRING NOT NULL,
+  hat_assignment_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  last_heartbeat_at TIMESTAMPTZ NOT NULL,
+  deadline_ms INT8 NOT NULL,
+  version INT8 NOT NULL,
+  PRIMARY KEY (organization_id, agent_id)
 );`.trim();
 }
 

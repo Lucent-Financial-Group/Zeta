@@ -6,12 +6,14 @@ import { describe, test } from "node:test";
 import { KeepAliveLaneStatus, createKeepAliveLane } from "../../../packages/keepalive/src/index.ts";
 import {
   ControlPlaneAlertKind,
+  createCockroachAgentLivenessMigration,
   createCockroachControlPlaneKeepAliveMigration,
   createCockroachControlPlaneStateStore,
   createCockroachKeepAliveActionSink,
   createCockroachKeepAliveSnapshotSource,
   splitSqlStatements,
   type CockroachAnySqlStatement,
+  type CockroachControlPlaneStateStore,
 } from "../../../packages/state-cockroach/src/index.ts";
 import {
   createCockroachSqlExecutor,
@@ -43,7 +45,7 @@ describe("deterministic keep-alive — live Cockroach control plane (operator te
       const executor = createCockroachSqlExecutor({ client: sqlClient });
 
       try {
-        await applyControlPlaneKeepAliveMigration(executor);
+        await applyKeepAliveMigrations(executor);
 
         const store = createCockroachControlPlaneStateStore({ executor });
         const lane = createKeepAliveLane({
@@ -100,7 +102,128 @@ describe("deterministic keep-alive — live Cockroach control plane (operator te
       }
     },
   );
+
+  test(
+    "drives the agents to stay alive — a stale agent triggers a deterministic reassignment alert",
+    {
+      skip:
+        env[KeepAliveIntegrationEnvName.DatabaseUrl] === undefined
+          ? `${KeepAliveIntegrationEnvName.DatabaseUrl} is not set`
+          : false,
+    },
+    async () => {
+      const databaseUrl = readIntegrationDatabaseUrl();
+      const organizationId = `org-agentlive-${randomUUID()}`;
+      const agentId = `agent-${randomUUID()}`;
+      const pool = await createPgCockroachWorkerPool({ databaseUrl });
+      const sqlClient = createCockroachWorkerSqlClient({ pool, maxTransactionAttempts: 2 });
+      const executor = createCockroachSqlExecutor({ client: sqlClient });
+
+      try {
+        await applyKeepAliveMigrations(executor);
+
+        const store = createCockroachControlPlaneStateStore({ executor });
+        const lane = buildLane(store, organizationId);
+        const agentDeadlineMs = 8_000;
+
+        // a fresh agent heartbeat — the engine sees the agent ALIVE, no reassign
+        await store.recordAgentHeartbeat({
+          organizationId,
+          agentId,
+          hatAssignmentId: "hat-1",
+          workItemId: "work-1",
+          deadlineMs: agentDeadlineMs,
+        });
+
+        const aliveSnapshot = await readAgentSnapshot(store, organizationId, agentId);
+        ok((aliveSnapshot?.heartbeatAgeMs ?? Number.MAX_SAFE_INTEGER) < agentDeadlineMs);
+
+        const freshTick = await lane.runOnce();
+        // only the org heartbeat applied — the agent is alive, no reassignment
+        equal(freshTick.appliedCount, 1);
+        equal(await readReassignmentAlertCount(executor, organizationId), 0);
+
+        // force the agent stale: push its last heartbeat past the deadline
+        await forceAgentStale(executor, organizationId, agentId, agentDeadlineMs);
+        const staleTick = await lane.runOnce();
+        // org heartbeat + one stale-work reassignment signal
+        equal(staleTick.appliedCount, 2);
+        ok(await readReassignmentNamesWork(executor, organizationId, "work-1"));
+      } finally {
+        await cleanUp(executor, organizationId);
+        await createCockroachWorkerShutdownPort({ pool }).shutdown();
+      }
+    },
+  );
 });
+
+function buildLane(store: CockroachControlPlaneStateStore, organizationId: string) {
+  return createKeepAliveLane({
+    source: createCockroachKeepAliveSnapshotSource({
+      store,
+      organizationId,
+      orgHeartbeatDeadlineMs: OrgHeartbeatDeadlineMs,
+      clock: { now: () => Date.now() },
+    }),
+    sink: createCockroachKeepAliveActionSink({ store, organizationId, generateAlertId: () => randomUUID() }),
+  });
+}
+
+async function readAgentSnapshot(
+  store: CockroachControlPlaneStateStore,
+  organizationId: string,
+  agentId: string,
+): Promise<{ heartbeatAgeMs: number } | undefined> {
+  const agents = await store.readAgentHeartbeats(organizationId);
+  return agents.find((agent) => agent.agentId === agentId);
+}
+
+async function forceAgentStale(
+  executor: ControlPlaneSqlExecutor,
+  organizationId: string,
+  agentId: string,
+  deadlineMs: number,
+): Promise<void> {
+  await executor.execute({
+    name: "keep_alive_live_force_agent_stale",
+    sql: `
+      UPDATE agentic_org_agent_heartbeat
+      SET last_heartbeat_at = now() - (($3::INT8 + 5000) * INTERVAL '1 millisecond')
+      WHERE organization_id = $1 AND agent_id = $2
+    `,
+    parameters: [organizationId, agentId, deadlineMs],
+  });
+}
+
+async function readReassignmentAlertCount(executor: ControlPlaneSqlExecutor, organizationId: string): Promise<number> {
+  const result = await executor.execute<{ alert_count: number | string }>({
+    name: "keep_alive_live_read_reassignment_count",
+    sql: `
+      SELECT count(*) AS alert_count
+      FROM agentic_org_control_plane_alerts
+      WHERE organization_id = $1 AND kind = $2
+    `,
+    parameters: [organizationId, ControlPlaneAlertKind.StaleWorkReassignment],
+  });
+  return Number(result.rows[0]?.alert_count ?? 0);
+}
+
+async function readReassignmentNamesWork(
+  executor: ControlPlaneSqlExecutor,
+  organizationId: string,
+  workItemId: string,
+): Promise<boolean> {
+  const result = await executor.execute<{ alert_count: number | string }>({
+    name: "keep_alive_live_read_reassignment_names_work",
+    sql: `
+      SELECT count(*) AS alert_count
+      FROM agentic_org_control_plane_alerts
+      WHERE organization_id = $1 AND kind = $2 AND detail_json->>'workItemId' = $3
+    `,
+    parameters: [organizationId, ControlPlaneAlertKind.StaleWorkReassignment, workItemId],
+  });
+  return Number(result.rows[0]?.alert_count ?? 0) >= 1;
+}
 
 function readIntegrationDatabaseUrl(): string {
   const databaseUrl = env[KeepAliveIntegrationEnvName.DatabaseUrl];
@@ -116,10 +239,12 @@ type ControlPlaneSqlExecutor = {
   ) => Promise<{ rows: readonly Row[] }>;
 };
 
-async function applyControlPlaneKeepAliveMigration(executor: ControlPlaneSqlExecutor): Promise<void> {
-  const migration = createCockroachControlPlaneKeepAliveMigration();
-  for (const statement of splitSqlStatements(migration.sql)) {
-    await executor.execute({ name: "keep_alive_live_migration", sql: statement, parameters: [] });
+async function applyKeepAliveMigrations(executor: ControlPlaneSqlExecutor): Promise<void> {
+  const migrations = [createCockroachControlPlaneKeepAliveMigration(), createCockroachAgentLivenessMigration()];
+  for (const migration of migrations) {
+    for (const statement of splitSqlStatements(migration.sql)) {
+      await executor.execute({ name: "keep_alive_live_migration", sql: statement, parameters: [] });
+    }
   }
 }
 
@@ -180,6 +305,13 @@ async function cleanUp(executor: ControlPlaneSqlExecutor, organizationId: string
     .execute({
       name: "keep_alive_live_cleanup_heartbeat",
       sql: `DELETE FROM agentic_org_control_plane_heartbeat WHERE organization_id = $1`,
+      parameters: [organizationId],
+    })
+    .catch(() => undefined);
+  await executor
+    .execute({
+      name: "keep_alive_live_cleanup_agent_heartbeat",
+      sql: `DELETE FROM agentic_org_agent_heartbeat WHERE organization_id = $1`,
       parameters: [organizationId],
     })
     .catch(() => undefined);

@@ -1,15 +1,15 @@
 /**
  * Cockroach-backed keep-alive snapshot source.
  *
- * Loads the org's liveness facts (heartbeat age from the control-plane store,
- * deadline from config, clock for lease expiry) into the pure engine's
- * KeepAliveSnapshot.
+ * Loads the org's liveness facts into the pure engine's KeepAliveSnapshot:
+ *   - org heartbeat age (control-plane store; DB-clock)
+ *   - agent heartbeats (agent-liveness store; DB-clock) — stale agents drive
+ *     deterministic reassignment signals
+ *   - org-heartbeat deadline (config); clock (for lease expiry)
  *
- * v1 scope: agents[] and leases[] are empty — Hermes agent sessions and runtime
- * resource leases are not yet persisted to Cockroach (Hermes runs in-process).
- * The engine handles empty agents/leases ("a quiet but live org with no agents
- * still ticks"); the stale-agent and lease-reap branches activate the moment
- * those facts are persisted. ORG liveness — the heart of tenet #1 — is real now.
+ * leases[] remains empty until runtime resource leases are persisted; the engine
+ * handles an empty lease set. ORG liveness and AGENT liveness — both halves of
+ * tenet #1 — are real here.
  */
 
 import type { KeepAliveSnapshot, KeepAliveSnapshotSource } from "../../keepalive/src/index.ts";
@@ -33,6 +33,7 @@ export function createCockroachKeepAliveSnapshotSource(
   return {
     loadSnapshot: async (): Promise<KeepAliveSnapshot> => {
       const ageMs = await input.store.readOrgHeartbeatAgeMs(input.organizationId);
+      const agents = await input.store.readAgentHeartbeats(input.organizationId);
 
       return {
         nowMs: input.clock.now(),
@@ -40,7 +41,7 @@ export function createCockroachKeepAliveSnapshotSource(
         // EmitHeartbeat action will register the row
         orgHeartbeatAgeMs: ageMs ?? 0,
         orgHeartbeatDeadlineMs: input.orgHeartbeatDeadlineMs,
-        agents: [],
+        agents,
         leases: [],
       };
     },

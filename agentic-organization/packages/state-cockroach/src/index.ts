@@ -3,9 +3,11 @@ export {
   ControlPlaneAlertKind,
   CockroachControlPlaneStateStoreStatement,
   createCockroachControlPlaneStateStore,
+  type AgentHeartbeatRecord,
   type AppendControlPlaneAlertInput,
   type CockroachControlPlaneStateStore,
   type CreateCockroachControlPlaneStateStoreInput,
+  type RecordAgentHeartbeatInput,
 } from "./cockroach-control-plane-state-store.ts";
 export {
   createCockroachKeepAliveSnapshotSource,
@@ -120,6 +122,7 @@ export {
   CockroachTableName,
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
+  createCockroachAgentLivenessMigration,
   createCockroachControlPlaneKeepAliveMigration,
   createCockroachDecisionRecordKernelMigration,
   createCockroachDiscussionAnchorKernelMigration,
