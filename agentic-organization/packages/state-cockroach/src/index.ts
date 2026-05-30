@@ -155,3 +155,6 @@ export {
   type CockroachSqlClient,
   type CreateCockroachSqlExecutorInput,
 } from "./cockroach-sql-executor.ts";
+export { createCockroachOrgEventStore, type CreateCockroachOrgEventStoreInput, type OrgEventStore } from "./cockroach-org-event-store.ts";
+export { createCockroachHatBindingStore, type CreateCockroachHatBindingStoreInput, type HatBindingStore } from "./cockroach-hat-binding-store.ts";
+export { createCockroachOrgSystemMigration } from "./cockroach-schema.ts";

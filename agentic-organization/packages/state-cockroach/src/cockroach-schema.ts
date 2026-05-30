@@ -26,6 +26,7 @@ export const CockroachCoreStateMigrationName = {
   AgentLivenessV12: "0012_agentic_org_agent_liveness",
   HindsightMemoryV13: "0013_agentic_org_hindsight_memory",
   HermesRunV14: "0014_agentic_org_hermes_run",
+  OrgSystemV15: "0015_agentic_org_org_system",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -54,6 +55,8 @@ export const CockroachTableName = {
   AgentHeartbeat: "agentic_org_agent_heartbeat",
   HindsightMemory: "agentic_org_hindsight_memory",
   HermesRun: "agentic_org_hermes_run",
+  OrgEvents: "agentic_org_org_events",
+  HatBindings: "agentic_org_hat_bindings",
 } as const;
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
@@ -137,6 +140,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachAgentLivenessMigration(),
     createCockroachHindsightMemoryMigration(),
     createCockroachHermesRunMigration(),
+    createCockroachOrgSystemMigration(),
   ];
 }
 
@@ -246,6 +250,57 @@ export function createCockroachHermesRunMigration(): CockroachSchemaMigration {
     name: CockroachCoreStateMigrationName.HermesRunV14,
     sql: createHermesRunTableSql(),
   };
+}
+
+export function createCockroachOrgSystemMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.OrgSystemV15,
+    sql: `${createOrgEventsTableSql()}\n${createHatBindingsTableSql()}`,
+  };
+}
+
+function createOrgEventsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.OrgEvents} (
+  org_event_id STRING PRIMARY KEY,
+  kind STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  actor_hat_id STRING NULL,
+  actor_agent_id STRING NULL,
+  department_id STRING NULL,
+  subject_id STRING NOT NULL,
+  from_state STRING NULL,
+  to_state STRING NULL,
+  decision STRING NOT NULL,
+  supervisor_chain JSONB NOT NULL,
+  evidence_refs JSONB NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL,
+  occurred_at TIMESTAMPTZ NOT NULL,
+  INDEX org_events_by_org_time (organization_id, occurred_at),
+  INDEX org_events_by_subject (subject_id, occurred_at)
+);`.trim();
+}
+
+function createHatBindingsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.HatBindings} (
+  binding_id STRING PRIMARY KEY,
+  hat_id STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  wearer_agent_id STRING NOT NULL,
+  phase STRING NOT NULL,
+  bound_at TIMESTAMPTZ NOT NULL,
+  warmup_ends_at TIMESTAMPTZ NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  activated_at TIMESTAMPTZ NULL,
+  ended_at TIMESTAMPTZ NULL,
+  cooldown_until TIMESTAMPTZ NULL,
+  reason STRING NULL,
+  INDEX hat_bindings_by_org_phase (organization_id, phase),
+  INDEX hat_bindings_by_hat (hat_id, phase)
+);`.trim();
 }
 
 function createControlPlaneHeartbeatTableSql(): string {
