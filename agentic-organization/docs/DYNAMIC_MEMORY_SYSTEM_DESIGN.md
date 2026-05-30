@@ -129,7 +129,9 @@ type MemoryContent = {
   protected: boolean;        // cannot be auto-overwritten / auto-demoted
   writtenBy: string;         // hatId | agentId | "memory_curator" | "human"
   writtenAt: string;         // ISO
-  embedding?: readonly number[]; // optional; nomic-embed-text via in-cluster Ollama
+  // NOTE: embeddings + semantic search live in HINDSIGHT (§13), NOT in Cockroach.
+  // Cockroach holds content/state only; the Cockroach-only adapter is weight-only
+  // (no semantic term). Hindsight owns vector/BM25/graph/temporal recall.
 };
 
 // STATE — updated continuously (the "satellite"); drives the weight
@@ -342,9 +344,21 @@ exists in the seed**, reporting to the COO, with these hats:
 
 ### 7.1 The cycle is an org cycle (observe → decide, fully traced)
 
-`runMemoryMaintenanceCycle` runs daily and is structured exactly like
-`runOrgCycle` — determinism computes the legal action set per memory; the
-appropriate hat chooses within it; every action emits one `org_event`.
+`runMemoryMaintenanceCycle` is structured exactly like `runOrgCycle` —
+determinism computes the legal action set per memory; the appropriate hat chooses
+within it; every action emits one `org_event`.
+
+**What fires it (the trigger).** The cycle is **NATS-scheduled on a durable
+subject** (`org.memory.maintenance.tick`), drained by the worker that already runs
+the org cycles — the same always-on lane that drives the keep-alive/heartbeat loop
+(`apps/workers/src/main.ts`). A daily tick is published deterministically (a
+scheduled publisher; cadence is config, default 24h). "Daily" is the default
+cadence, **not** a hard requirement — because every action is idempotent
+(content-addressed writes §12.3) and deterministic, the cycle is **safe to run
+more often or to re-run after a crash**: re-processing the same memories produces
+the same decisions. The trigger therefore needs no exactly-once guarantee — at-
+least-once on the NATS subject is sufficient. This mirrors how the org cycle and
+heartbeat already run; no new scheduling primitive is introduced.
 
 **Stage A — automated (no hat decision; safe, reversible):**
 
@@ -386,6 +400,33 @@ are harder to reverse and benefit from judgment. That judgment is the agent
 curated rules) are excluded from auto-overwrite, auto-demotion, and confidence
 decay. They can only change via an explicit human/`memory_director` action — the
 same protected-fact discipline as the source idea, enforced at the write layer.
+
+### 7.3 `reflect` — insight generation that produces higher-tier memory
+
+The `Memory` port's third operation, `reflect`, is **not deferred** — it has a
+concrete home, and Hindsight implements it directly (`POST /banks/{id}/reflect` →
+disposition-aware insights / "mental models"). In our system `reflect` is *the
+operation that turns many low-tier memories into one durable higher-tier memory*:
+
+- **Where it runs (the agent side):** at the **reflection step of the work rhythm**
+  ([`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`](AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md)
+  already schedules "memory reflection" time per hat). At reflection, the kernel
+  calls `reflect(scope)` for the binding; the returned insight is offered as a
+  `memoryCandidate` (subject to the same write policy + protected rules).
+- **Where it runs (the maintenance side):** `reflect` is how **promotion** (§7.1
+  Stage B) materializes — when `knowledge_router` proposes promoting a lesson
+  reinforced across ≥3 scopes, the higher-tier memory it writes is a *reflected
+  insight* (an explicit summary with `derived_from` links to its sources), not a
+  raw copy. A reflected `work`-tier cluster becomes a `hat`-tier "mental model."
+- **Determinism boundary:** `reflect`'s *output is model-generated* (it summarizes),
+  so it is never auto-applied — it always enters as a candidate routed through a
+  hat's `chooseWithinLegal` (a `memory_reviewer`/`memory_director` decision),
+  emitting `memory_promotion_decision`. Reflection produces *proposals*; hats
+  decide; the kernel clamps; the trace records.
+
+So the three port operations partition cleanly: **`retain`** writes a fact,
+**`recall`** surfaces facts (weight-ranked), **`reflect`** distills facts into a
+higher-tier memory through a hat decision.
 
 ---
 
@@ -431,21 +472,79 @@ CREATE INDEX IF NOT EXISTS idx_mem_state_demote ON agentic_org_memory_state (org
 CREATE INDEX IF NOT EXISTS idx_mem_state_weight ON agentic_org_memory_state (organization_id, weight DESC);
 ```
 
-Plus an **injection ledger** (which memories were injected into which binding/
-work item) so §6 can correlate outcomes and §4.2 can update utility. Every
-maintenance action is *also* an `org_event`, so the existing org-snapshot fold
-gains a memory view for free.
+### 8.1 Injection ledger (load-bearing for KPI §6, utility §4.2, must-address §12.5)
 
-### 8.1 Embeddings — in-cluster Ollama, optional and degradable
+Every time a memory is injected into a turn we record one ledger row. This is the
+join that lets the maintenance cycle answer "which memories were in scope during
+this work item's success/failure" (§6) and "injected vs. cited" (§4.2), and lets
+the must-address gate (§12.5) know what the agent was shown.
 
-We already run Ollama in-cluster. The semantic term uses a small embedding model
-(`nomic-embed-text`); embeddings are stored as a JSONB float array and cosine-
-scored in the retrieval query. **v1 can ship with the semantic term disabled**
-(weight uses the deterministic signals only, `semantic = 0.5`) and add embeddings
-later — exactly the graceful-degradation posture the source idea takes when its
-vector store is unavailable. No external embedding API; cost is zero.
+```sql
+CREATE TABLE IF NOT EXISTS agentic_org_memory_injection (
+  injection_id     UUID PRIMARY KEY,
+  organization_id  STRING NOT NULL,
+  memory_id        UUID NOT NULL,              -- the memory that was injected
+  work_item_id     STRING NOT NULL,            -- KPI correlation key (§6)
+  hat_id           STRING NOT NULL,            -- the wearing hat at injection
+  agent_id         STRING NOT NULL,            -- the actor
+  prompt_flow_run_id STRING NOT NULL,          -- the turn
+  weight_at_injection FLOAT8 NOT NULL,         -- weight when surfaced (for must-address §12.5)
+  cited            BOOL NOT NULL DEFAULT false, -- set true when the agent cites it (§4.2 utility)
+  injected_at      TIMESTAMPTZ NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_mem_inj_work ON agentic_org_memory_injection (organization_id, work_item_id);
+CREATE INDEX IF NOT EXISTS idx_mem_inj_memory ON agentic_org_memory_injection (organization_id, memory_id);
+CREATE INDEX IF NOT EXISTS idx_mem_inj_run ON agentic_org_memory_injection (prompt_flow_run_id);
+```
 
-### 8.2 New `OrgEventKind`s
+`citedCount`/`injectedCount` in `MemoryState.utility` (§3) are derivable from this
+table (`COUNT(*)` and `COUNT(*) FILTER (WHERE cited)` per `memory_id`); we keep
+the cached counters on the state row for ranking speed and treat the ledger as the
+source of truth. Every maintenance action is *also* an `org_event`, so the
+existing org-snapshot fold gains a memory view for free.
+
+### 8.2 Semantic search is Hindsight's job — Cockroach is weight-only
+
+There is **no embedding column and no cosine in Cockroach.** Semantic / vector /
+BM25 / graph / temporal recall is **entirely Hindsight's** (§13); Hindsight stores
+the embeddings in its own `pgvector` Postgres. Our CockroachDB holds only content
+metadata (optional, §8.3), **state** (weight signals), the injection ledger, and
+the `org_event` trace.
+
+This resolves cleanly into two adapters behind the one `Memory` port:
+
+| Adapter | Recall ranking | When |
+|---------|----------------|------|
+| **Hindsight adapter** (`createHindsightMemory`, §13) | Hindsight semantic recall → **re-ranked by our §4 weight** | normal operation |
+| **Cockroach/in-process adapter** (degraded) | **weight-only** (`semantic = 0.5`); no embeddings | Hindsight unavailable, or tests |
+
+So `semantic` in the §4 weight formula is supplied by Hindsight when present and is
+the neutral `0.5` constant otherwise — the graceful-degradation posture, with the
+heavy lifting delegated to a system built for it. No embedding model, no vector
+index, and no `pgvector`-on-Cockroach problem to solve on our side.
+
+### 8.3 Reconciliation with the existing `agentic_org_hindsight_memory` (V13) table
+
+The repo already ships `agentic_org_hindsight_memory` (migration V13) — a simple
+content store with exactly our attribution columns (`agent_id, hat_assignment_id,
+project_id, work_item_id, prompt_flow_run_id, content, retained_at`) behind the
+in-cluster Cockroach `Memory` adapter. Under this design:
+
+- **Content moves to Hindsight** (the real recall engine, §13). The `memoryId`
+  returned by Hindsight's `retain` becomes our canonical id.
+- **V13 is retained as the degraded-mode / test content store**, not deleted — it
+  *is* the Cockroach weight-only adapter's content table (§8.2). When Hindsight is
+  unavailable, recall falls back to V13 content + our weight ranking.
+- **The new `agentic_org_memory_records` table (§8) is optional**: if Hindsight
+  holds content, our Cockroach can hold *only* `MemoryState` + the injection ledger
+  + `org_events`, with `MemoryState.memoryId` referencing the Hindsight id (or the
+  V13 `memory_id` in fallback). We do **not** duplicate content across both.
+
+Net: no schema is thrown away; V13 becomes the fallback content store; the new
+tables are the **state + ledger + trace** satellite; Hindsight is the content +
+recall hub.
+
+### 8.4 New `OrgEventKind`s
 
 `MemoryLifecycleTransition`, `MemoryWeightRecomputed`, `MemoryPromotionDecision`,
 `MemoryDemotionDecision`, `MemoryConflictDecision`, `MemoryInjection`,
@@ -672,19 +771,55 @@ Hindsight ([github.com/vectorize-io/hindsight](https://github.com/vectorize-io/h
 (world facts, experiences, mental models), LLM-powered extraction, and **parallel
 recall** across vector + keyword (BM25) + graph + temporal strategies, with
 cross-encoder reranking and reciprocal-rank fusion. Its core API is
-**`Retain / Recall / Reflect`**, exposed as an **HTTP REST API + SDKs**
-(Python, Node/TS, CLI). It runs as a **Docker service** over **PostgreSQL** and can
-use **Ollama** as its LLM provider.
+**`Retain / Recall / Reflect`**, exposed as an **HTTP REST API + generated SDKs**
+(Python, Node/TS, Go, CLI) and an **MCP server**. It runs as a **single Docker
+container** (with an embedded Postgres by default) over **PostgreSQL + pgvector**,
+and uses any OpenAI-compatible LLM — including **Ollama** — for extraction.
 
 We do **not** adopt Hindsight wholesale and we do **not** fork it. We **compose**
-with it. The reasons are structural:
+with it. The reasons are structural (all verified against the repo — see §13.0):
 
 | Fact about Hindsight | Consequence for us |
 |----------------------|--------------------|
-| Core API is `Retain / Recall / Reflect` | **Our `Memory` port already mirrors it exactly** (`packages/memory/src/memory.ts`, with sticky attribution). The seam exists today. |
+| Core API is `Retain / Recall / Reflect`, bank-scoped | **Our `Memory` port already mirrors it exactly** (`packages/memory/src/memory.ts`, with sticky attribution). The seam exists today. |
 | MIT-licensed | Forking, vendoring, and upstream PRs are all legally open — so the choice is purely engineering. |
-| Postgres + Ollama + REST/SDK, **no MCP** | It already speaks our stack; and "no MCP" *reinforces* §12 — agents reach it through our harness, never as an agent-facing tool. |
+| Postgres + Ollama + REST/SDK; an MCP server exists | It already speaks our stack. It *does* ship an MCP server, but **we deliberately do not use it** — §12 makes memory a harness invariant, not an agent-facing tool, so we drive Hindsight through our port. |
 | Strong recall, **no decay / weighting / maintenance** | That gap is **exactly** our governance layer (§4–§7). Composition is additive, not duplicative. |
+
+### 13.0 Verified API surface (investigated against the repo, 2026-05-30)
+
+Confirmed from Hindsight's OpenAPI contract
+(`hindsight-clients/go/api/openapi.yaml`) and `.env.example`, so the adapter below
+is grounded in the real API, not a summary:
+
+| Concern | Verified fact |
+|---------|---------------|
+| Scope primitives | **`bank_id`** (URL path) + arbitrary **`metadata`** (string→string map on each retained item) + **`tags`** (string array). |
+| Retain | `POST /v1/default/banks/{bank_id}/memories` — **batch** `items[]`, each `{ content, context?, timestamp?, metadata?, tags?, document_id?, entities? }`; `async` flag. Returns created memory **ids**. |
+| Recall | `POST /v1/default/banks/{bank_id}/memories/recall` — `{ query, types?, tags?, tags_match: any\|all, budget, max_tokens, query_timestamp? }`. **Filters by tags**; semantic + spreading-activation. |
+| Recall response | `RecallResponse.results[]` each carry **`id`** (the memory id), `chunk_id`, `context`, `entities`, `occurred_start/end`; plus `chunks{}` (text) and `entities{}`. **`results[].id` is our join key.** |
+| Reflect | `POST /v1/default/banks/{bank_id}/reflect` → insights; **mental-models** are reflect-derived (§7.3). |
+| Conflict/versioning | `GET /memories/{id}/history` + a documented conflict-resolution mechanism — **Hindsight handles content-level conflict itself** (so our §5 conflict logic is the degraded/Cockroach-only path; with Hindsight, content conflict is its job, our job is weight/lifecycle). |
+| LLM | `HINDSIGHT_API_LLM_PROVIDER=ollama` + `HINDSIGHT_API_LLM_BASE_URL` + `_MODEL` — OpenAI-compatible; **fully local on our in-cluster Ollama**. |
+| DB | embedded `pg0` by default; `HINDSIGHT_API_DATABASE_URL` to point external; uses **`pgvector`** → **do not use CockroachDB for it** (run its own Postgres / embedded pg0). |
+| Deploy | single container `ghcr.io/vectorize-io/hindsight:latest` (API `:8888`, UI `:9999`) **or the repo's `helm/` chart** — clean kind deploy. |
+
+**Scope mapping (the `hat ⊕ agent ⊕ work` union, §2.1, onto Hindsight):**
+
+| Our concept | Hindsight |
+|-------------|-----------|
+| `projectId` (recall is project-scoped, never global) | **`bank_id`** = `projectId` (one bank per project) |
+| attribution (`agentId, hatAssignmentId, workItemId, promptFlowRunId`) + `tier/scope` | retained-item **`metadata`** (string map) |
+| the scope-union retrieval key | **`tags`** = `["tier:"+tier, "scope:"+scope, "agent:"+agentId, "work:"+workItemId]` |
+| recall the hat ⊕ agent ⊕ work union | `recall({ tags:["scope:"+hatId,"agent:"+agentId,"work:"+workItemId], tags_match:"any" })` |
+| our `MemoryState.memoryId` | the **`results[].id`** Hindsight returns from `retain`/`recall` |
+
+**The one item left for the live spike (H1), now small:** whether
+`results[]` exposes a numeric **relevance score** to *blend* with our weight, or
+only an ordered list (rank-position). Either way the re-rank works — we re-rank by
+our §4 weight over the returned ids; a Hindsight score would only let us additionally
+blend. Plus the usual runtime confirmations (Ollama-as-extractor latency/quality,
+recall p99). The integration's *possibility* is no longer in question.
 
 ### 13.1 The division of labor (Hindsight is the engine; we are the economy)
 
@@ -725,9 +860,14 @@ export function createHindsightMemory(deps: {
   client: HindsightClient;        // the Node SDK or a thin REST wrapper
   organizationId: string;
 }): Memory {
-  // retain → hindsight.retain(content, { metadata: attributionToMetadata(attr) })
-  // recall → hindsight.recall(query, { filter: scopeFilter(attr) })  then OUR re-rank (§13.3)
-  // reflect → hindsight.reflect({ filter: scopeFilter(attr) })
+  // bank_id = attr.projectId  (recall is project-scoped, never global)
+  // retain  → POST /banks/{projectId}/memories  { items:[{ content,
+  //            metadata: attributionToMetadata(attr),
+  //            tags: ["tier:"+tier,"scope:"+scope,"agent:"+attr.agentId,"work:"+attr.workItemId] }] }
+  //            → returns ids; we create the MemoryState row keyed on the returned id
+  // recall  → POST /banks/{projectId}/memories/recall  { query, tags:[scope/agent/work], tags_match:"any" }
+  //            → results[].id  → join MemoryState → OUR §4 weight re-rank (§13.3)
+  // reflect → POST /banks/{projectId}/reflect  { query }  → insight candidate (§7.3), hat-decided
 }
 ```
 
@@ -754,9 +894,10 @@ as the final re-rank.**
 
 ### 13.4 Storage split — Hindsight's Postgres vs. our CockroachDB (honest nuance)
 
-Hindsight manages **its own PostgreSQL** schema (and likely Postgres-specific
-extensions such as `pgvector`). **Do not point Hindsight at CockroachDB** — run
-Hindsight with its own Postgres pod in the cluster (or use Hindsight Cloud). This
+Hindsight manages **its own PostgreSQL** schema and **requires `pgvector`**
+(confirmed in `.env.example`: *"Vector Extension — uses pgvector by default"*).
+**Do not point Hindsight at CockroachDB** — run it on its **embedded `pg0`** (zero
+extra infra) or a dedicated Postgres pod / Hindsight Cloud. This
 yields the clean hub/satellite split §3 already anticipated:
 
 | Store | Holds | Owner |
@@ -787,8 +928,8 @@ only on evidence.
 
 | Phase | Deliverable |
 |-------|-------------|
-| **H1** | Stand up Hindsight in kind (Docker pod + its own Postgres + Ollama provider); smoke-test `retain/recall/reflect` via REST. |
-| **H2** | `createHindsightMemory()` adapter behind the existing `Memory` port; attribution↔metadata mapping; scoped (non-global) recall; degraded fallback to the Cockroach/in-process adapter. |
+| **H1** | **Spike (now a confirmation, not a discovery — §13.0):** deploy `ghcr.io/vectorize-io/hindsight:latest` (or the repo `helm/` chart) in the `agentic-org` ns with embedded `pg0`, `HINDSIGHT_API_LLM_PROVIDER=ollama` + `_BASE_URL` at our in-cluster Ollama. Smoke-test: `retain` a tagged item → `recall` by tag returns it with an `id` → `reflect` returns an insight. Confirm the three runtime questions: (a) does `results[]` carry a blendable **score** or rank-only; (b) Ollama-as-extractor latency/quality; (c) recall p99. |
+| **H2** | `createHindsightMemory()` adapter behind the existing `Memory` port per §13.2 (bank_id=projectId, tags/metadata mapping, `results[].id`→`MemoryState`); scoped (non-global) recall; degraded fallback to the V13/in-process adapter (§8.2–§8.3). |
 | **H3** | Compose §13.3: Hindsight recall → join `MemoryState` → §4 weight re-rank + archive floor + budget pack; the §12 reliability harness drives `retain`/`recall` as kernel invariants. |
 | **H4** | **Observe in kind:** an agent retains via Hindsight, recalls scoped + KPI-re-ranked context, the daily maintenance cycle decays/promotes/archives against our Cockroach state, and the whole flow is traced in `org_events` — same proof bar as the org system. |
 
