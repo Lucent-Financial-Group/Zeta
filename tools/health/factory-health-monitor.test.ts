@@ -167,6 +167,41 @@ describe("factory-health-monitor", () => {
     ]);
   });
 
+  test("findCoincidenceWindows keeps signatures overlap-aware across primary and secondary keys", () => {
+    const mergedPr: CoincidenceEvent = {
+      id: "merged-pr-6103",
+      trajectory: "codex",
+      occurredAt: "2026-05-30T05:00:00.000Z",
+      correlationKey: "pr:6103",
+      correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:6103+6104"],
+    };
+    const independentEvent: CoincidenceEvent = {
+      id: "otto-1",
+      trajectory: "otto",
+      occurredAt: "2026-05-30T05:00:01.000Z",
+    };
+    const trajectoryReceipt: CoincidenceEvent = {
+      id: "trajectory-receipt-6103",
+      trajectory: "autonomous-loop-coordination",
+      occurredAt: "2026-05-30T05:00:20.000Z",
+      correlationKey: "pr:6103",
+    };
+
+    expect(
+      findCoincidenceWindows([mergedPr, independentEvent, trajectoryReceipt], {
+        windowMs: 30_000,
+        minimumEvents: 2,
+      }),
+    ).toEqual([
+      {
+        windowStart: "2026-05-30T05:00:00.000Z",
+        windowEnd: "2026-05-30T05:00:30.000Z",
+        trajectories: ["codex", "otto"],
+        events: [mergedPr, independentEvent],
+      },
+    ]);
+  });
+
   test("classifyCoincidenceWindows emits ok and warning signals", () => {
     expect(classifyCoincidenceWindows([], { windowMs: 30_000, minimumEvents: 2 })).toEqual([
       {

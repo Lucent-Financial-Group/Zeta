@@ -153,11 +153,6 @@ function coincidenceEventTimeMs(event: CoincidenceEvent): number | null {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
-function coincidenceEventSignatureKey(event: CoincidenceEvent, fallbackIndex: number): string {
-  const keys = coincidenceEventWindowKeys(event, fallbackIndex);
-  return event.correlationKeys?.find((key) => key.trim().length > 0)?.trim() ?? keys[0] ?? `${event.id}:${fallbackIndex}`;
-}
-
 function coincidenceEventWindowKeys(event: CoincidenceEvent, fallbackIndex: number): string[] {
   const keys = [event.correlationKey, ...(event.correlationKeys ?? [])]
     .map((key) => key?.trim() ?? "")
@@ -168,6 +163,14 @@ function coincidenceEventWindowKeys(event: CoincidenceEvent, fallbackIndex: numb
   }
 
   return [`${event.id}:${fallbackIndex}`];
+}
+
+function coincidenceWindowAlreadySeen(
+  members: readonly { readonly event: CoincidenceEvent; readonly index: number }[],
+  seenWindows: readonly ReadonlySet<string>[],
+): boolean {
+  const memberKeySets = members.map((member) => coincidenceEventWindowKeys(member.event, member.index));
+  return seenWindows.some((seenKeys) => memberKeySets.every((keys) => keys.some((key) => seenKeys.has(key))));
 }
 
 export function findCoincidenceWindows(
@@ -181,7 +184,7 @@ export function findCoincidenceWindows(
     .filter((timed): timed is { event: CoincidenceEvent; index: number; timeMs: number } => timed.timeMs !== null)
     .sort((a, b) => a.timeMs - b.timeMs || a.event.id.localeCompare(b.event.id) || a.index - b.index);
 
-  const seen = new Set<string>();
+  const seenWindows: Array<ReadonlySet<string>> = [];
   const windows: CoincidenceWindow[] = [];
 
   for (let i = 0; i < timedEvents.length; i++) {
@@ -213,13 +216,10 @@ export function findCoincidenceWindows(
       continue;
     }
 
-    const signature = JSON.stringify(
-      members.map((member) => coincidenceEventSignatureKey(member.event, member.index)).sort(),
-    );
-    if (seen.has(signature)) {
+    if (coincidenceWindowAlreadySeen(members, seenWindows)) {
       continue;
     }
-    seen.add(signature);
+    seenWindows.push(new Set(members.flatMap((member) => coincidenceEventWindowKeys(member.event, member.index))));
 
     windows.push({
       windowStart: new Date(first.timeMs).toISOString(),
