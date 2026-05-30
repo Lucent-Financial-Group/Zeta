@@ -17,7 +17,12 @@
 #           https://scoop.sh/  https://github.com/ScoopInstaller/scoop
 #   git   -- scoop: git | winget: Git.Git | choco: git
 [CmdletBinding()] param([switch]$SkipLoopRegister)
-Set-StrictMode -Version Latest
+# Deliberately NO `Set-StrictMode -Version Latest`: this installer shells out (via the call
+# operator) to third-party bootstrap scripts -- scoop's get.scoop.sh + the scoop shim -- which run
+# in child scopes that INHERIT strict mode. scoop reads $LASTEXITCODE before any native command has
+# set it, which throws under StrictMode (Server-Core Docker run #5, 2026-05-30). Keep this script
+# lenient so third-party bootstraps run cleanly; $ErrorActionPreference=Stop still catches our own
+# cmdlet failures.
 $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path "$PSScriptRoot\..\..").Path
 function Have($c) { [bool](Get-Command $c -ErrorAction SilentlyContinue) }
