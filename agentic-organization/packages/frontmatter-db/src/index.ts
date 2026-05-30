@@ -51,3 +51,31 @@ export {
   type IndexToGitResult,
   type SyncFeedback,
 } from "./sync.ts";
+export {
+  EventCodecFeedbackReason,
+  parseEvent,
+  serializeEvent,
+  type EventParseResult,
+} from "./event-codec.ts";
+export {
+  GitFsAdapterFeedbackReason,
+  createGitFsAdapter,
+  eventFilePath,
+  type EventFileSystem,
+  type GitFsAdapter,
+  type GitFsLoadResult,
+} from "./git-fs-adapter.ts";
+export {
+  createInMemoryCockroachRowSink,
+  type CockroachRowSink,
+} from "./cockroach-row-sink.ts";
+export {
+  ReconcileCycleStatus,
+  ReconcileLane,
+  createReconcileWorker,
+  type CreateReconcileWorkerInput,
+  type ReconcileCycleResult,
+  type ReconcileLaneFailure,
+  type ReconcileTableSummary,
+  type ReconcileWorker,
+} from "./reconcile-worker.ts";

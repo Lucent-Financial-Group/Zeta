@@ -18,7 +18,11 @@ code_anchors:
   - ../packages/frontmatter-db/src/sql-to-schema.ts
   - ../packages/frontmatter-db/src/schema-to-sql.ts
   - ../packages/frontmatter-db/src/frontmatter-codec.ts
+  - ../packages/frontmatter-db/src/event-codec.ts
   - ../packages/frontmatter-db/src/sync.ts
+  - ../packages/frontmatter-db/src/git-fs-adapter.ts
+  - ../packages/frontmatter-db/src/cockroach-row-sink.ts
+  - ../packages/frontmatter-db/src/reconcile-worker.ts
   - ../packages/frontmatter-db/src/traverse.ts
   - ../packages/frontmatter-db/src/validate.ts
   - ../../src/Core.TypeScript/zeta-id/zeta-id.ts
@@ -154,9 +158,18 @@ frontmatter YAML codec (`frontmatter-codec.ts`, lossless round-trip incl.
 number-looking strings and arrays), and the port-based git↔cockroach sync core
 (`sync.ts`). Full suite 318 green; real `tsc` clean for these files.
 
-Design/next: real adapters behind the sync ports (a Git adapter that
-reads/writes `<table>/<ZetaIdDecimal>.md` via the codec, and a CockroachDB row
-sink), wiring the index→git direction onto the existing `messaging-nats` outbox,
-and the periodic reconcile worker. The ZetaId codec (ideas 7, 8) is the existing
+Also implemented and tested: the filesystem-backed Git adapter
+(`git-fs-adapter.ts` + `event-codec.ts`, async load/flush over an in-memory
+snapshot so the sync ports stay synchronous), the in-memory CockroachDB row sink
+(`cockroach-row-sink.ts`, the rebuildable index, with a SQL-host `// TODO`), and
+the periodic reconcile worker (`reconcile-worker.ts`, a `runOnce()` cycle
+mirroring `worker-host.ts`). The reconcile cycle runs **index→git before
+git→index** so a row written only to the index this cycle becomes an event before
+the projection diff — otherwise git→index would tombstone-delete it as canonical.
+
+Design/next: the real SQL-backed `CockroachRowSink` behind the port (the
+`// TODO(cockroach-host)`), committing the adapter's written event files to git,
+and wiring the reconcile worker onto the existing `messaging-nats` outbox +
+scheduler. The ZetaId codec (ideas 7, 8) is the existing
 cross-verified `src/Core.TypeScript/zeta-id`; `frontmatter-db` mirrors only its
 timestamp-bit layout to stay self-contained.
