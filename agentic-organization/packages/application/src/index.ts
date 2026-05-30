@@ -31,6 +31,8 @@ export {
 } from "./review-gate.ts";
 export {
   runWorkItemThroughHermes,
+  type AgentHeartbeatRecord,
+  type AgentHeartbeatWriter,
   type WorkItemRunDeps,
   type WorkItemRunRequest,
   type WorkItemRunResult,

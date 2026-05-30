@@ -19,7 +19,27 @@ import type { Memory, MemoryAttribution, MemoryRecord } from "../../memory/src/i
 /** Why an orchestrated run could not complete — preserves the Hermes reason DU. */
 export type OrchestrationFeedbackReason = HermesRuntimeFeedbackReason;
 
+/** One agent session's liveness fact persisted when a run heartbeats. */
+export type AgentHeartbeatRecord = {
+  organizationId: string;
+  agentId: string;
+  hatAssignmentId: string;
+  workItemId: string;
+  deadlineMs: number;
+};
+
+/**
+ * Port that persists an agent heartbeat so the keep-alive engine can see the
+ * agent is alive. Dependency-inverted — the Cockroach control-plane store's
+ * recordAgentHeartbeat satisfies it structurally; the application package does
+ * not depend on the state layer.
+ */
+export type AgentHeartbeatWriter = {
+  recordAgentHeartbeat: (record: AgentHeartbeatRecord) => Promise<void>;
+};
+
 export type WorkItemRunRequest = {
+  organizationId: string;
   workItemId: string;
   agentId: string;
   sessionId: string;
@@ -38,7 +58,13 @@ export type WorkItemRunRequest = {
 export type WorkItemRunDeps = {
   hermes: HermesRuntime;
   memory: Memory;
+  /** optional: persist agent liveness when the run heartbeats (keep-alive reads it) */
+  agentHeartbeatWriter?: AgentHeartbeatWriter;
+  /** ms before a silent agent is considered stale; defaults when a writer is present */
+  agentHeartbeatDeadlineMs?: number;
 };
+
+const DefaultAgentHeartbeatDeadlineMs = 60_000;
 
 export type WorkItemRunResult =
   | {
@@ -90,6 +116,18 @@ export async function runWorkItemThroughHermes(
   const beat = await deps.hermes.heartbeat(launched.run.runId);
   if (beat.outcome === "feedback") {
     return { outcome: "feedback", feedback: { reason: beat.feedback.reason, message: beat.feedback.message } };
+  }
+
+  // persist agent liveness so the deterministic keep-alive engine sees the agent
+  // is alive — only after a SUCCESSFUL heartbeat (a vanished run records nothing)
+  if (deps.agentHeartbeatWriter !== undefined) {
+    await deps.agentHeartbeatWriter.recordAgentHeartbeat({
+      organizationId: request.organizationId,
+      agentId: request.agentId,
+      hatAssignmentId: request.hatAssignmentId,
+      workItemId: request.workItemId,
+      deadlineMs: deps.agentHeartbeatDeadlineMs ?? DefaultAgentHeartbeatDeadlineMs,
+    });
   }
 
   // 4. retain what was learned (attributed, sticky); skip if nothing learned
