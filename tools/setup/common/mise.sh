@@ -46,7 +46,11 @@ if [ "${GITHUB_ACTIONS:-}" = "true" ] &&
   # authenticated path. REVERT/ESCALATION: if cross-repo 404s reappear, set a
   # dedicated fine-grained `MISE_GITHUB_TOKEN` repo secret (still
   # highest-precedence, so this branch becomes a no-op).
-  (cd "$REPO_ROOT" && MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise install)
+  # `env -u GITHUB_TOKEN` removes the bare token from the child env (so no
+  # mise plugin / aqua path can read it directly cross-repo — the 404 surface),
+  # while MISE_GITHUB_TOKEN (shell-expanded before env runs) carries the value
+  # via mise's own auth path. Authenticated AND no bare-token leak.
+  (cd "$REPO_ROOT" && env -u GITHUB_TOKEN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise install)
 else
   (cd "$REPO_ROOT" && mise install)
 fi
