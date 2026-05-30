@@ -29,8 +29,11 @@ if [ ! -f "$MANIFEST" ]; then
   exit 0
 fi
 
-# Read a `key  value` pair from the declarative manifest.
-mget() { grep -E "^$1[[:space:]]" "$MANIFEST" | awk '{print $2}' | head -1; }
+# Read a `key  value` pair from the declarative manifest. `|| true` keeps it
+# graceful under `set -euo pipefail`: a missing key (grep exit 1) — or head -1
+# closing the pipe early (SIGPIPE) — must NOT exit the script (Copilot #6120); the
+# caller treats an empty value as absent.
+mget() { grep -E "^$1[[:space:]]" "$MANIFEST" | awk '{print $2}' | head -1 || true; }
 MODEL="$(mget model)"
 HOST="$(mget host)"
 : "${HOST:=http://127.0.0.1:11434}"
@@ -59,14 +62,21 @@ if ! command -v ollama >/dev/null 2>&1; then
         #     (ollama's closure brings coreutils-full vs the profile's existing one;
         #     --priority did not resolve it — profile-install is structurally
         #     collision-prone here).
-        # Robust fix: DON'T mutate the profile. `nix build` the store path and
-        # symlink bin/ollama onto PATH — no profile entry, no collision, FHS-safe
-        # in the container AND on real NixOS. (The declarative real-hardware path is
-        # services.ollama in configuration.nix — complementary.) Surface stderr;
-        # graceful (warn + exit 0 so install.sh never bricks over a best-effort probe).
-        ollama_store="$(nix --extra-experimental-features 'nix-command flakes' build --no-link --print-out-paths nixpkgs#ollama 2>&1 | tail -1)"
-        if [ -n "$ollama_store" ] && [ -x "$ollama_store/bin/ollama" ]; then
-          mkdir -p "$HOME/.local/bin"
+        # Robust fix: DON'T mutate the profile. `nix build` the store path with a
+        # GC-rooted out-link, then wrap bin/ollama onto PATH — no profile entry, no
+        # collision, FHS-safe in the container AND on real NixOS. (The declarative
+        # real-hardware path is services.ollama in configuration.nix — complementary.)
+        #   - --out-link (NOT --no-link): registers an indirect GC root so a later
+        #     nix-collect-garbage cannot delete ollama out from under the wrapper
+        #     (Copilot #6120 — a raw --print-out-paths store path is not GC-protected).
+        #   - run the build INSIDE the `if` condition: a failure is then GRACEFUL under
+        #     `set -euo pipefail` (a failing `var=$(...)` command-substitution would
+        #     exit the script before the warn+exit-0 fallback — Copilot #6120).
+        # Surface stderr (2>&1); warn + exit 0 so install.sh never bricks on a probe.
+        ollama_gcroot="$HOME/.local/state/zeta/ollama-result"
+        mkdir -p "$(dirname "$ollama_gcroot")" "$HOME/.local/bin"
+        if nix --extra-experimental-features 'nix-command flakes' build --out-link "$ollama_gcroot" nixpkgs#ollama 2>&1 \
+           && [ -x "$ollama_gcroot/bin/ollama" ]; then
           # WRAPPER (not bare symlink): the nix-built ollama has the correct glibc in
           # its RPATH, but a polluting LD_LIBRARY_PATH (e.g. the docker-nixos test's
           # FHS-mise glibc hack) OVERRIDES the RPATH → 'symbol lookup error: libc.so.6
@@ -74,11 +84,12 @@ if ! command -v ollama >/dev/null 2>&1; then
           # The wrapper runs ollama clear of LD_LIBRARY_PATH so EVERY call (install-time
           # serve+pull AND the test's assert) uses ollama's own glibc. Harmless on real
           # NixOS / ubuntu / mac (LD_LIBRARY_PATH unset there → env -u is a no-op).
-          printf '#!/usr/bin/env bash\nexec env -u LD_LIBRARY_PATH %s/bin/ollama "$@"\n' "$ollama_store" > "$HOME/.local/bin/ollama"
+          # Points at the GC-rooted out-link, not a raw store path.
+          printf '#!/usr/bin/env bash\nexec env -u LD_LIBRARY_PATH %s/bin/ollama "$@"\n' "$ollama_gcroot" > "$HOME/.local/bin/ollama"
           chmod +x "$HOME/.local/bin/ollama"
-          echo "  ✓ ollama via nix build + LD_LIBRARY_PATH-clean wrapper ($ollama_store/bin/ollama)"
+          echo "  ✓ ollama via nix build (GC-rooted out-link $ollama_gcroot) + LD_LIBRARY_PATH-clean wrapper"
         else
-          echo "warn: nix build ollama failed ($ollama_store); skipping local-llm (tests fall back to mock)" >&2; exit 0
+          echo "warn: nix build ollama failed; skipping local-llm (tests fall back to mock)" >&2; exit 0
         fi
         export PATH="$HOME/.local/bin:$PATH"
         command -v ollama >/dev/null 2>&1 || { echo "warn: ollama not on PATH after nix build; skipping local-llm" >&2; exit 0; }
