@@ -54,14 +54,21 @@ if ! command -v ollama >/dev/null 2>&1; then
       # affect DST reproducibility — the pinned MODEL + temp0 + seed do — so we
       # track latest (less maintenance). GitHub's /releases/latest/download/<asset>
       # auto-redirects to the newest release's asset (no API call, no pin).
-      url="https://github.com/ollama/ollama/releases/latest/download/ollama-linux-${oarch}.tgz"
+      # Asset is .tar.zst (zstd), NOT .tgz — verified against the release API
+      # 2026-05-30 (ollama-linux-amd64.tar.zst). The bare ollama-linux-<arch>.tgz
+      # name 404s; this was caught by the validation workflow.
+      url="https://github.com/ollama/ollama/releases/latest/download/ollama-linux-${oarch}.tar.zst"
       echo "↓ installing ollama (latest, linux-${oarch})..."
-      if ! curl_fetch --output "${tmp}/ollama.tgz" "$url"; then
+      if ! curl_fetch --output "${tmp}/ollama.tar.zst" "$url"; then
         echo "warn: ollama download failed; skipping local-llm (tests fall back to mock)" >&2; exit 0
       fi
       mkdir -p "$HOME/.local"
-      # ollama-linux-<arch>.tgz extracts bin/ollama + lib/ollama under the prefix.
-      tar -C "$HOME/.local" -xzf "${tmp}/ollama.tgz"
+      # ollama-linux-<arch>.tar.zst extracts bin/ollama + lib/ollama under the
+      # prefix. zstd-compressed → tar --zstd (zstd is present on ubuntu runners;
+      # GNU tar + bsdtar both support --zstd).
+      if ! tar -C "$HOME/.local" --zstd -xf "${tmp}/ollama.tar.zst"; then
+        echo "warn: ollama extract failed (zstd?); skipping local-llm (tests fall back to mock)" >&2; exit 0
+      fi
       export PATH="$HOME/.local/bin:$PATH"
       ;;
     Darwin)
