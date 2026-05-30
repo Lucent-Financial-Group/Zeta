@@ -17,6 +17,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { resolveSubprocessPath } from "../../tools/persistence/loop-subprocess-path";
 
 const home = process.env.HOME ?? homedir();
 const worktree = process.env.ZETA_CLAUDE_LOOP_WORKTREE ?? join(home, ".local/share/zeta-claude-loop/Zeta");
@@ -57,7 +58,7 @@ function run(command: string, args: string[], timeoutMs: number): { status: numb
         encoding: "utf8",
         env: {
             ...process.env,
-            PATH: `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${join(home, ".local/bin")}`,
+            PATH: resolveSubprocessPath(process.platform, home, process.env.PATH),
         },
         timeout: timeoutMs,
         maxBuffer: 20 * 1024 * 1024,
