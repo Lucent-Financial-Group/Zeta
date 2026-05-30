@@ -25,6 +25,11 @@ export {
   type CockroachMemoryDeps,
 } from "./cockroach-memory.ts";
 export {
+  CockroachHermesRuntimeStatement,
+  createCockroachHermesRuntime,
+  type CockroachHermesRuntimeDeps,
+} from "./cockroach-hermes-runtime.ts";
+export {
   CockroachCommandStateStoreStatement,
   createCockroachCommandStateStoreFactory,
   type CockroachSqlExecutor,
@@ -130,6 +135,7 @@ export {
   createCockroachAgentLivenessMigration,
   createCockroachControlPlaneKeepAliveMigration,
   createCockroachHindsightMemoryMigration,
+  createCockroachHermesRunMigration,
   createCockroachDecisionRecordKernelMigration,
   createCockroachDiscussionAnchorKernelMigration,
   createCockroachHatAssignmentAuthorityProjectionMigration,

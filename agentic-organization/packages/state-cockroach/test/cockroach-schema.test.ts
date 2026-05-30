@@ -23,6 +23,7 @@ import {
   createCockroachAgentLivenessMigration,
   createCockroachControlPlaneKeepAliveMigration,
   createCockroachHindsightMemoryMigration,
+  createCockroachHermesRunMigration,
   createCockroachDecisionRecordKernelMigration,
   createCockroachDiscussionAnchorKernelMigration,
   createCockroachHatAssignmentAuthorityProjectionMigration,
@@ -91,6 +92,18 @@ describe("cockroach core state schema", () => {
     equal(migrations[10]?.name, CockroachCoreStateMigrationName.ControlPlaneKeepAliveV11);
     equal(migrations[11]?.name, CockroachCoreStateMigrationName.AgentLivenessV12);
     equal(migrations[12]?.name, CockroachCoreStateMigrationName.HindsightMemoryV13);
+    equal(migrations[13]?.name, CockroachCoreStateMigrationName.HermesRunV14);
+  });
+
+  test("declares the hermes run table (durable agent-run history)", () => {
+    const migration = createCockroachHermesRunMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.HermesRunV14);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.HermesRun}`));
+    ok(migration.sql.includes("run_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("state STRING NOT NULL"));
+    ok(migration.sql.includes("last_heartbeat_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("outcome_evidence_refs JSONB"));
   });
 
   test("declares the hindsight memory table (durable Hindsight)", () => {

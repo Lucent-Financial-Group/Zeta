@@ -25,6 +25,7 @@ export const CockroachCoreStateMigrationName = {
   ControlPlaneKeepAliveV11: "0011_agentic_org_control_plane_keep_alive",
   AgentLivenessV12: "0012_agentic_org_agent_liveness",
   HindsightMemoryV13: "0013_agentic_org_hindsight_memory",
+  HermesRunV14: "0014_agentic_org_hermes_run",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -52,6 +53,7 @@ export const CockroachTableName = {
   ControlPlaneAlerts: "agentic_org_control_plane_alerts",
   AgentHeartbeat: "agentic_org_agent_heartbeat",
   HindsightMemory: "agentic_org_hindsight_memory",
+  HermesRun: "agentic_org_hermes_run",
 } as const;
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
@@ -134,6 +136,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachControlPlaneKeepAliveMigration(),
     createCockroachAgentLivenessMigration(),
     createCockroachHindsightMemoryMigration(),
+    createCockroachHermesRunMigration(),
   ];
 }
 
@@ -230,6 +233,21 @@ export function createCockroachHindsightMemoryMigration(): CockroachSchemaMigrat
   };
 }
 
+/**
+ * Hermes runs — the durable, auditable record of every agent run (the autonomous
+ * data plane). One row per run: the Organization binding (work item, agent,
+ * session, hat, prompt-flow run), the run state (running/completed/failed), the
+ * last heartbeat, and the outcome/failure. The Cockroach Hermes runtime adapter
+ * persists this across restarts so the org has a durable history of who ran on
+ * what and how it ended.
+ */
+export function createCockroachHermesRunMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.HermesRunV14,
+    sql: createHermesRunTableSql(),
+  };
+}
+
 function createControlPlaneHeartbeatTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneHeartbeat} (
@@ -275,6 +293,23 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.HindsightMemory} (
   prompt_flow_run_id STRING NOT NULL,
   content STRING NOT NULL,
   retained_at TIMESTAMPTZ NOT NULL
+);`.trim();
+}
+
+function createHermesRunTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.HermesRun} (
+  run_id STRING PRIMARY KEY,
+  work_item_id STRING NOT NULL,
+  agent_id STRING NOT NULL,
+  session_id STRING NOT NULL,
+  hat_assignment_id STRING NOT NULL,
+  prompt_flow_run_id STRING NOT NULL,
+  state STRING NOT NULL,
+  last_heartbeat_at TIMESTAMPTZ NOT NULL,
+  outcome_summary STRING,
+  outcome_evidence_refs JSONB,
+  failure_reason STRING
 );`.trim();
 }
 
