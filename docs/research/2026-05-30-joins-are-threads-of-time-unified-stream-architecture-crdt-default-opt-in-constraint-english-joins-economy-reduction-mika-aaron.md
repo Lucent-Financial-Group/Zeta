@@ -121,6 +121,21 @@ multi-oracle-not-BFT, and the git-native event-store (#6071).
   max info in Earth's mass), not a changeable protocol number. "Good luck changing the
   laws of physics through a software update." Aaron wants the physics constant encoded
   explicitly in-protocol.
+- **Multi-planet expansion is an ENDOGENOUS economic driver** (Aaron 2026-05-30): if the
+  money-supply ceiling is the Bekenstein bound on *accessible mass-energy*, and budgets
+  are non-revocable (no debasement possible), then the **only non-debasing way to grow
+  the money supply is to add accessible mass** — more celestial bodies (Earth ≈ 10^75
+  bits; Mars / Moon / asteroids / other worlds each add their own Bekenstein capacity).
+  So cosmic expansion becomes an *endogenous* driver of the economy, not an exogenous
+  goal. Two-sided elegance: the physics-cap makes the currency **anti-debasement by
+  physics** (can't print) *and* **pro-expansion by physics** (growth = real mass
+  acquired = honest cosmic work; no fiat). Razor note: the *mechanism* (economy
+  structurally drives off-world expansion) survives clean; the strong form ("multi-planet
+  expansion is inevitable") is the high-end framing — a powerful driver riding on top of
+  feasibility + timing, held per `god-tier-claims-...-dont-collapse` rather than
+  collapsed either way. Composes with `additive-not-zero-sum` (literally additive at
+  cosmic scale), the Kardashev-scale civilizational-growth framing, and the
+  entropy/swim-upstream substrate (`only-way-to-lose-is-not-to-play`).
 
 ### The consent filter — engine vs extraction pipeline
 
