@@ -40,6 +40,16 @@ What "critical-mass adoption" means structurally remains to be defined. Candidat
 4. ~~Track citation count over time~~ → **B-0707** is the dedicated slice for persistent-snapshot + delta-over-time
 5. When citation rate + cross-AI adoption + mechanical-CI-check land, propose promotion
 
+### Cadence repair note (2026-05-30)
+
+B-0707's scheduled workflow successfully pushed six daily snapshot
+branches for 2026-05-24 through 2026-05-29, but each run failed after
+the push because this repository does not permit `GITHUB_TOKEN` to
+create pull requests. The repaired cadence uses branch handoff as the
+durable surface: push the daily `ops/manifesto-citation-snapshot-*`
+branch, record branch and compare URLs in the run summary, and leave
+PR creation or direct landing to the next maintainer/agent pass.
+
 ## Initial baseline (2026-05-23)
 
 First snapshot from `tools/hygiene/audit-manifesto-citations.ts` (count-only, no time-series yet):
