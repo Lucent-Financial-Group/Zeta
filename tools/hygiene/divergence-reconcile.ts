@@ -87,8 +87,25 @@ export function reconciliationBody(markdown: string): string | null {
 export function isReconciliationPending(markdown: string): boolean {
   const body = reconciliationBody(markdown);
   if (body === null) return false;
-  const stripped = body.replace(/<!--[\s\S]*?-->/g, "").trim();
-  return stripped.length === 0;
+  return stripHtmlComments(body).trim().length === 0;
+}
+
+/**
+ * Remove HTML comment blocks (`<!-- … -->`) to a fixpoint. A single `/g` pass is
+ * incomplete sanitization: removing one match can splice the surrounding text
+ * into a fresh `<!-- … -->` (e.g. `<!--<!---->-->` leaves a residual `<!--`),
+ * so we re-run until the string stops shrinking. Termination is guaranteed —
+ * each changing pass strictly deletes characters. (CodeQL js/incomplete-multi-
+ * character-sanitization.)
+ */
+function stripHtmlComments(text: string): string {
+  let out = text;
+  let prev: string;
+  do {
+    prev = out;
+    out = out.replace(/<!--[\s\S]*?-->/g, "");
+  } while (out !== prev);
+  return out;
 }
 
 /** Value of an `agent:` line nested under `parentKey:` in a frontmatter block. */

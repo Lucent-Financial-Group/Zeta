@@ -75,6 +75,15 @@ describe("isReconciliationPending", () => {
   test("a file with no Reconciliation section is not pending", () => {
     expect(isReconciliationPending("---\ntype: divergence\n---\n\n## Loop A perspective\n\nx")).toBe(false);
   });
+  test("spliced/nested comments are stripped to a fixpoint, not one pass", () => {
+    // A single `.replace(/<!--…-->/g, "")` pass leaves a residual `<!-- -->`
+    // here: removing the inner comment splices `<!` + `-- -->` into a fresh
+    // comment the pass already scanned past. The fixpoint loop strips it
+    // fully, so a comment-only body still reads as pending. (Regression for
+    // CodeQL js/incomplete-multi-character-sanitization.)
+    const md = "---\ntype: divergence\n---\n\n## Reconciliation\n\n<!<!-- -->-- -->\n";
+    expect(isReconciliationPending(md)).toBe(true);
+  });
 });
 
 describe("parseShardMeta", () => {
