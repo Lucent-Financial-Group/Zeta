@@ -38,8 +38,12 @@ spec:
             - { name: WORKER_OUTBOX_BATCH_SIZE, value: "10" }
             - { name: WORKER_REACTION_PLAN_BATCH_SIZE, value: "8" }
             - { name: WORKER_REACTION_PLAN_LEASE_MS, value: "300000" }
-            # smaller deadline so the keep-alive is observable quickly in the demo
-            - { name: WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS, value: "15000" }
+            # The keep-alive ticks once per worker cycle, and an idle cycle is
+            # bounded by the NATS pull long-poll (~30s). The deadline must exceed
+            # the max cycle time so a healthy org is not flagged flatlining; 90s
+            # gives comfortable margin over the ~30s idle cycle. (Future hardening:
+            # an independent fast keep-alive loop decoupled from the work cycle.)
+            - { name: WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS, value: "90000" }
           resources:
             requests: { cpu: "50m", memory: "128Mi" }
             limits: { cpu: "500m", memory: "512Mi" }

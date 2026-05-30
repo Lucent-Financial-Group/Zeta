@@ -21,11 +21,12 @@ spec:
       containers:
         - name: cockroach
           image: cockroachdb/cockroach:v26.2.1
+          # NB: v26.2.1 start-single-node rejects a non-localhost --listen-addr.
+          # Leave it unset (as docker-compose does) — cockroach binds network-
+          # accessibly by default, reachable cluster-wide via the Service.
           args:
             - start-single-node
             - --insecure
-            - --listen-addr=0.0.0.0:26257
-            - --http-addr=0.0.0.0:8080
             - --store=/cockroach/cockroach-data
           ports:
             - name: sql
