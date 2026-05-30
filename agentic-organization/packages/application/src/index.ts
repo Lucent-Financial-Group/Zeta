@@ -256,3 +256,12 @@ export {
   type HatSupplyVote,
   type WorkloadItem,
 } from "./rmo.ts";
+export {
+  assignHat,
+  rankEligibleCandidates,
+  type ActiveBindingSummary,
+  type AgentCandidate,
+  type AssignHatContext,
+  type AssignmentResult,
+  type RankEligibleInput,
+} from "./assignment-engine.ts";

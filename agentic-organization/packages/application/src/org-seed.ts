@@ -245,6 +245,15 @@ export function buildHatDefinitions(): readonly HatDefinition[] {
     }
   }
 
+  // conflicts are symmetric: if A conflicts with B, B conflicts with A
+  const conflicts = new Map<string, Set<string>>();
+  for (const spec of HAT_SPECS) {
+    for (const other of spec.conflictsWithHatIds ?? []) {
+      (conflicts.get(spec.id) ?? conflicts.set(spec.id, new Set()).get(spec.id)!).add(other);
+      (conflicts.get(other) ?? conflicts.set(other, new Set()).get(other)!).add(spec.id);
+    }
+  }
+
   return HAT_SPECS.map((spec): HatDefinition => {
     const d = LEVEL_DEFAULTS[spec.level];
     return {
@@ -254,7 +263,7 @@ export function buildHatDefinitions(): readonly HatDefinition[] {
       level: spec.level,
       supervisesHatIds: supervisedBy.get(spec.id) ?? [],
       reportsToHatIds: spec.reportsTo === null ? [] : [spec.reportsTo],
-      conflictsWithHatIds: spec.conflictsWithHatIds ?? [],
+      conflictsWithHatIds: [...(conflicts.get(spec.id) ?? [])],
       // a hat is assignable by the hats it reports to (its supervisors)
       assignableByHatIds: spec.reportsTo === null ? [] : [spec.reportsTo],
       allowedToolBundles: spec.toolBundles,
