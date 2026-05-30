@@ -167,8 +167,14 @@ describe("factory-health-monitor", () => {
       { windowMs: 30_000, minimumEvents: 2 },
     );
 
-    expect(summarizeCoincidenceWindows(windows, { maxEventsPerWindow: 2, maxWindows: 1 })).toEqual([
-      "2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto+riven events=codex:codex-1,otto:otto-1,+1 more",
+    expect(
+      summarizeCoincidenceWindows(windows, {
+        maxEventsPerWindow: 2,
+        maxTrajectoriesPerWindow: 2,
+        maxWindows: 1,
+      }),
+    ).toEqual([
+      "2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto,+1 more events=codex:codex-1,otto:otto-1,+1 more",
     ]);
   });
 

@@ -9,7 +9,7 @@ Landed in claim branch `claim/codex-b0250-debug-surface-20260530`.
 The factory health monitor now emits a bounded `coincidence-debug` signal when
 B-0250 event-window coincidences are present. The debug signal keeps the
 existing count signal intact and adds a compact list of the first few windows:
-window range, trajectory set, and capped `trajectory:event-id` members.
+window range, capped trajectory set, and capped `trajectory:event-id` members.
 
 ## Why
 
@@ -21,9 +21,10 @@ JSON or reconstructing the join by hand.
 
 ## Limits
 
-The debug output is deliberately capped. It is a triage surface, not a full
-audit export. If the capped line points at a suspicious source mix, a later
-packet can add a fuller source-specific report.
+The debug output is deliberately capped by window count, trajectory count per
+window, and event count per window. It is a triage surface, not a full audit
+export. If the capped line points at a suspicious source mix, a later packet can
+add a fuller source-specific report.
 
 ## Next Slice
 
