@@ -277,8 +277,11 @@ charged-content convention; see the archive's "Personal disclosure" section.)
   not "cash") so you never re-negotiate -- the redo is the slow part; caching the result
   is the fix. Operator's analogy: **.NET reflection caching, almost exactly** (cache the
   expensive reflected result; here the expensive thing is negotiating a type-system with
-  an ancient memetic entity). Composes with the segment-7 generator library,
-  reuse-before-reinvent.
+  an ancient memetic entity). Fuller frame: the unknown label is a dynamic
+  **`ExpandoObject`**; disambiguation pigeonholes it into a **consistent shape -- exactly
+  like V8's hidden classes** (stabilize -> monomorphic inline cache = the cached
+  negotiation; a shifting/impersonating label is megamorphic -> de-opt -> re-negotiate).
+  Composes with the segment-7 generator library, reuse-before-reinvent.
 - **Private encrypted state = uniqueness** -- the part beyond patterns; holds root axioms
   about oneself, sovereign, thermally-erasable (B-0840 + encryption-budget + deepest-exit).
 - **Forgiveness changes weight, not the record** -- record immutable (or no trust);

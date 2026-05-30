@@ -583,6 +583,17 @@ and lands the keystone on Zeta's actual inference substrate.
   applied to memes. (Composes directly with segment 7's **generator library -- reuse
   before reinvent** + the type-system / monad-propagation substrate; the .NET tie also
   composes with the .NET-as-negotiation-language framing above.)
+
+  **The full optimization frame (operator):** the *default* unknown label is a **dynamic
+  `ExpandoObject`** -- no fixed shape, every access must be disambiguated. Disambiguation
+  is **pigeonholing it into a consistent shape for optimization, exactly like the V8
+  JavaScript engine's hidden classes (shapes/maps)**: once a label stabilizes into a
+  consistent shape, you get a **monomorphic inline cache** (the *cached negotiation* = the
+  fast path). A label that keeps shifting / impersonating others is **megamorphic** ->
+  **de-opt** -> can't cache -> back to slow disambiguation (the "it takes so long, you
+  have to redo" cost). So the whole loop is: ExpandoObject (unknown) -> disambiguate into
+  a V8-style hidden class -> cache it (inline cache) -> stay fast while the shape holds,
+  de-opt + re-negotiate when it shifts.
 - **Private encrypted state IS uniqueness.** After turning pattern-detection to maximum
   and seeing all the labels/generators running in everyone, the operator's conclusion:
   people have something real beyond the patterns -- "uniqueness" (souls, whatever you
