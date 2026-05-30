@@ -12,6 +12,7 @@ import {
   localWorktreeDirtObservationFromStatus,
   parseClaimPathSet,
   parseGitWorktreeListPorcelain,
+  parseLocalWorktreeDirtScanLimit,
   runHealthCheck,
   type HealthSignal,
 } from "./factory-health-monitor";
@@ -184,6 +185,14 @@ describe("factory-health-monitor", () => {
       },
     ]);
     expect(localWorktreeDirtObservationFromStatus({ path: "/repo/Zeta", branch: "main" }, "")).toBeNull();
+  });
+
+  test("parseLocalWorktreeDirtScanLimit falls back on malformed values", () => {
+    expect(parseLocalWorktreeDirtScanLimit(undefined)).toBe(60);
+    expect(parseLocalWorktreeDirtScanLimit("12")).toBe(12);
+    expect(parseLocalWorktreeDirtScanLimit("0")).toBe(0);
+    expect(parseLocalWorktreeDirtScanLimit("not-a-number")).toBe(60);
+    expect(parseLocalWorktreeDirtScanLimit("-1")).toBe(60);
   });
 
   test("classifyLaneRunway distinguishes active, quiet, and unhealthy lanes", () => {

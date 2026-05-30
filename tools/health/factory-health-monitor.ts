@@ -72,7 +72,8 @@ type ToolResult = { ok: boolean; stdout: string };
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
-const LOCAL_WORKTREE_DIRT_SCAN_LIMIT = Number.parseInt(process.env.FACTORY_HEALTH_WORKTREE_DIRT_LIMIT ?? "60", 10);
+const DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT = 60;
+const LOCAL_WORKTREE_DIRT_SCAN_LIMIT = parseLocalWorktreeDirtScanLimit(process.env.FACTORY_HEALTH_WORKTREE_DIRT_LIMIT);
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
   ".claude/",
@@ -97,6 +98,11 @@ function run(cmd: ToolCommand, args: string[]): ToolResult {
     timeout: 30_000,
   });
   return { ok: r.status === 0, stdout: (r.stdout ?? "").trim() };
+}
+
+export function parseLocalWorktreeDirtScanLimit(value: string | undefined): number {
+  const parsed = Number.parseInt(value ?? `${DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT}`, 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT;
 }
 
 function fetchOpenPRs(): ToolResult {

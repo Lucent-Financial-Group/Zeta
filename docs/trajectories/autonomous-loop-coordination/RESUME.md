@@ -116,9 +116,8 @@ or untracked files.
 
 ## Recommended Next Action
 
-Open the local-worktree dirt health PR after focused TypeScript checks pass,
-then use the new signal to prioritize stale-worktree cleanup during quiet-lane
-windows.
+Land the local-worktree dirt health PR after review and CI are green, then use
+the new signal to prioritize stale-worktree cleanup during quiet-lane windows.
 
 ## Next Child Packets
 
