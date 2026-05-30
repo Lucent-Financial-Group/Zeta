@@ -1,7 +1,7 @@
 ---
 id: B-0941
 priority: P2
-status: open
+status: closed
 title: NixOS-native ollama for the local-LLM primitive — close the hole in the shield (NixOS test passes by SKIPPING, not validating)
 tier: install-graph-correctness
 ask: Aaron 2026-05-30
@@ -116,3 +116,23 @@ load-bearing for a shipped path on NixOS hardware.
   patches a hole in it.
 - `.claude/rules/dep-pin-search-first-authority.md` — `manifests/local-llm` model
   pin as the single declarative source of truth across OSes.
+
+## Resolution (2026-05-30)
+
+Closed. Both halves landed:
+
+1. **NixOS-native ollama** — `common/local-llm.sh` detects `/etc/NIXOS` and installs
+   ollama via `nix build --out-link` (GC-rooted store path) + an
+   `LD_LIBRARY_PATH`-clean wrapper (the FHS-mise glibc hack would otherwise override
+   ollama's RPATH → `__nptl_change_stack_perm` symbol error). FHS-safe in the
+   container AND on real NixOS; the declarative real-hardware `services.ollama` path
+   stays a complementary follow-up.
+2. **Test ASSERTS, not skips** — `docker-nixos-install-sh-test` now starts the
+   daemon, asserts the pinned model is present, and runs the real `chooseIndex`
+   probe (`validate-local-llm.ts`) — fails the build if the local-LLM is absent.
+
+Verified green-with-assert (runs 26686148178 + 26686797500):
+`✓ ollama via nix build (GC-rooted out-link) + wrapper` → model pulled →
+`validate-local-llm: backend=ollama:qwen2.5:0.5b raw="0" index=0 fallback=false`
+(the local LLM genuinely answered — not skip-to-green). The false-green is closed.
+Graduated to main via the narrowed install-graph harvest.
