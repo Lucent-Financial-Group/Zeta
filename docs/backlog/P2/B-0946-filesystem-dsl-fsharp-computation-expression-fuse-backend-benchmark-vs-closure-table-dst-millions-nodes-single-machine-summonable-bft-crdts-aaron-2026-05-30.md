@@ -118,6 +118,20 @@ agents/devices/environments converge to their twins via distributed local action
 the declarative microkernel (B-0945, the desired-state substrate), CRDTs, summonable-BFT, and the
 digital-twin pattern.
 
+## Empirical anchor -- the meter simulator (this model is already proven) (operator 2026-05-30)
+
+> *"we did this for meters for the meter simulator and the state update was our flywheel"*
+
+This is NOT speculative -- operator has already built the digital-twin + DST + desired-state model
+for **smart meters** (the meter simulator; Itron context -- composes with the NULL-as-quantum-state
+recursive-CTE substrate, billions-of-meters scale). The meter simulator simulated the meter
+**digital twins**; **the state update was the FLYWHEEL** -- the reconciliation tick (the
+desired-state delta applied per twin) was the self-sustaining engine that drove the whole
+simulation forward. That is the "i can show you code than can do this" reference (Part 2) made
+concrete: meters are one instance of the agent/device/environment digital twin (Part 3); the model
+generalizes from meters to any node. The flywheel = the state-update loop; the twins = the meters;
+the DST-at-scale = the meter simulator running the fleet on one machine.
+
 ## Acceptance
 
 1. `fs { }` computation-expression DSL over the current closure-table backend (F# first).
