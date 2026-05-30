@@ -1,6 +1,6 @@
 ---
 name: attack-vector-proof-via-no-3rd-party-deps-depend-only-on-slow-vetted-core-rewrite-deps-in-house
-description: "Aaron 2026-05-30: the core languages move glacially and are the most-vetted layer in software; the attack surface is the 3rd-party dependency supply chain. Depend ONLY on the slow vetted core (compiler + std lib), pull in ZERO 3rd-party deps, and rewrite the ones we currently depend on in-house over time -> the supply-chain attack surface collapses to ~the languages themselves = attack-vector-proof. Composes with summonable-BFT (same move = consensus + hardening) + the B-0944 multi-language build (slice-1 = zero deps)."
+description: "Aaron 2026-05-30: the core languages move glacially and are the most-vetted layer in software; the attack surface is the 3rd-party dependency supply chain. Depend ONLY on the slow vetted core (compiler + std lib), pull in ZERO 3rd-party deps, and rewrite the ones we currently depend on in-house over time -> the supply-chain attack surface collapses to ~the languages themselves = attack-vector-proof. Composes with summonable-BFT (same move = consensus + hardening) + the B-0944 multi-language build (slice-1 shipped zero-dep via PR #6158)."
 type: feedback
 created: 2026-05-30
 ---
@@ -39,7 +39,7 @@ on. One move (bare-language multi-impl), two properties (consensus + hardening).
 
 ## Empirical anchor
 
-B-0944 slice 1 (the TS tri-boolean digital qubit, `src/Core.TypeScript/tri-boolean/`) ships with
+B-0944 slice 1 (the TS tri-boolean digital qubit, `src/Core.TypeScript/tri-boolean/`, shipped via PR #6158) ships with
 ZERO 3rd-party dependencies -- only the language + `bun:test` for tests. The multi-language core-
 primitive program is attack-vector-proof by construction from day one.
 
