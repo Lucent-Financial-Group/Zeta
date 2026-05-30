@@ -39,10 +39,28 @@ You can only apply the rule if you know whether the action is reversible — so
 classify first. **If reversibility is uncertain, treat as non-reversible** (get
 the opinion) until verified.
 
+**Git-presence IS the reversibility boundary** (Aaron 2026-05-30): the
+discriminator under the table is *is the thing in git — committed AND pushed to a
+durable remote?* Git is the recovery substrate (ref / reflog / remote / revert).
+
+- **In git** → reversible (recover from git).
+- **Dark** (NOT in git — untracked files, an unpushed local branch, a stash,
+  `drop/` & `.playwright-mcp/` artifacts, a worktree's untracked content, anything
+  only on one developer's machine) → **irreversible to delete**: there is no
+  recovery substrate to restore from.
+
+Aaron 2026-05-30: *"deleting anything in the missing-files md file is also
+irreversible cause it's all happening on dark areas not in git yet only on the
+dark developer's machine."* `tools/hygiene/LOST-FILES-LOCATIONS.md` is the
+**catalog of dark areas** (15 location-classes outside git); deleting an entry
+there loses the *map* to recovery, not just one dark file — meta-irreversible.
+This is also *why* the worktree clean-check works (note below): `git status
+--short == 0` confirms there is nothing dark to lose.
+
 | Non-reversible (→ get a 2nd opinion) | Reversible (→ proceed) |
 |---|---|
 | `git push --force` / `--force-with-lease` | local edits; running tests |
-| unrecoverable deletion (no ref/backup left) | branch push (revertable via PR / revert) |
+| delete of DARK content — untracked / unpushed branch / stash / `drop/` artifact (only on one machine, no git copy) | branch push (revertable via PR / revert) |
 | send / publish to an external service | commit to your own branch (amendable pre-merge) |
 | irreversible external API call (charge, provision, email) | clean+merged+mine worktree `remove` (branch ref preserved, content on main — **reversible**; reconstruct via `git worktree add`) |
 | anything where undo is not trivial | anything trivially undoable |
