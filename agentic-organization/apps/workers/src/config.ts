@@ -26,6 +26,9 @@ export const WorkerProcessEnvName = {
   WorkerReactionPlanBatchSize: "WORKER_REACTION_PLAN_BATCH_SIZE",
   WorkerReactionPlanLeaseMs: "WORKER_REACTION_PLAN_LEASE_MS",
   WorkerKeepAliveOrgHeartbeatDeadlineMs: "WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS",
+  /** when set, the agent's composer makes real model calls to this in-cluster endpoint */
+  LlmBaseUrl: "LLM_BASE_URL",
+  LlmModel: "LLM_MODEL",
 } as const;
 
 export type WorkerProcessEnvName = (typeof WorkerProcessEnvName)[keyof typeof WorkerProcessEnvName];
@@ -40,6 +43,10 @@ export type WorkerDurableRuntimeConfig = {
   workerReactionPlanBatchSize: number;
   workerReactionPlanLeaseMs: number;
   workerKeepAliveOrgHeartbeatDeadlineMs: number;
+  /** in-cluster model endpoint for the agent's decision backend (optional) */
+  llmBaseUrl?: string;
+  /** model name to ask the endpoint for (optional; required when llmBaseUrl is set) */
+  llmModel?: string;
 };
 
 export type WorkerProcessConfig = WorkerRuntimeConfig & WorkerDurableRuntimeConfig;
@@ -82,7 +89,23 @@ export function parseWorkerRuntimeConfigFromEnv(env: WorkerProcessEnvironment): 
     workerKeepAliveOrgHeartbeatDeadlineMs: parseWorkerKeepAliveOrgHeartbeatDeadlineMs(
       env[WorkerProcessEnvName.WorkerKeepAliveOrgHeartbeatDeadlineMs],
     ),
+    // optional model backend — only set when both URL and model are provided
+    ...parseLlmConfig(env),
   };
+}
+
+function parseLlmConfig(env: WorkerProcessEnvironment): { llmBaseUrl?: string; llmModel?: string } {
+  const baseUrl = nonEmpty(env[WorkerProcessEnvName.LlmBaseUrl]);
+  const model = nonEmpty(env[WorkerProcessEnvName.LlmModel]);
+  if (baseUrl === undefined || model === undefined) {
+    return {};
+  }
+  return { llmBaseUrl: baseUrl, llmModel: model };
+}
+
+function nonEmpty(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed !== undefined && trimmed.length > 0 ? trimmed : undefined;
 }
 
 function parseWorkerKeepAliveOrgHeartbeatDeadlineMs(value: string | undefined): number {

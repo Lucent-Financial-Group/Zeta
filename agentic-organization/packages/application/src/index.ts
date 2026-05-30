@@ -44,11 +44,28 @@ export {
 export {
   createFirstLegalOptionComposer,
   decideReactionAction,
+  decideReactionActionAsync,
   deterministicRunIdForAction,
   summarizeReactionDecision,
+  type DecideReactionActionAsyncInput,
   type DecideReactionActionInput,
   type ReactionDecisionSummary,
 } from "./reaction-decision.ts";
+export {
+  createModelBackedComposer,
+  toAsyncComposer,
+  type ChatCompletionPort,
+  type ChatCompletionRequest,
+  type CreateModelBackedComposerInput,
+} from "./model-backed-composer.ts";
+export {
+  SandboxVerificationEvidencePrefix,
+  buildVerificationToolRequest,
+  verificationEvidenceRef,
+  type SandboxToolPort,
+  type SandboxToolRequest,
+  type SandboxToolResult,
+} from "./sandbox-tool.ts";
 export {
   createOrganizationReactionPlanActionExecutor,
   type CreateOrganizationReactionPlanActionExecutorInput,
@@ -168,11 +185,13 @@ export {
   DecideOutcome,
   DefaultDeterministicRules,
   decide,
+  decideAsync,
   observe,
   ObserveFeedbackReason,
   ObserveOutcome,
   RunLifecyclePhase,
   RunScope,
+  type AsyncEphemeralComposerPort,
   type AvailableOption,
   type ComposerSelection,
   type ComposerSelectionRequest,

@@ -24,13 +24,19 @@ import {
   type ReactionPlanActionExecutionResult,
   type ReactionPlanActionExecutorPort,
 } from "../../runtime/src/index.ts";
-import type { EphemeralComposerPort } from "./observe.ts";
+import type { AsyncEphemeralComposerPort } from "./observe.ts";
 import {
   createFirstLegalOptionComposer,
-  decideReactionAction,
+  decideReactionActionAsync,
   summarizeReactionDecision,
   type ReactionDecisionSummary,
 } from "./reaction-decision.ts";
+import { toAsyncComposer } from "./model-backed-composer.ts";
+import {
+  buildVerificationToolRequest,
+  verificationEvidenceRef,
+  type SandboxToolPort,
+} from "./sandbox-tool.ts";
 import { runWorkItemThroughHermes, type AgentHeartbeatWriter, type WorkItemRunRequest } from "./orchestrate-run.ts";
 
 export type HermesReactionPlanActionExecutorDeps = {
@@ -42,13 +48,21 @@ export type HermesReactionPlanActionExecutorDeps = {
   agentHeartbeatDeadlineMs: number;
   generateId: (prefix: string) => string;
   /**
-   * The agent's decision intelligence. Defaults to the deterministic
-   * first-legal-option policy; a real LLM/sandbox backend implements the same
-   * EphemeralComposerPort and swaps in here without touching any other wiring.
+   * The agent's decision intelligence (async — may make real model calls).
+   * Defaults to the deterministic first-legal-option policy. A model-backed
+   * composer swaps in here behind the same port; the decision kernel re-checks
+   * every choice against the legal set, so the model cannot widen the rules.
    */
-  composer?: EphemeralComposerPort;
+  composer?: AsyncEphemeralComposerPort;
   /** clock for the decision readout; defaults to wall-clock. */
   now?: () => string;
+  /**
+   * Optional sandboxed tool runner. When present, the agent executes a real
+   * bounded subprocess to produce verifiable evidence for the run.
+   */
+  sandbox?: SandboxToolPort;
+  /** node binary path for the sandbox verification tool; defaults to the running node. */
+  nodeBinary?: string;
 };
 
 export function createHermesReactionPlanActionExecutor(
@@ -60,11 +74,11 @@ export function createHermesReactionPlanActionExecutor(
       context: ReactionPlanActionExecutionContext,
     ): Promise<ReactionPlanActionExecutionResult> => {
       // The agent makes a REAL decision: the deterministic kernel computes the
-      // legal options; the composer chooses among them. A decision the kernel
-      // can't legalize fails the run honestly (retryable) — no fabricated work.
-      const decision = decideReactionAction({
+      // legal options; the (possibly model-backed) composer chooses among them.
+      // A decision the kernel can't legalize fails the run honestly (retryable).
+      const decision = await decideReactionActionAsync({
         action,
-        composer: deps.composer ?? createFirstLegalOptionComposer(),
+        composer: deps.composer ?? toAsyncComposer(createFirstLegalOptionComposer()),
         now: deps.now ?? (() => new Date().toISOString()),
       });
       const summary = summarizeReactionDecision(decision);
@@ -78,7 +92,11 @@ export function createHermesReactionPlanActionExecutor(
         };
       }
 
-      const request = mapActionToRunRequest(action, context, deps.generateId, summary);
+      // The agent actually runs a sandboxed tool (a real bounded subprocess) to
+      // produce verifiable evidence. Tool failure is supplementary, never fatal.
+      const toolEvidenceRef = await runSandboxVerification(action, deps);
+
+      const request = mapActionToRunRequest(action, context, deps.generateId, summary, toolEvidenceRef);
 
       const result = await runWorkItemThroughHermes(request, {
         hermes: deps.createHermesRuntime(),
@@ -116,7 +134,15 @@ function mapActionToRunRequest(
   context: ReactionPlanActionExecutionContext,
   generateId: (prefix: string) => string,
   decision: Extract<ReactionDecisionSummary, { kind: "summary" }>,
+  toolEvidenceRef: string | undefined,
 ): WorkItemRunRequest {
+  // evidence = the trigger event + (when the sandbox produced one) the tool result
+  const evidenceRefs = toolEvidenceRef === undefined
+    ? [action.triggerEventId]
+    : [action.triggerEventId, toolEvidenceRef];
+  const learned = toolEvidenceRef === undefined
+    ? decision.learned
+    : `${decision.learned}; sandbox tool produced ${toolEvidenceRef}`;
   return {
     organizationId: action.organizationId,
     workItemId: action.workItemId,
@@ -128,7 +154,21 @@ function mapActionToRunRequest(
     priorContextNeeded: true,
     // the run records the agent's COMPUTED decision, not a fixed string
     actionSummary: decision.actionSummary,
-    evidenceRefs: [action.triggerEventId],
-    learned: decision.learned,
+    evidenceRefs,
+    learned,
   };
+}
+
+/** Run the sandboxed verification tool if a sandbox is wired; returns an evidence ref or undefined. */
+async function runSandboxVerification(
+  action: ReactionPlanAction,
+  deps: HermesReactionPlanActionExecutorDeps,
+): Promise<string | undefined> {
+  // both the sandbox runner AND the node binary path come from the composition
+  // root; the application layer never reaches for the host process itself.
+  if (deps.sandbox === undefined || deps.nodeBinary === undefined) {
+    return undefined;
+  }
+  const result = await deps.sandbox.run(buildVerificationToolRequest(action, deps.nodeBinary));
+  return verificationEvidenceRef(result);
 }

@@ -318,13 +318,43 @@ export function decide(
   if (observed.outcome === ObserveOutcome.Feedback) {
     return { outcome: DecideOutcome.Feedback, feedback: observed.feedback };
   }
+  return resolveSelection(observed.readout, composer.compose({ readout: observed.readout }));
+}
 
-  const selection = composer.compose({ readout: observed.readout });
-  if (selection.decision === ComposerDecision.Hold) {
-    return { outcome: DecideOutcome.Held, readout: observed.readout, reason: selection.reason };
+/** Async sibling of the EphemeralComposerPort — for backends that do I/O (real model calls). */
+export interface AsyncEphemeralComposerPort {
+  compose: (request: ComposerSelectionRequest) => Promise<ComposerSelection>;
+}
+
+/**
+ * Async sibling of decide(): identical deterministic guardrail (same observe()
+ * + same legality enforcement via resolveSelection), but the composer may be
+ * asynchronous (e.g. an LLM call). The model still cannot escape the rules — an
+ * out-of-set choice is rejected exactly as in the synchronous path.
+ */
+export async function decideAsync(
+  snapshot: RunSnapshot,
+  composer: AsyncEphemeralComposerPort,
+  deps: ObserveDependencies,
+): Promise<DecideResult> {
+  const observed = observe(snapshot, deps);
+  if (observed.outcome === ObserveOutcome.Feedback) {
+    return { outcome: DecideOutcome.Feedback, feedback: observed.feedback };
   }
+  return resolveSelection(observed.readout, await composer.compose({ readout: observed.readout }));
+}
 
-  const isLegal = observed.readout.options.some(
+/**
+ * Shared legality enforcement for both decide paths: a Hold passes through; a
+ * Select is admitted only if the option is in the readout's surviving set —
+ * otherwise it is rejected as a deterministic-rule violation. This is the single
+ * choke point that guarantees no composer (sync, async, or LLM) escapes the rules.
+ */
+function resolveSelection(readout: RunStateReadout, selection: ComposerSelection): DecideResult {
+  if (selection.decision === ComposerDecision.Hold) {
+    return { outcome: DecideOutcome.Held, readout, reason: selection.reason };
+  }
+  const isLegal = readout.options.some(
     (option) => option.actionType === selection.option.actionType && option.toPhase === selection.option.toPhase,
   );
   if (!isLegal) {
@@ -336,10 +366,5 @@ export function decide(
       },
     };
   }
-
-  return {
-    outcome: DecideOutcome.Selected,
-    readout: observed.readout,
-    selection: { option: selection.option, reason: selection.reason },
-  };
+  return { outcome: DecideOutcome.Selected, readout, selection: { option: selection.option, reason: selection.reason } };
 }

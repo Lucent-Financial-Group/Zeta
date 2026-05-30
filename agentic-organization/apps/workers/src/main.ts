@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import { argv } from "node:process";
 import { fileURLToPath } from "node:url";
 
 import type { AgenticEventEnvelope } from "../../../packages/domain/src/index.ts";
@@ -18,8 +19,16 @@ import {
   createCockroachMemory,
   createCockroachSqlExecutor,
 } from "../../../packages/state-cockroach/src/index.ts";
-import { createHermesReactionPlanActionExecutor } from "../../../packages/application/src/index.ts";
+import {
+  createFirstLegalOptionComposer,
+  createHermesReactionPlanActionExecutor,
+  createModelBackedComposer,
+  toAsyncComposer,
+  type AsyncEphemeralComposerPort,
+} from "../../../packages/application/src/index.ts";
 import { composeOrganizationReactionPlanActionExecutor } from "./organization-executor-composition.ts";
+import { createOllamaChatPort } from "./adapters/ollama-chat-port.ts";
+import { createSubprocessSandbox } from "./adapters/subprocess-sandbox.ts";
 import type { InboundEventSource } from "../../../packages/workers/src/index.ts";
 import {
   createCockroachMigrationBootstrapper,
@@ -207,6 +216,20 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
   // the deterministic keep-alive engine watches the agent. (The Hermes runtime is
   // in-process today; a real agent backend swaps in behind the same port.)
   const controlPlaneStore = createCockroachControlPlaneStateStore({ executor: cockroachExecutor });
+
+  // The agent's decision intelligence. When an in-cluster model endpoint is
+  // configured the agent makes REAL model calls (falling back to the
+  // deterministic policy if the model is unreachable or picks an illegal move —
+  // the decision kernel re-checks every choice, so the model never widens the
+  // rules). Otherwise the deterministic first-legal-option policy is used.
+  const agentComposer: AsyncEphemeralComposerPort =
+    config.llmBaseUrl !== undefined && config.llmModel !== undefined
+      ? createModelBackedComposer({
+          chat: createOllamaChatPort({ baseUrl: config.llmBaseUrl, model: config.llmModel }),
+          fallback: createFirstLegalOptionComposer(),
+        })
+      : toAsyncComposer(createFirstLegalOptionComposer());
+
   const hermesExecutor = createHermesReactionPlanActionExecutor({
     // durable Hermes runs — every agent run is a durable, auditable row
     createHermesRuntime: () => createCockroachHermesRuntime({ executor: cockroachExecutor }),
@@ -215,6 +238,10 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
     agentHeartbeatWriter: controlPlaneStore,
     agentHeartbeatDeadlineMs: config.workerKeepAliveOrgHeartbeatDeadlineMs,
     generateId: deps.durablePorts.createId,
+    // the live decision backend (model calls) + real sandboxed tool execution
+    composer: agentComposer,
+    sandbox: createSubprocessSandbox(),
+    nodeBinary: argv[0] ?? "node",
   });
 
   // The entire organizational structure: each reaction-plan action runs the

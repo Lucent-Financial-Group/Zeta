@@ -23,6 +23,8 @@ import {
   RunScope,
   asZetaIdDecimal,
   decide,
+  decideAsync,
+  type AsyncEphemeralComposerPort,
   type DecideResult,
   type EphemeralComposerPort,
   type ObserveFeedback,
@@ -54,19 +56,33 @@ export type DecideReactionActionInput = {
  * keystone read), and the composer selects a legal next move.
  */
 export function decideReactionAction(input: DecideReactionActionInput): DecideResult {
-  const snapshot: RunSnapshot = {
-    runId: deterministicRunIdForAction(input.action),
+  return decide(snapshotForAction(input.action), input.composer, { clock: { now: input.now } });
+}
+
+export type DecideReactionActionAsyncInput = {
+  action: ReactionPlanAction;
+  composer: AsyncEphemeralComposerPort;
+  now: () => string;
+};
+
+/** Async sibling: the agent decides through an async (e.g. model-backed) composer, same guardrail. */
+export async function decideReactionActionAsync(input: DecideReactionActionAsyncInput): Promise<DecideResult> {
+  return decideAsync(snapshotForAction(input.action), input.composer, { clock: { now: input.now } });
+}
+
+function snapshotForAction(action: ReactionPlanAction): RunSnapshot {
+  return {
+    runId: deterministicRunIdForAction(action),
     scope: RunScope.Run,
     phase: RunLifecyclePhase.Observing,
     trace: {
-      correlationId: input.action.triggerEventId,
-      causationId: input.action.triggerEventId,
-      traceId: input.action.triggerEventId,
+      correlationId: action.triggerEventId,
+      causationId: action.triggerEventId,
+      traceId: action.triggerEventId,
     },
     hasGateApproval: false,
     hasEvidence: false,
   };
-  return decide(snapshot, input.composer, { clock: { now: input.now } });
 }
 
 /** Result-as-DU summary: either a run-request summary, or a feedback to fail the run on. */
