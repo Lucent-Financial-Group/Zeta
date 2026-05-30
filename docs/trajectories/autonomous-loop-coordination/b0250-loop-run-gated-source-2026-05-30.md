@@ -13,9 +13,8 @@ open-PR-only churn.
 The Codex loop-run coincidence source no longer emits an event for every
 `codex forward gate end` line in the local runner log. This receipt narrowed
 the source to adjacent `heartbeat complete` snapshots around the gate
-completion whose surrounding snapshots showed a claim-count or open-PR-count
-transition. The later claim-gate receipt narrows this again to claim-count
-transitions only.
+completion whose surrounding snapshots showed a broad count transition. The
+later claim-gate receipt narrows this again to claim-count transitions only.
 
 ## Why
 

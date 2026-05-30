@@ -179,10 +179,9 @@ Current B-0250 loop-run gated source receipt:
 `docs/trajectories/autonomous-loop-coordination/b0250-loop-run-gated-source-2026-05-30.md`
 
 It was the first narrowing pass for Codex loop-run coincidence events. The
-current claim-gate receipt below supersedes its broader claim-count or
-open-PR-count transition rule; open-PR-only churn now stays in the raw runner
-log and lane-runway surfaces instead of creating B-0250 Codex coincidence
-events.
+current claim-gate receipt below supersedes that broader count-transition
+rule; open-PR-only churn now stays in the raw runner log and lane-runway
+surfaces instead of creating B-0250 Codex coincidence events.
 
 Current B-0250 compact debug surface receipt:
 `docs/trajectories/autonomous-loop-coordination/b0250-compact-debug-surface-2026-05-30.md`
