@@ -541,3 +541,32 @@ cycle, so a single long work cycle cannot delay the heartbeat.
   orchestration are built and unit-tested in-process (Phase 4) but not yet
   deployed/integrated into the live k8s pipeline. The reaction-plan action
   executor in the deployed worker is the V0 path, not yet the Hermes agent.
+
+## Update 2026-05-30 — Phase 7: agent liveness is real (both halves of tenet #1)
+
+The keep-alive snapshot source no longer hardcodes `agents: []` — it reads real
+persisted agent heartbeats (migration 0012 `agentic_org_agent_heartbeat`,
+store.recordAgentHeartbeat / readAgentHeartbeats with DB-clock age). The engine's
+stale-agent -> reassignment-signal branch is now live, not dormant.
+
+Live proof (real Cockroach): a fresh agent heartbeat reads ALIVE (the lane applies
+only the org heartbeat, no reassignment); forcing the agent past its deadline
+makes the engine emit ReassignStaleWork and the sink record a
+`stale_work_reassignment` alert naming the agent's work item. The control plane
+only SIGNALS reassignment — the decision stays in the autonomous data plane.
+
+Durability evidence: the kind cluster ran 12–20 min with 0 restarts and the org
+heartbeat reached version 32 (alive=true) — the deterministic keep-alive kept the
+org alive in-cluster continuously, unattended.
+
+Full suite 516/516 pass, 0 skipped, vs live Cockroach + NATS. tsc 0.
+
+### Honest boundary (production writer)
+
+The agent-liveness mechanism + detection are real and proven, but no deployed
+agent session calls `recordAgentHeartbeat` yet — that writer arrives when the
+Hermes runtime (Phase 4, currently in-process) is integrated into the live
+worker pipeline. Next slices toward the full vision: (1) wire the orchestration's
+Hermes heartbeat to the agent-heartbeat writer; (2) integrate the Hermes
+autonomous data plane into the deployed worker (agent decision-making on work
+items); (3) independent fast keep-alive loop; (4) deploy Hindsight memory.
