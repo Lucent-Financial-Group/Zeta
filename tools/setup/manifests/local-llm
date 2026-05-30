@@ -1,0 +1,25 @@
+# tools/setup/manifests/local-llm — declarative pins for the CORE local-LLM
+# primitive: a small CPU-only model served by Ollama, account-free.
+#
+# Why core (Aaron 2026-05-30): small CPU-capable local LLMs are a baseline
+# substrate primitive (like a language runtime), not an optional extra. Consumers:
+#   - accelerator move-next selector ("choose your own adventure")
+#   - observe.ts auto-classifier (input -> one label)
+#   - DST test fixtures: temp 0 + fixed seed + pinned model = reproducible, so a
+#     real (not mocked) model can back deterministic-simulation tests.
+#
+# Installed by tools/setup/common/local-llm.sh (idempotent, graceful). Format:
+# `key  value`  (one per line; comments start with `#`).
+#
+# Ollama runtime version. Stable per WebSearch 2026-05-30
+# (https://github.com/ollama/ollama/releases — v0.30.x was a release candidate).
+# macOS installs the binary via manifests/brew; Linux pulls this pinned release.
+ollama_version  0.24.0
+
+# Tiny instruct model — 398MB Q4_K_M, CPU-friendly
+# (https://ollama.com/library/qwen2.5:0.5b). Pinned tag.
+model  qwen2.5:0.5b
+
+# Deterministic defaults for DST reproducibility (greedy + fixed seed).
+seed  0
+host  http://127.0.0.1:11434
