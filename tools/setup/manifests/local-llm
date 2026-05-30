@@ -11,13 +11,15 @@
 # Installed by tools/setup/common/local-llm.sh (idempotent, graceful). Format:
 # `key  value`  (one per line; comments start with `#`).
 #
-# Ollama runtime version. Stable per WebSearch 2026-05-30
-# (https://github.com/ollama/ollama/releases — v0.30.x was a release candidate).
-# macOS installs the binary via manifests/brew; Linux pulls this pinned release.
-ollama_version  0.24.0
+# Ollama runtime: FLOATING latest (Aaron 2026-05-30) — the runtime version does
+# not affect DST reproducibility (the pinned MODEL + temp0 + seed do), so we track
+# latest for less maintenance. Installed per-OS: macOS via manifests/brew; Linux
+# via GitHub /releases/latest; Windows via install.ps1 (peer surface) — all read
+# the model/seed/host below from THIS manifest (OS-agnostic shared contract).
 
 # Tiny instruct model — 398MB Q4_K_M, CPU-friendly
-# (https://ollama.com/library/qwen2.5:0.5b). Pinned tag.
+# (https://ollama.com/library/qwen2.5:0.5b). PINNED tag — the reproducible
+# artifact for DST (temp0 + seed + this pin = deterministic).
 model  qwen2.5:0.5b
 
 # Deterministic defaults for DST reproducibility (greedy + fixed seed).

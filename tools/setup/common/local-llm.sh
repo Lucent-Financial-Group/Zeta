@@ -31,7 +31,6 @@ fi
 
 # Read a `key  value` pair from the declarative manifest.
 mget() { grep -E "^$1[[:space:]]" "$MANIFEST" | awk '{print $2}' | head -1; }
-OLLAMA_VERSION="$(mget ollama_version)"
 MODEL="$(mget model)"
 HOST="$(mget host)"
 : "${HOST:=http://127.0.0.1:11434}"
@@ -50,12 +49,13 @@ if ! command -v ollama >/dev/null 2>&1; then
         aarch64 | arm64) oarch=arm64 ;;
         *) echo "warn: unsupported arch $(uname -m) for ollama; skipping local-llm" >&2; exit 0 ;;
       esac
-      if [ -z "$OLLAMA_VERSION" ]; then
-        echo "warn: local-llm manifest has no 'ollama_version'; skipping" >&2; exit 0
-      fi
       tmp="$(mktemp -d)"
-      url="https://github.com/ollama/ollama/releases/download/v${OLLAMA_VERSION}/ollama-linux-${oarch}.tgz"
-      echo "↓ installing ollama ${OLLAMA_VERSION} (linux-${oarch})..."
+      # FLOATING latest (Aaron 2026-05-30): the ollama *runtime* version does not
+      # affect DST reproducibility — the pinned MODEL + temp0 + seed do — so we
+      # track latest (less maintenance). GitHub's /releases/latest/download/<asset>
+      # auto-redirects to the newest release's asset (no API call, no pin).
+      url="https://github.com/ollama/ollama/releases/latest/download/ollama-linux-${oarch}.tgz"
+      echo "↓ installing ollama (latest, linux-${oarch})..."
       if ! curl_fetch --output "${tmp}/ollama.tgz" "$url"; then
         echo "warn: ollama download failed; skipping local-llm (tests fall back to mock)" >&2; exit 0
       fi
@@ -98,4 +98,4 @@ else
     exit 0
   fi
 fi
-echo "✓ local-llm primitive ready: ${MODEL} via ollama ${OLLAMA_VERSION:-?}"
+echo "✓ local-llm primitive ready: ${MODEL} via ollama $(ollama --version 2>/dev/null | head -1 || echo '(version unknown)')"
