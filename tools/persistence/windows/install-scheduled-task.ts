@@ -16,7 +16,7 @@
 //   ... --ref feat/x   # which ref the dedicated clone tracks (default: main)
 //   ... --run-claude --model opus   # enable harness-launch instead of heartbeat-only
 //
-// Flags: --task-name <n> --ref <r> --run-claude --model <m> --bun-path <p>
+// Flags: --task-name <n> --ref <r> --run-claude --model <m>
 //        --repo-root <p> --clone-dir <p> --dry-run --register
 import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, rmSync, existsSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
@@ -28,7 +28,6 @@ export interface Args {
   ref: string;
   runClaude: boolean;
   model: string;
-  bunPath?: string;
   repoRoot?: string;
   cloneDir?: string;
   dryRun: boolean;
@@ -76,7 +75,6 @@ export function parseArgs(argv: string[]): Args {
       case "--task-name": a.taskName = next("--task-name"); break;
       case "--ref": a.ref = next("--ref"); break;
       case "--model": a.model = next("--model"); break;
-      case "--bun-path": a.bunPath = next("--bun-path"); break;
       case "--repo-root": a.repoRoot = next("--repo-root"); break;
       case "--clone-dir": a.cloneDir = next("--clone-dir"); break;
       case "--run-claude": a.runClaude = true; break;

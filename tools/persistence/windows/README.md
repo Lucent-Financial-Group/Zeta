@@ -49,7 +49,7 @@ bun tools/persistence/windows/install-scheduled-task.ts --register --run-claude 
 ```
 
 Flags: `--task-name <n>` (default `ZetaOttoLoop`) · `--ref <r>` (default `main`) ·
-`--run-claude` · `--model <m>` · `--clone-dir <p>` · `--bun-path <p>` · `--repo-root <p>` ·
+`--run-claude` · `--model <m>` · `--clone-dir <p>` · `--repo-root <p>` ·
 `--dry-run` · `--register`.
 
 ## Verify

@@ -57,12 +57,17 @@ if (Test-Path $hbStamp) {
     } catch { $pushHb = $true }
 }
 if ($pushHb) {
-    try {
-        & $bun (Join-Path $Clone 'tools\agent-heartbeats\write-heartbeat.ts') `
-            --push --persona-name otto-windows --disposition loop-tick *>> (Join-Path $LogDir 'wrapper.log')
+    # NOTE: PowerShell try/catch does NOT trap non-zero exits from native exes
+    # (bun.exe here); $ErrorActionPreference='Stop' only governs cmdlets, and
+    # $PSNativeCommandUseErrorActionPreference is PS 7.3+ (this script floors at
+    # 5.1). So check $LASTEXITCODE explicitly and only stamp $hbStamp on success —
+    # stamping on failure would suppress retries for ~10 min (see gate above).
+    & $bun (Join-Path $Clone 'tools\agent-heartbeats\write-heartbeat.ts') `
+        --push --persona-name otto-windows --disposition loop-tick *>> (Join-Path $LogDir 'wrapper.log')
+    if ($LASTEXITCODE -eq 0) {
         (Get-Date -Format o) | Out-File -Encoding utf8 $hbStamp
-    } catch {
-        "$(Get-Date -Format o) WARN heartbeat-push failed: $_" | Out-File -Append (Join-Path $LogDir 'wrapper.err')
+    } else {
+        "$(Get-Date -Format o) WARN heartbeat-push failed (exit $LASTEXITCODE)" | Out-File -Append (Join-Path $LogDir 'wrapper.err')
     }
 }
 
