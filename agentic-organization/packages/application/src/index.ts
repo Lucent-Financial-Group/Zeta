@@ -17,6 +17,14 @@ export {
   type ProjectGraphInput,
 } from "./graph-projection.ts";
 export {
+  ObserveWorkItemFeedbackReason,
+  observeWorkItem,
+  snapshotForWorkItem,
+  type ObserveWorkItemDeps,
+  type ObserveWorkItemFacts,
+  type ObserveWorkItemResult,
+} from "./observe-work-item.ts";
+export {
   createCommandHandlerRegistry,
   type CommandExecutionContext,
   type CommandHandler,
