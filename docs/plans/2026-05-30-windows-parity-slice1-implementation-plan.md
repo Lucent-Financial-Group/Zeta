@@ -56,6 +56,7 @@ Authoritative "how it works": `tools/persistence/windows/README.md` + commits cb
 ## Task 1: OS-conditional subprocess PATH helper (the portability fix)
 
 **Files:**
+
 - Create: `.claude/bin/loop-subprocess-path.ts`
 - Test: `.claude/bin/loop-subprocess-path.test.ts`
 - Modify: `.claude/bin/claude-loop-tick.ts` (the `run()` env block, ~L55-64)
@@ -166,6 +167,7 @@ git commit -m "fix(loop-tick): OS-conditional subprocess PATH (inherit on Window
 ## Task 2: Task Scheduler XML template
 
 **Files:**
+
 - Create: `tools/persistence/windows/scheduled-task.xml`
 
 - [ ] **Step 1: Write the template**
@@ -245,6 +247,7 @@ git commit -m "feat(persistence/windows): Task Scheduler XML template for user-m
 ## Task 3: Installer pure functions (TDD)
 
 **Files:**
+
 - Create: `tools/persistence/windows/install-scheduled-task.ts` (pure functions first)
 - Test: `tools/persistence/windows/install-scheduled-task.test.ts`
 
@@ -390,6 +393,7 @@ git commit -m "feat(persistence/windows): installer pure functions (xmlEscape, s
 ## Task 4: Installer `main()` + schtasks registration
 
 **Files:**
+
 - Modify: `tools/persistence/windows/install-scheduled-task.ts` (append detection + main)
 
 - [ ] **Step 1: Append detection helpers + main()**
@@ -481,6 +485,7 @@ git commit -m "feat(persistence/windows): installer main() + schtasks /Create re
 ## Task 5: PowerShell wrapper
 
 **Files:**
+
 - Create: `tools/persistence/windows/otto-loop-wrapper.ps1`
 
 - [ ] **Step 1: Write the wrapper**
@@ -534,6 +539,7 @@ git commit -m "feat(persistence/windows): per-tick PowerShell wrapper (env + bun
 ## Task 6: README
 
 **Files:**
+
 - Create: `tools/persistence/windows/README.md`
 
 - [ ] **Step 1: Write the README** — cover: what it is (user-mode parity with launchd),
