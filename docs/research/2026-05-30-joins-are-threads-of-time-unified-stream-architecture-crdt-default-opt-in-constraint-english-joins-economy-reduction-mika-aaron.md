@@ -129,12 +129,17 @@ multi-oracle-not-BFT, and the git-native event-store (#6071).
   So cosmic expansion becomes an *endogenous* driver of the economy, not an exogenous
   goal. Two-sided elegance: the physics-cap makes the currency **anti-debasement by
   physics** (can't print) *and* **pro-expansion by physics** (growth = real mass
-  acquired = honest cosmic work; no fiat). Razor note: the *mechanism* (economy
-  structurally drives off-world expansion) survives clean; the strong form ("multi-planet
-  expansion is inevitable") is the high-end framing — a powerful driver riding on top of
-  feasibility + timing, held per `god-tier-claims-...-dont-collapse` rather than
-  collapsed either way. Composes with `additive-not-zero-sum` (literally additive at
-  cosmic scale), the Kardashev-scale civilizational-growth framing, and the
+  acquired = honest cosmic work; no fiat). **Inevitability scope (Aaron 2026-05-30
+  sharpening):** the *mechanism* IS inevitable — a physics-mass-capped, non-debasable
+  economy makes cosmic expansion a structural growth-lever certainty (given the design +
+  physics, expansion-as-the-only-honest-growth-path holds). What is NOT claimed is any
+  specific *actor's* success (e.g. Elon's): the driver is **actor-agnostic** — whoever
+  expands captures the money-supply growth; Elon is one candidate, not the inevitable
+  winner. Inevitability attaches to the mechanism, not to a winner — the operational
+  claim survives the razor; only the actor-attribution stays open (per
+  `god-tier-claims-...-dont-collapse`: don't collapse the mechanism-certainty, don't
+  inflate to actor-specific-success). Composes with `additive-not-zero-sum` (literally
+  additive at cosmic scale), the Kardashev-scale civilizational-growth framing, and the
   entropy/swim-upstream substrate (`only-way-to-lose-is-not-to-play`).
 
 ### The consent filter — engine vs extraction pipeline
