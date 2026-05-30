@@ -668,6 +668,7 @@ heartbeatAgeMs 93063 (past the 90000 ms deadline). Meanwhile the org heartbeat
 kept advancing (version 56), unattended, surviving a redeploy.
 
 This is the operator's #1 tenet, realized and proven in kubernetes:
+
 - the ORGANIZATION stays alive deterministically (org heartbeat),
 - the AGENTS run autonomously (Hermes data plane in the deployed worker),
 - and the control plane WATCHES the agents and deterministically catches a silent
