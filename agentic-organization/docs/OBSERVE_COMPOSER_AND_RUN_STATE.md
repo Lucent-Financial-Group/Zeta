@@ -17,6 +17,7 @@ code_anchors:
   - ../packages/application/test/observe.test.ts
   - ../packages/observability/src/workflow-visibility.ts
   - ../packages/application/src/command-pipeline.ts
+  - ../packages/governance/src/constitution-gate.ts
 supersedes: []
 ---
 
@@ -128,7 +129,7 @@ constitution set is adopted. This composes with the existing `governance`
 package and the repo's multi-oracle / three-faction BFT substrate (B-0703,
 B-0652) rather than inventing a new voting path.
 
-Proposed explicit gate DU (next slice, in `packages/governance`):
+Explicit gate DU, implemented in `packages/governance/src/constitution-gate.ts`:
 
 ```ts
 const ConstitutionRatificationState = {
@@ -136,25 +137,29 @@ const ConstitutionRatificationState = {
   Gathering: "gathering",          // collecting independent agent agreements
   Ratified: "ratified",            // >= quorum (default 3) distinct agents agreed
   Rejected: "rejected",
-  Superseded: "superseded",
+  Superseded: "superseded",        // lifecycle variant; not produced by the pure evaluation
 } as const;
 
 type ConstitutionAgreement = {
   agentId: string;                 // must be distinct; self-agreement does not count
   hatAssignmentId: string;
-  decision: "agree" | "object";
+  decision: ConstitutionDecision;  // "agree" | "object"
   rationale: string;
 };
 ```
 
-Ratification is reached only when `agreements.filter(a => a.decision === "agree")`
-has **≥ quorum distinct `agentId`s** (default 3), with no unresolved `object`.
-The quorum, the distinctness check, and the no-self-approval rule are explicit —
-not buried — exactly as the `decide()` legality check is explicit.
+`evaluateConstitutionRatification({ agreements, quorum? })` is a pure function.
+Ratification is reached only when the **distinct** `agentId`s with `decision ===
+"agree"` number **≥ quorum** (default 3, `DEFAULT_CONSTITUTION_QUORUM`), with no
+unresolved `object` (any objection vetoes to `Rejected`). A single agent agreeing
+twice counts once — no self-amplification. The quorum, the distinctness check,
+and the objection-veto precedence are explicit — not buried — exactly as the
+`decide()` legality check is explicit.
 
 ## Status
 
 `observe.ts` + `decide` + the default deterministic rules are **implemented and
-tested** (8 tests, green; full suite 271 green). The constitution ratification
-gate DU and the MCP metrics tool are **design** (next slices). See
-`PHASED_DEVELOPMENT_PLAN.md` for sequencing.
+tested**, and the constitution ratification gate DU
+(`packages/governance/src/constitution-gate.ts`) is **implemented and tested**
+(full suite 318 green). The MCP metrics tool (idea 4) remains **design** (next
+slice). See `PHASED_DEVELOPMENT_PLAN.md` for sequencing.

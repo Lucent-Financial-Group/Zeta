@@ -28,3 +28,26 @@ export { project, type Projection } from "./project.ts";
 export { parseCreateTable, type SchemaParseResult } from "./sql-to-schema.ts";
 export { validateRow, type RowViolation, type ValidationResult } from "./validate.ts";
 export { edgesOf, neighbors, type Edge } from "./traverse.ts";
+export {
+  ParseFeedbackReason,
+  documentToRow,
+  parseFrontmatterDocument,
+  rowToDocument,
+  serializeFrontmatterDocument,
+  type ParsedDocument,
+  type ParseResult,
+} from "./frontmatter-codec.ts";
+export { emitCreateTable } from "./schema-to-sql.ts";
+export {
+  SyncDirection,
+  syncGitToIndex,
+  syncIndexToGit,
+  type GitEventSink,
+  type GitEventSource,
+  type GitToIndexResult,
+  type IdGenerator,
+  type IndexRowSink,
+  type IndexRowSource,
+  type IndexToGitResult,
+  type SyncFeedback,
+} from "./sync.ts";
