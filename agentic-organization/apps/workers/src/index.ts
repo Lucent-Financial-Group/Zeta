@@ -1,4 +1,5 @@
 export {
+  WorkerKeepAliveConfigDefault,
   WorkerProcessEnvName,
   parseWorkerRuntimeConfigFromEnv,
   type WorkerDurableRuntimeConfig,

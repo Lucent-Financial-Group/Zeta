@@ -2,6 +2,15 @@ import { WorkerRuntimeConfigError, WorkerRuntimeConfigErrorCode, type WorkerRunt
 
 const decimalIntegerPattern = /^[0-9]+$/;
 
+/**
+ * Default deadline (ms) past which the deterministic keep-alive engine treats
+ * the org as flatlining and raises a self-heal alert. Optional env override;
+ * defaulted so existing deployments do not need a new variable.
+ */
+export const WorkerKeepAliveConfigDefault = {
+  OrgHeartbeatDeadlineMs: 30_000,
+} as const;
+
 export const WorkerProcessEnvName = {
   AgenticOrgEnv: "AGENTIC_ORG_ENV",
   AgenticOrgId: "AGENTIC_ORG_ID",
@@ -14,6 +23,7 @@ export const WorkerProcessEnvName = {
   WorkerOutboxBatchSize: "WORKER_OUTBOX_BATCH_SIZE",
   WorkerReactionPlanBatchSize: "WORKER_REACTION_PLAN_BATCH_SIZE",
   WorkerReactionPlanLeaseMs: "WORKER_REACTION_PLAN_LEASE_MS",
+  WorkerKeepAliveOrgHeartbeatDeadlineMs: "WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS",
 } as const;
 
 export type WorkerProcessEnvName = (typeof WorkerProcessEnvName)[keyof typeof WorkerProcessEnvName];
@@ -27,6 +37,7 @@ export type WorkerDurableRuntimeConfig = {
   workerOutboxBatchSize: number;
   workerReactionPlanBatchSize: number;
   workerReactionPlanLeaseMs: number;
+  workerKeepAliveOrgHeartbeatDeadlineMs: number;
 };
 
 export type WorkerProcessConfig = WorkerRuntimeConfig & WorkerDurableRuntimeConfig;
@@ -66,7 +77,32 @@ export function parseWorkerRuntimeConfigFromEnv(env: WorkerProcessEnvironment): 
       env[WorkerProcessEnvName.WorkerReactionPlanBatchSize],
     ),
     workerReactionPlanLeaseMs: parseWorkerReactionPlanLeaseMs(env[WorkerProcessEnvName.WorkerReactionPlanLeaseMs]),
+    workerKeepAliveOrgHeartbeatDeadlineMs: parseWorkerKeepAliveOrgHeartbeatDeadlineMs(
+      env[WorkerProcessEnvName.WorkerKeepAliveOrgHeartbeatDeadlineMs],
+    ),
   };
+}
+
+function parseWorkerKeepAliveOrgHeartbeatDeadlineMs(value: string | undefined): number {
+  return parseOptionalPositiveDecimalInteger(
+    value,
+    WorkerKeepAliveConfigDefault.OrgHeartbeatDeadlineMs,
+    WorkerRuntimeConfigErrorCode.InvalidWorkerKeepAliveOrgHeartbeatDeadlineMs,
+  );
+}
+
+function parseOptionalPositiveDecimalInteger(
+  value: string | undefined,
+  defaultValue: number,
+  errorCode: WorkerRuntimeConfigErrorCode,
+): number {
+  const trimmedValue = value?.trim();
+
+  if (trimmedValue === undefined || trimmedValue.length === 0) {
+    return defaultValue;
+  }
+
+  return parsePositiveDecimalInteger(trimmedValue, errorCode);
 }
 
 function readRequiredEnvValue(

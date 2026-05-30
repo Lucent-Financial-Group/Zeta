@@ -37,6 +37,7 @@ export const WorkerRuntimeConfigErrorCode = {
   InvalidWorkerOutboxBatchSize: "invalid_worker_outbox_batch_size",
   InvalidWorkerReactionPlanBatchSize: "invalid_worker_reaction_plan_batch_size",
   InvalidWorkerReactionPlanLeaseMs: "invalid_worker_reaction_plan_lease_ms",
+  InvalidWorkerKeepAliveOrgHeartbeatDeadlineMs: "invalid_worker_keep_alive_org_heartbeat_deadline_ms",
   InvalidNatsServers: "invalid_nats_servers",
   MissingCockroachDatabaseUrl: "missing_cockroach_database_url",
   InvalidNatsInboundBatchSize: "invalid_nats_inbound_batch_size",

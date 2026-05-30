@@ -22,6 +22,7 @@ export const CockroachCoreStateMigrationName = {
   HatAssignmentAuthorityProjectionV8: "0008_agentic_org_hat_assignment_authority_projection",
   ReactionPlanExecutionLifecycleV9: "0009_agentic_org_reaction_plan_execution_lifecycle",
   QualityGateEvaluationKernelV10: "0010_agentic_org_quality_gate_evaluation_kernel",
+  ControlPlaneKeepAliveV11: "0011_agentic_org_control_plane_keep_alive",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -45,6 +46,8 @@ export const CockroachTableName = {
   ReactionPlans: "agentic_org_reaction_plans",
   IdempotencyRecords: "agentic_org_idempotency_records",
   PolicyObservations: "agentic_org_policy_observations",
+  ControlPlaneHeartbeat: "agentic_org_control_plane_heartbeat",
+  ControlPlaneAlerts: "agentic_org_control_plane_alerts",
 } as const;
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
@@ -124,6 +127,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachHatAssignmentAuthorityProjectionMigration(),
     createCockroachReactionPlanExecutionLifecycleMigration(),
     createCockroachQualityGateEvaluationKernelMigration(),
+    createCockroachControlPlaneKeepAliveMigration(),
   ];
 }
 
@@ -174,6 +178,42 @@ export function createCockroachQualityGateEvaluationKernelMigration(): Cockroach
     name: CockroachCoreStateMigrationName.QualityGateEvaluationKernelV10,
     sql: createQualityGateEvaluationsTableSql(),
   };
+}
+
+/**
+ * Control-plane keep-alive tables — the durable substrate for the operator's
+ * #1 tenet ("drive the organization to stay alive"). Two tables, two change
+ * rates (DV2.0 split):
+ *   - heartbeat: ONE row per org, UPSERTed every keep-alive tick. last_tick_at
+ *     advancing IS the org's observable proof of life ("SELECT last_tick_at").
+ *   - alerts: append-only log of self-heal signals (org stall, stale-work
+ *     reassignment, lease reap) the deterministic engine emitted.
+ */
+export function createCockroachControlPlaneKeepAliveMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ControlPlaneKeepAliveV11,
+    sql: [createControlPlaneHeartbeatTableSql(), createControlPlaneAlertsTableSql()].join("\n\n"),
+  };
+}
+
+function createControlPlaneHeartbeatTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneHeartbeat} (
+  organization_id STRING PRIMARY KEY,
+  last_tick_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL
+);`.trim();
+}
+
+function createControlPlaneAlertsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneAlerts} (
+  control_plane_alert_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  kind STRING NOT NULL,
+  detail_json JSONB NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL
+);`.trim();
 }
 
 function createProjectsTableSql(): string {

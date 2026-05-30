@@ -20,6 +20,7 @@ import {
   CockroachTableName,
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
+  createCockroachControlPlaneKeepAliveMigration,
   createCockroachDecisionRecordKernelMigration,
   createCockroachDiscussionAnchorKernelMigration,
   createCockroachHatAssignmentAuthorityProjectionMigration,
@@ -85,6 +86,19 @@ describe("cockroach core state schema", () => {
     equal(migrations[7]?.name, CockroachCoreStateMigrationName.HatAssignmentAuthorityProjectionV8);
     equal(migrations[8]?.name, CockroachCoreStateMigrationName.ReactionPlanExecutionLifecycleV9);
     equal(migrations[9]?.name, CockroachCoreStateMigrationName.QualityGateEvaluationKernelV10);
+    equal(migrations[10]?.name, CockroachCoreStateMigrationName.ControlPlaneKeepAliveV11);
+  });
+
+  test("declares the control-plane keep-alive tables (org proof-of-life + alert log)", () => {
+    const migration = createCockroachControlPlaneKeepAliveMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ControlPlaneKeepAliveV11);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneHeartbeat}`));
+    ok(migration.sql.includes("organization_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("last_tick_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneAlerts}`));
+    ok(migration.sql.includes("control_plane_alert_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("detail_json JSONB NOT NULL"));
   });
 
   test("declares an additive work-anchor kernel migration for existing databases", () => {
