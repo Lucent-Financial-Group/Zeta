@@ -45,9 +45,9 @@ deps in `apps/workers`):
 Doc hygiene this checkpoint: all docs now carry frontmatter `status`
 (design / v0 / index) per `DOC_FRONTMATTER_CONVENTION.md`.
 
-Priorities #2 (reconciliation table) and #5 (graph projection) are now addressed;
-#4 (triage expansion) is partially addressed (2 of 5 new actions implemented, 3
-deferred). The cluster-integration gaps (hat-system projection, identity mapping,
+Priorities #2 (reconciliation table) and #5 (graph projection) are now
+addressed; #4 (triage expansion) is partially addressed (2 of 5 new actions
+implemented, 3 deferred). The cluster-integration gaps (hat-system projection, identity mapping,
 Hindsight, Hermes runtime, LGTM export) and the MCP server host remain deferred
 to the `full-ai-cluster` substrate.
 
