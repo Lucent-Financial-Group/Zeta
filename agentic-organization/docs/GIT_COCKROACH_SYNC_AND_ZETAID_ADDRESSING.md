@@ -1,8 +1,8 @@
 ---
-title: Git <-> Cockroach Sync and ZetaId Addressing
+title: Git as Database and Event Store (Frontmatter + ZetaId CRDT)
 canonical_name: Agentic Organization
-status: design
-ideas: [1, 7, 8]
+status: v0
+ideas: [1, 2, 3, 7, 8]
 extends:
   - CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md
   - V0_SCHEMA_AND_COMMANDS.md
@@ -11,143 +11,135 @@ composes_with:
   - ./OBSERVE_COMPOSER_AND_RUN_STATE.md
   - ./DOC_FRONTMATTER_CONVENTION.md
 code_anchors:
+  - ../packages/frontmatter-db/src/schema.ts
+  - ../packages/frontmatter-db/src/event.ts
+  - ../packages/frontmatter-db/src/crdt-log.ts
+  - ../packages/frontmatter-db/src/project.ts
+  - ../packages/frontmatter-db/src/sql-to-schema.ts
+  - ../packages/frontmatter-db/src/traverse.ts
+  - ../packages/frontmatter-db/src/validate.ts
   - ../../src/Core.TypeScript/zeta-id/zeta-id.ts
-  - ../packages/application/src/observe.ts
-  - ../packages/state-cockroach/migrations/0001_agentic_org_core_state.sql
 supersedes: []
 ---
 
-# Git <-> Cockroach Sync and ZetaId Addressing
+# Git as Database and Event Store (Frontmatter + ZetaId CRDT)
 
-The persistence and addressing layer beneath the observe/compose keystone.
-Operator ideas **7** (unique ids, no collision in git), **8** (ZetaId as the
-decimal identifier for indexing in git-as-db), and **1** (a generic bidirectional
-converter/sync between GitHub-as-database and CockroachDB).
+The persistence and addressing layer. Operator vision (2026-05-29): **git is the
+database and the event store**. A markdown file is a row; its YAML frontmatter is
+the typed schema/columns; foreign-key columns are graph edges; events are
+unique-id files that merge conflict-free as a CRDT; and the schema converts
+to/from SQL. CockroachDB demotes to a rebuildable query index. Covers operator
+ideas 1 (git<->cockroach converter), 2 (explicit DUs), 3 (frontmatter graph), 7
+(no-collision ids), 8 (ZetaId decimal index).
 
-## Do not reinvent the id (ideas 7, 8)
+> **Why this is git's native shape.** Linus Torvalds built git as a
+> content-addressable object database (a "stupid content tracker"): `git
+> hash-object` writes a blob keyed by its SHA, `git cat-file` reads it back;
+> trees and commits are just objects on top. Git-as-db is not a hack — it is
+> git used for what it fundamentally is. The one thing we add is a *stable,
+> semantic, time-ordered* key (ZetaId) because a content SHA changes whenever
+> content changes and therefore cannot be a primary key or a foreign-key target.
 
-ZetaId **already exists** as a tri-language primitive:
-
-- `src/Core.TypeScript/zeta-id/zeta-id.ts` — `pack(observation, env) → ZetaId`,
-  `unpack`
-- `src/Core.FSharp.ZetaId/`, `src/Core.CSharp.ZetaId/` — cross-verified ports
-
-A ZetaId is a **128-bit packed observation** with fields
-`version | timestamp | chromosome | category | firefly | authority | persona |
-momentum | location | randomness(32-bit)`. The 32-bit crypto-random field is the
-collision-resistance mechanism (idea 7): two observations with identical semantic
-fields still get distinct ids — *unless* `DETERMINISTIC_ENV` is used, which is
-explicitly for the cross-verification harness only and documented as
-collision-risky. Production code passes `DEFAULT_ENV`.
-
-**Decimal rendering (idea 8):** a ZetaId is a `bigint`; its canonical index key
-for git-as-db is its base-10 string (`id.toString()`). This is the
-`ZetaIdDecimal` branded type already used by the observe keystone
-(`packages/application/src/observe.ts`). Git paths, Cockroach primary keys, and
-NATS subjects all key off the same decimal string, so an id minted once is the
-same handle everywhere.
+## The stack
 
 ```text
-ZetaObservation --pack(DEFAULT_ENV)--> ZetaId (128-bit bigint)
-                                          |
-                                          +-- .toString() --> ZetaIdDecimal
-                                                                 |
-   git path: <type>/<ZetaIdDecimal>.json    <----- same key ----+----->  cockroach PK: id TEXT
-   nats subject: agentic-org.<env>.<org>.<domain>.<ZetaIdDecimal>
+git object DB (durability + conflict-free merge)
+  └─ events/<table>/<ZetaIdDecimal>.md      append-only event files  ── G-Set CRDT
+        │  (frontmatter = op + aggregateId + field values + schema_version)
+        ▼  fold in (timestamp, id) order  ── retraction-native (Z-set)
+     <table>/<ZetaIdDecimal>.md             materialized rows (current state)
+        │  (frontmatter = typed columns; fk columns = graph edges; body = doc)
+        ▼  derive
+     CockroachDB                            rebuildable query / index projection
 ```
 
-Collision policy is therefore "minted once with crypto randomness, addressed by
-decimal everywhere" — there is no second id scheme to reconcile.
+One **frontmatter schema** (derived from SQL) governs all four layers.
 
-## Git as a database (idea 8 context)
+## Layer 1 — the schema is frontmatter, derived from SQL (ideas 2, 3)
 
-Git-as-db treats a Git tree as an append-only, content-addressed store:
+`packages/frontmatter-db/src/schema.ts` defines the column model as an explicit
+discriminated union (`ColumnType`: zeta_id, text, int, bool, timestamp, enum, fk,
+fk_array). Payload-bearing kinds carry their payload as an explicit variant —
+`enum` carries `values`, `fk`/`fk_array` carry `references` — never buried in
+optional fields (repo rule: IMPLICIT-NOT-EXPLICIT is class error).
 
-- one file per aggregate, path `= <aggregateType>/<ZetaIdDecimal>.json`
-- the file holds the aggregate's current projection plus its event log (or a
-  pointer to it)
-- commits are the durable, signed, replayable history (composes with the repo's
-  git-as-event-store discipline and the trace envelope)
+`sql-to-schema.ts` converts a `CREATE TABLE` into that schema:
 
-CockroachDB remains the **authoritative runtime state** (low-latency,
-transactional, the source of truth for live work per
-`V0_SCHEMA_AND_COMMANDS.md`). Git is the **durable, auditable, portable mirror**.
-The two must stay convergent — that is what the converter is for.
+| SQL | frontmatter column |
+|-----|--------------------|
+| `id TEXT PRIMARY KEY` | `{ type: zeta_id, pk: true, required: true }` |
+| `status TEXT NOT NULL CHECK (status IN ('a','b'))` | `{ type: enum, required: true, values: [a, b] }` |
+| `project_id TEXT REFERENCES project(id)` | `{ type: fk, references: project }` |
+| `reviewer_ids TEXT[] REFERENCES hat_assignment(id)` | `{ type: fk_array, references: hat_assignment }` |
+| `estimate INTEGER` / `created_at TIMESTAMPTZ NOT NULL` | `{ type: int }` / `{ type: timestamp, required: true }` |
 
-## The generic bidirectional converter (idea 1)
+The reverse (schema → `CREATE TABLE`) feeds the Cockroach projection, so the
+schema is the single source both sides derive from — the existing
+`state-cockroach/migrations` become derivable rather than hand-authored.
 
-A single generic converter keyed by aggregate type, not a per-table hand-written
-sync. Both directions share one mapping declaration so they cannot drift.
+## Layer 2 — events are a ZetaId-keyed G-Set CRDT (ideas 7, 1)
 
-```ts
-// proposed: packages/state-sync/src/aggregate-mapping.ts
-type AggregateMapping<TRow, TFile> = {
-  aggregateType: string;                       // e.g. "work_item"
-  idOf: (x: TRow | TFile) => ZetaIdDecimal;    // the shared key
-  rowToFile: (row: TRow) => TFile;             // cockroach -> git
-  fileToRow: (file: TFile) => TRow;            // git -> cockroach
-  schemaVersion: number;                       // explicit; migrations are data
-};
-```
+`event.ts` + `crdt-log.ts`. Each event is one file named by its ZetaId decimal.
+Because ZetaIds are globally unique (32-bit crypto-random field), two agents
+writing concurrently produce **different filenames** — a git merge is a pure
+union, never a content conflict. The log is therefore a **grow-only set keyed by
+unique id**; `mergeLogs` is union, which is:
 
-Sync is then generic over the mapping set:
+- **commutative** — `merge(a,b)` and `merge(b,a)` have the same ids
+- **associative** — grouping does not matter
+- **idempotent** — re-merging the same log changes nothing
 
-```ts
-const SyncDirection = {
-  CockroachToGit: "cockroach_to_git",
-  GitToCockroach: "git_to_cockroach",
-} as const;
+(All three proven in `test/crdt-log.test.ts`.) These are the CRDT join laws, so
+branches converge in any merge order. Collision policy is "minted once with
+crypto randomness, addressed by decimal everywhere" — one id scheme, no
+reconciliation.
 
-const SyncOutcome = {
-  Converged: "converged",
-  Applied: "applied",          // wrote N changes to the target
-  Conflict: "conflict",        // both sides changed since last common point
-} as const;
+## Layer 3 — state is a timestamp-ordered fold (ideas 8, 2)
 
-// Result<T, TFeedback> as an explicit DU, same pattern as observe.ts
-type SyncResult =
-  | { outcome: "applied"; direction: SyncDirection; changed: readonly ZetaIdDecimal[] }
-  | { outcome: "converged" }
-  | { outcome: "conflict"; feedback: SyncConflictFeedback };
-```
+`project.ts`. ZetaId embeds a 48-bit timestamp, so the event log is
+self-ordering — `timestampMsFromZetaId` reads it straight out of the id. `project`
+folds a table's events in `(timestamp, id)` order:
 
-### Conflict handling is explicit, not last-write-wins
+- `upsert` merges field values (last-writer-wins by timestamp)
+- `retract` tombstones the aggregate (retraction-native, Z-set style; a later
+  upsert revives it)
 
-When both git and Cockroach changed an aggregate since their last common version,
-the converter returns a `conflict` feedback variant rather than silently
-clobbering. Resolution composes with the keystone: a conflict becomes a run whose
-`observe()` readout offers the legal reconciliation options (prefer-cockroach,
-prefer-git, merge-by-field), and the memoryless composer (or a human hat) selects
-— it does not get decided implicitly. The ZetaId is the join key on both sides,
-so matching aggregates across the two stores is exact.
+Because the order is derived from the ids (not from insertion or merge order),
+`project(merge(a,b)) === project(merge(b,a))` — the convergence property, proven
+in `test/project.test.ts`. The resulting `FrontmatterRow`s are the materialized
+rows of Layer 1; they are fully rebuildable from the event log (DST-replayable).
 
-### Outbox-driven, not polling-first
+## Layer 4 — frontmatter is graph-traversed (idea 3)
 
-Cockroach→git rides the existing transactional outbox (`messaging-nats`): a
-committed command emits an event; a sync worker projects the changed aggregate to
-its git file and commits. Git→cockroach is triggered by a webhook/commit watcher.
-A periodic full reconcile is the recovery net (composes with
-`ALWAYS_ON_ORCHESTRATION_RUNTIME.md`), not the primary path.
+`traverse.ts`. `fk` and `fk_array` columns are edges; `edgesOf(row, schema)`
+yields them and `neighbors(row, schema, column, store)` resolves them against a
+row store keyed by `ZetaIdDecimal`. This is the same edge mechanism the doc graph
+uses (`composes_with` in `DOC_FRONTMATTER_CONVENTION.md`) — docs and data rows
+share one traversal model.
 
-## Package boundary (proposed)
+## Layer 5 — Cockroach is the index, and the converter is generic (idea 1)
 
-A new `packages/state-sync` (depends on `domain` + `state` ports only, per the
-package dependency direction in `TECHNICAL_CA_PACKAGE_ARCHITECTURE.md`):
+CockroachDB is the low-latency query projection (`WHERE status='ready' ORDER BY
+created_at` over thousands of `.md` files is not viable; the index is). The
+generic converter is keyed by the schema, not hand-written per table:
 
-- `aggregate-mapping.ts` — the `AggregateMapping<TRow, TFile>` contract + the
-  registry of mappings
-- `git-store-port.ts` — read/write/commit an aggregate file by `ZetaIdDecimal`
-- `sync-converter.ts` — the generic bidirectional engine returning `SyncResult`
-- adapters: a real Git adapter (idea 8) and the existing Cockroach store
+- **git → cockroach**: project the event log to rows, upsert into the index
+- **cockroach → git**: a committed command emits an event file (rides the
+  existing `messaging-nats` outbox)
+- a periodic full reconcile (`ALWAYS_ON_ORCHESTRATION_RUNTIME.md`) is the
+  recovery net
 
-It reuses `ZetaIdDecimal` from `packages/application` (or a shared id package),
-the trace envelope from `domain`, and the outbox from `messaging-nats`. No new id
-scheme, no parallel event model.
+Conflicts cannot arise at the event layer (unique ids). At the *row* layer, two
+upserts to the same aggregate are resolved deterministically by the timestamp
+fold — there is no last-write-wins ambiguity to hand-resolve, because the id
+*is* the clock.
 
 ## Status
 
-Design. The ZetaId primitive (ideas 7, 8) is implemented and cross-verified
-upstream; this doc specifies how the Agentic Organization **adopts** it as the
-git-as-db index and the converter join key. The `state-sync` package (idea 1) is
-the proposed next slice after the constitution gate; sequencing in
-`PHASED_DEVELOPMENT_PLAN.md`.
+Implemented and tested: `packages/frontmatter-db` (schema DUs, SQL→schema,
+event/CRDT log, timestamp-ordered projection, validation, traversal) — 26 tests
+green; full suite 297 green. Design/next: the on-disk frontmatter YAML codec
+(read/write `.md` files), the schema→`CREATE TABLE` emitter, and the
+outbox-driven sync worker. The ZetaId codec (ideas 7, 8) is the existing
+cross-verified `src/Core.TypeScript/zeta-id`; `frontmatter-db` mirrors only its
+timestamp-bit layout to stay self-contained.

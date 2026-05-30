@@ -62,6 +62,22 @@ Frontmatter pointers let a tool (or an agent) reconstruct the doc graph from the
 files themselves — the same way `composes_with:` edges work in the backlog. The
 graph is derivable, so it cannot rot out of sync with the docs.
 
+## Two roles, one mechanism
+
+Frontmatter plays two roles in the Agentic Organization, and they are the same
+mechanism at two scopes:
+
+1. **Doc-graph metadata** (this doc) — `title`/`status`/`extends`/`composes_with`/
+   `code_anchors` make the design docs a navigable graph.
+2. **Database rows + schema** (`GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`) —
+   a `.md` file is a row, its frontmatter is the typed columns, and `fk`/`fk_array`
+   columns are graph edges resolved exactly like `composes_with`.
+
+A doc's `composes_with` list *is* an `fk_array` over the docs "table"; a task row's
+`depends_on` is an `fk_array` over the task table. The traversal code
+(`packages/frontmatter-db/src/traverse.ts`) is therefore reusable for both: the
+doc graph and the data graph are one graph with different schemas.
+
 ## Adoption
 
 New docs MUST carry the frontmatter. Existing docs adopt it opportunistically as
