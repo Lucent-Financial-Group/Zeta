@@ -19,6 +19,7 @@ import {
   createCockroachSqlExecutor,
 } from "../../../packages/state-cockroach/src/index.ts";
 import { createHermesReactionPlanActionExecutor } from "../../../packages/application/src/index.ts";
+import { composeOrganizationReactionPlanActionExecutor } from "./organization-executor-composition.ts";
 import type { InboundEventSource } from "../../../packages/workers/src/index.ts";
 import {
   createCockroachMigrationBootstrapper,
@@ -206,7 +207,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
   // the deterministic keep-alive engine watches the agent. (The Hermes runtime is
   // in-process today; a real agent backend swaps in behind the same port.)
   const controlPlaneStore = createCockroachControlPlaneStateStore({ executor: cockroachExecutor });
-  const reactionPlanActionExecutor = createHermesReactionPlanActionExecutor({
+  const hermesExecutor = createHermesReactionPlanActionExecutor({
     // durable Hermes runs — every agent run is a durable, auditable row
     createHermesRuntime: () => createCockroachHermesRuntime({ executor: cockroachExecutor }),
     // durable Hindsight memory — what the agent retains/recalls persists across restarts
@@ -214,6 +215,17 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
     agentHeartbeatWriter: controlPlaneStore,
     agentHeartbeatDeadlineMs: config.workerKeepAliveOrgHeartbeatDeadlineMs,
     generateId: deps.durablePorts.createId,
+  });
+
+  // The entire organizational structure: each reaction-plan action runs the
+  // Hermes agent (above) AND produces a durable, auditable org artifact — a
+  // supervisor-triage discussion anchor created through the command pipeline,
+  // anchored to a real work item. Agent autonomy meets org substrate.
+  const reactionPlanActionExecutor = composeOrganizationReactionPlanActionExecutor({
+    cockroachExecutor,
+    agentExecutor: hermesExecutor,
+    createId: deps.durablePorts.createId,
+    now: deps.clock.now,
   });
 
   try {
