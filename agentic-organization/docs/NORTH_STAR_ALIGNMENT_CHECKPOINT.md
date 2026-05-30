@@ -448,3 +448,49 @@ labels, dashboard ownership, and alertable degraded-worker signals.
    pause/resume, worktree/runtime/credential allocation, and compliance
    observation still need to land before meeting-heavy, review-heavy, or
    verification-heavy autonomous work consumes capacity.
+
+## Update 2026-05-30 — deterministic keep-alive control plane is real (operator tenet #1)
+
+The operator's #1 tenet — "enough determinism to drive the organization to stay
+alive and drive the agents to stay alive, with sufficient autonomy from the
+agents themselves" — now has a real, tested implementation, not just a pure
+engine.
+
+What landed:
+
+- **Pure engine** (`packages/keepalive/src/keepalive.ts`): `evaluateKeepAlive`
+  is a pure function over a liveness snapshot. Guarantees motion — always emits
+  a heartbeat, deterministically detects a flatlining org / stale agents /
+  expired leases, and converts each into an explicit DU action. It never
+  decides WHAT work to do (that is the autonomous data plane).
+- **Lane** (`keepalive-lane.ts`): turns the engine into a self-driving loop;
+  source/sink failures are captured, never thrown — the heartbeat must not die.
+- **Wired as a third worker-runtime lane** (`apps/workers/src/worker-runtime.ts`):
+  ticks FIRST every cycle; a thrown/failing lane is captured; org-flatlining
+  marks the runtime degraded.
+- **Durable on Cockroach** (migration 0011): `agentic_org_control_plane_heartbeat`
+  (one row per org; `last_tick_at` advancing IS the observable proof of life)
+  and `agentic_org_control_plane_alerts` (append-only self-heal log). Age is
+  measured by the DB clock, so liveness stays deterministic across replicas.
+- **Constructed in production composition** (`durable-composition.ts`): store ->
+  snapshot source -> action sink -> lane, threaded into `createWorkerRuntime`.
+  The deployed worker now ticks the org heartbeat every cycle.
+
+Proof: a live integration test against real CockroachDB shows the heartbeat row
+advancing each tick and a forced stall emitting heartbeat + org-stall alert
+(Degraded, appliedCount 2) with the org self-healing. Full suite 511/511 pass,
+0 skipped, vs live Cockroach + NATS. tsc 0.
+
+Review board (inline, 2 lenses): PASS on SOLID/house-style and
+correctness/north-star. Control-plane/data-plane separation respected
+(`ReassignStaleWork` emits a signal, not a work decision).
+
+### Honest gap — next step toward the second half of the tenet
+
+"Drive the AGENTS to stay alive" is wired-but-dormant: the Cockroach snapshot
+source returns `agents: []` because Hermes agent sessions are not yet persisted
+to Cockroach (Hermes runs in-process). The engine's stale-agent and lease-reap
+branches are implemented and unit-tested; they activate the moment agent
+heartbeats are persisted. Smallest real next step: a Cockroach agent-heartbeat
+table + Hermes runtime persisting per-run heartbeats + the snapshot source
+reading them. ORG liveness is real now; AGENT liveness is the next slice.
