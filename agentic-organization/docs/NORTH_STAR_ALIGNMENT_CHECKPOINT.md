@@ -742,3 +742,37 @@ The remaining piece is the agent's internal DECISION backend (simulated in-proce
 Hermes today; a real LLM/sandbox backend swaps in behind the unchanged
 HermesRuntime port) plus the full org-artifact structure (decision records via the
 command pipeline). Every surrounding piece is real, durable, tested, and proven.
+
+## Update 2026-05-30 — Phase 12: organizational-structure command pipeline (PROVEN IN-CLUSTER)
+
+The deployed worker now produces **durable organizational artifacts** for every
+reaction-plan action, not just an agent run. `composeOrganizationReactionPlanActionExecutor`
+(apps/workers/src/organization-executor-composition.ts) wraps the Hermes agent
+executor and, after a successful agent run, idempotently seeds the target
+work item and creates a supervisor-triage **discussion anchor** through the
+command pipeline (permissive auth seam + policy observation + create-discussion-anchor
+handler + work-anchor reader). The application executor's `commandPipeline`
+dependency was ISP-narrowed to `CommandPipeline<CreateDiscussionAnchorCommand>`
+(the only command it builds), so any wider pipeline remains assignable via
+contravariance.
+
+Proven in kind for work item `work-0b7a3569-378a-443e-ad39-98731b2b494e` from a
+single published `SupervisorSignalSent` task — both planes, durably persisted:
+
+- **Data plane:** `agentic_org_hermes_run` row `hermes-run-e14c00dd…` state=`completed`,
+  agent=`agent-engineering_manager-4b0ab953…`, outcome="handled create_supervisor_triage",
+  evidence=`["evt-0b7a3569…"]`; `agentic_org_hindsight_memory` persisted; agent
+  liveness heartbeat written (the keep-alive control plane watches it).
+- **Org structure:** `agentic_org_projects` `project-0b7a3569…` (active),
+  `agentic_org_work_items` `work-0b7a3569…` (created, seeded idempotently),
+  `agentic_org_discussion_anchors` `discussion-anchor-ca64e91d…` (work_item),
+  anchored to the seeded work item — created through the command pipeline.
+
+Worker reaction-plan telemetry for the cycle: `reaction_plan.status=succeeded`,
+`succeeded_count=1`. tsc 0, 538 tests (2 new org-executor unit tests).
+
+This closes the Stop-hook-named gap: "the full organizational-structure command
+pipeline." Agents now produce real, auditable org substrate while running as
+durable, watched Hermes agents. (The one remaining seam is the agent *decision
+backend* itself — a real LLM/sandbox swaps in behind the unchanged HermesRuntime
+port without touching any of the durable plumbing proven above.)
