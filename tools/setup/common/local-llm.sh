@@ -53,20 +53,19 @@ if ! command -v ollama >/dev/null 2>&1; then
       # routes NixOS via /etc/NIXOS; honor the same marker here.
       if [ -f /etc/NIXOS ]; then
         echo "↓ NixOS detected — installing ollama via nix (FHS-safe)..."
-        # Lead with channel-based nix-env -iA (the nixos/nix container installs its
-        # own deps this way — proven), then the flake form as fallback. Surface
-        # nix stderr to the build log (2>&1) — a SUPPRESSED error can't be
-        # diagnosed (the prior 2>/dev/null hid the real failure). Graceful: warn +
-        # exit 0 so install.sh never bricks over a best-effort probe.
-        if nix-env -iA nixpkgs.ollama 2>&1; then
-          echo "  ✓ ollama via nix-env (channel)"
-        elif nix --extra-experimental-features 'nix-command flakes' profile install nixpkgs#ollama 2>&1; then
-          echo "  ✓ ollama via nix profile (flake)"
+        # Diagnosed from the surfaced stderr (run 26685829032): nix-env -iA chokes
+        # on ollama's 'bad meta.outputsToInstall', and bare `nix profile install`
+        # hits a coreutils-full FILE COLLISION in the profile (existing priority 5).
+        # nix's own message prescribes --priority; use 6 so the existing coreutils
+        # wins the collision and ollama's own binary still installs. Surface stderr
+        # (a suppressed error can't be diagnosed). Graceful: warn + exit 0 so
+        # install.sh never bricks over a best-effort probe.
+        if nix --extra-experimental-features 'nix-command flakes' profile install --priority 6 nixpkgs#ollama 2>&1; then
+          echo "  ✓ ollama via nix profile (flake, --priority 6)"
         else
-          echo "warn: nix ollama install failed (nix-env + nix profile both failed); skipping local-llm (tests fall back to mock)" >&2; exit 0
+          echo "warn: nix ollama install failed; skipping local-llm (tests fall back to mock)" >&2; exit 0
         fi
-        # nix-env installs into the per-user profile; cover all the canonical bins.
-        export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/per-user/$(id -un)/profile/bin:/nix/var/nix/profiles/default/bin:$PATH"
+        export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH"
         command -v ollama >/dev/null 2>&1 || { echo "warn: ollama not on PATH after nix install; skipping local-llm" >&2; exit 0; }
       else
       case "$(uname -m)" in
