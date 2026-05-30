@@ -30,10 +30,25 @@ import type {
   MenuOption,
 } from "../agent-loop/state-machine.ts";
 
-// ─── ULID (128-bit, time-sortable, unique) ───────────────────────────
-// Branded so a raw string can't be passed where an event id is expected.
-// UUIDv7 is an acceptable alternative (also time-sortable); ULID chosen for
-// lexical = chronological directory-sort.
+// ─── Zeta-ID (the canonical 128-bit merge primitive) ─────────────────
+// Event ids are the canonical ZetaId (B-0893; src/Core.TypeScript/zeta-id/),
+// serialized as a 32-char lowercase-hex string of the 128-bit value. The
+// ZetaId encodes version+timestamp in its HIGH bits, so lexical-hex order =
+// chronological order (same property the old ULID gave us), AND the key now
+// carries category / persona / authority / location / momentum (provenance in
+// the key itself) instead of being opaque timestamp+randomness.
+export type ZetaIdHex = string & { readonly __brand: "ZetaIdHex" };
+
+const ZETA_ID_HEX_RE = /^[0-9a-f]{32}$/; // 128 bits, zero-padded lowercase hex
+
+export function isZetaIdHex(s: string): s is ZetaIdHex {
+  return ZETA_ID_HEX_RE.test(s);
+}
+
+// ─── Legacy ULID (back-compat for move-next-event@1) ─────────────────
+// @1 events were keyed by a placeholder ULID (Crockford base32, 26 chars).
+// Retained so replay still validates pre-@2 events on the stream; new events
+// (@2) use ZetaIdHex. `isEventId` accepts either format.
 export type Ulid = string & { readonly __brand: "Ulid" };
 
 const ULID_RE = /^[0-9A-HJKMNP-TV-Z]{26}$/; // Crockford base32, 26 chars
@@ -42,8 +57,15 @@ export function isUlid(s: string): s is Ulid {
   return ULID_RE.test(s);
 }
 
+/** An event id is valid if it is a @2 ZetaIdHex OR a legacy @1 ULID. */
+export function isEventId(s: string): boolean {
+  return isZetaIdHex(s) || isUlid(s);
+}
+
 // ─── Schema identity (schema-in-the-stream) ──────────────────────────
-export const CURRENT_SCHEMA = "move-next-event@1" as const;
+// @2 = Zeta-ID-keyed events (was @1 = placeholder-ULID-keyed). The id format
+// changed (ULID → ZetaIdHex); replay still accepts legacy @1 ids via isEventId.
+export const CURRENT_SCHEMA = "move-next-event@2" as const;
 export type SchemaId = `${string}@${number}`;
 
 // ─── Z-set weight (forgiveness algebra) ──────────────────────────────
@@ -59,12 +81,12 @@ export type EventKind =
   | "retraction";
 
 interface EventBase {
-  readonly id: Ulid; // also the filename: events/<agent>/<id>.json
+  readonly id: ZetaIdHex; // also the filename: events/<agent>/<id>.json
   readonly schema: SchemaId; // which schema interprets this event
-  readonly ts: string; // ISO-8601; redundant with ULID time, explicit for readers
+  readonly ts: string; // ISO-8601; redundant with the ZetaId timestamp, explicit for readers
   readonly agent: AgentPersona;
   readonly cycle: number; // AgentContext.cycle
-  readonly prev: Ulid | null; // previous event in THIS agent's stream (causal link); null = first
+  readonly prev: ZetaIdHex | Ulid | null; // previous event in THIS agent's stream (causal link); null = first. Ulid permitted only for a legacy @1 predecessor.
   readonly weight: Weight;
   readonly agencySig?: Readonly<Record<string, unknown>>; // AgencySignature v1 trailer fields
 }
@@ -96,7 +118,7 @@ export interface SchemaDefEvent extends EventBase {
 export interface RetractionEvent extends EventBase {
   readonly kind: "retraction";
   readonly weight: -1;
-  readonly retracts: Ulid; // the event id being negated
+  readonly retracts: ZetaIdHex | Ulid; // the event id being negated (Ulid only if negating a legacy @1 event)
 }
 
 export type EventEnvelope =
@@ -114,9 +136,9 @@ export type ValidationResult =
 
 export function validateEnvelope(e: EventEnvelope): ValidationResult {
   const errors: string[] = [];
-  if (!isUlid(e.id)) errors.push(`id is not a valid ULID: ${String(e.id)}`);
-  if (e.prev !== null && !isUlid(e.prev)) {
-    errors.push(`prev is neither null nor a valid ULID: ${String(e.prev)}`);
+  if (!isEventId(e.id)) errors.push(`id is not a valid Zeta-ID (or legacy ULID): ${String(e.id)}`);
+  if (e.prev !== null && !isEventId(e.prev)) {
+    errors.push(`prev is neither null nor a valid Zeta-ID (or legacy ULID): ${String(e.prev)}`);
   }
   if (!/^.+@\d+$/.test(e.schema)) {
     errors.push(`schema is not "<name>@<version>": ${e.schema}`);
@@ -127,8 +149,8 @@ export function validateEnvelope(e: EventEnvelope): ValidationResult {
   }
   if (e.kind === "retraction") {
     if (e.weight !== -1) errors.push("retraction events must have weight -1");
-    if (!isUlid(e.retracts)) {
-      errors.push(`retraction.retracts is not a valid ULID: ${String(e.retracts)}`);
+    if (!isEventId(e.retracts)) {
+      errors.push(`retraction.retracts is not a valid Zeta-ID (or legacy ULID): ${String(e.retracts)}`);
     }
   }
   if (e.kind === "transition" && e.weight !== 1) {
@@ -138,24 +160,39 @@ export function validateEnvelope(e: EventEnvelope): ValidationResult {
 }
 
 // ─── The per-agent path for an event (conflict-free by construction) ──
-export function eventPath(agent: AgentPersona, id: Ulid): string {
+export function eventPath(agent: AgentPersona, id: ZetaIdHex): string {
   return `events/${agent}/${id}.json`;
 }
 
 // ─── Builders ────────────────────────────────────────────────────────
-// The harness supplies a real ULID generator + clock; these builders keep the
-// shape correct and the schema/weight invariants by construction.
+// The harness supplies the Zeta-ID generator (the codec-backed `newId`) + a
+// clock; these builders keep the shape correct and the schema/weight invariants
+// by construction. `newId` takes the SEMANTICS that go into the key's category /
+// persona / authority bits (the schema stays decoupled from the codec types;
+// the harness's realDeps.newId does the actual pack()).
+
+/** Event-key semantics — the provenance the harness packs into the ZetaId. */
+export interface IdSemantics {
+  readonly agent: AgentPersona; // → ZetaId persona bits
+  readonly category: "Observation" | "Emission" | "Workflow" | "Heartbeat"; // → ZetaId category bits
+  readonly authority?: "Simulated" | "BestEffort" | "Standard" | "TrustedAgent" | "HumanVerified"; // → ZetaId authority bits (default Simulated)
+}
 
 export interface BuildDeps {
-  readonly newUlid: () => Ulid;
+  readonly newId: (sem: IdSemantics) => ZetaIdHex;
   readonly nowIso: () => string;
+}
+
+/** Category for a transition: heartbeat options → Heartbeat, else Workflow. */
+function categoryForOption(option: MenuOption): IdSemantics["category"] {
+  return option.tag === "EmitHeartbeat" ? "Heartbeat" : "Workflow";
 }
 
 export function makeTransitionEvent(
   deps: BuildDeps,
   args: {
     readonly context: AgentContext;
-    readonly prev: Ulid | null;
+    readonly prev: ZetaIdHex | Ulid | null;
     readonly from: AgentState;
     readonly option: MenuOption;
     readonly to: AgentState;
@@ -164,7 +201,7 @@ export function makeTransitionEvent(
 ): TransitionEvent {
   return {
     kind: "transition",
-    id: deps.newUlid(),
+    id: deps.newId({ agent: args.context.agent, category: categoryForOption(args.option) }),
     schema: CURRENT_SCHEMA,
     ts: deps.nowIso(),
     agent: args.context.agent,
@@ -182,14 +219,14 @@ export function makeRetractionEvent(
   deps: BuildDeps,
   args: {
     readonly context: AgentContext;
-    readonly prev: Ulid | null;
-    readonly retracts: Ulid;
+    readonly prev: ZetaIdHex | Ulid | null;
+    readonly retracts: ZetaIdHex | Ulid;
     readonly agencySig?: Readonly<Record<string, unknown>>;
   },
 ): RetractionEvent {
   return {
     kind: "retraction",
-    id: deps.newUlid(),
+    id: deps.newId({ agent: args.context.agent, category: "Workflow" }),
     schema: CURRENT_SCHEMA,
     ts: deps.nowIso(),
     agent: args.context.agent,

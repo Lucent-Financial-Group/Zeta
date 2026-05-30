@@ -32,39 +32,84 @@ import {
 import {
   type BuildDeps,
   type EventEnvelope,
+  type IdSemantics,
   type TransitionEvent,
-  type Ulid,
+  type ZetaIdHex,
   eventPath,
   makeTransitionEvent,
   validateEnvelope,
 } from "./event-store-schema.ts";
+import {
+  DEFAULT_ENV,
+  type SimulationEnvironment,
+  pack,
+} from "../../src/Core.TypeScript/zeta-id/zeta-id.ts";
+import {
+  Category,
+  Chromosome,
+  Firefly,
+  IdVersion,
+  LocationHint,
+  Persona,
+} from "../../src/Core.TypeScript/zeta-id/types.ts";
+import type {
+  Authority,
+  Milliseconds,
+  ZetaObservation,
+} from "../../src/Core.TypeScript/zeta-id/types.ts";
 
 // ─── Hard safety bound (be-good-to-our-host) ─────────────────────────
 export const MAX_ITERATIONS = 25; // hard cap; --max-iterations clamps to this
 export const HALT_SENTINEL = "_HALT"; // events/_HALT stops the loop
 
-// ─── ULID generation (Crockford base32, 26 chars; matches schema ULID_RE) ──
-const CROCKFORD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"; // no I, L, O, U
+// ─── Zeta-ID generation (the canonical 128-bit merge primitive, B-0893) ──
+// Replaces the placeholder ULID with the cross-verified codec at
+// src/Core.TypeScript/zeta-id/. The event id IS a real ZetaId, hex-serialized
+// (32-char lowercase). version+timestamp live in the HIGH bits ⇒ hex order =
+// chronological; the key now carries persona / category / authority / location
+// (provenance in the key itself), not opaque timestamp+randomness.
 
-function encodeCrockford(n: number, len: number): string {
-  let out = "";
-  for (let i = 0; i < len; i++) {
-    out = CROCKFORD[n % 32] + out;
-    n = Math.floor(n / 32);
-  }
-  return out;
+/**
+ * Map an accelerator agent → a canonical ZetaId persona.
+ *
+ * The canonical Persona vocabulary (shared C#/F#/TS, golden-vector cross-verified)
+ * currently blesses only Aaron(1) + FireflyCoherence(2). The full agent roster
+ * (otto/alexa/riven/vera/lior/addison/max) is NOT yet in the canonical enum, so
+ * autonomous agents map to FireflyCoherence and the precise agent stays in the
+ * event `agent` field + directory partition. FOLLOW-UP (cross-impl, golden-vector
+ * touching): extend the canonical Persona enum with the agent roster to put the
+ * exact agent into the key bits.
+ */
+function agentToPersona(agent: AgentPersona): Persona {
+  return agent === "aaron" ? Persona.Aaron : Persona.FireflyCoherence;
 }
 
-/** Real ULID generator: 48-bit ms timestamp (10 chars) + 80-bit randomness (16 chars). */
-export function newUlid(now: number = Date.now()): Ulid {
-  const time = encodeCrockford(now, 10);
-  let rand = "";
-  for (let i = 0; i < 16; i++) rand += CROCKFORD[Math.floor(Math.random() * 32)];
-  return (time + rand) as Ulid;
+const CATEGORY_BY_NAME: Record<IdSemantics["category"], Category> = {
+  Observation: Category.Observation,
+  Emission: Category.Emission,
+  Workflow: Category.Workflow,
+  Heartbeat: Category.Heartbeat,
+};
+
+/** Pack a real ZetaId for an event and hex-serialize it (32-char lowercase). */
+export function packZetaIdHex(sem: IdSemantics, env: SimulationEnvironment = DEFAULT_ENV): ZetaIdHex {
+  const obs: ZetaObservation = {
+    version: IdVersion.V1,
+    timestamp: Date.now() as Milliseconds,
+    chromosome: Chromosome.MetaCoherence,
+    category: CATEGORY_BY_NAME[sem.category],
+    firefly: Firefly.NoDirective,
+    authority: { type: sem.authority ?? "Simulated" } as Authority,
+    persona: agentToPersona(sem.agent),
+    momentum: { type: "Normal" },
+    location: LocationHint.EastUS_VA1,
+  };
+  const id = pack(obs, env) as bigint;
+  return id.toString(16).padStart(32, "0") as ZetaIdHex;
 }
 
 export const realDeps: BuildDeps = {
-  newUlid: () => newUlid(),
+  newId: (sem) => packZetaIdHex(sem, DEFAULT_ENV),
   nowIso: () => new Date().toISOString(),
 };
 
@@ -72,11 +117,10 @@ export const realDeps: BuildDeps = {
 // Surfaces the KEYS the agent uses each cycle so a run is auditable from the
 // Action log alone (PR-less ⇒ review-by-observation, per the charter):
 //   - agent      : the PARTITION key  → events/<agent>/      (single-writer)
-//   - key        : the per-event ULID → events/<agent>/<key>.json (= id = filename)
-//   - keyFormat  : "ulid" today (timestamp+randomness). The canonical merge
-//                  primitive is the 128-bit Zeta-ID (B-0893: +category-trie-bits);
-//                  this field makes the placeholder-vs-Zeta-ID gap visible in logs.
-//   - prev       : the causal-link key (previous ULID in THIS agent's stream).
+//   - key        : the per-event ZetaId hex → events/<agent>/<key>.json (= id)
+//   - keyFormat  : "zeta-id" (@2, canonical B-0893) or "ulid" (legacy @1). The
+//                  ZetaId carries persona/category/authority/location in the key.
+//   - prev       : the causal-link key (previous event id in THIS agent's stream).
 // Logs go to STDERR so STDOUT stays the clean, parseable cycle summary.
 export type Logger = (entry: Record<string, unknown>) => void;
 
@@ -88,24 +132,33 @@ export const stderrLog: Logger = (entry) => {
   process.stderr.write(JSON.stringify({ t: new Date().toISOString(), ...entry }) + "\n");
 };
 
-/** Classify the event-key format so the Zeta-ID gap (B-0893) is observable. */
-export function keyFormat(id: string): "ulid" | "zeta-id" | "unknown" {
-  // A plain ULID is 26 Crockford chars (timestamp+randomness, no trie-bits).
-  // A Zeta-ID (when it lands) will carry category-trie-bits and be tagged here.
-  if (/^[0-9A-HJKMNP-TV-Z]{26}$/.test(id)) return "ulid";
+/** Classify the event-key format (observability for the @1→@2 migration). */
+export function keyFormat(id: string): "zeta-id" | "ulid" | "unknown" {
+  if (/^[0-9a-f]{32}$/.test(id)) return "zeta-id"; // @2: 128-bit ZetaId hex
+  if (/^[0-9A-HJKMNP-TV-Z]{26}$/.test(id)) return "ulid"; // @1 legacy (Crockford)
   return "unknown";
 }
 
 // ─── Store I/O (append-only) ─────────────────────────────────────────
 
-/** Read an agent's event stream, sorted (ULID lexical = chronological). */
+/**
+ * Read an agent's event stream, sorted chronologically by event `ts`.
+ * (Sort-by-`ts` is robust across the @2 ZetaIdHex + legacy @1 ULID id formats —
+ * filename-lexical sort only sorted correctly within a single id format. Tie-break
+ * by id for deterministic ordering of same-millisecond events.)
+ */
 export function loadStream(root: string, agent: AgentPersona): EventEnvelope[] {
   const dir = join(root, "events", agent);
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
     .filter((f) => f.endsWith(".json"))
-    .sort() // ULID filenames sort chronologically
-    .map((f) => JSON.parse(readFileSync(join(dir, f), "utf8")) as EventEnvelope);
+    .map((f) => JSON.parse(readFileSync(join(dir, f), "utf8")) as EventEnvelope)
+    .sort((a, b) => {
+      const ta = Date.parse(a.ts);
+      const tb = Date.parse(b.ts);
+      if (ta !== tb) return ta - tb;
+      return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+    });
 }
 
 /** Kill-switch: is the halt sentinel present? */
@@ -189,7 +242,7 @@ export function runCycle(args: {
   const log = args.log ?? noopLog;
   const select = args.select ?? firstOption;
   const stream = loadStream(args.root, args.ctx.agent);
-  const prev = stream.length > 0 ? (stream[stream.length - 1]!.id as Ulid) : null;
+  const prev = stream.length > 0 ? stream[stream.length - 1]!.id : null;
   const from = replayState(stream, args.ctx);
   const menu = generateMenu(from);
   const option = select(from, menu);

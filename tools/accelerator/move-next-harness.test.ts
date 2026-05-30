@@ -8,19 +8,21 @@ import { mkdtempSync, rmSync, mkdirSync, writeFileSync, readdirSync, existsSync 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { AgentContext } from "../agent-loop/state-machine.ts";
-import type { BuildDeps, Ulid } from "./event-store-schema.ts";
-import { isUlid } from "./event-store-schema.ts";
+import type { BuildDeps, ZetaIdHex } from "./event-store-schema.ts";
+import { isZetaIdHex } from "./event-store-schema.ts";
 import {
   HALT_SENTINEL,
   MAX_ITERATIONS,
   generateMenu,
   isHalted,
   loadStream,
-  newUlid,
+  packZetaIdHex,
   replayState,
   runCycle,
   runLoop,
 } from "./move-next-harness.ts";
+import { unpack } from "../../src/Core.TypeScript/zeta-id/zeta-id.ts";
+import { Category, Persona, type ZetaId } from "../../src/Core.TypeScript/zeta-id/types.ts";
 
 let root: string;
 beforeEach(() => {
@@ -30,24 +32,37 @@ afterEach(() => {
   rmSync(root, { recursive: true, force: true });
 });
 
-// Deterministic deps: monotonic ULIDs (still valid Crockford) + fixed clock.
+// Deterministic deps: monotonic hex ids (zero-padded so lexical = numeric) +
+// fixed clock. loadStream sorts by ts (all equal here) then tie-breaks by id, so
+// monotonic ids preserve cycle order.
 function makeDeps(): BuildDeps {
   let n = 0;
   return {
-    newUlid: () => `01J8XQ7M0Z000000000000${String(n++).padStart(4, "0")}` as Ulid,
+    newId: (_sem) => (n++).toString(16).padStart(32, "0") as ZetaIdHex,
     nowIso: () => "2026-05-30T00:00:00.000Z",
   };
 }
 
 const ctx: AgentContext = { agent: "otto", cycle: 0, sessionStartIso: "2026-05-30T00:00:00.000Z" };
 
-describe("newUlid", () => {
-  test("produces valid 26-char Crockford ULIDs that sort chronologically", () => {
-    const a = newUlid(1000);
-    const b = newUlid(2000);
-    expect(isUlid(a)).toBe(true);
-    expect(isUlid(b)).toBe(true);
-    expect(a < b).toBe(true); // later timestamp sorts after
+describe("packZetaIdHex (the canonical zeta-id event key)", () => {
+  test("produces a 32-char hex ZetaId encoding category + persona in the key", () => {
+    const id = packZetaIdHex({ agent: "otto", category: "Heartbeat" });
+    expect(isZetaIdHex(id)).toBe(true);
+    // Round-trip through the canonical codec: the semantics are IN the key bits.
+    const obs = unpack(BigInt("0x" + id) as ZetaId);
+    expect(obs.category).toBe(Category.Heartbeat);
+    expect(obs.persona).toBe(Persona.FireflyCoherence); // otto → autonomous-agent persona
+  });
+  test("aaron maps to the canonical Aaron persona", () => {
+    const obs = unpack(BigInt("0x" + packZetaIdHex({ agent: "aaron", category: "Workflow" })) as ZetaId);
+    expect(obs.persona).toBe(Persona.Aaron);
+    expect(obs.category).toBe(Category.Workflow);
+  });
+  test("two ids differ (randomness bits)", () => {
+    expect(packZetaIdHex({ agent: "otto", category: "Workflow" })).not.toBe(
+      packZetaIdHex({ agent: "otto", category: "Workflow" }),
+    );
   });
 });
 
