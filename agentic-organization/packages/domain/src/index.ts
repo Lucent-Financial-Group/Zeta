@@ -112,3 +112,12 @@ export {
   isScheduleBlockType,
   isWorkItemStateChangedPayload,
 } from "./records.ts";
+export { DepartmentId, type Department } from "./department.ts";
+export {
+  HatLevel,
+  ReputationScope,
+  RiskLevel,
+  SuccessionPolicy,
+  ToolBundle,
+  type HatDefinition,
+} from "./hat-definition.ts";

@@ -206,3 +206,12 @@ export {
   type RunTrace,
   type ZetaIdDecimal,
 } from "./observe.ts";
+export {
+  DEPARTMENTS,
+  OrgGraphValidation,
+  buildHatDefinitions,
+  buildOrgSeed,
+  validateOrgGraph,
+  type OrgGraphValidationResult,
+  type OrgSeed,
+} from "./org-seed.ts";
