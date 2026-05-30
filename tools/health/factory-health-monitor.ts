@@ -211,9 +211,12 @@ export function classifyLaneRunway(snapshot: LaneRunwaySnapshot): HealthSignal[]
 }
 
 function countLaneActiveItems(snapshot: LaneRunwaySnapshot, lane: LaneRunwayNamedLane): number {
-  const openPrs = snapshot.openPrBranches.filter((branch) => classifyBranchLane(branch) === lane).length;
-  const claims = snapshot.activeClaimBranches.filter((branch) => classifyBranchLane(branch) === lane).length;
-  return openPrs + claims;
+  const activeBranches = new Set(
+    [...snapshot.openPrBranches, ...snapshot.activeClaimBranches]
+      .map((branch) => branch.trim().replace(/^origin\//, ""))
+      .filter((branch) => classifyBranchLane(branch) === lane),
+  );
+  return activeBranches.size;
 }
 
 export function classifyParallelRunway(snapshot: LaneRunwaySnapshot, options: ParallelRunwayOptions): HealthSignal[] {

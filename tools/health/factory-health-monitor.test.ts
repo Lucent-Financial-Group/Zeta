@@ -265,7 +265,7 @@ describe("factory-health-monitor", () => {
       classifyParallelRunway(
         {
           openPrBranches: ["claim/codex-doc-packet"],
-          activeClaimBranches: [],
+          activeClaimBranches: ["origin/claim/codex-doc-packet"],
         },
         { lane: "codex", minimumActiveItems: 1, targetActiveItems: 2 },
       ),
