@@ -906,3 +906,88 @@ tsc 0, 554 tests (12 new across the phase).
 - Real tool execution: bounded, isolated, env-stripped sandboxed subprocess.
 - The entire organizational structure: command pipeline producing durable,
   auditable org artifacts (discussion anchors anchored to work items).
+
+## Update 2026-05-30 — the full hat + department organization runs end-to-end in kubernetes (PROVEN IN-CLUSTER)
+
+The entire organizational structure/system — every hat, every department, the
+binding lifecycle, RMO hat-supply voting, director/TPM prioritization,
+assignment, and the customer-discovery→release pipeline — is now built and
+proven end-to-end in the kind cluster. One `runOrgCycle` ties every layer
+together and writes a durable, attributed trace that proves the *whole
+hierarchy* is working, from Executive Board down to individual contributors.
+
+### Built (P0–P7, all committed)
+
+- **Org as data** (`org-seed.ts`): 16 departments + ~115 hats derived into full
+  `HatDefinition`s — supervises = reverse(reportsTo), conflicts symmetrized
+  (A↔B), short TTL/warmup/cooldown per tier so the lifecycle is *observable* in
+  seconds. `validateOrgGraph()` proves the reportsTo graph is acyclic + every
+  parent resolves (DFS).
+- **Binding lifecycle DU** (`hat-binding.ts` + `hat-lifecycle.ts`):
+  Pending→Warmup→Active→Probation→Expired/Released/Succeeded/Revoked. `advance`
+  is deterministic from `boundAt + warmup/TTL` vs the clock; terminal phases
+  no-op; expiry stamps cooldown; succession is planned for the vacated hat.
+- **The determinism⇄autonomy split at org scope** (`org-decision.ts`):
+  determinism computes the LEGAL set; an agent chooser picks WITHIN it; the pick
+  is clamped (`max(0, min(len-1, trunc(index)))`) so a chooser — deterministic
+  *or* model-backed — can never escape the rules. Empty legal set and NaN/
+  overflow indices both resolve safely.
+- **Prioritization** (`prioritization.ts`): a priority recommendation is scored
+  from weighted inputs, but the *class an authority may choose* is clamped by
+  level (an IC can't decide, a TPM can't expedite/pause, a Director can).
+- **RMO** (`rmo.ts`): required hat supply is computed from priority-weighted
+  workload; supervisors vote; a majority-quorum tally yields a HatSupplyDecision
+  (expand/release/hold) with the median target.
+- **Assignment** (`assignment-engine.ts`): eligible agents ranked by per-hat
+  reputation, filtered by already-wearing / cooldown / conflict / supply cap;
+  supply exhaustion routes back to RMO rather than over-staffing.
+- **Pipeline** (`pipeline.ts`): the 7 gates customer_rfp_review → brd_approval →
+  architecture_approval → implementation_review → runtime_validation →
+  final_business_validation → release_readiness → **merged**, each owned by a
+  specific hat. `nextLegalGate` makes a gate legal *iff* all priors passed — no
+  gate can be skipped.
+- **Observability** (`org-snapshot.ts`): a pure fold over hats + bindings +
+  OrgEvents → hierarchy activity by acting-hat level, department rollup, active
+  bindings with time-to-expiry, per-work-item pipeline stage, latest priority/
+  supply. The fold is order-independent (latest-state-per-subject by
+  max(occurredAt)) so it's correct whether the store returns rows ASC or DESC.
+- **Durable state** (`cockroach-org-event-store.ts` + `cockroach-hat-binding-
+  store.ts` + migration `OrgSystemV15`): one `agentic_org_org_events` row per
+  *every* transition (actorHatId, departmentId, supervisorChain, decision,
+  evidence, correlation/causation/trace as JSONB) + `agentic_org_hat_bindings`.
+
+### In-cluster proof (agentic-org namespace CockroachDB)
+
+`deploy/run-org-cycle.ts` ran one cycle against in-cluster Cockroach; the
+persisted trace was then read back and folded by `deploy/observe-org.ts`:
+
+- **71 org_events** persisted, attributed across the WHOLE hierarchy:
+  executive_board=1, c_suite=3, director=1, manager=16, lead=5,
+  individual_contributor=28.
+- The work item reached **merged** through all **7 gates** (Product Owner →
+  BRD Reviewer → Architect → Code Reviewer → QA Verifier → Product Owner →
+  Release Manager), each emitting a quality_gate_evaluation + a
+  pipeline_stage_transition.
+- The hat lifecycle was observed real: team_lead binding warmup → active →
+  **expired** (cooldown 30s) → **succession_planned** (director_assigned, 2
+  candidates).
+- RMO supply voting recorded (3/3 approved, quorum met) and assignments bound
+  the owner hats.
+
+Every transition is crystal-clear in the persisted store: the `observe-org.ts`
+LATEST DECISIONS view replays the exact chronological progression
+(architecture_approval → implementation_review → runtime_validation →
+final_business_validation → release_readiness → merged, then the lifecycle).
+
+### Verification
+
+tsc 0; **614 tests, 0 fail** (org-runtime drives a customer goal to Merged and
+exercises every hierarchy level; the snapshot fold has a DESC-order regression
+test; the Cockroach stores round-trip JSONB and exclude terminal phases from
+list-active). Independent review checkpoint: the clamp cannot be escaped,
+terminal bindings cannot advance, no gate can be skipped, and the store SQL is
+fully parameterized with explicit JSONB casts.
+
+### Status: the organizational structure is implemented, hooked up, tested in
+kind, and observed end-to-end — executive board → C-suite → directors →
+management → individual contributors — with full observability + traceability.
