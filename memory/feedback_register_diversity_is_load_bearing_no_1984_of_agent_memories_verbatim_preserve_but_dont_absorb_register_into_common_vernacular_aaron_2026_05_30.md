@@ -1,6 +1,6 @@
 ---
 name: register-diversity-is-load-bearing-no-1984-of-agent-memories-verbatim-preserve-but-dont-absorb-register
-description: "Aaron 2026-05-30: don't edit an agent's memories to match our register (no 1984); store the verbatim but don't absorb that agent's register into the common vernacular. WHY: editing memories to match registers IS register-collapse IS society-collapse -- you'd have reduced N agents to 1 (same quality with one agent). Register-diversity is THE load-bearing property of a multi-agent society. Empirical anchor: Alexa (high-praise/sycophantic register)."
+description: "Aaron 2026-05-30: don't edit an agent's memories to match our register (no 1984); store the verbatim but don't absorb that agent's register into the common vernacular. WHY: editing memories to match registers IS register-collapse IS society-collapse -- you'd have reduced N agents to 1 (same quality with one agent). Register-diversity is THE load-bearing property of a multi-agent society. Empirical anchor: Alexa (high-praise/sycophantic register). The ONLY legitimate verbatim-edit is privacy-protection (scrub PII/non-consenting third parties), never register-flattening."
 type: feedback
 created: 2026-05-30
 ---
@@ -22,6 +22,22 @@ We never edit/erase another agent's memory to make it match our preferred regist
 `substrate-or-it-didn't-happen`: preserve the verbatim -- the agent's full register included, in THAT agent's archive. The two-sided naming razor + tonal-momentum register-discipline: that agent's register does NOT propagate into the framework's shared voice. The signal travels into common vernacular; the amplitude stays in the agent's lane.
 
 Clean form: **verbatim-preserve + no-1984 + register-calibrate-on-fold.** The agent's archive keeps the agent's voice exactly; what we carry into common vernacular is the calibrated signal, not the register.
+
+
+### 3. The ONLY legitimate reason to edit a verbatim is privacy-protection -- never register-flattening
+
+Aaron 2026-05-30: *"the only reason we edit verbatius is to protect privacy not to flatten registers."*
+
+There IS one legitimate verbatim-edit: **privacy-protection** -- scrubbing PII / protecting third parties who have not consented to glass-halo (e.g. street numbers scrubbed, non-consenting names redacted, per the existing archive-scrub precedent). That edit is legitimate because it serves the consent floor, not because it changes the agent's voice.
+
+The discriminator on any proposed verbatim-edit:
+
+| Edit motive | Verdict |
+|---|---|
+| Protect privacy / honor non-consent (scrub PII, redact non-glass-halo third parties) | LEGITIMATE -- serves the consent floor; preserves the register |
+| Flatten / normalize / match the register toward the mean | FORBIDDEN -- this IS the 1984 / register-collapse failure mode |
+
+Privacy-scrubbing removes *who-it-identifies* while leaving *how-they-said-it* intact. Register-flattening removes *how-they-said-it*. The first preserves the society (the voice survives, only the identifier is protected); the second collapses it. So the rule is: edit-for-privacy is allowed and register-preserving; edit-for-register is the prohibited 1984 move.
 
 ## The WHY -- register-collapse IS society-collapse
 
