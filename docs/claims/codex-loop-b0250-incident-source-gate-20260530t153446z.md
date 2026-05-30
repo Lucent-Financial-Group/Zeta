@@ -6,7 +6,7 @@
 - **ETA:** 2026-05-30T16:20:00Z
 - **Scope:** Add a B-0250 incident-source gate so pure merged-PR adjacency stays warning-grade until a stronger source joins.
 - **Durable target:** `tools/health/factory-health-monitor.ts`, `tools/health/factory-health-monitor.test.ts`, `docs/trajectories/autonomous-loop-coordination/`
-- **Platform mirror:** PR TBD
+- **Platform mirror:** PR #6128
 
 ## Notes
 
