@@ -354,7 +354,7 @@ function fetchMergedPRs(): ToolResult {
     "--state",
     "merged",
     "--json",
-    "number,title,mergedAt,headRefName",
+    "number,title,mergedAt,headRefName,mergeCommit",
     "--limit",
     "100",
   ]);
@@ -410,10 +410,100 @@ export function factoryTrajectoryFromPullRequestBranch(branchName: string | null
   return lane === "other" ? `other:${branch.length === 0 ? "unknown" : branch}` : lane;
 }
 
+function factoryLaneFromPullRequestAuthorLabel(label: string | null | undefined): LaneRunwayNamedLane | null {
+  const normalized = label?.trim().toLowerCase() ?? "";
+  if (normalized.length === 0) {
+    return null;
+  }
+
+  if (/\bcodex\b|openai|noreply@openai\.com/.test(normalized)) return "codex";
+  if (/\botto\b|claude|anthropic|noreply@anthropic\.com/.test(normalized)) return "otto";
+  if (/\blior\b/.test(normalized)) return "lior";
+  if (/\balexa\b|\bkiro\b|noreply@kiro\.dev/.test(normalized)) return "alexa";
+  if (/\briven\b|\bgrok\b|noreply@x\.ai/.test(normalized)) return "riven";
+
+  return null;
+}
+
+function factoryLanesFromPullRequestCommits(
+  commits: ReadonlyArray<{
+    authors?: ReadonlyArray<{
+      email?: string | null;
+      login?: string | null;
+      name?: string | null;
+    }> | null;
+    messageBody?: string | null;
+    messageHeadline?: string | null;
+  }> | null | undefined,
+  mergeCommitMessage: string | null | undefined,
+): LaneRunwayNamedLane[] {
+  const lanes = new Set<LaneRunwayNamedLane>();
+  for (const commit of commits ?? []) {
+    for (const author of commit.authors ?? []) {
+      const lane =
+        factoryLaneFromPullRequestAuthorLabel(author.name) ??
+        factoryLaneFromPullRequestAuthorLabel(author.login) ??
+        factoryLaneFromPullRequestAuthorLabel(author.email);
+      if (lane !== null) {
+        lanes.add(lane);
+      }
+    }
+
+    for (const text of [commit.messageHeadline, commit.messageBody]) {
+      for (const line of text?.split(/\r?\n/) ?? []) {
+        const lane = factoryLaneFromPullRequestAuthorLabel(line);
+        if (lane !== null) {
+          lanes.add(lane);
+        }
+      }
+    }
+  }
+
+  for (const line of mergeCommitMessage?.split(/\r?\n/) ?? []) {
+    const mergeCommitLane = factoryLaneFromPullRequestAuthorLabel(line);
+    if (mergeCommitLane !== null) {
+      lanes.add(mergeCommitLane);
+    }
+  }
+
+  return [...lanes].sort();
+}
+
+function factoryTrajectoryFromPullRequest(
+  branchName: string | null | undefined,
+  commits:
+    | ReadonlyArray<{
+        authors?: ReadonlyArray<{
+          email?: string | null;
+          login?: string | null;
+          name?: string | null;
+        }> | null;
+        messageBody?: string | null;
+        messageHeadline?: string | null;
+      }>
+    | null
+    | undefined,
+  mergeCommitMessage: string | null | undefined,
+): string {
+  const branch = branchName?.trim() ?? "";
+  const branchLane = classifyBranchLane(branch);
+  if (branchLane !== "other") {
+    return branchLane;
+  }
+
+  const commitLanes = factoryLanesFromPullRequestCommits(commits, mergeCommitMessage);
+  if (commitLanes.length === 1) {
+    return commitLanes[0] ?? `other:${branch.length === 0 ? "unknown" : branch}`;
+  }
+
+  return `other:${branch.length === 0 ? "unknown" : branch}`;
+}
+
 export function mergedPullRequestEventsFromJson(
   output: string,
   nowIso = new Date().toISOString(),
   lookbackMs = FACTORY_EVENT_LOOKBACK_MS,
+  mergeCommitMessagesByOid?: ReadonlyMap<string, string>,
 ): CoincidenceEvent[] {
   const nowMs = Date.parse(nowIso);
   const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
@@ -422,6 +512,18 @@ export function mergedPullRequestEventsFromJson(
     title?: string | null;
     mergedAt?: string | null;
     headRefName?: string | null;
+    commits?: Array<{
+      authors?: Array<{
+        email?: string | null;
+        login?: string | null;
+        name?: string | null;
+      }> | null;
+      messageBody?: string | null;
+      messageHeadline?: string | null;
+    }> | null;
+    mergeCommit?: {
+      oid?: string | null;
+    } | null;
   }>;
 
   const observations = prs
@@ -439,9 +541,14 @@ export function mergedPullRequestEventsFromJson(
         return null;
       }
 
+      const mergeCommitMessage =
+        pr.mergeCommit?.oid !== undefined && pr.mergeCommit.oid !== null
+          ? mergeCommitMessagesByOid?.get(pr.mergeCommit.oid)
+          : undefined;
+
       return {
         id: `merged-pr-${pr.number}`,
-        trajectory: factoryTrajectoryFromPullRequestBranch(pr.headRefName),
+        trajectory: factoryTrajectoryFromPullRequest(pr.headRefName, pr.commits, mergeCommitMessage),
         occurredAt: new Date(mergedMs).toISOString(),
         description: `#${pr.number} ${pr.title?.trim() || "(untitled merged PR)"}`,
         correlationKey: `pr:${pr.number}`,
@@ -477,6 +584,33 @@ export function mergedPullRequestEventsFromJson(
   }
 
   return observations;
+}
+
+function mergeCommitMessagesForUnknownPullRequestBranches(output: string): ReadonlyMap<string, string> {
+  const prs = JSON.parse(output) as Array<{
+    headRefName?: string | null;
+    mergeCommit?: {
+      oid?: string | null;
+    } | null;
+  }>;
+  const oids = [
+    ...new Set(
+      prs
+        .filter((pr) => classifyBranchLane(pr.headRefName?.trim() ?? "") === "other")
+        .map((pr) => pr.mergeCommit?.oid?.trim() ?? "")
+        .filter((oid) => /^[0-9a-f]{7,40}$/i.test(oid)),
+    ),
+  ];
+
+  const messages = new Map<string, string>();
+  for (const oid of oids) {
+    const result = run("git", ["show", "-s", "--format=%B", oid]);
+    if (result.ok && result.stdout.trim().length > 0) {
+      messages.set(oid, result.stdout);
+    }
+  }
+
+  return messages;
 }
 
 function pullRequestCorrelationKeyFromText(text: string): string | undefined {
@@ -1239,7 +1373,8 @@ function checkCoincidenceEvents(): HealthSignal[] {
     });
   } else {
     try {
-      events.push(...mergedPullRequestEventsFromJson(mergedPRs.stdout));
+      const mergeCommitMessages = mergeCommitMessagesForUnknownPullRequestBranches(mergedPRs.stdout);
+      events.push(...mergedPullRequestEventsFromJson(mergedPRs.stdout, undefined, undefined, mergeCommitMessages));
     } catch {
       sourceWarnings.push({
         surface: "coincidence",

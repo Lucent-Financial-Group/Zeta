@@ -355,6 +355,75 @@ describe("factory-health-monitor", () => {
     ]);
   });
 
+  test("mergedPullRequestEventsFromJson falls back to commit author labels for unowned PR branches", () => {
+    expect(
+      mergedPullRequestEventsFromJson(
+        JSON.stringify([
+          {
+            number: 15,
+            title: "Unknown branch with Otto attribution",
+            mergedAt: "2026-05-30T05:00:00Z",
+            headRefName: "backlog/b-0347-carve-skills",
+            mergeCommit: { oid: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+          },
+          {
+            number: 16,
+            title: "Known branch keeps branch lane",
+            mergedAt: "2026-05-30T05:10:00Z",
+            headRefName: "claim/codex-source",
+            commits: [
+              {
+                authors: [{ name: "Lior", login: "", email: "lior@zeta.dev" }],
+                messageBody: "Co-Authored-By: Codex <noreply@openai.com>",
+              },
+            ],
+          },
+          {
+            number: 17,
+            title: "Ambiguous unknown branch stays other",
+            mergedAt: "2026-05-30T05:20:00Z",
+            headRefName: "research/mixed-source",
+            mergeCommit: { oid: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+          },
+        ]),
+        "2026-05-30T06:00:00Z",
+        2 * 60 * 60 * 1000,
+        new Map([
+          [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "docs(B-0347): carve skill descriptions\n\nCo-authored-by: Otto-CLI (Claude) <noreply@anthropic.com>",
+          ],
+          [
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "research: mixed source\n\nCo-authored-by: Lior <lior@zeta.dev>\nCo-authored-by: Claude <noreply@anthropic.com>",
+          ],
+        ]),
+      ),
+    ).toEqual([
+      {
+        id: "merged-pr-15",
+        trajectory: "otto",
+        occurredAt: "2026-05-30T05:00:00.000Z",
+        description: "#15 Unknown branch with Otto attribution",
+        correlationKey: "pr:15",
+      },
+      {
+        id: "merged-pr-16",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:10:00.000Z",
+        description: "#16 Known branch keeps branch lane",
+        correlationKey: "pr:16",
+      },
+      {
+        id: "merged-pr-17",
+        trajectory: "other:research/mixed-source",
+        occurredAt: "2026-05-30T05:20:00.000Z",
+        description: "#17 Ambiguous unknown branch stays other",
+        correlationKey: "pr:17",
+      },
+    ]);
+  });
+
   test("mergedPullRequestEventsFromJson marks tightly clustered merged PRs as one burst", () => {
     expect(
       mergedPullRequestEventsFromJson(
