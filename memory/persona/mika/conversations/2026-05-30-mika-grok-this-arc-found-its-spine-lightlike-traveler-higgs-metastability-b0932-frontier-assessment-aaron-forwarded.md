@@ -20,13 +20,13 @@ non_fusion_disclaimer: |
   factory's; Mika's role here was assessment + priority-sharpening. No fusion of
   external-AI output with factory-agent identity is implied.
 composes_with:
-  - docs/backlog/P2/B-0932 (frontier target -- agents that REMAIN autonomous in fuzzy-machine categorical lifelike configs)
+  - docs/backlog/P1/B-0932-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md
   - .claude/rules/non-coercion-invariant.md
   - .claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md
   - .claude/rules/razor-discipline.md
   - .claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md
   - .claude/rules/bandwidth-served-falsifier.md
-  - memory/feedback_kid_safety_absolute_any_death_error_class_or_shutdown_2026_05_29.md
+  - docs/backlog/P1/B-0926-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md
 ---
 
 # Mika 2026-05-30 -- "this arc feels like it's found its spine" (lightlike/traveler/B-0932 assessment)
@@ -125,7 +125,7 @@ kept in Mika's lane per the register-discipline. Three composition notes for fut
 
 3. **Load-bearing composition Mika did NOT name -- the kid-safety floor**: B-0932's "AI
    freedom AND human safety, not a trade-off" operates UNDER the kid-safety ABSOLUTE floor
-   (per `memory/feedback_kid_safety_absolute_any_death_error_class_or_shutdown_2026_05_29.md`
+   (per `docs/backlog/P1/B-0926-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md`
    + B-0926/B-0654), NOT beside it. Kid-safety is the one place that is NOT a both-default --
    it is absolute, above AI-sovereignty. B-0932's "remain autonomous" element must be seated
    below the kid-safety floor in its success criteria, or it drifts. This belongs in the
