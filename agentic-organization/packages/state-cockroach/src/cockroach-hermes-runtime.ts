@@ -7,6 +7,8 @@
  * Persists across restarts so the org keeps a history of who ran on what.
  */
 
+import { randomUUID } from "node:crypto";
+
 import {
   HermesRunState,
   HermesRuntimeFeedbackReason,
@@ -49,8 +51,9 @@ type HermesRunRow = {
 };
 
 export function createCockroachHermesRuntime(deps: CockroachHermesRuntimeDeps): HermesRuntime {
-  let counter = 0;
-  const nextRunId = deps.idGenerator?.nextRunId ?? (() => `hermes-run-${(counter += 1)}`);
+  // default to globally-unique ids (NOT a per-instance counter): a fresh runtime
+  // is created per execution, so a counter would collide on retry / across runs
+  const nextRunId = deps.idGenerator?.nextRunId ?? (() => `hermes-run-${randomUUID()}`);
   const now = deps.clock?.now ?? (() => Date.now());
 
   async function readRun(runId: string): Promise<HermesRun | undefined> {
@@ -122,7 +125,7 @@ export function createCockroachHermesRuntime(deps: CockroachHermesRuntimeDeps): 
         name: CockroachHermesRuntimeStatement.CompleteRun,
         sql: `
           UPDATE agentic_org_hermes_run
-          SET state = $2, outcome_summary = $3, outcome_evidence_refs = $4, last_heartbeat_at = now()
+          SET state = $2, outcome_summary = $3, outcome_evidence_refs = $4::JSONB, last_heartbeat_at = now()
           WHERE run_id = $1 AND state = $5
         `,
         parameters: [

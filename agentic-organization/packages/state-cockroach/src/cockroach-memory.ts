@@ -7,6 +7,8 @@
  * worker restarts.
  */
 
+import { randomUUID } from "node:crypto";
+
 import {
   MemoryOperation,
   type Memory,
@@ -43,8 +45,9 @@ type MemoryRow = {
 };
 
 export function createCockroachMemory(deps: CockroachMemoryDeps): Memory {
-  let counter = 0;
-  const nextMemoryId = deps.idGenerator?.nextMemoryId ?? (() => `mem-${(counter += 1)}`);
+  // default to globally-unique ids (NOT a per-instance counter): a fresh memory
+  // adapter is created per execution, so a counter would collide across runs
+  const nextMemoryId = deps.idGenerator?.nextMemoryId ?? (() => `mem-${randomUUID()}`);
   const now = deps.clock?.now ?? (() => Date.now());
 
   return {
