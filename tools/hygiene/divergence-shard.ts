@@ -394,3 +394,106 @@ export function fileReviewThreadDisagreement(repoRoot: string, input: ReviewThre
     divergenceInput: detection.divergenceInput,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Read half of the protocol (AC #4): classify a filed shard's Reconciliation
+// section. The schema README's morning-reconciliation workflow ("reads all
+// shards with empty Reconciliation sections") needs a primitive that tells an
+// empty (awaiting) section from a filled (decided) one. This is the pure
+// counterpart to buildDivergenceShard: it consumes exactly the placeholder
+// that builder writes. Stays below the blocked end-to-end boundary -- parsing
+// an already-filed shard needs no GitHub call and no concurrent-loop harness.
+// ---------------------------------------------------------------------------
+
+/**
+ * The four canonical reconciliation decisions per the schema README
+ * ("Reconciliation outcomes"). Order is the README's listing order; matching
+ * is by earliest occurrence in the section, not by this order.
+ */
+export const RECONCILIATION_DECISIONS = ["accept-loop-a", "accept-loop-b", "accept-both", "escalate"] as const;
+
+export type ReconciliationDecision = (typeof RECONCILIATION_DECISIONS)[number];
+
+/**
+ * Status of a divergence shard's Reconciliation section.
+ *   - unreconciled: the section holds only the maintainer-fills-in placeholder
+ *     (the two HTML comments buildDivergenceShard writes) and/or whitespace;
+ *     this shard awaits morning reconciliation.
+ *   - reconciled: the section is filled and carries a recognized decision
+ *     keyword; `note` is the maintainer's trimmed, case-preserving prose.
+ *   - reconciled-freeform: the section is filled but carries no recognized
+ *     keyword. Distinct from `reconciled` because the morning tooling should
+ *     flag it for the maintainer to canonicalize rather than treat it as a
+ *     clean decision (IMPLICIT-NOT-EXPLICIT: a substantively-distinct state
+ *     earns its own variant).
+ */
+export type ReconciliationStatus =
+  | { readonly kind: "unreconciled" }
+  | { readonly kind: "reconciled"; readonly decision: ReconciliationDecision; readonly note: string }
+  | { readonly kind: "reconciled-freeform"; readonly note: string };
+
+const RECONCILIATION_HEADER = "## Reconciliation";
+
+/**
+ * Extract the Reconciliation section body: everything after the
+ * "## Reconciliation" header up to the next "## " heading or end-of-file. In
+ * the canonical shape Reconciliation is the last section, so EOF terminates
+ * it; the next-heading terminator is defensive for shards that append further
+ * sections. Throws on a shard missing the header (malformed per schema --
+ * eager rejection over silent acceptance, matching detectReviewThreadDisagreement).
+ */
+function extractReconciliationSection(markdown: string): string {
+  const headerIdx = markdown.indexOf(RECONCILIATION_HEADER);
+  if (headerIdx < 0) {
+    throw new Error(`malformed divergence shard: missing "${RECONCILIATION_HEADER}" section`);
+  }
+  const afterHeader = markdown.slice(headerIdx + RECONCILIATION_HEADER.length);
+  const nextHeading = afterHeader.search(/\n## /);
+  return nextHeading >= 0 ? afterHeader.slice(0, nextHeading) : afterHeader;
+}
+
+/** Remove HTML comments. Load-bearing: the unreconciled placeholder itself
+ *  lists the four decision keywords inside `<!-- ... -->`, so comments MUST be
+ *  stripped before the empty-check and before the keyword scan -- otherwise an
+ *  untouched placeholder would read as a filled "accept-loop-a..." decision. */
+function stripHtmlComments(text: string): string {
+  return text.replace(/<!--[\s\S]*?-->/g, "");
+}
+
+/** Earliest-occurring recognized decision keyword in `text` (already lowercased
+ *  by the caller), or null if none is present. Earliest-wins is deterministic
+ *  when a note mentions more than one keyword. */
+function findEarliestDecision(lowerText: string): ReconciliationDecision | null {
+  let earliest: { decision: ReconciliationDecision; idx: number } | null = null;
+  for (const decision of RECONCILIATION_DECISIONS) {
+    const idx = lowerText.indexOf(decision);
+    if (idx >= 0 && (earliest === null || idx < earliest.idx)) {
+      earliest = { decision, idx };
+    }
+  }
+  return earliest?.decision ?? null;
+}
+
+/**
+ * Classify a filed divergence shard's Reconciliation section. Pure: no I/O, no
+ * GitHub, no clock. Composes with buildDivergenceShard -- feeding that builder's
+ * output here returns `{ kind: "unreconciled" }`, which is the foundational read
+ * the schema README's "reads all shards with empty Reconciliation sections"
+ * morning workflow (and B-0164.1 AC #4) depends on.
+ *
+ * Decision keyword matching is case-insensitive (consistent with
+ * normalizedConclusion). The returned `note` preserves the maintainer's
+ * original case + content (trimmed) for human readability.
+ */
+export function parseReconciliationStatus(markdown: string): ReconciliationStatus {
+  const section = extractReconciliationSection(markdown);
+  const filled = stripHtmlComments(section).trim();
+  if (filled.length === 0) {
+    return { kind: "unreconciled" };
+  }
+  const decision = findEarliestDecision(filled.toLowerCase());
+  if (decision === null) {
+    return { kind: "reconciled-freeform", note: filled };
+  }
+  return { kind: "reconciled", decision, note: filled };
+}
