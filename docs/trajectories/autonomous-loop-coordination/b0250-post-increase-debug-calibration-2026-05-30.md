@@ -2,8 +2,8 @@
 
 ## Status
 
-Under PR review on claim branch
-`claim/codex-loop-b0250-post-increase-debug-calibration-20260530`; the live
+This receipt is under PR review on claim branch
+`claim/codex-loop-b0250-post-increase-debug-calibration-20260530`. The live
 claim file is released in this branch before merge.
 
 ## Live Observation
