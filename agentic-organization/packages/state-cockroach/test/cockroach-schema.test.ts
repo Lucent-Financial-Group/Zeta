@@ -93,6 +93,7 @@ describe("cockroach core state schema", () => {
     equal(migrations[11]?.name, CockroachCoreStateMigrationName.AgentLivenessV12);
     equal(migrations[12]?.name, CockroachCoreStateMigrationName.HindsightMemoryV13);
     equal(migrations[13]?.name, CockroachCoreStateMigrationName.HermesRunV14);
+    equal(migrations[14]?.name, CockroachCoreStateMigrationName.OrgSystemV15);
   });
 
   test("declares the hermes run table (durable agent-run history)", () => {
