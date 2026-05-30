@@ -133,6 +133,6 @@ Seed org at worker startup → submit a customer-discovery goal → observe one 
 item traverse all 7 gates, with **Executive Board → C-suite → Directors →
 Management → ICs** each acting (gate approvals, priority decisions, supply votes,
 assignments attributed to a hat at the right level), **hat expiry firing** on
-TTL, **RMO voting** on supply — every step readable from `agentic_org_org_events`
-+ the org-snapshot projection. The hierarchy walk must show activity at every
+TTL, **RMO voting** on supply — every step readable from `agentic_org_org_events` +
+the org-snapshot projection. The hierarchy walk must show activity at every
 level.
