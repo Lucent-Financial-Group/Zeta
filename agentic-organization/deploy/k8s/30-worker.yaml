@@ -1,0 +1,45 @@
+# The agentic-organization worker process. On start it runs the Cockroach
+# migration bootstrapper (incl. 0011 control-plane keep-alive), checks readiness,
+# then loops runOnce(): keep-alive ticks the org heartbeat FIRST every cycle
+# (deterministic "stay alive"), then the org-worker + NATS-consumer lanes.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: agentic-org
+  labels:
+    app: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: agentic-org-worker:keepalive
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: AGENTIC_ORG_ENV, value: "dev" }
+            - { name: AGENTIC_ORG_ID, value: "org-lfg" }
+            - {
+                name: COCKROACH_DATABASE_URL,
+                value: "postgresql://root@cockroach:26257/defaultdb?sslmode=disable",
+              }
+            - { name: NATS_SERVERS, value: "nats://nats:4222" }
+            - { name: NATS_STREAM, value: "agentic-org-events" }
+            - { name: NATS_DURABLE, value: "agentic-org-v0-automation-planner" }
+            - { name: NATS_INBOUND_BATCH_SIZE, value: "25" }
+            - { name: WORKER_INBOUND_BATCH_SIZE, value: "15" }
+            - { name: WORKER_OUTBOX_BATCH_SIZE, value: "10" }
+            - { name: WORKER_REACTION_PLAN_BATCH_SIZE, value: "8" }
+            - { name: WORKER_REACTION_PLAN_LEASE_MS, value: "300000" }
+            # smaller deadline so the keep-alive is observable quickly in the demo
+            - { name: WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS, value: "15000" }
+          resources:
+            requests: { cpu: "50m", memory: "128Mi" }
+            limits: { cpu: "500m", memory: "512Mi" }
