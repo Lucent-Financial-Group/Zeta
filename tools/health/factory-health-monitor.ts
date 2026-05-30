@@ -109,6 +109,9 @@ const CODEX_PARALLEL_RUNWAY_MINIMUM_ACTIVE_ITEMS = 1;
 const CODEX_PARALLEL_RUNWAY_TARGET_ACTIVE_ITEMS = 2;
 const FACTORY_EVENT_COINCIDENCE_WINDOW_MS = 5 * 60 * 1000;
 const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
+const FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG =
+  process.env.FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG ??
+  (process.env.HOME ? join(process.env.HOME, "Library/Logs/zeta-codex-loop/runner.log") : "");
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
   ".claude/",
@@ -269,6 +272,22 @@ function fetchTrajectoryReceiptCommits(): ToolResult {
   ]);
 }
 
+function fetchCodexLoopRunnerLog(): ToolResult {
+  if (FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG.length === 0) {
+    return { ok: true, stdout: "" };
+  }
+
+  try {
+    const stats = statSync(FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG);
+    if (!stats.isFile()) {
+      return { ok: true, stdout: "" };
+    }
+    return { ok: true, stdout: readFileSync(FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG, "utf-8") };
+  } catch {
+    return { ok: true, stdout: "" };
+  }
+}
+
 function fetchCodexLoopHealth(): ToolResult {
   return run("bun", [join(ROOT, ".codex/bin/codex-loop-health.ts")]);
 }
@@ -416,6 +435,44 @@ export function trajectoryReceiptEventsFromGitLog(
   flush();
 
   return events.sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
+}
+
+export function loopRunReceiptEventsFromRunnerLog(
+  output: string,
+  nowIso = new Date().toISOString(),
+  lookbackMs = FACTORY_EVENT_LOOKBACK_MS,
+): CoincidenceEvent[] {
+  const nowMs = Date.parse(nowIso);
+  const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
+  const events = new Map<string, CoincidenceEvent>();
+
+  for (const line of output.split(/\r?\n/)) {
+    const match = line.match(
+      /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z) codex forward gate end run_id=([A-Za-z0-9_-]+) status=(-?\d+)/,
+    );
+    if (!match?.[1] || !match[2] || !match[3]) {
+      continue;
+    }
+
+    const occurredMs = Date.parse(match[1]);
+    if (Number.isNaN(occurredMs)) {
+      continue;
+    }
+
+    if (!Number.isNaN(nowMs) && (occurredMs > nowMs || nowMs - occurredMs > maxAgeMs)) {
+      continue;
+    }
+
+    const runId = match[2];
+    events.set(runId, {
+      id: `loop-run-${runId}`,
+      trajectory: "codex",
+      occurredAt: new Date(occurredMs).toISOString(),
+      description: `codex forward gate ${runId} status=${match[3]}`,
+    });
+  }
+
+  return [...events.values()].sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
 }
 
 export function classifyLaneRunway(snapshot: LaneRunwaySnapshot): HealthSignal[] {
@@ -1020,6 +1077,20 @@ function checkCoincidenceEvents(): HealthSignal[] {
         level: "warning",
         message: "Could not parse trajectory receipt observations for coincidence signals",
         action: "inspect trajectory receipt event adapter before trusting coincidence signals",
+      });
+    }
+  }
+
+  const loopRunReceipts = fetchCodexLoopRunnerLog();
+  if (loopRunReceipts.ok && loopRunReceipts.stdout.length > 0) {
+    try {
+      events.push(...loopRunReceiptEventsFromRunnerLog(loopRunReceipts.stdout));
+    } catch {
+      sourceWarnings.push({
+        surface: "coincidence",
+        level: "warning",
+        message: "Could not parse Codex loop-run observations for coincidence signals",
+        action: "inspect Codex runner log before trusting loop-run coincidence signals",
       });
     }
   }

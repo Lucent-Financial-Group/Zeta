@@ -17,6 +17,7 @@ import {
   laneRunwayServiceHealthFromObservations,
   laneRunwaySnapshotFromObservations,
   localWorktreeDirtObservationFromStatus,
+  loopRunReceiptEventsFromRunnerLog,
   mergedPullRequestEventsFromJson,
   parseClaimPathSet,
   parseGitWorktreeListPorcelain,
@@ -227,6 +228,26 @@ describe("factory-health-monitor", () => {
         trajectory: "factory-trajectory-surface",
         occurredAt: "2026-05-30T05:00:00.000Z",
         description: "aaaaaaaaaaaa land two receipts",
+      },
+    ]);
+  });
+
+  test("loopRunReceiptEventsFromRunnerLog builds bounded Codex loop-run events", () => {
+    const output = [
+      "2026-05-30T05:00:00Z heartbeat complete run_id=20260530T050000Z fetch=ok claims=1 open_prs=0 dirty=0 codex=wait due_in=60s",
+      "2026-05-30T05:01:00Z codex forward gate start run_id=20260530T050100Z timeout=180s",
+      "2026-05-30T05:04:00Z codex forward gate end run_id=20260530T050100Z status=0",
+      "2026-05-28T05:04:00Z codex forward gate end run_id=stale status=0",
+      "2026-05-30T08:04:00Z codex forward gate end run_id=future status=0",
+      "not-a-date codex forward gate end run_id=bad status=0",
+    ].join("\n");
+
+    expect(loopRunReceiptEventsFromRunnerLog(output, "2026-05-30T06:00:00Z", 2 * 60 * 60 * 1000)).toEqual([
+      {
+        id: "loop-run-20260530T050100Z",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:04:00.000Z",
+        description: "codex forward gate 20260530T050100Z status=0",
       },
     ]);
   });
