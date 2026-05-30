@@ -88,6 +88,26 @@ declarative cluster substrate (full-ai-cluster/nixos/) until the in-house microk
 - Declarative-system prior art: NixOS (the current substrate; study-not-depend).
 - WebSearch the current state of each before committing a design (Otto-364).
 
+## Staging -- the before-microkernel path (FUSE + justbash) (operator 2026-05-30)
+
+> *"before we go microkernel we could take our fuse and do something like justbash"*
+
+Do NOT jump straight to the microkernel. The incremental, de-risking path:
+
+1. **FUSE filesystem** (B-0946 + B-0016) -- own the fs in userspace.
+2. **justbash-style userspace layer** (B-0016 -- "research just-bash / Vercel Labs ... own FUSE FS
+   eventually") -- a minimal userspace OS-ish layer on top of the FUSE fs, like just-bash. Proves
+   the desired-state / digital-twin / flywheel model (B-0946) in USERSPACE first -- cheaper,
+   faster, no kernel work, no capability-OS investment yet.
+3. **Microkernel** (this row, B-0945) -- the full capability-secure substrate LATER, when the
+   userspace layer's limits become the bottleneck.
+
+B-0016 already carries the microkernel lineage (its composes_with cites the no-OS /
+we-are-microkernel long-term anchor), so the justbash + FUSE row IS the natural intermediate.
+Userspace-first is supply-chain-doctrine-aligned (minimal, fewer deps) and lets the
+summonable-BFT + CRDT + DST-at-millions + digital-twin-flywheel model (B-0946) be validated before
+any microkernel investment.
+
 ## Acceptance (umbrella -- decomposes into slices)
 
 1. A design pass: which microkernel base (build-from-scratch vs fork seL4/Redox/Genode), how the
