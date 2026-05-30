@@ -466,8 +466,10 @@ export function mergedPullRequestEventsFromJson(
     if (burst.length > 1) {
       const burstNumbers = burst.map((event) => event.id.replace(/^merged-pr-/, "")).join("+");
       const burstKey = `merge-burst:${burst[0]?.occurredAt ?? "unknown"}:${burstNumbers}`;
+      const burstPrimaryKeys = burst.map((event) => event.correlationKey).filter((key): key is string => key !== undefined);
       for (const event of burst) {
-        event.correlationKeys = [...new Set([...(event.correlationKeys ?? []), burstKey])];
+        const peerPrimaryKeys = burstPrimaryKeys.filter((key) => key !== event.correlationKey);
+        event.correlationKeys = [...new Set([...(event.correlationKeys ?? []), burstKey, ...peerPrimaryKeys])];
       }
     }
 

@@ -180,15 +180,22 @@ describe("factory-health-monitor", () => {
       trajectory: "otto",
       occurredAt: "2026-05-30T05:00:01.000Z",
     };
+    const secondBurstPr: CoincidenceEvent = {
+      id: "merged-pr-6104",
+      trajectory: "riven",
+      occurredAt: "2026-05-30T05:00:20.000Z",
+      correlationKey: "pr:6104",
+      correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:6103+6104", "pr:6103"],
+    };
     const trajectoryReceipt: CoincidenceEvent = {
       id: "trajectory-receipt-6103",
       trajectory: "autonomous-loop-coordination",
-      occurredAt: "2026-05-30T05:00:20.000Z",
+      occurredAt: "2026-05-30T05:00:21.000Z",
       correlationKey: "pr:6103",
     };
 
     expect(
-      findCoincidenceWindows([mergedPr, independentEvent, trajectoryReceipt], {
+      findCoincidenceWindows([mergedPr, independentEvent, secondBurstPr, trajectoryReceipt], {
         windowMs: 30_000,
         minimumEvents: 2,
       }),
@@ -381,7 +388,7 @@ describe("factory-health-monitor", () => {
         occurredAt: "2026-05-30T05:00:00.000Z",
         description: "#20 First burst PR",
         correlationKey: "pr:20",
-        correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:20+21"],
+        correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:20+21", "pr:21"],
       },
       {
         id: "merged-pr-21",
@@ -389,7 +396,7 @@ describe("factory-health-monitor", () => {
         occurredAt: "2026-05-30T05:00:20.000Z",
         description: "#21 Second burst PR",
         correlationKey: "pr:21",
-        correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:20+21"],
+        correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:20+21", "pr:20"],
       },
       {
         id: "merged-pr-22",
