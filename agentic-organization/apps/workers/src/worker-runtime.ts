@@ -46,6 +46,8 @@ export const WorkerRuntimeConfigErrorCode = {
   MissingNatsServers: "missing_nats_servers",
   MissingNatsStreamName: "missing_nats_stream_name",
   MissingOrganizationId: "missing_organization_id",
+  /** exactly one of LLM_BASE_URL / LLM_MODEL was provided — a misconfiguration */
+  PartialLlmConfig: "partial_llm_config",
 } as const;
 
 export type WorkerRuntimeConfigErrorCode =

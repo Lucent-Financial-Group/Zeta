@@ -31,7 +31,7 @@ test("handles an escaped single quote inside a string ('' is a literal quote)", 
   ]);
 });
 
-test("strips a line comment but keeps the statement", () => {
+test("does not split on a semicolon inside a line comment (comment is preserved)", () => {
   deepEqual(splitSqlStatements("SELECT 1; -- a comment with ; semicolon\nSELECT 2;"), [
     "SELECT 1",
     "-- a comment with ; semicolon\nSELECT 2",

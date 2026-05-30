@@ -247,6 +247,36 @@ describe("worker runtime config parsing", () => {
       WorkerRuntimeConfigErrorCode.InvalidNatsServers,
     );
   });
+
+  test("throws on partial LLM config — only LLM_BASE_URL is set", () => {
+    assertConfigError(
+      { ...createMinimalValidEnv(), [WorkerProcessEnvName.LlmBaseUrl]: "http://ollama:11434" },
+      WorkerRuntimeConfigErrorCode.PartialLlmConfig,
+    );
+  });
+
+  test("throws on partial LLM config — only LLM_MODEL is set", () => {
+    assertConfigError(
+      { ...createMinimalValidEnv(), [WorkerProcessEnvName.LlmModel]: "qwen2:0.5b" },
+      WorkerRuntimeConfigErrorCode.PartialLlmConfig,
+    );
+  });
+
+  test("accepts both LLM env vars together", () => {
+    const config = parseWorkerRuntimeConfigFromEnv({
+      ...createMinimalValidEnv(),
+      [WorkerProcessEnvName.LlmBaseUrl]: " http://ollama:11434 ",
+      [WorkerProcessEnvName.LlmModel]: " qwen2:0.5b ",
+    });
+    equal(config.llmBaseUrl, "http://ollama:11434");
+    equal(config.llmModel, "qwen2:0.5b");
+  });
+
+  test("omits LLM config when neither env var is set (deterministic-composer mode)", () => {
+    const config = parseWorkerRuntimeConfigFromEnv(createMinimalValidEnv());
+    equal(config.llmBaseUrl, undefined);
+    equal(config.llmModel, undefined);
+  });
 });
 
 function createMinimalValidEnv(): WorkerProcessEnvironment {

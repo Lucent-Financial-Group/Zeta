@@ -1,4 +1,4 @@
-import { equal } from "node:assert/strict";
+import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 import { asZetaIdDecimal, type ZetaIdDecimal } from "../src/event.ts";
 import { ColumnType, type FrontmatterRow, type TableSchema } from "../src/schema.ts";
@@ -24,6 +24,27 @@ function row(values: Record<string, string | readonly string[]>): FrontmatterRow
 test("a well-formed row validates", () => {
   const result = validateRow(row({ id: "42", status: "ready", title: "t", project_id: "7", depends_on: ["8", "9"] }), taskSchema);
   equal(result.outcome, "valid");
+});
+
+test("a non-ZetaId FK reference is rejected (FK targets a ZetaId pk)", () => {
+  const result = validateRow(row({ id: "42", status: "ready", title: "t", project_id: "not-a-zeta-id" }), taskSchema);
+  equal(result.outcome, "invalid");
+  if (result.outcome !== "invalid") return;
+  ok(result.violations.some((v) => v.column === "project_id" && v.reason === "bad_fk"));
+});
+
+test("a non-ZetaId element in an FK array is rejected", () => {
+  const result = validateRow(row({ id: "42", status: "ready", title: "t", depends_on: ["8", "nope"] }), taskSchema);
+  equal(result.outcome, "invalid");
+  if (result.outcome !== "invalid") return;
+  ok(result.violations.some((v) => v.column === "depends_on" && v.reason === "bad_fk_array"));
+});
+
+test("a stray 'table' key in values is flagged as unknown column (no bypass)", () => {
+  const result = validateRow({ table: "task", values: { id: "42", status: "ready", title: "t", table: "task" } }, taskSchema);
+  equal(result.outcome, "invalid");
+  if (result.outcome !== "invalid") return;
+  ok(result.violations.some((v) => v.column === "table" && v.reason === "unknown_column"));
 });
 
 test("enum out of range is reported", () => {

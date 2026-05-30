@@ -1,9 +1,20 @@
-import { deepEqual, equal } from "node:assert/strict";
+import { deepEqual, equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import { emitCreateTable } from "../src/schema-to-sql.ts";
 import { parseCreateTable } from "../src/sql-to-schema.ts";
 import { ColumnType, type TableSchema, type ColumnDef } from "../src/schema.ts";
+
+test("escapes single quotes in enum literals so they can't break/inject SQL", () => {
+  const schema: TableSchema = {
+    table: "t",
+    schemaVersion: 1,
+    columns: [{ type: ColumnType.Enum, name: "label", required: true, values: ["it's", "ok"] } as ColumnDef],
+  };
+  const sql = emitCreateTable(schema);
+  ok(sql.includes("'it''s'"));
+  ok(!sql.includes("'it's'"));
+});
 
 const taskSchema: TableSchema = {
   table: "task",

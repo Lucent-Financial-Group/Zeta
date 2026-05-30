@@ -34,10 +34,10 @@ export function validateRow(row: FrontmatterRow, schema: TableSchema): Validatio
     checkType(column, value, violations);
   }
 
+  // `table` is carried on FrontmatterRow.table, not in values; a `table` key in
+  // values is a stray frontmatter key like any other and must be flagged, not
+  // silently skipped (which would hide schema violations).
   for (const key of Object.keys(row.values)) {
-    if (key === "table") {
-      continue;
-    }
     if (findColumn(schema, key) === undefined) {
       violations.push({ column: key, reason: "unknown_column", message: `column '${key}' is not in schema for ${schema.table}` });
     }
@@ -59,13 +59,15 @@ function checkType(column: ColumnDef, value: FrontmatterValue, violations: RowVi
       }
       return;
     case ColumnType.Fk:
-      if (typeof value !== "string" || value.length === 0) {
-        violations.push({ column: column.name, reason: "bad_fk", message: `column '${column.name}' must be a single reference id` });
+      // FK targets a ZetaId pk, so the reference must be a base-10 ZetaId — not
+      // just any non-empty string (traverse.ts brands these as ZetaIdDecimal).
+      if (typeof value !== "string" || !/^[0-9]+$/.test(value)) {
+        violations.push({ column: column.name, reason: "bad_fk", message: `column '${column.name}' must be a base-10 ZetaId reference` });
       }
       return;
     case ColumnType.FkArray:
-      if (!Array.isArray(value) || value.some((v) => typeof v !== "string" || v.length === 0)) {
-        violations.push({ column: column.name, reason: "bad_fk_array", message: `column '${column.name}' must be an array of reference ids` });
+      if (!Array.isArray(value) || value.some((v) => typeof v !== "string" || !/^[0-9]+$/.test(v))) {
+        violations.push({ column: column.name, reason: "bad_fk_array", message: `column '${column.name}' must be an array of base-10 ZetaId references` });
       }
       return;
     case ColumnType.Int:

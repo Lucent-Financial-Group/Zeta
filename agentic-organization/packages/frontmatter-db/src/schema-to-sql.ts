@@ -26,7 +26,9 @@ function emitColumn(col: ColumnDef): string {
         ? `${col.name} TEXT PRIMARY KEY`
         : `${col.name} TEXT`;
     case ColumnType.Enum: {
-      const values = col.values.map((v) => `'${v}'`).join(", ");
+      // escape single quotes (' -> '') so enum literals can't break the SQL
+      // string or open an injection vector when schemas are author-supplied.
+      const values = col.values.map((v) => `'${v.replace(/'/g, "''")}'`).join(", ");
       return `${col.name} TEXT${notNull(col.required)} CHECK (${col.name} IN (${values}))`;
     }
     case ColumnType.Fk:

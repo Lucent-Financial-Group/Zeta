@@ -1,7 +1,19 @@
-import { deepEqual, equal } from "node:assert/strict";
+import { deepEqual, equal, throws } from "node:assert/strict";
 import { test } from "node:test";
 import { EventOp, asZetaIdDecimal, zetaIdWithTimestamp, type FrontmatterEvent } from "../src/event.ts";
 import { EventCodecFeedbackReason, parseEvent, serializeEvent } from "../src/event-codec.ts";
+
+test("serializeEvent rejects a field key in the reserved $ namespace (no metadata spoofing)", () => {
+  const event: FrontmatterEvent = {
+    id: zetaIdWithTimestamp(1000),
+    table: "task",
+    aggregateId: asZetaIdDecimal("7"),
+    op: EventOp.Upsert,
+    schemaVersion: 1,
+    fields: { $id: "999", title: "spoof attempt" },
+  };
+  throws(() => serializeEvent(event), /reserved '\$' namespace/);
+});
 
 function sampleEvent(): FrontmatterEvent {
   return {

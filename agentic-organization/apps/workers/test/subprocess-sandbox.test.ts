@@ -48,6 +48,15 @@ test("a tool that exceeds its timeout fails as Result, never hangs the agent", a
   equal(result.ok, false);
 });
 
+test("rejects a relative command path as a Result (never PATH-resolves a binary)", async () => {
+  const sandbox = createSubprocessSandbox();
+  const result = await sandbox.run({ command: "node", args: ["-e", "1"], timeoutMs: 5_000 });
+
+  equal(result.ok, false);
+  if (result.ok) return;
+  ok(result.reason.includes("absolute"));
+});
+
 test("the sandbox strips the environment (the tool cannot read worker secrets)", async () => {
   process.env["WORKER_SECRET_TEST"] = "top-secret";
   try {

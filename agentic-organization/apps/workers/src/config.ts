@@ -97,8 +97,14 @@ export function parseWorkerRuntimeConfigFromEnv(env: WorkerProcessEnvironment): 
 function parseLlmConfig(env: WorkerProcessEnvironment): { llmBaseUrl?: string; llmModel?: string } {
   const baseUrl = nonEmpty(env[WorkerProcessEnvName.LlmBaseUrl]);
   const model = nonEmpty(env[WorkerProcessEnvName.LlmModel]);
-  if (baseUrl === undefined || model === undefined) {
+  if (baseUrl === undefined && model === undefined) {
+    // neither set → the deterministic composer is used (a valid, intended mode)
     return {};
+  }
+  if (baseUrl === undefined || model === undefined) {
+    // exactly one set → a misconfiguration; fail loudly rather than silently
+    // dropping the model backend, which would be hard to diagnose in-cluster.
+    throw new WorkerRuntimeConfigError(WorkerRuntimeConfigErrorCode.PartialLlmConfig);
   }
   return { llmBaseUrl: baseUrl, llmModel: model };
 }

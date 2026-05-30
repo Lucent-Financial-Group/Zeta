@@ -53,6 +53,13 @@ export function serializeEvent(event: FrontmatterEvent): string {
   frontmatter[Reserved.Op] = event.op;
   frontmatter[Reserved.SchemaVersion] = event.schemaVersion;
   for (const [key, value] of Object.entries(event.fields)) {
+    // The `$`-prefix is the reserved metadata namespace. A field key inside it
+    // would overwrite event metadata and round-trip as a spoofed event, so
+    // reject it as a programmer error (parseEvent already filters these out on
+    // read — this keeps write symmetric with read).
+    if (key.startsWith("$")) {
+      throw new Error(`serializeEvent: field key '${key}' is in the reserved '$' namespace`);
+    }
     frontmatter[key] = value;
   }
   return serializeFrontmatterDocument({ frontmatter, body: "" });

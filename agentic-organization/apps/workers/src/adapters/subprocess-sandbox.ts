@@ -21,9 +21,20 @@ import type { SandboxToolPort, SandboxToolRequest, SandboxToolResult } from "../
 
 const MAX_OUTPUT_BYTES = 64 * 1024;
 
+/** POSIX "/..." or Windows "C:\..." / "C:/...". */
+function isAbsolutePath(command: string): boolean {
+  return command.startsWith("/") || /^[A-Za-z]:[\\/]/.test(command);
+}
+
 export function createSubprocessSandbox(): SandboxToolPort {
   return {
     run: async (request: SandboxToolRequest): Promise<SandboxToolResult> => {
+      // The contract requires an absolute command path. A relative command would
+      // be resolved via PATH and could execute an unexpected binary, so reject
+      // it as a Result rather than spawning it.
+      if (!isAbsolutePath(request.command)) {
+        return { ok: false, reason: `sandbox command must be an absolute path, got '${request.command}'` };
+      }
       const workdir = mkdtempSync(join(tmpdir(), "agentic-sandbox-"));
       try {
         return await new Promise<SandboxToolResult>((resolve) => {
