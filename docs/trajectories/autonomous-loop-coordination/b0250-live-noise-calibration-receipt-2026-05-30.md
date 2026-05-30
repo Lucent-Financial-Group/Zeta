@@ -32,11 +32,11 @@ The 76 windows split by source set as:
 
 | Window source set | Count |
 | --- | ---: |
-| loop-run + merged-pr | 46 |
-| loop-run + merged-pr + trajectory-receipt | 12 |
-| merged-pr | 9 |
-| merged-pr + trajectory-receipt | 7 |
-| loop-run + trajectory-receipt | 2 |
+| Codex loop run + merged PR | 46 |
+| Codex loop run + merged PR + trajectory receipt | 12 |
+| merged PR | 9 |
+| merged PR + trajectory receipt | 7 |
+| Codex loop run + trajectory receipt | 2 |
 
 The largest trajectory cluster was `codex + otto` with 31 windows. The two
 latest B-0250 windows were deterministic lifecycle joins:
