@@ -24,6 +24,20 @@ import { createHash } from "node:crypto";
 import { closeSync, mkdirSync, openSync, readFileSync, writeSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 
+import {
+  RECONCILIATION_DECISIONS,
+  type ReconciliationDecision,
+  reconciliationBody,
+  stripHtmlComments,
+} from "./divergence-reconcile.ts";
+
+// Re-export the canonical reconciliation vocabulary so existing importers of
+// divergence-shard (the test suite, downstream callers) keep a stable surface.
+// Single-sourced in divergence-reconcile.ts to stop the two modules drifting on
+// order/value/doc -- the read half here and the fill half there now share one
+// definition of the four decisions (Copilot PR #6130).
+export { RECONCILIATION_DECISIONS, type ReconciliationDecision };
+
 /** A single loop's identity for attribution in the shard frontmatter. */
 export interface LoopIdentity {
   /** Named agent identifier, e.g. "otto", "codex-loop", "vera". */
@@ -406,21 +420,14 @@ export function fileReviewThreadDisagreement(repoRoot: string, input: ReviewThre
 // ---------------------------------------------------------------------------
 
 /**
- * The four canonical reconciliation decisions per the schema README
- * ("Reconciliation outcomes"). Order is the README's listing order; matching
- * is by earliest occurrence in the section, not by this order.
- */
-export const RECONCILIATION_DECISIONS = ["accept-loop-a", "accept-loop-b", "accept-both", "escalate"] as const;
-
-export type ReconciliationDecision = (typeof RECONCILIATION_DECISIONS)[number];
-
-/**
  * Status of a divergence shard's Reconciliation section.
  *   - unreconciled: the section holds only the maintainer-fills-in placeholder
  *     (the two HTML comments buildDivergenceShard writes) and/or whitespace;
  *     this shard awaits morning reconciliation.
  *   - reconciled: the section is filled and carries a recognized decision
- *     keyword; `note` is the maintainer's trimmed, case-preserving prose.
+ *     keyword; `note` is the maintainer's prose, case-preserving and trimmed,
+ *     with the placeholder HTML comments removed (the same strip the empty-check
+ *     applies, so an `<!-- ... -->` block never leaks into the note).
  *   - reconciled-freeform: the section is filled but carries no recognized
  *     keyword. Distinct from `reconciled` because the morning tooling should
  *     flag it for the maintainer to canonicalize rather than treat it as a
@@ -432,8 +439,6 @@ export type ReconciliationStatus =
   | { readonly kind: "reconciled"; readonly decision: ReconciliationDecision; readonly note: string }
   | { readonly kind: "reconciled-freeform"; readonly note: string };
 
-const RECONCILIATION_HEADER = "## Reconciliation";
-
 /**
  * Extract the Reconciliation section body: everything after the
  * "## Reconciliation" header up to the next "## " heading or end-of-file. In
@@ -441,23 +446,20 @@ const RECONCILIATION_HEADER = "## Reconciliation";
  * it; the next-heading terminator is defensive for shards that append further
  * sections. Throws on a shard missing the header (malformed per schema --
  * eager rejection over silent acceptance, matching detectReviewThreadDisagreement).
+ *
+ * Delegates to divergence-reconcile.ts's `reconciliationBody`, which anchors on
+ * the heading as a full line (`/^## Reconciliation[ \t]*$/m`) instead of a bare
+ * `indexOf`. The anchored match is deterministic: an "## Reconciliation" mention
+ * inside prose or a fenced code block before the real heading can no longer
+ * slice the wrong region (Copilot PR #6130). `reconciliationBody` returns null
+ * when no heading line exists; we convert that to the eager-rejection throw.
  */
 function extractReconciliationSection(markdown: string): string {
-  const headerIdx = markdown.indexOf(RECONCILIATION_HEADER);
-  if (headerIdx < 0) {
-    throw new Error(`malformed divergence shard: missing "${RECONCILIATION_HEADER}" section`);
+  const body = reconciliationBody(markdown);
+  if (body === null) {
+    throw new Error('malformed divergence shard: missing "## Reconciliation" section');
   }
-  const afterHeader = markdown.slice(headerIdx + RECONCILIATION_HEADER.length);
-  const nextHeading = afterHeader.search(/\n## /);
-  return nextHeading >= 0 ? afterHeader.slice(0, nextHeading) : afterHeader;
-}
-
-/** Remove HTML comments. Load-bearing: the unreconciled placeholder itself
- *  lists the four decision keywords inside `<!-- ... -->`, so comments MUST be
- *  stripped before the empty-check and before the keyword scan -- otherwise an
- *  untouched placeholder would read as a filled "accept-loop-a..." decision. */
-function stripHtmlComments(text: string): string {
-  return text.replace(/<!--[\s\S]*?-->/g, "");
+  return body;
 }
 
 /** Earliest-occurring recognized decision keyword in `text` (already lowercased
@@ -482,8 +484,10 @@ function findEarliestDecision(lowerText: string): ReconciliationDecision | null 
  * morning workflow (and B-0164.1 AC #4) depends on.
  *
  * Decision keyword matching is case-insensitive (consistent with
- * normalizedConclusion). The returned `note` preserves the maintainer's
- * original case + content (trimmed) for human readability.
+ * normalizedConclusion). The returned `note` is the section's text after the
+ * placeholder HTML comments are stripped (same fixpoint strip as the empty-
+ * check) then trimmed; case is preserved for human readability. It is the
+ * maintainer's prose, not a byte-for-byte copy of the raw section.
  */
 export function parseReconciliationStatus(markdown: string): ReconciliationStatus {
   const section = extractReconciliationSection(markdown);
