@@ -708,6 +708,53 @@ describe("factory-health-monitor", () => {
     ]);
   });
 
+  test("pullRequestBlockerEventsFromJson follows required-check gate semantics", () => {
+    expect(
+      pullRequestBlockerEventsFromJson(
+        JSON.stringify([
+          {
+            number: 35,
+            title: "Diagnostic only failure",
+            createdAt: "2026-05-30T04:00:00Z",
+            updatedAt: "2026-05-30T05:00:00Z",
+            headRefName: "claim/codex-diagnostic-only",
+            requiredCheckNames: ["required-build"],
+            statusCheckRollup: [
+              { name: "diagnostic", workflowName: "gate", status: "COMPLETED", conclusion: "FAILURE" },
+              { name: "required-build", workflowName: "gate", status: "COMPLETED", conclusion: "SUCCESS" },
+            ],
+          },
+          {
+            number: 36,
+            title: "Required failures",
+            createdAt: "2026-05-30T04:01:00Z",
+            updatedAt: "2026-05-30T05:01:00Z",
+            headRefName: "claim/codex-required-failures",
+            requiredCheckNames: ["cancelled", "error-state", "stale", "startup"],
+            statusCheckRollup: [
+              { name: "diagnostic", workflowName: "gate", status: "COMPLETED", conclusion: "FAILURE" },
+              { name: "cancelled", workflowName: "gate", status: "COMPLETED", conclusion: "CANCELLED" },
+              { name: "error-state", workflowName: "gate", state: "ERROR", status: "COMPLETED", conclusion: "" },
+              { name: "stale", workflowName: "gate", status: "COMPLETED", conclusion: "STALE" },
+              { name: "startup", workflowName: "gate", status: "COMPLETED", conclusion: "STARTUP_FAILURE" },
+            ],
+          },
+        ]),
+        "2026-05-30T06:00:00Z",
+        2 * 60 * 60 * 1000,
+      ),
+    ).toEqual([
+      {
+        id: "failed-gate-36",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:01:00.000Z",
+        description: "#36 Required failures failed gates: gate/cancelled, gate/error-state, gate/stale, +1 more",
+        correlationKey: "pr:36",
+        source: "failed-gate",
+      },
+    ]);
+  });
+
   test("classifyCoincidenceWindows escalates when PR blockers join ordinary merge events", () => {
     expect(
       classifyCoincidenceWindows(

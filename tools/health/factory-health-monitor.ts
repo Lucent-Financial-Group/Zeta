@@ -88,6 +88,7 @@ interface MergedPullRequestObservationInput {
 interface PullRequestStatusCheckObservationInput {
   conclusion?: string | null;
   name?: string | null;
+  state?: string | null;
   status?: string | null;
   workflowName?: string | null;
 }
@@ -99,6 +100,7 @@ interface PullRequestBlockerObservationInput {
   updatedAt?: string | null;
   headRefName?: string | null;
   reviewDecision?: string | null;
+  requiredCheckNames?: string[] | null;
   statusCheckRollup?: PullRequestStatusCheckObservationInput[] | null;
 }
 
@@ -167,7 +169,15 @@ const INCIDENT_GRADE_COINCIDENCE_SOURCES: ReadonlySet<CoincidenceEventSource> = 
   "failed-gate",
   "broadcast-blocker",
 ]);
-const FAILED_GATE_CONCLUSIONS: ReadonlySet<string> = new Set(["ACTION_REQUIRED", "FAILURE", "TIMED_OUT"]);
+const FAILED_GATE_CONCLUSIONS: ReadonlySet<string> = new Set([
+  "ACTION_REQUIRED",
+  "CANCELLED",
+  "ERROR",
+  "FAILURE",
+  "STALE",
+  "STARTUP_FAILURE",
+  "TIMED_OUT",
+]);
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
   ".claude/",
@@ -419,7 +429,7 @@ export function resolveCodexLoopRunnerLog(env: NodeJS.ProcessEnv): string {
 }
 
 function fetchOpenPRs(): ToolResult {
-  return run("gh", [
+  const result = run("gh", [
     "pr",
     "list",
     "--repo",
@@ -431,6 +441,51 @@ function fetchOpenPRs(): ToolResult {
     "--limit",
     "200",
   ]);
+  if (!result.ok) {
+    return result;
+  }
+
+  try {
+    const prs = JSON.parse(result.stdout) as PullRequestBlockerObservationInput[];
+    const enriched = prs.map((pr) => {
+      if (typeof pr.number !== "number") {
+        return pr;
+      }
+
+      const requiredCheckNames = fetchRequiredCheckNames(pr.number);
+      if (requiredCheckNames === undefined) {
+        return pr;
+      }
+
+      return { ...pr, requiredCheckNames };
+    });
+    return { ok: true, stdout: JSON.stringify(enriched) };
+  } catch {
+    return result;
+  }
+}
+
+function fetchRequiredCheckNames(prNumber: number): string[] | undefined {
+  const result = spawnSync(
+    "gh",
+    ["pr", "checks", String(prNumber), "--repo", REPO, "--required", "--json", "name"],
+    {
+      cwd: ROOT,
+      encoding: "utf-8",
+      timeout: 30_000,
+    },
+  );
+
+  if (result.status !== 0 && result.status !== 4 && result.status !== 8) {
+    return undefined;
+  }
+
+  try {
+    const checks = JSON.parse(result.stdout ?? "[]") as Array<{ name?: unknown }>;
+    return checks.map((check) => check.name).filter((name): name is string => typeof name === "string");
+  } catch {
+    return undefined;
+  }
 }
 
 function fetchMergedPRs(): ToolResult {
@@ -563,9 +618,26 @@ function eventTimeInLookback(occurredMs: number, nowIso: string, lookbackMs: num
   return Number.isNaN(nowMs) || (occurredMs <= nowMs && nowMs - occurredMs <= Math.max(0, Math.floor(lookbackMs)));
 }
 
-function failedGateLabels(statusChecks: PullRequestStatusCheckObservationInput[] | null | undefined): string[] {
+function failedGateLabels(
+  statusChecks: PullRequestStatusCheckObservationInput[] | null | undefined,
+  requiredCheckNames?: readonly string[] | null,
+): string[] {
+  const requiredNames =
+    requiredCheckNames === undefined || requiredCheckNames === null
+      ? null
+      : new Set(requiredCheckNames.map((name) => name.trim()).filter((name) => name.length > 0));
+
   return (statusChecks ?? [])
-    .filter((check) => FAILED_GATE_CONCLUSIONS.has(check.conclusion?.trim().toUpperCase() ?? ""))
+    .filter((check) => {
+      const name = check.name?.trim() ?? "";
+      if (requiredNames !== null && !requiredNames.has(name)) {
+        return false;
+      }
+
+      const conclusion = check.conclusion?.trim().toUpperCase() ?? "";
+      const state = check.state?.trim().toUpperCase() ?? "";
+      return FAILED_GATE_CONCLUSIONS.has(conclusion) || FAILED_GATE_CONCLUSIONS.has(state);
+    })
     .map((check) => {
       const workflowName = check.workflowName?.trim() ?? "";
       const name = check.name?.trim() ?? "";
@@ -623,7 +695,7 @@ export function pullRequestBlockerEventsFromJson(
       });
     }
 
-    const failedGates = failedGateLabels(pr.statusCheckRollup);
+    const failedGates = failedGateLabels(pr.statusCheckRollup, pr.requiredCheckNames);
     if (failedGates.length > 0) {
       events.push({
         id: `failed-gate-${pr.number}`,
