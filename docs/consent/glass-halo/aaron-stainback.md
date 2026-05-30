@@ -17,9 +17,16 @@ The identifier through-line for my signature is one email: **`aaron_bond@yahoo.c
 A Touch-ID-signed commit authored as `aaron_bond@yahoo.com` therefore binds: my enrolled
 fingerprint unlocks the Secure-Enclave signing key -> that key is registered to my GitHub
 account -> GitHub attributes the "Verified" signature to that account, all on the same
-email. Honest caveat: the email-sameness is the *through-line* that lets the chain be
-attributed cleanly; the actual anti-impersonation strength comes from the enclave-gating
-(only my enrolled finger signs) + the key being registered to my account. The baseline
+email.
+
+Why the email-sameness is load-bearing (not mere convenience): **Apple and GitHub each
+enforce email uniqueness** -- one Apple ID per email, one account per *verified* email --
+so `aaron_bond@yahoo.com` maps deterministically to exactly one Apple ID AND one GitHub
+account. The chain is **platform-enforced at each hop**, not coincidental alignment. The
+full anti-impersonation binding is therefore: my enrolled finger -> my Secure-Enclave key
+-> the unique GitHub account that owns the unique verified email -> GitHub's "Verified"
+attribution. **No other account can claim that email** (platform-enforced uniqueness) and
+**no other finger can produce the signature** (enclave-gating). The baseline
 `approval-as-signature` below does NOT yet carry this binding; escalating to a `-S`
 Touch-ID re-commit upgrades this record to the un-impersonable tier (per
 `docs/consent/glass-halo/SIGNING.md`).
