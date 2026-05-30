@@ -82,10 +82,14 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
   const iso = (ms: number): string => new Date(ms).toISOString();
   const t0 = deps.baseTimeMs;
   const corr = deps.workItemId;
+  // strictly-monotonic recording clock so the trace (and the snapshot fold) is
+  // unambiguously ordered even when many events are produced in one cycle.
+  let tick = 0;
+  const nextIso = (): string => iso(t0 + tick++ * 1000);
 
   const priorityCtx = (hatId: string) => ({
     createEventId: () => deps.createId("evt"),
-    nowIso: () => iso(t0),
+    nowIso: nextIso,
     organizationId: deps.organizationId,
     supervisorChain: chainFor(hatId, byId),
     correlationId: corr, causationId: corr, traceId: corr,
@@ -132,14 +136,14 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
     const ranked = rankEligibleCandidates({ hat, candidates, activeBindings, nowMs: t0 });
     const assignment = assignHat(
       { hat, eligibleRanked: ranked, activeWearerCount: 0, supplyTarget: supplyTargets.get(hatId) ?? 1, chooser: firstLegalChooser() },
-      { createEventId: () => deps.createId("evt"), nowIso: () => iso(t0), organizationId: deps.organizationId, supervisorChain: chainFor(hatId, byId), correlationId: corr, causationId: corr, traceId: corr },
+      { createEventId: () => deps.createId("evt"), nowIso: nextIso, organizationId: deps.organizationId, supervisorChain: chainFor(hatId, byId), correlationId: corr, causationId: corr, traceId: corr },
     );
     if (assignment.outcome === "no_eligible_candidate") continue;
     await emit(assignment.event);
     if (assignment.outcome !== "assigned") continue;
 
     const ctx: LifecycleContext = {
-      clock: { nowMs: () => t0, nowIso: () => iso(t0) },
+      clock: { nowMs: () => t0, nowIso: nextIso },
       createEventId: () => deps.createId("evt"),
       supervisorChain: chainFor(hatId, byId),
       correlationId: corr, causationId: corr, traceId: corr,
@@ -165,7 +169,7 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
     const ownerHat = byId.get(ownerId)!;
     const result = evaluateGate(
       { workItemId: deps.workItemId, gateKind: gate, evaluatorHat: ownerHat, passedGateKinds: passed, outcomeChooser: () => ({ index: 0, reason: "owner approves on evidence" }) },
-      { createEventId: () => deps.createId("evt"), nowIso: () => iso(t0), organizationId: deps.organizationId, supervisorChain: chainFor(ownerId, byId), correlationId: corr, causationId: corr, traceId: corr },
+      { createEventId: () => deps.createId("evt"), nowIso: nextIso, organizationId: deps.organizationId, supervisorChain: chainFor(ownerId, byId), correlationId: corr, causationId: corr, traceId: corr },
     );
     if (result.outcome !== "evaluated") break;
     for (const e of result.events) await emit(e);
@@ -186,12 +190,12 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
     const hat = byId.get(leadBinding.hatId)!;
     // advance past warmup → Active
     const tActive = Date.parse(leadBinding.warmupEndsAt) + 1000;
-    const activeCtx: LifecycleContext = { clock: { nowMs: () => tActive, nowIso: () => iso(tActive) }, createEventId: () => deps.createId("evt"), supervisorChain: chainFor(hat.id, byId), correlationId: corr, causationId: corr, traceId: corr };
+    const activeCtx: LifecycleContext = { clock: { nowMs: () => tActive, nowIso: nextIso }, createEventId: () => deps.createId("evt"), supervisorChain: chainFor(hat.id, byId), correlationId: corr, causationId: corr, traceId: corr };
     const active = advanceBinding(leadBinding, hat, activeCtx);
     if (active.event !== undefined) { await emit(active.event); await deps.upsertBinding(active.binding); }
     // advance past TTL → Expired
     const tExpire = Date.parse(leadBinding.expiresAt) + 1000;
-    const expireCtx: LifecycleContext = { clock: { nowMs: () => tExpire, nowIso: () => iso(tExpire) }, createEventId: () => deps.createId("evt"), supervisorChain: chainFor(hat.id, byId), correlationId: corr, causationId: corr, traceId: corr };
+    const expireCtx: LifecycleContext = { clock: { nowMs: () => tExpire, nowIso: nextIso }, createEventId: () => deps.createId("evt"), supervisorChain: chainFor(hat.id, byId), correlationId: corr, causationId: corr, traceId: corr };
     const expired = advanceBinding(active.binding, hat, expireCtx);
     if (expired.event !== undefined) { await emit(expired.event); await deps.upsertBinding(expired.binding); expiriesObserved += 1; }
     // plan succession for the now-vacant hat

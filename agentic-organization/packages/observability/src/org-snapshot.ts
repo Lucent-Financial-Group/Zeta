@@ -141,17 +141,31 @@ export function buildOrgSnapshot(input: BuildOrgSnapshotInput): OrgSnapshot {
     return { level, eventCount: e.count, actingHatIds: [...e.hats] };
   });
 
-  // pipeline stage per work item = latest PipelineStageTransition toState
+  // latest-state-per-subject, computed order-independently so the snapshot is
+  // correct regardless of whether the event store returns rows ASC or DESC.
+  // We keep the winning event's occurredAt and only overwrite on a strictly
+  // newer (or equal — last-seen breaks ties) timestamp.
   const pipelineMap = new Map<string, string>();
   const priorityMap = new Map<string, string>();
   const supplyMap = new Map<string, string>();
+  const latestAt = new Map<string, number>(); // key = `${kind}:${subjectId}`
+  const keepLatest = (map: Map<string, string>, kind: string, e: { subjectId: string; toState?: string; occurredAt: string }): void => {
+    if (e.toState === undefined) return;
+    const key = `${kind}:${e.subjectId}`;
+    const at = Date.parse(e.occurredAt);
+    const prior = latestAt.get(key);
+    if (prior === undefined || at >= prior) {
+      latestAt.set(key, at);
+      map.set(e.subjectId, e.toState);
+    }
+  };
   for (const e of input.events) {
-    if (e.kind === OrgEventKind.PipelineStageTransition && e.toState !== undefined) {
-      pipelineMap.set(e.subjectId, e.toState);
-    } else if (e.kind === OrgEventKind.PriorityDecision && e.toState !== undefined) {
-      priorityMap.set(e.subjectId, e.toState);
-    } else if (e.kind === OrgEventKind.HatSupplyDecision && e.toState !== undefined) {
-      supplyMap.set(e.subjectId, e.toState);
+    if (e.kind === OrgEventKind.PipelineStageTransition) {
+      keepLatest(pipelineMap, "pipeline", e);
+    } else if (e.kind === OrgEventKind.PriorityDecision) {
+      keepLatest(priorityMap, "priority", e);
+    } else if (e.kind === OrgEventKind.HatSupplyDecision) {
+      keepLatest(supplyMap, "supply", e);
     }
   }
 

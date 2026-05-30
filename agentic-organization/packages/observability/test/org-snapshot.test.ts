@@ -77,6 +77,22 @@ test("pipeline stage, priority, and supply are folded from the event stream", ()
   equal(snap.latestSupplyByHat["backend_implementer"], "expand");
 });
 
+test("the fold is order-independent: newest-state wins even when events arrive DESC (store returns newest-first)", () => {
+  // Same 7-gate progression, but presented newest→oldest the way the Cockroach
+  // store returns rows (ORDER BY occurred_at DESC). A naive last-write-wins fold
+  // would pick the OLDEST stage; the correct fold keeps the newest by timestamp.
+  const stages = [
+    "awaiting_brd_approval", "awaiting_architecture_approval", "awaiting_implementation_review",
+    "awaiting_runtime_validation", "awaiting_final_business_validation", "awaiting_release_readiness", "merged",
+  ];
+  const ascending: OrgEvent[] = stages.map((s, i) =>
+    ev(OrgEventKind.PipelineStageTransition, "product_owner", "wi-9", s, "advanced", NOW - (stages.length - i) * 1000),
+  );
+  const descending = [...ascending].reverse(); // newest first, as the store returns them
+  const snap = buildOrgSnapshot({ hats, bindings: [], events: descending, nowMs: NOW, nowIso: new Date(NOW).toISOString() });
+  equal(snap.pipeline.find((p) => p.workItemId === "wi-9")?.stage, "merged");
+});
+
 test("renderOrgSnapshot produces a readable report", () => {
   const snap = buildOrgSnapshot({ hats, bindings: [binding("b-1", "ceo", "agent-A", HatBindingPhase.Active, 100)], events: [], nowMs: NOW, nowIso: new Date(NOW).toISOString() });
   const report = renderOrgSnapshot(snap);
