@@ -2,7 +2,7 @@
 
 Status: three high-confidence stale remote refs retired
 Surface: codex-background-service
-Origin: desktop heartbeat `vera-desktop-loop`
+Origin: codex desktop heartbeat loop
 Session: codex/20260530T0448Z
 Claim: `claim/task-stale-claim-prune-high-confidence-20260530`
 Parent receipt:
