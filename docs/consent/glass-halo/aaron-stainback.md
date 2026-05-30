@@ -64,14 +64,22 @@ requires the corresponding biometric no one else holds. (Azure access is a *sepa
 authority, via Entra on the servicetitan email, not via the GitHub code path.)
 
 **Device-side defense-in-depth (TENTATIVE -- needs verification).** The work Mac +
-Windows devices appear to be under managed-device control -- operator: *"they use
-sentinel i think for mac and windows device management."* Likely **SentinelOne** (EDR /
-endpoint agent for Mac+Windows) or possibly **Microsoft Sentinel** (cloud SIEM); not yet
-confirmed which. A managed/monitored device adds device-compliance + compromise-detection
-on the device side, which *hardens* the device holding the signing key but is **not part
-of the core signature-binding** (that is biometric + key + email-uniqueness). Flagged
-unverified per `premise-flagged-unverified-stays-unverified-downstream` -- do not build
-firm conclusions on it until confirmed.
+Windows devices appear to be under a managed-device stack the operator recalls only
+partially:
+
+- *"they use sentinel i think for mac and windows device management"* -- likely
+  **SentinelOne** (EDR / endpoint agent for Mac+Windows), possibly **Microsoft Sentinel**
+  (cloud SIEM); not confirmed which.
+- *"a little bit of okta and microsoft one i forgot it's mdm name it's a weird name"* --
+  **Okta** (already the auth factor, Okta FastPass) plus a **Microsoft MDM** whose name
+  the operator didn't recall; most likely **Microsoft Intune** (the Microsoft MDM/UEM,
+  formerly Microsoft Endpoint Manager).
+
+A managed/monitored device adds device-compliance + compromise-detection on the device
+side, which *hardens* the device holding the signing key but is **not part of the core
+signature-binding** (that is biometric + key + email-uniqueness). The whole stack here is
+flagged unverified per `premise-flagged-unverified-stays-unverified-downstream` -- product
+names are operator-uncertain; do not build firm conclusions on them until confirmed.
 
 ## Consent event record (all three parts)
 
