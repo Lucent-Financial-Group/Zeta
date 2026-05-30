@@ -1,9 +1,55 @@
+---
+title: North Star Alignment Checkpoint
+canonical_name: Agentic Organization
+status: design
+---
+
 # North Star Alignment Checkpoint
 
 ## Status
 
 Current checkpoint after the first executable TypeScript slices and
 subagent review.
+
+## Update 2026-05-29 — git-as-DB substrate + observe keystone + coherence slices
+
+Landed since the prior checkpoint (all tested; full suite 382 green; tsc clean for
+new files; the 8 remaining typecheck errors are pre-existing `@nats-io` missing
+deps in `apps/workers`):
+
+- **`packages/frontmatter-db`** — git-as-database-and-event-store: a markdown file
+  is a row, frontmatter is the SQL-derived typed schema + fk graph edges, events
+  are ZetaId-keyed files merging conflict-free as a G-Set CRDT, state is a
+  timestamp-ordered fold, CockroachDB is a rebuildable index. Includes the YAML +
+  event codecs, schema↔SQL round-trip, port-based sync core, a filesystem Git
+  adapter, an in-memory Cockroach row sink, and a `runOnce()` reconcile worker.
+  See `GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`.
+- **`observe.ts` keystone** (`packages/application/src/observe.ts`) — the single
+  entrypoint with the run-lifecycle DU + ephemeral memoryless composer. Wired to
+  real work-item state via `observe-work-item.ts` (slice 4). See
+  `OBSERVE_COMPOSER_AND_RUN_STATE.md`.
+- **≥3-agent constitution gate** (`packages/governance/src/constitution-gate.ts`).
+- **Metrics + 3-agent review board** (`packages/metrics`) — quantitative code
+  metrics + the qualitative board, now usable as a real gate via
+  `review-gate.ts` (slice 5). See `METRICS_AND_REVIEW_BOARD.md`.
+- **Slice 1 — State reconciliation table** (`packages/domain/src/state-reconciliation.ts`):
+  the North-Star-#2 single authoritative WorkItemState mapping + observe phase
+  binding + generic-vs-type-specific rule split. See `STATE_RECONCILIATION.md`.
+- **Slice 2 — Triage action resolver** (North-Star-#4): the 5 declared-but-
+  unimplemented `SupervisorTriageActionType` actions are now explicit — AnswerDirectly
+  and EscalateToNextSupervisor are implemented; the 3 substrate-dependent actions
+  resolve to a visible `Deferred` outcome rather than a silent rejection.
+- **Slice 3 — Graph projection v0** (North-Star-#5): typed node/edge projection of
+  work-item/anchor/decision records + the `decisionsForWorkItem` retrieval.
+
+Doc hygiene this checkpoint: all docs now carry frontmatter `status`
+(design / v0 / index) per `DOC_FRONTMATTER_CONVENTION.md`.
+
+Priorities #2 (reconciliation table) and #5 (graph projection) are now addressed;
+#4 (triage expansion) is partially addressed (2 of 5 new actions implemented, 3
+deferred). The cluster-integration gaps (hat-system projection, identity mapping,
+Hindsight, Hermes runtime, LGTM export) and the MCP server host remain deferred
+to the `full-ai-cluster` substrate.
 
 ## Verdict
 

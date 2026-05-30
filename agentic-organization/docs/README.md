@@ -1,3 +1,9 @@
+---
+title: Agentic Organization Docs
+canonical_name: Agentic Organization
+status: index
+---
+
 # Agentic Organization Docs
 
 This folder is the working design set for the Agentic Organization platform.
