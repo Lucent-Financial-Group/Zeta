@@ -68,3 +68,20 @@ module TriBoolean =
         | N, _
         | _, N -> N
         | _ -> F
+
+    // --- Computation-expression null-monad (the `tri { }` builder) ---
+    // B-0944 slice 2 spec: an F# computation-expression null-monad. `tri { let! b = cell
+    // ... return f b }` short-circuits on N (held uncertainty propagates) and resolves
+    // through T/F. The CE form is how the monad is exposed as a DSL.
+
+    /// Computation-expression builder for the Tri null-monad.
+    type TriBuilder() =
+        /// let! over a Tri: N propagates (held); T/F feed the continuation.
+        member _.Bind(t: Tri, f: bool -> Tri) : Tri = bindTri f t
+        /// return a boolean as a certain cell.
+        member _.Return(b: bool) : Tri = fromBool b
+        /// return! an existing Tri unchanged.
+        member _.ReturnFrom(t: Tri) : Tri = t
+
+    /// The Tri null-monad computation expression: `TriBoolean.tri { let! b = cell; return f b }`.
+    let tri = TriBuilder()
