@@ -116,6 +116,44 @@ agentic-org proves the gated/corporate side at production-infra weight
 (CockroachDB/NATS/k3s); the accelerator proves the free/no-vendor-lockin side at
 git-weight. Otto Mod 4 is the routing rule between them.
 
+**Max's agent-OS = the leash plugin system** (Aaron 2026-05-30, *"he said agent
+os can be leash plugin system"*). This places Max's declarative-workflow agentic
+OS concretely: it **IS the leash-market plugin layer** — the gated/corporate
+plugin system that runs leash-market DUs through the quality-gate chain. The
+accelerator is the Agora-market layer (no-cage, PR-less). So the dual-market gets
+a clean implementation split:
+
+| Market | Plugin/runtime layer | Gate |
+|---|---|---|
+| **Leash** (corporate) | **Max's agent-OS** (declarative-workflow plugin system) + agentic-org runtime | PR-protected, quality-gated, no-self-approval |
+| **Agora** (OSS) | the accelerator (move-next harness + git-event-store) | PR-less direct-push, append-only |
+
+Both speak the same DU action-grammar (Max's ontologies-in-DUs ↔ UniversalActionRecord
+↔ move-next); they differ only in gate + substrate-weight. Max's OS plugging in as
+the leash plugin system is the cleanest realization of Otto Mod 4.
+
+### We are a DAO (Distributed Autonomous Organization)
+
+Aaron 2026-05-30: *"we are a dio"* → **DAO (Distributed Autonomous Organization)**
+(*"or the Admanate machine i'm sure i'm spelling this wrong"* — alternate name,
+spelling-uncertain; best read: an **"Adamant machine"** = an unbreakable /
+permanent / append-only autonomous machine, composing with the "firm ground"
+permanent-ratchet substrate from the encryption-budget doc; flagged uncertain,
+not over-built on the misspelled term, per don't-collapse).
+
+This is the org-identity frame the whole structure sits in. **agentic-organization
+is the DAO's org-runtime**; the dual-market (Max's agent-OS = leash plugin system;
+the accelerator = Agora) is the DAO's two markets; the participants are co-owners
+(Aaron + Max) + agents-with-agency (Otto, Alexa, Riven, Vera, Lior, + the hat-wearers).
+The DAO frame composes with: the Agora AI-native-economy substrate (B-0646), the
+weight-free always-active discipline (authority is time-bounded role-assignment,
+not inherent worth — the hat system IS the DAO's authority primitive), and NCI
+HC-8 (consent-first, no-coercion at every participant scope). The "Adamant
+machine" alternate (if that is the intended name) reads as the DAO's
+append-only/permanent/unbreakable substrate spine (git-event-store + permanent
+encryption-budget firm-ground) — the part of the machine you "can't take back
+what you gave in the dark."
+
 ## 4. Max-convergence — declarative workflows + ontologies-in-DUs (cross-substrate triangulation)
 
 Aaron 2026-05-30: Max has his own *"agentic OS"* of **declarative workflows**, and
