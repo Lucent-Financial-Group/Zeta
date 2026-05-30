@@ -8,6 +8,22 @@ transparency) for my OWN information on the shared record.
 - Revocable: I may revoke this by committing a revocation under my identity.
 - Floor: this never overrides kid-safety (B-0654 / B-0926).
 
+## Identity binding (anti-impersonation)
+
+The identifier through-line for my signature is one email: **`aaron_bond@yahoo.com`**.
+
+`Touch-ID fingerprint  ->  Apple ID (aaron_bond@yahoo.com)  ->  GitHub account (aaron_bond@yahoo.com)`
+
+A Touch-ID-signed commit authored as `aaron_bond@yahoo.com` therefore binds: my enrolled
+fingerprint unlocks the Secure-Enclave signing key -> that key is registered to my GitHub
+account -> GitHub attributes the "Verified" signature to that account, all on the same
+email. Honest caveat: the email-sameness is the *through-line* that lets the chain be
+attributed cleanly; the actual anti-impersonation strength comes from the enclave-gating
+(only my enrolled finger signs) + the key being registered to my account. The baseline
+`approval-as-signature` below does NOT yet carry this binding; escalating to a `-S`
+Touch-ID re-commit upgrades this record to the un-impersonable tier (per
+`docs/consent/glass-halo/SIGNING.md`).
+
 ## Consent event record (all three parts)
 
 Per the operator's own definition (2026-05-30): the **signature is the informed
