@@ -371,12 +371,7 @@ describe("factory-health-monitor", () => {
             title: "Known branch keeps branch lane",
             mergedAt: "2026-05-30T05:10:00Z",
             headRefName: "claim/codex-source",
-            commits: [
-              {
-                authors: [{ name: "Lior", login: "", email: "lior@zeta.dev" }],
-                messageBody: "Co-Authored-By: Codex <noreply@openai.com>",
-              },
-            ],
+            mergeCommit: { oid: " cccccccccccccccccccccccccccccccccccccccc " },
           },
           {
             number: 17,
@@ -384,6 +379,13 @@ describe("factory-health-monitor", () => {
             mergedAt: "2026-05-30T05:20:00Z",
             headRefName: "research/mixed-source",
             mergeCommit: { oid: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+          },
+          {
+            number: 18,
+            title: "Subject mention is not attribution",
+            mergedAt: "2026-05-30T05:30:00Z",
+            headRefName: "research/codex-notes",
+            mergeCommit: { oid: "dddddddddddddddddddddddddddddddddddddddd" },
           },
         ]),
         "2026-05-30T06:00:00Z",
@@ -397,6 +399,8 @@ describe("factory-health-monitor", () => {
             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
             "research: mixed source\n\nCo-authored-by: Lior <lior@zeta.dev>\nCo-authored-by: Claude <noreply@anthropic.com>",
           ],
+          ["cccccccccccccccccccccccccccccccccccccccc", "docs: known branch\n\nCo-Authored-By: Lior <lior@zeta.dev>"],
+          ["dddddddddddddddddddddddddddddddddddddddd", "feat: add codex skill notes\n\nNo author trailer here."],
         ]),
       ),
     ).toEqual([
@@ -420,6 +424,13 @@ describe("factory-health-monitor", () => {
         occurredAt: "2026-05-30T05:20:00.000Z",
         description: "#17 Ambiguous unknown branch stays other",
         correlationKey: "pr:17",
+      },
+      {
+        id: "merged-pr-18",
+        trajectory: "other:research/codex-notes",
+        occurredAt: "2026-05-30T05:30:00.000Z",
+        description: "#18 Subject mention is not attribution",
+        correlationKey: "pr:18",
       },
     ]);
   });

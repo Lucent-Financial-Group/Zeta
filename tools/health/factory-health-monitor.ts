@@ -64,6 +64,16 @@ export interface CoincidenceWindow {
   events: CoincidenceEvent[];
 }
 
+interface MergedPullRequestObservationInput {
+  number?: number | null;
+  title?: string | null;
+  mergedAt?: string | null;
+  headRefName?: string | null;
+  mergeCommit?: {
+    oid?: string | null;
+  } | null;
+}
+
 export type LaneRunwayLane = "codex" | "otto" | "lior" | "alexa" | "riven" | "other";
 
 export type LaneRunwayNamedLane = Exclude<LaneRunwayLane, "other">;
@@ -410,8 +420,9 @@ export function factoryTrajectoryFromPullRequestBranch(branchName: string | null
   return lane === "other" ? `other:${branch.length === 0 ? "unknown" : branch}` : lane;
 }
 
-function factoryLaneFromPullRequestAuthorLabel(label: string | null | undefined): LaneRunwayNamedLane | null {
-  const normalized = label?.trim().toLowerCase() ?? "";
+function factoryLaneFromPullRequestAuthorLabelLine(line: string | null | undefined): LaneRunwayNamedLane | null {
+  const match = line?.trim().match(/^(?:co-authored-by|author):\s*(.+)$/i);
+  const normalized = match?.[1]?.trim().toLowerCase() ?? "";
   if (normalized.length === 0) {
     return null;
   }
@@ -425,42 +436,10 @@ function factoryLaneFromPullRequestAuthorLabel(label: string | null | undefined)
   return null;
 }
 
-function factoryLanesFromPullRequestCommits(
-  commits: ReadonlyArray<{
-    authors?: ReadonlyArray<{
-      email?: string | null;
-      login?: string | null;
-      name?: string | null;
-    }> | null;
-    messageBody?: string | null;
-    messageHeadline?: string | null;
-  }> | null | undefined,
-  mergeCommitMessage: string | null | undefined,
-): LaneRunwayNamedLane[] {
+function factoryLanesFromMergeCommitMessage(mergeCommitMessage: string | null | undefined): LaneRunwayNamedLane[] {
   const lanes = new Set<LaneRunwayNamedLane>();
-  for (const commit of commits ?? []) {
-    for (const author of commit.authors ?? []) {
-      const lane =
-        factoryLaneFromPullRequestAuthorLabel(author.name) ??
-        factoryLaneFromPullRequestAuthorLabel(author.login) ??
-        factoryLaneFromPullRequestAuthorLabel(author.email);
-      if (lane !== null) {
-        lanes.add(lane);
-      }
-    }
-
-    for (const text of [commit.messageHeadline, commit.messageBody]) {
-      for (const line of text?.split(/\r?\n/) ?? []) {
-        const lane = factoryLaneFromPullRequestAuthorLabel(line);
-        if (lane !== null) {
-          lanes.add(lane);
-        }
-      }
-    }
-  }
-
   for (const line of mergeCommitMessage?.split(/\r?\n/) ?? []) {
-    const mergeCommitLane = factoryLaneFromPullRequestAuthorLabel(line);
+    const mergeCommitLane = factoryLaneFromPullRequestAuthorLabelLine(line);
     if (mergeCommitLane !== null) {
       lanes.add(mergeCommitLane);
     }
@@ -471,18 +450,6 @@ function factoryLanesFromPullRequestCommits(
 
 function factoryTrajectoryFromPullRequest(
   branchName: string | null | undefined,
-  commits:
-    | ReadonlyArray<{
-        authors?: ReadonlyArray<{
-          email?: string | null;
-          login?: string | null;
-          name?: string | null;
-        }> | null;
-        messageBody?: string | null;
-        messageHeadline?: string | null;
-      }>
-    | null
-    | undefined,
   mergeCommitMessage: string | null | undefined,
 ): string {
   const branch = branchName?.trim() ?? "";
@@ -491,7 +458,7 @@ function factoryTrajectoryFromPullRequest(
     return branchLane;
   }
 
-  const commitLanes = factoryLanesFromPullRequestCommits(commits, mergeCommitMessage);
+  const commitLanes = factoryLanesFromMergeCommitMessage(mergeCommitMessage);
   if (commitLanes.length === 1) {
     return commitLanes[0] ?? `other:${branch.length === 0 ? "unknown" : branch}`;
   }
@@ -505,26 +472,26 @@ export function mergedPullRequestEventsFromJson(
   lookbackMs = FACTORY_EVENT_LOOKBACK_MS,
   mergeCommitMessagesByOid?: ReadonlyMap<string, string>,
 ): CoincidenceEvent[] {
+  return mergedPullRequestEventsFromParsed(
+    parseMergedPullRequests(output),
+    nowIso,
+    lookbackMs,
+    mergeCommitMessagesByOid,
+  );
+}
+
+function parseMergedPullRequests(output: string): MergedPullRequestObservationInput[] {
+  return JSON.parse(output) as MergedPullRequestObservationInput[];
+}
+
+function mergedPullRequestEventsFromParsed(
+  prs: readonly MergedPullRequestObservationInput[],
+  nowIso = new Date().toISOString(),
+  lookbackMs = FACTORY_EVENT_LOOKBACK_MS,
+  mergeCommitMessagesByOid?: ReadonlyMap<string, string>,
+): CoincidenceEvent[] {
   const nowMs = Date.parse(nowIso);
   const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
-  const prs = JSON.parse(output) as Array<{
-    number?: number | null;
-    title?: string | null;
-    mergedAt?: string | null;
-    headRefName?: string | null;
-    commits?: Array<{
-      authors?: Array<{
-        email?: string | null;
-        login?: string | null;
-        name?: string | null;
-      }> | null;
-      messageBody?: string | null;
-      messageHeadline?: string | null;
-    }> | null;
-    mergeCommit?: {
-      oid?: string | null;
-    } | null;
-  }>;
 
   const observations = prs
     .map((pr): CoincidenceEvent | null => {
@@ -541,14 +508,13 @@ export function mergedPullRequestEventsFromJson(
         return null;
       }
 
+      const mergeCommitOid = pr.mergeCommit?.oid?.trim();
       const mergeCommitMessage =
-        pr.mergeCommit?.oid !== undefined && pr.mergeCommit.oid !== null
-          ? mergeCommitMessagesByOid?.get(pr.mergeCommit.oid)
-          : undefined;
+        mergeCommitOid !== undefined && mergeCommitOid.length > 0 ? mergeCommitMessagesByOid?.get(mergeCommitOid) : undefined;
 
       return {
         id: `merged-pr-${pr.number}`,
-        trajectory: factoryTrajectoryFromPullRequest(pr.headRefName, pr.commits, mergeCommitMessage),
+        trajectory: factoryTrajectoryFromPullRequest(pr.headRefName, mergeCommitMessage),
         occurredAt: new Date(mergedMs).toISOString(),
         description: `#${pr.number} ${pr.title?.trim() || "(untitled merged PR)"}`,
         correlationKey: `pr:${pr.number}`,
@@ -586,13 +552,9 @@ export function mergedPullRequestEventsFromJson(
   return observations;
 }
 
-function mergeCommitMessagesForUnknownPullRequestBranches(output: string): ReadonlyMap<string, string> {
-  const prs = JSON.parse(output) as Array<{
-    headRefName?: string | null;
-    mergeCommit?: {
-      oid?: string | null;
-    } | null;
-  }>;
+function mergeCommitMessagesForUnknownPullRequestBranches(
+  prs: readonly MergedPullRequestObservationInput[],
+): ReadonlyMap<string, string> {
   const oids = [
     ...new Set(
       prs
@@ -1373,8 +1335,9 @@ function checkCoincidenceEvents(): HealthSignal[] {
     });
   } else {
     try {
-      const mergeCommitMessages = mergeCommitMessagesForUnknownPullRequestBranches(mergedPRs.stdout);
-      events.push(...mergedPullRequestEventsFromJson(mergedPRs.stdout, undefined, undefined, mergeCommitMessages));
+      const mergedPullRequests = parseMergedPullRequests(mergedPRs.stdout);
+      const mergeCommitMessages = mergeCommitMessagesForUnknownPullRequestBranches(mergedPullRequests);
+      events.push(...mergedPullRequestEventsFromParsed(mergedPullRequests, undefined, undefined, mergeCommitMessages));
     } catch {
       sourceWarnings.push({
         surface: "coincidence",

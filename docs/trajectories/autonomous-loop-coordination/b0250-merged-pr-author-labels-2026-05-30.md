@@ -29,9 +29,12 @@ missing labels for a known agent lane.
 
 ## Live Check
 
-After the patch, the live monitor reported 15 coincidence windows. The former
-`other:backlog/...` top window is now labeled as `otto`, and the merged-PR
-source stayed queryable.
+After the initial patch, the live monitor reported 15 coincidence windows. A
+review follow-up then restricted author detection to trailer-style lines and
+removed the unused PR-commit author path. With that stricter parser, the live
+monitor reported 16 coincidence windows, but the top windows are now labeled as
+Codex/Otto adjacency rather than verbose `other:backlog/...` branch labels, and
+the merged-PR source stayed queryable.
 
 ## Verification
 
