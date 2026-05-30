@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   EXTENDED_HAMMING_8_4_4_GENERATOR, enumerateCodewords, isDoublyEven, isSelfDual,
-  weight, dotMod2, canonicalCodeMaterial, deriveKeySeed, adinkraEccProof,
+  weight, dotMod2, deriveKeySeed, adinkraEccProof,
 } from "./adinkra-ecc-prototype";
 
 describe("Adinkra [8,4,4] ECC — B-0623 acceptance #3 constructive proof path", () => {
@@ -17,14 +17,14 @@ describe("Adinkra [8,4,4] ECC — B-0623 acceptance #3 constructive proof path",
     expect(isSelfDual(cw)).toBe(true);
     cw.forEach((a) => cw.forEach((b) => expect(dotMod2(a, b)).toBe(0)));
   });
-  test("key-seed is deterministic (same code → same seed)", async () => {
-    const a = await deriveKeySeed(cw);
-    const b = await deriveKeySeed(enumerateCodewords([...EXTENDED_HAMMING_8_4_4_GENERATOR].reverse()));
+  test("key-seed is deterministic (same code → same seed)", () => {
+    const a = deriveKeySeed(cw);
+    const b = deriveKeySeed(enumerateCodewords([...EXTENDED_HAMMING_8_4_4_GENERATOR].reverse()));
     expect(a).toBe(b); // order-independent (canonical material)
     expect(a).toHaveLength(64); // SHA-256 hex
   });
-  test("full proof path holds", async () => {
-    const p = await adinkraEccProof();
+  test("full proof path holds", () => {
+    const p = adinkraEccProof();
     expect(p.doublyEven && p.selfDual).toBe(true);
     expect(p.dimension).toBe(4);
   });

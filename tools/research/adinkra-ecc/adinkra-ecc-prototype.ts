@@ -21,6 +21,8 @@
 // the primer (indistinguishability / forward-secrecy / non-compromise of the ECC)
 // are NOT answered here. This is the proof-of-construction, not a security claim.
 
+import { createHash } from "node:crypto";
+
 /** A length-8 binary codeword as a tuple of 8 bits (0|1). */
 export type Bits8 = readonly [number, number, number, number, number, number, number, number];
 
@@ -40,7 +42,13 @@ export const EXTENDED_HAMMING_8_4_4_GENERATOR: readonly Bits8[] = [
 
 /** XOR two length-8 bit vectors (GF(2) addition). */
 export function xor8(a: Bits8, b: Bits8): Bits8 {
-  return a.map((bit, i) => bit ^ b[i]) as unknown as Bits8;
+  // Construct the 8-tuple explicitly: literal indices on a Bits8 tuple are
+  // exact `number` (not `number | undefined`), so the return type is honest
+  // without an `as unknown as Bits8` cast.
+  return [
+    a[0] ^ b[0], a[1] ^ b[1], a[2] ^ b[2], a[3] ^ b[3],
+    a[4] ^ b[4], a[5] ^ b[5], a[6] ^ b[6], a[7] ^ b[7],
+  ];
 }
 
 /** Hamming weight (number of 1-bits). */
@@ -50,23 +58,39 @@ export function weight(c: Bits8): number {
 
 /** Standard inner product mod 2 (used for self-duality / orthogonality). */
 export function dotMod2(a: Bits8, b: Bits8): number {
-  return a.reduce((acc, bit, i) => acc ^ (bit & b[i]), 0);
+  // Literal indices keep each `&` operand exact `number` (honest under
+  // noUncheckedIndexedAccess); the chained XOR is the GF(2) inner product.
+  return (
+    (a[0] & b[0]) ^ (a[1] & b[1]) ^ (a[2] & b[2]) ^ (a[3] & b[3]) ^
+    (a[4] & b[4]) ^ (a[5] & b[5]) ^ (a[6] & b[6]) ^ (a[7] & b[7])
+  );
 }
 
 /**
- * Enumerate all 2^k codewords of the linear code spanned by `generators`
- * (k = generators.length). Each codeword is the GF(2) sum of a subset of rows.
+ * Enumerate the linear code spanned by `generators` — the SET of distinct
+ * codewords, each the GF(2) sum of a subset of rows. For k linearly-independent
+ * generators (the [8,4,4] case, whose I_4 block guarantees independence) this is
+ * exactly 2^k words. If the rows are NOT independent the code is smaller than
+ * 2^k, so duplicate sums are de-duplicated here rather than over-counted — this
+ * keeps `isSelfDual`'s `|C| = 2^(n/2)` dimension check honest (a dependent
+ * generator set would otherwise inflate `codewords.length` and false-positive).
  */
 export function enumerateCodewords(generators: readonly Bits8[]): Bits8[] {
   const k = generators.length;
   const zero: Bits8 = [0, 0, 0, 0, 0, 0, 0, 0];
+  const seen = new Set<string>();
   const out: Bits8[] = [];
   for (let mask = 0; mask < 1 << k; mask++) {
     let cw: Bits8 = zero;
     for (let i = 0; i < k; i++) {
-      if (mask & (1 << i)) cw = xor8(cw, generators[i]);
+      const row = generators[i];
+      if (row !== undefined && (mask & (1 << i))) cw = xor8(cw, row);
     }
-    out.push(cw);
+    const key = cw.join("");
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(cw);
+    }
   }
   return out;
 }
@@ -104,29 +128,30 @@ export function canonicalCodeMaterial(codewords: readonly Bits8[]): string {
  * The "code → key" proof path: the SAME code always yields the SAME seed; a
  * production KDF would substitute blake3 (Lucent-KSK substrate) + add the
  * security properties the primer flags as open research.
+ *
+ * Uses `node:crypto` `createHash` — the repo-uniform hashing pattern (vs the
+ * WebCrypto `crypto.subtle` async path) — so the call is synchronous and
+ * consistent with the rest of `tools/`.
  */
-export async function deriveKeySeed(codewords: readonly Bits8[]): Promise<string> {
+export function deriveKeySeed(codewords: readonly Bits8[]): string {
   const material = canonicalCodeMaterial(codewords);
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(material));
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+  return createHash("sha256").update(material, "utf8").digest("hex");
 }
 
 /** The full constructive proof path, as one object (code → properties → key). */
-export async function adinkraEccProof(): Promise<{
+export function adinkraEccProof(): {
   codewords: Bits8[];
   doublyEven: boolean;
   selfDual: boolean;
   dimension: number;
   keySeed: string;
-}> {
+} {
   const codewords = enumerateCodewords(EXTENDED_HAMMING_8_4_4_GENERATOR);
   return {
     codewords,
     doublyEven: isDoublyEven(codewords),
     selfDual: isSelfDual(codewords),
     dimension: EXTENDED_HAMMING_8_4_4_GENERATOR.length,
-    keySeed: await deriveKeySeed(codewords),
+    keySeed: deriveKeySeed(codewords),
   };
 }
