@@ -329,6 +329,38 @@ the guardian exists precisely so a dangerous-sovereign-user cannot get shared-ec
 The greedy-vs-paranoid agent split = multi-oracle BFT at swarm scope; ideological-tension-as-
 safety = monoculture-misses-the-blind-spot-that-kills-a-kid (operator named this himself).
 
+### Floor enforcement is at the federation boundary, NOT in the code (operator 2026-05-30 correction)
+
+Otto-CLI initially framed the floor + guardian as something that "must NOT be fork-removable."
+Operator corrected that (verbatim):
+
+> *"you can't stop what a fork removes you can only refuse to do business with them, they
+> control the code."*
+
+Correct model: the kid-safety floor is NOT enforced by making code technically unremovable
+(impossible in open source AND the DRM/centralized-control anti-pattern the architecture
+rejects). It is enforced at the FEDERATION BOUNDARY -- refusal to do business. You cannot stop
+a fork from removing the floor (they control their code); the shared economy refuses their
+rollups, refuses to federate, refuses their data into the common Git/CRDT consensus. The floor
+lives at the boundary (do-we-accept-your-data), not in the bytes (can't-touch-your-code). The
+floor is a MEMBERSHIP CONDITION, not a lock.
+
+More consistent with the rest of the architecture, not less:
+- good-citizen: sovereignty is real (fork + remove anything); shared-economy access is conferred
+  by the collective, which declines the floor-remover.
+- "not like-like" (batch 3): a floor-removing fork is not-like-like; consensus refuses its data
+  -- the same mechanism.
+- NCI / non-coercion: refusal-to-interoperate is the collective's OWN consent exercised; the
+  fork is not coerced (cannot be, will not be); non-coercive enforcement = withdraw participation.
+- cluster-fork-as-trust-boundary (B-0829): the fork boundary IS the trust boundary; floor-
+  compliance is a federation precondition, not a code constraint.
+- game-shape discriminator (only-way-to-lose-is-not-to-play): a floor-removing fork plays a
+  different game; the floored economy's move is the WarGames inversion -- the only winning move
+  is not to play THAT game with THEM, at federation scope.
+
+Two economies can coexist; the floored one does not control the unfloored one's code -- it just
+does not roll up with it.
+
 ### Lands on existing substrate
 
 - "you gotta be light" = the lightlike substrate (local-only-heavy loses parallelizable-traceable properties)
