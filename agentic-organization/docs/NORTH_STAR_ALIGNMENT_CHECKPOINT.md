@@ -698,3 +698,45 @@ keep-alive loop is stopped and its current tick awaited.
 This resolves the cadence-coupling caveat noted in the Phase 6 update. Full suite
 519 pass, 0 fail (6 live skipped); tsc 0; the boot-path test (main.test.ts) stays
 green — the proven boot path was untouched.
+
+## Update 2026-05-30 — durable data plane runs to completion in kubernetes (+ a real bug the live cluster caught)
+
+Hermes runs and Hindsight memory are now durable (Cockroach-backed, migrations
+0013 + 0014) and wired into the deployed worker. The full autonomous data plane
+now runs to COMPLETION in-cluster and every layer is durable:
+
+For a single task event (work item work-7f7453d4...), after the worker processed it:
+- hermes_run.state = completed; outcome = "handled create_supervisor_triage";
+  evidence = ["evt-7f7453d4..."] (JSON evidence round-trips through JSONB)
+- hindsight_memory = "processed create_supervisor_triage for work item ..."
+  (the agent's durable retained learning, scoped + sticky)
+- agent_heartbeat = agent-engineering_manager-... (durable liveness, watched by
+  the independent keep-alive loop)
+- reaction_plan = completed
+
+### A real bug the live cluster caught (and unit tests missed)
+
+The first durable run STALLED at `running` with a `duplicate key violates
+agentic_org_hermes_run_pkey` failure. Root cause: a fresh Cockroach Hermes
+runtime / memory adapter is created per reaction-plan execution, and the DEFAULT
+id generators used a per-instance counter (hermes-run-1 / mem-1) that reset every
+execution -> collision on the first retry. The mocked unit tests passed an
+explicit deterministic id generator, so they never exercised the default. Fixes:
+default id generators now use crypto.randomUUID(); completeRun casts the evidence
+param to JSONB. A new live integration test (hermes-memory-live-integration)
+exercises the real DB (unique ids across runs, JSON evidence round-trip, scoped
+recall) so this class of bug is guarded. Full suite 536/536 pass, 0 skipped, vs
+live Cockroach + NATS; tsc 0.
+
+### State of the system
+
+Durable + Cockroach-backed + proven end-to-end in kubernetes:
+- Control plane: org liveness + agent liveness; independent fast keep-alive loop.
+- Data plane: durable Hermes runs + durable Hindsight memory; runs complete.
+- Full loop: task event -> reaction plan -> durable Hermes agent run -> durable
+  memory + liveness -> keep-alive watches -> reassignment on silence -> completed.
+
+The remaining piece is the agent's internal DECISION backend (simulated in-process
+Hermes today; a real LLM/sandbox backend swaps in behind the unchanged
+HermesRuntime port) plus the full org-artifact structure (decision records via the
+command pipeline). Every surrounding piece is real, durable, tested, and proven.
