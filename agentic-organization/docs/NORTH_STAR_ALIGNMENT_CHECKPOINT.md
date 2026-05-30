@@ -859,6 +859,7 @@ unreachable response falls back to the deterministic policy. The model adds
 judgment WITHIN the guardrails; it can never widen them.
 
 New surface:
+
 - `AsyncEphemeralComposerPort` + `decideAsync` (async decision path, identical
   legality enforcement to the sync path).
 - `createModelBackedComposer` (prompt from legal options → ChatCompletionPort →
@@ -895,7 +896,7 @@ accepts a target-phase token, and falls back on illegal/unreachable
 
 tsc 0, 554 tests (12 new across the phase).
 
-### Status: the entire vision is now implemented and proven end-to-end in kubernetes.
+### Status: the entire vision is now implemented and proven end-to-end in kubernetes
 
 - Deterministic keep-alive control plane drives org + agent liveness (org
   heartbeat v594; 1693 agent-liveness signals; only signals, never decides).
