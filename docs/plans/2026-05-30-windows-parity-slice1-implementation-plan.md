@@ -19,6 +19,24 @@ no UAC/admin).
 
 ---
 
+## Build-time corrections (AS-BUILT — supersedes the per-task locations below)
+
+Three issues surfaced during execution (the tick's own "assume decomposition has mistakes"):
+
+1. **Helper + test live in `tools/persistence/`, NOT `.claude/bin/`** — `.claude/bin/` is
+   gitignored (`bin/`) so a new file there never commits, and `bun test` does not discover
+   tests in dot-directories. The tick imports `../../tools/persistence/loop-subprocess-path`.
+2. **The loop runs against a DEDICATED CLONE (`%LOCALAPPDATA%\zeta-otto-loop\Zeta`), never the
+   operator checkout** — the tick does `git reset --hard origin/main`, which would wipe a
+   working checkout. The wrapper sets `ZETA_CLAUDE_LOOP_WORKTREE` to the clone (NOT `$RepoRoot`
+   as some task bodies below wrongly state). Installer gained `--ref` + clone-setup. macOS
+   dual-agent parity. (Operator-approved 2026-05-30.)
+3. **`posix.join`** (not host `join`) builds the macOS/Linux PATH so the helper is host-independent.
+
+Authoritative "how it works": `tools/persistence/windows/README.md` + commits cb630e98b, 3c592e9de.
+
+---
+
 ## File structure
 
 | File | Responsibility |
