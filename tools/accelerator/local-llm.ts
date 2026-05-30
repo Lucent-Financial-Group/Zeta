@@ -19,8 +19,16 @@
 // safety rail).
 
 // ─── Backend interface ───────────────────────────────────────────────
+// DST note (Aaron 2026-05-30): a small local model at temperature 0 (greedy) +
+// a fixed `seed` + a PINNED model/quantization is DETERMINISTIC — same input ⇒
+// same output, reproducibly — so it can be a real (not mocked) fixture in
+// deterministic-simulation tests (e.g. observe.ts's auto-classifier), not just a
+// runtime selector. Cross-hardware caveat: CPU float order can differ across
+// runner architectures, so pin the runner image (or snapshot the output) when
+// asserting exact classifications across machines; on one image it is stable.
 export interface CompleteOptions {
-  readonly temperature?: number; // default 0 (reproducible — DST discipline)
+  readonly temperature?: number; // default 0 (greedy — reproducible, DST)
+  readonly seed?: number; // fix for deterministic-simulation reproducibility
   readonly maxTokens?: number; // selection needs only a few tokens
 }
 
@@ -35,6 +43,7 @@ export interface OllamaOptions {
   readonly model?: string; // tiny instruct model
   readonly host?: string;
   readonly timeoutMs?: number;
+  readonly seed?: number; // default deterministic seed (DST); override per-call
 }
 
 /** A ModelBackend backed by a local Ollama server (no account/key). */
@@ -42,6 +51,7 @@ export function ollamaBackend(opts: OllamaOptions = {}): ModelBackend {
   const model = opts.model ?? "qwen2.5:0.5b";
   const host = opts.host ?? "http://127.0.0.1:11434";
   const timeoutMs = opts.timeoutMs ?? 60_000;
+  const defaultSeed = opts.seed ?? 0; // fixed seed ⇒ reproducible (DST)
   return {
     name: `ollama:${model}`,
     async complete(prompt, o) {
@@ -57,6 +67,7 @@ export function ollamaBackend(opts: OllamaOptions = {}): ModelBackend {
             stream: false,
             options: {
               temperature: o?.temperature ?? 0,
+              seed: o?.seed ?? defaultSeed,
               num_predict: o?.maxTokens ?? 6,
             },
           }),
