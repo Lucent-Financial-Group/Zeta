@@ -10,9 +10,13 @@
 /goal Build the "orchestration moat" for this cluster-native AI-organization OS: close the
 capability gap on the reference project (gastown), then go decisively further by exploiting our
 deterministic, rule-enforced kernel to deliver verifiable, simulatable, self-improving agentic
-orchestration. Work one phase at a time, TDD-first, SOLID, each proven in KIND, with a subagent
-review at each phase, committing after each and recording progress in
-docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md. Do not stop until the sequenced plan below is complete.
+orchestration. Work one phase at a time, TDD-first, SOLID, with a subagent review at each phase.
+At EVERY major checkpoint you MUST fully end-to-end test the system in KIND — rebuild the worker
+image, redeploy, confirm a clean boot, and run a `deploy/run-*.ts` proof against the live in-cluster
+Cockroach/NATS that prints a passing JSON PROOF report (the exact method is Section 7 — it is how
+every track in this repo was validated; a phase is NOT done until its KIND proof is green). Commit
+after each phase and record progress in docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md. Do not stop until
+the sequenced plan below is complete.
 Think deeper than the plan as you go: the plan is the floor, not the ceiling — your job is to find
 what truly puts us ahead.
 
@@ -183,17 +187,111 @@ roadmap is a living artifact; improving it is part of the goal.
   adapters get a deterministic mock round-trip + a kind proof.
 - **SOLID:** ports + adapters, pure planners returning data the caller persists, House DUs, one
   responsibility per module. Extend via new legal-transition functions + lanes, never new bypasses.
-- **Prove in KIND at each phase:** a `deploy/run-*.ts` proof against live in-cluster Cockroach/NATS,
-  printing a JSON PROOF report. The redeploy loop:
-  `docker build -t agentic-org-worker:keepalive . && kind load docker-image agentic-org-worker:keepalive --name agentic-org && kubectl -n agentic-org rollout restart deploy/worker`.
+- **Prove in KIND at each phase (mandatory — Section 7 is the full method):** a `deploy/run-*.ts`
+  proof against live in-cluster Cockroach/NATS that prints a passing JSON PROOF report, on a freshly
+  rebuilt+redeployed worker image. This is non-negotiable and is exactly how every existing track was
+  validated. A phase with green unit tests but no green KIND proof is NOT done.
 - **Subagent review at each phase:** dispatch a code-reviewer subagent on the diff; apply
   high-confidence findings with regression tests before committing.
 - **Commit after each phase** with the trailer `Co-Authored-By: Claude Opus 4.8 (1M context)
   <noreply@anthropic.com>`, and append a track section to `docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md`.
-- **Definition of done per phase:** tsc 0; `npm test` 0 fail; the new behavior proven in kind with a
-  PROOF report; subagent-reviewed; committed; recorded in NORTH_STAR.
+- **Definition of done per phase:** tsc 0; `npm test` 0 fail; **the new behavior end-to-end proven in
+  KIND with a passing PROOF report on the rebuilt image** (Section 7); subagent-reviewed; committed;
+  recorded in NORTH_STAR.
 
-## 7. Hard-won gotchas (these will cost you days if you don't know them)
+## 7. How to fully end-to-end test in KIND at every checkpoint (exactly how everything here was validated)
+
+This is not optional polish — it is the validation discipline that made every track in this repo
+trustworthy. "Proven in kind" in NORTH_STAR means a track was driven against **real** in-cluster
+Cockroach + NATS (+ Ollama + Hindsight) and printed a passing PROOF report. Do the same for every
+phase you build. There are three test tiers; the third (KIND) is the one a checkpoint gates on.
+
+### 7.1 The three-tier test pyramid (what each tier proves)
+
+1. **Fast hermetic unit/contract tests** (`npm test`, ~845 of them, 0 network). Pure logic against
+   the in-memory fakes in `packages/state`. These run on every change and in `ci.yml`. They prove
+   the *logic* is correct in isolation.
+2. **Env-gated integration/contract tests** (`npm run test:integration`, the 7 that skip locally).
+   The *same* code against **real** Cockroach + NATS, gated on `AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL`
+   + `AGENTIC_ORG_NATS_INTEGRATION_SERVERS`. They prove the *adapters* speak the real wire. `ci.yml`'s
+   sibling `integration.yml` stands real containers and runs them green (and fails if any skips).
+3. **KIND end-to-end proofs** (`deploy/run-*.ts`). The whole stack, live in the cluster. **This is
+   the checkpoint gate.** Each proof exercises the exact adapters + migrations + kernel against the
+   in-cluster Cockroach and prints a JSON PROOF report. "Skipped locally" ≠ "unverified" precisely
+   because tier 3 covers what tier 2 skips.
+
+### 7.2 The cluster (one-time orientation)
+
+`kind` cluster `agentic-org`, namespace `agentic-org`. Deployments live in `deploy/k8s/`:
+`10-cockroach`, `20-nats`, `25-ollama`, `35-hindsight`, `30-worker` (the always-on org runtime that
+drives the cadence lanes). Bring-up is `kubectl apply -f deploy/k8s/`. Confirm health with
+`kubectl -n agentic-org get pods` (all Running) and the worker boot log (Section 7.4).
+
+### 7.3 A `deploy/run-*.ts` proof — the anatomy (copy this shape for your phase)
+
+Every proof is a host-side script with the same skeleton (read `deploy/run-knowledge-graph.ts`,
+`run-work-os-cycle.ts`, `run-work-provider.ts` as worked examples):
+
+```
+pg Pool(COCKROACH_DATABASE_URL)
+  → CockroachSqlClient → createCockroachSqlExecutor
+  → apply the migration(s) for this track (splitSqlStatements + execute)
+  → run the REAL logic (the kernel / lane / adapter under test) against live state
+  → assert outcomes + emit OrgEvents
+  → console.log(JSON.stringify({ ...report, PROOF: ok ? "PASS" : "FAIL" }, null, 2))
+  → process.exitCode = ok ? 0 : 1
+```
+
+Run it against the in-cluster Cockroach via a **port-forward**, and run the forward + the proof in
+**one** Bash invocation (the forward dies between separate Bash calls):
+
+```
+kubectl -n agentic-org port-forward svc/cockroach 26259:26257 >/tmp/pf.log 2>&1 & PF=$!; sleep 6; \
+  COCKROACH_DATABASE_URL=postgresql://root@localhost:26259/defaultdb?sslmode=disable \
+  node --experimental-strip-types deploy/run-<your-track>.ts; kill $PF
+```
+
+For an **outward-facing** wire (a provider PR/card), stand a real loopback `node:http` mock instead
+of touching github.com — `deploy/run-work-provider.ts` is the template: it drives the REAL
+resolver-built port over native fetch against a controllable endpoint, asserts the token never
+appears in any call, prints PROOF: PASS. Never fabricate a real external call.
+
+### 7.4 The full checkpoint ritual (do ALL of this at each major checkpoint)
+
+1. **Rebuild + redeploy the worker so the deployed image matches HEAD** (any code change is invisible
+   in-cluster until you do this):
+   ```
+   docker build -t agentic-org-worker:keepalive . \
+     && kind load docker-image agentic-org-worker:keepalive --name agentic-org \
+     && kubectl -n agentic-org rollout restart deploy/worker \
+     && kubectl -n agentic-org rollout status deploy/worker --timeout=120s
+   ```
+2. **Confirm a clean boot** — the worker drives all cadence lanes with no errors. Target the freshest
+   Running pod (a rollout leaves a terminating one):
+   ```
+   POD=$(kubectl -n agentic-org get pods -l app=worker --field-selector=status.phase=Running -o jsonpath='{.items[-1:].metadata.name}')
+   kubectl -n agentic-org logs "$POD" | grep -oE '"lane":"[a-z-]+"' | sort | uniq -c   # 4 lanes tick
+   kubectl -n agentic-org logs "$POD" | grep -cE 'worker run failed|"level":"error"'    # MUST be 0
+   ```
+3. **Run your track's `deploy/run-*.ts` proof** (Section 7.3) and require `PROOF: PASS` (exit 0).
+4. **Verify the org_event ledger reflects the new behavior** — the universal trace is the
+   ground-truth observability surface; your new transitions should appear there. (When the M1
+   conformance checker exists, also assert the ledger replays cleanly through the kernel.)
+5. **Only then** is the phase done: record the proof's report in the NORTH_STAR track section.
+
+### 7.5 KIND gotchas that bite during e2e testing
+
+- **Host port 26257 is squatted by Docker** → port-forward to **26259** for proofs; for raw DDL use a
+  pod-exec: `kubectl -n agentic-org exec -i deploy/cockroach -- env -u COCKROACH_URL ./cockroach sql --insecure --host=localhost:26257 --database=defaultdb < /tmp/file.sql`.
+- **Integration tests want a FRESH database** — they assume a clean DB and collide on re-run against a
+  dirty one. Point them at a fresh `itest` db (`CREATE DATABASE itest`) or a fresh container; CI's
+  ephemeral container is clean by construction.
+- **Backgrounded `git push` / port-forward outcomes** must be verified directly (`git ls-remote`,
+  re-grep the log) — captured output from a background task is unreliable.
+- **The deployed image must match HEAD** — if you skip the rebuild, your "proof" validates stale code.
+  Always rebuild before the proof so the green report corresponds to committed code.
+
+## 8. Hard-won gotchas (these will cost you days if you don't know them)
 
 - **Security Write-hook false-positives:** the harness blocks the Write tool on the substrings
   "eval" (matches "retrieval", `RegExp.exec(`) and "exec". Workaround: write such files via a Bash
@@ -218,7 +316,7 @@ roadmap is a living artifact; improving it is part of the goal.
   `npm run test:integration` against live Cockroach+NATS runs them green; `.github/workflows/
   integration.yml` does this in CI. Don't "fix" the skips.
 
-## 8. Definition of done (the whole goal)
+## 9. Definition of done (the whole goal)
 
 The sequenced plan (M1+M4 → G3 → G1 → E2 → G2/M3/M5 → M2 → E3 + polish) is built, each phase proven
 in kind, subagent-reviewed, committed, and recorded in NORTH_STAR — AND the roadmap doc has grown
