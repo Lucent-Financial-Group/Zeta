@@ -42,4 +42,28 @@ $env:ZETA_CLAUDE_LOOP_REF       = $ref
 Set-Location $Clone
 $tick = Join-Path $Clone '.claude\bin\claude-loop-tick.ts'
 & $bun $tick *>> (Join-Path $LogDir 'wrapper.log')
-exit $LASTEXITCODE
+$tickExit = $LASTEXITCODE
+
+# slice-1b — cross-machine heartbeat-push to the shared agent-heartbeats branch (PR-free,
+# REST, ZetaID-keyed via tools/agent-heartbeats/write-heartbeat.ts). Gated to ~10 min to be
+# host-considerate: the per-minute tick covers local git-state; cross-machine "is-it-alive"
+# visibility doesn't need every minute. Best-effort — never fails the tick.
+$hbStamp = Join-Path $Base 'last-heartbeat-push.txt'
+$pushHb = $true
+if (Test-Path $hbStamp) {
+    try {
+        $last = [datetime]::Parse((Get-Content $hbStamp -Raw).Trim())
+        if (((Get-Date) - $last).TotalMinutes -lt 10) { $pushHb = $false }
+    } catch { $pushHb = $true }
+}
+if ($pushHb) {
+    try {
+        & $bun (Join-Path $Clone 'tools\agent-heartbeats\write-heartbeat.ts') `
+            --push --persona-name otto-windows --disposition loop-tick *>> (Join-Path $LogDir 'wrapper.log')
+        (Get-Date -Format o) | Out-File -Encoding utf8 $hbStamp
+    } catch {
+        "$(Get-Date -Format o) WARN heartbeat-push failed: $_" | Out-File -Append (Join-Path $LogDir 'wrapper.err')
+    }
+}
+
+exit $tickExit
