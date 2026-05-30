@@ -175,7 +175,7 @@ RUN bash -lc 'set -eu; eval "$(mise activate bash)"; \
       curl -fsS http://127.0.0.1:11434/api/version >/dev/null 2>&1 && break; \
       sleep 1; \
     done; \
-    curl -fsS http://127.0.0.1:11434/api/version; \
+    curl -fsS http://127.0.0.1:11434/api/version || { echo "=== ollama serve log (/tmp/ollama.log) — daemon not reachable ==="; cat /tmp/ollama.log 2>/dev/null || echo "(no /tmp/ollama.log)"; echo "=== end serve log ==="; exit 7; }; \
     MODEL="$(grep -E "^model" tools/setup/manifests/local-llm | awk "{print \$2}")"; \
     echo "asserting model: $MODEL"; \
     ollama list; \
