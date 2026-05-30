@@ -37,7 +37,7 @@
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { join, relative } from "node:path";
+import { isAbsolute, join, relative, resolve } from "node:path";
 
 // Mirrors DIVERGENCE_ROOT in divergence-shard.ts. Both files reflect the path
 // the README fixes as the source of truth; a comment-cited copy keeps the
@@ -333,11 +333,30 @@ export function reconcileDivergenceShard(
   decision: ReconciliationDecision,
   note?: string,
 ): ReconcileResult {
-  const abs = join(repoRoot, relPath);
-  if (!existsSync(abs)) {
-    throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+  // Constrain relPath to the divergence root before any I/O. A write-back
+  // helper that does join(repoRoot, relPath) blindly can be steered to clobber
+  // unrelated files via an absolute path or "../" traversal; bound it to
+  // docs/hygiene-history/divergences/ (the only place shards live).
+  const divergenceRoot = resolve(repoRoot, DIVERGENCE_ROOT);
+  const abs = resolve(repoRoot, relPath);
+  const within = relative(divergenceRoot, abs);
+  if (within === "" || within.startsWith("..") || isAbsolute(within)) {
+    throw new Error(
+      `cannot reconcile: ${relPath} is outside the divergence root (${DIVERGENCE_ROOT})`,
+    );
   }
-  const original = readFileSync(abs, "utf8");
+  // Read directly and treat a missing file as a signal rather than pre-checking
+  // with existsSync — the check-then-read gap is a TOCTOU race (CWE-367), and
+  // the error path is the same friendly message either way.
+  let original: string;
+  try {
+    original = readFileSync(abs, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+    }
+    throw err;
+  }
   if (parseShardMeta(original) === null) {
     throw new Error(`cannot reconcile: ${relPath} is not a divergence shard (missing frontmatter or type != divergence)`);
   }

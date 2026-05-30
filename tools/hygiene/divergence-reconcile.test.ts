@@ -75,7 +75,7 @@ describe("isReconciliationPending", () => {
     expect(isReconciliationPending(PENDING_SHARD)).toBe(true);
   });
   test("a shard with a filled decision is not pending", () => {
-    expect(isReconciliationPending(reconcile(PENDING_SHARD, "accept-loop-b — B reproduces locally. (Aaron)"))).toBe(false);
+    expect(isReconciliationPending(reconcile(PENDING_SHARD, "accept-loop-b — B reproduces locally. (human maintainer)"))).toBe(false);
   });
   test("a file with no Reconciliation section is not pending", () => {
     expect(isReconciliationPending("---\ntype: divergence\n---\n\n## Loop A perspective\n\nx")).toBe(false);
@@ -114,7 +114,7 @@ describe("findPendingShards", () => {
     const older = buildDivergenceShard(inputAt("2026-05-09T08:00:00Z", "older A", "older B"));
     const reconciled = reconcile(
       buildDivergenceShard(inputAt("2026-05-11T07:00:00Z", "done A", "done B")),
-      "accept-loop-a — settled. (Aaron)",
+      "accept-loop-a — settled. (human maintainer)",
     );
     const files = [
       { relPath: "d/newer.md", content: newer },
@@ -149,7 +149,7 @@ describe("scanDivergenceDir", () => {
       expect(before[0]!.loopBAgent).toBe("codex-loop");
 
       // Maintainer fills the Reconciliation section in place → no longer pending.
-      writeFileSync(join(root, relPath), reconcile(buildDivergenceShard(input), "accept-loop-b — (Aaron)"));
+      writeFileSync(join(root, relPath), reconcile(buildDivergenceShard(input), "accept-loop-b — (human maintainer)"));
       expect(scanDivergenceDir(root)).toHaveLength(0);
     });
   });
@@ -183,7 +183,7 @@ describe("isReconciliationDecision / RECONCILIATION_DECISIONS", () => {
     expect(isReconciliationDecision("escalate")).toBe(true);
     expect(isReconciliationDecision("accept-loop-c")).toBe(false);
     expect(isReconciliationDecision("")).toBe(false);
-    expect(isReconciliationDecision("accept-loop-b — (Aaron)")).toBe(false);
+    expect(isReconciliationDecision("accept-loop-b — (human maintainer)")).toBe(false);
   });
 });
 
@@ -195,8 +195,8 @@ describe("fillReconciliation", () => {
   });
 
   test("appends an optional note below the decision", () => {
-    const filled = fillReconciliation(PENDING_SHARD, "accept-loop-b", "B reproduces locally. (Aaron)");
-    expect(reconciliationBody(filled)!.trim()).toBe("accept-loop-b\n\nB reproduces locally. (Aaron)");
+    const filled = fillReconciliation(PENDING_SHARD, "accept-loop-b", "B reproduces locally. (human maintainer)");
+    expect(reconciliationBody(filled)!.trim()).toBe("accept-loop-b\n\nB reproduces locally. (human maintainer)");
     expect(isReconciliationPending(filled)).toBe(false);
   });
 
@@ -243,7 +243,7 @@ describe("fillReconciliation", () => {
       const { relPath } = writeDivergenceShard(root, input);
       expect(scanDivergenceDir(root)).toHaveLength(1);
       // Reconstruct exactly what the writer wrote (writeDivergenceShard == buildDivergenceShard(input)).
-      const filled = fillReconciliation(buildDivergenceShard(input), "accept-loop-b", "B reproduces locally. (Aaron)");
+      const filled = fillReconciliation(buildDivergenceShard(input), "accept-loop-b", "B reproduces locally. (human maintainer)");
       writeFileSync(join(root, relPath), filled);
       expect(scanDivergenceDir(root)).toHaveLength(0);
     });
@@ -259,14 +259,14 @@ describe("reconcileDivergenceShard (read → fillReconciliation → write-back, 
       expect(scanDivergenceDir(root).map((p) => p.relPath)).toEqual([relPath]);
 
       // "one action": land the decision in place.
-      const result = reconcileDivergenceShard(root, relPath, "accept-loop-b", "B reproduces locally. (Aaron)");
+      const result = reconcileDivergenceShard(root, relPath, "accept-loop-b", "B reproduces locally. (human maintainer)");
       expect(result).toEqual({ relPath, decision: "accept-loop-b" });
 
       // The shard is no longer pending, and the on-disk content carries the decision.
       expect(scanDivergenceDir(root)).toHaveLength(0);
       const md = readFileSync(join(root, relPath), "utf8");
       expect(isReconciliationPending(md)).toBe(false);
-      expect(reconciliationBody(md)!.trim()).toBe("accept-loop-b\n\nB reproduces locally. (Aaron)");
+      expect(reconciliationBody(md)!.trim()).toBe("accept-loop-b\n\nB reproduces locally. (human maintainer)");
     });
   });
 
@@ -305,11 +305,35 @@ describe("reconcileDivergenceShard (read → fillReconciliation → write-back, 
     });
   });
 
+  test("rejects a relPath that escapes the divergence root (no write)", () => {
+    withTempRoot((root) => {
+      // A traversal payload and an absolute path both resolve outside
+      // docs/hygiene-history/divergences/; the guard rejects before any I/O so
+      // a write-back helper can never be steered to clobber unrelated files.
+      const victim = "docs/IMPORTANT.md";
+      const victimAbs = join(root, victim);
+      mkdirSync(dirname(victimAbs), { recursive: true });
+      writeFileSync(victimAbs, "do not clobber\n");
+
+      const traversal = "docs/hygiene-history/divergences/../../IMPORTANT.md";
+      expect(() => reconcileDivergenceShard(root, traversal, "accept-loop-a")).toThrow(
+        /outside the divergence root/,
+      );
+      expect(() => reconcileDivergenceShard(root, "/etc/passwd", "accept-loop-a")).toThrow(
+        /outside the divergence root/,
+      );
+      // Fail-closed: the file the traversal pointed at is untouched.
+      expect(readFileSync(victimAbs, "utf8")).toBe("do not clobber\n");
+    });
+  });
+
   test("throws (file unchanged) when the target is not a divergence shard", () => {
     withTempRoot((root) => {
       // A markdown file that HAS a `## Reconciliation` heading but is NOT a
       // divergence shard (no type: divergence frontmatter) — a mistyped relPath.
-      const relPath = "docs/notes/stray.md";
+      // Kept inside the divergence root so the "not a shard" guard is what
+      // fires (the path-containment guard would otherwise reject it first).
+      const relPath = "docs/hygiene-history/divergences/stray.md";
       const abs = join(root, relPath);
       mkdirSync(dirname(abs), { recursive: true });
       const stray = "---\ntitle: not a shard\n---\n\n## Reconciliation\n\n<!-- placeholder -->\n";
