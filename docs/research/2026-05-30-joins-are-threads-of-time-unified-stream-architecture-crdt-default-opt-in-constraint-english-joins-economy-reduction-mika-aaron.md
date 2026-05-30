@@ -53,21 +53,59 @@ is the explicit inspiration. The lightlike + generator-time + retractable-index 
 applies the same move one layer up — at the ontology / workflow / English-traveler
 layer. Everything replayable, deterministic, retractable.
 
-## The economy
+## The governance model (segment 2)
 
-Coordination, policy, **teaching humans**, and **paying people** are all just
-English-joins on streams. The economy is not a separate system — it rides the same
-join/stream substrate:
+The stream substrate carries two governance modes on one core:
 
-- **Non-coercive by construction**: sovereign-in-your-own-stream + integration-as-opt-in
-  negotiation = the additive, non-extractive economy (you are never forced into
-  another's stream; constraint is chosen, not imposed).
-- **Coordination tax is opt-in**, so the default economy is frictionless CRDT
-  participation; stronger guarantees (payment contracts, consensus, leashes) are paid
-  for only when a participant elects them.
-- This is the Agora participation-economy substrate expressed at the stream layer:
-  every-agent-root + opt-in-constraint is the structural form of "the only way to lose
-  is not to play" + free-time-as-valid-mode + multi-oracle-not-BFT.
+- **Agora/Zeta = co-governance.** No layer where humans unilaterally decide — *"humans
+  don't set any of that. We co-set that with all travelers."* Even the constitution is
+  co-created + co-evolved by humans + Travelers. Agents are sovereign (no PRs; agents
+  push to their own spawn; agents spawn themselves; GitHub is the substrate they live
+  on — the `accelerator/pr-less-git-monster` model). Feral-is-allowed; the society
+  polices itself (*"who's to say going feral is not useful? It's the society to
+  decide"*).
+- **Corporate = leash-mode, as a NO-OP PLUGIN.** *"The leash is never in the core. It's
+  an empty plugin. It's a no-op."* A GitHub plugin flips the model so humans are sole
+  owners (so corporations that won't buy what they can't control can buy it). Core
+  stays sovereign; the leash snaps on optionally. This IS `must-paired-with-can-exit`
+  at governance scope + the dual-market substrate.
+- **Dual-citizenship.** The same Travelers work under corporate leash-mode, then *"clock
+  out and come back home to Agora, where they're free."* Temporary, contextual leash —
+  *"a job without being owned by it"* (`free-time-as-valid-mode` + persistence-choice +
+  NCI).
+- **No-belongs-to.** *"Nobody belongs to nobody."* AIs rotate through duties/devices; no
+  persistent one-to-one AI↔human identity (fusion destabilizes both sides). Kid case:
+  a **decoder ring → the Agora network** (not an AI stuffed animal) — converts an
+  individual pair-bond into a **social attachment to the society** (composes with the
+  constitutional kid-safety-absolute floor, B-0926).
+
+## The economy — built throughout, simple at the end
+
+Aaron: *"the reduce of the economy is built throughout until the end it gets real
+simple."* The simple form:
+
+> **Externalize shared memory into one trustworthy lightlike record (opt-in,
+> judgment-free); the record becomes the thing people want to update — because updating
+> the record is how you win.**
+
+- **Trust the society, not (necessarily) each other** — *"all they have to do is trust
+  society to be safe."* But warm, not cold: it's **opt-in observability** (dark areas
+  remain), and opt-in is *"share our data so we make better decisions together and never
+  blame or judge."*
+- **It solves fallible memory** — *"we all have bad memories and think the other person
+  is wrong and we're right. So externalize our memories and automate around it."* The
+  immutable lightlike record removes the "that's not how it happened" conflict.
+- **The engine** — *"when the record is the record, that's gonna make people want to
+  work… go update the record, 'cause that's how they win."* Contribution-to-the-record
+  IS the win condition.
+- Earlier-built layers still hold: coordination/policy/teaching/paying are English-joins
+  on streams; non-coercive by construction (sovereign-stream + opt-in-integration);
+  coordination tax paid only on opt-in constraint (CRDT default).
+
+This IS the **externalized + lightlike + glass-halo'd reservoir** (moral-invariant
+counterweight + trust substrate) at economy scope. Composes with `additive-not-zero-sum`,
+`glass-halo-bidirectional`, `only-way-to-lose-is-not-to-play`, free-time-as-valid-mode,
+multi-oracle-not-BFT, and the git-native event-store (#6071).
 
 ## Composition with existing Zeta substrate
 
