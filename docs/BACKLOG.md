@@ -887,6 +887,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0925](backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)** C. elegans-substrate as controller variant for B-0924 — OpenWorm 302-neuron full-connectome + generate+join over emulator-scene-AND-worm-scene under DST-omniscience (operator 2026-05-28)
 - [ ] **[B-0933](backlog/P2/B-0933-memory-index-duplicate-lint-required-or-advisory-decision-2026-05-29.md)** Decide whether memory-index-duplicate-lint is required or explicitly advisory
 - [ ] **[B-0934](backlog/P2/B-0934-backlog-index-integrity-required-or-advisory-decision-2026-05-29.md)** Decide whether backlog-index-integrity is required or explicitly advisory
+- [ ] **[B-0940](backlog/P2/B-0940-evaluate-ubuntu-support-value-nixos-primary-community-reach-aaron-2026-05-30.md)** Evaluate what Ubuntu support brings us — NixOS is primary; Ubuntu's value is community/contributor reach
 
 ## P3 — convenience / deferred
 
