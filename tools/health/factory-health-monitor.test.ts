@@ -251,6 +251,9 @@ describe("factory-health-monitor", () => {
       "docs/trajectories/factory-trajectory-surface/receipt.md",
       "docs/trajectories/factory-trajectory-surface/RESUME.md",
       "",
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\t2026-05-30T05:10:00+00:00\tland receipt without PR marker",
+      "docs/trajectories/autonomous-loop-coordination/followup.md",
+      "",
       "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\t2026-05-28T05:00:00+00:00\tstale receipt",
       "docs/trajectories/stale/RESUME.md",
       "",
@@ -275,6 +278,12 @@ describe("factory-health-monitor", () => {
         occurredAt: "2026-05-30T05:00:00.000Z",
         description: "aaaaaaaaaaaa land two receipts (#6097)",
         correlationKey: "pr:6097",
+      },
+      {
+        id: "trajectory-receipt-eeeeeeeeeeee-autonomous-loop-coordination",
+        trajectory: "autonomous-loop-coordination",
+        occurredAt: "2026-05-30T05:10:00.000Z",
+        description: "eeeeeeeeeeee land receipt without PR marker",
       },
     ]);
   });

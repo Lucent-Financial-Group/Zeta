@@ -440,13 +440,17 @@ export function trajectoryReceiptEventsFromGitLog(
     ].sort();
 
     for (const trajectory of trajectories) {
-      events.push({
+      const event: CoincidenceEvent = {
         id: `trajectory-receipt-${current.hash.slice(0, 12)}-${trajectory}`,
         trajectory,
         occurredAt: new Date(committedMs).toISOString(),
         description: `${current.hash.slice(0, 12)} ${current.subject.trim() || "(untitled trajectory receipt commit)"}`,
-        correlationKey: pullRequestCorrelationKeyFromText(current.subject),
-      });
+      };
+      const correlationKey = pullRequestCorrelationKeyFromText(current.subject);
+      if (correlationKey !== undefined) {
+        event.correlationKey = correlationKey;
+      }
+      events.push(event);
     }
 
     current = null;
