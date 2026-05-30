@@ -44,6 +44,22 @@ fi
 if ! command -v ollama >/dev/null 2>&1; then
   case "$(uname -s)" in
     Linux)
+      # NixOS: the generic glibc release binary won't run (non-FHS). Install ollama
+      # via nix instead — FHS-safe, works in the nixos/nix container AND on real
+      # NixOS, and floats with the channel (consistent with the float-ollama
+      # decision). This is the install.sh-retrofit path that closes B-0941's test
+      # false-green; the declarative real-hardware self-heal layer is
+      # services.ollama in configuration.nix (complementary). linux.sh already
+      # routes NixOS via /etc/NIXOS; honor the same marker here.
+      if [ -f /etc/NIXOS ]; then
+        echo "↓ NixOS detected — installing ollama via nix (FHS-safe)..."
+        if ! nix --extra-experimental-features 'nix-command flakes' profile install nixpkgs#ollama 2>/dev/null \
+           && ! nix-env -iA nixpkgs.ollama 2>/dev/null; then
+          echo "warn: nix ollama install failed; skipping local-llm (tests fall back to mock)" >&2; exit 0
+        fi
+        export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH"
+        command -v ollama >/dev/null 2>&1 || { echo "warn: ollama not on PATH after nix install; skipping local-llm" >&2; exit 0; }
+      else
       case "$(uname -m)" in
         x86_64 | amd64) oarch=amd64 ;;
         aarch64 | arm64) oarch=arm64 ;;
@@ -70,6 +86,7 @@ if ! command -v ollama >/dev/null 2>&1; then
         echo "warn: ollama extract failed (zstd?); skipping local-llm (tests fall back to mock)" >&2; exit 0
       fi
       export PATH="$HOME/.local/bin:$PATH"
+      fi
       ;;
     Darwin)
       echo "warn: ollama not found on macOS — expected via manifests/brew (brew install ollama)." >&2
