@@ -67,8 +67,16 @@ if ! command -v ollama >/dev/null 2>&1; then
         ollama_store="$(nix --extra-experimental-features 'nix-command flakes' build --no-link --print-out-paths nixpkgs#ollama 2>&1 | tail -1)"
         if [ -n "$ollama_store" ] && [ -x "$ollama_store/bin/ollama" ]; then
           mkdir -p "$HOME/.local/bin"
-          ln -sf "$ollama_store/bin/ollama" "$HOME/.local/bin/ollama"
-          echo "  ✓ ollama via nix build + symlink ($ollama_store/bin/ollama)"
+          # WRAPPER (not bare symlink): the nix-built ollama has the correct glibc in
+          # its RPATH, but a polluting LD_LIBRARY_PATH (e.g. the docker-nixos test's
+          # FHS-mise glibc hack) OVERRIDES the RPATH → 'symbol lookup error: libc.so.6
+          # undefined symbol __nptl_change_stack_perm GLIBC_PRIVATE' (run 26686054042).
+          # The wrapper runs ollama clear of LD_LIBRARY_PATH so EVERY call (install-time
+          # serve+pull AND the test's assert) uses ollama's own glibc. Harmless on real
+          # NixOS / ubuntu / mac (LD_LIBRARY_PATH unset there → env -u is a no-op).
+          printf '#!/usr/bin/env bash\nexec env -u LD_LIBRARY_PATH %s/bin/ollama "$@"\n' "$ollama_store" > "$HOME/.local/bin/ollama"
+          chmod +x "$HOME/.local/bin/ollama"
+          echo "  ✓ ollama via nix build + LD_LIBRARY_PATH-clean wrapper ($ollama_store/bin/ollama)"
         else
           echo "warn: nix build ollama failed ($ollama_store); skipping local-llm (tests fall back to mock)" >&2; exit 0
         fi
