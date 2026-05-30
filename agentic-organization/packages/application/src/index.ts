@@ -215,3 +215,17 @@ export {
   type OrgGraphValidationResult,
   type OrgSeed,
 } from "./org-seed.ts";
+export {
+  advanceBinding,
+  approveBinding,
+  beginBinding,
+  isInCooldown,
+  planSuccession,
+  releaseBinding,
+  revokeBinding,
+  successionEvent,
+  type BindingTransition,
+  type LifecycleClock,
+  type LifecycleContext,
+  type SuccessionPlan,
+} from "./hat-lifecycle.ts";

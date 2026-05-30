@@ -121,3 +121,10 @@ export {
   ToolBundle,
   type HatDefinition,
 } from "./hat-definition.ts";
+export { OrgEventKind, type OrgEvent } from "./org-event.ts";
+export {
+  HatBindingPhase,
+  TerminalHatBindingPhases,
+  isTerminalHatBinding,
+  type HatBinding,
+} from "./hat-binding.ts";
