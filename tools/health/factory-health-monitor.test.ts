@@ -64,6 +64,22 @@ describe("factory-health-monitor", () => {
     ).toEqual(["tools/health/factory-health-monitor.test.ts"]);
   });
 
+  test("parseClaimPathSet falls back to durable target paths", () => {
+    expect(
+      parseClaimPathSet(
+        [
+          "# Claim",
+          "",
+          "- **Durable target:** `tools/health/factory-health-monitor.ts`, docs/claims/example.md, https://example.invalid, `claim/not-a-path-branch`",
+        ].join("\n"),
+      ),
+    ).toEqual(["docs/claims/example.md", "tools/health/factory-health-monitor.ts"]);
+
+    expect(
+      parseClaimPathSet(["# Claim", "", "- **Durable target:** PR from `claim/codex-loop-branch-only`"].join("\n")),
+    ).toEqual([]);
+  });
+
   test("findClaimPathCollisions detects exact and glob ownership overlap", () => {
     expect(
       findClaimPathCollisions([
@@ -80,6 +96,20 @@ describe("factory-health-monitor", () => {
         claimBranches: ["claim/codex-health", "claim/otto-health-test"],
       },
     ]);
+  });
+
+  test("findClaimPathCollisions canonicalizes overlap messages", () => {
+    const forward = findClaimPathCollisions([
+      { claimBranch: "claim/a", paths: ["tools/health/**"] },
+      { claimBranch: "claim/b", paths: ["tools/health/file.ts"] },
+    ]);
+    const reversed = findClaimPathCollisions([
+      { claimBranch: "claim/b", paths: ["tools/health/file.ts"] },
+      { claimBranch: "claim/a", paths: ["tools/health/**"] },
+    ]);
+
+    expect(forward).toEqual(reversed);
+    expect(forward[0]?.path).toBe("tools/health/** overlaps tools/health/file.ts");
   });
 
   test("classifyClaimPathCollisions emits lane-runway warnings only for collisions", () => {

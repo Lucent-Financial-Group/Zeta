@@ -62,6 +62,21 @@ type ToolResult = { ok: boolean; stdout: string };
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
+const REPO_PATH_PREFIXES = [
+  ".claude/",
+  ".codex/",
+  ".github/",
+  ".gemini/",
+  "agentic-organization/",
+  "docs/",
+  "memory/",
+  "references/",
+  "registry/",
+  "src/",
+  "test/",
+  "tests/",
+  "tools/",
+] as const;
 
 function run(cmd: ToolCommand, args: string[]): ToolResult {
   const r = spawnSync(cmd, args, {
@@ -228,13 +243,59 @@ function stripInlineCode(value: string): string {
 }
 
 function normalizeClaimPath(value: string): string {
-  return stripInlineCode(value).trim().replace(/^\.\//, "");
+  return stripInlineCode(value)
+    .trim()
+    .replace(/^[([<]+/, "")
+    .replace(/[)\]>.,;:]+$/, "")
+    .replace(/^\.\//, "");
 }
 
-export function parseClaimPathSet(body: string): string[] {
+function isRepoPathLike(value: string): boolean {
+  if (
+    value.length === 0 ||
+    value.includes("://") ||
+    value.startsWith("#") ||
+    value.startsWith("claim/") ||
+    value.startsWith("origin/") ||
+    value.startsWith("refs/")
+  ) {
+    return false;
+  }
+
+  return REPO_PATH_PREFIXES.some((prefix) => value.startsWith(prefix)) || /^[A-Za-z0-9_.-]+\.[A-Za-z0-9]+$/.test(value);
+}
+
+function addPath(paths: Set<string>, value: string): void {
+  const path = normalizeClaimPath(value);
+  if (isRepoPathLike(path)) {
+    paths.add(path);
+  }
+}
+
+function parseDurableTargetPaths(body: string): string[] {
+  const match = body.match(/^- \*\*Durable target:\*\* (.+)$/m);
+  if (!match?.[1]) {
+    return [];
+  }
+
+  const value = match[1];
+  const inlineCodeTokens = [...value.matchAll(/`([^`]+)`/g)].map((token) => token[1] ?? "");
+  const plainTokens = value
+    .replace(/`[^`]+`/g, " ")
+    .split(/[\s,;]+/)
+    .filter(Boolean);
+  const paths = new Set<string>();
+
+  for (const token of [...inlineCodeTokens, ...plainTokens]) {
+    addPath(paths, token);
+  }
+
+  return [...paths].sort();
+}
+
+function parseHeadingPathSet(body: string): string[] {
   const paths = new Set<string>();
   let inPathSet = false;
-
   for (const line of body.split(/\r?\n/)) {
     const trimmed = line.trim();
     if (trimmed === "Initial intended path set:" || trimmed === "Planned path set:") {
@@ -251,13 +312,14 @@ export function parseClaimPathSet(body: string): string[] {
     if (!match?.[1]) {
       continue;
     }
-    const path = normalizeClaimPath(match[1]);
-    if (path.length > 0) {
-      paths.add(path);
-    }
+    addPath(paths, match[1]);
   }
 
   return [...paths].sort();
+}
+
+export function parseClaimPathSet(body: string): string[] {
+  return [...new Set([...parseHeadingPathSet(body), ...parseDurableTargetPaths(body)])].sort();
 }
 
 function claimPathGlobBase(path: string): string | null {
@@ -302,7 +364,11 @@ function claimSlug(branch: string): string {
 }
 
 function formatCollisionPath(left: string, right: string): string {
-  return left === right ? left : `${left} overlaps ${right}`;
+  if (left === right) {
+    return left;
+  }
+  const [first, second] = [left, right].sort((a, b) => a.localeCompare(b));
+  return `${first} overlaps ${second}`;
 }
 
 export function findClaimPathCollisions(claims: ClaimPathSetObservation[]): ClaimPathCollision[] {
