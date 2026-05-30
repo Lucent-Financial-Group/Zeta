@@ -1713,3 +1713,52 @@ The proof for `org-recovery-02a002d1` observed four `recovery_incident_detected`
 
 `npm run typecheck` passed. `npm test` passed: **871 tests, 0 fail** (7 skipped live-integration
 tests).
+
+---
+
+## Orchestration Moat G1 — Release Queue Batch + Bisect
+
+Approved ChangeSets now flow through a dedicated `release-queue` cadence lane instead of being
+auto-applied by the change-control lane. This makes `approved` a durable queue state: review says
+"ready to release"; the release queue proves the stack and materializes only the green changes.
+
+### What shipped
+
+- Pure release planner in `packages/application/src/release-queue.ts`.
+- `ReleaseQueueState` and `ReleaseQueueActionKind` House-DUs for idle, green, and bisected batches.
+- Priority ordering by retry pressure (`revision`) and age (`updatedAt`).
+- Recursive red-batch bisection against an accumulating accepted stack: green candidates apply;
+  single red culprits move back to `changes_requested`; interaction-red stacks cannot apply both
+  independently-green halves.
+- Worker `release-queue` lane wired into `composeOrgCadenceLoops`, fail-open like the other lanes,
+  with an explicit release-batch evaluator port. If no evaluator is wired, approved work is not
+  applied on metadata alone.
+- Batch persistence uses the Cockroach `executeTransaction` boundary so green batch actions and
+  release-red bounces commit atomically with their org-event evidence.
+- Change-control no longer auto-applies `approved` ChangeSets; the release queue owns
+  `approved -> applied`.
+- The change-set clamp now permits `approved -> changes_requested` so release-red bounces remain
+  replayable/conformant.
+- KIND proof runner: `deploy/run-release-queue.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:g1-release-queue-atomic`
+(`sha256:da47e79507bfc3690eb449c60a9a616916ad060d09a908d9d0a11b289749dc9f`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-695b8dc895-lc8dv` with zero restarts. Fresh boot
+logs showed `release-queue:0applied/0changes_requested/0requeued` with `failureCount:0`.
+
+`deploy/run-release-queue.ts` seeded three approved ChangeSets in live Cockroach and ran the same
+lane factory the worker composes. The deterministic evaluator made the middle ChangeSet red:
+
+- `cs-release-green-a-50fbc139`: `applied`
+- `cs-release-red-50fbc139`: `changes_requested`
+- `cs-release-green-b-50fbc139`: `applied`
+
+The proof for `org-release-a8e06b67` observed two `change_set_applied` events and one
+`changes_requested` event. `PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **882 tests, 0 fail** (7 skipped live-integration
+tests).

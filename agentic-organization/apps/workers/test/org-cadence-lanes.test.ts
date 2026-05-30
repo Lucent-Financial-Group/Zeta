@@ -21,6 +21,7 @@ import {
   createMemoryMaintenanceCadenceLane,
   createChangeControlCadenceLane,
   createConformanceCadenceLane,
+  createReleaseQueueCadenceLane,
   createAbandonedRunBindingScanCadenceLane,
   createDeadLetterClassifierCadenceLane,
   createStaleReactionPlanScanCadenceLane,
@@ -149,6 +150,139 @@ test("change-control lane is a no-op (0 advanced) when nothing is in review", as
   });
   const result = await lane.runOnce();
   equal(result.status, "change-control:0advanced");
+});
+
+function releaseChangeSet(changeSetId: string, phase: ChangeSetPhase = ChangeSetPhase.Approved): ChangeSet {
+  return {
+    ...changeSet(phase, 0),
+    changeSetId,
+    workItemId: `work-${changeSetId}`,
+    targetRef: `feat/${changeSetId}`,
+    title: `Release ${changeSetId}`,
+  };
+}
+
+test("release-queue lane applies a green approved batch and emits apply events", async () => {
+  const approved = [releaseChangeSet("cs-a"), releaseChangeSet("cs-b")];
+  const upserts: ChangeSet[] = [];
+  const events: OrgEvent[] = [];
+  const lane = createReleaseQueueCadenceLane({
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
+    writer: { upsert: async (cs) => { upserts.push(cs); } },
+    appendEvent: async (event) => { events.push(event); },
+    evaluateBatch: () => ({ green: true, evidenceRefs: ["release-proof:green"] }),
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "release-queue:2applied/0changes_requested/0requeued");
+  deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Applied, ChangeSetPhase.Applied]);
+  equal(events.filter((event) => event.kind === OrgEventKind.ChangeSetApplied).length, 2);
+});
+
+test("release-queue lane bisects a red batch and bounces only the culprit", async () => {
+  const approved = [releaseChangeSet("cs-a"), releaseChangeSet("cs-b"), releaseChangeSet("cs-c")];
+  const upserts: ChangeSet[] = [];
+  const events: OrgEvent[] = [];
+  const lane = createReleaseQueueCadenceLane({
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
+    writer: { upsert: async (cs) => { upserts.push(cs); } },
+    appendEvent: async (event) => { events.push(event); },
+    evaluateBatch: (batch) => ({
+      green: !batch.some((cs) => cs.changeSetId === "cs-b"),
+      evidenceRefs: [`release-proof:${batch.map((cs) => cs.changeSetId).join("+")}`],
+    }),
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "release-queue:2applied/1changes_requested/0requeued");
+  deepEqual(upserts.map((cs) => [cs.changeSetId, cs.phase]), [
+    ["cs-a", ChangeSetPhase.Applied],
+    ["cs-b", ChangeSetPhase.ChangesRequested],
+    ["cs-c", ChangeSetPhase.Applied],
+  ]);
+  ok(events.some((event) => event.kind === OrgEventKind.ChangesRequested && event.subjectId === "cs-b"));
+});
+
+test("release-queue lane persists batch actions through the provided atomic boundary", async () => {
+  const approved = [releaseChangeSet("cs-a"), releaseChangeSet("cs-b")];
+  const upserts: ChangeSet[] = [];
+  let atomicCalls = 0;
+  const lane = createReleaseQueueCadenceLane({
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
+    writer: { upsert: async () => { throw new Error("non-atomic writer used"); } },
+    appendEvent: async () => { throw new Error("non-atomic event sink used"); },
+    evaluateBatch: () => ({ green: true, evidenceRefs: ["release-proof:green"] }),
+    runAtomically: async (operation) => {
+      atomicCalls += 1;
+      await operation({
+        writer: { upsert: async (cs) => { upserts.push(cs); } },
+        appendEvent: async () => {},
+      });
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(atomicCalls, 1);
+  deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Applied, ChangeSetPhase.Applied]);
+});
+
+test("release-queue lane degrades instead of applying when no release evaluator is wired", async () => {
+  const approved = [releaseChangeSet("cs-a")];
+  const upserts: ChangeSet[] = [];
+  const events: OrgEvent[] = [];
+  const lane = createReleaseQueueCadenceLane({
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
+    writer: { upsert: async (cs) => { upserts.push(cs); } },
+    appendEvent: async (event) => { events.push(event); },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "degraded");
+  equal(result.failures.length, 1);
+  ok(result.failures[0]!.message.includes("release batch evaluator unavailable"));
+  equal(upserts.length, 0);
+  equal(events.length, 0);
+});
+
+test("release-queue lane fails open on transient reader errors", async () => {
+  const lane = createReleaseQueueCadenceLane({
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: {
+      listByOrgPhase: async () => {
+        throw new Error("cockroach timeout");
+      },
+    },
+    writer: { upsert: async () => {} },
+    appendEvent: async () => {},
+    evaluateBatch: () => ({ green: true, evidenceRefs: [] }),
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "degraded");
+  equal(result.failures.length, 1);
+  ok(result.failures[0]!.message.includes("release-queue lane"));
 });
 
 test("doc-maintenance lane flags a stale unit + persists it + emits the cycle event", async () => {

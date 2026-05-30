@@ -28,14 +28,20 @@ is an additive layer on existing primitives — no substrate change.
 ### G1. Release/merge queue with batch + bisect failure isolation
 *Gap closed: gastown Refinery (`internal/refinery/batch.go`).*
 
+**Status: shipped 2026-05-30.**
+
 - New `ReleaseQueueState` DU + a `release-queue` cadence lane.
-- Collect ChangeSets that reach `approved`; batch up to N; run the gate suite
-  (`evaluateStageGate`) **once on the batched stack**; green → `applyChangeSet` all atomically;
-  red → **bisect O(log N)** to isolate the culprit, requeue the good ones, notify the owner.
-- Reuses the change-control kernel verbatim as the per-ChangeSet authority. The queue + bisect
-  is pure new orchestration. Priority = age + retry-count + initiative-deps.
-- **Build:** `packages/application/src/release-queue.ts` (pure batch/bisect planner, TDD) +
-  `apps/workers/src/org-cadence-lanes.ts` lane + a `deploy/run-release-queue.ts` kind proof.
+- Collect ChangeSets that reach `approved`; batch up to N; require an explicit release-batch
+  evaluator; green → `applyChangeSet` all; red → bisect against an accumulating accepted stack to
+  isolate the culprit and bounce only that ChangeSet to `changes_requested`.
+- Reuses the change-control kernel as the per-ChangeSet authority. The change-control lane now
+  leaves `approved` ChangeSets for the release queue instead of immediately applying them.
+- **Built:** `packages/application/src/release-queue.ts` (pure batch/bisect planner, TDD),
+  `apps/workers/src/org-cadence-lanes.ts` release queue lane, cadence composition wiring with a
+  release gate port, Cockroach transaction-bound batch persistence, and `deploy/run-release-queue.ts`.
+  KIND proof: two seeded green ChangeSets applied, one red culprit changed to
+  `changes_requested`, ledger emitted two `change_set_applied` events and one `changes_requested`
+  event, `PROOF: PASS`.
 
 ### G2. Model-eval harness (Class A/B downgrade)
 *Gap closed: gastown gt-model-eval.*

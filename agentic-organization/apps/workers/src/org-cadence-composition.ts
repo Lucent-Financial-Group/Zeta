@@ -15,8 +15,9 @@ import {
   buildHatDefinitions,
   applyAutonomyPolicy,
   type ChangeControlPort,
+  type ReleaseBatchEvaluation,
 } from "../../../packages/application/src/index.ts";
-import { AutonomyLevel, type AutonomyPolicy } from "../../../packages/domain/src/index.ts";
+import { AutonomyLevel, type AutonomyPolicy, type ChangeSet } from "../../../packages/domain/src/index.ts";
 import {
   createCockroachOrgEventStore,
   createCockroachMemoryStateStore,
@@ -31,6 +32,7 @@ import {
   createWorkOsCadenceLane,
   createMemoryMaintenanceCadenceLane,
   createChangeControlCadenceLane,
+  createReleaseQueueCadenceLane,
   createDocMaintenanceCadenceLane,
   createConformanceCadenceLane,
   createAbandonedRunBindingScanCadenceLane,
@@ -44,6 +46,7 @@ export type OrgCadenceIntervals = {
   workOsMs: number;
   memoryMaintenanceMs: number;
   changeControlMs: number;
+  releaseQueueMs: number;
   docMaintenanceMs: number;
   conformanceMs: number;
   staleReactionPlanScanMs: number;
@@ -56,6 +59,7 @@ export const OrgCadenceIntervalDefault: OrgCadenceIntervals = {
   workOsMs: 60_000,
   memoryMaintenanceMs: 6 * 60 * 60 * 1000, // 6h (memory decay is slow)
   changeControlMs: 30_000,
+  releaseQueueMs: 30_000,
   docMaintenanceMs: 6 * 60 * 60 * 1000, // 6h (doc lifecycle is slow, like memory)
   conformanceMs: 60_000,
   staleReactionPlanScanMs: 60_000,
@@ -88,6 +92,11 @@ export type ComposeOrgCadenceInput = {
    * require a human is config, not hardcoded. Defaults to assisted (the QA sign-off stays human).
    */
   autonomy?: AutonomyPolicy;
+  /**
+   * real release gate for approved ChangeSets. If omitted, the release queue idles when empty
+   * and degrades instead of applying approved work on metadata alone.
+   */
+  releaseBatchEvaluator?: (batch: readonly ChangeSet[]) => ReleaseBatchEvaluation;
   /** bound each lane for tests/proofs; unbounded in the worker */
   maxTicksPerLane?: number;
 };
@@ -132,6 +141,29 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     pipelineFor: (cs) => applyAutonomyPolicy(policy.pipelines[cs.pipelineId] ?? buildInternalOnlyPipeline(input.organizationId), autonomy),
     appendEvent,
     ...(input.externalPort ? { externalPort: input.externalPort } : {}),
+  });
+  const releaseQueue = createReleaseQueueCadenceLane({
+    organizationId: input.organizationId,
+    now: input.now,
+    createId: input.createId,
+    reader: changeSets,
+    writer: changeSets,
+    appendEvent,
+    ...(input.releaseBatchEvaluator ? { evaluateBatch: input.releaseBatchEvaluator } : {}),
+    runAtomically: async (operation) => {
+      await input.executor.executeTransaction(async (transaction) => {
+        const txExecutor: CockroachGenericSqlExecutor = {
+          execute: transaction.execute,
+          executeTransaction: async (nestedOperation) => await nestedOperation(transaction),
+        };
+        const txChangeSets = createCockroachChangeSetStore({ executor: txExecutor });
+        const txOrgEvents = createCockroachOrgEventStore({ executor: txExecutor });
+        await operation({
+          writer: txChangeSets,
+          appendEvent: (event) => txOrgEvents.append(event),
+        });
+      });
+    },
   });
   const docMaintenance = createDocMaintenanceCadenceLane({
     organizationId: input.organizationId, now: input.now, createId: input.createId,
@@ -185,6 +217,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     start(workOs, intervals.workOsMs),
     start(memory, intervals.memoryMaintenanceMs),
     start(changeControl, intervals.changeControlMs),
+    start(releaseQueue, intervals.releaseQueueMs),
     start(docMaintenance, intervals.docMaintenanceMs),
     start(conformance, intervals.conformanceMs),
     start(staleReactionPlans, intervals.staleReactionPlanScanMs),

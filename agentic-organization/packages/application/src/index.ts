@@ -427,6 +427,15 @@ export {
   externalStateForChangeSet,
 } from "./change-control-reconciliation.ts";
 export {
+  ReleaseQueueActionKind,
+  ReleaseQueueState,
+  planReleaseQueue,
+  type ReleaseBatchEvaluation,
+  type ReleaseQueueAction,
+  type ReleaseQueuePlan,
+  type PlanReleaseQueueInput,
+} from "./release-queue.ts";
+export {
   createGitHubHttpClient,
   createGitHubPrPort,
   gitHubFilesFor,

@@ -15,6 +15,7 @@
 
 import {
   ChangeSetPhase,
+  OrgEventKind,
   StageOutcome,
   currentStage,
   type ChangeSet,
@@ -33,6 +34,7 @@ import {
   applyChangeSet,
   ExternalDecision,
   replayLedger,
+  planReleaseQueue,
   classifyDeadLetters,
   recoveryIncidentToOrgEvent,
   recoveryScanCompletedToOrgEvent,
@@ -41,6 +43,8 @@ import {
   scanStrandedScheduleBlocks,
   type ChangeControlPort,
   type DeadLetterRecoveryCandidate,
+  ReleaseQueueActionKind,
+  type ReleaseBatchEvaluation,
   type ReactionPlanRecoveryCandidate,
   type ReviewKernelDeps,
   type RunBindingRecoveryCandidate,
@@ -217,11 +221,6 @@ export function createChangeControlCadenceLane(deps: ChangeControlCadenceDeps): 
             await deps.writer.upsert(next);
             for (const e of re.events) await deps.appendEvent(e);
           }
-          if (next.phase === ChangeSetPhase.Approved) {
-            const ap = applyChangeSet(next, kernel);
-            await deps.writer.upsert(ap.changeSet);
-            for (const e of ap.events) await deps.appendEvent(e);
-          }
           advanced += 1;
         }
         return { status: `change-control:${advanced}advanced`, failures: [] };
@@ -229,6 +228,133 @@ export function createChangeControlCadenceLane(deps: ChangeControlCadenceDeps): 
         return degraded(`change-control lane: ${error instanceof Error ? error.message : String(error)}`);
       }
     },
+  };
+}
+
+// ── G1: release queue ───────────────────────────────────────────────────────
+
+export type ReleaseQueueCadenceDeps = {
+  organizationId: string;
+  now: () => number;
+  createId: (prefix: string) => string;
+  reader: ChangeSetReader;
+  writer: ChangeSetWriter;
+  appendEvent: (event: OrgEvent) => Promise<void>;
+  maxBatchSize?: number;
+  evaluateBatch?: (batch: readonly ChangeSet[]) => ReleaseBatchEvaluation;
+  runAtomically?: (operation: (ports: ReleaseQueuePersistencePorts) => Promise<void>) => Promise<void>;
+};
+
+export type ReleaseQueuePersistencePorts = {
+  writer: ChangeSetWriter;
+  appendEvent: (event: OrgEvent) => Promise<void>;
+};
+
+const DEFAULT_RELEASE_QUEUE_BATCH_SIZE = 8;
+
+export function createReleaseQueueCadenceLane(deps: ReleaseQueueCadenceDeps): CadenceLane {
+  return {
+    name: "release-queue",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const approved = await deps.reader.listByOrgPhase(deps.organizationId, ChangeSetPhase.Approved);
+        if (approved.length === 0) {
+          return {
+            status: "release-queue:0applied/0changes_requested/0requeued",
+            failures: [],
+          };
+        }
+        if (deps.evaluateBatch === undefined) {
+          return degraded("release-queue lane: release batch evaluator unavailable");
+        }
+        const plan = planReleaseQueue({
+          approvedChangeSets: approved,
+          maxBatchSize: deps.maxBatchSize ?? DEFAULT_RELEASE_QUEUE_BATCH_SIZE,
+          evaluateBatch: deps.evaluateBatch,
+        });
+        const byId = new Map(approved.map((cs) => [cs.changeSetId, cs]));
+        const counts = { applied: 0, changesRequested: 0, requeued: 0 };
+        const persist = deps.runAtomically ?? (async (operation) => await operation({
+          writer: deps.writer,
+          appendEvent: deps.appendEvent,
+        }));
+
+        if (plan.actions.length > 0) {
+          await persist(async (ports) => {
+            for (const action of plan.actions) {
+              const cs = byId.get(action.changeSetId);
+              if (cs === undefined) continue;
+
+              if (action.kind === ReleaseQueueActionKind.Apply) {
+                const kernel = releaseQueueKernel(deps);
+                const applied = applyChangeSet(cs, kernel);
+                await ports.writer.upsert(applied.changeSet);
+                for (const event of applied.events) {
+                  await ports.appendEvent(withEvidence(event, action.evidenceRefs));
+                }
+                counts.applied += 1;
+              } else if (action.kind === ReleaseQueueActionKind.RequestChanges) {
+                const next = {
+                  ...cs,
+                  phase: ChangeSetPhase.ChangesRequested,
+                  updatedAt: new Date(deps.now()).toISOString(),
+                };
+                await ports.writer.upsert(next);
+                await ports.appendEvent(releaseQueueChangesRequestedEvent(deps, cs, action.evidenceRefs));
+                counts.changesRequested += 1;
+              } else {
+                counts.requeued += 1;
+              }
+            }
+          });
+        }
+
+        return {
+          status: `release-queue:${counts.applied}applied/${counts.changesRequested}changes_requested/${counts.requeued}requeued`,
+          failures: [],
+        };
+      } catch (error) {
+        return degraded(`release-queue lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+function releaseQueueKernel(deps: ReleaseQueueCadenceDeps): ReviewKernelDeps {
+  return {
+    organizationId: deps.organizationId,
+    now: deps.now(),
+    createId: deps.createId,
+  };
+}
+
+function withEvidence(event: OrgEvent, evidenceRefs: readonly string[]): OrgEvent {
+  return {
+    ...event,
+    evidenceRefs: [...event.evidenceRefs, ...evidenceRefs],
+  };
+}
+
+function releaseQueueChangesRequestedEvent(
+  deps: ReleaseQueueCadenceDeps,
+  cs: ChangeSet,
+  evidenceRefs: readonly string[],
+): OrgEvent {
+  const correlationId = deps.createId("releaseq-corr");
+  return {
+    id: deps.createId("releaseq-evt"),
+    kind: OrgEventKind.ChangesRequested,
+    occurredAt: new Date(deps.now()).toISOString(),
+    organizationId: deps.organizationId,
+    subjectId: cs.changeSetId,
+    fromState: ChangeSetPhase.Approved,
+    toState: ChangeSetPhase.ChangesRequested,
+    decision: `release queue isolated red ChangeSet ${cs.changeSetId}`,
+    supervisorChain: ["executive_board", "coo"],
+    evidenceRefs,
+    correlationId,
+    causationId: correlationId,
+    traceId: correlationId,
   };
 }
 

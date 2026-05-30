@@ -71,9 +71,9 @@ test("changes_requested returns to the proposer (in_review or withdraw)", () => 
   deepEqual([...next].sort(), [ChangeSetPhase.InReview, ChangeSetPhase.Withdrawn].sort());
 });
 
-test("approved can only apply or withdraw", () => {
+test("approved can apply, return for release fixes, or withdraw", () => {
   const next = legalChangeSetTransitions(changeSet({ phase: ChangeSetPhase.Approved }), pipeline([stage({ id: "s" })]));
-  deepEqual([...next].sort(), [ChangeSetPhase.Applied, ChangeSetPhase.Withdrawn].sort());
+  deepEqual([...next].sort(), [ChangeSetPhase.Applied, ChangeSetPhase.ChangesRequested, ChangeSetPhase.Withdrawn].sort());
 });
 
 test("THE CLAMP: an unsatisfiable gate can never be approved — only bounced or rejected", () => {
