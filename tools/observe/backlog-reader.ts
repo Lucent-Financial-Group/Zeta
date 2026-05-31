@@ -39,15 +39,14 @@
  *     `WorkItem`). THIS reader is where that mapping lands: today `id` carries
  *     `B-xxxxx`; post-migration it carries (or pairs with) a `WorkItem` ZetaId.
  *
- *  3. EXECUTION axis (operator 2026-05-31, open umbrella question). A WorkItem
- *     RUNS AS a durable Task (Durable Functions / Task framework) whose lifecycle
- *     is an Rx `Observable<WorkItemEvent>` (the heartbeat/bus stream IS that
- *     observable). "Task" here is the EXECUTION primitive — a different layer
- *     from the planning `task` TYPE. Recommendation: keep `WorkItem` as the
- *     planning umbrella (matches Azure DevOps, clean plugin-interop) and RELATE
- *     it to execution (runs-as-Task, observed-via-Rx) rather than REPLACE it with
- *     `Task` (which would invert Azure DevOps + overload the word). Pending
- *     operator confirmation of the umbrella name.
+ *  3. EXECUTION axis. A WorkItem RUNS AS a durable Task (Durable Functions / Task
+ *     framework) whose lifecycle is an Rx `Observable<WorkItemEvent>` (the
+ *     heartbeat/bus stream IS that observable). "Task" here is the EXECUTION
+ *     primitive — a different layer from the planning `task` TYPE. DECIDED
+ *     (operator 2026-05-31): keep `WorkItem` as the planning umbrella (matches
+ *     Azure DevOps; clean Jira/ADO plugin-interop; git-native first) and RELATE
+ *     it to execution (runs-as-Task, observed-via-Rx) — do NOT replace it with
+ *     `Task` (which would invert Azure DevOps + overload the word).
  *
  * Keeping the reader the single seam means observe.ts never sees `B-xxxxx` vs
  * ZetaId, or task vs bug vs state — only the observe DU.
