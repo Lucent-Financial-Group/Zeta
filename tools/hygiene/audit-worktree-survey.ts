@@ -138,20 +138,6 @@ function parseWorktreePorcelain(stdout: string): WorktreeEntry[] {
 }
 
 function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<WorktreeSurveyItem, "bucket" | "reason"> {
-  if (!inspection.pathExists && entry.prunable) {
-    return {
-      bucket: "OBSOLETE",
-      reason: "git marks the worktree prunable and the working path is missing",
-    };
-  }
-
-  if (!inspection.pathExists) {
-    return {
-      bucket: "NEEDS-RECOVERY",
-      reason: "working path is missing but git did not mark the entry prunable",
-    };
-  }
-
   if (inspection.statusError !== null) {
     return {
       bucket: "NEEDS-RECOVERY",
@@ -159,7 +145,7 @@ function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<Wo
     };
   }
 
-  if (inspection.dirty === true) {
+  if (inspection.pathExists && inspection.dirty === true) {
     return {
       bucket: "NEEDS-RECOVERY",
       reason: "worktree has uncommitted or untracked changes",
@@ -169,21 +155,48 @@ function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<Wo
   if (inspection.headReachableFromMain === true) {
     return {
       bucket: "ALREADY-COVERED",
-      reason: "clean worktree HEAD is reachable from origin/main",
+      reason: inspection.pathExists
+        ? "clean worktree HEAD is reachable from origin/main"
+        : "missing worktree HEAD is reachable from origin/main",
     };
   }
 
   if (inspection.treeEquivalentToMain === true) {
     return {
       bucket: "ALREADY-COVERED",
-      reason: "clean worktree changes produce no tree changes when merged into origin/main",
+      reason: inspection.pathExists
+        ? "clean worktree changes produce no tree changes when merged into origin/main"
+        : "missing worktree changes produce no tree changes when merged into origin/main",
     };
   }
 
   if (inspection.patchEquivalentToMain === true) {
     return {
       bucket: "ALREADY-COVERED",
-      reason: "clean worktree changes are patch-equivalent to origin/main",
+      reason: inspection.pathExists
+        ? "clean worktree changes are patch-equivalent to origin/main"
+        : "missing worktree changes are patch-equivalent to origin/main",
+    };
+  }
+
+  if (!inspection.pathExists && entry.prunable && entry.head === null) {
+    return {
+      bucket: "OBSOLETE",
+      reason: "git marks the worktree prunable, the working path is missing, and no HEAD is recorded",
+    };
+  }
+
+  if (!inspection.pathExists && entry.prunable) {
+    return {
+      bucket: "NEEDS-RECOVERY",
+      reason: "prunable worktree path is missing but its HEAD is not known covered by origin/main",
+    };
+  }
+
+  if (!inspection.pathExists) {
+    return {
+      bucket: "NEEDS-RECOVERY",
+      reason: "working path is missing but git did not mark the entry prunable",
     };
   }
 
@@ -341,51 +354,45 @@ function mergeTreeEquivalentToMain(path: string, head: string): boolean | null {
   return mergedTree === null ? null : mergedTree === mainTree;
 }
 
-function inspectWorktreeEntry(entry: WorktreeEntry): WorktreeInspection {
+function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string = entry.path): WorktreeInspection {
   const pathExists = existsSync(entry.path);
-  if (!pathExists) {
-    return {
-      pathExists,
-      dirty: null,
-      headReachableFromMain: null,
-      treeEquivalentToMain: null,
-      patchEquivalentToMain: null,
-      statusError: null,
-    };
-  }
-
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const status = spawnSync("git", ["-C", entry.path, "status", "--porcelain=v1", "--untracked-files=normal"], {
-    encoding: "utf8",
-  });
-  if (status.error) {
-    return {
-      pathExists,
-      dirty: null,
-      headReachableFromMain: null,
-      treeEquivalentToMain: null,
-      patchEquivalentToMain: null,
-      statusError: status.error.message,
-    };
-  }
-  if (status.status !== 0) {
-    const stderr = (status.stderr || "").trim() || `(no stderr; exit ${status.status ?? "null"})`;
-    return {
-      pathExists,
-      dirty: null,
-      headReachableFromMain: null,
-      treeEquivalentToMain: null,
-      patchEquivalentToMain: null,
-      statusError: stderr,
-    };
+  let dirty: boolean | null = null;
+  if (pathExists) {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const status = spawnSync("git", ["-C", entry.path, "status", "--porcelain=v1", "--untracked-files=normal"], {
+      encoding: "utf8",
+    });
+    if (status.error) {
+      return {
+        pathExists,
+        dirty: null,
+        headReachableFromMain: null,
+        treeEquivalentToMain: null,
+        patchEquivalentToMain: null,
+        statusError: status.error.message,
+      };
+    }
+    if (status.status !== 0) {
+      const stderr = (status.stderr || "").trim() || `(no stderr; exit ${status.status ?? "null"})`;
+      return {
+        pathExists,
+        dirty: null,
+        headReachableFromMain: null,
+        treeEquivalentToMain: null,
+        patchEquivalentToMain: null,
+        statusError: stderr,
+      };
+    }
+    dirty = status.stdout.trim().length > 0;
   }
 
   let headReachableFromMain: boolean | null = null;
   let treeEquivalentToMain: boolean | null = null;
   let patchEquivalentToMain: boolean | null = null;
   if (entry.head !== null) {
+    const gitContext = pathExists ? entry.path : fallbackGitContext;
     // eslint-disable-next-line sonarjs/no-os-command-from-path
-    const mergeBase = spawnSync("git", ["-C", entry.path, "merge-base", "--is-ancestor", entry.head, "origin/main"], {
+    const mergeBase = spawnSync("git", ["-C", gitContext, "merge-base", "--is-ancestor", entry.head, "origin/main"], {
       encoding: "utf8",
     });
     if (!mergeBase.error && (mergeBase.status === 0 || mergeBase.status === 1)) {
@@ -393,12 +400,12 @@ function inspectWorktreeEntry(entry: WorktreeEntry): WorktreeInspection {
     }
 
     if (headReachableFromMain !== true) {
-      treeEquivalentToMain = mergeTreeEquivalentToMain(entry.path, entry.head);
+      treeEquivalentToMain = mergeTreeEquivalentToMain(gitContext, entry.head);
     }
 
     if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
       // eslint-disable-next-line sonarjs/no-os-command-from-path
-      const cherry = spawnSync("git", ["-C", entry.path, "cherry", "origin/main", entry.head], {
+      const cherry = spawnSync("git", ["-C", gitContext, "cherry", "origin/main", entry.head], {
         encoding: "utf8",
       });
       if (!cherry.error && cherry.status === 0) {
@@ -413,7 +420,7 @@ function inspectWorktreeEntry(entry: WorktreeEntry): WorktreeInspection {
 
   return {
     pathExists,
-    dirty: status.stdout.trim().length > 0,
+    dirty,
     headReachableFromMain,
     treeEquivalentToMain,
     patchEquivalentToMain,
@@ -421,9 +428,10 @@ function inspectWorktreeEntry(entry: WorktreeEntry): WorktreeInspection {
   };
 }
 
-function realInspector(): Inspector {
+function realInspector(root: string | null): Inspector {
+  const fallbackGitContext = root ?? process.cwd();
   return {
-    inspect: inspectWorktreeEntry,
+    inspect: (entry) => inspectWorktreeEntry(entry, fallbackGitContext),
   };
 }
 
@@ -438,7 +446,7 @@ function runSurvey(root: string | null, now: Date): WorktreeSurvey | { error: st
     return { error: `git worktree list failed: ${stderr}`, code: 128 };
   }
 
-  return makeSurvey(parseWorktreePorcelain(list.stdout), realInspector(), now, root);
+  return makeSurvey(parseWorktreePorcelain(list.stdout), realInspector(root), now, root);
 }
 
 function main(argv: string[]): AuditExitCode {

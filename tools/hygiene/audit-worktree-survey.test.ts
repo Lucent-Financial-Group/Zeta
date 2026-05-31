@@ -164,13 +164,29 @@ describe("classifyWorktrees", () => {
     expect(items[0]!.reason).toContain("uncommitted or untracked");
   });
 
-  test("marks missing prunable entries as obsolete", () => {
-    const items = classifyWorktrees([entry({ prunable: true })], {
+  test("marks missing prunable entries without a recorded HEAD as obsolete", () => {
+    const items = classifyWorktrees([entry({ head: null, prunable: true })], {
       inspect: () => inspection({ pathExists: false, dirty: null, headReachableFromMain: null }),
     });
 
     expect(items[0]!.bucket).toBe("OBSOLETE");
     expect(items[0]!.reason).toContain("prunable");
+  });
+
+  test("marks missing prunable entries with uncovered commits as needing recovery", () => {
+    const items = classifyWorktrees([entry({ prunable: true })], {
+      inspect: () =>
+        inspection({
+          pathExists: false,
+          dirty: null,
+          headReachableFromMain: false,
+          treeEquivalentToMain: false,
+          patchEquivalentToMain: false,
+        }),
+    });
+
+    expect(items[0]!.bucket).toBe("NEEDS-RECOVERY");
+    expect(items[0]!.reason).toContain("HEAD is not known covered");
   });
 
   test("marks missing non-prunable entries as needing recovery", () => {
@@ -251,6 +267,31 @@ describe("inspectWorktreeEntry", () => {
       rmSync(repo, { recursive: true, force: true });
     }
   });
+
+  test("checks missing prunable worktree HEAD coverage from the repository context", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      commitFile(repo, "tracked.txt", "base\n", "base");
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+      runGit(repo, ["checkout", "-b", "feature"]);
+      commitFile(repo, "tracked.txt", "unique committed work\n", "unique feature");
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      const missingPath = join(repo, "deleted-linked-worktree");
+      const result = inspectWorktreeEntry(entry({ path: missingPath, head: featureHead, prunable: true }), repo);
+      expect(result.pathExists).toBe(false);
+      expect(result.dirty).toBe(null);
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(false);
+      expect(result.patchEquivalentToMain).toBe(false);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
 });
 
 describe("renderMarkdown", () => {
@@ -272,7 +313,7 @@ describe("renderMarkdown", () => {
 
   test("renders totals and bucket tables", () => {
     const survey = makeSurvey(
-      [entry({ path: "/repo/dirty" }), entry({ path: "/repo/stale", prunable: true })],
+      [entry({ path: "/repo/dirty" }), entry({ path: "/repo/stale", head: null, prunable: true })],
       {
         inspect: (e) =>
           e.path.endsWith("stale")
