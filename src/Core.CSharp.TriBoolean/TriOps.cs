@@ -17,6 +17,15 @@ public static class TriOps
     private const string ClosedHierarchy =
         "Tri is a closed hierarchy: TrueCell | FalseCell | NCell";
 
+    /// <summary>
+    /// Validate a continuation's result before returning it: a nullable-oblivious continuation could
+    /// return null, which is NOT a valid Tri (null is not Tri.N). Surface it loudly rather than
+    /// manufacturing an invalid cell that fails later in unrelated operations.
+    /// </summary>
+    private static Tri RequireCell(Tri? result) =>
+        result ?? throw new InvalidOperationException(
+            "A Tri-producing continuation returned null; it must return a valid Tri (null is not Tri.N).");
+
     /// <summary>Construct a certain cell from a boolean.</summary>
     public static Tri FromBool(bool b) => b ? Tri.T : Tri.F;
 
@@ -97,8 +106,8 @@ public static class TriOps
         ArgumentNullException.ThrowIfNull(fn);
         return t switch
         {
-            Tri.TrueCell => fn(true),
-            Tri.FalseCell => fn(false),
+            Tri.TrueCell => RequireCell(fn(true)),
+            Tri.FalseCell => RequireCell(fn(false)),
             Tri.NCell => Tri.N,
             _ => throw new UnreachableException(ClosedHierarchy),
         };

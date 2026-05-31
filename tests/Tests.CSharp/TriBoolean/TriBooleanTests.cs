@@ -101,4 +101,17 @@ public class TriBooleanTests
         Assert.Throws<ArgumentNullException>(() => OrTri(nul, Tri.F));
         Assert.Throws<ArgumentNullException>(() => Eq(nul, Tri.T));
     }
+
+    [Fact]
+    public void BindTriRejectsNullReturningContinuation()
+    {
+        // A nullable-oblivious continuation returning null must not manufacture an invalid cell
+        // (Codex P2 on #6168, the fix-commit follow-up). Certain inputs reach the continuation;
+        // a null result is surfaced loudly instead of returned.
+        Func<bool, Tri> nullCont = _ => null!;
+        Assert.Throws<InvalidOperationException>(() => BindTri(Tri.T, nullCont));
+        Assert.Throws<InvalidOperationException>(() => BindTri(Tri.F, nullCont));
+        // Tri.N short-circuits before the continuation runs -- no throw, stays held.
+        Assert.Equal(Tri.N, BindTri(Tri.N, nullCont));
+    }
 }
