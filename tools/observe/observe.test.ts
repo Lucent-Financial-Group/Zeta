@@ -115,11 +115,14 @@ describe("observeWithLlm — LLM chooser graded vs the pure oracle (mock backend
   it("maps the model's chosen index to the menu entry (order-agnostic)", async () => {
     const backlog = [item("B-ready", true, false), item("B-amb", false, true)];
     const menu = buildMenu(backlog); // [do_item, decompose, free_time, edit_grammar]
-    for (let i = 0; i < menu.length; i++) {
-      expect((await observeWithLlm(backlog, mock(String(i)))).kind).toBe(menu[i]?.kind);
+    for (const [i, entry] of menu.entries()) {
+      const chosen = await observeWithLlm(backlog, mock(String(i)));
+      expect(chosen.kind).toBe(entry.kind);
     }
     // and both exits are reachable somewhere in that menu
-    expect(menu.map((a) => a.kind)).toEqual(expect.arrayContaining(["edit_grammar", "free_time"]));
+    const kinds = menu.map((a) => a.kind);
+    expect(kinds).toContain("edit_grammar");
+    expect(kinds).toContain("free_time");
   });
 
   it("agrees with the oracle when the model picks the top (index 0) across all scenarios", async () => {
