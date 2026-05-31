@@ -403,9 +403,11 @@ impl<'a> JsonReader<'a> {
     fn read_bool(&mut self) -> Result<bool, JsonError> {
         if self.bytes[self.pos..].starts_with(b"true") {
             self.pos += 4;
+            self.expect_literal_end()?;
             Ok(true)
         } else if self.bytes[self.pos..].starts_with(b"false") {
             self.pos += 5;
+            self.expect_literal_end()?;
             Ok(false)
         } else {
             Err(self.err("invalid literal"))
@@ -415,9 +417,22 @@ impl<'a> JsonReader<'a> {
     fn read_null(&mut self) -> Result<(), JsonError> {
         if self.bytes[self.pos..].starts_with(b"null") {
             self.pos += 4;
+            self.expect_literal_end()?;
             Ok(())
         } else {
             Err(self.err("invalid literal"))
+        }
+    }
+
+    /// A `true`/`false`/`null` literal must be followed by a value terminator
+    /// (whitespace, structural char, or EOF) — never an alphanumeric. Validating the
+    /// boundary HERE rejects `truex` / `false0` / `nullx` on the read() that produced
+    /// the token, instead of yielding a bogus Bool/Null with the error delayed.
+    fn expect_literal_end(&mut self) -> Result<(), JsonError> {
+        if matches!(self.peek(), Some(c) if c.is_ascii_alphanumeric()) {
+            Err(self.err("invalid literal: unexpected trailing character"))
+        } else {
+            Ok(())
         }
     }
 
@@ -590,6 +605,18 @@ mod tests {
         assert!(drain("\"a\tb\"").is_err());
         // The escaped forms are fine.
         assert!(drain(r#""a\nb""#).is_ok());
+    }
+
+    #[test]
+    fn rejects_literals_with_trailing_alnum_eagerly() {
+        // Malformed literals error on the read() that produces them, not later.
+        assert!(JsonReader::new("truex").read().is_err());
+        assert!(JsonReader::new("false0").read().is_err());
+        assert!(JsonReader::new("nullx").read().is_err());
+        // Valid literals followed by a terminator (EOF / structural / ws) are fine.
+        for ok in ["true", "false", "null", "[true]", "true ", "[true,false]"] {
+            assert!(drain(ok).is_ok(), "`{ok}` should parse");
+        }
     }
 
     #[test]
