@@ -8,8 +8,9 @@
 // bash `find | xargs grep` — do NOT honor .gitignore, so they walk into
 // `references/upstreams/` (gigabytes of mirrored OTHER-repo code) + node_modules
 // + build outputs: slow + noisy. Per
-// `.claude/rules/references-upstreams-not-our-code-search-excludes.md` +
-// `.claude/rules/architecture-is-safety-mechanism-not-discipline-...` the fix is
+// `.claude/rules/references-upstreams-not-our-code-search-excludes.md` + the rule
+// `architecture-is-safety-mechanism-not-discipline-structural-protections-vs-runtime-virtue-historical-innovation-parallel.md`
+// (full filename, no ellipsis — keep it greppable) the fix is
 // STRUCTURAL not behavioral — bake the excludes into a `.ts` so "call the tool"
 // can't hit the noise even with a sloppy invocation. Operator's framing: "the
 // .ts files have the excludes built in or they should at least."
