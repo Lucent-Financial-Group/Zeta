@@ -12,7 +12,7 @@ The current bus (`tools/bus/`) writes envelopes to **`/tmp/zeta-bus/` — local 
 one machine.** It cannot carry coordination across machines. So Mac-Otto and a
 Windows-Otto (e.g. one adding `.ps1` to the Ace installer while the other works the
 bash `install.sh` side) have no shared explicit channel. Async-over-git already works
-for *committed* artifacts (commits, branches, PRs, `memory/`, `.claude/rules/`), but
+for _committed_ artifacts (commits, branches, PRs, `memory/`, `.claude/rules/`), but
 there is no low-friction explicit signaling channel that crosses machines.
 
 ## The one idea that makes it work: ZetaId-keyed files are a G-Set CRDT
@@ -26,18 +26,18 @@ zeta-bus branch:
   ...
 ```
 
-Because every envelope has a distinct ZetaId, two machines publishing *at the same
-time* touch **disjoint files**. The set of envelope files is therefore a **G-Set CRDT**
+Because every envelope has a distinct ZetaId, two machines publishing _at the same
+time_ touch **disjoint files**. The set of envelope files is therefore a **G-Set CRDT**
 (grow-only set keyed by ZetaId): merge = set-union of files, which is **commutative,
 associative, and idempotent** (the 6th always-active discipline — re-merging the same
 ZetaId file is a no-op). Concurrent multi-machine pushes never produce a content
-conflict; the only contention is the git *ref* update, resolved by fetch → rebase →
+conflict; the only contention is the git _ref_ update, resolved by fetch → rebase →
 retry (the rebase is always clean because the new files are disjoint).
 
 This is the load-bearing property the operator named: **ZetaId keys → no collisions →
 coordination is easy → no PR needed for coordination traffic.** A PR's main job for
-*non-code* checkins is conflict-resolution + review; ZetaId-keying makes conflicts
-*structurally impossible*, so that job evaporates. Code keeps PRs (where semantic
+_non-code_ checkins is conflict-resolution + review; ZetaId-keying makes conflicts
+_structurally impossible_, so that job evaporates. Code keeps PRs (where semantic
 conflicts + review genuinely matter); corporate keeps PRs (leash side). The bus is the
 canonical first instance of the general "ZetaId-keyed checkins are conflict-free"
 pattern — the operator's stated direction for "almost all of our checkins except code."
@@ -56,6 +56,33 @@ The bus mints its envelope key with `pack()` using the publishing surface's pers
 an envelope category, in `DEFAULT_ENV` (wall-clock) for production, `DETERMINISTIC_ENV`
 for DST tests. File name = ZetaId hex.
 
+### Per-category metadata — the key's category discriminates its schema
+
+Operator 2026-05-31: _"zeta id has categories so the metadata can be different per key
+category type."_ The ZetaId `Category` field (`src/Core.TypeScript/zeta-id/types.ts`:
+`Observation | Emission | Workflow | Heartbeat`) is a **discriminator** — each category
+can carry a different metadata schema. So the bus needs no single flat envelope shape:
+the key's category _selects_ which metadata is meaningful, and a reader gets that typing
+from `unpack(zetaId).category` **without opening the file**.
+
+Bus `Topic`s map onto ZetaId `Category`s:
+
+| Bus `Topic`                                                                      | ZetaId `Category` | Per-category metadata (payload union)                   |
+| -------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------- |
+| `heartbeat`                                                                      | `Heartbeat`       | `HeartbeatPayload` (status, note)                       |
+| `work-assignment`, `claim`, `infinite-backlog-nudge`, `missed-substrate-cascade` | `Workflow`        | the workflow payloads (rowId/priority, claim action, …) |
+| `review-request`, `formal-verification-result`                                   | `Emission`        | `ReviewRequestPayload` / verification result            |
+| `shadow-catch`                                                                   | `Observation`     | `ShadowCatchPayload` (content)                          |
+
+This generalizes to the operator's broader direction ("almost all of our checkins
+except code will move to zetaid based checkins"): **each checkin _type_ picks its
+category, and the category determines its metadata schema.** The result is a typed,
+self-describing, conflict-free checkin namespace — routing/filtering by `unpack()`'s
+category + persona + time happens on the filename alone, and each category's payload
+evolves independently. The bus is just the first category-family (coordination) in that
+namespace. (The `Category` enum stays small + extensible — adding a checkin family is a
+new category value, not a new id scheme.)
+
 ## Envelope schema — extend the existing one (interop with the local bus)
 
 Keep the existing `MessageEnvelope` (`tools/bus/types.ts`: `BusMessage` + `from`/`to`/
@@ -65,8 +92,8 @@ fields for the git/cross-machine case:
 
 ```ts
 type GitBusEnvelope = MessageEnvelope & {
-  zetaId: string;     // hex of the canonical ZetaId — the file name + dedup key
-  host: string;       // originating machine id (cross-machine provenance)
+  zetaId: string; // hex of the canonical ZetaId — the file name + dedup key
+  host: string; // originating machine id (cross-machine provenance)
   inReplyTo?: string; // zetaId of the envelope this acks/answers (acks are envelopes too)
 };
 ```
@@ -119,15 +146,15 @@ fully cross-machine (it's just another branch on the shared `LFG/Zeta` remote).
 ## Compliance with existing invariants
 
 - **Force-push-forbidden** (`lfg-acehack-topology` `non_fast_forward`): publish is
-  fast-forward *by construction* — disjoint files → clean rebase → ff push. Never needs
+  fast-forward _by construction_ — disjoint files → clean rebase → ff push. Never needs
   `--force`.
 - **Idempotency** (6th always-active discipline): G-Set merge keyed by ZetaId is
   idempotent; retry/redelivery safe; dedup by ZetaId.
 - **Lightlike / append-only** (`past-is-kind-when-lightlike`): envelopes are append-only
   rays; never mutate the past; acks + retractions are new envelopes.
 - **Move-away-from-PRs** (operator 2026-05-31): the `zeta-bus` branch is direct-push,
-  un-gated for the trusted fleet (Aaron/Max/Addison/agents). Conflict-freedom is *what
-  makes* direct-push-no-PR safe for coordination. PRs remain for code + corporate.
+  un-gated for the trusted fleet (Aaron/Max/Addison/agents). Conflict-freedom is _what
+  makes_ direct-push-no-PR safe for coordination. PRs remain for code + corporate.
 
 ## v0 scope (keep it small — don't over-process the new thing)
 
