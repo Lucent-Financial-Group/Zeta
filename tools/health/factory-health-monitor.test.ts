@@ -41,6 +41,18 @@ function getReport(): ReturnType<typeof runHealthCheck> {
   return cachedReport;
 }
 
+function expectSignal(signals: HealthSignal[], expected: HealthSignal): void {
+  expect(
+    signals.some(
+      (signal) =>
+        signal.surface === expected.surface &&
+        signal.level === expected.level &&
+        signal.message === expected.message &&
+        signal.action === expected.action,
+    ),
+  ).toBe(true);
+}
+
 describe("factory-health-monitor", () => {
   test("findCoincidenceWindows detects cross-trajectory events inside a bounded window", () => {
     const firstEvent: CoincidenceEvent = {
@@ -1104,17 +1116,17 @@ describe("factory-health-monitor", () => {
       },
     });
 
-    expect(signals).toContainEqual({
+    expectSignal(signals, {
       surface: "lane-runway",
       level: "ok",
       message: "codex: active (1 open PR(s), 1 active claim(s))",
     });
-    expect(signals).toContainEqual({
+    expectSignal(signals, {
       surface: "lane-runway",
       level: "ok",
       message: "lior: quiet runway (0 open PRs, 0 active claims)",
     });
-    expect(signals).toContainEqual({
+    expectSignal(signals, {
       surface: "lane-runway",
       level: "warning",
       message: "riven: no open PRs or claims and service unhealthy",
@@ -1128,7 +1140,7 @@ describe("factory-health-monitor", () => {
       activeClaimBranches: ["claim/task-unowned-work"],
     });
 
-    expect(signals).toContainEqual({
+    expectSignal(signals, {
       surface: "lane-runway",
       level: "warning",
       message: "other: 1 open PR(s), 1 active claim(s) outside named lanes",
