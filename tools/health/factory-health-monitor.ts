@@ -331,11 +331,16 @@ function coincidenceEventSource(event: CoincidenceEvent): CoincidenceEventSource
 }
 
 function loopRunClaimIncreaseSource(occurredMs: number, nowMs: number): CoincidenceEventSource {
-  if (Number.isNaN(nowMs)) {
-    return "loop-run";
+  if (Number.isNaN(occurredMs) || Number.isNaN(nowMs)) {
+    return "unknown";
   }
 
-  return nowMs - occurredMs <= FACTORY_EVENT_LOOP_RUN_INCIDENT_FRESHNESS_MS ? "loop-run" : "unknown";
+  const ageMs = nowMs - occurredMs;
+  if (ageMs < 0) {
+    return "unknown";
+  }
+
+  return ageMs <= FACTORY_EVENT_LOOP_RUN_INCIDENT_FRESHNESS_MS ? "loop-run" : "unknown";
 }
 
 function coincidenceWindowHasIncidentSource(window: CoincidenceWindow): boolean {
@@ -1077,6 +1082,8 @@ export function loopRunReceiptEventsFromRunnerLog(
 ): CoincidenceEvent[] {
   const nowMs = Date.parse(nowIso);
   const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
+  const outsideWindow = (timeMs: number): boolean =>
+    !Number.isNaN(nowMs) && (timeMs > nowMs || nowMs - timeMs > maxAgeMs);
   const events = new Map<string, CoincidenceEvent>();
   const heartbeatSnapshots: Array<{
     claims: number;
@@ -1120,7 +1127,7 @@ export function loopRunReceiptEventsFromRunnerLog(
       continue;
     }
 
-    if (!Number.isNaN(nowMs) && (occurredMs > nowMs || nowMs - occurredMs > maxAgeMs)) {
+    if (outsideWindow(occurredMs)) {
       continue;
     }
 
@@ -1146,6 +1153,10 @@ export function loopRunReceiptEventsFromRunnerLog(
       break;
     }
     if (before === undefined || after === undefined) {
+      continue;
+    }
+
+    if (outsideWindow(after.timeMs)) {
       continue;
     }
 

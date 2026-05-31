@@ -6,7 +6,7 @@ Implemented as a bounded incident-gate refinement.
 
 ## Provenance
 
-- Surface: desktop heartbeat `vera-desktop-loop`
+- Surface: local desktop loop
 - Origin: Codex harness
 - Claim: `claim/task-b0250-lifecycle-residue-freshness`
 - Calibration source:

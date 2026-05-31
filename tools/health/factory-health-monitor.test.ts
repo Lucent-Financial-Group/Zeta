@@ -712,6 +712,34 @@ describe("factory-health-monitor", () => {
     ]);
   });
 
+  test("loopRunReceiptEventsFromRunnerLog is conservative when observation time is unsafe", () => {
+    const output = [
+      "2026-05-30T05:00:00Z heartbeat complete run_id=20260530T050000Z fetch=ok claims=1 open_prs=0 dirty=0 codex=wait due_in=60s",
+      "2026-05-30T05:04:00Z codex forward gate end run_id=invalid-now status=0",
+      "2026-05-30T05:05:00Z heartbeat complete run_id=20260530T050500Z fetch=ok claims=2 open_prs=0 dirty=0 codex=wait due_in=60s",
+    ].join("\n");
+
+    expect(loopRunReceiptEventsFromRunnerLog(output, "not-a-date", 2 * 60 * 60 * 1000)).toEqual([
+      {
+        id: "loop-run-invalid-now",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:05:00.000Z",
+        description: "codex forward gate invalid-now status=0 claims 1->2 open_prs 0->0 lifecycle-residue",
+        source: "unknown",
+      },
+    ]);
+  });
+
+  test("loopRunReceiptEventsFromRunnerLog ignores out-of-window after heartbeats", () => {
+    const output = [
+      "2026-05-30T05:00:00Z heartbeat complete run_id=20260530T050000Z fetch=ok claims=1 open_prs=0 dirty=0 codex=wait due_in=60s",
+      "2026-05-30T05:04:00Z codex forward gate end run_id=future-after status=0",
+      "2026-05-30T08:00:00Z heartbeat complete run_id=20260530T080000Z fetch=ok claims=2 open_prs=0 dirty=0 codex=wait due_in=60s",
+    ].join("\n");
+
+    expect(loopRunReceiptEventsFromRunnerLog(output, "2026-05-30T05:06:00Z", 2 * 60 * 60 * 1000)).toEqual([]);
+  });
+
   test("broadcastBlockerEventsFromJson only converts fresh explicit blocker records", () => {
     expect(
       broadcastBlockerEventsFromJson(
