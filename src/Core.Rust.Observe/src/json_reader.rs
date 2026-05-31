@@ -264,14 +264,19 @@ impl<'a> JsonReader<'a> {
         Ok((token, false))
     }
 
-    /// A scalar value must be followed by a terminator that is valid IN CONTEXT:
-    /// whitespace or EOF always; `,` only inside a container; `]` only inside an
-    /// array; `}` only inside an object. Context-awareness rejects `1,2` / `1]` /
-    /// `[1}]` eagerly (a context-blind check would accept the structural byte and
-    /// delay the error to the next read).
+    /// A scalar value must be followed (after any whitespace) by a terminator that
+    /// is valid IN CONTEXT: EOF always; `,` only inside a container; `]` only inside
+    /// an array; `}` only inside an object. We look PAST whitespace to the next
+    /// significant byte so `[1 2]` / `1   x` (a bad byte after the space) are rejected
+    /// eagerly — a check that stopped at the whitespace would accept it and delay the
+    /// error to the next read.
     fn expect_value_terminator(&self) -> Result<(), JsonError> {
-        let ok = match self.peek() {
-            None | Some(b' ' | b'\t' | b'\n' | b'\r') => true,
+        let mut i = self.pos;
+        while i < self.bytes.len() && matches!(self.bytes[i], b' ' | b'\t' | b'\n' | b'\r') {
+            i += 1;
+        }
+        let ok = match self.bytes.get(i).copied() {
+            None => true,
             Some(b',') => !self.stack.is_empty(),
             Some(b']') => self.stack.last() == Some(&Container::Array),
             Some(b'}') => self.stack.last() == Some(&Container::Object),
@@ -647,7 +652,9 @@ mod tests {
         // A structural byte that's wrong for the current container errors on the
         // read() that produces the value, not later: `,`/`]`/`}` at top-level, `}`
         // closing an array, `]` closing an object.
-        for bad in ["1,2", "1]", "1}", "[1}", "[1}]"] {
+        // Includes whitespace-then-invalid (`[1 2]`, `1   x`): the check looks PAST
+        // whitespace, so the bad byte is caught on the value's read, not later.
+        for bad in ["1,2", "1]", "1}", "[1}", "[1}]", "[1 2]", "1   x", "[1 2 3]"] {
             let mut r = JsonReader::new(bad);
             // First read() may be StartArray (for `[…`); the offending value's read
             // must surface the error.
@@ -658,8 +665,8 @@ mod tests {
             .is_err();
             assert!(saw_err, "`{bad}` must be rejected");
         }
-        // Context-valid terminators still parse.
-        for ok in ["1", "[1,2]", "[1]", r#"{"a":1}"#, r#"{"a":1,"b":2}"#] {
+        // Context-valid terminators (incl. whitespace before them) still parse.
+        for ok in ["1", "1 ", "[1,2]", "[1 ,2]", "[1, 2]", "[1]", r#"{"a":1}"#, r#"{"a":1,"b":2}"#] {
             assert!(drain(ok).is_ok(), "`{ok}` should parse");
         }
     }
