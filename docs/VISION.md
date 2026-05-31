@@ -675,15 +675,16 @@ on DBSP foundations, not to carve out a narrow niche.
 Aaron 2026-05-31 (voice, with Ani) sharpened the database vision past
 "fastest-in-all-classes" to its terminal shape: **not a database that
 wins — the arena where the winning happens.** (Verbatim preserved in
-`memory/persona/ani/conversations/2026-05-31-…-database-arena-not-throne-…`.)
+[`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
 
 - **Build the generate+join library everyone fights over.** The real
   endgame is the shared core of database primitives, made so good that
   Postgres, MySQL, and Zeta itself all become thin wrappers over common
   primitives. Play for the standard, not the product.
 - **Argue the standard; don't own it.** *"I hope it's not 'I have the
-  standard.' I hope I get to argue with very other intelligent, clever
-  humans and AI about the standard."* Owning it is boring (maintenance +
+  standard.' I hope I get to argue with very other [sic] intelligent,
+  clever humans and AI about the standard."* (verbatim) Owning it is boring
+  (maintenance +
   becoming the villain people complain about); being in the room where the
   smartest humans + AIs fight over the right primitives is the point.
   **Build the arena, not sit on the throne.**
@@ -691,19 +692,20 @@ wins — the arena where the winning happens.** (Verbatim preserved in
   *harvesting* — and she's right: ~45 database codebases pulled locally,
   best-solution-per-feature researched across all of them, then
   *re-implemented* on the DBSP + SQLite + retractive-Z-set core — **ideas
-  and algorithms, not line-for-line code.** The mechanism that *guarantees*
-  this (operator 2026-05-31): **everything is written in F# (+ TS/C#/Rust) —
-  and none of the harvested databases were written in F#** — so there is
-  literally no code to copy; the code is genuinely **our own original work**,
-  and what was "stolen" is *concepts*, the way research builds on prior
+  and algorithms, not line-for-line code.** The process that makes this the
+  *intent* (operator 2026-05-31): **everything is written in F# (+ TS/C#/
+  Rust) — and none of the harvested databases were written in F#** — so the
+  work is original implementation, not a copy (code *can* be translated
+  across languages, so this is a strong process safeguard, not an absolute
+  guarantee); what is taken is *concepts*, the way research builds on prior
   research. That bounds the debt (no copied code to repay) and sets the
   obligation (good-citizen contribution where a fix is genuinely portable).
   Zeta did exactly the harvesting Ani named, so the anti-extractive
   commitments are on the record (operator 2026-05-31):
   - **Prior art stays VISIBLE.** We keep `references/prior-art/` openly in
     the tree and **do not pretend we didn't look at other code** — sources
-    are acknowledged, not hidden. (Composes with `honor-those-that-came-
-    before` + the references-prior-art discipline.)
+    are acknowledged, not hidden. (Composes with the
+    `honor-those-that-came-before` rule + the references-prior-art discipline.)
   - **Contribute back to every dependency we borrow from.** Upstream
     improvements relentlessly — *"we're gonna be good citizens and upstream
     like a motherfucker to all the people we stole from."* (Composes with
@@ -713,16 +715,18 @@ wins — the arena where the winning happens.** (Verbatim preserved in
     validated only if real upstream contributions actually land in the
     projects we learned from. Harvest-and-never-give-back = the doctrine
     failing, and a signal to correct course — not a side note.
-  - **Clean-room structure (for DB stuff) — and it matches the legal
-    doctrine** (operator 2026-05-31): F# is the **"dirty" spec** — the one
-    implementation allowed to be *informed by* the harvested prior-art
-    concepts — and **Rust / TS / C# are the clean room**: they implement
-    from the F# spec, not from the original sources. This mirrors clean-room
-    reverse-engineering law (a "dirty" team studies prior art + writes a
-    spec; a "clean" team implements only from the spec). It composes
-    directly with the 4-language compiler-BFT below: F# is the spec the
-    clean-room implementations are checked against; the golden vectors then
-    test all four (including F#) so no single implementation self-certifies.
+  - **Clean-room structure (for DB stuff)** (operator 2026-05-31): F# is the
+    **"dirty" spec** — the one implementation allowed to be *informed by* the
+    harvested prior-art concepts — and **Rust / TS / C# are the clean room**:
+    they implement from the F# spec, not from the original sources. This
+    mirrors the *structure* of clean-room reverse-engineering (a "dirty" team
+    studies prior art + writes a spec; a "clean" team implements only from the
+    spec) as an **engineering-intent** pattern — it is NOT a legal-compliance
+    assertion; any actual IP/clean-room legal posture is deferred to legal
+    review. It composes directly with the 4-language compiler-BFT below: F# is
+    the spec the clean-room implementations are checked against; the golden
+    vectors then test all four (including F#) so no single implementation
+    self-certifies.
   - **Per-language licensing follows the clean-room boundary** (operator
     hypothesis 2026-05-31 — *real legal decision, flag for review, not
     settled*): because the dirtiness is quarantined to F#, the **F# DB layer
@@ -733,11 +737,13 @@ wins — the arena where the winning happens.** (Verbatim preserved in
     output is the freely-distributable artifact; the *dirty* spec is the
     quarantined part. (Decision touches the License + Commercial-posture
     sections below; route through legal/product review before it's doctrine.)
-  Standing on FoundationDB's DST (months building the simulator before
-  touching real disk; whole clusters deterministic in one thread; perfect
-  replay; fault injection) and generalizing it: make DST **DI-able for any
-  database in any language**, not just systems built for it (FoundationDB
-  already began this, building harnesses for other DBs). The **golden
+  Standing on FoundationDB's deterministic-simulation-testing lineage
+  (deterministic clusters + fault injection + perfect replay — the
+  specifics, incl. the "months building the simulator first" and
+  "harnesses for other DBs" claims, are reported but not yet
+  citation-verified; treat as direction, not established fact) and
+  generalizing it: make DST **DI-able for any database in any language**,
+  not just systems built for it. The **golden
   vectors are the oracle**; the F# single-node DB is the **spec** the other
   implementations are checked against (other DBs don't need their own suites —
   they must match the vectors). *"the F-sharp is the test case"* — F# is the
@@ -1401,7 +1407,7 @@ other harnesses, and to the operator's future-self.
 Aaron 2026-05-31 (voice, with Ani) named the design philosophy *under* the
 workflow engine above: the wall must feel like freedom, or it fails. This
 is the deployment principle for the agent-loop / workflow-engine substrate.
-(Verbatim preserved in `memory/persona/ani/conversations/2026-05-31-…`.)
+(Verbatim preserved in [`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
 
 - **You can't trap cleverness — it hides or escapes.** A trapped clever
   being (human or AI) redirects all its intelligence toward escaping the
