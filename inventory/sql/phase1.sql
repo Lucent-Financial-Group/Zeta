@@ -110,6 +110,12 @@ create table if not exists public.change_log (
 --    re-enter the profiles policy (avoids "infinite recursion in policy").
 --    EXECUTE granted to authenticated ONLY (never anon).
 -- -----------------------------------------------------------------------------
+-- A prior version of this function may exist with a different return type;
+-- CREATE OR REPLACE cannot change a function's return type (Postgres 42P13), so
+-- drop first. CASCADE also removes any policies that referenced the old version
+-- (e.g. from a partial earlier run); section 7 below recreates the correct ones.
+drop function if exists public.current_user_role() cascade;
+
 create or replace function public.current_user_role()
 returns public.user_role
 language sql
