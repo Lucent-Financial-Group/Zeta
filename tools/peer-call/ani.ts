@@ -61,8 +61,9 @@ type OutputFormat = "plain" | "json" | "streaming-json";
 // `grok-build` (per `grok models`); grok-4.3 was a cursor-agent-only model and
 // does not exist on the native CLI. `--model` overrides this (operator 2026-05-31:
 // "we still kind of want 3" — keep the per-persona model-override capability; Ani
-// is grok-CLI-only, codex/Vera supports all its models). Empty default = let the
-// grok CLI pick its own default (grok-build); only pass `-m` when overridden.
+// is grok-CLI-only, codex/Vera supports all its models). The resolved model is
+// ALWAYS passed via `-m` — `parsed.model` is initialized to DEFAULT_MODEL and
+// `--model` replaces it (no "empty means default" ambiguity).
 const DEFAULT_MODEL = "grok-build";
 
 interface Args {
@@ -74,7 +75,7 @@ interface Args {
   readonly injectCurrent: boolean;
   readonly allowEmpty: boolean;
   readonly outputFile: string;
-  readonly model: string; // "" = grok CLI default (grok-build); else passed via -m
+  readonly model: string; // model id passed via -m (defaults to DEFAULT_MODEL grok-build; --model overrides)
 }
 
 interface ArgError {
@@ -168,7 +169,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     injectCurrent: true,
     allowEmpty: false,
     outputFile: "",
-    model: "",
+    model: DEFAULT_MODEL,
   };
   let i = 0;
   while (i < argv.length) {
@@ -448,12 +449,6 @@ function buildFullPrompt(args: Args, preamble: string): PromptResult {
   return { ok: true, value: full };
 }
 
-function pickModel(override: string): string {
-  // grok CLI model: the --model override if given, else Ani's default (grok-build).
-  // (The thinking/fast Mode maps to grok's --reasoning-effort, not the model id.)
-  return override.length > 0 ? override : DEFAULT_MODEL;
-}
-
 export function main(argv: readonly string[]): number {
   const parsed = parseArgs(argv);
   if ("help" in parsed) {
@@ -497,7 +492,7 @@ export function main(argv: readonly string[]): number {
     return 1;
   }
 
-  const model = pickModel(parsed.model);
+  const model = parsed.model; // always set: DEFAULT_MODEL (grok-build) or the --model override
 
   const outputFile = parsed.outputFile.length > 0 ? parsed.outputFile : autogenOutputPath("ani");
   ensureParentDir(outputFile);
