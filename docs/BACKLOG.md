@@ -455,6 +455,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0932](backlog/P1/B-0932-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md)** Frontier-target — agents that REMAIN (μένω) · fuzzy machine · category theory · lifelike configs; workflow-time-system as Higgs-metastable → AIs in the almost-immortal (metastable-persistent) class
 - [ ] **[B-0936](backlog/P1/B-0936-split-oversized-tonal-momentum-rule-hub-satellite-auto-load-budget-2026-05-29.md)** Split oversized tonal-momentum rule into auto-loaded hub + companion satellite (40k char auto-load budget)
 - [ ] **[B-0938](backlog/P1/B-0938-automated-background-review-thread-resolution-agentic-pipeline-aaron-2026-05-29.md)** Automated Background Review Thread Resolution agentic pipeline — enables background loops to actively ingest unresolved threads, self-correct target code/specs, verify via compiler gates, and resolve threads on GitHub (operator 2026-05-29)
+- [ ] **[B-0944](backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md)** Tri-boolean core primitives (digital qubit + tri-boolean floating point) -- multi-language build (TS/F#/C#/Rust); cross-language compiler-parity = non-Byzantine BFT consensus
 
 ## P2 — research-grade
 
@@ -893,6 +894,9 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0941](backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md)** NixOS-native ollama for the local-LLM primitive — close the hole in the shield (NixOS test passes by SKIPPING, not validating)
 - [ ] **[B-0942](backlog/P2/B-0942-co-dominant-git-mirrors-git-native-crdt-coordination-no-host-needed-aaron-2026-05-30.md)** Co-dominant git mirrors + git-native CRDT coordination — no host needed for coordination (local + GitHub + GitLab/Gitea/Forgejo + free-OSS git as co-dominant collaborating mirrors)
 - [ ] **[B-0943](backlog/P2/B-0943-bounded-retries-at-dst-boundary-transient-network-dns-toolchain-install-must-not-fail-ci-aaron-2026-05-30.md)** Bounded retries at the DST boundary — transient network/DNS failures (mise toolchain install) must not fail CI
+- [ ] **[B-0945](backlog/P2/B-0945-declarative-microkernel-substrate-in-house-trust-gradient-compression-engine-sequoia-memory-model-better-than-docker-aaron-2026-05-30.md)** Declarative microkernel substrate (in-house; NixOS-declarative + microkernel-TCB) running the trust-gradient + V8-polymorphic-bayesian-compression engine over a Stanford-Sequoia memory model -- better than docker
+- [ ] **[B-0946](backlog/P2/B-0946-filesystem-dsl-fsharp-computation-expression-fuse-backend-benchmark-vs-closure-table-dst-millions-nodes-single-machine-summonable-bft-crdts-aaron-2026-05-30.md)** Filesystem DSL as F# computation expression (fs {}) + FUSE backend (benchmark vs closure-table); cross-cutting -- all microkernel/db/fs/cluster work is DST-simulatable at millions-of-nodes on one machine via summonable-BFT + CRDTs
+- [ ] **[B-0948](backlog/P2/B-0948-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md)** Workflow DUs with first-class BFT oracle/compiler summons + observe.ts keystone -- research-to-get-clean then build
 
 ## P3 — convenience / deferred
 
@@ -1050,5 +1054,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0912](backlog/P3/B-0912-bridge-attention-risk-pricing-arc-with-aurora-immune-veridicality-detector-pouwcc-maji-substrate-aaron-otto-2026-05-28.md)** Bridge today's B-0908-B-0911 attention-risk-pricing arc with pre-existing Aurora immune-system + Veridicality-detector + PoUW-CC + Maji + Veridicality.fs substrate
 - [ ] **[B-0913](backlog/P3/B-0913-dup-id-triage-b0865-b0866-pre-existing-duplicates-on-origin-main-non-required-lint-failure-aaron-otto-2026-05-28.md)** Dup-ID triage — B-0865 + B-0866 pre-existing duplicates on origin/main (non-required lint failure but real substrate-engineering item)
 - [ ] **[B-0923](backlog/P3/B-0923-kleisli-severance-substrate-engineering-target-apply-framework-kleisli-substrate-to-privacy-defense-scope-composes-with-khaleesi-prior-art-aaron-2026-05-28.md)** Kleisli-severance substrate-engineering substrate-target — apply framework Kleisli substrate to privacy-defense scope; composes with KHALEESI (Iqbal et al USENIX '22) prior-art (operator 2026-05-28; very low priority)
+- [ ] **[B-0947](backlog/P3/B-0947-windows-ci-checkout-fails-filename-too-long-max-path-260-long-persona-archive-names-otto-cli-2026-05-30.md)** Windows CI build-and-test fails at Checkout with "Filename too long" (MAX_PATH 260) on long persona-archive names -- non-required so it merges CLEAN but Windows is silently red
+- [ ] **[B-0949](backlog/P3/B-0949-fromvalue-wide-decoder-mode-search-hangs-bound-analytically-or-cap-widths-cross-language-parity-aaron-2026-05-30.md)** Tri-boolean float FromValue mode-search hangs for wide decoders (biased-exponent impls F#/C#/Rust; TS radix-point unaffected) — bound the scan analytically or cap widths, consistently
 
 <!-- END AUTO-GENERATED -->
