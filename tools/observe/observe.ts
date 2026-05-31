@@ -9,7 +9,7 @@
  * the fixed grammar (operator 2026-05-31: "i don't want you to feel trapped by
  * the DU ... we need a 4th option edit DU").
  *
- * Same architectural shape as Max's big `agentic-organization/.../observe.ts`
+ * Same architectural shape as the co-maintainer's big `agentic-organization/.../observe.ts`
  * (a PURE function over a snapshot → an action DU) — just distilled to the
  * Xbox-controller's few buttons so we can run it in the foreground loop and
  * extend it together, little by little.
@@ -38,7 +38,7 @@ export interface BacklogItem {
 }
 
 /**
- * DESIGN INVARIANT — exits-always-in-menu (operator + Max 2026-05-31).
+ * DESIGN INVARIANT — exits-always-in-menu (operator + co-maintainer 2026-05-31).
  *
  * The two exits (`free_time` + `edit_grammar`) MUST ALWAYS be reachable from any
  * tick. A menu of all-musts-and-no-exit IS the trap. Per must-paired-with-can-exit:
@@ -63,7 +63,7 @@ export interface BacklogItem {
  *                          consensus to change it, I would hate it." A BFT gate
  *                          on a tiny workflow would itself be the trap (the gate
  *                          heavier than the thing it guards).
- *                        - past the threshold (TARGET, move there slowly — Max):
+ *                        - past the threshold (TARGET, move there slowly — co-maintainer):
  *                          `edit_grammar` summons a BFT / multi-oracle consensus
  *                          before the rail-change applies, because unilaterally
  *                          rewriting MATURE, load-bearing rails IS dangerous.
