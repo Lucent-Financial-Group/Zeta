@@ -461,7 +461,7 @@ export function decodeEnvelope(bytes: Uint8Array): DecodeEnvelopeResult {
       ok: false,
       feedback: {
         kind: "EnvelopeMalformed",
-        reason: `contentNonce must be ${NONCE_LEN} bytes, got ${o.contentNonce.length}`,
+        reason: `contentNonce must be ${String(NONCE_LEN)} bytes, got ${String(o.contentNonce.length)}`,
       },
     };
   }
