@@ -249,6 +249,7 @@ export {
   observe,
   observeAgent,
   observeAgentSurface,
+  promptFlowReadoutForHat,
   ObserveFeedbackReason,
   ActRejectionReason,
   ObserveCommandType,
@@ -313,6 +314,22 @@ export {
   type VetoedOption,
   type ZetaIdDecimal,
 } from "./observe.ts";
+export {
+  PromptFlowGateKind,
+  PromptFlowRunState,
+  advancePromptFlowRun,
+  canAdvancePromptFlowRun,
+  compilePromptFlowTasks,
+  lintPromptFlowDefinition,
+  type CompilePromptFlowTasksInput,
+  type PromptFlowAdvanceResult,
+  type PromptFlowDefinition,
+  type PromptFlowLintDiagnostic,
+  type PromptFlowPhaseDefinition,
+  type PromptFlowPhaseGate,
+  type PromptFlowRollbackPolicy,
+  type PromptFlowRun,
+} from "./prompt-flow.ts";
 export {
   DEPARTMENTS,
   OrgGraphValidation,

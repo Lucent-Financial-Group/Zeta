@@ -12,6 +12,8 @@ import {
   observeAgentSurface,
   ObserveCommandType,
   ObserveOutcome,
+  PromptFlowGateKind,
+  PromptFlowRunState,
   RunLifecyclePhase,
   RunScope,
   TriAvailability,
@@ -402,6 +404,7 @@ async function loadPromptFlowContextFromRequest(
       label: ref,
       value: ref,
     })),
+    ...copyPromptFlowRequestMetadata(request),
   };
 }
 
@@ -695,6 +698,7 @@ function formatHierarchyPolicyViolations(violations: HierarchyReadout["policyVio
 
 function formatPromptFlowContext(context: PromptFlowContext): string {
   return [
+    ...formatPromptFlowContextMetadata(context),
     "directions:",
     ...formatStringList(context.directions),
     "tools:",
@@ -704,6 +708,44 @@ function formatPromptFlowContext(context: PromptFlowContext): string {
     "context artifacts:",
     ...formatContextArtifacts(context.contextArtifacts),
   ].join("\n");
+}
+
+function copyPromptFlowRequestMetadata(request: PromptFlowContextRequest): Partial<PromptFlowContext> {
+  return {
+    ...(request.definitionVersion !== undefined ? { definitionVersion: request.definitionVersion } : {}),
+    ...(request.phaseId !== undefined ? { phaseId: request.phaseId } : {}),
+    ...(request.runState !== undefined ? { runState: request.runState } : {}),
+    ...(request.permittedUniversalActions !== undefined ? { permittedUniversalActions: request.permittedUniversalActions } : {}),
+    ...(request.requiredEvidenceRefs !== undefined ? { requiredEvidenceRefs: request.requiredEvidenceRefs } : {}),
+    ...(request.gate !== undefined ? { gate: request.gate } : {}),
+    ...(request.reviewerHatIds !== undefined ? { reviewerHatIds: request.reviewerHatIds } : {}),
+    ...(request.timeoutSeconds !== undefined ? { timeoutSeconds: request.timeoutSeconds } : {}),
+    ...(request.retryLimit !== undefined ? { retryLimit: request.retryLimit } : {}),
+    ...(request.rollbackPolicy !== undefined ? { rollbackPolicy: request.rollbackPolicy } : {}),
+  };
+}
+
+function formatPromptFlowContextMetadata(context: PromptFlowContext): readonly string[] {
+  const rows: string[] = [];
+  if (context.phaseId !== undefined || context.runState !== undefined) {
+    rows.push(`phase: ${context.phaseId ?? "unknown"} ${context.runState ?? "unknown"}`);
+  }
+  if (context.requiredEvidenceRefs !== undefined) {
+    rows.push("required evidence:", ...formatStringList(context.requiredEvidenceRefs));
+  }
+  if (context.gate !== undefined) {
+    rows.push(`gate: ${context.gate.kind}`);
+  }
+  if (context.reviewerHatIds !== undefined) {
+    rows.push("reviewers:", ...formatStringList(context.reviewerHatIds));
+  }
+  if (context.timeoutSeconds !== undefined) {
+    rows.push(`timeout seconds: ${context.timeoutSeconds}`);
+  }
+  if (context.rollbackPolicy !== undefined) {
+    rows.push(`rollback: ${context.rollbackPolicy.kind} ${context.rollbackPolicy.description}`);
+  }
+  return rows;
 }
 
 function formatStringList(values: readonly string[]): readonly string[] {
@@ -753,12 +795,14 @@ function parsePromptFlowTask(value: unknown): PromptFlowTask {
     label: parseRequiredString(candidate, "label"),
     scope: parsePromptFlowRunScope(candidate.scope),
     priority: parsePromptFlowPriority(candidate.priority),
+    ...parseOptionalStringArray(candidate.allowedHatIds, "allowedHatIds"),
     ...parseOptionalActionClass(candidate.actionClass),
     ...parseOptionalRequiredToolBundles(candidate.requiredToolBundles),
     directions: parseStringArray(candidate.directions, "directions"),
     toolInjections: parseToolInjections(candidate.toolInjections),
     metrics: parseMetricBlocks(candidate.metrics),
     contextArtifactRefs: parseStringArray(candidate.contextArtifactRefs, "contextArtifactRefs"),
+    ...parseOptionalPromptFlowMetadata(candidate),
   };
 }
 
@@ -1042,6 +1086,83 @@ function parseOptionalRequiredToolBundles(value: unknown): { requiredToolBundles
     }
   }
   return { requiredToolBundles: bundles as readonly ToolBundleName[] };
+}
+
+function parseOptionalStringArray(value: unknown, property: string): Record<string, readonly string[]> {
+  if (value === undefined) return {};
+  return { [property]: parseStringArray(value, property) };
+}
+
+function parseOptionalPromptFlowMetadata(candidate: Record<string, unknown>): Partial<PromptFlowTask> {
+  return {
+    ...parseOptionalString(candidate.definitionVersion, "definitionVersion"),
+    ...parseOptionalString(candidate.phaseId, "phaseId"),
+    ...parseOptionalPromptFlowRunState(candidate.runState),
+    ...parseOptionalStringArray(candidate.permittedUniversalActions, "permittedUniversalActions"),
+    ...parseOptionalStringArray(candidate.requiredEvidenceRefs, "requiredEvidenceRefs"),
+    ...parseOptionalPromptFlowGate(candidate.gate),
+    ...parseOptionalStringArray(candidate.reviewerHatIds, "reviewerHatIds"),
+    ...parseOptionalPositiveInteger(candidate.timeoutSeconds, "timeoutSeconds"),
+    ...parseOptionalPositiveInteger(candidate.retryLimit, "retryLimit"),
+    ...parseOptionalRollbackPolicy(candidate.rollbackPolicy),
+  };
+}
+
+function parseOptionalString(value: unknown, property: string): Record<string, string> {
+  if (value === undefined) return {};
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`prompt-flow task ${property} must be a non-empty string when present`);
+  }
+  return { [property]: value };
+}
+
+function parseOptionalPromptFlowRunState(value: unknown): { runState?: PromptFlowRunState } {
+  if (value === undefined) return {};
+  if (typeof value !== "string" || !Object.values(PromptFlowRunState).includes(value as PromptFlowRunState)) {
+    throw new Error("prompt-flow task runState is invalid");
+  }
+  return { runState: value as PromptFlowRunState };
+}
+
+function parseOptionalPromptFlowGate(value: unknown): Pick<PromptFlowTask, "gate"> {
+  if (value === undefined) return {};
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow task gate must be an object when present");
+  }
+  const gate = value as Record<string, unknown>;
+  if (typeof gate.kind !== "string" || !Object.values(PromptFlowGateKind).includes(gate.kind as PromptFlowGateKind)) {
+    throw new Error("prompt-flow task gate kind is invalid");
+  }
+  return {
+    gate: {
+      kind: gate.kind as PromptFlowGateKind,
+      requiredEvidenceRefs: parseStringArray(gate.requiredEvidenceRefs, "gate.requiredEvidenceRefs"),
+      ...(gate.reviewerHatIds === undefined ? {} : { reviewerHatIds: parseStringArray(gate.reviewerHatIds, "gate.reviewerHatIds") }),
+    },
+  };
+}
+
+function parseOptionalPositiveInteger(value: unknown, property: "timeoutSeconds" | "retryLimit"): Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">> {
+  if (value === undefined) return {};
+  if (!Number.isInteger(value) || (value as number) < 0 || (property === "timeoutSeconds" && value === 0)) {
+    throw new Error(`prompt-flow task ${property} must be a positive integer when present`);
+  }
+  return { [property]: value } as Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">>;
+}
+
+function parseOptionalRollbackPolicy(value: unknown): Pick<PromptFlowTask, "rollbackPolicy"> {
+  if (value === undefined) return {};
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow task rollbackPolicy must be an object when present");
+  }
+  const rollback = value as Record<string, unknown>;
+  if (rollback.kind !== "compensating_action" && rollback.kind !== "revert_artifact" && rollback.kind !== "cancel_only") {
+    throw new Error("prompt-flow task rollbackPolicy kind is invalid");
+  }
+  if (typeof rollback.description !== "string" || rollback.description.length === 0) {
+    throw new Error("prompt-flow task rollbackPolicy description is required");
+  }
+  return { rollbackPolicy: { kind: rollback.kind, description: rollback.description } };
 }
 
 function parseStringArray(value: unknown, property: string): readonly string[] {

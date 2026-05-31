@@ -15,8 +15,17 @@ import { Pool } from "pg";
 import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 
-import { ChangeSetPhase, MemoryPhase, MemoryTier, type ChangeSet, type MemoryRecord, type MemoryState } from "../packages/domain/src/index.ts";
-import { buildInternalOnlyPipeline, RunLifecyclePhase, RunScope } from "../packages/application/src/index.ts";
+import { ChangeSetPhase, MemoryPhase, MemoryTier, ToolBundle, type ChangeSet, type MemoryRecord, type MemoryState } from "../packages/domain/src/index.ts";
+import {
+  ActionClass,
+  PromptFlowGateKind,
+  PromptFlowRunState,
+  buildInternalOnlyPipeline,
+  compilePromptFlowTasks,
+  createContentAddressedEvidenceRef,
+  RunLifecyclePhase,
+  RunScope,
+} from "../packages/application/src/index.ts";
 import {
   createCockroachCoreStateMigrations,
   createCockroachSqlExecutor,
@@ -51,6 +60,45 @@ async function main(): Promise<void> {
   const csId = id("cs-cadence");
   const cs: ChangeSet = { changeSetId: csId, organizationId: ORG, workItemId: id("work"), proposerHatId: "code_author", title: "Cadence-driven change", targetRef: "feat/cadence", phase: ChangeSetPhase.InReview, pipelineId: buildInternalOnlyPipeline(ORG).pipelineId, currentStageIndex: 0, artifacts: [{ kind: "code_diff", path: "a.ts", diff: "+x", language: "ts" }], projections: [], revision: 2, openedAt: at, updatedAt: at };
   await createCockroachChangeSetStore({ executor }).upsert(cs);
+  const testEvidenceRef = createContentAddressedEvidenceRef("test-result", { proof: "org-cadence", status: "green" });
+  const diffEvidenceRef = createContentAddressedEvidenceRef("diff", { proof: "org-cadence", status: "reviewable" });
+  const promptFlowTasks = compilePromptFlowTasks({
+    definitions: [{
+      promptFlowId: "flow-backend-code-change",
+      version: "1.0.0",
+      name: "Backend code-change flow",
+      ownerDepartmentId: "engineering",
+      allowedHatIds: ["backend_implementer"],
+      requiredScope: RunScope.WorkItem,
+      reviewerHatIds: ["code_reviewer"],
+      rollbackPolicy: { kind: "compensating_action", description: "revert patch and release claim" },
+      phases: [{
+        phaseId: "execute",
+        label: "Execute backend change",
+        actionClass: ActionClass.WriteCode,
+        permittedUniversalActions: ["execute", "submit_evidence"],
+        directions: ["Load work context", "Patch the smallest surface", "Run focused tests"],
+        requiredToolBundles: [ToolBundle.Delivery],
+        toolInjections: [{ tool: "repo.patch", args: { workItemId: "work-observe-act" } }],
+        contextArtifactRefs: ["work:work-observe-act", "decision:observe-act"],
+        requiredEvidenceRefs: [testEvidenceRef, diffEvidenceRef],
+        gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: [testEvidenceRef, diffEvidenceRef] },
+        timeoutSeconds: 900,
+        retryLimit: 2,
+        metrics: [{ id: "prompt_flow.required_evidence", label: "required evidence", value: 2, unit: "count" }],
+      }],
+    }],
+    runs: [{
+      runId: "prompt-flow-run-observe-act",
+      promptFlowId: "flow-backend-code-change",
+      definitionVersion: "1.0.0",
+      workItemId: "work-observe-act",
+      scope: RunScope.WorkItem,
+      currentPhaseId: "execute",
+      state: PromptFlowRunState.RunningPhase,
+      priority: 100,
+    }],
+  });
 
   // run the SAME composition the worker drives, bounded to a few ticks per lane
   const laneTicks: { lane: string; tick: number; status: string }[] = [];
@@ -69,10 +117,12 @@ async function main(): Promise<void> {
       phase: RunLifecyclePhase.AwaitingGate,
       hasGateApproval: true,
       hasEvidence: false,
-      hatId: "release_operator",
+      hatId: "backend_implementer",
       hatAssignmentId: "99",
       agentId: "agent-observe-act",
+      promptFlowTasks,
     }),
+    observeActSelectSlot: () => 8,
     observeActRunCommand: async () => ({ status: "shadow_accepted" }),
     observeActDispatchTool: async () => {
       throw new Error("org-cadence observe-act shadow proof should not dispatch MCP");
@@ -95,6 +145,7 @@ async function main(): Promise<void> {
         ticked: laneTicks.some((tick) => tick.lane === "observe-act-work-item"),
         evidenceRows: observeActEvents.length,
         lastEvidenceRefs: observeActEvents[0]?.evidenceRefs ?? [],
+        promptFlowEvidenceRows: observeActEvents.filter((e) => e.evidenceRefs.some((ref) => ref.startsWith("observe-act:prompt_flow:"))).length,
       },
       seededMemory: { memoryId: memId, phaseAfter: memAfter?.state.phase, weightAfter: memAfter?.state.weight, surfaces: memAfter?.state.phase !== MemoryPhase.Archived },
       seededChangeSet: { changeSetId: csId, phaseAfter: csAfter?.phase, revisionAfter: csAfter?.revision },

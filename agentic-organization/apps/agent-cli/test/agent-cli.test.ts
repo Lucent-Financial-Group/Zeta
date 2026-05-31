@@ -3,6 +3,8 @@ import { test } from "node:test";
 
 import {
   ActionClass,
+  PromptFlowGateKind,
+  PromptFlowRunState,
   RunLifecyclePhase,
   RunScope,
   type HierarchySnapshot,
@@ -290,6 +292,60 @@ test("runAgentCliCycle renders prompt-flow tasks and loads selected context", as
   deepEqual(contexts, ["task-implement:repo.search:work_item.failures"]);
 });
 
+test("runAgentCliCycle default prompt-flow loader preserves compiled phase metadata", async () => {
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--select-index",
+      "8",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    promptFlowTasks: [
+      promptFlowTask({
+        taskId: "task-compiled",
+        promptFlowId: "flow-implement",
+        label: "Execute implementation",
+        actionClass: ActionClass.WriteCode,
+        directions: ["Patch the smallest surface"],
+        toolInjections: [{ tool: "repo.patch" }],
+        contextArtifactRefs: ["work:work-1"],
+        definitionVersion: "1.0.0",
+        phaseId: "execute",
+        runState: PromptFlowRunState.RunningPhase,
+        requiredEvidenceRefs: ["tests.green"],
+        gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: ["tests.green"] },
+        reviewerHatIds: ["code_reviewer"],
+        timeoutSeconds: 900,
+        rollbackPolicy: { kind: "compensating_action", description: "revert patch" },
+      }),
+    ],
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "loaded_context");
+  ok(stdout.join("\n").includes("phase: execute running_phase"));
+  ok(stdout.join("\n").includes("required evidence:"));
+  ok(stdout.join("\n").includes("- tests.green"));
+  ok(stdout.join("\n").includes("gate: evidence"));
+  ok(stdout.join("\n").includes("reviewers:"));
+  ok(stdout.join("\n").includes("- code_reviewer"));
+  ok(stdout.join("\n").includes("timeout seconds: 900"));
+  ok(stdout.join("\n").includes("rollback: compensating_action revert patch"));
+});
+
 test("runAgentCliCycle renders hierarchy items for the active hat level", async () => {
   const stdout: string[] = [];
   const result = await runAgentCliCycle({
@@ -531,9 +587,19 @@ test("createAgentCliPromptFlowTasksFromEnv reads current tasks from JSON", () =>
           promptFlowId: "flow-implement",
           label: "Implement work item",
           actionClass: ActionClass.WriteCode,
+          allowedHatIds: ["backend_implementer"],
           directions: ["Load plan"],
           toolInjections: [{ tool: "repo.search", args: { q: "work-1" } }],
           metrics: [{ id: "work_item.failures", label: "failing tests", value: 2 }],
+          definitionVersion: "1.0.0",
+          phaseId: "execute",
+          runState: PromptFlowRunState.RunningPhase,
+          requiredEvidenceRefs: ["tests.green"],
+          gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: ["tests.green"] },
+          reviewerHatIds: ["code_reviewer"],
+          timeoutSeconds: 900,
+          retryLimit: 2,
+          rollbackPolicy: { kind: "compensating_action", description: "revert patch" },
         }),
       ]),
     },
@@ -542,6 +608,15 @@ test("createAgentCliPromptFlowTasksFromEnv reads current tasks from JSON", () =>
   equal(tasks.length, 1);
   equal(tasks[0]?.taskId, "task-implement");
   equal(tasks[0]?.toolInjections[0]?.tool, "repo.search");
+  deepEqual(tasks[0]?.allowedHatIds, ["backend_implementer"]);
+  equal(tasks[0]?.phaseId, "execute");
+  equal(tasks[0]?.runState, PromptFlowRunState.RunningPhase);
+  deepEqual(tasks[0]?.requiredEvidenceRefs, ["tests.green"]);
+  equal(tasks[0]?.gate?.kind, PromptFlowGateKind.Evidence);
+  deepEqual(tasks[0]?.reviewerHatIds, ["code_reviewer"]);
+  equal(tasks[0]?.timeoutSeconds, 900);
+  equal(tasks[0]?.retryLimit, 2);
+  equal(tasks[0]?.rollbackPolicy?.kind, "compensating_action");
 });
 
 function menuForSelection() {

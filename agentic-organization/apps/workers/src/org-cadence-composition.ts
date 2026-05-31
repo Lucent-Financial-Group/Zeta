@@ -54,6 +54,7 @@ import {
   createStaleReactionPlanScanCadenceLane,
   createStrandedScheduleScanCadenceLane,
   type ObserveActCommandRunner,
+  type ObserveActMenuSelector,
   type ObserveActToolDispatcher,
   type ObserveActWorkItemSource,
   type WorkIntakeSource,
@@ -123,6 +124,7 @@ export type ComposeOrgCadenceInput = {
   observeActWorkItems?: ObserveActWorkItemSource;
   observeActRunCommand?: ObserveActCommandRunner;
   observeActDispatchTool?: ObserveActToolDispatcher;
+  observeActSelectSlot?: ObserveActMenuSelector;
   /** bound each lane for tests/proofs; unbounded in the worker */
   maxTicksPerLane?: number;
 };
@@ -168,6 +170,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     source: input.observeActWorkItems ?? createCockroachObserveActWorkItemSource(input),
     runCommand: input.observeActRunCommand ?? createCockroachObserveActCommandRunner(input, hats),
     dispatchTool: input.observeActDispatchTool ?? unavailableObserveActToolDispatcher,
+    ...(input.observeActSelectSlot === undefined ? {} : { selectSlot: input.observeActSelectSlot }),
     appendEvent,
   });
   const workLanes = workLanesFor(input.workOsDriver ?? "legacy", legacyWorkLane, observeActWorkLane);

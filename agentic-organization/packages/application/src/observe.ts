@@ -33,6 +33,11 @@ import type {
   TelemetryTimeRange,
 } from "../../observability/src/index.ts";
 import { ActionClass, preflightHatAction } from "./hat-guardrails.ts";
+import type {
+  PromptFlowPhaseGate,
+  PromptFlowRollbackPolicy,
+  PromptFlowRunState,
+} from "./prompt-flow.ts";
 
 /**
  * ZetaId rendered as a base-10 string — the canonical index for git-as-db
@@ -520,12 +525,23 @@ export type PromptFlowTask = {
   label: string;
   scope: RunScope;
   priority: number;
+  allowedHatIds?: readonly string[] | undefined;
   actionClass?: ActionClass | undefined;
   requiredToolBundles?: readonly ToolBundle[] | undefined;
   directions: readonly string[];
   toolInjections: readonly PromptFlowToolInjection[];
   metrics: readonly MetricBlock[];
   contextArtifactRefs: readonly string[];
+  definitionVersion?: string | undefined;
+  phaseId?: string | undefined;
+  runState?: PromptFlowRunState | undefined;
+  permittedUniversalActions?: readonly string[] | undefined;
+  requiredEvidenceRefs?: readonly string[] | undefined;
+  gate?: PromptFlowPhaseGate | undefined;
+  reviewerHatIds?: readonly string[] | undefined;
+  timeoutSeconds?: number | undefined;
+  retryLimit?: number | undefined;
+  rollbackPolicy?: PromptFlowRollbackPolicy | undefined;
 };
 
 export type VetoedPromptFlowTask = {
@@ -551,6 +567,16 @@ export type PromptFlowContextRequest = {
   toolInjections: readonly PromptFlowToolInjection[];
   metrics: readonly MetricBlock[];
   contextArtifactRefs: readonly string[];
+  definitionVersion?: string | undefined;
+  phaseId?: string | undefined;
+  runState?: PromptFlowRunState | undefined;
+  permittedUniversalActions?: readonly string[] | undefined;
+  requiredEvidenceRefs?: readonly string[] | undefined;
+  gate?: PromptFlowPhaseGate | undefined;
+  reviewerHatIds?: readonly string[] | undefined;
+  timeoutSeconds?: number | undefined;
+  retryLimit?: number | undefined;
+  rollbackPolicy?: PromptFlowRollbackPolicy | undefined;
 };
 
 export type PromptFlowContextArtifact = {
@@ -566,6 +592,16 @@ export type PromptFlowContext = {
   toolInjections: readonly PromptFlowToolInjection[];
   metrics: readonly MetricBlock[];
   contextArtifacts: readonly PromptFlowContextArtifact[];
+  definitionVersion?: string | undefined;
+  phaseId?: string | undefined;
+  runState?: PromptFlowRunState | undefined;
+  permittedUniversalActions?: readonly string[] | undefined;
+  requiredEvidenceRefs?: readonly string[] | undefined;
+  gate?: PromptFlowPhaseGate | undefined;
+  reviewerHatIds?: readonly string[] | undefined;
+  timeoutSeconds?: number | undefined;
+  retryLimit?: number | undefined;
+  rollbackPolicy?: PromptFlowRollbackPolicy | undefined;
 };
 
 export type QueryContext = {
@@ -763,6 +799,7 @@ function createPromptFlowContextRequest(
     toolInjections: task.toolInjections,
     metrics: task.metrics,
     contextArtifactRefs: task.contextArtifactRefs,
+    ...copyOptionalPromptFlowTaskMetadata(task),
   };
 }
 
@@ -1487,6 +1524,12 @@ function firstPromptFlowTaskVeto(
   hat: HatDefinition,
   task: PromptFlowTask,
 ): { ruleName: string; reason: string } | undefined {
+  if (task.allowedHatIds !== undefined && !task.allowedHatIds.includes(hat.id)) {
+    return {
+      ruleName: "prompt-flow-allowed-hat",
+      reason: `hat "${hat.id}" is not in allowed hats [${task.allowedHatIds.join(", ")}] for prompt flow "${task.promptFlowId}"`,
+    };
+  }
   if (task.actionClass !== undefined) {
     const result = preflightHatAction(hat, task.actionClass);
     if (!result.allowed) {
@@ -1502,6 +1545,21 @@ function firstPromptFlowTaskVeto(
     }
   }
   return undefined;
+}
+
+function copyOptionalPromptFlowTaskMetadata(task: PromptFlowTask): Partial<PromptFlowContextRequest> {
+  return {
+    ...(task.definitionVersion !== undefined ? { definitionVersion: task.definitionVersion } : {}),
+    ...(task.phaseId !== undefined ? { phaseId: task.phaseId } : {}),
+    ...(task.runState !== undefined ? { runState: task.runState } : {}),
+    ...(task.permittedUniversalActions !== undefined ? { permittedUniversalActions: task.permittedUniversalActions } : {}),
+    ...(task.requiredEvidenceRefs !== undefined ? { requiredEvidenceRefs: task.requiredEvidenceRefs } : {}),
+    ...(task.gate !== undefined ? { gate: task.gate } : {}),
+    ...(task.reviewerHatIds !== undefined ? { reviewerHatIds: task.reviewerHatIds } : {}),
+    ...(task.timeoutSeconds !== undefined ? { timeoutSeconds: task.timeoutSeconds } : {}),
+    ...(task.retryLimit !== undefined ? { retryLimit: task.retryLimit } : {}),
+    ...(task.rollbackPolicy !== undefined ? { rollbackPolicy: task.rollbackPolicy } : {}),
+  };
 }
 
 function comparePromptFlowTasks(left: PromptFlowTask, right: PromptFlowTask): number {
