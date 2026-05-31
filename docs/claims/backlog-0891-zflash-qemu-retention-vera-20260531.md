@@ -13,4 +13,5 @@
 - ask: operator assigned Vera the USB/ISO QEMU lane on 2026-05-31; Otto keeps `tools/crypto/**` and `tools/observe/**`.
 - receipt: no active remote claim for B-0891 or zflash/QEMU was visible before claiming.
 - receipt: open PR path check showed #6217 in `tools/crypto/**`, #6218 in `tools/observe/**`, and #6216 in `agentic-organization/**`; this claim avoids those path sets.
+- progress: claim branch pushed at `ec78b17670c9c49d245d4aa85dc6692fb653f082`; follow-up progress commit records a parseable AgencySignature trailer block.
 - next: inspect the existing B-0891 scaffold and implement the first bounded scenario 3 retention proof without skip-to-green behavior.
