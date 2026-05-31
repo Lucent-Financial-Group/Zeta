@@ -371,6 +371,11 @@ function stableDiffPatchId(path: string, base: string, rev: string): string | nu
   return line?.split(/\s+/)[0] ?? null;
 }
 
+function stableFirstParentPatchId(path: string, commit: string): string | null {
+  const parent = firstOutputLine(gitStdout(path, ["rev-parse", `${commit}^`]) ?? "");
+  return parent === null ? null : stableDiffPatchId(path, parent, commit);
+}
+
 function treeObjectId(path: string, rev: string, filePath: string): string | null {
   const output = gitStdout(path, ["ls-tree", "-z", rev, "--", filePath]);
   if (output === null) return null;
@@ -430,7 +435,7 @@ function branchDeltaCoveredByMainHistory(path: string, head: string): boolean | 
     .filter((line) => line.length > 0);
 
   for (const commit of commits) {
-    if (stableDiffPatchId(path, base, commit) === branchPatchId) return true;
+    if (stableFirstParentPatchId(path, commit) === branchPatchId) return true;
     if (historicalCommitContainsPatch(path, commit, branchPatch) === true) return true;
   }
   return false;

@@ -297,6 +297,33 @@ describe("inspectWorktreeEntry", () => {
     }
   });
 
+  test("marks exact later first-parent commit deltas as covered after unrelated main work", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      commitFile(repo, "tracked.txt", "base\n", "base");
+      commitFile(repo, "other.txt", "base\n", "other base");
+      runGit(repo, ["checkout", "-b", "feature"]);
+      commitFile(repo, "tracked.txt", "feature substrate\n", "feature substrate");
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      runGit(repo, ["checkout", "main"]);
+      commitFile(repo, "other.txt", "unrelated earlier main work\n", "unrelated main");
+      commitFile(repo, "tracked.txt", "feature substrate\n", "exact feature squash");
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+      const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
+      expect(result.dirty).toBe(false);
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(true);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+
   test("handles large branch deltas without degrading coverage to unknown", () => {
     const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
     try {
