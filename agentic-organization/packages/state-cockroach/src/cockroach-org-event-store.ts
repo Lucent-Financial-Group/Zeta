@@ -82,7 +82,7 @@ function asTransitionContext(value: unknown): OrgEventTransitionContext | undefi
 }
 
 function isTransitionContext(value: unknown): value is OrgEventTransitionContext {
-  if (typeof value !== "object" || value === null) {
+  if (typeof value !== "object" || !value) {
     return false;
   }
   const candidate = value as Partial<OrgEventTransitionContext>;
