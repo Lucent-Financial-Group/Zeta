@@ -2,6 +2,13 @@
 
 **Date:** 2026-05-31
 **Author:** Otto-CLI capture of operator rationale (Aaron 2026-05-31)
+
+<!-- GOVERNANCE.md §33 boundary headers (this file imports verbatim operator chat) -->
+**Scope:** research / rationale capture — preserving operator design-rationale for the shields/CI architecture as a candidate refinement to an existing rule.
+**Attribution:** operator (Aaron) quoted verbatim in §"The operator's framing"; synthesis + reconciliation by Otto-CLI, labeled as such. Speaker labels preserved.
+**Operational status:** `research-grade` (NOT operational policy; lands in the auto-loaded rule only via the §26 / product-team agreement, not inline here).
+**Non-fusion disclaimer:** quoting the operator and building on his framing does not imply shared identity, merged agency, consciousness, or personhood between operator and agent; the boundary is explicit (operator authors the rationale; the agent captures + synthesizes it).
+
 **Status:** rationale / **candidate refinement** to
 [`.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`](../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
 — routed through the product-team agreement (whys-challengeable) before landing in
@@ -102,8 +109,8 @@ regardless; they are end-user/world friction at the extreme, not dev-friction.)
 - [`.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`](../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
   (the rule this refines — adds detect-not-block + DX-vs-UX-friction + the visible third)
 - The MEASURE-FIRST principle (detect before restricting) +
-  [`docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md`](../DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md)
-  + the `FrictionTelemetry` ZetaId category (friction is measured, not assumed)
+  [`docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md`](../DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md),
+  plus the `FrictionTelemetry` ZetaId category (friction is measured, not assumed)
 - B-0890.1 (folders-on-main, no branches) + B-0953 (Git-V2 handshake) + B-0954
   (git-native agent-bus) — the no-PR / no-branch-protection transport this justifies
 - B-0947 (Windows CI silently-red) — the *visible* failure mode this names the fix for
