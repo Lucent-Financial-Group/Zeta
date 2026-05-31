@@ -40,7 +40,6 @@ import { Buffer } from "node:buffer";
 import {
   closeSync,
   constants,
-  existsSync,
   fstatSync,
   ftruncateSync,
   lstatSync,
@@ -267,7 +266,7 @@ export function findPendingShards(files: ReadonlyArray<{ relPath: string; conten
  */
 export function scanDivergenceDir(repoRoot: string, divergenceRel: string = DIVERGENCE_ROOT): PendingShard[] {
   const root = join(repoRoot, divergenceRel);
-  if (!existsSync(root)) return [];
+  if (!assertRealDivergenceRoot(root, divergenceRel, "scan divergences")) return [];
   const files: { relPath: string; content: string }[] = [];
   const walk = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -400,23 +399,28 @@ function openRegularShardForReadWrite(abs: string, relPath: string): number {
   }
 }
 
-function rejectSymlinkedAncestors(divergenceRoot: string, abs: string, relPath: string): void {
+function assertRealDivergenceRoot(absRoot: string, divergenceRel: string, action: string): boolean {
   try {
-    const rootStat = lstatSync(divergenceRoot);
+    const rootStat = lstatSync(absRoot);
     if (rootStat.isSymbolicLink()) {
       throw new Error(
-        `cannot reconcile: ${DIVERGENCE_ROOT} is a symbolic link; divergence root must be a real directory`,
+        `cannot ${action}: ${divergenceRel} is a symbolic link; divergence root must be a real directory`,
       );
     }
     if (!rootStat.isDirectory()) {
-      throw new Error(`cannot reconcile: ${DIVERGENCE_ROOT} is not a directory`);
+      throw new Error(`cannot ${action}: ${divergenceRel} is not a directory`);
     }
+    return true;
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      return;
+      return false;
     }
     throw err;
   }
+}
+
+function rejectSymlinkedAncestors(divergenceRoot: string, abs: string, relPath: string): void {
+  if (!assertRealDivergenceRoot(divergenceRoot, DIVERGENCE_ROOT, "reconcile")) return;
 
   const within = relative(divergenceRoot, abs);
   const parts = within.split(sep).filter(Boolean);

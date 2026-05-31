@@ -185,6 +185,19 @@ describe("scanDivergenceDir", () => {
       expect(scanDivergenceDir(root)).toEqual([]);
     });
   });
+
+  test("rejects a symlinked divergence root before scanning", () => {
+    withTempRoot((root) => {
+      const historyDir = join(root, "docs/hygiene-history");
+      const outsideDir = join(root, "outside-divergences");
+      mkdirSync(historyDir, { recursive: true });
+      mkdirSync(outsideDir, { recursive: true });
+      writeFileSync(join(outsideDir, "114800Z-root-symlink.md"), PENDING_SHARD);
+      symlinkSync(outsideDir, join(historyDir, "divergences"), "dir");
+
+      expect(() => scanDivergenceDir(root)).toThrow(/symbolic link/);
+    });
+  });
 });
 
 const RECONCILIATION_HEADING = "## Reconciliation";
