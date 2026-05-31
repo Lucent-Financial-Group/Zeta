@@ -30,6 +30,7 @@ function inspection(overrides: Partial<WorktreeInspection> = {}): WorktreeInspec
     pathExists: true,
     dirty: false,
     headReachableFromMain: true,
+    treeEquivalentToMain: null,
     patchEquivalentToMain: null,
     statusError: null,
     ...overrides,
@@ -163,11 +164,25 @@ describe("classifyWorktrees", () => {
 
   test("marks clean but uncovered worktrees as needing recovery", () => {
     const items = classifyWorktrees([entry()], {
-      inspect: () => inspection({ headReachableFromMain: false, patchEquivalentToMain: false }),
+      inspect: () =>
+        inspection({
+          headReachableFromMain: false,
+          treeEquivalentToMain: false,
+          patchEquivalentToMain: false,
+        }),
     });
 
     expect(items[0]!.bucket).toBe("NEEDS-RECOVERY");
-    expect(items[0]!.reason).toContain("not known reachable or patch-equivalent");
+    expect(items[0]!.reason).toContain("not known reachable, tree-equivalent, or patch-equivalent");
+  });
+
+  test("marks clean tree-equivalent worktrees as already covered", () => {
+    const items = classifyWorktrees([entry()], {
+      inspect: () => inspection({ headReachableFromMain: false, treeEquivalentToMain: true }),
+    });
+
+    expect(items[0]!.bucket).toBe("ALREADY-COVERED");
+    expect(items[0]!.reason).toContain("tree matches origin/main");
   });
 
   test("marks clean patch-equivalent worktrees as already covered", () => {
@@ -216,11 +231,13 @@ describe("renderMarkdown", () => {
             : inspection({ dirty: true, headReachableFromMain: false }),
       },
       new Date("2026-05-31T14:32:00Z"),
-      "/repo",
+      "`/repo`",
     );
 
     const md = renderMarkdown(survey);
     expect(md).toContain("Generated: 2026-05-31T14:32:00.000Z");
+    expect(md).toContain("Root: `` `/repo` ``");
+    expect(md).toContain("- Surveyed locked/prunable worktrees: 2");
     expect(md).toContain("- NEEDS-RECOVERY: 1");
     expect(md).toContain("- OBSOLETE: 1");
     expect(md).toContain("## NEEDS-RECOVERY");

@@ -41,6 +41,7 @@ interface WorktreeInspection {
   readonly pathExists: boolean;
   readonly dirty: boolean | null;
   readonly headReachableFromMain: boolean | null;
+  readonly treeEquivalentToMain: boolean | null;
   readonly patchEquivalentToMain: boolean | null;
   readonly statusError: string | null;
 }
@@ -172,6 +173,13 @@ function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<Wo
     };
   }
 
+  if (inspection.treeEquivalentToMain === true) {
+    return {
+      bucket: "ALREADY-COVERED",
+      reason: "clean worktree tree matches origin/main",
+    };
+  }
+
   if (inspection.patchEquivalentToMain === true) {
     return {
       bucket: "ALREADY-COVERED",
@@ -181,7 +189,7 @@ function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<Wo
 
   return {
     bucket: "NEEDS-RECOVERY",
-    reason: "clean worktree HEAD is not known reachable or patch-equivalent to origin/main",
+    reason: "clean worktree HEAD is not known reachable, tree-equivalent, or patch-equivalent to origin/main",
   };
 }
 
@@ -242,8 +250,20 @@ function renderInlineCode(value: string): string {
 }
 
 function renderCoveredByMain(item: WorktreeSurveyItem): string {
-  if (item.headReachableFromMain === true || item.patchEquivalentToMain === true) return "yes";
-  if (item.headReachableFromMain === false && item.patchEquivalentToMain === false) return "no";
+  if (
+    item.headReachableFromMain === true ||
+    item.treeEquivalentToMain === true ||
+    item.patchEquivalentToMain === true
+  ) {
+    return "yes";
+  }
+  if (
+    item.headReachableFromMain === false &&
+    item.treeEquivalentToMain === false &&
+    item.patchEquivalentToMain === false
+  ) {
+    return "no";
+  }
   return "unknown";
 }
 
@@ -252,11 +272,11 @@ function renderMarkdown(survey: WorktreeSurvey): string {
   lines.push("# git-worktree recovery survey");
   lines.push("");
   lines.push(`Generated: ${survey.generatedAt}`);
-  if (survey.root !== null) lines.push(`Root: \`${survey.root}\``);
+  if (survey.root !== null) lines.push(`Root: ${renderInlineCode(survey.root)}`);
   lines.push("");
   lines.push("## Summary");
   lines.push("");
-  lines.push(`- Total worktrees: ${survey.totals.worktrees}`);
+  lines.push(`- Surveyed locked/prunable worktrees: ${survey.totals.worktrees}`);
   lines.push(`- ALREADY-COVERED: ${survey.totals.alreadyCovered}`);
   lines.push(`- NEEDS-RECOVERY: ${survey.totals.needsRecovery}`);
   lines.push(`- OBSOLETE: ${survey.totals.obsolete}`);
@@ -295,6 +315,7 @@ function realInspector(): Inspector {
           pathExists,
           dirty: null,
           headReachableFromMain: null,
+          treeEquivalentToMain: null,
           patchEquivalentToMain: null,
           statusError: null,
         };
@@ -309,6 +330,7 @@ function realInspector(): Inspector {
           pathExists,
           dirty: null,
           headReachableFromMain: null,
+          treeEquivalentToMain: null,
           patchEquivalentToMain: null,
           statusError: status.error.message,
         };
@@ -319,12 +341,14 @@ function realInspector(): Inspector {
           pathExists,
           dirty: null,
           headReachableFromMain: null,
+          treeEquivalentToMain: null,
           patchEquivalentToMain: null,
           statusError: stderr,
         };
       }
 
       let headReachableFromMain: boolean | null = null;
+      let treeEquivalentToMain: boolean | null = null;
       let patchEquivalentToMain: boolean | null = null;
       if (entry.head !== null) {
         // eslint-disable-next-line sonarjs/no-os-command-from-path
@@ -340,6 +364,16 @@ function realInspector(): Inspector {
         }
 
         if (headReachableFromMain !== true) {
+          // eslint-disable-next-line sonarjs/no-os-command-from-path
+          const treeDiff = spawnSync("git", ["-C", entry.path, "diff", "--quiet", "origin/main", entry.head, "--"], {
+            encoding: "utf8",
+          });
+          if (!treeDiff.error && (treeDiff.status === 0 || treeDiff.status === 1)) {
+            treeEquivalentToMain = treeDiff.status === 0;
+          }
+        }
+
+        if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
           // eslint-disable-next-line sonarjs/no-os-command-from-path
           const cherry = spawnSync("git", ["-C", entry.path, "cherry", "origin/main", entry.head], {
             encoding: "utf8",
@@ -358,6 +392,7 @@ function realInspector(): Inspector {
         pathExists,
         dirty: status.stdout.trim().length > 0,
         headReachableFromMain,
+        treeEquivalentToMain,
         patchEquivalentToMain,
         statusError: null,
       };
