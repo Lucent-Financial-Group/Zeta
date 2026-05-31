@@ -1080,6 +1080,7 @@ export function loopRunReceiptEventsFromRunnerLog(
   const events = new Map<string, CoincidenceEvent>();
   const heartbeatSnapshots: Array<{
     claims: number;
+    occurredAt: string;
     openPrs: number;
     timeMs: number;
   }> = [];
@@ -1099,6 +1100,7 @@ export function loopRunReceiptEventsFromRunnerLog(
       if (!Number.isNaN(occurredMs)) {
         heartbeatSnapshots.push({
           claims: Number.parseInt(heartbeatMatch[2], 10),
+          occurredAt: new Date(occurredMs).toISOString(),
           openPrs: Number.parseInt(heartbeatMatch[3], 10),
           timeMs: occurredMs,
         });
@@ -1157,7 +1159,7 @@ export function loopRunReceiptEventsFromRunnerLog(
     events.set(runId, {
       id: `loop-run-${runId}`,
       trajectory: "codex",
-      occurredAt: gateEnd.occurredAt,
+      occurredAt: after.occurredAt,
       description: `codex forward gate ${runId} status=${gateEnd.status} claims ${before.claims}->${after.claims} open_prs ${before.openPrs}->${after.openPrs}${lifecycleSuffix}`,
       source,
     });

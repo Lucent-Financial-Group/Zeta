@@ -26,7 +26,11 @@ so they stay visible in warning/debug output without keeping the lane in
 critical state.
 
 The freshness window is the existing current-response coincidence window:
-`FACTORY_EVENT_COINCIDENCE_WINDOW_MS`.
+`FACTORY_EVENT_COINCIDENCE_WINDOW_MS`. The classifier compares that window
+against the after-heartbeat timestamp, because the claim-count increase is
+observed in that heartbeat snapshot. The emitted event's `occurredAt` value
+uses the same after-heartbeat timestamp so source classification and event
+time describe the same observation.
 
 ## Live Output
 

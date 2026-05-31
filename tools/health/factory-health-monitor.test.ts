@@ -646,7 +646,7 @@ describe("factory-health-monitor", () => {
       {
         id: "loop-run-20260530T050100Z",
         trajectory: "codex",
-        occurredAt: "2026-05-30T05:04:00.000Z",
+        occurredAt: "2026-05-30T05:05:00.000Z",
         description: "codex forward gate 20260530T050100Z status=0 claims 1->2 open_prs 0->0",
         source: "loop-run",
       },
@@ -664,7 +664,7 @@ describe("factory-health-monitor", () => {
     expect(event).toEqual({
       id: "loop-run-20260530T050100Z",
       trajectory: "codex",
-      occurredAt: "2026-05-30T05:04:00.000Z",
+      occurredAt: "2026-05-30T05:05:00.000Z",
       description: "codex forward gate 20260530T050100Z status=0 claims 1->2 open_prs 0->0 lifecycle-residue",
       source: "unknown",
     });
@@ -672,7 +672,7 @@ describe("factory-health-monitor", () => {
     expect(
       classifyCoincidenceWindows(
         [
-          { id: "merged-pr-20", trajectory: "otto", occurredAt: "2026-05-30T05:04:05.000Z" },
+          { id: "merged-pr-20", trajectory: "otto", occurredAt: "2026-05-30T05:05:05.000Z" },
           event!,
         ],
         { windowMs: 30_000, minimumEvents: 2 },
@@ -688,13 +688,13 @@ describe("factory-health-monitor", () => {
         surface: "coincidence-debug",
         level: "warning",
         message:
-          "Top coincidence windows: 2026-05-30T05:04:00.000Z..2026-05-30T05:04:30.000Z trajectories=codex+otto events=codex:loop-run-20260530T050100Z,otto:merged-pr-20",
+          "Top coincidence windows: 2026-05-30T05:05:00.000Z..2026-05-30T05:05:30.000Z trajectories=codex+otto events=codex:loop-run-20260530T050100Z,otto:merged-pr-20",
         action: "inspect listed coincidence event ids before adding another source",
       },
     ]);
   });
 
-  test("loopRunReceiptEventsFromRunnerLog uses the after heartbeat for freshness", () => {
+  test("loopRunReceiptEventsFromRunnerLog uses the after heartbeat for freshness and event time", () => {
     const output = [
       "2026-05-30T05:00:00Z heartbeat complete run_id=20260530T050000Z fetch=ok claims=1 open_prs=0 dirty=0 codex=wait due_in=60s",
       "2026-05-30T05:04:00Z codex forward gate end run_id=delayed-claim-snapshot status=0",
@@ -705,7 +705,7 @@ describe("factory-health-monitor", () => {
       {
         id: "loop-run-delayed-claim-snapshot",
         trajectory: "codex",
-        occurredAt: "2026-05-30T05:04:00.000Z",
+        occurredAt: "2026-05-30T05:50:00.000Z",
         description: "codex forward gate delayed-claim-snapshot status=0 claims 1->2 open_prs 0->0",
         source: "loop-run",
       },
