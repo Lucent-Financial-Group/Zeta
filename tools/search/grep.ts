@@ -17,7 +17,7 @@
 // Cross-repo aware: `--repo ../SQLSharp` searches a sibling repo, still skipping
 // THAT repo's references/upstreams (every repo mirrors the same convention).
 //
-//   bun tools/search/grep.ts <pattern> [--repo <dir>] [--ext ts,md] [-i] [--files]
+//   bun tools/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]
 //
 // Options:
 //   --repo <dir>   root to search (default: cwd)
@@ -25,13 +25,16 @@
 //   -i             case-insensitive
 //   --files        print matching file paths only (not lines)
 //
-// v1 is a zero-dep Bun-native walk so the excludes hold EVERYWHERE — including
-// this Windows laptop, which has no `rg` on PATH (verified 2026-05-31). A
-// ripgrep fast-path (rg already honors .gitignore) is a future optimization;
-// correctness + zero-dep beats speed for v1.
+// MATCH SEMANTICS: literal substring (fixed-string, like `grep -F`), NOT regex —
+// deliberately. This is the "safe quick search excluding noise" tool; literal is
+// the common case, faster, and avoids constructing a regex from CLI input (no
+// ReDoS / regex-injection surface). When you genuinely need a regex, the harness
+// Grep tool (ripgrep) serves that AND honors .gitignore (so it also skips
+// references/upstreams). This tool stays literal + zero-dep so the excludes hold
+// EVERYWHERE — including this Windows laptop, which has no `rg` on PATH (2026-05-31).
 
 import { resolve, relative, join, sep } from "node:path";
-import { readdirSync, statSync, readFileSync, type Dirent } from "node:fs";
+import { readdirSync, fstatSync, readFileSync, openSync, closeSync, type Dirent } from "node:fs";
 
 /** Directory basenames never worth searching (build outputs / vendored deps). */
 export const EXCLUDE_BASENAMES = new Set([
@@ -59,7 +62,8 @@ export interface GrepMatch {
 
 export interface GrepOptions {
   root: string;
-  pattern: RegExp;
+  needle: string; // literal substring to find
+  ignoreCase?: boolean | undefined;
   // extensions without the dot; undefined = all text files. Explicit `| undefined`
   // so it composes under tsconfig `exactOptionalPropertyTypes: true`.
   exts?: Set<string> | undefined;
@@ -87,9 +91,31 @@ function looksBinary(buf: string): boolean {
   return false;
 }
 
+/** Read a file via a single fd — fstat the OPEN handle (not a second path stat)
+ *  so there's no time-of-check/time-of-use race between size-check and read.
+ *  Returns null if too big, binary, or unreadable. */
+function readTextCapped(abs: string): string | null {
+  let fd: number;
+  try {
+    fd = openSync(abs, "r");
+  } catch {
+    return null;
+  }
+  try {
+    if (fstatSync(fd).size > MAX_FILE_BYTES) return null;
+    const content = readFileSync(fd, "utf8");
+    return looksBinary(content) ? null : content;
+  } catch {
+    return null;
+  } finally {
+    closeSync(fd);
+  }
+}
+
 /** Pure, testable core: walk `root`, skipping excluded dirs, return matches. */
 export function grepTree(opts: GrepOptions): GrepMatch[] {
-  const { root, pattern, exts } = opts;
+  const { root, needle, ignoreCase, exts } = opts;
+  const cmpNeedle = ignoreCase ? needle.toLowerCase() : needle;
   const out: GrepMatch[] = [];
 
   const walk = (absDir: string): void => {
@@ -111,25 +137,12 @@ export function grepTree(opts: GrepOptions): GrepMatch[] {
         const ext = dot >= 0 ? ent.name.slice(dot + 1) : "";
         if (!exts.has(ext)) continue;
       }
-      let size: number;
-      try {
-        size = statSync(abs).size;
-      } catch {
-        continue;
-      }
-      if (size > MAX_FILE_BYTES) continue;
-      let content: string;
-      try {
-        content = readFileSync(abs, "utf8");
-      } catch {
-        continue;
-      }
-      if (looksBinary(content)) continue;
+      const content = readTextCapped(abs);
+      if (content === null) continue;
       const lines = content.split(/\r?\n/);
       for (let i = 0; i < lines.length; i++) {
-        // Reset lastIndex defensively in case a global flag was passed.
-        pattern.lastIndex = 0;
-        if (pattern.test(lines[i]!)) {
+        const hay = ignoreCase ? lines[i]!.toLowerCase() : lines[i]!;
+        if (hay.includes(cmpNeedle)) {
           out.push({ file: relPosix(root, abs), line: i + 1, text: lines[i]! });
         }
       }
@@ -141,7 +154,7 @@ export function grepTree(opts: GrepOptions): GrepMatch[] {
 }
 
 interface ParsedArgs {
-  pattern: string;
+  needle: string;
   repo: string;
   exts?: Set<string> | undefined;
   ignoreCase: boolean;
@@ -176,11 +189,11 @@ export function parseArgs(argv: string[]): ParsedArgs | { error: string } {
     }
   }
 
-  const pattern = positionals.join(" ").trim();
-  if (!pattern) {
-    return { error: "usage: bun tools/search/grep.ts <pattern> [--repo <dir>] [--ext ts,md] [-i] [--files]" };
+  const needle = positionals.join(" ").trim();
+  if (!needle) {
+    return { error: "usage: bun tools/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]" };
   }
-  return { pattern, repo, exts, ignoreCase, filesOnly };
+  return { needle, repo, exts, ignoreCase, filesOnly };
 }
 
 export function main(argv: string[]): number {
@@ -189,14 +202,12 @@ export function main(argv: string[]): number {
     console.error(parsed.error);
     return 1;
   }
-  let pattern: RegExp;
-  try {
-    pattern = new RegExp(parsed.pattern, parsed.ignoreCase ? "i" : "");
-  } catch (e) {
-    console.error(`invalid regex: ${(e as Error).message}`);
-    return 1;
-  }
-  const matches = grepTree({ root: parsed.repo, pattern, exts: parsed.exts });
+  const matches = grepTree({
+    root: parsed.repo,
+    needle: parsed.needle,
+    ignoreCase: parsed.ignoreCase,
+    exts: parsed.exts,
+  });
   if (parsed.filesOnly) {
     const seen = new Set<string>();
     for (const m of matches) {

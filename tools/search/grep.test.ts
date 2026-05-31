@@ -10,6 +10,7 @@ import { grepTree, isExcludedDir, parseArgs, EXCLUDE_BASENAMES } from "./grep.ts
 //   references/upstreams/noise.ts  -> "needle" (MUST be excluded — the whole point)
 //   node_modules/dep/index.ts      -> "needle" (MUST be excluded)
 //   bin/output.ts                  -> "needle" (MUST be excluded)
+//   src/case.ts                    -> "NeEdLe" (only matched with -i)
 let root: string;
 
 beforeAll(() => {
@@ -24,40 +25,48 @@ beforeAll(() => {
   write("references/upstreams/noise.ts", "// needle in vendored upstream — MUST NOT surface\n");
   write("node_modules/dep/index.ts", "// needle in a dep — MUST NOT surface\n");
   write("bin/output.ts", "// needle in build output — MUST NOT surface\n");
+  write("src/case.ts", "// NeEdLe mixed case\n");
 });
 
 afterAll(() => {
   if (root) rmSync(root, { recursive: true, force: true });
 });
 
-test("finds matches in normal source files", () => {
-  const m = grepTree({ root, pattern: /needle/ });
+test("finds literal substring in normal source files", () => {
+  const m = grepTree({ root, needle: "needle" });
   const files = m.map((x) => x.file).sort();
   expect(files).toContain("src/hit.ts");
   expect(files).toContain("src/nested/also.md");
 });
 
 test("EXCLUDES references/upstreams (the load-bearing guarantee)", () => {
-  const m = grepTree({ root, pattern: /needle/ });
+  const m = grepTree({ root, needle: "needle" });
   const files = m.map((x) => x.file);
   expect(files.some((f) => f.includes("references/upstreams"))).toBe(false);
 });
 
 test("EXCLUDES node_modules and build-output dirs", () => {
-  const m = grepTree({ root, pattern: /needle/ });
+  const m = grepTree({ root, needle: "needle" });
   const files = m.map((x) => x.file);
   expect(files.some((f) => f.startsWith("node_modules/"))).toBe(false);
   expect(files.some((f) => f.startsWith("bin/"))).toBe(false);
 });
 
+test("case-sensitive by default; -i matches mixed case", () => {
+  const sensitive = grepTree({ root, needle: "needle" }).map((x) => x.file);
+  expect(sensitive).not.toContain("src/case.ts");
+  const insensitive = grepTree({ root, needle: "needle", ignoreCase: true }).map((x) => x.file);
+  expect(insensitive).toContain("src/case.ts");
+});
+
 test("reports correct 1-based line numbers", () => {
-  const m = grepTree({ root, pattern: /needle/ });
+  const m = grepTree({ root, needle: "needle" });
   const hit = m.find((x) => x.file === "src/hit.ts");
   expect(hit?.line).toBe(2);
 });
 
 test("--ext filter restricts to given extensions", () => {
-  const m = grepTree({ root, pattern: /needle/, exts: new Set(["md"]) });
+  const m = grepTree({ root, needle: "needle", exts: new Set(["md"]) });
   const files = m.map((x) => x.file);
   expect(files).toEqual(["src/nested/also.md"]);
 });
@@ -77,7 +86,7 @@ test("EXCLUDE_BASENAMES carries the known noise dirs", () => {
   }
 });
 
-test("parseArgs: pattern required", () => {
+test("parseArgs: needle required", () => {
   const r = parseArgs([]);
   expect("error" in r).toBe(true);
 });
@@ -86,7 +95,7 @@ test("parseArgs: flags parsed", () => {
   const r = parseArgs(["foo", "bar", "-i", "--ext", "ts,md", "--files"]);
   expect("error" in r).toBe(false);
   if (!("error" in r)) {
-    expect(r.pattern).toBe("foo bar");
+    expect(r.needle).toBe("foo bar");
     expect(r.ignoreCase).toBe(true);
     expect(r.filesOnly).toBe(true);
     expect([...(r.exts ?? [])].sort()).toEqual(["md", "ts"]);
