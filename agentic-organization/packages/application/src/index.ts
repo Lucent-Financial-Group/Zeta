@@ -16,6 +16,17 @@ export {
   type RunDecisionOptimizerCycleInput,
 } from "./decision-optimizer.ts";
 export {
+  TelemetryImprovementMetricKind,
+  TelemetryImprovementProposalMode,
+  runTelemetryImprovementOptimizer,
+  type ImprovementHypothesis,
+  type RunTelemetryImprovementOptimizerInput,
+  type TelemetryImprovementExpectedMetricMovement,
+  type TelemetryImprovementOptimizerResult,
+  type TelemetryImprovementProposedChange,
+  type TelemetryImprovementTrigger,
+} from "./telemetry-improvement-optimizer.ts";
+export {
   TriageActionFeedbackReason,
   TriageActionResolution,
   resolveTriageAction,

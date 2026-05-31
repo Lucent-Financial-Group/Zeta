@@ -28,13 +28,18 @@ describe("telemetry query port", () => {
 
   test("queries live LGTM HTTP APIs and normalizes metrics, traces, and logs", async () => {
     const urls: string[] = [];
+    const metricHeaders: Record<string, string>[] = [];
     const port = createLgtmTelemetryQueryPort({
       mimirBaseUrl: "http://mimir:9009/prometheus",
       tempoBaseUrl: "http://tempo:3200",
       lokiBaseUrl: "http://loki:3100",
+      mimirTenantId: "agentic-org",
       stepSeconds: 60,
-      fetchImpl: (async (url) => {
+      fetchImpl: (async (url, init) => {
         urls.push(String(url));
+        if (new URL(String(url)).hostname === "mimir") {
+          metricHeaders.push(init?.headers as Record<string, string>);
+        }
         if (String(url).includes("/loki/api/v1/query_range")) {
           return jsonResponse({
             status: "success",
@@ -104,6 +109,7 @@ describe("telemetry query port", () => {
       ],
     });
     deepEqual(urls.map((url) => new URL(url).hostname), ["mimir", "tempo", "loki"]);
+    deepEqual(metricHeaders, [{ "X-Scope-OrgID": "agentic-org" }]);
   });
 
   test("returns degraded evidence for LGTM HTTP failures instead of empty successful data", async () => {

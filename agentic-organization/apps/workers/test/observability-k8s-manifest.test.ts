@@ -36,6 +36,15 @@ test("Grafana manifest provisions the conformance SLI panel and alert rule", asy
   ok(coverageAlert.includes("expr: min(org_conformance_coverage_ratio)"));
 });
 
+test("Mimir manifest is queryable as a single-node KIND deployment", async () => {
+  const manifest = await readFile(
+    fileURLToPath(new URL("../../../deploy/k8s/42-mimir.yaml", import.meta.url)),
+    "utf8",
+  );
+
+  ok(manifest.includes("-ingester.ring.replication-factor=1"));
+});
+
 function parseOrgHealthDashboard(manifest: string): Dashboard {
   const marker = "  org-health.json: |";
   const start = manifest.indexOf(marker);

@@ -62,6 +62,7 @@ export type RecordingTelemetryQueryPortInput = {
 
 export type LgtmTelemetryQueryPortInput = {
   mimirBaseUrl: string;
+  mimirTenantId?: string | undefined;
   tempoBaseUrl: string;
   lokiBaseUrl: string;
   stepSeconds?: number;
@@ -102,7 +103,7 @@ export function createLgtmTelemetryQueryPort(input: LgtmTelemetryQueryPortInput)
 
   return {
     queryMetrics: async (promql, range) =>
-      await queryJson(fetchImpl, "mimir", createPrometheusRangeUrl(input.mimirBaseUrl, promql, range, stepSeconds), mapPrometheusRange),
+      await queryJson(fetchImpl, "mimir", createPrometheusRangeUrl(input.mimirBaseUrl, promql, range, stepSeconds), mapPrometheusRange, mimirHeaders(input.mimirTenantId)),
     queryTraces: async (traceql, range) =>
       await queryJson(fetchImpl, "tempo", createTempoSearchUrl(input.tempoBaseUrl, traceql, range), mapTempoSearch),
     queryLogs: async (logql, range) =>
@@ -115,9 +116,10 @@ async function queryJson<Result>(
   source: TelemetryQuerySource,
   url: URL,
   map: (body: unknown) => readonly Result[],
+  headers?: Record<string, string> | undefined,
 ): Promise<TelemetryQueryResult<Result>> {
   try {
-    const response = await fetchImpl(url);
+    const response = await fetchImpl(url, headers === undefined ? undefined : { headers });
     if (!response.ok) {
       return {
         status: "degraded",
@@ -168,6 +170,10 @@ async function queryJson<Result>(
       message: `${source} telemetry query fetch failed: ${errorMessage(error)}`,
     };
   }
+}
+
+function mimirHeaders(tenantId: string | undefined): Record<string, string> | undefined {
+  return tenantId === undefined ? undefined : { "X-Scope-OrgID": tenantId };
 }
 
 function validateLgtmResponseBody(
