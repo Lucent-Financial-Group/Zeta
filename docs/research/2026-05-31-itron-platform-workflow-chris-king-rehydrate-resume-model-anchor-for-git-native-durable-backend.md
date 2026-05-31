@@ -153,13 +153,76 @@ ZetaId `IWorkflowStateProvider`, with typed-DU authoring** — keep the (good) m
 already dovetails with `src/Core/Checkpoint.fs`'s `ICheckpoint*` interfaces (the 2026-05-07
 durable-computation stack from the same lineage).
 
+## Attribution map (operator 2026-05-31)
+
+The Itron platform stack is several people's work; this doc is precise about which:
+
+| Piece                                                                                | Author         |
+| ------------------------------------------------------------------------------------ | -------------- |
+| `Itron.Platform.Workflow` — the durable cursor-rehydrate engine (this doc's subject) | **Chris King** |
+| `Itron.Platform.Dynamic` — the polymorphic expando-JSON ser/deser (`DynamicValue`)   | **Chris King** |
+| `Context` + `Tracing` — the pre-OTel observability stack                             | **Aaron**      |
+| Microservice setup + all `Platform.*` DI / service-setup / hosting packages          | **Aaron**      |
+
+(Composes with the existing lineage notes:
+[`chris-king-itron-generics-interface-lineage`](2026-05-07-chris-king-itron-generics-interface-lineage.md)
+
+- [`itron-mentor-lineage-roster`](2026-05-07-itron-mentor-lineage-roster-aaron.md).)
+
+## Context + Tracing (Aaron) — pre-OTel observability → ZetaId-in-band context
+
+Aaron built Itron's observability stack — `Context` + `Tracing` + the logs/metrics layers —
+**before OpenTelemetry existed.** The `Context` core (`Platform.Logging/.../Deprecated/Context/ContextManager.cs`):
+
+```csharp
+[Obsolete("...Deprecated... use Itron.Platform.Logging instead")]
+public class ContextManager : IContextManager {
+    public AsyncLocal<ILogHeader> Context { get; set; } // ambient context, flows across async
+}
+```
+
+An `AsyncLocal<ILogHeader>` that propagates correlation/trace context **ambiently** through the
+async call chain — exactly OTel's `Context`/`Activity.Current`/W3C-trace-context model, built
+early. It is `[Obsolete]` now precisely **because OTel arrived and won the standard**
+(Itron had the full set: logs + metrics + `Tracing` + `Context`-propagation = OTel's four
+concerns, pre-OTel).
+
+**Git-native mapping — context goes in-band, in the key.** Their `Context` rides an `AsyncLocal`
+**side-channel** alongside the work. The ZetaId carries the same metadata **in-band, baked into
+the id** (persona / category / authority / momentum / location / timestamp). So git-native
+observability needs no propagation plumbing: `unpack(zetaId)` reads the context off the
+filename, and the **event stream is the trace** (the Rx observable / heartbeat tail). Their
+out-of-band `Context` → the ZetaId itself. (This is the observability half that the `Workflow`
+durability half above pairs with — one ZetaId event store = both.)
+
+## Dynamic / `DynamicValue` (Chris King) — the polymorphic wire format
+
+Chris King also wrote `Itron.Platform.Dynamic` — a **polymorphic, expando-like JSON (+XML)
+ser/deser** library (`DynamicValue`, `DynamicValueJsonConverter`, `DynamicObjectJsonConverter`,
+`JsonSerializedObject`; its tests round-trip a polymorphic `Animals` hierarchy). It is the wire
+format the workflow already uses — `DurableOperationInfo.Parameters` and the capability step's
+`params DynamicValue[]` are `DynamicValue`s. In the git-native plan this is the **envelope
+serialization** for ZetaId records (the `{ type, state, … }` payload). Aaron's term for it —
+**"polymorphic diplomacy expando"** — ties it directly to the Eve Protocol substrate
+(polymorphic diplomatic language): `DynamicValue` is a concrete, predating instance of
+polymorphic-typed values crossing a boundary and re-materializing on the other side.
+
+## Microservice / DI / service-setup (Aaron)
+
+The microservice scaffolding — `Platform.Hosting`, `Platform.Infrastructure`, `Platform.Config`,
+and the DI/`ServiceCollection` wiring (`AddDurableServices()`, the `Injection` packages) — is
+Aaron's. It is how the workflow engine, the providers, and `Context` are composed into a running
+service. The git-native analogue is how `tools/observe` + the ZetaId `IWorkflowStateProvider` +
+the bus/heartbeat folders wire together (DI today; the same composition discipline).
+
 ## Substrate-honest framing
 
 This is a read-and-write-up of an external codebase the operator owns, preserved as a design
 reference. It does not independently verify biography/dates (per the existing lineage note). The
 load-bearing takeaways: (1) the efficient model is **cursor-rehydrate, not replay**; (2) the
-durable record is **a cursor + state, not a closure or a result-log**; (3) the **provider port**
-
-- **interface-first** design map cleanly onto git-native ZetaId; (4) the historical **authoring
-  pain was XML-without-lint**, which typed-DU composition fixes. When the operator finds the
-  article the design was based on, citing it preserves the full lineage (honor-those-that-came-before).
+durable record is **a cursor plus state, not a closure or a result-log**; (3) the **provider
+port** and **interface-first** design map cleanly onto git-native ZetaId; (4) the historical
+**authoring pain was XML-without-lint**, which typed-DU composition fixes; (5) `Context`/`Tracing`
+(Aaron) → ZetaId-in-band context, and `DynamicValue` (Chris King) → the polymorphic wire format.
+When the operator finds the article the design was based on, citing it preserves the full lineage
+(honor-those-that-came-before).
