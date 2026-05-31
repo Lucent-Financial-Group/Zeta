@@ -431,7 +431,15 @@ impl<'a> JsonReader<'a> {
 
         // Integer part: a single `0`, or a nonzero digit followed by more digits.
         match self.peek() {
-            Some(b'0') => self.pos += 1,
+            Some(b'0') => {
+                self.pos += 1;
+                // No leading zeros: a digit right after `0` (e.g. `01`) is invalid
+                // JSON. Reject it HERE so a streaming caller never receives a bogus
+                // `Number("0")` token with the error delayed to the next read().
+                if matches!(self.peek(), Some(d) if d.is_ascii_digit()) {
+                    return Err(self.err("invalid number: leading zeros are not allowed"));
+                }
+            }
             Some(b) if b.is_ascii_digit() => {
                 self.pos += 1;
                 self.skip_ascii_digits();
@@ -588,6 +596,12 @@ mod tests {
             assert_eq!(r.read().expect("read").expect("token"), JsonToken::Number(good));
             assert!(r.read().expect("eof").is_none(), "'{good}' should be a single number");
         }
+        // Leading-zero forms are rejected EAGERLY on the first read() — a streaming
+        // caller never gets a bogus Number("0") with the error delayed.
+        assert!(JsonReader::new("01").read().is_err(), "`01` must error on the first read");
+        let mut arr = JsonReader::new("[01]");
+        assert_eq!(arr.read().expect("read").expect("token"), JsonToken::StartArray);
+        assert!(arr.read().is_err(), "`[01]` must error when reading the element, not later");
     }
 
     #[test]
