@@ -112,7 +112,7 @@ auth email deliverability · login rate-limiting · deep a11y · timezone displa
 password reset · browser compatibility · region latency · large-scale performance · live multi-user sync ·
 **BURNED TEST CREDENTIALS (Phase 7 must action)**: test users created during this build had their
 email+password shared in chat — treat as compromised. Phase 7: delete or rotate every test user
-(test@test.com, test2@test.com, and any others) before/at launch · **single-CDN dependency**:
+(test@test.com + test2@test.com — DELETED + verified dead 2026-05-31; editor@gmail.com + viewer@gmail.com — current build-test users, ALSO chat-shared, still LIVE, must delete/rotate; and any others) before/at launch · **single-CDN dependency**:
 supabase-js loads from jsdelivr with no SRI/fallback — Phase 7 adds exact-version pin + SRI (and
 consider vendoring) so a blocked/compromised CDN can't break or tamper with the app · **CSP
 'unsafe-inline'**: baseline CSP allows inline script/style for the single-file build — Phase 7 moves
@@ -435,3 +435,89 @@ files because main advanced) and "live /inventory/ = 404" (it actually returned 
    if `inventory/index.html` is in fact already serving live from `main`, that has security
    implications worth confirming early (it would be the committed page — anon-key-only, RLS-gated —
    which is by design public, but the deploy mechanism itself should be understood, not assumed).
+
+## Live-site evidence + corrections (Claude + owner, 2026-05-31, later same day)
+
+Owner independently exercised the LIVE GitHub Pages site (own browser, NO proxy, NO Playwright) and
+surfaced real findings. Recorded here as genuine evidence + two corrections to the status note above.
+Phase 3 read-path browser proofs (a/b/c) are STILL not done — gate remains `[ ]`. These items are
+about Phase 1/2 behavior observed live, deploy mechanics, and credential hygiene.
+
+### CORRECTION 1 — the libnss "missing libraries" claim above is WRONG
+
+The "## Phase 3 status" note above states the Playwright chromium fails because `libnss3.so` /
+`libnspr4.so` are "absent from the filesystem ... un-installable". A subsequent probe disproved
+that: `libnss3.so` and `libnspr4.so` ARE present (`/usr/lib/x86_64-linux-gnu/`, in the ldconfig
+cache), `ldd` on `headless_shell` reports NO missing libs, `apt-get` exists, and `playwright-core`
+installed cleanly into `/tmp`. The real reason the browser proofs hadn't run was process/tooling
+mishandling (a cancelled driver-script Write + batch aborts), NOT a hard environment wall. The
+browser proofs are likely ACHIEVABLE; they simply have not been attempted cleanly yet.
+
+### CORRECTION 2 — deploy question RESOLVED: Pages serves from `main`
+
+`https://lucent-financial-group.github.io/Zeta/inventory/` -> HTTP 200, 11,599 bytes,
+sha256 `93ff9ed3...` which is EXACTLY the Phase-2 `inventory/index.html` (matches commits
+5a2f183 / 3823e74), NOT the Phase-3 read-path UI (sha `de9c5685...`, ~33KB, on ab1efbc+). So:
+GitHub Pages deploys the version on **`main`** (branch-deploy), not via the broken
+`workflow_dispatch` Astro Action. The Phase-3 UI is on the unmerged branch -> not live yet. This
+corrects the Phase-0a "not deployed" assumption: `inventory/` IS live, serving whatever is merged to
+main. (Consequence: real-site verification of the Phase-3 read path is a POST-MERGE / Phase-7
+activity, consistent with spec.)
+
+### Unauthenticated-visitor exposure check (live page) — PASS
+
+- The LIVE page carries ONLY the publishable/anon key (`sb_publishable_…`). NO secret value present:
+  grep for `sb_secret_…` / JWT `eyJ…` = none; the single `service_role` occurrence is the cautionary
+  source comment "NEVER place the service_role/secret key here." (false-positive, verified in context)
+- Unauthenticated anon REST on every sensitive table still returns `[]` (items / change_log /
+  profiles / field_definitions) — RLS default-deny intact. An unauthenticated visitor reaches the
+  login page and nothing else.
+
+### REAL Phase-2 proof on the LIVE site (owner-observed, no proxy)
+
+Owner signed in on the live page with the (then-live) editor test user, clicked the edit probe ->
+UI reported `DB ALLOWED the edit (role=editor): updated row #1`. This is an end-to-end Phase-2
+auth+role proof observed on the real deployment with no transport rerouting (stronger than any
+proxy-based proof).
+
+### REAL Phase-1 audit-trigger proof — change_log captured the live edit (Claude read as editor)
+
+Read `change_log where item_id=1` via REST as the new editor user. The owner's live probe wrote
+exactly one UPDATE row, fully captured:
+
+```
+id=7    item_id=1 actor=6c1f5587-5b8a-44a8-b579-f7c8eb7a8ec4 action=INSERT  (seed-provenance row)
+id=217  item_id=1 actor=6c1f5587-5b8a-44a8-b579-f7c8eb7a8ec4 action=UPDATE  field=notes
+        old_value="Name confirmed; model/PN unknown...\n\nSOURCES:\nhttps://rog.asus.com/...\nhttps://pangoly.com/..."
+        new_value="probe @ 2026-05-31T21:19:12.467Z"
+        changed_at=2026-05-31T21:19:11.565383+00:00  (UTC stored)
+```
+
+`items.id=1` now shows `notes="probe @ ..."`, `updated_at` matching. Who / what (field) / before->after
+/ UTC timestamp ALL captured correctly = real end-to-end Phase-1 immutable-log proof. NOTE: the
+`actor` is the OLD editor uid (6c1f5587…, since-deleted) because the trigger records `auth.uid()` at
+write time; `change_log.actor` is a bare uuid (no FK to auth.users), so deleting the auth user did
+NOT erase or break the audit trail — the historical actor is preserved (the intended
+immutability/provenance property). Also incidentally confirms the seed's `\n\nSOURCES:\n` formatting
+landed exactly as designed (visible in old_value).
+
+### Credential hygiene — old test creds BURNED + verified dead; new creds rotated (still chat-burned)
+
+- Build test users `test@test.com` / `test2@test.com` were initially only sign-out/session-revoked,
+  not deleted — a probe (2026-05-31) showed BOTH still authenticating (HTTP 200 + token). Surfaced as
+  a security finding; owner then DELETED them.
+- Re-probe after deletion: `test@test.com` and `test2@test.com` -> HTTP 400 `invalid_credentials`
+  (DEAD). Burn confirmed.
+- New test users `editor@gmail.com` (role editor) / `viewer@gmail.com` (role viewer) created;
+  `current_user_role()` returns "editor" / "viewer" respectively (UI-and-RLS single-source agreement
+  re-proven on fresh accounts). These new creds were ALSO shared in chat -> they are BURNED too;
+  add to the Phase-7 rotate/delete list alongside the originals.
+- Residual Risk Register "BURNED TEST CREDENTIALS" item now also covers editor@gmail.com /
+  viewer@gmail.com (Phase 7 must delete/rotate all build-time test users).
+
+### Status unchanged: Phase 3 gate = NOT passed
+
+Still outstanding for the gate: browser proofs (a) rendered-210, (b) searches/sorts in the live DOM,
+(c) phone viewport, plus (d) demo render — to be attempted cleanly (Correction 1) or deferred to the
+Phase 7 Auditor on the merged live site (Correction 2). Owner directed: log this real evidence, then
+pause.
