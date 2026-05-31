@@ -162,8 +162,10 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect("error" in result).toBe(true);
     if ("error" in result) {
       expect(result.error.kind).toBe("command-failed");
-      expect(result.error.step).toBe("restore-baseline-snapshot");
       expect(result.error.commandExecutions).toHaveLength(3);
+      if (result.error.kind === "command-failed") {
+        expect(result.error.step).toBe("restore-baseline-snapshot");
+      }
     }
   });
 
