@@ -27,6 +27,29 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path "$PSScriptRoot\..\..").Path
 function Have($c) { [bool](Get-Command $c -ErrorAction SilentlyContinue) }
 
+# Native-tool invocation helper. Native tools (scoop/mise/bun) write progress + benign notes to
+# STDERR; PS 5.1 promotes native stderr to a fatal NativeCommandError under
+# $ErrorActionPreference='Stop' the moment the tool emits ANY stderr line -- even with 2>$null or
+# 2>&1 (Server-Core build 2026-05-31: `mise trust` printing "mise trusted ..." to stderr crashed
+# install). Conversely, Stop does NOT catch a native non-zero EXIT in 5.1, so real failures went
+# silent (e.g. a failed `bun install -g claude-code`). So route native calls through here: run
+# stderr-tolerant (ErrorActionPreference=Continue so merged stderr is just text), surface output,
+# then fault ONLY on a real non-zero exit code.
+function Invoke-Tool {
+  param([Parameter(Mandatory)][scriptblock]$Cmd, [string]$What = 'native command')
+  $prev = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  try { & $Cmd 2>&1 | ForEach-Object { Write-Host "$_" } } finally { $ErrorActionPreference = $prev }
+  if ($LASTEXITCODE -ne 0) { throw "$What failed (exit $LASTEXITCODE)" }
+}
+# Cosmetic version probe -- best-effort, never fatal (stderr-tolerant, ignores exit code).
+function Get-ToolVersion {
+  param([Parameter(Mandatory)][scriptblock]$Cmd)
+  $prev = $ErrorActionPreference
+  $ErrorActionPreference = 'SilentlyContinue'
+  try { (& $Cmd 2>&1 | Select-Object -First 1) } finally { $ErrorActionPreference = $prev }
+}
+
 Write-Host "=== Zeta install -- Windows user-mode entry (scoop-primary, declarative) ==="
 Write-Host "Repo root: $RepoRoot"
 
@@ -63,7 +86,7 @@ if (-not (Have scoop)) {
 # shells, but this process needs them now -- mirrors macos.sh's brew/mise shim PATH export).
 $scoopShims = Join-Path $env:USERPROFILE 'scoop\shims'
 if ((Test-Path $scoopShims) -and ($env:PATH -notlike "*$scoopShims*")) { $env:PATH = "$scoopShims;$env:PATH" }
-Write-Host "scoop: $((scoop --version 2>$null | Select-Object -First 1))"
+Write-Host "scoop: $(Get-ToolVersion { scoop --version })"
 
 # 2. system CLI tools from manifests/windows (scoop -> winget -> choco). Strips `#` comments +
 #    trims (parity with the awk in macos.sh's brew-manifest loop).
@@ -77,29 +100,29 @@ foreach ($raw in Get-Content $manifest) {
   $wid = if ($winget) { $winget } else { $scoopId }   # if/else (5.1-safe; NOT the 7+ ?: ternary)
   $cid = if ($choco) { $choco } else { $scoopId }
   Write-Host "down $scoopId (scoop -> winget -> choco)"
-  if ($(Have scoop)) { scoop install $scoopId }
-  elseif ($(Have winget)) { winget install --id $wid --silent --accept-package-agreements --accept-source-agreements }
-  elseif ($(Have choco)) { choco install $cid -y }
+  if ($(Have scoop)) { Invoke-Tool { scoop install $scoopId } "scoop install $scoopId" }
+  elseif ($(Have winget)) { Invoke-Tool { winget install --id $wid --silent --accept-package-agreements --accept-source-agreements } "winget install $wid" }
+  elseif ($(Have choco)) { Invoke-Tool { choco install $cid -y } "choco install $cid" }
   else { throw "no package source (scoop/winget/choco) available for $scoopId" }
 }
 
 # 3. mise (runtime manager) via scoop -- mirrors macos.sh step 4 (brew install mise).
-if (-not (Have mise)) { scoop install mise }
-Write-Host "mise: $((mise --version 2>$null))"
+if (-not (Have mise)) { Invoke-Tool { scoop install mise } 'scoop install mise' }
+Write-Host "mise: $(Get-ToolVersion { mise --version })"
 
 # 4. runtimes from .mise.toml (dotnet/python/java/bun/uv) -- IDENTICAL file to Unix (symmetric).
 Push-Location $RepoRoot
 try {
-  mise trust 2>$null | Out-Null
-  mise install
+  Invoke-Tool { mise trust } 'mise trust'
+  Invoke-Tool { mise install } 'mise install'
 } finally { Pop-Location }
 
 # 5. claude-code via bun --global (bun provided by mise) -- identical to Unix.
-mise exec -- bun install --global '@anthropic-ai/claude-code'
+Invoke-Tool { mise exec -- bun install --global '@anthropic-ai/claude-code' } 'bun install -g claude-code'
 
 # 6. register the per-minute (windowless, conhost --headless) loop unless skipped.
 if (-not $SkipLoopRegister) {
-  mise exec -- bun "$RepoRoot\tools\persistence\windows\install-scheduled-task.ts" --register
+  Invoke-Tool { mise exec -- bun "$RepoRoot\tools\persistence\windows\install-scheduled-task.ts" --register } 'register loop task'
 }
 
 Write-Host ""

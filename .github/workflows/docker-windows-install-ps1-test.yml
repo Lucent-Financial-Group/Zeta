@@ -1,9 +1,10 @@
 # .github/workflows/docker-windows-install-ps1-test.yml
 #
 # Slice 2c — CI for the Server-Core Docker test of tools/setup/install.ps1 (B-0857 Windows
-# parity). Mirrors docker-nixos-install-sh-test.yml but runs on windows-2022: Windows containers
-# need a Windows host, and windows-latest = Server 2025 which REMOVED servercore:ltsc2022 — so
-# pin -2022 (WebSearch 2026-05-30: actions/runner-images).
+# parity). Mirrors docker-nixos-install-sh-test.yml but on a Windows host (Windows containers need
+# one). Base + runner are a MATCHED PAIR: servercore:ltsc2025 on runs-on: windows-2025 (Windows
+# Server 2025, the current LTSC). WebSearch 2026-05-31: actions/runner-images#11742 (windows-2025
+# GA 2025-04-08; windows-latest already migrated to Server 2025) — see the Dockerfile for full pins.
 #
 # FIRST LANDING: workflow_dispatch ONLY, while the Windows-container specifics (scoop's admin
 # behavior, mise install of runtimes, cross-layer PATH) are iterated to green via manual dispatch
@@ -25,14 +26,14 @@ concurrency:
 jobs:
   docker-test:
     name: docker-windows-install-ps1-test
-    runs-on: windows-2022
-    # servercore pull (~1-2 GB cold) + scoop bootstrap + mise install of .mise.toml runtimes
+    runs-on: windows-2025
+    # servercore pull (cold) + scoop bootstrap + mise install of .mise.toml runtimes
     # (dotnet/python/java/bun/uv) is heavy on a cold runner; 45-min ceiling gives headroom.
     timeout-minutes: 45
 
     steps:
-      # Zeta has >260-char filenames (dense persona/research naming); a fresh windows-2022
-      # runner's git fails checkout with "Filename too long" without long-path support.
+      # Zeta has >260-char filenames (dense persona/research naming); a fresh runner's git fails
+      # checkout with "Filename too long" without long-path support.
       - name: Enable git long paths (Windows MAX_PATH)
         run: git config --global core.longpaths true
 
