@@ -55,7 +55,6 @@ import {
   type FileEnvelope,
   type RecipientKey,
   type RecipientSlot,
-  type SeedSource,
   determineEncryptionPath,
   validateEnvelopeStructure,
 } from "./types";
@@ -134,13 +133,20 @@ function firstInvalidIdentity(recipients: readonly RecipientKey[]): { identity: 
  * Generate a v1 recipient keypair (XWing KEM + ML-DSA-65 signature).
  *
  * v1 supports `seedSource: "random-bytes"` only; `adinkra-derived` (B-0623)
- * and `hsm-derived` are future substrate. Throws on unsupported seed source —
- * keygen is a setup operation, not a hot-path Result surface.
+ * and `hsm-derived` are future substrate. The parameter is NARROWED to the
+ * literal `"random-bytes"` (not the full `SeedSource` union) so an unsupported
+ * source is a COMPILE error, not a runtime throw — the strongest form of the
+ * Result-shaped boundary `encrypt`/`decrypt` use: the unsupported case is made
+ * unrepresentable rather than handled. When `adinkra-derived`/`hsm-derived`
+ * land, widen the parameter to the union AND return `Result<GeneratedKeyPair,
+ * { kind: "SeedSourceNotAvailable"; seedSource }>` to keep the boundary typed.
+ * (Codex/Copilot P1 on PR #6217 — exported surface must not throw on a
+ * user-selectable option.)
  */
-export function generateRecipientKeyPair(identity: string, seedSource: SeedSource = "random-bytes"): GeneratedKeyPair {
-  if (seedSource !== "random-bytes") {
-    throw new Error(`generateRecipientKeyPair: seedSource "${seedSource}" not available in v1 (random-bytes only)`);
-  }
+export function generateRecipientKeyPair(
+  identity: string,
+  seedSource: "random-bytes" = "random-bytes",
+): GeneratedKeyPair {
   const kem = XWing.keygen();
   const sig = ml_dsa65.keygen();
   return {
@@ -159,6 +165,25 @@ export function generateRecipientKeyPair(identity: string, seedSource: SeedSourc
       sigSecretKey: sig.secretKey,
     },
   };
+}
+
+/**
+ * Prove a KEM SECRET key actually unwraps a given slot to the expected CEK.
+ * encrypt uses this on the SENDER's own slot: the guards above only compare
+ * sender PUBLIC KEM keys + self-verify the signature key, so a stale/mismatched
+ * KEM secret (right public key, wrong secret) would still mint an envelope the
+ * sender — a required self-recipient — can't decrypt. This is the KEM-side
+ * analogue of the signature self-verify. (Codex P2 on PR #6217.)
+ */
+function kemSecretUnwrapsSlot(slot: RecipientSlot, kemSecretKey: Uint8Array, expectedCek: Uint8Array): boolean {
+  try {
+    const sharedSecret = XWing.decapsulate(slot.kemCt, kemSecretKey);
+    const wrapKey = hkdf(sha256, sharedSecret, undefined, slot.kdfInfo, CEK_LEN);
+    const unwrapped = chacha20poly1305(wrapKey, WRAP_ZERO_NONCE).decrypt(slot.wrappedCek);
+    return bytesEqual(unwrapped, expectedCek);
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -351,6 +376,21 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
         kind: "RecipientKeyInvalid",
         identity: context.sender.identity,
         reason: "sender secret key does not match (or sender publicSigKey is malformed)",
+      },
+    };
+  }
+
+  // KEM-side self-check: prove the sender's own KEM SECRET unwraps the sender's
+  // slot back to the CEK. Without this, a stale/mismatched KEM secret (right
+  // public key, wrong secret) mints an envelope the sender can't decrypt.
+  const senderSlot = slots.find((s) => s.identity === context.sender.identity);
+  if (!senderSlot || !kemSecretUnwrapsSlot(senderSlot, senderSecretKeys.kemSecretKey, cek)) {
+    return {
+      ok: false,
+      feedback: {
+        kind: "RecipientKeyInvalid",
+        identity: context.sender.identity,
+        reason: "sender KEM secret key does not unwrap the sender slot (stale/mismatched KEM secret)",
       },
     };
   }

@@ -1,12 +1,17 @@
 /**
  * tools/crypto/better-git-crypt/crypto.test.ts
  *
- * B-0883 v1 Phase 2 — real-crypto round-trip + tamper-detection tests.
+ * B-0883 v1 Phase 2 — WIRING + tamper-detection tests.
  *
- * These tests ARE the no-human-intervention oracle: they exercise the actual
- * @noble post-quantum primitives end-to-end. A green run proves the wiring
- * (XWing KEM + ML-DSA-65 sig + HKDF + ChaCha20-Poly1305 + CBOR envelope) is
- * correct against the installed package versions.
+ * SCOPE (do not overstate): these exercise the actual @noble post-quantum
+ * primitives end-to-end and prove the API COMPOSES — encrypt→decrypt round
+ * trips, multi-recipient, empty/large payloads — and that every typed failure
+ * mode surfaces as Result feedback (tamper, wrong key, bad CBOR, version, etc).
+ * They do NOT prove cryptographic CORRECTNESS: no Known-Answer-Tests against
+ * Noble's published vectors, no formal verification of the envelope/key-handling
+ * design, no security-ops review. Those are still REQUIRED before this holds
+ * anything real — the crypto-don't-rush gate (README "Phase 2 operator
+ * decisions"). A green wiring suite is necessary, not sufficient.
  *
  * Run via: bun test tools/crypto/better-git-crypt/crypto.test.ts
  */
@@ -55,8 +60,16 @@ describe("B-0883 v1 Phase 2 — keygen", () => {
     expect(Buffer.from(a.publicKey.publicKemKey).equals(Buffer.from(b.publicKey.publicKemKey))).toBe(false);
   });
 
-  it("rejects non-random-bytes seed source in v1", () => {
-    expect(() => generateRecipientKeyPair("x@zeta", "adinkra-derived")).toThrow(/not available in v1/);
+  it("seed source is type-narrowed: an unsupported source is a COMPILE error, not a runtime throw", () => {
+    // v1 narrows the param to the literal "random-bytes", so the unsupported
+    // case is unrepresentable at compile time (Result-boundary by construction)
+    // rather than a runtime exception. (Copilot P1 on PR #6217 — an exported
+    // surface must not throw on a user-selectable option.) The @ts-expect-error
+    // IS the assertion: if the param is ever widened, this line stops erroring
+    // and the test fails, forcing a Result-shaped return at that point.
+    // @ts-expect-error "adinkra-derived" is not assignable to "random-bytes"
+    const kp = generateRecipientKeyPair("x@zeta", "adinkra-derived");
+    expect(kp.publicKey.identity).toBe("x@zeta"); // no throw — keygen just proceeds
   });
 });
 
@@ -240,6 +253,30 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
       expect(enc.feedback.kind).toBe("RecipientKeyInvalid");
       if (enc.feedback.kind === "RecipientKeyInvalid") {
         expect(enc.feedback.reason).toBe("empty recipient identity");
+      }
+    }
+  });
+
+  it("RecipientKeyInvalid: rejects a sender KEM secret that can't unwrap its own slot", () => {
+    // Right sender identity + right public keys + right SIG secret, but a
+    // stale/mismatched KEM SECRET. Signature self-verify passes; without the
+    // KEM-side self-check encrypt would mint an envelope the sender (a required
+    // self-recipient) can't decrypt. (Codex P2 on PR #6217.)
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const other = generateRecipientKeyPair("sender@zeta"); // different keys, same identity
+    const mismatchedSecrets = { ...sender.secretKeys, kemSecretKey: other.secretKeys.kemSecretKey };
+    const ctx: EncryptionContext = {
+      plaintext: utf8("x"),
+      recipients: [sender.publicKey],
+      sender: sender.publicKey,
+      seedSource: "random-bytes",
+    };
+    const enc = encrypt(ctx, mismatchedSecrets);
+    expect(enc.ok).toBe(false);
+    if (!enc.ok) {
+      expect(enc.feedback.kind).toBe("RecipientKeyInvalid");
+      if (enc.feedback.kind === "RecipientKeyInvalid") {
+        expect(enc.feedback.reason).toContain("KEM secret");
       }
     }
   });

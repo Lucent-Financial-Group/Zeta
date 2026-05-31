@@ -78,24 +78,32 @@ bun test tools/crypto/better-git-crypt/
 
 Invariants checked: unique alg ids; ships-v1 presence for each class (kem/signature/kdf/aead); registry catches duplicate ids + missing ships-v1; envelope catches wrong version + context mismatch + unknown algs + wrong-class-references + empty recipient set + empty signerIdentity; encryption context catches empty recipient set + sender-not-in-recipients + unsupported algs + invalid keys.
 
-## Phase 2 integration protocol
+## Phase 2 — as implemented
 
-When operator authorizes Phase 2:
+Phase 2 landed as a single `crypto.ts` against the real primitives (NOT the
+split-module / `cbor-x` sketch this section originally proposed — that plan is
+superseded by what actually shipped):
 
-1. Add `@noble/post-quantum`, `@noble/ciphers`, `@noble/hashes`, and a CBOR library (e.g. `cbor-x`) to `package.json`
-2. Implement `ciphers/registry.ts` dispatch:
-   - `mlKem768Encapsulate(pk: Uint8Array): { ct: Uint8Array; ss: Uint8Array }`
-   - `mlKem768Decapsulate(sk: Uint8Array, ct: Uint8Array): Uint8Array`
-   - `xwingHybrid` wrapper composing ML-KEM-768 + X25519
-   - `mlDsa65Sign(sk: Uint8Array, msg: Uint8Array): Uint8Array`
-   - `mlDsa65Verify(pk: Uint8Array, msg: Uint8Array, sig: Uint8Array): boolean`
-3. Implement `envelope.ts` CBOR encode/decode
-4. Implement `files/encrypt.ts` + `files/decrypt.ts` round-trip
-5. Implement `recipients/manage.ts` + `recipients/storage.ts`
-6. Implement `seed/sources.ts` with random-bytes ships-v1; Adinkra-derived per B-0623 future
-7. Add round-trip integration tests + KAT (Known-Answer Tests) per Noble's KAT vectors
-8. Wire `files/textconv.ts` for `git textconv` filter (diff-readable ciphertext)
-9. Optional: ship as standalone npm package OR keep internal to tools/
+- **Deps** (pinned): `@noble/post-quantum` (XWing KEM + `ml_dsa65`),
+  `@noble/ciphers` (`chacha20poly1305`), `@noble/hashes` (`hkdf`/`sha256`),
+  `cborg` (canonical CBOR). See "On-disk wire format" above for the authoritative
+  envelope shape (flat camelCase — supersedes the earlier snake_case sketch).
+- **`crypto.ts`** (single module, not split): `generateRecipientKeyPair`,
+  `encrypt` / `decrypt` (Result-shaped: `Result<_, EncryptionFeedback>` /
+  `Result<_, DecryptionFeedback>`), `encodeEnvelope` / `decodeEnvelope` (canonical
+  CBOR with a non-canonical / unknown-field reject), and the signed-view encoder.
+- **`crypto.test.ts`**: wiring + tamper-detection suite (round-trip,
+  multi-recipient, every typed failure mode). Scope-honest — see that file's
+  header: a green run proves the API composes, NOT cryptographic correctness.
+
+Still future (NOT done in this PR): `git textconv` filter wiring, a recipients
+registry / storage layer, alternate seed sources (Adinkra-derived per B-0623,
+HSM-derived), and optional standalone-npm packaging.
+
+**Before it holds anything real**, the crypto-don't-rush gate below still
+applies — KATs against Noble's vectors + formal verification + security-ops
+review of the envelope and key-handling. A green wiring suite is necessary, not
+sufficient.
 
 ## Phase 2 operator decisions (2026-05-29)
 
