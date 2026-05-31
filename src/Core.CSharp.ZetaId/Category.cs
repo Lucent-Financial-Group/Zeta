@@ -6,7 +6,8 @@ public enum Category : byte
     Emission = 1,
     Workflow = 2,
     Heartbeat = 3,
-    // 4 proposed for Batch (B-0890 memo); 5 reserved for FrictionTelemetry (ADR 2026-05-29)
+    // 4 free — B-0890 Batch coordinator superseded by B-0890.1 folders-on-main
+    FrictionTelemetry = 5,  // friction telemetry per ADR 2026-05-29 (slot registered; impl pending)
     Bus = 6,        // cross-machine agent comms (git-native bus spec, #6219)
     Spawn = 7,      // agent-spawning (backend-portable: GH Actions / Argo / GitLab)
     WorkItem = 8,   // planning umbrella (tasks + bugs; B-xxxxx -> ZetaId migration)

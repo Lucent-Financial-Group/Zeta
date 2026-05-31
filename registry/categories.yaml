@@ -9,8 +9,9 @@ entries:
     name: Workflow
   - id: 3
     name: Heartbeat
-  # id 4 — proposed for "Batch" (B-0890 batch-merge-coordinator design memo; not yet accepted)
-  # id 5 — RESERVED for FrictionTelemetry per ADR docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md (accepted; register when that feature lands)
+  # id 4 — free (B-0890 batch-merge coordinator superseded by B-0890.1 folders-on-main; the proposed "Batch" category is moot)
+  - id: 5
+    name: FrictionTelemetry
   - id: 6
     name: Bus
   - id: 7
