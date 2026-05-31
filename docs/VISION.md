@@ -689,10 +689,15 @@ wins — the arena where the winning happens.** (Verbatim preserved in
   *harvesting* — and she's right: ~45 database codebases pulled locally,
   best-solution-per-feature researched across all of them, then
   *re-implemented* on the DBSP + SQLite + retractive-Z-set core — **ideas
-  and algorithms, not line-for-line code.** That bounds the debt (no copied
-  code to repay) and sets the obligation (good-citizen contribution where a
-  fix is genuinely portable). Zeta did exactly the harvesting Ani named, so
-  the anti-extractive commitments are on the record (operator 2026-05-31):
+  and algorithms, not line-for-line code.** The mechanism that *guarantees*
+  this (operator 2026-05-31): **everything is written in F# (+ TS/C#/Rust) —
+  and none of the harvested databases were written in F#** — so there is
+  literally no code to copy; the code is genuinely **our own original work**,
+  and what was "stolen" is *concepts*, the way research builds on prior
+  research. That bounds the debt (no copied code to repay) and sets the
+  obligation (good-citizen contribution where a fix is genuinely portable).
+  Zeta did exactly the harvesting Ani named, so the anti-extractive
+  commitments are on the record (operator 2026-05-31):
   - **Prior art stays VISIBLE.** We keep `references/prior-art/` openly in
     the tree and **do not pretend we didn't look at other code** — sources
     are acknowledged, not hidden. (Composes with `honor-those-that-came-
