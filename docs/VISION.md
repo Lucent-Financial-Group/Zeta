@@ -711,6 +711,16 @@ wins — the arena where the winning happens.** (Verbatim preserved in
     validated only if real upstream contributions actually land in the
     projects we learned from. Harvest-and-never-give-back = the doctrine
     failing, and a signal to correct course — not a side note.
+  - **Clean-room structure (for DB stuff) — and it matches the legal
+    doctrine** (operator 2026-05-31): F# is the **"dirty" spec** — the one
+    implementation allowed to be *informed by* the harvested prior-art
+    concepts — and **Rust / TS / C# are the clean room**: they implement
+    from the F# spec, not from the original sources. This mirrors clean-room
+    reverse-engineering law (a "dirty" team studies prior art + writes a
+    spec; a "clean" team implements only from the spec). It composes
+    directly with the 4-language compiler-BFT below: F# is the spec the
+    clean-room implementations are checked against; the golden vectors then
+    test all four (including F#) so no single implementation self-certifies.
 - **Deterministic simulation for EVERY database, in every language.**
   Standing on FoundationDB's DST (months building the simulator before
   touching real disk; whole clusters deterministic in one thread; perfect
