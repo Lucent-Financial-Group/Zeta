@@ -9,9 +9,11 @@ entries:
     name: Workflow
   - id: 3
     name: Heartbeat
-  - id: 4
-    name: Bus
-  - id: 5
-    name: Spawn
+  # id 4 — proposed for "Batch" (B-0890 batch-merge-coordinator design memo; not yet accepted)
+  # id 5 — RESERVED for FrictionTelemetry per ADR docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md (accepted; register when that feature lands)
   - id: 6
+    name: Bus
+  - id: 7
+    name: Spawn
+  - id: 8
     name: WorkItem
