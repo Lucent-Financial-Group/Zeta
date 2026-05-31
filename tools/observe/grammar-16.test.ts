@@ -1,6 +1,6 @@
 /**
  * Conformance lock for the canonical v0 16-slot grammar against the ADR's resolved table
- * (docs/DECISIONS/2026-05-31-observe-act-16-direction-...md, "v0 RESOLVED 2026-05-31").
+ * (docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md, "v0 RESOLVED 2026-05-31").
  * If the ADR's v0 layout changes, these tests fail until grammar-16.ts is re-synced — the
  * grammar can't silently drift from its source of truth.
  */

@@ -1,13 +1,13 @@
 /**
  * The canonical v0 16-slot universal action grammar (Xbox-controller layout).
  *
- * ONE shared grammar. The sovereign `buildMenu()` (this package) and Max's corporate
+ * ONE shared grammar. The sovereign `buildMenu()` (this package) and the corporate
  * `Menu16` (`agentic-organization/packages/application/src/observe.ts`) BOTH derive from
  * this single canonical definition — the "thing corporate retrofits onto" per the
  * canonical-retrofit (docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md).
  *
  * Before this module the v0 grammar lived only as ADR prose + a corporate-private copy in
- * Max's `Menu16Slot[]`. This makes it canonical code: the 16 DIRECTIONS are FIXED (muscle
+ * the corporate `Menu16Slot[]`. This makes it canonical code: the 16 DIRECTIONS are FIXED (muscle
  * memory); per-state LABELS + Tri availability move (see `RenderedSlot`).
  *
  * Source of truth: the ADR's "The 16-slot universal action grammar (v0 — RESOLVED 2026-05-31)"
@@ -18,7 +18,7 @@
  * committing renders slot 4 as `F`; a held/uncertain option renders it `N`.
  *
  * Composes:
- *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-...md (the v0 layout + canonical-retrofit)
+ *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md (the v0 layout + canonical-retrofit)
  *   - src/Core.TypeScript/tri-boolean (B-0944 — the `Tri` per-slot availability)
  *   - ./observe.ts (the sovereign NextAction algebra + buildMenu this grammar renders)
  */
@@ -51,7 +51,7 @@ export interface RenderedSlot extends GrammarSlot {
 }
 
 /**
- * The canonical v0 grammar — FIXED for v0 (Max review to lock; whys stay challengeable).
+ * The canonical v0 grammar — FIXED for v0 (corporate review to lock; whys stay challengeable).
  * Exactly 16 slots, dense indices 0..15, four groups of four, in the ADR's table order.
  */
 export const GRAMMAR_16_V0: readonly GrammarSlot[] = [
