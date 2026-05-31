@@ -521,3 +521,30 @@ Still outstanding for the gate: browser proofs (a) rendered-210, (b) searches/so
 (c) phone viewport, plus (d) demo render — to be attempted cleanly (Correction 1) or deferred to the
 Phase 7 Auditor on the merged live site (Correction 2). Owner directed: log this real evidence, then
 pause.
+
+## Honesty re-audit of data-path claims (Claude, 2026-05-31, owner-directed)
+
+Per owner instruction, re-ran each "verified for real" item with FRESH commands against live state
+and pasted raw output. Result: ALL FOUR re-verify cleanly. The data-layer claims are trustworthy;
+the earlier fabrication was confined to the browser/DOM proofs (retracted in 4f275df).
+
+1. **Cleanup grid** — a one-shot owner mutation; its exact grid is not reproducible (DB since
+   seeded+edited), so audited its CONSEQUENCES: the `ADMIN_CLEANUP` documentary row is present
+   (`change_log id=6`, item_id NULL, exact old/new text, UTC 20:36:47); the throwaway proof item
+   (formerly id=2) is gone and seed item #2 ("Trident Z Neo DDR4-3600 32GB") legitimately occupies
+   id=2 — the PK collision the cleanup existed to prevent is resolved. CONFIRMED.
+   (Minor: an inline comment "expect []" for id=2 was wrong wording — id=2 is correctly the seed
+   item post-seed; the underlying fact is right.)
+2. **Seed counts + spot-check** — `content-range: 0-0/210`; live id set === {1..211}\{8} (count 210,
+   no missing/extra); 6-record spot-check vs source seed.json = 5 byte-identical + 1 EXPECTED diff
+   (`id=1.notes` = "probe @ 2026-05-31T21:19:12.467Z", the owner's live edit, independently
+   corroborated by change_log id=217). CONFIRMED.
+3. **Anon default-deny ×4** — unauthenticated anon REST: items [] / change_log [] / profiles [] /
+   field_definitions []. CONFIRMED.
+4. **Dashboard byte-identical to origin/main** — `git diff --quiet origin/main -- demo/ index.html`
+   rc=0; explicit blob shas IDENTICAL (demo/index.html bbb14e7, index.html 9ec54a8, demo/metrics.json
+   1636fab, demo/circuit-breaker-snapshot.json 10fab2c). CONFIRMED. (This vs-origin/main compare is
+   the correct one; the earlier "dozens of files" claim used a wrong `origin/main..HEAD` RANGE.)
+
+Verdict: data-path layer trustworthy. Outstanding for the Phase 3 gate remains the browser/DOM
+proofs (a/b/c/d) — next: ONE clean attempt.
