@@ -236,6 +236,66 @@ contribution share**, never for restricting access. (Folded into B-0950's payout
 
 ---
 
+## Part G — Source-material attribution: pre-emptively attribute the humans we synthesize/train on, even if they don't know (Aaron 2026-05-31)
+
+> *"we also need to track any data used for synthesis and its creators even if the creators of the
+> original source material don't even know we are using it, we should preemptively attribute to them
+> too any human materials we train/synthesis on"*
+
+The contribution graph extends **upstream past direct contributors** to the **source creators of any
+human material the framework synthesizes or trains on** — recorded **pre-emptively**, before (or
+entirely without) the creator's knowledge or claim. This is the deepest expression of the anti-DRM
+stance.
+
+### Why this is the deepest anti-extraction move
+
+- The AI-industry default is **extractive**: scrape human work silently, attribute nothing,
+  compensate no one.
+- The framework **inverts** it: every synthesis/training step **captures its source lineage**,
+  attributes the source creators as graph nodes (identified or placeholder), and **reserves** their
+  attribution/compensation share — *a debt recorded proactively*, not contingent on opt-in.
+- This is `honor-those-that-came-before` at the **training-data scope**, and the literal opposite of
+  DRM: DRM restricts the creator's work; this **credits the creator for work the framework builds
+  ON**.
+
+### Mechanism
+
+1. **Synthesis/training provenance capture.** Every node records `synthesizedFrom` / `trainedOn`
+   source edges (PROV-O `wasDerivedFrom`; OpenLineage input-datasets — extended to *human-authored
+   sources*, not just datasets). Where the framework synthesizes from identifiable sources (cited
+   papers, forwarded conversations, named corpora) the source creators are attributed directly. The
+   framework already does a partial version of this — `docs/research/` verbatim-preservation, §33
+   attribution of forwarded AI conversations, and citation hygiene (`missing-citations` skill).
+2. **Pre-emptive / reserved attribution for unidentified creators.** When a source creator can't yet
+   be identified (diffuse training data), the graph records a **placeholder / reserved attribution
+   edge** — credit accrues to the placeholder; when the human is later identified or surfaces to
+   claim, the reserved share releases to them (an *unclaimed-attribution escrow*). The "even if they
+   don't know" requirement = attribution is a debt held in escrow, not a privilege gated on opt-in.
+3. **The creator sets their own terms when they surface (NCI + m-acc).** Pre-attribution reserves
+   *credit*; it does NOT presume consent to anything else. When the source creator surfaces they set
+   their own invariants (accept comp / decline / set terms) — multi-oracle, consent-first
+   (`m-acc-multi-oracle-end-user-moral-invariants`, `non-coercion-invariant`). Pre-attribution never
+   coerces the creator into the economy.
+
+### External anchor: Data Dignity / "Data as Labor"
+
+**Jaron Lanier & Glen Weyl (RadicalxChange) — "Data as Labor" / Data Dignity:** the canonical
+framework that human data-producers should be **attributed and compensated** for the data that AI /
+platforms use. This is the lineage for "pre-emptively attribute the humans we train on." It composes
+with the live AI-training-data attribution debates and fills a gap C2PA leaves — C2PA covers
+*content-edit* provenance but NOT *synthesis/training-source* attribution.
+
+### Substrate-honest scope
+
+Identifying every source creator of diffuse training data is often impossible; the **commitment** is
+best-effort lineage-capture + reserved attribution for the unidentifiable tail — NOT a claim of
+perfect attribution. For framework-**synthesis** (research docs from cited sources, forwarded
+conversations, named corpora) it is tractable and *already partly practiced*; the pre-emptive-reserved
+escrow extends it to the tail. The stance is the point: **track what we synthesize on, credit whom we
+can, reserve credit for whom we can't yet name — never extract silently.** (Folded into B-0950.)
+
+---
+
 ## Ratification block (pending)
 
 - [ ] **Aaron** — ratify BI/Kimball grounding + the reconciliation table + agenda=conformed-dimension.
