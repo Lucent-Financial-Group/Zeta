@@ -457,7 +457,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0936](backlog/P1/B-0936-split-oversized-tonal-momentum-rule-hub-satellite-auto-load-budget-2026-05-29.md)** Split oversized tonal-momentum rule into auto-loaded hub + companion satellite (40k char auto-load budget)
 - [ ] **[B-0938](backlog/P1/B-0938-automated-background-review-thread-resolution-agentic-pipeline-aaron-2026-05-29.md)** Automated Background Review Thread Resolution agentic pipeline — enables background loops to actively ingest unresolved threads, self-correct target code/specs, verify via compiler gates, and resolve threads on GitHub (operator 2026-05-29)
 - [ ] **[B-0944](backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md)** Tri-boolean core primitives (digital qubit + tri-boolean floating point) -- multi-language build (TS/F#/C#/Rust); cross-language compiler-parity = non-Byzantine BFT consensus
-- [ ] **[B-0951](backlog/P1/B-0951-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md)** Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance
+- [ ] **[B-0952](backlog/P1/B-0952-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md)** Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance
 
 ## P2 — research-grade
 
