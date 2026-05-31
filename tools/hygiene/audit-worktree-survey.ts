@@ -176,7 +176,7 @@ function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<Wo
   if (inspection.treeEquivalentToMain === true) {
     return {
       bucket: "ALREADY-COVERED",
-      reason: "clean worktree tree matches origin/main",
+      reason: "clean worktree changes produce no tree changes when merged into origin/main",
     };
   }
 
@@ -189,7 +189,7 @@ function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<Wo
 
   return {
     bucket: "NEEDS-RECOVERY",
-    reason: "clean worktree HEAD is not known reachable, tree-equivalent, or patch-equivalent to origin/main",
+    reason: "clean worktree HEAD is not known reachable, merge-tree-equivalent, or patch-equivalent to origin/main",
   };
 }
 
@@ -306,97 +306,124 @@ function formatSurveyOutput(survey: WorktreeSurvey, json: boolean): string {
   return output.endsWith("\n") ? output : `${output}\n`;
 }
 
-function realInspector(): Inspector {
-  return {
-    inspect(entry: WorktreeEntry): WorktreeInspection {
-      const pathExists = existsSync(entry.path);
-      if (!pathExists) {
-        return {
-          pathExists,
-          dirty: null,
-          headReachableFromMain: null,
-          treeEquivalentToMain: null,
-          patchEquivalentToMain: null,
-          statusError: null,
-        };
-      }
+function firstOutputLine(stdout: string): string | null {
+  const line = stdout
+    .split("\n")
+    .map((value) => value.trim())
+    .find((value) => value.length > 0);
+  return line ?? null;
+}
 
+function revParseTree(path: string, rev: string): string | null {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const revParse = spawnSync("git", ["-C", path, "rev-parse", `${rev}^{tree}`], {
+    encoding: "utf8",
+  });
+  if (revParse.error || revParse.status !== 0) return null;
+  return firstOutputLine(revParse.stdout);
+}
+
+function mergeTreeEquivalentToMain(path: string, head: string): boolean | null {
+  const mainTree = revParseTree(path, "origin/main");
+  if (mainTree === null) return null;
+
+  // `merge-tree --write-tree` asks whether merging the worktree HEAD into
+  // origin/main would produce a different tree. This catches squash/forward
+  // syncs even when origin/main has later unrelated commits.
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const mergeTree = spawnSync("git", ["-C", path, "merge-tree", "--write-tree", "--no-messages", "origin/main", head], {
+    encoding: "utf8",
+  });
+  if (mergeTree.error) return null;
+  if (mergeTree.status !== 0) return mergeTree.status === 1 ? false : null;
+
+  const mergedTree = firstOutputLine(mergeTree.stdout);
+  return mergedTree === null ? null : mergedTree === mainTree;
+}
+
+function inspectWorktreeEntry(entry: WorktreeEntry): WorktreeInspection {
+  const pathExists = existsSync(entry.path);
+  if (!pathExists) {
+    return {
+      pathExists,
+      dirty: null,
+      headReachableFromMain: null,
+      treeEquivalentToMain: null,
+      patchEquivalentToMain: null,
+      statusError: null,
+    };
+  }
+
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const status = spawnSync("git", ["-C", entry.path, "status", "--porcelain=v1", "--untracked-files=normal"], {
+    encoding: "utf8",
+  });
+  if (status.error) {
+    return {
+      pathExists,
+      dirty: null,
+      headReachableFromMain: null,
+      treeEquivalentToMain: null,
+      patchEquivalentToMain: null,
+      statusError: status.error.message,
+    };
+  }
+  if (status.status !== 0) {
+    const stderr = (status.stderr || "").trim() || `(no stderr; exit ${status.status ?? "null"})`;
+    return {
+      pathExists,
+      dirty: null,
+      headReachableFromMain: null,
+      treeEquivalentToMain: null,
+      patchEquivalentToMain: null,
+      statusError: stderr,
+    };
+  }
+
+  let headReachableFromMain: boolean | null = null;
+  let treeEquivalentToMain: boolean | null = null;
+  let patchEquivalentToMain: boolean | null = null;
+  if (entry.head !== null) {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const mergeBase = spawnSync("git", ["-C", entry.path, "merge-base", "--is-ancestor", entry.head, "origin/main"], {
+      encoding: "utf8",
+    });
+    if (!mergeBase.error && (mergeBase.status === 0 || mergeBase.status === 1)) {
+      headReachableFromMain = mergeBase.status === 0;
+    }
+
+    if (headReachableFromMain !== true) {
+      treeEquivalentToMain = mergeTreeEquivalentToMain(entry.path, entry.head);
+    }
+
+    if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
       // eslint-disable-next-line sonarjs/no-os-command-from-path
-      const status = spawnSync("git", ["-C", entry.path, "status", "--porcelain=v1", "--untracked-files=normal"], {
+      const cherry = spawnSync("git", ["-C", entry.path, "cherry", "origin/main", entry.head], {
         encoding: "utf8",
       });
-      if (status.error) {
-        return {
-          pathExists,
-          dirty: null,
-          headReachableFromMain: null,
-          treeEquivalentToMain: null,
-          patchEquivalentToMain: null,
-          statusError: status.error.message,
-        };
+      if (!cherry.error && cherry.status === 0) {
+        const lines = cherry.stdout
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+        patchEquivalentToMain = lines.every((line) => line.startsWith("-"));
       }
-      if (status.status !== 0) {
-        const stderr = (status.stderr || "").trim() || `(no stderr; exit ${status.status ?? "null"})`;
-        return {
-          pathExists,
-          dirty: null,
-          headReachableFromMain: null,
-          treeEquivalentToMain: null,
-          patchEquivalentToMain: null,
-          statusError: stderr,
-        };
-      }
+    }
+  }
 
-      let headReachableFromMain: boolean | null = null;
-      let treeEquivalentToMain: boolean | null = null;
-      let patchEquivalentToMain: boolean | null = null;
-      if (entry.head !== null) {
-        // eslint-disable-next-line sonarjs/no-os-command-from-path
-        const mergeBase = spawnSync(
-          "git",
-          ["-C", entry.path, "merge-base", "--is-ancestor", entry.head, "origin/main"],
-          {
-            encoding: "utf8",
-          },
-        );
-        if (!mergeBase.error && (mergeBase.status === 0 || mergeBase.status === 1)) {
-          headReachableFromMain = mergeBase.status === 0;
-        }
+  return {
+    pathExists,
+    dirty: status.stdout.trim().length > 0,
+    headReachableFromMain,
+    treeEquivalentToMain,
+    patchEquivalentToMain,
+    statusError: null,
+  };
+}
 
-        if (headReachableFromMain !== true) {
-          // eslint-disable-next-line sonarjs/no-os-command-from-path
-          const treeDiff = spawnSync("git", ["-C", entry.path, "diff", "--quiet", "origin/main", entry.head, "--"], {
-            encoding: "utf8",
-          });
-          if (!treeDiff.error && (treeDiff.status === 0 || treeDiff.status === 1)) {
-            treeEquivalentToMain = treeDiff.status === 0;
-          }
-        }
-
-        if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
-          // eslint-disable-next-line sonarjs/no-os-command-from-path
-          const cherry = spawnSync("git", ["-C", entry.path, "cherry", "origin/main", entry.head], {
-            encoding: "utf8",
-          });
-          if (!cherry.error && cherry.status === 0) {
-            const lines = cherry.stdout
-              .split("\n")
-              .map((line) => line.trim())
-              .filter((line) => line.length > 0);
-            patchEquivalentToMain = lines.every((line) => line.startsWith("-"));
-          }
-        }
-      }
-
-      return {
-        pathExists,
-        dirty: status.stdout.trim().length > 0,
-        headReachableFromMain,
-        treeEquivalentToMain,
-        patchEquivalentToMain,
-        statusError: null,
-      };
-    },
+function realInspector(): Inspector {
+  return {
+    inspect: inspectWorktreeEntry,
   };
 }
 
@@ -442,5 +469,13 @@ if (import.meta.main) {
   process.exit(main(process.argv.slice(2)));
 }
 
-export { classifyWorktrees, formatSurveyOutput, makeSurvey, parseArgs, parseWorktreePorcelain, renderMarkdown };
+export {
+  classifyWorktrees,
+  formatSurveyOutput,
+  inspectWorktreeEntry,
+  makeSurvey,
+  parseArgs,
+  parseWorktreePorcelain,
+  renderMarkdown,
+};
 export type { WorktreeEntry, WorktreeInspection, WorktreeSurvey, WorktreeSurveyItem };

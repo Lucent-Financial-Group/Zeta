@@ -2,9 +2,14 @@
 // worktree recovery survey classifier.
 
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 import {
   classifyWorktrees,
   formatSurveyOutput,
+  inspectWorktreeEntry,
   makeSurvey,
   parseArgs,
   parseWorktreePorcelain,
@@ -35,6 +40,21 @@ function inspection(overrides: Partial<WorktreeInspection> = {}): WorktreeInspec
     statusError: null,
     ...overrides,
   };
+}
+
+function runGit(repo: string, args: readonly string[]): string {
+  const result = spawnSync("git", ["-C", repo, ...args], { encoding: "utf8" });
+  if (result.error) throw result.error;
+  if (result.status !== 0) {
+    throw new Error(`git ${args.join(" ")} failed: ${(result.stderr || result.stdout).trim()}`);
+  }
+  return result.stdout.trim();
+}
+
+function commitFile(repo: string, path: string, content: string, message: string): void {
+  writeFileSync(join(repo, path), content);
+  runGit(repo, ["add", path]);
+  runGit(repo, ["commit", "-m", message]);
 }
 
 describe("parseArgs", () => {
@@ -173,7 +193,7 @@ describe("classifyWorktrees", () => {
     });
 
     expect(items[0]!.bucket).toBe("NEEDS-RECOVERY");
-    expect(items[0]!.reason).toContain("not known reachable, tree-equivalent, or patch-equivalent");
+    expect(items[0]!.reason).toContain("not known reachable, merge-tree-equivalent, or patch-equivalent");
   });
 
   test("marks clean tree-equivalent worktrees as already covered", () => {
@@ -182,7 +202,7 @@ describe("classifyWorktrees", () => {
     });
 
     expect(items[0]!.bucket).toBe("ALREADY-COVERED");
-    expect(items[0]!.reason).toContain("tree matches origin/main");
+    expect(items[0]!.reason).toContain("produce no tree changes");
   });
 
   test("marks clean patch-equivalent worktrees as already covered", () => {
@@ -201,6 +221,35 @@ describe("classifyWorktrees", () => {
 
     expect(items[0]!.bucket).toBe("NEEDS-RECOVERY");
     expect(items[0]!.reason).toContain("status could not be read");
+  });
+});
+
+describe("inspectWorktreeEntry", () => {
+  test("marks squashed branch changes as covered after unrelated main commits", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      commitFile(repo, "tracked.txt", "base\n", "base");
+      runGit(repo, ["checkout", "-b", "feature"]);
+      commitFile(repo, "tracked.txt", "feature line one\n", "feature one");
+      commitFile(repo, "tracked.txt", "feature final\n", "feature two");
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      runGit(repo, ["checkout", "main"]);
+      commitFile(repo, "tracked.txt", "feature final\n", "squash feature");
+      commitFile(repo, "unrelated.txt", "later main work\n", "unrelated main");
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+      const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
+      expect(result.dirty).toBe(false);
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(true);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
   });
 });
 
