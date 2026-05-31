@@ -10,9 +10,10 @@
 
 ---
 
-### Task 1: Persist Hat Identity In Authority Projection
+## Task 1: Persist Hat Identity In Authority Projection
 
 **Files:**
+
 - Modify: `packages/domain/src/records.ts`
 - Modify: `packages/state-cockroach/src/cockroach-schema.ts`
 - Modify: `packages/state-cockroach/migrations/0008_agentic_org_hat_assignment_authority_projection.sql`
@@ -53,6 +54,7 @@ Expected: PASS.
 ### Task 2: Build The Concrete Hat Authority Port
 
 **Files:**
+
 - Create: `packages/application/src/hat-authority-port.ts`
 - Create: `packages/application/test/hat-authority-port.test.ts`
 - Modify: `packages/application/src/index.ts`
@@ -104,6 +106,7 @@ Expected: PASS.
 ### Task 3: Require Content-Addressed Evidence For Gate Approval
 
 **Files:**
+
 - Create: `packages/application/src/evidence.ts`
 - Create: `packages/application/test/evidence.test.ts`
 - Modify: `packages/application/src/handlers/record-quality-gate-evaluation.ts`
@@ -153,6 +156,7 @@ Expected: PASS.
 ### Task 4: Replace The Worker Composition Stub
 
 **Files:**
+
 - Modify: `apps/workers/src/organization-executor-composition.ts`
 - Create or modify: `deploy/run-real-authority-evidence.ts`
 
@@ -209,6 +213,7 @@ Expected: typecheck/test pass, worker boots cleanly, proof prints `PROOF: PASS`.
 ### Task 5: Review, Document, Commit
 
 **Files:**
+
 - Modify: `docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md`
 - Modify: `docs/ORCHESTRATION_MOAT_ROADMAP.md`
 

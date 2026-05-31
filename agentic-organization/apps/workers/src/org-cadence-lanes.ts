@@ -59,10 +59,7 @@ import {
   type ScheduleBlockRecoveryCandidate,
 } from "../../../packages/application/src/index.ts";
 import { runAgentCliCycle } from "../../agent-cli/src/agent-cli.ts";
-import {
-  TelemetryMetricKind,
-  type TelemetryPort,
-} from "../../../packages/observability/src/index.ts";
+import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
 import type { CadenceLane, CadenceLaneTickResult } from "./cadence-lane.ts";
 
 function degraded(message: string): CadenceLaneTickResult {
@@ -646,7 +643,7 @@ export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): Cade
 
 function recordConformanceMetric(deps: ConformanceCadenceDeps, report: ReturnType<typeof replayLedger>): void {
   deps.telemetry?.recordMetric({
-    kind: TelemetryMetricKind.Gauge,
+    kind: "gauge",
     name: "org_conformance_pass_ratio",
     value: report.checked === 0 ? 1 : report.conformant / report.checked,
     attributes: {

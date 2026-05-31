@@ -26,10 +26,12 @@ import {
   createCockroachDocUnitStore,
   createCockroachRecoveryScanReader,
 } from "../../../packages/state-cockroach/src/index.ts";
+import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "../../../packages/state-cockroach/src/cockroach-sql-executor.ts";
 import { runCadenceLane, type CadenceLane, type CadenceLaneObserver } from "./cadence-lane.ts";
 import {
   createWorkOsCadenceLane,
+  createObserveActWorkItemCadenceLane,
   createMemoryMaintenanceCadenceLane,
   createChangeControlCadenceLane,
   createReleaseQueueCadenceLane,
@@ -39,6 +41,9 @@ import {
   createDeadLetterClassifierCadenceLane,
   createStaleReactionPlanScanCadenceLane,
   createStrandedScheduleScanCadenceLane,
+  type ObserveActCommandRunner,
+  type ObserveActToolDispatcher,
+  type ObserveActWorkItemSource,
   type WorkIntakeSource,
 } from "./org-cadence-lanes.ts";
 
@@ -97,6 +102,15 @@ export type ComposeOrgCadenceInput = {
    * and degrades instead of applying approved work on metadata alone.
    */
   releaseBatchEvaluator?: (batch: readonly ChangeSet[]) => ReleaseBatchEvaluation;
+  telemetry?: TelemetryPort;
+  /**
+   * Defaults to the legacy hardcoded Work OS loop. `observe-act` is the explicit
+   * migration switch for the universal observe.ts controller path.
+   */
+  workOsDriver?: "legacy" | "observe-act";
+  observeActWorkItems?: ObserveActWorkItemSource;
+  observeActRunCommand?: ObserveActCommandRunner;
+  observeActDispatchTool?: ObserveActToolDispatcher;
   /** bound each lane for tests/proofs; unbounded in the worker */
   maxTicksPerLane?: number;
 };
@@ -104,6 +118,16 @@ export type ComposeOrgCadenceInput = {
 export type OrgCadenceHandle = {
   stop: () => void;
   done: Promise<unknown>;
+};
+
+const idleObserveActWorkItemSource: ObserveActWorkItemSource = async () => null;
+
+const unavailableObserveActCommandRunner: ObserveActCommandRunner = async () => {
+  throw new Error("observe-act command runner unavailable");
+};
+
+const unavailableObserveActToolDispatcher: ObserveActToolDispatcher = async () => {
+  throw new Error("observe-act tool dispatcher unavailable");
 };
 
 export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenceHandle {
@@ -125,10 +149,21 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
       organizationId: input.organizationId,
       nowIso: () => new Date(input.now()).toISOString(),
     });
-  const workOs = createWorkOsCadenceLane({
-    organizationId: input.organizationId, hats: buildHatDefinitions(), now: input.now, createId: input.createId, appendEvent,
-    intake,
-  });
+  const hats = buildHatDefinitions();
+  const workLane = input.workOsDriver === "observe-act"
+    ? createObserveActWorkItemCadenceLane({
+      organizationId: input.organizationId,
+      hats,
+      now: input.now,
+      createId: input.createId,
+      source: input.observeActWorkItems ?? idleObserveActWorkItemSource,
+      runCommand: input.observeActRunCommand ?? unavailableObserveActCommandRunner,
+      dispatchTool: input.observeActDispatchTool ?? unavailableObserveActToolDispatcher,
+    })
+    : createWorkOsCadenceLane({
+      organizationId: input.organizationId, hats, now: input.now, createId: input.createId, appendEvent,
+      intake,
+    });
   const memory = createMemoryMaintenanceCadenceLane({
     organizationId: input.organizationId, now: input.now, createId: input.createId,
     reader: memoryState, writer: memoryState, appendEvent,
@@ -173,6 +208,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     organizationId: input.organizationId,
     reader: orgEvents,
     limit: 1_000,
+    ...(input.telemetry === undefined ? {} : { telemetry: input.telemetry }),
   });
   const staleReactionPlans = createStaleReactionPlanScanCadenceLane({
     organizationId: input.organizationId,
@@ -214,7 +250,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     });
 
   const done = Promise.all([
-    start(workOs, intervals.workOsMs),
+    start(workLane, intervals.workOsMs),
     start(memory, intervals.memoryMaintenanceMs),
     start(changeControl, intervals.changeControlMs),
     start(releaseQueue, intervals.releaseQueueMs),

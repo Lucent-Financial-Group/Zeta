@@ -10,9 +10,10 @@
 
 ---
 
-### Task 1: Pure Release Queue Planner
+## Task 1: Pure Release Queue Planner
 
 **Files:**
+
 - Create: `packages/application/src/release-queue.ts`
 - Create: `packages/application/test/release-queue.test.ts`
 - Modify: `packages/application/src/index.ts`
@@ -76,6 +77,7 @@ test("release queue bisects a red batch and requests changes only for the culpri
 - [ ] **Step 5: Implement recursive bisect**
 
 For a red batch:
+
 - If batch length is 1, emit `RequestChanges`.
 - Otherwise evaluate left and right halves recursively.
 - Green sub-batches emit `Apply` actions for every member.
@@ -87,6 +89,7 @@ Add `release-queue.ts` exports to `packages/application/src/index.ts`.
 ### Task 2: Worker Lane
 
 **Files:**
+
 - Modify: `apps/workers/src/org-cadence-lanes.ts`
 - Modify: `apps/workers/src/org-cadence-composition.ts`
 - Modify: `apps/workers/test/org-cadence-lanes.test.ts`
@@ -94,6 +97,7 @@ Add `release-queue.ts` exports to `packages/application/src/index.ts`.
 - [ ] **Step 1: Write failing lane tests**
 
 Add tests proving:
+
 - the release-queue lane reads `ChangeSetPhase.Approved`, applies a green batch through `applyChangeSet`, persists applied ChangeSets, and appends events;
 - a red single-change batch moves that ChangeSet to `changes_requested` and leaves green peers applied;
 - read/write errors degrade the lane instead of throwing.
@@ -107,6 +111,7 @@ Expected: fail because `createReleaseQueueCadenceLane` does not exist.
 - [ ] **Step 3: Implement the lane**
 
 Add `createReleaseQueueCadenceLane` with dependencies:
+
 - `reader.listByOrgPhase(organizationId, ChangeSetPhase.Approved)`
 - `writer.upsert(changeSet)`
 - `pipelineFor(changeSet)`
@@ -114,6 +119,7 @@ Add `createReleaseQueueCadenceLane` with dependencies:
 - `evaluateBatch(batch)`.
 
 For each planner action:
+
 - `Apply`: call existing `applyChangeSet` and persist/emit its result.
 - `RequestChanges`: persist the ChangeSet as `changes_requested` and append a `changes_requested` event carrying release-queue evidence.
 - `Requeue`: do not mutate.
@@ -129,6 +135,7 @@ Add `releaseQueueMs` to `OrgCadenceIntervals`, default `30_000`, compose the lan
 ### Task 3: KIND Proof and Documentation
 
 **Files:**
+
 - Create: `deploy/run-release-queue.ts`
 - Modify: `docs/ORCHESTRATION_MOAT_ROADMAP.md`
 - Modify: `docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md`
@@ -136,11 +143,13 @@ Add `releaseQueueMs` to `OrgCadenceIntervals`, default `30_000`, compose the lan
 - [ ] **Step 1: Write live proof runner**
 
 The proof seeds three approved ChangeSets in live Cockroach:
+
 - one green before a red culprit;
 - one red culprit;
 - one green after the culprit.
 
 It runs the release-queue lane once with a deterministic evaluator, then asserts:
+
 - two ChangeSets are `applied`;
 - one ChangeSet is `changes_requested`;
 - the ledger contains two `change_set_applied` events and one `changes_requested` event;
@@ -149,6 +158,7 @@ It runs the release-queue lane once with a deterministic evaluator, then asserts
 - [ ] **Step 2: Verify locally**
 
 Run:
+
 - `npm run typecheck`
 - `npm test`
 

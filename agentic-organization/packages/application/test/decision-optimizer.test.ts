@@ -11,6 +11,7 @@ import {
   type TenantConfig,
 } from "../../domain/src/index.ts";
 import { ModelEvalCaseClass, type ModelEvalSummary } from "../../model-eval/src/model-eval.ts";
+import { RecordingTelemetryQueryPort } from "../../observability/src/index.ts";
 import {
   createContentAddressedEvidenceRef,
   changeSetDocumentKey,
@@ -23,6 +24,7 @@ import {
 const NOW = "2026-05-30T00:00:00.000Z";
 const EvalEvidenceRef = createContentAddressedEvidenceRef("model-eval-report", { runId: "eval-run-1" });
 const KpiEvidenceRef = createContentAddressedEvidenceRef("decision-kpi", { runId: "eval-run-1" });
+const TelemetryEvidenceRef = createContentAddressedEvidenceRef("telemetry-regression", { runId: "eval-run-1" });
 const ModelCostRank = { "qwen2:0.5b": 1, "gpt-5.5": 10 } as const;
 
 test("proposes a safe model downgrade only when Class A clears threshold and KPI is non-negative", () => {
@@ -258,6 +260,52 @@ test("runs the optimizer cycle against a generic document/log store", async () =
   equal(result.appendedEvents.some((event) => event.kind === OrgEventKind.ModelEvalCompleted), true);
   equal(result.appendedEvents.some((event) => event.kind === OrgEventKind.DecisionOptimizationProposed), true);
   equal(result.eventStreamKey, "org-events/org-lfg.jsonl");
+});
+
+test("reads telemetry before proposing and carries telemetry evidence into change-control", async () => {
+  const currentConfig = tenantConfigWithModel("gpt-5.5");
+  const store = createRecordingDecisionOptimizerStore(currentConfig);
+  const telemetryQueryPort = new RecordingTelemetryQueryPort({
+    metrics: [{ labels: { hat: "code_reviewer" }, points: [{ timestamp: NOW, value: 3 }] }],
+    traces: [{ traceId: "trace-work-001", rootName: "org.command", spanCount: 9 }],
+    logs: [{ timestamp: NOW, line: "p95 latency rose 3x", labels: { hat: "code_reviewer" } }],
+  });
+
+  const result = await runDecisionOptimizerCycle({
+    store,
+    organizationId: "org-lfg",
+    workItemId: "work-optimizer-telemetry",
+    proposerHatId: "decision_optimizer",
+    targetHatId: "code_reviewer",
+    targetRef: tenantConfigDocumentKey("org-lfg"),
+    candidateModel: "qwen2:0.5b",
+    budgetDeltaTokens: -512,
+    evalSummary: summary({ classAAccuracy: 1, classBAccuracy: 1 }),
+    evalEvidenceRef: EvalEvidenceRef,
+    kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
+    kpiEvidenceRef: KpiEvidenceRef,
+    modelCostRank: ModelCostRank,
+    thresholds: { minClassAAccuracy: 0.99 },
+    now: NOW,
+    telemetryEvidence: {
+      queryPort: telemetryQueryPort,
+      evidenceRef: TelemetryEvidenceRef,
+      range: { start: "2026-05-30T23:00:00.000Z", end: NOW },
+      metricQueries: ["histogram_quantile(0.95, org_command_duration_ms{hat=\"code_reviewer\"})"],
+      traceQueries: ['{ org.hat_id = "code_reviewer" }'],
+      logQueries: ['{app="agentic-org-worker"} |= "latency"'],
+    },
+  });
+
+  equal(result.kind, "proposed");
+  if (result.kind !== "proposed") throw new Error("expected telemetry-backed proposal");
+  deepEqual(result.event.evidenceRefs, [EvalEvidenceRef, KpiEvidenceRef, TelemetryEvidenceRef]);
+  deepEqual(telemetryQueryPort.calls.map((call) => call.kind), ["metrics", "traces", "logs"]);
+  deepEqual(result.telemetryObservations, {
+    metricSeriesCount: 1,
+    traceSummaryCount: 1,
+    logLineCount: 1,
+  });
 });
 
 test("returns a store-level no-op when generic storage has no tenant config", async () => {

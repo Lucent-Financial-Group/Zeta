@@ -28,6 +28,11 @@ import {
   type PolicyDecisionObservation,
   type PolicyDecisionObservationPort,
 } from "../../policy/src/index.ts";
+import {
+  RecordingTelemetry,
+  TelemetryMetricKind,
+  TelemetrySpanStatusCode,
+} from "../../observability/src/index.ts";
 import { createInMemoryOrganizationStoreFactory } from "../../state/src/index.ts";
 import { createCommandHandlerRegistry } from "../src/command-handler-registry.ts";
 import {
@@ -1148,6 +1153,59 @@ describe("command pipeline idempotency", () => {
     equal(deniedHandler.executeCallCount, 0);
     equal(stateStoreFactory.findCallCount, 0);
     equal(stateStoreFactory.recordedOutcomes.length, 0);
+  });
+
+  test("records command span and RED metric at the pipeline seam", async () => {
+    const telemetry = new RecordingTelemetry();
+    const handler = createRecordingCommandHandler();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory: createRecordingCommandStateStoreFactory<CommandResult>(),
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([handler]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+      telemetry,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    deepEqual(
+      telemetry.spans.map((span) => ({
+        name: span.name,
+        status: span.status,
+        ended: span.ended,
+        commandId: span.attributes["agentic.command.id"],
+        commandType: span.attributes["agentic.command.type"],
+        organizationId: span.attributes["agentic.organization.id"],
+        traceId: span.attributes["agentic.trace.id"],
+        resultStatus: span.attributes["result.status"],
+      })),
+      [
+        {
+          name: "org.command",
+          status: { code: TelemetrySpanStatusCode.Ok },
+          ended: true,
+          commandId: "cmd-supervisor-signal-001",
+          commandType: CommandType.SendSupervisorSignal,
+          organizationId: "org-lfg",
+          traceId: "trace-supervisor-signal-001",
+          resultStatus: CommandResultStatus.Accepted,
+        },
+      ],
+    );
+    deepEqual(telemetry.metrics, [
+      {
+        kind: TelemetryMetricKind.Counter,
+        name: "org_command_total",
+        value: 1,
+        attributes: {
+          "agentic.command.type": CommandType.SendSupervisorSignal,
+          "result.status": CommandResultStatus.Accepted,
+        },
+      },
+    ]);
   });
 });
 

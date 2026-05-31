@@ -16,6 +16,7 @@ date: 2026-05-31
 > **first-class product surface** that the AI org reads to enhance itself.
 
 Two consumers, one substrate:
+
 1. **Humans** — Grafana dashboards: "what is the org doing right now, where is it stuck, is it healthy?"
 2. **The org itself** — the decision-optimizer (`packages/application/src/decision-optimizer.ts`,
    shipped with the moat) and org-intelligence read live telemetry (PromQL/TraceQL/LogQL) the way
@@ -109,6 +110,7 @@ A single set of resource + span attributes (reuse + extend `packages/observabili
 | `result.status` / `error.kind` | outcome | error budgets |
 
 **Propagation across async boundaries** is the load-bearing detail:
+
 - **NATS**: inject W3C `traceparent` into the `AgenticEventEnvelope.trace` (the envelope already carries
   a `CommandTrace`); the consumer extracts it so a published→consumed event is one continuous trace.
   Extend `packages/observability/src/nats-consumer-attributes.ts` to carry traceparent.

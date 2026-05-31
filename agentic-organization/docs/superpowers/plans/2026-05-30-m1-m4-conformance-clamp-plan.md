@@ -10,9 +10,10 @@
 
 ---
 
-### Task 1: Pure Conformance Checker
+## Task 1: Pure Conformance Checker
 
 **Files:**
+
 - Create: `packages/application/src/conformance.ts`
 - Test: `packages/application/test/conformance.test.ts`
 - Modify: `packages/application/src/index.ts`
@@ -38,6 +39,7 @@
 ### Task 2: Clamp Property Tests
 
 **Files:**
+
 - Modify: `packages/domain/test/work-item.test.ts`
 - Modify: `packages/domain/test/change-control.test.ts`
 - Modify: `packages/domain/test/memory-state-machine.test.ts`
@@ -57,6 +59,7 @@
 ### Task 3: Worker Lane And KIND Proof
 
 **Files:**
+
 - Modify: `apps/workers/src/org-cadence-lanes.ts`
 - Modify: `apps/workers/test/org-cadence-lanes.test.ts`
 - Create: `deploy/run-conformance.ts`
@@ -73,6 +76,7 @@
 ### Task 4: Verification, Docs, Review, Commit
 
 **Files:**
+
 - Modify: `docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md`
 - Optionally modify: `docs/ORCHESTRATION_MOAT_ROADMAP.md` if implementation reveals a deeper deterministic capability.
 

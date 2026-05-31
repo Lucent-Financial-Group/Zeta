@@ -197,7 +197,12 @@ export function createAgentCliMetricAgentsFromEnv(
     return [];
   }
 
-  const telemetry = createLgtmTelemetryQueryPort({
+  const createTelemetryQueryPort: unknown = createLgtmTelemetryQueryPort;
+  if (typeof createTelemetryQueryPort !== "function") {
+    throw new Error("observability telemetry query port factory is unavailable");
+  }
+
+  const telemetry = (createTelemetryQueryPort as typeof createLgtmTelemetryQueryPort)({
     mimirBaseUrl,
     tempoBaseUrl,
     lokiBaseUrl,

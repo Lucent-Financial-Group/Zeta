@@ -10,6 +10,7 @@ import {
   type TenantConfigLayer,
 } from "../../domain/src/index.ts";
 import { ModelEvalCaseClass, type ModelEvalSummary } from "../../model-eval/src/model-eval.ts";
+import type { TelemetryQueryPort, TelemetryTimeRange } from "../../observability/src/index.ts";
 import { contentAddressedChangeSetId } from "./change-control-id.ts";
 import { isContentAddressedEvidenceRef } from "./content-addressed-evidence.ts";
 
@@ -35,6 +36,7 @@ export type ProposeDecisionOptimizerChangeSetInput = {
   budgetDeltaTokens: number;
   evalSummary: ModelEvalSummary;
   evalEvidenceRef?: string | undefined;
+  telemetryEvidenceRef?: string | undefined;
   kpiSignal: DecisionOptimizerKpiSignal;
   kpiEvidenceRef?: string | undefined;
   modelCostRank: Readonly<Record<string, number>>;
@@ -70,7 +72,23 @@ export type RunDecisionOptimizerCycleInput =
   Omit<ProposeDecisionOptimizerChangeSetInput, "currentConfig"> & {
     store: DecisionOptimizerStore;
     modelEvalEvent?: OrgEvent | undefined;
+    telemetryEvidence?: DecisionOptimizerTelemetryEvidenceInput | undefined;
   };
+
+export type DecisionOptimizerTelemetryEvidenceInput = {
+  queryPort: TelemetryQueryPort;
+  evidenceRef: string;
+  range: TelemetryTimeRange;
+  metricQueries?: readonly string[] | undefined;
+  traceQueries?: readonly string[] | undefined;
+  logQueries?: readonly string[] | undefined;
+};
+
+export type DecisionOptimizerTelemetryObservations = {
+  metricSeriesCount: number;
+  traceSummaryCount: number;
+  logLineCount: number;
+};
 
 export type DecisionOptimizerCycleResult =
   | {
@@ -81,6 +99,7 @@ export type DecisionOptimizerCycleResult =
     persistedChangeSetKey: string;
     eventStreamKey: string;
     appendedEvents: readonly OrgEvent[];
+    telemetryObservations?: DecisionOptimizerTelemetryObservations | undefined;
   }
   | {
     kind: "no_proposal";
@@ -133,7 +152,13 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
     input.targetRef,
     1,
   );
-  const evidenceRefs = [evalEvidenceRef, kpiEvidenceRef];
+  const evidenceRefs = [
+    evalEvidenceRef,
+    kpiEvidenceRef,
+    ...(input.telemetryEvidenceRef !== undefined && isContentAddressedEvidenceRef(input.telemetryEvidenceRef)
+      ? [input.telemetryEvidenceRef]
+      : []),
+  ];
   const changeSet: ChangeSet = {
     changeSetId,
     organizationId: input.organizationId,
@@ -177,10 +202,12 @@ export async function runDecisionOptimizerCycle(
     appendedEvents.push(input.modelEvalEvent);
   }
 
-  const { store: _store, modelEvalEvent: _modelEvalEvent, ...proposalInput } = input;
+  const telemetryObservations = await collectTelemetryEvidence(input.telemetryEvidence);
+  const { store: _store, modelEvalEvent: _modelEvalEvent, telemetryEvidence: _telemetryEvidence, ...proposalInput } = input;
   const proposal = proposeDecisionOptimizerChangeSet({
     ...proposalInput,
     currentConfig,
+    ...(input.telemetryEvidence === undefined ? {} : { telemetryEvidenceRef: input.telemetryEvidence.evidenceRef }),
   });
   if (proposal.kind !== "proposed") {
     return proposal;
@@ -197,7 +224,33 @@ export async function runDecisionOptimizerCycle(
     persistedChangeSetKey,
     eventStreamKey,
     appendedEvents,
+    ...(telemetryObservations === undefined ? {} : { telemetryObservations }),
   };
+}
+
+async function collectTelemetryEvidence(
+  input: DecisionOptimizerTelemetryEvidenceInput | undefined,
+): Promise<DecisionOptimizerTelemetryObservations | undefined> {
+  if (input === undefined) {
+    return undefined;
+  }
+
+  let metricSeriesCount = 0;
+  for (const query of input.metricQueries ?? []) {
+    metricSeriesCount += (await input.queryPort.queryMetrics(query, input.range)).length;
+  }
+
+  let traceSummaryCount = 0;
+  for (const query of input.traceQueries ?? []) {
+    traceSummaryCount += (await input.queryPort.queryTraces(query, input.range)).length;
+  }
+
+  let logLineCount = 0;
+  for (const query of input.logQueries ?? []) {
+    logLineCount += (await input.queryPort.queryLogs(query, input.range)).length;
+  }
+
+  return { metricSeriesCount, traceSummaryCount, logLineCount };
 }
 
 export function tenantConfigDocumentKey(organizationId: string): string {

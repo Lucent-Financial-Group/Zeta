@@ -37,7 +37,7 @@ import {
   type ObserveLifecycleTransitionCommand,
   type PromptFlowTask,
 } from "../../../packages/application/src/index.ts";
-import { RecordingTelemetry, TelemetryMetricKind } from "../../../packages/observability/src/index.ts";
+import { RecordingTelemetry } from "../../../packages/observability/src/index.ts";
 import {
   PolicyDecisionObservationPersistenceStatus,
   PolicyDecisionStatus,
@@ -551,7 +551,7 @@ test("conformance lane emits the pass-ratio SLI metric for Grafana alerts", asyn
 
   deepEqual(telemetry.metrics, [
     {
-      kind: TelemetryMetricKind.Gauge,
+      kind: "gauge",
       name: "org_conformance_pass_ratio",
       value: 0.5,
       attributes: {

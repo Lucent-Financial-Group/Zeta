@@ -29,6 +29,7 @@ agents doing the work inside it. It is NOT a chatbot, NOT a single-agent loop, N
 engine you configure with YAML. It is an *organization as a deterministic state machine*.
 
 **Stack / non-negotiables (learn these before writing a line):**
+
 - **TypeScript, native `node --experimental-strip-types`, NodeNext ESM, `.ts` relative imports.**
   There is **NO `@types/node`** — a hand-maintained ambient shim `packages/test-node.d.ts` declares
   the node builtins we use. If you need a new node builtin, add a minimal declaration there.
@@ -69,6 +70,7 @@ that sentence in your head — it is the source of every "miles ahead" capabilit
 ## 2. Orient yourself (do this first, in this order — ~60–90 min)
 
 Read, in order:
+
 1. `docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md` — the ground truth of what is **shipped + proven in
    kind** vs **deferred**. Long; skim the track headers, read the "Status" lines and the most
    recent tracks (A/L/D/G/C, GEN, INT).
@@ -83,6 +85,7 @@ Read, in order:
    `change-control.ts`, `work-provider.ts`.
 
 Then get the environment live:
+
 - `npm run typecheck` (expect 0) and `npm test` (expect ~845 pass, 0 fail, 7 skipped — the 7 are
   env-gated integration tests; that is correct).
 - The cluster is `kind` (cluster name `agentic-org`, namespace `agentic-org`). Manifests in

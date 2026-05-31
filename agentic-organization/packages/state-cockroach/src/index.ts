@@ -150,6 +150,7 @@ export {
   createCockroachHatAssignmentAuthorityProjectionMigration,
   createCockroachOutboxClaimFenceMigration,
   createCockroachReactionPlanExecutionLifecycleMigration,
+  createCockroachReactionPlanTraceparentMigration,
   createCockroachWorkScheduleBlockKernelMigration,
   createCockroachWorkAnchorKernelMigration,
   createCockroachWorkItemStateHistoryMetadataMigration,
