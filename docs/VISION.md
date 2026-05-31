@@ -721,7 +721,16 @@ wins — the arena where the winning happens.** (Verbatim preserved in
     directly with the 4-language compiler-BFT below: F# is the spec the
     clean-room implementations are checked against; the golden vectors then
     test all four (including F#) so no single implementation self-certifies.
-- **Deterministic simulation for EVERY database, in every language.**
+  - **Per-language licensing follows the clean-room boundary** (operator
+    hypothesis 2026-05-31 — *real legal decision, flag for review, not
+    settled*): because the dirtiness is quarantined to F#, the **F# DB layer
+    carries a research license** (it's the layer that looked at prior art),
+    while the **clean-room layers (Rust / TS / C#) can carry permissive
+    licenses (Apache or similar)** — they were implemented from the F# spec,
+    not the sources. This matches clean-room law's whole point: the *clean*
+    output is the freely-distributable artifact; the *dirty* spec is the
+    quarantined part. (Decision touches the License + Commercial-posture
+    sections below; route through legal/product review before it's doctrine.)
   Standing on FoundationDB's DST (months building the simulator before
   touching real disk; whole clusters deterministic in one thread; perfect
   replay; fault injection) and generalizing it: make DST **DI-able for any
