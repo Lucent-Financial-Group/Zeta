@@ -9,11 +9,14 @@ import {
   createHatAuthorityPort,
   createObserveLifecycleTransitionHandler,
   createScheduleBlockCommandAuthority,
+  createSendSupervisorSignalHandler,
   type ActDependencies,
   type CommandResult,
   type ObserveLifecycleTransitionCommand,
+  type SendSupervisorSignalCommand,
 } from "../../../packages/application/src/index.ts";
 import {
+  CommandType,
   OrgEventKind,
   type OrgEvent,
 } from "../../../packages/domain/src/index.ts";
@@ -51,6 +54,8 @@ import {
   type AgentCliCycleEvidence,
   type ParsedAgentCliArgs,
 } from "./agent-cli.ts";
+
+type ObserveActPipelineCommand = ObserveLifecycleTransitionCommand | SendSupervisorSignalCommand;
 
 export type AgentCliMainRuntime = Pick<ActDependencies, "runCommand" | "dispatchTool"> &
   Partial<Pick<ActDependencies, "authorizeSlot" | "loadPromptFlowContext">> & {
@@ -286,7 +291,7 @@ function createCockroachAgentCliCommandRunner(input: {
   const hats = buildHatDefinitions();
   const stateAdapters = createCockroachDurableStateAdapters<CommandResult>({ executor: input.executor });
   const controlPlaneState = createCockroachControlPlaneStateStore({ executor: input.executor });
-  const pipeline = createCommandPipeline<ObserveLifecycleTransitionCommand>({
+  const pipeline = createCommandPipeline<ObserveActPipelineCommand>({
     stateStoreFactory: stateAdapters.commandStateStoreFactory,
     commandAuthorizationPort: createCommandAuthorizationPort({
       hatAuthorityPort: createHatAuthorityPort({
@@ -301,8 +306,9 @@ function createCockroachAgentCliCommandRunner(input: {
     commandScheduleAuthorityPort: createScheduleBlockCommandAuthority({
       scheduleBlockReader: stateAdapters.workScheduleBlockAuthorityReader,
     }),
-    handlerRegistry: createCommandHandlerRegistry<ObserveLifecycleTransitionCommand, CommandResult>([
+    handlerRegistry: createCommandHandlerRegistry<ObserveActPipelineCommand, CommandResult>([
       createObserveLifecycleTransitionHandler(),
+      createSendSupervisorSignalHandler(),
     ]),
     workAnchorStateReader: stateAdapters.workAnchorStateStore,
     controlPlane: {
@@ -315,10 +321,10 @@ function createCockroachAgentCliCommandRunner(input: {
   });
 
   return async (commandType, command) => {
-    if (commandType !== ObserveCommandType.LifecycleTransition) {
+    if (commandType !== ObserveCommandType.LifecycleTransition && commandType !== CommandType.SendSupervisorSignal) {
       return { status: "unsupported_command_type", commandType };
     }
-    return await pipeline.execute(command as ObserveLifecycleTransitionCommand);
+    return await pipeline.execute(command as ObserveActPipelineCommand);
   };
 }
 

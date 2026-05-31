@@ -26,9 +26,12 @@
  */
 
 import {
+  CommandType,
   HatLevel,
   ScheduleBlockState,
   ScheduleBlockType,
+  SupervisorChainLevel,
+  SupervisorSignalToolType,
   ToolBundle,
   type HatDefinition,
   type WorkScheduleBlock,
@@ -127,6 +130,7 @@ export type AgentObserveSnapshot = RunSnapshot & {
   projectId?: string | undefined;
   teamId?: string | undefined;
   workItemId?: string | undefined;
+  supervisorHatAssignmentId?: string | undefined;
 };
 
 export type VetoedOption = {
@@ -380,6 +384,19 @@ export type RenderMenu16Options = {
   promptFlows?: PromptFlowReadout;
   promptFlowPage?: number | undefined;
   status?: GlassHaloStatusContext | undefined;
+  escalation?: SupervisorEscalationContext | undefined;
+  escalationDisabledReason?: string | undefined;
+};
+
+export type SupervisorEscalationContext = {
+  teamId: string;
+  workItemId: string;
+  targetHatAssignmentId: string;
+  sourceLevel: SupervisorChainLevel;
+  targetLevel: SupervisorChainLevel;
+  toolType?: SupervisorSignalToolType | undefined;
+  title?: string | undefined;
+  message?: string | undefined;
 };
 
 export type GlassHaloStatusSignal = {
@@ -825,7 +842,7 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
   }
   if (readout.options.length > 0) {
     renderScopeSlots(rendered, readout.scope);
-    renderMetaSlots(rendered, readout, options.status);
+    renderMetaSlots(rendered, readout, options.status, options.escalation, options.escalationDisabledReason);
     const promptFlowPage = renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId, options.promptFlowPage);
     page = promptFlowPage === undefined ? undefined : { promptFlows: promptFlowPage };
   }
@@ -896,12 +913,91 @@ function renderMetaSlots(
   rendered: Menu16Slot[],
   readout: RunStateReadout,
   statusContext: GlassHaloStatusContext | undefined,
+  escalationContext: SupervisorEscalationContext | undefined,
+  escalationDisabledReason: string | undefined,
 ): void {
   const currentScope = readout.scope;
   rendered[12] = createObserveSlot(12, MENU16_DIRECTIONS[12]!, "refresh", currentScope);
   rendered[13] = createStatusSlot(13, MENU16_DIRECTIONS[13]!, readout, statusContext);
   rendered[14] = createDisabledGrammarSlot(14, MENU16_DIRECTIONS[14]!, "pause", "pause mode is not wired for this run state");
-  rendered[15] = createDisabledGrammarSlot(15, MENU16_DIRECTIONS[15]!, "escalate", "supervisor escalation is not wired for this run state");
+  rendered[15] = createEscalationSlot(15, MENU16_DIRECTIONS[15]!, readout, escalationContext, escalationDisabledReason);
+}
+
+function createEscalationSlot(
+  index: number,
+  direction: string,
+  readout: RunStateReadout,
+  context: SupervisorEscalationContext | undefined,
+  disabledReason: string | undefined,
+): Menu16Slot {
+  if (context === undefined) {
+    return createDisabledGrammarSlot(
+      index,
+      direction,
+      "escalate",
+      disabledReason ?? "supervisor escalation requires team, work item, and target supervisor hat assignment",
+    );
+  }
+  return {
+    index,
+    direction,
+    label: `escalate to ${formatSupervisorChainLevel(context.targetLevel)}`,
+    availability: TriAvailability.True,
+    impl: {
+      kind: "command",
+      commandType: CommandType.SendSupervisorSignal,
+      command: createSupervisorSignalCommand(readout, context),
+    },
+  };
+}
+
+function createSupervisorSignalCommand(
+  readout: RunStateReadout,
+  context: SupervisorEscalationContext,
+): {
+  targetHatAssignmentId: string;
+  title: string;
+  message: string;
+  policyContext: {
+    scope: { teamId: string; workItemId: string };
+    toolType: SupervisorSignalToolType;
+    supervisorChain: { sourceLevel: SupervisorChainLevel; targetLevel: SupervisorChainLevel };
+  };
+} {
+  return {
+    targetHatAssignmentId: context.targetHatAssignmentId,
+    title: context.title ?? `Observe-act escalation for ${readout.scope} ${readout.phase}`,
+    message: context.message ?? [
+      `Agent requested supervisor triage for run ${readout.runId} at ${readout.scope}/${readout.phase}.`,
+      `Legal options: ${readout.options.length}; vetoed options: ${readout.vetoedOptions.length}.`,
+    ].join(" "),
+    policyContext: {
+      scope: {
+        teamId: context.teamId,
+        workItemId: context.workItemId,
+      },
+      toolType: context.toolType ?? SupervisorSignalToolType.RequestEscalation,
+      supervisorChain: {
+        sourceLevel: context.sourceLevel,
+        targetLevel: context.targetLevel,
+      },
+    },
+  };
+}
+
+function formatSupervisorChainLevel(level: SupervisorChainLevel): string {
+  switch (level) {
+    case SupervisorChainLevel.TeamMember:
+      return "team member";
+    case SupervisorChainLevel.Manager:
+      return "manager";
+    case SupervisorChainLevel.Director:
+      return "director";
+    case SupervisorChainLevel.CSuite:
+      return "c-suite";
+    case SupervisorChainLevel.ExecutiveBoard:
+      return "executive board";
+  }
 }
 
 function createStatusSlot(
@@ -1219,6 +1315,7 @@ export async function observeAgentSurface(
       promptFlows,
       promptFlowPage: deps.promptFlowPage,
       status: createGlassHaloStatusContext(blocks, promptFlows, hierarchy),
+      ...createOptionalSupervisorEscalationContext(snapshot, deps.scheduleBlocks),
     }),
     metrics: {
       scope: snapshot.scope,
@@ -1227,6 +1324,117 @@ export async function observeAgentSurface(
     promptFlows,
     hierarchy,
   };
+}
+
+function createOptionalSupervisorEscalationContext(
+  snapshot: AgentObserveSnapshot,
+  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
+): { escalation?: SupervisorEscalationContext; escalationDisabledReason?: string } {
+  if (
+    snapshot.teamId === undefined ||
+    snapshot.workItemId === undefined ||
+    snapshot.supervisorHatAssignmentId === undefined
+  ) {
+    return {};
+  }
+  const guardrail = preflightHatAction(snapshot.hat, ActionClass.Prioritize);
+  if (!guardrail.allowed) {
+    return { escalationDisabledReason: guardrail.reason };
+  }
+  const scheduleDenial = supervisorEscalationScheduleDenial(snapshot, scheduleBlocks);
+  if (scheduleDenial !== undefined) {
+    return { escalationDisabledReason: scheduleDenial };
+  }
+  const sourceLevel = supervisorChainLevelForHat(snapshot.hat.level);
+  const targetLevel = nextSupervisorLevel(sourceLevel);
+  if (targetLevel === undefined) {
+    return {};
+  }
+  return {
+    escalation: {
+      teamId: snapshot.teamId,
+      workItemId: snapshot.workItemId,
+      targetHatAssignmentId: snapshot.supervisorHatAssignmentId,
+      sourceLevel,
+      targetLevel,
+    },
+  };
+}
+
+function supervisorEscalationScheduleDenial(
+  snapshot: AgentObserveSnapshot,
+  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
+): string | undefined {
+  if (scheduleBlocks === undefined) return undefined;
+  const matchingScopeBlocks = scheduleBlocks.filter((block) =>
+    block.organizationId === snapshot.organizationId &&
+    block.projectId === snapshot.projectId &&
+    block.assignedAgentId === snapshot.agentId &&
+    block.assignedHatAssignmentId === snapshot.hatAssignmentId &&
+    optionalMatches(block.teamId, snapshot.teamId) &&
+    optionalMatches(block.workItemId, snapshot.workItemId)
+  );
+  if (matchingScopeBlocks.length === 0) {
+    return "supervisor escalation requires a current schedule block for this work item";
+  }
+  const stateMatchedBlocks = matchingScopeBlocks.filter((block) =>
+    SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_STATES.includes(block.state)
+  );
+  if (stateMatchedBlocks.length === 0) {
+    return "current schedule block state does not allow supervisor escalation";
+  }
+  const allowedBlock = stateMatchedBlocks.find((block) =>
+    SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_TYPES.includes(block.blockType)
+  );
+  return allowedBlock === undefined
+    ? "current schedule block type does not allow supervisor escalation"
+    : undefined;
+}
+
+const SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_STATES: readonly ScheduleBlockState[] = [
+  ScheduleBlockState.Active,
+  ScheduleBlockState.Scheduled,
+];
+
+const SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_TYPES: readonly ScheduleBlockType[] = [
+  ScheduleBlockType.FreeTime,
+  ScheduleBlockType.Meeting,
+  ScheduleBlockType.PrioritizedWork,
+  ScheduleBlockType.PromptFlowExecution,
+  ScheduleBlockType.Reflection,
+  ScheduleBlockType.Reporting,
+  ScheduleBlockType.Review,
+];
+
+function supervisorChainLevelForHat(level: HatLevel): SupervisorChainLevel {
+  switch (level) {
+    case HatLevel.ExecutiveBoard:
+      return SupervisorChainLevel.ExecutiveBoard;
+    case HatLevel.CSuite:
+      return SupervisorChainLevel.CSuite;
+    case HatLevel.Director:
+      return SupervisorChainLevel.Director;
+    case HatLevel.Manager:
+      return SupervisorChainLevel.Manager;
+    case HatLevel.Lead:
+    case HatLevel.IndividualContributor:
+      return SupervisorChainLevel.TeamMember;
+  }
+}
+
+function nextSupervisorLevel(level: SupervisorChainLevel): SupervisorChainLevel | undefined {
+  switch (level) {
+    case SupervisorChainLevel.TeamMember:
+      return SupervisorChainLevel.Manager;
+    case SupervisorChainLevel.Manager:
+      return SupervisorChainLevel.Director;
+    case SupervisorChainLevel.Director:
+      return SupervisorChainLevel.CSuite;
+    case SupervisorChainLevel.CSuite:
+      return SupervisorChainLevel.ExecutiveBoard;
+    case SupervisorChainLevel.ExecutiveBoard:
+      return undefined;
+  }
 }
 
 function createGlassHaloStatusContext(

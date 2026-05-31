@@ -3,8 +3,11 @@ import { test } from "node:test";
 import { buildHatDefinitions } from "../src/org-seed.ts";
 import { ActionClass } from "../src/hat-guardrails.ts";
 import {
+  CommandType,
   ScheduleBlockState,
   ScheduleBlockType,
+  SupervisorChainLevel,
+  SupervisorSignalToolType,
   type WorkScheduleBlock,
 } from "../../domain/src/index.ts";
 import {
@@ -532,6 +535,90 @@ test("renderMenu16 makes meta.status emit a glass-halo status signal", async () 
     outcome: "status_report",
     status: menu.slots[13]?.impl?.kind === "status" ? menu.slots[13].impl.status : undefined,
   });
+});
+
+test("renderMenu16 makes meta.escalate emit a scoped supervisor signal when supervisor context is present", async () => {
+  const approved = observe(snapshot({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingGate,
+    hasGateApproval: true,
+  }), deps);
+  equal(approved.outcome, ObserveOutcome.Readout);
+  if (approved.outcome !== ObserveOutcome.Readout) return;
+
+  const menu = renderMenu16(approved.readout, {
+    hatAssignmentId: asZetaIdDecimal("99"),
+    escalation: {
+      teamId: "team-runtime",
+      workItemId: "work-1",
+      sourceLevel: SupervisorChainLevel.TeamMember,
+      targetLevel: SupervisorChainLevel.Manager,
+      targetHatAssignmentId: "hat-manager-1",
+    },
+  });
+
+  equal(menu.slots[15]?.direction, "meta.escalate");
+  equal(menu.slots[15]?.label, "escalate to manager");
+  equal(menu.slots[15]?.availability, "T");
+  deepEqual(menu.slots[15]?.impl, {
+    kind: "command",
+    commandType: CommandType.SendSupervisorSignal,
+    command: {
+      targetHatAssignmentId: "hat-manager-1",
+      title: "Observe-act escalation for work_item awaiting_gate",
+      message: "Agent requested supervisor triage for run 42 at work_item/awaiting_gate. Legal options: 2; vetoed options: 0.",
+      policyContext: {
+        scope: {
+          teamId: "team-runtime",
+          workItemId: "work-1",
+        },
+        toolType: SupervisorSignalToolType.RequestEscalation,
+        supervisorChain: {
+          sourceLevel: SupervisorChainLevel.TeamMember,
+          targetLevel: SupervisorChainLevel.Manager,
+        },
+      },
+    },
+  });
+
+  const result = await act(15, menu, {
+    runCommand: async (commandType, command) => ({ commandType, command }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  deepEqual(result, {
+    outcome: "dispatched",
+    kind: "command",
+    result: {
+      commandType: CommandType.SendSupervisorSignal,
+      command: menu.slots[15]?.impl?.kind === "command" ? menu.slots[15].impl.command : undefined,
+    },
+  });
+});
+
+test("observeAgentSurface disables meta.escalate when the hat lacks supervisor-signal authority", async () => {
+  const releaseOperator = buildHatDefinitions().find((h) => h.id === "release_operator")!;
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hat: releaseOperator,
+      agentId: "agent-release-1",
+      organizationId: "org-1",
+      projectId: "project-1",
+      teamId: "team-runtime",
+      workItemId: "work-1",
+      supervisorHatAssignmentId: "hat-manager-1",
+    }),
+    deps,
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.actions.slots[15]?.availability, "F");
+  ok(surface.actions.slots[15]?.reason?.includes("lacks"));
+  ok(surface.actions.slots[15]?.reason?.includes("backlog_and_defect"));
 });
 
 test("renderMenu16 disables scope-out at organization scope and scope-in at run scope", () => {

@@ -4,6 +4,7 @@ import { test } from "node:test";
 import {
   AgenticEventType,
   ChangeSetPhase,
+  CommandType,
   ExternalSystem,
   OrgEventKind,
   ReactionPlanStatus,
@@ -379,6 +380,81 @@ test("observe-act work-item lane persists status priority-scope evidence when hi
   equal(result.status, "observe-act:status:glass_halo_status");
   equal(observeEvents.length, 1);
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status_priority_scope:department_initiatives"));
+});
+
+test("observe-act work-item lane routes meta.escalate through supervisor-signal command with evidence", async () => {
+  const commands: { commandType: string; command: unknown }[] = [];
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      teamId: "team-runtime",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "dependency_manager",
+      hatAssignmentId: "99",
+      supervisorHatAssignmentId: "hat-manager-1",
+      agentId: "agent-release-1",
+    }),
+    selectSlot: () => 15,
+    runCommand: async (commandType, command) => {
+      commands.push({ commandType, command });
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => {
+      throw new Error("meta.escalate should dispatch a command, not an MCP tool");
+    },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:command:accepted");
+  equal(commands.length, 1);
+  equal(commands[0]?.commandType, CommandType.SendSupervisorSignal);
+  deepEqual(commands[0]?.command, {
+    commandId: "cmd-observe-1-15",
+    type: CommandType.SendSupervisorSignal,
+    idempotencyKey: "observe:1:99:awaiting_gate:15",
+    requestHash: "send_supervisor_signal:1:99:awaiting_gate:15:hat-manager-1",
+    correlationId: "observe-cli-1",
+    causationId: "observe-cli-1",
+    traceId: "observe-cli-1",
+    organizationId: "org-lfg",
+    projectId: "proj-1",
+    workItemId: "work-1",
+    actor: {
+      agentId: "agent-release-1",
+      hatAssignmentId: "99",
+    },
+    targetHatAssignmentId: "hat-manager-1",
+    title: "Observe-act escalation for work_item awaiting_gate",
+    message: "Agent requested supervisor triage for run 1 at work_item/awaiting_gate. Legal options: 1; vetoed options: 1.",
+    policyContext: {
+      scope: {
+        teamId: "team-runtime",
+        workItemId: "work-1",
+      },
+      toolType: "request_escalation",
+      supervisorChain: {
+        sourceLevel: "team_member",
+        targetLevel: "manager",
+      },
+    },
+  });
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:command_type:send_supervisor_signal"));
 });
 
 test("observe-act work-item lane can load a prompt-flow task context instead of requiring hat-specific agent knowledge", async () => {

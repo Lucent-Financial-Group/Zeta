@@ -115,6 +115,7 @@ export function createWorkOsCadenceLane(deps: WorkOsCadenceDeps): CadenceLane {
 export type ObserveActWorkItem = {
   runId: string;
   projectId: string;
+  teamId?: string | undefined;
   workItemId: string;
   scope: RunScope;
   phase: RunLifecyclePhase;
@@ -122,6 +123,7 @@ export type ObserveActWorkItem = {
   hasEvidence: boolean;
   hatId: string;
   hatAssignmentId: string;
+  supervisorHatAssignmentId?: string | undefined;
   agentId: string;
   scheduleBlocks?: readonly WorkScheduleBlock[];
   promptFlowTasks?: readonly PromptFlowTask[];
@@ -305,6 +307,7 @@ function observeActEvidenceRefs(
     `observe-act:selected_slot:${evidence.selectedIndex}`,
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
+    ...selectedCommandEvidenceRefs(evidence),
     ...promptFlowPageEvidenceRefs(evidence),
     ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
     ...statusEvidenceRefs(evidence),
@@ -312,6 +315,14 @@ function observeActEvidenceRefs(
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
   ];
+}
+
+function selectedCommandEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  return evidence.selectedCommandType === undefined
+    ? []
+    : [`observe-act:command_type:${evidence.selectedCommandType}`];
 }
 
 function statusEvidenceRefs(
@@ -382,9 +393,15 @@ function observeActArgv(organizationId: string, work: ObserveActWorkItem, prompt
     work.projectId,
     "--work-item",
     work.workItemId,
+    ...observeActOptionalArg("--team", work.teamId),
+    ...observeActOptionalArg("--supervisor-hat-assignment", work.supervisorHatAssignmentId),
     ...observeActPromptFlowPageArgs(promptFlowPage),
     ...observeActBooleanArgs(work),
   ];
+}
+
+function observeActOptionalArg(flag: string, value: string | undefined): string[] {
+  return value === undefined ? [] : [flag, value];
 }
 
 function observeActPromptFlowPageArgs(promptFlowPage: number | undefined): string[] {

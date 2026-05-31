@@ -19,6 +19,7 @@ import {
   createHatAuthorityPort,
   createObserveLifecycleTransitionHandler,
   createScheduleBlockCommandAuthority,
+  createSendSupervisorSignalHandler,
   evaluateControlPlaneAccess,
   RunLifecyclePhase,
   RunScope,
@@ -26,13 +27,23 @@ import {
   type CommandResult,
   type ChangeControlPort,
   type ObserveLifecycleTransitionCommand,
+  type SendSupervisorSignalCommand,
   type ReleaseBatchEvaluation,
   type ControlPlaneBudgetCeiling,
   type ControlPlaneFlag,
   type ControlPlaneUsage,
   type ScopedMetricAgent,
 } from "../../../packages/application/src/index.ts";
-import { AutonomyLevel, OrgEventKind, WorkItemState, type AutonomyPolicy, type ChangeSet, type OrgEvent } from "../../../packages/domain/src/index.ts";
+import {
+  AutonomyLevel,
+  CommandType,
+  HatAssignmentAuthorityState,
+  OrgEventKind,
+  WorkItemState,
+  type AutonomyPolicy,
+  type ChangeSet,
+  type OrgEvent,
+} from "../../../packages/domain/src/index.ts";
 import { createCommandAuthorizationPort, createPolicyDecisionObservationPort } from "../../../packages/policy/src/index.ts";
 import {
   createCockroachOrgEventStore,
@@ -67,6 +78,8 @@ import {
   type ObserveActWorkItemSource,
   type WorkIntakeSource,
 } from "./org-cadence-lanes.ts";
+
+type ObserveActPipelineCommand = ObserveLifecycleTransitionCommand | SendSupervisorSignalCommand;
 
 export type OrgCadenceIntervals = {
   workOsMs: number;
@@ -630,6 +643,10 @@ type ObserveActWorkItemRow = {
   created_by_hat_assignment_id: string;
 };
 
+type ObserveActSupervisorAssignmentRow = {
+  hat_assignment_id: string;
+};
+
 function createCockroachObserveActWorkItemSource(
   input: Pick<ComposeOrgCadenceInput, "executor" | "organizationId" | "now">,
 ): ObserveActWorkItemSource {
@@ -643,7 +660,7 @@ function createCockroachObserveActWorkItemSource(
         WHERE organization_id = $1
           AND state IN ($2, $3, $4, $5)
         ORDER BY updated_at ASC, created_at ASC
-        LIMIT 1
+        LIMIT 10
       `.trim(),
       parameters: [
         input.organizationId,
@@ -653,30 +670,79 @@ function createCockroachObserveActWorkItemSource(
         WorkItemState.Blocked,
       ],
     });
-    const row = result.rows[0];
-    if (row === undefined) return null;
-    const phase = observeActPhaseForWorkItemState(row.state);
-    if (phase === undefined) return null;
-    const evaluatedAt = new Date(input.now()).toISOString();
-    const scheduleBlocks = await stateAdapters.workScheduleBlockAuthorityReader.findAuthorizingScheduleBlocks({
-      agentId: row.created_by_agent_id,
-      hatAssignmentId: row.created_by_hat_assignment_id,
-      evaluatedAt,
-    });
-    return {
-      runId: String(row.version),
-      projectId: row.project_id,
-      workItemId: row.work_item_id,
-      scope: RunScope.WorkItem,
-      phase,
-      hasGateApproval: row.state === WorkItemState.Ready,
-      hasEvidence: row.state === WorkItemState.InProgress || row.state === WorkItemState.Review,
-      hatId: "release_operator",
-      hatAssignmentId: row.created_by_hat_assignment_id,
-      agentId: row.created_by_agent_id,
-      scheduleBlocks,
-    };
+    for (const row of result.rows) {
+      const phase = observeActPhaseForWorkItemState(row.state);
+      if (phase === undefined) continue;
+      const actorAuthority = await stateAdapters.hatAssignmentAuthorityReader.findHatAssignmentAuthority(row.created_by_hat_assignment_id);
+      if (actorAuthority === undefined || actorAuthority.state !== HatAssignmentAuthorityState.Active) continue;
+      const actorHat = buildHatDefinitions().find((hat) => hat.id === actorAuthority.hatId);
+      if (actorHat === undefined) continue;
+      const supervisorHatId = actorHat.reportsToHatIds[0];
+      const supervisorHatAssignmentId = supervisorHatId === undefined
+        ? undefined
+        : await findActiveObserveActSupervisorHatAssignment(input, {
+            organizationId: actorAuthority.organizationId,
+            projectId: actorAuthority.projectId,
+            teamId: actorAuthority.teamId,
+            supervisorHatId,
+          });
+      const evaluatedAt = new Date(input.now()).toISOString();
+      const scheduleBlocks = await stateAdapters.workScheduleBlockAuthorityReader.findAuthorizingScheduleBlocks({
+        agentId: row.created_by_agent_id,
+        hatAssignmentId: row.created_by_hat_assignment_id,
+        evaluatedAt,
+      });
+      return {
+        runId: String(row.version),
+        projectId: row.project_id,
+        ...(actorAuthority.teamId === undefined ? {} : { teamId: actorAuthority.teamId }),
+        workItemId: row.work_item_id,
+        scope: RunScope.WorkItem,
+        phase,
+        hasGateApproval: row.state === WorkItemState.Ready,
+        hasEvidence: row.state === WorkItemState.InProgress || row.state === WorkItemState.Review,
+        hatId: actorAuthority.hatId,
+        hatAssignmentId: row.created_by_hat_assignment_id,
+        ...(supervisorHatAssignmentId === undefined ? {} : { supervisorHatAssignmentId }),
+        agentId: row.created_by_agent_id,
+        scheduleBlocks,
+      };
+    }
+    return null;
   };
+}
+
+async function findActiveObserveActSupervisorHatAssignment(
+  input: Pick<ComposeOrgCadenceInput, "executor">,
+  lookup: {
+    organizationId: string;
+    projectId: string;
+    teamId?: string | undefined;
+    supervisorHatId: string;
+  },
+): Promise<string | undefined> {
+  const result = await input.executor.execute<ObserveActSupervisorAssignmentRow>({
+    name: "find_active_observe_act_supervisor_hat_assignment",
+    sql: `
+      SELECT hat_assignment_id
+      FROM ${CockroachTableName.HatAssignmentAuthorities}
+      WHERE organization_id = $1
+        AND project_id = $2
+        AND (($3::STRING IS NULL AND team_id IS NULL) OR team_id = $3 OR team_id IS NULL)
+        AND hat_id = $4
+        AND state = $5
+      ORDER BY CASE WHEN team_id = $3 THEN 0 WHEN team_id IS NULL THEN 1 ELSE 2 END, updated_at DESC
+      LIMIT 1
+    `.trim(),
+    parameters: [
+      lookup.organizationId,
+      lookup.projectId,
+      lookup.teamId ?? null,
+      lookup.supervisorHatId,
+      HatAssignmentAuthorityState.Active,
+    ],
+  });
+  return result.rows[0]?.hat_assignment_id;
 }
 
 function observeActPhaseForWorkItemState(state: string): RunLifecyclePhase | undefined {
@@ -700,7 +766,7 @@ function createCockroachObserveActCommandRunner(
 ): ObserveActCommandRunner {
   const stateAdapters = createCockroachDurableStateAdapters<CommandResult>({ executor: input.executor });
   const controlPlaneState = createCockroachControlPlaneStateStore({ executor: input.executor });
-  const pipeline = createCommandPipeline<ObserveLifecycleTransitionCommand>({
+  const pipeline = createCommandPipeline<ObserveActPipelineCommand>({
     stateStoreFactory: stateAdapters.commandStateStoreFactory,
     commandAuthorizationPort: createCommandAuthorizationPort({
       hatAuthorityPort: createHatAuthorityPort({
@@ -715,8 +781,9 @@ function createCockroachObserveActCommandRunner(
     commandScheduleAuthorityPort: createScheduleBlockCommandAuthority({
       scheduleBlockReader: stateAdapters.workScheduleBlockAuthorityReader,
     }),
-    handlerRegistry: createCommandHandlerRegistry<ObserveLifecycleTransitionCommand, CommandResult>([
+    handlerRegistry: createCommandHandlerRegistry<ObserveActPipelineCommand, CommandResult>([
       createObserveLifecycleTransitionHandler(),
+      createSendSupervisorSignalHandler(),
     ]),
     workAnchorStateReader: stateAdapters.workAnchorStateStore,
     controlPlane: {
@@ -728,10 +795,10 @@ function createCockroachObserveActCommandRunner(
     createId: input.createId,
   });
   return async (commandType, command) => {
-    if (commandType !== ObserveCommandType.LifecycleTransition) {
+    if (commandType !== ObserveCommandType.LifecycleTransition && commandType !== CommandType.SendSupervisorSignal) {
       return { status: "unsupported_command_type", commandType };
     }
-    return await pipeline.execute(command as ObserveLifecycleTransitionCommand);
+    return await pipeline.execute(command as ObserveActPipelineCommand);
   };
 }
 
@@ -756,6 +823,7 @@ function createCockroachObserveActSlotAuthorizer(
       scope: {
         organizationId,
         projectId: work.projectId,
+        ...(work.teamId === undefined ? {} : { teamId: work.teamId }),
         workItemId: work.workItemId,
       },
       evaluatedAt,

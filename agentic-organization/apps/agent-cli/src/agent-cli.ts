@@ -44,7 +44,7 @@ import {
   type ScopedMetricAgent,
   type ScopedReadout,
 } from "../../../packages/application/src/index.ts";
-import { HatLevel, ToolBundle, type ToolBundle as ToolBundleName, type WorkScheduleBlock } from "../../../packages/domain/src/index.ts";
+import { CommandType, HatLevel, ToolBundle, type ToolBundle as ToolBundleName, type WorkScheduleBlock } from "../../../packages/domain/src/index.ts";
 import { createLgtmTelemetryQueryPort } from "../../../packages/observability/src/index.ts";
 import { createOllamaChatPort } from "../../workers/src/adapters/ollama-chat-port.ts";
 
@@ -58,7 +58,9 @@ export type ParsedAgentCliArgs = {
   agentId: string;
   organizationId: string;
   projectId: string;
+  teamId?: string | undefined;
   workItemId: string;
+  supervisorHatAssignmentId?: string | undefined;
   gateApproved: boolean;
   evidence: boolean;
   promptFlowPage?: number;
@@ -158,6 +160,7 @@ export type AgentCliCycleEvidence = {
   statusScope?: RunScope | undefined;
   statusPhase?: RunLifecyclePhase | undefined;
   statusHierarchyPriorityScope?: HierarchyReadout["priorityScope"] | undefined;
+  selectedCommandType?: string | undefined;
   promptFlowPage?: number | undefined;
   selectedPromptFlowTaskId?: string | undefined;
   selectedPromptFlowId?: string | undefined;
@@ -196,7 +199,9 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
   const agentId = values.flags.get("agent") ?? "agent-local";
   const organizationId = values.flags.get("organization") ?? "org-local";
   const projectId = values.flags.get("project") ?? "project-local";
+  const teamId = values.flags.get("team");
   const workItemId = values.flags.get("work-item") ?? runId;
+  const supervisorHatAssignmentId = values.flags.get("supervisor-hat-assignment");
   const selectIndexValue = values.flags.get("select-index");
   const selectIndex = selectIndexValue === undefined ? undefined : Number.parseInt(selectIndexValue, 10);
   if (selectIndexValue !== undefined && (!Number.isInteger(selectIndex) || String(selectIndex) !== selectIndexValue)) {
@@ -222,7 +227,9 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
       agentId,
       organizationId,
       projectId,
+      ...(teamId === undefined ? {} : { teamId }),
       workItemId,
+      ...(supervisorHatAssignmentId === undefined ? {} : { supervisorHatAssignmentId }),
       gateApproved: values.booleans.has("gate-approved"),
       evidence: values.booleans.has("evidence"),
       ...createOptionalPromptFlowPage(promptFlowPageValue === undefined ? undefined : promptFlowPage),
@@ -412,7 +419,9 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     agentId: parsed.value.agentId,
     organizationId: parsed.value.organizationId,
     projectId: parsed.value.projectId,
+    ...(parsed.value.teamId === undefined ? {} : { teamId: parsed.value.teamId }),
     workItemId: parsed.value.workItemId,
+    ...(parsed.value.supervisorHatAssignmentId === undefined ? {} : { supervisorHatAssignmentId: parsed.value.supervisorHatAssignmentId }),
   };
 
   const observed = await observeAgentSurface(snapshot, {
@@ -514,6 +523,32 @@ function materializeCommand(
   args: ParsedAgentCliArgs,
 ): unknown {
   if (commandType !== ObserveCommandType.LifecycleTransition || !isLifecycleTransitionPayload(command)) {
+    if (commandType === CommandType.SendSupervisorSignal && isSupervisorSignalPayload(command)) {
+      return {
+        commandId: `cmd-observe-${args.runId}-${slot.index}`,
+        type: CommandType.SendSupervisorSignal,
+        idempotencyKey: `observe:${args.runId}:${args.hatAssignmentId}:${args.phase}:${slot.index}`,
+        requestHash: [
+          CommandType.SendSupervisorSignal,
+          args.runId,
+          args.hatAssignmentId,
+          args.phase,
+          slot.index,
+          command.targetHatAssignmentId,
+        ].join(":"),
+        correlationId: `observe-cli-${args.runId}`,
+        causationId: `observe-cli-${args.runId}`,
+        traceId: `observe-cli-${args.runId}`,
+        organizationId: args.organizationId,
+        projectId: args.projectId,
+        workItemId: args.workItemId,
+        actor: {
+          agentId: args.agentId,
+          hatAssignmentId: args.hatAssignmentId,
+        },
+        ...command,
+      };
+    }
     return command;
   }
 
@@ -571,6 +606,7 @@ function createAgentCliCycleEvidence(
     vetoCount: menu.slots.filter((slot) => slot.availability === TriAvailability.False).length,
     trueSlotCount: menu.slots.filter((slot) => slot.availability === TriAvailability.True).length,
     ...selectedStatusEvidence(actionResult),
+    ...selectedCommandEvidence(menu, selection.index),
     ...createOptionalEvidenceNumber("promptFlowPage", menu.page?.promptFlows?.page),
     ...selectedPromptFlowEvidence(menu, selection.index),
     ...(actionResult?.outcome === "reobserve" ? createOptionalEvidenceNumber("reobservePromptFlowPage", actionResult.menuPage?.promptFlows) : {}),
@@ -665,6 +701,14 @@ function selectedPromptFlowEvidence(
   };
 }
 
+function selectedCommandEvidence(
+  menu: Menu16,
+  selectedIndex: number,
+): { selectedCommandType?: string } {
+  const selected = menu.slots.find((slot) => slot.index === selectedIndex);
+  return selected?.impl?.kind === "command" ? { selectedCommandType: selected.impl.commandType } : {};
+}
+
 function createOptionalEvidenceNumber<K extends string>(
   key: K,
   value: number | undefined,
@@ -733,6 +777,27 @@ function isLifecycleTransitionPayload(value: unknown): value is LifecycleTransit
     typeof candidate.actionType === "string" &&
     typeof candidate.toPhase === "string" &&
     typeof candidate.toScope === "string"
+  );
+}
+
+function isSupervisorSignalPayload(
+  value: unknown,
+): value is {
+  targetHatAssignmentId: string;
+  title: string;
+  message: string;
+  policyContext: unknown;
+} {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.targetHatAssignmentId === "string" &&
+    typeof candidate.title === "string" &&
+    typeof candidate.message === "string" &&
+    typeof candidate.policyContext === "object" &&
+    candidate.policyContext !== null
   );
 }
 

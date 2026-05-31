@@ -24,8 +24,11 @@ import {
   selectFirstTrueSlot,
 } from "../src/agent-cli.ts";
 import {
+  CommandType,
   ScheduleBlockState,
   ScheduleBlockType,
+  SupervisorChainLevel,
+  SupervisorSignalToolType,
   type WorkScheduleBlock,
 } from "../../../packages/domain/src/index.ts";
 
@@ -254,6 +257,57 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   deepEqual(commands, [
     'observe.lifecycle_transition:{"commandId":"cmd-observe-1-4","type":"observe.lifecycle_transition","idempotencyKey":"observe:1:99:awaiting_gate:4","requestHash":"observe.lifecycle_transition:1:99:awaiting_gate:execute:executing:4","correlationId":"observe-cli-1","causationId":"observe-cli-1","traceId":"observe-cli-1","organizationId":"org-1","projectId":"project-1","workItemId":"work-1","actor":{"agentId":"agent-release-1","hatAssignmentId":"99"},"policyContext":{"toolType":"write_code"},"runId":"1","fromPhase":"awaiting_gate","actionType":"execute","toPhase":"executing","toScope":"work_item","hatAssignmentId":"99"}',
   ]);
+});
+
+test("runAgentCliCycle materializes meta.escalate as a send-supervisor-signal command", async () => {
+  const commands: string[] = [];
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "dependency_manager",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--team",
+      "team-runtime",
+      "--work-item",
+      "work-1",
+      "--supervisor-hat-assignment",
+      "hat-manager-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--select-index",
+      "15",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    runCommand: async (commandType, command) => {
+      commands.push(`${commandType}:${JSON.stringify(command)}`);
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "dispatched");
+  ok(stdout.join("\n").includes("[15] T meta.escalate escalate to manager"));
+  equal(result.evidence?.selectedIndex, 15);
+  equal(result.evidence?.selectedCommandType, CommandType.SendSupervisorSignal);
+  deepEqual(commands, [
+    `${CommandType.SendSupervisorSignal}:{"commandId":"cmd-observe-1-15","type":"send_supervisor_signal","idempotencyKey":"observe:1:99:awaiting_gate:15","requestHash":"send_supervisor_signal:1:99:awaiting_gate:15:hat-manager-1","correlationId":"observe-cli-1","causationId":"observe-cli-1","traceId":"observe-cli-1","organizationId":"org-1","projectId":"project-1","workItemId":"work-1","actor":{"agentId":"agent-release-1","hatAssignmentId":"99"},"targetHatAssignmentId":"hat-manager-1","title":"Observe-act escalation for work_item awaiting_gate","message":"Agent requested supervisor triage for run 1 at work_item/awaiting_gate. Legal options: 1; vetoed options: 1.","policyContext":{"scope":{"teamId":"team-runtime","workItemId":"work-1"},"toolType":"request_escalation","supervisorChain":{"sourceLevel":"team_member","targetLevel":"manager"}}}`,
+  ]);
+  ok(commands[0]?.includes(SupervisorSignalToolType.RequestEscalation));
+  ok(commands[0]?.includes(SupervisorChainLevel.Manager));
 });
 
 test("runAgentCliCycle passes schedule blocks into observe so execution can fail closed", async () => {

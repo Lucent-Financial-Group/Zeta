@@ -7,6 +7,12 @@ import {
   RunLifecyclePhase,
   RunScope,
 } from "../../../packages/application/src/index.ts";
+import {
+  HatAssignmentAuthorityState,
+  ScheduleBlockState,
+  ScheduleBlockType,
+  WorkItemState,
+} from "../../../packages/domain/src/index.ts";
 import { RecordingTelemetry, TelemetryMetricKind } from "../../../packages/observability/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "../../../packages/state-cockroach/src/cockroach-sql-executor.ts";
 import { composeOrgCadenceLoops } from "../src/org-cadence-composition.ts";
@@ -69,6 +75,90 @@ test("org cadence composition can disable legacy work-os and run the observe-act
   ));
   equal(legacyIntakeCalls, 0);
   equal(observeActCommands, 1);
+});
+
+test("org cadence production observe-act source supplies team and supervisor assignment for meta.escalate", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  const commands: { commandType: string; command: unknown }[] = [];
+
+  const handle = composeOrgCadenceLoops({
+    executor: createObserveActEscalationCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-composition-escalation-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act-primary",
+    observeActPromotionWindow: {
+      shadowTickCount: 100,
+      shadowSoakHours: 1,
+      shadowDivergenceRate: 0,
+      shadowIllegalSelections: 0,
+      primarySelectorRejections30m: 0,
+      primaryControlBypassRejections30m: 0,
+    },
+    observeActSelectSlot: () => 15,
+    observeActRunCommand: async (commandType, command) => {
+      commands.push({ commandType, command });
+      return { status: "accepted" };
+    },
+    observeActDispatchTool: async () => {
+      throw new Error("observe-act escalation source test should not dispatch MCP");
+    },
+  });
+
+  await handle.done;
+
+  equal(records.find((record) => record.lane === "observe-act-work-item")?.status, "observe-act:command:accepted");
+  equal(commands[0]?.commandType, "send_supervisor_signal");
+  const command = commands[0]?.command as { targetHatAssignmentId?: string; policyContext?: { scope?: { teamId?: string } } } | undefined;
+  equal(command?.targetHatAssignmentId, "101");
+  equal(command?.policyContext?.scope?.teamId, "team-runtime");
+});
+
+test("org cadence production observe-act source skips stale rows and falls back to project-wide supervisors", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  const commands: { commandType: string; command: unknown }[] = [];
+  const supervisorSql: string[] = [];
+
+  const handle = composeOrgCadenceLoops({
+    executor: createObserveActEscalationCockroachExecutor({
+      staleFirst: true,
+      projectWideSupervisor: true,
+      supervisorSql,
+    }),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-composition-escalation-fallback-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act-primary",
+    observeActPromotionWindow: {
+      shadowTickCount: 100,
+      shadowSoakHours: 1,
+      shadowDivergenceRate: 0,
+      shadowIllegalSelections: 0,
+      primarySelectorRejections30m: 0,
+      primaryControlBypassRejections30m: 0,
+    },
+    observeActSelectSlot: () => 15,
+    observeActRunCommand: async (commandType, command) => {
+      commands.push({ commandType, command });
+      return { status: "accepted" };
+    },
+    observeActDispatchTool: async () => {
+      throw new Error("observe-act escalation fallback test should not dispatch MCP");
+    },
+  });
+
+  await handle.done;
+
+  equal(records.find((record) => record.lane === "observe-act-work-item")?.status, "observe-act:command:accepted");
+  const command = commands[0]?.command as { targetHatAssignmentId?: string } | undefined;
+  equal(command?.targetHatAssignmentId, "101-project-wide");
+  ok(supervisorSql[0]?.includes("OR team_id IS NULL"));
 });
 
 test("org cadence composition shadow mode observes selected slots without dispatching observe-act side effects", async () => {
@@ -518,4 +608,89 @@ function createEmptyCockroachExecutor(): CockroachGenericSqlExecutor {
         execute: async () => ({ rows: [] }),
       }),
   };
+}
+
+function createObserveActEscalationCockroachExecutor(options: {
+  staleFirst?: boolean;
+  projectWideSupervisor?: boolean;
+  supervisorSql?: string[];
+} = {}): CockroachGenericSqlExecutor {
+  const now = "2026-05-31T12:00:00.000Z";
+  return {
+    execute: async (statement) => {
+      if (statement.name === "claimable_observe_act_work_item") {
+        return sqlRows([
+          ...(options.staleFirst ? [{
+            work_item_id: "work-stale",
+            project_id: "project-1",
+            state: WorkItemState.Ready,
+            version: 6,
+            created_by_agent_id: "agent-stale-1",
+            created_by_hat_assignment_id: "999",
+          }] : []),
+          {
+            work_item_id: "work-1",
+            project_id: "project-1",
+            state: WorkItemState.Ready,
+            version: 7,
+            created_by_agent_id: "agent-dependency-1",
+            created_by_hat_assignment_id: "100",
+          },
+        ]);
+      }
+      if (statement.name === "find_hat_assignment_authority") {
+        if (statement.parameters[0] === "999") {
+          return sqlRows([]);
+        }
+        return sqlRows([{
+            hat_assignment_id: "100",
+            hat_id: "dependency_manager",
+            organization_id: "org-lfg",
+            project_id: "project-1",
+            team_id: "team-runtime",
+            assigned_agent_id: "agent-dependency-1",
+            state: HatAssignmentAuthorityState.Active,
+          }]);
+      }
+      if (statement.name === "find_active_observe_act_supervisor_hat_assignment") {
+        options.supervisorSql?.push(statement.sql);
+        return sqlRows([{ hat_assignment_id: options.projectWideSupervisor ? "101-project-wide" : "101" }]);
+      }
+      if (statement.name === "find_authorizing_schedule_blocks") {
+        return sqlRows([{
+            work_schedule_block_id: "schedule-1",
+            organization_id: "org-lfg",
+            project_id: "project-1",
+            team_id: "team-runtime",
+            work_item_id: "work-1",
+            discussion_anchor_id: null,
+            assigned_agent_id: "agent-dependency-1",
+            assigned_hat_assignment_id: "100",
+            block_type: ScheduleBlockType.PrioritizedWork,
+            state: ScheduleBlockState.Active,
+            title: "Resolve dependency blocker",
+            purpose: "Authorize observe-act escalation",
+            starts_at: "2026-05-31T11:00:00.000Z",
+            ends_at: "2026-05-31T13:00:00.000Z",
+            scheduled_by_agent_id: "agent-tpm-1",
+            scheduled_by_hat_assignment_id: "101",
+            scheduled_at: "2026-05-31T10:00:00.000Z",
+            updated_at: now,
+            version: 1,
+            correlation_id: "corr-1",
+            causation_id: "cause-1",
+            trace_id: "trace-1",
+          }]);
+      }
+      return sqlRows([]);
+    },
+    executeTransaction: async (operation) =>
+      await operation({
+        execute: async () => ({ rows: [] }),
+      }),
+  };
+}
+
+function sqlRows<Row = Record<string, unknown>>(rows: readonly unknown[]): { rows: readonly Row[] } {
+  return { rows: rows as readonly Row[] };
 }
