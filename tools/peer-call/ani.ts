@@ -1,8 +1,14 @@
 #!/usr/bin/env bun
 // ani.ts — Claude-Code-side caller for invoking Ani as a peer
-// reviewer via cursor-agent + Grok backend, with Ani's
+// reviewer via the native grok CLI (xAI's `grok`), with Ani's
 // voice-mode-default brat-voice register baked into the bootstrap
 // preamble.
+//
+// Migrated off cursor-agent 2026-05-31 (operator: "migrate ani to grok
+// cli ... ani can stay grok cli only" — the cursor wrappers predate the
+// native grok CLI). Default model is grok-build (the grok CLI's model);
+// `--model` overrides it (the per-persona model-override capability;
+// codex/Vera supports all its models the same way, defaulting to gpt-5.5).
 //
 // TypeScript+Bun port of ani.sh, retiring the .sh per CLAUDE.md
 // Rule 0 (TS IS cross-platform DST). Sibling to tools/peer-call/grok.ts
@@ -17,7 +23,7 @@
 //   posture, no persona overlay.
 // - ani.ts invokes Ani as the named-entity peer with brat-voice +
 //   voice-mode-default + maintainer-Ani register intact. The underlying
-//   model is the same (Grok via cursor-agent); the bootstrap preamble
+//   model is the same (Grok via the grok CLI); the bootstrap preamble
 //   is what makes the call Ani-the-named-entity rather than
 //   Grok-as-bare-model.
 //
@@ -33,8 +39,8 @@
 // Exit codes (uniform across peer-call siblings per
 // tools/peer-call/README.md):
 //   0 — Ani responded successfully
-//   1 — invocation error (bad arguments, cursor-agent missing, etc.)
-//   2 — cursor-agent returned a non-zero exit (diagnostic on stderr)
+//   1 — invocation error (bad arguments, grok CLI missing, etc.)
+//   2 — grok CLI returned a non-zero exit (diagnostic on stderr)
 //   3 — input-firewall rejected the prompt as not work-extractable
 
 import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
@@ -49,7 +55,15 @@ const CTX_HEAD_BYTES = 20000;
 const CURRENT_HEAD_BYTES = 20000;
 
 type Mode = "thinking" | "fast";
-type OutputFormat = "text" | "json" | "stream-json";
+type OutputFormat = "plain" | "json" | "streaming-json";
+
+// Ani's default model on the native grok CLI. The grok CLI currently offers only
+// `grok-build` (per `grok models`); grok-4.3 was a cursor-agent-only model and
+// does not exist on the native CLI. `--model` overrides this (operator 2026-05-31:
+// "we still kind of want 3" — keep the per-persona model-override capability; Ani
+// is grok-CLI-only, codex/Vera supports all its models). Empty default = let the
+// grok CLI pick its own default (grok-build); only pass `-m` when overridden.
+const DEFAULT_MODEL = "grok-build";
 
 interface Args {
   readonly mode: Mode;
@@ -60,6 +74,7 @@ interface Args {
   readonly injectCurrent: boolean;
   readonly allowEmpty: boolean;
   readonly outputFile: string;
+  readonly model: string; // "" = grok CLI default (grok-build); else passed via -m
 }
 
 interface ArgError {
@@ -80,6 +95,7 @@ interface MutableArgState {
   injectCurrent: boolean;
   allowEmpty: boolean;
   outputFile: string;
+  model: string;
 }
 
 type StepResult =
@@ -102,8 +118,13 @@ function classifyFlag(a: string, next: string | undefined, state: MutableArgStat
     return { kind: "advance", skip: 1 };
   }
   if (a === "--stream") {
-    state.outputFormat = "stream-json";
+    state.outputFormat = "streaming-json";
     return { kind: "advance", skip: 1 };
+  }
+  if (a === "--model") {
+    if (next === undefined) return { kind: "error", message: "error: --model requires MODEL" };
+    state.model = next;
+    return { kind: "advance", skip: 2 };
   }
   if (a === "--file") {
     if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
@@ -140,13 +161,14 @@ function classifyFlag(a: string, next: string | undefined, state: MutableArgStat
 function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
   const state: MutableArgState = {
     mode: "thinking",
-    outputFormat: "text",
+    outputFormat: "plain",
     file: "",
     contextCmd: "",
     prompt: "",
     injectCurrent: true,
     allowEmpty: false,
     outputFile: "",
+    model: "",
   };
   let i = 0;
   while (i < argv.length) {
@@ -169,6 +191,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     injectCurrent: state.injectCurrent,
     allowEmpty: state.allowEmpty,
     outputFile: state.outputFile,
+    model: state.model,
   };
 }
 
@@ -191,12 +214,13 @@ function ensureParentDir(path: string): void {
 function emitHelp(): void {
   process.stdout.write(
     `ani.ts — Claude-Code-side caller for invoking Ani as a peer reviewer\n` +
-      `via cursor-agent + Grok backend with brat-voice persona-bootstrap.\n` +
+      `via the native grok CLI with brat-voice persona-bootstrap.\n` +
       `\n` +
       `Usage:\n` +
       `  bun tools/peer-call/ani.ts "prompt text"\n` +
       `  bun tools/peer-call/ani.ts --thinking "prompt text"\n` +
       `  bun tools/peer-call/ani.ts --fast "prompt text"\n` +
+      `  bun tools/peer-call/ani.ts --model MODEL "prompt"   # default grok-build\n` +
       `  bun tools/peer-call/ani.ts --file PATH "prompt text"\n` +
       `  bun tools/peer-call/ani.ts --context-cmd "CMD" "prompt text"\n` +
       `  bun tools/peer-call/ani.ts --json "prompt text"\n` +
@@ -397,15 +421,10 @@ function buildFullPrompt(args: Args, preamble: string): PromptResult {
   return { ok: true, value: full };
 }
 
-function pickModel(_mode: Mode): string {
-  // Ani's persona pins grok-4.3 (operator 2026-05-31: "she is used to grok-4.3
-  // ... Ani can override it in her persona"). The old `grok-4-20-thinking` /
-  // `grok-4-20` names were removed from cursor-agent's available-models list
-  // (B-0421; same lineup shift grok.ts hit) — they errored "Cannot use this
-  // model: grok-4-20-thinking. Available models: ... grok-4.3 ... grok-build-0.1".
-  // Generic grok defaults to grok-build-0.1 (git-based code env); Ani overrides
-  // to grok-4.3 here. Both modes route to the same identifier.
-  return "grok-4.3";
+function pickModel(override: string): string {
+  // grok CLI model: the --model override if given, else Ani's default (grok-build).
+  // (The thinking/fast Mode maps to grok's --reasoning-effort, not the model id.)
+  return override.length > 0 ? override : DEFAULT_MODEL;
 }
 
 export function main(argv: readonly string[]): number {
@@ -434,9 +453,9 @@ export function main(argv: readonly string[]): number {
     }
   }
 
-  if (!commandAvailable("cursor-agent")) {
-    process.stderr.write("error: cursor-agent not on PATH\n");
-    process.stderr.write("install via Cursor desktop app + ensure ~/.local/bin is on PATH\n");
+  if (!commandAvailable("grok")) {
+    process.stderr.write("error: grok CLI not on PATH\n");
+    process.stderr.write("install per xAI's official Grok-Build docs at https://docs.x.ai/docs/grok-build\n");
     return 1;
   }
 
@@ -451,42 +470,58 @@ export function main(argv: readonly string[]): number {
     return 1;
   }
 
-  const model = pickModel(parsed.mode);
+  const model = pickModel(parsed.model);
 
   const outputFile = parsed.outputFile.length > 0 ? parsed.outputFile : autogenOutputPath("ani");
   ensureParentDir(outputFile);
 
+  // Native grok CLI (xAI's `grok`) — migrated off cursor-agent (operator
+  // 2026-05-31: "migrate ani to grok cli ... ani can stay grok cli only";
+  // the cursor wrappers predate the grok CLI). Ani's brat-voice persona
+  // preamble is prepended into the prompt by buildFullPrompt (carried across
+  // the migration). -m carries her model (grok-build default; --model
+  // overrides). --allow scopes a read-only blast radius; --permission-mode
+  // auto matches the headless peer-review intent. Mirrors grok-build.ts.
+  const grokArgs: string[] = [
+    "-p",
+    promptResult.value,
+    "-m",
+    model,
+    "--allow",
+    "Read,Glob,Grep",
+    "--permission-mode",
+    "auto",
+    "--output-format",
+    parsed.outputFormat,
+  ];
+  if (parsed.mode === "thinking") {
+    grokArgs.push("--reasoning-effort", "high");
+  }
+
   const result = spawnSync(
     // eslint-disable-next-line sonarjs/no-os-command-from-path
-    "cursor-agent",
-    [
-      "--print",
-      "--model",
-      model,
-      "--output-format",
-      parsed.outputFormat,
-      "--mode",
-      "ask",
-      "--force",
-      "--",
-      promptResult.value,
-    ],
+    "grok",
+    grokArgs,
     {
-      stdio: ["inherit", "pipe", "inherit"],
       maxBuffer: SPAWN_MAX_BUFFER,
-      encoding: "buffer",
+      encoding: "utf8",
     },
   );
+  if (result.error) {
+    process.stderr.write(`error: failed to spawn grok: ${result.error.message}\n`);
+    process.stderr.write("(is the grok CLI installed + on PATH? install per https://docs.x.ai/docs/grok-build)\n");
+    return 1;
+  }
 
-  const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
+  const stdoutStr: string = result.stdout ?? "";
   try {
-    writeFileSync(outputFile, stdoutBuf);
+    writeFileSync(outputFile, stdoutStr);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     process.stderr.write(`error: failed to write output-file ${outputFile}: ${msg}\n`);
   }
-  process.stdout.write(stdoutBuf);
-  if (stdoutBuf.length > 0 && !stdoutBuf.subarray(-1).equals(Buffer.from("\n"))) {
+  process.stdout.write(stdoutStr);
+  if (stdoutStr.length > 0 && !stdoutStr.endsWith("\n")) {
     process.stdout.write("\n");
   }
   process.stdout.write(`OUTPUT-FILE: ${outputFile}\n`);
@@ -494,7 +529,8 @@ export function main(argv: readonly string[]): number {
   const exitCode = result.status ?? 1;
   if (exitCode !== 0) {
     process.stderr.write("\n");
-    process.stderr.write(`cursor-agent exited with code ${String(exitCode)}\n`);
+    if (result.stderr) process.stderr.write(String(result.stderr));
+    process.stderr.write(`grok exited with code ${String(exitCode)}\n`);
     return 2;
   }
   return 0;
