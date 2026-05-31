@@ -340,6 +340,82 @@ test("observe-act work-item lane can load a prompt-flow task context instead of 
   deepEqual(loaded, ["task-implement:Load implementation plan:repo.search:work_item.failures"]);
 });
 
+test("observe-act work-item lane carries prompt-flow overflow page navigation into the next tick and evidence", async () => {
+  const stdout: string[] = [];
+  const observeEvents: OrgEvent[] = [];
+  const loaded: string[] = [];
+  let tick = 0;
+  const tasks = Array.from({ length: 3 }, (_, index) => promptFlowTask({
+    taskId: `task-${index + 1}`,
+    promptFlowId: `flow-${index + 1}`,
+    label: `Task ${index + 1}`,
+    actionClass: ActionClass.WriteCode,
+    priority: 100 - index,
+    directions: [`Load task ${index + 1}`],
+  }));
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+      promptFlowTasks: tasks,
+    }),
+    writeObserveStdout: (text) => {
+      stdout.push(text);
+    },
+    selectSlot: () => {
+      tick += 1;
+      return tick === 1 ? 1 : 6;
+    },
+    runCommand: async () => {
+      throw new Error("prompt-flow paging test should not dispatch a command");
+    },
+    dispatchTool: async () => {
+      throw new Error("prompt-flow paging test should not dispatch MCP directly");
+    },
+    loadPromptFlowContext: async (request) => {
+      loaded.push(request.taskId);
+      return {
+        taskId: request.taskId,
+        promptFlowId: request.promptFlowId,
+        directions: request.directions,
+        toolInjections: request.toolInjections,
+        metrics: request.metrics,
+        contextArtifacts: [],
+      };
+    },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const first = await lane.runOnce();
+  const second = await lane.runOnce();
+
+  equal(first.failures.length, 0);
+  equal(first.status, "observe-act:reobserve:work_item:prompt_flow_page:1");
+  equal(second.failures.length, 0);
+  equal(second.status, "observe-act:context:task-3");
+  ok(stdout.join("\n").includes("prompt-flow page: 2/2"));
+  deepEqual(loaded, ["task-3"]);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:prompt_flow_page:0"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:reobserve_prompt_flow_page:1"));
+  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:prompt_flow_page:1"));
+  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:selected_prompt_flow_task:task-3"));
+  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:selected_prompt_flow:flow-3"));
+});
+
 test("observe-act work-item lane passes hierarchy readouts through to the agent observe surface", async () => {
   const stdout: string[] = [];
   const lane = createObserveActWorkItemCadenceLane({

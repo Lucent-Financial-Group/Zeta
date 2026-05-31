@@ -60,6 +60,7 @@ export type ParsedAgentCliArgs = {
   workItemId: string;
   gateApproved: boolean;
   evidence: boolean;
+  promptFlowPage?: number;
   selectIndex?: number;
 };
 
@@ -73,6 +74,7 @@ export type AgentCliScreen = {
   hatId: string;
   metrics: ScopedReadout;
   promptFlows?: PromptFlowReadout;
+  page?: Menu16["page"];
   hierarchy?: HierarchyReadout;
   slots: readonly Pick<Menu16Slot, "index" | "direction" | "label" | "availability" | "reason">[];
 };
@@ -151,6 +153,10 @@ export type AgentCliCycleEvidence = {
   selectedIndex: number;
   vetoCount: number;
   trueSlotCount: number;
+  promptFlowPage?: number | undefined;
+  selectedPromptFlowTaskId?: string | undefined;
+  selectedPromptFlowId?: string | undefined;
+  reobservePromptFlowPage?: number | undefined;
   promptFlowIds: readonly string[];
   metricBlockIds: readonly string[];
   selectorRejections: readonly MenuSelectorRejection[];
@@ -191,6 +197,13 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
   if (selectIndexValue !== undefined && (!Number.isInteger(selectIndex) || String(selectIndex) !== selectIndexValue)) {
     return { ok: false, message: `--select-index must be an integer, got '${selectIndexValue}'` };
   }
+  const promptFlowPageValue = values.flags.get("prompt-flow-page");
+  const promptFlowPage = promptFlowPageValue === undefined ? undefined : Number.parseInt(promptFlowPageValue, 10);
+  if (promptFlowPageValue !== undefined) {
+    if (!Number.isInteger(promptFlowPage) || String(promptFlowPage) !== promptFlowPageValue || (promptFlowPage ?? -1) < 0) {
+      return { ok: false, message: `--prompt-flow-page must be a non-negative integer, got '${promptFlowPageValue}'` };
+    }
+  }
 
   return {
     ok: true,
@@ -207,13 +220,17 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
       workItemId,
       gateApproved: values.booleans.has("gate-approved"),
       evidence: values.booleans.has("evidence"),
+      ...createOptionalPromptFlowPage(promptFlowPageValue === undefined ? undefined : promptFlowPage),
       ...createOptionalSelectIndex(selectIndexValue === undefined ? undefined : selectIndex),
     },
   };
 }
 
 export function selectFirstTrueSlot(menu: Menu16): number {
-  return menu.slots.find((slot) => slot.availability === TriAvailability.True)?.index ?? -1;
+  const selectable = menu.slots.filter((slot) => slot.availability === TriAvailability.True);
+  return selectable.find((slot) => !slot.direction.startsWith("navigate."))?.index
+    ?? selectable[0]?.index
+    ?? -1;
 }
 
 export function formatAgentCliScreen(screen: AgentCliScreen): string {
@@ -226,6 +243,7 @@ export function formatAgentCliScreen(screen: AgentCliScreen): string {
     ...formatMetricBlocks(screen.metrics.blocks),
     "prompt flows:",
     ...formatPromptFlowTasks(screen.promptFlows),
+    ...formatMenuPage(screen.page),
     ...formatHierarchy(screen.hierarchy),
     "menu:",
     ...screen.slots.map(formatSlot),
@@ -397,6 +415,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     ...createOptionalDeterministicRules(input.deterministicRules),
     ...createOptionalMetricAgents(input.metricAgents),
     ...createOptionalPromptFlowTasks(input.promptFlowTasks),
+    ...createOptionalPromptFlowPage(parsed.value.promptFlowPage),
     ...createOptionalHierarchy(input.hierarchy),
     ...createOptionalScheduleBlocks(input.scheduleBlocks),
   });
@@ -411,6 +430,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     hatId: parsed.value.hatId,
     metrics: observed.metrics,
     promptFlows: observed.promptFlows,
+    page: observed.actions.page,
     hierarchy: observed.hierarchy,
     slots: observed.actions.slots,
   })}\n`);
@@ -545,6 +565,9 @@ function createAgentCliCycleEvidence(
     selectedIndex: selection.index,
     vetoCount: menu.slots.filter((slot) => slot.availability === TriAvailability.False).length,
     trueSlotCount: menu.slots.filter((slot) => slot.availability === TriAvailability.True).length,
+    ...createOptionalEvidenceNumber("promptFlowPage", menu.page?.promptFlows?.page),
+    ...selectedPromptFlowEvidence(menu, selection.index),
+    ...(actionResult?.outcome === "reobserve" ? createOptionalEvidenceNumber("reobservePromptFlowPage", actionResult.menuPage?.promptFlows) : {}),
     promptFlowIds: uniqueSorted([
       ...promptFlows.tasks.map((task) => task.promptFlowId),
       ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task.promptFlowId),
@@ -556,16 +579,67 @@ function createAgentCliCycleEvidence(
 }
 
 function hashMenu(menu: Menu16): string {
-  const stable = menu.slots.map((slot) => ({
-    index: slot.index,
-    direction: slot.direction,
-    label: slot.label,
-    availability: slot.availability,
-    reason: slot.reason ?? null,
-    impl: slot.impl === undefined ? null : slot.impl.kind,
-    actionType: slot.action?.actionType ?? null,
-  }));
+  const stable = {
+    page: menu.page ?? null,
+    slots: menu.slots.map((slot) => ({
+      index: slot.index,
+      direction: slot.direction,
+      label: slot.label,
+      availability: slot.availability,
+      reason: slot.reason ?? null,
+      impl: stableSlotImpl(slot),
+      actionType: slot.action?.actionType ?? null,
+    })),
+  };
   return createHash("sha256").update(JSON.stringify(stable)).digest("hex");
+}
+
+function stableSlotImpl(slot: Menu16Slot): unknown {
+  switch (slot.impl?.kind) {
+    case undefined:
+      return null;
+    case "prompt_flow":
+      return {
+        kind: slot.impl.kind,
+        taskId: slot.impl.request.taskId,
+        promptFlowId: slot.impl.request.promptFlowId,
+      };
+    case "observe":
+      return {
+        kind: slot.impl.kind,
+        toScope: slot.impl.toScope,
+        menuPage: slot.impl.menuPage ?? null,
+      };
+    case "command":
+      return {
+        kind: slot.impl.kind,
+        commandType: slot.impl.commandType,
+      };
+    case "mcp":
+      return {
+        kind: slot.impl.kind,
+        tool: slot.impl.tool,
+      };
+  }
+}
+
+function selectedPromptFlowEvidence(
+  menu: Menu16,
+  selectedIndex: number,
+): { selectedPromptFlowTaskId?: string; selectedPromptFlowId?: string } {
+  const selected = menu.slots.find((slot) => slot.index === selectedIndex);
+  if (selected?.impl?.kind !== "prompt_flow") return {};
+  return {
+    selectedPromptFlowTaskId: selected.impl.request.taskId,
+    selectedPromptFlowId: selected.impl.request.promptFlowId,
+  };
+}
+
+function createOptionalEvidenceNumber<K extends string>(
+  key: K,
+  value: number | undefined,
+): { [P in K]?: number } {
+  return value === undefined ? {} : { [key]: value } as { [P in K]?: number };
 }
 
 function uniqueSorted(values: readonly string[]): readonly string[] {
@@ -668,6 +742,10 @@ function createOptionalSelectIndex(selectIndex: number | undefined): { selectInd
   return selectIndex === undefined ? {} : { selectIndex };
 }
 
+function createOptionalPromptFlowPage(promptFlowPage: number | undefined): { promptFlowPage?: number } {
+  return promptFlowPage === undefined ? {} : { promptFlowPage };
+}
+
 function createOptionalMetricAgents(
   metricAgents: readonly ScopedMetricAgent[] | undefined,
 ): { metricAgents?: readonly ScopedMetricAgent[] } {
@@ -715,6 +793,11 @@ function formatPromptFlowTasks(promptFlows: PromptFlowReadout | undefined): read
     ...promptFlows.tasks.map((task) => `- ${task.taskId} ${task.promptFlowId} ${task.label}`),
     ...promptFlows.vetoedTasks.map((vetoed) => `- ${vetoed.task.taskId} ${vetoed.task.promptFlowId} ${vetoed.task.label} (${vetoed.reason})`),
   ];
+}
+
+function formatMenuPage(page: Menu16["page"] | undefined): readonly string[] {
+  if (page?.promptFlows === undefined) return [];
+  return [`prompt-flow page: ${page.promptFlows.page + 1}/${page.promptFlows.pageCount}`];
 }
 
 function formatHierarchy(hierarchy: HierarchyReadout | undefined): readonly string[] {
@@ -876,7 +959,7 @@ function formatActResult(result: ActResult): string {
     case "loaded_context":
       return `loaded context ${result.context.taskId}`;
     case "reobserve":
-      return `reobserve ${result.scope}`;
+      return `reobserve ${result.scope}${result.menuPage?.promptFlows === undefined ? "" : ` prompt-flow-page ${result.menuPage.promptFlows + 1}`}`;
     case "rejected":
       return `rejected ${result.reason}: ${result.message}`;
   }

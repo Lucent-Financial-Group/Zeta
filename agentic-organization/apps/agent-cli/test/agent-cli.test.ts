@@ -80,6 +80,27 @@ test("selectFirstTrueSlot returns the first selectable slot index", () => {
   );
 });
 
+test("selectFirstTrueSlot prefers executable work over page navigation", () => {
+  equal(
+    selectFirstTrueSlot({
+      slots: [
+        { index: 1, direction: "navigate.next", label: "next prompt-flow page", availability: "T" },
+        { index: 4, direction: "commit.a", label: "execute", availability: "T" },
+        { index: 6, direction: "inspect.more", label: "Task context", availability: "T" },
+      ],
+    }),
+    4,
+  );
+  equal(
+    selectFirstTrueSlot({
+      slots: [
+        { index: 1, direction: "navigate.next", label: "next prompt-flow page", availability: "T" },
+      ],
+    }),
+    1,
+  );
+});
+
 test("createModelBackedMenuSelector accepts only rendered T slot indexes from the local model", async () => {
   const prompts: { system: string; user: string }[] = [];
   const selector = createModelBackedMenuSelector({
@@ -492,6 +513,110 @@ test("runAgentCliCycle renders prompt-flow tasks and loads selected context", as
   ok(stdout.join("\n").includes("context metrics:"));
   ok(stdout.join("\n").includes("- failing tests: 2"));
   deepEqual(contexts, ["task-implement:repo.search:work_item.failures"]);
+});
+
+test("runAgentCliCycle renders prompt-flow overflow pages and reobserve page navigation", async () => {
+  const stdout: string[] = [];
+  const tasks = Array.from({ length: 3 }, (_, index) => promptFlowTask({
+    taskId: `task-${index + 1}`,
+    promptFlowId: `flow-${index + 1}`,
+    label: `Task ${index + 1}`,
+    actionClass: ActionClass.WriteCode,
+    priority: 100 - index,
+  }));
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--prompt-flow-page",
+      "1",
+      "--select-index",
+      "0",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    promptFlowTasks: tasks,
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  deepEqual(result.actionResult, {
+    outcome: "reobserve",
+    scope: RunScope.WorkItem,
+    menuPage: { promptFlows: 0 },
+  });
+  const rendered = stdout.join("\n");
+  ok(rendered.includes("prompt-flow page: 2/2"));
+  ok(rendered.includes("[06] T inspect.more Task 3"));
+  ok(rendered.includes("[00] T navigate.previous previous prompt-flow page"));
+  ok(rendered.includes("action: reobserve work_item prompt-flow-page 1"));
+  equal(result.evidence?.promptFlowPage, 1);
+  equal(result.evidence?.selectedPromptFlowTaskId, undefined);
+  equal(result.evidence?.reobservePromptFlowPage, 0);
+});
+
+test("runAgentCliCycle binds selected prompt-flow task identity into evidence", async () => {
+  const tasks = Array.from({ length: 3 }, (_, index) => promptFlowTask({
+    taskId: `task-${index + 1}`,
+    promptFlowId: `flow-${index + 1}`,
+    label: "Duplicate label",
+    actionClass: ActionClass.WriteCode,
+    priority: 100 - index,
+  }));
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--prompt-flow-page",
+      "1",
+      "--select-index",
+      "6",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    promptFlowTasks: tasks,
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.evidence?.promptFlowPage, 1);
+  equal(result.evidence?.selectedPromptFlowTaskId, "task-3");
+  equal(result.evidence?.selectedPromptFlowId, "flow-3");
 });
 
 test("runAgentCliCycle default prompt-flow loader preserves compiled phase metadata", async () => {

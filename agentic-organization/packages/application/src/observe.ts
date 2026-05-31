@@ -341,7 +341,7 @@ export type TriAvailability = (typeof TriAvailability)[keyof typeof TriAvailabil
 export type SlotImpl =
   | { kind: "command"; commandType: string; command?: unknown }
   | { kind: "mcp"; tool: string; args?: unknown }
-  | { kind: "observe"; toScope: RunScope }
+  | { kind: "observe"; toScope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { kind: "prompt_flow"; request: PromptFlowContextRequest };
 
 export const ObserveCommandType = {
@@ -371,11 +371,28 @@ export type Menu16Slot = {
 
 export type Menu16 = {
   slots: readonly Menu16Slot[];
+  page?: Menu16PageState | undefined;
 };
 
 export type RenderMenu16Options = {
   hatAssignmentId?: ZetaIdDecimal;
   promptFlows?: PromptFlowReadout;
+  promptFlowPage?: number | undefined;
+};
+
+export type PromptFlowPageState = {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+};
+
+export type Menu16PageState = {
+  promptFlows?: PromptFlowPageState | undefined;
+};
+
+export type MenuPageTarget = {
+  promptFlows?: number | undefined;
 };
 
 export type ActDependencies = {
@@ -406,7 +423,7 @@ export type ActRejectionReason = (typeof ActRejectionReason)[keyof typeof ActRej
 export type ActResult =
   | { outcome: "dispatched"; kind: "command" | "mcp"; result: unknown }
   | { outcome: "loaded_context"; context: PromptFlowContext }
-  | { outcome: "reobserve"; scope: RunScope }
+  | { outcome: "reobserve"; scope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { outcome: "rejected"; reason: ActRejectionReason; message: string };
 
 export type MetricBlock = {
@@ -704,6 +721,7 @@ export type CreateTelemetryScopedMetricAgentsInput = {
 export type AgentObserveDependencies = ObserveDependencies & {
   metricAgents?: readonly ScopedMetricAgent[];
   promptFlowTasks?: readonly PromptFlowTask[];
+  promptFlowPage?: number | undefined;
   hierarchy?: HierarchySnapshot;
 };
 
@@ -738,6 +756,8 @@ const MENU16_DIRECTIONS: readonly string[] = [
 ];
 const COMMIT_SLOT_INDICES: readonly number[] = [4, 5];
 const PROMPT_FLOW_SLOT_INDICES: readonly number[] = [6, 7];
+const PROMPT_FLOW_PAGE_SIZE = PROMPT_FLOW_SLOT_INDICES.length;
+const MENU16_SLOT_COUNT = 16;
 const RUN_SCOPE_LADDER: readonly RunScope[] = [
   RunScope.Run,
   RunScope.WorkItem,
@@ -751,6 +771,7 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
   const vetoesByAction = new Map(readout.vetoedOptions.map((vetoed) => [vetoed.option.actionType, vetoed]));
   const survivorsByAction = new Map(readout.options.map((option) => [option.actionType, option]));
   const orderedOptions = PHASE_OPTIONS[readout.phase] ?? [];
+  let page: Menu16PageState | undefined;
 
   for (const [offset, option] of orderedOptions.entries()) {
     const slotIndex = COMMIT_SLOT_INDICES[offset];
@@ -766,9 +787,13 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
   if (readout.options.length > 0) {
     renderScopeSlots(rendered, readout.scope);
     renderMetaSlots(rendered, readout.scope);
-    renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId);
+    const promptFlowPage = renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId, options.promptFlowPage);
+    page = promptFlowPage === undefined ? undefined : { promptFlows: promptFlowPage };
   }
-  return { slots: rendered };
+  return {
+    slots: rendered,
+    ...createOptionalMenuPage(page),
+  };
 }
 
 function createNeutralSlot(index: number, direction: string): Menu16Slot {
@@ -840,13 +865,18 @@ function createObserveSlot(
   direction: string,
   label: string,
   toScope: RunScope,
+  menuPage?: MenuPageTarget | undefined,
 ): Menu16Slot {
   return {
     index,
     direction,
     label,
     availability: TriAvailability.True,
-    impl: { kind: "observe", toScope },
+    impl: {
+      kind: "observe",
+      toScope,
+      ...createOptionalMenuPageTarget(menuPage),
+    },
   };
 }
 
@@ -870,16 +900,22 @@ function renderPromptFlowSlots(
   readout: RunStateReadout,
   promptFlows: PromptFlowReadout | undefined,
   hatAssignmentId: ZetaIdDecimal | undefined,
-): void {
-  if (promptFlows === undefined || hatAssignmentId === undefined) return;
+  requestedPage = 0,
+): PromptFlowPageState | undefined {
+  if (promptFlows === undefined || hatAssignmentId === undefined) return undefined;
   const ordered = [
     ...[...promptFlows.tasks].sort(comparePromptFlowTasks),
     ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task).sort(comparePromptFlowTasks),
   ];
+  if (ordered.length === 0) return undefined;
+  const pageCount = Math.ceil(ordered.length / PROMPT_FLOW_PAGE_SIZE);
+  const page = clampPromptFlowPage(requestedPage, pageCount);
+  const pageStart = page * PROMPT_FLOW_PAGE_SIZE;
+  const pageTasks = ordered.slice(pageStart, pageStart + PROMPT_FLOW_PAGE_SIZE);
   const vetoesByTask = new Map(promptFlows.vetoedTasks.map((vetoed) => [vetoed.task.taskId, vetoed]));
   const allowedTaskIds = new Set(promptFlows.tasks.map((task) => task.taskId));
 
-  for (const [offset, task] of ordered.entries()) {
+  for (const [offset, task] of pageTasks.entries()) {
     const slotIndex = PROMPT_FLOW_SLOT_INDICES[offset];
     if (slotIndex === undefined) break;
     if (rendered[slotIndex]?.availability !== TriAvailability.Neutral) continue;
@@ -891,6 +927,40 @@ function renderPromptFlowSlots(
       rendered[slotIndex] = createPromptFlowVetoedSlot(slotIndex, direction, task, vetoed?.reason ?? "prompt flow is not executable by this hat");
     }
   }
+  renderPromptFlowNavigationSlots(rendered, readout.scope, page, pageCount);
+  return {
+    page,
+    pageSize: PROMPT_FLOW_PAGE_SIZE,
+    pageCount,
+    total: ordered.length,
+  };
+}
+
+function renderPromptFlowNavigationSlots(
+  rendered: Menu16Slot[],
+  currentScope: RunScope,
+  page: number,
+  pageCount: number,
+): void {
+  rendered[0] = page <= 0
+    ? createDisabledGrammarSlot(0, MENU16_DIRECTIONS[0]!, "previous prompt-flow page", "already at first prompt-flow page")
+    : createObserveSlot(0, MENU16_DIRECTIONS[0]!, "previous prompt-flow page", currentScope, { promptFlows: page - 1 });
+  rendered[1] = page >= pageCount - 1
+    ? createDisabledGrammarSlot(1, MENU16_DIRECTIONS[1]!, "next prompt-flow page", "already at last prompt-flow page")
+    : createObserveSlot(1, MENU16_DIRECTIONS[1]!, "next prompt-flow page", currentScope, { promptFlows: page + 1 });
+}
+
+function clampPromptFlowPage(requestedPage: number, pageCount: number): number {
+  if (!Number.isInteger(requestedPage) || requestedPage < 0) return 0;
+  return Math.min(requestedPage, Math.max(0, pageCount - 1));
+}
+
+function createOptionalMenuPage(page: Menu16PageState | undefined): { page?: Menu16PageState } {
+  return page === undefined ? {} : { page };
+}
+
+function createOptionalMenuPageTarget(menuPage: MenuPageTarget | undefined): { menuPage?: MenuPageTarget } {
+  return menuPage === undefined ? {} : { menuPage };
 }
 
 function createPromptFlowSlot(
@@ -970,7 +1040,7 @@ function createOptionalHatAssignment(
 }
 
 export async function act(index: number, menu: Menu16, deps: ActDependencies): Promise<ActResult> {
-  if (!Number.isInteger(index) || index < 0 || index >= menu.slots.length) {
+  if (!Number.isInteger(index) || index < 0 || index >= MENU16_SLOT_COUNT) {
     return rejectAct(ActRejectionReason.SlotOutOfRange, `slot index ${index} is outside the rendered menu`);
   }
   const slot = menu.slots[index];
@@ -1004,7 +1074,11 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
         result: await deps.dispatchTool(slot.impl.tool, slot.impl.args, slot),
       };
     case "observe":
-      return { outcome: "reobserve", scope: slot.impl.toScope };
+      return {
+        outcome: "reobserve",
+        scope: slot.impl.toScope,
+        ...createOptionalMenuPageTarget(slot.impl.menuPage),
+      };
     case "prompt_flow":
       if (deps.loadPromptFlowContext === undefined) {
         return rejectAct(ActRejectionReason.MissingPromptFlowContextLoader, `slot ${index} requires a prompt-flow context loader`);
@@ -1045,7 +1119,11 @@ export async function observeAgentSurface(
   return {
     outcome: ObserveOutcome.Readout,
     readout: observed.readout,
-    actions: renderMenu16(observed.readout, { hatAssignmentId: snapshot.hatAssignmentId, promptFlows }),
+    actions: renderMenu16(observed.readout, {
+      hatAssignmentId: snapshot.hatAssignmentId,
+      promptFlows,
+      promptFlowPage: deps.promptFlowPage,
+    }),
     metrics: {
       scope: snapshot.scope,
       blocks,

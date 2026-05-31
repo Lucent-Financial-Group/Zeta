@@ -125,6 +125,7 @@ export type ObserveActWorkItem = {
   agentId: string;
   scheduleBlocks?: readonly WorkScheduleBlock[];
   promptFlowTasks?: readonly PromptFlowTask[];
+  promptFlowPage?: number | undefined;
   hierarchy?: HierarchySnapshot;
 };
 
@@ -177,6 +178,7 @@ export type ObserveActWorkItemCadenceDeps = {
 };
 
 export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCadenceDeps): CadenceLane {
+  const promptFlowPageByRunId = new Map<string, number>();
   return {
     name: "observe-act-work-item",
     async runOnce(): Promise<CadenceLaneTickResult> {
@@ -192,8 +194,9 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
         const stderr: string[] = [];
         const executionMode = await resolveObserveActExecutionMode(deps.executionMode);
         const supplementalEvidenceRefs = await resolveObserveActSupplementalEvidenceRefs(deps.supplementalEvidenceRefs);
+        const promptFlowPage = work.promptFlowPage ?? promptFlowPageByRunId.get(work.runId);
         const result = await runAgentCliCycle({
-          argv: observeActArgv(deps.organizationId, work),
+          argv: observeActArgv(deps.organizationId, work, promptFlowPage),
           now: () => new Date(deps.now()).toISOString(),
           writeStdout: deps.writeObserveStdout ?? (() => undefined),
           writeStderr: (text) => {
@@ -209,6 +212,7 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
           ...(executionMode === "shadow" ? {} : createOptionalObserveActSlotAuthorizer(deps, work)),
           ...(deps.selectSlot === undefined ? {} : { selectSlot: deps.selectSlot }),
         });
+        recordObserveActPageCursor(promptFlowPageByRunId, work.runId, result.actionResult);
         if (result.evidence !== undefined && deps.appendEvent !== undefined) {
           await deps.appendEvent(createObserveActTickEvent(deps, work, result.evidence, supplementalEvidenceRefs));
         }
@@ -301,10 +305,22 @@ function observeActEvidenceRefs(
     `observe-act:selected_slot:${evidence.selectedIndex}`,
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
+    ...promptFlowPageEvidenceRefs(evidence),
     ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
     ...actionRejectionEvidenceRefs(evidence),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function promptFlowPageEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  return [
+    ...(evidence.promptFlowPage === undefined ? [] : [`observe-act:prompt_flow_page:${evidence.promptFlowPage}`]),
+    ...(evidence.selectedPromptFlowTaskId === undefined ? [] : [`observe-act:selected_prompt_flow_task:${evidence.selectedPromptFlowTaskId}`]),
+    ...(evidence.selectedPromptFlowId === undefined ? [] : [`observe-act:selected_prompt_flow:${evidence.selectedPromptFlowId}`]),
+    ...(evidence.reobservePromptFlowPage === undefined ? [] : [`observe-act:reobserve_prompt_flow_page:${evidence.reobservePromptFlowPage}`]),
   ];
 }
 
@@ -332,7 +348,7 @@ function selectorRejectionEvidenceRefs(
   ];
 }
 
-function observeActArgv(organizationId: string, work: ObserveActWorkItem): string[] {
+function observeActArgv(organizationId: string, work: ObserveActWorkItem, promptFlowPage: number | undefined): string[] {
   return [
     "observe",
     "--hat",
@@ -353,8 +369,13 @@ function observeActArgv(organizationId: string, work: ObserveActWorkItem): strin
     work.projectId,
     "--work-item",
     work.workItemId,
+    ...observeActPromptFlowPageArgs(promptFlowPage),
     ...observeActBooleanArgs(work),
   ];
+}
+
+function observeActPromptFlowPageArgs(promptFlowPage: number | undefined): string[] {
+  return promptFlowPage === undefined ? [] : ["--prompt-flow-page", String(promptFlowPage)];
 }
 
 function createOptionalObserveActPromptFlowTasks(
@@ -415,7 +436,7 @@ function formatObserveActStatus(
     return `${prefix}:${result.kind}:${observeActDispatchStatus(result.result)}`;
   }
   if (result?.outcome === "reobserve") {
-    return `${prefix}:reobserve:${result.scope}`;
+    return `${prefix}:reobserve:${result.scope}${result.menuPage?.promptFlows === undefined ? "" : `:prompt_flow_page:${result.menuPage.promptFlows}`}`;
   }
   if (result?.outcome === "loaded_context") {
     return `${prefix}:context:${result.context.taskId}`;
@@ -424,6 +445,15 @@ function formatObserveActStatus(
     return `${prefix}:rejected:${result.reason}`;
   }
   return exitCode === 0 ? `${prefix}:no_action` : `${prefix}:rejected`;
+}
+
+function recordObserveActPageCursor(
+  cursor: Map<string, number>,
+  runId: string,
+  result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"],
+): void {
+  if (result?.outcome !== "reobserve" || result.menuPage?.promptFlows === undefined) return;
+  cursor.set(runId, result.menuPage.promptFlows);
 }
 
 function observeActDispatchStatus(result: unknown): string {

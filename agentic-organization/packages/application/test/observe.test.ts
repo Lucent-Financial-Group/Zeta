@@ -325,6 +325,104 @@ test("renderMenu16 prompt-flow overflow prefers executable tasks over vetoed tas
   equal(menu.slots[7]?.availability, "F");
 });
 
+test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", async () => {
+  const approved = observe(snapshot({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingGate,
+    hasGateApproval: true,
+  }), deps);
+  equal(approved.outcome, ObserveOutcome.Readout);
+  if (approved.outcome !== ObserveOutcome.Readout) return;
+  const tasks = Array.from({ length: 5 }, (_, index) => promptFlowTask({
+    taskId: `task-${index + 1}`,
+    promptFlowId: `flow-${index + 1}`,
+    label: `Task ${index + 1}`,
+    priority: 100 - index,
+  }));
+
+  const firstPage = renderMenu16(approved.readout, {
+    hatAssignmentId: asZetaIdDecimal("99"),
+    promptFlows: { tasks, vetoedTasks: [] },
+  });
+
+  deepEqual(firstPage.page?.promptFlows, { page: 0, pageSize: 2, pageCount: 3, total: 5 });
+  equal(firstPage.slots[0]?.direction, "navigate.previous");
+  equal(firstPage.slots[0]?.availability, "F");
+  ok(firstPage.slots[0]?.reason?.includes("already at first prompt-flow page"));
+  equal(firstPage.slots[1]?.direction, "navigate.next");
+  equal(firstPage.slots[1]?.availability, "T");
+  deepEqual(firstPage.slots[1]?.impl, {
+    kind: "observe",
+    toScope: RunScope.WorkItem,
+    menuPage: { promptFlows: 1 },
+  });
+  deepEqual(firstPage.slots.slice(6, 8).map((slot) => slot.label), ["Task 1", "Task 2"]);
+
+  const nextResult = await act(1, firstPage, {
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  deepEqual(nextResult, {
+    outcome: "reobserve",
+    scope: RunScope.WorkItem,
+    menuPage: { promptFlows: 1 },
+  });
+});
+
+test("renderMenu16 renders later prompt-flow overflow pages without changing slot count", () => {
+  const approved = observe(snapshot({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingGate,
+    hasGateApproval: true,
+  }), deps);
+  equal(approved.outcome, ObserveOutcome.Readout);
+  if (approved.outcome !== ObserveOutcome.Readout) return;
+  const tasks = Array.from({ length: 5 }, (_, index) => promptFlowTask({
+    taskId: `task-${index + 1}`,
+    promptFlowId: `flow-${index + 1}`,
+    label: `Task ${index + 1}`,
+    priority: 100 - index,
+  }));
+
+  const middlePage = renderMenu16(approved.readout, {
+    hatAssignmentId: asZetaIdDecimal("99"),
+    promptFlowPage: 1,
+    promptFlows: { tasks, vetoedTasks: [] },
+  });
+
+  equal(middlePage.slots.length, 16);
+  deepEqual(middlePage.page?.promptFlows, { page: 1, pageSize: 2, pageCount: 3, total: 5 });
+  equal(middlePage.slots[0]?.availability, "T");
+  deepEqual(middlePage.slots[0]?.impl, {
+    kind: "observe",
+    toScope: RunScope.WorkItem,
+    menuPage: { promptFlows: 0 },
+  });
+  equal(middlePage.slots[1]?.availability, "T");
+  deepEqual(middlePage.slots[1]?.impl, {
+    kind: "observe",
+    toScope: RunScope.WorkItem,
+    menuPage: { promptFlows: 2 },
+  });
+  deepEqual(middlePage.slots.slice(6, 8).map((slot) => slot.label), ["Task 3", "Task 4"]);
+
+  const lastPage = renderMenu16(approved.readout, {
+    hatAssignmentId: asZetaIdDecimal("99"),
+    promptFlowPage: 2,
+    promptFlows: { tasks, vetoedTasks: [] },
+  });
+
+  deepEqual(lastPage.page?.promptFlows, { page: 2, pageSize: 2, pageCount: 3, total: 5 });
+  equal(lastPage.slots[0]?.availability, "T");
+  equal(lastPage.slots[1]?.availability, "F");
+  ok(lastPage.slots[1]?.reason?.includes("already at last prompt-flow page"));
+  equal(lastPage.slots[6]?.label, "Task 5");
+  equal(lastPage.slots[6]?.availability, "T");
+  equal(lastPage.slots[7]?.label, "empty");
+  equal(lastPage.slots[7]?.availability, "N");
+});
+
 test("renderMenu16 exposes ADR scope, history, and meta controller slots", async () => {
   const approved = observe(snapshot({
     scope: RunScope.WorkItem,
@@ -492,6 +590,40 @@ test("act rejects non-selectable slots before any implementation dispatch", asyn
   });
 
   equal(result.outcome, "rejected");
+  equal(dispatched, false);
+});
+
+test("act rejects slot indexes outside the fixed 16-direction grammar even if a malformed menu is longer", async () => {
+  const malformed: Menu16 = {
+    slots: [
+      ...Array.from({ length: 16 }, (_, index) => ({
+        index,
+        direction: `slot.${index}`,
+        label: "empty",
+        availability: "N" as const,
+      })),
+      {
+        index: 16,
+        direction: "overflow.illegal",
+        label: "illegal seventeenth slot",
+        availability: "T",
+        impl: { kind: "mcp" as const, tool: "unsafe.extra_slot" },
+      },
+    ],
+  };
+  let dispatched = false;
+
+  const result = await act(16, malformed, {
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.outcome, "rejected");
+  if (result.outcome !== "rejected") return;
+  equal(result.reason, ActRejectionReason.SlotOutOfRange);
   equal(dispatched, false);
 });
 
