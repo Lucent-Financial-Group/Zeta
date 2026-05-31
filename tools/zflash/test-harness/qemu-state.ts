@@ -20,6 +20,7 @@ export interface Qcow2SnapshotRetentionInput {
   readonly diskPath: string;
   readonly serialLogPath: string;
   readonly snapshotName: string;
+  readonly diskSizeGB?: number;
   readonly memoryMB?: number;
   readonly cpuCount?: number;
   readonly kvmAvailable?: boolean;
@@ -30,6 +31,9 @@ export interface Qcow2SnapshotRetentionPlan {
   readonly diskPath: string;
   readonly serialLogPath: string;
   readonly snapshotName: string;
+  readonly diskSizeGB: number;
+  readonly createDiskImage: QemuCommand;
+  readonly initialInstallFromIsoWithDisk: QemuCommand;
   readonly createBaselineSnapshot: QemuCommand;
   readonly restoreBaselineSnapshot: QemuCommand;
   readonly listSnapshots: QemuCommand;
@@ -60,6 +64,8 @@ export type RetentionSerialMarkerResult =
   | { readonly error: RetentionSerialMarkerFeedback };
 
 export type Qcow2RetentionExecutionStep =
+  | "create-disk-image"
+  | "initial-install-from-iso-with-disk"
   | "create-baseline-snapshot"
   | "list-baseline-snapshots"
   | "restore-baseline-snapshot"
@@ -136,6 +142,7 @@ export type Qcow2RetentionExecutionResult =
 
 const DEFAULT_MEMORY_MB = 4096;
 const DEFAULT_CPU_COUNT = 2;
+const DEFAULT_DISK_SIZE_GB = 20;
 const DEFAULT_RETENTION_COMMAND_TIMEOUT_MS = 30 * 60 * 1000;
 
 export const RETENTION_SERIAL_MARKERS: readonly string[] = [
@@ -163,6 +170,9 @@ function validateInput(input: Qcow2SnapshotRetentionInput): Qcow2SnapshotRetenti
   }
   if (!nonEmpty(input.snapshotName)) {
     return { kind: "invalid-input", field: "snapshotName", reason: "snapshot name is required" };
+  }
+  if (input.diskSizeGB !== undefined && !positiveInteger(input.diskSizeGB)) {
+    return { kind: "invalid-input", field: "diskSizeGB", reason: "diskSizeGB must be a positive integer" };
   }
   if (input.memoryMB !== undefined && !positiveInteger(input.memoryMB)) {
     return { kind: "invalid-input", field: "memoryMB", reason: "memoryMB must be a positive integer" };
@@ -219,6 +229,7 @@ export function planQcow2SnapshotRetention(
     diskPath: input.diskPath,
     serialLogPath: input.serialLogPath,
     snapshotName: input.snapshotName,
+    diskSizeGB: input.diskSizeGB ?? DEFAULT_DISK_SIZE_GB,
     memoryMB: input.memoryMB ?? DEFAULT_MEMORY_MB,
     cpuCount: input.cpuCount ?? DEFAULT_CPU_COUNT,
     kvmAvailable: input.kvmAvailable ?? false,
@@ -230,6 +241,15 @@ export function planQcow2SnapshotRetention(
       diskPath: normalized.diskPath,
       serialLogPath: normalized.serialLogPath,
       snapshotName: normalized.snapshotName,
+      diskSizeGB: normalized.diskSizeGB,
+      createDiskImage: {
+        bin: "qemu-img",
+        args: ["create", "-f", "qcow2", normalized.diskPath, `${normalized.diskSizeGB}G`],
+      },
+      initialInstallFromIsoWithDisk: {
+        bin: "qemu-system-x86_64",
+        args: buildRestartArgs(normalized),
+      },
       createBaselineSnapshot: {
         bin: "qemu-img",
         args: ["snapshot", "-c", normalized.snapshotName, normalized.diskPath],
@@ -255,6 +275,8 @@ function retentionExecutionSteps(
   plan: Qcow2SnapshotRetentionPlan,
 ): ReadonlyArray<readonly [Qcow2RetentionExecutionStep, QemuCommand]> {
   return [
+    ["create-disk-image", plan.createDiskImage],
+    ["initial-install-from-iso-with-disk", plan.initialInstallFromIsoWithDisk],
     ["create-baseline-snapshot", plan.createBaselineSnapshot],
     ["list-baseline-snapshots", plan.listSnapshots],
     ["restore-baseline-snapshot", plan.restoreBaselineSnapshot],

@@ -5,8 +5,8 @@ PoC scaffold for the zflash "done" acceptance criteria — the 5-scenario QEMU t
 ## Scope
 
 **PoC**: declarative scenario definitions + CLI dispatcher contract +
-invariant tests + QEMU snapshot/restart command planning and explicit
-scenario-3 process-executor wiring.
+invariant tests + QEMU disk bootstrap, snapshot/restart command planning,
+and explicit scenario-3 process-executor wiring.
 
 **NOT in PoC** (deferred to follow-up): default-on QEMU snapshot/restart
 execution for scenarios 3-5 (state preservation between boots); multi-VM
@@ -67,8 +67,10 @@ ZFLASH_QEMU_RETENTION_EXECUTE=1 \
   bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention <iso-path>
 ```
 
-The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence and
-passes only when the serial log includes the required retention markers.
+The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence:
+create the qcow2 disk, boot the ISO once to establish the baseline disk,
+snapshot the baseline, restore it, restart from the ISO with the same disk,
+then pass only when the serial log includes the required retention markers.
 Runtime attempts for scenarios 4-5 remain
 scaffolded/fail-closed.
 `--dry-run` remains the planning surface for inspecting pending scenarios
@@ -97,7 +99,7 @@ When a scenario transitions to composes-with-existing:
 
 - [`tools/ci/qemu-full-install-test.ts`](../../ci/qemu-full-install-test.ts) — B-0831 Slice 1 starter; existing QEMU full-install harness
 - [`tools/ci/qemu-boot-test.ts`](../../ci/qemu-boot-test.ts) — cascade #5 boot smoke-test
-- [`qemu-state.ts`](qemu-state.ts) — scenario 3 qcow2 snapshot/restart command planner
+- [`qemu-state.ts`](qemu-state.ts) — scenario 3 qcow2 disk bootstrap + snapshot/restart command planner
 - [`tools/ci/audit-installer-iso-content.ts`](../../ci/audit-installer-iso-content.ts) — cascade #4 ISO content audit
 - [`full-ai-cluster/tools/zflash.ts`](../../../full-ai-cluster/tools/zflash.ts) — the zflash CLI under test
 - [`full-ai-cluster/tools/zflash-lib.ts`](../../../full-ai-cluster/tools/zflash-lib.ts) — library substrate

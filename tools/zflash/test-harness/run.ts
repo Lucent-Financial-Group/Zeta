@@ -79,11 +79,13 @@ export interface RetentionRuntimeOptions {
   readonly executor?: Qcow2RetentionExecutor;
   readonly cwd?: string;
   readonly timeoutMs?: number;
+  readonly kvmAvailable?: boolean;
 }
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const RETENTION_EXECUTION_ENV = "ZFLASH_QEMU_RETENTION_EXECUTE";
 const RETENTION_TIMEOUT_ENV = "ZFLASH_QEMU_RETENTION_TIMEOUT_MS";
+const KVM_PATH = "/dev/kvm";
 
 function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
   const args = argv.slice(2);
@@ -261,6 +263,7 @@ export function runRetentionRuntime(
     diskPath: `${absIsoPath}.scenario3.qcow2`,
     serialLogPath: `${absIsoPath}.scenario3.serial.log`,
     snapshotName: "post-initial-format",
+    kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
   });
   if ("error" in planned) {
     return {

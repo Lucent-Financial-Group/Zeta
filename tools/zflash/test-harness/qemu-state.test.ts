@@ -30,16 +30,25 @@ function successfulExecution(
 }
 
 describe("B-0891 QEMU state-preservation planner", () => {
-  test("plans qcow2 snapshot create, restore, list, and restart commands", () => {
+  test("plans qcow2 disk bootstrap, snapshot, restore, list, and restart commands", () => {
     const result = planQcow2SnapshotRetention({
       isoPath: "/tmp/zeta.iso",
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      diskSizeGB: 32,
       kvmAvailable: true,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
+    expect(result.ok.diskSizeGB).toBe(32);
+    expect(result.ok.createDiskImage).toEqual({
+      bin: "qemu-img",
+      args: ["create", "-f", "qcow2", "/tmp/zeta.qcow2", "32G"],
+    });
+    expect(result.ok.initialInstallFromIsoWithDisk.bin).toBe("qemu-system-x86_64");
+    expect(result.ok.initialInstallFromIsoWithDisk.args).toContain("-enable-kvm");
+    expect(result.ok.initialInstallFromIsoWithDisk.args).toContain("file=/tmp/zeta.qcow2,if=virtio,format=qcow2");
     expect(result.ok.createBaselineSnapshot).toEqual({
       bin: "qemu-img",
       args: ["snapshot", "-c", "post-initial-format", "/tmp/zeta.qcow2"],
@@ -55,6 +64,19 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect(result.ok.restartFromIsoWithDisk.args).toContain("host");
     expect(result.ok.restartFromIsoWithDisk.args).toContain("file=/tmp/zeta.qcow2,if=virtio,format=qcow2");
     expect(result.ok.restartFromIsoWithDisk.args).toContain("file:/tmp/serial.log");
+  });
+
+  test("defaults the qcow2 bootstrap disk size", () => {
+    const result = planQcow2SnapshotRetention({
+      isoPath: "/tmp/zeta.iso",
+      diskPath: "/tmp/zeta.qcow2",
+      serialLogPath: "/tmp/serial.log",
+      snapshotName: "post-initial-format",
+    });
+    if ("error" in result) throw new Error(result.error.reason);
+
+    expect(result.ok.diskSizeGB).toBe(20);
+    expect(result.ok.createDiskImage.args).toEqual(["create", "-f", "qcow2", "/tmp/zeta.qcow2", "20G"]);
   });
 
   test("falls back to qemu64 CPU when KVM is unavailable", () => {
@@ -99,6 +121,22 @@ describe("B-0891 QEMU state-preservation planner", () => {
     }
   });
 
+  test("returns Result-shaped feedback for invalid disk size", () => {
+    const result = planQcow2SnapshotRetention({
+      isoPath: "/tmp/zeta.iso",
+      diskPath: "/tmp/zeta.qcow2",
+      serialLogPath: "/tmp/serial.log",
+      snapshotName: "post-initial-format",
+      diskSizeGB: 0,
+    });
+
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error.kind).toBe("invalid-input");
+      expect(result.error.field).toBe("diskSizeGB");
+    }
+  });
+
   test("asserts retention serial markers from QEMU output", () => {
     const result = assertRetentionSerialMarkers([
       "zeta-creds-restore: reading preserved ESP blob",
@@ -138,12 +176,14 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect("ok" in result).toBe(true);
     if ("ok" in result) {
       expect(observedSteps).toEqual([
+        "create-disk-image",
+        "initial-install-from-iso-with-disk",
         "create-baseline-snapshot",
         "list-baseline-snapshots",
         "restore-baseline-snapshot",
         "restart-from-iso-with-disk",
       ]);
-      expect(result.ok.commandExecutions).toHaveLength(4);
+      expect(result.ok.commandExecutions).toHaveLength(6);
       expect(result.ok.serialAssertion.matchedMarkers).toContain("already-present");
     }
   });
@@ -176,6 +216,8 @@ describe("B-0891 QEMU state-preservation planner", () => {
     if ("ok" in result) {
       expect(observed.map((entry) => entry.command.bin)).toEqual([
         "qemu-img",
+        "qemu-system-x86_64",
+        "qemu-img",
         "qemu-img",
         "qemu-img",
         "qemu-system-x86_64",
@@ -203,7 +245,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect("error" in result).toBe(true);
     if ("error" in result) {
       expect(result.error.kind).toBe("command-failed");
-      expect(result.error.commandExecutions).toHaveLength(3);
+      expect(result.error.commandExecutions).toHaveLength(5);
       if (result.error.kind === "command-failed") {
         expect(result.error.step).toBe("restore-baseline-snapshot");
       }
@@ -219,7 +261,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect("error" in result).toBe(true);
     if ("error" in result) {
       expect(result.error.kind).toBe("serial-marker-failed");
-      expect(result.error.commandExecutions).toHaveLength(4);
+      expect(result.error.commandExecutions).toHaveLength(6);
       if (result.error.kind === "serial-marker-failed") {
         expect(result.error.assertion.missingMarkers).toEqual(["already-present"]);
       }

@@ -32,4 +32,6 @@
 - progress: `qemu-state.ts` now exposes a timeout-bound `spawnSync` process executor adapter, with injectable command and serial readers so tests prove command wiring without launching QEMU.
 - progress: `run.ts` now connects scenario 3 to the real timeout-bound QEMU process executor behind explicit `ZFLASH_QEMU_RETENTION_EXECUTE=1` opt-in; the default CLI path still fails closed, while the opt-in path can pass only after serial-marker assertions prove retention.
 - proof: `bun test tools/zflash/test-harness/` passes with injected-executor dispatcher coverage for both proven-retention success and missing-marker failure; `bun --bun tsc --noEmit -p tsconfig.json` and `git diff --check` pass.
-- next: add lifecycle-aware QEMU polling/disk bootstrap so `ZFLASH_QEMU_RETENTION_EXECUTE=1` can drive a real scenario-3 ISO/disk run instead of relying on pre-existing qcow2 state.
+- progress: scenario 3 now plans qcow2 disk bootstrap (`qemu-img create`) plus an initial ISO boot before baseline snapshot/restore/restart, so `ZFLASH_QEMU_RETENTION_EXECUTE=1` no longer assumes a pre-existing qcow2 disk.
+- proof: focused harness coverage now asserts the create-disk and initial-install steps in both the planner and dispatcher execution sequence.
+- next: add lifecycle-aware QEMU polling/stop conditions so the initial ISO boot and retained restart can terminate from serial markers instead of relying on QEMU process exit alone.

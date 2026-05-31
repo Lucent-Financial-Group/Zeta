@@ -48,6 +48,16 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(parsed.results[0].status).toBe("failed");
     expect(parsed.results[0].message).toContain("fails closed");
     expect(parsed.results[0].message).toContain("ZFLASH_QEMU_RETENTION_EXECUTE=1");
+    expect(parsed.results[0].qemuRetentionPlan.createDiskImage.args).toEqual([
+      "create",
+      "-f",
+      "qcow2",
+      "/tmp/nonexistent.iso.scenario3.qcow2",
+      "20G",
+    ]);
+    expect(parsed.results[0].qemuRetentionPlan.initialInstallFromIsoWithDisk.args).toContain(
+      "file=/tmp/nonexistent.iso.scenario3.qcow2,if=virtio,format=qcow2",
+    );
     expect(parsed.results[0].qemuRetentionPlan.createBaselineSnapshot.args).toEqual([
       "snapshot",
       "-c",
@@ -81,6 +91,8 @@ describe("B-0891 test-harness dispatcher", () => {
 
     expect(result.status).toBe("passed");
     expect(observedSteps).toEqual([
+      "create-disk-image",
+      "initial-install-from-iso-with-disk",
       "create-baseline-snapshot",
       "list-baseline-snapshots",
       "restore-baseline-snapshot",
