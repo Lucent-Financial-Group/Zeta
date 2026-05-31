@@ -41,8 +41,9 @@ public sealed record EventLog
     /// COPIED on construction (see the constructor) so a caller's later mutation of
     /// a passed-in mutable list cannot change what <see cref="FoldOnto"/> replays
     /// or what <c>+</c> appends — the free-monoid stability this type exists to
-    /// guarantee. (Record equality still compares this by reference; value
-    /// comparison uses <c>SequenceEqual</c>, per the tests.)</summary>
+    /// guarantee. Compared STRUCTURALLY (element-wise — see <see cref="Equals(EventLog?)"/>
+    /// + <see cref="GetHashCode"/>), so the advertised monoid laws hold through
+    /// <c>==</c> and hash-based collections.</summary>
     public IReadOnlyList<NextAction> Events { get; }
 
     /// <summary>Construct a log, defensively copying <paramref name="events"/> into
@@ -63,4 +64,27 @@ public sealed record EventLog
     /// <c>Algebra.Fold(initial, Events)</c>; satisfies
     /// <c>(a + b).FoldOnto(w0) == b.FoldOnto(a.FoldOnto(w0))</c>.</summary>
     public World FoldOnto(World initial) => Algebra.Fold(initial, Events);
+
+    /// <summary>Structural equality — element-wise over <see cref="Events"/> — so the
+    /// advertised monoid laws actually hold through <c>==</c>, <see cref="object.Equals(object)"/>,
+    /// and hash-based collections (<c>AdditiveIdentity + x == x</c>; associativity).
+    /// The compiler-generated record equality would compare <see cref="Events"/> by
+    /// REFERENCE (C# records do reference equality on list-typed properties), which
+    /// breaks those laws — so it is overridden here. (The F# observe-fold EventLog is
+    /// structural by construction; this brings C# to parity.)</summary>
+    public bool Equals(EventLog? other) =>
+        other is not null && Events.SequenceEqual(other.Events);
+
+    /// <summary>Hash consistent with the structural <see cref="Equals(EventLog?)"/>:
+    /// combined over the event sequence (order-sensitive — the log is ordered).</summary>
+    public override int GetHashCode()
+    {
+        var hash = new HashCode();
+        foreach (var ev in Events)
+        {
+            hash.Add(ev);
+        }
+
+        return hash.ToHashCode();
+    }
 }

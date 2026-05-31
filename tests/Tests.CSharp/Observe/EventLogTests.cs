@@ -102,4 +102,22 @@ public sealed class EventLogTests
         Assert.Single(log.Events);
         Assert.IsType<NextAction.Explore>(log.Events[0]);
     }
+
+    // Codex P2: a record that advertises value equality must actually obey the
+    // monoid laws through == / Equals / hash — not only via .Events.SequenceEqual.
+    // Equality is overridden structurally so AdditiveIdentity + x == x really holds
+    // (the generated record equality would compare Events by reference and fail it).
+    [Fact]
+    public void RecordEqualityObeysMonoidLawsThroughEqualsAndHash()
+    {
+        var x = LogA();
+        Assert.Equal(x, EventLog.AdditiveIdentity + x);  // left identity at ==/Equals
+        Assert.Equal(x, x + EventLog.AdditiveIdentity);  // right identity at ==/Equals
+        Assert.Equal(
+            x.GetHashCode(),
+            (EventLog.AdditiveIdentity + x).GetHashCode());  // hash consistent with Equals
+
+        EventLog a = LogA(), b = LogB(), c = LogC();
+        Assert.Equal((a + b) + c, a + (b + c));  // associativity at ==/Equals
+    }
 }
