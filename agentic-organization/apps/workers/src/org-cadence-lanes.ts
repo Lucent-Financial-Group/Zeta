@@ -46,7 +46,6 @@ import {
   RunScope,
   type ChangeControlPort,
   type DeadLetterRecoveryCandidate,
-  type Menu16,
   type Menu16Slot,
   type HierarchySnapshot,
   type PromptFlowContext,
@@ -60,7 +59,7 @@ import {
   type ScheduleBlockRecoveryCandidate,
   type SlotAuthorizationDecision,
 } from "../../../packages/application/src/index.ts";
-import { runAgentCliCycle } from "../../agent-cli/src/agent-cli.ts";
+import { runAgentCliCycle, type MenuSelector } from "../../agent-cli/src/agent-cli.ts";
 import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
 import type { CadenceLane, CadenceLaneTickResult } from "./cadence-lane.ts";
 
@@ -128,7 +127,7 @@ export type ObserveActWorkItem = {
 };
 
 export type ObserveActWorkItemSource = () => Promise<ObserveActWorkItem | null>;
-export type ObserveActMenuSelector = (menu: Menu16) => Promise<number> | number;
+export type ObserveActMenuSelector = MenuSelector;
 export type ObserveActCommandRunner = (
   commandType: string,
   command: unknown,
@@ -276,8 +275,19 @@ function observeActEvidenceRefs(
     `observe-act:selected_slot:${evidence.selectedIndex}`,
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
+    ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function selectorRejectionEvidenceRefs(
+  rejection: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>["selectorRejections"][number],
+): readonly string[] {
+  const rejectedIndex = rejection.rejectedIndex === undefined ? "unknown" : String(rejection.rejectedIndex);
+  return [
+    `observe-act:selector_rejected:${rejection.reason}:${rejectedIndex}`,
+    `observe-act:selector_rejected_fallback_slot:${rejection.fallbackIndex}`,
   ];
 }
 

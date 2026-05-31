@@ -72,6 +72,7 @@ export type RunAgentCliMainInput = {
   now: () => string;
   writeStdout: (text: string) => void;
   writeStderr: (text: string) => void;
+  fetchImpl?: typeof fetch | undefined;
   runtime?: AgentCliMainRuntime | undefined;
 };
 
@@ -164,6 +165,7 @@ function createRunAgentCliCycleInput(
     metricAgents: createAgentCliMetricAgentsFromEnv({
       env: input.env,
       now: input.now,
+      ...createOptionalFetchImpl(input.fetchImpl),
     }),
     promptFlowTasks: createAgentCliPromptFlowTasksFromEnv({
       env: input.env,
@@ -173,12 +175,19 @@ function createRunAgentCliCycleInput(
     }),
     selectSlot: createAgentCliSelectorFromEnv({
       env: input.env,
+      ...createOptionalFetchImpl(input.fetchImpl),
     }),
     runCommand: runtime.runCommand,
     dispatchTool: runtime.dispatchTool,
     ...createOptionalAuthorizeSlot(runtime.authorizeSlot),
     ...createOptionalLoadPromptFlowContext(runtime.loadPromptFlowContext),
   };
+}
+
+function createOptionalFetchImpl(
+  fetchImpl: typeof fetch | undefined,
+): { fetchImpl?: typeof fetch } {
+  return fetchImpl === undefined ? {} : { fetchImpl };
 }
 
 async function appendObserveActEvidenceIfPresent(
@@ -228,8 +237,19 @@ function observeActEvidenceRefs(evidence: AgentCliCycleEvidence): readonly strin
     `observe-act:selected_slot:${evidence.selectedIndex}`,
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
+    ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function selectorRejectionEvidenceRefs(
+  rejection: AgentCliCycleEvidence["selectorRejections"][number],
+): readonly string[] {
+  const rejectedIndex = rejection.rejectedIndex === undefined ? "unknown" : String(rejection.rejectedIndex);
+  return [
+    `observe-act:selector_rejected:${rejection.reason}:${rejectedIndex}`,
+    `observe-act:selector_rejected_fallback_slot:${rejection.fallbackIndex}`,
   ];
 }
 

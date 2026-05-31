@@ -87,7 +87,7 @@ export type AgentCliCycleInput = ActDependencies & {
   hierarchy?: HierarchySnapshot;
   scheduleBlocks?: readonly WorkScheduleBlock[];
   deterministicRules?: readonly DeterministicRule[];
-  selectSlot?: (menu: Menu16) => Promise<number> | number;
+  selectSlot?: MenuSelector;
 };
 
 export type CreateAgentCliMetricAgentsFromEnvInput = {
@@ -104,7 +104,31 @@ export type CreateAgentCliHierarchyFromEnvInput = {
   env: Readonly<Record<string, string | undefined>>;
 };
 
-export type MenuSelector = (menu: Menu16) => Promise<number> | number;
+export const SelectorRejectionReason = {
+  ModelError: "model_error",
+  ParseFailure: "parse_failure",
+  SlotOutOfRange: "slot_out_of_range",
+  NonSelectableSlot: "non_selectable_slot",
+} as const;
+
+export type SelectorRejectionReason = (typeof SelectorRejectionReason)[keyof typeof SelectorRejectionReason];
+
+export type MenuSelectorRejection = {
+  reason: SelectorRejectionReason;
+  fallbackIndex: number;
+  rawOutput?: string | undefined;
+  rejectedIndex?: number | undefined;
+};
+
+export type MenuSelectionResult = {
+  index: number;
+  reason: string;
+  selectorRejection?: MenuSelectorRejection | undefined;
+};
+
+export type MenuSelectorOutput = number | MenuSelectionResult;
+
+export type MenuSelector = (menu: Menu16) => Promise<MenuSelectorOutput> | MenuSelectorOutput;
 
 export type CreateModelBackedMenuSelectorInput = {
   chat: ChatCompletionPort;
@@ -129,6 +153,7 @@ export type AgentCliCycleEvidence = {
   trueSlotCount: number;
   promptFlowIds: readonly string[];
   metricBlockIds: readonly string[];
+  selectorRejections: readonly MenuSelectorRejection[];
 };
 
 export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsResult {
@@ -283,15 +308,36 @@ export function createModelBackedMenuSelector(input: CreateModelBackedMenuSelect
     try {
       completion = await input.chat.complete({
         system:
-          "You are selecting from a deterministic 16-slot agent controller. Reply with only one selectable slot index.",
+          "You are selecting from a deterministic 16-slot agent controller. Reply with only one selectable integer slot index and no prose.",
         user: buildMenuSelectorPrompt(selectable),
       });
     } catch {
-      return await input.fallback(menu);
+      const fallback = normalizeMenuSelectionResult(await input.fallback(menu), "fallback_after_model_error");
+      return {
+        index: fallback.index,
+        reason: "fallback_after_selector_rejection",
+        selectorRejection: {
+          reason: SelectorRejectionReason.ModelError,
+          fallbackIndex: fallback.index,
+        },
+      };
     }
 
-    const index = parseModelSelectedIndex(completionContent(completion), selectable);
-    return index ?? (await input.fallback(menu));
+    const rawOutput = completionContent(completion);
+    const parsed = parseModelSelectedIndex(rawOutput, menu);
+    if (parsed.ok) return parsed.index;
+
+    const fallback = normalizeMenuSelectionResult(await input.fallback(menu), "fallback_after_selector_rejection");
+    return {
+      index: fallback.index,
+      reason: "fallback_after_selector_rejection",
+      selectorRejection: {
+        reason: parsed.reason,
+        rawOutput,
+        fallbackIndex: fallback.index,
+        ...createOptionalRejectedIndex(parsed.rejectedIndex),
+      },
+    };
   };
 }
 
@@ -368,14 +414,22 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     slots: observed.actions.slots,
   })}\n`);
 
-  const selectedIndex =
-    parsed.value.selectIndex ?? (await (input.selectSlot?.(observed.actions) ?? selectFirstTrueSlot(observed.actions)));
+  const selection = parsed.value.selectIndex === undefined
+    ? normalizeMenuSelectionResult(
+      await (input.selectSlot?.(observed.actions) ?? selectFirstTrueSlot(observed.actions)),
+      "selector_selected",
+    )
+    : {
+        index: parsed.value.selectIndex,
+        reason: "cli_select_index",
+      };
+  const selectedIndex = selection.index;
   if (!observed.actions.slots.some((slot) => slot.availability === TriAvailability.True)) {
     const actionResult = rejectAct(
       ActRejectionReason.NoSelectableSlot,
       "no TriAvailability.True slots in rendered menu",
     );
-    const evidence = createAgentCliCycleEvidence(observed.actions, selectedIndex, observed.promptFlows, observed.metrics);
+    const evidence = createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics);
     input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
     return { exitCode: 1, actionResult, evidence };
   }
@@ -393,7 +447,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
   return {
     exitCode: actionResult.outcome === "rejected" ? 1 : 0,
     actionResult,
-    evidence: createAgentCliCycleEvidence(observed.actions, selectedIndex, observed.promptFlows, observed.metrics),
+    evidence: createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics),
   };
 }
 
@@ -480,13 +534,13 @@ const ACTION_CLASS_FOR_OBSERVE_LIFECYCLE: Readonly<Record<string, ActionClass>> 
 
 function createAgentCliCycleEvidence(
   menu: Menu16,
-  selectedIndex: number,
+  selection: MenuSelectionResult,
   promptFlows: PromptFlowReadout,
   metrics: ScopedReadout,
 ): AgentCliCycleEvidence {
   return {
     menuHash: hashMenu(menu),
-    selectedIndex,
+    selectedIndex: selection.index,
     vetoCount: menu.slots.filter((slot) => slot.availability === TriAvailability.False).length,
     trueSlotCount: menu.slots.filter((slot) => slot.availability === TriAvailability.True).length,
     promptFlowIds: uniqueSorted([
@@ -494,6 +548,7 @@ function createAgentCliCycleEvidence(
       ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task.promptFlowId),
     ]),
     metricBlockIds: uniqueSorted(metrics.blocks.map((block) => block.id)),
+    selectorRejections: selection.selectorRejection === undefined ? [] : [selection.selectorRejection],
   };
 }
 
@@ -526,14 +581,37 @@ function completionContent(completion: ChatCompletionResult): string {
   return typeof completion === "string" ? completion : completion.content;
 }
 
-function parseModelSelectedIndex(raw: string, selectable: readonly Menu16Slot[]): number | undefined {
+function parseModelSelectedIndex(
+  raw: string,
+  menu: Menu16,
+): { ok: true; index: number } | { ok: false; reason: SelectorRejectionReason; rejectedIndex?: number | undefined } {
   const normalized = raw.trim();
-  const match = /(?:^|\D)(\d{1,2})(?:\D|$)/.exec(normalized);
+  const match = /^(?:\[(\d{1,2})\]|(\d{1,2}))$/.exec(normalized);
   if (match === null) {
-    return undefined;
+    return { ok: false, reason: SelectorRejectionReason.ParseFailure };
   }
-  const index = Number.parseInt(match[1]!, 10);
-  return selectable.some((slot) => slot.index === index) ? index : undefined;
+  const index = Number.parseInt((match[1] ?? match[2])!, 10);
+  if (index < 0 || index >= 16) {
+    return { ok: false, reason: SelectorRejectionReason.SlotOutOfRange, rejectedIndex: index };
+  }
+  const slot = menu.slots.find((candidate) => candidate.index === index);
+  if (slot?.availability !== TriAvailability.True) {
+    return { ok: false, reason: SelectorRejectionReason.NonSelectableSlot, rejectedIndex: index };
+  }
+  return { ok: true, index };
+}
+
+function normalizeMenuSelectionResult(
+  output: MenuSelectorOutput,
+  defaultReason: string,
+): MenuSelectionResult {
+  return typeof output === "number" ? { index: output, reason: defaultReason } : output;
+}
+
+function createOptionalRejectedIndex(
+  rejectedIndex: number | undefined,
+): { rejectedIndex?: number } {
+  return rejectedIndex === undefined ? {} : { rejectedIndex };
 }
 
 function isLifecycleTransitionPayload(value: unknown): value is LifecycleTransitionCommandPayload {

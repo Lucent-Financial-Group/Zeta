@@ -159,6 +159,51 @@ test("observe-act work-item lane runs one tick through observe -> act -> org eve
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
 });
 
+test("observe-act work-item lane persists selector rejection evidence on fallback-selected ticks", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    selectSlot: () => ({
+      index: 4,
+      reason: "fallback_after_selector_rejection",
+      selectorRejection: {
+        reason: "non_selectable_slot",
+        rawOutput: "5",
+        rejectedIndex: 5,
+        fallbackIndex: 4,
+      },
+    }),
+    runCommand: async () => ({ status: "accepted" }),
+    dispatchTool: async () => ({ ok: true }),
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:command:accepted");
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selector_rejected:non_selectable_slot:5"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selector_rejected_fallback_slot:4"));
+});
+
 test("observe-act work-item lane can load a prompt-flow task context instead of requiring hat-specific agent knowledge", async () => {
   const loaded: string[] = [];
   const lane = createObserveActWorkItemCadenceLane({

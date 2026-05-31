@@ -99,7 +99,7 @@ test("createModelBackedMenuSelector accepts only rendered T slot indexes from th
   ok(!prompts[0]?.user.includes("[05] commit.b blocked"));
 });
 
-test("createModelBackedMenuSelector falls back when the model chooses a non-selectable slot", async () => {
+test("createModelBackedMenuSelector records selector rejection evidence when the model chooses a non-selectable slot", async () => {
   const selector = createModelBackedMenuSelector({
     chat: {
       complete: async () => "5",
@@ -107,7 +107,59 @@ test("createModelBackedMenuSelector falls back when the model chooses a non-sele
     fallback: () => 4,
   });
 
-  equal(await selector(menuForSelection()), 4);
+  deepEqual(await selector(menuForSelection()), {
+    index: 4,
+    reason: "fallback_after_selector_rejection",
+    selectorRejection: {
+      reason: "non_selectable_slot",
+      rawOutput: "5",
+      rejectedIndex: 5,
+      fallbackIndex: 4,
+    },
+  });
+});
+
+test("runAgentCliCycle carries selector rejection evidence into observe-act tick evidence", async () => {
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    selectSlot: createModelBackedMenuSelector({
+      chat: {
+        complete: async () => "15",
+      },
+      fallback: () => 4,
+    }),
+    runCommand: async () => ({ status: "accepted" }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.evidence?.selectedIndex, 4);
+  deepEqual(result.evidence?.selectorRejections, [{
+    reason: "non_selectable_slot",
+    rawOutput: "15",
+    rejectedIndex: 15,
+    fallbackIndex: 4,
+  }]);
 });
 
 test("createAgentCliSelectorFromEnv wires a local Ollama selector when configured", async () => {

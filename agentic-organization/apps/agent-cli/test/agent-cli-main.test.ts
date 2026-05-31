@@ -208,6 +208,58 @@ test("runAgentCliMain loads prompt-flow context and persists observe-act tick ev
   ok(events[0]?.evidenceRefs.includes("observe-act:prompt_flow:flow-code-change"));
 });
 
+test("runAgentCliMain persists selector rejection evidence from local model fallback", async () => {
+  const events: OrgEvent[] = [];
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--run-id",
+      "3",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-selector",
+      "--gate-approved",
+    ],
+    env: {
+      AGENTIC_ORG_LLM_BASE_URL: "http://ollama:11434",
+      AGENTIC_ORG_LLM_MODEL: "llama3.1",
+    },
+    fetchImpl: (async () =>
+      new Response(JSON.stringify({ message: { content: "15" }, model: "llama3.1" }))) as typeof fetch,
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: () => undefined,
+    writeStderr: () => undefined,
+    runtime: {
+      runCommand: async () => ({ status: "accepted" }),
+      dispatchTool: async () => ({ status: "unused" }),
+      appendObserveActTick: async (event) => {
+        events.push(event);
+      },
+      shutdown: async () => undefined,
+    } as AgentCliMainRuntime & { appendObserveActTick: (event: OrgEvent) => Promise<void> },
+  });
+
+  equal(exitCode, 0);
+  equal(events.length, 1);
+  ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:selector_rejected:non_selectable_slot:15"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:selector_rejected_fallback_slot:4"));
+});
+
 test("createAgentCliMcpDispatcher dispatches in-process metrics tools and returns typed unknown-tool feedback", async () => {
   const dispatchTool = createAgentCliMcpDispatcher();
   const slot: Menu16Slot = {
