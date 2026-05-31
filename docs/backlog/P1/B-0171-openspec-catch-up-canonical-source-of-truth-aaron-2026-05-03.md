@@ -40,7 +40,9 @@ This row tracks the catch-up work needed to restore OpenSpec as actual source-of
 The row's 2026-05-03 baseline is stale. The current mechanized inventory
 surface is `tools/openspec/inventory.ts`, and the latest focused run reports:
 
-- `openspec/specs/**`: 9 capability specs.
+- `openspec/specs/**`: 9 capability specs with `spec.md` files. The
+  README-only `openspec/specs/retraction-native/` directory remains background
+  material, not an input to the strict unmapped-spec gate.
 - `src/Core/*.fs`: 84 scanned modules, 18 covered modules, 64 uncovered
   modules after exclusions.
 - Artifact coverage: 22 mapped artifacts across agentic-organization,

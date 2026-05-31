@@ -484,4 +484,13 @@ describe("integration: real repo scan", () => {
     expect(agenticOrgMapping!.missingArtifacts).toEqual([]);
     expect(report.unmappedSpecs).not.toContain("agentic-organization");
   });
+
+  test("real README-only capability directories are not strict spec inputs", () => {
+    const repoRoot = join(import.meta.dir, "..", "..");
+    const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
+    const report = buildGapReport(specs, [], { artifactRoot: repoRoot });
+
+    expect(specs.map((s) => s.capability)).not.toContain("retraction-native");
+    expect(report.unmappedSpecs).not.toContain("retraction-native");
+  });
 });
