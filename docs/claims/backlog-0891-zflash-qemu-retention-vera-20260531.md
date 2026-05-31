@@ -24,4 +24,5 @@
 - operator-clarification: USB/ISO tests cover zflash, boot, retention/no-retention semantics, and one agent start path; Kubernetes and ArgoCD health belong in separate cluster integration tests.
 - operator-clarification: retention reformat keeps the same cluster/node identity; no-retention reformat creates a new cluster/node identity.
 - operator-clarification: Touch ID/biometric retention is physical operator testing; QEMU should assert preserved auth-state markers. Zeta is baked into the image, and target hardware assumptions include both x86_64 and ARM64/aarch64.
+- progress: carved Kubernetes and ArgoCD health into dedicated backlog row B-0951 for kind/k3d integration testing, keeping B-0891 scoped to USB/ISO zflash acceptance and a narrow agent-start smoke path.
 - next: execute this planner from the B-0891 scenario-3 runtime path and keep `reformat-with-retention` scaffolded until QEMU state preservation asserts end-to-end.
