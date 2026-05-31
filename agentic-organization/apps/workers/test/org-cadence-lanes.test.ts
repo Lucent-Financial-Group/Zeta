@@ -2,12 +2,14 @@ import { deepEqual, equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  AgenticEventType,
   ChangeSetPhase,
   ExternalSystem,
   OrgEventKind,
   ReactionPlanStatus,
   ScheduleBlockState,
   WorkItemState,
+  WorkItemType,
   MemoryPhase,
   MemoryTier,
   type ChangeSet,
@@ -15,8 +17,35 @@ import {
   type OrgEvent,
   type ProjectionRef,
 } from "../../../packages/domain/src/index.ts";
-import { buildHatDefinitions, buildInternalOnlyPipeline, buildGitHubGatedPipeline, ExternalDecision, type ChangeControlPort } from "../../../packages/application/src/index.ts";
 import {
+  buildHatDefinitions,
+  buildInternalOnlyPipeline,
+  buildGitHubGatedPipeline,
+  createCommandHandlerRegistry,
+  createCommandPipeline,
+  createObserveLifecycleTransitionHandler,
+  CommandOutcomePersistenceStatus,
+  ActionClass,
+  type CommandResult,
+  ExternalDecision,
+  RunLifecyclePhase,
+  RunScope,
+  type ChangeControlPort,
+  type CommandEffects,
+  type CommandStateStoreFactory,
+  type HierarchySnapshot,
+  type ObserveLifecycleTransitionCommand,
+  type PromptFlowTask,
+} from "../../../packages/application/src/index.ts";
+import { RecordingTelemetry, TelemetryMetricKind } from "../../../packages/observability/src/index.ts";
+import {
+  PolicyDecisionObservationPersistenceStatus,
+  PolicyDecisionStatus,
+  type CommandAuthorizationPort,
+  type PolicyDecisionObservationPort,
+} from "../../../packages/policy/src/index.ts";
+import {
+  createObserveActWorkItemCadenceLane,
   createWorkOsCadenceLane,
   createMemoryMaintenanceCadenceLane,
   createChangeControlCadenceLane,
@@ -41,6 +70,169 @@ test("work-os lane drives one living-loop cycle and reports the final state", as
   equal(result.failures.length, 0);
   ok(result.status.startsWith("work-os:"));
   ok(events.length > 0, "the living loop emitted org_events");
+});
+
+test("observe-act work-item lane runs one tick through observe -> act -> org event effects with legacy disabled", async () => {
+  let capturedEffects: CommandEffects | undefined;
+  const pipeline = createCommandPipeline<ObserveLifecycleTransitionCommand>({
+    stateStoreFactory: captureObserveActEffectsStoreFactory((effects) => {
+      capturedEffects = effects;
+    }),
+    commandAuthorizationPort: createObserveActAllowingAuthorizationPort(),
+    policyDecisionObservationPort: createObserveActPolicyObservationPort(),
+    handlerRegistry: createCommandHandlerRegistry<ObserveLifecycleTransitionCommand, CommandResult>([
+      createObserveLifecycleTransitionHandler(),
+    ]),
+    workAnchorStateReader: {
+      findProject: async () => undefined,
+      findInitiative: async () => undefined,
+      findWorkItem: async () => ({
+        workItemId: "work-1",
+        organizationId: "org-lfg",
+        projectId: "proj-1",
+        workItemType: WorkItemType.Task,
+        title: "Implement observe-act lane",
+        description: "Prove worker cadence can route through observe.ts.",
+        state: WorkItemState.Ready,
+        createdAt: new Date(NOW).toISOString(),
+        createdBy: { agentId: "agent-release-1", hatAssignmentId: "99" },
+        metadata: {
+          updatedAt: new Date(NOW).toISOString(),
+          version: 1,
+          correlationId: "corr-before",
+          causationId: "cause-before",
+          traceId: "trace-before",
+        },
+      }),
+    },
+    now: () => new Date(NOW).toISOString(),
+    createId,
+  });
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    runCommand: async (_commandType, command) => await pipeline.execute(command as ObserveLifecycleTransitionCommand),
+    dispatchTool: async () => {
+      throw new Error("observe-act work-item lane should not dispatch MCP for lifecycle execution");
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:command:accepted");
+  equal(capturedEffects?.outboxEvents[0]?.envelope.eventType, AgenticEventType.WorkItemStateChanged);
+  equal(capturedEffects?.workAnchors?.workItemTransitions[0]?.transition.fromState, WorkItemState.Ready);
+  equal(capturedEffects?.workAnchors?.workItemTransitions[0]?.transition.toState, WorkItemState.InProgress);
+});
+
+test("observe-act work-item lane can load a prompt-flow task context instead of requiring hat-specific agent knowledge", async () => {
+  const loaded: string[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+      promptFlowTasks: [
+        promptFlowTask({
+          taskId: "task-implement",
+          promptFlowId: "flow-implement",
+          label: "Implement work item",
+          actionClass: ActionClass.WriteCode,
+          directions: ["Load implementation plan"],
+          toolInjections: [{ tool: "repo.search", args: { q: "work-1" } }],
+          metrics: [{ id: "work_item.failures", label: "failing tests", value: 2 }],
+        }),
+      ],
+    }),
+    selectSlot: () => 8,
+    runCommand: async () => {
+      throw new Error("prompt-flow context loading should not dispatch a command");
+    },
+    dispatchTool: async () => {
+      throw new Error("prompt-flow context loading should not dispatch MCP directly");
+    },
+    loadPromptFlowContext: async (request) => {
+      loaded.push(`${request.taskId}:${request.directions[0]}:${request.toolInjections[0]?.tool}:${request.metrics[0]?.id}`);
+      return {
+        taskId: request.taskId,
+        promptFlowId: request.promptFlowId,
+        directions: request.directions,
+        toolInjections: request.toolInjections,
+        metrics: request.metrics,
+        contextArtifacts: [{ id: "ctx-1", label: "plan", value: "plan body" }],
+      };
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:context:task-implement");
+  deepEqual(loaded, ["task-implement:Load implementation plan:repo.search:work_item.failures"]);
+});
+
+test("observe-act work-item lane passes hierarchy readouts through to the agent observe surface", async () => {
+  const stdout: string[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "project-eng",
+      workItemId: "work-1",
+      scope: RunScope.Project,
+      phase: RunLifecyclePhase.Observing,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "engineering_director",
+      hatAssignmentId: "99",
+      agentId: "agent-director-1",
+      hierarchy: hierarchySnapshot(),
+    }),
+    writeObserveStdout: (text) => {
+      stdout.push(text);
+    },
+    selectSlot: () => 4,
+    runCommand: async () => ({ status: "observed" }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  ok(stdout.join("\n").includes("hierarchy: director"));
+  ok(stdout.join("\n").includes("priority scope: department_initiatives"));
+  ok(stdout.join("\n").includes("- project project-eng Engineering Project"));
+  ok(stdout.join("\n").includes("- initiative init-eng-a Readiness Initiative"));
+  ok(stdout.join("\n").includes("- hierarchy action record_priority_decision: Rank department initiatives"));
 });
 
 test("work-os lane stays IDLE (no cycle, no events) when intake returns null", async () => {
@@ -341,6 +533,38 @@ test("conformance lane replays org_events and reports a clean theorem tick", asy
   equal(result.status, "conformance:1checked/0violations/0skipped");
 });
 
+test("conformance lane emits the pass-ratio SLI metric for Grafana alerts", async () => {
+  const telemetry = new RecordingTelemetry();
+  const lane = createConformanceCadenceLane({
+    organizationId: "org-lfg",
+    limit: 100,
+    reader: {
+      listByOrganization: async () => [
+        orgEvent({ id: "evt-legal", fromState: WorkItemState.Created, toState: WorkItemState.Intake }),
+        orgEvent({ id: "evt-illegal", fromState: WorkItemState.Created, toState: WorkItemState.Done }),
+      ],
+    },
+    telemetry,
+  });
+
+  await lane.runOnce();
+
+  deepEqual(telemetry.metrics, [
+    {
+      kind: TelemetryMetricKind.Gauge,
+      name: "org_conformance_pass_ratio",
+      value: 0.5,
+      attributes: {
+        "agentic.organization.id": "org-lfg",
+        "agentic.conformance.checked": 2,
+        "agentic.conformance.conformant": 1,
+        "agentic.conformance.nonconformant": 1,
+        "agentic.conformance.skipped": 0,
+      },
+    },
+  ]);
+});
+
 test("conformance lane degrades when replay finds an illegal durable transition", async () => {
   const lane = createConformanceCadenceLane({
     organizationId: "org-lfg",
@@ -508,3 +732,81 @@ test("dead-letter classifier lane reports terminal reaction-plan failures", asyn
   ok(events[0]?.evidenceRefs.includes("classification:poison-payload"));
   equal(events.at(-1)?.kind, OrgEventKind.RecoveryScanCompleted);
 });
+
+function captureObserveActEffectsStoreFactory(
+  capture: (effects: CommandEffects) => void,
+): CommandStateStoreFactory<CommandResult> {
+  return {
+    createCommandStateStore: () => ({
+      findIdempotencyRecord: async () => undefined,
+      recordCommandOutcome: async (input) => {
+        capture(input.effects);
+        return {
+          status: CommandOutcomePersistenceStatus.Committed,
+          result: input.idempotencyRecord.result,
+        };
+      },
+    }),
+  };
+}
+
+function createObserveActAllowingAuthorizationPort(): CommandAuthorizationPort {
+  return {
+    authorizeCommand: async () => ({
+      status: PolicyDecisionStatus.Allowed,
+      decisionId: "policy-decision-observe-act",
+      policyVersion: "policy-v1",
+    }),
+  };
+}
+
+function createObserveActPolicyObservationPort(): PolicyDecisionObservationPort {
+  return {
+    observePolicyDecision: async () => ({
+      status: PolicyDecisionObservationPersistenceStatus.Recorded,
+    }),
+  };
+}
+
+function promptFlowTask(overrides: Partial<PromptFlowTask> = {}): PromptFlowTask {
+  return {
+    taskId: "task-1",
+    workItemId: "work-1",
+    title: "Work item task",
+    promptFlowId: "flow-1",
+    label: "Load task context",
+    scope: RunScope.WorkItem,
+    priority: 1,
+    directions: [],
+    toolInjections: [],
+    metrics: [],
+    contextArtifactRefs: [],
+    ...overrides,
+  };
+}
+
+function hierarchySnapshot(): HierarchySnapshot {
+  return {
+    projects: [
+      {
+        projectId: "project-eng",
+        organizationId: "org-lfg",
+        departmentId: "engineering",
+        name: "Engineering Project",
+        status: "active",
+        trajectory: [{ id: "delivery", label: "delivery trajectory", value: "on_track" }],
+        metrics: [],
+      },
+    ],
+    initiatives: [
+      {
+        initiativeId: "init-eng-a",
+        projectId: "project-eng",
+        organizationId: "org-lfg",
+        title: "Readiness Initiative",
+        status: "active",
+        metrics: [],
+      },
+    ],
+  };
+}

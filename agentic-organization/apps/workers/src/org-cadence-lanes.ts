@@ -41,8 +41,16 @@ import {
   scanAbandonedRunBindings,
   scanStaleReactionPlans,
   scanStrandedScheduleBlocks,
+  RunLifecyclePhase,
+  RunScope,
   type ChangeControlPort,
   type DeadLetterRecoveryCandidate,
+  type Menu16,
+  type Menu16Slot,
+  type HierarchySnapshot,
+  type PromptFlowContext,
+  type PromptFlowContextRequest,
+  type PromptFlowTask,
   ReleaseQueueActionKind,
   type ReleaseBatchEvaluation,
   type ReactionPlanRecoveryCandidate,
@@ -50,6 +58,11 @@ import {
   type RunBindingRecoveryCandidate,
   type ScheduleBlockRecoveryCandidate,
 } from "../../../packages/application/src/index.ts";
+import { runAgentCliCycle } from "../../agent-cli/src/agent-cli.ts";
+import {
+  TelemetryMetricKind,
+  type TelemetryPort,
+} from "../../../packages/observability/src/index.ts";
 import type { CadenceLane, CadenceLaneTickResult } from "./cadence-lane.ts";
 
 function degraded(message: string): CadenceLaneTickResult {
@@ -95,6 +108,178 @@ export function createWorkOsCadenceLane(deps: WorkOsCadenceDeps): CadenceLane {
       }
     },
   };
+}
+
+// ── A1b: observe-act work-item loop ──────────────────────────────────────────
+
+export type ObserveActWorkItem = {
+  runId: string;
+  projectId: string;
+  workItemId: string;
+  scope: RunScope;
+  phase: RunLifecyclePhase;
+  hasGateApproval: boolean;
+  hasEvidence: boolean;
+  hatId: string;
+  hatAssignmentId: string;
+  agentId: string;
+  promptFlowTasks?: readonly PromptFlowTask[];
+  hierarchy?: HierarchySnapshot;
+};
+
+export type ObserveActWorkItemSource = () => Promise<ObserveActWorkItem | null>;
+export type ObserveActMenuSelector = (menu: Menu16) => Promise<number> | number;
+export type ObserveActCommandRunner = (
+  commandType: string,
+  command: unknown,
+  slot: Menu16Slot,
+) => Promise<unknown>;
+export type ObserveActToolDispatcher = (
+  tool: string,
+  args: unknown,
+  slot: Menu16Slot,
+) => Promise<unknown>;
+export type ObserveActPromptFlowContextLoader = (
+  request: PromptFlowContextRequest,
+  slot: Menu16Slot,
+) => Promise<PromptFlowContext>;
+
+export type ObserveActWorkItemCadenceDeps = {
+  organizationId: string;
+  hats: readonly HatDefinition[];
+  now: () => number;
+  createId: (prefix: string) => string;
+  source: ObserveActWorkItemSource;
+  runCommand: ObserveActCommandRunner;
+  dispatchTool: ObserveActToolDispatcher;
+  loadPromptFlowContext?: ObserveActPromptFlowContextLoader;
+  writeObserveStdout?: (text: string) => void;
+  selectSlot?: ObserveActMenuSelector;
+};
+
+export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCadenceDeps): CadenceLane {
+  return {
+    name: "observe-act-work-item",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const work = await deps.source();
+        if (work === null) return { status: "observe-act:idle", failures: [] };
+
+        const hat = deps.hats.find((candidate) => candidate.id === work.hatId);
+        if (hat === undefined) {
+          return degraded(`observe-act lane: unknown hat '${work.hatId}'`);
+        }
+
+        const stderr: string[] = [];
+        const result = await runAgentCliCycle({
+          argv: observeActArgv(deps.organizationId, work),
+          now: () => new Date(deps.now()).toISOString(),
+          writeStdout: deps.writeObserveStdout ?? (() => undefined),
+          writeStderr: (text) => {
+            stderr.push(text.trim());
+          },
+          runCommand: deps.runCommand,
+          dispatchTool: deps.dispatchTool,
+          ...createOptionalObserveActPromptFlowTasks(work.promptFlowTasks),
+          ...createOptionalObserveActHierarchy(work.hierarchy),
+          ...createOptionalObserveActPromptFlowContextLoader(deps.loadPromptFlowContext),
+          ...(deps.selectSlot === undefined ? {} : { selectSlot: deps.selectSlot }),
+        });
+
+        return {
+          status: formatObserveActStatus(result.actionResult, result.exitCode),
+          failures: observeActFailures(result.actionResult, result.exitCode, stderr),
+        };
+      } catch (error) {
+        return degraded(`observe-act lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+function observeActArgv(organizationId: string, work: ObserveActWorkItem): string[] {
+  return [
+    "observe",
+    "--hat",
+    work.hatId,
+    "--scope",
+    work.scope,
+    "--phase",
+    work.phase,
+    "--run-id",
+    work.runId,
+    "--hat-assignment",
+    work.hatAssignmentId,
+    "--agent",
+    work.agentId,
+    "--organization",
+    organizationId,
+    "--project",
+    work.projectId,
+    "--work-item",
+    work.workItemId,
+    ...observeActBooleanArgs(work),
+  ];
+}
+
+function createOptionalObserveActPromptFlowTasks(
+  promptFlowTasks: readonly PromptFlowTask[] | undefined,
+): { promptFlowTasks?: readonly PromptFlowTask[] } {
+  return promptFlowTasks === undefined ? {} : { promptFlowTasks };
+}
+
+function createOptionalObserveActHierarchy(
+  hierarchy: HierarchySnapshot | undefined,
+): { hierarchy?: HierarchySnapshot } {
+  return hierarchy === undefined ? {} : { hierarchy };
+}
+
+function createOptionalObserveActPromptFlowContextLoader(
+  loadPromptFlowContext: ObserveActPromptFlowContextLoader | undefined,
+): { loadPromptFlowContext?: ObserveActPromptFlowContextLoader } {
+  return loadPromptFlowContext === undefined ? {} : { loadPromptFlowContext };
+}
+
+function observeActBooleanArgs(work: ObserveActWorkItem): string[] {
+  return [
+    ...(work.hasGateApproval ? ["--gate-approved"] : []),
+    ...(work.hasEvidence ? ["--evidence"] : []),
+  ];
+}
+
+function formatObserveActStatus(result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"], exitCode: number): string {
+  if (result?.outcome === "dispatched") {
+    return `observe-act:${result.kind}:${observeActDispatchStatus(result.result)}`;
+  }
+  if (result?.outcome === "reobserve") {
+    return `observe-act:reobserve:${result.scope}`;
+  }
+  if (result?.outcome === "loaded_context") {
+    return `observe-act:context:${result.context.taskId}`;
+  }
+  return exitCode === 0 ? "observe-act:no_action" : "observe-act:rejected";
+}
+
+function observeActDispatchStatus(result: unknown): string {
+  if (typeof result === "object" && result !== null && "status" in result) {
+    const status = (result as { status?: unknown }).status;
+    if (typeof status === "string") return status;
+  }
+  return "dispatched";
+}
+
+function observeActFailures(
+  result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"],
+  exitCode: number,
+  stderr: readonly string[],
+): CadenceLaneTickResult["failures"] {
+  if (result?.outcome === "rejected") {
+    return [{ message: `observe-act lane: ${result.reason}` }];
+  }
+  if (exitCode !== 0) {
+    return [{ message: `observe-act lane: ${stderr.join("; ") || `CLI exited ${exitCode}`}` }];
+  }
+  return [];
 }
 
 // ── A2: memory maintenance ───────────────────────────────────────────────────
@@ -432,6 +617,7 @@ export type ConformanceCadenceDeps = {
   organizationId: string;
   reader: ConformanceEventReader;
   limit: number;
+  telemetry?: TelemetryPort;
 };
 
 /**
@@ -445,6 +631,7 @@ export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): Cade
       try {
         const events = await deps.reader.listByOrganization(deps.organizationId, deps.limit);
         const report = replayLedger(events);
+        recordConformanceMetric(deps, report);
         if (report.nonconformant > 0) {
           const first = report.violations[0]!;
           return degraded(`conformance lane: ${report.nonconformant} violation(s); first=${first.eventId} ${first.fromState}->${first.toState} legal=[${first.legalToStates.join(",")}]`);
@@ -455,6 +642,21 @@ export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): Cade
       }
     },
   };
+}
+
+function recordConformanceMetric(deps: ConformanceCadenceDeps, report: ReturnType<typeof replayLedger>): void {
+  deps.telemetry?.recordMetric({
+    kind: TelemetryMetricKind.Gauge,
+    name: "org_conformance_pass_ratio",
+    value: report.checked === 0 ? 1 : report.conformant / report.checked,
+    attributes: {
+      "agentic.organization.id": deps.organizationId,
+      "agentic.conformance.checked": report.checked,
+      "agentic.conformance.conformant": report.conformant,
+      "agentic.conformance.nonconformant": report.nonconformant,
+      "agentic.conformance.skipped": report.skipped,
+    },
+  });
 }
 
 // ── G3: recovery scanners ───────────────────────────────────────────────────
