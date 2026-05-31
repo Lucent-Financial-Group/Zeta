@@ -13,6 +13,12 @@ import { ModelEvalCaseClass, type ModelEvalSummary } from "../../model-eval/src/
 import type { TelemetryQueryPort, TelemetryTimeRange } from "../../observability/src/index.ts";
 import { contentAddressedChangeSetId } from "./change-control-id.ts";
 import { isContentAddressedEvidenceRef } from "./content-addressed-evidence.ts";
+import {
+  evaluateControlPlaneAccess,
+  type ControlPlaneBudgetCeiling,
+  type ControlPlaneFlag,
+  type ControlPlaneUsage,
+} from "./control-plane-guard.ts";
 
 export type DecisionOptimizerKpiSignal = {
   observedWorkItems: number;
@@ -66,6 +72,7 @@ export type DecisionOptimizerResult =
       | "candidate_model_mismatch"
       | "candidate_not_lower_cost"
       | "budget_delta_not_negative"
+      | "control_plane_denied"
       | "telemetry_degraded";
   };
 
@@ -83,7 +90,16 @@ export type RunDecisionOptimizerCycleInput =
     store: DecisionOptimizerStore;
     modelEvalEvent?: OrgEvent | undefined;
     telemetryEvidence?: DecisionOptimizerTelemetryEvidenceInput | undefined;
+    controlPlane?: DecisionOptimizerControlPlane | undefined;
   };
+
+export type DecisionOptimizerControlPlane = {
+  flags?: readonly ControlPlaneFlag[] | undefined;
+  loadFlags?: (() => Promise<readonly ControlPlaneFlag[]>) | undefined;
+  budgets?: readonly ControlPlaneBudgetCeiling[] | undefined;
+  usage?: ControlPlaneUsage | undefined;
+  availableSecretScopes?: readonly string[] | undefined;
+};
 
 export type DecisionOptimizerTelemetryEvidenceInput = {
   queryPort: TelemetryQueryPort;
@@ -223,6 +239,10 @@ export async function runDecisionOptimizerCycle(
   if (currentConfig === null) {
     return { kind: "no_proposal", reason: "missing_current_config" };
   }
+  const controlPlaneDecision = await authorizeOptimizerControlPlane(input);
+  if (controlPlaneDecision !== undefined) {
+    return controlPlaneDecision;
+  }
   const appendedEvents: OrgEvent[] = [];
   const eventStreamKey = orgEventStreamKey(input.organizationId);
   if (input.modelEvalEvent !== undefined) {
@@ -234,7 +254,13 @@ export async function runDecisionOptimizerCycle(
   if ((telemetryObservations?.degradedQueryCount ?? 0) > 0) {
     return { kind: "no_proposal", reason: "telemetry_degraded" };
   }
-  const { store: _store, modelEvalEvent: _modelEvalEvent, telemetryEvidence: _telemetryEvidence, ...proposalInput } = input;
+  const {
+    store: _store,
+    modelEvalEvent: _modelEvalEvent,
+    telemetryEvidence: _telemetryEvidence,
+    controlPlane: _controlPlane,
+    ...proposalInput
+  } = input;
   const proposal = proposeDecisionOptimizerChangeSet({
     ...proposalInput,
     currentConfig,
@@ -257,6 +283,29 @@ export async function runDecisionOptimizerCycle(
     appendedEvents,
     ...(telemetryObservations === undefined ? {} : { telemetryObservations }),
   };
+}
+
+async function authorizeOptimizerControlPlane(
+  input: RunDecisionOptimizerCycleInput,
+): Promise<Extract<DecisionOptimizerCycleResult, { kind: "no_proposal" }> | undefined> {
+  if (input.controlPlane === undefined) {
+    return undefined;
+  }
+  const flags = [...(input.controlPlane.flags ?? []), ...await (input.controlPlane.loadFlags?.() ?? Promise.resolve([]))];
+  const decision = evaluateControlPlaneAccess({
+    organizationId: input.organizationId,
+    actorHatId: input.proposerHatId,
+    tenantId: input.organizationId,
+    boundary: "optimizer_rollout",
+    actionType: "decision_optimizer_cycle",
+    evaluatedAt: input.now,
+    flags,
+    budgets: input.controlPlane.budgets,
+    usage: input.controlPlane.usage,
+    availableSecretScopes: input.controlPlane.availableSecretScopes,
+  });
+
+  return decision.status === "denied" ? { kind: "no_proposal", reason: "control_plane_denied" } : undefined;
 }
 
 async function collectTelemetryEvidence(

@@ -19,6 +19,7 @@ import {
   createHatAuthorityPort,
   createObserveLifecycleTransitionHandler,
   createScheduleBlockCommandAuthority,
+  evaluateControlPlaneAccess,
   RunLifecyclePhase,
   RunScope,
   ObserveCommandType,
@@ -26,8 +27,11 @@ import {
   type ChangeControlPort,
   type ObserveLifecycleTransitionCommand,
   type ReleaseBatchEvaluation,
+  type ControlPlaneBudgetCeiling,
+  type ControlPlaneFlag,
+  type ControlPlaneUsage,
 } from "../../../packages/application/src/index.ts";
-import { AutonomyLevel, WorkItemState, type AutonomyPolicy, type ChangeSet } from "../../../packages/domain/src/index.ts";
+import { AutonomyLevel, WorkItemState, type AutonomyPolicy, type ChangeSet, type OrgEvent } from "../../../packages/domain/src/index.ts";
 import { createCommandAuthorizationPort, createPolicyDecisionObservationPort } from "../../../packages/policy/src/index.ts";
 import {
   createCockroachOrgEventStore,
@@ -37,6 +41,7 @@ import {
   createCockroachDocUnitStore,
   createCockroachRecoveryScanReader,
   createCockroachDurableStateAdapters,
+  createCockroachControlPlaneStateStore,
   CockroachTableName,
 } from "../../../packages/state-cockroach/src/index.ts";
 import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
@@ -128,8 +133,18 @@ export type ComposeOrgCadenceInput = {
   observeActDispatchTool?: ObserveActToolDispatcher;
   observeActSelectSlot?: ObserveActMenuSelector;
   observeActAuthorizeSlot?: ObserveActSlotAuthorizer;
+  controlPlane?: ComposeOrgCadenceControlPlane | undefined;
   /** bound each lane for tests/proofs; unbounded in the worker */
   maxTicksPerLane?: number;
+};
+
+export type ComposeOrgCadenceControlPlane = {
+  flags?: readonly ControlPlaneFlag[] | undefined;
+  loadFlags?: ((evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>) | undefined;
+  budgets?: readonly ControlPlaneBudgetCeiling[] | undefined;
+  usageForBoundary?: ((boundary: "cadence_tick_start" | "org_event_append", actionType: string) => ControlPlaneUsage | undefined) | undefined;
+  availableSecretScopes?: readonly string[] | undefined;
+  exemptLaneNames?: readonly string[] | undefined;
 };
 
 export type OrgCadenceHandle = {
@@ -144,12 +159,18 @@ const unavailableObserveActToolDispatcher: ObserveActToolDispatcher = async () =
 export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenceHandle {
   const intervals = { ...OrgCadenceIntervalDefault, ...input.intervals };
   const orgEvents = createCockroachOrgEventStore({ executor: input.executor });
+  const controlPlaneState = createCockroachControlPlaneStateStore({ executor: input.executor });
+  const controlPlane = createOrgCadenceControlPlane(input, controlPlaneState);
   const memoryState = createCockroachMemoryStateStore({ executor: input.executor });
   const changeSets = createCockroachChangeSetStore({ executor: input.executor });
   const docUnits = createCockroachDocUnitStore({ executor: input.executor });
   const recoveryScanReader = createCockroachRecoveryScanReader({ executor: input.executor });
   const policy = buildDefaultChangeControlPolicy(input.organizationId);
-  const appendEvent = (e: Parameters<typeof orgEvents.append>[0]) => orgEvents.append(e);
+  const appendEvent = (laneName: string) => async (e: Parameters<typeof orgEvents.append>[0]) => {
+    const denial = await controlPlane.guardOrgEventAppend(laneName, e);
+    if (denial !== undefined) throw new Error(denial);
+    await orgEvents.append(e);
+  };
 
   // real intake by default: claim a `proposed` initiative from Cockroach (dequeue-once);
   // the worker idles only when nothing is proposed — no synthetic flood, no manual runner.
@@ -162,7 +183,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     });
   const hats = buildHatDefinitions();
   const legacyWorkLane = createWorkOsCadenceLane({
-    organizationId: input.organizationId, hats, now: input.now, createId: input.createId, appendEvent,
+    organizationId: input.organizationId, hats, now: input.now, createId: input.createId, appendEvent: appendEvent("work-os"),
     intake,
   });
   const observeActWorkLane = createObserveActWorkItemCadenceLane({
@@ -175,12 +196,12 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     dispatchTool: input.observeActDispatchTool ?? unavailableObserveActToolDispatcher,
     ...createOptionalObserveActSlotAuthorizer(input),
     ...(input.observeActSelectSlot === undefined ? {} : { selectSlot: input.observeActSelectSlot }),
-    appendEvent,
+    appendEvent: appendEvent("observe-act-work-item"),
   });
   const workLanes = workLanesFor(input.workOsDriver ?? "legacy", legacyWorkLane, observeActWorkLane);
   const memory = createMemoryMaintenanceCadenceLane({
     organizationId: input.organizationId, now: input.now, createId: input.createId,
-    reader: memoryState, writer: memoryState, appendEvent,
+    reader: memoryState, writer: memoryState, appendEvent: appendEvent("memory-maintenance"),
   });
   // the autonomy dial as config (C1): apply the tenant policy to every resolved pipeline
   const autonomy: AutonomyPolicy = input.autonomy ?? { level: AutonomyLevel.Assisted, humanGatedStageIds: ["human-qa-signoff"] };
@@ -188,7 +209,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     organizationId: input.organizationId, now: input.now, createId: input.createId,
     reader: changeSets, writer: changeSets,
     pipelineFor: (cs) => applyAutonomyPolicy(policy.pipelines[cs.pipelineId] ?? buildInternalOnlyPipeline(input.organizationId), autonomy),
-    appendEvent,
+    appendEvent: appendEvent("change-control"),
     ...(input.externalPort ? { externalPort: input.externalPort } : {}),
   });
   const releaseQueue = createReleaseQueueCadenceLane({
@@ -197,7 +218,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     createId: input.createId,
     reader: changeSets,
     writer: changeSets,
-    appendEvent,
+    appendEvent: appendEvent("release-queue"),
     ...(input.releaseBatchEvaluator ? { evaluateBatch: input.releaseBatchEvaluator } : {}),
     runAtomically: async (operation) => {
       await input.executor.executeTransaction(async (transaction) => {
@@ -209,14 +230,18 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
         const txOrgEvents = createCockroachOrgEventStore({ executor: txExecutor });
         await operation({
           writer: txChangeSets,
-          appendEvent: (event) => txOrgEvents.append(event),
+          appendEvent: async (event) => {
+            const denial = await controlPlane.guardOrgEventAppend("release-queue", event);
+            if (denial !== undefined) throw new Error(denial);
+            await txOrgEvents.append(event);
+          },
         });
       });
     },
   });
   const docMaintenance = createDocMaintenanceCadenceLane({
     organizationId: input.organizationId, now: input.now, createId: input.createId,
-    reader: docUnits, writer: docUnits, appendEvent,
+    reader: docUnits, writer: docUnits, appendEvent: appendEvent("doc-maintenance"),
   });
   const conformance = createConformanceCadenceLane({
     organizationId: input.organizationId,
@@ -229,35 +254,35 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     now: input.now,
     createId: input.createId,
     reader: recoveryScanReader,
-    appendEvent,
+    appendEvent: appendEvent("stale-reaction-plan-scan"),
   });
   const strandedSchedules = createStrandedScheduleScanCadenceLane({
     organizationId: input.organizationId,
     now: input.now,
     createId: input.createId,
     reader: recoveryScanReader,
-    appendEvent,
+    appendEvent: appendEvent("stranded-schedule-scan"),
   });
   const abandonedRunBindings = createAbandonedRunBindingScanCadenceLane({
     organizationId: input.organizationId,
     now: input.now,
     createId: input.createId,
     reader: recoveryScanReader,
-    appendEvent,
+    appendEvent: appendEvent("abandoned-run-binding-scan"),
   });
   const deadLetters = createDeadLetterClassifierCadenceLane({
     organizationId: input.organizationId,
     now: input.now,
     createId: input.createId,
     reader: recoveryScanReader,
-    appendEvent,
+    appendEvent: appendEvent("dead-letter-classifier"),
   });
 
   const stopped = { value: false };
   const isStopRequested = () => stopped.value;
   const start = (lane: CadenceLane, intervalMs: number): Promise<unknown> =>
     runCadenceLane({
-      lane, intervalMs, isStopRequested,
+      lane: controlPlane.protectLane(lane), intervalMs, isStopRequested,
       sleep: (ms) => input.sleep(ms, isStopRequested), // sleep + loop check share ONE stop flag
       ...(input.observer ? { observer: input.observer } : {}),
       ...(input.telemetry ? { telemetry: input.telemetry } : {}),
@@ -278,6 +303,70 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
   ]);
 
   return { stop: () => { stopped.value = true; }, done };
+}
+
+type OrgCadenceControlPlane = {
+  protectLane: (lane: CadenceLane) => CadenceLane;
+  guardOrgEventAppend: (laneName: string, event: OrgEvent) => Promise<string | undefined>;
+};
+
+const DefaultControlPlaneExemptLaneNames = new Set([
+  "conformance",
+  "stale-reaction-plan-scan",
+  "stranded-schedule-scan",
+  "abandoned-run-binding-scan",
+  "dead-letter-classifier",
+]);
+
+function createOrgCadenceControlPlane(
+  input: ComposeOrgCadenceInput,
+  state: ReturnType<typeof createCockroachControlPlaneStateStore>,
+): OrgCadenceControlPlane {
+  const exemptLaneNames = new Set([
+    ...DefaultControlPlaneExemptLaneNames,
+    ...(input.controlPlane?.exemptLaneNames ?? []),
+  ]);
+  const isExemptLane = (laneName: string) => exemptLaneNames.has(laneName);
+  const loadFlags = async (evaluatedAt: string): Promise<readonly ControlPlaneFlag[]> => [
+    ...(input.controlPlane?.flags ?? []),
+    ...await (input.controlPlane?.loadFlags?.(evaluatedAt) ?? state.listActiveFlags(input.organizationId, evaluatedAt) as Promise<readonly ControlPlaneFlag[]>),
+  ];
+  const guard = async (
+    laneName: string,
+    boundary: "cadence_tick_start" | "org_event_append",
+    actionType: string,
+    actorHatId?: string | undefined,
+  ): Promise<string | undefined> => {
+    const evaluatedAt = new Date(input.now()).toISOString();
+    const decision = evaluateControlPlaneAccess({
+      organizationId: input.organizationId,
+      actorHatId,
+      tenantId: input.organizationId,
+      boundary,
+      actionType,
+      evaluatedAt,
+      flags: await loadFlags(evaluatedAt),
+      budgets: input.controlPlane?.budgets,
+      usage: input.controlPlane?.usageForBoundary?.(boundary, actionType),
+      availableSecretScopes: input.controlPlane?.availableSecretScopes,
+      isControlPlaneExempt: isExemptLane(laneName),
+    });
+    return decision.status === "denied" ? decision.message : undefined;
+  };
+
+  return {
+    protectLane: (lane) => ({
+      name: lane.name,
+      runOnce: async () => {
+        const denial = await guard(lane.name, "cadence_tick_start", lane.name);
+        return denial === undefined
+          ? await lane.runOnce()
+          : { status: `${lane.name}:control-plane-denied`, failures: [{ message: denial }] };
+      },
+    }),
+    guardOrgEventAppend: async (laneName, event) =>
+      await guard(laneName, "org_event_append", event.kind, event.actorHatId),
+  };
 }
 
 function createOptionalObserveActSlotAuthorizer(
@@ -381,6 +470,7 @@ function createCockroachObserveActCommandRunner(
   hats: readonly ReturnType<typeof buildHatDefinitions>[number][],
 ): ObserveActCommandRunner {
   const stateAdapters = createCockroachDurableStateAdapters<CommandResult>({ executor: input.executor });
+  const controlPlaneState = createCockroachControlPlaneStateStore({ executor: input.executor });
   const pipeline = createCommandPipeline<ObserveLifecycleTransitionCommand>({
     stateStoreFactory: stateAdapters.commandStateStoreFactory,
     commandAuthorizationPort: createCommandAuthorizationPort({
@@ -400,6 +490,11 @@ function createCockroachObserveActCommandRunner(
       createObserveLifecycleTransitionHandler(),
     ]),
     workAnchorStateReader: stateAdapters.workAnchorStateStore,
+    controlPlane: {
+      loadFlags: async (command) =>
+        await controlPlaneState.listActiveFlags(command.organizationId, new Date(input.now()).toISOString()) as readonly ControlPlaneFlag[],
+      now: () => new Date(input.now()).toISOString(),
+    },
     now: () => new Date(input.now()).toISOString(),
     createId: input.createId,
   });

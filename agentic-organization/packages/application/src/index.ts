@@ -6,6 +6,7 @@ export {
   tenantConfigDocumentKey,
   type DecisionOptimizerKpiSignal,
   type DecisionOptimizerCycleResult,
+  type DecisionOptimizerControlPlane,
   type DecisionOptimizerNoProposalReason,
   type DecisionOptimizerResult,
   type DecisionOptimizerSimulationDecision,
@@ -21,6 +22,14 @@ export {
   type ResolvedTriageAction,
   type TriageActionRequest,
 } from "./triage-action-resolver.ts";
+export {
+  computeRestoreDrillChecksum,
+  verifyRestoreDrill,
+  type RestoreDrillChecksum,
+  type RestoreDrillProjection,
+  type RestoreDrillSnapshot,
+  type RestoreDrillVerification,
+} from "./restore-drill.ts";
 export {
   DeadLetterClassification,
   RecoveryIncidentKind,
@@ -113,6 +122,7 @@ export {
   createOrganizationReactionPlanActionExecutor,
   type CreateOrganizationReactionPlanActionExecutorInput,
   type EnsureWorkItemPort,
+  type ReactionPlanControlPlane,
 } from "./organization-reaction-plan-action-executor.ts";
 export {
   createCommandHandlerRegistry,
@@ -130,8 +140,26 @@ export {
 export {
   createCommandPipeline,
   type CommandPipeline,
+  type CommandPipelineControlPlane,
   type CommandPipelineDependencies,
 } from "./command-pipeline.ts";
+export {
+  ControlPlaneFlagKind,
+  ControlPlaneScopeKind,
+  createControlPlaneDeterministicRule,
+  createControlPlaneSlotAuthorizer,
+  evaluateControlPlaneAccess,
+  type ControlPlaneAccessDecision,
+  type ControlPlaneAudit,
+  type ControlPlaneBoundary,
+  type ControlPlaneBudgetCeiling,
+  type ControlPlaneBudgetKind,
+  type ControlPlaneDenialReason,
+  type ControlPlaneFlag,
+  type ControlPlaneScope,
+  type ControlPlaneUsage,
+  type EvaluateControlPlaneAccessInput,
+} from "./control-plane-guard.ts";
 export {
   CommandErrorCode,
   CommandResultArtifactType,

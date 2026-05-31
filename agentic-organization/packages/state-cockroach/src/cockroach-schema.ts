@@ -44,6 +44,7 @@ export const CockroachCoreStateMigrationName = {
   TenantConfigV20: "0020_agentic_org_tenant_config",
   ReactionPlanTraceparentV21: "0021_agentic_org_reaction_plan_traceparent",
   OrgEventTransitionContextV22: "0022_agentic_org_event_transition_context",
+  ControlPlaneFlagsV23: "0023_agentic_org_control_plane_flags",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -69,6 +70,7 @@ export const CockroachTableName = {
   PolicyObservations: "agentic_org_policy_observations",
   ControlPlaneHeartbeat: "agentic_org_control_plane_heartbeat",
   ControlPlaneAlerts: "agentic_org_control_plane_alerts",
+  ControlPlaneFlags: "agentic_org_control_plane_flags",
   AgentHeartbeat: "agentic_org_agent_heartbeat",
   HindsightMemory: "agentic_org_hindsight_memory",
   HermesRun: "agentic_org_hermes_run",
@@ -115,6 +117,8 @@ export const CockroachCheckConstraintName = {
   GraphNodeConfidence: "agentic_org_graph_nodes_confidence_check",
   GraphEdgeKind: "agentic_org_graph_edges_kind_check",
   GraphEdgeConfidence: "agentic_org_graph_edges_confidence_check",
+  ControlPlaneFlagScopeKind: "agentic_org_control_plane_flags_scope_kind_check",
+  ControlPlaneFlagKind: "agentic_org_control_plane_flags_flag_check",
 } as const;
 
 export type CockroachCheckConstraintName =
@@ -188,6 +192,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachTenantConfigMigration(),
     createCockroachReactionPlanTraceparentMigration(),
     createCockroachOrgEventTransitionContextMigration(),
+    createCockroachControlPlaneFlagsMigration(),
   ];
 }
 
@@ -449,6 +454,13 @@ export function createCockroachOrgEventTransitionContextMigration(): CockroachSc
   };
 }
 
+export function createCockroachControlPlaneFlagsMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ControlPlaneFlagsV23,
+    sql: createControlPlaneFlagsTableSql(),
+  };
+}
+
 function createGraphNodesTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.GraphNodes} (
@@ -686,6 +698,26 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneAlerts} (
   kind STRING NOT NULL,
   detail_json JSONB NOT NULL,
   created_at TIMESTAMPTZ NOT NULL
+);`.trim();
+}
+
+function createControlPlaneFlagsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneFlags} (
+  control_plane_flag_id STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  scope_kind STRING NOT NULL,
+  scope_id STRING NULL,
+  flag STRING NOT NULL,
+  reason STRING NOT NULL,
+  set_by_hat_id STRING NOT NULL,
+  set_at TIMESTAMPTZ NOT NULL,
+  expires_at TIMESTAMPTZ NULL,
+  PRIMARY KEY (organization_id, control_plane_flag_id),
+  CONSTRAINT ${CockroachCheckConstraintName.ControlPlaneFlagScopeKind} CHECK (scope_kind IN ('organization', 'tenant', 'hat', 'provider')),
+  CONSTRAINT ${CockroachCheckConstraintName.ControlPlaneFlagKind} CHECK (flag IN ('estop', 'freeze', 'budget_freeze', 'provider_freeze', 'simulator_required')),
+  INDEX control_plane_flags_by_org_flag (organization_id, flag),
+  INDEX control_plane_flags_by_org_scope (organization_id, scope_kind, scope_id)
 );`.trim();
 }
 

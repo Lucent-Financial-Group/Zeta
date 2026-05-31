@@ -25,6 +25,7 @@ export type CreateCockroachOrgEventStoreInput = {
   executor: CockroachGenericSqlExecutor;
   generateId?: () => string;
   telemetry?: TelemetryPort;
+  beforeAppend?: ((event: OrgEvent) => Promise<void>) | undefined;
 };
 
 type OrgEventRow = {
@@ -174,6 +175,7 @@ export function createCockroachOrgEventStore(input: CreateCockroachOrgEventStore
   return {
     async append(eventInput: OrgEvent): Promise<void> {
       const id = eventInput.id !== "" ? eventInput.id : nextId();
+      await input.beforeAppend?.({ ...eventInput, id });
       await input.executor.execute({
         name: "append_org_event",
         sql: `

@@ -13,6 +13,8 @@ import {
 import { ModelEvalCaseClass, type ModelEvalSummary } from "../../model-eval/src/model-eval.ts";
 import { RecordingTelemetryQueryPort, type TelemetryQueryPort } from "../../observability/src/index.ts";
 import {
+  ControlPlaneFlagKind,
+  ControlPlaneScopeKind,
   createContentAddressedEvidenceRef,
   changeSetDocumentKey,
   proposeDecisionOptimizerChangeSet,
@@ -411,6 +413,45 @@ test("does not cite telemetry evidence when telemetry queries degrade", async ()
   });
 
   deepEqual(result, { kind: "no_proposal", reason: "telemetry_degraded" });
+  deepEqual(store.operations, ["getJson:tenant-config/org-lfg.json"]);
+});
+
+test("control-plane ESTOP prevents optimizer rollout before appending events or writing ChangeSets", async () => {
+  const currentConfig = tenantConfigWithModel("gpt-5.5");
+  const store = createRecordingDecisionOptimizerStore(currentConfig);
+
+  const result = await runDecisionOptimizerCycle({
+    store,
+    organizationId: "org-lfg",
+    workItemId: "work-optimizer-control-plane",
+    proposerHatId: "decision_optimizer",
+    targetHatId: "code_reviewer",
+    targetRef: tenantConfigDocumentKey("org-lfg"),
+    candidateModel: "qwen2:0.5b",
+    budgetDeltaTokens: -512,
+    evalSummary: summary({ classAAccuracy: 1, classBAccuracy: 1 }),
+    evalEvidenceRef: EvalEvidenceRef,
+    kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
+    kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
+    modelCostRank: ModelCostRank,
+    thresholds: { minClassAAccuracy: 0.99 },
+    now: NOW,
+    controlPlane: {
+      flags: [{
+        controlPlaneFlagId: "flag-estop",
+        organizationId: "org-lfg",
+        scope: { kind: ControlPlaneScopeKind.Organization },
+        flag: ControlPlaneFlagKind.Estop,
+        reason: "operator estop",
+        setByHatId: "incident_commander",
+        setAt: NOW,
+      }],
+    },
+  });
+
+  deepEqual(result, { kind: "no_proposal", reason: "control_plane_denied" });
   deepEqual(store.operations, ["getJson:tenant-config/org-lfg.json"]);
 });
 

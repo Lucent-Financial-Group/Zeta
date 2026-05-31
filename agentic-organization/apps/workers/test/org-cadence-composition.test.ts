@@ -1,7 +1,12 @@
 import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
-import { RunLifecyclePhase, RunScope } from "../../../packages/application/src/index.ts";
+import {
+  ControlPlaneFlagKind,
+  ControlPlaneScopeKind,
+  RunLifecyclePhase,
+  RunScope,
+} from "../../../packages/application/src/index.ts";
 import { RecordingTelemetry, TelemetryMetricKind } from "../../../packages/observability/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "../../../packages/state-cockroach/src/cockroach-sql-executor.ts";
 import { composeOrgCadenceLoops } from "../src/org-cadence-composition.ts";
@@ -150,6 +155,52 @@ test("org cadence composition passes telemetry through every composed lane", asy
       `missing org_lane_ticks_total metric for ${lane}`,
     );
   }
+});
+
+test("org cadence control-plane ESTOP blocks work lanes while control lanes keep ticking", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  let observeActCommands = 0;
+
+  const handle = composeOrgCadenceLoops({
+    executor: createEmptyCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-control-plane-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act",
+    controlPlane: {
+      flags: [{
+        controlPlaneFlagId: "flag-estop",
+        organizationId: "org-lfg",
+        scope: { kind: ControlPlaneScopeKind.Organization },
+        flag: ControlPlaneFlagKind.Estop,
+        reason: "operator estop",
+        setByHatId: "incident_commander",
+        setAt: "2026-05-31T11:59:00.000Z",
+      }],
+    },
+    observeActWorkItems: async () => {
+      throw new Error("observe-act source should not run under ESTOP");
+    },
+    observeActRunCommand: async () => {
+      observeActCommands += 1;
+      return { status: "accepted" };
+    },
+    observeActDispatchTool: async () => ({ status: "dispatched" }),
+  });
+
+  await handle.done;
+
+  const observeAct = records.find((record) => record.lane === "observe-act-work-item");
+  const conformance = records.find((record) => record.lane === "conformance");
+  const staleScan = records.find((record) => record.lane === "stale-reaction-plan-scan");
+  equal(observeAct?.status, "observe-act-work-item:control-plane-denied");
+  equal(observeAct?.failureCount, 1);
+  equal(conformance?.status.startsWith("conformance:"), true);
+  equal(staleScan?.status.startsWith("stale-reaction-plan-scan:"), true);
+  equal(observeActCommands, 0);
 });
 
 function createEmptyCockroachExecutor(): CockroachGenericSqlExecutor {

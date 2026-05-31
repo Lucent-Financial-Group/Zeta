@@ -396,6 +396,7 @@ export const ActRejectionReason = {
   SlotNotSelectable: "slot_not_selectable",
   MissingImplementation: "missing_implementation",
   MissingPromptFlowContextLoader: "missing_prompt_flow_context_loader",
+  ControlPlaneDenied: "control_plane_denied",
   ScheduleAuthorityDenied: "schedule_authority_denied",
   UnsupportedImplementation: "unsupported_implementation",
 } as const;
@@ -918,7 +919,10 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
   }
   const authorization = await deps.authorizeSlot?.(slot);
   if (authorization?.status === "denied") {
-    return rejectAct(ActRejectionReason.ScheduleAuthorityDenied, authorization.message);
+    const reason = authorization.reason === ActRejectionReason.ControlPlaneDenied
+      ? ActRejectionReason.ControlPlaneDenied
+      : ActRejectionReason.ScheduleAuthorityDenied;
+    return rejectAct(reason, authorization.message);
   }
   switch (slot.impl.kind) {
     case "command":

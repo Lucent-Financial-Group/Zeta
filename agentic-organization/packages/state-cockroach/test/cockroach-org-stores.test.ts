@@ -174,6 +174,29 @@ test("append projects org_event evidence into telemetry", async () => {
   equal(telemetry.metrics[0]?.name, "org_events_total");
 });
 
+test("org_event append runs the fail-closed side-effect guard before SQL or telemetry", async () => {
+  const { executor, orgEvents } = fakeExecutor();
+  const telemetry = new RecordingTelemetry();
+  const store = createCockroachOrgEventStore({
+    executor,
+    telemetry,
+    beforeAppend: async () => {
+      throw new Error("control-plane denied org_event append");
+    },
+  });
+
+  await store.append(sampleEvent()).then(
+    () => {
+      throw new Error("expected append guard to reject");
+    },
+    (error: unknown) =>
+      equal(error instanceof Error ? error.message : String(error), "control-plane denied org_event append"),
+  );
+
+  equal(orgEvents.length, 0);
+  equal(telemetry.spans.length, 0);
+});
+
 test("hat bindings upsert and list-active excludes terminal phases", async () => {
   const { executor } = fakeExecutor();
   const store = createCockroachHatBindingStore({ executor });
