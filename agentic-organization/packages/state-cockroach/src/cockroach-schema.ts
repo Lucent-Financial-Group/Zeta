@@ -123,6 +123,9 @@ export const CockroachCheckConstraintName = {
   ControlPlaneFlagKind: "agentic_org_control_plane_flags_flag_check",
   ControlPlaneRateLimitScopeKind: "agentic_org_control_plane_rate_limits_scope_kind_check",
   ControlPlaneRateLimitKind: "agentic_org_control_plane_rate_limits_kind_check",
+  ControlPlaneRateLimitScopeShape: "agentic_org_control_plane_rate_limits_scope_shape_check",
+  ControlPlaneRateLimitWindowOrder: "agentic_org_control_plane_rate_limits_window_order_check",
+  ControlPlaneRateLimitCounts: "agentic_org_control_plane_rate_limits_counts_check",
 } as const;
 
 export type CockroachCheckConstraintName =
@@ -749,6 +752,9 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneRateLimits} (
   PRIMARY KEY (organization_id, control_plane_rate_limit_id),
   CONSTRAINT ${CockroachCheckConstraintName.ControlPlaneRateLimitScopeKind} CHECK (scope_kind IN ('organization', 'tenant', 'hat', 'provider')),
   CONSTRAINT ${CockroachCheckConstraintName.ControlPlaneRateLimitKind} CHECK (kind IN ('tokens', 'tools', 'model_calls', 'external_provider_calls', 'release_actions')),
+  CONSTRAINT ${CockroachCheckConstraintName.ControlPlaneRateLimitScopeShape} CHECK ((scope_kind = 'organization' AND scope_id IS NULL) OR (scope_kind <> 'organization' AND scope_id IS NOT NULL AND length(trim(scope_id)) > 0)),
+  CONSTRAINT ${CockroachCheckConstraintName.ControlPlaneRateLimitWindowOrder} CHECK (window_ends_at > window_started_at),
+  CONSTRAINT ${CockroachCheckConstraintName.ControlPlaneRateLimitCounts} CHECK (limit_count > 0 AND used_count >= 0 AND (requested_count IS NULL OR requested_count >= 0)),
   INDEX control_plane_rate_limits_by_org_window (organization_id, window_started_at, window_ends_at),
   INDEX control_plane_rate_limits_by_org_scope (organization_id, scope_kind, scope_id)
 );`.trim();

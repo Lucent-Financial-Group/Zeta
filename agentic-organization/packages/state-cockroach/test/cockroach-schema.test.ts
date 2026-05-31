@@ -522,6 +522,9 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("used_count INT8 NOT NULL"));
     ok(migration.sql.includes("agentic_org_control_plane_rate_limits_scope_kind_check"));
     ok(migration.sql.includes("agentic_org_control_plane_rate_limits_kind_check"));
+    ok(migration.sql.includes("agentic_org_control_plane_rate_limits_scope_shape_check"));
+    ok(migration.sql.includes("agentic_org_control_plane_rate_limits_window_order_check"));
+    ok(migration.sql.includes("agentic_org_control_plane_rate_limits_counts_check"));
     ok(migration.sql.includes("control_plane_rate_limits_by_org_window"));
     ok(migration.sql.includes("control_plane_rate_limits_by_org_scope"));
   });
