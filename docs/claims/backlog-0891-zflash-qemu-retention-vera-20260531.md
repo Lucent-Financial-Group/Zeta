@@ -26,4 +26,5 @@
 - operator-clarification: Touch ID/biometric retention is physical operator testing; QEMU should assert preserved auth-state markers. Zeta is baked into the image, and target hardware assumptions include both x86_64 and ARM64/aarch64.
 - progress: carved Kubernetes and ArgoCD health into dedicated backlog row B-0951 for kind/k3d integration testing, keeping B-0891 scoped to USB/ISO zflash acceptance and a narrow agent-start smoke path.
 - progress: `run.ts --scenario reformat-with-retention <iso>` now emits the QEMU qcow2 snapshot/restart plan from `qemu-state.ts` and still exits failed until command execution plus serial-marker assertions are wired.
+- progress: `qemu-state.ts` now includes a Result-shaped retention serial-marker assertion helper for `zeta-creds-restore:` and `already-present`, with missing-marker feedback tests.
 - next: execute the emitted QEMU command plan from the B-0891 scenario-3 runtime path and keep `reformat-with-retention` failed closed until serial-marker assertions prove end-to-end retention.

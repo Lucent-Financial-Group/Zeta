@@ -37,6 +37,21 @@ export type Qcow2SnapshotRetentionResult =
   | { readonly ok: Qcow2SnapshotRetentionPlan }
   | { readonly error: Qcow2SnapshotRetentionFeedback };
 
+export interface RetentionSerialMarkerAssertion {
+  readonly matchedMarkers: readonly string[];
+}
+
+export type RetentionSerialMarkerFeedback =
+  | {
+      readonly kind: "missing-serial-markers";
+      readonly missingMarkers: readonly string[];
+      readonly requiredMarkers: readonly string[];
+    };
+
+export type RetentionSerialMarkerResult =
+  | { readonly ok: RetentionSerialMarkerAssertion }
+  | { readonly error: RetentionSerialMarkerFeedback };
+
 const DEFAULT_MEMORY_MB = 4096;
 const DEFAULT_CPU_COUNT = 2;
 
@@ -145,6 +160,28 @@ export function planQcow2SnapshotRetention(
         args: buildRestartArgs(normalized),
       },
       requiredSerialMarkers: RETENTION_SERIAL_MARKERS,
+    },
+  };
+}
+
+export function assertRetentionSerialMarkers(
+  serialOutput: string,
+  requiredMarkers: readonly string[] = RETENTION_SERIAL_MARKERS,
+): RetentionSerialMarkerResult {
+  const missingMarkers = requiredMarkers.filter((marker) => !serialOutput.includes(marker));
+  if (missingMarkers.length > 0) {
+    return {
+      error: {
+        kind: "missing-serial-markers",
+        missingMarkers,
+        requiredMarkers,
+      },
+    };
+  }
+
+  return {
+    ok: {
+      matchedMarkers: requiredMarkers,
     },
   };
 }

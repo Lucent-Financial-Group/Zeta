@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { planQcow2SnapshotRetention } from "./qemu-state";
+import { assertRetentionSerialMarkers, planQcow2SnapshotRetention } from "./qemu-state";
 
 describe("B-0891 QEMU state-preservation planner", () => {
   test("plans qcow2 snapshot create, restore, list, and restart commands", () => {
@@ -67,6 +67,29 @@ describe("B-0891 QEMU state-preservation planner", () => {
     if ("error" in result) {
       expect(result.error.kind).toBe("invalid-input");
       expect(result.error.field).toBe("isoPath");
+    }
+  });
+
+  test("asserts retention serial markers from QEMU output", () => {
+    const result = assertRetentionSerialMarkers([
+      "zeta-creds-restore: reading preserved ESP blob",
+      "zeta-creds-restore: already-present, skipping credential rewrite",
+    ].join("\n"));
+
+    expect("ok" in result).toBe(true);
+    if ("ok" in result) {
+      expect(result.ok.matchedMarkers).toContain("zeta-creds-restore:");
+      expect(result.ok.matchedMarkers).toContain("already-present");
+    }
+  });
+
+  test("returns missing marker feedback when restore did not skip", () => {
+    const result = assertRetentionSerialMarkers("zeta-creds-restore: restoring credentials");
+
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error.kind).toBe("missing-serial-markers");
+      expect(result.error.missingMarkers).toEqual(["already-present"]);
     }
   });
 });
