@@ -155,12 +155,22 @@ Enforcement is only as strong as its weakest side-door. Three hardening moves cl
   bypasses the pipeline. The kernel is the *only* door.
 
 ### E2. Real authority + non-forgeable evidence (kill the two current stubs)
+**Status: shipped 2026-05-30.**
+
 - Replace the **permissive command-authorization stub** with a real authority port (hat
-  definition → allowed command types + tool kinds; OPA/JWT-backed). A TPM *structurally* cannot
-  emit an implementation command — today that's a stub, make it real.
+  definition → allowed command types + tool kinds). A TPM *structurally* cannot emit an
+  implementation command.
 - Make **evidence non-forgeable**: gate satisfaction must cite content-addressed evidence
   artifacts (a test-run id, a quorum-vote record, an external-approval id), not a boolean an
   agent can assert. The clamp already requires evidence; make the evidence un-fakeable.
+- **Built:** durable `HatAuthorityPort`, `hat_id` on the Cockroach authority projection with an
+  additive fail-closed upgrade for existing KIND databases, recomputable content-addressed
+  evidence artifacts for approved / waived quality gates, review-stage evidence propagation into
+  `org_events`, and `deploy/run-real-authority-evidence.ts`.
+  KIND proof: TPM + `write_code` denied and observed, `release_operator` + `write_code`
+  accepted, plain approval evidence rejected, content-addressed approval evidence accepted, and
+  a review-stage approval event persisted the content-addressed evidence ref. The proof also
+  executes the worker composition path. `PROOF: PASS`.
 
 ### E3. Continuous proof + emergency stop
 - The conformance checker (M1) runs as a **live lane + CI gate**: the org is *continuously*

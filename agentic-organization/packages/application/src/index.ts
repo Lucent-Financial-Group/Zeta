@@ -84,6 +84,15 @@ export {
   type SandboxToolResult,
 } from "./sandbox-tool.ts";
 export {
+  ContentAddressedEvidencePrefix,
+  allEvidenceRefsContentAddressed,
+  createContentAddressedEvidenceArtifact,
+  createContentAddressedEvidenceRef,
+  isContentAddressedEvidenceRef,
+  verifiedContentAddressedEvidenceRefs,
+  type ContentAddressedEvidenceArtifact,
+} from "./content-addressed-evidence.ts";
+export {
   createOrganizationReactionPlanActionExecutor,
   type CreateOrganizationReactionPlanActionExecutorInput,
   type EnsureWorkItemPort,
@@ -131,6 +140,11 @@ export {
   type CreateScheduleBlockCommandAuthorityInput,
   type ScheduleAuthorityCommandRule,
 } from "./schedule-authority.ts";
+export {
+  HatAuthorityPolicyVersion,
+  createHatAuthorityPort,
+  type CreateHatAuthorityPortInput,
+} from "./hat-authority-port.ts";
 export {
   createCreateWorkItemHandler,
   createWorkItem,

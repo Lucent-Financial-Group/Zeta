@@ -1762,3 +1762,59 @@ The proof for `org-release-a8e06b67` observed two `change_set_applied` events an
 
 `npm run typecheck` passed. `npm test` passed: **882 tests, 0 fail** (7 skipped live-integration
 tests).
+
+## Update 2026-05-30 — E2 real authority + non-forgeable evidence shipped and proven in kind
+
+The two remaining soft spots in the orchestration moat are now closed: command authorization is
+backed by durable hat-assignment authority, and approved / waived evidence must be
+content-addressed instead of plain labels.
+
+### What shipped
+
+- Durable hat authority projection now carries `hat_id`, and the Cockroach V8 migration is
+  additive for existing KIND databases (`ADD COLUMN IF NOT EXISTS`) as well as correct for fresh
+  databases.
+- `createHatAuthorityPort` reads the durable assignment, checks active / revoked / expired state,
+  validates actor and scope identity, resolves the assigned hat definition, maps commands or
+  explicit `toolType` to action classes, and applies the deterministic hat guardrail.
+- The worker composition no longer uses the permissive authorization stub. It wires
+  `createCommandAuthorizationPort` to the durable hat authority reader.
+- Approved / waived quality-gate commands require content-addressed evidence refs for evaluated
+  artifacts and business-rule evidence. Drafty request-changes / rejected gates can still carry
+  informal context.
+- Change-control stage gates now require content-addressed evidence for satisfiable test,
+  no-blocking-finding, quorum, and external signals, and emitted review-stage org_events carry
+  that evidence.
+- Reaction-plan commands now carry policy `toolType`, so autonomous reactions are authorized by
+  their required hat instead of slipping through a generic command default.
+- KIND proof runner: `deploy/run-real-authority-evidence.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:e2-real-authority-evidence`
+(`sha256:33c9b51fca3fcc7538dfa803f26a4026aab7bdcb23929153e27a191b42bf2610`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-7759886cf9-lmtvm` with zero restarts. Fresh boot
+logs showed the worker cadence lanes and keep-alive ticking with `failureCount:0`.
+
+`deploy/run-real-authority-evidence.ts` ran against in-cluster Cockroach for
+`org-authority-evidence-a4f378b2` and proved:
+
+- TPM (`senior_tpm`) + `write_code` was rejected and recorded as one denied policy observation.
+- `release_operator` + `write_code` was accepted and persisted a work item
+  (`work-item-a4f378b2-864ba3a5-5dec-43df-887a-4213314ade7f`).
+- Approved quality-gate evidence using the plain label `plain-qa-report` was rejected.
+- Approved quality-gate evidence using
+  `evidence:qa-report:sha256:83b595a44127b8f16b929aa9f936f473e8de3a3113a4ba73c54fe02e8e986642`
+  was accepted.
+- Review-stage approval for `cs-e2-a4f378b2` persisted
+  `evidence:review-stage:sha256:1c0351451db088d459527e2be42b561c93a0900b2548a1b37d69d3bf60865947`
+  in the emitted org_event.
+- The proof also executed the deployed worker composition path for a supervisor-triage reaction;
+  `workerCompositionProof.status` was `succeeded`.
+
+`PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **897 tests, 0 fail** (7 skipped live-integration
+tests).

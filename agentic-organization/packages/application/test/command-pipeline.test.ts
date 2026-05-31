@@ -36,6 +36,10 @@ import {
   CommandResultStatus,
   type CommandResult,
 } from "../src/command-result.ts";
+import {
+  createContentAddressedEvidenceArtifact,
+  createContentAddressedEvidenceRef,
+} from "../src/content-addressed-evidence.ts";
 import { createCommandPipeline } from "../src/command-pipeline.ts";
 import {
   createSendSupervisorSignalHandler,
@@ -142,12 +146,21 @@ const qualityGateCommand: RecordQualityGateEvaluationCommand = {
   gateKind: QualityGateKind.FinalBusinessValidation,
   outcome: QualityGateOutcome.Approved,
   summary: "The delivered behavior satisfies the BRD and can proceed to release readiness.",
-  evaluatedArtifactIds: ["brd-001", "qa-report-001", "trace-report-001"],
+  evaluatedArtifactIds: [
+    evidenceRef("brd", "brd-001"),
+    evidenceRef("test-run", "qa-report-001"),
+    evidenceRef("trace", "trace-report-001"),
+  ],
+  evidenceArtifacts: [
+    evidenceArtifact("brd", "brd-001"),
+    evidenceArtifact("test-run", "qa-report-001"),
+    evidenceArtifact("trace", "trace-report-001"),
+  ],
   businessRuleResults: [
     {
       ruleId: "BRD-001",
       status: BusinessRuleEvaluationStatus.Satisfied,
-      evidenceArtifactIds: ["qa-report-001"],
+      evidenceArtifactIds: [evidenceRef("test-run", "qa-report-001")],
       notes: "The delivered behavior matches the accepted business rule.",
     },
   ],
@@ -168,6 +181,14 @@ type OrganizationTestCommand =
   | CreateDiscussionAnchorCommand
   | RecordQualityGateEvaluationCommand
   | RecordGenericArtifactCommand;
+
+function evidenceRef(kind: string, id: string): string {
+  return createContentAddressedEvidenceRef(kind, { id });
+}
+
+function evidenceArtifact(kind: string, id: string) {
+  return createContentAddressedEvidenceArtifact(kind, { id });
+}
 
 describe("command pipeline idempotency", () => {
   test("executes heterogeneous command handlers from one runtime registry", async () => {

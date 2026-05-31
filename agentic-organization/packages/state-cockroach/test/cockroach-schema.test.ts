@@ -286,6 +286,9 @@ describe("cockroach core state schema", () => {
     equal(migration.name, CockroachCoreStateMigrationName.HatAssignmentAuthorityProjectionV8);
     ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.HatAssignmentAuthorities}`));
     ok(migration.sql.includes("hat_assignment_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("hat_id STRING NOT NULL"));
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.HatAssignmentAuthorities}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS hat_id STRING NOT NULL"));
     ok(migration.sql.includes("organization_id STRING NOT NULL"));
     ok(migration.sql.includes("project_id STRING NOT NULL"));
     ok(migration.sql.includes("team_id STRING"));
