@@ -117,7 +117,8 @@ function gitArgs(root: string | null, args: readonly string[]): string[] {
 
 function parseWorktreePorcelain(stdout: string): WorktreeEntry[] {
   const entries: WorktreeEntry[] = [];
-  for (const block of stdout.split("\n\n")) {
+  const normalizedStdout = stdout.replace(/\r\n?/g, "\n");
+  for (const block of normalizedStdout.split("\n\n")) {
     if (!block.trim()) continue;
 
     let path = "";
@@ -417,6 +418,7 @@ function zeroContextPatchMatchesTargetLines(path: string, commit: string, patch:
       if (match === null) return false;
       const newStart = Number.parseInt(match[1]!, 10);
       const addedLines: string[] = [];
+      const deletedLines: string[] = [];
 
       for (index += 1; index < lines.length; index += 1) {
         const hunkLine = lines[index]!;
@@ -425,14 +427,23 @@ function zeroContextPatchMatchesTargetLines(path: string, commit: string, patch:
           break;
         }
         if (hunkLine.startsWith("+") && !hunkLine.startsWith("+++ ")) addedLines.push(hunkLine.slice(1));
+        else if (hunkLine.startsWith("-") && !hunkLine.startsWith("--- ")) deletedLines.push(hunkLine.slice(1));
       }
 
-      if (addedLines.length === 0) return false;
       const target = gitStdout(path, ["show", `${commit}:${filePath}`]);
       if (target === null) return null;
       const targetLines = target.split("\n");
-      for (const [offset, addedLine] of addedLines.entries()) {
-        if (targetLines[newStart - 1 + offset] !== addedLine) return false;
+
+      if (addedLines.length > 0) {
+        for (const [offset, addedLine] of addedLines.entries()) {
+          if (targetLines[newStart - 1 + offset] !== addedLine) return false;
+        }
+      } else if (deletedLines.length > 0) {
+        const insertionIndex = Math.max(newStart, 0);
+        const targetWindow = targetLines.slice(insertionIndex, insertionIndex + deletedLines.length);
+        if (deletedLines.some((deletedLine) => targetWindow.includes(deletedLine))) return false;
+      } else {
+        return false;
       }
     }
   }

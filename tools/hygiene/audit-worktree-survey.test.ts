@@ -43,6 +43,7 @@ function inspection(overrides: Partial<WorktreeInspection> = {}): WorktreeInspec
 }
 
 function runGit(repo: string, args: readonly string[]): string {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const result = spawnSync("git", ["-C", repo, ...args], { encoding: "utf8" });
   if (result.error) throw result.error;
   if (result.status !== 0) {
@@ -110,7 +111,9 @@ describe("parseWorktreePorcelain", () => {
       "detached",
       "locked",
       "",
-    ].join("\n");
+    ]
+      .join("\n")
+      .replace(/\n/g, "\r\n");
 
     expect(parseWorktreePorcelain(stdout)).toEqual([
       {
@@ -317,6 +320,57 @@ describe("inspectWorktreeEntry", () => {
       expect(result.dirty).toBe(false);
       expect(result.headReachableFromMain).toBe(false);
       expect(result.treeEquivalentToMain).toBe(true);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+
+  test("marks deletion-only branch hunks as covered when adjacent squash edits changed context", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      commitFile(repo, "tracked.txt", "a\nb\nc\n", "base");
+      runGit(repo, ["checkout", "-b", "feature"]);
+      commitFile(repo, "tracked.txt", "a\nc\n", "feature deletion");
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      runGit(repo, ["checkout", "main"]);
+      commitFile(repo, "tracked.txt", "a\nC\n", "squash deletion with adjacent edit");
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+      const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
+      expect(result.dirty).toBe(false);
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(true);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+
+  test("does not mark deletion-only branch hunks as covered when deleted lines remain", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      commitFile(repo, "tracked.txt", "a\nb\nc\n", "base");
+      runGit(repo, ["checkout", "-b", "feature"]);
+      commitFile(repo, "tracked.txt", "a\nc\n", "feature deletion");
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      runGit(repo, ["checkout", "main"]);
+      commitFile(repo, "tracked.txt", "a\nb\nC\n", "adjacent edit without deletion");
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+      const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
+      expect(result.dirty).toBe(false);
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(false);
+      expect(result.patchEquivalentToMain).toBe(false);
     } finally {
       rmSync(repo, { recursive: true, force: true });
     }
