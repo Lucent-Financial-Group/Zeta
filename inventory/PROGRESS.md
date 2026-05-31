@@ -16,6 +16,27 @@ Status: [ ] todo · [~] doing · [x] gate passed (record HOW verified — eviden
   (id=2) + its immutable change_log row. Before the Phase 3 seed (explicit ids 1..211) the owner
   removes them in the SQL editor (disable change_log_immutable trigger -> delete proof change_log
   row + item -> re-enable) to avoid an id=2 PK collision. (append decisions as we go)
+- Phase 3 (Read path) decisions (2026-05-31, owner-approved): (1) the pre-seed cleanup script
+  INSERTs a documentary `change_log` row (item_id=NULL, action='ADMIN_CLEANUP') before re-enabling
+  the immutability trigger — append-only INSERT; does NOT violate immutability (only UPDATE/DELETE
+  are blocked). (2) UI uses system fonts — no Google Fonts, no CSP widening; matches the dashboard
+  look without a new CDN (keeps the Phase-7 SRI/CDN surface small). (3) Claude runs the 210-row
+  seed via REST as the burned editor test user (publishable/anon key; NO service_role); owner
+  independently re-verifies the result with SQL afterward. (4) inventory/ stays a STANDALONE file
+  for Phase 3 — NO nav link added to demo/index.html; nav-wiring deferred. (5) live Pages
+  propagation of inventory/ is Phase 7 (Pages deploy source still unresolved) — Phase 3 proofs test
+  the local file via the flagged same-origin reverse-proxy (browser path) + direct container TLS
+  (data path).
+- Seed staging dir `_seed_tmp/` is git-ignored (inventory/.gitignore) — the 210-item source file
+  (serials / values / locations / notes) is sensitive and is NEVER committed; only the importer
+  script (logic, no data) lands in the repo. Mirrors the existing `_proof_tmp/` ignore.
+- `<<autonomous-loop>>` SessionStart hook watch: this repo's root SessionStart hook has surfaced
+  and been consistently REFUSED in TWO consecutive sessions (initial capability check + Phase 3
+  kickoff). It conflicts with the inventory working agreement (do ONLY the current phase; never
+  silently insert new standing instructions) and `CronList`/`CronCreate` are not enabled in this
+  context regardless. FOLLOW-UP TASK (after Phase 3, before Phase 7 hardening): investigate where
+  the hook is configured, who added it, and whether it can be removed. Out of scope for the
+  inventory build itself; tracked here so it is not lost.
 
 ## Evidence rule
 
