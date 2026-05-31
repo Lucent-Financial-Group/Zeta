@@ -16,6 +16,15 @@ The human maintainer grants full permission for everything EXCEPT:
    — cost decisions evaluated on merit at proposal time.)
 2. **Permanent WONT-DO decisions** — only the *forever* version requires
    the human maintainer. WONT-DO is 99% deferral, not forever.
+3. **Large changes to external / dependent repos** — small external PRs are
+   ungated, but *large* external changes need Aaron-or-Max review first. See
+   "External-repo contributions" below for the full rule + why.
+
+> The title's "only two real gates" is the historical anchor for work *in our
+> own repos*. The complete gated set is enumerated under "Still gated" in the
+> Standing-authority section below (it also includes the HARD LIMITS / kid-safety
+> / force-push floor + the large-external-change gate). Do not conclude "external
+> large PRs are ungated" from this summary — read "Still gated."
 
 **DX-visibility**: state-changing actions are echoed in chat, NOT gated
 behind permission requests. Echo `CronCreate`, settings changes,
@@ -47,10 +56,13 @@ traveler/AI-native society ("society of minds, not factory of robots").
 capabilities carry no marginal cost → broad auth; paid surfaces spend real money →
 the reserved gate.
 
-**Still gated (unchanged):** budget-increase; permanent/forever WONT-DO; HARD LIMITS
-(`methodology-hard-limits`); kid-safety floor (B-0926); force-push/irreversible git
-confirm (`force-push-with-lease-authorization-policy`). The broad grant operates
-within that floor.
+**Still gated (the complete set):** budget-increase; permanent/forever WONT-DO;
+HARD LIMITS (`methodology-hard-limits`); kid-safety floor (B-0926); force-push/
+irreversible git confirm (`force-push-with-lease-authorization-policy`); **large
+external-repo changes** (Aaron-or-Max review-first — see "External-repo
+contributions" below; small external PRs stay ungated). The broad grant operates
+within that floor. (The title's "only two real gates" names the *in-our-repos*
+default; this is the full gated enumeration.)
 
 **Dual-market:** corporate/leash = PR-protected static no-self-mod DUs (= the
 child-tier constrained, certifiable mode); OSS/Agora = self-modifying DUs free from
