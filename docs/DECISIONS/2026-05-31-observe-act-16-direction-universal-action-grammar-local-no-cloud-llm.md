@@ -90,6 +90,45 @@ deployments (cluster for the org; USB-single-node for sovereignty/offline). This
 fork — per `AI_CLUSTER_SCAFFOLD_CONTEXT.md` local models are already a gated/deferred concern in the
 cluster context; the single-node deployment is where they become primary.
 
+### observe.ts is self-recursive: composed of summoned local small-LLM sub-observes (operator 2026-05-31)
+
+`observe()` need not be one model call. The readout it returns — the current phase + the legal
+options at a `RunScope` — can itself be **composed by summoning many local small LLMs, each
+assembling one piece of the readout, joined together; and that composition is recursive**. Operator
+2026-05-31: *"observe.ts can be composed of summons of many local small llms to pull together its own
+observe.ts pieces too — it can be self recursive."*
+
+This is **summonable BFT (B-0944) applied to `observe()` itself**, and it composes cleanly with the
+keystone because `observe()` is already a *pure* function over an injected snapshot (so the snapshot
+can be assembled by sub-observes without changing the contract):
+
+- **Recursive scope decomposition.** `observe(scope = organization)` may summon
+  `observe(scope = project)` -> `observe(scope = initiative)` -> ... down the `RunScope` ladder; each
+  level's readout is a piece of the parent's. The fixed grammar is the same at every level (a
+  `RunScope` rung renders to the same 16 slots), so recursion is uniform.
+- **Per-piece summoning.** Each piece of a readout (a candidate option, a deterministic-rule
+  evaluation, a label, a Tri-availability call) can be produced by a *summoned small local LLM*. The
+  16-way constrained decode keeps each summon tiny + local — many cheap summons compose into one
+  readout rather than one large model call.
+- **BFT join (the "summon" half of summonable BFT).** Where a piece is uncertain, summon **>=N small
+  LLMs and join** — agreement = the piece is `T`/`F`; disagreement = `N` (held), surfaced rather than
+  forced. This is the same non-Byzantine-consensus discipline as the four-compiler tri-boolean
+  ballot (B-0944), here over summoned local models instead of compilers, and it is exactly what makes
+  the readout trustworthy without a central oracle (the no-central-Rehoboam invariant: the readout is
+  assembled distributedly, never decreed).
+- **Self-recursive composition.** Because each summon is itself an `observe`-shaped call returning a
+  readout, `observe.ts` can build `observe.ts` — a small set of primitives (summon, render-16, join)
+  composes to arbitrary depth. The `decide()` legality check + the deterministic rules + the
+  >=3-agent constitution gate still bound the WHOLE recursion (a summoned sub-observe cannot escape
+  the rules any more than the top-level composer can).
+
+**[OPEN]** the summon/join protocol (how many small LLMs per piece; quorum; how disagreement maps to
+`N` vs a re-summon), the recursion-depth budget + termination, and caching of stable sub-readouts.
+This composes with B-0944 (summonable BFT), B-0703/B-0652 (multi-oracle BFT), the keystone's
+`DeterministicRule` + constitution gate, and the metabolism-loop generator-function substrate (each
+summoned piece is a generator). It is additive to the keystone — `observe()` stays pure; the snapshot
+it reads can now be *recursively summoned* rather than monolithically loaded.
+
 ## Decision
 
 Adopt, as the agent foreground-loop architecture, a **choose-your-own-adventure observe->act loop**
