@@ -33,11 +33,24 @@ namespace Zeta.Core.CSharp.Observe;
 /// safety; UoM lives where measurable quantities do (TriFloat values, the
 /// attention/tick/dora domain).</para>
 /// </summary>
-/// <param name="Events">The append-only event log (MSB-of-history first).</param>
-public sealed record EventLog(IReadOnlyList<NextAction> Events)
+public sealed record EventLog
     : IAdditiveIdentity<EventLog, EventLog>,
       IAdditionOperators<EventLog, EventLog, EventLog>
 {
+    /// <summary>The append-only event log (MSB-of-history first). Defensively
+    /// COPIED on construction (see the constructor) so a caller's later mutation of
+    /// a passed-in mutable list cannot change what <see cref="FoldOnto"/> replays
+    /// or what <c>+</c> appends — the free-monoid stability this type exists to
+    /// guarantee. (Record equality still compares this by reference; value
+    /// comparison uses <c>SequenceEqual</c>, per the tests.)</summary>
+    public IReadOnlyList<NextAction> Events { get; }
+
+    /// <summary>Construct a log, defensively copying <paramref name="events"/> into
+    /// a private read-only backing array — so the log is genuinely append-only and
+    /// immutable regardless of what the caller does with its argument afterward.</summary>
+    /// <param name="events">The events to copy into this log.</param>
+    public EventLog(IReadOnlyList<NextAction> events) => Events = events.ToArray();
+
     /// <summary>The empty log — the monoid identity. <c>empty + x == x == x + empty</c>.</summary>
     public static EventLog AdditiveIdentity { get; } = new(Array.Empty<NextAction>());
 

@@ -87,4 +87,19 @@ public sealed class EventLogTests
         AssertWorldEqual((a + b).FoldOnto(w0), b.FoldOnto(a.FoldOnto(w0)));
         AssertWorldEqual(((a + b) + c).FoldOnto(w0), c.FoldOnto(b.FoldOnto(a.FoldOnto(w0))));
     }
+
+    // The log must be genuinely append-only: constructing from a mutable list and
+    // mutating that list afterward MUST NOT change the log (the free-monoid
+    // stability this type guarantees). The constructor defensively copies.
+    [Fact]
+    public void ConstructorDefensivelyCopiesTheInput()
+    {
+        var mutable = new List<NextAction> { new NextAction.Explore("e") };
+        var log = new EventLog(mutable);
+
+        mutable.Add(new NextAction.Play("p")); // mutate the source AFTER construction
+
+        Assert.Single(log.Events);
+        Assert.IsType<NextAction.Explore>(log.Events[0]);
+    }
 }
