@@ -92,13 +92,17 @@ jobs:
           grep PRETTY_NAME /etc/os-release
           uname -sr
           # Native clone into the WSL filesystem (NOT running from the /mnt mount): git restores the
-          # committed +x mode bits so install.sh can exec linux.sh, and ext4 avoids the 9p perf hit.
+          # committed +x mode bits so the entrypoint stays executable, and ext4 avoids the 9p perf hit.
           # This was the reliable path in the local clean-room validation.
           rm -rf /root/zeta
           git clone --depth 1 "file://${HOST_WORKSPACE}" /root/zeta
           cd /root/zeta
           echo "HEAD=$(git rev-parse --short HEAD)"
-          test -x tools/setup/linux.sh || { echo "linux.sh not executable after clone"; exit 1; }
-          echo "=== running tools/setup/install.sh ==="
-          bash tools/setup/install.sh
+          # Assert the clone preserved +x on the ENTRYPOINT (the whole point of native-clone-not-/mnt),
+          # then invoke it DIRECTLY via its shebang — the real user-invocation path, not `bash …` which
+          # would mask a lost +x bit. install.sh itself execs "$SETUP_DIR/linux.sh" directly, so
+          # linux.sh's +x is validated transitively once install.sh runs it.
+          test -x tools/setup/install.sh || { echo "install.sh not executable after clone (+x not preserved)"; exit 1; }
+          echo "=== running ./tools/setup/install.sh (direct, via shebang) ==="
+          ./tools/setup/install.sh
           echo "=== install.sh completed (exit 0) ==="
