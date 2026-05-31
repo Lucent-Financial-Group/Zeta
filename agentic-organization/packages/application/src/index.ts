@@ -532,7 +532,14 @@ export {
   type GateEvaluationResult,
   type PipelineContext,
 } from "./pipeline.ts";
-export { runOrgCycle, type OrgCycleDeps, type OrgCycleReport } from "./org-runtime.ts";
+export {
+  runOrgCycle,
+  type OrgCycleDeps,
+  type OrgCycleReport,
+  type OrgCycleRmoCandidatesForHat,
+  type OrgCycleRmoCandidateSource,
+  type OrgCycleRmoCandidateSourceInput,
+} from "./org-runtime.ts";
 export {
   AuthorityScope,
   authorityScopeOf,
