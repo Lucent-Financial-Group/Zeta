@@ -176,12 +176,13 @@ ZetaIds solve for every other family. So work items become a `WorkItem` ZetaId c
   type.
 
 `tools/observe/backlog-reader.ts` is the **migration seam**: today it reads `docs/backlog/`
-B-xxxxx rows; post-migration the row `id` is a `WorkItem` ZetaId. Open question (operator
-2026-05-31): a WorkItem also wants to **run as a durable Task** (Durable Functions / Rx
-`Observable<WorkItemEvent>` — the heartbeat/bus stream IS that observable). Recommendation:
-keep `WorkItem` the planning umbrella (Azure DevOps-aligned, clean Jira/ADO plugin-interop —
-git-native first), and RELATE it to execution (runs-as-Task, observed-via-Rx) rather than
-REPLACE it with `Task` (which inverts ADO + overloads the word). Pending operator confirm.
+B-xxxxx rows; post-migration the row `id` is a `WorkItem` ZetaId. A WorkItem also **runs as a
+durable Task** (Durable Functions / Rx `Observable<WorkItemEvent>` — the heartbeat/bus stream
+IS that observable). DECIDED (operator 2026-05-31): keep `WorkItem` the planning umbrella
+(Azure DevOps-aligned; clean Jira/ADO plugin-interop; git-native first) and RELATE it to
+execution (runs-as-Task, observed-via-Rx) — do NOT replace it with `Task` (which inverts ADO
+
+- overloads the word: planning leaf-type `task` vs runtime `Task<T>` stay distinct layers).
 
 ## Envelope schema — extend the existing one (interop with the local bus)
 
