@@ -632,3 +632,76 @@ read path renders exactly 210 rows (table + cards), matching the seed count. Thi
 viewport, XSS, or sign-out (those are the deferred a/b/c/d gate, Phase 7 Auditor on the live merged
 site). Transport for this proof was the flagged same-origin proxy (browser blocks the jsdelivr CDN);
 the assertion is on the rendered DOM row count, which is app behavior independent of transport.
+
+## Phase 4 (Write path) — plan + evidence (Claude, 2026-05-31)
+
+Owner-approved plan (4 answers): server-authoritative version trigger · diagnostics behind an
+admin-only Debug toggle · custom in-theme modal · owner-supplied editor creds for the REST proofs.
+Building ONLY Phase 4 (read path Phase 3 unchanged; custom_fields editing is Phase 5, excluded).
+
+Honesty note (corrects my own earlier mis-read): this container CAN reach the live Supabase backend
+(anon reads return `[]` over HTTP 200; `auth/v1/token` 400; `current_user_role` RPC 42501). Egress
+is NOT a blocker. The only thing I lacked was editor creds, now supplied. The `<<autonomous-loop>>`
+SessionStart hook was again REFUSED (same standing reason — phase-gated working agreement).
+
+### What landed (commits on this branch)
+
+- `sql/phase4.sql` — `items_bump_version` BEFORE UPDATE trigger: `new.version = old.version + 1`.
+  Server owns `version`; client never sends it. Separate trigger so a `phase1.sql` re-run can't drop
+  it. Audit trigger ignores `version` → no change_log noise. **No new RLS policy, no `USING(true)`,
+  no GRANT/REVOKE — nothing loosened.**
+- `sql/proofs/phase4_proofs.sql` — owner `BEGIN…ROLLBACK` proof (version bump; stale-version
+  broken-vs-fixed; audit-trail-intact; no-permissive-policy). OWNER runs this in the SQL editor.
+- `proofs/phase4-write-proofs.ts` — client-path REST driver (editor key, NO service_role) for the
+  four gate proofs, on a throwaway `__phase4_proof_item__` (seed rows never touched).
+- `index.html` — write UI: edit/add/archive/un-archive modal + optimistic-lock save + per-item
+  History (UTC stored / local shown) + "Include archived" toggle + admin-only Debug toggle hiding
+  the Phase-2 diagnostics. CSP/anon-key/read-path unchanged; no innerHTML (XSS-safe).
+
+### UI smoke (Claude headless Chromium, real index.html, stubbed CDN transport) — PASS
+
+Per-role wiring (the buttons are cosmetic; RLS is the real gate):
+`viewer`: 0 Edit buttons, no Actions column, Add hidden, Debug hidden, archived row hidden until
+"Include archived" → then shown. `editor`: Actions column + Edit buttons + Add visible, Debug hidden,
+edit modal opens with all 12 core fields (status = `<select>`). `admin`: same + Debug toggle visible.
+0 page errors in all three roles.
+
+### Gate proof — broken baseline (phase4.sql NOT yet run)
+
+(a)/(c)/(d) PASS, (b) FAIL — the "fails on broken code" half of the test rule. Raw observed output
+(editor session, live backend, item id=212):
+
+```
+role (current_user_role RPC) -> "editor" (http 200)
+(a) change_log row: id=219 item_id=212 action=UPDATE field=notes
+    old="orig" -> new="edited-by-phase4-proof-a"
+    changed_at=2026-05-31T23:01:30.084961+00:00 (UTC)   local=5/31/2026, 11:01:30 PM (tz=UTC)
+    (a) ASSERTION ... : PASS
+(b) row at version=1; stale guard WHERE version=1 -> affected 1 row (NOT rejected — version never
+    bumped because phase4.sql is not installed); unguarded -> 1 row.
+    (b) ASSERTION guarded-stale=0 AND unguarded=1 : FAIL   <-- EXPECTED on broken baseline
+(c) archive is_archived false->true (#222) then true->false (#223); INSERT(#218) present; data
+    intact. (c) ASSERTION ... : PASS
+(d) anon items/field_definitions/change_log/profiles each -> []  (d) ASSERTION ... : PASS
+SUMMARY: (a)=PASS (b)=FAIL (c)=PASS (d)=PASS
+```
+
+Interpretation: without the version trigger, `version` stayed `1` through every edit, so the stale
+guard matched the row (silent overwrite) → (b) correctly FAILS. This IS the broken half of the
+CLAUDE.md "key test fails on broken code, passes when fixed" rule. (a)/(c)/(d) pass because they do
+not depend on the trigger.
+
+### OUTSTANDING for the Phase 4 gate (NOT yet [x])
+
+1. **Owner runs `inventory/sql/phase4.sql`** in the Supabase SQL editor (and optionally
+   `sql/proofs/phase4_proofs.sql` → expect all `PASSED`).
+2. Claude re-runs `proofs/phase4-write-proofs.ts` → expect **(b) flips to PASS** (`version 1→2`,
+   stale guard 0 rows rejected) alongside (a)/(c)/(d) — the four proofs the owner asked for, with
+   observed output. Then PROGRESS records the FIXED run and only THEN is the gate considered met
+   (subject to Phase 7 Auditor re-verification on the live site).
+
+### Owner cleanup follow-up (Phase 7 / pre-launch)
+
+Proof runs created throwaway items (id=212 from the broken run; id=213+ from the fixed run), left
+ARCHIVED (the client has no DELETE policy by design). Remove in the SQL editor like the Phase-1
+proof item: disable `change_log_immutable` → delete their change_log rows + items → re-enable.
