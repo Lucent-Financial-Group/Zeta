@@ -329,3 +329,54 @@ Observed output (no tokens/passwords logged):
 trust; role single-source (`current_user_role()`) read by both UI and RLS, in agreement
 (viewer→viewer, editor→editor); Viewer edit refused BY THE DB (0 rows, RLS) with editor allowed as
 control; sign-out ends the session (verified getUser()→null) and clears rendered + in-memory data.
+
+## Seed-import mapping decisions (Phase 3, owner-approved 2026-05-31)
+
+Source: `Company_Inventory_Master_List.xlsx` (sheet `Inventory`, 1 header + 210 data rows,
+ids 1..211 with **#8 absent** — matches spec "#8 retired/not renumbered"). Stored ONLY in the
+git-ignored `inventory/_seed_tmp/` (sensitive: serials/values/locations/notes/sources) — never
+committed. The committed transform logic lives in `inventory/seed/seed-import.ts`.
+
+Column map (sheet → `items`):
+
+| Sheet column      | → items column | Notes |
+|-------------------|----------------|-------|
+| A Inventory ID    | id             | 210 ids, 1..211 skip 8 |
+| B Section         | category       | single column (Phase-1 decision #2); 17 distinct sections |
+| C Brand           | brand          | 209/210 (1 null) |
+| D Product Name    | name           | 210/210 |
+| E Model / PN      | model_pn       | 205/210 |
+| F Qty             | qty            | all integers |
+| G Device Type     | device_type    | 210/210 |
+| H Status          | status         | **OK → Active/In Use** (see Decision A) |
+| I Notes           | notes          | base of the notes field (see Decision B) |
+| J Source(s)       | notes (append) | **SOURCES block** (see Decision B) |
+| (none)            | location, assignment_purpose, value, serial | not in sheet → null |
+| (none)            | is_archived=false, custom_fields={} | DB defaults; custom_fields owned by Phase 5 |
+
+**Decision A — status mapping.** Source `Status` is a binary health flag: `OK` (156) /
+`Needs Attention` (54). Mapping: `Needs Attention` → `Needs Attention` (verbatim);
+**`OK` → `Active/In Use`**. Rationale: `OK` meant "no-problem flag" (opposite of Needs Attention),
+NOT a location claim; `Active/In Use` is the semantically-neutral "this is fine" status, whereas
+`In Storage` would manufacture location data we do not have. Lossless re: the one bit that exists
+(fine vs attention); refine item-by-item later. (Answers a future "why is everything Active/In Use
+when the source said OK?")
+
+**Decision B — Source(s) → notes (no schema change in Phase 3).** Sources are appended to the
+notes field after a machine-parseable marker so a future phase can promote them to a dedicated
+column with a deterministic split. Format when sources exist:
+```
+[existing notes text]
+
+SOURCES:
+https://url1
+https://url2
+```
+- notes + sources → `"{notes}\n\nSOURCES:\n{url}\n{url}"` (split a future migration on `\n\nSOURCES:\n`)
+- sources only (19 rows, empty notes) → `"SOURCES:\n{url}\n{url}"` (begins with `SOURCES:\n`)
+- notes only (50 rows) → notes unchanged
+- neither → null
+Source URLs in the sheet are ` ; `-separated; each becomes its own line under `SOURCES:`.
+
+Status-quo at write time: 156 → Active/In Use, 54 → Needs Attention; sources present on 160/210
+(141 with notes, 19 without). These mappings are also echoed in the `seed-import.ts` header comment.
