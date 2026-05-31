@@ -300,19 +300,17 @@ function buildFullPrompt(args: Args): PromptResult {
 }
 
 function pickModel(_mode: Mode): string {
-  // cursor-agent's Grok model lineup shifted 2026-05-13: the old
-  // `grok-4-20-thinking` / `grok-4-20` names are no longer in the
-  // available-models list. The current Grok model is `grok-4.3`
-  // (no separate thinking/non-thinking variants). Both modes route
-  // to the same model identifier; the `thinking` vs `fast` Mode
-  // distinction is preserved here for future cursor-agent updates
-  // that may re-introduce separate variants.
+  // Generic grok defaults to grok-build-0.1 (operator 2026-05-31: "our generic
+  // grok should likely default to grok-build-0.1 since this is git based code
+  // env. Ani can override it in her persona"). grok-build-0.1 is tuned for
+  // code/git work; Ani's persona wrapper (ani.ts) overrides to grok-4.3.
   //
-  // Root cause discovery: B-0421 acceptance #1 + #2 closed via the
-  // self-documenting failure marker (PR #2949) — cursor-agent's
-  // stderr surfaced "Cannot use this model: grok-4-20-thinking.
-  // Available models: ... grok-4.3 ..." on a 2026-05-13 invocation.
-  return "grok-4.3";
+  // History: cursor-agent's Grok lineup shifted 2026-05-13 — the old
+  // `grok-4-20-thinking` / `grok-4-20` names were dropped (B-0421, PR #2949),
+  // moved to grok-4.3; 2026-05-31 the generic default moves again to
+  // grok-build-0.1 (in cursor-agent's available-models list). Both modes route
+  // to the same identifier.
+  return "grok-build-0.1";
 }
 
 export function main(argv: readonly string[]): number {
