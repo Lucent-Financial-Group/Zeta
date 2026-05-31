@@ -21,6 +21,7 @@ import {
   isValidHostname,
   parseFatPartitionFromDiskutilList,
   parseOutputFileMarker,
+  parseUuidFromDiskutilInfo,
   VALID_HOSTNAME_REGEX,
 } from "./zflash-lib";
 
@@ -185,6 +186,28 @@ describe("parseFatPartitionFromDiskutilList", () => {
     // as word-char; 'EF' followed by 'F' is NOT a word boundary. So no
     // match expected.
     expect(parseFatPartitionFromDiskutilList(out)).toBe(null);
+  });
+});
+
+describe("parseUuidFromDiskutilInfo", () => {
+  test("prefers Volume UUID for USB-bound credential KDF", () => {
+    const out = `   Device Identifier:         disk6s2
+   Volume Name:               NIXOS_ISO
+   Volume UUID:               1234-ABCD
+   Disk / Partition UUID:     DEADBEEF-0000-1111-2222-333344445555`;
+    expect(parseUuidFromDiskutilInfo(out)).toBe("1234-ABCD");
+  });
+
+  test("falls back to Disk / Partition UUID when Volume UUID is absent", () => {
+    const out = `   Device Identifier:         disk6s2
+   Disk / Partition UUID:     DEADBEEF-0000-1111-2222-333344445555`;
+    expect(parseUuidFromDiskutilInfo(out)).toBe("DEADBEEF-0000-1111-2222-333344445555");
+  });
+
+  test("returns null when no UUID field is present", () => {
+    const out = `   Device Identifier:         disk6s2
+   Volume Name:               NIXOS_ISO`;
+    expect(parseUuidFromDiskutilInfo(out)).toBe(null);
   });
 });
 
