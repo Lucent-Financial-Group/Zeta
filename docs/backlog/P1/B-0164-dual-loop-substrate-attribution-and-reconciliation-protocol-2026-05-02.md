@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: Dual-loop substrate attribution + reconciliation protocol — implementation work for BFT-many-masters at loop layer (Aaron 2026-05-02 + Otto independent extension)
 created: 2026-05-02
-last_updated: 2026-05-10
+last_updated: 2026-05-31
 depends_on:
   - B-0160
 children:
@@ -50,7 +50,7 @@ Aaron's morning reconciliation has to resolve these. The architecture's commitme
 
 1. **Per-loop attribution channel.** ✅ SATISFIED BY EXISTING SUBSTRATE — Otto's tick-shards under `docs/hygiene-history/ticks/**` already include col2 model-identifier (e.g., `opus-4-7 / autonomous-loop session continuation`). Codex's loop should write to the same shard surface with its own model-identifier (e.g., `gpt-5.5 / codex-loop`). The col2 schema accommodates this; no schema change needed.
 
-2. **Disagreement-preservation protocol for PR reviews.** ⏳ BLOCKED — requires dual-loop running. When both loops review the same PR thread with different conclusions: each loop's review-comment is preserved with attribution; neither auto-resolves the other. The morning reconciliation reads both, decides, resolves accordingly. No silent overwrites.
+2. **Disagreement-preservation protocol for PR reviews.** ✅ DONE — B-0164.1 closed on 2026-05-31. The landed `tools/hygiene/divergence-shard.ts` detector/writer preserves differing PR-review-thread conclusions as divergence shards without auto-resolving GitHub threads, and `tools/hygiene/divergence-reconcile.ts` supplies the pending-shard read/write-back path for morning reconciliation.
 
 3. **Branch-attribution for in-flight work.** ✅ SATISFIED BY EXISTING SUBSTRATE — When both loops produce concurrent commits to the same branch: each loop commits with its own author-identifier (already supported by `Co-Authored-By` trailer). Different loops working different threads don't conflict if file-isolation holds; if they touch the same file, the second loop's tick should detect the conflict and either rebase OR file a divergence-shard noting the conflict for morning reconciliation.
 
@@ -134,7 +134,7 @@ ACs #1, #3, #4 are closed. Remaining open work extracted as atomic child rows:
 
 | Child | AC | Blocker | File |
 |-------|----|---------|------|
-| B-0164.1 | AC #2 — PR-review disagreement-preservation | B-0160 (dual-loop not running) | `B-0164.1-pr-review-disagreement-preservation-protocol.md` |
+| B-0164.1 | AC #2 — PR-review disagreement-preservation | Closed 2026-05-31 | `B-0164.1-pr-review-disagreement-preservation-protocol.md` |
 | B-0164.2 | AC #5 — Multi-loop tick-tooling attribution | B-0163 (tooling retirement) | `B-0164.2-multi-loop-tick-tooling-attribution.md` |
 | B-0164.3 | AC #6 — Cron-tick coordination | B-0160 + B-0164.1 | `B-0164.3-cron-tick-coordination-dual-loop.md` |
 
