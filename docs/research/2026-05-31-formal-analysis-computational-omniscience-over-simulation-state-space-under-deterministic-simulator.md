@@ -262,6 +262,41 @@ graph) — operational, bounded, non-mystical.
 
 ---
 
+## 6.5 The concrete mechanism — IScheduler (time) + function generator (generator-time) + DBSP retraction-native (efficient rewind / fast-forward / branch)
+
+Operator 2026-05-31, naming the implementation primitives that make this real for
+the framework's emulator (B-0924/B-0925): *"it works for us cause we can use
+IScheduler and function generator for the emulator"* + *"for time"* + *"generator
+time"* + *"it lets you rewind and fast forward over dbsp retraction native so you
+can explore branching playthrough very efficiently."* The three primitives map
+one-to-one onto the formal machinery above — these are off-the-shelf, composable,
+not bespoke:
+
+| Primitive | Realizes | Maps to |
+|---|---|---|
+| **`IScheduler`** (Rx controllable/virtual-time scheduler — `System.Reactive.Concurrency` / RxJS `Scheduler`; the `TestScheduler` / `HistoricalScheduler` / `VirtualTimeScheduler` family) | **TIME.** All timing/concurrency flows through the scheduler; a virtual clock you can advance deterministically — so execution is deterministic (O1), replayable (O2), and reachable-to-any-point (O3). The same controllable-scheduler move as FoundationDB's Flow, but as a standard Rx abstraction. | the deterministic-simulator *time* axis (three-clocks: physical/git time, made controllable) |
+| **function generator** (generator functions; bidirectional `value = yield x`; F# `seq`/CEs) | **GENERATOR TIME.** Drives the simulation one step per `yield` AND receives feedback through the yield — the Kleisli bidirectional channel (B-0917). The generator-time axis where future feedback updates the generator (O5 + §6). | the *generator-time* clock (the third clock) |
+| **DBSP retraction-native** (Z-sets; §4.2) | **EFFICIENT rewind / fast-forward / branch.** Rewind = retract the deltas back to a branch point (add inverse Z-sets — cheap); fast-forward = replay/advance the scheduler; branch = fork the trajectory at a point and explore a counterfactual playthrough. All **incremental** — derived views are maintained, not recomputed per branch (O4). | the *git* clock (append-only + retraction) + O4 incrementality |
+
+**The payoff (operator's phrasing): "explore branching playthrough very
+efficiently."** Counterfactual-branch exploration (O3) over the state-space is the
+expensive operation — and retraction-native DBSP makes it **incremental**: you do
+not re-run each branch from scratch, you *rewind by retracting deltas* to the
+branch point and *fast-forward by replaying*, with the derived views (and, in the
+Bayesian regime of §4.5, the posterior) maintained incrementally throughout. This
+is precisely what makes the probabilistic-Bayesian regime *tractable* (§4.5): the
+posterior over branching playthroughs is updated incrementally as you rewind/branch,
+not recomputed.
+
+This also **sharpens the exploration-bound (§5.3):** full enumeration of the
+state-space is still exponential, but *navigating* it — rewind, fast-forward, fork a
+branch, query the (incrementally-maintained) view/posterior — is efficient. "Any
+state/branch knowable on demand, cheaply-reachable by incremental rewind/replay" is
+the achievable property; "all states materialized at once" is not (and is not
+needed — the posterior is the all-at-once representation).
+
+---
+
 ## 7. What the framework HAS vs NEEDS (substrate-honest: not-yet-done-here)
 
 **HAS (the pieces, at toy/partial scale):**
@@ -274,12 +309,17 @@ graph) — operational, bounded, non-mystical.
 | Kleisli interrupt substrate (O5 / generator-time) | B-0917 |
 | Bounded state-space simulators as existence demos | **B-0924** (Atari emulator, all-state-space) + **B-0925** (C. elegans worm-colony controller) |
 | Z-set / DBSP substrate (O4/O5) | `algebra-owner` skill; B-0951 git-native indexes |
+| The implementation primitives (§6.5): `IScheduler` (time), function generators (generator-time), DBSP Z-sets (efficient rewind/ff/branch) | off-the-shelf (Rx + language generators + the Z-set substrate) — the emulator's deterministic-time + generator-time + branching engine |
 
 **NEEDS (to actually achieve O1–O5 over the framework's *own* execution):**
 
-1. **Full DST coverage of the framework itself** — inject *all* nondeterminism
-   (I/O, time, scheduling, RNG) FoundationDB-Flow-style. Today DST is a discipline
-   over substrate, not a Flow-grade runtime; (O1) is not yet enforced end-to-end.
+1. **Wire the §6.5 primitives into the emulator + the framework's own loop** — the
+   pieces exist (Rx `IScheduler` for controllable time, function generators for
+   generator-time, DBSP Z-sets for incremental rewind/ff/branch); what's needed is
+   **full DST coverage** — route *all* nondeterminism (I/O, time, scheduling, RNG)
+   through the scheduler FoundationDB-Flow-style, so (O1) is enforced end-to-end.
+   Today DST is a discipline over substrate; the gap is the controllable-runtime
+   wiring, not the primitives.
 2. **The DBSP incremental-view layer wired to the git-native append-only event log**
    — so (O4) is real incremental maintenance, not per-query recompute.
 3. **The generator-time bidirectional feedback realized** as a first-class channel
