@@ -9,3 +9,9 @@ entries:
     name: Workflow
   - id: 3
     name: Heartbeat
+  - id: 4
+    name: Bus
+  - id: 5
+    name: Spawn
+  - id: 6
+    name: WorkItem

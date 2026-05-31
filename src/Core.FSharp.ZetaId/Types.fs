@@ -25,6 +25,9 @@ type Category =
     | Emission = 1uy
     | Workflow = 2uy
     | Heartbeat = 3uy
+    | Bus = 4uy        // cross-machine agent comms (git-native bus spec, #6219)
+    | Spawn = 5uy      // agent-spawning (backend-portable: GH Actions / Argo / GitLab)
+    | WorkItem = 6uy   // planning umbrella (tasks + bugs; B-xxxxx -> ZetaId migration)
 
 /// Firefly bit — 1 bit. Mirrors `src/Core.CSharp.ZetaId/Firefly.cs`.
 type Firefly =
