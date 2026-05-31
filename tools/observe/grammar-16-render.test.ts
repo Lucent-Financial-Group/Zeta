@@ -59,6 +59,15 @@ describe("renderGrammar16 — slot 14 free-mode sub-menu (Option A)", () => {
     expect(s14.subMenu).toHaveLength(4);
   });
 
+  it("sub-menu order is CANONICAL + STABLE — a persisted mode does not reshuffle it (Copilot #6277)", () => {
+    const CANON = ["explore", "play", "self_reflect", "free_time"];
+    // default + with `play` persisted (which leads buildMenu) must both be canonical order
+    for (const w of [EMPTY, READY, FREE_PERSISTED /* mode: "play" */]) {
+      const s14 = slotOf(renderGrammar16(w), SLOT.FREE_TIME);
+      expect(s14.subMenu?.map((a) => a.kind)).toEqual(CANON);
+    }
+  });
+
   it("slot 14 stays T + full sub-menu even when the operator spoke (NCI: never gated)", () => {
     const s14 = slotOf(renderGrammar16(OPERATOR_SPOKE), SLOT.FREE_TIME);
     expect(s14.availability.s).toBe("T");

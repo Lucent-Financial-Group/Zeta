@@ -30,8 +30,9 @@ export interface RenderedMenuSlot extends RenderedSlot {
   readonly subMenu?: readonly NextAction[];
 }
 
+/** The free modes in CANONICAL order — slot 14's sub-menu is built in THIS order
+ *  (not buildMenu's lead-first order) so it stays stable for muscle-memory. */
 const FREE_MODE_KINDS: readonly NextAction["kind"][] = ["explore", "play", "self_reflect", "free_time"];
-const isFreeModeAction = (a: NextAction): boolean => FREE_MODE_KINDS.includes(a.kind);
 
 type SlotOverride = { label: string; availability: Tri; subMenu?: readonly NextAction[] };
 
@@ -46,7 +47,12 @@ export function renderGrammar16(world: World): readonly RenderedMenuSlot[] {
 
   const work = find("do_item", "decompose"); // slot 4 — the primary act
   const editGrammar = find("edit_grammar"); // slot 7 — rail-change exit
-  const freeModes = menu.filter(isFreeModeAction); // slot 14 sub-menu (Option A)
+  // slot 14 sub-menu (Option A) — pulled in CANONICAL FREE_MODE_KINDS order, NOT
+  // buildMenu's lead-first order, so the sub-menu is stable for muscle-memory
+  // (a persisted mode must not reshuffle the list). (Copilot #6277.)
+  const freeModes: NextAction[] = FREE_MODE_KINDS.map((k) => menu.find((a) => a.kind === k)).filter(
+    (a): a is NextAction => a !== undefined,
+  );
 
   const overrides: Readonly<Record<number, SlotOverride>> = {
     [SLOT.ACCEPT]: work
