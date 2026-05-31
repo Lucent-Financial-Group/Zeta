@@ -10,7 +10,7 @@ import { DETERMINISTIC_ENV, DEFAULT_ENV, unpack } from "../../src/Core.TypeScrip
 import { Category } from "../../src/Core.TypeScript/zeta-id/types";
 import { envelopePath, mintBusZetaIdHex, serializeEnvelope, type AgentBusEnvelope } from "./types";
 import { writeEnvelope, makeEnvelope } from "./publish";
-import { readEnvelopesSince, nextCursor } from "./subscribe";
+import { readEnvelopesSince, nextCursor, envelopeCursor } from "./subscribe";
 
 let ROOT: string;
 beforeEach(() => {
@@ -109,9 +109,22 @@ describe("readEnvelopesSince", () => {
     expect(after.map((e) => e.ts)).toEqual(["2026-05-31T11:00:00.000Z", "2026-05-31T12:00:00.000Z"]);
   });
 
-  it("nextCursor is the newest ts (advances the read position)", () => {
+  it("nextCursor is the newest envelope's compound cursor (advances the read position)", () => {
     seed();
-    expect(nextCursor(readEnvelopesSince(ROOT))).toBe("2026-05-31T12:00:00.000Z");
+    const envs = readEnvelopesSince(ROOT);
+    expect(nextCursor(envs)).toBe(envelopeCursor(envs[envs.length - 1]!));
+    expect(nextCursor(envs)).toBe(`2026-05-31T12:00:00.000Z|${"03".padStart(32, "0")}`);
+  });
+
+  it("does NOT drop a later same-millisecond envelope — compound (ts, zetaIdHex) cursor (Codex #6283)", () => {
+    const sameTs = "2026-05-31T12:00:00.000Z";
+    const e1 = env({ zetaIdHex: "aa".padStart(32, "0"), ts: sameTs });
+    const e2 = env({ zetaIdHex: "bb".padStart(32, "0"), ts: sameTs }); // same ms, higher hex
+    writeEnvelope(e1, ROOT, at);
+    writeEnvelope(e2, ROOT, at);
+    // cursor at e1's compound key: a ts-only filter would drop e2 (same ts); compound keeps it
+    const after = readEnvelopesSince(ROOT, envelopeCursor(e1));
+    expect(after.map((e) => e.zetaIdHex)).toEqual([e2.zetaIdHex]);
   });
 
   it("skips malformed envelopes (best-effort) without throwing", () => {

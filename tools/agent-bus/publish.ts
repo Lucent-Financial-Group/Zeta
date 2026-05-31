@@ -51,8 +51,19 @@ function gitPushEnvelope(path: string, from: SenderAgentId, topic: string): void
   const opts = { stdio: "inherit" as const };
   execFileSync("git", ["add", path], opts);
   execFileSync("git", ["commit", "-q", "-m", `bus(${from}): ${topic} ${path}`], opts);
-  // Direct-to-main, no PR (the B-0858 carve-out). --no-verify: bus envelopes are data, not code.
-  execFileSync("git", ["push"], opts);
+  // Direct-to-main, no PR (the B-0858 carve-out). A concurrent peer publishing its OWN
+  // disjoint envelope advances main, so this push can be rejected non-fast-forward — but
+  // the envelopes are disjoint ZetaId files (the G-Set CRDT), so `pull --rebase` NEVER
+  // conflicts; integrate the peer's commit + retry. (Codex #6283.)
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      execFileSync("git", ["push"], opts);
+      return;
+    } catch {
+      execFileSync("git", ["pull", "--rebase"], opts);
+    }
+  }
+  execFileSync("git", ["push"], opts); // final attempt — throws if still failing (surfaced, not swallowed)
 }
 
 if (import.meta.main) {
