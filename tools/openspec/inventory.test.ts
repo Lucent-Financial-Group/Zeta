@@ -392,6 +392,7 @@ describe("mapping table integrity", () => {
       "docs/hygiene-history/loop-tick-history.md",
       "docs/hygiene-history/ticks/README.md",
       "tools/hygiene/check-tick-history-order.ts",
+      "tools/hygiene/check-tick-history-order.test.ts",
       "tools/hygiene/check-tick-history-shard-schema.ts",
       "tools/hygiene/check-tick-history-shard-schema.test.ts",
     ]);
