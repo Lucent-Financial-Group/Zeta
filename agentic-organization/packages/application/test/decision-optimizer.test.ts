@@ -11,7 +11,7 @@ import {
   type TenantConfig,
 } from "../../domain/src/index.ts";
 import { ModelEvalCaseClass, type ModelEvalSummary } from "../../model-eval/src/model-eval.ts";
-import { RecordingTelemetryQueryPort } from "../../observability/src/index.ts";
+import { RecordingTelemetryQueryPort, type TelemetryQueryPort } from "../../observability/src/index.ts";
 import {
   createContentAddressedEvidenceRef,
   changeSetDocumentKey,
@@ -306,6 +306,48 @@ test("reads telemetry before proposing and carries telemetry evidence into chang
     traceSummaryCount: 1,
     logLineCount: 1,
   });
+});
+
+test("does not cite telemetry evidence when telemetry queries degrade", async () => {
+  const currentConfig = tenantConfigWithModel("gpt-5.5");
+  const store = createRecordingDecisionOptimizerStore(currentConfig);
+  const telemetryQueryPort: TelemetryQueryPort = {
+    queryMetrics: async () => ({
+      status: "degraded",
+      source: "mimir",
+      reason: "timeout",
+      message: "mimir telemetry query timed out: operation timed out",
+    }),
+    queryTraces: async () => ({ status: "ok", source: "recording", data: [] }),
+    queryLogs: async () => ({ status: "ok", source: "recording", data: [] }),
+  };
+
+  const result = await runDecisionOptimizerCycle({
+    store,
+    organizationId: "org-lfg",
+    workItemId: "work-optimizer-telemetry-degraded",
+    proposerHatId: "decision_optimizer",
+    targetHatId: "code_reviewer",
+    targetRef: tenantConfigDocumentKey("org-lfg"),
+    candidateModel: "qwen2:0.5b",
+    budgetDeltaTokens: -512,
+    evalSummary: summary({ classAAccuracy: 1, classBAccuracy: 1 }),
+    evalEvidenceRef: EvalEvidenceRef,
+    kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
+    kpiEvidenceRef: KpiEvidenceRef,
+    modelCostRank: ModelCostRank,
+    thresholds: { minClassAAccuracy: 0.99 },
+    now: NOW,
+    telemetryEvidence: {
+      queryPort: telemetryQueryPort,
+      evidenceRef: TelemetryEvidenceRef,
+      range: { start: "2026-05-30T23:00:00.000Z", end: NOW },
+      metricQueries: ["histogram_quantile(0.95, org_command_duration_ms{hat=\"code_reviewer\"})"],
+    },
+  });
+
+  deepEqual(result, { kind: "no_proposal", reason: "telemetry_degraded" });
+  deepEqual(store.operations, ["getJson:tenant-config/org-lfg.json"]);
 });
 
 test("returns a store-level no-op when generic storage has no tenant config", async () => {

@@ -28,6 +28,7 @@
 import { HatLevel, ToolBundle, type HatDefinition } from "../../domain/src/index.ts";
 import type {
   MetricSeries,
+  TelemetryQueryDegraded,
   TelemetryQueryPort,
   TelemetryTimeRange,
 } from "../../observability/src/index.ts";
@@ -1508,14 +1509,18 @@ function createTelemetryCommandCountAgent(
   return {
     id: `telemetry.command_total.${scope}`,
     scope,
-    compute: async () => ({
-      id: "telemetry.command_total",
-      label: "commands in range",
-      value: sumLatestMetricValues(
-        await input.telemetry.queryMetrics(`sum(org_command_total{agentic_scope="${scope}"})`, input.range),
-      ),
-      unit: "count",
-    }),
+    compute: async () => {
+      const result = await input.telemetry.queryMetrics(`sum(org_command_total{agentic_scope="${scope}"})`, input.range);
+      if (result.status === "degraded") {
+        return telemetryDegradedMetricBlock("telemetry.command_total", "commands in range", result);
+      }
+      return {
+        id: "telemetry.command_total",
+        label: "commands in range",
+        value: sumLatestMetricValues(result.data),
+        unit: "count",
+      };
+    },
   };
 }
 
@@ -1526,12 +1531,18 @@ function createTelemetryTraceCountAgent(
   return {
     id: `telemetry.trace_count.${scope}`,
     scope,
-    compute: async () => ({
-      id: "telemetry.trace_count",
-      label: "traces in range",
-      value: (await input.telemetry.queryTraces(`{ agentic.scope = "${scope}" }`, input.range)).length,
-      unit: "trace",
-    }),
+    compute: async () => {
+      const result = await input.telemetry.queryTraces(`{ agentic.scope = "${scope}" }`, input.range);
+      if (result.status === "degraded") {
+        return telemetryDegradedMetricBlock("telemetry.trace_count", "traces in range", result);
+      }
+      return {
+        id: "telemetry.trace_count",
+        label: "traces in range",
+        value: result.data.length,
+        unit: "trace",
+      };
+    },
   };
 }
 
@@ -1542,17 +1553,34 @@ function createTelemetryWarningLogCountAgent(
   return {
     id: `telemetry.warning_log_count.${scope}`,
     scope,
-    compute: async () => ({
-      id: "telemetry.warning_log_count",
-      label: "warning logs in range",
-      value: (
-        await input.telemetry.queryLogs(
-          `{app="agentic-org-worker", agentic_scope="${scope}", level=~"warn|error"}`,
-          input.range,
-        )
-      ).length,
-      unit: "log",
-    }),
+    compute: async () => {
+      const result = await input.telemetry.queryLogs(
+        `{app="agentic-org-worker", agentic_scope="${scope}", level=~"warn|error"}`,
+        input.range,
+      );
+      if (result.status === "degraded") {
+        return telemetryDegradedMetricBlock("telemetry.warning_log_count", "warning logs in range", result);
+      }
+      return {
+        id: "telemetry.warning_log_count",
+        label: "warning logs in range",
+        value: result.data.length,
+        unit: "log",
+      };
+    },
+  };
+}
+
+function telemetryDegradedMetricBlock(
+  id: string,
+  label: string,
+  result: TelemetryQueryDegraded,
+): MetricBlock {
+  return {
+    id,
+    label,
+    value: "degraded",
+    unit: `${result.source}:${result.reason}`,
   };
 }
 

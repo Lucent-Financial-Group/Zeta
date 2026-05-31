@@ -56,7 +56,8 @@ export type DecisionOptimizerResult =
       | "current_model_unknown"
       | "candidate_model_mismatch"
       | "candidate_not_lower_cost"
-      | "budget_delta_not_negative";
+      | "budget_delta_not_negative"
+      | "telemetry_degraded";
   };
 
 export type DecisionOptimizerNoProposalReason =
@@ -88,6 +89,7 @@ export type DecisionOptimizerTelemetryObservations = {
   metricSeriesCount: number;
   traceSummaryCount: number;
   logLineCount: number;
+  degradedQueryCount?: number | undefined;
 };
 
 export type DecisionOptimizerCycleResult =
@@ -203,6 +205,9 @@ export async function runDecisionOptimizerCycle(
   }
 
   const telemetryObservations = await collectTelemetryEvidence(input.telemetryEvidence);
+  if ((telemetryObservations?.degradedQueryCount ?? 0) > 0) {
+    return { kind: "no_proposal", reason: "telemetry_degraded" };
+  }
   const { store: _store, modelEvalEvent: _modelEvalEvent, telemetryEvidence: _telemetryEvidence, ...proposalInput } = input;
   const proposal = proposeDecisionOptimizerChangeSet({
     ...proposalInput,
@@ -236,21 +241,42 @@ async function collectTelemetryEvidence(
   }
 
   let metricSeriesCount = 0;
+  let degradedQueryCount = 0;
   for (const query of input.metricQueries ?? []) {
-    metricSeriesCount += (await input.queryPort.queryMetrics(query, input.range)).length;
+    const result = await input.queryPort.queryMetrics(query, input.range);
+    if (result.status === "ok") {
+      metricSeriesCount += result.data.length;
+    } else {
+      degradedQueryCount += 1;
+    }
   }
 
   let traceSummaryCount = 0;
   for (const query of input.traceQueries ?? []) {
-    traceSummaryCount += (await input.queryPort.queryTraces(query, input.range)).length;
+    const result = await input.queryPort.queryTraces(query, input.range);
+    if (result.status === "ok") {
+      traceSummaryCount += result.data.length;
+    } else {
+      degradedQueryCount += 1;
+    }
   }
 
   let logLineCount = 0;
   for (const query of input.logQueries ?? []) {
-    logLineCount += (await input.queryPort.queryLogs(query, input.range)).length;
+    const result = await input.queryPort.queryLogs(query, input.range);
+    if (result.status === "ok") {
+      logLineCount += result.data.length;
+    } else {
+      degradedQueryCount += 1;
+    }
   }
 
-  return { metricSeriesCount, traceSummaryCount, logLineCount };
+  return {
+    metricSeriesCount,
+    traceSummaryCount,
+    logLineCount,
+    ...(degradedQueryCount > 0 ? { degradedQueryCount } : {}),
+  };
 }
 
 export function tenantConfigDocumentKey(organizationId: string): string {

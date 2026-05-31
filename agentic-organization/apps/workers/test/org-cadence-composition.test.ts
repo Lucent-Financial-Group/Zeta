@@ -2,6 +2,7 @@ import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import { RunLifecyclePhase, RunScope } from "../../../packages/application/src/index.ts";
+import { RecordingTelemetry, TelemetryMetricKind } from "../../../packages/observability/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "../../../packages/state-cockroach/src/cockroach-sql-executor.ts";
 import { composeOrgCadenceLoops } from "../src/org-cadence-composition.ts";
 import type { CadenceLaneTickRecord } from "../src/cadence-lane.ts";
@@ -51,6 +52,55 @@ test("org cadence composition can disable legacy work-os and run the observe-act
   equal(records.some((record) => record.lane === "work-os"), false);
   equal(legacyIntakeCalls, 0);
   equal(observeActCommands, 1);
+});
+
+test("org cadence composition passes telemetry through every composed lane", async () => {
+  const telemetry = new RecordingTelemetry();
+  const expectedLanes = [
+    "work-os",
+    "memory-maintenance",
+    "change-control",
+    "release-queue",
+    "doc-maintenance",
+    "conformance",
+    "stale-reaction-plan-scan",
+    "stranded-schedule-scan",
+    "abandoned-run-binding-scan",
+    "dead-letter-classifier",
+  ];
+
+  const handle = composeOrgCadenceLoops({
+    executor: createEmptyCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-telemetry-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    telemetry,
+  });
+
+  await handle.done;
+
+  equal(telemetry.spans.filter((span) => span.name === "org.lane.tick").length, expectedLanes.length);
+  equal(telemetry.metrics.filter((metric) => metric.name === "org_lane_ticks_total").length, expectedLanes.length);
+  for (const lane of expectedLanes) {
+    ok(
+      telemetry.spans.some((span) =>
+        span.name === "org.lane.tick" &&
+        span.ended &&
+        span.attributes["agentic.lane"] === lane,
+      ),
+      `missing org.lane.tick span for ${lane}`,
+    );
+    ok(
+      telemetry.metrics.some((metric) =>
+        metric.kind === TelemetryMetricKind.Counter &&
+        metric.name === "org_lane_ticks_total" &&
+        metric.attributes?.["agentic.lane"] === lane,
+      ),
+      `missing org_lane_ticks_total metric for ${lane}`,
+    );
+  }
 });
 
 function createEmptyCockroachExecutor(): CockroachGenericSqlExecutor {

@@ -246,6 +246,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
       lane, intervalMs, isStopRequested,
       sleep: (ms) => input.sleep(ms, isStopRequested), // sleep + loop check share ONE stop flag
       ...(input.observer ? { observer: input.observer } : {}),
+      ...(input.telemetry ? { telemetry: input.telemetry } : {}),
       ...(input.maxTicksPerLane !== undefined ? { maxTicks: input.maxTicksPerLane } : {}),
     });
 
