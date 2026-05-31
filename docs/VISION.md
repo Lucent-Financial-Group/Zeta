@@ -645,7 +645,7 @@ on DBSP foundations, not to carve out a narrow niche.
   proofs, Java for the Alloy driver, TypeScript (or
   researched alternative) for post-install automation. F#
   stays load-bearing. *(Superseded re: the DB by the
-  [4-language compiler-BFT governance ADR (2026-05-31)](../DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md):
+  [4-language compiler-BFT governance ADR (2026-05-31)](DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md):
   F# is correctness-/spec-authoritative, TS is distribution-
   authoritative — two axes, not "F# primary with polyglot
   drift.")*
