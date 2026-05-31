@@ -177,12 +177,38 @@ ZetaIds solve for every other family. So work items become a `WorkItem` ZetaId c
 
 `tools/observe/backlog-reader.ts` is the **migration seam**: today it reads `docs/backlog/`
 B-xxxxx rows; post-migration the row `id` is a `WorkItem` ZetaId. A WorkItem also **runs as a
-durable Task** (Durable Functions / Rx `Observable<WorkItemEvent>` — the heartbeat/bus stream
+durable Task** whose lifecycle is an Rx `Observable<WorkItemEvent>` (the heartbeat/bus stream
 IS that observable). DECIDED (operator 2026-05-31): keep `WorkItem` the planning umbrella
 (Azure DevOps-aligned; clean Jira/ADO plugin-interop; git-native first) and RELATE it to
 execution (runs-as-Task, observed-via-Rx) — do NOT replace it with `Task` (which inverts ADO
+and overloads the word: the planning leaf-type `task` and the runtime `Task<T>` stay distinct
+layers).
 
-- overloads the word: planning leaf-type `task` vs runtime `Task<T>` stay distinct layers).
+#### Durable backend = continuation-persistence, NOT replay (operator 2026-05-31)
+
+The durable-task backend is **git-native + ZetaId-keyed too** — the same event store as the
+bus/heartbeat/spawn/work-item families (the `Workflow` category, id=2). But the durability
+mechanism is NOT Microsoft Durable Functions' **replay** model (re-execute the orchestration
+from event history on each wake). Operator 2026-05-31: _"the only backend is the async/yield
+(or whatever language primitive) for persistence and rehydration of active closures when you
+await and sleep until the runtime wakes you up."_
+
+So the backend is just the language's **async/yield/await** primitive + **persist-and-
+rehydrate of the suspended closure** (the captured continuation) at the await boundary:
+persist the closure to git keyed by ZetaId, then rehydrate that exact closure when a matching
+ZetaId event (bus message, timer, sub-task-complete) satisfies its await condition. No
+re-execution, none of MS's replay/determinism machinery — leaner (the operator's
+pre-Durable-Functions Itron implementation predates and is lighter than MS's). This is a
+near-exact fit for **Persist / μένω (B-0897)**: `await` = emit-the-suspended-state-now +
+observe-the-wake-event-later; μένω ("I remain") = the closure _remains_ persisted across the
+suspension.
+
+The event log still exists (for observability — the Rx stream, audit, the heartbeat tail);
+but **durability is the continuation persistence, not the replay.** Composes with the
+git-native event-store ADR (`docs/DECISIONS/2026-05-29-git-native-event-store-spec.md`),
+B-0773 (cluster-as-digital-twin git-native event store), B-0942 (git-native CRDT
+coordination), and the `OrgEventStore` port (cockroach impl = corporate/leash; git-native
+ZetaId impl = Agora/sovereign — observe.ts talks to the port, not the backend).
 
 ## Envelope schema — extend the existing one (interop with the local bus)
 
