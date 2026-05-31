@@ -307,11 +307,23 @@ export type ActDependencies = {
   loadPromptFlowContext?: ((request: PromptFlowContextRequest, slot: Menu16Slot) => Promise<PromptFlowContext>) | undefined;
 };
 
+export const ActRejectionReason = {
+  NoSelectableSlot: "no_selectable_slot",
+  SlotOutOfRange: "slot_out_of_range",
+  SlotNotRendered: "slot_not_rendered",
+  SlotNotSelectable: "slot_not_selectable",
+  MissingImplementation: "missing_implementation",
+  MissingPromptFlowContextLoader: "missing_prompt_flow_context_loader",
+  UnsupportedImplementation: "unsupported_implementation",
+} as const;
+
+export type ActRejectionReason = (typeof ActRejectionReason)[keyof typeof ActRejectionReason];
+
 export type ActResult =
   | { outcome: "dispatched"; kind: "command" | "mcp"; result: unknown }
   | { outcome: "loaded_context"; context: PromptFlowContext }
   | { outcome: "reobserve"; scope: RunScope }
-  | { outcome: "rejected"; reason: string };
+  | { outcome: "rejected"; reason: ActRejectionReason; message: string };
 
 export type MetricBlock = {
   id: string;
@@ -777,17 +789,17 @@ function createOptionalHatAssignment(
 
 export async function act(index: number, menu: Menu16, deps: ActDependencies): Promise<ActResult> {
   if (!Number.isInteger(index) || index < 0 || index >= menu.slots.length) {
-    return { outcome: "rejected", reason: `slot index ${index} is outside the rendered menu` };
+    return rejectAct(ActRejectionReason.SlotOutOfRange, `slot index ${index} is outside the rendered menu`);
   }
   const slot = menu.slots[index];
   if (slot === undefined) {
-    return { outcome: "rejected", reason: `slot index ${index} is not rendered` };
+    return rejectAct(ActRejectionReason.SlotNotRendered, `slot index ${index} is not rendered`);
   }
   if (slot.availability !== TriAvailability.True) {
-    return { outcome: "rejected", reason: slot.reason ?? `slot ${index} is not selectable` };
+    return rejectAct(ActRejectionReason.SlotNotSelectable, slot.reason ?? `slot ${index} is not selectable`);
   }
   if (slot.impl === undefined) {
-    return { outcome: "rejected", reason: `slot ${index} has no implementation` };
+    return rejectAct(ActRejectionReason.MissingImplementation, `slot ${index} has no implementation`);
   }
   switch (slot.impl.kind) {
     case "command":
@@ -806,7 +818,7 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
       return { outcome: "reobserve", scope: slot.impl.toScope };
     case "prompt_flow":
       if (deps.loadPromptFlowContext === undefined) {
-        return { outcome: "rejected", reason: `slot ${index} requires a prompt-flow context loader` };
+        return rejectAct(ActRejectionReason.MissingPromptFlowContextLoader, `slot ${index} requires a prompt-flow context loader`);
       }
       return {
         outcome: "loaded_context",
@@ -814,9 +826,13 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
       };
     default: {
       const unhandled: never = slot.impl;
-      return { outcome: "rejected", reason: `unsupported slot implementation ${(unhandled as { kind?: string }).kind}` };
+      return rejectAct(ActRejectionReason.UnsupportedImplementation, `unsupported slot implementation ${(unhandled as { kind?: string }).kind}`);
     }
   }
+}
+
+export function rejectAct(reason: ActRejectionReason, message: string): ActResult {
+  return { outcome: "rejected", reason, message };
 }
 
 export async function observeAgentSurface(
@@ -1590,8 +1606,9 @@ function sumLatestMetricValues(series: readonly MetricSeries[]): number {
 
 /**
  * The keystone read. Pure over the snapshot; holds no memory. Returns the
- * current state and the options that survive every deterministic rule, or a
- * feedback variant when there is nothing legal to surface.
+ * current state and the options that survive every deterministic rule. If every
+ * raw option is vetoed, the readout still surfaces the disabled menu and veto
+ * reasons so the agent can see the legal boundary it hit.
  */
 export function observe(snapshot: RunSnapshot, deps: ObserveDependencies): ObserveResult {
   const rawOptions = PHASE_OPTIONS[snapshot.phase];
@@ -1618,16 +1635,6 @@ export function observe(snapshot: RunSnapshot, deps: ObserveDependencies): Obser
     return {
       outcome: ObserveOutcome.Feedback,
       feedback: { reason: ObserveFeedbackReason.TerminalPhase, message: `run ${snapshot.runId} is terminal at '${snapshot.phase}'` },
-    };
-  }
-
-  if (surviving.length === 0) {
-    return {
-      outcome: ObserveOutcome.Feedback,
-      feedback: {
-        reason: ObserveFeedbackReason.DeterministicRuleViolation,
-        message: `no option survives deterministic rules at phase '${snapshot.phase}'`,
-      },
     };
   }
 

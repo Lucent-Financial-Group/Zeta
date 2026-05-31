@@ -54,6 +54,53 @@ test("org cadence composition can disable legacy work-os and run the observe-act
   equal(observeActCommands, 1);
 });
 
+test("org cadence composition shadow mode runs observe-act beside legacy work-os", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  let observeActCommands = 0;
+  let legacyIntakeCalls = 0;
+
+  const handle = composeOrgCadenceLoops({
+    executor: createEmptyCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-composition-shadow-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act-shadow",
+    intake: async () => {
+      legacyIntakeCalls += 1;
+      return null;
+    },
+    observeActWorkItems: async () => ({
+      runId: "1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    observeActRunCommand: async () => {
+      observeActCommands += 1;
+      return { status: "accepted" };
+    },
+    observeActDispatchTool: async () => {
+      throw new Error("observe-act composition test should not dispatch MCP");
+    },
+  });
+
+  await handle.done;
+
+  ok(records.some((record) => record.lane === "work-os"));
+  ok(records.some((record) => record.lane === "observe-act-work-item"));
+  equal(legacyIntakeCalls, 1);
+  equal(observeActCommands, 1);
+});
+
 test("org cadence composition passes telemetry through every composed lane", async () => {
   const telemetry = new RecordingTelemetry();
   const expectedLanes = [

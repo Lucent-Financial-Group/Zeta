@@ -76,6 +76,8 @@ export const OrgEventKind = {
   // Recovery scanners (G3) — observability over stale/stranded/abandoned runtime rows.
   RecoveryIncidentDetected: "recovery_incident_detected",
   RecoveryScanCompleted: "recovery_scan_completed",
+  // Observe-act foreground loop (Phase 2.2) — every menu selection is durable.
+  ObserveActTick: "observe_act_tick",
 } as const;
 
 export type OrgEventKind = (typeof OrgEventKind)[keyof typeof OrgEventKind];

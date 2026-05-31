@@ -130,6 +130,7 @@ const ExplicitNonTransitionKinds = new Set<OrgEventKind>([
   OrgEventKind.DecisionOptimizationProposed,
   OrgEventKind.RecoveryIncidentDetected,
   OrgEventKind.RecoveryScanCompleted,
+  OrgEventKind.ObserveActTick,
 ]);
 
 export function replayLedger(events: readonly OrgEvent[], options: ReplayLedgerOptions = {}): ConformanceReport {

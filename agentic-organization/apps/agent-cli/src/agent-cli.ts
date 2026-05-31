@@ -1,9 +1,14 @@
+import { createHash } from "node:crypto";
+
 import {
   act,
   ActionClass,
+  ActRejectionReason,
   asZetaIdDecimal,
   buildHatDefinitions,
   createTelemetryScopedMetricAgents,
+  rejectAct,
+  type DeterministicRule,
   observeAgentSurface,
   ObserveCommandType,
   ObserveOutcome,
@@ -78,6 +83,7 @@ export type AgentCliCycleInput = ActDependencies & {
   metricAgents?: readonly ScopedMetricAgent[];
   promptFlowTasks?: readonly PromptFlowTask[];
   hierarchy?: HierarchySnapshot;
+  deterministicRules?: readonly DeterministicRule[];
   selectSlot?: (menu: Menu16) => Promise<number> | number;
 };
 
@@ -110,6 +116,16 @@ export type CreateAgentCliSelectorFromEnvInput = {
 export type AgentCliCycleResult = {
   exitCode: number;
   actionResult?: ActResult;
+  evidence?: AgentCliCycleEvidence;
+};
+
+export type AgentCliCycleEvidence = {
+  menuHash: string;
+  selectedIndex: number;
+  vetoCount: number;
+  trueSlotCount: number;
+  promptFlowIds: readonly string[];
+  metricBlockIds: readonly string[];
 };
 
 export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsResult {
@@ -324,6 +340,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
 
   const observed = await observeAgentSurface(snapshot, {
     clock: { now: input.now },
+    ...createOptionalDeterministicRules(input.deterministicRules),
     ...createOptionalMetricAgents(input.metricAgents),
     ...createOptionalPromptFlowTasks(input.promptFlowTasks),
     ...createOptionalHierarchy(input.hierarchy),
@@ -345,6 +362,15 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
 
   const selectedIndex =
     parsed.value.selectIndex ?? (await (input.selectSlot?.(observed.actions) ?? selectFirstTrueSlot(observed.actions)));
+  if (!observed.actions.slots.some((slot) => slot.availability === TriAvailability.True)) {
+    const actionResult = rejectAct(
+      ActRejectionReason.NoSelectableSlot,
+      "no TriAvailability.True slots in rendered menu",
+    );
+    const evidence = createAgentCliCycleEvidence(observed.actions, selectedIndex, observed.promptFlows, observed.metrics);
+    input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
+    return { exitCode: 1, actionResult, evidence };
+  }
   const actionResult = await act(selectedIndex, observed.actions, {
     runCommand: async (commandType, command, slot) =>
       await input.runCommand(commandType, materializeCommand(commandType, command, slot, parsed.value), slot),
@@ -355,7 +381,11 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
   if (actionResult.outcome === "loaded_context") {
     input.writeStdout?.(`${formatPromptFlowContext(actionResult.context)}\n`);
   }
-  return { exitCode: actionResult.outcome === "rejected" ? 1 : 0, actionResult };
+  return {
+    exitCode: actionResult.outcome === "rejected" ? 1 : 0,
+    actionResult,
+    evidence: createAgentCliCycleEvidence(observed.actions, selectedIndex, observed.promptFlows, observed.metrics),
+  };
 }
 
 async function loadPromptFlowContextFromRequest(
@@ -408,8 +438,58 @@ function materializeCommand(
       agentId: args.agentId,
       hatAssignmentId: args.hatAssignmentId,
     },
+    ...createOptionalObserveLifecyclePolicyContext(command.actionType),
     ...command,
   };
+}
+
+function createOptionalObserveLifecyclePolicyContext(actionType: string): { policyContext?: { toolType: ActionClass } } {
+  const toolType = ACTION_CLASS_FOR_OBSERVE_LIFECYCLE[actionType];
+  return toolType === undefined ? {} : { policyContext: { toolType } };
+}
+
+const ACTION_CLASS_FOR_OBSERVE_LIFECYCLE: Readonly<Record<string, ActionClass>> = {
+  execute: ActionClass.WriteCode,
+  request_review: ActionClass.ReviewCode,
+  complete: ActionClass.ApproveReview,
+  rework: ActionClass.WriteCode,
+  resume: ActionClass.WriteCode,
+};
+
+function createAgentCliCycleEvidence(
+  menu: Menu16,
+  selectedIndex: number,
+  promptFlows: PromptFlowReadout,
+  metrics: ScopedReadout,
+): AgentCliCycleEvidence {
+  return {
+    menuHash: hashMenu(menu),
+    selectedIndex,
+    vetoCount: menu.slots.filter((slot) => slot.availability === TriAvailability.False).length,
+    trueSlotCount: menu.slots.filter((slot) => slot.availability === TriAvailability.True).length,
+    promptFlowIds: uniqueSorted([
+      ...promptFlows.tasks.map((task) => task.promptFlowId),
+      ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task.promptFlowId),
+    ]),
+    metricBlockIds: uniqueSorted(metrics.blocks.map((block) => block.id)),
+  };
+}
+
+function hashMenu(menu: Menu16): string {
+  const stable = menu.slots.map((slot) => ({
+    index: slot.index,
+    direction: slot.direction,
+    label: slot.label,
+    availability: slot.availability,
+    reason: slot.reason ?? null,
+    impl: slot.impl === undefined ? null : slot.impl.kind,
+    actionType: slot.action?.actionType ?? null,
+  }));
+  return createHash("sha256").update(JSON.stringify(stable)).digest("hex");
+}
+
+function uniqueSorted(values: readonly string[]): readonly string[] {
+  return [...new Set(values)].sort((left, right) => left.localeCompare(right));
 }
 
 function buildMenuSelectorPrompt(selectable: readonly Menu16Slot[]): string {
@@ -501,6 +581,12 @@ function createOptionalHierarchy(
   hierarchy: HierarchySnapshot | undefined,
 ): { hierarchy?: HierarchySnapshot } {
   return hierarchy === undefined ? {} : { hierarchy };
+}
+
+function createOptionalDeterministicRules(
+  deterministicRules: readonly DeterministicRule[] | undefined,
+): { deterministicRules?: readonly DeterministicRule[] } {
+  return deterministicRules === undefined ? {} : { deterministicRules };
 }
 
 function createOptionalFetchImpl(fetchImpl: typeof fetch | undefined): { fetchImpl?: typeof fetch } {
@@ -650,7 +736,7 @@ function formatActResult(result: ActResult): string {
     case "reobserve":
       return `reobserve ${result.scope}`;
     case "rejected":
-      return `rejected ${result.reason}`;
+      return `rejected ${result.reason}: ${result.message}`;
   }
 }
 

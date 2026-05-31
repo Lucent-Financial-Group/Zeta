@@ -74,6 +74,7 @@ test("work-os lane drives one living-loop cycle and reports the final state", as
 
 test("observe-act work-item lane runs one tick through observe -> act -> org event effects with legacy disabled", async () => {
   let capturedEffects: CommandEffects | undefined;
+  const observeEvents: OrgEvent[] = [];
   const pipeline = createCommandPipeline<ObserveLifecycleTransitionCommand>({
     stateStoreFactory: captureObserveActEffectsStoreFactory((effects) => {
       capturedEffects = effects;
@@ -129,6 +130,9 @@ test("observe-act work-item lane runs one tick through observe -> act -> org eve
     dispatchTool: async () => {
       throw new Error("observe-act work-item lane should not dispatch MCP for lifecycle execution");
     },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
   });
 
   const result = await lane.runOnce();
@@ -138,6 +142,11 @@ test("observe-act work-item lane runs one tick through observe -> act -> org eve
   equal(capturedEffects?.outboxEvents[0]?.envelope.eventType, AgenticEventType.WorkItemStateChanged);
   equal(capturedEffects?.workAnchors?.workItemTransitions[0]?.transition.fromState, WorkItemState.Ready);
   equal(capturedEffects?.workAnchors?.workItemTransitions[0]?.transition.toState, WorkItemState.InProgress);
+  equal(observeEvents.length, 1);
+  equal(observeEvents[0]?.kind, OrgEventKind.ObserveActTick);
+  equal(observeEvents[0]?.actorHatId, "release_operator");
+  ok(observeEvents[0]?.evidenceRefs.some((ref) => ref.startsWith("observe-act:menu_hash:")));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
 });
 
 test("observe-act work-item lane can load a prompt-flow task context instead of requiring hat-specific agent knowledge", async () => {

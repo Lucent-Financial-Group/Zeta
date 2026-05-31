@@ -14,10 +14,20 @@ import {
   buildInternalOnlyPipeline,
   buildHatDefinitions,
   applyAutonomyPolicy,
+  createCommandHandlerRegistry,
+  createCommandPipeline,
+  createHatAuthorityPort,
+  createObserveLifecycleTransitionHandler,
+  RunLifecyclePhase,
+  RunScope,
+  ObserveCommandType,
+  type CommandResult,
   type ChangeControlPort,
+  type ObserveLifecycleTransitionCommand,
   type ReleaseBatchEvaluation,
 } from "../../../packages/application/src/index.ts";
-import { AutonomyLevel, type AutonomyPolicy, type ChangeSet } from "../../../packages/domain/src/index.ts";
+import { AutonomyLevel, WorkItemState, type AutonomyPolicy, type ChangeSet } from "../../../packages/domain/src/index.ts";
+import { createCommandAuthorizationPort, createPolicyDecisionObservationPort } from "../../../packages/policy/src/index.ts";
 import {
   createCockroachOrgEventStore,
   createCockroachMemoryStateStore,
@@ -25,6 +35,8 @@ import {
   createCockroachWorkIntakeSource,
   createCockroachDocUnitStore,
   createCockroachRecoveryScanReader,
+  createCockroachDurableStateAdapters,
+  CockroachTableName,
 } from "../../../packages/state-cockroach/src/index.ts";
 import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "../../../packages/state-cockroach/src/cockroach-sql-executor.ts";
@@ -104,10 +116,10 @@ export type ComposeOrgCadenceInput = {
   releaseBatchEvaluator?: (batch: readonly ChangeSet[]) => ReleaseBatchEvaluation;
   telemetry?: TelemetryPort;
   /**
-   * Defaults to the legacy hardcoded Work OS loop. `observe-act` is the explicit
-   * migration switch for the universal observe.ts controller path.
+   * Defaults to the legacy hardcoded Work OS loop. Shadow runs observe-act next
+   * to legacy; primary replaces legacy with the universal observe.ts controller.
    */
-  workOsDriver?: "legacy" | "observe-act";
+  workOsDriver?: "legacy" | "observe-act" | "observe-act-shadow" | "observe-act-primary";
   observeActWorkItems?: ObserveActWorkItemSource;
   observeActRunCommand?: ObserveActCommandRunner;
   observeActDispatchTool?: ObserveActToolDispatcher;
@@ -118,12 +130,6 @@ export type ComposeOrgCadenceInput = {
 export type OrgCadenceHandle = {
   stop: () => void;
   done: Promise<unknown>;
-};
-
-const idleObserveActWorkItemSource: ObserveActWorkItemSource = async () => null;
-
-const unavailableObserveActCommandRunner: ObserveActCommandRunner = async () => {
-  throw new Error("observe-act command runner unavailable");
 };
 
 const unavailableObserveActToolDispatcher: ObserveActToolDispatcher = async () => {
@@ -150,20 +156,21 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
       nowIso: () => new Date(input.now()).toISOString(),
     });
   const hats = buildHatDefinitions();
-  const workLane = input.workOsDriver === "observe-act"
-    ? createObserveActWorkItemCadenceLane({
-      organizationId: input.organizationId,
-      hats,
-      now: input.now,
-      createId: input.createId,
-      source: input.observeActWorkItems ?? idleObserveActWorkItemSource,
-      runCommand: input.observeActRunCommand ?? unavailableObserveActCommandRunner,
-      dispatchTool: input.observeActDispatchTool ?? unavailableObserveActToolDispatcher,
-    })
-    : createWorkOsCadenceLane({
-      organizationId: input.organizationId, hats, now: input.now, createId: input.createId, appendEvent,
-      intake,
-    });
+  const legacyWorkLane = createWorkOsCadenceLane({
+    organizationId: input.organizationId, hats, now: input.now, createId: input.createId, appendEvent,
+    intake,
+  });
+  const observeActWorkLane = createObserveActWorkItemCadenceLane({
+    organizationId: input.organizationId,
+    hats,
+    now: input.now,
+    createId: input.createId,
+    source: input.observeActWorkItems ?? createCockroachObserveActWorkItemSource(input),
+    runCommand: input.observeActRunCommand ?? createCockroachObserveActCommandRunner(input, hats),
+    dispatchTool: input.observeActDispatchTool ?? unavailableObserveActToolDispatcher,
+    appendEvent,
+  });
+  const workLanes = workLanesFor(input.workOsDriver ?? "legacy", legacyWorkLane, observeActWorkLane);
   const memory = createMemoryMaintenanceCadenceLane({
     organizationId: input.organizationId, now: input.now, createId: input.createId,
     reader: memoryState, writer: memoryState, appendEvent,
@@ -251,7 +258,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     });
 
   const done = Promise.all([
-    start(workLane, intervals.workOsMs),
+    ...workLanes.map((lane) => start(lane, intervals.workOsMs)),
     start(memory, intervals.memoryMaintenanceMs),
     start(changeControl, intervals.changeControlMs),
     start(releaseQueue, intervals.releaseQueueMs),
@@ -264,4 +271,117 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
   ]);
 
   return { stop: () => { stopped.value = true; }, done };
+}
+
+function workLanesFor(
+  driver: NonNullable<ComposeOrgCadenceInput["workOsDriver"]>,
+  legacy: CadenceLane,
+  observeAct: CadenceLane,
+): readonly CadenceLane[] {
+  switch (driver) {
+    case "legacy":
+      return [legacy];
+    case "observe-act-shadow":
+      return [legacy, observeAct];
+    case "observe-act":
+    case "observe-act-primary":
+      return [observeAct];
+  }
+}
+
+type ObserveActWorkItemRow = {
+  work_item_id: string;
+  project_id: string;
+  state: string;
+  version: string | number;
+  created_by_agent_id: string;
+  created_by_hat_assignment_id: string;
+};
+
+function createCockroachObserveActWorkItemSource(
+  input: Pick<ComposeOrgCadenceInput, "executor" | "organizationId">,
+): ObserveActWorkItemSource {
+  return async () => {
+    const result = await input.executor.execute<ObserveActWorkItemRow>({
+      name: "claimable_observe_act_work_item",
+      sql: `
+        SELECT work_item_id, project_id, state, version, created_by_agent_id, created_by_hat_assignment_id
+        FROM ${CockroachTableName.WorkItems}
+        WHERE organization_id = $1
+          AND state IN ($2, $3, $4, $5)
+        ORDER BY updated_at ASC, created_at ASC
+        LIMIT 1
+      `.trim(),
+      parameters: [
+        input.organizationId,
+        WorkItemState.Ready,
+        WorkItemState.InProgress,
+        WorkItemState.Review,
+        WorkItemState.Blocked,
+      ],
+    });
+    const row = result.rows[0];
+    if (row === undefined) return null;
+    const phase = observeActPhaseForWorkItemState(row.state);
+    if (phase === undefined) return null;
+    return {
+      runId: String(row.version),
+      projectId: row.project_id,
+      workItemId: row.work_item_id,
+      scope: RunScope.WorkItem,
+      phase,
+      hasGateApproval: row.state === WorkItemState.Ready,
+      hasEvidence: row.state === WorkItemState.InProgress || row.state === WorkItemState.Review,
+      hatId: "release_operator",
+      hatAssignmentId: row.created_by_hat_assignment_id,
+      agentId: row.created_by_agent_id,
+    };
+  };
+}
+
+function observeActPhaseForWorkItemState(state: string): RunLifecyclePhase | undefined {
+  switch (state) {
+    case WorkItemState.Ready:
+      return RunLifecyclePhase.AwaitingGate;
+    case WorkItemState.InProgress:
+      return RunLifecyclePhase.AwaitingEvidence;
+    case WorkItemState.Review:
+      return RunLifecyclePhase.AwaitingReview;
+    case WorkItemState.Blocked:
+      return RunLifecyclePhase.Blocked;
+    default:
+      return undefined;
+  }
+}
+
+function createCockroachObserveActCommandRunner(
+  input: Pick<ComposeOrgCadenceInput, "executor" | "createId" | "now">,
+  hats: readonly ReturnType<typeof buildHatDefinitions>[number][],
+): ObserveActCommandRunner {
+  const stateAdapters = createCockroachDurableStateAdapters<CommandResult>({ executor: input.executor });
+  const pipeline = createCommandPipeline<ObserveLifecycleTransitionCommand>({
+    stateStoreFactory: stateAdapters.commandStateStoreFactory,
+    commandAuthorizationPort: createCommandAuthorizationPort({
+      hatAuthorityPort: createHatAuthorityPort({
+        hatAssignmentAuthorityReader: stateAdapters.hatAssignmentAuthorityReader,
+        hatDefinitions: hats,
+        createId: input.createId,
+      }),
+    }),
+    policyDecisionObservationPort: createPolicyDecisionObservationPort({
+      store: stateAdapters.policyDecisionObservationStore,
+    }),
+    handlerRegistry: createCommandHandlerRegistry<ObserveLifecycleTransitionCommand, CommandResult>([
+      createObserveLifecycleTransitionHandler(),
+    ]),
+    workAnchorStateReader: stateAdapters.workAnchorStateStore,
+    now: () => new Date(input.now()).toISOString(),
+    createId: input.createId,
+  });
+  return async (commandType, command) => {
+    if (commandType !== ObserveCommandType.LifecycleTransition) {
+      return { status: "unsupported_command_type", commandType };
+    }
+    return await pipeline.execute(command as ObserveLifecycleTransitionCommand);
+  };
 }

@@ -158,6 +158,30 @@ test("renderMenu16 places lifecycle actions in the fixed commit bank", () => {
   equal(menu.slots[5]?.action?.actionType, "block");
 });
 
+test("observe returns an all-vetoed readout so renderMenu16 can show dark slots with reasons", () => {
+  const blocked = observe(snapshot({ phase: RunLifecyclePhase.Observing }), {
+    clock: deps.clock,
+    deterministicRules: [
+      {
+        name: "maintenance-freeze",
+        veto: (option) => `maintenance freeze blocks ${option.actionType}`,
+      },
+    ],
+  });
+
+  equal(blocked.outcome, ObserveOutcome.Readout);
+  if (blocked.outcome !== ObserveOutcome.Readout) return;
+  equal(blocked.readout.options.length, 0);
+  equal(blocked.readout.vetoedOptions.length, 2);
+
+  const menu = renderMenu16(blocked.readout);
+  equal(menu.slots[4]?.availability, "F");
+  equal(menu.slots[4]?.action?.actionType, "compose");
+  ok(menu.slots[4]?.reason?.includes("maintenance freeze blocks compose"));
+  equal(menu.slots[5]?.availability, "F");
+  equal(menu.slots[5]?.action?.actionType, "block");
+});
+
 test("act rejects non-selectable slots before any implementation dispatch", async () => {
   const blocked = observe(snapshot({ phase: RunLifecyclePhase.AwaitingGate, hasGateApproval: false }), deps);
   equal(blocked.outcome, ObserveOutcome.Readout);

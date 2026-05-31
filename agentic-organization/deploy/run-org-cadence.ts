@@ -16,7 +16,7 @@ import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 
 import { ChangeSetPhase, MemoryPhase, MemoryTier, type ChangeSet, type MemoryRecord, type MemoryState } from "../packages/domain/src/index.ts";
-import { buildInternalOnlyPipeline } from "../packages/application/src/index.ts";
+import { buildInternalOnlyPipeline, RunLifecyclePhase, RunScope } from "../packages/application/src/index.ts";
 import {
   createCockroachCoreStateMigrations,
   createCockroachSqlExecutor,
@@ -60,6 +60,23 @@ async function main(): Promise<void> {
     sleep: async () => {},
     // synthetic pending work so the Work OS lane exercises in this bounded proof
     intake: async () => ({ projectId: id("proj"), initiativeId: id("init"), initiativeBranch: "feat/cadence-auto" }),
+    workOsDriver: "observe-act-shadow",
+    observeActWorkItems: async () => ({
+      runId: "1",
+      projectId: "proj-observe-act",
+      workItemId: "work-observe-act",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-observe-act",
+    }),
+    observeActRunCommand: async () => ({ status: "shadow_accepted" }),
+    observeActDispatchTool: async () => {
+      throw new Error("org-cadence observe-act shadow proof should not dispatch MCP");
+    },
     maxTicksPerLane: 3,
     observer: { record: (r) => laneTicks.push({ lane: r.lane, tick: r.tick, status: r.status }) },
   });
@@ -69,10 +86,16 @@ async function main(): Promise<void> {
   const csAfter = await createCockroachChangeSetStore({ executor }).get(csId);
   const events = await createCockroachOrgEventStore({ executor }).listByOrganization(ORG, 200);
   const recent = events.filter((e) => e.kind.startsWith("work_item") || e.kind.startsWith("memory_") || e.kind.startsWith("change_set") || e.kind.startsWith("review_") || e.kind.startsWith("stage_"));
+  const observeActEvents = events.filter((e) => e.kind === "observe_act_tick");
 
   console.log(JSON.stringify({
     orgCadence: {
       laneTicks,
+      observeActShadow: {
+        ticked: laneTicks.some((tick) => tick.lane === "observe-act-work-item"),
+        evidenceRows: observeActEvents.length,
+        lastEvidenceRefs: observeActEvents[0]?.evidenceRefs ?? [],
+      },
       seededMemory: { memoryId: memId, phaseAfter: memAfter?.state.phase, weightAfter: memAfter?.state.weight, surfaces: memAfter?.state.phase !== MemoryPhase.Archived },
       seededChangeSet: { changeSetId: csId, phaseAfter: csAfter?.phase, revisionAfter: csAfter?.revision },
       orgEventsObservedFromLanes: recent.length,

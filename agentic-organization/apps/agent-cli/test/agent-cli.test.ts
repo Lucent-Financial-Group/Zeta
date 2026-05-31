@@ -165,9 +165,60 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   equal(result.actionResult?.outcome, "dispatched");
   ok(stdout.join("\n").includes("[04] T commit.a execute"));
   ok(stdout.join("\n").includes("action: dispatched command"));
+  equal(result.evidence?.selectedIndex, 4);
+  equal(result.evidence?.vetoCount, 0);
+  equal(result.evidence?.trueSlotCount, 2);
+  equal(result.evidence?.metricBlockIds[0], "queue");
+  ok(result.evidence?.menuHash.match(/^[0-9a-f]{64}$/));
   deepEqual(commands, [
-    'observe.lifecycle_transition:{"commandId":"cmd-observe-1-4","type":"observe.lifecycle_transition","idempotencyKey":"observe:1:99:awaiting_gate:4","requestHash":"observe.lifecycle_transition:1:99:awaiting_gate:execute:executing:4","correlationId":"observe-cli-1","causationId":"observe-cli-1","traceId":"observe-cli-1","organizationId":"org-1","projectId":"project-1","workItemId":"work-1","actor":{"agentId":"agent-release-1","hatAssignmentId":"99"},"runId":"1","fromPhase":"awaiting_gate","actionType":"execute","toPhase":"executing","toScope":"work_item","hatAssignmentId":"99"}',
+    'observe.lifecycle_transition:{"commandId":"cmd-observe-1-4","type":"observe.lifecycle_transition","idempotencyKey":"observe:1:99:awaiting_gate:4","requestHash":"observe.lifecycle_transition:1:99:awaiting_gate:execute:executing:4","correlationId":"observe-cli-1","causationId":"observe-cli-1","traceId":"observe-cli-1","organizationId":"org-1","projectId":"project-1","workItemId":"work-1","actor":{"agentId":"agent-release-1","hatAssignmentId":"99"},"policyContext":{"toolType":"write_code"},"runId":"1","fromPhase":"awaiting_gate","actionType":"execute","toPhase":"executing","toScope":"work_item","hatAssignmentId":"99"}',
   ]);
+});
+
+test("runAgentCliCycle returns typed no_selectable_slot feedback for all-vetoed menus", async () => {
+  let dispatched = false;
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      "run",
+      "--phase",
+      "observing",
+      "--select-index",
+      "4",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    deterministicRules: [
+      {
+        name: "tenant-freeze",
+        veto: (option) => `tenant freeze blocks ${option.actionType}`,
+      },
+    ],
+    runCommand: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.exitCode, 1);
+  equal(result.actionResult?.outcome, "rejected");
+  if (result.actionResult?.outcome !== "rejected") return;
+  equal(result.actionResult.reason, "no_selectable_slot");
+  equal(result.actionResult.message, "no TriAvailability.True slots in rendered menu");
+  equal(result.evidence?.selectedIndex, 4);
+  equal(result.evidence?.vetoCount, 2);
+  equal(result.evidence?.trueSlotCount, 0);
+  equal(dispatched, false);
+  ok(stdout.join("\n").includes("[04] F commit.a compose (tenant freeze blocks compose)"));
+  ok(stdout.join("\n").includes("[05] F commit.b block (tenant freeze blocks block)"));
 });
 
 test("runAgentCliCycle renders prompt-flow tasks and loads selected context", async () => {

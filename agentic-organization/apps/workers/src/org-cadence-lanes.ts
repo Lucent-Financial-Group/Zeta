@@ -140,6 +140,7 @@ export type ObserveActPromptFlowContextLoader = (
   request: PromptFlowContextRequest,
   slot: Menu16Slot,
 ) => Promise<PromptFlowContext>;
+export type ObserveActOrgEventAppender = (event: OrgEvent) => Promise<void>;
 
 export type ObserveActWorkItemCadenceDeps = {
   organizationId: string;
@@ -149,6 +150,7 @@ export type ObserveActWorkItemCadenceDeps = {
   source: ObserveActWorkItemSource;
   runCommand: ObserveActCommandRunner;
   dispatchTool: ObserveActToolDispatcher;
+  appendEvent?: ObserveActOrgEventAppender;
   loadPromptFlowContext?: ObserveActPromptFlowContextLoader;
   writeObserveStdout?: (text: string) => void;
   selectSlot?: ObserveActMenuSelector;
@@ -182,6 +184,9 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
           ...createOptionalObserveActPromptFlowContextLoader(deps.loadPromptFlowContext),
           ...(deps.selectSlot === undefined ? {} : { selectSlot: deps.selectSlot }),
         });
+        if (result.evidence !== undefined && deps.appendEvent !== undefined) {
+          await deps.appendEvent(createObserveActTickEvent(deps, work, result.evidence));
+        }
 
         return {
           status: formatObserveActStatus(result.actionResult, result.exitCode),
@@ -192,6 +197,43 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
       }
     },
   };
+}
+
+function createObserveActTickEvent(
+  deps: Pick<ObserveActWorkItemCadenceDeps, "organizationId" | "now" | "createId">,
+  work: ObserveActWorkItem,
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): OrgEvent {
+  const eventId = deps.createId("observeactevt");
+  const traceId = `observe-act-${work.runId}`;
+  return {
+    id: eventId,
+    kind: OrgEventKind.ObserveActTick,
+    occurredAt: new Date(deps.now()).toISOString(),
+    organizationId: deps.organizationId,
+    actorHatId: work.hatId,
+    actorAgentId: work.agentId,
+    subjectId: work.workItemId,
+    decision: `observe-act selected slot ${evidence.selectedIndex} for run ${work.runId}`,
+    supervisorChain: [work.hatId],
+    evidenceRefs: observeActEvidenceRefs(evidence),
+    correlationId: traceId,
+    causationId: eventId,
+    traceId,
+  };
+}
+
+function observeActEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  return [
+    `observe-act:menu_hash:${evidence.menuHash}`,
+    `observe-act:selected_slot:${evidence.selectedIndex}`,
+    `observe-act:veto_count:${evidence.vetoCount}`,
+    `observe-act:true_slot_count:${evidence.trueSlotCount}`,
+    ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
+    ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
 }
 
 function observeActArgv(organizationId: string, work: ObserveActWorkItem): string[] {
@@ -271,7 +313,7 @@ function observeActFailures(
   stderr: readonly string[],
 ): CadenceLaneTickResult["failures"] {
   if (result?.outcome === "rejected") {
-    return [{ message: `observe-act lane: ${result.reason}` }];
+    return [{ message: `observe-act lane: ${result.reason}: ${result.message}` }];
   }
   if (exitCode !== 0) {
     return [{ message: `observe-act lane: ${stderr.join("; ") || `CLI exited ${exitCode}`}` }];
