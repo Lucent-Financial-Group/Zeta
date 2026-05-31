@@ -19,8 +19,19 @@ composes_with:
 **Attribution (operator 2026-05-31):** `Itron.Platform.Workflow` is **Chris King's design**
 (the same mentor named in
 [`2026-05-07-chris-king-itron-generics-interface-lineage.md`](2026-05-07-chris-king-itron-generics-interface-lineage.md)
-for "designs and interfaces define the type"). It **predates Microsoft Durable Functions**
-("MS was watching us create it at Itron"). Read directly from `/Users/acehack/Downloads/Itron`.
+for "designs and interfaces define the type"). Read directly from `/Users/acehack/Downloads/Itron`.
+
+**Timeline — the "predates the industry" claims are date-grounded** (operator's resume,
+`memory/user_career_substrate_through_line.md`): this is Itron-era work, **April 2012 – June
+2019** (Aaron's 7-year tenure). That window straddles the industry's later standardization:
+**MS Durable Functions** public preview ≈ 2017; **OpenTelemetry** formed 2019 (OpenTracing
+2016 / OpenCensus 2018). So the durable workflow (Chris King) and the `Context`/`Tracing`
+observability (Aaron) genuinely predate or parallel the standards they prefigure ("MS was
+watching us create it at Itron"). The related **US Patent 10,834,144** (hub-and-agent
+firewall traversal — capability-locally-controlled, agent-owns-its-execution-surface = Zeta's
+agent model) was **filed 2016**, ~10 years before Zeta executes on it. The underlying
+retraction-native / incremental-view discipline runs back to **2000** (elections) across six
+domains. "I've had these ideas for Zeta a real long time" is literal.
 
 **Operator's authoring-pain context (2026-05-31):** _"devs hated it cause it didn't have a UI
 and they had to hand-write XML without lint."_ The **engine/model was strong**; the **authoring
