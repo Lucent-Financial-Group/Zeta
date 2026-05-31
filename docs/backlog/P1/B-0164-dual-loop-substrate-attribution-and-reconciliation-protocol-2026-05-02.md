@@ -50,7 +50,7 @@ Aaron's morning reconciliation has to resolve these. The architecture's commitme
 
 1. **Per-loop attribution channel.** ✅ SATISFIED BY EXISTING SUBSTRATE — Otto's tick-shards under `docs/hygiene-history/ticks/**` already include col2 model-identifier (e.g., `opus-4-7 / autonomous-loop session continuation`). Codex's loop should write to the same shard surface with its own model-identifier (e.g., `gpt-5.5 / codex-loop`). The col2 schema accommodates this; no schema change needed.
 
-2. **Disagreement-preservation protocol for PR reviews.** ✅ DONE — B-0164.1 closed on 2026-05-31. The landed `tools/hygiene/divergence-shard.ts` detector/writer preserves differing PR-review-thread conclusions as divergence shards without auto-resolving GitHub threads, and `tools/hygiene/divergence-reconcile.ts` supplies the pending-shard read/write-back path for morning reconciliation.
+2. **Disagreement-preservation protocol for PR reviews.** ⏳ PARTIAL — B-0164.1 has landed the pure detector/writer, divergence-shard builder, pending-shard reader, and reconcile CLI. Remaining work: wire a live PR-review workflow path so two loop observations on the same GitHub review thread actually invoke `fileReviewThreadDisagreement` when their conclusions differ.
 
 3. **Branch-attribution for in-flight work.** ✅ SATISFIED BY EXISTING SUBSTRATE — When both loops produce concurrent commits to the same branch: each loop commits with its own author-identifier (already supported by `Co-Authored-By` trailer). Different loops working different threads don't conflict if file-isolation holds; if they touch the same file, the second loop's tick should detect the conflict and either rebase OR file a divergence-shard noting the conflict for morning reconciliation.
 
@@ -134,14 +134,14 @@ ACs #1, #3, #4 are closed. Remaining open work extracted as atomic child rows:
 
 | Child | AC | Blocker | File |
 |-------|----|---------|------|
-| B-0164.1 | AC #2 — PR-review disagreement-preservation | Closed 2026-05-31 | `B-0164.1-pr-review-disagreement-preservation-protocol.md` |
+| B-0164.1 | AC #2 — PR-review disagreement-preservation | Live PR-review caller wiring | `B-0164.1-pr-review-disagreement-preservation-protocol.md` |
 | B-0164.2 | AC #5 — Multi-loop tick-tooling attribution | B-0163 (tooling retirement) | `B-0164.2-multi-loop-tick-tooling-attribution.md` |
-| B-0164.3 | AC #6 — Cron-tick coordination | B-0160 + B-0164.1 | `B-0164.3-cron-tick-coordination-dual-loop.md` |
+| B-0164.3 | AC #6 — Cron-tick coordination | B-0164.1 live caller + topology observation | `B-0164.3-cron-tick-coordination-dual-loop.md` |
 
 **Dependency order:**
 
 ```
-B-0160  ──→  B-0164.1  ──→  B-0164.3
+B-0160 (closed) ──→  B-0164.1 caller wiring  ──→  B-0164.3
 B-0163  ──→  B-0164.2  ──→  (B-0164.3 write-safety audit)
 ```
 
