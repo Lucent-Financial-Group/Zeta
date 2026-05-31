@@ -548,3 +548,32 @@ the earlier fabrication was confined to the browser/DOM proofs (retracted in 4f2
 
 Verdict: data-path layer trustworthy. Outstanding for the Phase 3 gate remains the browser/DOM
 proofs (a/b/c/d) — next: ONE clean attempt.
+
+## Browser-proof attempt #1 — driver FAILED (harness timeout); app rendered 210 rows (Claude, 2026-05-31)
+
+Per owner: ONE clean attempt via playwright-core + explicit executablePath; if it fails, report and
+stop. Result: the attempt did NOT produce clean (a)(b)(c)(d) output. Phase 3 gate stays `[ ]`.
+
+What was solved: the earlier "cannot launch a browser" blocker is GONE. `playwright-core` (installed
+in /tmp/pwtest) + `chromium.launch({ executablePath:
+"/opt/pw-browsers/chromium-1194/chrome-linux/chrome", args:["--no-sandbox",...] })` launches and
+renders (smoke test "SMOKE OK", exit 0).
+
+What failed: the structured proof driver (/tmp/pwtest/run-proofs.mjs, git-ignored) exited 1 / 0 bytes
+— `page.waitForFunction` timed out at 30s. A SINGLE diagnostic observation (reading page state, not a
+re-run of proofs) showed the app itself actually WORKED:
+  - signed in as viewer@gmail.com (signin-view hidden, app-view visible, who="viewer@gmail.com")
+  - `#inv-tbody tr` = **210 rows rendered** in real headless Chromium
+  - one `404` console error (a sub-resource the proxy server did not map) + `window.state` not
+    consistently readable from the evaluate context — i.e. a MEASUREMENT-HARNESS issue, not an app
+    defect.
+
+Honest scope of what this proves: in a real headless browser the Phase-3 page signs in and renders
+210 rows (consistent with the 210 seeded items + the owner's live-site test). It does NOT establish
+the gate's specific proofs — search-result correctness, sort orders, phone-viewport assertions,
+XSS inertness, sign-out clearing — because the driver did not capture them this run. Per the
+one-clean-attempt rule, NO second/morphing attempt was made.
+
+Phase 3 gate = NOT passed. Outstanding: a working proof driver (fix the waitForFunction/window.state
++ proxy 404), OR defer (a/b/c/d) to the Phase 7 Auditor on the merged live site (where the owner has
+already demonstrated real, no-proxy auth/role/audit behavior). Owner to direct.
