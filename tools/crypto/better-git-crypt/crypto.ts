@@ -565,5 +565,20 @@ export function decodeEnvelope(bytes: Uint8Array): DecodeEnvelopeResult {
   } catch (e) {
     return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: e instanceof Error ? e.message : String(e) } };
   }
+  // Canonical-bytes enforcement (closes two findings at once):
+  //  - non-canonical CBOR malleability: a byte-level rewrite to another valid
+  //    encoding of the same fields would otherwise decode + re-encode-for-verify
+  //    and still pass. (Codex P2)
+  //  - unknown top-level fields: extra unauthenticated data dropped from the
+  //    reconstructed signed view would otherwise ride along in a valid envelope. (Copilot P1)
+  // Re-encoding the reconstructed envelope canonically and requiring it to equal
+  // the input bytes rejects BOTH: the only valid on-disk form is the canonical
+  // encodeEnvelope output, so the bytes are bit-locked to the signed content.
+  if (!bytesEqual(encodeEnvelope(envelope), bytes)) {
+    return {
+      ok: false,
+      feedback: { kind: "EnvelopeMalformed", reason: "non-canonical CBOR encoding or unknown fields present" },
+    };
+  }
   return { ok: true, envelope };
 }

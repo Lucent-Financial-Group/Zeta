@@ -224,8 +224,13 @@ export const ALG_REGISTRY: readonly AlgSpec[] = [
   {
     id: "SLH-DSA",
     class: "signature",
-    status: "ships-v1",
-    description: "SPHINCS+ — hash-based signature alternate; Noble-native",
+    // deferred-alternate, NOT ships-v1: Noble has it, but crypto.ts v1 only
+    // dispatches ML-DSA-65. Marking it ships-v1 would let determineEncryptionPath
+    // advertise a signature the crypto layer can't actually produce (registry/
+    // planner inconsistency — Copilot P1 on PR #6217). Promote when real
+    // SLH-DSA dispatch lands.
+    status: "deferred-alternate",
+    description: "SPHINCS+ — hash-based signature alternate; Noble-native; deferred until crypto.ts dispatch added",
     nobleModule: "@noble/post-quantum/slh-dsa",
     composesWith: ["B-0883.1"],
   },

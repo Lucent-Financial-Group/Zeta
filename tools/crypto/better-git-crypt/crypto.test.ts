@@ -21,6 +21,7 @@ import {
   type GeneratedKeyPair,
 } from "./crypto";
 import type { EncryptionContext } from "./types";
+import { encode as cborEncode } from "cborg";
 
 const utf8 = (s: string): Uint8Array => new TextEncoder().encode(s);
 const str = (b: Uint8Array): string => new TextDecoder().decode(b);
@@ -146,10 +147,10 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
   });
 
   it("AlgUnsupported: rejects a non-ML-DSA-65 signature alg (no lying metadata)", () => {
-    // SLH-DSA is ships-v1 in the registry + accepted by the planner, but crypto.ts
-    // only dispatches ml_dsa65 — encrypt must reject it rather than write an
-    // envelope whose algSig label disagrees with the actual signature bytes.
-    // (Codex P2 finding on PR #6217.)
+    // SLH-DSA is deferred-alternate in the registry (not ships-v1), so the
+    // planner rejects it; even if it weren't, crypto.ts only dispatches ml_dsa65,
+    // so encrypt must reject rather than write an envelope whose algSig label
+    // disagrees with the actual signature bytes. (Codex P2 finding on PR #6217.)
     const base = generateRecipientKeyPair("sender@zeta");
     const slhSender = { ...base.publicKey, sigAlgId: "SLH-DSA" };
     const ctx: EncryptionContext = {
@@ -340,6 +341,20 @@ describe("B-0883 v1 Phase 2 — on-disk envelope CBOR codec", () => {
     if (!enc.ok) return;
     const bytes = encodeEnvelope({ ...enc.envelope, contentNonce: new Uint8Array(8) }); // wrong length
     const decoded = decodeEnvelope(bytes);
+    expect(decoded.ok).toBe(false);
+    if (!decoded.ok) expect(decoded.feedback.kind).toBe("EnvelopeMalformed");
+  });
+
+  it("decodeEnvelope rejects unknown top-level fields (canonical-bytes enforcement)", () => {
+    // Extra unauthenticated fields would otherwise ride along in a valid envelope.
+    // The canonical re-encode-and-compare check fails closed. (Codex P2 + Copilot P1.)
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(utf8("x"), sender, [sender]), sender.secretKeys);
+    expect(enc.ok).toBe(true);
+    if (!enc.ok) return;
+    expect(decodeEnvelope(encodeEnvelope(enc.envelope)).ok).toBe(true); // canonical round-trips
+    const withRogue = cborEncode({ ...enc.envelope, rogue: new Uint8Array([1, 2, 3]) });
+    const decoded = decodeEnvelope(withRogue);
     expect(decoded.ok).toBe(false);
     if (!decoded.ok) expect(decoded.feedback.kind).toBe("EnvelopeMalformed");
   });

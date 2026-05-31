@@ -34,16 +34,22 @@ Post-quantum (Noble + XWing + ML-DSA-65 + CBOR envelope) replacement for legacy 
 
 ## v1 algorithms (per design memo + B-0883.1 library landscape audit)
 
-| Class     | Algorithm                          | Status                        | Noble module                  |
-| --------- | ---------------------------------- | ----------------------------- | ----------------------------- |
-| KEM       | ML-KEM-768 + X25519 (XWing hybrid) | ships-v1                      | `@noble/post-quantum/ml-kem`  |
-| KEM       | Saber                              | deferred-alternate (B-0883.2) | —                             |
-| KEM       | NTRU-Prime                         | deferred-alternate (B-0883.2) | —                             |
-| KEM       | FrodoKEM                           | deferred-alternate (B-0883.2) | —                             |
-| Signature | ML-DSA-65                          | ships-v1                      | `@noble/post-quantum/ml-dsa`  |
-| Signature | SLH-DSA (SPHINCS+)                 | ships-v1                      | `@noble/post-quantum/slh-dsa` |
-| KDF       | HKDF-SHA256                        | ships-v1                      | `@noble/hashes/hkdf`          |
-| AEAD      | ChaCha20-Poly1305                  | ships-v1                      | `@noble/ciphers/chacha`       |
+| Class     | Algorithm                          | Status                        | Noble module                                                                         |
+| --------- | ---------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------ |
+| KEM       | ML-KEM-768 + X25519 (XWing hybrid) | ships-v1                      | `@noble/post-quantum/ml-kem`                                                         |
+| KEM       | Saber                              | deferred-alternate (B-0883.2) | —                                                                                    |
+| KEM       | NTRU-Prime                         | deferred-alternate (B-0883.2) | —                                                                                    |
+| KEM       | FrodoKEM                           | deferred-alternate (B-0883.2) | —                                                                                    |
+| Signature | ML-DSA-65                          | ships-v1                      | `@noble/post-quantum/ml-dsa`                                                         |
+| Signature | SLH-DSA (SPHINCS+)                 | deferred-alternate            | `@noble/post-quantum/slh-dsa` (Noble has it; crypto.ts v1 dispatches ML-DSA-65 only) |
+| KDF       | HKDF-SHA256                        | ships-v1                      | `@noble/hashes/hkdf`                                                                 |
+| AEAD      | ChaCha20-Poly1305                  | ships-v1                      | `@noble/ciphers/chacha`                                                              |
+
+## On-disk wire format (canonical — authoritative as implemented)
+
+The signed on-disk envelope is **canonical CBOR** (cborg) of a **flat, camelCase** object. This is the authoritative schema — it supersedes the v1 design memo's pre-implementation sketch (which used a nested/snake_case shape). `decodeEnvelope` enforces canonical bytes: it re-encodes the reconstructed envelope and rejects any input that isn't byte-identical (so non-canonical encodings AND unknown fields fail closed — the bytes are bit-locked to the signed content).
+
+Fields: `version` (1), `context` (`"zeta.git-crypt.file.v1"`), `algKem`, `algKdf`, `algWrap`, `algContent`, `algSig`, `recipients[]` (`{ identity, kemCt, wrappedCek, kdfInfo }`), `ciphertext`, `contentNonce` (12 bytes), `signerIdentity`, `signature`. The ML-DSA-65 signature covers every field **except** `signature` itself (the "signed view"), with `context` inside the signed bytes for domain separation.
 
 ## CLI
 
