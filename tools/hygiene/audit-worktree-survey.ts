@@ -376,12 +376,12 @@ function stableFirstParentPatchId(path: string, commit: string): string | null {
   return parent === null ? null : stableDiffPatchId(path, parent, commit);
 }
 
-function treeObjectId(path: string, rev: string, filePath: string): string | null {
+function treeEntryIdentity(path: string, rev: string, filePath: string): string | null {
   const output = gitStdout(path, ["ls-tree", "-z", rev, "--", filePath]);
   if (output === null) return null;
   const entry = output.split("\0")[0] ?? "";
   const metadata = entry.split("\t")[0] ?? "";
-  return metadata.split(/\s+/)[2] ?? null;
+  return metadata.length > 0 ? metadata : null;
 }
 
 function branchChangedPaths(path: string, base: string, head: string): readonly string[] | null {
@@ -395,7 +395,7 @@ function branchChangedPathsRetainedAtMainTip(path: string, base: string, head: s
   if (paths === null) return null;
   if (paths.length === 0) return true;
   return paths.every(
-    (changedPath) => treeObjectId(path, base, changedPath) !== treeObjectId(path, "origin/main", changedPath),
+    (changedPath) => treeEntryIdentity(path, base, changedPath) !== treeEntryIdentity(path, "origin/main", changedPath),
   );
 }
 

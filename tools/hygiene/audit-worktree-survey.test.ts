@@ -2,7 +2,7 @@
 // worktree recovery survey classifier.
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -286,6 +286,36 @@ describe("inspectWorktreeEntry", () => {
       writeFileSync(join(repo, "other.txt"), "batched unrelated work\n");
       runGit(repo, ["add", "tracked.txt", "other.txt"]);
       runGit(repo, ["commit", "-m", "squash batch"]);
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+      const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
+      expect(result.dirty).toBe(false);
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(true);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+
+  test("marks mode-only branch changes as covered when main retained the mode", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      const scriptPath = join(repo, "script.sh");
+      commitFile(repo, "script.sh", "#!/usr/bin/env bash\necho hi\n", "base script");
+      runGit(repo, ["checkout", "-b", "feature"]);
+      chmodSync(scriptPath, 0o755);
+      runGit(repo, ["add", "script.sh"]);
+      runGit(repo, ["commit", "-m", "make script executable"]);
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      runGit(repo, ["checkout", "main"]);
+      chmodSync(scriptPath, 0o755);
+      runGit(repo, ["add", "script.sh"]);
+      runGit(repo, ["commit", "-m", "squash executable mode"]);
       runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
 
       const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
