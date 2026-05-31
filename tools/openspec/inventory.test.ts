@@ -340,6 +340,29 @@ describe("parseCliArgs", () => {
     });
   });
 
+  test("--fail-on-unmapped-specs alone implies --enforce", () => {
+    const parsed = parseCliArgs(["--fail-on-unmapped-specs"]);
+
+    // Without the implication the gate would never evaluate and the CLI would
+    // exit 0 even with unmapped specs (regression guard for the silent-exit bug).
+    expect(parsed.enforce).toBe(true);
+    expect(parsed.gateOptions).toEqual({ failOnUnmappedSpecs: true });
+  });
+
+  test("--fail-on-uncovered-modules alone implies --enforce", () => {
+    const parsed = parseCliArgs(["--fail-on-uncovered-modules"]);
+
+    expect(parsed.enforce).toBe(true);
+    expect(parsed.gateOptions).toEqual({ failOnUncoveredModules: true });
+  });
+
+  test("bare invocation does not enforce", () => {
+    const parsed = parseCliArgs([]);
+
+    expect(parsed.enforce).toBe(false);
+    expect(parsed.gateOptions).toEqual({});
+  });
+
   test("surfaces unknown arguments", () => {
     const parsed = parseCliArgs(["--wat"]);
 

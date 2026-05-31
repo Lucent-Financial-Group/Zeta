@@ -307,10 +307,15 @@ function parseCliArgs(args: string[]): CliOptions {
         parsed.enforce = true;
         break;
       case "--fail-on-unmapped-specs":
+        // A --fail-on-* flag is a request to gate on that condition, which is
+        // meaningless unless the gate is actually evaluated — so it implies
+        // --enforce. Without this, passing the flag alone silently exited 0.
         parsed.gateOptions.failOnUnmappedSpecs = true;
+        parsed.enforce = true;
         break;
       case "--fail-on-uncovered-modules":
         parsed.gateOptions.failOnUncoveredModules = true;
+        parsed.enforce = true;
         break;
       case "--help":
       case "-h":
@@ -330,8 +335,8 @@ function printUsage(err: (message?: unknown, ...optionalParams: unknown[]) => vo
   err("");
   err("Options:");
   err("  --enforce                    Exit nonzero when the inventory gate fails.");
-  err("  --fail-on-unmapped-specs     Treat specs without mappings as gate failures.");
-  err("  --fail-on-uncovered-modules  Treat uncovered Core modules as gate failures.");
+  err("  --fail-on-unmapped-specs     Treat specs without mappings as gate failures (implies --enforce).");
+  err("  --fail-on-uncovered-modules  Treat uncovered Core modules as gate failures (implies --enforce).");
 }
 
 // ── CLI ──────────────────────────────────────────────────────────────
