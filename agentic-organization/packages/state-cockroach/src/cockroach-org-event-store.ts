@@ -7,7 +7,7 @@
 
 import { randomUUID } from "node:crypto";
 
-import { OrgEventKind, type DepartmentId, type OrgEvent } from "../../domain/src/index.ts";
+import { OrgEventKind, type DepartmentId, type OrgEvent, type OrgEventTransitionContext } from "../../domain/src/index.ts";
 import {
   NoopTelemetry,
   recordOrgEventTelemetry,
@@ -37,6 +37,7 @@ type OrgEventRow = {
   subject_id: string;
   from_state: string | null;
   to_state: string | null;
+  transition_context: unknown | null;
   decision: string;
   supervisor_chain: unknown;
   evidence_refs: unknown;
@@ -63,7 +64,49 @@ function asStringArray(value: unknown): readonly string[] {
   return [];
 }
 
+function asTransitionContext(value: unknown): OrgEventTransitionContext | undefined {
+  if (value === null || value === undefined) {
+    return undefined;
+  }
+  if (typeof value === "string") {
+    try {
+      return asTransitionContext(JSON.parse(value));
+    } catch {
+      return undefined;
+    }
+  }
+  if (isTransitionContext(value)) {
+    return value;
+  }
+  return undefined;
+}
+
+function isTransitionContext(value: unknown): value is OrgEventTransitionContext {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const candidate = value as Partial<OrgEventTransitionContext>;
+  if (candidate.kind === "document_lifecycle") {
+    return typeof candidate.loadBearing === "boolean";
+  }
+  if (candidate.kind === "change_set_review") {
+    const currentStageIndex = candidate.currentStageIndex;
+    const stageCount = candidate.stageCount;
+    return (
+      Number.isInteger(currentStageIndex) &&
+      Number.isInteger(stageCount) &&
+      stageCount !== undefined &&
+      stageCount > 0 &&
+      currentStageIndex !== undefined &&
+      currentStageIndex >= 0 &&
+      currentStageIndex < stageCount
+    );
+  }
+  return false;
+}
+
 function rowToEvent(row: OrgEventRow): OrgEvent {
+  const transitionContext = asTransitionContext(row.transition_context);
   return {
     id: row.org_event_id,
     kind: row.kind as OrgEventKind,
@@ -75,6 +118,7 @@ function rowToEvent(row: OrgEventRow): OrgEvent {
     subjectId: row.subject_id,
     ...(row.from_state !== null ? { fromState: row.from_state } : {}),
     ...(row.to_state !== null ? { toState: row.to_state } : {}),
+    ...(transitionContext !== undefined ? { transitionContext } : {}),
     decision: row.decision,
     supervisorChain: asStringArray(row.supervisor_chain),
     evidenceRefs: asStringArray(row.evidence_refs),
@@ -95,15 +139,15 @@ export function createCockroachOrgEventStore(input: CreateCockroachOrgEventStore
         sql: `
           INSERT INTO agentic_org_org_events (
             org_event_id, kind, organization_id, actor_hat_id, actor_agent_id, department_id,
-            subject_id, from_state, to_state, decision, supervisor_chain, evidence_refs,
+            subject_id, from_state, to_state, transition_context, decision, supervisor_chain, evidence_refs,
             correlation_id, causation_id, trace_id, occurred_at
           ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::JSONB, $12::JSONB, $13, $14, $15, $16
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10::JSONB, $11, $12::JSONB, $13::JSONB, $14, $15, $16, $17
           )
           ON CONFLICT (org_event_id) DO NOTHING`,
         parameters: [
           id, eventInput.kind, eventInput.organizationId, eventInput.actorHatId ?? null, eventInput.actorAgentId ?? null, eventInput.departmentId ?? null,
-          eventInput.subjectId, eventInput.fromState ?? null, eventInput.toState ?? null, eventInput.decision,
+          eventInput.subjectId, eventInput.fromState ?? null, eventInput.toState ?? null, eventInput.transitionContext === undefined ? null : JSON.stringify(eventInput.transitionContext), eventInput.decision,
           JSON.stringify(eventInput.supervisorChain), JSON.stringify(eventInput.evidenceRefs),
           eventInput.correlationId, eventInput.causationId, eventInput.traceId, eventInput.occurredAt,
         ],

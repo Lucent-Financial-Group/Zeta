@@ -19,7 +19,7 @@ import {
   runOrgCycle,
 } from "../packages/application/src/index.ts";
 import {
-  createCockroachOrgSystemMigration,
+  createCockroachCoreStateMigrations,
   createCockroachOrgEventStore,
   createCockroachHatBindingStore,
   createCockroachSqlExecutor,
@@ -41,9 +41,11 @@ async function main(): Promise<void> {
   };
   const executor = createCockroachSqlExecutor({ client });
 
-  // apply the org-system migration (idempotent CREATE TABLE IF NOT EXISTS)
-  for (const statement of splitSqlStatements(createCockroachOrgSystemMigration().sql)) {
-    await pool.query(statement);
+  // Apply the ordered core set so reused DBs have additive org_event columns.
+  for (const migration of createCockroachCoreStateMigrations()) {
+    for (const statement of splitSqlStatements(migration.sql)) {
+      await pool.query(statement);
+    }
   }
 
   const orgEventStore = createCockroachOrgEventStore({ executor });

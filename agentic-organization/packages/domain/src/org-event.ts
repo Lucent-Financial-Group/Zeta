@@ -80,6 +80,17 @@ export const OrgEventKind = {
 
 export type OrgEventKind = (typeof OrgEventKind)[keyof typeof OrgEventKind];
 
+export type OrgEventTransitionContext =
+  | {
+      kind: "change_set_review";
+      currentStageIndex: number;
+      stageCount: number;
+    }
+  | {
+      kind: "document_lifecycle";
+      loadBearing: boolean;
+    };
+
 export type OrgEvent = {
   id: string;
   kind: OrgEventKind;
@@ -93,6 +104,12 @@ export type OrgEvent = {
   subjectId: string;
   fromState?: string;
   toState?: string;
+  /**
+   * Context needed to replay legal transitions whose legality depends on more
+   * than from/to states. Without this envelope, conformance counts the event as
+   * an ambiguous skip instead of pretending it is proven.
+   */
+  transitionContext?: OrgEventTransitionContext;
   /** human-readable decision summary — must be crystal clear about what happened */
   decision: string;
   /** hat-id path from the Executive Board root down to the actor */

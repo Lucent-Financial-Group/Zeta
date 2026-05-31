@@ -8,7 +8,11 @@ import { createCockroachHatBindingStore } from "../src/cockroach-hat-binding-sto
 import type { CockroachGenericSqlExecutor } from "../src/cockroach-sql-executor.ts";
 
 /** An in-memory fake of the SQL executor: records INSERT/UPSERT rows, answers SELECTs. */
-function fakeExecutor(): { executor: CockroachGenericSqlExecutor; statements: { name: string; sql: string; parameters: readonly unknown[] }[] } {
+function fakeExecutor(): {
+  executor: CockroachGenericSqlExecutor;
+  orgEvents: Record<string, unknown>[];
+  statements: { name: string; sql: string; parameters: readonly unknown[] }[];
+} {
   const orgEvents: Record<string, unknown>[] = [];
   const bindings = new Map<string, Record<string, unknown>>();
   const statements: { name: string; sql: string; parameters: readonly unknown[] }[] = [];
@@ -19,8 +23,8 @@ function fakeExecutor(): { executor: CockroachGenericSqlExecutor; statements: { 
     if (s.name === "append_org_event") {
       orgEvents.push({
         org_event_id: p[0], kind: p[1], organization_id: p[2], actor_hat_id: p[3], actor_agent_id: p[4], department_id: p[5],
-        subject_id: p[6], from_state: p[7], to_state: p[8], decision: p[9], supervisor_chain: p[10], evidence_refs: p[11],
-        correlation_id: p[12], causation_id: p[13], trace_id: p[14], occurred_at: p[15],
+        subject_id: p[6], from_state: p[7], to_state: p[8], transition_context: p[9], decision: p[10], supervisor_chain: p[11], evidence_refs: p[12],
+        correlation_id: p[13], causation_id: p[14], trace_id: p[15], occurred_at: p[16],
       });
       return { rows: [] };
     }
@@ -47,13 +51,14 @@ function fakeExecutor(): { executor: CockroachGenericSqlExecutor; statements: { 
     return { rows: [] };
   };
 
-  return { executor: { execute, executeTransaction: async (op) => op({ execute }) } as CockroachGenericSqlExecutor, statements };
+  return { executor: { execute, executeTransaction: async (op) => op({ execute }) } as CockroachGenericSqlExecutor, orgEvents, statements };
 }
 
 function sampleEvent(): OrgEvent {
   return {
     id: "evt-1", kind: OrgEventKind.PriorityDecision, occurredAt: "2026-05-30T09:00:00.000Z", organizationId: "org-1",
     actorHatId: "engineering_director", departmentId: "engineering", subjectId: "wi-1", toState: "high",
+    transitionContext: { kind: "document_lifecycle", loadBearing: false },
     decision: "director set wi-1 to high", supervisorChain: ["executive_board_member", "cto", "engineering_director"],
     evidenceRefs: ["evidence-A"], correlationId: "c", causationId: "c", traceId: "t",
   };
@@ -68,6 +73,10 @@ test("org events round-trip with JSONB supervisor chain + evidence preserved", a
   equal(byOrg.length, 1);
   equal(byOrg[0]?.actorHatId, "engineering_director");
   equal(byOrg[0]?.decision, "director set wi-1 to high");
+  equal(byOrg[0]?.transitionContext?.kind, "document_lifecycle");
+  if (byOrg[0]?.transitionContext?.kind === "document_lifecycle") {
+    equal(byOrg[0].transitionContext.loadBearing, false);
+  }
   // supervisor chain (JSONB) survives the round trip
   equal(byOrg[0]?.supervisorChain.join(","), "executive_board_member,cto,engineering_director");
   equal(byOrg[0]?.evidenceRefs[0], "evidence-A");
@@ -81,8 +90,37 @@ test("the SQL casts the JSONB columns (no string-into-JSONB error)", async () =>
   const store = createCockroachOrgEventStore({ executor });
   await store.append(sampleEvent());
   const insert = statements.find((s) => s.name === "append_org_event")!;
-  ok(insert.sql.includes("$11::JSONB"));
+  ok(insert.sql.includes("$10::JSONB"));
   ok(insert.sql.includes("$12::JSONB"));
+  ok(insert.sql.includes("$13::JSONB"));
+});
+
+test("malformed persisted org_event transition context is ignored", async () => {
+  const { executor, orgEvents } = fakeExecutor();
+  orgEvents.push({
+    org_event_id: "evt-malformed",
+    kind: OrgEventKind.DocLifecycleTransition,
+    organization_id: "org-1",
+    actor_hat_id: null,
+    actor_agent_id: null,
+    department_id: null,
+    subject_id: "doc-1",
+    from_state: "draft",
+    to_state: "active",
+    transition_context: { kind: "document_lifecycle" },
+    decision: "malformed persisted context",
+    supervisor_chain: "[]",
+    evidence_refs: "[]",
+    correlation_id: "c",
+    causation_id: "c",
+    trace_id: "t",
+    occurred_at: "2026-05-30T09:00:00.000Z",
+  });
+
+  const store = createCockroachOrgEventStore({ executor });
+  const byOrg = await store.listByOrganization("org-1", 10);
+  equal(byOrg.length, 1);
+  equal(byOrg[0]?.transitionContext, undefined);
 });
 
 test("append projects org_event evidence into telemetry", async () => {

@@ -43,6 +43,7 @@ export const CockroachCoreStateMigrationName = {
   KnowledgeGraphV19: "0019_agentic_org_knowledge_graph",
   TenantConfigV20: "0020_agentic_org_tenant_config",
   ReactionPlanTraceparentV21: "0021_agentic_org_reaction_plan_traceparent",
+  OrgEventTransitionContextV22: "0022_agentic_org_event_transition_context",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -186,6 +187,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachKnowledgeGraphMigration(),
     createCockroachTenantConfigMigration(),
     createCockroachReactionPlanTraceparentMigration(),
+    createCockroachOrgEventTransitionContextMigration(),
   ];
 }
 
@@ -440,6 +442,13 @@ export function createCockroachReactionPlanTraceparentMigration(): CockroachSche
   };
 }
 
+export function createCockroachOrgEventTransitionContextMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.OrgEventTransitionContextV22,
+    sql: createOrgEventTransitionContextMigrationSql(),
+  };
+}
+
 function createGraphNodesTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.GraphNodes} (
@@ -621,6 +630,7 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.OrgEvents} (
   subject_id STRING NOT NULL,
   from_state STRING NULL,
   to_state STRING NULL,
+  transition_context JSONB NULL,
   decision STRING NOT NULL,
   supervisor_chain JSONB NOT NULL,
   evidence_refs JSONB NOT NULL,
@@ -631,6 +641,12 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.OrgEvents} (
   INDEX org_events_by_org_time (organization_id, occurred_at),
   INDEX org_events_by_subject (subject_id, occurred_at)
 );`.trim();
+}
+
+function createOrgEventTransitionContextMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.OrgEvents}
+ADD COLUMN IF NOT EXISTS transition_context JSONB NULL;`.trim();
 }
 
 function createHatBindingsTableSql(): string {

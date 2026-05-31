@@ -18,9 +18,7 @@ import { env } from "node:process";
 import { ChangeSetPhase, MemoryPhase, MemoryTier, type ChangeSet, type MemoryRecord, type MemoryState } from "../packages/domain/src/index.ts";
 import { buildInternalOnlyPipeline } from "../packages/application/src/index.ts";
 import {
-  createCockroachOrgSystemMigration,
-  createCockroachMemorySystemMigration,
-  createCockroachChangeControlMigration,
+  createCockroachCoreStateMigrations,
   createCockroachSqlExecutor,
   createCockroachMemoryStateStore,
   createCockroachChangeSetStore,
@@ -39,9 +37,9 @@ async function main(): Promise<void> {
   const pool = new Pool({ connectionString });
   const client: CockroachSqlClient = { query: async (sql, p) => ({ rows: (await pool.query(sql, p as unknown[])).rows }), transaction: async (op) => op(client) };
   const executor = createCockroachSqlExecutor({ client });
-  for (const s of splitSqlStatements(createCockroachOrgSystemMigration().sql)) await pool.query(s);
-  for (const s of splitSqlStatements(createCockroachMemorySystemMigration().sql)) await pool.query(s);
-  for (const s of splitSqlStatements(createCockroachChangeControlMigration().sql)) await pool.query(s);
+  for (const migration of createCockroachCoreStateMigrations()) {
+    for (const s of splitSqlStatements(migration.sql)) await pool.query(s);
+  }
 
   // seed: an aged+useless memory (the maintenance lane should archive it) + an in_review ChangeSet
   const memId = id("mem-cadence");

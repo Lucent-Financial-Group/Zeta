@@ -520,6 +520,18 @@ function orgEvent(over: Partial<OrgEvent> = {}): OrgEvent {
   };
 }
 
+function conformanceMetric(name: string, value: number, attributes: Record<string, string | number | boolean>) {
+  return {
+    kind: "gauge",
+    name,
+    value,
+    attributes: {
+      "agentic.organization.id": "org-lfg",
+      ...attributes,
+    },
+  };
+}
+
 test("conformance lane replays org_events and reports a clean theorem tick", async () => {
   const lane = createConformanceCadenceLane({
     organizationId: "org-lfg",
@@ -533,7 +545,7 @@ test("conformance lane replays org_events and reports a clean theorem tick", asy
   equal(result.status, "conformance:1checked/0violations/0skipped");
 });
 
-test("conformance lane emits the pass-ratio SLI metric for Grafana alerts", async () => {
+test("conformance lane emits pass-ratio and coverage-ratio SLI metrics for Grafana alerts", async () => {
   const telemetry = new RecordingTelemetry();
   const lane = createConformanceCadenceLane({
     organizationId: "org-lfg",
@@ -550,18 +562,17 @@ test("conformance lane emits the pass-ratio SLI metric for Grafana alerts", asyn
   await lane.runOnce();
 
   deepEqual(telemetry.metrics, [
-    {
-      kind: "gauge",
-      name: "org_conformance_pass_ratio",
-      value: 0.5,
-      attributes: {
-        "agentic.organization.id": "org-lfg",
-        "agentic.conformance.checked": 2,
-        "agentic.conformance.conformant": 1,
-        "agentic.conformance.nonconformant": 1,
-        "agentic.conformance.skipped": 0,
-      },
-    },
+    conformanceMetric("org_conformance_pass_ratio", 0.5, {
+      "agentic.conformance.checked": 2,
+      "agentic.conformance.conformant": 1,
+      "agentic.conformance.nonconformant": 1,
+      "agentic.conformance.skipped": 0,
+      "agentic.conformance.skipped_ambiguous": 0,
+    }),
+    conformanceMetric("org_conformance_coverage_ratio", 1, {
+      "agentic.conformance.checked": 2,
+      "agentic.conformance.skipped_ambiguous": 0,
+    }),
   ]);
 });
 
@@ -577,6 +588,29 @@ test("conformance lane degrades when replay finds an illegal durable transition"
   equal(result.status, "degraded");
   equal(result.failures.length, 1);
   ok(result.failures[0]!.message.includes("evt-bypass"));
+});
+
+test("conformance lane degrades when ambiguous transition skips exceed the ratchet", async () => {
+  const lane = createConformanceCadenceLane({
+    organizationId: "org-lfg",
+    limit: 100,
+    reader: {
+      listByOrganization: async () => [
+        orgEvent({
+          id: "evt-approved",
+          kind: OrgEventKind.ChangeSetApproved,
+          fromState: ChangeSetPhase.InReview,
+          toState: ChangeSetPhase.Approved,
+        }),
+      ],
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "degraded");
+  equal(result.failures.length, 1);
+  ok(result.failures[0]!.message.includes("ambiguous transition skip ratchet"));
 });
 
 test("stale-reaction-plan scan lane emits incident and completion events", async () => {

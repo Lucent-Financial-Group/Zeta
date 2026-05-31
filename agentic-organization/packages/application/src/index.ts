@@ -648,7 +648,9 @@ export {
 } from "./work-provider.ts";
 export {
   replayLedger,
+  unclassifiedOrgEventKinds,
   type ConformanceReport,
   type ConformanceSkip,
   type ConformanceViolation,
+  type ReplayLedgerOptions,
 } from "./conformance.ts";

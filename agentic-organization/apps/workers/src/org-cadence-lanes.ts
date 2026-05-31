@@ -627,8 +627,13 @@ export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): Cade
     async runOnce(): Promise<CadenceLaneTickResult> {
       try {
         const events = await deps.reader.listByOrganization(deps.organizationId, deps.limit);
-        const report = replayLedger(events);
+        const report = replayLedger(events, { maxSkippedAmbiguous: 0 });
         recordConformanceMetric(deps, report);
+        if (report.ratchetViolated) {
+          return degraded(
+            `conformance lane: ambiguous transition skip ratchet exceeded; skipped=${report.skippedAmbiguous} max=${report.ratchetViolation!.maxSkippedAmbiguous}`,
+          );
+        }
         if (report.nonconformant > 0) {
           const first = report.violations[0]!;
           return degraded(`conformance lane: ${report.nonconformant} violation(s); first=${first.eventId} ${first.fromState}->${first.toState} legal=[${first.legalToStates.join(",")}]`);
@@ -652,6 +657,17 @@ function recordConformanceMetric(deps: ConformanceCadenceDeps, report: ReturnTyp
       "agentic.conformance.conformant": report.conformant,
       "agentic.conformance.nonconformant": report.nonconformant,
       "agentic.conformance.skipped": report.skipped,
+      "agentic.conformance.skipped_ambiguous": report.skippedAmbiguous,
+    },
+  });
+  deps.telemetry?.recordMetric({
+    kind: "gauge",
+    name: "org_conformance_coverage_ratio",
+    value: report.coverageRatio,
+    attributes: {
+      "agentic.organization.id": deps.organizationId,
+      "agentic.conformance.checked": report.checked,
+      "agentic.conformance.skipped_ambiguous": report.skippedAmbiguous,
     },
   });
 }
