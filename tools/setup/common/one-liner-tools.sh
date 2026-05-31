@@ -10,7 +10,7 @@
 # non-zero curl_fetch exit — unlike `curl … | bash`, where bash exits 0 on an empty pipe even when
 # the download failed. Same shape as the Homebrew bootstrap in macos.sh. Trust anchor: HTTPS + the
 # vendor's domain (these installers track HEAD with no published per-release checksum, same as
-# Homebrew's install.sh).
+# Homebrew's install.sh) — and the runner ENFORCES https:// before fetching (see below).
 #
 # NONINTERACTIVE: the downloaded installer is exec'd with stdin redirected from /dev/null, so it
 # matches the vendor's documented `curl … | bash` behavior (where bash's stdin is the pipe, not a
@@ -42,7 +42,7 @@
 #
 # Registry line:  <detect-binary>  <installer-url>  [interp=bash|sh]  [os=mac,linux]  [args=<arg> ...]
 # (defaults: interp=bash, os=all, no args). `#` comments + blank lines ignored. args= is repeatable.
-# See manifests/one-liner-tools.
+# Installer URLs MUST be https:// (enforced). See manifests/one-liner-tools.
 
 set -euo pipefail
 
@@ -128,6 +128,14 @@ while IFS= read -r line || [ -n "$line" ]; do
     echo "✓ $bin already installed; skipping (self-updating; set ZETA_FORCE_UPDATE_TOOLS=1 to force re-run)"
     continue
   fi
+
+  # Enforce HTTPS (the documented trust anchor) before fetching, so a manifest typo/edit cannot
+  # silently fetch+exec an installer over cleartext or another curl-supported scheme (http://,
+  # file://, ftp://, …). Best-effort: warn + skip this entry, never brick install.
+  case "$url" in
+    https://*) : ;;  # ok
+    *) echo "warn: refusing non-https installer URL for '$bin' ($url); skipping (HTTPS is the trust anchor)" >&2; continue ;;
+  esac
 
   # Download-then-exec (B-0063): fetch installer to temp, verify non-empty, exec with interpreter.
   if command -v "$bin" >/dev/null 2>&1; then
