@@ -400,6 +400,110 @@ test("runAgentCliCycle can select scope controls without dispatching side effect
   equal(result.evidence?.selectedIndex, 8);
 });
 
+test("runAgentCliCycle can select meta.status and returns glass-halo evidence", async () => {
+  let dispatched = false;
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--select-index",
+      "13",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    metricAgents: [
+      {
+        id: "queue.pressure",
+        scope: RunScope.WorkItem,
+        compute: async () => ({ id: "queue.pressure", label: "queue pressure", value: 4 }),
+      },
+    ],
+    promptFlowTasks: [
+      promptFlowTask({
+        taskId: "task-implement",
+        promptFlowId: "flow-implement",
+        label: "Implement work item",
+        actionClass: ActionClass.WriteCode,
+      }),
+    ],
+    runCommand: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.exitCode, 0);
+  equal(dispatched, false);
+  equal(result.actionResult?.outcome, "status_report");
+  ok(stdout.join("\n").includes("[13] T meta.status status / glass-halo"));
+  ok(stdout.join("\n").includes("action: status glass_halo_status work_item awaiting_gate"));
+  equal(result.evidence?.selectedIndex, 13);
+  equal(result.evidence?.statusSignalKind, "glass_halo_status");
+  equal(result.evidence?.statusScope, RunScope.WorkItem);
+  equal(result.evidence?.statusPhase, RunLifecyclePhase.AwaitingGate);
+  deepEqual(result.evidence?.metricBlockIds, ["queue.pressure"]);
+  deepEqual(result.evidence?.promptFlowIds, ["flow-implement"]);
+});
+
+test("runAgentCliCycle status evidence includes hierarchy priority scope when hierarchy is available", async () => {
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-director-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-eng",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "project",
+      "--phase",
+      "observing",
+      "--select-index",
+      "13",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    hierarchy: hierarchySnapshot(),
+    runCommand: async () => {
+      throw new Error("status must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("status must not dispatch MCP side effects");
+    },
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "status_report");
+  equal(result.evidence?.statusHierarchyPriorityScope, "department_initiatives");
+});
+
 test("runAgentCliCycle returns typed no_selectable_slot feedback for all-vetoed menus", async () => {
   let dispatched = false;
   const stdout: string[] = [];

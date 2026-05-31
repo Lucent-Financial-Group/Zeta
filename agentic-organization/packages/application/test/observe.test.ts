@@ -454,7 +454,7 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
   equal(menu.slots[12]?.label, "refresh");
   equal(menu.slots[12]?.availability, "T");
   equal(menu.slots[13]?.direction, "meta.status");
-  equal(menu.slots[13]?.label, "status");
+  equal(menu.slots[13]?.label, "status / glass-halo");
   equal(menu.slots[14]?.direction, "meta.pause");
   equal(menu.slots[14]?.label, "pause");
   equal(menu.slots[15]?.direction, "meta.escalate");
@@ -477,6 +477,61 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
     dispatchTool: async () => ({ ok: true }),
   });
   deepEqual(refreshResult, { outcome: "reobserve", scope: RunScope.WorkItem });
+});
+
+test("renderMenu16 makes meta.status emit a glass-halo status signal", async () => {
+  const approved = observe(snapshot({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingGate,
+    hasGateApproval: true,
+  }), deps);
+  equal(approved.outcome, ObserveOutcome.Readout);
+  if (approved.outcome !== ObserveOutcome.Readout) return;
+
+  const menu = renderMenu16(approved.readout, {
+    status: {
+      metricBlockIds: ["queue.pressure", "review.lag"],
+      promptFlowIds: ["flow-implement"],
+      promptFlowTaskCount: 1,
+      vetoedPromptFlowTaskCount: 0,
+    },
+  });
+
+  equal(menu.slots[13]?.direction, "meta.status");
+  equal(menu.slots[13]?.label, "status / glass-halo");
+  equal(menu.slots[13]?.availability, "T");
+  deepEqual(menu.slots[13]?.impl, {
+    kind: "status",
+    status: {
+      kind: "glass_halo_status",
+      runId: "42",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      observedAt: "2026-05-29T00:00:00.000Z",
+      trace: { correlationId: "corr-1", causationId: "cause-1", traceId: "trace-1" },
+      legalOptionCount: 2,
+      vetoedOptionCount: 0,
+      deterministicRulesApplied: ["gate-precondition", "evidence-precondition"],
+      metricBlockIds: ["queue.pressure", "review.lag"],
+      promptFlowIds: ["flow-implement"],
+      promptFlowTaskCount: 1,
+      vetoedPromptFlowTaskCount: 0,
+    },
+  });
+
+  const result = await act(13, menu, {
+    runCommand: async () => {
+      throw new Error("status must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("status must not dispatch MCP side effects");
+    },
+  });
+
+  deepEqual(result, {
+    outcome: "status_report",
+    status: menu.slots[13]?.impl?.kind === "status" ? menu.slots[13].impl.status : undefined,
+  });
 });
 
 test("renderMenu16 disables scope-out at organization scope and scope-in at run scope", () => {

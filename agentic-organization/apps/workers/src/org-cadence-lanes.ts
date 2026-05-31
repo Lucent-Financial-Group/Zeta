@@ -307,9 +307,22 @@ function observeActEvidenceRefs(
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
     ...promptFlowPageEvidenceRefs(evidence),
     ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
+    ...statusEvidenceRefs(evidence),
     ...actionRejectionEvidenceRefs(evidence),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function statusEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  if (evidence.statusSignalKind === undefined) return [];
+  return [
+    `observe-act:status:${evidence.statusSignalKind}`,
+    ...(evidence.statusScope === undefined ? [] : [`observe-act:status_scope:${evidence.statusScope}`]),
+    ...(evidence.statusPhase === undefined ? [] : [`observe-act:status_phase:${evidence.statusPhase}`]),
+    ...(evidence.statusHierarchyPriorityScope === undefined ? [] : [`observe-act:status_priority_scope:${evidence.statusHierarchyPriorityScope}`]),
   ];
 }
 
@@ -440,6 +453,9 @@ function formatObserveActStatus(
   }
   if (result?.outcome === "loaded_context") {
     return `${prefix}:context:${result.context.taskId}`;
+  }
+  if (result?.outcome === "status_report") {
+    return `${prefix}:status:${result.status.kind}`;
   }
   if (result?.outcome === "rejected") {
     return `${prefix}:rejected:${result.reason}`;

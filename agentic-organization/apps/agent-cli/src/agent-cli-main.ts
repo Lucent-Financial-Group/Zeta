@@ -239,9 +239,20 @@ function observeActEvidenceRefs(evidence: AgentCliCycleEvidence): readonly strin
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
     ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
+    ...statusEvidenceRefs(evidence),
     ...actionRejectionEvidenceRefs(evidence),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function statusEvidenceRefs(evidence: AgentCliCycleEvidence): readonly string[] {
+  if (evidence.statusSignalKind === undefined) return [];
+  return [
+    `observe-act:status:${evidence.statusSignalKind}`,
+    ...(evidence.statusScope === undefined ? [] : [`observe-act:status_scope:${evidence.statusScope}`]),
+    ...(evidence.statusPhase === undefined ? [] : [`observe-act:status_phase:${evidence.statusPhase}`]),
+    ...(evidence.statusHierarchyPriorityScope === undefined ? [] : [`observe-act:status_priority_scope:${evidence.statusHierarchyPriorityScope}`]),
   ];
 }
 

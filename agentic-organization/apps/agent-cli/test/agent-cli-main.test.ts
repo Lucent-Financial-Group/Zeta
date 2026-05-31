@@ -261,6 +261,80 @@ test("runAgentCliMain loads prompt-flow context and persists observe-act tick ev
   ok(events[0]?.evidenceRefs.includes("observe-act:prompt_flow:flow-code-change"));
 });
 
+test("runAgentCliMain persists glass-halo status evidence", async () => {
+  const stdout: string[] = [];
+  const events: OrgEvent[] = [];
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--run-id",
+      "5",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-status",
+      "--gate-approved",
+      "--select-index",
+      "13",
+    ],
+    env: {
+      AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON: JSON.stringify([{
+        taskId: "task-status",
+        workItemId: "work-status",
+        title: "Load implementation context",
+        promptFlowId: "flow-status",
+        label: "load context",
+        scope: RunScope.WorkItem,
+        priority: 100,
+        allowedHatIds: ["release_operator"],
+        directions: ["Read the scoped implementation plan."],
+        toolInjections: [],
+        metrics: [],
+        contextArtifactRefs: [],
+      }]),
+    },
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: (text) => {
+      stdout.push(text);
+    },
+    writeStderr: () => undefined,
+    runtime: {
+      runCommand: async () => {
+        throw new Error("status must not dispatch command side effects");
+      },
+      dispatchTool: async () => {
+        throw new Error("status must not dispatch MCP side effects");
+      },
+      appendObserveActTick: async (event) => {
+        events.push(event);
+      },
+      shutdown: async () => undefined,
+    } as AgentCliMainRuntime & { appendObserveActTick: (event: OrgEvent) => Promise<void> },
+  });
+
+  equal(exitCode, 0);
+  ok(stdout.join("").includes("action: status glass_halo_status work_item awaiting_gate"));
+  equal(events.length, 1);
+  ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:13"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:status:glass_halo_status"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:status_scope:work_item"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:status_phase:awaiting_gate"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:prompt_flow:flow-status"));
+});
+
 test("runAgentCliMain persists selector rejection evidence from local model fallback", async () => {
   const events: OrgEvent[] = [];
 

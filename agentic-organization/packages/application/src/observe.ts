@@ -342,6 +342,7 @@ export type SlotImpl =
   | { kind: "command"; commandType: string; command?: unknown }
   | { kind: "mcp"; tool: string; args?: unknown }
   | { kind: "observe"; toScope: RunScope; menuPage?: MenuPageTarget | undefined }
+  | { kind: "status"; status: GlassHaloStatusSignal }
   | { kind: "prompt_flow"; request: PromptFlowContextRequest };
 
 export const ObserveCommandType = {
@@ -378,6 +379,43 @@ export type RenderMenu16Options = {
   hatAssignmentId?: ZetaIdDecimal;
   promptFlows?: PromptFlowReadout;
   promptFlowPage?: number | undefined;
+  status?: GlassHaloStatusContext | undefined;
+};
+
+export type GlassHaloStatusSignal = {
+  kind: "glass_halo_status";
+  runId: ZetaIdDecimal;
+  scope: RunScope;
+  phase: RunLifecyclePhase;
+  observedAt: string;
+  trace: RunTrace;
+  legalOptionCount: number;
+  vetoedOptionCount: number;
+  deterministicRulesApplied: readonly string[];
+  metricBlockIds: readonly string[];
+  promptFlowIds: readonly string[];
+  promptFlowTaskCount: number;
+  vetoedPromptFlowTaskCount: number;
+  hierarchy?: GlassHaloHierarchyStatus | undefined;
+};
+
+export type GlassHaloStatusContext = {
+  metricBlockIds?: readonly string[] | undefined;
+  promptFlowIds?: readonly string[] | undefined;
+  promptFlowTaskCount?: number | undefined;
+  vetoedPromptFlowTaskCount?: number | undefined;
+  hierarchy?: GlassHaloHierarchyStatus | undefined;
+};
+
+export type GlassHaloHierarchyStatus = {
+  level: HatLevel;
+  priorityScope: HierarchyPriorityScope;
+  policyViolationCount: number;
+  priorityItemCount: number;
+  actionCount: number;
+  vetoedActionCount: number;
+  missionStatus?: HierarchyMissionStatus | undefined;
+  missionVariancePercent?: number | undefined;
 };
 
 export type PromptFlowPageState = {
@@ -423,6 +461,7 @@ export type ActRejectionReason = (typeof ActRejectionReason)[keyof typeof ActRej
 export type ActResult =
   | { outcome: "dispatched"; kind: "command" | "mcp"; result: unknown }
   | { outcome: "loaded_context"; context: PromptFlowContext }
+  | { outcome: "status_report"; status: GlassHaloStatusSignal }
   | { outcome: "reobserve"; scope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { outcome: "rejected"; reason: ActRejectionReason; message: string };
 
@@ -786,7 +825,7 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
   }
   if (readout.options.length > 0) {
     renderScopeSlots(rendered, readout.scope);
-    renderMetaSlots(rendered, readout.scope);
+    renderMetaSlots(rendered, readout, options.status);
     const promptFlowPage = renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId, options.promptFlowPage);
     page = promptFlowPage === undefined ? undefined : { promptFlows: promptFlowPage };
   }
@@ -853,11 +892,62 @@ function renderScopeSlots(rendered: Menu16Slot[], currentScope: RunScope): void 
   rendered[11] = createDisabledGrammarSlot(11, MENU16_DIRECTIONS[11]!, "redo", "redo is not wired for this run state");
 }
 
-function renderMetaSlots(rendered: Menu16Slot[], currentScope: RunScope): void {
+function renderMetaSlots(
+  rendered: Menu16Slot[],
+  readout: RunStateReadout,
+  statusContext: GlassHaloStatusContext | undefined,
+): void {
+  const currentScope = readout.scope;
   rendered[12] = createObserveSlot(12, MENU16_DIRECTIONS[12]!, "refresh", currentScope);
-  rendered[13] = createObserveSlot(13, MENU16_DIRECTIONS[13]!, "status", currentScope);
+  rendered[13] = createStatusSlot(13, MENU16_DIRECTIONS[13]!, readout, statusContext);
   rendered[14] = createDisabledGrammarSlot(14, MENU16_DIRECTIONS[14]!, "pause", "pause mode is not wired for this run state");
   rendered[15] = createDisabledGrammarSlot(15, MENU16_DIRECTIONS[15]!, "escalate", "supervisor escalation is not wired for this run state");
+}
+
+function createStatusSlot(
+  index: number,
+  direction: string,
+  readout: RunStateReadout,
+  statusContext: GlassHaloStatusContext | undefined,
+): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: "status / glass-halo",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "status",
+      status: createGlassHaloStatusSignal(readout, statusContext),
+    },
+  };
+}
+
+function createGlassHaloStatusSignal(
+  readout: RunStateReadout,
+  context: GlassHaloStatusContext | undefined,
+): GlassHaloStatusSignal {
+  return {
+    kind: "glass_halo_status",
+    runId: readout.runId,
+    scope: readout.scope,
+    phase: readout.phase,
+    observedAt: readout.observedAt,
+    trace: readout.trace,
+    legalOptionCount: readout.options.length,
+    vetoedOptionCount: readout.vetoedOptions.length,
+    deterministicRulesApplied: readout.deterministicRulesApplied,
+    metricBlockIds: context?.metricBlockIds ?? [],
+    promptFlowIds: context?.promptFlowIds ?? [],
+    promptFlowTaskCount: context?.promptFlowTaskCount ?? 0,
+    vetoedPromptFlowTaskCount: context?.vetoedPromptFlowTaskCount ?? 0,
+    ...createOptionalGlassHaloHierarchyStatus(context?.hierarchy),
+  };
+}
+
+function createOptionalGlassHaloHierarchyStatus(
+  hierarchy: GlassHaloHierarchyStatus | undefined,
+): { hierarchy?: GlassHaloHierarchyStatus } {
+  return hierarchy === undefined ? {} : { hierarchy };
 }
 
 function createObserveSlot(
@@ -1079,6 +1169,11 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
         scope: slot.impl.toScope,
         ...createOptionalMenuPageTarget(slot.impl.menuPage),
       };
+    case "status":
+      return {
+        outcome: "status_report",
+        status: slot.impl.status,
+      };
     case "prompt_flow":
       if (deps.loadPromptFlowContext === undefined) {
         return rejectAct(ActRejectionReason.MissingPromptFlowContextLoader, `slot ${index} requires a prompt-flow context loader`);
@@ -1123,6 +1218,7 @@ export async function observeAgentSurface(
       hatAssignmentId: snapshot.hatAssignmentId,
       promptFlows,
       promptFlowPage: deps.promptFlowPage,
+      status: createGlassHaloStatusContext(blocks, promptFlows, hierarchy),
     }),
     metrics: {
       scope: snapshot.scope,
@@ -1131,6 +1227,38 @@ export async function observeAgentSurface(
     promptFlows,
     hierarchy,
   };
+}
+
+function createGlassHaloStatusContext(
+  blocks: readonly MetricBlock[],
+  promptFlows: PromptFlowReadout,
+  hierarchy: HierarchyReadout,
+): GlassHaloStatusContext {
+  return {
+    metricBlockIds: uniqueStrings(blocks.map((block) => block.id)),
+    promptFlowIds: uniqueStrings([
+      ...promptFlows.tasks.map((task) => task.promptFlowId),
+      ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task.promptFlowId),
+    ]),
+    promptFlowTaskCount: promptFlows.tasks.length,
+    vetoedPromptFlowTaskCount: promptFlows.vetoedTasks.length,
+    hierarchy: {
+      level: hierarchy.level,
+      priorityScope: hierarchy.priorityScope,
+      policyViolationCount: hierarchy.policyViolations.length,
+      priorityItemCount: hierarchy.priorityItems.length,
+      actionCount: hierarchy.actions.length,
+      vetoedActionCount: hierarchy.vetoedActions.length,
+      ...(hierarchy.mission === undefined ? {} : {
+        missionStatus: hierarchy.mission.status,
+        missionVariancePercent: hierarchy.mission.variancePercent,
+      }),
+    },
+  };
+}
+
+function uniqueStrings(values: readonly string[]): readonly string[] {
+  return [...new Set(values)].sort((left, right) => left.localeCompare(right));
 }
 
 export function hierarchyReadoutForHat(

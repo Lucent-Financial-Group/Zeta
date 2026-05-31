@@ -283,6 +283,104 @@ test("observe-act work-item lane persists control-bypass rejection evidence", as
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:control_bypass_rejected:control_plane_denied:4"));
 });
 
+test("observe-act work-item lane persists glass-halo status evidence", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+      promptFlowTasks: [
+        promptFlowTask({
+          taskId: "task-implement",
+          promptFlowId: "flow-implement",
+          label: "Implement work item",
+          actionClass: ActionClass.WriteCode,
+        }),
+      ],
+    }),
+    metricAgents: [
+      {
+        id: "queue.pressure",
+        scope: RunScope.WorkItem,
+        compute: async () => ({ id: "queue.pressure", label: "queue pressure", value: 4 }),
+      },
+    ],
+    selectSlot: () => 13,
+    runCommand: async () => {
+      throw new Error("status must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("status must not dispatch MCP side effects");
+    },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:status:glass_halo_status");
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status:glass_halo_status"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status_scope:work_item"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status_phase:awaiting_gate"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:metric:queue.pressure"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:prompt_flow:flow-implement"));
+});
+
+test("observe-act work-item lane persists status priority-scope evidence when hierarchy is available", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "project-eng",
+      workItemId: "work-1",
+      scope: RunScope.Project,
+      phase: RunLifecyclePhase.Observing,
+      hasGateApproval: false,
+      hasEvidence: false,
+      hatId: "engineering_director",
+      hatAssignmentId: "99",
+      agentId: "agent-director-1",
+      hierarchy: directorHierarchySnapshot(),
+    }),
+    selectSlot: () => 13,
+    runCommand: async () => {
+      throw new Error("status must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("status must not dispatch MCP side effects");
+    },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:status:glass_halo_status");
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status_priority_scope:department_initiatives"));
+});
+
 test("observe-act work-item lane can load a prompt-flow task context instead of requiring hat-specific agent knowledge", async () => {
   const loaded: string[] = [];
   const lane = createObserveActWorkItemCadenceLane({
@@ -1126,6 +1224,33 @@ function hierarchySnapshot(): HierarchySnapshot {
         organizationId: "org-lfg",
         title: "Readiness Initiative",
         status: "active",
+        metrics: [],
+      },
+    ],
+  };
+}
+
+function directorHierarchySnapshot(): HierarchySnapshot {
+  return {
+    projects: [
+      {
+        projectId: "project-eng",
+        organizationId: "org-lfg",
+        departmentId: "engineering",
+        name: "Engineering Project",
+        status: "active",
+        trajectory: [{ id: "delivery", label: "delivery trajectory", value: "on_track" }],
+        metrics: [],
+      },
+    ],
+    initiatives: [
+      {
+        initiativeId: "init-eng-a",
+        projectId: "project-eng",
+        organizationId: "org-lfg",
+        title: "Readiness Initiative",
+        status: "active",
+        priorityScore: 75,
         metrics: [],
       },
     ],

@@ -34,6 +34,7 @@ import {
   type Menu16,
   type Menu16Slot,
   type MetricBlock,
+  type GlassHaloStatusSignal,
   type PromptFlowContext,
   type PromptFlowContextArtifact,
   type PromptFlowContextRequest,
@@ -153,6 +154,10 @@ export type AgentCliCycleEvidence = {
   selectedIndex: number;
   vetoCount: number;
   trueSlotCount: number;
+  statusSignalKind?: GlassHaloStatusSignal["kind"] | undefined;
+  statusScope?: RunScope | undefined;
+  statusPhase?: RunLifecyclePhase | undefined;
+  statusHierarchyPriorityScope?: HierarchyReadout["priorityScope"] | undefined;
   promptFlowPage?: number | undefined;
   selectedPromptFlowTaskId?: string | undefined;
   selectedPromptFlowId?: string | undefined;
@@ -565,6 +570,7 @@ function createAgentCliCycleEvidence(
     selectedIndex: selection.index,
     vetoCount: menu.slots.filter((slot) => slot.availability === TriAvailability.False).length,
     trueSlotCount: menu.slots.filter((slot) => slot.availability === TriAvailability.True).length,
+    ...selectedStatusEvidence(actionResult),
     ...createOptionalEvidenceNumber("promptFlowPage", menu.page?.promptFlows?.page),
     ...selectedPromptFlowEvidence(menu, selection.index),
     ...(actionResult?.outcome === "reobserve" ? createOptionalEvidenceNumber("reobservePromptFlowPage", actionResult.menuPage?.promptFlows) : {}),
@@ -610,6 +616,16 @@ function stableSlotImpl(slot: Menu16Slot): unknown {
         toScope: slot.impl.toScope,
         menuPage: slot.impl.menuPage ?? null,
       };
+    case "status":
+      return {
+        kind: slot.impl.kind,
+        statusKind: slot.impl.status.kind,
+        scope: slot.impl.status.scope,
+        phase: slot.impl.status.phase,
+        metricBlockIds: slot.impl.status.metricBlockIds,
+        promptFlowIds: slot.impl.status.promptFlowIds,
+        hierarchy: slot.impl.status.hierarchy ?? null,
+      };
     case "command":
       return {
         kind: slot.impl.kind,
@@ -621,6 +637,20 @@ function stableSlotImpl(slot: Menu16Slot): unknown {
         tool: slot.impl.tool,
       };
   }
+}
+
+function selectedStatusEvidence(
+  actionResult: ActResult | undefined,
+): Pick<AgentCliCycleEvidence, "statusSignalKind" | "statusScope" | "statusPhase" | "statusHierarchyPriorityScope"> {
+  if (actionResult?.outcome !== "status_report") return {};
+  return {
+    statusSignalKind: actionResult.status.kind,
+    statusScope: actionResult.status.scope,
+    statusPhase: actionResult.status.phase,
+    ...(actionResult.status.hierarchy === undefined ? {} : {
+      statusHierarchyPriorityScope: actionResult.status.hierarchy.priorityScope,
+    }),
+  };
 }
 
 function selectedPromptFlowEvidence(
@@ -958,6 +988,8 @@ function formatActResult(result: ActResult): string {
       return `dispatched ${result.kind}`;
     case "loaded_context":
       return `loaded context ${result.context.taskId}`;
+    case "status_report":
+      return `status ${result.status.kind} ${result.status.scope} ${result.status.phase}`;
     case "reobserve":
       return `reobserve ${result.scope}${result.menuPage?.promptFlows === undefined ? "" : ` prompt-flow-page ${result.menuPage.promptFlows + 1}`}`;
     case "rejected":
