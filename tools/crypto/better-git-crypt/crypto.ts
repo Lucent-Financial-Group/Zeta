@@ -214,6 +214,22 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
     return { ok: false, feedback: { kind: "AlgUnsupported", algId: plan.path.algSig } };
   }
 
+  // 2b. Reject duplicate recipient identities. decrypt resolves a recipient by
+  //     identity via first-match, so two slots for the same identity (e.g. a
+  //     stale registry entry kept before the current key) would make a valid
+  //     later slot unreachable and surface a spurious KemFailure. Keep the
+  //     recipient set identity-unique.
+  const seenIdentities = new Set<string>();
+  for (const r of context.recipients) {
+    if (seenIdentities.has(r.identity)) {
+      return {
+        ok: false,
+        feedback: { kind: "RecipientKeyInvalid", identity: r.identity, reason: "duplicate recipient identity" },
+      };
+    }
+    seenIdentities.add(r.identity);
+  }
+
   // 3. v1 supports random-bytes seed source only.
   if (context.seedSource !== "random-bytes") {
     return {

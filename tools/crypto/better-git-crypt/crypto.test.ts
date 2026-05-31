@@ -204,6 +204,22 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
     expect(result?.ok).toBe(false);
     if (result && !result.ok) expect(result.feedback.kind).toBe("RecipientKeyInvalid");
   });
+
+  it("RecipientKeyInvalid: rejects duplicate recipient identities", () => {
+    // Two slots for one identity would make decrypt's first-match resolution
+    // skip a valid later slot -> spurious KemFailure. (Codex P2 on PR #6217.)
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const dupeStale = { ...generateRecipientKeyPair("sender@zeta").publicKey }; // same identity, different keys
+    const ctx: EncryptionContext = {
+      plaintext: utf8("x"),
+      recipients: [sender.publicKey, dupeStale],
+      sender: sender.publicKey,
+      seedSource: "random-bytes",
+    };
+    const enc = encrypt(ctx, sender.secretKeys);
+    expect(enc.ok).toBe(false);
+    if (!enc.ok) expect(enc.feedback.kind).toBe("RecipientKeyInvalid");
+  });
 });
 
 describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () => {
