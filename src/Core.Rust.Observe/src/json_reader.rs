@@ -232,28 +232,44 @@ impl<'a> JsonReader<'a> {
     /// pushes the container and returns the Start token with `true`.
     fn read_value(&mut self) -> Result<(JsonToken<'a>, bool), JsonError> {
         self.skip_ws();
-        match self.peek() {
+        // Containers return immediately (their interior is driven by the state
+        // machine). Scalars fall through to the value-terminator check.
+        let token = match self.peek() {
             Some(b'{') => {
                 self.pos += 1;
                 self.push_container(Container::Object)?;
-                Ok((JsonToken::StartObject, true))
+                return Ok((JsonToken::StartObject, true));
             }
             Some(b'[') => {
                 self.pos += 1;
                 self.push_container(Container::Array)?;
-                Ok((JsonToken::StartArray, true))
+                return Ok((JsonToken::StartArray, true));
             }
-            Some(b'"') => Ok((JsonToken::Str(self.read_string()?), false)),
-            Some(b't') | Some(b'f') => Ok((JsonToken::Bool(self.read_bool()?), false)),
+            Some(b'"') => JsonToken::Str(self.read_string()?),
+            Some(b't') | Some(b'f') => JsonToken::Bool(self.read_bool()?),
             Some(b'n') => {
                 self.read_null()?;
-                Ok((JsonToken::Null, false))
+                JsonToken::Null
             }
-            Some(b) if b == b'-' || b.is_ascii_digit() => {
-                Ok((JsonToken::Number(self.read_number()?), false))
-            }
-            Some(_) => Err(self.err("unexpected character (expected a value)")),
-            None => Err(self.err("unexpected end of input (expected a value)")),
+            Some(b) if b == b'-' || b.is_ascii_digit() => JsonToken::Number(self.read_number()?),
+            Some(_) => return Err(self.err("unexpected character (expected a value)")),
+            None => return Err(self.err("unexpected end of input (expected a value)")),
+        };
+        // After ANY scalar, the next byte must be a value terminator (whitespace, a
+        // structural delimiter, or EOF). Validating it HERE rejects every malformed
+        // trailing byte — `1x`, `true_`, `null/`, `false"`, `[1x]` — on the read()
+        // that produced the token, instead of yielding a bogus token with the error
+        // delayed to the next read().
+        self.expect_value_terminator()?;
+        Ok((token, false))
+    }
+
+    /// A scalar value must be followed by whitespace, a structural delimiter
+    /// (`,` `]` `}`), or EOF — nothing else.
+    fn expect_value_terminator(&self) -> Result<(), JsonError> {
+        match self.peek() {
+            None | Some(b' ' | b'\t' | b'\n' | b'\r' | b',' | b']' | b'}') => Ok(()),
+            Some(_) => Err(self.err("unexpected character after value (expected a delimiter)")),
         }
     }
 
@@ -401,13 +417,14 @@ impl<'a> JsonReader<'a> {
     }
 
     fn read_bool(&mut self) -> Result<bool, JsonError> {
+        // The literal's trailing boundary is checked by `expect_value_terminator`
+        // (called for all scalars in `read_value`), so `truex`/`false0`/`false"` etc.
+        // are rejected eagerly there.
         if self.bytes[self.pos..].starts_with(b"true") {
             self.pos += 4;
-            self.expect_literal_end()?;
             Ok(true)
         } else if self.bytes[self.pos..].starts_with(b"false") {
             self.pos += 5;
-            self.expect_literal_end()?;
             Ok(false)
         } else {
             Err(self.err("invalid literal"))
@@ -417,22 +434,9 @@ impl<'a> JsonReader<'a> {
     fn read_null(&mut self) -> Result<(), JsonError> {
         if self.bytes[self.pos..].starts_with(b"null") {
             self.pos += 4;
-            self.expect_literal_end()?;
             Ok(())
         } else {
             Err(self.err("invalid literal"))
-        }
-    }
-
-    /// A `true`/`false`/`null` literal must be followed by a value terminator
-    /// (whitespace, structural char, or EOF) — never an alphanumeric. Validating the
-    /// boundary HERE rejects `truex` / `false0` / `nullx` on the read() that produced
-    /// the token, instead of yielding a bogus Bool/Null with the error delayed.
-    fn expect_literal_end(&mut self) -> Result<(), JsonError> {
-        if matches!(self.peek(), Some(c) if c.is_ascii_alphanumeric()) {
-            Err(self.err("invalid literal: unexpected trailing character"))
-        } else {
-            Ok(())
         }
     }
 
@@ -608,13 +612,21 @@ mod tests {
     }
 
     #[test]
-    fn rejects_literals_with_trailing_alnum_eagerly() {
-        // Malformed literals error on the read() that produces them, not later.
-        assert!(JsonReader::new("truex").read().is_err());
-        assert!(JsonReader::new("false0").read().is_err());
-        assert!(JsonReader::new("nullx").read().is_err());
-        // Valid literals followed by a terminator (EOF / structural / ws) are fine.
-        for ok in ["true", "false", "null", "[true]", "true ", "[true,false]"] {
+    fn rejects_non_delimiter_after_value_eagerly() {
+        // ANY non-terminator byte after a scalar (alnum OR symbol) errors on the
+        // read() that produces the token — literals AND numbers.
+        for bad in ["truex", "false0", "nullx", "true_", "null/", "false\"", "1x", "12.3z"] {
+            let mut r = JsonReader::new(bad);
+            assert!(r.read().is_err(), "`{bad}` must error on the read that produces it");
+        }
+        // `[1x]` / `[true_]` error when reading the element, not later.
+        for bad in ["[1x]", "[true_]"] {
+            let mut r = JsonReader::new(bad);
+            assert_eq!(r.read().expect("read").expect("token"), JsonToken::StartArray);
+            assert!(r.read().is_err(), "`{bad}` element must error eagerly");
+        }
+        // Valid scalars followed by a terminator (EOF / structural / ws) are fine.
+        for ok in ["true", "false", "null", "1", "[true]", "true ", "[true,false]", "[1,2]"] {
             assert!(drain(ok).is_ok(), "`{ok}` should parse");
         }
     }
