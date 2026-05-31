@@ -7,7 +7,7 @@
 // => value-superposed); only the certain-case arithmetic of "how the middle decodes the ends"
 // differs. The ratified v0 `decode` in ./tri-boolean-float.ts is unchanged (radix-point default);
 // this is additive exploration. Comparison + recommendation:
-//   docs/research/2026-05-31-tri-boolean-float-decoder-semantics-comparison-...-aaron-otto.md
+//   docs/research/2026-05-31-tri-boolean-float-decoder-semantics-comparison-radix-point-biased-exponent-high-low-split-aaron-otto.md
 
 import { type Tri } from '../tri-boolean';
 import { type TriFloat, type DecodeResult, type FloatShape } from './types';
