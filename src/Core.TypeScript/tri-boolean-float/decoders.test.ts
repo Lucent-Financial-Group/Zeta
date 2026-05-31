@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test';
-import { T, F, N } from '../tri-boolean';
+import { type Tri, T, F, N } from '../tri-boolean';
 import { DEFAULT_SHAPE } from './types';
 import { fromTrits } from './tri-boolean-float';
 import { decodeWith, characterize, type DecoderSemantics } from './decoders';
