@@ -8,9 +8,16 @@
 # executes it with the named interpreter. NEVER `curl … | bash`: a truncated/interrupted download
 # is caught by the non-empty check before any code runs, and a failed download surfaces as a
 # non-zero curl_fetch exit — unlike `curl … | bash`, where bash exits 0 on an empty pipe even when
-# the download failed (the pipefail trap Codex flagged on the prior revision). Same shape as the
-# Homebrew bootstrap in macos.sh. Trust anchor: HTTPS + the vendor's domain (these installers track
-# HEAD with no published per-release checksum, same as Homebrew's install.sh).
+# the download failed. Same shape as the Homebrew bootstrap in macos.sh. Trust anchor: HTTPS + the
+# vendor's domain (these installers track HEAD with no published per-release checksum, same as
+# Homebrew's install.sh).
+#
+# NONINTERACTIVE: the downloaded installer is exec'd with stdin redirected from /dev/null, so it
+# matches the vendor's documented `curl … | bash` behavior (where bash's stdin is the pipe, not a
+# TTY). Several installers (e.g. Hermes) gate their interactive setup wizard on `[ -t 0 ]` and only
+# run it when a terminal is attached; without the /dev/null redirect, running install.sh from an
+# interactive shell would hand the installer the user's TTY and a setup/auth wizard could stall the
+# Zeta bootstrap before local-llm.sh + shellenv.sh run.
 #
 # DETECT-FIRST + UPDATE: by default, skip if the tool's <detect-binary> is already on PATH. This is
 # the efficient path (no re-download of multi-step vendor installers on every install.sh run) AND it
@@ -22,11 +29,15 @@
 # continues — these are auth-gated peer/dev CLIs, not hard deps; LOGIN/auth is the operator's to do
 # after install; it must NEVER brick install (mirrors common/local-llm.sh exceptions-as-signals).
 #
-# CI DEFAULT-SKIP: these heavy external vendor installers (best-effort, not asserted) would run in
-# EVERY gate job's install.sh, needlessly downloading grok/cursor/hermes/forge per job and tipping
-# the short-timeout lint jobs over (install.sh ~90s -> >2min). In CI this step is skipped by default;
-# dev laptops (no CI env) get the full install, and the dedicated install-shields (or anyone) can
-# exercise the installers in CI by setting ZETA_INSTALL_FULL=1.
+# NON-INTERACTIVE DEFAULT-SKIP: these heavy external vendor installers (best-effort, not asserted)
+# would otherwise run in EVERY CI install.sh — every gate lint job (needlessly downloading
+# grok/cursor/hermes/forge per job and tipping the short-timeout jobs over: install.sh ~90s ->
+# >2min) AND every Docker/macOS install shield. The discriminator is the controlling terminal:
+# install.sh run interactively from a dev shell (stdin is a TTY) installs them; any non-interactive
+# run (CI gate jobs, Docker build steps, macOS shield steps — none have a TTY) skips them. This is
+# consistent across ALL CI contexts (unlike $CI, which Docker builds do not inherit). To exercise
+# the installers in a non-interactive context anyway (e.g. a dedicated install-shield that should
+# download-exec them), set ZETA_INSTALL_FULL=1.
 #
 # Registry line:  <detect-binary>  <installer-url>  [interp=bash|sh]  [os=mac,linux]
 # (defaults: interp=bash, os=all). `#` comments + blank lines ignored. See manifests/one-liner-tools.
@@ -50,10 +61,13 @@ if [ ! -f "$MANIFEST" ]; then
   exit 0
 fi
 
-# CI default-skip (see header): keep gate jobs' install.sh fast + flake-free. Dev machines run the
-# installers by default; set ZETA_INSTALL_FULL=1 to exercise them in CI (e.g. the install-shields).
-if [ -n "${CI:-}" ] && [ "${ZETA_INSTALL_FULL:-0}" != "1" ]; then
-  echo "✓ one-liner-tools: skipping dev-CLI installers in CI (best-effort; set ZETA_INSTALL_FULL=1 to exercise; dev machines run them by default)"
+# Non-interactive default-skip (see header): if there is no controlling TTY on stdin this is a CI /
+# scripted run (gate lint job, Docker build step, macOS shield step — none have a TTY), so skip the
+# heavy best-effort dev-CLI installers unless ZETA_INSTALL_FULL=1 opts in. Interactive dev shells
+# (stdin is a TTY) install them by default. Using the TTY check rather than $CI keeps the behavior
+# consistent across ALL CI contexts (Docker builds do not inherit $CI).
+if [ ! -t 0 ] && [ "${ZETA_INSTALL_FULL:-0}" != "1" ]; then
+  echo "✓ one-liner-tools: skipping dev-CLI installers (non-interactive run; best-effort; set ZETA_INSTALL_FULL=1 to exercise; interactive dev shells run them by default)"
   exit 0
 fi
 
@@ -128,7 +142,9 @@ while IFS= read -r line || [ -n "$line" ]; do
     rm -f "$tmp"
     continue
   fi
-  if ! "$interp" "$tmp"; then
+  # Exec with stdin from /dev/null so the installer runs noninteractively (matches the vendor's
+  # documented `curl … | bash`, where bash's stdin is the pipe rather than the user's TTY).
+  if ! "$interp" "$tmp" </dev/null; then
     echo "warn: installer for '$bin' failed; continuing (best-effort — auth/login is the operator's)" >&2
   fi
   rm -f "$tmp"
