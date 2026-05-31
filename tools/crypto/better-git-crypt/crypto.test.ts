@@ -144,6 +144,27 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
     expect(enc.ok).toBe(false);
     if (!enc.ok) expect(enc.feedback.kind).toBe("SeedSourceNotAvailable");
   });
+
+  it("AlgUnsupported: rejects a non-ML-DSA-65 signature alg (no lying metadata)", () => {
+    // SLH-DSA is ships-v1 in the registry + accepted by the planner, but crypto.ts
+    // only dispatches ml_dsa65 — encrypt must reject it rather than write an
+    // envelope whose algSig label disagrees with the actual signature bytes.
+    // (Codex P2 finding on PR #6217.)
+    const base = generateRecipientKeyPair("otto-cli@zeta");
+    const slhSender = { ...base.publicKey, sigAlgId: "SLH-DSA" };
+    const ctx: EncryptionContext = {
+      plaintext: utf8("x"),
+      recipients: [slhSender],
+      sender: slhSender,
+      seedSource: "random-bytes",
+    };
+    const enc = encrypt(ctx, base.secretKeys);
+    expect(enc.ok).toBe(false);
+    if (!enc.ok) {
+      expect(enc.feedback.kind).toBe("AlgUnsupported");
+      if (enc.feedback.kind === "AlgUnsupported") expect(enc.feedback.algId).toBe("SLH-DSA");
+    }
+  });
 });
 
 describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () => {

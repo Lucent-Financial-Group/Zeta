@@ -197,7 +197,19 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
     return { ok: false, feedback: plan.feedback };
   }
 
-  // 2. v1 supports random-bytes seed source only.
+  // 2. This implementation only DISPATCHES XWing KEM + ML-DSA-65 signatures.
+  //    The planner accepts any ships-v1 alg from the registry (e.g. SLH-DSA),
+  //    but signing with ml_dsa65 while recording a different `algSig` would
+  //    write LYING metadata (bytes are ML-DSA, label says otherwise). Reject
+  //    anything we don't actually dispatch so the envelope never lies.
+  if (plan.path.algKem !== V1_KEM_ALG) {
+    return { ok: false, feedback: { kind: "AlgUnsupported", algId: plan.path.algKem } };
+  }
+  if (plan.path.algSig !== V1_SIG_ALG) {
+    return { ok: false, feedback: { kind: "AlgUnsupported", algId: plan.path.algSig } };
+  }
+
+  // 3. v1 supports random-bytes seed source only.
   if (context.seedSource !== "random-bytes") {
     return {
       ok: false,
@@ -205,7 +217,7 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
     };
   }
 
-  // 3. The sender's secret keys must belong to the sender identity in context.
+  // 4. The sender's secret keys must belong to the sender identity in context.
   if (senderSecretKeys.identity !== context.sender.identity) {
     return {
       ok: false,
@@ -217,11 +229,11 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
     };
   }
 
-  // 4. Content encryption key + content nonce.
+  // 5. Content encryption key + content nonce.
   const cek = randomBytes(CEK_LEN);
   const contentNonce = randomBytes(NONCE_LEN);
 
-  // 5. Per-recipient KEM encapsulation + CEK wrap.
+  // 6. Per-recipient KEM encapsulation + CEK wrap.
   const slots: RecipientSlot[] = [];
   for (const r of context.recipients) {
     let cipherText: Uint8Array;
@@ -240,10 +252,10 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
     slots.push({ identity: r.identity, kemCt: cipherText, wrappedCek, kdfInfo });
   }
 
-  // 6. Encrypt the content once with the CEK.
+  // 7. Encrypt the content once with the CEK.
   const ciphertext = chacha20poly1305(cek, contentNonce).encrypt(context.plaintext);
 
-  // 7. Sign the signed view (everything except the signature). The signed
+  // 8. Sign the signed view (everything except the signature). The signed
   //    bytes include `context` for domain separation.
   const signedView = {
     version: 1 as const,
@@ -296,7 +308,18 @@ export function decrypt(
     };
   }
 
-  // 2. Structural validation (alg classes / non-empty shape).
+  // 2. This implementation only dispatches XWing KEM + ML-DSA-65. Reject any
+  //    envelope whose declared algorithms we don't actually verify with — an
+  //    envelope labelled e.g. algSig "SLH-DSA" must NOT be verified with
+  //    ml_dsa65 (that would treat lying metadata as valid).
+  if (envelope.algKem !== V1_KEM_ALG) {
+    return { ok: false, feedback: { kind: "AlgUnsupported", algId: envelope.algKem } };
+  }
+  if (envelope.algSig !== V1_SIG_ALG) {
+    return { ok: false, feedback: { kind: "AlgUnsupported", algId: envelope.algSig } };
+  }
+
+  // 3. Structural validation (alg classes / non-empty shape).
   try {
     validateEnvelopeStructure(envelope);
   } catch (e) {
@@ -306,7 +329,7 @@ export function decrypt(
     };
   }
 
-  // 3. Verify the signature over the signed view (fail-closed on tampering).
+  // 4. Verify the signature over the signed view (fail-closed on tampering).
   let sigValid: boolean;
   try {
     sigValid = ml_dsa65.verify(envelope.signature, encodeSignedView(envelope), senderPublicSigKey);
@@ -317,13 +340,13 @@ export function decrypt(
     return { ok: false, feedback: { kind: "SignatureInvalid", signerIdentity: envelope.signerIdentity } };
   }
 
-  // 4. Locate this recipient's slot.
+  // 5. Locate this recipient's slot.
   const slot = envelope.recipients.find((r) => r.identity === recipientSecretKeys.identity);
   if (!slot) {
     return { ok: false, feedback: { kind: "RecipientNotInEnvelope", identity: recipientSecretKeys.identity } };
   }
 
-  // 5. KEM decapsulate -> shared secret -> unwrap CEK.
+  // 6. KEM decapsulate -> shared secret -> unwrap CEK.
   //    Per FIPS-203 implicit rejection, decapsulate never throws on a bad
   //    ciphertext; it returns a (wrong) shared secret, and the CEK-unwrap
   //    AEAD tag check below is what fails -> KemFailure.
@@ -336,7 +359,7 @@ export function decrypt(
     return { ok: false, feedback: { kind: "KemFailure" } };
   }
 
-  // 6. Decrypt content under the CEK.
+  // 7. Decrypt content under the CEK.
   try {
     const plaintext = chacha20poly1305(cek, envelope.contentNonce).decrypt(envelope.ciphertext);
     return { ok: true, plaintext };
