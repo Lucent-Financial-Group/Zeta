@@ -212,13 +212,13 @@ describe("classifyWorktrees", () => {
     expect(items[0]!.reason).toContain("not known reachable, merge-tree-equivalent, or patch-equivalent");
   });
 
-  test("marks clean tree-equivalent worktrees as already covered", () => {
+  test("marks clean delta-equivalent worktrees as already covered", () => {
     const items = classifyWorktrees([entry()], {
       inspect: () => inspection({ headReachableFromMain: false, treeEquivalentToMain: true }),
     });
 
     expect(items[0]!.bucket).toBe("ALREADY-COVERED");
-    expect(items[0]!.reason).toContain("produce no tree changes");
+    expect(items[0]!.reason).toContain("match a historical origin/main delta");
   });
 
   test("marks clean patch-equivalent worktrees as already covered", () => {
@@ -241,7 +241,7 @@ describe("classifyWorktrees", () => {
 });
 
 describe("inspectWorktreeEntry", () => {
-  test("marks squashed branch changes as covered after unrelated main commits", () => {
+  test("marks squashed branch changes as covered after later main edits to the same file", () => {
     const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
     try {
       runGit(repo, ["init", "-b", "main"]);
@@ -256,7 +256,7 @@ describe("inspectWorktreeEntry", () => {
 
       runGit(repo, ["checkout", "main"]);
       commitFile(repo, "tracked.txt", "feature final\n", "squash feature");
-      commitFile(repo, "unrelated.txt", "later main work\n", "unrelated main");
+      commitFile(repo, "tracked.txt", "feature final\nlater main work\n", "later main");
       runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
 
       const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));

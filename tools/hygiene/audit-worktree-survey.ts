@@ -165,8 +165,8 @@ function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<Wo
     return {
       bucket: "ALREADY-COVERED",
       reason: inspection.pathExists
-        ? "clean worktree changes produce no tree changes when merged into origin/main"
-        : "missing worktree changes produce no tree changes when merged into origin/main",
+        ? "clean worktree changes match a historical origin/main delta"
+        : "missing worktree changes match a historical origin/main delta",
     };
   }
 
@@ -327,31 +327,45 @@ function firstOutputLine(stdout: string): string | null {
   return line ?? null;
 }
 
-function revParseTree(path: string, rev: string): string | null {
+function gitStdout(path: string, args: readonly string[], input?: string): string | null {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const revParse = spawnSync("git", ["-C", path, "rev-parse", `${rev}^{tree}`], {
+  const result = spawnSync("git", ["-C", path, ...args], {
     encoding: "utf8",
+    input,
   });
-  if (revParse.error || revParse.status !== 0) return null;
-  return firstOutputLine(revParse.stdout);
+  if (result.error || result.status !== 0) return null;
+  return result.stdout;
 }
 
-function mergeTreeEquivalentToMain(path: string, head: string): boolean | null {
-  const mainTree = revParseTree(path, "origin/main");
-  if (mainTree === null) return null;
+function stableDiffPatchId(path: string, base: string, rev: string): string | null {
+  const diff = gitStdout(path, ["diff", "--full-index", base, rev, "--"]);
+  if (diff === null) return null;
+  if (diff.trim().length === 0) return "EMPTY";
 
-  // `merge-tree --write-tree` asks whether merging the worktree HEAD into
-  // origin/main would produce a different tree. This catches squash/forward
-  // syncs even when origin/main has later unrelated commits.
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const mergeTree = spawnSync("git", ["-C", path, "merge-tree", "--write-tree", "--no-messages", "origin/main", head], {
-    encoding: "utf8",
-  });
-  if (mergeTree.error) return null;
-  if (mergeTree.status !== 0) return mergeTree.status === 1 ? false : null;
+  const patchId = gitStdout(path, ["patch-id", "--stable"], diff);
+  const line = patchId === null ? null : firstOutputLine(patchId);
+  return line?.split(/\s+/)[0] ?? null;
+}
 
-  const mergedTree = firstOutputLine(mergeTree.stdout);
-  return mergedTree === null ? null : mergedTree === mainTree;
+function branchDeltaEquivalentToMainHistory(path: string, head: string): boolean | null {
+  const base = firstOutputLine(gitStdout(path, ["merge-base", "origin/main", head]) ?? "");
+  if (base === null) return null;
+
+  const branchPatchId = stableDiffPatchId(path, base, head);
+  if (branchPatchId === null) return null;
+  if (branchPatchId === "EMPTY") return true;
+
+  const history = gitStdout(path, ["rev-list", "--first-parent", "--reverse", `${base}..origin/main`]);
+  if (history === null) return null;
+  const commits = history
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  for (const commit of commits) {
+    if (stableDiffPatchId(path, base, commit) === branchPatchId) return true;
+  }
+  return false;
 }
 
 function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string = entry.path): WorktreeInspection {
@@ -400,7 +414,7 @@ function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string =
     }
 
     if (headReachableFromMain !== true) {
-      treeEquivalentToMain = mergeTreeEquivalentToMain(gitContext, entry.head);
+      treeEquivalentToMain = branchDeltaEquivalentToMainHistory(gitContext, entry.head);
     }
 
     if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
