@@ -1,13 +1,20 @@
 # Inventory Build — Progress & Plan
+
 Status: [ ] todo · [~] doing · [x] gate passed (record HOW verified — evidence, not just a check)
+
 ## Decisions log
+
 - Backend: Supabase, USA region, owner-owned. Connector-first; CLI fallback.
 - Archive over delete. $0 target; anon read-only heartbeat to prevent pause; manual + scheduled export.
 - service_role key: forbidden everywhere. (append decisions as we go)
+
 ## Evidence rule
+
 A [x] must record 1–2 lines of HOW it was verified. A later session must NOT trust a [x] lacking
 recorded evidence — re-verify instead. Doc changes happen only via an owner-approved PR step.
+
 ## Phases
+
 - [ ] Phase 0a — Docs & decisions (Claude, no app code): resolve open items (Pages deploy source;
 your environment's planning/effort capabilities; current Supabase free-tier limits; region=USA);
 draft CLAUDE.md + spec.md + PROGRESS.md; give plain Supabase setup steps.
@@ -51,12 +58,18 @@ re-verify EVERY gate; probe — any secret in the repo? service_role referenced?
 bypassable from the client (run the unauthenticated anon checks)? custom-field XSS? change_log
 editable? role mismatch UI-vs-DB? Then review the Residual Risk Register and confirm each item is
 handled or consciously deferred. Report findings; fix nothing without owner go-ahead.
+
 ## If a gate fails
+
 Stop the phase. Diagnose + fix + re-verify, or escalate. Never mark passed to advance.
+
 ## Residual risk register (verify at Auditor pass / tune post-launch)
+
 auth email deliverability · login rate-limiting · deep a11y · timezone display · CSV encoding edges ·
 password reset · browser compatibility · region latency · large-scale performance · live multi-user sync.
+
 ## Open items (resolve in Phase 0a)
+
 Pages deploy source (Actions vs /docs) · re-verify connector planning/effort capabilities ·
 re-confirm Supabase free-tier numbers.
 
@@ -76,6 +89,7 @@ GATE ("owner approves docs + resolved items") is NOT yet met — left as `[ ]` a
 approval before Phase 0b.
 
 ### Environment / capability confirmations
+
 - **Repo + docs access**: confirmed. `inventory/CLAUDE.md`, `inventory/spec.md`, `inventory/PROGRESS.md`
   all present (this commit).
 - **Delivery**: confirmed — work reaches the owner as a PR/branch (this PR). Per `inventory/CLAUDE.md`
@@ -97,6 +111,7 @@ approval before Phase 0b.
   (owner/auditor-run)" stays owner/Auditor-owned.)
 
 ### Item #6(a) — How GitHub Pages deploys for this repo  ⚠️ NEEDS OWNER CONFIRMATION
+
 - The repo deploys Pages via a **GitHub Action**: `.github/workflows/pages-deploy.yml`
   (`actions/upload-pages-artifact@v3` → `actions/deploy-pages@v4`).
 - **Important caveat 1**: that workflow is **`workflow_dispatch` only** (manual). Its own header
@@ -121,6 +136,7 @@ approval before Phase 0b.
   doesn't surprise us at Phase 7.
 
 ### Item #6(b) — Supabase free-tier limits (re-confirmed 2026-05-31, direct from supabase.com/pricing)
+
 | Limit | Current (2026) | Bundle assumption | Change? |
 |---|---|---|---|
 | Database size | 500 MB | ~500 MB | unchanged |
@@ -129,11 +145,13 @@ approval before Phase 0b.
 | File storage | 1 GB | n/a | fine |
 | Active projects | 2 max | 1 needed | fine |
 | Inactivity pause | **paused after 1 week (7 days)** | 7 days | **unchanged** |
+
 - Verdict: **no material change** from the bundle's early-2026 assumptions. 210 items ≪ 500 MB. The
   spec's anon read-only heartbeat to prevent the 7-day pause is exactly the right mitigation
   (alternatives noted by docs: scheduled GitHub Action / cron ping / uptime monitor).
 
 ### Item #6(b-bis) — Supabase API-key naming change (currency drift you should know about)
+
 - Supabase is migrating from legacy JWT keys (`anon` / `service_role`) to a new model:
   **publishable key** `sb_publishable_…` (low-privilege, safe for public client code — the modern
   equivalent of the **anon** key) and **secret key** `sb_secret_…` (elevated — the modern equivalent
@@ -145,6 +163,7 @@ approval before Phase 0b.
   **Never** copy/use the `service_role` (legacy) or `sb_secret_…` (new secret) key — anywhere.
 
 ### Item #6(c) — region = USA acceptable?
+
 - **Yes, acceptable.** Supabase offers standard US regions (e.g., East US (N. Virginia), East US
   (Ohio), West US (Oregon), West US (San Jose)). No blocker.
 - Note only: data residency = USA; lowest latency for US users; "region latency" already sits in the
@@ -152,6 +171,7 @@ approval before Phase 0b.
   default).
 
 ### Item #7 — Plain Supabase web-dashboard setup steps (for Phase 0b; service_role NOT requested)
+
 1. Go to **app.supabase.com** → sign in → **New project**.
 2. Pick your org → **Name** (e.g., `zeta-inventory`) → **Database password**: click *Generate*, then
    store it in YOUR password manager (NOT in this repo, NOT pasted to me) → **Region**: pick a **US**
@@ -173,6 +193,7 @@ approval before Phase 0b.
    key (and that's all). Gate for 0b = I confirm I can reach Supabase with that anon/publishable key.
 
 ### Sources (item #6 research, 2026-05-31)
+
 - Supabase Pricing — https://supabase.com/pricing
 - Understanding API keys (publishable/secret migration) —
   https://supabase.com/docs/guides/getting-started/api-keys
@@ -181,6 +202,7 @@ approval before Phase 0b.
 - Bandwidth & Storage Egress — https://supabase.com/docs/guides/storage/serving/bandwidth
 
 ### Minor observation (NOT edited — flagged per "commit verbatim")
+
 - The permission-matrix table in `spec.md` was committed **exactly as provided**, including its
   missing markdown header-separator row (`|---|`). I did not "improve" it (per your instruction not to
   redraft/edit the contract docs). If the repo's markdown lint flags it on this PR, that's your call to
