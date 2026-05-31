@@ -483,6 +483,25 @@ describe("reconcileDivergenceShard (read → fillReconciliation → write-back, 
     });
   });
 
+  test("rejects a symlinked ancestor ABOVE the divergence root before write-back", () => {
+    // lstat follows intermediate path components, so symlinking an ancestor of
+    // the root (here docs/hygiene-history -> outside) redirects write-back
+    // outside the tree even though the final `divergences` component is real
+    // in the symlink target. The full repo-root-through-root walk must reject it.
+    withTempRoot((root) => {
+      const outsideHistory = join(root, "outside-history");
+      const outside = join(outsideHistory, "divergences", "114800Z-ancestor-root-symlink.md");
+      const relPath = "docs/hygiene-history/divergences/114800Z-ancestor-root-symlink.md";
+      mkdirSync(join(outsideHistory, "divergences"), { recursive: true });
+      mkdirSync(join(root, "docs"), { recursive: true });
+      writeFileSync(outside, PENDING_SHARD);
+      symlinkSync(outsideHistory, join(root, "docs", "hygiene-history"), "dir");
+
+      expect(() => reconcileDivergenceShard(root, relPath, "accept-loop-a")).toThrow(/symbolic link/);
+      expect(readFileSync(outside, "utf8")).toBe(PENDING_SHARD);
+    });
+  });
+
   test("rejects non-file paths before write-back", () => {
     withTempRoot((root) => {
       const relPath = "docs/hygiene-history/divergences/2026/05/10";

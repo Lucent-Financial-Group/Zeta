@@ -409,23 +409,35 @@ function openRegularShardForReadWrite(abs: string, relPath: string): number {
 }
 
 function assertRealDivergenceRoot(absRoot: string, divergenceRel: string, action: string): boolean {
-  try {
-    const rootStat = lstatSync(absRoot);
-    if (rootStat.isSymbolicLink()) {
-      throw new Error(
-        `cannot ${action}: ${divergenceRel} is a symbolic link; divergence root must be a real directory`,
-      );
+  // Walk every component from the repo root through DIVERGENCE_ROOT, lstat-ing
+  // each one. lstat only refuses to follow the FINAL path component, so a bare
+  // lstat(absRoot) still follows symlinked ancestors above the root (docs/,
+  // docs/hygiene-history/) — symlinking one of those would silently redirect
+  // write-back outside the tree (CWE-59 link following). Reconstruct the repo
+  // base lexically (resolve up one level per relative component) and lstat
+  // forward so a symlink at ANY component in the chain fails closed.
+  const relParts = divergenceRel.split("/").filter(Boolean);
+  let cursor = resolve(absRoot, ...relParts.map(() => ".."));
+  for (const part of relParts) {
+    cursor = join(cursor, part);
+    try {
+      const stat = lstatSync(cursor);
+      if (stat.isSymbolicLink()) {
+        throw new Error(
+          `cannot ${action}: ${divergenceRel} is a symbolic link; divergence root must be a real directory`,
+        );
+      }
+      if (!stat.isDirectory()) {
+        throw new Error(`cannot ${action}: ${divergenceRel} is not a directory`);
+      }
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        return false;
+      }
+      throw err;
     }
-    if (!rootStat.isDirectory()) {
-      throw new Error(`cannot ${action}: ${divergenceRel} is not a directory`);
-    }
-    return true;
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      return false;
-    }
-    throw err;
   }
+  return true;
 }
 
 function rejectSymlinkedAncestors(divergenceRoot: string, abs: string, relPath: string): void {
