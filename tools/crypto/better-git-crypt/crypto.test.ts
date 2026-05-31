@@ -165,6 +165,22 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
       if (enc.feedback.kind === "AlgUnsupported") expect(enc.feedback.algId).toBe("SLH-DSA");
     }
   });
+
+  it("RecipientKeyInvalid: sender secret key doesn't match declared public sig key", () => {
+    // Right identity, WRONG sig key — encrypt self-verifies after signing and
+    // must catch this at encrypt time rather than mint an undecryptable envelope.
+    // (Copilot P1 finding on PR #6217.)
+    const otto = generateRecipientKeyPair("otto-cli@zeta");
+    const other = generateRecipientKeyPair("other@zeta");
+    const wrongKeys = {
+      identity: otto.publicKey.identity, // same identity as the declared sender
+      kemSecretKey: otto.secretKeys.kemSecretKey,
+      sigSecretKey: other.secretKeys.sigSecretKey, // but a sig key that doesn't match otto's public sig key
+    };
+    const enc = encrypt(ctxFor(utf8("x"), otto, [otto]), wrongKeys);
+    expect(enc.ok).toBe(false);
+    if (!enc.ok) expect(enc.feedback.kind).toBe("RecipientKeyInvalid");
+  });
 });
 
 describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () => {
@@ -236,12 +252,11 @@ describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () =>
     const enc = encrypt(ctxFor(utf8("secret"), otto, [otto]), otto.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
-    // Mutating context breaks the signature first; verify it fails closed.
+    // decrypt checks context BEFORE structural validation + signature verify,
+    // so a wrong context must surface the precise ContextMismatch feedback.
     const dec = decrypt({ ...enc.envelope, context: "wrong.ctx.v1" }, otto.secretKeys, otto.publicKey.publicSigKey);
     expect(dec.ok).toBe(false);
-    // EnvelopeMalformed (structural validator rejects bad context) is the
-    // first gate; either that or SignatureInvalid is acceptable fail-closed.
-    if (!dec.ok) expect(["EnvelopeMalformed", "ContextMismatch", "SignatureInvalid"]).toContain(dec.feedback.kind);
+    if (!dec.ok) expect(dec.feedback.kind).toBe("ContextMismatch");
   });
 });
 
@@ -273,6 +288,19 @@ describe("B-0883 v1 Phase 2 — on-disk envelope CBOR codec", () => {
 
   it("decodeEnvelope rejects garbage bytes with EnvelopeMalformed", () => {
     const decoded = decodeEnvelope(new Uint8Array([0xff, 0x00, 0x13, 0x37]));
+    expect(decoded.ok).toBe(false);
+    if (!decoded.ok) expect(decoded.feedback.kind).toBe("EnvelopeMalformed");
+  });
+
+  it("decodeEnvelope rejects a wrong-length contentNonce with EnvelopeMalformed", () => {
+    // A signed-but-malformed nonce must fail structurally at decode, not later
+    // as a content decrypt error. (Copilot finding on PR #6217.)
+    const otto = generateRecipientKeyPair("otto-cli@zeta");
+    const enc = encrypt(ctxFor(utf8("x"), otto, [otto]), otto.secretKeys);
+    expect(enc.ok).toBe(true);
+    if (!enc.ok) return;
+    const bytes = encodeEnvelope({ ...enc.envelope, contentNonce: new Uint8Array(8) }); // wrong length
+    const decoded = decodeEnvelope(bytes);
     expect(decoded.ok).toBe(false);
     if (!decoded.ok) expect(decoded.feedback.kind).toBe("EnvelopeMalformed");
   });

@@ -270,11 +270,27 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
     contentNonce,
     signerIdentity: context.sender.identity,
   };
+  const toSign = encodeSignedView(signedView);
   let signature: Uint8Array;
   try {
-    signature = ml_dsa65.sign(encodeSignedView(signedView), senderSecretKeys.sigSecretKey);
+    signature = ml_dsa65.sign(toSign, senderSecretKeys.sigSecretKey);
   } catch {
     return { ok: false, feedback: { kind: "SignatureFailure" } };
+  }
+
+  // Self-verify against the sender's DECLARED public sig key. If the supplied
+  // secret key doesn't match (right identity, wrong/stale key), this catches it
+  // at encrypt time — otherwise we'd mint an envelope that no one can verify
+  // (an undecryptable artifact). Surface it as RecipientKeyInvalid now.
+  if (!ml_dsa65.verify(signature, toSign, context.sender.publicSigKey)) {
+    return {
+      ok: false,
+      feedback: {
+        kind: "RecipientKeyInvalid",
+        identity: context.sender.identity,
+        reason: "sender secret key does not match the declared public sig key",
+      },
+    };
   }
 
   return { ok: true, envelope: { ...signedView, signature } };
@@ -436,6 +452,18 @@ export function decodeEnvelope(bytes: Uint8Array): DecodeEnvelopeResult {
     !isBytes(o.signature)
   ) {
     return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: "envelope field shape mismatch" } };
+  }
+  // contentNonce is a fixed-size ChaCha20-Poly1305 nonce — reject a wrong-length
+  // one here (a signed-but-malformed nonce would otherwise only surface as a
+  // late ContentDecryptFailure rather than a structural EnvelopeMalformed).
+  if (o.contentNonce.length !== NONCE_LEN) {
+    return {
+      ok: false,
+      feedback: {
+        kind: "EnvelopeMalformed",
+        reason: `contentNonce must be ${NONCE_LEN} bytes, got ${o.contentNonce.length}`,
+      },
+    };
   }
   const recipients: RecipientSlot[] = [];
   for (const r of o.recipients as unknown[]) {
