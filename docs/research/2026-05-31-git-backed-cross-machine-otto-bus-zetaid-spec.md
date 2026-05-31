@@ -83,6 +83,30 @@ evolves independently. The bus is just the first category-family (coordination) 
 namespace. (The `Category` enum stays small + extensible — adding a checkin family is a
 new category value, not a new id scheme.)
 
+#### Option: a dedicated `Bus` category (operator 2026-05-31 — "we can also add/extend that with like a bus type if we wanted")
+
+Two ways to seat coordination traffic in the category space — both valid, a small
+reversible enum-level call at build time:
+
+- **(A) Reuse existing categories** (the table above): a coordination envelope takes the
+  category of its semantic class (`heartbeat`→`Heartbeat`, `claim`→`Workflow`, …). No
+  enum change. Cost: the `Observation`/`Emission`/… categories now mix "real" checkins
+  with bus-shadow versions of the same class, so "is this a bus message?" is a topic
+  check, not a category check.
+- **(B) Add a first-class `Bus` category** (`Category.Bus = 4`): all coordination
+  traffic gets one category, with the existing `Topic` as the **bus-type sub-discriminator**
+  inside it. Cost: one enum value. Benefit: "all bus traffic" is `unpack().category ===
+Bus` on the filename alone (no open, no topic scan); the original categories keep pure
+  semantics (`Observation` = an actual observation, not a bus shadow-catch); and per the
+  per-category-metadata rule, `Bus` carries the coordination metadata schema (from/to/
+  topic/host/inReplyTo) cleanly separated from non-bus checkins.
+
+Recommendation: lean **(B)** when building — it's one enum value, keeps the categories
+honest, and makes the "filter all bus traffic by filename" property exact. It also sets
+the pattern for the operator's broader direction: each non-code checkin _family_ (bus,
+and later others) is its own category, with the family's sub-types as the discriminator
+within it. Deferred to the operator / build-time; the v0 mechanism works under either.
+
 ## Envelope schema — extend the existing one (interop with the local bus)
 
 Keep the existing `MessageEnvelope` (`tools/bus/types.ts`: `BusMessage` + `from`/`to`/
