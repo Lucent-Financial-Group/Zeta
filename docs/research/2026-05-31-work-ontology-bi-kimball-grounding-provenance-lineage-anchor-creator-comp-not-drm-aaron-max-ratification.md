@@ -15,11 +15,11 @@ that subsumes **both** vocabularies and resolves the conflicts.
 
 The label set conflates **two orthogonal axes**, and each operator's vocabulary mixes them:
 
-1. **A work-breakdown hierarchy** (size of a work-grouping):
-   Max's agentic-org ladder, by frequency in `agentic-organization/docs/`:
-   `initiative` (373) > `project` (482) > `epic` (7) > `work item` (363) > `task`.
-   Aaron's **backlog row (B-NNNN) is the leaf** of this ladder — Aaron's own words: "our backlog
-   rows are just a type of work item to him."
+1. **A work-breakdown hierarchy** (size of a work-grouping) — the `⊃` denotes *containment*, NOT
+   frequency: `initiative ⊃ project ⊃ epic ⊃ work-item ⊃ task`. (Usage frequency in
+   `agentic-organization/docs/` is a separate signal and does **not** imply the hierarchy order:
+   project 482, initiative 373, work-item 363, epic 7.) Aaron's **backlog row (B-NNNN) is the leaf**
+   of this ladder — Aaron's own words: "our backlog rows are just a type of work item to him."
 
 2. **Cross-cutting dimensions hung on *any* node of that ladder** — these are NOT ladder rungs:
    - **trajectory** — the node's evolving path/history toward its goal (Aaron: "any of Max's items

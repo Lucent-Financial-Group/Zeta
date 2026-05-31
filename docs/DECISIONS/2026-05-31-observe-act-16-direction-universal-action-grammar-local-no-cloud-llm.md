@@ -315,8 +315,8 @@ agentic-org (work item / project / initiative). Per Aaron 2026-05-31 the clean g
 Kimball dimensional modeling on a DV2.0 storage backbone**, which resolves the label conflicts and
 supports a **multi-attribution contribution graph** + **attention × quality-of-attention payout** for
 creator-compensation (provenance, not DRM). The full proposal — the reconciliation table, the
-hierarchy-vs-cross-cutting-dimensions split, `agenda = conformed dimension`, `trajectory =
-accumulating-snapshot fact`, the provenance anchor stack (OpenLineage / PROV-O / C2PA / Shepard's),
+hierarchy-vs-cross-cutting-dimensions split, `agenda = conformed dimension`,
+`trajectory = accumulating-snapshot fact`, the provenance anchor stack (OpenLineage / PROV-O / C2PA / Shepard's),
 and the contribution-graph + attention-weighted payout — lives in:
 
 > [`docs/research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md`](../research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md)
