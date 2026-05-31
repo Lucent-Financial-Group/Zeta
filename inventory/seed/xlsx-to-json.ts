@@ -96,12 +96,12 @@ const colLetters = (ref: string) => ref.replace(/[0-9]+$/, "");
 function cellValueFromInner(inner: string): string | null {
   const hasInline = /<t[ >\/]/.test(inner) || /<is\b/.test(inner);
   if (hasInline) {
-    const runs = [...inner.matchAll(/<t[^>]*>([\s\S]*?)<\/t>/g)].map((m) => decodeXml(m[1]));
+    const runs = [...inner.matchAll(/<t[^>]*>([\s\S]*?)<\/t>/g)].map((m) => decodeXml(m[1] ?? ""));
     const joined = runs.join("");
     return joined.length ? joined : null;
   }
   const v = inner.match(/<v[^>]*>([\s\S]*?)<\/v>/);
-  return v ? decodeXml(v[1]) : null;
+  return v ? decodeXml(v[1] ?? "") : null;
 }
 
 function parseSheet(xml: string): Map<number, Record<string, string | null>> {
@@ -109,9 +109,10 @@ function parseSheet(xml: string): Map<number, Record<string, string | null>> {
   for (const rowM of xml.matchAll(/<row[^>]*\br="(\d+)"[^>]*>([\s\S]*?)<\/row>/g)) {
     const rowNum = Number(rowM[1]);
     const cells: Record<string, string | null> = {};
-    for (const cM of rowM[2].matchAll(/<c\b[^>]*\br="([A-Z]+\d+)"[^>]*?(?:\/>|>([\s\S]*?)<\/c>)/g)) {
-      const ref = cM[1];
+    for (const cM of (rowM[2] ?? "").matchAll(/<c\b[^>]*\br="([A-Z]+\d+)"[^>]*?(?:\/>|>([\s\S]*?)<\/c>)/g)) {
+      const ref = cM[1] ?? "";
       const inner = cM[2] ?? ""; // self-closing <c .../> => empty
+      if (!ref) continue;        // a <c> with no r="..." reference -> skip
       cells[colLetters(ref)] = inner ? cellValueFromInner(inner) : null;
     }
     rows.set(rowNum, cells);
