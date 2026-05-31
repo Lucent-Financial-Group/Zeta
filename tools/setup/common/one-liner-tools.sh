@@ -22,6 +22,12 @@
 # continues — these are auth-gated peer/dev CLIs, not hard deps; LOGIN/auth is the operator's to do
 # after install; it must NEVER brick install (mirrors common/local-llm.sh exceptions-as-signals).
 #
+# CI DEFAULT-SKIP: these heavy external vendor installers (best-effort, not asserted) would run in
+# EVERY gate job's install.sh, needlessly downloading grok/cursor/hermes/forge per job and tipping
+# the short-timeout lint jobs over (install.sh ~90s -> >2min). In CI this step is skipped by default;
+# dev laptops (no CI env) get the full install, and the dedicated install-shields (or anyone) can
+# exercise the installers in CI by setting ZETA_INSTALL_FULL=1.
+#
 # Registry line:  <detect-binary>  <installer-url>  [interp=bash|sh]  [os=mac,linux]
 # (defaults: interp=bash, os=all). `#` comments + blank lines ignored. See manifests/one-liner-tools.
 
@@ -41,6 +47,13 @@ FORCE_UPDATE="${ZETA_FORCE_UPDATE_TOOLS:-0}"
 
 if [ ! -f "$MANIFEST" ]; then
   echo "✓ no one-liner-tools manifest; skipping"
+  exit 0
+fi
+
+# CI default-skip (see header): keep gate jobs' install.sh fast + flake-free. Dev machines run the
+# installers by default; set ZETA_INSTALL_FULL=1 to exercise them in CI (e.g. the install-shields).
+if [ -n "${CI:-}" ] && [ "${ZETA_INSTALL_FULL:-0}" != "1" ]; then
+  echo "✓ one-liner-tools: skipping dev-CLI installers in CI (best-effort; set ZETA_INSTALL_FULL=1 to exercise; dev machines run them by default)"
   exit 0
 fi
 
