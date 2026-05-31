@@ -130,6 +130,28 @@ Edit:
 Require telemetry evidence for telemetry-triggered proposals and carry typed
 telemetry quality into the returned cycle result.
 
+## Checkpoint 3.5: OTLP Metric Kind Fidelity
+
+### Tests First
+
+Edit:
+
+- `agentic-organization/apps/workers/test/otlp-telemetry.test.ts`
+
+Add a test proving `TelemetryMetricKind.Counter`, `TelemetryMetricKind.Gauge`,
+and `TelemetryMetricKind.Histogram` serialize as distinct OTLP HTTP JSON metric
+payloads, not a single `sum` shape.
+
+### Production Code
+
+Edit:
+
+- `agentic-organization/apps/workers/src/adapters/otlp-telemetry.ts`
+
+Map counters to monotonic `sum`, gauges to `gauge`, and scalar histogram samples
+to `histogram` data points. This keeps DORA and review-latency distribution
+telemetry queryable as the metric kind the application emitted.
+
 ## Checkpoint 4: Conformance Skip Ratchet
 
 ### Tests First
@@ -157,4 +179,3 @@ After each checkpoint:
 1. request a spec-compliance review against the CA phase text and this plan;
 2. request a code-quality review for changed files only;
 3. fix all material findings before moving to the next checkpoint.
-
