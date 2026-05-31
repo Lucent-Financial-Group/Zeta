@@ -9,9 +9,10 @@
 //! allocates (`Cow::Owned`); numbers are returned as their raw `&str` slice
 //! (zero-copy, lossless — parse on demand).
 //!
-//! This is the streaming PRIMITIVE. The DOM `Json` parse (json.rs) is a convenience
-//! layer that *could* be built on top of this reader (unification tracked in
-//! B-0867.29). Operator observation 2026-05-31: "our json parser needs to ... be
+//! This is the streaming PRIMITIVE, and the DOM `Json` parse (json.rs) IS built on
+//! top of it (`ZetaJsonParser` drives this reader) — one tokenizer; the DOM is a
+//! trusted-input-only convenience layer over the streaming core. Operator
+//! observation 2026-05-31: "our json parser needs to ... be
 //! like dotnet ... one pass forward only ... never needs the whole object at once ...
 //! deserialize infinite json streams" + "think aspnet json speed requirements".
 //!
@@ -81,20 +82,42 @@ enum State {
     End,
 }
 
+/// Default maximum nesting depth, matching serde_json's recursion limit. Caps the
+/// container stack so hostile deeply-nested input (`[[[[…`) can't grow it without
+/// bound — the deep-nesting DoS the SOAP/XML DOM era taught (B-0867.29).
+pub const DEFAULT_MAX_DEPTH: usize = 128;
+
 /// A forward-only, pull-based reader over a complete UTF-8 JSON buffer. Call
 /// [`read`](JsonReader::read) repeatedly; it yields one [`JsonToken`] per call and
-/// `None` at end of input. Memory is bounded by nesting depth, not document size.
+/// `None` at end of input. Memory is bounded by nesting depth, not document size,
+/// and nesting depth itself is capped at [`max_depth`](JsonReader::with_max_depth)
+/// (default [`DEFAULT_MAX_DEPTH`]) so untrusted input cannot exhaust memory via the
+/// container stack.
 pub struct JsonReader<'a> {
     bytes: &'a [u8],
     pos: usize,
     stack: Vec<Container>,
     state: State,
+    max_depth: usize,
 }
 
 impl<'a> JsonReader<'a> {
-    /// Create a reader over a complete UTF-8 JSON buffer.
+    /// Create a reader over a complete UTF-8 JSON buffer (nesting capped at
+    /// [`DEFAULT_MAX_DEPTH`]).
     pub fn new(input: &'a str) -> Self {
-        JsonReader { bytes: input.as_bytes(), pos: 0, stack: Vec::new(), state: State::Value }
+        Self::with_max_depth(input, DEFAULT_MAX_DEPTH)
+    }
+
+    /// Create a reader with an explicit maximum nesting depth (`{`/`[` beyond this
+    /// are rejected) — tune it for the trust level of the input source.
+    pub fn with_max_depth(input: &'a str, max_depth: usize) -> Self {
+        JsonReader {
+            bytes: input.as_bytes(),
+            pos: 0,
+            stack: Vec::new(),
+            state: State::Value,
+            max_depth,
+        }
     }
 
     /// Current nesting depth (number of open containers). Stays bounded regardless
@@ -190,6 +213,15 @@ impl<'a> JsonReader<'a> {
         if self.stack.is_empty() { State::End } else { State::AfterMember }
     }
 
+    /// Push a container, enforcing the max-depth cap (rejects hostile deep nesting).
+    fn push_container(&mut self, container: Container) -> Result<(), JsonError> {
+        if self.stack.len() >= self.max_depth {
+            return Err(self.err("maximum nesting depth exceeded"));
+        }
+        self.stack.push(container);
+        Ok(())
+    }
+
     /// Read a value token. Returns `(token, is_container_start)`; on `{`/`[` it
     /// pushes the container and returns the Start token with `true`.
     fn read_value(&mut self) -> Result<(JsonToken<'a>, bool), JsonError> {
@@ -197,12 +229,12 @@ impl<'a> JsonReader<'a> {
         match self.peek() {
             Some(b'{') => {
                 self.pos += 1;
-                self.stack.push(Container::Object);
+                self.push_container(Container::Object)?;
                 Ok((JsonToken::StartObject, true))
             }
             Some(b'[') => {
                 self.pos += 1;
-                self.stack.push(Container::Array);
+                self.push_container(Container::Array)?;
                 Ok((JsonToken::StartArray, true))
             }
             Some(b'"') => Ok((JsonToken::Str(self.read_string()?), false)),
@@ -556,5 +588,20 @@ mod tests {
             assert_eq!(r.read().expect("read").expect("token"), JsonToken::Number(good));
             assert!(r.read().expect("eof").is_none(), "'{good}' should be a single number");
         }
+    }
+
+    #[test]
+    fn caps_nesting_depth_for_untrusted_input() {
+        // Hostile deep nesting beyond the default cap is rejected (not OOM).
+        let deep = "[".repeat(DEFAULT_MAX_DEPTH + 50);
+        assert!(drain(&deep).is_err(), "nesting past DEFAULT_MAX_DEPTH must be rejected");
+        // Explicit small cap: depth beyond it errors, within it is fine.
+        let mut over = JsonReader::with_max_depth("[[[]]]", 2);
+        let over_result = (|| -> Result<(), JsonError> {
+            while over.read()?.is_some() {}
+            Ok(())
+        })();
+        assert!(over_result.is_err(), "nesting beyond max_depth=2 must be rejected");
+        assert!(JsonReader::with_max_depth("[[]]", 2).read().is_ok(), "within cap is fine");
     }
 }
