@@ -114,6 +114,16 @@ function bytesEqual(a: Uint8Array, b: Uint8Array): boolean {
   return Buffer.from(a).equals(Buffer.from(b));
 }
 
+/** First duplicated identity in a recipient list, or null if all unique. */
+function firstDuplicateIdentity(recipients: readonly RecipientKey[]): string | null {
+  const seen = new Set<string>();
+  for (const r of recipients) {
+    if (seen.has(r.identity)) return r.identity;
+    seen.add(r.identity);
+  }
+  return null;
+}
+
 /**
  * Generate a v1 recipient keypair (XWing KEM + ML-DSA-65 signature).
  *
@@ -219,15 +229,12 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
   //     stale registry entry kept before the current key) would make a valid
   //     later slot unreachable and surface a spurious KemFailure. Keep the
   //     recipient set identity-unique.
-  const seenIdentities = new Set<string>();
-  for (const r of context.recipients) {
-    if (seenIdentities.has(r.identity)) {
-      return {
-        ok: false,
-        feedback: { kind: "RecipientKeyInvalid", identity: r.identity, reason: "duplicate recipient identity" },
-      };
-    }
-    seenIdentities.add(r.identity);
+  const dupId = firstDuplicateIdentity(context.recipients);
+  if (dupId !== null) {
+    return {
+      ok: false,
+      feedback: { kind: "RecipientKeyInvalid", identity: dupId, reason: "duplicate recipient identity" },
+    };
   }
 
   // 3. v1 supports random-bytes seed source only.
