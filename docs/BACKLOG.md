@@ -85,7 +85,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0170.1](backlog/P1/B-0170.1-semantic-equivalence-drift-checker.md)** Substrate-claim-checker - semantic-equivalence-drift checker
 - [ ] **[B-0171](backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md)** OpenSpec catch-up — restore OpenSpec capabilities as canonical source-of-truth (Aaron 2026-05-03 architectural-debt naming; "if we deleted everything other than it [OpenSpec]")
 - [ ] **[B-0171.1](backlog/P1/B-0171.1-author-z-set-spec.md)** OpenSpec catch-up - author Z-Set Algebra spec
-- [ ] **[B-0171.2](backlog/P1/B-0171.2-author-tick-history-spec.md)** OpenSpec catch-up - author Tick-History Schema spec
+- [x] **[B-0171.2](backlog/P1/B-0171.2-author-tick-history-spec.md)** OpenSpec catch-up - author Tick-History Schema spec
 - [ ] **[B-0171.3](backlog/P1/B-0171.3-author-retraction-native-spec.md)** OpenSpec catch-up - author Retraction-Native Semantics spec
 - [ ] **[B-0171.4](backlog/P1/B-0171.4-author-backlog-row-schema-spec.md)** OpenSpec catch-up - author Backlog Row Schema spec
 - [ ] **[B-0173](backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md)** Hook authoring for skill-creation contracts — pre/post-condition enforcement at skill-creation + commit + PR-creation time (Aaron 2026-05-03 rule 3b from skill-design memo)
