@@ -401,6 +401,45 @@ function commitContainsPatch(path: string, commit: string, patch: string, zeroCo
   }
 }
 
+function zeroContextPatchMatchesTargetLines(path: string, commit: string, patch: string): boolean | null {
+  let filePath: string | null = null;
+  const lines = patch.split("\n");
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]!;
+    if (line.startsWith("+++ b/")) {
+      filePath = line.slice(6);
+    } else if (line.startsWith("+++ /dev/null")) {
+      filePath = null;
+    } else if (line.startsWith("@@ ")) {
+      if (filePath === null) return false;
+      const match = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/.exec(line);
+      if (match === null) return false;
+      const newStart = Number.parseInt(match[1]!, 10);
+      const addedLines: string[] = [];
+
+      for (index += 1; index < lines.length; index += 1) {
+        const hunkLine = lines[index]!;
+        if (hunkLine.startsWith("diff --git ") || hunkLine.startsWith("@@ ")) {
+          index -= 1;
+          break;
+        }
+        if (hunkLine.startsWith("+") && !hunkLine.startsWith("+++ ")) addedLines.push(hunkLine.slice(1));
+      }
+
+      if (addedLines.length === 0) return false;
+      const target = gitStdout(path, ["show", `${commit}:${filePath}`]);
+      if (target === null) return null;
+      const targetLines = target.split("\n");
+      for (const [offset, addedLine] of addedLines.entries()) {
+        if (targetLines[newStart - 1 + offset] !== addedLine) return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 function commitContainsBranchDelta(
   path: string,
   commit: string,
@@ -409,6 +448,8 @@ function commitContainsBranchDelta(
 ): boolean | null {
   const fullContextResult = commitContainsPatch(path, commit, fullContextPatch, false);
   if (fullContextResult !== false) return fullContextResult;
+  const targetLineResult = zeroContextPatchMatchesTargetLines(path, commit, zeroContextPatch);
+  if (targetLineResult !== true) return targetLineResult;
   return commitContainsPatch(path, commit, zeroContextPatch, true);
 }
 
