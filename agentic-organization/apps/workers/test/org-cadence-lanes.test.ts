@@ -147,6 +147,14 @@ test("observe-act work-item lane runs one tick through observe -> act -> org eve
   equal(observeEvents.length, 1);
   equal(observeEvents[0]?.kind, OrgEventKind.ObserveActTick);
   equal(observeEvents[0]?.actorHatId, "release_operator");
+  deepEqual(observeEvents[0]?.supervisorChain, [
+    "executive_board_member",
+    "ceo",
+    "coo",
+    "delivery_director",
+    "release_manager",
+    "release_operator",
+  ]);
   ok(observeEvents[0]?.evidenceRefs.some((ref) => ref.startsWith("observe-act:menu_hash:")));
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
 });

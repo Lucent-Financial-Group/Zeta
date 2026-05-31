@@ -232,7 +232,7 @@ const shadowDispatchTool: ObserveActToolDispatcher = async (tool, _args, slot) =
 });
 
 function createObserveActTickEvent(
-  deps: Pick<ObserveActWorkItemCadenceDeps, "organizationId" | "now" | "createId">,
+  deps: Pick<ObserveActWorkItemCadenceDeps, "organizationId" | "now" | "createId" | "hats">,
   work: ObserveActWorkItem,
   evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
 ): OrgEvent {
@@ -247,12 +247,25 @@ function createObserveActTickEvent(
     actorAgentId: work.agentId,
     subjectId: work.workItemId,
     decision: `observe-act selected slot ${evidence.selectedIndex} for run ${work.runId}`,
-    supervisorChain: [work.hatId],
+    supervisorChain: supervisorChainFor(work.hatId, deps.hats),
     evidenceRefs: observeActEvidenceRefs(evidence),
     correlationId: traceId,
     causationId: eventId,
     traceId,
   };
+}
+
+function supervisorChainFor(hatId: string, hats: readonly HatDefinition[]): readonly string[] {
+  const byId = new Map(hats.map((hat) => [hat.id, hat]));
+  const chain: string[] = [];
+  const seen = new Set<string>();
+  let current: string | undefined = hatId;
+  while (current !== undefined && !seen.has(current)) {
+    chain.push(current);
+    seen.add(current);
+    current = byId.get(current)?.reportsToHatIds[0];
+  }
+  return chain.reverse();
 }
 
 function observeActEvidenceRefs(
