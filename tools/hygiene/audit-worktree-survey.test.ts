@@ -354,6 +354,32 @@ describe("inspectWorktreeEntry", () => {
     }
   });
 
+  test("does not mark reverted historical branch deltas as covered", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      commitFile(repo, "tracked.txt", "base\n", "base");
+      runGit(repo, ["checkout", "-b", "feature"]);
+      commitFile(repo, "tracked.txt", "feature substrate\n", "feature substrate");
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      runGit(repo, ["checkout", "main"]);
+      commitFile(repo, "tracked.txt", "feature substrate\n", "squash feature");
+      commitFile(repo, "tracked.txt", "base\n", "revert feature");
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+      const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(false);
+      expect(result.patchEquivalentToMain).toBe(false);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+
   test("checks missing prunable worktree HEAD coverage from the repository context", () => {
     const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
     try {

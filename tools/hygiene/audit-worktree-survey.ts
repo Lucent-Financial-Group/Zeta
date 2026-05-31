@@ -371,6 +371,29 @@ function stableDiffPatchId(path: string, base: string, rev: string): string | nu
   return line?.split(/\s+/)[0] ?? null;
 }
 
+function treeObjectId(path: string, rev: string, filePath: string): string | null {
+  const output = gitStdout(path, ["ls-tree", "-z", rev, "--", filePath]);
+  if (output === null) return null;
+  const entry = output.split("\0")[0] ?? "";
+  const metadata = entry.split("\t")[0] ?? "";
+  return metadata.split(/\s+/)[2] ?? null;
+}
+
+function branchChangedPaths(path: string, base: string, head: string): readonly string[] | null {
+  const output = gitStdout(path, ["diff", "--name-only", "-z", base, head, "--"]);
+  if (output === null) return null;
+  return output.split("\0").filter((line) => line.length > 0);
+}
+
+function branchChangedPathsRetainedAtMainTip(path: string, base: string, head: string): boolean | null {
+  const paths = branchChangedPaths(path, base, head);
+  if (paths === null) return null;
+  if (paths.length === 0) return true;
+  return paths.every(
+    (changedPath) => treeObjectId(path, base, changedPath) !== treeObjectId(path, "origin/main", changedPath),
+  );
+}
+
 function historicalCommitContainsPatch(path: string, commit: string, patch: string): boolean | null {
   const indexDir = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-index-"));
   const indexPath = join(indexDir, "index");
@@ -392,6 +415,8 @@ function branchDeltaCoveredByMainHistory(path: string, head: string): boolean | 
   const branchPatch = gitStdout(path, ["diff", "--binary", base, head, "--"]);
   if (branchPatch === null) return null;
   if (branchPatch.trim().length === 0) return true;
+  const mainTipRetainsBranchPaths = branchChangedPathsRetainedAtMainTip(path, base, head);
+  if (mainTipRetainsBranchPaths !== true) return mainTipRetainsBranchPaths;
 
   const branchPatchId = stableDiffPatchId(path, base, head);
   if (branchPatchId === null) return null;
@@ -463,8 +488,14 @@ function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string =
     }
 
     if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
-      const cherryOutput = gitStdout(gitContext, ["cherry", "origin/main", entry.head]);
-      if (cherryOutput !== null) {
+      const base = firstOutputLine(gitStdout(gitContext, ["merge-base", "origin/main", entry.head]) ?? "");
+      const mainTipRetainsBranchPaths =
+        base === null ? null : branchChangedPathsRetainedAtMainTip(gitContext, base, entry.head);
+      const cherryOutput =
+        mainTipRetainsBranchPaths === true ? gitStdout(gitContext, ["cherry", "origin/main", entry.head]) : null;
+      if (mainTipRetainsBranchPaths === false) {
+        patchEquivalentToMain = false;
+      } else if (cherryOutput !== null) {
         const lines = cherryOutput
           .split("\n")
           .map((line) => line.trim())
