@@ -729,15 +729,21 @@ const MENU16_DIRECTIONS: readonly string[] = [
   "commit.y",
   "scope.run",
   "scope.work_item",
-  "scope.initiative",
   "scope.project",
+  "scope.organization",
   "meta.status",
   "meta.evidence",
-  "meta.help",
   "meta.hold",
+  "meta.escalate",
 ];
 const COMMIT_SLOT_INDICES: readonly number[] = [4, 5, 6, 7];
 const PROMPT_FLOW_SLOT_INDICES: readonly number[] = [8, 9, 10, 11];
+const SCOPE_SLOT_TARGETS: Readonly<Record<number, RunScope>> = {
+  8: RunScope.Run,
+  9: RunScope.WorkItem,
+  10: RunScope.Project,
+  11: RunScope.Organization,
+};
 
 export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Options = {}): Menu16 {
   const rendered = MENU16_DIRECTIONS.map((direction, index) => createNeutralSlot(index, direction));
@@ -755,6 +761,10 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
     } else if (vetoed !== undefined) {
       rendered[slotIndex] = createVetoedSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, vetoed);
     }
+  }
+  if (readout.options.length > 0) {
+    renderScopeSlots(rendered, readout.scope);
+    renderMetaSlots(rendered, readout.scope);
   }
   renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId);
   return { slots: rendered };
@@ -799,6 +809,53 @@ function createVetoedSlot(index: number, direction: string, vetoed: VetoedOption
     availability: TriAvailability.False,
     action: vetoed.option,
     reason: vetoed.reason,
+  };
+}
+
+function renderScopeSlots(rendered: Menu16Slot[], currentScope: RunScope): void {
+  for (const [indexText, targetScope] of Object.entries(SCOPE_SLOT_TARGETS)) {
+    const index = Number.parseInt(indexText, 10);
+    const direction = MENU16_DIRECTIONS[index]!;
+    rendered[index] = targetScope === currentScope
+      ? createDisabledGrammarSlot(index, direction, `observe ${targetScope}`, `already observing ${targetScope}`)
+      : createObserveSlot(index, direction, `observe ${targetScope}`, targetScope);
+  }
+}
+
+function renderMetaSlots(rendered: Menu16Slot[], currentScope: RunScope): void {
+  rendered[12] = createObserveSlot(12, MENU16_DIRECTIONS[12]!, "refresh status", currentScope);
+  rendered[13] = createObserveSlot(13, MENU16_DIRECTIONS[13]!, "inspect evidence", currentScope);
+  rendered[14] = createDisabledGrammarSlot(14, MENU16_DIRECTIONS[14]!, "hold", "hold mode is not wired for this run state");
+  rendered[15] = createDisabledGrammarSlot(15, MENU16_DIRECTIONS[15]!, "escalate", "supervisor escalation is not wired for this run state");
+}
+
+function createObserveSlot(
+  index: number,
+  direction: string,
+  label: string,
+  toScope: RunScope,
+): Menu16Slot {
+  return {
+    index,
+    direction,
+    label,
+    availability: TriAvailability.True,
+    impl: { kind: "observe", toScope },
+  };
+}
+
+function createDisabledGrammarSlot(
+  index: number,
+  direction: string,
+  label: string,
+  reason: string,
+): Menu16Slot {
+  return {
+    index,
+    direction,
+    label,
+    availability: TriAvailability.False,
+    reason,
   };
 }
 

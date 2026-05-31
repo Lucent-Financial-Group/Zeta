@@ -226,8 +226,8 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   ok(stdout.join("\n").includes("[04] T commit.a execute"));
   ok(stdout.join("\n").includes("action: dispatched command"));
   equal(result.evidence?.selectedIndex, 4);
-  equal(result.evidence?.vetoCount, 0);
-  equal(result.evidence?.trueSlotCount, 2);
+  equal(result.evidence?.vetoCount, 3);
+  equal(result.evidence?.trueSlotCount, 7);
   equal(result.evidence?.metricBlockIds[0], "queue");
   ok(result.evidence?.menuHash.match(/^[0-9a-f]{64}$/));
   deepEqual(commands, [
@@ -331,6 +331,52 @@ test("runAgentCliCycle re-authorizes selected slots before command dispatch", as
   equal(result.actionResult.reason, ActRejectionReason.ScheduleAuthorityDenied);
   equal(result.actionResult.message, "schedule authority changed after observe");
   equal(dispatched, false);
+});
+
+test("runAgentCliCycle can select scope controls without dispatching side effects", async () => {
+  let dispatched = false;
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--select-index",
+      "8",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    runCommand: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.exitCode, 0);
+  deepEqual(result.actionResult, { outcome: "reobserve", scope: RunScope.Run });
+  equal(dispatched, false);
+  ok(stdout.join("\n").includes("[08] T scope.run observe run"));
+  ok(stdout.join("\n").includes("action: reobserve run"));
+  equal(result.evidence?.selectedIndex, 8);
 });
 
 test("runAgentCliCycle returns typed no_selectable_slot feedback for all-vetoed menus", async () => {

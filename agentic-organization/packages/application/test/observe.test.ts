@@ -252,6 +252,67 @@ test("renderMenu16 places lifecycle actions in the fixed commit bank", () => {
   equal(menu.slots[5]?.action?.actionType, "block");
 });
 
+test("renderMenu16 exposes scope controls and meta reobserve slots as ADR grammar actions", async () => {
+  const approved = observe(snapshot({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingGate,
+    hasGateApproval: true,
+  }), deps);
+  equal(approved.outcome, ObserveOutcome.Readout);
+  if (approved.outcome !== ObserveOutcome.Readout) return;
+
+  const menu = renderMenu16(approved.readout);
+
+  equal(menu.slots[8]?.direction, "scope.run");
+  equal(menu.slots[8]?.label, "observe run");
+  equal(menu.slots[8]?.availability, "T");
+  deepEqual(menu.slots[8]?.impl, { kind: "observe", toScope: RunScope.Run });
+  equal(menu.slots[9]?.direction, "scope.work_item");
+  equal(menu.slots[9]?.availability, "F");
+  ok(menu.slots[9]?.reason?.includes("already observing work_item"));
+  equal(menu.slots[10]?.direction, "scope.project");
+  equal(menu.slots[10]?.label, "observe project");
+  equal(menu.slots[10]?.availability, "T");
+  equal(menu.slots[11]?.direction, "scope.organization");
+  equal(menu.slots[11]?.label, "observe organization");
+  equal(menu.slots[11]?.availability, "T");
+  equal(menu.slots[12]?.direction, "meta.status");
+  equal(menu.slots[12]?.label, "refresh status");
+  equal(menu.slots[12]?.availability, "T");
+  equal(menu.slots[14]?.direction, "meta.hold");
+  equal(menu.slots[14]?.label, "hold");
+  equal(menu.slots[15]?.direction, "meta.escalate");
+  equal(menu.slots[15]?.label, "escalate");
+
+  const scopeResult = await act(8, menu, {
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+  deepEqual(scopeResult, { outcome: "reobserve", scope: RunScope.Run });
+
+  const statusResult = await act(12, menu, {
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+  deepEqual(statusResult, { outcome: "reobserve", scope: RunScope.WorkItem });
+});
+
+test("renderMenu16 disables the organization scope slot at top scope", () => {
+  const approved = observe(snapshot({
+    scope: RunScope.Organization,
+    phase: RunLifecyclePhase.Observing,
+  }), deps);
+  equal(approved.outcome, ObserveOutcome.Readout);
+  if (approved.outcome !== ObserveOutcome.Readout) return;
+
+  const menu = renderMenu16(approved.readout);
+
+  equal(menu.slots[11]?.direction, "scope.organization");
+  equal(menu.slots[11]?.label, "observe organization");
+  equal(menu.slots[11]?.availability, "F");
+  ok(menu.slots[11]?.reason?.includes("already observing organization"));
+});
+
 test("observe returns an all-vetoed readout so renderMenu16 can show dark slots with reasons", () => {
   const blocked = observe(snapshot({ phase: RunLifecyclePhase.Observing }), {
     clock: deps.clock,
