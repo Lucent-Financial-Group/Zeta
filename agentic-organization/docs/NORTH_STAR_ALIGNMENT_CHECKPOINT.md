@@ -1973,8 +1973,13 @@ freezes and secret/rate-limit controls cannot be bypassed by the foreground loop
   Cockroach flags and active Cockroach rate limits at act time and passing available secret scopes
   into observe.
 - Cockroach migration `0024_agentic_org_control_plane_rate_limits` stores durable windowed rate
-  limits with typed scope/kind constraints and a read path for active limits.
+  limits with typed scope/kind constraints, scope-shape constraints, positive limit/non-negative
+  usage constraints, window-order constraints, and a read path for active limits.
 - KIND proof runner: `deploy/run-control-plane-secret-scopes.ts`.
+- Restore-drill checksum source: `createCockroachRestoreDrillSnapshotSource` captures the
+  tenant-scoped `org_events`, `control_plane_flags`, and `control_plane_rate_limits` projections
+  for `verifyRestoreDrill`.
+- KIND proof runner: `deploy/run-restore-drill.ts`.
 
 ### KIND proof
 
@@ -2004,6 +2009,18 @@ expected cadence lanes with zero `worker run failed` or structured error matches
 
 `PROOF: PASS`.
 
+`deploy/run-restore-drill.ts` ran against in-cluster Cockroach for
+`org-restore-drill-95da3bd6` and proved:
+
+- The proof seeded one durable `ObserveActTick` org event, one provider-freeze flag, and one
+  tenant-scoped external-provider-call rate limit.
+- The Cockroach restore snapshot source captured three tenant-scoped projections:
+  `org_events`, `control_plane_flags`, and `control_plane_rate_limits`.
+- `verifyRestoreDrill` compared before/after checksums over those projections and produced the same
+  SHA-256 checksum, with `projectionCount = 3` and `rowCount = 3`.
+
+`PROOF: PASS`.
+
 ### Verification
 
-`npm run typecheck` passed. `npm test` passed: **1198 tests, 1191 pass, 0 fail, 7 skipped**.
+`npm run typecheck` passed. `npm test` passed: **1199 tests, 1192 pass, 0 fail, 7 skipped**.

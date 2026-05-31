@@ -21,6 +21,12 @@ export {
   type KeepAliveClock,
 } from "./cockroach-keep-alive-snapshot-source.ts";
 export {
+  CockroachRestoreDrillSnapshotStatement,
+  createCockroachRestoreDrillSnapshotSource,
+  type CockroachRestoreDrillSnapshotSource,
+  type CreateCockroachRestoreDrillSnapshotSourceInput,
+} from "./cockroach-restore-drill-snapshot-source.ts";
+export {
   createCockroachKeepAliveActionSink,
   type CreateCockroachKeepAliveActionSinkInput,
   type KeepAliveActionSink as CockroachKeepAliveActionSink,
