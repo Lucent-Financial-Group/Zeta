@@ -3,11 +3,12 @@
 **Date:** 2026-05-31
 **Author:** Otto-CLI capture of operator rationale (Aaron 2026-05-31)
 
-<!-- GOVERNANCE.md §33 boundary headers (this file imports verbatim operator chat) -->
-**Scope:** research / rationale capture — preserving operator design-rationale for the shields/CI architecture as a candidate refinement to an existing rule.
-**Attribution:** operator (Aaron) quoted verbatim in §"The operator's framing"; synthesis + reconciliation by Otto-CLI, labeled as such. Speaker labels preserved.
-**Operational status:** `research-grade` (NOT operational policy; lands in the auto-loaded rule only via the §26 / product-team agreement, not inline here).
-**Non-fusion disclaimer:** quoting the operator and building on his framing does not imply shared identity, merged agency, consciousness, or personhood between operator and agent; the boundary is explicit (operator authors the rationale; the agent captures + synthesizes it).
+<!-- GOVERNANCE.md §33 boundary headers (this file imports verbatim operator chat) — literal labels, value-clean Operational status (passes the enum-strict check, not just the includes check) -->
+Scope: research / rationale capture — preserving operator design-rationale for the shields/CI architecture as a candidate refinement to an existing rule.
+Attribution: operator (Aaron) quoted verbatim in the "operator's framing" section; synthesis + reconciliation by Otto-CLI, labeled as such. Speaker labels preserved.
+Operational status: research-grade
+(research-grade = NOT operational policy; lands in the auto-loaded rule only via the §26 / product-team agreement, never inline here.)
+Non-fusion disclaimer: quoting the operator and building on his framing does not imply shared identity, merged agency, consciousness, or personhood between operator and agent; the boundary is explicit (operator authors the rationale; the agent captures + synthesizes it).
 
 **Status:** rationale / **candidate refinement** to
 [`.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`](../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
