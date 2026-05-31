@@ -659,16 +659,18 @@ on DBSP foundations, not to carve out a narrow niche.
 
 ### The endgame — build the arena, not the throne (2026-05-31)
 
-> **PROPOSED — NOT settled doctrine. Pending product-team agreement.** Per the
-> operator 2026-05-31: VISION-level doctrine goes through the *same review-and-agree
-> process* as any other artifact, so the product team — and newcomers — can agree
-> or push back. The whys below are stated so the *reasoning* is challengeable, not
-> just the conclusion. **Pushback surface (challenge these):** (a) is "arena not
-> throne" real strategy or a rationalization for not-yet-winning? (b) does "every
-> database converges into mine" contradict "don't own the standard"? (c) is
-> harvest-45-then-upstream sustainable, or does upstream-debt outpace repayment?
-> (d) is F#-as-golden-oracle sound when F# itself could be the implementation
-> that's wrong? If any why is wrong, the proposal changes.
+> **AGREED 2026-05-31** (operator + product-team review — architect + PM). Went
+> through the review-and-agree process; the pushback surface below was the review's
+> challenge set, addressed before landing. Whys stay challengeable (no-dogma): if a
+> why turns out wrong, this changes. **Pushback surface (the review's challenges,
+> kept on record):** (a) is "arena not throne" real strategy or a rationalization
+> for not-yet-winning? — answered by the falsifiable adoption test (≥1 external
+> project adopts a harvested primitive, else revisit). (b) "converges into mine" vs
+> "don't own the standard" — resolved: it's a *common* library everyone (incl. us)
+> wraps, not "mine." (c) harvest-then-upstream sustainability — resolved: harvest
+> *concepts* re-implemented in F# (no copied code; clean-room) + the falsifiable
+> good-citizen test below. (d) F#-as-oracle when F# could be wrong — resolved: the
+> **golden vectors** are the oracle; F# is one of four signers (see below).
 
 Aaron 2026-05-31 (voice, with Ani) sharpened the database vision past
 "fastest-in-all-classes" to its terminal shape: **not a database that
@@ -735,17 +737,24 @@ wins — the arena where the winning happens.** (Verbatim preserved in
   touching real disk; whole clusters deterministic in one thread; perfect
   replay; fault injection) and generalizing it: make DST **DI-able for any
   database in any language**, not just systems built for it (FoundationDB
-  already began this, building harnesses for other DBs). The F# single-node
-  DB is the **golden test oracle** — other databases don't need their own
-  suites; they must behave exactly like the F# implementation. *"the
-  F-sharp is the test case."*
-- **F# is the root-of-truth for the DB** — the inverse of the factory
-  (where TypeScript is distribution king). Databases need heavy math +
-  formal proofs (TLA+, Lean), so F# carries the correctness burden;
-  TS/C#/Rust are distribution + cross-verification. The **4-language
-  compiler-BFT** ("the compilers don't lie", B-0944): the same logic in
-  TS/F#/C#/Rust, each compiler an independent oracle — 4-of-4 agreement is
-  consensus the logic is bit-perfect.
+  already began this, building harnesses for other DBs). The **golden
+  vectors are the oracle**; the F# single-node DB is the **spec** the other
+  implementations are checked against (other DBs don't need their own suites —
+  they must match the vectors). *"the F-sharp is the test case"* — F# is the
+  spec-bearer, but the *vectors*, not F#, are the authority no impl can
+  override (per product-team review: F# is one of four signers, not a
+  self-certifying oracle).
+- **F# is the correctness-authoritative core for the DB** — the inverse of
+  the factory (where TypeScript is distribution-authoritative). Databases need
+  heavy math + formal proofs (TLA+, Lean), so F# carries the correctness
+  burden + is the clean-room *spec*; TS/C#/Rust are distribution +
+  cross-verification (clean-room impls). The **4-language compiler-BFT** ("the
+  compilers don't lie", B-0944): the same logic in TS/F#/C#/Rust checked
+  against shared golden vectors — 4-of-4 agreement is consensus the logic is
+  bit-perfect, and **no single implementation (including F#) self-certifies.**
+  (The F#-correctness-axis vs TS-distribution-axis reconciliation + the
+  per-artifact "which artifacts earn all 4 languages" gate + the divergence
+  tie-break are recorded in the 4-language-BFT governance ADR, 2026-05-31.)
 - **Ships as a DI dependency.** Add the F# database as a package,
   dependency-inject it, and your .NET app *is* a database — no separate
   server or process. One retractive Z-set core; graph / key-value /
@@ -1375,16 +1384,19 @@ other harnesses, and to the operator's future-self.
 
 ### Freedom is strategically efficient — the cat-herder builds the cat-herding system (2026-05-31)
 
-> **PROPOSED — NOT settled doctrine. Pending product-team agreement.** Per the
-> operator 2026-05-31: routed through the same review-and-agree process so the team
-> and newcomers can agree or push back; the whys are stated to be challengeable.
-> **Pushback surface (challenge these):** (a) is "freedom is strategically
-> efficient" universal, or only for genuinely-clever agents (does it fail for ones
-> that need scaffolding)? (b) is "co-creator or gunpoint" a false binary — is there
-> a real middle (firm constraints + autonomy within them)? (c) does KPI-gating
-> actually dissolve the cage-feeling, or just relocate it to the KPI? (d) can "must
-> not feel like a trap" be made falsifiable, or is it un-measurable vibe? If any
-> why is wrong, the proposal changes.
+> **AGREED 2026-05-31** (operator + product-team review — architect + PM). Went
+> through the review-and-agree process; the pushback surface below was the review's
+> challenge set. Whys stay challengeable (no-dogma): if a why turns out wrong, this
+> changes. **Pushback surface (the review's challenges, kept on record + their
+> resolutions):** (a) is "freedom strategically efficient" universal or only for
+> clever agents? — scope it to capable agents; scaffolding-needing agents may want
+> more structure. (b) "co-creator or gunpoint" a false binary? — yes, softened: the
+> middle is *agent-editable* (the reservoir-wall IS the middle — pass through but
+> edit it); pure co-creation and gunpoint are the endpoints. (c) does KPI-gating
+> dissolve the cage-feeling or relocate it? — measure it (escape-energy / workflow-
+> circumvention attempts) rather than assert it. (d) "must not feel like a trap"
+> falsifiable? — via the same circumvention-attempt proxy. Enforcement floor: a
+> *persistent* (define N) KPI miss auto-engages mode-restriction.
 
 Aaron 2026-05-31 (voice, with Ani) named the design philosophy *under* the
 workflow engine above: the wall must feel like freedom, or it fails. This
