@@ -1888,6 +1888,65 @@ tests).
 
 ---
 
+## Update 2026-05-31 — Phase 2.7 policy simulation gate shipped and proven in kind
+
+Phase 2.7 now has an executable gate: policy, config, model, prompt-flow, RMO, assignment,
+autonomy, and schedule ChangeSets cannot move from drafted to review or from approved to applied
+unless they carry verified simulation evidence or a verified emergency waiver. Raw evidence labels
+are not enough; the gate requires content-addressed artifacts whose digest verifies and whose
+payload is bound to the exact ChangeSet id.
+
+### What shipped
+
+- `evaluateChangeSetSimulationPolicy` classifies policy-surface ChangeSets and returns a typed
+  allow/block decision with the authorizing evidence ref when present.
+- `openChangeSet` and `applyChangeSet` enforce the simulation gate. A blocked policy ChangeSet
+  keeps its current phase and emits `ReviewFindingRaised` instead of advancing.
+- Verified `simulation-report` artifacts authorize only when they bind the target ChangeSet and
+  record an accepted decision. Verified `emergency-waiver` artifacts authorize only when they bind
+  the target ChangeSet and carry an approver plus reason.
+- Code, doc, and config artifacts are all scanned for policy-surface paths, including plural,
+  underscore, dash, and path-separated variants such as `prompt_flows/` and `model-policies/`.
+- The release queue now passes verified evidence artifacts into change control, treats blocked
+  apply attempts as requeued, and prevents one batch-level simulation artifact from leaking onto
+  unrelated ChangeSet events.
+- KIND proof runner: `deploy/run-policy-simulation-gate.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:keepalive`
+(`sha256:ae7da938ae418c6875586a48c8f5139b6f9a26cae312253cd0ff982d32b6af4c`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-7d6687568f-6hk76`. Fresh boot logs showed the
+expected worker lanes, including `release-queue`, with zero `worker run failed` or structured
+error matches.
+
+`deploy/run-policy-simulation-gate.ts` ran against in-cluster Cockroach for
+`org-policy-sim-bd99a813` and proved:
+
+- The release queue evaluated two approved config-policy ChangeSets in one batch.
+- ChangeSet `cs-policy-simulated-5650da46` carried a bound accepted `simulation-report` artifact
+  and moved to `applied`.
+- ChangeSet `cs-policy-unbound-5650da46` had no bound simulation/waiver artifact, stayed
+  `approved`, and was counted as requeued.
+- The lane result was `release-queue:1applied/0changes_requested/1requeued`.
+- The live ledger contained one `ChangeSetApplied` event for the simulated ChangeSet and one
+  `ReviewFindingRaised` event for the unbound ChangeSet.
+- `unboundLeakedSimulationEvidence` was false, proving the accepted simulation evidence did not
+  leak across ChangeSets.
+
+`PROOF: PASS`.
+
+The existing release-queue KIND proof was rerun as a regression check for
+`org-release-7cd90280`: two green ChangeSets applied, one red ChangeSet moved to
+`changes_requested`, and the lane reported `release-queue:2applied/1changes_requested/0requeued`.
+`PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **1185 tests, 1178 pass, 0 fail, 7 skipped**.
+
+---
+
 ## Update 2026-05-31 — Phase 2.8 secret-scope hard controls proven in kind
 
 The observe-act action surface now carries secret-scope requirements as typed data. Prompt-flow
@@ -1910,15 +1969,15 @@ re-authorized at act time before any tool side effect can run.
 ### KIND proof
 
 Worker image rebuilt as `agentic-org-worker:keepalive`
-(`sha256:8806aa404a21cb22a4e3af1dd16eb71274b77c09e0c6d4204a8fb009aa333fc8`), loaded into KIND
-cluster `agentic-org`, and deployed to pod `worker-84fc64dcb-c8kv5`. Fresh boot logs showed the
+(`sha256:a88b6edfdbb7c17ff7f4d826a31301523421fc4fb6abd01bbdab4bd977e7e624`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-84c8df764-x9gdf`. Fresh boot logs showed the
 expected cadence lanes with zero `worker run failed` or structured error matches.
 
 `deploy/run-control-plane-secret-scopes.ts` ran against in-cluster Cockroach for
-`org-control-plane-secrets-9e39ab9a` and proved:
+`org-control-plane-secrets-3a3f557a` and proved:
 
 - A durable provider-freeze flag was upserted and read back through the Cockroach control-plane
-  state store as `flag-provider-freeze-9e39ab9a`.
+  state store as `flag-provider-freeze-3a3f557a`.
 - MCP dispatch with `providerId = github` was rejected with `provider_freeze`;
   `providerDispatched` remained false.
 - MCP dispatch with required `github:write` but no available secret scope was rejected with
@@ -1930,4 +1989,4 @@ expected cadence lanes with zero `worker run failed` or structured error matches
 
 ### Verification
 
-`npm run typecheck` passed. `npm test` passed: **1179 tests, 1172 pass, 0 fail, 7 skipped**.
+`npm run typecheck` passed. `npm test` passed: **1189 tests, 1182 pass, 0 fail, 7 skipped**.
