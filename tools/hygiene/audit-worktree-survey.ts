@@ -258,6 +258,11 @@ function renderMarkdown(survey: WorktreeSurvey): string {
   return lines.join("\n");
 }
 
+function formatSurveyOutput(survey: WorktreeSurvey, json: boolean): string {
+  const output = json ? JSON.stringify(survey, null, 2) : renderMarkdown(survey);
+  return output.endsWith("\n") ? output : `${output}\n`;
+}
+
 function realInspector(): Inspector {
   return {
     inspect(entry: WorktreeEntry): WorktreeInspection {
@@ -364,7 +369,7 @@ function main(argv: string[]): AuditExitCode {
     return survey.code;
   }
 
-  const output = parsed.args.json ? `${JSON.stringify(survey, null, 2)}\n` : `${renderMarkdown(survey)}\n`;
+  const output = formatSurveyOutput(survey, parsed.args.json);
   if (parsed.args.report !== null) {
     writeFileSync(parsed.args.report, output);
     console.log(`wrote ${parsed.args.report}`);
@@ -379,5 +384,5 @@ if (import.meta.main) {
   process.exit(main(process.argv.slice(2)));
 }
 
-export { classifyWorktrees, makeSurvey, parseArgs, parseWorktreePorcelain, renderMarkdown };
+export { classifyWorktrees, formatSurveyOutput, makeSurvey, parseArgs, parseWorktreePorcelain, renderMarkdown };
 export type { WorktreeEntry, WorktreeInspection, WorktreeSurvey, WorktreeSurveyItem };

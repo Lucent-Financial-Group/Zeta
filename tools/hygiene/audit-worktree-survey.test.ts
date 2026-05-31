@@ -4,6 +4,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   classifyWorktrees,
+  formatSurveyOutput,
   makeSurvey,
   parseArgs,
   parseWorktreePorcelain,
@@ -136,7 +137,7 @@ describe("classifyWorktrees", () => {
 
   test("marks clean but uncovered worktrees as needing recovery", () => {
     const items = classifyWorktrees([entry()], {
-      inspect: () => inspection({ headReachableFromMain: false }),
+      inspect: () => inspection({ headReachableFromMain: false, patchEquivalentToMain: false }),
     });
 
     expect(items[0]!.bucket).toBe("NEEDS-RECOVERY");
@@ -204,5 +205,12 @@ describe("renderMarkdown", () => {
     const md = renderMarkdown(survey);
     expect(md).toContain("`/repo/has\\|pipe`");
     expect(md).toContain("fatal: reason\\|with<br>newline");
+  });
+
+  test("formats report output with a trailing newline", () => {
+    const survey = makeSurvey([entry()], { inspect: () => inspection() }, new Date("2026-05-31T14:32:00Z"), null);
+
+    expect(formatSurveyOutput(survey, false).endsWith("\n")).toBe(true);
+    expect(formatSurveyOutput(survey, true).endsWith("\n")).toBe(true);
   });
 });
