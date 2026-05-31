@@ -25,4 +25,5 @@
 - operator-clarification: retention reformat keeps the same cluster/node identity; no-retention reformat creates a new cluster/node identity.
 - operator-clarification: Touch ID/biometric retention is physical operator testing; QEMU should assert preserved auth-state markers. Zeta is baked into the image, and target hardware assumptions include both x86_64 and ARM64/aarch64.
 - progress: carved Kubernetes and ArgoCD health into dedicated backlog row B-0951 for kind/k3d integration testing, keeping B-0891 scoped to USB/ISO zflash acceptance and a narrow agent-start smoke path.
-- next: execute this planner from the B-0891 scenario-3 runtime path and keep `reformat-with-retention` scaffolded until QEMU state preservation asserts end-to-end.
+- progress: `run.ts --scenario reformat-with-retention <iso>` now emits the QEMU qcow2 snapshot/restart plan from `qemu-state.ts` and still exits failed until command execution plus serial-marker assertions are wired.
+- next: execute the emitted QEMU command plan from the B-0891 scenario-3 runtime path and keep `reformat-with-retention` failed closed until serial-marker assertions prove end-to-end retention.

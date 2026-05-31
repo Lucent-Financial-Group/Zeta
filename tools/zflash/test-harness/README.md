@@ -57,7 +57,10 @@ Exit codes:
 - `1` — one or more requested scenarios FAILED
 - `2` — usage error OR scenario-definition invariant violation
 
-Runtime attempts for scaffolded scenarios fail closed with exit `1`.
+Runtime attempts for scenario 3 now emit the QEMU snapshot/restart command
+plan and still fail closed with exit `1` until command execution plus serial
+marker assertions are wired. Runtime attempts for scenarios 4-5 remain
+scaffolded/fail-closed.
 `--dry-run` remains the planning surface for inspecting pending scenarios
 without claiming a false green.
 

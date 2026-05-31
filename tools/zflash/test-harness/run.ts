@@ -17,9 +17,11 @@
  *               misconfiguration.
  *   --scenario  Run one scenario by id. For composes-with-existing
  *               scenarios, delegates to tools/ci/qemu-full-install-test.ts
- *               or tools/ci/qemu-boot-test.ts. For scaffolded scenarios,
- *               reports "not yet implemented" with the implementation
- *               substrate path documented.
+ *               or tools/ci/qemu-boot-test.ts. For scenario 3, emits the
+ *               QEMU snapshot/restart plan but still fails closed until
+ *               serial-marker assertions are wired. Other scaffolded
+ *               scenarios report "not yet implemented" with the
+ *               implementation substrate path documented.
  *   --all       Run all 5 scenarios in orderIndex order; gate failures
  *               skip dependent scenarios.
  *
@@ -35,8 +37,8 @@
  * Per .claude/rules/rule-0-no-sh-files.md (TS-first for cross-platform DST).
  * PoC scope: dispatcher contract + --list + --dry-run paths fully wired;
  * --scenario + --all paths shell out to existing QEMU harnesses for
- * composes-with-existing scenarios + return scaffolded status for the
- * remaining 3.
+ * composes-with-existing scenarios + return fail-closed implementation
+ * status for the remaining 3.
  */
 
 import { spawnSync } from "node:child_process";
@@ -44,6 +46,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
 import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
+import { planQcow2SnapshotRetention, type Qcow2SnapshotRetentionPlan } from "./qemu-state";
 
 type Mode = "list" | "dry-run" | "scenario" | "all";
 
@@ -58,6 +61,7 @@ interface ScenarioResult {
   readonly status: "passed" | "failed" | "skipped" | "scaffolded";
   readonly durationMs?: number;
   readonly message?: string;
+  readonly qemuRetentionPlan?: Qcow2SnapshotRetentionPlan;
 }
 
 function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
@@ -203,6 +207,31 @@ function reportScaffolded(scenario: Scenario): ScenarioResult {
   };
 }
 
+function planRetentionRuntime(isoPath: string): ScenarioResult {
+  const absIsoPath = resolve(isoPath);
+  const planned = planQcow2SnapshotRetention({
+    isoPath: absIsoPath,
+    diskPath: `${absIsoPath}.scenario3.qcow2`,
+    serialLogPath: `${absIsoPath}.scenario3.serial.log`,
+    snapshotName: "post-initial-format",
+  });
+  if ("error" in planned) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: `could not plan QEMU retention runtime: ${planned.error.field} ${planned.error.reason}`,
+    };
+  }
+
+  return {
+    id: "reformat-with-retention",
+    status: "failed",
+    message:
+      "QEMU snapshot/restart retention plan generated; command execution and serial-marker assertions are not wired yet, so the scenario fails closed.",
+    qemuRetentionPlan: planned.ok,
+  };
+}
+
 function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
   const scenario = findScenario(scenarioId);
   if (!scenario) {
@@ -216,6 +245,9 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
     case "composes-with-existing":
       return runComposingScenario(scenario, isoPath);
     case "scaffolded":
+      if (scenario.id === "reformat-with-retention") {
+        return planRetentionRuntime(isoPath);
+      }
       return reportScaffolded(scenario);
     case "operator-runtime":
       return {

@@ -2,9 +2,9 @@
  * B-0891 scenario 3 QEMU state-preservation primitives.
  *
  * This file is deliberately a command planner, not a green runtime path:
- * it defines the qemu-img snapshot/restart sequence that scenario 3 will
- * execute, while run.ts keeps reformat-with-retention failing closed until
- * the full serial-marker assertions are wired.
+ * it defines the qemu-img snapshot/restart sequence that scenario 3 emits
+ * from run.ts, while the dispatcher keeps reformat-with-retention failing
+ * closed until command execution and full serial-marker assertions are wired.
  */
 
 export interface QemuCommand {

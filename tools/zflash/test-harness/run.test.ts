@@ -26,12 +26,26 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(parsed.targets[0].plan).toContain("implementation pending");
   });
 
-  test("runtime attempt for scaffolded retention fails closed", () => {
+  test("runtime attempt for retention emits QEMU plan but fails closed", () => {
     const result = run("--scenario", "reformat-with-retention", "/tmp/nonexistent.iso");
     expect(result.exitCode).toBe(1);
     const parsed = JSON.parse(result.stdout);
-    expect(parsed.summary.scaffolded).toBe(1);
-    expect(parsed.results[0].status).toBe("scaffolded");
-    expect(parsed.results[0].message).toContain("implementation pending");
+    expect(parsed.summary.failed).toBe(1);
+    expect(parsed.summary.scaffolded).toBe(0);
+    expect(parsed.results[0].status).toBe("failed");
+    expect(parsed.results[0].message).toContain("fails closed");
+    expect(parsed.results[0].qemuRetentionPlan.createBaselineSnapshot.args).toEqual([
+      "snapshot",
+      "-c",
+      "post-initial-format",
+      "/tmp/nonexistent.iso.scenario3.qcow2",
+    ]);
+    expect(parsed.results[0].qemuRetentionPlan.restoreBaselineSnapshot.args).toContain(
+      "/tmp/nonexistent.iso.scenario3.qcow2",
+    );
+    expect(parsed.results[0].qemuRetentionPlan.restartFromIsoWithDisk.args).toContain(
+      "file=/tmp/nonexistent.iso.scenario3.qcow2,if=virtio,format=qcow2",
+    );
+    expect(parsed.results[0].qemuRetentionPlan.requiredSerialMarkers).toContain("already-present");
   });
 });
