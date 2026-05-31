@@ -19,6 +19,10 @@ import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+// Git diffs and cherry output can exceed Node/Bun's small default
+// spawnSync buffer on long-lived branches or large parked worktrees.
+const GIT_OUTPUT_MAX_BUFFER = 64 * 1024 * 1024;
+
 type AuditExitCode = 0 | 64 | 128;
 
 type WorktreeBucket = "ALREADY-COVERED" | "NEEDS-RECOVERY" | "OBSOLETE";
@@ -334,6 +338,7 @@ function gitStdout(path: string, args: readonly string[], input?: string): strin
   const result = spawnSync("git", ["-C", path, ...args], {
     encoding: "utf8",
     input,
+    maxBuffer: GIT_OUTPUT_MAX_BUFFER,
   });
   if (result.error || result.status !== 0) return null;
   return result.stdout;
@@ -350,6 +355,7 @@ function gitExitOk(
     encoding: "utf8",
     env,
     input,
+    maxBuffer: GIT_OUTPUT_MAX_BUFFER,
   });
   if (result.error) return null;
   return result.status === 0;
@@ -412,6 +418,7 @@ function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string =
     // eslint-disable-next-line sonarjs/no-os-command-from-path
     const status = spawnSync("git", ["-C", entry.path, "status", "--porcelain=v1", "--untracked-files=normal"], {
       encoding: "utf8",
+      maxBuffer: GIT_OUTPUT_MAX_BUFFER,
     });
     if (status.error) {
       return {
@@ -445,6 +452,7 @@ function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string =
     // eslint-disable-next-line sonarjs/no-os-command-from-path
     const mergeBase = spawnSync("git", ["-C", gitContext, "merge-base", "--is-ancestor", entry.head, "origin/main"], {
       encoding: "utf8",
+      maxBuffer: GIT_OUTPUT_MAX_BUFFER,
     });
     if (!mergeBase.error && (mergeBase.status === 0 || mergeBase.status === 1)) {
       headReachableFromMain = mergeBase.status === 0;
@@ -455,12 +463,9 @@ function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string =
     }
 
     if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
-      // eslint-disable-next-line sonarjs/no-os-command-from-path
-      const cherry = spawnSync("git", ["-C", gitContext, "cherry", "origin/main", entry.head], {
-        encoding: "utf8",
-      });
-      if (!cherry.error && cherry.status === 0) {
-        const lines = cherry.stdout
+      const cherryOutput = gitStdout(gitContext, ["cherry", "origin/main", entry.head]);
+      if (cherryOutput !== null) {
+        const lines = cherryOutput
           .split("\n")
           .map((line) => line.trim())
           .filter((line) => line.length > 0);
@@ -488,7 +493,10 @@ function realInspector(root: string | null): Inspector {
 
 function runSurvey(root: string | null, now: Date): WorktreeSurvey | { error: string; code: AuditExitCode } {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const list = spawnSync("git", gitArgs(root, ["worktree", "list", "--porcelain"]), { encoding: "utf8" });
+  const list = spawnSync("git", gitArgs(root, ["worktree", "list", "--porcelain"]), {
+    encoding: "utf8",
+    maxBuffer: GIT_OUTPUT_MAX_BUFFER,
+  });
   if (list.error) {
     return { error: `git worktree list failed to launch: ${list.error.message}`, code: 128 };
   }

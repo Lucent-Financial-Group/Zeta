@@ -297,6 +297,63 @@ describe("inspectWorktreeEntry", () => {
     }
   });
 
+  test("handles large branch deltas without degrading coverage to unknown", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      commitFile(repo, "tracked.txt", "base\n", "base");
+      runGit(repo, ["checkout", "-b", "feature"]);
+      commitFile(repo, "large.txt", `${"x".repeat(2 * 1024 * 1024)}\n`, "large feature");
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      runGit(repo, ["checkout", "main"]);
+      writeFileSync(join(repo, "large.txt"), `${"x".repeat(2 * 1024 * 1024)}\n`);
+      writeFileSync(join(repo, "tracked.txt"), "base\nbatched unrelated work\n");
+      runGit(repo, ["add", "large.txt", "tracked.txt"]);
+      runGit(repo, ["commit", "-m", "squash large batch"]);
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+      const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
+      expect(result.dirty).toBe(false);
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(true);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+
+  test("handles large covered branch diffs without spawn buffer exhaustion", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
+    try {
+      runGit(repo, ["init", "-b", "main"]);
+      runGit(repo, ["config", "user.email", "test@example.com"]);
+      runGit(repo, ["config", "user.name", "Zeta Test"]);
+
+      const largeFeatureContent = "covered branch payload\n".repeat(90_000);
+      commitFile(repo, "large.txt", "base\n", "base");
+      commitFile(repo, "other.txt", "base\n", "other base");
+      runGit(repo, ["checkout", "-b", "feature"]);
+      commitFile(repo, "large.txt", largeFeatureContent, "large feature substrate");
+      const featureHead = runGit(repo, ["rev-parse", "HEAD"]);
+
+      runGit(repo, ["checkout", "main"]);
+      writeFileSync(join(repo, "large.txt"), largeFeatureContent);
+      writeFileSync(join(repo, "other.txt"), "batched unrelated work\n");
+      runGit(repo, ["add", "large.txt", "other.txt"]);
+      runGit(repo, ["commit", "-m", "large squash batch"]);
+      runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+      const result = inspectWorktreeEntry(entry({ path: repo, head: featureHead }));
+      expect(result.headReachableFromMain).toBe(false);
+      expect(result.treeEquivalentToMain).toBe(true);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+
   test("checks missing prunable worktree HEAD coverage from the repository context", () => {
     const repo = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-"));
     try {
