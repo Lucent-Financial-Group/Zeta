@@ -642,12 +642,54 @@ describe("factory-health-monitor", () => {
       "not-a-date codex forward gate end run_id=bad status=0",
     ].join("\n");
 
-    expect(loopRunReceiptEventsFromRunnerLog(output, "2026-05-30T06:00:00Z", 2 * 60 * 60 * 1000)).toEqual([
+    expect(loopRunReceiptEventsFromRunnerLog(output, "2026-05-30T05:06:00Z", 2 * 60 * 60 * 1000)).toEqual([
       {
         id: "loop-run-20260530T050100Z",
         trajectory: "codex",
         occurredAt: "2026-05-30T05:04:00.000Z",
         description: "codex forward gate 20260530T050100Z status=0 claims 1->2 open_prs 0->0",
+        source: "loop-run",
+      },
+    ]);
+  });
+
+  test("loopRunReceiptEventsFromRunnerLog demotes old completed claim increases to lifecycle residue", () => {
+    const output = [
+      "2026-05-30T05:00:00Z heartbeat complete run_id=20260530T050000Z fetch=ok claims=1 open_prs=0 dirty=0 codex=wait due_in=60s",
+      "2026-05-30T05:04:00Z codex forward gate end run_id=20260530T050100Z status=0",
+      "2026-05-30T05:05:00Z heartbeat complete run_id=20260530T050500Z fetch=ok claims=2 open_prs=0 dirty=0 codex=wait due_in=60s",
+    ].join("\n");
+
+    const [event] = loopRunReceiptEventsFromRunnerLog(output, "2026-05-30T06:00:00Z", 2 * 60 * 60 * 1000);
+    expect(event).toEqual({
+      id: "loop-run-20260530T050100Z",
+      trajectory: "codex",
+      occurredAt: "2026-05-30T05:04:00.000Z",
+      description: "codex forward gate 20260530T050100Z status=0 claims 1->2 open_prs 0->0 lifecycle-residue",
+      source: "unknown",
+    });
+
+    expect(
+      classifyCoincidenceWindows(
+        [
+          { id: "merged-pr-20", trajectory: "otto", occurredAt: "2026-05-30T05:04:05.000Z" },
+          event!,
+        ],
+        { windowMs: 30_000, minimumEvents: 2 },
+      ),
+    ).toEqual([
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "1 event-window coincidence(s) detected",
+        action: "inspect shared upstream cause for coincident trajectory events",
+      },
+      {
+        surface: "coincidence-debug",
+        level: "warning",
+        message:
+          "Top coincidence windows: 2026-05-30T05:04:00.000Z..2026-05-30T05:04:30.000Z trajectories=codex+otto events=codex:loop-run-20260530T050100Z,otto:merged-pr-20",
+        action: "inspect listed coincidence event ids before adding another source",
       },
     ]);
   });

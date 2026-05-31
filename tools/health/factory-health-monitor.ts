@@ -181,6 +181,7 @@ const FACTORY_EVENT_DEBUG_TRAJECTORY_LIMIT = 4;
 const FACTORY_EVENT_DEBUG_WINDOW_LIMIT = 3;
 const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
 const FACTORY_EVENT_MERGE_BURST_GAP_MS = 2 * 60 * 1000;
+const FACTORY_EVENT_LOOP_RUN_INCIDENT_FRESHNESS_MS = FACTORY_EVENT_COINCIDENCE_WINDOW_MS;
 const FACTORY_EVENT_BROADCAST_BUS_ENVELOPE_LIMIT = 200;
 const FACTORY_HEALTH_BROADCAST_BUS_DIR =
   process.env.FACTORY_HEALTH_BROADCAST_BUS_DIR ?? process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
@@ -327,6 +328,14 @@ function coincidenceEventSource(event: CoincidenceEvent): CoincidenceEventSource
   if (event.id.startsWith("failed-gate-")) return "failed-gate";
 
   return "unknown";
+}
+
+function loopRunClaimIncreaseSource(occurredMs: number, nowMs: number): CoincidenceEventSource {
+  if (Number.isNaN(nowMs)) {
+    return "loop-run";
+  }
+
+  return nowMs - occurredMs <= FACTORY_EVENT_LOOP_RUN_INCIDENT_FRESHNESS_MS ? "loop-run" : "unknown";
 }
 
 function coincidenceWindowHasIncidentSource(window: CoincidenceWindow): boolean {
@@ -1143,11 +1152,14 @@ export function loopRunReceiptEventsFromRunnerLog(
     }
 
     const runId = gateEnd.runId;
+    const source = loopRunClaimIncreaseSource(gateEnd.timeMs, nowMs);
+    const lifecycleSuffix = source === "loop-run" ? "" : " lifecycle-residue";
     events.set(runId, {
       id: `loop-run-${runId}`,
       trajectory: "codex",
       occurredAt: gateEnd.occurredAt,
-      description: `codex forward gate ${runId} status=${gateEnd.status} claims ${before.claims}->${after.claims} open_prs ${before.openPrs}->${after.openPrs}`,
+      description: `codex forward gate ${runId} status=${gateEnd.status} claims ${before.claims}->${after.claims} open_prs ${before.openPrs}->${after.openPrs}${lifecycleSuffix}`,
+      source,
     });
   }
 
