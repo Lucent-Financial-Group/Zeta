@@ -14,10 +14,11 @@
 #
 # NONINTERACTIVE: the downloaded installer is exec'd with stdin redirected from /dev/null, so it
 # matches the vendor's documented `curl … | bash` behavior (where bash's stdin is the pipe, not a
-# TTY). Several installers (e.g. Hermes) gate their interactive setup wizard on `[ -t 0 ]` and only
-# run it when a terminal is attached; without the /dev/null redirect, running install.sh from an
-# interactive shell would hand the installer the user's TTY and a setup/auth wizard could stall the
-# Zeta bootstrap before local-llm.sh + shellenv.sh run.
+# TTY). Note some installers (e.g. Hermes) open /dev/tty DIRECTLY rather than reading stdin, so the
+# /dev/null redirect alone does not suppress their setup wizard on an interactive dev install — those
+# need an explicit noninteractive flag via the args= qualifier (Hermes: args=--skip-setup). Without
+# this, running install.sh from an interactive shell could let a setup/auth wizard stall the Zeta
+# bootstrap before local-llm.sh + shellenv.sh run.
 #
 # DETECT-FIRST + UPDATE: by default, skip if the tool's <detect-binary> is already on PATH. This is
 # the efficient path (no re-download of multi-step vendor installers on every install.sh run) AND it
@@ -39,8 +40,9 @@
 # the installers in a non-interactive context anyway (e.g. a dedicated install-shield that should
 # download-exec them), set ZETA_INSTALL_FULL=1.
 #
-# Registry line:  <detect-binary>  <installer-url>  [interp=bash|sh]  [os=mac,linux]
-# (defaults: interp=bash, os=all). `#` comments + blank lines ignored. See manifests/one-liner-tools.
+# Registry line:  <detect-binary>  <installer-url>  [interp=bash|sh]  [os=mac,linux]  [args=<arg> ...]
+# (defaults: interp=bash, os=all, no args). `#` comments + blank lines ignored. args= is repeatable.
+# See manifests/one-liner-tools.
 
 set -euo pipefail
 
@@ -97,13 +99,15 @@ while IFS= read -r line || [ -n "$line" ]; do
   fi
   shift 2
 
-  # Parse optional key=value qualifiers (order-independent).
+  # Parse optional key=value qualifiers (order-independent). args= is repeatable -> installer_args[].
   interp="bash"
   os_filter="all"
+  installer_args=()
   for tok in "$@"; do
     case "$tok" in
       interp=*) interp="${tok#interp=}" ;;
       os=*)     os_filter="${tok#os=}" ;;
+      args=*)   installer_args+=("${tok#args=}") ;;
       *)        echo "warn: unknown qualifier '$tok' for '$bin'; ignoring" >&2 ;;
     esac
   done
@@ -143,8 +147,10 @@ while IFS= read -r line || [ -n "$line" ]; do
     continue
   fi
   # Exec with stdin from /dev/null so the installer runs noninteractively (matches the vendor's
-  # documented `curl … | bash`, where bash's stdin is the pipe rather than the user's TTY).
-  if ! "$interp" "$tmp" </dev/null; then
+  # documented `curl … | bash`, where bash's stdin is the pipe rather than the user's TTY). args=
+  # qualifiers (e.g. Hermes --skip-setup, for installers that open /dev/tty directly) are appended.
+  # The ${arr[@]+...} guard keeps an empty array safe under `set -u` on bash 3.2 (macOS).
+  if ! "$interp" "$tmp" ${installer_args[@]+"${installer_args[@]}"} </dev/null; then
     echo "warn: installer for '$bin' failed; continuing (best-effort — auth/login is the operator's)" >&2
   fi
   rm -f "$tmp"
