@@ -17,6 +17,11 @@ namespace Zeta.Core.FSharp.TriBoolean
 /// `measure` is the only collapsing op; it surfaces which superposition is held rather than
 /// collapsing silently (the digital-qubit measure/cooperate discipline at the number scope).
 ///
+/// Width: field reads accumulate into int64 (matching the Rust u64 oracle; TS uses f64). This keeps
+/// all four oracles in agreement up to f64's 2^53 exact-integer range -- the shared limit, since the
+/// decoded value is f64 in every oracle. (A naive 32-bit int would wrap at 2^31, diverging from the
+/// other three oracles before the f64 limit; int64 defers that to widths no realistic shape reaches.)
+///
 /// F# is oracle #2 of four (TS/F#/C#/Rust) in the summonable-BFT cross-language consensus. The F#
 /// compiler is a non-Byzantine oracle: it cannot lie about whether the TS design type-composes, so
 /// four-of-four compiler-checked parity = BFT consensus with no human voters.
@@ -52,19 +57,21 @@ module Float =
         | ValueSuperposed
 
     /// MSB-first base-2 read of a trit field (Tri.T = 1, Tri.F = 0). None if ANY trit is held (Tri.N).
-    let private intOf (trits: Tri list) : int option =
+    /// Accumulates into int64 (see module doc): no wrap until 63 bits, well past any realistic shape
+    /// and past f64's 2^53 exact range that bounds the decoded value across all four oracles.
+    let private intOf (trits: Tri list) : int64 option =
         let rec go acc ts =
             match ts with
             | [] -> Some acc
             | Tri.N :: _ -> None
-            | Tri.T :: rest -> go (acc * 2 + 1) rest
-            | Tri.F :: rest -> go (acc * 2) rest
+            | Tri.T :: rest -> go (acc * 2L + 1L) rest
+            | Tri.F :: rest -> go (acc * 2L) rest
 
-        go 0 trits
+        go 0L trits
 
     /// MSB-first encode of a non-negative integer into `width` certain trits (Tri.T = 1, Tri.F = 0).
-    let private intToTrits (v: int) (width: int) : Tri list =
-        [ for i in (width - 1) .. -1 .. 0 -> if (v >>> i) &&& 1 = 1 then Tri.T else Tri.F ]
+    let private intToTrits (v: int64) (width: int) : Tri list =
+        [ for i in (width - 1) .. -1 .. 0 -> if (v >>> i) &&& 1L = 1L then Tri.T else Tri.F ]
 
     /// decode (middle-out, biased-exponent): read the MIDDLE decoder first, then decode OUTWARD.
     ///   * Tri.N in the decoder  => InterpretationSuperposed (the decode instruction is held).
@@ -78,7 +85,7 @@ module Float =
             match intOf (f.High @ f.Low) with
             | None -> Error FloatFeedback.ValueSuperposed
             | Some v ->
-                let bias = pown 2 (f.Decoder.Length - 1)
+                let bias = pown 2L (f.Decoder.Length - 1)
                 Ok(float v * (2.0 ** float (mode - bias)))
 
     /// measure: the ONLY collapsing operation (identical to decode; named for parity with the
@@ -111,17 +118,18 @@ module Float =
     /// in the decoder field. Picks the SMALLEST mode that works (a canonical representation; the
     /// biased-exponent decoder has redundant representations, so a canonical choice is required).
     /// Surfaces a reason string when not representable. v0 is unsigned + finite. Round-trips with
-    /// decode: `fromValue v shape |> Result.map decode` resolves back to Ok v.
+    /// decode: `fromValue v shape |> Result.map decode` resolves back to Ok v. Bounds math uses
+    /// int64 so wide shapes return feedback rather than overflowing to negative/incorrect bounds.
     let fromValue (value: float) (shape: FloatShape) : Result<TriFloat, string> =
         if System.Double.IsNaN value || System.Double.IsInfinity value || value < 0.0 then
             Error "v0 is unsigned + finite"
         else
             let valueBits = shape.HighWidth + shape.LowWidth
-            let maxMode = (1 <<< shape.DecoderWidth) - 1
-            let maxV = pown 2 valueBits
-            let bias = pown 2 (shape.DecoderWidth - 1)
+            let maxMode = (1L <<< shape.DecoderWidth) - 1L
+            let maxV = pown 2L valueBits
+            let bias = pown 2L (shape.DecoderWidth - 1)
 
-            let rec tryMode mode =
+            let rec tryMode (mode: int64) =
                 if mode > maxMode then
                     Error(sprintf "no (mode,V) with mode<=%d and V<%d represents %g" maxMode maxV value)
                 else
@@ -129,7 +137,7 @@ module Float =
                     let scaled = value / (2.0 ** float (mode - bias))
 
                     if System.Double.IsInteger scaled && scaled >= 0.0 && scaled < float maxV then
-                        let v = int scaled
+                        let v = int64 scaled
                         let bits = intToTrits v valueBits
 
                         Ok
@@ -138,6 +146,6 @@ module Float =
                               Decoder = intToTrits mode shape.DecoderWidth
                               Low = bits |> List.skip shape.HighWidth }
                     else
-                        tryMode (mode + 1)
+                        tryMode (mode + 1L)
 
-            tryMode 0
+            tryMode 0L
