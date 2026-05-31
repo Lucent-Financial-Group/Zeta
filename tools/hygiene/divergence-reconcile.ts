@@ -36,18 +36,20 @@
 // Writer companion:        tools/hygiene/divergence-shard.ts
 
 import { execFileSync } from "node:child_process";
+import { Buffer } from "node:buffer";
 import {
   closeSync,
   constants,
   existsSync,
   fstatSync,
   ftruncateSync,
+  lstatSync,
   openSync,
   readFileSync,
   readdirSync,
   writeSync,
 } from "node:fs";
-import { isAbsolute, join, relative, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 
 // Mirrors DIVERGENCE_ROOT in divergence-shard.ts. Both files reflect the path
 // the README fixes as the source of truth; a comment-cited copy keeps the
@@ -398,6 +400,43 @@ function openRegularShardForReadWrite(abs: string, relPath: string): number {
   }
 }
 
+function rejectSymlinkedAncestors(divergenceRoot: string, abs: string, relPath: string): void {
+  const within = relative(divergenceRoot, abs);
+  const parts = within.split(sep).filter(Boolean);
+  let cursor = divergenceRoot;
+  for (const part of parts.slice(0, -1)) {
+    cursor = join(cursor, part);
+    try {
+      const stat = lstatSync(cursor);
+      if (stat.isSymbolicLink()) {
+        throw new Error(
+          `cannot reconcile: ${relPath} contains a symbolic link; shard ancestors must be real directories`,
+        );
+      }
+      if (!stat.isDirectory()) {
+        throw new Error(`cannot reconcile: ${relPath} is not a regular file`);
+      }
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+      }
+      throw err;
+    }
+  }
+}
+
+function writeAllUtf8Sync(fd: number, content: string): void {
+  const bytes = Buffer.from(content, "utf8");
+  let offset = 0;
+  while (offset < bytes.length) {
+    const written = writeSync(fd, bytes, offset, bytes.length - offset, offset);
+    if (written <= 0) {
+      throw new Error("cannot reconcile: write made no progress");
+    }
+    offset += written;
+  }
+}
+
 /**
  * Apply a morning-reconciliation decision to a PENDING divergence shard and
  * write the reconciled markdown back IN PLACE — the I/O "one action" of AC #4
@@ -450,6 +489,7 @@ export function reconcileDivergenceShard(
   if (within === "" || within.startsWith("..") || isAbsolute(within)) {
     throw new Error(`cannot reconcile: ${relPath} is outside the divergence root (${DIVERGENCE_ROOT})`);
   }
+  rejectSymlinkedAncestors(divergenceRoot, abs, relPath);
   // Read directly and treat a missing file as a signal rather than pre-checking
   // with existsSync — the check-then-read gap is a TOCTOU race (CWE-367), and
   // the error path is the same friendly message either way.
@@ -471,7 +511,7 @@ export function reconcileDivergenceShard(
     // reconciled markdown first; only truncate/write once it has succeeded.
     const reconciled = fillReconciliation(original, decision, note);
     ftruncateSync(fd, 0);
-    writeSync(fd, reconciled, 0, "utf8");
+    writeAllUtf8Sync(fd, reconciled);
   } finally {
     if (fd !== undefined) closeSync(fd);
   }

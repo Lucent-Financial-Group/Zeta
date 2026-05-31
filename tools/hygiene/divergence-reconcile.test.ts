@@ -431,6 +431,23 @@ describe("reconcileDivergenceShard (read → fillReconciliation → write-back, 
     });
   });
 
+  test("rejects symlinked shard ancestor paths before write-back", () => {
+    withTempRoot((root) => {
+      const insideRoot = join(root, "docs/hygiene-history/divergences");
+      const outsideDir = join(root, "outside-divergences");
+      const outside = join(outsideDir, "114800Z-symlink-ancestor.md");
+      const linkDir = join(insideRoot, "linkdir");
+      const relPath = "docs/hygiene-history/divergences/linkdir/114800Z-symlink-ancestor.md";
+      mkdirSync(insideRoot, { recursive: true });
+      mkdirSync(outsideDir, { recursive: true });
+      writeFileSync(outside, PENDING_SHARD);
+      symlinkSync(outsideDir, linkDir, "dir");
+
+      expect(() => reconcileDivergenceShard(root, relPath, "accept-loop-a")).toThrow(/symbolic link/);
+      expect(readFileSync(outside, "utf8")).toBe(PENDING_SHARD);
+    });
+  });
+
   test("rejects non-file paths before write-back", () => {
     withTempRoot((root) => {
       const relPath = "docs/hygiene-history/divergences/2026/05/10";
