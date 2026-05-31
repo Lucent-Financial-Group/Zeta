@@ -6,7 +6,16 @@ Status: [ ] todo · [~] doing · [x] gate passed (record HOW verified — eviden
 
 - Backend: Supabase, USA region, owner-owned. Connector-first; CLI fallback.
 - Archive over delete. $0 target; anon read-only heartbeat to prevent pause; manual + scheduled export.
-- service_role key: forbidden everywhere. (append decisions as we go)
+- service_role key: forbidden everywhere.
+- Phase 1 schema (2026-05-31, owner-approved): change_log has NO client INSERT policy (SECURITY
+  DEFINER trigger writes only); items.category is a single column; items.status is text+CHECK (not
+  enum); change_log timestamp column renamed changed_at; GIN index on custom_fields deferred to
+  Phase 5; immutability is two-layered (RLS no-UPDATE/DELETE + BEFORE U/D trigger that RAISEs);
+  RLS ENABLE (not FORCE) so SECURITY DEFINER triggers can write.
+- Pre-Phase-3 cleanup (known follow-up): proof runs left throwaway item `__client_proof_item__`
+  (id=2) + its immutable change_log row. Before the Phase 3 seed (explicit ids 1..211) the owner
+  removes them in the SQL editor (disable change_log_immutable trigger -> delete proof change_log
+  row + item -> re-enable) to avoid an id=2 PK collision. (append decisions as we go)
 
 ## Evidence rule
 
@@ -19,15 +28,21 @@ recorded evidence — re-verify instead. Doc changes happen only via an owner-ap
 your environment's planning/effort capabilities; current Supabase free-tier limits; region=USA);
 draft CLAUDE.md + spec.md + PROGRESS.md; give plain Supabase setup steps.
 GATE: owner approves docs + resolved items.
-- [ ] Phase 0b — Supabase live (owner): create project; turn ON "Enable RLS on new tables"; provide
+- [x] Phase 0b — Supabase live (owner): create project; turn ON "Enable RLS on new tables"; provide
 project URL + anon key. GATE: Claude confirms it can reach Supabase with the anon key.
 service_role key NOT shared.
-- [ ] Phase 1 — Schema + RLS + audit trigger.
+  EVIDENCE (2026-05-31): Project URL + publishable (anon) key delivered; admin user created in the
+  dashboard; Claude reached the REST API with the anon key (anon reads return [] — see Phase 1
+  evidence appendix). service_role NOT shared; publishable key is the public low-privilege key.
+- [x] Phase 1 — Schema + RLS + audit trigger.
 GATE: every table RLS-ON, default-deny, NO permissive/`USING(true)` policies, least-privilege;
 change_log immutable; trigger writes who/what/when.
 VERIFY (mix of Claude + OWNER): from a real client session attempt UPDATE/DELETE on change_log →
 refused. OWNER-RUN: unauthenticated anon `curl` on items, field_definitions, change_log, profiles
 → each returns nothing. (Claude provides commands + expected output; owner runs; not self-certified.)
+  EVIDENCE (2026-05-31): proof #3 anon reads all [] (+ RPC 42501); proof A (SQL editor) all PASSED
+  incl. broken-vs-fixed guard toggle; proof B (client editor session via REST) UPDATE+DELETE on
+  change_log -> [] / [] / row unchanged (action=INSERT). Full output in "Phase 1 evidence" appendix.
 - [ ] Phase 2 — Auth + roles.
 GATE: trust uses getUser()/verified claims; role single-source read by BOTH UI and RLS and they
 agree; sign-out ends access and clears rendered data.
@@ -207,3 +222,29 @@ approval before Phase 0b.
   missing markdown header-separator row (`|---|`). I did not "improve" it (per your instruction not to
   redraft/edit the contract docs). If the repo's markdown lint flags it on this PR, that's your call to
   fix in an owner-approved doc-change step — I won't silently edit it.
+
+## Phase 1 evidence (Claude + owner, 2026-05-31)
+
+All three Phase 1 proofs landed with observed output. **Phase 1 gate = PASSED.**
+
+SQL applied: `inventory/sql/phase1.sql` (owner ran it in the Supabase SQL editor; required one
+follow-up fix — `DROP FUNCTION current_user_role() CASCADE` — because CREATE OR REPLACE cannot
+change a function's return type, Postgres `42P13`).
+
+- **Proof #3 — anon returns nothing** (Claude ran; owner/auditor re-runs as the authority per spec):
+  `items` / `profiles` / `field_definitions` / `change_log` each → `[]` (HTTP 200); anon
+  `POST rpc/current_user_role` → `42501 permission denied for function` (HTTP 401), confirming
+  EXECUTE is granted to `authenticated` only.
+- **Proof A — privileged immutability + broken-vs-fixed** (owner ran `proofs/phase1_proofs.sql`):
+  results table all `PASSED` — `#1a` UPDATE blocked (`change_log is immutable`), `#1b` DELETE blocked,
+  `#2` with the immutability trigger DISABLED the tamper SUCCEEDED (proving the trigger is the guard).
+  Ran inside `BEGIN…ROLLBACK`, so it left no artifacts.
+- **Proof B — client-path immutability** (Claude ran as the disposable editor test user):
+  login OK; `current_user_role` → `"editor"`; `POST items` → HTTP 201 (editor can write; audit trigger
+  wrote `change_log` row `id=2`); `PATCH change_log` → `[]` (HTTP 200); `DELETE change_log` → `[]`
+  (HTTP 200); re-read → `action` still `"INSERT"`.
+
+Follow-ups recorded in the Decisions log:
+- Throwaway item `__client_proof_item__` (id=2) + its immutable `change_log` row persist; owner removes
+  them before the Phase 3 seed (id-collision avoidance).
+- A disposable **editor** test user exists for proof B and Phase 2; rotate/delete after Phase 2.
