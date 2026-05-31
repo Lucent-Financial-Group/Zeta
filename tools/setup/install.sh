@@ -40,7 +40,7 @@
 #     /run/initramfs canonical installer-       (B-0857.3 will factor that body into
 #     ISO markers)                              a callable nixos-install-from-usb.sh;
 #                                                this routing stub lands first)
-#   - Windows (Git Bash MINGW/MSYS/CYGWIN)   -> exec setup/install.ps1 via PowerShell
+#   - Windows (Git Bash MINGW/MSYS/CYGWIN)   -> exec tools/setup/install.ps1 via PowerShell
 #                                                (b2; the PowerShell graph is the
 #                                                Windows install path)
 #

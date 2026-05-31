@@ -10,6 +10,7 @@ import { grepTree, isExcludedDir, parseArgs, EXCLUDE_BASENAMES } from "./grep.ts
 //   references/upstreams/noise.ts  -> "needle" (MUST be excluded — the whole point)
 //   node_modules/dep/index.ts      -> "needle" (MUST be excluded)
 //   bin/output.ts                  -> "needle" (MUST be excluded)
+//   artifacts/built.ts             -> "needle" (MUST be excluded)
 //   src/case.ts                    -> "NeEdLe" (only matched with -i)
 let root: string;
 
@@ -25,6 +26,7 @@ beforeAll(() => {
   write("references/upstreams/noise.ts", "// needle in vendored upstream — MUST NOT surface\n");
   write("node_modules/dep/index.ts", "// needle in a dep — MUST NOT surface\n");
   write("bin/output.ts", "// needle in build output — MUST NOT surface\n");
+  write("artifacts/built.ts", "// needle in artifacts — MUST NOT surface\n");
   write("src/case.ts", "// NeEdLe mixed case\n");
 });
 
@@ -45,11 +47,12 @@ test("EXCLUDES references/upstreams (the load-bearing guarantee)", () => {
   expect(files.some((f) => f.includes("references/upstreams"))).toBe(false);
 });
 
-test("EXCLUDES node_modules and build-output dirs", () => {
+test("EXCLUDES node_modules + build-output dirs (bin, artifacts)", () => {
   const m = grepTree({ root, needle: "needle" });
   const files = m.map((x) => x.file);
   expect(files.some((f) => f.startsWith("node_modules/"))).toBe(false);
   expect(files.some((f) => f.startsWith("bin/"))).toBe(false);
+  expect(files.some((f) => f.startsWith("artifacts/"))).toBe(false);
 });
 
 test("case-sensitive by default; -i matches mixed case", () => {
@@ -80,8 +83,18 @@ test("isExcludedDir: upstreams + node_modules excluded, src kept", () => {
   expect(isExcludedDir(root, join(root, "upstreams"))).toBe(false);
 });
 
-test("EXCLUDE_BASENAMES carries the known noise dirs", () => {
-  for (const d of [".git", "node_modules", "bin", "obj", "target"]) {
+test("EXCLUDE_BASENAMES carries the known noise dirs (incl. .NET/Lean/bench outputs)", () => {
+  for (const d of [
+    ".git",
+    "node_modules",
+    "bin",
+    "obj",
+    "target",
+    "artifacts",
+    "TestResults",
+    "BenchmarkDotNet.Artifacts",
+    ".lake",
+  ]) {
     expect(EXCLUDE_BASENAMES.has(d)).toBe(true);
   }
 });
@@ -91,7 +104,7 @@ test("parseArgs: needle required", () => {
   expect("error" in r).toBe(true);
 });
 
-test("parseArgs: flags parsed", () => {
+test("parseArgs: flags parsed (default repo = cwd, valid)", () => {
   const r = parseArgs(["foo", "bar", "-i", "--ext", "ts,md", "--files"]);
   expect("error" in r).toBe(false);
   if (!("error" in r)) {
@@ -105,4 +118,16 @@ test("parseArgs: flags parsed", () => {
 test("parseArgs: unknown flag errors", () => {
   const r = parseArgs(["x", "--bogus"]);
   expect("error" in r).toBe(true);
+});
+
+test("parseArgs: bad --repo errors (no silent 0-hits false-negative)", () => {
+  const missing = parseArgs(["x", "--repo", join(root, "does-not-exist-xyz")]);
+  expect("error" in missing).toBe(true);
+  // a file (non-directory) is also rejected
+  const filePath = join(root, "src", "hit.ts");
+  const notDir = parseArgs(["x", "--repo", filePath]);
+  expect("error" in notDir).toBe(true);
+  // a real directory is accepted
+  const ok = parseArgs(["x", "--repo", root]);
+  expect("error" in ok).toBe(false);
 });

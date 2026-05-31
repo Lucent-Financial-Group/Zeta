@@ -35,9 +35,10 @@
 // EVERYWHERE — including this Windows laptop, which has no `rg` on PATH (2026-05-31).
 
 import { resolve, relative, join, sep } from "node:path";
-import { readdirSync, fstatSync, readFileSync, openSync, closeSync, type Dirent } from "node:fs";
+import { readdirSync, fstatSync, statSync, readFileSync, openSync, closeSync, type Dirent } from "node:fs";
 
-/** Directory basenames never worth searching (build outputs / vendored deps). */
+/** Directory basenames never worth searching (build outputs / vendored deps).
+ *  Mirrors the repo's established ignore set (gitignore / tsconfig / tooling). */
 export const EXCLUDE_BASENAMES = new Set([
   ".git",
   "node_modules",
@@ -46,6 +47,11 @@ export const EXCLUDE_BASENAMES = new Set([
   "target",
   ".playwright-mcp",
   "drop",
+  // .NET / Lean / benchmark build outputs (regeneratable; not source).
+  "artifacts",
+  "TestResults",
+  "BenchmarkDotNet.Artifacts",
+  ".lake",
 ]);
 
 /** Repo-relative POSIX paths to skip wholesale. references/upstreams is the
@@ -194,6 +200,20 @@ export function parseArgs(argv: string[]): ParsedArgs | { error: string } {
   if (!needle) {
     return { error: "usage: bun tools/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]" };
   }
+
+  // Fail loud on a bad search root: a missing/non-directory --repo would otherwise
+  // walk nothing, return 0 matches, and exit 0 — indistinguishable from a genuine
+  // "no hits" (a silent false-negative). Validate so main() can exit non-zero.
+  let repoStat;
+  try {
+    repoStat = statSync(repo);
+  } catch {
+    return { error: `--repo path does not exist: ${repo}` };
+  }
+  if (!repoStat.isDirectory()) {
+    return { error: `--repo is not a directory: ${repo}` };
+  }
+
   return { needle, repo, exts, ignoreCase, filesOnly };
 }
 
