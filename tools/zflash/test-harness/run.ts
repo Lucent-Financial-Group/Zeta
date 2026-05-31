@@ -80,11 +80,13 @@ export interface RetentionRuntimeOptions {
   readonly cwd?: string;
   readonly timeoutMs?: number;
   readonly kvmAvailable?: boolean;
+  readonly bootImagePath?: string;
 }
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const RETENTION_EXECUTION_ENV = "ZFLASH_QEMU_RETENTION_EXECUTE";
 const RETENTION_TIMEOUT_ENV = "ZFLASH_QEMU_RETENTION_TIMEOUT_MS";
+const RETENTION_BOOT_IMAGE_ENV = "ZFLASH_QEMU_RETENTION_BOOT_IMAGE";
 const KVM_PATH = "/dev/kvm";
 
 function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
@@ -253,13 +255,25 @@ function retentionTimeoutMsFromEnv(): number | undefined {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
 }
 
+function retentionBootImagePathFromEnv(): string | undefined {
+  const raw = process.env[RETENTION_BOOT_IMAGE_ENV];
+  if (raw === undefined || raw.trim().length === 0) {
+    return undefined;
+  }
+  return resolve(raw);
+}
+
 export function runRetentionRuntime(
   isoPath: string,
   options: RetentionRuntimeOptions = {},
 ): ScenarioResult {
   const absIsoPath = resolve(isoPath);
+  const bootImagePath = options.bootImagePath === undefined
+    ? retentionBootImagePathFromEnv()
+    : resolve(options.bootImagePath);
   const planned = planQcow2SnapshotRetention({
     isoPath: absIsoPath,
+    ...(bootImagePath === undefined ? {} : { bootImagePath }),
     diskPath: `${absIsoPath}.scenario3.qcow2`,
     serialLogPath: `${absIsoPath}.scenario3.serial.log`,
     snapshotName: "post-initial-format",

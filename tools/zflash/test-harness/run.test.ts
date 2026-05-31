@@ -106,6 +106,23 @@ describe("B-0891 test-harness dispatcher", () => {
     }
   });
 
+  test("retention runtime can plan against an explicit zflash-prepared boot image", () => {
+    const result = runRetentionRuntime("/tmp/zeta.iso", {
+      bootImagePath: "/tmp/zflash-boot.img",
+    });
+
+    expect(result.status).toBe("failed");
+    expect(result.qemuRetentionPlan?.bootImagePath).toBe("/tmp/zflash-boot.img");
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain(
+      "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
+    );
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain("qemu-xhci,id=xhci");
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain(
+      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+    );
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).not.toContain("-cdrom");
+  });
+
   test("retention runtime stays failed when QEMU output does not prove retention", () => {
     const result = runRetentionRuntime("/tmp/zeta.iso", {
       execute: true,

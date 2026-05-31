@@ -111,6 +111,29 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect(result.ok.restartFromIsoWithDisk.args).toContain("qemu64");
   });
 
+  test("can boot from a zflash-prepared raw USB image instead of a plain CD-ROM ISO", () => {
+    const result = planQcow2SnapshotRetention({
+      isoPath: "/tmp/zeta.iso",
+      bootImagePath: "/tmp/zflash-boot.img",
+      diskPath: "/tmp/zeta.qcow2",
+      serialLogPath: "/tmp/serial.log",
+      snapshotName: "post-initial-format",
+    });
+    if ("error" in result) throw new Error(result.error.reason);
+
+    expect(result.ok.bootImagePath).toBe("/tmp/zflash-boot.img");
+    expect(result.ok.restartFromIsoWithDisk.args).not.toContain("-cdrom");
+    expect(result.ok.restartFromIsoWithDisk.args).not.toContain("/tmp/zeta.iso");
+    expect(result.ok.restartFromIsoWithDisk.args).toContain(
+      "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
+    );
+    expect(result.ok.restartFromIsoWithDisk.args).toContain("qemu-xhci,id=xhci");
+    expect(result.ok.restartFromIsoWithDisk.args).toContain(
+      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+    );
+    expect(result.ok.restartFromIsoWithDisk.args).toContain("file=/tmp/zeta.qcow2,if=virtio,format=qcow2");
+  });
+
   test("carries retention serial markers for later runtime assertions", () => {
     const result = planQcow2SnapshotRetention({
       isoPath: "/tmp/zeta.iso",

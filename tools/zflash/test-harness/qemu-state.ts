@@ -16,6 +16,7 @@ export interface QemuCommand {
 
 export interface Qcow2SnapshotRetentionInput {
   readonly isoPath: string;
+  readonly bootImagePath?: string;
   readonly diskPath: string;
   readonly serialLogPath: string;
   readonly snapshotName: string;
@@ -27,6 +28,7 @@ export interface Qcow2SnapshotRetentionInput {
 
 export interface Qcow2SnapshotRetentionPlan {
   readonly isoPath: string;
+  readonly bootImagePath?: string;
   readonly diskPath: string;
   readonly serialLogPath: string;
   readonly snapshotName: string;
@@ -214,6 +216,9 @@ function validateInput(input: Qcow2SnapshotRetentionInput): Qcow2SnapshotRetenti
   if (!nonEmpty(input.isoPath)) {
     return { kind: "invalid-input", field: "isoPath", reason: "ISO path is required" };
   }
+  if (input.bootImagePath !== undefined && !nonEmpty(input.bootImagePath)) {
+    return { kind: "invalid-input", field: "bootImagePath", reason: "boot image path must be non-empty when provided" };
+  }
   if (!nonEmpty(input.diskPath)) {
     return { kind: "invalid-input", field: "diskPath", reason: "qcow2 disk path is required" };
   }
@@ -235,7 +240,11 @@ function validateInput(input: Qcow2SnapshotRetentionInput): Qcow2SnapshotRetenti
   return null;
 }
 
-function buildRestartArgs(input: Required<Qcow2SnapshotRetentionInput>): readonly string[] {
+type NormalizedQcow2SnapshotRetentionInput =
+  & Required<Omit<Qcow2SnapshotRetentionInput, "bootImagePath">>
+  & Pick<Qcow2SnapshotRetentionInput, "bootImagePath">;
+
+function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonly string[] {
   const args: string[] = [
     "-machine",
     "q35",
@@ -243,10 +252,6 @@ function buildRestartArgs(input: Required<Qcow2SnapshotRetentionInput>): readonl
     String(input.memoryMB),
     "-smp",
     String(input.cpuCount),
-    "-cdrom",
-    input.isoPath,
-    "-boot",
-    "d",
     "-drive",
     `file=${input.diskPath},if=virtio,format=qcow2`,
     "-serial",
@@ -258,6 +263,24 @@ function buildRestartArgs(input: Required<Qcow2SnapshotRetentionInput>): readonl
     "-device",
     "virtio-net-pci,netdev=net0",
   ];
+
+  if (input.bootImagePath !== undefined) {
+    args.push(
+      "-drive",
+      `file=${input.bootImagePath},if=none,format=raw,readonly=on,id=zflashboot`,
+      "-device",
+      "qemu-xhci,id=xhci",
+      "-device",
+      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+    );
+  } else {
+    args.push(
+      "-cdrom",
+      input.isoPath,
+      "-boot",
+      "d",
+    );
+  }
 
   if (input.kvmAvailable) {
     args.push("-enable-kvm", "-cpu", "host");
@@ -276,8 +299,9 @@ export function planQcow2SnapshotRetention(
     return { error: invalid };
   }
 
-  const normalized: Required<Qcow2SnapshotRetentionInput> = {
+  const normalized: NormalizedQcow2SnapshotRetentionInput = {
     isoPath: input.isoPath,
+    ...(input.bootImagePath === undefined ? {} : { bootImagePath: input.bootImagePath }),
     diskPath: input.diskPath,
     serialLogPath: input.serialLogPath,
     snapshotName: input.snapshotName,
@@ -290,6 +314,7 @@ export function planQcow2SnapshotRetention(
   return {
     ok: {
       isoPath: normalized.isoPath,
+      ...(normalized.bootImagePath === undefined ? {} : { bootImagePath: normalized.bootImagePath }),
       diskPath: normalized.diskPath,
       serialLogPath: normalized.serialLogPath,
       snapshotName: normalized.snapshotName,

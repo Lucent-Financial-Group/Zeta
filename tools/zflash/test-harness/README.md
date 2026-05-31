@@ -68,6 +68,20 @@ ZFLASH_QEMU_RETENTION_EXECUTE=1 \
   bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention <iso-path>
 ```
 
+When testing a zflash-prepared USB artifact instead of a plain installer
+ISO, point the runner at the raw boot image with
+`ZFLASH_QEMU_RETENTION_BOOT_IMAGE`:
+
+```bash
+ZFLASH_QEMU_RETENTION_BOOT_IMAGE=/path/to/zflash-boot.img \
+ZFLASH_QEMU_RETENTION_EXECUTE=1 \
+  bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention <iso-path>
+```
+
+The positional ISO path still names the run artifacts (`*.scenario3.qcow2`
+and `*.scenario3.serial.log`); the boot-image env var supplies the actual
+USB-shaped boot media so QEMU can observe the zflash-baked ESP contents.
+
 The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence:
 create the qcow2 disk, boot the ISO once to establish the baseline disk,
 stop that boot when the serial log reaches the observed installer-ready
