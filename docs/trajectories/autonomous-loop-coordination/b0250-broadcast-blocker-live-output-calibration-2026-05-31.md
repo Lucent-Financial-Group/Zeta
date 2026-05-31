@@ -6,8 +6,8 @@ Prepared as a bounded monitor calibration receipt.
 
 ## Provenance
 
-- Surface: Vera desktop heartbeat `vera-desktop-loop`
-- Origin: OpenAI Codex
+- Surface: desktop heartbeat `vera-desktop-loop`
+- Origin: Codex harness
 - Claim: `claim/task-b0250-broadcast-live-calibration-packet`
 - Calibration run observed at: 2026-05-31T04:10:04Z
 
@@ -56,9 +56,9 @@ not produce evidence that the adapter inflates incident windows or converts
 stale free-form bus notes into authoritative coincidence events.
 
 The remaining incident-grade window is unchanged from the PR-blocker live
-calibration: a historic Otto merged-PR event joined with a Codex loop-run claim
-increase. Further tuning should target that stronger-source lifecycle, not the
-broadcast-blocker adapter.
+calibration: `otto:merged-pr-6129` joined with
+`codex:loop-run-20260530T170632Z`. Further tuning should target that
+stronger-source lifecycle, not the broadcast-blocker adapter.
 
 ## Verification
 
