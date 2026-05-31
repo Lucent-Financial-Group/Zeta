@@ -43,7 +43,7 @@
 //   2 — grok CLI returned a non-zero exit (diagnostic on stderr)
 //   3 — input-firewall rejected the prompt as not work-extractable
 
-import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
+import { closeSync, mkdirSync, openSync, readSync, statSync, writeSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -207,7 +207,34 @@ function ensureParentDir(path: string): void {
   try {
     mkdirSync(dirname(path), { recursive: true });
   } catch {
-    // best-effort; writeFileSync will surface the real error
+    // best-effort; the openSync write will surface the real error
+  }
+}
+
+function writeOutputExclusive(path: string, data: string): void {
+  // Mitigates symlink-overwrite (CodeQL "insecure temporary file"): open with
+  // `wx` (exclusive create — fails if the path exists, preventing follow-symlink
+  // overwrites of an attacker-planted /tmp file) + mode 0o600. Mirrors
+  // grok-build.ts / claude.ts.
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "wx", 0o600);
+    const buf = Buffer.from(data, "utf8");
+    writeSync(fd, buf, 0, buf.length, 0);
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
+}
+
+function writeOutputTruncate(path: string, data: string): void {
+  // Explicit operator path — they chose it + may want to overwrite. `w` + 0o600.
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "w", 0o600);
+    const buf = Buffer.from(data, "utf8");
+    writeSync(fd, buf, 0, buf.length, 0);
+  } finally {
+    if (fd !== undefined) closeSync(fd);
   }
 }
 
@@ -515,7 +542,13 @@ export function main(argv: readonly string[]): number {
 
   const stdoutStr: string = result.stdout ?? "";
   try {
-    writeFileSync(outputFile, stdoutStr);
+    // Auto-generated /tmp paths use exclusive-create (symlink-safe); explicit
+    // operator paths use truncate (their chosen path). Mirrors grok-build.ts.
+    if (parsed.outputFile.length > 0) {
+      writeOutputTruncate(outputFile, stdoutStr);
+    } else {
+      writeOutputExclusive(outputFile, stdoutStr);
+    }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     process.stderr.write(`error: failed to write output-file ${outputFile}: ${msg}\n`);
