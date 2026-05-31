@@ -52,7 +52,7 @@ move that converts an infeasible idealization into an achievable system property
 
 ## 2. Formal setup
 
-Let a **simulation** be a tuple `S = (Σ, σ₀, A, δ, E)`:
+Let a **simulation** be a tuple `S = (Σ, σ, A, δ, E)`:
 
 - `Σ` — the state space (all well-formed states).
 - `σ` — a **seed** drawn from a seed-space; fixes every nondeterministic choice.
@@ -200,11 +200,34 @@ distribution. Concretely:
   retrograde table.
 - The **Atari all-state-space** demo (B-0924) under this lens is the posterior over
   reachable game states weighted by probability, not an enumerated value table.
-- Bayesian update composes with the DBSP/Z-set retraction algebra (§4.2):
-  incorporating evidence is an incremental view-maintenance step (down-weight =
-  negative multiplicity; the posterior is an incrementally-maintained Z-set / signed
-  measure). So **(O4) incremental queryability applies to the *posterior*, not just
-  to deterministic derived views.**
+- Bayesian update composes with the DBSP/Z-set retraction algebra (§4.2) **at the
+  sufficient-statistic layer, not on the probabilities directly.** A Bayesian update
+  is multiplicative (likelihood) + a normalization; probabilities must stay
+  non-negative and sum to 1, so it is *not* literally "down-weight = negative Z-set
+  multiplicity." What DBSP/Z-sets maintain incrementally is the **evidence / counts /
+  unnormalized log-weights / sufficient statistics** — those compose additively and
+  *retract* cleanly (removing a piece of evidence = adding its inverse). The
+  **posterior is the normalized derived view** computed from those incrementally-
+  maintained statistics. So **(O4) incremental queryability applies to the
+  posterior's sufficient statistics** (and thus, via normalization, to the posterior
+  itself) — not just to deterministic derived views.
+- **The inference engine: Infer.NET over Z-sets** (operator 2026-05-31:
+  *"infer.net over zsets"*). The Bayesian inference itself is **message passing** —
+  Expectation Propagation / belief propagation / variational message passing over a
+  **factor graph** — which is exactly [Infer.NET](https://dotnet.github.io/infer/)'s
+  regime (Microsoft Research; EP generalizes loopy belief propagation; open-source
+  `dotnet/infer`, MIT —
+  [Probabilistic Programming with Infer.NET](https://www.microsoft.com/en-us/research/publication/probabilistic-programming-infer-net/)).
+  The crucial fit: **the factor-graph messages ARE the sufficient statistics of the
+  bullet above.** Running message passing **over Z-sets** means those messages /
+  factors are maintained incrementally + retractably by DBSP — *retracting evidence
+  retracts its messages* — so incremental Bayesian update **and** the rewind / branch
+  of §6.5 are message-retractions, and the posterior is the normalized marginal. This
+  is already a **named framework target**: the peer-call rule's *"future state is Zeta
+  Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level
+  inference"* + the `algebra-owner` skill's BP/EP-over-Z-set F# substrate. So the
+  probabilistic-regime engine is not hypothetical — it is Infer.NET-class message
+  passing whose messages live on the retraction-native Z-set substrate.
 
 **Refinement to the definition (§3) for the probabilistic regime:** in the Bayesian
 regime, "computational omniscience over `S`" means omniscience over the **posterior
@@ -229,10 +252,12 @@ The "omniscience" is **bounded** and the bounds are the substrate-honest content
    nondeterminism (an un-injected `now()`, real RNG, real network, OS-scheduler
    race) breaks replay and collapses the property. (O1) is a *discipline*, not a
    freebie — it is the entire cost.
-3. **Exploration-bounded.** Knowing *any* state is `O(1)`-to-recompute does not mean
+3. **Exploration-bounded.** Knowing *any* state is *computable on demand* (under the
+   replay/checkpoint cost model of bound 4 — not constant-time) does not mean
    *enumerating all* states is free. Like BUGGIFY, you *sample/navigate* the
    state-space; full enumeration is still exponential. "Omniscience" = *any state is
-   knowable on demand*, not *all states are materialized at once*.
+   knowable on demand* (and, per §6.5, cheaply *reachable* by incremental
+   rewind/fast-forward/branch), not *all states are materialized at once*.
 4. **Cost-bounded.** Incremental (O4) is cheap *relative to recompute*, not free;
    replay (O2) is bounded by log length (mitigated by snapshots/checkpoints).
 
@@ -336,7 +361,7 @@ here at toy scale, not-yet-at-framework-scale" status the operator named.
 ## 8. The formal claim + the falsifier
 
 **Claim (theorem-shape):**
-> Let `S = (Σ, σ₀, A, δ, E)` satisfy **(C1)** `init`/`δ` are pure + total and *every*
+> Let `S = (Σ, σ, A, δ, E)` satisfy **(C1)** `init`/`δ` are pure + total and *every*
 > nondeterministic input is a function of `σ`/`E`; **(C2)** the event log is
 > append-only; **(C3)** derived views are expressed in DBSP over Z-sets. Then `M`
 > running `S` has computational omniscience over `S` in the sense (O1)–(O5).
@@ -358,7 +383,7 @@ not god-tier. A god-tier claim has no falsifier; this one's falsifier is a CI te
 ## 9. The verification path (route to the formal-verification expert)
 
 This doc is the **analysis**, not the **verification**. The verification follow-up
-(per [`formal-verification-expert`](../../.claude/agents/) routing — pick the tool
+(per [`formal-verification-expert`](../../.claude/agents/formal-verification-expert.md) routing — pick the tool
 for the property class before writing a spec; guard against TLA+-hammer bias):
 
 - **(O1) determinism / replay-equivalence** — a *safety* property over a state
@@ -389,8 +414,8 @@ in both directions: not god-tier, and not "we've done it."
 
 **Composes with:**
 - `.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md` (this doc is its rigorous backing)
-- `.claude/rules/future-does-not-edit-past-event-...-three-clocks-...md` (§6 generator-time)
-- `.claude/rules/past-is-kind-when-lightlike-...md` (append-only replayable trajectory = "lightlike" rays)
+- `.claude/rules/future-does-not-edit-past-event-future-affects-generator-that-makes-past-intelligible-three-clocks-physical-git-generator-time-amara-aaron-2026-05-28.md` (§6 generator-time)
+- `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md` (append-only replayable trajectory = "lightlike" rays)
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` (the discipline whose failure produced the initial mis-framing this doc corrects)
 - `.claude/rules/edge-defining-work-not-speculation.md` (the further bets — physics-retrocausality, "no digital at all" — are edge-defining, distinct from this achieved-elsewhere property)
 - B-0867.27/.28 (observe-fold algebra + monoid), B-0917 (Kleisli interrupts), B-0924/B-0925 (state-space simulators), B-0944 (4-language BFT), B-0951 (git-native DBSP indexes), `algebra-owner` (Z-sets)
@@ -407,3 +432,4 @@ in both directions: not god-tier, and not "we've done it."
 - [Building an open-source Antithesis, Part 1 (DST ecosystem)](https://databases.systems/posts/open-source-antithesis-p1)
 - [DBSP: Automatic Incremental View Maintenance for Rich Query Languages (arXiv 2203.16684)](https://arxiv.org/abs/2203.16684)
 - [DBSP — VLDB Journal 2025](https://dl.acm.org/doi/10.1007/s00778-025-00922-y)
+- [Infer.NET (dotnet.github.io/infer)](https://dotnet.github.io/infer/) · [Probabilistic Programming with Infer.NET (Microsoft Research)](https://www.microsoft.com/en-us/research/publication/probabilistic-programming-infer-net/) · [Infer.NET — Expectation Propagation](https://dotnet.github.io/infer/userguide/Expectation%20Propagation.html)
