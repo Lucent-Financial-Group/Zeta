@@ -46,13 +46,16 @@ is an additive layer on existing primitives — no substrate change.
 ### G2. Model-eval harness (Class A/B downgrade)
 *Gap closed: gastown gt-model-eval.*
 
-- A corpus of real `observe()` situations (work-item triage, review-gate, memory
-  promote/demote, supervisor-triage), each with an `allowed_actions` vocabulary + expected action.
-- Run our `ChatCompletionPort` (Ollama, gated hosted) in two classes: **Class B** = full hat
-  directive context (instruction-following); **Class A** = neutral, evidence-only (pure reasoning,
-  the safe-downgrade signal). Score decision quality, not syntax.
-- **Build:** `packages/model-eval/` + `deploy/run-model-eval.ts`; results recorded as org_events.
-  This is the input to the self-optimization loop (M3) — not a one-off benchmark.
+**Status: shipped 2026-05-31.**
+
+- `packages/model-eval/` runs Class A neutral-evidence cases and Class B directive-context cases
+  through a decision port, then scores the returned action against an `allowedActions` vocabulary
+  and expected action.
+- Model-eval reports carry stable overall / per-class accuracy, failed case ids, illegal case ids,
+  and a `model_eval_completed` org_event projection.
+- **Built:** `packages/model-eval/` and `deploy/run-model-eval-optimizer.ts`; KIND proof recorded
+  content-addressed eval evidence and one `model_eval_completed` event for
+  `org-model-eval-optimizer-ccc393f8`, `PROOF: PASS`.
 
 ### G3. Recovery scanners (the lanes our NORTH_STAR already names)
 *Gap closed: gastown convoy stranded-scan + reaper + witness patrol.*
@@ -111,13 +114,41 @@ M5) → memory KPI-correlation measures the realized decision outcome → re-eva
 which model + which policy each hat uses, with evidence from its own outcomes, recorded as
 org_events.
 
-- We already have the two hard halves: memory KPI-correlation (which cited memories preceded a
-  merged outcome) and the model-eval scaffold. M3 is the controller that joins them.
+**Status: shipped 2026-05-31.**
+
+- `packages/application/src/decision-optimizer.ts` reads model-eval summaries and KPI signal,
+  then proposes a safe model downgrade only when Class A clears threshold, KPI is non-negative,
+  eval/KPI evidence is content-addressed, the evaluated model matches the candidate, the candidate
+  is lower-cost than the currently resolved model, and the budget delta is negative.
+- The optimizer cycle depends on a generic document/log store (`getJson`, `putJson`,
+  `appendJson`). Cockroach is one adapter for KIND; a Git/GitHub-backed adapter can persist the
+  same drafted ChangeSet and config artifact through files / PRs without changing optimizer logic.
+- The optimizer does not mutate tenant config. It emits a drafted ChangeSet with a
+  full org-scoped tenant-config document artifact (`tenant-config/<org>.json`), so the org's own
+  policy changes pass through the same review fabric as code/doc changes without cross-org path
+  collisions.
+- KIND proof produced drafted ChangeSet `604120b3-4b7d-59f7-8030-fd28d1258302` and one
+  `decision_optimization_proposed` org_event carrying both eval and KPI evidence refs.
+- After the generic-store correction, the current deploy proof produced drafted ChangeSet
+  `6642c9f1-a96d-57ff-b3ad-fa97e33c1840` through that generic document/log store interface with
+  Cockroach only as the adapter.
 - **Why gastown cannot:** no memory-KPI substrate, no enforced config to tune, no ledger to
   measure against.
-- **Build:** `packages/application/src/decision-optimizer.ts` — reads eval + KPI org_events,
-  proposes a `tenant_config` delta as a *ChangeSet* (so the change to the org's own policy goes
-  through the same enforced change-control kernel — the org governs itself by its own rules).
+
+### M5. Layered tenant config — model/policy overlays as data
+
+**Status: shipped 2026-05-31.**
+
+- `TenantConfig.layers` now supports organization, department, hat, and work-item scopes.
+- Resolution is deterministic: more-specific non-nil model wins; integer budget deltas stack; a
+  layer can block inherited directives before adding its own; same-specificity ties resolve by
+  `updatedAt`, `version`, then `layerId`.
+- The existing Cockroach tenant-config row remains compatible because layers live inside the JSONB
+  config blob; Git/file stores can carry the same `TenantConfig` document because resolution is
+  over the generic domain shape, not a SQL row shape.
+- KIND proof resolved `gpt-5.5` before the optimizer overlay and `qwen2:0.5b` with
+  `budgetDeltaTokens = -512` after the proposed hat layer, with inherited frontier-model
+  directives blocked by the optimizer overlay.
 
 ### M4. Formal verification of the clamp
 Make the legal-transition functions provably total and safe: property-based tests (every DU

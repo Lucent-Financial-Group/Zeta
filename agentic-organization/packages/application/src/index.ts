@@ -1,4 +1,19 @@
 export {
+  proposeDecisionOptimizerChangeSet,
+  runDecisionOptimizerCycle,
+  changeSetDocumentKey,
+  orgEventStreamKey,
+  tenantConfigDocumentKey,
+  type DecisionOptimizerKpiSignal,
+  type DecisionOptimizerCycleResult,
+  type DecisionOptimizerNoProposalReason,
+  type DecisionOptimizerResult,
+  type DecisionOptimizerStore,
+  type DecisionOptimizerThresholds,
+  type ProposeDecisionOptimizerChangeSetInput,
+  type RunDecisionOptimizerCycleInput,
+} from "./decision-optimizer.ts";
+export {
   TriageActionFeedbackReason,
   TriageActionResolution,
   resolveTriageAction,

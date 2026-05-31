@@ -1818,3 +1818,70 @@ logs showed the worker cadence lanes and keep-alive ticking with `failureCount:0
 
 `npm run typecheck` passed. `npm test` passed: **897 tests, 0 fail** (7 skipped live-integration
 tests).
+
+---
+
+## Update 2026-05-31 — G2/M3/M5 self-improving org loop shipped and proven in kind
+
+The org now has its first closed self-improvement loop: deterministic model eval produces durable
+decision-quality evidence; the decision optimizer reads that evidence plus KPI signal and proposes
+a tenant-config delta as a ChangeSet; layered tenant config resolves the proposed overlay without
+mutating runtime policy directly.
+
+### What shipped
+
+- `packages/model-eval/` scores Class A neutral-evidence cases and Class B directive-context cases
+  against an allowed action vocabulary and expected action. The eval runner calls a decision port
+  per case before scoring; the deploy proof uses a deterministic port so the proof is hermetic.
+- Model-eval reports now summarize stable overall / per-class accuracy, failed cases, illegal
+  decisions, and can project results into `model_eval_completed` org_events.
+- `packages/application/src/decision-optimizer.ts` proposes safe model downgrades only when Class A
+  clears threshold, KPI is non-negative, eval and KPI evidence refs are content-addressed, the
+  evaluated model equals the candidate model, the candidate is lower-cost than the currently
+  resolved model, and the budget delta is negative. It emits a drafted ChangeSet with a
+  `config_change` artifact instead of mutating tenant config.
+- The optimizer cycle is storage-neutral: it reads one JSON document with `getJson`, writes one
+  JSON document with `putJson`, and appends JSON events with `appendJson`. The KIND proof supplies
+  Cockroach stores behind that generic document/log adapter; a Git or GitHub PR-backed store can
+  satisfy the same contract with files and PR changes without changing optimizer logic.
+- Tenant config now supports versioned layers over organization, department, hat, and work-item
+  scopes. Resolution is deterministic: more-specific non-nil model wins, integer budget deltas
+  stack, same-specificity ties resolve by `updatedAt`, `version`, then `layerId`, and a layer can
+  block inherited directives.
+- New event kind `decision_optimization_proposed` records optimizer proposals as durable ledger
+  evidence.
+- KIND proof runner: `deploy/run-model-eval-optimizer.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:g2-m3-m5-generic-store`
+(`sha256:a1dd61300a85be5f1583ca8d99f0aa1034a93ac1811e88ec24f8feb306a8b612`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-687cc7dbd5-v2snn` with zero restarts. Fresh boot
+logs showed cadence lanes, conformance, memory maintenance, keep-alive, and the worker cycle
+ticking with `failureCount:0`.
+
+`deploy/run-model-eval-optimizer.ts` ran through the generic optimizer store interface with
+in-cluster Cockroach as the adapter for `org-model-eval-optimizer-65f29b32` and proved:
+
+- The seeded model-eval run `eval-65f29b32` scored 2/2 overall, Class A 1/1, Class B 1/1 through
+  the eval runner's decision-port path.
+- The eval summary was bound to content-addressed evidence
+  `evidence:model-eval-report:sha256:327b39c90b8ccc93e5da9768b0765837aaf17aab1d330c31e3f90b86d9a6fb13`.
+- The KPI signal was bound to content-addressed evidence
+  `evidence:decision-kpi:sha256:9156181894765028106932c6e78453723dacae72b372d2ab1b1aa87839468b61`.
+- The optimizer produced drafted ChangeSet `6642c9f1-a96d-57ff-b3ad-fa97e33c1840` with one full
+  `tenant-config/org-model-eval-optimizer-65f29b32.json` `config_change` artifact.
+- Layer resolution before the overlay selected `gpt-5.5` with baseline directive
+  `baseline:use-frontier-model`.
+- Layer resolution after the proposed overlay selected `qwen2:0.5b`, stacked
+  `budgetDeltaTokens = -512`, blocked the inherited baseline directive, and retained only the
+  optimizer directive `optimizer:model-downgrade:eval-65f29b32`.
+- The live ledger contained one `model_eval_completed` event and one
+  `decision_optimization_proposed` event carrying both eval and KPI evidence refs.
+
+`PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **916 tests, 0 fail** (7 skipped live-integration
+tests).
