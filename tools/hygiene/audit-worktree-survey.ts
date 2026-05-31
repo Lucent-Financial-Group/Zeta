@@ -7,6 +7,7 @@
 //   bun tools/hygiene/audit-worktree-survey.ts --json
 //   bun tools/hygiene/audit-worktree-survey.ts --root PATH
 //   bun tools/hygiene/audit-worktree-survey.ts --report PATH
+//   bun tools/hygiene/audit-worktree-survey.ts --dry
 //
 // Exit codes:
 //   0   survey completed
@@ -24,12 +25,15 @@ interface Args {
   readonly root: string | null;
   readonly report: string | null;
   readonly json: boolean;
+  readonly dry: boolean;
 }
 
 interface WorktreeEntry {
   readonly path: string;
   readonly head: string | null;
   readonly branch: string | null;
+  readonly locked: boolean;
+  readonly lockReason: string | null;
   readonly prunable: boolean;
 }
 
@@ -71,6 +75,7 @@ function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "erro
   let root: string | null = null;
   let report: string | null = null;
   let json = false;
+  let dry = false;
   let i = 0;
 
   while (i < argv.length) {
@@ -88,12 +93,15 @@ function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "erro
     } else if (arg === "--json") {
       json = true;
       i += 1;
+    } else if (arg === "--dry") {
+      dry = true;
+      i += 1;
     } else {
       return { kind: "error", message: `Unknown argument: ${arg}` };
     }
   }
 
-  return { kind: "args", args: { root, report, json } };
+  return { kind: "args", args: { root, report, json, dry } };
 }
 
 function gitArgs(root: string | null, args: readonly string[]): string[] {
@@ -108,16 +116,22 @@ function parseWorktreePorcelain(stdout: string): WorktreeEntry[] {
     let path = "";
     let head: string | null = null;
     let branch: string | null = null;
+    let locked = false;
+    let lockReason: string | null = null;
     let prunable = false;
 
     for (const line of block.split("\n")) {
       if (line.startsWith("worktree ")) path = line.slice(9);
       else if (line.startsWith("HEAD ")) head = line.slice(5);
       else if (line.startsWith("branch ")) branch = line.slice(7);
-      else if (line === "prunable" || line.startsWith("prunable ")) prunable = true;
+      else if (line === "locked") locked = true;
+      else if (line.startsWith("locked ")) {
+        locked = true;
+        lockReason = line.slice(7);
+      } else if (line === "prunable" || line.startsWith("prunable ")) prunable = true;
     }
 
-    if (path.length > 0) entries.push({ path, head, branch, prunable });
+    if (path.length > 0) entries.push({ path, head, branch, locked, lockReason, prunable });
   }
   return entries;
 }
@@ -185,7 +199,8 @@ function makeSurvey(
   now: Date,
   root: string | null,
 ): WorktreeSurvey {
-  const items = classifyWorktrees(entries, inspector);
+  const scopedEntries = entries.filter((entry) => entry.locked || entry.prunable);
+  const items = classifyWorktrees(scopedEntries, inspector);
   return {
     schemaVersion: 1,
     generatedAt: now.toISOString(),
@@ -370,7 +385,7 @@ function main(argv: string[]): AuditExitCode {
   }
 
   const output = formatSurveyOutput(survey, parsed.args.json);
-  if (parsed.args.report !== null) {
+  if (parsed.args.report !== null && !parsed.args.dry) {
     writeFileSync(parsed.args.report, output);
     console.log(`wrote ${parsed.args.report}`);
   } else {

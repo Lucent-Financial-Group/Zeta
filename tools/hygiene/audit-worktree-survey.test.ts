@@ -18,6 +18,8 @@ function entry(overrides: Partial<WorktreeEntry> = {}): WorktreeEntry {
     path: "/repo/worktree",
     head: "abc123",
     branch: "refs/heads/feature",
+    locked: true,
+    lockReason: "agent parked for recovery",
     prunable: false,
     ...overrides,
   };
@@ -36,12 +38,13 @@ function inspection(overrides: Partial<WorktreeInspection> = {}): WorktreeInspec
 
 describe("parseArgs", () => {
   test("parses root, report, and json flags", () => {
-    expect(parseArgs(["--root", "/repo", "--report", "survey.md", "--json"])).toEqual({
+    expect(parseArgs(["--root", "/repo", "--report", "survey.md", "--json", "--dry"])).toEqual({
       kind: "args",
       args: {
         root: "/repo",
         report: "survey.md",
         json: true,
+        dry: true,
       },
     });
   });
@@ -61,9 +64,9 @@ describe("parseArgs", () => {
   });
 
   test("rejects unknown arguments", () => {
-    expect(parseArgs(["--dry"])).toEqual({
+    expect(parseArgs(["--dry-run"])).toEqual({
       kind: "error",
-      message: "Unknown argument: --dry",
+      message: "Unknown argument: --dry-run",
     });
   });
 });
@@ -74,6 +77,7 @@ describe("parseWorktreePorcelain", () => {
       "worktree /repo/main",
       "HEAD aaa",
       "branch refs/heads/main",
+      "locked active recovery lane",
       "",
       "worktree /repo/stale",
       "HEAD bbb",
@@ -83,13 +87,35 @@ describe("parseWorktreePorcelain", () => {
       "worktree /repo/detached",
       "HEAD ccc",
       "detached",
+      "locked",
       "",
     ].join("\n");
 
     expect(parseWorktreePorcelain(stdout)).toEqual([
-      { path: "/repo/main", head: "aaa", branch: "refs/heads/main", prunable: false },
-      { path: "/repo/stale", head: "bbb", branch: "refs/heads/old", prunable: true },
-      { path: "/repo/detached", head: "ccc", branch: null, prunable: false },
+      {
+        path: "/repo/main",
+        head: "aaa",
+        branch: "refs/heads/main",
+        locked: true,
+        lockReason: "active recovery lane",
+        prunable: false,
+      },
+      {
+        path: "/repo/stale",
+        head: "bbb",
+        branch: "refs/heads/old",
+        locked: false,
+        lockReason: null,
+        prunable: true,
+      },
+      {
+        path: "/repo/detached",
+        head: "ccc",
+        branch: null,
+        locked: true,
+        lockReason: null,
+        prunable: false,
+      },
     ]);
   });
 
@@ -164,6 +190,22 @@ describe("classifyWorktrees", () => {
 });
 
 describe("renderMarkdown", () => {
+  test("surveys only locked or prunable worktrees", () => {
+    const survey = makeSurvey(
+      [
+        entry({ path: "/repo/unlocked", locked: false, lockReason: null, prunable: false }),
+        entry({ path: "/repo/locked", locked: true, prunable: false }),
+        entry({ path: "/repo/prunable", locked: false, lockReason: null, prunable: true }),
+      ],
+      { inspect: () => inspection() },
+      new Date("2026-05-31T14:32:00Z"),
+      null,
+    );
+
+    expect(survey.items.map((item) => item.path)).toEqual(["/repo/locked", "/repo/prunable"]);
+    expect(survey.totals.worktrees).toBe(2);
+  });
+
   test("renders totals and bucket tables", () => {
     const survey = makeSurvey(
       [entry({ path: "/repo/dirty" }), entry({ path: "/repo/stale", prunable: true })],
