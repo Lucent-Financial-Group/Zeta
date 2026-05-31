@@ -1,13 +1,20 @@
 //! Forward-only, pull-based, zero-copy UTF-8 JSON token reader — the
 //! `Utf8JsonReader` model (System.Text.Json / ASP.NET Core).
 //!
-//! Single pass, forward only. It NEVER materializes the whole document, so it can
-//! stream arbitrarily large / unbounded JSON, processing token-by-token and
-//! discarding as it goes. State is bounded by nesting DEPTH (a small container
-//! stack), not by document size — so a million-element array reads in constant
-//! memory. Tokens BORROW from the input buffer (zero-copy); only an escaped string
-//! allocates (`Cow::Owned`); numbers are returned as their raw `&str` slice
-//! (zero-copy, lossless — parse on demand).
+//! Single pass, forward only. It NEVER materializes the whole document into a DOM:
+//! it yields tokens one at a time and the caller discards as it goes, so even a
+//! million-element array is processed in constant memory (reader state is bounded by
+//! nesting DEPTH — a small container stack — not document size). Tokens BORROW from
+//! the input buffer (zero-copy); only an escaped string allocates (`Cow::Owned`);
+//! numbers are returned as their raw `&str` slice (zero-copy, lossless — parse on
+//! demand).
+//!
+//! SCOPE — day-one this reads from a COMPLETE in-memory buffer (the public
+//! constructors take `&str`; bytes internally). So it gives the no-DOM / constant-
+//! memory / forward-only half of the `Utf8JsonReader` model, but NOT yet *truly
+//! unbounded* socket streaming — that needs the multi-segment / `BufRead`-refill
+//! variant (re-feed bytes across reads) tracked in B-0867.29. "Streams" here means
+//! "tokenizes without a DOM", not "reads from an endless socket" (yet).
 //!
 //! This is the streaming PRIMITIVE, and the DOM `Json` parse (json.rs) IS built on
 //! top of it (`ZetaJsonParser` drives this reader) — one tokenizer; the DOM is a
@@ -16,8 +23,7 @@
 //! like dotnet ... one pass forward only ... never needs the whole object at once ...
 //! deserialize infinite json streams" + "think aspnet json speed requirements".
 //!
-//! Day-one scope: this reader operates over a complete `&[u8]` buffer — the common
-//! `Utf8JsonReader`-over-a-span case. The perf-hardening roadmap (B-0867.29):
+//! Perf-hardening roadmap (B-0867.29):
 //! a multi-segment / `BufRead`-refill variant for truly infinite socket streams
 //! (re-feed bytes across reads), SIMD-vectorized whitespace/structural scanning,
 //! and a criterion benchmark vs serde_json to prove ASP.NET-grade throughput.
