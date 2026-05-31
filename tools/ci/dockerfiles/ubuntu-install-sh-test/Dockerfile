@@ -59,3 +59,27 @@ RUN set -eu; \
     ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"; \
     bun test tools/accelerator/local-llm.test.ts; \
     bun tools/accelerator/validate-local-llm.ts --root "$PWD"
+
+# Idempotency / 2nd-run assert (operator 2026-05-31: "like our mac installs
+# homebrew ... the windows should be the same indepotent install/update everything
+# ... a 2nd run should not redo everything, it should efficiently just update
+# what's needed and no more"). A re-run on an already-provisioned machine must NOT
+# redo work — in particular it must NOT re-pull the 398MB model (the exact caching
+# issue named). Run install.sh a SECOND time on the state the 1st RUN left (tools
+# installed + model on disk), then ASSERT the idempotency signals. Per
+# automated-tests-are-the-shield-assert-dont-skip.md the test ASSERTS the positive
+# (model already-present + zero re-pull), it does not merely tolerate a no-op.
+# The DAEMON doesn't persist across layers, so install.sh's local-LLM step starts
+# its own `ollama serve` and reads the model from the persisted disk layer.
+RUN set -eu; \
+    export PATH="/root/.local/bin:$PATH"; \
+    MODEL="$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')"; \
+    echo "=== 2nd install.sh run (idempotency) ==="; \
+    ./tools/setup/install.sh 2>&1 | tee /tmp/install-2nd.log; \
+    echo "=== idempotency asserts ==="; \
+    grep -qF "local-llm model ${MODEL} already present" /tmp/install-2nd.log \
+      || { echo "FAIL: 2nd run did not report '${MODEL} already present' — idempotency hole (the local-LLM step should detect-first-skip)"; exit 1; }; \
+    if grep -qF "pulling ${MODEL}" /tmp/install-2nd.log || grep -qF "pulling manifest" /tmp/install-2nd.log; then \
+      echo "FAIL: 2nd run RE-PULLED the model — caching/idempotency regression (a re-run must reuse the on-disk model)"; exit 1; \
+    fi; \
+    echo "OK: 2nd run idempotent — ${MODEL} already present, zero re-pull"
