@@ -85,6 +85,43 @@ test("org events round-trip with JSONB supervisor chain + evidence preserved", a
   equal(bySubject.length, 1);
 });
 
+test("org events preserve reputation observation transition context for durable replay", async () => {
+  const { executor } = fakeExecutor();
+  const store = createCockroachOrgEventStore({ executor });
+  await store.append({
+    id: "evt-reputation-1",
+    kind: OrgEventKind.ReputationOutcomeObserved,
+    occurredAt: "2026-05-31T12:00:00.000Z",
+    organizationId: "org-1",
+    actorHatId: "backend_implementer",
+    actorAgentId: "agent-1",
+    subjectId: "agent-1:backend_implementer:code_change:quality",
+    transitionContext: {
+      kind: "reputation_observation",
+      agentId: "agent-1",
+      hatId: "backend_implementer",
+      workType: "code_change",
+      outcomeClass: "quality",
+      observedAt: "2026-05-31T12:00:00.000Z",
+      signal: { kind: "binary", success: true },
+      evidenceRef: "evidence:agent-1:quality-pass",
+    },
+    decision: "reputation outcome observed",
+    supervisorChain: ["rmo_office", "backend_implementer"],
+    evidenceRefs: ["reputation:quality:success", "evidence:agent-1:quality-pass"],
+    correlationId: "corr-1",
+    causationId: "cause-1",
+    traceId: "trace-1",
+  });
+
+  const byOrg = await store.listByOrganization("org-1", 10);
+  equal(byOrg[0]?.transitionContext?.kind, "reputation_observation");
+  if (byOrg[0]?.transitionContext?.kind === "reputation_observation") {
+    equal(byOrg[0].transitionContext.signal.kind, "binary");
+    equal(byOrg[0].transitionContext.evidenceRef, "evidence:agent-1:quality-pass");
+  }
+});
+
 test("the SQL casts the JSONB columns (no string-into-JSONB error)", async () => {
   const { executor, statements } = fakeExecutor();
   const store = createCockroachOrgEventStore({ executor });

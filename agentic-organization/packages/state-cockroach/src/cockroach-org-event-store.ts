@@ -102,7 +102,47 @@ function isTransitionContext(value: unknown): value is OrgEventTransitionContext
       currentStageIndex < stageCount
     );
   }
+  if (candidate.kind === "reputation_observation") {
+    return (
+      typeof candidate.agentId === "string" &&
+      typeof candidate.hatId === "string" &&
+      typeof candidate.workType === "string" &&
+      typeof candidate.outcomeClass === "string" &&
+      typeof candidate.observedAt === "string" &&
+      typeof candidate.evidenceRef === "string" &&
+      isReputationObservationSignal(candidate.signal)
+    );
+  }
   return false;
+}
+
+function isReputationObservationSignal(value: unknown): boolean {
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as {
+    kind?: unknown;
+    success?: unknown;
+    value?: unknown;
+    unit?: unknown;
+    lowerIsBetter?: unknown;
+    weight?: unknown;
+  };
+  if (candidate.kind === "binary") {
+    return typeof candidate.success === "boolean" && isOptionalNonNegativeNumber(candidate.weight);
+  }
+  if (candidate.kind === "continuous") {
+    return (
+      typeof candidate.value === "number" &&
+      Number.isFinite(candidate.value) &&
+      typeof candidate.unit === "string" &&
+      typeof candidate.lowerIsBetter === "boolean" &&
+      isOptionalNonNegativeNumber(candidate.weight)
+    );
+  }
+  return false;
+}
+
+function isOptionalNonNegativeNumber(value: unknown): boolean {
+  return value === undefined || (typeof value === "number" && Number.isFinite(value) && value >= 0);
 }
 
 function rowToEvent(row: OrgEventRow): OrgEvent {

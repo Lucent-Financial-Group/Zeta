@@ -126,6 +126,7 @@ const ExplicitNonTransitionKinds = new Set<OrgEventKind>([
   OrgEventKind.GraphDerivedIntelligence,
   OrgEventKind.ModelEvalCompleted,
   OrgEventKind.DecisionOptimizationProposed,
+  OrgEventKind.ReputationOutcomeObserved,
   OrgEventKind.RecoveryIncidentDetected,
   OrgEventKind.RecoveryScanCompleted,
   OrgEventKind.ObserveActTick,
