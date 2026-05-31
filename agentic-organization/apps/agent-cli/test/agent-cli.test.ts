@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import {
   ActionClass,
+  ActRejectionReason,
   PromptFlowGateKind,
   PromptFlowRunState,
   RunLifecyclePhase,
@@ -22,6 +23,11 @@ import {
   runAgentCliCycle,
   selectFirstTrueSlot,
 } from "../src/agent-cli.ts";
+import {
+  ScheduleBlockState,
+  ScheduleBlockType,
+  type WorkScheduleBlock,
+} from "../../../packages/domain/src/index.ts";
 
 test("parseAgentCliArgs accepts the minimal observe invocation and defaults replayable snapshot fields", () => {
   const parsed = parseAgentCliArgs(["observe", "--hat", "release_operator", "--scope", "work_item"]);
@@ -175,6 +181,104 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   deepEqual(commands, [
     'observe.lifecycle_transition:{"commandId":"cmd-observe-1-4","type":"observe.lifecycle_transition","idempotencyKey":"observe:1:99:awaiting_gate:4","requestHash":"observe.lifecycle_transition:1:99:awaiting_gate:execute:executing:4","correlationId":"observe-cli-1","causationId":"observe-cli-1","traceId":"observe-cli-1","organizationId":"org-1","projectId":"project-1","workItemId":"work-1","actor":{"agentId":"agent-release-1","hatAssignmentId":"99"},"policyContext":{"toolType":"write_code"},"runId":"1","fromPhase":"awaiting_gate","actionType":"execute","toPhase":"executing","toScope":"work_item","hatAssignmentId":"99"}',
   ]);
+});
+
+test("runAgentCliCycle passes schedule blocks into observe so execution can fail closed", async () => {
+  let dispatched = false;
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--select-index",
+      "4",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    scheduleBlocks: [],
+    runCommand: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.exitCode, 1);
+  equal(result.actionResult?.outcome, "rejected");
+  if (result.actionResult?.outcome !== "rejected") return;
+  equal(result.actionResult.reason, ActRejectionReason.NoSelectableSlot);
+  equal(dispatched, false);
+  ok(stdout.join("\n").includes("[04] F commit.a execute"));
+  ok(stdout.join("\n").includes("requires a current schedule block"));
+});
+
+test("runAgentCliCycle re-authorizes selected slots before command dispatch", async () => {
+  let dispatched = false;
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--select-index",
+      "4",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    scheduleBlocks: [scheduleBlock()],
+    authorizeSlot: async () => ({
+      status: "denied",
+      reason: "schedule_block_required",
+      message: "schedule authority changed after observe",
+    }),
+    runCommand: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.exitCode, 1);
+  equal(result.actionResult?.outcome, "rejected");
+  if (result.actionResult?.outcome !== "rejected") return;
+  equal(result.actionResult.reason, ActRejectionReason.ScheduleAuthorityDenied);
+  equal(result.actionResult.message, "schedule authority changed after observe");
+  equal(dispatched, false);
 });
 
 test("runAgentCliCycle returns typed no_selectable_slot feedback for all-vetoed menus", async () => {
@@ -642,6 +746,36 @@ function promptFlowTask(overrides: Partial<PromptFlowTask> = {}): PromptFlowTask
     toolInjections: [],
     metrics: [],
     contextArtifactRefs: [],
+    ...overrides,
+  };
+}
+
+function scheduleBlock(overrides: Partial<WorkScheduleBlock> = {}): WorkScheduleBlock {
+  return {
+    workScheduleBlockId: "schedule-1",
+    organizationId: "org-1",
+    projectId: "project-1",
+    workItemId: "work-1",
+    assignedAgentId: "agent-release-1",
+    assignedHatAssignmentId: "99",
+    blockType: ScheduleBlockType.PrioritizedWork,
+    state: ScheduleBlockState.Active,
+    title: "Execute current work",
+    purpose: "Authorize observe-act lifecycle execution",
+    startsAt: "2026-05-31T11:00:00.000Z",
+    endsAt: "2026-05-31T13:00:00.000Z",
+    scheduledAt: "2026-05-31T10:00:00.000Z",
+    scheduledBy: {
+      agentId: "agent-manager-1",
+      hatAssignmentId: "hat-manager-1",
+    },
+    metadata: {
+      updatedAt: "2026-05-31T10:00:00.000Z",
+      version: 1,
+      correlationId: "corr-1",
+      causationId: "cause-1",
+      traceId: "trace-1",
+    },
     ...overrides,
   };
 }

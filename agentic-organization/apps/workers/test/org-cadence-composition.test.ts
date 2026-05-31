@@ -41,6 +41,7 @@ test("org cadence composition can disable legacy work-os and run the observe-act
       observeActCommands += 1;
       return { status: "accepted" };
     },
+    observeActAuthorizeSlot: async () => ({ status: "allowed" }),
     observeActDispatchTool: async () => {
       throw new Error("observe-act composition test should not dispatch MCP");
     },
@@ -88,6 +89,7 @@ test("org cadence composition shadow mode runs observe-act beside legacy work-os
       observeActCommands += 1;
       return { status: "accepted" };
     },
+    observeActAuthorizeSlot: async () => ({ status: "allowed" }),
     observeActDispatchTool: async () => {
       throw new Error("observe-act composition test should not dispatch MCP");
     },

@@ -3,8 +3,14 @@ import { test } from "node:test";
 import { buildHatDefinitions } from "../src/org-seed.ts";
 import { ActionClass } from "../src/hat-guardrails.ts";
 import {
+  ScheduleBlockState,
+  ScheduleBlockType,
+  type WorkScheduleBlock,
+} from "../../domain/src/index.ts";
+import {
   asZetaIdDecimal,
   act,
+  ActRejectionReason,
   ComposerDecision,
   DecideOutcome,
   decide,
@@ -127,6 +133,94 @@ test("hat-aware observe leaves write-code execution available for a delivery hat
   ok(!allowed.readout.vetoedOptions.some((v) => v.option.actionType === "execute"));
 });
 
+test("hat-aware observe requires an active work schedule block before execution", () => {
+  const releaseOperator = buildHatDefinitions().find((h) => h.id === "release_operator")!;
+  const blocked = observeAgent(
+    agentSnapshot({
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hat: releaseOperator,
+    }),
+    {
+      ...deps,
+      scheduleBlocks: [],
+    },
+  );
+
+  equal(blocked.outcome, ObserveOutcome.Readout);
+  if (blocked.outcome !== ObserveOutcome.Readout) return;
+  ok(!blocked.readout.options.some((option) => option.actionType === "execute"));
+  const veto = blocked.readout.vetoedOptions.find((vetoed) => vetoed.option.actionType === "execute");
+  equal(veto?.ruleName, "schedule-authority");
+  ok(veto?.reason.includes("requires a current schedule block"));
+});
+
+test("hat-aware observe allows execution during prioritized work or prompt-flow schedule blocks", () => {
+  const releaseOperator = buildHatDefinitions().find((h) => h.id === "release_operator")!;
+  const allowed = observeAgent(
+    agentSnapshot({
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hat: releaseOperator,
+    }),
+    {
+      ...deps,
+      scheduleBlocks: [scheduleBlock()],
+    },
+  );
+
+  equal(allowed.outcome, ObserveOutcome.Readout);
+  if (allowed.outcome !== ObserveOutcome.Readout) return;
+  ok(allowed.readout.options.some((option) => option.actionType === "execute"));
+  ok(!allowed.readout.vetoedOptions.some((vetoed) => vetoed.option.actionType === "execute"));
+});
+
+test("hat-aware observe vetoes execution when the current block type is not executable work", () => {
+  const releaseOperator = buildHatDefinitions().find((h) => h.id === "release_operator")!;
+  const blocked = observeAgent(
+    agentSnapshot({
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hat: releaseOperator,
+    }),
+    {
+      ...deps,
+      scheduleBlocks: [scheduleBlock({ blockType: ScheduleBlockType.Meeting })],
+    },
+  );
+
+  equal(blocked.outcome, ObserveOutcome.Readout);
+  if (blocked.outcome !== ObserveOutcome.Readout) return;
+  const veto = blocked.readout.vetoedOptions.find((vetoed) => vetoed.option.actionType === "execute");
+  equal(veto?.ruleName, "schedule-authority");
+  ok(veto?.reason.includes("does not allow execute"));
+});
+
+test("hat-aware observe does not authorize execution with a block for another work item", () => {
+  const releaseOperator = buildHatDefinitions().find((h) => h.id === "release_operator")!;
+  const blocked = observeAgent(
+    agentSnapshot({
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hat: releaseOperator,
+      agentId: "agent-1",
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+    }),
+    {
+      ...deps,
+      scheduleBlocks: [scheduleBlock({ workItemId: "work-other" })],
+    },
+  );
+
+  equal(blocked.outcome, ObserveOutcome.Readout);
+  if (blocked.outcome !== ObserveOutcome.Readout) return;
+  const veto = blocked.readout.vetoedOptions.find((vetoed) => vetoed.option.actionType === "execute");
+  equal(veto?.ruleName, "schedule-authority");
+  ok(veto?.reason.includes("requires a current schedule block"));
+});
+
 test("renderMenu16 projects survivors, vetoes, and empty directions into fixed Tri slots", () => {
   const blocked = observe(snapshot({ phase: RunLifecyclePhase.AwaitingGate, hasGateApproval: false }), deps);
   equal(blocked.outcome, ObserveOutcome.Readout);
@@ -202,6 +296,36 @@ test("act rejects non-selectable slots before any implementation dispatch", asyn
   });
 
   equal(result.outcome, "rejected");
+  equal(dispatched, false);
+});
+
+test("act re-authorizes selectable slots before dispatching side effects", async () => {
+  const approved = observe(snapshot({ phase: RunLifecyclePhase.AwaitingGate, hasGateApproval: true }), deps);
+  equal(approved.outcome, ObserveOutcome.Readout);
+  if (approved.outcome !== ObserveOutcome.Readout) return;
+  const menu = renderMenu16(approved.readout);
+  let dispatched = false;
+
+  const result = await act(4, menu, {
+    authorizeSlot: async () => ({
+      status: "denied",
+      reason: "schedule_authority_denied",
+      message: "current schedule block expired after observe",
+    }),
+    runCommand: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.outcome, "rejected");
+  if (result.outcome !== "rejected") return;
+  equal(result.reason, ActRejectionReason.ScheduleAuthorityDenied);
+  equal(result.message, "current schedule block expired after observe");
   equal(dispatched, false);
 });
 
@@ -795,6 +919,36 @@ function hierarchyWorkItem(overrides: Partial<HierarchyWorkItem> = {}): Hierarch
     state: "ready",
     priorityScore: 1,
     metrics: [],
+    ...overrides,
+  };
+}
+
+function scheduleBlock(overrides: Partial<WorkScheduleBlock> = {}): WorkScheduleBlock {
+  return {
+    workScheduleBlockId: "schedule-1",
+    organizationId: "org-1",
+    projectId: "project-1",
+    workItemId: "work-1",
+    assignedAgentId: "agent-1",
+    assignedHatAssignmentId: "99",
+    blockType: ScheduleBlockType.PrioritizedWork,
+    state: ScheduleBlockState.Active,
+    title: "Implement current work",
+    purpose: "Authorize observe-act execution",
+    startsAt: "2026-05-28T23:00:00.000Z",
+    endsAt: "2026-05-29T01:00:00.000Z",
+    scheduledAt: "2026-05-28T22:00:00.000Z",
+    scheduledBy: {
+      agentId: "supervisor-1",
+      hatAssignmentId: "supervisor-hat-1",
+    },
+    metadata: {
+      updatedAt: "2026-05-28T22:00:00.000Z",
+      version: 1,
+      correlationId: "corr-1",
+      causationId: "cause-1",
+      traceId: "trace-1",
+    },
     ...overrides,
   };
 }

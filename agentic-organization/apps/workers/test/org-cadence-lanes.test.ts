@@ -8,6 +8,7 @@ import {
   OrgEventKind,
   ReactionPlanStatus,
   ScheduleBlockState,
+  ScheduleBlockType,
   WorkItemState,
   WorkItemType,
   MemoryPhase,
@@ -16,6 +17,7 @@ import {
   type MemoryEnvelope,
   type OrgEvent,
   type ProjectionRef,
+  type WorkScheduleBlock,
 } from "../../../packages/domain/src/index.ts";
 import {
   buildHatDefinitions,
@@ -244,6 +246,53 @@ test("observe-act work-item lane passes hierarchy readouts through to the agent 
   ok(stdout.join("\n").includes("- hierarchy action record_priority_decision: Rank department initiatives"));
 });
 
+test("observe-act work-item lane forwards schedule blocks and slot authorization into the foreground loop", async () => {
+  let dispatched = false;
+  let authorizedSlot = -1;
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+      scheduleBlocks: [scheduleBlock()],
+    }),
+    authorizeSlot: async ({ slot }) => {
+      authorizedSlot = slot.index;
+      return {
+        status: "denied",
+        reason: "schedule_block_required",
+        message: "schedule block expired before dispatch",
+      };
+    },
+    runCommand: async () => {
+      dispatched = true;
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => {
+      throw new Error("observe-act schedule test should not dispatch MCP");
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "observe-act:rejected:schedule_authority_denied");
+  equal(result.failures.length, 1);
+  equal(result.failures[0]?.message, "observe-act lane: schedule_authority_denied: schedule block expired before dispatch");
+  equal(authorizedSlot, 4);
+  equal(dispatched, false);
+});
+
 test("work-os lane stays IDLE (no cycle, no events) when intake returns null", async () => {
   const events: OrgEvent[] = [];
   const lane = createWorkOsCadenceLane({ organizationId: "org-lfg", hats: buildHatDefinitions(), now: () => NOW, createId, intake: async () => null, appendEvent: async (e) => { events.push(e); } });
@@ -264,6 +313,27 @@ function memEnvelope(memoryId: string, phase: MemoryPhase, freshnessAt: string, 
   return {
     memoryId, organizationId: "org-lfg", tier: MemoryTier.Work, scope: "work-1", key: "k", protected: false, writtenBy: "system", writtenAt: "2026-05-30T00:00:00Z",
     state: { memoryId, organizationId: "org-lfg", phase, confidence, weight: 0.5, freshnessAt, reinforcementCount: 1, outcome: { successCount: 8, failureCount: 0, inconclusiveCount: 0, workItemsObserved: [] }, utility: { injectedCount: 6, citedCount: 5 }, crossScope: { distinctScopes: [], firstObservedAt: "2026-05-30T00:00:00Z", lastObservedAt: "2026-05-30T00:00:00Z" } },
+  };
+}
+
+function scheduleBlock(overrides: Partial<WorkScheduleBlock> = {}): WorkScheduleBlock {
+  return {
+    workScheduleBlockId: "schedule-1",
+    organizationId: "org-lfg",
+    projectId: "proj-1",
+    workItemId: "work-1",
+    assignedAgentId: "agent-release-1",
+    assignedHatAssignmentId: "99",
+    blockType: ScheduleBlockType.PrioritizedWork,
+    state: ScheduleBlockState.Active,
+    title: "Observe-act work",
+    purpose: "Authorize lifecycle execution",
+    startsAt: "2026-05-29T23:30:00.000Z",
+    endsAt: "2026-05-30T00:30:00.000Z",
+    scheduledAt: "2026-05-29T23:00:00.000Z",
+    scheduledBy: { agentId: "agent-manager-1", hatAssignmentId: "hat-manager-1" },
+    metadata: { updatedAt: "2026-05-29T23:00:00.000Z", version: 1, correlationId: "corr", causationId: "cause", traceId: "trace" },
+    ...overrides,
   };
 }
 

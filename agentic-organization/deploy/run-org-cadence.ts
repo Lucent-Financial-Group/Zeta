@@ -15,7 +15,7 @@ import { Pool } from "pg";
 import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 
-import { ChangeSetPhase, MemoryPhase, MemoryTier, ToolBundle, type ChangeSet, type MemoryRecord, type MemoryState } from "../packages/domain/src/index.ts";
+import { ChangeSetPhase, MemoryPhase, MemoryTier, ScheduleBlockState, ScheduleBlockType, ToolBundle, type ChangeSet, type MemoryRecord, type MemoryState } from "../packages/domain/src/index.ts";
 import {
   ActionClass,
   PromptFlowGateKind,
@@ -51,6 +51,7 @@ import {
   createCockroachMemoryStateStore,
   createCockroachChangeSetStore,
   createCockroachOrgEventStore,
+  CockroachTableName,
   splitSqlStatements,
 } from "../packages/state-cockroach/src/index.ts";
 import { composeOrgCadenceLoops } from "../apps/workers/src/org-cadence-composition.ts";
@@ -138,6 +139,73 @@ async function main(): Promise<void> {
     implementationEvidenceRef: createContentAddressedEvidenceRef("test-result", { proof: "work-market", status: "implemented" }),
     reviewEvidenceRef: createContentAddressedEvidenceRef("review", { proof: "work-market", status: "peer-approved" }),
   });
+  const observeActScheduleBlock = {
+    workScheduleBlockId: id("schedule-observe-act"),
+    organizationId: ORG,
+    projectId: "proj-observe-act",
+    workItemId: "work-observe-act",
+    assignedAgentId: "agent-observe-act",
+    assignedHatAssignmentId: "99",
+    blockType: ScheduleBlockType.PrioritizedWork,
+    state: ScheduleBlockState.Active,
+    title: "KIND observe-act schedule authority",
+    purpose: "Prove observe-act lifecycle commands require current schedule authority",
+    startsAt: new Date(NOW - 60_000).toISOString(),
+    endsAt: new Date(NOW + 600_000).toISOString(),
+    scheduledAt: new Date(NOW - 120_000).toISOString(),
+    scheduledBy: { agentId: "agent-rmo", hatAssignmentId: "hat-rmo" },
+    metadata: { updatedAt: NOW_ISO, version: 1, correlationId: "corr-schedule-kind", causationId: "cause-schedule-kind", traceId: "trace-schedule-kind" },
+  };
+  await pool.query(
+    `
+      INSERT INTO ${CockroachTableName.WorkScheduleBlocks} (
+        work_schedule_block_id,
+        organization_id,
+        project_id,
+        team_id,
+        work_item_id,
+        discussion_anchor_id,
+        assigned_agent_id,
+        assigned_hat_assignment_id,
+        block_type,
+        state,
+        title,
+        purpose,
+        starts_at,
+        ends_at,
+        scheduled_by_agent_id,
+        scheduled_by_hat_assignment_id,
+        scheduled_at,
+        updated_at,
+        version,
+        correlation_id,
+        causation_id,
+        trace_id
+      ) VALUES ($1, $2, $3, NULL, $4, NULL, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+    `.trim(),
+    [
+      observeActScheduleBlock.workScheduleBlockId,
+      observeActScheduleBlock.organizationId,
+      observeActScheduleBlock.projectId,
+      observeActScheduleBlock.workItemId,
+      observeActScheduleBlock.assignedAgentId,
+      observeActScheduleBlock.assignedHatAssignmentId,
+      observeActScheduleBlock.blockType,
+      observeActScheduleBlock.state,
+      observeActScheduleBlock.title,
+      observeActScheduleBlock.purpose,
+      observeActScheduleBlock.startsAt,
+      observeActScheduleBlock.endsAt,
+      observeActScheduleBlock.scheduledBy.agentId,
+      observeActScheduleBlock.scheduledBy.hatAssignmentId,
+      observeActScheduleBlock.scheduledAt,
+      observeActScheduleBlock.metadata.updatedAt,
+      observeActScheduleBlock.metadata.version,
+      observeActScheduleBlock.metadata.correlationId,
+      observeActScheduleBlock.metadata.causationId,
+      observeActScheduleBlock.metadata.traceId,
+    ],
+  );
   const promptFlowTasks = compilePromptFlowTasks({
     definitions: [{
       promptFlowId: "flow-backend-code-change",
@@ -213,9 +281,10 @@ async function main(): Promise<void> {
       hatId: "backend_implementer",
       hatAssignmentId: "99",
       agentId: "agent-observe-act",
+      scheduleBlocks: [observeActScheduleBlock],
       promptFlowTasks,
     }),
-    observeActSelectSlot: () => 8,
+    observeActSelectSlot: () => 4,
     observeActRunCommand: async () => ({ status: "shadow_accepted" }),
     observeActDispatchTool: async () => {
       throw new Error("org-cadence observe-act shadow proof should not dispatch MCP");
@@ -240,6 +309,8 @@ async function main(): Promise<void> {
         evidenceRows: observeActEvents.length,
         lastEvidenceRefs: observeActEvents[0]?.evidenceRefs ?? [],
         promptFlowEvidenceRows: observeActEvents.filter((e) => e.evidenceRefs.some((ref) => ref.startsWith("observe-act:prompt_flow:"))).length,
+        scheduleAuthorizedCommandRows: laneTicks.filter((tick) => tick.lane === "observe-act-work-item" && tick.status === "observe-act:command:shadow_accepted").length,
+        scheduleBlockId: observeActScheduleBlock.workScheduleBlockId,
       },
       seededMemory: { memoryId: memId, phaseAfter: memAfter?.state.phase, weightAfter: memAfter?.state.weight, surfaces: memAfter?.state.phase !== MemoryPhase.Archived },
       seededChangeSet: { changeSetId: csId, phaseAfter: csAfter?.phase, revisionAfter: csAfter?.revision },

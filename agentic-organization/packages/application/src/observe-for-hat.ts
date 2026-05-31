@@ -15,7 +15,7 @@
  * SCOPE of the objects being ordered.
  */
 
-import { HatLevel, type ChangeSet, type HatDefinition, type OrgEvent, type WorkBatch, type WorkItem } from "../../domain/src/index.ts";
+import { HatLevel, type ChangeSet, type HatBinding, type HatDefinition, type OrgEvent, type WorkBatch, type WorkItem, type WorkScheduleBlock } from "../../domain/src/index.ts";
 import { legalPriorityClassesFor, type PriorityClass } from "./prioritization.ts";
 import {
   aggregateMetrics,
@@ -27,6 +27,7 @@ import {
 import { recordDoraMetricsTelemetry } from "../../observability/src/dora-metrics.ts";
 import type { TelemetryPort } from "../../observability/src/telemetry-port.ts";
 import { workMarketReadoutForHat, type HatWorkQueue, type WorkMarketReadout } from "./work-market.ts";
+import { schedulePressureReadoutForHat, type SchedulePressureReadout } from "./schedule-optimizer.ts";
 
 export const AuthorityScope = {
   Individual: "individual",
@@ -94,6 +95,7 @@ export type HatReadout = {
   batches: readonly { batch: WorkBatch; metrics: WorkBatchMetrics }[];
   scopeRollup: ScopeMetrics;
   workMarket: WorkMarketReadout;
+  schedulePressure: SchedulePressureReadout;
   /** the priority classes this hat may set (clamped by level) — the legal prioritization set */
   legalPriorityClasses: readonly PriorityClass[];
 };
@@ -107,7 +109,12 @@ export type OrgWorkState = {
   changeSets?: readonly ChangeSet[];
   telemetry?: TelemetryPort;
   workQueues?: readonly HatWorkQueue[];
+  scheduleBlocks?: readonly WorkScheduleBlock[];
+  hatBindings?: readonly HatBinding[];
   now?: string;
+  reviewLagMsByHat?: ReadonlyMap<string, number>;
+  failureRateByHat?: ReadonlyMap<string, number>;
+  heartbeatReliabilityByHat?: ReadonlyMap<string, number>;
   /** optional QA test summary per batch (W3 supplies it; absent → zeros) */
   testsByBatch?: ReadonlyMap<string, TestSummary>;
 };
@@ -145,6 +152,17 @@ export function observeForHat(hat: HatDefinition, state: OrgWorkState): HatReado
       hatId: hat.id,
       visibleHatIds: visibleWorkQueueHatIds(hat, state),
       now: state.now ?? new Date(0).toISOString(),
+    }),
+    schedulePressure: schedulePressureReadoutForHat(hat, {
+      organizationId: state.organizationId ?? inScope[0]?.organizationId ?? state.workQueues?.[0]?.organizationId ?? "",
+      hats: state.hats,
+      now: state.now ?? new Date(0).toISOString(),
+      workQueues: state.workQueues ?? [],
+      scheduleBlocks: state.scheduleBlocks ?? [],
+      bindings: state.hatBindings ?? [],
+      ...(state.reviewLagMsByHat !== undefined ? { reviewLagMsByHat: state.reviewLagMsByHat } : {}),
+      ...(state.failureRateByHat !== undefined ? { failureRateByHat: state.failureRateByHat } : {}),
+      ...(state.heartbeatReliabilityByHat !== undefined ? { heartbeatReliabilityByHat: state.heartbeatReliabilityByHat } : {}),
     }),
     legalPriorityClasses: legalPriorityClassesFor(hat.level),
   };

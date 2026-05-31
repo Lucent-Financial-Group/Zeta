@@ -24,6 +24,7 @@ import {
   type MemoryState,
   type OrgEvent,
   type ReviewPipeline,
+  type WorkScheduleBlock,
 } from "../../../packages/domain/src/index.ts";
 import {
   runWorkOsCycle,
@@ -57,6 +58,7 @@ import {
   type ReviewKernelDeps,
   type RunBindingRecoveryCandidate,
   type ScheduleBlockRecoveryCandidate,
+  type SlotAuthorizationDecision,
 } from "../../../packages/application/src/index.ts";
 import { runAgentCliCycle } from "../../agent-cli/src/agent-cli.ts";
 import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
@@ -120,6 +122,7 @@ export type ObserveActWorkItem = {
   hatId: string;
   hatAssignmentId: string;
   agentId: string;
+  scheduleBlocks?: readonly WorkScheduleBlock[];
   promptFlowTasks?: readonly PromptFlowTask[];
   hierarchy?: HierarchySnapshot;
 };
@@ -140,6 +143,15 @@ export type ObserveActPromptFlowContextLoader = (
   request: PromptFlowContextRequest,
   slot: Menu16Slot,
 ) => Promise<PromptFlowContext>;
+export type ObserveActSlotAuthorizationInput = {
+  organizationId: string;
+  work: ObserveActWorkItem;
+  slot: Menu16Slot;
+  evaluatedAt: string;
+};
+export type ObserveActSlotAuthorizer = (
+  input: ObserveActSlotAuthorizationInput,
+) => Promise<SlotAuthorizationDecision>;
 export type ObserveActOrgEventAppender = (event: OrgEvent) => Promise<void>;
 
 export type ObserveActWorkItemCadenceDeps = {
@@ -152,6 +164,7 @@ export type ObserveActWorkItemCadenceDeps = {
   dispatchTool: ObserveActToolDispatcher;
   appendEvent?: ObserveActOrgEventAppender;
   loadPromptFlowContext?: ObserveActPromptFlowContextLoader;
+  authorizeSlot?: ObserveActSlotAuthorizer;
   writeObserveStdout?: (text: string) => void;
   selectSlot?: ObserveActMenuSelector;
 };
@@ -179,9 +192,11 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
           },
           runCommand: deps.runCommand,
           dispatchTool: deps.dispatchTool,
+          ...createOptionalObserveActScheduleBlocks(work.scheduleBlocks),
           ...createOptionalObserveActPromptFlowTasks(work.promptFlowTasks),
           ...createOptionalObserveActHierarchy(work.hierarchy),
           ...createOptionalObserveActPromptFlowContextLoader(deps.loadPromptFlowContext),
+          ...createOptionalObserveActSlotAuthorizer(deps, work),
           ...(deps.selectSlot === undefined ? {} : { selectSlot: deps.selectSlot }),
         });
         if (result.evidence !== undefined && deps.appendEvent !== undefined) {
@@ -267,6 +282,12 @@ function createOptionalObserveActPromptFlowTasks(
   return promptFlowTasks === undefined ? {} : { promptFlowTasks };
 }
 
+function createOptionalObserveActScheduleBlocks(
+  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
+): { scheduleBlocks?: readonly WorkScheduleBlock[] } {
+  return scheduleBlocks === undefined ? {} : { scheduleBlocks };
+}
+
 function createOptionalObserveActHierarchy(
   hierarchy: HierarchySnapshot | undefined,
 ): { hierarchy?: HierarchySnapshot } {
@@ -277,6 +298,23 @@ function createOptionalObserveActPromptFlowContextLoader(
   loadPromptFlowContext: ObserveActPromptFlowContextLoader | undefined,
 ): { loadPromptFlowContext?: ObserveActPromptFlowContextLoader } {
   return loadPromptFlowContext === undefined ? {} : { loadPromptFlowContext };
+}
+
+function createOptionalObserveActSlotAuthorizer(
+  deps: ObserveActWorkItemCadenceDeps,
+  work: ObserveActWorkItem,
+): { authorizeSlot?: (slot: Menu16Slot) => Promise<SlotAuthorizationDecision> } {
+  return deps.authorizeSlot === undefined
+    ? {}
+    : {
+        authorizeSlot: async (slot) =>
+          await deps.authorizeSlot!({
+            organizationId: deps.organizationId,
+            work,
+            slot,
+            evaluatedAt: new Date(deps.now()).toISOString(),
+          }),
+      };
 }
 
 function observeActBooleanArgs(work: ObserveActWorkItem): string[] {
@@ -295,6 +333,9 @@ function formatObserveActStatus(result: Awaited<ReturnType<typeof runAgentCliCyc
   }
   if (result?.outcome === "loaded_context") {
     return `observe-act:context:${result.context.taskId}`;
+  }
+  if (result?.outcome === "rejected") {
+    return `observe-act:rejected:${result.reason}`;
   }
   return exitCode === 0 ? "observe-act:no_action" : "observe-act:rejected";
 }

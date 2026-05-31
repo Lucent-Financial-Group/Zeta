@@ -18,6 +18,7 @@ import {
   createCommandPipeline,
   createHatAuthorityPort,
   createObserveLifecycleTransitionHandler,
+  createScheduleBlockCommandAuthority,
   RunLifecyclePhase,
   RunScope,
   ObserveCommandType,
@@ -55,6 +56,7 @@ import {
   createStrandedScheduleScanCadenceLane,
   type ObserveActCommandRunner,
   type ObserveActMenuSelector,
+  type ObserveActSlotAuthorizer,
   type ObserveActToolDispatcher,
   type ObserveActWorkItemSource,
   type WorkIntakeSource,
@@ -125,6 +127,7 @@ export type ComposeOrgCadenceInput = {
   observeActRunCommand?: ObserveActCommandRunner;
   observeActDispatchTool?: ObserveActToolDispatcher;
   observeActSelectSlot?: ObserveActMenuSelector;
+  observeActAuthorizeSlot?: ObserveActSlotAuthorizer;
   /** bound each lane for tests/proofs; unbounded in the worker */
   maxTicksPerLane?: number;
 };
@@ -170,6 +173,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     source: input.observeActWorkItems ?? createCockroachObserveActWorkItemSource(input),
     runCommand: input.observeActRunCommand ?? createCockroachObserveActCommandRunner(input, hats),
     dispatchTool: input.observeActDispatchTool ?? unavailableObserveActToolDispatcher,
+    ...createOptionalObserveActSlotAuthorizer(input),
     ...(input.observeActSelectSlot === undefined ? {} : { selectSlot: input.observeActSelectSlot }),
     appendEvent,
   });
@@ -276,6 +280,13 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
   return { stop: () => { stopped.value = true; }, done };
 }
 
+function createOptionalObserveActSlotAuthorizer(
+  input: ComposeOrgCadenceInput,
+): { authorizeSlot?: ObserveActSlotAuthorizer } {
+  if (input.observeActAuthorizeSlot !== undefined) return { authorizeSlot: input.observeActAuthorizeSlot };
+  return { authorizeSlot: createCockroachObserveActSlotAuthorizer(input) };
+}
+
 function workLanesFor(
   driver: NonNullable<ComposeOrgCadenceInput["workOsDriver"]>,
   legacy: CadenceLane,
@@ -302,8 +313,9 @@ type ObserveActWorkItemRow = {
 };
 
 function createCockroachObserveActWorkItemSource(
-  input: Pick<ComposeOrgCadenceInput, "executor" | "organizationId">,
+  input: Pick<ComposeOrgCadenceInput, "executor" | "organizationId" | "now">,
 ): ObserveActWorkItemSource {
+  const stateAdapters = createCockroachDurableStateAdapters<CommandResult>({ executor: input.executor });
   return async () => {
     const result = await input.executor.execute<ObserveActWorkItemRow>({
       name: "claimable_observe_act_work_item",
@@ -327,6 +339,12 @@ function createCockroachObserveActWorkItemSource(
     if (row === undefined) return null;
     const phase = observeActPhaseForWorkItemState(row.state);
     if (phase === undefined) return null;
+    const evaluatedAt = new Date(input.now()).toISOString();
+    const scheduleBlocks = await stateAdapters.workScheduleBlockAuthorityReader.findAuthorizingScheduleBlocks({
+      agentId: row.created_by_agent_id,
+      hatAssignmentId: row.created_by_hat_assignment_id,
+      evaluatedAt,
+    });
     return {
       runId: String(row.version),
       projectId: row.project_id,
@@ -338,6 +356,7 @@ function createCockroachObserveActWorkItemSource(
       hatId: "release_operator",
       hatAssignmentId: row.created_by_hat_assignment_id,
       agentId: row.created_by_agent_id,
+      scheduleBlocks,
     };
   };
 }
@@ -374,6 +393,9 @@ function createCockroachObserveActCommandRunner(
     policyDecisionObservationPort: createPolicyDecisionObservationPort({
       store: stateAdapters.policyDecisionObservationStore,
     }),
+    commandScheduleAuthorityPort: createScheduleBlockCommandAuthority({
+      scheduleBlockReader: stateAdapters.workScheduleBlockAuthorityReader,
+    }),
     handlerRegistry: createCommandHandlerRegistry<ObserveLifecycleTransitionCommand, CommandResult>([
       createObserveLifecycleTransitionHandler(),
     ]),
@@ -386,5 +408,36 @@ function createCockroachObserveActCommandRunner(
       return { status: "unsupported_command_type", commandType };
     }
     return await pipeline.execute(command as ObserveLifecycleTransitionCommand);
+  };
+}
+
+function createCockroachObserveActSlotAuthorizer(
+  input: Pick<ComposeOrgCadenceInput, "executor" | "now">,
+): ObserveActSlotAuthorizer {
+  const stateAdapters = createCockroachDurableStateAdapters<CommandResult>({ executor: input.executor });
+  const authority = createScheduleBlockCommandAuthority({
+    scheduleBlockReader: stateAdapters.workScheduleBlockAuthorityReader,
+  });
+  return async ({ organizationId, work, slot, evaluatedAt }) => {
+    if (slot.impl?.kind !== "command") {
+      return { status: "allowed" };
+    }
+    const decision = await authority.authorizeCommandSchedule({
+      commandId: `observe-act-slot-${work.runId}-${slot.index}`,
+      commandType: slot.impl.commandType,
+      actor: {
+        agentId: work.agentId,
+        hatAssignmentId: work.hatAssignmentId,
+      },
+      scope: {
+        organizationId,
+        projectId: work.projectId,
+        workItemId: work.workItemId,
+      },
+      evaluatedAt,
+    });
+    return decision.status === "denied"
+      ? { status: "denied", reason: decision.reason, message: decision.message }
+      : { status: "allowed" };
   };
 }

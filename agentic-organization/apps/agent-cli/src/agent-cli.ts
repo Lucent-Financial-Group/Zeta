@@ -43,7 +43,7 @@ import {
   type ScopedMetricAgent,
   type ScopedReadout,
 } from "../../../packages/application/src/index.ts";
-import { HatLevel, ToolBundle, type ToolBundle as ToolBundleName } from "../../../packages/domain/src/index.ts";
+import { HatLevel, ToolBundle, type ToolBundle as ToolBundleName, type WorkScheduleBlock } from "../../../packages/domain/src/index.ts";
 import { createLgtmTelemetryQueryPort } from "../../../packages/observability/src/index.ts";
 import { createOllamaChatPort } from "../../workers/src/adapters/ollama-chat-port.ts";
 
@@ -85,6 +85,7 @@ export type AgentCliCycleInput = ActDependencies & {
   metricAgents?: readonly ScopedMetricAgent[];
   promptFlowTasks?: readonly PromptFlowTask[];
   hierarchy?: HierarchySnapshot;
+  scheduleBlocks?: readonly WorkScheduleBlock[];
   deterministicRules?: readonly DeterministicRule[];
   selectSlot?: (menu: Menu16) => Promise<number> | number;
 };
@@ -338,6 +339,10 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     hasEvidence: parsed.value.evidence,
     hatAssignmentId: asZetaIdDecimal(parsed.value.hatAssignmentId),
     hat,
+    agentId: parsed.value.agentId,
+    organizationId: parsed.value.organizationId,
+    projectId: parsed.value.projectId,
+    workItemId: parsed.value.workItemId,
   };
 
   const observed = await observeAgentSurface(snapshot, {
@@ -346,6 +351,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     ...createOptionalMetricAgents(input.metricAgents),
     ...createOptionalPromptFlowTasks(input.promptFlowTasks),
     ...createOptionalHierarchy(input.hierarchy),
+    ...createOptionalScheduleBlocks(input.scheduleBlocks),
   });
   if (observed.outcome === ObserveOutcome.Feedback) {
     input.writeStderr?.(`${observed.feedback.message}\n`);
@@ -378,6 +384,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
       await input.runCommand(commandType, materializeCommand(commandType, command, slot, parsed.value), slot),
     dispatchTool: input.dispatchTool,
     loadPromptFlowContext: input.loadPromptFlowContext ?? loadPromptFlowContextFromRequest,
+    ...createOptionalSlotAuthorizer(input.authorizeSlot),
   });
   input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
   if (actionResult.outcome === "loaded_context") {
@@ -406,6 +413,18 @@ async function loadPromptFlowContextFromRequest(
     })),
     ...copyPromptFlowRequestMetadata(request),
   };
+}
+
+function createOptionalScheduleBlocks(
+  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
+): { scheduleBlocks?: readonly WorkScheduleBlock[] } {
+  return scheduleBlocks === undefined ? {} : { scheduleBlocks };
+}
+
+function createOptionalSlotAuthorizer(
+  authorizeSlot: AgentCliCycleInput["authorizeSlot"],
+): Pick<ActDependencies, "authorizeSlot"> {
+  return authorizeSlot === undefined ? {} : { authorizeSlot };
 }
 
 function materializeCommand(

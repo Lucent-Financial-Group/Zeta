@@ -25,7 +25,14 @@
  * the next slice. See agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md.
  */
 
-import { HatLevel, ToolBundle, type HatDefinition } from "../../domain/src/index.ts";
+import {
+  HatLevel,
+  ScheduleBlockState,
+  ScheduleBlockType,
+  ToolBundle,
+  type HatDefinition,
+  type WorkScheduleBlock,
+} from "../../domain/src/index.ts";
 import type {
   MetricSeries,
   TelemetryQueryDegraded,
@@ -115,6 +122,11 @@ export type RunSnapshot = {
 export type AgentObserveSnapshot = RunSnapshot & {
   hatAssignmentId: ZetaIdDecimal;
   hat: HatDefinition;
+  agentId?: string | undefined;
+  organizationId?: string | undefined;
+  projectId?: string | undefined;
+  teamId?: string | undefined;
+  workItemId?: string | undefined;
 };
 
 export type VetoedOption = {
@@ -173,6 +185,7 @@ export type DeterministicRule = {
 export type ObserveDependencies = {
   clock: { now: () => string };
   deterministicRules?: readonly DeterministicRule[];
+  scheduleBlocks?: readonly WorkScheduleBlock[];
 };
 
 export const ACTION_CLASS_FOR_ACTION_TYPE: Readonly<Partial<Record<string, ActionClass>>> = {
@@ -255,7 +268,66 @@ export function hatAuthorityRule(hat: HatDefinition): DeterministicRule {
 
 export function observeAgent(snapshot: AgentObserveSnapshot, deps: ObserveDependencies): ObserveResult {
   const rules = deps.deterministicRules ?? DefaultDeterministicRules;
-  return observe(snapshot, { ...deps, deterministicRules: [...rules, hatAuthorityRule(snapshot.hat)] });
+  const agentRules = [...rules, hatAuthorityRule(snapshot.hat), ...createOptionalScheduleRules(deps)];
+  return observe(snapshot, { ...deps, deterministicRules: agentRules });
+}
+
+const SCHEDULE_BLOCK_TYPES_FOR_ACTION: Readonly<Record<string, readonly ScheduleBlockType[]>> = {
+  block: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+  compose: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  execute: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  fail: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  request_gate: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  request_review: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+  resume: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+  rework: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+  submit_evidence: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  complete: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+} as const;
+
+export function scheduleAuthorityRule(
+  scheduleBlocks: readonly WorkScheduleBlock[],
+  evaluatedAt: string,
+): DeterministicRule {
+  return {
+    name: "schedule-authority",
+    veto: (option, snapshot) => {
+      const allowedBlockTypes = SCHEDULE_BLOCK_TYPES_FOR_ACTION[option.actionType];
+      if (allowedBlockTypes === undefined) return undefined;
+      const hatAssignmentId = (snapshot as Partial<AgentObserveSnapshot>).hatAssignmentId;
+      if (hatAssignmentId === undefined) {
+        return `option '${option.actionType}' requires a hat assignment before schedule authorization`;
+      }
+      const activeBlocks = scheduleBlocks.filter((block) =>
+        block.assignedHatAssignmentId === hatAssignmentId &&
+        optionalMatches(block.assignedAgentId, (snapshot as Partial<AgentObserveSnapshot>).agentId) &&
+        optionalMatches(block.organizationId, (snapshot as Partial<AgentObserveSnapshot>).organizationId) &&
+        optionalMatches(block.projectId, (snapshot as Partial<AgentObserveSnapshot>).projectId) &&
+        optionalMatches(block.teamId, (snapshot as Partial<AgentObserveSnapshot>).teamId) &&
+        optionalMatches(block.workItemId, (snapshot as Partial<AgentObserveSnapshot>).workItemId) &&
+        block.state === ScheduleBlockState.Active &&
+        block.startsAt <= evaluatedAt &&
+        evaluatedAt < block.endsAt
+      );
+      if (activeBlocks.length === 0) {
+        return `option '${option.actionType}' requires a current schedule block for hat assignment ${hatAssignmentId}`;
+      }
+      const allowed = activeBlocks.some((block) => allowedBlockTypes.includes(block.blockType));
+      return allowed
+        ? undefined
+        : `current schedule block type '${activeBlocks[0]?.blockType}' does not allow ${option.actionType}`;
+    },
+  };
+}
+
+function optionalMatches(actual: string | undefined, expected: string | undefined): boolean {
+  return expected === undefined || actual === expected;
+}
+
+function createOptionalScheduleRules(deps: ObserveDependencies): readonly DeterministicRule[] {
+  return deps.scheduleBlocks === undefined
+    ? []
+    : [scheduleAuthorityRule(deps.scheduleBlocks, deps.clock.now())];
 }
 
 export const TriAvailability = {
@@ -310,7 +382,12 @@ export type ActDependencies = {
   runCommand: (commandType: string, command: unknown, slot: Menu16Slot) => Promise<unknown>;
   dispatchTool: (tool: string, args: unknown, slot: Menu16Slot) => Promise<unknown>;
   loadPromptFlowContext?: ((request: PromptFlowContextRequest, slot: Menu16Slot) => Promise<PromptFlowContext>) | undefined;
+  authorizeSlot?: ((slot: Menu16Slot) => Promise<SlotAuthorizationDecision>) | undefined;
 };
+
+export type SlotAuthorizationDecision =
+  | { status: "allowed" }
+  | { status: "denied"; reason?: string | undefined; message: string };
 
 export const ActRejectionReason = {
   NoSelectableSlot: "no_selectable_slot",
@@ -319,6 +396,7 @@ export const ActRejectionReason = {
   SlotNotSelectable: "slot_not_selectable",
   MissingImplementation: "missing_implementation",
   MissingPromptFlowContextLoader: "missing_prompt_flow_context_loader",
+  ScheduleAuthorityDenied: "schedule_authority_denied",
   UnsupportedImplementation: "unsupported_implementation",
 } as const;
 
@@ -837,6 +915,10 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
   }
   if (slot.impl === undefined) {
     return rejectAct(ActRejectionReason.MissingImplementation, `slot ${index} has no implementation`);
+  }
+  const authorization = await deps.authorizeSlot?.(slot);
+  if (authorization?.status === "denied") {
+    return rejectAct(ActRejectionReason.ScheduleAuthorityDenied, authorization.message);
   }
   switch (slot.impl.kind) {
     case "command":

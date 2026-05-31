@@ -2,24 +2,30 @@ import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  HatBindingPhase,
   ChangeArtifactKind,
   ChangeSetPhase,
   HatLevel,
   OrgEventKind,
+  ScheduleBlockState,
+  ScheduleBlockType,
   WorkItemState,
   WorkItemType,
   WorkItemSource,
   WorkBatchState,
   type ChangeSet,
+  type HatBinding,
   type HatDefinition,
   type OrgEvent,
   type WorkBatch,
   type WorkItem,
+  type WorkScheduleBlock,
 } from "../../domain/src/index.ts";
 import { buildHatDefinitions } from "../src/org-seed.ts";
 import { RecordingTelemetry, rollUpBatchMetrics, aggregateMetrics } from "../../observability/src/index.ts";
 import { observeForHat, authorityScopeOf, AuthorityScope, type OrgWorkState } from "../src/observe-for-hat.ts";
 import { WorkClaimState, WorkShardState, type HatWorkQueue } from "../src/work-market.ts";
+import { ScheduleCorrectiveActionKind, SchedulePressureLevel } from "../src/schedule-optimizer.ts";
 
 function wi(id: string, type: WorkItemType, state: WorkItemState, batchId: string): WorkItem {
   return {
@@ -261,6 +267,33 @@ test("observeForHat rolls subordinate work-market pressure up to executive scope
   equal(readout.workMarket.queues[0]?.queueId, "queue-backend-project-1");
 });
 
+test("observeForHat exposes schedule pressure and legal reassignment actions", () => {
+  const hats = buildHatDefinitions();
+  const byId = new Map<string, HatDefinition>(hats.map((h) => [h.id, h]));
+  const ceo = byId.get("ceo")!;
+  const state: OrgWorkState = {
+    organizationId: "org-lfg",
+    hats: byId,
+    batches: [],
+    itemsByBatch: new Map(),
+    events: [],
+    workQueues: [backendQueue()],
+    scheduleBlocks: [scheduleBlock()],
+    hatBindings: [hatBinding({ phase: HatBindingPhase.Expired })],
+    now: "2026-05-31T12:30:00.000Z",
+    reviewLagMsByHat: new Map([["backend_implementer", 2 * 60 * 60 * 1000]]),
+    failureRateByHat: new Map([["backend_implementer", 0.25]]),
+    heartbeatReliabilityByHat: new Map([["backend_implementer", 0.5]]),
+  };
+
+  const readout = observeForHat(ceo, state);
+
+  equal(readout.schedulePressure.level, SchedulePressureLevel.Critical);
+  equal(readout.schedulePressure.visibleHatIds.includes("backend_implementer"), true);
+  ok(readout.schedulePressure.signals.some((signal) => signal.kind === "expired_hat_binding"));
+  ok(readout.schedulePressure.correctiveActions.some((action) => action.kind === ScheduleCorrectiveActionKind.ReassignAfterExpiry));
+});
+
 test("authorityScopeOf maps every level", () => {
   equal(authorityScopeOf(HatLevel.ExecutiveBoard), AuthorityScope.Organization);
   equal(authorityScopeOf(HatLevel.Director), AuthorityScope.Department);
@@ -321,5 +354,41 @@ function backendQueue(): HatWorkQueue {
       },
     ],
     reviews: [],
+  };
+}
+
+function scheduleBlock(input: Partial<WorkScheduleBlock> = {}): WorkScheduleBlock {
+  return {
+    workScheduleBlockId: "block-backend",
+    organizationId: "org-lfg",
+    projectId: "proj-1",
+    workItemId: "work-claimed",
+    assignedAgentId: "agent-backend-1",
+    assignedHatAssignmentId: "hat-backend-1",
+    blockType: ScheduleBlockType.PrioritizedWork,
+    state: ScheduleBlockState.Active,
+    title: "Backend focus",
+    purpose: "Implement backend shard",
+    startsAt: "2026-05-31T12:00:00.000Z",
+    endsAt: "2026-05-31T13:00:00.000Z",
+    scheduledAt: "2026-05-31T11:30:00.000Z",
+    scheduledBy: { agentId: "agent-manager", hatAssignmentId: "hat-manager" },
+    metadata: { updatedAt: "2026-05-31T11:30:00.000Z", version: 1, correlationId: "corr", causationId: "cause", traceId: "trace" },
+    ...input,
+  };
+}
+
+function hatBinding(input: Partial<HatBinding> = {}): HatBinding {
+  return {
+    id: "hat-backend-1",
+    organizationId: "org-lfg",
+    hatId: "backend_implementer",
+    wearerAgentId: "agent-backend-1",
+    phase: HatBindingPhase.Active,
+    boundAt: "2026-05-31T11:00:00.000Z",
+    warmupEndsAt: "2026-05-31T11:05:00.000Z",
+    expiresAt: "2026-05-31T12:00:00.000Z",
+    activatedAt: "2026-05-31T11:05:00.000Z",
+    ...input,
   };
 }

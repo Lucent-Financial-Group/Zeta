@@ -157,6 +157,19 @@ export {
   type ScheduleAuthorityCommandRule,
 } from "./schedule-authority.ts";
 export {
+  ScheduleCorrectiveActionKind,
+  SchedulePressureLevel,
+  SchedulePressureSignalKind,
+  computeSchedulePressure,
+  schedulePressureReadoutForHat,
+  type ScheduleCorrectiveAction,
+  type SchedulePressure,
+  type SchedulePressureInput,
+  type SchedulePressureReadout,
+  type SchedulePressureReadoutInput,
+  type SchedulePressureSignal,
+} from "./schedule-optimizer.ts";
+export {
   HatAuthorityPolicyVersion,
   createHatAuthorityPort,
   type CreateHatAuthorityPortInput,
@@ -308,6 +321,7 @@ export {
   type RenderMenu16Options,
   type ScopedMetricAgent,
   type ScopedReadout,
+  type SlotAuthorizationDecision,
   type SlotImpl,
   type VetoedPromptFlowTask,
   type VetoedHierarchyAction,
