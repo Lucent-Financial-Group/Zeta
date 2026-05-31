@@ -37,13 +37,13 @@ function ctxFor(plaintext: Uint8Array, sender: GeneratedKeyPair, recipients: Gen
 
 describe("B-0883 v1 Phase 2 — keygen", () => {
   it("generates XWing + ML-DSA-65 keypair with expected public-key sizes", () => {
-    const kp = generateRecipientKeyPair("otto-cli@zeta");
-    expect(kp.publicKey.identity).toBe("otto-cli@zeta");
+    const kp = generateRecipientKeyPair("sender@zeta");
+    expect(kp.publicKey.identity).toBe("sender@zeta");
     expect(kp.publicKey.kemAlgId).toBe("ML-KEM-768+X25519");
     expect(kp.publicKey.sigAlgId).toBe("ML-DSA-65");
     expect(kp.publicKey.publicKemKey.length).toBe(1216); // XWing public key
     expect(kp.publicKey.publicSigKey.length).toBeGreaterThan(0); // ML-DSA-65 public key
-    expect(kp.secretKeys.identity).toBe("otto-cli@zeta");
+    expect(kp.secretKeys.identity).toBe("sender@zeta");
     expect(kp.secretKeys.kemSecretKey.length).toBeGreaterThan(0);
     expect(kp.secretKeys.sigSecretKey.length).toBeGreaterThan(0);
   });
@@ -61,53 +61,53 @@ describe("B-0883 v1 Phase 2 — keygen", () => {
 
 describe("B-0883 v1 Phase 2 — encrypt/decrypt round-trip", () => {
   it("single recipient (sender == recipient) round-trips", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
+    const sender = generateRecipientKeyPair("sender@zeta");
     const pt = utf8("the secret is in the wavefunction");
-    const enc = encrypt(ctxFor(pt, otto, [otto]), otto.secretKeys);
+    const enc = encrypt(ctxFor(pt, sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
-    const dec = decrypt(enc.envelope, otto.secretKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt(enc.envelope, sender.secretKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(true);
     if (!dec.ok) return;
     expect(str(dec.plaintext)).toBe("the secret is in the wavefunction");
   });
 
   it("multi-recipient: every recipient (and the sender) can decrypt", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const addison = generateRecipientKeyPair("addison@zeta");
-    const max = generateRecipientKeyPair("max@zeta");
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const recipientA = generateRecipientKeyPair("recipient-a@zeta");
+    const recipientB = generateRecipientKeyPair("recipient-b@zeta");
     const pt = utf8("three-party shared secret");
-    // sender (otto) must be in the recipient set for round-trip recovery
-    const enc = encrypt(ctxFor(pt, otto, [otto, addison, max]), otto.secretKeys);
+    // sender (sender) must be in the recipient set for round-trip recovery
+    const enc = encrypt(ctxFor(pt, sender, [sender, recipientA, recipientB]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
     expect(enc.envelope.recipients.length).toBe(3);
 
-    for (const who of [otto, addison, max]) {
-      const dec = decrypt(enc.envelope, who.secretKeys, otto.publicKey.publicSigKey);
+    for (const who of [sender, recipientA, recipientB]) {
+      const dec = decrypt(enc.envelope, who.secretKeys, sender.publicKey.publicSigKey);
       expect(dec.ok).toBe(true);
       if (dec.ok) expect(str(dec.plaintext)).toBe("three-party shared secret");
     }
   });
 
   it("empty plaintext round-trips", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const enc = encrypt(ctxFor(new Uint8Array(0), otto, [otto]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(new Uint8Array(0), sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
-    const dec = decrypt(enc.envelope, otto.secretKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt(enc.envelope, sender.secretKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(true);
     if (dec.ok) expect(dec.plaintext.length).toBe(0);
   });
 
   it("larger binary payload round-trips byte-for-byte", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
+    const sender = generateRecipientKeyPair("sender@zeta");
     const pt = new Uint8Array(8192);
     for (let i = 0; i < pt.length; i++) pt[i] = (i * 37 + 11) & 0xff;
-    const enc = encrypt(ctxFor(pt, otto, [otto]), otto.secretKeys);
+    const enc = encrypt(ctxFor(pt, sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
-    const dec = decrypt(enc.envelope, otto.secretKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt(enc.envelope, sender.secretKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(true);
     if (dec.ok) expect(Buffer.from(dec.plaintext).equals(Buffer.from(pt))).toBe(true);
   });
@@ -115,32 +115,32 @@ describe("B-0883 v1 Phase 2 — encrypt/decrypt round-trip", () => {
 
 describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () => {
   it("EmptyRecipientSet", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const enc = encrypt(ctxFor(utf8("x"), otto, []), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(utf8("x"), sender, []), sender.secretKeys);
     expect(enc.ok).toBe(false);
     if (!enc.ok) expect(enc.feedback.kind).toBe("EmptyRecipientSet");
   });
 
   it("SenderNotInRecipientSet", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const addison = generateRecipientKeyPair("addison@zeta");
-    const enc = encrypt(ctxFor(utf8("x"), otto, [addison]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const recipientA = generateRecipientKeyPair("recipient-a@zeta");
+    const enc = encrypt(ctxFor(utf8("x"), sender, [recipientA]), sender.secretKeys);
     expect(enc.ok).toBe(false);
     if (!enc.ok) expect(enc.feedback.kind).toBe("SenderNotInRecipientSet");
   });
 
   it("RecipientKeyInvalid when sender secret-key identity mismatches", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
+    const sender = generateRecipientKeyPair("sender@zeta");
     const imposter = generateRecipientKeyPair("imposter@zeta");
-    // context sender = otto, but pass imposter's secret keys
-    const enc = encrypt(ctxFor(utf8("x"), otto, [otto]), imposter.secretKeys);
+    // context sender = sender, but pass imposter's secret keys
+    const enc = encrypt(ctxFor(utf8("x"), sender, [sender]), imposter.secretKeys);
     expect(enc.ok).toBe(false);
     if (!enc.ok) expect(enc.feedback.kind).toBe("RecipientKeyInvalid");
   });
 
   it("SeedSourceNotAvailable for non-random-bytes", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const enc = encrypt({ ...ctxFor(utf8("x"), otto, [otto]), seedSource: "hsm-derived" }, otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt({ ...ctxFor(utf8("x"), sender, [sender]), seedSource: "hsm-derived" }, sender.secretKeys);
     expect(enc.ok).toBe(false);
     if (!enc.ok) expect(enc.feedback.kind).toBe("SeedSourceNotAvailable");
   });
@@ -150,7 +150,7 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
     // only dispatches ml_dsa65 — encrypt must reject it rather than write an
     // envelope whose algSig label disagrees with the actual signature bytes.
     // (Codex P2 finding on PR #6217.)
-    const base = generateRecipientKeyPair("otto-cli@zeta");
+    const base = generateRecipientKeyPair("sender@zeta");
     const slhSender = { ...base.publicKey, sigAlgId: "SLH-DSA" };
     const ctx: EncryptionContext = {
       plaintext: utf8("x"),
@@ -170,91 +170,114 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
     // Right identity, WRONG sig key — encrypt self-verifies after signing and
     // must catch this at encrypt time rather than mint an undecryptable envelope.
     // (Copilot P1 finding on PR #6217.)
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
+    const sender = generateRecipientKeyPair("sender@zeta");
     const other = generateRecipientKeyPair("other@zeta");
     const wrongKeys = {
-      identity: otto.publicKey.identity, // same identity as the declared sender
-      kemSecretKey: otto.secretKeys.kemSecretKey,
-      sigSecretKey: other.secretKeys.sigSecretKey, // but a sig key that doesn't match otto's public sig key
+      identity: sender.publicKey.identity, // same identity as the declared sender
+      kemSecretKey: sender.secretKeys.kemSecretKey,
+      sigSecretKey: other.secretKeys.sigSecretKey, // but a sig key that doesn't match sender's public sig key
     };
-    const enc = encrypt(ctxFor(utf8("x"), otto, [otto]), wrongKeys);
+    const enc = encrypt(ctxFor(utf8("x"), sender, [sender]), wrongKeys);
     expect(enc.ok).toBe(false);
     if (!enc.ok) expect(enc.feedback.kind).toBe("RecipientKeyInvalid");
+  });
+
+  it("RecipientKeyInvalid (not a throw) on a malformed sender publicSigKey", () => {
+    // Noble's verify decoder throws on a truncated key — encrypt's self-verify
+    // must catch it and return a Result, not throw. (Codex P2 on PR #6217.)
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const malformedSender = { ...sender.publicKey, publicSigKey: new Uint8Array([1, 2, 3]) };
+    const ctx: EncryptionContext = {
+      plaintext: utf8("x"),
+      recipients: [malformedSender],
+      sender: malformedSender,
+      seedSource: "random-bytes",
+    };
+    let threw = false;
+    let result: ReturnType<typeof encrypt> | undefined;
+    try {
+      result = encrypt(ctx, sender.secretKeys);
+    } catch {
+      threw = true;
+    }
+    expect(threw).toBe(false);
+    expect(result?.ok).toBe(false);
+    if (result && !result.ok) expect(result.feedback.kind).toBe("RecipientKeyInvalid");
   });
 });
 
 describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () => {
   it("wrong recipient (not in envelope) -> RecipientNotInEnvelope", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
+    const sender = generateRecipientKeyPair("sender@zeta");
     const stranger = generateRecipientKeyPair("stranger@zeta");
-    const enc = encrypt(ctxFor(utf8("secret"), otto, [otto]), otto.secretKeys);
+    const enc = encrypt(ctxFor(utf8("secret"), sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
-    const dec = decrypt(enc.envelope, stranger.secretKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt(enc.envelope, stranger.secretKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(false);
     if (!dec.ok) expect(dec.feedback.kind).toBe("RecipientNotInEnvelope");
   });
 
   it("tampered ciphertext -> SignatureInvalid (signature covers content)", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const enc = encrypt(ctxFor(utf8("secret"), otto, [otto]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(utf8("secret"), sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
     const tampered = new Uint8Array(enc.envelope.ciphertext);
     tampered[0] = (tampered[0] ?? 0) ^ 0xff;
-    const dec = decrypt({ ...enc.envelope, ciphertext: tampered }, otto.secretKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt({ ...enc.envelope, ciphertext: tampered }, sender.secretKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(false);
     if (!dec.ok) expect(dec.feedback.kind).toBe("SignatureInvalid");
   });
 
   it("tampered signature -> SignatureInvalid", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const enc = encrypt(ctxFor(utf8("secret"), otto, [otto]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(utf8("secret"), sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
     const sig = new Uint8Array(enc.envelope.signature);
     sig[0] = (sig[0] ?? 0) ^ 0xff;
-    const dec = decrypt({ ...enc.envelope, signature: sig }, otto.secretKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt({ ...enc.envelope, signature: sig }, sender.secretKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(false);
     if (!dec.ok) expect(dec.feedback.kind).toBe("SignatureInvalid");
   });
 
   it("wrong sender public sig key -> SignatureInvalid", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
+    const sender = generateRecipientKeyPair("sender@zeta");
     const other = generateRecipientKeyPair("other@zeta");
-    const enc = encrypt(ctxFor(utf8("secret"), otto, [otto]), otto.secretKeys);
+    const enc = encrypt(ctxFor(utf8("secret"), sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
-    const dec = decrypt(enc.envelope, otto.secretKeys, other.publicKey.publicSigKey);
+    const dec = decrypt(enc.envelope, sender.secretKeys, other.publicKey.publicSigKey);
     expect(dec.ok).toBe(false);
     if (!dec.ok) expect(dec.feedback.kind).toBe("SignatureInvalid");
   });
 
   it("recipient present but holding wrong KEM secret key -> KemFailure", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const addison = generateRecipientKeyPair("addison@zeta");
-    const enc = encrypt(ctxFor(utf8("secret"), otto, [otto, addison]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const recipientA = generateRecipientKeyPair("recipient-a@zeta");
+    const enc = encrypt(ctxFor(utf8("secret"), sender, [sender, recipientA]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
-    // addison's slot exists, but supply a mismatched KEM secret key (otto's)
+    // recipientA's slot exists, but supply a mismatched KEM secret key (sender's)
     const wrongKeys = {
-      identity: "addison@zeta",
-      kemSecretKey: otto.secretKeys.kemSecretKey,
-      sigSecretKey: addison.secretKeys.sigSecretKey,
+      identity: "recipient-a@zeta",
+      kemSecretKey: sender.secretKeys.kemSecretKey,
+      sigSecretKey: recipientA.secretKeys.sigSecretKey,
     };
-    const dec = decrypt(enc.envelope, wrongKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt(enc.envelope, wrongKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(false);
     if (!dec.ok) expect(dec.feedback.kind).toBe("KemFailure");
   });
 
   it("context mismatch -> ContextMismatch", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const enc = encrypt(ctxFor(utf8("secret"), otto, [otto]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(utf8("secret"), sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
     // decrypt checks context BEFORE structural validation + signature verify,
     // so a wrong context must surface the precise ContextMismatch feedback.
-    const dec = decrypt({ ...enc.envelope, context: "wrong.ctx.v1" }, otto.secretKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt({ ...enc.envelope, context: "wrong.ctx.v1" }, sender.secretKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(false);
     if (!dec.ok) expect(dec.feedback.kind).toBe("ContextMismatch");
   });
@@ -262,9 +285,9 @@ describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () =>
 
 describe("B-0883 v1 Phase 2 — on-disk envelope CBOR codec", () => {
   it("encode/decode round-trips and the decoded envelope still decrypts", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const addison = generateRecipientKeyPair("addison@zeta");
-    const enc = encrypt(ctxFor(utf8("persisted to git, read later"), otto, [otto, addison]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const recipientA = generateRecipientKeyPair("recipient-a@zeta");
+    const enc = encrypt(ctxFor(utf8("persisted to git, read later"), sender, [sender, recipientA]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
 
@@ -281,7 +304,7 @@ describe("B-0883 v1 Phase 2 — on-disk envelope CBOR codec", () => {
     expect(decoded.envelope.contentNonce.length).toBe(12);
 
     // The decoded envelope must still decrypt (proves the persist->observe bridge)
-    const dec = decrypt(decoded.envelope, addison.secretKeys, otto.publicKey.publicSigKey);
+    const dec = decrypt(decoded.envelope, recipientA.secretKeys, sender.publicKey.publicSigKey);
     expect(dec.ok).toBe(true);
     if (dec.ok) expect(str(dec.plaintext)).toBe("persisted to git, read later");
   });
@@ -295,8 +318,8 @@ describe("B-0883 v1 Phase 2 — on-disk envelope CBOR codec", () => {
   it("decodeEnvelope rejects a wrong-length contentNonce with EnvelopeMalformed", () => {
     // A signed-but-malformed nonce must fail structurally at decode, not later
     // as a content decrypt error. (Copilot finding on PR #6217.)
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const enc = encrypt(ctxFor(utf8("x"), otto, [otto]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(utf8("x"), sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
     const bytes = encodeEnvelope({ ...enc.envelope, contentNonce: new Uint8Array(8) }); // wrong length
@@ -305,9 +328,25 @@ describe("B-0883 v1 Phase 2 — on-disk envelope CBOR codec", () => {
     if (!decoded.ok) expect(decoded.feedback.kind).toBe("EnvelopeMalformed");
   });
 
+  it("decodeEnvelope reports VersionUnsupported for a well-formed future version", () => {
+    // A well-formed envelope of an unsupported version must get the precise
+    // VersionUnsupported feedback, not generic EnvelopeMalformed. (Copilot P1.)
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(utf8("x"), sender, [sender]), sender.secretKeys);
+    expect(enc.ok).toBe(true);
+    if (!enc.ok) return;
+    const bytes = encodeEnvelope({ ...enc.envelope, version: 2 as unknown as 1 });
+    const decoded = decodeEnvelope(bytes);
+    expect(decoded.ok).toBe(false);
+    if (!decoded.ok) {
+      expect(decoded.feedback.kind).toBe("VersionUnsupported");
+      if (decoded.feedback.kind === "VersionUnsupported") expect(decoded.feedback.version).toBe(2);
+    }
+  });
+
   it("encodeEnvelope is deterministic (same envelope -> same bytes)", () => {
-    const otto = generateRecipientKeyPair("otto-cli@zeta");
-    const enc = encrypt(ctxFor(utf8("determinism"), otto, [otto]), otto.secretKeys);
+    const sender = generateRecipientKeyPair("sender@zeta");
+    const enc = encrypt(ctxFor(utf8("determinism"), sender, [sender]), sender.secretKeys);
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
     const a = encodeEnvelope(enc.envelope);

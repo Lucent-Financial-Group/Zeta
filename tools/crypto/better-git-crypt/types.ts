@@ -74,7 +74,7 @@ export interface AlgSpec {
   readonly status: CipherStatus;
   readonly description: string;
   readonly nobleModule?: string; // @noble/post-quantum module path when ships-v1
-  readonly composesWith: ReadonlyArray<string>; // backlog/rule references
+  readonly composesWith: readonly string[]; // backlog/rule references
 }
 
 /**
@@ -95,7 +95,7 @@ export interface RecipientKey {
   readonly publicKemKey: Uint8Array;
   readonly publicSigKey: Uint8Array;
   readonly seedSource: SeedSource;
-  readonly composesWith: ReadonlyArray<string>;
+  readonly composesWith: readonly string[];
 }
 
 /**
@@ -125,7 +125,7 @@ export interface FileEnvelope {
   readonly algWrap: string; // AlgSpec.id of CipherClass "aead"
   readonly algContent: string; // AlgSpec.id of CipherClass "aead"
   readonly algSig: string; // AlgSpec.id of CipherClass "signature"
-  readonly recipients: ReadonlyArray<RecipientSlot>;
+  readonly recipients: readonly RecipientSlot[];
   readonly ciphertext: Uint8Array;
   readonly contentNonce: Uint8Array; // 12-byte ChaCha20-Poly1305 nonce for the content AEAD (memo schema "content_nonce"); covered by the signature
   readonly signerIdentity: string; // matches RecipientKey.identity of sender
@@ -137,7 +137,7 @@ export interface FileEnvelope {
  */
 export interface EncryptionContext {
   readonly plaintext: Uint8Array;
-  readonly recipients: ReadonlyArray<RecipientKey>;
+  readonly recipients: readonly RecipientKey[];
   readonly sender: RecipientKey;
   readonly seedSource: SeedSource;
 }
@@ -181,7 +181,7 @@ export type DecryptionFeedback =
 /**
  * Seed v1 algorithm registry per design memo.
  */
-export const ALG_REGISTRY: ReadonlyArray<AlgSpec> = [
+export const ALG_REGISTRY: readonly AlgSpec[] = [
   // KEM
   {
     id: "ML-KEM-768+X25519",
@@ -305,7 +305,7 @@ export interface PlannedEncryptionPath {
   readonly algSig: string; // CipherClass: signature
   readonly recipientCount: number;
   readonly senderIdentity: string;
-  readonly composesWith: ReadonlyArray<string>;
+  readonly composesWith: readonly string[];
 }
 
 /**
@@ -382,7 +382,7 @@ export function determineEncryptionPath(context: EncryptionContext): PlanResult 
 
   // KEM alg must be ships-v1:
   const kemAlg = findAlg(firstKemId);
-  if (!kemAlg || kemAlg.class !== "kem" || kemAlg.status !== "ships-v1") {
+  if (kemAlg?.class !== "kem" || kemAlg.status !== "ships-v1") {
     return {
       ok: false,
       feedback: { kind: "AlgUnsupported", algId: firstKemId },
@@ -392,7 +392,7 @@ export function determineEncryptionPath(context: EncryptionContext): PlanResult 
   // Signature alg must be ships-v1:
   const sigAlgId = context.sender.sigAlgId;
   const sigAlg = findAlg(sigAlgId);
-  if (!sigAlg || sigAlg.class !== "signature" || sigAlg.status !== "ships-v1") {
+  if (sigAlg?.class !== "signature" || sigAlg.status !== "ships-v1") {
     return {
       ok: false,
       feedback: { kind: "AlgUnsupported", algId: sigAlgId },
@@ -407,7 +407,7 @@ export function determineEncryptionPath(context: EncryptionContext): PlanResult 
   // Sanity-check the defaults exist (should always hold given seed registry):
   for (const id of [algKdf, algWrap, algContent]) {
     const alg = findAlg(id);
-    if (!alg || alg.status !== "ships-v1") {
+    if (alg?.status !== "ships-v1") {
       return { ok: false, feedback: { kind: "AlgUnsupported", algId: id } };
     }
   }
@@ -437,7 +437,7 @@ export function determineEncryptionPath(context: EncryptionContext): PlanResult 
  *   - at least one ships-v1 KDF
  *   - at least one ships-v1 AEAD
  */
-export function validateAlgRegistry(reg: ReadonlyArray<AlgSpec>): void {
+export function validateAlgRegistry(reg: readonly AlgSpec[]): void {
   const ids = new Set<string>();
   for (const a of reg) {
     if (ids.has(a.id)) {
@@ -489,6 +489,13 @@ export function validateEnvelopeStructure(env: FileEnvelope): void {
   if (env.signerIdentity.length === 0) {
     throw new Error("envelope has empty signerIdentity");
   }
+  // contentNonce is a fixed 12-byte ChaCha20-Poly1305 nonce. Enforce it in the
+  // SHARED validator so callers that validate/decrypt without going through
+  // decodeEnvelope still reject a malformed nonce structurally (not as a late
+  // crypto failure).
+  if (env.contentNonce.length !== 12) {
+    throw new Error(`envelope contentNonce must be 12 bytes, got ${env.contentNonce.length}`);
+  }
 }
 
 /**
@@ -498,7 +505,7 @@ export function validateEnvelopeStructure(env: FileEnvelope): void {
  */
 export function validateEncryptionContext(
   ctx: EncryptionContext,
-  reg: ReadonlyArray<AlgSpec>,
+  reg: readonly AlgSpec[],
 ): EncryptionFeedback | undefined {
   if (ctx.recipients.length === 0) {
     return { kind: "EmptyRecipientSet" };

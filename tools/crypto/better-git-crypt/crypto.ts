@@ -109,6 +109,11 @@ export type DecryptResult = { ok: true; plaintext: Uint8Array } | { ok: false; f
 
 const utf8 = (s: string): Uint8Array => new TextEncoder().encode(s);
 
+/** Byte equality for public-key comparison (constant-time not required — keys are public). */
+function bytesEqual(a: Uint8Array, b: Uint8Array): boolean {
+  return Buffer.from(a).equals(Buffer.from(b));
+}
+
 /**
  * Generate a v1 recipient keypair (XWing KEM + ML-DSA-65 signature).
  *
@@ -229,6 +234,22 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
     };
   }
 
+  // 4b. The sender's entry in `recipients` must carry the SAME public KEM key as
+  //     `context.sender`. Otherwise the CEK gets wrapped to a stale/rotated key
+  //     and the sender can't decrypt their own envelope (key-rotation / registry
+  //     staleness footgun). Compare the entry that will actually be encrypted to.
+  const senderRecipientEntry = context.recipients.find((r) => r.identity === context.sender.identity);
+  if (senderRecipientEntry && !bytesEqual(senderRecipientEntry.publicKemKey, context.sender.publicKemKey)) {
+    return {
+      ok: false,
+      feedback: {
+        kind: "RecipientKeyInvalid",
+        identity: context.sender.identity,
+        reason: "sender's recipients entry has a different publicKemKey than context.sender (stale/rotated key)",
+      },
+    };
+  }
+
   // 5. Content encryption key + content nonce.
   const cek = randomBytes(CEK_LEN);
   const contentNonce = randomBytes(NONCE_LEN);
@@ -281,14 +302,22 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
   // Self-verify against the sender's DECLARED public sig key. If the supplied
   // secret key doesn't match (right identity, wrong/stale key), this catches it
   // at encrypt time — otherwise we'd mint an envelope that no one can verify
-  // (an undecryptable artifact). Surface it as RecipientKeyInvalid now.
-  if (!ml_dsa65.verify(signature, toSign, context.sender.publicSigKey)) {
+  // (an undecryptable artifact). Surface it as RecipientKeyInvalid now. The
+  // verify is wrapped because Noble's key decoder THROWS on a malformed/truncated
+  // publicSigKey — a throw here would break the EncryptResult contract.
+  let selfVerified: boolean;
+  try {
+    selfVerified = ml_dsa65.verify(signature, toSign, context.sender.publicSigKey);
+  } catch {
+    selfVerified = false;
+  }
+  if (!selfVerified) {
     return {
       ok: false,
       feedback: {
         kind: "RecipientKeyInvalid",
         identity: context.sender.identity,
-        reason: "sender secret key does not match the declared public sig key",
+        reason: "sender secret key does not match (or sender publicSigKey is malformed)",
       },
     };
   }
@@ -413,6 +442,22 @@ export function encodeEnvelope(envelope: FileEnvelope): Uint8Array {
 /** Result of `decodeEnvelope` — Result<FileEnvelope, DecryptionFeedback>. */
 export type DecodeEnvelopeResult = { ok: true; envelope: FileEnvelope } | { ok: false; feedback: DecryptionFeedback };
 
+/** Decode + shape-validate the recipient-slot array (extracted to keep decodeEnvelope simple). */
+function decodeRecipientSlots(arr: readonly unknown[]): { slots: RecipientSlot[] } | { error: string } {
+  const isBytes = (v: unknown): v is Uint8Array => v instanceof Uint8Array;
+  const isStr = (v: unknown): v is string => typeof v === "string";
+  const slots: RecipientSlot[] = [];
+  for (const r of arr) {
+    if (typeof r !== "object" || r === null) return { error: "recipient slot is not an object" };
+    const rr = r as Record<string, unknown>;
+    if (!isStr(rr.identity) || !isBytes(rr.kemCt) || !isBytes(rr.wrappedCek) || !isBytes(rr.kdfInfo)) {
+      return { error: "recipient slot field shape mismatch" };
+    }
+    slots.push({ identity: rr.identity, kemCt: rr.kemCt, wrappedCek: rr.wrappedCek, kdfInfo: rr.kdfInfo });
+  }
+  return { slots };
+}
+
 /**
  * Decode on-disk CBOR bytes back into a `FileEnvelope`, structurally validated.
  * Returns `EnvelopeMalformed` feedback on any decode / shape failure rather
@@ -437,8 +482,16 @@ export function decodeEnvelope(bytes: Uint8Array): DecodeEnvelopeResult {
   const o = raw as Record<string, unknown>;
   const isBytes = (v: unknown): v is Uint8Array => v instanceof Uint8Array;
   const isStr = (v: unknown): v is string => typeof v === "string";
+  // Split the version check from the shape check so a well-formed envelope of an
+  // UNSUPPORTED version gets the precise VersionUnsupported feedback (the same
+  // condition decrypt exposes), not a generic EnvelopeMalformed.
+  if (typeof o.version !== "number") {
+    return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: "version is not a number" } };
+  }
+  if (o.version !== 1) {
+    return { ok: false, feedback: { kind: "VersionUnsupported", version: o.version } };
+  }
   if (
-    o.version !== 1 ||
     !isStr(o.context) ||
     !isStr(o.algKem) ||
     !isStr(o.algKdf) ||
@@ -465,17 +518,11 @@ export function decodeEnvelope(bytes: Uint8Array): DecodeEnvelopeResult {
       },
     };
   }
-  const recipients: RecipientSlot[] = [];
-  for (const r of o.recipients as unknown[]) {
-    if (typeof r !== "object" || r === null) {
-      return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: "recipient slot is not an object" } };
-    }
-    const rr = r as Record<string, unknown>;
-    if (!isStr(rr.identity) || !isBytes(rr.kemCt) || !isBytes(rr.wrappedCek) || !isBytes(rr.kdfInfo)) {
-      return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: "recipient slot field shape mismatch" } };
-    }
-    recipients.push({ identity: rr.identity, kemCt: rr.kemCt, wrappedCek: rr.wrappedCek, kdfInfo: rr.kdfInfo });
+  const recipientsResult = decodeRecipientSlots(o.recipients as readonly unknown[]);
+  if ("error" in recipientsResult) {
+    return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: recipientsResult.error } };
   }
+  const recipients = recipientsResult.slots;
   const envelope: FileEnvelope = {
     version: 1,
     context: o.context,
