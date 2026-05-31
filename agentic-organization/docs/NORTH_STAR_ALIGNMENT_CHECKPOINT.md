@@ -1885,3 +1885,49 @@ in-cluster Cockroach as the adapter for `org-model-eval-optimizer-65f29b32` and 
 
 `npm run typecheck` passed. `npm test` passed: **916 tests, 0 fail** (7 skipped live-integration
 tests).
+
+---
+
+## Update 2026-05-31 — Phase 2.8 secret-scope hard controls proven in kind
+
+The observe-act action surface now carries secret-scope requirements as typed data. Prompt-flow
+tool injections and MCP slots can declare `requiredSecretScopes`; prompt-flow tasks whose injected
+tools require unavailable scopes are hidden as false slots during observe, and MCP dispatch is
+re-authorized at act time before any tool side effect can run.
+
+### What shipped
+
+- `PromptFlowToolInjection` now supports `requiredSecretScopes`, and the agent CLI preserves those
+  scopes when compiling durable prompt-flow definitions into current prompt-flow tasks.
+- `SlotImpl.kind === "mcp"` now supports `requiredSecretScopes` directly on the executable slot.
+- `observeAgentSurface` accepts `availableSecretScopes` and vetoes prompt-flow tasks with a
+  `prompt-flow-secret-scope` reason when their tool injections require unavailable secrets.
+- `createControlPlaneSlotAuthorizer` derives control-plane usage from MCP and prompt-flow slots, so
+  act-time authorization rejects tool dispatch when the required secret scope is unavailable even if
+  the slot was visible at observe time.
+- KIND proof runner: `deploy/run-control-plane-secret-scopes.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:keepalive`
+(`sha256:8806aa404a21cb22a4e3af1dd16eb71274b77c09e0c6d4204a8fb009aa333fc8`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-84fc64dcb-c8kv5`. Fresh boot logs showed the
+expected cadence lanes with zero `worker run failed` or structured error matches.
+
+`deploy/run-control-plane-secret-scopes.ts` ran against in-cluster Cockroach for
+`org-control-plane-secrets-9e39ab9a` and proved:
+
+- A durable provider-freeze flag was upserted and read back through the Cockroach control-plane
+  state store as `flag-provider-freeze-9e39ab9a`.
+- MCP dispatch with `providerId = github` was rejected with `provider_freeze`;
+  `providerDispatched` remained false.
+- MCP dispatch with required `github:write` but no available secret scope was rejected with
+  `secret_scope_unavailable`; `secretDispatched` remained false.
+- A prompt-flow task whose `github.publish_release` tool injection required `github:write` was
+  rendered as a vetoed prompt-flow task with rule `prompt-flow-secret-scope`.
+
+`PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **1179 tests, 1172 pass, 0 fail, 7 skipped**.
