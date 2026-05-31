@@ -17,4 +17,6 @@
 - progress: `tools/installer/zeta-creds-restore.ts` now skips `already-present` restored credentials instead of rewriting them.
 - proof: `bun test tools/installer/zeta-creds-persist-restore.test.ts` passes with an ESP-retention regression covering root wipe -> restore -> repeat restore with zero writes.
 - limitation: `bun run typecheck` could not start because `tsc` is not installed in this isolated worktree.
+- progress: `tools/zflash/test-harness/run.ts` now fails closed on scaffolded runtime attempts, so `reformat-with-retention` cannot pass by returning scaffolded status.
+- proof: `bun test tools/zflash/test-harness/` passes, including `run.test.ts` coverage that `--dry-run` remains non-runtime planning while `--scenario reformat-with-retention` exits nonzero until implementation lands.
 - next: wire this credential-retention proof into the B-0891 scenario-3 QEMU snapshot/restart harness; keep `reformat-with-retention` scaffolded until QEMU state preservation asserts end-to-end.

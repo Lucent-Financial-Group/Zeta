@@ -39,9 +39,13 @@ bun tools/zflash/test-harness/run.ts --all <iso-path>
 
 Exit codes:
 
-- `0` — all requested scenarios passed (or all skipped/scaffolded)
+- `0` — all requested runnable scenarios passed; `--list`/`--dry-run` succeeded
 - `1` — one or more requested scenarios FAILED
 - `2` — usage error OR scenario-definition invariant violation
+
+Runtime attempts for scaffolded scenarios fail closed with exit `1`.
+`--dry-run` remains the planning surface for inspecting pending scenarios
+without claiming a false green.
 
 ## Tests
 

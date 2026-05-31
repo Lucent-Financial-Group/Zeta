@@ -28,7 +28,7 @@
  *   Human-readable summary to stderr
  *
  * Exit codes:
- *   0  all requested scenarios passed (or all skipped due to scaffolded status)
+ *   0  all requested runnable scenarios passed; --list/--dry-run succeeded
  *   1  one or more requested scenarios FAILED
  *   2  usage error OR scenario-definition invariant violation
  *
@@ -274,7 +274,7 @@ function main(argv: ReadonlyArray<string>): number {
       }
       const result = runScenario(parsed.scenarioId, parsed.isoPath);
       emitResults([result]);
-      return result.status === "failed" ? 1 : 0;
+      return result.status === "failed" || result.status === "scaffolded" ? 1 : 0;
     }
     case "all": {
       if (!parsed.isoPath) {
@@ -296,7 +296,7 @@ function main(argv: ReadonlyArray<string>): number {
         }
         const result = runScenario(scenario.id, parsed.isoPath);
         results.push(result);
-        if (result.status === "failed") {
+        if (result.status === "failed" || result.status === "scaffolded") {
           failedIds.add(scenario.id);
         }
       }
