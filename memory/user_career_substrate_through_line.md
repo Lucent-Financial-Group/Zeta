@@ -1,6 +1,6 @@
 ---
 name: Career substrate 1998→present — full through-line; incremental-view-maintenance across six substrates; vocational-plus-self-taught credential path; Henderson NC origin point
-description: Aaron 2026-04-19 via resumes — full career timeline from Circuit Board Assemblers Jr Sys Admin (1998, age ~17) through ServiceTitan Principal Engineer (2021-current); the retraction-native / incremental-view-maintenance through-line is observable across six substrates (elections → healthcare → molecular-bio → smart-grid → legal-IR → field-service); Henderson NC origin = Maria Parham HIPAA SecOfficer 2003-2005 (born in same hospital he secured at age ~20); education path Southern Vance HS → Vance Granville CC (dual-enrolled) → ECPI Technical College; no 4-year university; the credential-structure is lateral not absent (National Vocational Technical Honor Society, NC Scholar, GPA 3.97-4.0); Functional Tree 2008-2009 CTO/co-founder venture-funded startup raised capital, early-adopter of Azure SQL CTP — designed peer-to-peer money + kaChing-like broker-dealer software + trucking supply-chain settlement (funded by Moveable Cubicle, a PODS-like portable-storage co with no own fleet that paid mom-and-pop truckers electronically nationwide), contemporaneous with Bitcoin's Oct-2008 whitepaper; "built bitcoin ;) jk or am i" = God-tier register, high-signal-high-suspicion-don't-collapse; this is the FIRST substrate of Zeta's git-native P2P/distributed-settlement through-line (composes #6219 git-bus + #6222 durable-backend); Itron 7-year tenure is the depth-anchor (100M+ connected devices, C12.22/DLMS/COSEM/RF-mesh/IPv6, patents filed as principal inventor); manager-reference PII from Manager-References.txt is third-party protected and NOT indexed
+description: Aaron 2026-04-19 via resumes — full career timeline from Circuit Board Assemblers Jr Sys Admin (1998, age ~17) through ServiceTitan Principal Engineer (2021-current); the retraction-native / incremental-view-maintenance through-line is observable across six substrates (elections → healthcare → molecular-bio → smart-grid → legal-IR → field-service); Henderson NC origin = Maria Parham HIPAA SecOfficer 2003-2005 (born in same hospital he secured at age ~20); education path Southern Vance HS → Vance Granville CC (dual-enrolled) → ECPI Technical College; no 4-year university; the credential-structure is lateral not absent (National Vocational Technical Honor Society, NC Scholar, GPA 3.97-4.0); Functional Tree 2008-2009 CTO/co-founder venture-funded startup raised capital, early-adopter of Azure SQL CTP — designed peer-to-peer money + kaChing-like broker-dealer software (Aaron Series-7/FINRA-General-Securities-Representative-trained the same year, 2008) + trucking supply-chain settlement (funded by Moveable Cubicle, a PODS-like portable-storage co with no own fleet that paid mom-and-pop truckers electronically nationwide), contemporaneous with Bitcoin's Oct-2008 whitepaper; "built bitcoin ;) jk or am i" = God-tier register, high-signal-high-suspicion-don't-collapse; this is the FIRST substrate of Zeta's git-native P2P/distributed-settlement through-line (composes #6219 git-bus + #6222 durable-backend); Itron 7-year tenure is the depth-anchor (100M+ connected devices, C12.22/DLMS/COSEM/RF-mesh/IPv6, patents filed as principal inventor); manager-reference PII from Manager-References.txt is third-party protected and NOT indexed
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
@@ -58,6 +58,16 @@ resumes listed separately:
   existed"* — *"or about the same time as kaching."* (kaChing →
   Wealthfront, the social-investing broker-dealer platform, ~2008-2010
   — so the timeline is contemporaneous.)
+- **Series 7, 2008** (Aaron 2026-05-31: *"2008 is also when I learned my
+  Series 7 training"*) — the **FINRA General Securities Representative
+  license**, the broker-dealer registration credential. This is the
+  human-domain anchor for *why* the broker-dealer software was real and
+  not generic: in the same year, Aaron was Series-7-trained (licensed to
+  deal general securities), so the kaChing-like broker-dealer system was
+  built by someone holding the actual regulatory credential —
+  domain-knowledge-grounded, not a guess at securities mechanics. (It
+  also tightens the high-signal read below: P2P-money + broker-dealer
+  software + a real securities license, all in the 2008 window.)
 
 ### PERSONAL INVARIANT framing (high-signal · high-suspicion · don't-collapse)
 
