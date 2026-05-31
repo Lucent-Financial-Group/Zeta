@@ -49,8 +49,13 @@ export const applyDecoder = (
     case 'high-low-split': {
       const e = Math.min(mode, valueBits); // exponent bits taken from the high end
       const mantBits = valueBits - e;
-      const exponent = mantBits === 0 ? 0 : V >>> mantBits;
-      const mantissa = mantBits === 0 ? 0 : V & ((1 << mantBits) - 1);
+      // Arithmetic (NOT bitwise): JS >>> / << coerce to uint32 and mask the shift count mod 32,
+      // which silently mis-decodes shapes with mantBits >= 32. Division/modulo is correct for any
+      // width within Number's 2^53 integer precision. (mantBits===0 => scale 1 => exponent V,
+      // mantissa 0 => value 0, the degenerate all-exponent case.)
+      const scale = 2 ** mantBits;
+      const exponent = Math.floor(V / scale);
+      const mantissa = V % scale;
       return mantissa * 2 ** exponent;
     }
   }

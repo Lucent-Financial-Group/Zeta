@@ -2,7 +2,7 @@ import { test, expect } from 'bun:test';
 import { type Tri, T, F, N } from '../tri-boolean';
 import { DEFAULT_SHAPE } from './types';
 import { fromTrits } from './tri-boolean-float';
-import { decodeWith, characterize, type DecoderSemantics } from './decoders';
+import { decodeWith, characterize, applyDecoder, type DecoderSemantics } from './decoders';
 
 const ALL: DecoderSemantics[] = ['radix-point', 'biased-exponent', 'high-low-split'];
 
@@ -33,8 +33,8 @@ test('biased-exponent: mode is a biased power-of-two exponent (bias = 2^(D-1) = 
 });
 
 test('high-low-split: mode = exponent-bit count; value = mantissa * 2^exponent (huge range)', () => {
-  // valueBits=8. mode(e)=1 => exponent = top 7 bits of V, mantissa = bottom 1 bit.
-  // V = 1000_0001 = 129 => exponent = 129>>>1 = 64, mantissa = 129&1 = 1 => 1 * 2^64.
+  // valueBits=8. mode(e)=7 => exponent = top 7 bits of V, mantissa = bottom 1 bit.
+  // V = 1000_0001 = 129 => exponent = floor(129/2) = 64, mantissa = 129 % 2 = 1 => 1 * 2^64.
   const f = fromTrits([T, F, F, F], [T, T, T], [F, F, F, T]); // V=129, e=7
   const r = decodeWith(f, 'high-low-split');
   expect(r.ok).toBe(true);
@@ -42,6 +42,17 @@ test('high-low-split: mode = exponent-bit count; value = mantissa * 2^exponent (
   // e=0 => pure integer V (no exponent bits; all 8 bits mantissa)
   const intF = fromTrits([F, F, F, F], [F, F, F], [F, F, T, F]); // V=2, e=0
   expect(decodeWith(intF, 'high-low-split')).toEqual({ ok: true, value: 2 });
+});
+
+test('high-low-split: wide shapes (mantBits >= 32) decode correctly (arithmetic, not 32-bit bitwise)', () => {
+  // Reviewer's case: applyDecoder(1, 1, 33, 1) => e=1, mantBits=32, exponent floor(1/2^32)=0,
+  // mantissa 1 % 2^32 = 1 => 1. A 32-bit `V >>> 32` / `(1 << 32)` would wrongly yield 0.
+  expect(applyDecoder(1, 1, 33, 1, 'high-low-split')).toBe(1);
+  // Another wide shape: valueBits=40, e=0 => pure integer (mantBits=40).
+  expect(applyDecoder(2 ** 35, 0, 40, 1, 'high-low-split')).toBe(2 ** 35);
+  // mantBits=40, exponent from a high bit: V = 2^39 + 5, e=1 => mantBits=39,
+  // exponent = floor((2^39+5)/2^39) = 1, mantissa = (2^39+5) % 2^39 = 5 => 5 * 2^1 = 10.
+  expect(applyDecoder(2 ** 39 + 5, 1, 40, 1, 'high-low-split')).toBe(10);
 });
 
 test('comparison profiles differ meaningfully (the reason none is obviously right)', () => {
