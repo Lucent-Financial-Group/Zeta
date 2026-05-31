@@ -1,6 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { runRetentionRuntime } from "./run";
+import type {
+  Qcow2RetentionExecutionStep,
+  QemuCommand,
+  QemuCommandExecution,
+} from "./qemu-state";
 
 const SCRIPT = join(import.meta.dir, "run.ts");
 
@@ -13,6 +19,13 @@ function run(...args: string[]): { readonly stdout: string; readonly stderr: str
     stderr: (result.stderr ?? "").trim(),
     exitCode: result.status ?? 1,
   };
+}
+
+function successfulExecution(
+  step: Qcow2RetentionExecutionStep,
+  command: QemuCommand,
+): QemuCommandExecution {
+  return { step, command, exitCode: 0, stdout: `${step} ok`, stderr: "" };
 }
 
 describe("B-0891 test-harness dispatcher", () => {
@@ -34,7 +47,7 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(parsed.summary.scaffolded).toBe(0);
     expect(parsed.results[0].status).toBe("failed");
     expect(parsed.results[0].message).toContain("fails closed");
-    expect(parsed.results[0].message).toContain("process runner");
+    expect(parsed.results[0].message).toContain("ZFLASH_QEMU_RETENTION_EXECUTE=1");
     expect(parsed.results[0].qemuRetentionPlan.createBaselineSnapshot.args).toEqual([
       "snapshot",
       "-c",
@@ -48,5 +61,55 @@ describe("B-0891 test-harness dispatcher", () => {
       "file=/tmp/nonexistent.iso.scenario3.qcow2,if=virtio,format=qcow2",
     );
     expect(parsed.results[0].qemuRetentionPlan.requiredSerialMarkers).toContain("already-present");
+  });
+
+  test("retention runtime executes through an injected QEMU executor when explicitly enabled", () => {
+    const observedSteps: Qcow2RetentionExecutionStep[] = [];
+    const result = runRetentionRuntime("/tmp/zeta.iso", {
+      execute: true,
+      executor: {
+        runCommand: (step, command) => {
+          observedSteps.push(step);
+          return successfulExecution(step, command);
+        },
+        readSerialOutput: () => [
+          "zeta-creds-restore: reading preserved ESP blob",
+          "zeta-creds-restore: already-present, skipping credential rewrite",
+        ].join("\n"),
+      },
+    });
+
+    expect(result.status).toBe("passed");
+    expect(observedSteps).toEqual([
+      "create-baseline-snapshot",
+      "list-baseline-snapshots",
+      "restore-baseline-snapshot",
+      "restart-from-iso-with-disk",
+    ]);
+    expect(result.qemuRetentionExecution).toBeDefined();
+    if (result.qemuRetentionExecution && "ok" in result.qemuRetentionExecution) {
+      expect(result.qemuRetentionExecution.ok.serialAssertion.matchedMarkers).toContain("already-present");
+    } else {
+      throw new Error("expected retention execution success");
+    }
+  });
+
+  test("retention runtime stays failed when QEMU output does not prove retention", () => {
+    const result = runRetentionRuntime("/tmp/zeta.iso", {
+      execute: true,
+      executor: {
+        runCommand: successfulExecution,
+        readSerialOutput: () => "zeta-creds-restore: restored credentials",
+      },
+    });
+
+    expect(result.status).toBe("failed");
+    expect(result.message).toContain("serial output did not prove retention");
+    expect(result.qemuRetentionExecution).toBeDefined();
+    if (result.qemuRetentionExecution && "error" in result.qemuRetentionExecution) {
+      expect(result.qemuRetentionExecution.error.kind).toBe("serial-marker-failed");
+    } else {
+      throw new Error("expected retention execution failure");
+    }
   });
 });

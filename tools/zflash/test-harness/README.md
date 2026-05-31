@@ -5,10 +5,11 @@ PoC scaffold for the zflash "done" acceptance criteria — the 5-scenario QEMU t
 ## Scope
 
 **PoC**: declarative scenario definitions + CLI dispatcher contract +
-invariant tests + QEMU snapshot/restart command planning.
+invariant tests + QEMU snapshot/restart command planning and explicit
+scenario-3 process-executor wiring.
 
-**NOT in PoC** (deferred to follow-up): executing the QEMU snapshot/restart
-plan for scenarios 3-5 (state preservation between boots); multi-VM
+**NOT in PoC** (deferred to follow-up): default-on QEMU snapshot/restart
+execution for scenarios 3-5 (state preservation between boots); multi-VM
 orchestration for scenario 5 (cluster-joining); GitHub Actions workflow
 integration.
 
@@ -58,8 +59,17 @@ Exit codes:
 - `2` — usage error OR scenario-definition invariant violation
 
 Runtime attempts for scenario 3 now emit the QEMU snapshot/restart command
-plan and still fail closed with exit `1` until command execution plus serial
-marker assertions are wired. Runtime attempts for scenarios 4-5 remain
+plan and still fail closed with exit `1` unless the operator explicitly opts
+into the real process executor:
+
+```bash
+ZFLASH_QEMU_RETENTION_EXECUTE=1 \
+  bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention <iso-path>
+```
+
+The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence and
+passes only when the serial log includes the required retention markers.
+Runtime attempts for scenarios 4-5 remain
 scaffolded/fail-closed.
 `--dry-run` remains the planning surface for inspecting pending scenarios
 without claiming a false green.

@@ -47,7 +47,15 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
 import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
-import { planQcow2SnapshotRetention, type Qcow2SnapshotRetentionPlan } from "./qemu-state";
+import {
+  createSpawnSyncQcow2RetentionExecutor,
+  executeQcow2SnapshotRetentionPlan,
+  planQcow2SnapshotRetention,
+  type Qcow2RetentionExecutionFeedback,
+  type Qcow2RetentionExecutionResult,
+  type Qcow2RetentionExecutor,
+  type Qcow2SnapshotRetentionPlan,
+} from "./qemu-state";
 
 type Mode = "list" | "dry-run" | "scenario" | "all";
 
@@ -57,13 +65,25 @@ interface ParsedArgs {
   readonly isoPath?: string;
 }
 
-interface ScenarioResult {
+export interface ScenarioResult {
   readonly id: ScenarioId;
   readonly status: "passed" | "failed" | "skipped" | "scaffolded";
   readonly durationMs?: number;
   readonly message?: string;
   readonly qemuRetentionPlan?: Qcow2SnapshotRetentionPlan;
+  readonly qemuRetentionExecution?: Qcow2RetentionExecutionResult;
 }
+
+export interface RetentionRuntimeOptions {
+  readonly execute?: boolean;
+  readonly executor?: Qcow2RetentionExecutor;
+  readonly cwd?: string;
+  readonly timeoutMs?: number;
+}
+
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
+const RETENTION_EXECUTION_ENV = "ZFLASH_QEMU_RETENTION_EXECUTE";
+const RETENTION_TIMEOUT_ENV = "ZFLASH_QEMU_RETENTION_TIMEOUT_MS";
 
 function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
   const args = argv.slice(2);
@@ -174,8 +194,7 @@ function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResu
   const harnessPath = scenario.id === "initial-format"
     ? "tools/ci/qemu-boot-test.ts"
     : "tools/ci/qemu-full-install-test.ts";
-  const repoRoot = resolve(import.meta.dir, "../../..");
-  const absHarnessPath = resolve(repoRoot, harnessPath);
+  const absHarnessPath = resolve(REPO_ROOT, harnessPath);
   if (!existsSync(absHarnessPath)) {
     return {
       id: scenario.id,
@@ -185,7 +204,7 @@ function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResu
   }
   const start = Date.now();
   const result = spawnSync("bun", [absHarnessPath, isoPath], {
-    cwd: repoRoot,
+    cwd: REPO_ROOT,
     stdio: "inherit",
   });
   const durationMs = Date.now() - start;
@@ -208,7 +227,34 @@ function reportScaffolded(scenario: Scenario): ScenarioResult {
   };
 }
 
-function planRetentionRuntime(isoPath: string): ScenarioResult {
+function describeRetentionExecutionError(error: Qcow2RetentionExecutionFeedback): string {
+  switch (error.kind) {
+    case "command-failed":
+      return `QEMU retention command failed at ${error.step} with exit ${error.exitCode ?? "unknown"}: ${error.stderr || "no stderr"}`;
+    case "executor-threw":
+      return `QEMU retention executor threw at ${error.step}: ${error.reason}`;
+    case "serial-marker-failed":
+      return `QEMU retention commands completed, but serial output did not prove retention; missing markers: ${error.assertion.missingMarkers.join(", ")}`;
+  }
+}
+
+function retentionExecutionEnabledFromEnv(): boolean {
+  return process.env[RETENTION_EXECUTION_ENV] === "1";
+}
+
+function retentionTimeoutMsFromEnv(): number | undefined {
+  const raw = process.env[RETENTION_TIMEOUT_ENV];
+  if (raw === undefined || raw.trim().length === 0) {
+    return undefined;
+  }
+  const parsed = Number(raw);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
+}
+
+export function runRetentionRuntime(
+  isoPath: string,
+  options: RetentionRuntimeOptions = {},
+): ScenarioResult {
   const absIsoPath = resolve(isoPath);
   const planned = planQcow2SnapshotRetention({
     isoPath: absIsoPath,
@@ -224,12 +270,37 @@ function planRetentionRuntime(isoPath: string): ScenarioResult {
     };
   }
 
+  if (options.execute !== true) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: `QEMU snapshot/restart retention plan generated; set ${RETENTION_EXECUTION_ENV}=1 to run the real QEMU process executor. Without that explicit opt-in, the scenario fails closed.`,
+      qemuRetentionPlan: planned.ok,
+    };
+  }
+
+  const executorOptions = options.timeoutMs === undefined
+    ? { cwd: options.cwd ?? REPO_ROOT }
+    : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
+  const executor = options.executor ?? createSpawnSyncQcow2RetentionExecutor(executorOptions);
+  const executed = executeQcow2SnapshotRetentionPlan(planned.ok, executor);
+
+  if ("error" in executed) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: describeRetentionExecutionError(executed.error),
+      qemuRetentionPlan: planned.ok,
+      qemuRetentionExecution: executed,
+    };
+  }
+
   return {
     id: "reformat-with-retention",
-    status: "failed",
-    message:
-      "QEMU snapshot/restart retention plan generated; command execution contract and serial-marker assertions are wired, but the dispatcher has not connected the real QEMU process runner yet, so the scenario fails closed.",
+    status: "passed",
+    message: "QEMU snapshot/restart retention execution observed all required serial markers.",
     qemuRetentionPlan: planned.ok,
+    qemuRetentionExecution: executed,
   };
 }
 
@@ -247,7 +318,11 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
       return runComposingScenario(scenario, isoPath);
     case "scaffolded":
       if (scenario.id === "reformat-with-retention") {
-        return planRetentionRuntime(isoPath);
+        const timeoutMs = retentionTimeoutMsFromEnv();
+        const options = timeoutMs === undefined
+          ? { execute: retentionExecutionEnabledFromEnv() }
+          : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
+        return runRetentionRuntime(isoPath, options);
       }
       return reportScaffolded(scenario);
     case "operator-runtime":
