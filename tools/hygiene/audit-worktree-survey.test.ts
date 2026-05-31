@@ -231,7 +231,7 @@ describe("renderMarkdown", () => {
 
   test("escapes markdown table cells", () => {
     const survey = makeSurvey(
-      [entry({ path: "/repo/has|pipe" })],
+      [entry({ path: "/repo/has|pipe\\slash", branch: "refs/heads/has`tick" })],
       {
         inspect: () =>
           inspection({
@@ -245,8 +245,22 @@ describe("renderMarkdown", () => {
     );
 
     const md = renderMarkdown(survey);
-    expect(md).toContain("`/repo/has\\|pipe`");
+    expect(md).toContain("`/repo/has\\|pipe\\\\slash`");
+    expect(md).toContain("``refs/heads/has`tick``");
     expect(md).toContain("fatal: reason\\|with<br>newline");
+  });
+
+  test("uses longer code fences for values with edge backticks", () => {
+    const survey = makeSurvey(
+      [entry({ path: "`/repo/edge`", branch: "refs/heads/``edge" })],
+      { inspect: () => inspection() },
+      new Date("2026-05-31T14:32:00Z"),
+      null,
+    );
+
+    const md = renderMarkdown(survey);
+    expect(md).toContain("`` `/repo/edge` ``");
+    expect(md).toContain("```refs/heads/``edge```");
   });
 
   test("formats report output with a trailing newline", () => {

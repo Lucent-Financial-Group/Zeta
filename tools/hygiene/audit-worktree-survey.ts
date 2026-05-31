@@ -216,7 +216,7 @@ function makeSurvey(
 }
 
 function renderBranch(branch: string | null): string {
-  return branch === null ? "_(detached)_" : `\`${branch}\``;
+  return branch === null ? "_(detached)_" : renderInlineCode(branch);
 }
 
 function renderNullableBoolean(value: boolean | null): string {
@@ -226,11 +226,19 @@ function renderNullableBoolean(value: boolean | null): string {
 }
 
 function escapeMarkdownTableCell(value: string): string {
-  return value.replace(/\r?\n/g, "<br>").replace(/\|/g, "\\|");
+  return value.replace(/\\/g, "\\\\").replace(/\r?\n/g, "<br>").replace(/\|/g, "\\|");
+}
+
+function longestBacktickRun(value: string): number {
+  const runs = value.match(/`+/g);
+  return runs === null ? 0 : Math.max(...runs.map((run) => run.length));
 }
 
 function renderInlineCode(value: string): string {
-  return `\`${value.replace(/`/g, "\\`")}\``;
+  const fence = "`".repeat(longestBacktickRun(value) + 1);
+  const padding =
+    value.startsWith("`") || value.endsWith("`") || value.startsWith(" ") || value.endsWith(" ") ? " " : "";
+  return `${fence}${padding}${value}${padding}${fence}`;
 }
 
 function renderCoveredByMain(item: WorktreeSurveyItem): string {
