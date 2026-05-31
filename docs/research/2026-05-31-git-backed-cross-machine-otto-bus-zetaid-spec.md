@@ -19,7 +19,10 @@ substrate that supersedes that choice:
 Heartbeat=3`).
 - **B-0890.1** (operator 2026-05-28) — _"we don't need branches for heartbeats and workflow
   … we can just have folders"_: **fast-lane as folders on main, NOT branches**, superseding
-  coordinator/branch complexity (main is Zeta-protected via B-0887, not PR machinery).
+  coordinator/branch complexity (folders-on-main are protected by path-scoped branch
+  protection — B-0887, **still `status: open`** — not PR machinery; until B-0887 lands the
+  folder transport stays in Phase 1, see "Rollout" + the B-0887 dependency note in
+  "Transport").
 - **B-0032** — threat model for the direct-to-main carve-out (the no-PR attack surface).
 - The folder `docs/agent-heartbeats/` already exists on main; Lior's 128-bit doc already
   extends the category space (used Category 5 for friction telemetry).
@@ -66,8 +69,37 @@ ref update, resolved by fetch → rebase → retry (always clean — disjoint ne
 
 This is the load-bearing property: **ZetaId keys → no collisions → no PR needed for
 coordination traffic.** A PR's job for _non-code_ checkins is conflict-resolution + review;
-ZetaId-keying makes conflicts _structurally impossible_, so the no-PR carve-out (B-0858) is
-safe. Code keeps PRs (semantic conflicts + review matter); corporate keeps PRs (leash side).
+ZetaId-keying makes content conflicts _vanishingly unlikely_, so the no-PR carve-out
+(B-0858) is safe. Code keeps PRs (semantic conflicts + review matter); corporate keeps PRs
+(leash side).
+
+### Collision caveat — the filename MUST be unique-or-merge-safe, not assumed-unique
+
+"Collision-free by construction" is the common case, not an absolute. The canonical
+`pack()` keeps only **32 bits of randomness** (`src/Core.TypeScript/zeta-id/zeta-id.ts`
+masks the randomness field to `0xFFFFFFFF`), so distinct envelopes sharing the same
+persona/category/timestamp fields rely on a 32-bit draw — a birthday collision becomes
+plausible at high publish volume per millisecond. Worse, **`DETERMINISTIC_ENV` (DST/
+cross-verification) returns `0n`** and its own doc-comment warns it "collapses observations
+with identical semantic fields to identical IDs (randomness collision risk)" — so two
+agents publishing identical-field envelopes under DST produce the **same** `bus/<zetaId>.json`
+path with **different content**, which is a real `git rebase` content conflict, not a
+disjoint-file union.
+
+v0 MUST therefore treat a same-path collision as a first-class case, not an impossibility:
+
+- **Production (`DEFAULT_ENV`)**: include a high-resolution monotonic field (the existing
+  48-bit timestamp at millisecond resolution + the 32-bit randomness) and, if a publisher
+  can emit >1 envelope/ms, salt the observation so two same-ms envelopes differ before
+  `pack()`. The G-Set property holds **only while filenames are distinct**.
+- **On the rare same-path rebase conflict**: the publisher re-`pack()`s (fresh randomness/
+  timestamp) and retries — never overwrites the peer's file (append-only / lightlike).
+- **DST tests**: give each simulated machine a distinct persona/salt so `DETERMINISTIC_ENV`
+  does not collapse their envelopes to one path.
+
+The conflict-freedom claim is **"unique filename ⇒ disjoint files ⇒ clean union"**; the
+load-bearing obligation is keeping the filename unique (or detecting the collision and
+re-minting), not assuming `pack()` alone guarantees it.
 
 ## Reuse the canonical ZetaId — do NOT mint a new id scheme
 
@@ -148,16 +180,24 @@ Add the Windows surface to `SENDER_IDS` (`tools/bus/types.ts`): `"otto-windows"`
 
 ## Operations
 
-### publish (append-only, direct-to-main, fetch-rebase-retry)
+### publish (append-only, fetch-rebase-retry) — **Phase-2 (direct-to-main) form shown**
+
+This is the **Phase-2 target** form. In **Phase 1 (now)** the same commit lands on a branch
+that is merged to `main` periodically (step 4 pushes the branch, not `main`) — branch
+protection stays ON until observe.ts is the replacement rail. See "Rollout" below; only the
+push target changes between phases, not the envelope/category/payload.
 
 ```
 1. zid  = pack({persona:<surface>, category: Bus, ...}, DEFAULT_ENV)
 2. write docs/agent-bus/<persona>/<Y>/<M>/<D>/<hex(zid)>.json   (GitBusEnvelope)
 3. commit (only that file)
-4. push origin main          # direct, no PR — the B-0858 path-scoped carve-out
+4. push origin main          # PHASE-2 only — needs the B-0858/B-0887 path-scoped carve-out
+   │                           #   in PHASE-1, push the feature branch instead (protection ON)
    └─ on non-fast-forward reject:
         git fetch origin main
-        git rebase origin/main   # clean: disjoint new files under the carve-out path (G-Set union)
+        git rebase origin/main   # clean WHEN the new file path is unique (G-Set union);
+                                 #   a same-path collision (see Collision caveat) is a real
+                                 #   content conflict → re-mint the zid + retry, never overwrite
         retry push  (bounded retries; idempotent — re-adding my zid file is a no-op)
 ```
 
@@ -168,15 +208,26 @@ agents touch only `docs/agent-bus/**` — never code paths — so the carve-out 
 ### poll (read; no writes)
 
 ```
-1. git fetch origin main
-2. read docs/agent-bus/**/*.json   (optionally one persona/day prefix to bound the scan)
+1. git fetch origin main                  # updates refs/remotes/origin/main, NOT the working tree
+2. read docs/agent-bus/** FROM origin/main directly — NOT the checked-out working tree:
+     git ls-tree -r --name-only origin/main -- docs/agent-bus/   → envelope paths
+     git show origin/main:<path>                                 → envelope content
+   (optionally bound the scan to one persona/day prefix)
 3. filter: to == me || to == "*"   (and optionally by Topic)
 4. skip already-seen via a LOCAL cursor (a per-machine file recording consumed zetaIds)
 5. sort by zetaId (time-ordered) → process oldest-first
 ```
 
-Seen-tracking is a **local cursor** so reading needs zero writes to the shared repo. The
-sender uses ack-envelopes only when it needs delivery confirmation.
+**Read from the remote-tracking ref, not the working tree.** `git fetch origin main` updates
+`refs/remotes/origin/main` but does **NOT** promote the working-tree files (per `git fetch
+-h`: it updates `FETCH_HEAD`/refs, not the checkout). A poller running on a feature branch —
+or on a `main` worktree that is behind — would otherwise scan **stale** `docs/agent-bus/`
+contents and miss peer envelopes until a separate `checkout`/`pull` happened. So the poll
+reads envelope paths + content **from `origin/main`** (`git ls-tree`/`git show`) — the same
+post-fetch read-trap discipline as `.claude/rules/refresh-before-decide.md`. An isolated bus
+worktree (`git worktree add … origin/main`) refreshed before each scan is an equivalent
+alternative. Seen-tracking is a **local cursor** so reading needs zero writes to the shared
+repo. The sender uses ack-envelopes only when it needs delivery confirmation.
 
 ## Rollout — branches now, folders once observe.ts works (operator 2026-05-31)
 
@@ -205,11 +256,17 @@ same two phases.
 Once Phase 2 is live, DV2.0 (the change-rate partition discipline) is satisfied by the
 **folder/path partition**, not a branch: `docs/agent-bus/**` (high-churn comms) is
 path-distinct from `docs/agent-heartbeats/**` (health) and from code (low-churn). Per
-B-0890.1, main is Zeta-protected (observe.ts rails + B-0887) so these folders don't need
-branch isolation — the path-scoped no-PR carve-out IS the partition. This keeps the bus on
-the one shared ref every machine already tracks (no extra branch to fetch), which is exactly
-what makes it trivially cross-machine. (The `publish` algorithm above is the Phase-2 form;
-in Phase 1 the same commit lands on a branch that's merged to main periodically.)
+B-0890.1, the Phase-2 folders-on-main transport depends on `main` being path-scope-protected
+so these folders don't need branch isolation — the path-scoped no-PR carve-out IS the
+partition. **That protection is not yet in place: B-0887 (Zeta-native review + path-scoped
+branch protection) is `status: open`, and B-0890.1 explicitly notes folder-on-main carries a
+security gap until B-0887's path-scoped protection lands.** So Phase 2 is gated on **both**
+observe.ts (the rail) **and** B-0887 (the path-scoped protection) — or, as an interim, an
+explicit per-folder push allowlist scoped to `docs/agent-bus/**`. Until then the bus stays on
+Phase 1 (branches + periodic merge, protection ON). This keeps the bus on the one shared ref
+every machine already tracks (no extra branch to fetch), which is exactly what makes it
+trivially cross-machine once the carve-out exists. (The `publish` algorithm above is the
+Phase-2 form; in Phase 1 the same commit lands on a branch that's merged to main periodically.)
 
 ## Compliance with existing invariants
 
@@ -234,14 +291,32 @@ mechanism. v0 leans on B-0858's mechanism wherever it already exists.
 
 **v0 ships:**
 
-- A `Bus` category added to `registry/categories.yaml` (the health-vs-comms split).
+- **ZetaId vocabulary reservation (prerequisite — do this first).** The canonical types
+  (`src/Core.TypeScript/zeta-id/types.ts`) today define only `Persona = { Aaron, FireflyCoherence }`
+  and `Category = { Observation, Emission, Workflow, Heartbeat }`. A bus publisher cannot
+  `pack()` an `otto-windows` (or any surface) persona, nor a `Bus`/`Spawn` category, until
+  those values are **reserved as canonical enum members** (or an explicit surface→persona-slot
+  mapping is defined). v0 reserves: a `Bus` category slot, a `Spawn` category slot, and the
+  surface personas (`otto-windows`, room for `otto-win-*`) — across `types.ts` AND the
+  16-slot `registry/categories.yaml`, keeping the F#/C#/TS cross-verification in lock-step.
+  Without this the spec's `pack({persona: "otto-windows", category: Bus, …})` call does not
+  compile.
+- A `Bus` category added to `registry/categories.yaml` (the health-vs-comms split) —
+  paired with the `types.ts` reservation above so the enum is canonical, not doc-only.
 - `docs/agent-bus/**` added to the B-0858/B-0032 path-scoped no-PR carve-out.
 - `tools/bus/git-bus.ts` `publish` + `poll` against `docs/agent-bus/**` on main —
-  ZetaId-keyed files, direct-to-main fetch-rebase-retry, local-cursor read; reuses
-  `pack()`/`unpack()` + `MessageEnvelope`.
-- `"otto-windows"` added to `SENDER_IDS`.
-- Declarative DST test (`DETERMINISTIC_ENV`): two simulated machines publish concurrently →
-  the folder merges conflict-free; cursor read returns each envelope once.
+  ZetaId-keyed files, direct-to-main fetch-rebase-retry, **collision-aware** (re-mint on
+  same-path rebase conflict per the Collision caveat), **remote-tree read** for poll (per
+  the poll algorithm below); reuses `pack()`/`unpack()` + `MessageEnvelope`.
+- `"otto-windows"` added to `SENDER_IDS` (the runtime sender list) **and** reserved as a
+  canonical `Persona` value (the two are distinct surfaces — `SENDER_IDS` is the bus-runtime
+  string list; `Persona` is the packed-into-the-ZetaId enum).
+- Declarative DST test (`DETERMINISTIC_ENV`): two simulated machines with **distinct
+  persona/salt** (so `DETERMINISTIC_ENV` does not collapse them to one path) publish
+  concurrently → the folder merges conflict-free; cursor read returns each envelope once.
+  Add a second case: two **identical-field** publishes under `DETERMINISTIC_ENV` collide on
+  one path → the publisher detects + re-mints (asserts the collision path is handled, not
+  assumed-impossible).
 
 **Deferred (follow-ups, not v0):**
 
@@ -275,7 +350,8 @@ mechanism. v0 leans on B-0858's mechanism wherever it already exists.
   (inter-agent comms bus origin)
 - `.claude/rules/dv2-data-split-discipline-activated.md` (idempotency #6 + DV2.0 — here the
   partition is by folder/path, not branch)
-- `.claude/rules/past-is-kind-when-lightlike-...md` (append-only rays)
+- `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md`
+  (append-only rays)
 - `docs/research/2026-05-29-pr-review-friction-report-observables-and-128bit-index-ids-lior.md`
   (Lior already extends the category space; observables monitoring layer)
 - The observe.ts `edit_grammar` maturity-threshold wisdom (don't over-build v0)
