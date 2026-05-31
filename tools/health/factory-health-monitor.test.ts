@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   buildCoincidenceWindowTriggerSource,
+  broadcastBlockerEventsFromJson,
   buildHealthReport,
   collectStandingQuerySignals,
   classifyClaimPathCollisions,
@@ -637,6 +638,118 @@ describe("factory-health-monitor", () => {
         description: "codex forward gate 20260530T050100Z status=0 claims 1->2 open_prs 0->0",
       },
     ]);
+  });
+
+  test("broadcastBlockerEventsFromJson only converts fresh explicit blocker records", () => {
+    expect(
+      broadcastBlockerEventsFromJson(
+        JSON.stringify([
+          {
+            id: "env-1",
+            from: "otto-cli",
+            topic: "shadow-catch",
+            timestamp: "2026-05-30T05:00:00Z",
+            expiresAt: "2026-05-30T07:00:00Z",
+            payload: {
+              blockers: [
+                {
+                  id: "review-thread",
+                  trajectory: "otto",
+                  observedAt: "2026-05-30T05:00:10Z",
+                  description: "Review thread blocks PR #50",
+                  correlationKey: "pr:50",
+                  correlationKeys: ["thread:abc123"],
+                },
+                {
+                  id: "missing-trajectory",
+                  observedAt: "2026-05-30T05:00:20Z",
+                  description: "No trajectory means no event",
+                },
+              ],
+            },
+          },
+          {
+            id: "env-2",
+            from: "riven-cli",
+            topic: "shadow-catch",
+            timestamp: "2026-05-30T05:01:00Z",
+            expiresAt: "2026-05-30T05:59:00Z",
+            payload: {
+              blockers: [
+                {
+                  id: "expired",
+                  trajectory: "riven",
+                  description: "Expired envelope should not count",
+                },
+              ],
+            },
+          },
+          {
+            id: "env-3",
+            from: "lior-gemini",
+            topic: "shadow-catch",
+            timestamp: "2026-05-30T05:02:00Z",
+            expiresAt: "2026-05-30T07:00:00Z",
+            payload: {
+              content: "Markdown-ish blocker text is coordination input, not a structured event.",
+            },
+          },
+          {
+            id: "env-4",
+            from: "vera-codex",
+            topic: "shadow-catch",
+            timestamp: "2026-05-28T05:02:00Z",
+            expiresAt: "2026-05-30T07:00:00Z",
+            payload: {
+              blocker: {
+                id: "stale",
+                trajectory: "codex",
+                description: "Stale blocker should not count",
+              },
+            },
+          },
+        ]),
+        "2026-05-30T06:00:00Z",
+        2 * 60 * 60 * 1000,
+      ),
+    ).toEqual([
+      {
+        id: "broadcast-blocker-env-1-review-thread",
+        trajectory: "otto",
+        occurredAt: "2026-05-30T05:00:10.000Z",
+        description: "Review thread blocks PR #50",
+        correlationKey: "pr:50",
+        correlationKeys: ["thread:abc123"],
+        source: "broadcast-blocker",
+      },
+    ]);
+  });
+
+  test("classifyCoincidenceWindows escalates when explicit broadcast blockers join ordinary merge events", () => {
+    expect(
+      classifyCoincidenceWindows(
+        [
+          {
+            id: "merged-pr-50",
+            trajectory: "otto",
+            occurredAt: "2026-05-30T05:00:00.000Z",
+            source: "merged-pr",
+          },
+          {
+            id: "broadcast-blocker-env-1-review-thread",
+            trajectory: "codex",
+            occurredAt: "2026-05-30T05:00:10.000Z",
+            source: "broadcast-blocker",
+          },
+        ],
+        { windowMs: 30_000, minimumEvents: 2 },
+      )[0],
+    ).toEqual({
+      surface: "coincidence-incident",
+      level: "critical",
+      message: "1 incident-grade coincidence window(s) detected",
+      action: "investigate stronger-source coincidence before treating it as queue-drain noise",
+    });
   });
 
   test("pullRequestBlockerEventsFromJson builds review and failed-gate stronger-source events", () => {
