@@ -63,15 +63,15 @@ job here is to **slot into it**, not rebuild it. The mapping:
 
 | This ADR's concept | Already exists in agentic-organization | Integration |
 |---|---|---|
-| the **observe** step | `observe(snapshot, deps)` — a **pure** function returning the current `RunLifecyclePhase` + the **legal next options at a `RunScope`**, filtered by `DeterministicRule` vetoes (`OBSERVE_COMPOSER_AND_RUN_STATE.md`; `packages/application/src/observe.ts`) | the ADR does NOT add an observe.ts; it **renders the existing readout** |
+| the **observe** step | `observe(snapshot, deps)` — a **pure** function returning the current `RunLifecyclePhase` + the **legal next options at a `RunScope`**, filtered by `DeterministicRule` vetoes (`OBSERVE_COMPOSER_AND_RUN_STATE.md`; `agentic-organization/packages/application/src/observe.ts`) | the ADR does NOT add an observe.ts; it **renders the existing readout** |
 | the **LLM selector** | `EphemeralComposerPort.compose(request) -> ComposerSelection` — **memoryless by contract** ("the agent-loop skill's LLM-as-pure-selector substrate made concrete") + `decide()` which **rejects any selection outside the readout** | the local 16-way selector IS this composer; `decide()` keeps it legal |
 | the **act / append** | `decide()` emits the selection as a command through `command-pipeline.ts` | unchanged; the chosen slot becomes a command |
 | the **universal action grammar** | already a named concept: *"the Universal Action Grammar becomes the shared action representation inside phases"* (`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`) | the **16-slot Xbox layout is the fixed-slot rendering** of that grammar — NOT a new language |
-| **per-slot availability** | `ObserveResult` = `{readout} \| {feedback}` (`Result<T, TFeedback>`); `DeterministicRule` vetoes; stall = `deterministic_rule_violation` feedback | each slot's availability is a **`Tri` (B-0944)**: legal option = `T`, deterministic-rule-vetoed/illegal = `F`, genuinely-held/uncertain = `N`. The 16-slot menu is a `Tri[16]` projection of the readout + vetoes |
+| **per-slot availability** | `ObserveResult` = `{readout} \| {feedback}` (`Result<T, TFeedback>`); `DeterministicRule` vetoes; stall = `deterministic_rule_violation` feedback | each slot's availability is a **`Tri` (B-0944)**: a surviving legal option = `T`; a slot with no surviving option = `F`; genuinely-held/uncertain = `N`. **[OPEN/limitation]** today `observe()` returns only the *surviving* `readout.options` + the *names* of `deterministicRulesApplied` (vetoed options + per-option reasons are dropped; zero survivors returns `feedback`, not a per-option readout). So a `Tri[16]` renderer can mark a slot `F` but cannot yet distinguish *vetoed-with-reason* from *unmapped* — surfacing that needs a small keystone enhancement (readout also lists vetoed options + reasons). Until then `F` = 'not currently selectable', without the why |
 | **scope** | `RunScope` = run / work_item / initiative / project / organization | the Scope slots (LB scope-out / RB scope-in) move along `RunScope` |
 | **lifecycle** | `RunLifecyclePhase` = observing / composing / awaiting_gate / executing / awaiting_evidence / awaiting_review / completed / blocked / failed | the loop's phases ARE this DU; Commit-slot A maps to `ComposerSelection.select`, slot B to `.hold` |
-| **escalate / governance** | the **≥3-agent constitution ratification gate** (`evaluateConstitutionRatification`, `ConstitutionRatificationState`; `packages/governance/src/constitution-gate.ts`; B-0703/B-0652) | Meta-slot R3 (escalate) routes to the supervisor chain + the constitution gate; the LLM never ratifies alone |
-| **state** | **git-as-db**: markdown row + frontmatter schema; events are **ZetaId-keyed files merging conflict-free as a G-Set CRDT**; state = timestamp-ordered fold; **CockroachDB = rebuildable query index** (`GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`; `packages/frontmatter-db/`; uses `src/Core.TypeScript/zeta-id/`) | **supersedes this ADR's "git-append-only, 128-bit ids" with the precise model**: git-canonical ZetaId-CRDT G-Set + Cockroach as the rebuildable index (the snapshot `observe()` reads is built from this) |
+| **escalate / governance** | the **≥3-agent constitution ratification gate** (`evaluateConstitutionRatification`, `ConstitutionRatificationState`; `agentic-organization/packages/governance/src/constitution-gate.ts`; B-0703/B-0652) | Meta-slot R3 (escalate) routes to the supervisor chain + the constitution gate; the LLM never ratifies alone |
+| **state** | **git-as-db**: markdown row + frontmatter schema; events are **ZetaId-keyed files merging conflict-free as a G-Set CRDT**; state = timestamp-ordered fold; **CockroachDB = rebuildable query index** (`GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`; `agentic-organization/packages/frontmatter-db/`; uses `src/Core.TypeScript/zeta-id/`) | **supersedes this ADR's "git-append-only, 128-bit ids" with the precise model**: git-canonical ZetaId-CRDT G-Set + Cockroach as the rebuildable index (the snapshot `observe()` reads is built from this) |
 
 **Net: the ADR's only new substrate is the 16-slot controller rendering + `Tri[16]` availability +
 the local single-node deployment.** Everything else (observe/compose/decide, the action grammar, the
@@ -148,8 +148,10 @@ with these four properties:
    **zero cloud inference**. The fixed, small, indexed action space (pick 0..15) is exactly what
    makes a small local model viable: it is **constrained decoding** to 16 tokens, not open-ended
    generation.
-4. **Git-as-append-only-state** — no DB; per-agent append-only Git log (128-bit IDs); the LLM never
-   holds state internally; every tick reads state from Git and appends the chosen event.
+4. **Git-as-canonical-state** — per the v2 Integration section's precise model: **git-as-db is the
+   canonical store** (ZetaId-CRDT G-Set events; a ZetaId is the unique id), and **CockroachDB is an
+   optional rebuildable query index** (not a separate source of truth). The LLM never holds state
+   internally; every tick reads the snapshot from this layer and appends the chosen event.
 
 ## The architecture to code around
 
@@ -211,7 +213,7 @@ committing renders slot 4 as `F`; a state with a held/uncertain option renders i
   state machine + `move-next(state) -> 16-slot menu`. No LLM here. Replayable / DST-able.
 - **LLM selector** (local, no cloud): a pure function `menu -> index 0..15` over only-`T` slots.
   Holds no state. Swappable model.
-- **Git** (append-only, 128-bit IDs): the only state store. Each act appends one event.
+- **State**: git-as-db canonical (ZetaId-CRDT G-Set; a ZetaId is the unique id) + Cockroach as a rebuildable index (per the Integration section). Each act appends one event.
 
 ### Local-USB, no-cloud
 
@@ -247,8 +249,9 @@ committing renders slot 4 as `F`; a state with a held/uncertain option renders i
 - **>16 or variable-size menu.** Rejected for v0: a fixed 16-slot grammar is learnable (muscle
   memory), maps to a real controller, and keeps the decode tiny. Overflow options are reachable via
   Navigate (slots 0-3) + Scope (8-9) rather than by growing the grammar.
-- **Non-git state (DB).** Rejected: git-append-only is free, replayable, merge-conflict-free (128-bit
-  ids), and already ratified (B-0867/B-0858).
+- **DB as the canonical store.** Rejected: git-as-db is canonical (free, replayable, merge-conflict-free
+  via ZetaId-CRDT G-Set, ratified B-0867/B-0858). NOTE this rejects DB-as-source-of-truth, NOT the
+  Cockroach **rebuildable index** the Integration section keeps (an index is derived, not canonical).
 
 ## Open design questions [OPEN — for operator + Max]
 
@@ -280,7 +283,7 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
    (deterministic/random over `T`), swap in the local LLM next.
 4. Feed the chosen slot back through the keystone's `decide()` -> `command-pipeline.ts` (which already
    rejects illegal picks + emits the command). **Do not** write a parallel act/append path.
-5. State reads/writes go through `packages/frontmatter-db/` (git-as-db + ZetaId-CRDT; Cockroach index
+5. State reads/writes go through `agentic-organization/packages/frontmatter-db/` (git-as-db + ZetaId-CRDT; Cockroach index
    optional on a single node), not a bespoke git log.
 6. Wire 1-5 behind a flag as the single-node loop; keep the hardcoded autonomous-tick as the default
    until trusted. (Cluster deployment reuses the same renderer + selector via the cluster runtime.)
@@ -288,14 +291,14 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
 ## Composes with
 
 - **`agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md`** (the existing observe.ts keystone
-  this ADR renders — `packages/application/src/observe.ts`; observe/compose/decide, the RunScope /
+  this ADR renders — `agentic-organization/packages/application/src/observe.ts`; observe/compose/decide, the RunScope /
   RunLifecyclePhase / ObserveResult / ComposerSelection DUs, the memoryless composer, deterministic
   rules, the ≥3-agent constitution gate)
 - **`agentic-organization/docs/AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`** (the already-named "Universal
   Action Grammar — the shared action representation inside phases"; *"reuse those ideas instead of
   inventing another unrelated action language"*; free-time = bounded exploration, not idle)
 - **`agentic-organization/docs/GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`** (the state model:
-  git-as-db + ZetaId-CRDT G-Set events + Cockroach rebuildable index; `packages/frontmatter-db/`;
+  git-as-db + ZetaId-CRDT G-Set events + Cockroach rebuildable index; `agentic-organization/packages/frontmatter-db/`;
   `src/Core.TypeScript/zeta-id/`)
 - **`agentic-organization/docs/CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md` +
   `RUNTIME_TECH_AND_PACKAGE_STRATEGY.md` + `AI_CLUSTER_SCAFFOLD_CONTEXT.md`** (the cluster deployment
