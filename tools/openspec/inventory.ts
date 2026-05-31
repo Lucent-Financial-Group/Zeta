@@ -103,14 +103,13 @@ const EXCLUDED_MODULES = new Set(["AssemblyInfo.fs", "FSharpApi.fs"]);
 function findRepoRoot(): string {
   let cur = resolve(import.meta.dir);
   while (cur !== "/" && cur !== "") {
-    try {
-      readFileSync(join(cur, ".git", "HEAD"));
+    if (existsSync(join(cur, ".git"))) {
       return cur;
-    } catch {
-      const parent = resolve(cur, "..");
-      if (parent === cur) break;
-      cur = parent;
     }
+
+    const parent = resolve(cur, "..");
+    if (parent === cur) break;
+    cur = parent;
   }
   return process.cwd();
 }
@@ -188,7 +187,7 @@ function scanModules(coreDir: string): ModuleEntry[] {
 // ── Gap analysis ─────────────────────────────────────────────────────
 
 function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[], options: GapReportOptions = {}): GapReport {
-  const artifactRoot = options.artifactRoot ?? process.cwd();
+  const artifactRoot = options.artifactRoot ?? findRepoRoot();
   const artifactMap = options.artifactMap ?? CAPABILITY_ARTIFACT_MAP;
   const allModuleNames = new Set(modules.map((m) => m.name));
   const specCapabilities = new Set(specs.map((s) => s.capability));

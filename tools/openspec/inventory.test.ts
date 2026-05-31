@@ -239,6 +239,27 @@ describe("buildGapReport", () => {
     rmSync(root, { recursive: true });
   });
 
+  test("default artifact root is stable across caller working directories", () => {
+    const originalCwd = process.cwd();
+    const root = makeTempDir();
+    const artifact = "tests/Tests.FSharp/Algebra/ZSet.Tests.fs";
+
+    try {
+      process.chdir(root);
+      const report = buildGapReport([], [], {
+        artifactMap: {
+          "z-set-algebra": [artifact],
+        },
+      });
+
+      expect(report.mappedArtifacts).toEqual([artifact]);
+      expect(report.missingArtifacts).toEqual([]);
+    } finally {
+      process.chdir(originalCwd);
+      rmSync(root, { recursive: true });
+    }
+  });
+
   test("coverage is 0% with no modules", () => {
     const report = buildGapReport([], []);
     expect(report.coveragePercent).toBe(0);
