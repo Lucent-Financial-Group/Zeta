@@ -2,19 +2,23 @@ import {
   ChangeSetPhase,
   DocLifecycleState,
   GraphConfidence,
+  HatBindingPhase,
   MemoryPhase,
   OrgEventKind,
+  WorkBatchState,
   WorkItemState,
   baseLegalNextStates,
   legalChangeSetTransitions,
   legalConfidencePromotions,
   legalDocTransitions,
+  legalNextBatchStates,
   legalMemoryTransitions,
   type ChangeSet,
   type OrgEvent,
   type OrgEventTransitionContext,
   type ReviewPipeline,
 } from "../../domain/src/index.ts";
+import { PipelineStage } from "./pipeline.ts";
 
 export type ConformanceViolation = {
   eventId: string;
@@ -86,12 +90,6 @@ const DocTransitionKinds = new Set<OrgEventKind>([
 const GraphTransitionKinds = new Set<OrgEventKind>([
   OrgEventKind.GraphConfidencePromoted,
   OrgEventKind.GraphEdgeRetracted,
-]);
-
-const PendingReplayKernelTransitionKinds = new Set<OrgEventKind>([
-  OrgEventKind.HatBindingTransition,
-  OrgEventKind.PipelineStageTransition,
-  OrgEventKind.WorkBatchTransition,
 ]);
 
 const ExplicitNonTransitionKinds = new Set<OrgEventKind>([
@@ -186,13 +184,14 @@ export function replayLedger(events: readonly OrgEvent[], options: ReplayLedgerO
 
 function classifyTransition(event: OrgEvent): TransitionCheck {
   if (!isReplayableTransitionKind(event.kind)) {
-    if (PendingReplayKernelTransitionKinds.has(event.kind)) {
-      return { kind: "skipped", reason: "event kind is a state-changing transition without a replay kernel", ambiguous: true };
-    }
     if (ExplicitNonTransitionKinds.has(event.kind)) {
       return { kind: "skipped", reason: "event kind is explicitly classified as non-transition", ambiguous: false };
     }
     return { kind: "skipped", reason: "event kind is not classified as replayable or non-transition", ambiguous: true };
+  }
+
+  if (event.kind === OrgEventKind.HatBindingTransition && event.fromState === undefined && event.toState === HatBindingPhase.Warmup) {
+    return { kind: "skipped", reason: "hat binding initialization is a legal non-ambiguous transition", ambiguous: false };
   }
 
   if (event.fromState === undefined || event.toState === undefined) {
@@ -211,6 +210,39 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
       kind: "checked",
       legalToStates: baseLegalNextStates(event.fromState),
       reason: "illegal work item transition",
+    };
+  }
+
+  if (event.kind === OrgEventKind.HatBindingTransition) {
+    if (!isHatBindingPhase(event.fromState) || !isHatBindingPhase(event.toState)) {
+      return { kind: "skipped", reason: "event states do not name a known hat binding phase transition", ambiguous: true };
+    }
+    return {
+      kind: "checked",
+      legalToStates: legalHatBindingTargets(event.fromState),
+      reason: "illegal hat binding phase transition",
+    };
+  }
+
+  if (event.kind === OrgEventKind.PipelineStageTransition) {
+    if (!isPipelineStage(event.fromState) || !isPipelineStage(event.toState)) {
+      return { kind: "skipped", reason: "event states do not name a known pipeline stage transition", ambiguous: true };
+    }
+    return {
+      kind: "checked",
+      legalToStates: legalPipelineStageTargets(event.fromState),
+      reason: "illegal pipeline stage transition",
+    };
+  }
+
+  if (event.kind === OrgEventKind.WorkBatchTransition) {
+    if (!isWorkBatchState(event.fromState) || !isWorkBatchState(event.toState)) {
+      return { kind: "skipped", reason: "event states do not name a known work batch transition", ambiguous: true };
+    }
+    return {
+      kind: "checked",
+      legalToStates: legalNextBatchStates(event.fromState),
+      reason: "illegal work batch transition",
     };
   }
 
@@ -276,6 +308,9 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
 function isReplayableTransitionKind(kind: OrgEventKind): boolean {
   return (
     kind === OrgEventKind.WorkItemTransition ||
+    kind === OrgEventKind.HatBindingTransition ||
+    kind === OrgEventKind.PipelineStageTransition ||
+    kind === OrgEventKind.WorkBatchTransition ||
     MemoryTransitionKinds.has(kind) ||
     ChangeTransitionKinds.has(kind) ||
     DocTransitionKinds.has(kind) ||
@@ -285,8 +320,55 @@ function isReplayableTransitionKind(kind: OrgEventKind): boolean {
 
 export function unclassifiedOrgEventKinds(): readonly OrgEventKind[] {
   return Object.values(OrgEventKind).filter(
-    (kind) => !isReplayableTransitionKind(kind) && !ExplicitNonTransitionKinds.has(kind) && !PendingReplayKernelTransitionKinds.has(kind),
+    (kind) => !isReplayableTransitionKind(kind) && !ExplicitNonTransitionKinds.has(kind),
   );
+}
+
+function legalHatBindingTargets(from: HatBindingPhase): readonly HatBindingPhase[] {
+  switch (from) {
+    case HatBindingPhase.Pending:
+      return [HatBindingPhase.Warmup, HatBindingPhase.Revoked];
+    case HatBindingPhase.Warmup:
+      return [HatBindingPhase.Active, HatBindingPhase.Expired, HatBindingPhase.Released, HatBindingPhase.Revoked];
+    case HatBindingPhase.Active:
+      return [
+        HatBindingPhase.Probation,
+        HatBindingPhase.Expired,
+        HatBindingPhase.Released,
+        HatBindingPhase.Succeeded,
+        HatBindingPhase.Revoked,
+      ];
+    case HatBindingPhase.Probation:
+      return [HatBindingPhase.Active, HatBindingPhase.Expired, HatBindingPhase.Released, HatBindingPhase.Revoked];
+    case HatBindingPhase.Expired:
+    case HatBindingPhase.Released:
+    case HatBindingPhase.Succeeded:
+    case HatBindingPhase.Revoked:
+      return [];
+  }
+}
+
+function legalPipelineStageTargets(from: PipelineStage): readonly PipelineStage[] {
+  switch (from) {
+    case PipelineStage.Intake:
+      return [PipelineStage.AwaitingCustomerRfpReview];
+    case PipelineStage.AwaitingCustomerRfpReview:
+      return [PipelineStage.AwaitingBrdApproval];
+    case PipelineStage.AwaitingBrdApproval:
+      return [PipelineStage.AwaitingArchitectureApproval];
+    case PipelineStage.AwaitingArchitectureApproval:
+      return [PipelineStage.AwaitingImplementationReview];
+    case PipelineStage.AwaitingImplementationReview:
+      return [PipelineStage.AwaitingRuntimeValidation];
+    case PipelineStage.AwaitingRuntimeValidation:
+      return [PipelineStage.AwaitingFinalBusinessValidation];
+    case PipelineStage.AwaitingFinalBusinessValidation:
+      return [PipelineStage.AwaitingReleaseReadiness];
+    case PipelineStage.AwaitingReleaseReadiness:
+      return [PipelineStage.Merged];
+    case PipelineStage.Merged:
+      return [];
+  }
 }
 
 function legalChangeTargets(from: ChangeSetPhase, context: OrgEventTransitionContext | undefined): readonly ChangeSetPhase[] {
@@ -404,4 +486,16 @@ function isDocLifecycleState(value: string): value is DocLifecycleState {
 
 function isGraphConfidence(value: string): value is GraphConfidence {
   return Object.values(GraphConfidence).includes(value as GraphConfidence);
+}
+
+function isHatBindingPhase(value: string): value is HatBindingPhase {
+  return Object.values(HatBindingPhase).includes(value as HatBindingPhase);
+}
+
+function isPipelineStage(value: string): value is PipelineStage {
+  return Object.values(PipelineStage).includes(value as PipelineStage);
+}
+
+function isWorkBatchState(value: string): value is WorkBatchState {
+  return Object.values(WorkBatchState).includes(value as WorkBatchState);
 }

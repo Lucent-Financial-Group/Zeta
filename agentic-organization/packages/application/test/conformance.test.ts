@@ -6,12 +6,15 @@ import {
   ChangeSetPhase,
   DocLifecycleState,
   GraphConfidence,
+  HatBindingPhase,
   MemoryPhase,
   OrgEventKind,
+  WorkBatchState,
   WorkItemState,
   type OrgEvent,
   type OrgEventTransitionContext,
 } from "../../domain/src/index.ts";
+import { PipelineStage } from "../src/pipeline.ts";
 
 function event(input: {
   id: string;
@@ -116,10 +119,74 @@ test("replayLedger does not count context-sensitive transitions as conformant wi
   ]);
 });
 
-test("replayLedger treats state-changing event kinds without replay kernels as ambiguous skips", () => {
+test("replayLedger accepts legal legacy transition kernels", () => {
   const report = replayLedger(
     [
-      event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: "pending", toState: "active" }),
+      event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: HatBindingPhase.Warmup, toState: HatBindingPhase.Active }),
+      event({
+        id: "evt-pipeline",
+        kind: OrgEventKind.PipelineStageTransition,
+        fromState: PipelineStage.AwaitingCustomerRfpReview,
+        toState: PipelineStage.AwaitingBrdApproval,
+      }),
+      event({ id: "evt-batch", kind: OrgEventKind.WorkBatchTransition, fromState: WorkBatchState.Active, toState: WorkBatchState.CompletionCheck }),
+    ],
+    { maxSkippedAmbiguous: 0 },
+  );
+
+  equal(report.checked, 3);
+  equal(report.conformant, 3);
+  equal(report.skippedAmbiguous, 0);
+  equal(report.ratchetViolated, false);
+});
+
+test("replayLedger reports illegal legacy transition kernel targets", () => {
+  const report = replayLedger([
+    event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: HatBindingPhase.Expired, toState: HatBindingPhase.Active, subjectId: "binding-1" }),
+    event({
+      id: "evt-pipeline",
+      kind: OrgEventKind.PipelineStageTransition,
+      fromState: PipelineStage.AwaitingBrdApproval,
+      toState: PipelineStage.AwaitingReleaseReadiness,
+      subjectId: "work-1",
+    }),
+    event({ id: "evt-batch", kind: OrgEventKind.WorkBatchTransition, fromState: WorkBatchState.Created, toState: WorkBatchState.Done, subjectId: "batch-1" }),
+  ]);
+
+  equal(report.checked, 3);
+  equal(report.conformant, 0);
+  equal(report.nonconformant, 3);
+  deepEqual(report.violations.map((v) => v.reason), [
+    "illegal hat binding phase transition",
+    "illegal pipeline stage transition",
+    "illegal work batch transition",
+  ]);
+});
+
+test("replayLedger treats initial hat binding as non-ambiguous lifecycle initialization", () => {
+  const report = replayLedger(
+    [
+      event({
+        id: "evt-hat-init",
+        kind: OrgEventKind.HatBindingTransition,
+        toState: HatBindingPhase.Warmup,
+        subjectId: "binding-1",
+      }),
+    ],
+    { maxSkippedAmbiguous: 0 },
+  );
+
+  equal(report.checked, 0);
+  equal(report.skipped, 1);
+  equal(report.skippedAmbiguous, 0);
+  equal(report.ratchetViolated, false);
+  equal(report.skips[0]?.reason, "hat binding initialization is a legal non-ambiguous transition");
+});
+
+test("replayLedger treats malformed legacy transition kernel states as ambiguous", () => {
+  const report = replayLedger(
+    [
+      event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: "proposed", toState: "activated" }),
       event({ id: "evt-pipeline", kind: OrgEventKind.PipelineStageTransition, fromState: "draft", toState: "review" }),
       event({ id: "evt-batch", kind: OrgEventKind.WorkBatchTransition, fromState: "queued", toState: "running" }),
     ],
@@ -130,9 +197,9 @@ test("replayLedger treats state-changing event kinds without replay kernels as a
   equal(report.skippedAmbiguous, 3);
   equal(report.ratchetViolated, true);
   deepEqual(report.skips.map((s) => s.reason), [
-    "event kind is a state-changing transition without a replay kernel",
-    "event kind is a state-changing transition without a replay kernel",
-    "event kind is a state-changing transition without a replay kernel",
+    "event states do not name a known hat binding phase transition",
+    "event states do not name a known pipeline stage transition",
+    "event states do not name a known work batch transition",
   ]);
 });
 
