@@ -20,21 +20,37 @@
  *    available in the LLM-chooser menu via observe.ts `buildMenu`.)
  *
  * ── FORWARD CONTEXT / MIGRATION SEAM (operator 2026-05-31) ────────────────────
- * Two things this reader absorbs as the system scales — and it is the single
- * place the rest of observe.ts is insulated from both:
- *  1. Backlog-item is ONE SUB-TYPE of a general WORK-ITEM (Max's framing) —
- *     work-items can be bugs and other kinds too. Today this reads the backlog
- *     sub-type; the general shape is a work-item carrying a sub-type.
- *  2. ZetaId gets a new `WorkItem` CATEGORY (operator 2026-05-31: "zetaid gets a
- *     new workitem category too after bus") — sequenced after the `Bus` category,
- *     alongside `Spawn`/`Heartbeat`. The backlog uses `B-xxxxx` ids today, which
- *     COLLIDE at scale — the very problem 128-bit ZetaIds solve everywhere else.
- *     The migration is `B-xxxxx` → 128-bit ZetaId **WorkItem-category** ids
- *     (backlog-item + bug + … as sub-types within `WorkItem`), and THIS reader is
- *     where that mapping lands: today `id` carries `B-xxxxx`; post-migration it
- *     carries (or pairs with) a `WorkItem` ZetaId.
+ * Three things this reader absorbs as the system scales — and it is the single
+ * place the rest of observe.ts is insulated from all of them:
+ *
+ *  1. TYPE axis (operator decided: `tasks + bugs`). A backlog row is not its own
+ *     thing — it's a WORK-ITEM with a TYPE. Per Azure DevOps (umbrella =
+ *     `WorkItem`; `Task` + `Bug` are peer leaf TYPES; Epic/Feature are the
+ *     hierarchy above): sub-types are `task` + `bug` (+ later feature/epic).
+ *     "backlog" is NOT a type — it's a STATE/view (the queued lane), orthogonal
+ *     to type. So: WorkItem.type ∈ {task, bug, …}; WorkItem.state ∈ {backlog,
+ *     active, done, …}.
+ *
+ *  2. ID axis. ZetaId gets a new `WorkItem` CATEGORY (operator 2026-05-31:
+ *     "zetaid gets a new workitem category too after bus") — after `Bus`,
+ *     alongside `Spawn`/`Heartbeat`. `B-xxxxx` ids COLLIDE at scale (the problem
+ *     128-bit ZetaIds solve everywhere else). Migration: `B-xxxxx` → 128-bit
+ *     ZetaId **WorkItem-category** ids (the `type` is a sub-type field within
+ *     `WorkItem`). THIS reader is where that mapping lands: today `id` carries
+ *     `B-xxxxx`; post-migration it carries (or pairs with) a `WorkItem` ZetaId.
+ *
+ *  3. EXECUTION axis (operator 2026-05-31, open umbrella question). A WorkItem
+ *     RUNS AS a durable Task (Durable Functions / Task framework) whose lifecycle
+ *     is an Rx `Observable<WorkItemEvent>` (the heartbeat/bus stream IS that
+ *     observable). "Task" here is the EXECUTION primitive — a different layer
+ *     from the planning `task` TYPE. Recommendation: keep `WorkItem` as the
+ *     planning umbrella (matches Azure DevOps, clean plugin-interop) and RELATE
+ *     it to execution (runs-as-Task, observed-via-Rx) rather than REPLACE it with
+ *     `Task` (which would invert Azure DevOps + overload the word). Pending
+ *     operator confirmation of the umbrella name.
+ *
  * Keeping the reader the single seam means observe.ts never sees `B-xxxxx` vs
- * ZetaId — only the observe DU.
+ * ZetaId, or task vs bug vs state — only the observe DU.
  */
 
 import { readBacklogItems, selectNextBacklogItem, type PickupSelection } from "../backlog/autonomous-pickup";
