@@ -37,6 +37,7 @@ interface WorktreeInspection {
   readonly pathExists: boolean;
   readonly dirty: boolean | null;
   readonly headReachableFromMain: boolean | null;
+  readonly patchEquivalentToMain: boolean | null;
   readonly statusError: string | null;
 }
 
@@ -157,9 +158,16 @@ function classify(entry: WorktreeEntry, inspection: WorktreeInspection): Pick<Wo
     };
   }
 
+  if (inspection.patchEquivalentToMain === true) {
+    return {
+      bucket: "ALREADY-COVERED",
+      reason: "clean worktree changes are patch-equivalent to origin/main",
+    };
+  }
+
   return {
     bucket: "NEEDS-RECOVERY",
-    reason: "clean worktree HEAD is not known reachable from origin/main",
+    reason: "clean worktree HEAD is not known reachable or patch-equivalent to origin/main",
   };
 }
 
@@ -202,6 +210,20 @@ function renderNullableBoolean(value: boolean | null): string {
   return "unknown";
 }
 
+function escapeMarkdownTableCell(value: string): string {
+  return value.replace(/\r?\n/g, "<br>").replace(/\|/g, "\\|");
+}
+
+function renderInlineCode(value: string): string {
+  return `\`${value.replace(/`/g, "\\`")}\``;
+}
+
+function renderCoveredByMain(item: WorktreeSurveyItem): string {
+  if (item.headReachableFromMain === true || item.patchEquivalentToMain === true) return "yes";
+  if (item.headReachableFromMain === false && item.patchEquivalentToMain === false) return "no";
+  return "unknown";
+}
+
 function renderMarkdown(survey: WorktreeSurvey): string {
   const lines: string[] = [];
   lines.push("# git-worktree recovery survey");
@@ -227,7 +249,7 @@ function renderMarkdown(survey: WorktreeSurvey): string {
     lines.push("|------|--------|-------|-----------------|--------|");
     for (const item of bucketItems) {
       lines.push(
-        `| \`${item.path}\` | ${renderBranch(item.branch)} | ${renderNullableBoolean(item.dirty)} | ${renderNullableBoolean(item.headReachableFromMain)} | ${item.reason} |`,
+        `| ${escapeMarkdownTableCell(renderInlineCode(item.path))} | ${escapeMarkdownTableCell(renderBranch(item.branch))} | ${renderNullableBoolean(item.dirty)} | ${renderCoveredByMain(item)} | ${escapeMarkdownTableCell(item.reason)} |`,
       );
     }
     lines.push("");
@@ -245,6 +267,7 @@ function realInspector(): Inspector {
           pathExists,
           dirty: null,
           headReachableFromMain: null,
+          patchEquivalentToMain: null,
           statusError: null,
         };
       }
@@ -258,6 +281,7 @@ function realInspector(): Inspector {
           pathExists,
           dirty: null,
           headReachableFromMain: null,
+          patchEquivalentToMain: null,
           statusError: status.error.message,
         };
       }
@@ -267,11 +291,13 @@ function realInspector(): Inspector {
           pathExists,
           dirty: null,
           headReachableFromMain: null,
+          patchEquivalentToMain: null,
           statusError: stderr,
         };
       }
 
       let headReachableFromMain: boolean | null = null;
+      let patchEquivalentToMain: boolean | null = null;
       if (entry.head !== null) {
         // eslint-disable-next-line sonarjs/no-os-command-from-path
         const mergeBase = spawnSync(
@@ -284,12 +310,27 @@ function realInspector(): Inspector {
         if (!mergeBase.error && (mergeBase.status === 0 || mergeBase.status === 1)) {
           headReachableFromMain = mergeBase.status === 0;
         }
+
+        if (headReachableFromMain !== true) {
+          // eslint-disable-next-line sonarjs/no-os-command-from-path
+          const cherry = spawnSync("git", ["-C", entry.path, "cherry", "origin/main", entry.head], {
+            encoding: "utf8",
+          });
+          if (!cherry.error && cherry.status === 0) {
+            const lines = cherry.stdout
+              .split("\n")
+              .map((line) => line.trim())
+              .filter((line) => line.length > 0);
+            patchEquivalentToMain = lines.every((line) => line.startsWith("-"));
+          }
+        }
       }
 
       return {
         pathExists,
         dirty: status.stdout.trim().length > 0,
         headReachableFromMain,
+        patchEquivalentToMain,
         statusError: null,
       };
     },
@@ -323,12 +364,12 @@ function main(argv: string[]): AuditExitCode {
     return survey.code;
   }
 
-  const output = parsed.args.json ? `${JSON.stringify(survey, null, 2)}\n` : renderMarkdown(survey);
+  const output = parsed.args.json ? `${JSON.stringify(survey, null, 2)}\n` : `${renderMarkdown(survey)}\n`;
   if (parsed.args.report !== null) {
     writeFileSync(parsed.args.report, output);
     console.log(`wrote ${parsed.args.report}`);
   } else {
-    console.log(output);
+    process.stdout.write(output);
   }
 
   return 0;

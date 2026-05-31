@@ -27,6 +27,7 @@ function inspection(overrides: Partial<WorktreeInspection> = {}): WorktreeInspec
     pathExists: true,
     dirty: false,
     headReachableFromMain: true,
+    patchEquivalentToMain: null,
     statusError: null,
     ...overrides,
   };
@@ -139,7 +140,16 @@ describe("classifyWorktrees", () => {
     });
 
     expect(items[0]!.bucket).toBe("NEEDS-RECOVERY");
-    expect(items[0]!.reason).toContain("not known reachable");
+    expect(items[0]!.reason).toContain("not known reachable or patch-equivalent");
+  });
+
+  test("marks clean patch-equivalent worktrees as already covered", () => {
+    const items = classifyWorktrees([entry()], {
+      inspect: () => inspection({ headReachableFromMain: false, patchEquivalentToMain: true }),
+    });
+
+    expect(items[0]!.bucket).toBe("ALREADY-COVERED");
+    expect(items[0]!.reason).toContain("patch-equivalent");
   });
 
   test("marks status read failures as needing recovery", () => {
@@ -174,5 +184,25 @@ describe("renderMarkdown", () => {
     expect(md).toContain("## OBSOLETE");
     expect(md).toContain("| `/repo/dirty` |");
     expect(md).toContain("| `/repo/stale` |");
+  });
+
+  test("escapes markdown table cells", () => {
+    const survey = makeSurvey(
+      [entry({ path: "/repo/has|pipe" })],
+      {
+        inspect: () =>
+          inspection({
+            dirty: null,
+            headReachableFromMain: null,
+            statusError: "fatal: reason|with\nnewline",
+          }),
+      },
+      new Date("2026-05-31T14:32:00Z"),
+      null,
+    );
+
+    const md = renderMarkdown(survey);
+    expect(md).toContain("`/repo/has\\|pipe`");
+    expect(md).toContain("fatal: reason\\|with<br>newline");
   });
 });
