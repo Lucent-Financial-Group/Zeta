@@ -187,6 +187,48 @@ describe("telemetry query port", () => {
       message: "mimir telemetry query timed out: operation timed out",
     });
   });
+
+  test("returns decode-error evidence when provider JSON parsing fails", async () => {
+    const port = createLgtmTelemetryQueryPort({
+      mimirBaseUrl: "http://mimir:9009/prometheus",
+      tempoBaseUrl: "http://tempo:3200",
+      lokiBaseUrl: "http://loki:3100",
+      fetchImpl: (async () => {
+        const response = new Response("{}");
+        response.json = async () => {
+          throw new Error("invalid JSON");
+        };
+        return response;
+      }) as typeof fetch,
+    });
+    const range = { start: "2026-05-31T00:00:00.000Z", end: "2026-05-31T01:00:00.000Z" };
+
+    deepEqual(await port.queryMetrics("org_lane_ticks_total", range), {
+      status: "degraded",
+      source: "mimir",
+      reason: "decode_error",
+      message: "mimir telemetry query decode failed: invalid JSON",
+    });
+  });
+
+  test("returns fetch-error evidence for non-timeout transport failures", async () => {
+    const port = createLgtmTelemetryQueryPort({
+      mimirBaseUrl: "http://mimir:9009/prometheus",
+      tempoBaseUrl: "http://tempo:3200",
+      lokiBaseUrl: "http://loki:3100",
+      fetchImpl: (async () => {
+        throw new Error("connection reset");
+      }) as typeof fetch,
+    });
+    const range = { start: "2026-05-31T00:00:00.000Z", end: "2026-05-31T01:00:00.000Z" };
+
+    deepEqual(await port.queryMetrics("org_lane_ticks_total", range), {
+      status: "degraded",
+      source: "mimir",
+      reason: "fetch_error",
+      message: "mimir telemetry query fetch failed: connection reset",
+    });
+  });
 });
 
 function jsonResponse(body: unknown): Response {
