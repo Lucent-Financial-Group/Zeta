@@ -18,6 +18,14 @@
  *   DOCKER_BUILD_TIMEOUT_SEC   override timeout (default 2400 — servercore pull + scoop + mise
  *                              install of .mise.toml runtimes is heavy on a cold runner)
  *   DOCKER_LOG_OUT_PATH        override log path (default .tools/docker-windows-install-ps1-test.log)
+ *   GITHUB_TOKEN               (optional) GitHub API token forwarded to mise INSIDE the build as
+ *                              MISE_GITHUB_TOKEN (--build-arg) so `mise install` authenticates
+ *                              (5000 req/hr) instead of hitting the unauthenticated 60/hr -> 403.
+ *                              See the Dockerfile's ARG MISE_GITHUB_TOKEN block for the full
+ *                              rationale + leak mitigations (legacy Windows builder has no BuildKit
+ *                              secret mounts, so --build-arg is the channel; the value is redacted
+ *                              in the logged command below + the image is rmi'd in cleanup()).
+ *                              Unset -> mise stays unauthenticated (identical to prior behavior).
  *
  * Exit codes: 0 build ok | 1 build failed | 2 usage/prereq | 124 timeout.
  */
@@ -52,6 +60,7 @@ function usage(): never {
   console.error("env:");
   console.error("  DOCKER_BUILD_TIMEOUT_SEC  override timeout (default 2400)");
   console.error("  DOCKER_LOG_OUT_PATH       override log path");
+  console.error("  GITHUB_TOKEN              (optional) forwarded to mise as MISE_GITHUB_TOKEN (build-arg)");
   process.exit(2);
 }
 
@@ -71,10 +80,28 @@ function checkPrereqs(): void {
 
 function runBuild(timeoutSec: number, logPath: string): BuildResult {
   const startMs = Date.now();
-  // NOTE: no --progress=plain — the windows-2022 runner uses the LEGACY docker builder (not
+  // NOTE: no --progress=plain — the windows-2025 runner uses the LEGACY docker builder (not
   // BuildKit/buildx), which rejects --progress. Output still streams to stdout/stderr (captured).
-  const buildArgs = ["build", "--file", DOCKERFILE_PATH, "--tag", IMAGE_TAG, "."];
-  console.log(`[Slice 2c] docker build ${buildArgs.join(" ")}`);
+  //
+  // mise GitHub-API token (rate-limit fix; sibling to the 4 Unix shields in #6273): forward the
+  // ambient GITHUB_TOKEN into the build as MISE_GITHUB_TOKEN so `mise install` authenticates
+  // (5000/hr) instead of hitting the unauthenticated 60/hr -> 403. The legacy Windows builder has
+  // NO BuildKit `--mount=type=secret`, so --build-arg is the only build-time channel; the Dockerfile's
+  // `ARG MISE_GITHUB_TOKEN` exposes it to the install RUN as an env var that mise inherits. See the
+  // Dockerfile block for the full leak-mitigation reasoning (ephemeral token + image rmi'd in
+  // cleanup() + the redaction below). Empty when unset -> mise stays unauthenticated (prior behavior).
+  const miseGithubToken = process.env.GITHUB_TOKEN ?? "";
+  const buildArgs = [
+    "build",
+    "--file", DOCKERFILE_PATH,
+    "--build-arg", `MISE_GITHUB_TOKEN=${miseGithubToken}`,
+    "--tag", IMAGE_TAG,
+    ".",
+  ];
+  // REDACT the token value in the logged command — NEVER print the secret to CI logs. (GHA also
+  // auto-masks GITHUB_TOKEN, but that's the backup; this explicit redaction is the primary defense.)
+  const loggedArgs = buildArgs.map((a) => (a.startsWith("MISE_GITHUB_TOKEN=") ? "MISE_GITHUB_TOKEN=***" : a));
+  console.log(`[Slice 2c] docker ${loggedArgs.join(" ")}`);
   console.log(`[Slice 2c] timeout: ${timeoutSec}s; log: ${logPath}`);
 
   const result = spawnDocker(buildArgs, { timeoutMs: timeoutSec * 1000 });
