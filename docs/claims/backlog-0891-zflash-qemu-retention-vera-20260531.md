@@ -14,4 +14,7 @@
 - receipt: no active remote claim for B-0891 or zflash/QEMU was visible before claiming.
 - receipt: open PR path check showed #6217 in `tools/crypto/**`, #6218 in `tools/observe/**`, and #6216 in `agentic-organization/**`; this claim avoids those path sets.
 - progress: claim branch pushed at `ec78b17670c9c49d245d4aa85dc6692fb653f082`; follow-up progress commit records a parseable AgencySignature trailer block.
-- next: inspect the existing B-0891 scaffold and implement the first bounded scenario 3 retention proof without skip-to-green behavior.
+- progress: `tools/installer/zeta-creds-restore.ts` now skips `already-present` restored credentials instead of rewriting them.
+- proof: `bun test tools/installer/zeta-creds-persist-restore.test.ts` passes with an ESP-retention regression covering root wipe -> restore -> repeat restore with zero writes.
+- limitation: `bun run typecheck` could not start because `tsc` is not installed in this isolated worktree.
+- next: wire this credential-retention proof into the B-0891 scenario-3 QEMU snapshot/restart harness; keep `reformat-with-retention` scaffolded until QEMU state preservation asserts end-to-end.
