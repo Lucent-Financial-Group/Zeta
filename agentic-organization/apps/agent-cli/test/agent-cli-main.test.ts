@@ -324,7 +324,6 @@ test("runAgentCliMain wires production control-plane authorization for active fl
       appendObserveActTick: async (event) => {
         events.push(event);
       },
-      availableSecretScopes: ["github:write"],
       shutdown: async () => undefined,
     } as AgentCliMainRuntime & {
       appendObserveActTick: (event: OrgEvent) => Promise<void>;
