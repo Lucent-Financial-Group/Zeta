@@ -401,6 +401,23 @@ function openRegularShardForReadWrite(abs: string, relPath: string): number {
 }
 
 function rejectSymlinkedAncestors(divergenceRoot: string, abs: string, relPath: string): void {
+  try {
+    const rootStat = lstatSync(divergenceRoot);
+    if (rootStat.isSymbolicLink()) {
+      throw new Error(
+        `cannot reconcile: ${DIVERGENCE_ROOT} is a symbolic link; divergence root must be a real directory`,
+      );
+    }
+    if (!rootStat.isDirectory()) {
+      throw new Error(`cannot reconcile: ${DIVERGENCE_ROOT} is not a directory`);
+    }
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      return;
+    }
+    throw err;
+  }
+
   const within = relative(divergenceRoot, abs);
   const parts = within.split(sep).filter(Boolean);
   let cursor = divergenceRoot;
