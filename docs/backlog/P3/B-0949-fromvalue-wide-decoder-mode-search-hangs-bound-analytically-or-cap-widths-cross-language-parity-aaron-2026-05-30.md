@@ -2,7 +2,7 @@
 id: B-0949
 priority: P3
 status: open
-title: Tri-boolean float FromValue mode-search hangs for wide decoders — bound the scan analytically (or cap widths) CONSISTENTLY across TS/F#/C#/Rust
+title: Tri-boolean float FromValue mode-search hangs for wide decoders (biased-exponent impls F#/C#/Rust; TS radix-point unaffected) — bound the scan analytically or cap widths, consistently
 tier: core-primitive
 ask: Codex P2 review on PR #6186 (2026-05-30)
 created: 2026-05-30
@@ -30,14 +30,23 @@ trivial. But `FloatShape` is **public** and `FromTrits` accepts **arbitrary** de
 - Result: a call like `FromValue(1.0, FloatShape(4, 32, 4))` scans ~2.1 **billion** iterations
   before finding an ordinary value — an **effective hang** instead of returning feedback.
 
-## Consistent across oracles — NOT a parity divergence
+## Affects the biased-exponent impls (F#/C#/Rust) — NOT TS (radix-point)
 
-The same linear `0..maxMode` scan is present in **all** the impls: F# (`int64`), C# (`long`),
-Rust (`u64`) `FromValue` (TS's `fromValue` is radix-point but the same loop shape). The 2026-05-30
-int64/long widening (PRs #6183 F# / #6186 C#) made the integer widths **consistent**; it did not
-create this hang — the hang is a pre-existing v0 limitation now uniform across the four. So the fix
-**must be applied identically across all four impls** (a C#-only point-fix would *introduce*
-divergence — backwards for a BFT-parity primitive).
+**Correction (Codex P2 on #6188):** the hang is specific to the **biased-exponent** decoder. In
+biased-exponent, mode 0 gives the *largest* scaling (`V = value · 2^bias`, astronomically large for
+wide decoders → skipped), so ordinary values aren't found until mode ≈ bias — hence the
+~2.1-billion-iteration scan. The three biased-exponent impls — **F# (`int64`), C# (`long`), Rust
+(`u64`)** — share this exactly (same `0..maxMode` loop). **TS's `fromValue` is radix-point**
+(`V = value · 2^mode`): mode 0 gives the *smallest* scaling, so a normal value like `1.0` is found
+**immediately at mode 0** and returns — TS does **not** share this hang. (TS would only inherit it
+if/when it adopts the ratified biased-exponent decoder as canonical.)
+
+So among the three biased-exponent impls the behavior is **consistent — not a parity divergence**:
+the 2026-05-30 int64/long widening (PRs #6183 F# / #6186 C#) made the integer widths uniform; it did
+not create the hang (a pre-existing v0 limitation of the biased-exponent mode-search). The fix **must
+be applied identically across the three biased-exponent impls** (a C#-only point-fix would *introduce*
+divergence — backwards for a BFT-parity primitive), and across TS too whenever TS's canonical
+decoder flips to biased-exponent.
 
 ## Fix options (operator/design decision on policy)
 
@@ -51,16 +60,17 @@ divergence — backwards for a BFT-parity primitive).
    shapes up front with `NotRepresentable` feedback (e.g. `valueBits > 52` or `decoderWidth` whose
    `bias` exceeds f64's exponent range), before the loop. Easy + uniform, but narrows the API.
 
-Either way: land the SAME choice in TS/F#/C#/Rust + add a conformance vector (the slice-6 ballot)
-that exercises a wide-decoder shape and asserts bounded-time feedback rather than a hang.
+Either way: land the SAME choice in the biased-exponent impls (F#/C#/Rust) — and in TS whenever its
+canonical decoder flips to biased-exponent — + add a conformance vector (the slice-6 ballot) that
+exercises a wide-decoder shape and asserts bounded-time feedback rather than a hang.
 
 ## Acceptance
 
-1. `FromValue` returns in bounded time (no multi-billion-iteration scan) for any public shape,
-   in all four impls.
-2. The chosen policy (analytic-window vs width-cap) is identical across TS/F#/C#/Rust.
-3. A conformance vector covers a wide-decoder shape; 4-of-4 parity on it.
-4. Existing default-shape behavior unchanged (the 13/14 per-language vectors still pass).
+1. `FromValue` returns in bounded time (no multi-billion-iteration scan) for any public shape, in
+   the biased-exponent impls (F#/C#/Rust; TS too if/when it adopts biased-exponent).
+2. The chosen policy (analytic-window vs width-cap) is identical across the biased-exponent impls.
+3. A conformance vector covers a wide-decoder shape; parity across the affected impls.
+4. Existing default-shape behavior unchanged (the per-language vectors still pass).
 
 ## Why P3
 
