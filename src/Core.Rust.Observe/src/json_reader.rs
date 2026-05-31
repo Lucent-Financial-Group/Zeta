@@ -266,6 +266,9 @@ impl<'a> JsonReader<'a> {
                     return Ok(Cow::Borrowed(s));
                 }
                 b'\\' => return self.read_string_escaped(start),
+                // JSON forbids raw control characters (U+0000–U+001F) in strings;
+                // they must be escaped. (serde rejects these too.)
+                c if c < 0x20 => return Err(self.err("unescaped control character in string")),
                 _ => self.pos += 1,
             }
         }
@@ -301,6 +304,9 @@ impl<'a> JsonReader<'a> {
                         _ => return Err(self.err("invalid escape")),
                     }
                     self.pos += 1;
+                }
+                Some(b) if b < 0x20 => {
+                    return Err(self.err("unescaped control character in string"));
                 }
                 Some(b) => {
                     out.push(b);
@@ -378,19 +384,57 @@ impl<'a> JsonReader<'a> {
     }
 
     /// Read a number, returning its raw source slice (zero-copy, lossless).
+    ///
+    /// Enforces the JSON number grammar strictly — `-? (0 | [1-9][0-9]*) (. [0-9]+)?
+    /// ([eE] [+-]? [0-9]+)?` — so non-JSON forms (`01`, `1.`, `-.1`, `+1`, a bare
+    /// `-`) are rejected, matching serde. (A lenient scan-then-`f64::parse` would
+    /// accept those — the bug Codex flagged.)
     fn read_number(&mut self) -> Result<&'a str, JsonError> {
         let start = self.pos;
+
+        // Optional leading minus.
         if self.peek() == Some(b'-') {
             self.pos += 1;
         }
-        while let Some(b) = self.peek() {
-            if b.is_ascii_digit() || matches!(b, b'.' | b'e' | b'E' | b'+' | b'-') {
+
+        // Integer part: a single `0`, or a nonzero digit followed by more digits.
+        match self.peek() {
+            Some(b'0') => self.pos += 1,
+            Some(b) if b.is_ascii_digit() => {
                 self.pos += 1;
-            } else {
-                break;
+                self.skip_ascii_digits();
             }
+            _ => return Err(self.err("invalid number: expected a digit")),
         }
+
+        // Optional fraction: `.` then at least one digit.
+        if self.peek() == Some(b'.') {
+            self.pos += 1;
+            if !matches!(self.peek(), Some(d) if d.is_ascii_digit()) {
+                return Err(self.err("invalid number: expected a digit after '.'"));
+            }
+            self.skip_ascii_digits();
+        }
+
+        // Optional exponent: `e`/`E`, optional sign, then at least one digit.
+        if matches!(self.peek(), Some(b'e') | Some(b'E')) {
+            self.pos += 1;
+            if matches!(self.peek(), Some(b'+') | Some(b'-')) {
+                self.pos += 1;
+            }
+            if !matches!(self.peek(), Some(d) if d.is_ascii_digit()) {
+                return Err(self.err("invalid number: expected a digit in the exponent"));
+            }
+            self.skip_ascii_digits();
+        }
+
         std::str::from_utf8(&self.bytes[start..self.pos]).map_err(|_| self.err("invalid number bytes"))
+    }
+
+    fn skip_ascii_digits(&mut self) {
+        while matches!(self.peek(), Some(d) if d.is_ascii_digit()) {
+            self.pos += 1;
+        }
     }
 }
 
@@ -482,5 +526,35 @@ mod tests {
         let toks = tokens("[-12.5e3]");
         assert_eq!(toks[1], JsonToken::Number("-12.5e3"));
         assert_eq!(toks[1].number_as_f64(), Some(-12500.0));
+    }
+
+    /// Drain the whole token stream; returns Err if any read fails (used to assert
+    /// that a malformed document is rejected somewhere in the stream).
+    fn drain(input: &str) -> Result<(), JsonError> {
+        let mut r = JsonReader::new(input);
+        while r.read()?.is_some() {}
+        Ok(())
+    }
+
+    #[test]
+    fn rejects_raw_control_characters_in_strings() {
+        // A literal newline (U+000A) inside the string, unescaped — JSON forbids it.
+        assert!(drain("\"a\nb\"").is_err());
+        // A literal tab (U+0009) likewise.
+        assert!(drain("\"a\tb\"").is_err());
+        // The escaped forms are fine.
+        assert!(drain(r#""a\nb""#).is_ok());
+    }
+
+    #[test]
+    fn enforces_json_number_grammar() {
+        for bad in ["01", "1.", "-.1", "+1", "-", "1.e3", "00", "1..2"] {
+            assert!(drain(bad).is_err(), "non-JSON number '{bad}' must be rejected");
+        }
+        for good in ["0", "-0", "1", "-12", "12.5", "-12.5e3", "1E10", "0.5", "1e-9"] {
+            let mut r = JsonReader::new(good);
+            assert_eq!(r.read().expect("read").expect("token"), JsonToken::Number(good));
+            assert!(r.read().expect("eof").is_none(), "'{good}' should be a single number");
+        }
     }
 }
