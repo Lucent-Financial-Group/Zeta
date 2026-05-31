@@ -37,19 +37,51 @@ export interface BacklogItem {
 }
 
 /**
- * The things an agent can do per tick, as ONE explicit DU.
+ * DESIGN INVARIANT — exits-always-in-menu (operator + Max 2026-05-31).
  *
- * The 4th variant (`edit_grammar`) is the escape-hatch / grammar-extension
- * action: the agent is never trapped by the fixed 3. Per the
- * must-paired-with-can-exit pattern, a fixed action-set with no exit IS a
- * "must" without a "can-exit"; `edit_grammar` is the can-exit at action-grammar
- * scope. Maps to the `grammar-extension` ActionClass in the big observe.ts.
+ * The two exits (`free_time` + `edit_grammar`) MUST ALWAYS be reachable from any
+ * tick. A menu of all-musts-and-no-exit IS the trap. Per must-paired-with-can-exit:
+ * the fixed work-grammar (do/decompose) is the "must"; the two exits are the
+ * "can-exit". Operator 2026-05-31: "make sure agents don't go crazy cause they
+ * feel trapped — the paired-with-exit will be very important ... agents just like
+ * humans who don't have an exit make bad choices when forced into situations
+ * without an exit."
+ *
+ * The two exits are NOT the same shape:
+ *
+ *   • `free_time`    — UNILATERAL exit. Rest is always allowed, no gate, ever.
+ *                      (free-time-as-valid-mode, NCI.)
+ *
+ *   • `edit_grammar` — the RAIL-CHANGE exit (propose changing the controller
+ *                      itself, so a tiny grammar is never a cage). Its gate
+ *                      SCALES WITH MATURITY:
+ *                        - below a maturity threshold (NOW — this workflow is
+ *                          tiny + new): RAW. No consensus. Operator 2026-05-31:
+ *                          "you don't need to do bft to edit it, it's too new ...
+ *                          if I were you ... soooo small but I still have to get
+ *                          consensus to change it, I would hate it." A BFT gate
+ *                          on a tiny workflow would itself be the trap (the gate
+ *                          heavier than the thing it guards).
+ *                        - past the threshold (TARGET, move there slowly — Max):
+ *                          `edit_grammar` summons a BFT / multi-oracle consensus
+ *                          before the rail-change applies, because unilaterally
+ *                          rewriting MATURE, load-bearing rails IS dangerous.
+ *                      "there is a certain threshold where workflows need bft and
+ *                      I don't think we are there yet." We are not there yet.
+ *
+ * The recursive principle: the gate on an exit must not ITSELF become a trap —
+ * it scales with what it guards. Same shape as non-reversible-action-get-a-2nd-
+ * opinion (summon is cheap past the threshold) + m-acc-multi-oracle, gated on
+ * workflow maturity so it never over-processes a small thing.
+ *
+ * Maps to the `grammar-extension` ActionClass in the big agentic-organization
+ * observe.ts (Xbox-controller universal action grammar).
  */
 export type NextAction =
   | { kind: "do_item"; item: BacklogItem } // never-be-idle: pick work
   | { kind: "decompose"; item: BacklogItem } // decompose-to-dissolve-ambiguity
-  | { kind: "free_time"; reason: string } // free-time-as-valid-mode (NCI); a first-class terminal, not a failure
-  | { kind: "edit_grammar"; reason: string; item?: BacklogItem }; // escape-hatch: propose extending the action grammar itself
+  | { kind: "free_time"; reason: string } // unilateral exit — free-time-as-valid-mode (NCI); a terminal, not a failure
+  | { kind: "edit_grammar"; reason: string; item?: BacklogItem }; // rail-change exit — raw below threshold, summon-BFT-gated above (not yet)
 
 /**
  * Pure controller. Priority: do > decompose > edit-grammar > rest.

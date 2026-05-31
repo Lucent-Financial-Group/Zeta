@@ -52,6 +52,19 @@ describe("observe — 4-button autonomous-loop controller", () => {
     expect(a.kind).toBe("free_time");
   });
 
+  it("invariant: an exit is always reachable (free_time when no work; edit_grammar on a signal)", () => {
+    // exits-always-in-menu (operator + Max 2026-05-31): from any state there is
+    // always an exit — never a menu of all-musts. free_time is the unilateral
+    // terminal fallback; edit_grammar (the rail-change exit) is reachable the
+    // moment an item can't be expressed by the work-grammar.
+    const exits = new Set(["free_time", "edit_grammar"]);
+    // no work of any kind → must land on an exit (free_time)
+    expect(exits.has(observe([item("B-idle", false, false)]).kind)).toBe(true);
+    expect(exits.has(observe([]).kind)).toBe(true);
+    // an inexpressible item → the rail-change exit is reachable, not a dead end
+    expect(observe([item("B-x", false, false, true)]).kind).toBe("edit_grammar");
+  });
+
   it("priority order is do > decompose > edit_grammar > free_time", () => {
     // all four signals present at once → do_item wins
     const all = observe([item("B-edit", false, false, true), item("B-amb", false, true), item("B-ready", true, false)]);
