@@ -70,11 +70,14 @@ ZFLASH_QEMU_RETENTION_EXECUTE=1 \
 
 The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence:
 create the qcow2 disk, boot the ISO once to establish the baseline disk,
-stop that boot when the serial log reaches the `[iter-5.1]` post-install
-marker, snapshot the baseline, restore it, restart from the ISO with the
-same disk, stop that restart when retention markers appear, then pass only
-when the final serial assertion includes the required retention markers.
-Runtime attempts for scenarios 4-5 remain
+stop that boot when the serial log reaches the observed installer-ready
+boundary (`zeta-installer login:` plus the `nixos@zeta-installer:~`
+prompt), snapshot the baseline, restore it, restart from the ISO with the
+same disk, stop that restart only when retention markers appear, then pass
+only when the final serial assertion includes the required retention
+markers. If the retained restart reaches the plain installer prompt before
+`zeta-creds-restore:` and `already-present`, the run fails fast instead of
+waiting for the full QEMU timeout. Runtime attempts for scenarios 4-5 remain
 scaffolded/fail-closed.
 `--dry-run` remains the planning surface for inspecting pending scenarios
 without claiming a false green.

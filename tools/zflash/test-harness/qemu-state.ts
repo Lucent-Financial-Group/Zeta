@@ -76,6 +76,7 @@ export interface QemuSerialStopCondition {
   readonly serialLogPath: string;
   readonly successMarkers: readonly string[];
   readonly failureMarkers: readonly string[];
+  readonly terminalFailureMarkers?: readonly string[];
 }
 
 export interface QemuSerialStopAssertion {
@@ -185,7 +186,8 @@ export const RETENTION_SERIAL_MARKERS: readonly string[] = [
 ];
 
 export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = [
-  "[iter-5.1]",
+  "zeta-installer login:",
+  "nixos@zeta-installer:~",
 ];
 
 export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
@@ -194,6 +196,10 @@ export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
   "Refusing to wipe",
   "no internet",
   "bail",
+];
+
+export const RETENTION_ABSENT_TERMINAL_MARKERS: readonly string[] = [
+  "nixos@zeta-installer:~",
 ];
 
 function nonEmpty(value: string): boolean {
@@ -321,6 +327,7 @@ export function planQcow2SnapshotRetention(
         serialLogPath: normalized.serialLogPath,
         successMarkers: RETENTION_SERIAL_MARKERS,
         failureMarkers: RETENTION_FAILURE_SERIAL_MARKERS,
+        terminalFailureMarkers: RETENTION_ABSENT_TERMINAL_MARKERS,
       },
       requiredSerialMarkers: RETENTION_SERIAL_MARKERS,
     },
@@ -522,6 +529,20 @@ function runManagedCommandUntilSerialMarkers(
           elapsedMs: Date.now() - startedAt,
           ...(stoppedPid === undefined ? {} : { stoppedPid }),
         },
+      };
+    }
+
+    const terminalFailureMarker = firstMatchedMarker(serialOutput, stopCondition.terminalFailureMarkers ?? []);
+    if (terminalFailureMarker !== undefined) {
+      managed.stop("SIGTERM");
+      return {
+        step,
+        command,
+        exitCode: 1,
+        stdout: "",
+        stderr:
+          `terminal marker observed before required serial markers: ${terminalFailureMarker}; ` +
+          `still waiting for ${stopCondition.successMarkers.join(", ")}`,
       };
     }
 

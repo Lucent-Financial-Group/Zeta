@@ -4,6 +4,7 @@ import {
   createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
   INITIAL_INSTALL_SERIAL_MARKERS,
+  RETENTION_ABSENT_TERMINAL_MARKERS,
   planQcow2SnapshotRetention,
   RETENTION_FAILURE_SERIAL_MARKERS,
   type Qcow2SnapshotRetentionPlan,
@@ -137,6 +138,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect(result.ok.initialInstallStopCondition.failureMarkers).toEqual(RETENTION_FAILURE_SERIAL_MARKERS);
     expect(result.ok.restartStopCondition.successMarkers).toContain("zeta-creds-restore:");
     expect(result.ok.restartStopCondition.successMarkers).toContain("already-present");
+    expect(result.ok.restartStopCondition.terminalFailureMarkers).toEqual(RETENTION_ABSENT_TERMINAL_MARKERS);
   });
 
   test("returns Result-shaped feedback for invalid input", () => {
@@ -247,7 +249,10 @@ describe("B-0891 QEMU state-preservation planner", () => {
       readSerialOutput: (serialLogPath) => {
         serialPaths.push(serialLogPath);
         if (managedObserved.length === 1) {
-          return "[iter-5.1] install reached post-install marker";
+          return [
+            "zeta-installer login: nixos (automatic login)",
+            "nixos@zeta-installer:~]$",
+          ].join("\n");
         }
         return [
           "zeta-creds-restore: reading preserved ESP blob",
@@ -276,9 +281,44 @@ describe("B-0891 QEMU state-preservation planner", () => {
       expect(managedObserved.every((entry) => entry.options.timeoutMs === 1234)).toBe(true);
       expect(serialPaths).toEqual(["/tmp/serial.log", "/tmp/serial.log", "/tmp/serial.log"]);
       expect(stoppedPids).toEqual([4201, 4202]);
-      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("[iter-5.1]");
+      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("zeta-installer login:");
+      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("nixos@zeta-installer:~");
       expect(result.ok.commandExecutions[5]?.serialStop?.matchedMarkers).toContain("already-present");
       expect(result.ok.serialAssertion.matchedMarkers).toContain("already-present");
+    }
+  });
+
+  test("fails retained restart when the plain installer prompt appears before retention markers", () => {
+    const managedObserved: QemuCommand[] = [];
+    const executor = createSpawnSyncQcow2RetentionExecutor({
+      pollIntervalMs: 1,
+      spawnCommand: () => ({ exitCode: 0, stdout: "ok", stderr: "" }),
+      spawnManagedCommand: (command) => {
+        managedObserved.push(command);
+        return managedProcess(5100 + managedObserved.length, []);
+      },
+      readSerialOutput: () => {
+        if (managedObserved.length === 1) {
+          return [
+            "zeta-installer login: nixos (automatic login)",
+            "nixos@zeta-installer:~]$",
+          ].join("\n");
+        }
+        return "nixos@zeta-installer:~]$";
+      },
+    });
+
+    const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), executor);
+
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error.kind).toBe("command-failed");
+      if (result.error.kind === "command-failed") {
+        expect(result.error.step).toBe("restart-from-iso-with-disk");
+        expect(result.error.stderr).toContain("terminal marker observed before required serial markers");
+        expect(result.error.stderr).toContain("zeta-creds-restore:");
+        expect(result.error.stderr).toContain("already-present");
+      }
     }
   });
 
