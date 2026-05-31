@@ -32,6 +32,18 @@ import {
   ReputationRiskTier,
   RunLifecyclePhase,
   RunScope,
+  WorkMarketClaimOutcome,
+  WorkMarketCompleteOutcome,
+  WorkMarketMergeOutcome,
+  WorkMarketQuorumOutcome,
+  WorkShardState,
+  claimNextWorkShard,
+  completeWorkClaim,
+  evaluateWorkShardReviewQuorum,
+  mergeReviewedWorkShards,
+  reapStaleWorkClaims,
+  workMarketReadoutForHat,
+  type HatWorkQueue,
 } from "../packages/application/src/index.ts";
 import {
   createCockroachCoreStateMigrations,
@@ -122,6 +134,10 @@ async function main(): Promise<void> {
   const testEvidenceRef = createContentAddressedEvidenceRef("test-result", { proof: "org-cadence", status: "green" });
   const diffEvidenceRef = createContentAddressedEvidenceRef("diff", { proof: "org-cadence", status: "reviewable" });
   const contextEvidenceRef = createContentAddressedEvidenceRef("context", { proof: "org-cadence", status: "loaded" });
+  const workMarketProof = runWorkMarketProof({
+    implementationEvidenceRef: createContentAddressedEvidenceRef("test-result", { proof: "work-market", status: "implemented" }),
+    reviewEvidenceRef: createContentAddressedEvidenceRef("review", { proof: "work-market", status: "peer-approved" }),
+  });
   const promptFlowTasks = compilePromptFlowTasks({
     definitions: [{
       promptFlowId: "flow-backend-code-change",
@@ -243,6 +259,7 @@ async function main(): Promise<void> {
           ? { agentId: reputationSelection.selected.agentId, reason: reputationSelection.reason }
           : { reason: reputationSelection.reason },
       },
+      workMarket: workMarketProof,
       orgEventsObservedFromLanes: recent.length,
     },
   }, null, 2));
@@ -266,5 +283,171 @@ function reputationObservation(
     observedAt: NOW_ISO,
     signal,
     evidenceRef,
+  };
+}
+
+function runWorkMarketProof(input: {
+  implementationEvidenceRef: string;
+  reviewEvidenceRef: string;
+}) {
+  const first = claimNextWorkShard(workMarketQueue("queue-kind-work-market"), claimInput("agent-backend-1", "claim-api", "fence-api"));
+  if (first.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected first same-hat shard claim");
+  const second = claimNextWorkShard(first.queue, claimInput("agent-backend-2", "claim-worker", "fence-worker"));
+  if (second.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected second same-hat shard claim");
+  if (first.claim.shardId === second.claim.shardId) throw new Error("same-hat agents duplicated a shard claim");
+
+  const afterFirstComplete = completeWorkClaim(second.queue, {
+    claimId: first.claim.claimId,
+    fencingToken: first.claim.fencingToken,
+    completedAt: new Date(NOW + 60_000).toISOString(),
+    evidenceRefs: [input.implementationEvidenceRef],
+  });
+  if (afterFirstComplete.outcome !== WorkMarketCompleteOutcome.Completed) throw new Error(`expected first completion, got ${afterFirstComplete.reason}`);
+  const afterSecondComplete = completeWorkClaim(afterFirstComplete.queue, {
+    claimId: second.claim.claimId,
+    fencingToken: second.claim.fencingToken,
+    completedAt: new Date(NOW + 120_000).toISOString(),
+    evidenceRefs: [input.implementationEvidenceRef],
+  });
+  if (afterSecondComplete.outcome !== WorkMarketCompleteOutcome.Completed) throw new Error(`expected second completion, got ${afterSecondComplete.reason}`);
+
+  const selfOnly = evaluateWorkShardReviewQuorum(afterSecondComplete.queue, {
+    shardId: first.claim.shardId,
+    producerAgentId: first.claim.ownerAgentId,
+    approvals: [{
+      reviewerAgentId: first.claim.ownerAgentId,
+      reviewerHatId: "backend_implementer",
+      approved: true,
+      evidenceRef: "evidence:self-review",
+      reviewedAt: new Date(NOW + 180_000).toISOString(),
+    }],
+  });
+  if (selfOnly.outcome !== WorkMarketQuorumOutcome.Rejected || selfOnly.reason !== "self_only_review") {
+    throw new Error("expected self-only review quorum rejection");
+  }
+
+  const firstReview = peerReview(afterSecondComplete.queue, first.claim.shardId, first.claim.ownerAgentId, input.reviewEvidenceRef);
+  const secondReview = peerReview(firstReview.queue, second.claim.shardId, second.claim.ownerAgentId, input.reviewEvidenceRef);
+  const merged = mergeReviewedWorkShards(secondReview.queue, {
+    shardIds: [first.claim.shardId, second.claim.shardId],
+    reviews: [firstReview.review, secondReview.review],
+    mergedAt: new Date(NOW + 240_000).toISOString(),
+  });
+  if (merged.outcome !== WorkMarketMergeOutcome.Merged) throw new Error(`expected reviewed shard merge, got ${merged.reason}`);
+
+  const staleClaim = claimNextWorkShard(workMarketQueue("queue-kind-stale"), claimInput("agent-backend-1", "claim-stale", "fence-stale", {
+    now: new Date(NOW - 60_000).toISOString(),
+    leaseExpiresAt: NOW_ISO,
+  }));
+  if (staleClaim.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected stale claim setup");
+  const reaped = reapStaleWorkClaims(staleClaim.queue, { now: NOW_ISO, reason: "lease_expired" });
+  if (reaped.reapedClaims.length !== 1) throw new Error("expected stale claim reaped");
+  const reclaimed = claimNextWorkShard(reaped.queue, claimInput("agent-backend-2", "claim-reclaimed", "fence-reclaimed"));
+  if (reclaimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected stale shard reclaimed");
+  const oldToken = completeWorkClaim(reclaimed.queue, {
+    claimId: staleClaim.claim.claimId,
+    fencingToken: staleClaim.claim.fencingToken,
+    completedAt: new Date(NOW + 60_000).toISOString(),
+    evidenceRefs: [input.implementationEvidenceRef],
+  });
+  if (oldToken.outcome !== WorkMarketCompleteOutcome.Rejected) throw new Error("expected old fencing token completion rejection");
+
+  const readout = workMarketReadoutForHat([second.queue], {
+    organizationId: ORG,
+    hatId: "backend_implementer",
+    now: new Date(NOW + 30_000).toISOString(),
+  });
+
+  return {
+    sameHatDistinctClaims: [first.claim.shardId, second.claim.shardId],
+    activeClaimReadout: {
+      queuePressure: readout.queuePressure,
+      readyShards: readout.totalReadyShards,
+      claimedShards: readout.totalClaimedShards,
+      activeClaims: readout.queues[0]?.activeClaims.map((claim) => claim.claimId) ?? [],
+    },
+    selfOnlyReviewRejected: selfOnly.reason,
+    mergedShardCount: merged.shardIds.length,
+    staleClaimReaped: reaped.reapedClaims.map((claim) => claim.claimId),
+    staleCompletionRejected: oldToken.reason,
+    mergeEvidenceRefs: merged.evidenceRefs,
+  };
+}
+
+function peerReview(queue: HatWorkQueue, shardId: string, producerAgentId: string, evidenceRef: string) {
+  const review = evaluateWorkShardReviewQuorum(queue, {
+    shardId,
+    producerAgentId,
+    approvals: [{
+      reviewerAgentId: `agent-reviewer-${shardId}`,
+      reviewerHatId: "architect_reviewer",
+      approved: true,
+      evidenceRef,
+      reviewedAt: new Date(NOW + 180_000).toISOString(),
+    }],
+  });
+  if (review.outcome !== WorkMarketQuorumOutcome.Accepted) throw new Error(`expected peer review accepted, got ${review.reason}`);
+  return review;
+}
+
+function claimInput(
+  ownerAgentId: string,
+  claimId: string,
+  fencingToken: string,
+  override: Partial<Parameters<typeof claimNextWorkShard>[1]> = {},
+): Parameters<typeof claimNextWorkShard>[1] {
+  return {
+    ownerAgentId,
+    hatAssignmentId: `${ownerAgentId}-backend-hat`,
+    claimId,
+    fencingToken,
+    now: NOW_ISO,
+    leaseExpiresAt: override.leaseExpiresAt ?? new Date(NOW + 300_000).toISOString(),
+    scheduleBlockId: `${ownerAgentId}-block`,
+    runtimeSessionId: `${ownerAgentId}-session`,
+    workspaceRef: `worktree:${ownerAgentId}`,
+    credentialScope: `tenant:${ORG}:repo:agentic-organization`,
+    compensatingAction: "release_claim_and_requeue_shard",
+    ...override,
+  };
+}
+
+function workMarketQueue(queueId: string): HatWorkQueue {
+  return {
+    queueId,
+    organizationId: ORG,
+    hatId: "backend_implementer",
+    scope: { kind: "project", id: "proj-observe-act" },
+    priorityClass: "p1",
+    slaDeadlineAt: new Date(NOW + 3_600_000).toISOString(),
+    shardability: "by_component",
+    requiredSkills: ["typescript", "worker-lanes"],
+    reviewQuorum: {
+      requiredApprovals: 1,
+      reviewerHatIds: ["architect_reviewer", "qa_reviewer"],
+      allowProducerApproval: false,
+    },
+    shards: [
+      {
+        shardId: `${queueId}-api`,
+        workItemId: "work-observe-act-api",
+        title: "Implement work-market API",
+        priority: 100,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+      {
+        shardId: `${queueId}-worker`,
+        workItemId: "work-observe-act-worker",
+        title: "Implement work-market worker lane",
+        priority: 90,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+    ],
+    claims: [],
+    reviews: [],
   };
 }

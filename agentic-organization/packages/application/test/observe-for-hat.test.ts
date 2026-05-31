@@ -19,6 +19,7 @@ import {
 import { buildHatDefinitions } from "../src/org-seed.ts";
 import { RecordingTelemetry, rollUpBatchMetrics, aggregateMetrics } from "../../observability/src/index.ts";
 import { observeForHat, authorityScopeOf, AuthorityScope, type OrgWorkState } from "../src/observe-for-hat.ts";
+import { WorkClaimState, WorkShardState, type HatWorkQueue } from "../src/work-market.ts";
 
 function wi(id: string, type: WorkItemType, state: WorkItemState, batchId: string): WorkItem {
   return {
@@ -216,9 +217,109 @@ test("legal priority classes are clamped by level (IC strictly fewer than exec)"
   ok(ceo.legalPriorityClasses.length > ic.legalPriorityClasses.length);
 });
 
+test("observeForHat includes same-hat work-market queue pressure and claim status", () => {
+  const hats = buildHatDefinitions();
+  const byId = new Map<string, HatDefinition>(hats.map((h) => [h.id, h]));
+  const backend = byId.get("backend_implementer")!;
+  const state: OrgWorkState = {
+    hats: byId,
+    batches: [],
+    itemsByBatch: new Map(),
+    events: [],
+    workQueues: [backendQueue()],
+    now: "2026-05-31T12:30:00.000Z",
+  };
+
+  const readout = observeForHat(backend, state);
+
+  equal(readout.workMarket.totalReadyShards, 1);
+  equal(readout.workMarket.totalClaimedShards, 1);
+  equal(readout.workMarket.totalStaleClaims, 1);
+  equal(readout.workMarket.queuePressure, "elevated");
+  equal(readout.workMarket.queues[0]?.activeClaims[0]?.claimId, "claim-stale");
+});
+
+test("observeForHat rolls subordinate work-market pressure up to executive scope", () => {
+  const hats = buildHatDefinitions();
+  const byId = new Map<string, HatDefinition>(hats.map((h) => [h.id, h]));
+  const ceo = byId.get("ceo")!;
+  const state: OrgWorkState = {
+    organizationId: "org-lfg",
+    hats: byId,
+    batches: [],
+    itemsByBatch: new Map(),
+    events: [],
+    workQueues: [backendQueue()],
+    now: "2026-05-31T12:30:00.000Z",
+  };
+
+  const readout = observeForHat(ceo, state);
+
+  equal(readout.workMarket.hatId, "ceo");
+  equal(readout.workMarket.totalReadyShards, 1);
+  equal(readout.workMarket.totalClaimedShards, 1);
+  equal(readout.workMarket.queues[0]?.queueId, "queue-backend-project-1");
+});
+
 test("authorityScopeOf maps every level", () => {
   equal(authorityScopeOf(HatLevel.ExecutiveBoard), AuthorityScope.Organization);
   equal(authorityScopeOf(HatLevel.Director), AuthorityScope.Department);
   equal(authorityScopeOf(HatLevel.Lead), AuthorityScope.Team);
   equal(authorityScopeOf(HatLevel.IndividualContributor), AuthorityScope.Individual);
 });
+
+function backendQueue(): HatWorkQueue {
+  return {
+    queueId: "queue-backend-project-1",
+    organizationId: "org-lfg",
+    hatId: "backend_implementer",
+    scope: { kind: "project", id: "proj-1" },
+    shardability: "by_component",
+    requiredSkills: ["typescript"],
+    reviewQuorum: {
+      requiredApprovals: 1,
+      reviewerHatIds: ["architect_reviewer"],
+      allowProducerApproval: false,
+    },
+    shards: [
+      {
+        shardId: "shard-ready",
+        workItemId: "work-ready",
+        title: "Ready shard",
+        priority: 80,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+      {
+        shardId: "shard-claimed",
+        workItemId: "work-claimed",
+        title: "Claimed shard",
+        priority: 90,
+        state: WorkShardState.Claimed,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+        claimedByClaimId: "claim-stale",
+      },
+    ],
+    claims: [
+      {
+        claimId: "claim-stale",
+        shardId: "shard-claimed",
+        ownerAgentId: "agent-backend-1",
+        hatAssignmentId: "hat-backend-1",
+        fencingToken: "fence-1",
+        leaseExpiresAt: "2026-05-31T12:00:00.000Z",
+        heartbeatAt: "2026-05-31T11:55:00.000Z",
+        scheduleBlockId: "block-1",
+        runtimeSessionId: "session-1",
+        workspaceRef: "worktree:agent-backend-1",
+        credentialScope: "tenant:org-lfg:repo:agentic-organization",
+        compensatingAction: "release_claim_and_requeue_shard",
+        state: WorkClaimState.Active,
+        claimedAt: "2026-05-31T11:45:00.000Z",
+      },
+    ],
+    reviews: [],
+  };
+}
