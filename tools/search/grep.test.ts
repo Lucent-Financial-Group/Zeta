@@ -1,0 +1,99 @@
+import { test, expect, beforeAll, afterAll } from "bun:test";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { grepTree, isExcludedDir, parseArgs, EXCLUDE_BASENAMES } from "./grep.ts";
+
+// Fixture tree:
+//   src/hit.ts                     -> "needle" (MUST be found)
+//   src/nested/also.md             -> "needle" (MUST be found)
+//   references/upstreams/noise.ts  -> "needle" (MUST be excluded — the whole point)
+//   node_modules/dep/index.ts      -> "needle" (MUST be excluded)
+//   bin/output.ts                  -> "needle" (MUST be excluded)
+let root: string;
+
+beforeAll(() => {
+  root = mkdtempSync(join(tmpdir(), "zeta-grep-test-"));
+  const write = (rel: string, body: string) => {
+    const abs = join(root, rel);
+    mkdirSync(join(abs, ".."), { recursive: true });
+    writeFileSync(abs, body, "utf8");
+  };
+  write("src/hit.ts", "const x = 1;\n// needle here\n");
+  write("src/nested/also.md", "# doc\nneedle in markdown\n");
+  write("references/upstreams/noise.ts", "// needle in vendored upstream — MUST NOT surface\n");
+  write("node_modules/dep/index.ts", "// needle in a dep — MUST NOT surface\n");
+  write("bin/output.ts", "// needle in build output — MUST NOT surface\n");
+});
+
+afterAll(() => {
+  if (root) rmSync(root, { recursive: true, force: true });
+});
+
+test("finds matches in normal source files", () => {
+  const m = grepTree({ root, pattern: /needle/ });
+  const files = m.map((x) => x.file).sort();
+  expect(files).toContain("src/hit.ts");
+  expect(files).toContain("src/nested/also.md");
+});
+
+test("EXCLUDES references/upstreams (the load-bearing guarantee)", () => {
+  const m = grepTree({ root, pattern: /needle/ });
+  const files = m.map((x) => x.file);
+  expect(files.some((f) => f.includes("references/upstreams"))).toBe(false);
+});
+
+test("EXCLUDES node_modules and build-output dirs", () => {
+  const m = grepTree({ root, pattern: /needle/ });
+  const files = m.map((x) => x.file);
+  expect(files.some((f) => f.startsWith("node_modules/"))).toBe(false);
+  expect(files.some((f) => f.startsWith("bin/"))).toBe(false);
+});
+
+test("reports correct 1-based line numbers", () => {
+  const m = grepTree({ root, pattern: /needle/ });
+  const hit = m.find((x) => x.file === "src/hit.ts");
+  expect(hit?.line).toBe(2);
+});
+
+test("--ext filter restricts to given extensions", () => {
+  const m = grepTree({ root, pattern: /needle/, exts: new Set(["md"]) });
+  const files = m.map((x) => x.file);
+  expect(files).toEqual(["src/nested/also.md"]);
+});
+
+test("isExcludedDir: upstreams + node_modules excluded, src kept", () => {
+  expect(isExcludedDir(root, join(root, "references", "upstreams"))).toBe(true);
+  expect(isExcludedDir(root, join(root, "references", "upstreams", "deep"))).toBe(true);
+  expect(isExcludedDir(root, join(root, "node_modules"))).toBe(true);
+  expect(isExcludedDir(root, join(root, "src"))).toBe(false);
+  // a dir literally named "upstreams" but NOT under references/ is kept
+  expect(isExcludedDir(root, join(root, "upstreams"))).toBe(false);
+});
+
+test("EXCLUDE_BASENAMES carries the known noise dirs", () => {
+  for (const d of [".git", "node_modules", "bin", "obj", "target"]) {
+    expect(EXCLUDE_BASENAMES.has(d)).toBe(true);
+  }
+});
+
+test("parseArgs: pattern required", () => {
+  const r = parseArgs([]);
+  expect("error" in r).toBe(true);
+});
+
+test("parseArgs: flags parsed", () => {
+  const r = parseArgs(["foo", "bar", "-i", "--ext", "ts,md", "--files"]);
+  expect("error" in r).toBe(false);
+  if (!("error" in r)) {
+    expect(r.pattern).toBe("foo bar");
+    expect(r.ignoreCase).toBe(true);
+    expect(r.filesOnly).toBe(true);
+    expect([...(r.exts ?? [])].sort()).toEqual(["md", "ts"]);
+  }
+});
+
+test("parseArgs: unknown flag errors", () => {
+  const r = parseArgs(["x", "--bogus"]);
+  expect("error" in r).toBe(true);
+});
