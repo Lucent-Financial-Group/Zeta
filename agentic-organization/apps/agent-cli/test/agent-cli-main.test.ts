@@ -160,7 +160,7 @@ test("runAgentCliMain loads prompt-flow context and persists observe-act tick ev
       "work-prompt-flow",
       "--gate-approved",
       "--select-index",
-      "8",
+      "6",
     ],
     env: {
       AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON: JSON.stringify([{
@@ -204,7 +204,7 @@ test("runAgentCliMain loads prompt-flow context and persists observe-act tick ev
   equal(exitCode, 0);
   ok(stdout.join("").includes("action: loaded context task-context"));
   equal(events.length, 1);
-  ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:8"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:6"));
   ok(events[0]?.evidenceRefs.includes("observe-act:prompt_flow:flow-code-change"));
 });
 

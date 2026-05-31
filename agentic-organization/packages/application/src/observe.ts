@@ -721,29 +721,30 @@ export type AgentObserveResult =
 const MENU16_DIRECTIONS: readonly string[] = [
   "navigate.previous",
   "navigate.next",
-  "navigate.up",
-  "navigate.drill",
+  "navigate.context_previous",
+  "navigate.context_next",
   "commit.a",
   "commit.b",
-  "commit.x",
-  "commit.y",
-  "scope.run",
-  "scope.work_item",
-  "scope.project",
-  "scope.organization",
+  "inspect.more",
+  "branch.fork",
+  "scope.out",
+  "scope.in",
+  "history.retract",
+  "history.redo",
+  "meta.refresh",
   "meta.status",
-  "meta.evidence",
-  "meta.hold",
+  "meta.pause",
   "meta.escalate",
 ];
-const COMMIT_SLOT_INDICES: readonly number[] = [4, 5, 6, 7];
-const PROMPT_FLOW_SLOT_INDICES: readonly number[] = [8, 9, 10, 11];
-const SCOPE_SLOT_TARGETS: Readonly<Record<number, RunScope>> = {
-  8: RunScope.Run,
-  9: RunScope.WorkItem,
-  10: RunScope.Project,
-  11: RunScope.Organization,
-};
+const COMMIT_SLOT_INDICES: readonly number[] = [4, 5];
+const PROMPT_FLOW_SLOT_INDICES: readonly number[] = [6, 7];
+const RUN_SCOPE_LADDER: readonly RunScope[] = [
+  RunScope.Run,
+  RunScope.WorkItem,
+  RunScope.Initiative,
+  RunScope.Project,
+  RunScope.Organization,
+];
 
 export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Options = {}): Menu16 {
   const rendered = MENU16_DIRECTIONS.map((direction, index) => createNeutralSlot(index, direction));
@@ -765,8 +766,8 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
   if (readout.options.length > 0) {
     renderScopeSlots(rendered, readout.scope);
     renderMetaSlots(rendered, readout.scope);
+    renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId);
   }
-  renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId);
   return { slots: rendered };
 }
 
@@ -813,19 +814,24 @@ function createVetoedSlot(index: number, direction: string, vetoed: VetoedOption
 }
 
 function renderScopeSlots(rendered: Menu16Slot[], currentScope: RunScope): void {
-  for (const [indexText, targetScope] of Object.entries(SCOPE_SLOT_TARGETS)) {
-    const index = Number.parseInt(indexText, 10);
-    const direction = MENU16_DIRECTIONS[index]!;
-    rendered[index] = targetScope === currentScope
-      ? createDisabledGrammarSlot(index, direction, `observe ${targetScope}`, `already observing ${targetScope}`)
-      : createObserveSlot(index, direction, `observe ${targetScope}`, targetScope);
-  }
+  const currentIndex = RUN_SCOPE_LADDER.indexOf(currentScope);
+  const coarserScope = currentIndex >= 0 ? RUN_SCOPE_LADDER[currentIndex + 1] : undefined;
+  const finerScope = currentIndex > 0 ? RUN_SCOPE_LADDER[currentIndex - 1] : undefined;
+
+  rendered[8] = coarserScope === undefined
+    ? createDisabledGrammarSlot(8, MENU16_DIRECTIONS[8]!, "scope out", "already at organization scope")
+    : createObserveSlot(8, MENU16_DIRECTIONS[8]!, `scope out to ${coarserScope}`, coarserScope);
+  rendered[9] = finerScope === undefined
+    ? createDisabledGrammarSlot(9, MENU16_DIRECTIONS[9]!, "scope in", "already at run scope")
+    : createObserveSlot(9, MENU16_DIRECTIONS[9]!, `scope in to ${finerScope}`, finerScope);
+  rendered[10] = createDisabledGrammarSlot(10, MENU16_DIRECTIONS[10]!, "retract", "retraction is not wired for this run state");
+  rendered[11] = createDisabledGrammarSlot(11, MENU16_DIRECTIONS[11]!, "redo", "redo is not wired for this run state");
 }
 
 function renderMetaSlots(rendered: Menu16Slot[], currentScope: RunScope): void {
-  rendered[12] = createObserveSlot(12, MENU16_DIRECTIONS[12]!, "refresh status", currentScope);
-  rendered[13] = createObserveSlot(13, MENU16_DIRECTIONS[13]!, "inspect evidence", currentScope);
-  rendered[14] = createDisabledGrammarSlot(14, MENU16_DIRECTIONS[14]!, "hold", "hold mode is not wired for this run state");
+  rendered[12] = createObserveSlot(12, MENU16_DIRECTIONS[12]!, "refresh", currentScope);
+  rendered[13] = createObserveSlot(13, MENU16_DIRECTIONS[13]!, "status", currentScope);
+  rendered[14] = createDisabledGrammarSlot(14, MENU16_DIRECTIONS[14]!, "pause", "pause mode is not wired for this run state");
   rendered[15] = createDisabledGrammarSlot(15, MENU16_DIRECTIONS[15]!, "escalate", "supervisor escalation is not wired for this run state");
 }
 
@@ -866,14 +872,17 @@ function renderPromptFlowSlots(
   hatAssignmentId: ZetaIdDecimal | undefined,
 ): void {
   if (promptFlows === undefined || hatAssignmentId === undefined) return;
-  const ordered = [...promptFlows.tasks, ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task)]
-    .sort((left, right) => right.priority - left.priority || left.taskId.localeCompare(right.taskId));
+  const ordered = [
+    ...[...promptFlows.tasks].sort(comparePromptFlowTasks),
+    ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task).sort(comparePromptFlowTasks),
+  ];
   const vetoesByTask = new Map(promptFlows.vetoedTasks.map((vetoed) => [vetoed.task.taskId, vetoed]));
   const allowedTaskIds = new Set(promptFlows.tasks.map((task) => task.taskId));
 
   for (const [offset, task] of ordered.entries()) {
     const slotIndex = PROMPT_FLOW_SLOT_INDICES[offset];
     if (slotIndex === undefined) break;
+    if (rendered[slotIndex]?.availability !== TriAvailability.Neutral) continue;
     const direction = MENU16_DIRECTIONS[slotIndex]!;
     if (allowedTaskIds.has(task.taskId)) {
       rendered[slotIndex] = createPromptFlowSlot(slotIndex, direction, readout, task, hatAssignmentId);

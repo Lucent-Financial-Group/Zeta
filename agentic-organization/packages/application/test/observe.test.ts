@@ -252,7 +252,80 @@ test("renderMenu16 places lifecycle actions in the fixed commit bank", () => {
   equal(menu.slots[5]?.action?.actionType, "block");
 });
 
-test("renderMenu16 exposes scope controls and meta reobserve slots as ADR grammar actions", async () => {
+test("renderMenu16 keeps every lifecycle option visible in the commit bank", () => {
+  const cases: readonly RunSnapshot[] = [
+    snapshot({ phase: RunLifecyclePhase.Observing }),
+    snapshot({ phase: RunLifecyclePhase.Composing }),
+    snapshot({ phase: RunLifecyclePhase.AwaitingGate, hasGateApproval: true }),
+    snapshot({ phase: RunLifecyclePhase.Executing }),
+    snapshot({ phase: RunLifecyclePhase.AwaitingEvidence, hasEvidence: true }),
+    snapshot({ phase: RunLifecyclePhase.AwaitingReview, hasEvidence: true }),
+    snapshot({ phase: RunLifecyclePhase.Blocked }),
+  ];
+
+  for (const run of cases) {
+    const observed = observe(run, deps);
+    equal(observed.outcome, ObserveOutcome.Readout);
+    if (observed.outcome !== ObserveOutcome.Readout) continue;
+    const menu = renderMenu16(observed.readout);
+    const renderedActions = new Set(menu.slots.flatMap((slot) => slot.action?.actionType ?? []));
+    const readoutActions = [
+      ...observed.readout.options.map((option) => option.actionType),
+      ...observed.readout.vetoedOptions.map((vetoed) => vetoed.option.actionType),
+    ];
+
+    for (const actionType of readoutActions) {
+      ok(renderedActions.has(actionType), `${run.phase} hides lifecycle action ${actionType}`);
+    }
+  }
+});
+
+test("renderMenu16 prompt-flow overflow prefers executable tasks over vetoed tasks", () => {
+  const approved = observe(snapshot({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingGate,
+    hasGateApproval: true,
+  }), deps);
+  equal(approved.outcome, ObserveOutcome.Readout);
+  if (approved.outcome !== ObserveOutcome.Readout) return;
+
+  const allowed = promptFlowTask({
+    taskId: "task-allowed",
+    promptFlowId: "flow-allowed",
+    label: "Allowed task",
+    priority: 1,
+  });
+  const vetoedHigh = promptFlowTask({
+    taskId: "task-vetoed-high",
+    promptFlowId: "flow-vetoed-high",
+    label: "Vetoed high task",
+    priority: 100,
+  });
+  const vetoedNext = promptFlowTask({
+    taskId: "task-vetoed-next",
+    promptFlowId: "flow-vetoed-next",
+    label: "Vetoed next task",
+    priority: 99,
+  });
+
+  const menu = renderMenu16(approved.readout, {
+    hatAssignmentId: asZetaIdDecimal("99"),
+    promptFlows: {
+      tasks: [allowed],
+      vetoedTasks: [
+        { task: vetoedHigh, ruleName: "hat-authority", reason: "hat lacks approval authority" },
+        { task: vetoedNext, ruleName: "hat-authority", reason: "hat lacks review authority" },
+      ],
+    },
+  });
+
+  equal(menu.slots[6]?.label, "Allowed task");
+  equal(menu.slots[6]?.availability, "T");
+  equal(menu.slots[7]?.label, "Vetoed high task");
+  equal(menu.slots[7]?.availability, "F");
+});
+
+test("renderMenu16 exposes ADR scope, history, and meta controller slots", async () => {
   const approved = observe(snapshot({
     scope: RunScope.WorkItem,
     phase: RunLifecyclePhase.AwaitingGate,
@@ -263,24 +336,29 @@ test("renderMenu16 exposes scope controls and meta reobserve slots as ADR gramma
 
   const menu = renderMenu16(approved.readout);
 
-  equal(menu.slots[8]?.direction, "scope.run");
-  equal(menu.slots[8]?.label, "observe run");
+  equal(menu.slots[8]?.direction, "scope.out");
+  equal(menu.slots[8]?.label, "scope out to initiative");
   equal(menu.slots[8]?.availability, "T");
-  deepEqual(menu.slots[8]?.impl, { kind: "observe", toScope: RunScope.Run });
-  equal(menu.slots[9]?.direction, "scope.work_item");
-  equal(menu.slots[9]?.availability, "F");
-  ok(menu.slots[9]?.reason?.includes("already observing work_item"));
-  equal(menu.slots[10]?.direction, "scope.project");
-  equal(menu.slots[10]?.label, "observe project");
-  equal(menu.slots[10]?.availability, "T");
-  equal(menu.slots[11]?.direction, "scope.organization");
-  equal(menu.slots[11]?.label, "observe organization");
-  equal(menu.slots[11]?.availability, "T");
-  equal(menu.slots[12]?.direction, "meta.status");
-  equal(menu.slots[12]?.label, "refresh status");
+  deepEqual(menu.slots[8]?.impl, { kind: "observe", toScope: RunScope.Initiative });
+  equal(menu.slots[9]?.direction, "scope.in");
+  equal(menu.slots[9]?.label, "scope in to run");
+  equal(menu.slots[9]?.availability, "T");
+  deepEqual(menu.slots[9]?.impl, { kind: "observe", toScope: RunScope.Run });
+  equal(menu.slots[10]?.direction, "history.retract");
+  equal(menu.slots[10]?.label, "retract");
+  equal(menu.slots[10]?.availability, "F");
+  ok(menu.slots[10]?.reason?.includes("retraction is not wired"));
+  equal(menu.slots[11]?.direction, "history.redo");
+  equal(menu.slots[11]?.label, "redo");
+  equal(menu.slots[11]?.availability, "F");
+  ok(menu.slots[11]?.reason?.includes("redo is not wired"));
+  equal(menu.slots[12]?.direction, "meta.refresh");
+  equal(menu.slots[12]?.label, "refresh");
   equal(menu.slots[12]?.availability, "T");
-  equal(menu.slots[14]?.direction, "meta.hold");
-  equal(menu.slots[14]?.label, "hold");
+  equal(menu.slots[13]?.direction, "meta.status");
+  equal(menu.slots[13]?.label, "status");
+  equal(menu.slots[14]?.direction, "meta.pause");
+  equal(menu.slots[14]?.label, "pause");
   equal(menu.slots[15]?.direction, "meta.escalate");
   equal(menu.slots[15]?.label, "escalate");
 
@@ -288,16 +366,22 @@ test("renderMenu16 exposes scope controls and meta reobserve slots as ADR gramma
     runCommand: async () => ({ ok: true }),
     dispatchTool: async () => ({ ok: true }),
   });
-  deepEqual(scopeResult, { outcome: "reobserve", scope: RunScope.Run });
+  deepEqual(scopeResult, { outcome: "reobserve", scope: RunScope.Initiative });
 
-  const statusResult = await act(12, menu, {
+  const drillResult = await act(9, menu, {
     runCommand: async () => ({ ok: true }),
     dispatchTool: async () => ({ ok: true }),
   });
-  deepEqual(statusResult, { outcome: "reobserve", scope: RunScope.WorkItem });
+  deepEqual(drillResult, { outcome: "reobserve", scope: RunScope.Run });
+
+  const refreshResult = await act(12, menu, {
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+  deepEqual(refreshResult, { outcome: "reobserve", scope: RunScope.WorkItem });
 });
 
-test("renderMenu16 disables the organization scope slot at top scope", () => {
+test("renderMenu16 disables scope-out at organization scope and scope-in at run scope", () => {
   const approved = observe(snapshot({
     scope: RunScope.Organization,
     phase: RunLifecyclePhase.Observing,
@@ -307,10 +391,29 @@ test("renderMenu16 disables the organization scope slot at top scope", () => {
 
   const menu = renderMenu16(approved.readout);
 
-  equal(menu.slots[11]?.direction, "scope.organization");
-  equal(menu.slots[11]?.label, "observe organization");
-  equal(menu.slots[11]?.availability, "F");
-  ok(menu.slots[11]?.reason?.includes("already observing organization"));
+  equal(menu.slots[8]?.direction, "scope.out");
+  equal(menu.slots[8]?.label, "scope out");
+  equal(menu.slots[8]?.availability, "F");
+  ok(menu.slots[8]?.reason?.includes("already at organization scope"));
+  equal(menu.slots[9]?.direction, "scope.in");
+  equal(menu.slots[9]?.label, "scope in to project");
+  equal(menu.slots[9]?.availability, "T");
+
+  const run = observe(snapshot({
+    scope: RunScope.Run,
+    phase: RunLifecyclePhase.Observing,
+  }), deps);
+  equal(run.outcome, ObserveOutcome.Readout);
+  if (run.outcome !== ObserveOutcome.Readout) return;
+
+  const runMenu = renderMenu16(run.readout);
+  equal(runMenu.slots[8]?.direction, "scope.out");
+  equal(runMenu.slots[8]?.label, "scope out to work_item");
+  equal(runMenu.slots[8]?.availability, "T");
+  equal(runMenu.slots[9]?.direction, "scope.in");
+  equal(runMenu.slots[9]?.label, "scope in");
+  equal(runMenu.slots[9]?.availability, "F");
+  ok(runMenu.slots[9]?.reason?.includes("already at run scope"));
 });
 
 test("observe returns an all-vetoed readout so renderMenu16 can show dark slots with reasons", () => {
@@ -335,6 +438,38 @@ test("observe returns an all-vetoed readout so renderMenu16 can show dark slots 
   ok(menu.slots[4]?.reason?.includes("maintenance freeze blocks compose"));
   equal(menu.slots[5]?.availability, "F");
   equal(menu.slots[5]?.action?.actionType, "block");
+});
+
+test("renderMenu16 keeps all-vetoed menus dark even when prompt-flow tasks exist", () => {
+  const blocked = observe(snapshot({ phase: RunLifecyclePhase.Observing }), {
+    clock: deps.clock,
+    deterministicRules: [
+      {
+        name: "maintenance-freeze",
+        veto: (option) => `maintenance freeze blocks ${option.actionType}`,
+      },
+    ],
+  });
+
+  equal(blocked.outcome, ObserveOutcome.Readout);
+  if (blocked.outcome !== ObserveOutcome.Readout) return;
+
+  const menu = renderMenu16(blocked.readout, {
+    hatAssignmentId: asZetaIdDecimal("99"),
+    promptFlows: {
+      tasks: [promptFlowTask({ taskId: "task-execute", promptFlowId: "flow-implement", label: "Implement work item" })],
+      vetoedTasks: [],
+    },
+  });
+
+  equal(menu.slots[4]?.availability, "F");
+  equal(menu.slots[5]?.availability, "F");
+  equal(menu.slots[6]?.direction, "inspect.more");
+  equal(menu.slots[6]?.availability, "N");
+  equal(menu.slots[6]?.label, "empty");
+  equal(menu.slots[7]?.direction, "branch.fork");
+  equal(menu.slots[7]?.availability, "N");
+  equal(menu.slots[8]?.availability, "N");
 });
 
 test("act rejects non-selectable slots before any implementation dispatch", async () => {
@@ -409,7 +544,7 @@ test("act routes selectable MCP, command, and observe slots through injected imp
       },
       {
         index: 2,
-        direction: "scope.work_item",
+        direction: "scope.in",
         label: "drill",
         availability: "T",
         impl: { kind: "observe", toScope: RunScope.WorkItem },
@@ -540,11 +675,11 @@ test("observeAgentSurface renders current hat-allowed prompt-flow tasks as conte
   deepEqual(surface.promptFlows.tasks.map((task) => task.taskId), ["task-execute"]);
   equal(surface.promptFlows.vetoedTasks[0]?.task.taskId, "task-review");
   ok(surface.promptFlows.vetoedTasks[0]?.reason.includes("lacks"));
-  equal(surface.actions.slots[8]?.availability, "T");
-  equal(surface.actions.slots[8]?.label, "Implement work item");
-  equal(surface.actions.slots[8]?.impl?.kind, "prompt_flow");
-  equal(surface.actions.slots[9]?.availability, "F");
-  equal(surface.actions.slots[9]?.label, "Approve review");
+  equal(surface.actions.slots[6]?.availability, "T");
+  equal(surface.actions.slots[6]?.label, "Implement work item");
+  equal(surface.actions.slots[6]?.impl?.kind, "prompt_flow");
+  equal(surface.actions.slots[7]?.availability, "F");
+  equal(surface.actions.slots[7]?.label, "Approve review");
 });
 
 test("observeAgentSurface shows C-suite projects with trajectories and policy violations", async () => {
@@ -843,7 +978,7 @@ test("act loads prompt-flow context through the injected context loader", async 
   equal(surface.outcome, ObserveOutcome.Readout);
   if (surface.outcome !== ObserveOutcome.Readout) return;
 
-  const result = await act(8, surface.actions, {
+  const result = await act(6, surface.actions, {
     runCommand: async () => ({ ok: true }),
     dispatchTool: async () => ({ ok: true }),
     loadPromptFlowContext: async (request) => ({

@@ -234,7 +234,7 @@ test("observe-act work-item lane can load a prompt-flow task context instead of 
         }),
       ],
     }),
-    selectSlot: () => 8,
+    selectSlot: () => 6,
     runCommand: async () => {
       throw new Error("prompt-flow context loading should not dispatch a command");
     },

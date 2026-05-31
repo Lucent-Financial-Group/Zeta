@@ -72,7 +72,7 @@ test("selectFirstTrueSlot returns the first selectable slot index", () => {
   equal(
     selectFirstTrueSlot({
       slots: [
-        { index: 0, direction: "meta.hold", label: "empty", availability: "N" },
+        { index: 0, direction: "meta.pause", label: "empty", availability: "N" },
         { index: 1, direction: "commit.a", label: "execute", availability: "T" },
       ],
     }),
@@ -226,8 +226,8 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   ok(stdout.join("\n").includes("[04] T commit.a execute"));
   ok(stdout.join("\n").includes("action: dispatched command"));
   equal(result.evidence?.selectedIndex, 4);
-  equal(result.evidence?.vetoCount, 3);
-  equal(result.evidence?.trueSlotCount, 7);
+  equal(result.evidence?.vetoCount, 4);
+  equal(result.evidence?.trueSlotCount, 6);
   equal(result.evidence?.metricBlockIds[0], "queue");
   ok(result.evidence?.menuHash.match(/^[0-9a-f]{64}$/));
   deepEqual(commands, [
@@ -372,10 +372,10 @@ test("runAgentCliCycle can select scope controls without dispatching side effect
   });
 
   equal(result.exitCode, 0);
-  deepEqual(result.actionResult, { outcome: "reobserve", scope: RunScope.Run });
+  deepEqual(result.actionResult, { outcome: "reobserve", scope: RunScope.Initiative });
   equal(dispatched, false);
-  ok(stdout.join("\n").includes("[08] T scope.run observe run"));
-  ok(stdout.join("\n").includes("action: reobserve run"));
+  ok(stdout.join("\n").includes("[08] T scope.out scope out to initiative"));
+  ok(stdout.join("\n").includes("action: reobserve initiative"));
   equal(result.evidence?.selectedIndex, 8);
 });
 
@@ -449,7 +449,7 @@ test("runAgentCliCycle renders prompt-flow tasks and loads selected context", as
       "awaiting_gate",
       "--gate-approved",
       "--select-index",
-      "8",
+      "6",
     ],
     now: () => "2026-05-31T12:00:00.000Z",
     writeStdout: (text) => stdout.push(text),
@@ -483,7 +483,7 @@ test("runAgentCliCycle renders prompt-flow tasks and loads selected context", as
   equal(result.actionResult?.outcome, "loaded_context");
   ok(stdout.join("\n").includes("prompt flows:"));
   ok(stdout.join("\n").includes("- task-implement flow-implement Implement work item"));
-  ok(stdout.join("\n").includes("[08] T scope.run Implement work item"));
+  ok(stdout.join("\n").includes("[06] T inspect.more Implement work item"));
   ok(stdout.join("\n").includes("action: loaded context task-implement"));
   ok(stdout.join("\n").includes("directions:"));
   ok(stdout.join("\n").includes("- Load implementation plan"));
@@ -509,7 +509,7 @@ test("runAgentCliCycle default prompt-flow loader preserves compiled phase metad
       "awaiting_gate",
       "--gate-approved",
       "--select-index",
-      "8",
+      "6",
     ],
     now: () => "2026-05-31T12:00:00.000Z",
     writeStdout: (text) => stdout.push(text),
@@ -720,7 +720,7 @@ test("runAgentCliCycle can load prompt-flow context with the built-in context lo
       "awaiting_gate",
       "--gate-approved",
       "--select-index",
-      "8",
+      "6",
     ],
     now: () => "2026-05-31T12:00:00.000Z",
     writeStdout: (text) => stdout.push(text),
