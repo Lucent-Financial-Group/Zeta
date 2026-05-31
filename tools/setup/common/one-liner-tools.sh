@@ -12,8 +12,13 @@
 # Homebrew bootstrap in macos.sh. Trust anchor: HTTPS + the vendor's domain (these installers track
 # HEAD with no published per-release checksum, same as Homebrew's install.sh).
 #
-# DETECT-FIRST: skip if the tool's <detect-binary> is already on PATH (efficient — no re-download;
-# remove the binary + re-run to reinstall/update). BEST-EFFORT: a failed installer WARNS and
+# DETECT-FIRST + UPDATE: by default, skip if the tool's <detect-binary> is already on PATH. This is
+# the efficient path (no re-download of multi-step vendor installers on every install.sh run) AND it
+# is correct for these CLIs because they SELF-UPDATE (cursor-agent + kiro auto-update in the
+# background per their docs; the others are HEAD-tracking installers that the operator re-runs at
+# will). install.sh's job here is to ensure PRESENCE; the tools keep themselves current. To FORCE a
+# re-run of every installer (the explicit update path, vs the old "manually remove the binary
+# first"), set ZETA_FORCE_UPDATE_TOOLS=1. BEST-EFFORT throughout: a failed installer WARNS and
 # continues — these are auth-gated peer/dev CLIs, not hard deps; LOGIN/auth is the operator's to do
 # after install; it must NEVER brick install (mirrors common/local-llm.sh exceptions-as-signals).
 #
@@ -31,6 +36,8 @@ source "$(dirname "${BASH_SOURCE[0]}")/curl-fetch.sh"
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 MANIFEST="$REPO_ROOT/tools/setup/manifests/one-liner-tools"
+# Force a re-run of every installer even when the binary is already present (explicit update path).
+FORCE_UPDATE="${ZETA_FORCE_UPDATE_TOOLS:-0}"
 
 if [ ! -f "$MANIFEST" ]; then
   echo "✓ no one-liner-tools manifest; skipping"
@@ -82,14 +89,21 @@ while IFS= read -r line || [ -n "$line" ]; do
     esac
   fi
 
-  # Detect-first: skip if already installed.
-  if command -v "$bin" >/dev/null 2>&1; then
-    echo "✓ $bin already installed; skipping (remove it + re-run to reinstall/update)"
+  # Detect-first: skip if already installed, UNLESS ZETA_FORCE_UPDATE_TOOLS=1 forces a re-run.
+  # The default skip is the efficient path; these CLIs self-update (see header), so re-running their
+  # multi-step installers on every install.sh run is unnecessary. The force path is the explicit
+  # update mechanism (no longer "manually remove the binary first").
+  if [ "$FORCE_UPDATE" != "1" ] && command -v "$bin" >/dev/null 2>&1; then
+    echo "✓ $bin already installed; skipping (self-updating; set ZETA_FORCE_UPDATE_TOOLS=1 to force re-run)"
     continue
   fi
 
   # Download-then-exec (B-0063): fetch installer to temp, verify non-empty, exec with interpreter.
-  echo "↓ installing $bin via $url (download-then-exec, best-effort)..."
+  if command -v "$bin" >/dev/null 2>&1; then
+    echo "↻ updating $bin via $url (ZETA_FORCE_UPDATE_TOOLS=1; download-then-exec, best-effort)..."
+  else
+    echo "↓ installing $bin via $url (download-then-exec, best-effort)..."
+  fi
   tmp="$(mktemp)" || { echo "warn: mktemp failed for '$bin'; skipping" >&2; continue; }
   if ! curl_fetch --output "$tmp" "$url"; then
     echo "warn: download failed for '$bin' ($url); continuing (best-effort)" >&2
