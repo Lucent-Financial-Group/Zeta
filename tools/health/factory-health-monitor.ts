@@ -557,10 +557,18 @@ function fetchBroadcastBusEnvelopes(): ToolResult {
   try {
     const files = readdirSync(FACTORY_HEALTH_BROADCAST_BUS_DIR)
       .filter((file) => file.endsWith(".json"))
-      .map((file) => ({
-        file,
-        mtimeMs: statSync(join(FACTORY_HEALTH_BROADCAST_BUS_DIR, file)).mtimeMs,
-      }))
+      .flatMap((file) => {
+        try {
+          return [
+            {
+              file,
+              mtimeMs: statSync(join(FACTORY_HEALTH_BROADCAST_BUS_DIR, file)).mtimeMs,
+            },
+          ];
+        } catch {
+          return [];
+        }
+      })
       .sort((a, b) => b.mtimeMs - a.mtimeMs)
       .slice(0, FACTORY_EVENT_BROADCAST_BUS_ENVELOPE_LIMIT);
     const envelopes = files.flatMap(({ file }) => {
@@ -742,7 +750,10 @@ function broadcastEnvelopeIsFresh(envelope: BroadcastBusEnvelopeInput, nowIso: s
 
   const expiresMs = Date.parse(expiresAt);
   const nowMs = Date.parse(nowIso);
-  return Number.isNaN(expiresMs) || Number.isNaN(nowMs) || expiresMs >= nowMs;
+  if (Number.isNaN(expiresMs) || Number.isNaN(nowMs)) {
+    return false;
+  }
+  return expiresMs >= nowMs;
 }
 
 export function broadcastBlockerEventsFromJson(

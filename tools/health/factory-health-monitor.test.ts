@@ -720,6 +720,20 @@ describe("factory-health-monitor", () => {
               },
             },
           },
+          {
+            id: "env-bad-expiry",
+            from: "otto-cli",
+            topic: "shadow-catch",
+            timestamp: "2026-05-30T05:03:00Z",
+            expiresAt: "not-a-date",
+            payload: {
+              blocker: {
+                id: "bad-expiry",
+                trajectory: "otto",
+                description: "Malformed expiry should not count",
+              },
+            },
+          },
         ]),
         "2026-05-30T06:00:00Z",
         2 * 60 * 60 * 1000,
