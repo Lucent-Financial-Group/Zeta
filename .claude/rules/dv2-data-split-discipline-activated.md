@@ -132,10 +132,12 @@ exactly-once-*effect* guard, NOT an exactly-once *delivery* guarantee).
   takes effect; the loser-iterations' recomputations are discarded. CAS
   is the canonical primitive for making a read-modify-write *commit
   exactly once* under contention. Idempotency becomes relevant for
-  lock-free only when the retried body has **side effects beyond the CAS
-  word** (I/O, sends, allocations the loser keeps) — those repeat on
-  every iteration and must themselves be idempotent or deferred until
-  after the winning CAS.
+  lock-free only when the retried body has **observable side effects
+  beyond the CAS word** (I/O, sends, metrics, or any state made visible
+  before the winning exchange — transient allocations don't count, they
+  are just discarded/GC'd unless they escape) — those repeat on every
+  iteration and must themselves be idempotent or deferred until after
+  the winning CAS.
 - **With DV2.0 / git-as-db:** the framework's state model is a
   **G-Set CRDT** of ZetaId-keyed events folded into state (per the
   agentic-organization keystone + `monad-propagation` substrate). G-Set
