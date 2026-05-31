@@ -119,11 +119,12 @@ Workflow=2, Heartbeat=3`; Lior used `5` for friction telemetry). **Add a `Bus` c
 monitoring). Within `Bus`, the existing `Topic` (`work-assignment`, `claim`,
 `review-request`, …) is the **bus-type sub-discriminator**.
 
-| Concern                  | Category      | Folder                   | Payload / consumer                                               |
-| ------------------------ | ------------- | ------------------------ | ---------------------------------------------------------------- |
-| Agent **health**         | `Heartbeat`   | `docs/agent-heartbeats/` | `HeartbeatPayload` (status/idle/working) → monitors              |
-| Agent **communications** | `Bus` (new)   | `docs/agent-bus/`        | bus `Topic` payloads (work-assignment, …) → **peer agents**      |
-| Agent **spawning**       | `Spawn` (new) | `docs/agent-spawn/`      | spawn request (persona/lane/backend/params) → **runner-adapter** |
+| Concern                  | Category         | Folder                   | Payload / consumer                                               |
+| ------------------------ | ---------------- | ------------------------ | ---------------------------------------------------------------- |
+| Agent **health**         | `Heartbeat`      | `docs/agent-heartbeats/` | `HeartbeatPayload` (status/idle/working) → monitors              |
+| Agent **communications** | `Bus` (new)      | `docs/agent-bus/`        | bus `Topic` payloads (work-assignment, …) → **peer agents**      |
+| Agent **spawning**       | `Spawn` (new)    | `docs/agent-spawn/`      | spawn request (persona/lane/backend/params) → **runner-adapter** |
+| **Work items**           | `WorkItem` (new) | `docs/backlog/` (today)  | work-item `type` ∈ {task, bug, …} + `state` ∈ {backlog, …}       |
 
 Per the operator's per-category-metadata point ("metadata can be different per key category
 type"), each category carries its own schema; `unpack().category` filters a family on the
@@ -160,6 +161,27 @@ existing spawn substrate: `.claude/skills/self-replication/`, **B-0867.24 / B-08
 (population-control safety-net — revive/spawn on zero-Ottos), `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md`
 (the spawn path must stay inside the safe-patterns floor), and the github-swarm-architecture
 substrate on this branch.
+
+### WorkItem category — the backlog migrates to ZetaIds (operator 2026-05-31)
+
+Operator 2026-05-31: _"zetaid gets a new workitem category too after bus"_ + _"tasks +
+bugs"_. The backlog uses `B-xxxxx` ids today, which COLLIDE at scale — the same problem
+ZetaIds solve for every other family. So work items become a `WorkItem` ZetaId category
+(after `Bus`), with **two orthogonal axes** (verified against Azure DevOps — umbrella =
+`WorkItem`; `Task`/`Bug` are peer leaf TYPES; "backlog" is a view, not a type):
+
+- **type** ∈ {`task`, `bug`, … (later `feature`/`epic` for hierarchy)} — operator picked
+  `tasks + bugs`. `backlog` is NOT a type.
+- **state** ∈ {`backlog`, `active`, `done`, …} — the queued lane is a state, orthogonal to
+  type.
+
+`tools/observe/backlog-reader.ts` is the **migration seam**: today it reads `docs/backlog/`
+B-xxxxx rows; post-migration the row `id` is a `WorkItem` ZetaId. Open question (operator
+2026-05-31): a WorkItem also wants to **run as a durable Task** (Durable Functions / Rx
+`Observable<WorkItemEvent>` — the heartbeat/bus stream IS that observable). Recommendation:
+keep `WorkItem` the planning umbrella (Azure DevOps-aligned, clean Jira/ADO plugin-interop —
+git-native first), and RELATE it to execution (runs-as-Task, observed-via-Rx) rather than
+REPLACE it with `Task` (which inverts ADO + overloads the word). Pending operator confirm.
 
 ## Envelope schema — extend the existing one (interop with the local bus)
 
