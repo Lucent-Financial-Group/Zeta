@@ -36,6 +36,7 @@ import {
   WorkMarketCompleteOutcome,
   WorkMarketMergeOutcome,
   WorkMarketQuorumOutcome,
+  RuntimeLeaseState,
   WorkShardState,
   claimNextWorkShard,
   completeWorkClaim,
@@ -591,10 +592,20 @@ function runWorkMarketProof(input: {
   const second = claimNextWorkShard(first.queue, claimInput("agent-backend-2", "claim-worker", "fence-worker"));
   if (second.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected second same-hat shard claim");
   if (first.claim.shardId === second.claim.shardId) throw new Error("same-hat agents duplicated a shard claim");
+  if (first.runtimeLease.fencingToken !== first.claim.fencingToken || second.runtimeLease.fencingToken !== second.claim.fencingToken) {
+    throw new Error("expected runtime leases to carry claim fencing tokens");
+  }
+  const duplicateRuntimeLease = claimNextWorkShard(second.queue, claimInput("agent-backend-3", "claim-duplicate-runtime", "fence-duplicate-runtime", {
+    runtimeLeaseId: first.runtimeLease.leaseId,
+  }));
+  if (duplicateRuntimeLease.outcome !== WorkMarketClaimOutcome.Rejected || duplicateRuntimeLease.reason !== "duplicate_runtime_lease_id") {
+    throw new Error("expected duplicate runtime lease id rejection");
+  }
 
   const afterFirstComplete = completeWorkClaim(second.queue, {
     claimId: first.claim.claimId,
     fencingToken: first.claim.fencingToken,
+    now: new Date(NOW + 60_000).toISOString(),
     completedAt: new Date(NOW + 60_000).toISOString(),
     evidenceRefs: [input.implementationEvidenceRef],
   });
@@ -602,6 +613,7 @@ function runWorkMarketProof(input: {
   const afterSecondComplete = completeWorkClaim(afterFirstComplete.queue, {
     claimId: second.claim.claimId,
     fencingToken: second.claim.fencingToken,
+    now: new Date(NOW + 120_000).toISOString(),
     completedAt: new Date(NOW + 120_000).toISOString(),
     evidenceRefs: [input.implementationEvidenceRef],
   });
@@ -643,10 +655,31 @@ function runWorkMarketProof(input: {
   const oldToken = completeWorkClaim(reclaimed.queue, {
     claimId: staleClaim.claim.claimId,
     fencingToken: staleClaim.claim.fencingToken,
+    now: new Date(NOW + 60_000).toISOString(),
     completedAt: new Date(NOW + 60_000).toISOString(),
     evidenceRefs: [input.implementationEvidenceRef],
   });
   if (oldToken.outcome !== WorkMarketCompleteOutcome.Rejected) throw new Error("expected old fencing token completion rejection");
+
+  const staleRuntimeLease = claimNextWorkShard(workMarketQueue("queue-kind-runtime-stale"), claimInput("agent-backend-1", "claim-runtime-stale", "fence-runtime-stale", {
+    heartbeatDeadlineAt: new Date(NOW + 60_000).toISOString(),
+    leaseExpiresAt: new Date(NOW + 600_000).toISOString(),
+  }));
+  if (staleRuntimeLease.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected stale runtime lease setup");
+  const runtimeReaped = reapStaleWorkClaims(staleRuntimeLease.queue, { now: new Date(NOW + 120_000).toISOString(), reason: "runtime_lease_stale" });
+  if (runtimeReaped.reapedClaims.length !== 1) throw new Error("expected runtime-stale claim reaped");
+  if (runtimeReaped.queue.runtimeLeases?.[0]?.state !== RuntimeLeaseState.Expired) throw new Error("expected runtime lease expired during reaping");
+
+  const mismatchedRuntimeLease = claimNextWorkShard(workMarketQueue("queue-kind-runtime-mismatch"), claimInput("agent-backend-1", "claim-runtime-mismatch", "fence-runtime-mismatch", {
+    leaseExpiresAt: new Date(NOW + 600_000).toISOString(),
+  }));
+  if (mismatchedRuntimeLease.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected mismatched runtime lease setup");
+  const mismatchedRuntimeQueue = {
+    ...mismatchedRuntimeLease.queue,
+    runtimeLeases: mismatchedRuntimeLease.queue.runtimeLeases?.map((lease) => ({ ...lease, workspaceRef: "worktree:wrong-runtime" })),
+  };
+  const mismatchReaped = reapStaleWorkClaims(mismatchedRuntimeQueue, { now: new Date(NOW + 120_000).toISOString(), reason: "runtime_lease_authority_mismatch" });
+  if (mismatchReaped.reapedClaims.length !== 1) throw new Error("expected authority-mismatched runtime lease reaped");
 
   const readout = workMarketReadoutForHat([second.queue], {
     organizationId: ORG,
@@ -666,6 +699,10 @@ function runWorkMarketProof(input: {
     mergedShardCount: merged.shardIds.length,
     staleClaimReaped: reaped.reapedClaims.map((claim) => claim.claimId),
     staleCompletionRejected: oldToken.reason,
+    runtimeLeaseIds: [first.runtimeLease.leaseId, second.runtimeLease.leaseId],
+    duplicateRuntimeLeaseRejected: duplicateRuntimeLease.reason,
+    runtimeLeaseStaleReaped: runtimeReaped.reapedClaims.map((claim) => claim.claimId),
+    runtimeLeaseMismatchReaped: mismatchReaped.reapedClaims.map((claim) => claim.claimId),
     mergeEvidenceRefs: merged.evidenceRefs,
   };
 }
@@ -699,6 +736,8 @@ function claimInput(
     fencingToken,
     now: NOW_ISO,
     leaseExpiresAt: override.leaseExpiresAt ?? new Date(NOW + 300_000).toISOString(),
+    heartbeatDeadlineAt: override.heartbeatDeadlineAt ?? override.leaseExpiresAt ?? new Date(NOW + 300_000).toISOString(),
+    runtimeLeaseId: override.runtimeLeaseId ?? `${claimId}-runtime-lease`,
     scheduleBlockId: `${ownerAgentId}-block`,
     runtimeSessionId: `${ownerAgentId}-session`,
     workspaceRef: `worktree:${ownerAgentId}`,

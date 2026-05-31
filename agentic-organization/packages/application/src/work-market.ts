@@ -17,6 +17,18 @@ export const WorkClaimState = {
 
 export type WorkClaimState = (typeof WorkClaimState)[keyof typeof WorkClaimState];
 
+export const RuntimeLeaseState = {
+  Reserved: "reserved",
+  Active: "active",
+  Renewed: "renewed",
+  Completed: "completed",
+  Expired: "expired",
+  Revoked: "revoked",
+  HandedOff: "handed_off",
+} as const;
+
+export type RuntimeLeaseState = (typeof RuntimeLeaseState)[keyof typeof RuntimeLeaseState];
+
 export const WorkMarketClaimOutcome = {
   Claimed: "claimed",
   Empty: "empty",
@@ -88,6 +100,33 @@ export type WorkClaim = {
   readonly evidenceRefs?: readonly string[];
 };
 
+export type RuntimeLease = {
+  readonly leaseId: string;
+  readonly claimId: string;
+  readonly organizationId: string;
+  readonly queueId: string;
+  readonly hatId: string;
+  readonly scope: WorkMarketScope;
+  readonly workItemId: string;
+  readonly shardId: string;
+  readonly hatAssignmentId: string;
+  readonly agentId: string;
+  readonly scheduleBlockId: string;
+  readonly runtimeSessionId: string;
+  readonly workspaceRef: string;
+  readonly credentialScopeRefs: readonly string[];
+  readonly fencingToken: string;
+  readonly heartbeatAt: string;
+  readonly heartbeatDeadlineAt: string;
+  readonly leaseExpiresAt: string;
+  readonly compensatingActionRef: string;
+  readonly state: RuntimeLeaseState;
+  readonly activatedAt: string;
+  readonly completedAt?: string;
+  readonly expiredAt?: string;
+  readonly revokedAt?: string;
+};
+
 export type WorkShardReviewQuorum = {
   readonly requiredApprovals: number;
   readonly reviewerHatIds: readonly string[];
@@ -125,6 +164,7 @@ export type HatWorkQueue = {
   readonly reviewQuorum: WorkShardReviewQuorum;
   readonly shards: readonly WorkShard[];
   readonly claims: readonly WorkClaim[];
+  readonly runtimeLeases?: readonly RuntimeLease[];
   readonly reviews?: readonly WorkShardReview[];
 };
 
@@ -135,6 +175,8 @@ export type ClaimNextWorkShardInput = {
   readonly fencingToken: string;
   readonly now: string;
   readonly leaseExpiresAt: string;
+  readonly runtimeLeaseId?: string;
+  readonly heartbeatDeadlineAt?: string;
   readonly scheduleBlockId: string;
   readonly runtimeSessionId: string;
   readonly workspaceRef: string;
@@ -148,6 +190,7 @@ export type WorkMarketClaimResult =
       readonly outcome: typeof WorkMarketClaimOutcome.Claimed;
       readonly queue: HatWorkQueue;
       readonly claim: WorkClaim;
+      readonly runtimeLease: RuntimeLease;
       readonly shard: WorkShard;
     }
   | {
@@ -158,7 +201,7 @@ export type WorkMarketClaimResult =
   | {
       readonly outcome: typeof WorkMarketClaimOutcome.Rejected;
       readonly queue: HatWorkQueue;
-      readonly reason: "stale_queue_revision" | "duplicate_claim_id" | "invalid_lease_window";
+      readonly reason: "stale_queue_revision" | "duplicate_claim_id" | "duplicate_runtime_lease_id" | "invalid_lease_window";
     };
 
 export type ReapStaleWorkClaimsInput = {
@@ -184,7 +227,12 @@ export type CompleteWorkClaimRejectReason =
   | "stale_fencing_token"
   | "lease_expired"
   | "invalid_timestamp"
-  | "shard_not_owned_by_claim";
+  | "shard_not_owned_by_claim"
+  | "runtime_lease_missing"
+  | "runtime_lease_not_active"
+  | "runtime_lease_fence_mismatch"
+  | "runtime_lease_authority_mismatch"
+  | "runtime_lease_expired";
 
 export type CompleteWorkClaimResult =
   | {
@@ -292,7 +340,18 @@ export function claimNextWorkShard(queue: HatWorkQueue, input: ClaimNextWorkShar
   if (queue.claims.some((claim) => claim.claimId === input.claimId)) {
     return { outcome: WorkMarketClaimOutcome.Rejected, queue, reason: "duplicate_claim_id" };
   }
-  if (!isValidIso(input.now) || !isValidIso(input.leaseExpiresAt) || isIsoAtOrBefore(input.leaseExpiresAt, input.now)) {
+  const runtimeLeaseId = input.runtimeLeaseId ?? `${input.claimId}:runtime-lease`;
+  if ((queue.runtimeLeases ?? []).some((lease) => lease.leaseId === runtimeLeaseId)) {
+    return { outcome: WorkMarketClaimOutcome.Rejected, queue, reason: "duplicate_runtime_lease_id" };
+  }
+  const heartbeatDeadlineAt = input.heartbeatDeadlineAt ?? input.leaseExpiresAt;
+  if (
+    !isValidIso(input.now) ||
+    !isValidIso(input.leaseExpiresAt) ||
+    !isValidIso(heartbeatDeadlineAt) ||
+    isIsoAtOrBefore(input.leaseExpiresAt, input.now) ||
+    isIsoAtOrBefore(heartbeatDeadlineAt, input.now)
+  ) {
     return { outcome: WorkMarketClaimOutcome.Rejected, queue, reason: "invalid_lease_window" };
   }
   const candidate = readyClaimableShards(queue)[0];
@@ -322,11 +381,35 @@ export function claimNextWorkShard(queue: HatWorkQueue, input: ClaimNextWorkShar
     state: WorkShardState.Claimed,
     claimedByClaimId: claim.claimId,
   };
+  const runtimeLease: RuntimeLease = {
+    leaseId: runtimeLeaseId,
+    claimId: claim.claimId,
+    organizationId: queue.organizationId,
+    queueId: queue.queueId,
+    hatId: queue.hatId,
+    scope: queue.scope,
+    workItemId: candidate.workItemId,
+    shardId: candidate.shardId,
+    hatAssignmentId: input.hatAssignmentId,
+    agentId: input.ownerAgentId,
+    scheduleBlockId: input.scheduleBlockId,
+    runtimeSessionId: input.runtimeSessionId,
+    workspaceRef: input.workspaceRef,
+    credentialScopeRefs: [input.credentialScope],
+    fencingToken: input.fencingToken,
+    heartbeatAt: input.now,
+    heartbeatDeadlineAt,
+    leaseExpiresAt: input.leaseExpiresAt,
+    compensatingActionRef: input.compensatingAction,
+    state: RuntimeLeaseState.Active,
+    activatedAt: input.now,
+  };
   const updated = bumpQueueRevision(replaceShard(queue, claimedShard));
   return {
     outcome: WorkMarketClaimOutcome.Claimed,
-    queue: { ...updated, claims: [...updated.claims, claim] },
+    queue: { ...updated, claims: [...updated.claims, claim], runtimeLeases: [...(updated.runtimeLeases ?? []), runtimeLease] },
     claim,
+    runtimeLease,
     shard: claimedShard,
   };
 }
@@ -335,7 +418,7 @@ export function reapStaleWorkClaims(queue: HatWorkQueue, input: ReapStaleWorkCla
   if (!isValidIso(input.now)) return { queue, reapedClaims: [] };
   const reapedIds = new Set(
     queue.claims
-      .filter((claim) => claim.state === WorkClaimState.Active && isIsoAtOrBefore(claim.leaseExpiresAt, input.now))
+      .filter((claim) => claim.state === WorkClaimState.Active && claimIsStale(queue, claim, input.now))
       .map((claim) => claim.claimId),
   );
   if (reapedIds.size === 0) return { queue, reapedClaims: [] };
@@ -357,18 +440,27 @@ export function reapStaleWorkClaims(queue: HatWorkQueue, input: ReapStaleWorkCla
       state: WorkShardState.Ready,
     };
   });
+  const runtimeLeases = (queue.runtimeLeases ?? []).map((lease): RuntimeLease => {
+    if (!reapedIds.has(lease.claimId)) return lease;
+    if (lease.state !== RuntimeLeaseState.Active && lease.state !== RuntimeLeaseState.Renewed) return lease;
+    return {
+      ...lease,
+      state: RuntimeLeaseState.Expired,
+      expiredAt: input.now,
+    };
+  });
 
   return {
-    queue: bumpQueueRevision({ ...queue, claims, shards }),
+    queue: bumpQueueRevision({ ...queue, claims, shards, runtimeLeases }),
     reapedClaims: claims.filter((claim) => reapedIds.has(claim.claimId)),
   };
 }
 
 export function completeWorkClaim(queue: HatWorkQueue, input: CompleteWorkClaimInput): CompleteWorkClaimResult {
-  const trustedNow = input.now ?? input.completedAt;
-  if (!isValidIso(trustedNow) || !isValidIso(input.completedAt)) {
+  if (input.now === undefined || !isValidIso(input.now) || !isValidIso(input.completedAt)) {
     return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "invalid_timestamp" };
   }
+  const trustedNow = input.now;
   const claim = queue.claims.find((candidate) => candidate.claimId === input.claimId);
   if (claim === undefined || claim.state !== WorkClaimState.Active) {
     return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "claim_not_active" };
@@ -376,12 +468,33 @@ export function completeWorkClaim(queue: HatWorkQueue, input: CompleteWorkClaimI
   if (claim.fencingToken !== input.fencingToken) {
     return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "stale_fencing_token" };
   }
+  const runtimeLease = queue.runtimeLeases?.find((lease) => lease.claimId === claim.claimId);
+  if (runtimeLease === undefined) {
+    return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "runtime_lease_missing" };
+  }
+  if (runtimeLease.state !== RuntimeLeaseState.Active && runtimeLease.state !== RuntimeLeaseState.Renewed) {
+    return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "runtime_lease_not_active" };
+  }
+  if (runtimeLease.fencingToken !== input.fencingToken) {
+    return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "runtime_lease_fence_mismatch" };
+  }
   const shard = queue.shards.find((candidate) => candidate.shardId === claim.shardId);
   if (shard === undefined || shard.state !== WorkShardState.Claimed || shard.claimedByClaimId !== claim.claimId) {
     return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "shard_not_owned_by_claim" };
   }
+  if (!runtimeLeaseMatchesClaim(queue, claim, shard, runtimeLease)) {
+    return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "runtime_lease_authority_mismatch" };
+  }
   if (!isValidIso(claim.leaseExpiresAt) || isIsoAtOrBefore(claim.leaseExpiresAt, trustedNow)) {
     return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "lease_expired" };
+  }
+  if (
+    !isValidIso(runtimeLease.leaseExpiresAt) ||
+    !isValidIso(runtimeLease.heartbeatDeadlineAt) ||
+    isIsoAtOrBefore(runtimeLease.leaseExpiresAt, trustedNow) ||
+    isIsoAtOrBefore(runtimeLease.heartbeatDeadlineAt, trustedNow)
+  ) {
+    return { outcome: WorkMarketCompleteOutcome.Rejected, queue, reason: "runtime_lease_expired" };
   }
   const completedClaim: WorkClaim = {
     ...claim,
@@ -402,6 +515,10 @@ export function completeWorkClaim(queue: HatWorkQueue, input: CompleteWorkClaimI
     queue: {
       ...updated,
       claims: updated.claims.map((candidate) => candidate.claimId === completedClaim.claimId ? completedClaim : candidate),
+      runtimeLeases: (updated.runtimeLeases ?? []).map((lease) =>
+        lease.leaseId === runtimeLease.leaseId
+          ? { ...lease, state: RuntimeLeaseState.Completed, completedAt: input.completedAt }
+          : lease),
     },
     claim: completedClaim,
     shard: completedShard,
@@ -518,7 +635,7 @@ export function workMarketReadoutForHat(queues: readonly HatWorkQueue[], input: 
       claimedShardCount: countShards(queue, WorkShardState.Claimed),
       completedShardCount: countShards(queue, WorkShardState.Completed),
       mergedShardCount: countShards(queue, WorkShardState.Merged),
-      staleClaimCount: activeClaims.filter((claim) => isIsoAtOrBefore(claim.leaseExpiresAt, input.now)).length,
+      staleClaimCount: activeClaims.filter((claim) => claimIsStale(queue, claim, input.now)).length,
       activeClaims,
       shards: queue.shards,
     };
@@ -558,6 +675,51 @@ function readyClaimableShards(queue: HatWorkQueue): readonly WorkShard[] {
     }))
     .slice()
     .sort((left: WorkShard, right: WorkShard) => right.priority - left.priority || left.shardId.localeCompare(right.shardId));
+}
+
+function claimIsStale(queue: HatWorkQueue, claim: WorkClaim, now: string): boolean {
+  if (!isValidIso(claim.leaseExpiresAt) || isIsoAtOrBefore(claim.leaseExpiresAt, now)) {
+    return true;
+  }
+  return !claimHasActiveRuntimeLease(queue, claim, now);
+}
+
+function claimHasActiveRuntimeLease(queue: HatWorkQueue, claim: WorkClaim, now: string): boolean {
+  const lease = queue.runtimeLeases?.find((candidate) => candidate.claimId === claim.claimId);
+  if (lease === undefined) return false;
+  if (lease.state !== RuntimeLeaseState.Active && lease.state !== RuntimeLeaseState.Renewed) return false;
+  if (lease.fencingToken !== claim.fencingToken) return false;
+  const shard = queue.shards.find((candidate) => candidate.shardId === claim.shardId);
+  if (shard === undefined || !runtimeLeaseMatchesClaim(queue, claim, shard, lease)) return false;
+  if (!isValidIso(lease.leaseExpiresAt) || !isValidIso(lease.heartbeatDeadlineAt)) return false;
+  if (isIsoAtOrBefore(lease.leaseExpiresAt, now) || isIsoAtOrBefore(lease.heartbeatDeadlineAt, now)) return false;
+  return true;
+}
+
+function runtimeLeaseMatchesClaim(
+  queue: HatWorkQueue,
+  claim: WorkClaim,
+  shard: WorkShard,
+  lease: RuntimeLease,
+): boolean {
+  return (
+    lease.organizationId === queue.organizationId &&
+    lease.queueId === queue.queueId &&
+    lease.hatId === queue.hatId &&
+    lease.scope.kind === queue.scope.kind &&
+    lease.scope.id === queue.scope.id &&
+    lease.workItemId === shard.workItemId &&
+    lease.shardId === shard.shardId &&
+    lease.claimId === claim.claimId &&
+    lease.hatAssignmentId === claim.hatAssignmentId &&
+    lease.agentId === claim.ownerAgentId &&
+    lease.scheduleBlockId === claim.scheduleBlockId &&
+    lease.runtimeSessionId === claim.runtimeSessionId &&
+    lease.workspaceRef === claim.workspaceRef &&
+    lease.compensatingActionRef === claim.compensatingAction &&
+    lease.credentialScopeRefs.length === 1 &&
+    lease.credentialScopeRefs[0] === claim.credentialScope
+  );
 }
 
 function replaceShard(queue: HatWorkQueue, shard: WorkShard): HatWorkQueue {

@@ -469,6 +469,7 @@ export {
   type SelectRmoCandidateWithExplorationInput,
 } from "./reputation.ts";
 export {
+  RuntimeLeaseState,
   WorkClaimState,
   WorkMarketClaimOutcome,
   WorkMarketCompleteOutcome,
@@ -492,6 +493,7 @@ export {
   type MergeReviewedWorkShardsResult,
   type ReapStaleWorkClaimsInput,
   type ReapStaleWorkClaimsResult,
+  type RuntimeLease,
   type WorkClaim,
   type WorkMarketClaimResult,
   type WorkMarketMergeRejectReason,
