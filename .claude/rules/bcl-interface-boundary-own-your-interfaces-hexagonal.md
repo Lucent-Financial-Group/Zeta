@@ -1,6 +1,6 @@
 # BCL-interface boundary — own your interfaces; depend only on BCL-tier or provenance-vetted-AND-widely-used 3rd-party interfaces
 
-Carved sentence (Aaron 2026-05-31):
+Carved sentence (the operator 2026-05-31):
 
 > Depend on a 3rd-party **interface** only if it is BCL or BCL-like (the platform's
 > own foundational library — `System.*`, ASP.NET Core, Rust `std`, the JDK). Any
@@ -9,7 +9,7 @@ Carved sentence (Aaron 2026-05-31):
 > provenance-vetted AND a widely-used de-facto standard — else use our own. *"A rule
 > without a why is dogma"* — so every clause below carries its why, open to challenge.
 
-> **This rule is whys-first by construction** (Aaron 2026-05-31: *"i like to make
+> **This rule is whys-first by construction** (the operator 2026-05-31: *"i like to make
 > sure my rules are not dogma but have real whys that others can question and agree
 > on if they are the right whys"* + *"a rule without a why IS dogma basically"*).
 > Each clause states its reasoning so a reader can dispute the *logic*, not just the
@@ -77,15 +77,18 @@ If a dep fails **either** (not provenance-vetted, OR niche/low-adoption) → **u
 own** (write it / wrap it), i.e. fall back to HARD. **WHY both, not either:**
 provenance without adoption is a well-signed package nobody stress-tests; adoption
 without provenance is a popular package you can't trust the supply chain of. You need
-both to skip the port. (Aaron 2026-05-31: *"and even then widely used by other
+both to skip the port. (the operator 2026-05-31: *"and even then widely used by other
 packages in the ecosystem or else we should just use our own even for the soft
 version of the rule."*)
 
 **Start soft, harden over time:** a provenance-vetted, widely-used dep is an
-acceptable *starting place*; the hexagonal port is what makes migrating to
-wrapped-or-own later **free** (you change the adapter, not the core). Even a SOFT-
-qualifying dep is *better* wrapped — the soft version just permits direct dependence
-when wrapping is impractical day-one.
+acceptable *starting place*. Note the cost of NOT wrapping: in the pure-SOFT case
+(direct dependence, no port yet), later hardening is NOT free — you must first
+introduce the port + adapter, then migrate every site that named the dep's type.
+Migration is only free *once a port exists* (then you swap the adapter, not the
+core). So even a SOFT-qualifying dep is **better wrapped from the start** — the soft
+version merely permits direct dependence when wrapping is impractical day-one, with
+the understanding that you're deferring (not avoiding) the port cost.
 
 ## Hexagonal IS the I/O-monad shape (why the port pattern is principled, not ad-hoc)
 
@@ -96,7 +99,7 @@ that can fail) is a *value* abstracted behind our type, the adapter is one
 interpretation, the core depends only on the port. So this rule is the I/O-boundary
 instance of the framework's already-landed `Result<T, TFeedback>` substrate (see
 [`monad-propagation-pattern-cross-language-substrate-shape.md`](monad-propagation-pattern-cross-language-substrate-shape.md)
-+ [`asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`](asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md)).
+and [`asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`](asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md)).
 Prefer `Result<OurType, OurError>` (monadic/Kleisli) port signatures so the effect is
 a value, not a thrown exception or hidden side effect. **WHY note this:** it tells you
 the port pattern composes by laws (associativity/identity) you already rely on — the
@@ -189,10 +192,10 @@ operator authority.
 
 ## Full reasoning
 
-Aaron 2026-05-31, across the Rust observe-reader arc, building the rule from the
+the operator 2026-05-31, across the Rust observe-reader arc, building the rule from the
 hexagonal "own your interfaces" principle through the BCL boundary, the
 provenance soft-version, the widely-used refinement, and the "a rule without a why
 is dogma" meta-principle that shaped how this rule is written. Captured in full in
 the hexagonal-own-interfaces-is-the-io-monad-shape + a-rule-without-a-why-is-dogma
-memories; landed here as auto-loading substrate per Aaron 2026-05-31 "land the
+memories; landed here as auto-loading substrate per the operator 2026-05-31 "land the
 BCL-interface-boundary rule."
