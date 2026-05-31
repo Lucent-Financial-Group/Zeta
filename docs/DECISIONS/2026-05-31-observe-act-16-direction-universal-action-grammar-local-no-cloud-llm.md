@@ -1,10 +1,12 @@
 # ADR: Choose-your-own-adventure observe->act loop — a 16-direction universal action grammar (Xbox-controller navigation), local-USB no-cloud LLM, git-as-append-only-state
 
-**Date:** 2026-05-31 (v3 — added the corporate/sovereign workflow-register distinction: agentic-organization = the corporate "agentic operating system"; Agora = the sovereign DIO-on-DID society)
-**Status:** *PROPOSED — design-starter.* Codeable basis for the agent foreground loop. To be
-shared with Max (co-maintainer) for review before lock. This ADR firms the architecture enough to
-start coding the first slice; the 16-slot grammar layout + several mechanisms are marked **[OPEN]**
-for operator + Max ratification.
+**Date:** 2026-05-31 (v4 — canonical-retrofit: the observe-algebra is now canonical; Max's corporate `Menu16` retrofits onto it; transport is the dial. See the Canonical-retrofit section + revision history.)
+**Status:** *ACCEPTED (direction) — canonical-retrofit proceeding.* The 16-slot grammar is resolved
+to v0 (v3, #6265) and the **canonical-retrofit direction is operator-authorized to proceed without
+waiting on Max** — the prior "Max-review-before-lock" gate is **lifted for this retrofit** (operator
+informs Max directly; changes to his Phase-2 loop stay behavior-preserving + tested + documented
+here for after-the-fact review — glass-halo). Some grammar-layout details remain **[OPEN]** below
+and continue to iterate; the *direction* is locked.
 
 > **v2 integration note (read first).** v1 of this ADR proposed a fresh `observe.ts`. On reviewing
 > `agentic-organization/docs/`, that keystone **already exists and is designed in depth** — see
@@ -20,7 +22,7 @@ for operator + Max ratification.
 > `Result<T, TFeedback>`; (3) the **local-USB single-node (no-cloud) deployment** of the keystone,
 > alongside the cluster runtime. See "Integration with the Agentic Organization keystone" below.
 
-**Owner:** operator (shaping-decision owner) + Max (co-review); Otto-CLI synthesis.
+**Owner:** operator (shaping-decision owner; authorized the canonical-retrofit to proceed without waiting on Max — see Status) + Max (corporate `Menu16` author; informed-after, after-the-fact review); Otto-CLI synthesis.
 **Decision confidence:** *medium* — the pieces are individually built or ratified (the move-next
 engine `tools/agent-loop/` exists; git-append-only-state is ratified B-0867/B-0858; the
 local-no-cloud stance is long-standing; the 16-direction framing is the operator's own from the
