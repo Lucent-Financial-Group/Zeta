@@ -381,9 +381,18 @@ export function parseArgs(argv: readonly string[]): ParseArgsResult {
   return { kind: "ok", command };
 }
 
+export function regularShardOpenFlags(noFollowFlag: unknown): number {
+  if (typeof noFollowFlag !== "number" || noFollowFlag === 0) {
+    throw new Error(
+      "cannot reconcile: O_NOFOLLOW is unavailable on this platform; refusing write-back without symlink protection",
+    );
+  }
+  return constants.O_RDWR | noFollowFlag;
+}
+
 function openRegularShardForReadWrite(abs: string, relPath: string): number {
   try {
-    return openSync(abs, constants.O_RDWR | constants.O_NOFOLLOW);
+    return openSync(abs, regularShardOpenFlags(constants.O_NOFOLLOW));
   } catch (err) {
     const code = (err as NodeJS.ErrnoException).code;
     if (code === "ENOENT") {

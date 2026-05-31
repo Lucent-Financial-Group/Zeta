@@ -21,6 +21,7 @@ import {
   parseArgs,
   reconcileDivergenceShard,
   reconciliationBody,
+  regularShardOpenFlags,
   scanDivergenceDir,
 } from "./divergence-reconcile";
 
@@ -333,6 +334,11 @@ describe("fillReconciliation", () => {
 });
 
 describe("reconcileDivergenceShard (read → fillReconciliation → write-back, AC #4 'one action')", () => {
+  test("fails closed when O_NOFOLLOW is unavailable", () => {
+    expect(() => regularShardOpenFlags(0)).toThrow(/O_NOFOLLOW is unavailable/);
+    expect(() => regularShardOpenFlags(undefined)).toThrow(/O_NOFOLLOW is unavailable/);
+  });
+
   test("full AC #4 loop: write pending shard → scan finds it → reconcile → scan is empty", () => {
     withTempRoot((root) => {
       const input = inputAt("2026-05-10T11:48:00Z", "resolve A", "do not resolve B");
