@@ -178,14 +178,38 @@ agents touch only `docs/agent-bus/**` — never code paths — so the carve-out 
 Seen-tracking is a **local cursor** so reading needs zero writes to the shared repo. The
 sender uses ack-envelopes only when it needs delivery confirmation.
 
-## Transport — folders on main, NOT a branch (B-0890.1)
+## Rollout — branches now, folders once observe.ts works (operator 2026-05-31)
 
-DV2.0 (the change-rate partition discipline) is satisfied by the **folder/path partition**,
-not a branch: `docs/agent-bus/**` (high-churn comms) is path-distinct from
-`docs/agent-heartbeats/**` (health) and from code (low-churn). Per B-0890.1, main is
-Zeta-protected (B-0887) so these folders don't need branch isolation — the path-scoped no-PR
-carve-out IS the partition. This keeps the bus on the one shared ref every machine already
-tracks (no extra branch to fetch), which is exactly what makes it trivially cross-machine.
+Operator 2026-05-31: _"these can all start out as branches that we merge back into main
+every so often while we get observe.ts working; once observe.ts is working we turn off
+branch protections on main and start using folders."_
+
+The folders-direct-to-main end-state requires a replacement for the safety the PR/branch-
+protection gate currently provides. **observe.ts (the rails) IS that replacement.** So the
+cutover is gated on observe.ts working — don't remove the rail before its replacement is
+ready (architecture-is-safety-mechanism; the same threshold discipline as `edit_grammar`).
+
+| Phase                                  | Mechanism                                                                                                 | Branch protection | Gate                            |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------- |
+| **1 — interim (now)**                  | Category checkins land on **branches**, merged back to `main` **periodically** (standard flow)            | **ON** (current)  | while observe.ts is being built |
+| **2 — target (once observe.ts works)** | **Folders** direct-to-`main`, **no PR** (the B-0858 / B-0890.1 mechanism the rest of this spec describes) | **OFF**           | observe.ts working → flip       |
+
+Both phases use the **same ZetaId-keyed envelope + category + payload**; only the _transport_
+changes (branch+periodic-merge → direct-to-main folder). So Bus v0 can start **now** under
+Phase 1 without waiting — the conflict-free-by-ZetaId property already holds on a branch, and
+the cutover to Phase 2 is a transport swap, not a rewrite. The `Spawn` category follows the
+same two phases.
+
+## Transport (Phase 2 target) — folders on main, NOT a branch (B-0890.1)
+
+Once Phase 2 is live, DV2.0 (the change-rate partition discipline) is satisfied by the
+**folder/path partition**, not a branch: `docs/agent-bus/**` (high-churn comms) is
+path-distinct from `docs/agent-heartbeats/**` (health) and from code (low-churn). Per
+B-0890.1, main is Zeta-protected (observe.ts rails + B-0887) so these folders don't need
+branch isolation — the path-scoped no-PR carve-out IS the partition. This keeps the bus on
+the one shared ref every machine already tracks (no extra branch to fetch), which is exactly
+what makes it trivially cross-machine. (The `publish` algorithm above is the Phase-2 form;
+in Phase 1 the same commit lands on a branch that's merged to main periodically.)
 
 ## Compliance with existing invariants
 
