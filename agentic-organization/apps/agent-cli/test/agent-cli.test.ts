@@ -1,4 +1,4 @@
-import { deepEqual, equal, ok } from "node:assert/strict";
+import { deepEqual, equal, ok, throws } from "node:assert/strict";
 import { test } from "node:test";
 
 import {
@@ -8,6 +8,7 @@ import {
   PromptFlowRunState,
   RunLifecyclePhase,
   RunScope,
+  type PromptFlowDefinition,
   type HierarchySnapshot,
   type HierarchyMission,
   type PromptFlowTask,
@@ -29,6 +30,7 @@ import {
   ScheduleBlockType,
   SupervisorChainLevel,
   SupervisorSignalToolType,
+  ToolBundle,
   type WorkScheduleBlock,
 } from "../../../packages/domain/src/index.ts";
 
@@ -1104,6 +1106,179 @@ test("createAgentCliPromptFlowTasksFromEnv reads current tasks from JSON", () =>
   equal(tasks[0]?.rollbackPolicy?.kind, "compensating_action");
 });
 
+test("createAgentCliPromptFlowTasksFromEnv compiles durable definitions and runs into current tasks", () => {
+  const tasks = createAgentCliPromptFlowTasksFromEnv({
+    env: {
+      AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([promptFlowDefinition()]),
+      AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([
+        {
+          runId: "pfr-compile-1",
+          promptFlowId: "flow-code-change",
+          definitionVersion: "1.0.0",
+          workItemId: "work-compile-1",
+          scope: RunScope.WorkItem,
+          currentPhaseId: "execute",
+          state: PromptFlowRunState.RunningPhase,
+          priority: 42,
+        },
+      ]),
+    },
+  });
+
+  equal(tasks.length, 1);
+  equal(tasks[0]?.taskId, "pfr-compile-1");
+  equal(tasks[0]?.promptFlowId, "flow-code-change");
+  equal(tasks[0]?.definitionVersion, "1.0.0");
+  equal(tasks[0]?.phaseId, "execute");
+  deepEqual(tasks[0]?.directions, ["Patch the smallest surface", "Run focused tests"]);
+  deepEqual(tasks[0]?.toolInjections, [{ tool: "repo.patch" }]);
+  deepEqual(tasks[0]?.requiredEvidenceRefs, ["tests.green", "diff.reviewable"]);
+  equal(tasks[0]?.rollbackPolicy?.kind, "compensating_action");
+});
+
+test("createAgentCliPromptFlowTasksFromEnv rejects invalid durable prompt-flow definitions before observe", () => {
+  throws(
+    () => createAgentCliPromptFlowTasksFromEnv({
+      env: {
+        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+          promptFlowDefinition({
+            allowedHatIds: [],
+            phases: [
+              {
+                ...promptFlowDefinition().phases[0]!,
+                requiredEvidenceRefs: [],
+              },
+            ],
+          }),
+        ]),
+        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+      },
+    }),
+    /AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON failed lint/,
+  );
+});
+
+test("createAgentCliPromptFlowTasksFromEnv rejects blank durable visible strings before observe", () => {
+  throws(
+    () => createAgentCliPromptFlowTasksFromEnv({
+      env: {
+        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+          promptFlowDefinition({
+            name: "   ",
+            phases: [{ ...promptFlowDefinition().phases[0]!, label: "   " }],
+          }),
+        ]),
+        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+      },
+    }),
+    /prompt-flow definition name must be a non-empty string/,
+  );
+});
+
+test("createAgentCliPromptFlowTasksFromEnv rejects blank strings inside durable phase arrays", () => {
+  throws(
+    () => createAgentCliPromptFlowTasksFromEnv({
+      env: {
+        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+          promptFlowDefinition({
+            phases: [
+              {
+                ...promptFlowDefinition().phases[0]!,
+                directions: [""],
+              },
+            ],
+          }),
+        ]),
+        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+      },
+    }),
+    /prompt-flow task directions must contain only non-empty strings/,
+  );
+});
+
+test("createAgentCliPromptFlowTasksFromEnv rejects durable runs that cannot compile into observe-visible tasks", () => {
+  throws(
+    () => createAgentCliPromptFlowTasksFromEnv({
+      env: {
+        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([promptFlowDefinition()]),
+        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([
+          {
+            runId: "pfr-typo",
+            promptFlowId: "flow-code-change",
+            definitionVersion: "1.0.0",
+            workItemId: "work-compile-1",
+            scope: RunScope.WorkItem,
+            currentPhaseId: "missing-phase",
+            state: PromptFlowRunState.RunningPhase,
+            priority: 42,
+          },
+        ]),
+      },
+    }),
+    /AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON failed compile coverage/,
+  );
+});
+
+test("createAgentCliPromptFlowTasksFromEnv rejects duplicate durable run ids before compile coverage", () => {
+  const run = {
+    runId: "pfr-duplicate",
+    promptFlowId: "flow-code-change",
+    definitionVersion: "1.0.0",
+    workItemId: "work-compile-1",
+    scope: RunScope.WorkItem,
+    currentPhaseId: "execute",
+    state: PromptFlowRunState.RunningPhase,
+    priority: 42,
+  };
+
+  throws(
+    () => createAgentCliPromptFlowTasksFromEnv({
+      env: {
+        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([promptFlowDefinition()]),
+        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([
+          run,
+          { ...run, currentPhaseId: "missing-phase" },
+        ]),
+      },
+    }),
+    /AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON contains duplicate run ids: pfr-duplicate/,
+  );
+});
+
+test("createAgentCliPromptFlowTasksFromEnv rejects duplicate durable definition keys", () => {
+  throws(
+    () => createAgentCliPromptFlowTasksFromEnv({
+      env: {
+        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+          promptFlowDefinition(),
+          promptFlowDefinition({ name: "Duplicate flow" }),
+        ]),
+        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+      },
+    }),
+    /AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON contains duplicate definition keys: flow-code-change@1.0.0/,
+  );
+});
+
+test("createAgentCliPromptFlowTasksFromEnv rejects duplicate durable phase ids", () => {
+  throws(
+    () => createAgentCliPromptFlowTasksFromEnv({
+      env: {
+        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+          promptFlowDefinition({
+            phases: [
+              promptFlowDefinition().phases[0]!,
+              { ...promptFlowDefinition().phases[1]!, phaseId: "context" },
+            ],
+          }),
+        ]),
+        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+      },
+    }),
+    /prompt-flow definition flow-code-change@1.0.0 contains duplicate phase ids: context/,
+  );
+});
+
 function menuForSelection() {
   return {
     slots: [
@@ -1127,6 +1302,52 @@ function promptFlowTask(overrides: Partial<PromptFlowTask> = {}): PromptFlowTask
     toolInjections: [],
     metrics: [],
     contextArtifactRefs: [],
+    ...overrides,
+  };
+}
+
+function promptFlowDefinition(overrides: Partial<PromptFlowDefinition> = {}): PromptFlowDefinition {
+  return {
+    promptFlowId: "flow-code-change",
+    version: "1.0.0",
+    name: "Code change flow",
+    ownerDepartmentId: "engineering",
+    allowedHatIds: ["backend_implementer"],
+    requiredScope: RunScope.WorkItem,
+    reviewerHatIds: ["code_reviewer"],
+    rollbackPolicy: { kind: "compensating_action", description: "revert patch and release claim" },
+    phases: [
+      {
+        phaseId: "context",
+        label: "Load implementation context",
+        actionClass: ActionClass.WriteDoc,
+        permittedUniversalActions: ["load_context"],
+        directions: ["Load work item", "Load initiative constraints"],
+        requiredToolBundles: [ToolBundle.Task],
+        toolInjections: [{ tool: "repo.search", args: { q: "work-compile-1" } }],
+        contextArtifactRefs: ["work:work-compile-1", "initiative:init-1"],
+        requiredEvidenceRefs: ["context.loaded"],
+        gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: ["context.loaded"] },
+        timeoutSeconds: 300,
+        retryLimit: 1,
+        metrics: [{ id: "context.age", label: "context age", value: 3, unit: "minutes" }],
+      },
+      {
+        phaseId: "execute",
+        label: "Execute implementation",
+        actionClass: ActionClass.WriteCode,
+        permittedUniversalActions: ["execute", "submit_evidence"],
+        directions: ["Patch the smallest surface", "Run focused tests"],
+        requiredToolBundles: [ToolBundle.Delivery],
+        toolInjections: [{ tool: "repo.patch" }],
+        contextArtifactRefs: ["work:work-compile-1", "decision:observe-act"],
+        requiredEvidenceRefs: ["tests.green", "diff.reviewable"],
+        gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: ["tests.green", "diff.reviewable"] },
+        timeoutSeconds: 900,
+        retryLimit: 2,
+        metrics: [{ id: "test.failures", label: "test failures", value: 0, unit: "count" }],
+      },
+    ],
     ...overrides,
   };
 }

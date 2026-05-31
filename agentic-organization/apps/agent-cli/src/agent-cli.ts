@@ -6,7 +6,9 @@ import {
   ActRejectionReason,
   asZetaIdDecimal,
   buildHatDefinitions,
+  compilePromptFlowTasks,
   createTelemetryScopedMetricAgents,
+  lintPromptFlowDefinition,
   rejectAct,
   type DeterministicRule,
   observeAgentSurface,
@@ -38,7 +40,11 @@ import {
   type PromptFlowContext,
   type PromptFlowContextArtifact,
   type PromptFlowContextRequest,
+  type PromptFlowDefinition,
+  type PromptFlowPhaseDefinition,
+  type PromptFlowPhaseGate,
   type PromptFlowReadout,
+  type PromptFlowRun,
   type PromptFlowTask,
   type PromptFlowToolInjection,
   type ScopedMetricAgent,
@@ -296,15 +302,19 @@ export function createAgentCliMetricAgentsFromEnv(
 export function createAgentCliPromptFlowTasksFromEnv(
   input: CreateAgentCliPromptFlowTasksFromEnvInput,
 ): readonly PromptFlowTask[] {
+  const compiled = compileAgentCliPromptFlowTasksFromEnv(input);
   const raw = input.env.AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON;
   if (raw === undefined || raw.trim().length === 0) {
-    return [];
+    return compiled;
   }
   const parsed: unknown = JSON.parse(raw);
   if (!Array.isArray(parsed)) {
     throw new Error("AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON must be a JSON array");
   }
-  return parsed.map(parsePromptFlowTask);
+  return [
+    ...compiled,
+    ...parsed.map(parsePromptFlowTask),
+  ];
 }
 
 export function createAgentCliHierarchyFromEnv(
@@ -1062,6 +1072,61 @@ function formatActResult(result: ActResult): string {
   }
 }
 
+function compileAgentCliPromptFlowTasksFromEnv(
+  input: CreateAgentCliPromptFlowTasksFromEnvInput,
+): readonly PromptFlowTask[] {
+  const definitionsRaw = input.env.AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON;
+  const runsRaw = input.env.AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON;
+  if ((definitionsRaw === undefined || definitionsRaw.trim().length === 0) && (runsRaw === undefined || runsRaw.trim().length === 0)) {
+    return [];
+  }
+  if (definitionsRaw === undefined || definitionsRaw.trim().length === 0 || runsRaw === undefined || runsRaw.trim().length === 0) {
+    throw new Error("AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON and AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON must be provided together");
+  }
+  const definitions = parsePromptFlowDefinitionsJson(definitionsRaw);
+  const lintMessages = definitions.flatMap((definition) =>
+    lintPromptFlowDefinition(definition).map((diagnostic) =>
+      `${definition.promptFlowId}@${definition.version}${diagnostic.phaseId === undefined ? "" : `:${diagnostic.phaseId}`}:${diagnostic.code}`,
+    ),
+  );
+  if (lintMessages.length > 0) {
+    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON failed lint: ${lintMessages.join(", ")}`);
+  }
+  const runs = parsePromptFlowRunsJson(runsRaw);
+  const tasks = compilePromptFlowTasks({
+    definitions,
+    runs,
+  });
+  assertPromptFlowRunCompileCoverage(runs, tasks);
+  return tasks;
+}
+
+function parsePromptFlowDefinitionsJson(raw: string): readonly PromptFlowDefinition[] {
+  const parsed: unknown = JSON.parse(raw);
+  if (!Array.isArray(parsed)) {
+    throw new Error("AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON must be a JSON array");
+  }
+  const definitions = parsed.map(parsePromptFlowDefinition);
+  const duplicateDefinitionKeys = repeatedValues(definitions.map(promptFlowDefinitionKey));
+  if (duplicateDefinitionKeys.length > 0) {
+    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON contains duplicate definition keys: ${duplicateDefinitionKeys.join(", ")}`);
+  }
+  return definitions;
+}
+
+function parsePromptFlowRunsJson(raw: string): readonly PromptFlowRun[] {
+  const parsed: unknown = JSON.parse(raw);
+  if (!Array.isArray(parsed)) {
+    throw new Error("AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON must be a JSON array");
+  }
+  const runs = parsed.map(parsePromptFlowRun);
+  const duplicateRunIds = repeatedValues(runs.map((run) => run.runId));
+  if (duplicateRunIds.length > 0) {
+    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON contains duplicate run ids: ${duplicateRunIds.join(", ")}`);
+  }
+  return runs;
+}
+
 function parsePromptFlowTask(value: unknown): PromptFlowTask {
   if (typeof value !== "object" || value === null) {
     throw new Error("prompt-flow task must be an object");
@@ -1083,6 +1148,101 @@ function parsePromptFlowTask(value: unknown): PromptFlowTask {
     metrics: parseMetricBlocks(candidate.metrics),
     contextArtifactRefs: parseStringArray(candidate.contextArtifactRefs, "contextArtifactRefs"),
     ...parseOptionalPromptFlowMetadata(candidate),
+  };
+}
+
+function parsePromptFlowDefinition(value: unknown): PromptFlowDefinition {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow definition must be an object");
+  }
+  const candidate = value as Record<string, unknown>;
+  const definition = {
+    promptFlowId: parsePromptFlowDefinitionString(candidate, "promptFlowId"),
+    version: parsePromptFlowDefinitionString(candidate, "version"),
+    name: parsePromptFlowDefinitionString(candidate, "name"),
+    ownerDepartmentId: parsePromptFlowDefinitionString(candidate, "ownerDepartmentId"),
+    allowedHatIds: parseStringArray(candidate.allowedHatIds, "allowedHatIds"),
+    requiredScope: parsePromptFlowRunScope(candidate.requiredScope),
+    phases: parsePromptFlowPhases(candidate.phases),
+    reviewerHatIds: parseStringArray(candidate.reviewerHatIds, "reviewerHatIds"),
+    rollbackPolicy: parsePromptFlowRollbackPolicy(candidate.rollbackPolicy),
+  };
+  const duplicatePhaseIds = repeatedValues(definition.phases.map((phase) => phase.phaseId));
+  if (duplicatePhaseIds.length > 0) {
+    throw new Error(`prompt-flow definition ${promptFlowDefinitionKey(definition)} contains duplicate phase ids: ${duplicatePhaseIds.join(", ")}`);
+  }
+  return definition;
+}
+
+function parsePromptFlowRun(value: unknown): PromptFlowRun {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow run must be an object");
+  }
+  const candidate = value as Record<string, unknown>;
+  return {
+    runId: parseRequiredString(candidate, "runId"),
+    promptFlowId: parseRequiredString(candidate, "promptFlowId"),
+    definitionVersion: parseRequiredString(candidate, "definitionVersion"),
+    workItemId: parseRequiredString(candidate, "workItemId"),
+    scope: parsePromptFlowRunScope(candidate.scope),
+    currentPhaseId: parseRequiredString(candidate, "currentPhaseId"),
+    state: parsePromptFlowRunState(candidate.state),
+    priority: parsePromptFlowPriority(candidate.priority),
+  };
+}
+
+function assertPromptFlowRunCompileCoverage(
+  runs: readonly PromptFlowRun[],
+  tasks: readonly PromptFlowTask[],
+): void {
+  const executableRunIds = new Set(
+    runs
+      .filter((run) => isExecutablePromptFlowRunState(run.state))
+      .map((run) => run.runId),
+  );
+  for (const task of tasks) {
+    executableRunIds.delete(task.taskId);
+  }
+  if (executableRunIds.size > 0) {
+    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON failed compile coverage: ${[...executableRunIds].sort().join(", ")}`);
+  }
+}
+
+function isExecutablePromptFlowRunState(state: PromptFlowRunState): boolean {
+  return (
+    state === PromptFlowRunState.Created ||
+    state === PromptFlowRunState.ContextLoaded ||
+    state === PromptFlowRunState.RunningPhase ||
+    state === PromptFlowRunState.AwaitingGate
+  );
+}
+
+function parsePromptFlowPhases(value: unknown): readonly PromptFlowPhaseDefinition[] {
+  if (!Array.isArray(value)) {
+    throw new Error("prompt-flow definition phases must be an array");
+  }
+  return value.map(parsePromptFlowPhaseDefinition);
+}
+
+function parsePromptFlowPhaseDefinition(value: unknown): PromptFlowPhaseDefinition {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow definition phase must be an object");
+  }
+  const phase = value as Record<string, unknown>;
+  return {
+    phaseId: parsePromptFlowDefinitionString(phase, "phaseId"),
+    label: parsePromptFlowDefinitionString(phase, "label"),
+    ...parseOptionalActionClass(phase.actionClass),
+    permittedUniversalActions: parseStringArray(phase.permittedUniversalActions, "permittedUniversalActions"),
+    directions: parseStringArray(phase.directions, "directions"),
+    ...parseOptionalRequiredToolBundles(phase.requiredToolBundles),
+    toolInjections: parseToolInjections(phase.toolInjections),
+    contextArtifactRefs: parseStringArray(phase.contextArtifactRefs, "contextArtifactRefs"),
+    requiredEvidenceRefs: parseStringArray(phase.requiredEvidenceRefs, "requiredEvidenceRefs"),
+    gate: parsePromptFlowGate(phase.gate),
+    timeoutSeconds: parsePositiveInteger(phase.timeoutSeconds, "timeoutSeconds"),
+    retryLimit: parseNonNegativeInteger(phase.retryLimit, "retryLimit"),
+    ...(phase.metrics === undefined ? {} : { metrics: parseMetricBlocks(phase.metrics) }),
   };
 }
 
@@ -1335,6 +1495,14 @@ function parseRequiredString(candidate: Record<string, unknown>, property: strin
   return value;
 }
 
+function parsePromptFlowDefinitionString(candidate: Record<string, unknown>, property: string): string {
+  const value = candidate[property];
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(`prompt-flow definition ${property} must be a non-empty string`);
+  }
+  return value;
+}
+
 function parsePromptFlowRunScope(value: unknown): RunScope {
   if (typeof value !== "string" || !Object.values(RunScope).includes(value as RunScope)) {
     throw new Error("prompt-flow task requires valid scope");
@@ -1347,6 +1515,13 @@ function parsePromptFlowPriority(value: unknown): number {
     throw new Error("prompt-flow task requires numeric priority");
   }
   return value;
+}
+
+function parsePromptFlowRunState(value: unknown): PromptFlowRunState {
+  if (typeof value !== "string" || !Object.values(PromptFlowRunState).includes(value as PromptFlowRunState)) {
+    throw new Error("prompt-flow run state is invalid");
+  }
+  return value as PromptFlowRunState;
 }
 
 function parseOptionalActionClass(value: unknown): { actionClass?: ActionClass } {
@@ -1406,6 +1581,10 @@ function parseOptionalPromptFlowRunState(value: unknown): { runState?: PromptFlo
 
 function parseOptionalPromptFlowGate(value: unknown): Pick<PromptFlowTask, "gate"> {
   if (value === undefined) return {};
+  return { gate: parsePromptFlowGate(value) };
+}
+
+function parsePromptFlowGate(value: unknown): PromptFlowPhaseGate {
   if (typeof value !== "object" || value === null) {
     throw new Error("prompt-flow task gate must be an object when present");
   }
@@ -1414,24 +1593,40 @@ function parseOptionalPromptFlowGate(value: unknown): Pick<PromptFlowTask, "gate
     throw new Error("prompt-flow task gate kind is invalid");
   }
   return {
-    gate: {
-      kind: gate.kind as PromptFlowGateKind,
-      requiredEvidenceRefs: parseStringArray(gate.requiredEvidenceRefs, "gate.requiredEvidenceRefs"),
-      ...(gate.reviewerHatIds === undefined ? {} : { reviewerHatIds: parseStringArray(gate.reviewerHatIds, "gate.reviewerHatIds") }),
-    },
+    kind: gate.kind as PromptFlowGateKind,
+    requiredEvidenceRefs: parseStringArray(gate.requiredEvidenceRefs, "gate.requiredEvidenceRefs"),
+    ...(gate.reviewerHatIds === undefined ? {} : { reviewerHatIds: parseStringArray(gate.reviewerHatIds, "gate.reviewerHatIds") }),
   };
 }
 
 function parseOptionalPositiveInteger(value: unknown, property: "timeoutSeconds" | "retryLimit"): Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">> {
   if (value === undefined) return {};
-  if (!Number.isInteger(value) || (value as number) < 0 || (property === "timeoutSeconds" && value === 0)) {
+  const parsed = property === "timeoutSeconds"
+    ? parsePositiveInteger(value, property)
+    : parseNonNegativeInteger(value, property);
+  return { [property]: parsed } as Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">>;
+}
+
+function parsePositiveInteger(value: unknown, property: "timeoutSeconds"): number {
+  if (!Number.isInteger(value) || (value as number) <= 0) {
     throw new Error(`prompt-flow task ${property} must be a positive integer when present`);
   }
-  return { [property]: value } as Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">>;
+  return value as number;
+}
+
+function parseNonNegativeInteger(value: unknown, property: "retryLimit"): number {
+  if (!Number.isInteger(value) || (value as number) < 0) {
+    throw new Error(`prompt-flow task ${property} must be a positive integer when present`);
+  }
+  return value as number;
 }
 
 function parseOptionalRollbackPolicy(value: unknown): Pick<PromptFlowTask, "rollbackPolicy"> {
   if (value === undefined) return {};
+  return { rollbackPolicy: parsePromptFlowRollbackPolicy(value) };
+}
+
+function parsePromptFlowRollbackPolicy(value: unknown): PromptFlowDefinition["rollbackPolicy"] {
   if (typeof value !== "object" || value === null) {
     throw new Error("prompt-flow task rollbackPolicy must be an object when present");
   }
@@ -1442,14 +1637,30 @@ function parseOptionalRollbackPolicy(value: unknown): Pick<PromptFlowTask, "roll
   if (typeof rollback.description !== "string" || rollback.description.length === 0) {
     throw new Error("prompt-flow task rollbackPolicy description is required");
   }
-  return { rollbackPolicy: { kind: rollback.kind, description: rollback.description } };
+  return { kind: rollback.kind, description: rollback.description };
 }
 
 function parseStringArray(value: unknown, property: string): readonly string[] {
-  if (!Array.isArray(value) || !value.every((item) => typeof item === "string")) {
-    throw new Error(`prompt-flow task ${property} must be a string array`);
+  if (!Array.isArray(value) || !value.every((item) => typeof item === "string" && item.trim().length > 0)) {
+    throw new Error(`prompt-flow task ${property} must contain only non-empty strings`);
   }
   return value;
+}
+
+function repeatedValues(values: readonly string[]): readonly string[] {
+  const seen = new Set<string>();
+  const repeated = new Set<string>();
+  for (const value of values) {
+    if (seen.has(value)) {
+      repeated.add(value);
+    }
+    seen.add(value);
+  }
+  return [...repeated].sort();
+}
+
+function promptFlowDefinitionKey(definition: Pick<PromptFlowDefinition, "promptFlowId" | "version">): string {
+  return `${definition.promptFlowId}@${definition.version}`;
 }
 
 function parseToolInjections(value: unknown): readonly PromptFlowToolInjection[] {
