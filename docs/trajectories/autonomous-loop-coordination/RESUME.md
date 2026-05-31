@@ -1,7 +1,7 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; dirty-worktree priority packet in review
-Last refreshed: 2026-05-30
+Status: active child packet; B-0250 lifecycle age-out calibration landed
+Last refreshed: 2026-05-31
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
 `docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
@@ -284,15 +284,46 @@ but the window came from `otto:merged-pr-6129` plus
 `codex:loop-run-20260530T170632Z`, not from a live PR review or failed-gate
 blocker. A direct open-PR query returned zero open PRs.
 
+Current B-0250 broadcast blocker adapter:
+`docs/trajectories/autonomous-loop-coordination/b0250-broadcast-blocker-adapter-2026-05-31.md`
+
+It adds an optional structured local-bus source for explicit
+`broadcast-blocker` coincidence events. The adapter reads bounded JSON
+envelopes from the configurable bus directory, but only converts fresh
+`payload.blockers[]` / `payload.blocker` records with explicit trajectory and
+time fields. Free-form markdown broadcasts remain coordination input, not
+authoritative event evidence.
+
+Current B-0250 broadcast blocker live-output calibration:
+`docs/trajectories/autonomous-loop-coordination/b0250-broadcast-blocker-live-output-calibration-2026-05-31.md`
+
+It re-runs the live monitor after the broadcast-blocker adapter landed. The
+adapter was quiet: no `broadcast-blocker` event appeared in either the
+incident-grade or warning-grade coincidence debug output. The remaining
+incident-grade window is still the historic `otto:merged-pr-6129` plus
+`codex:loop-run-20260530T170632Z` stronger-source pairing, so the next tuning
+slice should target old loop-run claim-increase lifecycle handling rather than
+the broadcast-blocker adapter.
+
+Current B-0250 loop-run lifecycle age-out calibration:
+`docs/trajectories/autonomous-loop-coordination/b0250-loop-run-lifecycle-age-out-calibration-2026-05-31.md`
+
+It classifies the remaining historical incident as lifecycle residue: a
+successful Codex loop-run claim-increase event was still joining with nearby
+merged Otto PR #6129 long after the run completed. The calibration keeps fresh
+loop-run claim increases in the stronger-source set, but says old completed
+loop-run events should demote to warning/debug output after the bounded
+freshness window.
+
 ## Recommended Next Action
 
-Add a bounded explicit broadcast-blocker adapter only when a fresh local bus
-blocker carries enough structure to map into `CoincidenceEvent`; stale local
-broadcast notes remain coordination input, not authoritative remote blockers.
+Implement the B-0250 lifecycle-residue freshness classifier so old completed
+loop-run claim-increase events no longer satisfy the incident-grade
+stronger-source escalation gate.
 
 ## Next Child Packets
 
-- B-0250 explicit broadcast-blocker adapter
+- None currently selected.
 
 ## Evidence Links
 
