@@ -21,4 +21,7 @@
 - proof: `bun test tools/zflash/test-harness/` passes, including `run.test.ts` coverage that `--dry-run` remains non-runtime planning while `--scenario reformat-with-retention` exits nonzero until implementation lands.
 - progress: `tools/zflash/test-harness/qemu-state.ts` now defines the scenario-3 qcow2 `qemu-img snapshot -c/-a/-l` and QEMU restart command plan plus required retention serial markers.
 - proof: `bun test tools/zflash/test-harness/` passes with `qemu-state.test.ts` coverage for KVM and TCG restart plans, snapshot commands, serial markers, and Result-shaped invalid-input feedback.
+- operator-clarification: USB/ISO tests cover zflash, boot, retention/no-retention semantics, and one agent start path; Kubernetes and ArgoCD health belong in separate cluster integration tests.
+- operator-clarification: retention reformat keeps the same cluster/node identity; no-retention reformat creates a new cluster/node identity.
+- operator-clarification: Touch ID/biometric retention is physical operator testing; QEMU should assert preserved auth-state markers. Zeta is baked into the image, and target hardware assumptions include both x86_64 and ARM64/aarch64.
 - next: execute this planner from the B-0891 scenario-3 runtime path and keep `reformat-with-retention` scaffolded until QEMU state preservation asserts end-to-end.

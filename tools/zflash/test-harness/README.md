@@ -12,14 +12,24 @@ plan for scenarios 3-5 (state preservation between boots); multi-VM
 orchestration for scenario 5 (cluster-joining); GitHub Actions workflow
 integration.
 
+Operator clarification, 2026-05-31: this harness proves USB/ISO behavior,
+not Kubernetes or ArgoCD health. The USB lane should cover zflash, boot,
+retention/no-retention semantics, and one agent start path via retained
+auth or local-LLM/no-account mode. Kubernetes and ArgoCD require their own
+cluster integration tests outside B-0891. Touch ID/biometric retention is
+represented by preserved auth-state markers here and remains
+operator-collaborative physical testing. Zeta is intentionally baked into
+the image; external contributor flows are future work. Target architecture
+assumptions include both x86_64 and ARM64/aarch64 hardware.
+
 ## Scenarios
 
 | # | Scenario | Status | Composes-with |
 |---|---|---|---|
 | 1 | Initial format (USB-bake from zero) | composes-with-existing | `tools/ci/qemu-boot-test.ts` + `tools/ci/audit-installer-iso-content.ts` |
-| 2 | Initial boot + cluster comes up | composes-with-existing | `tools/ci/qemu-full-install-test.ts` (B-0831 Slice 1) |
-| 3 | Reformat WITH key + selection retention | scaffolded | B-0737 Touch ID + B-0852 USB-bound creds (requires QEMU state preservation) |
-| 4 | Reformat from scratch (wipe + fresh keys) | scaffolded | B-0852 USB-bound creds + B-0884 PQ git-crypt (requires test-harness path-fork) |
+| 2 | Initial boot + agent start path | composes-with-existing | `tools/ci/qemu-full-install-test.ts` (B-0831 Slice 1); K8s/ArgoCD health is external integration coverage |
+| 3 | Reformat WITH key + selection retention | scaffolded | B-0737 Touch ID + B-0852 USB-bound creds; same cluster/node identity retained (requires QEMU state preservation) |
+| 4 | Reformat from scratch (wipe + fresh keys) | scaffolded | B-0852 USB-bound creds + B-0884 PQ git-crypt; new cluster/node identity (requires test-harness path-fork) |
 | 5 | Cluster joining (new node) | scaffolded | B-0831 cluster-auto-join + B-0852.3 cred-picker (requires multi-VM QEMU orchestration) |
 
 ## CLI
