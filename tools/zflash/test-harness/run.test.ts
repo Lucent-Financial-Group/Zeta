@@ -34,6 +34,7 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(parsed.summary.scaffolded).toBe(0);
     expect(parsed.results[0].status).toBe("failed");
     expect(parsed.results[0].message).toContain("fails closed");
+    expect(parsed.results[0].message).toContain("process runner");
     expect(parsed.results[0].qemuRetentionPlan.createBaselineSnapshot.args).toEqual([
       "snapshot",
       "-c",

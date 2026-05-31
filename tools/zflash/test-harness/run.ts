@@ -19,7 +19,8 @@
  *               scenarios, delegates to tools/ci/qemu-full-install-test.ts
  *               or tools/ci/qemu-boot-test.ts. For scenario 3, emits the
  *               QEMU snapshot/restart plan but still fails closed until
- *               serial-marker assertions are wired. Other scaffolded
+ *               the real process runner is connected to the execution
+ *               contract. Other scaffolded
  *               scenarios report "not yet implemented" with the
  *               implementation substrate path documented.
  *   --all       Run all 5 scenarios in orderIndex order; gate failures
@@ -227,7 +228,7 @@ function planRetentionRuntime(isoPath: string): ScenarioResult {
     id: "reformat-with-retention",
     status: "failed",
     message:
-      "QEMU snapshot/restart retention plan generated; command execution and serial-marker assertions are not wired yet, so the scenario fails closed.",
+      "QEMU snapshot/restart retention plan generated; command execution contract and serial-marker assertions are wired, but the dispatcher has not connected the real QEMU process runner yet, so the scenario fails closed.",
     qemuRetentionPlan: planned.ok,
   };
 }

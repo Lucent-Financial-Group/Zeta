@@ -23,6 +23,10 @@ export interface Qcow2SnapshotRetentionInput {
 }
 
 export interface Qcow2SnapshotRetentionPlan {
+  readonly isoPath: string;
+  readonly diskPath: string;
+  readonly serialLogPath: string;
+  readonly snapshotName: string;
   readonly createBaselineSnapshot: QemuCommand;
   readonly restoreBaselineSnapshot: QemuCommand;
   readonly listSnapshots: QemuCommand;
@@ -51,6 +55,58 @@ export type RetentionSerialMarkerFeedback =
 export type RetentionSerialMarkerResult =
   | { readonly ok: RetentionSerialMarkerAssertion }
   | { readonly error: RetentionSerialMarkerFeedback };
+
+export type Qcow2RetentionExecutionStep =
+  | "create-baseline-snapshot"
+  | "list-baseline-snapshots"
+  | "restore-baseline-snapshot"
+  | "restart-from-iso-with-disk";
+
+export interface QemuCommandExecution {
+  readonly step: Qcow2RetentionExecutionStep;
+  readonly command: QemuCommand;
+  readonly exitCode: number | null;
+  readonly stdout: string;
+  readonly stderr: string;
+}
+
+export interface Qcow2RetentionExecutor {
+  readonly runCommand: (
+    step: Qcow2RetentionExecutionStep,
+    command: QemuCommand,
+  ) => QemuCommandExecution;
+  readonly readSerialOutput: (serialLogPath: string) => string;
+}
+
+export type Qcow2RetentionExecutionFeedback =
+  | {
+      readonly kind: "command-failed";
+      readonly step: Qcow2RetentionExecutionStep;
+      readonly command: QemuCommand;
+      readonly exitCode: number | null;
+      readonly stderr: string;
+      readonly commandExecutions: readonly QemuCommandExecution[];
+    }
+  | {
+      readonly kind: "executor-threw";
+      readonly step: Qcow2RetentionExecutionStep | "read-serial-output";
+      readonly reason: string;
+      readonly commandExecutions: readonly QemuCommandExecution[];
+    }
+  | {
+      readonly kind: "serial-marker-failed";
+      readonly assertion: RetentionSerialMarkerFeedback;
+      readonly commandExecutions: readonly QemuCommandExecution[];
+    };
+
+export interface Qcow2RetentionExecutionAssertion {
+  readonly commandExecutions: readonly QemuCommandExecution[];
+  readonly serialAssertion: RetentionSerialMarkerAssertion;
+}
+
+export type Qcow2RetentionExecutionResult =
+  | { readonly ok: Qcow2RetentionExecutionAssertion }
+  | { readonly error: Qcow2RetentionExecutionFeedback };
 
 const DEFAULT_MEMORY_MB = 4096;
 const DEFAULT_CPU_COUNT = 2;
@@ -143,6 +199,10 @@ export function planQcow2SnapshotRetention(
 
   return {
     ok: {
+      isoPath: normalized.isoPath,
+      diskPath: normalized.diskPath,
+      serialLogPath: normalized.serialLogPath,
+      snapshotName: normalized.snapshotName,
       createBaselineSnapshot: {
         bin: "qemu-img",
         args: ["snapshot", "-c", normalized.snapshotName, normalized.diskPath],
@@ -160,6 +220,90 @@ export function planQcow2SnapshotRetention(
         args: buildRestartArgs(normalized),
       },
       requiredSerialMarkers: RETENTION_SERIAL_MARKERS,
+    },
+  };
+}
+
+function retentionExecutionSteps(
+  plan: Qcow2SnapshotRetentionPlan,
+): ReadonlyArray<readonly [Qcow2RetentionExecutionStep, QemuCommand]> {
+  return [
+    ["create-baseline-snapshot", plan.createBaselineSnapshot],
+    ["list-baseline-snapshots", plan.listSnapshots],
+    ["restore-baseline-snapshot", plan.restoreBaselineSnapshot],
+    ["restart-from-iso-with-disk", plan.restartFromIsoWithDisk],
+  ];
+}
+
+function unknownReason(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+export function executeQcow2SnapshotRetentionPlan(
+  plan: Qcow2SnapshotRetentionPlan,
+  executor: Qcow2RetentionExecutor,
+): Qcow2RetentionExecutionResult {
+  const commandExecutions: QemuCommandExecution[] = [];
+
+  for (const [step, command] of retentionExecutionSteps(plan)) {
+    let execution: QemuCommandExecution;
+    try {
+      execution = executor.runCommand(step, command);
+    } catch (error) {
+      return {
+        error: {
+          kind: "executor-threw",
+          step,
+          reason: unknownReason(error),
+          commandExecutions,
+        },
+      };
+    }
+    commandExecutions.push(execution);
+
+    if (execution.exitCode !== 0) {
+      return {
+        error: {
+          kind: "command-failed",
+          step,
+          command,
+          exitCode: execution.exitCode,
+          stderr: execution.stderr,
+          commandExecutions,
+        },
+      };
+    }
+  }
+
+  let serialOutput: string;
+  try {
+    serialOutput = executor.readSerialOutput(plan.serialLogPath);
+  } catch (error) {
+    return {
+      error: {
+        kind: "executor-threw",
+        step: "read-serial-output",
+        reason: unknownReason(error),
+        commandExecutions,
+      },
+    };
+  }
+
+  const assertion = assertRetentionSerialMarkers(serialOutput, plan.requiredSerialMarkers);
+  if ("error" in assertion) {
+    return {
+      error: {
+        kind: "serial-marker-failed",
+        assertion: assertion.error,
+        commandExecutions,
+      },
+    };
+  }
+
+  return {
+    ok: {
+      commandExecutions,
+      serialAssertion: assertion.ok,
     },
   };
 }
