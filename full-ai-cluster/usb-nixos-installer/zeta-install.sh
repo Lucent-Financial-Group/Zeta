@@ -374,6 +374,7 @@ sudo mkdir -p "$PROBE_MOUNT"
 
 PUBKEY_FILE=""
 INJECT_OK=0
+BOOT_USB_CREDS_PRESEEDED=0
 
 # Try 1: scan already-mounted filesystems.
 # Per #5083 Copilot P0: under `set -euo pipefail`, `find` exits non-zero
@@ -503,6 +504,26 @@ if [ -n "$PUBKEY_FILE" ]; then
   else
     echo "[B-0852.3a-prep]   WARN: could not derive USB partition device OR blkid unavailable;"
     echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+  fi
+
+  # ── B-0891/B-0852 retention preseed: carry zflash-baked creds forward ────
+  # zflash can bake the encrypted credential blob onto the boot USB ESP as
+  # zeta-creds.enc. Copy that blob onto the target ESP before we unmount the
+  # USB ESP so a reformat-with-retention keeps the operator answers/accounts
+  # without re-running the interactive picker.
+  BOOT_USB_CREDS_BLOB="$(dirname "$PUBKEY_FILE")/zeta-creds.enc"
+  if sudo test -f "$BOOT_USB_CREDS_BLOB"; then
+    echo "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP"
+    if command -v mountpoint >/dev/null 2>&1 && mountpoint -q /mnt/boot; then
+      sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc
+      BOOT_USB_CREDS_PRESEEDED=1
+      echo "[B-0891-retention]   copied retained cred blob to /mnt/boot/zeta-creds.enc"
+      echo "[B-0891-retention]   Step 6.95-picker will skip account re-entry"
+    else
+      echo "[B-0891-retention]   WARN: /mnt/boot is not mounted; retained cred blob not copied"
+    fi
+  else
+    echo "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal"
   fi
 
   sudo umount "$PROBE_MOUNT" 2>/dev/null || true
@@ -1422,7 +1443,10 @@ if [ -d "$ZETA_HOME" ]; then
   # subprocess env only; the parent installer shell holds the secret in the
   # NON-EXPORTED shell var ZETA_CREDS_PASSPHRASE_VAL, never exported anywhere.
   PICKER_OPT_OUT=0
-  if [ "${ZETA_CREDS_PICKER:-1}" = "0" ]; then
+  if [ "${BOOT_USB_CREDS_PRESEEDED:-0}" = "1" ] && [ -f /mnt/boot/zeta-creds.enc ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="/mnt/boot/zeta-creds.enc already present from zflash retention preseed"
+  elif [ "${ZETA_CREDS_PICKER:-1}" = "0" ]; then
     PICKER_OPT_OUT=1
     PICKER_SKIP_REASON="ZETA_CREDS_PICKER=0 (env opt-out)"
   elif [ -f /etc/zeta/no-picker ]; then

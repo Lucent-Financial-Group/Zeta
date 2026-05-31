@@ -83,6 +83,11 @@ const ITER_541_BLOCK = extractStep(
   "B-0835 Bug 1 fix: pre-stage per-file symlinks",
 );
 
+const ITER_42_BLOCK = extractStep(
+  "Step 6.5: iter-4.2 probe boot USB for operator SSH pubkey",
+  "Step 6.56: B-0852.3b cred-blob passphrase prompt",
+);
+
 describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
   test("the gh auth login branch is gated on user opt-in", () => {
     // Operator must answer Y/y to GH_AUTH_REPLY. Opt-out path (n) skips.
@@ -173,6 +178,39 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
     // Should appear EXACTLY ONCE in the iter-5.4.0 block (the assignment
     // inside the success branch). Other references should be reads.
     expect(setOccurrences.length).toBe(1);
+  });
+});
+
+describe("B-0891 retained zflash credential preseed", () => {
+  test("iter-4.2 copies the zflash-baked blob to target ESP before USB unmount", () => {
+    expect(ITER_42_BLOCK).toContain(
+      'BOOT_USB_CREDS_BLOB="$(dirname "$PUBKEY_FILE")/zeta-creds.enc"',
+    );
+    expect(ITER_42_BLOCK).toContain(
+      'sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc',
+    );
+    expect(ITER_42_BLOCK).toContain("BOOT_USB_CREDS_PRESEEDED=1");
+
+    const sourceIdx = ITER_42_BLOCK.indexOf("BOOT_USB_CREDS_BLOB=");
+    const copyIdx = ITER_42_BLOCK.indexOf(
+      'sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc',
+    );
+    const unmountIdx = ITER_42_BLOCK.indexOf(
+      'sudo umount "$PROBE_MOUNT"',
+      copyIdx,
+    );
+    expect(sourceIdx).toBeGreaterThan(0);
+    expect(copyIdx).toBeGreaterThan(sourceIdx);
+    expect(unmountIdx).toBeGreaterThan(copyIdx);
+  });
+
+  test("Step 6.95 skips picker when a retained blob already exists", () => {
+    expect(SCRIPT).toMatch(
+      /if \[ "\$\{BOOT_USB_CREDS_PRESEEDED:-0\}" = "1" \] && \[ -f \/mnt\/boot\/zeta-creds\.enc \]; then\n\s+PICKER_OPT_OUT=1/,
+    );
+    expect(SCRIPT).toContain(
+      "/mnt/boot/zeta-creds.enc already present from zflash retention preseed",
+    );
   });
 });
 
