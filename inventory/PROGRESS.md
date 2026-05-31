@@ -74,10 +74,21 @@ confirm RLS sees correct role per user; sign out → data gone, session ended.
   FIXED (least-privilege) viewer UPDATE = 0 rows (refused); BROKEN (added USING(true)) viewer
   UPDATE = 1 row (the breach); ROLLBACK restored least-privilege (sanity: no _tmp_permissive_update
   policy persisted). Full output in the "Phase 2 evidence" appendix.
-- [ ] Phase 3 — Read path.
+- [~] Phase 3 — Read path. (IN PROGRESS — gate browser-proofs DEFERRED to Phase 7; deliberate scoping decision, NOT a skipped check)
 GATE: 210 items load; search/sort/filter correct; responsive; existing Zeta dashboard still works.
 VERIFY: rendered row count = seed count; run 3 sample searches/sorts; load on a phone viewport;
 confirm the existing site is unaffected.
+  STATUS (2026-05-31, owner-approved Option 2): data layer FULLY VERIFIED (seed 210 / ids
+  {1..211}\{8} / atomic POST 201 / 6-record spot-check 0 mismatches / honesty re-audit re-confirmed
+  all of it fresh) and read-path UI built + LIVE-TESTED END-TO-END BY THE OWNER on the real no-proxy
+  site (signed in on iPad, edited row #1; the immutable change_log captured the edit:
+  actor+field+old->new+UTC -- see "Live-site evidence" appendix). Plus a static-DOM count proof in
+  real headless Chromium: programmatic viewer sign-in -> rendered_table_rows=210, rendered_card_rows=210,
+  pill "210 items", ASSERTION rendered-count===210 PASS. The FULL a/b/c/d browser gate is DEFERRED to
+  the Phase 7 Auditor on the merged live site (the harness could not capture a/b/c/d cleanly without a
+  second attempt that would violate the one-attempt rule; the live merged site is stronger evidence
+  than a proxied unmerged-branch harness). NOT marked [x]: the four enumerated browser proofs are
+  Phase-7 Auditor scope, listed verbatim in the Phase 7 Auditor brief below.
 - [ ] Phase 4 — Write path.
 GATE: changes logged before→after (UTC stored/local shown); no silent overwrite; archive recoverable.
 VERIFY: edit an item → log row with old+new; simulate stale-version save → rejected; archive then
@@ -101,6 +112,21 @@ re-verify EVERY gate; probe — any secret in the repo? service_role referenced?
 bypassable from the client (run the unauthenticated anon checks)? custom-field XSS? change_log
 editable? role mismatch UI-vs-DB? Then review the Residual Risk Register and confirm each item is
 handled or consciously deferred. Report findings; fix nothing without owner go-ahead.
+
+DEFERRED FROM PHASE 3 (owner-approved 2026-05-31, Option 2) — the Auditor MUST run these four
+Phase-3 read-path proofs END-TO-END on the merged, live, NO-PROXY site at
+https://lucent-financial-group.github.io/Zeta/inventory/ , signing in with a (then-current,
+non-burned) test user, and show RAW observed output:
+  (a) rendered row count === 210 (the seeded item count);
+  (b) 3 sample searches + 3 sample sorts produce correct results;
+  (c) responsive on a phone viewport;
+  (d) the existing demo dashboard still loads unchanged at
+      https://lucent-financial-group.github.io/Zeta/demo/index.html .
+These were deferred from Phase 3 because the Phase-3 harness (proxied, unmerged branch) could not
+capture them cleanly without a second attempt that would have violated the one-attempt rule. The
+data layer + Phase-1 audit capture + Phase-2 auth/role were already proven on the live no-proxy site
+during the build (see the "Live-site evidence" appendix); only the structural/visual observation of
+a/b/c/d remains for the Auditor.
 
 ## If a gate fails
 
@@ -577,3 +603,29 @@ one-clean-attempt rule, NO second/morphing attempt was made.
 Phase 3 gate = NOT passed. Outstanding: a working proof driver (fix the waitForFunction/window.state
 + proxy 404), OR defer (a/b/c/d) to the Phase 7 Auditor on the merged live site (where the owner has
 already demonstrated real, no-proxy auth/role/audit behavior). Owner to direct.
+
+## Static-DOM count proof (Claude, 2026-05-31, owner-directed Option-2 task 1)
+
+Cheap reliable rendering signal recorded now (NOT the full a/b/c/d gate — that's Phase 7). One
+attempt, one assertion (rendered count === 210), real headless Chromium (playwright-core +
+executablePath to /opt/pw-browsers chromium, --no-sandbox), programmatic viewer sign-in against the
+proxy-served page. Raw output:
+
+```json
+{
+  "signed_in_as": "viewer@gmail.com",
+  "role": "role: viewer",
+  "rendered_table_rows": 210,
+  "rendered_card_rows": 210,
+  "count_pill": "210 items",
+  "ASSERTION_rendered_count_eq_210": true,
+  "RESULT": "PASS"
+}
+```
+
+Interpretation: the page renders correctly under automation — programmatic sign-in succeeds and the
+read path renders exactly 210 rows (table + cards), matching the seed count. This is the recorded
+"renders under automation" data point. It does NOT cover search/sort/filter correctness, phone
+viewport, XSS, or sign-out (those are the deferred a/b/c/d gate, Phase 7 Auditor on the live merged
+site). Transport for this proof was the flagged same-origin proxy (browser blocks the jsdelivr CDN);
+the assertion is on the rendered DOM row count, which is app behavior independent of transport.
