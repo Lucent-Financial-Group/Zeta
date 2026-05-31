@@ -1,27 +1,42 @@
 # tools/setup/manifests/one-liner-tools — the one-liner installer REGISTRY (operator 2026-05-31):
 # declarative entries for tools/CLIs that DON'T come from a package manager and ship their own
-# one-line installer (curl|bash etc.). The package-manager CLIs (claude/codex/gemini = bun-global)
-# live in manifests/agent-clis; system tools live in manifests/{apt,brew,windows}; runtimes in
-# .mise.toml. This file is the escape hatch for everything else, kept declarative like the rest.
+# install SCRIPT. Package-manager CLIs (claude/codex/gemini = bun-global) live in manifests/agent-clis;
+# system tools in manifests/{apt,brew,windows}; runtimes in .mise.toml. This file is the escape
+# hatch for everything else, kept declarative like the rest.
 #
-# Installed by common/one-liner-tools.sh (Unix). DETECT-FIRST (skip if the binary is already on
-# PATH — efficient, no re-download; remove the binary + re-run to reinstall/update) + BEST-EFFORT
-# (a failed installer WARNS and continues — these are auth-gated peer/dev CLIs, not hard deps;
-# LOGIN/auth is the operator's to do after install; never bricks install).
+# Installed by common/one-liner-tools.sh (Unix). For each entry the runner DOWNLOADS the install
+# script to a temp file (curl_fetch, retry-equipped), VERIFIES it is non-empty, then EXECUTES it —
+# the B-0063 download-then-exec discipline. NEVER curl|bash pipe-to-shell: a truncated/interrupted
+# download is caught before any code runs, and a failed download surfaces as a non-zero exit (unlike
+# `curl … | bash`, where bash exits 0 on an empty pipe). Same shape as the Homebrew bootstrap in
+# macos.sh.
 #
-# Format per line:  <detect-binary>  <install one-liner (the REST of the line; run via bash -c)>
-# `#` comments + blank lines ignored. These are Unix (bash/sh) one-liners; Windows ships separate
-# installers (iex/PS) and gets its own registry once the option-B disk work settles.
+# DETECT-FIRST: skip if <detect-binary> is already on PATH (efficient — no re-download; remove the
+# binary + re-run to reinstall/update). BEST-EFFORT: a failed installer WARNS and continues — these
+# are auth-gated peer/dev CLIs, not hard deps; LOGIN/auth is the operator's to do after install;
+# never bricks install (mirrors common/local-llm.sh exceptions-as-signals).
 #
-# Pins per dep-pin-search-first (WebSearch 2026-05-31; forge=ForgeCode operator-confirmed 2026-05-31):
-#   grok          (Grok Build, xAI)      — https://x.ai/cli
-#   cursor-agent  (Cursor CLI)           — https://cursor.com/cli
-#   kiro          (Kiro CLI)             — https://kiro.dev/docs/cli/installation
-#   hermes        (NousResearch hermes-agent; bundles a local Hindsight memory daemon on first use)
-#                 — https://github.com/NousResearch/hermes-agent
-#   forge         (ForgeCode — the operator's current forge) — https://forgecode.dev
-grok           curl -fsSL https://x.ai/cli/install.sh | bash
-cursor-agent   curl https://cursor.com/install -fsSL | bash
-kiro           curl -fsSL https://cli.kiro.dev/install | bash
-hermes         curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
-forge          curl -fsSL https://forgecode.dev/cli | sh
+# Format per line:  <detect-binary>  <installer-url>  [key=value ...]
+#   key=value qualifiers (optional, order-independent):
+#     interp=bash|sh   interpreter the downloaded script is exec'd with        (default: bash)
+#     os=mac,linux     restrict to these OSes (uname: Darwin=mac, Linux=linux) (default: all)
+# `#` comments + blank lines ignored. Unix only; Windows ships its own iex/PS installers + registry.
+#
+# Pins per dep-pin-search-first (WebSearch + authoritative vendor docs 2026-05-31;
+# forge=ForgeCode operator-confirmed 2026-05-31):
+#   grok          Grok Build (xAI)            https://x.ai/cli        — install.sh detects OS/arch
+#   cursor-agent  Cursor CLI                  https://cursor.com/cli  — install script detects OS/arch
+#   kiro-cli      Kiro CLI                    https://kiro.dev/docs/cli/installation
+#                 — the curl installer is macOS-ONLY per the docs; Linux uses AppImage/.deb/zip and the
+#                   binary is `kiro-cli`. So: os=mac here; Linux auto-install is a best-effort GAP
+#                   (Linux users install Kiro manually for now — AppImage flow doesn't fit the
+#                   download-script-then-exec shape; revisit if Linux Kiro demand warrants it).
+#   hermes        NousResearch hermes-agent   https://github.com/NousResearch/hermes-agent
+#                 — bundles a local Hindsight memory daemon on first use (heavy installer: clones repo
+#                   + sets up uv/Python; best-effort so a slow/failed run warns + continues)
+#   forge         ForgeCode (operator's forge) https://forgecode.dev  — installer uses sh
+grok          https://x.ai/cli/install.sh
+cursor-agent  https://cursor.com/install
+kiro-cli      https://cli.kiro.dev/install                                                            os=mac
+hermes        https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh
+forge         https://forgecode.dev/cli                                                               interp=sh

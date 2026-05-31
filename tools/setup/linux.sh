@@ -14,9 +14,12 @@
 #                              manifests/dotnet-tools
 #   7. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
 #   8. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
-#   9. common/one-liner-tools.sh — non-package-manager CLIs (curl installers) from
-#                                  manifests/one-liner-tools
-#  10. common/shellenv.sh     — managed PATH file
+#   9. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
+#                                  from manifests/one-liner-tools
+#  10. common/local-llm.sh   — local-LLM core primitive (ollama + pinned tiny model) from
+#                              manifests/local-llm
+#  11. common/shellenv.sh    — managed PATH file
+#  12. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 #
 # Non-Debian Linuxes (RHEL/Fedora/Arch/Alpine) are deferred — the
 # install-script layering supports adding them alongside apt.
