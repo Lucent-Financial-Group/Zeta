@@ -264,12 +264,23 @@ impl<'a> JsonReader<'a> {
         Ok((token, false))
     }
 
-    /// A scalar value must be followed by whitespace, a structural delimiter
-    /// (`,` `]` `}`), or EOF — nothing else.
+    /// A scalar value must be followed by a terminator that is valid IN CONTEXT:
+    /// whitespace or EOF always; `,` only inside a container; `]` only inside an
+    /// array; `}` only inside an object. Context-awareness rejects `1,2` / `1]` /
+    /// `[1}]` eagerly (a context-blind check would accept the structural byte and
+    /// delay the error to the next read).
     fn expect_value_terminator(&self) -> Result<(), JsonError> {
-        match self.peek() {
-            None | Some(b' ' | b'\t' | b'\n' | b'\r' | b',' | b']' | b'}') => Ok(()),
-            Some(_) => Err(self.err("unexpected character after value (expected a delimiter)")),
+        let ok = match self.peek() {
+            None | Some(b' ' | b'\t' | b'\n' | b'\r') => true,
+            Some(b',') => !self.stack.is_empty(),
+            Some(b']') => self.stack.last() == Some(&Container::Array),
+            Some(b'}') => self.stack.last() == Some(&Container::Object),
+            Some(_) => false,
+        };
+        if ok {
+            Ok(())
+        } else {
+            Err(self.err("unexpected character after value (invalid terminator in this context)"))
         }
     }
 
@@ -627,6 +638,28 @@ mod tests {
         }
         // Valid scalars followed by a terminator (EOF / structural / ws) are fine.
         for ok in ["true", "false", "null", "1", "[true]", "true ", "[true,false]", "[1,2]"] {
+            assert!(drain(ok).is_ok(), "`{ok}` should parse");
+        }
+    }
+
+    #[test]
+    fn rejects_context_invalid_terminators_eagerly() {
+        // A structural byte that's wrong for the current container errors on the
+        // read() that produces the value, not later: `,`/`]`/`}` at top-level, `}`
+        // closing an array, `]` closing an object.
+        for bad in ["1,2", "1]", "1}", "[1}", "[1}]"] {
+            let mut r = JsonReader::new(bad);
+            // First read() may be StartArray (for `[…`); the offending value's read
+            // must surface the error.
+            let saw_err = (|| -> Result<bool, JsonError> {
+                while let Some(_t) = r.read()? {}
+                Ok(false)
+            })()
+            .is_err();
+            assert!(saw_err, "`{bad}` must be rejected");
+        }
+        // Context-valid terminators still parse.
+        for ok in ["1", "[1,2]", "[1]", r#"{"a":1}"#, r#"{"a":1,"b":2}"#] {
             assert!(drain(ok).is_ok(), "`{ok}` should parse");
         }
     }
