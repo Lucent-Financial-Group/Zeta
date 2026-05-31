@@ -331,7 +331,9 @@ async function main(): Promise<void> {
       promptFlowTasks,
     }),
     observeActSelectSlot: () => 4,
-    observeActRunCommand: async () => ({ status: "shadow_accepted" }),
+    observeActRunCommand: async () => {
+      throw new Error("org-cadence observe-act shadow proof should not dispatch commands");
+    },
     observeActDispatchTool: async () => {
       throw new Error("org-cadence observe-act shadow proof should not dispatch MCP");
     },
@@ -355,7 +357,7 @@ async function main(): Promise<void> {
         evidenceRows: observeActEvents.length,
         lastEvidenceRefs: observeActEvents[0]?.evidenceRefs ?? [],
         promptFlowEvidenceRows: observeActEvents.filter((e) => e.evidenceRefs.some((ref) => ref.startsWith("observe-act:prompt_flow:"))).length,
-        scheduleAuthorizedCommandRows: laneTicks.filter((tick) => tick.lane === "observe-act-work-item" && tick.status === "observe-act:command:shadow_accepted").length,
+        shadowSelectedRows: laneTicks.filter((tick) => tick.lane === "observe-act-work-item" && tick.status === "observe-act-shadow:command:shadow_selected").length,
         scheduleBlockId: observeActScheduleBlock.workScheduleBlockId,
       },
       seededMemory: { memoryId: memId, phaseAfter: memAfter?.state.phase, weightAfter: memAfter?.state.weight, surfaces: memAfter?.state.phase !== MemoryPhase.Archived },

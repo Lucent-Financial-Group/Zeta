@@ -1,0 +1,234 @@
+import { deepEqual, equal, ok } from "node:assert/strict";
+import { test } from "node:test";
+
+import {
+  ObserveCommandType,
+  RunLifecyclePhase,
+  RunScope,
+  TriAvailability,
+  type Menu16Slot,
+} from "../../../packages/application/src/index.ts";
+import { OrgEventKind, type OrgEvent } from "../../../packages/domain/src/index.ts";
+import {
+  createAgentCliMcpDispatcher,
+  resolveAgentCliProductionRuntime,
+  runAgentCliMain,
+  type AgentCliMainRuntime,
+} from "../src/agent-cli-main.ts";
+
+test("resolveAgentCliProductionRuntime fails closed without COCKROACH_DATABASE_URL", async () => {
+  const resolved = await resolveAgentCliProductionRuntime({
+    env: {},
+    now: () => "2026-05-31T00:00:00.000Z",
+  });
+
+  deepEqual(resolved, {
+    ok: false,
+    message: "COCKROACH_DATABASE_URL is required for production observe-act CLI dispatch",
+  });
+});
+
+test("runAgentCliMain routes selected command slots through supplied production runtime", async () => {
+  const stdout: string[] = [];
+  const stderr: string[] = [];
+  const commands: string[] = [];
+  const events: OrgEvent[] = [];
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--run-id",
+      "1",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--gate-approved",
+      "--select-index",
+      "4",
+    ],
+    env: {},
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: (text) => {
+      stdout.push(text);
+    },
+    writeStderr: (text) => {
+      stderr.push(text);
+    },
+    runtime: {
+      runCommand: async (commandType) => {
+        commands.push(commandType);
+        return { status: "accepted" };
+      },
+      dispatchTool: async () => ({ outcome: "feedback", feedback: { reason: "unused", message: "unused" } }),
+      appendObserveActTick: async (event) => {
+        events.push(event);
+      },
+      shutdown: async () => undefined,
+    } as AgentCliMainRuntime & { appendObserveActTick: (event: OrgEvent) => Promise<void> },
+  });
+
+  equal(exitCode, 0);
+  deepEqual(commands, [ObserveCommandType.LifecycleTransition]);
+  equal(stderr.join(""), "");
+  ok(stdout.join("").includes("action: dispatched command"));
+  equal(events.length, 1);
+  equal(events[0]?.kind, OrgEventKind.ObserveActTick);
+  ok(events[0]?.evidenceRefs.some((ref) => ref.startsWith("observe-act:menu_hash:")));
+  ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
+});
+
+test("runAgentCliMain reports malformed env JSON as typed setup feedback instead of throwing", async () => {
+  const stderr: string[] = [];
+  let shutdowns = 0;
+
+  const exitCode = await runAgentCliMain({
+    argv: ["observe", "--hat", "release_operator", "--scope", RunScope.WorkItem],
+    env: { AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON: "{" },
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: () => undefined,
+    writeStderr: (text) => {
+      stderr.push(text);
+    },
+    runtime: {
+      runCommand: async () => ({ status: "accepted" }),
+      dispatchTool: async () => ({ status: "unused" }),
+      shutdown: async () => {
+        shutdowns += 1;
+      },
+    },
+  });
+
+  equal(exitCode, 2);
+  equal(shutdowns, 1);
+  ok(stderr.join("").includes("agent CLI setup failed:"));
+});
+
+test("runAgentCliMain reports production runtime bootstrap failures as typed setup feedback", async () => {
+  const stderr: string[] = [];
+
+  const exitCode = await runAgentCliMain({
+    argv: ["observe", "--hat", "release_operator", "--scope", RunScope.WorkItem],
+    env: { COCKROACH_DATABASE_URL: "postgresql://root@127.0.0.1:1/defaultdb?sslmode=disable" },
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: () => undefined,
+    writeStderr: (text) => {
+      stderr.push(text);
+    },
+  });
+
+  equal(exitCode, 2);
+  ok(stderr.join("").includes("agent CLI setup failed:"));
+});
+
+test("runAgentCliMain loads prompt-flow context and persists observe-act tick evidence", async () => {
+  const stdout: string[] = [];
+  const events: OrgEvent[] = [];
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--run-id",
+      "2",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-prompt-flow",
+      "--gate-approved",
+      "--select-index",
+      "8",
+    ],
+    env: {
+      AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON: JSON.stringify([{
+        taskId: "task-context",
+        workItemId: "work-prompt-flow",
+        title: "Load implementation context",
+        promptFlowId: "flow-code-change",
+        label: "load context",
+        scope: RunScope.WorkItem,
+        priority: 100,
+        allowedHatIds: ["release_operator"],
+        directions: ["Read the scoped implementation plan."],
+        toolInjections: [],
+        metrics: [{ id: "flow.ready", label: "flow ready", value: true }],
+        contextArtifactRefs: ["artifact:plan"],
+      }]),
+    },
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: (text) => {
+      stdout.push(text);
+    },
+    writeStderr: () => undefined,
+    runtime: {
+      runCommand: async () => ({ status: "unused" }),
+      dispatchTool: async () => ({ status: "unused" }),
+      loadPromptFlowContext: async (request) => ({
+        taskId: request.taskId,
+        promptFlowId: request.promptFlowId,
+        directions: request.directions,
+        toolInjections: request.toolInjections,
+        metrics: request.metrics,
+        contextArtifacts: [{ id: "artifact:plan", label: "Plan", value: "phase plan" }],
+      }),
+      appendObserveActTick: async (event) => {
+        events.push(event);
+      },
+      shutdown: async () => undefined,
+    } as AgentCliMainRuntime & { appendObserveActTick: (event: OrgEvent) => Promise<void> },
+  });
+
+  equal(exitCode, 0);
+  ok(stdout.join("").includes("action: loaded context task-context"));
+  equal(events.length, 1);
+  ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:8"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:prompt_flow:flow-code-change"));
+});
+
+test("createAgentCliMcpDispatcher dispatches in-process metrics tools and returns typed unknown-tool feedback", async () => {
+  const dispatchTool = createAgentCliMcpDispatcher();
+  const slot: Menu16Slot = {
+    index: 0,
+    direction: "commit.a",
+    label: "metrics",
+    availability: TriAvailability.True,
+  };
+
+  const report = await dispatchTool("analyze_source", {
+    filePath: "sample.ts",
+    source: "export function tiny() { return 1; }\n",
+  }, slot);
+  const unknown = await dispatchTool("missing_tool", {}, slot);
+
+  equal((report as { outcome?: string }).outcome, "ok");
+  deepEqual(unknown, {
+    outcome: "feedback",
+    feedback: {
+      reason: "unknown_tool",
+      message: "no metrics tool named 'missing_tool'",
+    },
+  });
+});

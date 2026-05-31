@@ -153,6 +153,7 @@ export type ObserveActSlotAuthorizer = (
   input: ObserveActSlotAuthorizationInput,
 ) => Promise<SlotAuthorizationDecision>;
 export type ObserveActOrgEventAppender = (event: OrgEvent) => Promise<void>;
+export type ObserveActExecutionMode = "primary" | "shadow";
 
 export type ObserveActWorkItemCadenceDeps = {
   organizationId: string;
@@ -165,6 +166,7 @@ export type ObserveActWorkItemCadenceDeps = {
   appendEvent?: ObserveActOrgEventAppender;
   loadPromptFlowContext?: ObserveActPromptFlowContextLoader;
   authorizeSlot?: ObserveActSlotAuthorizer;
+  executionMode?: ObserveActExecutionMode | undefined;
   writeObserveStdout?: (text: string) => void;
   selectSlot?: ObserveActMenuSelector;
 };
@@ -183,6 +185,7 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
         }
 
         const stderr: string[] = [];
+        const executionMode = deps.executionMode ?? "primary";
         const result = await runAgentCliCycle({
           argv: observeActArgv(deps.organizationId, work),
           now: () => new Date(deps.now()).toISOString(),
@@ -190,13 +193,13 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
           writeStderr: (text) => {
             stderr.push(text.trim());
           },
-          runCommand: deps.runCommand,
-          dispatchTool: deps.dispatchTool,
+          runCommand: executionMode === "shadow" ? shadowRunCommand : deps.runCommand,
+          dispatchTool: executionMode === "shadow" ? shadowDispatchTool : deps.dispatchTool,
           ...createOptionalObserveActScheduleBlocks(work.scheduleBlocks),
           ...createOptionalObserveActPromptFlowTasks(work.promptFlowTasks),
           ...createOptionalObserveActHierarchy(work.hierarchy),
           ...createOptionalObserveActPromptFlowContextLoader(deps.loadPromptFlowContext),
-          ...createOptionalObserveActSlotAuthorizer(deps, work),
+          ...(executionMode === "shadow" ? {} : createOptionalObserveActSlotAuthorizer(deps, work)),
           ...(deps.selectSlot === undefined ? {} : { selectSlot: deps.selectSlot }),
         });
         if (result.evidence !== undefined && deps.appendEvent !== undefined) {
@@ -204,7 +207,7 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
         }
 
         return {
-          status: formatObserveActStatus(result.actionResult, result.exitCode),
+          status: formatObserveActStatus(result.actionResult, result.exitCode, executionMode),
           failures: observeActFailures(result.actionResult, result.exitCode, stderr),
         };
       } catch (error) {
@@ -213,6 +216,20 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
     },
   };
 }
+
+const shadowRunCommand: ObserveActCommandRunner = async (commandType, _command, slot) => ({
+  status: "shadow_selected",
+  kind: "command",
+  commandType,
+  slotIndex: slot.index,
+});
+
+const shadowDispatchTool: ObserveActToolDispatcher = async (tool, _args, slot) => ({
+  status: "shadow_selected",
+  kind: "mcp",
+  tool,
+  slotIndex: slot.index,
+});
 
 function createObserveActTickEvent(
   deps: Pick<ObserveActWorkItemCadenceDeps, "organizationId" | "now" | "createId">,
@@ -324,20 +341,25 @@ function observeActBooleanArgs(work: ObserveActWorkItem): string[] {
   ];
 }
 
-function formatObserveActStatus(result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"], exitCode: number): string {
+function formatObserveActStatus(
+  result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"],
+  exitCode: number,
+  executionMode: ObserveActExecutionMode = "primary",
+): string {
+  const prefix = executionMode === "shadow" ? "observe-act-shadow" : "observe-act";
   if (result?.outcome === "dispatched") {
-    return `observe-act:${result.kind}:${observeActDispatchStatus(result.result)}`;
+    return `${prefix}:${result.kind}:${observeActDispatchStatus(result.result)}`;
   }
   if (result?.outcome === "reobserve") {
-    return `observe-act:reobserve:${result.scope}`;
+    return `${prefix}:reobserve:${result.scope}`;
   }
   if (result?.outcome === "loaded_context") {
-    return `observe-act:context:${result.context.taskId}`;
+    return `${prefix}:context:${result.context.taskId}`;
   }
   if (result?.outcome === "rejected") {
-    return `observe-act:rejected:${result.reason}`;
+    return `${prefix}:rejected:${result.reason}`;
   }
-  return exitCode === 0 ? "observe-act:no_action" : "observe-act:rejected";
+  return exitCode === 0 ? `${prefix}:no_action` : `${prefix}:rejected`;
 }
 
 function observeActDispatchStatus(result: unknown): string {

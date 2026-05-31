@@ -194,6 +194,7 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     source: input.observeActWorkItems ?? createCockroachObserveActWorkItemSource(input),
     runCommand: input.observeActRunCommand ?? createCockroachObserveActCommandRunner(input, hats),
     dispatchTool: input.observeActDispatchTool ?? unavailableObserveActToolDispatcher,
+    executionMode: (input.workOsDriver ?? "legacy") === "observe-act-shadow" ? "shadow" : "primary",
     ...createOptionalObserveActSlotAuthorizer(input),
     ...(input.observeActSelectSlot === undefined ? {} : { selectSlot: input.observeActSelectSlot }),
     appendEvent: appendEvent("observe-act-work-item"),

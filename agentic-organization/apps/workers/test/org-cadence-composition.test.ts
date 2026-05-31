@@ -60,7 +60,7 @@ test("org cadence composition can disable legacy work-os and run the observe-act
   equal(observeActCommands, 1);
 });
 
-test("org cadence composition shadow mode runs observe-act beside legacy work-os", async () => {
+test("org cadence composition shadow mode observes selected slots without dispatching observe-act side effects", async () => {
   const records: CadenceLaneTickRecord[] = [];
   let observeActCommands = 0;
   let legacyIntakeCalls = 0;
@@ -103,9 +103,12 @@ test("org cadence composition shadow mode runs observe-act beside legacy work-os
   await handle.done;
 
   ok(records.some((record) => record.lane === "work-os"));
-  ok(records.some((record) => record.lane === "observe-act-work-item"));
+  ok(records.some((record) =>
+    record.lane === "observe-act-work-item" &&
+    record.status === "observe-act-shadow:command:shadow_selected"
+  ));
   equal(legacyIntakeCalls, 1);
-  equal(observeActCommands, 1);
+  equal(observeActCommands, 0);
 });
 
 test("org cadence composition passes telemetry through every composed lane", async () => {
