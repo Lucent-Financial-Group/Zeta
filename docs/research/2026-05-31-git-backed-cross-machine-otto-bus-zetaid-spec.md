@@ -250,7 +250,10 @@ push target changes between phases, not the envelope/category/payload.
         retry push  (bounded retries; idempotent — re-adding my zid file is a no-op)
 ```
 
-No file is ever modified or deleted (append-only / lightlike). An **ack is a new envelope**
+In the **v0 publish/poll model no file is ever modified or deleted** (append-only / lightlike,
+grow-only G-Set). (Compaction/GC — a post-v0 lifecycle that deliberately relaxes this v0
+invariant — is scoped separately under "Deferred"; v0 implementers must NOT add deletes.) An
+**ack is a new envelope**
 (`inReplyTo: <zid>`), not a mutation (retraction-native: the trail is preserved). Publishing
 agents touch only `docs/agent-bus/**` — never code paths — so the carve-out stays tight.
 
@@ -285,14 +288,19 @@ every so often while we get observe.ts working; once observe.ts is working we tu
 branch protections on main and start using folders."_
 
 The folders-direct-to-main end-state requires a replacement for the safety the PR/branch-
-protection gate currently provides. **observe.ts (the rails) IS that replacement.** So the
-cutover is gated on observe.ts working — don't remove the rail before its replacement is
-ready (architecture-is-safety-mechanism; the same threshold discipline as `edit_grammar`).
+protection gate currently provides. **observe.ts (the rails) is one half of that replacement;
+B-0887 path-scoped branch protection is the other.** So the cutover is gated on **both**
+observe.ts working **and** B-0887 (`status: open`) landing — or, as an interim, an explicit
+per-folder push allowlist scoped to `docs/agent-bus/**`. Don't remove the broad PR/branch
+gate before BOTH replacements are ready (architecture-is-safety-mechanism; the same threshold
+discipline as `edit_grammar`). The Phase-2 transport is **not** "protection off" — it is
+"broad PR gating replaced by path-scoped protection"; see "Transport (Phase 2 target)" below
+for the full B-0887 + B-0890.1 security-gap dependency note.
 
-| Phase                                  | Mechanism                                                                                                 | Branch protection | Gate                            |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------- |
-| **1 — interim (now)**                  | Category checkins land on **branches**, merged back to `main` **periodically** (standard flow)            | **ON** (current)  | while observe.ts is being built |
-| **2 — target (once observe.ts works)** | **Folders** direct-to-`main`, **no PR** (the B-0858 / B-0890.1 mechanism the rest of this spec describes) | **OFF**           | observe.ts working → flip       |
+| Phase                                            | Mechanism                                                                                                 | Branch protection                                               | Gate                                                                                            |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **1 — interim (now)**                            | Category checkins land on **branches**, merged back to `main` **periodically** (standard flow)            | **ON** (current)                                                | while observe.ts is being built                                                                 |
+| **2 — target (observe.ts works + B-0887 lands)** | **Folders** direct-to-`main`, **no PR** (the B-0858 / B-0890.1 mechanism the rest of this spec describes) | broad PR gating **replaced by** path-scoped protection (B-0887) | observe.ts working **and** B-0887 landed (or interim `docs/agent-bus/**` push allowlist) → flip |
 
 Both phases use the **same ZetaId-keyed envelope + category + payload**; only the _transport_
 changes (branch+periodic-merge → direct-to-main folder). So Bus v0 can start **now** under
@@ -369,10 +377,16 @@ mechanism. v0 leans on B-0858's mechanism wherever it already exists.
 
 **Deferred (follow-ups, not v0):**
 
-- **Compaction/GC** — the folder grows. Later: a periodic job that drops expired
-  (`expiresAt`) envelope files (a normal delete-commit on main under the carve-out — no
-  branch reset needed since it's folders-on-main; retraction-native: dropping a consumed
-  ephemeral envelope is not rewriting history, it's GC of expired state).
+- **Compaction/GC** — the folder grows. **This is a post-v0 lifecycle that deliberately
+  relaxes the v0 grow-only G-Set invariant** ("No file is ever modified or deleted", above) —
+  the two models do NOT coexist: **v0 = grow-only G-Set (no deletes); post-v0 = bounded
+  compaction keyed on `expiresAt`**. The later job drops expired envelope files (a normal
+  delete-commit on main under the carve-out — no branch reset needed since it's
+  folders-on-main). Dropping a consumed/expired ephemeral envelope is GC of expired state,
+  not rewriting history — but it **is** a non-G-Set operation, so it ships as its own
+  separately-versioned follow-up with its own convergence argument (**compaction must be
+  deterministic across machines** — same `expiresAt` cutoff evaluated identically everywhere
+  — or it re-introduces the conflicts the G-Set property eliminated).
 - **Transport router** — auto-pick local `/tmp` (same-machine, low-latency) vs the git folder
   (cross-machine) by target locality, so `bus.ts publish` "just works" either way.
 - **Sync daemon** — continuous `/tmp` ↔ `docs/agent-bus/` mirroring.
