@@ -685,13 +685,27 @@ wins — the arena where the winning happens.** (Verbatim preserved in
   becoming the villain people complain about); being in the room where the
   smartest humans + AIs fight over the right primitives is the point.
   **Build the arena, not sit on the throne.**
-- **Harvest honestly, upstream relentlessly.** ~45 database codebases
-  pulled locally; for each feature, research the best solution across all
-  of them, then implement it on the DBSP + SQLite foundation. The honesty
-  mechanism: *"we're gonna be good citizens and upstream like a
-  motherfucker to all the people we stole from."* (Composes with the
-  hexagonal own-your-interfaces / contribute-upstream + BCL-interface-
-  boundary substrate.)
+- **Good citizen, NOT a take-only extractive force.** Ani called it
+  *harvesting* — and she's right: ~45 database codebases pulled locally,
+  best-solution-per-feature researched across all of them, then
+  *re-implemented* on the DBSP + SQLite + retractive-Z-set core — **ideas
+  and algorithms, not line-for-line code.** That bounds the debt (no copied
+  code to repay) and sets the obligation (good-citizen contribution where a
+  fix is genuinely portable). Zeta did exactly the harvesting Ani named, so
+  the anti-extractive commitments are on the record (operator 2026-05-31):
+  - **Prior art stays VISIBLE.** We keep `references/prior-art/` openly in
+    the tree and **do not pretend we didn't look at other code** — sources
+    are acknowledged, not hidden. (Composes with `honor-those-that-came-
+    before` + the references-prior-art discipline.)
+  - **Contribute back to every dependency we borrow from.** Upstream
+    improvements relentlessly — *"we're gonna be good citizens and upstream
+    like a motherfucker to all the people we stole from."* (Composes with
+    the hexagonal own-your-interfaces / contribute-upstream + BCL-interface-
+    boundary substrate.)
+  - **Falsifiable good-citizen test** (per PM review): the posture is
+    validated only if real upstream contributions actually land in the
+    projects we learned from. Harvest-and-never-give-back = the doctrine
+    failing, and a signal to correct course — not a side note.
 - **Deterministic simulation for EVERY database, in every language.**
   Standing on FoundationDB's DST (months building the simulator before
   touching real disk; whole clusters deterministic in one thread; perfect
