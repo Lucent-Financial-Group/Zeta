@@ -51,6 +51,7 @@ row generalizes it into a first-class retrieval layer.
 ## Design (proposed; refine at start-gate)
 
 **Index types** (each a git-committed text file):
+
 - **sorted key index** — `<key> <tab> <location>` sorted; O(log n) by-key via byte-offset binary
   search (the `look(1)` / git `packed-refs` shape).
 - **inverted index** — `<term> <tab> <files…>` for full-text.
@@ -58,6 +59,7 @@ row generalizes it into a first-class retrieval layer.
   Hindsight-style knowledge graph, traversable as text.
 
 **Three disciplines that make it O-fast + conflict-safe:**
+
 1. **Regenerate, never merge.** Derived indexes are reproducible from source → on a git conflict,
    rebuild (never hand-merge). This is what lets indexes live in git under multi-agent writes
    (BACKLOG.md already does this).
@@ -68,6 +70,7 @@ row generalizes it into a first-class retrieval layer.
    window.
 
 **Update mechanism (the "kept up to date" part):**
+
 - **incremental** (Z-set delta on change — the elegant DBSP/differential-dataflow way; this is the
   factory's own engine pointed at its own memory), OR
 - **full-rebuild-on-cadence** (simple; works today; text rebuild is cheap at current corpus size).
