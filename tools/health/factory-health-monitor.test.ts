@@ -659,6 +659,7 @@ describe("factory-health-monitor", () => {
           {
             id: "env-1",
             from: "otto-cli",
+            to: "*",
             topic: "shadow-catch",
             timestamp: "2026-05-30T05:00:00Z",
             expiresAt: "2026-05-30T07:00:00Z",
@@ -721,8 +722,24 @@ describe("factory-health-monitor", () => {
             },
           },
           {
+            id: "env-private",
+            from: "otto-cli",
+            to: "vera",
+            topic: "shadow-catch",
+            timestamp: "2026-05-30T05:03:00Z",
+            expiresAt: "2026-05-30T07:00:00Z",
+            payload: {
+              blocker: {
+                id: "private",
+                trajectory: "otto",
+                description: "Private blocker should not count",
+              },
+            },
+          },
+          {
             id: "env-bad-expiry",
             from: "otto-cli",
+            to: "*",
             topic: "shadow-catch",
             timestamp: "2026-05-30T05:03:00Z",
             expiresAt: "not-a-date",

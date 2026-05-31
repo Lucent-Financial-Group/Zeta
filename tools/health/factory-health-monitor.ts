@@ -107,6 +107,7 @@ interface PullRequestBlockerObservationInput {
 interface BroadcastBusEnvelopeInput {
   id?: unknown;
   from?: unknown;
+  to?: unknown;
   topic?: unknown;
   timestamp?: unknown;
   expiresAt?: unknown;
@@ -756,6 +757,10 @@ function broadcastEnvelopeIsFresh(envelope: BroadcastBusEnvelopeInput, nowIso: s
   return expiresMs >= nowMs;
 }
 
+function broadcastEnvelopeTargetsFactory(envelope: BroadcastBusEnvelopeInput): boolean {
+  return stringValue(envelope.to) === "*";
+}
+
 export function broadcastBlockerEventsFromJson(
   output: string,
   nowIso = new Date().toISOString(),
@@ -766,7 +771,7 @@ export function broadcastBlockerEventsFromJson(
   const events: CoincidenceEvent[] = [];
 
   for (const envelope of envelopes) {
-    if (!broadcastEnvelopeIsFresh(envelope, nowIso)) {
+    if (!broadcastEnvelopeTargetsFactory(envelope) || !broadcastEnvelopeIsFresh(envelope, nowIso)) {
       continue;
     }
 
