@@ -14,8 +14,10 @@
 //   64  argument error
 //   128 git worktree list failed
 
-import { existsSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 type AuditExitCode = 0 | 64 | 128;
 
@@ -337,6 +339,22 @@ function gitStdout(path: string, args: readonly string[], input?: string): strin
   return result.stdout;
 }
 
+function gitExitOk(
+  path: string,
+  args: readonly string[],
+  input: string | undefined,
+  env: NodeJS.ProcessEnv,
+): boolean | null {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync("git", ["-C", path, ...args], {
+    encoding: "utf8",
+    env,
+    input,
+  });
+  if (result.error) return null;
+  return result.status === 0;
+}
+
 function stableDiffPatchId(path: string, base: string, rev: string): string | null {
   const diff = gitStdout(path, ["diff", "--full-index", base, rev, "--"]);
   if (diff === null) return null;
@@ -347,9 +365,27 @@ function stableDiffPatchId(path: string, base: string, rev: string): string | nu
   return line?.split(/\s+/)[0] ?? null;
 }
 
-function branchDeltaEquivalentToMainHistory(path: string, head: string): boolean | null {
+function historicalCommitContainsPatch(path: string, commit: string, patch: string): boolean | null {
+  const indexDir = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-index-"));
+  const indexPath = join(indexDir, "index");
+  const env = { ...process.env, GIT_INDEX_FILE: indexPath };
+
+  try {
+    const readTree = gitExitOk(path, ["read-tree", commit], undefined, env);
+    if (readTree !== true) return readTree;
+    return gitExitOk(path, ["apply", "--cached", "--reverse", "--check", "--whitespace=nowarn"], patch, env);
+  } finally {
+    rmSync(indexDir, { recursive: true, force: true });
+  }
+}
+
+function branchDeltaCoveredByMainHistory(path: string, head: string): boolean | null {
   const base = firstOutputLine(gitStdout(path, ["merge-base", "origin/main", head]) ?? "");
   if (base === null) return null;
+
+  const branchPatch = gitStdout(path, ["diff", "--binary", base, head, "--"]);
+  if (branchPatch === null) return null;
+  if (branchPatch.trim().length === 0) return true;
 
   const branchPatchId = stableDiffPatchId(path, base, head);
   if (branchPatchId === null) return null;
@@ -364,6 +400,7 @@ function branchDeltaEquivalentToMainHistory(path: string, head: string): boolean
 
   for (const commit of commits) {
     if (stableDiffPatchId(path, base, commit) === branchPatchId) return true;
+    if (historicalCommitContainsPatch(path, commit, branchPatch) === true) return true;
   }
   return false;
 }
@@ -414,7 +451,7 @@ function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string =
     }
 
     if (headReachableFromMain !== true) {
-      treeEquivalentToMain = branchDeltaEquivalentToMainHistory(gitContext, entry.head);
+      treeEquivalentToMain = branchDeltaCoveredByMainHistory(gitContext, entry.head);
     }
 
     if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
