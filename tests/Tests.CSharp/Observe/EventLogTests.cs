@@ -120,4 +120,15 @@ public sealed class EventLogTests
         EventLog a = LogA(), b = LogB(), c = LogC();
         Assert.Equal((a + b) + c, a + (b + c));  // associativity at ==/Equals
     }
+
+    // Codex P2: assigning a bare T[] to the IReadOnlyList property would let a caller
+    // downcast (log.Events is NextAction[] arr) and rewrite the backing array. The
+    // constructor wraps the copy in a read-only collection, so Events is NOT a raw
+    // array and cannot be downcast-and-mutated.
+    [Fact]
+    public void EventsCannotBeDowncastToAMutableArray()
+    {
+        var log = new EventLog([new NextAction.Explore("e")]);
+        Assert.False(log.Events is NextAction[]);
+    }
 }

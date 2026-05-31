@@ -46,11 +46,15 @@ public sealed record EventLog
     /// <c>==</c> and hash-based collections.</summary>
     public IReadOnlyList<NextAction> Events { get; }
 
-    /// <summary>Construct a log, defensively copying <paramref name="events"/> into
-    /// a private read-only backing array — so the log is genuinely append-only and
-    /// immutable regardless of what the caller does with its argument afterward.</summary>
+    /// <summary>Construct a log, defensively copying <paramref name="events"/> into a
+    /// <see cref="System.Collections.ObjectModel.ReadOnlyCollection{T}"/> wrapper over a
+    /// private array — so the log is genuinely append-only and immutable regardless of
+    /// what the caller does with its argument afterward, AND the exposed
+    /// <see cref="Events"/> cannot be downcast to a mutable array and rewritten
+    /// (assigning a bare <c>T[]</c> to the <see cref="IReadOnlyList{T}"/> property would
+    /// leave that hole; the read-only wrapper closes it).</summary>
     /// <param name="events">The events to copy into this log.</param>
-    public EventLog(IReadOnlyList<NextAction> events) => Events = events.ToArray();
+    public EventLog(IReadOnlyList<NextAction> events) => Events = Array.AsReadOnly(events.ToArray());
 
     /// <summary>The empty log — the monoid identity. <c>empty + x == x == x + empty</c>.</summary>
     public static EventLog AdditiveIdentity { get; } = new(Array.Empty<NextAction>());
