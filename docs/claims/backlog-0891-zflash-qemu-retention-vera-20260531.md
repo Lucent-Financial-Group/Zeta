@@ -34,4 +34,6 @@
 - proof: `bun test tools/zflash/test-harness/` passes with injected-executor dispatcher coverage for both proven-retention success and missing-marker failure; `bun --bun tsc --noEmit -p tsconfig.json` and `git diff --check` pass.
 - progress: scenario 3 now plans qcow2 disk bootstrap (`qemu-img create`) plus an initial ISO boot before baseline snapshot/restore/restart, so `ZFLASH_QEMU_RETENTION_EXECUTE=1` no longer assumes a pre-existing qcow2 disk.
 - proof: focused harness coverage now asserts the create-disk and initial-install steps in both the planner and dispatcher execution sequence.
-- next: add lifecycle-aware QEMU polling/stop conditions so the initial ISO boot and retained restart can terminate from serial markers instead of relying on QEMU process exit alone.
+- progress: scenario 3 now carries lifecycle-aware QEMU serial stop conditions: initial ISO boot stops on `[iter-5.1]`, retained restart stops on `zeta-creds-restore:` + `already-present`, and shared hard-fail markers stop the run early.
+- proof: `bun test tools/zflash/test-harness/` passes with 61 tests covering lifecycle stop markers, managed QEMU command stop behavior, and failure-marker feedback; `bun --bun tsc --noEmit -p tsconfig.json` and `git diff --check` pass.
+- next: run the real `ZFLASH_QEMU_RETENTION_EXECUTE=1` scenario against an ISO/artifact when available, then promote scenario 3 out of scaffolded only after real QEMU serial markers prove retention end to end.

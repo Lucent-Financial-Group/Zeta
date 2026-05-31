@@ -1,13 +1,12 @@
-import { spawnSync as nodeSpawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 
 /**
  * B-0891 scenario 3 QEMU state-preservation primitives.
  *
- * This file is deliberately a command planner, not a green runtime path:
- * it defines the qemu-img snapshot/restart sequence that scenario 3 emits
- * from run.ts, while the dispatcher keeps reformat-with-retention failing
- * closed until command execution and full serial-marker assertions are wired.
+ * This file defines the qemu-img snapshot/restart sequence and the
+ * serial-marker lifecycle gates that keep QEMU boot phases bounded without
+ * waiting for the guest to exit by itself.
  */
 
 export interface QemuCommand {
@@ -34,10 +33,12 @@ export interface Qcow2SnapshotRetentionPlan {
   readonly diskSizeGB: number;
   readonly createDiskImage: QemuCommand;
   readonly initialInstallFromIsoWithDisk: QemuCommand;
+  readonly initialInstallStopCondition: QemuSerialStopCondition;
   readonly createBaselineSnapshot: QemuCommand;
   readonly restoreBaselineSnapshot: QemuCommand;
   readonly listSnapshots: QemuCommand;
   readonly restartFromIsoWithDisk: QemuCommand;
+  readonly restartStopCondition: QemuSerialStopCondition;
   readonly requiredSerialMarkers: readonly string[];
 }
 
@@ -71,18 +72,36 @@ export type Qcow2RetentionExecutionStep =
   | "restore-baseline-snapshot"
   | "restart-from-iso-with-disk";
 
+export interface QemuSerialStopCondition {
+  readonly serialLogPath: string;
+  readonly successMarkers: readonly string[];
+  readonly failureMarkers: readonly string[];
+}
+
+export interface QemuSerialStopAssertion {
+  readonly matchedMarkers: readonly string[];
+  readonly elapsedMs: number;
+  readonly stoppedPid?: number;
+}
+
 export interface QemuCommandExecution {
   readonly step: Qcow2RetentionExecutionStep;
   readonly command: QemuCommand;
   readonly exitCode: number | null;
   readonly stdout: string;
   readonly stderr: string;
+  readonly serialStop?: QemuSerialStopAssertion;
 }
 
 export interface Qcow2RetentionExecutor {
   readonly runCommand: (
     step: Qcow2RetentionExecutionStep,
     command: QemuCommand,
+  ) => QemuCommandExecution;
+  readonly runCommandUntilSerialMarkers?: (
+    step: Qcow2RetentionExecutionStep,
+    command: QemuCommand,
+    stopCondition: QemuSerialStopCondition,
   ) => QemuCommandExecution;
   readonly readSerialOutput: (serialLogPath: string) => string;
 }
@@ -103,10 +122,24 @@ export type SpawnSyncQemuCommand = (
   options: SpawnSyncQemuCommandOptions,
 ) => SpawnSyncQemuCommandResult;
 
+export interface ManagedQemuCommandProcess {
+  readonly pid?: number;
+  readonly isRunning: () => boolean;
+  readonly stop: (signal?: NodeJS.Signals) => void;
+  readonly stderr: () => string;
+}
+
+export type SpawnManagedQemuCommand = (
+  command: QemuCommand,
+  options: SpawnSyncQemuCommandOptions,
+) => ManagedQemuCommandProcess;
+
 export interface SpawnSyncQcow2RetentionExecutorOptions {
   readonly cwd?: string;
   readonly timeoutMs?: number;
+  readonly pollIntervalMs?: number;
   readonly spawnCommand?: SpawnSyncQemuCommand;
+  readonly spawnManagedCommand?: SpawnManagedQemuCommand;
   readonly readSerialOutput?: (serialLogPath: string) => string;
 }
 
@@ -144,10 +177,23 @@ const DEFAULT_MEMORY_MB = 4096;
 const DEFAULT_CPU_COUNT = 2;
 const DEFAULT_DISK_SIZE_GB = 20;
 const DEFAULT_RETENTION_COMMAND_TIMEOUT_MS = 30 * 60 * 1000;
+const DEFAULT_RETENTION_POLL_INTERVAL_MS = 1000;
 
 export const RETENTION_SERIAL_MARKERS: readonly string[] = [
   "zeta-creds-restore:",
   "already-present",
+];
+
+export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = [
+  "[iter-5.1]",
+];
+
+export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
+  "panic",
+  "FATAL",
+  "Refusing to wipe",
+  "no internet",
+  "bail",
 ];
 
 function nonEmpty(value: string): boolean {
@@ -250,6 +296,11 @@ export function planQcow2SnapshotRetention(
         bin: "qemu-system-x86_64",
         args: buildRestartArgs(normalized),
       },
+      initialInstallStopCondition: {
+        serialLogPath: normalized.serialLogPath,
+        successMarkers: INITIAL_INSTALL_SERIAL_MARKERS,
+        failureMarkers: RETENTION_FAILURE_SERIAL_MARKERS,
+      },
       createBaselineSnapshot: {
         bin: "qemu-img",
         args: ["snapshot", "-c", normalized.snapshotName, normalized.diskPath],
@@ -266,21 +317,40 @@ export function planQcow2SnapshotRetention(
         bin: "qemu-system-x86_64",
         args: buildRestartArgs(normalized),
       },
+      restartStopCondition: {
+        serialLogPath: normalized.serialLogPath,
+        successMarkers: RETENTION_SERIAL_MARKERS,
+        failureMarkers: RETENTION_FAILURE_SERIAL_MARKERS,
+      },
       requiredSerialMarkers: RETENTION_SERIAL_MARKERS,
     },
   };
 }
 
+interface RetentionExecutionPlannedStep {
+  readonly step: Qcow2RetentionExecutionStep;
+  readonly command: QemuCommand;
+  readonly stopCondition?: QemuSerialStopCondition;
+}
+
 function retentionExecutionSteps(
   plan: Qcow2SnapshotRetentionPlan,
-): ReadonlyArray<readonly [Qcow2RetentionExecutionStep, QemuCommand]> {
+): readonly RetentionExecutionPlannedStep[] {
   return [
-    ["create-disk-image", plan.createDiskImage],
-    ["initial-install-from-iso-with-disk", plan.initialInstallFromIsoWithDisk],
-    ["create-baseline-snapshot", plan.createBaselineSnapshot],
-    ["list-baseline-snapshots", plan.listSnapshots],
-    ["restore-baseline-snapshot", plan.restoreBaselineSnapshot],
-    ["restart-from-iso-with-disk", plan.restartFromIsoWithDisk],
+    { step: "create-disk-image", command: plan.createDiskImage },
+    {
+      step: "initial-install-from-iso-with-disk",
+      command: plan.initialInstallFromIsoWithDisk,
+      stopCondition: plan.initialInstallStopCondition,
+    },
+    { step: "create-baseline-snapshot", command: plan.createBaselineSnapshot },
+    { step: "list-baseline-snapshots", command: plan.listSnapshots },
+    { step: "restore-baseline-snapshot", command: plan.restoreBaselineSnapshot },
+    {
+      step: "restart-from-iso-with-disk",
+      command: plan.restartFromIsoWithDisk,
+      stopCondition: plan.restartStopCondition,
+    },
   ];
 }
 
@@ -329,11 +399,162 @@ function defaultSpawnSyncQemuCommand(
   };
 }
 
+function pidIsRunning(pid: number | undefined): boolean {
+  if (pid === undefined) {
+    return false;
+  }
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function defaultSpawnManagedQemuCommand(
+  command: QemuCommand,
+  options: SpawnSyncQemuCommandOptions,
+): ManagedQemuCommandProcess {
+  const spawnOptions: SpawnOptions = { stdio: ["ignore", "ignore", "pipe"] };
+  if (options.cwd !== undefined) {
+    spawnOptions.cwd = options.cwd;
+  }
+  const child = nodeSpawn(command.bin, [...command.args], spawnOptions);
+  let stderr = "";
+  child.stderr?.on("data", (chunk: Buffer | string) => {
+    stderr += typeof chunk === "string" ? chunk : chunk.toString("utf8");
+  });
+  return {
+    ...(child.pid === undefined ? {} : { pid: child.pid }),
+    isRunning: () => pidIsRunning(child.pid),
+    stop: (signal = "SIGTERM") => {
+      if (pidIsRunning(child.pid)) {
+        child.kill(signal);
+      }
+    },
+    stderr: () => stderr,
+  };
+}
+
+function sleepSync(ms: number): void {
+  const buffer = new SharedArrayBuffer(4);
+  const view = new Int32Array(buffer);
+  Atomics.wait(view, 0, 0, ms);
+}
+
+function readSerialOutputIfPresent(
+  serialLogPath: string,
+  readSerialOutput: (serialLogPath: string) => string,
+): string {
+  try {
+    return readSerialOutput(serialLogPath);
+  } catch (error) {
+    if (!existsSync(serialLogPath)) {
+      return "";
+    }
+    throw error;
+  }
+}
+
+function matchedMarkers(serialOutput: string, markers: readonly string[]): readonly string[] {
+  return markers.filter((marker) => serialOutput.includes(marker));
+}
+
+function allMarkersPresent(serialOutput: string, markers: readonly string[]): boolean {
+  return matchedMarkers(serialOutput, markers).length === markers.length;
+}
+
+function firstMatchedMarker(serialOutput: string, markers: readonly string[]): string | undefined {
+  return markers.find((marker) => serialOutput.includes(marker));
+}
+
+function runManagedCommandUntilSerialMarkers(
+  step: Qcow2RetentionExecutionStep,
+  command: QemuCommand,
+  stopCondition: QemuSerialStopCondition,
+  options: SpawnSyncQemuCommandOptions,
+  pollIntervalMs: number,
+  spawnManagedCommand: SpawnManagedQemuCommand,
+  readSerialOutput: (serialLogPath: string) => string,
+): QemuCommandExecution {
+  const startedAt = Date.now();
+  const deadline = startedAt + options.timeoutMs;
+  const managed = spawnManagedCommand(command, options);
+
+  while (Date.now() < deadline) {
+    let serialOutput: string;
+    try {
+      serialOutput = readSerialOutputIfPresent(stopCondition.serialLogPath, readSerialOutput);
+    } catch (error) {
+      managed.stop("SIGTERM");
+      return {
+        step,
+        command,
+        exitCode: 1,
+        stdout: "",
+        stderr: `serial log read failed while waiting for markers: ${unknownReason(error)}`,
+      };
+    }
+
+    const failureMarker = firstMatchedMarker(serialOutput, stopCondition.failureMarkers);
+    if (failureMarker !== undefined) {
+      managed.stop("SIGTERM");
+      return {
+        step,
+        command,
+        exitCode: 1,
+        stdout: "",
+        stderr: `failure marker observed in serial log: ${failureMarker}`,
+      };
+    }
+
+    if (allMarkersPresent(serialOutput, stopCondition.successMarkers)) {
+      const stoppedPid = managed.pid;
+      managed.stop("SIGTERM");
+      return {
+        step,
+        command,
+        exitCode: 0,
+        stdout: `serial markers observed: ${stopCondition.successMarkers.join(", ")}`,
+        stderr: managed.stderr(),
+        serialStop: {
+          matchedMarkers: matchedMarkers(serialOutput, stopCondition.successMarkers),
+          elapsedMs: Date.now() - startedAt,
+          ...(stoppedPid === undefined ? {} : { stoppedPid }),
+        },
+      };
+    }
+
+    if (!managed.isRunning()) {
+      return {
+        step,
+        command,
+        exitCode: 1,
+        stdout: "",
+        stderr: `QEMU exited before serial markers were observed: ${stopCondition.successMarkers.join(", ")}`,
+      };
+    }
+
+    sleepSync(pollIntervalMs);
+  }
+
+  managed.stop("SIGTERM");
+  return {
+    step,
+    command,
+    exitCode: 1,
+    stdout: "",
+    stderr: `timeout (${options.timeoutMs}ms) waiting for serial markers: ${stopCondition.successMarkers.join(", ")}`,
+  };
+}
+
 export function createSpawnSyncQcow2RetentionExecutor(
   options: SpawnSyncQcow2RetentionExecutorOptions = {},
 ): Qcow2RetentionExecutor {
   const timeoutMs = options.timeoutMs ?? DEFAULT_RETENTION_COMMAND_TIMEOUT_MS;
+  const pollIntervalMs = options.pollIntervalMs ?? DEFAULT_RETENTION_POLL_INTERVAL_MS;
   const spawnCommand = options.spawnCommand ?? defaultSpawnSyncQemuCommand;
+  const spawnManagedCommand = options.spawnManagedCommand ?? defaultSpawnManagedQemuCommand;
   const readSerialOutput = options.readSerialOutput ?? ((serialLogPath: string) => readFileSync(serialLogPath, "utf8"));
   return {
     runCommand: (step, command) => {
@@ -346,6 +567,16 @@ export function createSpawnSyncQcow2RetentionExecutor(
         stderr: execution.stderr,
       };
     },
+    runCommandUntilSerialMarkers: (step, command, stopCondition) =>
+      runManagedCommandUntilSerialMarkers(
+        step,
+        command,
+        stopCondition,
+        qemuCommandOptions(options.cwd, timeoutMs),
+        pollIntervalMs,
+        spawnManagedCommand,
+        readSerialOutput,
+      ),
     readSerialOutput,
   };
 }
@@ -356,10 +587,12 @@ export function executeQcow2SnapshotRetentionPlan(
 ): Qcow2RetentionExecutionResult {
   const commandExecutions: QemuCommandExecution[] = [];
 
-  for (const [step, command] of retentionExecutionSteps(plan)) {
+  for (const { step, command, stopCondition } of retentionExecutionSteps(plan)) {
     let execution: QemuCommandExecution;
     try {
-      execution = executor.runCommand(step, command);
+      execution = stopCondition !== undefined && executor.runCommandUntilSerialMarkers !== undefined
+        ? executor.runCommandUntilSerialMarkers(step, command, stopCondition)
+        : executor.runCommand(step, command);
     } catch (error) {
       return {
         error: {

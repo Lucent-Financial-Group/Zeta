@@ -3,9 +3,12 @@ import {
   assertRetentionSerialMarkers,
   createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
+  INITIAL_INSTALL_SERIAL_MARKERS,
   planQcow2SnapshotRetention,
+  RETENTION_FAILURE_SERIAL_MARKERS,
   type Qcow2SnapshotRetentionPlan,
   type Qcow2RetentionExecutionStep,
+  type ManagedQemuCommandProcess,
   type QemuCommand,
   type QemuCommandExecution,
   type SpawnSyncQemuCommandOptions,
@@ -27,6 +30,20 @@ function successfulExecution(
   command: QemuCommand,
 ): QemuCommandExecution {
   return { step, command, exitCode: 0, stdout: `${step} ok`, stderr: "" };
+}
+
+function managedProcess(
+  pid: number,
+  stoppedPids: number[],
+): ManagedQemuCommandProcess {
+  return {
+    pid,
+    isRunning: () => true,
+    stop: () => {
+      stoppedPids.push(pid);
+    },
+    stderr: () => "",
+  };
 }
 
 describe("B-0891 QEMU state-preservation planner", () => {
@@ -104,6 +121,22 @@ describe("B-0891 QEMU state-preservation planner", () => {
 
     expect(result.ok.requiredSerialMarkers).toContain("zeta-creds-restore:");
     expect(result.ok.requiredSerialMarkers).toContain("already-present");
+  });
+
+  test("carries lifecycle stop markers for QEMU boot phases", () => {
+    const result = planQcow2SnapshotRetention({
+      isoPath: "/tmp/zeta.iso",
+      diskPath: "/tmp/zeta.qcow2",
+      serialLogPath: "/tmp/serial.log",
+      snapshotName: "post-initial-format",
+    });
+    if ("error" in result) throw new Error(result.error.reason);
+
+    expect(result.ok.initialInstallStopCondition.serialLogPath).toBe("/tmp/serial.log");
+    expect(result.ok.initialInstallStopCondition.successMarkers).toEqual(INITIAL_INSTALL_SERIAL_MARKERS);
+    expect(result.ok.initialInstallStopCondition.failureMarkers).toEqual(RETENTION_FAILURE_SERIAL_MARKERS);
+    expect(result.ok.restartStopCondition.successMarkers).toContain("zeta-creds-restore:");
+    expect(result.ok.restartStopCondition.successMarkers).toContain("already-present");
   });
 
   test("returns Result-shaped feedback for invalid input", () => {
@@ -193,16 +226,29 @@ describe("B-0891 QEMU state-preservation planner", () => {
       readonly command: QemuCommand;
       readonly options: SpawnSyncQemuCommandOptions;
     }> = [];
+    const managedObserved: Array<{
+      readonly command: QemuCommand;
+      readonly options: SpawnSyncQemuCommandOptions;
+    }> = [];
+    const stoppedPids: number[] = [];
     const serialPaths: string[] = [];
     const executor = createSpawnSyncQcow2RetentionExecutor({
       cwd: "/tmp/zeta-worktree",
       timeoutMs: 1234,
+      pollIntervalMs: 1,
       spawnCommand: (command, options) => {
         observed.push({ command, options });
         return { exitCode: 0, stdout: `${command.bin} ok`, stderr: "" };
       },
+      spawnManagedCommand: (command, options) => {
+        managedObserved.push({ command, options });
+        return managedProcess(4200 + managedObserved.length, stoppedPids);
+      },
       readSerialOutput: (serialLogPath) => {
         serialPaths.push(serialLogPath);
+        if (managedObserved.length === 1) {
+          return "[iter-5.1] install reached post-install marker";
+        }
         return [
           "zeta-creds-restore: reading preserved ESP blob",
           "zeta-creds-restore: already-present, skipping credential rewrite",
@@ -216,16 +262,43 @@ describe("B-0891 QEMU state-preservation planner", () => {
     if ("ok" in result) {
       expect(observed.map((entry) => entry.command.bin)).toEqual([
         "qemu-img",
+        "qemu-img",
+        "qemu-img",
+        "qemu-img",
+      ]);
+      expect(managedObserved.map((entry) => entry.command.bin)).toEqual([
         "qemu-system-x86_64",
-        "qemu-img",
-        "qemu-img",
-        "qemu-img",
         "qemu-system-x86_64",
       ]);
       expect(observed.every((entry) => entry.options.cwd === "/tmp/zeta-worktree")).toBe(true);
       expect(observed.every((entry) => entry.options.timeoutMs === 1234)).toBe(true);
-      expect(serialPaths).toEqual(["/tmp/serial.log"]);
+      expect(managedObserved.every((entry) => entry.options.cwd === "/tmp/zeta-worktree")).toBe(true);
+      expect(managedObserved.every((entry) => entry.options.timeoutMs === 1234)).toBe(true);
+      expect(serialPaths).toEqual(["/tmp/serial.log", "/tmp/serial.log", "/tmp/serial.log"]);
+      expect(stoppedPids).toEqual([4201, 4202]);
+      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("[iter-5.1]");
+      expect(result.ok.commandExecutions[5]?.serialStop?.matchedMarkers).toContain("already-present");
       expect(result.ok.serialAssertion.matchedMarkers).toContain("already-present");
+    }
+  });
+
+  test("fails a lifecycle-managed QEMU phase when a serial failure marker appears", () => {
+    const executor = createSpawnSyncQcow2RetentionExecutor({
+      pollIntervalMs: 1,
+      spawnCommand: () => ({ exitCode: 0, stdout: "ok", stderr: "" }),
+      spawnManagedCommand: () => managedProcess(5001, []),
+      readSerialOutput: () => "panic: installer crashed",
+    });
+
+    const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), executor);
+
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error.kind).toBe("command-failed");
+      if (result.error.kind === "command-failed") {
+        expect(result.error.step).toBe("initial-install-from-iso-with-disk");
+        expect(result.error.stderr).toContain("failure marker observed");
+      }
     }
   });
 

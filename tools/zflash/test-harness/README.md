@@ -6,7 +6,8 @@ PoC scaffold for the zflash "done" acceptance criteria — the 5-scenario QEMU t
 
 **PoC**: declarative scenario definitions + CLI dispatcher contract +
 invariant tests + QEMU disk bootstrap, snapshot/restart command planning,
-and explicit scenario-3 process-executor wiring.
+explicit scenario-3 process-executor wiring, and serial-marker lifecycle
+stop conditions for QEMU boot phases.
 
 **NOT in PoC** (deferred to follow-up): default-on QEMU snapshot/restart
 execution for scenarios 3-5 (state preservation between boots); multi-VM
@@ -69,8 +70,10 @@ ZFLASH_QEMU_RETENTION_EXECUTE=1 \
 
 The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence:
 create the qcow2 disk, boot the ISO once to establish the baseline disk,
-snapshot the baseline, restore it, restart from the ISO with the same disk,
-then pass only when the serial log includes the required retention markers.
+stop that boot when the serial log reaches the `[iter-5.1]` post-install
+marker, snapshot the baseline, restore it, restart from the ISO with the
+same disk, stop that restart when retention markers appear, then pass only
+when the final serial assertion includes the required retention markers.
 Runtime attempts for scenarios 4-5 remain
 scaffolded/fail-closed.
 `--dry-run` remains the planning surface for inspecting pending scenarios
