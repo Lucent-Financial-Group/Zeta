@@ -14,9 +14,11 @@
 //   bun tools/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall
 //   bun tools/peer-call/grok.ts --output-file PATH "prompt text"
 //
-// Routing: wraps `cursor-agent --print --model grok-4-20-thinking`
-// (default) or `grok-4-20` (with --fast flag). The --print flag
-// makes cursor-agent non-interactive (script-friendly).
+// Routing: wraps `cursor-agent --print --model grok-build-0.1` (the
+// generic-grok default for this git-based code env; both --thinking and
+// --fast route to the same model id). The --print flag makes cursor-agent
+// non-interactive (script-friendly). Ani's persona wrapper overrides the
+// model (grok-4.3 historically; now grok-CLI-only per the ani migration).
 //
 // Per the four-ferry consensus (PR #24): Otto's role is "tests" not
 // "owns the peer protocol." This script is Otto's harness-side
@@ -195,8 +197,8 @@ function emitHelp(): void {
       `  bun tools/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall\n` +
       `  bun tools/peer-call/grok.ts --output-file PATH "prompt text"\n` +
       `\n` +
-      `Routing: wraps cursor-agent --print --model grok-4-20-thinking\n` +
-      `(default) or grok-4-20 (with --fast).\n` +
+      `Routing: wraps cursor-agent --print --model grok-build-0.1\n` +
+      `(generic-grok default; both --thinking and --fast use this id).\n` +
       `\n` +
       `Grok input-firewall: rejects rote-heartbeat / empty-token prompts\n` +
       `with exit code 3. Override via --allow-empty (testing only; logged).\n` +
