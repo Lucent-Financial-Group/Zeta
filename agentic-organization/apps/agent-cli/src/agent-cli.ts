@@ -154,6 +154,7 @@ export type AgentCliCycleEvidence = {
   promptFlowIds: readonly string[];
   metricBlockIds: readonly string[];
   selectorRejections: readonly MenuSelectorRejection[];
+  actionRejectionReason?: ActRejectionReason | undefined;
 };
 
 export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsResult {
@@ -429,7 +430,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
       ActRejectionReason.NoSelectableSlot,
       "no TriAvailability.True slots in rendered menu",
     );
-    const evidence = createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics);
+    const evidence = createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics, actionResult);
     input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
     return { exitCode: 1, actionResult, evidence };
   }
@@ -447,7 +448,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
   return {
     exitCode: actionResult.outcome === "rejected" ? 1 : 0,
     actionResult,
-    evidence: createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics),
+    evidence: createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics, actionResult),
   };
 }
 
@@ -537,6 +538,7 @@ function createAgentCliCycleEvidence(
   selection: MenuSelectionResult,
   promptFlows: PromptFlowReadout,
   metrics: ScopedReadout,
+  actionResult?: ActResult | undefined,
 ): AgentCliCycleEvidence {
   return {
     menuHash: hashMenu(menu),
@@ -549,6 +551,7 @@ function createAgentCliCycleEvidence(
     ]),
     metricBlockIds: uniqueSorted(metrics.blocks.map((block) => block.id)),
     selectorRejections: selection.selectorRejection === undefined ? [] : [selection.selectorRejection],
+    ...(actionResult?.outcome === "rejected" ? { actionRejectionReason: actionResult.reason } : {}),
   };
 }
 

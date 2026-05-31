@@ -44,6 +44,7 @@ import {
   scanStrandedScheduleBlocks,
   RunLifecyclePhase,
   RunScope,
+  ActRejectionReason,
   type ChangeControlPort,
   type DeadLetterRecoveryCandidate,
   type Menu16Slot,
@@ -57,6 +58,7 @@ import {
   type ReviewKernelDeps,
   type RunBindingRecoveryCandidate,
   type ScheduleBlockRecoveryCandidate,
+  type ScopedMetricAgent,
   type SlotAuthorizationDecision,
 } from "../../../packages/application/src/index.ts";
 import { runAgentCliCycle, type MenuSelector } from "../../agent-cli/src/agent-cli.ts";
@@ -153,6 +155,8 @@ export type ObserveActSlotAuthorizer = (
 ) => Promise<SlotAuthorizationDecision>;
 export type ObserveActOrgEventAppender = (event: OrgEvent) => Promise<void>;
 export type ObserveActExecutionMode = "primary" | "shadow";
+export type ObserveActExecutionModeSource = ObserveActExecutionMode | (() => Promise<ObserveActExecutionMode>);
+export type ObserveActSupplementalEvidenceSource = readonly string[] | (() => Promise<readonly string[]>);
 
 export type ObserveActWorkItemCadenceDeps = {
   organizationId: string;
@@ -163,9 +167,11 @@ export type ObserveActWorkItemCadenceDeps = {
   runCommand: ObserveActCommandRunner;
   dispatchTool: ObserveActToolDispatcher;
   appendEvent?: ObserveActOrgEventAppender;
+  supplementalEvidenceRefs?: ObserveActSupplementalEvidenceSource | undefined;
+  metricAgents?: readonly ScopedMetricAgent[] | undefined;
   loadPromptFlowContext?: ObserveActPromptFlowContextLoader;
   authorizeSlot?: ObserveActSlotAuthorizer;
-  executionMode?: ObserveActExecutionMode | undefined;
+  executionMode?: ObserveActExecutionModeSource | undefined;
   writeObserveStdout?: (text: string) => void;
   selectSlot?: ObserveActMenuSelector;
 };
@@ -184,7 +190,8 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
         }
 
         const stderr: string[] = [];
-        const executionMode = deps.executionMode ?? "primary";
+        const executionMode = await resolveObserveActExecutionMode(deps.executionMode);
+        const supplementalEvidenceRefs = await resolveObserveActSupplementalEvidenceRefs(deps.supplementalEvidenceRefs);
         const result = await runAgentCliCycle({
           argv: observeActArgv(deps.organizationId, work),
           now: () => new Date(deps.now()).toISOString(),
@@ -194,6 +201,7 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
           },
           runCommand: executionMode === "shadow" ? shadowRunCommand : deps.runCommand,
           dispatchTool: executionMode === "shadow" ? shadowDispatchTool : deps.dispatchTool,
+          ...(deps.metricAgents === undefined ? {} : { metricAgents: deps.metricAgents }),
           ...createOptionalObserveActScheduleBlocks(work.scheduleBlocks),
           ...createOptionalObserveActPromptFlowTasks(work.promptFlowTasks),
           ...createOptionalObserveActHierarchy(work.hierarchy),
@@ -202,7 +210,7 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
           ...(deps.selectSlot === undefined ? {} : { selectSlot: deps.selectSlot }),
         });
         if (result.evidence !== undefined && deps.appendEvent !== undefined) {
-          await deps.appendEvent(createObserveActTickEvent(deps, work, result.evidence));
+          await deps.appendEvent(createObserveActTickEvent(deps, work, result.evidence, supplementalEvidenceRefs));
         }
 
         return {
@@ -214,6 +222,20 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
       }
     },
   };
+}
+
+async function resolveObserveActExecutionMode(
+  source: ObserveActExecutionModeSource | undefined,
+): Promise<ObserveActExecutionMode> {
+  if (source === undefined) return "primary";
+  return typeof source === "function" ? await source() : source;
+}
+
+async function resolveObserveActSupplementalEvidenceRefs(
+  source: ObserveActSupplementalEvidenceSource | undefined,
+): Promise<readonly string[]> {
+  if (source === undefined) return [];
+  return typeof source === "function" ? await source() : source;
 }
 
 const shadowRunCommand: ObserveActCommandRunner = async (commandType, _command, slot) => ({
@@ -234,6 +256,7 @@ function createObserveActTickEvent(
   deps: Pick<ObserveActWorkItemCadenceDeps, "organizationId" | "now" | "createId" | "hats">,
   work: ObserveActWorkItem,
   evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+  supplementalEvidenceRefs: readonly string[],
 ): OrgEvent {
   const eventId = deps.createId("observeactevt");
   const traceId = `observe-act-${work.runId}`;
@@ -247,7 +270,10 @@ function createObserveActTickEvent(
     subjectId: work.workItemId,
     decision: `observe-act selected slot ${evidence.selectedIndex} for run ${work.runId}`,
     supervisorChain: supervisorChainFor(work.hatId, deps.hats),
-    evidenceRefs: observeActEvidenceRefs(evidence),
+    evidenceRefs: [
+      ...observeActEvidenceRefs(evidence),
+      ...supplementalEvidenceRefs,
+    ],
     correlationId: traceId,
     causationId: eventId,
     traceId,
@@ -276,8 +302,23 @@ function observeActEvidenceRefs(
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
     ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
+    ...actionRejectionEvidenceRefs(evidence),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function actionRejectionEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  if (
+    evidence.actionRejectionReason !== ActRejectionReason.ControlPlaneDenied &&
+    evidence.actionRejectionReason !== ActRejectionReason.ScheduleAuthorityDenied
+  ) {
+    return [];
+  }
+  return [
+    `observe-act:control_bypass_rejected:${evidence.actionRejectionReason}:${evidence.selectedIndex}`,
   ];
 }
 

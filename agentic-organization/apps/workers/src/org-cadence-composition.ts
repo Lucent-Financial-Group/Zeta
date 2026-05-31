@@ -30,8 +30,9 @@ import {
   type ControlPlaneBudgetCeiling,
   type ControlPlaneFlag,
   type ControlPlaneUsage,
+  type ScopedMetricAgent,
 } from "../../../packages/application/src/index.ts";
-import { AutonomyLevel, WorkItemState, type AutonomyPolicy, type ChangeSet, type OrgEvent } from "../../../packages/domain/src/index.ts";
+import { AutonomyLevel, OrgEventKind, WorkItemState, type AutonomyPolicy, type ChangeSet, type OrgEvent } from "../../../packages/domain/src/index.ts";
 import { createCommandAuthorizationPort, createPolicyDecisionObservationPort } from "../../../packages/policy/src/index.ts";
 import {
   createCockroachOrgEventStore,
@@ -133,6 +134,10 @@ export type ComposeOrgCadenceInput = {
   observeActDispatchTool?: ObserveActToolDispatcher;
   observeActSelectSlot?: ObserveActMenuSelector;
   observeActAuthorizeSlot?: ObserveActSlotAuthorizer;
+  observeActMetricAgents?: readonly ScopedMetricAgent[] | undefined;
+  observeActPromotionWindow?: ObserveActPromotionWindow | undefined;
+  observeActPromotionWindowSource?: (() => Promise<ObserveActPromotionWindow>) | undefined;
+  observeActPromotionPolicy?: ObserveActPromotionPolicy | undefined;
   controlPlane?: ComposeOrgCadenceControlPlane | undefined;
   /** bound each lane for tests/proofs; unbounded in the worker */
   maxTicksPerLane?: number;
@@ -146,6 +151,81 @@ export type ComposeOrgCadenceControlPlane = {
   availableSecretScopes?: readonly string[] | undefined;
   exemptLaneNames?: readonly string[] | undefined;
 };
+
+export type ObserveActPromotionWindow = {
+  shadowTickCount: number;
+  shadowSoakHours: number;
+  shadowDivergenceRate: number;
+  shadowIllegalSelections: number;
+  primarySelectorRejections30m: number;
+  primaryControlBypassRejections30m: number;
+};
+
+export type ObserveActPromotionPolicy = {
+  minShadowTicks?: number | undefined;
+  minShadowSoakHours?: number | undefined;
+  maxShadowDivergenceRate?: number | undefined;
+  primarySelectorRejectionDemotionThreshold?: number | undefined;
+  primaryControlBypassDemotionThreshold?: number | undefined;
+};
+
+export type ObserveActPromotionDecision = {
+  executionMode: "shadow" | "primary";
+  reason: "shadow_window_clean" | "shadow_window_insufficient" | "shadow_window_diverged" | "primary_window_unsafe";
+  evidenceRefs: readonly string[];
+};
+
+type ObserveActPromotionDecisionSource = () => Promise<ObserveActPromotionDecision | undefined>;
+
+const DefaultObserveActPromotionPolicy = {
+  minShadowTicks: 100,
+  minShadowSoakHours: 24,
+  maxShadowDivergenceRate: 0.05,
+  primarySelectorRejectionDemotionThreshold: 2,
+  primaryControlBypassDemotionThreshold: 1,
+} as const satisfies Required<ObserveActPromotionPolicy>;
+
+export function evaluateObserveActPromotionGate(
+  window: ObserveActPromotionWindow,
+  policy: ObserveActPromotionPolicy = {},
+): ObserveActPromotionDecision {
+  const effective = {
+    minShadowTicks: policy.minShadowTicks ?? DefaultObserveActPromotionPolicy.minShadowTicks,
+    minShadowSoakHours: policy.minShadowSoakHours ?? DefaultObserveActPromotionPolicy.minShadowSoakHours,
+    maxShadowDivergenceRate: policy.maxShadowDivergenceRate ?? DefaultObserveActPromotionPolicy.maxShadowDivergenceRate,
+    primarySelectorRejectionDemotionThreshold: policy.primarySelectorRejectionDemotionThreshold ?? DefaultObserveActPromotionPolicy.primarySelectorRejectionDemotionThreshold,
+    primaryControlBypassDemotionThreshold: policy.primaryControlBypassDemotionThreshold ?? DefaultObserveActPromotionPolicy.primaryControlBypassDemotionThreshold,
+  };
+  const evidenceRefs = observeActPromotionEvidenceRefs(window);
+  const primaryUnsafe =
+    window.primarySelectorRejections30m >= effective.primarySelectorRejectionDemotionThreshold ||
+    window.primaryControlBypassRejections30m >= effective.primaryControlBypassDemotionThreshold;
+  if (primaryUnsafe) {
+    return { executionMode: "shadow", reason: "primary_window_unsafe", evidenceRefs };
+  }
+
+  if (window.shadowIllegalSelections > 0 || window.shadowDivergenceRate > effective.maxShadowDivergenceRate) {
+    return { executionMode: "shadow", reason: "shadow_window_diverged", evidenceRefs };
+  }
+
+  const shadowWindowSatisfied =
+    window.shadowTickCount >= effective.minShadowTicks ||
+    window.shadowSoakHours >= effective.minShadowSoakHours;
+  return shadowWindowSatisfied
+    ? { executionMode: "primary", reason: "shadow_window_clean", evidenceRefs }
+    : { executionMode: "shadow", reason: "shadow_window_insufficient", evidenceRefs };
+}
+
+function observeActPromotionEvidenceRefs(window: ObserveActPromotionWindow): readonly string[] {
+  return [
+    `observe-act-promotion:shadow_ticks:${window.shadowTickCount}`,
+    `observe-act-promotion:shadow_soak_hours:${window.shadowSoakHours}`,
+    `observe-act-promotion:shadow_divergence_rate:${window.shadowDivergenceRate}`,
+    `observe-act-promotion:shadow_illegal_selections:${window.shadowIllegalSelections}`,
+    `observe-act-promotion:primary_selector_rejections_30m:${window.primarySelectorRejections30m}`,
+    `observe-act-promotion:primary_control_bypass_rejections_30m:${window.primaryControlBypassRejections30m}`,
+  ];
+}
 
 export type OrgCadenceHandle = {
   stop: () => void;
@@ -182,6 +262,9 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
       nowIso: () => new Date(input.now()).toISOString(),
     });
   const hats = buildHatDefinitions();
+  const observeActPromotionDecisionSource = createObserveActPromotionDecisionSource(input);
+  const initialObserveActPromotionDecision = resolveInitialObserveActPromotionDecision(input);
+  const workOsDriver = resolveObserveActWorkOsDriver(input, initialObserveActPromotionDecision);
   const legacyWorkLane = createWorkOsCadenceLane({
     organizationId: input.organizationId, hats, now: input.now, createId: input.createId, appendEvent: appendEvent("work-os"),
     intake,
@@ -194,12 +277,17 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     source: input.observeActWorkItems ?? createCockroachObserveActWorkItemSource(input),
     runCommand: input.observeActRunCommand ?? createCockroachObserveActCommandRunner(input, hats),
     dispatchTool: input.observeActDispatchTool ?? unavailableObserveActToolDispatcher,
-    executionMode: (input.workOsDriver ?? "legacy") === "observe-act-shadow" ? "shadow" : "primary",
+    executionMode: async () => {
+      const decision = await observeActPromotionDecisionSource();
+      return decision?.executionMode ?? (workOsDriver === "observe-act-shadow" ? "shadow" : "primary");
+    },
+    supplementalEvidenceRefs: async () => promotionEvidenceRefs(await observeActPromotionDecisionSource()),
+    ...(input.observeActMetricAgents === undefined ? {} : { metricAgents: input.observeActMetricAgents }),
     ...createOptionalObserveActSlotAuthorizer(input),
     ...(input.observeActSelectSlot === undefined ? {} : { selectSlot: input.observeActSelectSlot }),
     appendEvent: appendEvent("observe-act-work-item"),
   });
-  const workLanes = workLanesFor(input.workOsDriver ?? "legacy", legacyWorkLane, observeActWorkLane);
+  const workLanes = workLanesFor(workOsDriver, legacyWorkLane, observeActWorkLane, observeActPromotionDecisionSource);
   const memory = createMemoryMaintenanceCadenceLane({
     organizationId: input.organizationId, now: input.now, createId: input.createId,
     reader: memoryState, writer: memoryState, appendEvent: appendEvent("memory-maintenance"),
@@ -377,20 +465,160 @@ function createOptionalObserveActSlotAuthorizer(
   return { authorizeSlot: createCockroachObserveActSlotAuthorizer(input) };
 }
 
+function resolveObserveActWorkOsDriver(
+  input: Pick<ComposeOrgCadenceInput, "workOsDriver" | "observeActPromotionWindow" | "observeActPromotionPolicy">,
+  promotionDecision: ObserveActPromotionDecision | undefined,
+): NonNullable<ComposeOrgCadenceInput["workOsDriver"]> {
+  const requested = input.workOsDriver ?? "legacy";
+  if (requested === "legacy" || promotionDecision === undefined) return requested;
+
+  return promotionDecision.executionMode === "primary" ? "observe-act-primary" : "observe-act-shadow";
+}
+
+function resolveInitialObserveActPromotionDecision(
+  input: Pick<ComposeOrgCadenceInput, "workOsDriver" | "observeActPromotionWindow" | "observeActPromotionPolicy">,
+): ObserveActPromotionDecision | undefined {
+  const requested = input.workOsDriver ?? "legacy";
+  if (requested === "legacy") return undefined;
+  if ((requested === "observe-act" || requested === "observe-act-primary") && input.observeActPromotionWindow === undefined) {
+    return evaluateObserveActPromotionGate({
+      shadowTickCount: 0,
+      shadowSoakHours: 0,
+      shadowDivergenceRate: 0,
+      shadowIllegalSelections: 0,
+      primarySelectorRejections30m: 0,
+      primaryControlBypassRejections30m: 0,
+    }, input.observeActPromotionPolicy);
+  }
+  if (input.observeActPromotionWindow === undefined) return undefined;
+  return evaluateObserveActPromotionGate(input.observeActPromotionWindow, input.observeActPromotionPolicy);
+}
+
+function createObserveActPromotionDecisionSource(
+  input: ComposeOrgCadenceInput,
+): ObserveActPromotionDecisionSource {
+  const requested = input.workOsDriver ?? "legacy";
+  if (requested === "legacy") return async () => undefined;
+  if (input.observeActPromotionWindow !== undefined) {
+    const decision = evaluateObserveActPromotionGate(input.observeActPromotionWindow, input.observeActPromotionPolicy);
+    return async () => decision;
+  }
+
+  const source = input.observeActPromotionWindowSource ?? createCockroachObserveActPromotionWindowSource(input);
+  return cacheDecisionForConcurrentWorkLanes(
+    async () => evaluateObserveActPromotionGate(await source(), input.observeActPromotionPolicy),
+  );
+}
+
+function cacheDecisionForConcurrentWorkLanes(
+  source: ObserveActPromotionDecisionSource,
+): ObserveActPromotionDecisionSource {
+  let cached: Promise<ObserveActPromotionDecision | undefined> | undefined;
+  let clearScheduled = false;
+  return async () => {
+    cached ??= source();
+    if (!clearScheduled) {
+      clearScheduled = true;
+      setTimeout(() => {
+        cached = undefined;
+        clearScheduled = false;
+      }, 0);
+    }
+    return await cached;
+  };
+}
+
+function promotionEvidenceRefs(
+  decision: ObserveActPromotionDecision | undefined,
+): readonly string[] {
+  return decision === undefined
+    ? []
+    : [
+        `observe-act-promotion:decision:${decision.reason}`,
+        `observe-act-promotion:mode:${decision.executionMode}`,
+        ...decision.evidenceRefs,
+      ];
+}
+
 function workLanesFor(
   driver: NonNullable<ComposeOrgCadenceInput["workOsDriver"]>,
   legacy: CadenceLane,
   observeAct: CadenceLane,
+  decisionSource: ObserveActPromotionDecisionSource,
 ): readonly CadenceLane[] {
   switch (driver) {
     case "legacy":
       return [legacy];
     case "observe-act-shadow":
-      return [legacy, observeAct];
+      return [promotionGatedLegacyLane(legacy, decisionSource), observeAct];
     case "observe-act":
     case "observe-act-primary":
-      return [observeAct];
+      return [promotionGatedLegacyLane(legacy, decisionSource), observeAct];
   }
+}
+
+function promotionGatedLegacyLane(
+  legacy: CadenceLane,
+  decisionSource: ObserveActPromotionDecisionSource,
+): CadenceLane {
+  return {
+    name: legacy.name,
+    runOnce: async () => {
+      const decision = await decisionSource();
+      return decision?.executionMode === "primary"
+        ? { status: "work-os:observe-act-primary-suppressed", failures: [] }
+        : await legacy.runOnce();
+    },
+  };
+}
+
+function createCockroachObserveActPromotionWindowSource(
+  input: Pick<ComposeOrgCadenceInput, "executor" | "organizationId" | "now">,
+): () => Promise<ObserveActPromotionWindow> {
+  const store = createCockroachOrgEventStore({ executor: input.executor });
+  return async () => {
+    const now = input.now();
+    const events = (await store.listByOrganization(input.organizationId, 10_000))
+      .filter((event) =>
+        event.kind === OrgEventKind.ObserveActTick &&
+        event.traceId.startsWith("observe-act-")
+      );
+    return observeActPromotionWindowFromEvents(events, now);
+  };
+}
+
+function observeActPromotionWindowFromEvents(
+  events: readonly OrgEvent[],
+  now: number,
+): ObserveActPromotionWindow {
+  const shadowEvents = events.filter((event) => !event.evidenceRefs.includes("observe-act-promotion:mode:primary"));
+  const shadowOccurredAt = shadowEvents
+    .map((event) => Date.parse(event.occurredAt))
+    .filter((timestamp) => Number.isFinite(timestamp));
+  const earliestShadow = shadowOccurredAt.length === 0 ? now : Math.min(...shadowOccurredAt);
+  const shadowSoakHours = Math.max(0, (now - earliestShadow) / (60 * 60 * 1000));
+  const recentPrimaryEvents = events.filter((event) =>
+    event.evidenceRefs.includes("observe-act-promotion:mode:primary") &&
+    Date.parse(event.occurredAt) >= now - 30 * 60 * 1000
+  );
+  return {
+    shadowTickCount: shadowEvents.length,
+    shadowSoakHours,
+    shadowDivergenceRate: shadowEvents.length === 0
+      ? 1
+      : shadowEvents.filter((event) =>
+          event.evidenceRefs.some((ref) => ref.startsWith("observe-act:shadow_divergence:"))
+        ).length / shadowEvents.length,
+    shadowIllegalSelections: shadowEvents.filter((event) =>
+      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:selector_rejected:") || ref === "observe-act:selected_slot:illegal")
+    ).length,
+    primarySelectorRejections30m: recentPrimaryEvents.filter((event) =>
+      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:selector_rejected:"))
+    ).length,
+    primaryControlBypassRejections30m: recentPrimaryEvents.filter((event) =>
+      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:control_bypass_rejected:"))
+    ).length,
+  };
 }
 
 type ObserveActWorkItemRow = {

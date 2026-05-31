@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import {
+  ActRejectionReason,
   ObserveCommandType,
   buildHatDefinitions,
   createCommandHandlerRegistry,
@@ -238,8 +239,21 @@ function observeActEvidenceRefs(evidence: AgentCliCycleEvidence): readonly strin
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
     ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
+    ...actionRejectionEvidenceRefs(evidence),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function actionRejectionEvidenceRefs(evidence: AgentCliCycleEvidence): readonly string[] {
+  if (
+    evidence.actionRejectionReason !== ActRejectionReason.ControlPlaneDenied &&
+    evidence.actionRejectionReason !== ActRejectionReason.ScheduleAuthorityDenied
+  ) {
+    return [];
+  }
+  return [
+    `observe-act:control_bypass_rejected:${evidence.actionRejectionReason}:${evidence.selectedIndex}`,
   ];
 }
 

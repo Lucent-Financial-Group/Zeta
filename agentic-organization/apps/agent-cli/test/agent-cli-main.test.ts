@@ -2,6 +2,7 @@ import { deepEqual, equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  ActRejectionReason,
   ObserveCommandType,
   RunLifecyclePhase,
   RunScope,
@@ -131,6 +132,58 @@ test("runAgentCliMain reports production runtime bootstrap failures as typed set
 
   equal(exitCode, 2);
   ok(stderr.join("").includes("agent CLI setup failed:"));
+});
+
+test("runAgentCliMain persists control-bypass rejection evidence", async () => {
+  const events: OrgEvent[] = [];
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--run-id",
+      "4",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-control-bypass",
+      "--gate-approved",
+      "--select-index",
+      "4",
+    ],
+    env: {},
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: () => undefined,
+    writeStderr: () => undefined,
+    runtime: {
+      runCommand: async () => ({ status: "unused" }),
+      dispatchTool: async () => ({ status: "unused" }),
+      authorizeSlot: async () => ({
+        status: "denied",
+        reason: ActRejectionReason.ControlPlaneDenied,
+        message: "ESTOP active",
+      }),
+      appendObserveActTick: async (event) => {
+        events.push(event);
+      },
+      shutdown: async () => undefined,
+    } as AgentCliMainRuntime & { appendObserveActTick: (event: OrgEvent) => Promise<void> },
+  });
+
+  equal(exitCode, 1);
+  equal(events.length, 1);
+  ok(events[0]?.evidenceRefs.includes("observe-act:control_bypass_rejected:control_plane_denied:4"));
 });
 
 test("runAgentCliMain loads prompt-flow context and persists observe-act tick evidence", async () => {

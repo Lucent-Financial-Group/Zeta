@@ -15,7 +15,7 @@ import { Pool } from "pg";
 import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 
-import { ChangeSetPhase, MemoryPhase, MemoryTier, ScheduleBlockState, ScheduleBlockType, ToolBundle, type ChangeSet, type MemoryRecord, type MemoryState } from "../packages/domain/src/index.ts";
+import { ChangeSetPhase, MemoryPhase, MemoryTier, OrgEventKind, ScheduleBlockState, ScheduleBlockType, ToolBundle, type ChangeSet, type MemoryRecord, type MemoryState, type OrgEvent } from "../packages/domain/src/index.ts";
 import {
   ActionClass,
   PromptFlowGateKind,
@@ -44,6 +44,7 @@ import {
   reapStaleWorkClaims,
   workMarketReadoutForHat,
   type HatWorkQueue,
+  type ScopedMetricAgent,
 } from "../packages/application/src/index.ts";
 import {
   createCockroachCoreStateMigrations,
@@ -54,7 +55,7 @@ import {
   CockroachTableName,
   splitSqlStatements,
 } from "../packages/state-cockroach/src/index.ts";
-import { composeOrgCadenceLoops } from "../apps/workers/src/org-cadence-composition.ts";
+import { composeOrgCadenceLoops, type ObserveActPromotionWindow } from "../apps/workers/src/org-cadence-composition.ts";
 import {
   evaluateSimulationRisk,
   runOrgPolicySimulation,
@@ -66,6 +67,54 @@ const ORG = "org-lfg";
 const NOW = Date.now();
 const NOW_ISO = new Date(NOW).toISOString();
 const id = (p: string) => `${p}-${randomUUID()}`;
+const OBSERVE_ACT_WORK_ITEM_ID = id("work-observe-act");
+
+function observeActPromotionWindowFromEvents(
+  events: readonly OrgEvent[],
+  now: number,
+): ObserveActPromotionWindow {
+  const occurredAt = events
+    .map((event) => Date.parse(event.occurredAt))
+    .filter((timestamp) => Number.isFinite(timestamp));
+  const earliest = occurredAt.length === 0 ? now : Math.min(...occurredAt);
+  const shadowSoakHours = Math.max(0, (now - earliest) / (60 * 60 * 1000));
+  const shadowIllegalSelections = events.filter((event) =>
+    event.evidenceRefs.some((ref) => ref.startsWith("observe-act:selector_rejected:") || ref === "observe-act:selected_slot:illegal")
+  ).length;
+  const divergenceCount = events.filter((event) =>
+    event.evidenceRefs.some((ref) => ref.startsWith("observe-act:shadow_divergence:"))
+  ).length;
+  return {
+    shadowTickCount: events.length,
+    shadowSoakHours,
+    shadowDivergenceRate: events.length === 0 ? 1 : divergenceCount / events.length,
+    shadowIllegalSelections,
+    primarySelectorRejections30m: events.filter((event) =>
+      Date.parse(event.occurredAt) >= now - 30 * 60 * 1000 &&
+      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:selector_rejected:"))
+    ).length,
+    primaryControlBypassRejections30m: events.filter((event) =>
+      Date.parse(event.occurredAt) >= now - 30 * 60 * 1000 &&
+      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:control_bypass_rejected:"))
+    ).length,
+  };
+}
+
+function assertObserveActPrimaryEvidence(event: OrgEvent): void {
+  const requiredEvidence = [
+    "observe-act:menu_hash:",
+    "observe-act:selected_slot:4",
+    "observe-act:veto_count:",
+    "observe-act:prompt_flow:flow-backend-code-change",
+    "observe-act:metric:prompt_flow.required_evidence",
+  ];
+  for (const expected of requiredEvidence) {
+    const present = expected.endsWith(":")
+      ? event.evidenceRefs.some((ref) => ref.startsWith(expected))
+      : event.evidenceRefs.includes(expected);
+    if (!present) throw new Error(`expected primary observe-act evidence ${expected}`);
+  }
+}
 
 async function main(): Promise<void> {
   const pool = new Pool({ connectionString });
@@ -147,10 +196,10 @@ async function main(): Promise<void> {
     organizationId: ORG,
     seed: "kind-org-cadence-phase-2-7",
     stream: [
-      { eventId: "sim-intake-1", kind: "work_intake", occurredAt: new Date(NOW - 900_000).toISOString(), workItemId: "work-observe-act", priority: 100 },
-      { eventId: "sim-complete-1", kind: "work_completed", occurredAt: new Date(NOW - 480_000).toISOString(), workItemId: "work-observe-act", leadTimeMs: 420_000 },
-      { eventId: "sim-review-1", kind: "review_lag", occurredAt: new Date(NOW - 420_000).toISOString(), workItemId: "work-observe-act", lagMs: 180_000 },
-      { eventId: "sim-stale-1", kind: "stale_claim", occurredAt: new Date(NOW - 360_000).toISOString(), workItemId: "work-observe-act" },
+      { eventId: "sim-intake-1", kind: "work_intake", occurredAt: new Date(NOW - 900_000).toISOString(), workItemId: OBSERVE_ACT_WORK_ITEM_ID, priority: 100 },
+      { eventId: "sim-complete-1", kind: "work_completed", occurredAt: new Date(NOW - 480_000).toISOString(), workItemId: OBSERVE_ACT_WORK_ITEM_ID, leadTimeMs: 420_000 },
+      { eventId: "sim-review-1", kind: "review_lag", occurredAt: new Date(NOW - 420_000).toISOString(), workItemId: OBSERVE_ACT_WORK_ITEM_ID, lagMs: 180_000 },
+      { eventId: "sim-stale-1", kind: "stale_claim", occurredAt: new Date(NOW - 360_000).toISOString(), workItemId: OBSERVE_ACT_WORK_ITEM_ID },
     ],
     baseline: {
       overlayId: "kind-baseline",
@@ -189,7 +238,7 @@ async function main(): Promise<void> {
     workScheduleBlockId: id("schedule-observe-act"),
     organizationId: ORG,
     projectId: "proj-observe-act",
-    workItemId: "work-observe-act",
+    workItemId: OBSERVE_ACT_WORK_ITEM_ID,
     assignedAgentId: "agent-observe-act",
     assignedHatAssignmentId: "99",
     blockType: ScheduleBlockType.PrioritizedWork,
@@ -270,8 +319,8 @@ async function main(): Promise<void> {
           permittedUniversalActions: ["load_context"],
           directions: ["Load work item", "Load initiative constraints"],
           requiredToolBundles: [ToolBundle.Task],
-          toolInjections: [{ tool: "repo.search", args: { workItemId: "work-observe-act" } }],
-          contextArtifactRefs: ["work:work-observe-act", "decision:observe-act"],
+          toolInjections: [{ tool: "repo.search", args: { workItemId: OBSERVE_ACT_WORK_ITEM_ID } }],
+          contextArtifactRefs: [`work:${OBSERVE_ACT_WORK_ITEM_ID}`, "decision:observe-act"],
           requiredEvidenceRefs: [contextEvidenceRef],
           gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: [contextEvidenceRef] },
           timeoutSeconds: 300,
@@ -285,8 +334,8 @@ async function main(): Promise<void> {
           permittedUniversalActions: ["execute", "submit_evidence"],
           directions: ["Patch the smallest surface", "Run focused tests"],
           requiredToolBundles: [ToolBundle.Delivery],
-          toolInjections: [{ tool: "repo.patch", args: { workItemId: "work-observe-act" } }],
-          contextArtifactRefs: ["work:work-observe-act", "decision:observe-act"],
+          toolInjections: [{ tool: "repo.patch", args: { workItemId: OBSERVE_ACT_WORK_ITEM_ID } }],
+          contextArtifactRefs: [`work:${OBSERVE_ACT_WORK_ITEM_ID}`, "decision:observe-act"],
           requiredEvidenceRefs: [testEvidenceRef, diffEvidenceRef],
           gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: [testEvidenceRef, diffEvidenceRef] },
           timeoutSeconds: 900,
@@ -299,27 +348,42 @@ async function main(): Promise<void> {
       runId: "prompt-flow-run-observe-act",
       promptFlowId: "flow-backend-code-change",
       definitionVersion: "1.0.0",
-      workItemId: "work-observe-act",
+      workItemId: OBSERVE_ACT_WORK_ITEM_ID,
       scope: RunScope.WorkItem,
       currentPhaseId: "context",
       state: PromptFlowRunState.RunningPhase,
       priority: 100,
     }],
   });
-
-  // run the SAME composition the worker drives, bounded to a few ticks per lane
-  const laneTicks: { lane: string; tick: number; status: string }[] = [];
-  const cadence = composeOrgCadenceLoops({
-    executor, organizationId: ORG, now: () => NOW, createId: id,
+  const observeActMetricAgents: readonly ScopedMetricAgent[] = [{
+    id: "kind-required-evidence-metric",
+    scope: RunScope.WorkItem,
+    compute: async () => ({
+      id: "prompt_flow.required_evidence",
+      label: "required prompt-flow evidence",
+      value: 2,
+      unit: "count",
+    }),
+  }];
+  const pinnedShadowWindow: ObserveActPromotionWindow = {
+    shadowTickCount: 0,
+    shadowSoakHours: 0,
+    shadowDivergenceRate: 0,
+    shadowIllegalSelections: 0,
+    primarySelectorRejections30m: 0,
+    primaryControlBypassRejections30m: 0,
+  };
+  const historicalShadow = composeOrgCadenceLoops({
+    executor, organizationId: ORG, now: () => NOW - 24 * 60 * 60 * 1000, createId: id,
     intervals: { workOsMs: 0, memoryMaintenanceMs: 0, changeControlMs: 0, docMaintenanceMs: 0 },
     sleep: async () => {},
-    // synthetic pending work so the Work OS lane exercises in this bounded proof
-    intake: async () => ({ projectId: id("proj"), initiativeId: id("init"), initiativeBranch: "feat/cadence-auto" }),
+    intake: async () => null,
     workOsDriver: "observe-act-shadow",
+    observeActPromotionWindow: pinnedShadowWindow,
     observeActWorkItems: async () => ({
-      runId: "1",
+      runId: "0",
       projectId: "proj-observe-act",
-      workItemId: "work-observe-act",
+      workItemId: OBSERVE_ACT_WORK_ITEM_ID,
       scope: RunScope.WorkItem,
       phase: RunLifecyclePhase.AwaitingGate,
       hasGateApproval: true,
@@ -331,6 +395,43 @@ async function main(): Promise<void> {
       promptFlowTasks,
     }),
     observeActSelectSlot: () => 4,
+    observeActMetricAgents,
+    observeActRunCommand: async () => {
+      throw new Error("historical observe-act shadow proof should not dispatch commands");
+    },
+    observeActDispatchTool: async () => {
+      throw new Error("historical observe-act shadow proof should not dispatch MCP");
+    },
+    maxTicksPerLane: 1,
+  });
+  await historicalShadow.done;
+
+  // run the SAME composition the worker drives, bounded to a few ticks per lane
+  const laneTicks: { lane: string; tick: number; status: string }[] = [];
+  const cadence = composeOrgCadenceLoops({
+    executor, organizationId: ORG, now: () => NOW, createId: id,
+    intervals: { workOsMs: 0, memoryMaintenanceMs: 0, changeControlMs: 0, docMaintenanceMs: 0 },
+    sleep: async () => {},
+    // synthetic pending work so the Work OS lane exercises in this bounded proof
+    intake: async () => ({ projectId: id("proj"), initiativeId: id("init"), initiativeBranch: "feat/cadence-auto" }),
+    workOsDriver: "observe-act-shadow",
+    observeActPromotionWindow: pinnedShadowWindow,
+    observeActWorkItems: async () => ({
+      runId: "1",
+      projectId: "proj-observe-act",
+      workItemId: OBSERVE_ACT_WORK_ITEM_ID,
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "backend_implementer",
+      hatAssignmentId: "99",
+      agentId: "agent-observe-act",
+      scheduleBlocks: [observeActScheduleBlock],
+      promptFlowTasks,
+    }),
+    observeActSelectSlot: () => 4,
+    observeActMetricAgents,
     observeActRunCommand: async () => {
       throw new Error("org-cadence observe-act shadow proof should not dispatch commands");
     },
@@ -341,12 +442,74 @@ async function main(): Promise<void> {
     observer: { record: (r) => laneTicks.push({ lane: r.lane, tick: r.tick, status: r.status }) },
   });
   await cadence.done;
+  const observedShadowEvents = (await orgEventStore.listByOrganization(ORG, 100_000))
+    .filter((event) => event.kind === OrgEventKind.ObserveActTick && event.subjectId === OBSERVE_ACT_WORK_ITEM_ID);
+  if (!observedShadowEvents.some((event) => event.traceId === "observe-act-0")) {
+    throw new Error("expected historical shadow soak to come from the observe-act lane");
+  }
+  if (!observedShadowEvents.some((event) => event.traceId === "observe-act-1")) {
+    throw new Error("expected current shadow proof ticks from the observe-act lane");
+  }
+  const observedPromotionWindow = observeActPromotionWindowFromEvents(observedShadowEvents, NOW);
+  if (observedPromotionWindow.shadowTickCount < 100 && observedPromotionWindow.shadowSoakHours < 24) {
+    throw new Error(`expected measured observe-act shadow window to satisfy tick or soak gate, got ${JSON.stringify(observedPromotionWindow)}`);
+  }
+  if (observedPromotionWindow.shadowIllegalSelections !== 0 || observedPromotionWindow.shadowDivergenceRate > 0.05) {
+    throw new Error(`expected clean observe-act shadow window, got ${JSON.stringify(observedPromotionWindow)}`);
+  }
+
+  const primaryPromotionTicks: { lane: string; tick: number; status: string }[] = [];
+  const promoted = composeOrgCadenceLoops({
+    executor, organizationId: ORG, now: () => NOW, createId: id,
+    intervals: { workOsMs: 0, memoryMaintenanceMs: 0, changeControlMs: 0, docMaintenanceMs: 0 },
+    sleep: async () => {},
+    intake: async () => {
+      throw new Error("promoted observe-act primary proof should not run legacy work-os");
+    },
+    workOsDriver: "observe-act-shadow",
+    observeActPromotionWindow: observedPromotionWindow,
+    observeActWorkItems: async () => ({
+      runId: "2",
+      projectId: "proj-observe-act",
+      workItemId: OBSERVE_ACT_WORK_ITEM_ID,
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "backend_implementer",
+      hatAssignmentId: "99",
+      agentId: "agent-observe-act",
+      scheduleBlocks: [observeActScheduleBlock],
+      promptFlowTasks,
+    }),
+    observeActSelectSlot: () => 4,
+    observeActMetricAgents,
+    observeActRunCommand: async () => ({ status: "accepted_primary_promotion" }),
+    observeActDispatchTool: async () => {
+      throw new Error("promoted observe-act primary proof should not dispatch MCP");
+    },
+    maxTicksPerLane: 1,
+    observer: { record: (r) => primaryPromotionTicks.push({ lane: r.lane, tick: r.tick, status: r.status }) },
+  });
+  await promoted.done;
+  const primaryPromotionStatus = primaryPromotionTicks.find((tick) => tick.lane === "observe-act-work-item")?.status;
+  if (primaryPromotionStatus !== "observe-act:command:accepted_primary_promotion") {
+    throw new Error(`expected observe-act primary promotion proof, got ${primaryPromotionStatus ?? "missing"}`);
+  }
+  if (!primaryPromotionTicks.some((tick) => tick.lane === "work-os" && tick.status === "work-os:observe-act-primary-suppressed")) {
+    throw new Error("promoted observe-act primary proof did not suppress legacy work-os");
+  }
 
   const memAfter = await createCockroachMemoryStateStore({ executor }).get(memId);
   const csAfter = await createCockroachChangeSetStore({ executor }).get(csId);
   const events = await orgEventStore.listByOrganization(ORG, 1000);
   const recent = events.filter((e) => e.kind.startsWith("work_item") || e.kind.startsWith("memory_") || e.kind.startsWith("change_set") || e.kind.startsWith("review_") || e.kind.startsWith("stage_"));
   const observeActEvents = events.filter((e) => e.kind === "observe_act_tick");
+  const primaryPromotionEvent = observeActEvents.find((e) => e.traceId === "observe-act-2");
+  if (!primaryPromotionEvent?.evidenceRefs.includes("observe-act-promotion:decision:shadow_window_clean")) {
+    throw new Error("expected observe-act primary promotion decision evidence");
+  }
+  assertObserveActPrimaryEvidence(primaryPromotionEvent);
   const reputationEvents = events.filter((e) => e.kind === "reputation_outcome_observed");
 
   console.log(JSON.stringify({
@@ -359,6 +522,13 @@ async function main(): Promise<void> {
         promptFlowEvidenceRows: observeActEvents.filter((e) => e.evidenceRefs.some((ref) => ref.startsWith("observe-act:prompt_flow:"))).length,
         shadowSelectedRows: laneTicks.filter((tick) => tick.lane === "observe-act-work-item" && tick.status === "observe-act-shadow:command:shadow_selected").length,
         scheduleBlockId: observeActScheduleBlock.workScheduleBlockId,
+      },
+      observeActPrimaryPromotion: {
+        ticked: primaryPromotionTicks.some((tick) => tick.lane === "observe-act-work-item"),
+        primaryStatus: primaryPromotionStatus,
+        legacySuppressed: primaryPromotionTicks.some((tick) => tick.lane === "work-os" && tick.status === "work-os:observe-act-primary-suppressed"),
+        measuredWindow: observedPromotionWindow,
+        evidenceRefs: primaryPromotionEvent.evidenceRefs.filter((ref) => ref.startsWith("observe-act-promotion:")),
       },
       seededMemory: { memoryId: memId, phaseAfter: memAfter?.state.phase, weightAfter: memAfter?.state.weight, surfaces: memAfter?.state.phase !== MemoryPhase.Archived },
       seededChangeSet: { changeSetId: csId, phaseAfter: csAfter?.phase, revisionAfter: csAfter?.revision },

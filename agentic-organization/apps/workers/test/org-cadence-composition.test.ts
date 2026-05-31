@@ -25,7 +25,15 @@ test("org cadence composition can disable legacy work-os and run the observe-act
     sleep: async () => {},
     maxTicksPerLane: 1,
     observer: { record: (record) => records.push(record) },
-    workOsDriver: "observe-act",
+    workOsDriver: "observe-act-primary",
+    observeActPromotionWindow: {
+      shadowTickCount: 100,
+      shadowSoakHours: 1,
+      shadowDivergenceRate: 0,
+      shadowIllegalSelections: 0,
+      primarySelectorRejections30m: 0,
+      primaryControlBypassRejections30m: 0,
+    },
     intake: async () => {
       legacyIntakeCalls += 1;
       throw new Error("legacy work-os intake should be disabled");
@@ -55,7 +63,10 @@ test("org cadence composition can disable legacy work-os and run the observe-act
   await handle.done;
 
   ok(records.some((record) => record.lane === "observe-act-work-item"));
-  equal(records.some((record) => record.lane === "work-os"), false);
+  ok(records.some((record) =>
+    record.lane === "work-os" &&
+    record.status === "work-os:observe-act-primary-suppressed"
+  ));
   equal(legacyIntakeCalls, 0);
   equal(observeActCommands, 1);
 });
@@ -97,6 +108,291 @@ test("org cadence composition shadow mode observes selected slots without dispat
     observeActAuthorizeSlot: async () => ({ status: "allowed" }),
     observeActDispatchTool: async () => {
       throw new Error("observe-act composition test should not dispatch MCP");
+    },
+  });
+
+  await handle.done;
+
+  ok(records.some((record) => record.lane === "work-os"));
+  ok(records.some((record) =>
+    record.lane === "observe-act-work-item" &&
+    record.status === "observe-act-shadow:command:shadow_selected"
+  ));
+  equal(legacyIntakeCalls, 1);
+  equal(observeActCommands, 0);
+});
+
+test("org cadence promotion gate promotes a clean shadow window to observe-act primary", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  let observeActCommands = 0;
+  let legacyIntakeCalls = 0;
+
+  const handle = composeOrgCadenceLoops({
+    executor: createEmptyCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-promotion-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act-shadow",
+    observeActPromotionWindow: {
+      shadowTickCount: 100,
+      shadowSoakHours: 1,
+      shadowDivergenceRate: 0.01,
+      shadowIllegalSelections: 0,
+      primarySelectorRejections30m: 0,
+      primaryControlBypassRejections30m: 0,
+    },
+    intake: async () => {
+      legacyIntakeCalls += 1;
+      throw new Error("legacy work-os should not run after observe-act promotion");
+    },
+    observeActWorkItems: async () => ({
+      runId: "1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    observeActRunCommand: async () => {
+      observeActCommands += 1;
+      return { status: "accepted" };
+    },
+    observeActAuthorizeSlot: async () => ({ status: "allowed" }),
+    observeActDispatchTool: async () => {
+      throw new Error("observe-act promotion test should not dispatch MCP");
+    },
+  });
+
+  await handle.done;
+
+  ok(records.some((record) =>
+    record.lane === "observe-act-work-item" &&
+    record.status === "observe-act:command:accepted"
+  ));
+  ok(records.some((record) =>
+    record.lane === "work-os" &&
+    record.status === "work-os:observe-act-primary-suppressed"
+  ));
+  equal(legacyIntakeCalls, 0);
+  equal(observeActCommands, 1);
+});
+
+test("org cadence promotion gate can promote from a rolling window source", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  let observeActCommands = 0;
+  let legacyIntakeCalls = 0;
+
+  const handle = composeOrgCadenceLoops({
+    executor: createEmptyCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-promotion-source-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act-primary",
+    observeActPromotionWindowSource: async () => ({
+      shadowTickCount: 100,
+      shadowSoakHours: 1,
+      shadowDivergenceRate: 0,
+      shadowIllegalSelections: 0,
+      primarySelectorRejections30m: 0,
+      primaryControlBypassRejections30m: 0,
+    }),
+    intake: async () => {
+      legacyIntakeCalls += 1;
+      throw new Error("legacy work-os should be suppressed after rolling promotion");
+    },
+    observeActWorkItems: async () => ({
+      runId: "1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    observeActRunCommand: async () => {
+      observeActCommands += 1;
+      return { status: "accepted" };
+    },
+    observeActAuthorizeSlot: async () => ({ status: "allowed" }),
+    observeActDispatchTool: async () => {
+      throw new Error("observe-act rolling promotion test should not dispatch MCP");
+    },
+  });
+
+  await handle.done;
+
+  ok(records.some((record) =>
+    record.lane === "observe-act-work-item" &&
+    record.status === "observe-act:command:accepted"
+  ));
+  ok(records.some((record) =>
+    record.lane === "work-os" &&
+    record.status === "work-os:observe-act-primary-suppressed"
+  ));
+  equal(legacyIntakeCalls, 0);
+  equal(observeActCommands, 1);
+});
+
+test("org cadence promotion gate demotes unsafe primary windows to shadow", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  let observeActCommands = 0;
+  let legacyIntakeCalls = 0;
+
+  const handle = composeOrgCadenceLoops({
+    executor: createEmptyCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-demotion-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act-primary",
+    observeActPromotionWindow: {
+      shadowTickCount: 100,
+      shadowSoakHours: 1,
+      shadowDivergenceRate: 0,
+      shadowIllegalSelections: 0,
+      primarySelectorRejections30m: 2,
+      primaryControlBypassRejections30m: 0,
+    },
+    intake: async () => {
+      legacyIntakeCalls += 1;
+      return null;
+    },
+    observeActWorkItems: async () => ({
+      runId: "1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    observeActRunCommand: async () => {
+      observeActCommands += 1;
+      return { status: "accepted" };
+    },
+    observeActAuthorizeSlot: async () => ({ status: "allowed" }),
+    observeActDispatchTool: async () => {
+      throw new Error("observe-act demotion test should not dispatch MCP");
+    },
+  });
+
+  await handle.done;
+
+  ok(records.some((record) => record.lane === "work-os"));
+  ok(records.some((record) =>
+    record.lane === "observe-act-work-item" &&
+    record.status === "observe-act-shadow:command:shadow_selected"
+  ));
+  equal(legacyIntakeCalls, 1);
+  equal(observeActCommands, 0);
+});
+
+test("org cadence promotion gate fails closed when primary mode has no promotion window", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  let observeActCommands = 0;
+  let legacyIntakeCalls = 0;
+
+  const handle = composeOrgCadenceLoops({
+    executor: createEmptyCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-missing-window-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act-primary",
+    intake: async () => {
+      legacyIntakeCalls += 1;
+      return null;
+    },
+    observeActWorkItems: async () => ({
+      runId: "1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    observeActRunCommand: async () => {
+      observeActCommands += 1;
+      return { status: "accepted" };
+    },
+    observeActAuthorizeSlot: async () => ({ status: "allowed" }),
+    observeActDispatchTool: async () => {
+      throw new Error("observe-act missing-window test should not dispatch MCP");
+    },
+  });
+
+  await handle.done;
+
+  ok(records.some((record) => record.lane === "work-os"));
+  ok(records.some((record) =>
+    record.lane === "observe-act-work-item" &&
+    record.status === "observe-act-shadow:command:shadow_selected"
+  ));
+  equal(legacyIntakeCalls, 1);
+  equal(observeActCommands, 0);
+});
+
+test("org cadence promotion gate fails closed for compatibility observe-act mode without a promotion window", async () => {
+  const records: CadenceLaneTickRecord[] = [];
+  let observeActCommands = 0;
+  let legacyIntakeCalls = 0;
+
+  const handle = composeOrgCadenceLoops({
+    executor: createEmptyCockroachExecutor(),
+    organizationId: "org-lfg",
+    now: () => Date.parse("2026-05-31T12:00:00.000Z"),
+    createId: (prefix) => `${prefix}-compat-missing-window-test`,
+    sleep: async () => {},
+    maxTicksPerLane: 1,
+    observer: { record: (record) => records.push(record) },
+    workOsDriver: "observe-act",
+    intake: async () => {
+      legacyIntakeCalls += 1;
+      return null;
+    },
+    observeActWorkItems: async () => ({
+      runId: "1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    observeActRunCommand: async () => {
+      observeActCommands += 1;
+      return { status: "accepted" };
+    },
+    observeActAuthorizeSlot: async () => ({ status: "allowed" }),
+    observeActDispatchTool: async () => {
+      throw new Error("observe-act compatibility missing-window test should not dispatch MCP");
     },
   });
 
@@ -172,7 +468,15 @@ test("org cadence control-plane ESTOP blocks work lanes while control lanes keep
     sleep: async () => {},
     maxTicksPerLane: 1,
     observer: { record: (record) => records.push(record) },
-    workOsDriver: "observe-act",
+    workOsDriver: "observe-act-primary",
+    observeActPromotionWindow: {
+      shadowTickCount: 100,
+      shadowSoakHours: 1,
+      shadowDivergenceRate: 0,
+      shadowIllegalSelections: 0,
+      primarySelectorRejections30m: 0,
+      primaryControlBypassRejections30m: 0,
+    },
     controlPlane: {
       flags: [{
         controlPlaneFlagId: "flag-estop",

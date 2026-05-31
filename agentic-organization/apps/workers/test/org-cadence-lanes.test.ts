@@ -28,6 +28,7 @@ import {
   createObserveLifecycleTransitionHandler,
   CommandOutcomePersistenceStatus,
   ActionClass,
+  ActRejectionReason,
   type CommandResult,
   ExternalDecision,
   RunLifecyclePhase,
@@ -202,6 +203,84 @@ test("observe-act work-item lane persists selector rejection evidence on fallbac
   equal(observeEvents.length, 1);
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selector_rejected:non_selectable_slot:5"));
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selector_rejected_fallback_slot:4"));
+});
+
+test("observe-act work-item lane carries supplemental promotion evidence on tick events", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    runCommand: async () => ({ status: "accepted" }),
+    dispatchTool: async () => ({ ok: true }),
+    supplementalEvidenceRefs: [
+      "observe-act-promotion:decision:shadow_window_clean",
+      "observe-act-promotion:mode:primary",
+    ],
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:command:accepted");
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act-promotion:decision:shadow_window_clean"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act-promotion:mode:primary"));
+});
+
+test("observe-act work-item lane persists control-bypass rejection evidence", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    runCommand: async () => ({ status: "accepted" }),
+    dispatchTool: async () => ({ ok: true }),
+    authorizeSlot: async () => ({
+      status: "denied",
+      reason: ActRejectionReason.ControlPlaneDenied,
+      message: "ESTOP active",
+    }),
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "observe-act:rejected:control_plane_denied");
+  equal(result.failures.length, 1);
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:control_bypass_rejected:control_plane_denied:4"));
 });
 
 test("observe-act work-item lane can load a prompt-flow task context instead of requiring hat-specific agent knowledge", async () => {
