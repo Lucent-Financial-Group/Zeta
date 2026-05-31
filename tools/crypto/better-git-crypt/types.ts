@@ -61,19 +61,19 @@ export type CipherClass = "kem" | "signature" | "kdf" | "aead";
  * Cipher implementation status — tracks Phase 1 ship vs deferred.
  */
 export type CipherStatus =
-  | "ships-v1"                    // Noble-native; ready for Phase 2 impl
-  | "deferred-alternate"          // multi-cipher hedge per B-0883.2
-  | "future-substrate";           // requires substrate that doesn't yet exist
+  | "ships-v1" // Noble-native; ready for Phase 2 impl
+  | "deferred-alternate" // multi-cipher hedge per B-0883.2
+  | "future-substrate"; // requires substrate that doesn't yet exist
 
 /**
  * Algorithm spec — registry entry per cipher.
  */
 export interface AlgSpec {
-  readonly id: string;            // e.g. "ML-KEM-768+X25519" (XWing identifier)
+  readonly id: string; // e.g. "ML-KEM-768+X25519" (XWing identifier)
   readonly class: CipherClass;
   readonly status: CipherStatus;
   readonly description: string;
-  readonly nobleModule?: string;  // @noble/post-quantum module path when ships-v1
+  readonly nobleModule?: string; // @noble/post-quantum module path when ships-v1
   readonly composesWith: ReadonlyArray<string>; // backlog/rule references
 }
 
@@ -81,17 +81,17 @@ export interface AlgSpec {
  * Seed source — parameterized per B-0623 (Adinkras-derived seeds swap in later).
  */
 export type SeedSource =
-  | "random-bytes"        // v1 default; CSPRNG
-  | "adinkra-derived"     // B-0623 future; SUSY-ECC private state
-  | "hsm-derived";        // future; HSM-backed seed source
+  | "random-bytes" // v1 default; CSPRNG
+  | "adinkra-derived" // B-0623 future; SUSY-ECC private state
+  | "hsm-derived"; // future; HSM-backed seed source
 
 /**
  * Recipient key — identity + public key material.
  */
 export interface RecipientKey {
-  readonly identity: string;      // e.g. "otto-cli@zeta"
-  readonly kemAlgId: string;      // must reference AlgSpec.id of CipherClass "kem"
-  readonly sigAlgId: string;      // must reference AlgSpec.id of CipherClass "signature"
+  readonly identity: string; // e.g. "otto-cli@zeta"
+  readonly kemAlgId: string; // must reference AlgSpec.id of CipherClass "kem"
+  readonly sigAlgId: string; // must reference AlgSpec.id of CipherClass "signature"
   readonly publicKemKey: Uint8Array;
   readonly publicSigKey: Uint8Array;
   readonly seedSource: SeedSource;
@@ -103,9 +103,9 @@ export interface RecipientKey {
  */
 export interface RecipientSlot {
   readonly identity: string;
-  readonly kemCt: Uint8Array;       // XWing ciphertext (per-recipient)
-  readonly wrappedCek: Uint8Array;  // CEK encrypted under KDF(shared_secret)
-  readonly kdfInfo: Uint8Array;     // domain-separation tag for HKDF
+  readonly kemCt: Uint8Array; // XWing ciphertext (per-recipient)
+  readonly wrappedCek: Uint8Array; // CEK encrypted under KDF(shared_secret)
+  readonly kdfInfo: Uint8Array; // domain-separation tag for HKDF
 }
 
 /**
@@ -119,15 +119,16 @@ export interface RecipientSlot {
  */
 export interface FileEnvelope {
   readonly version: EnvelopeVersion;
-  readonly context: string;          // domain-separation; must equal "zeta.git-crypt.file.v1"
-  readonly algKem: string;           // AlgSpec.id of CipherClass "kem"
-  readonly algKdf: string;           // AlgSpec.id of CipherClass "kdf"
-  readonly algWrap: string;          // AlgSpec.id of CipherClass "aead"
-  readonly algContent: string;       // AlgSpec.id of CipherClass "aead"
-  readonly algSig: string;           // AlgSpec.id of CipherClass "signature"
+  readonly context: string; // domain-separation; must equal "zeta.git-crypt.file.v1"
+  readonly algKem: string; // AlgSpec.id of CipherClass "kem"
+  readonly algKdf: string; // AlgSpec.id of CipherClass "kdf"
+  readonly algWrap: string; // AlgSpec.id of CipherClass "aead"
+  readonly algContent: string; // AlgSpec.id of CipherClass "aead"
+  readonly algSig: string; // AlgSpec.id of CipherClass "signature"
   readonly recipients: ReadonlyArray<RecipientSlot>;
   readonly ciphertext: Uint8Array;
-  readonly signerIdentity: string;   // matches RecipientKey.identity of sender
+  readonly contentNonce: Uint8Array; // 12-byte ChaCha20-Poly1305 nonce for the content AEAD (memo schema "content_nonce"); covered by the signature
+  readonly signerIdentity: string; // matches RecipientKey.identity of sender
   readonly signature: Uint8Array;
 }
 
@@ -297,11 +298,11 @@ export function findAlg(id: string): AlgSpec | undefined {
  * exist in ALG_REGISTRY and have CipherClass matching the slot.
  */
 export interface PlannedEncryptionPath {
-  readonly algKem: string;       // CipherClass: kem
-  readonly algKdf: string;       // CipherClass: kdf
-  readonly algWrap: string;      // CipherClass: aead (for CEK wrap)
-  readonly algContent: string;   // CipherClass: aead (for plaintext)
-  readonly algSig: string;       // CipherClass: signature
+  readonly algKem: string; // CipherClass: kem
+  readonly algKdf: string; // CipherClass: kdf
+  readonly algWrap: string; // CipherClass: aead (for CEK wrap)
+  readonly algContent: string; // CipherClass: aead (for plaintext)
+  readonly algSig: string; // CipherClass: signature
   readonly recipientCount: number;
   readonly senderIdentity: string;
   readonly composesWith: ReadonlyArray<string>;
@@ -314,9 +315,7 @@ export interface PlannedEncryptionPath {
  * so the path-planner composes cleanly with downstream encrypt operations
  * via Result.bind chains.
  */
-export type PlanResult =
-  | { ok: true; path: PlannedEncryptionPath }
-  | { ok: false; feedback: EncryptionFeedback };
+export type PlanResult = { ok: true; path: PlannedEncryptionPath } | { ok: false; feedback: EncryptionFeedback };
 
 /**
  * `determineEncryptionPath` — discriminator that maps an EncryptionContext
@@ -339,9 +338,7 @@ export type PlanResult =
  * extensions to EncryptionFeedback union must update this function (TS
  * strict mode enforces).
  */
-export function determineEncryptionPath(
-  context: EncryptionContext,
-): PlanResult {
+export function determineEncryptionPath(context: EncryptionContext): PlanResult {
   // Empty recipient set:
   if (context.recipients.length === 0) {
     return { ok: false, feedback: { kind: "EmptyRecipientSet" } };
@@ -349,9 +346,7 @@ export function determineEncryptionPath(
 
   // Sender must be in recipient set (sender encrypts to self too for
   // round-trip recovery, per design memo):
-  const senderInRecipients = context.recipients.some(
-    (r) => r.identity === context.sender.identity,
-  );
+  const senderInRecipients = context.recipients.some((r) => r.identity === context.sender.identity);
   if (!senderInRecipients) {
     return {
       ok: false,
@@ -367,18 +362,14 @@ export function determineEncryptionPath(
   if (!firstKemId) {
     return { ok: false, feedback: { kind: "EmptyRecipientSet" } };
   }
-  const allSameKem = context.recipients.every(
-    (r) => r.kemAlgId === firstKemId,
-  );
+  const allSameKem = context.recipients.every((r) => r.kemAlgId === firstKemId);
   if (!allSameKem) {
     // Use RecipientKeyInvalid (not AlgUnsupported) — the per-recipient
     // KEM is itself well-formed and supported; the failure is that v1's
     // single-envelope-KEM-column constraint requires all recipients use
     // the SAME KEM. RecipientKeyInvalid surfaces the specific mismatched
     // identity + the v1 constraint reason for the caller's handler.
-    const mismatched = context.recipients.find(
-      (r) => r.kemAlgId !== firstKemId,
-    );
+    const mismatched = context.recipients.find((r) => r.kemAlgId !== firstKemId);
     return {
       ok: false,
       feedback: {
@@ -512,9 +503,7 @@ export function validateEncryptionContext(
   if (ctx.recipients.length === 0) {
     return { kind: "EmptyRecipientSet" };
   }
-  const senderInRecipients = ctx.recipients.some(
-    (r) => r.identity === ctx.sender.identity,
-  );
+  const senderInRecipients = ctx.recipients.some((r) => r.identity === ctx.sender.identity);
   if (!senderInRecipients) {
     return { kind: "SenderNotInRecipientSet", senderIdentity: ctx.sender.identity };
   }

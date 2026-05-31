@@ -1,0 +1,448 @@
+/**
+ * tools/crypto/better-git-crypt/crypto.ts
+ *
+ * B-0883 v1 — Phase 2 REAL crypto implementation (operator-authorized
+ * 2026-05-31). Wires the type substrate in `types.ts` to actual
+ * post-quantum primitives:
+ *
+ *   - KEM:       XWing (ML-KEM-768 + X25519 hybrid) — @noble/post-quantum/hybrid.js
+ *   - Signature: ML-DSA-65 (Dilithium)             — @noble/post-quantum/ml-dsa.js
+ *   - KDF:       HKDF-SHA256                        — @noble/hashes/hkdf.js + sha2.js
+ *   - AEAD:      ChaCha20-Poly1305                  — @noble/ciphers/chacha.js
+ *   - Envelope:  CBOR (canonical/deterministic)     — cborg
+ *
+ * Dependency versions (pinned current-latest per dep-pin-search-first-authority,
+ * verified empirically against the installed packages 2026-05-31):
+ *   @noble/post-quantum@0.6.1  @noble/ciphers@2.2.0  @noble/hashes@2.2.0  cborg@5.1.1
+ *
+ * API shapes EMPIRICALLY VERIFIED against the installed packages (the runtime
+ * is the oracle — the v1 design memo's pseudocode used a different chacha
+ * call-shape + a 3-arg ml_dsa sign that do NOT exist in these versions):
+ *   - chacha20poly1305(key, nonce).encrypt(pt) / .decrypt(ct)   [NOT (key).encrypt(nonce,pt)]
+ *   - ml_dsa65.sign(msg, sk) / verify(sig, msg, pk)             [2-arg; no context positional]
+ *   - XWing.keygen() -> {publicKey, secretKey}; encapsulate(pk) -> {cipherText, sharedSecret};
+ *     decapsulate(ct, sk) -> sharedSecret
+ *   - hkdf(sha256, ikm, salt?, info, len)
+ *
+ * Domain separation: the signature is computed over the CBOR encoding of the
+ * envelope's signed view, which INCLUDES the `context` field
+ * ("zeta.git-crypt.file.v1"). That puts the domain-separation tag inside the
+ * signed bytes — so the (unavailable) ml_dsa context positional is not needed.
+ *
+ * Scope (v1):
+ *   - content-only encryption (B-0883.5); metadata (filenames / commit msgs) deferred
+ *   - git-at-rest threat model (B-0883.4)
+ *   - single envelope KEM column (all recipients share one KEM) per memo
+ *   - forward-only revocation (B-0883.3 future)
+ *
+ * Composes with: types.ts (determineEncryptionPath planner + validation),
+ * B-0883 design memo, B-0885 (agent private encrypted state consumer),
+ * asymmetric-authorship + monad-propagation rules (Result<T, TFeedback>).
+ */
+
+import { sha256 } from "@noble/hashes/sha2.js";
+import { hkdf } from "@noble/hashes/hkdf.js";
+import { randomBytes } from "@noble/hashes/utils.js";
+import { chacha20poly1305 } from "@noble/ciphers/chacha.js";
+import { XWing } from "@noble/post-quantum/hybrid.js";
+import { ml_dsa65 } from "@noble/post-quantum/ml-dsa.js";
+import { encode as cborEncode, decode as cborDecode } from "cborg";
+
+import {
+  type EncryptionContext,
+  type EncryptionFeedback,
+  type DecryptionFeedback,
+  type FileEnvelope,
+  type RecipientKey,
+  type RecipientSlot,
+  type SeedSource,
+  determineEncryptionPath,
+  validateEnvelopeStructure,
+} from "./types";
+
+/** v1 algorithm ids — the only ships-v1 set this implementation wires. */
+export const V1_KEM_ALG = "ML-KEM-768+X25519";
+export const V1_SIG_ALG = "ML-DSA-65";
+export const V1_CONTEXT = "zeta.git-crypt.file.v1";
+
+/** ChaCha20-Poly1305 nonce length (bytes). */
+const NONCE_LEN = 12;
+/** Content encryption key length (bytes) — ChaCha20 key size. */
+const CEK_LEN = 32;
+/**
+ * Zero nonce used for the per-recipient CEK wrap.
+ *
+ * SAFETY INVARIANT (per design memo): the wrap key is single-use. It is
+ * `HKDF(sha256, sharedSecret, info=cek-wrap.v1:<identity>)` where
+ * `sharedSecret` is freshly produced by `XWing.encapsulate` on every
+ * encryption (XWing draws fresh randomness per call). A given wrapKey
+ * therefore encrypts exactly one CEK, ever — so a fixed (zero) nonce can
+ * never be reused under the same key, which is the only condition
+ * ChaCha20-Poly1305 nonce-uniqueness requires. The content nonce, by
+ * contrast, IS random (the CEK is reused across recipients within one file,
+ * though still single-file-scoped).
+ */
+const WRAP_ZERO_NONCE = new Uint8Array(NONCE_LEN);
+
+/**
+ * A recipient's PRIVATE key material — the secret counterpart to the public
+ * `RecipientKey` in types.ts. Held only by the identity itself; never
+ * serialized into an envelope.
+ */
+export interface RecipientSecretKeys {
+  readonly identity: string;
+  readonly kemSecretKey: Uint8Array; // XWing secret key
+  readonly sigSecretKey: Uint8Array; // ML-DSA-65 secret key
+}
+
+/** A freshly generated keypair: the publishable public half + the private half. */
+export interface GeneratedKeyPair {
+  readonly publicKey: RecipientKey;
+  readonly secretKeys: RecipientSecretKeys;
+}
+
+/** Result of `encrypt` — Result<FileEnvelope, EncryptionFeedback>. */
+export type EncryptResult = { ok: true; envelope: FileEnvelope } | { ok: false; feedback: EncryptionFeedback };
+
+/** Result of `decrypt` — Result<plaintext, DecryptionFeedback>. */
+export type DecryptResult = { ok: true; plaintext: Uint8Array } | { ok: false; feedback: DecryptionFeedback };
+
+const utf8 = (s: string): Uint8Array => new TextEncoder().encode(s);
+
+/**
+ * Generate a v1 recipient keypair (XWing KEM + ML-DSA-65 signature).
+ *
+ * v1 supports `seedSource: "random-bytes"` only; `adinkra-derived` (B-0623)
+ * and `hsm-derived` are future substrate. Throws on unsupported seed source —
+ * keygen is a setup operation, not a hot-path Result surface.
+ */
+export function generateRecipientKeyPair(identity: string, seedSource: SeedSource = "random-bytes"): GeneratedKeyPair {
+  if (seedSource !== "random-bytes") {
+    throw new Error(`generateRecipientKeyPair: seedSource "${seedSource}" not available in v1 (random-bytes only)`);
+  }
+  const kem = XWing.keygen();
+  const sig = ml_dsa65.keygen();
+  return {
+    publicKey: {
+      identity,
+      kemAlgId: V1_KEM_ALG,
+      sigAlgId: V1_SIG_ALG,
+      publicKemKey: kem.publicKey,
+      publicSigKey: sig.publicKey,
+      seedSource,
+      composesWith: ["B-0883", "B-0883.1"],
+    },
+    secretKeys: {
+      identity,
+      kemSecretKey: kem.secretKey,
+      sigSecretKey: sig.secretKey,
+    },
+  };
+}
+
+/**
+ * Canonical CBOR encoding of the envelope's SIGNED VIEW — every field except
+ * `signature`. Both encrypt (to produce the signature) and decrypt (to verify
+ * it) call this with the same field set; cborg's canonical/deterministic
+ * encoding then guarantees byte-identical input to sign/verify.
+ *
+ * The recipient slots are mapped to a fixed shape so no extraneous field can
+ * leak into (or fall out of) the signed bytes.
+ */
+function encodeSignedView(env: {
+  version: number;
+  context: string;
+  algKem: string;
+  algKdf: string;
+  algWrap: string;
+  algContent: string;
+  algSig: string;
+  recipients: readonly RecipientSlot[];
+  ciphertext: Uint8Array;
+  contentNonce: Uint8Array;
+  signerIdentity: string;
+}): Uint8Array {
+  return cborEncode({
+    version: env.version,
+    context: env.context,
+    algKem: env.algKem,
+    algKdf: env.algKdf,
+    algWrap: env.algWrap,
+    algContent: env.algContent,
+    algSig: env.algSig,
+    recipients: env.recipients.map((r) => ({
+      identity: r.identity,
+      kemCt: r.kemCt,
+      wrappedCek: r.wrappedCek,
+      kdfInfo: r.kdfInfo,
+    })),
+    ciphertext: env.ciphertext,
+    contentNonce: env.contentNonce,
+    signerIdentity: env.signerIdentity,
+  });
+}
+
+/**
+ * Encrypt `context.plaintext` to all `context.recipients`, signed by
+ * `context.sender` (whose private keys are supplied separately — the public
+ * `RecipientKey` in the context carries no secret).
+ *
+ * Returns Result<FileEnvelope, EncryptionFeedback>. All failure modes are the
+ * function's own authored TFeedback variants (asymmetric-authorship rule).
+ */
+export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientSecretKeys): EncryptResult {
+  // 1. Plan the algorithm path (reuses the validated planner from types.ts).
+  const plan = determineEncryptionPath(context);
+  if (!plan.ok) {
+    return { ok: false, feedback: plan.feedback };
+  }
+
+  // 2. v1 supports random-bytes seed source only.
+  if (context.seedSource !== "random-bytes") {
+    return {
+      ok: false,
+      feedback: { kind: "SeedSourceNotAvailable", seedSource: context.seedSource },
+    };
+  }
+
+  // 3. The sender's secret keys must belong to the sender identity in context.
+  if (senderSecretKeys.identity !== context.sender.identity) {
+    return {
+      ok: false,
+      feedback: {
+        kind: "RecipientKeyInvalid",
+        identity: senderSecretKeys.identity,
+        reason: `sender secret key identity "${senderSecretKeys.identity}" != context sender "${context.sender.identity}"`,
+      },
+    };
+  }
+
+  // 4. Content encryption key + content nonce.
+  const cek = randomBytes(CEK_LEN);
+  const contentNonce = randomBytes(NONCE_LEN);
+
+  // 5. Per-recipient KEM encapsulation + CEK wrap.
+  const slots: RecipientSlot[] = [];
+  for (const r of context.recipients) {
+    let cipherText: Uint8Array;
+    let sharedSecret: Uint8Array;
+    try {
+      const enc = XWing.encapsulate(r.publicKemKey);
+      cipherText = enc.cipherText;
+      sharedSecret = enc.sharedSecret;
+    } catch {
+      return { ok: false, feedback: { kind: "KemFailure", recipientIdentity: r.identity } };
+    }
+    const kdfInfo = utf8(`zeta.git-crypt.cek-wrap.v1:${r.identity}`);
+    const wrapKey = hkdf(sha256, sharedSecret, undefined, kdfInfo, CEK_LEN);
+    // Zero nonce is safe here — see WRAP_ZERO_NONCE invariant (single-use wrapKey).
+    const wrappedCek = chacha20poly1305(wrapKey, WRAP_ZERO_NONCE).encrypt(cek);
+    slots.push({ identity: r.identity, kemCt: cipherText, wrappedCek, kdfInfo });
+  }
+
+  // 6. Encrypt the content once with the CEK.
+  const ciphertext = chacha20poly1305(cek, contentNonce).encrypt(context.plaintext);
+
+  // 7. Sign the signed view (everything except the signature). The signed
+  //    bytes include `context` for domain separation.
+  const signedView = {
+    version: 1 as const,
+    context: V1_CONTEXT,
+    algKem: plan.path.algKem,
+    algKdf: plan.path.algKdf,
+    algWrap: plan.path.algWrap,
+    algContent: plan.path.algContent,
+    algSig: plan.path.algSig,
+    recipients: slots,
+    ciphertext,
+    contentNonce,
+    signerIdentity: context.sender.identity,
+  };
+  let signature: Uint8Array;
+  try {
+    signature = ml_dsa65.sign(encodeSignedView(signedView), senderSecretKeys.sigSecretKey);
+  } catch {
+    return { ok: false, feedback: { kind: "SignatureFailure" } };
+  }
+
+  return { ok: true, envelope: { ...signedView, signature } };
+}
+
+/**
+ * Decrypt an envelope as `recipientSecretKeys`, verifying it was signed by the
+ * holder of `senderPublicSigKey` (the caller resolves the envelope's
+ * `signerIdentity` to a known public sig key, e.g. via a recipients registry).
+ *
+ * Signature is verified FIRST (fail-closed on tampering before touching the
+ * KEM). Returns Result<plaintext, DecryptionFeedback>.
+ */
+export function decrypt(
+  envelope: FileEnvelope,
+  recipientSecretKeys: RecipientSecretKeys,
+  senderPublicSigKey: Uint8Array,
+): DecryptResult {
+  // 1. Version + context checks FIRST, so the precise typed feedback is
+  //    reachable. The `version` literal type says `1`, but decrypt may be
+  //    handed UNTRUSTED decoded input (e.g. a hand-built or future-version
+  //    envelope) where it isn't — hence the runtime guard the type can't see.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard on untrusted decoded input; the compile-time literal type does not hold for arbitrary runtime envelopes
+  if (envelope.version !== 1) {
+    return { ok: false, feedback: { kind: "VersionUnsupported", version: envelope.version } };
+  }
+  if (envelope.context !== V1_CONTEXT) {
+    return {
+      ok: false,
+      feedback: { kind: "ContextMismatch", expected: V1_CONTEXT, actual: envelope.context },
+    };
+  }
+
+  // 2. Structural validation (alg classes / non-empty shape).
+  try {
+    validateEnvelopeStructure(envelope);
+  } catch (e) {
+    return {
+      ok: false,
+      feedback: { kind: "EnvelopeMalformed", reason: e instanceof Error ? e.message : String(e) },
+    };
+  }
+
+  // 3. Verify the signature over the signed view (fail-closed on tampering).
+  let sigValid: boolean;
+  try {
+    sigValid = ml_dsa65.verify(envelope.signature, encodeSignedView(envelope), senderPublicSigKey);
+  } catch {
+    sigValid = false;
+  }
+  if (!sigValid) {
+    return { ok: false, feedback: { kind: "SignatureInvalid", signerIdentity: envelope.signerIdentity } };
+  }
+
+  // 4. Locate this recipient's slot.
+  const slot = envelope.recipients.find((r) => r.identity === recipientSecretKeys.identity);
+  if (!slot) {
+    return { ok: false, feedback: { kind: "RecipientNotInEnvelope", identity: recipientSecretKeys.identity } };
+  }
+
+  // 5. KEM decapsulate -> shared secret -> unwrap CEK.
+  //    Per FIPS-203 implicit rejection, decapsulate never throws on a bad
+  //    ciphertext; it returns a (wrong) shared secret, and the CEK-unwrap
+  //    AEAD tag check below is what fails -> KemFailure.
+  let cek: Uint8Array;
+  try {
+    const sharedSecret = XWing.decapsulate(slot.kemCt, recipientSecretKeys.kemSecretKey);
+    const wrapKey = hkdf(sha256, sharedSecret, undefined, slot.kdfInfo, CEK_LEN);
+    cek = chacha20poly1305(wrapKey, WRAP_ZERO_NONCE).decrypt(slot.wrappedCek);
+  } catch {
+    return { ok: false, feedback: { kind: "KemFailure" } };
+  }
+
+  // 6. Decrypt content under the CEK.
+  try {
+    const plaintext = chacha20poly1305(cek, envelope.contentNonce).decrypt(envelope.ciphertext);
+    return { ok: true, plaintext };
+  } catch {
+    return { ok: false, feedback: { kind: "ContentDecryptFailure" } };
+  }
+}
+
+/**
+ * Encode a full envelope (including signature) to canonical CBOR bytes — the
+ * on-disk / in-git file format.
+ */
+export function encodeEnvelope(envelope: FileEnvelope): Uint8Array {
+  return cborEncode({
+    version: envelope.version,
+    context: envelope.context,
+    algKem: envelope.algKem,
+    algKdf: envelope.algKdf,
+    algWrap: envelope.algWrap,
+    algContent: envelope.algContent,
+    algSig: envelope.algSig,
+    recipients: envelope.recipients.map((r) => ({
+      identity: r.identity,
+      kemCt: r.kemCt,
+      wrappedCek: r.wrappedCek,
+      kdfInfo: r.kdfInfo,
+    })),
+    ciphertext: envelope.ciphertext,
+    contentNonce: envelope.contentNonce,
+    signerIdentity: envelope.signerIdentity,
+    signature: envelope.signature,
+  });
+}
+
+/** Result of `decodeEnvelope` — Result<FileEnvelope, DecryptionFeedback>. */
+export type DecodeEnvelopeResult = { ok: true; envelope: FileEnvelope } | { ok: false; feedback: DecryptionFeedback };
+
+/**
+ * Decode on-disk CBOR bytes back into a `FileEnvelope`, structurally validated.
+ * Returns `EnvelopeMalformed` feedback on any decode / shape failure rather
+ * than throwing (Result-shaped per monad-propagation rule).
+ */
+export function decodeEnvelope(bytes: Uint8Array): DecodeEnvelopeResult {
+  let raw: unknown;
+  try {
+    raw = cborDecode(bytes);
+  } catch (e) {
+    return {
+      ok: false,
+      feedback: {
+        kind: "EnvelopeMalformed",
+        reason: `cbor decode failed: ${e instanceof Error ? e.message : String(e)}`,
+      },
+    };
+  }
+  if (typeof raw !== "object" || raw === null) {
+    return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: "decoded value is not an object" } };
+  }
+  const o = raw as Record<string, unknown>;
+  const isBytes = (v: unknown): v is Uint8Array => v instanceof Uint8Array;
+  const isStr = (v: unknown): v is string => typeof v === "string";
+  if (
+    o.version !== 1 ||
+    !isStr(o.context) ||
+    !isStr(o.algKem) ||
+    !isStr(o.algKdf) ||
+    !isStr(o.algWrap) ||
+    !isStr(o.algContent) ||
+    !isStr(o.algSig) ||
+    !Array.isArray(o.recipients) ||
+    !isBytes(o.ciphertext) ||
+    !isBytes(o.contentNonce) ||
+    !isStr(o.signerIdentity) ||
+    !isBytes(o.signature)
+  ) {
+    return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: "envelope field shape mismatch" } };
+  }
+  const recipients: RecipientSlot[] = [];
+  for (const r of o.recipients as unknown[]) {
+    if (typeof r !== "object" || r === null) {
+      return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: "recipient slot is not an object" } };
+    }
+    const rr = r as Record<string, unknown>;
+    if (!isStr(rr.identity) || !isBytes(rr.kemCt) || !isBytes(rr.wrappedCek) || !isBytes(rr.kdfInfo)) {
+      return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: "recipient slot field shape mismatch" } };
+    }
+    recipients.push({ identity: rr.identity, kemCt: rr.kemCt, wrappedCek: rr.wrappedCek, kdfInfo: rr.kdfInfo });
+  }
+  const envelope: FileEnvelope = {
+    version: 1,
+    context: o.context,
+    algKem: o.algKem,
+    algKdf: o.algKdf,
+    algWrap: o.algWrap,
+    algContent: o.algContent,
+    algSig: o.algSig,
+    recipients,
+    ciphertext: o.ciphertext,
+    contentNonce: o.contentNonce,
+    signerIdentity: o.signerIdentity,
+    signature: o.signature,
+  };
+  try {
+    validateEnvelopeStructure(envelope);
+  } catch (e) {
+    return { ok: false, feedback: { kind: "EnvelopeMalformed", reason: e instanceof Error ? e.message : String(e) } };
+  }
+  return { ok: true, envelope };
+}

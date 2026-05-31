@@ -31,12 +31,7 @@
  * points for Phase 2.
  */
 
-import {
-  ALG_REGISTRY,
-  validateAlgRegistry,
-  validateEnvelopeStructure,
-  type FileEnvelope,
-} from "../types";
+import { ALG_REGISTRY, validateAlgRegistry, validateEnvelopeStructure, type FileEnvelope } from "../types";
 
 type Mode = "list-algs" | "validate" | "dry-run-envelope";
 
@@ -135,6 +130,7 @@ function modeDryRunEnvelope(): number {
       },
     ],
     ciphertext: new Uint8Array(0),
+    contentNonce: new Uint8Array(12),
     signerIdentity: "otto-cli@zeta",
     signature: new Uint8Array(0),
   };
@@ -159,8 +155,7 @@ function modeDryRunEnvelope(): number {
         signerIdentity: synthetic.signerIdentity,
       },
       integrationPending: {
-        nobleKemImpl:
-          "Phase 2 — @noble/post-quantum/ml-kem XWing implementation; KEM encapsulate/decapsulate",
+        nobleKemImpl: "Phase 2 — @noble/post-quantum/ml-kem XWing implementation; KEM encapsulate/decapsulate",
         nobleSigImpl: "Phase 2 — @noble/post-quantum/ml-dsa signature gen/verify",
         cborEncoding: "Phase 2 — CBOR envelope encode/decode (cbor-x or similar)",
         contentAead: "Phase 2 — @noble/ciphers ChaCha20-Poly1305 encrypt/decrypt",
