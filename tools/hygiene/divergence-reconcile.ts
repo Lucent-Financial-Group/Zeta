@@ -36,7 +36,17 @@
 // Writer companion:        tools/hygiene/divergence-shard.ts
 
 import { execFileSync } from "node:child_process";
-import { existsSync, lstatSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import {
+  closeSync,
+  constants,
+  existsSync,
+  fstatSync,
+  ftruncateSync,
+  openSync,
+  readFileSync,
+  readdirSync,
+  writeSync,
+} from "node:fs";
 import { isAbsolute, join, relative, resolve } from "node:path";
 
 // Mirrors DIVERGENCE_ROOT in divergence-shard.ts. Both files reflect the path
@@ -370,6 +380,24 @@ export function parseArgs(argv: readonly string[]): ParseArgsResult {
   return { kind: "ok", command };
 }
 
+function openRegularShardForReadWrite(abs: string, relPath: string): number {
+  try {
+    return openSync(abs, constants.O_RDWR | constants.O_NOFOLLOW);
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+    }
+    if (code === "ELOOP") {
+      throw new Error(`cannot reconcile: ${relPath} is a symbolic link; divergence shards must be regular files`);
+    }
+    if (code === "EISDIR") {
+      throw new Error(`cannot reconcile: ${relPath} is not a regular file`);
+    }
+    throw err;
+  }
+}
+
 /**
  * Apply a morning-reconciliation decision to a PENDING divergence shard and
  * write the reconciled markdown back IN PLACE — the I/O "one action" of AC #4
@@ -425,32 +453,28 @@ export function reconcileDivergenceShard(
   // Read directly and treat a missing file as a signal rather than pre-checking
   // with existsSync — the check-then-read gap is a TOCTOU race (CWE-367), and
   // the error path is the same friendly message either way.
-  let original: string;
+  let fd: number | undefined;
   try {
-    const stat = lstatSync(abs);
-    if (stat.isSymbolicLink()) {
-      throw new Error(`cannot reconcile: ${relPath} is a symbolic link; divergence shards must be regular files`);
-    }
+    fd = openRegularShardForReadWrite(abs, relPath);
+    const stat = fstatSync(fd);
     if (!stat.isFile()) {
       throw new Error(`cannot reconcile: ${relPath} is not a regular file`);
     }
-    original = readFileSync(abs, "utf8");
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+    const original = readFileSync(fd, "utf8");
+    if (parseShardMeta(original) === null) {
+      throw new Error(
+        `cannot reconcile: ${relPath} is not a divergence shard (missing frontmatter or type != divergence)`,
+      );
     }
-    throw err;
+    // fillReconciliation validates eagerly (decision vocabulary + section
+    // present + still pending) and throws before mutation. Compute the
+    // reconciled markdown first; only truncate/write once it has succeeded.
+    const reconciled = fillReconciliation(original, decision, note);
+    ftruncateSync(fd, 0);
+    writeSync(fd, reconciled, 0, "utf8");
+  } finally {
+    if (fd !== undefined) closeSync(fd);
   }
-  if (parseShardMeta(original) === null) {
-    throw new Error(
-      `cannot reconcile: ${relPath} is not a divergence shard (missing frontmatter or type != divergence)`,
-    );
-  }
-  // fillReconciliation validates eagerly (decision vocabulary + section present
-  // + still pending) and throws before we touch the file. Compute the
-  // reconciled markdown first; only write once it has succeeded.
-  const reconciled = fillReconciliation(original, decision, note);
-  writeFileSync(abs, reconciled);
   return { relPath, decision };
 }
 
