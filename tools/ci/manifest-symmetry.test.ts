@@ -9,6 +9,7 @@ import { join } from "node:path";
 // silently. (Per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md: this asserts.)
 
 const setupDir = join(import.meta.dir, "..", "setup");
+const repoRoot = join(import.meta.dir, "..", "..");
 
 function parseManifest(name: string): string[] {
   let raw: string;
@@ -22,6 +23,11 @@ function parseManifest(name: string): string[] {
     .map((l) => l.replace(/#.*$/, "").trim())
     .filter((l) => l.length > 0)
     .map((l) => l.split(/\s+/)[0]!); // first token = the package id
+}
+
+function expectMiseTool(name: string, version: string): void {
+  const raw = readFileSync(join(repoRoot, ".mise.toml"), "utf8");
+  expect(raw).toMatch(new RegExp(`^${name}\\s*=\\s*"${version}"$`, "m"));
 }
 
 // Windows disposition for Unix system tools NOT carried in manifests/windows.
@@ -43,6 +49,10 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   "libgssapi-krb5-2": "Linux Kerberos/GSSAPI runtime lib; Windows uses SSPI natively",
   tzdata: "Linux timezone database; Windows ships its own timezone data",
   ollama: "cross-platform incl. Windows (scoop / winget Ollama.Ollama); inclusion in the Windows install graph is a local-LLM-substrate Windows-parity decision — deferred, like hermes-agent",
+  "qemu-system-x86":
+    "covered on Windows by the qemu manifest line; apt splits qemu-system-* from qemu-utils",
+  "qemu-utils":
+    "covered on Windows by the qemu manifest line; apt splits qemu-img utilities from qemu-system-*",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
@@ -55,6 +65,17 @@ test("manifests/windows covers every apt/brew system tool (or an allowlisted exc
 
 test("git is present in manifests/windows (loop clone + repo-ops prerequisite)", () => {
   expect(parseManifest("windows")).toContain("git");
+});
+
+test("USB/QEMU and cluster integration tools are declared in install substrate", () => {
+  expect(parseManifest("apt")).toEqual(expect.arrayContaining(["qemu-system-x86", "qemu-utils"]));
+  expect(parseManifest("brew")).toContain("qemu");
+  expect(parseManifest("windows")).toContain("qemu");
+
+  expectMiseTool("k3d", "5.8.3");
+  expectMiseTool("kind", "0.31.0");
+  expectMiseTool("kubectl", "1.36.1");
+  expectMiseTool("helm", "4.2.0");
 });
 
 test("no stale WINDOWS_EXCEPTIONS (each must still be a real apt/brew tool)", () => {

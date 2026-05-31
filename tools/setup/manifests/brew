@@ -30,3 +30,8 @@ hermes-agent  # "Self-improving AI agent that creates skills from
 # model is the reproducible/pinned artifact; brew tracks latest ollama binary).
 ollama  # CPU-served tiny model for the move-next selector + observe.ts
         # classifier + DST fixtures. Idempotent: brew install skips if present.
+
+# USB/ISO QEMU acceptance substrate (operator 2026-05-31): B-0891 uses
+# qemu-system-x86_64 for boot/full-install/retention scenarios and qemu-img
+# for qcow2 snapshot/restart state preservation.
+qemu

@@ -14,3 +14,7 @@
 # https://github.com/ScoopInstaller/scoop + https://learn.microsoft.com/windows/package-manager/):
 #   git — scoop: git | winget: Git.Git | choco: git
 git    winget=Git.Git    choco=git
+
+# USB/ISO QEMU acceptance substrate (B-0891). The Unix package split is
+# qemu-system-x86 + qemu-utils; Windows carries those binaries through qemu.
+qemu   winget=SoftwareFreedomConservancy.QEMU   choco=qemu

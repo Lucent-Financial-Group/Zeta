@@ -27,4 +27,5 @@
 - progress: carved Kubernetes and ArgoCD health into dedicated backlog row B-0951 for kind/k3d integration testing, keeping B-0891 scoped to USB/ISO zflash acceptance and a narrow agent-start smoke path.
 - progress: `run.ts --scenario reformat-with-retention <iso>` now emits the QEMU qcow2 snapshot/restart plan from `qemu-state.ts` and still exits failed until command execution plus serial-marker assertions are wired.
 - progress: `qemu-state.ts` now includes a Result-shaped retention serial-marker assertion helper for `zeta-creds-restore:` and `already-present`, with missing-marker feedback tests.
+- progress: declared B-0891 QEMU substrate through install.sh manifests (`qemu`/`qemu-system-x86`/`qemu-utils`) and B-0951 cluster tools through `.mise.toml` (`k3d`, `kind`, `kubectl`, `helm`), replacing ad hoc dev-cluster brew instructions with `tools/setup/install.sh`.
 - next: execute the emitted QEMU command plan from the B-0891 scenario-3 runtime path and keep `reformat-with-retention` failed closed until serial-marker assertions prove end-to-end retention.
