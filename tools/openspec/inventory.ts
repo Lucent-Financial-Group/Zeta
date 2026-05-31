@@ -9,7 +9,7 @@
  * Output: JSON to stdout. Human-readable summary to stderr.
  */
 
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -33,13 +33,27 @@ interface Mapping {
   missingModules: string[];
 }
 
+interface ArtifactMapping {
+  capability: string;
+  artifacts: string[];
+  missingArtifacts: string[];
+}
+
+interface GapReportOptions {
+  artifactRoot?: string;
+  artifactMap?: Record<string, string[]>;
+}
+
 interface GapReport {
   timestamp: string;
   specs: SpecEntry[];
   modules: ModuleEntry[];
   mappings: Mapping[];
+  artifactMappings: ArtifactMapping[];
   coveredModules: string[];
   uncoveredModules: string[];
+  mappedArtifacts: string[];
+  missingArtifacts: string[];
   unmappedSpecs: string[];
   coveragePercent: number;
 }
@@ -61,33 +75,28 @@ const CAPABILITY_MODULE_MAP: Record<string, string[]> = {
     "Primitive.fs",
     "Handles.fs",
   ],
-  "retraction-safe-recursion": [
-    "Recursive.fs",
-    "RecursiveSigned.fs",
-  ],
-  "durability-modes": [
-    "Durability.fs",
-  ],
-  "circuit-recursion": [
-    "Circuit.fs",
-    "NestedCircuit.fs",
-  ],
-  "lsm-spine-family": [
-    "Spine.fs",
-    "SpineAsync.fs",
-    "DiskSpine.fs",
-    "BalancedSpine.fs",
-    "SpineSelector.fs",
-  ],
+  "retraction-safe-recursion": ["Recursive.fs", "RecursiveSigned.fs"],
+  "durability-modes": ["Durability.fs"],
+  "circuit-recursion": ["Circuit.fs", "NestedCircuit.fs"],
+  "lsm-spine-family": ["Spine.fs", "SpineAsync.fs", "DiskSpine.fs", "BalancedSpine.fs", "SpineSelector.fs"],
   "repo-automation": [],
+};
+
+// Some OpenSpec capabilities are backed by repo artifacts outside src/Core/.
+// Keeping this separate prevents tests, proofs, and profile-only evidence from
+// inflating source-module coverage while still making the mapping explicit.
+const CAPABILITY_ARTIFACT_MAP: Record<string, string[]> = {
+  "z-set-algebra": [
+    "tests/Tests.FSharp/Algebra/ZSet.Tests.fs",
+    "tests/Tests.FSharp/Algebra/ZSet.Overflow.Tests.fs",
+    "tests/Tests.FSharp/Algebra/IndexedZSet.Tests.fs",
+    "tests/Tests.CSharp/ZSetTests.cs",
+  ],
 };
 
 // Modules excluded from gap analysis — infrastructure, assembly metadata,
 // or modules whose spec coverage is tracked under a different capability.
-const EXCLUDED_MODULES = new Set([
-  "AssemblyInfo.fs",
-  "FSharpApi.fs",
-]);
+const EXCLUDED_MODULES = new Set(["AssemblyInfo.fs", "FSharpApi.fs"]);
 
 // ── Scanning ─────────────────────────────────────────────────────────
 
@@ -124,9 +133,7 @@ function scanSpecs(specsDir: string): SpecEntry[] {
       continue;
     }
 
-    const purposeMatch = content.match(
-      /##\s*Purpose\s*\n+([\s\S]*?)(?=\n##\s|\n$)/,
-    );
+    const purposeMatch = content.match(/##\s*Purpose\s*\n+([\s\S]*?)(?=\n##\s|\n$)/);
     const purposeSnippet = purposeMatch
       ? purposeMatch[1]!.trim().split("\n")[0]!.slice(0, 200)
       : "(no purpose section found)";
@@ -157,7 +164,9 @@ function scanModules(coreDir: string): ModuleEntry[] {
   const entries: ModuleEntry[] = [];
   let files: string[];
   try {
-    files = readdirSync(coreDir).filter((f) => f.endsWith(".fs")).sort();
+    files = readdirSync(coreDir)
+      .filter((f) => f.endsWith(".fs"))
+      .sort();
   } catch {
     return entries;
   }
@@ -178,11 +187,16 @@ function scanModules(coreDir: string): ModuleEntry[] {
 
 // ── Gap analysis ─────────────────────────────────────────────────────
 
-function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
+function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[], options: GapReportOptions = {}): GapReport {
+  const artifactRoot = options.artifactRoot ?? process.cwd();
+  const artifactMap = options.artifactMap ?? CAPABILITY_ARTIFACT_MAP;
   const allModuleNames = new Set(modules.map((m) => m.name));
   const specCapabilities = new Set(specs.map((s) => s.capability));
   const coveredSet = new Set<string>();
   const mappings: Mapping[] = [];
+  const artifactMappings: ArtifactMapping[] = [];
+  const mappedArtifactSet = new Set<string>();
+  const missingArtifactSet = new Set<string>();
 
   for (const [capability, moduleNames] of Object.entries(CAPABILITY_MODULE_MAP)) {
     const actualModules = moduleNames.filter((m) => allModuleNames.has(m));
@@ -195,31 +209,44 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
     }
   }
 
+  for (const [capability, artifactPaths] of Object.entries(artifactMap)) {
+    const artifacts: string[] = [];
+    const missingArtifacts: string[] = [];
+    for (const artifactPath of artifactPaths) {
+      if (existsSync(join(artifactRoot, artifactPath))) {
+        artifacts.push(artifactPath);
+        mappedArtifactSet.add(artifactPath);
+      } else {
+        missingArtifacts.push(artifactPath);
+        missingArtifactSet.add(artifactPath);
+      }
+    }
+    artifactMappings.push({ capability, artifacts, missingArtifacts });
+  }
+
   const coveredModules = [...coveredSet].sort();
   const uncoveredModules = modules
     .map((m) => m.name)
     .filter((m) => !coveredSet.has(m) && !EXCLUDED_MODULES.has(m))
     .sort();
 
-  const mappedCapabilities = new Set(Object.keys(CAPABILITY_MODULE_MAP));
-  const unmappedSpecs = [...specCapabilities]
-    .filter((c) => !mappedCapabilities.has(c))
-    .sort();
+  const mappedCapabilities = new Set([...Object.keys(CAPABILITY_MODULE_MAP), ...Object.keys(artifactMap)]);
+  const unmappedSpecs = [...specCapabilities].filter((c) => !mappedCapabilities.has(c)).sort();
 
   const excludedPresent = modules.filter((m) => EXCLUDED_MODULES.has(m.name)).length;
   const totalAnalyzable = modules.length - excludedPresent;
-  const coveragePercent =
-    totalAnalyzable > 0
-      ? Math.round((coveredModules.length / totalAnalyzable) * 1000) / 10
-      : 0;
+  const coveragePercent = totalAnalyzable > 0 ? Math.round((coveredModules.length / totalAnalyzable) * 1000) / 10 : 0;
 
   return {
     timestamp: new Date().toISOString(),
     specs,
     modules,
     mappings,
+    artifactMappings,
     coveredModules,
     uncoveredModules,
+    mappedArtifacts: [...mappedArtifactSet].sort(),
+    missingArtifacts: [...missingArtifactSet].sort(),
     unmappedSpecs,
     coveragePercent,
   };
@@ -227,14 +254,8 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
 
 // ── CLI ──────────────────────────────────────────────────────────────
 
-export {
-  scanSpecs,
-  scanModules,
-  buildGapReport,
-  CAPABILITY_MODULE_MAP,
-  EXCLUDED_MODULES,
-};
-export type { SpecEntry, ModuleEntry, GapReport, Mapping };
+export { scanSpecs, scanModules, buildGapReport, CAPABILITY_MODULE_MAP, CAPABILITY_ARTIFACT_MAP, EXCLUDED_MODULES };
+export type { SpecEntry, ModuleEntry, GapReport, GapReportOptions, Mapping, ArtifactMapping };
 
 export function main(): number {
   const repoRoot = findRepoRoot();
@@ -243,7 +264,7 @@ export function main(): number {
 
   const specs = scanSpecs(specsDir);
   const modules = scanModules(coreDir);
-  const report = buildGapReport(specs, modules);
+  const report = buildGapReport(specs, modules, { artifactRoot: repoRoot });
 
   // Convert absolute paths to repo-relative for display
   for (const s of report.specs) {
@@ -264,6 +285,7 @@ export function main(): number {
   err(`  Core modules:      ${report.modules.length}`);
   err(`  Covered modules:   ${report.coveredModules.length}`);
   err(`  Uncovered modules: ${report.uncoveredModules.length}`);
+  err(`  Mapped artifacts:  ${report.mappedArtifacts.length}`);
   err(`  Coverage:          ${report.coveragePercent}%`);
   err("");
 
@@ -276,8 +298,16 @@ export function main(): number {
     err("");
   }
 
+  if (report.missingArtifacts.length > 0) {
+    err(`  Mapped artifacts not found (possible drift):`);
+    for (const artifact of report.missingArtifacts) {
+      err(`    - ${artifact}`);
+    }
+    err("");
+  }
+
   if (report.unmappedSpecs.length > 0) {
-    err(`  Specs without module mapping:`);
+    err(`  Specs without module or artifact mapping:`);
     for (const s of report.unmappedSpecs) {
       err(`    - ${s}`);
     }
