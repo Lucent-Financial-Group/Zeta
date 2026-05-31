@@ -36,7 +36,7 @@
 // Writer companion:        tools/hygiene/divergence-shard.ts
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { isAbsolute, join, relative, resolve } from "node:path";
 
 // Mirrors DIVERGENCE_ROOT in divergence-shard.ts. Both files reflect the path
@@ -264,6 +264,7 @@ export function scanDivergenceDir(repoRoot: string, divergenceRel: string = DIVE
         walk(abs);
         continue;
       }
+      if (entry.isSymbolicLink()) continue;
       if (!entry.name.endsWith(".md")) continue;
       if (entry.name === "README.md") continue;
       files.push({ relPath: relative(repoRoot, abs), content: readFileSync(abs, "utf8") });
@@ -426,6 +427,13 @@ export function reconcileDivergenceShard(
   // the error path is the same friendly message either way.
   let original: string;
   try {
+    const stat = lstatSync(abs);
+    if (stat.isSymbolicLink()) {
+      throw new Error(`cannot reconcile: ${relPath} is a symbolic link; divergence shards must be regular files`);
+    }
+    if (!stat.isFile()) {
+      throw new Error(`cannot reconcile: ${relPath} is not a regular file`);
+    }
     original = readFileSync(abs, "utf8");
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
@@ -472,6 +480,10 @@ function renderPendingReport(pending: readonly PendingShard[]): string {
   return report;
 }
 
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
 export interface MainOptions {
   readonly repoRoot?: () => string;
   readonly stdout?: Pick<typeof process.stdout, "write">;
@@ -494,8 +506,8 @@ export function main(argv: readonly string[] = process.argv.slice(2), options: M
     return 0;
   }
 
-  const root = (options.repoRoot ?? repoRoot)();
   try {
+    const root = (options.repoRoot ?? repoRoot)();
     if (parsed.command.kind === "list") {
       stdout.write(renderPendingReport(scanDivergenceDir(root)));
       return 0;
@@ -504,7 +516,7 @@ export function main(argv: readonly string[] = process.argv.slice(2), options: M
     stdout.write(`Reconciled ${result.relPath} with ${result.decision}.\n`);
     return 0;
   } catch (err) {
-    stderr.write(`error: ${(err as Error).message}\n`);
+    stderr.write(`error: ${errorMessage(err)}\n`);
     return 1;
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
@@ -171,6 +171,18 @@ describe("scanDivergenceDir", () => {
       const pending = scanDivergenceDir(root);
       expect(pending).toHaveLength(1);
       expect(dirname(pending[0]!.relPath)).toBe("docs/hygiene-history/divergences/2026/05/10");
+    });
+  });
+
+  test("skips symlinked markdown entries instead of surfacing them for write-back", () => {
+    withTempRoot((root) => {
+      const dir = join(root, "docs/hygiene-history/divergences/2026/05/10");
+      const outside = join(root, "outside.md");
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(outside, PENDING_SHARD);
+      symlinkSync(outside, join(dir, "114800Z-symlink.md"));
+
+      expect(scanDivergenceDir(root)).toEqual([]);
     });
   });
 });
@@ -404,6 +416,29 @@ describe("reconcileDivergenceShard (read → fillReconciliation → write-back, 
     });
   });
 
+  test("rejects symlinked shard paths before write-back", () => {
+    withTempRoot((root) => {
+      const dir = join(root, "docs/hygiene-history/divergences/2026/05/10");
+      const outside = join(root, "outside.md");
+      const relPath = "docs/hygiene-history/divergences/2026/05/10/114800Z-symlink.md";
+      const link = join(root, relPath);
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(outside, PENDING_SHARD);
+      symlinkSync(outside, link);
+
+      expect(() => reconcileDivergenceShard(root, relPath, "accept-loop-a")).toThrow(/symbolic link/);
+      expect(readFileSync(outside, "utf8")).toBe(PENDING_SHARD);
+    });
+  });
+
+  test("rejects non-file paths before write-back", () => {
+    withTempRoot((root) => {
+      const relPath = "docs/hygiene-history/divergences/2026/05/10";
+      mkdirSync(join(root, relPath), { recursive: true });
+      expect(() => reconcileDivergenceShard(root, relPath, "accept-loop-a")).toThrow(/not a regular file/);
+    });
+  });
+
   test("re-run on an already-reconciled shard fails closed (prior decision not erased)", () => {
     withTempRoot((root) => {
       const { relPath } = writeDivergenceShard(root, inputAt("2026-05-10T11:48:00Z", "A", "B"));
@@ -484,5 +519,22 @@ describe("main CLI write-back action", () => {
       expect(err.join("")).toContain("--decision is required with --reconcile");
       expect(readFileSync(join(root, relPath), "utf8")).toBe(before);
     });
+  });
+
+  test("prints a stable message when a non-Error value is thrown", () => {
+    const out: string[] = [];
+    const err: string[] = [];
+
+    const exit = main(["--list"], {
+      repoRoot: () => {
+        throw "non-error failure";
+      },
+      stdout: writer(out),
+      stderr: writer(err),
+    });
+
+    expect(exit).toBe(1);
+    expect(out).toEqual([]);
+    expect(err.join("")).toBe("error: non-error failure\n");
   });
 });
