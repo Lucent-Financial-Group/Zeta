@@ -1152,7 +1152,7 @@ export function loopRunReceiptEventsFromRunnerLog(
     }
 
     const runId = gateEnd.runId;
-    const source = loopRunClaimIncreaseSource(gateEnd.timeMs, nowMs);
+    const source = loopRunClaimIncreaseSource(after.timeMs, nowMs);
     const lifecycleSuffix = source === "loop-run" ? "" : " lifecycle-residue";
     events.set(runId, {
       id: `loop-run-${runId}`,

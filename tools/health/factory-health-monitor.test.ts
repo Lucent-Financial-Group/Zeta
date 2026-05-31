@@ -694,6 +694,24 @@ describe("factory-health-monitor", () => {
     ]);
   });
 
+  test("loopRunReceiptEventsFromRunnerLog uses the after heartbeat for freshness", () => {
+    const output = [
+      "2026-05-30T05:00:00Z heartbeat complete run_id=20260530T050000Z fetch=ok claims=1 open_prs=0 dirty=0 codex=wait due_in=60s",
+      "2026-05-30T05:04:00Z codex forward gate end run_id=delayed-claim-snapshot status=0",
+      "2026-05-30T05:50:00Z heartbeat complete run_id=20260530T055000Z fetch=ok claims=2 open_prs=0 dirty=0 codex=wait due_in=60s",
+    ].join("\n");
+
+    expect(loopRunReceiptEventsFromRunnerLog(output, "2026-05-30T05:51:00Z", 2 * 60 * 60 * 1000)).toEqual([
+      {
+        id: "loop-run-delayed-claim-snapshot",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:04:00.000Z",
+        description: "codex forward gate delayed-claim-snapshot status=0 claims 1->2 open_prs 0->0",
+        source: "loop-run",
+      },
+    ]);
+  });
+
   test("broadcastBlockerEventsFromJson only converts fresh explicit blocker records", () => {
     expect(
       broadcastBlockerEventsFromJson(
