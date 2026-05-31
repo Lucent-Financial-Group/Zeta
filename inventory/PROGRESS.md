@@ -245,6 +245,7 @@ change a function's return type, Postgres `42P13`).
   (HTTP 200); re-read → `action` still `"INSERT"`.
 
 Follow-ups recorded in the Decisions log:
+
 - Throwaway item `__client_proof_item__` (id=2) + its immutable `change_log` row persist; owner removes
   them before the Phase 3 seed (id-collision avoidance).
 - A disposable **editor** test user exists for proof B and Phase 2; rotate/delete after Phase 2.
