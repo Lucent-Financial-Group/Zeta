@@ -16,6 +16,8 @@ import {
   type ChatCompletionPort,
   type ChatCompletionResult,
   type HierarchyInitiative,
+  type HierarchyMission,
+  type HierarchyMissionMilestone,
   type HierarchyProject,
   type HierarchyReadout,
   type HierarchySnapshot,
@@ -34,7 +36,7 @@ import {
   type ScopedMetricAgent,
   type ScopedReadout,
 } from "../../../packages/application/src/index.ts";
-import { ToolBundle, type ToolBundle as ToolBundleName } from "../../../packages/domain/src/index.ts";
+import { HatLevel, ToolBundle, type ToolBundle as ToolBundleName } from "../../../packages/domain/src/index.ts";
 import { createLgtmTelemetryQueryPort } from "../../../packages/observability/src/index.ts";
 import { createOllamaChatPort } from "../../workers/src/adapters/ollama-chat-port.ts";
 
@@ -242,6 +244,7 @@ export function createAgentCliHierarchyFromEnv(
     initiatives: parseHierarchyInitiatives(candidate.initiatives),
     workBatches: parseOptionalHierarchyWorkBatches(candidate.workBatches),
     workItems: parseOptionalHierarchyWorkItems(candidate.workItems),
+    missions: parseOptionalHierarchyMissions(candidate.missions),
   };
 }
 
@@ -527,6 +530,7 @@ function formatHierarchy(hierarchy: HierarchyReadout | undefined): readonly stri
   return [
     `hierarchy: ${hierarchy.level}`,
     `priority scope: ${hierarchy.priorityScope}`,
+    ...formatHierarchyMission(hierarchy.mission),
     ...formatHierarchyProjects(hierarchy.projects),
     ...formatHierarchyInitiatives(hierarchy.initiatives),
     ...formatHierarchyMetrics(hierarchy.metrics),
@@ -535,6 +539,23 @@ function formatHierarchy(hierarchy: HierarchyReadout | undefined): readonly stri
     ...formatHierarchyActions(hierarchy.actions),
     ...formatHierarchyVetoedActions(hierarchy.vetoedActions),
     ...formatHierarchyPolicyViolations(hierarchy.policyViolations),
+  ];
+}
+
+function formatHierarchyMission(mission: HierarchyReadout["mission"]): readonly string[] {
+  if (mission === undefined) return ["- no hierarchy mission"];
+  return [
+    `mission: ${mission.mission.goal}`,
+    `mission timeframe: ${mission.mission.timeframe.startsAt} -> ${mission.mission.timeframe.targetAt}`,
+    `mission status: ${mission.status}`,
+    `mission progress: ${mission.actualProgressPercent}% actual / ${mission.expectedProgressPercent}% expected`,
+    `mission days remaining: ${mission.daysRemaining}`,
+    ...mission.objectives.map((objective) => `- mission objective ${objective}`),
+    ...mission.nextMilestones.map((milestone) => `- mission milestone ${milestone.milestoneId} ${milestone.title} (${milestone.status})`),
+    ...mission.metrics.map((metric) => `- mission metric ${metric.label}: ${metric.value}${metric.unit ?? ""}`),
+    ...mission.lagSignals.map((signal) => `- mission lag ${signal.label}: ${signal.value}${signal.unit ?? ""}`),
+    ...mission.correctiveActions.map((action) => `- mission corrective action ${action.kind}: ${action.label}`),
+    ...mission.vetoedCorrectiveActions.map((vetoed) => `- mission corrective action veto ${vetoed.action.kind}: ${vetoed.reason}`),
   ];
 }
 
@@ -736,6 +757,102 @@ function parseOptionalHierarchyWorkItems(value: unknown): readonly HierarchyWork
       metrics: parseHierarchyMetricBlocks(workItem.metrics, "metrics"),
     };
   });
+}
+
+function parseOptionalHierarchyMissions(value: unknown): readonly HierarchyMission[] | undefined {
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value)) {
+    throw new Error("hierarchy missions must be an array");
+  }
+  return value.map((item) => {
+    if (typeof item !== "object" || item === null) {
+      throw new Error("hierarchy mission must be an object");
+    }
+    const mission = item as Record<string, unknown>;
+    return {
+      missionId: parseHierarchyRequiredString(mission, "missionId"),
+      issuedByHatId: parseHierarchyRequiredString(mission, "issuedByHatId"),
+      ...parseOptionalHierarchyString(mission.assignedHatId, "assignedHatId"),
+      ...parseOptionalHierarchyString(mission.departmentId, "departmentId"),
+      ...parseOptionalHierarchyString(mission.projectId, "projectId"),
+      ...parseOptionalHierarchyString(mission.initiativeId, "initiativeId"),
+      ...parseOptionalHierarchyMissionLevel(mission.level),
+      goal: parseHierarchyRequiredString(mission, "goal"),
+      strategy: parseStringArray(mission.strategy, "strategy"),
+      successCriteria: parseStringArray(mission.successCriteria, "successCriteria"),
+      timeframe: parseHierarchyMissionTimeframe(mission.timeframe),
+      status: parseHierarchyMissionStatus(mission.status),
+      progressPercent: parseHierarchyProgressPercent(mission.progressPercent),
+      metrics: parseHierarchyMetricBlocks(mission.metrics, "metrics"),
+      milestones: parseHierarchyMissionMilestones(mission.milestones),
+    };
+  });
+}
+
+function parseHierarchyMissionTimeframe(value: unknown): HierarchyMission["timeframe"] {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("hierarchy mission timeframe must be an object");
+  }
+  const timeframe = value as Record<string, unknown>;
+  return {
+    startsAt: parseHierarchyRequiredString(timeframe, "startsAt"),
+    targetAt: parseHierarchyRequiredString(timeframe, "targetAt"),
+  };
+}
+
+function parseHierarchyMissionMilestones(value: unknown): readonly HierarchyMissionMilestone[] {
+  if (!Array.isArray(value)) {
+    throw new Error("hierarchy mission milestones must be an array");
+  }
+  return value.map((item) => {
+    if (typeof item !== "object" || item === null) {
+      throw new Error("hierarchy mission milestone must be an object");
+    }
+    const milestone = item as Record<string, unknown>;
+    return {
+      milestoneId: parseHierarchyRequiredString(milestone, "milestoneId"),
+      title: parseHierarchyRequiredString(milestone, "title"),
+      targetAt: parseHierarchyRequiredString(milestone, "targetAt"),
+      status: parseHierarchyMissionStatus(milestone.status),
+      ...parseOptionalHierarchyProgressPercent(milestone.progressPercent),
+      metrics: parseHierarchyMetricBlocks(milestone.metrics, "metrics"),
+    };
+  });
+}
+
+function parseHierarchyMissionStatus(value: unknown): HierarchyMission["status"] {
+  if (value === "on_track" || value === "at_risk" || value === "behind" || value === "blocked" || value === "complete") {
+    return value;
+  }
+  throw new Error("hierarchy mission requires valid status");
+}
+
+function parseOptionalHierarchyMissionLevel(value: unknown): { level?: HatLevel } {
+  if (value === undefined) return {};
+  if (typeof value !== "string" || !Object.values(HatLevel).includes(value as HatLevel)) {
+    throw new Error("hierarchy mission level must be a valid hat level when present");
+  }
+  return { level: value as HatLevel };
+}
+
+function parseHierarchyProgressPercent(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new Error("hierarchy mission progressPercent must be numeric");
+  }
+  return value;
+}
+
+function parseOptionalHierarchyProgressPercent(value: unknown): { progressPercent?: number } {
+  if (value === undefined) return {};
+  return { progressPercent: parseHierarchyProgressPercent(value) };
+}
+
+function parseOptionalHierarchyString(value: unknown, property: string): Record<string, string> {
+  if (value === undefined) return {};
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`hierarchy mission ${property} must be a string when present`);
+  }
+  return { [property]: value };
 }
 
 function parseHierarchyRequiredString(candidate: Record<string, unknown>, property: string): string {

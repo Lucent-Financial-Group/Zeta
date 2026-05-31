@@ -452,6 +452,117 @@ test("observeAgentSurface gives directors initiative priority scope, scoped metr
   ok(surface.hierarchy.vetoedActions.some((action) => action.action.kind === "schedule_coordination_meeting"));
 });
 
+test("observeAgentSurface gives management hats their top-down mission, timeframe, lag signals, and corrective actions", async () => {
+  const engineeringDirector = buildHatDefinitions().find((h) => h.id === "engineering_director")!;
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      scope: RunScope.Project,
+      phase: RunLifecyclePhase.Observing,
+      hat: engineeringDirector,
+    }),
+    {
+      ...deps,
+      hierarchy: {
+        projects: [hierarchyProject({ projectId: "project-eng", departmentId: "engineering" })],
+        initiatives: [
+          hierarchyInitiative({
+            initiativeId: "init-risk",
+            projectId: "project-eng",
+            title: "Stabilize workflow",
+            priorityScore: 92,
+            metrics: [{ id: "initiative.blockers", label: "blockers", value: 4 }],
+          }),
+        ],
+        missions: [
+          {
+            missionId: "mission-eng-director",
+            issuedByHatId: "cto",
+            assignedHatId: "engineering_director",
+            departmentId: "engineering",
+            projectId: "project-eng",
+            goal: "Ship the observe-act management surface",
+            strategy: ["Rank the riskiest initiatives", "Staff the blocker path first"],
+            successCriteria: ["Director can see current risk", "Lagging initiatives trigger an escalation path"],
+            timeframe: {
+              startsAt: "2026-05-01T00:00:00.000Z",
+              targetAt: "2026-06-30T00:00:00.000Z",
+            },
+            status: "on_track",
+            progressPercent: 20,
+            metrics: [{ id: "mission.blockers", label: "mission blockers", value: 4 }],
+            milestones: [
+              {
+                milestoneId: "milestone-readout",
+                title: "Mission readout implemented",
+                targetAt: "2026-06-01T00:00:00.000Z",
+                status: "behind",
+                progressPercent: 50,
+                metrics: [{ id: "milestone.open_items", label: "open items", value: 3 }],
+              },
+            ],
+          },
+        ],
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.hierarchy.mission?.mission.missionId, "mission-eng-director");
+  equal(surface.hierarchy.mission?.mission.goal, "Ship the observe-act management surface");
+  equal(surface.hierarchy.mission?.expectedProgressPercent, 46);
+  equal(surface.hierarchy.mission?.actualProgressPercent, 20);
+  equal(surface.hierarchy.mission?.status, "behind");
+  deepEqual(surface.hierarchy.mission?.objectives, [
+    "Rank the riskiest initiatives",
+    "Staff the blocker path first",
+  ]);
+  equal(surface.hierarchy.mission?.nextMilestones[0]?.milestoneId, "milestone-readout");
+  ok(surface.hierarchy.mission?.lagSignals.some((signal) => signal.id === "mission.progress_variance"));
+  ok(surface.hierarchy.mission?.correctiveActions.some((action) => action.kind === "request_staffing"));
+  ok(surface.hierarchy.mission?.vetoedCorrectiveActions.some((vetoed) => vetoed.action.kind === "schedule_coordination_meeting"));
+});
+
+test("observeAgentSurface does not attach management missions to individual contributor hats", async () => {
+  const implementer = buildHatDefinitions().find((h) => h.id === "backend_implementer")!;
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.Observing,
+      hat: implementer,
+    }),
+    {
+      ...deps,
+      hierarchy: {
+        projects: [hierarchyProject({ projectId: "project-eng", departmentId: "engineering" })],
+        initiatives: [hierarchyInitiative({ initiativeId: "init-risk", projectId: "project-eng" })],
+        missions: [
+          {
+            missionId: "mission-eng-dept",
+            issuedByHatId: "cto",
+            departmentId: "engineering",
+            goal: "Deliver the department mission",
+            strategy: ["Keep the active project moving"],
+            successCriteria: ["No stale blockers"],
+            timeframe: {
+              startsAt: "2026-05-01T00:00:00.000Z",
+              targetAt: "2026-06-30T00:00:00.000Z",
+            },
+            status: "on_track",
+            progressPercent: 20,
+            metrics: [],
+            milestones: [],
+          },
+        ],
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.hierarchy.mission, undefined);
+});
+
 test("observeAgentSurface gives TPMs initiative execution priority over work batches and work items", async () => {
   const tpm = buildHatDefinitions().find((h) => h.id === "tpm")!;
   const surface = await observeAgentSurface(

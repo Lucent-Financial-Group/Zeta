@@ -6,6 +6,7 @@ import {
   RunLifecyclePhase,
   RunScope,
   type HierarchySnapshot,
+  type HierarchyMission,
   type PromptFlowTask,
 } from "../../../packages/application/src/index.ts";
 import {
@@ -334,6 +335,59 @@ test("runAgentCliCycle renders TPM operating readout for work batches and meetin
   ok(stdout.join("\n").includes("- hierarchy action schedule_prioritized_work: Schedule prioritized work block"));
 });
 
+test("runAgentCliCycle renders management mission, schedule pressure, and corrective actions", async () => {
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-director-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-eng",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "project",
+      "--phase",
+      "observing",
+      "--select-index",
+      "4",
+    ],
+    now: () => "2026-05-29T00:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    hierarchy: managementMissionHierarchySnapshot(),
+    runCommand: async () => ({ status: "ok" }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  ok(stdout.join("\n").includes("mission: Ship the observe-act management surface"));
+  ok(stdout.join("\n").includes("mission timeframe: 2026-05-01T00:00:00.000Z -> 2026-06-30T00:00:00.000Z"));
+  ok(stdout.join("\n").includes("mission status: behind"));
+  ok(stdout.join("\n").includes("mission progress: 20% actual / 46% expected"));
+  ok(stdout.join("\n").includes("- mission lag progress variance: -26pct"));
+  ok(stdout.join("\n").includes("- mission corrective action request_staffing: Request staffing or hat supply"));
+  ok(stdout.join("\n").includes("- mission corrective action veto schedule_coordination_meeting:"));
+});
+
+test("createAgentCliHierarchyFromEnv reads management missions from JSON", () => {
+  const hierarchy = createAgentCliHierarchyFromEnv({
+    env: {
+      AGENTIC_ORG_HIERARCHY_JSON: JSON.stringify(managementMissionHierarchySnapshot()),
+    },
+  });
+
+  equal(hierarchy.missions?.length, 1);
+  equal(hierarchy.missions?.[0]?.missionId, "mission-eng-director");
+  equal(hierarchy.missions?.[0]?.milestones[0]?.milestoneId, "milestone-readout");
+});
+
 test("runAgentCliCycle can load prompt-flow context with the built-in context loader", async () => {
   const stdout: string[] = [];
   const result = await runAgentCliCycle({
@@ -581,5 +635,64 @@ function tpmHierarchySnapshot(): HierarchySnapshot {
         metrics: [{ id: "work.age", label: "age", value: 2, unit: "days" }],
       },
     ],
+  };
+}
+
+function managementMissionHierarchySnapshot(): HierarchySnapshot {
+  return {
+    projects: [
+      {
+        projectId: "project-eng",
+        organizationId: "org-1",
+        departmentId: "engineering",
+        name: "Engineering Project",
+        status: "active",
+        trajectory: [{ id: "delivery", label: "delivery trajectory", value: "at_risk" }],
+        metrics: [{ id: "project.health", label: "project health", value: "yellow" }],
+      },
+    ],
+    initiatives: [
+      {
+        initiativeId: "init-eng-a",
+        projectId: "project-eng",
+        organizationId: "org-1",
+        title: "Readiness Initiative",
+        status: "active",
+        priorityScore: 75,
+        metrics: [{ id: "initiative.ready", label: "ready work", value: 3 }],
+      },
+    ],
+    missions: [managementMission()],
+  };
+}
+
+function managementMission(overrides: Partial<HierarchyMission> = {}): HierarchyMission {
+  return {
+    missionId: "mission-eng-director",
+    issuedByHatId: "cto",
+    assignedHatId: "engineering_director",
+    departmentId: "engineering",
+    projectId: "project-eng",
+    goal: "Ship the observe-act management surface",
+    strategy: ["Rank the riskiest initiatives", "Staff the blocker path first"],
+    successCriteria: ["Director can see current risk", "Lagging initiatives trigger an escalation path"],
+    timeframe: {
+      startsAt: "2026-05-01T00:00:00.000Z",
+      targetAt: "2026-06-30T00:00:00.000Z",
+    },
+    status: "on_track",
+    progressPercent: 20,
+    metrics: [{ id: "mission.blockers", label: "mission blockers", value: 4 }],
+    milestones: [
+      {
+        milestoneId: "milestone-readout",
+        title: "Mission readout implemented",
+        targetAt: "2026-06-01T00:00:00.000Z",
+        status: "behind",
+        progressPercent: 50,
+        metrics: [{ id: "milestone.open_items", label: "open items", value: 3 }],
+      },
+    ],
+    ...overrides,
   };
 }

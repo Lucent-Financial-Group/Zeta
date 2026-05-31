@@ -414,11 +414,70 @@ export type VetoedHierarchyAction = {
   reason: string;
 };
 
+export type HierarchyMissionStatus = "on_track" | "at_risk" | "behind" | "blocked" | "complete";
+
+export type HierarchyMissionTimeframe = {
+  startsAt: string;
+  targetAt: string;
+};
+
+export type HierarchyMissionMilestone = {
+  milestoneId: string;
+  title: string;
+  targetAt: string;
+  status: HierarchyMissionStatus;
+  progressPercent?: number | undefined;
+  metrics: readonly MetricBlock[];
+};
+
+export type HierarchyMission = {
+  missionId: string;
+  issuedByHatId: string;
+  assignedHatId?: string | undefined;
+  departmentId?: string | undefined;
+  projectId?: string | undefined;
+  initiativeId?: string | undefined;
+  level?: HatLevel | undefined;
+  goal: string;
+  strategy: readonly string[];
+  successCriteria: readonly string[];
+  timeframe: HierarchyMissionTimeframe;
+  status: HierarchyMissionStatus;
+  progressPercent: number;
+  metrics: readonly MetricBlock[];
+  milestones: readonly HierarchyMissionMilestone[];
+};
+
+export type HierarchyMissionLagSignal = {
+  id: string;
+  label: string;
+  value: number | string | boolean;
+  unit?: string | undefined;
+  severity: "at_risk" | "behind" | "blocked";
+  rationale: string;
+};
+
+export type HierarchyMissionReadout = {
+  mission: HierarchyMission;
+  status: HierarchyMissionStatus;
+  expectedProgressPercent: number;
+  actualProgressPercent: number;
+  variancePercent: number;
+  daysRemaining: number;
+  objectives: readonly string[];
+  nextMilestones: readonly HierarchyMissionMilestone[];
+  metrics: readonly MetricBlock[];
+  lagSignals: readonly HierarchyMissionLagSignal[];
+  correctiveActions: readonly HierarchyAction[];
+  vetoedCorrectiveActions: readonly VetoedHierarchyAction[];
+};
+
 export type HierarchySnapshot = {
   projects: readonly HierarchyProject[];
   initiatives: readonly HierarchyInitiative[];
   workBatches?: readonly HierarchyWorkBatch[] | undefined;
   workItems?: readonly HierarchyWorkItem[] | undefined;
+  missions?: readonly HierarchyMission[] | undefined;
 };
 
 export type HierarchyReadout = {
@@ -432,6 +491,7 @@ export type HierarchyReadout = {
   scopedMetrics: readonly MetricBlock[];
   actions: readonly HierarchyAction[];
   vetoedActions: readonly VetoedHierarchyAction[];
+  mission?: HierarchyMissionReadout | undefined;
 };
 
 export type PromptFlowToolInjection = {
@@ -775,7 +835,7 @@ export async function observeAgentSurface(
   const matchingAgents = (deps.metricAgents ?? []).filter((agent) => agent.scope === snapshot.scope);
   const blocks = await Promise.all(matchingAgents.map((agent) => agent.compute(ctx)));
   const promptFlows = promptFlowReadoutForHat(snapshot.hat, deps.promptFlowTasks ?? []);
-  const hierarchy = hierarchyReadoutForHat(snapshot.hat, deps.hierarchy);
+  const hierarchy = hierarchyReadoutForHat(snapshot.hat, deps.hierarchy, observed.readout.observedAt);
   return {
     outcome: ObserveOutcome.Readout,
     readout: observed.readout,
@@ -792,6 +852,7 @@ export async function observeAgentSurface(
 export function hierarchyReadoutForHat(
   hat: HatDefinition,
   hierarchy: HierarchySnapshot | undefined,
+  observedAt = "1970-01-01T00:00:00.000Z",
 ): HierarchyReadout {
   const projects = activeProjects(hierarchy?.projects ?? []);
   const initiatives = visibleInitiatives(hierarchy?.initiatives ?? []);
@@ -813,6 +874,15 @@ export function hierarchyReadoutForHat(
     policyViolations,
   );
   const actions = hierarchyActionsForHat(hat, priorityScope);
+  const mission = hierarchyMissionReadoutForHat(
+    hat,
+    hierarchy?.missions ?? [],
+    observedAt,
+    visibleProjects,
+    visibleInitiativeRows,
+    actions.allowed,
+    actions.vetoed,
+  );
 
   return {
     level: hat.level,
@@ -825,6 +895,7 @@ export function hierarchyReadoutForHat(
     scopedMetrics: scopedHierarchyMetricsForHat(hat, visibleProjects, visibleInitiativeRows, visibleWorkBatches, visibleWorkItems),
     actions: actions.allowed,
     vetoedActions: actions.vetoed,
+    ...createOptionalHierarchyMission(mission),
   };
 }
 
@@ -1170,6 +1241,209 @@ function hierarchyViolationVisibleToHat(hat: HatDefinition, violation: Hierarchy
     case HatLevel.IndividualContributor:
       return false;
   }
+}
+
+function hierarchyMissionReadoutForHat(
+  hat: HatDefinition,
+  missions: readonly HierarchyMission[],
+  observedAt: string,
+  projects: readonly HierarchyProject[],
+  initiatives: readonly HierarchyInitiative[],
+  actions: readonly HierarchyAction[],
+  vetoedActions: readonly VetoedHierarchyAction[],
+): HierarchyMissionReadout | undefined {
+  if (!isManagementHat(hat)) return undefined;
+  const mission = mostSpecificMissionForHat(hat, missions, projects, initiatives);
+  if (mission === undefined) return undefined;
+
+  const expectedProgressPercent = expectedMissionProgressPercent(mission.timeframe, observedAt);
+  const actualProgressPercent = clampPercent(mission.progressPercent);
+  const variancePercent = actualProgressPercent - expectedProgressPercent;
+  const daysRemaining = missionDaysRemaining(mission.timeframe, observedAt);
+  const lagSignals = missionLagSignals(mission, expectedProgressPercent, actualProgressPercent, daysRemaining);
+  const status = missionStatus(mission.status, lagSignals);
+  const corrective = missionCorrectiveActions(status, actions, vetoedActions);
+
+  return {
+    mission,
+    status,
+    expectedProgressPercent,
+    actualProgressPercent,
+    variancePercent,
+    daysRemaining,
+    objectives: mission.strategy,
+    nextMilestones: mission.milestones
+      .filter((milestone) => milestone.status !== "complete")
+      .sort((left, right) => Date.parse(left.targetAt) - Date.parse(right.targetAt) || left.milestoneId.localeCompare(right.milestoneId)),
+    metrics: [...mission.metrics, ...mission.milestones.flatMap((milestone) => milestone.metrics)],
+    lagSignals,
+    correctiveActions: corrective.allowed,
+    vetoedCorrectiveActions: corrective.vetoed,
+  };
+}
+
+function createOptionalHierarchyMission(
+  mission: HierarchyMissionReadout | undefined,
+): { mission?: HierarchyMissionReadout } {
+  return mission === undefined ? {} : { mission };
+}
+
+function isManagementHat(hat: HatDefinition): boolean {
+  return hat.level !== HatLevel.IndividualContributor;
+}
+
+function mostSpecificMissionForHat(
+  hat: HatDefinition,
+  missions: readonly HierarchyMission[],
+  projects: readonly HierarchyProject[],
+  initiatives: readonly HierarchyInitiative[],
+): HierarchyMission | undefined {
+  const visibleProjectIds = new Set(projects.map((project) => project.projectId));
+  const visibleInitiativeIds = new Set(initiatives.map((initiative) => initiative.initiativeId));
+  return missions
+    .map((mission) => ({ mission, score: missionSpecificityScore(hat, mission, visibleProjectIds, visibleInitiativeIds) }))
+    .filter((candidate) => candidate.score > 0)
+    .sort(
+      (left, right) =>
+        right.score - left.score ||
+        Date.parse(left.mission.timeframe.targetAt) - Date.parse(right.mission.timeframe.targetAt) ||
+        left.mission.missionId.localeCompare(right.mission.missionId),
+    )
+    .at(0)?.mission;
+}
+
+function missionSpecificityScore(
+  hat: HatDefinition,
+  mission: HierarchyMission,
+  visibleProjectIds: ReadonlySet<string>,
+  visibleInitiativeIds: ReadonlySet<string>,
+): number {
+  if (mission.assignedHatId !== undefined && mission.assignedHatId !== hat.id) return 0;
+  if (mission.departmentId !== undefined && mission.departmentId !== hat.departmentId) return 0;
+  if (mission.level !== undefined && mission.level !== hat.level) return 0;
+  if (mission.projectId !== undefined && !visibleProjectIds.has(mission.projectId)) return 0;
+  if (mission.initiativeId !== undefined && !visibleInitiativeIds.has(mission.initiativeId)) return 0;
+
+  let score = 1;
+  if (mission.assignedHatId === hat.id) score += 1_000;
+  if (mission.departmentId === hat.departmentId) score += 300;
+  if (mission.level === hat.level) score += 200;
+  if (mission.projectId !== undefined) score += 100;
+  if (mission.initiativeId !== undefined) score += 50;
+  return score;
+}
+
+function expectedMissionProgressPercent(timeframe: HierarchyMissionTimeframe, observedAt: string): number {
+  const start = Date.parse(timeframe.startsAt);
+  const target = Date.parse(timeframe.targetAt);
+  const observed = Date.parse(observedAt);
+  if (!Number.isFinite(start) || !Number.isFinite(target) || !Number.isFinite(observed)) return 0;
+  if (target <= start) return observed >= target ? 100 : 0;
+  return Math.floor(clampPercent(((observed - start) / (target - start)) * 100));
+}
+
+function missionDaysRemaining(timeframe: HierarchyMissionTimeframe, observedAt: string): number {
+  const target = Date.parse(timeframe.targetAt);
+  const observed = Date.parse(observedAt);
+  if (!Number.isFinite(target) || !Number.isFinite(observed)) return 0;
+  return Math.ceil((target - observed) / (24 * 60 * 60 * 1000));
+}
+
+function clampPercent(value: number): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(100, Math.floor(value)));
+}
+
+function missionLagSignals(
+  mission: HierarchyMission,
+  expectedProgressPercent: number,
+  actualProgressPercent: number,
+  daysRemaining: number,
+): readonly HierarchyMissionLagSignal[] {
+  const signals: HierarchyMissionLagSignal[] = [];
+  const variance = actualProgressPercent - expectedProgressPercent;
+  if (mission.status === "blocked") {
+    signals.push({
+      id: "mission.status_blocked",
+      label: "mission status",
+      value: mission.status,
+      severity: "blocked",
+      rationale: "the mission is explicitly marked blocked",
+    });
+  }
+  if (mission.status === "behind") {
+    signals.push({
+      id: "mission.status_behind",
+      label: "mission status",
+      value: mission.status,
+      severity: "behind",
+      rationale: "the mission is explicitly marked behind",
+    });
+  }
+  if (variance < -10) {
+    signals.push({
+      id: "mission.progress_variance",
+      label: "progress variance",
+      value: variance,
+      unit: "pct",
+      severity: variance < -25 ? "behind" : "at_risk",
+      rationale: "actual mission progress is below expected progress for the elapsed timeframe",
+    });
+  }
+  if (daysRemaining < 0 && mission.status !== "complete") {
+    signals.push({
+      id: "mission.target_missed",
+      label: "days past target",
+      value: Math.abs(daysRemaining),
+      unit: "day",
+      severity: "behind",
+      rationale: "the mission target date has passed without completion",
+    });
+  }
+  for (const milestone of mission.milestones) {
+    if (milestone.status === "blocked" || milestone.status === "behind") {
+      signals.push({
+        id: `mission.milestone.${milestone.milestoneId}`,
+        label: milestone.title,
+        value: milestone.status,
+        severity: milestone.status,
+        rationale: `milestone "${milestone.milestoneId}" is ${milestone.status}`,
+      });
+    }
+  }
+  return signals;
+}
+
+function missionStatus(
+  declared: HierarchyMissionStatus,
+  lagSignals: readonly HierarchyMissionLagSignal[],
+): HierarchyMissionStatus {
+  if (declared === "complete") return "complete";
+  if (lagSignals.some((signal) => signal.severity === "blocked")) return "blocked";
+  if (lagSignals.some((signal) => signal.severity === "behind")) return "behind";
+  if (lagSignals.some((signal) => signal.severity === "at_risk")) return "at_risk";
+  return declared;
+}
+
+function missionCorrectiveActions(
+  status: HierarchyMissionStatus,
+  actions: readonly HierarchyAction[],
+  vetoedActions: readonly VetoedHierarchyAction[],
+): { allowed: readonly HierarchyAction[]; vetoed: readonly VetoedHierarchyAction[] } {
+  if (status !== "at_risk" && status !== "behind" && status !== "blocked") {
+    return { allowed: [], vetoed: [] };
+  }
+  const correctiveKinds: ReadonlySet<HierarchyActionKind> = new Set([
+    "request_staffing",
+    "schedule_coordination_meeting",
+    "schedule_prioritized_work",
+    "send_supervisor_signal",
+    "request_status_update",
+  ]);
+  return {
+    allowed: actions.filter((action) => correctiveKinds.has(action.kind)),
+    vetoed: vetoedActions.filter((vetoed) => correctiveKinds.has(vetoed.action.kind)),
+  };
 }
 
 export function promptFlowReadoutForHat(
