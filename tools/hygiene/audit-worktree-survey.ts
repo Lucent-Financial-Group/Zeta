@@ -376,30 +376,12 @@ function stableFirstParentPatchId(path: string, commit: string): string | null {
   return parent === null ? null : stableDiffPatchId(path, parent, commit);
 }
 
-function treeEntryIdentity(path: string, rev: string, filePath: string): string | null {
-  const output = gitStdout(path, ["ls-tree", "-z", rev, "--", filePath]);
-  if (output === null) return null;
-  const entry = output.split("\0")[0] ?? "";
-  const metadata = entry.split("\t")[0] ?? "";
-  return metadata.length > 0 ? metadata : null;
+function branchPatch(path: string, base: string, head: string, zeroContext: boolean): string | null {
+  const contextArgs = zeroContext ? ["--unified=0"] : [];
+  return gitStdout(path, ["diff", "--binary", ...contextArgs, base, head, "--"]);
 }
 
-function branchChangedPaths(path: string, base: string, head: string): readonly string[] | null {
-  const output = gitStdout(path, ["diff", "--name-only", "-z", base, head, "--"]);
-  if (output === null) return null;
-  return output.split("\0").filter((line) => line.length > 0);
-}
-
-function branchChangedPathsRetainedAtMainTip(path: string, base: string, head: string): boolean | null {
-  const paths = branchChangedPaths(path, base, head);
-  if (paths === null) return null;
-  if (paths.length === 0) return true;
-  return paths.every(
-    (changedPath) => treeEntryIdentity(path, base, changedPath) !== treeEntryIdentity(path, "origin/main", changedPath),
-  );
-}
-
-function historicalCommitContainsPatch(path: string, commit: string, patch: string): boolean | null {
+function commitContainsPatch(path: string, commit: string, patch: string, zeroContext: boolean): boolean | null {
   const indexDir = mkdtempSync(join(tmpdir(), "zeta-worktree-survey-index-"));
   const indexPath = join(indexDir, "index");
   const env = { ...process.env, GIT_INDEX_FILE: indexPath };
@@ -407,21 +389,40 @@ function historicalCommitContainsPatch(path: string, commit: string, patch: stri
   try {
     const readTree = gitExitOk(path, ["read-tree", commit], undefined, env);
     if (readTree !== true) return readTree;
-    return gitExitOk(path, ["apply", "--cached", "--reverse", "--check", "--whitespace=nowarn"], patch, env);
+    const contextArgs = zeroContext ? ["--unidiff-zero"] : [];
+    return gitExitOk(
+      path,
+      ["apply", "--cached", "--reverse", "--check", "--whitespace=nowarn", ...contextArgs],
+      patch,
+      env,
+    );
   } finally {
     rmSync(indexDir, { recursive: true, force: true });
   }
+}
+
+function commitContainsBranchDelta(
+  path: string,
+  commit: string,
+  fullContextPatch: string,
+  zeroContextPatch: string,
+): boolean | null {
+  const fullContextResult = commitContainsPatch(path, commit, fullContextPatch, false);
+  if (fullContextResult !== false) return fullContextResult;
+  return commitContainsPatch(path, commit, zeroContextPatch, true);
 }
 
 function branchDeltaCoveredByMainHistory(path: string, head: string): boolean | null {
   const base = firstOutputLine(gitStdout(path, ["merge-base", "origin/main", head]) ?? "");
   if (base === null) return null;
 
-  const branchPatch = gitStdout(path, ["diff", "--binary", base, head, "--"]);
-  if (branchPatch === null) return null;
-  if (branchPatch.trim().length === 0) return true;
-  const mainTipRetainsBranchPaths = branchChangedPathsRetainedAtMainTip(path, base, head);
-  if (mainTipRetainsBranchPaths !== true) return mainTipRetainsBranchPaths;
+  const fullContextPatch = branchPatch(path, base, head, false);
+  if (fullContextPatch === null) return null;
+  if (fullContextPatch.trim().length === 0) return true;
+  const zeroContextPatch = branchPatch(path, base, head, true);
+  if (zeroContextPatch === null) return null;
+  const mainTipContainsBranchDelta = commitContainsBranchDelta(path, "origin/main", fullContextPatch, zeroContextPatch);
+  if (mainTipContainsBranchDelta !== true) return mainTipContainsBranchDelta;
 
   const branchPatchId = stableDiffPatchId(path, base, head);
   if (branchPatchId === null) return null;
@@ -436,7 +437,7 @@ function branchDeltaCoveredByMainHistory(path: string, head: string): boolean | 
 
   for (const commit of commits) {
     if (stableFirstParentPatchId(path, commit) === branchPatchId) return true;
-    if (historicalCommitContainsPatch(path, commit, branchPatch) === true) return true;
+    if (commitContainsBranchDelta(path, commit, fullContextPatch, zeroContextPatch) === true) return true;
   }
   return false;
 }
@@ -494,11 +495,15 @@ function inspectWorktreeEntry(entry: WorktreeEntry, fallbackGitContext: string =
 
     if (headReachableFromMain !== true && treeEquivalentToMain !== true) {
       const base = firstOutputLine(gitStdout(gitContext, ["merge-base", "origin/main", entry.head]) ?? "");
-      const mainTipRetainsBranchPaths =
-        base === null ? null : branchChangedPathsRetainedAtMainTip(gitContext, base, entry.head);
+      const fullContextPatch = base === null ? null : branchPatch(gitContext, base, entry.head, false);
+      const zeroContextPatch = base === null ? null : branchPatch(gitContext, base, entry.head, true);
+      const mainTipContainsBranchDelta =
+        fullContextPatch === null || zeroContextPatch === null
+          ? null
+          : commitContainsBranchDelta(gitContext, "origin/main", fullContextPatch, zeroContextPatch);
       const cherryOutput =
-        mainTipRetainsBranchPaths === true ? gitStdout(gitContext, ["cherry", "origin/main", entry.head]) : null;
-      if (mainTipRetainsBranchPaths === false) {
+        mainTipContainsBranchDelta === true ? gitStdout(gitContext, ["cherry", "origin/main", entry.head]) : null;
+      if (mainTipContainsBranchDelta === false) {
         patchEquivalentToMain = false;
       } else if (cherryOutput !== null) {
         const lines = cherryOutput
