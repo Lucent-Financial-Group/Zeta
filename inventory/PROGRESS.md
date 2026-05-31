@@ -43,14 +43,16 @@ refused. OWNER-RUN: unauthenticated anon `curl` on items, field_definitions, cha
   EVIDENCE (2026-05-31): proof #3 anon reads all [] (+ RPC 42501); proof A (SQL editor) all PASSED
   incl. broken-vs-fixed guard toggle; proof B (client editor session via REST) UPDATE+DELETE on
   change_log -> [] / [] / row unchanged (action=INSERT). Full output in "Phase 1 evidence" appendix.
-- [~] Phase 2 — Auth + roles.
+- [x] Phase 2 — Auth + roles.
 GATE: trust uses getUser()/verified claims; role single-source read by BOTH UI and RLS and they
 agree; sign-out ends access and clears rendered data.
 VERIFY: log in as Viewer in the browser, attempt an edit → refused BY THE DB (not just UI hidden);
 confirm RLS sees correct role per user; sign out → data gone, session ended.
-  STATUS (2026-05-31): build complete; (a)/(b)/(c)+negative-control PROVEN in a real browser
-  (see "Phase 2 evidence" appendix). Remaining before [x]: owner runs the broken-vs-fixed (a)
-  SQL (proofs/phase2_rls_brokenfix.sql) in the SQL editor and pastes the 0-row/1-row notices.
+  GATE PASSED (2026-05-31): (a)/(b)/(c)+negative-control PROVEN in a real browser (Playwright vs
+  live Supabase) AND owner-run broken-vs-fixed (a) returned the expected results grid:
+  FIXED (least-privilege) viewer UPDATE = 0 rows (refused); BROKEN (added USING(true)) viewer
+  UPDATE = 1 row (the breach); ROLLBACK restored least-privilege (sanity: no _tmp_permissive_update
+  policy persisted). Full output in the "Phase 2 evidence" appendix.
 - [ ] Phase 3 — Read path.
 GATE: 210 items load; search/sort/filter correct; responsive; existing Zeta dashboard still works.
 VERIFY: rendered row count = seed count; run 3 sample searches/sorts; load on a phone viewport;
@@ -295,8 +297,14 @@ Observed output (no tokens/passwords logged):
   probe msg cleared), in-memory state nulled, localStorage auth token **gone**, and a server-verified
   `getUser()` returned **null** (session truly ended, not just locally); view returned to sign-in.
 
-Remaining before Phase 2 `[x]` (owner-run, privileged SQL editor — `set role` needed):
-- **broken-vs-fixed (a)**: run `inventory/sql/proofs/phase2_rls_brokenfix.sql`; expected NOTICES:
-  `FIXED … viewer UPDATE affected 0 row(s)` and `BROKEN … viewer UPDATE affected 1 row(s)`; the
-  transaction ROLLS BACK so least-privilege is restored (then the sanity check shows no
-  `_tmp_permissive_update` policy persists).
+- **broken-vs-fixed (a)** (owner ran `inventory/sql/proofs/phase2_rls_brokenfix.sql` in the SQL
+  editor; results grid): `FIXED (least-privilege items_update): viewer UPDATE affected 0 row(s)`
+  and `BROKEN (added USING(true) policy): viewer UPDATE affected 1 row(s)`. One `BEGIN…ROLLBACK`,
+  so least-privilege was restored and no artifacts persisted (sanity check: no
+  `_tmp_permissive_update` policy remained). Proves the least-privilege items_update policy is what
+  refuses the Viewer's edit — confirmed "fails on broken code (1 row), passes when fixed (0 rows)."
+
+**Phase 2 gate = PASSED.** All gate criteria met with observed evidence: getUser()/verified-claims
+trust; role single-source (`current_user_role()`) read by both UI and RLS, in agreement
+(viewer→viewer, editor→editor); Viewer edit refused BY THE DB (0 rows, RLS) with editor allowed as
+control; sign-out ends the session (verified getUser()→null) and clears rendered + in-memory data.
