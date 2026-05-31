@@ -9,6 +9,7 @@ import {
   HatBindingPhase,
   MemoryPhase,
   OrgEventKind,
+  ScheduleBlockState,
   WorkBatchState,
   WorkItemState,
   type OrgEvent,
@@ -123,6 +124,7 @@ test("replayLedger accepts legal legacy transition kernels", () => {
   const report = replayLedger(
     [
       event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: HatBindingPhase.Warmup, toState: HatBindingPhase.Active }),
+      event({ id: "evt-schedule", kind: OrgEventKind.WorkScheduleBlockTransition, fromState: ScheduleBlockState.Scheduled, toState: ScheduleBlockState.Active }),
       event({
         id: "evt-pipeline",
         kind: OrgEventKind.PipelineStageTransition,
@@ -134,8 +136,8 @@ test("replayLedger accepts legal legacy transition kernels", () => {
     { maxSkippedAmbiguous: 0 },
   );
 
-  equal(report.checked, 3);
-  equal(report.conformant, 3);
+  equal(report.checked, 4);
+  equal(report.conformant, 4);
   equal(report.skippedAmbiguous, 0);
   equal(report.ratchetViolated, false);
 });
@@ -187,20 +189,67 @@ test("replayLedger treats malformed legacy transition kernel states as ambiguous
   const report = replayLedger(
     [
       event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: "proposed", toState: "activated" }),
+      event({ id: "evt-schedule", kind: OrgEventKind.WorkScheduleBlockTransition, fromState: "planned", toState: "running" }),
       event({ id: "evt-pipeline", kind: OrgEventKind.PipelineStageTransition, fromState: "draft", toState: "review" }),
       event({ id: "evt-batch", kind: OrgEventKind.WorkBatchTransition, fromState: "queued", toState: "running" }),
     ],
     { maxSkippedAmbiguous: 0 },
   );
 
-  equal(report.skipped, 3);
-  equal(report.skippedAmbiguous, 3);
+  equal(report.skipped, 4);
+  equal(report.skippedAmbiguous, 4);
   equal(report.ratchetViolated, true);
   deepEqual(report.skips.map((s) => s.reason), [
     "event states do not name a known hat binding phase transition",
+    "event states do not name a known schedule block state transition",
     "event states do not name a known pipeline stage transition",
     "event states do not name a known work batch transition",
   ]);
+});
+
+test("replayLedger rejects illegal schedule block lifecycle transitions", () => {
+  const report = replayLedger([
+    event({
+      id: "evt-schedule-backwards",
+      kind: OrgEventKind.WorkScheduleBlockTransition,
+      fromState: ScheduleBlockState.Completed,
+      toState: ScheduleBlockState.Active,
+      subjectId: "schedule-block-1",
+    }),
+  ]);
+
+  equal(report.checked, 1);
+  equal(report.conformant, 0);
+  equal(report.nonconformant, 1);
+  deepEqual(report.violations[0], {
+    eventId: "evt-schedule-backwards",
+    kind: OrgEventKind.WorkScheduleBlockTransition,
+    subjectId: "schedule-block-1",
+    fromState: ScheduleBlockState.Completed,
+    toState: ScheduleBlockState.Active,
+    legalToStates: [],
+    reason: "illegal schedule block state transition",
+  });
+});
+
+test("replayLedger treats initial schedule block as non-ambiguous lifecycle initialization", () => {
+  const report = replayLedger(
+    [
+      event({
+        id: "evt-schedule-init",
+        kind: OrgEventKind.WorkScheduleBlockTransition,
+        toState: ScheduleBlockState.Scheduled,
+        subjectId: "schedule-block-1",
+      }),
+    ],
+    { maxSkippedAmbiguous: 0 },
+  );
+
+  equal(report.checked, 0);
+  equal(report.skipped, 1);
+  equal(report.skippedAmbiguous, 0);
+  equal(report.ratchetViolated, false);
+  equal(report.skips[0]?.reason, "schedule block initialization is a legal non-ambiguous transition");
 });
 
 test("replayLedger uses transition context envelopes for context-sensitive transitions", () => {

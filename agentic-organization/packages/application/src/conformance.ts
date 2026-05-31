@@ -5,9 +5,11 @@ import {
   HatBindingPhase,
   MemoryPhase,
   OrgEventKind,
+  ScheduleBlockState,
   WorkBatchState,
   WorkItemState,
   baseLegalNextStates,
+  isScheduleBlockState,
   legalChangeSetTransitions,
   legalConfidencePromotions,
   legalDocTransitions,
@@ -195,6 +197,10 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
     return { kind: "skipped", reason: "hat binding initialization is a legal non-ambiguous transition", ambiguous: false };
   }
 
+  if (event.kind === OrgEventKind.WorkScheduleBlockTransition && event.fromState === undefined && event.toState === ScheduleBlockState.Scheduled) {
+    return { kind: "skipped", reason: "schedule block initialization is a legal non-ambiguous transition", ambiguous: false };
+  }
+
   if (event.fromState === undefined || event.toState === undefined) {
     return { kind: "skipped", reason: "event does not carry from/to state", ambiguous: true };
   }
@@ -244,6 +250,17 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
       kind: "checked",
       legalToStates: legalNextBatchStates(event.fromState),
       reason: "illegal work batch transition",
+    };
+  }
+
+  if (event.kind === OrgEventKind.WorkScheduleBlockTransition) {
+    if (!isScheduleBlockState(event.fromState) || !isScheduleBlockState(event.toState)) {
+      return { kind: "skipped", reason: "event states do not name a known schedule block state transition", ambiguous: true };
+    }
+    return {
+      kind: "checked",
+      legalToStates: legalScheduleBlockTargets(event.fromState),
+      reason: "illegal schedule block state transition",
     };
   }
 
@@ -312,6 +329,7 @@ function isReplayableTransitionKind(kind: OrgEventKind): boolean {
     kind === OrgEventKind.HatBindingTransition ||
     kind === OrgEventKind.PipelineStageTransition ||
     kind === OrgEventKind.WorkBatchTransition ||
+    kind === OrgEventKind.WorkScheduleBlockTransition ||
     MemoryTransitionKinds.has(kind) ||
     ChangeTransitionKinds.has(kind) ||
     DocTransitionKinds.has(kind) ||
@@ -368,6 +386,26 @@ function legalPipelineStageTargets(from: PipelineStage): readonly PipelineStage[
     case PipelineStage.AwaitingReleaseReadiness:
       return [PipelineStage.Merged];
     case PipelineStage.Merged:
+      return [];
+  }
+}
+
+function legalScheduleBlockTargets(from: ScheduleBlockState): readonly ScheduleBlockState[] {
+  switch (from) {
+    case ScheduleBlockState.Scheduled:
+      return [ScheduleBlockState.Active, ScheduleBlockState.Canceled, ScheduleBlockState.Missed];
+    case ScheduleBlockState.Active:
+      return [
+        ScheduleBlockState.Paused,
+        ScheduleBlockState.Completed,
+        ScheduleBlockState.Canceled,
+        ScheduleBlockState.Missed,
+      ];
+    case ScheduleBlockState.Paused:
+      return [ScheduleBlockState.Active, ScheduleBlockState.Canceled, ScheduleBlockState.Missed];
+    case ScheduleBlockState.Completed:
+    case ScheduleBlockState.Canceled:
+    case ScheduleBlockState.Missed:
       return [];
   }
 }

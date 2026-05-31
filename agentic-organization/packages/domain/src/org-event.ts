@@ -80,6 +80,8 @@ export const OrgEventKind = {
   RecoveryScanCompleted: "recovery_scan_completed",
   // Observe-act foreground loop (Phase 2.2) — every menu selection is durable.
   ObserveActTick: "observe_act_tick",
+  // Schedule authority (Phase 2.6) — schedule block lifecycle transitions are replayable.
+  WorkScheduleBlockTransition: "work_schedule_block_transition",
 } as const;
 
 export type OrgEventKind = (typeof OrgEventKind)[keyof typeof OrgEventKind];

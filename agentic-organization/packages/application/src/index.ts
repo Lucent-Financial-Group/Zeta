@@ -210,6 +210,11 @@ export {
   type SchedulePressureSignal,
 } from "./schedule-optimizer.ts";
 export {
+  createReassignAfterExpirySupervisorSignalCommand,
+  type CreateReassignAfterExpirySupervisorSignalCommandInput,
+  type ReassignAfterExpirySupervisorSignalCommandResult,
+} from "./schedule-corrective-command.ts";
+export {
   HatAuthorityPolicyVersion,
   createHatAuthorityPort,
   type CreateHatAuthorityPortInput,
