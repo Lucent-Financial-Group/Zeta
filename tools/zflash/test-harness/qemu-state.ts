@@ -1,3 +1,6 @@
+import { spawnSync as nodeSpawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+
 /**
  * B-0891 scenario 3 QEMU state-preservation primitives.
  *
@@ -78,6 +81,29 @@ export interface Qcow2RetentionExecutor {
   readonly readSerialOutput: (serialLogPath: string) => string;
 }
 
+export interface SpawnSyncQemuCommandOptions {
+  readonly cwd?: string;
+  readonly timeoutMs: number;
+}
+
+export interface SpawnSyncQemuCommandResult {
+  readonly exitCode: number | null;
+  readonly stdout: string;
+  readonly stderr: string;
+}
+
+export type SpawnSyncQemuCommand = (
+  command: QemuCommand,
+  options: SpawnSyncQemuCommandOptions,
+) => SpawnSyncQemuCommandResult;
+
+export interface SpawnSyncQcow2RetentionExecutorOptions {
+  readonly cwd?: string;
+  readonly timeoutMs?: number;
+  readonly spawnCommand?: SpawnSyncQemuCommand;
+  readonly readSerialOutput?: (serialLogPath: string) => string;
+}
+
 export type Qcow2RetentionExecutionFeedback =
   | {
       readonly kind: "command-failed";
@@ -110,6 +136,7 @@ export type Qcow2RetentionExecutionResult =
 
 const DEFAULT_MEMORY_MB = 4096;
 const DEFAULT_CPU_COUNT = 2;
+const DEFAULT_RETENTION_COMMAND_TIMEOUT_MS = 30 * 60 * 1000;
 
 export const RETENTION_SERIAL_MARKERS: readonly string[] = [
   "zeta-creds-restore:",
@@ -237,6 +264,68 @@ function retentionExecutionSteps(
 
 function unknownReason(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+function qemuCommandOptions(
+  cwd: string | undefined,
+  timeoutMs: number,
+): SpawnSyncQemuCommandOptions {
+  return cwd === undefined ? { timeoutMs } : { cwd, timeoutMs };
+}
+
+function stringifySpawnOutput(output: string | Buffer | null | undefined): string {
+  if (typeof output === "string") {
+    return output;
+  }
+  return output?.toString("utf8") ?? "";
+}
+
+function appendSpawnError(stderr: string, error: unknown): string {
+  if (!(error instanceof Error)) {
+    return stderr;
+  }
+  if (stderr.length === 0) {
+    return error.message;
+  }
+  return `${stderr}\n${error.message}`;
+}
+
+function defaultSpawnSyncQemuCommand(
+  command: QemuCommand,
+  options: SpawnSyncQemuCommandOptions,
+): SpawnSyncQemuCommandResult {
+  const spawnOptions = options.cwd === undefined
+    ? { encoding: "utf8" as const, timeout: options.timeoutMs }
+    : { cwd: options.cwd, encoding: "utf8" as const, timeout: options.timeoutMs };
+  const result = nodeSpawnSync(command.bin, [...command.args], spawnOptions);
+  const stdout = stringifySpawnOutput(result.stdout);
+  const stderr = appendSpawnError(stringifySpawnOutput(result.stderr), result.error);
+  return {
+    exitCode: result.status,
+    stdout,
+    stderr,
+  };
+}
+
+export function createSpawnSyncQcow2RetentionExecutor(
+  options: SpawnSyncQcow2RetentionExecutorOptions = {},
+): Qcow2RetentionExecutor {
+  const timeoutMs = options.timeoutMs ?? DEFAULT_RETENTION_COMMAND_TIMEOUT_MS;
+  const spawnCommand = options.spawnCommand ?? defaultSpawnSyncQemuCommand;
+  const readSerialOutput = options.readSerialOutput ?? ((serialLogPath: string) => readFileSync(serialLogPath, "utf8"));
+  return {
+    runCommand: (step, command) => {
+      const execution = spawnCommand(command, qemuCommandOptions(options.cwd, timeoutMs));
+      return {
+        step,
+        command,
+        exitCode: execution.exitCode,
+        stdout: execution.stdout,
+        stderr: execution.stderr,
+      };
+    },
+    readSerialOutput,
+  };
 }
 
 export function executeQcow2SnapshotRetentionPlan(

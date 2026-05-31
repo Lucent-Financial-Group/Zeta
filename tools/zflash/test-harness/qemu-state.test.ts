@@ -1,12 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import {
   assertRetentionSerialMarkers,
+  createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
   planQcow2SnapshotRetention,
   type Qcow2SnapshotRetentionPlan,
   type Qcow2RetentionExecutionStep,
   type QemuCommand,
   type QemuCommandExecution,
+  type SpawnSyncQemuCommandOptions,
 } from "./qemu-state";
 
 function retentionPlan(): Qcow2SnapshotRetentionPlan {
@@ -142,6 +144,45 @@ describe("B-0891 QEMU state-preservation planner", () => {
         "restart-from-iso-with-disk",
       ]);
       expect(result.ok.commandExecutions).toHaveLength(4);
+      expect(result.ok.serialAssertion.matchedMarkers).toContain("already-present");
+    }
+  });
+
+  test("adapts planned QEMU commands to a timeout-bound process executor", () => {
+    const observed: Array<{
+      readonly command: QemuCommand;
+      readonly options: SpawnSyncQemuCommandOptions;
+    }> = [];
+    const serialPaths: string[] = [];
+    const executor = createSpawnSyncQcow2RetentionExecutor({
+      cwd: "/tmp/zeta-worktree",
+      timeoutMs: 1234,
+      spawnCommand: (command, options) => {
+        observed.push({ command, options });
+        return { exitCode: 0, stdout: `${command.bin} ok`, stderr: "" };
+      },
+      readSerialOutput: (serialLogPath) => {
+        serialPaths.push(serialLogPath);
+        return [
+          "zeta-creds-restore: reading preserved ESP blob",
+          "zeta-creds-restore: already-present, skipping credential rewrite",
+        ].join("\n");
+      },
+    });
+
+    const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), executor);
+
+    expect("ok" in result).toBe(true);
+    if ("ok" in result) {
+      expect(observed.map((entry) => entry.command.bin)).toEqual([
+        "qemu-img",
+        "qemu-img",
+        "qemu-img",
+        "qemu-system-x86_64",
+      ]);
+      expect(observed.every((entry) => entry.options.cwd === "/tmp/zeta-worktree")).toBe(true);
+      expect(observed.every((entry) => entry.options.timeoutMs === 1234)).toBe(true);
+      expect(serialPaths).toEqual(["/tmp/serial.log"]);
       expect(result.ok.serialAssertion.matchedMarkers).toContain("already-present");
     }
   });
