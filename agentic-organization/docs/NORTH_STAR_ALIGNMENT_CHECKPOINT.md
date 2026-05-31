@@ -1976,15 +1976,15 @@ freezes and secret/rate-limit controls cannot be bypassed by the foreground loop
 ### KIND proof
 
 Worker image rebuilt as `agentic-org-worker:keepalive`
-(`sha256:ec1e7361711ff11c63bcfc5251cc3a6730c5dfa6e6fa363cc7550695a46f6cab`), loaded into KIND
-cluster `agentic-org`, and deployed to pod `worker-65766f68d8-qbrhk`. Fresh boot logs showed the
+(`sha256:59ff53b16321cf80c047cd97be239b50045d23b82ba2c6d9a591efb4d4b484f7`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-5c9c9c668f-p9k2j`. Fresh boot logs showed the
 expected cadence lanes with zero `worker run failed` or structured error matches.
 
 `deploy/run-control-plane-secret-scopes.ts` ran against in-cluster Cockroach for
-`org-control-plane-secrets-03c5844c` and proved:
+`org-control-plane-secrets-a8650bdd` and proved:
 
 - A durable provider-freeze flag was upserted and read back through the Cockroach control-plane
-  state store as `flag-provider-freeze-03c5844c`.
+  state store as `flag-provider-freeze-a8650bdd`.
 - MCP dispatch with `providerId = github` was rejected with `provider_freeze`;
   `providerDispatched` remained false.
 - MCP dispatch with required `github:write` but no available secret scope was rejected with
