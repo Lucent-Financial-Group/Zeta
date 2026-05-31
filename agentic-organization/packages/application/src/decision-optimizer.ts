@@ -25,6 +25,10 @@ export type DecisionOptimizerThresholds = {
   minClassAAccuracy: number;
 };
 
+export type DecisionOptimizerSimulationDecision =
+  | { status: "accepted"; reason: string }
+  | { status: "rejected"; reason: string };
+
 export type ProposeDecisionOptimizerChangeSetInput = {
   organizationId: string;
   workItemId: string;
@@ -37,6 +41,9 @@ export type ProposeDecisionOptimizerChangeSetInput = {
   evalSummary: ModelEvalSummary;
   evalEvidenceRef?: string | undefined;
   telemetryEvidenceRef?: string | undefined;
+  simulationEvidenceRef?: string | undefined;
+  simulationDecision?: DecisionOptimizerSimulationDecision | undefined;
+  emergencyWaiverEvidenceRef?: string | undefined;
   kpiSignal: DecisionOptimizerKpiSignal;
   kpiEvidenceRef?: string | undefined;
   modelCostRank: Readonly<Record<string, number>>;
@@ -53,6 +60,8 @@ export type DecisionOptimizerResult =
       | "kpi_negative"
       | "missing_eval_evidence"
       | "missing_kpi_evidence"
+      | "missing_simulation_evidence"
+      | "simulation_rejected"
       | "current_model_unknown"
       | "candidate_model_mismatch"
       | "candidate_not_lower_cost"
@@ -124,6 +133,22 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
   if (kpiEvidenceRef === undefined || !isContentAddressedEvidenceRef(kpiEvidenceRef)) {
     return { kind: "no_proposal", reason: "missing_kpi_evidence" };
   }
+  const simulationEvidenceRef = input.simulationEvidenceRef;
+  const emergencyWaiverEvidenceRef = input.emergencyWaiverEvidenceRef;
+  const simulationAccepted = simulationEvidenceRef !== undefined &&
+    isContentAddressedEvidenceRef(simulationEvidenceRef) &&
+    input.simulationDecision?.status === "accepted";
+  const policyEvidenceRef = simulationAccepted
+    ? simulationEvidenceRef
+    : emergencyWaiverEvidenceRef !== undefined && isContentAddressedEvidenceRef(emergencyWaiverEvidenceRef)
+      ? emergencyWaiverEvidenceRef
+      : undefined;
+  if (policyEvidenceRef === undefined) {
+    if (simulationEvidenceRef !== undefined && isContentAddressedEvidenceRef(simulationEvidenceRef) && input.simulationDecision?.status === "rejected") {
+      return { kind: "no_proposal", reason: "simulation_rejected" };
+    }
+    return { kind: "no_proposal", reason: "missing_simulation_evidence" };
+  }
   if (input.candidateModel !== input.evalSummary.model) {
     return { kind: "no_proposal", reason: "candidate_model_mismatch" };
   }
@@ -160,6 +185,7 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
     ...(input.telemetryEvidenceRef !== undefined && isContentAddressedEvidenceRef(input.telemetryEvidenceRef)
       ? [input.telemetryEvidenceRef]
       : []),
+    policyEvidenceRef,
   ];
   const changeSet: ChangeSet = {
     changeSetId,

@@ -25,6 +25,8 @@ const NOW = "2026-05-30T00:00:00.000Z";
 const EvalEvidenceRef = createContentAddressedEvidenceRef("model-eval-report", { runId: "eval-run-1" });
 const KpiEvidenceRef = createContentAddressedEvidenceRef("decision-kpi", { runId: "eval-run-1" });
 const TelemetryEvidenceRef = createContentAddressedEvidenceRef("telemetry-regression", { runId: "eval-run-1" });
+const SimulationEvidenceRef = createContentAddressedEvidenceRef("simulation-report", { runId: "sim-run-1" });
+const AcceptedSimulationDecision = { status: "accepted", reason: "candidate_beats_baseline" } as const;
 const ModelCostRank = { "qwen2:0.5b": 1, "gpt-5.5": 10 } as const;
 
 test("proposes a safe model downgrade only when Class A clears threshold and KPI is non-negative", () => {
@@ -41,6 +43,8 @@ test("proposes a safe model downgrade only when Class A clears threshold and KPI
     evalEvidenceRef: EvalEvidenceRef,
     kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
     kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
     modelCostRank: ModelCostRank,
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,
@@ -52,7 +56,7 @@ test("proposes a safe model downgrade only when Class A clears threshold and KPI
   equal(result.changeSet.proposerHatId, "decision_optimizer");
   equal(result.changeSet.artifacts.length, 1);
   equal(result.event.kind, OrgEventKind.DecisionOptimizationProposed);
-  deepEqual(result.event.evidenceRefs, [EvalEvidenceRef, KpiEvidenceRef]);
+  deepEqual(result.event.evidenceRefs, [EvalEvidenceRef, KpiEvidenceRef, SimulationEvidenceRef]);
 
   const artifact = result.changeSet.artifacts[0]!;
   equal(artifact.kind, ChangeArtifactKind.ConfigChange);
@@ -115,6 +119,8 @@ test("does not mutate tenant config directly", () => {
     evalEvidenceRef: EvalEvidenceRef,
     kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
     kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
     modelCostRank: ModelCostRank,
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,
@@ -122,6 +128,52 @@ test("does not mutate tenant config directly", () => {
 
   equal(result.kind, "proposed");
   deepEqual(currentConfig.layers, tenantConfigWithModel("gpt-5.5").layers);
+});
+
+test("does not propose config policy changes without simulation or emergency waiver evidence", () => {
+  const result = proposeDecisionOptimizerChangeSet({
+    organizationId: "org-lfg",
+    workItemId: "work-optimizer-missing-sim",
+    proposerHatId: "decision_optimizer",
+    targetHatId: "code_reviewer",
+    targetRef: tenantConfigDocumentKey("org-lfg"),
+    currentConfig: tenantConfigWithModel("gpt-5.5"),
+    candidateModel: "qwen2:0.5b",
+    budgetDeltaTokens: -512,
+    evalSummary: summary({ classAAccuracy: 1, classBAccuracy: 1 }),
+    evalEvidenceRef: EvalEvidenceRef,
+    kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
+    kpiEvidenceRef: KpiEvidenceRef,
+    modelCostRank: ModelCostRank,
+    thresholds: { minClassAAccuracy: 0.99 },
+    now: NOW,
+  });
+
+  deepEqual(result, { kind: "no_proposal", reason: "missing_simulation_evidence" });
+});
+
+test("does not propose config policy changes when simulation rejects the candidate", () => {
+  const result = proposeDecisionOptimizerChangeSet({
+    organizationId: "org-lfg",
+    workItemId: "work-optimizer-rejected-sim",
+    proposerHatId: "decision_optimizer",
+    targetHatId: "code_reviewer",
+    targetRef: tenantConfigDocumentKey("org-lfg"),
+    currentConfig: tenantConfigWithModel("gpt-5.5"),
+    candidateModel: "qwen2:0.5b",
+    budgetDeltaTokens: -512,
+    evalSummary: summary({ classAAccuracy: 1, classBAccuracy: 1 }),
+    evalEvidenceRef: EvalEvidenceRef,
+    kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
+    kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: { status: "rejected", reason: "escaped_defect_regression" },
+    modelCostRank: ModelCostRank,
+    thresholds: { minClassAAccuracy: 0.99 },
+    now: NOW,
+  });
+
+  deepEqual(result, { kind: "no_proposal", reason: "simulation_rejected" });
 });
 
 test("does not propose when the candidate is not a cheaper downgrade", () => {
@@ -138,6 +190,8 @@ test("does not propose when the candidate is not a cheaper downgrade", () => {
     evalEvidenceRef: EvalEvidenceRef,
     kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
     kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
     modelCostRank: ModelCostRank,
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,
@@ -160,6 +214,8 @@ test("does not propose without negative budget delta and durable KPI evidence", 
     evalEvidenceRef: EvalEvidenceRef,
     kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
     kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
     modelCostRank: ModelCostRank,
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,
@@ -200,6 +256,8 @@ test("does not let an eval summary authorize a different candidate model", () =>
     evalEvidenceRef: EvalEvidenceRef,
     kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
     kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
     modelCostRank: { ...ModelCostRank, "qwen2:1.5b": 2 },
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,
@@ -240,6 +298,8 @@ test("runs the optimizer cycle against a generic document/log store", async () =
     evalEvidenceRef: EvalEvidenceRef,
     kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
     kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
     modelCostRank: ModelCostRank,
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,
@@ -284,6 +344,8 @@ test("reads telemetry before proposing and carries telemetry evidence into chang
     evalEvidenceRef: EvalEvidenceRef,
     kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
     kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
     modelCostRank: ModelCostRank,
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,
@@ -299,7 +361,7 @@ test("reads telemetry before proposing and carries telemetry evidence into chang
 
   equal(result.kind, "proposed");
   if (result.kind !== "proposed") throw new Error("expected telemetry-backed proposal");
-  deepEqual(result.event.evidenceRefs, [EvalEvidenceRef, KpiEvidenceRef, TelemetryEvidenceRef]);
+  deepEqual(result.event.evidenceRefs, [EvalEvidenceRef, KpiEvidenceRef, TelemetryEvidenceRef, SimulationEvidenceRef]);
   deepEqual(telemetryQueryPort.calls.map((call) => call.kind), ["metrics", "traces", "logs"]);
   deepEqual(result.telemetryObservations, {
     metricSeriesCount: 1,
@@ -335,6 +397,8 @@ test("does not cite telemetry evidence when telemetry queries degrade", async ()
     evalEvidenceRef: EvalEvidenceRef,
     kpiSignal: { observedWorkItems: 12, successCount: 9, failureCount: 3, kpiDelta: 0 },
     kpiEvidenceRef: KpiEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: AcceptedSimulationDecision,
     modelCostRank: ModelCostRank,
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,

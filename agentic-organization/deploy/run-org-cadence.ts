@@ -55,6 +55,10 @@ import {
   splitSqlStatements,
 } from "../packages/state-cockroach/src/index.ts";
 import { composeOrgCadenceLoops } from "../apps/workers/src/org-cadence-composition.ts";
+import {
+  evaluateSimulationRisk,
+  runOrgPolicySimulation,
+} from "../packages/simulator/src/index.ts";
 import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroach-sql-executor.ts";
 
 const connectionString = env.COCKROACH_DATABASE_URL ?? "postgresql://root@localhost:26257/defaultdb?sslmode=disable";
@@ -138,6 +142,48 @@ async function main(): Promise<void> {
   const workMarketProof = runWorkMarketProof({
     implementationEvidenceRef: createContentAddressedEvidenceRef("test-result", { proof: "work-market", status: "implemented" }),
     reviewEvidenceRef: createContentAddressedEvidenceRef("review", { proof: "work-market", status: "peer-approved" }),
+  });
+  const simulationReport = runOrgPolicySimulation({
+    organizationId: ORG,
+    seed: "kind-org-cadence-phase-2-7",
+    stream: [
+      { eventId: "sim-intake-1", kind: "work_intake", occurredAt: new Date(NOW - 900_000).toISOString(), workItemId: "work-observe-act", priority: 100 },
+      { eventId: "sim-complete-1", kind: "work_completed", occurredAt: new Date(NOW - 480_000).toISOString(), workItemId: "work-observe-act", leadTimeMs: 420_000 },
+      { eventId: "sim-review-1", kind: "review_lag", occurredAt: new Date(NOW - 420_000).toISOString(), workItemId: "work-observe-act", lagMs: 180_000 },
+      { eventId: "sim-stale-1", kind: "stale_claim", occurredAt: new Date(NOW - 360_000).toISOString(), workItemId: "work-observe-act" },
+    ],
+    baseline: {
+      overlayId: "kind-baseline",
+      autonomyLevel: "assisted",
+      modelMapping: { backend_implementer: "gpt-5.5" },
+      modelCostPerWorkItem: 10,
+      gateQuorum: 2,
+    },
+    candidate: {
+      overlayId: "kind-schedule-rebalance",
+      autonomyLevel: "assisted",
+      modelMapping: { backend_implementer: "gpt-5.5" },
+      modelCostPerWorkItem: 10,
+      schedulePolicy: "rebalance_critical_hats",
+      leadTimeMultiplier: 0.5,
+      reviewLagMultiplier: 0.5,
+      staleClaimMultiplier: 0,
+      gateQuorum: 2,
+    },
+  });
+  const simulationDecision = evaluateSimulationRisk(simulationReport, {
+    maxEscapedDefectRegression: 0,
+    maxClassBEscapedDefectRegression: 0,
+    maxIncidentRegression: 0,
+    maxConformanceFailureRegression: 0,
+    minThroughputDelta: 0,
+  });
+  if (simulationDecision.status !== "accepted") {
+    throw new Error(`expected schedule policy simulation accepted, got ${simulationDecision.reason}`);
+  }
+  const simulationEvidenceRef = createContentAddressedEvidenceRef("simulation-report", {
+    report: simulationReport,
+    decision: simulationDecision,
   });
   const observeActScheduleBlock = {
     workScheduleBlockId: id("schedule-observe-act"),
@@ -331,6 +377,13 @@ async function main(): Promise<void> {
           : { reason: reputationSelection.reason },
       },
       workMarket: workMarketProof,
+      simulation: {
+        evidenceRef: simulationEvidenceRef,
+        decision: simulationDecision,
+        baseline: simulationReport.baseline.metrics,
+        candidate: simulationReport.candidate.metrics,
+        scenarioKinds: simulationReport.scenarioKinds,
+      },
       orgEventsObservedFromLanes: recent.length,
     },
   }, null, 2));

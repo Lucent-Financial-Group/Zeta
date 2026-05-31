@@ -8,6 +8,7 @@ export {
   type DecisionOptimizerCycleResult,
   type DecisionOptimizerNoProposalReason,
   type DecisionOptimizerResult,
+  type DecisionOptimizerSimulationDecision,
   type DecisionOptimizerStore,
   type DecisionOptimizerThresholds,
   type ProposeDecisionOptimizerChangeSetInput,
