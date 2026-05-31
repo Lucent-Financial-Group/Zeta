@@ -51,7 +51,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Zeta.Core.FSharp.TriBoolean
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.CSharp.TriBoolean", "Core.CSharp.TriBoolean", "{A85D3BA6-21D2-F4A6-D376-045E882F96BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zeta.Core.CSharp.TriBoolean", "src\Core.CSharp.TriBoolean\Zeta.Core.CSharp.TriBoolean.csproj", "{94ECC78D-5D55-4CF4-B029-686B000D193E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zeta.Core.CSharp.TriBoolean", "src\Core.CSharp.TriBoolean\Zeta.Core.CSharp.TriBoolean.csproj", "{94ECC78D-5D55-4CF4-B029-686B000D193E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
