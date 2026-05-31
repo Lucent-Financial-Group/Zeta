@@ -26,7 +26,7 @@ original five from 2026-05-13; **idempotency added 2026-05-30**):
 | Weight-free | Type theory | No implicit weighting |
 | DST | Verification | Deterministic replay |
 | **DV2.0** (re-activated) | **Partition** | **Change-rate-based partition into storage shapes** |
-| **Idempotency** (added 2026-05-30) | **Effects / replay / merge** | **Apply-N-times == apply-once: retry-safe, replay-safe, exactly-once-effect ops** |
+| **Idempotency** (added 2026-05-30) | **Effects / replay / merge** | **Apply-N-times == apply-once: retry-safe, replay-safe, dedup-keyed exactly-once *effects* (under at-least-once delivery — not exactly-once delivery)** |
 
 All six apply simultaneously per
 `.claude/rules/default-to-both.md`.
@@ -111,15 +111,21 @@ are NOT (they need a natural key / dedup token to be made so). The
 discipline at substrate-engineering time: when designing any operation
 that can be **re-run, retried, re-delivered, or re-merged**, make its
 *effect* idempotent — or name the non-idempotence explicitly and guard
-it (idempotency key, dedup window, exactly-once-effect wrapper).
+it (the mechanism is an idempotency key + dedup window — a dedup-keyed
+exactly-once-*effect* guard, NOT an exactly-once *delivery* guarantee).
 
 ### Why it is load-bearing with the other five
 
-- **With DST (question 4):** DST replays a seeded event stream and must
-  re-produce the same state. Replay is only sound if applying the same
-  event twice is a no-op the second time — idempotency is the property
-  that makes deterministic re-execution safe. Idempotency and DST are
-  siblings: DST *requires* replay; idempotency makes replay *safe*.
+- **With DST (question 4):** a pure single deterministic replay of the
+  same ordered stream is sound on its own — it applies each event exactly
+  once, so even non-idempotent events (e.g. counter-increment) re-produce
+  the same state. Idempotency is what keeps replay safe under the
+  *imperfect* cases DST must tolerate: at-least-once redelivery, retry
+  after a crash mid-replay, or partial re-execution of an
+  already-partly-applied stream — where an event can land twice and
+  re-applying must be a no-op the second time. Idempotency and DST are
+  siblings: DST *requires* replay; idempotency makes *redelivery / partial*
+  replay safe.
 - **With lock-free / wait-free (question 2):** lock-free retry loops
   (CAS) re-attempt the same operation under contention; the operation
   must be idempotent for the retry to be correct. CAS itself is the
@@ -136,7 +142,8 @@ it (idempotency key, dedup window, exactly-once-effect wrapper).
   deliberate **non-idempotent** collapse (the one op that changes
   state, surfaced as feedback). The idempotent/non-idempotent split IS
   the cooperate/measure split.
-- **With the observe→act / move-next loop (the observe.ts ADR):** a
+- **With the observe→act / move-next loop (the observe.ts ADR —
+  [`docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`](../../docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md)):** a
   re-fired menu selection / re-delivered action should be a no-op if
   already applied — idempotent actions are what make the
   state-machine-in-git loop safe to retry across crashes (this very
@@ -241,7 +248,7 @@ The sixth question (idempotency) catches:
   re-execution sound; composes with question 4)
 - `cooperate` (the tri-boolean wonder-compression op) is idempotent by
   design; `measure` is the deliberate non-idempotent collapse
-- Upsert / exactly-once-effect at the operator + storage layer
+- Upsert / dedup-keyed exactly-once *effects* (not exactly-once delivery) at the operator + storage layer
 - observe→act / move-next actions (a re-fired menu selection should be
   a no-op if already applied) — the agent-loop / observe.ts substrate
 
