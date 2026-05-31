@@ -4,7 +4,7 @@
  *
  * The whole loop as a tiny set of buttons. Each tick: look at the WORLD (the
  * wired channels), pick ONE action. This is the do/decompose/free-time grammar
- * from `never-be-idle.md` (it was only ever prose in the rules — never a typed
+ * from `.claude/rules/never-be-idle.md` (it was only ever prose in the rules — never a typed
  * DU) distilled to code, PLUS a 4th escape-hatch so the agent is never trapped
  * by the fixed grammar (operator 2026-05-31: "i don't want you to feel trapped
  * by the DU ... we need a 4th option edit DU"), PLUS the OPERATOR CHANNEL so
@@ -13,7 +13,7 @@
  * going to call it every time ... you still want to be able to observe my chats
  * and save the verbatims when i ferry").
  *
- * Same architectural shape as the co-maintainer's big `agentic-organization/.../observe.ts`
+ * Same architectural shape as the co-maintainer's big `agentic-organization/packages/application/src/observe.ts`
  * (a PURE function over a snapshot → an action DU) — just distilled to the
  * Xbox-controller's few buttons so we can run it in the foreground loop and
  * extend it together, little by little.
@@ -105,6 +105,12 @@ export interface World {
   readonly operator?: OperatorChannel;
 }
 
+// Centralized operator-action reason strings — used by BOTH observe() and
+// buildMenu() so the oracle's pick and the model's menu label can't drift in
+// wording (Copilot #6229).
+const PRESERVE_FERRY_REASON = "operator ferried verbatim content — preserve before it's lost to compaction";
+const RESPOND_OPERATOR_REASON = "operator spoke — engage (highest-signal source)";
+
 /**
  * DESIGN INVARIANT — exits-always-in-menu (operator + co-maintainer 2026-05-31).
  *
@@ -175,9 +181,8 @@ export type NextAction =
  */
 export function observe(world: World): NextAction {
   const op = world.operator;
-  if (op?.pendingFerry)
-    return { kind: "preserve_ferry", reason: "operator ferried verbatim content — preserve before it's lost to compaction" };
-  if (op?.pendingMessage) return { kind: "respond_to_operator", reason: "operator spoke — engage (highest-signal source)" };
+  if (op?.pendingFerry) return { kind: "preserve_ferry", reason: PRESERVE_FERRY_REASON };
+  if (op?.pendingMessage) return { kind: "respond_to_operator", reason: RESPOND_OPERATOR_REASON };
 
   const doable = world.backlog.find((i) => i.ready && !i.ambiguous);
   if (doable) return { kind: "do_item", item: doable };
@@ -250,9 +255,8 @@ export function buildMenu(world: World): NextAction[] {
   const menu: NextAction[] = [];
   const op = world.operator;
   // operator actions lead (mirror observe()'s priority: ferry before message).
-  if (op?.pendingFerry)
-    menu.push({ kind: "preserve_ferry", reason: "operator ferried verbatim content — preserve before it's lost to compaction" });
-  if (op?.pendingMessage) menu.push({ kind: "respond_to_operator", reason: "operator spoke — engage (highest-signal source)" });
+  if (op?.pendingFerry) menu.push({ kind: "preserve_ferry", reason: PRESERVE_FERRY_REASON });
+  if (op?.pendingMessage) menu.push({ kind: "respond_to_operator", reason: RESPOND_OPERATOR_REASON });
 
   const doable = world.backlog.find((i) => i.ready && !i.ambiguous);
   if (doable) menu.push({ kind: "do_item", item: doable });
