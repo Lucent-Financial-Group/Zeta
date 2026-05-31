@@ -4,9 +4,13 @@ PoC scaffold for the zflash "done" acceptance criteria — the 5-scenario QEMU t
 
 ## Scope
 
-**PoC**: declarative scenario definitions + CLI dispatcher contract + invariant tests.
+**PoC**: declarative scenario definitions + CLI dispatcher contract +
+invariant tests + QEMU snapshot/restart command planning.
 
-**NOT in PoC** (deferred to follow-up): QEMU snapshot/restart logic for scenarios 3-5 (state preservation between boots); multi-VM orchestration for scenario 5 (cluster-joining); GitHub Actions workflow integration.
+**NOT in PoC** (deferred to follow-up): executing the QEMU snapshot/restart
+plan for scenarios 3-5 (state preservation between boots); multi-VM
+orchestration for scenario 5 (cluster-joining); GitHub Actions workflow
+integration.
 
 ## Scenarios
 
@@ -70,6 +74,7 @@ When a scenario transitions to composes-with-existing:
 
 - [`tools/ci/qemu-full-install-test.ts`](../../ci/qemu-full-install-test.ts) — B-0831 Slice 1 starter; existing QEMU full-install harness
 - [`tools/ci/qemu-boot-test.ts`](../../ci/qemu-boot-test.ts) — cascade #5 boot smoke-test
+- [`qemu-state.ts`](qemu-state.ts) — scenario 3 qcow2 snapshot/restart command planner
 - [`tools/ci/audit-installer-iso-content.ts`](../../ci/audit-installer-iso-content.ts) — cascade #4 ISO content audit
 - [`full-ai-cluster/tools/zflash.ts`](../../../full-ai-cluster/tools/zflash.ts) — the zflash CLI under test
 - [`full-ai-cluster/tools/zflash-lib.ts`](../../../full-ai-cluster/tools/zflash-lib.ts) — library substrate
