@@ -34,11 +34,11 @@ surface is `tools/openspec/inventory.ts`, and the latest focused run reports:
 - `openspec/specs/**`: 9 capability specs.
 - `src/Core/*.fs`: 84 scanned modules, 18 covered modules, 64 uncovered
   modules after exclusions.
-- Artifact coverage: 4 mapped Z-set algebra test artifacts and 0 missing
-  mapped artifacts.
+- Artifact coverage: 9 mapped Z-set algebra and tick-history artifacts and 0
+  missing mapped artifacts.
 - Inventory gate: PASS under the current default gate.
-- Remaining inventory flags: `agentic-organization` and `tick-history` have
-  specs but no module or artifact mapping yet.
+- Remaining inventory flag: `agentic-organization` has a spec but no module or
+  artifact mapping yet.
 
 This means the next B-0171 slice is no longer "prove OpenSpec is empty." The
 work is now reconciliation: map artifact-backed capabilities, decide which
