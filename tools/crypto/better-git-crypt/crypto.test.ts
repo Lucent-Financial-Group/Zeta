@@ -221,6 +221,28 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
     expect(enc.ok).toBe(false);
     if (!enc.ok) expect(enc.feedback.kind).toBe("RecipientKeyInvalid");
   });
+
+  it("RecipientKeyInvalid: rejects empty sender/recipient identity", () => {
+    // generateRecipientKeyPair("") yields identity:"". Encrypting with it would
+    // mint an envelope whose signerIdentity/slot id is "" — decrypt can't
+    // resolve it later, so the artifact is undecryptable. Reject up front.
+    // (Codex P2 on PR #6217.)
+    const empty = generateRecipientKeyPair("");
+    const ctx: EncryptionContext = {
+      plaintext: utf8("x"),
+      recipients: [empty.publicKey],
+      sender: empty.publicKey,
+      seedSource: "random-bytes",
+    };
+    const enc = encrypt(ctx, empty.secretKeys);
+    expect(enc.ok).toBe(false);
+    if (!enc.ok) {
+      expect(enc.feedback.kind).toBe("RecipientKeyInvalid");
+      if (enc.feedback.kind === "RecipientKeyInvalid") {
+        expect(enc.feedback.reason).toBe("empty recipient identity");
+      }
+    }
+  });
 });
 
 describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () => {

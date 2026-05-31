@@ -114,11 +114,17 @@ function bytesEqual(a: Uint8Array, b: Uint8Array): boolean {
   return Buffer.from(a).equals(Buffer.from(b));
 }
 
-/** First duplicated identity in a recipient list, or null if all unique. */
-function firstDuplicateIdentity(recipients: readonly RecipientKey[]): string | null {
+/**
+ * First invalid recipient identity (empty or duplicated), or null if all are
+ * non-empty + unique. Empty identities would mint an envelope with an empty
+ * `signerIdentity`/slot id that decrypt can't resolve (undecryptable); dupes
+ * make a valid later slot unreachable via first-match.
+ */
+function firstInvalidIdentity(recipients: readonly RecipientKey[]): { identity: string; reason: string } | null {
   const seen = new Set<string>();
   for (const r of recipients) {
-    if (seen.has(r.identity)) return r.identity;
+    if (r.identity.length === 0) return { identity: r.identity, reason: "empty recipient identity" };
+    if (seen.has(r.identity)) return { identity: r.identity, reason: "duplicate recipient identity" };
     seen.add(r.identity);
   }
   return null;
@@ -224,16 +230,20 @@ export function encrypt(context: EncryptionContext, senderSecretKeys: RecipientS
     return { ok: false, feedback: { kind: "AlgUnsupported", algId: plan.path.algSig } };
   }
 
-  // 2b. Reject duplicate recipient identities. decrypt resolves a recipient by
-  //     identity via first-match, so two slots for the same identity (e.g. a
-  //     stale registry entry kept before the current key) would make a valid
-  //     later slot unreachable and surface a spurious KemFailure. Keep the
-  //     recipient set identity-unique.
-  const dupId = firstDuplicateIdentity(context.recipients);
-  if (dupId !== null) {
+  // 2b. Reject empty + duplicate recipient identities. decrypt resolves a
+  //     recipient by identity via first-match: an empty identity would mint a
+  //     slot keyed by "" that decrypt can't resolve (undecryptable artifact),
+  //     and two slots for the same identity (e.g. a stale registry entry kept
+  //     before the current key) would make a valid later slot unreachable and
+  //     surface a spurious KemFailure. Since the sender MUST be in the recipient
+  //     set (checked next), this also rejects an empty sender identity before it
+  //     can sign an envelope with signerIdentity:"". Keep identities non-empty +
+  //     unique.
+  const invalidId = firstInvalidIdentity(context.recipients);
+  if (invalidId !== null) {
     return {
       ok: false,
-      feedback: { kind: "RecipientKeyInvalid", identity: dupId, reason: "duplicate recipient identity" },
+      feedback: { kind: "RecipientKeyInvalid", identity: invalidId.identity, reason: invalidId.reason },
     };
   }
 
