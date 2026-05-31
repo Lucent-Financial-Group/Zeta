@@ -87,17 +87,47 @@ Workflow=2, Heartbeat=3`; Lior used `5` for friction telemetry). **Add a `Bus` c
 monitoring). Within `Bus`, the existing `Topic` (`work-assignment`, `claim`,
 `review-request`, …) is the **bus-type sub-discriminator**.
 
-| Concern                  | Category    | Folder                   | Payload                                   |
-| ------------------------ | ----------- | ------------------------ | ----------------------------------------- |
-| Agent **health**         | `Heartbeat` | `docs/agent-heartbeats/` | `HeartbeatPayload` (status/idle/working)  |
-| Agent **communications** | `Bus` (new) | `docs/agent-bus/`        | bus `Topic` payloads (work-assignment, …) |
+| Concern                  | Category      | Folder                   | Payload / consumer                                               |
+| ------------------------ | ------------- | ------------------------ | ---------------------------------------------------------------- |
+| Agent **health**         | `Heartbeat`   | `docs/agent-heartbeats/` | `HeartbeatPayload` (status/idle/working) → monitors              |
+| Agent **communications** | `Bus` (new)   | `docs/agent-bus/`        | bus `Topic` payloads (work-assignment, …) → **peer agents**      |
+| Agent **spawning**       | `Spawn` (new) | `docs/agent-spawn/`      | spawn request (persona/lane/backend/params) → **runner-adapter** |
 
 Per the operator's per-category-metadata point ("metadata can be different per key category
-type"), each category carries its own schema; `unpack().category` filters all bus traffic
-on the filename alone, and `Heartbeat` stays semantically pure (health, not comms). This is
-the canonical first split of the operator's broader direction — "almost all of our checkins
-except code will move to zetaid-based": each non-code checkin family is its own category +
-folder on the same B-0858 mechanism.
+type"), each category carries its own schema; `unpack().category` filters a family on the
+filename alone, and `Heartbeat` stays semantically pure (health, not comms or spawn). This
+is the operator's broader direction — "almost all of our checkins except code will move to
+zetaid-based": each non-code checkin family is its own category + folder on the same B-0858
+mechanism. Slot numbers are allocated against `registry/categories.yaml` at build time
+(currently `0–3` committed; check in-flight before claiming, per the ID-allocation
+discipline).
+
+### Spawn category — agent-spawning workflows, backend-portable (operator 2026-05-31)
+
+Operator 2026-05-31: _"for our git agent spawning workflows we probably want a category too,
+we can reproduce it locally with argo workflows or gitlab too, so we have a spawn category
+or something like that."_
+
+`Spawn` is a sibling category for **agent-spawning workflow events** — distinct from `Bus`
+(messages between _existing_ agents) because a spawn checkin requests _creating a new agent
+run_ (lifecycle, not comms). The load-bearing requirement is **backend portability**: the
+spawn envelope is **runner-agnostic** (a ZetaId-keyed file with `{ persona, lane/task,
+backend, params }`), and a **runner-adapter** materializes it on whichever backend:
+
+| Backend            | How the adapter materializes a spawn envelope                         |
+| ------------------ | --------------------------------------------------------------------- |
+| **GitHub Actions** | `workflow_dispatch` / `repository_dispatch` (cloud; free OSS compute) |
+| **Argo Workflows** | submit a Workflow to the local k8s cluster (`full-ai-cluster`)        |
+| **GitLab CI**      | pipeline trigger                                                      |
+
+Same envelope, swappable backend — so the swarm reproduces locally (Argo) or on GitLab, not
+locked to GitHub. The spawn-specific consumer is the **runner-adapter** (whereas `Bus`
+envelopes are consumed by peer agents); this is the first-class, portable form of what the
+bus spec earlier deferred as a "GitHub Actions trigger" follow-up. Composes with the
+existing spawn substrate: `.claude/skills/self-replication/`, **B-0867.24 / B-0867.25**
+(population-control safety-net — revive/spawn on zero-Ottos), `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md`
+(the spawn path must stay inside the safe-patterns floor), and the github-swarm-architecture
+substrate on this branch.
 
 ## Envelope schema — extend the existing one (interop with the local bus)
 
@@ -198,8 +228,10 @@ mechanism. v0 leans on B-0858's mechanism wherever it already exists.
 - **Transport router** — auto-pick local `/tmp` (same-machine, low-latency) vs the git folder
   (cross-machine) by target locality, so `bus.ts publish` "just works" either way.
 - **Sync daemon** — continuous `/tmp` ↔ `docs/agent-bus/` mirroring.
-- **GitHub Actions trigger** — push to `docs/agent-bus/**` fires an Action that fans
-  envelopes out (the swarm-recursion direction).
+- **`Spawn` category + runner-adapter** (its own follow-up — see "Spawn category" above):
+  `docs/agent-spawn/**` + a backend-portable adapter (GitHub Actions / Argo / GitLab).
+  This is the first-class form of the old "GitHub Actions trigger" idea; build after Bus
+  v0 lands, likely its own B-0867.24/.25-adjacent row.
 
 ## Composes with
 
@@ -210,7 +242,10 @@ mechanism. v0 leans on B-0858's mechanism wherever it already exists.
 - **B-0032** (heartbeat direct-to-main threat model) — extends to cover `docs/agent-bus/**`
 - **B-0868** (hats/workflow-engine/heartbeat-folder/dashboard unification) + B-0887
   (Zeta-native review/branch-protection) — the protection substrate that makes no-PR safe
-- `registry/categories.yaml` (16-slot category enum — add `Bus`)
+- `registry/categories.yaml` (16-slot category enum — add `Bus`; later `Spawn`)
+- **B-0867.24 / B-0867.25** (population-control safety-net — revive/spawn on zero-Ottos) +
+  `.claude/skills/self-replication/` + `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md` — the
+  `Spawn`-category substrate (backend-portable agent-spawning) composes here
 - `src/Core.TypeScript/zeta-id/` (canonical ZetaId — reused, not re-minted)
 - `tools/bus/` (legacy in-process bus — same envelope model, second transport) + B-0400
   (inter-agent comms bus origin)
