@@ -25,6 +25,11 @@ type Category =
     | Emission = 1uy
     | Workflow = 2uy
     | Heartbeat = 3uy
+    | Batch = 4uy      // branch-mode batch-merge transport (corporate leash, B-0890); slot reserved, impl deferred
+    | FrictionTelemetry = 5uy  // friction telemetry per ADR 2026-05-29 (slot registered; impl pending)
+    | Bus = 6uy        // cross-machine agent comms (git-native bus spec, #6219)
+    | Spawn = 7uy      // agent-spawning (backend-portable: GH Actions / Argo / GitLab)
+    | WorkItem = 8uy   // planning umbrella (tasks + bugs; B-xxxxx -> ZetaId migration)
 
 /// Firefly bit — 1 bit. Mirrors `src/Core.CSharp.ZetaId/Firefly.cs`.
 type Firefly =

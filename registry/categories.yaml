@@ -9,3 +9,14 @@ entries:
     name: Workflow
   - id: 3
     name: Heartbeat
+  # Batch — branch-mode batch-merge transport (corporate leash, B-0890); slot reserved 2026-05-31, impl deferred (Max). Sovereign mode uses folders-on-main (B-0890.1), no coordinator.
+  - id: 4
+    name: Batch
+  - id: 5
+    name: FrictionTelemetry
+  - id: 6
+    name: Bus
+  - id: 7
+    name: Spawn
+  - id: 8
+    name: WorkItem
