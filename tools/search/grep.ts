@@ -60,7 +60,9 @@ export interface GrepMatch {
 export interface GrepOptions {
   root: string;
   pattern: RegExp;
-  exts?: Set<string>; // extensions without the dot; undefined = all text files
+  // extensions without the dot; undefined = all text files. Explicit `| undefined`
+  // so it composes under tsconfig `exactOptionalPropertyTypes: true`.
+  exts?: Set<string> | undefined;
 }
 
 function relPosix(root: string, abs: string): string {
@@ -141,7 +143,7 @@ export function grepTree(opts: GrepOptions): GrepMatch[] {
 interface ParsedArgs {
   pattern: string;
   repo: string;
-  exts?: Set<string>;
+  exts?: Set<string> | undefined;
   ignoreCase: boolean;
   filesOnly: boolean;
 }
