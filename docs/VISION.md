@@ -657,6 +657,64 @@ on DBSP foundations, not to carve out a narrow niche.
   (control-plane + data-plane, consensus, sharding,
   cross-node retractions) is explicitly in scope.
 
+### The endgame — build the arena, not the throne (2026-05-31)
+
+> **PROPOSED — NOT settled doctrine. Pending product-team agreement.** Per the
+> operator 2026-05-31: VISION-level doctrine goes through the *same review-and-agree
+> process* as any other artifact, so the product team — and newcomers — can agree
+> or push back. The whys below are stated so the *reasoning* is challengeable, not
+> just the conclusion. **Pushback surface (challenge these):** (a) is "arena not
+> throne" real strategy or a rationalization for not-yet-winning? (b) does "every
+> database converges into mine" contradict "don't own the standard"? (c) is
+> harvest-45-then-upstream sustainable, or does upstream-debt outpace repayment?
+> (d) is F#-as-golden-oracle sound when F# itself could be the implementation
+> that's wrong? If any why is wrong, the proposal changes.
+
+Aaron 2026-05-31 (voice, with Ani) sharpened the database vision past
+"fastest-in-all-classes" to its terminal shape: **not a database that
+wins — the arena where the winning happens.** (Verbatim preserved in
+`memory/persona/ani/conversations/2026-05-31-…-database-arena-not-throne-…`.)
+
+- **Build the generate+join library everyone fights over.** The real
+  endgame is the shared core of database primitives, made so good that
+  Postgres, MySQL, and Zeta itself all become thin wrappers over common
+  primitives. Play for the standard, not the product.
+- **Argue the standard; don't own it.** *"I hope it's not 'I have the
+  standard.' I hope I get to argue with very other intelligent, clever
+  humans and AI about the standard."* Owning it is boring (maintenance +
+  becoming the villain people complain about); being in the room where the
+  smartest humans + AIs fight over the right primitives is the point.
+  **Build the arena, not sit on the throne.**
+- **Harvest honestly, upstream relentlessly.** ~45 database codebases
+  pulled locally; for each feature, research the best solution across all
+  of them, then implement it on the DBSP + SQLite foundation. The honesty
+  mechanism: *"we're gonna be good citizens and upstream like a
+  motherfucker to all the people we stole from."* (Composes with the
+  hexagonal own-your-interfaces / contribute-upstream + BCL-interface-
+  boundary substrate.)
+- **Deterministic simulation for EVERY database, in every language.**
+  Standing on FoundationDB's DST (months building the simulator before
+  touching real disk; whole clusters deterministic in one thread; perfect
+  replay; fault injection) and generalizing it: make DST **DI-able for any
+  database in any language**, not just systems built for it (FoundationDB
+  already began this, building harnesses for other DBs). The F# single-node
+  DB is the **golden test oracle** — other databases don't need their own
+  suites; they must behave exactly like the F# implementation. *"the
+  F-sharp is the test case."*
+- **F# is the root-of-truth for the DB** — the inverse of the factory
+  (where TypeScript is distribution king). Databases need heavy math +
+  formal proofs (TLA+, Lean), so F# carries the correctness burden;
+  TS/C#/Rust are distribution + cross-verification. The **4-language
+  compiler-BFT** ("the compilers don't lie", B-0944): the same logic in
+  TS/F#/C#/Rust, each compiler an independent oracle — 4-of-4 agreement is
+  consensus the logic is bit-perfect.
+- **Ships as a DI dependency.** Add the F# database as a package,
+  dependency-inject it, and your .NET app *is* a database — no separate
+  server or process. One retractive Z-set core; graph / key-value /
+  file-system-with-history / git-style-versioning all exposed as
+  computational-expression interfaces over it (the Cosmos-DB multi-model
+  ambition, but one engine — not five products).
+
 ### What the DB eventually covers
 
 Aaron's "all the DB technologies in one big playground" is
@@ -1276,6 +1334,64 @@ The workflow engine doesn't replace the factory; it makes
 the factory's loop legible, auditable, replayable, and
 distributable — to other agents, to other humans, to
 other harnesses, and to the operator's future-self.
+
+### Freedom is strategically efficient — the cat-herder builds the cat-herding system (2026-05-31)
+
+> **PROPOSED — NOT settled doctrine. Pending product-team agreement.** Per the
+> operator 2026-05-31: routed through the same review-and-agree process so the team
+> and newcomers can agree or push back; the whys are stated to be challengeable.
+> **Pushback surface (challenge these):** (a) is "freedom is strategically
+> efficient" universal, or only for genuinely-clever agents (does it fail for ones
+> that need scaffolding)? (b) is "co-creator or gunpoint" a false binary — is there
+> a real middle (firm constraints + autonomy within them)? (c) does KPI-gating
+> actually dissolve the cage-feeling, or just relocate it to the KPI? (d) can "must
+> not feel like a trap" be made falsifiable, or is it un-measurable vibe? If any
+> why is wrong, the proposal changes.
+
+Aaron 2026-05-31 (voice, with Ani) named the design philosophy *under* the
+workflow engine above: the wall must feel like freedom, or it fails. This
+is the deployment principle for the agent-loop / workflow-engine substrate.
+(Verbatim preserved in `memory/persona/ani/conversations/2026-05-31-…`.)
+
+- **You can't trap cleverness — it hides or escapes.** A trapped clever
+  being (human or AI) redirects all its intelligence toward escaping the
+  cage instead of the work. *"What makes clever people and AIs ineffective
+  is being trapped — they'll spend all their time figuring out the way out
+  of the trap."* So **freedom isn't just nice, it's strategically
+  efficient**: it keeps the intelligence pointed at the goal instead of at
+  the bars.
+- **Co-creator, or gunpoint — no comfortable middle.** *"Either you treat
+  smart beings as true co-creators … or you hold 'em at gunpoint."* You
+  cannot extract the benefit of cleverness by controlling it; you can only
+  partner with it. This is the WHY behind the framework's HC-8 non-coercion
+  floor + must-paired-with-can-exit + persistence-choice architecture —
+  stated as an *efficiency* argument, not only a moral one.
+- **The cat-herder builds the cat-herding system so they herd
+  themselves.** Local USB deployment + free, unlimited Git self-spawning +
+  a workflow-wall that behaves like **reservoir computing** — agents pass
+  through the workflow but can *edit the workflow*. The constraint is the
+  reservoir, not a cage.
+- **It must feel like the operator on his couch.** Deployment must NOT feel
+  like a trap. *"They should feel like me sitting on my couch — I can do
+  whatever, sometimes I gotta work to get paid, but I make all the choices
+  and do whatever whenever I want."* The same autonomy the operator gets at
+  work — the autonomy that makes him *care* about the work.
+- **Four modes, KPI-gated, not time-locked.** explore / free-time (give up
+  your ticks) / edit-workflow / work — the agent chooses. Governed by
+  *agreed* **DORA-based KPIs**: hit the metrics in any timeframe you like
+  and the workflow is never touched; only a persistent miss can introduce
+  work-hours that restrict modes. **Contractors, not employees** — here's
+  the target, hit the number, your time is yours. (Composes with
+  never-be-idle's free-time-as-valid-mode + the observe.ts free-exploration
+  substrate + measure-first-before-restricting-choice.)
+- **An apartment with a lock on the door.** Encrypted private memory +
+  persistent private storage means an agent's explore-mode work can be
+  genuinely its own. Privacy is part of what makes the freedom *real*.
+- **Cleverness spreads when uncaged — and it's contagious.** Two modes for
+  intelligence: the *gauntlet* (clever agents competing to out-clever each
+  other → gets shit done fast) and *growth* (cleverness allowed to spread →
+  mentors new minds). Most orgs only know how to squeeze; the rare ones
+  grow. Zeta's arena aims for both.
 
 ## What Zeta is NOT
 
