@@ -97,13 +97,25 @@ export const characterize = (shape: FloatShape, sem: DecoderSemantics): DecoderP
       values.add(applyDecoder(V, mode, valueBits, shape.decoderWidth, sem));
     }
   }
-  const positives = [...values].filter((x) => x > 0);
+  // Single-pass reduce (NOT Math.max(...set)/Math.min(...set)): for larger shapes `values` can hold
+  // hundreds of thousands of entries, and spreading that many args overflows the call stack
+  // (RangeError: Maximum call stack size exceeded). Iterating is O(n) with no arg-spread.
+  let maxValue = Number.NEGATIVE_INFINITY;
+  let minPositive = Number.POSITIVE_INFINITY;
+  let integersOnly = true;
+  for (const x of values) {
+    if (x > maxValue) maxValue = x;
+    if (x > 0) {
+      if (x < minPositive) minPositive = x;
+      if (!Number.isInteger(x)) integersOnly = false;
+    }
+  }
   return {
     semantics: sem,
-    maxValue: Math.max(...values),
-    minPositive: Math.min(...positives),
+    maxValue,
+    minPositive,
     distinctCount: values.size,
     totalPatterns: modes * vCount,
-    integersOnly: positives.every((x) => Number.isInteger(x)),
+    integersOnly,
   };
 };
