@@ -8,7 +8,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { DETERMINISTIC_ENV, DEFAULT_ENV, unpack } from "../../src/Core.TypeScript/zeta-id/zeta-id";
 import { Category } from "../../src/Core.TypeScript/zeta-id/types";
-import { envelopePath, mintBusZetaIdHex, serializeEnvelope, type AgentBusEnvelope } from "./types";
+import { envelopePath, mintBusZetaIdHex, serializeEnvelope, isSafeSegment, type AgentBusEnvelope } from "./types";
 import { writeEnvelope, makeEnvelope } from "./publish";
 import { readEnvelopesSince, nextCursor, envelopeCursor } from "./subscribe";
 
@@ -20,12 +20,15 @@ afterEach(() => {
   rmSync(ROOT, { recursive: true, force: true });
 });
 
+// AgentBusEnvelope === MessageEnvelope: topic+payload top-level + id/from/to/timestamp/expiresAt
 const env = (over: Partial<AgentBusEnvelope> = {}): AgentBusEnvelope => ({
-  zetaIdHex: "00000000000000000000000000000001",
+  topic: "shadow-catch",
+  payload: { content: "hi" },
+  id: "00000000000000000000000000000001",
   from: "otto-cli",
   to: "*",
-  ts: "2026-05-31T12:00:00.000Z",
-  message: { topic: "shadow-catch", payload: { content: "hi" } },
+  timestamp: "2026-05-31T12:00:00.000Z",
+  expiresAt: "2026-06-01T12:00:00.000Z",
   ...over,
 });
 
@@ -33,55 +36,51 @@ describe("mintBusZetaIdHex", () => {
   it("is 32 hex chars in the Bus category", () => {
     const hex = mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000);
     expect(hex).toMatch(/^[0-9a-f]{32}$/);
-    const obs = unpack(BigInt(`0x${hex}`) as never);
-    expect(obs.category).toBe(Category.Bus);
+    expect(unpack(BigInt(`0x${hex}`) as never).category).toBe(Category.Bus);
   });
-
   it("is reproducible under DETERMINISTIC_ENV (same fields -> same id; the G-Set collision caveat)", () => {
-    const a = mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000);
-    const b = mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000);
-    expect(a).toBe(b);
+    expect(mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000)).toBe(mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000));
   });
-
   it("is unique under DEFAULT_ENV even at the same ms (crypto randomness)", () => {
-    const a = mintBusZetaIdHex(DEFAULT_ENV, 1_700_000_000_000);
-    const b = mintBusZetaIdHex(DEFAULT_ENV, 1_700_000_000_000);
-    expect(a).not.toBe(b);
+    expect(mintBusZetaIdHex(DEFAULT_ENV, 1_700_000_000_000)).not.toBe(mintBusZetaIdHex(DEFAULT_ENV, 1_700_000_000_000));
   });
 });
 
-describe("envelopePath", () => {
-  it("lays out <root>/<persona>/<YYYY>/<MM>/<DD>/<hex>.json (UTC)", () => {
-    const p = envelopePath(ROOT, "otto-cli", "deadbeef", new Date("2026-05-31T23:59:00Z"));
-    expect(p).toBe(join(ROOT, "otto-cli", "2026", "05", "31", "deadbeef.json"));
+describe("envelopePath + isSafeSegment (path-injection guard)", () => {
+  it("lays out <root>/<persona>/<YYYY>/<MM>/<DD>/<id>.json (UTC)", () => {
+    expect(envelopePath(ROOT, "otto-cli", "deadbeef", new Date("2026-05-31T23:59:00Z"))).toBe(
+      join(ROOT, "otto-cli", "2026", "05", "31", "deadbeef.json"),
+    );
+  });
+  it("rejects unsafe segments (../, /, leading dot)", () => {
+    expect(isSafeSegment("otto-cli")).toBe(true);
+    expect(isSafeSegment("../etc")).toBe(false);
+    expect(isSafeSegment("a/b")).toBe(false);
+    expect(isSafeSegment(".hidden")).toBe(false);
+    expect(() => envelopePath(ROOT, "../escape", "deadbeef")).toThrow();
+    expect(() => envelopePath(ROOT, "otto-cli", "../../escape")).toThrow();
   });
 });
 
-describe("writeEnvelope — G-Set CRDT semantics", () => {
-  it("creates the file under the persona/date path", () => {
-    const r = writeEnvelope(env(), ROOT, new Date("2026-05-31T12:00:00Z"));
+describe("writeEnvelope — G-Set CRDT semantics (atomic, no TOCTOU)", () => {
+  const at = new Date("2026-05-31T12:00:00Z");
+  it("creates the file under the persona/date/id path", () => {
+    const r = writeEnvelope(env(), ROOT, at);
     expect(r.kind).toBe("created");
     expect(existsSync(r.path)).toBe(true);
-    expect(r.path).toBe(join(ROOT, "otto-cli", "2026", "05", "31", `${env().zetaIdHex}.json`));
+    expect(r.path).toBe(join(ROOT, "otto-cli", "2026", "05", "31", `${env().id}.json`));
   });
-
   it("is idempotent on identical content (re-publish = safe no-op)", () => {
-    const at = new Date("2026-05-31T12:00:00Z");
     expect(writeEnvelope(env(), ROOT, at).kind).toBe("created");
     expect(writeEnvelope(env(), ROOT, at).kind).toBe("exists-identical");
   });
-
-  it("surfaces a same-id/different-content collision (never silently overwrites)", () => {
-    const at = new Date("2026-05-31T12:00:00Z");
+  it("surfaces a same-id/different-content collision (atomic; never silently overwrites)", () => {
     writeEnvelope(env(), ROOT, at);
-    const r = writeEnvelope(env({ message: { topic: "shadow-catch", payload: { content: "DIFFERENT" } } }), ROOT, at);
-    expect(r.kind).toBe("collision");
+    expect(writeEnvelope(env({ payload: { content: "DIFFERENT" } }), ROOT, at).kind).toBe("collision");
   });
-
-  it("disjoint zetaIds -> disjoint files (grow-only set, conflict-free)", () => {
-    const at = new Date("2026-05-31T12:00:00Z");
-    writeEnvelope(env({ zetaIdHex: "00000000000000000000000000000001" }), ROOT, at);
-    writeEnvelope(env({ zetaIdHex: "00000000000000000000000000000002" }), ROOT, at);
+  it("disjoint ids -> disjoint files (grow-only set, conflict-free)", () => {
+    writeEnvelope(env({ id: "00000000000000000000000000000001" }), ROOT, at);
+    writeEnvelope(env({ id: "00000000000000000000000000000002" }), ROOT, at);
     expect(readEnvelopesSince(ROOT)).toHaveLength(2);
   });
 });
@@ -89,66 +88,67 @@ describe("writeEnvelope — G-Set CRDT semantics", () => {
 describe("readEnvelopesSince", () => {
   const at = new Date("2026-05-31T12:00:00Z");
   const seed = () => {
-    writeEnvelope(env({ zetaIdHex: "01".padStart(32, "0"), ts: "2026-05-31T10:00:00.000Z" }), ROOT, at);
-    writeEnvelope(env({ zetaIdHex: "02".padStart(32, "0"), ts: "2026-05-31T11:00:00.000Z" }), ROOT, at);
-    writeEnvelope(env({ zetaIdHex: "03".padStart(32, "0"), ts: "2026-05-31T12:00:00.000Z" }), ROOT, at);
+    writeEnvelope(env({ id: "01".padStart(32, "0"), timestamp: "2026-05-31T10:00:00.000Z" }), ROOT, at);
+    writeEnvelope(env({ id: "02".padStart(32, "0"), timestamp: "2026-05-31T11:00:00.000Z" }), ROOT, at);
+    writeEnvelope(env({ id: "03".padStart(32, "0"), timestamp: "2026-05-31T12:00:00.000Z" }), ROOT, at);
   };
 
-  it("returns all envelopes sorted by ts when no cursor", () => {
+  it("returns all envelopes sorted by timestamp when no cursor", () => {
     seed();
-    expect(readEnvelopesSince(ROOT).map((e) => e.ts)).toEqual([
+    expect(readEnvelopesSince(ROOT).map((e) => e.timestamp)).toEqual([
       "2026-05-31T10:00:00.000Z",
       "2026-05-31T11:00:00.000Z",
       "2026-05-31T12:00:00.000Z",
     ]);
   });
-
   it("returns only envelopes strictly after the cursor", () => {
     seed();
-    const after = readEnvelopesSince(ROOT, "2026-05-31T10:30:00.000Z");
-    expect(after.map((e) => e.ts)).toEqual(["2026-05-31T11:00:00.000Z", "2026-05-31T12:00:00.000Z"]);
+    expect(readEnvelopesSince(ROOT, "2026-05-31T10:30:00.000Z").map((e) => e.timestamp)).toEqual([
+      "2026-05-31T11:00:00.000Z",
+      "2026-05-31T12:00:00.000Z",
+    ]);
   });
-
-  it("nextCursor is the newest envelope's compound cursor (advances the read position)", () => {
+  it("nextCursor is the newest envelope's compound cursor", () => {
     seed();
     const envs = readEnvelopesSince(ROOT);
-    expect(nextCursor(envs)).toBe(envelopeCursor(envs[envs.length - 1]!));
     expect(nextCursor(envs)).toBe(`2026-05-31T12:00:00.000Z|${"03".padStart(32, "0")}`);
   });
-
-  it("does NOT drop a later same-millisecond envelope — compound (ts, zetaIdHex) cursor (Codex #6283)", () => {
+  it("does NOT drop a later same-millisecond envelope — compound (timestamp, id) cursor", () => {
     const sameTs = "2026-05-31T12:00:00.000Z";
-    const e1 = env({ zetaIdHex: "aa".padStart(32, "0"), ts: sameTs });
-    const e2 = env({ zetaIdHex: "bb".padStart(32, "0"), ts: sameTs }); // same ms, higher hex
+    const e1 = env({ id: "aa".padStart(32, "0"), timestamp: sameTs });
+    const e2 = env({ id: "bb".padStart(32, "0"), timestamp: sameTs });
     writeEnvelope(e1, ROOT, at);
     writeEnvelope(e2, ROOT, at);
-    // cursor at e1's compound key: a ts-only filter would drop e2 (same ts); compound keeps it
-    const after = readEnvelopesSince(ROOT, envelopeCursor(e1));
-    expect(after.map((e) => e.zetaIdHex)).toEqual([e2.zetaIdHex]);
+    expect(readEnvelopesSince(ROOT, envelopeCursor(e1)).map((e) => e.id)).toEqual([e2.id]);
   });
-
-  it("skips malformed envelopes (best-effort) without throwing", () => {
+  it("skips malformed JSON (best-effort) without throwing", () => {
     writeEnvelope(env(), ROOT, at);
     const bad = join(ROOT, "otto-cli", "2026", "05", "31", "ffffffffffffffffffffffffffffffff.json");
     mkdirSync(dirname(bad), { recursive: true });
     writeFileSync(bad, "{ not json");
-    expect(readEnvelopesSince(ROOT)).toHaveLength(1); // the one good envelope; bad skipped
+    expect(readEnvelopesSince(ROOT)).toHaveLength(1);
+  });
+  it("skips schema-invalid envelopes (valid JSON, missing timestamp/id) without throwing", () => {
+    writeEnvelope(env(), ROOT, at);
+    const bad = join(ROOT, "otto-cli", "2026", "05", "31", "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json");
+    mkdirSync(dirname(bad), { recursive: true });
+    writeFileSync(bad, JSON.stringify({ topic: "shadow-catch", payload: { content: "no keys" } })); // no timestamp/id
+    expect(readEnvelopesSince(ROOT)).toHaveLength(1); // the good one; schema-invalid skipped, no crash
   });
 });
 
-describe("serializeEnvelope", () => {
-  it("is stable (pretty + trailing newline) so re-publish content-matches", () => {
+describe("serializeEnvelope + makeEnvelope", () => {
+  it("serialize is stable (pretty + trailing newline)", () => {
     const s = serializeEnvelope(env());
     expect(s.endsWith("}\n")).toBe(true);
-    expect(JSON.parse(s).zetaIdHex).toBe(env().zetaIdHex);
+    expect(JSON.parse(s).id).toBe(env().id);
   });
-});
-
-describe("makeEnvelope", () => {
-  it("mints a Bus zetaId + ISO ts for a given message", () => {
+  it("makeEnvelope builds a MessageEnvelope (Bus id, timestamp+expiresAt, top-level topic/payload)", () => {
     const e = makeEnvelope("otto-cli", "*", { topic: "heartbeat", payload: { status: "alive" } }, 1_700_000_000_000);
-    expect(e.zetaIdHex).toMatch(/^[0-9a-f]{32}$/);
-    expect(e.ts).toBe(new Date(1_700_000_000_000).toISOString());
+    expect(e.id).toMatch(/^[0-9a-f]{32}$/);
+    expect(e.timestamp).toBe(new Date(1_700_000_000_000).toISOString());
+    expect(e.topic).toBe("heartbeat");
     expect(e.from).toBe("otto-cli");
+    expect(typeof e.expiresAt).toBe("string");
   });
 });

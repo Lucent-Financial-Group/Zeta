@@ -2,21 +2,24 @@
  * Agent-bus Phase 1 (B-0954) — the git-native cross-machine agent comms channel.
  *
  * Envelopes are ZetaId-named files in
- *   docs/agent-bus/<persona>/<YYYY>/<MM>/<DD>/<zetaIdHex>.json
+ *   docs/agent-bus/<persona>/<YYYY>/<MM>/<DD>/<id>.json
  * a **G-Set CRDT**: disjoint, ZetaId-named files never collide, so concurrent agents
  * on different machines write different files -> conflict-free -> cross-machine /
  * Windows-safe (git is the transport). Per the #6219 spec; no-PR direct-to-main per
  * B-0858 (heartbeat folder) + folders-on-main per B-0890.1.
  *
- * Reuses the existing bus topic+payload (`tools/bus/types`) + the canonical ZetaId
- * (`Category.Bus`) — NOT a new id scheme or action language.
+ * The envelope **reuses the existing local-bus `MessageEnvelope`** (`tools/bus/types`)
+ * per the spec's "extend MessageEnvelope" guidance — `id` is the Bus-category ZetaId
+ * hex (filename + dedup key); `topic`/`payload` are the existing `BusMessage` union;
+ * `from`/`to`/`timestamp`/`expiresAt` are the existing fields. Same shape as the
+ * local bus, so the legacy-bus bridge (B-0954 sub-target) is a transport swap, not a
+ * reshape. NOT a new id scheme or action language.
  *
- * This module is PURE (path + mint + types). The git layer (commit/push on publish,
- * pull on subscribe) lives behind the CLIs in publish.ts / subscribe.ts so tests +
- * importers never touch git or the real `docs/agent-bus/` folder.
+ * This module is PURE (path + mint + types). The git layer lives behind the CLIs in
+ * publish.ts / subscribe.ts so tests + importers never touch git or the real folder.
  */
 import { join } from "node:path";
-import type { AgentId, SenderAgentId, BusMessage } from "../bus/types";
+import { TTL_MS, type AgentId, type SenderAgentId, type BusMessage, type MessageEnvelope } from "../bus/types";
 import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../../src/Core.TypeScript/zeta-id/zeta-id";
 import {
   Category,
@@ -33,37 +36,39 @@ import {
 export const AGENT_BUS_ROOT: string = process.env.ZETA_AGENT_BUS_DIR ?? "docs/agent-bus";
 
 /**
- * One bus envelope = one file. Reuses the existing `BusMessage` (topic+payload union)
- * + the sender/target identifiers; the ZetaId hex is the filename + the dedup key.
+ * One bus envelope = one file. **Reuses the local-bus `MessageEnvelope`** — `id` is
+ * the 32-hex Bus-category ZetaId (filename + dedup key); `topic`/`payload` come from
+ * `BusMessage`; `from`/`to`/`timestamp`/`expiresAt` are the existing fields.
  */
-export interface AgentBusEnvelope {
-  readonly zetaIdHex: string; // 32-hex Bus-category ZetaId — filename + dedup key
-  readonly from: SenderAgentId; // publishing agent surface
-  readonly to: AgentId; // target ("*" = broadcast)
-  readonly ts: string; // ISO timestamp — the ordering key (the ZetaId carries the canonical ms)
-  readonly message: BusMessage; // the existing topic+payload discriminated union
-}
+export type AgentBusEnvelope = MessageEnvelope;
 
 const pad2 = (n: number): string => String(n).padStart(2, "0");
 
-/** `<root>/<persona>/<YYYY>/<MM>/<DD>/<zetaIdHex>.json` (UTC date partition). */
-export function envelopePath(root: string, persona: string, zetaIdHex: string, at: Date = new Date()): string {
+/** A path segment must be a single safe name — no separators, no `..`, no leading dot. */
+export function isSafeSegment(seg: string): boolean {
+  return seg.length > 0 && !seg.includes("/") && !seg.includes("\\") && !seg.includes("..") && !seg.startsWith(".");
+}
+
+/** `<root>/<persona>/<YYYY>/<MM>/<DD>/<id>.json` (UTC date partition). */
+export function envelopePath(root: string, persona: string, id: string, at: Date = new Date()): string {
+  if (!isSafeSegment(persona) || !isSafeSegment(id)) {
+    throw new Error(`agent-bus: unsafe path segment (persona=${persona}, id=${id})`);
+  }
   return join(
     root,
     persona,
     String(at.getUTCFullYear()),
     pad2(at.getUTCMonth() + 1),
     pad2(at.getUTCDate()),
-    `${zetaIdHex}.json`,
+    `${id}.json`,
   );
 }
 
 /**
  * Mint a Bus-category ZetaId as 32-hex. `DEFAULT_ENV` (crypto randomness) makes each
- * call unique even with identical semantic fields — so distinct envelopes get distinct
- * files. Pass `DETERMINISTIC_ENV` for reproducible tests (identical fields -> identical
- * id -> the safe idempotent same-file the G-Set CRDT relies on; see the spec's
- * collision caveat).
+ * call unique even with identical semantic fields. Pass `DETERMINISTIC_ENV` for
+ * reproducible tests (identical fields -> identical id -> the safe idempotent same-file
+ * the G-Set CRDT relies on; see the spec's collision caveat).
  */
 export function mintBusZetaIdHex(env: SimulationEnvironment = DEFAULT_ENV, atMs: number = Date.now()): string {
   const obs: ZetaObservation = {
@@ -78,6 +83,23 @@ export function mintBusZetaIdHex(env: SimulationEnvironment = DEFAULT_ENV, atMs:
     location: LocationHint.EastUS_VA1,
   };
   return pack(obs, env).toString(16).padStart(32, "0");
+}
+
+/** Build an envelope (reuses MessageEnvelope): mint a Bus id + stamp timestamp/expiresAt. */
+export function makeEnvelope(
+  from: SenderAgentId,
+  to: AgentId,
+  message: BusMessage,
+  atMs: number = Date.now(),
+): AgentBusEnvelope {
+  return {
+    ...message,
+    id: mintBusZetaIdHex(undefined, atMs),
+    from,
+    to,
+    timestamp: new Date(atMs).toISOString(),
+    expiresAt: new Date(atMs + TTL_MS[message.topic]).toISOString(), // per-topic TTL (Record<Topic, number>)
+  };
 }
 
 /** Canonical on-disk serialization (stable: pretty + trailing newline). */

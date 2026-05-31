@@ -1,12 +1,12 @@
 /**
  * Agent-bus Phase 1 (B-0954) — subscribe.
  *
- * `readEnvelopesSince` is PURE (read a folder; filter by a COMPOUND `(ts, zetaIdHex)`
+ * `readEnvelopesSince` is PURE (read a folder; filter by a COMPOUND `(timestamp, id)`
  * cursor; sort). The CLI (`import.meta.main`) does the cross-machine read **from
  * `origin/main`** (not the working tree): `git fetch origin main`, then read the bus
  * folder at the `origin/main` tree via `readEnvelopesFromGitRef` — so it works even
  * when the agent is checked out on a feature branch or a stale worktree (the
- * post-fetch-read-trap; Codex #6283). Tests import the pure readers and never touch git.
+ * post-fetch-read-trap). Tests import the pure readers and never touch git.
  */
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -14,26 +14,36 @@ import { execFileSync } from "node:child_process";
 import { AGENT_BUS_ROOT, type AgentBusEnvelope } from "./types";
 
 /**
- * Compound cursor `<ts>|<zetaIdHex>` — the read position. ts alone drops a later
- * envelope that shares the cursor's millisecond; the zetaIdHex tiebreak fixes that
- * (Codex #6283). ISO ts sorts lexicographically; the hex breaks ties deterministically.
+ * Compound cursor `<timestamp>|<id>` — the read position. timestamp alone drops a
+ * later envelope sharing the cursor's millisecond; the id tiebreak fixes that. ISO
+ * timestamp sorts lexicographically; the id (32-hex) breaks ties deterministically.
  */
 export function envelopeCursor(env: AgentBusEnvelope): string {
-  return `${env.ts}|${env.zetaIdHex}`;
+  return `${env.timestamp}|${env.id}`;
 }
 
-/** Parse + compound-cursor-filter + stable-sort a set of envelope JSON strings. */
+/** A parsed value is a usable envelope only if its ordering keys are present strings. */
+function isReadableEnvelope(v: unknown): v is AgentBusEnvelope {
+  const e = v as Partial<AgentBusEnvelope> | null;
+  return !!e && typeof e === "object" && typeof e.timestamp === "string" && typeof e.id === "string";
+}
+
+/** Parse + schema-validate + compound-cursor-filter + stable-sort envelope JSON strings. */
 function collect(files: Iterable<{ path: string; json: string }>, cursor?: string): AgentBusEnvelope[] {
   const envs: AgentBusEnvelope[] = [];
   for (const { path, json } of files) {
-    let env: AgentBusEnvelope;
+    let parsed: unknown;
     try {
-      env = JSON.parse(json) as AgentBusEnvelope;
+      parsed = JSON.parse(json);
     } catch {
       console.warn(`agent-bus: skipping malformed envelope ${path}`);
       continue;
     }
-    if (cursor === undefined || envelopeCursor(env) > cursor) envs.push(env);
+    if (!isReadableEnvelope(parsed)) {
+      console.warn(`agent-bus: skipping schema-invalid envelope (missing timestamp/id) ${path}`);
+      continue;
+    }
+    if (cursor === undefined || envelopeCursor(parsed) > cursor) envs.push(parsed);
   }
   envs.sort((a, b) => envelopeCursor(a).localeCompare(envelopeCursor(b)));
   return envs;
@@ -53,8 +63,9 @@ function walkJson(dir: string): string[] {
 
 /**
  * PURE filesystem read: all envelopes under `root` with a compound cursor strictly
- * after `cursor` (`<ts>|<zetaIdHex>`), sorted by that cursor. No cursor -> all.
- * Malformed files skipped (best-effort; one bad envelope must not break the read).
+ * after `cursor` (`<timestamp>|<id>`), sorted by that cursor. No cursor -> all.
+ * Malformed + schema-invalid files skipped (best-effort; one bad envelope must not
+ * break the read for everyone).
  */
 export function readEnvelopesSince(root: string = AGENT_BUS_ROOT, cursor?: string): AgentBusEnvelope[] {
   return collect(
@@ -66,8 +77,7 @@ export function readEnvelopesSince(root: string = AGENT_BUS_ROOT, cursor?: strin
 /**
  * Read the bus folder at a git REF (e.g. `origin/main`) rather than the working tree —
  * the cross-machine-correct read (the working tree may be on a feature branch / stale).
- * Uses `git ls-tree` + `git show`; same compound-cursor filter + sort as the filesystem
- * read. (Codex #6283.)
+ * Uses `git ls-tree` + `git show`; same schema-validate + compound-cursor filter + sort.
  */
 export function readEnvelopesFromGitRef(ref: string, root: string = AGENT_BUS_ROOT, cursor?: string): AgentBusEnvelope[] {
   let listing: string;
@@ -83,14 +93,14 @@ export function readEnvelopesFromGitRef(ref: string, root: string = AGENT_BUS_RO
   );
 }
 
-/** The next compound cursor = the last (newest) envelope's `<ts>|<zetaIdHex>`, else prior. */
+/** The next compound cursor = the last (newest) envelope's `<timestamp>|<id>`, else prior. */
 export function nextCursor(envs: readonly AgentBusEnvelope[], prior?: string): string | undefined {
   return envs.length > 0 ? envelopeCursor(envs[envs.length - 1]!) : prior;
 }
 
 if (import.meta.main) {
   // usage: bun tools/agent-bus/subscribe.ts [cursor] [--no-fetch]
-  // cursor = "<ts>|<zetaIdHex>" from a prior run (or a bare ISO ts as a lower bound).
+  // cursor = "<timestamp>|<id>" from a prior run (or a bare ISO timestamp as a lower bound).
   const ref = "origin/main";
   if (!process.argv.includes("--no-fetch")) {
     try {
