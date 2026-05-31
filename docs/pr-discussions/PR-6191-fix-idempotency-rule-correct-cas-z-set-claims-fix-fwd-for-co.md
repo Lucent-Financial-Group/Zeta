@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Fix-forward: correct CAS + Z-set claims in the idempotency rule
 
-Two Codex P2 corrections to the idempotency discipline (`#6189`) were pushed **after** that PR's auto-merge had already fired — they got stranded on a re-created branch and never landed (the [auto-merge-race-with-follow-up-commit anti-pattern](../blob/main/.claude/rules/blocked-green-ci-investigate-threads.md)). This lands them on merged main. Both are real technical errors, verified:
+Two Codex P2 corrections to the idempotency discipline (`#6189`) were pushed **after** that PR's auto-merge had already fired — they got stranded on a re-created branch and never landed (the [auto-merge-race-with-follow-up-commit anti-pattern](../../.claude/rules/blocked-green-ci-investigate-threads.md)). This lands them on merged main. Both are real technical errors, verified:
 
 1. **CAS bodies need not be idempotent.** A failed compare-exchange commits *nothing* — only the winning attempt takes effect; loser-iteration recomputations are discarded. Reframed: CAS makes a read-modify-write **commit exactly once** under contention. Idempotency matters for lock-free only when the retried body has **side effects beyond the CAS word** (I/O, sends).
 
