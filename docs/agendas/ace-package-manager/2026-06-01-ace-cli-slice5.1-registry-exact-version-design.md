@@ -155,8 +155,9 @@ the transitive graph. Per the operator 2026-06-01:
   we write our own solver we should test it against existing ones") — the
   `bcl-interface-boundary` differential-test trick (own impl + a library-backed
   adapter behind a flag, tested against each other on shared constraint-graph
-  fixtures), exactly as slice 3 differential-tested our canonical hashing against
-  serde_json.
+  fixtures), exactly as the Rust observe oracle (B-0867.27/.29, PRs #6255/#6257)
+  differential-tested our own `ZetaJsonParser` against a `serde_json`-backed
+  adapter behind the `serde` feature flag.
 - **Pulling in a vetted solver library is on the table** if the problem proves
   hard (per BCL soft-exception: provenance-vetted + widely-used, behind our port).
 
