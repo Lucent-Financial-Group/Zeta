@@ -302,12 +302,18 @@ export async function main(argv: readonly string[]): Promise<number> {
       publicB64 = parsed.arg; // not a file -> treat as raw b64
       inputForm = "from b64";
     }
-    // Validate the public key before persisting: it must decode from base64 and
-    // parse as an Ed25519 SPKI DER (44 bytes). createPublicKey throws on invalid input.
+    // Validate the public key before persisting: it must decode from base64,
+    // parse as an SPKI DER, AND have asymmetricKeyType === "ed25519".
+    // createPublicKey accepts RSA/EC SPKI too; a non-Ed25519 key can never
+    // verify any Ace package signature and must be rejected early.
     try {
       const der = Buffer.from(publicB64, "base64");
       if (der.length < 32) throw new Error("too short");
-      createPublicKey({ key: der, format: "der", type: "spki" });
+      const pub = createPublicKey({ key: der, format: "der", type: "spki" });
+      if (pub.asymmetricKeyType !== "ed25519") {
+        console.error(`ace: trust add: not an Ed25519 public key (got ${pub.asymmetricKeyType ?? "unknown"}) — only Ed25519 keys are accepted`);
+        return 65;
+      }
     } catch {
       console.error("ace: trust add: invalid Ed25519 public key (not a valid SPKI DER) -- check the .pub file or b64 string");
       return 65;

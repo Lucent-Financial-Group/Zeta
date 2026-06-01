@@ -180,12 +180,20 @@ export function loadTrustStore(
 
 /** Append to the user store (create if absent); dedup by key_id.
  * Creates ~/.ace with mode 0o700 (owner-only) and sets trust file to 0o600 (owner-only)
- * on every call — so a pre-existing permissive file is also corrected. chmod after write
+ * on EVERY call — including the dedup early-return path — so a pre-existing permissive
+ * file (e.g. from an old version or bad umask) is always corrected. chmod after write
  * because writeFileSync's mode option only applies on file creation, not on overwrite.
  */
 export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePath()): { added: boolean } {
   const existing = readKeysFile(userPath);
-  if (existing.some((k) => k.key_id === entry.key_id)) return { added: false };
+  if (existing.some((k) => k.key_id === entry.key_id)) {
+    // Dedup path: key already present, nothing to write — but still repair perms if the
+    // file exists with loose bits (e.g. pre-existing permissive file from a bad umask).
+    if (existsSync(userPath)) {
+      try { chmodSync(userPath, 0o600); } catch { /* best-effort; unusual FS */ }
+    }
+    return { added: false };
+  }
   existing.push({ ...entry, added: entry.added ?? new Date().toISOString() });
   mkdirSync(dirname(userPath), { recursive: true, mode: 0o700 });
   writeFileSync(userPath, JSON.stringify(existing, null, 2));

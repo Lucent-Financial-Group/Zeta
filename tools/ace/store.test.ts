@@ -164,4 +164,28 @@ describe("trust store", () => {
     expect(statSync(user).mode & 0o077).toBe(0);
   });
 
+  // ---- Fix 2: dedup path repairs perms ----
+
+  test("addTrustedKey repairs perms on the DEDUP path (pre-existing permissive file, same key → {added:false} AND mode 0o600)", () => {
+    if (process.platform === "win32") {
+      // chmod is advisory on Windows; just verify {added:false} is returned
+      const dir = mkdtempSync(join(tmpdir(), "ace-trust-dedup-win-"));
+      const user = join(dir, "trusted-keys.json");
+      writeFileSync(user, JSON.stringify([{ key_id: "ed25519:dedup1", public_key: "P" }]));
+      const result = addTrustedKey({ key_id: "ed25519:dedup1", public_key: "P" }, user);
+      expect(result.added).toBe(false);
+      return;
+    }
+    const dir = mkdtempSync(join(tmpdir(), "ace-trust-dedup-"));
+    const user = join(dir, "trusted-keys.json");
+    // Pre-create with the key already present AND a permissive mode
+    writeFileSync(user, JSON.stringify([{ key_id: "ed25519:dedup1", public_key: "P" }]), { mode: 0o644 });
+    expect(statSync(user).mode & 0o077).not.toBe(0); // confirm loose bits
+    // Re-adding the same key → dedup early-return
+    const result = addTrustedKey({ key_id: "ed25519:dedup1", public_key: "P" }, user);
+    expect(result.added).toBe(false);
+    // Perms must be repaired even on the dedup path
+    expect(statSync(user).mode & 0o077).toBe(0);
+  });
+
 });

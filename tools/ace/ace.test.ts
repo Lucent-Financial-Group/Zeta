@@ -2,6 +2,7 @@ import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { generateKeyPairSync } from "node:crypto";
 import { parseArgs, main } from "./ace.ts";
 import { listInstalled, contentHash } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
@@ -435,6 +436,19 @@ describe("main", () => {
     writeFileSync(badPub, "this-is-not-a-valid-key!!!!!!!!!!!!!!");
     const code = await main(["trust", "add", badPub]);
     expect(code === 64 || code === 65).toBe(true);
+  });
+
+  // ---- trust add: non-Ed25519 SPKI rejection (Fix 1) ----
+
+  test("trust add a non-Ed25519 SPKI (EC P-256) exits 65", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-trust-nonec-"));
+    // Generate an EC P-256 keypair — valid SPKI DER, but NOT Ed25519
+    const { publicKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
+    const spkiB64 = publicKey.export({ type: "spki", format: "der" }).toString("base64");
+    const pubPath = join(dir, "ec.pub");
+    writeFileSync(pubPath, JSON.stringify({ algo: "ec", key_id: "ec:test", public_key: spkiB64 }));
+    const code = await main(["trust", "add", pubPath]);
+    expect(code).toBe(65);
   });
 
   // ---- install authenticity gate ----
