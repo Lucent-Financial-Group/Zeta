@@ -97,15 +97,15 @@ describe("recordReviewThreadObservation", () => {
       expect(shard).toContain("Conclusion: needs-fix");
       const store = loadObservationStore(root);
       expect(store.observations).toHaveLength(2);
-      expect(store.filedDisagreements).toEqual([
-        {
-          filedAt: "2026-06-01T11:10:00Z",
-          prNumber: 4147,
-          threadId: "PRRT_kwExample",
-          conclusions: ["needs-fix", "resolve"],
-          relPath: filed.outcome.write.relPath,
-        },
-      ]);
+      expect(store.filedDisagreements).toHaveLength(1);
+      expect(store.filedDisagreements![0]).toMatchObject({
+        filedAt: "2026-06-01T11:10:00Z",
+        prNumber: 4147,
+        threadId: "PRRT_kwExample",
+        conclusions: ["needs-fix", "resolve"],
+        relPath: filed.outcome.write.relPath,
+      });
+      expect(store.filedDisagreements![0]!.evidenceFingerprints).toHaveLength(2);
     });
   });
 
@@ -144,6 +144,44 @@ describe("recordReviewThreadObservation", () => {
       ]);
       expect(divergenceFiles(root)).toHaveLength(1);
       expect(loadObservationStore(root).observations).toHaveLength(3);
+    });
+  });
+
+  test("files fresh evidence for an unresolved disagreement", () => {
+    withTempRoot((root) => {
+      recordReviewThreadObservation({
+        repoRoot: root,
+        observedAt: TICK,
+        tick: TICK,
+        operativeAuthorization: AUTH,
+        observation: observation("otto", "resolve"),
+      });
+      recordReviewThreadObservation({
+        repoRoot: root,
+        observedAt: "2026-06-01T11:10:00Z",
+        tick: "2026-06-01T11:10:00Z",
+        operativeAuthorization: AUTH,
+        observation: observation("codex-loop", "needs-fix"),
+      });
+
+      const result = recordReviewThreadObservation({
+        repoRoot: root,
+        observedAt: "2026-06-01T11:12:00Z",
+        tick: "2026-06-01T11:12:00Z",
+        operativeAuthorization: AUTH,
+        observation: observation("otto", "resolve", { body: "otto found a second repro path." }),
+      });
+
+      expect(result.compared).toBe(1);
+      expect(result.filed).toHaveLength(1);
+      expect(result.noDisagreements).toEqual([]);
+      expect(divergenceFiles(root)).toHaveLength(2);
+      const store = loadObservationStore(root);
+      expect(store.observations).toHaveLength(3);
+      expect(store.filedDisagreements).toHaveLength(2);
+      expect(store.filedDisagreements![0]!.evidenceFingerprints).not.toEqual(
+        store.filedDisagreements![1]!.evidenceFingerprints,
+      );
     });
   });
 

@@ -9,6 +9,7 @@
 
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, normalize } from "node:path";
+import { createHash } from "node:crypto";
 
 import {
   fileReviewThreadDisagreement,
@@ -30,6 +31,7 @@ export interface StoredReviewThreadDisagreement {
   readonly prNumber: number;
   readonly threadId: string;
   readonly conclusions: readonly [string, string];
+  readonly evidenceFingerprints?: readonly [string, string];
   readonly relPath: string;
 }
 
@@ -180,11 +182,31 @@ function parseStoredDisagreement(value: unknown, index: number): StoredReviewThr
   if (typeof prNumber !== "number" || !Number.isInteger(prNumber) || prNumber <= 0) {
     throw new Error(`observation store filedDisagreements entry ${index}.prNumber must be a positive integer`);
   }
+  const evidenceFingerprints = value["evidenceFingerprints"];
+  if (
+    evidenceFingerprints !== undefined &&
+    (!Array.isArray(evidenceFingerprints) ||
+      evidenceFingerprints.length !== 2 ||
+      typeof evidenceFingerprints[0] !== "string" ||
+      typeof evidenceFingerprints[1] !== "string")
+  ) {
+    throw new Error(
+      `observation store filedDisagreements entry ${index}.evidenceFingerprints must be a 2-item string array`,
+    );
+  }
   return {
     filedAt: nonBlank(stringField(value, "filedAt"), `filedDisagreements entry ${index}.filedAt`),
     prNumber,
     threadId: nonBlank(stringField(value, "threadId"), `filedDisagreements entry ${index}.threadId`),
     conclusions: [normalizedConclusion(String(conclusions[0])), normalizedConclusion(String(conclusions[1]))],
+    ...(evidenceFingerprints === undefined
+      ? {}
+      : {
+          evidenceFingerprints: [
+            nonBlank(evidenceFingerprints[0], "evidenceFingerprints[0]"),
+            nonBlank(evidenceFingerprints[1], "evidenceFingerprints[1]"),
+          ] as const,
+        }),
     relPath: normalizeRelPath(stringField(value, "relPath")),
   };
 }
@@ -252,17 +274,35 @@ function disagreementConclusions(a: ReviewThreadObservation, b: ReviewThreadObse
   return [sorted[0]!, sorted[1]!];
 }
 
+function evidenceFingerprint(observation: ReviewThreadObservation): string {
+  return createHash("sha256").update(nonBlank(observation.body, "body")).digest("hex");
+}
+
+function disagreementEvidenceFingerprints(
+  a: ReviewThreadObservation,
+  b: ReviewThreadObservation,
+): readonly [string, string] {
+  const sorted = [
+    `${normalizedConclusion(a.conclusion)}\u0000${evidenceFingerprint(a)}`,
+    `${normalizedConclusion(b.conclusion)}\u0000${evidenceFingerprint(b)}`,
+  ].sort();
+  return [sorted[0]!, sorted[1]!];
+}
+
 function sameFiledDisagreement(
   filed: StoredReviewThreadDisagreement,
   a: ReviewThreadObservation,
   b: ReviewThreadObservation,
 ): boolean {
   const conclusions = disagreementConclusions(a, b);
+  const evidenceFingerprints = disagreementEvidenceFingerprints(a, b);
   return (
     filed.prNumber === a.prNumber &&
     filed.threadId === nonBlank(a.threadId, "threadId") &&
     filed.conclusions[0] === conclusions[0] &&
-    filed.conclusions[1] === conclusions[1]
+    filed.conclusions[1] === conclusions[1] &&
+    filed.evidenceFingerprints?.[0] === evidenceFingerprints[0] &&
+    filed.evidenceFingerprints?.[1] === evidenceFingerprints[1]
   );
 }
 
@@ -356,6 +396,7 @@ export function recordReviewThreadObservation(
           prNumber: input.observation.prNumber,
           threadId: nonBlank(input.observation.threadId, "threadId"),
           conclusions: disagreementConclusions(prior.observation, input.observation),
+          evidenceFingerprints: disagreementEvidenceFingerprints(prior.observation, input.observation),
           relPath: outcome.write.relPath,
         });
         writeStore();
