@@ -205,13 +205,28 @@ function parseNode(n: unknown): Expr {
   }
 }
 
-/** Parse a canonical Bonsai-subset string back to an `Expr` — strict. */
+/**
+ * Parse a canonical Bonsai-subset string back to an `Expr` — strict and
+ * **canonical-only**. Accepts the canonical byte form ONLY: a structurally-valid
+ * but non-canonical vector (extra fields, whitespace, reordered keys) is rejected
+ * rather than silently canonicalized. This enforces the advertised `serialize ∘
+ * parse` fixed point as a precondition — without it, `serialize(parse(s)) !== s`
+ * for such `s`, and a non-canonical saga vector could pass this oracle yet fail a
+ * peer oracle's byte-diff (the very invariant the cross-language oracles exist to
+ * guarantee).
+ */
 export function parse(s: string): Expr {
   const doc = asObject(JSON.parse(s), "document");
   if (doc.v !== BONSAI_VERSION) {
     throw new Error(`bonsai: unsupported version ${String(doc.v)} (expected ${BONSAI_VERSION})`);
   }
-  return parseNode(doc.expr);
+  const result = parseNode(doc.expr);
+  // Canonical-only guard: the round-trip must reproduce the input byte-for-byte.
+  const round = serialize(result);
+  if (round !== s) {
+    throw new Error(`bonsai: input is not in canonical form (serialize(parse(s)) !== s)`);
+  }
+  return result;
 }
 
 // ---- structural equality --------------------------------------------------

@@ -135,4 +135,19 @@ describe("Bonsai-subset — strict validation (the parse/construct conformance s
   it("parse rejects a bool literal carrying a non-boolean value", () => {
     expect(() => parse('{"v":1,"expr":{"kind":"const","value":{"t":"bool","v":1}}}')).toThrow();
   });
+
+  // Canonical-only: parse accepts the canonical byte form ONLY, so the advertised
+  // serialize∘parse fixed point holds and a non-canonical saga vector can't pass
+  // this oracle yet disagree on a peer oracle's byte-diff.
+  it("parse rejects a non-canonical vector carrying an unknown extra field", () => {
+    expect(() => parse('{"v":1,"expr":{"kind":"param","name":"x","extra":0}}')).toThrow();
+  });
+
+  it("parse rejects non-canonical whitespace (canonical form is whitespace-free)", () => {
+    expect(() => parse('{"v":1, "expr":{"kind":"param","name":"x"}}')).toThrow();
+  });
+
+  it("parse rejects non-canonical key order (canonical fixes kind/v first)", () => {
+    expect(() => parse('{"expr":{"kind":"param","name":"x"},"v":1}')).toThrow();
+  });
 });
