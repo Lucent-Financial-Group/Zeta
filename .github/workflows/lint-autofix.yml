@@ -12,8 +12,10 @@
 # (the principle: no single job holds BOTH privilege AND untrusted execution; the
 # artifact is the trust boundary — this job emits DATA, the apply job consumes DATA).
 #
-# Mechanical only (no intelligence): markdownlint-cli2 --fix + prettier --write,
-# at the same mise-pinned versions as gate.yml (via install.sh) for version parity.
+# Mechanical only (no intelligence): markdownlint-cli2 --fix (the markdownlint
+# required gate; cleanly autofixable), at the same mise-pinned version as gate.yml
+# (via install.sh) for version parity. prettier --write is deferred to a follow-up
+# (see the step comment below) — not a required gate, and needs proper scoping.
 
 name: lint-autofix
 
@@ -22,8 +24,6 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - '**/*.md'
-      - '**/*.ts'
-      - '**/*.json'
       - '.github/workflows/lint-autofix.yml'
       - '.github/workflows/lint-autofix-apply.yml'
 
@@ -71,21 +71,17 @@ jobs:
       - name: markdownlint --fix (mechanical)
         run: mise exec -- markdownlint-cli2 --fix "**/*.md" || true
 
-      - name: prettier --write (mechanical auto-format, TS/JSON)
-        working-directory: src/Core.TypeScript
-        run: |
-          set -euo pipefail
-          if bun install --frozen-lockfile; then
-            bunx prettier --write '**/*.{ts,json}' || true
-          else
-            echo "bun lockfile drift — skipping prettier this run (no lockfile churn)" >&2
-          fi
+      # prettier --write (TS/JSON auto-format) is DEFERRED to a follow-up: it is
+      # not a required gate, and doing it correctly needs a deliberate pass on
+      # scope + a .prettierignore + running from the repo ROOT (package.json /
+      # bun.lock live at the root, NOT src/Core.TypeScript — Copilot review of
+      # #6393, 2026-06-01). V1 ships the required-gate autofix (markdownlint --fix)
+      # only; prettier-format joins once its scoping is designed.
 
-      - name: Compute heal patch (no lockfile churn)
+      - name: Compute heal patch
         id: patch
         run: |
           set -euo pipefail
-          git checkout -- src/Core.TypeScript/bun.lock 2>/dev/null || true
           git diff > autofix.patch
           if [ -s autofix.patch ]; then
             echo "has_patch=true" >> "$GITHUB_OUTPUT"
