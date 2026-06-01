@@ -146,8 +146,9 @@ observed state)`, re-derived each tick. A CAS loser, **once the winner's
 **Net (honest):** the menu **breaks lockstep livelock** (symmetry-breaking via
 state-fold) and gives **lock-free selection under fair-retry + fresh-state +
 visible-reservation**; it does **not** prove completion-lock-freedom or per-agent
-wait-freedom — those are **formally proven (F# model first, then extended to git)
-in [B-0963](B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)**.
+wait-freedom — those are **deferred to [B-0963](B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)
+for formal proof** (open follow-up; F# model first, then extended to git — not yet
+proven here).
 That's still a real win — much of "easy-as-fuck" survives — but it's
 a symmetry breaker, not a fairness theorem. Composes with the framework's
 lock-free/wait-free always-active disciplines (`dv2-data-split`) as the _selection_

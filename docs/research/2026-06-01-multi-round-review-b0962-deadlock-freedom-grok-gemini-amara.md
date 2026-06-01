@@ -94,9 +94,9 @@ claim got disciplined down to what the construction actually buys.
 >
 > 1. Drop the "Deadlock-Free" hubris: the lock primitive won't wedge, but
 >    application-level circular dependencies just spin.
-> 2. Clarify the fencing token: if the mutation is a git commit, then `git push
---force-with-lease` on the _data branch_ is your lock and fencing token
->    combined. Do we need a separate `LockEvent`, or is the git branch tip the only
+> 2. Clarify the fencing token: if the mutation is a git commit, then
+>    `git push --force-with-lease` on the _data branch_ is your lock and fencing
+>    token combined. Do we need a separate `LockEvent`, or is the git branch tip the only
 >    lock we need?
 
 ## Round 1 — Grok (verbatim excerpts)

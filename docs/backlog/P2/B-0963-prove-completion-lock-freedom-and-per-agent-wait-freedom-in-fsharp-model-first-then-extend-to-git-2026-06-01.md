@@ -36,8 +36,14 @@ composes_with:
 These are **liveness/progress properties under concurrency** — distinct from the
 safety properties (mutual-exclusion, no-lost-update via fencing) B-0962 already
 argues. Liveness needs **fairness assumptions** stated explicitly (that's the
-whole game): lock-freedom typically needs **weak fairness**; wait-freedom needs
-**strong fairness** or an explicit fairness mechanism (the jitter/ticket knob).
+whole game) — and a sharp distinction the proof must keep (Copilot 2026-06-01):
+lock-freedom typically needs **weak fairness**; **starvation-freedom** (eventual
+completion — every agent _eventually_ finishes) follows from **strong fairness**;
+but the **bounded per-agent wait-freedom** §0 defines (completion within a bounded
+number of an agent's _own_ steps) is **stronger than starvation-freedom** and does
+**not** follow from fairness alone — it needs an explicit **bound** (a ranking /
+variant function, or a ticket/age mechanism). Don't conflate "eventually" with
+"within N steps."
 
 ## §1 Phase A — prove in the F# model (no git)
 
@@ -54,9 +60,12 @@ generator over IScheduler").
   class; do NOT TLA+-hammer reflexively, but liveness-under-concurrency IS TLA+'s
   sweet spot):**
   - **TLA+ / TLC** — model-check **lock-freedom** under weak fairness and
-    **wait-freedom** under strong fairness (temporal-logic liveness with explicit
-    `WF`/`SF` fairness; this is exactly what TLA+ is for). The honest deliverable is
-    "property X holds under fairness assumption Y."
+    **starvation-freedom** (eventual completion) under strong fairness
+    (temporal-logic liveness with explicit `WF`/`SF`; this is exactly what TLA+ is
+    for). The honest deliverable is "property X holds under fairness assumption Y."
+    **Note:** strong fairness gives _eventual_ completion, not the **bounded**
+    per-agent wait-freedom §0 defines — that bound needs a separate ranking/variant
+    argument or a ticket mechanism (model-checking liveness ≠ proving a step-bound).
   - **FsCheck** — property-based tests of the F# model (at-most-one-winner;
     monotone progress of the work-set; no-lockstep-re-pick once a winner is
     visible). Tests, not proofs — they bound confidence, they don't replace TLC.
@@ -102,8 +111,12 @@ round-1 review named — re-run the analysis with them and state what survives:
 - [ ] F# abstract model of the coordination protocol (CAS + menu fold + TTL +
       optional fairness knob) over the deterministic `IScheduler` (B-0878/B-0767).
 - [ ] TLA+ spec + TLC model-check: lock-freedom under weak fairness;
-      wait-freedom under strong fairness / explicit fairness mechanism. Record the
+      **starvation-freedom** (eventual completion) under strong fairness. Record the
       fairness assumption each property requires.
+- [ ] **Bounded per-agent wait-freedom** (if that is the deliverable, vs. mere
+      starvation-freedom): an explicit **step-bound** argument — a ranking/variant
+      function or a ticket/age mechanism — NOT just strong fairness (model-checking
+      liveness proves "eventually," not "within N own-steps").
 - [ ] FsCheck properties on the F# model (at-most-one-winner; work-set monotone
       progress; no-lockstep-re-pick-once-visible).
 - [ ] Phase-B extension: re-state each property under visibility-lag + partition +
