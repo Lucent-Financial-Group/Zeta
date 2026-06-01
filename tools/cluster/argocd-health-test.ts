@@ -584,6 +584,31 @@ function isFailure(value: unknown): value is Failure {
   return record !== null && typeof record.kind === "string" && typeof record.message === "string";
 }
 
+function kubectlFailure(message: string, args: readonly string[], result: CommandOutput): Failure {
+  return {
+    kind: "KubectlFailed",
+    message,
+    command: ["kubectl", ...args],
+    detail: {
+      stderr: result.stderr.slice(-2000),
+      stdout: result.stdout.slice(-2000),
+      errorCode: result.errorCode,
+    },
+  };
+}
+
+function kubectlJsonFailure(message: string, args: readonly string[], stdout: string, error: unknown): Failure {
+  return {
+    kind: "KubectlFailed",
+    message,
+    command: ["kubectl", ...args],
+    detail: {
+      stdout: stdout.slice(-2000),
+      error: error instanceof Error ? error.message : String(error),
+    },
+  };
+}
+
 function runCommand(command: string, args: readonly string[], timeoutMs?: number): CommandOutput {
   // sonarjs/no-os-command-from-path suppression rationale: this harness
   // intentionally spawns local cluster CLIs (`docker`/`podman`, `kind`/`k3d`,
@@ -594,14 +619,16 @@ function runCommand(command: string, args: readonly string[], timeoutMs?: number
   const result = spawnSync(command, [...args], {
     cwd: REPO_ROOT,
     encoding: "utf8",
+    env: process.env,
     maxBuffer: SPAWN_MAX_BUFFER,
     stdio: ["ignore", "pipe", "pipe"],
     timeout: timeoutMs,
   });
+  const pipes = result as unknown as { readonly stdout: string | null; readonly stderr: string | null };
   const output = {
     status: result.status,
-    stdout: result.stdout,
-    stderr: result.stderr,
+    stdout: pipes.stdout ?? "",
+    stderr: pipes.stderr ?? "",
     signal: result.signal,
   };
   const errorCode = (result.error as NodeJS.ErrnoException | undefined)?.code;
@@ -834,6 +861,24 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
   });
 }
 
+function parseApplicationListOrFailure(jsonText: string, command: readonly string[]): readonly ArgoApplicationSnapshot[] | Failure {
+  try {
+    return parseApplicationList(jsonText);
+  } catch (error) {
+    return kubectlJsonFailure("could not parse ArgoCD Application list JSON", command, jsonText, error);
+  }
+}
+
+function parseApplicationObjectOrFailure(jsonText: string, command: readonly string[]): Record<string, unknown> | Failure {
+  try {
+    const application = asRecord(JSON.parse(jsonText));
+    if (application !== null) return application;
+    return kubectlJsonFailure("could not parse ArgoCD Application JSON", command, jsonText, "kubectl returned non-object JSON");
+  } catch (error) {
+    return kubectlJsonFailure("could not parse ArgoCD Application JSON", command, jsonText, error);
+  }
+}
+
 export function classifyApplications(
   expectedApplications: readonly ExpectedApplication[],
   snapshots: readonly ArgoApplicationSnapshot[],
@@ -933,16 +978,13 @@ export function classifySmokeApplications(snapshots: readonly ArgoApplicationSna
 async function waitForApplications(plan: HarnessPlan, options: CliOptions): Promise<readonly ApplicationVerdict[] | Failure> {
   let lastVerdicts: readonly ApplicationVerdict[] = [];
   const failure = await waitFor(options.timeoutSeconds, options.pollSeconds, () => {
-    const result = kubectl(["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"], Math.max(options.pollSeconds, 10));
+    const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
+    const result = kubectl(command, Math.max(options.pollSeconds, 10));
     if (result.status !== 0) {
-      return {
-        kind: "KubectlFailed",
-        message: "could not list ArgoCD Applications",
-        command: ["kubectl", "-n", "argocd", "get", "applications.argoproj.io", "-o", "json"],
-        detail: { stderr: result.stderr.slice(-2000), stdout: result.stdout.slice(-2000) },
-      };
+      return kubectlFailure("could not list ArgoCD Applications", command, result);
     }
-    const snapshots = parseApplicationList(result.stdout);
+    const snapshots = parseApplicationListOrFailure(result.stdout, command);
+    if (isFailure(snapshots)) return snapshots;
     lastVerdicts = plan.scope === "smoke"
       ? classifySmokeApplications(snapshots)
       : classifyApplications(plan.expectedApplications, snapshots);
@@ -973,7 +1015,7 @@ async function runDriftRepairCheck(options: CliOptions): Promise<Failure | null>
   if (patchFailure !== null) return patchFailure;
 
   return waitFor(options.timeoutSeconds, options.pollSeconds, () => {
-    const result = kubectl([
+    const command = [
       "-n",
       "argocd",
       "get",
@@ -981,9 +1023,14 @@ async function runDriftRepairCheck(options: CliOptions): Promise<Failure | null>
       appName,
       "-o",
       "json",
-    ], Math.max(options.pollSeconds, 10));
-    const application = result.status === 0 ? asRecord(JSON.parse(result.stdout)) : null;
-    const metadata = application ? recordAt(application, "metadata") : null;
+    ];
+    const result = kubectl(command, Math.max(options.pollSeconds, 10));
+    if (result.status !== 0) {
+      return kubectlFailure("could not read ArgoCD Application drift state", command, result);
+    }
+    const application = parseApplicationObjectOrFailure(result.stdout, command);
+    if (isFailure(application)) return application;
+    const metadata = recordAt(application, "metadata");
     const annotations = metadata ? recordAt(metadata, "annotations") : null;
     const stillPresent = annotations?.[annotation] === stamp;
     if (!stillPresent) return null;

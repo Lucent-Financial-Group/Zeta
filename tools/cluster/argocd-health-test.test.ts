@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -13,7 +13,83 @@ import {
   parseArgs,
   parseK3dClusterName,
   preflightFailure,
+  runHarness,
 } from "./argocd-health-test.ts";
+
+const SMOKE_APPLICATION_LIST = JSON.stringify({
+  items: [
+    {
+      metadata: { name: "zeta-root-dev" },
+      status: { sync: { status: "OutOfSync" }, health: { status: "Healthy", message: "" } },
+    },
+    {
+      metadata: { name: "argocd" },
+      status: { sync: { status: "Unknown" }, health: { status: "Healthy", message: "" } },
+    },
+    {
+      metadata: { name: "cert-manager" },
+      status: { sync: { status: "Synced" }, health: { status: "Healthy", message: "" } },
+    },
+    ...Array.from({ length: 20 }, (_value, index) => ({
+      metadata: { name: `child-${String(index)}` },
+      status: { sync: { status: "OutOfSync" }, health: { status: "Missing", message: "" } },
+    })),
+  ],
+});
+
+async function withFakeClusterCli(mode: "invalid-list-json" | "drift-read-fails", action: () => Promise<void>): Promise<void> {
+  const cliDir = mkdtempSync(join(tmpdir(), "zeta-argocd-health-cli-"));
+  const previousPath = process.env.PATH;
+  const previousMode = process.env.ZETA_FAKE_KUBECTL_MODE;
+  const script = [
+    "#!/usr/bin/env bash",
+    "set -eu",
+    "tool=$(basename \"$0\")",
+    "if [ \"$tool\" = docker ]; then exit 0; fi",
+    "if [ \"$tool\" = helm ]; then exit 0; fi",
+    "if [ \"$tool\" = kind ]; then exit 0; fi",
+    "if [ \"$tool\" != kubectl ]; then exit 127; fi",
+    "mode=${ZETA_FAKE_KUBECTL_MODE:-healthy}",
+    "if [ \"${1:-}\" = version ]; then echo 'clientVersion: {}'; exit 0; fi",
+    "if [ \"${1:-}\" = config ] && [ \"${2:-}\" = use-context ]; then exit 0; fi",
+    "if [ \"${1:-}\" = get ] && [ \"${2:-}\" = namespace ]; then exit 0; fi",
+    "if [ \"${1:-}\" = wait ]; then exit 0; fi",
+    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = rollout ]; then exit 0; fi",
+    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = get ] && [ \"${4:-}\" = application ] && [ \"${5:-}\" = zeta-root-dev ]; then exit 0; fi",
+    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = get ] && [ \"${4:-}\" = applications.argoproj.io ]; then",
+    "  if [ \"$mode\" = invalid-list-json ]; then printf '{not json'; exit 0; fi",
+    "  cat <<'JSON'",
+    SMOKE_APPLICATION_LIST,
+    "JSON",
+    "  exit 0",
+    "fi",
+    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = patch ] && [ \"${4:-}\" = application ]; then exit 0; fi",
+    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = get ] && [ \"${4:-}\" = application ] && [ \"${5:-}\" = argocd ]; then",
+    "  echo 'simulated API read failure' >&2",
+    "  exit 7",
+    "fi",
+    "echo \"unexpected kubectl invocation: $*\" >&2",
+    "exit 66",
+    "",
+  ].join("\n");
+
+  try {
+    for (const tool of ["docker", "helm", "kind", "kubectl"]) {
+      const toolPath = join(cliDir, tool);
+      writeFileSync(toolPath, script);
+      chmodSync(toolPath, 0o755);
+    }
+    process.env.PATH = `${cliDir}:${previousPath ?? ""}`;
+    process.env.ZETA_FAKE_KUBECTL_MODE = mode;
+    await action();
+  } finally {
+    if (previousPath === undefined) delete process.env.PATH;
+    else process.env.PATH = previousPath;
+    if (previousMode === undefined) delete process.env.ZETA_FAKE_KUBECTL_MODE;
+    else process.env.ZETA_FAKE_KUBECTL_MODE = previousMode;
+    rmSync(cliDir, { recursive: true, force: true });
+  }
+}
 
 describe("B-0967 argocd-health-test argument parsing", () => {
   test("defaults to safe dry-run against the k3d dev cluster", () => {
@@ -277,5 +353,53 @@ describe("B-0967 argocd-health-test preflight failures", () => {
       },
     ]);
     expect(failure?.kind).toBe("ContainerRuntimeUnavailable");
+  });
+});
+
+describe("B-0967 argocd-health-test live failure shaping", () => {
+  test("returns a structured failure when kubectl emits malformed Application list JSON", async () => {
+    await withFakeClusterCli("invalid-list-json", async () => {
+      const parsed = parseArgs([
+        "--run",
+        "--provider",
+        "kind",
+        "--existing",
+        "--timeout-sec",
+        "1",
+        "--poll-sec",
+        "1",
+      ], {});
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected malformed JSON to fail the harness");
+      expect(result.failure.kind).toBe("KubectlFailed");
+      expect(result.failure.message).toContain("could not parse ArgoCD Application list JSON");
+    });
+  });
+
+  test("does not treat drift-check kubectl read failures as repaired drift", async () => {
+    await withFakeClusterCli("drift-read-fails", async () => {
+      const parsed = parseArgs([
+        "--run",
+        "--provider",
+        "kind",
+        "--existing",
+        "--drift-check",
+        "--timeout-sec",
+        "1",
+        "--poll-sec",
+        "1",
+      ], {});
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected kubectl drift read failure to fail the harness");
+      expect(result.failure.kind).toBe("KubectlFailed");
+      expect(result.failure.message).toContain("could not read ArgoCD Application drift state");
+      expect(result.driftRepair).toBe("failed");
+    });
   });
 });
