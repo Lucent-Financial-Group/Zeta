@@ -45,10 +45,18 @@ jobs:
       github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout PR head (read-only)
+      - name: Checkout the immutable PR head commit (read-only)
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          # Immutable head SHA, not the moving branch ref — the patch is produced
+          # against the exact commit the apply job checks out (determinism / TOCTOU
+          # fix, Copilot P1 #6393).
+          ref: ${{ github.event.pull_request.head.sha }}
+          # Do NOT persist the git token: this job runs PR code (install.sh / bun
+          # lifecycle scripts), so it must expose no credential to that code
+          # (CodeQL "checkout of untrusted code in trusted context", #6393). It is
+          # read-only and produces only a patch artifact — it never needs to push.
+          persist-credentials: false
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Same install path + retry as gate.yml so the heal uses the SAME

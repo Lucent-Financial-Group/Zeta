@@ -44,11 +44,15 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write # apply the heal patch back to the PR branch
+      actions: read # `gh run download` reads the producer run's artifact via the Actions API (Copilot P0, #6393)
     steps:
-      - name: Checkout the PR branch (git only — NO PR-code execution here)
+      - name: Checkout the immutable produce commit (git only — NO PR-code execution here)
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.workflow_run.head_branch }}
+          # The IMMUTABLE commit the patch was produced from (head_sha), NOT the
+          # moving branch tip — so the patch applies to its exact base (TOCTOU
+          # fix, Copilot P1 #6393). Pushed back to head_branch ff-only below.
+          ref: ${{ github.event.workflow_run.head_sha }}
           token: ${{ secrets.AUTOFIX_TOKEN || github.token }}
           fetch-depth: 0
 
@@ -79,13 +83,21 @@ jobs:
             echo "Patch artifact empty — nothing to apply."
             exit 0
           fi
-          # git-apply only — this is data application, NOT code execution.
+          # git-apply only — this is data application, NOT code execution. The
+          # patch applies to its exact base (we checked out head_sha), so a clean
+          # apply is expected; the else is a safety net.
           if git apply --index "$patch" 2>/dev/null; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "style: mechanical lint auto-heal (markdownlint --fix / prettier --write)"
-            git push origin "HEAD:${HEAD_BRANCH}"
-            echo "Heal applied + pushed to ${HEAD_BRANCH}."
+            git commit -m "style: mechanical lint auto-heal (markdownlint --fix)"
+            # ff-only push: HEAD = head_sha + heal. Succeeds iff head_branch is
+            # still at head_sha; if the branch moved since produce the non-ff push
+            # is rejected and we skip (next push re-triggers) — never force.
+            if git push origin "HEAD:${HEAD_BRANCH}"; then
+              echo "Heal applied + pushed to ${HEAD_BRANCH}."
+            else
+              echo "head_branch moved since produce — non-ff push rejected; skipping (next push re-triggers)." >&2
+            fi
           else
-            echo "Patch did not apply cleanly (branch moved since produce?) — skipping; next push re-triggers." >&2
+            echo "Patch did not apply to its base (unexpected) — skipping." >&2
           fi

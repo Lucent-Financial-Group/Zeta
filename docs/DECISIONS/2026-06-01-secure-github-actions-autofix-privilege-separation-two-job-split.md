@@ -70,7 +70,10 @@ Two GitHub event types matter here:
 ## Composes with
 
 * PR #6393 — the workflow this ADR's split is implemented in (resolves its CodeQL finding).
-* [`2026-06-01-ci-mechanical-lint-autoheal-and-review-emission-to-the-git-native-bus.md`](2026-06-01-ci-mechanical-lint-autoheal-and-review-emission-to-the-git-native-bus.md)
-  — **resolves its OQ5** (secure-checkout pattern = the two-job split).
+* The CI-mechanical-lint-autoheal + review-emission ADR (**PR #6394**, landing
+  alongside this one; file `docs/DECISIONS/2026-06-01-ci-mechanical-lint-autoheal-and-review-emission-to-the-git-native-bus.md`
+  on merge) — this ADR **resolves its OQ5** (secure-checkout pattern = the
+  two-job split). Referenced by PR number to avoid a dead link before #6394 merges
+  (Copilot xref, #6393).
 * [`2026-05-29-monitoring-and-reducing-pr-review-friction.md`](2026-05-29-monitoring-and-reducing-pr-review-friction.md)
   (B-0938) — the friction this autofix reduces, now reduced *safely*.
