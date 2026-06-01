@@ -65,34 +65,55 @@ interface ParsedEvent {
 }
 
 /**
+ * The action payload must match its kind, or `fold → simulate` can throw (e.g. a
+ * `{ kind: "do_item" }` with no `item` derefs `action.item.id`). Tolerant reader
+ * rejects ill-shaped payloads.
+ */
+function hasValidPayload(kind: string, a: Record<string, unknown>): boolean {
+  if (kind === "do_item" || kind === "decompose") {
+    const it = a.item;
+    return typeof it === "object" && it !== null && typeof (it as Record<string, unknown>).id === "string";
+  }
+  return typeof a.reason === "string"; // the reason-carrying kinds
+}
+
+/** Parse one event file → a ParsedEvent, or null if anything is missing/malformed (never throws). */
+function parseEventFile(eventDir: string, name: string): ParsedEvent | null {
+  if (!name.endsWith(".json")) return null;
+  try {
+    const raw: unknown = JSON.parse(readFileSync(join(eventDir, name), "utf-8"));
+    if (typeof raw !== "object" || raw === null) return null;
+    const env = raw as Record<string, unknown>;
+    const action = env.action;
+    if (!isCanonicalEventId(env.id) || typeof env.at !== "string") return null;
+    if (typeof action !== "object" || action === null) return null;
+    const a = action as Record<string, unknown>;
+    const kind = a.kind;
+    if (typeof kind !== "string" || !KNOWN_KINDS.has(kind) || !hasValidPayload(kind, a)) return null;
+    return { id: env.id, at: env.at, action: action as NextAction };
+  } catch {
+    return null; // malformed file → skip
+  }
+}
+
+/**
  * Read + deterministically order the event log → the recorded actions. Tolerant:
- * a missing dir, a non-JSON file, a malformed envelope, a non-canonical id, or an
- * unknown action kind is skipped (never throws). Ordered by `at` then `id` so the
- * fold is replayable (DST).
+ * a missing dir, a non-JSON file, a malformed envelope, a non-canonical id, an
+ * unknown action kind, or an ill-shaped payload is skipped (never throws). Recurses
+ * date-partitioned dirs (YYYY/MM/DD/{id}.json, B-0867.2 / bus shape). Ordered by
+ * `at` then `id` so the fold is replayable (DST).
  */
 export function readEventActions(eventDir: string): readonly NextAction[] {
   let names: readonly string[];
   try {
-    names = readdirSync(eventDir);
+    names = readdirSync(eventDir, { recursive: true, encoding: "utf-8" });
   } catch {
     return []; // no event dir yet → empty log
   }
   const parsed: ParsedEvent[] = [];
   for (const name of names) {
-    if (!name.endsWith(".json")) continue;
-    try {
-      const raw: unknown = JSON.parse(readFileSync(join(eventDir, name), "utf-8"));
-      if (typeof raw !== "object" || raw === null) continue;
-      const env = raw as Record<string, unknown>;
-      const action = env.action;
-      if (!isCanonicalEventId(env.id) || typeof env.at !== "string") continue;
-      if (typeof action !== "object" || action === null) continue;
-      const kind = (action as Record<string, unknown>).kind;
-      if (typeof kind !== "string" || !KNOWN_KINDS.has(kind)) continue;
-      parsed.push({ id: env.id, at: env.at, action: action as NextAction });
-    } catch {
-      continue; // malformed file → skip
-    }
+    const p = parseEventFile(eventDir, name);
+    if (p !== null) parsed.push(p);
   }
   parsed.sort((a, b) => {
     if (a.at !== b.at) return a.at < b.at ? -1 : 1;
