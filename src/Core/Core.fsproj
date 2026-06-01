@@ -22,6 +22,7 @@
     <Compile Include="ToffoliGate.fs" />
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="Bonsai.fs" />
+    <Compile Include="Resume.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
     <Compile Include="PluginHarness.fs" />
