@@ -1,0 +1,125 @@
+# .github/workflows/lint-autofix.yml
+#
+# Mechanical lint auto-HEAL: runs the DETERMINISTIC --fix tools on a PR and
+# commits the result back to the PR branch, so the required lint gate (gate.yml)
+# passes on the healed commit instead of blocking on a fixable nit. Auto-heal,
+# not a new gate — it removes friction rather than adding a block (operator
+# 2026-06-01: "mechanical fixes or auto format fixes ... it just being a
+# workflow step makes sense"; the project is winding branch protection DOWN, so
+# this is the keep-the-gates-frictionless half of that).
+#
+# MECHANICAL ONLY — no intelligence:
+#   - markdownlint-cli2 --fix   (heals the `markdownlint` required gate cleanly)
+#   - prettier --write          (TS/JSON auto-format hygiene; not itself a gate)
+# Uses the SAME mise-pinned tool versions as gate.yml (via install.sh) so the
+# heal can never "fix" into a state the gate rejects — version parity is
+# load-bearing here.
+#
+# INTELLIGENCE-requiring fixes (actionlint workflow logic, semgrep rules with no
+# `fix:`, type/logic errors) are deliberately NOT here. Those are a SEPARATE
+# agent-in-Actions workflow step (the accelerator / local-LLM direction:
+# accelerator-move-next.yml + accelerator-local-llm-validate.yml) — operator
+# 2026-06-01: "for the intelligence stuff ... that's [a] workflow step" too. This
+# workflow does the free, zero-LLM subset; the intelligence step escalates what
+# this leaves behind.
+#
+# RE-TRIGGER NOTE (load-bearing): commits pushed with the default GITHUB_TOKEN do
+# NOT re-trigger workflows (GitHub's recursion guard), so while a REQUIRED gate
+# still exists a healed commit would not get a fresh gate.yml run on its own. Set
+# an `AUTOFIX_TOKEN` secret (a fine-grained PAT or GitHub App token with
+# `contents: write` on this repo) and the push emits a normal event so the gate
+# re-runs on the healed commit. Without it the fix still commits, but the gate
+# must be nudged (the autonomous loop / author re-runs it). As branch protection
+# is removed, the plain GITHUB_TOKEN path suffices and the PAT is unnecessary.
+
+name: lint-autofix
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - '**/*.md'
+      - '**/*.ts'
+      - '**/*.json'
+      - '.github/workflows/lint-autofix.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lint-autofix-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  autofix:
+    name: mechanical lint auto-heal
+    # Same-repo PRs only: fork PRs cannot receive a GITHUB_TOKEN push, and
+    # running write-permission autofix over untrusted fork code is unsafe. Skip
+    # our own heal commits (loop guard; the heal is idempotent anyway, so even
+    # without this the second run would just no-op).
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # commit the heal back to the PR branch
+    steps:
+      - name: Checkout PR head (push credentials persisted)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.AUTOFIX_TOKEN || github.token }}
+          fetch-depth: 0
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Same install path + retry as gate.yml so the autofix uses the SAME
+        # mise-pinned markdownlint-cli2 / bun the gate uses (version parity).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then break; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: markdownlint --fix (mechanical)
+        # --fix heals what it deterministically can; an unfixable remainder is
+        # left for the required gate to judge, so a nonzero exit here is fine.
+        run: mise exec -- markdownlint-cli2 --fix "**/*.md" || true
+
+      - name: prettier --write (mechanical auto-format, TS/JSON)
+        working-directory: src/Core.TypeScript
+        # Only format when the lockfile is clean (--frozen-lockfile), so this
+        # step never churns bun.lock into the heal commit. On lockfile drift,
+        # skip prettier this run rather than risk an unrelated lockfile change.
+        run: |
+          set -euo pipefail
+          if bun install --frozen-lockfile; then
+            bunx prettier --write '**/*.{ts,json}' || true
+          else
+            echo "bun lockfile drift — skipping prettier this run (no lockfile churn)" >&2
+          fi
+
+      - name: Commit + push heal if anything changed
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          # Discard any incidental lockfile change so only lint/format fixes land.
+          git checkout -- src/Core.TypeScript/bun.lock 2>/dev/null || true
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No mechanical lint fixes needed — already clean."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "style: mechanical lint auto-heal (markdownlint --fix / prettier --write)"
+          git push origin "HEAD:${HEAD_REF}"
