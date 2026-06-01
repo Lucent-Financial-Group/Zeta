@@ -561,6 +561,8 @@ export async function main(argv: readonly string[]): Promise<number> {
         try { const p = parseIndex(readFileSync(outPath, "utf8")); if (!("error" in p)) prev = p; } catch { /* no prev */ }
       }
       const seq = nextSequence(prev);
+      // Anti-rollback guard (defense-in-depth): unreachable while sequence is auto-bumped (+1),
+      // but protects the deferred explicit --sequence flag from emitting a non-increasing index.
       if (prev && seq <= prev.sequence) { console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`); return 1; }
       let serialized: string;
       try {

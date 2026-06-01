@@ -1389,4 +1389,34 @@ describe("ace registry publish (slice 6.1)", () => {
   test("publish without --key is a parse error", () => {
     expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x"])).toBe(true);
   });
+
+  test("duplicate name@version in the dir → publish refused (exit 1, no index written)", async () => {
+    const { existsSync: existsSyncLocal } = await import("node:fs");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-dup-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    // a second file, different filename, SAME name@version
+    const dupFiles = { "leaf.txt": "other" };
+    const dupCh = contentHash(new TextEncoder().encode(JSON.stringify(dupFiles)));
+    const dupKp = generateKeypair();
+    const dupM = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: dupCh };
+    const dupPkg = { manifest: { ...dupM, signature: signManifest(dupM, dupKp.privatePem) }, files: dupFiles };
+    writeFileSync(join(pkgDir, "leaf-dup.json"), JSON.stringify(dupPkg));
+    const keyPath = join(tempHome, "dup.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "dup-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+    expect(existsSyncLocal(outPath)).toBe(false);
+  });
+
+  test("malformed (non-PEM) key → publish refused (exit 1, no index written)", async () => {
+    const { existsSync: existsSyncLocal } = await import("node:fs");
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badkey-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "bad.pem"); writeFileSync(keyPath, "not a pem at all");
+    const outPath = join(tempHome, "badkey-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+    expect(existsSyncLocal(outPath)).toBe(false);
+  });
 });
