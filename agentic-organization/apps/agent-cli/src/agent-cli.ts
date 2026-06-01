@@ -77,6 +77,12 @@ export type ParseAgentCliArgsResult =
   | { ok: true; value: ParsedAgentCliArgs }
   | { ok: false; message: string };
 
+type AgentCliZetaIdDecimal = ReturnType<typeof asZetaIdDecimal>;
+
+type ParseAgentCliZetaIdResult =
+  | { ok: true; value: AgentCliZetaIdDecimal }
+  | { ok: false; message: string };
+
 export type AgentCliScreen = {
   scope: RunScope;
   phase: RunLifecyclePhase;
@@ -384,8 +390,9 @@ export function createModelBackedMenuSelector(input: CreateModelBackedMenuSelect
     try {
       completion = await input.chat.complete({
         system:
-          "You are selecting from a deterministic 16-slot agent controller. Reply with only one selectable integer slot index and no prose.",
+          "You are selecting from a deterministic 16-slot agent controller. Return JSON only. The `slot` value must be one selectable slot index, and `reason` must briefly explain the choice.",
         user: buildMenuSelectorPrompt(selectable),
+        format: buildMenuSelectionSchema(selectable),
       });
     } catch {
       const fallback = normalizeMenuSelectionResult(await input.fallback(menu), "fallback_after_model_error");
@@ -448,8 +455,20 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     return { exitCode: 2 };
   }
 
+  const runId = parseAgentCliZetaId(parsed.value.runId, "--run-id");
+  if (!runId.ok) {
+    input.writeStderr?.(`${runId.message}\n`);
+    return { exitCode: 2 };
+  }
+
+  const hatAssignmentId = parseAgentCliZetaId(parsed.value.hatAssignmentId, "--hat-assignment");
+  if (!hatAssignmentId.ok) {
+    input.writeStderr?.(`${hatAssignmentId.message}\n`);
+    return { exitCode: 2 };
+  }
+
   const snapshot: AgentObserveSnapshot = {
-    runId: asZetaIdDecimal(parsed.value.runId),
+    runId: runId.value,
     scope: parsed.value.scope,
     phase: parsed.value.phase,
     trace: {
@@ -459,7 +478,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     },
     hasGateApproval: parsed.value.gateApproved,
     hasEvidence: parsed.value.evidence,
-    hatAssignmentId: asZetaIdDecimal(parsed.value.hatAssignmentId),
+    hatAssignmentId: hatAssignmentId.value,
     hat,
     agentId: parsed.value.agentId,
     organizationId: parsed.value.organizationId,
@@ -776,8 +795,28 @@ function buildMenuSelectorPrompt(selectable: readonly Menu16Slot[]): string {
   return [
     "Selectable slots:",
     ...selectable.map((slot) => `[${String(slot.index).padStart(2, "0")}] ${slot.direction} ${slot.label}`),
-    "Reply with one slot index from the list above. Do not explain.",
+    "Return exactly this JSON shape: {\"slot\": <one listed integer>, \"reason\": \"short reason\"}.",
   ].join("\n");
+}
+
+function buildMenuSelectionSchema(selectable: readonly Menu16Slot[]): {
+  type: "object";
+  additionalProperties: false;
+  required: readonly ["slot", "reason"];
+  properties: {
+    slot: { type: "integer"; enum: readonly number[] };
+    reason: { type: "string"; minLength: 1 };
+  };
+} {
+  return {
+    type: "object",
+    additionalProperties: false,
+    required: ["slot", "reason"],
+    properties: {
+      slot: { type: "integer", enum: selectable.map((slot) => slot.index) },
+      reason: { type: "string", minLength: 1 },
+    },
+  };
 }
 
 function completionContent(completion: ChatCompletionResult): string {
@@ -788,17 +827,26 @@ function parseModelSelectedIndex(
   raw: string,
   menu: Menu16,
 ): { ok: true; index: number } | { ok: false; reason: SelectorRejectionReason; rejectedIndex?: number | undefined } {
-  const normalized = raw.trim();
-  const match = /^(?:\[(\d{1,2})\]|(\d{1,2}))$/.exec(normalized);
-  if (match === null) {
+  let decoded: unknown;
+  try {
+    decoded = JSON.parse(raw);
+  } catch {
     return { ok: false, reason: SelectorRejectionReason.ParseFailure };
   }
-  const index = Number.parseInt((match[1] ?? match[2])!, 10);
+  if (typeof decoded !== "object" || decoded === null || Array.isArray(decoded)) {
+    return { ok: false, reason: SelectorRejectionReason.ParseFailure };
+  }
+  const slot = (decoded as { slot?: unknown }).slot;
+  const reason = (decoded as { reason?: unknown }).reason;
+  if (!Number.isInteger(slot) || typeof reason !== "string" || reason.trim().length === 0) {
+    return { ok: false, reason: SelectorRejectionReason.ParseFailure };
+  }
+  const index = slot as number;
   if (index < 0 || index >= 16) {
     return { ok: false, reason: SelectorRejectionReason.SlotOutOfRange, rejectedIndex: index };
   }
-  const slot = menu.slots.find((candidate) => candidate.index === index);
-  if (slot?.availability !== TriAvailability.True) {
+  const renderedSlot = menu.slots.find((candidate) => candidate.index === index);
+  if (renderedSlot?.availability !== TriAvailability.True) {
     return { ok: false, reason: SelectorRejectionReason.NonSelectableSlot, rejectedIndex: index };
   }
   return { ok: true, index };
@@ -1763,6 +1811,14 @@ function parseOptionalMetricUnit(value: unknown): { unit?: string } {
     throw new Error("prompt-flow task metric unit must be a string");
   }
   return { unit: value };
+}
+
+function parseAgentCliZetaId(value: string, flagName: string): ParseAgentCliZetaIdResult {
+  try {
+    return { ok: true, value: asZetaIdDecimal(value) };
+  } catch {
+    return { ok: false, message: `${flagName} must be a base-10 ZetaId, got '${value}'` };
+  }
 }
 
 function parseJsonEnv(raw: string, envName: string): unknown {
