@@ -591,6 +591,19 @@ describe("main", () => {
     expect(listInstalled(store).length).toBe(0);
   });
 
+  test("atomic: a graph whose ROOT has a bad content_hash installs NOTHING", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
+    writeFileSync(join(dir,"B.json"), JSON.stringify(B));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: "sha256:deadbeef", dependencies:[{ name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B as any) }] }, files: { "r.txt":"r" } };
+    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+
   test("store-collision: two distinct packages with identical files install NOTHING", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));

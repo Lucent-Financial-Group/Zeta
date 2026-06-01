@@ -156,4 +156,22 @@ describe("resolve — verification", () => {
     const lax = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, { allowNoSignature: true });
     expect(lax.ok).toBe(true);
   });
+  test("untrusted/bad signature refuses even with allowNoSignature:true", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const signed: AcePackage = { manifest: { ...D.manifest, signature: { algo: "ed25519", key_id: "ed25519:unknownkey", sig: "AAAA" } }, files: D.files };
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: signed, url: "http://e/D" }]);
+    const r = await resolve(root, fetchOf({ "http://e/D": signed }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(["untrusted-key", "bad-signature"]).toContain(r.reason);
+  });
+});
+
+describe("resolve — invalid package", () => {
+  test("dep JSON that is parseable but not an AcePackage refuses invalid-package (no throw)", async () => {
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: pkgOf("D", { "d.txt": "d" }), url: "http://e/D" }]);
+    const badFetch: FetchPackage = async () => JSON.stringify({ foo: 1 }); // valid JSON, not an AcePackage
+    const r = await resolve(root, badFetch, NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
 });

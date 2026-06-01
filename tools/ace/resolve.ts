@@ -44,6 +44,8 @@ export async function resolve(
   const walk = async (node: AcePackage, path: string[]): Promise<ResolveResult | null> => {
     for (const edge of node.manifest.dependencies ?? []) {
       const here = [...path, edge.name];
+      // NB: the root is seeded into `visiting`, so a root-involving skew (root@1 -> A -> root@2)
+      // trips this cycle check before the version-skew check below — both refuse + install nothing.
       if (visiting.has(edge.name)) {
         return { ok: false, reason: "cycle", detail: here.join(" → "), path: here };
       }
@@ -60,6 +62,11 @@ export async function resolve(
       let dep: AcePackage;
       try { dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage; }
       catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
+      // Shape guard: verify the parsed JSON is a well-formed AcePackage before any field access.
+      const m = (dep as { manifest?: unknown; files?: unknown });
+      if (typeof dep !== "object" || dep === null || typeof m.manifest !== "object" || m.manifest === null || typeof m.files !== "object" || m.files === null) {
+        return { ok: false, reason: "invalid-package", detail: `${edge.url}: not a well-formed AcePackage`, path: here };
+      }
       // slice-2 self-check
       const filesHash = contentHash(new TextEncoder().encode(JSON.stringify(dep.files)));
       if (filesHash !== dep.manifest.content_hash) {

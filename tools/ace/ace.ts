@@ -406,9 +406,15 @@ export async function main(argv: readonly string[]): Promise<number> {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
       }
-      // PREFLIGHT (atomic): path-safety + store-key collision across the whole graph BEFORE any extract.
+      // PREFLIGHT (atomic): integrity + path-safety + store-key collision across the whole
+      // graph BEFORE any extract. content_hash is verified first (including the root, which
+      // the resolver does not re-check) so a tampered root cannot orphan already-extracted
+      // leaves.
       const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
       for (const node of res.order) {
+        // D6 atomicity: verify every node's content_hash before any extraction (incl. root).
+        const fh = contentHash(new TextEncoder().encode(JSON.stringify(node.files)));
+        if (fh !== node.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.manifest.name}`); return 1; }
         const unsafe = validatePackagePaths(node);
         if (unsafe !== null) { console.error(`ace: install refused: unsafe file path in ${node.manifest.name}: ${unsafe}`); return 1; }
         const ph = packageHash(node);
