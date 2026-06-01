@@ -93,6 +93,31 @@ test("arithmetic past the safe-int range declines NonSafeInt", () => {
   if (!r.ok) expect(r.error.kind).toBe("NonSafeInt");
 });
 
+test("a restored env preserves a __proto__ binding (no prototype-setter hole)", () => {
+  // "__proto__" is a legal Bonsai param name; a saga that captures it must round-trip through
+  // persist/restore and still resolve the binding (not invoke the legacy prototype setter)
+  const bindings = Object.create(null) as Record<string, ConstValue>;
+  bindings["__proto__"] = { t: "int", v: 5 };
+  const program = binary("add", { kind: "call", fn: "a", args: [] }, param("__proto__"));
+  const s0 = stepOk(start(program, bindings));
+  expect(s0.kind).toBe("suspended");
+  if (s0.kind !== "suspended") return;
+  const ser = serializeState(s0.state);
+  expect(ser.ok).toBe(true);
+  if (!ser.ok) return;
+  const restored = parseState(ser.value);
+  expect(restored.ok).toBe(true);
+  if (!restored.ok) return;
+  // resume from the RESTORED state: param("__proto__") must resolve to 5 → add(10,5)=15,
+  // not decline Unbound (which it would if readEnv had used the prototype setter)
+  const r = resume(restored.value, { t: "int", v: 10 });
+  expect(r.ok).toBe(true);
+  if (r.ok) {
+    expect(r.value.kind).toBe("done");
+    if (r.value.kind === "done") expect(r.value.value).toEqual({ t: "int", v: 15 });
+  }
+});
+
 // ---- state serialization round-trip ----
 
 test("serializeState / parseState round-trip + resume-from-restored equals resume-from-original", () => {

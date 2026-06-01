@@ -335,7 +335,10 @@ function readConstValue(n: unknown, where: string): ConstValue {
 function readEnv(n: unknown, where: string): Env {
   if (typeof n !== "object" || n === null || Array.isArray(n)) bad(`${where} is not an object`);
   const o = n as Record<string, unknown>;
-  const out: Record<string, ConstValue> = {};
+  // null-prototype: assigning a binding named "__proto__" (a legal Bonsai param name) must
+  // create an own property, not invoke the legacy prototype setter — so a restored env
+  // preserves every binding (and the own-property param lookup then finds it).
+  const out: Record<string, ConstValue> = Object.create(null) as Record<string, ConstValue>;
   for (const k of Object.keys(o)) out[k] = readConstValue(o[k], `${where}.${k}`);
   return out;
 }
