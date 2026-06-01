@@ -21,6 +21,7 @@ import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys, validatePackagePaths,
   loadRegistry, addRegistryEntry, listRegistry,
+  writeRegistryRemote, removeRegistryRemote, readRegistriesConfig,
   type AcePackage,
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
@@ -84,11 +85,14 @@ interface UpdateArgs {
 
 interface RegistryArgs {
   readonly command: "registry";
-  readonly sub: "list" | "add";
+  readonly sub: "list" | "add" | "remote-add" | "remote-list" | "remote-rm";
   readonly regName?: string;
   readonly regVersion?: string;
   readonly regUrl?: string;
   readonly regHash?: string;
+  readonly remoteUrl?: string;
+  readonly remoteKey?: string;
+  readonly remoteMaxStaleness?: number;
 }
 
 type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
@@ -203,6 +207,29 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       const result: RegistryArgs = { command: "registry", sub: "add", regName: name, regVersion: version, regUrl: url };
       if (hash !== undefined) return { ...result, regHash: hash };
       return result;
+    }
+    if (sub === "remote") {
+      const action = argv[2];
+      if (action === "list") return { command: "registry", sub: "remote-list" };
+      if (action === "rm") {
+        const url = argv[3];
+        if (!url || url.startsWith("-")) return { error: "registry remote rm requires <url>" };
+        return { command: "registry", sub: "remote-rm", remoteUrl: url };
+      }
+      if (action === "add") {
+        const url = argv[3];
+        if (!url || url.startsWith("-")) return { error: "registry remote add requires <url> --key <keyid>" };
+        let key: string | undefined; let msd: number | undefined;
+        for (let i = 4; i < argv.length; i++) {
+          if (argv[i] === "--key") { key = argv[++i]; if (!key || key.startsWith("-")) return { error: "--key requires a value" }; }
+          else if (argv[i] === "--max-staleness-days") { const v = argv[++i]; if (!v || v.startsWith("-")) return { error: "--max-staleness-days requires a value" }; msd = Number(v); if (!Number.isInteger(msd) || msd <= 0) return { error: "--max-staleness-days must be a positive integer" }; }
+          else return { error: `Unknown option for registry remote add: ${argv[i]}` };
+        }
+        if (!key) return { error: "registry remote add requires --key <keyid>" };
+        const r: RegistryArgs = { command: "registry", sub: "remote-add", remoteUrl: url, remoteKey: key };
+        return msd !== undefined ? { ...r, remoteMaxStaleness: msd } : r;
+      }
+      return { error: "registry remote requires 'add', 'list', or 'rm'" };
     }
     return { error: "registry requires 'add' or 'list'" };
   }
@@ -321,6 +348,9 @@ Usage:
   ace trust list                                 List all trusted keys
   ace registry add <name> <version> <url> [--hash <h>] Register a package in the local registry
   ace registry list                              List all registry entries
+  ace registry remote add <url> --key <keyid> [--max-staleness-days <n>] Add a signed remote registry
+  ace registry remote list                       List configured remote registries
+  ace registry remote rm <url>                   Remove a configured remote registry
   ace help                                       Show this help
 
 Future commands (not yet implemented):
@@ -446,6 +476,25 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   // registry
   if (parsed.command === "registry") {
+    if (parsed.sub === "remote-list") {
+      const remotes = readRegistriesConfig().remotes;
+      if (remotes.length === 0) { console.log("No remote registries. (add: ace registry remote add <url> --key <keyid>)"); return 0; }
+      for (const r of remotes) console.log(`  ${r.url}  key=${r.key_id}${r.max_staleness_days ? `  max-staleness=${r.max_staleness_days}d` : ""}`);
+      return 0;
+    }
+    if (parsed.sub === "remote-rm") {
+      const { removed } = removeRegistryRemote(parsed.remoteUrl!);
+      console.log(removed ? `ace: removed remote ${parsed.remoteUrl}` : `ace: no such remote ${parsed.remoteUrl}`);
+      return 0;
+    }
+    if (parsed.sub === "remote-add") {
+      const entry = parsed.remoteMaxStaleness !== undefined
+        ? { url: parsed.remoteUrl!, key_id: parsed.remoteKey!, max_staleness_days: parsed.remoteMaxStaleness }
+        : { url: parsed.remoteUrl!, key_id: parsed.remoteKey! };
+      const { added, updated } = writeRegistryRemote(entry);
+      console.log(`ace: ${updated ? "updated" : added ? "added" : "noop"} remote ${parsed.remoteUrl}`);
+      return 0;
+    }
     if (parsed.sub === "list") {
       const rows = listRegistry();
       if (rows.length === 0) { console.log("No registry entries. (add one: ace registry add <name> <version> <url>)"); return 0; }

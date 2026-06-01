@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { generateKeyPairSync, createHash } from "node:crypto";
 import { parseArgs, main } from "./ace.ts";
 import { listInstalled, contentHash, listTrustedKeys, loadRegistry } from "./store.ts";
+import { readRegistriesConfig } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
 import { packageHash } from "./resolve.ts";
 import { parseLockfile } from "./lockfile.ts";
@@ -1226,5 +1227,22 @@ describe("ace update (slice 5.4)", () => {
     const lf = parseLockfile(readFileSync(lockPath, "utf8"));
     expect("error" in lf).toBe(false);
     if (!("error" in lf)) expect(lf.nodes).toEqual([]);
+  });
+});
+
+describe("ace registry remote (slice 6)", () => {
+  test("add (with --key) → list → rm round-trips", async () => {
+    expect(await main(["registry", "remote", "add", "https://r/index.json", "--key", "ed25519:abc"])).toBe(0);
+    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/index.json", key_id: "ed25519:abc" }]);
+    expect(await main(["registry", "remote", "list"])).toBe(0);
+    expect(await main(["registry", "remote", "rm", "https://r/index.json"])).toBe(0);
+    expect(readRegistriesConfig().remotes).toEqual([]);
+  });
+  test("add WITHOUT --key is a parse error", () => {
+    expect("error" in parseArgs(["registry", "remote", "add", "https://r/index.json"])).toBe(true);
+  });
+  test("add with --max-staleness-days", async () => {
+    expect(await main(["registry", "remote", "add", "https://r/i.json", "--key", "ed25519:k", "--max-staleness-days", "7"])).toBe(0);
+    expect(readRegistriesConfig().remotes[0]!.max_staleness_days).toBe(7);
   });
 });
