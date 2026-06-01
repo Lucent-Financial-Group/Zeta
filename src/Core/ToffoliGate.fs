@@ -43,8 +43,9 @@ type ZSetGateOp =
 //   - ToffoliCircuit.Ancilla >= 0.
 //   - Ancilla records the allocated wire capacity for this closed model.
 //     Wire indices occupy 0 .. Ancilla-1 by convention.
-//   - No bit erasure: ancilla wires carry the inverse function, so the
-//     circuit is reversible over its full wire set.
+//   - No bit erasure: the retained wires carry the inverse function, so the
+//     circuit is reversible over its full wire set. ("Ancilla" names the
+//     total allocated capacity here, not a helper-wire subset.)
 
 /// Integer index identifying a wire in a ToffoliCircuit.
 type WireId = int
@@ -171,6 +172,13 @@ module ToffoliGate =
     /// though no partial product starts in the high column. Product sign
     /// gates are emitted only for nonzero products, keeping zero products in
     /// canonical signed-magnitude form.
+    ///
+    /// Modeled domain: this fragment encodes the exact mathematical product
+    /// in leftWidth + rightWidth signed-magnitude bits. The Z-set join weight
+    /// product (ZSet.cartesian / ZSet.join / IndexedZSet.join) multiplies with
+    /// Checked.(*), which throws on int64 overflow; reconciling this fragment's
+    /// unbounded product with that checked semantics (an overflow/error wire or
+    /// a bounded-domain law) is deferred to B-0366.2.3.
     ///
     /// This is intentionally the core multiplication primitive only;
     /// B-0366.2.3 layers laws over the fragment before full join(A,B).
