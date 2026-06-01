@@ -255,7 +255,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       const r: RegistryArgs = { command: "registry", sub: "publish", pubPackagesDir: dir, pubBaseUrl: base, pubKeyPath: key };
       return out !== undefined ? { ...r, pubOut: out } : r;
     }
-    return { error: "registry requires 'add' or 'list'" };
+    return { error: "registry requires 'add', 'list', 'remote', or 'publish'" };
   }
 
   if (command === "update") {

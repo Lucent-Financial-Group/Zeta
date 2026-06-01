@@ -241,7 +241,7 @@ ace registry publish --packages <dir> --base-url <url> --key <pem-path> [--out i
   skipped with a warning.
 - **`--base-url <url>`** — base URL of the registry. Each package's consumer
   `url` is derived as `<base-url>/<name>-<version>.json` and its `package_hash`
-  is computed from the manifest file.
+  is the `packageHash` of the canonical whole package (`{ manifest, files }`) — the same hash the consumer pins.
 - **`--key <pem-path>`** — path to the Ed25519 **private** key (PEM format, mode
   0600). The index is signed with this key.
 - **`--out <file>`** — path to write the signed index JSON (default: `./index.json`).
@@ -261,11 +261,7 @@ the signing key's own public key). A published `index.json` is therefore
 guaranteed to satisfy `ace install` when a consumer has registered the registry
 with the matching key ID.
 
-To find the key ID to pin, run:
-
-```bash
-ace trust <pub-file>   # prints the key ID
-```
+To find the `<keyId>` to pin, the `<keyId>` is shown by `ace trust list` (or printed by `ace trust add <pub>` when the key is added).
 
 Then on the consumer side:
 
