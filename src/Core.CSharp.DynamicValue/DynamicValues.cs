@@ -151,25 +151,31 @@ public static class DynamicValues
         return true;
     }
 
-    // Reads "[<digits>]" starting at `open` (the '['). Returns the offset just past ']' and the
-    // parsed index, or -1 on a malformed bracket (no digits, unterminated, or an index that
-    // overflows Int32 — TryParse, never an OverflowException escaping Get).
-    private static int TryReadIndex(string path, int open, out int index)
+    // Reads "[<digits>]" in `segment` starting at `open` (which must point at the '['). Returns the
+    // offset just past ']' and the parsed index, or -1 on a malformed bracket (open not at '[', no
+    // digits, unterminated, or an index that overflows Int32 — TryParse, never an OverflowException
+    // escaping Get).
+    private static int TryReadIndex(string segment, int open, out int index)
     {
         index = 0;
-        int start = open + 1;
-        int j = start;
-        while (j < path.Length && char.IsDigit(path[j]))
-        {
-            j++;
-        }
-
-        if (j == start || j >= path.Length || path[j] != ']')
+        if (open >= segment.Length || segment[open] != '[')
         {
             return -1;
         }
 
-        return int.TryParse(path.AsSpan(start, j - start), NumberStyles.None, CultureInfo.InvariantCulture, out index)
+        int start = open + 1;
+        int j = start;
+        while (j < segment.Length && char.IsDigit(segment[j]))
+        {
+            j++;
+        }
+
+        if (j == start || j >= segment.Length || segment[j] != ']')
+        {
+            return -1;
+        }
+
+        return int.TryParse(segment.AsSpan(start, j - start), NumberStyles.None, CultureInfo.InvariantCulture, out index)
             ? j + 1
             : -1;
     }

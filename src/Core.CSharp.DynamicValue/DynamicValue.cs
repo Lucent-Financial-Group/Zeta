@@ -27,7 +27,9 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 public abstract record DynamicValue
 {
-    private protected DynamicValue() { }
+    // private (not private protected): only the eight nested records can derive — no other
+    // in-assembly subtype can be introduced, so the hierarchy is genuinely closed.
+    private DynamicValue() { }
 
     /// <summary>The runtime tag — QueryInterface ("what shape are you?").</summary>
     public abstract DynamicValueType Type { get; }
