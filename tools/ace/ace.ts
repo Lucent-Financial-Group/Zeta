@@ -88,6 +88,24 @@ interface ArgError {
   readonly error: string;
 }
 
+/** Integrity preflight over a resolved graph: per-node content_hash, path-safety, and
+ *  store-key (content_hash -> package_hash) collision. Returns null on success, or an
+ *  error message. Shared by `install` (before extract) and `update` (before lock write). */
+function preflightGraph(order: AcePackage[]): string | null {
+  const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
+  for (const node of order) {
+    const fh = contentHash(new TextEncoder().encode(JSON.stringify(node.files)));
+    if (fh !== node.manifest.content_hash) return `bad-content-hash in ${node.manifest.name}`;
+    const unsafe = validatePackagePaths(node);
+    if (unsafe !== null) return `unsafe file path in ${node.manifest.name}: ${unsafe}`;
+    const ph = packageHash(node);
+    const prior = byStoreKey.get(node.manifest.content_hash);
+    if (prior !== undefined && prior !== ph) return `store-collision — ${node.manifest.name} shares a content_hash store key with a different package`;
+    byStoreKey.set(node.manifest.content_hash, ph);
+  }
+  return null;
+}
+
 export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
   const command = argv[0];
   if (!command || command === "help" || command === "--help" || command === "-h") {
@@ -587,21 +605,9 @@ export async function main(argv: readonly string[]): Promise<number> {
         return 1;
       }
       // PREFLIGHT (atomic): integrity + path-safety + store-key collision across the whole
-      // graph BEFORE any extract. content_hash is verified first (including the root, which
-      // the resolver does not re-check) so a tampered root cannot orphan already-extracted
-      // leaves.
-      const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
-      for (const node of res.order) {
-        // D6 atomicity: verify every node's content_hash before any extraction (incl. root).
-        const fh = contentHash(new TextEncoder().encode(JSON.stringify(node.files)));
-        if (fh !== node.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.manifest.name}`); return 1; }
-        const unsafe = validatePackagePaths(node);
-        if (unsafe !== null) { console.error(`ace: install refused: unsafe file path in ${node.manifest.name}: ${unsafe}`); return 1; }
-        const ph = packageHash(node);
-        const prior = byStoreKey.get(node.manifest.content_hash);
-        if (prior !== undefined && prior !== ph) { console.error(`ace: install refused: store-collision — ${node.manifest.name} shares a content_hash store key with a different package`); return 1; }
-        byStoreKey.set(node.manifest.content_hash, ph);
-      }
+      // graph BEFORE any extract (shared with `update`'s before-write guard via preflightGraph).
+      const pf = preflightGraph(res.order);
+      if (pf !== null) { console.error(`ace: install refused: ${pf}`); return 1; }
       // EXTRACT all, leaves first.
       for (const node of res.order) {
         const out = installPackage(parsed.storePath, node);
