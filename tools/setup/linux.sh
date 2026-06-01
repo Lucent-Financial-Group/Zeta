@@ -108,8 +108,16 @@ elif [ -f "$APT_MANIFEST" ]; then
     apt_update_rc=0
     apt_update_out="$($SUDO apt-get update -y 2>&1)" || apt_update_rc=$?
     printf '%s\n' "$apt_update_out"
+    # Use a here-string, NOT `printf ... | grep -q`: under `set -o pipefail`,
+    # `grep -q` exits on the first match → `printf` gets SIGPIPE (exit 141) →
+    # pipefail makes the whole pipeline return 141, so the `||` reads it as
+    # false and the warning is SUPPRESSED even though grep matched — a silent
+    # hole in exactly the exit-0 partial-source case this guard exists to
+    # surface (Codex P2 on PR #6419, discussion_r3334414817). A here-string has
+    # no upstream producer to receive SIGPIPE, so pipefail never trips it, and
+    # grep stays line-oriented so `^Err:` still anchors per-line.
     if [ "$apt_update_rc" -ne 0 ] \
-       || printf '%s' "$apt_update_out" | grep -qiE 'Failed to fetch|Some index files failed to download|^Err:'; then
+       || grep -qiE 'Failed to fetch|Some index files failed to download|^Err:' <<<"$apt_update_out"; then
       echo "⚠ apt-get update reported errors — likely an unreachable third-party" >&2
       echo "  source the host image shipped (not a Zeta manifest source). Continuing;" >&2
       echo "  the apt-get install below still asserts the packages we need are present." >&2
