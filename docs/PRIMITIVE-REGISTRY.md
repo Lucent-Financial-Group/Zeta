@@ -15,11 +15,28 @@ on. The work that fills the gaps is tracked by
 [B-0959](backlog/P1/B-0959-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md)
 (master checklist); this file is the _status view_ over it.
 
-**What this is becoming** (Aaron 2026-06-01): a **cross-language BCL** — a documented,
+**What this is becoming** (the maintainer 2026-06-01): a **cross-language BCL** — a documented,
 compatibility-guaranteed set of primitives we can count on across all four languages, so
 crossing languages is safe and a dev doesn't relearn the basics four times. Built up
 slowly, one verified primitive at a time, under the same three-requirement bar as the
 BCL-like tier below (cross-compatible + one common surface + still idiomatic).
+
+## The wish list — every primitive we want (so we don't forget)
+
+The complete set, built + wished, in one place (the maintainer 2026-06-01: "the uber
+primitive wish list … so we don't forget what we want"). ✅ shipped (Tier-1/2) · 🚧
+building · ⬜ wished (not started). Per-language cells + detail are in the sections below;
+**add anything new here with ⬜ the moment it's named, so it's never lost.**
+
+- **Identity** — ✅ ZetaId (4/4)
+- **Event / reactive** — ✅ Observe loop (4/4) · ⬜ Rx-Observable = Z-set delta-stream (per-lang Rx exists; unify) · ⬜ CALM coordination-free marker
+- **Algebra ladder** — ✅ G-Set (4/4) · 🚧 Bag / multiset (next) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
+- **Comms** — 🚧 git-native Bus (TS only)
+- **Logic / numeric** (the cross-language number BCL) — ✅ TriBoolean (digital qubit) · ✅ TriBoolean middle-out float · ⬜ `bool?` plain-Kleene · ⬜ int8…int128 / uint8…uint128 · ⬜ float32/64 · ⬜ decimal (dep-behind-port) · ⬜ bigint (dep-behind-port)
+- **Codec / BCL-like** — ⬜ JSON · ⬜ UTF-8 · ⬜ base64 · ⬜ SHA-256 · ⬜ regex · ⬜ time/clock
+- **DST / test** — ✅ DeterministicEnv (4/4) · ✅ (F#) IClock / FrozenClock · ✅ (F#) ChaosEnvironment (seeded) · ✅ (F#) LawRunner · ✅ (F#) Injection DI seams · ⬜ cross-lang versions of all of these
+- **Concurrency / runtime / IO** (further-out) — ⬜ channels · ⬜ pipelines · ⬜ concurrent dictionary · ⬜ work-stealing / ActionBlock · ⬜ async runtime (Tokio / .NET `Task` / JS event loop) · ⬜ TCP/UDP sockets · ⬜ ASP.NET-class server
+- **Type-system shims** — ✅ Variance (C# `Variance.cs`) · ✅ ZetaCircuitBuilder (C# Z-set binding)
 
 ## Consensus tiers
 
@@ -69,7 +86,7 @@ de-facto-standard exception, e.g. `serde`, only when both provenance-signed AND
 widely-relied-on).
 
 **"A good interface across all four" is a higher bar than "all four have it"**
-(Aaron 2026-06-01) — three requirements, all of which must hold before we rely on a
+(the maintainer 2026-06-01) — three requirements, all of which must hold before we rely on a
 BCL-like primitive:
 
 1. **Cross-compatible** — the four implementations interoperate on the wire (JSON
@@ -94,13 +111,13 @@ only once all three hold.
 | **UTF-8** | native (`TextEncoder`) | `System.Text.Encoding.UTF8` | `System.Text.Encoding.UTF8` | `str`/`String` (native)                                                                                      | All four have it; UTF-8 has no endianness, so the cross-lang concern is **string ordering/comparison consistency**, not byte order — TS/.NET sort on UTF-16 code-units, Rust on UTF-8 bytes, which diverge once you move beyond ASCII/BMP. They agree for ASCII/BMP (what the g-set comparator + ZetaId hex already rely on); verify before depending beyond that. |
 | **JSON**  | native `JSON`          | `System.Text.Json`          | `System.Text.Json`          | our `ZetaJsonParser` (zero-dep, `src/Core.Rust.Observe/src/json.rs`) + `serde_json` adapter behind a feature | Rust std has **no** JSON, so the cross-lang primitive is _our JSON port_ (the hexagonal interface), not one library. Stabilize the port shape across all four (number precision, key order, escaping) before declaring it registry-stable.                                                                                                                         |
 
-**Other BCL-like candidates — data / codec** (Aaron 2026-06-01: "for sure yes", pull
+**Other BCL-like candidates — data / codec** (the maintainer 2026-06-01: "for sure yes", pull
 in slowly): **base64**, **SHA-256** hashing, **big integers**, **regex**, and
 **time/clock** — the last is a load-bearing **DST primitive** (deterministic simulation
 needs a seedable/controllable clock, not wall-clock; F# is already well ahead here).
 Each lands only after the four-way interface is verified — not on first use.
 
-**Further-out — concurrency / runtime / IO primitives** (Aaron 2026-06-01, naming them
+**Further-out — concurrency / runtime / IO primitives** (the maintainer 2026-06-01, naming them
 for the map): **channels** + **pipelines** (`System.Threading.Channels` /
 `System.IO.Pipelines`), **concurrent dictionary**, **work-stealing / `ActionBlock`-like**
 dataflow, an **async runtime** (Tokio in Rust; the TPL/`Task` scheduler in .NET; the
@@ -113,7 +130,7 @@ runtime. Listed now so they're on the map; the same three-requirement bar applie
 ## Category / numeric primitives — the cross-language number BCL
 
 The base value types mapped across the four oracles, with the compatibility caveats that
-bite when you cross languages (Aaron 2026-06-01: "category primitives too like all the
+bite when you cross languages (the maintainer 2026-06-01: "category primitives too like all the
 ints floats decimal etc."). These are the "count on it" primitives the cross-language BCL
 is built from. ✅ native / ⚠️ caveat / ❌ no native (needs a library).
 
@@ -133,9 +150,20 @@ is the outlier (one numeric type, f64) — fixed-width, full 64-bit, and decimal
 care. Documenting the mapping + the caveat tells a dev crossing languages exactly where
 the floor is.
 
+**Filling the ❌ gaps — dep behind our port, replaced over time** (the maintainer
+2026-06-01): a missing primitive (Rust `bigint`/`decimal`, TS `decimal`) is brought up by
+pulling a dep (`num-bigint`, `rust_decimal`, `decimal.js`) **behind our own hexagonal
+interface** — never depending on the dep's interface directly (per
+[`bcl-interface-boundary`](../.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md)).
+The dep is the bootstrap implementation **and** the differential-test oracle (our impl vs
+the dep, the way `Core.Rust.Observe` keeps `serde_json` behind a feature); over time we
+replace the dep with our own impl while keeping it for the differential test. So a ❌ cell
+becomes "⚠️ via dep behind our port" → eventually "✅ ours" — the gap closes without ever
+exposing four different vendor APIs to devs.
+
 ## DST / test primitives — F# is ahead; the cross-language target
 
-The deterministic-simulation + test substrate (Aaron 2026-06-01: "F# we are way ahead
+The deterministic-simulation + test substrate (the maintainer 2026-06-01: "F# we are way ahead
 here"). These make seeded, replayable simulation possible — the backbone of the
 "compilers don't lie" verification + the DST discipline.
 
@@ -173,6 +201,7 @@ G-Set / Bag / Z-set gaps collapse into a single ladder build per language.
   harness that fails non-zero on mismatch (the `tests/cross-verification/zeta-id/`
   pattern is the template).
 
-_Last updated: 2026-06-01 — ZetaId reached Tier-1 4-oracle consensus (B-0679); G-Set
-gained its Rust rung (#6360, now 3/4, C# → Tier-1); added the BCL-like candidate tier
-(JSON, UTF-8 — pull in slowly once the four-way interface is verified)._
+_Last updated: 2026-06-01 — ZetaId Tier-1 4-oracle (B-0679); G-Set now **4/4** (Rust
+#6360, C# #6363) → Tier-1; added the cross-language-BCL framing, the numeric/category
+primitives table (+ the dep-behind-port fill strategy for the ❌ gaps), the DST/test
+primitives section, and the BCL-like candidate tier (JSON, UTF-8 — pull in slowly)._
