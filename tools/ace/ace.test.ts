@@ -1582,4 +1582,79 @@ describe("ace registry publish (slice 6.1)", () => {
       expect(doc.packages.bad).toBeUndefined();
     }
   });
+
+  test("URL-unsafe name is skipped; well-formed sibling is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-urlbad-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // bad: name contains '#', which is URL-unsafe
+    const badName = "bad#x";
+    const badFiles = { "bad.txt": "x" };
+    const badCh = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const badKp = generateKeypair();
+    const badM = { format_version: 1, name: badName, version: "1.0.0", content_hash: badCh };
+    const badPkg = { manifest: { ...badM, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
+    // filename matches <name>-<version>.json so it clears the basename guard, but name is URL-unsafe
+    writeFileSync(join(pkgDir, `${badName}-1.0.0.json`), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "urlbad.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "urlbad-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages[badName]).toBeUndefined();
+    }
+  });
+
+  test("malformed dep edge (missing version) is skipped; well-formed sibling is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-baddep-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // bad: dep edge missing version field
+    const badFiles = { "bad.txt": "x" };
+    const badCh = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const badKp = generateKeypair();
+    const badM = { format_version: 1, name: "bad", version: "1.0.0", content_hash: badCh };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const badPkg = { manifest: { ...badM, dependencies: [{ kind: "registry", name: "dep" }] as any, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "baddep.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "baddep-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
+  });
+
+  test("unsafe file path is skipped; well-formed sibling is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-unsafe-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // bad: files key is a path-traversal path
+    const badFiles = { "../escape.txt": "x" };
+    const badCh = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const badKp = generateKeypair();
+    const badM = { format_version: 1, name: "bad", version: "1.0.0", content_hash: badCh };
+    const badPkg = { manifest: { ...badM, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "unsafe.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "unsafe-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
+  });
 });

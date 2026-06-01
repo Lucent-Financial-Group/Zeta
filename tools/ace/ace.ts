@@ -28,6 +28,15 @@ import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFro
 import { resolve, packageHash } from "./resolve.ts";
 import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
+
+function isValidDepEdge(e: unknown): boolean {
+  if (typeof e !== "object" || e === null) return false;
+  const d = e as Record<string, unknown>;
+  if (typeof d.name !== "string" || typeof d.version !== "string") return false;
+  if (d.kind === "registry") return true;
+  if (d.kind === "inline") return typeof d.url === "string" && typeof d.package_hash === "string";
+  return false;
+}
 import { buildIndexDoc, nextSequence } from "./registry-publish.ts";
 import { loadRegistries, parseIndex } from "./registry-remote.ts";
 import type { IndexDoc } from "./registry-remote.ts";
@@ -537,8 +546,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       let pem: string;
       try { pem = readFileSync(parsed.pubKeyPath!, "utf8"); }
       catch (e) { console.error(`ace: publish: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`); return 1; }
-      // P2-A: a non-Ed25519 key (RSA/EC) would sign + self-verify but the index claims algo:"ed25519",
-      // so consumers reject it. Refuse non-ed25519 (and malformed) keys here, before building the index.
+      // P2-A: signIndex uses crypto.sign(null, ...) which only supports Ed25519/Ed448 — an RSA/EC key
+      // THROWS rather than signing. Pre-check here to fail fast with a clear error before building the index.
       try {
         if (createPrivateKey(pem).asymmetricKeyType !== "ed25519") {
           console.error("ace: publish refused: --key must be an ed25519 private key"); return 1;
@@ -582,6 +591,25 @@ export async function main(argv: readonly string[]): Promise<number> {
         const fileVals = Object.values((obj as AcePackage).files as Record<string, unknown>);
         if (fileVals.some((v) => typeof v !== "string")) {
           console.error(`ace: publish: skip ${f} — every file value must be a string`); continue;
+        }
+        // P2: package name/version must be URL-safe — the consumer URL is <base>/<name>-<version>.json,
+        // so a '#' or '?' (or path sep / control char) would break or redirect the fetched URL.
+        const nm = (obj as AcePackage).manifest.name;
+        const ver = (obj as AcePackage).manifest.version;
+        if (/[\x00-\x20#?%/\\]/.test(nm) || /[\x00-\x20#?%/\\]/.test(ver)) {
+          console.error(`ace: publish: skip ${f} — name/version has a URL-unsafe character`); continue;
+        }
+        // P2: dependency edges must be well-formed (matching the consumer's AceDependency shape),
+        // else a consumer resolve would break on a self-verified index.
+        const depEdges = (obj as AcePackage).manifest.dependencies;
+        if (Array.isArray(depEdges) && !depEdges.every(isValidDepEdge)) {
+          console.error(`ace: publish: skip ${f} — malformed dependency edge`); continue;
+        }
+        // P2: reuse the consumer's path guard — a package with an unsafe files key (../ or absolute)
+        // would index but be rejected/unsafe at install. Skip + warn.
+        const unsafePath = validatePackagePaths(obj as AcePackage);
+        if (unsafePath !== null) {
+          console.error(`ace: publish: skip ${f} — unsafe file path: ${unsafePath}`); continue;
         }
         packages.push(obj as AcePackage);
       }

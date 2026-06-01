@@ -3,9 +3,10 @@ import { generateKeyPairSync } from "node:crypto";
 import {
   generateKeypair, keyId, canonicalManifestBytes, signManifest, verifySignature,
   type TrustEntry,
+  signIndex, verifyIndexSignature, type IndexSignableContent,
+  publicKeyInfoFromPrivatePem,
 } from "./signing.ts";
 import type { AceManifest } from "./store.ts";
-import { signIndex, verifyIndexSignature, type IndexSignableContent } from "./signing.ts";
 
 function baseManifest(overrides: Partial<AceManifest> = {}): AceManifest {
   return { format_version: 1, name: "demo", version: "1.0.0", content_hash: "sha256:abc", ...overrides };
@@ -130,7 +131,6 @@ describe("index signing", () => {
   });
 });
 
-import { publicKeyInfoFromPrivatePem } from "./signing.ts";
 
 describe("publicKeyInfoFromPrivatePem", () => {
   test("derives the same keyId + public_key as generateKeypair for the same key", () => {
