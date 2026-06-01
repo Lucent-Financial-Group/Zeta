@@ -119,3 +119,25 @@ let ``serialize keeps a valid surrogate pair literal (matches JSON.stringify)`` 
     let s = Bonsai.serialize (Bonsai.Param pair)
     Assert.Contains(pair, s)
     Assert.DoesNotContain("\\ud83d", s)
+
+// Canonical-only parse parity (matches the TS oracle): a structurally-valid but
+// non-canonical vector is rejected, so both oracles agree on the valid-input
+// domain and the serialize(parse s) = s fixed point holds.
+
+[<Fact>]
+let ``parse rejects a non-canonical vector carrying an unknown extra field`` () =
+    Assert.Throws<System.Exception>(fun () ->
+        Bonsai.parse "{\"v\":1,\"expr\":{\"kind\":\"param\",\"name\":\"x\",\"extra\":0}}" |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``parse rejects non-canonical whitespace (canonical form is whitespace-free)`` () =
+    Assert.Throws<System.Exception>(fun () ->
+        Bonsai.parse "{\"v\":1, \"expr\":{\"kind\":\"param\",\"name\":\"x\"}}" |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``parse rejects non-canonical key order (canonical fixes v/kind first)`` () =
+    Assert.Throws<System.Exception>(fun () ->
+        Bonsai.parse "{\"expr\":{\"kind\":\"param\",\"name\":\"x\"},\"v\":1}" |> ignore)
+    |> ignore

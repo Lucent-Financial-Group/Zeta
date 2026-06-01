@@ -196,7 +196,13 @@ module Bonsai =
             Cond(parseNode (el.GetProperty("test")), parseNode (el.GetProperty("then")), parseNode (el.GetProperty("else")))
         | other -> failwithf "bonsai: unknown node kind: %s" other
 
-    /// Parse a canonical Bonsai-subset string back to an Expr.
+    /// Parse a canonical Bonsai-subset string back to an Expr. Canonical-only
+    /// (matches the TS oracle): a structurally-valid but non-canonical vector
+    /// (extra fields, whitespace, reordered keys) is rejected rather than
+    /// silently canonicalized — without this serialize(parse s) would not equal
+    /// s for such s, and the F# + TS oracles would disagree on which input is
+    /// valid (the very byte-exact invariant the cross-language oracles exist to
+    /// guarantee).
     let parse (s: string) : Expr =
         use doc = JsonDocument.Parse(s)
         let root = doc.RootElement
@@ -205,4 +211,9 @@ module Bonsai =
         if v <> Version then
             failwithf "bonsai: unsupported version %d (expected %d)" v Version
 
-        parseNode (root.GetProperty("expr"))
+        let result = parseNode (root.GetProperty("expr"))
+        // Canonical-only guard: the round-trip must reproduce the input exactly.
+        if serialize result <> s then
+            failwith "bonsai: input is not in canonical form (serialize(parse s) <> s)"
+
+        result
