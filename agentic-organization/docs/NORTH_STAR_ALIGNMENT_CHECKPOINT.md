@@ -1885,3 +1885,205 @@ in-cluster Cockroach as the adapter for `org-model-eval-optimizer-65f29b32` and 
 
 `npm run typecheck` passed. `npm test` passed: **916 tests, 0 fail** (7 skipped live-integration
 tests).
+
+---
+
+## Update 2026-05-31 — Phase 2.7 policy simulation gate shipped and proven in kind
+
+Phase 2.7 now has an executable gate: policy, config, model, prompt-flow, RMO, assignment,
+autonomy, and schedule ChangeSets cannot move from drafted to review or from approved to applied
+unless they carry verified simulation evidence or a verified emergency waiver. Raw evidence labels
+are not enough; the gate requires content-addressed artifacts whose digest verifies and whose
+payload is bound to the exact ChangeSet id.
+
+### What shipped
+
+- `evaluateChangeSetSimulationPolicy` classifies policy-surface ChangeSets and returns a typed
+  allow/block decision with the authorizing evidence ref when present.
+- `openChangeSet` and `applyChangeSet` enforce the simulation gate. A blocked policy ChangeSet
+  keeps its current phase and emits `ReviewFindingRaised` instead of advancing.
+- Verified `simulation-report` artifacts authorize only when they bind the target ChangeSet and
+  record an accepted decision. Verified `emergency-waiver` artifacts authorize only when they bind
+  the target ChangeSet and carry an approver plus reason.
+- Code, doc, and config artifacts are all scanned for policy-surface paths, including plural,
+  underscore, dash, and path-separated variants such as `prompt_flows/` and `model-policies/`.
+- The release queue now passes verified evidence artifacts into change control, treats blocked
+  apply attempts as requeued, and prevents one batch-level simulation artifact from leaking onto
+  unrelated ChangeSet events.
+- KIND proof runner: `deploy/run-policy-simulation-gate.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:keepalive`
+(`sha256:ae7da938ae418c6875586a48c8f5139b6f9a26cae312253cd0ff982d32b6af4c`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-7d6687568f-6hk76`. Fresh boot logs showed the
+expected worker lanes, including `release-queue`, with zero `worker run failed` or structured
+error matches.
+
+`deploy/run-policy-simulation-gate.ts` ran against in-cluster Cockroach for
+`org-policy-sim-bd99a813` and proved:
+
+- The release queue evaluated two approved config-policy ChangeSets in one batch.
+- ChangeSet `cs-policy-simulated-5650da46` carried a bound accepted `simulation-report` artifact
+  and moved to `applied`.
+- ChangeSet `cs-policy-unbound-5650da46` had no bound simulation/waiver artifact, stayed
+  `approved`, and was counted as requeued.
+- The lane result was `release-queue:1applied/0changes_requested/1requeued`.
+- The live ledger contained one `ChangeSetApplied` event for the simulated ChangeSet and one
+  `ReviewFindingRaised` event for the unbound ChangeSet.
+- `unboundLeakedSimulationEvidence` was false, proving the accepted simulation evidence did not
+  leak across ChangeSets.
+
+`PROOF: PASS`.
+
+The existing release-queue KIND proof was rerun as a regression check for
+`org-release-7cd90280`: two green ChangeSets applied, one red ChangeSet moved to
+`changes_requested`, and the lane reported `release-queue:2applied/1changes_requested/0requeued`.
+`PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **1185 tests, 1178 pass, 0 fail, 7 skipped**.
+
+---
+
+## Update 2026-05-31 — Phase 2.8 secret-scope and rate-limit hard controls proven in kind
+
+The observe-act action surface now carries secret-scope requirements as typed data. Prompt-flow
+tool injections and MCP slots can declare `requiredSecretScopes`; prompt-flow tasks whose injected
+tools require unavailable scopes are hidden as false slots during observe, and MCP dispatch is
+re-authorized at act time before any tool side effect can run. The production CLI now also builds a
+default control-plane slot authorizer from the parsed run context and Cockroach flags, so provider
+freezes and secret/rate-limit controls cannot be bypassed by the foreground loop.
+
+### What shipped
+
+- `PromptFlowToolInjection` now supports `requiredSecretScopes`, and the agent CLI preserves those
+  scopes when compiling durable prompt-flow definitions into current prompt-flow tasks.
+- `SlotImpl.kind === "mcp"` now supports `requiredSecretScopes` directly on the executable slot.
+- `observeAgentSurface` accepts `availableSecretScopes` and vetoes prompt-flow tasks with a
+  `prompt-flow-secret-scope` reason when their tool injections require unavailable secrets.
+- `createControlPlaneSlotAuthorizer` derives control-plane usage from MCP and prompt-flow slots, so
+  act-time authorization rejects tool dispatch when the required secret scope is unavailable even if
+  the slot was visible at observe time.
+- `ControlPlaneRateLimit` adds windowed per-scope limits for tokens, tools, model calls, external
+  provider calls, and release actions. Exhausted limits produce `rate_limit_exceeded` and expose the
+  matched rate-limit ids in the control-plane audit.
+- `runAgentCliMain` now wires production observe-act control-plane authorization by loading active
+  Cockroach flags and active Cockroach rate limits at act time and passing available secret scopes
+  into observe.
+- Cockroach migration `0024_agentic_org_control_plane_rate_limits` stores durable windowed rate
+  limits with typed scope/kind constraints, scope-shape constraints, positive limit/non-negative
+  usage constraints, window-order constraints, and a read path for active limits.
+- KIND proof runner: `deploy/run-control-plane-secret-scopes.ts`.
+- Restore-drill checksum source: `createCockroachRestoreDrillSnapshotSource` captures the
+  tenant-scoped `org_events`, `control_plane_flags`, and `control_plane_rate_limits` projections
+  for `verifyRestoreDrill`.
+- KIND proof runner: `deploy/run-restore-drill.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:keepalive`, retagged as the deployment image
+`agentic-org-worker:phase2-telemetry-v3`
+(`sha256:35827fb0141cc0137a696387dd1aa032bb73568c2b2874591f5c88e5dd1ce0d7`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-5f647f64b5-t2shx`. Fresh boot logs showed the
+expected cadence lanes with zero `worker run failed` or structured error matches.
+
+`deploy/run-control-plane-secret-scopes.ts` ran against in-cluster Cockroach for
+`org-control-plane-secrets-11731bb7` and proved:
+
+- A durable provider-freeze flag was upserted and read back through the Cockroach control-plane
+  state store as `flag-provider-freeze-11731bb7`.
+- A durable external-provider call rate limit was upserted and read back through the Cockroach
+  control-plane state store as `rate-limit-provider-11731bb7`.
+- MCP dispatch with `providerId = github` was rejected with `provider_freeze`;
+  `providerDispatched` remained false.
+- MCP dispatch with required `github:write` but no available secret scope was rejected with
+  `secret_scope_unavailable`; `secretDispatched` remained false.
+- MCP dispatch with exhausted external-provider call rate limit was rejected with
+  `rate_limit_exceeded`; `rateLimitDispatched` remained false.
+- A prompt-flow task whose `github.publish_release` tool injection required `github:write` was
+  rendered as a vetoed prompt-flow task with rule `prompt-flow-secret-scope`.
+- The production CLI path selected a prompt-flow slot under a live Cockroach-backed provider freeze;
+  it exited `1`, did not load context, and appended control-bypass evidence.
+
+`PROOF: PASS`.
+
+`deploy/run-restore-drill.ts` ran against in-cluster Cockroach for
+`org-restore-drill-95da3bd6` and proved:
+
+- The proof seeded one durable `ObserveActTick` org event, one provider-freeze flag, and one
+  tenant-scoped external-provider-call rate limit.
+- The Cockroach restore snapshot source captured three tenant-scoped projections:
+  `org_events`, `control_plane_flags`, and `control_plane_rate_limits`.
+- `verifyRestoreDrill` compared before/after checksums over those projections and produced the same
+  SHA-256 checksum, with `projectionCount = 3` and `rowCount = 3`.
+
+`PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **1199 tests, 1192 pass, 0 fail, 7 skipped**.
+
+---
+
+## Update 2026-05-31 — Phase 2.8 incident runbook prompt flows gain human approval gates
+
+Production incident runbooks are now represented as typed prompt-flow definitions instead of
+free-form operational text. The first shipped registry entry is the provider-outage incident
+runbook for the `incident_commander` hat. It walks the agent through impact assessment, an
+operator approval packet, and guarded recovery/closure, while keeping the production freeze or
+failover step behind an explicit human-approval gate.
+
+### What shipped
+
+- `PromptFlowPhaseGate` now carries human approver hats and a required approval count for
+  `human_approval` gates.
+- `advancePromptFlowRun` now accepts structured human approvals in addition to evidence refs.
+  A human-approval gate blocks when approval is missing, when the approver hat is not allowed,
+  or when the approval evidence ref is not content-addressed.
+- `lintPromptFlowDefinition` rejects human-approval gates that do not name approver hats or
+  declare an invalid approval count.
+- `buildProductionIncidentRunbookPromptFlowDefinitions` returns the first production runbook
+  registry entry: `incident.provider-outage`.
+- The runbook uses the existing prompt-flow compiler/readout path, so incident work appears in
+  observe as a hat-scoped prompt-flow task rather than a separate control surface.
+- The agent CLI parser preserves `approverHatIds` and `requiredHumanApprovalCount` from durable
+  prompt-flow JSON, so runbook gates survive JSON ingestion.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **1201 tests, 1194 pass, 0 fail, 7 skipped**.
+
+---
+
+## Update 2026-05-31 — Phase 2.2 CLI setup failures become typed env-load feedback
+
+The observe-act agent CLI now has typed env-load result surfaces for the production-visible
+prompt-flow and hierarchy JSON inputs. The previous production main path relied on catching parser
+throws after constructing the cycle input. The CLI still keeps the throwing helpers for existing
+internal call sites and tests, but the executable `runAgentCliMain` path consumes the typed
+`tryCreate...FromEnv` loaders and exits with setup feedback before invoking the observe-act cycle.
+
+### What shipped
+
+- `tryCreateAgentCliPromptFlowTasksFromEnv` returns `{ ok: false, source: "prompt_flow_tasks",
+  message }` for malformed prompt-flow task/definition/run JSON.
+- `tryCreateAgentCliHierarchyFromEnv` returns `{ ok: false, source: "hierarchy", message }` for
+  malformed hierarchy JSON.
+- JSON parse failures now name the exact env variable (`AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON`,
+  `AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON`, `AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON`, or
+  `AGENTIC_ORG_HIERARCHY_JSON`) before the parser detail.
+- `runAgentCliMain` uses the typed loaders while preserving shutdown behavior and the existing
+  `agent CLI setup failed:` user-visible feedback line.
+
+### Proof boundary
+
+This is a CLI setup-contract hardening slice, not a new in-cluster state transition. No new KIND
+runner was added because the behavior is pure env parsing and cycle-input construction; the
+production KIND proofs that execute the CLI still exercise the same `runAgentCliMain` boundary.
+
+### Verification
+
+Focused tests passed with the full agentic-org test harness: **1203 tests, 1196 pass, 0 fail,
+7 skipped**. `npm run typecheck` passed.

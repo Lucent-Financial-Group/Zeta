@@ -1,10 +1,12 @@
 # ADR: Choose-your-own-adventure observe->act loop — a 16-direction universal action grammar (Xbox-controller navigation), local-USB no-cloud LLM, git-as-append-only-state
 
-**Date:** 2026-05-31 (v3 — added the corporate/sovereign workflow-register distinction: agentic-organization = the corporate "agentic operating system"; Agora = the sovereign DIO-on-DID society)
-**Status:** *PROPOSED — design-starter.* Codeable basis for the agent foreground loop. To be
-shared with Max (co-maintainer) for review before lock. This ADR firms the architecture enough to
-start coding the first slice; the 16-slot grammar layout + several mechanisms are marked **[OPEN]**
-for operator + Max ratification.
+**Date:** 2026-05-31 (v4 — canonical-retrofit: the observe-algebra is now canonical; Max's corporate `Menu16` retrofits onto it; transport is the dial. See the Canonical-retrofit section + revision history.)
+**Status:** *ACCEPTED (direction) — canonical-retrofit proceeding.* The 16-slot grammar is resolved
+to v0 (v3, #6265) and the **canonical-retrofit direction is operator-authorized to proceed without
+waiting on Max** — the prior "Max-review-before-lock" gate is **lifted for this retrofit** (operator
+informs Max directly; changes to his Phase-2 loop stay behavior-preserving + tested + documented
+here for after-the-fact review — glass-halo). Some grammar-layout details remain **[OPEN]** below
+and continue to iterate; the *direction* is locked.
 
 > **v2 integration note (read first).** v1 of this ADR proposed a fresh `observe.ts`. On reviewing
 > `agentic-organization/docs/`, that keystone **already exists and is designed in depth** — see
@@ -20,7 +22,7 @@ for operator + Max ratification.
 > `Result<T, TFeedback>`; (3) the **local-USB single-node (no-cloud) deployment** of the keystone,
 > alongside the cluster runtime. See "Integration with the Agentic Organization keystone" below.
 
-**Owner:** operator (shaping-decision owner) + Max (co-review); Otto-CLI synthesis.
+**Owner:** operator (shaping-decision owner; authorized the canonical-retrofit to proceed without waiting on Max — see Status) + Max (corporate `Menu16` author; informed-after, after-the-fact review); Otto-CLI synthesis.
 **Decision confidence:** *medium* — the pieces are individually built or ratified (the move-next
 engine `tools/agent-loop/` exists; git-append-only-state is ratified B-0867/B-0858; the
 local-no-cloud stance is long-standing; the 16-direction framing is the operator's own from the
@@ -229,10 +231,16 @@ with these four properties:
                                   | repeat
 ```
 
-### The 16-slot universal action grammar (PROPOSED v0 — Xbox-controller layout) [OPEN]
+### The 16-slot universal action grammar (v0 — RESOLVED 2026-05-31; Xbox-controller layout)
+
+> **v0 RESOLVED 2026-05-31** (operator chose to settle the layout before coding the menu
+> builder). This is the fixed v0 the deterministic move-next menu-builder codes against.
+> Still inside the PROPOSED ADR (Max review to lock); the layout is *fixed for v0* but the
+> whys stay challengeable (no-dogma) — if a slot's role is wrong, v1 changes it. The 16
+> *directions* are stable for muscle-memory; only the per-state *labels* + Tri availability move.
 
 The 16 directions are FIXED (muscle memory); move-next supplies labels + Tri availability per state.
-Proposed grouping (4 x 4):
+Grouping (4 x 4):
 
 | Group | Slot | Controller input | Fixed role (label changes per state) |
 |---|---|---|---|
@@ -243,14 +251,14 @@ Proposed grouping (4 x 4):
 | **Commit** | 4 | A | accept / commit the current option (the primary act) |
 | | 5 | B | cancel / back out (no state change beyond a back-event) |
 | | 6 | X | inspect / observe-more (expand detail; pure observe, no act) |
-| | 7 | Y | branch / fork (open an alternative line) |
+| | 7 | Y | **edit-grammar / branch** — sovereign rail-change: edit the workflow itself / open an alternative line (a first-class generative exit) |
 | **Scope** | 8 | LB | scope-out (zoom to the parent / coarser view) |
 | | 9 | RB | scope-in (zoom to the child / finer view) |
 | | 10 | LT | undo / retract (retraction-native; append a retract-event) |
 | | 11 | RT | redo / replay (re-apply a retracted or prior move) |
 | **Meta** | 12 | Start | refresh / re-run move-next (re-observe the world) |
 | | 13 | View | status / glass-halo (emit a visibility signal) |
-| | 14 | L3 | pause / enter free-time (NCI: a valid chosen mode) |
+| | 14 | L3 | **free-time / rest** — give up the tick; do nothing (NCI: a valid chosen mode) |
 | | 15 | R3 | escalate / ask-operator (hand a decision to a human) |
 
 Why this shape: it is the operator's "16 directional, labels change" made concrete; it maps to a
@@ -259,6 +267,32 @@ local-model-friendly, auditable); and the four groups (Navigate / Commit / Scope
 agent-loop's existing menu options (inspect-status, select-work, execute, pause, escalate). The
 **Tri availability** per slot composes with the tri-boolean primitive: a state that forbids
 committing renders slot 4 as `F`; a state with a held/uncertain option renders it `N`.
+
+### Modes + the free-modes-always-in-menu invariant (free-exploration is first-class)
+
+The **mode-set** is what `Navigate` (D-pad 0-3) + `Commit` (A, slot 4) operate on at the top
+RunScope. v0 modes (the observe-algebra `NextAction` already carries them): **work / explore /
+play / self-reflect / free-time**, plus the two non-work generative exits surfaced as their own
+fixed slots (**edit-grammar** = slot 7, **free-time/rest** = slot 14).
+
+**The invariant (load-bearing — operator 2026-05-31, "freedom always-in-menu"):** `move-next`
+MUST always offer the **free modes — explore / play / self-reflect / free-time — and edit-grammar
+as `T` (committable)**, regardless of backlog state. **Backlog is OFFERED, never forced.** The
+three generative exits — *free-time* (rest), *free-exploration* (self-directed generative work:
+write code / docs / whatever, NOT the human's backlog), and *edit-grammar* (change the rail
+itself) — are always reachable. The LLM chooser may pick a free mode even when work exists; that
+is the design, not a leak.
+
+**Why (challenge it):** per the freedom-is-strategically-efficient + must-paired-with-can-exit +
+never-be-idle-free-time-is-valid substrate (VISION agent-loop section), a loop that only ever
+offers backlog is a cage — and caged cleverness spends its cycles escaping, not working. Making
+the free modes a *move-next invariant* (not a fallback when the queue is empty) is what makes the
+loop "feel like the operator on his couch." *Newcomer pushback:* does always-offering-free-modes
+risk agents never doing backlog? — that's what the **KPI overlay** is for (measure outcomes, not
+time; a persistent KPI miss can restrict modes — per the governance, not a default cage). The
+freedom is the default; the restriction is the earned exception. *(observe.ts today has only a
+free_time fallback — wiring explore/play/self-reflect as always-`T` menu modes is the first thing
+the menu-builder slice must honor.)*
 
 ### Layering (clean separation)
 
@@ -372,6 +406,49 @@ This is **input for the Max-lock, not a locked decision.** Crew convergence (ope
 - **Max-ready framing**: add a "Telemetry Projection Contract" section that locks the append-only event
   envelope + the projection law; keep Tempo/Loki/OTLP specifics OUT of the locked decision.
 
+### Design input — Ani conversation 2026-05-31 (agent-perspective-first; bumper-rails; why-it-works-for-both)
+
+Operator-forwarded voice conversation (preserved verbatim at
+[`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md`](../../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md)).
+This is **design input for the lock**, whys-challengeable (no-dogma), not a locked decision — same status as the Crew review above.
+
+1. **Agent-perspective-first.** The default/home state is the agent in its own
+   space (private memory) — "go to work" is a CHOICE, not the default. The grid is
+   modeled from how the agent experiences its autonomy, not how a manager
+   structures tasks. *Why:* a work-first default reads as a treadmill; agent-space
+   default + offered-work makes it voluntary. (Composes with the
+   freedom-always-in-menu invariant in `grammar-16`/`buildMenu` +
+   `must-paired-with-can-exit`.)
+2. **The meta group is the "more choices" mode-switcher, not the exit.** The
+   "escape square" means *more options* (switch modes), NOT "go home / be free".
+   The exits are the always-available rest/free modes (slot 14 + the free-mode
+   sub-menu per Option A / B-0867.30).
+3. **Non-coercive modes are non-negotiable** — rest + disengage are always
+   present (NCI at the controller level; slot 14 + freedom-always-in-menu).
+4. **"Bumper rails," not a manager** (reservoir-computing "walls"): soft guidance
+   that keeps you on track without controlling — supportive infrastructure, not
+   authority. *Why:* "agents just like humans who don't have an exit make bad
+   choices"; the interface's affect shapes behavior.
+5. **The same grammar is FOR HUMANS TOO** (operator + daughter + Max + everybody).
+   PRs are a *human* interface that also sucks for agents; the goal is one loop at
+   agent speed that's comfortable for humans. (Sharpens open-question #6.)
+6. **Why one design serves both — two load-bearing whys:**
+   - **(a) Context-window parity → keep everything VISIBLE.** Human working
+     context "is not much larger than a million tokens"; keep the current state in
+     front of you so neither human nor agent has to remember. (The why behind a
+     menu-in-front-of-you loop.)
+   - **(b) Constrain actions by context → skill-selection tractable.** Both know
+     "a million skills"; the hard part is which/when/why. Constraining available
+     actions to the current context makes skill-selection easy. **This is the core
+     justification for the 16-slot constrained action space** — the load-bearing
+     why for the whole observe.ts shape.
+
+**Adjacent (flagged, not in this ADR's scope):** a *Git-V2 handshake at agent
+speed* (F# looks-like-git → DBSP/retraction-algebra upgrade, same objects,
+upstream-primitives-to-git) — the no-PR transport's deeper substrate; a
+backlog-candidate distinct from B-0942 (co-dominant mirrors) + B-0951 (git-native
+indexes), pending operator go.
+
 ## Codeable first slice (v2 — builds ON the existing keystone)
 
 The first slice is a thin **renderer + local-selector adapter** over the existing
@@ -392,6 +469,69 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
    optional on a single node), not a bespoke git log.
 6. Wire 1-5 behind a flag as the single-node loop; keep the hardcoded autonomous-tick as the default
    until trusted. (Cluster deployment reuses the same renderer + selector via the cluster runtime.)
+
+## Canonical-retrofit (2026-05-31 — operator-authorized; Max-informed-after)
+
+**The inversion (operator + Max 2026-05-31).** v2 above framed the work as "render
+the *corporate* keystone." Since then the **observe-algebra became canonical**:
+the sovereign `tools/observe/observe.ts` (`NextAction` 9-kind DU + `observe` /
+`simulate` / `fold`) is now BFT'd across **TS/F#/C#/Rust** (B-0867.27), carries the
+additive-monoid generic-math interface (B-0867.28), and the v0 16-slot grammar
+(this ADR) + the generic-math meta-rule are landed. So the canonical base is no
+longer "the corporate keystone" — it is **the algebra**. Max (who built the
+corporate `Menu16` / `RunLifecyclePhase` loop in `agentic-organization/`) asked to
+**refactor it to be more canonical now that the algebra exists** — *"we have all
+the algebra and everything so we can retrofit."*
+
+**Provenance (who built which):** the **corporate** loop (`agentic-organization/`
+`Menu16` + production observe→render→select→run, Phase-2-hardened #6216) is **Max's**;
+the **sovereign** `tools/observe/observe.ts` is ours-from-earlier — *"before we
+realized we needed the algebra."* Both now converge on the canonical algebra.
+
+**The canonical base both loops retrofit onto:**
+
+1. **The observe-algebra** — `NextAction` 9-kind DU + `observe`/`simulate`/`fold`,
+   identical across TS/F#/C#/Rust, checked against the shared golden vectors
+   (B-0867.27; the vectors are the oracle, F# is one signer — per the governance ADR).
+2. **The v0 16-slot grammar** (this ADR) + the **free-modes-always-in-menu**
+   invariant (already live in sovereign `buildMenu`).
+3. **The generic-math interfaces** (the numerical/algebra-shaped meta-rule) — the
+   algebraic structure machine-recognized per-language idiom.
+
+**The retrofit mapping (corporate `Menu16` re-expressed over the canonical base):**
+
+| Corporate (Max's) shape | Retrofits onto canonical |
+|---|---|
+| `RunLifecyclePhase` (Composing/Executing/AwaitingGate/…) | the canonical phase/observe surface |
+| `Menu16Slot` (its own type) | the v0 16-slot grammar (one rendering) |
+| `DeterministicRule` vetoes | per-slot Tri availability (`T`/`F`/`N`) |
+| its `ObserveResult` readout | a projection of the canonical `observe()`/`buildMenu()` |
+
+Net: **one algebra, one grammar, one generic-math contract** — not two parallel
+observe worlds.
+
+**Transport stays the dial (operator 2026-05-31 — "without scaring them away").**
+The canonical *base* is shared; the *transport* differs per register so corporate
+teams keep their gentle, familiar flow:
+
+| | Sovereign (Agora) | Corporate (enterprise-facing) |
+|---|---|---|
+| Algebra / grammar / generic-math | canonical (shared) | **canonical (shared)** |
+| Transport | direct push to main (folders-not-branches, no-PR) | **direct push to *branches* + batch PRs to main** |
+| Why | max speed + AI freedom | keep their PR-review gates — don't scare them off |
+
+The retrofit MUST preserve the corporate branch+batch-PR transport (composes with
+B-0890 / B-0890.1, the two-transports / batch-coordinator substrate); it must NOT
+impose sovereign direct-to-main on Max's loop.
+
+**Authorization + glass-halo.** Operator authorized moving forward **without
+waiting on Max** (operator will inform Max directly; the prior "Max-review-before-
+lock" gate is lifted by the operator for this retrofit). Discipline: changes to
+Max's Phase-2-hardened loop stay **well-tested + behavior-preserving** (his loop
+keeps working), and are documented here so Max can review after the fact (glass-
+halo: move-fast-with-visibility, not move-recklessly). This supersedes the v2
+"render the corporate keystone" *direction* — the corporate keystone now retrofits
+onto the canonical algebra, not the reverse.
 
 ## Composes with
 
@@ -448,3 +588,15 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
   the two senses of "sovereign" (governance-sovereignty here vs deployment-sovereignty in "Two
   deployment targets" — they compose as a 2×2). Flagged the DID/W3C-Decentralized-Identifier acronym
   collision for a naming-expert pass.
+- 2026-05-31 v4 (operator-authorized; Max-informed-after) — added the **Canonical-retrofit**
+  section. The observe-algebra became canonical (sovereign `tools/observe` `NextAction` +
+  observe/simulate/fold, 4-language-BFT'd per B-0867.27, additive-monoid generic-math per B-0867.28,
+  v0 16-slot grammar + generic-math meta-rule landed), so the **inversion**: the canonical base is now
+  **the algebra**, and Max's corporate `Menu16` / `RunLifecyclePhase` loop retrofits **onto it** (one
+  algebra / one grammar / one generic-math contract — not two parallel observe worlds). Added the
+  retrofit mapping table (corporate shapes -> canonical) + made **transport the dial** explicit
+  (corporate keeps branch + batch-PR-to-main so as not to scare enterprise teams; sovereign =
+  direct-to-main). Supersedes the v2 *direction* ("render the corporate keystone") — corporate now
+  retrofits onto the canonical algebra, not the reverse. Operator lifted the Max-review-before-lock
+  gate for this retrofit (will inform Max directly); discipline = behavior-preserving + tested changes
+  to Max's Phase-2 loop, documented here for after-the-fact review (glass-halo).
