@@ -1,6 +1,6 @@
 ---
 name: agent-experience-engineer
-description: Agent experience — audits persona cold-start cost, pointer drift, wake-up clarity, and notebook hygiene; proposes minimal friction fixes.
+description: Agent experience — audits cold-start cost, pointer drift, wake-up clarity, notebook hygiene; proposes friction fixes.
 record_source: "skill-creator, round 34"
 load_datetime: "2026-04-19"
 last_updated: "2026-04-21"
