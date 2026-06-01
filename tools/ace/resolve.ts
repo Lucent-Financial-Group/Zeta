@@ -43,6 +43,19 @@ export async function resolve(
   const walk = async (node: AcePackage, path: string[]): Promise<ResolveResult | null> => {
     for (const edge of node.manifest.dependencies ?? []) {
       const here = [...path, edge.name];
+      if (visiting.has(edge.name)) {
+        return { ok: false, reason: "cycle", detail: here.join(" → "), path: here };
+      }
+      const seen = byName.get(edge.name);
+      if (seen) {
+        if (seen.version !== edge.version) {
+          return { ok: false, reason: "version-skew", detail: `${edge.name} required at ${seen.version} (via ${seen.path.join(" → ")}) and ${edge.version} (via ${here.join(" → ")})`, path: here };
+        }
+        if (seen.pkgHash !== edge.package_hash) {
+          return { ok: false, reason: "tamper", detail: `${edge.name}@${edge.version} has two different package hashes`, path: here };
+        }
+        continue; // diamond dedup: same name+version+package_hash, already resolved
+      }
       let dep: AcePackage;
       try { dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage; }
       catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }

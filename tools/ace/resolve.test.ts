@@ -60,3 +60,24 @@ describe("resolve — basic", () => {
     if (r.ok) expect(r.order.map((p) => p.manifest.name)).toEqual(["B", "A", "root"]);
   });
 });
+
+describe("resolve — dedup", () => {
+  test("diamond (root->A->D, root->B->D, same D) installs D once", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const A = pkgOf("A", { "a.txt": "a" }, [{ pkg: D, url: "http://e/D" }]);
+    const B = pkgOf("B", { "b.txt": "b" }, [{ pkg: D, url: "http://e/D" }]);
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }, { pkg: B, url: "http://e/B" }]);
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D": D }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.order.filter((p) => p.manifest.name === "D").length).toBe(1);
+  });
+  test("distinct packages with identical files (different names) both resolve", async () => {
+    const files = { "same.txt": "identical" };
+    const X = pkgOf("X", files);
+    const Y = pkgOf("Y", files); // same files, different name => different package_hash
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: X, url: "http://e/X" }, { pkg: Y, url: "http://e/Y" }]);
+    const r = await resolve(root, fetchOf({ "http://e/X": X, "http://e/Y": Y }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.order.map((p) => p.manifest.name).sort()).toEqual(["X", "Y", "root"]);
+  });
+});
