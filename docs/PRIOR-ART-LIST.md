@@ -100,7 +100,23 @@ F# extraction backend audit. See`docs/research/liquidfsharp-findings.md`Path A a
   **Boost.Intrusive/Container** (allocation-aware containers →
   pooled hot-path), **Boost.Outcome** (`Result`-style → our
   `Result<T, TFeedback>`). Ideas-not-code; we own our interfaces
-  (`bcl-interface-boundary`).
+  (`bcl-interface-boundary`). **First-hand provenance** (Aaron
+  2026-06-01): used Boost at **MacVector** building DNA-sequencing +
+  visualization / bioinformatics software — so the "pull Boost" call is
+  from production experience with it, not a cold reference.
+- **NIST algorithms / standards** ⭐ — NIST reference algorithms +
+  standards as a primitive-correctness source (Aaron 2026-06-01: "we
+  used many NIST based algos on DNA and molecular simulation" at
+  MacVector). Distinct from the **NIST AI RMF / AI 100-2** entry below
+  (that's the adversarial-ML governance one). This is the
+  **numeric/scientific** NIST: FIPS crypto (SHA-2/3, AES — anchors our
+  `Blake3 / CRC32C / XxHash` + hashing roster), the NIST Statistical
+  Reference Datasets (StRD — golden-vector discipline for numeric
+  primitives, the same shape as our cross-oracle byte-diff), DSP /
+  numeric reference algorithms, and the molecular/DNA-sim algos Aaron
+  used. Prior art for **conformance-against-published-reference** — NIST
+  test vectors are exactly the "agree with the published oracle" pattern
+  our four-oracle model uses internally.
 
 ## AI / ML / adversarial-AI reading list
 
