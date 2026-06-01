@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Zeta.Core.CSharp;
 
@@ -76,17 +77,10 @@ public static class IndexedZSet
             }
         }
 
-        // Drop any group whose values are empty (a supplied-empty group, or one cancelled by merge).
-        var final = ImmutableArray.CreateBuilder<KeyGroup<TKey, TValue>>(live.Count);
-        foreach (var g in live)
-        {
-            if (!g.Values.IsEmpty)
-            {
-                final.Add(g);
-            }
-        }
-
-        return new IndexedZSet<TKey, TValue>(final.ToImmutable(), ck, cv);
+        // Drop any group whose values are empty (a supplied-empty group, or one cancelled by merge)
+        // — explicit Where filter, mirroring ZSet.Canonicalize's drop-zero (CodeQL quality, #6404).
+        return new IndexedZSet<TKey, TValue>(
+            live.Where(g => !g.Values.IsEmpty).ToImmutableArray(), ck, cv);
     }
 
     /// <summary>
