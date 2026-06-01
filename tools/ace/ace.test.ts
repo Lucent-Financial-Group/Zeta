@@ -837,6 +837,72 @@ describe("install --frozen (slice 5.3)", () => {
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
+
+  test("--frozen atomicity: a 2-node lock whose 2nd node fails verification installs NEITHER (verify-all-before-install-any)", async () => {
+    // Two inline nodes A,B. The lock pins A's real package_hash but B's bytes are TAMPERED after the
+    // lock is written, so B's package_hash no longer matches the pin. With sequential fetch+verify+install
+    // the first verified node (A) would already be on disk by the time B's pin check fails; the two-pass
+    // restructure verifies the WHOLE graph before any extract, so a B failure leaves A NOT installed.
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-atomic-"));
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
+    const bPath = join(dir, "B.json"); writeFileSync(bPath, JSON.stringify(B));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
+      { kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: packageHash(A as any) },
+      { kind:"inline" as const, name:"B", version:"1.0.0", url: bPath, package_hash: packageHash(B as any) },
+    ] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    // Build the lock directly so A is node[0] (verifies clean) and B is node[1] (will fail after tamper).
+    const lock = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
+      nodes: [
+        { name: "A", version: "1.0.0", url: aPath, package_hash: packageHash(A as any) },
+        { name: "B", version: "1.0.0", url: bPath, package_hash: packageHash(B as any) },
+      ],
+    };
+    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    // Tamper B's bytes AFTER the lock pinned B's package_hash -> B fails the pin check in pass 1.
+    const tamperedB = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"TAMPERED" }) }, files: { "b.txt":"TAMPERED" } };
+    writeFileSync(bPath, JSON.stringify(tamperedB));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-atomic-store-"));
+    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    // The load-bearing assertion: A (the first, fully-verifiable node) is NOT on disk -> verify-all-then-install.
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen store-collision: two nodes sharing a content_hash store key with different package_hash install NOTHING", async () => {
+    // Two distinct packages X,Y with IDENTICAL files -> identical content_hash (sha256 of files) but
+    // distinct manifests (name X vs Y) -> distinct package_hash. They collide on the content_hash store
+    // key. The frozen pass-1 byStoreKey guard (mirrored from the default-path preflight) must refuse
+    // before installing either, exactly like the default-path store-collision test.
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-collision-"));
+    const sharedFiles = { "same.txt": "identical" };
+    const X = { manifest: { format_version:1, name:"X", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
+    const Y = { manifest: { format_version:1, name:"Y", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
+    const xPath = join(dir, "X.json"); writeFileSync(xPath, JSON.stringify(X));
+    const yPath = join(dir, "Y.json"); writeFileSync(yPath, JSON.stringify(Y));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
+      { kind:"inline" as const, name:"X", version:"1.0.0", url: xPath, package_hash: packageHash(X as any) },
+      { kind:"inline" as const, name:"Y", version:"1.0.0", url: yPath, package_hash: packageHash(Y as any) },
+    ] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lock = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
+      nodes: [
+        { name: "X", version: "1.0.0", url: xPath, package_hash: packageHash(X as any) },
+        { name: "Y", version: "1.0.0", url: yPath, package_hash: packageHash(Y as any) },
+      ],
+    };
+    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-collision-store-"));
+    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
 });
 
 // ---- semver ranges + solver (slice 5.2) ----

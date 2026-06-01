@@ -520,7 +520,14 @@ export async function main(argv: readonly string[]): Promise<number> {
           return 1;
         }
         const trust = loadTrustStore();
-        // Replay each locked node: fetch → parse → verify pin + content_hash + signature + path-safety → install.
+        // PASS 1 (verify-all, install NOTHING) — mirrors the default-path preflight: fetch → parse →
+        // verify pin + content_hash + signature + path-safety + store-key collision across the WHOLE
+        // graph before any extract, so a verify failure on a later node cannot orphan earlier ones.
+        const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
+        // Seed the collision set with the root (already content_hash+signature verified above), so a
+        // locked node that shares the root's content_hash store key with a different package is caught.
+        byStoreKey.set(pkg.manifest.content_hash, packageHash(pkg));
+        const verified: AcePackage[] = []; // locked nodes in lock order; root installed separately
         for (const node of lf.nodes) {
           let nodeRaw: string;
           try { nodeRaw = (node.url.startsWith("http://") || node.url.startsWith("https://")) ? await (await fetch(node.url)).text() : readFileSync(node.url, "utf8"); }
@@ -535,6 +542,16 @@ export async function main(argv: readonly string[]): Promise<number> {
           const nv = verifySignature(np.manifest, trust);
           if (!nv.ok && nv.reason !== "no-signature") { console.error(`ace: install refused: ${nv.reason} for ${node.name}@${node.version}`); return 1; }
           if (!nv.ok && nv.reason === "no-signature" && !parsed.allowNoSignature) { console.error(`ace: install refused: unsigned ${node.name}@${node.version} (use --allow-no-signature)`); return 1; }
+          const nph = packageHash(np);
+          const prior = byStoreKey.get(np.manifest.content_hash);
+          if (prior !== undefined && prior !== nph) { console.error(`ace: install refused: store-collision — ${node.name}@${node.version} shares a content_hash store key with a different package`); return 1; }
+          byStoreKey.set(np.manifest.content_hash, nph);
+          verified.push(np);
+        }
+        // PASS 2 (install-all) — only after the full graph verifies: nodes in lock order, then root.
+        for (let i = 0; i < verified.length; i++) {
+          const np = verified[i]!;
+          const node = lf.nodes[i]!;
           const ir = installPackage(parsed.storePath, np);
           if (!ir.ok) { console.error(`ace: install refused: ${node.name}@${node.version}: ${ir.error}`); return 1; }
         }

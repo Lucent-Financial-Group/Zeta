@@ -30,7 +30,7 @@ Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust a
 | `keygen` | `bun tools/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
 | `sign` | `bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
 | `list` | `bun tools/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
-| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
+| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen] [--lockfile <path>]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
 | `verify` | `bun tools/ace/ace.ts verify <hash>` | Confirm an installed package is present |
 | `trust add` | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
 | `trust list` | `bun tools/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
