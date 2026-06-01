@@ -115,12 +115,14 @@ export function readEnvelopesFromGitRef(
 ): AgentBusEnvelope[] {
   let listing: string;
   try {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
     listing = execFileSync("git", ["ls-tree", "-r", "--name-only", ref, "--", root], { encoding: "utf-8" });
   } catch {
     return []; // ref or path absent (e.g. no bus folder yet)
   }
   const paths = listing.split("\n").filter((p) => p.endsWith(".json"));
   return collect(
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
     paths.map((path) => ({ path, json: execFileSync("git", ["show", `${ref}:${path}`], { encoding: "utf-8" }) })),
     cursor,
     recipient,
@@ -129,7 +131,8 @@ export function readEnvelopesFromGitRef(
 
 /** The next compound cursor = the last (newest) envelope's `<timestamp>|<id>`, else prior. */
 export function nextCursor(envs: readonly AgentBusEnvelope[], prior?: string): string | undefined {
-  return envs.length > 0 ? envelopeCursor(envs[envs.length - 1]!) : prior;
+  const last = envs.at(-1);
+  return last ? envelopeCursor(last) : prior;
 }
 
 /**
@@ -160,6 +163,7 @@ if (import.meta.main) {
   const ref = "origin/main";
   if (fetch) {
     try {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path
       execFileSync("git", ["fetch", "origin", "main"], { stdio: "inherit" });
     } catch {
       console.warn("agent-bus: git fetch failed (offline?) — reading last-known origin/main");

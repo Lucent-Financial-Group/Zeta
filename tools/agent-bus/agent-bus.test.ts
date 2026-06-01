@@ -146,7 +146,8 @@ describe("readEnvelopesSince", () => {
     writeEnvelope(env({ id: A1, to: "otto-cli" }), ROOT, at);
     writeEnvelope(env({ id: "a2".padStart(32, "0"), to: "otto-windows" }), ROOT, at);
     writeEnvelope(env({ id: A3, to: "*" }), ROOT, at);
-    expect(readEnvelopesSince(ROOT, undefined, "otto-cli").map((e) => e.id).sort()).toEqual([A1, A3].sort());
+    const cmp = (a: string, b: string) => a.localeCompare(b);
+    expect(readEnvelopesSince(ROOT, undefined, "otto-cli").map((e) => e.id).sort(cmp)).toEqual([A1, A3].sort(cmp));
   });
 
   it("skips malformed JSON (best-effort) without throwing", () => {
@@ -178,7 +179,7 @@ describe("serializeEnvelope + makeEnvelope", () => {
   it("serialize is stable (pretty + trailing newline)", () => {
     const s = serializeEnvelope(env());
     expect(s.endsWith("}\n")).toBe(true);
-    expect(JSON.parse(s).id).toBe(env().id);
+    expect((JSON.parse(s) as AgentBusEnvelope).id).toBe(env().id);
   });
   it("makeEnvelope builds a MessageEnvelope (Bus id, timestamp+expiresAt, top-level topic/payload)", () => {
     const e = makeEnvelope("otto-cli", "*", { topic: "heartbeat", payload: { status: "alive" } }, 1_700_000_000_000);

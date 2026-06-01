@@ -52,8 +52,17 @@ const pad2 = (n: number): string => String(n).padStart(2, "0");
  * otto-windows) + 32-hex ids, which already satisfy this; the allowlist makes the
  * "Windows-safe" claim actually hold for any future caller (Copilot #6283).
  */
+// Windows reserved device names (case-insensitive, with or without an extension) — invalid
+// as filenames on Windows even though they pass the char allowlist (Copilot #6283).
+const WINDOWS_RESERVED_NAME = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\.|$)/i;
+
 export function isSafeSegment(seg: string): boolean {
-  return /^[A-Za-z0-9._-]+$/.test(seg) && !seg.startsWith(".") && !seg.includes("..");
+  return (
+    /^[A-Za-z0-9._-]+$/.test(seg) &&
+    !seg.startsWith(".") &&
+    !seg.includes("..") &&
+    !WINDOWS_RESERVED_NAME.test(seg)
+  );
 }
 
 /**
