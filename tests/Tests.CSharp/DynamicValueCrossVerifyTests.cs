@@ -10,11 +10,12 @@ namespace Zeta.Tests.CSharp;
 
 /// <summary>
 /// DynamicValue cross-language byte-lock — the C# oracle RE-GROUNDED against the shared seed
-/// (<c>src/Core.TypeScript/dynamic-value/golden-vectors.json</c>). Seed-first (Aaron 2026-06-01:
-/// "we are growing code from the seeds"): the seed is the canonical DATA; this proves the C#
-/// canonical encoder AGREES on it (<c>ToCanonicalJson(value) == json</c>) for every locked vector.
-/// Passing == agreeing with the TS/F# oracles. v1 locks null/bool/int/string/array/object; Float +
-/// Bytes are DEFERRED (not in the locked vectors). "The compilers don't lie."
+/// (<c>src/Core.TypeScript/dynamic-value/golden-vectors.json</c>). Seed-first (the maintainer
+/// 2026-06-01: "we are growing code from the seeds"): the seed is the canonical DATA; this proves
+/// the C# canonical encoder AGREES on it (<c>ToCanonicalJson(value)</c> is <c>Ok json</c>) for
+/// every locked vector. Passing == agreeing with the TS/F# oracles. v1 locks
+/// null/bool/int/string/array/object; Float + Bytes are DEFERRED (not in the locked vectors).
+/// "The compilers don't lie."
 /// </summary>
 public class DynamicValueCrossVerifyTests
 {
@@ -57,6 +58,12 @@ public class DynamicValueCrossVerifyTests
                         .Select(pair =>
                         {
                             JsonElement[] parts = pair.EnumerateArray().ToArray();
+                            if (parts.Length != 2)
+                            {
+                                throw new InvalidOperationException(
+                                    $"seed object pair must have exactly 2 elements [key, value], got {parts.Length}");
+                            }
+
                             string key = parts[0].GetString()
                                 ?? throw new InvalidOperationException("object key is not a string");
                             return new KeyValuePair<string, DynamicValue>(key, BuildValue(parts[1]));
@@ -81,10 +88,22 @@ public class DynamicValueCrossVerifyTests
             string name = Str(v, "name");
             DynamicValue value = BuildValue(v.GetProperty("value"));
             string expected = Str(v, "json");
-            string actual = DynamicValues.ToCanonicalJson(value);
-            if (!string.Equals(actual, expected, StringComparison.Ordinal))
+
+            switch (DynamicValues.ToCanonicalJson(value))
             {
-                failures.Add($"{name}: expected {expected} but got {actual}");
+                case Result<string, EncodeError>.Ok ok:
+                    if (!string.Equals(ok.Value, expected, StringComparison.Ordinal))
+                    {
+                        failures.Add($"{name}: expected {expected} but got {ok.Value}");
+                    }
+
+                    break;
+                case Result<string, EncodeError>.Err err:
+                    failures.Add($"{name}: expected {expected} but got Err {err.Error}");
+                    break;
+                default:
+                    failures.Add($"{name}: unexpected Result shape");
+                    break;
             }
         }
 

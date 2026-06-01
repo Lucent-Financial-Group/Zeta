@@ -192,11 +192,64 @@ public static class DynamicValues
     /// <see cref="InvalidOperationException"/>.</summary>
     /// <param name="value">the value to encode.</param>
     /// <returns>the canonical JSON text.</returns>
-    public static string ToCanonicalJson(DynamicValue value)
+    /// <summary>Canonical JSON encoding — the byte-lock target (the shared seed is
+    /// <c>src/Core.TypeScript/dynamic-value/golden-vectors.json</c>). Minified; <see
+    /// cref="DynamicValue.Object"/> keys in INSERTION order — NOT sorted, because Object is
+    /// order-significant, so a key-sorting canonical form (JCS / RFC 8785 / CBOR §4.2) would be
+    /// lossy / non-bijective; <see cref="DynamicValue.Int"/> = bare exact decimal (invariant);
+    /// strings per RFC 8259 minimal escaping. v1 locks null/bool/int/string/array/object;
+    /// <see cref="DynamicValue.Float"/> and <see cref="DynamicValue.Bytes"/> are DEFERRED (no
+    /// canonical JSON form yet) and surfaced as <see cref="Result{T, TError}.Err"/> data per the
+    /// Result-over-exception hard rule (AGENTS.md), never thrown.</summary>
+    /// <param name="value">the value to encode.</param>
+    /// <returns><see cref="Result{T, TError}.Ok"/> with the canonical JSON, or
+    /// <see cref="Result{T, TError}.Err"/> carrying the deferred-variant reason.</returns>
+    public static Result<string, EncodeError> ToCanonicalJson(DynamicValue value)
     {
+        ArgumentNullException.ThrowIfNull(value);
+
+        if (FirstDeferred(value) is EncodeError deferred)
+        {
+            return new Result<string, EncodeError>.Err(deferred);
+        }
+
         var sb = new StringBuilder();
         WriteCanonical(sb, value);
-        return sb.ToString();
+        return new Result<string, EncodeError>.Ok(sb.ToString());
+    }
+
+    // The first deferred variant (Float/Bytes) anywhere in the tree, or null if fully encodable.
+    private static EncodeError? FirstDeferred(DynamicValue value)
+    {
+        switch (value)
+        {
+            case DynamicValue.Float:
+                return EncodeError.FloatDeferred;
+            case DynamicValue.Bytes:
+                return EncodeError.BytesDeferred;
+            case DynamicValue.Array a:
+                foreach (var item in a.Items)
+                {
+                    if (FirstDeferred(item) is EncodeError e)
+                    {
+                        return e;
+                    }
+                }
+
+                return null;
+            case DynamicValue.Object o:
+                foreach (var pair in o.Pairs)
+                {
+                    if (FirstDeferred(pair.Value) is EncodeError e)
+                    {
+                        return e;
+                    }
+                }
+
+                return null;
+            default:
+                return null;
+        }
     }
 
     private static void WriteCanonical(StringBuilder sb, DynamicValue value)
@@ -245,26 +298,24 @@ public static class DynamicValues
 
                 sb.Append('}');
                 break;
-            case DynamicValue.Float:
-                throw new InvalidOperationException(
-                    "DynamicValue.Float canonical JSON is DEFERRED (no canonical shortest-float in plain JSON); locks under CBOR or a tagged-JSON convention");
-            case DynamicValue.Bytes:
-                throw new InvalidOperationException(
-                    "DynamicValue.Bytes canonical JSON is DEFERRED (no native JSON byte type); locks under CBOR or a tagged-JSON convention");
             default:
-                throw new InvalidOperationException($"unknown DynamicValue shape: {value.Type}");
+                // Unreachable: null is guarded, Float/Bytes are caught by FirstDeferred.
+                throw new InvalidOperationException(
+                    $"WriteCanonical reached a non-locked variant ({value.Type}); should be pre-checked by FirstDeferred");
         }
     }
 
     // JSON string literal (incl. surrounding quotes), RFC 8259 minimal escaping: '"' and '\' and
     // control chars U+0000..U+001F (short forms where they exist, else \u00XX lowercase-hex); '/'
-    // is NOT escaped; all else (incl. non-ASCII / astral surrogate pairs, by UTF-16 code unit)
-    // emitted raw.
+    // is NOT escaped; valid surrogate PAIRS emit the astral char raw, but LONE surrogates are
+    // \u-escaped (a raw lone surrogate is invalid Unicode + non-bijective under UTF-8 byte-lock);
+    // all other characters emitted raw.
     private static void AppendEscaped(StringBuilder sb, string s)
     {
         sb.Append('"');
-        foreach (char ch in s)
+        for (int i = 0; i < s.Length; i++)
         {
+            char ch = s[i];
             switch (ch)
             {
                 case '"':
@@ -291,6 +342,19 @@ public static class DynamicValues
                 default:
                     if (ch < 0x20)
                     {
+                        sb.Append("\\u");
+                        sb.Append(((int)ch).ToString("x4", CultureInfo.InvariantCulture));
+                    }
+                    else if (char.IsHighSurrogate(ch) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
+                    {
+                        // valid surrogate pair -> emit the astral char raw
+                        sb.Append(ch);
+                        sb.Append(s[i + 1]);
+                        i++;
+                    }
+                    else if (char.IsSurrogate(ch))
+                    {
+                        // lone surrogate -> escape (raw would be invalid Unicode / non-bijective)
                         sb.Append("\\u");
                         sb.Append(((int)ch).ToString("x4", CultureInfo.InvariantCulture));
                     }
