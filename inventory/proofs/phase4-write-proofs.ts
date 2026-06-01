@@ -62,11 +62,11 @@ async function rest(
   };
   if (opts.body !== undefined) headers["Content-Type"] = "application/json";
   if (opts.prefer) headers["Prefer"] = opts.prefer;
-  const res = await fetch(`${URL}/rest/v1/${path}`, {
-    method,
-    headers,
-    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
-  });
+  // Build init incrementally so `body` is ABSENT (not `undefined`) on GET —
+  // required under the repo tsconfig's exactOptionalPropertyTypes.
+  const init: RequestInit = { method, headers };
+  if (opts.body !== undefined) init.body = JSON.stringify(opts.body);
+  const res = await fetch(`${URL}/rest/v1/${path}`, init);
   let body: unknown;
   const text = await res.text();
   try {

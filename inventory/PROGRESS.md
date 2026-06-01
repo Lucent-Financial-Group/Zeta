@@ -773,11 +773,12 @@ site, like every gate. RLS unchanged: no new policy, no `USING(true)`, no GRANT/
 
 Two throwaway proof items remain, both ARCHIVED (client has no DELETE policy by design):
 
-- **id=212** (broken-baseline run), **id=213** (fixed run).
+- **id=212** (broken-baseline run), **id=213** (fixed run), **id=214** (fixed re-run after a
+  tsc `exactOptionalPropertyTypes` fix to the driver — same all-PASS result).
 
 Remove in the SQL editor like the Phase-1 proof item:
 `alter table public.change_log disable trigger change_log_immutable;`
-`delete from public.change_log where item_id in (212,213);`
-`delete from public.items where id in (212,213);`
+`delete from public.change_log where item_id in (212,213,214);`
+`delete from public.items where id in (212,213,214);`
 `alter table public.change_log enable trigger change_log_immutable;`
 (The items id sequence is unaffected — next auto id continues after the current max.)
