@@ -199,6 +199,16 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
       coauthorFor(envelope.by),
     ].join("\n");
     run(["commit", "--no-verify", "-q", "-m", msg, "--", gitPath]);
+    // After this point the commit exists on local main. If the push never lands we MUST undo it
+    // (soft, so the event file is preserved for a later retry) — otherwise local main is left
+    // ahead of origin/main and the ahead-check wedges every future append (Codex #6312 P2).
+    const undoLocalCommit = (): void => {
+      try {
+        run(["reset", "--soft", "HEAD~1"]); // un-commit; keep the event file staged for retry
+      } catch {
+        /* nothing to undo — fine */
+      }
+    };
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         run(["push", "origin", "HEAD:main"]);
@@ -207,19 +217,21 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
         try {
           run(["pull", "--rebase", "origin", "main"]);
         } catch {
-          // Leave the checkout clean: abort the in-progress rebase (best-effort) so the
-          // next append / any unrelated git op isn't blocked. Result-only contract
-          // means we never leave a dangling rebase behind (Codex #6312 P2).
+          // Leave the checkout clean: abort the in-progress rebase + undo our local commit
+          // (best-effort) so neither a dangling rebase nor an ahead local main blocks the next
+          // append. Result-only contract: a failed append leaves no local residue (Codex #6312 P2).
           try {
             run(["rebase", "--abort"]);
           } catch {
             /* no rebase in progress to abort — fine */
           }
-          return { ok: false, reason: "push rejected and rebase failed (peer contention); rebase aborted" };
+          undoLocalCommit();
+          return { ok: false, reason: "push rejected and rebase failed (peer contention); local commit undone" };
         }
       }
     }
-    return { ok: false, reason: "push failed after 3 rebase-retry attempts" };
+    undoLocalCommit();
+    return { ok: false, reason: "push failed after 3 rebase-retry attempts; local commit undone" };
   } catch (err) {
     return { ok: false, reason: `git commit failed: ${(err as Error).message}` };
   }
