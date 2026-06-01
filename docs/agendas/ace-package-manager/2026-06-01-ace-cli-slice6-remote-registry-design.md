@@ -147,7 +147,8 @@ Pure-where-possible; the only effectful surfaces are `fetch` + cache file I/O.
 - `fetchRemoteIndex(remote, trustStore, opts): Promise<{ entries: Registry } | { error: string } | { skipped: string }>`
   — per-registry orchestration:
   1. read cache meta;
-  2. if `opts.offline` → if cached body present, `verifyIndex` (skip freshness) → entries;
+  2. if `opts.offline` → if cached body present, `verifyIndex` (skip **past** max-staleness
+     only; **future-skew, sig + anti-rollback all still enforced**) → entries;
      else `{ skipped }` (+ warn);
   3. else conditional GET (`If-None-Match: etag`, `If-Modified-Since: last_modified`):
      - **304** → use cached body → `verifyIndex` (full gates) → entries;
@@ -203,7 +204,7 @@ install (graph): read root → verify → loadRegistries(offline?)              
 | --- | --- |
 | Remote unreachable, cache present | Use cache + warn |
 | Remote unreachable, no cache | Skip remote + warn (continue local-only) |
-| `--offline`, cache present | Use cache; **skip freshness**; sig + anti-rollback still enforced |
+| `--offline`, cache present | Use cache; **skip past max-staleness only** (future-skew still enforced); sig + anti-rollback still enforced |
 | `--offline`, no cache | Skip remote + warn |
 | `304 Not Modified` | Use cached body (full gates) |
 | Index parse / shape / `format_version ≠ 1` | **Hard refusal** (named registry) |
