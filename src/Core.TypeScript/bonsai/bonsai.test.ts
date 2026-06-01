@@ -201,4 +201,15 @@ describe("Bonsai-subset — nesting-depth contract (shared MaxDepth, bounded)", 
   it("serialize declines an expression past the shared MaxDepth with TooDeep", () => {
     expect(errKind(serialize(buildDeepChain(BONSAI_MAX_DEPTH + 50)))).toBe("TooDeep");
   });
+
+  it("parse declines a deeply-nested document with TooDeep during parsing (bounded recursion)", () => {
+    // Build an over-MaxDepth JSON document by hand (can't via serialize — it
+    // declines first); parse must decline TooDeep via the parseNode depth counter,
+    // not recurse to a stack-overflow before the serialize guard.
+    let node = '{"kind":"const","value":{"t":"int","v":1}}';
+    for (let i = 0; i < BONSAI_MAX_DEPTH + 50; i++) {
+      node = `{"kind":"binary","op":"add","left":${node},"right":{"kind":"const","value":{"t":"int","v":0}}}`;
+    }
+    expect(errKind(parse(`{"v":1,"expr":${node}}`))).toBe("TooDeep");
+  });
 });

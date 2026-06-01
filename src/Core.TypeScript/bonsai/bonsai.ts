@@ -252,8 +252,14 @@ function parseConst(n: unknown): ConstValue {
   }
 }
 
-/** Rebuild an `Expr` from parsed JSON — strict (validates shape, kind, fields). */
-function parseNode(n: unknown): Expr {
+/** Rebuild an `Expr` from parsed JSON — strict (validates shape, kind, fields).
+ * Carries a depth counter so a deeply-nested input declines `TooDeep` *during*
+ * parsing — bounding recursion (no stack-overflow / RangeError escaping the
+ * Result) rather than relying only on the after-the-fact serialize guard.
+ * (F#'s parseNode is bounded by its JsonDocument MaxDepth; JS's JSON.parse has no
+ * such bound, so the counter must be explicit here.) */
+function parseNode(depth: number, n: unknown): Expr {
+  if (depth > BONSAI_MAX_DEPTH) throw new BonsaiFail({ kind: "TooDeep", limit: BONSAI_MAX_DEPTH });
   const o = asObject(n, "node");
   const kind = asString(o.kind, "node.kind");
   switch (kind) {
@@ -265,14 +271,24 @@ function parseNode(n: unknown): Expr {
       return {
         kind: "lambda",
         params: asArray(o.params, "lambda.params").map((p) => asString(p, "lambda.params[]")),
-        body: parseNode(o.body),
+        body: parseNode(depth + 1, o.body),
       };
     case "binary":
-      return { kind: "binary", op: asBinOp(o.op, "binary.op"), left: parseNode(o.left), right: parseNode(o.right) };
+      return {
+        kind: "binary",
+        op: asBinOp(o.op, "binary.op"),
+        left: parseNode(depth + 1, o.left),
+        right: parseNode(depth + 1, o.right),
+      };
     case "call":
-      return { kind: "call", fn: asString(o.fn, "call.fn"), args: asArray(o.args, "call.args").map(parseNode) };
+      return { kind: "call", fn: asString(o.fn, "call.fn"), args: asArray(o.args, "call.args").map((a) => parseNode(depth + 1, a)) };
     case "cond":
-      return { kind: "cond", test: parseNode(o.test), then: parseNode(o.then), else: parseNode(o.else) };
+      return {
+        kind: "cond",
+        test: parseNode(depth + 1, o.test),
+        then: parseNode(depth + 1, o.then),
+        else: parseNode(depth + 1, o.else),
+      };
     default:
       throw new BonsaiFail({ kind: "UnknownKind", nodeKind: kind });
   }
@@ -299,7 +315,7 @@ export function parse(s: string): Result<Expr, BonsaiFeedback> {
     const d = asObject(doc, "document");
     if (typeof d.v !== "number") return err({ kind: "MalformedJson", message: "document v is not a number" });
     if (d.v !== BONSAI_VERSION) return err({ kind: "UnsupportedVersion", found: d.v, expected: BONSAI_VERSION });
-    const result = parseNode(d.expr);
+    const result = parseNode(1, d.expr);
     // Canonical-only guard: the round-trip must reproduce the input byte-for-byte
     // (serialize also re-checks depth + safe-int, so an over-deep input declines here).
     const round = serialize(result);
