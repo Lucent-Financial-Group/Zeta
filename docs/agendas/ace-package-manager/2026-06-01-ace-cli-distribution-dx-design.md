@@ -1,6 +1,8 @@
 # Ace CLI — distribution + DX design (2026-06-01)
 
-> **Status:** design / pre-implementation. Synthesised from a product-team round
+> **Status:** design APPROVED; the two open decisions RESOLVED by operator 2026-06-01
+> (install.sh-sibling first; skill-installer-only MVP) -> next is an implementation plan.
+> Synthesised from a product-team round
 > (pm2 + developer-experience-engineer + agent-experience-engineer), the
 > bun-hypothesis WebSearch, and the bus↔Ace substrate synthesis (#6284). Authored
 > per operator "write the spec" 2026-06-01. Lives next to
@@ -108,18 +110,17 @@ kept alive, **gates nothing in the MVP**. The shared-fold-engine refactor routes
 through product-team agreement (it touches the bus that's another surface's active
 work).
 
-## 8. Open decisions for the operator
+## 8. Decisions (RESOLVED — operator 2026-06-01)
 
-1. **[DECISION] Primary human audience** — devs who've already run `install.sh`
-   (Node guaranteed → `bunx ace` alone suffices, ship `ace` as a sibling of
-   `agent-clis.sh`), *or* cold agent-store devs (the bare-machine Node/bun
-   bootstrap becomes a first-class headline)? *Recommendation: both, but ship the
-   `install.sh`-sibling path first (smallest), add the standalone bootstrap second.*
-2. **[DECISION] MVP scope vs the manifests** — is MVP-Ace a *skill installer* only,
-   or already the layer that drives the `tools/setup/manifests/` (apt/brew/mise)
-   entries? *Recommendation: skill-installer first; manifest-driving is a later
-   slice (keeps MVP beside `manifests/`, not on top of it).*
-3. **(RESOLVED) Runtime** — Node-floor portable, not bun-only (§3).
+1. **Primary human audience → `install.sh`-sibling first.** `install.sh` ends by
+   making `ace` available (one `bun install -g ace` line, sibling to
+   `agent-clis.sh` / `one-liner-tools.sh`), so anyone who ran the Zeta installer
+   gets `ace` for free (Node guaranteed present). The standalone bare-machine
+   `bunx` / Node-bootstrap path is a **later slice**, not the MVP headline.
+2. **MVP scope → skill-installer ONLY.** MVP-Ace installs skills/packages; it does
+   **not** yet drive the `tools/setup/manifests/` (apt/brew/mise) layer — it sits
+   *beside* `manifests/`, not on top. The manifest-driving layer is a later slice.
+3. **Runtime → Node-floor portable, not bun-only** (§3); repo on Node 24 (#6290).
 
 ## 9. Maps onto existing work — no new architecture
 
@@ -144,10 +145,11 @@ work).
 
 ## 11. Next step
 
-On operator answers to the two **[DECISION]** items, this transitions to an
-implementation plan (writing-plans) for: the `.claude/skills/ace/` surface +
-`bunx`/bootstrap channel + the Node-floor portability + install-time provenance —
-all over the existing `tools/ace/ace.ts` core.
+Decisions resolved (§8) -> implementation plan (writing-plans) for the **MVP**:
+the `.claude/skills/ace/` surface + the `install.sh`-sibling `bun install -g ace`
+line + install-time provenance — all over the existing `tools/ace/ace.ts` core,
+Node-floor portable. The standalone `bunx`/bootstrap channel + the manifest-driving
+layer are explicitly later slices, NOT in the MVP plan.
 
 ## Provenance / sources
 
