@@ -642,8 +642,8 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
 
   const usbUuid = getPartitionUuid(espPart);
   if (!usbUuid) {
-    dumpDiagnostics(`diskutil info ${espPart} did not report a Volume UUID`);
-    throw new Error(`could not resolve USB UUID for ${espPart}`);
+    dumpDiagnostics(`diskutil info ${espPart} did not report a FAT Volume UUID`);
+    throw new Error(`could not resolve FAT USB UUID for ${espPart}`);
   }
 
   const target = join(mountPoint, "zeta-creds.enc");
@@ -684,6 +684,11 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
   } catch (e) {
     dumpDiagnostics(`sudo tee ${target} failed`);
     throw new Error(`sudo tee ${target} failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
+  try {
+    execFileSync("sudo", ["chmod", "600", target], { stdio: "ignore" });
+  } catch {
+    process.stdout.write(`B-0852: chmod 600 not honored for ${target}; continuing because some FAT mounts ignore POSIX modes\n`);
   }
   process.stdout.write(`B-0852: wrote encrypted credential blob to ${target} (USB UUID ${usbUuid})\n`);
 }

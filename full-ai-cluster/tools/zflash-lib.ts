@@ -73,14 +73,13 @@ export function parseFatPartitionFromDiskutilList(diskutilOutput: string): strin
  * the USB-bound credential KDF input.
  *
  * Prefer `Volume UUID` because that matches Linux `blkid -s UUID` for the
- * FAT filesystem that zeta-install.sh records at install time. Fall back to
- * `Disk / Partition UUID` for diskutil variants that omit the volume field.
+ * FAT filesystem that zeta-install.sh records at install time. Do not fall
+ * back to the GPT partition UUID; Linux restore uses the FAT filesystem UUID.
  */
 export function parseUuidFromDiskutilInfo(diskutilOutput: string): string | null {
   const volume = diskutilOutput.match(/^\s*Volume UUID:\s+(.+)$/m)?.[1]?.trim();
-  if (volume) return volume;
-  const partition = diskutilOutput.match(/^\s*Disk \/ Partition UUID:\s+(.+)$/m)?.[1]?.trim();
-  return partition && partition.length > 0 ? partition : null;
+  if (!volume) return null;
+  return /^[0-9a-fA-F]{4}-[0-9a-fA-F]{4}$/.test(volume) ? volume : null;
 }
 
 export interface CommandPlan {

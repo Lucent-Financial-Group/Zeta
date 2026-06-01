@@ -201,10 +201,16 @@ describe("parseUuidFromDiskutilInfo", () => {
     expect(parseUuidFromDiskutilInfo(out)).toBe("1234-ABCD");
   });
 
-  test("falls back to Disk / Partition UUID when Volume UUID is absent", () => {
+  test("rejects Disk / Partition UUID fallback when Volume UUID is absent", () => {
     const out = `   Device Identifier:         disk6s2
    Disk / Partition UUID:     DEADBEEF-0000-1111-2222-333344445555`;
-    expect(parseUuidFromDiskutilInfo(out)).toBe("DEADBEEF-0000-1111-2222-333344445555");
+    expect(parseUuidFromDiskutilInfo(out)).toBe(null);
+  });
+
+  test("rejects GUID-shaped Volume UUID for USB-bound credential KDF", () => {
+    const out = `   Device Identifier:         disk6s2
+   Volume UUID:               DEADBEEF-0000-1111-2222-333344445555`;
+    expect(parseUuidFromDiskutilInfo(out)).toBe(null);
   });
 
   test("returns null when no UUID field is present", () => {
