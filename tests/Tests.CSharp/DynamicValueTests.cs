@@ -158,4 +158,33 @@ public class DynamicValueTests
         Assert.Null(Sample.Get("a]b")); // stray close bracket
         Assert.Null(Sample.Get("a.b[99999999999999999999]")); // index overflows Int32 -> null, not an exception
     }
+
+    [Fact]
+    public void GetDeclinesEmptySegments()
+    {
+        Assert.Null(Sample.Get(".flag")); // leading dot
+        Assert.Null(Sample.Get("a..b")); // doubled dot
+        Assert.Null(Sample.Get("a.")); // trailing dot
+        Assert.Null(Sample.Get(".")); // lone dot
+    }
+
+    [Fact]
+    public void DefaultImmutableArraysAreNormalizedToEmpty()
+    {
+        // A caller passing default(ImmutableArray<T>) must not poison equality/hashing/indexing —
+        // the ctors normalize default -> empty, so these behave as the empty payloads.
+        var bytes = new DynamicValue.Bytes(default);
+        var arr = new DynamicValue.Array(default);
+        var obj = new DynamicValue.Object(default);
+
+        Assert.Equal(bytes, new DynamicValue.Bytes(ImmutableArray<byte>.Empty));
+        Assert.Equal(bytes.GetHashCode(), new DynamicValue.Bytes(ImmutableArray<byte>.Empty).GetHashCode());
+        Assert.Equal(arr, new DynamicValue.Array(ImmutableArray<DynamicValue>.Empty));
+        Assert.Equal(obj, new DynamicValue.Object(ImmutableArray<KeyValuePair<string, DynamicValue>>.Empty));
+
+        // and navigation/accessors over them don't throw
+        Assert.Null(arr.TryItem(0));
+        Assert.Null(obj.TryField("x"));
+        Assert.True(bytes.TryBytes()!.Value.IsEmpty);
+    }
 }

@@ -111,51 +111,59 @@ public abstract record DynamicValue
     private static List<Step>? TryParsePath(string path)
     {
         var steps = new List<Step>();
-        var key = new StringBuilder();
-
-        void FlushKey()
+        if (path.Length == 0)
         {
-            if (key.Length > 0)
-            {
-                steps.Add(new Step(false, key.ToString(), 0));
-                key.Clear();
-            }
+            return steps; // empty path = identity navigation
         }
 
-        int i = 0;
-        while (i < path.Length)
+        // Split on '.': any empty segment ("" — from a leading, doubled, or trailing dot) is
+        // malformed and rejected, so typoed paths return null rather than silently resolving.
+        foreach (var segment in path.Split('.'))
         {
-            char c = path[i];
-            if (c == '.')
-            {
-                FlushKey();
-                i++;
-            }
-            else if (c == '[')
-            {
-                FlushKey();
-                int next = TryReadIndex(path, i, out int idx);
-                if (next < 0)
-                {
-                    return null;
-                }
-
-                steps.Add(new Step(true, string.Empty, idx));
-                i = next;
-            }
-            else if (c == ']')
+            if (!TryParseSegment(segment, steps))
             {
                 return null;
             }
-            else
-            {
-                key.Append(c);
-                i++;
-            }
         }
 
-        FlushKey();
         return steps;
+    }
+
+    // A segment is "key", "key[i][j]…", or "[i][j]…" (bare indices). Empty -> malformed.
+    private static bool TryParseSegment(string segment, List<Step> steps)
+    {
+        if (segment.Length == 0)
+        {
+            return false;
+        }
+
+        int i = 0;
+        int firstBracket = segment.IndexOf('[', StringComparison.Ordinal);
+        if (firstBracket != 0)
+        {
+            string keyPart = firstBracket < 0 ? segment : segment[..firstBracket];
+            if (keyPart.Contains(']'))
+            {
+                return false; // stray ']' in the key part
+            }
+
+            steps.Add(new Step(false, keyPart, 0));
+            i = firstBracket < 0 ? segment.Length : firstBracket;
+        }
+
+        while (i < segment.Length)
+        {
+            int next = TryReadIndex(segment, i, out int idx);
+            if (next < 0)
+            {
+                return false;
+            }
+
+            steps.Add(new Step(true, string.Empty, idx));
+            i = next;
+        }
+
+        return true;
     }
 
     /// Reads "[&lt;digits&gt;]" starting at <paramref name="open"/> (the '['). Returns the offset
@@ -228,7 +236,7 @@ public abstract record DynamicValue
     {
         /// <summary>Initializes the byte payload.</summary>
         /// <param name="value">the bytes.</param>
-        public Bytes(ImmutableArray<byte> value) => Value = value;
+        public Bytes(ImmutableArray<byte> value) => Value = value.IsDefault ? ImmutableArray<byte>.Empty : value;
 
         /// <summary>The raw bytes.</summary>
         public ImmutableArray<byte> Value { get; }
@@ -259,7 +267,7 @@ public abstract record DynamicValue
     {
         /// <summary>Initializes the array.</summary>
         /// <param name="items">the items, in order.</param>
-        public Array(ImmutableArray<DynamicValue> items) => Items = items;
+        public Array(ImmutableArray<DynamicValue> items) => Items = items.IsDefault ? ImmutableArray<DynamicValue>.Empty : items;
 
         /// <summary>The items, in order.</summary>
         public ImmutableArray<DynamicValue> Items { get; }
@@ -291,7 +299,8 @@ public abstract record DynamicValue
     {
         /// <summary>Initializes the object.</summary>
         /// <param name="pairs">the key → value pairs, in order.</param>
-        public Object(ImmutableArray<KeyValuePair<string, DynamicValue>> pairs) => Pairs = pairs;
+        public Object(ImmutableArray<KeyValuePair<string, DynamicValue>> pairs) =>
+            Pairs = pairs.IsDefault ? ImmutableArray<KeyValuePair<string, DynamicValue>>.Empty : pairs;
 
         /// <summary>The key → value pairs, in order.</summary>
         public ImmutableArray<KeyValuePair<string, DynamicValue>> Pairs { get; }
