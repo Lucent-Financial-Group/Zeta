@@ -174,6 +174,29 @@ describe("parseArgs", () => {
   });
 });
 
+describe("parseArgs — install lockfile flags", () => {
+  test("--frozen defaults off; sets frozen + default lockfile path", () => {
+    const a = parseArgs(["install", "pkg.json"]);
+    expect("command" in a && a.command === "install").toBe(true);
+    if ("command" in a && a.command === "install") {
+      expect(a.frozen).toBe(false);
+      expect(a.lockfile).toBe("ace.lock");
+    }
+  });
+  test("--frozen sets frozen true", () => {
+    const a = parseArgs(["install", "pkg.json", "--frozen"]);
+    if ("command" in a && a.command === "install") expect(a.frozen).toBe(true);
+  });
+  test("--lockfile <path> overrides", () => {
+    const a = parseArgs(["install", "pkg.json", "--lockfile", "custom.lock"]);
+    if ("command" in a && a.command === "install") expect(a.lockfile).toBe("custom.lock");
+  });
+  test("--lockfile without a path is an error", () => {
+    const a = parseArgs(["install", "pkg.json", "--lockfile"]);
+    expect("error" in a).toBe(true);
+  });
+});
+
 // ---- listInstalled ----
 
 describe("listInstalled", () => {
