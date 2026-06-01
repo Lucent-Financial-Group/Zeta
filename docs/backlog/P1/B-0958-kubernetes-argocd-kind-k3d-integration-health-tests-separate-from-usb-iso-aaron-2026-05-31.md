@@ -1,5 +1,5 @@
 ---
-id: B-0957
+id: B-0958
 priority: P1
 status: open
 title: Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance
@@ -7,7 +7,7 @@ effort: M
 ask: aaron 2026-05-31
 created: 2026-05-31
 last_updated: 2026-05-31
-renumbered_from: "B-0951; B-0952; B-0953 (2026-06-01 merge collision repair; origin/main retains B-0953 Git-V2 row)"
+renumbered_from: "B-0951; B-0952; B-0953; B-0957 (2026-06-01 merge collision repairs; origin/main retains B-0953 Git-V2 row and B-0957 labels/tags row)"
 depends_on:
   - B-0742
   - B-0794
@@ -30,7 +30,7 @@ tags:
   - x86-64-and-arm64
 ---
 
-# B-0957 -- Kubernetes + ArgoCD integration health tests via kind/k3d
+# B-0958 -- Kubernetes + ArgoCD integration health tests via kind/k3d
 
 ## Operator framing 2026-05-31
 
