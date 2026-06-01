@@ -299,7 +299,10 @@ function readConstValue(n: unknown, where: string): ConstValue {
   const o = n as Record<string, unknown>;
   switch (o.t) {
     case "int":
-      if (typeof o.v !== "number" || !Number.isInteger(o.v)) bad(`${where} int value`);
+      // match the Bonsai ConstValue wire contract: JS-safe integers only. A restored /
+      // tampered / cross-oracle int outside 2^53-1 (which JSON.parse silently rounds to an
+      // integer) declines MalformedState rather than resuming a corrupted numeric value.
+      if (typeof o.v !== "number" || !Number.isSafeInteger(o.v)) bad(`${where} int value`);
       return { t: "int", v: o.v as number };
     case "str":
       if (typeof o.v !== "string") bad(`${where} str value`);

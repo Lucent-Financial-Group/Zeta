@@ -127,3 +127,21 @@ test("parseState declines MalformedState on a tampered/unknown operator in a res
   expect(r.ok).toBe(false);
   if (!r.ok) expect(r.error.kind).toBe("MalformedState");
 });
+
+test("parseState declines MalformedState on an unsafe integer in a restored state", () => {
+  // a suspension carrying an int activity-arg: act(7) → awaiting {act, args:[{int,7}]}
+  const program = { kind: "call", fn: "act", args: [cint(7)] } as const;
+  const s0 = stepOk(start(program));
+  expect(s0.kind).toBe("suspended");
+  if (s0.kind !== "suspended") return;
+  const ser = serializeState(s0.state);
+  expect(ser.ok).toBe(true);
+  if (!ser.ok) return;
+  // tamper the persisted int beyond 2^53-1 — JSON.parse rounds it to an integer, but the
+  // safe-int wire contract must reject it rather than resume a corrupted value
+  const tampered = ser.value.replace('"v":7', '"v":9007199254740993');
+  expect(tampered).not.toBe(ser.value);
+  const r = parseState(tampered);
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.error.kind).toBe("MalformedState");
+});
