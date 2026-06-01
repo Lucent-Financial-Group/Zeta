@@ -37,11 +37,13 @@ function managedProcess(
   pid: number,
   stoppedPids: number[],
 ): ManagedQemuCommandProcess {
+  let running = true;
   return {
     pid,
-    isRunning: () => true,
+    isRunning: () => running,
     stop: () => {
       stoppedPids.push(pid);
+      running = false;
     },
     stderr: () => "",
   };
@@ -364,6 +366,63 @@ describe("B-0891 QEMU state-preservation planner", () => {
     if ("ok" in result) {
       expect(result.ok.commandExecutions[5]?.serialStop?.matchedMarkers).toContain("already-present");
     }
+  });
+
+  test("waits for managed QEMU stop before the next qcow2 step", () => {
+    let initialQemuRunning = true;
+    let initialQemuStopIssued = false;
+    let initialQemuRunningPollsAfterStop = 0;
+    let snapshotSawStoppedQemu = false;
+    const managedObserved: QemuCommand[] = [];
+    const executor = createSpawnSyncQcow2RetentionExecutor({
+      pollIntervalMs: 1,
+      spawnCommand: (command) => {
+        if (command.args[0] === "snapshot" && command.args[1] === "-c") {
+          snapshotSawStoppedQemu = !initialQemuRunning;
+        }
+        return { exitCode: 0, stdout: "ok", stderr: "" };
+      },
+      spawnManagedCommand: (command) => {
+        managedObserved.push(command);
+        if (managedObserved.length > 1) {
+          return managedProcess(5400 + managedObserved.length, []);
+        }
+        return {
+          pid: 5401,
+          isRunning: () => {
+            if (!initialQemuStopIssued) {
+              return true;
+            }
+            initialQemuRunningPollsAfterStop += 1;
+            initialQemuRunning = initialQemuRunningPollsAfterStop < 3;
+            return initialQemuRunning;
+          },
+          stop: () => {
+            initialQemuStopIssued = true;
+          },
+          stderr: () => "",
+        };
+      },
+      readSerialOutput: () => {
+        if (managedObserved.length === 0) {
+          return "";
+        }
+        if (managedObserved.length === 1) {
+          return "[iter-5.1] install reached post-nixos-install marker";
+        }
+        return [
+          "[iter-5.1] install reached post-nixos-install marker",
+          "zeta-creds-restore: reading preserved ESP blob",
+          "zeta-creds-restore: already-present, skipping credential rewrite",
+        ].join("\n");
+      },
+    });
+
+    const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), executor);
+
+    expect("ok" in result).toBe(true);
+    expect(snapshotSawStoppedQemu).toBe(true);
+    expect(initialQemuRunningPollsAfterStop).toBeGreaterThanOrEqual(3);
   });
 
   test("fails initial install when the installer prompt appears before post-install marker", () => {

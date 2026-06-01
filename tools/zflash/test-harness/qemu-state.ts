@@ -181,6 +181,8 @@ const DEFAULT_CPU_COUNT = 2;
 const DEFAULT_DISK_SIZE_GB = 20;
 const DEFAULT_RETENTION_COMMAND_TIMEOUT_MS = 30 * 60 * 1000;
 const DEFAULT_RETENTION_POLL_INTERVAL_MS = 1000;
+const DEFAULT_QEMU_STOP_TIMEOUT_MS = 5000;
+const DEFAULT_QEMU_KILL_TIMEOUT_MS = 1000;
 
 export const RETENTION_SERIAL_MARKERS: readonly string[] = [
   "zeta-creds-restore:",
@@ -474,6 +476,36 @@ function sleepSync(ms: number): void {
   Atomics.wait(view, 0, 0, ms);
 }
 
+function waitForManagedProcessStop(
+  managed: ManagedQemuCommandProcess,
+  timeoutMs: number,
+  pollIntervalMs: number,
+): boolean {
+  const deadline = Date.now() + timeoutMs;
+  while (managed.isRunning() && Date.now() < deadline) {
+    sleepSync(Math.min(pollIntervalMs, Math.max(deadline - Date.now(), 1)));
+  }
+  return !managed.isRunning();
+}
+
+function stopManagedProcess(
+  managed: ManagedQemuCommandProcess,
+  signal: NodeJS.Signals,
+  pollIntervalMs: number,
+): void {
+  if (!managed.isRunning()) {
+    return;
+  }
+  managed.stop(signal);
+  if (waitForManagedProcessStop(managed, DEFAULT_QEMU_STOP_TIMEOUT_MS, pollIntervalMs)) {
+    return;
+  }
+  if (signal !== "SIGKILL" && managed.isRunning()) {
+    managed.stop("SIGKILL");
+    waitForManagedProcessStop(managed, DEFAULT_QEMU_KILL_TIMEOUT_MS, pollIntervalMs);
+  }
+}
+
 function readSerialOutputIfPresent(
   serialLogPath: string,
   readSerialOutput: (serialLogPath: string) => string,
@@ -539,7 +571,7 @@ function runManagedCommandUntilSerialMarkers(
     try {
       serialOutput = readSerialOutputIfPresent(stopCondition.serialLogPath, readSerialOutput);
     } catch (error) {
-      managed.stop("SIGTERM");
+      stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
       return {
         step,
         command,
@@ -552,7 +584,7 @@ function runManagedCommandUntilSerialMarkers(
     const phaseSerialOutput = serialOutputAfterBaseline(serialOutput, serialBaseline);
     const failureMarker = firstMatchedMarker(phaseSerialOutput, stopCondition.failureMarkers);
     if (failureMarker !== undefined) {
-      managed.stop("SIGTERM");
+      stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
       return {
         step,
         command,
@@ -564,7 +596,7 @@ function runManagedCommandUntilSerialMarkers(
 
     if (allMarkersPresent(phaseSerialOutput, stopCondition.successMarkers)) {
       const stoppedPid = managed.pid;
-      managed.stop("SIGTERM");
+      stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
       return {
         step,
         command,
@@ -581,7 +613,7 @@ function runManagedCommandUntilSerialMarkers(
 
     const terminalFailureMarker = firstMatchedMarker(phaseSerialOutput, stopCondition.terminalFailureMarkers ?? []);
     if (terminalFailureMarker !== undefined) {
-      managed.stop("SIGTERM");
+      stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
       return {
         step,
         command,
@@ -606,7 +638,7 @@ function runManagedCommandUntilSerialMarkers(
     sleepSync(pollIntervalMs);
   }
 
-  managed.stop("SIGTERM");
+  stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
   return {
     step,
     command,
