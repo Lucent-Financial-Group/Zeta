@@ -57,6 +57,7 @@ import {
   runAgentCliCycle,
   tryCreateAgentCliHierarchyFromEnv,
   tryCreateAgentCliPromptFlowTasksFromEnv,
+  tryCreateAgentCliWorkQueuesFromEnv,
   type AgentCliCycleEvidence,
   type ParsedAgentCliArgs,
 } from "./agent-cli.ts";
@@ -202,6 +203,11 @@ function createRunAgentCliCycleInput(
   });
   if (!hierarchy.ok) return { ok: false, message: hierarchy.message };
 
+  const workQueues = tryCreateAgentCliWorkQueuesFromEnv({
+    env: input.env,
+  });
+  if (!workQueues.ok) return { ok: false, message: workQueues.message };
+
   return {
     ok: true,
     value: {
@@ -216,6 +222,7 @@ function createRunAgentCliCycleInput(
       }),
       promptFlowTasks: promptFlowTasks.value,
       hierarchy: hierarchy.value,
+      workQueues: workQueues.value,
       selectSlot: createAgentCliSelectorFromEnv({
         env: input.env,
         ...createOptionalFetchImpl(input.fetchImpl),
@@ -355,11 +362,19 @@ function observeActEvidenceRefs(evidence: AgentCliCycleEvidence): readonly strin
     `observe-act:selected_slot:${evidence.selectedIndex}`,
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
+    ...selectedSemanticEvidenceRefs(evidence),
     ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
     ...statusEvidenceRefs(evidence),
     ...actionRejectionEvidenceRefs(evidence),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function selectedSemanticEvidenceRefs(evidence: AgentCliCycleEvidence): readonly string[] {
+  return [
+    ...(evidence.selectedImplKind === undefined ? [] : [`observe-act:selected_impl:${evidence.selectedImplKind}`]),
+    ...(evidence.actionOutcome === undefined ? [] : [`observe-act:action_outcome:${evidence.actionOutcome}`]),
   ];
 }
 

@@ -312,9 +312,6 @@ worker path.
 
 **Current production blockers:**
 
-- `apps/agent-cli/src/main.ts` still wires `runCommand` and `dispatchTool` to
-  not-wired stubs;
-- the CLI lacks package/bin readiness as an executable production surface;
 - the current slot layout is not yet the full ADR controller grammar;
 - all-vetoed work menus now render disabled commit slots with reasons and keep
   safe meta controls reachable for refresh/status/rest/escalation;
@@ -385,6 +382,47 @@ returns a typed `rested` result without invoking command dispatch or MCP/tool
 side effects. The agent CLI includes the selected slot and menu hash in durable
 tick evidence and prints an explicit rested action result, which gives the
 foreground loop a bounded no-op action that is visible, auditable, and legal.
+
+**Checkpoint 2026-06-01: slot 7 edit-grammar/branch**
+
+Slot 7 is now reserved for the ADR's always-reachable `edit-grammar / branch`
+generative exit instead of being reused as prompt-flow overflow capacity.
+`renderMenu16` exposes it as `TriAvailability.True` in normal and all-work-vetoed
+menus, and `act(7)` returns a typed `grammar_branch_requested` result without
+invoking command dispatch or MCP/tool side effects. Prompt-flow context loading
+now pages through slot 6 (`inspect.more`) only, preserving the fixed 16-slot
+controller grammar while still giving agents access to all scoped prompt-flow
+tasks through navigation.
+
+**Checkpoint 2026-06-01: slots 10/11 history request controls**
+
+Slots 10 and 11 are now selectable ADR grammar controls instead of disabled
+placeholders. `history.retract` and `history.redo` return typed
+`history_retract_requested` and `history_redo_requested` outcomes from `act()`
+without command dispatch, MCP/tool dispatch, or ledger mutation. This makes
+agent intent visible in tick evidence while keeping the stronger retraction
+ledger, replay proof, and compensating-transaction machinery as the next
+implementation layer rather than implying undo/redo side effects already exist.
+
+**Checkpoint 2026-06-01: selected implementation and outcome evidence**
+
+Observe-act tick events now record both the stable selected slot and the semantic
+result of executing that selection. CLI and worker-lane events include
+`observe-act:selected_impl:<kind>` and `observe-act:action_outcome:<outcome>`
+evidence refs, so no-op/request choices such as rest, grammar-branch, history
+retract, and history redo are auditable from durable org events without scraping
+stdout.
+
+**Checkpoint 2026-06-01: production CLI entrypoint readiness**
+
+The observe-act foreground loop now has a tested executable surface. The root
+`agentic-organization/package.json` exposes `npm run agent:observe` and the
+`agentic-org-observe` bin entry, while `apps/agent-cli/src/main.ts` has the
+`node --experimental-strip-types` shebang expected by that bin. The package
+metadata test also anchors the Node engine floor used by the executable path.
+This moves package/bin readiness out of the blocker list; remaining production
+work is primary-lane rollout, controller-grammar completion, and deeper typed
+feedback coverage.
 
 **Algorithms:**
 
@@ -530,6 +568,18 @@ duplicating work or self-approving.
 - expose queue pressure and claim status in `observeForHat` and agent CLI.
 - bind claims to schedule block, runtime session, worktree or workspace,
   credential scope, heartbeat deadline, and compensating action.
+
+**Checkpoint 2026-06-01: foreground work-market visibility**
+
+The same-hat work-market readout is now visible in the executable observe-act
+foreground loop. `runAgentCliCycle` accepts `HatWorkQueue` context, computes the
+same scoped `WorkMarketReadout` used by `observeForHat`, and renders queue
+pressure, shard counts, stale-claim counts, and active claim ownership/fencing
+tokens before the 16-slot menu. The production `runAgentCliMain` path can load
+this context from `AGENTIC_ORG_WORK_MARKET_QUEUES_JSON` with typed setup
+feedback on malformed input, so an agent can see whether it should claim a
+different shard, wait for review, or escalate stale same-hat work instead of
+staring at an undifferentiated work item.
 
 **Algorithms:**
 

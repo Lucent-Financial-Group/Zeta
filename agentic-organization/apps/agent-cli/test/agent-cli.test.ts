@@ -8,6 +8,9 @@ import {
   PromptFlowRunState,
   RunLifecyclePhase,
   RunScope,
+  WorkClaimState,
+  WorkShardState,
+  type HatWorkQueue,
   type PromptFlowDefinition,
   type ChatCompletionRequest,
   type HierarchySnapshot,
@@ -292,8 +295,8 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   ok(stdout.join("\n").includes("[04] T commit.a execute"));
   ok(stdout.join("\n").includes("action: dispatched command"));
   equal(result.evidence?.selectedIndex, 4);
-  equal(result.evidence?.vetoCount, 3);
-  equal(result.evidence?.trueSlotCount, 7);
+  equal(result.evidence?.vetoCount, 1);
+  equal(result.evidence?.trueSlotCount, 10);
   equal(result.evidence?.metricBlockIds[0], "queue");
   ok(result.evidence?.menuHash.match(/^[0-9a-f]{64}$/));
   deepEqual(commands, [
@@ -563,6 +566,45 @@ test("runAgentCliCycle can select meta.status and returns glass-halo evidence", 
   deepEqual(result.evidence?.promptFlowIds, ["flow-implement"]);
 });
 
+test("runAgentCliCycle renders work-market queue pressure and active claim status", async () => {
+  const stdout: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "backend_implementer",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-backend-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "observing",
+      "--select-index",
+      "13",
+    ],
+    now: () => "2026-05-31T12:30:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    workQueues: [workMarketQueue()],
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  const rendered = stdout.join("\n");
+  ok(rendered.includes("work market: elevated"));
+  ok(rendered.includes("- queue queue-backend-project-1 project:project-1 ready=1 claimed=1 stale=1"));
+  ok(rendered.includes("- active claim claim-stale shard=shard-claimed owner=agent-backend-2 fence=fence-stale"));
+});
+
 test("runAgentCliCycle status evidence includes hierarchy priority scope when hierarchy is available", async () => {
   const result = await runAgentCliCycle({
     argv: [
@@ -643,6 +685,95 @@ test("runAgentCliCycle can select free-time/rest without dispatching side effect
   equal(result.evidence?.selectedIndex, 14);
 });
 
+test("runAgentCliCycle can select edit-grammar/branch without dispatching side effects", async () => {
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--select-index",
+      "7",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    runCommand: async () => {
+      throw new Error("edit-grammar/branch must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("edit-grammar/branch must not dispatch MCP side effects");
+    },
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "grammar_branch_requested");
+  ok(stdout.join("\n").includes("[07] T branch.fork edit-grammar / branch"));
+  ok(stdout.join("\n").includes("action: grammar-branch requested edit-grammar/branch selected; no side effects for this tick"));
+  equal(result.evidence?.selectedIndex, 7);
+});
+
+test("runAgentCliCycle can select history retract/redo without dispatching side effects", async () => {
+  for (const [slotIndex, label, outcome, actionLine] of [
+    [10, "history.retract retract", "history_retract_requested", "action: history-retract requested history.retract selected; no ledger mutation for this tick"],
+    [11, "history.redo redo", "history_redo_requested", "action: history-redo requested history.redo selected; no ledger mutation for this tick"],
+  ] as const) {
+    const stdout: string[] = [];
+    const result = await runAgentCliCycle({
+      argv: [
+        "observe",
+        "--hat",
+        "release_operator",
+        "--hat-assignment",
+        "99",
+        "--agent",
+        "agent-release-1",
+        "--organization",
+        "org-1",
+        "--project",
+        "project-1",
+        "--work-item",
+        "work-1",
+        "--scope",
+        "work_item",
+        "--phase",
+        "awaiting_gate",
+        "--gate-approved",
+        "--select-index",
+        String(slotIndex),
+      ],
+      now: () => "2026-05-31T12:00:00.000Z",
+      writeStdout: (text) => stdout.push(text),
+      runCommand: async () => {
+        throw new Error(`${label} must not dispatch command side effects`);
+      },
+      dispatchTool: async () => {
+        throw new Error(`${label} must not dispatch MCP side effects`);
+      },
+    });
+
+    equal(result.exitCode, 0);
+    equal(result.actionResult?.outcome, outcome);
+    ok(stdout.join("\n").includes(`[${String(slotIndex).padStart(2, "0")}] T ${label}`));
+    ok(stdout.join("\n").includes(actionLine));
+    equal(result.evidence?.selectedIndex, slotIndex);
+  }
+});
+
 test("runAgentCliCycle rejects vetoed work slots while keeping all-vetoed meta controls visible", async () => {
   let dispatched = false;
   const stdout: string[] = [];
@@ -683,10 +814,11 @@ test("runAgentCliCycle rejects vetoed work slots while keeping all-vetoed meta c
   equal(result.actionResult.message, "tenant freeze blocks compose");
   equal(result.evidence?.selectedIndex, 4);
   equal(result.evidence?.vetoCount, 3);
-  equal(result.evidence?.trueSlotCount, 3);
+  equal(result.evidence?.trueSlotCount, 4);
   equal(dispatched, false);
   ok(stdout.join("\n").includes("[04] F commit.a compose (tenant freeze blocks compose)"));
   ok(stdout.join("\n").includes("[05] F commit.b block (tenant freeze blocks block)"));
+  ok(stdout.join("\n").includes("[07] T branch.fork edit-grammar / branch"));
   ok(stdout.join("\n").includes("[12] T meta.refresh refresh"));
   ok(stdout.join("\n").includes("[13] T meta.status status / glass-halo"));
   ok(stdout.join("\n").includes("[14] T meta.pause free-time / rest"));
@@ -810,8 +942,9 @@ test("runAgentCliCycle renders prompt-flow overflow pages and reobserve page nav
     menuPage: { promptFlows: 0 },
   });
   const rendered = stdout.join("\n");
-  ok(rendered.includes("prompt-flow page: 2/2"));
-  ok(rendered.includes("[06] T inspect.more Task 3"));
+  ok(rendered.includes("prompt-flow page: 2/3"));
+  ok(rendered.includes("[06] T inspect.more Task 2"));
+  ok(rendered.includes("[07] T branch.fork edit-grammar / branch"));
   ok(rendered.includes("[00] T navigate.previous previous prompt-flow page"));
   ok(rendered.includes("action: reobserve work_item prompt-flow-page 1"));
   equal(result.evidence?.promptFlowPage, 1);
@@ -861,8 +994,8 @@ test("runAgentCliCycle binds selected prompt-flow task identity into evidence", 
 
   equal(result.exitCode, 0);
   equal(result.evidence?.promptFlowPage, 1);
-  equal(result.evidence?.selectedPromptFlowTaskId, "task-3");
-  equal(result.evidence?.selectedPromptFlowId, "flow-3");
+  equal(result.evidence?.selectedPromptFlowTaskId, "task-2");
+  equal(result.evidence?.selectedPromptFlowId, "flow-2");
 });
 
 test("runAgentCliCycle default prompt-flow loader preserves compiled phase metadata", async () => {
@@ -1526,6 +1659,66 @@ function scheduleBlock(overrides: Partial<WorkScheduleBlock> = {}): WorkSchedule
       causationId: "cause-1",
       traceId: "trace-1",
     },
+    ...overrides,
+  };
+}
+
+function workMarketQueue(overrides: Partial<HatWorkQueue> = {}): HatWorkQueue {
+  return {
+    queueId: "queue-backend-project-1",
+    organizationId: "org-1",
+    hatId: "backend_implementer",
+    scope: { kind: "project", id: "project-1" },
+    priorityClass: "high",
+    slaDeadlineAt: "2026-05-31T14:00:00.000Z",
+    shardability: "by_component",
+    requiredSkills: ["typescript"],
+    reviewQuorum: {
+      requiredApprovals: 1,
+      reviewerHatIds: ["architect_reviewer"],
+      allowProducerApproval: false,
+    },
+    shards: [
+      {
+        shardId: "shard-ready",
+        workItemId: "work-ready",
+        title: "Ready shard",
+        priority: 80,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+      {
+        shardId: "shard-claimed",
+        workItemId: "work-claimed",
+        title: "Claimed shard",
+        priority: 90,
+        state: WorkShardState.Claimed,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+        claimedByClaimId: "claim-stale",
+      },
+    ],
+    claims: [
+      {
+        claimId: "claim-stale",
+        shardId: "shard-claimed",
+        ownerAgentId: "agent-backend-2",
+        hatAssignmentId: "hat-backend-2",
+        fencingToken: "fence-stale",
+        leaseExpiresAt: "2026-05-31T12:00:00.000Z",
+        heartbeatAt: "2026-05-31T11:55:00.000Z",
+        scheduleBlockId: "block-1",
+        runtimeSessionId: "session-1",
+        workspaceRef: "worktree:agent-backend-2",
+        credentialScope: "tenant:org-1:repo:agentic-organization",
+        compensatingAction: "release_claim_and_requeue_shard",
+        state: WorkClaimState.Active,
+        claimedAt: "2026-05-31T11:45:00.000Z",
+      },
+    ],
+    runtimeLeases: [],
+    reviews: [],
     ...overrides,
   };
 }
