@@ -228,7 +228,11 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
         return { ok: true };
       } catch {
         try {
-          run(["pull", "--rebase", "origin", "main"]);
+          // --autostash: an agent may have unrelated unstaged tracked edits in the shared main
+          // checkout; without it the rebase refuses on a dirty tree. autostash stashes them, replays
+          // our disjoint event, and pops them back — peer contention resolves even on a dirty checkout
+          // (Codex #6312). Our event is a disjoint ZetaId file, so the pop never conflicts with it.
+          run(["pull", "--rebase", "--autostash", "origin", "main"]);
         } catch {
           // Leave the checkout clean: abort the in-progress rebase + undo our local commit
           // (best-effort) so neither a dangling rebase nor an ahead local main blocks the next
