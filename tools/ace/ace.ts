@@ -12,7 +12,7 @@
 //
 // Future commands (not yet implemented): remove, inspect.
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, readFileSync, writeFileSync } from "node:fs";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys,
@@ -230,11 +230,26 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 0;
   }
 
-  // keygen — write private key 0600 (secure-create), public key normal
+  // keygen — exclusive-create the private key so secret bytes never land in a
+  // pre-existing (possibly permissive) file, then belt-and-suspenders chmodSync.
+  // Refuse with exit 1 if <prefix>.key already exists (never silently clobber).
   if (parsed.command === "keygen") {
     const kp = generateKeypair();
-    // mode on the OPEN so the file is never momentarily world-readable (POSIX; advisory on Windows)
-    writeFileSync(`${parsed.outPrefix}.key`, kp.privatePem, { mode: 0o600 });
+    const keyPath = `${parsed.outPrefix}.key`;
+    try {
+      // flag "wx": exclusive create — fails with EEXIST if the file already exists.
+      // mode 0o600: applied on create (POSIX-guaranteed; advisory on Windows).
+      writeFileSync(keyPath, kp.privatePem, { mode: 0o600, flag: "wx" });
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "EEXIST") {
+        console.error(`ace: keygen refused: ${keyPath} already exists — remove it or choose a different --out (refusing to overwrite a private key)`);
+        return 1;
+      }
+      throw e;
+    }
+    // Belt-and-suspenders: force 0o600 even if the platform ignored mode-on-create.
+    chmodSync(keyPath, 0o600);
+    // Only write .pub after .key exclusive-create succeeds.
     writeFileSync(`${parsed.outPrefix}.pub`, JSON.stringify({ algo: "ed25519", key_id: kp.keyId, public_key: kp.publicSpkiB64 }, null, 2));
     console.log(`ace: wrote ${parsed.outPrefix}.key (0600) + ${parsed.outPrefix}.pub  key_id ${kp.keyId} — share ${parsed.outPrefix}.pub with consumers; keep ${parsed.outPrefix}.key private`);
     return 0;

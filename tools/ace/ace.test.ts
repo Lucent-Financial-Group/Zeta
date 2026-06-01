@@ -354,6 +354,20 @@ describe("main", () => {
     }
   });
 
+  test("keygen refuses to overwrite an existing .key and leaves file content unchanged", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-kg-"));
+    const prefix = join(dir, "existkey");
+    const keyPath = prefix + ".key";
+    // Pre-create the .key with sentinel content at a permissive mode (simulating a stale file)
+    writeFileSync(keyPath, "OLD", { mode: 0o644 });
+    // Second keygen should refuse with exit 1
+    const code = await main(["keygen", "--out", prefix]);
+    expect(code).toBe(1);
+    // The file must NOT have been overwritten — sentinel content must still be present
+    const { readFileSync: rf } = require("node:fs");
+    expect(rf(keyPath, "utf8")).toBe("OLD");
+  });
+
   // ---- sign ----
 
   test("sign of a valid package writes signed output and exits 0", async () => {
