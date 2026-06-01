@@ -87,7 +87,22 @@ elif [ -f "$APT_MANIFEST" ]; then
     # Use sudo only when not already root (CI containers often run as root).
     SUDO=""
     if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
-    $SUDO apt-get update -y
+    # `apt-get update` refreshes EVERY configured source, including any
+    # third-party PPAs the host image shipped that we don't control. Under
+    # `set -euo pipefail` a single unreachable source (e.g. a launchpad PPA
+    # returning 403 behind a restricted-network policy) aborts the whole
+    # install before any runtime tooling is set up. Per
+    # `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`
+    # ("grace in the artifact, assert in the test"): keep the update GRACEFUL
+    # (warn + continue on partial-source failure) while the install below stays
+    # STRICT — `apt-get install` still fails loudly if a package we actually
+    # need is unavailable, so the assert is preserved at install time rather
+    # than skipped to a false-green.
+    if ! $SUDO apt-get update -y; then
+      echo "⚠ apt-get update reported errors — likely an unreachable third-party" >&2
+      echo "  source the host image shipped (not a Zeta manifest source). Continuing;" >&2
+      echo "  the apt-get install below still asserts the packages we need are present." >&2
+    fi
     # shellcheck disable=SC2086
     $SUDO apt-get install -y --no-install-recommends $PKGS
   else
