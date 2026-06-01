@@ -72,3 +72,15 @@ describe("serializeLockfile / parseLockfile", () => {
     expect("error" in parseLockfile(JSON.stringify({ ...lf, root: { name: "r" } }))).toBe(true);
   });
 });
+
+import { verifyRootMatchesLock } from "./lockfile.ts";
+
+describe("verifyRootMatchesLock", () => {
+  test("true when root packageHash matches, false on any root change", () => {
+    const root = pkgAt("root", "1.0.0", [regEdge("A", "^1.0.0")]);
+    const lf = { format_version: 1 as const, root: { name: "root", version: "1.0.0", package_hash: packageHash(root) }, nodes: [] };
+    expect(verifyRootMatchesLock(root, lf)).toBe(true);
+    const changed = pkgAt("root", "1.0.0", [regEdge("A", "^2.0.0")]); // changed range → different packageHash
+    expect(verifyRootMatchesLock(changed, lf)).toBe(false);
+  });
+});

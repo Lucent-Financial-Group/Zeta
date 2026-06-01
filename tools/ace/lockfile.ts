@@ -67,3 +67,8 @@ export function parseLockfile(json: string): Lockfile | { error: string } {
   }
   return { format_version: 1, root: { name: root.name, version: root.version, package_hash: root.package_hash }, nodes };
 }
+
+/** Drift gate for --frozen: the provided root must be byte-identical to the locked root. */
+export function verifyRootMatchesLock(root: AcePackage, lf: Lockfile): boolean {
+  return packageHash(root) === lf.root.package_hash;
+}
