@@ -104,5 +104,5 @@ into B-0964 (gist preserved here so the in-doc attributions are auditable):
   `{tier, gated}`, else the §3 glass-halo audit can't distinguish a sandbox run from
   a real-FS/docker escalation. (→ B-0964 §0/§3 + acceptance.)
 - **Consistent event names.** Standardize on
-  `ActionExecutionStarted/ActionExecutionSucceeded/ActionExecutionFailed` (the intro
-  - acceptance had mixed `ActionSucceeded/ActionFailed`). (→ B-0964 §0/§1/acceptance.)
+  `ActionExecutionStarted/ActionExecutionSucceeded/ActionExecutionFailed` (intro and
+  acceptance had mixed `ActionSucceeded/ActionFailed`). (→ B-0964 §0/§1/acceptance.)
