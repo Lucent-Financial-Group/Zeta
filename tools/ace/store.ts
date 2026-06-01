@@ -278,6 +278,22 @@ export function loadRegistry(bundledPath: string = bundledRegistryPath(), userPa
   return m;
 }
 
+/** Append/overwrite a user-registry entry; dir 0o700, file 0o600 on EVERY call (incl. dedup
+ * early-return) — mirrors addTrustedKey. chmod after write (writeFileSync mode only applies on create). */
+export function addRegistryEntry(name: string, version: string, entry: RegistryEntry, userPath: string = registryPath()): { added: boolean } {
+  const dir = dirname(userPath);
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  try { chmodSync(dir, 0o700); } catch { /* best-effort */ }
+  const tightenFile = (): void => { if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort */ } } };
+  const obj = readRegistryFile(userPath);
+  if (obj[name]?.[version]) { tightenFile(); return { added: false }; }
+  obj[name] = obj[name] ?? {};
+  obj[name][version] = { url: entry.url, package_hash: entry.package_hash };
+  writeFileSync(userPath, JSON.stringify(obj, null, 2));
+  chmodSync(userPath, 0o600);
+  return { added: true };
+}
+
 /** bundled ∪ user flattened to rows; user overrides bundled on (name, version); each row carries source. */
 export function listRegistry(
   bundledPath: string = bundledRegistryPath(), userPath: string = registryPath(),

@@ -3,7 +3,7 @@ import { mkdtempSync, existsSync, readFileSync, statSync, writeFileSync, chmodSy
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
-import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath, bundledRegistryPath, registryPath, loadRegistry, listRegistry } from "./store.ts";
+import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath, bundledRegistryPath, registryPath, loadRegistry, listRegistry, addRegistryEntry } from "./store.ts";
 
 describe("contentHash", () => {
   test("sha256 of known bytes matches the sha256:<hex> form", () => {
@@ -280,5 +280,32 @@ describe("registry load + list", () => {
     const row = rows.find((r) => r.name === "a" && r.version === "1.0.0");
     expect(row?.source).toBe("user");
     expect(row?.url).toBe("U");
+  });
+});
+
+describe("addRegistryEntry", () => {
+  test("creates the user file + dedups by (name,version)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
+    const u = join(dir, "registry.json");
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "U", package_hash: "sha256:u" }, u).added).toBe(true);
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "U", package_hash: "sha256:u" }, u).added).toBe(false);
+    expect(loadRegistry(join(dir, "missing.json"), u).get("libfoo")?.get("1.0.0")?.url).toBe("U");
+  });
+  test("a second version of the same name is added (not a dedup)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
+    const u = join(dir, "registry.json");
+    addRegistryEntry("libfoo", "1.0.0", { url: "U1", package_hash: "sha256:u1" }, u);
+    expect(addRegistryEntry("libfoo", "2.0.0", { url: "U2", package_hash: "sha256:u2" }, u).added).toBe(true);
+    const m = loadRegistry(join(dir, "missing.json"), u);
+    expect(m.get("libfoo")?.size).toBe(2);
+  });
+  test("writes owner-only perms on POSIX (0600 file, 0700 dir)", () => {
+    if (process.platform === "win32") return;
+    const parent = mkdtempSync(join(tmpdir(), "ace-regperm-"));
+    const aceDir = join(parent, ".ace");
+    const u = join(aceDir, "registry.json");
+    addRegistryEntry("a", "1.0.0", { url: "U", package_hash: "sha256:u" }, u);
+    expect(statSync(u).mode & 0o077).toBe(0);
+    expect(statSync(aceDir).mode & 0o077).toBe(0);
   });
 });
