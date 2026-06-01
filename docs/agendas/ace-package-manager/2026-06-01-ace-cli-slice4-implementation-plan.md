@@ -28,6 +28,7 @@
 ## Task 1: Manifest gains `dependencies?` (back-compat)
 
 **Files:**
+
 - Modify: `tools/ace/store.ts` (the `AceManifest` interface + a new `AceDependency` interface, near lines 7-14)
 - Test: `tools/ace/store.test.ts`
 
@@ -93,6 +94,7 @@ git commit -m "feat(ace): AceManifest.dependencies? + AceDependency (slice 4 tas
 ## Task 2: Factor `validatePackagePaths` out of `installPackage`
 
 **Files:**
+
 - Modify: `tools/ace/store.ts` (`installPackage`, the path-safety loop ~lines 115-119)
 - Test: `tools/ace/store.test.ts`
 
@@ -161,6 +163,7 @@ git commit -m "refactor(ace): factor validatePackagePaths out of installPackage 
 ## Task 3: `packageHash` (full-package identity)
 
 **Files:**
+
 - Create: `tools/ace/resolve.ts`
 - Test: `tools/ace/resolve.test.ts`
 
@@ -237,6 +240,7 @@ git commit -m "feat(ace): packageHash full-package identity helper (slice 4 task
 ## Task 4: `resolve` — leaf + linear chain (topo order)
 
 **Files:**
+
 - Modify: `tools/ace/resolve.ts`, `tools/ace/resolve.test.ts`
 
 **Shared test helper** (add near the top of `resolve.test.ts`, after imports): builds a package + a fetch map keyed by URL, with edges carrying the correct `package_hash`.
