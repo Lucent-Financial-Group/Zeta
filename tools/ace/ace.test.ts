@@ -1530,4 +1530,31 @@ describe("ace registry publish (slice 6.1)", () => {
     expect(code).toBe(1);
     expect(existsSyncLocal(outPath)).toBe(false);
   });
+
+  test("package with non-array dependencies is skipped; well-formed sibling is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-baddeps-"));
+    // Good package
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // Bad package: dependencies is a string, not an array
+    const badFiles = { "bad.txt": "x" };
+    const badCh = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const badKp = generateKeypair();
+    const badM = { format_version: 1 as const, name: "bad", version: "1.0.0", content_hash: badCh };
+    const badSig = signManifest(badM, badKp.privatePem);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const badPkg = { manifest: { ...badM, dependencies: "not-an-array" as any, signature: badSig }, files: badFiles };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "bd.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "baddeps-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
+  });
 });

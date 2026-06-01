@@ -258,10 +258,15 @@ consumer's anti-rollback gate: the published sequence always advances.
 ### Round-trip self-verify
 
 Before writing, `publish` re-parses the produced index through the same
-`parseIndex` path and signature check that `ace install` uses (verifying against
-the signing key's own public key). A published `index.json` is therefore
-guaranteed to satisfy `ace install` when a consumer has registered the registry
-with the matching key ID.
+`parseIndex` path and signature check the consumer uses, verifying against the
+signing key's own public key. This guarantees the published `index.json` loads
+and verifies as a signed index for a consumer who pinned the matching registry
+key ID. It does **not** by itself guarantee `ace install` succeeds: install
+additionally verifies each package's own manifest signature against the
+consumer's package trust store, which may use a different key than the registry
+index. Consumers must trust both the registry key (for the index) and each
+package's signing key (for install), or pass `--allow-no-signature` for unsigned
+packages.
 
 To find the `<keyId>` to pin, the `<keyId>` is shown by `ace trust list` (or printed by `ace trust add <pub>` when the key is added).
 

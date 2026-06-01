@@ -59,4 +59,11 @@ describe("buildIndexDoc", () => {
     const doc = buildIndexDoc({ packages: [pkg("leaf", "1.0.0"), pkg("leaf", "1.0.0")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(true);
   });
+
+  test("packages sorted by name then version regardless of input order", () => {
+    const doc = buildIndexDoc({ packages: [pkg("zeta", "1.0.0"), pkg("alpha", "1.0.0")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    expect("error" in doc).toBe(false);
+    if ("error" in doc) return;
+    expect(Object.keys(doc.packages)).toEqual(["alpha", "zeta"]);
+  });
 });

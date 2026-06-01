@@ -26,7 +26,9 @@ export function buildIndexDoc(args: {
 }): IndexDoc | { error: string } {
   // Null-prototype map: a package name like "__proto__" cannot pollute via bracket-assign.
   const packages: Record<string, Record<string, RegistryEntry>> = Object.create(null);
-  for (const pkg of args.packages) {
+  const sorted = [...args.packages].sort((a, b) =>
+    a.manifest.name.localeCompare(b.manifest.name) || a.manifest.version.localeCompare(b.manifest.version));
+  for (const pkg of sorted) {
     const name = pkg.manifest.name;
     const version = pkg.manifest.version;
     const versions = packages[name] ?? (Object.create(null) as Record<string, RegistryEntry>);

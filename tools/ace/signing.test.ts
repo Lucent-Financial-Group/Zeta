@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { generateKeyPairSync } from "node:crypto";
 import {
   generateKeypair, keyId, canonicalManifestBytes, signManifest, verifySignature,
   type TrustEntry,
@@ -146,5 +147,10 @@ describe("publicKeyInfoFromPrivatePem", () => {
     const info = publicKeyInfoFromPrivatePem(kp.privatePem);
     const trust = new Map([[info.keyId, { public_key: info.public_key }]]);
     expect(verifyIndexSignature(content, sig, trust).ok).toBe(true);
+  });
+  test("throws for a non-ed25519 key", () => {
+    const { privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+    const rsaPem = privateKey.export({ type: "pkcs8", format: "pem" }) as string;
+    expect(() => publicKeyInfoFromPrivatePem(rsaPem)).toThrow(/ed25519/);
   });
 });

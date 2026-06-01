@@ -572,6 +572,10 @@ export async function main(argv: readonly string[]): Promise<number> {
         if (f !== expectedFile) {
           console.error(`ace: publish: skip ${f} — filename must be ${expectedFile} to match its derived consumer URL`); continue;
         }
+        const deps = (obj as AcePackage).manifest.dependencies;
+        if (deps !== undefined && !Array.isArray(deps)) {
+          console.error(`ace: publish: skip ${f} — manifest.dependencies must be an array`); continue;
+        }
         packages.push(obj as AcePackage);
       }
       if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`); return 1; }

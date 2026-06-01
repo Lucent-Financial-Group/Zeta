@@ -120,6 +120,9 @@ export function verifyIndexSignature(
  *  trust store). Sibling of signIndex's internal signer-id derivation. */
 export function publicKeyInfoFromPrivatePem(privatePem: string): { keyId: string; public_key: string } {
   const priv = createPrivateKey(privatePem);
+  if (priv.asymmetricKeyType !== "ed25519") {
+    throw new Error(`publicKeyInfoFromPrivatePem: expected an ed25519 key, got ${priv.asymmetricKeyType ?? "unknown"}`);
+  }
   const public_key = (createPublicKey(priv).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
   return { keyId: keyId(public_key), public_key };
 }

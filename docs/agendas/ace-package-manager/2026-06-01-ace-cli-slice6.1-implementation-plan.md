@@ -24,8 +24,7 @@ Read/Write — use **Write** for brand-new files, **bun patch-scripts** for edit
 files (write `tools/ace/_patch_<x>.ts` → `readFileSync` → `split().length-1`
 assert-exactly-1 → `split().join()` → `writeFileSync` → `bun run` → `rm` — and **`rm` it
 before committing; never commit a `_patch_*.ts`**). Commit canary `git ls-tree HEAD | wc -l`
-must stay **67**. Commit trailer last line: `Co-Authored-By: Claude Opus 4.8
-<noreply@anthropic.com>`. Tests: `bun test tools/ace/`. Strict gate:
+must stay **67**. Commit trailer last line: the project's standard `Co-Authored-By:` agent trailer (see `CLAUDE.md`). Tests: `bun test tools/ace/`. Strict gate:
 `bun --bun tsc --noEmit -p tsconfig.json` (exit 0; repo uses `exactOptionalPropertyTypes` +
 `noUnusedLocals` — never assign `undefined` to an optional prop; import only what you use).
 markdownlint on SKILL.md (Task 4): blank lines around headings/lists/fences; no spaces
