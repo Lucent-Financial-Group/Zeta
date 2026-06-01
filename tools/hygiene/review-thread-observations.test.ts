@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -42,6 +42,11 @@ function observation(
   };
 }
 
+function divergenceFiles(root: string): string[] {
+  const dir = join(root, "docs/hygiene-history/divergences/2026/06/01");
+  return existsSync(dir) ? readdirSync(dir).filter((name) => name.endsWith(".md")) : [];
+}
+
 describe("recordReviewThreadObservation", () => {
   test("records the first observation without filing a divergence shard", () => {
     withTempRoot((root) => {
@@ -58,6 +63,8 @@ describe("recordReviewThreadObservation", () => {
       expect(result.noDisagreements).toEqual([]);
       const store = loadObservationStore(root);
       expect(store.observations).toHaveLength(1);
+      expect(store.filedDisagreements).toEqual([]);
+      expect(existsSync(join(root, `${DEFAULT_OBSERVATION_STORE_REL_PATH}.lock`))).toBe(false);
       expect(existsSync(join(root, "docs/hygiene-history/divergences"))).toBe(false);
     });
   });
@@ -88,7 +95,55 @@ describe("recordReviewThreadObservation", () => {
       const shard = readFileSync(join(root, filed.outcome.write.relPath), "utf8");
       expect(shard).toContain("Conclusion: resolve");
       expect(shard).toContain("Conclusion: needs-fix");
-      expect(loadObservationStore(root).observations).toHaveLength(2);
+      const store = loadObservationStore(root);
+      expect(store.observations).toHaveLength(2);
+      expect(store.filedDisagreements).toEqual([
+        {
+          filedAt: "2026-06-01T11:10:00Z",
+          prNumber: 4147,
+          threadId: "PRRT_kwExample",
+          conclusions: ["needs-fix", "resolve"],
+          relPath: filed.outcome.write.relPath,
+        },
+      ]);
+    });
+  });
+
+  test("does not refile an unchanged unresolved disagreement", () => {
+    withTempRoot((root) => {
+      recordReviewThreadObservation({
+        repoRoot: root,
+        observedAt: TICK,
+        tick: TICK,
+        operativeAuthorization: AUTH,
+        observation: observation("otto", "resolve"),
+      });
+      recordReviewThreadObservation({
+        repoRoot: root,
+        observedAt: "2026-06-01T11:10:00Z",
+        tick: "2026-06-01T11:10:00Z",
+        operativeAuthorization: AUTH,
+        observation: observation("codex-loop", "needs-fix"),
+      });
+
+      const result = recordReviewThreadObservation({
+        repoRoot: root,
+        observedAt: "2026-06-01T11:11:00Z",
+        tick: "2026-06-01T11:11:00Z",
+        operativeAuthorization: AUTH,
+        observation: observation("otto", "resolve"),
+      });
+
+      expect(result.compared).toBe(1);
+      expect(result.filed).toEqual([]);
+      expect(result.noDisagreements).toEqual([
+        {
+          prior: result.noDisagreements[0]!.prior,
+          reason: "already-filed",
+        },
+      ]);
+      expect(divergenceFiles(root)).toHaveLength(1);
+      expect(loadObservationStore(root).observations).toHaveLength(3);
     });
   });
 

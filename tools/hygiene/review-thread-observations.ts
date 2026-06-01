@@ -7,7 +7,7 @@
 // with prior observations for that same thread from other loop identities, and
 // invoke fileReviewThreadDisagreement when conclusions differ.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, normalize } from "node:path";
 
 import {
@@ -25,9 +25,18 @@ export interface StoredReviewThreadObservation {
   readonly observation: ReviewThreadObservation;
 }
 
+export interface StoredReviewThreadDisagreement {
+  readonly filedAt: string;
+  readonly prNumber: number;
+  readonly threadId: string;
+  readonly conclusions: readonly [string, string];
+  readonly relPath: string;
+}
+
 export interface ReviewThreadObservationStore {
   readonly schemaVersion: typeof SCHEMA_VERSION;
   readonly observations: ReadonlyArray<StoredReviewThreadObservation>;
+  readonly filedDisagreements?: ReadonlyArray<StoredReviewThreadDisagreement>;
 }
 
 export interface RecordReviewThreadObservationInput {
@@ -44,9 +53,11 @@ export interface FiledReviewThreadDisagreement {
   readonly outcome: Extract<ReviewThreadShardOutcome, { readonly kind: "filed" }>;
 }
 
+export type ReviewThreadObservationNoFileReason = ReviewThreadNoDisagreementReason | "already-filed";
+
 export interface ReviewThreadNoDisagreement {
   readonly prior: StoredReviewThreadObservation;
-  readonly reason: ReviewThreadNoDisagreementReason;
+  readonly reason: ReviewThreadObservationNoFileReason;
 }
 
 export interface RecordReviewThreadObservationResult {
@@ -101,7 +112,7 @@ export function validateReviewThreadObservation(observation: ReviewThreadObserva
 }
 
 export function emptyObservationStore(): ReviewThreadObservationStore {
-  return { schemaVersion: SCHEMA_VERSION, observations: [] };
+  return { schemaVersion: SCHEMA_VERSION, observations: [], filedDisagreements: [] };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -151,6 +162,27 @@ function parseStoredObservation(value: unknown, index: number): StoredReviewThre
   return stored;
 }
 
+function parseStoredDisagreement(value: unknown, index: number): StoredReviewThreadDisagreement {
+  if (!isRecord(value)) {
+    throw new Error(`observation store filedDisagreements entry ${index} must be an object`);
+  }
+  const conclusions = value["conclusions"];
+  if (!Array.isArray(conclusions) || conclusions.length !== 2) {
+    throw new Error(`observation store filedDisagreements entry ${index}.conclusions must be a 2-item array`);
+  }
+  const prNumber = value["prNumber"];
+  if (typeof prNumber !== "number" || !Number.isInteger(prNumber) || prNumber <= 0) {
+    throw new Error(`observation store filedDisagreements entry ${index}.prNumber must be a positive integer`);
+  }
+  return {
+    filedAt: nonBlank(stringField(value, "filedAt"), `filedDisagreements entry ${index}.filedAt`),
+    prNumber,
+    threadId: nonBlank(stringField(value, "threadId"), `filedDisagreements entry ${index}.threadId`),
+    conclusions: [normalizedConclusion(String(conclusions[0])), normalizedConclusion(String(conclusions[1]))],
+    relPath: normalizeRelPath(stringField(value, "relPath")),
+  };
+}
+
 export function parseObservationStore(text: string): ReviewThreadObservationStore {
   const parsed: unknown = JSON.parse(text);
   if (!isRecord(parsed)) {
@@ -163,9 +195,14 @@ export function parseObservationStore(text: string): ReviewThreadObservationStor
   if (!Array.isArray(observations)) {
     throw new Error("observation store observations must be an array");
   }
+  const filedDisagreements = parsed["filedDisagreements"];
+  if (filedDisagreements !== undefined && !Array.isArray(filedDisagreements)) {
+    throw new Error("observation store filedDisagreements must be an array");
+  }
   return {
     schemaVersion: SCHEMA_VERSION,
     observations: observations.map(parseStoredObservation),
+    filedDisagreements: filedDisagreements?.map(parseStoredDisagreement) ?? [],
   };
 }
 
@@ -200,6 +237,62 @@ function differentLoopIdentity(a: ReviewThreadObservation, b: ReviewThreadObserv
   return identityKey(a) !== identityKey(b);
 }
 
+function normalizedConclusion(value: string): string {
+  return nonBlank(value, "conclusion").toLowerCase();
+}
+
+function disagreementConclusions(a: ReviewThreadObservation, b: ReviewThreadObservation): readonly [string, string] {
+  const sorted = [normalizedConclusion(a.conclusion), normalizedConclusion(b.conclusion)].sort();
+  return [sorted[0]!, sorted[1]!];
+}
+
+function sameFiledDisagreement(
+  filed: StoredReviewThreadDisagreement,
+  a: ReviewThreadObservation,
+  b: ReviewThreadObservation,
+): boolean {
+  const conclusions = disagreementConclusions(a, b);
+  return (
+    filed.prNumber === a.prNumber &&
+    filed.threadId === nonBlank(a.threadId, "threadId") &&
+    filed.conclusions[0] === conclusions[0] &&
+    filed.conclusions[1] === conclusions[1]
+  );
+}
+
+function sleepMs(ms: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function acquireObservationStoreLock(
+  repoRoot: string,
+  storeRelPath: string,
+): { readonly absPath: string; readonly fd: number } {
+  const lockAbsPath = join(repoRoot, `${normalizeRelPath(storeRelPath)}.lock`);
+  mkdirSync(dirname(lockAbsPath), { recursive: true });
+  const deadline = Date.now() + 5000;
+  for (;;) {
+    try {
+      return { absPath: lockAbsPath, fd: openSync(lockAbsPath, "wx") };
+    } catch (err) {
+      if (!isRecord(err) || err["code"] !== "EEXIST" || Date.now() >= deadline) {
+        throw err;
+      }
+      sleepMs(25);
+    }
+  }
+}
+
+function withObservationStoreLock<T>(repoRoot: string, storeRelPath: string, fn: () => T): T {
+  const lock = acquireObservationStoreLock(repoRoot, storeRelPath);
+  try {
+    return fn();
+  } finally {
+    closeSync(lock.fd);
+    unlinkSync(lock.absPath);
+  }
+}
+
 export function recordReviewThreadObservation(
   input: RecordReviewThreadObservationInput,
 ): RecordReviewThreadObservationResult {
@@ -209,45 +302,64 @@ export function recordReviewThreadObservation(
   nonBlank(input.operativeAuthorization, "operativeAuthorization");
   validateReviewThreadObservation(input.observation);
 
-  const store = loadObservationStore(input.repoRoot, storeRelPath);
-  const current: StoredReviewThreadObservation = {
-    observedAt: input.observedAt,
-    observation: input.observation,
-  };
-  const priorSameThread = store.observations.filter(
-    (prior) =>
-      sameReviewThread(prior.observation, input.observation) &&
-      differentLoopIdentity(prior.observation, input.observation),
-  );
+  return withObservationStoreLock(input.repoRoot, storeRelPath, () => {
+    const store = loadObservationStore(input.repoRoot, storeRelPath);
+    const current: StoredReviewThreadObservation = {
+      observedAt: input.observedAt,
+      observation: input.observation,
+    };
+    const priorSameThread = store.observations.filter(
+      (prior) =>
+        sameReviewThread(prior.observation, input.observation) &&
+        differentLoopIdentity(prior.observation, input.observation),
+    );
 
-  const filed: FiledReviewThreadDisagreement[] = [];
-  const noDisagreements: ReviewThreadNoDisagreement[] = [];
-  for (const prior of priorSameThread) {
-    const outcome = fileReviewThreadDisagreement(input.repoRoot, {
-      tick: input.tick,
-      loopA: prior.observation,
-      loopB: input.observation,
-      operativeAuthorization: input.operativeAuthorization,
-    });
-    if (outcome.kind === "filed") {
-      filed.push({ prior, outcome });
-    } else {
-      noDisagreements.push({ prior, reason: outcome.reason });
+    const filedDisagreements = [...(store.filedDisagreements ?? [])];
+    const filed: FiledReviewThreadDisagreement[] = [];
+    const noDisagreements: ReviewThreadNoDisagreement[] = [];
+    for (const prior of priorSameThread) {
+      if (
+        normalizedConclusion(prior.observation.conclusion) !== normalizedConclusion(input.observation.conclusion) &&
+        filedDisagreements.some((existing) => sameFiledDisagreement(existing, prior.observation, input.observation))
+      ) {
+        noDisagreements.push({ prior, reason: "already-filed" });
+        continue;
+      }
+
+      const outcome = fileReviewThreadDisagreement(input.repoRoot, {
+        tick: input.tick,
+        loopA: prior.observation,
+        loopB: input.observation,
+        operativeAuthorization: input.operativeAuthorization,
+      });
+      if (outcome.kind === "filed") {
+        filed.push({ prior, outcome });
+        filedDisagreements.push({
+          filedAt: input.tick,
+          prNumber: input.observation.prNumber,
+          threadId: nonBlank(input.observation.threadId, "threadId"),
+          conclusions: disagreementConclusions(prior.observation, input.observation),
+          relPath: outcome.write.relPath,
+        });
+      } else {
+        noDisagreements.push({ prior, reason: outcome.reason });
+      }
     }
-  }
 
-  writeObservationStore(input.repoRoot, storeRelPath, {
-    schemaVersion: SCHEMA_VERSION,
-    observations: [...store.observations, current],
+    writeObservationStore(input.repoRoot, storeRelPath, {
+      schemaVersion: SCHEMA_VERSION,
+      observations: [...store.observations, current],
+      filedDisagreements,
+    });
+
+    return {
+      storeRelPath,
+      stored: current,
+      compared: priorSameThread.length,
+      filed,
+      noDisagreements,
+    };
   });
-
-  return {
-    storeRelPath,
-    stored: current,
-    compared: priorSameThread.length,
-    filed,
-    noDisagreements,
-  };
 }
 
 function hasFlagValue(value: string | undefined): value is string {
