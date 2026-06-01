@@ -37,7 +37,7 @@ export type FailureKind =
   | "UnsupportedArchitecture"
   | "UnsupportedProvider"
   | "MissingTool"
-  | "DockerUnavailable"
+  | "ContainerRuntimeUnavailable"
   | "ClusterBootstrapFailed"
   | "KubectlFailed"
   | "ArgoCdTimeout"
@@ -63,6 +63,7 @@ export interface CliOptions {
   readonly pollSeconds: number;
   readonly driftCheck: boolean;
   readonly scope: Scope;
+  readonly scopeExplicit: boolean;
   readonly runtime: ContainerRuntime;
 }
 
@@ -137,6 +138,7 @@ interface MutableCliOptions {
   pollSeconds: number;
   driftCheck: boolean;
   scope: Scope;
+  scopeExplicit: boolean;
   runtime: ContainerRuntime;
 }
 
@@ -286,6 +288,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       pollSeconds: DEFAULT_POLL_SECONDS,
       driftCheck: false,
       scope: provider === "kind" ? "smoke" : "full",
+      scopeExplicit: false,
       runtime,
     },
   };
@@ -349,6 +352,7 @@ function parseScopeFlag(argv: readonly string[], index: number, options: Mutable
     return { ok: false, failure: usageFailure(`unsupported scope: ${parsed.value}`) };
   }
   options.scope = parsed.value;
+  options.scopeExplicit = true;
   return { ok: true, nextIndex: index + 2 };
 }
 
@@ -398,6 +402,9 @@ function validateOptions(options: CliOptions): Failure | null {
   if (options.provider === "k3d" && options.runtime === "podman") {
     return usageFailure("k3d + podman is not wired yet; use --provider kind --runtime podman for the Podman lane");
   }
+  if (options.provider === "kind" && options.scope === "full") {
+    return usageFailure("kind provider supports smoke scope only; use --scope smoke or --provider k3d for full");
+  }
   const configFile = basename(options.configPath).toLowerCase();
   if (options.provider === "kind" && configFile.includes("k3d")) {
     return usageFailure("kind provider requires a kind config; got a k3d config path");
@@ -412,7 +419,7 @@ function normalizeProviderDefaults(options: MutableCliOptions): void {
   if (!options.configExplicit && options.provider === "kind" && options.configPath === DEFAULT_K3D_CONFIG) {
     options.configPath = DEFAULT_KIND_CONFIG;
   }
-  if (options.provider === "kind" && options.scope === "full") {
+  if (!options.scopeExplicit && options.provider === "kind" && options.scope === "full") {
     options.scope = "smoke";
   }
 }
@@ -659,7 +666,7 @@ export function preflightFailure(preflight: readonly ToolCheck[]): Failure | nul
   if (missing === undefined) return null;
   if ((missing.tool === "docker" || missing.tool === "podman") && isRuntimeUnavailable(missing.detail)) {
     return {
-      kind: "DockerUnavailable",
+      kind: "ContainerRuntimeUnavailable",
       message: `${missing.tool} is unavailable: ${missing.detail}`,
       detail: missing,
     };
@@ -1044,7 +1051,7 @@ function exitCode(result: HarnessResult): 0 | 1 | 2 {
   if (result.ok) return 0;
   return result.failure.kind === "UsageError" ||
     result.failure.kind === "MissingTool" ||
-    result.failure.kind === "DockerUnavailable" ||
+    result.failure.kind === "ContainerRuntimeUnavailable" ||
     result.failure.kind === "UnsupportedProvider" ||
     result.failure.kind === "UnsupportedArchitecture"
     ? 2

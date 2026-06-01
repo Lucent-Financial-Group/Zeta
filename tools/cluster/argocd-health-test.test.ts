@@ -102,6 +102,13 @@ describe("B-0967 argocd-health-test argument parsing", () => {
     if (!("kind" in parsed)) throw new Error("expected usage error");
     expect(parsed.message).toContain("kind provider requires a kind config");
   });
+
+  test("rejects explicit full scope on kind instead of silently coercing it", () => {
+    const parsed = parseArgs(["--run", "--provider", "kind", "--scope", "full"], {});
+    expect("kind" in parsed).toBe(true);
+    if (!("kind" in parsed)) throw new Error("expected usage error");
+    expect(parsed.message).toContain("kind provider supports smoke scope only");
+  });
 });
 
 describe("B-0967 argocd-health-test manifest parsing", () => {
@@ -261,7 +268,7 @@ describe("B-0967 argocd-health-test planning", () => {
 });
 
 describe("B-0967 argocd-health-test preflight failures", () => {
-  test("classifies a present but down Docker daemon separately from missing tools", () => {
+  test("classifies a present but down container runtime separately from missing tools", () => {
     const failure = preflightFailure([
       {
         tool: "docker",
@@ -269,6 +276,6 @@ describe("B-0967 argocd-health-test preflight failures", () => {
         detail: "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?",
       },
     ]);
-    expect(failure?.kind).toBe("DockerUnavailable");
+    expect(failure?.kind).toBe("ContainerRuntimeUnavailable");
   });
 });
