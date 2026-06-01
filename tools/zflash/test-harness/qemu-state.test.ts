@@ -258,6 +258,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
     }> = [];
     const stoppedPids: number[] = [];
     const serialPaths: string[] = [];
+    let serialReadCount = 0;
     const executor = createSpawnSyncQcow2RetentionExecutor({
       cwd: "/tmp/zeta-worktree",
       timeoutMs: 1234,
@@ -272,10 +273,18 @@ describe("B-0891 QEMU state-preservation planner", () => {
       },
       readSerialOutput: (serialLogPath) => {
         serialPaths.push(serialLogPath);
+        serialReadCount += 1;
+        if (serialReadCount === 1) {
+          return "";
+        }
         if (managedObserved.length === 1) {
           return "[iter-5.1] install reached post-nixos-install marker";
         }
+        if (serialReadCount === 3) {
+          return "[iter-5.1] install reached post-nixos-install marker";
+        }
         return [
+          "[iter-5.1] install reached post-nixos-install marker",
           "zeta-creds-restore: reading preserved ESP blob",
           "zeta-creds-restore: already-present, skipping credential rewrite",
         ].join("\n");
@@ -300,7 +309,13 @@ describe("B-0891 QEMU state-preservation planner", () => {
       expect(observed.every((entry) => entry.options.timeoutMs === 1234)).toBe(true);
       expect(managedObserved.every((entry) => entry.options.cwd === "/tmp/zeta-worktree")).toBe(true);
       expect(managedObserved.every((entry) => entry.options.timeoutMs === 1234)).toBe(true);
-      expect(serialPaths).toEqual(["/tmp/serial.log", "/tmp/serial.log", "/tmp/serial.log"]);
+      expect(serialPaths).toEqual([
+        "/tmp/serial.log",
+        "/tmp/serial.log",
+        "/tmp/serial.log",
+        "/tmp/serial.log",
+        "/tmp/serial.log",
+      ]);
       expect(stoppedPids).toEqual([4201, 4202]);
       expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("[iter-5.1]");
       expect(result.ok.commandExecutions[5]?.serialStop?.matchedMarkers).toContain("already-present");
@@ -308,12 +323,59 @@ describe("B-0891 QEMU state-preservation planner", () => {
     }
   });
 
+  test("scans only new serial output for each lifecycle-managed QEMU phase", () => {
+    const managedObserved: QemuCommand[] = [];
+    const staleSerial = [
+      "[iter-5.1] install reached post-nixos-install marker",
+      "nixos@zeta-installer:~]$",
+    ].join("\n");
+    const readsByManagedCount = new Map<number, number>();
+    const executor = createSpawnSyncQcow2RetentionExecutor({
+      pollIntervalMs: 1,
+      spawnCommand: () => ({ exitCode: 0, stdout: "ok", stderr: "" }),
+      spawnManagedCommand: (command) => {
+        managedObserved.push(command);
+        return managedProcess(5300 + managedObserved.length, []);
+      },
+      readSerialOutput: () => {
+        const managedCount = managedObserved.length;
+        const nextRead = (readsByManagedCount.get(managedCount) ?? 0) + 1;
+        readsByManagedCount.set(managedCount, nextRead);
+        if (managedCount === 0) {
+          return "";
+        }
+        if (managedCount === 1) {
+          return staleSerial;
+        }
+        if (nextRead === 1) {
+          return staleSerial;
+        }
+        return [
+          staleSerial,
+          "zeta-creds-restore: reading preserved ESP blob",
+          "zeta-creds-restore: already-present, skipping credential rewrite",
+        ].join("\n");
+      },
+    });
+
+    const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), executor);
+
+    expect("ok" in result).toBe(true);
+    if ("ok" in result) {
+      expect(result.ok.commandExecutions[5]?.serialStop?.matchedMarkers).toContain("already-present");
+    }
+  });
+
   test("fails initial install when the installer prompt appears before post-install marker", () => {
+    let readCount = 0;
     const executor = createSpawnSyncQcow2RetentionExecutor({
       pollIntervalMs: 1,
       spawnCommand: () => ({ exitCode: 0, stdout: "ok", stderr: "" }),
       spawnManagedCommand: () => managedProcess(5201, []),
-      readSerialOutput: () => "nixos@zeta-installer:~]$",
+      readSerialOutput: () => {
+        readCount += 1;
+        return readCount === 1 ? "" : "nixos@zeta-installer:~]$";
+      },
     });
 
     const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), executor);
@@ -331,6 +393,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
 
   test("fails retained restart when the plain installer prompt appears before retention markers", () => {
     const managedObserved: QemuCommand[] = [];
+    let serialReadCount = 0;
     const executor = createSpawnSyncQcow2RetentionExecutor({
       pollIntervalMs: 1,
       spawnCommand: () => ({ exitCode: 0, stdout: "ok", stderr: "" }),
@@ -339,7 +402,14 @@ describe("B-0891 QEMU state-preservation planner", () => {
         return managedProcess(5100 + managedObserved.length, []);
       },
       readSerialOutput: () => {
+        serialReadCount += 1;
+        if (serialReadCount === 1) {
+          return "";
+        }
         if (managedObserved.length === 1) {
+          return "[iter-5.1] install reached post-nixos-install marker";
+        }
+        if (serialReadCount === 3) {
           return "[iter-5.1] install reached post-nixos-install marker";
         }
         return "nixos@zeta-installer:~]$";
@@ -361,11 +431,15 @@ describe("B-0891 QEMU state-preservation planner", () => {
   });
 
   test("fails a lifecycle-managed QEMU phase when a serial failure marker appears", () => {
+    let readCount = 0;
     const executor = createSpawnSyncQcow2RetentionExecutor({
       pollIntervalMs: 1,
       spawnCommand: () => ({ exitCode: 0, stdout: "ok", stderr: "" }),
       spawnManagedCommand: () => managedProcess(5001, []),
-      readSerialOutput: () => "panic: installer crashed",
+      readSerialOutput: () => {
+        readCount += 1;
+        return readCount === 1 ? "" : "panic: installer crashed";
+      },
     });
 
     const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), executor);

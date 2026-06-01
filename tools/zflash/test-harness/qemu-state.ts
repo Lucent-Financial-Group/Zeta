@@ -500,6 +500,15 @@ function firstMatchedMarker(serialOutput: string, markers: readonly string[]): s
   return markers.find((marker) => serialOutput.includes(marker));
 }
 
+function serialOutputAfterBaseline(serialOutput: string, baseline: string): string {
+  if (baseline.length === 0) {
+    return serialOutput;
+  }
+  return serialOutput.startsWith(baseline)
+    ? serialOutput.slice(baseline.length)
+    : serialOutput;
+}
+
 function runManagedCommandUntilSerialMarkers(
   step: Qcow2RetentionExecutionStep,
   command: QemuCommand,
@@ -511,6 +520,18 @@ function runManagedCommandUntilSerialMarkers(
 ): QemuCommandExecution {
   const startedAt = Date.now();
   const deadline = startedAt + options.timeoutMs;
+  let serialBaseline: string;
+  try {
+    serialBaseline = readSerialOutputIfPresent(stopCondition.serialLogPath, readSerialOutput);
+  } catch (error) {
+    return {
+      step,
+      command,
+      exitCode: 1,
+      stdout: "",
+      stderr: `serial log baseline read failed while waiting for markers: ${unknownReason(error)}`,
+    };
+  }
   const managed = spawnManagedCommand(command, options);
 
   while (Date.now() < deadline) {
@@ -528,7 +549,8 @@ function runManagedCommandUntilSerialMarkers(
       };
     }
 
-    const failureMarker = firstMatchedMarker(serialOutput, stopCondition.failureMarkers);
+    const phaseSerialOutput = serialOutputAfterBaseline(serialOutput, serialBaseline);
+    const failureMarker = firstMatchedMarker(phaseSerialOutput, stopCondition.failureMarkers);
     if (failureMarker !== undefined) {
       managed.stop("SIGTERM");
       return {
@@ -540,7 +562,7 @@ function runManagedCommandUntilSerialMarkers(
       };
     }
 
-    if (allMarkersPresent(serialOutput, stopCondition.successMarkers)) {
+    if (allMarkersPresent(phaseSerialOutput, stopCondition.successMarkers)) {
       const stoppedPid = managed.pid;
       managed.stop("SIGTERM");
       return {
@@ -550,14 +572,14 @@ function runManagedCommandUntilSerialMarkers(
         stdout: `serial markers observed: ${stopCondition.successMarkers.join(", ")}`,
         stderr: managed.stderr(),
         serialStop: {
-          matchedMarkers: matchedMarkers(serialOutput, stopCondition.successMarkers),
+          matchedMarkers: matchedMarkers(phaseSerialOutput, stopCondition.successMarkers),
           elapsedMs: Date.now() - startedAt,
           ...(stoppedPid === undefined ? {} : { stoppedPid }),
         },
       };
     }
 
-    const terminalFailureMarker = firstMatchedMarker(serialOutput, stopCondition.terminalFailureMarkers ?? []);
+    const terminalFailureMarker = firstMatchedMarker(phaseSerialOutput, stopCondition.terminalFailureMarkers ?? []);
     if (terminalFailureMarker !== undefined) {
       managed.stop("SIGTERM");
       return {
