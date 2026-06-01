@@ -155,3 +155,13 @@ describe("solve — untrusted edge shape (regression)", () => {
     if (!r.ok) expect(r.reason).toBe("invalid-package");
   });
 });
+
+describe("solve — malformed edge name path fidelity (regression)", () => {
+  test("non-string name → invalid-package, path preserves the stringified bad name", async () => {
+    const bad = { kind: "registry", name: 99, version: "^1.0.0" } as unknown as AceDependency;
+    const root = pkgAt("root", "1.0.0", [bad]);
+    const r = await solve(root, fetchOf({}), new Map());
+    expect(r.ok).toBe(false);
+    if (!r.ok) { expect(r.reason).toBe("invalid-package"); expect(r.path).toEqual(["root", "99"]); }
+  });
+});

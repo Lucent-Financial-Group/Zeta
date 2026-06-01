@@ -97,7 +97,7 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
   const ingest = async (deps: ReadonlyArray<AceDependency>, ownerPath: string[], source: string): Promise<SolveResult | null> => {
     if (source !== "root") retractSource(source); // idempotency: clear this source's prior constraints before re-adding (root is seeded once; its constraints are permanent — honors retractSource's "never call with root" invariant)
     for (const edge of deps) {
-      const here = [...ownerPath, edge.name];
+      const here = [...ownerPath, String((edge as { name?: unknown }).name)];
       const ek = (edge as { readonly kind?: unknown }).kind;
       if (ek !== undefined && ek !== "inline" && ek !== "registry") {
         return { ok: false, reason: "invalid-package", detail: `${edge.name}: unknown dependency kind ${JSON.stringify(ek)}`, path: here };
