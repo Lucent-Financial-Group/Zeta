@@ -356,6 +356,9 @@ export async function main(argv: readonly string[]): Promise<number> {
     } else if (v.reason === "bad-signature") {
       console.error("ace: install refused: bad signature");
       return 1;
+    } else if (v.reason === "unsupported-algo") {
+      console.error("ace: install refused: unsupported signature algorithm (expected ed25519)");
+      return 1;
     } else if (v.reason === "untrusted-key") {
       const kid = pkg.manifest.signature?.key_id ?? "?";
       console.error(`ace: install refused: signature from untrusted key ${kid} — unknown publisher. Run 'ace trust list' to see trusted keys, or obtain the publisher's .pub and run 'ace trust add <pub>'.`);

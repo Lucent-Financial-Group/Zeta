@@ -476,4 +476,36 @@ describe("main", () => {
     writeFileSync(pkgPath, JSON.stringify(pkg));
     expect(await main(["install", pkgPath, "--allow-unsigned", "--store", store])).toBe(0);
   });
+
+  test("install algo-tampered (signed+trusted, algo->none) - exit 1 (unsupported-algo, NOT allow-unsigned-overridable)", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const { pkgPath, kp, dir } = signedPkgFixture();
+    // Trust the key -- key IS trusted, but we tamper algo before installing
+    const pubPath = writePubFile(dir, kp);
+    await main(["trust", "add", pubPath]);
+    // Read the package and tamper signature.algo
+    const pkg = JSON.parse(require("node:fs").readFileSync(pkgPath, "utf8"));
+    pkg.manifest.signature.algo = "none";
+    const tamperedPath = join(dir, "algo-tampered.json");
+    writeFileSync(tamperedPath, JSON.stringify(pkg));
+    // Should be refused even though key is trusted
+    const code = await main(["install", tamperedPath, "--store", store]);
+    expect(code).toBe(1);
+  });
+
+  test("install algo-tampered with --allow-unsigned - still exit 1 (unsupported-algo is never overridable)", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const { pkgPath, kp, dir } = signedPkgFixture();
+    // Trust the key
+    const pubPath = writePubFile(dir, kp);
+    await main(["trust", "add", pubPath]);
+    // Tamper algo
+    const pkg = JSON.parse(require("node:fs").readFileSync(pkgPath, "utf8"));
+    pkg.manifest.signature.algo = "none";
+    const tamperedPath = join(dir, "algo-tampered2.json");
+    writeFileSync(tamperedPath, JSON.stringify(pkg));
+    // --allow-unsigned must NOT override algorithm-confusion
+    const code = await main(["install", tamperedPath, "--allow-unsigned", "--store", store]);
+    expect(code).toBe(1);
+  });
 });

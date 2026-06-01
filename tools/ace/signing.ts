@@ -15,7 +15,7 @@ export interface AceSignature { algo: "ed25519"; key_id: string; sig: string; }
 export interface TrustEntry { public_key: string; label?: string; }
 export type VerifyResult =
   | { ok: true; key_id: string; label?: string }
-  | { ok: false; reason: "no-signature" | "untrusted-key" | "bad-signature" };
+  | { ok: false; reason: "no-signature" | "untrusted-key" | "bad-signature" | "unsupported-algo" };
 
 /** key_id = "ed25519:" + first 16 hex of sha256(SPKI-DER). */
 export function keyId(spkiB64: string): string {
@@ -62,6 +62,7 @@ export function verifySignature(
 ): VerifyResult {
   const signature = (manifest as AceManifest & { signature?: AceSignature }).signature;
   if (!signature) return { ok: false, reason: "no-signature" };
+  if (signature.algo !== "ed25519") return { ok: false, reason: "unsupported-algo" };
   const entry = trustStore.get(signature.key_id);
   if (!entry) return { ok: false, reason: "untrusted-key" };
   let verified = false;

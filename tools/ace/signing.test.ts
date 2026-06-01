@@ -75,4 +75,16 @@ describe("sign + verify", () => {
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("no-signature");
   });
+
+  test("tampered signature.algo -> unsupported-algo (algorithm-confusion / alg:none)", () => {
+    const kp = generateKeypair();
+    const m = baseManifest();
+    const sig = signManifest(m, kp.privatePem);
+    // Mutate algo to "none" on an otherwise validly-signed manifest
+    const signed = { ...m, signature: { ...sig, algo: "none" as "ed25519" } };
+    const trust: Map<string, TrustEntry> = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    const r = verifySignature(signed, trust);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("unsupported-algo");
+  });
 });
