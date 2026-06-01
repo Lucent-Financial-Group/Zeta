@@ -32,7 +32,7 @@ metadata:
 servers: 1
 agents: 2
 
-image: rancher/k3s:v1.31.5-k3s1
+image: rancher/k3s:v1.36.1-k3s1
 
 network: zeta-dev   # named docker network so cilium can reach pods
 
@@ -62,6 +62,12 @@ options:
     wait: false
   k3s:
     extraArgs:
+      # Use embedded etcd rather than K3S's default sqlite/kine datastore.
+      # On Docker Desktop for macOS, the sqlite/kine path has repeatedly
+      # produced slow reads and apiserver post-start hook panics before
+      # kubeconfig exists.
+      - arg: --cluster-init
+        nodeFilters: [server:*]
       # Disable bundled CNI / kube-proxy / network-policy - Cilium
       # takes all three.
       - arg: --flannel-backend=none

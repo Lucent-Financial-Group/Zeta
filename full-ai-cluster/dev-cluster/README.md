@@ -125,9 +125,12 @@ sync/health, and keeps this Kubernetes/ArgoCD proof separate from the USB/ISO
 zflash retention lane.
 
 The current conservative CI path is kind-on-Docker smoke. k3d remains the
-closer Cilium-parity lane, but a k3d control-plane failure before kubeconfig
-exists is a substrate/runtime failure, not an ArgoCD chart failure. Podman is
-supported through kind; give the Podman VM enough memory before asking it to
+closer Cilium-parity lane. The k3d configs pin `rancher/k3s:v1.36.1-k3s1`,
+matching the repo's pinned `kubectl 1.36.1`; a k3d control-plane failure before
+kubeconfig exists is a substrate/runtime failure, not an ArgoCD chart failure.
+The single-node k3d CI profile also uses embedded etcd and trims impossible
+single-node Cilium targets (`operator.replicas=1`, no Hubble relay/UI). Podman
+is supported through kind; give the Podman VM enough memory before asking it to
 reconcile the full ArgoCD graph.
 
 Smoke is only the first rung. The default ISO/USB install target is a full

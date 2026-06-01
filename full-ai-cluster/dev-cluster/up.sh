@@ -88,6 +88,14 @@ case "$CLUSTER_NAME" in
 esac
 KUBECONTEXT="k3d-${CLUSTER_NAME}"
 K3D_SERVER_HOST="${KUBECONTEXT}-server-0"
+AGENT_COUNT="$(awk '
+  /^[[:space:]]*agents:[[:space:]]*/ {
+    sub(/^[[:space:]]*agents:[[:space:]]*/, "")
+    print
+    exit
+  }
+' "$CONFIG_PATH")"
+AGENT_COUNT="${AGENT_COUNT:-0}"
 
 # Reject git refs that aren't safe to interpolate into the heredoc
 # below. Branch names, tags, and SHAs all fit a narrow charset.
@@ -145,6 +153,21 @@ if ! helm -n kube-system status cilium >/dev/null 2>&1; then
   echo "Installing Cilium ..."
   helm repo add cilium https://helm.cilium.io >/dev/null 2>&1 || true
   helm repo update cilium >/dev/null
+
+  cilium_extra_values=()
+  if [ "$AGENT_COUNT" = "0" ]; then
+    cilium_extra_values+=(
+      --set operator.replicas=1
+      --set hubble.relay.enabled=false
+      --set hubble.ui.enabled=false
+    )
+  else
+    cilium_extra_values+=(
+      --set hubble.relay.enabled=true
+      --set hubble.ui.enabled=true
+    )
+  fi
+
   helm install cilium cilium/cilium \
     --version 1.16.5 \
     --namespace kube-system \
@@ -152,9 +175,8 @@ if ! helm -n kube-system status cilium >/dev/null 2>&1; then
     --set k8sServiceHost="$K3D_SERVER_HOST" \
     --set k8sServicePort=6443 \
     --set hubble.enabled=true \
-    --set hubble.relay.enabled=true \
-    --set hubble.ui.enabled=true \
     --set ipam.mode=kubernetes \
+    "${cilium_extra_values[@]}" \
     --wait
 fi
 

@@ -162,6 +162,24 @@ Local outside-ISO evidence on Aaron's macOS host:
 - k3d-on-Docker failed during `k3d cluster create` before kubeconfig existed,
   with K3S/kine slow SQLite reads and apiserver post-start hook failures. That
   is before Cilium, Helm, ArgoCD, sync waves, or the Zeta charts run.
+- Follow-up pin audit found the k3d/kind/kubectl/helm mise pins already on the
+  latest stable installable versions, but the k3d node image lagged at
+  `rancher/k3s:v1.31.5-k3s1`. The k3d dev and CI profiles now pin
+  `rancher/k3s:v1.36.1-k3s1`, matching `kubectl 1.36.1`.
+- The k3d CI profile now uses embedded etcd via `--cluster-init` to avoid the
+  Docker Desktop sqlite/kine slow-read path, and `up.sh` trims Cilium's
+  single-node values when `agents: 0`.
+- With that pin and embedded-etcd change, `k3d cluster create --config
+  full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml --wait=false` succeeds
+  and `kubectl get --raw=/readyz` returns `ok` before CNI installation. That
+  proves the original pre-kubeconfig failure is past the K3S/kine substrate
+  layer.
+- The current k3d smoke still is not green. It advances past Cilium install,
+  then ArgoCD's `argocd-redis-secret-init` pre-install job times out while
+  CoreDNS/local-path-provisioner/metrics-server are unhealthy. The next k3d
+  slice should test a K3S/Cilium compatibility bump, with `cilium/cilium`
+  `1.19.4` as the current latest chart candidate, before claiming full k3d
+  ArgoCD health.
 - kind-on-Podman control-plane creation passed. Full Argo smoke on the current
   Podman VM is blocked by the 2 GiB Podman machine budget causing Kubernetes
   API timeouts under Argo/app reconciliation load.

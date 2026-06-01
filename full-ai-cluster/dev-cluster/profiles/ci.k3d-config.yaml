@@ -1,9 +1,10 @@
 # full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
 #
 # Single-node k3d profile for B-0967 GitOps health checks on CI runners.
-# It keeps the same Cilium takeover stance and ArgoCD App-of-Apps substrate
-# as the local three-node dev profile, but drops agents, registry, and host
-# port forwards so the smoke run has fewer moving parts and no port conflicts.
+# It keeps the same Cilium takeover stance and ArgoCD App-of-Apps substrate as
+# the local three-node dev profile, but drops agents, registry, host port
+# forwards, extra Cilium operator replicas, and Hubble relay/UI so the smoke
+# run has fewer moving parts and no impossible single-node scheduling targets.
 
 apiVersion: k3d.io/v1alpha5
 kind: Simple
@@ -13,7 +14,7 @@ metadata:
 servers: 1
 agents: 0
 
-image: rancher/k3s:v1.31.5-k3s1
+image: rancher/k3s:v1.36.1-k3s1
 
 network: zeta-ci
 
@@ -24,6 +25,8 @@ options:
     wait: false
   k3s:
     extraArgs:
+      - arg: --cluster-init
+        nodeFilters: [server:*]
       - arg: --flannel-backend=none
         nodeFilters: [server:*]
       - arg: --disable-kube-proxy
