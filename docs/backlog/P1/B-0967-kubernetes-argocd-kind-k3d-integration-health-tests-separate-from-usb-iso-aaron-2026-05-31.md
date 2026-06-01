@@ -145,8 +145,9 @@ The helper scripts now keep the desired-state source canonical:
   smoke substrate for Docker and Podman.
 
 The Podman lane reuses the repo-wide B-0964 OCI runtime selector:
-`ZETA_CONTAINER_RUNTIME=podman` selects Podman, while the older
-`CONTAINER_RUNTIME` name remains a compatibility alias in the shell wrappers.
+`ZETA_CONTAINER_RUNTIME=podman` selects Podman. The older
+`CONTAINER_RUNTIME` spelling is intentionally not an alias; stale callers fail
+fast instead of silently selecting the wrong runtime.
 This harness keeps provider choice explicit instead of fully auto-detecting the
 runtime because provider topology changes with the runtime. For now, k3d stays
 Docker-only because its profile depends on Docker-network and k3d registry
@@ -194,9 +195,8 @@ Local outside-ISO evidence on Aaron's macOS host:
   API timeouts under Argo/app reconciliation load.
 - The harness was aligned with the repo-wide OCI runtime swap convention after
   comparing against the B-0964 `do_item` substrate: `ZETA_CONTAINER_RUNTIME` is
-  now the first-class environment switch, `CONTAINER_RUNTIME` remains accepted
-  by `kind-up.sh`/`kind-down.sh` as an alias, and `--runtime` remains available
-  for explicit one-off runs.
+  now the only environment switch, stale `CONTAINER_RUNTIME` callers fail fast,
+  and `--runtime` remains available for explicit one-off runs.
 
 ## Full-cluster target
 

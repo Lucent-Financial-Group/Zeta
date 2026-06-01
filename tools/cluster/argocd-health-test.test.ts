@@ -79,12 +79,11 @@ describe("B-0967 argocd-health-test argument parsing", () => {
     expect(parsed.configPath).toBe("full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml");
   });
 
-  test("keeps CONTAINER_RUNTIME as a compatibility alias", () => {
+  test("rejects CONTAINER_RUNTIME instead of treating it as an alias", () => {
     const parsed = parseArgs(["--run", "--provider", "kind"], { CONTAINER_RUNTIME: "podman" });
-    expect("kind" in parsed).toBe(false);
-    if ("kind" in parsed) throw new Error(parsed.message);
-    expect(parsed.provider).toBe("kind");
-    expect(parsed.runtime).toBe("podman");
+    expect("kind" in parsed).toBe(true);
+    if (!("kind" in parsed)) throw new Error("expected usage error");
+    expect(parsed.message).toContain("CONTAINER_RUNTIME is not supported");
   });
 });
 

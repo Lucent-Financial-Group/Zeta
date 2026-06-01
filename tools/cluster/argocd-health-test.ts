@@ -219,12 +219,19 @@ function isContainerRuntime(value: string): value is ContainerRuntime {
 }
 
 function containerRuntimeFromEnv(env: NodeJS.ProcessEnv): ParseRuntimeEnvResult {
-  const raw = env.ZETA_CONTAINER_RUNTIME ?? env.CONTAINER_RUNTIME;
+  if (env.CONTAINER_RUNTIME !== undefined && env.CONTAINER_RUNTIME !== "") {
+    return {
+      ok: false,
+      failure: usageFailure("CONTAINER_RUNTIME is not supported; use ZETA_CONTAINER_RUNTIME"),
+    };
+  }
+
+  const raw = env.ZETA_CONTAINER_RUNTIME;
   if (raw === undefined || raw === "") return { ok: true, value: null };
   if (isContainerRuntime(raw)) return { ok: true, value: raw };
   return {
     ok: false,
-    failure: usageFailure(`ZETA_CONTAINER_RUNTIME/CONTAINER_RUNTIME must be docker or podman (got: ${raw})`),
+    failure: usageFailure(`ZETA_CONTAINER_RUNTIME must be docker or podman (got: ${raw})`),
   };
 }
 
@@ -506,7 +513,7 @@ export function buildPlan(options: CliOptions): HarnessPlan | Failure {
     notes: [
       "B-0967 is separate from B-0891; this harness does not test USB reformat retention.",
       "Dev excludes cilium, longhorn, and GPU model-serving app directories; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
-      "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; CONTAINER_RUNTIME remains a compatibility alias for the kind shell wrappers.",
+      "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };
 }

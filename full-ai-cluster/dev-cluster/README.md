@@ -124,10 +124,9 @@ sync/health, and keeps this Kubernetes/ArgoCD proof separate from the USB/ISO
 zflash retention lane.
 
 `ZETA_CONTAINER_RUNTIME` is the repo-wide OCI runtime switch used by the
-effectful work substrate. The kind wrappers still accept the older
-`CONTAINER_RUNTIME` name as a compatibility alias, but new commands should use
-`ZETA_CONTAINER_RUNTIME`. `--runtime` remains available for one-off explicit
-harness runs.
+effectful work substrate. The older `CONTAINER_RUNTIME` spelling is not
+accepted; stale callers fail fast instead of silently selecting the wrong
+runtime. `--runtime` remains available for one-off explicit harness runs.
 
 The current conservative CI path is kind-on-Docker smoke. k3d remains the
 closer Cilium-parity lane. The k3d configs pin `rancher/k3s:v1.36.1-k3s1`,
