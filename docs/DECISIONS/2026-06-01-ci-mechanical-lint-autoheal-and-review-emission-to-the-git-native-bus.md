@@ -140,6 +140,18 @@ pushes do not re-trigger workflows (the re-trigger wrinkle from #6393).
 4. **Required-gate re-trigger:** add an `AUTOFIX_TOKEN` PAT/App-token now (so the
    gate re-runs on healed commits while gates still exist), or accept the
    nudge-by-loop behavior since gates are being removed anyway?
+5. **Secure-checkout pattern:** the mechanical commit-back workflow (#6393) trips
+   CodeQL's "checkout of untrusted code in trusted context" — its privileged
+   (`contents: write`) job executes the PR's own `install.sh` / `bun install`
+   lifecycle scripts. The same-repo `if`-gate + `pull_request` (not
+   `pull_request_target`) close the untrusted-fork case (forks skip the
+   privileged job + get no secrets); the residual is same-repo (trusted-fleet)
+   PRs. The canonical legitimate fix is a **two-job split**: an `on: pull_request`
+   read-only job runs the fixers + uploads the patch as an artifact, and an
+   `on: workflow_run` privileged job only *applies* the patch (no untrusted
+   execution under write perms). Which does the review loop want —
+   same-repo-`if`-gate-with-justification, two-job-split, or a GitHub-App token?
+   (This interacts with Q4 — a GitHub-App token answers both.)
 
 ## Composes with
 
