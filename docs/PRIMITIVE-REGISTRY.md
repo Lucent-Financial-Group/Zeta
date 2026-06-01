@@ -28,11 +28,18 @@ primitive wish list … so we don't forget what we want"). ✅ shipped (Tier-1/2
 building · ⬜ wished (not started). Per-language cells + detail are in the sections below;
 **add anything new here with ⬜ the moment it's named, so it's never lost.**
 
+Every primitive also gets **our own wrapper** (the hexagonal port), not just the native
+type — so the surface stays uniform across the four langs and a native-or-dep impl can be
+swapped underneath without changing callers (the dep-behind-port strategy below).
+
 - **Identity** — ✅ ZetaId (4/4)
 - **Event / reactive** — ✅ Observe loop (4/4) · ⬜ Rx-Observable = Z-set delta-stream (per-lang Rx exists; unify) · ⬜ CALM coordination-free marker
 - **Algebra ladder** — ✅ G-Set (4/4) · 🚧 Bag / multiset (next) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
+- **Numerics / algebra tower** — ⬜ complex/imaginary + the **Cayley–Dickson** tower ℝ→ℂ→ℍ→𝕆→𝕊 (F# `src/Core/CayleyDickson.fs` — the "imaginary stack", B-0623) · ⬜ Clifford / geometric algebra (F# substrate) · ✅ Z-set weight ring ℤ (F# `src/Core/Algebra.fs`)
+- **Inference** — ⬜ Infer.NET **BP/EP** factor-graph (F# substrate; architecture B-0365.5 closed + B-0637) · ⬜ uncertainty semiring (B-0367) · ⬜ posterior quorum (B-0255)
 - **Comms** — 🚧 git-native Bus (TS only)
 - **Logic / numeric** (the cross-language number BCL) — ✅ TriBoolean (digital qubit) · ✅ TriBoolean middle-out float · ⬜ `bool?` plain-Kleene · ⬜ int8…int128 / uint8…uint128 · ⬜ float32/64 · ⬜ decimal (dep-behind-port) · ⬜ bigint (dep-behind-port)
+- **Nullable / optional** — ⬜ an `Option<T>` / `T?` / nullable wrapper for **every** primitive, all four langs (F# `option`, C# `Nullable<T>` + reference-nullable, Rust `Option<T>`, TS `T | null`) — one common surface
 - **Codec / BCL-like** — ⬜ JSON · ⬜ UTF-8 · ⬜ base64 · ⬜ SHA-256 · ⬜ regex · ⬜ time/clock
 - **DST / test** — ✅ DeterministicEnv (4/4) · ✅ (F#) IClock / FrozenClock · ✅ (F#) ChaosEnvironment (seeded) · ✅ (F#) LawRunner · ✅ (F#) Injection DI seams · ⬜ cross-lang versions of all of these
 - **Concurrency / runtime / IO** (further-out) — ⬜ channels · ⬜ pipelines · ⬜ concurrent dictionary · ⬜ work-stealing / ActionBlock · ⬜ async runtime (Tokio / .NET `Task` / JS event loop) · ⬜ TCP/UDP sockets · ⬜ ASP.NET-class server
