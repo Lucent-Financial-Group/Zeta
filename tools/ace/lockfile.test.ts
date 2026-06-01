@@ -44,3 +44,31 @@ describe("buildLockfile", () => {
     }
   });
 });
+
+import { serializeLockfile, parseLockfile, type Lockfile } from "./lockfile.ts";
+
+describe("serializeLockfile / parseLockfile", () => {
+  const lf: Lockfile = {
+    format_version: 1,
+    root: { name: "root", version: "1.0.0", package_hash: "sha256:r" },
+    nodes: [{ name: "A", version: "1.2.0", url: "u/A", package_hash: "sha256:a" }],
+  };
+  test("round-trips", () => {
+    const parsed = parseLockfile(serializeLockfile(lf));
+    expect(parsed).toEqual(lf);
+  });
+  test("serialization is canonical (object keys sorted) + ends in newline", () => {
+    const s = serializeLockfile(lf);
+    expect(s.endsWith("\n")).toBe(true);
+    // canonical: every object's keys are emitted in sorted order
+    expect(s).toContain('"format_version":1');
+    expect(s.indexOf('"name"')).toBeLessThan(s.indexOf('"package_hash"')); // n < p within root
+  });
+  test("parse rejects malformed input with {error} (no throw)", () => {
+    expect("error" in parseLockfile("not json {")).toBe(true);
+    expect("error" in parseLockfile(JSON.stringify({ ...lf, format_version: 2 }))).toBe(true);
+    expect("error" in parseLockfile(JSON.stringify({ ...lf, nodes: "x" }))).toBe(true);
+    expect("error" in parseLockfile(JSON.stringify({ ...lf, nodes: [{ name: 1, version: "1", url: "u", package_hash: "h" }] }))).toBe(true);
+    expect("error" in parseLockfile(JSON.stringify({ ...lf, root: { name: "r" } }))).toBe(true);
+  });
+});

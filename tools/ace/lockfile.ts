@@ -1,4 +1,4 @@
-import { packageHash } from "./resolve.ts";
+import { canonicalJson, packageHash } from "./resolve.ts";
 import type { AcePackage, Registry } from "./store.ts";
 
 export type LockNode = { name: string; version: string; url: string; package_hash: string };
@@ -36,4 +36,34 @@ export function buildLockfile(root: AcePackage, order: AcePackage[], registry: R
     root: { name: root.manifest.name, version: root.manifest.version, package_hash: packageHash(root) },
     nodes,
   };
+}
+
+export function serializeLockfile(lf: Lockfile): string {
+  return canonicalJson(lf) + "\n";
+}
+
+/** Parse + shape-guard an untrusted lockfile string. Never throws — malformed input → {error}. */
+export function parseLockfile(json: string): Lockfile | { error: string } {
+  let v: unknown;
+  try { v = JSON.parse(json); } catch (e) { return { error: `not valid JSON: ${(e as Error).message}` }; }
+  if (typeof v !== "object" || v === null) return { error: "lockfile is not an object" };
+  const o = v as Record<string, unknown>;
+  if (o.format_version !== 1) return { error: `unsupported format_version: ${JSON.stringify(o.format_version)}` };
+  const root = o.root as Record<string, unknown> | null | undefined;
+  if (typeof root !== "object" || root === null
+      || typeof root.name !== "string" || typeof root.version !== "string" || typeof root.package_hash !== "string") {
+    return { error: "malformed lockfile root" };
+  }
+  if (!Array.isArray(o.nodes)) return { error: "lockfile nodes is not an array" };
+  const nodes: LockNode[] = [];
+  for (const n of o.nodes) {
+    const e = n as Record<string, unknown> | null;
+    if (typeof e !== "object" || e === null
+        || typeof e.name !== "string" || typeof e.version !== "string"
+        || typeof e.url !== "string" || typeof e.package_hash !== "string") {
+      return { error: "malformed lockfile node" };
+    }
+    nodes.push({ name: e.name, version: e.version, url: e.url, package_hash: e.package_hash });
+  }
+  return { format_version: 1, root: { name: root.name, version: root.version, package_hash: root.package_hash }, nodes };
 }
