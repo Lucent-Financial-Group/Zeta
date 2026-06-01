@@ -32,6 +32,30 @@ console.log(`  F#:   ${fsExists ? Object.keys(fsExists).length : "MISSING"} vect
 console.log(`  C#:   ${csExists ? Object.keys(csExists).length : "MISSING"} vectors`);
 console.log(`  Rust: ${rustExists ? Object.keys(rustExists).length : "MISSING"} vectors`);
 
+// Key-set equality, not just TS-key iteration (PR review 2026-06-01): the per-key
+// loop below catches a vector MISSING from another impl (its hex reads undefined),
+// but an EXTRA or renamed vector in another impl — drift — would slip past silently.
+// Assert every present impl has exactly the TS key set.
+const tsKeySet = new Set(keys);
+for (const [name, impl] of [
+  ["F#", fsExists],
+  ["C#", csExists],
+  ["Rust", rustExists],
+] as const) {
+  if (!impl) continue;
+  const implKeys = Object.keys(impl);
+  for (const k of implKeys) {
+    if (!tsKeySet.has(k)) {
+      console.error(`Extra vector in ${name} not present in TS: ${k}`);
+      mismatches++;
+    }
+  }
+  if (implKeys.length !== keys.length) {
+    console.error(`Vector count mismatch: TS=${keys.length} ${name}=${implKeys.length}`);
+    mismatches++;
+  }
+}
+
 for (const key of keys) {
   const tsHex = typeof ts[key] === "string" ? ts[key] : ts[key].hex;
   if (fsExists) {

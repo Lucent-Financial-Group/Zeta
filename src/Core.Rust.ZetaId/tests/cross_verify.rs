@@ -193,7 +193,21 @@ fn cross_verify_matches_shared_vectors() {
         out.push_str(if i + 1 < results.len() { ",\n" } else { "\n" });
     }
     out.push_str("}\n");
-    std::fs::write(fixture_dir.join("rust-output.json"), out).expect("write rust-output.json");
+
+    // Golden-file discipline (PR review 2026-06-01): do NOT unconditionally rewrite the
+    // tracked fixture — that dirties the working tree and fails in read-only checkouts.
+    // Default: assert the checked-in rust-output.json matches the freshly generated output.
+    // Regenerate on demand with `UPDATE_GOLDEN=1 cargo test`.
+    let output_path = fixture_dir.join("rust-output.json");
+    if std::env::var_os("UPDATE_GOLDEN").is_some() {
+        std::fs::write(&output_path, &out).expect("write rust-output.json");
+    } else {
+        let existing = std::fs::read_to_string(&output_path).unwrap_or_default();
+        assert_eq!(
+            existing, out,
+            "rust-output.json is stale — regenerate with `UPDATE_GOLDEN=1 cargo test`",
+        );
+    }
 
     let n = results.len();
     println!(
