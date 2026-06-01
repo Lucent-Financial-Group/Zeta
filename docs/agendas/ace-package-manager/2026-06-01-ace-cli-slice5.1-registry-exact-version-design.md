@@ -172,12 +172,14 @@ change that).
 ## Testing
 
 **`store.test.ts`:**
+
 - `loadRegistry` unions bundled + user; user overrides bundled on (name, version)
 - `loadRegistry` skips malformed entries (not fatal)
 - `addRegistryEntry` creates the user file + dedups by (name, version); POSIX perms 0600 file / 0700 dir; corrects a pre-existing permissive file
 - registry JSON round-trips (name → version → {url, package_hash})
 
 **`resolve.test.ts`** (injected in-memory registry + fetch):
+
 - a `registry` dep resolves: lookup → fetch → full slice-4 verify → installs
 - `registry-miss` (name or version absent) → `registry-miss` refuse
 - mixed graph: one `inline` edge + one `registry` edge → both resolve
@@ -186,6 +188,7 @@ change that).
 - exact-version: `registry` dep at a version NOT in the registry (even if a *different* version is present) → `registry-miss` (no range fallback)
 
 **`ace.test.ts`** (temp HOME + temp pkg files):
+
 - `ace registry add <name> <version> <url>` fetches + computes hash + stores; `registry list` shows it
 - `ace registry add … --hash <h>` stores without fetching
 - e2e: install a root with a `registry` dep, registry populated → both installed
