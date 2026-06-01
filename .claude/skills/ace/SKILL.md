@@ -191,8 +191,11 @@ ace update  <pkg> --offline [--lockfile <path>]
 - The past-staleness gate is skipped (stale cache is accepted as-is).
 - The signature, anti-rollback, and future-skew gates are still enforced
   against the cached index.
-- `--offline` composes with `--frozen`: both flags may be supplied together for a
-  fully network-free reproducible replay that still enforces authenticity.
+- `--offline` composes with `--frozen`: both flags may be supplied together; the
+  registry-index fetch uses the cache (no registry network) while package artifacts
+  at `http(s)` URLs are still fetched. `--offline` skips the *registry* network,
+  not all network. The signature, anti-rollback, and future-skew gates remain
+  enforced against the cached index throughout.
 
 ### Index cache
 
