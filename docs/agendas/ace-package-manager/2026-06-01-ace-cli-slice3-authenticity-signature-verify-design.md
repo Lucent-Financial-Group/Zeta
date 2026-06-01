@@ -4,7 +4,8 @@
 > brainstorming: trust model = **both** bundled-root + user-addable; enforcement =
 > **signed-enforced, unsigned needs `--allow-unsigned`**; scope = **verify + trust
 > add + minimal `ace sign`**). This doc is the faithful transcription for review
-> before the implementation plan.
+> before the implementation plan. Updated 2026-06-01 for two PR #6315 review
+> findings (keygen key permissions; `--allow-unsigned` override scope).
 
 Builds on slice 1 (`bun link` distribution + skill surface, #6301) and slice 2
 (content-hash **integrity** install/verify, #6308). Slice 2 deliberately shipped
@@ -27,7 +28,7 @@ attacker also controls when they control the distribution surface).
 |---|---|---|
 | **Primitive** | Ed25519 via `node:crypto` | Zero dependency, Node-floor portable (verified: sign/verify work, 44-byte SPKI keys) — matches the slices 1–2 zero-dep ethos. Not a fork; settled by the ethos. |
 | **Trust anchors** | **Both** — bundled root file (in-repo) ∪ user store (`~/.ace`) | Repo ships a root-of-trust anchor; operator extends it with third-party publisher keys. |
-| **Enforcement** | **Signed-enforced; unsigned needs `--allow-unsigned`** | Valid trusted sig → install. Bad sig → hard refuse always. Unsigned/untrusted → refuse unless `--allow-unsigned` (loud). Doesn't brick slice-2 integrity-only packages; keeps the gap opt-in + loud (slice-2 honesty ethos). |
+| **Enforcement** | **Signed-enforced.** Three distinct cases (see §6): valid trusted sig → install; **bad sig → hard refuse always**; **present-but-untrusted-key sig → hard refuse always** (operator must `ace trust add` the key — NOT overridable); **genuinely unsigned (no `signature` field) → refuse unless `--allow-unsigned`** (loud). | `--allow-unsigned` means "this package carries no signature, proceed anyway" — it **never** bypasses a *present* signature. Otherwise an attacker could staple a junk/untrusted signature and ride the override path, defeating signed-enforcement. Genuinely-unsigned stays overridable so slice-2 integrity-only packages aren't bricked. |
 | **Scope** | **verify + `ace trust add` + minimal `ace sign`** (+ `keygen`) | Full produce→sign→trust→verify loop is in-tool + dogfoodable; testable end-to-end. |
 
 ## 3. Signature format (additive, back-compatible)
@@ -63,14 +64,15 @@ canonical `files` JSON, slice 2), so **one signature binds both identity
 - **`loadTrustStore(bundledPath, userPath)`** → `Map<key_id, { public_key, label,
   source: "bundled" | "user" }>`. User entries override bundled on key_id
   collision. With both empty (the default until a key is added), **every** package
-  is untrusted → needs `--allow-unsigned`. That is the honest default: nothing is
-  trusted until a key is explicitly added.
+  is untrusted → genuinely-unsigned ones need `--allow-unsigned`, and any
+  present-but-untrusted signature is hard-refused. That is the honest default:
+  nothing is trusted until a key is explicitly added.
 
 ## 5. Verbs
 
 | Verb | Form | Behavior |
 |---|---|---|
-| `keygen` | `ace keygen [--out <prefix>]` | Generate an Ed25519 keypair. Writes `<prefix>.key` (PKCS8 PEM, private) + `<prefix>.pub` (JSON `{ algo, key_id, public_key }`). Default prefix `ace-key`. |
+| `keygen` | `ace keygen [--out <prefix>]` | Generate an Ed25519 keypair. Writes `<prefix>.key` (PKCS8 PEM, private) **with owner-only `0600` permissions — secure-create, never world-readable** (see §8) + `<prefix>.pub` (JSON `{ algo, key_id, public_key }`, normal perms). Default prefix `ace-key`. |
 | `sign` | `ace sign <pkg> --key <priv> [--out <file>]` | Read package JSON; **recompute content_hash and refuse to sign if it doesn't match** `files` (never sign tampered content); build canonical manifest bytes; Ed25519-sign with the private key; set `manifest.signature`; write to `--out` (else stdout). |
 | `trust add` | `ace trust add <pub-or-b64> [--label <name>]` | Append a public key to `~/.ace/trusted-keys.json` (create if absent; dedup by key_id). `<pub-or-b64>` = path to a `.pub` file OR a raw base64 SPKI-DER string. |
 | `trust list` | `ace trust list` | List trusted keys (bundled ∪ user) with key_id, label, source. |
@@ -88,10 +90,11 @@ never written to disk):
    - `signature` present + crypto-valid + `key_id` in trust store → **proceed**
      (record signer).
    - `signature` present but crypto-invalid → **hard refuse** (exit 1):
-     `ace: install refused: bad signature`.
+     `ace: install refused: bad signature`. **Not overridable.**
    - `signature` present but `key_id` not trusted → **hard refuse** (exit 1):
      `ace: install refused: signature from untrusted key <key_id> (ace trust add to trust it)`.
-   - `signature` absent → if `--allow-unsigned`: loud warn + proceed; else
+     **Not overridable** — `--allow-unsigned` does NOT apply to a present signature.
+   - `signature` **absent** → if `--allow-unsigned`: loud warn + proceed; else
      **refuse** (exit 1): `ace: install refused: unsigned package (use --allow-unsigned to override)`.
 3. **Integrity + extract:** `installPackage` (slice-2 content-hash verify-before-
    extract, unchanged). Files-vs-content_hash mismatch → refuse (exit 1).
@@ -100,19 +103,22 @@ never written to disk):
    - unsigned+allowed → the slice-2 line: `ace: integrity-verified (content hash). NOT authenticity-verified (--allow-unsigned).`
 
 `verifySignature(manifest, trustStore)` is **pure**: returns
-`{ ok: true, key_id, label }` or `{ ok: false, reason: "no-signature" | "untrusted-key" | "bad-signature" }`. The enforcement *policy* (which reasons refuse vs warn) lives in `ace.ts`, not in the crypto.
+`{ ok: true, key_id, label }` or `{ ok: false, reason: "no-signature" | "untrusted-key" | "bad-signature" }`. The enforcement *policy* (which reasons refuse-always vs which the `--allow-unsigned` flag may override — **only `no-signature`**) lives in `ace.ts`, not in the crypto.
 
 ## 7. Module boundaries
 
 - **`tools/ace/signing.ts`** (NEW, pure crypto, no fs/process): `generateKeypair()`
   → `{ privatePem, publicSpkiB64, keyId }`; `keyId(spkiB64)`; `canonicalManifestBytes(manifest)`;
   `signManifest(manifest, privatePem)` → signature object; `verifySignature(manifest, trustStore)`.
+  (Key-file *writing* — including the `0600` private-key permission — is I/O and
+  lives in `ace.ts`/`store.ts`, not in this pure module.)
 - **`tools/ace/store.ts`** (extended): add `trustStorePath()`, `bundledTrustPath()`,
   `loadTrustStore()`, `addTrustedKey()`, `listTrustedKeys()` — all the `~/.ace`/repo
   trust-file I/O lives here next to `defaultStorePath`/`listInstalled`. **`installPackage`
   is unchanged** (integrity-only single responsibility; slice-2 contract + tests intact).
 - **`tools/ace/ace.ts`** (extended): `parseArgs` + `main` wire `keygen`/`sign`/`trust`/
-  the install gate; orchestrates the enforcement policy.
+  the install gate; orchestrates the enforcement policy; performs the `0600`
+  secure-create when writing a generated private key.
 - **`.claude/skills/ace/SKILL.md`**: verb table + the integrity-only note updated;
   description stays ≤120 chars (per the audit).
 - **`tools/ace/store.ts` slice-3 NOTE**: the CodeQL http-to-file comment updated —
@@ -122,17 +128,28 @@ never written to disk):
 
 **Defends:** a malicious or compromised **distribution surface** (the untrusted
 skills store) — an attacker who controls the bytes cannot forge a signature without
-a trusted **private** key, and cannot reuse another package's signature (the
-signature binds name+version+content_hash).
+a trusted **private** key, cannot reuse another package's signature (the signature
+binds name+version+content_hash), and **cannot bypass verification by stapling an
+untrusted/garbage signature** (a present signature is always validated; only a
+genuinely-absent one is `--allow-unsigned`-overridable).
+
+**Private-key permissions (PR #6315 P1):** `ace keygen` writes the PKCS8 private
+key with **owner-only `0600`** (secure-create — open with mode `0o600`, or write
+then `chmod 0o600` before any secret bytes are flushed; never rely on the umask).
+A world-readable signing key on a shared machine lets another local user sign
+packages as that trusted publisher, silently defeating the trust model. The `.pub`
+file uses normal permissions. (On Windows, POSIX mode bits are advisory — `node:fs`
+applies what the platform supports; the owner-only intent is documented and applied
+where the OS honors it.)
 
 **Does NOT defend:**
 
 - An operator tricked into `ace trust add`-ing an attacker's key — that is an
   operator trust decision, outside the tool's control (the tool makes the trust set
   explicit + inspectable via `trust list`).
-- **Private-key custody** — where a publisher's private key lives is a publisher
-  concern (`ace keygen` produces one; secure storage references the
-  `agent-native-key-custody` design; not implemented here).
+- **Private-key custody** — where a publisher's private key lives long-term is a
+  publisher concern (`ace keygen` produces one with `0600`; secure storage/HSM
+  references the `agent-native-key-custody` design; not implemented here).
 - **Revocation / rotation** — no CRL/expiry in this slice (a compromised key is
   removed by editing the trust store). Tracked for 3.1.
 - **Guardian-AI oversight** (B-0288 AC) — not in this slice.
@@ -147,10 +164,12 @@ signature binds name+version+content_hash).
   user); `addTrustedKey` creates + dedups; user overrides bundled on key_id;
   `listTrustedKeys` reports source.
 - **`tools/ace/ace.test.ts`** (additions): install signed+trusted → ok + authenticity
-  message; install bad-sig → refused (exit 1); install untrusted-key → refused;
+  message; install bad-sig → refused (exit 1); install untrusted-key → refused
+  **even with `--allow-unsigned`** (override does not apply to a present signature);
   install unsigned → refused without flag; install unsigned `--allow-unsigned` → ok
-  + warn; `keygen`/`sign`/`trust add`/`trust list` parse + roundtrip; `sign` of a
-  tampered package → refused.
+  + warn; `keygen` writes the private key `0600` (assert the mode on POSIX; skip the
+  mode assertion with a printed note on Windows per the shield rule);
+  `sign`/`trust add`/`trust list` parse + roundtrip; `sign` of a tampered package → refused.
 - Gates (per the slice-2 discipline): `bun test tools/ace/` all pass; `tsc` clean on
   `tools/ace`; `ace help`/`list`/`verify` smokes; `markdownlint` SKILL.md; commit
   canary `git ls-tree HEAD | wc -l` unchanged except the new `signing.ts` /
@@ -170,5 +189,6 @@ signature binds name+version+content_hash).
 
 1. `signing.ts` — Ed25519 primitives + `signing.test.ts` (pure, no I/O).
 2. Trust store in `store.ts` + bundled `trusted-keys.json` + `store.test.ts` additions.
-3. `ace.ts` — `keygen`/`sign`/`trust` verbs + install authenticity gate + `ace.test.ts` additions.
+3. `ace.ts` — `keygen` (with `0600` private key) / `sign` / `trust` verbs + install
+   authenticity gate (`--allow-unsigned` overrides only genuinely-unsigned) + `ace.test.ts` additions.
 4. `SKILL.md` + the slice-2 "NOT authenticity-verified" line + the store.ts CodeQL NOTE updated.
