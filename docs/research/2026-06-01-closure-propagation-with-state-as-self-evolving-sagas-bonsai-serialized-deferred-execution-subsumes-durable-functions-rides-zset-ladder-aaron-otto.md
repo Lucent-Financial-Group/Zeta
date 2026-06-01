@@ -121,6 +121,83 @@ agent IS a self-propagating pattern with evolving state) and the
 `function-is-tiny-control-flow-generator` substrate (a serialized control-flow
 generator is exactly a serialized deferred-execution expression).
 
+## Every partition has self-evolving sagas — and so do cross-partition joins
+
+The operator (2026-06-01): *"so now every partition has self evolving sagas and
+so do cross partition joins."*
+
+The framework already partitions: B-0959 §0 (agent-partition) makes each surface
+a **shard**, lanes the partition, the bus the cross-machine carrier; the algebra
+ladder's IndexedZSet stores `Z[K × V]` **grouped by key** — that grouping IS the
+partition (by key). Two consequences:
+
+- **Per-partition sagas.** Each partition (shard / key-group / lane) carries its
+  own `(Bonsai tree, closure)` payloads — its own self-evolving sagas, evolving
+  locally via retraction (CALM / coordination-free: a partition advances its
+  sagas without a distributed lock round, exactly the property the relation-ring
+  ℤ-weights buy).
+- **Cross-partition joins are sagas too.** The bilinear **`join`** spanning
+  partitions (the IndexedZSet headline — merge-join on the shared key ×
+  cross-product values, weight-MULTIPLY) is *itself* a deferred computation: a
+  serialized join-expression-tree + its accumulating closure state = a saga that
+  lives **across** partitions. The join's definition can evolve (retract a
+  join-clause sub-tree, add another) by the same inverse — so a cross-partition
+  join is a **self-evolving saga over the partition boundary**.
+
+The shape is fractal: a saga inside a partition, and a saga (the join) between
+partitions, are the same primitive — `(expression-tree, closure)` on a
+retraction-native stream — at two scales. The join is not a special case; it is a
+saga whose key-domain is the pair of partitions it bridges.
+
+## The cross-partition join mediator — an agent, both sides local, saga compensation
+
+The operator (2026-06-01): *"the cross partition joins are going to need agent
+mediators that are the tick stream that have both repos pulled locally and join
+with mitigation factors in their saga for when one side fails."*
+
+This names **who runs** a cross-partition join saga and **how it survives
+partial failure**:
+
+- **The mediator is an agent, and it IS the tick stream.** A cross-partition
+  join doesn't run in a detached service — it runs as an **agent's
+  autonomous-loop tick stream** (the heartbeat). The tick stream is the
+  execution carrier for the join saga; each tick advances the merge-join +
+  evolves the saga. (Composes with the agent-loop / observe→act substrate and
+  `tick-must-never-stop`.)
+- **Both repos pulled locally.** The linear merge-join needs **both sorted runs
+  present** to scan in lock-step (O(N+M), no distributed search). So the mediator
+  agent holds **both partitions / both repos locally** — it materializes both
+  sides, then does the join as a *local* computation. This is the CALM move made
+  physical: pull both sides to one place, join coordination-free, rather than a
+  distributed lock round. (Mirrors the existing agent-worktree discipline — an
+  agent that has both checkouts can merge them; B-0959 §0 shards + bus.)
+- **Mitigation factors in the saga for when one side fails.** A cross-partition
+  join is a *long-running distributed* operation, so it is a **saga** in the
+  full sense — it must carry **compensating / mitigation actions** for the case
+  where one side is unavailable (repo unreachable, partition down, stale, or the
+  pull fails). The mitigation factors live **inside the serialized saga** (the
+  Bonsai expression tree has the fallback branches; the closure state records
+  how far the join got), so on one-side-failure the saga can: degrade to a
+  one-sided result, retract the partial join (ℤ inverse — un-emit what it
+  emitted), retry against a replica, or hold + resume when the side returns —
+  *without losing the in-flight state*, because the saga itself is durable +
+  serialized.
+
+This is the Saga pattern's defining feature (compensation on failure) but with
+the saga **self-evolving** + **serialized**: the compensation logic is data in
+the expression tree, not fixed orchestrator code, so the *mitigation strategy
+itself* can evolve. The mediator agent's tick stream is where Durable-Functions'
+"replay to rebuild state" is replaced by "the saga is already serialized + local
+— resume it directly."
+
+| Saga concern | How it lands here |
+| --- | --- |
+| Who executes | An **agent mediator**; its **tick stream** is the carrier |
+| Data locality | **Both repos / partitions pulled local** → linear merge-join, CALM |
+| Long-running durability | The saga is **serialized** (Bonsai expr-tree + closure) — resume, don't replay |
+| Partial failure | **Mitigation factors inside the saga** — compensate / retract (ℤ inverse) / retry / hold-resume |
+| Evolution | Compensation logic is **data**, so the mitigation strategy itself evolves |
+
 ## Build options (when the operator drives it — not now)
 
 The operator named two: **(a) Nuqleon Bonsai** directly (it is .NET, MIT-ish
@@ -161,8 +238,9 @@ This note **does**:
   `Checkpoint.fs`, PRIOR-ART Reaqtor⭐, the durable-functions elevator pitch, the
   travelers thread) rather than mint a parallel.
 
-The PRIMITIVE-REGISTRY want-line + a B-0640 cross-reference follow once PR #6413
-(the IndexedZSet 4/4 registry edit) merges, to avoid a registry footer conflict.
+The PRIMITIVE-REGISTRY want-line lands in **this** PR (the Event/reactive line,
+placed clear of #6413's line-49 + footer edits → clean 3-way merge). A B-0640
+status cross-reference + the 4/4-ladder footer note compose once #6413 merges.
 
 ## Sources
 
