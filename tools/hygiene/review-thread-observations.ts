@@ -65,6 +65,20 @@ export interface RecordReviewThreadObservationInput {
   readonly fileDisagreement?: ReviewThreadDisagreementWriter;
 }
 
+export interface RecordReviewThreadObservationBatchItem {
+  readonly observedAt: string;
+  readonly tick: string;
+  readonly operativeAuthorization: string;
+  readonly observation: ReviewThreadObservation;
+}
+
+export interface RecordReviewThreadObservationBatchInput {
+  readonly repoRoot: string;
+  readonly storeRelPath?: string;
+  readonly fileDisagreement?: ReviewThreadDisagreementWriter;
+  readonly observations: ReadonlyArray<RecordReviewThreadObservationBatchItem>;
+}
+
 export interface FiledReviewThreadDisagreement {
   readonly prior: StoredReviewThreadObservation;
   readonly outcome: Extract<ReviewThreadShardOutcome, { readonly kind: "filed" }>;
@@ -453,6 +467,19 @@ export function recordReviewThreadObservation(
       noDisagreements,
     };
   });
+}
+
+export function recordReviewThreadObservationBatch(
+  input: RecordReviewThreadObservationBatchInput,
+): ReadonlyArray<RecordReviewThreadObservationResult> {
+  return input.observations.map((observationInput) =>
+    recordReviewThreadObservation({
+      repoRoot: input.repoRoot,
+      storeRelPath: input.storeRelPath,
+      fileDisagreement: input.fileDisagreement,
+      ...observationInput,
+    }),
+  );
 }
 
 function hasFlagValue(value: string | undefined): value is string {
