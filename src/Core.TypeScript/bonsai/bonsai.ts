@@ -47,10 +47,58 @@ export type Expr =
 /** The serialization format version (the `v` field of the document wrapper). */
 export const BONSAI_VERSION = 1;
 
+// ---- validation helpers (construct + parse are strict conformance surfaces) -
+
+/** The valid binary operators, as a set for O(1) membership validation. */
+const BIN_OPS: ReadonlySet<string> = new Set<BinOp>(["add", "sub", "mul", "eq", "lt", "and", "or"]);
+
+/**
+ * Validate a value is a finite, JS-**safe** integer — the v1 `int` domain. An
+ * int64 from a C#/Rust oracle beyond 2^53 is REJECTED, not silently rounded,
+ * and a fractional / NaN / Infinity / non-number is rejected, not truncated —
+ * keeping the cross-language byte contract exact (a value TS cannot represent
+ * exactly must not be silently rewritten). A future v2 could widen ints to
+ * bigint/string; v1 is the safe-integer range.
+ */
+function asSafeInt(v: unknown, where: string): number {
+  if (typeof v !== "number" || !Number.isSafeInteger(v)) {
+    throw new Error(`bonsai: ${where} expects a safe integer, got ${typeof v === "number" ? String(v) : typeof v}`);
+  }
+  return v;
+}
+
+/** Validate a value is a non-null, non-array object. */
+function asObject(v: unknown, where: string): Record<string, unknown> {
+  if (typeof v !== "object" || v === null || Array.isArray(v)) {
+    const got = v === null ? "null" : Array.isArray(v) ? "array" : typeof v;
+    throw new Error(`bonsai: ${where} expects an object, got ${got}`);
+  }
+  return v as Record<string, unknown>;
+}
+
+/** Validate a value is a string. */
+function asString(v: unknown, where: string): string {
+  if (typeof v !== "string") throw new Error(`bonsai: ${where} expects a string, got ${typeof v}`);
+  return v;
+}
+
+/** Validate a value is an array. */
+function asArray(v: unknown, where: string): unknown[] {
+  if (!Array.isArray(v)) throw new Error(`bonsai: ${where} expects an array, got ${typeof v}`);
+  return v;
+}
+
+/** Validate a value is one of the known binary operators. */
+function asBinOp(v: unknown, where: string): BinOp {
+  const s = asString(v, where);
+  if (!BIN_OPS.has(s)) throw new Error(`bonsai: ${where} unknown binary operator: ${s}`);
+  return s as BinOp;
+}
+
 // ---- constructors (ergonomic builders; optional) ---------------------------
 
-/** A literal-int constant. */
-export const cint = (v: number): Expr => ({ kind: "const", value: { t: "int", v: Math.trunc(v) } });
+/** A literal-int constant. Rejects non-safe-integer / fractional / NaN / Infinity. */
+export const cint = (v: number): Expr => ({ kind: "const", value: { t: "int", v: asSafeInt(v, "cint") } });
 /** A literal-string constant. */
 export const cstr = (v: string): Expr => ({ kind: "const", value: { t: "str", v } });
 /** A literal-bool constant. */
@@ -74,7 +122,9 @@ export const cond = (test: Expr, then: Expr, els: Expr): Expr => ({ kind: "cond"
 function emitConst(c: ConstValue): string {
   switch (c.t) {
     case "int":
-      return `{"t":"int","v":${Math.trunc(c.v)}}`;
+      // Safe integers always stringify to plain digits (no exponent), so the
+      // emitted bytes are reproducible across oracles; reject anything else.
+      return `{"t":"int","v":${asSafeInt(c.v, "emit int")}}`;
     case "str":
       return `{"t":"str","v":${JSON.stringify(c.v)}}`;
     case "bool":
@@ -109,16 +159,19 @@ export function serialize(e: Expr): string {
 
 // ---- parse (canonical string -> Expr) -------------------------------------
 
-/** Rebuild a `ConstValue` from parsed JSON (validating the tag). */
+/** Rebuild a `ConstValue` from parsed JSON — strict (validates tag + value type). */
 function parseConst(n: unknown): ConstValue {
-  const o = n as Record<string, unknown>;
+  const o = asObject(n, "const value");
   switch (o.t) {
     case "int":
-      return { t: "int", v: Math.trunc(o.v as number) };
+      return { t: "int", v: asSafeInt(o.v, "const int value") };
     case "str":
-      return { t: "str", v: o.v as string };
+      return { t: "str", v: asString(o.v, "const str value") };
     case "bool":
-      return { t: "bool", v: o.v as boolean };
+      if (typeof o.v !== "boolean") {
+        throw new Error(`bonsai: const bool value expects a boolean, got ${typeof o.v}`);
+      }
+      return { t: "bool", v: o.v };
     case "null":
       return { t: "null" };
     default:
@@ -126,30 +179,35 @@ function parseConst(n: unknown): ConstValue {
   }
 }
 
-/** Rebuild an `Expr` from parsed JSON (validating the kind). */
+/** Rebuild an `Expr` from parsed JSON — strict (validates shape, kind, fields). */
 function parseNode(n: unknown): Expr {
-  const o = n as Record<string, unknown>;
-  switch (o.kind) {
+  const o = asObject(n, "node");
+  const kind = asString(o.kind, "node.kind");
+  switch (kind) {
     case "const":
       return { kind: "const", value: parseConst(o.value) };
     case "param":
-      return { kind: "param", name: o.name as string };
+      return { kind: "param", name: asString(o.name, "param.name") };
     case "lambda":
-      return { kind: "lambda", params: o.params as string[], body: parseNode(o.body) };
+      return {
+        kind: "lambda",
+        params: asArray(o.params, "lambda.params").map((p) => asString(p, "lambda.params[]")),
+        body: parseNode(o.body),
+      };
     case "binary":
-      return { kind: "binary", op: o.op as BinOp, left: parseNode(o.left), right: parseNode(o.right) };
+      return { kind: "binary", op: asBinOp(o.op, "binary.op"), left: parseNode(o.left), right: parseNode(o.right) };
     case "call":
-      return { kind: "call", fn: o.fn as string, args: (o.args as unknown[]).map(parseNode) };
+      return { kind: "call", fn: asString(o.fn, "call.fn"), args: asArray(o.args, "call.args").map(parseNode) };
     case "cond":
       return { kind: "cond", test: parseNode(o.test), then: parseNode(o.then), else: parseNode(o.else) };
     default:
-      throw new Error(`bonsai: unknown node kind: ${String(o.kind)}`);
+      throw new Error(`bonsai: unknown node kind: ${kind}`);
   }
 }
 
-/** Parse a canonical Bonsai-subset string back to an `Expr`. */
+/** Parse a canonical Bonsai-subset string back to an `Expr` — strict. */
 export function parse(s: string): Expr {
-  const doc = JSON.parse(s) as { v?: number; expr?: unknown };
+  const doc = asObject(JSON.parse(s), "document");
   if (doc.v !== BONSAI_VERSION) {
     throw new Error(`bonsai: unsupported version ${String(doc.v)} (expected ${BONSAI_VERSION})`);
   }

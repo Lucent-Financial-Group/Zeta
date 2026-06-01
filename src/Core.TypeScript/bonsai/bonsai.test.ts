@@ -16,7 +16,7 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join as pathJoin } from "node:path";
-import { equals, type Expr, parse, serialize } from "./bonsai";
+import { cint, equals, type Expr, parse, serialize } from "./bonsai";
 
 interface GoldenCase {
   readonly name: string;
@@ -87,5 +87,52 @@ describe("Bonsai-subset — round-trip + structural laws", () => {
 
   it("parse rejects an unsupported version", () => {
     expect(() => parse('{"v":2,"expr":{"kind":"param","name":"x"}}')).toThrow();
+  });
+});
+
+describe("Bonsai-subset — strict validation (the parse/construct conformance surface)", () => {
+  it("cint rejects non-integer / NaN / Infinity (no silent truncation)", () => {
+    expect(() => cint(1.9)).toThrow();
+    expect(() => cint(Number.NaN)).toThrow();
+    expect(() => cint(Number.POSITIVE_INFINITY)).toThrow();
+  });
+
+  it("cint rejects integers outside the JS safe-integer range (no silent rounding)", () => {
+    expect(() => cint(2 ** 53)).toThrow(); // 2^53 is NOT a safe integer (MAX is 2^53 - 1)
+  });
+
+  it("parse rejects a non-integer int literal", () => {
+    expect(() => parse('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":1.5}}}')).toThrow();
+  });
+
+  it("parse rejects an int beyond the safe-integer range (e.g. an int64 from another oracle)", () => {
+    expect(() => parse('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":99999999999999999}}}')).toThrow();
+  });
+
+  it("parse rejects an unknown binary operator (e.g. div)", () => {
+    expect(() =>
+      parse('{"v":1,"expr":{"kind":"binary","op":"div","left":{"kind":"param","name":"a"},"right":{"kind":"param","name":"b"}}}'),
+    ).toThrow();
+  });
+
+  it("parse rejects non-array call args", () => {
+    expect(() => parse('{"v":1,"expr":{"kind":"call","fn":"f","args":"nope"}}')).toThrow();
+  });
+
+  it("parse rejects a null expr (deterministic Bonsai error, not a generic TypeError)", () => {
+    expect(() => parse('{"v":1,"expr":null}')).toThrow();
+  });
+
+  it("parse rejects a null const value", () => {
+    expect(() => parse('{"v":1,"expr":{"kind":"const","value":null}}')).toThrow();
+  });
+
+  it("parse rejects a non-object document", () => {
+    expect(() => parse("null")).toThrow();
+    expect(() => parse("42")).toThrow();
+  });
+
+  it("parse rejects a bool literal carrying a non-boolean value", () => {
+    expect(() => parse('{"v":1,"expr":{"kind":"const","value":{"t":"bool","v":1}}}')).toThrow();
   });
 });
