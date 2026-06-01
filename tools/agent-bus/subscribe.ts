@@ -139,8 +139,8 @@ export function nextCursor(envs: readonly AgentBusEnvelope[], prior?: string): s
  * the cursor at index 0, making `subscribe.ts <cursor>` reread everything (Codex #6283).
  */
 export function parseSubscribeArgs(args: readonly string[]): {
-  cursor?: string;
-  recipient?: AgentId;
+  cursor: string | undefined;
+  recipient: AgentId | undefined;
   fetch: boolean;
 } {
   const forIdx = args.indexOf("--for");
