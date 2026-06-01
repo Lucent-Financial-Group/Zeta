@@ -132,23 +132,39 @@ export function nextCursor(envs: readonly AgentBusEnvelope[], prior?: string): s
   return envs.length > 0 ? envelopeCursor(envs[envs.length - 1]!) : prior;
 }
 
+/**
+ * Parse the subscribe CLI args (pure + testable): `[cursor] [--for <agentId>] [--no-fetch]`.
+ * The cursor is the first non-flag arg that ISN'T the `--for` value. `forValueIdx` is
+ * guarded to -1 when `--for` is absent — otherwise `forIdx (-1) + 1 = 0` would wrongly drop
+ * the cursor at index 0, making `subscribe.ts <cursor>` reread everything (Codex #6283).
+ */
+export function parseSubscribeArgs(args: readonly string[]): {
+  cursor?: string;
+  recipient?: AgentId;
+  fetch: boolean;
+} {
+  const forIdx = args.indexOf("--for");
+  const forValueIdx = forIdx >= 0 ? forIdx + 1 : -1;
+  return {
+    recipient: forIdx >= 0 ? (args[forIdx + 1] as AgentId) : undefined,
+    cursor: args.find((a, i) => !a.startsWith("--") && i !== forValueIdx),
+    fetch: !args.includes("--no-fetch"),
+  };
+}
+
 if (import.meta.main) {
   // usage: bun tools/agent-bus/subscribe.ts [cursor] [--for <agentId>] [--no-fetch]
   // cursor = "<timestamp>|<id>" from a prior run (or a bare ISO timestamp as a lower bound).
   // --for <agentId> returns only envelopes addressed to that agent or broadcast to `*`.
-  const args = process.argv.slice(2);
+  const { cursor, recipient, fetch } = parseSubscribeArgs(process.argv.slice(2));
   const ref = "origin/main";
-  if (!args.includes("--no-fetch")) {
+  if (fetch) {
     try {
       execFileSync("git", ["fetch", "origin", "main"], { stdio: "inherit" });
     } catch {
       console.warn("agent-bus: git fetch failed (offline?) — reading last-known origin/main");
     }
   }
-  const forIdx = args.indexOf("--for");
-  const recipient = forIdx >= 0 ? (args[forIdx + 1] as AgentId) : undefined;
-  // positional cursor = first non-flag arg that isn't the --for value
-  const cursor = args.find((a, i) => !a.startsWith("--") && i !== forIdx + 1);
   const envs = readEnvelopesFromGitRef(ref, AGENT_BUS_ROOT, cursor, recipient);
   console.log(JSON.stringify({ count: envs.length, cursor: nextCursor(envs, cursor), envelopes: envs }, null, 2));
 }

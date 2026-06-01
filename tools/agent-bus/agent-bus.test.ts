@@ -10,7 +10,7 @@ import { DETERMINISTIC_ENV, DEFAULT_ENV, unpack } from "../../src/Core.TypeScrip
 import { Category } from "../../src/Core.TypeScript/zeta-id/types";
 import { envelopePath, mintBusZetaIdHex, serializeEnvelope, isSafeSegment, type AgentBusEnvelope } from "./types";
 import { writeEnvelope, makeEnvelope } from "./publish";
-import { readEnvelopesSince, nextCursor, envelopeCursor } from "./subscribe";
+import { readEnvelopesSince, nextCursor, envelopeCursor, parseSubscribeArgs } from "./subscribe";
 
 let ROOT: string;
 beforeEach(() => {
@@ -187,5 +187,21 @@ describe("serializeEnvelope + makeEnvelope", () => {
     expect(e.topic).toBe("heartbeat");
     expect(e.from).toBe("otto-cli");
     expect(typeof e.expiresAt).toBe("string");
+  });
+});
+
+describe("parseSubscribeArgs (CLI arg parsing)", () => {
+  it("treats a bare positional as the cursor when --for is absent (Codex #6283 regression)", () => {
+    expect(parseSubscribeArgs(["mycursor"])).toEqual({ cursor: "mycursor", recipient: undefined, fetch: true });
+  });
+  it("parses cursor + --for in either order", () => {
+    expect(parseSubscribeArgs(["mycursor", "--for", "otto-cli"])).toEqual({ cursor: "mycursor", recipient: "otto-cli", fetch: true });
+    expect(parseSubscribeArgs(["--for", "otto-cli", "mycursor"])).toEqual({ cursor: "mycursor", recipient: "otto-cli", fetch: true });
+  });
+  it("does not mistake the --for value for the cursor", () => {
+    expect(parseSubscribeArgs(["--for", "otto-cli"]).cursor).toBeUndefined();
+  });
+  it("honors --no-fetch", () => {
+    expect(parseSubscribeArgs(["mycursor", "--no-fetch"])).toEqual({ cursor: "mycursor", recipient: undefined, fetch: false });
   });
 });
