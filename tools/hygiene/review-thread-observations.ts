@@ -7,9 +7,18 @@
 // with prior observations for that same thread from other loop identities, and
 // invoke fileReviewThreadDisagreement when conclusions differ.
 
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
+import { createHash, randomUUID } from "node:crypto";
+import {
+  closeSync,
+  existsSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, isAbsolute, join, normalize } from "node:path";
-import { createHash } from "node:crypto";
 
 import {
   fileReviewThreadDisagreement,
@@ -254,7 +263,18 @@ export function writeObservationStore(
   const relPath = normalizeRelPath(storeRelPath);
   const absPath = join(repoRoot, relPath);
   mkdirSync(dirname(absPath), { recursive: true });
-  writeFileSync(absPath, `${JSON.stringify(store, null, 2)}\n`);
+  const tempPath = `${absPath}.tmp-${process.pid}-${randomUUID()}`;
+  try {
+    writeFileSync(tempPath, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+    renameSync(tempPath, absPath);
+  } catch (err) {
+    try {
+      unlinkSync(tempPath);
+    } catch {
+      // The temp file may not exist if the write failed before creation.
+    }
+    throw err;
+  }
 }
 
 function sameReviewThread(a: ReviewThreadObservation, b: ReviewThreadObservation): boolean {
@@ -331,11 +351,31 @@ function acquireObservationStoreLock(
 
 function withObservationStoreLock<T>(repoRoot: string, storeRelPath: string, fn: () => T): T {
   const lock = acquireObservationStoreLock(repoRoot, storeRelPath);
+  let thrown: unknown;
   try {
     return fn();
+  } catch (err) {
+    thrown = err;
+    throw err;
   } finally {
-    closeSync(lock.fd);
-    unlinkSync(lock.absPath);
+    let closeErr: unknown;
+    try {
+      closeSync(lock.fd);
+    } catch (err) {
+      closeErr = err;
+    }
+    try {
+      unlinkSync(lock.absPath);
+    } catch (err) {
+      if (!isRecord(err) || err["code"] !== "ENOENT") {
+        if (thrown === undefined) {
+          throw err;
+        }
+      }
+    }
+    if (thrown === undefined && closeErr !== undefined) {
+      throw closeErr;
+    }
   }
 }
 

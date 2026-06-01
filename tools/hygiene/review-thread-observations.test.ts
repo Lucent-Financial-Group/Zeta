@@ -5,14 +5,16 @@ import { join } from "node:path";
 
 import {
   DEFAULT_OBSERVATION_STORE_REL_PATH,
+  emptyObservationStore,
   loadObservationStore,
   parseArgs,
   recordReviewThreadObservation,
+  writeObservationStore,
 } from "./review-thread-observations.ts";
 import type { ReviewThreadObservation } from "./divergence-shard.ts";
 
 const TICK = "2026-06-01T11:09:00Z";
-const AUTH = 'aaron 2026-05-14: "- **Devil-pole** (edge-runner drive): keep pushing"';
+const AUTH = "maintainer directive 2026-05-14: edge-runner drive; keep pushing";
 
 function withTempRoot(fn: (root: string) => void): void {
   const root = mkdtempSync(join(tmpdir(), "review-observation-test-"));
@@ -66,6 +68,15 @@ describe("recordReviewThreadObservation", () => {
       expect(store.filedDisagreements).toEqual([]);
       expect(existsSync(join(root, `${DEFAULT_OBSERVATION_STORE_REL_PATH}.lock`))).toBe(false);
       expect(existsSync(join(root, "docs/hygiene-history/divergences"))).toBe(false);
+    });
+  });
+
+  test("writes the observation store atomically without leaving temp files", () => {
+    withTempRoot((root) => {
+      writeObservationStore(root, DEFAULT_OBSERVATION_STORE_REL_PATH, emptyObservationStore());
+
+      expect(loadObservationStore(root).observations).toEqual([]);
+      expect(readdirSync(join(root, "docs/hygiene-history"))).toEqual(["review-thread-observations.json"]);
     });
   });
 
@@ -203,6 +214,7 @@ describe("recordReviewThreadObservation", () => {
           operativeAuthorization: AUTH,
           observation: observation("codex-loop", "needs-fix"),
           fileDisagreement: () => {
+            rmSync(join(root, `${DEFAULT_OBSERVATION_STORE_REL_PATH}.lock`), { force: true });
             throw new Error("simulated shard write failure");
           },
         }),
