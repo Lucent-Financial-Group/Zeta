@@ -9,9 +9,9 @@ open Zeta.Core
 
 // DynamicValue cross-language byte-lock — the F# oracle RE-GROUNDED against the
 // shared seed (src/Core.TypeScript/dynamic-value/golden-vectors.json). Seed-first
-// (Aaron 2026-06-01: "we are growing code from the seeds"): the seed is the
-// canonical DATA; this proves the F# canonical encoder AGREES on it
-// (encode(value) === json) for every locked vector. v1 locks
+// (the maintainer 2026-06-01: "we are growing code from the seeds"): the seed is
+// the canonical DATA; this proves the F# canonical encoder AGREES on it
+// (encode(value) = Ok json) for every locked vector. v1 locks
 // null/bool/int/string/array/object; Float + Bytes are DEFERRED (not in the
 // locked vectors). "The compilers don't lie."
 
@@ -28,6 +28,14 @@ let private repoRoot () : string =
 
     dir.FullName
 
+// Eager array of a JsonElement's children via a direct enumerator loop
+// (`[| for … -> … |]`), NOT `EnumerateArray() |> Seq.toArray`:
+// JsonElement.ArrayEnumerator is a mutable struct, and boxing it through the lazy
+// Seq pipeline corrupts its state in compiled F# (works in fsi, fails in Release)
+// — see tests/Tests.FSharp/Observe/GoldenVectors.Tests.fs.
+let private children (el: JsonElement) : JsonElement[] =
+    [| for child in el.EnumerateArray() -> child |]
+
 /// Build a DynamicValue from the seed's language-neutral tagged form `{ t, v }`.
 /// v1 locks null/bool/int/string/arr/obj; float/bytes are DEFERRED (not present
 /// in the locked vectors), so an unsupported tag fails loudly.
@@ -37,11 +45,11 @@ let rec private buildValue (el: JsonElement) : DynamicValue =
     | "bool" -> DynamicValue.Bool(el.GetProperty("v").GetBoolean())
     | "int" -> DynamicValue.Int(System.Int64.Parse(el.GetProperty("v").GetString(), CultureInfo.InvariantCulture))
     | "str" -> DynamicValue.String(el.GetProperty("v").GetString())
-    | "arr" -> DynamicValue.Array [ for item in el.GetProperty("v").EnumerateArray() -> buildValue item ]
+    | "arr" -> DynamicValue.Array [ for item in children (el.GetProperty("v")) -> buildValue item ]
     | "obj" ->
         DynamicValue.Object
-            [ for pair in el.GetProperty("v").EnumerateArray() do
-                  let parts = pair.EnumerateArray() |> Seq.toArray
+            [ for pair in children (el.GetProperty("v")) do
+                  let parts = children pair
                   yield (parts.[0].GetString(), buildValue parts.[1]) ]
     | other -> failwithf "unsupported tag in v1 seed: %s" other
 
@@ -51,7 +59,7 @@ let ``F# canonical encoder agrees with the shared DynamicValue seed (byte-lock)`
         Path.Join(repoRoot (), "src", "Core.TypeScript", "dynamic-value", "golden-vectors.json")
 
     use doc = JsonDocument.Parse(File.ReadAllText(path))
-    let vectors = doc.RootElement.GetProperty("vectors").EnumerateArray() |> Seq.toArray
+    let vectors = children (doc.RootElement.GetProperty("vectors"))
     Assert.True(vectors.Length > 0, "seed must have vectors")
 
     let failures =
@@ -59,9 +67,10 @@ let ``F# canonical encoder agrees with the shared DynamicValue seed (byte-lock)`
               let name = v.GetProperty("name").GetString()
               let value = buildValue (v.GetProperty("value"))
               let expected = v.GetProperty("json").GetString()
-              let actual = DynamicValue.toCanonicalJson value
 
-              if actual <> expected then
-                  yield sprintf "%s: expected %s but got %s" name expected actual ]
+              match DynamicValue.toCanonicalJson value with
+              | Ok actual when actual = expected -> ()
+              | Ok actual -> yield sprintf "%s: expected %s but got %s" name expected actual
+              | Error e -> yield sprintf "%s: expected %s but got Error %A" name expected e ]
 
     Assert.True(List.isEmpty failures, "byte-lock mismatches:\n" + String.concat "\n" failures)

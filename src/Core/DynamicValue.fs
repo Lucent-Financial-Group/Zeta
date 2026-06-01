@@ -136,6 +136,17 @@ type DynamicValue =
                 h <- (h * 31) ^^^ hash k ^^^ v.GetHashCode()
             h
 
+/// Why a `DynamicValue` could not be canonically encoded (v1). `Float` and
+/// `Bytes` have no canonical JSON form yet (they lock under CBOR or a tagged-JSON
+/// convention); surfaced as data per the Result-over-exception hard rule
+/// (AGENTS.md), never thrown.
+[<RequireQualifiedAccess>]
+type EncodeError =
+    /// `DynamicValue.Float` has no canonical shortest-float form in plain JSON.
+    | FloatDeferred
+    /// `DynamicValue.Bytes` has no native JSON byte type.
+    | BytesDeferred
+
 /// Companion module (the `Option`/`List` type-plus-module pattern): the tag
 /// accessor, the lazy-bind `try*` accessors, and `PropertyPath` navigation.
 module DynamicValue =
@@ -298,23 +309,55 @@ module DynamicValue =
     /// Escape a string as a JSON string literal (including the surrounding
     /// quotes), RFC 8259 minimal escaping: '"' and '\' and control chars
     /// U+0000..U+001F (short forms where they exist, else \u00XX lowercase-hex);
-    /// '/' is NOT escaped; all other characters (incl. non-ASCII / astral
-    /// surrogate pairs, appended raw per UTF-16 code unit) are emitted raw.
+    /// '/' is NOT escaped; valid surrogate PAIRS are emitted raw (the astral
+    /// char), but LONE surrogates are \u-escaped (a raw lone surrogate is not
+    /// valid Unicode and would be replaced by UTF-8 byte-locking, breaking
+    /// bijectivity); all other characters are emitted raw.
     let private escapeJsonString (s: string) : string =
         let sb = System.Text.StringBuilder(s.Length + 2)
         sb.Append('"') |> ignore
+        let mutable i = 0
 
-        for ch in s do
+        while i < s.Length do
+            let ch = s.[i]
+
             match ch with
-            | '"' -> sb.Append("\\\"") |> ignore
-            | '\\' -> sb.Append("\\\\") |> ignore
-            | '\b' -> sb.Append("\\b") |> ignore
-            | '\f' -> sb.Append("\\f") |> ignore
-            | '\n' -> sb.Append("\\n") |> ignore
-            | '\r' -> sb.Append("\\r") |> ignore
-            | '\t' -> sb.Append("\\t") |> ignore
-            | c when int c < 0x20 -> sb.AppendFormat("\\u{0:x4}", int c) |> ignore
-            | c -> sb.Append(c) |> ignore
+            | '"' ->
+                sb.Append("\\\"") |> ignore
+                i <- i + 1
+            | '\\' ->
+                sb.Append("\\\\") |> ignore
+                i <- i + 1
+            | '\b' ->
+                sb.Append("\\b") |> ignore
+                i <- i + 1
+            | '\f' ->
+                sb.Append("\\f") |> ignore
+                i <- i + 1
+            | '\n' ->
+                sb.Append("\\n") |> ignore
+                i <- i + 1
+            | '\r' ->
+                sb.Append("\\r") |> ignore
+                i <- i + 1
+            | '\t' ->
+                sb.Append("\\t") |> ignore
+                i <- i + 1
+            | c when int c < 0x20 ->
+                sb.AppendFormat("\\u{0:x4}", int c) |> ignore
+                i <- i + 1
+            | c when System.Char.IsHighSurrogate c && i + 1 < s.Length && System.Char.IsLowSurrogate s.[i + 1] ->
+                // valid surrogate pair -> emit the astral char raw
+                sb.Append(c) |> ignore
+                sb.Append(s.[i + 1]) |> ignore
+                i <- i + 2
+            | c when System.Char.IsSurrogate c ->
+                // lone surrogate -> escape (raw would be invalid Unicode / non-bijective)
+                sb.AppendFormat("\\u{0:x4}", int c) |> ignore
+                i <- i + 1
+            | c ->
+                sb.Append(c) |> ignore
+                i <- i + 1
 
         sb.Append('"') |> ignore
         sb.ToString()
@@ -327,21 +370,27 @@ module DynamicValue =
     /// exact decimal (invariant culture); `String` per `escapeJsonString`. v1
     /// locks null/bool/int/string/array/object; `Float` and `Bytes` are DEFERRED
     /// (no canonical JSON form yet — they lock under CBOR or a tagged-JSON
-    /// convention) and raise `InvalidOperationException` if encoded.
-    let rec toCanonicalJson (value: DynamicValue) : string =
+    /// convention) and are surfaced as `Error EncodeError.*` data per the
+    /// Result-over-exception hard rule (AGENTS.md), never thrown.
+    let rec toCanonicalJson (value: DynamicValue) : Result<string, EncodeError> =
         match value with
-        | DynamicValue.Null -> "null"
-        | DynamicValue.Bool b -> if b then "true" else "false"
-        | DynamicValue.Int i -> i.ToString(System.Globalization.CultureInfo.InvariantCulture)
-        | DynamicValue.Float _ ->
-            invalidOp
-                "DynamicValue.Float canonical JSON is DEFERRED (no canonical shortest-float in plain JSON); locks under CBOR or a tagged-JSON convention"
-        | DynamicValue.String s -> escapeJsonString s
-        | DynamicValue.Bytes _ ->
-            invalidOp
-                "DynamicValue.Bytes canonical JSON is DEFERRED (no native JSON byte type); locks under CBOR or a tagged-JSON convention"
-        | DynamicValue.Array items -> "[" + String.concat "," (List.map toCanonicalJson items) + "]"
+        | DynamicValue.Null -> Ok "null"
+        | DynamicValue.Bool b -> Ok(if b then "true" else "false")
+        | DynamicValue.Int i -> Ok(i.ToString(System.Globalization.CultureInfo.InvariantCulture))
+        | DynamicValue.Float _ -> Error EncodeError.FloatDeferred
+        | DynamicValue.String s -> Ok(escapeJsonString s)
+        | DynamicValue.Bytes _ -> Error EncodeError.BytesDeferred
+        | DynamicValue.Array items ->
+            items
+            |> List.fold
+                (fun acc item -> acc |> Result.bind (fun parts -> toCanonicalJson item |> Result.map (fun s -> s :: parts)))
+                (Ok [])
+            |> Result.map (fun parts -> "[" + String.concat "," (List.rev parts) + "]")
         | DynamicValue.Object pairs ->
-            "{"
-            + String.concat "," (pairs |> List.map (fun (k, v) -> escapeJsonString k + ":" + toCanonicalJson v))
-            + "}"
+            pairs
+            |> List.fold
+                (fun acc (k, v) ->
+                    acc
+                    |> Result.bind (fun parts -> toCanonicalJson v |> Result.map (fun s -> (escapeJsonString k + ":" + s) :: parts)))
+                (Ok [])
+            |> Result.map (fun parts -> "{" + String.concat "," (List.rev parts) + "}")
