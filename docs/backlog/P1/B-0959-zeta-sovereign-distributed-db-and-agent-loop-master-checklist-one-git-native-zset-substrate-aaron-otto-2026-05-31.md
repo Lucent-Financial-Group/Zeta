@@ -24,6 +24,12 @@ composes_with:
   - B-0867
   - B-0824
   - B-0428
+  - B-0840
+  - B-0859
+  - B-0885
+  - B-0883
+  - B-0634
+  - B-0688
 tags:
   - master-checklist
   - one-substrate
