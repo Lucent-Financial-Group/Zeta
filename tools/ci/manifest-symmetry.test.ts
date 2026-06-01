@@ -133,6 +133,21 @@ test("NixOS install shield validates agent-clis manifest, not one hardcoded CLI"
   expect(dockerfile).not.toContain("bun install --global @google/gemini-cli");
 });
 
+test("local-llm install defaults to skip outside interactive/full install contexts", () => {
+  const localLlm = readFileSync(join(setupDir, "common", "local-llm.sh"), "utf8");
+  const ubuntuDockerfile = readFileSync(
+    join(repoRoot, "tools", "ci", "dockerfiles", "ubuntu-install-sh-test", "Dockerfile"),
+    "utf8",
+  );
+
+  expect(localLlm).toContain('[ ! -t 0 ] && [ "${ZETA_INSTALL_FULL:-0}" != "1" ]');
+  expect(localLlm).toContain("local-llm: skipping Ollama/model install");
+
+  // The install shields are the explicit non-interactive opt-in path that asserts real Ollama.
+  expect(ubuntuDockerfile).toContain("ZETA_INSTALL_FULL=1 \\\n    GITHUB_TOKEN=");
+  expect(ubuntuDockerfile).toContain("if ! ZETA_INSTALL_FULL=1 ./tools/setup/install.sh");
+});
+
 test("NixOS and USB installer surfaces delegate agent/runtime drift to install graph", () => {
   const commonNix = readFileSync(
     join(repoRoot, "full-ai-cluster", "nixos", "modules", "common.nix"),
