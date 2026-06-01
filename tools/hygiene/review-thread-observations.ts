@@ -474,10 +474,10 @@ export function recordReviewThreadObservationBatch(
 ): ReadonlyArray<RecordReviewThreadObservationResult> {
   return input.observations.map((observationInput) =>
     recordReviewThreadObservation({
-      repoRoot: input.repoRoot,
-      ...(input.storeRelPath === undefined ? {} : { storeRelPath: input.storeRelPath }),
-      ...(input.fileDisagreement === undefined ? {} : { fileDisagreement: input.fileDisagreement }),
       ...observationInput,
+      repoRoot: input.repoRoot,
+      storeRelPath: input.storeRelPath ?? DEFAULT_OBSERVATION_STORE_REL_PATH,
+      fileDisagreement: input.fileDisagreement ?? fileReviewThreadDisagreement,
     }),
   );
 }
