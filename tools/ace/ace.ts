@@ -170,5 +170,12 @@ export async function main(argv: readonly string[]): Promise<number> {
 }
 
 if (import.meta.main) {
-  main(process.argv.slice(2)).then((c) => process.exit(c));
+  // .catch() closes the unhandled-promise surface from the async main(): an unexpected throw
+  // inside an await exits 1 with a diagnostic instead of an UnhandledPromiseRejection.
+  main(process.argv.slice(2))
+    .then((c) => process.exit(c))
+    .catch((e) => {
+      console.error(`ace: fatal: ${(e as Error).message}`);
+      process.exit(1);
+    });
 }

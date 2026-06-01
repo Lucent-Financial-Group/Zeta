@@ -91,14 +91,26 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   if (actual !== pkg.manifest.content_hash) {
     return { ok: false, error: `content hash mismatch: manifest says ${pkg.manifest.content_hash}, computed ${actual}` };
   }
+  // Validate ALL file paths BEFORE creating any directory or writing any file, so a
+  // traversal-blocked install refuses ATOMICALLY (extracts nothing) — the same guarantee a
+  // hash mismatch gives. (Validating inside the write loop would leave a partial dir on disk
+  // when a bad path is not the first entry.) Reject any '..' component (POSIX `../` or Windows
+  // `..\`) or absolute path (leading '/' or '\').
+  //
+  // NOTE (slice-3 hardening — on the map per the shield rule, not silently skipped): Windows
+  // device names (CON/NUL/PRN/AUX/COM1…) and drive-relative paths (`C:foo`) are NOT rejected
+  // here. They cannot escape `<storePath>/<hash>/` — `path.join` embeds them as subpaths — but
+  // a malicious package could still target a Windows device sink. Out of scope for this
+  // integrity-only MVP; tracked for the authenticity/robustness slice.
+  for (const rel of Object.keys(pkg.files)) {
+    if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\")) {
+      return { ok: false, error: `unsafe file path in package: ${rel}` };
+    }
+  }
   const dir = join(storePath, pkg.manifest.content_hash.replace(":", "-"));
   try {
     mkdirSync(dir, { recursive: true });
     for (const [rel, contents] of Object.entries(pkg.files)) {
-      // Guard against path traversal: reject any '..' or absolute path component.
-      if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\")) {
-        return { ok: false, error: `unsafe file path in package: ${rel}` };
-      }
       const dest = join(dir, rel);
       mkdirSync(join(dest, ".."), { recursive: true });
       writeFileSync(dest, contents);

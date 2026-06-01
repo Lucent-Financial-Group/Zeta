@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { createHash } from "node:crypto";
 import { contentHash, installPackage } from "./store.ts";
 
 describe("contentHash", () => {
@@ -23,8 +24,7 @@ describe("installPackage", () => {
   function makePkg(files: Record<string, string>, name = "demo") {
     const filesJson = JSON.stringify(files);
     const content_hash =
-      "sha256:" +
-      require("node:crypto").createHash("sha256").update(new TextEncoder().encode(filesJson)).digest("hex");
+      "sha256:" + createHash("sha256").update(new TextEncoder().encode(filesJson)).digest("hex");
     return {
       pkg: { manifest: { format_version: 1, name, version: "1.0.0", content_hash }, files },
       content_hash,
@@ -52,11 +52,48 @@ describe("installPackage", () => {
     if (!result.ok) expect(result.error).toContain("content hash mismatch");
   });
 
-  test("rejects a package with a path-traversal file path", () => {
+  test("rejects a package with a '../' path-traversal file path", () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkg } = makePkg({ "../escape.txt": "x" });
     const result = installPackage(store, pkg);
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error).toContain("unsafe file path");
+  });
+
+  test("rejects a Windows-style '..\\' path-traversal file path", () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const { pkg } = makePkg({ "..\\escape.txt": "x" });
+    const result = installPackage(store, pkg);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toContain("unsafe file path");
+  });
+
+  test("rejects an absolute POSIX path", () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const { pkg } = makePkg({ "/etc/passwd": "x" });
+    const result = installPackage(store, pkg);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toContain("unsafe file path");
+  });
+
+  test("rejects an absolute Windows/UNC backslash path", () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const { pkg } = makePkg({ "\\\\server\\share": "x" });
+    const result = installPackage(store, pkg);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toContain("unsafe file path");
+  });
+
+  test("traversal refusal is ATOMIC — a non-first bad path extracts NOTHING (store stays clean)", () => {
+    // The bad path is not first: validate-all-before-extract must reject before the legit
+    // file is written, so the hash dir must not exist at all after a refused install.
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const { pkg, content_hash } = makePkg({ "legit.txt": "ok", "../escape.txt": "x" });
+    const result = installPackage(store, pkg);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toContain("unsafe file path");
+    // Nothing extracted: the hash dir was never created (no partial write of legit.txt).
+    const dir = join(store, content_hash.replace(":", "-"));
+    expect(existsSync(dir)).toBe(false);
   });
 });
