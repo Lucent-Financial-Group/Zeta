@@ -807,6 +807,36 @@ describe("install --frozen (slice 5.3)", () => {
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
+
+  test("--frozen refuses an untrusted-signature locked node even WITH --allow-no-signature", async () => {
+    // Security surface: the frozen replay's signature gate hard-refuses any present-but-invalid
+    // signature (nv.reason !== "no-signature"); --allow-no-signature ONLY waives no-signature.
+    // Construct a locked node A signed with a key NEVER added to the trust store -> verifySignature
+    // returns "untrusted-key" -> must refuse despite --allow-no-signature. The lock is built directly
+    // so its pin = packageHash(signedA): replay fetches the SAME signed bytes (pin passes, content_hash
+    // passes, path-safety passes) and reaches the signature gate -- proving the gate, not an earlier check.
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-untrusted-"));
+    const untrustedKp = generateKeypair(); // never added to the trust store
+    const aFiles = { "a.txt": "a" };
+    const aManifestBase = { format_version: 1, name: "A", version: "1.0.0", content_hash: h(aFiles) };
+    const signature = signManifest(aManifestBase, untrustedKp.privatePem);
+    const signedA = { manifest: { ...aManifestBase, signature }, files: aFiles };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(signedA));
+    const aHash = packageHash(signedA as any);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    // Build the lock directly (pin A's SIGNED package_hash) so replay reaches the signature gate.
+    const lock = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
+      nodes: [{ name: "A", version: "1.0.0", url: aPath, package_hash: aHash }],
+    };
+    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-untrusted-store-"));
+    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
 });
 
 // ---- semver ranges + solver (slice 5.2) ----

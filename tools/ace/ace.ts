@@ -520,11 +520,11 @@ export async function main(argv: readonly string[]): Promise<number> {
         const trust = loadTrustStore();
         // Replay each locked node: fetch → parse → verify pin + content_hash + signature + path-safety → install.
         for (const node of lf.nodes) {
-          let raw: string;
-          try { raw = (node.url.startsWith("http://") || node.url.startsWith("https://")) ? await (await fetch(node.url)).text() : readFileSync(node.url, "utf8"); }
+          let nodeRaw: string;
+          try { nodeRaw = (node.url.startsWith("http://") || node.url.startsWith("https://")) ? await (await fetch(node.url)).text() : readFileSync(node.url, "utf8"); }
           catch (e) { console.error(`ace: install refused: fetch failed for ${node.name}@${node.version} (${node.url}): ${(e as Error).message}`); return 1; }
           let np: AcePackage;
-          try { np = JSON.parse(raw) as AcePackage; } catch { console.error(`ace: install refused: ${node.name}@${node.version} is not valid JSON`); return 1; }
+          try { np = JSON.parse(nodeRaw) as AcePackage; } catch { console.error(`ace: install refused: ${node.name}@${node.version} is not valid JSON`); return 1; }
           if (packageHash(np) !== node.package_hash) { console.error(`ace: install refused: package_hash mismatch for ${node.name}@${node.version} (lock pin violated)`); return 1; }
           const fh = contentHash(new TextEncoder().encode(JSON.stringify(np.files)));
           if (fh !== np.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.name}@${node.version}`); return 1; }
