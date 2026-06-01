@@ -202,6 +202,21 @@ describe("parseArgs — install lockfile flags", () => {
   });
 });
 
+describe("parseArgs — install --locked", () => {
+  test("--locked defaults off", () => {
+    const a = parseArgs(["install", "pkg.json"]);
+    if ("command" in a && a.command === "install") expect(a.locked).toBe(false);
+  });
+  test("--locked sets locked true", () => {
+    const a = parseArgs(["install", "pkg.json", "--locked"]);
+    if ("command" in a && a.command === "install") expect(a.locked).toBe(true);
+  });
+  test("--locked + --frozen is an error (mutually exclusive)", () => {
+    const a = parseArgs(["install", "pkg.json", "--locked", "--frozen"]);
+    expect("error" in a).toBe(true);
+  });
+});
+
 // ---- listInstalled ----
 
 describe("listInstalled", () => {

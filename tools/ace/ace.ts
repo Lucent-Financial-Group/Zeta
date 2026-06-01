@@ -45,6 +45,7 @@ interface InstallArgs {
   readonly allowNoSignature: boolean;
   readonly printResolution?: boolean;
   readonly frozen: boolean;
+  readonly locked: boolean;
   readonly lockfile: string;
 }
 
@@ -205,6 +206,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     let allowNoSignature = false;
     let printResolution = false;
     let frozen = false;
+    let locked = false;
     let lockfilePath = "ace.lock";
     for (let i = 2; i < argv.length; i++) {
       if (argv[i] === "--store" || argv[i] === "-s") {
@@ -218,6 +220,8 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         printResolution = true;
       } else if (argv[i] === "--frozen") {
         frozen = true;
+      } else if (argv[i] === "--locked") {
+        locked = true;
       } else if (argv[i] === "--lockfile") {
         const next = argv[++i];
         if (!next || next.startsWith("-")) return { error: "--lockfile requires a path argument" };
@@ -226,7 +230,8 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         return { error: `Unknown option for install: ${argv[i]}` };
       }
     }
-    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature, frozen, lockfile: lockfilePath };
+    if (locked && frozen) return { error: "--locked and --frozen are mutually exclusive" };
+    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature, frozen, locked, lockfile: lockfilePath };
     if (printResolution) return { ...baseResult, printResolution: true };
     return baseResult;
   }
