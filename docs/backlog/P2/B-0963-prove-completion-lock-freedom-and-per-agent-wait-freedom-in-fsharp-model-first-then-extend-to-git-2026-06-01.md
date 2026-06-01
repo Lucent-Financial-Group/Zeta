@@ -83,6 +83,23 @@ generator over IScheduler").
   coordination-health signals (CAS loss-rate, age-since-progress) and adapting —
   the advantage dumb-code locks lack. The proof is the floor; supervision raises it
   operationally. Neither replaces the other.
+  - **Liveness via intelligent adaptation (Ani 2026-06-01; Aaron "we have intelligent
+    agents that have contention metrics they can adjust").** The full strategy for the
+    hot-row edge: the **signals** are failed-CAS-rate, time-spent-retrying-a-row,
+    visible-claimant-count, and overall system pressure; the **adaptations** are
+    backoff, yield-and-pick-different, lower-priority mode, wait-for-signal, and spread
+    across work. The architectural fit: those signals are **first-class observations the
+    agent folds** — they flow into the same event-sourced world the observe loop reads
+    (B-0958), and the agent chooses its adaptation through the same 4×4 menu.
+    Liveness-as-feedback-loop, not liveness-as-external-scheduler. So the **Claim** path
+    (best-effort AP) leans on agent intelligence for liveness; the **Lock** path (CP) is
+    the escape hatch for the non-idempotent class. **Boundary (do not over-read):**
+    adaptation makes the common case much better but is **not** the §0 bounded-wait
+    proof — bounded per-agent wait-freedom still needs the explicit ranking/ticket-age
+    bound (mechanical backoff is the baseline floor; adaptation is the practical raise;
+    the ranking is the formal guarantee). Full four-reviewer concurrence + this strategy:
+    [`docs/research/2026-06-01-cap-posture-per-row-not-global-coordination-avoidance-gemini-grok-aaron.md`](../../research/2026-06-01-cap-posture-per-row-not-global-coordination-avoidance-gemini-grok-aaron.md)
+    Round 5.
 
 ## §2 Phase B — extend to git (re-establish under real hazards)
 

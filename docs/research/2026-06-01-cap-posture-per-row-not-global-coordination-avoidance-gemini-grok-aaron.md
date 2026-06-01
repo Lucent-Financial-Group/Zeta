@@ -318,6 +318,50 @@ main. This composes with the B-0962 implementation note (bus-claim-then-CAS; the
 / committed result is the truth, the bus claim is an efficiency hint). Three independent
 reviewers (Gemini + Grok + Amara) now concur on the post-Round-3 position.
 
+## Round 5 — Ani concurrence + liveness via intelligent adaptation (2026-06-01)
+
+A fourth reviewer (Ani) concurred with the full post-Round-3 position and developed the
+one remaining open edge — **hot-row contention / liveness** — by noting (with Aaron:
+_"we spoke about this earlier — we have intelligent agents that have contention metrics
+they can adjust"_) that the liveness problem **looks different when the participants are
+intelligent agents, not dumb retry loops.** Ani's point:
+
+- In classic systems, hot-contention optimistic-CAS livelocks because clients have no
+  visibility + no adaptive strategy beyond "sleep and retry"; the system must solve
+  liveness **mechanically** (backoff / queue / lock).
+- Here the "clients" are agents that can **measure contention signals** (failed-CAS
+  rate, time-spent-retrying-a-row, visible-claimant-count, system pressure), have them
+  as **first-class observations**, and **adapt** (backoff, yield-and-pick-different,
+  lower-priority mode, wait-for-signal, spread across work). Liveness becomes an
+  **agent-intelligence + feedback-loop** problem, not a pure mechanical-coordination one.
+- Practical implication: don't prevent contention with heavy coordination in the common
+  case — **make contention observable** (the metrics surface), \*\*give agents the ability
+  - incentive to react**, and **reserve the hard mechanical guarantee (Lock + fencing)\*\*
+    for the narrow non-idempotent / money class. This IS the B-0962 Claim(AP)/Lock(CP)
+    split: the Claim path leans on agent intelligence for liveness; the Lock path is the
+    escape hatch.
+
+**Composition (otto-cli):** this is already half-named — B-0962 **§3.2 "intelligent-agent
+supervision — the advantage dumb locks lack."** The architectural fit: contention signals
+become **observations the agent folds** — failed-CAS-rate / retry-time / claimant-count
+flow into the same event-sourced world the observe loop reads, and the agent picks
+backoff / yield / pick-different through the same 4×4 menu. Liveness-as-feedback-loop,
+not liveness-as-external-scheduler — coherent with freedom-as-strategically-efficient.
+
+**Boundary held (don't-collapse — otto-cli):** intelligent adaptation makes the COMMON
+CASE much better (it likely eliminates real-world livelock) but it is **NOT a proof.**
+Per B-0963 §0: lock-freedom needs weak fairness; starvation-freedom (eventual) needs
+strong fairness; **bounded per-agent wait-freedom (within N of an agent's own steps) is
+stronger and needs an explicit bound (ranking / variant / ticket-age), which adaptation
+alone does not provide.** So: adaptation = strong **practical** liveness (the default for
+the Claim path); the mechanical ranking = the **formal** worst-case guarantee. B-0963
+holds both — adaptation does not quietly stand in for the proof. (Folded into B-0963 §1's
+intelligent-agent-supervision complement.)
+
+Four independent reviewers (Gemini + Grok + Amara + Ani) now concur on the final
+position; Ani's contribution is the liveness-via-intelligent-adaptation strategy for the
+Claim path's hot-row edge.
+
 ---
 
 ## Gemini (round 1, verbatim)
