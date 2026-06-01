@@ -224,3 +224,64 @@ injecting a future-dated index. The per-package **content-hash pin** and
 **Ed25519 signature gate** (slice 2–3) are unchanged and still enforced on every
 downloaded package. Remote registry support is additive security — the two layers
 cover different attack surfaces and both must pass.
+
+## Publishing a registry (slice 6.1)
+
+Slice 6.1 adds the producer side: `ace registry publish` scans a directory of
+package manifests, builds a signed index, and writes the file a registry serves.
+
+### Command
+
+```bash
+ace registry publish --packages <dir> --base-url <url> --key <pem-path> [--out index.json]
+```
+
+- **`--packages <dir>`** — directory to scan. Every `*.json` file is attempted
+  as a package manifest; files that do not parse as a valid package manifest are
+  skipped with a warning.
+- **`--base-url <url>`** — base URL of the registry. Each package's consumer
+  `url` is derived as `<base-url>/<name>-<version>.json` and its `package_hash`
+  is computed from the manifest file.
+- **`--key <pem-path>`** — path to the Ed25519 **private** key (PEM format, mode
+  0600). The index is signed with this key.
+- **`--out <file>`** — path to write the signed index JSON (default: `./index.json`).
+
+### Sequence auto-bump
+
+If `--out` already exists, `publish` reads the previous index and sets the new
+index's `sequence` to `prior_sequence + 1`. A sequence that is not strictly
+increasing is refused (exit 1). This is the producer-side mirror of the
+consumer's anti-rollback gate: the published sequence always advances.
+
+### Round-trip self-verify
+
+Before writing, `publish` re-parses the produced index through the same
+`parseIndex` path and signature check that `ace install` uses (verifying against
+the signing key's own public key). A published `index.json` is therefore
+guaranteed to satisfy `ace install` when a consumer has registered the registry
+with the matching key ID.
+
+To find the key ID to pin, run:
+
+```bash
+ace trust <pub-file>   # prints the key ID
+```
+
+Then on the consumer side:
+
+```bash
+ace registry remote add <url> --key <keyId>
+```
+
+### The published index
+
+The `index.json` written by `publish` is the file a registry serves at the URL
+consumers configure. It contains the package list, `sequence`, `issued_at`,
+and the Ed25519 signature over the canonical payload.
+
+### Deferred
+
+- Per-package URL override (custom artifact hosting).
+- ETag / Last-Modified sidecar for conditional-GET cache validation.
+- Multi-directory publish and incremental (append-only) publish.
+- Multi-signer publish (multiple signing keys on one index).
