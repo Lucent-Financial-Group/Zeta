@@ -29,6 +29,15 @@
  * Integrating `executeDoItem` into the unified `execute`/log/sink is a follow-up
  * (Phase 1 keeps it a sibling so the existing `execute` + its tests stay green).
  *
+ * At-least-once corner (Copilot 2026-06-01): if the executor RUNS but the terminal
+ * fact append fails, the side-effect happened yet only `Started` is durable. That
+ * surfaces as `terminal-append-failed` (NOT `append-failed`) so the caller does not
+ * blind-retry (which would duplicate the side-effect). A `Started`-only log is a
+ * **reconcile-needed** state; safe re-execution requires idempotent item-work (the
+ * always-active idempotency discipline). FOLLOW-UP: project a `Started` with no
+ * matching terminal into an explicit in-flight state that BLOCKS auto-re-execution
+ * until reconciled (needs a World in-flight field — beyond Phase-1's envelope scope).
+ *
  * Composes with (exact paths):
  *   - tools/observe/observe.ts (simulate = the single reducer; World / BacklogItem)
  *   - tools/observe/execute.ts (EventSink<E> = the durability port reused here for facts; AppendOutcome)
@@ -113,11 +122,27 @@ export interface DoItemOptions {
   readonly gated: boolean; // was this run gate-approved (real-FS/escalation)?
 }
 
-/** Machinery feedback (append/durability failure) — distinct from work-failure. */
-export interface DoItemFeedback {
-  readonly kind: "append-failed";
-  readonly reason: string;
-}
+/**
+ * Machinery feedback (durability failure) — distinct from work-failure. Two cases,
+ * because they have OPPOSITE retry-safety (Copilot 2026-06-01):
+ *   - `append-failed`: the `Started` append failed → the executor NEVER ran (no
+ *     side-effect). Safe to retry the whole do_item.
+ *   - `terminal-append-failed`: the executor ALREADY RAN (side-effect happened) but
+ *     the TERMINAL fact (Succeeded/Failed) didn't land — only `Started` is durable.
+ *     A `Started`-only log is a **reconcile-needed** state: do NOT blind-retry (that
+ *     would duplicate the side-effect under at-least-once). The caller must reconcile
+ *     (re-append the known terminal fact, or check the world + decide). Re-execution
+ *     is only safe if the item's work is idempotent (the always-active idempotency
+ *     discipline — `dv2-data-split`). `durableFacts` carries what DID land.
+ */
+export type DoItemFeedback =
+  | { readonly kind: "append-failed"; readonly reason: string }
+  | {
+      readonly kind: "terminal-append-failed";
+      readonly ranOutcome: "succeeded" | "failed";
+      readonly reason: string;
+      readonly durableFacts: readonly ActionFact[];
+    };
 
 /**
  * `ok` means the MACHINERY worked (facts landed); `completed` means the WORK
@@ -166,7 +191,16 @@ export async function executeDoItem(
     const succeeded: ActionFact = { kind: "ActionExecutionSucceeded", item };
     const append: AppendOutcome = await sink.append(succeeded);
     if (!append.ok) {
-      return { ok: false, feedback: { kind: "append-failed", reason: append.reason } };
+      // executor RAN; the terminal fact didn't land → reconcile-needed, NOT retry.
+      return {
+        ok: false,
+        feedback: {
+          kind: "terminal-append-failed",
+          ranOutcome: "succeeded",
+          reason: append.reason,
+          durableFacts: [started],
+        },
+      };
     }
     return { ok: true, completed: true, world: foldFacts(world, [started, succeeded]), facts: [started, succeeded] };
   }
@@ -174,7 +208,16 @@ export async function executeDoItem(
   const failed: ActionFact = { kind: "ActionExecutionFailed", item, reason: outcome.reason };
   const append: AppendOutcome = await sink.append(failed);
   if (!append.ok) {
-    return { ok: false, feedback: { kind: "append-failed", reason: append.reason } };
+    // executor RAN (and failed); the terminal fact didn't land → reconcile-needed.
+    return {
+      ok: false,
+      feedback: {
+        kind: "terminal-append-failed",
+        ranOutcome: "failed",
+        reason: append.reason,
+        durableFacts: [started],
+      },
+    };
   }
   return {
     ok: true,

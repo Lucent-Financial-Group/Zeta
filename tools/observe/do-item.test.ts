@@ -106,6 +106,28 @@ describe("executeDoItem — the fact envelope", () => {
     expect(ran).toBe(false); // executor never ran — append-first
     expect(sink.appended).toHaveLength(0);
   });
+
+  it("terminal-append failure (executor RAN): reconcile-needed feedback, not blind-retryable (Copilot 2026-06-01)", async () => {
+    const world = w([item("B-1")]);
+    const sink = failingFactSink(2); // Started lands; the terminal Succeeded append fails
+    let ran = false;
+    const watchExecutor: CommandExecutor = {
+      tier: "fake",
+      run: () => {
+        ran = true;
+        return Promise.resolve(okRun);
+      },
+    };
+
+    const r = await executeDoItem(world, item("B-1"), sink, watchExecutor, opts);
+    expect(ran).toBe(true); // the side-effect DID happen
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.feedback.kind).toBe("terminal-append-failed"); // distinct from append-failed — do NOT blind-retry
+    if (r.feedback.kind !== "terminal-append-failed") return;
+    expect(r.feedback.ranOutcome).toBe("succeeded");
+    expect(r.feedback.durableFacts.map((f) => f.kind)).toEqual(["ActionExecutionStarted"]); // only Started is durable
+  });
 });
 
 describe("foldFacts — replay folds FACTS, never re-runs (B-0964 §0 correctness)", () => {
