@@ -121,3 +121,39 @@ describe("resolve — conflicts", () => {
     if (!r.ok) { expect(r.reason).toBe("cycle"); expect(r.path).toContain("A"); }
   });
 });
+
+describe("resolve — verification", () => {
+  test("bad-content-hash (files don't hash to manifest.content_hash) refuses", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const tampered: AcePackage = { manifest: D.manifest, files: { "d.txt": "TAMPERED" } };
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]); // edge pins original D
+    const r = await resolve(root, fetchOf({ "http://e/D": tampered }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("bad-content-hash");
+  });
+  test("pin-mismatch (edge package_hash != fetched) refuses", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]);
+    (root.manifest.dependencies as any)[0] = { ...root.manifest.dependencies![0], package_hash: "sha256:wrongwrong" };
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("pin-mismatch");
+  });
+  test("declared-identity mismatch (edge name != fetched manifest name) refuses pin-mismatch", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]);
+    (root.manifest.dependencies as any)[0] = { ...root.manifest.dependencies![0], name: "NOT_D" };
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("pin-mismatch");
+  });
+  test("unsigned node refuses without allowNoSignature, resolves with it", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]);
+    const strict = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, { allowNoSignature: false });
+    expect(strict.ok).toBe(false);
+    if (!strict.ok) expect(strict.reason).toBe("no-signature");
+    const lax = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, { allowNoSignature: true });
+    expect(lax.ok).toBe(true);
+  });
+});

@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
-import type { AcePackage, LoadedTrustEntry } from "./store.ts";
+import { contentHash, type AcePackage, type LoadedTrustEntry } from "./store.ts";
+import { verifySignature } from "./signing.ts";
 
 /** Deterministic JSON: object keys recursively sorted; arrays preserve order. */
 function canonicalJson(value: unknown): string {
@@ -30,8 +31,8 @@ export type ResolveResult =
 export async function resolve(
   root: AcePackage,
   fetchPackage: FetchPackage,
-  _trustStore: Map<string, LoadedTrustEntry>,
-  _opts: { allowNoSignature: boolean },
+  trustStore: Map<string, LoadedTrustEntry>,
+  opts: { allowNoSignature: boolean },
 ): Promise<ResolveResult> {
   const byName = new Map<string, { version: string; pkgHash: string; path: string[] }>();
   const visiting = new Set<string>();
@@ -59,6 +60,29 @@ export async function resolve(
       let dep: AcePackage;
       try { dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage; }
       catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
+      // slice-2 self-check
+      const filesHash = contentHash(new TextEncoder().encode(JSON.stringify(dep.files)));
+      if (filesHash !== dep.manifest.content_hash) {
+        return { ok: false, reason: "bad-content-hash", detail: `${edge.name}: files hash ${filesHash} != manifest ${dep.manifest.content_hash}`, path: here };
+      }
+      // pin check (whole-package identity)
+      const got = packageHash(dep);
+      if (got !== edge.package_hash) {
+        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${edge.package_hash} but fetched ${got}`, path: here };
+      }
+      // declared-identity check
+      if (dep.manifest.name !== edge.name || dep.manifest.version !== edge.version) {
+        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}@${edge.version}: edge identity != fetched ${dep.manifest.name}@${dep.manifest.version}`, path: here };
+      }
+      // slice-3 signature gate
+      const v = verifySignature(dep.manifest, trustStore);
+      if (!v.ok) {
+        if (v.reason === "no-signature") {
+          if (!opts.allowNoSignature) return { ok: false, reason: "no-signature", detail: `${edge.name}: unsigned (use --allow-no-signature)`, path: here };
+        } else {
+          return { ok: false, reason: v.reason, detail: `${edge.name}: ${v.reason}`, path: here };
+        }
+      }
       byName.set(edge.name, { version: edge.version, pkgHash: edge.package_hash, path: here });
       visiting.add(edge.name);
       const sub = await walk(dep, here);
