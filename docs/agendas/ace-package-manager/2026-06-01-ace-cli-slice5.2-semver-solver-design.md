@@ -88,21 +88,32 @@ export async function solve(
 Algorithm — **deterministic newest-first backtracking** (pubgrub-shape, scoped to the
 subset):
 
-1. Accumulate constraints per package name. The root's edges seed them; inline edges
-   contribute a fixed exact constraint (`=x.y.z`); registry edges contribute their range.
-2. When a constraint is added for a package, intersect ALL its accumulated ranges.
-   - **Unassigned** → take `maxSatisfying(registry versions for that name, intersected
-     range)`; no candidate → **backtrack** (try the next-lower version of the most-recent
-     decision that narrowed this package); exhausted → `unsatisfiable` with the
-     conflicting constraint path.
-   - **Already assigned** → **re-validate**: the current concrete version MUST still
-     satisfy the new intersected range. If a transitive dep narrows the range below the
-     earlier newest-first pick (root wants `A >=1.0.0`, picks `A@1.9.0`; then `B@1.0.0`
-     is fetched requiring `A <1.6.0`), the assignment is now invalid → **conflict** →
-     backtrack to the decision that caused it (lower the violating package's version, or
-     re-decide `A` within the tighter range) and re-solve. Re-validation on **every** new
-     constraint — not only at first assignment — is the load-bearing correctness rule
-     (P1 review finding, Codex 2026-06-01).
+1. Accumulate constraints per package name from every edge, and classify each name by
+   **source**: an **inline** edge fixes both the version (`=x.y.z`) AND the package source
+   (its own url + package_hash); a **registry** edge contributes a range to solve against
+   the versions the registry holds. Inline edges are pre-decided and are **never** looked
+   up in the registry — an inline-only `root → A@1.0.0` (url/hash, no registry entry) must
+   install via the 5.1 inline path, not fail `registry-miss` (P1 review finding, Codex
+   2026-06-01).
+2. Decide each package:
+   - **Inline-sourced** (the name has an inline edge) → its version is already fixed at the
+     inline `=x.y.z`, sourced from the inline url/package_hash; record it + recurse into the
+     inline package's deps; **no registry lookup**. If the same name also has registry
+     range-edges, the inline-fixed version must satisfy them (else `unsatisfiable`) — the
+     inline pin is authoritative; mixed inline+registry edges for one name only constrain,
+     they never re-source. (All-inline graphs / empty registry therefore solve trivially.)
+   - **Registry-sourced, unassigned** → intersect all ranges, take `maxSatisfying(registry
+     versions for that name, intersected range)`; no candidate → **backtrack** (try the
+     next-lower version of the most-recent decision that narrowed this package); exhausted
+     → `unsatisfiable` with the conflicting constraint path.
+   - **Registry-sourced, already assigned** → **re-validate**: the current concrete version
+     MUST still satisfy the new intersected range. If a transitive dep narrows the range
+     below the earlier newest-first pick (root wants `A >=1.0.0`, picks `A@1.9.0`; then
+     `B@1.0.0` is fetched requiring `A <1.6.0`), the assignment is now invalid →
+     **conflict** → backtrack to the decision that caused it (lower the violating
+     package's version, or re-decide `A` within the tighter range) and re-solve.
+     Re-validation on **every** new constraint — not only at first assignment — is the
+     load-bearing correctness rule (P1 review finding, Codex 2026-06-01).
 3. Fetch the chosen version (to read its transitive deps), add its edges as new
    constraints (each addition triggers the step-2 intersect + re-validate for any
    already-assigned name), recurse. Cache fetched manifests within a single `solve` run
@@ -174,6 +185,11 @@ edges are untouched (exact + self-pinned).
   never blindly trusts the map.
 - e2e via `main(["install", …])`: install a root with ranged registry deps resolving
   across a multi-package registry; an unsatisfiable graph → exit 1, store empty (atomic).
+- Inline back-compat (P1 regression guard): an inline-only graph with an **empty registry**
+  — `root → A@1.0.0` self-pinned with url/package_hash — solves + installs via the 5.1
+  inline path and never returns `registry-miss`. Mixed inline+registry for one name:
+  inline pin authoritative; a registry range the inline version cannot satisfy →
+  `unsatisfiable`.
 
 ## Sliced-off enhancements (filed as backlog; operator "slice off everything we skipped")
 
