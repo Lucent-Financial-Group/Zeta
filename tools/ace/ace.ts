@@ -167,7 +167,9 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         if (argv[i] === "--hash") { hash = argv[++i]; if (!hash) return { error: "--hash requires a value" }; }
         else return { error: `Unknown option for registry add: ${argv[i]}` };
       }
-      return { command: "registry", sub: "add", regName: name, regVersion: version, regUrl: url, regHash: hash };
+      const result: RegistryArgs = { command: "registry", sub: "add", regName: name, regVersion: version, regUrl: url };
+      if (hash !== undefined) return { ...result, regHash: hash };
+      return result;
     }
     return { error: "registry requires 'add' or 'list'" };
   }
