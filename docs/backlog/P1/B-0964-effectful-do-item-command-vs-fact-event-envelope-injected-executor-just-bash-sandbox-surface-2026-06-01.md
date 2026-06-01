@@ -35,15 +35,19 @@ re-charge). Standard event-sourcing: **commands ≠ events.**
 
 - **`do_item` is a COMMAND** — an intent the chooser picked ("do B-0883").
 - Executing it emits **FACT events** — what actually happened:
-  `ActionExecutionStarted{item}` → `ActionSucceeded{item}` **or**
-  `ActionFailed{item, reason}` (+ `ModeChanged{work}`).
-- **`fold`/`replay` fold the FACTS**, never the command: a folded `ActionSucceeded`
+  `ActionExecutionStarted{item, tier, gated}` → `ActionExecutionSucceeded{item}`
+  **or** `ActionExecutionFailed{item, reason}` (+ `ModeChanged{work}`). The
+  `Started` fact **records which executor tier ran** (fake / just-bash-text /
+  docker / cloud-burst) **and whether it was gated** — so the §3 glass-halo audit
+  can distinguish a sandbox run from a real-FS/docker escalation (Copilot
+  2026-06-01).
+- **`fold`/`replay` fold the FACTS**, never the command: a folded `ActionExecutionSucceeded`
   re-applies the state transition (item leaves backlog) **without** re-running the
-  shell. A folded `ActionFailed` leaves the item in the backlog.
+  shell. A folded `ActionExecutionFailed` leaves the item in the backlog.
 
 So the durable log for an effectful action is the **fact stream**, not the command.
 `simulate(do_item)` (item leaves backlog, mode→work) stays the pure transition —
-but it is now driven by **`ActionSucceeded`**, not by the raw command. The
+but it is now driven by **`ActionExecutionSucceeded`**, not by the raw command. The
 zero-side-effect kinds can keep folding directly (a fact == the action); only
 effectful kinds need the started/succeeded/failed envelope.
 
@@ -73,7 +77,7 @@ export interface CommandExecutor {
 ```
 
 `execute(do_item)` = append `ActionExecutionStarted` → `executor.run(...)` →
-append `ActionSucceeded|ActionFailed` → `simulate` **only on success**. Tests
+append `ActionExecutionSucceeded|ActionExecutionFailed` → `simulate` **only on success**. Tests
 inject a fake executor (deterministic ok/fail, no shell). Production injects the
 real one (§2).
 
@@ -172,7 +176,8 @@ A local-LLM with a bash surface is a real attack/footgun surface. The floor (per
 - **Real-FS / network / docker is GATED** — escalation to a real shell is an
   explicit, operator-gated decision per item-class, never the loop's default. The
   fact-envelope makes every escalation an auditable `ActionExecutionStarted` event
-  (glass-halo).
+  **carrying `{tier, gated}`** (glass-halo) — the audit distinguishes a sandbox run
+  from a real-FS/docker escalation only because the tier is in the fact.
 - **Not turned on in Otto's foreground loop** until "comfortable" (Aaron) — the
   fake executor + just-bash sandbox are the test/dev surfaces; the real-FS surface
   for the autonomous foreground loop is a separate, later, gated decision.
@@ -201,8 +206,10 @@ LLM sub-loop over just-bash) as Phase 2.
 
 **Phase 1 — envelope + port + transition (fake executor; no new dep, no shell):**
 
-- [ ] Fact-event types `ActionExecutionStarted | ActionSucceeded | ActionFailed`
+- [ ] Fact-event types `ActionExecutionStarted | ActionExecutionSucceeded | ActionExecutionFailed`
       (+ `ModeChanged` if not already implied); decide persist-facts-only (§0).
+      `ActionExecutionStarted` carries `{item, tier, gated}` (the executor tier +
+      gate decision) so the glass-halo audit (§3) is real.
 - [ ] `CommandExecutor` port (§1); `execute(do_item)` appends Started → runs
       executor → appends Succeeded|Failed → `simulate` **only on success**.
 - [ ] `fold`/`replay` fold the FACTS (Succeeded ⇒ item leaves backlog; Failed ⇒
