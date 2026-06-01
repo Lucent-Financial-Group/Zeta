@@ -104,11 +104,11 @@ describe("parseArgs", () => {
     }
   });
 
-  test("install --allow-unsigned parses", () => {
-    const result = parseArgs(["install", "pkg.json", "--allow-unsigned"]);
+  test("install --allow-no-signature parses", () => {
+    const result = parseArgs(["install", "pkg.json", "--allow-no-signature"]);
     expect("error" in result).toBe(false);
     if (!("error" in result) && result.command === "install") {
-      expect((result as { allowUnsigned: boolean }).allowUnsigned).toBe(true);
+      expect((result as { allowNoSignature: boolean }).allowNoSignature).toBe(true);
     }
   });
 
@@ -479,15 +479,15 @@ describe("main", () => {
     expect(code).toBe(1);
   });
 
-  test("install untrusted-key → exit 1 EVEN with --allow-unsigned", async () => {
+  test("install untrusted-key → exit 1 EVEN with --allow-no-signature", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkgPath } = signedPkgFixture();
     // Do NOT trust the key
-    const code = await main(["install", pkgPath, "--allow-unsigned", "--store", store]);
+    const code = await main(["install", pkgPath, "--allow-no-signature", "--store", store]);
     expect(code).toBe(1);
   });
 
-  test("install unsigned → exit 1 without --allow-unsigned", async () => {
+  test("install unsigned → exit 1 without --allow-no-signature", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const files = { "a.txt": "hi" };
     const filesJson = JSON.stringify(files);
@@ -499,7 +499,7 @@ describe("main", () => {
     expect(await main(["install", pkgPath, "--store", store])).toBe(1);
   });
 
-  test("install unsigned → exit 0 with --allow-unsigned", async () => {
+  test("install unsigned → exit 0 with --allow-no-signature", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const files = { "a.txt": "hi" };
     const filesJson = JSON.stringify(files);
@@ -508,10 +508,10 @@ describe("main", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-u-"));
     const pkgPath = join(dir, "u.json");
     writeFileSync(pkgPath, JSON.stringify(pkg));
-    expect(await main(["install", pkgPath, "--allow-unsigned", "--store", store])).toBe(0);
+    expect(await main(["install", pkgPath, "--allow-no-signature", "--store", store])).toBe(0);
   });
 
-  test("install algo-tampered (signed+trusted, algo->none) - exit 1 (unsupported-algo, NOT allow-unsigned-overridable)", async () => {
+  test("install algo-tampered (signed+trusted, algo->none) - exit 1 (unsupported-algo, NOT allow-no-signature-overridable)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkgPath, kp, dir } = signedPkgFixture();
     // Trust the key -- key IS trusted, but we tamper algo before installing
@@ -527,7 +527,7 @@ describe("main", () => {
     expect(code).toBe(1);
   });
 
-  test("install algo-tampered with --allow-unsigned - still exit 1 (unsupported-algo is never overridable)", async () => {
+  test("install algo-tampered with --allow-no-signature - still exit 1 (unsupported-algo is never overridable)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkgPath, kp, dir } = signedPkgFixture();
     // Trust the key
@@ -538,8 +538,8 @@ describe("main", () => {
     pkg.manifest.signature.algo = "none";
     const tamperedPath = join(dir, "algo-tampered2.json");
     writeFileSync(tamperedPath, JSON.stringify(pkg));
-    // --allow-unsigned must NOT override algorithm-confusion
-    const code = await main(["install", tamperedPath, "--allow-unsigned", "--store", store]);
+    // --allow-no-signature must NOT override algorithm-confusion
+    const code = await main(["install", tamperedPath, "--allow-no-signature", "--store", store]);
     expect(code).toBe(1);
   });
 });

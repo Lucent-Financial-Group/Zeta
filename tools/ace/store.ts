@@ -109,7 +109,7 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   //       `<storePath>/<hash>/` (path guard above) and the bytes are integrity-checked against
   //       the manifest hash. Authenticity (signature over a trusted key) now EXISTS — `ace install`
   //       runs the Ed25519 signature gate (see `ace.ts` + `signing.ts`); a package installed via
-  //       the signed+trusted path is authenticity-verified, and `--allow-unsigned` is required to
+  //       the signed+trusted path is authenticity-verified, and `--allow-no-signature` is required to
   //       install an unsigned one. The CodeQL js/http-to-file-access alert remains a true
   //       intended-flow observation (the http→file write is the package manager's function).
   for (const rel of Object.keys(pkg.files)) {
