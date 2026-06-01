@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseArgs, main } from "./ace.ts";
@@ -364,8 +364,7 @@ describe("main", () => {
     const code = await main(["keygen", "--out", prefix]);
     expect(code).toBe(1);
     // The file must NOT have been overwritten — sentinel content must still be present
-    const { readFileSync: rf } = require("node:fs");
-    expect(rf(keyPath, "utf8")).toBe("OLD");
+    expect(readFileSync(keyPath, "utf8")).toBe("OLD");
   });
 
   // ---- sign ----
@@ -387,7 +386,7 @@ describe("main", () => {
     const code = await main(["sign", pkgPath, "--key", keyPath, "--out", outPath]);
     expect(code).toBe(0);
     expect(existsSync(outPath)).toBe(true);
-    const parsed = JSON.parse(require("node:fs").readFileSync(outPath, "utf8"));
+    const parsed = JSON.parse(readFileSync(outPath, "utf8"));
     expect(parsed.manifest.signature).toBeDefined();
   });
 
@@ -417,6 +416,27 @@ describe("main", () => {
     expect(listCode).toBe(0);
   });
 
+
+  // ---- trust add: invalid key validation ----
+
+  test("trust add with .pub JSON missing public_key field exits 64 or 65 (NOT a fatal throw)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-trust-bad-"));
+    const badPub = join(dir, "bad.pub");
+    // A valid JSON .pub but with public_key missing
+    writeFileSync(badPub, JSON.stringify({ algo: "ed25519", key_id: "ed25519:missing" }));
+    const code = await main(["trust", "add", badPub]);
+    expect(code === 64 || code === 65).toBe(true);
+  });
+
+  test("trust add with a garbage non-base64 string exits 64 or 65 (NOT a fatal throw)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-trust-garbage-"));
+    const badPub = join(dir, "garbage.pub");
+    // Write a file whose content is clearly not a valid Ed25519 SPKI
+    writeFileSync(badPub, "this-is-not-a-valid-key!!!!!!!!!!!!!!");
+    const code = await main(["trust", "add", badPub]);
+    expect(code === 64 || code === 65).toBe(true);
+  });
+
   // ---- install authenticity gate ----
 
   test("install signed + trusted → exit 0 (integrity + authenticity verified)", async () => {
@@ -434,7 +454,7 @@ describe("main", () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkgPath, kp, dir } = signedPkgFixture();
     // Write a package with tampered content_hash (after signing)
-    const pkg = JSON.parse(require("node:fs").readFileSync(pkgPath, "utf8"));
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
     pkg.manifest.content_hash = "sha256:TAMPERED"; // but signature was over original
     const tamperedPath = join(dir, "tampered.json");
     writeFileSync(tamperedPath, JSON.stringify(pkg));
@@ -484,7 +504,7 @@ describe("main", () => {
     const pubPath = writePubFile(dir, kp);
     await main(["trust", "add", pubPath]);
     // Read the package and tamper signature.algo
-    const pkg = JSON.parse(require("node:fs").readFileSync(pkgPath, "utf8"));
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
     pkg.manifest.signature.algo = "none";
     const tamperedPath = join(dir, "algo-tampered.json");
     writeFileSync(tamperedPath, JSON.stringify(pkg));
@@ -500,7 +520,7 @@ describe("main", () => {
     const pubPath = writePubFile(dir, kp);
     await main(["trust", "add", pubPath]);
     // Tamper algo
-    const pkg = JSON.parse(require("node:fs").readFileSync(pkgPath, "utf8"));
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
     pkg.manifest.signature.algo = "none";
     const tamperedPath = join(dir, "algo-tampered2.json");
     writeFileSync(tamperedPath, JSON.stringify(pkg));

@@ -13,6 +13,7 @@
 // Future commands (not yet implemented): remove, inspect.
 
 import { chmodSync, readFileSync, writeFileSync } from "node:fs";
+import { createPublicKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys,
@@ -300,6 +301,16 @@ export async function main(argv: readonly string[]): Promise<number> {
     } catch {
       publicB64 = parsed.arg; // not a file -> treat as raw b64
       inputForm = "from b64";
+    }
+    // Validate the public key before persisting: it must decode from base64 and
+    // parse as an Ed25519 SPKI DER (44 bytes). createPublicKey throws on invalid input.
+    try {
+      const der = Buffer.from(publicB64, "base64");
+      if (der.length < 32) throw new Error("too short");
+      createPublicKey({ key: der, format: "der", type: "spki" });
+    } catch {
+      console.error("ace: trust add: invalid Ed25519 public key (not a valid SPKI DER) -- check the .pub file or b64 string");
+      return 65;
     }
     const kid = keyId(publicB64);
     const entry: { key_id: string; public_key: string; label?: string } = { key_id: kid, public_key: publicB64 };

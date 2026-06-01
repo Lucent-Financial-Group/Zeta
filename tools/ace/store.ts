@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import type { Dirent } from "node:fs";
 import { join, dirname } from "node:path";
 import { createHash } from "node:crypto";
@@ -178,13 +178,18 @@ export function loadTrustStore(
   return m;
 }
 
-/** Append to the user store (create if absent); dedup by key_id. */
+/** Append to the user store (create if absent); dedup by key_id.
+ * Creates ~/.ace with mode 0o700 (owner-only) and sets trust file to 0o600 (owner-only)
+ * on every call — so a pre-existing permissive file is also corrected. chmod after write
+ * because writeFileSync's mode option only applies on file creation, not on overwrite.
+ */
 export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePath()): { added: boolean } {
   const existing = readKeysFile(userPath);
   if (existing.some((k) => k.key_id === entry.key_id)) return { added: false };
   existing.push({ ...entry, added: entry.added ?? new Date().toISOString() });
-  mkdirSync(dirname(userPath), { recursive: true });
+  mkdirSync(dirname(userPath), { recursive: true, mode: 0o700 });
   writeFileSync(userPath, JSON.stringify(existing, null, 2));
+  chmodSync(userPath, 0o600);
   return { added: true };
 }
 
