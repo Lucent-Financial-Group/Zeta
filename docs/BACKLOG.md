@@ -461,7 +461,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0957](backlog/P1/B-0957-first-class-labels-tags-scopes-on-every-gset-zset-entity-deferred-to-human-state-label-otel-baggage-di-scope-propagation-aaron-otto-2026-05-31.md)** First-class labels/tags + scopes on every G-Set/Z-set entity — deferred-to-human state-label; OTel-baggage / DI-scope propagation; the metadata layer policies + decentralized identity build on
 - [ ] **[B-0958](backlog/P1/B-0958-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md)** observe.ts agent-loop — implementation + testing checklist (the closed observe→execute→loadWorld loop; toward vendor-store distribution)
 - [ ] **[B-0959](backlog/P1/B-0959-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md)** Zeta sovereign distributed-DB + agent-loop MASTER checklist — one git-native ZetaId Z-set substrate (algebra ladder · observe loop · git-native bus · distributed time · 4-oracle)
-- [ ] **[B-0961](backlog/P1/B-0961-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md)** Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance
+- [ ] **[B-0966](backlog/P1/B-0966-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md)** Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance
 
 ## P2 — research-grade
 
@@ -911,8 +911,13 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0952](backlog/P2/B-0952-contribute-back-dora-metrics-small-first-trust-building-external-contribution-strategy-not-take-only-aaron-2026-05-31.md)** Contribute-back DORA metrics + small-first trust-building external-contribution strategy (not-take-only good-citizen, made measurable)
 - [ ] **[B-0953](backlog/P2/B-0953-git-v2-handshake-fsharp-looks-like-git-negotiates-up-to-dbsp-retraction-algebra-same-objects-agent-speed-upstream-aaron-2026-05-31.md)** Git-V2 handshake — F# looks-like-git, negotiates up to a DBSP/retraction-algebra protocol at agent-coordination speed; same objects both views; upstream the primitives to git
 - [ ] **[B-0954](backlog/P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)** Implement the git-native cross-machine agent-bus — docs/agent-bus/ folder, ZetaId-Bus-keyed G-Set CRDT, no-PR (per the #6219 spec); the cross-machine/Windows comms channel
+- [ ] **[B-0954.1](backlog/P2/B-0954.1-agent-bus-tip-partition-tolerance-named-ref-consensus-claim-coordinator-single-row-cas-co-dominant-mirrors-aaron-otto-2026-06-01.md)** Agent-bus tip partition-tolerance — the named-ref consensus story (claim-coordinator + single-row CAS/lease + co-dominant mirrors + §4), not "CRDT merge
 - [ ] **[B-0955](backlog/P2/B-0955-migrate-tools-off-bun-only-apis-to-node-process-equivalents-node-safe-baseline-policy-aaron-otto-2026-05-31.md)** Migrate tools/ production code off Bun-only APIs to node:/process equivalents — honor the Node-safe-baseline policy (2026-04-20 tools-runtime ADR v6)
 - [ ] **[B-0960](backlog/P2/B-0960-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md)** Ace slice 3.1 — pave the strict-by-default road (lower signature friction)
+- [ ] **[B-0961](backlog/P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md)** ZetaId root-category taxonomy — gap analysis + DEFERRAL (model Claim/Lock as typed events first; promote to root Category only after producers + identity-rule + growth-theory)
+- [ ] **[B-0962](backlog/P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)** Phase 1 — typed Claim/Lock coordination events (optimistic CAS: mechanism-deadlock-free + symmetry-breaking observe-menu; app-level safety needs fencing + release-before-acquire)
+- [ ] **[B-0963](backlog/P2/B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)** Prove completion-lock-freedom + per-agent wait-freedom — F# model first (no git), then extend to git
+- [ ] **[B-0965](backlog/P2/B-0965-gitbash-routing-install-shield-parity-gap-2026-06-01.md)** git-bash routing install-shield — the one unshielded install surface (parity gap)
 
 ## P3 — convenience / deferred
 
