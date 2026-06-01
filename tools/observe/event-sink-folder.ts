@@ -45,7 +45,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../../src/Core.TypeScript/zeta-id/zeta-id";
 import {
@@ -207,15 +207,17 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
       coauthorFor(envelope.by),
     ].join("\n");
     run(["commit", "--no-verify", "-q", "-m", msg, "--", gitPath]);
-    // After this point the commit exists on local main. If the push never lands we MUST fully undo
-    // it — commit AND the event file — leaving the checkout exactly at origin/main. A soft reset
-    // would leave the file STAGED, which then makes the next append's `git pull --rebase` refuse on
-    // a dirty index (Codex #6312). A hard reset of our own pathspec-scoped commit on the sink's
-    // clean-main checkout leaves zero residue; the failed append didn't land, and the loop re-appends
-    // a fresh event next tick (so nothing is lost). (Codex #6312 P2: ahead-check wedge + dirty-index.)
+    // After this point the commit exists on local main. If the push never lands we MUST undo it
+    // WITHOUT clobbering unrelated edits: a `reset --hard` would wipe an agent's concurrent
+    // uncommitted work in other files (Codex #6312 P1). Targeted undo instead: `reset --soft`
+    // (move HEAD back; stages ONLY our commit's diff = our event file; other files untouched) then
+    // `restore --staged -- <our path>` (unstage ONLY our file → untracked; nothing else touched).
+    // The orphaned event file itself is removed by `append` on the ok:false return (so it can't be
+    // half-read by loadWorld). Net: commit gone, our file gone, every other file exactly as it was.
     const undoLocalCommit = (): void => {
       try {
-        run(["reset", "--hard", "HEAD~1"]); // drop our commit + the event file → clean at origin/main
+        run(["reset", "--soft", "HEAD~1"]);
+        run(["restore", "--staged", "--", gitPath]);
       } catch {
         /* nothing to undo — fine */
       }
@@ -276,7 +278,17 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
         const written = writeEventFile(envelope, opts.eventDir);
         if (!written.ok) return Promise.resolve({ ok: false, reason: written.reason });
         const committed = commit(written.path, envelope);
-        if (!committed.ok) return Promise.resolve({ ok: false, reason: committed.reason });
+        if (!committed.ok) {
+          // The append failed → the event did NOT land. Remove the written file so it can't be
+          // half-read by loadWorld (which reads the folder), regardless of whether the failure was
+          // pre-commit (file written, never committed) or post-commit (commit undone) (Codex #6312).
+          try {
+            rmSync(written.path, { force: true });
+          } catch {
+            /* file already gone (e.g. undo removed it) — fine */
+          }
+          return Promise.resolve({ ok: false, reason: committed.reason });
+        }
         return Promise.resolve({ ok: true, eventId: id });
       } catch (err) {
         return Promise.resolve({ ok: false, reason: `append failed: ${(err as Error).message}` });

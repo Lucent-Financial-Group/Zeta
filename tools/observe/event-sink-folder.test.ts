@@ -8,7 +8,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { unpack } from "../../src/Core.TypeScript/zeta-id/zeta-id";
@@ -86,6 +86,8 @@ describe("folderSink — write the fact envelope + commit", () => {
     const r = await sink.append(freeTime);
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("not on main");
+    // the event did NOT land → the written file is removed (not left for loadWorld to half-read)
+    expect(existsSync(join(dir, `${ID_FAILC}.json`))).toBe(false);
   });
 
   it("surfaces a write failure as ok:false (unwritable dir, never throws)", async () => {
