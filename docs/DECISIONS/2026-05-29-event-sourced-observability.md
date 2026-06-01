@@ -39,8 +39,9 @@ To allow the agent swarm to recursively analyze friction bottlenecks and autonom
 ## Addendum (2026-05-31): the LGTM stack, git-native — metrics are a Bag-fold over the event G-Set
 
 Option 2 is not just "a cheaper Prometheus." Once telemetry is a ZetaId-keyed,
-append-only **event G-Set** (the same paradigm as the agent-bus, B-0954, in
-`docs/agent-bus/`; the friction log in `docs/observability/`), the entire Grafana
+append-only **event G-Set** (the same paradigm as the *in-flight* agent-bus — B-0954,
+Phase 1 landing in #6283, under `docs/agent-bus/`; the friction log in
+`docs/observability/`), the entire Grafana
 **LGTM** stack falls out as *folds over that one event store* — "LGTM for git-native":
 
 | LGTM (Grafana) | git-native equivalent | how |
@@ -82,7 +83,7 @@ curvature meter"* becomes *"the Bag-fold is the curvature meter."*
 
 ### Composes with
 
-* the agent-bus (B-0954) — the concrete event G-Set; observability is the *count-fold* over the same machinery
+* the agent-bus (B-0954, Phase 1 landing in #6283) — the event G-Set this builds on; observability is the *count-fold* over the same machinery
 * the G-Set / Bag / Z-set ladder ([bus↔Ace synthesis](../research/2026-05-31-bus-and-ace-one-git-native-zetaid-zset-substrate-gset-comms-vs-dependency-zset.md)) — metric = the Bag rung
 * [`.claude/skills/lightlike-observability-discipline/SKILL.md`](../../.claude/skills/lightlike-observability-discipline/SKILL.md) — the OTel / K8s / Argo / Prometheus = lightlike mapping
 * [`2026-05-29-monitoring-and-reducing-pr-review-friction.md`](2026-05-29-monitoring-and-reducing-pr-review-friction.md) — the friction-measurement decision this serves
