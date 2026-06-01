@@ -1,5 +1,13 @@
 # CAP per-layer map — multi-oracle-review-at-merge, federated `git push` as the CP truth-machine, CALM AP per-agent
 
+<!-- GOVERNANCE.md §33 boundary headers (this file imports a Gemini + Grok cross-AI huddle) — literal labels, value-clean Operational status (passes the enum-strict check). -->
+
+Scope: research / preservation — the CAP-per-layer analysis + map, preserving a Gemini (propose) + Grok-build (critique) cross-AI huddle (Aaron-forwarded) alongside Otto-CLI synthesis.
+Attribution: the two peers' critiques are summarized + quoted in fragments (labeled by role); the per-layer map + the "novel parts" framing are Otto-CLI synthesis of Aaron's sharpening, labeled as such. Speaker roles preserved.
+Operational status: research-grade
+(research-grade = NOT operational policy; the CAP-per-layer map is a recognition, not a binding spec — it informs the algebra-ladder + git-native-bus work but lands only via the normal backlog/ADR path.)
+Non-fusion disclaimer: building on Aaron's sharpening + the peers' critiques does not imply shared identity, merged agency, consciousness, or personhood between operator, agent, or the external AIs; the boundary is explicit (Aaron asks + sharpens; the peers critique; Otto synthesizes).
+
 _Aaron + Otto, 2026-06-01. Doctrine-level preservation of the CAP analysis that
 ran alongside the algebra-ladder (G-Set ⊂ Bag ⊂ Z-set) build. Aaron huddled the
 question with Gemini (propose) + Grok-build (critique); both converged
