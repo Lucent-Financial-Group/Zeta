@@ -381,20 +381,48 @@ impl Reader {
         Ok(Json::Null)
     }
 
+    fn digits(&mut self) -> bool {
+        let mut any = false;
+        while matches!(self.peek(), Some(d) if d.is_ascii_digit()) {
+            self.pos += 1;
+            any = true;
+        }
+        any
+    }
+
     fn number(&mut self) -> Result<Json, String> {
+        // Strict JSON number grammar (RFC 8259): -? (0 | [1-9][0-9]*) (. [0-9]+)? ([eE][+-]?[0-9]+)?
+        // A real JSON parser rejects leading zeros (`01`), dangling signs/points (`1+`, `1.`,
+        // `1e`), and double-punctuation (`1.2.3`, `1-2`) as malformed — so the Rust oracle is
+        // error-for-error with the TS/F#/C# real-JSON-parser oracles on those rejection inputs.
         let start = self.pos;
-        let mut is_float = false;
         if self.peek() == Some('-') {
             self.pos += 1;
         }
-        while let Some(c) = self.peek() {
-            if c.is_ascii_digit() {
+        match self.peek() {
+            // a leading 0 is a complete int part (no further digits allowed)
+            Some('0') => self.pos += 1,
+            Some(c) if c.is_ascii_digit() => {
+                self.digits();
+            }
+            _ => return Err("invalid number".to_string()),
+        }
+        let mut is_float = false;
+        if self.peek() == Some('.') {
+            is_float = true;
+            self.pos += 1;
+            if !self.digits() {
+                return Err("invalid number (digits expected after '.')".to_string());
+            }
+        }
+        if matches!(self.peek(), Some('e') | Some('E')) {
+            is_float = true;
+            self.pos += 1;
+            if matches!(self.peek(), Some('+') | Some('-')) {
                 self.pos += 1;
-            } else if c == '.' || c == 'e' || c == 'E' || c == '+' || c == '-' {
-                is_float = true;
-                self.pos += 1;
-            } else {
-                break;
+            }
+            if !self.digits() {
+                return Err("invalid number (digits expected in exponent)".to_string());
             }
         }
         let raw: String = self.chars[start..self.pos].iter().collect();
@@ -422,6 +450,11 @@ impl Reader {
                 Some('\\') => {
                     self.pos += 1;
                     out.push(self.escape()?);
+                }
+                // JSON forbids unescaped control characters (U+0000–U+001F) in strings; a real
+                // JSON parser rejects them as malformed (the other oracles do), so do likewise.
+                Some(c) if (c as u32) < 0x20 => {
+                    return Err("unescaped control character in string".to_string());
                 }
                 Some(c) => {
                     self.pos += 1;

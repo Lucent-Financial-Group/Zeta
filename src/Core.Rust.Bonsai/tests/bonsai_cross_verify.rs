@@ -117,6 +117,29 @@ fn non_canonical_declines() {
 }
 
 #[test]
+fn malformed_number_declines_as_malformed_json() {
+    // a real JSON parser rejects a leading-zero integer — error-for-error with the siblings
+    // (MalformedJson), not a downstream NonCanonical/ExpectedInt
+    for bad in [
+        r#"{"v":1,"expr":{"kind":"const","value":{"t":"int","v":01}}}"#,
+        r#"{"v":1,"expr":{"kind":"const","value":{"t":"int","v":1.2.3}}}"#,
+        r#"{"v":1,"expr":{"kind":"const","value":{"t":"int","v":1+}}}"#,
+    ] {
+        assert!(
+            matches!(parse(bad), Err(BonsaiFeedback::MalformedJson(_))),
+            "expected MalformedJson for {bad}"
+        );
+    }
+}
+
+#[test]
+fn raw_control_char_in_string_declines_as_malformed_json() {
+    // an unescaped newline inside a JSON string is malformed JSON (the siblings reject it)
+    let bad = "{\"v\":1,\"expr\":{\"kind\":\"param\",\"name\":\"a\nb\"}}";
+    assert!(matches!(parse(bad), Err(BonsaiFeedback::MalformedJson(_))));
+}
+
+#[test]
 fn too_deep_declines_on_serialize() {
     // Build + serialize + drop a depth-exceeding tree on a large stack. The production depth
     // guard bounds recursion at MAX_DEPTH (fine on the 8 MiB main thread), but constructing,
