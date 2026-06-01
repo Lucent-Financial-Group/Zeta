@@ -72,10 +72,12 @@ let ``custom equality: order-independent inputs are equal + hash-stable`` () =
 // numeric code (`GenericZero`, SRTP-constrained folds) can aggregate a G-Set.
 
 [<Fact>]
-let ``(+) equals union`` () =
+let ``(+) merges to the explicit union result (semantics, not just delegation)`` () =
+    // assert the actual merged content, not `(+) = union` (which is tautological now that
+    // `union` delegates to `(+)`) — proves `(+)` produces the correct sorted-unique merge
     let a = GSet.ofSeq [ "a"; "b" ]
     let b = GSet.ofSeq [ "b"; "c" ]
-    (a + b) |> should equal (GSet.union a b)
+    (a + b) |> GSet.toList |> should equal [ "a"; "b"; "c" ]
 
 [<Fact>]
 let ``Zero is the additive identity: Zero + a = a and a + Zero = a`` () =
