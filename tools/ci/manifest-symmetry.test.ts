@@ -78,6 +78,87 @@ test("USB/QEMU and cluster integration tools are declared in install substrate",
   expectMiseTool("helm", "4.2.0");
 });
 
+test("Windows agent CLI install consumes the shared agent-clis manifest", () => {
+  const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
+  const agentCliManifest = readFileSync(join(setupDir, "manifests", "agent-clis"), "utf8");
+
+  expect(installPs1).toContain("manifests\\agent-clis");
+  expect(agentCliManifest).toContain("@anthropic-ai/claude-code");
+  expect(agentCliManifest).toContain("@openai/codex");
+  expect(agentCliManifest).toContain("@google/gemini-cli");
+  expect(agentCliManifest).toContain("bin=claude");
+  expect(agentCliManifest).toContain("bin=codex");
+  expect(agentCliManifest).toContain("bin=gemini");
+
+  // Install adapters consume the manifest; package ids do not belong hardcoded in install.ps1.
+  expect(installPs1).not.toContain("@anthropic-ai/claude-code");
+  expect(installPs1).not.toContain("@openai/codex");
+  expect(installPs1).not.toContain("@google/gemini-cli");
+});
+
+test("NixOS install shield validates agent-clis manifest, not one hardcoded CLI", () => {
+  const dockerfile = readFileSync(
+    join(repoRoot, "tools", "ci", "dockerfiles", "nixos-install-sh-test", "Dockerfile"),
+    "utf8",
+  );
+
+  expect(dockerfile).toContain("tools/setup/manifests/agent-clis");
+  expect(dockerfile).toContain("bin=*)");
+  expect(dockerfile).not.toContain("bun install --global @anthropic-ai/claude-code");
+  expect(dockerfile).not.toContain("bun install --global @openai/codex");
+  expect(dockerfile).not.toContain("bun install --global @google/gemini-cli");
+});
+
+test("NixOS and USB installer surfaces delegate agent/runtime drift to install graph", () => {
+  const commonNix = readFileSync(
+    join(repoRoot, "full-ai-cluster", "nixos", "modules", "common.nix"),
+    "utf8",
+  );
+  const aiAgentNix = readFileSync(
+    join(repoRoot, "full-ai-cluster", "nixos", "modules", "zeta-ai-agent.nix"),
+    "utf8",
+  );
+  const installerNix = readFileSync(
+    join(
+      repoRoot,
+      "full-ai-cluster",
+      "usb-nixos-installer",
+      "nixos",
+      "installer",
+      "configuration.nix",
+    ),
+    "utf8",
+  );
+  const zetaInstall = readFileSync(
+    join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "zeta-install.sh"),
+    "utf8",
+  );
+
+  // Installed NixOS gets declarative system packages from Nix, but runtime/agent CLI drift
+  // comes from the same install.sh manifest graph as dev machines and CI.
+  expect(commonNix).toContain("mise");
+  expect(commonNix).toContain("tools/setup/manifests/agent-clis");
+  expect(aiAgentNix).toContain("tools/setup/manifests/agent-clis");
+
+  // The live USB bakes zeta-install declaratively, then the target bootstrap enters the
+  // canonical install graph with the live-ISO guard explicitly overridden for the target.
+  expect(installerNix).toContain('writeShellScriptBin "zeta-install"');
+  expect(installerNix).toContain("p7zip");
+  expect(installerNix).toContain("gh");
+  expect(zetaInstall).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
+  expect(zetaInstall).toContain("ZETA_INSTALL_FULL=1");
+  expect(zetaInstall).toContain("tools/setup/manifests/agent-clis");
+  expect(zetaInstall).toContain("tools/setup/manifests/one-liner-tools");
+
+  // No NixOS module should name individual bun-global agent packages; package selection lives
+  // in tools/setup/manifests/agent-clis.
+  for (const nixText of [commonNix, aiAgentNix]) {
+    expect(nixText).not.toContain("@anthropic-ai/claude-code");
+    expect(nixText).not.toContain("@openai/codex");
+    expect(nixText).not.toContain("@google/gemini-cli");
+  }
+});
+
 test("no stale WINDOWS_EXCEPTIONS (each must still be a real apt/brew tool)", () => {
   const unixTools = new Set([...parseManifest("apt"), ...parseManifest("brew")]);
   const stale = Object.keys(WINDOWS_EXCEPTIONS).filter((t) => !unixTools.has(t));
