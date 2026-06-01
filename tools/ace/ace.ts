@@ -576,6 +576,13 @@ export async function main(argv: readonly string[]): Promise<number> {
         if (deps !== undefined && !Array.isArray(deps)) {
           console.error(`ace: publish: skip ${f} — manifest.dependencies must be an array`); continue;
         }
+        // P2: every files value must be a string — installPackage's writeFileSync(dest, contents)
+        // throws on non-string values, so a self-verified index could point at an un-installable
+        // package. Skip + warn (consistent with the other scan skips).
+        const fileVals = Object.values((obj as AcePackage).files as Record<string, unknown>);
+        if (fileVals.some((v) => typeof v !== "string")) {
+          console.error(`ace: publish: skip ${f} — every file value must be a string`); continue;
+        }
         packages.push(obj as AcePackage);
       }
       if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`); return 1; }

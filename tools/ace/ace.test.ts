@@ -1386,6 +1386,31 @@ describe("ace registry publish (slice 6.1)", () => {
     if (!("error" in doc2)) expect(doc2.sequence).toBe(2);
   });
 
+  test("package with a non-string file value is skipped", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-fv-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // files value is a number, not a string: content_hash matches its JSON, so it clears the
+    // content gate, but installPackage would throw at writeFileSync. Must be skipped at publish.
+    const badFiles = { "a.txt": 123 };
+    const bch = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const bm = { format_version: 1, name: "bad", version: "1.0.0", content_hash: bch };
+    const bkp = generateKeypair();
+    const badPkg = { manifest: { ...bm, signature: signManifest(bm, bkp.privatePem) }, files: badFiles };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "registry-fv.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "index-fv.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
+  });
+
   test("publish without --key is a parse error", () => {
     expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x"])).toBe(true);
   });
