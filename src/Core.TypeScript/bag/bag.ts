@@ -55,7 +55,30 @@ function at<E>(arr: readonly E[], i: number): E {
   return arr[i] as E;
 }
 
-/** Ascending Unicode code-point order — the canonical key comparator for the stack. */
+/**
+ * A multiplicity must be a safe integer — counts are ℕ, so a fraction / NaN /
+ * Infinity / unsafe-magnitude value is not a natural count and cannot be
+ * represented by the integer F#/C#/Rust oracles (it would also make `total` /
+ * `multiplicity` stop being counts). Zero and negative integers ARE accepted as
+ * input (the constructors drop them — a count `<= 0` is never stored), but a
+ * non-integer is rejected at admission so a canonical bag always holds integer
+ * counts `>= 1`.
+ */
+function assertCount(n: number): void {
+  if (!Number.isSafeInteger(n)) {
+    throw new RangeError(`Bag multiplicity must be a safe integer (got ${String(n)})`);
+  }
+}
+
+/**
+ * Ascending ordinal (UTF-16 code-unit) order — JS `<` on strings. This is the
+ * canonical key comparator for the stack: it matches F# ordinal + C#
+ * `StringComparer.Ordinal`, and for the BMP-non-surrogate keys the fixtures use
+ * (ASCII `b-XXX`) it coincides with code-point order and a byte-ordered Rust
+ * `Ord`, so all four oracles agree on those vectors. Astral-plane keys — where
+ * UTF-16 code-unit order and Unicode code-point order diverge — are out of scope
+ * for the v1 contract; pass an explicit code-point comparator if you need them.
+ */
 export const stringCompare: Compare<string> = (a, b) => {
   if (a < b) return -1;
   if (a > b) return 1;
@@ -67,8 +90,9 @@ export function empty<T>(): Bag<T> {
   return [];
 }
 
-/** A one-key Bag at count `n` (default 1); `n <= 0` yields the empty Bag. */
+/** A one-key Bag at count `n` (default 1, must be a safe integer); `n <= 0` yields the empty Bag. */
 export function singleton<T>(x: T, n = 1): Bag<T> {
+  assertCount(n);
   return n > 0 ? [{ e: x, n }] : [];
 }
 
@@ -81,6 +105,7 @@ export function ofEntries<T>(compare: Compare<T>, entries: readonly BagEntry<T>[
   const sorted = [...entries].sort((a, b) => compare(a.e, b.e));
   const out: BagEntry<T>[] = [];
   for (const entry of sorted) {
+    assertCount(entry.n);
     const last = out.length - 1;
     if (last >= 0 && compare(at(out, last).e, entry.e) === 0) {
       const prev = at(out, last);
@@ -165,8 +190,9 @@ export function add<T>(compare: Compare<T>, x: T, g: Bag<T>): Bag<T> {
   return union(compare, g, [{ e: x, n: 1 }]);
 }
 
-/** Increment `x`'s count by `n` (`n <= 0` is a no-op — the Bag is grow-only over ℕ). */
+/** Increment `x`'s count by `n` (a safe integer; `n <= 0` is a no-op — the Bag is grow-only over ℕ). */
 export function addN<T>(compare: Compare<T>, x: T, n: number, g: Bag<T>): Bag<T> {
+  assertCount(n);
   return n > 0 ? union(compare, g, [{ e: x, n }]) : g;
 }
 

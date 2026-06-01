@@ -66,6 +66,15 @@ describe("Bag — canonicalization", () => {
     expect(distinctCount(b)).toBe(2);
     expect(total(b)).toBe(5);
   });
+  it("rejects non-integer / non-finite multiplicities (counts are ℕ; integer F#/C#/Rust parity)", () => {
+    expect(() => singleton("x", 0.5)).toThrow(RangeError);
+    expect(() => addN(cmp, "x", 1.5, empty<string>())).toThrow(RangeError);
+    expect(() => ofEntries(cmp, [entry("x", Number.NaN)])).toThrow(RangeError);
+    expect(() => ofEntries(cmp, [entry("x", Number.POSITIVE_INFINITY)])).toThrow(RangeError);
+    // safe integers (including 0, handled by the drop/no-op logic) are admitted
+    expect(toEntries(singleton("x", 0))).toEqual([]);
+    expect(equals(cmp, addN(cmp, "z", 0, bag(entry("a", 1))), bag(entry("a", 1)))).toBe(true);
+  });
 });
 
 describe("Bag — commutative-monoid laws (and NON-idempotence)", () => {
