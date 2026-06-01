@@ -60,7 +60,7 @@ the metadata layer; it sets up (does not yet build) the policy + identity trajec
 Usage is inconsistent across systems (Gmail "labels" are tags; Git "tags" are pointers;
 K8s/AWS "labels"/"tags" are key-value) — the load-bearing split is **flat-membership (tag) vs
 keyed-facet (label)**. Both are **folds over the event log** (a label's current value = the
-fold of its set/unset events) — no new store, consistent with the DB-design ADR.
+fold of its set/unset events) — no new store, consistent with the [DB-design ADR](../../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md).
 
 **Lineage links** (`composes_with` / `depends_on`) are a third ancestry: **citation
 indexing** — Shepard's Citations (Frank Shepard, **1873**) → Eugene Garfield's Science
@@ -83,7 +83,7 @@ trajectory, session). This is the **Tempo / trace-context leg** of the git-nativ
 ## The concrete first need: `deferred-to-human`
 
 `deferred-to-human` is a **state-label** (`state=deferred-to-human`) — the work-item twin of
-the GitHub `deferred-to-human` PR label (`pr-triage-tiers.md` Tier 5). Per the type-vs-state
+the GitHub `deferred-to-human` PR label ([`pr-triage-tiers.md`](../../../.claude/rules/pr-triage-tiers.md) Tier 5). Per the type-vs-state
 model (B-0956): it's a *state* value, not a type. (Operator 2026-05-31 prefers
 `deferred-to-human` over `waiting-on-human`.)
 
@@ -125,7 +125,7 @@ identity); decentralized identity makes the actor verifiable + the trust-decisio
 - **B-0668** (compositional-DBSP meta-tagged *dimensions*) — this row is the entity-metadata
   level; B-0668 is the dimensional-frame level; they compose (dims × entity-facets)
 - **B-0956** (work-items) — the first consumer (`deferred-to-human` state-label)
-- the DB-design ADR (2026-05-31) + git-native LGTM (#6289) — labels-as-folds + baggage=Tempo
+- the [DB-design ADR](../../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md) (2026-05-31) + git-native LGTM (#6289) — labels-as-folds + baggage=Tempo
 - **B-0646** (agora-v6 reputation / encryption-budget) — the trust/identity economy
 - **B-0776** (cluster stack incl. OPA) — the policy-engine anchor
 - **B-0867** (workflow engine) — labels/states on lifecycle objects
