@@ -62,7 +62,7 @@ actionlint = "1.7.12"
 shellcheck = "0.11.0"
 # Cluster integration + GitOps health tooling (operator 2026-05-31):
 # B-0891 keeps USB/ISO tests focused on zflash/boot/retention, while
-# B-0951 proves Kubernetes + ArgoCD health separately through k3d/kind.
+# B-0967 proves Kubernetes + ArgoCD health separately through k3d/kind.
 # Pin these here so dev laptops, CI runners, devcontainers, Windows
 # install.ps1, and NixOS-installed nodes running install.sh converge on
 # one tool graph instead of ad hoc `brew install ...` instructions.
