@@ -10,6 +10,11 @@
 name: zflash-qemu-test
 
 on:
+  schedule:
+    # Weekly Sundays 15:17 UTC — off-the-hour weekend cadence. This keeps
+    # the B-0891 dry-run floor watching runner-image/Bun/dependency drift
+    # without paying for default-on QEMU execution.
+    - cron: "17 15 * * 0"
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
