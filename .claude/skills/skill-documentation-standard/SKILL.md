@@ -3,7 +3,7 @@ name: skill-documentation-standard
 description: SKILL.md documentation standard — frontmatter pattern, Data Vault breadcrumbs, body scaffold, BP-NN citations.
 record_source: "skill-creator, round 34"
 load_datetime: "2026-04-19"
-last_updated: "2026-04-22"
+last_updated: "2026-06-01"
 status: active
 bp_rules_cited: [BP-02, BP-10, BP-11]
 ---

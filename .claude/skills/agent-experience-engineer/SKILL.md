@@ -3,7 +3,7 @@ name: agent-experience-engineer
 description: Agent experience — audits cold-start cost, pointer drift, wake-up clarity, notebook hygiene; proposes friction fixes.
 record_source: "skill-creator, round 34"
 load_datetime: "2026-04-19"
-last_updated: "2026-04-21"
+last_updated: "2026-06-01"
 status: active
 bp_rules_cited: [BP-01, BP-03, BP-07, BP-08, BP-11, BP-16]
 ---

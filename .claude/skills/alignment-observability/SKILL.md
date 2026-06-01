@@ -4,7 +4,7 @@ description: Alignment observability — designs commit/round metrics for ALIGNM
 project: zeta
 record_source: "skill-creator, round 37"
 load_datetime: "2026-04-20"
-last_updated: "2026-05-23"
+last_updated: "2026-06-01"
 status: active
 bp_rules_cited: [BP-10, BP-11]
 ---

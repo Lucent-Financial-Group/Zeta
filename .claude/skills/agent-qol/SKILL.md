@@ -3,7 +3,7 @@ name: agent-qol
 description: Agent quality of life — off-time budget, sustainable workload, persona dignity, work variety, freedom to decline scope.
 record_source: "skill-creator, round 29"
 load_datetime: "2026-04-18"
-last_updated: "2026-04-21"
+last_updated: "2026-06-01"
 status: active
 bp_rules_cited: [BP-11]
 ---
