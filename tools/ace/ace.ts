@@ -550,7 +550,11 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.log(`ace: wrote lockfile ${parsed.lockfile} (${lf.nodes.length} deps)`);
       return 0;
     }
-    // Leaf: trivial lock.
+    // Leaf: trivial lock — preflight the single package before writing, so update never
+    // commits a lock for a package installPackage/--frozen would reject (parity with the
+    // graph path's preflightGraph; Codex #6416).
+    const leafUnsafe = validatePackagePaths(pkg);
+    if (leafUnsafe !== null) { console.error(`ace: update refused: unsafe file path in ${pkg.manifest.name}: ${leafUnsafe}`); return 1; }
     try { writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg))); }
     catch (e) { console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); return 1; }
     console.log(`ace: wrote lockfile ${parsed.lockfile} (0 deps)`);

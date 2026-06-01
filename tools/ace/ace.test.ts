@@ -1200,4 +1200,17 @@ describe("ace update (slice 5.4)", () => {
     expect(code).toBe(1);
     expect(existsSync(lockPath)).toBe(false);
   });
+
+  test("update refuses (no lock written) when a LEAF package fails preflight (unsafe path)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-update-leaf-bad-"));
+    // A leaf (no deps) with an unsafe file path → validatePackagePaths fails → no lock written.
+    // Parity with the graph path; otherwise update could commit an unreplayable leaf lock that
+    // installPackage/--frozen would reject (Codex #6416).
+    const bad = { manifest: { format_version:1, name:"BADLEAF", version:"1.0.0", content_hash: h({ "../escape":"x" }) }, files: { "../escape":"x" } };
+    const badPath = join(dir, "BADLEAF.json"); writeFileSync(badPath, JSON.stringify(bad));
+    const lockPath = join(dir, "ace.lock");
+    const code = await main(["update", badPath, "--lockfile", lockPath, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(existsSync(lockPath)).toBe(false);
+  });
 });
