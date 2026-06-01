@@ -141,3 +141,26 @@ let ``parse rejects non-canonical key order (canonical fixes v/kind first)`` () 
     Assert.Throws<System.Exception>(fun () ->
         Bonsai.parse "{\"expr\":{\"kind\":\"param\",\"name\":\"x\"},\"v\":1}" |> ignore)
     |> ignore
+
+// Nesting-depth contract: serialize emits + parse reads back trees far deeper
+// than System.Text.Json's default 64, but both are bounded by the shared v1
+// MaxDepth (a stack-overflow / DoS guard that keeps the oracles agreeing on the
+// valid-depth domain).
+
+let rec private buildDeepChain (n: int) : Bonsai.Expr =
+    if n <= 0 then
+        Bonsai.Const(Bonsai.CInt 1L)
+    else
+        Bonsai.Binary(Bonsai.Add, buildDeepChain (n - 1), Bonsai.Const(Bonsai.CInt 0L))
+
+[<Fact>]
+let ``deep-but-valid expression round-trips past System.Text.Json's default depth 64`` () =
+    // 100 > 64 (the default that broke the round-trip); well within MaxDepth.
+    let deep = buildDeepChain 100
+    Assert.Equal<Bonsai.Expr>(deep, Bonsai.parse (Bonsai.serialize deep))
+
+[<Fact>]
+let ``serialize rejects an expression past the v1 maximum nesting depth`` () =
+    let tooDeep = buildDeepChain (Bonsai.MaxDepth + 50)
+    Assert.Throws<System.Exception>(fun () -> Bonsai.serialize tooDeep |> ignore)
+    |> ignore

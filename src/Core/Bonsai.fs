@@ -60,6 +60,24 @@ module Bonsai =
     [<Literal>]
     let Version = 1
 
+    /// The maximum expression nesting depth in the v1 contract. Bounds the
+    /// recursive serializer/parser against unbounded nesting (a stack-overflow /
+    /// DoS vector on attacker-controlled saga bytes) and is the shared depth limit
+    /// every oracle should enforce, so a tree that round-trips in one oracle
+    /// round-trips in every oracle. Generous for any realistic deferred
+    /// computation, well below the recursion ceiling, and far above
+    /// System.Text.Json's default of 64 (which is too low for serializer output).
+    [<Literal>]
+    let MaxDepth = 1024
+
+    /// JSON tokenizer depth ceiling — generous headroom above MaxDepth so
+    /// JsonDocument.Parse never rejects a tree within the v1 nesting contract
+    /// (System.Text.Json defaults to 64, far below what serialize emits + the TS
+    /// oracle's JSON.parse accepts). The serialize-side cap (emitAt) + the
+    /// canonical round-trip guard in parse are the actual contract enforcers; this
+    /// only stops the tokenizer being the artificial bottleneck the 64 default was.
+    let private parseDepthCeiling = MaxDepth * 2
+
     /// Map a binary operator to its canonical wire string.
     let binOpToString (op: BinOp) : string =
         match op with
@@ -144,25 +162,38 @@ module Bonsai =
         | CBool v -> sprintf "{\"t\":\"bool\",\"v\":%s}" (if v then "true" else "false")
         | CNull -> "{\"t\":\"null\"}"
 
-    /// Emit a node in canonical compact form (fixed key order per kind).
-    let rec private emit (e: Expr) : string =
+    /// Emit a node in canonical compact form (fixed key order per kind). Tracks
+    /// nesting depth and rejects a tree past MaxDepth — so serialize never emits a
+    /// tree the parser (any oracle) could not read back, and recursion is bounded.
+    let rec private emitAt (depth: int) (e: Expr) : string =
+        if depth > MaxDepth then
+            failwithf "bonsai: expression nesting depth exceeds the v1 maximum of %d" MaxDepth
+
         match e with
         | Const c -> sprintf "{\"kind\":\"const\",\"value\":%s}" (emitConst c)
         | Param n -> sprintf "{\"kind\":\"param\",\"name\":%s}" (jsonString n)
         | Lambda(ps, body) ->
             let psJson = ps |> List.map jsonString |> String.concat ","
-            sprintf "{\"kind\":\"lambda\",\"params\":[%s],\"body\":%s}" psJson (emit body)
+            sprintf "{\"kind\":\"lambda\",\"params\":[%s],\"body\":%s}" psJson (emitAt (depth + 1) body)
         | Binary(op, l, r) ->
-            sprintf "{\"kind\":\"binary\",\"op\":%s,\"left\":%s,\"right\":%s}" (jsonString (binOpToString op)) (emit l) (emit r)
+            sprintf
+                "{\"kind\":\"binary\",\"op\":%s,\"left\":%s,\"right\":%s}"
+                (jsonString (binOpToString op))
+                (emitAt (depth + 1) l)
+                (emitAt (depth + 1) r)
         | Call(fn, args) ->
-            let argsJson = args |> List.map emit |> String.concat ","
+            let argsJson = args |> List.map (emitAt (depth + 1)) |> String.concat ","
             sprintf "{\"kind\":\"call\",\"fn\":%s,\"args\":[%s]}" (jsonString fn) argsJson
         | Cond(t, th, el) ->
-            sprintf "{\"kind\":\"cond\",\"test\":%s,\"then\":%s,\"else\":%s}" (emit t) (emit th) (emit el)
+            sprintf
+                "{\"kind\":\"cond\",\"test\":%s,\"then\":%s,\"else\":%s}"
+                (emitAt (depth + 1) t)
+                (emitAt (depth + 1) th)
+                (emitAt (depth + 1) el)
 
     /// Serialize an expression to the canonical Bonsai-subset string.
     let serialize (e: Expr) : string =
-        sprintf "{\"v\":%d,\"expr\":%s}" Version (emit e)
+        sprintf "{\"v\":%d,\"expr\":%s}" Version (emitAt 1 e)
 
     /// Rebuild a ConstValue from a parsed JSON element (validating the tag).
     let private parseConst (el: JsonElement) : ConstValue =
@@ -204,7 +235,10 @@ module Bonsai =
     /// valid (the very byte-exact invariant the cross-language oracles exist to
     /// guarantee).
     let parse (s: string) : Expr =
-        use doc = JsonDocument.Parse(s)
+        // Lift the tokenizer ceiling above the v1 nesting contract (the default 64
+        // is far below serializer output); the emitAt cap + the canonical
+        // round-trip guard below remain the actual depth enforcers.
+        use doc = JsonDocument.Parse(s, JsonDocumentOptions(MaxDepth = parseDepthCeiling))
         let root = doc.RootElement
         let v = root.GetProperty("v").GetInt32()
 
