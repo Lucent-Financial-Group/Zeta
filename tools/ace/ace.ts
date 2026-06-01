@@ -6,8 +6,8 @@
 //   bun tools/ace/ace.ts install <url-or-path> [--allow-unsigned]
 //   bun tools/ace/ace.ts verify <hash>
 //   bun tools/ace/ace.ts keygen [--out <prefix>]
-//   bun tools/ace/ace.ts sign <pkg> --key <priv.pem> [--out <file>]
-//   bun tools/ace/ace.ts trust add <pub> [--label <name>]
+//   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
+//   bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]
 //   bun tools/ace/ace.ts trust list
 //
 // Future commands (not yet implemented): remove, inspect.
@@ -109,7 +109,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         return { error: `Unknown option for sign: ${argv[i]}` };
       }
     }
-    if (!keyPath) return { error: "sign requires --key <priv.pem>" };
+    if (!keyPath) return { error: "sign requires --key <priv.key>" };
     const result: SignArgs = { command: "sign", pkgPath, keyPath };
     if (outPath !== undefined) return { ...result, outPath };
     return result;
@@ -203,10 +203,11 @@ function printUsage(): void {
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
   ace install <url-or-path> [--allow-unsigned]   Download/read a package, verify integrity+authenticity, install
+                                                   --allow-unsigned only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
   ace verify <hash>                              Confirm an installed package is present
   ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
-  ace sign <pkg> --key <priv.pem> [--out <file>] Sign a package manifest with an Ed25519 private key
-  ace trust add <pub> [--label <name>]           Trust an Ed25519 public key
+  ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
+  ace trust add <pub-file-or-b64> [--label <name>] Trust an Ed25519 public key
   ace trust list                                 List all trusted keys
   ace help                                       Show this help
 
@@ -235,7 +236,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     // mode on the OPEN so the file is never momentarily world-readable (POSIX; advisory on Windows)
     writeFileSync(`${parsed.outPrefix}.key`, kp.privatePem, { mode: 0o600 });
     writeFileSync(`${parsed.outPrefix}.pub`, JSON.stringify({ algo: "ed25519", key_id: kp.keyId, public_key: kp.publicSpkiB64 }, null, 2));
-    console.log(`ace: wrote ${parsed.outPrefix}.key (0600) + ${parsed.outPrefix}.pub  key_id ${kp.keyId}`);
+    console.log(`ace: wrote ${parsed.outPrefix}.key (0600) + ${parsed.outPrefix}.pub  key_id ${kp.keyId} — share ${parsed.outPrefix}.pub with consumers; keep ${parsed.outPrefix}.key private`);
     return 0;
   }
 
@@ -246,7 +247,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     catch { console.error("ace: package is not valid JSON"); return 65; }
     const recomputed = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
     if (recomputed !== pkg.manifest.content_hash) {
-      console.error(`ace: sign refused: content_hash mismatch (manifest ${pkg.manifest.content_hash}, computed ${recomputed})`);
+      console.error(`ace: sign refused: package content changed since its content_hash was computed — rebuild the package, then sign`);
       return 1;
     }
     let priv: string;
@@ -259,6 +260,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       writeFileSync(parsed.outPath, out);
       console.log(`ace: signed -> ${parsed.outPath} (key_id ${signature.key_id})`);
     } else {
+      process.stderr.write(`ace: signed (key_id ${signature.key_id}) — redirect stdout to a file, or use --out <file>\n`);
       console.log(out);
     }
     return 0;
@@ -268,24 +270,27 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (parsed.command === "trust") {
     if (parsed.sub === "list") {
       const rows = listTrustedKeys();
-      if (rows.length === 0) { console.log("No trusted keys."); return 0; }
+      if (rows.length === 0) { console.log("No trusted keys. (add one: ace trust add <pub>)"); return 0; }
       for (const r of rows) console.log(`  ${r.key_id}  [${r.source}]${r.label ? "  " + r.label : ""}`);
       return 0;
     }
     // add: arg is a .pub file path OR a raw base64 SPKI
     if (!parsed.arg) { console.error("ace: trust add requires a <pubkey-file-or-b64>"); return 64; }
     let publicB64: string;
+    let inputForm: string;
     try {
       const raw = readFileSync(parsed.arg, "utf8").trim();
       publicB64 = raw.startsWith("{") ? (JSON.parse(raw).public_key as string) : raw;
+      inputForm = `from file: ${parsed.arg}`;
     } catch {
       publicB64 = parsed.arg; // not a file -> treat as raw b64
+      inputForm = "from b64";
     }
     const kid = keyId(publicB64);
     const entry: { key_id: string; public_key: string; label?: string } = { key_id: kid, public_key: publicB64 };
     if (parsed.label !== undefined) entry.label = parsed.label;
     const res = addTrustedKey(entry);
-    console.log(res.added ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""}` : `ace: ${kid} already trusted`);
+    console.log(res.added ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""} [${inputForm}]` : `ace: ${kid} already trusted`);
     return 0;
   }
 
@@ -338,7 +343,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 1;
     } else if (v.reason === "untrusted-key") {
       const kid = pkg.manifest.signature?.key_id ?? "?";
-      console.error(`ace: install refused: signature from untrusted key ${kid} (ace trust add to trust it)`);
+      console.error(`ace: install refused: signature from untrusted key ${kid} — unknown publisher. Run 'ace trust list' to see trusted keys, or obtain the publisher's .pub and run 'ace trust add <pub>'.`);
       return 1;
     } else {
       // no-signature

@@ -23,14 +23,16 @@ without one.
 
 ## Verb grammar
 
+Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust add`, `trust list`, `list`.
+
 | Verb | Form | What |
 |---|---|---|
+| `keygen` | `bun tools/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
+| `sign` | `bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
 | `list` | `bun tools/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
 | `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-unsigned]` | Download/read a package, verify integrity + authenticity, install |
 | `verify` | `bun tools/ace/ace.ts verify <hash>` | Confirm an installed package is present |
-| `keygen` | `bun tools/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
-| `sign` | `bun tools/ace/ace.ts sign <pkg> --key <priv.pem> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
-| `trust add` | `bun tools/ace/ace.ts trust add <pub> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
+| `trust add` | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
 | `trust list` | `bun tools/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
 | `help` | `bun tools/ace/ace.ts help` | Usage |
 
@@ -44,7 +46,7 @@ signature is always refused (`ace trust add` the key).
 bun tools/ace/ace.ts list --json
 ```
 
-Exit codes: `0` ok · `64` usage error · `1` refused (bad signature / untrusted key / integrity fail).
+Exit codes: `0` ok · `64` usage error · `65` invalid package JSON · `1` refused (bad signature / untrusted key / integrity fail).
 
 ## Where the deep substrate lives (one Read away)
 
