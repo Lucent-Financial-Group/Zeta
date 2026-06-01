@@ -1,6 +1,6 @@
 ---
 name: agent-qol
-description: Agent quality of life — off-time budget, workload sustainability, persona dignity, variety of work, freedom to decline scope.
+description: Agent quality of life — off-time budget, sustainable workload, persona dignity, work variety, freedom to decline scope.
 record_source: "skill-creator, round 29"
 load_datetime: "2026-04-18"
 last_updated: "2026-04-21"
