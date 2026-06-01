@@ -149,11 +149,19 @@ function writeEventFile(envelope: EventEnvelope, eventDir: string): { ok: true; 
  */
 export function coauthorFor(by: string): string {
   const id = by.toLowerCase();
-  if (id.startsWith("otto")) return "Co-Authored-By: Claude <noreply@anthropic.com>";
-  if (id.startsWith("alexa")) return "Co-Authored-By: Kiro <noreply@kiro.dev>";
-  if (id.startsWith("riven")) return "Co-Authored-By: Grok <noreply@x.ai>";
-  if (id.startsWith("vera")) return "Co-Authored-By: Codex <noreply@openai.com>";
-  if (id.startsWith("lior")) return "Co-Authored-By: Gemini <noreply@google.com>";
+  // Match the EXACT surface id or a hyphen-delimited variant (otto, otto-cli, otto-desktop) —
+  // NOT a bare prefix, so "ottobot" / "liorx" fall back to the sender trailer instead of being
+  // mis-stamped (Codex #6312: mirror the agent-bus exact-or-hyphen matching, not startsWith).
+  const TRAILERS: readonly (readonly [string, string])[] = [
+    ["otto", "Co-Authored-By: Claude <noreply@anthropic.com>"],
+    ["alexa", "Co-Authored-By: Kiro <noreply@kiro.dev>"],
+    ["riven", "Co-Authored-By: Grok <noreply@x.ai>"],
+    ["vera", "Co-Authored-By: Codex <noreply@openai.com>"],
+    ["lior", "Co-Authored-By: Gemini <noreply@google.com>"],
+  ];
+  for (const [surface, trailer] of TRAILERS) {
+    if (id === surface || id.startsWith(`${surface}-`)) return trailer;
+  }
   return `Co-Authored-By: ${by} <noreply@zeta.local>`;
 }
 
@@ -199,12 +207,15 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
       coauthorFor(envelope.by),
     ].join("\n");
     run(["commit", "--no-verify", "-q", "-m", msg, "--", gitPath]);
-    // After this point the commit exists on local main. If the push never lands we MUST undo it
-    // (soft, so the event file is preserved for a later retry) — otherwise local main is left
-    // ahead of origin/main and the ahead-check wedges every future append (Codex #6312 P2).
+    // After this point the commit exists on local main. If the push never lands we MUST fully undo
+    // it — commit AND the event file — leaving the checkout exactly at origin/main. A soft reset
+    // would leave the file STAGED, which then makes the next append's `git pull --rebase` refuse on
+    // a dirty index (Codex #6312). A hard reset of our own pathspec-scoped commit on the sink's
+    // clean-main checkout leaves zero residue; the failed append didn't land, and the loop re-appends
+    // a fresh event next tick (so nothing is lost). (Codex #6312 P2: ahead-check wedge + dirty-index.)
     const undoLocalCommit = (): void => {
       try {
-        run(["reset", "--soft", "HEAD~1"]); // un-commit; keep the event file staged for retry
+        run(["reset", "--hard", "HEAD~1"]); // drop our commit + the event file → clean at origin/main
       } catch {
         /* nothing to undo — fine */
       }
@@ -248,20 +259,28 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
   const commit = opts.commit ?? gitCommitToMain;
   return {
     append: (action: NextAction): Promise<AppendOutcome> => {
-      const id = mint();
-      // `mint` is injectable + FolderSinkOptions is exported, so a caller could return a
-      // path-traversal segment ("../outside") or a Windows-reserved name. The id is used as a
-      // path segment — reject anything but a canonical 32-hex ZetaId before joining a path
-      // (the bus guards its segments the same way). Security-relevant (Copilot #6312 P1).
-      if (!isCanonicalEventId(id)) {
-        return Promise.resolve({ ok: false, reason: `non-canonical event id (expected 32 lowercase hex): '${id}'` });
+      // Wrap the whole body: the injected `mint` / `now` / `commit` could throw (e.g. a now()
+      // returning NaN makes toISOString() throw), but the documented contract is Result-only —
+      // convert ANY throw to { ok: false } like the rest of the adapter (Copilot #6312 P1).
+      try {
+        const id = mint();
+        // `mint` is injectable + FolderSinkOptions is exported, so a caller could return a
+        // path-traversal segment ("../outside") or a Windows-reserved name. The id is used as a
+        // path segment — reject anything but a canonical 32-hex ZetaId before joining a path
+        // (the bus guards its segments the same way). Security-relevant (Copilot #6312 P1).
+        if (!isCanonicalEventId(id)) {
+          return Promise.resolve({ ok: false, reason: `non-canonical event id (expected 32 lowercase hex): '${id}'` });
+        }
+        const at = new Date(now()).toISOString();
+        const envelope: EventEnvelope = { id, at, by: opts.by, action };
+        const written = writeEventFile(envelope, opts.eventDir);
+        if (!written.ok) return Promise.resolve({ ok: false, reason: written.reason });
+        const committed = commit(written.path, envelope);
+        if (!committed.ok) return Promise.resolve({ ok: false, reason: committed.reason });
+        return Promise.resolve({ ok: true, eventId: id });
+      } catch (err) {
+        return Promise.resolve({ ok: false, reason: `append failed: ${(err as Error).message}` });
       }
-      const envelope: EventEnvelope = { id, at: new Date(now()).toISOString(), by: opts.by, action };
-      const written = writeEventFile(envelope, opts.eventDir);
-      if (!written.ok) return Promise.resolve({ ok: false, reason: written.reason });
-      const committed = commit(written.path, envelope);
-      if (!committed.ok) return Promise.resolve({ ok: false, reason: committed.reason });
-      return Promise.resolve({ ok: true, eventId: id });
     },
   };
 }

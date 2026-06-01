@@ -94,6 +94,13 @@ describe("folderSink — write the fact envelope + commit", () => {
     expect(r.ok).toBe(false);
     expect(committed).toHaveLength(0); // never reached commit
   });
+
+  it("converts an injected throw (now()=NaN) to ok:false, never throws (Result-only contract)", async () => {
+    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_A, now: () => Number.NaN, commit: okCommit });
+    const r = await sink.append(freeTime); // new Date(NaN).toISOString() throws inside append
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("append failed");
+  });
 });
 
 describe("mintObserveEventIdHex — stable WorkItem-category identity", () => {
@@ -134,6 +141,9 @@ describe("coauthorFor — harness-specific trailer from the acting agent (shared
     expect(coauthorFor("vera-codex")).toBe("Co-Authored-By: Codex <noreply@openai.com>");
     expect(coauthorFor("lior-antigravity")).toBe("Co-Authored-By: Gemini <noreply@google.com>");
     expect(coauthorFor("addison")).toBe("Co-Authored-By: addison <noreply@zeta.local>");
+    // bare-prefix near-misses must NOT be mis-stamped (exact-or-hyphen only)
+    expect(coauthorFor("ottobot")).toBe("Co-Authored-By: ottobot <noreply@zeta.local>");
+    expect(coauthorFor("liorx")).toBe("Co-Authored-By: liorx <noreply@zeta.local>");
   });
 });
 
