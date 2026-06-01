@@ -207,7 +207,7 @@ public sealed class GSet<T> :
         "Design",
         "CA1000:Do not declare static members on generic types",
         Justification = "IAdditiveIdentity<TSelf,TResult> requires a static AdditiveIdentity member on the generic type; CA1000 predates static-abstract interface members (IWSAM) and does not apply to generic-math interface implementations.")]
-    public static GSet<T> AdditiveIdentity => GSet.Empty<T>();
+    public static GSet<T> AdditiveIdentity { get; } = GSet.Empty<T>();
 
     /// <summary>
     /// The additive operator (generic-math <c>+</c>): the CRDT <see cref="Union"/> merge.
@@ -225,8 +225,8 @@ public sealed class GSet<T> :
 
         // The additive identity is the empty set; it must absorb under ANY comparer for the
         // monoid identity law to hold (AdditiveIdentity uses the default comparer, but a set
-        // may carry a custom one). Empty has no elements, so its ordering is irrelevant — short
-        // -circuit before Union's deliberate same-comparer check (which guards non-empty merges).
+        // may carry a custom one). Empty has no elements, so its ordering is irrelevant —
+        // short-circuit before Union's deliberate same-comparer check (guards non-empty merges).
         if (left.IsEmpty)
         {
             return right;
