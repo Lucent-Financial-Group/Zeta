@@ -44,9 +44,16 @@ export type AgentBusEnvelope = MessageEnvelope;
 
 const pad2 = (n: number): string => String(n).padStart(2, "0");
 
-/** A path segment must be a single safe name — no separators, no `..`, no leading dot. */
+/**
+ * A path segment must be a single name that is valid on EVERY OS. Positive allowlist:
+ * letters, digits, dot, underscore, hyphen — no leading dot, no `..`. Everything
+ * Windows forbids (`< > : " / \ | ? *`, control chars, spaces) is rejected by
+ * omission. Our real segments are SENDER_IDS personas (kebab-case, e.g. otto-cli /
+ * otto-windows) + 32-hex ids, which already satisfy this; the allowlist makes the
+ * "Windows-safe" claim actually hold for any future caller (Copilot #6283).
+ */
 export function isSafeSegment(seg: string): boolean {
-  return seg.length > 0 && !seg.includes("/") && !seg.includes("\\") && !seg.includes("..") && !seg.startsWith(".");
+  return /^[A-Za-z0-9._-]+$/.test(seg) && !seg.startsWith(".") && !seg.includes("..");
 }
 
 /** `<root>/<persona>/<YYYY>/<MM>/<DD>/<id>.json` (UTC date partition). */

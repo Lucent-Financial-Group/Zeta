@@ -11,7 +11,7 @@ import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { execFileSync } from "node:child_process";
 import { AGENT_BUS_ROOT, envelopePath, serializeEnvelope, makeEnvelope, type AgentBusEnvelope } from "./types";
-import { SENDER_IDS, AGENT_IDS, type AgentId, type SenderAgentId, type BusMessage } from "../bus/types";
+import { SENDER_IDS, AGENT_IDS, TTL_MS, type AgentId, type SenderAgentId, type BusMessage } from "../bus/types";
 
 export { makeEnvelope };
 
@@ -29,7 +29,11 @@ export type WriteResult =
 export function writeEnvelope(
   env: AgentBusEnvelope,
   root: string = AGENT_BUS_ROOT,
-  at: Date = new Date(),
+  // Partition by the envelope's OWN timestamp, not wall-clock: the path must be a
+  // deterministic function of (from, id, timestamp) so an idempotent re-publish always
+  // lands the SAME file (the G-Set property) — even across a UTC-midnight boundary, where
+  // a wall-clock `new Date()` would write a 2nd file for one id (Copilot #6283).
+  at: Date = new Date(env.timestamp),
 ): WriteResult {
   const path = envelopePath(root, env.from, env.id, at);
   const content = serializeEnvelope(env);
@@ -100,6 +104,13 @@ if (import.meta.main) {
     console.error(`unknown target '${to}'. Valid: ${AGENT_IDS.join(", ")} | *`);
     process.exit(2);
   }
+  // Validate topic against the known bus topics (TTL_MS keys) BEFORE building the envelope:
+  // an unknown topic makes TTL_MS[topic] undefined, and makeEnvelope's expiresAt
+  // (new Date(atMs + undefined)) throws a confusing RangeError (Copilot #6283 P0).
+  if (!(topic in TTL_MS)) {
+    console.error(`unknown topic '${topic}'. Valid: ${Object.keys(TTL_MS).join(", ")}`);
+    process.exit(2);
+  }
   let payload: unknown;
   try {
     payload = JSON.parse(payloadJson);
@@ -107,7 +118,8 @@ if (import.meta.main) {
     console.error(`invalid JSON payload: ${(e as Error).message}`);
     process.exit(2);
   }
-  const message = { topic, payload } as BusMessage;
+  // topic validated above -> safe to narrow to the BusMessage topic union.
+  const message = { topic: topic as BusMessage["topic"], payload } as BusMessage;
   const env = makeEnvelope(from as SenderAgentId, to as AgentId, message);
   const result = writeEnvelope(env);
   console.log(JSON.stringify({ result: result.kind, path: result.path, id: env.id }));

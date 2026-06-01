@@ -60,9 +60,12 @@ describe("envelopePath + isSafeSegment (path-injection guard)", () => {
   });
   it("rejects unsafe segments (../, /, leading dot)", () => {
     expect(isSafeSegment("otto-cli")).toBe(true);
+    expect(isSafeSegment("otto-windows")).toBe(true); // kebab hyphen is fine
     expect(isSafeSegment("../etc")).toBe(false);
     expect(isSafeSegment("a/b")).toBe(false);
     expect(isSafeSegment(".hidden")).toBe(false);
+    expect(isSafeSegment("a:b")).toBe(false); // Windows-forbidden colon (Copilot #6283)
+    expect(isSafeSegment("a*b")).toBe(false); // Windows-forbidden glob char
     expect(() => envelopePath(ROOT, "../escape", "deadbeef")).toThrow();
     expect(() => envelopePath(ROOT, "otto-cli", "../../escape")).toThrow();
   });
@@ -88,6 +91,13 @@ describe("writeEnvelope — G-Set CRDT semantics (atomic, no TOCTOU)", () => {
     writeEnvelope(env({ id: "00000000000000000000000000000001" }), ROOT, at);
     writeEnvelope(env({ id: "00000000000000000000000000000002" }), ROOT, at);
     expect(readEnvelopesSince(ROOT)).toHaveLength(2);
+  });
+  it("defaults the date partition to the envelope's OWN timestamp, not wall-clock (Copilot #6283)", () => {
+    // No explicit `at` -> partition must come from env.timestamp so an idempotent
+    // re-publish always lands the same file, even near a UTC-midnight boundary.
+    const id = "dd".padStart(32, "0");
+    const r = writeEnvelope(env({ id, timestamp: "2026-05-31T23:59:00.000Z" }), ROOT);
+    expect(r.path).toBe(join(ROOT, "otto-cli", "2026", "05", "31", `${id}.json`));
   });
 });
 
