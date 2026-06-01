@@ -41,7 +41,8 @@ To allow the agent swarm to recursively analyze friction bottlenecks and autonom
 Option 2 is not just "a cheaper Prometheus." Once telemetry is a ZetaId-keyed,
 append-only **event G-Set** (the same paradigm as the *in-flight* agent-bus — B-0954,
 Phase 1 landing in #6283, *targeted at* `docs/agent-bus/`; the friction log *planned at*
-`docs/observability/` — neither directory exists on `main` yet), the entire Grafana
+`docs/observability/` — neither directory existed on `main` as of this 2026-05-31
+addendum), the entire Grafana
 **LGTM** stack falls out as *folds over that one event store* — "LGTM for git-native":
 
 | LGTM (Grafana) | git-native equivalent | how |
