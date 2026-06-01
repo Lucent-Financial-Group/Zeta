@@ -8,7 +8,7 @@
 > per operator "write the spec" 2026-06-01. Lives next to
 > [`AGENDA.md`](AGENDA.md) (Zeta-native home; not the `superpowers` plugin's
 > default `docs/superpowers/specs/`, which is a plugin convention foreign to the
-> repo). Open decisions for the operator are flagged **[DECISION]**.
+> repo). The two open decisions were RESOLVED by the operator 2026-06-01 (see §8).
 
 **Goal:** decide how the Ace CLI is *distributed* and what its *DX* is — for both
 AI agents (via agent skills stores) and human developers — without foreclosing the
@@ -88,7 +88,7 @@ existing `tools/ace/ace.ts` is that core.
 
 ## 7. Abstract layer — bus + Ace are one substrate (B-0824 / #6284; NOT MVP)
 
-Per mac-Otto's #6284 synthesis: the git-native agent-bus (B-0954) and Ace (B-0824)
+Per the macOS Otto surface's #6284 synthesis: the git-native agent-bus (B-0954) and Ace (B-0824)
 are **the same git-native ZetaId-keyed store whose state is a DBSP fold over the
 entry stream** — they differ only in the *algebra*:
 
@@ -97,7 +97,7 @@ entry stream** — they differ only in the *algebra*:
   resolved dependency view).
 - **G-Set = Z-set restricted to non-negative multiplicity.** Between them sits the
   **bag / multiset** (multiplicity ∈ ℕ₀) as the materialised non-negative
-  current-count *observability* view both project into. *(mac-Otto is adding the
+  current-count *observability* view both project into. *(the macOS Otto surface is adding the
   exact bag-as-observability framing to #6284; reconcile this paragraph with his
   wording when it lands.)*
 
@@ -113,7 +113,8 @@ work).
 ## 8. Decisions (RESOLVED — operator 2026-06-01)
 
 1. **Primary human audience → `install.sh`-sibling first.** `install.sh` ends by
-   making `ace` available (one `bun install -g ace` line, sibling to
+   making `ace` available (a `bun link` step in the repo root that exposes the
+   `package.json` `bin`, sibling to
    `agent-clis.sh` / `one-liner-tools.sh`), so anyone who ran the Zeta installer
    gets `ace` for free (Node guaranteed present). The standalone bare-machine
    `bunx` / Node-bootstrap path is a **later slice**, not the MVP headline.
@@ -146,7 +147,7 @@ work).
 ## 11. Next step
 
 Decisions resolved (§8) -> implementation plan (writing-plans) for the **MVP**:
-the `.claude/skills/ace/` surface + the `install.sh`-sibling `bun install -g ace`
+the `.claude/skills/ace/` surface + the `install.sh`-sibling `bun link`
 line + install-time provenance — all over the existing `tools/ace/ace.ts` core,
 Node-floor portable. The standalone `bunx`/bootstrap channel + the manifest-driving
 layer are explicitly later slices, NOT in the MVP plan.
@@ -155,5 +156,5 @@ layer are explicitly later slices, NOT in the MVP plan.
 
 - Product round: pm2 + developer-experience-engineer + agent-experience-engineer (2026-06-01).
 - bun hypothesis: [Claude Code npm (Node ≥22.5)](https://www.npmjs.com/package/@anthropic-ai/claude-code) · [OpenAI Codex CLI (Rust)](https://github.com/openai/codex) · [Gemini CLI (Node 18+)](https://github.com/google-gemini/gemini-cli) · [Node releases / LTS](https://nodejs.org/en/about/previous-releases).
-- bus↔Ace substrate: [#6284](https://github.com/Lucent-Financial-Group/Zeta/pull/6284) (mac-Otto synthesis) + B-0954 + B-0824 + B-0867.27.
+- bus↔Ace substrate: [#6284](https://github.com/Lucent-Financial-Group/Zeta/pull/6284) (macOS-Otto-surface synthesis) + B-0954 + B-0824 + B-0867.27.
 - Node-24 standardisation: #6290.
