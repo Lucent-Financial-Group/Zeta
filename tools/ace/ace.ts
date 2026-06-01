@@ -9,6 +9,8 @@
 //   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
 //   bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]
 //   bun tools/ace/ace.ts trust list
+//   bun tools/ace/ace.ts registry add <name> <version> <url> [--hash <h>]
+//   bun tools/ace/ace.ts registry list
 //
 // Future commands (not yet implemented): remove, inspect.
 
@@ -17,7 +19,7 @@ import { createPublicKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys, validatePackagePaths,
-  loadRegistry,
+  loadRegistry, addRegistryEntry, listRegistry,
   type AcePackage,
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
@@ -65,7 +67,16 @@ interface TrustArgs {
   readonly label?: string;
 }
 
-type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs;
+interface RegistryArgs {
+  readonly command: "registry";
+  readonly sub: "list" | "add";
+  readonly regName?: string;
+  readonly regVersion?: string;
+  readonly regUrl?: string;
+  readonly regHash?: string;
+}
+
+type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs;
 
 interface ArgError {
   readonly error: string;
@@ -143,6 +154,24 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     return { error: `Unknown trust subcommand: ${sub}` };
   }
 
+  if (command === "registry") {
+    const sub = argv[1];
+    if (sub === "list") return { command: "registry", sub: "list" };
+    if (sub === "add") {
+      const name = argv[2], version = argv[3], url = argv[4];
+      if (!name || !version || !url || name.startsWith("-") || version.startsWith("-") || url.startsWith("-")) {
+        return { error: "registry add requires <name> <version> <url>" };
+      }
+      let hash: string | undefined;
+      for (let i = 5; i < argv.length; i++) {
+        if (argv[i] === "--hash") { hash = argv[++i]; if (!hash) return { error: "--hash requires a value" }; }
+        else return { error: `Unknown option for registry add: ${argv[i]}` };
+      }
+      return { command: "registry", sub: "add", regName: name, regVersion: version, regUrl: url, regHash: hash };
+    }
+    return { error: "registry requires 'add' or 'list'" };
+  }
+
   if (command === "install") {
     const source = argv[1];
     if (!source || source.startsWith("-")) return { error: "install requires a <url-or-path> argument" };
@@ -212,6 +241,8 @@ Usage:
   ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
   ace trust add <pub-file-or-b64> [--label <name>] Trust an Ed25519 public key
   ace trust list                                 List all trusted keys
+  ace registry add <name> <version> <url> [--hash <h>] Register a package in the local registry
+  ace registry list                              List all registry entries
   ace help                                       Show this help
 
 Future commands (not yet implemented):
@@ -332,6 +363,35 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (parsed.label !== undefined) entry.label = parsed.label;
     const res = addTrustedKey(entry);
     console.log(res.added ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""} [${inputForm}]` : `ace: ${kid} already trusted`);
+    return 0;
+  }
+
+  // registry
+  if (parsed.command === "registry") {
+    if (parsed.sub === "list") {
+      const rows = listRegistry();
+      if (rows.length === 0) { console.log("No registry entries. (add one: ace registry add <name> <version> <url>)"); return 0; }
+      for (const r of rows) console.log(`  ${r.name}@${r.version}  ${r.url}  [${r.source}]`);
+      return 0;
+    }
+    // sub === "add"
+    let pkgHash = parsed.regHash;
+    if (pkgHash === undefined) {
+      let raw: string;
+      try {
+        raw = parsed.regUrl!.startsWith("http://") || parsed.regUrl!.startsWith("https://")
+          ? await (await fetch(parsed.regUrl!)).text()
+          : readFileSync(parsed.regUrl!, "utf8");
+      } catch (e) {
+        console.error(`ace: registry add: fetch/read failed: ${(e as Error).message}`);
+        return 1;
+      }
+      let pkg: AcePackage;
+      try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: registry add: package is not valid JSON"); return 65; }
+      pkgHash = packageHash(pkg);
+    }
+    const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: parsed.regUrl!, package_hash: pkgHash });
+    console.log(res.added ? `ace: registered ${parsed.regName}@${parsed.regVersion}` : `ace: ${parsed.regName}@${parsed.regVersion} already registered`);
     return 0;
   }
 
