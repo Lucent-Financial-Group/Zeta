@@ -74,7 +74,17 @@ function gitPushEnvelope(path: string, from: SenderAgentId, topic: string): void
   // --no-verify: bus envelopes are DATA, not code — skip code hooks.
   // Pathspec `-- path` commits ONLY the envelope, never pre-staged work already in the
   // checkout (Codex #6283 P2 — a direct-to-main --no-verify commit must not sweep it in).
-  execFileSync("git", ["commit", "--no-verify", "-q", "-m", `bus(${from}): ${topic} ${path}`, "--", path], opts);
+  // Body names the publishing sender; the Co-Authored-By trailer keeps the repo-required
+  // attribution even though --no-verify skips the hook that would otherwise add/check it
+  // (Codex #6283 P2 — a direct-to-main bus commit must still carry attribution).
+  const commitMsg = [
+    `bus(${from}): ${topic} ${path}`,
+    "",
+    `Agent-bus envelope published by ${from} (B-0954, no-PR direct-to-main).`,
+    "",
+    "Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>",
+  ].join("\n");
+  execFileSync("git", ["commit", "--no-verify", "-q", "-m", commitMsg, "--", path], opts);
   // Explicit target: a concurrent peer advancing main rejects this push non-fast-forward,
   // but disjoint ZetaId files (G-Set CRDT) never conflict -> pull --rebase + retry.
   for (let attempt = 0; attempt < 3; attempt++) {
