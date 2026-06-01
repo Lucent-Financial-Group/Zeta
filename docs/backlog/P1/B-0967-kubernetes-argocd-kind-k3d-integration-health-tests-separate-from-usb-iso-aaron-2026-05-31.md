@@ -94,27 +94,92 @@ timeouts.
 
 ## Acceptance
 
-- [ ] A TypeScript integration entrypoint exists for local cluster health, for
+- [x] A TypeScript integration entrypoint exists for local cluster health, for
   example `tools/cluster/argocd-health-test.ts` or
   `tools/ci/k8s-argocd-health-test.ts`.
-- [ ] The harness can create or select an ephemeral k3d/kind cluster and emits
+- [x] The harness can create or select an ephemeral k3d/kind cluster and emits
   Result-shaped structured failures for missing tools, Docker unavailability,
   cluster creation failure, or timeout.
-- [ ] The harness applies or reuses the Zeta bootstrap path for Cilium, ArgoCD,
+- [x] The harness applies or reuses the Zeta bootstrap path for Cilium, ArgoCD,
   and the root App-of-Apps without duplicating the desired-state manifests.
-- [ ] The harness waits for the `argocd` namespace, ArgoCD controller/server
+- [x] The harness waits for the `argocd` namespace, ArgoCD controller/server
   readiness, Application CRD establishment, and root Application creation.
-- [ ] The harness asserts expected ArgoCD Application state and reports exact
+- [x] The harness asserts expected ArgoCD Application state and reports exact
   failing Applications/resources rather than a single opaque timeout.
 - [ ] A safe drift-repair check exists: mutate a non-destructive test resource
   or fixture-owned object, then assert ArgoCD self-heal/prune reconverges it.
-- [ ] CI coverage is added on an appropriate cadence or path filter, likely for
+- [x] CI coverage is added on an appropriate cadence or path filter, likely for
   changes under `full-ai-cluster/k8s/**`, `full-ai-cluster/dev-cluster/**`, and
   the new harness path. It may be separate from default PR checks if runtime is
   too expensive.
-- [ ] The supported architecture story is explicit: x86_64 and ARM64/aarch64
+- [x] The supported architecture story is explicit: x86_64 and ARM64/aarch64
   are both assumed target hardware classes; unsupported runner combinations
   fail with a named dependency, not a green skip.
+
+## Implementation slice 2026-06-01
+
+`tools/cluster/argocd-health-test.ts` is the first executable slice. It has a
+safe dry-run mode, a preflight mode that names missing dependencies, and live
+`--run` modes for:
+
+- `--provider kind --scope smoke --runtime docker`, the conservative outside-ISO
+  CI lane.
+- `--provider kind --scope smoke --runtime podman`, the Podman-standard local
+  lane once the Podman VM has enough memory for the Argo graph.
+- `--provider k3d --scope full --runtime docker`, the closer Cilium-parity lane.
+
+The first CI workflow is `.github/workflows/k8s-argocd-health-test.yml`: it runs
+unit/dry-run checks and a live kind-on-Docker smoke check on a path-filtered
+PR/push surface plus weekly cadence. The workflow runs on Ubuntu x86_64 and
+Ubuntu ARM64 runners so Linux/architecture drift is visible before the
+installer lane consumes the signal.
+
+The helper scripts now keep the desired-state source canonical:
+
+- `full-ai-cluster/dev-cluster/apply-root-app.sh` applies the root App-of-Apps
+  from the current git ref and keeps dev-only GPU/storage exclusions in one
+  place.
+- `full-ai-cluster/dev-cluster/up.sh` and `down.sh` accept `--config` and
+  parse the k3d cluster name from the profile.
+- `full-ai-cluster/dev-cluster/kind-up.sh` and `kind-down.sh` provide the
+  smoke substrate for Docker and Podman.
+
+The USB/ISO zflash reformat-retention proof remains in B-0891 and should
+consume this only as a narrow "cluster health lane exists" signal, not as an
+embedded zflash scenario.
+
+## Live evidence 2026-06-01
+
+Local outside-ISO evidence on Aaron's macOS host:
+
+- kind-on-Docker smoke passed from a fresh cluster using
+  `--provider kind --scope smoke --runtime docker`.
+- The smoke observed 26 child Applications, a healthy root App-of-Apps, healthy
+  ArgoCD, and `cert-manager` synced/healthy.
+- k3d-on-Docker failed during `k3d cluster create` before kubeconfig existed,
+  with K3S/kine slow SQLite reads and apiserver post-start hook failures. That
+  is before Cilium, Helm, ArgoCD, sync waves, or the Zeta charts run.
+- kind-on-Podman control-plane creation passed. Full Argo smoke on the current
+  Podman VM is blocked by the 2 GiB Podman machine budget causing Kubernetes
+  API timeouts under Argo/app reconciliation load.
+
+## Follow-on matrix
+
+The next slices should keep the same failure-attribution boundary:
+
+- Add a NixOS-hosted local smoke once a NixOS runner or operator host is
+  available, covering CNI/networking differences that Ubuntu runners do not
+  exercise.
+- Keep Ubuntu x86_64 and Ubuntu ARM64 smoke in CI for kind-on-Docker.
+- Re-run kind-on-Podman smoke after resizing the Podman VM; treat Docker as an
+  accelerator and Podman as the standard lane.
+- Add one USB/ISO post-boot smoke after the outside-ISO harness is green: boot
+  the installed medium, prove Kubernetes is reachable enough to run the same
+  narrow smoke signal, and leave full Argo health to this lane.
+- Add dependency-derived sync waves for ArgoCD. Hard-coded waves are acceptable
+  as a bootstrap, but the target is Flux-like dependency tracking that can
+  generate Argo sync waves/parameters from the repo's existing dependency and
+  semver-solving substrate.
 
 ## Out of scope
 

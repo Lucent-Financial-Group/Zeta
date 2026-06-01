@@ -1,0 +1,41 @@
+# full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
+#
+# Single-node k3d profile for B-0967 GitOps health checks on CI runners.
+# It keeps the same Cilium takeover stance and ArgoCD App-of-Apps substrate
+# as the local three-node dev profile, but drops agents, registry, and host
+# port forwards so the smoke run has fewer moving parts and no port conflicts.
+
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: zeta-ci
+
+servers: 1
+agents: 0
+
+image: rancher/k3s:v1.31.5-k3s1
+
+network: zeta-ci
+
+options:
+  k3d:
+    # Cilium is installed by up.sh immediately after cluster creation. Do not
+    # wait for node Ready before the CNI exists.
+    wait: false
+  k3s:
+    extraArgs:
+      - arg: --flannel-backend=none
+        nodeFilters: [server:*]
+      - arg: --disable-kube-proxy
+        nodeFilters: [server:*]
+      - arg: --disable-network-policy
+        nodeFilters: [server:*]
+      - arg: --disable=traefik
+        nodeFilters: [server:*]
+      - arg: --node-label=zeta.io/env=ci
+        nodeFilters: [all]
+      - arg: --node-label=zeta.io/substrate=k3d
+        nodeFilters: [all]
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
