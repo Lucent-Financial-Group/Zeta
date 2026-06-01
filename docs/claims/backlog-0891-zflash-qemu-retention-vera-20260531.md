@@ -58,3 +58,6 @@
 - progress: `executeFileBackedZflashImageExecutionPlan` now runs the planned `qemu-img`/`mcopy` sequence through injected I/O, materializes inline hostname files in order, fails closed with Result-shaped feedback, and returns the `ZFLASH_QEMU_RETENTION_BOOT_IMAGE` env binding for the QEMU retention harness.
 - proof: `bun test full-ai-cluster/tools/zflash-lib.test.ts`, `bun --bun tsc --noEmit -p tsconfig.json`, and `git diff --check` pass after the injected file-backed executor patch.
 - next: connect the executor to a CLI/runtime wrapper that supplies real `writeFile`/`spawnSync` effects, then run `ZFLASH_QEMU_RETENTION_EXECUTE=1` against the produced raw boot image.
+- progress: `zflash-file-backed-runtime.ts` now supplies the Node runtime executor adapter for file-backed zflash images, creating inline staging directories, writing UTF-8 inline payloads, and running `qemu-img`/`mcopy` through argv-array `spawnSync` while preserving Result-shaped command output.
+- proof: `bun test full-ai-cluster/tools/zflash-file-backed-runtime.test.ts full-ai-cluster/tools/zflash-lib.test.ts`, `bun --bun tsc --noEmit -p tsconfig.json`, and `git diff --check` pass after the runtime executor patch.
+- next: wire the runtime executor into a narrow CLI path that produces a baked raw boot image, then run `ZFLASH_QEMU_RETENTION_EXECUTE=1` against that artifact.
