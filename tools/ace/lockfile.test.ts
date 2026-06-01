@@ -66,6 +66,7 @@ describe("serializeLockfile / parseLockfile", () => {
   });
   test("parse rejects malformed input with {error} (no throw)", () => {
     expect("error" in parseLockfile("not json {")).toBe(true);
+    expect("error" in parseLockfile(JSON.stringify({}))).toBe(true); // absent format_version
     expect("error" in parseLockfile(JSON.stringify({ ...lf, format_version: 2 }))).toBe(true);
     expect("error" in parseLockfile(JSON.stringify({ ...lf, nodes: "x" }))).toBe(true);
     expect("error" in parseLockfile(JSON.stringify({ ...lf, nodes: [{ name: 1, version: "1", url: "u", package_hash: "h" }] }))).toBe(true);
