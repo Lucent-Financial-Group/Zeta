@@ -24,7 +24,7 @@
 
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { basename, join, resolve } from "node:path";
 
 export type Provider = "k3d" | "kind";
 export type Mode = "dry-run" | "preflight" | "run";
@@ -33,6 +33,7 @@ export type ContainerRuntime = "docker" | "podman";
 
 export type FailureKind =
   | "UsageError"
+  | "ApplicationManifestInvalid"
   | "UnsupportedArchitecture"
   | "UnsupportedProvider"
   | "MissingTool"
@@ -130,6 +131,7 @@ interface MutableCliOptions {
   gitRef: string;
   clusterName: string | null;
   configPath: string;
+  configExplicit: boolean;
   existing: boolean;
   timeoutSeconds: number;
   pollSeconds: number;
@@ -263,6 +265,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       gitRef: "main",
       clusterName: null,
       configPath: provider === "kind" ? DEFAULT_KIND_CONFIG : DEFAULT_K3D_CONFIG,
+      configExplicit: false,
       existing: false,
       timeoutSeconds: DEFAULT_TIMEOUT_SECONDS,
       pollSeconds: DEFAULT_POLL_SECONDS,
@@ -284,7 +287,10 @@ function readFlagValue(argv: readonly string[], index: number, flag: string, des
 function assignStringFlag(options: MutableCliOptions, flag: string, value: string): void {
   if (flag === "--git-ref") options.gitRef = value;
   if (flag === "--cluster-name") options.clusterName = value;
-  if (flag === "--config") options.configPath = value;
+  if (flag === "--config") {
+    options.configPath = value;
+    options.configExplicit = true;
+  }
 }
 
 function assignIntegerFlag(options: MutableCliOptions, flag: string, value: number): void {
@@ -377,11 +383,18 @@ function validateOptions(options: CliOptions): Failure | null {
   if (options.provider === "k3d" && options.runtime === "podman") {
     return usageFailure("k3d + podman is not wired yet; use --provider kind --runtime podman for the Podman lane");
   }
+  const configFile = basename(options.configPath).toLowerCase();
+  if (options.provider === "kind" && configFile.includes("k3d")) {
+    return usageFailure("kind provider requires a kind config; got a k3d config path");
+  }
+  if (options.provider === "k3d" && configFile.includes("kind")) {
+    return usageFailure("k3d provider requires a k3d config; got a kind config path");
+  }
   return null;
 }
 
 function normalizeProviderDefaults(options: MutableCliOptions): void {
-  if (options.provider === "kind" && options.configPath === DEFAULT_K3D_CONFIG) {
+  if (!options.configExplicit && options.provider === "kind" && options.configPath === DEFAULT_K3D_CONFIG) {
     options.configPath = DEFAULT_KIND_CONFIG;
   }
   if (options.provider === "kind" && options.scope === "full") {
@@ -484,11 +497,20 @@ function resolveClusterName(options: CliOptions): ParseStringResult {
   return readClusterNameFromConfig(options.configPath);
 }
 
-export function buildPlan(options: CliOptions): HarnessPlan | Failure {
+export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPlan | Failure {
   const clusterName = resolveClusterName(options);
   if (!clusterName.ok) return clusterName.failure;
 
-  const expectedApplications = discoverExpectedApplications();
+  let expectedApplications: readonly ExpectedApplication[];
+  try {
+    expectedApplications = discoverExpectedApplications(repoRoot);
+  } catch (error) {
+    return {
+      kind: "ApplicationManifestInvalid",
+      message: "failed to discover expected ArgoCD Applications from full-ai-cluster/k8s/applications",
+      detail: error instanceof Error ? error.message : String(error),
+    };
+  }
   return {
     rowId: "B-0967",
     mode: options.mode,
@@ -540,6 +562,12 @@ function isFailure(value: unknown): value is Failure {
 }
 
 function runCommand(command: string, args: readonly string[], timeoutMs?: number): CommandOutput {
+  // sonarjs/no-os-command-from-path suppression rationale: this harness
+  // intentionally spawns local cluster CLIs (`docker`/`podman`, `kind`/`k3d`,
+  // `kubectl`, `helm`) from PATH because those tools are the named dependency
+  // surface under test. Commands are fixed constants, user-controlled values
+  // are passed as argv elements, and git refs / cluster names / config-provider
+  // pairings are validated before any live spawn.
   const result = spawnSync(command, [...args], {
     cwd: REPO_ROOT,
     encoding: "utf8",
@@ -600,10 +628,20 @@ export function runPreflight(provider: Provider, runtime: ContainerRuntime): rea
   return checks;
 }
 
-function preflightFailure(preflight: readonly ToolCheck[]): Failure | null {
+function isRuntimeUnavailable(detail: string): boolean {
+  const normalized = detail.toLowerCase();
+  return normalized.includes("unavailable") ||
+    normalized.includes("cannot connect to the docker daemon") ||
+    normalized.includes("is the docker daemon running") ||
+    normalized.includes("connection refused") ||
+    normalized.includes("podman machine") ||
+    normalized.includes("cannot connect to podman");
+}
+
+export function preflightFailure(preflight: readonly ToolCheck[]): Failure | null {
   const missing = preflight.find((check) => !check.ok);
   if (missing === undefined) return null;
-  if ((missing.tool === "docker" || missing.tool === "podman") && missing.detail.includes("unavailable")) {
+  if ((missing.tool === "docker" || missing.tool === "podman") && isRuntimeUnavailable(missing.detail)) {
     return {
       kind: "DockerUnavailable",
       message: `${missing.tool} is unavailable: ${missing.detail}`,

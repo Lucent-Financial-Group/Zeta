@@ -1,4 +1,7 @@
 import { describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   architectureFailure,
   buildPlan,
@@ -9,6 +12,7 @@ import {
   parseApplicationName,
   parseArgs,
   parseK3dClusterName,
+  preflightFailure,
 } from "./argocd-health-test.ts";
 
 describe("B-0967 argocd-health-test argument parsing", () => {
@@ -84,6 +88,19 @@ describe("B-0967 argocd-health-test argument parsing", () => {
     expect("kind" in parsed).toBe(true);
     if (!("kind" in parsed)) throw new Error("expected usage error");
     expect(parsed.message).toContain("CONTAINER_RUNTIME is not supported");
+  });
+
+  test("rejects mismatched provider and config flavors before spawning CLIs", () => {
+    const parsed = parseArgs([
+      "--run",
+      "--provider",
+      "kind",
+      "--config",
+      "full-ai-cluster/dev-cluster/k3d-config.yaml",
+    ], {});
+    expect("kind" in parsed).toBe(true);
+    if (!("kind" in parsed)) throw new Error("expected usage error");
+    expect(parsed.message).toContain("kind provider requires a kind config");
   });
 });
 
@@ -220,5 +237,37 @@ describe("B-0967 argocd-health-test planning", () => {
     expect(architectureFailure("x64")).toBeNull();
     expect(architectureFailure("arm64")).toBeNull();
     expect(architectureFailure("s390x")?.message).toContain("x86_64 and ARM64/aarch64");
+  });
+
+  test("turns invalid Application manifests into structured failures", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-"));
+    try {
+      const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/broken");
+      mkdirSync(appDir, { recursive: true });
+      writeFileSync(join(appDir, "Application.yaml"), "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\nspec: {}\n");
+
+      const parsed = parseArgs(["--dry-run", "--provider", "kind"], {});
+      if ("kind" in parsed) throw new Error(parsed.message);
+      const plan = buildPlan(parsed, repoRoot);
+      expect("kind" in plan).toBe(true);
+      if (!("kind" in plan)) throw new Error("expected structured failure");
+      expect(plan.kind).toBe("ApplicationManifestInvalid");
+      expect(plan.message).toContain("failed to discover expected ArgoCD Applications");
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("B-0967 argocd-health-test preflight failures", () => {
+  test("classifies a present but down Docker daemon separately from missing tools", () => {
+    const failure = preflightFailure([
+      {
+        tool: "docker",
+        ok: false,
+        detail: "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?",
+      },
+    ]);
+    expect(failure?.kind).toBe("DockerUnavailable");
   });
 });

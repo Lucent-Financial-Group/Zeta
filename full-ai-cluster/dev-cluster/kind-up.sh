@@ -99,6 +99,9 @@ for cmd in "$OCI_RUNTIME" kind kubectl helm; do
     echo "ERROR: $cmd not found. Install with:"
     case "$cmd" in
       docker) echo "  Docker Desktop or Colima (https://docs.docker.com/desktop/install/mac-install/)" ;;
+      podman)
+        echo "  Podman Desktop or: brew install podman && podman machine init && podman machine start"
+        ;;
       kind|kubectl|helm)
         echo "  bash \"${REPO_ROOT}/tools/setup/install.sh\""
         echo "  # installs kind/kubectl/helm from the repo's .mise.toml"
