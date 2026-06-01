@@ -185,22 +185,24 @@ export function loadTrustStore(
  */
 export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePath()): { added: boolean } {
   const dir = dirname(userPath);
-  // Repair BOTH the ~/.ace dir (0o700) and the trust file (0o600) on EVERY call. mkdirSync's
-  // mode only applies on creation, so a pre-existing permissive dir would otherwise let another
-  // local user replace files in it (swap trusted-keys.json) even though the file itself is 0o600.
-  const repairPerms = (): void => {
-    if (existsSync(dir)) { try { chmodSync(dir, 0o700); } catch { /* best-effort; unusual FS */ } }
+  // Tighten the ~/.ace DIR to 0o700 FIRST — before reading or writing the trust file — so a
+  // pre-existing group/world-writable dir cannot let another local user swap trusted-keys.json
+  // during the read/write window (TOCTOU). mkdirSync's mode only applies on create, so chmod the
+  // (possibly pre-existing) dir explicitly right after. File mode is tightened after each write
+  // (writeFileSync's mode only applies on create too).
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  try { chmodSync(dir, 0o700); } catch { /* best-effort; unusual FS */ }
+  const tightenFile = (): void => {
     if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort; unusual FS */ } }
   };
   const existing = readKeysFile(userPath);
   if (existing.some((k) => k.key_id === entry.key_id)) {
-    repairPerms(); // dedup path: nothing to write, but still tighten dir+file if loose
+    tightenFile(); // dedup path: nothing to write, but correct a pre-existing permissive file
     return { added: false };
   }
   existing.push({ ...entry, added: entry.added ?? new Date().toISOString() });
-  mkdirSync(dir, { recursive: true, mode: 0o700 });
   writeFileSync(userPath, JSON.stringify(existing, null, 2));
-  repairPerms(); // tighten dir (in case it pre-existed permissive) + file
+  chmodSync(userPath, 0o600);
   return { added: true };
 }
 
