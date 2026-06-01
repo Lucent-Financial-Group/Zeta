@@ -21,7 +21,7 @@
  * The `CommandExecutor` is INJECTED (asymmetric-authorship: the port authors its
  * own outcome channel; `executeDoItem` stays testable with a fake; no shell in the
  * unit path). The `Started` observation records the executor `tier` + `gated` so the
- * §3 glass-halo audit can tell a sandbox run from a real-FS/docker escalation.
+ * §3 glass-halo audit can tell a sandbox run from a real-FS/OCI escalation.
  *
  * Phase 1 (this file): the envelope + port + transition, fake executor, no dep,
  * no shell. Phase 2 wires real impls behind `CommandExecutor` (local OCI runtime —
@@ -71,7 +71,7 @@ export type RunOutcome =
   | { readonly ok: true; readonly stdout: string; readonly exitCode: 0 }
   | { readonly ok: false; readonly reason: string; readonly exitCode: number; readonly stderr: string };
 
-/** The injected bash surface. Fake in tests; docker / just-bash in prod (B-0964 §2). */
+/** The injected bash surface. Fake in tests; oci / just-bash in prod (B-0964 §2). */
 export interface CommandExecutor {
   readonly tier: ExecutorTier;
   run: (spec: RunSpec) => Promise<RunOutcome>;
