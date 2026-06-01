@@ -999,3 +999,55 @@ describe("install — semver ranges (slice 5.2)", () => {
     expect(await main(["install", rootPath, "--store", store, "--allow-no-signature", "--print-resolution"])).toBe(0);
   });
 });
+
+describe("install --locked graph (slice 5.4)", () => {
+  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+
+  test("--locked installs when the on-disk lock matches a fresh solve", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-locked-pkgs-"));
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A)); await main(["registry","add","A","1.0.0",aPath]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(dir, "ace.lock");
+    // 1. Normal install writes the lock.
+    expect(await main(["install", rootPath, "--store", mkdtempSync(join(tmpdir(),"ace-locked-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    expect(existsSync(lockPath)).toBe(true);
+    // 2. --locked with the SAME registry + matching lock → installs.
+    const store = mkdtempSync(join(tmpdir(), "ace-locked-ok-"));
+    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--locked"]);
+    expect(code).toBe(0);
+    expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["A","root"]);
+  });
+
+  test("--locked refuses + installs nothing when the lock is stale", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-locked-stale-"));
+    const A1 = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a1" }) }, files: { "a.txt":"a1" } };
+    const a1Path = join(dir, "A-1.0.0.json"); writeFileSync(a1Path, JSON.stringify(A1)); await main(["registry","add","A","1.0.0",a1Path]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(dir, "ace.lock");
+    // 1. Normal install locks A@1.0.0.
+    expect(await main(["install", rootPath, "--store", mkdtempSync(join(tmpdir(),"ace-locked-stale-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    // 2. Add A@1.1.0 (in-range) — the fresh solve now picks A@1.1.0, so the lock is stale.
+    const A11 = { manifest: { format_version:1, name:"A", version:"1.1.0", content_hash: h({ "a.txt":"a11" }) }, files: { "a.txt":"a11" } };
+    const a11Path = join(dir, "A-1.1.0.json"); writeFileSync(a11Path, JSON.stringify(A11)); await main(["registry","add","A","1.1.0",a11Path]);
+    // 3. --locked → refuse, store unchanged.
+    const store = mkdtempSync(join(tmpdir(), "ace-locked-stale-store-"));
+    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--locked"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+
+  test("--locked with NO lockfile → refused", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-locked-nolock-"));
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A)); await main(["registry","add","A","1.0.0",aPath]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const store = mkdtempSync(join(tmpdir(), "ace-locked-nolock-store-"));
+    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", join(dir, "missing.lock"), "--locked"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+});

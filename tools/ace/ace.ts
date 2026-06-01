@@ -24,7 +24,7 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
-import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock } from "./lockfile.ts";
+import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual } from "./lockfile.ts";
 import { solve } from "./solver.ts";
 import { resolve as toAbsolutePath } from "node:path";
 
@@ -608,6 +608,21 @@ export async function main(argv: readonly string[]): Promise<number> {
       if (!res.ok) {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
+      }
+      // SLICE 5.4: --locked — assert the committed lock equals a fresh solve, else refuse
+      // (CI guard; installs nothing). Falls through to the normal preflight+extract when it matches.
+      if (parsed.locked) {
+        let lockRaw: string;
+        try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
+        catch { console.error(`ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`); return 1; }
+        const onDisk = parseLockfile(lockRaw);
+        if ("error" in onDisk) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`); return 1; }
+        const fresh = buildLockfile(pkg, res.order, registry);
+        if ("error" in fresh) { console.error(`ace: install refused: could not build lockfile: ${fresh.error}`); return 1; }
+        if (!lockfilesEqual(onDisk, fresh)) {
+          console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
+          return 1;
+        }
       }
       // PREFLIGHT (atomic): integrity + path-safety + store-key collision across the whole
       // graph BEFORE any extract (shared with `update`'s before-write guard via preflightGraph).
