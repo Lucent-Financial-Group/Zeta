@@ -89,10 +89,19 @@ confirm the existing site is unaffected.
   second attempt that would violate the one-attempt rule; the live merged site is stronger evidence
   than a proxied unmerged-branch harness). NOT marked [x]: the four enumerated browser proofs are
   Phase-7 Auditor scope, listed verbatim in the Phase 7 Auditor brief below.
-- [ ] Phase 4 — Write path.
+- [x] Phase 4 — Write path.
 GATE: changes logged before→after (UTC stored/local shown); no silent overwrite; archive recoverable.
 VERIFY: edit an item → log row with old+new; simulate stale-version save → rejected; archive then
 un-archive.
+  GATE PASSED (2026-06-01): owner installed `sql/phase4.sql` (server version trigger). Claude-run
+  REST proofs (editor key, NO service_role) — ALL FOUR PASS (exit 0): (a) change_log #227
+  notes "orig"->"edited-by-phase4-proof-a", actor+UTC stored/local shown; (b) stale guarded PATCH
+  affected 0 rows / `[]` (REJECTED; value unchanged) vs unguarded 1 row — broken(id=212)->fixed(id=213)
+  pair version `1→1` vs `1→2`; (c) archive false->true (#229) then true->false (#230), data + 5-row
+  append-only history intact; (d) anon reads items/field_definitions/change_log/profiles all `[]`.
+  RLS unchanged (no new policy / USING(true) / GRANT). Full raw output in "Phase 4 — FIXED run"
+  appendix. Phase-7 Auditor re-verifies on the live site (and may run the owner-side SQL companion
+  `sql/proofs/phase4_proofs.sql`, incl. its pg_policies no-permissive-items-policy check).
 - [ ] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
 GATE: dedicated test suite passes; add-field applies to ALL items; per-type validation;
 search/sort INCLUDE custom fields; XSS-safe.
@@ -705,3 +714,70 @@ not depend on the trigger.
 Proof runs created throwaway items (id=212 from the broken run; id=213+ from the fixed run), left
 ARCHIVED (the client has no DELETE policy by design). Remove in the SQL editor like the Phase-1
 proof item: disable `change_log_immutable` → delete their change_log rows + items → re-enable.
+
+## Phase 4 (Write path) — FIXED run, gate PASSED (Claude, 2026-06-01)
+
+Owner ran `inventory/sql/phase4.sql` in the Supabase SQL editor ("success, no rows returned" —
+expected for DDL: CREATE FUNCTION + CREATE TRIGGER return no rows). The `items_bump_version`
+trigger is now live. Claude re-ran `proofs/phase4-write-proofs.ts` (editor session, publishable
+key, NO service_role) against the live backend. **All four proofs PASS (exit 0).**
+
+Broken-vs-fixed isolation (only the trigger differs between the two runs):
+
+| Proof | Broken baseline (id=212, no trigger) | FIXED (id=213, trigger live) |
+|---|---|---|
+| (b) version on edit | `1 → 1` (never bumps) | `1 → 2` (server bumps) |
+| (b) stale guarded PATCH | **1 row (silent overwrite)** | **0 rows / `[]` (REJECTED)** |
+| (a)/(c)/(d) | PASS | PASS |
+
+Raw observed output of the FIXED run (item id=213):
+
+```
+role (current_user_role RPC) -> "editor" (http 200)
+
+(a) change_log row #227: item_id=213 actor=cbc7e91b-90a3-4632-9118-621bc9fb3bc4
+    action=UPDATE field=notes  old="orig" -> new="edited-by-phase4-proof-a"
+    changed_at=2026-06-01T01:43:34.084609+00:00 (UTC stored)  local=6/1/2026, 1:43:34 AM
+    (a) ASSERTION ... : PASS
+
+(b) row at version=2 after the edit; second editor holds STALE version=1.
+    FIXED  (guarded, WHERE version=1): http 200, rows affected=0  -> [] = REJECTED
+      re-read: notes still "edited-by-phase4-proof-a" (version=2) — NOT overwritten.
+    BROKEN (no version guard, WHERE id only): http 200, rows affected=1 (the overwrite the guard prevents)
+    (b) ASSERTION guarded-stale=0 AND unguarded=1 : PASS
+
+(c) archive is_archived false->true (#229) then true->false (#230); INSERT(#226) present;
+    name/qty intact through the cycle; full append-only history = 5 rows, nothing deleted.
+    (c) ASSERTION ... : PASS
+
+(d) anon (unauthenticated) reads: items [] / field_definitions [] / change_log [] / profiles []
+    (d) ASSERTION all four == [] : PASS
+
+SUMMARY: (a)=PASS (b)=PASS (c)=PASS (d)=PASS   (exit 0)
+```
+
+Gate mapping (spec.md Phase 4 + the owner's four-proof brief):
+
+- (a) every change produces a change_log row with field-level before->after — proof (a) ✓
+  (who=actor uid / what=field / old->new / UTC stored, local displayed).
+- (b) stale-version save REJECTED not silently overwritten — proof (b) ✓ (broken 1 row -> fixed 0).
+- (c) archive then un-archive; data + history intact — proof (c) ✓.
+- (d) RLS still ON, no permissive policy, anon checks on all four sensitive tables -> [] — proof (d)
+  ✓; the SQL `proofs/phase4_proofs.sql #4 no-permissive-items-policy` is the owner-run companion.
+
+**Phase 4 gate = PASSED** (Claude-run client-path evidence above + UI smoke + the phase4.sql DDL
+the owner installed). Subject to Phase 7 Auditor independent re-verification on the merged live
+site, like every gate. RLS unchanged: no new policy, no `USING(true)`, no GRANT/REVOKE in this phase.
+
+### Owner cleanup follow-up (Phase 7 / pre-launch) — EXACT ids
+
+Two throwaway proof items remain, both ARCHIVED (client has no DELETE policy by design):
+
+- **id=212** (broken-baseline run), **id=213** (fixed run).
+
+Remove in the SQL editor like the Phase-1 proof item:
+`alter table public.change_log disable trigger change_log_immutable;`
+`delete from public.change_log where item_id in (212,213);`
+`delete from public.items where id in (212,213);`
+`alter table public.change_log enable trigger change_log_immutable;`
+(The items id sequence is unaffected — next auto id continues after the current max.)
