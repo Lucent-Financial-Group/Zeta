@@ -123,14 +123,14 @@ second and skip its manifest, transitive deps, and signature check.
 1. **Seed with the root** before walking — so skew / tamper / cycles that involve
    the root itself are caught (e.g. `root@1 → A → root@2` is skew;
    `root@1 → A → root@1` is a cycle):
-   - `byName: Map<name, {version, package_hash}>` ← `{ root.name: {root.version, hash(root)} }`
+   - `byName: Map<name, {version, package_hash, path}>` ← `{ root.name: {root.version, hash(root), path: ["root"]} }`
    - `visiting: Set<name>` ← `{ root.name }` — current DFS stack, for cycle detection
    - `order: AcePackage[]` ← `[]` — filled post-order; root appended last
    - `path: string[]` — human-readable dependency path for error messages (`root → A → D`)
 2. DFS the current node's `dependencies`. For each edge `{name, version, url, package_hash}`, in this order:
    - **Cycle:** if `name ∈ visiting` → `cycle` (detail lists the loop via `path`).
    - **Else if `name ∈ byName`** (already resolved, not on the current stack):
-     - different `version` → `version-skew` (detail names both requirers + versions)
+     - different `version` → `version-skew` (detail cites the first requirer via `byName[name].path` and the current `path`)
      - same `version`, different `package_hash` → `tamper`
      - same `version`, same `package_hash` → **diamond dedup**: skip (already resolved + fully verified; identical `package_hash` ⇒ byte-identical ⇒ no re-fetch, no recurse)
    - **Else (new identity)** — fetch via `fetchPackage(url)`:
@@ -139,7 +139,7 @@ second and skip its manifest, transitive deps, and signature check.
      - **pin check:** `packageHash(dep) === edge.package_hash` else `pin-mismatch` (the fetched whole package must be exactly what the parent pinned)
      - **identity check:** `dep.manifest.name === name && dep.manifest.version === version` else `pin-mismatch`
      - **slice-3 gate** (`verifySignature(dep.manifest, trustStore)`): `no-signature` → refuse unless `allowNoSignature`; `bad-signature` / `untrusted-key` / `unsupported-algo` → refuse **always**
-     - record `byName[name] = {version, package_hash}`; add `name` to `visiting`; recurse into `dep.manifest.dependencies`; on return, remove `name` from `visiting` and append the package to `order` (post-order ⇒ leaves first)
+     - record `byName[name] = {version, package_hash, path: [...path, name]}` (the first-seen requirer path, so skew/tamper can name BOTH requirers); add `name` to `visiting`; recurse into `dep.manifest.dependencies`; on return, remove `name` from `visiting` and append the package to `order` (post-order ⇒ leaves first)
 3. On success, append the root to `order` last and return it (leaves first, root last).
 
 `packageHash(pkg)` = `sha256` of the canonical (recursive key-sorted) JSON of the
