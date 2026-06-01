@@ -203,6 +203,21 @@ const DEV_EXCLUDED_DIRS = new Set([
   "deepseek-coder",
   "qwen-coder",
 ]);
+function requestsLonghornStorageClass(yamlText: string): boolean {
+  return yamlText.split("\n").some((line) => {
+    const trimmed = line.trim();
+    const separator = trimmed.indexOf(":");
+    if (separator < 0) return false;
+    const key = trimmed.slice(0, separator);
+    if (key !== "storageClass" && key !== "storageClassName") return false;
+    const rawValue = trimmed.slice(separator + 1).split("#", 1)[0]?.trim() ?? "";
+    const value = (rawValue.startsWith("\"") && rawValue.endsWith("\"")) ||
+        (rawValue.startsWith("'") && rawValue.endsWith("'"))
+      ? rawValue.slice(1, -1)
+      : rawValue;
+    return value === "longhorn";
+  });
+}
 
 function usageFailure(message: string): Failure {
   return { kind: "UsageError", message };
@@ -462,7 +477,8 @@ export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly Exp
   return dirs.flatMap((dir) => {
     const appPath = join(appsDir, dir, "Application.yaml");
     if (!existsSync(appPath)) return [];
-    const name = parseApplicationName(readFileSync(appPath, "utf8"));
+    const appText = readFileSync(appPath, "utf8");
+    const name = parseApplicationName(appText);
     if (name === null) {
       throw new Error(`Application name not found: ${appPath}`);
     }
@@ -470,7 +486,7 @@ export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly Exp
       dir,
       name,
       path: appPath.slice(repoRoot.length + 1),
-      excludedFromDev: DEV_EXCLUDED_DIRS.has(dir),
+      excludedFromDev: DEV_EXCLUDED_DIRS.has(dir) || requestsLonghornStorageClass(appText),
     }];
   });
 }
@@ -534,7 +550,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     ],
     notes: [
       "B-0967 is separate from B-0891; this harness does not test USB reformat retention.",
-      "Dev excludes cilium, longhorn, and GPU model-serving app directories; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Dev excludes cilium, Longhorn, GPU model-serving, and Longhorn-backed app directories; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };

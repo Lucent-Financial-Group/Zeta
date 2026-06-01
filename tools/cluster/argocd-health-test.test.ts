@@ -129,6 +129,7 @@ describe("B-0967 argocd-health-test manifest parsing", () => {
     expect(applications.some((app) => app.name === "argocd" && !app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "cilium" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "longhorn" && app.excludedFromDev)).toBe(true);
+    expect(applications.some((app) => app.dir === "vault" && app.excludedFromDev)).toBe(true);
   });
 
   test("smoke scope accepts a broad graph with lightweight healthy anchors", () => {
