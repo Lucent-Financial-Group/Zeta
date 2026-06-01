@@ -256,6 +256,15 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
     undoLocalCommit();
     return { ok: false, reason: "push failed after 3 rebase-retry attempts; local commit undone" };
   } catch (err) {
+    // If `git commit` itself failed AFTER `git add` (e.g. missing git identity, a commit hook),
+    // our path is left STAGED; append's rmSync would then remove the worktree file but leave a
+    // staged-add of a now-deleted file = dirty index that blocks the next rebase. Unstage our path
+    // (best-effort; no-op if nothing was staged) so the index is clean too (Codex #6312 P2).
+    try {
+      run(["restore", "--staged", "--", gitPath]);
+    } catch {
+      /* nothing staged for our path — fine */
+    }
     return { ok: false, reason: `git commit failed: ${(err as Error).message}` };
   }
 }
