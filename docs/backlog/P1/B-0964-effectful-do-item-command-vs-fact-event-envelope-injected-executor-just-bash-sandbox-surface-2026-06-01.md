@@ -1,6 +1,6 @@
 ---
 id: B-0964
-title: Effectful do_item — command-vs-fact-event envelope + injected executor port + just-bash sandboxed bash surface
+title: Effectful do_item — command-vs-fact-event envelope + injected executor port + item-class-routed bash surface (just-bash text / local docker real-work / CF cloud-burst)
 status: open
 priority: P1
 created: 2026-06-01
@@ -77,47 +77,51 @@ append `ActionSucceeded|ActionFailed` → `simulate` **only on success**. Tests
 inject a fake executor (deterministic ok/fail, no shell). Production injects the
 real one (§2).
 
-## §2 The bash surface (Aaron's question) — RESOLVED: just-bash sandbox by default
+## §2 The bash surface (Aaron's question) — RESOLVED (post multi-AI review): item-class-routed, NOT just-bash-everywhere
 
 > **Aaron 2026-06-01:** "can we use justbash or anything like that to give the
 > local llm a real simulated bash surface without a ton of work or some sort of
-> docker container if not?"
+> docker container if not? … maybe see if the peers think it's overkill."
 
-**Yes — [`just-bash`](https://github.com/vercel-labs/just-bash) (vercel-labs;
-[justbash.dev](https://justbash.dev/)).** A full **bash environment reimplemented
-in TypeScript, in-process, that never touches the real filesystem** — 70+ commands
-(cat/grep/sed/jq, pipes, redirects, `&&`/`||`, for/while, functions, globs,
-heredocs, var-expansion), filesystem-isolated, **no VM/container**
-([writeup](https://www.codeline.co/thoughts/repo-review/2026/just-bash-virtual-shell-for-ai-agents)).
-Exactly "a real simulated bash surface without docker or a ton of work" — and it's
-TS, so it drops straight into the Bun-hosted observe loop (Rule 0: TS is the
-substrate).
+First draft answered "just-bash as the default." **The review (Gemini + Amara,
+2026-06-01) demoted that** — and the reasoning is load-bearing. Amara's keeper:
 
-The three-tier surface (default safe → escalate only when needed):
+> **`just-bash` proves the envelope; local Docker proves the work. Persist facts
+> across both, and never let replay reissue commands.**
 
-| Tier            | Surface                                                                                               | When                                                             | Safety                                                                                                       |
-| --------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **Default**     | just-bash **in the IN-MEMORY config, network DISABLED**                                               | the LLM's do_item work — real shell semantics, no real-FS reach  | sandboxed **only in this config** — the in-memory FS can't escape to disk; network off                       |
-| **Constrained** | [`just`](https://github.com/casey/just) recipes via [just-mcp](https://docs.rs/crate/just-mcp/latest) | pre-vetted named tasks (build/test) — an allowlist               | safest: the LLM picks a recipe index, not free-form bash (composes the 16-action constrained-choice grammar) |
-| **Escalation**  | just-bash **OverlayFS / ReadWriteFs / network-allowlist** configs · Bun `$` · real shell · docker     | only when the item genuinely needs real-FS / real-system effects | **GATED** — see §3 security floor; not the default                                                           |
+[`just-bash`](https://github.com/vercel-labs/just-bash) (vercel-labs;
+[justbash.dev](https://justbash.dev/)) is real: a bash environment reimplemented in
+TypeScript, in-process, in-memory FS, no container — "a real bash surface without
+docker." But it is a **simulator**: it hits a wall the moment an item needs **real
+tools** (git/npm/compilers), and re-implementing POSIX chases a long tail forever
+vs. a real kernel's correctness + namespaces/cgroups (Gemini). And it is **TS-only**
+— the 4-oracle (Rust/C#/F#) would each need a re-impl, whereas a **container
+boundary is language-agnostic** (one local docker, all four drive it). So the
+routing is **by item-class**, not a single default:
+
+| Tier                       | Surface                                                                                                                                                       | When                                                                                        | Safety                                                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Tests**                  | **fake executor** (deterministic, no shell)                                                                                                                   | CI / envelope-shakedown                                                                     | always-green shield                                                                                                        |
+| **Text / no-FS items**     | **just-bash** (in-memory FS, network OFF)                                                                                                                     | pure-text work that never needs real tools — zero-ops, in-process                           | sandboxed **only in this config** (in-memory FS can't reach disk; net off)                                                 |
+| **Real effectful work**    | **local docker** (real kernel, real tools)                                                                                                                    | "the first time the item needs real tools, **stop simulating**" (Amara) — git/npm/compilers | real namespaces/cgroups; **language-agnostic boundary** — the 4-oracle's shared executor                                   |
+| **Constrained**            | [`just`](https://github.com/casey/just) recipes via [just-mcp](https://docs.rs/crate/just-mcp/latest)                                                         | pre-vetted named tasks — an allowlist                                                       | safest: pick a recipe index, not free-form bash (composes the 16-action grammar)                                           |
+| **Cloud-burst escalation** | [Cloudflare Sandbox SDK](https://github.com/cloudflare/sandbox-sdk) (edge containers + fork-sessions) · just-bash OverlayFS/ReadWriteFs/net · real host shell | massive parallel / explicit need                                                            | **GATED** (§3). CF is a **dependency trap for a LOCAL sovereign agent** (Gemini) — escalation only, never the loop default |
 
 > **The tool is NOT the gate — the CONFIG is (Codex review, 2026-06-01).** just-bash
-> ([justbash.dev](https://justbash.dev/)) ships more than the in-memory `Bash`:
-> it also documents **CLI / OverlayFS / ReadWriteFs mounting** that reads the real
-> project root, and **network access with URL allowlists**. So "we use just-bash"
-> does NOT by itself mean sandboxed — choosing the OverlayFS/ReadWriteFs path or
-> enabling network silently crosses into the real-FS/network tier. The default
-> executor MUST pin the **in-memory filesystem + network-disabled** config; those
-> other just-bash configs sit in the **Escalation** tier and require the §3 gate.
+> also ships CLI/OverlayFS/ReadWriteFs mounting (reads the real project root) +
+> network-allowlist configs. "We use just-bash" ≠ sandboxed — the text-tier MUST pin
+> **in-memory FS + network-disabled**; its other configs are cloud-burst/escalation
+> tier, gated.
 
-**Recommendation:** **just-bash (in-memory FS, network disabled) as the default
-`CommandExecutor` impl** (real bash surface, no docker, can't reach disk);
-**fake executor for tests** (the always-green shield, per "test with our local-llm
-tests until comfortable"); **`just`-recipe allowlist** where the work is a known
-task; **any real-FS/network config (just-bash OverlayFS/ReadWriteFs/curl, Bun `$`,
-docker) only behind the §3 gate.** Adding just-bash is a new dep — implementation
-PR runs the dep-pin-search-first WebSearch for the current version + confirms the
-exact in-memory/network-off config flags.
+**Recommendation (folded):** **fake for tests; just-bash (in-memory, net-off) only
+for pure-text/no-FS items; LOCAL DOCKER as the default for real effectful work**
+(real kernel, language-agnostic boundary — the 4-oracle drives the same container,
+no 4× bash re-impl); **`just`-recipe allowlist** for known tasks; **CF Sandbox =
+cloud-burst escalation only** (sovereignty trap as a default); **reject
+bash-on-our-own-FUSE-fs** ("we're building an AI factory, not rewriting GNU
+userland" — Gemini). The `CommandExecutor` port (§1) is the invariant Rust/C#/F#
+inherit; the impl is swappable behind it. Each impl is a new dep — implementation
+PR runs dep-pin-search-first for versions + confirms sandbox/config flags.
 
 ## §2.1 Cross-language + alternatives — the port is the seam (operator 2026-06-01)
 
@@ -206,13 +210,19 @@ LLM sub-loop over just-bash) as Phase 2.
 - [ ] Tests: fake executor success path, failure path (item stays, mode unchanged
       or work), replay-folds-facts-without-executor, closed-loop.test.ts extended.
 
-**Phase 2 — real bash surface (just-bash):**
+**Phase 2 — real surfaces (review-folded routing):**
 
-- [ ] just-bash `CommandExecutor` impl (dep-pin WebSearch for current version);
-      sandboxed FS-isolation verified; fake stays the CI default.
+- [ ] **local docker `CommandExecutor`** — the DEFAULT for real effectful work
+      (real kernel, language-agnostic boundary the 4-oracle shares). Real
+      namespaces/cgroups; gate per §3.
+- [ ] **just-bash `CommandExecutor`** — for pure-text / no-FS items only. Package:
+      **[`@archildata/just-bash`](https://www.npmjs.com/package/@archildata/just-bash)**
+      (operator-provided coordinate 2026-06-01); pin in-memory FS + network-off;
+      dep-pin-search-first for the current version at install; fake stays the CI default.
 - [ ] (Optional) `just`-recipe executor for the allowlist tier.
 
-**Phase 3 — escalation (gated, later):** real-FS/docker surface behind explicit
+**Phase 3 — escalation (gated, later):** CF Sandbox SDK (cloud-burst) +
+just-bash OverlayFS/ReadWriteFs/network + real host shell — behind explicit
 operator gating; NOT in the autonomous foreground loop until comfortable.
 
 ## §6 Master-checklist linkage
