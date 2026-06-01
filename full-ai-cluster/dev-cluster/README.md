@@ -130,6 +130,11 @@ exists is a substrate/runtime failure, not an ArgoCD chart failure. Podman is
 supported through kind; give the Podman VM enough memory before asking it to
 reconcile the full ArgoCD graph.
 
+Smoke is only the first rung. The default ISO/USB install target is a full
+Kubernetes cluster with the complete ArgoCD-managed stack. Prove the full graph
+here first, including chart dependencies, sync waves, and parameter flow; then
+promote that same proof into the installer acceptance lane.
+
 ## Pushing dev images
 
 The k3d cluster comes with a local Docker registry at

@@ -144,9 +144,12 @@ The helper scripts now keep the desired-state source canonical:
 - `full-ai-cluster/dev-cluster/kind-up.sh` and `kind-down.sh` provide the
   smoke substrate for Docker and Podman.
 
-The USB/ISO zflash reformat-retention proof remains in B-0891 and should
-consume this only as a narrow "cluster health lane exists" signal, not as an
-embedded zflash scenario.
+The USB/ISO zflash reformat-retention proof remains in B-0891. Its first
+cluster-health consumption should be narrow, but the intended installed-system
+target is a full Kubernetes cluster with the complete default ArgoCD stack.
+B-0967 owns proving that full ArgoCD graph outside the ISO first, so the
+USB/ISO lane can later assert the same default stack bootstraps after install
+without muddying installer failures with chart/dependency failures.
 
 ## Live evidence 2026-06-01
 
@@ -163,6 +166,24 @@ Local outside-ISO evidence on Aaron's macOS host:
   Podman VM is blocked by the 2 GiB Podman machine budget causing Kubernetes
   API timeouts under Argo/app reconciliation load.
 
+## Full-cluster target
+
+Aaron clarified on 2026-06-01 that the destination is not merely a minimal
+cluster smoke. The eventual default ISO/USB install should bring up a full
+Kubernetes cluster with the whole ArgoCD-managed stack. The staged proof ladder
+is:
+
+1. Outside-ISO smoke proves Kubernetes, ArgoCD, and the root App-of-Apps are
+   wired correctly.
+2. Outside-ISO full scope proves every non-excluded ArgoCD Application, chart,
+   dependency, sync wave, and parameter flow reconciles correctly.
+3. NixOS and Ubuntu host runs exercise substrate/networking/CNI differences.
+4. Podman becomes the standard OCI-runtime lane, with Docker retained as an
+   accelerator.
+5. USB/ISO acceptance consumes the mature full-cluster proof: boot the
+   installed system and assert the default full stack comes up, while retaining
+   separate zflash/key-retention assertions.
+
 ## Follow-on matrix
 
 The next slices should keep the same failure-attribution boundary:
@@ -173,9 +194,9 @@ The next slices should keep the same failure-attribution boundary:
 - Keep Ubuntu x86_64 and Ubuntu ARM64 smoke in CI for kind-on-Docker.
 - Re-run kind-on-Podman smoke after resizing the Podman VM; treat Docker as an
   accelerator and Podman as the standard lane.
-- Add one USB/ISO post-boot smoke after the outside-ISO harness is green: boot
-  the installed medium, prove Kubernetes is reachable enough to run the same
-  narrow smoke signal, and leave full Argo health to this lane.
+- Add one USB/ISO post-boot smoke after the outside-ISO harness is green, then
+  graduate that to full-stack default-install acceptance once the outside-ISO
+  full ArgoCD graph is reliable.
 - Add dependency-derived sync waves for ArgoCD. Hard-coded waves are acceptable
   as a bootstrap, but the target is Flux-like dependency tracking that can
   generate Argo sync waves/parameters from the repo's existing dependency and
@@ -199,9 +220,10 @@ The next slices should keep the same failure-attribution boundary:
 - **B-0794** covers node self-registration leading to ArgoCD full bring-up.
 - **B-0813** covers ArgoCD watching the cluster-nodes tree.
 - **B-0831** remains the QEMU full-install and cluster-auto-join cascade.
-- **B-0891** remains the USB/ISO zflash acceptance lane and should consume only
-  a narrow "cluster is reachable enough / one agent starts" smoke signal, not
-  this lane's full ArgoCD health matrix.
+- **B-0891** remains the USB/ISO zflash acceptance lane. It should consume a
+  narrow smoke first, then graduate to proving the installed ISO/USB default
+  brings up the full Kubernetes + ArgoCD stack after B-0967 proves that stack
+  outside the installer.
 
 ## Substrate-honest framing
 
