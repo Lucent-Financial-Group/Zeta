@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 import type { Dirent } from "node:fs";
 import { join, dirname } from "node:path";
 import { createHash } from "node:crypto";
+import { fileURLToPath } from "node:url";
 
 export interface AceManifest {
   readonly format_version: number;
@@ -144,7 +145,10 @@ export function trustStorePath(): string {
 
 /** tools/ace/trusted-keys.json — the in-repo bundled root anchor (ships empty). */
 export function bundledTrustPath(): string {
-  return join(import.meta.dir, "trusted-keys.json");
+  // node:url + import.meta.url is the standard-ESM portable idiom (works on Bun AND
+  // Node >= 22.5); import.meta.dir is Bun-only and would be undefined under Node,
+  // silently breaking the bundled-anchor path. Keep this portable per the skill's Node-floor claim.
+  return join(dirname(fileURLToPath(import.meta.url)), "trusted-keys.json");
 }
 
 function readKeysFile(p: string): TrustedKey[] {
