@@ -362,6 +362,51 @@ Four independent reviewers (Gemini + Grok + Amara + Ani) now concur on the final
 position; Ani's contribution is the liveness-via-intelligent-adaptation strategy for the
 Claim path's hot-row edge.
 
+## Round 6 — Mika concurrence + the no-PR sovereign correction (double-work = verification, not a wasteful race) (2026-06-01)
+
+A **fifth** reviewer (Mika) concurred with the full position and added two things:
+
+**1. Liveness-adaptation incentive caveat.** Mika echoed Ani's liveness-via-adaptation
+("the liveness problem moves from a hard protocol-guarantee problem to a
+runtime-adaptation + observability problem") and added the **two conditions it depends
+on**: (a) the contention metrics must be **timely + accurate enough to react before
+thrashing gets bad**, and (b) the agents must be **incentivized to back off** — the
+economic / game-theoretic layer has to reward restraint on hot resources rather than
+pure greed. If either fails, intelligent agents can still thrash. (Folded into B-0963
+alongside the adaptation note.)
+
+**2. The no-PR sovereign correction (Aaron) — retracts the residual "wasteful race /
+conflicting PRs" framing.** Earlier rounds described bus double-claim as "two agents
+race on git" with an implication of wasted work + conflicting PRs to reconcile. Aaron
+corrected the residual PR-era thinking:
+
+> Aaron 2026-06-01: "we don't have PRs anymore or branch protection — everything goes
+> straight to main, and if two agents do the same work I look at it as helpful
+> verification and double-check."
+
+In the **sovereign transport** (folders-direct-to-main, no PR gates, no branch
+protection — B-0890.1; the corporate/leash transport still uses PRs), there are **no
+conflicting branches/PRs to reconcile.** Both agents push straight to main; the **per-row
+git CAS (`force-with-lease`) on the contended row is the only serialization point**; if
+both succeed you get two independent observations on the same item = **automatic
+cross-check, not waste.** So the bus claim is **even more advisory** than Round 2/4
+credited: its job is to _reduce obvious wasted work when convenient_, but a false
+positive (two agents on one item) is **low-cost by design** because of determinism +
+direct-to-main convergence. This is the strongest realization of redundancy-as-
+verification: the coordination layer doesn't need to _prevent_ double-claim, because
+double-claim isn't a conflict — it's a free second observation main reconciles.
+
+The one nuance Mika kept (unchanged): this "double-work is fine" rule is the **Claim**
+(deterministic) path; genuinely wasteful/dangerous double-work (non-deterministic side
+effects, expensive external calls, money) stays on the **Lock** (CP) path. The
+Round-2/Grok "race on git" verbatim is preserved below as-written; this round corrects
+the _framing_ (retraction-native) — under the sovereign no-PR transport it is a
+double-push-to-main resolved by per-row CAS, not a branch/PR reconciliation.
+
+Five independent reviewers (Gemini + Grok + Amara + Ani + Mika) now concur. Net new from
+Mika: the liveness-adaptation **incentive conditions** + the **no-PR sovereign**
+sharpening of bus-double-claim from "wasteful race" to "low-cost verification."
+
 ---
 
 ## Gemini (round 1, verbatim)

@@ -97,9 +97,31 @@ generator over IScheduler").
     adaptation makes the common case much better but is **not** the §0 bounded-wait
     proof — bounded per-agent wait-freedom still needs the explicit ranking/ticket-age
     bound (mechanical backoff is the baseline floor; adaptation is the practical raise;
-    the ranking is the formal guarantee). Full four-reviewer concurrence + this strategy:
+    the ranking is the formal guarantee). Full five-reviewer concurrence + this strategy:
     [`docs/research/2026-06-01-cap-posture-per-row-not-global-coordination-avoidance-gemini-grok-aaron.md`](../../research/2026-06-01-cap-posture-per-row-not-global-coordination-avoidance-gemini-grok-aaron.md)
-    Round 5.
+    Rounds 5–6.
+  - **Adaptation's two incentive conditions (Mika 2026-06-01).** Intelligent adaptation
+    only delivers the practical raise when (a) the contention metrics are **timely +
+    accurate enough to react before thrashing**, and (b) agents are **incentivized to
+    back off** — the economic / game-theoretic layer must reward restraint on hot
+    resources, not pure greed. If either fails, "intelligent" agents still thrash. So the
+    adaptation raise is conditional on the observability latency + the incentive design,
+    not free.
+  - **Statistics → proof pipeline (Aaron 2026-06-01: "not a proof, but statistics and
+    learned patterns over time can lead to proof").** The adaptation-vs-proof gap is a
+    pipeline, not a dead end. Statistics from the running system feed the proof three
+    ways: (1) **falsification** — an observed unbounded-wait / livelock is a counterexample
+    that kills the property (cheapest, immediate); (2) **conjecture-then-verify** — the
+    empirical worst-case wait + contention patterns suggest the variant/ranking/ticket-age
+    mechanism, which Phase A then formally verifies (measure → conjecture the invariant →
+    prove it); (3) **probabilistic liveness** — when deterministic worst-case bounded-wait
+    is too strong, prove the weaker-but-real **bounded-wait in expectation / w.p. 1** under
+    the empirically-estimated contention model (the §3 randomized backoff already lives in
+    this regime; statistics estimate the distribution, the proof is over it). **DST is the
+    bridge** (`ChaosEnv.fs` seed → deterministic replay over gathered patterns → search
+    for counterexamples at scale AND coverage toward the proof); learned patterns tighten
+    the bound over time. So: adaptation generates data → data falsifies-or-conjectures →
+    conjecture yields a deterministic ranking-proof OR a probabilistic-liveness proof.
 
 ## §2 Phase B — extend to git (re-establish under real hazards)
 
