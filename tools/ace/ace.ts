@@ -534,6 +534,12 @@ export async function main(argv: readonly string[]): Promise<number> {
           catch (e) { console.error(`ace: install refused: fetch failed for ${node.name}@${node.version} (${node.url}): ${(e as Error).message}`); return 1; }
           let np: AcePackage;
           try { np = JSON.parse(nodeRaw) as AcePackage; } catch { console.error(`ace: install refused: ${node.name}@${node.version} is not valid JSON`); return 1; }
+          // Shape-guard the untrusted fetched bytes before any verify primitive touches them, so a
+          // malformed payload refuses cleanly instead of throwing in packageHash/contentHash.
+          const npm = (np as { manifest?: unknown; files?: unknown });
+          if (typeof npm !== "object" || npm === null || typeof npm.manifest !== "object" || npm.manifest === null || typeof npm.files !== "object" || npm.files === null) {
+            console.error(`ace: install refused: ${node.name}@${node.version} is not a well-formed package`); return 1;
+          }
           if (packageHash(np) !== node.package_hash) { console.error(`ace: install refused: package_hash mismatch for ${node.name}@${node.version} (lock pin violated)`); return 1; }
           const fh = contentHash(new TextEncoder().encode(JSON.stringify(np.files)));
           if (fh !== np.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.name}@${node.version}`); return 1; }

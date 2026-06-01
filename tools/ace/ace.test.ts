@@ -903,6 +903,33 @@ describe("install --frozen (slice 5.3)", () => {
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
+
+  test("--frozen with a malformed (JSON-valid but not a well-formed package) locked node refuses cleanly (no throw)", async () => {
+    // The fetched node bytes + lockfile are untrusted. A payload that parses as JSON but is not a
+    // well-formed package (no manifest/files) must hit the PASS-1 shape guard and refuse (exit 1)
+    // rather than THROW (np.manifest.content_hash on an undefined manifest). To EXERCISE the guard
+    // (not an earlier check), the lock must pin the MALFORMED payload's package_hash so the pin
+    // check PASSES and execution reaches the shape guard — the exact line that throws unguarded.
+    // Mirrors the untrusted-signature/atomicity tests: build the lock directly to reach a gate.
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-malformed-"));
+    const malformed = {}; // valid JSON, no manifest/files — packageHash() runs, np.manifest.content_hash throws
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(malformed));
+    const aHash = packageHash(malformed as any); // pin == the malformed payload's hash → pin check passes
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lock = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
+      nodes: [{ name: "A", version: "1.0.0", url: aPath, package_hash: aHash }],
+    };
+    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-malformed-store-"));
+    // The load-bearing assertion: this MUST NOT throw (the unguarded bug is a TypeError on
+    // np.manifest.content_hash). await directly so any throw fails the test loudly; exit 1 = refused.
+    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
 });
 
 // ---- semver ranges + solver (slice 5.2) ----

@@ -13,16 +13,22 @@ export type Lockfile = {
  *  (inline pins are authoritative — the solver never registry-solves an inline-fixed name),
  *  then registry. package_hash is the hash of the actually-installed package. */
 export function buildLockfile(root: AcePackage, order: AcePackage[], registry: Registry): Lockfile | { error: string } {
-  // Prescan every inline edge in the graph → name@version -> url.
+  // Prescan every inline edge in the graph → name@version -> url. kind omitted == inline
+  // (pre-DU back-compat — resolve()/solver treat a missing kind as inline), so capture those too.
+  // A kind-omitted edge is untrusted-shaped (not in the AceDependency DU); read url defensively.
   const inlineUrls = new Map<string, string>();
   for (const p of order) {
     for (const edge of (p.manifest.dependencies ?? [])) {
-      if (edge.kind === "inline" && typeof edge.url === "string") {
-        inlineUrls.set(`${edge.name}@${edge.version}`, edge.url);
+      if (edge.kind === "inline" || edge.kind === undefined) {
+        const url = (edge as { kind?: unknown; url?: unknown }).url;
+        if (typeof url === "string") inlineUrls.set(`${edge.name}@${edge.version}`, url);
       }
     }
   }
-  const deps = order.filter((p) => p !== root); // root is the input, not a locked dependency
+  // root is the input, not a locked dependency. Contract: root is LAST in order (resolve()'s
+  // deps-first, root-last output); slice when that holds, else fall back to identity-filter.
+  const last = order[order.length - 1];
+  const deps = last === root ? order.slice(0, -1) : order.filter((p) => p !== root);
   const nodes: LockNode[] = [];
   for (const dep of deps) {
     const name = dep.manifest.name;

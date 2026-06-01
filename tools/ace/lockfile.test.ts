@@ -43,6 +43,19 @@ describe("buildLockfile", () => {
       expect(lf.nodes).toEqual([{ name: "B", version: "2.0.0", url: "http://e/B", package_hash: packageHash(B) }]);
     }
   });
+  test("records a kind-OMITTED inline edge's url (pre-DU back-compat parity with resolve())", () => {
+    const C = pkgAt("C", "3.0.0");
+    // kind omitted entirely — represents pre-DU back-compat shape that resolve()/solver treat as
+    // inline. Not representable in the AceDependency DU, so build it via a cast.
+    const kindlessEdge = { name: "C", version: "3.0.0", url: "http://e/C", package_hash: packageHash(C) } as unknown as AceDependency;
+    const root = pkgAt("root", "1.0.0", [kindlessEdge]);
+    const order: AcePackage[] = [C, root];
+    const lf = buildLockfile(root, order, new Map());
+    expect("error" in lf).toBe(false); // must NOT fail with "cannot resolve url"
+    if (!("error" in lf)) {
+      expect(lf.nodes).toEqual([{ name: "C", version: "3.0.0", url: "http://e/C", package_hash: packageHash(C) }]);
+    }
+  });
 });
 
 import { serializeLockfile, parseLockfile, type Lockfile } from "./lockfile.ts";
