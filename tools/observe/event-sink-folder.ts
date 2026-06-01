@@ -116,12 +116,18 @@ export interface FolderSinkOptions {
  * file exists — but for a G-Set the same id means the same event already landed,
  * so EEXIST is idempotent SUCCESS, not an error.
  */
-function writeEventFile(envelope: EventEnvelope, eventDir: string): { ok: true; path: string } | { ok: false; reason: string } {
+// `created` distinguishes a file WE wrote this append (safe to clean up on failure) from a
+// pre-existing durable event found via EEXIST-replay (must NEVER be deleted — that would drop a
+// landed G-Set event, Copilot #6312 P0).
+function writeEventFile(
+  envelope: EventEnvelope,
+  eventDir: string,
+): { ok: true; path: string; created: boolean } | { ok: false; reason: string } {
   const path = join(eventDir, `${envelope.id}.json`);
   try {
     mkdirSync(eventDir, { recursive: true });
     writeFileSync(path, `${JSON.stringify(envelope, null, 2)}\n`, { flag: "wx" });
-    return { ok: true, path };
+    return { ok: true, path, created: true }; // WE created it → ours to clean up on failure
   } catch (err) {
     const e = err as NodeJS.ErrnoException;
     if (e.code === "EEXIST") {
@@ -130,7 +136,7 @@ function writeEventFile(envelope: EventEnvelope, eventDir: string): { ok: true; 
       // real collision — surface it, never silently accept stale (Codex #6312 P2).
       try {
         const existing = readFileSync(path, "utf-8");
-        if (existing === `${JSON.stringify(envelope, null, 2)}\n`) return { ok: true, path };
+        if (existing === `${JSON.stringify(envelope, null, 2)}\n`) return { ok: true, path, created: false }; // pre-existing → do NOT delete
         return { ok: false, reason: `id collision: ${envelope.id} already exists with different content` };
       } catch (readErr) {
         return { ok: false, reason: `EEXIST but re-read failed: ${(readErr as Error).message}` };
@@ -254,6 +260,16 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
   }
 }
 
+/** Best-effort remove a file WE created this append (null = we created nothing → nothing to remove). */
+function removeOurFile(path: string | null): void {
+  if (path === null) return;
+  try {
+    rmSync(path, { force: true });
+  } catch {
+    /* already gone (e.g. undo removed it) — fine */
+  }
+}
+
 /**
  * The real folder-direct-to-main EventSink. `append` mints a ZetaId, builds the
  * fact envelope, atomically writes `<eventDir>/<id>.json`, and commits it to main.
@@ -265,9 +281,12 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
   const commit = opts.commit ?? gitCommitToMain;
   return {
     append: (action: NextAction): Promise<AppendOutcome> => {
-      // Wrap the whole body: the injected `mint` / `now` / `commit` could throw (e.g. a now()
-      // returning NaN makes toISOString() throw), but the documented contract is Result-only —
-      // convert ANY throw to { ok: false } like the rest of the adapter (Copilot #6312 P1).
+      // `ourFile` is set ONLY to a file WE created this append — so failure-cleanup removes our own
+      // residue but NEVER a pre-existing durable event found via EEXIST-replay (Copilot #6312 P0).
+      let ourFile: string | null = null;
+      // Wrap the whole body: the injected `mint` / `now` / `commit` could throw (e.g. now()=NaN
+      // makes toISOString() throw, or commit() throws). The documented contract is Result-only —
+      // ANY throw converts to { ok: false } AND still cleans up our own file (Copilot #6312 P1).
       try {
         const id = mint();
         // `mint` is injectable + FolderSinkOptions is exported, so a caller could return a
@@ -281,20 +300,17 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
         const envelope: EventEnvelope = { id, at, by: opts.by, action };
         const written = writeEventFile(envelope, opts.eventDir);
         if (!written.ok) return Promise.resolve({ ok: false, reason: written.reason });
+        if (written.created) ourFile = written.path; // only OUR new file is ours to clean up
         const committed = commit(written.path, envelope);
         if (!committed.ok) {
-          // The append failed → the event did NOT land. Remove the written file so it can't be
-          // half-read by loadWorld (which reads the folder), regardless of whether the failure was
-          // pre-commit (file written, never committed) or post-commit (commit undone) (Codex #6312).
-          try {
-            rmSync(written.path, { force: true });
-          } catch {
-            /* file already gone (e.g. undo removed it) — fine */
-          }
+          removeOurFile(ourFile); // pre-existing durable events are NOT touched (created === false)
           return Promise.resolve({ ok: false, reason: committed.reason });
         }
         return Promise.resolve({ ok: true, eventId: id });
       } catch (err) {
+        // A throw (e.g. from an injected commit) must route through the SAME cleanup, so a failed
+        // append never leaves a half-written file we created (Copilot #6312 P1).
+        removeOurFile(ourFile);
         return Promise.resolve({ ok: false, reason: `append failed: ${(err as Error).message}` });
       }
     },

@@ -97,6 +97,29 @@ describe("folderSink — write the fact envelope + commit", () => {
     expect(committed).toHaveLength(0); // never reached commit
   });
 
+  it("does NOT delete a pre-existing durable event when a later append's commit fails (G-Set P0)", async () => {
+    const ID_DUR = "1".repeat(32);
+    // 1) land the event durably (commit ok)
+    await folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_DUR, now: () => FIXED, commit: okCommit }).append(freeTime);
+    expect(existsSync(join(dir, `${ID_DUR}.json`))).toBe(true);
+    // 2) a second append of the SAME id whose commit fails must NOT delete the pre-existing file
+    const failCommit = (): CommitOutcome => ({ ok: false, reason: "not on main" });
+    const r = await folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_DUR, now: () => FIXED, commit: failCommit }).append(freeTime);
+    expect(r.ok).toBe(false);
+    expect(existsSync(join(dir, `${ID_DUR}.json`))).toBe(true); // durable event preserved
+  });
+
+  it("a THROWING injected commit → ok:false AND removes the file we created (P1)", async () => {
+    const ID_THROW = "2".repeat(32);
+    const throwCommit = (): CommitOutcome => {
+      throw new Error("boom");
+    };
+    const r = await folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_THROW, now: () => FIXED, commit: throwCommit }).append(freeTime);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("append failed");
+    expect(existsSync(join(dir, `${ID_THROW}.json`))).toBe(false); // our half-written file cleaned up
+  });
+
   it("converts an injected throw (now()=NaN) to ok:false, never throws (Result-only contract)", async () => {
     const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_A, now: () => Number.NaN, commit: okCommit });
     const r = await sink.append(freeTime); // new Date(NaN).toISOString() throws inside append
