@@ -162,7 +162,7 @@ impl<T: Ord + Clone> Sum for GSet<T> {
     /// Fold a collection of G-Sets through the monoid (`Default` identity + `+`), so
     /// `iter.sum()` aggregates them — the "generic code folds it for free" payoff.
     fn sum<I: Iterator<Item = GSet<T>>>(iter: I) -> Self {
-        iter.fold(GSet::empty(), |acc, x| &acc + &x)
+        iter.fold(Self::default(), |acc, x| &acc + &x)
     }
 }
 
