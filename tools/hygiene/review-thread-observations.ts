@@ -1,0 +1,362 @@
+#!/usr/bin/env bun
+// review-thread-observations.ts — live caller for B-0164.1 review-thread
+// disagreement preservation.
+//
+// This is the operational bridge below a full GitHub review workflow: record
+// one loop's machine-comparable conclusion for a PR review thread, compare it
+// with prior observations for that same thread from other loop identities, and
+// invoke fileReviewThreadDisagreement when conclusions differ.
+
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, isAbsolute, join, normalize } from "node:path";
+
+import {
+  fileReviewThreadDisagreement,
+  type ReviewThreadNoDisagreementReason,
+  type ReviewThreadObservation,
+  type ReviewThreadShardOutcome,
+} from "./divergence-shard.ts";
+
+export const DEFAULT_OBSERVATION_STORE_REL_PATH = "docs/hygiene-history/review-thread-observations.json";
+const SCHEMA_VERSION = 1 as const;
+
+export interface StoredReviewThreadObservation {
+  readonly observedAt: string;
+  readonly observation: ReviewThreadObservation;
+}
+
+export interface ReviewThreadObservationStore {
+  readonly schemaVersion: typeof SCHEMA_VERSION;
+  readonly observations: ReadonlyArray<StoredReviewThreadObservation>;
+}
+
+export interface RecordReviewThreadObservationInput {
+  readonly repoRoot: string;
+  readonly storeRelPath?: string;
+  readonly observedAt: string;
+  readonly tick: string;
+  readonly operativeAuthorization: string;
+  readonly observation: ReviewThreadObservation;
+}
+
+export interface FiledReviewThreadDisagreement {
+  readonly prior: StoredReviewThreadObservation;
+  readonly outcome: Extract<ReviewThreadShardOutcome, { readonly kind: "filed" }>;
+}
+
+export interface ReviewThreadNoDisagreement {
+  readonly prior: StoredReviewThreadObservation;
+  readonly reason: ReviewThreadNoDisagreementReason;
+}
+
+export interface RecordReviewThreadObservationResult {
+  readonly storeRelPath: string;
+  readonly stored: StoredReviewThreadObservation;
+  readonly compared: number;
+  readonly filed: ReadonlyArray<FiledReviewThreadDisagreement>;
+  readonly noDisagreements: ReadonlyArray<ReviewThreadNoDisagreement>;
+}
+
+export type ParseArgsResult =
+  | { readonly kind: "args"; readonly input: RecordReviewThreadObservationInput }
+  | { readonly kind: "error"; readonly message: string };
+
+function nonBlank(value: string, field: string): string {
+  const trimmed = value.trim();
+  if (trimmed.length === 0) {
+    throw new Error(`${field} must be non-blank`);
+  }
+  return trimmed;
+}
+
+function normalizeRelPath(relPath: string): string {
+  const normalized = normalize(nonBlank(relPath, "store path")).replaceAll("\\", "/");
+  if (isAbsolute(normalized) || normalized === ".." || normalized.startsWith("../")) {
+    throw new Error(`store path must be repo-relative: ${relPath}`);
+  }
+  return normalized;
+}
+
+function threadKey(observation: ReviewThreadObservation): string {
+  return `${observation.prNumber}:${nonBlank(observation.threadId, "threadId")}`;
+}
+
+function identityKey(observation: ReviewThreadObservation): string {
+  const id = observation.identity;
+  return [
+    nonBlank(id.agent, "identity.agent"),
+    nonBlank(id.model, "identity.model"),
+    nonBlank(id.harness, "identity.harness"),
+  ].join("\u0000");
+}
+
+export function validateReviewThreadObservation(observation: ReviewThreadObservation): void {
+  if (!Number.isInteger(observation.prNumber) || observation.prNumber <= 0) {
+    throw new Error(`prNumber must be a positive integer: ${observation.prNumber}`);
+  }
+  threadKey(observation);
+  identityKey(observation);
+  nonBlank(observation.conclusion, "conclusion");
+  nonBlank(observation.body, "body");
+}
+
+export function emptyObservationStore(): ReviewThreadObservationStore {
+  return { schemaVersion: SCHEMA_VERSION, observations: [] };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function stringField(value: Record<string, unknown>, field: string): string {
+  const raw = value[field];
+  if (typeof raw !== "string") {
+    throw new Error(`observation store ${field} must be a string`);
+  }
+  return raw;
+}
+
+function parseStoredObservation(value: unknown, index: number): StoredReviewThreadObservation {
+  if (!isRecord(value)) {
+    throw new Error(`observation store entry ${index} must be an object`);
+  }
+  const observationValue = value["observation"];
+  if (!isRecord(observationValue)) {
+    throw new Error(`observation store entry ${index}.observation must be an object`);
+  }
+  const identityValue = observationValue["identity"];
+  if (!isRecord(identityValue)) {
+    throw new Error(`observation store entry ${index}.observation.identity must be an object`);
+  }
+  const prNumber = observationValue["prNumber"];
+  if (typeof prNumber !== "number") {
+    throw new Error(`observation store entry ${index}.observation.prNumber must be a number`);
+  }
+  const stored = {
+    observedAt: stringField(value, "observedAt"),
+    observation: {
+      identity: {
+        agent: stringField(identityValue, "agent"),
+        model: stringField(identityValue, "model"),
+        harness: stringField(identityValue, "harness"),
+      },
+      prNumber,
+      threadId: stringField(observationValue, "threadId"),
+      conclusion: stringField(observationValue, "conclusion"),
+      body: stringField(observationValue, "body"),
+    },
+  };
+  validateReviewThreadObservation(stored.observation);
+  nonBlank(stored.observedAt, `observation store entry ${index}.observedAt`);
+  return stored;
+}
+
+export function parseObservationStore(text: string): ReviewThreadObservationStore {
+  const parsed: unknown = JSON.parse(text);
+  if (!isRecord(parsed)) {
+    throw new Error("observation store must be a JSON object");
+  }
+  if (parsed["schemaVersion"] !== SCHEMA_VERSION) {
+    throw new Error(`observation store schemaVersion must be ${SCHEMA_VERSION}`);
+  }
+  const observations = parsed["observations"];
+  if (!Array.isArray(observations)) {
+    throw new Error("observation store observations must be an array");
+  }
+  return {
+    schemaVersion: SCHEMA_VERSION,
+    observations: observations.map(parseStoredObservation),
+  };
+}
+
+export function loadObservationStore(
+  repoRoot: string,
+  storeRelPath = DEFAULT_OBSERVATION_STORE_REL_PATH,
+): ReviewThreadObservationStore {
+  const relPath = normalizeRelPath(storeRelPath);
+  const absPath = join(repoRoot, relPath);
+  if (!existsSync(absPath)) {
+    return emptyObservationStore();
+  }
+  return parseObservationStore(readFileSync(absPath, "utf8"));
+}
+
+export function writeObservationStore(
+  repoRoot: string,
+  storeRelPath: string,
+  store: ReviewThreadObservationStore,
+): void {
+  const relPath = normalizeRelPath(storeRelPath);
+  const absPath = join(repoRoot, relPath);
+  mkdirSync(dirname(absPath), { recursive: true });
+  writeFileSync(absPath, `${JSON.stringify(store, null, 2)}\n`);
+}
+
+function sameReviewThread(a: ReviewThreadObservation, b: ReviewThreadObservation): boolean {
+  return a.prNumber === b.prNumber && threadKey(a) === threadKey(b);
+}
+
+function differentLoopIdentity(a: ReviewThreadObservation, b: ReviewThreadObservation): boolean {
+  return identityKey(a) !== identityKey(b);
+}
+
+export function recordReviewThreadObservation(
+  input: RecordReviewThreadObservationInput,
+): RecordReviewThreadObservationResult {
+  const storeRelPath = normalizeRelPath(input.storeRelPath ?? DEFAULT_OBSERVATION_STORE_REL_PATH);
+  nonBlank(input.observedAt, "observedAt");
+  nonBlank(input.tick, "tick");
+  nonBlank(input.operativeAuthorization, "operativeAuthorization");
+  validateReviewThreadObservation(input.observation);
+
+  const store = loadObservationStore(input.repoRoot, storeRelPath);
+  const current: StoredReviewThreadObservation = {
+    observedAt: input.observedAt,
+    observation: input.observation,
+  };
+  const priorSameThread = store.observations.filter(
+    (prior) =>
+      sameReviewThread(prior.observation, input.observation) &&
+      differentLoopIdentity(prior.observation, input.observation),
+  );
+
+  const filed: FiledReviewThreadDisagreement[] = [];
+  const noDisagreements: ReviewThreadNoDisagreement[] = [];
+  for (const prior of priorSameThread) {
+    const outcome = fileReviewThreadDisagreement(input.repoRoot, {
+      tick: input.tick,
+      loopA: prior.observation,
+      loopB: input.observation,
+      operativeAuthorization: input.operativeAuthorization,
+    });
+    if (outcome.kind === "filed") {
+      filed.push({ prior, outcome });
+    } else {
+      noDisagreements.push({ prior, reason: outcome.reason });
+    }
+  }
+
+  writeObservationStore(input.repoRoot, storeRelPath, {
+    schemaVersion: SCHEMA_VERSION,
+    observations: [...store.observations, current],
+  });
+
+  return {
+    storeRelPath,
+    stored: current,
+    compared: priorSameThread.length,
+    filed,
+    noDisagreements,
+  };
+}
+
+function hasFlagValue(value: string | undefined): value is string {
+  return value !== undefined && value.length > 0 && !value.startsWith("--");
+}
+
+function readRequired(flags: Map<string, string>, key: string): string | { readonly error: string } {
+  const value = flags.get(key);
+  if (value === undefined) {
+    return { error: `${key} is required` };
+  }
+  return value;
+}
+
+export function parseArgs(argv: string[]): ParseArgsResult {
+  const flags = new Map<string, string>();
+  for (let i = 0; i < argv.length; ) {
+    const flag = argv[i]!;
+    if (!flag.startsWith("--")) {
+      return { kind: "error", message: `unknown positional argument: ${flag}` };
+    }
+    const value = argv[i + 1];
+    if (!hasFlagValue(value)) {
+      return { kind: "error", message: `${flag} requires a value` };
+    }
+    flags.set(flag, value);
+    i += 2;
+  }
+
+  const required = [
+    "--tick",
+    "--operative-authorization",
+    "--agent",
+    "--model",
+    "--harness",
+    "--pr-number",
+    "--thread-id",
+    "--conclusion",
+    "--body",
+  ] as const;
+  for (const flag of required) {
+    const value = readRequired(flags, flag);
+    if (typeof value !== "string") {
+      return { kind: "error", message: value.error };
+    }
+  }
+  const prNumberRaw = flags.get("--pr-number")!;
+  if (!/^\d+$/.test(prNumberRaw)) {
+    return { kind: "error", message: "--pr-number must be a positive integer" };
+  }
+  const prNumber = Number.parseInt(prNumberRaw, 10);
+  if (prNumber <= 0) {
+    return { kind: "error", message: "--pr-number must be a positive integer" };
+  }
+
+  return {
+    kind: "args",
+    input: {
+      repoRoot: flags.get("--repo-root") ?? ".",
+      storeRelPath: flags.get("--store") ?? DEFAULT_OBSERVATION_STORE_REL_PATH,
+      observedAt: flags.get("--observed-at") ?? flags.get("--tick")!,
+      tick: flags.get("--tick")!,
+      operativeAuthorization: flags.get("--operative-authorization")!,
+      observation: {
+        identity: {
+          agent: flags.get("--agent")!,
+          model: flags.get("--model")!,
+          harness: flags.get("--harness")!,
+        },
+        prNumber,
+        threadId: flags.get("--thread-id")!,
+        conclusion: flags.get("--conclusion")!,
+        body: flags.get("--body")!,
+      },
+    },
+  };
+}
+
+function renderOutcome(outcome: RecordReviewThreadObservationResult): string {
+  return JSON.stringify(
+    {
+      storeRelPath: outcome.storeRelPath,
+      compared: outcome.compared,
+      filed: outcome.filed.map((f) => ({
+        priorAgent: f.prior.observation.identity.agent,
+        relPath: f.outcome.write.relPath,
+        status: f.outcome.write.status,
+      })),
+      noDisagreements: outcome.noDisagreements.map((n) => ({
+        priorAgent: n.prior.observation.identity.agent,
+        reason: n.reason,
+      })),
+    },
+    null,
+    2,
+  );
+}
+
+export function main(argv: string[] = process.argv.slice(2)): number {
+  const parsed = parseArgs(argv);
+  if (parsed.kind === "error") {
+    console.error(`error: ${parsed.message}`);
+    return 64;
+  }
+  const outcome = recordReviewThreadObservation(parsed.input);
+  console.log(renderOutcome(outcome));
+  return 0;
+}
+
+if (import.meta.main) {
+  process.exit(main());
+}
