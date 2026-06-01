@@ -52,21 +52,12 @@ public static class DynamicValues
     /// <c>null</c> if not an object or the key is absent.</summary>
     /// <param name="value">the value.</param>
     /// <param name="key">the field name (ordinal comparison).</param>
-    public static DynamicValue? TryField(DynamicValue value, string key)
-    {
-        if (value is DynamicValue.Object o)
-        {
-            foreach (var kv in o.Pairs)
-            {
-                if (string.Equals(kv.Key, key, StringComparison.Ordinal))
-                {
-                    return kv.Value;
-                }
-            }
-        }
-
-        return null;
-    }
+    public static DynamicValue? TryField(DynamicValue value, string key) =>
+        value is DynamicValue.Object o
+            ? o.Pairs.Where(kv => string.Equals(kv.Key, key, StringComparison.Ordinal))
+                .Select(kv => kv.Value)
+                .FirstOrDefault()
+            : null;
 
     /// <summary>Index into an array. <c>null</c> if not an array or the index is out of range
     /// (negative indices are out of range).</summary>
@@ -119,15 +110,8 @@ public static class DynamicValues
 
         // Split on '.': any empty segment ("" — from a leading, doubled, or trailing dot) is
         // malformed and rejected, so typoed paths return null rather than silently resolving.
-        foreach (var segment in path.Split('.'))
-        {
-            if (!TryParseSegment(segment, steps))
-            {
-                return null;
-            }
-        }
-
-        return steps;
+        // All(...) short-circuits on the first malformed segment (TryParseSegment appends to steps).
+        return path.Split('.').All(segment => TryParseSegment(segment, steps)) ? steps : null;
     }
 
     // A segment is "key", "key[i][j]…", or "[i][j]…" (bare indices). Empty -> malformed.
