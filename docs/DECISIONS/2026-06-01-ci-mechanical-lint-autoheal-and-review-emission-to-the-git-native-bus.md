@@ -20,9 +20,10 @@ The operator is winding branch protection *down* toward fewer/no required gates
 "keep the gates that remain frictionless" — auto-**heal** the mechanical class so
 a fixable nit never blocks a merge.
 
-A concrete first piece already shipped: PR #6393 (`lint-autofix.yml`) runs the
-mechanical `--fix` tools on a PR and commits the heal back (same-repo-only,
-loop-guarded, version-parity with `gate.yml`). This ADR is the *design pass* the
+A concrete first piece is authored + in flight (PR #6393, not yet merged):
+`lint-autofix.yml` runs the mechanical `--fix` tools on a PR and applies the heal
+back (now via a two-job privilege-separated split — see the security ADR), at
+version-parity with `gate.yml`. This ADR is the *design pass* the
 operator asked for on the **larger** shape it implies:
 
 > operator 2026-06-01: *"we can have filed github workflows add a file to the bus
@@ -69,8 +70,8 @@ pushes do not re-trigger workflows (the re-trigger wrinkle from #6393).
 
 ### Option 2: Commit-back heal only (status quo of #6393)
 
-* **Pros:** Already shipped; removes the most common friction (markdown) with
-  zero new surface; no intelligence; idempotent.
+* **Pros:** Authored + in flight (#6393); removes the most common friction
+  (markdown) with minimal surface; no intelligence; idempotent.
 * **Cons:** No structured record of *what* was healed / *what remains*; the
   intelligence layer has nothing to consume; no observability of the heal as a
   system-health signal (the B-0938 friction monitor can't see it cleanly).
@@ -110,7 +111,7 @@ pushes do not re-trigger workflows (the re-trigger wrinkle from #6393).
   intelligence layer a substrate to consume, (c) stays git-native via the bus
   rather than a parallel review surface, and (d) matches the operator's
   "mechanical step + intelligence step, composing through the bus" framing. The
-  mechanical half is already proven (#6393); the bus-emission + intelligence-step
+  mechanical half is authored + in flight (#6393); the bus-emission + intelligence-step
   halves are the build-out this ADR gates on review.
 
   This decision is **explicitly held open for Max** — he owns the corporate-loop
@@ -155,7 +156,7 @@ pushes do not re-trigger workflows (the re-trigger wrinkle from #6393).
 
 ## Composes with
 
-* PR #6393 — the mechanical lint auto-heal workflow (the shipped first piece).
+* PR #6393 — the mechanical lint auto-heal workflow (the first piece, in flight).
 * [`2026-05-29-monitoring-and-reducing-pr-review-friction.md`](2026-05-29-monitoring-and-reducing-pr-review-friction.md)
   (B-0938) — measures friction; this ADR reduces a class of it + structures the
   review-emission the monitor can consume.
