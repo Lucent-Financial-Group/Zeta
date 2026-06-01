@@ -9,16 +9,16 @@
  * B-0954). Corporate batch-to-main (B-0890) is the same event shape behind a
  * different commit fn — swap `commit`, not the envelope.
  *
- * ── Fact, not command (Amara 2026-05-31) ─────────────────────────────────────
+ * ── Fact, not command (per the design review) ────────────────────────────────
  * Replay must fold FACTS, not redo COMMANDS. So the durable record is an
  * `EventEnvelope` — `{ id, at, by, action }` — a fact ("at t, actor X recorded
- * this action"), carrying a **stable ZetaId identity** (Amara caution #2) so the
+ * this action"), carrying a **stable ZetaId identity** (design-review caution #2) so the
  * log is idempotent (the filename IS the id; re-appending the same id is a
  * no-op — the G-Set CRDT property). The richer executed-event envelope
  * (ActionExecutionStarted/Succeeded/Failed/ModeChanged) is the next refinement;
  * this slice logs the chosen action as the fact, with identity + actor + time.
  *
- * ── Conflict discipline (Amara cautions #5/#6) ───────────────────────────────
+ * ── Conflict discipline (design-review cautions #5/#6) ───────────────────────
  * Direct-to-main is safe here for the same reason the bus is: events are
  * **disjoint ZetaId files** — two agents appending never touch the same path, so
  * a concurrent peer advancing `main` only causes a non-fast-forward push, which
@@ -80,6 +80,11 @@ export function mintObserveEventIdHex(env: SimulationEnvironment = DEFAULT_ENV, 
     location: LocationHint.EastUS_VA1,
   };
   return pack(obs, env).toString(16).padStart(32, "0");
+}
+
+/** A canonical observe-event id is 32 lowercase hex chars (mintObserveEventIdHex output). */
+export function isCanonicalEventId(id: string): boolean {
+  return /^[0-9a-f]{32}$/.test(id);
 }
 
 /** The durable FACT: a recorded action with stable identity + actor + time. */
@@ -175,6 +180,17 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
       return { ok: false, reason: `local main is ${ahead} commit(s) ahead of origin/main; reconcile before appending events` };
     }
     run(["add", gitPath]);
+    // Idempotent re-append: if the file is already committed + unchanged, `git add` stages
+    // nothing, so `git commit` would fail ("nothing to commit"). That's a no-op, not an error —
+    // return ok (the event already landed durably). `git diff --cached --quiet` exits 0 when
+    // nothing is staged (Copilot #6312 — re-append of an already-landed event must be idempotent ok).
+    let staged = false;
+    try {
+      run(["diff", "--cached", "--quiet", "--", gitPath]);
+    } catch {
+      staged = true; // non-zero exit = staged changes present
+    }
+    if (!staged) return { ok: true };
     const msg = [
       `observe(${envelope.by}): ${envelope.action.kind} ${gitPath}`,
       "",
@@ -221,6 +237,13 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
   return {
     append: (action: NextAction): Promise<AppendOutcome> => {
       const id = mint();
+      // `mint` is injectable + FolderSinkOptions is exported, so a caller could return a
+      // path-traversal segment ("../outside") or a Windows-reserved name. The id is used as a
+      // path segment — reject anything but a canonical 32-hex ZetaId before joining a path
+      // (the bus guards its segments the same way). Security-relevant (Copilot #6312 P1).
+      if (!isCanonicalEventId(id)) {
+        return Promise.resolve({ ok: false, reason: `non-canonical event id (expected 32 lowercase hex): '${id}'` });
+      }
       const envelope: EventEnvelope = { id, at: new Date(now()).toISOString(), by: opts.by, action };
       const written = writeEventFile(envelope, opts.eventDir);
       if (!written.ok) return Promise.resolve({ ok: false, reason: written.reason });

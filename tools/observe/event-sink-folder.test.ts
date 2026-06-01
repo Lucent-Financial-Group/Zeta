@@ -35,28 +35,35 @@ afterEach(() => {
 
 const freeTime: NextAction = { kind: "free_time", reason: "rest" };
 
+// Canonical 32-lowercase-hex ids (the only shape the sink accepts as a path segment).
+const ID_A = "a".repeat(32);
+const ID_DUP = "d".repeat(32);
+const ID_CLASH = "c".repeat(32);
+const ID_FAILC = "e".repeat(32);
+const ID_WRITEF = "f".repeat(32);
+
 describe("folderSink — write the fact envelope + commit", () => {
   it("writes <eventDir>/<id>.json and commits it; returns ok + eventId", async () => {
-    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => "abc123", now: () => FIXED, commit: okCommit });
+    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_A, now: () => FIXED, commit: okCommit });
     const r = await sink.append(freeTime);
     expect(r.ok).toBe(true);
-    if (r.ok) expect(r.eventId).toBe("abc123");
+    if (r.ok) expect(r.eventId).toBe(ID_A);
     expect(committed).toHaveLength(1);
-    expect(committed[0]?.path).toBe(join(dir, "abc123.json"));
+    expect(committed[0]?.path).toBe(join(dir, `${ID_A}.json`));
 
-    const env = JSON.parse(readFileSync(join(dir, "abc123.json"), "utf-8")) as EventEnvelope;
-    expect(env).toEqual({ id: "abc123", at: "2026-05-31T12:00:00.000Z", by: "otto-cli", action: freeTime });
+    const env = JSON.parse(readFileSync(join(dir, `${ID_A}.json`), "utf-8")) as EventEnvelope;
+    expect(env).toEqual({ id: ID_A, at: "2026-05-31T12:00:00.000Z", by: "otto-cli", action: freeTime });
   });
 
   it("is idempotent: same id + same content appended twice → both ok (EEXIST no-op, G-Set)", async () => {
-    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => "dup", now: () => FIXED, commit: okCommit });
+    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_DUP, now: () => FIXED, commit: okCommit });
     const a = await sink.append(freeTime);
     const b = await sink.append(freeTime);
     expect(a.ok && b.ok).toBe(true);
   });
 
   it("rejects a same-id collision with DIFFERENT content (not a silent no-op)", async () => {
-    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => "clash", now: () => FIXED, commit: okCommit });
+    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_CLASH, now: () => FIXED, commit: okCommit });
     const first = await sink.append(freeTime);
     const second = await sink.append({ kind: "self_reflect", reason: "different action, same id" });
     expect(first.ok).toBe(true);
@@ -64,16 +71,25 @@ describe("folderSink — write the fact envelope + commit", () => {
     if (!second.ok) expect(second.reason).toContain("collision");
   });
 
+  it("rejects a non-canonical id (path-traversal / reserved-name guard; never writes outside)", async () => {
+    for (const evil of ["../outside", "con", "not-hex", "AAAA", "a".repeat(31)]) {
+      const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => evil, now: () => FIXED, commit: okCommit });
+      const r = await sink.append(freeTime);
+      expect(r.ok).toBe(false);
+      expect(committed).toHaveLength(0); // never wrote, never committed
+    }
+  });
+
   it("surfaces a commit failure as ok:false (never throws)", async () => {
     const failCommit = (): CommitOutcome => ({ ok: false, reason: "not on main" });
-    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => "x", now: () => FIXED, commit: failCommit });
+    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_FAILC, now: () => FIXED, commit: failCommit });
     const r = await sink.append(freeTime);
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("not on main");
   });
 
   it("surfaces a write failure as ok:false (unwritable dir, never throws)", async () => {
-    const sink = folderSink({ eventDir: "/dev/null/cannot-create", by: "otto-cli", mint: () => "y", now: () => FIXED, commit: okCommit });
+    const sink = folderSink({ eventDir: "/dev/null/cannot-create", by: "otto-cli", mint: () => ID_WRITEF, now: () => FIXED, commit: okCommit });
     const r = await sink.append(freeTime);
     expect(r.ok).toBe(false);
     expect(committed).toHaveLength(0); // never reached commit
@@ -95,16 +111,17 @@ describe("mintObserveEventIdHex — stable WorkItem-category identity", () => {
 describe("folderSink composes with execute (the real adapter end-to-end)", () => {
   it("execute(free_time, folderSink) appends the event + transitions mode", async () => {
     const world: World = { backlog: [] };
-    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => "evt", now: () => FIXED, commit: okCommit });
+    const ID_EXEC = "b".repeat(32);
+    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_EXEC, now: () => FIXED, commit: okCommit });
     const r = await execute(world, freeTime, sink);
     expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.world.mode).toBe("free_time");
-      expect(r.eventId).toBe("evt");
+      expect(r.eventId).toBe(ID_EXEC);
     }
     // the durable event landed (one file, one commit)
     expect(committed).toHaveLength(1);
-    const env = JSON.parse(readFileSync(join(dir, "evt.json"), "utf-8")) as EventEnvelope;
+    const env = JSON.parse(readFileSync(join(dir, `${ID_EXEC}.json`), "utf-8")) as EventEnvelope;
     expect(env.action).toEqual(freeTime);
   });
 });
