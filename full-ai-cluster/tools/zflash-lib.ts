@@ -30,6 +30,12 @@ export function isValidHostname(s: string): boolean {
   return VALID_HOSTNAME_REGEX.test(s);
 }
 
+function isPhysicalDevicePath(path: string): boolean {
+  const trimmed = path.trim();
+  const windowsDevicePath = trimmed.replace(/\//g, "\\");
+  return /^\/dev\//.test(trimmed) || /^\\\\\.\\PhysicalDrive\d+(?:\\|$)/i.test(windowsDevicePath);
+}
+
 /**
  * Parse `diskutil list <device>` output to find a FAT/EFI partition.
  *
@@ -210,7 +216,7 @@ export function planFileBackedZflashImage(
   if (outputImagePath.length === 0) {
     return { ok: false, error: "outputImagePath is required" };
   }
-  if (/^\/dev\//.test(outputImagePath)) {
+  if (isPhysicalDevicePath(outputImagePath)) {
     return {
       ok: false,
       error: `outputImagePath must be file-backed, not a device path: ${outputImagePath}`,
@@ -285,7 +291,7 @@ export function planFileBackedZflashImageExecution(
   input: FileBackedZflashImageExecutionPlanInput,
 ): FileBackedZflashImageExecutionPlanResult {
   const plan = input.plan;
-  if (/^\/dev\//.test(plan.outputImagePath.trim())) {
+  if (isPhysicalDevicePath(plan.outputImagePath)) {
     return {
       ok: false,
       error: `outputImagePath must be file-backed, not a device path: ${plan.outputImagePath}`,

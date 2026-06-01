@@ -312,6 +312,20 @@ describe("planFileBackedZflashImage", () => {
     });
   });
 
+  test("refuses Windows raw device output paths", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "\\\\.\\PhysicalDrive0",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "outputImagePath must be file-backed, not a device path: \\\\.\\PhysicalDrive0",
+    });
+  });
+
   test("rejects invalid hostname before planning ESP writes", () => {
     const result = planFileBackedZflashImage({
       espOffsetBytes: 1_048_576,
@@ -467,6 +481,26 @@ describe("planFileBackedZflashImageExecution", () => {
     expect(planFileBackedZflashImageExecution({ plan: planned.value })).toEqual({
       ok: false,
       error: "inlineStagingDirectory is required for content ESP writes",
+    });
+  });
+
+  test("refuses Windows raw device paths before expanding execution steps", () => {
+    const result = planFileBackedZflashImageExecution({
+      plan: {
+        espOffsetBytes: 1_048_576,
+        espWrites: [{ destination: "/zeta-authorized-keys.pub", sourcePath: "fixtures/id_ed25519.pub" }],
+        imageCommand: {
+          command: "qemu-img",
+          args: ["convert", "-f", "raw", "-O", "raw", "a.iso", "\\\\.\\PhysicalDrive0"],
+        },
+        isoPath: "a.iso",
+        outputImagePath: "\\\\.\\PhysicalDrive0",
+      },
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "outputImagePath must be file-backed, not a device path: \\\\.\\PhysicalDrive0",
     });
   });
 

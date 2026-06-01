@@ -56,6 +56,8 @@ test("bun global package detection accepts scoped id or unscoped package name", 
   expect(bunGlobalOutputContainsPackage("@openai/codex@1.2.3", "@openai/codex")).toBe(true);
   expect(bunGlobalOutputContainsPackage("claude-code@1.2.3", "@anthropic-ai/claude-code")).toBe(true);
   expect(bunGlobalOutputContainsPackage("other@1.2.3", "@google/gemini-cli")).toBe(false);
+  expect(bunGlobalOutputContainsPackage("not-claude-code@1.2.3", "@anthropic-ai/claude-code")).toBe(false);
+  expect(bunGlobalOutputContainsPackage("@openai/codex-plus@1.2.3", "@openai/codex")).toBe(false);
 });
 
 // Empirical anchor (Server-Core Docker run #3, 2026-05-30): install.ps1 had an em-dash (—) and

@@ -59,10 +59,18 @@ export function parseAgentCliManifest(text: string): AgentCliManifestEntry[] {
     });
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function bunPackageTokenRegex(packageId: string): RegExp {
+  return new RegExp(`(^|\\s)${escapeRegExp(packageId)}(?:@|\\s|$)`, "m");
+}
+
 /** Pure: bun global output can vary between package id and unscoped package name. */
 export function bunGlobalOutputContainsPackage(output: string, packageId: string): boolean {
   const unscoped = packageId.split("/").at(-1) ?? packageId;
-  return output.includes(packageId) || output.includes(unscoped);
+  return bunPackageTokenRegex(packageId).test(output) || bunPackageTokenRegex(unscoped).test(output);
 }
 
 /** Pure: system-command checks that run in BOTH modes. */
