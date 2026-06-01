@@ -535,6 +535,20 @@ that learns from outcomes while preserving exploration.
 - **lock-in penalty:** consecutive same-hat assignment count remains explicit and
   becomes stronger when confidence is high but outcome diversity is low.
 
+**Checkpoint 2026-06-01: reputation decay and incident retention**
+
+Posterior reputation now accepts an explicit decay policy when projecting
+append-only observations. Old evidence keeps its evidence refs but contributes
+less weight to the posterior, which lowers stale confidence instead of letting
+old success lock an agent into a hat forever. Severe incident-contribution
+observations can retain a configured minimum negative weight under decay, so a
+high-severity incident remains a risk signal until a later review process
+chooses to counterbalance it with durable evidence rather than being erased by
+time alone. RMO candidate materialization now carries review-reversal and
+incident-contribution posteriors into evidence refs, safety-adjusted agent-hat
+reputation, and review-quality scoring, so retained incident evidence changes
+assignment ranking instead of remaining a passive projection.
+
 **Tests and proofs:**
 
 - unit tests for posterior update math;
@@ -580,6 +594,18 @@ this context from `AGENTIC_ORG_WORK_MARKET_QUEUES_JSON` with typed setup
 feedback on malformed input, so an agent can see whether it should claim a
 different shard, wait for review, or escalate stale same-hat work instead of
 staring at an undifferentiated work item.
+
+**Checkpoint 2026-06-01: deterministic same-hat market clearing**
+
+The work-market kernel now includes `planWorkMarketClaims`, a deterministic
+cross-queue planner for same-hat agents. It scores claimable shards by queue
+priority class, SLA urgency, shard priority, agent-hat reputation, current load,
+recent same-hat claims, and required-skill fit, then emits a stable assignment
+plan with at most one shard per agent and no duplicate shard ownership. The
+planner makes the market surface explicit before claim mutation: supervisors and
+foreground agents can see which agent should claim which queue/shard, which
+ready shards remain unassigned, and why the selected assignments were preferred
+without bypassing the existing lease-fenced `claimNextWorkShard` store boundary.
 
 **Algorithms:**
 

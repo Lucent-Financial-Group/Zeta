@@ -24,7 +24,7 @@ composes_with:
   - B-0590
   - B-0770
   - B-0778
-  - B-0959
+  - B-0961
 related_rules:
   - non-coercion-invariant
   - persistence-choice-architecture-for-zeta-ais
@@ -41,7 +41,7 @@ tags:
   - operator-personal-axis-usb-priority-top
   - composes-with-pq-gitcrypt-zflash-integration-b-0884
   - composes-with-symbiotic-self-healing-b-0889
-  - k8s-argocd-health-carved-to-b-0959
+  - k8s-argocd-health-carved-to-b-0961
 ---
 
 ## Operator framing 2026-05-28
@@ -73,7 +73,7 @@ USB/ISO lane should mostly prove:
 - physical hardware testing covers biometric behavior that QEMU cannot model
   honestly.
 
-Full Kubernetes and ArgoCD health is carved out to **B-0959**. B-0891 may keep
+Full Kubernetes and ArgoCD health is carved out to **B-0961**. B-0891 may keep
 a narrow cluster smoke signal for end-to-end confidence, but should not absorb
 the full ArgoCD Application health matrix.
 
@@ -129,7 +129,7 @@ This composes with the trajectory-async-review surface (B-0873) — testing-prog
 - **B-0590** fleet-replication-20-machines — at-scale validation context
 - **B-0770** GL-iNet Comet Pro IP-KVM — for remote USB-boot fleet testing
 - **B-0778** commodity hardware reference + fingerbot — hardware context for cluster tests
-- **B-0959** Kubernetes + ArgoCD kind/k3d integration health tests — separate
+- **B-0961** Kubernetes + ArgoCD kind/k3d integration health tests — separate
   cluster-health proof; this row consumes only a narrow smoke signal from that
   domain
 
