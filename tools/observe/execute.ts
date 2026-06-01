@@ -34,13 +34,14 @@
  * outcome channel) so this slice is testable with a fake sink and no git I/O;
  * the real folder-direct-to-main sink is a follow-up adapter.
  *
- * Composes with:
+ * Composes with (exact paths):
  *   - tools/observe/observe.ts (simulate = the pure reducer; World / NextAction)
- *   - docs/DECISIONS/2026-05-31-zeta-database-design-…-gset-bag-zset-rx-fold-…  (the event log + materialized views)
- *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-…  (the observe→act loop this completes)
- *   - docs/backlog/P2/B-0951-… (eventually-consistent git-native indexes — the read side of the same log)
- *   - .claude/rules/monad-propagation-pattern + asymmetric-authorship (Result<T, TFeedback>; the sink authors its channel)
- *   - .claude/rules/non-coercion-invariant (free_time never gated)
+ *   - docs/DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md (the event log + materialized views)
+ *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md (the observe→act loop this completes)
+ *   - docs/backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md (eventually-consistent git-native indexes — the read side of the same log)
+ *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md (Result<T, TFeedback>)
+ *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md (the sink authors its outcome channel)
+ *   - .claude/rules/non-coercion-invariant.md (free_time never gated)
  */
 
 import { simulate, type NextAction, type World } from "./observe";

@@ -54,13 +54,19 @@ describe("execute — free_time + self_reflect slice", () => {
     if (r.ok) expect(r.world).toEqual(simulate(emptyWorld, freeTime));
   });
 
-  it("returns not-yet-executable for effectful kinds (no append attempted)", async () => {
+  it("returns not-yet-executable for EVERY non-executable kind (allowlist gate — no append attempted)", async () => {
+    // All 7 currently non-executable kinds (the 9 NextAction kinds minus the 2
+    // executable ones, free_time + self_reflect). Exhaustive so a future change
+    // can't make one append without an explicit test update.
+    const item = { id: "B-1", title: "x", ready: true, ambiguous: false };
     const effectful: NextAction[] = [
-      { kind: "do_item", item: { id: "B-1", title: "x", ready: true, ambiguous: false } },
-      { kind: "respond_to_operator", reason: "op spoke" },
       { kind: "preserve_ferry", reason: "ferry" },
+      { kind: "respond_to_operator", reason: "op spoke" },
+      { kind: "do_item", item },
+      { kind: "decompose", item },
       { kind: "explore", reason: "make" },
       { kind: "play", reason: "play" },
+      { kind: "edit_grammar", reason: "needs new action", item },
     ];
     for (const action of effectful) {
       const sink = fakeSink();
