@@ -12,6 +12,7 @@ import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { AGENT_BUS_ROOT, type AgentBusEnvelope } from "./types";
+import type { AgentId } from "../bus/types";
 
 /**
  * Compound cursor `<timestamp>|<id>` — the read position. timestamp alone drops a
@@ -28,8 +29,17 @@ function isReadableEnvelope(v: unknown): v is AgentBusEnvelope {
   return !!e && typeof e === "object" && typeof e.timestamp === "string" && typeof e.id === "string";
 }
 
-/** Parse + schema-validate + compound-cursor-filter + stable-sort envelope JSON strings. */
-function collect(files: Iterable<{ path: string; json: string }>, cursor?: string): AgentBusEnvelope[] {
+/** A subscriber sees envelopes addressed to it or broadcast to `*`; no recipient = all. */
+function matchesRecipient(env: AgentBusEnvelope, recipient?: AgentId): boolean {
+  return recipient === undefined || env.to === recipient || env.to === "*";
+}
+
+/** Parse + schema-validate + recipient-filter + compound-cursor-filter + stable-sort. */
+function collect(
+  files: Iterable<{ path: string; json: string }>,
+  cursor?: string,
+  recipient?: AgentId,
+): AgentBusEnvelope[] {
   const envs: AgentBusEnvelope[] = [];
   for (const { path, json } of files) {
     let parsed: unknown;
@@ -43,6 +53,7 @@ function collect(files: Iterable<{ path: string; json: string }>, cursor?: strin
       console.warn(`agent-bus: skipping schema-invalid envelope (missing timestamp/id) ${path}`);
       continue;
     }
+    if (!matchesRecipient(parsed, recipient)) continue;
     if (cursor === undefined || envelopeCursor(parsed) > cursor) envs.push(parsed);
   }
   envs.sort((a, b) => envelopeCursor(a).localeCompare(envelopeCursor(b)));
@@ -67,10 +78,15 @@ function walkJson(dir: string): string[] {
  * Malformed + schema-invalid files skipped (best-effort; one bad envelope must not
  * break the read for everyone).
  */
-export function readEnvelopesSince(root: string = AGENT_BUS_ROOT, cursor?: string): AgentBusEnvelope[] {
+export function readEnvelopesSince(
+  root: string = AGENT_BUS_ROOT,
+  cursor?: string,
+  recipient?: AgentId,
+): AgentBusEnvelope[] {
   return collect(
     walkJson(root).map((path) => ({ path, json: readFileSync(path, "utf-8") })),
     cursor,
+    recipient,
   );
 }
 
@@ -79,7 +95,12 @@ export function readEnvelopesSince(root: string = AGENT_BUS_ROOT, cursor?: strin
  * the cross-machine-correct read (the working tree may be on a feature branch / stale).
  * Uses `git ls-tree` + `git show`; same schema-validate + compound-cursor filter + sort.
  */
-export function readEnvelopesFromGitRef(ref: string, root: string = AGENT_BUS_ROOT, cursor?: string): AgentBusEnvelope[] {
+export function readEnvelopesFromGitRef(
+  ref: string,
+  root: string = AGENT_BUS_ROOT,
+  cursor?: string,
+  recipient?: AgentId,
+): AgentBusEnvelope[] {
   let listing: string;
   try {
     listing = execFileSync("git", ["ls-tree", "-r", "--name-only", ref, "--", root], { encoding: "utf-8" });
@@ -90,6 +111,7 @@ export function readEnvelopesFromGitRef(ref: string, root: string = AGENT_BUS_RO
   return collect(
     paths.map((path) => ({ path, json: execFileSync("git", ["show", `${ref}:${path}`], { encoding: "utf-8" }) })),
     cursor,
+    recipient,
   );
 }
 
@@ -99,17 +121,22 @@ export function nextCursor(envs: readonly AgentBusEnvelope[], prior?: string): s
 }
 
 if (import.meta.main) {
-  // usage: bun tools/agent-bus/subscribe.ts [cursor] [--no-fetch]
+  // usage: bun tools/agent-bus/subscribe.ts [cursor] [--for <agentId>] [--no-fetch]
   // cursor = "<timestamp>|<id>" from a prior run (or a bare ISO timestamp as a lower bound).
+  // --for <agentId> returns only envelopes addressed to that agent or broadcast to `*`.
+  const args = process.argv.slice(2);
   const ref = "origin/main";
-  if (!process.argv.includes("--no-fetch")) {
+  if (!args.includes("--no-fetch")) {
     try {
       execFileSync("git", ["fetch", "origin", "main"], { stdio: "inherit" });
     } catch {
       console.warn("agent-bus: git fetch failed (offline?) — reading last-known origin/main");
     }
   }
-  const cursor = process.argv.slice(2).find((a) => !a.startsWith("--"));
-  const envs = readEnvelopesFromGitRef(ref, AGENT_BUS_ROOT, cursor);
+  const forIdx = args.indexOf("--for");
+  const recipient = forIdx >= 0 ? (args[forIdx + 1] as AgentId) : undefined;
+  // positional cursor = first non-flag arg that isn't the --for value
+  const cursor = args.find((a, i) => !a.startsWith("--") && i !== forIdx + 1);
+  const envs = readEnvelopesFromGitRef(ref, AGENT_BUS_ROOT, cursor, recipient);
   console.log(JSON.stringify({ count: envs.length, cursor: nextCursor(envs, cursor), envelopes: envs }, null, 2));
 }

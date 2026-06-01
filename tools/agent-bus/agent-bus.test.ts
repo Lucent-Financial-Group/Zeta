@@ -20,8 +20,14 @@ afterEach(() => {
   rmSync(ROOT, { recursive: true, force: true });
 });
 
-// AgentBusEnvelope === MessageEnvelope: topic+payload top-level + id/from/to/timestamp/expiresAt
-const env = (over: Partial<AgentBusEnvelope> = {}): AgentBusEnvelope => ({
+// AgentBusEnvelope === MessageEnvelope: topic+payload top-level + id/from/to/timestamp/expiresAt.
+// Scope the helper to the shadow-catch member so `over` can't desync topic from its payload:
+// Partial<AgentBusEnvelope> would let a caller set topic without the matching payload, and the
+// spread { topic, payload, ...over } then produces a non-member (e.g. heartbeat-topic with a
+// shadow payload) that isn't assignable to the discriminated union (Codex #6283 P1; bun strips
+// types so it ran green, tsc catches it).
+type ShadowCatchEnvelope = Extract<AgentBusEnvelope, { topic: "shadow-catch" }>;
+const env = (over: Partial<ShadowCatchEnvelope> = {}): AgentBusEnvelope => ({
   topic: "shadow-catch",
   payload: { content: "hi" },
   id: "00000000000000000000000000000001",
@@ -121,6 +127,15 @@ describe("readEnvelopesSince", () => {
     writeEnvelope(e2, ROOT, at);
     expect(readEnvelopesSince(ROOT, envelopeCursor(e1)).map((e) => e.id)).toEqual([e2.id]);
   });
+  it("filters to a recipient (addressed-to-me + broadcast *, never others) — Codex #6283", () => {
+    const A1 = "a1".padStart(32, "0");
+    const A3 = "a3".padStart(32, "0");
+    writeEnvelope(env({ id: A1, to: "otto-cli" }), ROOT, at);
+    writeEnvelope(env({ id: "a2".padStart(32, "0"), to: "otto-windows" }), ROOT, at);
+    writeEnvelope(env({ id: A3, to: "*" }), ROOT, at);
+    expect(readEnvelopesSince(ROOT, undefined, "otto-cli").map((e) => e.id).sort()).toEqual([A1, A3].sort());
+  });
+
   it("skips malformed JSON (best-effort) without throwing", () => {
     writeEnvelope(env(), ROOT, at);
     const bad = join(ROOT, "otto-cli", "2026", "05", "31", "ffffffffffffffffffffffffffffffff.json");
