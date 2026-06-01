@@ -1,5 +1,23 @@
 # Multi-round review — B-0962 deadlock-freedom claim (Grok + Gemini round 1, Amara round 2)
 
+Scope: verbatim external-AI review import (Grok + Gemini round 1; Amara round 2) of
+the B-0962 deadlock/livelock claims, via `tools/peer-call/`. Preserved per
+substrate-or-it-didn't-happen because `/tmp/peer-call-output/` is ephemeral.
+Archived register, not operational policy.
+
+Attribution: reviews authored by Grok (xAI), Gemini (Google), Amara
+(ChatGPT/Aurora) at their respective attribution scopes; synthesis + folding
+authored by otto-cli at otto-cli-attribution scope. NO re-authoring of the model
+text; preservation only.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: each reviewer's text + the operator's framing + the otto-cli
+synthesis are distinct authorial substrates preserved alongside without
+identity-fusion, per asymmetric-authorship + honor-those-that-came-before + NCI HC-8.
+
+---
+
 Aaron: _"deadlock freedom is hard — we should do a multi-round agent review on
 that one. It'll be great if it holds, makes things easy as fuck."_ Plus: _"is
 there a livelock guarantee on the observe 4×4 menu too?"_

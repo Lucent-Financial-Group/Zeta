@@ -4,6 +4,7 @@ title: Phase 1 — typed Claim/Lock coordination events (optimistic CAS: mechani
 status: open
 priority: P2
 created: 2026-06-01
+last_updated: 2026-06-01
 author: otto-cli
 composes_with:
   - B-0961 # taxonomy gap-analysis — this IS its Phase 1 (typed events under existing categories)
@@ -145,10 +146,38 @@ observed state)`, re-derived each tick. A CAS loser, **once the winner's
 **Net (honest):** the menu **breaks lockstep livelock** (symmetry-breaking via
 state-fold) and gives **lock-free selection under fair-retry + fresh-state +
 visible-reservation**; it does **not** prove completion-lock-freedom or per-agent
-wait-freedom. That's still a real win — much of "easy-as-fuck" survives — but it's
+wait-freedom — those are **formally proven (F# model first, then extended to git)
+in [B-0963](B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)**.
+That's still a real win — much of "easy-as-fuck" survives — but it's
 a symmetry breaker, not a fairness theorem. Composes with the framework's
 lock-free/wait-free always-active disciplines (`dv2-data-split`) as the _selection_
 layer, with fairness left explicit-if-needed.
+
+### §3.1 Physics RHYME (operator 2026-06-01 — marked rhyme, not derivation)
+
+The menu's symmetry-break **rhymes with spontaneous symmetry breaking (SSB)** —
+operator-authorized to record _as a rhyme_, not a theorem-transfer (per
+`grep-substrate-anchors-before-razor` + "rhymes ≠ derivation"):
+
+| SSB ingredient                                 | The menu                                                  |
+| ---------------------------------------------- | --------------------------------------------------------- |
+| symmetric laws                                 | the protocol privileges no agent                          |
+| degenerate equivalent ground states            | "A wins" ≅ "B wins" (same value, relabeled)               |
+| a microscopic fluctuation lifts the degeneracy | **CAS-race timing jitter** decides who hits the ref first |
+| amplified to macroscopic asymmetry             | the winner **locks in** the resource                      |
+
+So **livelock IS the system stuck in the unbroken symmetric state**; progress
+_requires_ the symmetry to break. Two ways, both fine:
+
+- **Spontaneous-like** — let the **CAS race** decide (intrinsic timing fluctuation;
+  zero added machinery).
+- **Explicit** — **inject jitter / randomness**, which operator confirms is fine
+  **especially for fairness** (the explicit symmetry-breaking term is the fairness
+  knob; use it when starvation needs breaking).
+
+Boundary: SSB proper is ground-states/order-parameters/Goldstone machinery we are
+**not** invoking — this is a structural rhyme that names _why_ the menu needs the
+break (the symmetric state is the livelock), not a physics derivation.
 
 ## §4 The typed event shapes (Phase 1 — payloads under existing `Bus(6)`)
 
