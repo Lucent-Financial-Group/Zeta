@@ -56,9 +56,21 @@ function gitPushEnvelope(path: string, from: SenderAgentId, topic: string): void
   if (branch !== "main") {
     throw new Error(`agent-bus publish must run on a main checkout (on '${branch}'); use a bus worktree on main`);
   }
+  // Refuse if local main is ahead of origin/main: `git push HEAD:main` would shove those
+  // unrelated local commits straight to main alongside the envelope (Codex #6283 P1).
+  // Fetch first so the comparison is against fresh origin/main, then require 0 ahead.
+  execFileSync("git", ["fetch", "origin", "main"], opts);
+  const ahead = execFileSync("git", ["rev-list", "--count", "origin/main..HEAD"], { encoding: "utf-8" }).trim();
+  if (ahead !== "0") {
+    throw new Error(
+      `agent-bus publish: local main is ${ahead} commit(s) ahead of origin/main; reconcile before publishing (refusing to push unrelated commits to main)`,
+    );
+  }
   execFileSync("git", ["add", path], opts);
   // --no-verify: bus envelopes are DATA, not code — skip code hooks.
-  execFileSync("git", ["commit", "--no-verify", "-q", "-m", `bus(${from}): ${topic} ${path}`], opts);
+  // Pathspec `-- path` commits ONLY the envelope, never pre-staged work already in the
+  // checkout (Codex #6283 P2 — a direct-to-main --no-verify commit must not sweep it in).
+  execFileSync("git", ["commit", "--no-verify", "-q", "-m", `bus(${from}): ${topic} ${path}`, "--", path], opts);
   // Explicit target: a concurrent peer advancing main rejects this push non-fast-forward,
   // but disjoint ZetaId files (G-Set CRDT) never conflict -> pull --rebase + retry.
   for (let attempt = 0; attempt < 3; attempt++) {
