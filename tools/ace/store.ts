@@ -277,3 +277,26 @@ export function loadRegistry(bundledPath: string = bundledRegistryPath(), userPa
   merge(readRegistryFile(userPath));
   return m;
 }
+
+/** bundled ∪ user flattened to rows; user overrides bundled on (name, version); each row carries source. */
+export function listRegistry(
+  bundledPath: string = bundledRegistryPath(), userPath: string = registryPath(),
+): Array<{ name: string; version: string; url: string; source: "bundled" | "user" }> {
+  const idx = new Map<string, number>(); // "name@version" → row index (for override)
+  const rows: Array<{ name: string; version: string; url: string; source: "bundled" | "user" }> = [];
+  const add = (src: Record<string, Record<string, RegistryEntry>>, source: "bundled" | "user"): void => {
+    for (const [name, versions] of Object.entries(src)) {
+      if (typeof versions !== "object" || versions === null) continue;
+      for (const [version, entry] of Object.entries(versions)) {
+        if (!entry || typeof entry.url !== "string" || typeof entry.package_hash !== "string") continue;
+        const key = `${name}@${version}`;
+        const row = { name, version, url: entry.url, source };
+        const prior = idx.get(key);
+        if (prior !== undefined) rows[prior] = row; else { idx.set(key, rows.length); rows.push(row); }
+      }
+    }
+  };
+  add(readRegistryFile(bundledPath), "bundled");
+  add(readRegistryFile(userPath), "user");
+  return rows;
+}

@@ -3,7 +3,7 @@ import { mkdtempSync, existsSync, readFileSync, statSync, writeFileSync, chmodSy
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
-import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath, bundledRegistryPath, registryPath, loadRegistry } from "./store.ts";
+import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath, bundledRegistryPath, registryPath, loadRegistry, listRegistry } from "./store.ts";
 
 describe("contentHash", () => {
   test("sha256 of known bytes matches the sha256:<hex> form", () => {
@@ -250,5 +250,35 @@ describe("registry paths + empty load", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
     const m = loadRegistry(join(dir, "b.json"), join(dir, "u.json"));
     expect(m.size).toBe(0);
+  });
+});
+
+describe("registry load + list", () => {
+  test("loadRegistry unions bundled+user; user overrides on (name,version)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
+    const b = join(dir, "b.json"); const u = join(dir, "u.json");
+    writeFileSync(b, JSON.stringify({ libfoo: { "1.0.0": { url: "B", package_hash: "sha256:b" } } }));
+    writeFileSync(u, JSON.stringify({ libfoo: { "1.0.0": { url: "U", package_hash: "sha256:u" }, "2.0.0": { url: "U2", package_hash: "sha256:u2" } } }));
+    const m = loadRegistry(b, u);
+    expect(m.get("libfoo")?.get("1.0.0")?.url).toBe("U");
+    expect(m.get("libfoo")?.get("2.0.0")?.url).toBe("U2");
+  });
+  test("loadRegistry skips malformed entries (not fatal)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
+    const u = join(dir, "u.json");
+    writeFileSync(u, JSON.stringify({ libfoo: { "1.0.0": { url: "U" } }, libbar: "nope" }));
+    const m = loadRegistry(join(dir, "missing.json"), u);
+    expect(m.get("libfoo")?.has("1.0.0")).toBe(false);
+    expect(m.has("libbar")).toBe(false);
+  });
+  test("listRegistry reports source per entry, user overriding bundled", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
+    const b = join(dir, "b.json"); const u = join(dir, "u.json");
+    writeFileSync(b, JSON.stringify({ a: { "1.0.0": { url: "B", package_hash: "sha256:b" } } }));
+    writeFileSync(u, JSON.stringify({ a: { "1.0.0": { url: "U", package_hash: "sha256:u" } } }));
+    const rows = listRegistry(b, u);
+    const row = rows.find((r) => r.name === "a" && r.version === "1.0.0");
+    expect(row?.source).toBe("user");
+    expect(row?.url).toBe("U");
   });
 });
