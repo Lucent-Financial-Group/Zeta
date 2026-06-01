@@ -2,7 +2,7 @@
 
 - **Date:** 2026-06-01
 - **Slice:** 4 (dependency resolution)
-- **Status:** approved (Aaron 2026-06-01) — spec for implementation
+- **Status:** approved (the human maintainer 2026-06-01) — spec for implementation
 - **Builds on:** slice 1 (content-addressed store), slice 2 (content-hash integrity), slice 3 (Ed25519 authenticity)
 - **Agenda:** `docs/agendas/ace-package-manager/AGENDA.md` (lifecycle stages distribute → discover → verify → grow)
 - **Backlog:** B-0288
@@ -156,7 +156,7 @@ the root — `fetch(url).text()` for http(s), `readFileSync` for a path.
   - `version-skew: D required at 1.0 (via root → A) and 2.0 (via root → B) — align on one version`
   - `cycle: root → A → B → A`
   - `pin-mismatch: root → A expected D content_hash sha256:abc… but fetched sha256:def…`
-  - `untrusted-key: root → A → D signed by ed25519:… which is not trusted — ace trust add the key`
+  - `untrusted-key: root → A → D signed by ed25519:… which is not trusted — run: ace trust add <pub-file-or-b64>`
 - Exit codes unchanged: `0` ok · `64` usage · `65` invalid package JSON · `1` refused (any resolution/verification failure).
 
 ## Out of scope (explicit)
