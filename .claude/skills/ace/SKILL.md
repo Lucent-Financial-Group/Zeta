@@ -1,6 +1,6 @@
 ---
 name: ace
-description: Ace DLC package manager — list/install/verify content-addressed packages from the local ~/.ace store. install verifies content-hash integrity (authenticity/signatures are slice 3). Run via bun; Node-floor portable.
+description: Ace DLC package manager — list/install/verify content-addressed packages in ~/.ace store. Run via bun.
 record_source: "B-0288 + ace-package-manager agenda; distribution per 2026-06-01 design"
 load_datetime: "2026-06-01"
 last_updated: "2026-06-01"

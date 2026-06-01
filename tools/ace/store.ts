@@ -97,11 +97,18 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   // when a bad path is not the first entry.) Reject any '..' component (POSIX `../` or Windows
   // `..\`) or absolute path (leading '/' or '\').
   //
-  // NOTE (slice-3 hardening — on the map per the shield rule, not silently skipped): Windows
-  // device names (CON/NUL/PRN/AUX/COM1…) and drive-relative paths (`C:foo`) are NOT rejected
-  // here. They cannot escape `<storePath>/<hash>/` — `path.join` embeds them as subpaths — but
-  // a malicious package could still target a Windows device sink. Out of scope for this
-  // integrity-only MVP; tracked for the authenticity/robustness slice.
+  // NOTE (slice-3 hardening — on the map per the shield rule, NOT silenced):
+  //   (a) PATH: Windows device names (CON/NUL/PRN/AUX/COM1…) and drive-relative paths
+  //       (`C:foo`) are NOT rejected here. They cannot escape `<storePath>/<hash>/` —
+  //       `path.join` embeds them as subpaths — but a malicious package could still target a
+  //       Windows device sink.
+  //   (b) CONTENT/SOURCE: the `install <url>` verb fetches package bytes over HTTP and writes
+  //       them here (CodeQL js/http-to-file-access, accepted). The write is confined to
+  //       `<storePath>/<hash>/` (path guard above) and the bytes are integrity-checked against
+  //       the manifest hash — but the manifest ships WITH the download, so integrity alone does
+  //       not defend against a malicious *source*. Authenticity (signature over a trusted key)
+  //       is the defense, and is explicitly the authenticity/robustness slice (slice 3). The
+  //       alert stays open until then rather than being suppressed.
   for (const rel of Object.keys(pkg.files)) {
     if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\")) {
       return { ok: false, error: `unsafe file path in package: ${rel}` };
