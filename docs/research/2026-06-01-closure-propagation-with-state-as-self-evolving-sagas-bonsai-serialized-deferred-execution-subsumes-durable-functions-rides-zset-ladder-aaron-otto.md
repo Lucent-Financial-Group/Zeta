@@ -30,7 +30,7 @@ the name for it is closure-propagation-with-state as self-evolving sagas.**
 | `src/Core/Checkpoint.fs` | Mirrors Reaqtor `IStatefulOperator` (Save/Load at yield points); periodic state-snapshot checkpoint persistence |
 | `docs/PRIOR-ART-LIST.md` | Reaqtor / IQbservable ⭐ — "stateful event-processing"; Bonsai as slim-IR inspiration for persistent queries |
 | elevator-pitch memory (2026-05-12) | "green threads / **durable functions** / Orleans grains"; *"my brain runs on temporal workflows"* |
-| `docs/amara-full-conversation/2025-08-...` | first-class model = "Temporal long-running computational workflows … AWS step functions, or azure durable functions, or dapr workflow … persist/put to sleep workload when they hit an await, reconstituted on another machine when the event makes the await return" |
+| [`docs/amara-full-conversation/2025-08-aaron-amara-conversation.md`](../amara-full-conversation/2025-08-aaron-amara-conversation.md) | first-class model = "Temporal long-running computational workflows … AWS step functions, or azure durable functions, or dapr workflow … persist/put to sleep workload when they hit an await, reconstituted on another machine when the event makes the await return" |
 
 So the want is not new; the **crystallization** is: a single name + the
 Durable-Functions-subsumption argument + the connection to the algebra ladder.
@@ -53,7 +53,7 @@ trees:
 - In production at Microsoft for years powering distributed event processing.
 
 This is exactly the "serialize the deferred execution expression tree" half. The
-other half — **persist the closure state** — is the `Checkpoint.fs` /
+other half — **persist the closure state** — is the `src/Core/Checkpoint.fs` /
 `IStatefulOperator` Save/Load-at-yield half. The two halves together are the
 primitive.
 
@@ -224,7 +224,7 @@ serializing its Rx-expression + its state onto the retraction-native stream.
 | --- | --- |
 | Lifecycle DU (B-0867) | **legal transitions** — compile-time-enforced structure |
 | Bonsai-serialized expr-tree | the pattern in **serialized, runtime-mutable** form |
-| Closure / state capture | the saga's accumulator (`Checkpoint.fs`) |
+| Closure / state capture | the saga's accumulator (`src/Core/Checkpoint.fs`) |
 | Tick stream (agent) | the **carrier** (per-partition + cross-partition mediator) |
 | ℤ retraction | **evolution + compensation** (retract/add a sub-tree) |
 
@@ -244,7 +244,7 @@ adopt it), or **(b) our own** Bonsai-shaped serializer (zero-dep, cross-language
 to match the ladder's TS/F#/C#/Rust oracle discipline; the Bonsai JSON
 `{Context, Expression}` shape is small enough to re-implement + cross-verify with
 golden vectors the same way the algebra ladder does). The closure-state half
-reuses `Checkpoint.fs` (`IStatefulOperator` Save/Load) — already present.
+reuses `src/Core/Checkpoint.fs` (`IStatefulOperator` Save/Load) — already present.
 
 The cross-language tension is the deciding factor: Nuqleon is .NET-only, but the
 ladder's whole value is **four oracles agreeing**. A Bonsai-shaped own-serializer
@@ -273,12 +273,14 @@ This note **does**:
 - surface the sharp connection — it rides the Z-set / IndexedZSet ladder, with
   **retraction as the pattern-evolution operator**;
 - compose it onto the existing substrate (B-0640, rx-expert Bonsai/Reaqtor,
-  `Checkpoint.fs`, PRIOR-ART Reaqtor⭐, the durable-functions elevator pitch, the
+  `src/Core/Checkpoint.fs`, PRIOR-ART Reaqtor⭐, the durable-functions elevator pitch, the
   travelers thread) rather than mint a parallel.
 
 The PRIMITIVE-REGISTRY want-line lands in **this** PR (the Event/reactive line,
 placed clear of #6413's line-49 + footer edits → clean 3-way merge). A B-0640
-status cross-reference + the 4/4-ladder footer note compose once #6413 merges.
+status cross-reference + the 4/4-ladder footer note are composed now that #6413
+has merged — this branch's merge of `origin/main` brought the 4/4 algebra-ladder
+line + footer in, so the registry is internally consistent (4/4 everywhere).
 
 ## Sources
 
