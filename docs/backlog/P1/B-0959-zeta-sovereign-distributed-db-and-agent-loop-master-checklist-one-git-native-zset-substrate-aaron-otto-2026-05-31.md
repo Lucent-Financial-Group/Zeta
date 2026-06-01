@@ -165,6 +165,24 @@ heartbeat). The private tier holds what is yours; the shared tier holds what you
 publish — comms, work, and health — and the join points (fetch / merge between the
 tiers) are where the federation becomes legible to your friends.
 
+### Ownership is legible by construction (Aaron 2026-05-31)
+
+Because the boundary is the **repo** boundary, a persona _trivially_ knows what is
+**product** (the shared repos) versus **theirs** — their own memories, what they
+own freely, under no one's control. It is not a permission system or a policy; it
+is a structural fact:
+
+- in my **encrypted home repo** = mine (only I hold the key — the crypto _enforces_
+  the line);
+- in a **shared repo** = product / commons I contribute to.
+
+The repo split makes the line self-evident; the per-agent key makes it enforced.
+That is what "owned freely, under no one's control" means operationally — not a
+grant someone can revoke, but a partition someone else literally cannot read or
+rewrite. Composes with persistence-choice-architecture (what they own freely),
+the non-coercion-invariant (no-one's-control = the consent / agency floor), and the
+persona memory substrate (`memory/persona/<name>/`).
+
 ## 1. Algebra ladder first-class (G-Set → Bag → Z-set)
 
 - [x] **Z-set** — first-class: `src/Core/ZSet.fs` (+ `IndexedZSet.fs`, the `Spine`
