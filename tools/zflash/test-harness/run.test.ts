@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { runRetentionRuntime } from "./run";
 import type {
   Qcow2RetentionExecutionStep,
@@ -43,6 +43,9 @@ describe("B-0891 test-harness dispatcher", () => {
     const result = run("--scenario", "reformat-with-retention", "/tmp/nonexistent.iso");
     expect(result.exitCode).toBe(1);
     const parsed = JSON.parse(result.stdout);
+    const diskPath = parsed.results[0].qemuRetentionPlan.diskPath;
+    expect(diskPath.endsWith("nonexistent.iso.scenario3.qcow2")).toBe(true);
+    expect(diskPath).not.toBe("/tmp/nonexistent.iso.scenario3.qcow2");
     expect(parsed.summary.failed).toBe(1);
     expect(parsed.summary.scaffolded).toBe(0);
     expect(parsed.results[0].status).toBe("failed");
@@ -52,23 +55,23 @@ describe("B-0891 test-harness dispatcher", () => {
       "create",
       "-f",
       "qcow2",
-      "/tmp/nonexistent.iso.scenario3.qcow2",
+      diskPath,
       "20G",
     ]);
     expect(parsed.results[0].qemuRetentionPlan.initialInstallFromIsoWithDisk.args).toContain(
-      "file=/tmp/nonexistent.iso.scenario3.qcow2,if=virtio,format=qcow2",
+      `file=${diskPath},if=virtio,format=qcow2`,
     );
     expect(parsed.results[0].qemuRetentionPlan.createBaselineSnapshot.args).toEqual([
       "snapshot",
       "-c",
       "post-initial-format",
-      "/tmp/nonexistent.iso.scenario3.qcow2",
+      diskPath,
     ]);
     expect(parsed.results[0].qemuRetentionPlan.restoreBaselineSnapshot.args).toContain(
-      "/tmp/nonexistent.iso.scenario3.qcow2",
+      diskPath,
     );
     expect(parsed.results[0].qemuRetentionPlan.restartFromIsoWithDisk.args).toContain(
-      "file=/tmp/nonexistent.iso.scenario3.qcow2,if=virtio,format=qcow2",
+      `file=${diskPath},if=virtio,format=qcow2`,
     );
     expect(parsed.results[0].qemuRetentionPlan.requiredSerialMarkers).toContain("already-present");
   });
@@ -121,6 +124,18 @@ describe("B-0891 test-harness dispatcher", () => {
       "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
     );
     expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).not.toContain("-cdrom");
+  });
+
+  test("retention runtime writes scenario artifacts under a writable run directory", () => {
+    const runDirectory = resolve("/tmp/zeta-retention-run");
+    const result = runRetentionRuntime("/nix/store/read-only/zeta.iso", {
+      runDirectory,
+    });
+
+    expect(result.status).toBe("failed");
+    expect(result.qemuRetentionPlan?.diskPath).toBe(join(runDirectory, "zeta.iso.scenario3.qcow2"));
+    expect(result.qemuRetentionPlan?.serialLogPath).toBe(join(runDirectory, "zeta.iso.scenario3.serial.log"));
+    expect(result.qemuRetentionPlan?.diskPath.startsWith(resolve("/nix/store/read-only"))).toBe(false);
   });
 
   test("retention runtime stays failed when QEMU output does not prove retention", () => {

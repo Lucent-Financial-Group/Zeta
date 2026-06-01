@@ -43,8 +43,9 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdirSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { basename, join, resolve } from "node:path";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
 import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
 import {
@@ -81,12 +82,14 @@ export interface RetentionRuntimeOptions {
   readonly timeoutMs?: number;
   readonly kvmAvailable?: boolean;
   readonly bootImagePath?: string;
+  readonly runDirectory?: string;
 }
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const RETENTION_EXECUTION_ENV = "ZFLASH_QEMU_RETENTION_EXECUTE";
 const RETENTION_TIMEOUT_ENV = "ZFLASH_QEMU_RETENTION_TIMEOUT_MS";
 const RETENTION_BOOT_IMAGE_ENV = "ZFLASH_QEMU_RETENTION_BOOT_IMAGE";
+const RETENTION_RUN_DIRECTORY_ENV = "ZFLASH_QEMU_RETENTION_RUN_DIR";
 const KVM_PATH = "/dev/kvm";
 
 function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
@@ -263,19 +266,53 @@ function retentionBootImagePathFromEnv(): string | undefined {
   return resolve(raw);
 }
 
+function prepareRetentionRunDirectory(option: string | undefined): { ok: string } | { error: string } {
+  const raw = option ?? process.env[RETENTION_RUN_DIRECTORY_ENV];
+  try {
+    if (raw !== undefined && raw.trim().length > 0) {
+      const runDirectory = resolve(raw);
+      mkdirSync(runDirectory, { recursive: true });
+      return { ok: runDirectory };
+    }
+    return { ok: mkdtempSync(join(tmpdir(), "zeta-zflash-retention-")) };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
+  readonly diskPath: string;
+  readonly serialLogPath: string;
+} {
+  const artifactStem = basename(absIsoPath);
+  return {
+    diskPath: join(runDirectory, `${artifactStem}.scenario3.qcow2`),
+    serialLogPath: join(runDirectory, `${artifactStem}.scenario3.serial.log`),
+  };
+}
+
 export function runRetentionRuntime(
   isoPath: string,
   options: RetentionRuntimeOptions = {},
 ): ScenarioResult {
   const absIsoPath = resolve(isoPath);
+  const runDirectory = prepareRetentionRunDirectory(options.runDirectory);
+  if ("error" in runDirectory) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: `could not prepare QEMU retention run directory: ${runDirectory.error}`,
+    };
+  }
   const bootImagePath = options.bootImagePath === undefined
     ? retentionBootImagePathFromEnv()
     : resolve(options.bootImagePath);
+  const artifacts = retentionArtifactPaths(absIsoPath, runDirectory.ok);
   const planned = planQcow2SnapshotRetention({
     isoPath: absIsoPath,
     ...(bootImagePath === undefined ? {} : { bootImagePath }),
-    diskPath: `${absIsoPath}.scenario3.qcow2`,
-    serialLogPath: `${absIsoPath}.scenario3.serial.log`,
+    diskPath: artifacts.diskPath,
+    serialLogPath: artifacts.serialLogPath,
     snapshotName: "post-initial-format",
     kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
   });

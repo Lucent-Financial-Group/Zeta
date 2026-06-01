@@ -78,9 +78,11 @@ ZFLASH_QEMU_RETENTION_EXECUTE=1 \
   bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention <iso-path>
 ```
 
-The positional ISO path still names the run artifacts (`*.scenario3.qcow2`
-and `*.scenario3.serial.log`); the boot-image env var supplies the actual
-USB-shaped boot media so QEMU can observe the zflash-baked ESP contents.
+The positional ISO path names the artifact stem only. Scenario-3 writes its
+qcow2 disk and serial log under a writable temporary run directory by
+default, or under `ZFLASH_QEMU_RETENTION_RUN_DIR` when that override is set.
+The boot-image env var supplies the actual USB-shaped boot media so QEMU can
+observe the zflash-baked ESP contents.
 
 The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence:
 create the qcow2 disk, boot the ISO once to establish the baseline disk,
