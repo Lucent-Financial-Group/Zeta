@@ -90,13 +90,23 @@ subset):
 
 1. Accumulate constraints per package name. The root's edges seed them; inline edges
    contribute a fixed exact constraint (`=x.y.z`); registry edges contribute their range.
-2. For an unassigned package, intersect all its accumulated ranges and take
-   `maxSatisfying(registry versions for that name, intersected range)`. No candidate →
-   **backtrack** to the most-recent decision that narrowed this package and try its next
-   lower version; exhausted → `unsatisfiable` with the conflicting constraint path.
+2. When a constraint is added for a package, intersect ALL its accumulated ranges.
+   - **Unassigned** → take `maxSatisfying(registry versions for that name, intersected
+     range)`; no candidate → **backtrack** (try the next-lower version of the most-recent
+     decision that narrowed this package); exhausted → `unsatisfiable` with the
+     conflicting constraint path.
+   - **Already assigned** → **re-validate**: the current concrete version MUST still
+     satisfy the new intersected range. If a transitive dep narrows the range below the
+     earlier newest-first pick (root wants `A >=1.0.0`, picks `A@1.9.0`; then `B@1.0.0`
+     is fetched requiring `A <1.6.0`), the assignment is now invalid → **conflict** →
+     backtrack to the decision that caused it (lower the violating package's version, or
+     re-decide `A` within the tighter range) and re-solve. Re-validation on **every** new
+     constraint — not only at first assignment — is the load-bearing correctness rule
+     (P1 review finding, Codex 2026-06-01).
 3. Fetch the chosen version (to read its transitive deps), add its edges as new
-   constraints, recurse. Cache fetched manifests within a single `solve` run so a
-   package version is fetched at most once during solving.
+   constraints (each addition triggers the step-2 intersect + re-validate for any
+   already-assigned name), recurse. Cache fetched manifests within a single `solve` run
+   so a package version is fetched at most once during solving.
 4. Determinism: candidates always tried newest-first; package visitation order is
    stable (sorted by name) so a given (root, registry) always yields the same solution
    — DST-compatible.
@@ -116,6 +126,7 @@ unchanged:
 if (edge.kind === "registry") {
   const concrete = solved.get(edge.name);
   if (concrete === undefined) return { ok:false, reason:"unsatisfiable", detail:`${edge.name}: no solved version`, path: here };
+  if (!satisfies(concrete, edge.version)) return { ok:false, reason:"unsatisfiable", detail:`${edge.name}: solved ${concrete} violates ${edge.version}`, path: here }; // defense-in-depth: never blindly trust the solver map
   const entry = registry.get(edge.name)?.get(concrete);
   if (entry === undefined) return { ok:false, reason:"registry-miss", detail:`${edge.name}@${concrete} not in registry`, path: here };
   url = entry.url; package_hash = entry.package_hash;
@@ -123,9 +134,13 @@ if (edge.kind === "registry") {
 }
 ```
 
-Because the solver guarantees one concrete version per name across the whole graph, the
-existing `version-skew` check becomes a safety net (it can only fire if the solver and
-resolver disagree — a bug). Inline edges are untouched (exact + self-pinned).
+`resolve()` imports `satisfies` from `semver.ts` and **re-checks the solved concrete
+version against the edge's declared range** (the `if (!satisfies(...))` guard above) —
+defense-in-depth so a solver bug can never install a version that violates a declared
+range (per the Codex P1 review finding 2026-06-01). Because the solver also guarantees
+one concrete version per name across the whole graph, the existing `version-skew` check
+becomes a further safety net (it can only fire if solver and resolver disagree). Inline
+edges are untouched (exact + self-pinned).
 
 **New `ResolveReason`s:** `unsatisfiable`, `bad-range`. (Exact inline edges keep
 `version-skew`; ranged edges can't skew once solved.)
@@ -149,9 +164,14 @@ resolver disagree — a bug). Inline edges are untouched (exact + self-pinned).
   maximize-newest objective) and assert our solver's assignment matches a Z3 model
   (or both agree it is unsatisfiable). This tests our TS solver end-to-end. `z3-solver`
   is a WASM devDep so it is always present in CI → **asserts**, no graceful-skip hole.
-- Own unit tests: `^`/`~` desugaring table, AND-range intersection, wildcard, backtrack
-  cases (version-dependent transitive deps that force a lower pick), `unsatisfiable`,
-  `bad-range`, mixed inline+registry, determinism (same input → same solution).
+- Own unit tests: `^`/`~` desugaring table, AND-range intersection, wildcard,
+  **re-validation/backtrack** (a transitive dep narrows an already-assigned package below
+  the newest-first pick — `A>=1.0.0`→`A@1.9.0`, then `B*`→`B@1.0.0` requires `A<1.6.0`;
+  solver must backtrack to a satisfying `A`), `unsatisfiable`, `bad-range`, mixed
+  inline+registry, determinism (same input → same solution).
+- Resolver defense-in-depth: a (deliberately wrong) solved-map version that violates an
+  edge's range is refused with `unsatisfiable` — the resolver re-checks `satisfies`,
+  never blindly trusts the map.
 - e2e via `main(["install", …])`: install a root with ranged registry deps resolving
   across a multi-package registry; an unsatisfiable graph → exit 1, store empty (atomic).
 
