@@ -3,7 +3,8 @@
 //
 // Usage:
 //   bun tools/ace/ace.ts list [--store <path>] [--json]
-//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution]
+//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>]
+//   bun tools/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]
 //   bun tools/ace/ace.ts verify <hash>
 //   bun tools/ace/ace.ts keygen [--out <prefix>]
 //   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
@@ -304,12 +305,15 @@ function printUsage(): void {
 
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
-  ace install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen] [--lockfile <path>]
+  ace install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>]
                                                    Download/read a package, verify integrity+authenticity, install
                                                    --allow-no-signature only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
                                                    --print-resolution prints the solved name@version graph before installing
                                                    writes ./ace.lock on a normal install; --frozen installs exactly the locked graph (registry-independent)
+                                                   --locked asserts the committed lock is up to date vs a fresh solve, else refuses (CI guard; mutually exclusive with --frozen)
                                                    --lockfile <path> overrides the default lockfile path (default: ace.lock)
+  ace update <url-or-path> [--lockfile <path>] [--allow-no-signature]
+                                                   Re-solve the dependency graph and rewrite the lockfile; installs nothing (lock-only)
   ace verify <hash>                              Confirm an installed package is present
   ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
   ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
