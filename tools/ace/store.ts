@@ -89,6 +89,16 @@ export interface AcePackage {
 
 export type InstallResult = { ok: true; dir: string } | { ok: false; error: string };
 
+/** Returns the first unsafe file path in the package, or null if all paths are safe.
+ *  Unsafe = contains '..', or is absolute (leading '/' or '\\'). Shared by installPackage
+ *  AND the slice-4 graph install preflight so the two never drift. */
+export function validatePackagePaths(pkg: AcePackage): string | null {
+  for (const rel of Object.keys(pkg.files)) {
+    if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\")) return rel;
+  }
+  return null;
+}
+
 /**
  * Verify-before-extract: recompute the content hash of `pkg.files` and refuse to
  * extract unless it matches `pkg.manifest.content_hash` (integrity). Extracts to
@@ -120,10 +130,9 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   //       the signed+trusted path is authenticity-verified, and `--allow-no-signature` is required to
   //       install an unsigned one. The CodeQL js/http-to-file-access alert remains a true
   //       intended-flow observation (the http→file write is the package manager's function).
-  for (const rel of Object.keys(pkg.files)) {
-    if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\")) {
-      return { ok: false, error: `unsafe file path in package: ${rel}` };
-    }
+  const unsafe = validatePackagePaths(pkg);
+  if (unsafe !== null) {
+    return { ok: false, error: `unsafe file path in package: ${unsafe}` };
   }
   const dir = join(storePath, pkg.manifest.content_hash.replace(":", "-"));
   try {

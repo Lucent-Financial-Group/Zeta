@@ -3,7 +3,7 @@ import { mkdtempSync, existsSync, readFileSync, statSync, writeFileSync, chmodSy
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
-import { contentHash, installPackage, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath } from "./store.ts";
+import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath } from "./store.ts";
 
 describe("contentHash", () => {
   test("sha256 of known bytes matches the sha256:<hex> form", () => {
@@ -110,6 +110,18 @@ describe("installPackage", () => {
     };
     const result = installPackage(store, pkg);
     expect(result.ok).toBe(true);
+  });
+});
+
+describe("validatePackagePaths", () => {
+  test("returns null for safe paths", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "ok.txt": "y" } })).toBeNull();
+  });
+  test("returns the offending path for '..' traversal", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "../escape": "y" } })).toBe("../escape");
+  });
+  test("returns the offending path for an absolute path", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "/etc/passwd": "y" } })).toBe("/etc/passwd");
   });
 });
 
