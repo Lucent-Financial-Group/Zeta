@@ -7,9 +7,9 @@ created: 2026-05-31
 attribution: aaron-otto-2026-05-31
 last_updated: 2026-05-31
 decomposition: umbrella
-depends_on:
-  - B-0668
+depends_on: []
 composes_with:
+  - B-0668
   - B-0956
   - B-0646
   - B-0776
