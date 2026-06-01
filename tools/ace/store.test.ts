@@ -123,6 +123,12 @@ describe("validatePackagePaths", () => {
   test("returns the offending path for an absolute path", () => {
     expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "/etc/passwd": "y" } })).toBe("/etc/passwd");
   });
+  test("returns the offending path for a Windows drive-absolute path", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "C:\\Windows\\system.ini": "y" } })).toBe("C:\\Windows\\system.ini");
+  });
+  test("returns the offending path for a Windows drive-relative path", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "C:evil": "y" } })).toBe("C:evil");
+  });
 });
 
 describe("trust store", () => {

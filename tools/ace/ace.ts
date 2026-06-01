@@ -359,7 +359,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (parsed.command === "install") {
     let raw: string;
     try {
-      raw = parsed.source.startsWith("http")
+      raw = parsed.source.startsWith("http://") || parsed.source.startsWith("https://")
         ? await (await fetch(parsed.source)).text()
         : readFileSync(parsed.source, "utf8");
     } catch (e) {
@@ -399,8 +399,14 @@ export async function main(argv: readonly string[]): Promise<number> {
 
     // SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
     if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+      // Verify root content_hash BEFORE resolving (no wasted graph fetch on a bad root).
+      const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
+      if (rootFilesHash !== pkg.manifest.content_hash) {
+        console.error(`ace: install refused: bad-content-hash in ${pkg.manifest.name} (root)`);
+        return 1;
+      }
       const fetchPackage = async (u: string): Promise<string> =>
-        u.startsWith("http") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+        (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
       const res = await resolve(pkg, fetchPackage, loadTrustStore(), { allowNoSignature: parsed.allowNoSignature });
       if (!res.ok) {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
@@ -456,7 +462,7 @@ export async function main(argv: readonly string[]): Promise<number> {
 
 if (import.meta.main) {
   // .catch() closes the unhandled-promise surface from the async main(): an unexpected throw
-  // inside an await exits 1 with a diagnostic instead of an UnhandledPromiseRejection.
+  // inside an async main() exits 1 with a diagnostic instead of an UnhandledPromiseRejection.
   main(process.argv.slice(2))
     .then((c) => process.exit(c))
     .catch((e) => {

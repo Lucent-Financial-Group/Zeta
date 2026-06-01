@@ -174,4 +174,14 @@ describe("resolve — invalid package", () => {
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("invalid-package");
   });
+  test("dep with non-array dependencies refuses invalid-package (no throw)", async () => {
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: pkgOf("D", { "d.txt": "d" }), url: "http://e/D" }]);
+    const D = pkgOf("D", { "d.txt": "d" });
+    const badDep: any = { manifest: { ...D.manifest, dependencies: {} }, files: D.files }; // dependencies present but not an array
+    // point the root edge's package_hash at badDep so it passes the pin check and reaches the dependencies access
+    (root.manifest.dependencies as any)[0] = { name: "D", version: "1.0.0", url: "http://e/D", package_hash: packageHash(badDep) };
+    const r = await resolve(root, fetchOf({ "http://e/D": badDep }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
 });

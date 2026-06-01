@@ -90,11 +90,12 @@ export interface AcePackage {
 export type InstallResult = { ok: true; dir: string } | { ok: false; error: string };
 
 /** Returns the first unsafe file path in the package, or null if all paths are safe.
- *  Unsafe = contains '..', or is absolute (leading '/' or '\\'). Shared by installPackage
- *  AND the slice-4 graph install preflight so the two never drift. */
+ *  Unsafe = contains '..', or is absolute (leading '/' or '\\'), or is a Windows drive
+ *  path (drive-absolute like 'C:\...' or drive-relative like 'C:foo'). Shared by
+ *  installPackage AND the slice-4 graph install preflight so the two never drift. */
 export function validatePackagePaths(pkg: AcePackage): string | null {
   for (const rel of Object.keys(pkg.files)) {
-    if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\")) return rel;
+    if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\") || /^[A-Za-z]:/.test(rel)) return rel;
   }
   return null;
 }
@@ -115,13 +116,14 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   // traversal-blocked install refuses ATOMICALLY (extracts nothing) — the same guarantee a
   // hash mismatch gives. (Validating inside the write loop would leave a partial dir on disk
   // when a bad path is not the first entry.) Reject any '..' component (POSIX `../` or Windows
-  // `..\`) or absolute path (leading '/' or '\').
+  // `..\`) or absolute path (leading '/' or '\') or Windows drive path ('C:\...' or 'C:foo').
+  //
+  // NOTE (slice-4 hardening):
+  //   Windows drive paths (C:\Windows\... and C:foo) are now rejected here. On Windows,
+  //   path.join(store, "C:\\x") discards the store prefix, enabling an escape from the store
+  //   directory. The /^[A-Za-z]:/ regex catches both drive-absolute and drive-relative forms.
   //
   // NOTE (slice-3 hardening):
-  //   (a) PATH: Windows device names (CON/NUL/PRN/AUX/COM1…) and drive-relative paths
-  //       (`C:foo`) are NOT rejected here. They cannot escape `<storePath>/<hash>/` —
-  //       `path.join` embeds them as subpaths — but a malicious package could still target a
-  //       Windows device sink.
   //   (b) CONTENT/SOURCE: the `install <url>` verb fetches package bytes over HTTP and writes
   //       them here (CodeQL js/http-to-file-access, accepted). The write is confined to
   //       `<storePath>/<hash>/` (path guard above) and the bytes are integrity-checked against

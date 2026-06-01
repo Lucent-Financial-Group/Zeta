@@ -42,7 +42,7 @@ export async function resolve(
   visiting.add(root.manifest.name);
 
   const walk = async (node: AcePackage, path: string[]): Promise<ResolveResult | null> => {
-    for (const edge of node.manifest.dependencies ?? []) {
+    for (const edge of (Array.isArray(node.manifest.dependencies) ? node.manifest.dependencies : [])) {
       const here = [...path, edge.name];
       // NB: the root is seeded into `visiting`, so a root-involving skew (root@1 -> A -> root@2)
       // trips this cycle check before the version-skew check below — both refuse + install nothing.
@@ -63,8 +63,11 @@ export async function resolve(
       try { dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage; }
       catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
       // Shape guard: verify the parsed JSON is a well-formed AcePackage before any field access.
-      const m = (dep as { manifest?: unknown; files?: unknown });
-      if (typeof dep !== "object" || dep === null || typeof m.manifest !== "object" || m.manifest === null || typeof m.files !== "object" || m.files === null) {
+      // Also reject non-array dependencies: a dependencies field that is present but not an array
+      // is malformed and would throw in the for-of loop, so we refuse it here as invalid-package.
+      const m = (dep as { manifest?: { dependencies?: unknown }; files?: unknown });
+      if (typeof dep !== "object" || dep === null || typeof m.manifest !== "object" || m.manifest === null || typeof m.files !== "object" || m.files === null
+          || (m.manifest.dependencies !== undefined && !Array.isArray(m.manifest.dependencies))) {
         return { ok: false, reason: "invalid-package", detail: `${edge.url}: not a well-formed AcePackage`, path: here };
       }
       // slice-2 self-check
