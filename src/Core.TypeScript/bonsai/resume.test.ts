@@ -31,6 +31,11 @@ function stepOk(r: Result<SagaStep, ResumeFeedback>): SagaStep {
 // activities are never re-invoked) AND the cross-language suspension/final contract.
 for (const tr of golden.traces) {
   test(`resume golden: ${tr.name}`, () => {
+    // fixture schema: exactly one expected state-byte string and one activity result per
+    // suspension — assert up front so a malformed golden fails as a clear schema mismatch,
+    // not a confusing undefined compare inside the loop
+    expect(tr.expectedStateAtSuspension.length).toBe(tr.expectedSuspensions.length);
+    expect(tr.activityResults.length).toBe(tr.expectedSuspensions.length);
     let step = stepOk(start(tr.program, tr.bindings));
     for (let i = 0; i < tr.expectedSuspensions.length; i++) {
       expect(step.kind).toBe("suspended");
