@@ -75,6 +75,15 @@ describe("Bag — canonicalization", () => {
     expect(toEntries(singleton("x", 0))).toEqual([]);
     expect(equals(cmp, addN(cmp, "z", 0, bag(entry("a", 1))), bag(entry("a", 1)))).toBe(true);
   });
+  it("guards SUMMED counts against safe-integer overflow (union + ofEntries dedup)", () => {
+    const big = singleton("x", Number.MAX_SAFE_INTEGER);
+    // union summing a shared key past MAX_SAFE_INTEGER would silently lose precision in JS
+    expect(() => union(cmp, big, singleton("x", 2))).toThrow(RangeError);
+    // same path while canonicalizing duplicate entries
+    expect(() => ofEntries(cmp, [entry("x", Number.MAX_SAFE_INTEGER), entry("x", 2)])).toThrow(RangeError);
+    // a sum that stays safe is fine
+    expect(toEntries(union(cmp, singleton("x", 2), singleton("x", 3)))).toEqual([entry("x", 5)]);
+  });
 });
 
 describe("Bag — commutative-monoid laws (and NON-idempotence)", () => {

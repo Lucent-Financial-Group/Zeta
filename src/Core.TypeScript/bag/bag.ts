@@ -72,6 +72,19 @@ function assertCount(n: number): void {
 }
 
 /**
+ * Add two counts and re-assert the sum is still a safe integer before it is
+ * stored. Two valid (safe-integer) counts can sum past `Number.MAX_SAFE_INTEGER`
+ * — e.g. `MAX_SAFE_INTEGER + 2` rounds in JS — which would silently lose
+ * precision where the int64 F#/C#/Rust oracles would not, so every summed count
+ * (the `union` / `ofEntries` merge of a shared key) is guarded at the store.
+ */
+function addCounts(a: number, b: number): number {
+  const sum = a + b;
+  assertCount(sum);
+  return sum;
+}
+
+/**
  * Ascending ordinal (UTF-16 code-unit) order — JS `<` on strings. This is the
  * canonical key comparator for the stack: it matches F# ordinal + C#
  * `StringComparer.Ordinal`, and for the BMP-non-surrogate keys the fixtures use
@@ -110,7 +123,7 @@ export function ofEntries<T>(compare: Compare<T>, entries: readonly BagEntry<T>[
     const last = out.length - 1;
     if (last >= 0 && compare(at(out, last).e, entry.e) === 0) {
       const prev = at(out, last);
-      out[last] = { e: prev.e, n: prev.n + entry.n };
+      out[last] = { e: prev.e, n: addCounts(prev.n, entry.n) };
     } else {
       out.push({ e: entry.e, n: entry.n });
     }
@@ -170,7 +183,7 @@ export function union<T>(compare: Compare<T>, a: Bag<T>, b: Bag<T>): Bag<T> {
       out.push(eb);
       j += 1;
     } else {
-      out.push({ e: ea.e, n: ea.n + eb.n }); // same key → counts add
+      out.push({ e: ea.e, n: addCounts(ea.n, eb.n) }); // same key → counts add (guarded against overflow)
       i += 1;
       j += 1;
     }
