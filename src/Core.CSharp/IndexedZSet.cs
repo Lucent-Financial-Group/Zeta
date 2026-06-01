@@ -462,10 +462,18 @@ public sealed class IndexedZSet<TKey, TValue> : IEquatable<IndexedZSet<TKey, TVa
         hash.Add(_compareK);
         hash.Add(_compareV);
         hash.Add(_groups.Length);
+        // Hash the key ONLY when the comparer is an equality comparer (so Compare==0 keys hash
+        // alike); otherwise OMIT it — Equals compares keys via _compareK.Compare, which is not a
+        // hashable equality, so hashing by default equality would break equal-objects-equal-hashes
+        // for Compare-equal-but-not-default-equal keys (Copilot P0 #6404; mirrors ZSet.GetHashCode).
         var keyEq = _compareK as IEqualityComparer<TKey>;
         foreach (var g in _groups)
         {
-            hash.Add(g.Key, keyEq);
+            if (keyEq is not null)
+            {
+                hash.Add(g.Key, keyEq);
+            }
+
             hash.Add(g.Values);
         }
 
