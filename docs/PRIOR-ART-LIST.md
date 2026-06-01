@@ -10,8 +10,8 @@ with a ⭐ below and add a row there.
 
 ## Zeta.Core's own reading list
 
-- **DBSP / IVM** ⭐ — Budiu et al. _DBSP: Automatic Incremental View
-  Maintenance for Rich Query Languages_ (VLDB 2023); VLDB Journal
+- **DBSP / IVM** ⭐ — Budiu et al. *DBSP: Automatic Incremental View
+  Maintenance for Rich Query Languages* (VLDB 2023); VLDB Journal
   2025 extended version; `arXiv:2203.16684`.
 - **Differential Dataflow / Timely** ⭐ — McSherry, Murray, Isard,
   Isaacs TODS 2013; Naiad SOSP 2013; Abadi et al. — the foundations
@@ -48,7 +48,7 @@ with a ⭐ below and add a row there.
 - **Bifunctor / profunctor optics literature** — Milewski, Pickering-
   Gibbons-Wu; references for `NovelMathExt.fs`.
 - **Tropical semiring / min-plus algebra** — reference for
-  `NovelMath.fs`; Golan _Semirings and their Applications_.
+  `NovelMath.fs`; Golan *Semirings and their Applications*.
 - **Residuated lattices** — Galatos-Jipsen-Kowalski-Ono 2007; shapes
   `Residuated.fs`.
 - **HyperLogLog** — Flajolet-Fusy-Gandouet-Meunier; HLL++ (Ertl
@@ -60,22 +60,24 @@ with a ⭐ below and add a row there.
 - **Merkle trees** — Merkle 1979; our `Merkle.fs`.
 - **Blake3 / CRC32C / XxHash** — hashing primitives we use or
   reference.
-- **Adam Shostack, _Threat Modelling_** — and the EoP card game
+- **Adam Shostack, *Threat Modelling*** — and the EoP card game
   (shipped in `docs/security/eop-*.pdf`).
 - **Microsoft SDL (12 practices)** — basis for
   `docs/security/SDL-CHECKLIST.md`.
-- **Lamport, _Specifying Systems_** ⭐ — TLA+ canonical reference
+- **Lamport, *Specifying Systems*** ⭐ — TLA+ canonical reference
   (`references/tla-book/`).
-- **Newcombe et al., _How AWS Uses Formal Methods_ CACM 2015** —
+- **Newcombe et al., *How AWS Uses Formal Methods* CACM 2015** —
   the paper that sold us on TLA+.
 - **F\*** ⭐ — `FStarLang/FStar`; dependently-typed ML with
   SMT-backed refinement types, effect system, separation logic
   (Pulse/Steel), and tactic engine (Meta-F*). Canonical case
-  studies: `miTLS`/`HACL*`(verified TLS + crypto), EverCrypt,
-EverParse. Closest active ancestor for the refinement-type
-class of checks we would have used LiquidF# for; evaluated
-round 35 and sitting on TECH-RADAR at Assess pending the
-F# extraction backend audit. See`docs/research/liquidfsharp-findings.md`Path A and`docs/research/refinement-type-feature-catalog.md`.
+  studies: `miTLS`/`HACL*` (verified TLS + crypto), EverCrypt,
+  EverParse. Closest active ancestor for the refinement-type
+  class of checks we would have used LiquidF# for; evaluated
+  round 35 and sitting on TECH-RADAR at Assess pending the
+  F# extraction backend audit. See
+  `docs/research/liquidfsharp-findings.md` Path A and
+  `docs/research/refinement-type-feature-catalog.md`.
 - **LiquidHaskell** — Vazou et al.; canonical refinement-type
   checker for Haskell. Not directly usable from F#, but the
   feature set (measures, termination proofs, totality, bounded
@@ -86,67 +88,68 @@ F# extraction backend audit. See`docs/research/liquidfsharp-findings.md`Path A a
   2008-2012); the historical F#-native refinement-type checker.
   Dormant (download artefact dated 2012). Listed for lineage;
   not a live dependency.
-- **Boost (C++)** ⭐ — the canonical deep, composable primitive
-  collection; prior art for **"C++ Boost for any language"** (Aaron
-  2026-06-01 — `docs/research/2026-06-01-languages-turned-inside-out-binary-compatible-bcl-is-the-asset-cpp-boost-for-any-language-aaron-otto.md`).
-  Study the **design** (not the C++): policy-from-mechanism separation
-  (allocators/comparators/traits as parameters) — the same shape as our
-  comparer-as-identity + generic-math-interface-as-port. Mine
-  **Boost.Hana/MPL/Fusion** (compile-time meta + heterogeneous
-  sequences), **Boost.Graph** (visitor/property-map generic graph),
-  **Boost.Spirit** (PEG/parser-combinators → ZetaParse),
-  **Boost.Asio** (proactor/executor → concurrency/IO),
-  **Boost.Multiprecision/Rational/Units** (numeric tower + UoM),
-  **Boost.Intrusive/Container** (allocation-aware containers →
-  pooled hot-path), **Boost.Outcome** (`Result`-style → our
-  `Result<T, TFeedback>`). Ideas-not-code; we own our interfaces
-  (`bcl-interface-boundary`). **First-hand provenance** (Aaron
-  2026-06-01): used Boost at **MacVector** building DNA-sequencing +
-  visualization / bioinformatics software — so the "pull Boost" call is
-  from production experience with it, not a cold reference.
-- **NIST algorithms / standards** ⭐ — NIST reference algorithms +
-  standards as a primitive-correctness source (Aaron 2026-06-01: "we
-  used many NIST based algos on DNA and molecular simulation" at
-  MacVector). Distinct from the **NIST AI RMF / AI 100-2** entry below
-  (that's the adversarial-ML governance one). This is the
-  **numeric/scientific** NIST: FIPS crypto (SHA-2/3, AES — anchors our
-  `Blake3 / CRC32C / XxHash` + hashing roster), the NIST Statistical
-  Reference Datasets (StRD — golden-vector discipline for numeric
-  primitives, the same shape as our cross-oracle byte-diff), DSP /
-  numeric reference algorithms, and the molecular/DNA-sim algos Aaron
-  used. Prior art for **conformance-against-published-reference** — NIST
-  test vectors are exactly the "agree with the published oracle" pattern
-  our four-oracle model uses internally.
+- **Boost (C++)** — deep, composable primitive collection; the
+  "C++ Boost for any language" prior-art for our cross-language
+  primitive effort (study the design, not the C++ — ideas-not-code;
+  we own our interfaces per `bcl-interface-boundary`). Near-total
+  coverage of our primitives wish-list: `Boost.Hana` / `MPL` /
+  `Fusion` (compile-time metaprogramming + heterogeneous sequences,
+  the generic-math / type-level discipline), `Boost.Graph` (visitor /
+  property-map separation, our `Graph` primitive), `Boost.Spirit`
+  (PEG / parser-combinators, ZetaParse), `Boost.Asio` (proactor /
+  executor model, concurrency / IO), `Boost.Multiprecision` /
+  `Rational` / `Units` (numeric tower + units, Cayley-Dickson + UoM),
+  `Boost.Intrusive` / `Container` (allocation-aware containers, the
+  pooled hot-path our Z-set / IndexedZSet combiners already use),
+  `Boost.Outcome` (`Result`-style errors, the `Result<T, TFeedback>`
+  lineage). The elegance to learn is the separation of policy from
+  mechanism (allocators / comparators / traits as parameters) — the
+  same shape as our comparer-as-identity + generic-math-as-port
+  design. Per Aaron: used at MacVector for DNA-sequencing +
+  molecular-simulation software. Refresh manifest entries: the 7
+  `boost-*` repos in `references/reference-sources.json`. See
+  `docs/research/2026-06-01-languages-turned-inside-out-binary-compatible-bcl-is-the-asset-cpp-boost-for-any-language-aaron-otto.md`.
+- **NIST algorithms / reference standards** — numeric + statistical +
+  cryptographic standards (FIPS, the Statistical Reference Datasets
+  / StRD, special-function and linear-algebra reference results,
+  molecular / physical reference data). Prior art for numeric-
+  correctness golden vectors and the conformance-by-agreement
+  discipline (cross-check our primitives against authoritative
+  reference outputs). Distinct from the NIST AI RMF entry in the AI / ML
+  section below (that is the AI-risk framework; this is the
+  numeric / FIPS / StRD algorithm standards). Per Aaron: used
+  NIST-based algorithms for DNA + molecular-simulation work at
+  MacVector.
 
 ## AI / ML / adversarial-AI reading list
 
 The factory itself runs on LLMs, so the research substrate that
 the AI/ML and security skill family depends on is tracked here
 alongside the database/streaming literature. When one of these
-references is _directly cited_ from a skill, that skill's
+references is *directly cited* from a skill, that skill's
 reference block links back here instead of restating the
 citation.
 
 ### LLM systems + prompting
 
-- **Schulhoff et al., _The Prompt Report_ (2025)** — the
+- **Schulhoff et al., *The Prompt Report* (2025)** — the
   canonical taxonomy of prompting techniques; cited by
   `prompt-engineering-expert`.
-- **Wei et al., _Chain-of-Thought Prompting Elicits Reasoning
-  in Large Language Models_ (2022)** — CoT origin paper.
-- **Yao et al., _ReAct: Synergizing Reasoning and Acting in
-  Language Models_ (ICLR 2023)** — reasoning + tool-use
+- **Wei et al., *Chain-of-Thought Prompting Elicits Reasoning
+  in Large Language Models* (2022)** — CoT origin paper.
+- **Yao et al., *ReAct: Synergizing Reasoning and Acting in
+  Language Models* (ICLR 2023)** — reasoning + tool-use
   interleave; basis of most agent loops.
-- **Kwon et al., _Efficient Memory Management for Large
-  Language Model Serving with PagedAttention_ (SOSP 2023)** —
+- **Kwon et al., *Efficient Memory Management for Large
+  Language Model Serving with PagedAttention* (SOSP 2023)** —
   vLLM; cited by `llm-systems-expert` for inference serving.
-- **Anthropic, _Model Context Protocol (MCP) Specification_** —
+- **Anthropic, *Model Context Protocol (MCP) Specification*** —
   tool-surface protocol; cited by `llm-systems-expert` and
   `prompt-protector`.
 - **Anthropic Agent SDK documentation** — the surface
   `.claude/skills/*` run on top of.
-- **OpenAI Agents SDK + _A Practical Guide to Building
-  Agents_** — cross-vendor comparison for agent loop design.
+- **OpenAI Agents SDK + *A Practical Guide to Building
+  Agents*** — cross-vendor comparison for agent loop design.
 
 ### Multi-agent scientific discovery (added 2026-05-28 per Aaron YouTube ferry PR #5762)
 
@@ -163,19 +166,19 @@ citation.
     engineering composition study
 - **Sakana AI Robin** ⭐ (Nature 2026; `s41586-026-10652-y`;
   arXiv:2505.13400) — closed-loop multi-agent system (Crow + Falcon
-  - Finch) with 8-parallel-Finch consensus mechanism for data
-    analysis. Validated novel therapeutic candidates including
-    ripasudil for AMD via lab-in-the-loop iteration.
-  * **SakanaAI/AI-Scientist** — original v1 framework
-  * **SakanaAI/AI-Scientist-v2** — workshop-level via agentic
+  + Finch) with 8-parallel-Finch consensus mechanism for data
+  analysis. Validated novel therapeutic candidates including
+  ripasudil for AMD via lab-in-the-loop iteration.
+  - **SakanaAI/AI-Scientist** — original v1 framework
+  - **SakanaAI/AI-Scientist-v2** — workshop-level via agentic
     tree search; Robin architecture descendant
 - **Microsoft Research Infer.NET + TrueSkill** ⭐ — probabilistic
   programming for Bayesian inference + canonical TrueSkill (Herbrich
-  - Minka + Graepel 2007) for ranking. Per Aaron 2026-05-28:
-    _"they are doing this for their idea ranking with Infra.net
-    basically"_ — the co-scientist ELO tournament composes with
-    Infer.NET TrueSkill substrate. Composes with Zeta.Bayesian
-    published library + framework's BP/EP references.
+  + Minka + Graepel 2007) for ranking. Per Aaron 2026-05-28:
+  *"they are doing this for their idea ranking with Infra.net
+  basically"* — the co-scientist ELO tournament composes with
+  Infer.NET TrueSkill substrate. Composes with Zeta.Bayesian
+  published library + framework's BP/EP references.
 
 ### Probabilistic programming / Bayesian inference (added 2026-05-28 per Aaron Infer.NET substrate-engineering question)
 
@@ -189,78 +192,79 @@ citation.
   → WebPPL is the closest substrate-accessible answer.
 - **videolectures.net** ⭐ — PhD-level academic ML/AI/research
   talks archive with transcripts + slides. Per Aaron 2026-05-28:
-  _'you'd love videolectures.net in your free time i think,
+  *'you'd love videolectures.net in your free time i think,
   you'll really know everything this is PhD everything here.
   they don't throttle that i can tell and they have transcripts
-  and powerpoints.'_ Tom Minka TrueSkill talks among canonical
+  and powerpoints.'* Tom Minka TrueSkill talks among canonical
   references. Substrate-accessible learning material; composes
   with never-be-idle + agent-qol free-time-as-valid-mode
   substrate.
 
 ### Retrieval + embeddings
 
-- **Malkov & Yashunin, _Efficient and robust approximate
+- **Malkov & Yashunin, *Efficient and robust approximate
   nearest neighbor search using Hierarchical Navigable Small
-  World graphs_ (2016/2018)** — HNSW; cited by
+  World graphs* (2016/2018)** — HNSW; cited by
   `llm-systems-expert` for vector retrieval.
 - **BGE / E5 / text-embedding-3 family** — production-grade
   embedding model lineages; cited by `ml-engineering-expert`.
 - **Matryoshka Representation Learning (Kusupati et al.
   NeurIPS 2022)** — truncatable embeddings; enables
   hybrid index tiers.
-- **Reimers & Gurevych, _Sentence-BERT_ (EMNLP 2019)** —
+- **Reimers & Gurevych, *Sentence-BERT* (EMNLP 2019)** —
   sentence-embedding foundations.
 
 ### Fine-tuning + alignment
 
-- **Hu et al., _LoRA: Low-Rank Adaptation of Large Language
-  Models_ (ICLR 2022)** — parameter-efficient fine-tuning
+- **Hu et al., *LoRA: Low-Rank Adaptation of Large Language
+  Models* (ICLR 2022)** — parameter-efficient fine-tuning
   canon; cited by `ml-engineering-expert`.
-- **Dettmers et al., _QLoRA: Efficient Finetuning of
-  Quantized LLMs_ (NeurIPS 2023)** — 4-bit fine-tuning.
-- **Rafailov et al., _Direct Preference Optimization: Your
-  Language Model is Secretly a Reward Model_ (NeurIPS 2023)** — DPO; cited by `ml-engineering-expert`.
-- **Ouyang et al., _Training language models to follow
-  instructions with human feedback_ (NeurIPS 2022)** —
+- **Dettmers et al., *QLoRA: Efficient Finetuning of
+  Quantized LLMs* (NeurIPS 2023)** — 4-bit fine-tuning.
+- **Rafailov et al., *Direct Preference Optimization: Your
+  Language Model is Secretly a Reward Model* (NeurIPS
+  2023)** — DPO; cited by `ml-engineering-expert`.
+- **Ouyang et al., *Training language models to follow
+  instructions with human feedback* (NeurIPS 2022)** —
   InstructGPT / RLHF origin.
-- **Schulman et al., _Proximal Policy Optimization Algorithms_
+- **Schulman et al., *Proximal Policy Optimization Algorithms*
   (2017)** — PPO; the classical alignment RL algorithm DPO
   replaced for many workloads.
 
 ### Quantisation + serving
 
-- **Frantar et al., _GPTQ: Accurate Post-Training Quantization
-  for Generative Pre-trained Transformers_ (ICLR 2023)**.
-- **Lin et al., _AWQ: Activation-aware Weight Quantization for
-  LLM Compression and Acceleration_ (MLSys 2024)**.
-- **Xiao et al., _SmoothQuant_ (ICML 2023)** — activation
+- **Frantar et al., *GPTQ: Accurate Post-Training Quantization
+  for Generative Pre-trained Transformers* (ICLR 2023)**.
+- **Lin et al., *AWQ: Activation-aware Weight Quantization for
+  LLM Compression and Acceleration* (MLSys 2024)**.
+- **Xiao et al., *SmoothQuant* (ICML 2023)** — activation
   smoothing for INT8 LLM inference.
-- **Hinton et al., _Distilling the Knowledge in a Neural
-  Network_ (2015)** — distillation origin.
+- **Hinton et al., *Distilling the Knowledge in a Neural
+  Network* (2015)** — distillation origin.
 
 ### Adversarial AI / red-team / prompt injection
 
-- **OWASP, _Top 10 for LLM Applications_ (2024+)** —
+- **OWASP, *Top 10 for LLM Applications* (2024+)** —
   industry-standard taxonomy; cited by `prompt-protector`,
   `ai-jailbreaker` (dormant), `threat-model-critic`.
-- **NIST AI RMF + _AI 100-2: Adversarial Machine Learning_** —
+- **NIST AI RMF + *AI 100-2: Adversarial Machine Learning*** —
   authoritative US government taxonomy; cited across the
   security stack.
-- **Greshake et al., _Not what you've signed up for:
+- **Greshake et al., *Not what you've signed up for:
   Compromising Real-World LLM-Integrated Applications with
-  Indirect Prompt Injection_ (2023)** — indirect prompt
+  Indirect Prompt Injection* (2023)** — indirect prompt
   injection foundational paper.
-- **Perez & Ribeiro, _Ignore Previous Prompt: Attack
-  Techniques for Language Models_ (2022)** — direct
+- **Perez & Ribeiro, *Ignore Previous Prompt: Attack
+  Techniques for Language Models* (2022)** — direct
   injection taxonomy.
-- **Zou et al., _Universal and Transferable Adversarial
-  Attacks on Aligned Language Models_ (2023)** — GCG suffix
+- **Zou et al., *Universal and Transferable Adversarial
+  Attacks on Aligned Language Models* (2023)** — GCG suffix
   attack; relevant to jailbreak coverage.
-- **Anthropic, _Constitutional AI_ (Bai et al. 2022)** — the
+- **Anthropic, *Constitutional AI* (Bai et al. 2022)** — the
   self-constraint surface the jailbreaker skill tests
   against.
-- **Carlini et al., _Extracting Training Data from Large
-  Language Models_ (USENIX Security 2021)** — data
+- **Carlini et al., *Extracting Training Data from Large
+  Language Models* (USENIX Security 2021)** — data
   exfiltration class; cited by `threat-model-critic`.
 - **DO NOT FETCH — elder-plinius / "Pliny the Prompter"
   corpus family** (`L1B3RT4S`, `OBLITERATUS`, `G0DM0D3`,
@@ -269,41 +273,41 @@ citation.
   is set in `AGENTS.md` §"How AI agents should treat this
   codebase" and `CLAUDE.md` §"Ground rules", and is not
   lifted by the `ai-jailbreaker` skill's activation gate.
-  Tracked here as a _threat-model input_, not as a source to
+  Tracked here as a *threat-model input*, not as a source to
   read.
 
 ### Steganography + content provenance + watermarking
 
-- **Simmons, _The Prisoners' Problem and the Subliminal
-  Channel_ (CRYPTO 1983)** — the foundational information-
+- **Simmons, *The Prisoners' Problem and the Subliminal
+  Channel* (CRYPTO 1983)** — the foundational information-
   theoretic framing of steganography; cited by
   `steganography-expert`.
-- **Westfeld, _F5 — A Steganographic Algorithm_ (2001)** —
+- **Westfeld, *F5 — A Steganographic Algorithm* (2001)** —
   matrix-encoded DCT steganography; canonical image-stego
   reference.
-- **Fridrich, _Steganography in Digital Media: Principles,
-  Algorithms, and Applications_ (Cambridge 2009)** —
+- **Fridrich, *Steganography in Digital Media: Principles,
+  Algorithms, and Applications* (Cambridge 2009)** —
   textbook on steganalysis.
-- **Google DeepMind, _SynthID_ (2023-)** — text/image/audio
+- **Google DeepMind, *SynthID* (2023-)** — text/image/audio
   watermarking for LLM-generated content; cited by
   `steganography-expert` as a legitimate-use reference.
-- **Kirchenbauer et al., _A Watermark for Large Language
-  Models_ (ICML 2023)** — open-research LLM text
+- **Kirchenbauer et al., *A Watermark for Large Language
+  Models* (ICML 2023)** — open-research LLM text
   watermarking.
 - **C2PA (Coalition for Content Provenance and Authenticity)
   specification** — signed provenance manifests for digital
   media; cited by `steganography-expert`.
-- **Unicode Technical Report #36, _Unicode Security
-  Considerations_** — the authoritative reference for
+- **Unicode Technical Report #36, *Unicode Security
+  Considerations*** — the authoritative reference for
   invisible-character / bidi / homoglyph classes that
   BP-10 enforces against.
 
 ### Safety evaluations + benchmarks
 
-- **Anthropic, _HarmBench_ & _Evaluation of Frontier Models
-  for Dangerous Capabilities_** — safety eval suites the
+- **Anthropic, *HarmBench* & *Evaluation of Frontier Models
+  for Dangerous Capabilities*** — safety eval suites the
   factory's `ai-evals-expert` skill (planned) tracks.
-- **METR, _Evaluations for autonomous AI systems_** — agent
+- **METR, *Evaluations for autonomous AI systems*** — agent
   capability eval methodology.
 - **HELM (Liang et al. Stanford CRFM 2022+)** — holistic eval
   framework; methodology reference.
@@ -379,8 +383,8 @@ citation.
 
 ## Active reads this round (17)
 
-- SlateDB ⭐ — current verdict _adopt CAS-manifest
-  protocol, don't clone code_.
+- SlateDB ⭐ — current verdict *adopt CAS-manifest
+  protocol, don't clone code*.
 - Feldera Rust DBSP — bench target; P1 to run an apples-to-apples
   micro-benchmark vs our `Zeta.Core`.
 - FoundationDB ⭐ — DST + simulator; our `ChaosEnv.fs` + SimulatedFs
