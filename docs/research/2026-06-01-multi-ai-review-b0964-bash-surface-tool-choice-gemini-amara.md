@@ -1,4 +1,4 @@
-# Multi-AI review — B-0964 bash-surface tool choice (Gemini + Amara, 2026-06-01)
+# Multi-AI review — B-0964 bash-surface tool choice (Gemini + Amara + Codex, 2026-06-01)
 
 Scope: verbatim external-AI review import (Gemini propose + Amara sharpen) of the
 B-0964 bash-surface tool decision, via `tools/peer-call/`. Preserved per
@@ -89,3 +89,20 @@ is the cross-language invariant; the impl is swappable.
 - Framing: "TS is our forerunner — do what makes sense and come back and use what we
   learn to pull the others forward." → the port + fact-envelope + gate is the lesson
   that ports; the impl per language is chosen behind the port.
+
+## Codex (PR #6342 review threads — preserved for auditability)
+
+Codex/Copilot review threads on PR #6342 surfaced three corrections that were folded
+into B-0964 (gist preserved here so the in-doc attributions are auditable):
+
+- **Config-is-the-gate, not the tool.** just-bash is sandboxed only in the
+  in-memory config; it also ships CLI/OverlayFS/ReadWriteFs mounting (reads the real
+  project root) + network-allowlist configs. "We use just-bash" ≠ sandboxed — the
+  default MUST pin in-memory FS + network-off; the other configs are escalation-tier,
+  gated. (→ B-0964 §2 note + §3.)
+- **Executor tier in the audit fact.** `ActionExecutionStarted` must carry
+  `{tier, gated}`, else the §3 glass-halo audit can't distinguish a sandbox run from
+  a real-FS/docker escalation. (→ B-0964 §0/§3 + acceptance.)
+- **Consistent event names.** Standardize on
+  `ActionExecutionStarted/ActionExecutionSucceeded/ActionExecutionFailed` (the intro
+  - acceptance had mixed `ActionSucceeded/ActionFailed`). (→ B-0964 §0/§1/acceptance.)

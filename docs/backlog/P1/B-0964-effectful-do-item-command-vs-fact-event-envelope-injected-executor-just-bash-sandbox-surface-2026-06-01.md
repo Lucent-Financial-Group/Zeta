@@ -111,7 +111,8 @@ routing is **by item-class**, not a single default:
 | **Constrained**            | [`just`](https://github.com/casey/just) recipes via [just-mcp](https://docs.rs/crate/just-mcp/latest)                                                         | pre-vetted named tasks — an allowlist                                                       | safest: pick a recipe index, not free-form bash (composes the 16-action grammar)                                           |
 | **Cloud-burst escalation** | [Cloudflare Sandbox SDK](https://github.com/cloudflare/sandbox-sdk) (edge containers + fork-sessions) · just-bash OverlayFS/ReadWriteFs/net · real host shell | massive parallel / explicit need                                                            | **GATED** (§3). CF is a **dependency trap for a LOCAL sovereign agent** (Gemini) — escalation only, never the loop default |
 
-> **The tool is NOT the gate — the CONFIG is (Codex review, 2026-06-01).** just-bash
+> **The tool is NOT the gate — the CONFIG is** (Codex PR review, preserved in the
+> review doc `docs/research/2026-06-01-multi-ai-review-b0964-bash-surface-tool-choice-gemini-amara.md`). just-bash
 > also ships CLI/OverlayFS/ReadWriteFs mounting (reads the real project root) +
 > network-allowlist configs. "We use just-bash" ≠ sandboxed — the text-tier MUST pin
 > **in-memory FS + network-disabled**; its other configs are cloud-burst/escalation
