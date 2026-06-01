@@ -189,7 +189,7 @@ public class CrossVerifyTests
                 if (!firstEv) sb.Append(",\n");
                 firstEv = false;
                 // Indent each event JSON with 4 spaces for readability (matches ts-output.json indent).
-                string evJson = IndentEventJson(EventToJson(ev), "    ");
+                string evJson = EventToJson(ev);
                 sb.Append("    ");
                 sb.Append(evJson);
             }
@@ -216,13 +216,6 @@ public class CrossVerifyTests
     // EventToJson already produces compact JSON per event; the file wrapper above wraps it.
     // We produce minimal indented-enough output. compare.ts parses the JSON anyway.
 
-    // Expand compact event JSON into a readable multi-line form with the given indent prefix.
-    private static string IndentEventJson(string compact, string indent)
-    {
-        // compact is already fine for compare.ts (which parses JSON); return as-is.
-        // The indentation is for human readability only; structure is what matters.
-        return compact;
-    }
 
     // -------------------------------------------------------------------------
     // YamlDotNet differential
