@@ -393,7 +393,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       pkgHash = packageHash(pkg);
     }
     const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: parsed.regUrl!, package_hash: pkgHash });
-    console.log(res.added ? `ace: registered ${parsed.regName}@${parsed.regVersion}` : `ace: ${parsed.regName}@${parsed.regVersion} already registered`);
+    console.log(res.added ? `ace: registered ${parsed.regName}@${parsed.regVersion}` : res.updated ? `ace: updated ${parsed.regName}@${parsed.regVersion} (corrected url/hash)` : `ace: ${parsed.regName}@${parsed.regVersion} already registered (identical)`);
     return 0;
   }
 

@@ -278,20 +278,28 @@ export function loadRegistry(bundledPath: string = bundledRegistryPath(), userPa
   return m;
 }
 
-/** Append/overwrite a user-registry entry; dir 0o700, file 0o600 on EVERY call (incl. dedup
- * early-return) — mirrors addTrustedKey. chmod after write (writeFileSync mode only applies on create). */
-export function addRegistryEntry(name: string, version: string, entry: RegistryEntry, userPath: string = registryPath()): { added: boolean } {
+/** Add/overwrite a user-registry entry; dir 0o700, file 0o600 on EVERY call (incl. the identical
+ * no-op path) — mirrors addTrustedKey. Re-adding the same name@version with a DIFFERING url or
+ * package_hash overwrites the stale pin (returns updated:true); an identical re-add is an idempotent
+ * no-op (added:false, updated:false). chmod after write (writeFileSync mode only applies on create). */
+export function addRegistryEntry(name: string, version: string, entry: RegistryEntry, userPath: string = registryPath()): { added: boolean; updated: boolean } {
   const dir = dirname(userPath);
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   try { chmodSync(dir, 0o700); } catch { /* best-effort */ }
   const tightenFile = (): void => { if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort */ } } };
   const obj = readRegistryFile(userPath);
-  if (obj[name]?.[version]) { tightenFile(); return { added: false }; }
+  const existing = obj[name]?.[version];
+  // Identical re-add → idempotent no-op (preserves dedup). New OR differing url/hash → write.
+  if (existing && existing.url === entry.url && existing.package_hash === entry.package_hash) {
+    tightenFile();
+    return { added: false, updated: false };
+  }
+  const updated = existing !== undefined; // same name@version, corrected url/hash → overwrite stale pin
   obj[name] = obj[name] ?? {};
   obj[name][version] = { url: entry.url, package_hash: entry.package_hash };
   writeFileSync(userPath, JSON.stringify(obj, null, 2));
   chmodSync(userPath, 0o600);
-  return { added: true };
+  return { added: !updated, updated };
 }
 
 /** bundled ∪ user flattened to rows; user overrides bundled on (name, version); each row carries source. */

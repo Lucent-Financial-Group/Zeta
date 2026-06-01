@@ -299,6 +299,16 @@ describe("addRegistryEntry", () => {
     const m = loadRegistry(join(dir, "missing.json"), u);
     expect(m.get("libfoo")?.size).toBe(2);
   });
+  test("re-add with DIFFERING url/hash overwrites stale pin (updated:true); identical re-add is a no-op (updated:false)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
+    const u = join(dir, "registry.json");
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "sha256:old" }, u)).toEqual({ added: true, updated: false });
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "sha256:old" }, u)).toEqual({ added: false, updated: false }); // identical -> idempotent no-op
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "NEW", package_hash: "sha256:new" }, u)).toEqual({ added: false, updated: true }); // corrected -> overwrite stale pin
+    const e = loadRegistry(join(dir, "missing.json"), u).get("libfoo")?.get("1.0.0");
+    expect(e?.url).toBe("NEW");
+    expect(e?.package_hash).toBe("sha256:new");
+  });
   test("writes owner-only perms on POSIX (0600 file, 0700 dir)", () => {
     if (process.platform === "win32") return;
     const parent = mkdtempSync(join(tmpdir(), "ace-regperm-"));
