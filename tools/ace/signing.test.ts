@@ -128,3 +128,23 @@ describe("index signing", () => {
     if (!r.ok) expect(r.reason).toBe("unsupported-algo");
   });
 });
+
+import { publicKeyInfoFromPrivatePem } from "./signing.ts";
+
+describe("publicKeyInfoFromPrivatePem", () => {
+  test("derives the same keyId + public_key as generateKeypair for the same key", () => {
+    const kp = generateKeypair();
+    const info = publicKeyInfoFromPrivatePem(kp.privatePem);
+    expect(info.keyId).toBe(kp.keyId);
+    expect(info.public_key).toBe(kp.publicSpkiB64);
+  });
+  test("the derived public_key verifies an index this key signed", () => {
+    const kp = generateKeypair();
+    const content = { format_version: 1 as const, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
+      packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+    const sig = signIndex(content, kp.privatePem);
+    const info = publicKeyInfoFromPrivatePem(kp.privatePem);
+    const trust = new Map([[info.keyId, { public_key: info.public_key }]]);
+    expect(verifyIndexSignature(content, sig, trust).ok).toBe(true);
+  });
+});
