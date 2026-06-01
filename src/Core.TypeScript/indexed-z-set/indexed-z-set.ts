@@ -283,7 +283,8 @@ export function equals<K, V>(
 // abelian GROUP — same surface as the Z-set rung (#6483): reuse the shared
 // `Monoid` (g-set) + `AbelianGroup` (z-set) interfaces. NOT INumber — the ring
 // product is the bilinear `join`, surfaced separately, not a numeric multiply.
-// Factories are comparator-specific (key comparer) like the Z-set/Bag twins.
+// Factories are comparator-specific in BOTH key and value comparers (the per-key
+// value-Z-set merge needs the value comparer), like the Z-set/Bag twins.
 
 /**
  * The additive-monoid view of an IndexedZSet under `compareK` / `compareV`:
