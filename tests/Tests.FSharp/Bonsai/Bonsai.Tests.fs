@@ -79,3 +79,43 @@ let ``parse rejects an unknown node kind`` () =
 let ``parse rejects an unsupported version`` () =
     Assert.Throws<System.Exception>(fun () -> Bonsai.parse "{\"v\":2,\"expr\":{\"kind\":\"param\",\"name\":\"x\"}}" |> ignore)
     |> ignore
+
+// Cross-language byte-exact parity guards (match the hardened TS oracle, which
+// rejects ints beyond the JS safe-integer range and escapes lone surrogates —
+// both are values a peer oracle could not reproduce byte-for-byte).
+
+[<Fact>]
+let ``parse rejects an int beyond the safe-integer range (an int64 a peer oracle could not preserve)`` () =
+    // 2^53 + 1 = 9007199254740993 — a valid int64 that TS's number rounds to
+    // 9007199254740992, breaking the byte contract; reject rather than diverge.
+    Assert.Throws<System.Exception>(fun () ->
+        Bonsai.parse "{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"int\",\"v\":9007199254740993}}}"
+        |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``serialize rejects an int beyond the safe-integer range`` () =
+    Assert.Throws<System.Exception>(fun () -> Bonsai.serialize (Bonsai.Const(Bonsai.CInt 9007199254740993L)) |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``serialize accepts the safe-integer boundary (2^53 - 1)`` () =
+    // The boundary value itself is in-domain and must serialize, not throw.
+    let s = Bonsai.serialize (Bonsai.Const(Bonsai.CInt 9007199254740991L))
+    Assert.Equal("{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"int\",\"v\":9007199254740991}}}", s)
+
+[<Fact>]
+let ``serialize escapes a lone high surrogate as lowercase backslash-u (matches JSON.stringify)`` () =
+    // A lone high surrogate (U+D800) has no valid UTF-8 encoding; well-formed
+    // JSON.stringify escapes it \ud800, so the F# oracle must too.
+    let s = Bonsai.serialize (Bonsai.Param(System.String([| '\uD800' |])))
+    Assert.Contains("\\ud800", s)
+
+[<Fact>]
+let ``serialize keeps a valid surrogate pair literal (matches JSON.stringify)`` () =
+    // U+1F600 = high D83D + low DE00 — JSON.stringify emits the astral character
+    // literally (not an escape); F# must emit the pair, not \ud83d.
+    let pair = System.String([| '\uD83D'; '\uDE00' |])
+    let s = Bonsai.serialize (Bonsai.Param pair)
+    Assert.Contains(pair, s)
+    Assert.DoesNotContain("\\ud83d", s)

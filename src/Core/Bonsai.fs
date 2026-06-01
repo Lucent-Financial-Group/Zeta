@@ -14,7 +14,8 @@ open System.Text.Json
 ///
 /// Canonical form (the cross-oracle byte-diff contract): serialize emits compact
 /// JSON (no whitespace) with a fixed key order per node-kind (kind first, then
-/// fields in declared order), integer-only numeric literals, standard JSON string
+/// fields in declared order), integer-only numeric literals in the shared
+/// JS-safe-integer range, standard JSON string
 /// escaping, and the document wrapper v=1,expr=node. parse round-trips:
 /// serialize(parse s) = s, and the DU has structural equality.
 module Bonsai =
@@ -82,14 +83,34 @@ module Bonsai =
         | "or" -> Or
         | other -> failwithf "bonsai: unknown binop: %s" other
 
+    /// The JS safe-integer bound, Number.MAX_SAFE_INTEGER = 2^53 - 1. The v1 int
+    /// domain is the safe-integer range every oracle shares: an int64 beyond this
+    /// cannot round-trip through the TS oracle's number (JSON.parse rounds it), so
+    /// it is rejected here too rather than emitting bytes a peer oracle would
+    /// silently rewrite — keeping the byte-exact cross-language contract exact.
+    [<Literal>]
+    let private MaxSafeInt = 9007199254740991L // 2^53 - 1
+
+    /// Reject an integer literal outside the shared v1 safe-integer range.
+    let private checkSafeInt (v: int64) : int64 =
+        if v > MaxSafeInt || v < -MaxSafeInt then
+            failwithf "bonsai: integer literal %d is outside the v1 safe-integer range [-(2^53-1), 2^53-1]" v
+
+        v
+
     /// Escape a string to a JSON string literal (quotes included), matching
     /// JavaScript JSON.stringify: escape quote, backslash, the short control
-    /// forms, and any other control char below 0x20 as lowercase \uXXXX.
+    /// forms, any other control char below 0x20 as lowercase \uXXXX, and any
+    /// unpaired UTF-16 surrogate as lowercase \uXXXX (a valid surrogate pair is
+    /// emitted literally, as JSON.stringify does, so the bytes stay valid UTF-8).
     let private jsonString (s: string) : string =
         let sb = StringBuilder(s.Length + 2)
         sb.Append('"') |> ignore
+        let mutable i = 0
 
-        for ch in s do
+        while i < s.Length do
+            let ch = s.[i]
+
             match ch with
             | '"' -> sb.Append("\\\"") |> ignore
             | '\\' -> sb.Append("\\\\") |> ignore
@@ -99,7 +120,18 @@ module Bonsai =
             | '\r' -> sb.Append("\\r") |> ignore
             | '\t' -> sb.Append("\\t") |> ignore
             | c when c < ' ' -> sb.AppendFormat("\\u{0:x4}", int c) |> ignore
+            | c when System.Char.IsHighSurrogate c && i + 1 < s.Length && System.Char.IsLowSurrogate(s.[i + 1]) ->
+                // valid surrogate pair — emit both code units literally (matches
+                // JSON.stringify, which emits the astral character, not an escape)
+                sb.Append(c) |> ignore
+                sb.Append(s.[i + 1]) |> ignore
+                i <- i + 1 // also consume the low surrogate
+            | c when System.Char.IsHighSurrogate c || System.Char.IsLowSurrogate c ->
+                // unpaired surrogate — escape it (well-formed JSON.stringify does)
+                sb.AppendFormat("\\u{0:x4}", int c) |> ignore
             | c -> sb.Append(c) |> ignore
+
+            i <- i + 1
 
         sb.Append('"') |> ignore
         sb.ToString()
@@ -107,7 +139,7 @@ module Bonsai =
     /// Emit a constant value in canonical compact form (t first, then v).
     let private emitConst (c: ConstValue) : string =
         match c with
-        | CInt v -> sprintf "{\"t\":\"int\",\"v\":%d}" v
+        | CInt v -> sprintf "{\"t\":\"int\",\"v\":%d}" (checkSafeInt v)
         | CStr v -> sprintf "{\"t\":\"str\",\"v\":%s}" (jsonString v)
         | CBool v -> sprintf "{\"t\":\"bool\",\"v\":%s}" (if v then "true" else "false")
         | CNull -> "{\"t\":\"null\"}"
@@ -135,7 +167,7 @@ module Bonsai =
     /// Rebuild a ConstValue from a parsed JSON element (validating the tag).
     let private parseConst (el: JsonElement) : ConstValue =
         match el.GetProperty("t").GetString() with
-        | "int" -> CInt(el.GetProperty("v").GetInt64())
+        | "int" -> CInt(checkSafeInt (el.GetProperty("v").GetInt64()))
         | "str" -> CStr(el.GetProperty("v").GetString())
         | "bool" -> CBool(el.GetProperty("v").GetBoolean())
         | "null" -> CNull
