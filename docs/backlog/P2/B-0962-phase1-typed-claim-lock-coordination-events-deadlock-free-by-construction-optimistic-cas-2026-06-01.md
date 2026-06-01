@@ -179,6 +179,49 @@ Boundary: SSB proper is ground-states/order-parameters/Goldstone machinery we ar
 **not** invoking — this is a structural rhyme that names _why_ the menu needs the
 break (the symmetric state is the livelock), not a physics derivation.
 
+### §3.2 Intelligent-agent supervision — the advantage dumb locks lack (operator 2026-06-01)
+
+> **Aaron 2026-06-01:** "we have one advantage … it's intelligent agents doing the
+> locks, not dumb code — so we can likely build in the ability for the agents to
+> notice the lock issues."
+
+Classical distributed locking has to be provable-by-construction precisely because
+the participants are **dumb code** that can't introspect — a spinning process
+can't tell it's livelocked. Here the participants are **intelligent agents** who
+can _observe their own coordination history_ and adapt. That gives a **second,
+complementary defense layer** exactly where construction is weakest — the soft
+properties (livelock, starvation, fairness) that §3 / B-0963 cannot guarantee by
+construction:
+
+- **Detection is cheap — it's already in the observe loop.** The agent's
+  observe→act fold can surface coordination-health signals per tick: CAS
+  loss-rate, contention-count on a resource, age-since-own-progress, repeated-
+  same-loser. A dumb lock has none of this; an intelligent agent reads it for free.
+- **Adaptation is the practical fairness mechanism.** On noticing "I've lost this
+  CAS N times / I'm starved," the agent can back off, **switch to different work**
+  (the menu always offers other cells), escalate to a human, **negotiate with the
+  peer** holding the resource, or propose a redesign. That IS the anti-starvation /
+  per-agent-progress mechanism pure CAS lacks — supplied by intelligence, not by a
+  ticket queue (build the queue only if intelligence proves insufficient).
+- **It's a natural fit for wait-freedom-in-practice (B-0963).** Formal wait-freedom
+  needs an explicit fairness term; intelligent supervision provides one without
+  hard-coding it — the agent that notices it's starved self-corrects. B-0963 proves
+  the construction bound; this layer covers the residual operationally.
+
+**Honest boundaries (defense-in-depth, not a replacement):**
+
+- This is **complementary**, not a substitute for the structural guarantees. The
+  **frozen-deadlock** and **lost-update** failures stay closed **by construction**
+  (mechanism-nonblocking + fencing + release-before-acquire) — those must NOT
+  depend on an agent being clever enough to notice. Intelligence handles the
+  _soft_ failures (livelock/starvation), not the _dangerous_ ones.
+- It is **not a guarantee.** An agent can fail to notice, or notice and act wrongly
+  (make contention worse). So it's a layer that _raises the floor in practice_, not
+  a proof — and it never licenses skipping fencing or release-before-acquire.
+- **Buildable + falsifiable:** surface the coordination-health signals as explicit
+  observe-loop telemetry; an agent that ignores a starvation signal is a detectable
+  bug, not an invisible hang.
+
 ## §4 The typed event shapes (Phase 1 — payloads under existing `Bus(6)`)
 
 Both ride `Bus(6)` (no root-`Category` change — Phase 2 is gated per B-0961).

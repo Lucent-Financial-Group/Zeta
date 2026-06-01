@@ -68,6 +68,12 @@ generator over IScheduler").
   explicit fairness mechanism** (pure CAS starves an unlucky agent) — it holds only
   with the jitter/ticket fairness knob (B-0962 §3.1 explicit symmetry-breaking).
   The proof's job is to make that boundary precise.
+- **Operational complement (B-0962 §3.2 — intelligent-agent supervision):** this
+  row bounds what _construction_ gives. The residual (starvation the formal model
+  can't rule out) is covered _in practice_ by intelligent agents noticing
+  coordination-health signals (CAS loss-rate, age-since-progress) and adapting —
+  the advantage dumb-code locks lack. The proof is the floor; supervision raises it
+  operationally. Neither replaces the other.
 
 ## §2 Phase B — extend to git (re-establish under real hazards)
 
