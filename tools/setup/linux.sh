@@ -105,23 +105,23 @@ elif [ -f "$APT_MANIFEST" ]; then
     # (warn + continue) while the install below stays STRICT — `apt-get install`
     # still fails loudly if a package we actually need is unavailable, so the
     # assert is preserved at install time rather than skipped to a false-green.
+    # STREAM the output live (a slow/retry-heavy mirror must not look hung —
+    # Copilot P1 on PR #6419) WHILE capturing it to a temp file for the
+    # partial-failure probe. `tee` consumes ALL of apt's output, so the
+    # SIGPIPE/pipefail hazard that ruled out `printf | grep -q` (Codex P2) does
+    # not apply here — the probe greps the FILE, not a pipe. Take apt's OWN exit
+    # from PIPESTATUS[0]; the pipeline's own status would be `tee`'s, masking
+    # apt. grep on the file stays line-oriented so `^Err:` still anchors per-line.
+    apt_log="$(mktemp)"
     apt_update_rc=0
-    apt_update_out="$($SUDO apt-get update -y 2>&1)" || apt_update_rc=$?
-    printf '%s\n' "$apt_update_out"
-    # Use a here-string, NOT `printf ... | grep -q`: under `set -o pipefail`,
-    # `grep -q` exits on the first match → `printf` gets SIGPIPE (exit 141) →
-    # pipefail makes the whole pipeline return 141, so the `||` reads it as
-    # false and the warning is SUPPRESSED even though grep matched — a silent
-    # hole in exactly the exit-0 partial-source case this guard exists to
-    # surface (Codex P2 on PR #6419, discussion_r3334414817). A here-string has
-    # no upstream producer to receive SIGPIPE, so pipefail never trips it, and
-    # grep stays line-oriented so `^Err:` still anchors per-line.
+    if $SUDO apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
     if [ "$apt_update_rc" -ne 0 ] \
-       || grep -qiE 'Failed to fetch|Some index files failed to download|^Err:' <<<"$apt_update_out"; then
+       || grep -qiE 'Failed to fetch|Some index files failed to download|^Err:' "$apt_log"; then
       echo "⚠ apt-get update reported errors — likely an unreachable third-party" >&2
       echo "  source the host image shipped (not a Zeta manifest source). Continuing;" >&2
       echo "  the apt-get install below still asserts the packages we need are present." >&2
     fi
+    rm -f "$apt_log"
     # shellcheck disable=SC2086
     $SUDO apt-get install -y --no-install-recommends $PKGS
   else
