@@ -76,13 +76,19 @@ A database engine bundles three jobs in one process: **storage + compute +
 coordination**. This substrate **unbundles** them into git-native parts — there is
 no separate engine binary:
 
-| Engine job                | Git-native part                                          |
-| ------------------------- | -------------------------------------------------------- |
-| storage + append-only log | git object store + the entry folders                     |
-| replication               | clone / fetch / push + CRDT merge (the G-Set/Z-set fold) |
-| transactions              | a commit is atomic (multi-key write = one commit)        |
-| query / compute           | the observe.ts fold + Rx/IVM pipeline (§3 math note)     |
-| coordination              | the §4 distributed-time primitive (non-monotone only)    |
+Every job is tagged by **kind** — a **git property**, an **algebra property**, or
+an **implemented protocol** — per the operational rule below; nothing is "free."
+
+| Engine job                                              | Git-native part                                      | Kind                                                |
+| ------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------- |
+| storage + append-only log                               | git object store + the entry folders                 | **git property** (durable, content-addressed)       |
+| replication transport                                   | clone / fetch / push                                 | **git property**                                    |
+| merge of disjoint files                                 | the G-Set / Z-set fold                               | **algebra property** (idempotent/commutative union) |
+| single-commit transactions                              | a commit is atomic (multi-key write = one commit)    | **git property**                                    |
+| query / compute                                         | the observe.ts fold + Rx/IVM pipeline (§3 math note) | **algebra property** (deterministic reconstruction) |
+| **shared-bus tip under concurrent writers + partition** | named-ref reconciliation                             | **implemented protocol — NOT free** (B-0954.1)      |
+| **coordination (non-monotone)**                         | the §4 distributed-time primitive                    | **implemented protocol — NOT free**                 |
+| **index maintenance · liveness · conflict policy · GC** | materialized `I` integral + retention                | **implemented protocol — NOT free**                 |
 
 Two parts do **not** dissolve and must stay named (neither is a DB engine):
 
@@ -94,10 +100,27 @@ Two parts do **not** dissolve and must stay named (neither is a DB engine):
    coordination-free; non-monotone cross-agent views (exclusive claims,
    latest-per-key, anti-joins) need the §4 time/BFT primitive.
 
-Everything else — storage, log, replication, single-commit transactions, monotone
-query execution — git + the fold give for free. **Per-agent clone = a replica; the
-agent's observe loop = that replica's query engine; replicas + git sync + CRDT
-merge = a multi-master distributed DB.**
+**What is NOT free** (multi-agent review 2026-06-01 — Grok + Amara converged). An
+earlier draft said "everything else — storage, log, replication, transactions,
+monotone query — git + the fold give for free." That over-reached. Corrected
+(Amara): **git supplies durable commits; Z-set folds supply deterministic
+reconstruction; everything resembling database behaviour is the named contract
+between commits, indexes, merge policy, and coordination.** Replication _semantics_,
+liveness, index maintenance, conflict policy, and non-monotone coordination are
+**engineered obligations** — and they bite hardest at the **shared bus under
+partition**: disjoint ZetaId files avoid _content_ conflict, but the _named-ref tip_
+still serializes, and reconciling "the current bus" across N sovereign writers
+during a partition **is a consensus problem, not a CRDT merge** (Grok). That gap is
+now tracked in **[B-0954.1](../P2/B-0954.1-agent-bus-tip-partition-tolerance-named-ref-consensus-claim-coordinator-single-row-cas-co-dominant-mirrors-aaron-otto-2026-06-01.md)**.
+
+**Operational rule (carved, design-review 2026-06-01):**
+
+> Do not call it a database-engine replacement until every "free" property is named
+> as either a git property, an algebra property, or an implemented protocol.
+
+**Per-agent clone = a replica; the agent's observe loop = that replica's query
+engine; replicas + git sync + CRDT merge = a multi-master distributed DB** — with
+the coordination obligations above made explicit, not waved away.
 
 ### Where it falls over — and the agent-partition fix (Aaron 2026-05-31)
 
@@ -151,6 +174,18 @@ unit of sovereignty + privacy (each agent's encrypted home). The substrate is a
 federation of per-agent encrypted homes that join on the relationships + physical
 topology that connect them.
 
+#### How the home is realised — three options (Gemini propose 2026-06-01; operator pick: **B → C fallback, A rejected**)
+
+| Option                                              | What                                                                                                                                                                  | Tradeoff                                                                                                                                                                                                                                                                                                                                               |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **(A) forked monoworkspace**                        | a fork of Zeta; private dirs never pushed; rest synced (one repo)                                                                                                     | **rejected — fragile.** Sovereignty rests on `.gitignore` / pre-push-hook discipline; one `git add -f` leaks private state (a shield with a hole). Binds agent identity to a Zeta fork.                                                                                                                                                                |
+| **(B) two-repo** ✅ default                         | separate agent-home repo + shared zeta repo                                                                                                                           | **chosen.** Trust boundary = structural boundary — the shared remote isn't even configured in the home repo, so leakage is near-impossible **by construction** (per `architecture-is-safety-mechanism-not-discipline`). Cost: cross-repo causal-consistency / atomic-transaction plumbing a single tree gives free. This is what §0 already describes. |
+| **(C) sparse-checkout crypto-monorepo** ⏭ fallback | one global remote holds everything incl. `homes/<zeta-id>/`; sovereignty via crypto + partial clones; sparse-checkout pulls only your encrypted folder + shared paths | **fallback if cross-repo friction hurts.** Single timeline → trivial causal joins (one atomic commit spans private + bus). Cost: all sovereignty on crypto (a break = already-globally-distributed private data) + central upstream accrues unbounded G-Set bloat.                                                                                     |
+
+Operator 2026-06-01: **(B) now** (structural sovereignty beats disciplinary), **(C)
+as the escape hatch** if the cross-repo join/transaction plumbing proves too heavy;
+**(A) rejected** — fragile-by-discipline.
+
 ### Shared repos are role-typed join surfaces — bus / product / heartbeat (Aaron 2026-05-31)
 
 If each agent's private home is the sovereignty tier, then **repos like Zeta are
@@ -197,6 +232,12 @@ persona memory substrate (`memory/persona/<name>/`).
 > heartbeat repos give them society. G-Set / Z-set folds give the whole thing
 > math.**
 
+Sharper operational form (design-review sharpen, 2026-06-01):
+
+> **A sovereign Zeta DB is a federation of encrypted per-agent append logs whose
+> deliberately published deltas fold into shared Z-set views at explicit causal
+> joins.**
+
 The design is compact because every layer is the same move: **append facts, fold
 views, publish chosen deltas, join only where relationships require it.**
 
@@ -241,6 +282,25 @@ no-PR (sovereign transport). Now unblocked by §1's first-class G-Set.
       self-reflect surfaces own trajectory; play surfaces peer chatter). The bus
       is just the first source — Rx-over-anything → dashboard. Wires §2 (observe)
       to §3 (bus): the dashboard becomes a live, mode-aware view of the substrate.
+- [ ] **ZetaId coordination — Claim + Lock as typed events first; root-Category promotion deferred** — [B-0961](../P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md).
+      Multi-agent review (Grok + Amara, 2026-06-01) rejected adding `Claim(9)`/`Lock(10)`
+      to root `Category` now. Phase 1 ([B-0962](../P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)):
+      model Claim (rides `Bus(6)`) + Lock (CAS slice, B-0954.1) as typed
+      coordination **events under existing categories**. Multi-round review
+      disciplined the guarantee: **mechanism-deadlock-free** (optimistic CAS, not
+      blocking locks); app-level safety via fencing + release-before-acquire; menu
+      symmetry-breaking for livelock; completion-lock-freedom + per-agent
+      wait-freedom formally proven in B-0963 (F# first, then git).
+      Phase 2 (promote to root): gated on Gate A (identity-rule — is `Category` in the
+      content-hash?) + Gate B (real producers/consumers). Gate C (growth) **resolved**:
+      escape-to-`Extended` (reserve slot `15`, then read a **wider** extension
+      field — not repeated 4-bit nibbles — or an `IdVersion` width-bump) means 4
+      bits is no ceiling (Aaron 2026-05-31). "Free slots ≠ permission."
+- [ ] **Backlog → ZetaId conversion** (Aaron 2026-05-31): once B-0961 settles,
+      convert `docs/backlog/P*/B-*.md` → `WorkItem(8)` events in the G-Set event-store.
+      The category already exists (`WorkItem(8)` was reserved for `B-xxxxx → ZetaId`)
+      — so this is **tooling, not a new category**, gated on B-0961. Then the
+      backlog is queryable via the same Rx-over-bus pipeline as everything else.
 
 ### What an Rx query IS, in G-Set/Z-set terms (the math note)
 
