@@ -16,10 +16,11 @@ import { chmodSync, readFileSync, writeFileSync } from "node:fs";
 import { createPublicKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
-  loadTrustStore, addTrustedKey, listTrustedKeys,
+  loadTrustStore, addTrustedKey, listTrustedKeys, validatePackagePaths,
   type AcePackage,
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
+import { resolve, packageHash } from "./resolve.ts";
 
 interface ListArgs {
   readonly command: "list";
@@ -394,6 +395,34 @@ export async function main(argv: readonly string[]): Promise<number> {
         return 1;
       }
       console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
+    }
+
+    // SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
+    if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+      const fetchPackage = async (u: string): Promise<string> =>
+        u.startsWith("http") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), { allowNoSignature: parsed.allowNoSignature });
+      if (!res.ok) {
+        console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
+        return 1;
+      }
+      // PREFLIGHT (atomic): path-safety + store-key collision across the whole graph BEFORE any extract.
+      const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
+      for (const node of res.order) {
+        const unsafe = validatePackagePaths(node);
+        if (unsafe !== null) { console.error(`ace: install refused: unsafe file path in ${node.manifest.name}: ${unsafe}`); return 1; }
+        const ph = packageHash(node);
+        const prior = byStoreKey.get(node.manifest.content_hash);
+        if (prior !== undefined && prior !== ph) { console.error(`ace: install refused: store-collision — ${node.manifest.name} shares a content_hash store key with a different package`); return 1; }
+        byStoreKey.set(node.manifest.content_hash, ph);
+      }
+      // EXTRACT all, leaves first.
+      for (const node of res.order) {
+        const out = installPackage(parsed.storePath, node);
+        if (!out.ok) { console.error(`ace: install failed mid-graph: ${out.error}`); return 1; }
+      }
+      console.log(`ace: installed ${res.order.length}: ${res.order.map((p) => `${p.manifest.name}@${p.manifest.version}`).join(", ")}`);
+      return 0;
     }
 
     // INTEGRITY + extract (slice 2, unchanged)
