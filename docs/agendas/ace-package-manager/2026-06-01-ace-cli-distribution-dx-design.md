@@ -26,8 +26,7 @@ meta-PM layer.
 
 ## 1. The reframe — Ace's CLI already partly exists
 
-`tools/ace/{ace.ts, store.ts, ace.test.ts}` is on disk (B-0288 partially landed:
-install / verify / list, content-addressed + signed). There is **no
+`tools/ace/{ace.ts, store.ts, ace.test.ts}` is on disk (B-0288 is the `list`-only smallest-safe slice; `install`/`verify`/`remove`/`inspect` are explicit "not yet implemented" stubs; `store.ts` has only `listInstalled`; the manifest type carries `content_hash` but no verify logic exists yet). There is **no
 `.claude/skills/ace/`** yet. So this is not "should Ace be TS" (it already is) —
 it is "**how is the TS CLI that exists distributed, and what is its DX**." That
 narrows the whole design.
@@ -74,9 +73,10 @@ the Node-floor precondition + the bun/Codex fallback); deep substrate stays one
 
 ## 5. Trust — provenance-verify at install time, not just list time
 
-Ace already carries content-addressed + signed packages (B-0288 AC). The skills
-store is an **untrusted distribution surface**, so signature-verify must run **at
-install/exec time** — verifying only at `list` time is a green-by-skip hole (per
+Ace's *design* carries content-addressed + signed packages (B-0288 AC: the
+manifest type has `content_hash`; the verify logic is **to be built in the MVP**).
+The skills store is an **untrusted distribution surface**, so signature-verify must
+run **at install/exec time** — verifying only at `list` time is a green-by-skip hole (per
 [`automated-tests-are-the-shield-assert-dont-skip`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)).
 This is the load-bearing security invariant of the skill channel.
 
