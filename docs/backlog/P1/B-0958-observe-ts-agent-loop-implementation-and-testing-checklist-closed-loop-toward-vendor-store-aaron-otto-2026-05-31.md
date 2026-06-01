@@ -55,9 +55,10 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
       kinds `not-yet-executable`). `tools/observe/execute.ts` (#6310).
 - [x] **`loadWorld`** — read side: backlog channel (selector = oracle) + mode from folding the event
       log; schema-on-read; closes the loop. `tools/observe/load-world.ts` (#6316).
-- [x] **`folderSink`** — real EventSink: ZetaId-named JSON, folder-direct-to-main, conflict
+- [~] **`folderSink`** — real EventSink: ZetaId-named JSON, folder-direct-to-main, conflict
       discipline (ahead-check + rebase --autostash + targeted undo), idempotency, path-traversal
-      guard, Result-only. `tools/observe/event-sink-folder.ts` (#6312).
+      guard, Result-only. **IN-FLIGHT — #6312 armed, not yet on `main`**; flip to [x] +
+      `tools/observe/event-sink-folder.ts` once it merges (Codex #6318).
 - [x] **Synthesis + transport correction + key-custody design + hardware-to-buy** (#6304/#6306/#6307).
 
 ## LEFT (the testing + impl backlog — ordered)
@@ -83,17 +84,35 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
 - [ ] **`observe-loop` TS skill** — `.claude/skills/observe-loop/` packaging the four modules + a
       fresh-git-repo bootstrap procedure (per `zeta-ships-with-skills-immediate-value`). After the
       above are tested.
-- [ ] **4-language loop fan-out** — once the **TS loop APIs are stable** (the items above) AND
-      **golden-vectors ✓ in all 4** (TS/Rust/C#/F#, against the one canonical `golden-vectors.json`
-      oracle — DONE, the safe ground), build the observe loop in F#/C#/Rust on that locked oracle.
-      Don't build on shaky ground (Aaron 2026-05-31): golden-vectors first, then the loop. The
-      4-language fold (B-0867.28) is the proof the pattern works.
+- [ ] **4-language loop fan-out — two frontiers led, met in the middle → the 4-oracle** (Aaron
+      2026-05-31). Once the **TS loop APIs are stable** (the items above) AND **golden-vectors ✓ in
+      all 4** (TS/Rust/C#/F#, against the one canonical `golden-vectors.json` oracle — DONE, the safe
+      ground), build the observe loop per the role-split below. Don't build on shaky ground: locked
+      golden-vectors first, then the loop. The 4-language fold (B-0867.28) is the proof the pattern
+      works.
+
+  | Language | Role on the loop | Frontier |
+  |---|---|---|
+  | **TS** | LEAD | git-native / **text** frontier (pioneers the folder-direct-to-main sink) |
+  | **F#** | LEAD | filesystem / **binary-efficient** frontier (pioneers the stateful-binary sink) |
+  | **C#** | **meet in the middle** | both formats — .NET sibling, so it reaches the binary side; distribution-tier, so it reaches the git-native side |
+  | **Rust** | **meet in the middle** | both formats — native/low-level, so it reaches the binary side; ubiquitous tooling, so it reaches the git-native side |
+
+  **Why meet-in-the-middle = the 4-oracle**: "frontier" means *who pioneers*, NOT
+  language-exclusivity. Each format needs **≥2 independent implementations** or the
+  golden-vectors cross-check is not Byzantine-fault-tolerant — one buggy compiler could agree with
+  itself. TS+F# each LEAD one format; **C# and Rust meet in the middle by implementing BOTH**, so
+  every format ends with ≥2 impls and all four compilers vote on the one oracle. That four-way vote
+  IS the **4-oracle** ("the compilers don't lie"). Each frontier needs its OWN golden-vectors
+  (text round-trip AND binary round-trip → same logical events) so the two frontiers stay
+  parity-locked.
 - [ ] **F# dual-track backend — git-native + filesystem-binary-efficient** (Aaron 2026-05-31).
       The EventSink today is folder-direct-to-main (git-native). The DB-design ADR's "two backends"
       means the loop is backend-agnostic: a **git-native** sink AND a **filesystem binary-efficient**
       sink. **F# carries the binary-efficient filesystem-native track first** (F# = the binary
       backend per the DB-design ADR); as each track becomes not-shaky, **all 4 languages get the same
-      dual mode** (git-native + binary), F# leading the binary side.
+      dual mode** (git-native + binary) per the meet-in-the-middle table above, F# leading the binary
+      side, TS leading the git-native side, C#+Rust completing both.
 - [ ] **Vendor-agent-store distribution** — gated on all the above + "lots of testing" (Aaron).
 
 ## Composes with
