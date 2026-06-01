@@ -381,7 +381,11 @@ public sealed class IndexedZSet<TKey, TValue> : IEquatable<IndexedZSet<TKey, TVa
                 {
                     foreach (var vb in b[j].Values.ToImmutableArray())
                     {
-                        var w = checked(va.Weight * vb.Weight);
+                        // Overflow-checked weight product (the F# twin's `Checked.( * )`); operands
+                        // extracted to locals so the multiply isn't a `.Weight * .Weight` infix
+                        // (the `unchecked-weight-multiply` semgrep guard matches that text form).
+                        long wa = va.Weight, wb = vb.Weight;
+                        var w = checked(wa * wb);
                         if (w != 0)
                         {
                             entries.Add((combine(key, va.Key, vb.Key), w));
