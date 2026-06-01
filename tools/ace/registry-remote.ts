@@ -4,7 +4,11 @@
 // hash-pinned + signature-gated downstream (unchanged) — index trust is additive.
 import type { AceSignature, IndexSignableContent, TrustEntry } from "./signing.ts";
 import { verifyIndexSignature } from "./signing.ts";
+import { createHash } from "node:crypto";
+import { join } from "node:path";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import type { RegistryEntry, RemoteRegistryConfig } from "./store.ts";
+import { registryCacheDir } from "./store.ts";
 
 export type IndexDoc = IndexSignableContent & { signature: AceSignature };
 
@@ -69,4 +73,40 @@ export function verifyIndex(
     if (now - issued > maxStaleMs) return { ok: false, reason: `index is stale (issued_at older than max-staleness)` };
   }
   return { ok: true };
+}
+
+function metaPath(url: string): string {
+  return join(registryCacheDir(), createHash("sha256").update(url).digest("hex") + ".json");
+}
+function blobPath(contentHash: string): string {
+  return join(registryCacheDir(), "blobs", contentHash.replace("sha256:", "") + ".json");
+}
+function indexContentHash(body: string): string {
+  return "sha256:" + createHash("sha256").update(body).digest("hex");
+}
+
+export function readCache(url: string): { meta: CacheMeta; body: string } | null {
+  try {
+    const meta = JSON.parse(readFileSync(metaPath(url), "utf8")) as CacheMeta;
+    if (typeof meta.index_content_hash !== "string") return null;
+    const body = readFileSync(blobPath(meta.index_content_hash), "utf8");
+    return { meta, body };
+  } catch { return null; }
+}
+
+export function writeCache(
+  url: string, body: string,
+  fields: { etag?: string; last_modified?: string; sequence_high_water: number },
+): CacheMeta {
+  const ch = indexContentHash(body);
+  mkdirSync(join(registryCacheDir(), "blobs"), { recursive: true });
+  writeFileSync(blobPath(ch), body);
+  const meta: CacheMeta = {
+    url, sequence_high_water: fields.sequence_high_water, index_content_hash: ch,
+    fetched_at: new Date().toISOString(),
+    ...(fields.etag !== undefined ? { etag: fields.etag } : {}),
+    ...(fields.last_modified !== undefined ? { last_modified: fields.last_modified } : {}),
+  };
+  writeFileSync(metaPath(url), JSON.stringify(meta, null, 2));
+  return meta;
 }

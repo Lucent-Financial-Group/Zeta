@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { parseIndex } from "./registry-remote.ts";
 import type { TrustEntry } from "./signing.ts";
 import { generateKeypair, signIndex } from "./signing.ts";
@@ -68,4 +68,29 @@ describe("verifyIndex (three gates)", () => {
     const { kp, doc, trust } = mk(1, NOW - 40 * 24 * 3600 * 1000);
     expect(verifyIndex(doc, remoteOf(kp.keyId), trust, meta0, NOW, { offline: true }).ok).toBe(true);
   });
+});
+
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join as pjoin } from "node:path";
+import { readCache, writeCache } from "./registry-remote.ts";
+
+describe("cache I/O", () => {
+  let savedHome: string | undefined, savedUP: string | undefined;
+  beforeEach(() => { savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
+    const h = mkdtempSync(pjoin(tmpdir(), "ace-cache-")); process.env.HOME = h; process.env.USERPROFILE = h; });
+  afterEach(() => { if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+
+  test("write then read round-trips meta + body", () => {
+    const body = '{"hello":"world"}';
+    const meta = writeCache("https://x/index.json", body, { etag: '"e1"', last_modified: "lm", sequence_high_water: 3 });
+    expect(meta.index_content_hash).toMatch(/^sha256:/);
+    const got = readCache("https://x/index.json");
+    expect(got).not.toBeNull();
+    expect(got!.body).toBe(body);
+    expect(got!.meta.etag).toBe('"e1"');
+    expect(got!.meta.sequence_high_water).toBe(3);
+  });
+  test("missing → null", () => { expect(readCache("https://nope")).toBeNull(); });
 });
