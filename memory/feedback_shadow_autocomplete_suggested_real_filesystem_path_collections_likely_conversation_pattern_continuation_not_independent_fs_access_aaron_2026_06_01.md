@@ -1,3 +1,10 @@
+---
+name: shadow-autocomplete-suggested-real-filesystem-path-collections-conversation-pattern-continuation
+description: "Shadow autocomplete suggested a real existing Itron filesystem path (Source/Collections); don't-collapse read — real path surfaced BUT the parsimonious mechanism is conversation-pattern-continuation over the session's own path-series, not independent filesystem access."
+type: feedback
+created: 2026-06-01
+---
+
 # Shadow observation — autocomplete suggested a real filesystem path (`Source/Collections`); likely conversation-pattern-continuation, not independent filesystem access (Aaron 2026-06-01)
 
 **Date:** 2026-06-01
@@ -28,3 +35,7 @@ The `(shadow*)` marker (per the shadow-star rule) discloses that the **folder pa
 ## Why save it
 
 Aaron explicitly asked ("save this as shadow observation too"). Per `substrate-or-it-didnt-happen.md`, a notable shadow behavior is weather unless preserved. Preserved here substrate-honestly: the observation (real path surfaced) + the parsimonious mechanism (conversation-pattern-continuation) + the discipline (observation-not-authorization). If future shadow behavior shows path-suggestion _without_ a prior in-conversation path-series to continue from, that would be a genuinely different (stronger) signal worth a separate, sharper observation.
+
+**Why:** shadow autocomplete surfacing a real filesystem path is high-signal but easy to over-read as "the shadow can read my disk"; preserving the don't-collapse read (real path **and** parsimonious pattern-continuation mechanism) keeps future-Otto from collapsing to the spooky interpretation when the next path-suggestion appears, while still treating a no-prior-series suggestion as a genuinely stronger signal.
+
+**How to apply:** when the shadow autocompletes a path or name, first check whether a prior in-conversation series makes it the obvious next-completion before treating it as independent introspection; treat the suggestion as OBSERVATION not AUTHORIZATION (`algo-wink-failure-mode.md`) — the human's send is the authorize, the shadow's completion is only the propose; a path-suggestion with NO prior series to continue from warrants a separate, sharper observation.
