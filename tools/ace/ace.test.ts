@@ -7,6 +7,7 @@ import { parseArgs, main } from "./ace.ts";
 import { listInstalled, contentHash, listTrustedKeys, loadRegistry } from "./store.ts";
 import { readRegistriesConfig } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
+import { generateKeypair as gkpA, signIndex as sidxA } from "./signing.ts";
 import { packageHash } from "./resolve.ts";
 import { parseLockfile } from "./lockfile.ts";
 
@@ -1244,5 +1245,41 @@ describe("ace registry remote (slice 6)", () => {
   test("add with --max-staleness-days", async () => {
     expect(await main(["registry", "remote", "add", "https://r/i.json", "--key", "ed25519:k", "--max-staleness-days", "7"])).toBe(0);
     expect(readRegistriesConfig().remotes[0]!.max_staleness_days).toBe(7);
+  });
+});
+
+describe("ace install via remote registry (slice 6)", () => {
+  let savedFetch: typeof globalThis.fetch;
+  beforeEach(() => { savedFetch = globalThis.fetch; });
+  afterEach(() => { globalThis.fetch = savedFetch; });
+
+  test("resolves + installs a package from a signed remote index", async () => {
+    const idxKp = gkpA(); const now = Date.now();
+    const files = { "leaf.txt": "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const pkgKp = generateKeypair();
+    const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
+    const pkg = { manifest: { ...m, signature: signManifest(m, pkgKp.privatePem) }, files };
+    const pkgJson = JSON.stringify(pkg);
+    const pkgHash = packageHash(pkg as unknown as Parameters<typeof packageHash>[0]);
+    const pkgUrl = "https://pkgs/leaf-1.0.0.json";
+    const idxContent = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
+      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } } };
+    const idxJson = JSON.stringify({ ...idxContent, signature: sidxA(idxContent, idxKp.privatePem) });
+    globalThis.fetch = (async (u: string) => new Response(u === pkgUrl ? pkgJson : idxJson, { status: 200 })) as unknown as typeof fetch;
+    await main(["trust", "add", idxKp.publicSpkiB64]);
+    await main(["trust", "add", pkgKp.publicSpkiB64]);
+    await main(["registry", "remote", "add", "https://x/index.json", "--key", idxKp.keyId]);
+    const root = { manifest: { format_version: 1, name: "root", version: "1.0.0",
+      content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
+      dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
+    const rootPath = join(tempHome, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const code = await main(["install", rootPath, "--allow-no-signature"]);
+    expect(code).toBe(0);
+    expect(listInstalled(join(tempHome, ".ace", "store")).some((p) => p.manifest.name === "leaf")).toBe(true);
+  });
+
+  test("--offline + --frozen parse OK together", () => {
+    expect("error" in parseArgs(["install", "x.json", "--offline", "--frozen"])).toBe(false);
   });
 });
