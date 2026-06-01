@@ -102,8 +102,11 @@ additive, but no negatives, so no retraction.
 G-Set is the free join-semilattice, Bag the free commutative monoid, Z-set the free
 abelian group. "Free" = the most general object with that algebra and nothing extra,
 which is precisely why each is the *canonical* conflict-mergeable container at its
-level (the same free-construction pattern as the Cayley-Dickson ladder elsewhere in
-the framework: add structure, lose a property, gain expressiveness).
+level. (This free-object ladder **rhymes with** the Cayley-Dickson ladder — both are
+"add structure, change a property" ladders — but it is a *rhyme, not an identity*: the
+free constructions here are universal-free-object claims over a key set, whereas
+Cayley-Dickson is a dimension-doubling algebraic extension. Per the framework's
+Cayley-Dickson-as-RHYMES discipline, that link stays a rhyme, not a theorem.)
 
 **So the bus↔Ace split is just two rungs of one ladder:** the **bus is the G-Set
 rung** (append-only comms, no retraction needed); **Ace is the Z-set rung** (deps add
