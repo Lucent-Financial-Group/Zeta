@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, isAbsolute } from "node:path";
 import { tmpdir } from "node:os";
 import { generateKeyPairSync, createHash } from "node:crypto";
 import { parseArgs, main } from "./ace.ts";
@@ -638,6 +638,18 @@ describe("registry commands", () => {
     expect(await main(["registry", "list"])).toBe(0);
   });
 
+  test("registry add normalizes a relative local path to absolute (cwd-independent install)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string, string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const D = { manifest: { format_version: 1, name: "Drel", version: "1.0.0", content_hash: h({ "d.txt": "d" }) }, files: { "d.txt": "d" } };
+    const absPath = join(dir, "Drel.json");
+    writeFileSync(absPath, JSON.stringify(D));
+    const relPath = relative(process.cwd(), absPath);
+    expect(await main(["registry", "add", "Drel", "1.0.0", relPath])).toBe(0);
+    const stored = loadRegistry().get("Drel")?.get("1.0.0")?.url;
+    expect(isAbsolute(stored!)).toBe(true);
+    expect(stored).toBe(absPath);
+  });
   test("e2e: install a root with a registry dep resolves via the registry", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));

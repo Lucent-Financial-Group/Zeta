@@ -24,6 +24,7 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
+import { resolve as toAbsolutePath } from "node:path";
 
 interface ListArgs {
   readonly command: "list";
@@ -377,13 +378,17 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 0;
     }
     // sub === "add"
+    // Local (non-HTTP) paths are stored ABSOLUTE: a relative path would be persisted into the
+    // user-global ~/.ace/registry.json and then fail at install time when the cwd differs.
+    const isHttp = parsed.regUrl!.startsWith("http://") || parsed.regUrl!.startsWith("https://");
+    const storedUrl = isHttp ? parsed.regUrl! : toAbsolutePath(parsed.regUrl!);
     let pkgHash = parsed.regHash;
     if (pkgHash === undefined) {
       let raw: string;
       try {
-        raw = parsed.regUrl!.startsWith("http://") || parsed.regUrl!.startsWith("https://")
+        raw = isHttp
           ? await (await fetch(parsed.regUrl!)).text()
-          : readFileSync(parsed.regUrl!, "utf8");
+          : readFileSync(storedUrl, "utf8");
       } catch (e) {
         console.error(`ace: registry add: fetch/read failed: ${(e as Error).message}`);
         return 1;
@@ -392,7 +397,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: registry add: package is not valid JSON"); return 65; }
       pkgHash = packageHash(pkg);
     }
-    const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: parsed.regUrl!, package_hash: pkgHash });
+    const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: storedUrl, package_hash: pkgHash });
     console.log(res.added ? `ace: registered ${parsed.regName}@${parsed.regVersion}` : res.updated ? `ace: updated ${parsed.regName}@${parsed.regVersion} (corrected url/hash)` : `ace: ${parsed.regName}@${parsed.regVersion} already registered (identical)`);
     return 0;
   }
