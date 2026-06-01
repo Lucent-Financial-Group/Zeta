@@ -87,6 +87,23 @@ ace install <pkg> --allow-no-signature --print-resolution
 Each printed line has the format `name@version`, sorted lexicographically. Useful for
 auditing which versions the solver selected before committing to the install.
 
+## Lockfile (slice 5.3)
+
+A normal `ace install` on a package with dependencies writes `./ace.lock` after a
+successful graph install. The lockfile pins every resolved dependency by name, version,
+URL, and `package_hash`.
+
+**`--frozen`** replays the locked graph: skips solving and registry access entirely,
+fetches each node from the locked URL, and byte-verifies the result against the locked
+`package_hash` and `content_hash`. Refused if the lockfile is missing or if the root
+package has drifted from its locked state ("lockfile out of date — re-run without
+`--frozen` to regenerate").
+
+**`--lockfile <path>`** overrides the default lockfile path (`ace.lock`).
+
+Errors during lockfile *write* are warnings (install still succeeds). All `--frozen`
+refusals (missing lock, drift, hash mismatch, bad signature) are hard exits (code `1`).
+
 ## Invocation
 
 ```bash
