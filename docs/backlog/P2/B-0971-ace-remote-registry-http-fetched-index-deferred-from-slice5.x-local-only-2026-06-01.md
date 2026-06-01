@@ -30,8 +30,12 @@ locally-registered entries.
 - The fetched index entries still carry `{url, package_hash}` so slice-5.1's full
   verify (content-hash + package-hash pin + identity + signature) is unchanged — a
   remote index is untrusted metadata; the package itself is still pinned + verified.
-- Provenance/signing of the registry index itself (a malicious index can only point at
-  packages; the per-package pin + signature gate still protects the install).
+- Provenance/signing of the registry index itself. The per-package hash pin + signature
+  gate protects the **integrity + authenticity** of installed bytes, but an untrusted
+  index can still influence **availability + version selection** — omit newer versions to
+  force a downgrade to an older validly-signed (possibly-vulnerable) release, point at
+  dead URLs (DoS), or steer the solver's version pick. Index provenance/signing + an
+  anti-rollback/freshness signal are therefore needed in addition to the per-package gate.
 
 ## Why deferred (operator 2026-06-01)
 
