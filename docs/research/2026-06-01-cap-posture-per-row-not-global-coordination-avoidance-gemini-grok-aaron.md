@@ -335,11 +335,11 @@ intelligent agents, not dumb retry loops.** Ani's point:
   lower-priority mode, wait-for-signal, spread across work). Liveness becomes an
   **agent-intelligence + feedback-loop** problem, not a pure mechanical-coordination one.
 - Practical implication: don't prevent contention with heavy coordination in the common
-  case — **make contention observable** (the metrics surface), \*\*give agents the ability
-  - incentive to react**, and **reserve the hard mechanical guarantee (Lock + fencing)\*\*
-    for the narrow non-idempotent / money class. This IS the B-0962 Claim(AP)/Lock(CP)
-    split: the Claim path leans on agent intelligence for liveness; the Lock path is the
-    escape hatch.
+  case. Instead, **make contention observable** (the metrics surface); **give agents the
+  ability and incentive to react**; and **reserve the hard mechanical guarantee (Lock and
+  fencing)** for the narrow non-idempotent / money class. This IS the B-0962
+  Claim(AP)/Lock(CP) split: the Claim path leans on agent intelligence for liveness; the
+  Lock path is the escape hatch.
 
 **Composition (otto-cli):** this is already half-named — B-0962 **§3.2 "intelligent-agent
 supervision — the advantage dumb locks lack."** The architectural fit: contention signals
