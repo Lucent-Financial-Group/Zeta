@@ -147,6 +147,36 @@ describe("recordReviewThreadObservation", () => {
     });
   });
 
+  test("persists the current observation before a shard write failure", () => {
+    withTempRoot((root) => {
+      recordReviewThreadObservation({
+        repoRoot: root,
+        observedAt: TICK,
+        tick: TICK,
+        operativeAuthorization: AUTH,
+        observation: observation("otto", "resolve"),
+      });
+
+      expect(() =>
+        recordReviewThreadObservation({
+          repoRoot: root,
+          observedAt: "2026-06-01T11:10:00Z",
+          tick: "2026-06-01T11:10:00Z",
+          operativeAuthorization: AUTH,
+          observation: observation("codex-loop", "needs-fix"),
+          fileDisagreement: () => {
+            throw new Error("simulated shard write failure");
+          },
+        }),
+      ).toThrow(/simulated shard write failure/);
+
+      const store = loadObservationStore(root);
+      expect(store.observations.map((entry) => entry.observation.identity.agent)).toEqual(["otto", "codex-loop"]);
+      expect(store.filedDisagreements).toEqual([]);
+      expect(existsSync(join(root, `${DEFAULT_OBSERVATION_STORE_REL_PATH}.lock`))).toBe(false);
+    });
+  });
+
   test("records a same-conclusion second loop without filing", () => {
     withTempRoot((root) => {
       recordReviewThreadObservation({
@@ -292,6 +322,36 @@ describe("parseArgs", () => {
     expect(parsed.kind).toBe("error");
     if (parsed.kind === "error") {
       expect(parsed.message).toContain("--pr-number must be a positive integer");
+    }
+  });
+
+  test("rejects unknown flags", () => {
+    const parsed = parseArgs([
+      "--tick",
+      TICK,
+      "--operative-authorization",
+      AUTH,
+      "--agent",
+      "codex-loop",
+      "--model",
+      "gpt-5.5",
+      "--harness",
+      "codex",
+      "--pr-number",
+      "4147",
+      "--thread-id",
+      "PRRT_kwExample",
+      "--conclusion",
+      "needs-fix",
+      "--body",
+      "lint reproduces locally",
+      "--operatve-authorization",
+      AUTH,
+    ]);
+
+    expect(parsed.kind).toBe("error");
+    if (parsed.kind === "error") {
+      expect(parsed.message).toContain("unknown argument: --operatve-authorization");
     }
   });
 });

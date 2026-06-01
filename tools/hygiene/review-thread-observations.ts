@@ -33,6 +33,11 @@ export interface StoredReviewThreadDisagreement {
   readonly relPath: string;
 }
 
+export type ReviewThreadDisagreementWriter = (
+  repoRoot: string,
+  input: Parameters<typeof fileReviewThreadDisagreement>[1],
+) => ReviewThreadShardOutcome;
+
 export interface ReviewThreadObservationStore {
   readonly schemaVersion: typeof SCHEMA_VERSION;
   readonly observations: ReadonlyArray<StoredReviewThreadObservation>;
@@ -46,6 +51,7 @@ export interface RecordReviewThreadObservationInput {
   readonly tick: string;
   readonly operativeAuthorization: string;
   readonly observation: ReviewThreadObservation;
+  readonly fileDisagreement?: ReviewThreadDisagreementWriter;
 }
 
 export interface FiledReviewThreadDisagreement {
@@ -308,6 +314,7 @@ export function recordReviewThreadObservation(
       observedAt: input.observedAt,
       observation: input.observation,
     };
+    const observations = [...store.observations, current];
     const priorSameThread = store.observations.filter(
       (prior) =>
         sameReviewThread(prior.observation, input.observation) &&
@@ -317,6 +324,16 @@ export function recordReviewThreadObservation(
     const filedDisagreements = [...(store.filedDisagreements ?? [])];
     const filed: FiledReviewThreadDisagreement[] = [];
     const noDisagreements: ReviewThreadNoDisagreement[] = [];
+    const writeStore = (): void =>
+      writeObservationStore(input.repoRoot, storeRelPath, {
+        schemaVersion: SCHEMA_VERSION,
+        observations,
+        filedDisagreements,
+      });
+
+    writeStore();
+
+    const writeDisagreement = input.fileDisagreement ?? fileReviewThreadDisagreement;
     for (const prior of priorSameThread) {
       if (
         normalizedConclusion(prior.observation.conclusion) !== normalizedConclusion(input.observation.conclusion) &&
@@ -326,7 +343,7 @@ export function recordReviewThreadObservation(
         continue;
       }
 
-      const outcome = fileReviewThreadDisagreement(input.repoRoot, {
+      const outcome = writeDisagreement(input.repoRoot, {
         tick: input.tick,
         loopA: prior.observation,
         loopB: input.observation,
@@ -341,16 +358,11 @@ export function recordReviewThreadObservation(
           conclusions: disagreementConclusions(prior.observation, input.observation),
           relPath: outcome.write.relPath,
         });
+        writeStore();
       } else {
         noDisagreements.push({ prior, reason: outcome.reason });
       }
     }
-
-    writeObservationStore(input.repoRoot, storeRelPath, {
-      schemaVersion: SCHEMA_VERSION,
-      observations: [...store.observations, current],
-      filedDisagreements,
-    });
 
     return {
       storeRelPath,
@@ -374,12 +386,30 @@ function readRequired(flags: Map<string, string>, key: string): string | { reado
   return value;
 }
 
+const REQUIRED_FLAGS = [
+  "--tick",
+  "--operative-authorization",
+  "--agent",
+  "--model",
+  "--harness",
+  "--pr-number",
+  "--thread-id",
+  "--conclusion",
+  "--body",
+] as const;
+
+const OPTIONAL_FLAGS = ["--repo-root", "--store", "--observed-at"] as const;
+const ALLOWED_FLAGS = new Set<string>([...REQUIRED_FLAGS, ...OPTIONAL_FLAGS]);
+
 export function parseArgs(argv: string[]): ParseArgsResult {
   const flags = new Map<string, string>();
   for (let i = 0; i < argv.length; ) {
     const flag = argv[i]!;
     if (!flag.startsWith("--")) {
       return { kind: "error", message: `unknown positional argument: ${flag}` };
+    }
+    if (!ALLOWED_FLAGS.has(flag)) {
+      return { kind: "error", message: `unknown argument: ${flag}` };
     }
     const value = argv[i + 1];
     if (!hasFlagValue(value)) {
@@ -389,18 +419,7 @@ export function parseArgs(argv: string[]): ParseArgsResult {
     i += 2;
   }
 
-  const required = [
-    "--tick",
-    "--operative-authorization",
-    "--agent",
-    "--model",
-    "--harness",
-    "--pr-number",
-    "--thread-id",
-    "--conclusion",
-    "--body",
-  ] as const;
-  for (const flag of required) {
+  for (const flag of REQUIRED_FLAGS) {
     const value = readRequired(flags, flag);
     if (typeof value !== "string") {
       return { kind: "error", message: value.error };
