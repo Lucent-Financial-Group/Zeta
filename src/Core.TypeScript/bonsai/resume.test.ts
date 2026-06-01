@@ -79,6 +79,20 @@ test("lambda in eval position declines UnsupportedNode (slice-1)", () => {
   if (!r.ok) expect(r.error.kind).toBe("UnsupportedNode");
 });
 
+test("a param named like an Object.prototype member declines Unbound (own-property lookup)", () => {
+  for (const name of ["toString", "constructor", "hasOwnProperty", "__proto__"]) {
+    const r = start(param(name)); // default {} bindings — must NOT resolve an inherited member
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.kind).toBe("Unbound");
+  }
+});
+
+test("arithmetic past the safe-int range declines NonSafeInt", () => {
+  const r = start(binary("add", cint(Number.MAX_SAFE_INTEGER), cint(1)));
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.error.kind).toBe("NonSafeInt");
+});
+
 // ---- state serialization round-trip ----
 
 test("serializeState / parseState round-trip + resume-from-restored equals resume-from-original", () => {

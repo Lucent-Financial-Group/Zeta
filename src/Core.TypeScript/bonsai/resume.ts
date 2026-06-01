@@ -36,6 +36,8 @@ export type ResumeFeedback =
   | { readonly kind: "Unbound"; readonly name: string }
   | { readonly kind: "TypeMismatch"; readonly where: string; readonly expected: string }
   | { readonly kind: "UnsupportedNode"; readonly nodeKind: string }
+  // an int operation/value left the shared JS-safe-integer wire domain (the Bonsai contract)
+  | { readonly kind: "NonSafeInt"; readonly value: number }
   | { readonly kind: "MalformedState"; readonly message: string };
 
 /**
@@ -87,15 +89,23 @@ function constEq(a: ConstValue, b: ConstValue): boolean {
   return (a as { v: unknown }).v === (b as { v: unknown }).v;
 }
 
+/** Build an `int` ConstValue, declining if the (possibly arithmetic) result left the shared
+ * JS-safe-integer wire domain — so an overflowing add/sub/mul can't become a final value or
+ * activity arg that `serializeState` emits but `parseState` rejects (the Bonsai safe-int contract). */
+function intResult(v: number): ConstValue {
+  if (!Number.isSafeInteger(v)) throw new ResumeFail({ kind: "NonSafeInt", value: v });
+  return { t: "int", v };
+}
+
 /** Apply a binary operator to two evaluated operands (the inline, pure step). */
 function applyBinOp(op: BinOp, left: ConstValue, right: ConstValue): ConstValue {
   switch (op) {
     case "add":
-      return { t: "int", v: asInt(left, "add.left") + asInt(right, "add.right") };
+      return intResult(asInt(left, "add.left") + asInt(right, "add.right"));
     case "sub":
-      return { t: "int", v: asInt(left, "sub.left") - asInt(right, "sub.right") };
+      return intResult(asInt(left, "sub.left") - asInt(right, "sub.right"));
     case "mul":
-      return { t: "int", v: asInt(left, "mul.left") * asInt(right, "mul.right") };
+      return intResult(asInt(left, "mul.left") * asInt(right, "mul.right"));
     case "eq":
       return { t: "bool", v: constEq(left, right) };
     case "lt":
@@ -136,9 +146,10 @@ function run(control: Control, kont: readonly Frame[]): SagaStep {
           ctrl = { mode: "ret", value: e.value };
           break;
         case "param": {
-          const v = env[e.name];
-          if (v === undefined) throw new ResumeFail({ kind: "Unbound", name: e.name });
-          ctrl = { mode: "ret", value: v };
+          // own-property check: a name like "toString"/"constructor" must NOT resolve to an
+          // inherited Object.prototype member — an unbound param declines Unbound, always
+          if (!Object.prototype.hasOwnProperty.call(env, e.name)) throw new ResumeFail({ kind: "Unbound", name: e.name });
+          ctrl = { mode: "ret", value: env[e.name]! };
           break;
         }
         case "binary":
@@ -221,6 +232,10 @@ export function resume(state: SagaState, activityResult: ConstValue): Result<Sag
 function emitConstValue(c: ConstValue): string {
   switch (c.t) {
     case "int":
+      // symmetric with parseState (and Bonsai): never emit an int parseState would reject —
+      // so an unsafe int injected via a resume() activity-result declines rather than producing
+      // un-parseable durable bytes
+      if (!Number.isSafeInteger(c.v)) throw new ResumeFail({ kind: "NonSafeInt", value: c.v });
       return `{"t":"int","v":${c.v}}`;
     case "str":
       return `{"t":"str","v":${JSON.stringify(c.v)}}`;
