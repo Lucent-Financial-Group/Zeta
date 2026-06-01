@@ -24,6 +24,7 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
+import { solve } from "./solver.ts";
 import { resolve as toAbsolutePath } from "node:path";
 
 interface ListArgs {
@@ -488,7 +489,12 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), loadRegistry(), { allowNoSignature: parsed.allowNoSignature });
+      const solveResult = await solve(pkg, fetchPackage, loadRegistry());
+      if (!solveResult.ok) {
+        console.error(`ace: install refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`);
+        return 1;
+      }
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), loadRegistry(), solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
       if (!res.ok) {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
