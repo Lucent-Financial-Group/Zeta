@@ -76,9 +76,49 @@ type ToffoliCircuit = {
     Ancilla : int
 }
 
+/// A bounded Toffoli sub-circuit with named wire groups.
+///
+/// B-0366.2.2 uses this fragment shape for one reversible join-weight
+/// multiplication primitive. The circuit keeps the encoded inputs,
+/// product target wires, and all partial-product/carry wires reachable
+/// so exact reversal never depends on erased intermediates.
+type ToffoliCircuitFragment = {
+    Circuit               : ToffoliCircuit
+    ConstantOneWire       : WireId
+    LeftSignWire          : WireId
+    LeftMagnitudeWires    : WireId list
+    RightSignWire         : WireId
+    RightMagnitudeWires   : WireId list
+    ProductSignWire       : WireId
+    ProductMagnitudeWires : WireId list
+    IntermediateWires     : WireId list
+    CarryWires            : WireId list
+    PeresChains           : ToffoliGateStep list list
+}
+
 
 [<RequireQualifiedAccess>]
 module ToffoliGate =
+
+    let private signBit (w: Weight) : Bit =
+        if w < 0L then One else Zero
+
+    let private magnitude (w: Weight) : uint64 =
+        if w < 0L then uint64 (~~~w) + 1UL else uint64 w
+
+    let private magnitudeBitWidth (m: uint64) : int =
+        let rec loop width value =
+            if value = 0UL then max 1 width
+            else loop (width + 1) (value >>> 1)
+
+        loop 0 m
+
+    let private magnitudeBits (width: int) (m: uint64) : Bit list =
+        [ for bit in 0 .. width - 1 do
+            if ((m >>> bit) &&& 1UL) = 1UL then One else Zero ]
+
+    let private wireRange start count : WireId list =
+        [ for offset in 0 .. count - 1 -> start + offset ]
 
     /// The Toffoli gate: (a, b, c) → (a, b, c ⊕ (a ∧ b)).
     ///
@@ -115,3 +155,107 @@ module ToffoliGate =
     /// invariants trivially — empty gate list implies no WireId constraints.
     let emptyCircuit : ToffoliCircuit =
         { Gates = []; Wires = Map.empty; Ancilla = 0 }
+
+    /// Model one reversible Z-set join weight multiplication fragment.
+    ///
+    /// Signed weights are encoded as sign plus little-endian magnitude
+    /// bits. A constant-one helper turns Toffoli into CNOT where the
+    /// fragment needs XOR-style sign/product wiring. Each magnitude bit
+    /// pair emits a three-step Peres-shaped chain:
+    ///
+    ///   1. compute and retain the partial product,
+    ///   2. route it into the matching product column,
+    ///   3. retain the column carry dependency for reversal.
+    ///
+    /// This is intentionally the core multiplication primitive only;
+    /// B-0366.2.3 layers laws over the fragment before full join(A,B).
+    let modelWeightMul (left: Weight) (right: Weight) : ToffoliCircuitFragment =
+        let leftMagnitude = magnitude left
+        let rightMagnitude = magnitude right
+        let leftWidth = magnitudeBitWidth leftMagnitude
+        let rightWidth = magnitudeBitWidth rightMagnitude
+        let productWidth = leftWidth + rightWidth
+        let partialCount = leftWidth * rightWidth
+
+        let mutable nextWire = 0
+
+        let takeOne () =
+            let wire = nextWire
+            nextWire <- nextWire + 1
+            wire
+
+        let take count =
+            let wires = wireRange nextWire count
+            nextWire <- nextWire + count
+            wires
+
+        let constantOneWire = takeOne ()
+        let leftSignWire = takeOne ()
+        let leftMagnitudeWires = take leftWidth
+        let rightSignWire = takeOne ()
+        let rightMagnitudeWires = take rightWidth
+        let productSignWire = takeOne ()
+        let productMagnitudeWires = take productWidth
+        let intermediateWires = take partialCount
+        let carryWires = take partialCount
+
+        let leftBits = magnitudeBits leftWidth leftMagnitude
+        let rightBits = magnitudeBits rightWidth rightMagnitude
+
+        let wireValues =
+            [ yield constantOneWire, One
+              yield leftSignWire, signBit left
+              yield! List.zip leftMagnitudeWires leftBits
+              yield rightSignWire, signBit right
+              yield! List.zip rightMagnitudeWires rightBits
+              yield productSignWire, Zero
+              yield! productMagnitudeWires |> List.map (fun wire -> wire, Zero)
+              yield! intermediateWires |> List.map (fun wire -> wire, Zero)
+              yield! carryWires |> List.map (fun wire -> wire, Zero) ]
+
+        let indexedBitPairs =
+            [ for leftIndex, leftWire in List.indexed leftMagnitudeWires do
+                for rightIndex, rightWire in List.indexed rightMagnitudeWires do
+                    yield leftIndex, rightIndex, leftWire, rightWire ]
+
+        let peresChains =
+            indexedBitPairs
+            |> List.mapi (fun index (leftIndex, rightIndex, leftWire, rightWire) ->
+                let partialWire = intermediateWires.[index]
+                let carryWire = carryWires.[index]
+                let productWire = productMagnitudeWires.[leftIndex + rightIndex]
+
+                [ { ControlA = leftWire
+                    ControlB = rightWire
+                    Target = partialWire }
+                  { ControlA = partialWire
+                    ControlB = constantOneWire
+                    Target = productWire }
+                  { ControlA = partialWire
+                    ControlB = productWire
+                    Target = carryWire } ])
+
+        let signGates =
+            [ { ControlA = leftSignWire
+                ControlB = constantOneWire
+                Target = productSignWire }
+              { ControlA = rightSignWire
+                ControlB = constantOneWire
+                Target = productSignWire } ]
+
+        let circuit =
+            { Gates = signGates @ List.collect id peresChains
+              Wires = Map.ofList wireValues
+              Ancilla = nextWire }
+
+        { Circuit = circuit
+          ConstantOneWire = constantOneWire
+          LeftSignWire = leftSignWire
+          LeftMagnitudeWires = leftMagnitudeWires
+          RightSignWire = rightSignWire
+          RightMagnitudeWires = rightMagnitudeWires
+          ProductSignWire = productSignWire
+          ProductMagnitudeWires = productMagnitudeWires
+          IntermediateWires = intermediateWires
+          CarryWires = carryWires
+          PeresChains = peresChains }
