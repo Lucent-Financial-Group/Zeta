@@ -6,7 +6,8 @@
 > add + minimal `ace sign`**). This doc is the faithful transcription for review
 > before the implementation plan. Updated 2026-06-01 for PR #6315 review findings
 > (keygen key permissions; `--allow-unsigned` override scope; whole-manifest
-> canonicalization; resolvable custody-doc link).
+> canonicalization; resolvable custody-doc link; content_hash-vs-manifest
+> canonicalization distinction).
 
 Builds on slice 1 (`bun link` distribution + skill surface, #6301) and slice 2
 (content-hash **integrity** install/verify, #6308). Slice 2 deliberately shipped
@@ -36,18 +37,29 @@ attacker also controls when they control the distribution surface).
 
 A signature is computed over the **entire canonical manifest with its own
 `signature` field removed** — and the manifest already carries `content_hash`
-(sha256 of the canonical `files` JSON, slice 2), so **one signature binds both
-identity (name/version) and content** without inventing a second hash.
+(sha256 of the `files` JSON, slice 2), so **one signature binds both identity
+(name/version) and content** without inventing a second hash.
 
-- **Canonical manifest bytes:** the manifest object with the `signature` field
-  removed, serialized as **deterministic canonical JSON — recursively key-sorted,
-  no insignificant whitespace** (an RFC 8785 / JCS-style canonicalization;
-  for the MVP: recursively sort all object keys then `JSON.stringify`, which is
-  stable for the manifest's string/integer value types). **The whole object is
-  covered, not a fixed field allowlist** — so every present field AND any future
-  field is bound by the signature. (An allowlist would be a footgun: a later
-  reader could act on a new field that an old signature never bound. Covering the
-  whole object closes that.)
+- **Canonical manifest bytes (for the signature):** the manifest object with the
+  `signature` field removed, serialized as **deterministic canonical JSON —
+  recursively key-sorted, no insignificant whitespace** (an RFC 8785 / JCS-style
+  canonicalization; for the MVP: recursively sort all object keys then
+  `JSON.stringify`, stable for the manifest's string/integer value types).
+  **The whole object is covered, not a fixed field allowlist** — so every present
+  field AND any future field is bound by the signature. (An allowlist would be a
+  footgun: a later reader could act on a new field that an old signature never
+  bound. Covering the whole object closes that.)
+- **`content_hash` uses a DIFFERENT canonicalization, on purpose — and is UNCHANGED
+  from slice 2.** `content_hash` = `sha256(JSON.stringify(pkg.files))` (the existing
+  `contentHash` in `store.ts`, **insertion-order**, no sorting). The manifest's
+  recursive-key-sort canonicalization above applies to the **manifest**, NEVER to
+  `files`. `ace sign` MUST reuse the slice-2 `contentHash` function **verbatim**
+  when it recomputes/checks `content_hash`, so the signer's hash always equals what
+  `installPackage` recomputes at install time. Applying the sorted canonicalization
+  to `files` would disagree with the slice-2 installer → `ace sign` would refuse a
+  package `installPackage` accepts, or sign a hash the installer can't reproduce.
+  Do not do it. (Making `content_hash` itself order-independent is a separate
+  pre-existing slice-2 concern, deferred to 3.1 — §10.)
 - **`manifest.signature`** (new, optional): `{ algo: "ed25519", key_id, sig }`
   where `sig` = base64 of the raw 64-byte Ed25519 signature. The `signature` field
   itself is excluded from the canonical bytes (you can't sign over the signature).
@@ -81,7 +93,7 @@ identity (name/version) and content** without inventing a second hash.
 | Verb | Form | Behavior |
 |---|---|---|
 | `keygen` | `ace keygen [--out <prefix>]` | Generate an Ed25519 keypair. Writes `<prefix>.key` (PKCS8 PEM, private) **with owner-only `0600` permissions — secure-create, never world-readable** (see §8) + `<prefix>.pub` (JSON `{ algo, key_id, public_key }`, normal perms). Default prefix `ace-key`. |
-| `sign` | `ace sign <pkg> --key <priv> [--out <file>]` | Read package JSON; **recompute content_hash and refuse to sign if it doesn't match** `files` (never sign tampered content); build canonical manifest bytes (§3); Ed25519-sign with the private key; set `manifest.signature`; write to `--out` (else stdout). |
+| `sign` | `ace sign <pkg> --key <priv> [--out <file>]` | Read package JSON; **recompute `content_hash` using the slice-2 `contentHash(JSON.stringify(files))` from `store.ts`** (NOT the manifest's sorted canonicalization — §3) and **refuse to sign if it doesn't match** (never sign tampered content); build canonical manifest bytes (§3); Ed25519-sign with the private key; set `manifest.signature`; write to `--out` (else stdout). |
 | `trust add` | `ace trust add <pub-or-b64> [--label <name>]` | Append a public key to `~/.ace/trusted-keys.json` (create if absent; dedup by key_id). `<pub-or-b64>` = path to a `.pub` file OR a raw base64 SPKI-DER string. |
 | `trust list` | `ace trust list` | List trusted keys (bundled ∪ user) with key_id, label, source. |
 | `install` | `ace install <url-or-path> [--allow-unsigned]` | **Changed** — adds the authenticity gate (§6). |
@@ -105,7 +117,8 @@ never written to disk):
    - `signature` **absent** → if `--allow-unsigned`: loud warn + proceed; else
      **refuse** (exit 1): `ace: install refused: unsigned package (use --allow-unsigned to override)`.
 3. **Integrity + extract:** `installPackage` (slice-2 content-hash verify-before-
-   extract, unchanged). Files-vs-content_hash mismatch → refuse (exit 1).
+   extract, unchanged — recomputes `content_hash` with the same slice-2 function the
+   signer used). Files-vs-content_hash mismatch → refuse (exit 1).
 4. **Success print:**
    - signed+trusted → `ace: integrity + authenticity verified (signed by <key_id> <label>) -> <dir>`
    - unsigned+allowed → the slice-2 line: `ace: integrity-verified (content hash). NOT authenticity-verified (--allow-unsigned).`
@@ -119,12 +132,14 @@ never written to disk):
   → `{ privatePem, publicSpkiB64, keyId }`; `keyId(spkiB64)`; `canonicalManifestBytes(manifest)`
   (whole-manifest-minus-`signature`, recursively key-sorted — §3);
   `signManifest(manifest, privatePem)` → signature object; `verifySignature(manifest, trustStore)`.
-  (Key-file *writing* — including the `0600` private-key permission — is I/O and
-  lives in `ace.ts`/`store.ts`, not in this pure module.)
+  It **imports the slice-2 `contentHash` from `store.ts`** (does not reimplement it)
+  so the signer's `content_hash` always matches the installer's. Key-file *writing*
+  (incl. the `0600` private-key permission) is I/O and lives in `ace.ts`, not here.
 - **`tools/ace/store.ts`** (extended): add `trustStorePath()`, `bundledTrustPath()`,
   `loadTrustStore()`, `addTrustedKey()`, `listTrustedKeys()` — all the `~/.ace`/repo
   trust-file I/O lives here next to `defaultStorePath`/`listInstalled`. **`installPackage`
-  is unchanged** (integrity-only single responsibility; slice-2 contract + tests intact).
+  and `contentHash` are unchanged** (integrity-only single responsibility; slice-2
+  contract + tests intact).
 - **`tools/ace/ace.ts`** (extended): `parseArgs` + `main` wire `keygen`/`sign`/`trust`/
   the install gate; orchestrates the enforcement policy; performs the `0600`
   secure-create when writing a generated private key.
@@ -173,7 +188,9 @@ where the OS honors it.)
   an arbitrary/unknown field) → `bad-signature` (proves whole-manifest coverage,
   not a fixed allowlist); key not in trust store → `untrusted-key`; missing
   signature → `no-signature`; `key_id` deterministic + stable; `canonicalManifestBytes`
-  identical regardless of input key order.
+  identical regardless of input key order; **a signed package's `content_hash`
+  matches the slice-2 `contentHash` so `installPackage` accepts it** (signer/installer
+  agreement).
 - **`tools/ace/store.test.ts`** (additions): `loadTrustStore` union (bundled ∪
   user); `addTrustedKey` creates + dedups; user overrides bundled on key_id;
   `listTrustedKeys` reports source.
@@ -193,6 +210,12 @@ where the OS honors it.)
 
 - Real Zeta root keypair ceremony (operator custody;
   [agent-native key-custody design](../../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)).
+- **Making `content_hash` canonicalization order-independent.** Slice 2 computes it
+  as `sha256(JSON.stringify(pkg.files))` (insertion-order), so two semantically
+  identical packages with different `files` key order hash differently. Changing it
+  now would break the slice-2 `installPackage` contract + tests + every existing
+  package, so slice 3 keeps it verbatim (signer reuses the same fn — §3); making it
+  canonical is a separate, back-compat-breaking change deferred here.
 - Key rotation / revocation / expiry.
 - Guardian-AI oversight (B-0288 AC).
 - Interop with `minisign` / `sigstore`/`cosign` signature formats (this slice uses
@@ -202,7 +225,7 @@ where the OS honors it.)
 
 ## Plan shape (4 tasks, subagent-driven like slices 1–2)
 
-1. `signing.ts` — Ed25519 primitives (whole-manifest canonicalization) + `signing.test.ts` (pure, no I/O).
+1. `signing.ts` — Ed25519 primitives (whole-manifest canonicalization; imports slice-2 `contentHash`) + `signing.test.ts` (pure, no I/O).
 2. Trust store in `store.ts` + bundled `trusted-keys.json` + `store.test.ts` additions.
 3. `ace.ts` — `keygen` (with `0600` private key) / `sign` / `trust` verbs + install
    authenticity gate (`--allow-unsigned` overrides only genuinely-unsigned) + `ace.test.ts` additions.
