@@ -179,25 +179,28 @@ export function loadTrustStore(
 }
 
 /** Append to the user store (create if absent); dedup by key_id.
- * Creates ~/.ace with mode 0o700 (owner-only) and sets trust file to 0o600 (owner-only)
- * on EVERY call — including the dedup early-return path — so a pre-existing permissive
+ * Tightens ~/.ace to 0o700 AND the trust file to 0o600 (both owner-only) on EVERY call — including the dedup early-return path — so a pre-existing permissive
  * file (e.g. from an old version or bad umask) is always corrected. chmod after write
  * because writeFileSync's mode option only applies on file creation, not on overwrite.
  */
 export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePath()): { added: boolean } {
+  const dir = dirname(userPath);
+  // Repair BOTH the ~/.ace dir (0o700) and the trust file (0o600) on EVERY call. mkdirSync's
+  // mode only applies on creation, so a pre-existing permissive dir would otherwise let another
+  // local user replace files in it (swap trusted-keys.json) even though the file itself is 0o600.
+  const repairPerms = (): void => {
+    if (existsSync(dir)) { try { chmodSync(dir, 0o700); } catch { /* best-effort; unusual FS */ } }
+    if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort; unusual FS */ } }
+  };
   const existing = readKeysFile(userPath);
   if (existing.some((k) => k.key_id === entry.key_id)) {
-    // Dedup path: key already present, nothing to write — but still repair perms if the
-    // file exists with loose bits (e.g. pre-existing permissive file from a bad umask).
-    if (existsSync(userPath)) {
-      try { chmodSync(userPath, 0o600); } catch { /* best-effort; unusual FS */ }
-    }
+    repairPerms(); // dedup path: nothing to write, but still tighten dir+file if loose
     return { added: false };
   }
   existing.push({ ...entry, added: entry.added ?? new Date().toISOString() });
-  mkdirSync(dirname(userPath), { recursive: true, mode: 0o700 });
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
   writeFileSync(userPath, JSON.stringify(existing, null, 2));
-  chmodSync(userPath, 0o600);
+  repairPerms(); // tighten dir (in case it pre-existed permissive) + file
   return { added: true };
 }
 
