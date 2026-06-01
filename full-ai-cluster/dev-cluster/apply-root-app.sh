@@ -6,6 +6,7 @@
 set -euo pipefail
 
 GIT_REF="${1:-main}"
+GIT_REPO_URL="${2:-${ZETA_ARGOCD_GIT_REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}}"
 
 case "$GIT_REF" in
   *[!a-zA-Z0-9._/-]* | ''|/*|*/|*//*)
@@ -13,7 +14,12 @@ case "$GIT_REF" in
     exit 1 ;;
 esac
 
-echo "Applying root App-of-Apps (git ref: ${GIT_REF}) ..."
+if ! [[ "$GIT_REPO_URL" =~ ^https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(\.git)?$ ]]; then
+  echo "ERROR: git repo URL must be an https://github.com/<owner>/<repo> URL (got: '${GIT_REPO_URL}')" >&2
+  exit 1
+fi
+
+echo "Applying root App-of-Apps (git repo: ${GIT_REPO_URL}, git ref: ${GIT_REF}) ..."
 cat <<EOF | kubectl apply -f -
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -25,7 +31,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    repoURL: ${GIT_REPO_URL}
     targetRevision: ${GIT_REF}
     path: full-ai-cluster/k8s/applications
     directory:

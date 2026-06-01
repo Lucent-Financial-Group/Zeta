@@ -21,7 +21,7 @@ on:
       - 'tools/cluster/argocd-health-test.ts'
       - 'tools/cluster/argocd-health-test.test.ts'
       - 'full-ai-cluster/dev-cluster/**'
-      - 'full-ai-cluster/k8s/**'
+      - 'full-ai-cluster/k8s/applications/**/Application.yaml'
       - 'docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md'
       - '.github/workflows/k8s-argocd-health-test.yml'
       - '.mise.toml'
@@ -33,7 +33,7 @@ on:
       - 'tools/cluster/argocd-health-test.ts'
       - 'tools/cluster/argocd-health-test.test.ts'
       - 'full-ai-cluster/dev-cluster/**'
-      - 'full-ai-cluster/k8s/**'
+      - 'full-ai-cluster/k8s/applications/**/Application.yaml'
       - 'docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md'
       - '.github/workflows/k8s-argocd-health-test.yml'
       - '.mise.toml'
@@ -71,6 +71,7 @@ jobs:
       - name: Build ArgoCD health dry-run plan
         env:
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
         run: |
           bun tools/cluster/argocd-health-test.ts \
             --dry-run \
@@ -104,6 +105,7 @@ jobs:
       - name: Run live kind ArgoCD health check
         env:
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
         run: |
           bun tools/cluster/argocd-health-test.ts \
             --run \

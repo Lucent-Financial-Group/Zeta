@@ -24,12 +24,13 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 GIT_REF="main"
+GIT_REPO_URL="${ZETA_ARGOCD_GIT_REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 CONFIG_PATH="${SCRIPT_DIR}/k3d-config.yaml"
 
 usage() {
   cat >&2 <<EOF
 usage: ./up.sh [git-ref]
-       ./up.sh --config <k3d-config.yaml> [--git-ref <ref>]
+       ./up.sh --config <k3d-config.yaml> [--git-ref <ref>] [--repo-url <url>]
 EOF
 }
 
@@ -49,6 +50,14 @@ while [ "$#" -gt 0 ]; do
         exit 1
       fi
       GIT_REF="$2"
+      shift 2
+      ;;
+    --repo-url)
+      if [ "$#" -lt 2 ]; then
+        usage
+        exit 1
+      fi
+      GIT_REPO_URL="$2"
       shift 2
       ;;
     -h|--help)
@@ -107,6 +116,11 @@ case "$GIT_REF" in
     echo "ERROR: git-ref must match [a-zA-Z0-9._/-]+ (got: '${GIT_REF}')" >&2
     exit 1 ;;
 esac
+
+if ! [[ "$GIT_REPO_URL" =~ ^https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(\.git)?$ ]]; then
+  echo "ERROR: git repo URL must be an https://github.com/<owner>/<repo> URL (got: '${GIT_REPO_URL}')" >&2
+  exit 1
+fi
 # Pre-flight
 for cmd in docker k3d kubectl helm; do
   command -v "$cmd" >/dev/null || {
@@ -209,7 +223,7 @@ kubectl wait --for=condition=Established \
   crd/applications.argoproj.io \
   >/dev/null 2>&1 || true
 
-"${SCRIPT_DIR}/apply-root-app.sh" "$GIT_REF"
+"${SCRIPT_DIR}/apply-root-app.sh" "$GIT_REF" "$GIT_REPO_URL"
 
 # Done
 cat <<EOF

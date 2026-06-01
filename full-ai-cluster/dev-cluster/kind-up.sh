@@ -11,13 +11,14 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 GIT_REF="main"
+GIT_REPO_URL="${ZETA_ARGOCD_GIT_REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 CONFIG_PATH="${SCRIPT_DIR}/profiles/ci.kind-config.yaml"
 CLUSTER_NAME="zeta-ci"
 OCI_RUNTIME="${ZETA_CONTAINER_RUNTIME:-docker}"
 
 usage() {
   cat >&2 <<EOF
-usage: ./kind-up.sh [--config <kind-config.yaml>] [--cluster-name <name>] [--git-ref <ref>]
+usage: ./kind-up.sh [--config <kind-config.yaml>] [--cluster-name <name>] [--git-ref <ref>] [--repo-url <url>]
 EOF
 }
 
@@ -45,6 +46,14 @@ while [ "$#" -gt 0 ]; do
         exit 1
       fi
       GIT_REF="$2"
+      shift 2
+      ;;
+    --repo-url)
+      if [ "$#" -lt 2 ]; then
+        usage
+        exit 1
+      fi
+      GIT_REPO_URL="$2"
       shift 2
       ;;
     -h|--help)
@@ -94,6 +103,11 @@ case "$GIT_REF" in
     exit 1 ;;
 esac
 
+if ! [[ "$GIT_REPO_URL" =~ ^https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(\.git)?$ ]]; then
+  echo "ERROR: git repo URL must be an https://github.com/<owner>/<repo> URL (got: '${GIT_REPO_URL}')" >&2
+  exit 1
+fi
+
 for cmd in "$OCI_RUNTIME" kind kubectl helm; do
   command -v "$cmd" >/dev/null || {
     echo "ERROR: $cmd not found. Install with:"
@@ -141,7 +155,7 @@ kubectl wait --for=condition=Established \
   crd/applications.argoproj.io \
   >/dev/null
 
-"${SCRIPT_DIR}/apply-root-app.sh" "$GIT_REF"
+"${SCRIPT_DIR}/apply-root-app.sh" "$GIT_REF" "$GIT_REPO_URL"
 
 cat <<EOF
 
