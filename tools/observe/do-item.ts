@@ -92,7 +92,7 @@ export type ActionObservation =
  * Apply ONE observation to the world (the observation reducer). `Succeeded` DELEGATES to
  * `simulate(do_item)` so the transition can't drift from the pure path; `Started`
  * and `Failed` only move the mode (the item stays until it actually succeeds).
- * No executor — applying a observation never runs anything.
+ * No executor — applying an observation never runs anything.
  */
 export function applyObservation(world: World, observation: ActionObservation): World {
   switch (observation.kind) {
