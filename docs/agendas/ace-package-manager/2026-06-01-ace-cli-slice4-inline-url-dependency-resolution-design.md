@@ -79,7 +79,7 @@ export type ResolveResult =
 export type ResolveReason =
   | "version-skew"        // D3: same name, two versions in the graph
   | "tamper"              // D4: same name+version, different content_hash
-  | "pin-mismatch"        // parent edge content_hash !== fetched dep manifest.content_hash
+  | "pin-mismatch"        // parent edge content_hash !== fetched dep manifest.content_hash (or declared identity mismatch)
   | "bad-content-hash"    // slice-2: dep files do not hash to its manifest.content_hash
   | "bad-signature"       // slice-3: present signature fails verification
   | "untrusted-key"       // slice-3: signature by a key not in the trust store
@@ -99,25 +99,36 @@ export async function resolve(
 
 ### Algorithm
 
-1. Start from `root`. Maintain:
-   - `byName: Map<name, {version, content_hash}>` — for skew/tamper/dedup detection
-   - `byHash: Map<content_hash, AcePackage>` — resolved nodes (dedup by hash)
-   - `visiting: Set<content_hash>` — current DFS stack, for cycle detection
+Dedup, skew, tamper, and cycle detection are all keyed on **package identity =
+`name`** — NOT `content_hash`. Because `content_hash` is `sha256(files)` *only*
+(slice-2 definition), two genuinely-distinct packages can ship identical files
+(same hash) while differing in `name` / `dependencies` / `signature`. Keying
+dedup on the hash would wrongly treat the second as an already-resolved diamond
+and skip its manifest, transitive deps, and signature check. So identity is the
+package **name**; `content_hash` is the integrity pin verified *against* that
+identity, never the dedup key.
+
+1. **Seed with the root** before walking — so skew / tamper / cycles that involve
+   the root itself are caught (e.g. `root@1 → A → root@2` is skew;
+   `root@1 → A → root@1` is a cycle):
+   - `byName: Map<name, {version, content_hash}>` ← `{ root.name: {root.version, root.content_hash} }`
+   - `visiting: Set<name>` ← `{ root.name }` — current DFS stack, for cycle detection
+   - `order: AcePackage[]` ← `[]` — filled post-order; root appended last
    - `path: string[]` — human-readable dependency path for error messages (`root → A → D`)
-2. DFS from the root's `dependencies`. For each edge `{name, version, url, content_hash}`:
-   - If `byHash` already has `content_hash` → diamond dedup; skip re-fetch (but still run the skew/tamper checks below against `byName`).
-   - Else fetch via `fetchPackage(url)`:
-     - fetch/parse failure → `fetch-failed` / `invalid-package`.
-     - **slice-2 self-check:** `contentHash(JSON.stringify(dep.files)) === dep.manifest.content_hash` else `bad-content-hash`.
-     - **pin check:** `edge.content_hash === dep.manifest.content_hash` else `pin-mismatch`.
-     - **slice-3 gate** (`verifySignature(dep.manifest, trustStore)`): map `no-signature` → refuse unless `allowNoSignature`; `bad-signature` / `untrusted-key` / `unsupported-algo` → refuse **always**.
-   - **Conflict checks against `byName[name]`:**
-     - present with **different version** → `version-skew` (detail names both requirers + versions).
-     - present with **same version, different content_hash** → `tamper`.
-     - present with same version+hash → dedup (do not recurse again).
-     - absent → record, recurse into `dep.manifest.dependencies`.
-   - **Cycle:** if `content_hash ∈ visiting` → `cycle` (detail lists the loop).
-3. On success, return DFS post-order (leaves first, root last) as `order`.
+2. DFS the current node's `dependencies`. For each edge `{name, version, url, content_hash}`, in this order:
+   - **Cycle:** if `name ∈ visiting` → `cycle` (detail lists the loop via `path`).
+   - **Else if `name ∈ byName`** (already resolved, not on the current stack):
+     - different `version` → `version-skew` (detail names both requirers + versions)
+     - same `version`, different `content_hash` → `tamper`
+     - same `version`, same `content_hash` → **diamond dedup**: skip (already resolved + verified — no re-fetch, no recurse)
+   - **Else (new identity)** — fetch via `fetchPackage(url)`:
+     - fetch/parse failure → `fetch-failed` / `invalid-package`
+     - **slice-2 self-check:** `contentHash(JSON.stringify(dep.files)) === dep.manifest.content_hash` else `bad-content-hash`
+     - **pin check:** `edge.content_hash === dep.manifest.content_hash` else `pin-mismatch`
+     - **identity check:** `dep.manifest.name === name && dep.manifest.version === version` else `pin-mismatch` (the edge's declared identity must match the fetched package's own manifest, so a mislabeled edge can't smuggle a different package past the name-keyed dedup)
+     - **slice-3 gate** (`verifySignature(dep.manifest, trustStore)`): `no-signature` → refuse unless `allowNoSignature`; `bad-signature` / `untrusted-key` / `unsupported-algo` → refuse **always**
+     - record `byName[name] = {version, content_hash}`; add `name` to `visiting`; recurse into `dep.manifest.dependencies`; on return, remove `name` from `visiting` and append the package to `order` (post-order ⇒ leaves first)
+3. On success, append the root to `order` last and return it (leaves first, root last).
 
 The resolver verifies; it does **not** touch the filesystem store (that stays
 `installPackage`'s job — clean separation).
@@ -160,11 +171,15 @@ registry caching/signing; per-node signature-policy granularity.
 **`resolve.test.ts`** (pure, injected in-memory fetch):
 
 - linear chain (root → A → B) installs in order B, A, root
-- diamond dedup (root → A → D, root → B → D, same D hash) visits/installs D once
+- diamond dedup (root → A → D, root → B → D, same D name+version+hash) visits/installs D once
+- distinct packages with identical files (A, B same files-hash, different names) BOTH resolve + recurse (identity-keyed dedup — the P1 case)
 - version-skew (A → D@1.0, B → D@2.0) → `version-skew` refuse
 - same-version-different-hash (A → D@1.0/hashX, B → D@1.0/hashY) → `tamper` refuse
+- root-involving skew (root@1 → A → root@2) → refused (root is seeded)
+- root cycle (root@1 → A → root@1) → `cycle` refuse (root is seeded into `visiting`)
 - cycle (A → B → A) → `cycle` refuse with the loop in `path`
 - pin-mismatch (edge hash ≠ fetched manifest hash) → `pin-mismatch` refuse
+- declared-identity mismatch (edge name/version ≠ fetched manifest name/version) → `pin-mismatch` refuse
 - bad-content-hash (dep files don't hash to its manifest) → `bad-content-hash` refuse
 - untrusted-key / bad-signature node → refuse always (even with `allowNoSignature`)
 - unsigned node + `allowNoSignature:false` → `no-signature` refuse; `true` → resolves
