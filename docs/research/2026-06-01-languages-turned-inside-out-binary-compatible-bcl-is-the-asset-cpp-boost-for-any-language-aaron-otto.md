@@ -83,8 +83,7 @@ interfaces per `bcl-interface-boundary`):
 
 The elegance to learn: Boost's **separation of policy from mechanism** (allocators,
 comparators, traits as parameters) — the same shape as our comparer-as-identity
-
-- generic-math-interface-as-port design.
+and generic-math-interface-as-port design.
 
 ## How the algebra-ladder sweep instantiates the thesis
 
