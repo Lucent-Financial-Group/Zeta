@@ -227,10 +227,12 @@ impl<T: Ord + Clone> Default for Bag<T> {
 }
 
 impl<T: Ord + Clone> Sum for Bag<T> {
-    /// Fold a collection of Bags through the monoid (`Default` identity + `+`), so
-    /// `iter.sum()` aggregates them (per-key sums) — the "generic code folds it" payoff.
+    /// Fold a collection of Bags through the monoid, so `iter.sum()` aggregates them (per-key
+    /// sums) — the "generic code folds it" payoff. `reduce` folds from the FIRST element (no
+    /// identity-seed clone — `&empty + &x` would clone `x` via union's empty short-circuit);
+    /// an empty iterator yields the `Default` identity.
     fn sum<I: Iterator<Item = Bag<T>>>(iter: I) -> Self {
-        iter.fold(Self::default(), |acc, x| &acc + &x)
+        iter.reduce(|acc, x| &acc + &x).unwrap_or_default()
     }
 }
 
