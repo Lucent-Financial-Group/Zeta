@@ -31,3 +31,11 @@ git    winget=Git.Git    choco=git
 # it normally. This matches Linux: common/local-llm.sh installs the ollama binary gracefully too
 # (the local-LLM model is best-effort substrate, never a hard dep).
 ollama    winget=Ollama.Ollama    choco=ollama    optional
+
+# Container runtime for the effectful do_item executor (symmetric with manifests/brew +
+# manifests/apt; B-0964 §2). podman = the default OCI runtime (Apache-2.0); on Windows it
+# runs its Linux VM via WSL2 (`podman machine init` on first use). Coexists with Docker
+# Desktop (also WSL2; separate machine). Pins per dep-pin-search-first (WebSearch 2026-06-01
+# — https://winget.run/pkg/RedHat/Podman + https://scoop.sh/): scoop `podman` | winget
+# `RedHat.Podman` | choco defaults to `podman` (last-resort; scoop is primary resolver).
+podman    winget=RedHat.Podman

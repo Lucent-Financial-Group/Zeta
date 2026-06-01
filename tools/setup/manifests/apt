@@ -31,3 +31,12 @@ libicu74          # ICU — .NET globalization (the classic "dotnet exited" caus
 libssl3t64        # OpenSSL 3 runtime (Noble t64 name)
 libgssapi-krb5-2  # Kerberos/GSSAPI — .NET networking
 tzdata            # timezone data — .NET DateTime
+
+# Container runtime for the effectful do_item executor (B-0964 §2; OCI-standard,
+# runtime-swappable via ZETA_CONTAINER_RUNTIME). podman = default (Apache-2.0,
+# rootless, daemonless). On Linux no VM is needed (native namespaces/cgroups). On
+# the GPU cluster, NVIDIA access is runtime-NEUTRAL via the NVIDIA Container Toolkit
+# + CDI — same `--device nvidia.com/gpu=all` works on podman AND docker (CDI ≥
+# podman 4.1 / docker via nvidia-container-toolkit), so the executor stays runtime-
+# agnostic even with GPUs. Docker (if installed) coexists; the executor picks via env.
+podman
