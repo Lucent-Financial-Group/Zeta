@@ -9,24 +9,35 @@ shape differs.
 
 ArgoCD reads `full-ai-cluster/k8s/applications/` as an App-of-Apps,
 recursively. The dev cluster runs ArgoCD configured against the
-same path. Every workload reconciles into both clusters
-identically -- Cilium, NFD, hat-system, OPA Gatekeeper, Vault,
-SPIRE, cert-manager, Trust Manager, External Secrets, ArgoCD
-itself if you bootstrap-in-place.
+same path. The parity lane proves the shared App-of-Apps wiring and
+the workloads whose substrate exists in dev/CI. Workloads that require
+bare-metal-only substrate, such as Longhorn-backed storage, stay visible
+in the same manifest tree but are not claimed as healthy in dev/CI until
+that substrate is installed or overlaid.
 
 What differs between dev and prod:
 
-| | Dev parity (k3d) | CI/smoke (kind) | Prod (NixOS bare-metal) |
-|--|------------------|----------------|-------------------------|
-| Substrate | Docker containers as "nodes" | Docker/Podman containers as "nodes" | Physical machines |
-| Node count | 1 server + 2 agents by default | 1 control-plane by default | 1+ control-plane + N workers |
-| CNI | Cilium (kube-proxy replacement) | kindnet unless a CNI test opts in | Cilium |
-| Storage | local-path-provisioner | local-path-style ephemeral volumes | Longhorn (multi-disk) |
-| GPU | none | none | NVIDIA / AMD / Intel |
-| Identity | SPIRE (same chart) | SPIRE manifests can reconcile in smoke/full scope | SPIRE (same chart) |
-| Secrets | Vault (in-cluster dev mode) | Vault manifests can reconcile in smoke/full scope | Vault (HA + Sealed Secrets) |
-| Network MTU | Runtime default | Runtime default | Real NIC MTU |
-| Persistence | Lost on `./down.sh` | Lost on `kind-down.sh` | Across reboots |
+- **Substrate** - k3d and kind run container-backed nodes; prod runs
+  physical machines.
+- **Node count** - k3d defaults to 1 server plus 2 agents, kind CI
+  defaults to 1 control-plane, and prod supports 1+ control-plane nodes
+  plus workers.
+- **CNI** - k3d runs Cilium as a kube-proxy replacement, kind CI uses
+  kindnet unless a CNI test opts in, and prod runs Cilium.
+- **Storage** - dev/CI use local ephemeral storage. Prod uses
+  Longhorn multi-disk storage.
+- **GPU** - dev/CI have none by default. Prod can use NVIDIA, AMD, or
+  Intel GPUs.
+- **Identity** - SPIRE is present in the shared manifest tree, but the
+  current values request Longhorn storage, so dev/CI health assertions
+  exclude it until a storage overlay exists.
+- **Secrets** - Vault is present in the shared manifest tree, but the
+  current values request Longhorn storage, so dev/CI health assertions
+  exclude it until a storage overlay exists.
+- **Network MTU** - dev/CI use the runtime default. Prod uses the real
+  NIC MTU.
+- **Persistence** - dev/CI data is removed by `./down.sh` or
+  `kind-down.sh`. Prod data survives reboots.
 
 Apps that don't make sense in dev are excluded by the root
 App-of-Apps `exclude:` glob in `up.sh`:
@@ -36,6 +47,12 @@ App-of-Apps `exclude:` glob in `up.sh`:
 - `ollama/**`, `vllm/**`, `deepseek-coder/**`, `qwen-coder/**` - no
   GPU. Remove from the exclude list if you have an Apple Silicon
   Mac + a model server that runs on MPS (vLLM nightly does).
+
+The B-0967 health harness also excludes Applications whose
+`Application.yaml` requests Longhorn storage via `storageClass` or
+`storageClassName` from dev/CI health assertions. That includes apps
+such as Vault and SPIRE until a local Longhorn-compatible storage
+overlay exists.
 
 ## Bring it up
 

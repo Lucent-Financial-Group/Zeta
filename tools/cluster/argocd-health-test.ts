@@ -557,7 +557,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     ],
     notes: [
       "B-0967 is separate from B-0891; this harness does not test USB reformat retention.",
-      "Dev excludes cilium, Longhorn, GPU model-serving, and Longhorn-backed app directories; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Dev health assertions exclude cilium, Longhorn, GPU model-serving, and Applications whose manifests request Longhorn storage; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };
