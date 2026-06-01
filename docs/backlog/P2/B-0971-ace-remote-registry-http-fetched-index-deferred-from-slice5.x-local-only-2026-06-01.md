@@ -16,10 +16,10 @@ tags: [ace, package-manager, registry, remote, http, deferred-enhancement]
 ## What this row proposes
 
 Today the Ace registry (slice 5.1) is **local only**: a bundled `tools/ace/registry.json`
-(ships `{}`) unioned with a user `~/.ace/registry.json`, mapping `name → version →
-{url, package_hash}`. This row tracks a **remote registry**: fetch a registry index over
-HTTP(S) so a name+range can resolve against a shared, hosted catalog rather than only
-locally-registered entries.
+(ships `{}`) unioned with a user `~/.ace/registry.json`, mapping
+`name → version → {url, package_hash}`. This row tracks a **remote registry**: fetch a
+registry index over HTTP(S) so a name+range can resolve against a shared, hosted catalog
+rather than only locally-registered entries.
 
 ## Scope sketch
 

@@ -33,8 +33,8 @@ graph into slice 5.1's **unchanged** verify + atomic-install engine.
 4. **Z3 tests our TS.** Differential tests cross-check our TS solver against **Z3**
    (end-to-end multi-constraint assignment) and **node-semver** (the `satisfies` /
    `compare` primitive). Both are **test-only devDependencies** (npm `z3-solver` WASM
-   + `semver`), pinned to WebSearch-current versions at build time per
-   [`dep-pin-search-first-authority`](../../../.claude/rules/dep-pin-search-first-authority.md). Using `z3-solver` (WASM, always present in CI)
+   + `semver`), pinned per
+   [`dep-pin-search-first-authority`](../../../.claude/rules/dep-pin-search-first-authority.md) — WebSearch the current version at **authoring time** and cite it in the commit message + PR description (no automated build-time pinning). Using `z3-solver` (WASM, always present in CI)
    not a system `z3` binary, so the Z3 cross-check **asserts** rather than skipping —
    no false-green hole (per [`automated-tests-are-the-shield`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)).
 
