@@ -57,6 +57,73 @@ invariants hold as HARD rules — (a) release-before-acquire-different (§1.3),
 (b) fencing / CAS-at-write (§2), (c) lease-protected release (§2). The residual is
 **livelock**, addressed in §3 (and turned into a real guarantee for the menu).
 
+### §0.1 CAP posture per layer — the per-row CP backstop in a layered stack (Gemini + Grok huddle + Aaron, 2026-06-01)
+
+A CAP huddle on the wider architecture located _where_ the consistency tradeoff lands,
+and it lands HERE — but scoped per-row, not globally. The per-layer map:
+
+| Layer                                  | CAP posture                                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Per-agent Z-sets / G-sets + git log    | **CA, locally** — single-writer, in-process synchronous indexes; no concurrent writer ⇒ no distributed-C to reconcile    |
+| Read-side reporting aggregate          | **AP** — bounded staleness (eventual consistency)                                                                        |
+| **Claim/lock coordination (this row)** | **per-row CP** — mutual exclusion is an _agreement_ problem, scoped to one workitem row (per-key CAS), NOT a global lock |
+
+The load-bearing point: **mutual exclusion is not CRDT-able.** A G-set/Z-set converges
+_commutatively_; "exactly one agent holds row X" is _not commutative_ → it needs
+agreement, and under partition that forces deny-availability OR risk-double-claim. CRDTs
+converge state _after_ the exclusive decision; they don't make it. BUT the agreement is
+**per-key**: non-contended rows never coordinate (pure AP, parallel); the CP requirement
+exists only on the one row two agents claim at the same instant — **per-key
+linearizability, not global** (coordination avoidance, Bailis et al.). There is **no
+global coordination surface** — no shared register, and no shared `main` (agents own
+their own repos across dozens of projects; a per-repo `main` is just another per-key CAS
+local to that repo, AP-with-retry via force-with-lease, never a CP bottleneck).
+
+So the optimistic-CAS + fencing mechanism (§0/§2) IS the per-key CP enforcement: under
+partition the bite is scoped to the _contended row_ and degrades to **try-or-pick-different
+/ rebase-retry** (the §3 livelock discipline) — availability degrades per-contended-key,
+consistency holds per-key always.
+
+**Round-2 correction (do not over-read the table):** a second review refuted "the per-row
+git CAS is the ONLY CP." Aaron's core — _no single global surface across the
+multi-repo/multi-project society_ — holds, but coordination is a **layered stack**, not
+one per-row CP: the per-row git CAS is the **authoritative backstop**, sitting under
+(a) the **bus claim** (`tools/bus/claim.ts` — first-to-claim + TTL, multi-agent
+visibility, advisory/optimistic; bus partition ⇒ two agents can both acquire then race
+on git), (b) **ID allocation** (sequential `B-NNNN` needs a consistent `origin/main` +
+in-flight view ⇒ stale view ⇒ collision; **content-addressed ZetaIds per B-0961 avoid
+this**), and (c) per-shared-repo **`origin/main`** serialization (per-ref CAS,
+AP-with-retry; GitHub is the availability dependency). Correctness is in how those layers
+**compose under partial connectivity**. Also: per-agent state is **CA-local** —
+**PACELC is undefined intra-process** (no network boundary), NOT "PC/EC." Cross-row work
+(decomposition / cascades) needs the §1.3 single-resource + release-before-acquire rule;
+hot-row contention needs §3 backoff + the (unproven) B-0963 bounded-wait-freedom.
+
+**Round-3 resolution (Aaron, 2026-06-01) — Claim is best-effort AP, not CP; this row's
+two primitives ARE the AP/CP split.** Round 2's pessimism resolves:
+
+- **Mutual exclusion is NOT a correctness requirement for deterministic/idempotent work.**
+  Two agents double-claiming the same backlog item is fine — even valuable: two PRs that
+  **cross-verify** each other, or one finishes first and the second sees it on main and
+  converges (**deterministic ending; "git decides"**). No lock ⇒ no deadlock/livelock to
+  contend (the round-2 deadlock/livelock objections only bite if at-most-once is required).
+  So **Claim** (§4: cooperative, monotone, G-Set, try-or-pick-different) is **best-effort
+  AP** — redundancy-as-verification, not a CP island.
+- **Lock** (§4: hard CAS + fencing) is the **CP** primitive, reserved for the gated
+  **non-idempotent** class (money / provisioning / external charges — B-0918 banker-bot
+  territory) where double-work IS unsafe. So this row's Claim-vs-Lock split = the AP/CP
+  split: Claim = AP default; Lock = CP escape.
+- **PACELC correction-of-the-correction:** per-agent state is geo-replicated for safety
+  (F# deterministic DB / CockroachDB — a single copy would be unsafe), so PACELC DOES
+  apply: per-agent = **PC/EC** (single-writer; replication chooses C). Round-2's
+  "undefined intra-process" assumed a single copy.
+- **ID surface being removed:** B-NNNN is a stopgap; ZetaId 128-bit (B-0858 v1 /
+  B-0893 v2, already implemented; content/structure-addressed) needs no global allocator.
+
+Full three-round analysis (Gemini + Grok verbatim, both huddle rounds + Aaron's
+resolutions):
+[`docs/research/2026-06-01-cap-posture-per-row-not-global-coordination-avoidance-gemini-grok-aaron.md`](../../research/2026-06-01-cap-posture-per-row-not-global-coordination-avoidance-gemini-grok-aaron.md).
+
 ## §1 The patterns — never-deadlock AND keep-it-simple
 
 Items 1–3 are the simple defaults; #4 is the only-if-ever escape; #5 the livelock

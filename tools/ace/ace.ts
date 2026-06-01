@@ -3,12 +3,14 @@
 //
 // Usage:
 //   bun tools/ace/ace.ts list [--store <path>] [--json]
-//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature]
+//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution]
 //   bun tools/ace/ace.ts verify <hash>
 //   bun tools/ace/ace.ts keygen [--out <prefix>]
 //   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
 //   bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]
 //   bun tools/ace/ace.ts trust list
+//   bun tools/ace/ace.ts registry add <name> <version> <url> [--hash <h>]
+//   bun tools/ace/ace.ts registry list
 //
 // Future commands (not yet implemented): remove, inspect.
 
@@ -16,10 +18,14 @@ import { chmodSync, readFileSync, writeFileSync } from "node:fs";
 import { createPublicKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
-  loadTrustStore, addTrustedKey, listTrustedKeys,
+  loadTrustStore, addTrustedKey, listTrustedKeys, validatePackagePaths,
+  loadRegistry, addRegistryEntry, listRegistry,
   type AcePackage,
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
+import { resolve, packageHash } from "./resolve.ts";
+import { solve } from "./solver.ts";
+import { resolve as toAbsolutePath } from "node:path";
 
 interface ListArgs {
   readonly command: "list";
@@ -36,6 +42,7 @@ interface InstallArgs {
   readonly source: string;
   readonly storePath: string;
   readonly allowNoSignature: boolean;
+  readonly printResolution?: boolean;
 }
 
 interface VerifyArgs {
@@ -63,7 +70,16 @@ interface TrustArgs {
   readonly label?: string;
 }
 
-type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs;
+interface RegistryArgs {
+  readonly command: "registry";
+  readonly sub: "list" | "add";
+  readonly regName?: string;
+  readonly regVersion?: string;
+  readonly regUrl?: string;
+  readonly regHash?: string;
+}
+
+type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs;
 
 interface ArgError {
   readonly error: string;
@@ -141,11 +157,32 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     return { error: `Unknown trust subcommand: ${sub}` };
   }
 
+  if (command === "registry") {
+    const sub = argv[1];
+    if (sub === "list") return { command: "registry", sub: "list" };
+    if (sub === "add") {
+      const name = argv[2], version = argv[3], url = argv[4];
+      if (!name || !version || !url || name.startsWith("-") || version.startsWith("-") || url.startsWith("-")) {
+        return { error: "registry add requires <name> <version> <url>" };
+      }
+      let hash: string | undefined;
+      for (let i = 5; i < argv.length; i++) {
+        if (argv[i] === "--hash") { hash = argv[++i]; if (!hash || hash.startsWith("-")) return { error: "--hash requires a value" }; }
+        else return { error: `Unknown option for registry add: ${argv[i]}` };
+      }
+      const result: RegistryArgs = { command: "registry", sub: "add", regName: name, regVersion: version, regUrl: url };
+      if (hash !== undefined) return { ...result, regHash: hash };
+      return result;
+    }
+    return { error: "registry requires 'add' or 'list'" };
+  }
+
   if (command === "install") {
     const source = argv[1];
     if (!source || source.startsWith("-")) return { error: "install requires a <url-or-path> argument" };
     let storePath = defaultStorePath();
     let allowNoSignature = false;
+    let printResolution = false;
     for (let i = 2; i < argv.length; i++) {
       if (argv[i] === "--store" || argv[i] === "-s") {
         const next = argv[i + 1];
@@ -154,11 +191,15 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         i++;
       } else if (argv[i] === "--allow-no-signature") {
         allowNoSignature = true;
+      } else if (argv[i] === "--print-resolution") {
+        printResolution = true;
       } else {
         return { error: `Unknown option for install: ${argv[i]}` };
       }
     }
-    return { command: "install", source, storePath, allowNoSignature };
+    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature };
+    if (printResolution) return { ...baseResult, printResolution: true };
+    return baseResult;
   }
 
   if (command === "verify") {
@@ -203,13 +244,17 @@ function printUsage(): void {
 
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
-  ace install <url-or-path> [--allow-no-signature]   Download/read a package, verify integrity+authenticity, install
+  ace install <url-or-path> [--allow-no-signature] [--print-resolution]
+                                                   Download/read a package, verify integrity+authenticity, install
                                                    --allow-no-signature only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
+                                                   --print-resolution prints the solved name@version graph before installing
   ace verify <hash>                              Confirm an installed package is present
   ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
   ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
   ace trust add <pub-file-or-b64> [--label <name>] Trust an Ed25519 public key
   ace trust list                                 List all trusted keys
+  ace registry add <name> <version> <url> [--hash <h>] Register a package in the local registry
+  ace registry list                              List all registry entries
   ace help                                       Show this help
 
 Future commands (not yet implemented):
@@ -333,6 +378,52 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 0;
   }
 
+  // registry
+  if (parsed.command === "registry") {
+    if (parsed.sub === "list") {
+      const rows = listRegistry();
+      if (rows.length === 0) { console.log("No registry entries. (add one: ace registry add <name> <version> <url>)"); return 0; }
+      for (const r of rows) console.log(`  ${r.name}@${r.version}  ${r.url}  [${r.source}]`);
+      return 0;
+    }
+    // sub === "add"
+    // Local (non-HTTP) paths are stored ABSOLUTE: a relative path would be persisted into the
+    // user-global ~/.ace/registry.json and then fail at install time when the cwd differs.
+    const isHttp = parsed.regUrl!.startsWith("http://") || parsed.regUrl!.startsWith("https://");
+    const storedUrl = isHttp ? parsed.regUrl! : toAbsolutePath(parsed.regUrl!);
+    let pkgHash = parsed.regHash;
+    if (pkgHash === undefined) {
+      let raw: string;
+      try {
+        raw = isHttp
+          ? await (await fetch(parsed.regUrl!)).text()
+          : readFileSync(storedUrl, "utf8");
+      } catch (e) {
+        console.error(`ace: registry add: fetch/read failed: ${(e as Error).message}`);
+        return 1;
+      }
+      let pkg: AcePackage;
+      try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: registry add: package is not valid JSON"); return 65; }
+      // Shape guard before hashing: a parseable-but-malformed package (missing manifest/files)
+      // would otherwise produce a bogus hash / throw; refuse with a clean exit. Also verify the
+      // package identity matches the CLI name/version so a package cannot be registered under the
+      // wrong name (mirrors the resolver declared-identity check, caught here at add-time).
+      const pm = pkg as { manifest?: { name?: unknown; version?: unknown }; files?: unknown };
+      if (typeof pkg !== "object" || pkg === null || typeof pm.manifest !== "object" || pm.manifest === null || typeof pm.files !== "object" || pm.files === null) {
+        console.error("ace: registry add: package is not a well-formed AcePackage (missing manifest/files)");
+        return 65;
+      }
+      if (pm.manifest.name !== parsed.regName || pm.manifest.version !== parsed.regVersion) {
+        console.error(`ace: registry add: package identity ${String(pm.manifest.name)}@${String(pm.manifest.version)} != ${parsed.regName}@${parsed.regVersion}`);
+        return 65;
+      }
+      pkgHash = packageHash(pkg);
+    }
+    const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: storedUrl, package_hash: pkgHash });
+    console.log(res.added ? `ace: registered ${parsed.regName}@${parsed.regVersion}` : res.updated ? `ace: updated ${parsed.regName}@${parsed.regVersion} (corrected url/hash)` : `ace: ${parsed.regName}@${parsed.regVersion} already registered (identical)`);
+    return 0;
+  }
+
   if (parsed.command === "list") {
     const packages = listInstalled(parsed.storePath);
 
@@ -358,7 +449,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (parsed.command === "install") {
     let raw: string;
     try {
-      raw = parsed.source.startsWith("http")
+      raw = parsed.source.startsWith("http://") || parsed.source.startsWith("https://")
         ? await (await fetch(parsed.source)).text()
         : readFileSync(parsed.source, "utf8");
     } catch (e) {
@@ -396,6 +487,58 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
     }
 
+    // SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
+    if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+      // Verify root content_hash BEFORE resolving (no wasted graph fetch on a bad root).
+      const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
+      if (rootFilesHash !== pkg.manifest.content_hash) {
+        console.error(`ace: install refused: bad-content-hash in ${pkg.manifest.name} (root)`);
+        return 1;
+      }
+      const fetchPackage = async (u: string): Promise<string> =>
+        (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+      const registry = loadRegistry();
+      const solveResult = await solve(pkg, fetchPackage, registry);
+      if (!solveResult.ok) {
+        console.error(`ace: install refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`);
+        return 1;
+      }
+      // Print the solved graph if --print-resolution was requested.
+      if (parsed.printResolution) {
+        for (const [n, v] of [...solveResult.versions].sort()) {
+          console.log(`  ${n}@${v}`);
+        }
+      }
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
+      if (!res.ok) {
+        console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
+        return 1;
+      }
+      // PREFLIGHT (atomic): integrity + path-safety + store-key collision across the whole
+      // graph BEFORE any extract. content_hash is verified first (including the root, which
+      // the resolver does not re-check) so a tampered root cannot orphan already-extracted
+      // leaves.
+      const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
+      for (const node of res.order) {
+        // D6 atomicity: verify every node's content_hash before any extraction (incl. root).
+        const fh = contentHash(new TextEncoder().encode(JSON.stringify(node.files)));
+        if (fh !== node.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.manifest.name}`); return 1; }
+        const unsafe = validatePackagePaths(node);
+        if (unsafe !== null) { console.error(`ace: install refused: unsafe file path in ${node.manifest.name}: ${unsafe}`); return 1; }
+        const ph = packageHash(node);
+        const prior = byStoreKey.get(node.manifest.content_hash);
+        if (prior !== undefined && prior !== ph) { console.error(`ace: install refused: store-collision — ${node.manifest.name} shares a content_hash store key with a different package`); return 1; }
+        byStoreKey.set(node.manifest.content_hash, ph);
+      }
+      // EXTRACT all, leaves first.
+      for (const node of res.order) {
+        const out = installPackage(parsed.storePath, node);
+        if (!out.ok) { console.error(`ace: install failed mid-graph: ${out.error}`); return 1; }
+      }
+      console.log(`ace: installed ${res.order.length}: ${res.order.map((p) => `${p.manifest.name}@${p.manifest.version}`).join(", ")}`);
+      return 0;
+    }
+
     // INTEGRITY + extract (slice 2, unchanged)
     const result = installPackage(parsed.storePath, pkg);
     if (!result.ok) { console.error(`ace: install refused: ${result.error}`); return 1; }
@@ -421,7 +564,7 @@ export async function main(argv: readonly string[]): Promise<number> {
 
 if (import.meta.main) {
   // .catch() closes the unhandled-promise surface from the async main(): an unexpected throw
-  // inside an await exits 1 with a diagnostic instead of an UnhandledPromiseRejection.
+  // inside an async main() exits 1 with a diagnostic instead of an UnhandledPromiseRejection.
   main(process.argv.slice(2))
     .then((c) => process.exit(c))
     .catch((e) => {

@@ -1,11 +1,12 @@
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, isAbsolute } from "node:path";
 import { tmpdir } from "node:os";
 import { generateKeyPairSync, createHash } from "node:crypto";
 import { parseArgs, main } from "./ace.ts";
-import { listInstalled, contentHash, listTrustedKeys } from "./store.ts";
+import { listInstalled, contentHash, listTrustedKeys, loadRegistry } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
+import { packageHash } from "./resolve.ts";
 
 // ---- Trust-path isolation: redirect ~/.ace to a temp dir in every test ----
 let savedHome: string | undefined;
@@ -558,5 +559,186 @@ describe("main", () => {
     // --allow-no-signature must NOT override algorithm-confusion
     const code = await main(["install", tamperedPath, "--allow-no-signature", "--store", store]);
     expect(code).toBe(1);
+  });
+
+  // ---- slice 4: graph install ----
+
+  test("e2e: install a small graph (root->A->B) installs all three", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
+    writeFileSync(join(dir,"B.json"), JSON.stringify(B));
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }), dependencies:[{ kind: "inline" as const, name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B as any) }] }, files: { "a.txt":"a" } };
+    writeFileSync(join(dir,"A.json"), JSON.stringify(A));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind: "inline" as const, name:"A", version:"1.0.0", url: join(dir,"A.json"), package_hash: packageHash(A as any) }] }, files: { "r.txt":"r" } };
+    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    expect(code).toBe(0);
+    expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["A","B","root"]);
+  });
+
+  test("atomic: a graph with an unsafe-path node installs NOTHING (preflight)", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const bad = { manifest: { format_version:1, name:"BAD", version:"1.0.0", content_hash: h({ "../escape":"x" }) }, files: { "../escape":"x" } };
+    writeFileSync(join(dir,"BAD.json"), JSON.stringify(bad));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind: "inline" as const, name:"BAD", version:"1.0.0", url: join(dir,"BAD.json"), package_hash: packageHash(bad as any) }] }, files: { "r.txt":"r" } };
+    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+
+  test("atomic: a graph whose ROOT has a bad content_hash installs NOTHING", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
+    writeFileSync(join(dir,"B.json"), JSON.stringify(B));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: "sha256:deadbeef", dependencies:[{ kind: "inline" as const, name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B as any) }] }, files: { "r.txt":"r" } };
+    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+
+  test("store-collision: two distinct packages with identical files install NOTHING", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const sharedFiles = { "same.txt": "identical" };
+    const X = { manifest: { format_version:1, name:"X", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
+    const Y = { manifest: { format_version:1, name:"Y", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
+    writeFileSync(join(dir,"X.json"), JSON.stringify(X));
+    writeFileSync(join(dir,"Y.json"), JSON.stringify(Y));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
+      { kind: "inline" as const, name:"X", version:"1.0.0", url: join(dir,"X.json"), package_hash: packageHash(X as any) },
+      { kind: "inline" as const, name:"Y", version:"1.0.0", url: join(dir,"Y.json"), package_hash: packageHash(Y as any) },
+    ] }, files: { "r.txt":"r" } };
+    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+});
+
+// ---- registry commands (slice 5.1) ----
+
+describe("registry commands", () => {
+  test("ace registry add fetches + computes hash + stores; registry list shows it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const D = { manifest: { format_version:1, name:"D", version:"1.0.0", content_hash: h({ "d.txt":"d" }) }, files: { "d.txt":"d" } };
+    const dPath = join(dir, "D.json"); writeFileSync(dPath, JSON.stringify(D));
+    expect(await main(["registry", "add", "D", "1.0.0", dPath])).toBe(0);
+    const reg = loadRegistry();
+    expect(reg.get("D")?.get("1.0.0")?.package_hash).toBe(packageHash(D as any));
+    expect(await main(["registry", "list"])).toBe(0);
+  });
+
+  test("registry add normalizes a relative local path to absolute (cwd-independent install)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string, string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const D = { manifest: { format_version: 1, name: "Drel", version: "1.0.0", content_hash: h({ "d.txt": "d" }) }, files: { "d.txt": "d" } };
+    const absPath = join(dir, "Drel.json");
+    writeFileSync(absPath, JSON.stringify(D));
+    const relPath = relative(process.cwd(), absPath);
+    expect(await main(["registry", "add", "Drel", "1.0.0", relPath])).toBe(0);
+    const stored = loadRegistry().get("Drel")?.get("1.0.0")?.url;
+    expect(isAbsolute(stored!)).toBe(true);
+    expect(stored).toBe(absPath);
+  });
+  test("registry add refuses a parseable-but-malformed package (no manifest/files) with exit 65", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const p = join(dir, "bad.json");
+    writeFileSync(p, JSON.stringify({ foo: "bar" }));
+    expect(await main(["registry", "add", "X", "1.0.0", p])).toBe(65);
+  });
+  test("registry add refuses a package whose identity != the CLI name/version with exit 65", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string, string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const D = { manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) }, files: { "d.txt": "d" } };
+    const p = join(dir, "D.json");
+    writeFileSync(p, JSON.stringify(D));
+    expect(await main(["registry", "add", "WRONGNAME", "1.0.0", p])).toBe(65);
+  });
+  test("e2e: install a root with a registry dep resolves via the registry", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const D = { manifest: { format_version:1, name:"D", version:"1.0.0", content_hash: h({ "d.txt":"d" }) }, files: { "d.txt":"d" } };
+    const dPath = join(dir, "D.json"); writeFileSync(dPath, JSON.stringify(D));
+    await main(["registry", "add", "D", "1.0.0", dPath]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry", name:"D", version:"1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
+    expect(code).toBe(0);
+    expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["D","root"]);
+  });
+
+  test("e2e: install with a registry dep missing from the registry -> exit 1, store empty", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry", name:"MISSING", version:"1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+});
+
+// ---- semver ranges + solver (slice 5.2) ----
+
+describe("install — semver ranges (slice 5.2)", () => {
+  test("e2e: ranged registry dep resolves to newest satisfying version", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const mkA = (v: string) => ({ manifest: { format_version:1, name:"A", version:v, content_hash: h({ "a.txt":v }) }, files: { "a.txt":v } });
+    for (const v of ["1.0.0","1.5.0","1.9.0"]) { const p = join(dir, `A-${v}.json`); writeFileSync(p, JSON.stringify(mkA(v))); await main(["registry","add","A",v,p]); }
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    expect(await main(["install", rootPath, "--store", store, "--allow-no-signature"])).toBe(0);
+    const names = listInstalled(store).map((p)=>`${p.manifest.name}@${p.manifest.version}`).sort();
+    expect(names).toEqual(["A@1.9.0", "root@1.0.0"]);
+  });
+
+  test("e2e: unsatisfiable range → exit 1, store empty", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A)); await main(["registry","add","A","1.0.0",ap]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:">=2.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    expect(await main(["install", rootPath, "--store", store, "--allow-no-signature"])).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+
+  test("e2e: inline-only graph still installs (empty registry, no registry-miss)", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A));
+    const aHash = packageHash(A as any);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: ap, package_hash: aHash }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    expect(await main(["install", rootPath, "--store", store, "--allow-no-signature"])).toBe(0);
+    expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["A","root"]);
+  });
+
+  test("e2e: --print-resolution prints the solved graph", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const A = { manifest: { format_version:1, name:"A", version:"1.2.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A)); await main(["registry","add","A","1.2.0",ap]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    expect(await main(["install", rootPath, "--store", store, "--allow-no-signature", "--print-resolution"])).toBe(0);
   });
 });

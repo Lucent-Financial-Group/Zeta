@@ -462,6 +462,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0958](backlog/P1/B-0958-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md)** observe.ts agent-loop — implementation + testing checklist (the closed observe→execute→loadWorld loop; toward vendor-store distribution)
 - [ ] **[B-0959](backlog/P1/B-0959-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md)** Zeta sovereign distributed-DB + agent-loop MASTER checklist — one git-native ZetaId Z-set substrate (algebra ladder · observe loop · git-native bus · distributed time · 4-oracle)
 - [ ] **[B-0964](backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md)** Effectful do_item — command-vs-fact-event envelope + injected executor port + item-class-routed bash surface (just-bash text / local docker real-work / CF cloud-burst)
+- [ ] **[B-0967](backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md)** Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance
+- [ ] **[B-0969](backlog/P1/B-0969-invariant-culture-everywhere-configureawait-false-cross-cutting-dotnet-defaults-never-culture-sensitive-fsharp-gset-first-fix-aaron-2026-06-01.md)** Invariant-culture-everywhere + ConfigureAwait(false) as cross-cutting .NET defaults — never default to culture-sensitive (F# G-Set culture-sensitivity is the first concrete fix)
 
 ## P2 — research-grade
 
@@ -758,7 +760,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0676](backlog/P2/B-0676-b0620-slice-4-consolidator-script.md)** B-0620 slice 4 consolidator script
 - [ ] **[B-0677](backlog/P2/B-0677-b0620-slice-6-cross-operator-generalization.md)** B-0620 slice 6 cross-operator generalization
 - [ ] **[B-0678](backlog/P2/B-0678-b0620-slice-5-category-classifier.md)** B-0620 slice 5 category classifier
-- [ ] **[B-0679](backlog/P2/B-0679-zeta-id-rust-implementation-2026-05-21.md)** ZetaId V1 — Rust implementation as full peer oracle
+- [x] **[B-0679](backlog/P2/B-0679-zeta-id-rust-implementation-2026-05-21.md)** ZetaId V1 — Rust implementation as full peer oracle
 - [ ] **[B-0680](backlog/P2/B-0680-zeta-id-python-implementation-2026-05-21.md)** ZetaId V1 — Python implementation as full peer oracle
 - [ ] **[B-0681](backlog/P2/B-0681-zeta-id-v2-spec-hardening-2026-05-21.md)** ZetaId v2 — entropy budget + HLC monotonicity + Firefly bit drop + vocabularies DRAFT marker
 - [ ] **[B-0682](backlog/P2/B-0682-zeta-id-canonical-string-encoding-endianness-2026-05-21.md)** ZetaId canonical string encoding (Crockford base32) + endianness + bit-numbering spec
@@ -918,6 +920,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0962](backlog/P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)** Phase 1 — typed Claim/Lock coordination events (optimistic CAS: mechanism-deadlock-free + symmetry-breaking observe-menu; app-level safety needs fencing + release-before-acquire)
 - [ ] **[B-0963](backlog/P2/B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)** Prove completion-lock-freedom + per-agent wait-freedom — F# model first (no git), then extend to git
 - [ ] **[B-0965](backlog/P2/B-0965-gitbash-routing-install-shield-parity-gap-2026-06-01.md)** git-bash routing install-shield — the one unshielded install surface (parity gap)
+- [ ] **[B-0968](backlog/P2/B-0968-both-runtimes-on-windows-shield-coverage-podman-linux-docker-windows-containers-2026-06-01.md)** Both-runtimes-on-Windows shield coverage — podman (Linux-container path via WSL2) alongside docker (Windows-container install.ps1 shield)
+- [ ] **[B-0970](backlog/P2/B-0970-ace-advanced-semver-union-hyphen-prerelease-build-metadata-deferred-from-slice5.2-pragmatic-subset-2026-06-01.md)** Ace advanced semver — `||` unions, hyphen ranges, pre-release precedence, build metadata (deferred from slice 5.2 pragmatic subset)
+- [ ] **[B-0971](backlog/P2/B-0971-ace-remote-registry-http-fetched-index-deferred-from-slice5.x-local-only-2026-06-01.md)** Ace remote registry — HTTP-fetched registry index (deferred from slice 5.x local-only registry)
+- [ ] **[B-0972](backlog/P2/B-0972-ace-solver-installer-single-fetch-cache-deferred-from-slice5.2-two-phase-2026-06-01.md)** Ace solver↔installer single-fetch cache — fetch each package once (deferred from slice 5.2 clean two-phase split)
 
 ## P3 — convenience / deferred
 
