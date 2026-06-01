@@ -7,6 +7,7 @@ import { parseArgs, main } from "./ace.ts";
 import { listInstalled, contentHash, listTrustedKeys, loadRegistry } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
 import { packageHash } from "./resolve.ts";
+import { parseLockfile } from "./lockfile.ts";
 
 // ---- Trust-path isolation: redirect ~/.ace to a temp dir in every test ----
 let savedHome: string | undefined;
@@ -699,6 +700,28 @@ describe("registry commands", () => {
     const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
     expect(code).toBe(0);
     expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["D","root"]);
+  });
+
+  test("e2e: graph install writes ./ace.lock pinning the installed deps", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
+    await main(["registry", "add", "A", "1.0.0", aPath]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(dir, "ace.lock");
+    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath]);
+    expect(code).toBe(0);
+    expect(existsSync(lockPath)).toBe(true);
+    const lf = parseLockfile(readFileSync(lockPath, "utf8"));
+    expect("error" in lf).toBe(false);
+    if (!("error" in lf)) {
+      expect(lf.root.name).toBe("root");
+      expect(lf.nodes.map((n) => `${n.name}@${n.version}`).sort()).toEqual(["A@1.0.0"]);
+      expect(lf.nodes[0]!.package_hash).toBe(packageHash(A as any));
+    }
   });
 
   test("e2e: install with a registry dep missing from the registry -> exit 1, store empty", async () => {

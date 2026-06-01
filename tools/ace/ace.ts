@@ -24,6 +24,7 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
+import { buildLockfile, serializeLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
 import { resolve as toAbsolutePath } from "node:path";
 
@@ -544,6 +545,14 @@ export async function main(argv: readonly string[]): Promise<number> {
       for (const node of res.order) {
         const out = installPackage(parsed.storePath, node);
         if (!out.ok) { console.error(`ace: install failed mid-graph: ${out.error}`); return 1; }
+      }
+      // SLICE 5.3: write the lockfile (write failure is a warning, not a failed install).
+      const lf = buildLockfile(pkg, res.order, registry);
+      if ("error" in lf) {
+        console.error(`ace: WARNING: could not build lockfile: ${lf.error}`);
+      } else {
+        try { writeFileSync(parsed.lockfile, serializeLockfile(lf)); }
+        catch (e) { console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); }
       }
       console.log(`ace: installed ${res.order.length}: ${res.order.map((p) => `${p.manifest.name}@${p.manifest.version}`).join(", ")}`);
       return 0;
