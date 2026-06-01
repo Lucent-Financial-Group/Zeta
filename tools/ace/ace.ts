@@ -532,7 +532,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
     if (rootFilesHash !== pkg.manifest.content_hash) { console.error(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`); return 1; }
 
-    if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+    if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
       const registry = loadRegistry();
@@ -540,7 +540,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       if (!solveResult.ok) { console.error(`ace: update refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`); return 1; }
       const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
       if (!res.ok) { console.error(`ace: update refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`); return 1; }
-      // Preflight BEFORE writing — never write a lock for a graph install would reject (Codex #6412).
+      // Preflight BEFORE writing — never write a lock the graph install would reject (preflight-before-write per spec #6412, fix-forward #6414).
       const pf = preflightGraph(res.order);
       if (pf !== null) { console.error(`ace: update refused: ${pf}`); return 1; }
       const lf = buildLockfile(pkg, res.order, registry);
@@ -552,7 +552,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
     // Leaf: trivial lock — preflight the single package before writing, so update never
     // commits a lock for a package installPackage/--frozen would reject (parity with the
-    // graph path's preflightGraph; Codex #6416).
+    // graph path's preflightGraph).
     const leafUnsafe = validatePackagePaths(pkg);
     if (leafUnsafe !== null) { console.error(`ace: update refused: unsafe file path in ${pkg.manifest.name}: ${leafUnsafe}`); return 1; }
     try { writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg))); }
@@ -603,7 +603,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
 
     // SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
-    if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+    if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
       // Verify root content_hash BEFORE resolving (no wasted graph fetch on a bad root).
       const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
       if (rootFilesHash !== pkg.manifest.content_hash) {

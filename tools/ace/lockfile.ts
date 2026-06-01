@@ -79,7 +79,7 @@ export function verifyRootMatchesLock(root: AcePackage, lf: Lockfile): boolean {
   return packageHash(root) === lf.root.package_hash;
 }
 
-/** True iff two lockfiles serialize identically (canonical JSON — key-order-insensitive). */
+/** True iff two lockfiles serialize identically. Canonical JSON normalizes object key order, but node array order IS significant — the same nodes in a different order are NOT equal. */
 export function lockfilesEqual(a: Lockfile, b: Lockfile): boolean {
   return serializeLockfile(a) === serializeLockfile(b);
 }

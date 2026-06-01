@@ -1213,4 +1213,18 @@ describe("ace update (slice 5.4)", () => {
     expect(code).toBe(1);
     expect(existsSync(lockPath)).toBe(false);
   });
+
+  test("update treats non-array dependencies as a leaf (untrusted-JSON Array.isArray guard)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-update-nonarr-"));
+    // dependencies as a string must NOT route through solve (would iterate chars / crash);
+    // the Array.isArray guard routes it to the leaf path instead.
+    const pkg = { manifest: { format_version:1, name:"weird", version:"1.0.0", content_hash: h({ "f.txt":"v" }), dependencies: "notanarray" }, files: { "f.txt":"v" } };
+    const pkgPath = join(dir, "weird.json"); writeFileSync(pkgPath, JSON.stringify(pkg));
+    const lockPath = join(dir, "ace.lock");
+    const code = await main(["update", pkgPath, "--lockfile", lockPath, "--allow-no-signature"]);
+    expect(code).toBe(0);
+    const lf = parseLockfile(readFileSync(lockPath, "utf8"));
+    expect("error" in lf).toBe(false);
+    if (!("error" in lf)) expect(lf.nodes).toEqual([]);
+  });
 });
