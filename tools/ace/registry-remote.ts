@@ -7,7 +7,7 @@ import { verifyIndexSignature } from "./signing.ts";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import type { RegistryEntry, RemoteRegistryConfig } from "./store.ts";
+import type { Registry, RegistryEntry, RemoteRegistryConfig } from "./store.ts";
 import { registryCacheDir } from "./store.ts";
 
 export type IndexDoc = IndexSignableContent & { signature: AceSignature };
@@ -109,4 +109,71 @@ export function writeCache(
   };
   writeFileSync(metaPath(url), JSON.stringify(meta, null, 2));
   return meta;
+}
+
+export interface FetchOpts { offline?: boolean; now?: number }
+
+function toRegistryFragment(doc: IndexDoc): Registry {
+  const m: Registry = new Map();
+  for (const [name, versions] of Object.entries(doc.packages)) {
+    const vm = new Map<string, RegistryEntry>();
+    for (const [version, entry] of Object.entries(versions)) vm.set(version, entry);
+    m.set(name, vm);
+  }
+  return m;
+}
+
+export async function fetchRemoteIndex(
+  remote: RemoteRegistryConfig, trustStore: Map<string, TrustEntry>, opts: FetchOpts = {},
+): Promise<{ entries: Registry } | { error: string } | { skipped: string }> {
+  const now = opts.now ?? Date.now();
+  const cached = readCache(remote.url);
+  const cacheMeta: CacheMeta = cached?.meta ?? { url: remote.url, sequence_high_water: 0, index_content_hash: "", fetched_at: "" };
+
+  // Validate a CACHED body through the three gates; never writes (the fresh-200 path writes its own cache).
+  const useCachedBody = (body: string): { entries: Registry } | { error: string } => {
+    const parsed = parseIndex(body);
+    if ("error" in parsed) return { error: `${remote.url}: ${parsed.error}` };
+    const v = verifyIndex(parsed, remote, trustStore, cacheMeta, now, { offline: opts.offline === true });
+    if (!v.ok) return { error: `${remote.url}: ${v.reason}` };
+    return { entries: toRegistryFragment(parsed) };
+  };
+
+  if (opts.offline) {
+    if (!cached) return { skipped: `${remote.url}: offline + no cache` };
+    return useCachedBody(cached.body);
+  }
+
+  let res: Response;
+  try {
+    const headers: Record<string, string> = {};
+    if (cacheMeta.etag) headers["If-None-Match"] = cacheMeta.etag;
+    if (cacheMeta.last_modified) headers["If-Modified-Since"] = cacheMeta.last_modified;
+    res = await fetch(remote.url, { headers });
+  } catch {
+    if (cached) return useCachedBody(cached.body);
+    return { skipped: `${remote.url}: unreachable + no cache` };
+  }
+
+  if (res.status === 304) {
+    if (cached) return useCachedBody(cached.body);
+    return { skipped: `${remote.url}: 304 but no cache` };
+  }
+  if (res.status !== 200) {
+    if (cached) return useCachedBody(cached.body);
+    return { skipped: `${remote.url}: HTTP ${res.status} + no cache` };
+  }
+  const body = await res.text();
+  const parsed = parseIndex(body);
+  if ("error" in parsed) return { error: `${remote.url}: ${parsed.error}` };
+  const v = verifyIndex(parsed, remote, trustStore, cacheMeta, now, { offline: false });
+  if (!v.ok) return { error: `${remote.url}: ${v.reason}` };
+  const etag = res.headers.get("ETag") ?? undefined;
+  const last_modified = res.headers.get("Last-Modified") ?? undefined;
+  writeCache(remote.url, body, {
+    sequence_high_water: Math.max(parsed.sequence, cacheMeta.sequence_high_water),
+    ...(etag !== undefined ? { etag } : {}),
+    ...(last_modified !== undefined ? { last_modified } : {}),
+  });
+  return { entries: toRegistryFragment(parsed) };
 }

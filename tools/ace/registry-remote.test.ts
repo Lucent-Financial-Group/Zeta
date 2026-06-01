@@ -94,3 +94,62 @@ describe("cache I/O", () => {
   });
   test("missing → null", () => { expect(readCache("https://nope")).toBeNull(); });
 });
+
+import { generateKeypair as gkp, signIndex as sidx } from "./signing.ts";
+import { fetchRemoteIndex } from "./registry-remote.ts";
+
+function indexJson(kp: { privatePem: string }, seq: number, issuedAtMs: number) {
+  const content = { format_version: 1 as const, sequence: seq, issued_at: new Date(issuedAtMs).toISOString(),
+    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+  return JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
+}
+
+describe("fetchRemoteIndex", () => {
+  let savedFetch: typeof globalThis.fetch, savedHome: string | undefined, savedUP: string | undefined;
+  beforeEach(() => { savedFetch = globalThis.fetch; savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
+    const h = mkdtempSync(pjoin(tmpdir(), "ace-fetch-")); process.env.HOME = h; process.env.USERPROFILE = h; });
+  afterEach(() => { globalThis.fetch = savedFetch;
+    if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+
+  test("200 verifies + returns entries + caches", async () => {
+    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    globalThis.fetch = (async () => new Response(indexJson(kp, 1, now), { status: 200, headers: { ETag: '"e1"' } })) as unknown as typeof fetch;
+    const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    const r = await fetchRemoteIndex({ url: "https://x/index.json", key_id: kp.keyId }, trust, { now });
+    expect("entries" in r).toBe(true);
+    if ("entries" in r) expect(r.entries.get("leaf")!.get("1.0.0")!.url).toBe("https://x/l.json");
+  });
+  test("304 uses cached body", async () => {
+    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    globalThis.fetch = (async () => new Response(indexJson(kp, 2, now), { status: 200, headers: { ETag: '"e2"' } })) as unknown as typeof fetch;
+    const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    const remote = { url: "https://x/index.json", key_id: kp.keyId };
+    await fetchRemoteIndex(remote, trust, { now });
+    globalThis.fetch = (async () => new Response(null, { status: 304 })) as unknown as typeof fetch;
+    expect("entries" in await fetchRemoteIndex(remote, trust, { now })).toBe(true);
+  });
+  test("network error → cache-fallback", async () => {
+    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    globalThis.fetch = (async () => new Response(indexJson(kp, 1, now), { status: 200 })) as unknown as typeof fetch;
+    const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    const remote = { url: "https://x/index.json", key_id: kp.keyId };
+    await fetchRemoteIndex(remote, trust, { now });
+    globalThis.fetch = (async () => { throw new Error("net"); }) as unknown as typeof fetch;
+    expect("entries" in await fetchRemoteIndex(remote, trust, { now })).toBe(true);
+  });
+  test("network error + no cache → skipped", async () => {
+    const kp = gkp();
+    globalThis.fetch = (async () => { throw new Error("net"); }) as unknown as typeof fetch;
+    expect("skipped" in await fetchRemoteIndex({ url: "https://x/index.json", key_id: kp.keyId }, new Map(), { now: Date.now() })).toBe(true);
+  });
+  test("rollback on 200 → error (hard refusal)", async () => {
+    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const remote = { url: "https://x/index.json", key_id: kp.keyId };
+    const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    globalThis.fetch = (async () => new Response(indexJson(kp, 5, now), { status: 200 })) as unknown as typeof fetch;
+    await fetchRemoteIndex(remote, trust, { now });
+    globalThis.fetch = (async () => new Response(indexJson(kp, 2, now), { status: 200 })) as unknown as typeof fetch;
+    expect("error" in await fetchRemoteIndex(remote, trust, { now })).toBe(true);
+  });
+});
