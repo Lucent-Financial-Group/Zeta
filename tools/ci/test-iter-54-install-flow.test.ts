@@ -47,9 +47,11 @@ const SCRIPT_PATH = resolve(
   ROOT,
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
 );
+const INSTALL_SCRIPT_PATH = resolve(ROOT, "tools/setup/install.sh");
 
 // Cache the script content — read once, asserted many times.
 const SCRIPT = readFileSync(SCRIPT_PATH, "utf8");
+const INSTALL_SCRIPT = readFileSync(INSTALL_SCRIPT_PATH, "utf8");
 
 // Helper: extract the body of an iter-N block from the script. The blocks
 // are delimited by `Step 6.N` comment headers. Returns the substring from
@@ -86,6 +88,11 @@ const ITER_541_BLOCK = extractStep(
 const ITER_42_BLOCK = extractStep(
   "Step 6.5: iter-4.2 probe boot USB for operator SSH pubkey",
   "Step 6.56: B-0852.3b cred-blob passphrase prompt",
+);
+
+const ITER_595_BLOCK = extractStep(
+  "Step 6.95: iter-5.5.0",
+  "Step 7: print initial credentials",
 );
 
 describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
@@ -211,6 +218,34 @@ describe("B-0891 retained zflash credential preseed", () => {
     expect(SCRIPT).toContain(
       "/mnt/boot/zeta-creds.enc already present from zflash retention preseed",
     );
+  });
+});
+
+describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => {
+  test("install.sh exposes an explicit installed-NixOS override for target bootstrap", () => {
+    expect(INSTALL_SCRIPT).toContain("ZETA_INSTALL_NIXOS_MODE");
+    expect(INSTALL_SCRIPT).toContain("installed|nixos-installed)");
+    expect(INSTALL_SCRIPT).toContain("live|nixos-live)");
+    expect(INSTALL_SCRIPT).toContain("invalid ZETA_INSTALL_NIXOS_MODE");
+  });
+
+  test("zeta-install calls install.sh as installed target, with full declarative CLI graph", () => {
+    expect(ITER_595_BLOCK).toContain("tools/setup/install.sh");
+    expect(ITER_595_BLOCK).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
+    expect(ITER_595_BLOCK).toContain("ZETA_INSTALL_FULL=1");
+    expect(ITER_595_BLOCK).toContain("BUN_INSTALL=\"$ZETA_HOME/.bun\"");
+  });
+
+  test("agent CLI package installs are not duplicated in zeta-install.sh", () => {
+    expect(ITER_595_BLOCK).toContain("tools/setup/manifests/agent-clis");
+    expect(ITER_595_BLOCK).toContain("tools/setup/manifests/one-liner-tools");
+    expect(ITER_595_BLOCK).not.toContain(
+      "bun install --global @anthropic-ai/claude-code",
+    );
+    expect(ITER_595_BLOCK).not.toContain(
+      "bun install --global @google/gemini-cli",
+    );
+    expect(ITER_595_BLOCK).not.toContain("bun install --global @openai/codex");
   });
 });
 
