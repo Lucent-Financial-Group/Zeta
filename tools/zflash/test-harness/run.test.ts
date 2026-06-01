@@ -11,6 +11,7 @@ import type {
 const SCRIPT = join(import.meta.dir, "run.ts");
 
 function run(...args: string[]): { readonly stdout: string; readonly stderr: string; readonly exitCode: number } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- bun is intentionally resolved from the active PATH; args are structured and never shell-expanded.
   const result = spawnSync("bun", [SCRIPT, ...args], {
     encoding: "utf-8",
   });

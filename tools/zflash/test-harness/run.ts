@@ -210,6 +210,7 @@ function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResu
     };
   }
   const start = Date.now();
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- bun is intentionally resolved from the active PATH; args are structured and never shell-expanded.
   const result = spawnSync("bun", [absHarnessPath, isoPath], {
     cwd: REPO_ROOT,
     stdio: "inherit",
