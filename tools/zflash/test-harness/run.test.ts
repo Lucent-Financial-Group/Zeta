@@ -86,6 +86,10 @@ describe("B-0891 test-harness dispatcher", () => {
           observedSteps.push(step);
           return successfulExecution(step, command);
         },
+        runCommandUntilSerialMarkers: (step, command) => {
+          observedSteps.push(step);
+          return successfulExecution(step, command);
+        },
         readSerialOutput: () => [
           "zeta-creds-restore: reading preserved ESP blob",
           "zeta-creds-restore: already-present, skipping credential rewrite",
@@ -144,6 +148,7 @@ describe("B-0891 test-harness dispatcher", () => {
       execute: true,
       executor: {
         runCommand: successfulExecution,
+        runCommandUntilSerialMarkers: successfulExecution,
         readSerialOutput: () => "zeta-creds-restore: restored credentials",
       },
     });

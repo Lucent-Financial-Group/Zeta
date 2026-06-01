@@ -74,6 +74,7 @@ export function createNodeFileBackedZflashImageExecutor(
       writeFileSync(file.path, file.content, { encoding: "utf8" });
     },
     runCommand: (command: CommandPlan): FileBackedZflashImageCommandResult => {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- zflash file-backed commands are planned constants; args are structured and never shell-expanded.
       const result = spawnSync(command.command, [...command.args], {
         encoding: "utf8",
         stdio: ["ignore", "pipe", "pipe"],

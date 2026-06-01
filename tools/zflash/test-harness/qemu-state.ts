@@ -423,6 +423,7 @@ function defaultSpawnSyncQemuCommand(
   const spawnOptions = options.cwd === undefined
     ? { encoding: "utf8" as const, timeout: options.timeoutMs }
     : { cwd: options.cwd, encoding: "utf8" as const, timeout: options.timeoutMs };
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- QEMU tool names are planned constants; args are structured and never shell-expanded.
   const result = nodeSpawnSync(command.bin, [...command.args], spawnOptions);
   const stdout = stringifySpawnOutput(result.stdout);
   const stderr = appendSpawnError(stringifySpawnOutput(result.stderr), result.error);
@@ -453,6 +454,7 @@ function defaultSpawnManagedQemuCommand(
   if (options.cwd !== undefined) {
     spawnOptions.cwd = options.cwd;
   }
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- QEMU tool names are planned constants; args are structured and never shell-expanded.
   const child = nodeSpawn(command.bin, [...command.args], spawnOptions);
   let stderr = "";
   child.stderr?.on("data", (chunk: Buffer | string) => {
