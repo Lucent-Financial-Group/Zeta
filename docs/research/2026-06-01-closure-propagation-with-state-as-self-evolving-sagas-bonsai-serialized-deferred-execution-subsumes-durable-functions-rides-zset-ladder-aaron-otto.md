@@ -140,6 +140,16 @@ The whole replay model is ~5 pieces:
    `notify` are the only surface. (`request` = fire-then-break-and-wait;
    `notify` = fire-and-cache.)
 
+**NB (Result-over-exception):** the break-exception is how the *replay family*
+(DTF / the minimal spike) suspends — described here as the baseline, **not
+prescribed for our build**. Per the repo's Result-over-exception /
+exceptions-as-signals discipline, our **resume** model suspends at the **value
+level** — a `Suspended` / `AwaitingResume` variant returned from the yield (a
+`Result<…, Suspended>`-shaped control-flow value), not a thrown exception. Resume
+serializes state and *returns*; there is no replay, so no throw-to-suspend at
+all. The break-exception is a **replay artifact**, not a control-flow primitive
+we adopt.
+
 On resume the operation **re-runs from the start**, skips every completed step
 (reading cached values), reaches the suspend point, finds the resume value
 populated, and continues. That's the entire model.
