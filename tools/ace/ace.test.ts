@@ -590,4 +590,23 @@ describe("main", () => {
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
+
+  test("store-collision: two distinct packages with identical files install NOTHING", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const sharedFiles = { "same.txt": "identical" };
+    const X = { manifest: { format_version:1, name:"X", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
+    const Y = { manifest: { format_version:1, name:"Y", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
+    writeFileSync(join(dir,"X.json"), JSON.stringify(X));
+    writeFileSync(join(dir,"Y.json"), JSON.stringify(Y));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
+      { name:"X", version:"1.0.0", url: join(dir,"X.json"), package_hash: packageHash(X as any) },
+      { name:"Y", version:"1.0.0", url: join(dir,"Y.json"), package_hash: packageHash(Y as any) },
+    ] }, files: { "r.txt":"r" } };
+    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
 });
