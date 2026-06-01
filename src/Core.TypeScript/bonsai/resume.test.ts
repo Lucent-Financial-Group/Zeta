@@ -13,6 +13,9 @@ interface Trace {
   readonly activityResults: readonly ConstValue[];
   readonly expectedSuspensions: readonly { readonly fn: string; readonly args: readonly ConstValue[] }[];
   readonly expectedFinal: ConstValue;
+  // the canonical serializeState() bytes the TS reference emits at each suspension, in order —
+  // the cross-oracle STATE-BYTE lock every ferry (F#/C#/Rust) must reproduce verbatim
+  readonly expectedStateAtSuspension: readonly string[];
 }
 
 const goldenPath = join(dirname(fileURLToPath(import.meta.url)), "resume-golden.json");
@@ -38,6 +41,9 @@ for (const tr of golden.traces) {
       const ser = serializeState(step.state);
       expect(ser.ok).toBe(true);
       if (!ser.ok) return;
+      // STATE-BYTE LOCK: the persisted continuation must equal the canonical bytes the TS
+      // reference authored — the exact wire every ferry replays (kont serializes top-last)
+      expect(ser.value).toBe(tr.expectedStateAtSuspension[i]!);
       const restored = parseState(ser.value);
       expect(restored.ok).toBe(true);
       if (!restored.ok) return;
