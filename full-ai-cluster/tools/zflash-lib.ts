@@ -143,6 +143,51 @@ export type FileBackedZflashImageExecutionPlanResult =
   | { readonly ok: true; readonly value: FileBackedZflashImageExecutionPlan }
   | { readonly ok: false; readonly error: string };
 
+export interface FileBackedZflashImageCommandResult {
+  readonly exitCode: number | null;
+  readonly stdout?: string;
+  readonly stderr?: string;
+}
+
+export interface FileBackedZflashImageExecutor {
+  readonly writeFile: (file: FileBackedInlineFile) => void;
+  readonly runCommand: (command: CommandPlan) => FileBackedZflashImageCommandResult;
+}
+
+export type FileBackedZflashImageExecutionFeedback =
+  | {
+      readonly kind: "inline-file-write-failed";
+      readonly file: FileBackedInlineFile;
+      readonly reason: string;
+      readonly completedSteps: readonly FileBackedZflashImageExecutionStep[];
+    }
+  | {
+      readonly kind: "command-failed";
+      readonly command: CommandPlan;
+      readonly exitCode: number | null;
+      readonly stdout: string;
+      readonly stderr: string;
+      readonly completedSteps: readonly FileBackedZflashImageExecutionStep[];
+    }
+  | {
+      readonly kind: "executor-threw";
+      readonly step: FileBackedZflashImageExecutionStep;
+      readonly reason: string;
+      readonly completedSteps: readonly FileBackedZflashImageExecutionStep[];
+    };
+
+export interface FileBackedZflashImageExecution {
+  readonly imagePath: string;
+  readonly completedSteps: readonly FileBackedZflashImageExecutionStep[];
+  readonly retentionBootImageEnvironment: {
+    readonly ZFLASH_QEMU_RETENTION_BOOT_IMAGE: string;
+  };
+}
+
+export type FileBackedZflashImageExecutionResult =
+  | { readonly ok: true; readonly value: FileBackedZflashImageExecution }
+  | { readonly ok: false; readonly error: FileBackedZflashImageExecutionFeedback };
+
 /**
  * Plan the non-destructive, file-backed equivalent of zflash's current
  * physical-device flow for QEMU tests.
@@ -313,6 +358,84 @@ export function planFileBackedZflashImageExecution(
       inlineFiles,
       mtoolsImageSpecifier,
       steps,
+    },
+  };
+}
+
+function describeExecutorError(e: unknown): string {
+  return e instanceof Error ? e.message : String(e);
+}
+
+/**
+ * Execute a file-backed zflash image plan through injected I/O.
+ *
+ * The library remains dependency-free/testable: callers provide filesystem and
+ * process effects, while this function enforces the planned order and returns
+ * the exact env binding needed by the QEMU retention harness.
+ */
+export function executeFileBackedZflashImageExecutionPlan(
+  plan: FileBackedZflashImageExecutionPlan,
+  executor: FileBackedZflashImageExecutor,
+): FileBackedZflashImageExecutionResult {
+  const completedSteps: FileBackedZflashImageExecutionStep[] = [];
+
+  for (const step of plan.steps) {
+    if (step.kind === "write-inline-file") {
+      try {
+        executor.writeFile(step.file);
+        completedSteps.push(step);
+      } catch (e) {
+        return {
+          ok: false,
+          error: {
+            kind: "inline-file-write-failed",
+            completedSteps,
+            file: step.file,
+            reason: describeExecutorError(e),
+          },
+        };
+      }
+      continue;
+    }
+
+    let result: FileBackedZflashImageCommandResult;
+    try {
+      result = executor.runCommand(step.command);
+    } catch (e) {
+      return {
+        ok: false,
+        error: {
+          kind: "executor-threw",
+          completedSteps,
+          reason: describeExecutorError(e),
+          step,
+        },
+      };
+    }
+    if (result.exitCode !== 0) {
+      return {
+        ok: false,
+        error: {
+          kind: "command-failed",
+          command: step.command,
+          completedSteps,
+          exitCode: result.exitCode,
+          stderr: result.stderr ?? "",
+          stdout: result.stdout ?? "",
+        },
+      };
+    }
+    completedSteps.push(step);
+  }
+
+  return {
+    ok: true,
+    value: {
+      completedSteps,
+      imagePath: plan.imagePath,
+      retentionBootImageEnvironment: {
+        ZFLASH_QEMU_RETENTION_BOOT_IMAGE: plan.imagePath,
+      },
     },
   };
 }

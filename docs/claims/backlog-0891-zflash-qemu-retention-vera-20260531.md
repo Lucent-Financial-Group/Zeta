@@ -55,3 +55,6 @@
 - proof: `bun test full-ai-cluster/tools/zflash-lib.test.ts`, `bun test tools/ci/manifest-symmetry.test.ts`, `bun --bun tsc --noEmit -p tsconfig.json`, and `git diff --check` pass after the file-backed execution-plan/declarative-dependency patch.
 - limitation: `mtools` has no selected Windows package-manager source in `tools/setup/manifests/windows` yet, so the manifest symmetry shield records it as a Windows exception while preserving QEMU-only Windows coverage.
 - next: add the small I/O executor that materializes inline staging files, runs the planned `qemu-img`/`mcopy` steps, and passes the resulting raw image to `ZFLASH_QEMU_RETENTION_BOOT_IMAGE` for a real retention run.
+- progress: `executeFileBackedZflashImageExecutionPlan` now runs the planned `qemu-img`/`mcopy` sequence through injected I/O, materializes inline hostname files in order, fails closed with Result-shaped feedback, and returns the `ZFLASH_QEMU_RETENTION_BOOT_IMAGE` env binding for the QEMU retention harness.
+- proof: `bun test full-ai-cluster/tools/zflash-lib.test.ts`, `bun --bun tsc --noEmit -p tsconfig.json`, and `git diff --check` pass after the injected file-backed executor patch.
+- next: connect the executor to a CLI/runtime wrapper that supplies real `writeFile`/`spawnSync` effects, then run `ZFLASH_QEMU_RETENTION_EXECUTE=1` against the produced raw boot image.
