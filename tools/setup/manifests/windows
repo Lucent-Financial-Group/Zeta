@@ -36,6 +36,7 @@ ollama    winget=Ollama.Ollama    choco=ollama    optional
 # manifests/apt; rationale: B-0964 §2). podman = the default OCI runtime (Apache-2.0); on
 # Windows it runs its Linux VM via WSL2 (`podman machine init` on first use). Coexists with
 # Docker Desktop. Pins per dep-pin-search-first-authority (WebSearch 2026-06-01 —
-# https://winget.run/pkg/RedHat/Podman + https://scoop.sh/): scoop `podman` | winget
-# `RedHat.Podman` | choco defaults to `podman` (scoop is the primary resolver).
-podman    winget=RedHat.Podman
+# https://winget.run/pkg/RedHat/Podman + https://community.chocolatey.org/packages/podman-cli):
+# scoop `podman` | winget `RedHat.Podman` | choco `podman-cli` (the CLI package — NOT
+# `podman`, which would 404 on a choco-only host; `podman-desktop` is the separate GUI).
+podman    winget=RedHat.Podman    choco=podman-cli
